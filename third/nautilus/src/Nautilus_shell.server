@@ -5,74 +5,85 @@
     <item value="IDL:GNOME/ObjectFactory:1.0"/>
   </oaf_attribute>
   <oaf_attribute name="name" type="string" value="Nautilus factory"/>
-  <oaf_attribute name="name-ar" type="string" value="مصنع ناوتيلاس"/>
-  <oaf_attribute name="name-az" type="string" value="Nautilus emalatxanası"/>
-  <oaf_attribute name="name-be" type="string" value="Мейсца Nautilus&apos;у"/>
-  <oaf_attribute name="name-bg" type="string" value="Фабрика на Nautilus"/>
+  <oaf_attribute name="name-ar" type="string" value="ÙØµÙØ¹ ÙØ§ÙØªÙÙØ§Ø³"/>
+  <oaf_attribute name="name-az" type="string" value="Nautilus emalatxanasÄ±"/>
+  <oaf_attribute name="name-be" type="string" value="ÐÐµÐ¹ÑÑÐ° Nautilus&apos;Ñ"/>
+  <oaf_attribute name="name-bg" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð½Ð° Nautilus"/>
   <oaf_attribute name="name-ca" type="string" value="Nautilus original"/>
-  <oaf_attribute name="name-cs" type="string" value="Factory pro Nautilus"/>
+  <oaf_attribute name="name-cs" type="string" value="GenerÃ¡tor pro Nautilus"/>
   <oaf_attribute name="name-da" type="string" value="Fabrik for Nautilus"/>
   <oaf_attribute name="name-de" type="string" value="Nautilus-Fabrik"/>
-  <oaf_attribute name="name-el" type="string" value="Εργοστάσιο Ναυτίλου"/>
+  <oaf_attribute name="name-el" type="string" value="ÎÏÎ³Î¿ÏÏÎ¬ÏÎ¹Î¿ ÎÎ±ÏÏÎ¯Î»Î¿Ï"/>
   <oaf_attribute name="name-es" type="string" value="Nautilus original"/>
+  <oaf_attribute name="name-et" type="string" value="Nautilus factory"/>
   <oaf_attribute name="name-eu" type="string" value="Nautilus-en fabrika"/>
   <oaf_attribute name="name-fi" type="string" value="Nautilustehdas"/>
   <oaf_attribute name="name-fr" type="string" value="Usine Nautilus"/>
-  <oaf_attribute name="name-gl" type="string" value="Fábrica do Nautilus"/>
+  <oaf_attribute name="name-gl" type="string" value="FÃ¡brica do Nautilus"/>
+  <oaf_attribute name="name-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤µà¥à¤µà¤°"/>
   <oaf_attribute name="name-hu" type="string" value="Nautilus factory"/>
   <oaf_attribute name="name-it" type="string" value="Fabbrica di Nautilus"/>
-  <oaf_attribute name="name-ja" type="string" value="Nautilus ファクトリ"/>
-  <oaf_attribute name="name-ko" type="string" value="노틸러스 팩토리"/>
+  <oaf_attribute name="name-ja" type="string" value="Nautilus ãã¡ã¯ããª"/>
+  <oaf_attribute name="name-ko" type="string" value="ë¸í¸ë¬ì¤ í©í ë¦¬"/>
   <oaf_attribute name="name-lt" type="string" value="Nautilus gamykla"/>
-  <oaf_attribute name="name-lv" type="string" value="Nautilus ražotne"/>
+  <oaf_attribute name="name-lv" type="string" value="Nautilus raÅ¾otne"/>
+  <oaf_attribute name="name-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð±ÑÐ¸Ðº"/>
   <oaf_attribute name="name-ms" type="string" value="Kilang Nautilus"/>
   <oaf_attribute name="name-nl" type="string" value="Nautilusfabriek"/>
   <oaf_attribute name="name-no" type="string" value="Nautilus factory"/>
   <oaf_attribute name="name-pl" type="string" value="Generator Nautilusa"/>
-  <oaf_attribute name="name-pt" type="string" value="Fábrica Nautilus"/>
-  <oaf_attribute name="name-pt_BR" type="string" value="Fábrica do Nautilus"/>
-  <oaf_attribute name="name-ru" type="string" value="Фабрика Nautilus"/>
-  <oaf_attribute name="name-sk" type="string" value="Vytváracie rozhranie pre Nautilus"/>
+  <oaf_attribute name="name-pt" type="string" value="FÃ¡brica Nautilus"/>
+  <oaf_attribute name="name-pt_BR" type="string" value="FÃ¡brica do Nautilus"/>
+  <oaf_attribute name="name-ro" type="string" value="FabricÄ Nautilus"/>
+  <oaf_attribute name="name-ru" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;"/>
+  <oaf_attribute name="name-sk" type="string" value="VytvÃ¡racie rozhranie pre Nautilus"/>
   <oaf_attribute name="name-sl" type="string" value="Tovarna Nautilusa"/>
   <oaf_attribute name="name-sq" type="string" value="Fabrika e Nautilus"/>
   <oaf_attribute name="name-sv" type="string" value="Nautilus-fabrik"/>
   <oaf_attribute name="name-tr" type="string" value="Nautilus mimarisi"/>
-  <oaf_attribute name="name-vi" type="string" value="Factory của Nautilus factor"/>
-  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus 制造库"/>
-  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus 工廠"/>
+  <oaf_attribute name="name-uk" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° ÐÐ°ÑÑÑÐ»ÑÑ"/>
+  <oaf_attribute name="name-vi" type="string" value="Factory cá»§a Nautilus factor"/>
+  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus å·¥å"/>
+  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus å·¥å» "/>
   <oaf_attribute name="description" type="string" value="Factory for Nautilus shell and file manager"/>
-  <oaf_attribute name="description-ar" type="string" value="مصنع لغلاف ومدير ملفات ناوتيلاس"/>
-  <oaf_attribute name="description-az" type="string" value="Nautilus qabıq və fayl idarəcisi emalatxanası"/>
-  <oaf_attribute name="description-ca" type="string" value="Original per l&apos;intèrpret i gestor de fitxers Nautilus"/>
-  <oaf_attribute name="description-cs" type="string" value="Factory pro správce souborů a shell Nautilus"/>
-  <oaf_attribute name="description-da" type="string" value="Fabrik til Nautilus&apos; skal og filhåndtering"/>
-  <oaf_attribute name="description-de" type="string" value="Fabrik für Nautilus-Shell und -Dateimanager"/>
-  <oaf_attribute name="description-el" type="string" value="Εργοστάσιο για το φλοιό του Ναυτίλου και τον διαχειριστή αρχείων"/>
-  <oaf_attribute name="description-es" type="string" value="Origen para el shell y administrador de archivos Nautilus"/>
+  <oaf_attribute name="description-ar" type="string" value="ÙØµÙØ¹ ÙØºÙØ§Ù ÙÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³"/>
+  <oaf_attribute name="description-az" type="string" value="Nautilus qabÄ±q vÉ fayl idarÉcisi emalatxanasÄ±"/>
+  <oaf_attribute name="description-bg" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð½Ð° Nautilus Ð·Ð° shell Ð¸ ÑÐ°Ð¹Ð»Ð¾Ð² Ð¼ÐµÐ½Ð¸Ð´Ð¶ÑÑ"/>
+  <oaf_attribute name="description-ca" type="string" value="Original per l&apos;intÃ¨rpret i gestor de fitxers Nautilus"/>
+  <oaf_attribute name="description-cs" type="string" value="GenerÃ¡tor pro sprÃ¡vce souborÅ¯ a shell Nautilus"/>
+  <oaf_attribute name="description-da" type="string" value="Fabrik til Nautilus&apos; skal og filhÃ¥ndtering"/>
+  <oaf_attribute name="description-de" type="string" value="Fabrik fÃ¼r Nautilus-Shell und -Dateimanager"/>
+  <oaf_attribute name="description-el" type="string" value="ÎÏÎ³Î¿ÏÏÎ¬ÏÎ¹Î¿ Î³Î¹Î± ÏÎ¿ ÏÎ»Î¿Î¹Ï ÏÎ¿Ï ÎÎ±ÏÏÎ¯Î»Î¿Ï ÎºÎ±Î¹ ÏÎ¿Î½ Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½"/>
+  <oaf_attribute name="description-es" type="string" value="FÃ¡brica para el shell y administrador de archivos Nautilus"/>
+  <oaf_attribute name="description-et" type="string" value="Factory for Nautilus shell and file manager"/>
   <oaf_attribute name="description-eu" type="string" value="Nautilus-en shell eta fitxategi-kudeatzaileen fabrika"/>
   <oaf_attribute name="description-fi" type="string" value="Tehdas, joka luo Nautilus-komentotulkin ja tiedostonhallinnan"/>
-  <oaf_attribute name="description-fr" type="string" value="Usine pour le terminal et le gestionnaire de fichier de Nautilus"/>
-  <oaf_attribute name="description-gl" type="string" value="Fábrica para a shell e o xestor de ficheiros Nautilus"/>
-  <oaf_attribute name="description-hu" type="string" value="Factory Nautilus shellhez és fájlkezelőhöz"/>
+  <oaf_attribute name="description-fr" type="string" value="Fabrique pour le terminal et le gestionnaire de fichier Nautilus"/>
+  <oaf_attribute name="description-gl" type="string" value="FÃ¡brica para a shell e o xestor de ficheiros Nautilus"/>
+  <oaf_attribute name="description-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤¶à¥à¤² à¤à¤µà¤ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤° à¤à¥ à¤²à¤¿à¤ à¤«à¥à¤à¥à¤à¤°à¥"/>
+  <oaf_attribute name="description-hu" type="string" value="Factory Nautilus shellhez Ã©s fÃ¡jlkezelÅhÃ¶z"/>
   <oaf_attribute name="description-it" type="string" value="Fabbrica per la shell e file manager Nautilus"/>
-  <oaf_attribute name="description-ja" type="string" value="Nautilusのシェルとファイルマネージャのファクトリ"/>
-  <oaf_attribute name="description-ko" type="string" value="노틸러스 쉘과 파일 관리자의 팩토리"/>
-  <oaf_attribute name="description-lv" type="string" value="Ražotne Nautilus čaulas un failu pārvaldniekam"/>
+  <oaf_attribute name="description-ja" type="string" value="Nautilusã®ã·ã§ã«ã¨ãã¡ã¤ã«ããã¼ã¸ã£ã®ãã¡ã¯ããª"/>
+  <oaf_attribute name="description-ko" type="string" value="ë¸í¸ë¬ì¤ ìê³¼ íì¼ ê´ë¦¬ìì í©í ë¦¬"/>
+  <oaf_attribute name="description-lv" type="string" value="RaÅ¾otne Nautilus Äaulas un failu pÄrvaldniekam"/>
+  <oaf_attribute name="description-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ Shell Ð±Ð° -Ð¤Ð°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑÐ¸Ð¹Ð½ ÑÐ°Ð±ÑÐ¸Ðº"/>
   <oaf_attribute name="description-ms" type="string" value="Kilang bagi shell Nautilus dan pengurus fail"/>
   <oaf_attribute name="description-nl" type="string" value="Fabriek voor de Nautilus-schil en -bestandsbeheer"/>
-  <oaf_attribute name="description-no" type="string" value="Factory for Nautilus skallet og filhåndtereren"/>
-  <oaf_attribute name="description-pl" type="string" value="Generator menedżera plików i powłoki graficznej Nautilusa"/>
-  <oaf_attribute name="description-pt" type="string" value="Fábrica para a consola e gestor de ficheiros Nautilus"/>
-  <oaf_attribute name="description-pt_BR" type="string" value="Fábrica para o gerenciador de arquivos do Nautilus"/>
-  <oaf_attribute name="description-ru" type="string" value="Фабрика для оболочки и диспетчера файлов Nautilus"/>
-  <oaf_attribute name="description-sk" type="string" value="Vytváracie rozhranie pre shell Nautilus a správcu súborov"/>
+  <oaf_attribute name="description-no" type="string" value="Factory for Nautilus skallet og filhÃ¥ndtereren"/>
+  <oaf_attribute name="description-pl" type="string" value="Generator menedÅ¼era plikÃ³w i powÅoki graficznej Nautilusa"/>
+  <oaf_attribute name="description-pt" type="string" value="FÃ¡brica para a consola e gestor de ficheiros Nautilus"/>
+  <oaf_attribute name="description-pt_BR" type="string" value="FÃ¡brica para o gerenciador de arquivos do Nautilus"/>
+  <oaf_attribute name="description-ro" type="string" value="FabricÄ pentru shell-ul Åi administratorul de fiÅiere Nautilus"/>
+  <oaf_attribute name="description-ru" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð¾Ð±Ð¾Ð»Ð¾ÑÐºÐ¸ Ð¸ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° Ð´Ð»Ñ &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;"/>
+  <oaf_attribute name="description-sk" type="string" value="VytvÃ¡racie rozhranie pre shell Nautilus a sprÃ¡vcu sÃºborov"/>
   <oaf_attribute name="description-sl" type="string" value="Tovarna za Nautilusovo lupino in upravljalnika datotek"/>
-  <oaf_attribute name="description-sq" type="string" value="Fabrikë për shell dhe file manager Nautilus"/>
-  <oaf_attribute name="description-sv" type="string" value="Fabrik för skalet och filhanteraren Nautilus"/>
-  <oaf_attribute name="description-tr" type="string" value="Nautilus kabuk ve dosya yöneticisi mimarisi"/>
-  <oaf_attribute name="description-vi" type="string" value="Factory cho vỏ và quản lý tập tin của Nautilus"/>
-  <oaf_attribute name="description-zh_CN" type="string" value="Nautilus 外壳和文件管理器的制造库"/>
-  <oaf_attribute name="description-zh_TW" type="string" value="產生 Nautilus 檔案管理員的工廠"/>
+  <oaf_attribute name="description-sq" type="string" value="FabrikÃ« pÃ«r shell dhe file manager Nautilus"/>
+  <oaf_attribute name="description-sv" type="string" value="Fabrik fÃ¶r skalet och filhanteraren Nautilus"/>
+  <oaf_attribute name="description-tr" type="string" value="Nautilus kabuk ve dosya yÃ¶neticisi mimarisi"/>
+  <oaf_attribute name="description-uk" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð´Ð»Ñ Ð¾Ð±Ð¾Ð»Ð¾Ð½ÐºÐ¸ ÐÐ°ÑÑÑÐ»ÑÑ ÑÐ° ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ°"/>
+  <oaf_attribute name="description-vi" type="string" value="Factory cho vá» vÃ  quáº£n lÃ½ táº­p tin cá»§a Nautilus"/>
+  <oaf_attribute name="description-zh_CN" type="string" value="Nautilus å¤å£³åæä»¶ç®¡çå¨å·¥å"/>
+  <oaf_attribute name="description-zh_TW" type="string" value="ç¢ç Nautilus åå½¢æä»¤çé¢/æªæ¡ç®¡çå¡çå·¥å» "/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:Nautilus_File_Manager_Icon_View" type="factory" location="OAFIID:Nautilus_Factory">
@@ -82,77 +93,83 @@
     <item value="IDL:Nautilus/View:1.0"/>
   </oaf_attribute>
   <oaf_attribute name="name" type="string" value="Nautilus file manager icon view"/>
-  <oaf_attribute name="name-ar" type="string" value="عرض أيقونات مدير ملفات ناوتيلاس"/>
-  <oaf_attribute name="name-az" type="string" value="Nautilus fayl idarəcisi timsal nümayişi"/>
-  <oaf_attribute name="name-bg" type="string" value="Мениджър на файлове Nautilus в преглед с икони"/>
+  <oaf_attribute name="name-ar" type="string" value="Ø¹Ø±Ø¶ Ø£ÙÙÙÙØ§Øª ÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³"/>
+  <oaf_attribute name="name-az" type="string" value="Nautilus fayl idarÉcisi timsal nÃ¼mayiÅi"/>
+  <oaf_attribute name="name-bg" type="string" value="ÐÐµÐ½Ð¸Ð´Ð¶ÑÑ Ð½Ð° ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Nautilus Ð² Ð¿ÑÐµÐ³Ð»ÐµÐ´ Ñ Ð¸ÐºÐ¾Ð½Ð¸"/>
   <oaf_attribute name="name-ca" type="string" value="Vista d&apos;icones del gestor de fitxers Nautilus "/>
-  <oaf_attribute name="name-cs" type="string" value="Ikonový pohled správce souborů Nautilus"/>
-  <oaf_attribute name="name-da" type="string" value="Nautilus filhåndteringsikonvisning"/>
-  <oaf_attribute name="name-de" type="string" value="Nautilus-Dateimanager-Icon-Ansicht"/>
-  <oaf_attribute name="name-el" type="string" value="Προβολή εικονιδίων διαχειριστή αρχείων Ναυτίλου"/>
+  <oaf_attribute name="name-cs" type="string" value="IkonovÃ½ pohled sprÃ¡vce souborÅ¯ Nautilus"/>
+  <oaf_attribute name="name-da" type="string" value="FilhÃ¥ndteringsikonvisning til Nautilus"/>
+  <oaf_attribute name="name-de" type="string" value="Nautilus-Dateimanager-Symbolansicht"/>
+  <oaf_attribute name="name-el" type="string" value="Î ÏÎ¿Î²Î¿Î»Î® ÎµÎ¹ÎºÎ¿Î½Î¹Î´Î¯ÏÎ½ Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½ ÎÎ±ÏÏÎ¯Î»Î¿Ï"/>
   <oaf_attribute name="name-es" type="string" value="Vista de iconos del administrador de archivos Nautilus"/>
   <oaf_attribute name="name-eu" type="string" value="Nautilus fitxategi-kudeatzailearen ikono-ikuspegia"/>
-  <oaf_attribute name="name-fi" type="string" value="Nautiluksen-tiedostonhallintan kuvakenäkymä"/>
-  <oaf_attribute name="name-fr" type="string" value="Vue icône du gestionnaire de fichiers Nautilus"/>
-  <oaf_attribute name="name-he" type="string" value="מנהל הקבצים של נאוטילוס תצוגת סמלים"/>
-  <oaf_attribute name="name-hu" type="string" value="Nautils fájlkezelő ikonnézet"/>
+  <oaf_attribute name="name-fi" type="string" value="Nautiluksen-tiedostonhallintan kuvakenÃ¤kymÃ¤"/>
+  <oaf_attribute name="name-fr" type="string" value="Vue icÃ´ne du gestionnaire de fichiers Nautilus"/>
+  <oaf_attribute name="name-he" type="string" value="×× ×× ××§××¦×× ×©× × ×××××××¡ ×ª×¦×××ª ×¡××××"/>
+  <oaf_attribute name="name-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤° à¤à¤¯à¤à¤¨ à¤µà¥à¤¯à¥"/>
+  <oaf_attribute name="name-hu" type="string" value="Nautils fÃ¡jlkezelÅ ikonnÃ©zet"/>
   <oaf_attribute name="name-it" type="string" value="Vista ad icona del file manager Nautilus"/>
-  <oaf_attribute name="name-ja" type="string" value="Nautilus ファイルマネージャアイコンビュー"/>
-  <oaf_attribute name="name-ko" type="string" value="노틸러스 파일관리자 아이콘 보기"/>
-  <oaf_attribute name="name-lt" type="string" value="Nautilus bylų tvarkytojo piktogramų vaizdas"/>
-  <oaf_attribute name="name-lv" type="string" value="Nautilus failu pārvaldnieka ikonu skatījums"/>
+  <oaf_attribute name="name-ja" type="string" value="Nautilus ãã¡ã¤ã«ããã¼ã¸ã£ã¢ã¤ã³ã³ãã¥ã¼"/>
+  <oaf_attribute name="name-ko" type="string" value="ë¸í¸ë¬ì¤ íì¼ê´ë¦¬ì ìì´ì½ ë³´ê¸°"/>
+  <oaf_attribute name="name-lt" type="string" value="Nautilus bylÅ³ tvarkytojo piktogramÅ³ vaizdas"/>
+  <oaf_attribute name="name-lv" type="string" value="Nautilus failu pÄrvaldnieka ikonu skatÄ«jums"/>
+  <oaf_attribute name="name-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑÐ¸Ð¹Ð½ ÑÐ¼Ð±Ð»ÐµÐ¼-ÑÑÐ»Ð±ÑÑ"/>
   <oaf_attribute name="name-ms" type="string" value="Paparan ikon pengurus fail Nautilus"/>
   <oaf_attribute name="name-nl" type="string" value="Nautilus-pictogrammen"/>
-  <oaf_attribute name="name-no" type="string" value="Nautilus filhåndterer ikonvisning"/>
-  <oaf_attribute name="name-pl" type="string" value="Widok ikon menedżera plików Nautilusa"/>
-  <oaf_attribute name="name-pt" type="string" value="Vista de ícones do gestor de ficheiros Nautilus"/>
-  <oaf_attribute name="name-pt_BR" type="string" value="Visão de ícone do gerenciador de arquivos do Nautilus"/>
+  <oaf_attribute name="name-no" type="string" value="Nautilus filhÃ¥ndterer ikonvisning"/>
+  <oaf_attribute name="name-pl" type="string" value="Widok ikon menedÅ¼era plikÃ³w Nautilusa"/>
+  <oaf_attribute name="name-pt" type="string" value="Vista de Ã­cones do gestor de ficheiros Nautilus"/>
+  <oaf_attribute name="name-pt_BR" type="string" value="VisÃ£o de Ã­cone do gerenciador de arquivos do Nautilus"/>
   <oaf_attribute name="name-ro" type="string" value="Vizualizare iconuri Nautilus"/>
-  <oaf_attribute name="name-ru" type="string" value="Просмотр пиктограмм диспетчера файлов Nautilus"/>
-  <oaf_attribute name="name-sk" type="string" value="Pohľad správcu súborov na ikony"/>
+  <oaf_attribute name="name-ru" type="string" value="ÐÑÐ¾ÑÐ¼Ð¾ÑÑ Ð² Ð²Ð¸Ð´Ðµ Ð·Ð½Ð°ÑÐºÐ¾Ð² Ð´Ð»Ñ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;"/>
+  <oaf_attribute name="name-sk" type="string" value="PohÄ¾ad sprÃ¡vcu sÃºborov na ikony"/>
   <oaf_attribute name="name-sl" type="string" value="Ikonski pogled Nautilusovega upravljalnika datotek"/>
   <oaf_attribute name="name-sq" type="string" value="Paraqitja me ikona i file manager Nautilus"/>
-  <oaf_attribute name="name-sv" type="string" value="Ikonvy för Nautilus filhanterare"/>
-  <oaf_attribute name="name-tr" type="string" value="Nautilus dosya yöneticisi simge görünümü"/>
-  <oaf_attribute name="name-vi" type="string" value="Cảnh xem biểu tượng của quản lý tập tin Nautilus"/>
-  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus 文件管理器图标视图"/>
-  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus 檔案管理員之圖示檢視模式"/>
+  <oaf_attribute name="name-sv" type="string" value="Ikonvy fÃ¶r Nautilus filhanterare"/>
+  <oaf_attribute name="name-tr" type="string" value="Nautilus dosya yÃ¶neticisi simge gÃ¶rÃ¼nÃ¼mÃ¼"/>
+  <oaf_attribute name="name-uk" type="string" value="ÐÐµÑÐµÐ³Ð»ÑÐ´ Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° ÑÐ°Ð¹Ð»ÑÐ² &quot;ÐÐ°ÑÑÑÐ»ÑÑ&quot;"/>
+  <oaf_attribute name="name-vi" type="string" value="Cáº£nh xem biá»u tÆ°á»£ng cá»§a quáº£n lÃ½ táº­p tin Nautilus"/>
+  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus æä»¶ç®¡çå¨å¾æ è§å¾"/>
+  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus æªæ¡ç®¡çå¡ä¹åç¤ºé¡¯ç¤ºæ¨¡å¼"/>
   <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows a two-dimensional icon space"/>
-  <oaf_attribute name="description-ar" type="string" value="جزء مدير ملفات ناوتيلاس الذي يعرض فضاء أيقونة ثنائي اﻷبعاد"/>
-  <oaf_attribute name="description-az" type="string" value="2 ölçülü timsal sahəsi göstərən Nautilus fayl idarəcisi əlavəsi"/>
-  <oaf_attribute name="description-bg" type="string" value="Компонент на мениджъра на файлове Nautilus който се показва в двумерно пространство за икони"/>
+  <oaf_attribute name="description-ar" type="string" value="Ø¬Ø²Ø¡ ÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³ Ø§ÙØ°Ù ÙØ¹Ø±Ø¶ ÙØ¶Ø§Ø¡ Ø£ÙÙÙÙØ© Ø«ÙØ§Ø¦Ù Ø§ï»·Ø¨Ø¹Ø§Ø¯"/>
+  <oaf_attribute name="description-az" type="string" value="2 Ã¶lÃ§Ã¼lÃ¼ timsal sahÉsi gÃ¶stÉrÉn Nautilus fayl idarÉcisi ÉlavÉsi"/>
+  <oaf_attribute name="description-bg" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð½Ð° Ð¼ÐµÐ½Ð¸Ð´Ð¶ÑÑÐ° Ð½Ð° ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Nautilus ÐºÐ¾Ð¹ÑÐ¾ ÑÐµ Ð¿Ð¾ÐºÐ°Ð·Ð²Ð° Ð² Ð´Ð²ÑÐ¼ÐµÑÐ½Ð¾ Ð¿ÑÐ¾ÑÑÑÐ°Ð½ÑÑÐ²Ð¾ Ð·Ð° Ð¸ÐºÐ¾Ð½Ð¸"/>
   <oaf_attribute name="description-ca" type="string" value="Component del gestor de fitxer Nautilus que mostra un espaiat d&apos;icona bidimensional"/>
-  <oaf_attribute name="description-cs" type="string" value="Komponenta správce souborů Nautilus, která zobrazuje dvourozměrný prostor ikon"/>
-  <oaf_attribute name="description-da" type="string" value="Nautilus filhåndteringskomponent der viser et to-dimensionalt areal med ikoner"/>
-  <oaf_attribute name="description-de" type="string" value="Nautilus-Dateimanager-Komponente, die einen zweidimensionalen Iconraum anzeigt"/>
-  <oaf_attribute name="description-el" type="string" value="Συστατικό διαχειριστή αρχείων Ναυτίλου που εμφανίζει ένα δισδιάστατο διάστημα εικονιδίου"/>
+  <oaf_attribute name="description-cs" type="string" value="Komponenta sprÃ¡vce souborÅ¯ Nautilus, kterÃ¡ zobrazuje dvourozmÄrnÃ½ prostor ikon"/>
+  <oaf_attribute name="description-da" type="string" value="FilhÃ¥ndteringskomponent til Nautilus der viser et to-dimensionalt areal med ikoner"/>
+  <oaf_attribute name="description-de" type="string" value="Nautilus-Dateimanager-Komponente, die einen zweidimensionalen Symbolraum anzeigt"/>
+  <oaf_attribute name="description-el" type="string" value="Î£ÏÏÏÎ±ÏÎ¹ÎºÏ Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½ ÎÎ±ÏÏÎ¯Î»Î¿Ï ÏÎ¿Ï ÎµÎ¼ÏÎ±Î½Î¯Î¶ÎµÎ¹ Î­Î½Î± Î´Î¹ÏÎ´Î¹Î¬ÏÏÎ±ÏÎ¿ Î´Î¹Î¬ÏÏÎ·Î¼Î± ÎµÎ¹ÎºÎ¿Î½Î¹Î´Î¯Î¿Ï"/>
   <oaf_attribute name="description-es" type="string" value="Componente del administrador de archivos Nautilus que muestra un espacio de icono bidimensional"/>
   <oaf_attribute name="description-eu" type="string" value="Dimentsio biko ikono-eremua erakusten duen Nautilus fitxategi-kudeatzailearen osagaia"/>
-  <oaf_attribute name="description-fi" type="string" value="Nautiluksen tiedostonhallintakomponentti, joka näyttää kaksiulotteisen kuvaketilan"/>
-  <oaf_attribute name="description-fr" type="string" value="Composant du gestionnaire de fichiers Nautilus qui affiche un espace d&apos;icône à deux dimensions"/>
-  <oaf_attribute name="description-he" type="string" value="רכיב מנהל הקבצים של נאוטילוס המראה חלל סמל דו-מימדי"/>
-  <oaf_attribute name="description-hu" type="string" value="Kétdimenziós ikonteret megjelenítő Nautilus fájlkezelő-komponens"/>
+  <oaf_attribute name="description-fi" type="string" value="Nautiluksen tiedostonhallintakomponentti, joka nÃ¤yttÃ¤Ã¤ kaksiulotteisen kuvaketilan"/>
+  <oaf_attribute name="description-fr" type="string" value="Composant du gestionnaire de fichiers Nautilus qui affiche un espace d&apos;icÃ´ne Ã  deux dimensions"/>
+  <oaf_attribute name="description-he" type="string" value="×¨××× ×× ×× ××§××¦×× ×©× × ×××××××¡ ×××¨×× ××× ×¡×× ××-×××××"/>
+  <oaf_attribute name="description-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤° à¤à¤à¤ªà¥à¤¨à¥à¤à¤ à¤à¥ à¤¦à¥ à¤¡à¤¾à¤¯à¤®à¥à¤à¤¶à¤¨ à¤à¤¯à¤ à¤¸à¥à¤ªà¥à¤¸ à¤¦à¤¿à¤à¤¾à¤¤à¤¾ à¤¹à¥"/>
+  <oaf_attribute name="description-hu" type="string" value="KÃ©tdimenziÃ³s ikonteret megjelenÃ­tÅ Nautilus fÃ¡jlkezelÅ-komponens"/>
   <oaf_attribute name="description-it" type="string" value="Componente del file manager Nautilus che mostra uno spazio bidimensionale per le icone."/>
-  <oaf_attribute name="description-ja" type="string" value="二次元のアイコンスペースを表示するNautilusファイルマネージャコンポーネント"/>
-  <oaf_attribute name="description-ko" type="string" value="이차원의 아이콘 공간으로 보여주는 노틸러스 파일관리자 구성요소"/>
-  <oaf_attribute name="description-lt" type="string" value="Nautilus bylų tvarkytojo komponentas, rodantis dvimatę piktogramų erdvę"/>
-  <oaf_attribute name="description-lv" type="string" value="Nautilus failu pārvaldnieka komponents, kas parāda divdimensionālu ikonu laukumu"/>
+  <oaf_attribute name="description-ja" type="string" value="äºæ¬¡åã®ã¢ã¤ã³ã³ã¹ãã¼ã¹ãè¡¨ç¤ºããNautilusãã¡ã¤ã«ããã¼ã¸ã£ã³ã³ãã¼ãã³ã"/>
+  <oaf_attribute name="description-ko" type="string" value="ì´ì°¨ìì ìì´ì½ ê³µê°ì¼ë¡ ë³´ì¬ì£¼ë ë¸í¸ë¬ì¤ íì¼ê´ë¦¬ì êµ¬ì±ìì"/>
+  <oaf_attribute name="description-lt" type="string" value="Nautilus bylÅ³ tvarkytojo komponentas, rodantis dvimatÄ piktogramÅ³ erdvÄ"/>
+  <oaf_attribute name="description-lv" type="string" value="Nautilus failu pÄrvaldnieka komponents, kas parÄda divdimensionÄlu ikonu laukumu"/>
+  <oaf_attribute name="description-mn" type="string" value="Ð¥Ð¾ÑÑ ÑÑÐ¼Ð¶ÑÑÑÑ ÑÐ¼Ð±Ð»ÐµÐ¼Ð¸Ð¹Ð½ ÑÐ°Ð»Ð±Ð°ÑÐ°Ð°Ñ ÑÐ°ÑÐ°Ñ Ð³Ð¾ÑÐ¸Ð¼Ð´ Ð¾ÑÑÑÐ»Ð´Ð°Ð³ ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑ -Ð¸Ð¹Ð½ ÐºÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ"/>
   <oaf_attribute name="description-ms" type="string" value="Komponen pengurus fail Nautilus yang memapar ruang ikon dua-dimensi"/>
   <oaf_attribute name="description-nl" type="string" value="Nautilus-bestandsbeheercomponent dat een pictogrammenvlak toont"/>
-  <oaf_attribute name="description-no" type="string" value="Nautilus komponent for filhåndterer som viser et todimensjonal ikonområde"/>
-  <oaf_attribute name="description-pl" type="string" value="Komponent menedżera plików Nautilusa wyświetlający dwuwymiarową przestrzeń ikon"/>
-  <oaf_attribute name="description-pt" type="string" value="Componente do gestor de ficheiros Nautilus que mostra o espaço bi-dimensional de um ícon"/>
-  <oaf_attribute name="description-pt_BR" type="string" value="Compomente de gerenciador de arquivos do Nautilus que exibe um espaço de ícones bi-dimensional"/>
-  <oaf_attribute name="description-ro" type="string" value="Componentă Nautilus care arată un spaţiu bidimensional pentru iconuri"/>
-  <oaf_attribute name="description-ru" type="string" value="Компонент диспетчера файлов Nautilus, который показывает двумерное поле с пиктограммами"/>
-  <oaf_attribute name="description-sk" type="string" value="Komponent správca súborov, ktorý zobrazuje dvojrozmerný priestor ikon."/>
-  <oaf_attribute name="description-sl" type="string" value="Komponenta Nautilusovega upravljalnika datotek, ki kaže dvodimenzionalni ikonski prostor"/>
-  <oaf_attribute name="description-sq" type="string" value="Komponues i file manager Nautilus që shfaq një hapsirë bi-dimensionale për ikonat"/>
-  <oaf_attribute name="description-sv" type="string" value="Nautilus-filhanterarkomponent som visar ett tvådimensionellt ikonutrymme"/>
-  <oaf_attribute name="description-tr" type="string" value="İki boyutlu simge ortamını gösteren Nautilus dosya yönetici bileşeni"/>
-  <oaf_attribute name="description-vi" type="string" value="Thành phần quản lý tập tin Nautilus hiển thị một không gian biểu tượng 2 chiều"/>
-  <oaf_attribute name="description-zh_CN" type="string" value="显示二维图标空间的 Nautilus 文件管理器部件"/>
-  <oaf_attribute name="description-zh_TW" type="string" value="以平面方式顯示圖示的 Nautilus 檔案管理員元件"/>
+  <oaf_attribute name="description-no" type="string" value="Nautilus komponent for filhÃ¥ndterer som viser et todimensjonal ikonomrÃ¥de"/>
+  <oaf_attribute name="description-pl" type="string" value="Komponent menedÅ¼era plikÃ³w Nautilusa wyÅwietlajÄcy dwuwymiarowÄ przestrzeÅ ikon"/>
+  <oaf_attribute name="description-pt" type="string" value="Componente do gestor de ficheiros Nautilus que mostra o espaÃ§o bi-dimensional de um Ã­con"/>
+  <oaf_attribute name="description-pt_BR" type="string" value="Compomente de gerenciador de arquivos do Nautilus que exibe um espaÃ§o de Ã­cones bi-dimensional"/>
+  <oaf_attribute name="description-ro" type="string" value="ComponentÄ Nautilus care aratÄ un spaÅ£iu bidimensional pentru iconuri"/>
+  <oaf_attribute name="description-ru" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;, ÐºÐ¾ÑÐ¾ÑÑÐ¹ Ð¿Ð¾ÐºÐ°Ð·ÑÐ²Ð°ÐµÑ Ð´Ð²ÑÐ¼ÐµÑÐ½Ð¾Ðµ Ð¿Ð¾Ð»Ðµ ÑÐ¾ Ð·Ð½Ð°ÑÐºÐ°Ð¼Ð¸"/>
+  <oaf_attribute name="description-sk" type="string" value="Komponent sprÃ¡vca sÃºborov, ktorÃ½ zobrazuje dvojrozmernÃ½ priestor ikon."/>
+  <oaf_attribute name="description-sl" type="string" value="Komponenta Nautilusovega upravljalnika datotek, ki kaÅ¾e dvodimenzionalni ikonski prostor"/>
+  <oaf_attribute name="description-sq" type="string" value="Komponues i file manager Nautilus qÃ« shfaq njÃ« hapsirÃ« bi-dimensionale pÃ«r ikonat"/>
+  <oaf_attribute name="description-sv" type="string" value="Nautilus-filhanterarkomponent som visar ett tvÃ¥dimensionellt ikonutrymme"/>
+  <oaf_attribute name="description-tr" type="string" value="Ä°ki boyutlu simge ortamÄ±nÄ± gÃ¶steren Nautilus dosya yÃ¶netici bileÅeni"/>
+  <oaf_attribute name="description-uk" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° ÑÐ°Ð¹Ð»ÑÐ² &quot;ÐÐ°ÑÑÑÐ»ÑÑ&quot;, ÑÐ¾ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶ÑÑ Ð¿Ð»Ð¾ÑÐ¸Ð½Ñ Ð· Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼Ð°Ð¼Ð¸"/>
+  <oaf_attribute name="description-vi" type="string" value="ThÃ nh pháº§n quáº£n lÃ½ táº­p tin Nautilus hiá»n thá» má»t khÃ´ng gian biá»u tÆ°á»£ng 2 chiá»u"/>
+  <oaf_attribute name="description-zh_CN" type="string" value="æ¾ç¤ºäºç»´å¾æ ç©ºé´ç Nautilus æä»¶ç®¡çå¨é¨ä»¶"/>
+  <oaf_attribute name="description-zh_TW" type="string" value="ä»¥å¹³é¢æ¹å¼é¡¯ç¤ºåç¤ºç Nautilus æªæ¡ç®¡çå¡åä»¶"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
     <item value="x-directory/normal"/>
     <item value="x-directory/webdav"/>
@@ -164,128 +181,157 @@
     <item value="trash"/>
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="Icons"/>
-  <oaf_attribute name="nautilus:view_as_name-am" type="string" value="ምልክቶቸ"/>
-  <oaf_attribute name="nautilus:view_as_name-ar" type="string" value="أيقونات"/>
+  <oaf_attribute name="nautilus:view_as_name-am" type="string" value="ááá­á¶á½"/>
+  <oaf_attribute name="nautilus:view_as_name-ar" type="string" value="Ø£ÙÙÙÙØ§Øª"/>
   <oaf_attribute name="nautilus:view_as_name-az" type="string" value="Timsallar"/>
-  <oaf_attribute name="nautilus:view_as_name-be" type="string" value="Значкі"/>
-  <oaf_attribute name="nautilus:view_as_name-bg" type="string" value="Икони"/>
+  <oaf_attribute name="nautilus:view_as_name-be" type="string" value="ÐÐ½Ð°ÑÐºÑ"/>
+  <oaf_attribute name="nautilus:view_as_name-bg" type="string" value="ÐÐºÐ¾Ð½Ð¸"/>
   <oaf_attribute name="nautilus:view_as_name-ca" type="string" value="Icones"/>
   <oaf_attribute name="nautilus:view_as_name-cs" type="string" value="Ikony"/>
   <oaf_attribute name="nautilus:view_as_name-da" type="string" value="Ikoner"/>
-  <oaf_attribute name="nautilus:view_as_name-de" type="string" value="Icons"/>
-  <oaf_attribute name="nautilus:view_as_name-el" type="string" value="Εικονίδια"/>
+  <oaf_attribute name="nautilus:view_as_name-de" type="string" value="Symbole"/>
+  <oaf_attribute name="nautilus:view_as_name-el" type="string" value="ÎÎ¹ÎºÎ¿Î½Î¯Î´Î¹Î±"/>
   <oaf_attribute name="nautilus:view_as_name-es" type="string" value="Iconos"/>
+  <oaf_attribute name="nautilus:view_as_name-et" type="string" value="Ikoonid"/>
   <oaf_attribute name="nautilus:view_as_name-eu" type="string" value="Ikonoak"/>
   <oaf_attribute name="nautilus:view_as_name-fi" type="string" value="kuvakkeet"/>
-  <oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Icônes"/>
+  <oaf_attribute name="nautilus:view_as_name-fr" type="string" value="IcÃ´nes"/>
   <oaf_attribute name="nautilus:view_as_name-gl" type="string" value="Iconas"/>
-  <oaf_attribute name="nautilus:view_as_name-he" type="string" value="סמלים"/>
+  <oaf_attribute name="nautilus:view_as_name-he" type="string" value="×¡××××"/>
+  <oaf_attribute name="nautilus:view_as_name-hi" type="string" value="à¤à¤à¤à¤¾à¤¨"/>
   <oaf_attribute name="nautilus:view_as_name-hu" type="string" value="Ikonok"/>
-  <oaf_attribute name="nautilus:view_as_name-it" type="string" value="Icone"/>
-  <oaf_attribute name="nautilus:view_as_name-ja" type="string" value="アイコン"/>
-  <oaf_attribute name="nautilus:view_as_name-ko" type="string" value="아이콘"/>
+  <oaf_attribute name="nautilus:view_as_name-it" type="string" value="icone"/>
+  <oaf_attribute name="nautilus:view_as_name-ja" type="string" value="ã¢ã¤ã³ã³"/>
+  <oaf_attribute name="nautilus:view_as_name-ko" type="string" value="ìì´ì½"/>
   <oaf_attribute name="nautilus:view_as_name-lt" type="string" value="Piktogramos"/>
   <oaf_attribute name="nautilus:view_as_name-lv" type="string" value="Ikonas"/>
-  <oaf_attribute name="nautilus:view_as_name-mk" type="string" value="Икони"/>
+  <oaf_attribute name="nautilus:view_as_name-mk" type="string" value="ÐÐºÐ¾Ð½Ð¸"/>
+  <oaf_attribute name="nautilus:view_as_name-mn" type="string" value="Ð­Ð¼Ð±Ð»ÐµÐ¼Ò¯Ò¯Ð´"/>
   <oaf_attribute name="nautilus:view_as_name-ms" type="string" value="Ikon"/>
   <oaf_attribute name="nautilus:view_as_name-nl" type="string" value="Pictogrammen"/>
   <oaf_attribute name="nautilus:view_as_name-nn" type="string" value="Ikon"/>
   <oaf_attribute name="nautilus:view_as_name-no" type="string" value="Ikoner"/>
   <oaf_attribute name="nautilus:view_as_name-pl" type="string" value="Ikony"/>
-  <oaf_attribute name="nautilus:view_as_name-pt" type="string" value="Ícones"/>
-  <oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Ícones"/>
+  <oaf_attribute name="nautilus:view_as_name-pt" type="string" value="Ãcones"/>
+  <oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Ãcones"/>
   <oaf_attribute name="nautilus:view_as_name-ro" type="string" value="Iconuri"/>
-  <oaf_attribute name="nautilus:view_as_name-ru" type="string" value="Пиктограммы"/>
+  <oaf_attribute name="nautilus:view_as_name-ru" type="string" value="ÐÐ½Ð°ÑÐºÐ¸"/>
   <oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Ikony"/>
   <oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Ikone"/>
   <oaf_attribute name="nautilus:view_as_name-sq" type="string" value="Ikona"/>
   <oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Ikoner"/>
+  <oaf_attribute name="nautilus:view_as_name-th" type="string" value="à¹à¸­à¸à¸­à¸"/>
   <oaf_attribute name="nautilus:view_as_name-tr" type="string" value="Simgeler"/>
-  <oaf_attribute name="nautilus:view_as_name-vi" type="string" value="Biểu tượng"/>
-  <oaf_attribute name="nautilus:view_as_name-zh_CN" type="string" value="图标"/>
-  <oaf_attribute name="nautilus:view_as_name-zh_TW" type="string" value="圖示"/>
+  <oaf_attribute name="nautilus:view_as_name-uk" type="string" value="ÐÑÐºÑÐ¾Ð³ÑÐ°Ð¼Ð¸"/>
+  <oaf_attribute name="nautilus:view_as_name-vi" type="string" value="Biá»u tÆ°á»£ng"/>
+  <oaf_attribute name="nautilus:view_as_name-zh_CN" type="string" value="å¾æ "/>
+  <oaf_attribute name="nautilus:view_as_name-zh_TW" type="string" value="åç¤º"/>
   <oaf_attribute name="nautilus:view_as_label" type="string" value="View as Icons"/>
-  <oaf_attribute name="nautilus:view_as_label-ar" type="string" value="اعرض كأيقونات"/>
-  <oaf_attribute name="nautilus:view_as_label-az" type="string" value="Timsal olaraq Göstər"/>
-  <oaf_attribute name="nautilus:view_as_label-be" type="string" value="Адлюстраваць як значкі"/>
-  <oaf_attribute name="nautilus:view_as_label-bg" type="string" value="Преглед като Икони"/>
+  <oaf_attribute name="nautilus:view_as_label-am" type="string" value="á¥áá° ááá­á¶á½ á á³á­"/>
+  <oaf_attribute name="nautilus:view_as_label-ar" type="string" value="Ø§Ø¹Ø±Ø¶ ÙØ£ÙÙÙÙØ§Øª"/>
   <oaf_attribute name="nautilus:view_as_label-ca" type="string" value="Visualitza com a icones"/>
   <oaf_attribute name="nautilus:view_as_label-cs" type="string" value="Zobrazit jako ikony"/>
   <oaf_attribute name="nautilus:view_as_label-da" type="string" value="Vis som ikoner"/>
-  <oaf_attribute name="nautilus:view_as_label-de" type="string" value="Als Icons betrachten"/>
-  <oaf_attribute name="nautilus:view_as_label-el" type="string" value="Προβολή ως Εικονίδια"/>
+  <oaf_attribute name="nautilus:view_as_label-de" type="string" value="Symbolansicht"/>
   <oaf_attribute name="nautilus:view_as_label-es" type="string" value="Ver como iconos"/>
-  <oaf_attribute name="nautilus:view_as_label-et" type="string" value="Esita ikoonidena"/>
-  <oaf_attribute name="nautilus:view_as_label-eu" type="string" value="Ikusi ikono gisa"/>
-  <oaf_attribute name="nautilus:view_as_label-fi" type="string" value="Näytä kuvakkeina"/>
-  <oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant qu&apos;Icônes"/>
-  <oaf_attribute name="nautilus:view_as_label-gl" type="string" value="Ver como iconas"/>
-  <oaf_attribute name="nautilus:view_as_label-he" type="string" value="הצג כסמלים"/>
-  <oaf_attribute name="nautilus:view_as_label-hu" type="string" value="Ikonként"/>
+  <oaf_attribute name="nautilus:view_as_label-et" type="string" value="Vaata ikoonidena"/>
+  <oaf_attribute name="nautilus:view_as_label-fi" type="string" value="NÃ¤ytÃ¤ kuvakkeina"/>
+  <oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant qu&apos;icÃ´nes"/>
+  <oaf_attribute name="nautilus:view_as_label-he" type="string" value="××¦× ××¡××××"/>
+  <oaf_attribute name="nautilus:view_as_label-hu" type="string" value="IkonnÃ©zet"/>
   <oaf_attribute name="nautilus:view_as_label-it" type="string" value="Vedi come icone"/>
-  <oaf_attribute name="nautilus:view_as_label-ja" type="string" value="アイコンで表示"/>
-  <oaf_attribute name="nautilus:view_as_label-ko" type="string" value="아이콘으로 보기"/>
-  <oaf_attribute name="nautilus:view_as_label-lt" type="string" value="Piktogramų vaizdas"/>
-  <oaf_attribute name="nautilus:view_as_label-lv" type="string" value="Parādīt kā Ikonas"/>
-  <oaf_attribute name="nautilus:view_as_label-mk" type="string" value="Преглед како Икони"/>
-  <oaf_attribute name="nautilus:view_as_label-ms" type="string" value="Lihat sebagai Ikon"/>
-  <oaf_attribute name="nautilus:view_as_label-nl" type="string" value="Bekijken als pictogrammen"/>
-  <oaf_attribute name="nautilus:view_as_label-nn" type="string" value="Vis som ikon"/>
+  <oaf_attribute name="nautilus:view_as_label-ko" type="string" value="ìì´ì½ì¼ë¡ ë³´ê¸°"/>
+  <oaf_attribute name="nautilus:view_as_label-lv" type="string" value="SkatÄ«t kÄ Ikonas"/>
+  <oaf_attribute name="nautilus:view_as_label-nl" type="string" value="Pictogrammenweergave"/>
   <oaf_attribute name="nautilus:view_as_label-no" type="string" value="Vis som ikoner"/>
-  <oaf_attribute name="nautilus:view_as_label-pl" type="string" value="Wyświetlanie jako Ikony"/>
-  <oaf_attribute name="nautilus:view_as_label-pt" type="string" value="Ver como Ícones"/>
-  <oaf_attribute name="nautilus:view_as_label-pt_BR" type="string" value="Ver como ícones"/>
-  <oaf_attribute name="nautilus:view_as_label-ro" type="string" value="Vizualizează ca iconuri"/>
-  <oaf_attribute name="nautilus:view_as_label-ru" type="string" value="Показывать как пиктограммы"/>
-  <oaf_attribute name="nautilus:view_as_label-sk" type="string" value="Zobraziť ako ikony"/>
+  <oaf_attribute name="nautilus:view_as_label-pl" type="string" value="WyÅwietlanie jako Ikony"/>
+  <oaf_attribute name="nautilus:view_as_label-pt_BR" type="string" value="Ver como Ãcones"/>
+  <oaf_attribute name="nautilus:view_as_label-ro" type="string" value="VizualizeazÄ ca iconuri"/>
+  <oaf_attribute name="nautilus:view_as_label-ru" type="string" value="ÐÑÐ¾ÑÐ¼Ð°ÑÑÐ¸Ð²Ð°ÑÑ Ð² Ð²Ð¸Ð´Ðµ  Ð·Ð½Ð°ÑÐºÐ¾Ð²"/>
+  <oaf_attribute name="nautilus:view_as_label-sk" type="string" value="ZobraziÅ¥ ako ikony"/>
   <oaf_attribute name="nautilus:view_as_label-sl" type="string" value="Glej kot ikone"/>
-  <oaf_attribute name="nautilus:view_as_label-sq" type="string" value="Shikoje si ikona"/>
+  <oaf_attribute name="nautilus:view_as_label-sq" type="string" value="Shikoi si Ikona"/>
   <oaf_attribute name="nautilus:view_as_label-sv" type="string" value="Visa som ikoner"/>
-  <oaf_attribute name="nautilus:view_as_label-tr" type="string" value="Simge olarak göster"/>
-  <oaf_attribute name="nautilus:view_as_label-vi" type="string" value="Xem theo Biểu tượng"/>
-  <oaf_attribute name="nautilus:view_as_label-zh_CN" type="string" value="当作图标查看"/>
-  <oaf_attribute name="nautilus:view_as_label-zh_TW" type="string" value="以圖示方式瀏覽"/>
+  <oaf_attribute name="nautilus:view_as_label-uk" type="string" value="ÐÐ¾ÐºÐ°Ð·Ð°ÑÐ¸ ÑÐº Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼Ð¸"/>
+  <oaf_attribute name="nautilus:view_as_label-vi" type="string" value="Xem theo Biá»u tÆ°á»£ng"/>
+  <oaf_attribute name="nautilus:view_as_label-zh_TW" type="string" value="ä»¥åç¤ºæ¹å¼é¡¯ç¤º"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic" type="string" value="View as _Icons"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-am" type="string" value="á¥áá° ááá­á¶á½ á á³á­ (_I)"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-bg" type="string" value="ÐÑÐµÐ³Ð»ÐµÐ´ ÐºÐ°ÑÐ¾ _ÐÐºÐ¾Ð½Ð¸"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ca" type="string" value="Visualitza com a _icones"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-cs" type="string" value="Zobrazit jako _ikony"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-da" type="string" value="Vis som _ikoner"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-de" type="string" value="S_ymbolansicht"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-el" type="string" value="Î ÏÎ¿Î²Î¿Î»Î® ÏÏ Î_Î¹ÎºÎ¿Î½Î¯Î´Î¹Î±"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-es" type="string" value="Ver como _iconos"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-et" type="string" value="Vaata _ikoonidena"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-fi" type="string" value="NÃ¤ytÃ¤ _kuvakkeina"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-fr" type="string" value="Voir en tant qu&apos;_IcÃ´nes"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-he" type="string" value="××¦× ×_×¡××××"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-hu" type="string" value="_IkonnÃ©zet"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-it" type="string" value="Vedi come i_cone"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ko" type="string" value="ìì´ì½ì¼ë¡ ë³´ê¸°(_I)"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-lv" type="string" value="SkatÄ«t kÄ _Ikonas"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-mn" type="string" value="_Ð­Ð¼Ð±Ð»ÐµÐ¼ ÑÑÐ»Ð±ÑÑÑÑÑ ÑÐ°ÑÐ°Ñ"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ms" type="string" value="Lihat sebagai _Ikon"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-nl" type="string" value="P_ictogrammenweergave"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-no" type="string" value="Vis som _ikoner"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-pl" type="string" value="WyÅwietlanie jako _Ikony"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-pt_BR" type="string" value="Ver como _Ãcones"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ro" type="string" value="VizualizeazÄ ca _iconuri"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ru" type="string" value="ÐÑÐ¾ÑÐ¼Ð°ÑÑÐ¸Ð²Ð°ÑÑ Ð² Ð²Ð¸Ð´Ðµ Ð·Ð½Ð°_ÑÐºÐ¾Ð²"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-sk" type="string" value="ZobraziÅ¥ ako _ikony"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-sl" type="string" value="Glej kot _ikone"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-sq" type="string" value="Shikoi si _Ikona"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-sv" type="string" value="Visa som _ikoner"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-uk" type="string" value="ÐÐ¾ÐºÐ°Ð·Ð°ÑÐ¸ ÑÐº _Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼Ð¸"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-vi" type="string" value="Xem theo Biá»u t_Æ°á»£ng"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-zh_CN" type="string" value="æå¾æ æ¥ç(_I)"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-zh_TW" type="string" value="ä»¥åç¤ºæ¹å¼é¡¯ç¤º(_I)"/>
   <oaf_attribute name="nautilus:viewer_label" type="string" value="Icons Viewer"/>
-  <oaf_attribute name="nautilus:viewer_label-am" type="string" value="የምልክቶቸ ተመልካች"/>
-  <oaf_attribute name="nautilus:viewer_label-ar" type="string" value="عارض الأيقونات"/>
-  <oaf_attribute name="nautilus:viewer_label-az" type="string" value="Timsal Nümayişçisi"/>
-  <oaf_attribute name="nautilus:viewer_label-be" type="string" value="Праглядальнік значак"/>
-  <oaf_attribute name="nautilus:viewer_label-bg" type="string" value="Преглед с Икони"/>
+  <oaf_attribute name="nautilus:viewer_label-am" type="string" value="á¨ááá­á¶á½ á°ááá«á½"/>
+  <oaf_attribute name="nautilus:viewer_label-ar" type="string" value="Ø¹Ø§Ø±Ø¶ Ø§ÙØ£ÙÙÙÙØ§Øª"/>
+  <oaf_attribute name="nautilus:viewer_label-az" type="string" value="Timsal NÃ¼mayiÅÃ§isi"/>
+  <oaf_attribute name="nautilus:viewer_label-be" type="string" value="ÐÑÐ°Ð³Ð»ÑÐ´Ð°Ð»ÑÐ½ÑÐº Ð·Ð½Ð°ÑÐ°Ðº"/>
+  <oaf_attribute name="nautilus:viewer_label-bg" type="string" value="ÐÑÐµÐ³Ð»ÐµÐ´ Ñ ÐÐºÐ¾Ð½Ð¸"/>
   <oaf_attribute name="nautilus:viewer_label-ca" type="string" value="Visualitzador d&apos;icones"/>
-  <oaf_attribute name="nautilus:viewer_label-cs" type="string" value="Prohlížeč obrázků"/>
+  <oaf_attribute name="nautilus:viewer_label-cs" type="string" value="ProhlÃ­Å¾eÄ obrÃ¡zkÅ¯"/>
   <oaf_attribute name="nautilus:viewer_label-da" type="string" value="Ikonviser"/>
-  <oaf_attribute name="nautilus:viewer_label-de" type="string" value="Icon-Betrachter"/>
-  <oaf_attribute name="nautilus:viewer_label-el" type="string" value="Προβολή Εικονιδίων"/>
+  <oaf_attribute name="nautilus:viewer_label-de" type="string" value="Symbolansicht"/>
+  <oaf_attribute name="nautilus:viewer_label-el" type="string" value="Î ÏÎ¿Î²Î¿Î»Î® ÎÎ¹ÎºÎ¿Î½Î¹Î´Î¯ÏÎ½"/>
   <oaf_attribute name="nautilus:viewer_label-es" type="string" value="Visor de iconos"/>
   <oaf_attribute name="nautilus:viewer_label-et" type="string" value="Ikoonide vaatur"/>
   <oaf_attribute name="nautilus:viewer_label-eu" type="string" value="Ikono-ikustailea"/>
   <oaf_attribute name="nautilus:viewer_label-fi" type="string" value="Kuvakekatselin"/>
-  <oaf_attribute name="nautilus:viewer_label-fr" type="string" value="Visionneur d&apos;icônes"/>
+  <oaf_attribute name="nautilus:viewer_label-fr" type="string" value="Visionneur d&apos;icÃ´nes"/>
   <oaf_attribute name="nautilus:viewer_label-gl" type="string" value="Visualizador de iconas"/>
-  <oaf_attribute name="nautilus:viewer_label-he" type="string" value="מציג סמלים"/>
-  <oaf_attribute name="nautilus:viewer_label-hu" type="string" value="Ikonnéző"/>
+  <oaf_attribute name="nautilus:viewer_label-he" type="string" value="××¦×× ×¡××××"/>
+  <oaf_attribute name="nautilus:viewer_label-hi" type="string" value="à¤à¤à¤à¤¨à¥à¤¸ à¤µà¥à¤µà¤°"/>
+  <oaf_attribute name="nautilus:viewer_label-hu" type="string" value="IkonnÃ©zÅ"/>
   <oaf_attribute name="nautilus:viewer_label-it" type="string" value="Visualizzatore icone"/>
-  <oaf_attribute name="nautilus:viewer_label-ja" type="string" value="アイコンビューア"/>
-  <oaf_attribute name="nautilus:viewer_label-ko" type="string" value="아이콘 보기 프로그램"/>
-  <oaf_attribute name="nautilus:viewer_label-lt" type="string" value="Piktogramų žiūryklė"/>
-  <oaf_attribute name="nautilus:viewer_label-lv" type="string" value="Ikonu Skatītājs"/>
-  <oaf_attribute name="nautilus:viewer_label-mk" type="string" value="Прегледувач на Икони"/>
+  <oaf_attribute name="nautilus:viewer_label-ja" type="string" value="ã¢ã¤ã³ã³ãã¥ã¼ã¢"/>
+  <oaf_attribute name="nautilus:viewer_label-ko" type="string" value="ìì´ì½ ë³´ê¸° íë¡ê·¸ë¨"/>
+  <oaf_attribute name="nautilus:viewer_label-lt" type="string" value="PiktogramÅ³ Å¾iÅ«ryklÄ"/>
+  <oaf_attribute name="nautilus:viewer_label-lv" type="string" value="Ikonu SkatÄ«tÄjs"/>
+  <oaf_attribute name="nautilus:viewer_label-mk" type="string" value="ÐÑÐµÐ³Ð»ÐµÐ´ÑÐ²Ð°Ñ Ð½Ð° ÐÐºÐ¾Ð½Ð¸"/>
+  <oaf_attribute name="nautilus:viewer_label-mn" type="string" value="Ð­Ð¼Ð±Ð»ÐµÐ¼ ÑÐ°ÑÐ°Ð³Ñ"/>
   <oaf_attribute name="nautilus:viewer_label-ms" type="string" value="Pelihat Ikon"/>
   <oaf_attribute name="nautilus:viewer_label-nl" type="string" value="Pictogrammenweergave"/>
   <oaf_attribute name="nautilus:viewer_label-no" type="string" value="Ikonvisning"/>
-  <oaf_attribute name="nautilus:viewer_label-pl" type="string" value="Przeglądarka ikon"/>
-  <oaf_attribute name="nautilus:viewer_label-pt" type="string" value="Visualizador de Ícones"/>
-  <oaf_attribute name="nautilus:viewer_label-pt_BR" type="string" value="Visualizador de ícones"/>
+  <oaf_attribute name="nautilus:viewer_label-pl" type="string" value="PrzeglÄdarka ikon"/>
+  <oaf_attribute name="nautilus:viewer_label-pt" type="string" value="Visualizador de Ãcones"/>
+  <oaf_attribute name="nautilus:viewer_label-pt_BR" type="string" value="Visualizador de Ã­cones"/>
   <oaf_attribute name="nautilus:viewer_label-ro" type="string" value="Vizualizator iconuri"/>
-  <oaf_attribute name="nautilus:viewer_label-ru" type="string" value="Просмотр пиктограмм"/>
-  <oaf_attribute name="nautilus:viewer_label-sk" type="string" value="Pohľad Ikony"/>
+  <oaf_attribute name="nautilus:viewer_label-ru" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð¿ÑÐ¾ÑÐ¼Ð¾ÑÑÐ° Ð² Ð²Ð¸Ð´Ðµ Ð·Ð½Ð°ÑÐºÐ¾Ð²"/>
+  <oaf_attribute name="nautilus:viewer_label-sk" type="string" value="PohÄ¾ad Ikony"/>
   <oaf_attribute name="nautilus:viewer_label-sl" type="string" value="Pregledovalnik ikon"/>
   <oaf_attribute name="nautilus:viewer_label-sq" type="string" value="Shikuesi i ikonave"/>
   <oaf_attribute name="nautilus:viewer_label-sv" type="string" value="Ikonvisare"/>
-  <oaf_attribute name="nautilus:viewer_label-tr" type="string" value="Simge Görüntüleyici"/>
-  <oaf_attribute name="nautilus:viewer_label-vi" type="string" value="Quan sát biểu tượng"/>
-  <oaf_attribute name="nautilus:viewer_label-zh_CN" type="string" value="图标查看器"/>
-  <oaf_attribute name="nautilus:viewer_label-zh_TW" type="string" value="圖示檢視模式"/>
+  <oaf_attribute name="nautilus:viewer_label-tr" type="string" value="Simge GÃ¶rÃ¼ntÃ¼leyici"/>
+  <oaf_attribute name="nautilus:viewer_label-uk" type="string" value="ÐÑÐ´Ð¾Ð±ÑÐ°Ð¶ÑÐ²Ð°Ñ Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼"/>
+  <oaf_attribute name="nautilus:viewer_label-vi" type="string" value="Quan sÃ¡t biá»u tÆ°á»£ng"/>
+  <oaf_attribute name="nautilus:viewer_label-zh_CN" type="string" value="å¾æ æ¥çå¨"/>
+  <oaf_attribute name="nautilus:viewer_label-zh_TW" type="string" value="åç¤ºé¡¯ç¤ºæ¨¡å¼"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:Nautilus_File_Manager_Desktop_Icon_View" type="factory" location="OAFIID:Nautilus_Factory">
@@ -296,77 +342,83 @@
     <item value="IDL:Bonobo/Zoomable:1.0"/>
   </oaf_attribute>
   <oaf_attribute name="name" type="string" value="Nautilus file manager desktop icon view"/>
-  <oaf_attribute name="name-ar" type="string" value="عرض أيقونات سطح المكتب لمدير ملفات ناوتيلاس"/>
-  <oaf_attribute name="name-az" type="string" value="Nautilus fayl idarəcisi masa üstü timsal nümayişi"/>
-  <oaf_attribute name="name-bg" type="string" value="Мениджър на файлове Nautilus в преглед с икони на раб. място"/>
+  <oaf_attribute name="name-ar" type="string" value="Ø¹Ø±Ø¶ Ø£ÙÙÙÙØ§Øª Ø³Ø·Ø­ Ø§ÙÙÙØªØ¨ ÙÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³"/>
+  <oaf_attribute name="name-az" type="string" value="Nautilus fayl idarÉcisi masa Ã¼stÃ¼ timsal nÃ¼mayiÅi"/>
+  <oaf_attribute name="name-bg" type="string" value="ÐÐµÐ½Ð¸Ð´Ð¶ÑÑ Ð½Ð° ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Nautilus Ð² Ð¿ÑÐµÐ³Ð»ÐµÐ´ Ñ Ð¸ÐºÐ¾Ð½Ð¸ Ð½Ð° ÑÐ°Ð±. Ð¼ÑÑÑÐ¾"/>
   <oaf_attribute name="name-ca" type="string" value="Vista d&apos;icones de l&apos;escriptori del gestor de fitxers Nautilus"/>
-  <oaf_attribute name="name-cs" type="string" value="Pohled na ikony na ploše správce souborů Nautilus"/>
-  <oaf_attribute name="name-da" type="string" value="Nautilus filhåndteringsskrivebordsikonvisning"/>
-  <oaf_attribute name="name-de" type="string" value="Nautilus-Dateimanager-Ansicht für Desktop-Icons"/>
-  <oaf_attribute name="name-el" type="string" value="Προβολή εικονιδίων επιφάνειας εργασίας διαχειριστή αρχείων Ναυτίλου"/>
+  <oaf_attribute name="name-cs" type="string" value="Pohled na ikony na ploÅ¡e sprÃ¡vce souborÅ¯ Nautilus"/>
+  <oaf_attribute name="name-da" type="string" value="FilhÃ¥ndteringsskrivebordsikonvisning til Nautilus"/>
+  <oaf_attribute name="name-de" type="string" value="Nautilus-Dateimanager-Ansicht fÃ¼r Desktop-Symbole"/>
+  <oaf_attribute name="name-el" type="string" value="Î ÏÎ¿Î²Î¿Î»Î® ÎµÎ¹ÎºÎ¿Î½Î¹Î´Î¯ÏÎ½ ÎµÏÎ¹ÏÎ¬Î½ÎµÎ¹Î±Ï ÎµÏÎ³Î±ÏÎ¯Î±Ï Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½ ÎÎ±ÏÏÎ¯Î»Î¿Ï"/>
   <oaf_attribute name="name-es" type="string" value="Vista de iconos del escritorio del administrador de archivos Nautilus"/>
   <oaf_attribute name="name-eu" type="string" value="Nautilus fitxategi-kudeatzailearen mahaigaineko ikonoen ikuspegia"/>
-  <oaf_attribute name="name-fi" type="string" value="Nautiluksen-tiedostonhallintan työpöytäkuvakenäkymä"/>
-  <oaf_attribute name="name-fr" type="string" value="Vue icône de bureau du gestionnaire de fichiers Nautilus"/>
-  <oaf_attribute name="name-he" type="string" value="מנהל הקבצים של נאוטילוס תצוגת סמלים על שולחן העבודה"/>
-  <oaf_attribute name="name-hu" type="string" value="Nautilus fájlkezelő munkaasztalikon-nézet"/>
+  <oaf_attribute name="name-fi" type="string" value="Nautiluksen-tiedostonhallintan tyÃ¶pÃ¶ytÃ¤kuvakenÃ¤kymÃ¤"/>
+  <oaf_attribute name="name-fr" type="string" value="Vue icÃ´ne de bureau du gestionnaire de fichiers Nautilus"/>
+  <oaf_attribute name="name-he" type="string" value="×× ×× ××§××¦×× ×©× × ×××××××¡ ×ª×¦×××ª ×¡×××× ×¢× ×©×××× ××¢××××"/>
+  <oaf_attribute name="name-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤° à¤¡à¥à¤¸à¥à¤à¤à¤¾à¤ª à¤à¤¯à¤à¤¨ à¤µà¥à¤¯à¥"/>
+  <oaf_attribute name="name-hu" type="string" value="Nautilus fÃ¡jlkezelÅ munkaasztalikon-nÃ©zet"/>
   <oaf_attribute name="name-it" type="string" value="Vista ad icone per il desktop del file manager Nautilus"/>
-  <oaf_attribute name="name-ja" type="string" value="Nautilus ファイルマネージャデスクトップアイコンビュー"/>
-  <oaf_attribute name="name-ko" type="string" value="노틸러스 파일관리자 바탕화면 아이콘 보기"/>
-  <oaf_attribute name="name-lt" type="string" value="Nautilus bylų tvarkytojo darbalaukio piktogramų vaizdas"/>
-  <oaf_attribute name="name-lv" type="string" value="Nautilus failu pārvaldnieka darbavirsmas ikonu skatījums"/>
+  <oaf_attribute name="name-ja" type="string" value="Nautilus ãã¡ã¤ã«ããã¼ã¸ã£ãã¹ã¯ãããã¢ã¤ã³ã³ãã¥ã¼"/>
+  <oaf_attribute name="name-ko" type="string" value="ë¸í¸ë¬ì¤ íì¼ê´ë¦¬ì ë°ííë©´ ìì´ì½ ë³´ê¸°"/>
+  <oaf_attribute name="name-lt" type="string" value="Nautilus bylÅ³ tvarkytojo darbalaukio piktogramÅ³ vaizdas"/>
+  <oaf_attribute name="name-lv" type="string" value="Nautilus failu pÄrvaldnieka darbavirsmas ikonu skatÄ«jums"/>
+  <oaf_attribute name="name-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑÐ¸Ð¹Ð½ Ó©Ó©ÑÐ¸Ð¹Ð½ ÑÐ»Ð³ÑÑÑÐ½ Ð´ÑÑÑ ÑÐ°ÑÐ°Ð³Ð´Ð°Ñ"/>
   <oaf_attribute name="name-ms" type="string" value="Paparan ikon desktop pengurus fail Nautilus"/>
   <oaf_attribute name="name-nl" type="string" value="Nautilus-bureaubladpictogrammen"/>
-  <oaf_attribute name="name-no" type="string" value="Nautilus filhåndterer visning for skrivebordsikoner"/>
-  <oaf_attribute name="name-pl" type="string" value="Widok ikon na biurku menedżera plików Nautilusa"/>
-  <oaf_attribute name="name-pt" type="string" value="Vista de ícones no ambiente do gestor de ficheiros Nautilus"/>
-  <oaf_attribute name="name-pt_BR" type="string" value="Visão de ícone na área de trabalho do gerenciador de arquivos do Nautilus"/>
+  <oaf_attribute name="name-no" type="string" value="Nautilus filhÃ¥ndterer visning for skrivebordsikoner"/>
+  <oaf_attribute name="name-pl" type="string" value="Widok ikon na biurku menedÅ¼era plikÃ³w Nautilusa"/>
+  <oaf_attribute name="name-pt" type="string" value="Vista de Ã­cones no ambiente do gestor de ficheiros Nautilus"/>
+  <oaf_attribute name="name-pt_BR" type="string" value="VisÃ£o de Ã­cone na Ã¡rea de trabalho do gerenciador de arquivos do Nautilus"/>
   <oaf_attribute name="name-ro" type="string" value="Vizualizare iconuri desktop Nautilus"/>
-  <oaf_attribute name="name-ru" type="string" value="Просмотр пиктограмм рабочего стола диспетчера файлов Nautilus"/>
-  <oaf_attribute name="name-sk" type="string" value="Pohľad správcu súborov na ikony plochy"/>
+  <oaf_attribute name="name-ru" type="string" value="ÐÑÐ¾ÑÐ¼Ð¾ÑÑ Ð·Ð½Ð°ÑÐºÐ¾Ð² ÑÐ°Ð±Ð¾ÑÐµÐ³Ð¾ ÑÑÐ¾Ð»Ð° Ð´Ð»Ñ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;"/>
+  <oaf_attribute name="name-sk" type="string" value="PohÄ¾ad sprÃ¡vcu sÃºborov na ikony plochy"/>
   <oaf_attribute name="name-sl" type="string" value="Ikonski pogled namizja Nautilusovega upravljalnika datotek"/>
-  <oaf_attribute name="name-sq" type="string" value="Paraqitja me ikona për desktop i file manager Nautilus"/>
-  <oaf_attribute name="name-sv" type="string" value="Skrivbordsikonvy för Nautilus filhanterare"/>
-  <oaf_attribute name="name-tr" type="string" value="Nautilus dosya yöneticisi masaüstü simge görünümü"/>
-  <oaf_attribute name="name-vi" type="string" value="Cảnh xem của quản lý tập tin Nautilus cho biểu tượng desktop"/>
-  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus 文件管理器桌面图标视图"/>
-  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus 檔案管理員之桌面圖示檢視模式"/>
+  <oaf_attribute name="name-sq" type="string" value="Paraqitja me ikona pÃ«r desktop i file manager Nautilus"/>
+  <oaf_attribute name="name-sv" type="string" value="Skrivbordsikonvy fÃ¶r Nautilus filhanterare"/>
+  <oaf_attribute name="name-tr" type="string" value="Nautilus dosya yÃ¶neticisi masaÃ¼stÃ¼ simge gÃ¶rÃ¼nÃ¼mÃ¼"/>
+  <oaf_attribute name="name-uk" type="string" value="ÐÐµÑÐµÐ³Ð»ÑÐ´ Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼ ÑÑÑÐ»ÑÐ½Ð¸ÑÑ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° ÑÐ°Ð¹Ð»ÑÐ² &quot;ÐÐ°ÑÑÑÐ»ÑÑ&quot;"/>
+  <oaf_attribute name="name-vi" type="string" value="Cáº£nh xem cá»§a quáº£n lÃ½ táº­p tin Nautilus cho biá»u tÆ°á»£ng desktop"/>
+  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus æä»¶ç®¡çå¨æ¡é¢å¾æ è§å¾"/>
+  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus æªæ¡ç®¡çå¡ä¹æ¡é¢åç¤ºé¡¯ç¤ºæ¨¡å¼"/>
   <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows icons on the desktop"/>
-  <oaf_attribute name="description-ar" type="string" value="جزء مدير ملفات ناوتيلاس الذي يعرض أيقونات على سطح المكتب"/>
-  <oaf_attribute name="description-az" type="string" value="Masa üstündə timsallar göstərən Nautilus fayl idarəcisi əlavəsi"/>
-  <oaf_attribute name="description-bg" type="string" value="Компонент на мениджъра на файлове Nautilus който се показва икони на работното място"/>
+  <oaf_attribute name="description-ar" type="string" value="Ø¬Ø²Ø¡ ÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³ Ø§ÙØ°Ù ÙØ¹Ø±Ø¶ Ø£ÙÙÙÙØ§Øª Ø¹ÙÙ Ø³Ø·Ø­ Ø§ÙÙÙØªØ¨"/>
+  <oaf_attribute name="description-az" type="string" value="Masa Ã¼stÃ¼ndÉ timsallar gÃ¶stÉrÉn Nautilus fayl idarÉcisi ÉlavÉsi"/>
+  <oaf_attribute name="description-bg" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð½Ð° Ð¼ÐµÐ½Ð¸Ð´Ð¶ÑÑÐ° Ð½Ð° ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Nautilus ÐºÐ¾Ð¹ÑÐ¾ ÑÐµ Ð¿Ð¾ÐºÐ°Ð·Ð²Ð° Ð¸ÐºÐ¾Ð½Ð¸ Ð½Ð° ÑÐ°Ð±Ð¾ÑÐ½Ð¾ÑÐ¾ Ð¼ÑÑÑÐ¾"/>
   <oaf_attribute name="description-ca" type="string" value="Component del gestor de fitxer Nautilus que mostra icones sobre l&apos;escriptori"/>
-  <oaf_attribute name="description-cs" type="string" value="Komponenta správce souborů Nautilus, která zobrazuje ikony na pracovní ploše"/>
-  <oaf_attribute name="description-da" type="string" value="Nautilus filhåndteringskomponent der viser ikoner på skrivebordet"/>
-  <oaf_attribute name="description-de" type="string" value="Nautilus-Dateimanager-Komponente, die Icons auf dem Desktop anzeigt"/>
-  <oaf_attribute name="description-el" type="string" value="Συστατικό του διαχειριστή αρχείων του Ναυτίλου που εμφανίζει εικονίδια στην επιφάνεια εργασίας"/>
+  <oaf_attribute name="description-cs" type="string" value="Komponenta sprÃ¡vce souborÅ¯ Nautilus, kterÃ¡ zobrazuje ikony na pracovnÃ­ ploÅ¡e"/>
+  <oaf_attribute name="description-da" type="string" value="FilhÃ¥ndteringskomponent til Nautilus der viser ikoner pÃ¥ skrivebordet"/>
+  <oaf_attribute name="description-de" type="string" value="Nautilus-Dateimanager-Komponente, die Symbole auf dem Desktop anzeigt"/>
+  <oaf_attribute name="description-el" type="string" value="Î£ÏÏÏÎ±ÏÎ¹ÎºÏ ÏÎ¿Ï Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½ ÏÎ¿Ï ÎÎ±ÏÏÎ¯Î»Î¿Ï ÏÎ¿Ï ÎµÎ¼ÏÎ±Î½Î¯Î¶ÎµÎ¹ ÎµÎ¹ÎºÎ¿Î½Î¯Î´Î¹Î± ÏÏÎ·Î½ ÎµÏÎ¹ÏÎ¬Î½ÎµÎ¹Î± ÎµÏÎ³Î±ÏÎ¯Î±Ï"/>
   <oaf_attribute name="description-es" type="string" value="Componente del administrador de archivos Nautilus que muestra iconos en el escritorio"/>
   <oaf_attribute name="description-eu" type="string" value="Mahaigainean ikonoak erakusten dituen Nautilus fitxategi-kudeatzailearen osagaia"/>
-  <oaf_attribute name="description-fi" type="string" value="Nautiluksen tiedostonhallintakomponentti, joka näyttää työpöydän kuvakkeet"/>
-  <oaf_attribute name="description-fr" type="string" value="Composant du gestionnaire de fichiers Nautilus qui affiche des icônes sur le bureau"/>
-  <oaf_attribute name="description-he" type="string" value="רכיב מנהל הקבצים של נאוטילוס המראה סמלים על שולחן העבודה"/>
-  <oaf_attribute name="description-hu" type="string" value="Nautilus fájlkezelő-komponens munkaasztal-ikonok megjelenítéséhez"/>
+  <oaf_attribute name="description-fi" type="string" value="Nautiluksen tiedostonhallintakomponentti, joka nÃ¤yttÃ¤Ã¤ tyÃ¶pÃ¶ydÃ¤n kuvakkeet"/>
+  <oaf_attribute name="description-fr" type="string" value="Composant du gestionnaire de fichiers Nautilus qui affiche des icÃ´nes sur le bureau"/>
+  <oaf_attribute name="description-he" type="string" value="×¨××× ×× ×× ××§××¦×× ×©× × ×××××××¡ ×××¨×× ×¡×××× ×¢× ×©×××× ××¢××××"/>
+  <oaf_attribute name="description-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤° à¤à¤à¤ªà¥à¤¨à¥à¤à¤ à¤à¥ à¤¡à¥à¤¸à¥à¤à¤à¤¾à¤ª à¤ªà¤° à¤à¤¯à¤à¤¨à¥à¤¸ à¤¦à¤¿à¤à¤¾à¤¤à¤¾ à¤¹à¥"/>
+  <oaf_attribute name="description-hu" type="string" value="Nautilus fÃ¡jlkezelÅ-komponens munkaasztal-ikonok megjelenÃ­tÃ©sÃ©hez"/>
   <oaf_attribute name="description-it" type="string" value="Componente del file manager Nautilus che mostra le icone sul desktop"/>
-  <oaf_attribute name="description-ja" type="string" value="デスクトップにアイコンを表示するNautilusファイルマネージャコンポーネント"/>
-  <oaf_attribute name="description-ko" type="string" value="바탕화면에 아이콘을 보여주는 노틸러스 파일관리자 구성요소"/>
-  <oaf_attribute name="description-lt" type="string" value="Nautilus bylų tvarkytojo komponentas, rodantis piktogramas darbalaukyje"/>
-  <oaf_attribute name="description-lv" type="string" value="Nautilus failu pārvaldnieka komponents, kas parāda ikonas uz darba virsmas"/>
+  <oaf_attribute name="description-ja" type="string" value="ãã¹ã¯ãããã«ã¢ã¤ã³ã³ãè¡¨ç¤ºããNautilusãã¡ã¤ã«ããã¼ã¸ã£ã³ã³ãã¼ãã³ã"/>
+  <oaf_attribute name="description-ko" type="string" value="ë°ííë©´ì ìì´ì½ì ë³´ì¬ì£¼ë ë¸í¸ë¬ì¤ íì¼ê´ë¦¬ì êµ¬ì±ìì"/>
+  <oaf_attribute name="description-lt" type="string" value="Nautilus bylÅ³ tvarkytojo komponentas, rodantis piktogramas darbalaukyje"/>
+  <oaf_attribute name="description-lv" type="string" value="Nautilus failu pÄrvaldnieka komponents, kas parÄda ikonas uz darba virsmas"/>
+  <oaf_attribute name="description-mn" type="string" value="Ð­Ð¼Ð±Ð»ÐµÐ¼Ò¯Ò¯Ð´Ð¸Ð¹Ð³ Ð´ÑÐ»Ð³ÑÑÑÐ½ Ð´ÑÑÑ ÑÑÑÐ´ ÑÐ°ÑÑÑÐ»Ð°Ñ Ð³Ð¾ÑÐ¸Ð¼Ð´ Ð¾ÑÑÑÐ»Ð´Ð°Ð³ ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑ -Ð¸Ð¹Ð½ ÐºÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ"/>
   <oaf_attribute name="description-ms" type="string" value="Komponen pengurus fail Nautilus yang memapar ikon pada desktop"/>
   <oaf_attribute name="description-nl" type="string" value="Nautilus-bestandsbeheercomponent dat pictogrammen op het bureaublad toont"/>
-  <oaf_attribute name="description-no" type="string" value="Nautilus komponent for filhåndterer som viser ikoner på skrivebordet"/>
-  <oaf_attribute name="description-pl" type="string" value="Komponent menedżera plików Nautilusa wyświetlający ikony na biurku"/>
-  <oaf_attribute name="description-pt" type="string" value="Componente do gestor de ficheiros Nautilus que mostra ícones no ambiente"/>
-  <oaf_attribute name="description-pt_BR" type="string" value="Compomente de gerenciador de arquivos do Nautilus que exibe ícones na área de trabalho"/>
-  <oaf_attribute name="description-ro" type="string" value="Componentă Nautilus care arată iconuri pe desktop"/>
-  <oaf_attribute name="description-ru" type="string" value="Компонент диспетчера файлов Nautilus, который показывает пиктограммы на рабочем столе"/>
-  <oaf_attribute name="description-sk" type="string" value="Komponent Správca súborov Nautilus, ktorý zobrazuje ikony na ploche"/>
-  <oaf_attribute name="description-sl" type="string" value="Komponenta upravljalnika datotek Nautilus, ki kaže ikone na namizju"/>
-  <oaf_attribute name="description-sq" type="string" value="Komponenti i file manager Nautilus që shfaq ikonat në desktop"/>
-  <oaf_attribute name="description-sv" type="string" value="Nautilus-filhanterarkomponent som visar ikoner på skrivbordet"/>
-  <oaf_attribute name="description-tr" type="string" value="Masaüstündeki simgeleri gösteren Nautilus dosya yöneticisi bileşeni"/>
-  <oaf_attribute name="description-vi" type="string" value="Thành phần quản lý tập tin Nautilus hiển thị các biểu tượng trên nền desktop"/>
-  <oaf_attribute name="description-zh_CN" type="string" value="在桌面上显示图标的 Nautilus 文件管理器部件"/>
-  <oaf_attribute name="description-zh_TW" type="string" value="顯示桌面圖示的 Nautilus 檔案管理員元件"/>
+  <oaf_attribute name="description-no" type="string" value="Nautilus komponent for filhÃ¥ndterer som viser ikoner pÃ¥ skrivebordet"/>
+  <oaf_attribute name="description-pl" type="string" value="Komponent menedÅ¼era plikÃ³w Nautilusa wyÅwietlajÄcy ikony na biurku"/>
+  <oaf_attribute name="description-pt" type="string" value="Componente do gestor de ficheiros Nautilus que mostra Ã­cones no ambiente"/>
+  <oaf_attribute name="description-pt_BR" type="string" value="Compomente de gerenciador de arquivos do Nautilus que exibe Ã­cones na Ã¡rea de trabalho"/>
+  <oaf_attribute name="description-ro" type="string" value="ComponentÄ Nautilus care aratÄ iconuri pe desktop"/>
+  <oaf_attribute name="description-ru" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;, ÐºÐ¾ÑÐ¾ÑÑÐ¹ Ð¿Ð¾ÐºÐ°Ð·ÑÐ²Ð°ÐµÑ Ð·Ð½Ð°ÑÐºÐ¸ Ð½Ð° ÑÐ°Ð±Ð¾ÑÐµÐ¼ ÑÑÐ¾Ð»Ðµ"/>
+  <oaf_attribute name="description-sk" type="string" value="Komponent SprÃ¡vca sÃºborov Nautilus, ktorÃ½ zobrazuje ikony na ploche"/>
+  <oaf_attribute name="description-sl" type="string" value="Komponenta upravljalnika datotek Nautilus, ki kaÅ¾e ikone na namizju"/>
+  <oaf_attribute name="description-sq" type="string" value="Komponenti i file manager Nautilus qÃ« shfaq ikonat nÃ« desktop"/>
+  <oaf_attribute name="description-sv" type="string" value="Nautilus-filhanterarkomponent som visar ikoner pÃ¥ skrivbordet"/>
+  <oaf_attribute name="description-tr" type="string" value="MasaÃ¼stÃ¼ndeki simgeleri gÃ¶steren Nautilus dosya yÃ¶neticisi bileÅeni"/>
+  <oaf_attribute name="description-uk" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° ÑÐ°Ð¹Ð»ÑÐ² &quot;ÐÐ°ÑÑÑÐ»ÑÑ&quot;, ÑÐ¾ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶ÑÑ Ð¿ÑÐºÑÐ¾Ð³ÑÐ°Ð¼Ð¸ Ð½Ð° ÑÑÑÐ»ÑÐ½Ð¸ÑÑ"/>
+  <oaf_attribute name="description-vi" type="string" value="ThÃ nh pháº§n quáº£n lÃ½ táº­p tin Nautilus hiá»n thá» cÃ¡c biá»u tÆ°á»£ng trÃªn ná»n desktop"/>
+  <oaf_attribute name="description-zh_CN" type="string" value="å¨æ¡é¢ä¸æ¾ç¤ºå¾æ ç Nautilus æä»¶ç®¡çå¨é¨ä»¶"/>
+  <oaf_attribute name="description-zh_TW" type="string" value="é¡¯ç¤ºæ¡é¢åç¤ºç Nautilus æªæ¡ç®¡çå¡åä»¶"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:Nautilus_File_Manager_List_View" type="factory" location="OAFIID:Nautilus_Factory">
@@ -377,78 +429,84 @@
     <item value="IDL:Bonobo/Zoomable:1.0"/>
   </oaf_attribute>
   <oaf_attribute name="name" type="string" value="Nautilus file manager list view"/>
-  <oaf_attribute name="name-ar" type="string" value="عرض قائمة مدير ملفات ناوتيلاس"/>
-  <oaf_attribute name="name-az" type="string" value="Nautilus fayl idarəcisi siyahı nümayişi"/>
-  <oaf_attribute name="name-bg" type="string" value="Мениджър на файлове Nautilus в списъчен преглед"/>
+  <oaf_attribute name="name-ar" type="string" value="Ø¹Ø±Ø¶ ÙØ§Ø¦ÙØ© ÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³"/>
+  <oaf_attribute name="name-az" type="string" value="Nautilus fayl idarÉcisi siyahÄ± nÃ¼mayiÅi"/>
+  <oaf_attribute name="name-bg" type="string" value="ÐÐµÐ½Ð¸Ð´Ð¶ÑÑ Ð½Ð° ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Nautilus Ð² ÑÐ¿Ð¸ÑÑÑÐµÐ½ Ð¿ÑÐµÐ³Ð»ÐµÐ´"/>
   <oaf_attribute name="name-ca" type="string" value="Vista de llista del gestor de fitxer Nautilus"/>
-  <oaf_attribute name="name-cs" type="string" value="Seznamový pohled správce souborů Nautilus"/>
-  <oaf_attribute name="name-da" type="string" value="Nautilus filhåndteringslistevisning"/>
+  <oaf_attribute name="name-cs" type="string" value="SeznamovÃ½ pohled sprÃ¡vce souborÅ¯ Nautilus"/>
+  <oaf_attribute name="name-da" type="string" value="FilhÃ¥ndteringslistevisning til Nautilus"/>
   <oaf_attribute name="name-de" type="string" value="Nautilus-Dateimanager-Listenansicht"/>
-  <oaf_attribute name="name-el" type="string" value="Προβολή λίστας διαχειριστή αρχείων Ναυτίλου"/>
+  <oaf_attribute name="name-el" type="string" value="Î ÏÎ¿Î²Î¿Î»Î® Î»Î¯ÏÏÎ±Ï Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½ ÎÎ±ÏÏÎ¯Î»Î¿Ï"/>
   <oaf_attribute name="name-es" type="string" value="Vista tipo lista, del administrador de archivos Nautilus"/>
   <oaf_attribute name="name-eu" type="string" value="Nautilus fitxategi-kudeatzailearen zerrenda-ikuspegia"/>
-  <oaf_attribute name="name-fi" type="string" value="Nautiluksen-tiedostonhallintan luettelonäkymä"/>
+  <oaf_attribute name="name-fi" type="string" value="Nautiluksen-tiedostonhallintan luettelonÃ¤kymÃ¤"/>
   <oaf_attribute name="name-fr" type="string" value="Vue liste du gestionnaire de fichiers Nautilus"/>
-  <oaf_attribute name="name-he" type="string" value="מנהל הקבצים של נאוטילוס תצוגת רשימה"/>
-  <oaf_attribute name="name-hu" type="string" value="Nautilus fájlkezelő listanézet"/>
+  <oaf_attribute name="name-he" type="string" value="×× ×× ××§××¦×× ×©× × ×××××××¡ ×ª×¦×××ª ×¨×©×××"/>
+  <oaf_attribute name="name-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤° à¤²à¤¿à¤¸à¥à¤ à¤µà¥à¤¯à¥"/>
+  <oaf_attribute name="name-hu" type="string" value="Nautilus fÃ¡jlkezelÅ listanÃ©zet"/>
   <oaf_attribute name="name-it" type="string" value="Vista a lista del file manager Nautilus"/>
-  <oaf_attribute name="name-ja" type="string" value="Nautilus ファイルマネージャリストビュー"/>
-  <oaf_attribute name="name-ko" type="string" value="노틸러스 파일관리자 목록 보기"/>
-  <oaf_attribute name="name-lt" type="string" value="Nautilus bylų tvarkytojo sąrašo vaizdas"/>
-  <oaf_attribute name="name-lv" type="string" value="Nautilus failu pārvaldnieka saraksta skatījums"/>
+  <oaf_attribute name="name-ja" type="string" value="Nautilus ãã¡ã¤ã«ããã¼ã¸ã£ãªã¹ããã¥ã¼"/>
+  <oaf_attribute name="name-ko" type="string" value="ë¸í¸ë¬ì¤ íì¼ê´ë¦¬ì ëª©ë¡ ë³´ê¸°"/>
+  <oaf_attribute name="name-lt" type="string" value="Nautilus bylÅ³ tvarkytojo sÄraÅ¡o vaizdas"/>
+  <oaf_attribute name="name-lv" type="string" value="Nautilus failu pÄrvaldnieka saraksta skatÄ«jums"/>
+  <oaf_attribute name="name-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑÐ¸Ð¹Ð½ Ð¶Ð°Ð³ÑÐ°Ð°Ð»Ñ-ÑÑÐ»Ð±ÑÑ"/>
   <oaf_attribute name="name-ms" type="string" value="Paparan senarai pengurus fail Nautilus"/>
   <oaf_attribute name="name-nl" type="string" value="Nautilus-lijst"/>
-  <oaf_attribute name="name-no" type="string" value="Nautilus filhåndterer listevisning"/>
-  <oaf_attribute name="name-pl" type="string" value="Widok listy menedżera plików Nautilusa"/>
+  <oaf_attribute name="name-no" type="string" value="Nautilus filhÃ¥ndterer listevisning"/>
+  <oaf_attribute name="name-pl" type="string" value="Widok listy menedÅ¼era plikÃ³w Nautilusa"/>
   <oaf_attribute name="name-pt" type="string" value="Vista em lista do gestor de ficheiros Nautilus"/>
-  <oaf_attribute name="name-pt_BR" type="string" value="Visão de lista do gerenciador de arquivos do Nautilus"/>
-  <oaf_attribute name="name-ro" type="string" value="Vizualizare listă Nautilus"/>
-  <oaf_attribute name="name-ru" type="string" value="Просмотр списка диспетчера файлов Nautilus"/>
-  <oaf_attribute name="name-sk" type="string" value="Pohľad správcu súborov ako zoznam"/>
+  <oaf_attribute name="name-pt_BR" type="string" value="VisÃ£o de lista do gerenciador de arquivos do Nautilus"/>
+  <oaf_attribute name="name-ro" type="string" value="Vizualizare listÄ Nautilus"/>
+  <oaf_attribute name="name-ru" type="string" value="ÐÑÐ¾ÑÐ¼Ð¾ÑÑ Ð² Ð²Ð¸Ð´Ðµ ÑÐ¿Ð¸ÑÐºÐ° Ð´Ð»Ñ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;"/>
+  <oaf_attribute name="name-sk" type="string" value="PohÄ¾ad sprÃ¡vcu sÃºborov ako zoznam"/>
   <oaf_attribute name="name-sl" type="string" value="Seznamski pogled nautilusovega upravljalnika datotek"/>
-  <oaf_attribute name="name-sq" type="string" value="Paraqitja si listë i file manager Nautilus"/>
-  <oaf_attribute name="name-sv" type="string" value="Listvy för Nautilus filhanterare"/>
-  <oaf_attribute name="name-tr" type="string" value="Nautilus dosya yöneticisi liste görünümü"/>
-  <oaf_attribute name="name-vi" type="string" value="Cảnh xem danh sách của quản lý tập tin Nautilus"/>
-  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus 文件管理器列表视图"/>
-  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus 檔案管理員之列表檢視模式"/>
+  <oaf_attribute name="name-sq" type="string" value="Paraqitja si listÃ« i file manager Nautilus"/>
+  <oaf_attribute name="name-sv" type="string" value="Listvy fÃ¶r Nautilus filhanterare"/>
+  <oaf_attribute name="name-tr" type="string" value="Nautilus dosya yÃ¶neticisi liste gÃ¶rÃ¼nÃ¼mÃ¼"/>
+  <oaf_attribute name="name-uk" type="string" value="ÐÐµÑÐµÐ³Ð»ÑÐ´ ÑÐ¿Ð¸ÑÐºÑ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° ÑÐ°Ð¹Ð»ÑÐ² &quot;ÐÐ°ÑÑÑÐ»ÑÑ&quot;"/>
+  <oaf_attribute name="name-vi" type="string" value="Cáº£nh xem danh sÃ¡ch cá»§a quáº£n lÃ½ táº­p tin Nautilus"/>
+  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus æä»¶ç®¡çå¨åè¡¨è§å¾"/>
+  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus æªæ¡ç®¡çå¡ä¹æ¸å®é¡¯ç¤ºæ¨¡å¼"/>
   <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows a scrollable list"/>
-  <oaf_attribute name="description-ar" type="string" value="جزء مدير ملفات ناوتيلاس الذي يعرض قائمة قابلة للتدرج"/>
-  <oaf_attribute name="description-az" type="string" value="Sürüşgən siyahını göstərən Nautilus fayl idarəcisi əlavəsi"/>
-  <oaf_attribute name="description-be" type="string" value="Кампанэнт Nautilus&apos;у які адлюстроўвае сьпіс з пракруткай"/>
-  <oaf_attribute name="description-bg" type="string" value="Компонент на мениджъра на файлове Nautilus който се показва в преместваемия списък"/>
-  <oaf_attribute name="description-ca" type="string" value="Component del gestor de fitxers Nautilus que mostra una llista desplaçable"/>
-  <oaf_attribute name="description-cs" type="string" value="Komponenta správce souborů Nautilus, která zobrazuje rolovatelný seznam"/>
-  <oaf_attribute name="description-da" type="string" value="Nautilus filhåndteringskomponent der viser en liste med rullebjælke."/>
+  <oaf_attribute name="description-ar" type="string" value="Ø¬Ø²Ø¡ ÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³ Ø§ÙØ°Ù ÙØ¹Ø±Ø¶ ÙØ§Ø¦ÙØ© ÙØ§Ø¨ÙØ© ÙÙØªØ¯Ø±Ø¬"/>
+  <oaf_attribute name="description-az" type="string" value="SÃ¼rÃ¼ÅgÉn siyahÄ±nÄ± gÃ¶stÉrÉn Nautilus fayl idarÉcisi ÉlavÉsi"/>
+  <oaf_attribute name="description-be" type="string" value="ÐÐ°Ð¼Ð¿Ð°Ð½ÑÐ½Ñ Nautilus&apos;Ñ ÑÐºÑ Ð°Ð´Ð»ÑÑÑÑÐ¾ÑÐ²Ð°Ðµ ÑÑÐ¿ÑÑ Ð· Ð¿ÑÐ°ÐºÑÑÑÐºÐ°Ð¹"/>
+  <oaf_attribute name="description-bg" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð½Ð° Ð¼ÐµÐ½Ð¸Ð´Ð¶ÑÑÐ° Ð½Ð° ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Nautilus ÐºÐ¾Ð¹ÑÐ¾ ÑÐµ Ð¿Ð¾ÐºÐ°Ð·Ð²Ð° Ð² Ð¿ÑÐµÐ¼ÐµÑÑÐ²Ð°ÐµÐ¼Ð¸Ñ ÑÐ¿Ð¸ÑÑÐº"/>
+  <oaf_attribute name="description-ca" type="string" value="Component del gestor de fitxers Nautilus que mostra una llista desplaÃ§able"/>
+  <oaf_attribute name="description-cs" type="string" value="Komponenta sprÃ¡vce souborÅ¯ Nautilus, kterÃ¡ zobrazuje posuvnÃ½ seznam"/>
+  <oaf_attribute name="description-da" type="string" value="FilhÃ¥ndteringskomponent til Nautilus der viser en liste med rullebjÃ¦lke."/>
   <oaf_attribute name="description-de" type="string" value="Nautilus-Dateimanager-Komponente, die eine rollbare Liste anzeigt"/>
-  <oaf_attribute name="description-el" type="string" value="Συστατικό διαχειριστή αρχείων Ναυτίλου που εμφανίζει μια κυλιόμενη λίστα"/>
+  <oaf_attribute name="description-el" type="string" value="Î£ÏÏÏÎ±ÏÎ¹ÎºÏ Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½ ÎÎ±ÏÏÎ¯Î»Î¿Ï ÏÎ¿Ï ÎµÎ¼ÏÎ±Î½Î¯Î¶ÎµÎ¹ Î¼Î¹Î± ÎºÏÎ»Î¹ÏÎ¼ÎµÎ½Î· Î»Î¯ÏÏÎ±"/>
   <oaf_attribute name="description-es" type="string" value="Componente del administrador de archivos Nautilus que muestra una lista desplegable"/>
   <oaf_attribute name="description-eu" type="string" value="Zerrenda korrigarria erakusten duen Nautilus fitxategi-kudeatzailearen osagaia"/>
-  <oaf_attribute name="description-fi" type="string" value="Nautiluksen tiedostonhallintakomponentti, joka näyttää vieritettävän luettelon"/>
-  <oaf_attribute name="description-fr" type="string" value="Composant du gestionnaire de fichiers Nautilus qui affiche une liste défilante"/>
-  <oaf_attribute name="description-he" type="string" value="רכיב מנהל הקבצים של נאוטילוס המראה רשימת נגררת"/>
-  <oaf_attribute name="description-hu" type="string" value="Nautilus fájlkezelő-komponens görgethető listák megjelenítéséhez"/>
+  <oaf_attribute name="description-fi" type="string" value="Nautiluksen tiedostonhallintakomponentti, joka nÃ¤yttÃ¤Ã¤ vieritettÃ¤vÃ¤n luettelon"/>
+  <oaf_attribute name="description-fr" type="string" value="Composant du gestionnaire de fichiers Nautilus qui affiche une liste dÃ©filante"/>
+  <oaf_attribute name="description-he" type="string" value="×¨××× ×× ×× ××§××¦×× ×©× × ×××××××¡ ×××¨×× ×¨×©×××ª × ××¨×¨×ª"/>
+  <oaf_attribute name="description-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤° à¤à¤®à¥à¤ªà¥à¤¨à¥à¤à¤ à¤à¥ à¤¸à¥à¤à¥à¤°à¥à¤²à¥à¤¬à¤² à¤¸à¥à¤à¥ à¤¦à¤¿à¤à¤¾à¤¤à¤¾ à¤¹à¥"/>
+  <oaf_attribute name="description-hu" type="string" value="Nautilus fÃ¡jlkezelÅ-komponens gÃ¶rgethetÅ listÃ¡k megjelenÃ­tÃ©sÃ©hez"/>
   <oaf_attribute name="description-it" type="string" value="Componente del file manager Nautilus che mostra una lista scorrevole"/>
-  <oaf_attribute name="description-ja" type="string" value="スクロール可能なリストを表示するNautilusファイルマネージャコンポーネント"/>
-  <oaf_attribute name="description-ko" type="string" value="스크롤 할 수 있는 목록으로 보여주는 노틸러스 파일관리자 구성요소"/>
-  <oaf_attribute name="description-lt" type="string" value="Nautilus bylų tvarkytojo komponentas, rodantis slankiojamą sąrašą"/>
-  <oaf_attribute name="description-lv" type="string" value="Nautilus failu pārvaldnieka komponents, kas parāda ritināmu sarakstu"/>
+  <oaf_attribute name="description-ja" type="string" value="ã¹ã¯ã­ã¼ã«å¯è½ãªãªã¹ããè¡¨ç¤ºããNautilusãã¡ã¤ã«ããã¼ã¸ã£ã³ã³ãã¼ãã³ã"/>
+  <oaf_attribute name="description-ko" type="string" value="ì¤í¬ë¡¤ í  ì ìë ëª©ë¡ì¼ë¡ ë³´ì¬ì£¼ë ë¸í¸ë¬ì¤ íì¼ê´ë¦¬ì êµ¬ì±ìì"/>
+  <oaf_attribute name="description-lt" type="string" value="Nautilus bylÅ³ tvarkytojo komponentas, rodantis slankiojamÄ sÄraÅ¡Ä"/>
+  <oaf_attribute name="description-lv" type="string" value="Nautilus failu pÄrvaldnieka komponents, kas parÄda ritinÄmu sarakstu"/>
+  <oaf_attribute name="description-mn" type="string" value="ÐÐ°Ð³ÑÐ°Ð°Ð»ÑÑÐ³ Ð³Ò¯Ð¹Ð»Ð³ÑÐ¶ ÑÐ°ÑÐ°Ñ Ð³Ð¾ÑÐ¸Ð¼Ð´ Ð¾ÑÑÑÐ»Ð´Ð°Ð³ ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑ -Ð¸Ð¹Ð½ ÐºÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ"/>
   <oaf_attribute name="description-ms" type="string" value="Komponen pengurus fail Nautilus yang memapar senarai boleh skrol"/>
   <oaf_attribute name="description-nl" type="string" value="Nautilus-bestandsbeheercomponent dat een schuifbare lijst toont"/>
-  <oaf_attribute name="description-no" type="string" value="Nautilus komponent for filhåndterer som viser en rullende liste"/>
-  <oaf_attribute name="description-pl" type="string" value="Komponent menedżera plików Nautilusa wyświetlający przewijalną listę"/>
+  <oaf_attribute name="description-no" type="string" value="Nautilus komponent for filhÃ¥ndterer som viser en rullende liste"/>
+  <oaf_attribute name="description-pl" type="string" value="Komponent menedÅ¼era plikÃ³w Nautilusa wyÅwietlajÄcy przewijalnÄ listÄ"/>
   <oaf_attribute name="description-pt" type="string" value="Componente do gestor de ficheiros Nautilus que mostra uma lista com rolamento"/>
   <oaf_attribute name="description-pt_BR" type="string" value="Compomente de gerenciador de arquivos Nautilus que exibe uma lista que rola"/>
-  <oaf_attribute name="description-ro" type="string" value="Componentă Nautilus care arată o listă defilabilă"/>
-  <oaf_attribute name="description-ru" type="string" value="Компонент диспетчера файлов Nautilus, который показывает прокручиваемый список"/>
-  <oaf_attribute name="description-sk" type="string" value="Komponent správca súborov, ktorý zobrazuje posuvný zoznam."/>
-  <oaf_attribute name="description-sl" type="string" value="Komponenta Nautilusovega upravljalnika datotek, ki kaže drsni seznam"/>
-  <oaf_attribute name="description-sq" type="string" value="Komponues i file manager që shfaq një listë rrëshqitëse"/>
+  <oaf_attribute name="description-ro" type="string" value="ComponentÄ Nautilus care aratÄ o listÄ defilabilÄ"/>
+  <oaf_attribute name="description-ru" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;, ÐºÐ¾ÑÐ¾ÑÑÐ¹ Ð¿Ð¾ÐºÐ°Ð·ÑÐ²Ð°ÐµÑ Ð¿ÑÐ¾ÐºÑÑÑÐ¸Ð²Ð°ÐµÐ¼ÑÐ¹ ÑÐ¿Ð¸ÑÐ¾Ðº"/>
+  <oaf_attribute name="description-sk" type="string" value="Komponent sprÃ¡vca sÃºborov, ktorÃ½ zobrazuje posuvnÃ½ zoznam."/>
+  <oaf_attribute name="description-sl" type="string" value="Komponenta Nautilusovega upravljalnika datotek, ki kaÅ¾e drsni seznam"/>
+  <oaf_attribute name="description-sq" type="string" value="Komponues i file manager qÃ« shfaq njÃ« listÃ« rrÃ«shqitÃ«se"/>
   <oaf_attribute name="description-sv" type="string" value="Nautilus-filhanterarkomponent som visar en rullningsbar lista"/>
-  <oaf_attribute name="description-tr" type="string" value="Nautilus dosya yönetici bileşeni"/>
-  <oaf_attribute name="description-vi" type="string" value="Thành phần quản lý tập tin Nautilus hiển thị một danh sách cuốn được"/>
-  <oaf_attribute name="description-zh_CN" type="string" value="显示一个可滚动列表的 Nautilus 文件管理器部件"/>
-  <oaf_attribute name="description-zh_TW" type="string" value="以可捲動的列表方式顯示項目的 Nautilus 檔案管理員元件"/>
+  <oaf_attribute name="description-tr" type="string" value="Nautilus dosya yÃ¶netici bileÅeni"/>
+  <oaf_attribute name="description-uk" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° ÑÐ°Ð¹Ð»ÑÐ² &quot;ÐÐ°ÑÑÑÐ»ÑÑ&quot;, ÑÐ¾ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶ÑÑ Ð¿ÑÐ¾ÐºÑÑÑÑÐ²Ð°Ð½Ð¸Ð¹ ÑÐ¿Ð¸ÑÐ¾Ðº"/>
+  <oaf_attribute name="description-vi" type="string" value="ThÃ nh pháº§n quáº£n lÃ½ táº­p tin Nautilus hiá»n thá» má»t danh sÃ¡ch cuá»n ÄÆ°á»£c"/>
+  <oaf_attribute name="description-zh_CN" type="string" value="æ¾ç¤ºä¸ä¸ªå¯æ»å¨åè¡¨ç Nautilus æä»¶ç®¡çå¨é¨ä»¶"/>
+  <oaf_attribute name="description-zh_TW" type="string" value="ä»¥å¯æ²åçæ¸å®æ¹å¼é¡¯ç¤ºé ç®ç Nautilus æªæ¡ç®¡çå¡åä»¶"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
     <item value="x-directory/normal"/>
     <item value="x-directory/webdav"/>
@@ -460,30 +518,32 @@
     <item value="trash"/>
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="List"/>
-  <oaf_attribute name="nautilus:view_as_name-am" type="string" value="ዝርዝር"/>
-  <oaf_attribute name="nautilus:view_as_name-ar" type="string" value="قائمة"/>
-  <oaf_attribute name="nautilus:view_as_name-az" type="string" value="Sıralı"/>
-  <oaf_attribute name="nautilus:view_as_name-be" type="string" value="Сьпіс"/>
-  <oaf_attribute name="nautilus:view_as_name-bg" type="string" value="Списък"/>
+  <oaf_attribute name="nautilus:view_as_name-am" type="string" value="áá­áá­"/>
+  <oaf_attribute name="nautilus:view_as_name-ar" type="string" value="ÙØ§Ø¦ÙØ©"/>
+  <oaf_attribute name="nautilus:view_as_name-az" type="string" value="SÄ±ralÄ±"/>
+  <oaf_attribute name="nautilus:view_as_name-be" type="string" value="Ð¡ÑÐ¿ÑÑ"/>
+  <oaf_attribute name="nautilus:view_as_name-bg" type="string" value="Ð¡Ð¿Ð¸ÑÑÐº"/>
   <oaf_attribute name="nautilus:view_as_name-ca" type="string" value="Llista"/>
   <oaf_attribute name="nautilus:view_as_name-cs" type="string" value="Seznam"/>
   <oaf_attribute name="nautilus:view_as_name-da" type="string" value="Liste"/>
   <oaf_attribute name="nautilus:view_as_name-de" type="string" value="Liste"/>
-  <oaf_attribute name="nautilus:view_as_name-el" type="string" value="Λίστα"/>
+  <oaf_attribute name="nautilus:view_as_name-el" type="string" value="ÎÎ¯ÏÏÎ±"/>
   <oaf_attribute name="nautilus:view_as_name-es" type="string" value="Lista"/>
   <oaf_attribute name="nautilus:view_as_name-et" type="string" value="Nimekiri"/>
   <oaf_attribute name="nautilus:view_as_name-eu" type="string" value="Zerrenda"/>
   <oaf_attribute name="nautilus:view_as_name-fi" type="string" value="luettelo"/>
   <oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Liste"/>
   <oaf_attribute name="nautilus:view_as_name-gl" type="string" value="Lista"/>
-  <oaf_attribute name="nautilus:view_as_name-he" type="string" value="רשימה"/>
+  <oaf_attribute name="nautilus:view_as_name-he" type="string" value="×¨×©×××"/>
+  <oaf_attribute name="nautilus:view_as_name-hi" type="string" value="à¤¸à¥à¤à¥"/>
   <oaf_attribute name="nautilus:view_as_name-hu" type="string" value="Lista"/>
-  <oaf_attribute name="nautilus:view_as_name-it" type="string" value="Lista"/>
-  <oaf_attribute name="nautilus:view_as_name-ja" type="string" value="リスト"/>
-  <oaf_attribute name="nautilus:view_as_name-ko" type="string" value="목록"/>
-  <oaf_attribute name="nautilus:view_as_name-lt" type="string" value="Sąrašas"/>
+  <oaf_attribute name="nautilus:view_as_name-it" type="string" value="lista"/>
+  <oaf_attribute name="nautilus:view_as_name-ja" type="string" value="ãªã¹ã"/>
+  <oaf_attribute name="nautilus:view_as_name-ko" type="string" value="ëª©ë¡"/>
+  <oaf_attribute name="nautilus:view_as_name-lt" type="string" value="SÄraÅ¡as"/>
   <oaf_attribute name="nautilus:view_as_name-lv" type="string" value="Saraksts"/>
-  <oaf_attribute name="nautilus:view_as_name-mk" type="string" value="Листа"/>
+  <oaf_attribute name="nautilus:view_as_name-mk" type="string" value="ÐÐ¸ÑÑÐ°"/>
+  <oaf_attribute name="nautilus:view_as_name-mn" type="string" value="ÐÐ°Ð³ÑÐ°Ð°Ð»Ñ"/>
   <oaf_attribute name="nautilus:view_as_name-ms" type="string" value="Senarai"/>
   <oaf_attribute name="nautilus:view_as_name-nl" type="string" value="Lijst"/>
   <oaf_attribute name="nautilus:view_as_name-nn" type="string" value="Liste"/>
@@ -491,98 +551,124 @@
   <oaf_attribute name="nautilus:view_as_name-pl" type="string" value="Lista"/>
   <oaf_attribute name="nautilus:view_as_name-pt" type="string" value="Lista"/>
   <oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Lista"/>
-  <oaf_attribute name="nautilus:view_as_name-ro" type="string" value="Listă"/>
-  <oaf_attribute name="nautilus:view_as_name-ru" type="string" value="Список"/>
+  <oaf_attribute name="nautilus:view_as_name-ro" type="string" value="ListÄ"/>
+  <oaf_attribute name="nautilus:view_as_name-ru" type="string" value="Ð¡Ð¿Ð¸ÑÐ¾Ðº"/>
   <oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Zoznam"/>
   <oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Seznam"/>
   <oaf_attribute name="nautilus:view_as_name-sq" type="string" value="Lista"/>
   <oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Lista"/>
+  <oaf_attribute name="nautilus:view_as_name-th" type="string" value="à¸¥à¸´à¸ªà¸à¹"/>
   <oaf_attribute name="nautilus:view_as_name-tr" type="string" value="Liste"/>
-  <oaf_attribute name="nautilus:view_as_name-vi" type="string" value="Danh sách"/>
-  <oaf_attribute name="nautilus:view_as_name-zh_CN" type="string" value="列表"/>
-  <oaf_attribute name="nautilus:view_as_name-zh_TW" type="string" value="列表"/>
+  <oaf_attribute name="nautilus:view_as_name-uk" type="string" value="Ð¡Ð¿Ð¸ÑÐ¾Ðº"/>
+  <oaf_attribute name="nautilus:view_as_name-vi" type="string" value="Danh sÃ¡ch"/>
+  <oaf_attribute name="nautilus:view_as_name-zh_CN" type="string" value="åè¡¨"/>
+  <oaf_attribute name="nautilus:view_as_name-zh_TW" type="string" value="æ¸å®"/>
   <oaf_attribute name="nautilus:view_as_label" type="string" value="View as List"/>
-  <oaf_attribute name="nautilus:view_as_label-ar" type="string" value="اعرض كقائمة"/>
-  <oaf_attribute name="nautilus:view_as_label-az" type="string" value="Sıra olaraq Göstər"/>
-  <oaf_attribute name="nautilus:view_as_label-be" type="string" value="Адлюстраваць як сьпіс"/>
-  <oaf_attribute name="nautilus:view_as_label-bg" type="string" value="Списъчен преглед"/>
+  <oaf_attribute name="nautilus:view_as_label-am" type="string" value="á¥áá° áá­áá­ á á³á­"/>
+  <oaf_attribute name="nautilus:view_as_label-ar" type="string" value="Ø§Ø¹Ø±Ø¶ ÙÙØ§Ø¦ÙØ©"/>
   <oaf_attribute name="nautilus:view_as_label-ca" type="string" value="Visualitza com llista"/>
   <oaf_attribute name="nautilus:view_as_label-cs" type="string" value="Zobrazit jako seznam"/>
   <oaf_attribute name="nautilus:view_as_label-da" type="string" value="Vis som liste"/>
-  <oaf_attribute name="nautilus:view_as_label-de" type="string" value="Als Liste betrachten"/>
-  <oaf_attribute name="nautilus:view_as_label-el" type="string" value="Προβολή ως Λίστα"/>
+  <oaf_attribute name="nautilus:view_as_label-de" type="string" value="Listenansicht"/>
   <oaf_attribute name="nautilus:view_as_label-es" type="string" value="Ver como lista"/>
-  <oaf_attribute name="nautilus:view_as_label-et" type="string" value="Esita nimekirjana"/>
-  <oaf_attribute name="nautilus:view_as_label-eu" type="string" value="Ikusi zerrenda gisa"/>
-  <oaf_attribute name="nautilus:view_as_label-fi" type="string" value="Näytä luettelona"/>
-  <oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant que Liste"/>
-  <oaf_attribute name="nautilus:view_as_label-gl" type="string" value="Ver como lista"/>
-  <oaf_attribute name="nautilus:view_as_label-he" type="string" value="הצג כרשימה"/>
-  <oaf_attribute name="nautilus:view_as_label-hu" type="string" value="Listaként"/>
+  <oaf_attribute name="nautilus:view_as_label-et" type="string" value="Vaata nimekirjana"/>
+  <oaf_attribute name="nautilus:view_as_label-fi" type="string" value="NÃ¤ytÃ¤ luettelona"/>
+  <oaf_attribute name="nautilus:view_as_label-fr" type="string" value="Voir en tant que liste"/>
+  <oaf_attribute name="nautilus:view_as_label-he" type="string" value="××¦× ××¨×©×××"/>
+  <oaf_attribute name="nautilus:view_as_label-hu" type="string" value="ListanÃ©zet"/>
   <oaf_attribute name="nautilus:view_as_label-it" type="string" value="Vedi come lista"/>
-  <oaf_attribute name="nautilus:view_as_label-ja" type="string" value="一覧で表示"/>
-  <oaf_attribute name="nautilus:view_as_label-ko" type="string" value="목록으로 보기"/>
-  <oaf_attribute name="nautilus:view_as_label-lt" type="string" value="Sąrašo vaizdas"/>
-  <oaf_attribute name="nautilus:view_as_label-lv" type="string" value="Parādīt kā Sarakstu"/>
-  <oaf_attribute name="nautilus:view_as_label-mk" type="string" value="Преглед како Листа"/>
-  <oaf_attribute name="nautilus:view_as_label-ms" type="string" value="Lihat sebagai Senarai"/>
-  <oaf_attribute name="nautilus:view_as_label-nl" type="string" value="Bekijken als lijst"/>
-  <oaf_attribute name="nautilus:view_as_label-nn" type="string" value="Vis som liste"/>
+  <oaf_attribute name="nautilus:view_as_label-ko" type="string" value="ëª©ë¡ì¼ë¡ ë³´ê¸°"/>
+  <oaf_attribute name="nautilus:view_as_label-lv" type="string" value="SkatÄ«t kÄ Sarakstu"/>
+  <oaf_attribute name="nautilus:view_as_label-nl" type="string" value="Lijstweergave"/>
   <oaf_attribute name="nautilus:view_as_label-no" type="string" value="Vis som liste"/>
-  <oaf_attribute name="nautilus:view_as_label-pl" type="string" value="Wyświetlanie jako Lista"/>
-  <oaf_attribute name="nautilus:view_as_label-pt" type="string" value="Ver como Lista"/>
-  <oaf_attribute name="nautilus:view_as_label-pt_BR" type="string" value="Ver como lista"/>
-  <oaf_attribute name="nautilus:view_as_label-ro" type="string" value="Vizualizează ca listă"/>
-  <oaf_attribute name="nautilus:view_as_label-ru" type="string" value="Показывать как список"/>
-  <oaf_attribute name="nautilus:view_as_label-sk" type="string" value="Zobraziť ako zoznam"/>
+  <oaf_attribute name="nautilus:view_as_label-pl" type="string" value="WyÅwietlanie jako Lista"/>
+  <oaf_attribute name="nautilus:view_as_label-pt_BR" type="string" value="Ver como Lista"/>
+  <oaf_attribute name="nautilus:view_as_label-ro" type="string" value="VizualizeazÄ ca listÄ"/>
+  <oaf_attribute name="nautilus:view_as_label-ru" type="string" value="ÐÑÐ¾ÑÐ¼Ð°ÑÑÐ¸Ð²Ð°ÑÑ Ð² Ð²Ð¸Ð´Ðµ ÑÐ¿Ð¸ÑÐºÐ°"/>
+  <oaf_attribute name="nautilus:view_as_label-sk" type="string" value="ZobraziÅ¥ ako zoznam"/>
   <oaf_attribute name="nautilus:view_as_label-sl" type="string" value="Glej kot seznam"/>
-  <oaf_attribute name="nautilus:view_as_label-sq" type="string" value="Shikoje si listë"/>
+  <oaf_attribute name="nautilus:view_as_label-sq" type="string" value="Shikoi si ListÃ«"/>
   <oaf_attribute name="nautilus:view_as_label-sv" type="string" value="Visa som lista"/>
-  <oaf_attribute name="nautilus:view_as_label-tr" type="string" value="Liste olarak göster"/>
-  <oaf_attribute name="nautilus:view_as_label-vi" type="string" value="Xem theo Danh sách"/>
-  <oaf_attribute name="nautilus:view_as_label-zh_CN" type="string" value="当作列表查看"/>
-  <oaf_attribute name="nautilus:view_as_label-zh_TW" type="string" value="以列表方式瀏覽"/>
+  <oaf_attribute name="nautilus:view_as_label-uk" type="string" value="ÐÐ¾ÐºÐ°Ð·Ð°ÑÐ¸ ÑÐº ÑÐ¿Ð¸ÑÐ¾Ðº"/>
+  <oaf_attribute name="nautilus:view_as_label-vi" type="string" value="Xem theo Danh sÃ¡ch"/>
+  <oaf_attribute name="nautilus:view_as_label-zh_TW" type="string" value="ä»¥æ¸å®æ¹å¼é¡¯ç¤º"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic" type="string" value="View as _List"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-am" type="string" value="á¥áá° áá­áá­ á á³á­ (_L)"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-bg" type="string" value="Ð¡Ð¿Ð¸ÑÑÑÐµÐ½ _ÐÑÐµÐ³Ð»ÐµÐ´"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ca" type="string" value="Visualitza com _llista"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-cs" type="string" value="Zobrazit jako _seznam"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-da" type="string" value="Vis som _liste"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-de" type="string" value="_Listenansicht"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-el" type="string" value="Î ÏÎ¿Î²Î¿Î»Î® ÏÏ _ÎÎ¯ÏÏÎ±"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-es" type="string" value="Ver como _lista"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-et" type="string" value="Vaata _nimekirjana"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-fi" type="string" value="NÃ¤ytÃ¤ _luettelona"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-fr" type="string" value="Voir en tant que _Liste"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-he" type="string" value="××¦× ×_×¨×©×××"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-hu" type="string" value="_ListanÃ©zet"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-it" type="string" value="Vedi come l_ista"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ko" type="string" value="ëª©ë¡ì¼ë¡ ë³´ê¸°(_L)"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-lv" type="string" value="SkatÄ«t kÄ _Sarakstu"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-mn" type="string" value="_ÐÐ°Ð³ÑÐ°Ð°Ð»Ñ ÑÑÐ»Ð±ÑÑÑÑÑ ÑÐ°ÑÐ°Ñ"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ms" type="string" value="Lihat sebagai _Senarai"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-nl" type="string" value="_Lijstweergave"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-no" type="string" value="Vis som _liste"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-pl" type="string" value="WyÅwietlanie jako _Lista"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-pt_BR" type="string" value="Ver como _Lista"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ro" type="string" value="VizualizeazÄ ca _listÄ"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-ru" type="string" value="ÐÑÐ¾ÑÐ¼Ð°ÑÑÐ¸Ð²Ð°ÑÑ Ð² Ð²Ð¸Ð´Ðµ ÑÐ¿Ð¸Ñ_ÐºÐ°"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-sk" type="string" value="ZobraziÅ¥ ako _zoznam"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-sl" type="string" value="Glej kot _seznam"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-sq" type="string" value="Shikoi si _ListÃ«"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-sv" type="string" value="Visa som _lista"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-uk" type="string" value="ÐÐ¾ÐºÐ°Ð·Ð°ÑÐ¸ ÑÐº _ÑÐ¿Ð¸ÑÐ¾Ðº"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-vi" type="string" value="Xem theo Danh s_Ã¡ch"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-zh_CN" type="string" value="æåè¡¨æ¥ç(_L)"/>
+  <oaf_attribute name="nautilus:view_as_label_with_mnemonic-zh_TW" type="string" value="ä»¥æ¸å®æ¹å¼é¡¯ç¤º(_L)"/>
   <oaf_attribute name="nautilus:viewer_label" type="string" value="List Viewer"/>
-  <oaf_attribute name="nautilus:viewer_label-am" type="string" value="የዝርዝር ተመልካች"/>
-  <oaf_attribute name="nautilus:viewer_label-ar" type="string" value="عارض القائمة"/>
-  <oaf_attribute name="nautilus:viewer_label-az" type="string" value="Sıra Nümayişçisi"/>
-  <oaf_attribute name="nautilus:viewer_label-be" type="string" value="Праглядальнік сьпісу"/>
-  <oaf_attribute name="nautilus:viewer_label-bg" type="string" value="Списъчен преглед"/>
+  <oaf_attribute name="nautilus:viewer_label-am" type="string" value="á¨áá­áá­ á°ááá«á½"/>
+  <oaf_attribute name="nautilus:viewer_label-ar" type="string" value="Ø¹Ø§Ø±Ø¶ Ø§ÙÙØ§Ø¦ÙØ©"/>
+  <oaf_attribute name="nautilus:viewer_label-az" type="string" value="SÄ±ra NÃ¼mayiÅÃ§isi"/>
+  <oaf_attribute name="nautilus:viewer_label-be" type="string" value="ÐÑÐ°Ð³Ð»ÑÐ´Ð°Ð»ÑÐ½ÑÐº ÑÑÐ¿ÑÑÑ"/>
+  <oaf_attribute name="nautilus:viewer_label-bg" type="string" value="Ð¡Ð¿Ð¸ÑÑÑÐµÐ½ Ð¿ÑÐµÐ³Ð»ÐµÐ´"/>
   <oaf_attribute name="nautilus:viewer_label-ca" type="string" value="Visualitzador de llista"/>
-  <oaf_attribute name="nautilus:viewer_label-cs" type="string" value="Prohlížeč seznamu"/>
+  <oaf_attribute name="nautilus:viewer_label-cs" type="string" value="ProhlÃ­Å¾eÄ seznamu"/>
   <oaf_attribute name="nautilus:viewer_label-da" type="string" value="Listeviser"/>
-  <oaf_attribute name="nautilus:viewer_label-de" type="string" value="Listen-Betrachter"/>
-  <oaf_attribute name="nautilus:viewer_label-el" type="string" value="Προβολή Λίστας"/>
+  <oaf_attribute name="nautilus:viewer_label-de" type="string" value="Listenansicht"/>
+  <oaf_attribute name="nautilus:viewer_label-el" type="string" value="Î ÏÎ¿Î²Î¿Î»Î® ÎÎ¯ÏÏÎ±Ï"/>
   <oaf_attribute name="nautilus:viewer_label-es" type="string" value="Visor de lista"/>
   <oaf_attribute name="nautilus:viewer_label-et" type="string" value="Nimekirja vaatur"/>
   <oaf_attribute name="nautilus:viewer_label-eu" type="string" value="Zerrenda-ikustailea"/>
   <oaf_attribute name="nautilus:viewer_label-fi" type="string" value="Luettelokatselin"/>
   <oaf_attribute name="nautilus:viewer_label-fr" type="string" value="Visionneur de liste"/>
   <oaf_attribute name="nautilus:viewer_label-gl" type="string" value="Visualizador de listas"/>
-  <oaf_attribute name="nautilus:viewer_label-he" type="string" value="מציג רשימה"/>
-  <oaf_attribute name="nautilus:viewer_label-hu" type="string" value="Listanéző"/>
+  <oaf_attribute name="nautilus:viewer_label-he" type="string" value="××¦×× ×¨×©×××"/>
+  <oaf_attribute name="nautilus:viewer_label-hi" type="string" value="à¤²à¤¿à¤¸à¥à¤ à¤µà¥à¤µà¤°"/>
+  <oaf_attribute name="nautilus:viewer_label-hu" type="string" value="ListanÃ©zÅ"/>
   <oaf_attribute name="nautilus:viewer_label-it" type="string" value="Visualizzatore lista"/>
-  <oaf_attribute name="nautilus:viewer_label-ja" type="string" value="リストビューア"/>
-  <oaf_attribute name="nautilus:viewer_label-ko" type="string" value="목록 보기 프로그램"/>
-  <oaf_attribute name="nautilus:viewer_label-lt" type="string" value="Sąrašo žiūryklė"/>
-  <oaf_attribute name="nautilus:viewer_label-lv" type="string" value="Saraksta Skatītājs"/>
-  <oaf_attribute name="nautilus:viewer_label-mk" type="string" value="Прегледувал на Листи"/>
+  <oaf_attribute name="nautilus:viewer_label-ja" type="string" value="ãªã¹ããã¥ã¼ã¢"/>
+  <oaf_attribute name="nautilus:viewer_label-ko" type="string" value="ëª©ë¡ ë³´ê¸° íë¡ê·¸ë¨"/>
+  <oaf_attribute name="nautilus:viewer_label-lt" type="string" value="SÄraÅ¡o Å¾iÅ«ryklÄ"/>
+  <oaf_attribute name="nautilus:viewer_label-lv" type="string" value="Saraksta SkatÄ«tÄjs"/>
+  <oaf_attribute name="nautilus:viewer_label-mk" type="string" value="ÐÑÐµÐ³Ð»ÐµÐ´ÑÐ²Ð°Ð» Ð½Ð° ÐÐ¸ÑÑÐ¸"/>
+  <oaf_attribute name="nautilus:viewer_label-mn" type="string" value="ÐÐ°Ð³ÑÐ°Ð°Ð»Ñ-ÑÐ°ÑÐ°Ð³Ñ"/>
   <oaf_attribute name="nautilus:viewer_label-ms" type="string" value="Pelihat Senarai"/>
   <oaf_attribute name="nautilus:viewer_label-nl" type="string" value="Lijstweergave"/>
   <oaf_attribute name="nautilus:viewer_label-no" type="string" value="Listevisning"/>
-  <oaf_attribute name="nautilus:viewer_label-pl" type="string" value="Przeglądarka listy"/>
+  <oaf_attribute name="nautilus:viewer_label-pl" type="string" value="PrzeglÄdarka listy"/>
   <oaf_attribute name="nautilus:viewer_label-pt" type="string" value="Visualizador de Listas"/>
   <oaf_attribute name="nautilus:viewer_label-pt_BR" type="string" value="Visualizador de lista"/>
-  <oaf_attribute name="nautilus:viewer_label-ro" type="string" value="Vizualizator listă"/>
-  <oaf_attribute name="nautilus:viewer_label-ru" type="string" value="Просмотр списка"/>
-  <oaf_attribute name="nautilus:viewer_label-sk" type="string" value="Pohľad zoznam"/>
+  <oaf_attribute name="nautilus:viewer_label-ro" type="string" value="Vizualizator listÄ"/>
+  <oaf_attribute name="nautilus:viewer_label-ru" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð¿ÑÐ¾ÑÐ¼Ð¾ÑÑÐ° Ð² Ð²Ð¸Ð´Ðµ ÑÐ¿Ð¸ÑÐºÐ°"/>
+  <oaf_attribute name="nautilus:viewer_label-sk" type="string" value="PohÄ¾ad zoznam"/>
   <oaf_attribute name="nautilus:viewer_label-sl" type="string" value="Pregledovalnik seznamov"/>
-  <oaf_attribute name="nautilus:viewer_label-sq" type="string" value="Shikuesi i listës"/>
+  <oaf_attribute name="nautilus:viewer_label-sq" type="string" value="Shikuesi i listÃ«s"/>
   <oaf_attribute name="nautilus:viewer_label-sv" type="string" value="Listvisare"/>
-  <oaf_attribute name="nautilus:viewer_label-tr" type="string" value="Liste Görüntüleyici"/>
-  <oaf_attribute name="nautilus:viewer_label-vi" type="string" value="Quan sát danh sách"/>
-  <oaf_attribute name="nautilus:viewer_label-zh_CN" type="string" value="列表查看器"/>
-  <oaf_attribute name="nautilus:viewer_label-zh_TW" type="string" value="列表檢視模式"/>
+  <oaf_attribute name="nautilus:viewer_label-tr" type="string" value="Liste GÃ¶rÃ¼ntÃ¼leyici"/>
+  <oaf_attribute name="nautilus:viewer_label-uk" type="string" value="ÐÑÐ´Ð¾Ð±ÑÐ°Ð¶ÑÐ²Ð°Ñ ÑÐ¿Ð¸ÑÐºÑ"/>
+  <oaf_attribute name="nautilus:viewer_label-vi" type="string" value="Quan sÃ¡t danh sÃ¡ch"/>
+  <oaf_attribute name="nautilus:viewer_label-zh_CN" type="string" value="åè¡¨æ¥çå¨"/>
+  <oaf_attribute name="nautilus:viewer_label-zh_TW" type="string" value="æ¸å®é¡¯ç¤ºæ¨¡å¼"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:Nautilus_File_Manager_Search_List_View" type="factory" location="OAFIID:Nautilus_Factory">
@@ -593,118 +679,127 @@
     <item value="IDL:Bonobo/Zoomable:1.0"/>
   </oaf_attribute>
   <oaf_attribute name="name" type="string" value="Nautilus file manager search results list view"/>
-  <oaf_attribute name="name-ar" type="string" value="عرض قائمة نتائج البحث لمدير ملفات ناوتيلاس"/>
-  <oaf_attribute name="name-az" type="string" value="Nautilus fayl idarəcisi axtarış nəticələri nümayişi"/>
-  <oaf_attribute name="name-bg" type="string" value="Мениджър на файлове Nautilus в списъчен преглед на резултатите от търсене"/>
+  <oaf_attribute name="name-ar" type="string" value="Ø¹Ø±Ø¶ ÙØ§Ø¦ÙØ© ÙØªØ§Ø¦Ø¬ Ø§ÙØ¨Ø­Ø« ÙÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³"/>
+  <oaf_attribute name="name-az" type="string" value="Nautilus fayl idarÉcisi axtarÄ±Å nÉticÉlÉri nÃ¼mayiÅi"/>
+  <oaf_attribute name="name-bg" type="string" value="ÐÐµÐ½Ð¸Ð´Ð¶ÑÑ Ð½Ð° ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Nautilus Ð² ÑÐ¿Ð¸ÑÑÑÐµÐ½ Ð¿ÑÐµÐ³Ð»ÐµÐ´ Ð½Ð° ÑÐµÐ·ÑÐ»ÑÐ°ÑÐ¸ÑÐµ Ð¾Ñ ÑÑÑÑÐµÐ½Ðµ"/>
   <oaf_attribute name="name-ca" type="string" value="Vista de la llista dels resultats de la cerca del gestor de fitxers Nautilus"/>
-  <oaf_attribute name="name-cs" type="string" value="Seznamový pohled na výsledky hledání správce souborů Nautilus"/>
-  <oaf_attribute name="name-da" type="string" value="Nautilus filhåndteringssøgeresultat-listevisning"/>
+  <oaf_attribute name="name-cs" type="string" value="SeznamovÃ½ pohled na vÃ½sledky hledÃ¡nÃ­ sprÃ¡vce souborÅ¯ Nautilus"/>
+  <oaf_attribute name="name-da" type="string" value="filhÃ¥ndteringssÃ¸geresultat-listevisning til Nautilus"/>
   <oaf_attribute name="name-de" type="string" value="Nautilus-Dateimanager-Suchergebnis-Listenansicht"/>
-  <oaf_attribute name="name-el" type="string" value="Προβολή λίστας αποτελεσμάτων αναζήτησης διαχειριστή αρχείων Ναυτίλου"/>
+  <oaf_attribute name="name-el" type="string" value="Î ÏÎ¿Î²Î¿Î»Î® Î»Î¯ÏÏÎ±Ï Î±ÏÎ¿ÏÎµÎ»ÎµÏÎ¼Î¬ÏÏÎ½ Î±Î½Î±Î¶Î®ÏÎ·ÏÎ·Ï Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½ ÎÎ±ÏÏÎ¯Î»Î¿Ï"/>
   <oaf_attribute name="name-es" type="string" value="Vista de lista de resultados del administrador de archivos Nautilus"/>
   <oaf_attribute name="name-eu" type="string" value="Nautilus fitxategi-kudeatzailearen bilaketa-emaitzen zerrenda-ikuspegia"/>
-  <oaf_attribute name="name-fi" type="string" value="Nautiluksen-tiedostonhallintan etsintätulosnäkymä"/>
-  <oaf_attribute name="name-fr" type="string" value="Vue liste de résultats de recherche du gestionnaire de fichiers Nautilus"/>
-  <oaf_attribute name="name-he" type="string" value="מנהל הקבצים של נאוטילוס תצוגת סמלים של תוצאות חיפוש"/>
-  <oaf_attribute name="name-hu" type="string" value="Nautilus fájlkezelő keresés eredményeit megjelenítő listanézete"/>
+  <oaf_attribute name="name-fi" type="string" value="Nautiluksen-tiedostonhallintan etsintÃ¤tulosnÃ¤kymÃ¤"/>
+  <oaf_attribute name="name-fr" type="string" value="Vue liste de rÃ©sultats de recherche du gestionnaire de fichiers Nautilus"/>
+  <oaf_attribute name="name-he" type="string" value="×× ×× ××§××¦×× ×©× × ×××××××¡ ×ª×¦×××ª ×¡×××× ×©× ×ª××¦×××ª ×××¤××©"/>
+  <oaf_attribute name="name-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤°"/>
+  <oaf_attribute name="name-hu" type="string" value="Nautilus fÃ¡jlkezelÅ keresÃ©s eredmÃ©nyeit megjelenÃ­tÅ listanÃ©zete"/>
   <oaf_attribute name="name-it" type="string" value="Vista a lista dei risultati della ricerca del file manager Nautilus"/>
-  <oaf_attribute name="name-ja" type="string" value="Nautilus ファイルマネージャ検索結果リストビュー"/>
-  <oaf_attribute name="name-ko" type="string" value="노틸러스 파일관리자 찾기 결과 목록 보기"/>
-  <oaf_attribute name="name-lt" type="string" value="Nautilus bylų tvarkytojo paieškos rezultatų vaizdas"/>
-  <oaf_attribute name="name-lv" type="string" value="Nautilus failu pārvaldnieka meklēšanas rezultātu saraksta skatījums"/>
+  <oaf_attribute name="name-ja" type="string" value="Nautilus ãã¡ã¤ã«ããã¼ã¸ã£æ¤ç´¢çµæãªã¹ããã¥ã¼"/>
+  <oaf_attribute name="name-ko" type="string" value="ë¸í¸ë¬ì¤ íì¼ê´ë¦¬ì ì°¾ê¸° ê²°ê³¼ ëª©ë¡ ë³´ê¸°"/>
+  <oaf_attribute name="name-lt" type="string" value="Nautilus bylÅ³ tvarkytojo paieÅ¡kos rezultatÅ³ vaizdas"/>
+  <oaf_attribute name="name-lv" type="string" value="Nautilus failu pÄrvaldnieka meklÄÅ¡anas rezultÄtu saraksta skatÄ«jums"/>
+  <oaf_attribute name="name-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑÐ¸Ð¹Ð½ ÑÐ°Ð¹Ð»ÑÑÐ½ Ò¯Ñ Ð´Ò¯Ð½Ð³Ð¸Ð¹Ð½ Ð¶Ð°Ð³ÑÐ°Ð°Ð»Ñ-ÑÑÐ»Ð±ÑÑ"/>
   <oaf_attribute name="name-ms" type="string" value="paparan senarai hasil pencarian pengurus fail Nautilus"/>
   <oaf_attribute name="name-nl" type="string" value="Nautilus-zoekresultatenlijst"/>
-  <oaf_attribute name="name-no" type="string" value="Nautilus filhåndterer listevisning for søkeresultat"/>
-  <oaf_attribute name="name-pl" type="string" value="Widok listy wyników wyszukiwania menedżera plików Nautilusa"/>
+  <oaf_attribute name="name-no" type="string" value="Nautilus filhÃ¥ndterer listevisning for sÃ¸keresultat"/>
+  <oaf_attribute name="name-pl" type="string" value="Widok listy wynikÃ³w wyszukiwania menedÅ¼era plikÃ³w Nautilusa"/>
   <oaf_attribute name="name-pt" type="string" value="Vista em lista de resultados de pesquisa do gestor de ficheiros Nautilus"/>
-  <oaf_attribute name="name-pt_BR" type="string" value="Visão de lista de resultados de busca do gerenciador de arquivos do Nautilus"/>
-  <oaf_attribute name="name-ro" type="string" value="Vizualizare listă rezulate căutare Nautilus"/>
-  <oaf_attribute name="name-ru" type="string" value="Просмотр списка результатов диспетчера файлов Nautilus"/>
-  <oaf_attribute name="name-sk" type="string" value="Pohľad správcu súborov ako zoznam výsledkov hľadania"/>
+  <oaf_attribute name="name-pt_BR" type="string" value="VisÃ£o de lista de resultados de busca do gerenciador de arquivos do Nautilus"/>
+  <oaf_attribute name="name-ro" type="string" value="Vizualizare listÄ rezulate cÄutare Nautilus"/>
+  <oaf_attribute name="name-ru" type="string" value="ÐÑÐ¾ÑÐ¼Ð¾ÑÑ Ð² Ð²Ð¸Ð´Ðµ ÑÐ¿Ð¸ÑÐºÐ° ÑÐµÐ·ÑÐ»ÑÑÐ°ÑÐ¾Ð² Ð´Ð¸ÑÐ¿ÐµÑÑÐµÑÐ° ÑÐ°Ð¹Ð»Ð¾Ð² Nautilus"/>
+  <oaf_attribute name="name-sk" type="string" value="PohÄ¾ad sprÃ¡vcu sÃºborov ako zoznam vÃ½sledkov hÄ¾adania"/>
   <oaf_attribute name="name-sl" type="string" value="Seznamski pogled zadetkov iskanja Nautilusovega upravljalnika datotek"/>
-  <oaf_attribute name="name-sq" type="string" value="Paraqitja si listë e rezultateve të kërkimit të file manager Nautilus"/>
-  <oaf_attribute name="name-sv" type="string" value="Sökresultatslistvy för Nautilus filhanterare"/>
-  <oaf_attribute name="name-tr" type="string" value="Nautilus dosya yöneticisi arama sonucu görünümü"/>
-  <oaf_attribute name="name-vi" type="string" value="Xem danh sách kết quả tìm kiếm của quản lý tập tin Nautilus"/>
-  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus 文件管理器搜索结果列表视图"/>
-  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus 檔案管理員之搜尋結果列表檢視模式"/>
+  <oaf_attribute name="name-sq" type="string" value="Paraqitja si listÃ« e rezultateve tÃ« kÃ«rkimit tÃ« file manager Nautilus"/>
+  <oaf_attribute name="name-sv" type="string" value="SÃ¶kresultatslistvy fÃ¶r Nautilus filhanterare"/>
+  <oaf_attribute name="name-tr" type="string" value="Nautilus dosya yÃ¶neticisi arama sonucu gÃ¶rÃ¼nÃ¼mÃ¼"/>
+  <oaf_attribute name="name-uk" type="string" value="ÐÐµÑÐµÐ³Ð»ÑÐ´ ÑÐ¿Ð¸ÑÐºÑ ÑÐµÐ·ÑÐ»ÑÑÐ°ÑÑÐ² Ð¿Ð¾ÑÑÐºÑ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° ÑÐ°Ð¹Ð»ÑÐ² &quot;ÐÐ°ÑÑÑÐ»ÑÑ&quot;"/>
+  <oaf_attribute name="name-vi" type="string" value="Xem danh sÃ¡ch káº¿t quáº£ tÃ¬m kiáº¿m cá»§a quáº£n lÃ½ táº­p tin Nautilus"/>
+  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus æä»¶ç®¡çå¨æç´¢ç»æåè¡¨è§å¾"/>
+  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus æªæ¡ç®¡çå¡ä¹æå°çµææ¸å®é¡¯ç¤ºæ¨¡å¼"/>
   <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows a scrollable list for search results"/>
-  <oaf_attribute name="description-ar" type="string" value="جزء مدير ملفات ناوتيلاس الذي يعرض قائمة قابلة للتدرج لنتائج البحث"/>
-  <oaf_attribute name="description-az" type="string" value="Axtarış nəticələrini sürüşgən siyahıda göstərən Nautilus fayl idarəcisi əlavəsi"/>
-  <oaf_attribute name="description-bg" type="string" value="Компонент на мениджъра на файлове Nautilus който се показва в преместваемия списък за резултати от търсене"/>
+  <oaf_attribute name="description-ar" type="string" value="Ø¬Ø²Ø¡ ÙØ¯ÙØ± ÙÙÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³ Ø§ÙØ°Ù ÙØ¹Ø±Ø¶ ÙØ§Ø¦ÙØ© ÙØ§Ø¨ÙØ© ÙÙØªØ¯Ø±Ø¬ ÙÙØªØ§Ø¦Ø¬ Ø§ÙØ¨Ø­Ø«"/>
+  <oaf_attribute name="description-az" type="string" value="AxtarÄ±Å nÉticÉlÉrini sÃ¼rÃ¼ÅgÉn siyahÄ±da gÃ¶stÉrÉn Nautilus fayl idarÉcisi ÉlavÉsi"/>
+  <oaf_attribute name="description-bg" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð½Ð° Ð¼ÐµÐ½Ð¸Ð´Ð¶ÑÑÐ° Ð½Ð° ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Nautilus ÐºÐ¾Ð¹ÑÐ¾ ÑÐµ Ð¿Ð¾ÐºÐ°Ð·Ð²Ð° Ð² Ð¿ÑÐµÐ¼ÐµÑÑÐ²Ð°ÐµÐ¼Ð¸Ñ ÑÐ¿Ð¸ÑÑÐº Ð·Ð° ÑÐµÐ·ÑÐ»ÑÐ°ÑÐ¸ Ð¾Ñ ÑÑÑÑÐµÐ½Ðµ"/>
   <oaf_attribute name="description-ca" type="string" value="Component del gestor de fitxers Nautilus que mostra una llista desplegable per als resultats de la cerca"/>
-  <oaf_attribute name="description-cs" type="string" value="Komponenta správce souborů Nautilus, která zobrazuje rolovatelný seznam výsledků hledání"/>
-  <oaf_attribute name="description-da" type="string" value="Nautilus filhåndteringskomponent der viser en liste med rullebjælke til søgeresultater."/>
-  <oaf_attribute name="description-de" type="string" value="Nautilus-Dateimanager-Komponente, die eine rollbare Liste für Suchergebnisse anzeigt"/>
-  <oaf_attribute name="description-el" type="string" value="Συστατικό διαχειριστή αρχείων Ναυτίλου που εμφανίζει μια κυλιόμενη λίστα των αποτελεσμάτων αναζήτησης"/>
-  <oaf_attribute name="description-es" type="string" value="Componente del administrador de archivos Nautilus que muestra una lista desplegable para los resultados de la búsqueda"/>
+  <oaf_attribute name="description-cs" type="string" value="Komponenta sprÃ¡vce souborÅ¯ Nautilus, kterÃ¡ zobrazuje posuvnÃ½ seznam vÃ½sledkÅ¯ hledÃ¡nÃ­"/>
+  <oaf_attribute name="description-da" type="string" value="FilhÃ¥ndteringskomponent til Nautilus der viser en liste med rullebjÃ¦lke til sÃ¸geresultater."/>
+  <oaf_attribute name="description-de" type="string" value="Nautilus-Dateimanager-Komponente, die eine rollbare Liste fÃ¼r Suchergebnisse anzeigt"/>
+  <oaf_attribute name="description-el" type="string" value="Î£ÏÏÏÎ±ÏÎ¹ÎºÏ Î´Î¹Î±ÏÎµÎ¹ÏÎ¹ÏÏÎ® Î±ÏÏÎµÎ¯ÏÎ½ ÎÎ±ÏÏÎ¯Î»Î¿Ï ÏÎ¿Ï ÎµÎ¼ÏÎ±Î½Î¯Î¶ÎµÎ¹ Î¼Î¹Î± ÎºÏÎ»Î¹ÏÎ¼ÎµÎ½Î· Î»Î¯ÏÏÎ± ÏÏÎ½ Î±ÏÎ¿ÏÎµÎ»ÎµÏÎ¼Î¬ÏÏÎ½ Î±Î½Î±Î¶Î®ÏÎ·ÏÎ·Ï"/>
+  <oaf_attribute name="description-es" type="string" value="Componente del administrador de archivos Nautilus que muestra una lista desplegable para los resultados de la bÃºsqueda"/>
   <oaf_attribute name="description-eu" type="string" value="Bilaketaren emaitzen zerrenda korrigarria erakusten duen Nautilus fitxategi-kudeatzailearen osagaia"/>
-  <oaf_attribute name="description-fi" type="string" value="Nautiluksen tiedostonhallintakomponentti, joka näyttää vieritettävän luettelon tuloksista"/>
-  <oaf_attribute name="description-fr" type="string" value="Composant du gestionnaire de fichiers Nautilus qui affiche une liste de résultats de recherche défilante"/>
-  <oaf_attribute name="description-he" type="string" value="רכיב מנהל הקבצים של נאוטילוס המראה רשימת נגררת עבור תוצאות חיפוש"/>
-  <oaf_attribute name="description-hu" type="string" value="Nautilus fájlkezelő-komponens, görgethető keresési eredmények megjelenítéséhez"/>
+  <oaf_attribute name="description-fi" type="string" value="Nautiluksen tiedostonhallintakomponentti, joka nÃ¤yttÃ¤Ã¤ vieritettÃ¤vÃ¤n luettelon tuloksista"/>
+  <oaf_attribute name="description-fr" type="string" value="Composant du gestionnaire de fichiers Nautilus qui affiche une liste de rÃ©sultats de recherche dÃ©filante"/>
+  <oaf_attribute name="description-he" type="string" value="×¨××× ×× ×× ××§××¦×× ×©× × ×××××××¡ ×××¨×× ×¨×©×××ª × ××¨×¨×ª ×¢×××¨ ×ª××¦×××ª ×××¤××©"/>
+  <oaf_attribute name="description-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤«à¤¾à¤à¤² à¤®à¥à¤¨à¥à¤à¤° à¤à¤®à¥à¤ªà¥à¤¨à¥à¤à¤ à¤à¥ à¤à¥à¤à¤¨à¥ à¤à¥ à¤²à¤¿à¤ à¤¸à¥à¤à¥à¤°à¥à¤²à¥à¤¬à¤² à¤¸à¥à¤à¥ à¤¦à¤¿à¤à¤¾à¤¤à¤¾ à¤¹à¥"/>
+  <oaf_attribute name="description-hu" type="string" value="Nautilus fÃ¡jlkezelÅ-komponens, gÃ¶rgethetÅ keresÃ©si eredmÃ©nyek megjelenÃ­tÃ©sÃ©hez"/>
   <oaf_attribute name="description-it" type="string" value="Componente del file manager Nautilus che mostra una lista scorrevole per i risultati della ricerca"/>
-  <oaf_attribute name="description-ja" type="string" value="検索結果に対してスクロール可能なリストを表示する Nautilus ファイルマネージャコンポーネント"/>
-  <oaf_attribute name="description-ko" type="string" value="찾기 결과를 스크롤할 수 있는 목록으로 보여주는 노틸러스 파일관리자 구성요소"/>
-  <oaf_attribute name="description-lt" type="string" value="Nautilus bylų tvarkytojo komponentas, rodantis slankiojamą paieškos rezultatų sąrašą"/>
-  <oaf_attribute name="description-lv" type="string" value="Nautilus failu pārvaldnieka komponents, kas parāda ritināmu meklēšanas rezultātu sarakstu"/>
+  <oaf_attribute name="description-ja" type="string" value="æ¤ç´¢çµæã«å¯¾ãã¦ã¹ã¯ã­ã¼ã«å¯è½ãªãªã¹ããè¡¨ç¤ºãã Nautilus ãã¡ã¤ã«ããã¼ã¸ã£ã³ã³ãã¼ãã³ã"/>
+  <oaf_attribute name="description-ko" type="string" value="ì°¾ê¸° ê²°ê³¼ë¥¼ ì¤í¬ë¡¤í  ì ìë ëª©ë¡ì¼ë¡ ë³´ì¬ì£¼ë ë¸í¸ë¬ì¤ íì¼ê´ë¦¬ì êµ¬ì±ìì"/>
+  <oaf_attribute name="description-lt" type="string" value="Nautilus bylÅ³ tvarkytojo komponentas, rodantis slankiojamÄ paieÅ¡kos rezultatÅ³ sÄraÅ¡Ä"/>
+  <oaf_attribute name="description-lv" type="string" value="Nautilus failu pÄrvaldnieka komponents, kas parÄda ritinÄmu meklÄÅ¡anas rezultÄtu sarakstu"/>
+  <oaf_attribute name="description-mn" type="string" value="Ð¥Ð°Ð¹Ð»ÑÑÐ½  Ò¯Ñ Ð´Ò¯Ð½Ð³Ð¸Ð¹Ð½ Ð¶Ð°Ð³ÑÐ°Ð°Ð»ÑÑÐ³ Ð³Ò¯Ð¹Ð»Ð³ÑÐ¶ ÑÐ°ÑÐ°Ñ Ð³Ð¾ÑÐ¸Ð¼Ð´ Ð¾ÑÑÑÐ»Ð´Ð°Ð³ ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÑÐ°Ð¹Ð» Ð¼ÐµÐ½ÐµÐ¶ÐµÑ -Ð¸Ð¹Ð½ ÐºÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ"/>
   <oaf_attribute name="description-ms" type="string" value="Komponen pengurus fail Nautilus yang memapar senarai boleh skrol bagi hasil pencarian"/>
   <oaf_attribute name="description-nl" type="string" value="Nautilus-bestandsbeheercomponent dat een schuifbare lijst toont voor zoekresultaten"/>
-  <oaf_attribute name="description-no" type="string" value="Nautilus komponent for filhåndterer som viser en rullende liste for søkeresultater"/>
-  <oaf_attribute name="description-pl" type="string" value="Komponent menedżera plików Nautilusa wyświetlający przewijalną listę wyników wyszukiwania"/>
+  <oaf_attribute name="description-no" type="string" value="Nautilus komponent for filhÃ¥ndterer som viser en rullende liste for sÃ¸keresultater"/>
+  <oaf_attribute name="description-pl" type="string" value="Komponent menedÅ¼era plikÃ³w Nautilusa wyÅwietlajÄcy przewijalnÄ listÄ wynikÃ³w wyszukiwania"/>
   <oaf_attribute name="description-pt" type="string" value="Componente do gestor de ficheiros Nautilus que mostra uma lista com rolamento para resultados de pesquisas"/>
   <oaf_attribute name="description-pt_BR" type="string" value="Compomente de gerenciador de arquivos do Nautilus que exibe uma lista que rola para busca"/>
-  <oaf_attribute name="description-ro" type="string" value="Componentă Nautilus care arată o listă defilabilă pentru rezulatele căutării"/>
-  <oaf_attribute name="description-ru" type="string" value="Компонент диспетчера файлов Nautilus, который показывает прокручиваемый список для результатов поиска"/>
-  <oaf_attribute name="description-sk" type="string" value="Komponent správca súborov, ktorý zobrazuje posuvný zoznam pre výsledky hľadania."/>
-  <oaf_attribute name="description-sl" type="string" value="Komponenta Nautilusovega upravljalnika datotek, ki kaže drsni seznam za zadetke iskanja"/>
-  <oaf_attribute name="description-sq" type="string" value="Komponues i file manager Nautilus që shfaq një listë rrëshqitëse për rezultatet e kërkimit"/>
-  <oaf_attribute name="description-sv" type="string" value="Nautilus-filhanterarkomponent som visar en rullningsbar lista för sökresultat"/>
-  <oaf_attribute name="description-tr" type="string" value="Arama sonuçlarını liste halinde gösteren Nautilus dosya yönetici bileşeni"/>
-  <oaf_attribute name="description-vi" type="string" value="Thành phần quản lý tập tin Nautilus hiển thị một danh sách cuốn được cho các kết quả của tim kiếm"/>
-  <oaf_attribute name="description-zh_CN" type="string" value="在可滚动列表中显示搜索结果的 Nautilus 文件管理器部件"/>
-  <oaf_attribute name="description-zh_TW" type="string" value="以可捲動的列表方式顯示搜尋結果的 Nautilus 檔案管理員元件"/>
+  <oaf_attribute name="description-ro" type="string" value="ComponentÄ Nautilus care aratÄ o listÄ defilabilÄ pentru rezulatele cÄutÄrii"/>
+  <oaf_attribute name="description-ru" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot; , ÐºÐ¾ÑÐ¾ÑÑÐ¹ Ð¿Ð¾ÐºÐ°Ð·ÑÐ²Ð°ÐµÑ Ð¿ÑÐ¾ÐºÑÑÑÐ¸Ð²Ð°ÐµÐ¼ÑÐ¹ ÑÐ¿Ð¸ÑÐ¾Ðº Ð´Ð»Ñ ÑÐµÐ·ÑÐ»ÑÑÐ°ÑÐ¾Ð² Ð¿Ð¾Ð¸ÑÐºÐ°"/>
+  <oaf_attribute name="description-sk" type="string" value="Komponent sprÃ¡vca sÃºborov, ktorÃ½ zobrazuje posuvnÃ½ zoznam pre vÃ½sledky hÄ¾adania."/>
+  <oaf_attribute name="description-sl" type="string" value="Komponenta Nautilusovega upravljalnika datotek, ki kaÅ¾e drsni seznam za zadetke iskanja"/>
+  <oaf_attribute name="description-sq" type="string" value="Komponues i file manager Nautilus qÃ« shfaq njÃ« listÃ« rrÃ«shqitÃ«se pÃ«r rezultatet e kÃ«rkimit"/>
+  <oaf_attribute name="description-sv" type="string" value="Nautilus-filhanterarkomponent som visar en rullningsbar lista fÃ¶r sÃ¶kresultat"/>
+  <oaf_attribute name="description-tr" type="string" value="Arama sonuÃ§larÄ±nÄ± liste halinde gÃ¶steren Nautilus dosya yÃ¶netici bileÅeni"/>
+  <oaf_attribute name="description-uk" type="string" value="ÐÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ Ð¼ÐµÐ½ÐµÐ´Ð¶ÐµÑÐ° ÑÐ°Ð¹Ð»ÑÐ² &quot;ÐÐ°ÑÑÑÐ»ÑÑ&quot;, ÑÐ¾ Ð²ÑÐ´Ð¾Ð±ÑÐ°Ð¶ÑÑ Ð¿ÑÐ¾ÐºÑÑÑÑÐ²Ð°Ð½Ð¸Ð¹ ÑÐ¿Ð¸ÑÐ¾Ðº ÑÐµÐ·ÑÐ»ÑÑÐ°ÑÑÐ² Ð¿Ð¾ÑÑÐºÑ"/>
+  <oaf_attribute name="description-vi" type="string" value="ThÃ nh pháº§n quáº£n lÃ½ táº­p tin Nautilus hiá»n thá» má»t danh sÃ¡ch cuá»n ÄÆ°á»£c cho cÃ¡c káº¿t quáº£ cá»§a tim kiáº¿m"/>
+  <oaf_attribute name="description-zh_CN" type="string" value="å¨å¯æ»å¨åè¡¨ä¸­æ¾ç¤ºæç´¢ç»æç Nautilus æä»¶ç®¡çå¨é¨ä»¶"/>
+  <oaf_attribute name="description-zh_TW" type="string" value="ä»¥å¯æ²åçæ¸å®æ¹å¼é¡¯ç¤ºæå°çµæç Nautilus æªæ¡ç®¡çå¡åä»¶"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
     <item value="x-directory/search"/>
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="Search List"/>
-  <oaf_attribute name="nautilus:view_as_name-ar" type="string" value="قائمة البحث"/>
-  <oaf_attribute name="nautilus:view_as_name-az" type="string" value="Axtarış Siyahısu"/>
-  <oaf_attribute name="nautilus:view_as_name-be" type="string" value="Сьпіс пошуку"/>
-  <oaf_attribute name="nautilus:view_as_name-bg" type="string" value="Списък за търсене"/>
+  <oaf_attribute name="nautilus:view_as_name-ar" type="string" value="ÙØ§Ø¦ÙØ© Ø§ÙØ¨Ø­Ø«"/>
+  <oaf_attribute name="nautilus:view_as_name-az" type="string" value="AxtarÄ±Å SiyahÄ±su"/>
+  <oaf_attribute name="nautilus:view_as_name-be" type="string" value="Ð¡ÑÐ¿ÑÑ Ð¿Ð¾ÑÑÐºÑ"/>
+  <oaf_attribute name="nautilus:view_as_name-bg" type="string" value="Ð¡Ð¿Ð¸ÑÑÐº Ð·Ð° ÑÑÑÑÐµÐ½Ðµ"/>
   <oaf_attribute name="nautilus:view_as_name-ca" type="string" value="Llista de cerca"/>
-  <oaf_attribute name="nautilus:view_as_name-cs" type="string" value="Seznam hledání"/>
-  <oaf_attribute name="nautilus:view_as_name-da" type="string" value="Søgeliste"/>
+  <oaf_attribute name="nautilus:view_as_name-cs" type="string" value="Seznam hledÃ¡nÃ­"/>
+  <oaf_attribute name="nautilus:view_as_name-da" type="string" value="SÃ¸geliste"/>
   <oaf_attribute name="nautilus:view_as_name-de" type="string" value="Suchliste"/>
-  <oaf_attribute name="nautilus:view_as_name-el" type="string" value="Λίστα Αναζήτησης"/>
-  <oaf_attribute name="nautilus:view_as_name-es" type="string" value="Lista de búsqueda"/>
+  <oaf_attribute name="nautilus:view_as_name-el" type="string" value="ÎÎ¯ÏÏÎ± ÎÎ½Î±Î¶Î®ÏÎ·ÏÎ·Ï"/>
+  <oaf_attribute name="nautilus:view_as_name-es" type="string" value="Lista de bÃºsqueda"/>
   <oaf_attribute name="nautilus:view_as_name-et" type="string" value="Otsingu nimekiri"/>
   <oaf_attribute name="nautilus:view_as_name-eu" type="string" value="Bilatze-zerrenda"/>
-  <oaf_attribute name="nautilus:view_as_name-fi" type="string" value="Etsintäluettelo"/>
+  <oaf_attribute name="nautilus:view_as_name-fi" type="string" value="EtsintÃ¤luettelo"/>
   <oaf_attribute name="nautilus:view_as_name-fr" type="string" value="Liste de recherche"/>
-  <oaf_attribute name="nautilus:view_as_name-he" type="string" value="רשימת חיפוש"/>
-  <oaf_attribute name="nautilus:view_as_name-hu" type="string" value="Keresési lista"/>
+  <oaf_attribute name="nautilus:view_as_name-he" type="string" value="×¨×©×××ª ×××¤××©"/>
+  <oaf_attribute name="nautilus:view_as_name-hi" type="string" value="à¤à¥à¤ à¤à¥ à¤¸à¥à¤à¥"/>
+  <oaf_attribute name="nautilus:view_as_name-hu" type="string" value="KeresÃ©si lista"/>
   <oaf_attribute name="nautilus:view_as_name-it" type="string" value="Lista di ricerca"/>
-  <oaf_attribute name="nautilus:view_as_name-ja" type="string" value="検索リスト"/>
-  <oaf_attribute name="nautilus:view_as_name-ko" type="string" value="찾기 목록"/>
-  <oaf_attribute name="nautilus:view_as_name-lt" type="string" value="Paieškos sąrašas"/>
-  <oaf_attribute name="nautilus:view_as_name-lv" type="string" value="Meklēšanas Saraksts"/>
+  <oaf_attribute name="nautilus:view_as_name-ja" type="string" value="æ¤ç´¢ãªã¹ã"/>
+  <oaf_attribute name="nautilus:view_as_name-ko" type="string" value="ì°¾ê¸° ëª©ë¡"/>
+  <oaf_attribute name="nautilus:view_as_name-lt" type="string" value="PaieÅ¡kos sÄraÅ¡as"/>
+  <oaf_attribute name="nautilus:view_as_name-lv" type="string" value="MeklÄÅ¡anas Saraksts"/>
+  <oaf_attribute name="nautilus:view_as_name-mn" type="string" value="Ð¥Ð°Ð¹Ð»ÑÑÐ½ Ð¶Ð°Ð³ÑÐ°Ð°Ð»Ñ"/>
   <oaf_attribute name="nautilus:view_as_name-ms" type="string" value="Senarai Carian"/>
   <oaf_attribute name="nautilus:view_as_name-nl" type="string" value="Zoeklijst"/>
-  <oaf_attribute name="nautilus:view_as_name-no" type="string" value="Søkeliste"/>
-  <oaf_attribute name="nautilus:view_as_name-pl" type="string" value="Lista wyników wyszukiwania"/>
+  <oaf_attribute name="nautilus:view_as_name-no" type="string" value="SÃ¸keliste"/>
+  <oaf_attribute name="nautilus:view_as_name-pl" type="string" value="Lista wynikÃ³w wyszukiwania"/>
   <oaf_attribute name="nautilus:view_as_name-pt" type="string" value="Lista de Pesquisa"/>
   <oaf_attribute name="nautilus:view_as_name-pt_BR" type="string" value="Lista de busca"/>
-  <oaf_attribute name="nautilus:view_as_name-ro" type="string" value="Listă căutare"/>
-  <oaf_attribute name="nautilus:view_as_name-ru" type="string" value="Список поиска"/>
-  <oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Zoznam hľadania"/>
+  <oaf_attribute name="nautilus:view_as_name-ro" type="string" value="ListÄ cÄutare"/>
+  <oaf_attribute name="nautilus:view_as_name-ru" type="string" value="Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð¿Ð¾Ð¸ÑÐºÐ°"/>
+  <oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Zoznam hÄ¾adania"/>
   <oaf_attribute name="nautilus:view_as_name-sl" type="string" value="Seznam iskanja"/>
-  <oaf_attribute name="nautilus:view_as_name-sq" type="string" value="Lista e kërkimit"/>
-  <oaf_attribute name="nautilus:view_as_name-sv" type="string" value="Söklista"/>
+  <oaf_attribute name="nautilus:view_as_name-sq" type="string" value="Lista e kÃ«rkimit"/>
+  <oaf_attribute name="nautilus:view_as_name-sv" type="string" value="SÃ¶klista"/>
   <oaf_attribute name="nautilus:view_as_name-tr" type="string" value="Arama Listesi"/>
-  <oaf_attribute name="nautilus:view_as_name-vi" type="string" value="Tìm danh sách"/>
-  <oaf_attribute name="nautilus:view_as_name-zh_CN" type="string" value="搜索列表"/>
-  <oaf_attribute name="nautilus:view_as_name-zh_TW" type="string" value="搜尋列表"/>
+  <oaf_attribute name="nautilus:view_as_name-uk" type="string" value="Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð¿Ð¾ÑÑÐºÑ"/>
+  <oaf_attribute name="nautilus:view_as_name-vi" type="string" value="TÃ¬m danh sÃ¡ch"/>
+  <oaf_attribute name="nautilus:view_as_name-zh_CN" type="string" value="æç´¢åè¡¨"/>
+  <oaf_attribute name="nautilus:view_as_name-zh_TW" type="string" value="æå°æ¸å®"/>
   <oaf_attribute name="nautilus:view_as_label" type="string" value="View as Search List"/>
   <oaf_attribute name="nautilus:viewer_label" type="string" value="Search List Viewer"/>
 </oaf_server>
@@ -715,76 +810,85 @@
     <item value="IDL:Nautilus/Shell:1.0"/>
   </oaf_attribute>
   <oaf_attribute name="name" type="string" value="Nautilus shell"/>
-  <oaf_attribute name="name-ar" type="string" value="غلاف ناوتيلاس"/>
-  <oaf_attribute name="name-az" type="string" value="Nautilus qabığı"/>
-  <oaf_attribute name="name-be" type="string" value="Абалонка Nautilus"/>
-  <oaf_attribute name="name-bg" type="string" value="shell на Nautilus"/>
-  <oaf_attribute name="name-ca" type="string" value="Intèrpret d&apos;ordres Nautilus"/>
-  <oaf_attribute name="name-cs" type="string" value="Shell Nautilu"/>
+  <oaf_attribute name="name-ar" type="string" value="ØºÙØ§Ù ÙØ§ÙØªÙÙØ§Ø³"/>
+  <oaf_attribute name="name-az" type="string" value="Nautilus qabÄ±ÄÄ±"/>
+  <oaf_attribute name="name-be" type="string" value="ÐÐ±Ð°Ð»Ð¾Ð½ÐºÐ° Nautilus"/>
+  <oaf_attribute name="name-bg" type="string" value="shell Ð½Ð° Nautilus"/>
+  <oaf_attribute name="name-ca" type="string" value="IntÃ¨rpret d&apos;ordres Nautilus"/>
+  <oaf_attribute name="name-cs" type="string" value="Shell Nautilus"/>
   <oaf_attribute name="name-da" type="string" value="Nautilus-skal"/>
   <oaf_attribute name="name-de" type="string" value="Nautilus-Shell"/>
-  <oaf_attribute name="name-el" type="string" value="Φλοιός Ναυτίλου"/>
+  <oaf_attribute name="name-el" type="string" value="Î¦Î»Î¿Î¹ÏÏ ÎÎ±ÏÏÎ¯Î»Î¿Ï"/>
   <oaf_attribute name="name-es" type="string" value="Shell de Nautilus"/>
   <oaf_attribute name="name-et" type="string" value="Nautiluse kest"/>
   <oaf_attribute name="name-eu" type="string" value="Nautilus shell"/>
   <oaf_attribute name="name-fi" type="string" value="Nautiluksen komentotulkki"/>
   <oaf_attribute name="name-fr" type="string" value="Shell Nautilus"/>
   <oaf_attribute name="name-gl" type="string" value="Shell do Nautilus"/>
-  <oaf_attribute name="name-he" type="string" value="מעטפת נאוטילוס"/>
+  <oaf_attribute name="name-he" type="string" value="××¢××¤×ª × ×××××××¡"/>
+  <oaf_attribute name="name-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤¶à¥à¤²"/>
   <oaf_attribute name="name-hu" type="string" value="Nautilus shell"/>
   <oaf_attribute name="name-it" type="string" value="Shell di Nautilus"/>
-  <oaf_attribute name="name-ja" type="string" value="Nautilus シェル"/>
-  <oaf_attribute name="name-ko" type="string" value="노틸러스 쉘"/>
+  <oaf_attribute name="name-ja" type="string" value="Nautilus ã·ã§ã«"/>
+  <oaf_attribute name="name-ko" type="string" value="ë¸í¸ë¬ì¤ ì"/>
   <oaf_attribute name="name-lt" type="string" value="Nautilus aplinka"/>
-  <oaf_attribute name="name-lv" type="string" value="Nautilus čaula"/>
+  <oaf_attribute name="name-lv" type="string" value="Nautilus Äaula"/>
+  <oaf_attribute name="name-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½-Shell"/>
   <oaf_attribute name="name-ms" type="string" value="Shell Nautilus"/>
   <oaf_attribute name="name-nl" type="string" value="Nautilus-schil"/>
   <oaf_attribute name="name-no" type="string" value="Nautilus skall"/>
-  <oaf_attribute name="name-pl" type="string" value="Powłoka Nautilusa"/>
+  <oaf_attribute name="name-pl" type="string" value="PowÅoka Nautilusa"/>
   <oaf_attribute name="name-pt" type="string" value="Consola Nautilus"/>
   <oaf_attribute name="name-pt_BR" type="string" value="Linha de comando do Nautilus"/>
   <oaf_attribute name="name-ro" type="string" value="Shell Nautilus"/>
-  <oaf_attribute name="name-ru" type="string" value="Оболочка Nautilus"/>
+  <oaf_attribute name="name-ru" type="string" value="ÐÐ±Ð¾Ð»Ð¾ÑÐºÐ° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;"/>
   <oaf_attribute name="name-sk" type="string" value="Nautilus shell"/>
   <oaf_attribute name="name-sl" type="string" value="Natuilusova lupina"/>
   <oaf_attribute name="name-sq" type="string" value="Shell i Nautilus"/>
   <oaf_attribute name="name-sv" type="string" value="Nautilus-skal"/>
-  <oaf_attribute name="name-tr" type="string" value="Nautilus kabuğu"/>
-  <oaf_attribute name="name-vi" type="string" value="Vỏ Nautilus"/>
+  <oaf_attribute name="name-tr" type="string" value="Nautilus kabuÄu"/>
+  <oaf_attribute name="name-uk" type="string" value="ÐÐ±Ð¾Ð»Ð¾Ð½ÐºÐ° ÐÐ°ÑÑÑÐ»ÑÑÐ°"/>
+  <oaf_attribute name="name-vi" type="string" value="Vá» Nautilus"/>
   <oaf_attribute name="name-zh_CN" type="string" value="Nautilus shell"/>
+  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus åå½¢æä»¤çé¢"/>
   <oaf_attribute name="description" type="string" value="Nautilus shell operations that can be done from subsequent command-line invocations"/>
-  <oaf_attribute name="description-ar" type="string" value="عمليات غلاف ناوتيلاس التي يتم القيام بها من خلال استخدام سطر اﻷوامر التالي"/>
-  <oaf_attribute name="description-az" type="string" value="Nautilus qabıq əmrləri altdakı əmr sətirindən verilə bilər"/>
-  <oaf_attribute name="description-ca" type="string" value="Operacions de l&apos;intèrpret d&apos;ordres Nautilus que es poden realitzar mitjançant subseqüents invocacions des de la línia de comandaments"/>
-  <oaf_attribute name="description-cs" type="string" value="Operace shellu Nautilu, které lze provést spuštěním z příkazové řádky"/>
-  <oaf_attribute name="description-da" type="string" value="Nautilus skaloperationer der kan udføres fra efterfølgende kommandolinjekørsler"/>
-  <oaf_attribute name="description-de" type="string" value="Nautilus-Shell-Aktionen, die von der Befehlszeile aus aufgerufen werden können"/>
-  <oaf_attribute name="description-el" type="string" value="Λειτουργίες φλοιού του Ναυτίλου που μπορούν να εκτελεστούν από παρεπόμενες κλήσεις γραμμής εντολών"/>
-  <oaf_attribute name="description-es" type="string" value="Operaciones de shell de Nautilus que pueden ser realizadas por llamadas subsecuentes desde la línea de comandos"/>
+  <oaf_attribute name="description-ar" type="string" value="Ø¹ÙÙÙØ§Øª ØºÙØ§Ù ÙØ§ÙØªÙÙØ§Ø³ Ø§ÙØªÙ ÙØªÙ Ø§ÙÙÙØ§Ù Ø¨ÙØ§ ÙÙ Ø®ÙØ§Ù Ø§Ø³ØªØ®Ø¯Ø§Ù Ø³Ø·Ø± Ø§ï»·ÙØ§ÙØ± Ø§ÙØªØ§ÙÙ"/>
+  <oaf_attribute name="description-az" type="string" value="Nautilus qabÄ±q ÉmrlÉri altdakÄ± Émr sÉtirindÉn verilÉ bilÉr"/>
+  <oaf_attribute name="description-bg" type="string" value="ÐÐ¿ÑÐ°ÑÐ¸Ð¸ Ð½Ð° Nautilus ÑÑÑ shell ÐºÐ¾Ð¸ÑÐ¾ Ð¼Ð¾Ð³Ð°Ñ Ð´Ð° Ð±ÑÐ´Ð°Ñ Ð¸Ð·Ð²ÑÑÑÐµÐ½Ð¸ Ð¾Ñ ÐºÐ¾Ð¼Ð°Ð½Ð´ÐµÐ½ ÑÐµÐ´"/>
+  <oaf_attribute name="description-ca" type="string" value="Operacions de l&apos;intÃ¨rpret d&apos;ordres Nautilus que es poden realitzar mitjanÃ§ant subseqÃ¼ents invocacions des de la lÃ­nia de comandaments"/>
+  <oaf_attribute name="description-cs" type="string" value="Operace shellu Nautilus, kterÃ© lze provÃ©st spuÅ¡tÄnÃ­m z pÅÃ­kazovÃ© ÅÃ¡dky"/>
+  <oaf_attribute name="description-da" type="string" value="Skaloperationer til Nautilus der kan udfÃ¸res fra efterfÃ¸lgende kommandolinjekÃ¸rsler"/>
+  <oaf_attribute name="description-de" type="string" value="Nautilus-Shell-Aktionen, die von der Befehlszeile aus aufgerufen werden kÃ¶nnen"/>
+  <oaf_attribute name="description-el" type="string" value="ÎÎµÎ¹ÏÎ¿ÏÏÎ³Î¯ÎµÏ ÏÎ»Î¿Î¹Î¿Ï ÏÎ¿Ï ÎÎ±ÏÏÎ¯Î»Î¿Ï ÏÎ¿Ï Î¼ÏÎ¿ÏÎ¿ÏÎ½ Î½Î± ÎµÎºÏÎµÎ»ÎµÏÏÎ¿ÏÎ½ Î±ÏÏ ÏÎ±ÏÎµÏÏÎ¼ÎµÎ½ÎµÏ ÎºÎ»Î®ÏÎµÎ¹Ï Î³ÏÎ±Î¼Î¼Î®Ï ÎµÎ½ÏÎ¿Î»ÏÎ½"/>
+  <oaf_attribute name="description-es" type="string" value="Operaciones de shell de Nautilus que pueden ser realizadas por llamadas subsecuentes desde la lÃ­nea de comandos"/>
   <oaf_attribute name="description-eu" type="string" value="Komando-lerroko ondorengo inbokazioez egin daitezkeen Nautilus-en shell eragiketak"/>
-  <oaf_attribute name="description-fi" type="string" value="Nautilus-komentotulkkitoiminnot, jotka voi tehdä peräkkäisillä komentorivikutsuilla"/>
-  <oaf_attribute name="description-fr" type="string" value="Commandes du terminal de Nautilus qui peuvent être exécutées en relançant Nautilus en ligne de commande"/>
-  <oaf_attribute name="description-he" type="string" value="פעולות מעטפת נאוטילוס שיכולות להתבצע מפעולות שורת פקודה המשכיות."/>
-  <oaf_attribute name="description-hu" type="string" value="Nautilus shell-műveletek, amiket meg lehet oldani egymást követ parancssori utasításokkal"/>
-  <oaf_attribute name="description-it" type="string" value="Operazioni di shell di Nautilus che possono essere fatte da invocazioni sequenziali dalla riga di comando"/>
-  <oaf_attribute name="description-ja" type="string" value="後に続くコマンド実行から実行されるNautilusシェルコンポーネント"/>
-  <oaf_attribute name="description-ko" type="string" value="명령행 실행으로 일어나는 노틸러스 쉘 동작"/>
-  <oaf_attribute name="description-lv" type="string" value="Nautilus čaulas operācijas, kas var tikt veiktas, sekojošās komandrindas palīdzību"/>
+  <oaf_attribute name="description-fi" type="string" value="Nautilus-komentotulkkitoiminnot, jotka voi tehdÃ¤ perÃ¤kkÃ¤isillÃ¤ komentorivikutsuilla"/>
+  <oaf_attribute name="description-fr" type="string" value="Commandes du terminal de Nautilus qui peuvent Ãªtre exÃ©cutÃ©es en relanÃ§ant Nautilus en ligne de commande"/>
+  <oaf_attribute name="description-he" type="string" value="×¤×¢××××ª ××¢××¤×ª × ×××××××¡ ×©××××××ª ×××ª××¦×¢ ××¤×¢××××ª ×©××¨×ª ×¤×§××× ×××©××××ª."/>
+  <oaf_attribute name="description-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤¶à¥à¤² à¤à¤ªà¤°à¥à¤¶à¤¨ à¤à¤¸ à¤¨à¤¿à¤°à¥à¤¦à¥à¤¶ à¤²à¤¾à¤à¤¨ à¤à¥ à¤à¤¨à¤µà¥à¤à¥à¤¶à¤¨ à¤¸à¥ à¤à¤¿à¤¯à¤¾ à¤à¤¾ à¤¸à¤à¤¤à¤¾ à¤¹à¥"/>
+  <oaf_attribute name="description-hu" type="string" value="Nautilus shell-mÅ±veletek, amiket meg lehet oldani egymÃ¡st kÃ¶vet parancssori utasÃ­tÃ¡sokkal"/>
+  <oaf_attribute name="description-it" type="string" value="Operazioni di shell di Nautilus che possono essere fatte da invocazioni successive dalla riga di comando"/>
+  <oaf_attribute name="description-ja" type="string" value="å¾ã«ç¶ãã³ãã³ãå®è¡ããå®è¡ãããNautilusã·ã§ã«ã³ã³ãã¼ãã³ã"/>
+  <oaf_attribute name="description-ko" type="string" value="ëªë ¹í ì¤íì¼ë¡ ì¼ì´ëë ë¸í¸ë¬ì¤ ì ëì"/>
+  <oaf_attribute name="description-lv" type="string" value="Nautilus Äaulas operÄcijas, kas var tikt veiktas, sekojoÅ¡Äs komandrindas palÄ«dzÄ«bu"/>
+  <oaf_attribute name="description-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½-Shell-ÑÐ½ ÐºÐ¾Ð¼Ð°Ð½Ð´ÑÐ½ Ð¼Ó©ÑÒ¯Ò¯Ð´ÑÑÑ Ð´ÑÑÐ´Ð°Ð³Ð´Ð°Ð¶ ÑÐ¸Ð¹Ð³Ð´ÑÑ Ò¯Ð¹Ð»Ð´Ð»Ò¯Ò¯Ð´"/>
   <oaf_attribute name="description-ms" type="string" value="Operasi shell Nautilus yang boleh dilakukan dari seruan arahan-baris berikut"/>
   <oaf_attribute name="description-nl" type="string" value="Nautilus shell-opdrachten kunnen worden in gedaan op de commandoregel"/>
-  <oaf_attribute name="description-no" type="string" value="Nautilus skall-operasjoner som kan utføres fra etterfølgende kommandolinjeinvokasjoner"/>
-  <oaf_attribute name="description-pl" type="string" value="Operacje powłoki Nautilusa, które mogą być wykonywane przy uruchomieniu z wiersza poleceń"/>
-  <oaf_attribute name="description-pt" type="string" value="Operações de consola do Nautilus que podem ser realizadas de invocações subsequentes da linha de comandos"/>
-  <oaf_attribute name="description-pt_BR" type="string" value="Operações de linha de comando do Nautilus que podem ser executadas de invocações subsequentes da linha de comando"/>
-  <oaf_attribute name="description-ro" type="string" value="Operaţii shell Nautilus care pot fi făcute din invocari ale liniei de comandă"/>
-  <oaf_attribute name="description-ru" type="string" value="операции оболочки программы Nautilus, которые могут быть произведены путём последовательных вызовов из командной строки"/>
-  <oaf_attribute name="description-sk" type="string" value="Operácie shellu Nautilus, ktoré je možné neskôr vykonať z príkazového riadku."/>
-  <oaf_attribute name="description-sl" type="string" value="Operacije Nautilusove lupine, ki so lahko izvedene z večimi izvršbami ukazne vrstice"/>
-  <oaf_attribute name="description-sq" type="string" value="Operacione shell të Nautilus që mund të kryhen nga thirrjet sekuenciale e komandave në rresht"/>
-  <oaf_attribute name="description-sv" type="string" value="Nautilus-skaloperationer som kan utföras genom upprepade kommandoradsanrop"/>
-  <oaf_attribute name="description-tr" type="string" value="Komut satırından yapılabilecek Nautilus kabuk işlemleri"/>
-  <oaf_attribute name="description-vi" type="string" value="Các hoạt động vỏ của Nautilus mà chúng có thể gọi từ dòng lệnh"/>
-  <oaf_attribute name="description-zh_CN" type="string" value="从后续的命令行启用中可以进行的 Nautilus shell 操作"/>
+  <oaf_attribute name="description-no" type="string" value="Nautilus skall-operasjoner som kan utfÃ¸res fra etterfÃ¸lgende kommandolinjeinvokasjoner"/>
+  <oaf_attribute name="description-pl" type="string" value="Operacje powÅoki Nautilusa, ktÃ³re mogÄ byÄ wykonywane przy uruchomieniu z wiersza poleceÅ"/>
+  <oaf_attribute name="description-pt" type="string" value="OperaÃ§Ãµes de consola do Nautilus que podem ser realizadas de invocaÃ§Ãµes subsequentes da linha de comandos"/>
+  <oaf_attribute name="description-pt_BR" type="string" value="OperaÃ§Ãµes de linha de comando do Nautilus que podem ser executadas de invocaÃ§Ãµes subsequentes da linha de comando"/>
+  <oaf_attribute name="description-ro" type="string" value="OperaÅ£ii shell Nautilus care pot fi fÄcute din invocari ale liniei de comandÄ"/>
+  <oaf_attribute name="description-ru" type="string" value="ÐÐ¿ÐµÑÐ°ÑÐ¸Ð¸ Ð¾Ð±Ð¾Ð»Ð¾ÑÐºÐ¸ &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;, ÐºÐ¾ÑÐ¾ÑÑÐµ Ð¼Ð¾Ð³ÑÑ Ð±ÑÑÑ Ð¿ÑÐ¾Ð¸Ð·Ð²ÐµÐ´ÐµÐ½Ñ Ð¿ÑÑÑÐ¼ Ð¿Ð¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°ÑÐµÐ»ÑÐ½ÑÑ Ð²ÑÐ·Ð¾Ð²Ð¾Ð² Ð¸Ð· ÐºÐ¾Ð¼Ð°Ð½Ð´Ð½Ð¾Ð¹ ÑÑÑÐ¾ÐºÐ¸"/>
+  <oaf_attribute name="description-sk" type="string" value="OperÃ¡cie shellu Nautilus, ktorÃ© je moÅ¾nÃ© neskÃ´r vykonaÅ¥ z prÃ­kazovÃ©ho riadku."/>
+  <oaf_attribute name="description-sl" type="string" value="Operacije Nautilusove lupine, ki so lahko izvedene z veÄimi izvrÅ¡bami ukazne vrstice"/>
+  <oaf_attribute name="description-sq" type="string" value="Operacione shell tÃ« Nautilus qÃ« mund tÃ« kryhen nga thirrjet sekuenciale e komandave nÃ« rresht"/>
+  <oaf_attribute name="description-sv" type="string" value="Nautilus-skaloperationer som kan utfÃ¶ras genom upprepade kommandoradsanrop"/>
+  <oaf_attribute name="description-tr" type="string" value="Komut satÄ±rÄ±ndan yapÄ±labilecek Nautilus kabuk iÅlemleri"/>
+  <oaf_attribute name="description-uk" type="string" value="ÐÐ¿ÐµÑÐ°ÑÑÑ Ð¾Ð±Ð¾Ð»Ð¾Ð½ÐºÐ¸ ÐÐ°ÑÑÑÐ»ÑÑ, ÑÐ¾ Ð¼Ð¾Ð¶ÑÑÑ Ð±ÑÑÐ¸ Ð²Ð¸ÐºÐ¾Ð½Ð°Ð½Ñ Ð· ÑÐ»ÑÑÐ¾Ð¼ Ð¿Ð¾ÑÐ»ÑÐ´Ð¾Ð²Ð½Ð¾Ð³Ð¾ Ð²Ð¸ÐºÐ¾Ð½Ð°Ð½Ð½Ñ Ñ ÐºÐ¾Ð¼Ð°Ð½Ð´Ð½Ð¾Ð¼Ñ ÑÑÐ´ÐºÑ"/>
+  <oaf_attribute name="description-vi" type="string" value="CÃ¡c hoáº¡t Äá»ng vá» cá»§a Nautilus mÃ  chÃºng cÃ³ thá» gá»i tá»« dÃ²ng lá»nh"/>
+  <oaf_attribute name="description-zh_CN" type="string" value="ä»åç»­çå½ä»¤è¡å¯ç¨ä¸­å¯ä»¥è¿è¡ç Nautilus shell æä½"/>
+  <oaf_attribute name="description-zh_TW" type="string" value="ç¸ææ¼æä»¤åç Nautilus æä»¤æä½ç¨åº"/>
 </oaf_server>
 
 <oaf_server iid="OAFIID:Nautilus_Metafile_Factory" type="factory" location="OAFIID:Nautilus_Factory">
@@ -793,71 +897,82 @@
     <item value="IDL:Nautilus/MetafileFactory:1.0"/>
   </oaf_attribute>
   <oaf_attribute name="name" type="string" value="Nautilus metafile factory"/>
-  <oaf_attribute name="name-ar" type="string" value="مصنع ملف عن الملفات في ناوتيلاس"/>
-  <oaf_attribute name="name-az" type="string" value="Nautilus metafayl emalatxanası"/>
-  <oaf_attribute name="name-be" type="string" value="Мейсца метафайлу Nautilus&apos;у"/>
-  <oaf_attribute name="name-bg" type="string" value="Фабрика за метафайлове на Nautilus"/>
+  <oaf_attribute name="name-ar" type="string" value="ÙØµÙØ¹ ÙÙÙ Ø¹Ù Ø§ÙÙÙÙØ§Øª ÙÙ ÙØ§ÙØªÙÙØ§Ø³"/>
+  <oaf_attribute name="name-az" type="string" value="Nautilus metafayl emalatxanasÄ±"/>
+  <oaf_attribute name="name-be" type="string" value="ÐÐµÐ¹ÑÑÐ° Ð¼ÐµÑÐ°ÑÐ°Ð¹Ð»Ñ Nautilus&apos;Ñ"/>
+  <oaf_attribute name="name-bg" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð·Ð° Ð¼ÐµÑÐ°ÑÐ°Ð¹Ð»Ð¾Ð²Ðµ Ð½Ð° Nautilus"/>
   <oaf_attribute name="name-ca" type="string" value="Metafitxer del Nautilus original"/>
-  <oaf_attribute name="name-cs" type="string" value="Factory pro metasoubor Nautilu"/>
-  <oaf_attribute name="name-da" type="string" value="Nautilus metafilsfabrik"/>
+  <oaf_attribute name="name-cs" type="string" value="GenerÃ¡tor pro metasoubor Nautilus"/>
+  <oaf_attribute name="name-da" type="string" value="Metafilsfabrik til Nautilus"/>
   <oaf_attribute name="name-de" type="string" value="Nautilus-Metadatei-Fabrik"/>
-  <oaf_attribute name="name-el" type="string" value="Εργοστάσιο μετά-αρχείων Ναυτίλου"/>
-  <oaf_attribute name="name-es" type="string" value="Origen de meta-archivo Nautilus"/>
+  <oaf_attribute name="name-el" type="string" value="ÎÏÎ³Î¿ÏÏÎ¬ÏÎ¹Î¿ Î¼ÎµÏÎ¬-Î±ÏÏÎµÎ¯ÏÎ½ ÎÎ±ÏÏÎ¯Î»Î¿Ï"/>
+  <oaf_attribute name="name-es" type="string" value="FÃ¡brica de meta-archivo Nautilus"/>
   <oaf_attribute name="name-eu" type="string" value="Nautilus-en metafitxategien fabrika"/>
   <oaf_attribute name="name-fi" type="string" value="Nautiluksen metatiedostotehdas"/>
   <oaf_attribute name="name-fr" type="string" value="Usine de metafichiers Nautilus"/>
+  <oaf_attribute name="name-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤®à¥à¤à¤¾à¤«à¤¾à¤à¤² à¤«à¥à¤à¥à¤à¤°à¥"/>
   <oaf_attribute name="name-hu" type="string" value="Nautilus metafile factory"/>
   <oaf_attribute name="name-it" type="string" value="Fabbrica di metafile per Nautilus"/>
-  <oaf_attribute name="name-ja" type="string" value="Nautilus メタファイルファクトリ"/>
-  <oaf_attribute name="name-ko" type="string" value="노틸러스 메타파일 팩토리"/>
+  <oaf_attribute name="name-ja" type="string" value="Nautilus ã¡ã¿ãã¡ã¤ã«ãã¡ã¯ããª"/>
+  <oaf_attribute name="name-ko" type="string" value="ë¸í¸ë¬ì¤ ë©ííì¼ í©í ë¦¬"/>
   <oaf_attribute name="name-lt" type="string" value="Nautilus metafile gamykla"/>
-  <oaf_attribute name="name-lv" type="string" value="Nautilus metafaila ražotne"/>
+  <oaf_attribute name="name-lv" type="string" value="Nautilus metafaila raÅ¾otne"/>
+  <oaf_attribute name="name-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÐÐµÑÐ°ÑÐ°Ð¹Ð»-ÑÐ°Ð±ÑÐ¸Ðº"/>
   <oaf_attribute name="name-ms" type="string" value="Kilang metafile Nautilus"/>
   <oaf_attribute name="name-nl" type="string" value="Fabriek voor Nautilus-metabestanden"/>
   <oaf_attribute name="name-no" type="string" value="Metafil-factory for Nautilus"/>
-  <oaf_attribute name="name-pl" type="string" value="Generator metaplików Nautilusa"/>
-  <oaf_attribute name="name-pt" type="string" value="Fábrica metafile Nautilus"/>
-  <oaf_attribute name="name-pt_BR" type="string" value="Fábrica de metafile do Nautilus"/>
-  <oaf_attribute name="name-ru" type="string" value="Фабрика метафайла Nautilus"/>
-  <oaf_attribute name="name-sk" type="string" value="Vytváracie rozhranie pre meta-súbory pre Nautilus"/>
+  <oaf_attribute name="name-pl" type="string" value="Generator metaplikÃ³w Nautilusa"/>
+  <oaf_attribute name="name-pt" type="string" value="FÃ¡brica metafile Nautilus"/>
+  <oaf_attribute name="name-pt_BR" type="string" value="FÃ¡brica de metafile do Nautilus"/>
+  <oaf_attribute name="name-ro" type="string" value="FabricÄ metafiÅier Nautilus"/>
+  <oaf_attribute name="name-ru" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð¼ÐµÑÐ°ÑÐ°Ð¹Ð»Ð° &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;"/>
+  <oaf_attribute name="name-sk" type="string" value="VytvÃ¡racie rozhranie pre meta-sÃºbory pre Nautilus"/>
   <oaf_attribute name="name-sl" type="string" value="Tovarna Nautilusovih meta datotek"/>
-  <oaf_attribute name="name-sq" type="string" value="Fabrika e metafile për Nautilus"/>
-  <oaf_attribute name="name-sv" type="string" value="Fabrik för Nautilus-metafil"/>
+  <oaf_attribute name="name-sq" type="string" value="Fabrika e metafile pÃ«r Nautilus"/>
+  <oaf_attribute name="name-sv" type="string" value="Fabrik fÃ¶r Nautilus-metafil"/>
   <oaf_attribute name="name-tr" type="string" value="Nautilus meta dosya mimarisi"/>
+  <oaf_attribute name="name-uk" type="string" value="Ð¤Ð°Ð±ÑÐ¸ÐºÐ° Ð¼ÐµÑÐ°ÑÐ°Ð¹Ð»Ð° &quot;ÐÐ°ÑÑÑÐ»ÑÑÐ°&quot;"/>
   <oaf_attribute name="name-vi" type="string" value="Nautilus metafile factory"/>
-  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus 元文件制造库"/>
+  <oaf_attribute name="name-zh_CN" type="string" value="Nautilus åæä»¶å·¥å"/>
+  <oaf_attribute name="name-zh_TW" type="string" value="Nautilus éå±¬è³ææªå·¥å» "/>
   <oaf_attribute name="description" type="string" value="Produces metafile objects for accessing Nautilus metadata"/>
-  <oaf_attribute name="description-ar" type="string" value="ينتج كائنات ملف عن الملفات للدخول على بيانات ناوتيلاس عن البيانات"/>
-  <oaf_attribute name="description-az" type="string" value="Nautilus metadatası üçün metafayllar emal edir"/>
-  <oaf_attribute name="description-bg" type="string" value="Създава метафайл обекти за достъп на Nautilus до метаданни"/>
+  <oaf_attribute name="description-ar" type="string" value="ÙÙØªØ¬ ÙØ§Ø¦ÙØ§Øª ÙÙÙ Ø¹Ù Ø§ÙÙÙÙØ§Øª ÙÙØ¯Ø®ÙÙ Ø¹ÙÙ Ø¨ÙØ§ÙØ§Øª ÙØ§ÙØªÙÙØ§Ø³ Ø¹Ù Ø§ÙØ¨ÙØ§ÙØ§Øª"/>
+  <oaf_attribute name="description-az" type="string" value="Nautilus metadatasÄ± Ã¼Ã§Ã¼n metafayllar emal edir"/>
+  <oaf_attribute name="description-bg" type="string" value="Ð¡ÑÐ·Ð´Ð°Ð²Ð° Ð¼ÐµÑÐ°ÑÐ°Ð¹Ð» Ð¾Ð±ÐµÐºÑÐ¸ Ð·Ð° Ð´Ð¾ÑÑÑÐ¿ Ð½Ð° Nautilus Ð´Ð¾ Ð¼ÐµÑÐ°Ð´Ð°Ð½Ð½Ð¸"/>
   <oaf_attribute name="description-ca" type="string" value="Produeix objectes metafitxers per accedir a les metadades Nautilus"/>
-  <oaf_attribute name="description-cs" type="string" value="Vytváří objekty metasouborů pro přístup k metadatům Nautilu"/>
-  <oaf_attribute name="description-da" type="string" value="Producerer metafil-objekter til at få adgang til Nautilus metadata"/>
+  <oaf_attribute name="description-cs" type="string" value="VytvÃ¡ÅÃ­ objekty metasouborÅ¯ pro pÅÃ­stup k metadatÅ¯m Nautilus"/>
+  <oaf_attribute name="description-da" type="string" value="Producerer metafil-objekter til at fÃ¥ adgang til Nautilus metadata"/>
   <oaf_attribute name="description-de" type="string" value="Erzeugt Metadatei-Objekte, um auf Nautilus-Metadaten zuzugreifen"/>
-  <oaf_attribute name="description-el" type="string" value="Παράγει αντικείμενα μετα-αρχείων για τη προσπέλαση μετα-δεδομένων του Ναυτίλου"/>
+  <oaf_attribute name="description-el" type="string" value="Î Î±ÏÎ¬Î³ÎµÎ¹ Î±Î½ÏÎ¹ÎºÎµÎ¯Î¼ÎµÎ½Î± Î¼ÎµÏÎ±-Î±ÏÏÎµÎ¯ÏÎ½ Î³Î¹Î± ÏÎ· ÏÏÎ¿ÏÏÎ­Î»Î±ÏÎ· Î¼ÎµÏÎ±-Î´ÎµÎ´Î¿Î¼Î­Î½ÏÎ½ ÏÎ¿Ï ÎÎ±ÏÏÎ¯Î»Î¿Ï"/>
   <oaf_attribute name="description-es" type="string" value="Crea objetos meta-archivo para acceder a meta-datos de Nautilus"/>
   <oaf_attribute name="description-eu" type="string" value="Nautilus-en metadatuak atzitzeko metafitxategi-objektuak sortzen ditu"/>
-  <oaf_attribute name="description-fi" type="string" value="Luo metatiedosto-olioita Nautiluksen metatietojen käyttämiseksi"/>
-  <oaf_attribute name="description-fr" type="string" value="Produits des objets métafichiers pour accéder aux métadonnées Nautilus"/>
-  <oaf_attribute name="description-hu" type="string" value="Metafile objektumokat hoz létre a Nautilus metadata eléréséhez"/>
+  <oaf_attribute name="description-fi" type="string" value="Luo metatiedosto-olioita Nautiluksen metatietojen kÃ¤yttÃ¤miseksi"/>
+  <oaf_attribute name="description-fr" type="string" value="Produits des objets mÃ©tafichiers pour accÃ©der aux mÃ©tadonnÃ©es Nautilus"/>
+  <oaf_attribute name="description-he" type="string" value="×××¦×¨ ××××××§××× ×©× ××× ×§×××¥ ××× ×××©×ª ×××××¢ ××× ×©× × ×××××××¡"/>
+  <oaf_attribute name="description-hi" type="string" value="à¤¨à¥à¤à¤¿à¤¿à¤²à¤¸ à¤®à¥à¤à¤¾à¤¡à¤¾à¤à¤¾ à¤à¥ à¤à¤à¥à¤¸à¥à¤¸ à¤à¤°à¤¨à¥ à¤à¥ à¤²à¤¿à¤ à¤®à¥à¤à¤¾à¤«à¤¾à¤à¤² à¤à¤¬à¥à¤à¥à¤à¥à¤ à¤¬à¤¨à¤¾à¤à¤"/>
+  <oaf_attribute name="description-hu" type="string" value="Metafile objektumokat hoz lÃ©tre a Nautilus metadata elÃ©rÃ©sÃ©hez"/>
   <oaf_attribute name="description-it" type="string" value="Produce degli oggetti metafile per l&apos;accesso ai metadati di Nautilus"/>
-  <oaf_attribute name="description-ja" type="string" value="Nautilusのメタデータにアクセスするためのメタファイルオブジェクトを作成します"/>
-  <oaf_attribute name="description-ko" type="string" value="노틸러스 메타데이터에 접근할 메타파일 개체를 만듭니다"/>
-  <oaf_attribute name="description-lv" type="string" value="Rada metafaila objektus, lai piekļūtu Nautilus metaatiem"/>
+  <oaf_attribute name="description-ja" type="string" value="Nautilusã®ã¡ã¿ãã¼ã¿ã«ã¢ã¯ã»ã¹ããããã®ã¡ã¿ãã¡ã¤ã«ãªãã¸ã§ã¯ããä½æãã¾ã"/>
+  <oaf_attribute name="description-ko" type="string" value="ë¸í¸ë¬ì¤ ë©íë°ì´í°ì ì ê·¼í  ë©ííì¼ ê°ì²´ë¥¼ ë§ë­ëë¤"/>
+  <oaf_attribute name="description-lv" type="string" value="Rada metafaila objektus, lai piekÄ¼Å«tu Nautilus metaatiem"/>
+  <oaf_attribute name="description-mn" type="string" value="ÐÐ°ÑÑÐ¸Ð»ÑÑÑÐ½ ÐÐµÑÐ°ÑÐ°Ð¹Ð»ÑÑÐ´ÑÐ³ ÑÐ½ÑÐ¸ÑÑÐ½ ÑÑÐ»Ð´ Ð¼ÐµÑÐ°ÑÐ°Ð¹Ð»ÑÐ½-Ð¾Ð±ÑÐµÐºÑÑÑÐ´ÑÐ³ Ò¯Ò¯ÑÐ³ÑÐ´ÑÐ³"/>
   <oaf_attribute name="description-ms" type="string" value="Hasilkan objek metafile bagi menakses metadata Nautilus"/>
   <oaf_attribute name="description-nl" type="string" value="Maakt metabestandsobjecten aan voor het benaderen van Nautilus-metadata"/>
-  <oaf_attribute name="description-no" type="string" value="Produserer metafil-objekter for å aksessere Nautilus metadata"/>
-  <oaf_attribute name="description-pl" type="string" value="Tworzy obiekty metaplików, dające dostęp do danych charakterystycznych dla Nautilusa"/>
+  <oaf_attribute name="description-no" type="string" value="Produserer metafil-objekter for Ã¥ aksessere Nautilus metadata"/>
+  <oaf_attribute name="description-pl" type="string" value="Tworzy obiekty metaplikÃ³w, dajÄce dostÄp do danych charakterystycznych dla Nautilusa"/>
   <oaf_attribute name="description-pt" type="string" value="Produz objectos metafile para aceder aos metadados do Nautilus"/>
   <oaf_attribute name="description-pt_BR" type="string" value="Produz objetos metafile para acessar metadados do Nautilus"/>
-  <oaf_attribute name="description-ru" type="string" value="Создаёт метафайлы объектов для доступа к метаданным программы Nautilus"/>
-  <oaf_attribute name="description-sk" type="string" value="Vytvorí objekty meta-súborov pre prístup k meta-údajom Nautilusu."/>
+  <oaf_attribute name="description-ro" type="string" value="Produce obiecte metafiÅiere pentru a accesa meta-datele Nautilus"/>
+  <oaf_attribute name="description-ru" type="string" value="Ð¡Ð¾Ð·Ð´Ð°ÑÑ Ð¼ÐµÑÐ°ÑÐ°Ð¹Ð»Ñ Ð¾Ð±ÑÐµÐºÑÐ¾Ð² Ð´Ð»Ñ Ð´Ð¾ÑÑÑÐ¿Ð° Ðº Ð¼ÐµÑÐ°Ð´Ð°Ð½Ð½ÑÐ¼ &quot;ÐÐ°ÑÑÐ¸Ð»ÑÑÐ°&quot;"/>
+  <oaf_attribute name="description-sk" type="string" value="VytvorÃ­ objekty meta-sÃºborov pre prÃ­stup k meta-Ãºdajom Nautilusu."/>
   <oaf_attribute name="description-sl" type="string" value="Ustvari predmete meta datotek za dostop do Nautilusovih meta datotek"/>
-  <oaf_attribute name="description-sq" type="string" value="Prodhon objekte metafile për hyrje në metadata e Nautilus"/>
-  <oaf_attribute name="description-sv" type="string" value="Skapar metafil-objekt för att komma åt Nautilus-metadata"/>
-  <oaf_attribute name="description-tr" type="string" value="Nautilus meta verilerine ulaşmak için meta dosya nesneleri oluşturur"/>
-  <oaf_attribute name="description-vi" type="string" value="Sản xuất các đối tượng metafile để truy cập Nautilus metadata"/>
-  <oaf_attribute name="description-zh_CN" type="string" value="生成用来存取 Nautilus 元数据的元文件对象"/>
+  <oaf_attribute name="description-sq" type="string" value="Prodhon objekte metafile pÃ«r hyrje nÃ« metadata e Nautilus"/>
+  <oaf_attribute name="description-sv" type="string" value="Skapar metafil-objekt fÃ¶r att komma Ã¥t Nautilus-metadata"/>
+  <oaf_attribute name="description-tr" type="string" value="Nautilus meta verilerine ulaÅmak iÃ§in meta dosya nesneleri oluÅturur"/>
+  <oaf_attribute name="description-uk" type="string" value="Ð¡ÑÐ²Ð¾ÑÑÑ Ð¼ÐµÑÐ°ÑÐ°Ð¹Ð»Ð¸ Ð¾Ð±&apos;ÑÐºÑÑÐ² Ð´Ð»Ñ Ð´Ð¾ÑÑÑÐ¿Ñ Ð´Ð¾ Ð¼ÐµÑÐ°Ð´Ð°Ð½Ð¸Ñ ÐÐ°ÑÑÑÐ»ÑÑ"/>
+  <oaf_attribute name="description-vi" type="string" value="Sáº£n xuáº¥t cÃ¡c Äá»i tÆ°á»£ng metafile Äá» truy cáº­p Nautilus metadata"/>
+  <oaf_attribute name="description-zh_CN" type="string" value="çæç¨æ¥å­å Nautilus åæ°æ®çåæä»¶å¯¹è±¡"/>
+  <oaf_attribute name="description-zh_TW" type="string" value="ç¢çéå±¬è³æç©ä»¶ï¼ç¨ä¾å­å Nautilus çæªæ¡éå±¬è³æ"/>
 </oaf_server>
 
 </oaf_info>

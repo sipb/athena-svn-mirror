@@ -28,6 +28,7 @@
 #include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
+#include <stdlib.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
@@ -132,6 +133,9 @@ struct FMIconViewDetails
 	NautilusAudioPlayerData *audio_player_data;
 	int audio_preview_timeout;
 	NautilusFile *audio_preview_file;
+
+	gboolean filter_by_screen;
+	int num_screens;
 };
 
 
@@ -274,7 +278,8 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	 * point values since there aren't locale-specific formats for
 	 * integers in C stdio.
 	 */
-	locale = setlocale (LC_NUMERIC, "C");
+	locale = g_strdup (setlocale (LC_NUMERIC, NULL));	
+	setlocale (LC_NUMERIC, "C");
 
 	/* Get the current position of this icon from the metadata. */
 	position_string = nautilus_file_get_metadata
@@ -307,7 +312,8 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	g_free (scale_string);
 
 	setlocale (LC_NUMERIC, locale);
-
+	g_free (locale);
+	
 	return position_good;
 }
 
@@ -463,23 +469,31 @@ fm_icon_view_clear (FMDirectoryView *view)
 	nautilus_icon_container_clear (icon_container);
 }
 
-static void
-fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
+
+static gboolean
+should_show_file_on_screen (FMDirectoryView *view, NautilusFile *file)
 {
+	char *screen_string;
+	int screen_num;
 	FMIconView *icon_view;
-	NautilusIconContainer *icon_container;
+	GdkScreen *screen;
 
 	icon_view = FM_ICON_VIEW (view);
-	icon_container = get_icon_container (icon_view);
-	
-	/* Reset scroll region for the first icon added when loading a directory. */
-	if (icon_view->details->loading && nautilus_icon_container_is_empty (icon_container)) {
-		nautilus_icon_container_reset_scroll_region (icon_container);
+
+	/* Get the screen for this icon from the metadata. */
+	screen_string = nautilus_file_get_metadata
+		(file, NAUTILUS_METADATA_KEY_SCREEN, "0");
+	screen_num = atoi (screen_string);
+	g_free (screen_string);
+	screen = gtk_widget_get_screen (GTK_WIDGET (view));
+
+	if (screen_num != gdk_screen_get_number (screen) &&
+	    (screen_num < icon_view->details->num_screens ||
+	     gdk_screen_get_number (screen) > 0)) {
+		return FALSE;
 	}
-	if (nautilus_icon_container_add (icon_container,
-					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
-		nautilus_file_ref (file);
-	}
+
+	return TRUE;
 }
 
 static void
@@ -492,11 +506,53 @@ fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
+fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
+{
+	FMIconView *icon_view;
+	NautilusIconContainer *icon_container;
+	
+	icon_view = FM_ICON_VIEW (view);
+	icon_container = get_icon_container (icon_view);
+
+	if (icon_view->details->filter_by_screen &&
+	    !should_show_file_on_screen (view, file)) {
+			return;
+	}
+	
+	/* Reset scroll region for the first icon added when loading a directory. */
+	if (icon_view->details->loading && nautilus_icon_container_is_empty (icon_container)) {
+		nautilus_icon_container_reset_scroll_region (icon_container);
+	}
+	if (nautilus_icon_container_add (icon_container,
+					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+		nautilus_file_ref (file);
+	}
+}
+
+
+static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
-	nautilus_icon_container_request_update
-		(get_icon_container (FM_ICON_VIEW (view)),
-		 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	FMIconView *icon_view;
+
+	g_return_if_fail (view != NULL);
+	icon_view = FM_ICON_VIEW (view);
+
+	if (!icon_view->details->filter_by_screen) {
+		nautilus_icon_container_request_update
+			(get_icon_container (icon_view),
+			 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+		return;
+	}
+	
+	if (!should_show_file_on_screen (view, file)) {
+		fm_icon_view_remove_file (view, file);
+	} else {
+
+		nautilus_icon_container_request_update
+			(get_icon_container (icon_view),
+			 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	}
 }
 
 static gboolean
@@ -1741,7 +1797,7 @@ renaming_icon_callback (NautilusIconContainer *container,
 	nautilus_clipboard_set_up_editable_in_control
 		(GTK_EDITABLE (widget),
 		 fm_directory_view_get_bonobo_control (directory_view),
-		 TRUE);
+		 FALSE);
 }
 
 int
@@ -1749,12 +1805,19 @@ fm_icon_view_compare_files (FMIconView   *icon_view,
 			    NautilusFile *a,
 			    NautilusFile *b)
 {
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-
 	return nautilus_file_compare_for_sort
 		(a, b, icon_view->details->sort->sort_type,
-		 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)),
+		 /* Use type-unsafe cast for performance */
+		 fm_directory_view_should_sort_directories_first ((FMDirectoryView *)icon_view),
 		 icon_view->details->sort_reversed);
+}
+
+void
+fm_icon_view_filter_by_screen (FMIconView *icon_view,
+			       gboolean filter)
+{
+	icon_view->details->filter_by_screen = filter;
+	icon_view->details->num_screens = gdk_display_get_n_screens (gtk_widget_get_display (GTK_WIDGET (icon_view)));
 }
 
 static int
@@ -1850,7 +1913,8 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	 * point values since there aren't locale-specific formats for
 	 * integers in C stdio.
 	 */
-	locale = setlocale (LC_NUMERIC, "C");
+	locale = g_strdup (setlocale (LC_NUMERIC, NULL));	
+	setlocale (LC_NUMERIC, "C");
 
 	/* Schedule updating menus for the next idle. Doing it directly here
 	 * noticeably slows down icon stretching.  The other work here to
@@ -1895,6 +1959,7 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	g_free (scale_string);
 
 	setlocale (LC_NUMERIC, locale);
+	g_free (locale);
 }
 
 /* Attempt to change the filename to the new text.  Notify user if operation fails. */
@@ -2417,6 +2482,7 @@ fm_icon_view_instance_init (FMIconView *icon_view)
 
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
 	icon_view->details->sort = &sort_criteria[0];
+	icon_view->details->filter_by_screen = FALSE;
 
 	create_icon_container (icon_view);
 

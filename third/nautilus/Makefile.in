@@ -75,6 +75,8 @@ DISABLE_DEPRECATED_CFLAGS = @DISABLE_DEPRECATED_CFLAGS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EEL_REQUIRED = @EEL_REQUIRED@
+EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
+EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 EXEEXT = @EXEEXT@
 GCONFTOOL = @GCONFTOOL@
@@ -100,7 +102,6 @@ INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
-INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
 INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
@@ -109,6 +110,7 @@ INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
+LIBEGG_CFLAGS = @LIBEGG_CFLAGS@
 LIBJPEG = @LIBJPEG@
 LIBNAUTILUS_CFLAGS = @LIBNAUTILUS_CFLAGS@
 LIBNAUTILUS_IDL_INCLUDES = @LIBNAUTILUS_IDL_INCLUDES@
@@ -119,14 +121,9 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MEDUSA_REQUIRED = @MEDUSA_REQUIRED@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-MUSIC_COMPONENT_CFLAGS = @MUSIC_COMPONENT_CFLAGS@
-MUSIC_COMPONENT_LIBS = @MUSIC_COMPONENT_LIBS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-ORBIT_CFLAGS = @ORBIT_CFLAGS@
-ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
-ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
@@ -140,7 +137,10 @@ XML_REQUIRED = @XML_REQUIRED@
 
 NULL = 
 
-DESKTOP_IN_FILES = nautilus.desktop.in
+DESKTOP_IN_FILES = \
+	nautilus.desktop.in				\
+	nautilus-file-management-properties.desktop
+
 DESKTOP_FILES = $(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 SUBDIRS = \
@@ -167,8 +167,6 @@ EXTRA_DIST = \
 	nautilus.spec.in			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
-	gnome-starthere-96.png			\
-	gnome-starthere.png			\
 	ChangeLog-20000414			\
 	ChangeLog-20000625			\
 	ChangeLog-20000831			\
@@ -183,18 +181,13 @@ EXTRA_DIST = \
 	$(NULL)
 
 
-appicondir = $(datadir)/pixmaps
-appicon_DATA = gnome-starthere-96.png		\
-		gnome-starthere.png
-
-
 Applicationsdir = $(datadir)/applications
 Applications_DATA = $(DESKTOP_FILES)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =  nautilus.spec
-DATA =  $(Applications_DATA) $(appicon_DATA)
+DATA =  $(Applications_DATA)
 
 DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING COPYING.LIB ChangeLog \
 INSTALL Makefile.am Makefile.in NEWS THANKS TODO acconfig.h aclocal.m4 \
@@ -270,25 +263,6 @@ uninstall-ApplicationsDATA:
 	@$(NORMAL_UNINSTALL)
 	list='$(Applications_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(Applicationsdir)/$$p; \
-	done
-
-install-appiconDATA: $(appicon_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(appicondir)
-	@list='$(appicon_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(appicondir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(appicondir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(appicondir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(appicondir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-appiconDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(appicon_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(appicondir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -453,13 +427,13 @@ all-recursive-am: config.h
 install-exec-am:
 install-exec: install-exec-recursive
 
-install-data-am: install-ApplicationsDATA install-appiconDATA
+install-data-am: install-ApplicationsDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-ApplicationsDATA uninstall-appiconDATA
+uninstall-am: uninstall-ApplicationsDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(DATA) config.h
 all-redirect: all-recursive-am
@@ -467,7 +441,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(Applicationsdir) $(DESTDIR)$(appicondir)
+	$(mkinstalldirs)  $(DESTDIR)$(Applicationsdir)
 
 
 mostlyclean-generic:
@@ -503,8 +477,7 @@ maintainer-clean: maintainer-clean-recursive
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
 uninstall-ApplicationsDATA install-ApplicationsDATA \
-uninstall-appiconDATA install-appiconDATA install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
+install-data-recursive uninstall-data-recursive install-exec-recursive \
 uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \

@@ -38,6 +38,7 @@
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE          "property/bgimage"
 #define NAUTILUS_ICON_DND_KEYWORD_TYPE          "property/keyword"
 #define NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE "x-special/gnome-reset-background"
+#define NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE  "application/x-rootwindow-drop"
 
 /* Item of the drag selection list */
 typedef struct {
@@ -56,12 +57,14 @@ typedef enum {
 	NAUTILUS_ICON_DND_BGIMAGE,
 	NAUTILUS_ICON_DND_KEYWORD,
 	NAUTILUS_ICON_DND_TEXT,
-	NAUTILUS_ICON_DND_RESET_BACKGROUND
+	NAUTILUS_ICON_DND_RESET_BACKGROUND,
+	NAUTILUS_ICON_DND_ROOTWINDOW_DROP
 } NautilusIconDndTargetType;
 
 typedef enum {
 	NAUTILUS_DND_ACTION_FIRST = GDK_ACTION_ASK << 1,
-	NAUTILUS_DND_ACTION_SET_AS_BACKGROUND = NAUTILUS_DND_ACTION_FIRST << 0
+	NAUTILUS_DND_ACTION_SET_AS_BACKGROUND = NAUTILUS_DND_ACTION_FIRST << 0,
+	NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND = NAUTILUS_DND_ACTION_FIRST << 1
 } NautilusDndAction;
 
 /* drag&drop-related information. */
@@ -80,9 +83,6 @@ typedef struct {
 	 * if data about them has not been received from the source yet.
 	 */
 	GList *selection_list;
-
-	/* Stipple for drawing icon shadows during DnD.  */
-	GdkBitmap *stipple;
 
         /* has the drop occured ? */
         gboolean drop_occured;
@@ -106,8 +106,7 @@ typedef void 		(* NautilusDragEachSelectedItemIterator)	(NautilusDragEachSelecte
 
 void                        nautilus_drag_init                          (NautilusDragInfo                     *drag_info,
 									 const GtkTargetEntry                 *drag_types,
-									 int                                   drag_type_count,
-									 GdkBitmap                            *stipple);
+									 int                                   drag_type_count);
 void                        nautilus_drag_finalize                      (NautilusDragInfo                     *drag_info);
 NautilusDragSelectionItem  *nautilus_drag_selection_item_new            (void);
 void                        nautilus_drag_destroy_selection_list        (GList                                *selection_list);
@@ -128,7 +127,10 @@ gboolean                    nautilus_drag_drag_data_get                 (GtkWidg
 									 NautilusDragEachSelectedItemIterator  each_selected_item_iterator);
 int                         nautilus_drag_modifier_based_action         (int                                   default_action,
 									 int                                   non_default_action);
+
 GdkDragAction               nautilus_drag_drop_action_ask               (GdkDragAction                         possible_actions);
+GdkDragAction               nautilus_drag_drop_background_ask           (GdkDragAction                         possible_actions);
+
 gboolean                    nautilus_drag_autoscroll_in_scroll_region   (GtkWidget                            *widget);
 void                        nautilus_drag_autoscroll_calculate_delta    (GtkWidget                            *widget,
 									 float                                *x_scroll_delta,

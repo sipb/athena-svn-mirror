@@ -36,14 +36,19 @@ typedef struct {
 	/* inherited drag info context */
 	NautilusDragInfo drag_info;
 
+	/* Stipple for drawing icon shadows during DnD.  */
+        GdkBitmap *stipple;
+
 	/* Shadow for the icons being dragged.  */
-	GnomeCanvasItem *shadow;
+	EelCanvasItem *shadow;
 } NautilusIconDndInfo;
 
 
 void   nautilus_icon_dnd_init                  (NautilusIconContainer *container,
 						GdkBitmap             *stipple);
 void   nautilus_icon_dnd_fini                  (NautilusIconContainer *container);
+void   nautilus_icon_dnd_set_stipple           (NautilusIconContainer *container,
+						GdkBitmap             *stipple);
 void   nautilus_icon_dnd_begin_drag            (NautilusIconContainer *container,
 						GdkDragAction          actions,
 						gint                   button,

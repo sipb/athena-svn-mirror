@@ -30,11 +30,14 @@
 
 #include "nautilus-applicable-views.h"
 #include "nautilus-application.h"
+#include "nautilus-information-panel.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-main.h"
 #include "nautilus-window-private.h"
 #include "nautilus-zoom-control.h"
+#include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-property-bag-client.h>
 #include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
@@ -60,6 +63,7 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-uri.h>
+#include <libnautilus-private/nautilus-theme.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -181,7 +185,11 @@ compute_title (NautilusWindow *window)
         char *title;
 
 	title = NULL;
-        if (window->new_content_view != NULL) {
+	
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		/* Special Desktop window title (displayed in the Ctrl-Alt-Tab window) */
+		title = g_strdup(_("Desktop"));
+	} else if (window->new_content_view != NULL) {
                 title = nautilus_view_frame_get_title (window->new_content_view);
         } else if (window->content_view != NULL) {
                 title = nautilus_view_frame_get_title (window->content_view);
@@ -226,9 +234,9 @@ update_title (NautilusWindow *window)
                 gtk_window_set_title (GTK_WINDOW (window), window_title);
                 g_free (window_title);
         }
-
-	if (window->sidebar != NULL) {
-        	nautilus_sidebar_set_title (window->sidebar, title);
+	if (window->information_panel) {
+        	nautilus_information_panel_set_title 
+                        (window->information_panel, title);
 	}
         
         if (title [0] != '\0' && window->current_location_bookmark &&
@@ -252,6 +260,42 @@ update_title (NautilusWindow *window)
 	g_list_free (sidebar_panels);
 
         g_free (title);
+}
+
+/* nautilus_window_update_icon:
+ * 
+ * Update the non-NautilusViewFrame objects that use the location's user-displayable
+ * icon in some way. Called when the location or icon-theme has changed.
+ * @window: The NautilusWindow in question.
+ * 
+ */
+void
+nautilus_window_update_icon (NautilusWindow *window)
+{
+	char *path;
+	GdkPixbuf *pixbuf;
+
+	pixbuf = NULL;
+	
+	/* Desktop window special icon */
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		path = nautilus_pixmap_file ("nautilus-desktop.png");
+
+		if (path != NULL) {
+			pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+			
+			g_free (path);
+		}
+	} else {
+		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (window->details->viewed_file,
+								    "open",
+								    NAUTILUS_ICON_SIZE_STANDARD);
+	}
+
+	if (pixbuf != NULL) {
+		gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
+		g_object_unref (pixbuf);
+	}
 }
 
 /* set_displayed_location:
@@ -286,6 +330,7 @@ set_displayed_location (NautilusWindow *window, const char *location)
         }
 
         update_title (window);
+	nautilus_window_update_icon (window);
 }
 
 static void
@@ -497,6 +542,7 @@ viewed_file_changed_callback (NautilusFile *file,
                 }
 
                 update_title (window);
+		nautilus_window_update_icon (window);
         }
 }
 
@@ -584,15 +630,15 @@ update_for_new_location (NautilusWindow *window)
         nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (window->navigation_bar),
                                               window->details->location);
         
-        /* Notify the sidebar of the location change. */
+        /* Notify the information panel of the location change. */
         /* FIXME bugzilla.gnome.org 40211:
          * Eventually, this will not be necessary when we restructure the 
          * sidebar itself to be a NautilusViewFrame.
          */
-	if (window->sidebar != NULL) {
-		nautilus_sidebar_set_uri (window->sidebar,
-					  window->details->location,
-					  window->details->title);
+	if (window->information_panel) {
+		nautilus_information_panel_set_uri (window->information_panel,
+                                                    window->details->location,
+                                                    window->details->title);
 	}
 }
 
@@ -648,6 +694,7 @@ location_has_really_changed (NautilusWindow *window)
         free_location_change (window);
 
         update_title (window);
+	nautilus_window_update_icon (window);
 
         /* The whole window has been finished. Now show it, unless
          * we're still waiting for the saved positions from the
@@ -693,8 +740,10 @@ open_location (NautilusWindow *window,
         }
 
         if (create_new_window) {
-                target_window = nautilus_application_create_window (window->application);
-        }
+                target_window = nautilus_application_create_window (
+						window->application,
+						gtk_window_get_screen (GTK_WINDOW (window)));
+	}
 
 	eel_g_list_free_deep (target_window->details->pending_selection);
         target_window->details->pending_selection = eel_g_str_list_copy (new_selection);
@@ -1036,9 +1085,6 @@ handle_view_failure (NautilusWindow *window,
 	if (view_frame_is_sidebar_panel (view)) {
                 report_sidebar_panel_failure_to_user (window, view);
 		current_iid = nautilus_view_frame_get_view_iid (view);
-		if (window->sidebar != NULL) {
-			nautilus_sidebar_hide_active_panel_if_matches (window->sidebar, current_iid);
-		}
 		disconnect_and_destroy_sidebar_panel (window, view);
 	} else {
 	        if (view == window->content_view) {
@@ -1330,6 +1376,13 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                                                  uri_for_display);
 		break;
 
+        case NAUTILUS_DETERMINE_VIEW_NO_MASTER_BROWSER:
+                error_message = g_strdup_printf
+                        (_("Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser.\n"
+                           "Check that an SMB server is running in the local network."),
+                         uri_for_display);
+                break;
+
 	case NAUTILUS_DETERMINE_VIEW_SERVICE_NOT_AVAILABLE:
 		if (nautilus_is_search_uri (location)) {
 			/* FIXME bugzilla.gnome.org 42458: Need to give
@@ -1343,17 +1396,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                                    "don't have an index, that the Medusa indexer is running."));
 			dialog_title = g_strdup (_("Searching Unavailable"));
 			break;
-		} else {
-			/* This is a special case for the smb: module */
-			if (eel_istr_has_prefix(location, "smb:") == 0)
-			{
-				error_message = g_strdup_printf
-					(_("Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser.\n"
-					"Check that an SMB server is running in the local network."),
-					uri_for_display);
-				break;
-			}
-		}
+		} 
 		/* else fall through */
         default:
                 error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."),
@@ -1571,9 +1614,6 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 						 compare_view_identifier_with_iid);
 		if (found_node == NULL) {
 			current_iid = nautilus_view_frame_get_view_iid (sidebar_panel);
-			if (window->sidebar != NULL) {
-				nautilus_sidebar_hide_active_panel_if_matches (window->sidebar, current_iid);
-			}
 			disconnect_and_destroy_sidebar_panel (window, sidebar_panel);
 		} else {
                         identifier = (NautilusViewIdentifier *) found_node->data;
@@ -1964,6 +2004,91 @@ title_changed_callback (NautilusViewFrame *view,
         g_assert (NAUTILUS_IS_WINDOW (window));
 
         update_title (window);
+	nautilus_window_update_icon (window);
+}
+
+static void
+set_side_panel_image (NautilusWindow *window,
+                      NautilusViewFrame *side_panel,
+                      const char *image_name)
+{
+        GdkPixbuf *pixbuf;
+        char *image_path;
+
+        pixbuf = NULL;
+        
+        if (image_name && image_name[0]) {
+                image_path = nautilus_theme_get_image_path (image_name);
+                if (image_path) {
+                        pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
+                        g_free (image_path);
+                }
+        }
+
+        nautilus_side_pane_set_panel_image (window->sidebar,
+                                            GTK_WIDGET (side_panel),
+                                            pixbuf);
+        
+        if (pixbuf) {
+                g_object_unref (pixbuf);
+        }
+}
+
+static void
+side_panel_image_changed_callback (BonoboListener *listener,
+                                   const char *event_name,
+                                   const CORBA_any *arg,
+                                   CORBA_Environment *ev,
+                                   gpointer callback_data)
+{
+        NautilusViewFrame *side_panel;
+        NautilusWindow *window;
+
+        side_panel = NAUTILUS_VIEW_FRAME (callback_data);        
+        window = NAUTILUS_WINDOW (g_object_get_data (G_OBJECT (side_panel),
+                                                     "nautilus-window"));
+
+        set_side_panel_image (window, side_panel, BONOBO_ARG_GET_STRING (arg));
+}
+
+static void
+connect_side_panel (NautilusWindow *window,
+                    NautilusViewFrame *side_panel)
+{
+        Bonobo_Control control;
+        Bonobo_PropertyBag property_bag;
+        CORBA_Environment ev;
+        char *image_name;
+        
+        g_object_set_data (G_OBJECT (side_panel),
+                           "nautilus-window",
+                           window);
+        
+        control = nautilus_view_frame_get_control (side_panel);
+
+        if (control != CORBA_OBJECT_NIL) {
+                CORBA_exception_init (&ev);
+                property_bag = Bonobo_Control_getProperties (control, &ev);
+                if (property_bag != CORBA_OBJECT_NIL) {                        
+                        bonobo_event_source_client_add_listener 
+                                (property_bag,
+                                 side_panel_image_changed_callback,
+                                 "Bonobo/Property:change:tab_image",
+                                 NULL,
+                                 side_panel);
+                        
+                        /* Set the initial tab image */
+                        image_name = bonobo_property_bag_client_get_value_string
+                                (property_bag, 
+                                 "tab_image", 
+                                 NULL);
+                        set_side_panel_image (window, side_panel, image_name);
+                        g_free (image_name);
+                        
+                        bonobo_object_release_unref (property_bag, NULL);
+                }
+                CORBA_exception_free (&ev);
+        }
 }
 
 static void
@@ -1985,6 +2110,11 @@ view_loaded_callback (NautilusViewFrame *view,
                                                        window->details->selection);
                 }
         }
+
+        if (view_frame_is_sidebar_panel (view)) {
+                connect_side_panel (window, view);
+        }
+
         if (window->details->title != NULL) {
                 nautilus_view_frame_title_changed (view, window->details->title);
         }

@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_ICON_CONTAINER_H
 #define NAUTILUS_ICON_CONTAINER_H
 
-#include <libgnomecanvas/gnome-canvas.h>
+#include <eel/eel-canvas.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 
 #define NAUTILUS_ICON_CONTAINER(obj) \
@@ -64,12 +64,12 @@ typedef enum {
 typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
 
 typedef struct {
-	GnomeCanvas canvas;
+	EelCanvas canvas;
 	NautilusIconContainerDetails *details;
 } NautilusIconContainer;
 
 typedef struct {
-	GnomeCanvasClass parent_slot;
+	EelCanvasClass parent_slot;
 
 	/* Operations on the container. */
 	int          (* button_press) 	          (NautilusIconContainer *container,
@@ -105,11 +105,10 @@ typedef struct {
 	 * These must be implemented. The default "do nothing" is not
 	 * good enough, these are _not_ signals.
 	 */
-	NautilusScalableIcon *
-	             (* get_icon_images)          (NautilusIconContainer *container,
+	char *       (* get_icon_images)          (NautilusIconContainer *container,
 						   NautilusIconData *data,
-						   const char *modifier,
-						   GList **emblem_icons);
+						   GList **emblem_icons,
+						   char **embedded_text);
 	void         (* get_icon_text)            (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   char **editable_text,
@@ -226,6 +225,9 @@ void              nautilus_icon_container_enable_linger_selection       (Nautilu
 gboolean          nautilus_icon_container_get_is_fixed_size             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 									 gboolean                is_fixed_size);
+gboolean          nautilus_icon_container_get_is_desktop                (NautilusIconContainer  *container);
+void              nautilus_icon_container_set_is_desktop                (NautilusIconContainer  *container,
+									 gboolean                is_desktop);
 void              nautilus_icon_container_reset_scroll_region           (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_font                      (NautilusIconContainer  *container,
 									 const char             *font); 

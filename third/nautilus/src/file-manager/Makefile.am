@@ -4,6 +4,7 @@ noinst_LTLIBRARIES=libnautilus-file-manager.la
 
 INCLUDES = 					\
 	-I$(top_srcdir) 			\
+	-I$(top_srcdir)/cut-n-paste-code	\
 	$(CORE_CFLAGS)				\
 	-DVERSION="\"$(VERSION)\""		\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
@@ -14,6 +15,7 @@ INCLUDES = 					\
 	-DGTK_DISABLE_DEPRECATED \
 	-DGNOME_DISABLE_DEPRECATED \
 	$(NULL)	
+
 
 
 libnautilus_file_manager_la_SOURCES=	\

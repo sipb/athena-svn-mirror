@@ -14,7 +14,7 @@
 	 _tip="Go to the next visited location"/>
 	<cmd name="Up"
 	 _tip="Go up one level"/>
-	<cmd name="Find" accel="*Control*f"
+	<cmd name="Find"
 	 _tip="Search this computer for files"/>
 	<cmd name="Toggle Find Mode" 
 	 _label="Find"
@@ -46,6 +46,7 @@
 <keybindings>
 	<accel name="*Control*equal" verb="Zoom In"/>
 	<accel name="*Control**Shift*plus" verb="Zoom In"/>
+	<accel name="BackSpace" verb="Up"/>
 </keybindings>
 
 <menu>
@@ -144,6 +145,7 @@
 	<submenu name="View" _label="_View">
 		<menuitem name="Stop" 
 			  _label="_Stop"
+			  accel="Escape"
 			  pixtype="stock" pixname="gtk-stop"
 			  verb="Stop"/>
 		<menuitem name="Reload"
@@ -157,6 +159,7 @@
 				  type="toggle"
 				  _label="_Side Pane"
 				  _tip="Change the visibility of this window's sidebar"
+				  accel="F9"
 				  id="Show Hide Sidebar"/>
 			<menuitem name="Show Hide Toolbar" 
 				  type="toggle"

@@ -1,7 +1,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Name:             nautilus
 Summary:          Nautilus is a network user environment
-Version:          2.0.8
+Version:          2.2.0.2
 Release:          1
 License:          GPL
 Group:            User Interface/Desktop
@@ -12,31 +12,29 @@ BuildRoot:        %{_tmppath}/%{name}-%{version}-root
 BuildRequires:    pkgconfig >= 0.8
 Requires:         esound >= @ESOUND_REQUIRED@
 Requires:         bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
-Requires:         eel2 >= 2.0.4
+Requires:         eel2 >= 2.2.0
 Requires:         glib2 >= @GLIB_REQUIRED@
-Requires:         gnome-vfs2 >= 1.9
+Requires:         gnome-vfs2 >= 2.1.5
 Requires:         gtk2 >= @GTK_REQUIRED@
 Requires:         libart_lgpl >= @ART_REQUIRED@
 Requires:         libbonobo >= @BONOBO_REQUIRED@
 Requires:         libbonoboui >= @BONOBO_UI_REQUIRED@
 Requires:         libgnome >= @GNOME_REQUIRED@
 Requires:         gnome-desktop >= @GNOME_DESKTOP_REQUIRED@
-Requires:         libgnomecanvas >= @GNOME_CANVAS_REQUIRED@
 Requires:         libgnomeui >= @GNOME_UI_REQUIRED@
 Requires:         librsvg2 >= 2.0.1
 Requires:         libxml2 >= 2.4.7
 BuildRequires:    esound-devel >= @ESOUND_REQUIRED@
 BuildRequires:    bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
-BuildRequires:    eel2-devel >= 2.0.4
+BuildRequires:    eel2-devel >= 2.2.0
 BuildRequires:    glib2-devel >= @GLIB_REQUIRED@
-BuildRequires:    gnome-vfs2-devel >= 1.9
+BuildRequires:    gnome-vfs2-devel >= 2.1.5
 BuildRequires:    gtk2-devel >= @GTK_REQUIRED@
 BuildRequires:    libart_lgpl-devel >= @ART_REQUIRED@
 BuildRequires:    libbonobo-devel >= @BONOBO_REQUIRED@
 BuildRequires:    libbonoboui-devel >= @BONOBO_UI_REQUIRED@
 BuildRequires:    libgnome-devel >= @GNOME_REQUIRED@
 BuildRequires:    gnome-desktop-devel >= @GNOME_DESKTOP_REQUIRED@
-BuildRequires:    libgnomecanvas-devel >= @GNOME_CANVAS_REQUIRED@
 BuildRequires:    libgnomeui-devel >= @GNOME_UI_REQUIRED@
 BuildRequires:    librsvg2-devel >= 2.0.1
 BuildRequires:    libxml2-devel >= 2.4.7
@@ -58,12 +56,12 @@ Requires:         esound >= @ESOUND_REQUIRED@
 Requires:         esound-devel >= @ESOUND_REQUIRED@
 Requires:         bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
 Requires:         bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
-Requires:         eel2 >= 2.0.4
-Requires:         eel2-devel >= 2.0.4
+Requires:         eel2 >= 2.2.0
+Requires:         eel2-devel >= 2.2.0
 Requires:         glib2 >= @GLIB_REQUIRED@
 Requires:         glib2-devel >= @GLIB_REQUIRED@
-Requires:         gnome-vfs2 >= 1.9
-Requires:         gnome-vfs2-devel >= 1.9
+Requires:         gnome-vfs2 >= 2.1.5
+Requires:         gnome-vfs2-devel >= 2.1.5
 Requires:         gtk2 >= @GTK_REQUIRED@
 Requires:         gtk2-devel >= @GTK_REQUIRED@
 Requires:         libart_lgpl >= @ART_REQUIRED@
@@ -76,8 +74,6 @@ Requires:         libgnome >= @GNOME_REQUIRED@
 Requires:         libgnome-devel >= @GNOME_REQUIRED@
 Requires:         gnome-desktop >= @GNOME_DESKTOP_REQUIRED@
 Requires:         gnome-desktop-devel >= @GNOME_DESKTOP_REQUIRED@
-Requires:         libgnomecanvas >= @GNOME_CANVAS_REQUIRED@
-Requires:         libgnomecanvas-devel >= @GNOME_CANVAS_REQUIRED@
 Requires:         libgnomeui >= @GNOME_UI_REQUIRED@
 Requires:         libgnomeui-devel >= @GNOME_UI_REQUIRED@
 Requires:         librsvg2 >= 2.0.1

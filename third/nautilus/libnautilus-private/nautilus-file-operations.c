@@ -117,10 +117,12 @@ typedef struct {
 	int last_icon_position_index;
 	GList *uris;
 	const GList *last_uri;
+	int screen;
 } IconPositionIterator;
 
 static IconPositionIterator *
-icon_position_iterator_new (GArray *icon_positions, const GList *uris)
+icon_position_iterator_new (GArray *icon_positions, const GList *uris,
+			    int screen)
 {
 	IconPositionIterator *result;
 	guint index;
@@ -137,6 +139,7 @@ icon_position_iterator_new (GArray *icon_positions, const GList *uris)
 
 	result->uris = eel_g_str_list_copy ((GList *)uris);
 	result->last_uri = result->uris;
+	result->screen = screen;
 
 	return result;
 }
@@ -497,6 +500,7 @@ typedef enum {
 	ERROR_NOT_WRITABLE,
 	ERROR_NOT_ENOUGH_PERMISSIONS,
 	ERROR_NO_SPACE,
+	ERROR_SOURCE_IN_TARGET,
 	ERROR_OTHER
 } NautilusFileOperationsErrorKind;
 
@@ -581,10 +585,19 @@ build_error_string (const char *source_name, const char *target_name,
 		 */
 		switch (operation_kind) {
 		case TRANSFER_MOVE:
-			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+			switch (error_kind) {
+			case ERROR_NOT_ENOUGH_PERMISSIONS:
 				error_string = _("Error while moving.\n\n"
 						 "\"%s\" cannot be moved because you do not have "
 						 "permissions to change it or its parent folder.");
+				break;
+			case ERROR_SOURCE_IN_TARGET:
+				error_string = _("Error while moving.\n\n"
+						 "\"%s\" cannot be moved because it or its parent folder "
+						 "are contained in the destination.");
+				break;
+			default:
+				break;
 			}
 			break;
 		case TRANSFER_MOVE_TO_TRASH:
@@ -862,6 +875,10 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
 			error_location = ERROR_LOCATION_TARGET;
 			error_kind = ERROR_NO_SPACE;
+		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
+			   && transfer_info->kind == TRANSFER_MOVE) {
+			error_location = ERROR_LOCATION_SOURCE_OR_PARENT;
+			error_kind = ERROR_SOURCE_IN_TARGET;
 		}
 
 		text = build_error_string (formatted_source_name, formatted_target_name,
@@ -890,7 +907,8 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			break;
 		}
 
-		if (error_location == ERROR_LOCATION_TARGET) {
+		if (error_location == ERROR_LOCATION_TARGET ||
+		    error_kind == ERROR_SOURCE_IN_TARGET) {
 			/* We can't continue, just tell the user. */
 			eel_run_simple_dialog (parent_for_error_dialog (transfer_info),
 				TRUE, text, dialog_title, _("Stop"), NULL);
@@ -1085,14 +1103,20 @@ get_link_name (char *name, int count)
 {
 	char *result;
 	char *unescaped_name;
+	char *unescaped_tmp_name;
 	char *unescaped_result;
+	char *new_file;
 
 	const char *format;
 	
 	g_assert (name != NULL);
 
-	unescaped_name = gnome_vfs_unescape_string (name, "/");
+	unescaped_tmp_name = gnome_vfs_unescape_string (name, "/");
 	g_free (name);
+
+	unescaped_name = g_filename_to_utf8 (unescaped_tmp_name, -1,
+					     NULL, NULL, NULL);
+	g_free (unescaped_tmp_name);
 
 	if (count < 1) {
 		g_warning ("bad count in get_link_name");
@@ -1146,11 +1170,12 @@ get_link_name (char *name, int count)
 		}
 		unescaped_result = g_strdup_printf (format, count, unescaped_name);
 	}
-
-	result = gnome_vfs_escape_path_string (unescaped_result);
+	new_file = g_filename_from_utf8 (unescaped_result, -1, NULL, NULL, NULL);
+	result = gnome_vfs_escape_path_string (new_file);
 	
 	g_free (unescaped_name);
 	g_free (unescaped_result);
+	g_free (new_file);
 
 	return result;
 }
@@ -1437,18 +1462,25 @@ static char *
 get_next_duplicate_name (char *name, int count_increment)
 {
 	char *unescaped_name;
+	char *unescaped_tmp_name;
 	char *unescaped_result;
 	char *result;
+	char *new_file;
 
-	unescaped_name = gnome_vfs_unescape_string (name, "/");
+	unescaped_tmp_name = gnome_vfs_unescape_string (name, "/");
 	g_free (name);
+
+	unescaped_name = g_filename_to_utf8 (unescaped_tmp_name, -1,
+					     NULL, NULL, NULL);
+	g_free (unescaped_tmp_name);
 
 	unescaped_result = get_duplicate_name (unescaped_name, count_increment);
 	g_free (unescaped_name);
 
-	result = gnome_vfs_escape_path_string (unescaped_result);
+	new_file = g_filename_from_utf8 (unescaped_result, -1, NULL, NULL, NULL);
+	result = gnome_vfs_escape_path_string (new_file);
 	g_free (unescaped_result);
-	
+	g_free (new_file);
 	return result;
 }
 
@@ -1510,7 +1542,7 @@ apply_one_position (IconPositionIterator *position_iterator,
 	GdkPoint point;
 
 	if (icon_position_iterator_get_next (position_iterator, source_name, &point)) {
-		nautilus_file_changes_queue_schedule_position_set (target_name, point);
+		nautilus_file_changes_queue_schedule_position_set (target_name, point, position_iterator->screen);
 	} else {
 		nautilus_file_changes_queue_schedule_position_remove (target_name);
 	}
@@ -1695,8 +1727,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	gboolean target_is_trash;
 	gboolean is_desktop_trash_link;
 	gboolean duplicate;
+	gboolean target_is_mapping;
+	gboolean have_nonlocal_source;
 	
 	IconPositionIterator *icon_position_iterator;
+
+	GdkScreen *screen;
+	int screen_num;
 
 	g_assert (item_uris != NULL);
 
@@ -1705,12 +1742,17 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	result = GNOME_VFS_OK;
 
 	target_is_trash = FALSE;
+	target_is_mapping = FALSE;
 	if (target_dir != NULL) {
 		if (eel_uri_is_trash (target_dir)) {
 			target_is_trash = TRUE;
 		} else {
 			target_dir_uri = gnome_vfs_uri_new (target_dir);
 		}
+		if (strncmp (target_dir, "burn:", 5) == 0) {
+			target_is_mapping = TRUE;
+		}
+			
 	}
 
 	/* Build the source and target URI lists and figure out if all
@@ -1718,6 +1760,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	 */
 	source_uri_list = NULL;
 	target_uri_list = NULL;
+	have_nonlocal_source = FALSE;
 	duplicate = copy_action != GDK_ACTION_MOVE;
 	for (p = item_uris; p != NULL; p = p->next) {
 		/* Filter out special Nautilus link files */
@@ -1731,6 +1774,14 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		}
 
 		source_uri = gnome_vfs_uri_new ((const char *) p->data);
+		if (source_uri == NULL) {
+			continue;
+		}
+		
+		if (strcmp (source_uri->method_string, "file") != 0) {
+			have_nonlocal_source = TRUE;
+		}
+			
 		source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
 		target_uri = NULL;
 		if (target_dir != NULL) {
@@ -1791,8 +1842,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	source_uri_list = g_list_reverse (source_uri_list);
 	target_uri_list = g_list_reverse (target_uri_list);
 
-
-	if (copy_action == GDK_ACTION_MOVE) {
+	if (target_is_mapping && !have_nonlocal_source && (copy_action == GDK_ACTION_COPY || copy_action == GDK_ACTION_MOVE)) {
+		copy_action = GDK_ACTION_LINK;
+	}
+	if (copy_action == GDK_ACTION_MOVE && !target_is_mapping) {
 		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
 	} else if (copy_action == GDK_ACTION_LINK) {
 		move_options |= GNOME_VFS_XFER_LINK_ITEMS;
@@ -1801,11 +1854,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	/* set up the copy/move parameters */
 	transfer_info = transfer_info_new (parent_view);
 	if (relative_item_points != NULL && relative_item_points->len > 0) {
+		screen = gtk_widget_get_screen (GTK_WIDGET (parent_view));
+		screen_num = gdk_screen_get_number (screen);
 		/* FIXME: we probably don't need an icon_position_iterator
 		 * here at all.
 		 */
 		icon_position_iterator = icon_position_iterator_new
-			(relative_item_points, item_uris);
+			(relative_item_points, item_uris, screen_num);
 	} else {
 		icon_position_iterator = NULL;
 	}
@@ -2085,6 +2140,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 {
 	GList *target_uri_list;
 	GnomeVFSURI *uri, *parent_uri;
+	char *dirname;
 	NewFolderTransferState *state;
 
 	state = g_new (NewFolderTransferState, 1);
@@ -2096,7 +2152,10 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
 	/* localizers: the initial name of a new folder  */
-	uri = gnome_vfs_uri_append_file_name (parent_uri, _("untitled folder"));
+
+	dirname = g_filename_from_utf8 (_("untitled folder"), -1, NULL, NULL, NULL);
+	uri = gnome_vfs_uri_append_file_name (parent_uri, dirname);
+	g_free (dirname);
 	target_uri_list = g_list_prepend (NULL, uri);
 	
 	gnome_vfs_async_xfer (&state->handle, NULL, target_uri_list,

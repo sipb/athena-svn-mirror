@@ -5,14 +5,17 @@ lib_LTLIBRARIES=libnautilus-private.la
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
+	-I$(top_srcdir)/cut-n-paste-code		\
 	$(CORE_CFLAGS)					\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	-DDATADIR=\""$(datadir)"\" 			\
+	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
 
 dependency_static_libs = \
         $(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la \
+	$(top_builddir)/cut-n-paste-code/libegg/libegg.la \
 	$(top_builddir)/libbackground/libbackground.la \
         $(NULL)
 
@@ -34,10 +37,9 @@ marshal_sources = \
 	nautilus-marshal-guts.c \
 	$(NULL)
 
+
 libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
-	eggtreemultidnd.c \
-	eggtreemultidnd.h \
 	nautilus-audio-player.c \
 	nautilus-audio-player.h \
 	nautilus-authn-manager.c \
@@ -66,6 +68,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-dnd.h \
 	nautilus-drag-window.c \
 	nautilus-drag-window.h \
+	nautilus-emblem-utils.c \
+	nautilus-emblem-utils.h \
 	nautilus-entry.c \
 	nautilus-entry.h \
 	nautilus-file-attributes.h \
@@ -85,8 +89,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-utilities.h \
 	nautilus-file.c \
 	nautilus-file.h \
-	nautilus-find-icon-image.c \
-	nautilus-find-icon-image.h \
 	nautilus-global-preferences.c \
 	nautilus-global-preferences.h \
 	nautilus-horizontal-splitter.c \
@@ -131,6 +133,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-program-chooser.h \
 	nautilus-program-choosing.c \
 	nautilus-program-choosing.h \
+	nautilus-recent.h \
+	nautilus-recent.c \
 	nautilus-search-uri.c \
 	nautilus-search-uri.h \
 	nautilus-sidebar-functions.c \
@@ -139,8 +143,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-sound.h \
 	nautilus-theme.c \
 	nautilus-theme.h \
-	nautilus-thumbnails-jpeg.c \
-	nautilus-thumbnails-jpeg.h \
 	nautilus-thumbnails.c \
 	nautilus-thumbnails.h \
 	nautilus-trash-directory.c \
@@ -211,3 +213,4 @@ CLEANFILES = \
 
 dist-hook:
 	cd $(distdir); rm -f $(CLEANFILES)
+
