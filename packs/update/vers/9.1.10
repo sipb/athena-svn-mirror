@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  ;;
+
+sgi)
+  chmod o-w /var/adm/appletalk/icons
+  ;;
+esac
