@@ -62,3 +62,19 @@ echo "/etc/krb.conf.v5"				>> "$DEADFILES"
 echo "/etc/named.mit"				>> "$DEADFILES"
 
 echo "/etc/athena/attach.conf"			>> "$CONFCHG"
+
+# Move cached clusterinfo files to /var/athena.
+if [ -f /etc/athena/clusterinfo ]; then
+	mv /etc/athena/clusterinfo /var/athena/clusterinfo
+fi
+if [ -f /etc/athena/clusterinfo.bsh ]; then
+	mv /etc/athena/clusterinfo.bsh /var/athena/clusterinfo.bsh
+fi
+
+# Move attachtab file to /var/athena.
+if [ -f /var/tmp/attachtab ]; then
+	mv /var/tmp/attachtab /var/athena/attachtab
+fi
+if [ -f /var/tmp/attachtab.lock ]; then
+	mv /var/tmp/attachtab.lock /var/athena/attachtab.lock
+fi
