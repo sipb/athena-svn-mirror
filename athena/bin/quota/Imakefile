@@ -8,20 +8,13 @@ DEFINES=$(MACHDEFS) -I. -I$(ATTACH) -I$(AFSDIR)/include
 
 BINDIR=$(ATHBINDIR)
 INSTOPT=-o root -m 4755
-#ifdef sgi
-AFSLIBS= $(AFSDIR)/lib/afs/libsys.a -L$(AFSDIR)/lib -lrx \
-	$(AFSDIR)/lib/afs/libsys.a -llwp
-#else
-AFSLIBS= $(AFSDIR)/lib/afs/libsys.a -L$(AFSDIR)/lib -lrx -llwp
-#endif
+AFSLIBS= -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -lsys -llwp
 
 OBJS = quota.o attachtab.o nfs.o afs.o $(MACHOBJS)
 #ifdef SOLARIS
-LIBS = $(MACHLIBS) $(AFSLIBS) 
-LDLIBS=/usr/athena/lib/libresolv.a -lsocket -lnsl /usr/ucblib/libucb.a -lelf -ldl
-#else
-LIBS = $(MACHLIBS) $(AFSLIBS)
+MACHLIBS=-lbsd
 #endif
+LIBS = $(AFSLIBS) $(MACHLIBS)
 
 #if defined(vax) || defined(ibm032)
 BINDIR=/usr/ucb
