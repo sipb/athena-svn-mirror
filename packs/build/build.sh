@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.1 1996-09-20 05:06:55 ghudson Exp $
+# $Id: build.sh,v 1.2 1996-10-04 03:21:58 ghudson Exp $
 
 export ATHENA_SYS HOSTTYPE PATH CONFIG_SITE
 
@@ -95,6 +95,12 @@ found=""
 done=""
 for package in $packages; do
 
+	# /bin/sh isn't supposed to do path hashing, but on Solaris it does.
+	# Yech.
+	if [ "$HOSTTYPE" = sun4 ]; then
+		hash -r
+	fi
+
 	# If arguments given, filter for start and end packages.
 	if [ -n "$done" ]; then
 		break;
@@ -109,7 +115,7 @@ for package in $packages; do
 			continue
 		fi
 	fi
-	if [ "package" = "$2" ]; then
+	if [ "$package" = "$2" ]; then
 		done=true
 	fi
 
