@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.5 2000-04-22 04:40:32 ghudson Exp $
+# $Id: Makefile,v 1.5.4.1 2002-11-14 06:48:18 ghudson Exp $
 
 SUBDIRS = resolv irs isc bsd inet nameser
 
@@ -55,6 +55,7 @@ LIBTS = ${TOP}/lib/libbind.ts
 all depend clean install distclean::
 	@for x in ${SUBDIRS}; do \
 		(cd $$x; pwd; ${MAKE} ${MARGS} $@); \
+		sleep 1; \
 	done
 
 all:: ${LIBTS}
