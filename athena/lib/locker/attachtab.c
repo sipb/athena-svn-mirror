@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.10 1999-11-23 20:05:47 danw Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.11 2002-02-18 15:50:26 ghudson Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -385,11 +385,15 @@ int locker_iterate_attachtab(locker_context context,
       if (status == LOCKER_ENOMEM)
 	locker__error(context, "Out of memory reading attachtab.\n");
 
+      unlock_attachtab(context, &lock);
       goto cleanup;
     }
 
   /* Sort the entries. */
   qsort(files, nfiles, sizeof(*files), compare_locker__dirents);
+
+  /* Unlock the attachtab directory, since callbacks might take a while. */
+  unlock_attachtab(context, &lock);
 
   /* Now run through the callbacks. */
   for (i = 0; i < nfiles; i++)
@@ -409,7 +413,6 @@ cleanup:
     free(files[i].name);
   free(files);
 
-  unlock_attachtab(context, &lock);
   return status;
 }
 
