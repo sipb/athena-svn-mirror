@@ -94,7 +94,7 @@ do_olc_done(arguments)
 
       if(string_equiv(*arguments,"-off",max(strlen(*arguments),2)))
 	{
-	  off = TRUE;
+	  set_option(Request.options,OFF_OPT);
 	  continue;
 	}
 
@@ -155,6 +155,13 @@ do_olc_cancel(arguments)
 	    strncpy(title,*arguments,LINE_LENGTH);
 	  continue;
 	}
+
+      if(string_equiv(*arguments,"-off",max(strlen(*arguments),2)))
+	{
+	  set_option(Request.options,OFF_OPT);
+	  continue;
+	}
+
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
@@ -166,7 +173,7 @@ do_olc_cancel(arguments)
 	    {
 	      fprintf(stderr, 
 		      "Usage is: \tcancel [<username> <instance id>] ");
-	      fprintf(stderr,"[-title <title>]\n");
+	      fprintf(stderr,"[-title <title>] [-off]\n");
 	    }
 	  return(ERROR);
 	}
