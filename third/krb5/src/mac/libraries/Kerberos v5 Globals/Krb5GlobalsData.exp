@@ -1,9 +1,0 @@
-#
-# Exports for globally shared data used by Kerberos v5 library
-#
-# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/mac/libraries/Kerberos v5 Globals/Krb5GlobalsData.exp,v 1.1.1.2 1999-12-26 03:33:46 ghudson Exp $
-#
-
-gKerberos5GlobalsRefCount
-gKerberos5SystemDefaultCacheName
-gKerberos5SystemDefaultCacheNameModification
