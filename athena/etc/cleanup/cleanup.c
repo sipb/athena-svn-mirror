@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.10 1994-08-14 15:10:02 cfields Exp $
+/* $Id: cleanup.c,v 2.11 1995-09-03 21:23:04 cfields Exp $
  *
  * Cleanup program for stray processes
  *
@@ -37,8 +37,9 @@
 #ifdef SOLARIS
 #include <kvm.h>
 #endif
+#include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.10 1994-08-14 15:10:02 cfields Exp $";
+char *version = "$Id: cleanup.c,v 2.11 1995-09-03 21:23:04 cfields Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -76,20 +77,6 @@ struct nlist nl[] =
   { ""}
 #endif
 #endif
-};
-
-#define MAXUSERS 1024
-#define MAXPROCS 1024
-#define ROOTUID 0
-#define DAEMONUID 1
-
-#define MDEBUG 0
-#define LOGGED_IN 1
-#define PASSWD 2
-
-struct cl_proc {
-    int pid;
-    int uid;
 };
 
 static char *nologin_msg =
@@ -307,7 +294,7 @@ int *get_logged_in()
     while (read(fd, &u, sizeof(u)) > 0 && i < MAXUSERS) {
 	if (u.ut_name[0] == 0)
 	    continue;
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(sgi)
         if (u.ut_type != USER_PROCESS)
             continue;
 #endif
@@ -375,7 +362,7 @@ int *get_password_entries()
 
 
 /* snapshot running processes */
-
+#ifndef sgi /* For sgi, we link another object for this routine. */
 struct cl_proc *get_processes()
 {
 #ifndef SOLARIS
@@ -474,6 +461,7 @@ struct cl_proc *get_processes()
     return(procs);
 #endif
 }
+#endif
 
 
 /* lock protocol for /etc/passwd & /etc/group using /etc/ptmp & /etc/gtmp */
