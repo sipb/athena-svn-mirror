@@ -4,8 +4,8 @@
 #	intended to clean up /tmp, /usr/tmp and some other areas.
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v $
-#	$Author: treese $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.3 1987-12-05 18:23:31 treese Exp $
+#	$Author: epeisach $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/maint/clean_tmp_areas.sh,v 1.4 1991-07-22 13:55:04 epeisach Exp $
 #
 # 05 1 * * *	root	find /tmp -atime +1 -exec rm -f {} \;
 # 10 1 * * *	root	cd /tmp; find . ! -name . -type d -mtime +1 -exec rm -r {} \;
@@ -24,13 +24,15 @@ set dirs =    (	/tmp/		/usr/tmp/	/usr/spool/rwho/ \
 		/usr/preserve/)
 set timeout = (	"-atime +1"	"-atime +2"	"-mtime +3" \
 		"-mtime +3")
+set xdev = -xdev
+if ( -e /etc/svc.conf ) set xdev = -mount
 
 set j = 1
 foreach i ($dirs)
 	if ( -d $i ) then
 		cd $i
-		find . -xdev $timeout[$j] ! -type b ! -type c ! -type s -exec rm -f {} \; -print
-		find . -xdev ! -name . -type d -mtime +1 -exec rmdir {} \; -print
+		find . $xdev $timeout[$j] ! -type b ! -type c ! -type s -exec rm -f {} \; -print
+		find . $xdev ! -name . -type d -mtime +1 -exec rmdir {} \; -print
 	endif
 @ j++
 end	
