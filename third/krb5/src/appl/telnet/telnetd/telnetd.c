@@ -879,7 +879,7 @@ terminaltypeok(s)
 {
     char buf[1024];
 
-    if (terminaltype == NULL)
+    if (!*s)
 	return(1);
 
     /*
@@ -938,11 +938,9 @@ void doit(who)
 	pty_init();
 	
 
-	if ((retval = pty_getpty(&pty, line, 20)) != 0 )
-	    {
+	if ((retval = pty_getpty(&pty, line, 17)) != 0) {
 		fatal(net, error_message(retval));
-	    }
-	
+	}
 
 #if	defined(_SC_CRAY_SECURE_SYS)
 	/*
