@@ -1,6 +1,6 @@
 %!
 
-% $Id: banner.ps,v 1.1 1999-04-05 16:06:33 mwhitson Exp $
+% $Id: banner.ps,v 1.2 1999-04-08 01:27:04 mwhitson Exp $
 
 % The following should be defined by a wrapper (such as banner.pl):
 
@@ -307,6 +307,7 @@ inchwidth inch 0 translate 90 rotate
         /hex		{ dohex }
 	/loglog		{ dologlog }
 	/polar		{ dopolar }
+	/blank		{ }
 	/random		{ dorandom }
 >> def
 
@@ -316,6 +317,7 @@ inchwidth inch 0 translate 90 rotate
 	/hex		1
 	/loglog		1
 	/polar		1
+	/blank		1
 >> def
 
 % print out the header information
