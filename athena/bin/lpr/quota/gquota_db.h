@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_db.h,v 1.1 1990-11-08 09:52:38 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_db.h,v 1.2 1991-01-23 13:35:35 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gquota_db.h,v $ */
 /* $Author: epeisach $ */
 
@@ -47,12 +47,13 @@ typedef int     gquota_amount;
 typedef int     gquota_allowed;
 typedef u_long  gquota_time;
 typedef int     gquota_deleted;
+typedef long 	Uid_num;
 
 typedef struct {
 	long           account;
 	char 	       service[SERV_SZ];	    /* Printer service type */
-	long           admin[GQUOTA_MAX_ADMIN + 1]; /* Max. no of admins */
-	long           user[GQUOTA_MAX_USER + 1];   /* Max. no of users  */
+	Uid_num        admin[GQUOTA_MAX_ADMIN + 1]; /* Max. no of admins */
+	Uid_num        user[GQUOTA_MAX_USER + 1];   /* Max. no of users  */
 	gquota_amount  quotaAmount;		    /* Total usage */
 	gquota_amount  quotaLimit;		    /* Max usage */
 	gquota_time    lastBilling;
@@ -68,4 +69,12 @@ extern int default_gquota;
 
 #ifdef DEBUG
 extern int gquota_debug;
+#endif
+
+#ifdef __STDC__
+extern	char	*uid_num_to_string(Uid_num);
+extern	Uid_num	uid_string_to_num(char *);
+#else
+extern	char	*uid_num_to_string();
+extern	Uid_num	uid_string_to_num();
 #endif
