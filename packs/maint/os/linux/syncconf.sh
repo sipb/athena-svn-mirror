@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.2 2000-04-28 15:16:58 tb Exp $
+# $Id: syncconf.sh,v 1.3 2000-05-31 22:34:15 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -78,7 +78,7 @@ handle()
 
     append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "DEVICE=$NETDEV"
     append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "BOOTPROTO=static"
-    append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "IPADDR=$ADDR""
+    append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "IPADDR=$ADDR"
     append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "NETMASK=$netmask"
     append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "NETWORK=$network"
     append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "ONBOOT=yes"
@@ -158,7 +158,7 @@ if [ "$#" -ne 0 ]; then
   exit 1
 fi
 
-$echo "Synchronizing configuration... \c"
+$echo -n "Synchronizing configuration... "
 
 . "$rcconf"
 
@@ -174,7 +174,7 @@ if [ -z "$changes" ]; then
 fi
 
 for i in $changes; do
-  $echo "$i \c"
+  $echo -n "$i "
   if [ -n "$debug" ]; then
     $echo ""
   fi
@@ -182,7 +182,7 @@ for i in $changes; do
 done
 
 for i in $dependencies; do
-  $echo "($i) \c"
+  $echo -n "($i) "
   if [ -n "$debug" ]; then
     $echo ""
   fi
