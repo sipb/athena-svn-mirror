@@ -9,46 +9,49 @@
 #ifndef  SOUP_URI_H
 #define  SOUP_URI_H 1
 
-#include <glib.h>
+#include <libsoup/soup-types.h>
 
-typedef enum {
-	SOUP_PROTOCOL_HTTP = 1,
-	SOUP_PROTOCOL_HTTPS,
-	SOUP_PROTOCOL_SMTP,
-	SOUP_PROTOCOL_SOCKS4,
-	SOUP_PROTOCOL_SOCKS5,
-	SOUP_PROTOCOL_FILE
-} SoupProtocol;
+typedef GQuark SoupProtocol;
+#define SOUP_PROTOCOL_HTTP (g_quark_from_static_string ("http"))
+#define SOUP_PROTOCOL_HTTPS (g_quark_from_static_string ("https"))
 
-typedef struct {
-	SoupProtocol        protocol;
+struct SoupUri {
+	SoupProtocol  protocol;
 
-	gchar              *user;
-	gchar              *authmech;
-	gchar              *passwd;
+	char         *user;
+	char         *passwd;
 
-	gchar              *host;
-	gint                port;
+	char         *host;
+	guint         port;
 
-	gchar              *path;
-	gchar              *querystring;
-} SoupUri;
+	char         *path;
+	char         *query;
 
-SoupUri *soup_uri_new       (const gchar   *uri_string);
+	char         *fragment;
 
-gchar   *soup_uri_to_string (const SoupUri *uri, 
-			     gboolean       show_password);
+	/* Don't use this */
+	gboolean      broken_encoding;
+};
 
-SoupUri *soup_uri_copy      (const SoupUri *uri);
+SoupUri  *soup_uri_new_with_base     (const SoupUri *base,
+				      const char    *uri_string);
+SoupUri  *soup_uri_new               (const char    *uri_string);
 
-gboolean soup_uri_equal     (const SoupUri *uri1, 
-			     const SoupUri *uri2);
+char     *soup_uri_to_string         (const SoupUri *uri, 
+				      gboolean       just_path);
 
-void     soup_uri_free      (SoupUri       *uri);
+SoupUri  *soup_uri_copy              (const SoupUri *uri);
+SoupUri  *soup_uri_copy_root         (const SoupUri *uri);
 
-void     soup_uri_set_auth  (SoupUri       *uri, 
-			     const gchar   *user, 
-			     const gchar   *passwd, 
-			     const gchar   *authmech);
+gboolean  soup_uri_equal             (const SoupUri *uri1, 
+				      const SoupUri *uri2);
+
+void      soup_uri_free              (SoupUri       *uri);
+
+char     *soup_uri_encode            (const char    *part,
+				      const char    *escape_extra);
+void      soup_uri_decode            (char          *part);
+
+gboolean  soup_uri_uses_default_port (const SoupUri *uri);
 
 #endif /*SOUP_URI_H*/

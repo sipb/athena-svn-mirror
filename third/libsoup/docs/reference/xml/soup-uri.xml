@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libsoup-soup-uri">
+<refmeta>
+<refentrytitle>soup-uri</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>soup-uri</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+typedef     <link linkend="SoupProtocol">SoupProtocol</link>;
+#define     <link linkend="SOUP-PROTOCOL-HTTP-CAPS">SOUP_PROTOCOL_HTTP</link>
+#define     <link linkend="SOUP-PROTOCOL-HTTPS-CAPS">SOUP_PROTOCOL_HTTPS</link>
+<link linkend="SoupUri">SoupUri</link>*    <link linkend="soup-uri-new-with-base">soup_uri_new_with_base</link>          (const <link linkend="SoupUri">SoupUri</link> *base,
+                                             const <link linkend="char">char</link> *uri_string);
+<link linkend="SoupUri">SoupUri</link>*    <link linkend="soup-uri-new">soup_uri_new</link>                    (const <link linkend="char">char</link> *uri_string);
+<link linkend="char">char</link>*       <link linkend="soup-uri-to-string">soup_uri_to_string</link>              (const <link linkend="SoupUri">SoupUri</link> *uri,
+                                             <link linkend="gboolean">gboolean</link> just_path);
+<link linkend="SoupUri">SoupUri</link>*    <link linkend="soup-uri-copy">soup_uri_copy</link>                   (const <link linkend="SoupUri">SoupUri</link> *uri);
+<link linkend="SoupUri">SoupUri</link>*    <link linkend="soup-uri-copy-root">soup_uri_copy_root</link>              (const <link linkend="SoupUri">SoupUri</link> *uri);
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-uri-equal">soup_uri_equal</link>                  (const <link linkend="SoupUri">SoupUri</link> *uri1,
+                                             const <link linkend="SoupUri">SoupUri</link> *uri2);
+<link linkend="void">void</link>        <link linkend="soup-uri-free">soup_uri_free</link>                   (<link linkend="SoupUri">SoupUri</link> *uri);
+<link linkend="char">char</link>*       <link linkend="soup-uri-encode">soup_uri_encode</link>                 (const <link linkend="char">char</link> *part,
+                                             const <link linkend="char">char</link> *escape_extra);
+<link linkend="void">void</link>        <link linkend="soup-uri-decode">soup_uri_decode</link>                 (<link linkend="char">char</link> *part);
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-uri-uses-default-port">soup_uri_uses_default_port</link>      (const <link linkend="SoupUri">SoupUri</link> *uri);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="SoupProtocol"/>SoupProtocol</title>
+<indexterm><primary>SoupProtocol</primary></indexterm><programlisting>typedef GQuark SoupProtocol;
+</programlisting>
+<para>
+<link linkend="GQuark"><type>GQuark</type></link> is used for SoupProtocol so that the protocol of a <link linkend="SoupUri"><type>SoupUri</type></link>
+can be tested quickly.
+</para></refsect2>
+<refsect2>
+<title><anchor id="SOUP-PROTOCOL-HTTP-CAPS"/>SOUP_PROTOCOL_HTTP</title>
+<indexterm><primary>SOUP_PROTOCOL_HTTP</primary></indexterm><programlisting>#define SOUP_PROTOCOL_HTTP (g_quark_from_static_string ("http"))
+</programlisting>
+<para>
+This returns the <link linkend="SoupProtocol"><type>SoupProtocol</type></link> value for "http".
+</para></refsect2>
+<refsect2>
+<title><anchor id="SOUP-PROTOCOL-HTTPS-CAPS"/>SOUP_PROTOCOL_HTTPS</title>
+<indexterm><primary>SOUP_PROTOCOL_HTTPS</primary></indexterm><programlisting>#define SOUP_PROTOCOL_HTTPS (g_quark_from_static_string ("https"))
+</programlisting>
+<para>
+This returns the <link linkend="SoupProtocol"><type>SoupProtocol</type></link> value for "https".
+</para></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-new-with-base"/>soup_uri_new_with_base ()</title>
+<indexterm><primary>soup_uri_new_with_base</primary></indexterm><programlisting><link linkend="SoupUri">SoupUri</link>*    soup_uri_new_with_base          (const <link linkend="SoupUri">SoupUri</link> *base,
+                                             const <link linkend="char">char</link> *uri_string);</programlisting>
+<para>
+Parses <parameter>uri_string</parameter> relative to <parameter>base</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>base</parameter>&nbsp;:</term>
+<listitem><simpara> a base URI
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri_string</parameter>&nbsp;:</term>
+<listitem><simpara> the URI
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a parsed <link linkend="SoupUri"><type>SoupUri</type></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-new"/>soup_uri_new ()</title>
+<indexterm><primary>soup_uri_new</primary></indexterm><programlisting><link linkend="SoupUri">SoupUri</link>*    soup_uri_new                    (const <link linkend="char">char</link> *uri_string);</programlisting>
+<para>
+Parses an absolute URI.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri_string</parameter>&nbsp;:</term>
+<listitem><simpara> a URI
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a <link linkend="SoupUri"><type>SoupUri</type></link>, or <literal>NULL</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-to-string"/>soup_uri_to_string ()</title>
+<indexterm><primary>soup_uri_to_string</primary></indexterm><programlisting><link linkend="char">char</link>*       soup_uri_to_string              (const <link linkend="SoupUri">SoupUri</link> *uri,
+                                             <link linkend="gboolean">gboolean</link> just_path);</programlisting>
+<para>
+Returns a string representing <parameter>uri</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupUri"><type>SoupUri</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>just_path</parameter>&nbsp;:</term>
+<listitem><simpara> if <literal>TRUE</literal>, output just the path and query portions
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a string representing <parameter>uri</parameter>, which the caller must free.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-copy"/>soup_uri_copy ()</title>
+<indexterm><primary>soup_uri_copy</primary></indexterm><programlisting><link linkend="SoupUri">SoupUri</link>*    soup_uri_copy                   (const <link linkend="SoupUri">SoupUri</link> *uri);</programlisting>
+<para>
+Copies <parameter>uri</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupUri"><type>SoupUri</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a copy of <parameter>uri</parameter>, which must be freed with <link linkend="soup-uri-free"><function>soup_uri_free()</function></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-copy-root"/>soup_uri_copy_root ()</title>
+<indexterm><primary>soup_uri_copy_root</primary></indexterm><programlisting><link linkend="SoupUri">SoupUri</link>*    soup_uri_copy_root              (const <link linkend="SoupUri">SoupUri</link> *uri);</programlisting>
+<para>
+Copies the protocol, host, and port of <parameter>uri</parameter> into a new <link linkend="SoupUri"><type>SoupUri</type></link>
+(all other fields in the new URI will be empty.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupUri"><type>SoupUri</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a partial copy of <parameter>uri</parameter>, which must be freed with
+<link linkend="soup-uri-free"><function>soup_uri_free()</function></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-equal"/>soup_uri_equal ()</title>
+<indexterm><primary>soup_uri_equal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_uri_equal                  (const <link linkend="SoupUri">SoupUri</link> *uri1,
+                                             const <link linkend="SoupUri">SoupUri</link> *uri2);</programlisting>
+<para>
+Tests whether or not <parameter>u1</parameter> and <parameter>u2</parameter> are equal in all parts</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri1</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> or <literal>FALSE</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-free"/>soup_uri_free ()</title>
+<indexterm><primary>soup_uri_free</primary></indexterm><programlisting><link linkend="void">void</link>        soup_uri_free                   (<link linkend="SoupUri">SoupUri</link> *uri);</programlisting>
+<para>
+Frees <parameter>uri</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupUri"><type>SoupUri</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-encode"/>soup_uri_encode ()</title>
+<indexterm><primary>soup_uri_encode</primary></indexterm><programlisting><link linkend="char">char</link>*       soup_uri_encode                 (const <link linkend="char">char</link> *part,
+                                             const <link linkend="char">char</link> *escape_extra);</programlisting>
+<para>
+This <literal>-encodes</literal> the given URI part and returns the escaped version
+in allocated memory, which the caller must free when it is done.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>part</parameter>&nbsp;:</term>
+<listitem><simpara> a URI part
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>escape_extra</parameter>&nbsp;:</term>
+<listitem><simpara> additional characters beyond " \"%#&lt;&gt;{}|\^[]`"
+to escape (or <literal>NULL</literal>)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the encoded URI part
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-decode"/>soup_uri_decode ()</title>
+<indexterm><primary>soup_uri_decode</primary></indexterm><programlisting><link linkend="void">void</link>        soup_uri_decode                 (<link linkend="char">char</link> *part);</programlisting>
+<para>
+<literal>-decodes</literal> the passed-in URI *in place*. The decoded version is
+never longer than the encoded version, so there does not need to
+be any additional space at the end of the string.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>part</parameter>&nbsp;:</term>
+<listitem><simpara> a URI part
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-uri-uses-default-port"/>soup_uri_uses_default_port ()</title>
+<indexterm><primary>soup_uri_uses_default_port</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_uri_uses_default_port      (const <link linkend="SoupUri">SoupUri</link> *uri);</programlisting>
+<para>
+Tests if <parameter>uri</parameter> uses the default port for its protocol. (Eg, 80 for
+http.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupUri"><type>SoupUri</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> or <literal>FALSE</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

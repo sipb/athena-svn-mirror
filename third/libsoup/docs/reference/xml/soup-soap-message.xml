@@ -1,0 +1,761 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="SoupSoapMessage">
+<refmeta>
+<refentrytitle>SoupSoapMessage</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>SoupSoapMessage</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="SoupSoapMessage-struct">SoupSoapMessage</link>;
+<link linkend="SoupSoapMessage">SoupSoapMessage</link>* <link linkend="soup-soap-message-new">soup_soap_message_new</link>      (const <link linkend="char">char</link> *method,
+                                             const <link linkend="char">char</link> *uri_string,
+                                             <link linkend="gboolean">gboolean</link> standalone,
+                                             const <link linkend="char">char</link> *xml_encoding,
+                                             const <link linkend="char">char</link> *env_prefix,
+                                             const <link linkend="char">char</link> *env_uri);
+<link linkend="SoupSoapMessage">SoupSoapMessage</link>* <link linkend="soup-soap-message-new-from-uri">soup_soap_message_new_from_uri</link>
+                                            (const <link linkend="char">char</link> *method,
+                                             const <link linkend="SoupUri">SoupUri</link> *uri,
+                                             <link linkend="gboolean">gboolean</link> standalone,
+                                             const <link linkend="char">char</link> *xml_encoding,
+                                             const <link linkend="char">char</link> *env_prefix,
+                                             const <link linkend="char">char</link> *env_uri);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-start-envelope">soup_soap_message_start_envelope</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-end-envelope">soup_soap_message_end_envelope</link>  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-start-body">soup_soap_message_start_body</link>    (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-end-body">soup_soap_message_end_body</link>      (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-start-element">soup_soap_message_start_element</link> (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *name,
+                                             const <link linkend="char">char</link> *prefix,
+                                             const <link linkend="char">char</link> *ns_uri);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-end-element">soup_soap_message_end_element</link>   (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-start-fault">soup_soap_message_start_fault</link>   (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *faultcode,
+                                             const <link linkend="char">char</link> *faultstring,
+                                             const <link linkend="char">char</link> *faultfactor);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-end-fault">soup_soap_message_end_fault</link>     (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-start-fault-detail">soup_soap_message_start_fault_detail</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-end-fault-detail">soup_soap_message_end_fault_detail</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-start-header">soup_soap_message_start_header</link>  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-end-header">soup_soap_message_end_header</link>    (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-start-header-element">soup_soap_message_start_header_element</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *name,
+                                             <link linkend="gboolean">gboolean</link> must_understand,
+                                             const <link linkend="char">char</link> *actor_uri,
+                                             const <link linkend="char">char</link> *prefix,
+                                             const <link linkend="char">char</link> *ns_uri);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-end-header-element">soup_soap_message_end_header_element</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-write-int">soup_soap_message_write_int</link>     (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             <link linkend="long-i">long i</link>);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-write-double">soup_soap_message_write_double</link>  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             <link linkend="double">double</link> d);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-write-base64">soup_soap_message_write_base64</link>  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *string,
+                                             <link linkend="int">int</link> len);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-write-time">soup_soap_message_write_time</link>    (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="time-t">time_t</link> *timeval);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-write-string">soup_soap_message_write_string</link>  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *string);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-write-buffer">soup_soap_message_write_buffer</link>  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *buffer,
+                                             <link linkend="int">int</link> len);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-set-element-type">soup_soap_message_set_element_type</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *xsi_type);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-set-null">soup_soap_message_set_null</link>      (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-add-attribute">soup_soap_message_add_attribute</link> (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *name,
+                                             const <link linkend="char">char</link> *value,
+                                             const <link linkend="char">char</link> *prefix,
+                                             const <link linkend="char">char</link> *ns_uri);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-add-namespace">soup_soap_message_add_namespace</link> (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *prefix,
+                                             const <link linkend="char">char</link> *ns_uri);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-set-default-namespace">soup_soap_message_set_default_namespace</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *ns_uri);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-set-encoding-style">soup_soap_message_set_encoding_style</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *enc_style);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-reset">soup_soap_message_reset</link>         (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-soap-message-persist">soup_soap_message_persist</link>       (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+const <link linkend="char">char</link>* <link linkend="soup-soap-message-get-namespace-prefix">soup_soap_message_get_namespace_prefix</link>
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *ns_uri);
+<link linkend="xmlDocPtr">xmlDocPtr</link>   <link linkend="soup-soap-message-get-xml-doc">soup_soap_message_get_xml_doc</link>   (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="SoupMessage">SoupMessage</link>
+         +----SoupSoapMessage
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="SoupSoapMessage-struct"/>struct SoupSoapMessage</title>
+<indexterm><primary>SoupSoapMessage</primary></indexterm><programlisting>struct SoupSoapMessage;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-new"/>soup_soap_message_new ()</title>
+<indexterm><primary>soup_soap_message_new</primary></indexterm><programlisting><link linkend="SoupSoapMessage">SoupSoapMessage</link>* soup_soap_message_new      (const <link linkend="char">char</link> *method,
+                                             const <link linkend="char">char</link> *uri_string,
+                                             <link linkend="gboolean">gboolean</link> standalone,
+                                             const <link linkend="char">char</link> *xml_encoding,
+                                             const <link linkend="char">char</link> *env_prefix,
+                                             const <link linkend="char">char</link> *env_uri);</programlisting>
+<para>
+Creates a new empty <link linkend="SoupSoapMessage"><type>SoupSoapMessage</type></link>, which will connect to <parameter>uri_string</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>method</parameter>&nbsp;:</term>
+<listitem><simpara> the HTTP method for the created request.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri_string</parameter>&nbsp;:</term>
+<listitem><simpara> the destination endpoint (as a string).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>standalone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>xml_encoding</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>env_prefix</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>env_uri</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="SoupSoapMessage"><type>SoupSoapMessage</type></link> (or <literal>NULL</literal> if <parameter>uri_string</parameter> could not be
+parsed).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-new-from-uri"/>soup_soap_message_new_from_uri ()</title>
+<indexterm><primary>soup_soap_message_new_from_uri</primary></indexterm><programlisting><link linkend="SoupSoapMessage">SoupSoapMessage</link>* soup_soap_message_new_from_uri
+                                            (const <link linkend="char">char</link> *method,
+                                             const <link linkend="SoupUri">SoupUri</link> *uri,
+                                             <link linkend="gboolean">gboolean</link> standalone,
+                                             const <link linkend="char">char</link> *xml_encoding,
+                                             const <link linkend="char">char</link> *env_prefix,
+                                             const <link linkend="char">char</link> *env_uri);</programlisting>
+<para>
+* Creates a new empty <link linkend="SoupSoapMessage"><type>SoupSoapMessage</type></link>, which will connect to <parameter>uri</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>method</parameter>&nbsp;:</term>
+<listitem><simpara> the HTTP method for the created request.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> the destination endpoint (as a <link linkend="SoupUri"><type>SoupUri</type></link>).
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>standalone</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>xml_encoding</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>env_prefix</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>env_uri</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="SoupSoapMessage"><type>SoupSoapMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-start-envelope"/>soup_soap_message_start_envelope ()</title>
+<indexterm><primary>soup_soap_message_start_envelope</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_start_envelope
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Starts the top level SOAP Envelope element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-end-envelope"/>soup_soap_message_end_envelope ()</title>
+<indexterm><primary>soup_soap_message_end_envelope</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_end_envelope  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Closes the top level SOAP Envelope element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-start-body"/>soup_soap_message_start_body ()</title>
+<indexterm><primary>soup_soap_message_start_body</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_start_body    (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Starts the SOAP Body element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-end-body"/>soup_soap_message_end_body ()</title>
+<indexterm><primary>soup_soap_message_end_body</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_end_body      (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Closes the SOAP Body element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-start-element"/>soup_soap_message_start_element ()</title>
+<indexterm><primary>soup_soap_message_start_element</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_start_element (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *name,
+                                             const <link linkend="char">char</link> *prefix,
+                                             const <link linkend="char">char</link> *ns_uri);</programlisting>
+<para>
+Starts a new arbitrary message element, with <parameter>name</parameter> as the element name,
+<parameter>prefix</parameter> as the XML Namespace prefix, and <parameter>ns_uri</parameter> as the XML Namespace uri for * the created element.
+</para>
+<para>
+Passing <parameter>prefix</parameter> with no <parameter>ns_uri</parameter> will cause a recursive search for an
+existing namespace with the same prefix. Failing that a new ns will be
+created with an empty uri.
+</para>
+<para>
+Passing both <parameter>prefix</parameter> and <parameter>ns_uri</parameter> always causes new namespace attribute
+creation.
+</para>
+<para>
+Passing NULL for both <parameter>prefix</parameter> and <parameter>ns_uri</parameter> causes no prefix to be used, and
+the element will be in the default namespace.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> the element name.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace prefix
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns_uri</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace URI
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-end-element"/>soup_soap_message_end_element ()</title>
+<indexterm><primary>soup_soap_message_end_element</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_end_element   (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Closes the current message element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-start-fault"/>soup_soap_message_start_fault ()</title>
+<indexterm><primary>soup_soap_message_start_fault</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_start_fault   (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *faultcode,
+                                             const <link linkend="char">char</link> *faultstring,
+                                             const <link linkend="char">char</link> *faultfactor);</programlisting>
+<para>
+Starts a new SOAP Fault element, creating faultcode, faultstring, and
+faultactor child elements.
+</para>
+<para>
+If you wish to add the faultdetail element, use
+<literal>soup_soap_message_start_fault_detail</literal>, and then <literal>soup_soap_message_start_element</literal>
+to add arbitrary sub-elements.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>faultcode</parameter>&nbsp;:</term>
+<listitem><simpara> faultcode element value
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>faultstring</parameter>&nbsp;:</term>
+<listitem><simpara> faultstring element value
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>faultfactor</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-end-fault"/>soup_soap_message_end_fault ()</title>
+<indexterm><primary>soup_soap_message_end_fault</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_end_fault     (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Closes the current SOAP Fault element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-start-fault-detail"/>soup_soap_message_start_fault_detail ()</title>
+<indexterm><primary>soup_soap_message_start_fault_detail</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_start_fault_detail
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Start the faultdetail child element of the current SOAP Fault element. The
+faultdetail element allows arbitrary data to be sent in a returned fault.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-end-fault-detail"/>soup_soap_message_end_fault_detail ()</title>
+<indexterm><primary>soup_soap_message_end_fault_detail</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_end_fault_detail
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Closes the current SOAP faultdetail element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-start-header"/>soup_soap_message_start_header ()</title>
+<indexterm><primary>soup_soap_message_start_header</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_start_header  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Creates a new SOAP Header element. You can call
+<literal>soup_soap_message_start_header_element</literal> after this to add a new header child
+element. SOAP Header elements allow out-of-band data to be transferred while
+not interfering with the message body.
+</para>
+<para>
+This should be called after <literal>soup_soap_message_start_envelope</literal> and before
+<literal>soup_soap_message_start_body</literal>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-end-header"/>soup_soap_message_end_header ()</title>
+<indexterm><primary>soup_soap_message_end_header</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_end_header    (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Closes the current SOAP Header element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-start-header-element"/>soup_soap_message_start_header_element ()</title>
+<indexterm><primary>soup_soap_message_start_header_element</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_start_header_element
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *name,
+                                             <link linkend="gboolean">gboolean</link> must_understand,
+                                             const <link linkend="char">char</link> *actor_uri,
+                                             const <link linkend="char">char</link> *prefix,
+                                             const <link linkend="char">char</link> *ns_uri);</programlisting>
+<para>
+Starts a new SOAP arbitrary header element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> name of the header element
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>must_understand</parameter>&nbsp;:</term>
+<listitem><simpara> whether the recipient must understand the header in order
+to proceed with processing the message
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>actor_uri</parameter>&nbsp;:</term>
+<listitem><simpara> the URI which represents the destination actor for this header.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace prefix
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns_uri</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace URI
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-end-header-element"/>soup_soap_message_end_header_element ()</title>
+<indexterm><primary>soup_soap_message_end_header_element</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_end_header_element
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Closes the current SOAP header element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-write-int"/>soup_soap_message_write_int ()</title>
+<indexterm><primary>soup_soap_message_write_int</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_write_int     (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             <link linkend="long-i">long i</link>);</programlisting>
+<para>
+Writes the stringified value if <parameter>i</parameter> as the current element's content.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param2</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-write-double"/>soup_soap_message_write_double ()</title>
+<indexterm><primary>soup_soap_message_write_double</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_write_double  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             <link linkend="double">double</link> d);</programlisting>
+<para>
+Writes the stringified value if <parameter>d</parameter> as the current element's content.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>d</parameter>&nbsp;:</term>
+<listitem><simpara> the double value to write.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-write-base64"/>soup_soap_message_write_base64 ()</title>
+<indexterm><primary>soup_soap_message_write_base64</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_write_base64  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *string,
+                                             <link linkend="int">int</link> len);</programlisting>
+<para>
+Writes the Base-64 encoded value of <parameter>string</parameter> as the current element's content. **/
+void
+soup_soap_message_write_base64 (SoupSoapMessage *msg, const char *string, int len)
+{
+        gchar *str = soup_base64_encode (string, len);
+        soup_soap_message_write_string (msg, str);
+        g_free (str);
+}
+</para>
+<para>
+/**
+soup_soap_message_write_time:
+<parameter>msg</parameter>: the <literal>SoupSoapMessage</literal>.
+<parameter>timeval</parameter>: pointer to a time_t to encode
+</para>
+<para>
+Writes the stringified value of <parameter>timeval</parameter> as the current element's content.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>string</parameter>&nbsp;:</term>
+<listitem><simpara> the binary data buffer to encode
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>len</parameter>&nbsp;:</term>
+<listitem><simpara> the length of data to encode
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-write-time"/>soup_soap_message_write_time ()</title>
+<indexterm><primary>soup_soap_message_write_time</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_write_time    (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="time-t">time_t</link> *timeval);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>timeval</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-write-string"/>soup_soap_message_write_string ()</title>
+<indexterm><primary>soup_soap_message_write_string</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_write_string  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *string);</programlisting>
+<para>
+Writes the <parameter>string</parameter> as the current element's content.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>string</parameter>&nbsp;:</term>
+<listitem><simpara> string to write.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-write-buffer"/>soup_soap_message_write_buffer ()</title>
+<indexterm><primary>soup_soap_message_write_buffer</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_write_buffer  (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *buffer,
+                                             <link linkend="int">int</link> len);</programlisting>
+<para>
+Writes the string buffer pointed to by <parameter>buffer</parameter> as the current element's content.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><simpara> the string data buffer to write.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>len</parameter>&nbsp;:</term>
+<listitem><simpara> length of <parameter>buffer</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-set-element-type"/>soup_soap_message_set_element_type ()</title>
+<indexterm><primary>soup_soap_message_set_element_type</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_set_element_type
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *xsi_type);</programlisting>
+<para>
+Sets the current element's XML schema xsi:type attribute, which specifies
+the element's type name.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>xsi_type</parameter>&nbsp;:</term>
+<listitem><simpara> the type name for the element.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-set-null"/>soup_soap_message_set_null ()</title>
+<indexterm><primary>soup_soap_message_set_null</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_set_null      (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Sets the current element's XML Schema xsi:null attribute.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-add-attribute"/>soup_soap_message_add_attribute ()</title>
+<indexterm><primary>soup_soap_message_add_attribute</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_add_attribute (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *name,
+                                             const <link linkend="char">char</link> *value,
+                                             const <link linkend="char">char</link> *prefix,
+                                             const <link linkend="char">char</link> *ns_uri);</programlisting>
+<para>
+Adds an XML attribute to the current element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> name of the attribute
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara> value of the attribute
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace prefix
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns_uri</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace URI
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-add-namespace"/>soup_soap_message_add_namespace ()</title>
+<indexterm><primary>soup_soap_message_add_namespace</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_add_namespace (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *prefix,
+                                             const <link linkend="char">char</link> *ns_uri);</programlisting>
+<para>
+Adds a new XML namespace to the current element.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>prefix</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace prefix
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns_uri</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace URI, or NULL for empty namespace
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-set-default-namespace"/>soup_soap_message_set_default_namespace ()</title>
+<indexterm><primary>soup_soap_message_set_default_namespace</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_set_default_namespace
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *ns_uri);</programlisting>
+<para>
+Sets the default namespace to the URI specified in <parameter>ns_uri</parameter>. The default
+namespace becomes the namespace all non-explicitly namespaced child elements
+fall into.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns_uri</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace URI.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-set-encoding-style"/>soup_soap_message_set_encoding_style ()</title>
+<indexterm><primary>soup_soap_message_set_encoding_style</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_set_encoding_style
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *enc_style);</programlisting>
+<para>
+Sets the encodingStyle attribute on the current element to the value of
+<parameter>enc_style</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>enc_style</parameter>&nbsp;:</term>
+<listitem><simpara> the new encodingStyle value
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-reset"/>soup_soap_message_reset ()</title>
+<indexterm><primary>soup_soap_message_reset</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_reset         (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Resets the internal XML representation of the SOAP message.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-persist"/>soup_soap_message_persist ()</title>
+<indexterm><primary>soup_soap_message_persist</primary></indexterm><programlisting><link linkend="void">void</link>        soup_soap_message_persist       (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Writes the serialized XML tree to the <literal>SoupMessage</literal>'s buffer.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-get-namespace-prefix"/>soup_soap_message_get_namespace_prefix ()</title>
+<indexterm><primary>soup_soap_message_get_namespace_prefix</primary></indexterm><programlisting>const <link linkend="char">char</link>* soup_soap_message_get_namespace_prefix
+                                            (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg,
+                                             const <link linkend="char">char</link> *ns_uri);</programlisting>
+<para>
+Returns the namespace prefix for <parameter>ns_uri</parameter> (or an empty string if
+<parameter>ns_uri</parameter> is set to the default namespace)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ns_uri</parameter>&nbsp;:</term>
+<listitem><simpara> the namespace URI.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The namespace prefix, or <literal>NULL</literal> if no namespace exists
+for the URI given.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-soap-message-get-xml-doc"/>soup_soap_message_get_xml_doc ()</title>
+<indexterm><primary>soup_soap_message_get_xml_doc</primary></indexterm><programlisting><link linkend="xmlDocPtr">xmlDocPtr</link>   soup_soap_message_get_xml_doc   (<link linkend="SoupSoapMessage">SoupSoapMessage</link> *msg);</programlisting>
+<para>
+Returns the internal XML representation tree of the <literal>SoupSoapMessage</literal> pointed
+to by <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <literal>SoupSoapMessage</literal>.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the xmlDocPtr representing the SOAP message.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libsoup-soup-headers">
+<refmeta>
+<refentrytitle>soup-headers</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>soup-headers</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-headers-parse-request">soup_headers_parse_request</link>      (<link linkend="char">char</link> *str,
+                                             <link linkend="int">int</link> len,
+                                             <link linkend="GHashTable">GHashTable</link> *dest,
+                                             <link linkend="char">char</link> **req_method,
+                                             <link linkend="char">char</link> **req_path,
+                                             <link linkend="SoupHttpVersion">SoupHttpVersion</link> *ver);
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-headers-parse-status-line">soup_headers_parse_status_line</link>  (const <link linkend="char">char</link> *status_line,
+                                             <link linkend="SoupHttpVersion">SoupHttpVersion</link> *ver,
+                                             <link linkend="guint">guint</link> *status_code,
+                                             <link linkend="char">char</link> **status_phrase);
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-headers-parse-response">soup_headers_parse_response</link>     (<link linkend="char">char</link> *str,
+                                             <link linkend="int">int</link> len,
+                                             <link linkend="GHashTable">GHashTable</link> *dest,
+                                             <link linkend="SoupHttpVersion">SoupHttpVersion</link> *ver,
+                                             <link linkend="guint">guint</link> *status_code,
+                                             <link linkend="char">char</link> **status_phrase);
+<link linkend="char">char</link>*       <link linkend="soup-header-param-decode-token">soup_header_param_decode_token</link>  (<link linkend="char">char</link> **in);
+<link linkend="GHashTable">GHashTable</link>* <link linkend="soup-header-param-parse-list">soup_header_param_parse_list</link>    (const <link linkend="char">char</link> *header);
+<link linkend="char">char</link>*       <link linkend="soup-header-param-copy-token">soup_header_param_copy_token</link>    (<link linkend="GHashTable">GHashTable</link> *tokens,
+                                             <link linkend="char">char</link> *t);
+<link linkend="void">void</link>        <link linkend="soup-header-param-destroy-hash">soup_header_param_destroy_hash</link>  (<link linkend="GHashTable">GHashTable</link> *table);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="soup-headers-parse-request"/>soup_headers_parse_request ()</title>
+<indexterm><primary>soup_headers_parse_request</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_headers_parse_request      (<link linkend="char">char</link> *str,
+                                             <link linkend="int">int</link> len,
+                                             <link linkend="GHashTable">GHashTable</link> *dest,
+                                             <link linkend="char">char</link> **req_method,
+                                             <link linkend="char">char</link> **req_path,
+                                             <link linkend="SoupHttpVersion">SoupHttpVersion</link> *ver);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>len</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>req_method</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>req_path</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ver</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-headers-parse-status-line"/>soup_headers_parse_status_line ()</title>
+<indexterm><primary>soup_headers_parse_status_line</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_headers_parse_status_line  (const <link linkend="char">char</link> *status_line,
+                                             <link linkend="SoupHttpVersion">SoupHttpVersion</link> *ver,
+                                             <link linkend="guint">guint</link> *status_code,
+                                             <link linkend="char">char</link> **status_phrase);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>status_line</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ver</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_code</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_phrase</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-headers-parse-response"/>soup_headers_parse_response ()</title>
+<indexterm><primary>soup_headers_parse_response</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_headers_parse_response     (<link linkend="char">char</link> *str,
+                                             <link linkend="int">int</link> len,
+                                             <link linkend="GHashTable">GHashTable</link> *dest,
+                                             <link linkend="SoupHttpVersion">SoupHttpVersion</link> *ver,
+                                             <link linkend="guint">guint</link> *status_code,
+                                             <link linkend="char">char</link> **status_phrase);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>str</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>len</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>dest</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ver</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_code</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_phrase</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-header-param-decode-token"/>soup_header_param_decode_token ()</title>
+<indexterm><primary>soup_header_param_decode_token</primary></indexterm><programlisting><link linkend="char">char</link>*       soup_header_param_decode_token  (<link linkend="char">char</link> **in);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>in</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-header-param-parse-list"/>soup_header_param_parse_list ()</title>
+<indexterm><primary>soup_header_param_parse_list</primary></indexterm><programlisting><link linkend="GHashTable">GHashTable</link>* soup_header_param_parse_list    (const <link linkend="char">char</link> *header);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>header</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-header-param-copy-token"/>soup_header_param_copy_token ()</title>
+<indexterm><primary>soup_header_param_copy_token</primary></indexterm><programlisting><link linkend="char">char</link>*       soup_header_param_copy_token    (<link linkend="GHashTable">GHashTable</link> *tokens,
+                                             <link linkend="char">char</link> *t);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>tokens</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>t</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-header-param-destroy-hash"/>soup_header_param_destroy_hash ()</title>
+<indexterm><primary>soup_header_param_destroy_hash</primary></indexterm><programlisting><link linkend="void">void</link>        soup_header_param_destroy_hash  (<link linkend="GHashTable">GHashTable</link> *table);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>table</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

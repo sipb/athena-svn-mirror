@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libsoup-soup-message-queue">
+<refmeta>
+<refentrytitle>soup-message-queue</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>soup-message-queue</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link>;
+<link linkend="SoupMessageQueue">SoupMessageQueue</link>* <link linkend="soup-message-queue-new">soup_message_queue_new</link>    (void);
+<link linkend="void">void</link>        <link linkend="soup-message-queue-append">soup_message_queue_append</link>       (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="SoupMessage">SoupMessage</link>* <link linkend="soup-message-queue-first">soup_message_queue_first</link>       (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link> *iter);
+<link linkend="SoupMessage">SoupMessage</link>* <link linkend="soup-message-queue-next">soup_message_queue_next</link>        (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link> *iter);
+<link linkend="SoupMessage">SoupMessage</link>* <link linkend="soup-message-queue-remove">soup_message_queue_remove</link>      (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link> *iter);
+<link linkend="void">void</link>        <link linkend="soup-message-queue-free-iter">soup_message_queue_free_iter</link>    (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link> *iter);
+<link linkend="void">void</link>        <link linkend="soup-message-queue-destroy">soup_message_queue_destroy</link>      (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue);
+<link linkend="void">void</link>        <link linkend="soup-message-queue-remove-message">soup_message_queue_remove_message</link>
+                                            (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="SoupMessageQueueIter"/>struct SoupMessageQueueIter</title>
+<indexterm><primary>SoupMessageQueueIter</primary></indexterm><programlisting>struct SoupMessageQueueIter {
+
+	GList *cur, *next;
+};
+</programlisting>
+<para>
+An opaque data structure used to iterate the elements of a
+<link linkend="SoupMessageQueue"><type>SoupMessageQueue</type></link>.
+</para></refsect2>
+<refsect2>
+<title><anchor id="soup-message-queue-new"/>soup_message_queue_new ()</title>
+<indexterm><primary>soup_message_queue_new</primary></indexterm><programlisting><link linkend="SoupMessageQueue">SoupMessageQueue</link>* soup_message_queue_new    (void);</programlisting>
+<para>
+Creates a new <link linkend="SoupMessageQueue"><type>SoupMessageQueue</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a new <link linkend="SoupMessageQueue"><type>SoupMessageQueue</type></link> object
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-queue-append"/>soup_message_queue_append ()</title>
+<indexterm><primary>soup_message_queue_append</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_queue_append       (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Appends <parameter>msg</parameter> to the end of <parameter>queue</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> a queue
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a message
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-queue-first"/>soup_message_queue_first ()</title>
+<indexterm><primary>soup_message_queue_first</primary></indexterm><programlisting><link linkend="SoupMessage">SoupMessage</link>* soup_message_queue_first       (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link> *iter);</programlisting>
+<para>
+Initializes <parameter>iter</parameter> and returns the first element of <parameter>queue</parameter>. If you
+do not iterate all the way to the end of the list, you must call
+<link linkend="soup-message-queue-free-iter"><function>soup_message_queue_free_iter()</function></link> to dispose the iterator when you are
+done.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> a queue
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
+<listitem><simpara> pointer to a <link linkend="SoupMessageQueueIter"><type>SoupMessageQueueIter</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the first element of <parameter>queue</parameter>, or <literal>NULL</literal> if it is empty.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-queue-next"/>soup_message_queue_next ()</title>
+<indexterm><primary>soup_message_queue_next</primary></indexterm><programlisting><link linkend="SoupMessage">SoupMessage</link>* soup_message_queue_next        (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link> *iter);</programlisting>
+<para>
+Returns the next element of <parameter>queue</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> a queue
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
+<listitem><simpara> pointer to an initialized <link linkend="SoupMessageQueueIter"><type>SoupMessageQueueIter</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the next element, or <literal>NULL</literal> if there are no more.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-queue-remove"/>soup_message_queue_remove ()</title>
+<indexterm><primary>soup_message_queue_remove</primary></indexterm><programlisting><link linkend="SoupMessage">SoupMessage</link>* soup_message_queue_remove      (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link> *iter);</programlisting>
+<para>
+Removes the queue element pointed to by <parameter>iter</parameter>; that is, the last
+message returned by <link linkend="soup-message-queue-first"><function>soup_message_queue_first()</function></link> or
+<link linkend="soup-message-queue-next"><function>soup_message_queue_next()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> a queue
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
+<listitem><simpara> pointer to an initialized <link linkend="SoupMessageQueueIter"><type>SoupMessageQueueIter</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the removed message, or <literal>NULL</literal> if the element pointed
+to by <parameter>iter</parameter> was already removed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-queue-free-iter"/>soup_message_queue_free_iter ()</title>
+<indexterm><primary>soup_message_queue_free_iter</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_queue_free_iter    (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessageQueueIter">SoupMessageQueueIter</link> *iter);</programlisting>
+<para>
+Removes <parameter>iter</parameter> from the list of active iterators in <parameter>queue</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> a queue
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>iter</parameter>&nbsp;:</term>
+<listitem><simpara> pointer to an initialized <link linkend="SoupMessageQueueIter"><type>SoupMessageQueueIter</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-queue-destroy"/>soup_message_queue_destroy ()</title>
+<indexterm><primary>soup_message_queue_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_queue_destroy      (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue);</programlisting>
+<para>
+Frees memory associated with <parameter>queue</parameter>, which must be empty.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> a message queue
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-queue-remove-message"/>soup_message_queue_remove_message ()</title>
+<indexterm><primary>soup_message_queue_remove_message</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_queue_remove_message
+                                            (<link linkend="SoupMessageQueue">SoupMessageQueue</link> *queue,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Removes the indicated message from <parameter>queue</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>queue</parameter>&nbsp;:</term>
+<listitem><simpara> a queue
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="SoupServerMessage">
+<refmeta>
+<refentrytitle>SoupServerMessage</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>SoupServerMessage</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="SoupServerMessage">SoupServerMessage</link>* <link linkend="soup-server-message-new">soup_server_message_new</link>  (<link linkend="SoupServer">SoupServer</link> *server);
+<link linkend="SoupServer">SoupServer</link>* <link linkend="soup-server-message-get-server">soup_server_message_get_server</link>  (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);
+<link linkend="void">void</link>        <link linkend="soup-server-message-set-encoding">soup_server_message_set_encoding</link>
+                                            (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg,
+                                             <link linkend="SoupTransferEncoding">SoupTransferEncoding</link> encoding);
+<link linkend="SoupTransferEncoding">SoupTransferEncoding</link> <link linkend="soup-server-message-get-encoding">soup_server_message_get_encoding</link>
+                                            (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);
+<link linkend="void">void</link>        <link linkend="soup-server-message-start">soup_server_message_start</link>       (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-server-message-is-started">soup_server_message_is_started</link>  (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);
+<link linkend="void">void</link>        <link linkend="soup-server-message-finish">soup_server_message_finish</link>      (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-server-message-is-finished">soup_server_message_is_finished</link> (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="soup-server-message-new"/>soup_server_message_new ()</title>
+<indexterm><primary>soup_server_message_new</primary></indexterm><programlisting><link linkend="SoupServerMessage">SoupServerMessage</link>* soup_server_message_new  (<link linkend="SoupServer">SoupServer</link> *server);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>server</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-server-message-get-server"/>soup_server_message_get_server ()</title>
+<indexterm><primary>soup_server_message_get_server</primary></indexterm><programlisting><link linkend="SoupServer">SoupServer</link>* soup_server_message_get_server  (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>smsg</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-server-message-set-encoding"/>soup_server_message_set_encoding ()</title>
+<indexterm><primary>soup_server_message_set_encoding</primary></indexterm><programlisting><link linkend="void">void</link>        soup_server_message_set_encoding
+                                            (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg,
+                                             <link linkend="SoupTransferEncoding">SoupTransferEncoding</link> encoding);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>smsg</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>encoding</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-server-message-get-encoding"/>soup_server_message_get_encoding ()</title>
+<indexterm><primary>soup_server_message_get_encoding</primary></indexterm><programlisting><link linkend="SoupTransferEncoding">SoupTransferEncoding</link> soup_server_message_get_encoding
+                                            (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>smsg</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-server-message-start"/>soup_server_message_start ()</title>
+<indexterm><primary>soup_server_message_start</primary></indexterm><programlisting><link linkend="void">void</link>        soup_server_message_start       (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>smsg</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-server-message-is-started"/>soup_server_message_is_started ()</title>
+<indexterm><primary>soup_server_message_is_started</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_server_message_is_started  (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>smsg</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-server-message-finish"/>soup_server_message_finish ()</title>
+<indexterm><primary>soup_server_message_finish</primary></indexterm><programlisting><link linkend="void">void</link>        soup_server_message_finish      (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>smsg</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-server-message-is-finished"/>soup_server_message_is_finished ()</title>
+<indexterm><primary>soup_server_message_is_finished</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_server_message_is_finished (<link linkend="SoupServerMessage">SoupServerMessage</link> *smsg);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>smsg</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

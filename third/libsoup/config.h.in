@@ -30,12 +30,6 @@
 /* Define if you have a Solaris-style gethostbyname_r() */
 #undef HAVE_GETHOSTBYNAME_R_SOLARIS
 
-/* Defined if you are using GnuTLS for SSL support */
-#undef HAVE_GNUTLS
-
-/* Define to 1 if you have the <gnutls/gnutls.h> header file. */
-#undef HAVE_GNUTLS_GNUTLS_H
-
 /* Define to 1 if you have the `inet_aton' function. */
 #undef HAVE_INET_ATON
 
@@ -57,14 +51,8 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Defined if you are using OpenSSL for SSL support */
-#undef HAVE_OPENSSL
-
-/* Define to 1 if you have the <openssl/err.h> header file. */
-#undef HAVE_OPENSSL_ERR_H
-
-/* Define to 1 if you have the <openssl/ssl.h> header file. */
-#undef HAVE_OPENSSL_SSL_H
+/* Defined if you have SSL support */
+#undef HAVE_SSL
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -77,21 +65,6 @@
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
-
-/* Define to 1 if you have the <sys/filio.h> header file. */
-#undef HAVE_SYS_FILIO_H
-
-/* Define to 1 if you have the <sys/ioctl.h> header file. */
-#undef HAVE_SYS_IOCTL_H
-
-/* Define to 1 if you have the <sys/param.h> header file. */
-#undef HAVE_SYS_PARAM_H
-
-/* Define to 1 if you have the <sys/poll.h> header file. */
-#undef HAVE_SYS_POLL_H
-
-/* Define to 1 if you have the <sys/sockio.h> header file. */
-#undef HAVE_SYS_SOCKIO_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
@@ -120,15 +93,12 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* The name to use for the SSL proxy binary. Defaults to libsoup-ssl-proxy */
-#undef SSL_PROXY_NAME
-
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
    automatically deduced at run-time.
-        STACK_DIRECTION > 0 => grows toward higher addresses
-        STACK_DIRECTION < 0 => grows toward lower addresses
-        STACK_DIRECTION = 0 => direction of growth unknown */
+	STACK_DIRECTION > 0 => grows toward higher addresses
+	STACK_DIRECTION < 0 => grows toward lower addresses
+	STACK_DIRECTION = 0 => direction of growth unknown */
 #undef STACK_DIRECTION
 
 /* Define to 1 if you have the ANSI C header files. */

@@ -2,10 +2,7 @@
 /*
  * soup-server-auth.c: Server-side authentication handling
  *
- * Authors:
- *      Alex Graveley (alex@ximian.com)
- *
- * Copyright (C) 2001-2002, Ximian, Inc.
+ * Copyright (C) 2001-2003, Ximian, Inc.
  */
 
 #include <glib.h>
@@ -16,9 +13,10 @@
 
 #include "soup-server-auth.h"
 
-#include "md5-utils.h"
 #include "soup-headers.h"
-#include "soup-ntlm.h"
+#include "soup-md5-utils.h"
+#include "soup-misc.h"
+#include "soup-uri.h"
 
 typedef struct {
 	const gchar   *scheme;
@@ -28,7 +26,6 @@ typedef struct {
 
 static AuthScheme known_auth_schemes [] = {
 	{ "Basic",  SOUP_AUTH_TYPE_BASIC,  0 },
-	{ "NTLM",   SOUP_AUTH_TYPE_NTLM,   2 },
 	{ "Digest", SOUP_AUTH_TYPE_DIGEST, 3 },
 	{ NULL }
 };
@@ -87,79 +84,79 @@ static gboolean
 check_digest_passwd (SoupServerAuthDigest *digest,
 		     gchar                *passwd)
 {
-	MD5Context ctx;
+	SoupMD5Context ctx;
 	guchar d[16];
 	guchar hex_a1 [33], hex_a2[33], o[33];
 	gchar *tmp;
 
 	/* compute A1 */
-	md5_init (&ctx);
-	md5_update (&ctx, digest->user, strlen (digest->user));
-	md5_update (&ctx, ":", 1);
-	md5_update (&ctx, digest->realm, strlen (digest->realm));
-	md5_update (&ctx, ":", 1);
+	soup_md5_init (&ctx);
+	soup_md5_update (&ctx, digest->user, strlen (digest->user));
+	soup_md5_update (&ctx, ":", 1);
+	soup_md5_update (&ctx, digest->realm, strlen (digest->realm));
+	soup_md5_update (&ctx, ":", 1);
 
 	if (passwd)
-		md5_update (&ctx, passwd, strlen (passwd));
+		soup_md5_update (&ctx, passwd, strlen (passwd));
 
 	if (digest->algorithm == SOUP_ALGORITHM_MD5_SESS) {
-		md5_final (&ctx, d);
+		soup_md5_final (&ctx, d);
 
-		md5_init (&ctx);
-		md5_update (&ctx, d, 16);
-		md5_update (&ctx, ":", 1);
-		md5_update (&ctx, digest->nonce, strlen (digest->nonce));
-		md5_update (&ctx, ":", 1);
-		md5_update (&ctx, digest->cnonce, strlen (digest->cnonce));
+		soup_md5_init (&ctx);
+		soup_md5_update (&ctx, d, 16);
+		soup_md5_update (&ctx, ":", 1);
+		soup_md5_update (&ctx, digest->nonce, strlen (digest->nonce));
+		soup_md5_update (&ctx, ":", 1);
+		soup_md5_update (&ctx, digest->cnonce, strlen (digest->cnonce));
 	}
 
 	/* hexify A1 */
-	md5_final (&ctx, d);
+	soup_md5_final (&ctx, d);
 	digest_hex (d, hex_a1);
 
 	/* compute A2 */
-	md5_init (&ctx);
-	md5_update (&ctx, 
+	soup_md5_init (&ctx);
+	soup_md5_update (&ctx, 
 		    digest->request_method, 
 		    strlen (digest->request_method));
-	md5_update (&ctx, ":", 1);
-	md5_update (&ctx, digest->digest_uri, strlen (digest->digest_uri));
+	soup_md5_update (&ctx, ":", 1);
+	soup_md5_update (&ctx, digest->digest_uri, strlen (digest->digest_uri));
 
 	if (digest->integrity) {
 		/* FIXME: Actually implement. Ugh. */
-		md5_update (&ctx, ":", 1);
-		md5_update (&ctx, "00000000000000000000000000000000", 32);
+		soup_md5_update (&ctx, ":", 1);
+		soup_md5_update (&ctx, "00000000000000000000000000000000", 32);
 	}
 
 	/* hexify A2 */
-	md5_final (&ctx, d);
+	soup_md5_final (&ctx, d);
 	digest_hex (d, hex_a2);
 
 	/* compute KD */
-	md5_init (&ctx);
-	md5_update (&ctx, hex_a1, 32);
-	md5_update (&ctx, ":", 1);
-	md5_update (&ctx, digest->nonce, strlen (digest->nonce));
-	md5_update (&ctx, ":", 1);
+	soup_md5_init (&ctx);
+	soup_md5_update (&ctx, hex_a1, 32);
+	soup_md5_update (&ctx, ":", 1);
+	soup_md5_update (&ctx, digest->nonce, strlen (digest->nonce));
+	soup_md5_update (&ctx, ":", 1);
 
 	tmp = g_strdup_printf ("%.8x", digest->nonce_count);
-	md5_update (&ctx, tmp, strlen (tmp));
+	soup_md5_update (&ctx, tmp, strlen (tmp));
 	g_free (tmp);
 
-	md5_update (&ctx, ":", 1);
-	md5_update (&ctx, digest->cnonce, strlen (digest->cnonce));
-	md5_update (&ctx, ":", 1);
+	soup_md5_update (&ctx, ":", 1);
+	soup_md5_update (&ctx, digest->cnonce, strlen (digest->cnonce));
+	soup_md5_update (&ctx, ":", 1);
 
 	if (digest->integrity)
 		tmp = "auth-int";
 	else 
 		tmp = "auth";
 
-	md5_update (&ctx, tmp, strlen (tmp));
-	md5_update (&ctx, ":", 1);
+	soup_md5_update (&ctx, tmp, strlen (tmp));
+	soup_md5_update (&ctx, ":", 1);
 
-	md5_update (&ctx, hex_a2, 32);
-	md5_final (&ctx, d);
+	soup_md5_update (&ctx, hex_a2, 32);
+	soup_md5_final (&ctx, d);
 
 	digest_hex (d, o);
 
@@ -180,26 +177,6 @@ soup_server_auth_check_passwd (SoupServerAuth *auth,
 			return passwd == auth->basic.passwd;
 	case SOUP_AUTH_TYPE_DIGEST:
 		return check_digest_passwd (&auth->digest, passwd);
-	case SOUP_AUTH_TYPE_NTLM:
-		if (passwd) {
-			gchar lm_hash [21], nt_hash [21];
-
-			soup_ntlm_lanmanager_hash (passwd, lm_hash);
-			soup_ntlm_nt_hash (passwd, nt_hash);
-
-			if (memcmp (lm_hash, 
-				    auth->ntlm.lm_hash, 
-				    sizeof (lm_hash)) != 0)
-				return FALSE;
-
-			if (memcmp (nt_hash, 
-				    auth->ntlm.nt_hash, 
-				    sizeof (nt_hash)) != 0)
-				return FALSE;
-
-			return TRUE;
-		}
-		return FALSE;
 	}
 
 	return FALSE;
@@ -215,8 +192,6 @@ soup_server_auth_get_user (SoupServerAuth *auth)
 		return auth->basic.user;
 	case SOUP_AUTH_TYPE_DIGEST:
 		return auth->digest.user;
-	case SOUP_AUTH_TYPE_NTLM:
-		return auth->ntlm.user;
 	}
 
 	return NULL;
@@ -252,7 +227,7 @@ parse_digest (SoupServerAuthContext *auth_ctx,
 		if (!uri)
 			goto DIGEST_AUTH_FAIL;
 
-		req_uri = soup_context_get_uri (msg->context);
+		req_uri = soup_message_get_uri (msg);
 
 		dig_uri = soup_uri_new (uri);
 		if (dig_uri) {
@@ -262,16 +237,9 @@ parse_digest (SoupServerAuthContext *auth_ctx,
 			}
 			soup_uri_free (dig_uri);
 		} else {	
-			gchar *req_path;
+			char *req_path;
 
-			if (req_uri->querystring)
-				req_path = 
-					g_strdup_printf ("%s?%s", 
-							 req_uri->path, 
-							 req_uri->querystring);
-			else
-				req_path = g_strdup (req_uri->path);
-
+			req_path = soup_uri_to_string (req_uri, TRUE);
 			if (strcmp (uri, req_path) != 0) {
 				g_free (req_path);
 				goto DIGEST_AUTH_FAIL;
@@ -380,7 +348,7 @@ soup_server_auth_new (SoupServerAuthContext *auth_ctx,
 	g_return_val_if_fail (msg != NULL, NULL);
 
 	if (!auth_hdrs && auth_ctx->types) {
-		soup_message_set_error (msg, SOUP_ERROR_UNAUTHORIZED);
+		soup_message_set_status (msg, SOUP_STATUS_UNAUTHORIZED);
 		return NULL;
 	}
 
@@ -389,7 +357,7 @@ soup_server_auth_new (SoupServerAuthContext *auth_ctx,
 					       &header);
 
 	if (!type && auth_ctx->types) {
-		soup_message_set_error (msg, SOUP_ERROR_UNAUTHORIZED);
+		soup_message_set_status (msg, SOUP_STATUS_UNAUTHORIZED);
 		return NULL;
 	}
 
@@ -424,14 +392,11 @@ soup_server_auth_new (SoupServerAuthContext *auth_ctx,
 		if (parse_digest (auth_ctx, header, msg, ret))
 			return ret;
 		break;
-	case SOUP_AUTH_TYPE_NTLM:
-		g_warning ("NTLM server authentication not yet implemented\n");
-		break;
 	}
 
 	g_free (ret);
 
-	soup_message_set_error (msg, SOUP_ERROR_UNAUTHORIZED);
+	soup_message_set_status (msg, SOUP_STATUS_UNAUTHORIZED);
 	return NULL;
 }
 
@@ -452,13 +417,6 @@ soup_server_auth_free (SoupServerAuth *auth)
 		g_free ((gchar *) auth->digest.cnonce);
 		g_free ((gchar *) auth->digest.digest_uri);
 		g_free ((gchar *) auth->digest.digest_response);
-		break;
-	case SOUP_AUTH_TYPE_NTLM:
-		g_free ((gchar *) auth->ntlm.host);
-		g_free ((gchar *) auth->ntlm.domain);
-		g_free ((gchar *) auth->ntlm.user);
-		g_free ((gchar *) auth->ntlm.lm_hash);
-		g_free ((gchar *) auth->ntlm.nt_hash);
 		break;
 	}
 

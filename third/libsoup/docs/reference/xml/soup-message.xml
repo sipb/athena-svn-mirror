@@ -1,0 +1,1165 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="SoupMessage">
+<refmeta>
+<refentrytitle>SoupMessage</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>SoupMessage</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+enum        <link linkend="SoupMessageStatus">SoupMessageStatus</link>;
+#define     <link linkend="SOUP-MESSAGE-IS-STARTING-CAPS">SOUP_MESSAGE_IS_STARTING</link>        (msg)
+enum        <link linkend="SoupTransferEncoding">SoupTransferEncoding</link>;
+enum        <link linkend="SoupOwnership">SoupOwnership</link>;
+struct      <link linkend="SoupDataBuffer">SoupDataBuffer</link>;
+<link linkend="void">void</link>        (<link linkend="SoupMessageCallbackFn">*SoupMessageCallbackFn</link>)        (<link linkend="SoupMessage">SoupMessage</link> *req,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="SoupMessage">SoupMessage</link>* <link linkend="soup-message-new">soup_message_new</link>               (const <link linkend="char">char</link> *method,
+                                             const <link linkend="char">char</link> *uri_string);
+<link linkend="SoupMessage">SoupMessage</link>* <link linkend="soup-message-new-from-uri">soup_message_new_from_uri</link>      (const <link linkend="char">char</link> *method,
+                                             const <link linkend="SoupUri">SoupUri</link> *uri);
+<link linkend="void">void</link>        <link linkend="soup-message-set-request">soup_message_set_request</link>        (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             const <link linkend="char">char</link> *content_type,
+                                             <link linkend="SoupOwnership">SoupOwnership</link> req_owner,
+                                             <link linkend="char">char</link> *req_body,
+                                             <link linkend="gulong">gulong</link> req_length);
+<link linkend="void">void</link>        <link linkend="soup-message-set-response">soup_message_set_response</link>       (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             const <link linkend="char">char</link> *content_type,
+                                             <link linkend="SoupOwnership">SoupOwnership</link> resp_owner,
+                                             <link linkend="char">char</link> *resp_body,
+                                             <link linkend="gulong">gulong</link> resp_length);
+<link linkend="void">void</link>        <link linkend="soup-message-add-header">soup_message_add_header</link>         (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             const <link linkend="char">char</link> *name,
+                                             const <link linkend="char">char</link> *value);
+const <link linkend="char">char</link>* <link linkend="soup-message-get-header">soup_message_get_header</link>         (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             const <link linkend="char">char</link> *name);
+const <link linkend="GSList">GSList</link>* <link linkend="soup-message-get-header-list">soup_message_get_header_list</link>  (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             const <link linkend="char">char</link> *name);
+<link linkend="void">void</link>        <link linkend="soup-message-foreach-header">soup_message_foreach_header</link>     (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             <link linkend="GHFunc">GHFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        <link linkend="soup-message-remove-header">soup_message_remove_header</link>      (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             const <link linkend="char">char</link> *name);
+<link linkend="void">void</link>        <link linkend="soup-message-clear-headers">soup_message_clear_headers</link>      (<link linkend="GHashTable">GHashTable</link> *hash);
+enum        <link linkend="SoupHttpVersion">SoupHttpVersion</link>;
+<link linkend="void">void</link>        <link linkend="soup-message-set-http-version">soup_message_set_http_version</link>   (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupHttpVersion">SoupHttpVersion</link> version);
+<link linkend="SoupHttpVersion">SoupHttpVersion</link> <link linkend="soup-message-get-http-version">soup_message_get_http_version</link>
+                                            (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-message-is-keepalive">soup_message_is_keepalive</link>       (<link linkend="SoupMessage">SoupMessage</link> *msg);
+const <link linkend="SoupUri">SoupUri</link>* <link linkend="soup-message-get-uri">soup_message_get_uri</link>         (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-set-uri">soup_message_set_uri</link>            (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             const <link linkend="SoupUri">SoupUri</link> *uri);
+enum        <link linkend="SoupMessageFlags">SoupMessageFlags</link>;
+<link linkend="void">void</link>        <link linkend="soup-message-set-flags">soup_message_set_flags</link>          (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="guint">guint</link> flags);
+<link linkend="guint">guint</link>       <link linkend="soup-message-get-flags">soup_message_get_flags</link>          (<link linkend="SoupMessage">SoupMessage</link> *msg);
+enum        <link linkend="SoupHandlerPhase">SoupHandlerPhase</link>;
+<link linkend="void">void</link>        <link linkend="soup-message-add-handler">soup_message_add_handler</link>        (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link> handler_cb,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        <link linkend="soup-message-add-header-handler">soup_message_add_header_handler</link> (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             const <link linkend="char">char</link> *header,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link>,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        <link linkend="soup-message-add-status-code-handler">soup_message_add_status_code_handler</link>
+                                            (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="guint">guint</link> status_code,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link>,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        <link linkend="soup-message-add-status-class-handler">soup_message_add_status_class_handler</link>
+                                            (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupStatusClass">SoupStatusClass</link> status_class,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link>,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        <link linkend="soup-message-remove-handler">soup_message_remove_handler</link>     (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link>,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        <link linkend="soup-message-set-status">soup_message_set_status</link>         (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="guint">guint</link> status_code);
+<link linkend="void">void</link>        <link linkend="soup-message-set-status-full">soup_message_set_status_full</link>    (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="guint">guint</link> status_code,
+                                             const <link linkend="char">char</link> *reason_phrase);
+<link linkend="void">void</link>        <link linkend="soup-message-add-chunk">soup_message_add_chunk</link>          (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupOwnership">SoupOwnership</link> owner,
+                                             const <link linkend="char">char</link> *body,
+                                             <link linkend="guint">guint</link> length);
+<link linkend="void">void</link>        <link linkend="soup-message-add-final-chunk">soup_message_add_final_chunk</link>    (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="SoupDataBuffer">SoupDataBuffer</link>* <link linkend="soup-message-pop-chunk">soup_message_pop_chunk</link>      (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-send-request">soup_message_send_request</link>       (<link linkend="SoupMessage">SoupMessage</link> *req,
+                                             <link linkend="SoupSocket">SoupSocket</link> *sock,
+                                             <link linkend="gboolean">gboolean</link> via_proxy);
+<link linkend="void">void</link>        <link linkend="soup-message-read-request">soup_message_read_request</link>       (<link linkend="SoupMessage">SoupMessage</link> *req,
+                                             <link linkend="SoupSocket">SoupSocket</link> *sock);
+<link linkend="void">void</link>        <link linkend="soup-message-io-pause">soup_message_io_pause</link>           (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-io-unpause">soup_message_io_unpause</link>         (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-wrote-informational">soup_message_wrote_informational</link>
+                                            (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-wrote-headers">soup_message_wrote_headers</link>      (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-wrote-chunk">soup_message_wrote_chunk</link>        (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-wrote-body">soup_message_wrote_body</link>         (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-got-informational">soup_message_got_informational</link>  (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-got-headers">soup_message_got_headers</link>        (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-got-chunk">soup_message_got_chunk</link>          (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-got-body">soup_message_got_body</link>           (<link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-message-finished">soup_message_finished</link>           (<link linkend="SoupMessage">SoupMessage</link> *msg);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="SoupMessageStatus"/>enum SoupMessageStatus</title>
+<indexterm><primary>SoupMessageStatus</primary></indexterm><programlisting>typedef enum {
+	SOUP_MESSAGE_STATUS_IDLE,
+	SOUP_MESSAGE_STATUS_QUEUED,
+        SOUP_MESSAGE_STATUS_CONNECTING,
+        SOUP_MESSAGE_STATUS_RUNNING,
+	SOUP_MESSAGE_STATUS_FINISHED
+} SoupMessageStatus;
+</programlisting>
+<para>
+Enum indicating the lifecycle of a <link linkend="SoupMessage"><type>SoupMessage</type></link>.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>SOUP_MESSAGE_STATUS_IDLE</literal></term>
+<listitem><simpara>The message has not yet been queued.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_MESSAGE_STATUS_QUEUED</literal></term>
+<listitem><simpara>The message has been queued, but is
+waiting for a connection to be available.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_MESSAGE_STATUS_CONNECTING</literal></term>
+<listitem><simpara>The message is waiting for a specific
+connection to finish connecting.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_MESSAGE_STATUS_RUNNING</literal></term>
+<listitem><simpara>The message is being processed.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_MESSAGE_STATUS_FINISHED</literal></term>
+<listitem><simpara>The message is complete (request and
+response both processed).
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SOUP-MESSAGE-IS-STARTING-CAPS"/>SOUP_MESSAGE_IS_STARTING()</title>
+<indexterm><primary>SOUP_MESSAGE_IS_STARTING</primary></indexterm><programlisting>#define SOUP_MESSAGE_IS_STARTING(msg) (msg-&gt;status == SOUP_MESSAGE_STATUS_QUEUED || msg-&gt;status == SOUP_MESSAGE_STATUS_CONNECTING)
+</programlisting>
+
+<para>
+Tests if <parameter>msg</parameter> is in a "starting" state, waiting to be sent. (More
+commonly used to test if a message has been requeued after its first
+attempt.)
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara>a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara><literal>TRUE</literal> if <parameter>msg</parameter> is waiting to be sent.
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SoupTransferEncoding"/>enum SoupTransferEncoding</title>
+<indexterm><primary>SoupTransferEncoding</primary></indexterm><programlisting>typedef enum {
+	SOUP_TRANSFER_UNKNOWN = 0,
+	SOUP_TRANSFER_CHUNKED,
+	SOUP_TRANSFER_CONTENT_LENGTH
+} SoupTransferEncoding;
+</programlisting>
+<para>
+How the length of a request or response is to be encoded.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>SOUP_TRANSFER_UNKNOWN</literal></term>
+<listitem><simpara>HTTP 1.0-style (content ends when the
+connection is closed)
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_TRANSFER_CHUNKED</literal></term>
+<listitem><simpara>chunked encoding (only supported for response)
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_TRANSFER_CONTENT_LENGTH</literal></term>
+<listitem><simpara>Content-Length
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SoupOwnership"/>enum SoupOwnership</title>
+<indexterm><primary>SoupOwnership</primary></indexterm><programlisting>typedef enum {
+	SOUP_BUFFER_SYSTEM_OWNED = 0,
+	SOUP_BUFFER_USER_OWNED,
+	SOUP_BUFFER_STATIC
+} SoupOwnership;
+</programlisting>
+<para>
+Used by <link linkend="SoupDataBuffer"><type>SoupDataBuffer</type></link> (and several functions) to indicate the
+ownership of a buffer.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>SOUP_BUFFER_SYSTEM_OWNED</literal></term>
+<listitem><simpara>The data is owned by soup and it can free
+it when it is done with it.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_BUFFER_USER_OWNED</literal></term>
+<listitem><simpara>The data is owned by the user, who is
+responsible for freeing it at the right point
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_BUFFER_STATIC</literal></term>
+<listitem><simpara>The data should not be freed.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SoupDataBuffer"/>struct SoupDataBuffer</title>
+<indexterm><primary>SoupDataBuffer</primary></indexterm><programlisting>struct SoupDataBuffer {
+
+	SoupOwnership  owner;
+	char          *body;
+	guint          length;
+};
+</programlisting>
+<para>
+A data buffer used in several places.
+</para><variablelist role="struct">
+<varlistentry>
+<term><link linkend="SoupOwnership">SoupOwnership</link> <structfield>owner</structfield></term>
+<listitem><simpara>the ownership of the data
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="char">char</link> *<structfield>body</structfield></term>
+<listitem><simpara>the data itself
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><link linkend="guint">guint</link> <structfield>length</structfield></term>
+<listitem><simpara>length of <parameter>body</parameter>
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SoupMessageCallbackFn"/>SoupMessageCallbackFn ()</title>
+<indexterm><primary>SoupMessageCallbackFn</primary></indexterm><programlisting><link linkend="void">void</link>        (*SoupMessageCallbackFn)        (<link linkend="SoupMessage">SoupMessage</link> *req,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+A callback function used by many <link linkend="SoupMessage"><type>SoupMessage</type></link> methods.
+</para><variablelist role="params">
+<varlistentry><term><parameter>req</parameter>&nbsp;:</term>
+<listitem><simpara>the <link linkend="SoupMessage"><type>SoupMessage</type></link> in question
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>user data
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-new"/>soup_message_new ()</title>
+<indexterm><primary>soup_message_new</primary></indexterm><programlisting><link linkend="SoupMessage">SoupMessage</link>* soup_message_new               (const <link linkend="char">char</link> *method,
+                                             const <link linkend="char">char</link> *uri_string);</programlisting>
+<para>
+Creates a new empty <link linkend="SoupMessage"><type>SoupMessage</type></link>, which will connect to <parameter>uri</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>method</parameter>&nbsp;:</term>
+<listitem><simpara> the HTTP method for the created request
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri_string</parameter>&nbsp;:</term>
+<listitem><simpara> the destination endpoint (as a string)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="SoupMessage"><type>SoupMessage</type></link> (or <literal>NULL</literal> if <parameter>uri</parameter> could not
+be parsed).
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-new-from-uri"/>soup_message_new_from_uri ()</title>
+<indexterm><primary>soup_message_new_from_uri</primary></indexterm><programlisting><link linkend="SoupMessage">SoupMessage</link>* soup_message_new_from_uri      (const <link linkend="char">char</link> *method,
+                                             const <link linkend="SoupUri">SoupUri</link> *uri);</programlisting>
+<para>
+Creates a new empty <link linkend="SoupMessage"><type>SoupMessage</type></link>, which will connect to <parameter>uri</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>method</parameter>&nbsp;:</term>
+<listitem><simpara> the HTTP method for the created request
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara> the destination endpoint (as a <link linkend="SoupUri"><type>SoupUri</type></link>)
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-set-request"/>soup_message_set_request ()</title>
+<indexterm><primary>soup_message_set_request</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_set_request        (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             const <link linkend="char">char</link> *content_type,
+                                             <link linkend="SoupOwnership">SoupOwnership</link> req_owner,
+                                             <link linkend="char">char</link> *req_body,
+                                             <link linkend="gulong">gulong</link> req_length);</programlisting>
+<para>
+Convenience function to set the request body of a <link linkend="SoupMessage"><type>SoupMessage</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the message
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>content_type</parameter>&nbsp;:</term>
+<listitem><simpara> MIME Content-Type of the body
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>req_owner</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="SoupOwnership"><type>SoupOwnership</type></link> of the passed data buffer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>req_body</parameter>&nbsp;:</term>
+<listitem><simpara> a data buffer containing the body of the message request.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>req_length</parameter>&nbsp;:</term>
+<listitem><simpara> the byte length of <parameter>req_body</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-set-response"/>soup_message_set_response ()</title>
+<indexterm><primary>soup_message_set_response</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_set_response       (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             const <link linkend="char">char</link> *content_type,
+                                             <link linkend="SoupOwnership">SoupOwnership</link> resp_owner,
+                                             <link linkend="char">char</link> *resp_body,
+                                             <link linkend="gulong">gulong</link> resp_length);</programlisting>
+<para>
+Convenience function to set the response body of a <link linkend="SoupMessage"><type>SoupMessage</type></link></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the message
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>content_type</parameter>&nbsp;:</term>
+<listitem><simpara> MIME Content-Type of the body
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>resp_owner</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="SoupOwnership"><type>SoupOwnership</type></link> of the passed data buffer.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>resp_body</parameter>&nbsp;:</term>
+<listitem><simpara> a data buffer containing the body of the message response.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>resp_length</parameter>&nbsp;:</term>
+<listitem><simpara> the byte length of <parameter>resp_body</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-add-header"/>soup_message_add_header ()</title>
+<indexterm><primary>soup_message_add_header</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_add_header         (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             const <link linkend="char">char</link> *name,
+                                             const <link linkend="char">char</link> *value);</programlisting>
+<para>
+Adds a header with name <parameter>name</parameter> and value <parameter>value</parameter> to <parameter>hash</parameter>. If there
+was already a header with name <parameter>name</parameter>, this one does not replace it,
+it is merely added to it.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>hash</parameter>&nbsp;:</term>
+<listitem><simpara> a header table (the <literal>request_headers</literal> or <literal>response_headers</literal>
+field of a <link linkend="SoupMessage"><type>SoupMessage</type></link>)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> the header name to add
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><simpara> the value of the new header
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-get-header"/>soup_message_get_header ()</title>
+<indexterm><primary>soup_message_get_header</primary></indexterm><programlisting>const <link linkend="char">char</link>* soup_message_get_header         (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             const <link linkend="char">char</link> *name);</programlisting>
+<para>
+Finds the first header in <parameter>hash</parameter> with name <parameter>name</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>hash</parameter>&nbsp;:</term>
+<listitem><simpara> a header table (the <literal>request_headers</literal> or <literal>response_headers</literal>
+field of a <link linkend="SoupMessage"><type>SoupMessage</type></link>)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> header name.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the header's value or <literal>NULL</literal> if not found.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-get-header-list"/>soup_message_get_header_list ()</title>
+<indexterm><primary>soup_message_get_header_list</primary></indexterm><programlisting>const <link linkend="GSList">GSList</link>* soup_message_get_header_list  (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             const <link linkend="char">char</link> *name);</programlisting>
+<para>
+Finds all headers in <parameter>hash</parameter> with name <parameter>name</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>hash</parameter>&nbsp;:</term>
+<listitem><simpara> a header table (the <literal>request_headers</literal> or <literal>response_headers</literal>
+field of a <link linkend="SoupMessage"><type>SoupMessage</type></link>)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> header name.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a (possibly empty) list of values of headers with
+name <parameter>name</parameter>. The caller should not modify or free this list.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-foreach-header"/>soup_message_foreach_header ()</title>
+<indexterm><primary>soup_message_foreach_header</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_foreach_header     (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             <link linkend="GHFunc">GHFunc</link> func,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Calls <parameter>func</parameter> once for each header value in <parameter>hash</parameter>. (If there are
+headers will multiple values, <parameter>func</parameter> will be called once on each
+value.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>hash</parameter>&nbsp;:</term>
+<listitem><simpara> a header table (the <literal>request_headers</literal> or <literal>response_headers</literal>
+field of a <link linkend="SoupMessage"><type>SoupMessage</type></link>)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>func</parameter>&nbsp;:</term>
+<listitem><simpara> callback function to run for each header
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> data to pass to <parameter>func</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-remove-header"/>soup_message_remove_header ()</title>
+<indexterm><primary>soup_message_remove_header</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_remove_header      (<link linkend="GHashTable">GHashTable</link> *hash,
+                                             const <link linkend="char">char</link> *name);</programlisting>
+<para>
+Removes <parameter>name</parameter> from <parameter>hash</parameter>. If there are multiple values for <parameter>name</parameter>,
+they are all removed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>hash</parameter>&nbsp;:</term>
+<listitem><simpara> a header table (the <literal>request_headers</literal> or <literal>response_headers</literal>
+field of a <link linkend="SoupMessage"><type>SoupMessage</type></link>)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> the header name to remove
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-clear-headers"/>soup_message_clear_headers ()</title>
+<indexterm><primary>soup_message_clear_headers</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_clear_headers      (<link linkend="GHashTable">GHashTable</link> *hash);</programlisting>
+<para>
+Clears <parameter>hash</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>hash</parameter>&nbsp;:</term>
+<listitem><simpara> a header table (the <literal>request_headers</literal> or <literal>response_headers</literal>
+field of a <link linkend="SoupMessage"><type>SoupMessage</type></link>)
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SoupHttpVersion"/>enum SoupHttpVersion</title>
+<indexterm><primary>SoupHttpVersion</primary></indexterm><programlisting>typedef enum {
+	SOUP_HTTP_1_0 = 0,
+	SOUP_HTTP_1_1 = 1
+} SoupHttpVersion;
+</programlisting>
+<para>
+Indicates the HTTP protocol version being used.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>SOUP_HTTP_1_0</literal></term>
+<listitem><simpara>HTTP 1.0 (RFC 1945)
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_HTTP_1_1</literal></term>
+<listitem><simpara>HTTP 1.1 (RFC 2616)
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-set-http-version"/>soup_message_set_http_version ()</title>
+<indexterm><primary>soup_message_set_http_version</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_set_http_version   (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupHttpVersion">SoupHttpVersion</link> version);</programlisting>
+<para>
+Sets the HTTP version on <parameter>msg</parameter>. The default version is
+<literal>SOUP_HTTP_1_1</literal>. Setting it to <literal>SOUP_HTTP_1_0</literal> will prevent certain
+functionality from being used.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>version</parameter>&nbsp;:</term>
+<listitem><simpara> the HTTP version
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-get-http-version"/>soup_message_get_http_version ()</title>
+<indexterm><primary>soup_message_get_http_version</primary></indexterm><programlisting><link linkend="SoupHttpVersion">SoupHttpVersion</link> soup_message_get_http_version
+                                            (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Gets the HTTP version of <parameter>msg</parameter>. This is the minimum of the
+version from the request and the version from the response.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the HTTP version
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-is-keepalive"/>soup_message_is_keepalive ()</title>
+<indexterm><primary>soup_message_is_keepalive</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_message_is_keepalive       (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Determines whether or not <parameter>msg</parameter>'s connection can be kept alive for
+further requests after processing <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> or <literal>FALSE</literal>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-get-uri"/>soup_message_get_uri ()</title>
+<indexterm><primary>soup_message_get_uri</primary></indexterm><programlisting>const <link linkend="SoupUri">SoupUri</link>* soup_message_get_uri         (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Gets <parameter>msg</parameter>'s URI</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the URI <parameter>msg</parameter> is targeted for.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-set-uri"/>soup_message_set_uri ()</title>
+<indexterm><primary>soup_message_set_uri</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_set_uri            (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             const <link linkend="SoupUri">SoupUri</link> *uri);</programlisting>
+<para>
+Changes the URI that <parameter>msg</parameter> is directed to (generally as a result
+of a redirect).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SoupMessageFlags"/>enum SoupMessageFlags</title>
+<indexterm><primary>SoupMessageFlags</primary></indexterm><programlisting>typedef enum {
+	/*
+	 * SOUP_MESSAGE_NO_REDIRECT: 
+	 * Do not follow redirection responses.
+	 */
+	SOUP_MESSAGE_NO_REDIRECT      = (1 &lt;&lt; 1),
+
+	/*
+	 * SOUP_MESSAGE_OVERWRITE_CHUNKS:
+	 * Downloaded data chunks should not be stored in the response 
+	 * data buffer.  Instead only send data to SOUP_HANDLER_BODY_CHUNK 
+	 * handlers, then truncate the data buffer.
+	 *
+	 * Useful when the response is expected to be very large, and 
+	 * storage in memory is not desired.
+	 */
+	SOUP_MESSAGE_OVERWRITE_CHUNKS = (1 &lt;&lt; 3),
+
+	/*
+	 * SOUP_MESSAGE_EXPECT_CONTINUE: The message includes an
+	 * "Expect: 100-continue" header, and we should not send the
+	 * body until the Continue response has been received. (This
+	 * is automatically set if there is an "Expect: 100-continue"
+	 * header.)
+	 */
+	SOUP_MESSAGE_EXPECT_CONTINUE = (1 &lt;&lt; 4)
+} SoupMessageFlags;
+</programlisting>
+<para>
+Various flags that can be set on a <link linkend="SoupMessage"><type>SoupMessage</type></link> to alter its behavior.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>SOUP_MESSAGE_NO_REDIRECT</literal></term>
+<listitem><simpara>The session should not follow redirect
+(3xx) responses received by this message.
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_MESSAGE_OVERWRITE_CHUNKS</literal></term>
+<listitem><simpara>Rather than building up the response
+body in <literal>response</literal>, each new chunk should overwrite the previous one.
+(This can be used if you are connecting to the <literal>got_chunk</literal> signal or
+have installed a <literal>SOUP_MESSAGE_BODY_CHUNK</literal> handler.)
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_MESSAGE_EXPECT_CONTINUE</literal></term>
+<listitem><simpara>This will cause an "Expect:
+100-continue" header to be added to the outgoing request, giving the
+server the opportunity to reject the message (eg, with a 401
+Unauthorized) before the full request body is sent.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-set-flags"/>soup_message_set_flags ()</title>
+<indexterm><primary>soup_message_set_flags</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_set_flags          (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="guint">guint</link> flags);</programlisting>
+<para>
+Sets the specified flags on <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
+<listitem><simpara> a set of <link linkend="SoupMessageFlags"><type>SoupMessageFlags</type></link> values
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-get-flags"/>soup_message_get_flags ()</title>
+<indexterm><primary>soup_message_get_flags</primary></indexterm><programlisting><link linkend="guint">guint</link>       soup_message_get_flags          (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Gets the flags on <parameter>msg</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the flags
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="SoupHandlerPhase"/>enum SoupHandlerPhase</title>
+<indexterm><primary>SoupHandlerPhase</primary></indexterm><programlisting>typedef enum {
+	SOUP_HANDLER_POST_REQUEST = 1,
+	SOUP_HANDLER_PRE_BODY,
+	SOUP_HANDLER_BODY_CHUNK,
+	SOUP_HANDLER_POST_BODY
+} SoupHandlerPhase;
+</programlisting>
+<para>
+Indicates when a handler added with <link linkend="soup-message-add-handler"><function>soup_message_add_handler()</function></link> or the
+like will be run.
+</para><variablelist role="enum">
+<varlistentry>
+<term><literal>SOUP_HANDLER_POST_REQUEST</literal></term>
+<listitem><simpara>The handler should run immediately after
+sending the request body
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_HANDLER_PRE_BODY</literal></term>
+<listitem><simpara>The handler should run before reading the
+response body (after reading the headers).
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_HANDLER_BODY_CHUNK</literal></term>
+<listitem><simpara>The handler should run after every body
+chunk is read. (See also <literal>SOUP_MESSAGE_OVERWRITE_CHUNKS</literal>.)
+</simpara></listitem>
+</varlistentry>
+<varlistentry>
+<term><literal>SOUP_HANDLER_POST_BODY</literal></term>
+<listitem><simpara>The handler should run after the entire
+message body has been read.
+
+</simpara></listitem>
+</varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-add-handler"/>soup_message_add_handler ()</title>
+<indexterm><primary>soup_message_add_handler</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_add_handler        (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link> handler_cb,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Adds a handler to <parameter>msg</parameter> for all messages</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>handler_cb</parameter>&nbsp;:</term>
+<listitem><simpara> the handler
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> data to pass to <parameter>handler_cb</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-add-header-handler"/>soup_message_add_header_handler ()</title>
+<indexterm><primary>soup_message_add_header_handler</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_add_header_handler (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             const <link linkend="char">char</link> *header,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link>,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Adds a handler to <parameter>msg</parameter> for messages containing the given response
+header.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>header</parameter>&nbsp;:</term>
+<listitem><simpara> HTTP response header to match against
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param4</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> data to pass to <parameter>handler_cb</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-add-status-code-handler"/>soup_message_add_status_code_handler ()</title>
+<indexterm><primary>soup_message_add_status_code_handler</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_add_status_code_handler
+                                            (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="guint">guint</link> status_code,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link>,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Adds a handler to <parameter>msg</parameter> for messages receiving the given status
+code.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_code</parameter>&nbsp;:</term>
+<listitem><simpara> HTTP status code to match against
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param4</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> data to pass to <parameter>handler_cb</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-add-status-class-handler"/>soup_message_add_status_class_handler ()</title>
+<indexterm><primary>soup_message_add_status_class_handler</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_add_status_class_handler
+                                            (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupStatusClass">SoupStatusClass</link> status_class,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link>,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Adds a handler to <parameter>msg</parameter> for messages receiving a status code in
+the given class.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_class</parameter>&nbsp;:</term>
+<listitem><simpara> HTTP status code class to match against
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param4</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> data to pass to <parameter>handler_cb</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-remove-handler"/>soup_message_remove_handler ()</title>
+<indexterm><primary>soup_message_remove_handler</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_remove_handler     (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupHandlerPhase">SoupHandlerPhase</link> type,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link>,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Removes all matching handlers from <parameter>msg</parameter></para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>type</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param3</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> data to pass to <parameter>handler_cb</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-set-status"/>soup_message_set_status ()</title>
+<indexterm><primary>soup_message_set_status</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_set_status         (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="guint">guint</link> status_code);</programlisting>
+<para>
+Sets <parameter>msg</parameter>'s status code to <parameter>status_code</parameter>. If <parameter>status_code</parameter> is a
+known value, it will also set <parameter>msg</parameter>'s reason_phrase.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_code</parameter>&nbsp;:</term>
+<listitem><simpara> an HTTP status code
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-set-status-full"/>soup_message_set_status_full ()</title>
+<indexterm><primary>soup_message_set_status_full</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_set_status_full    (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="guint">guint</link> status_code,
+                                             const <link linkend="char">char</link> *reason_phrase);</programlisting>
+<para>
+Sets <parameter>msg</parameter>'s status code and reason phrase.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>status_code</parameter>&nbsp;:</term>
+<listitem><simpara> an HTTP status code
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>reason_phrase</parameter>&nbsp;:</term>
+<listitem><simpara> a description of the status
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-add-chunk"/>soup_message_add_chunk ()</title>
+<indexterm><primary>soup_message_add_chunk</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_add_chunk          (<link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupOwnership">SoupOwnership</link> owner,
+                                             const <link linkend="char">char</link> *body,
+                                             <link linkend="guint">guint</link> length);</programlisting>
+<para>
+Adds a chunk of response data to <parameter>body</parameter>. (Note that currently
+there is no way to send a request using chunked encoding.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>owner</parameter>&nbsp;:</term>
+<listitem><simpara> the ownership of <parameter>body</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>body</parameter>&nbsp;:</term>
+<listitem><simpara> body data
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>length</parameter>&nbsp;:</term>
+<listitem><simpara> length of <parameter>body</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-add-final-chunk"/>soup_message_add_final_chunk ()</title>
+<indexterm><primary>soup_message_add_final_chunk</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_add_final_chunk    (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Adds a final, empty chunk of response data to <parameter>body</parameter>. This must
+be called after adding the last real chunk, to indicate that
+there is no more data.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-pop-chunk"/>soup_message_pop_chunk ()</title>
+<indexterm><primary>soup_message_pop_chunk</primary></indexterm><programlisting><link linkend="SoupDataBuffer">SoupDataBuffer</link>* soup_message_pop_chunk      (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Pops a chunk of response data from <parameter>msg</parameter>'s chunk list. The caller
+must free <parameter>chunk</parameter> itself, and must handle the data in <parameter>chunk</parameter>
+according to its <literal>ownership</literal>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the chunk, or <literal>NULL</literal> if there are no chunks left.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-send-request"/>soup_message_send_request ()</title>
+<indexterm><primary>soup_message_send_request</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_send_request       (<link linkend="SoupMessage">SoupMessage</link> *req,
+                                             <link linkend="SoupSocket">SoupSocket</link> *sock,
+                                             <link linkend="gboolean">gboolean</link> via_proxy);</programlisting>
+<para>
+Begins the process of sending <parameter>msg</parameter> across <parameter>sock</parameter>. (If <parameter>sock</parameter> is
+synchronous, then <link linkend="soup-message-send-request"><function>soup_message_send_request()</function></link> won't return until
+the response has been received.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>req</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sock</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="SoupSocket"><type>SoupSocket</type></link> to send <parameter>req</parameter> on
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>via_proxy</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-read-request"/>soup_message_read_request ()</title>
+<indexterm><primary>soup_message_read_request</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_read_request       (<link linkend="SoupMessage">SoupMessage</link> *req,
+                                             <link linkend="SoupSocket">SoupSocket</link> *sock);</programlisting>
+<para>
+Begins the process of receiving a request from <parameter>sock</parameter> into <parameter>req</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>req</parameter>&nbsp;:</term>
+<listitem><simpara> an empty <link linkend="SoupServerMessage"><type>SoupServerMessage</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>sock</parameter>&nbsp;:</term>
+<listitem><simpara> socket to receive the request on
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-io-pause"/>soup_message_io_pause ()</title>
+<indexterm><primary>soup_message_io_pause</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_io_pause           (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Pauses I/O on <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-io-unpause"/>soup_message_io_unpause ()</title>
+<indexterm><primary>soup_message_io_unpause</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_io_unpause         (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Resumes I/O on <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-wrote-informational"/>soup_message_wrote_informational ()</title>
+<indexterm><primary>soup_message_wrote_informational</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_wrote_informational
+                                            (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>wrote_informational</literal> signal, indicating that the IO layer
+finished writing an informational (1xx) response for <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-wrote-headers"/>soup_message_wrote_headers ()</title>
+<indexterm><primary>soup_message_wrote_headers</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_wrote_headers      (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>wrote_headers</literal> signal, indicating that the IO layer
+finished writing the (non-informational) headers for <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-wrote-chunk"/>soup_message_wrote_chunk ()</title>
+<indexterm><primary>soup_message_wrote_chunk</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_wrote_chunk        (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>wrote_chunk</literal> signal, indicating that the IO layer
+finished writing a chunk of <parameter>msg</parameter>'s body.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-wrote-body"/>soup_message_wrote_body ()</title>
+<indexterm><primary>soup_message_wrote_body</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_wrote_body         (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>wrote_body</literal> signal, indicating that the IO layer finished
+writing the body for <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-got-informational"/>soup_message_got_informational ()</title>
+<indexterm><primary>soup_message_got_informational</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_got_informational  (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>got_informational</literal> signal, indicating that the IO layer
+read a complete informational (1xx) response for <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-got-headers"/>soup_message_got_headers ()</title>
+<indexterm><primary>soup_message_got_headers</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_got_headers        (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>got_headers</literal> signal, indicating that the IO layer
+finished reading the (non-informational) headers for <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-got-chunk"/>soup_message_got_chunk ()</title>
+<indexterm><primary>soup_message_got_chunk</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_got_chunk          (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>got_chunk</literal> signal, indicating that the IO layer finished
+reading a chunk of <parameter>msg</parameter>'s body.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-got-body"/>soup_message_got_body ()</title>
+<indexterm><primary>soup_message_got_body</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_got_body           (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>got_body</literal> signal, indicating that the IO layer finished
+reading the body for <parameter>msg</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-message-finished"/>soup_message_finished ()</title>
+<indexterm><primary>soup_message_finished</primary></indexterm><programlisting><link linkend="void">void</link>        soup_message_finished           (<link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Emits the <literal>finished</literal> signal, indicating that <parameter>msg</parameter> has been completely
+processed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessage"><type>SoupMessage</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,135 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>soup-method</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupMessage.html" title="SoupMessage"><link rel="next" href="libsoup-soup-misc.html" title="soup-misc"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupMessage.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="libsoup-soup-misc.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libsoup-soup-method"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">soup-method</span></h2><p>soup-method &#8212; HTTP method-related defines.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-POST-CAPS">SOUP_METHOD_POST</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-GET-CAPS">SOUP_METHOD_GET</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-HEAD-CAPS">SOUP_METHOD_HEAD</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-OPTIONS-CAPS">SOUP_METHOD_OPTIONS</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-PUT-CAPS">SOUP_METHOD_PUT</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-MOVE-CAPS">SOUP_METHOD_MOVE</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-COPY-CAPS">SOUP_METHOD_COPY</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-DELETE-CAPS">SOUP_METHOD_DELETE</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-TRACE-CAPS">SOUP_METHOD_TRACE</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-CONNECT-CAPS">SOUP_METHOD_CONNECT</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-MKCOL-CAPS">SOUP_METHOD_MKCOL</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-PROPPATCH-CAPS">SOUP_METHOD_PROPPATCH</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-PROPFIND-CAPS">SOUP_METHOD_PROPFIND</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-PATCH-CAPS">SOUP_METHOD_PATCH</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-LOCK-CAPS">SOUP_METHOD_LOCK</a>
+#define     <a href="libsoup-soup-method.html#SOUP-METHOD-UNLOCK-CAPS">SOUP_METHOD_UNLOCK</a>
+enum        <a href="libsoup-soup-method.html#SoupMethodId">SoupMethodId</a>;
+<a href="libsoup-soup-method.html#SoupMethodId">SoupMethodId</a> <a href="libsoup-soup-method.html#soup-method-get-id">soup_method_get_id</a>             (const char *method);
+</pre></div><div class="refsect1" lang="en"><a name="id2561663"></a><h2>Description</h2><p>
+These can be used if you don't want to specify the HTTP method to
+<a href="SoupMessage.html#soup-message-new"><tt class="function">soup_message_new()</tt></a> as an explicit string. This is purely a stylistic
+consideration. There is no difference between using the define and
+the string itself.
+</p></div><div class="refsect1" lang="en"><a name="id2561682"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2561688"></a><h3><a name="SOUP-METHOD-POST-CAPS"></a>SOUP_METHOD_POST</h3><a class="indexterm" name="id2561696"></a><pre class="programlisting">#define SOUP_METHOD_POST      "POST"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2561706"></a><h3><a name="SOUP-METHOD-GET-CAPS"></a>SOUP_METHOD_GET</h3><a class="indexterm" name="id2561714"></a><pre class="programlisting">#define SOUP_METHOD_GET       "GET"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2561724"></a><h3><a name="SOUP-METHOD-HEAD-CAPS"></a>SOUP_METHOD_HEAD</h3><a class="indexterm" name="id2561732"></a><pre class="programlisting">#define SOUP_METHOD_HEAD      "HEAD"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2518204"></a><h3><a name="SOUP-METHOD-OPTIONS-CAPS"></a>SOUP_METHOD_OPTIONS</h3><a class="indexterm" name="id2518211"></a><pre class="programlisting">#define SOUP_METHOD_OPTIONS   "OPTIONS"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2518221"></a><h3><a name="SOUP-METHOD-PUT-CAPS"></a>SOUP_METHOD_PUT</h3><a class="indexterm" name="id2518229"></a><pre class="programlisting">#define SOUP_METHOD_PUT       "PUT"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2518239"></a><h3><a name="SOUP-METHOD-MOVE-CAPS"></a>SOUP_METHOD_MOVE</h3><a class="indexterm" name="id2518247"></a><pre class="programlisting">#define SOUP_METHOD_MOVE      "MOVE"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2518257"></a><h3><a name="SOUP-METHOD-COPY-CAPS"></a>SOUP_METHOD_COPY</h3><a class="indexterm" name="id2518265"></a><pre class="programlisting">#define SOUP_METHOD_COPY      "COPY"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2518275"></a><h3><a name="SOUP-METHOD-DELETE-CAPS"></a>SOUP_METHOD_DELETE</h3><a class="indexterm" name="id2518283"></a><pre class="programlisting">#define SOUP_METHOD_DELETE    "DELETE"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2518294"></a><h3><a name="SOUP-METHOD-TRACE-CAPS"></a>SOUP_METHOD_TRACE</h3><a class="indexterm" name="id2518302"></a><pre class="programlisting">#define SOUP_METHOD_TRACE     "TRACE"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2518312"></a><h3><a name="SOUP-METHOD-CONNECT-CAPS"></a>SOUP_METHOD_CONNECT</h3><a class="indexterm" name="id2518321"></a><pre class="programlisting">#define SOUP_METHOD_CONNECT   "CONNECT"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2518331"></a><h3><a name="SOUP-METHOD-MKCOL-CAPS"></a>SOUP_METHOD_MKCOL</h3><a class="indexterm" name="id2574497"></a><pre class="programlisting">#define SOUP_METHOD_MKCOL     "MKCOL"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2574507"></a><h3><a name="SOUP-METHOD-PROPPATCH-CAPS"></a>SOUP_METHOD_PROPPATCH</h3><a class="indexterm" name="id2574516"></a><pre class="programlisting">#define SOUP_METHOD_PROPPATCH "PROPPATCH"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2574526"></a><h3><a name="SOUP-METHOD-PROPFIND-CAPS"></a>SOUP_METHOD_PROPFIND</h3><a class="indexterm" name="id2574534"></a><pre class="programlisting">#define SOUP_METHOD_PROPFIND  "PROPFIND"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2574545"></a><h3><a name="SOUP-METHOD-PATCH-CAPS"></a>SOUP_METHOD_PATCH</h3><a class="indexterm" name="id2574553"></a><pre class="programlisting">#define SOUP_METHOD_PATCH     "PATCH"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2574564"></a><h3><a name="SOUP-METHOD-LOCK-CAPS"></a>SOUP_METHOD_LOCK</h3><a class="indexterm" name="id2574572"></a><pre class="programlisting">#define SOUP_METHOD_LOCK      "LOCK"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2574582"></a><h3><a name="SOUP-METHOD-UNLOCK-CAPS"></a>SOUP_METHOD_UNLOCK</h3><a class="indexterm" name="id2574591"></a><pre class="programlisting">#define SOUP_METHOD_UNLOCK    "UNLOCK"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2574601"></a><h3><a name="SoupMethodId"></a>enum SoupMethodId</h3><a class="indexterm" name="id2574610"></a><pre class="programlisting">typedef enum {
+	SOUP_METHOD_ID_UNKNOWN = 0,
+	SOUP_METHOD_ID_POST,
+	SOUP_METHOD_ID_GET,
+	SOUP_METHOD_ID_HEAD,
+	SOUP_METHOD_ID_OPTIONS,
+	SOUP_METHOD_ID_PUT,
+	SOUP_METHOD_ID_MOVE,
+	SOUP_METHOD_ID_COPY,
+	SOUP_METHOD_ID_DELETE,
+	SOUP_METHOD_ID_TRACE,
+	SOUP_METHOD_ID_CONNECT,
+	SOUP_METHOD_ID_MKCOL,
+	SOUP_METHOD_ID_PROPPATCH,
+	SOUP_METHOD_ID_PROPFIND,
+	SOUP_METHOD_ID_PATCH,
+	SOUP_METHOD_ID_LOCK,
+	SOUP_METHOD_ID_UNLOCK
+} SoupMethodId;
+</pre><p>
+This enumeration is used internally by routines that need to check the
+HTTP method in a <a href="SoupMessage.html" title="SoupMessage"><span class="type">SoupMessage</span></a> against several different possibilities,
+to avoid repeated <tt class="function">strcmp()</tt>s.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2577030"></a><h3><a name="soup-method-get-id"></a>soup_method_get_id ()</h3><a class="indexterm" name="id2577038"></a><pre class="programlisting"><a href="libsoup-soup-method.html#SoupMethodId">SoupMethodId</a> soup_method_get_id             (const char *method);</pre><p>
+Converts <i class="parameter"><tt>method</tt></i> into a corresponding <a href="libsoup-soup-method.html#SoupMethodId"><span class="type">SoupMethodId</span></a> (possibly
+<tt class="literal">SOUP_METHOD_ID_UNKNOWN</tt>).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>method</tt></i> :</span></td><td> an HTTP method
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="libsoup-soup-method.html#SoupMethodId"><span class="type">SoupMethodId</span></a>
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="SoupMessage.html"><b>&lt;&lt; SoupMessage</b></a></td><td align="right"><a accesskey="n" href="libsoup-soup-misc.html"><b>soup-misc &gt;&gt;</b></a></td></tr></table></body></html>

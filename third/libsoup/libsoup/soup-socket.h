@@ -1,87 +1,108 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * soup-socket.c: ronous Callback-based HTTP Request Queue.
- *
- * Authors:
- *      David Helder  (dhelder@umich.edu)
- *      Alex Graveley (alex@ximian.com)
- * 
- * Original code compliments of David Helder's GNET Networking Library.
- *
- * Copyright (C) 2000-2002, Ximian, Inc.
+ * Copyright (C) 2000-2003, Ximian, Inc.
  */
 
 #ifndef SOUP_SOCKET_H
 #define SOUP_SOCKET_H 1
 
-#include <glib.h>
-#include <libsoup/soup-address.h>
+#include <libsoup/soup-types.h>
 
-typedef struct _SoupSocket SoupSocket;
+#define SOUP_TYPE_SOCKET            (soup_socket_get_type ())
+#define SOUP_SOCKET(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), SOUP_TYPE_SOCKET, SoupSocket))
+#define SOUP_SOCKET_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), SOUP_TYPE_SOCKET, SoupSocketClass))
+#define SOUP_IS_SOCKET(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SOUP_TYPE_SOCKET))
+#define SOUP_IS_SOCKET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), SOUP_TYPE_SOCKET))
+#define SOUP_SOCKET_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), SOUP_TYPE_SOCKET, SoupSocketClass))
 
-typedef gpointer SoupSocketConnectId;
+typedef struct SoupSocketPrivate SoupSocketPrivate;
+
+struct SoupSocket {
+	GObject parent;
+
+	SoupSocketPrivate *priv;
+};
+
+typedef struct {
+	GObjectClass parent_class;
+
+	/* signals */
+	void (*connect_result) (SoupSocket *, guint);
+	void (*readable)       (SoupSocket *);
+	void (*writable)       (SoupSocket *);
+	void (*disconnected)   (SoupSocket *);
+
+	void (*new_connection) (SoupSocket *, SoupSocket *);
+} SoupSocketClass;
+
+#define SOUP_SOCKET_FLAG_NONBLOCKING "non-blocking"
+#define SOUP_SOCKET_FLAG_NODELAY     "nodelay"
+#define SOUP_SOCKET_FLAG_REUSEADDR   "reuseaddr"
+#define SOUP_SOCKET_IS_SERVER        "is-server"
+#define SOUP_SOCKET_SSL_CREDENTIALS  "ssl-creds"
+
+GType soup_socket_get_type (void);
+
+SoupSocket    *soup_socket_new                (const char         *optname1,
+					       ...);
+
+guint          soup_socket_connect            (SoupSocket         *sock,
+					       SoupAddress        *remote_addr);
+gboolean       soup_socket_listen             (SoupSocket         *sock,
+					       SoupAddress        *local_addr);
+gboolean       soup_socket_start_ssl          (SoupSocket         *sock);
+
+void           soup_socket_disconnect         (SoupSocket         *sock);
+gboolean       soup_socket_is_connected       (SoupSocket         *sock);
+
+typedef void (*SoupSocketCallback)            (SoupSocket         *sock,
+					       guint               status,
+					       gpointer            user_data);
+typedef void (*SoupSocketListenerCallback)    (SoupSocket         *listener,
+					       SoupSocket         *sock,
+					       gpointer            user_data);
+
+SoupSocket    *soup_socket_client_new_async   (const char         *hostname,
+					       guint               port,
+					       gpointer            ssl_creds,
+					       SoupSocketCallback  callback,
+					       gpointer            user_data);
+SoupSocket    *soup_socket_client_new_sync    (const char         *hostname,
+					       guint               port,
+					       gpointer            ssl_creds,
+					       guint              *status_ret);
+SoupSocket    *soup_socket_server_new         (SoupAddress        *local_addr,
+					       gpointer            ssl_creds,
+					       SoupSocketListenerCallback callback,
+					       gpointer            user_data);
+
+SoupAddress   *soup_socket_get_local_address  (SoupSocket         *sock);
+SoupAddress   *soup_socket_get_remote_address (SoupSocket         *sock);
+
 
 typedef enum {
-	SOUP_SOCKET_CONNECT_ERROR_NONE,
-	SOUP_SOCKET_CONNECT_ERROR_ADDR_RESOLVE,
-	SOUP_SOCKET_CONNECT_ERROR_NETWORK
-} SoupSocketConnectStatus;
+	SOUP_SOCKET_OK,
+	SOUP_SOCKET_WOULD_BLOCK,
+	SOUP_SOCKET_EOF,
+	SOUP_SOCKET_ERROR
+} SoupSocketIOStatus;
 
-typedef void (*SoupSocketConnectFn) (SoupSocket              *socket, 
-				     SoupSocketConnectStatus  status, 
-				     gpointer                 data);
+SoupSocketIOStatus  soup_socket_read       (SoupSocket         *sock,
+					    gpointer            buffer,
+					    gsize               len,
+					    gsize              *nread);
+SoupSocketIOStatus  soup_socket_read_until (SoupSocket         *sock,
+					    gpointer            buffer,
+					    gsize               len,
+					    gconstpointer       boundary,
+					    gsize               boundary_len,
+					    gsize              *nread,
+					    gboolean           *got_boundary);
 
-SoupSocketConnectId  soup_socket_connect        (const gchar*        hostname,
-						 const gint          port, 
-						 SoupSocketConnectFn func, 
-						 gpointer            data);
+SoupSocketIOStatus  soup_socket_write      (SoupSocket         *sock,
+					    gconstpointer       buffer,
+					    gsize               len,
+					    gsize              *nwrote);
 
-void                 soup_socket_connect_cancel (SoupSocketConnectId id);
-
-SoupSocket          *soup_socket_connect_sync   (const gchar        *hostname, 
-						 const gint          port);
-
-
-typedef gpointer SoupSocketNewId;
-
-typedef enum {
-	SOUP_SOCKET_NEW_STATUS_OK,
-	SOUP_SOCKET_NEW_STATUS_ERROR
-} SoupSocketNewStatus;
-
-typedef void (*SoupSocketNewFn) (SoupSocket*         socket, 
-				 SoupSocketNewStatus status, 
-				 gpointer            data);
-
-SoupSocketNewId     soup_socket_new             (SoupAddress        *addr, 
-						 guint               port,
-						 SoupSocketNewFn     func,
-						 gpointer            data);
-
-void                soup_socket_new_cancel      (SoupSocketNewId     id);
-
-SoupSocket         *soup_socket_new_sync        (SoupAddress        *addr,
-						 guint               port);
-
-
-void                soup_socket_ref             (SoupSocket*         s);
-
-void                soup_socket_unref           (SoupSocket*         s);
-
-GIOChannel         *soup_socket_get_iochannel   (SoupSocket*         socket);
-
-SoupAddress        *soup_socket_get_address     (const SoupSocket*   socket);
-
-gint                soup_socket_get_port        (const SoupSocket*   socket);
-
-
-#define SOUP_SERVER_ANY_PORT 0
-
-SoupSocket         *soup_socket_server_new        (SoupAddress        *local_addr,
-						   guint               local_port);
-
-SoupSocket         *soup_socket_server_accept     (SoupSocket         *socket);
-
-SoupSocket         *soup_socket_server_try_accept (SoupSocket         *socket);
 
 #endif /* SOUP_SOCKET_H */
