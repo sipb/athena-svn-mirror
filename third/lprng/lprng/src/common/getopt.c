@@ -113,7 +113,7 @@ Getopt (int argc, char *argv[], char *optstring)
 
 	/* check for start of option string AND no initial '-'  */
 	if( (next_opt == argv[Optind-1]) ){
-		if( next_opt[0] != '-' ){
+		if( next_opt[0] != '-' || next_opt[1] == '\0' ){
 			--Optind;
 			return( EOF );
 		} else {
