@@ -1,4 +1,4 @@
-! $Id: Xlogin.sun4.presed,v 1.1 1999-10-28 15:38:53 kcr Exp $
+! $Id: Xlogin.sun4.presed,v 1.2 1999-11-10 03:54:43 kcr Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -466,7 +466,7 @@ xlogin.Geometry: 		580x325+288+180
 *omenuEntry7.justify:		center
 *omenuEntry7.flipColors:	False
 *omenuEntry8.label:		Login to MITVMA
-*omenuEntry8.callback:		runCB(/usr/athena/lib/login/mitvma)
+*omenuEntry8.callback:		runCB(SHELL=/bin/echo /usr/athena/bin/x3270 mitvma.mit.edu)
 *omenuEntry9.label:		Update MIT Mailhub Info (Moira)
 *omenuEntry9.callback:		attachAndRunCB(moira,xterm -geometry 80x34+60+25 +ut -fn -adobe-courier-medium-r-normal--18-180-75-75-\*-\*-\*-\* -display :0.0 -e timeout 120 /mit/moira/namespace)
 *omenuEntry10.label:		Display Console Window
