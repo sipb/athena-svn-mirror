@@ -12,21 +12,15 @@
  *
  */
 
+#include "../Xj.tmpl"
+
 #include "mit-copyright.h"
-
-#ifndef HaveKerberos
-#define HaveKerberos
-#endif
-
-#ifndef HaveAttach
-#define HaveAttach
-#endif
 
 DASH		=	dash
 DASHRESOURCES	=	Dash
 COMPILE		=	compile_menu
 
-#ifdef _AUX_SOURCE
+#ifdef MacIIArchitecture
 M_LIB		=	-lmalloc
 #else
 M_LIB		=
@@ -58,18 +52,17 @@ OBJS		=	dash.o ${K_OBJ}
 SRCS		=	dash.c ${K_SRC}
 
 XJLIB		=	../lib/libXj.a
-D_LIBS		=	-L/usr/athena/lib ${XJLIB} ${XLIB} \
+D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
 			${XMULIB} ${K_LIB} ${M_LIB}
-CMP_LIBS	=	-L/usr/athena/lib ${XJLIB} -lX11
+CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11
 
 #if defined(AIXArchitecture)
-DEFINES		=	-DSHAPE ${K_DEF} ${A_DEF} -D_BSD -D_BSD_INCLUDES \
-			-DAIXV=12
+DEFINES		=	${K_DEF} ${A_DEF} -D_BSD -D_BSD_INCLUDES -DAIXV=12
 #else
-DEFINES		=	-DSHAPE ${K_DEF} ${A_DEF}
+DEFINES		=	${K_DEF} ${A_DEF}
 #endif
 
-INCLUDES	=	-I.. -I/usr/athena/include
+INCLUDES	=	-I.. ${LOCAL_INCLUDES}
 
 
 AllTarget(${COMPILE})
