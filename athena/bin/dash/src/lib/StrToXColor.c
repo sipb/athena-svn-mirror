@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToXColor.c,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToXColor.c,v 1.2 1993-07-02 17:19:35 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/StrToXColor.c,v 1.3 1994-05-08 23:29:57 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -22,6 +22,9 @@ static char *rcsid =
 #define GRAY 1
 #define COLOR 2
 
+#define MAXCOLORS 50
+Colormap xjcolormap;
+unsigned long writecolors[MAXCOLORS];
 
 /*
  * string to Pixel conversion
@@ -39,6 +42,8 @@ int StrToXPixel(display, string, pixel)
   char *ptr;
   static int init=0;
   static int dpy_type;
+  int cnum, i;
+  static int wcavail;
 
   copy = XjNewString(string);
 
@@ -53,14 +58,16 @@ int StrToXPixel(display, string, pixel)
 	  Visual *visual;
 	  visual =
 	    DefaultVisualOfScreen(DefaultScreenOfDisplay(display));
+	  wcavail = 0;
 	  switch(visual->class)
 	    {
 	    case StaticGray:
 	    case GrayScale:
 	      dpy_type = GRAY;
 	      break;
-	    case StaticColor:
 	    case PseudoColor:
+	      wcavail = 1;
+	    case StaticColor:
 	    case TrueColor:
 	    case DirectColor:
 	      dpy_type = COLOR;
@@ -70,6 +77,11 @@ int StrToXPixel(display, string, pixel)
 	      break;
 	    }
 	}
+
+      for (i = 0; i < MAXCOLORS; i++)
+	writecolors[i] = XjNoColor;
+      xjcolormap = DefaultColormap(display,
+				   DefaultScreen(display));
     }
 
   /*
@@ -152,6 +164,47 @@ int StrToXPixel(display, string, pixel)
       return 0;
     }
 
+  /*
+   * Support for writable color cells.
+   */
+  if (strncmp(XjColor, color, strlen(XjColor)) == 0)
+    {
+      cnum = atoi(&color[strlen(XjColor)]);
+      if (cnum < 0 || cnum > MAXCOLORS || !wcavail)
+	{
+	  if (!wcavail)
+	    XjWarning("display does not support dynamic colors");
+	  else
+	    {
+	      sprintf(errtext,
+		      "invalid color number: %d is not between 0 and %d",
+		      cnum, MAXCOLORS);
+	      XjWarning(errtext);
+	    }
+	  XjFree(copy);
+	  *pixel = -1;
+	  return -1;
+	}
+
+      if (writecolors[cnum] == XjNoColor)
+	{
+	  if (!XAllocColorCells(display, xjcolormap,
+				False, NULL, 0,
+				&writecolors[cnum], 1))
+	    {
+	      sprintf(errtext, "could not allocate %s", color);
+	      XjWarning(errtext);
+	      XjFree(copy);
+	      *pixel = -1;
+	      return -1;
+	    }
+	}
+
+      *pixel = writecolors[cnum];
+      XjFree(copy);
+      return 0;
+    }
+
   if (!XParseColor(display,
 		   DefaultColormap(display, DefaultScreen(display)),
 		   color,
@@ -180,8 +233,6 @@ int StrToXPixel(display, string, pixel)
   XjFree(copy);
   return 0;
 }
-
-
 
 /*
  * string to Color conversion

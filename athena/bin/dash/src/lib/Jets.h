@@ -2,7 +2,7 @@
  * Various stuff stolen from the X Toolkit...
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.h,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -143,6 +143,12 @@ extern char *programName;
 extern char *programClass;
 extern char *displayName;
 extern XrmDatabase rdb;
+extern unsigned long writecolors[];
+extern Colormap xjcolormap;
+
+#define XjColormap(j) xjcolormap
+#define XjGetColor(c) (writecolors[c])
+#define XjNoColor -1
 
 extern char *XjMalloc(), *XjRealloc();
 extern Jet XjCreateRoot();
@@ -223,6 +229,7 @@ extern void XjExit();
 #define XjDefaultValue "-1"
 #define XjDefaultForeground "XjDefaultForeground"
 #define XjDefaultBackground "XjDefaultBackground"
+#define XjColor "color"
 #define XjLeftJustify "left"
 #define XjRightJustify "right"
 #define XjTopJustify "top"
