@@ -1,9 +1,10 @@
-# $Id: Makefile.in,v 1.2 1999-09-21 01:40:05 danw Exp $
+# $Id: Makefile.in,v 1.3 2003-04-17 15:19:35 rbasch Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_SCRIPT=@INSTALL_SCRIPT@
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 prefix=@prefix@
@@ -11,32 +12,17 @@ exec_prefix=@exec_prefix@
 bindir=@bindir@
 mandir=@mandir@
 
-CC=@CC@
-DEFS=@DEFS@
-CPPFLAGS=@CPPFLAGS@
-CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
-LDFLAGS=@LDFLAGS@
-LIBS=@HESIOD_LIBS@ @KRB4_LIBS@ @LIBS@
-ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
-
-all: from
-
-from: from.o popmail.o
-	${CC} ${LDFLAGS} -o from from.o popmail.o ${LIBS}
-
-.c.o:
-	${CC} -c ${ALL_CFLAGS} $<
+all:
 
 check:
 
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${INSTALL_PROGRAM} from ${DESTDIR}${bindir}
+	${INSTALL_SCRIPT} from.pl ${DESTDIR}${bindir}/from
 	${INSTALL} -m 444 ${srcdir}/from.1 ${DESTDIR}${mandir}/man1
 
 clean:
-	rm -f from.o popmail.o from
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile
