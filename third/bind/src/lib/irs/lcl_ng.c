@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 1998 by Internet Software Consortium.
+ * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,13 +16,17 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static char rcsid[] = "$Id: lcl_ng.c,v 1.1.1.2 1998-05-12 18:05:14 ghudson Exp $";
+static char rcsid[] = "$Id: lcl_ng.c,v 1.1.1.3 1999-03-16 19:45:43 danw Exp $";
 #endif
 
 /* Imports */
 
 #include "port_before.h"
 
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/nameser.h>
+#include <resolv.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +34,7 @@ static char rcsid[] = "$Id: lcl_ng.c,v 1.1.1.2 1998-05-12 18:05:14 ghudson Exp $
 #include <unistd.h>
 
 #include <irs.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -100,13 +105,13 @@ irs_lcl_ng(struct irs_acc *this) {
 	struct irs_ng *ng;
 	struct pvt *pvt;
 	
-	if (!(ng = malloc(sizeof *ng))) {
+	if (!(ng = memget(sizeof *ng))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
 	memset(ng, 0x5e, sizeof *ng);
-	if (!(pvt = malloc(sizeof *pvt))) {
-		free(ng);
+	if (!(pvt = memget(sizeof *pvt))) {
+		memput(ng, sizeof *ng);
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -129,8 +134,8 @@ ng_close(struct irs_ng *this) {
 	if (pvt->fp != NULL)
 		fclose(pvt->fp);
 	freelists(this);
-	free(pvt);
-	free(this);
+	memput(pvt, sizeof *pvt);
+	memput(this, sizeof *this);
 }
 	
 /*

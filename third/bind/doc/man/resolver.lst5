@@ -19,7 +19,7 @@ DDEESSCCRRIIPPTTIIOONN
      name is determined from the host name, and the domain search path is con-
      structed from the domain name.
 
-     The different configuration options are:
+     The different configuration directives are:
 
      nameserver
               Internet address (in dot notation) of a name server that the
@@ -79,6 +79,35 @@ DDEESSCCRRIIPPTTIIOONN
                         solute name before any _s_e_a_r_c_h _l_i_s_t elements are ap-
                         pended to it.
 
+              timeout:_n
+                        sets the amount of time the resolver will wait for a
+                        response from a remote name server before giving up
+                        and retrying the query.  Measured in seconds, the de-
+                        fault is 30.
+
+              attempts:_n
+                        sets the number of queries the resolver will send to a
+                        given nameserver before giving up and trying the next
+                        listed nameserver.  The default is 2.
+
+              rotate    sets RES_ROTATE in ___r_e_s_._o_p_t_i_o_n_s _, which causes round
+                        robin selection of nameservers from among those list-
+                        ed.  This has the effect of spreading the query load
+                        among all listed servers, rather than having all
+                        clients try the first listed server first every time.
+
+              no-check-names
+                        sets RES_NOCHECKNAME in ___r_e_s_._o_p_t_i_o_n_s _, which disables
+                        the modern BIND checking of incoming host names and
+                        mail names for invalid characters such as underscore
+                        (_), non-ASCII, or control characters.
+
+              inet6     sets RES_USE_INET6 in ___r_e_s_._o_p_t_i_o_n_s _.  This has the ef-
+                        fect of trying a AAAA query before an A query inside
+                        the _g_e_t_h_o_s_t_b_y_n_a_m_e function, and of mapping IPv4 re-
+                        sponses in IPv6 ``tunnelled form'' if no AAAA records
+                        are found but an A record set exists.
+
      The domain and search keywords are mutually exclusive.  If more than one
      instance of these keywords is present, the last instance wins.
 
@@ -101,5 +130,3 @@ FFIILLEESS
 SSEEEE AALLSSOO
      gethostbyname(3),  hostname(7),  named(8),  resolver(3),  resolver(5).
      ``Name Server Operations Guide for BBIINNDD''
-
-4th Berkeley Distribution      November 11, 1993                             2

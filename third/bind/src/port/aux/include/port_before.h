@@ -4,6 +4,11 @@
 #define SIG_FN void
 #define SYSV
 #define _POSIX_SOURCE
+
+#if defined(HAS_PTHREADS) && defined(_REENTRANT)
+#define DO_PTHREADS
+#endif
+
 #include <sys/types.h>
 
 #include <limits.h>	/* _POSIX_PATH_MAX */

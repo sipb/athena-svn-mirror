@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996,1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: nul_ng.c,v 1.1.1.2 1998-05-12 18:05:24 ghudson Exp $";
+static const char rcsid[] = "$Id: nul_ng.c,v 1.1.1.3 1999-03-16 19:45:44 danw Exp $";
 #endif
 
 /*
@@ -27,6 +27,8 @@ static const char rcsid[] = "$Id: nul_ng.c,v 1.1.1.2 1998-05-12 18:05:24 ghudson
 
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/nameser.h>
+#include <resolv.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -36,6 +38,7 @@ static const char rcsid[] = "$Id: nul_ng.c,v 1.1.1.2 1998-05-12 18:05:24 ghudson
 #include <errno.h>
 
 #include <irs.h>
+#include <isc/memcluster.h>
 
 #include "port_after.h"
 
@@ -59,7 +62,7 @@ struct irs_ng *
 irs_nul_ng(struct irs_acc *this) {
 	struct irs_ng *ng;
 
-	if (!(ng = malloc(sizeof *ng))) {
+	if (!(ng = memget(sizeof *ng))) {
 		errno = ENOMEM;
 		return (NULL);
 	}
@@ -77,7 +80,7 @@ irs_nul_ng(struct irs_acc *this) {
 
 static void
 ng_close(struct irs_ng *this) {
-	free(this);
+	memput(this, sizeof *this);
 }
 
 /* ARGSUSED */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 1996 by Internet Software Consortium
+ * Copyright (c) 1995-1999 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 /*
- * $Id: misc.h,v 1.1.1.1 1998-05-04 22:23:38 ghudson Exp $
+ * $Id: misc.h,v 1.1.1.2 1999-03-16 19:49:05 danw Exp $
  */
 
 #ifndef _ISC_MISC_H

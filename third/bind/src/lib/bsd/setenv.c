@@ -1,6 +1,6 @@
 #if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)setenv.c	8.1 (Berkeley) 6/4/93";
-static char rcsid[] = "$Id: setenv.c,v 1.1.1.1 1998-05-04 22:23:39 ghudson Exp $";
+static const char sccsid[] = "@(#)setenv.c	8.1 (Berkeley) 6/4/93";
+static const char rcsid[] = "$Id: setenv.c,v 1.1.1.2 1999-03-16 19:45:21 danw Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /*

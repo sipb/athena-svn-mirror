@@ -16,4 +16,5 @@
 'CATEXT=$$N'
 'PS=ps -p'
 'RANLIB=:'
+'REENTRANT=-pthread'
 'LDS=:'

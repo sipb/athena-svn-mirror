@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 1996, 1997, 1998 by Internet Software Consortium
+ * Copyright (c) 1995-1999 by Internet Software Consortium
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,7 +20,7 @@
  */
 
 #if !defined(LINT) && !defined(CODECENTER)
-static const char rcsid[] = "$Id: ev_connects.c,v 1.1.1.2 1998-05-12 18:05:28 ghudson Exp $";
+static const char rcsid[] = "$Id: ev_connects.c,v 1.1.1.3 1999-03-16 19:46:07 danw Exp $";
 #endif
 
 /* Import. */
@@ -38,6 +38,18 @@ static const char rcsid[] = "$Id: ev_connects.c,v 1.1.1.2 1998-05-12 18:05:28 gh
 #include "eventlib_p.h"
 
 #include "port_after.h"
+
+/* Macros. */
+
+#define GETXXXNAME(f, s, sa, len) ( \
+	(f((s), (&sa), (&len)) >= 0) ? 0 : \
+		(errno != EAFNOSUPPORT && errno != EOPNOTSUPP) ? -1 : ( \
+			memset(&(sa), 0, sizeof (sa)), \
+			(len) = sizeof (sa), \
+			(sa).sa_family = AF_UNIX, \
+			0 \
+		) \
+	)
 
 /* Forward. */
 
@@ -226,7 +238,7 @@ evTryAccept(evContext opaqueCtx, evConnID id, int *sys_errno) {
 	new->fd = accept(conn->fd, &new->ra, &new->ralen);
 	if (new->fd >= 0) {
 		new->lalen = sizeof new->la;
-		if (getsockname(new->fd, &new->la, &new->lalen) < 0) {
+		if (GETXXXNAME(getsockname, new->fd, new->la, new->lalen) < 0) {
 			new->ioErrno = errno;
 			(void) close(new->fd);
 			new->fd = -1;
@@ -258,7 +270,7 @@ listener(evContext opaqueCtx, void *uap, int fd, int evmask) {
 	new = accept(fd, &ra, &ralen);
 	if (new >= 0) {
 		lalen = sizeof la;
-		if (getsockname(new, &la, &lalen) < 0) {
+		if (GETXXXNAME(getsockname, new, la, lalen) < 0) {
 			int save = errno;
 
 			(void) close(new);
@@ -304,8 +316,8 @@ connector(evContext opaqueCtx, void *uap, int fd, int evmask) {
 #else
 	    read(fd, buf, 0) < 0 ||
 #endif
-	    getsockname(fd, &la, &lalen) < 0 ||
-	    getpeername(fd, &ra, &ralen) < 0) {
+	    GETXXXNAME(getsockname, fd, la, lalen) < 0 ||
+	    GETXXXNAME(getpeername, fd, ra, ralen) < 0) {
 		int save = errno;
 
 		(void) close(fd);	/* XXX closing caller's fd */

@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Thu May  7 13:34:56 1998
+%%CreationDate: Tue Mar 16 10:50:11 1999
 %%DocumentNeededResources: font Times-Roman
 %%DocumentSuppliedResources: procset grops 1.10 0
 %%Pages: 1
@@ -231,53 +231,59 @@ E(ork)-.1 E .281(protocols directory hosts)72 132 R(Netw)27.781 E .281
 R 28.903(local Use)6.404 F(a)6.403 E .034
 (local \214le, usually in /etc dns)72 168 R .034
 (Use the domain name service \(includes hesiod\) nis)32.534 F .035
-(Use the Sun-compati-)32.535 F 23.225(ble Netw)72 180 R 23.225
-(ork Information Service A)-.1 F -.25(va)-.74 G 23.225
-(ilable options: Option).25 F(Description)44.22 E 24.38
-(======== ================================================)72 192 R
-26.913(continue don')11.913 F 11.914(ts)-.18 G(top)-11.914 E .032
-(searching if you can')72 204 R 2.531<748c>-.18 G .031(nd something mer)
--2.531 F 25.031(ge don')-.18 F 2.531(ts)-.18 G .031
-(top searching if you CAN \214nd something The continue op-)-2.531 F
-.294(tion creates whereby subsequent access methods of the same map type can be tried if a name cannot be found using)
-72 216 R .03(earlier access methods.)72 228 R .03(This can be quite confusing in the case of host names, since the name to address and address)
-5.03 F .255(to name mappings can be visibly asymmetric e)72 240 R -.15
-(ve)-.25 G 2.755(nt).15 G .255(hough the data used by an)-2.755 F 2.755
-(yg)-.15 G -2.15 -.25(iv e)-2.755 H 2.756(na).25 G .256
-(ccess method is entirely con-)-2.756 F 2.525(sistent. This)72 252 R
-(beha)2.525 E .024(vior is, therefore, not the def)-.2 F 2.524
-(ault. The)-.1 F(mer)2.524 E .024(ge option only af)-.18 F .024
-(fects lookups in the groups map.)-.25 F .024(If set,)5.024 F .002(subsequent access methods will be tried in order to cause local users to appear in NIS \(or other remote\) groups in ad-)
-72 264 R .08(dition to the local groups.)72 276 R 2.58(#G)5.08 G .08
-(et passw)-2.58 F .079(ord entries from local \214le, or f)-.1 F .079
-(ailing that, NIS passwd)-.1 F 31.62(local con-)25.079 F(tinue passwd)72
-288 Q(nis)42.56 E 9.076(#B)72 312 S 6.576
+(Use the Sun-compati-)32.535 F 2.725(ble Netw)72 180 R 2.724
+(ork Information Service irp)-.1 F 2.724
+(Use the IRP daemon on the localhost.)60.89 F -1.27 -.74(Av a)7.724 H
+2.724(ilable options:).74 F 41.72(Option Description)72 192 R 24.38
+(======== ================================================)6.62 F 18.655
+(continue don')72 204 R 3.655(ts)-.18 G 1.155(top searching if you can')
+-3.655 F 3.655<748c>-.18 G 1.155(nd something mer)-3.655 F 26.155
+(ge don')-.18 F 3.655(ts)-.18 G 1.155(top searching if you CAN \214nd)
+-3.655 F .666(something The continue option creates whereby subsequent access methods of the same map type can be tried if a)
+72 216 R .085(name cannot be found using earlier access methods.)72 228
+R .085(This can be quite confusing in the case of host names, since the)
+5.085 F .606(name to address and address to name mappings can be visibly asymmetric e)
+72 240 R -.15(ve)-.25 G 3.106(nt).15 G .607(hough the data used by an)
+-3.106 F 3.107(yg)-.15 G -2.15 -.25(iv e)-3.107 H(n).25 E 1.384
+(access method is entirely consistent.)72 252 R 1.384(This beha)6.384 F
+1.384(vior is, therefore, not the def)-.2 F 3.884(ault. The)-.1 F(mer)
+3.883 E 1.383(ge option only af)-.18 F(fects)-.25 E .278
+(lookups in the groups map.)72 264 R .279(If set, subsequent access methods will be tried in order to cause local users to appear in)
+5.278 F .469
+(NIS \(or other remote\) groups in addition to the local groups.)72 276
+R 2.968(#G)5.468 G .468(et passw)-2.968 F .468
+(ord entries from local \214le, or f)-.1 F .468(ailing that,)-.1 F
+(NIS passwd)72 288 Q 31.62(local continue)25 F 40.06(passwd nis)2.5 F
+9.076(#B)72 312 S 6.576
 (uild group membership from both local \214le, and NIS.)-9.076 F 46.17
 (group local)11.576 F(continue,mer)16.56 E(ge)-.18 E 46.17(group nis)72
 324 R 2.5(#S)72 348 S(ervices comes from just the local \214le.)-2.5 E
 1.29(services local)5 F 32.28(protocols local)72 372 R 2.5(#H)72 396 S
 (osts comes \214rst from DNS, f)-2.5 E
 (ailing that, the local \214le hosts)-.1 E 19.61(dns continue)51.44 F
-48.94(hosts local)2.5 F(netw)72 420 Q 32.94(orks local)-.1 F 17.84
-(netgroup local)72 444 R .34
-(If a local user needs to be in the local host')2.84 F 2.84(sg)-.55 G
-.339(roup b)-2.84 F .339(ut not in e)-.2 F -.15(ve)-.25 G .339(ry host')
-.15 F 2.839(sg)-.55 G .339(roup, put them in the)-2.839 F .708
-(local host')72 456 R 3.208(se)-.55 G .708
+48.94(hosts local)2.5 F 3.757(#N)72 420 S(etw)-3.757 E 1.257
+(orks comes \214rst from the local \214le, and f)-.1 F 1.256
+(ailing # that the, irp daemon netw)-.1 F 32.94(orks local)-.1 F
+(continue)16.56 E(netw)72 432 Q 32.94(orks irp)-.1 F 17.839
+(netgroup local)72 456 R .339
+(If a local user needs to be in the local host')2.839 F 2.84(sg)-.55 G
+.34(roup b)-2.84 F .34(ut not in e)-.2 F -.15(ve)-.25 G .34(ry host').15
+F 2.84(sg)-.55 G .34(roup, put them in the)-2.84 F .708(local host')72
+468 R 3.208(se)-.55 G .708
 (ntry and set up the portion of your \214le as: group)-3.208 F 5.708
 (local continue,mer)8.208 F .708(ge group)-.18 F .708(nis NIS tak)8.208
-F .708(es a long)-.1 F .12(time to time out.)72 468 R .119
+F .708(es a long)-.1 F .119(time to time out.)72 480 R .119
 (Especially for hosts if you use the option to your serv)5.119 F(er')
 -.15 E 2.619(sd)-.55 G 2.619(aemon. It)-2.619 F .119
-(is important that the \214le con-)2.619 F .606
-(tain an entry for each map.)72 480 R .606(If a map is not mentioned in the \214le, all queries to that map will f)
-5.606 F 3.107(ail. The)-.1 F .607(classic NIS)3.107 F .398(mechanism for specifying union namespaces is to add an entry to a local map \214le whose name is `)
-72 492 R(`+')-.74 E 2.897('. In)-.74 F .397(IRS, this)2.897 F .511
-(is done via `)72 504 R(`continue')-.74 E 3.011('a)-.74 G .511(nd/or `)
+(is important that the \214le con-)2.619 F .607
+(tain an entry for each map.)72 492 R .606(If a map is not mentioned in the \214le, all queries to that map will f)
+5.607 F 3.106(ail. The)-.1 F .606(classic NIS)3.106 F .398(mechanism for specifying union namespaces is to add an entry to a local map \214le whose name is `)
+72 504 R(`+')-.74 E 2.898('. In)-.74 F .398(IRS, this)2.898 F .512
+(is done via `)72 516 R(`continue')-.74 E 3.011('a)-.74 G .511(nd/or `)
 -3.011 F(`mer)-.74 E(ge')-.18 E 3.011('m)-.74 G .511(ap options.)-3.011
 F .511(While this results in a small incompatibility when local map)
-5.511 F .398(\214les are imported from non-IRS systems to IRS systems, there are compensating adv)
-72 516 R .397(antages in security and con\214g-)-.25 F(urability)72 528
+5.511 F .397(\214les are imported from non-IRS systems to IRS systems, there are compensating adv)
+72 528 R .398(antages in security and con\214g-)-.25 F(urability)72 540
 Q 5(.T)-.65 G(he \214le resides in)-5 E EP
 %%Trailer
 end

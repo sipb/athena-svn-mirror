@@ -12,7 +12,6 @@
 'YACC=yacc -d'
 'SYSLIBS=-ll'
 'INSTALL=install'
-'PIDDIR=/etc'
 'MANDIR=man'
 'MANROFF=man'
 'CATEXT=$$N'

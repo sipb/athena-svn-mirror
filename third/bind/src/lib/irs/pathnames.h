@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996,1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 /*
- * $Id: pathnames.h,v 1.1.1.1 1998-05-04 22:23:42 ghudson Exp $
+ * $Id: pathnames.h,v 1.1.1.2 1999-03-16 19:45:27 danw Exp $
  */
 
 #ifndef _PATH_IRS_CONF
@@ -37,6 +37,12 @@
 
 #ifndef _PATH_SERVICES 
 #define _PATH_SERVICES "/etc/services"
+#endif
+
+#ifdef IRS_LCL_SV_DB
+#ifndef _PATH_SERVICES_DB
+#define	_PATH_SERVICES_DB _PATH_SERVICES ".db"
+#endif
 #endif
 
 #ifndef _PATH_HESIOD_CONF

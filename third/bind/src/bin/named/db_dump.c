@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)db_dump.c	4.33 (Berkeley) 3/3/91";
-static char rcsid[] = "$Id: db_dump.c,v 1.1.1.2 1998-05-12 18:03:52 ghudson Exp $";
+static char rcsid[] = "$Id: db_dump.c,v 1.1.1.3 1999-03-16 19:44:50 danw Exp $";
 #endif /* not lint */
 
 /*
@@ -82,7 +82,7 @@ static char rcsid[] = "$Id: db_dump.c,v 1.1.1.2 1998-05-12 18:03:52 ghudson Exp 
  */
 
 /*
- * Portions Copyright (c) 1996, 1997 by Internet Software Consortium.
+ * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -104,6 +104,7 @@ static char rcsid[] = "$Id: db_dump.c,v 1.1.1.2 1998-05-12 18:03:52 ghudson Exp 
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>
@@ -141,7 +142,7 @@ doadump()
 		return;
 	gettime(&tt);
 	fprintf(fp, "; Dumped at %s", ctimel(tt.tv_sec));
-	if (zones && nzones)
+	if (zones != NULL && nzones != 0)
 		zt_dump(fp);
 	fputs(
 "; Note: Cr=(auth,answer,addtnl,cache) tag only shown for non-auth RR's\n",
@@ -164,7 +165,7 @@ zt_dump(FILE *fp) {
 	struct zoneinfo *zp;
 
 	fprintf(fp, ";; ++zone table++\n");
-	for (zp = &zones[1]; zp < &zones[nzones]; zp++) {
+	for (zp = &zones[0]; zp < &zones[nzones]; zp++) {
 		char *pre, buf[64];
 		u_int cnt;
 
@@ -209,13 +210,12 @@ db_dump(struct hashbuf *htp, FILE *fp, int zone, char *origin) {
 	struct namebuf **npp, **nppend;
 	char dname[MAXDNAME];
 	u_int32_t n;
-	u_int32_t addr;
 	int j, i, found_data, tab, printed_origin;
 	u_char *cp, *end;
 	const char *proto, *sep;
 	int16_t type;
 	u_int16_t keyflags;
-	u_char *sigdata;
+	u_char *sigdata, *certdata;
 	u_char *savecp;
 	char temp_base64[NS_MD5RSA_MAX_BASE64];
 
@@ -275,11 +275,11 @@ db_dump(struct hashbuf *htp, FILE *fp, int zone, char *origin) {
 			    else
 				    fprintf(fp, "%d\t",
 					(int)(dp->d_ttl - tt.tv_sec));
-			} else if (dp->d_ttl != USE_MINIMUM &&
-			    dp->d_ttl != zones[dp->d_zone].z_minimum)
+			} else if (dp->d_ttl != USE_MINIMUM)
 				fprintf(fp, "%d\t", (int)dp->d_ttl);
-			else if (tab)
-				(void) putc('\t', fp);
+			else
+				fprintf(fp, "%d\t",
+				        zones[dp->d_zone].z_minimum);
 			fprintf(fp, "%s\t%s\t",
 				p_class(dp->d_class),
 				p_type(dp->d_type));
@@ -577,6 +577,24 @@ db_dump(struct hashbuf *htp, FILE *fp, int zone, char *origin) {
 				}
 				break;
 
+			case ns_t_cert:
+				certdata = cp;
+				NS_GET16(n,cp);
+				fprintf(fp, "%d ", n); /* cert type */
+
+				NS_GET16(n,cp);
+				fprintf(fp, "%d %d", n, *cp++); /* tag & alg */
+
+				/* Certificate (base64 of any length) */
+				i = b64_ntop(cp,
+					     dp->d_size - (cp - certdata),
+					     temp_base64, sizeof(temp_base64));
+				if (i < 0)
+					fprintf(fp, "; BAD BASE64");
+				else
+					fprintf(fp, "%s", temp_base64);
+				break;
+
 			default:
 				fprintf(fp, "%s?d_type=%d?",
 					sep, dp->d_type);
@@ -591,6 +609,17 @@ db_dump(struct hashbuf *htp, FILE *fp, int zone, char *origin) {
 					sep, dp->d_clev);
 				sep = " ";
 			}
+			if ((dp->d_flags & DB_F_LAME) != 0) {
+				time_t when;
+				getname(np, dname, sizeof(dname));
+				when = db_lame_find(dname, dp);
+				if (when != 0 && when > tt.tv_sec) {
+					fprintf(fp, "%sLAME=%d",
+						sep, when - tt.tv_sec);
+					sep = " ";
+				}
+			}
+
  eoln:
 			if (dp->d_ns != NULL){
 				fprintf(fp, "%s[%s]",

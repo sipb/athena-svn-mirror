@@ -12,3 +12,8 @@
         typedef unsigned long u_long;
 
 
+
+#if defined(HAS_PTHREADS) && defined(_REENTRANT)
+#define DO_PTHREADS
+#endif
+

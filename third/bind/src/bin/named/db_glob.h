@@ -1,9 +1,10 @@
 /*
  *	from db.h	4.16 (Berkeley) 6/1/90
- *	$Id: db_glob.h,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $
+ *	$Id: db_glob.h,v 1.1.1.2 1999-03-16 19:45:00 danw Exp $
  */
 
-/* Copyright (c) 1985, 1990
+/*
+ * Copyright (c) 1985, 1990
  *    The Regents of the University of California.  All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +36,8 @@
  * SUCH DAMAGE.
  */
 
-/* Portions Copyright (c) 1993 by Digital Equipment Corporation.
+/*
+ * Portions Copyright (c) 1993 by Digital Equipment Corporation.
  * 
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -54,7 +56,8 @@
  * SOFTWARE.
  */
 
-/* Portions Copyright (c) 1996, 1997 by Internet Software Consortium.
+/*
+ * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -92,3 +95,9 @@ DECL	struct hashbuf	*fcachetab INIT(NULL);
 #ifdef FORCED_RELOAD
 DECL	int		reloading INIT(0);
 #endif /* FORCED_RELOAD */
+
+DECL	const int hashsizes[]
+#ifdef MAIN_PROGRAM
+	= { 2, 11, 113, 337, 977, 2053, 4073, 8011, 16001, 99887, 0 }
+#endif
+	;

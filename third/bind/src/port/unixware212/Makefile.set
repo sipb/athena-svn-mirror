@@ -12,7 +12,6 @@
 'YACC=yacc -d'
 'SYSLIBS=-lc89 -ll -lnsl -lsocket'
 'INSTALL=/usr/ucb/install'
-'PIDDIR=/etc/inet'
 'MANDIR=man'
 'MANROFF=man'
 'CATEXT=$$N'

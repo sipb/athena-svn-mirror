@@ -1,4 +1,4 @@
-# Copyright (c) 1996 by Internet Software Consortium
+# Copyright (c) 1996,1999 by Internet Software Consortium
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.1 1998-05-04 22:23:49 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 1999-03-16 19:47:28 danw Exp $
 
 # these are only appropriate for BSD 4.4 or derivatives, and are used in
 # development.  normal builds will be done in the top level directory and
@@ -33,7 +33,7 @@ PORTINCL = ${TOP}/port/${SYSTYPE}/include
 LIBBIND = ${TOP}/lib/libbind.${A}
 CFLAGS=	${CDEBUG} -I${PORTINCL} -I${INCL}
 LD_LIBFLAGS= -x -r
-AR= ar cruv
+AR= ar cru
 RANLIB= :
 INSTALL= install
 
@@ -44,6 +44,15 @@ SRCS=	noop.c
 OBJS=	noop.${O}
 
 MARGS= DESTDIR="${DESTDIR}" DESTINC="${DESTINC}" INSTALL="${INSTALL}"
+
+depend::
+	if [[ ! -a "irix_patch_applied" ]]; then\
+		echo "Applying IRIX patches.";\
+		patch -cfN -d ../../ < irix_8.2.patch;\
+		touch irix_patch_applied;\
+	else\
+		echo "IRIX patches are already in-place.";\
+	fi
 
 all depend clean distclean install::
 	@for x in ${SUBDIRS}; do \
@@ -65,6 +74,13 @@ distclean:: clean
 clean:: FRC
 	rm -f .depend a.out core tags
 	rm -f *.${O} *.BAK *.CKP *~
+	if [[ -a "irix_patch_applied" ]]; then\
+		echo "Reversing IRIX patches...";\
+		patch -cfR -d ../../ < irix_8.2.patch;\
+		rm -fr irix_patch_applied;\
+	else\
+		echo "IRIX aren't in-place";\
+	fi
 
 depend:: FRC
 	mkdep -I${INCL} -I${PORTINCL} ${CPPFLAGS} ${SRCS}

@@ -53,7 +53,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)debug.c	5.26 (Berkeley) 3/21/91";
-static char rcsid[] = "$Id: debug.c,v 1.1.1.2 1998-05-12 18:04:24 ghudson Exp $";
+static char rcsid[] = "$Id: debug.c,v 1.1.1.3 1999-03-16 19:45:15 danw Exp $";
 #endif /* not lint */
 
 /*
@@ -119,7 +119,7 @@ Fprint_query(const u_char *msg, const u_char *eom, int printHeader, FILE *file)
 	 */
 	hp = (HEADER *)msg;
 	cp = msg + HFIXEDSZ;
-	if (printHeader || (_res.options & RES_DEBUG2)) {
+	if (printHeader || (res.options & RES_DEBUG2)) {
 		fprintf(file,"    HEADER:\n");
 		fprintf(file,"\topcode = %s", _res_opcodes[hp->opcode]);
 		fprintf(file,", id = %d", ntohs(hp->id));
@@ -280,9 +280,9 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 	NS_GET16(dlen, cp);
 	BOUNDS_CHECK(cp, dlen);
 
-	debug = _res.options & (RES_DEBUG|RES_DEBUG2);
+	debug = res.options & (RES_DEBUG|RES_DEBUG2);
 	if (debug) {
-		if (_res.options & RES_DEBUG2)
+		if (res.options & RES_DEBUG2)
 			fprintf(file,"\n\ttype = %s, class = %s, dlen = %d",
 				p_type(type), p_class(class), dlen);
 		if (type == T_SOA)
@@ -633,7 +633,7 @@ Print_rr(const u_char *ocp, const u_char *msg, const u_char *eom, FILE *file) {
 		cp += dlen;
 	    }
 	}
-	if (_res.options & RES_DEBUG && type != T_SOA) {
+	if (res.options & RES_DEBUG && type != T_SOA) {
 		fprintf(file,"\tttl = %lu (%s)\n", rrttl, p_time(rrttl));
 	}
 	if (cp != cp1 + dlen) {

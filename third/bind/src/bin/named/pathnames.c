@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,12 +16,13 @@
  */
 
 /*
- * $Id: pathnames.c,v 1.1.1.1 1998-05-04 22:23:36 ghudson Exp $
+ * $Id: pathnames.c,v 1.1.1.2 1999-03-16 19:44:44 danw Exp $
  */
 
 #include "port_before.h"
 
 #include <sys/types.h>
+#include <sys/un.h>
 
 #include <netinet/in.h>
 #include <arpa/nameser.h>

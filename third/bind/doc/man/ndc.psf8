@@ -1,6 +1,6 @@
 %!PS-Adobe-3.0
 %%Creator: groff version 1.10
-%%CreationDate: Thu May  7 13:34:50 1998
+%%CreationDate: Tue Mar 16 10:50:06 1999
 %%DocumentNeededResources: font Times-Roman
 %%DocumentSuppliedResources: procset grops 1.10 0
 %%Pages: 1
@@ -199,40 +199,55 @@ def/PL 792 def/LS false def/ENC0[/asciicircum/asciitilde/Scaron/Zcaron
 %%BeginPageSetup
 BP
 %%EndPageSetup
-/F0 10/Times-Roman@0 SF .225(This command allo)72 12 R .225
-(ws the name serv)-.25 F .225(er administrator to send v)-.15 F .225
-(arious signals to the name serv)-.25 F(er)-.15 E 2.724(,o)-.4 G 2.724
-(rt)-2.724 G 2.724(or)-2.724 G .224(estart it.)-2.724 F(Zero)5.224 E
-.231(or more directi)72 24 R -.15(ve)-.25 G 2.731(sm).15 G .231
-(ay be gi)-2.731 F -.15(ve)-.25 G .231(n, from the follo).15 F .231
-(wing list: Displays the current status of as sho)-.25 F .231
-(wn by Causes to dump)-.25 F .588
-(its database and cache to \(uses the signal.\))72 36 R .587
-(Causes to check the serial numbers of all primary and secondary zones)
-5.587 F .281(and to reload those that ha)72 48 R .581 -.15(ve c)-.2 H
-.281(hanged \(uses the signal.\)).15 F .281
-(Causes to dump its statistics to \(uses the or signal.\))5.281 F
-(Causes)5.281 E .664(to increment its by one.)72 60 R(Whene)5.664 E -.15
-(ve)-.25 G 3.164(rt).15 G .663(he tracing le)-3.164 F -.15(ve)-.25 G
-3.163(li).15 G 3.163(sn)-3.163 G .663
-(onzero, trace information will be written to Higher tracing)-3.163 F
-(le)72 72 Q -.15(ve)-.25 G .349(ls result in more detailed information.)
-.15 F .349(\(Uses the signal.\))5.349 F .349
-(Causes to set its to zero, closing if it is open \(uses the)5.349 F
-2.695(signal.\) Causes)72 84 R .195(to toggle the feature, which while on will result in a of each incoming query \(uses the signal.\))
-2.695 F(Note)5.195 E .036
-(that query logging consumes quite a lot of log \214le space.)72 96 R
-.036(This directi)5.036 F .336 -.15(ve m)-.25 H .037(ay also be gi).15 F
--.15(ve)-.25 G 2.537(na).15 G 2.537(sC)-2.537 G .037
-(auses to be started, as)-2.537 F .156(long as it isn')72 108 R 2.656
-(ta)-.18 G .156(lready running.)-2.656 F .156
-(Causes to be stopped, if it is running.)5.156 F .156
-(Causes to be killed and restarted.)5.156 F(Ar)5.156 E(guments)-.18 E
-.367(to are not preserv)72 120 R .367(ed by or kno)-.15 F .367
-(wn by Some mechanism for controlling the parameters and en)-.25 F .367
-(vironment should e)-.4 F(xist.)-.15 E(Implemented as a script.)72 132 Q
--.15(Pa)5 G(ul V).15 E(ixie \(Internet Softw)-.6 E(are Consortium\))-.1
-E EP
+/F0 10/Times-Roman@0 SF .144(This command allo)72 12 R .144
+(ws the system administrator to control the operation of a name serv)
+-.25 F(er)-.15 E 5.143(.I)-.55 G 2.643(fn)-5.143 G 2.643(oi)-2.643 G
+2.643(sg)-2.643 G -2.15 -.25(iv e)-2.643 H .143(n, will prompt).25 F
+.046(for commands until it reads EOF)72 24 R 5.046(.O)-.8 G .046
+(ptions are: Speci\214es the rendezv)-5.046 F .046
+(ous point for the control channel.)-.2 F .047(The def)5.046 F .047
+(ault is)-.1 F 1.704(\(a UNIX domain sock)72 36 R 1.704
+(et which is also the serv)-.1 F(er')-.15 E 4.204(sd)-.55 G(ef)-4.204 E
+1.704(ault control channel\).)-.1 F 1.704
+(If the desired control channel is a)6.704 F .421(TCP/IP sock)72 48 R
+.421(et, then the format of the ar)-.1 F .421(gument is \(for e)-.18 F
+.421(xample, w)-.15 F .422(ould be TCP port 54 on the local host.\))-.1
+F .422(This op-)5.422 F .39(tion will the client side of the control channel to a speci\214c address.)
+72 60 R(Serv)5.389 E .389(ers can be con\214gured to reject connections)
+-.15 F .295(which do not come from speci\214c addresses.)72 72 R .295
+(The format is the same as for \(see abo)5.295 F -.15(ve)-.15 G 2.795
+(\). F).15 F .295(or backw)-.15 F .295(ard compatibility)-.1 F 1.299
+(with older name serv)72 84 R 1.299
+(ers, is able to use UNIX signals for control communications.)-.15 F
+1.298(This capability is optional in)6.299 F .096(modern name serv)72 96
+R .096(ers and will disappear altogether at some future time.)-.15 F
+.096(Note that the a)5.096 F -.25(va)-.2 G .096(ilable set is narro).25
+F .097(wer when)-.25 F .4(the signal interf)72 108 R .4(ace is used.)-.1
+F 2.9(Al)5.4 G(ik)-2.9 E .4(ely ar)-.1 F .4(gument w)-.18 F .4
+(ould be something lik)-.1 F 2.9(eT)-.1 G .4(urns on deb)-3.35 F .4
+(ugging output, which is of in-)-.2 F .769(terest mainly to de)72 120 R
+-.15(ve)-.25 G 3.269(lopers. Suppresses).15 F .769
+(prompts and result te)3.269 F 3.269(xt. Suppresses)-.15 F(nonf)3.269 E
+.77(atal error announcements.)-.1 F -.45(Tu)5.77 G(rns).45 E .363
+(on protocol and system tracing, useful in installation deb)72 132 R
+2.863(ugging. Se)-.2 F -.15(ve)-.25 G .363(ral commands are b).15 F .363
+(uilt into b)-.2 F .362(ut the full set of)-.2 F 1.433
+(commands supported by the name serv)72 144 R 1.434
+(er is dynamic and should be disco)-.15 F -.15(ve)-.15 G 1.434
+(red using the command \(see belo).15 F(w\).)-.25 E .04
+(Builtin commands are: Pro)72 156 R .04(vides help for b)-.15 F .039
+(uiltin commands.)-.2 F .039(Exit from command interpreter)5.039 F 5.039
+(.T)-.55 G .039(oggle tracing \(see de-)-5.839 F 1.126(scription abo)72
+168 R -.15(ve)-.15 G 3.626(\). T).15 F 1.126(oggle deb)-.8 F 1.126
+(ugging \(see description abo)-.2 F -.15(ve)-.15 G 3.626(\). T).15 F
+1.126(oggle quietude \(see description abo)-.8 F -.15(ve)-.15 G 3.627
+(\). T).15 F 1.127(oggle si-)-.8 F 1.086(lence \(see description abo)72
+180 R -.15(ve)-.15 G 3.586(\). If).15 F 1.086(running in mode, an)3.586
+F 3.586(ya)-.15 G -.18(rg)-3.586 G 1.086
+(uments to and commands are passed to the ne).18 F 3.585(wo)-.25 G 3.585
+(ni)-3.585 G(ts)-3.585 E .32(command line.)72 192 R .32(If running in mode, there is no command and the command just tells the name serv)
+5.32 F .32(er to itself.)-.15 F -.15(Pa)5.32 G(ul).15 E -.6(Vi)72 204 S
+(xie \(Internet Softw).6 E(are Consortium\))-.1 E EP
 %%Trailer
 end
 %%EOF

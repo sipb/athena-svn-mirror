@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996 by Internet Software Consortium.
+ * Copyright (c) 1996,1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #if defined(LIBC_SCCS) && !defined(lint)
-static const char rcsid[] = "$Id: util.c,v 1.1.1.2 1998-05-12 18:05:25 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.1.1.3 1999-03-16 19:45:31 danw Exp $";
 #endif
 
 #include "port_before.h"
@@ -25,8 +25,8 @@ static const char rcsid[] = "$Id: util.c,v 1.1.1.2 1998-05-12 18:05:25 ghudson E
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/nameser.h>
+#include <resolv.h>
 
-#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>

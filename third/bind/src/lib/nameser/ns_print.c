@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 1998 by Internet Software Consortium.
+ * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Id: ns_print.c,v 1.1.1.2 1998-05-12 18:05:40 ghudson Exp $";
+static char rcsid[] = "$Id: ns_print.c,v 1.1.1.3 1999-03-16 19:46:43 danw Exp $";
 #endif
 
 /* Import. */
@@ -30,7 +30,7 @@ static char rcsid[] = "$Id: ns_print.c,v 1.1.1.2 1998-05-12 18:05:40 ghudson Exp
 #include <arpa/nameser.h>
 #include <arpa/inet.h>
 
-#include <assert.h>
+#include <isc/assertions.h>
 #include <errno.h>
 #include <resolv.h>
 #include <string.h>
@@ -491,10 +491,10 @@ ns_sprintrrf(const u_char *msg, size_t msglen,
 		algorithm = *rdata++;
 		labels = *rdata++;
 		t = ns_get32(rdata);  rdata += NS_INT32SZ;
-		len = SPRINTF((tmp, " %s %d %lu ",
+		len = SPRINTF((tmp, "%s %d %lu ",
 			       p_type(type), algorithm, t));
 		T(addstr(tmp, len, &buf, &buflen));
-		if (labels != (u_int)dn_count_labels(name))
+		if (labels > (u_int)dn_count_labels(name))
 			goto formerr;
 
 		/* Signature expiry. */
@@ -550,6 +550,63 @@ ns_sprintrrf(const u_char *msg, size_t msglen,
 				len = SPRINTF((tmp, " %s", p_type(c)));
 				T(addstr(tmp, len, &buf, &buflen));
 			}
+		break;
+	    }
+
+	case ns_t_cert: {
+		u_int c_type, key_tag, alg;
+		int n, siz;
+		char base64_cert[8192], *leader, tmp[40];
+
+		c_type  = ns_get16(rdata); rdata += NS_INT16SZ;
+		key_tag = ns_get16(rdata); rdata += NS_INT16SZ;
+		alg = (u_int) *rdata++;
+
+		len = SPRINTF((tmp, "%d %d %d ", c_type, key_tag, alg));
+		T(addstr(tmp, len, &buf, &buflen));
+		siz = (edata-rdata)*4/3 + 4; /* "+4" accounts for trailing \0 */
+		if (siz > sizeof(base64_cert) * 3/4) {
+			char *str = "record too long to print";
+			T(addstr(str, strlen(str), &buf, &buflen));
+		}
+		else {
+			len = b64_ntop(rdata, edata-rdata, base64_cert, siz);
+
+			if (len < 0)
+				goto formerr;
+			else if (len > 15) {
+				T(addstr(" (", 2, &buf, &buflen));
+				leader = "\n\t\t";
+				spaced = 0;
+			}
+			else
+				leader = " ";
+	
+			for (n = 0; n < len; n += 48) {
+				T(addstr(leader, strlen(leader),
+					 &buf, &buflen));
+				T(addstr(base64_cert + n, MIN(len - n, 48),
+					 &buf, &buflen));
+			}
+			if (len > 15)
+				T(addstr(" )", 2, &buf, &buflen));
+		}
+		break;
+	    }
+
+	case ns_t_tsig: {
+		/* BEW - need to complete this */
+		int n;
+
+		T(len = addname(msg, msglen, &rdata, origin, &buf, &buflen));
+		T(addstr(" ", 1, &buf, &buflen));
+		rdata += 8; /* time */
+		n = ns_get16(rdata); rdata += INT16SZ;
+		rdata += n; /* sig */
+		n = ns_get16(rdata); rdata += INT16SZ; /* original id */
+		sprintf(buf, "%d", ns_get16(rdata));
+		rdata += INT16SZ;
+		addlen(strlen(buf), &buf, &buflen);
 		break;
 	    }
 
@@ -712,7 +769,7 @@ addname(const u_char *msg, size_t msglen,
 
 static void
 addlen(size_t len, char **buf, size_t *buflen) {
-	assert(len <= *buflen);
+	INSIST(len <= *buflen);
 	*buf += len;
 	*buflen -= len;
 }

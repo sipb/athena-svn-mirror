@@ -15,5 +15,5 @@
 'MANROFF=cat'
 'CATEXT=$$N'
 'PS=ps -p'
-'AR=ar cruvs'
+'AR=ar crus'
 'RANLIB=:'
