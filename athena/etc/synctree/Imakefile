@@ -19,7 +19,7 @@ CCDEF= -Wf,-XNh1200 -DYYDEBUG -DLEXDEBUG
 #endif
 #if defined(SOLARIS)
 CCDEF= -I/usr/ucbinclude 
-LDLIBS=  -lsocket -lnsl /usr/ucblib/libucb.a -lelf -lw
+LDLIBS=  -lsocket -lnsl /usr/ucblib/libucb.a -lelf -lw -ldl
 #endif
 
 DEFINES= $(CCDEF)
