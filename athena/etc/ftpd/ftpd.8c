@@ -203,24 +203,9 @@ Upon closing of the ftp connection (or HUP and TERM signals),
 .I ftpd
 destroys the
 .IR Kerberos
-tickets it obtained (if any).  Further, if the user is not
-otherwise logged in, it does a
-.IR detach 
--all and an
-.IR unlog.
-(Note:
-.I ftpd
-does a detach -user #uid -all. For this to have the desired
-result, the workstation's
-.IR attach.conf
-file should have the lines
-.IR ownercheck
-and
-.IR trusted
-.IR root
-in it. See
-.IR attach.conf(5)
-for details.)
+tickets it obtained (if any), and runs
+.I fsid
+-u on the user's home directory.
 .PP
 In addition, this
 .I ftpd
@@ -283,15 +268,3 @@ This causes unpatched versions of
 to break trying to stat /dev/ftpN, which doesn't exist. A gross
 workaround for this (short of fixing finger) is to link
 /dev/ftp{0,1,2,3...} to /dev/null.
-.PP
-When the user closes the
-.IR ftp
-connection,
-.I ftpd
-will do a
-.IR detach
--all.  If there is not an ownercheck line in
-.IR attach.conf,
-all non-busy filsystems will be detached.  There is no good
-solution to this problem, except to have to have the ownercheck
-line present.
