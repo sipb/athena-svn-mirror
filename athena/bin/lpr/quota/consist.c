@@ -47,6 +47,8 @@ char *argv[];
 	exit(1);
     }
 
+    logger_journal_set_sync(0);
+
     if(logger_journal_get_header(&head)) {
 	printf("Could not get head\n");
 	exit(1);
