@@ -33,7 +33,7 @@ extern WindowClassRec windowClassRec;
 typedef struct {
   int foreground, background, borderColor;
   int borderWidth;
-  Boolean overrideRedirect, rootTransient, showCommand;
+  Boolean overrideRedirect, rootTransient, showCommand, global;
   char *title;
   char *geometry;
   char *defGeometry;
@@ -78,6 +78,8 @@ typedef struct _WindowInfo {
 #define XjNoverrideRedirect "overrideRedirect"
 #define XjCShowCommand "ShowCommand"
 #define XjNshowCommand "showCommand"
+#define XjCGlobal "Global"
+#define XjNglobal "global"
 #define XjCRootTransient "RootTransient"
 #define XjNrootTransient "rootTransient"
 #define XjNcursorCode "cursorCode"
