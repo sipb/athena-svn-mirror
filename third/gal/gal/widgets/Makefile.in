@@ -404,6 +404,30 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+color-group.lo color-group.o : color-group.c ../../gal/util/e-util.h \
+	color-group.h
+color-palette.lo color-palette.o : color-palette.c ../../config.h \
+	../../gal/util/e-i18n.h color-group.h color-palette.h \
+	color-group.h e-colors.h
+e-canvas-utils.lo e-canvas-utils.o : e-canvas-utils.c e-canvas-utils.h
+e-canvas-vbox.lo e-canvas-vbox.o : e-canvas-vbox.c ../../config.h \
+	e-canvas-vbox.h e-canvas-utils.h e-canvas.h \
+	../../gal/util/e-util.h
+e-canvas.lo e-canvas.o : e-canvas.c e-canvas.h
+e-categories-master-list-array.lo e-categories-master-list-array.o : \
+	e-categories-master-list-array.c ../../config.h \
+	e-categories-master-list-array.h e-categories-master-list.h \
+	../../gal/util/e-i18n.h ../../gal/util/e-xml-utils.h \
+	e-unicode.h ../../gal/unicode/gunicode.h
+e-categories-master-list-combo.lo e-categories-master-list-combo.o : \
+	e-categories-master-list-combo.c ../../config.h \
+	e-categories-master-list-combo.h e-categories-master-list.h \
+	../../gal/util/e-i18n.h ../../gal/util/e-util.h
+e-categories-master-list-dialog-model.lo e-categories-master-list-dialog-model.o : \
+	e-categories-master-list-dialog-model.c ../../config.h \
+	e-categories-master-list-dialog-model.h \
+	../../gal/e-table/e-table-model.h e-categories-master-list.h
+
 info-am:
 info: info-am
 dvi-am:
