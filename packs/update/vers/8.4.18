@@ -1,0 +1,28 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  echo "106327-08"					>> $PATCHES
+  echo "106748-04"					>> $PATCHES
+  echo "107058-01"					>> $PATCHES
+  echo "OSCHANGES=true"					>> $CONFVARS
+  ;;
+
+sgi)
+  # Remove the InPerson subsystem.
+  echo "remove InPerson"			>> $LINKPACKAGES.applications
+
+  # Clean up dangling symlinks.
+  echo "/usr/share/Insight/library/SGI_bookshelves/SGI_Admin/books/InPerson_AG" \
+							>> $DEADFILES
+  echo "/usr/share/Insight/library/SGI_bookshelves/SGI_EndUser/books/InPerson_UG" \
+							>> $DEADFILES
+  echo "/usr/share/help/InPerson.helpmap"		>> $DEADFILES
+  echo "/usr/share/help/InPerson.helpmap.backup"	>> $DEADFILES
+
+  # We have updated the OS volumes with fixed X server binaries;
+  # the oschanges script will install them.
+  echo "OSCHANGES=true"					>> $CONFVARS
+  ;;
+
+esac
