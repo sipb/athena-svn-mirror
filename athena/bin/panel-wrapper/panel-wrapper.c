@@ -233,10 +233,6 @@ int main(int argc, char **argv)
 
   while (1)
     {
-      /* Exercise the X connection, so that we die if the server is gone. */
-      XNoOp(GDK_DISPLAY());
-      XFlush(GDK_DISPLAY());
-
       pid = fork();
       if (pid == 0)
 	{
@@ -257,6 +253,11 @@ int main(int argc, char **argv)
       if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
 	confirm_logout();
       else
-	sleep(1);
+	{
+	  /* Exercise the X connection, so that we die if the server exits. */
+	  XNoOp(GDK_DISPLAY());
+	  XFlush(GDK_DISPLAY());
+	  sleep(1);
+	}
     }
 }
