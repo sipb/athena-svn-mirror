@@ -1,13 +1,25 @@
-/* 
- * $Id: from.c,v 1.25 1999-09-28 22:16:17 danw Exp $
+/* Copyright 1991-1999 by the Massachusetts Institute of Technology.
  *
- * This is the main source file for a KPOP version of the from command. 
- * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
- * modified by Jerry Larivee, MIT Project Athena,  to support both KPOP
- * and the old UCB from functionality.
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: from.c,v 1.25 1999-09-28 22:16:17 danw Exp $";
+static const char rcsid[] = "$Id: from.c,v 1.26 1999-10-13 20:01:07 ghudson Exp $";
+
+/* This is the main source file for a KPOP version of the from command. 
+ * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
+ * modified by Jerry Larivee, MIT Project Athena, to support both KPOP
+ * and the old UCB from functionality.
+ */
 
 #include <stdio.h>
 #include <sys/ioctl.h>
