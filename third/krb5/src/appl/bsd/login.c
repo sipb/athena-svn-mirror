@@ -227,6 +227,11 @@ static const char *krb_get_err_text(kerror)
 #include <sys/id.h>
 #endif
 
+#ifdef sgi
+#include <capability.h>
+#include <sys/capability.h>
+#endif
+
 #if defined(_AIX)
 #define PRIO_OFFSET 20
 #else
@@ -315,6 +320,9 @@ void dofork();
 int doremotelogin(), do_krb_login(), rootterm();
 void lgetstr(), getloginname(), checknologin(), sleepexit();
 void dolastlog(), motd(), check_mail();
+
+void ensure_process_capabilities(void);
+void set_user_capabilities(const char *username);
 
 #ifndef HAVE_STRSAVE
 char * strsave();
@@ -617,9 +625,10 @@ int have_v5_tickets (me)
 #endif /* KRB5_GET_TICKETS */
 
 #ifdef KRB4_CONVERT
-try_convert524 (kcontext, me)
+try_convert524 (kcontext, me, use_cache)
      krb5_context kcontext;
      krb5_principal me;
+     int use_cache;
 {
     krb5_principal kpcserver;
     krb5_error_code kpccode;
@@ -630,39 +639,52 @@ try_convert524 (kcontext, me)
 
     /* or do this directly with krb524_convert_creds_kdc */
     krb524_init_ets(kcontext);
-    /* cc->ccache, already set up */
-    /* client->me, already set up */
-    if ((kpccode =
-	 krb5_build_principal_ext(kcontext,
-				  &kpcserver, 
-				  krb5_princ_realm(kcontext, me)->length,
-				  krb5_princ_realm(kcontext, me)->data,
-				  6,
-				  "krbtgt",
-				  krb5_princ_realm(kcontext, me)->length,
-				  krb5_princ_realm(kcontext, me)->data,
-				  NULL))) {
-      com_err("login/v4", kpccode,
-	      "while creating service principal name");
-      return 0;
-    }
 
-    memset((char *) &increds, 0, sizeof(increds));
-    increds.client = me;
-    increds.server = kpcserver;
-    increds.times.endtime = 0;
-    increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
-    if ((kpccode = krb5_get_credentials(kcontext, 0, 
-					ccache,
-					&increds, 
-					&v5creds))) {
-	com_err("login/v4", kpccode,
-		"getting V5 credentials");
-	return 0;
+    /* If we have forwarded v5 tickets, retrieve the credentials from
+     * the cache; otherwise, the v5 credentials are in my_creds.
+     */
+    if (use_cache) {
+	/* cc->ccache, already set up */
+	/* client->me, already set up */
+	if ((kpccode =
+	     krb5_build_principal_ext(kcontext,
+				      &kpcserver, 
+				      krb5_princ_realm(kcontext, me)->length,
+				      krb5_princ_realm(kcontext, me)->data,
+				      6,
+				      "krbtgt",
+				      krb5_princ_realm(kcontext, me)->length,
+				      krb5_princ_realm(kcontext, me)->data,
+				      NULL))) {
+	    com_err("login/v4", kpccode,
+		    "while creating service principal name");
+	    return 0;
+	}
+
+	memset((char *) &increds, 0, sizeof(increds));
+	increds.client = me;
+	increds.server = kpcserver;
+	increds.times.endtime = 0;
+	increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+	if ((kpccode = krb5_get_credentials(kcontext, 0, 
+					    ccache,
+					    &increds, 
+					    &v5creds))) {
+	    com_err("login/v4", kpccode,
+		    "getting V5 credentials");
+	    return 0;
+	}
+	kpccode = krb524_convert_creds_kdc(kcontext, 
+					   v5creds,
+					   &v4creds);
+	krb5_free_creds(kcontext, v5creds);
+	krb5_free_principal(kcontext, kpcserver);
     }
-    if ((kpccode = krb524_convert_creds_kdc(kcontext, 
-					    v5creds,
-					    &v4creds))) {
+    else
+	kpccode = krb524_convert_creds_kdc(kcontext, 
+					   &my_creds,
+					   &v4creds);
+    if (kpccode != 0) {
 	com_err("login/v4", kpccode, 
 		"converting to V4 credentials");
 	return 0;
@@ -1432,18 +1454,15 @@ int main(argc, argv)
 #endif
 
 #ifdef KRB5_GET_TICKETS
-		    /* Maybe telnetd got tickets for us?  */
+	/* Maybe telnetd got tickets for us?  */
 	if (!got_v5_tickets && have_v5_tickets (&me))
-	  got_v5_tickets = 1;
+	    forwarded_v5_tickets = 1;
 #endif /* GET_KRB_TICKETS */
 
 #ifdef KRB4_GET_TICKETS
 	if ( login_krb4_convert && !got_v4_tickets) {
-
-
-	    if (got_v5_tickets)
-		try_convert524 (kcontext, me);
-
+	    if (got_v5_tickets || forwarded_v5_tickets)
+		try_convert524 (kcontext, me, forwarded_v5_tickets);
 	}
 #endif
 
@@ -1486,6 +1505,9 @@ int main(argc, argv)
 	    dofork();
 	}
 #endif /* KRB4_GET_TICKETS */
+
+    /* Ensure that this process has the proper capabilities. */
+    ensure_process_capabilities();
 
     if (chdir(pwd->pw_dir) < 0) {
 	printf("No directory %s!\n", pwd->pw_dir);
@@ -1681,6 +1703,9 @@ int main(argc, argv)
 	sleepexit(1);
     }
 
+    /* Set process capabilities for the user. */
+    set_user_capabilities(username);
+
     /*
      * We are the user now.  Re-create the destroyed ccache and
      * ticket file.
@@ -1697,13 +1722,13 @@ int main(argc, argv)
 	    com_err(argv[0], retval, "when initializing cache");
 	} else if (retval = krb5_cc_store_cred(kcontext, ccache, &my_creds)) {
 	    com_err(argv[0], retval, "while storing credentials");
-	} else if (xtra_creds &&
-		   (retval = krb5_cc_copy_creds(kcontext, xtra_creds,
-						ccache))) {
-	    com_err(argv[0], retval, "while storing credentials");
+	} else if (xtra_creds) {
+	    if (retval = krb5_cc_copy_creds(kcontext, xtra_creds,
+					    ccache))
+		com_err(argv[0], retval, "while storing credentials");
+	    krb5_cc_destroy(kcontext, xtra_creds);
 	}
 
-	krb5_cc_destroy(kcontext, xtra_creds);
     } else if (forwarded_v5_tickets && rewrite_ccache) {
 	if ((retval = krb5_cc_initialize (kcontext, ccache, me))) {
 	    syslog(LOG_ERR,
@@ -2494,3 +2519,64 @@ update_ref_count(int adj)
     enduserdb();
 }
 #endif
+
+/* Ensure we can set process capabilities after we setuid().
+ * Currently implemented only on IRIX.
+ */
+void ensure_process_capabilities(void)
+{
+#ifdef sgi
+    if (cap_envl(0, CAP_SETPCAP, (cap_value_t) 0) == -1) {
+	fprintf(stderr, "Insufficient privilege\n");
+	sleepexit(1);
+    }
+#endif
+    return;
+}
+
+/* Set the POSIX capabilities for the user process.  This is called
+ * after we setuid() to the user.
+ * Currently implemented only on IRIX.
+ */
+void set_user_capabilities(const char *username)
+{
+#ifdef sgi
+    struct user_cap *user_cap;
+    char *def_cap;
+    cap_t cap, ocap;
+    cap_value_t capval;
+
+    /* If capabilities are supported, initialize the user's capability
+     * set, defaulting to an empty set if no default capabilities are
+     * defined for the user.
+     */
+    if (sysconf(_SC_CAP) > 0) {
+	user_cap = sgi_getcapabilitybyname(username);
+	def_cap = (user_cap != NULL ? user_cap->ca_default : "all=");
+	cap = cap_from_text(def_cap);
+	if (user_cap != NULL) {
+	    free(user_cap->ca_name);
+	    free(user_cap->ca_default);
+	    free(user_cap->ca_allowed);
+	    free(user_cap);
+	}
+	if (cap == NULL) {
+	    fprintf(stderr,
+		    "login: Cannot convert user capabilities: %s\n",
+		    strerror(errno));
+	    sleepexit(1);
+	}
+	capval = CAP_SETPCAP;
+	ocap = cap_acquire(1, &capval);
+	if (cap_set_proc(cap) == -1) {
+	    cap_surrender(ocap);
+	    perror("Cannot set process capabilities");
+	    cap_free(cap);
+	    sleepexit(1);
+	}
+	cap_free(cap);
+	cap_free(ocap);
+    }
+#endif
+    return;
+}
