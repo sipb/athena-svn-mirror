@@ -103,9 +103,9 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 
 #ifdef SparcArchitecture
 #define BuildPex	NO
-#define	CcCmd		cc
+#define	CcCmd		/usr/gcc/bin/gcc -traditional
 #define DoRanlibCmd No
-#define ExtraLibraries	-lsocket /usr/athena/lib/libresolv.a -lnsl 
+#define ExtraLibraries	-lsocket -lnsl 
 
 #undef SharedLibraryCcCmd
 #define SharedLibraryCcCmd gcc2 -pipe
