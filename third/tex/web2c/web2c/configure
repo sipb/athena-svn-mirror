@@ -858,8 +858,11 @@ if test "z${DECLARE_YYTEXT}" = "z"; then
     echo "Can't find output from $LEX; assuming lex.yy.c." 1>&2
     LEX_OUTPUT_ROOT=lex.yy
   fi
-  DECLARE_YYTEXT=`eval ${CPP} "${LEX_OUTPUT_ROOT}.c" |
-    sed -n '/extern.*yytext[^a-zA-Z0-9_]/s/^.*extern/extern/p'`
+  if test `grep -c 'char[ 	]*\*yytext' ${LEX_OUTPUT_ROOT}.c` != 0; then
+	DECLARE_YYTEXT='extern char *yytext;'
+  else
+	DECLARE_YYTEXT='extern char yytext[];'
+  fi
   rm -f "${LEX_OUTPUT_ROOT}.c"
 fi
 
