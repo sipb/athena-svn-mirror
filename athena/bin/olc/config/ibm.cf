@@ -1,5 +1,7 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.1 1990-09-18 13:12:59 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/ibm.cf,v 1.2 1990-11-16 07:24:02 lwvanels Exp $ */
 #ifdef PS2Architecture
+#define RanlibCmd	/bin/true
+#define CcCmd /bin/acc
 #define SystemV 1
 #endif
 
