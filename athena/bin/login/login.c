@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.70 1994-06-23 12:32:13 vrt Exp $
+ * $Id: login.c,v 1.71 1994-08-14 17:12:40 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.70 1994-06-23 12:32:13 vrt Exp $";
+static char *rcsid = "$Id: login.c,v 1.71 1994-08-14 17:12:40 cfields Exp $";
 #endif
 
 /*
@@ -328,6 +328,7 @@ main(argc, argv)
     char *tp;
     struct utmp ut_tmp;
     struct utmpx *utx_tmp;
+    char *tmp; /* temp pointer */
 #endif
 
 
@@ -416,7 +417,13 @@ main(argc, argv)
 		}
 	if (strcmp(argv[1], "-h") == 0 && getuid() == 0) {
 #ifdef SOLARIS
-            strcpy(term1, index(argv[3], '=') + 1); 
+          tmp = (char *)malloc(strlen(argv[3])*sizeof(char));
+          *tmp=NULL;
+          term1[0]=NULL;
+          tmp = index(argv[3], '=');
+          if (tmp != NULL ) {
+            strcpy(term1, tmp+1);
+          }  
 #endif
 	    if (rflag || kflag || Kflag || hflag) {
 		printf("Only one of -r -k -K or -h allowed\n");
