@@ -12,6 +12,8 @@
 #define HAVE_CHROOT
 #define CAN_CHANGE_ID
 
+#define HAS_INET6_STRUCTS
+
 #if __GLIBC__ >= 2
 #  define dprintf bind_dprintf
 #else
@@ -19,6 +21,9 @@
 #  define NEED_DAEMON
 int daemon(int nochdir, int noclose);
 #endif
+
+/* What utter grot. --tb */
+#define fds_bits __fds_bits
 
 #define SPURIOUS_ECONNREFUSED	/* XXX is this still needed for 2.0 kernels? */
 #define _TIMEZONE timezone
