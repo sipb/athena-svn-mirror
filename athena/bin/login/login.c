@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.92 1997-06-28 18:21:55 ghudson Exp $
+ * $Id: login.c,v 1.93 1997-07-15 14:25:23 danw Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.92 1997-06-28 18:21:55 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.93 1997-07-15 14:25:23 danw Exp $";
 #endif
 
 /*
@@ -2120,7 +2120,7 @@ struct passwd *pwd;
 {
     FILE *pfile;
     int cnt, fd;
-#ifdef SYSV
+#ifdef SHADOW
     long lastchg = DAY_NOW;
 #endif
 
@@ -2193,8 +2193,7 @@ struct passwd *pwd;
     if (fd == -1) {
 	syslog(LOG_CRIT, "failed to lock /etc/passwd for remove");
 	printf("Failed to remove you from /etc/passwd\n");
-    }
-    if ((newfile = fdopen(fd, "w")) != NULL) {
+    } else if ((newfile = fdopen(fd, "w")) != NULL) {
 	setpwent();
 	while ((copypw = getpwent()) != 0)
 	    if (copypw->pw_uid != pwd->pw_uid)
@@ -2278,8 +2277,7 @@ struct passwd *pwd;
     if (fd < 0) {
 	syslog(LOG_CRIT, "failed to lock /etc/shadow for remove");
 	printf("Failed to remove you from /etc/shadow\n");
-    }
-    if ((newfile = fdopen(fd, "w")) != NULL) {
+    } else if ((newfile = fdopen(fd, "w")) != NULL) {
         setspent();
 	while ((copyspw = getspent()) != NULL)
 	    if (strcmp(copyspw->sp_namp , pwd->pw_name)) {
@@ -2291,7 +2289,7 @@ struct passwd *pwd;
 	endspent();
 	fclose(newfile);
 	if (stat(SHADTEMP, &statb) != 0 || statb.st_size < 80) {
-	    syslog(LOG_CRIT, "something stepped on /etc/ptmp");
+	    syslog(LOG_CRIT, "something stepped on /etc/stmp");
 	    printf("Failed to cleanup login\n");
 	    failure = 1;
 	} else
