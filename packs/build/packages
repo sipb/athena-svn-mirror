@@ -1,4 +1,4 @@
-# $Id: packages,v 1.227 2003-04-02 23:42:27 ghudson Exp $
+# $Id: packages,v 1.228 2003-04-03 04:11:13 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -144,7 +144,7 @@ third/bzip2			except linux
 third/control-center		except linux requires gettext,intltool,gtk2,GConf2,libgnomeui,libglade2,libbonobo,libbonoboui,bonobo-activation,libglade2,gnome-desktop,libxml2,gnome-vfs2,esound,metacity,Xft
 third/db
 third/diffutils			on solaris
-third/eel			except linux requires gettext,GConf2,gtk2,glib2,gnome-vfs2,gail,libart_lgpl,libgnome,libgnomeui,libxml2,libglade2
+third/eel			except linux requires gettext,GConf2,gtk2,glib2,gnome-vfs2,gail,libart_lgpl,libgnome,libgnomeui,libxml2,libglade2,Xrender
 third/emacs			requires hesiod,krb5,texinfo
 third/enscript			except linux
 third/eog			except linux requires gettext,intltool,gnome-vfs2,libgnomeprint,libgnomeui,libbonoboui,bonobo-activation,librsvg,ORBit2,GConf2,jpeg,libpng,popt
@@ -152,7 +152,8 @@ third/esound			requires audiofile
 third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper,soup,openssl
 third/expat			except linux
 third/fcpackage/fontconfig	except linux requires expat,freetype
-third/fcpackage/Xft		except linux requires fontconfig,freetype
+third/fcpackage/Xft		except linux requires fontconfig,freetype,Xrender
+third/fcpackage/Xrender		except linux
 third/file-roller		except linux requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,bonobo-activation,libbonobo,libbonoboui,scrollkeeper
 third/findutils			on solaris
 third/freetype			except linux
