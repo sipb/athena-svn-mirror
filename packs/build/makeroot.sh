@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.19 2004-02-20 03:36:28 rbasch Exp $
+# $Id: makeroot.sh,v 1.20 2004-03-31 15:37:16 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -90,13 +90,16 @@ EOF
   # third/gnome-utils wants to know where to look for log messages.
   touch "$root/var/adm/messages"
 
+  # pkgadd needs to use mnttab.  We can fake it out by copying /etc/mnttab.
+  cp /etc/mnttab "$root/etc"
+
   # Copy the /os symlink.
   (cd / && tar cf - os) | (cd "$root" && tar xf -)
 
   # Make links into destination area.
-  ln -s ../.srvd/usr/athena "$root/usr/athena"
-  ln -s ../.srvd/usr/afsws "$root/usr/afsws"
-  ln -s ../.srvd/usr/gcc "$root/usr/gcc"
+  ln -s ../build/athtools/usr/athena "$root/usr/athena"
+  ln -s ../build/athtools/usr/afsws "$root/usr/afsws"
+  ln -s ../build/athtools/usr/gcc "$root/usr/gcc"
   ;;
 
 esac
