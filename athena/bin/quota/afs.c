@@ -1,7 +1,7 @@
 /*
  * AFS quota routines
  *
- * $Id: afs.c,v 1.8 1992-05-18 16:49:47 lwvanels Exp $
+ * $Id: afs.c,v 1.9 1992-05-29 19:47:29 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -93,7 +93,7 @@ prafsquota(path,foo,heading_id,heading_name)
 	       vs->BlocksInUse,
 	       vs->MaxQuota,
 	       vs->MaxQuota,
-	       (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota)
+	       (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota * 9 / 10)
 		? "<<" : ""));
     }
 }
@@ -114,6 +114,11 @@ afswarn(path,foo,name)
     if (vs->MaxQuota && (vs->BlocksInUse > vs->MaxQuota)) {
 	sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
 		path, (vs->BlocksInUse - vs->MaxQuota));
+	putwarning(buf);
+    }
+    else if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota * 9 / 10)) {
+	sprintf(buf,"User %s has used %d%% of his disk quota on %s\n", name,
+		(int)((vs->BlocksInUse*100.0/vs->MaxQuota)+0.5), path);
 	putwarning(buf);
     }
 }
