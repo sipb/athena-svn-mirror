@@ -10570,8 +10570,8 @@ BONOBO_CONF_LIBS="`gnome-config --libs bonobo_conf`"
 
 
 
-EXTRA_GNOME_LIBS="`gnome-config --libs libglade gdk_pixbuf gnomecanvaspixbuf gnomeui gal` $THREADS_LIBS"
-EXTRA_GNOME_CFLAGS="`gnome-config --cflags libglade gdk_pixbuf gnomecanvaspixbuf gnomeui gal` $THREADS_CFLAGS"
+EXTRA_GNOME_LIBS="`gnome-config --libs bonobo libglade gdk_pixbuf gnomecanvaspixbuf gnomeui gal` $THREADS_LIBS"
+EXTRA_GNOME_CFLAGS="`gnome-config --cflags bonobo libglade gdk_pixbuf gnomecanvaspixbuf gnomeui gal` $THREADS_CFLAGS"
 
 
 
@@ -11064,18 +11064,20 @@ fi
 msg_krb5=no
 if test ${with_krb5:=no} != no; then
 	LDFLAGS_save="$LDFLAGS"
+	LIBS_save="$LIBS"
 
 	mitlibs="-lkrb5 -lk5crypto -lcom_err"
 	heimlibs="-lkrb5 -lcrypto -lasn1 -lcom_err -lroken"
 	echo $ac_n "checking for Kerberos 5""... $ac_c" 1>&6
-echo "configure:11072: checking for Kerberos 5" >&5
+echo "configure:11073: checking for Kerberos 5" >&5
 if eval "test \"`echo '$''{'ac_cv_lib_kerberos5'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   
-		LDFLAGS="$LDFLAGS -L$with_krb5/lib $mitlibs"
+		LDFLAGS="$LDFLAGS -L$with_krb5/lib"
+		LIBS="$LIBS $mitlibs"
 		cat > conftest.$ac_ext <<EOF
-#line 11079 "configure"
+#line 11081 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11086,16 +11088,17 @@ int main() {
 krb5_init_context()
 ; return 0; }
 EOF
-if { (eval echo configure:11090: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11092: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   ac_cv_lib_kerberos5="$mitlibs"
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
   rm -rf conftest*
-  LDFLAGS="$LDFLAGS_save -L$with_krb5/lib $heimlibs"
+  LDFLAGS="$LDFLAGS_save -L$with_krb5/lib"
+			LIBS="$LIBS_save $heimlibs"
 			cat > conftest.$ac_ext <<EOF
-#line 11099 "configure"
+#line 11102 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11106,7 +11109,7 @@ int main() {
 krb5_init_context()
 ; return 0; }
 EOF
-if { (eval echo configure:11110: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11113: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   ac_cv_lib_kerberos5="$heimlibs"
 else
@@ -11120,6 +11123,7 @@ rm -f conftest*
 fi
 rm -f conftest*
 		LDFLAGS="$LDFLAGS_save"
+		LIBS="$LIBS_save"
 	
 fi
 
@@ -11131,19 +11135,21 @@ EOF
 
 		msg_krb5=yes
 		KRB5_CFLAGS="-I$with_krb5/include/krb5"
-		KRB5_LDFLAGS="-L$with_krb5/lib $ac_cv_lib_kerberos5"
+		KRB5_LDFLAGS="-L$with_krb5/lib"
+		KRB5_LIBS="$ac_cv_lib_kerberos5"
 	fi
 else
 	echo $ac_n "checking for Kerberos 5""... $ac_c" 1>&6
-echo "configure:11139: checking for Kerberos 5" >&5
+echo "configure:11144: checking for Kerberos 5" >&5
 	echo "$ac_t""$with_krb5" 1>&6
 fi
 
 msg_krb4=no
 if test x${with_krb4:=no} != xno; then
 	LDFLAGS_save="$LDFLAGS"
+	LIBS_save="$LIBS"
 	echo $ac_n "checking for Kerberos 4""... $ac_c" 1>&6
-echo "configure:11147: checking for Kerberos 4" >&5
+echo "configure:11153: checking for Kerberos 4" >&5
 if eval "test \"`echo '$''{'ac_cv_lib_kerberos4'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -11153,9 +11159,10 @@ else
 		case $ac_cv_lib_kerberos5 in
 		*k5crypto*)
 			# Look for MIT krb5 compat krb4
-			LDFLAGS="$LDFLAGS -L$with_krb4/lib -lkrb4 -ldes425 $KRB5_LDFLAGS"
+			LDFLAGS="$LDFLAGS -L$with_krb4/lib $KRB5_LDFLAGS"
+			LIBS="$LIBS -lkrb4 -ldes425 $KRB5_LIBS"
 			cat > conftest.$ac_ext <<EOF
-#line 11159 "configure"
+#line 11166 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11166,9 +11173,11 @@ int main() {
 krb_mk_req()
 ; return 0; }
 EOF
-if { (eval echo configure:11170: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11177: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
-  ac_cv_lib_kerberos4="-lkrb4 -ldes425 $KRB5_LDFLAGS"
+  ac_cv_lib_kerberos4="-lkrb4 -ldes425 $KRB5_LIBS"
+				ac_cv_ldflag_kerberos4="$KRB5_LDFLAGS"
+			
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
@@ -11179,9 +11188,10 @@ rm -f conftest*
 
 		if test "$ac_cv_lib_kerberos4" = no; then
 			# Look for KTH krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb -lcrypto -lcom_err -lroken"
+			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib"
+			LIBS="$LIBS_save -lkrb -lcrypto -lcom_err -lroken"
 			cat > conftest.$ac_ext <<EOF
-#line 11185 "configure"
+#line 11195 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11192,7 +11202,7 @@ int main() {
 krb_mk_req()
 ; return 0; }
 EOF
-if { (eval echo configure:11196: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11206: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   ac_cv_lib_kerberos4="-lkrb -lcrypto -lcom_err -lroken"
 else
@@ -11203,9 +11213,10 @@ rm -f conftest*
 		fi
 		if test "$ac_cv_lib_kerberos4" = no; then
 			# Look for old MIT krb4
-			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib -lkrb"
+			LDFLAGS="$LDFLAGS_save -L$with_krb4/lib"
+			LIBS="$LIBS_save -lkrb"
 			cat > conftest.$ac_ext <<EOF
-#line 11209 "configure"
+#line 11220 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11216,16 +11227,16 @@ int main() {
 krb_mk_req()
 ; return 0; }
 EOF
-if { (eval echo configure:11220: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11231: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   ac_cv_lib_kerberos4=-lkrb
 else
   echo "configure: failed program was:" >&5
   cat conftest.$ac_ext >&5
   rm -rf conftest*
-  LDFLAGS="$LDFLAGS -ldes"
+  LIBS="$LIBS -ldes"
 				cat > conftest.$ac_ext <<EOF
-#line 11229 "configure"
+#line 11240 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11236,7 +11247,7 @@ int main() {
 krb_mk_req()
 ; return 0; }
 EOF
-if { (eval echo configure:11240: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11251: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   ac_cv_lib_kerberos4="-lkrb -ldes"
 else
@@ -11253,6 +11264,7 @@ fi
 
 echo "$ac_t""$ac_cv_lib_kerberos4" 1>&6
 	LDFLAGS="$LDFLAGS_save"
+	LIBS="$LIBS_save"
 	if test "$ac_cv_lib_kerberos4" != no; then
 		cat >> confdefs.h <<\EOF
 #define HAVE_KRB4 1
@@ -11264,12 +11276,13 @@ EOF
 		else
 			KRB4_CFLAGS="-I$with_krb4/include/kerberosIV"
 		fi
-		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_lib_kerberos4"
+		KRB4_LDFLAGS="-L$with_krb4/lib $ac_cv_ldflag_kerberos4"
+		KRB4_LIBS="$ac_cv_lib_kerberos4"
 
 		CFLAGS_save="$CFLAGS"
 		CFLAGS="$CFLAGS $KRB4_CFLAGS"
 		cat > conftest.$ac_ext <<EOF
-#line 11273 "configure"
+#line 11286 "configure"
 #include "confdefs.h"
 #include "krb.h"
 		int krb_sendauth;
@@ -11278,7 +11291,7 @@ int main() {
 return 0
 ; return 0; }
 EOF
-if { (eval echo configure:11282: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:11295: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   cat >> confdefs.h <<\EOF
 #define NEED_KRB_SENDAUTH_PROTO 1
@@ -11293,9 +11306,11 @@ rm -f conftest*
 	fi
 else
 	echo $ac_n "checking for Kerberos 4""... $ac_c" 1>&6
-echo "configure:11297: checking for Kerberos 4" >&5
+echo "configure:11310: checking for Kerberos 4" >&5
 	echo "$ac_t""${with_krb4}" 1>&6
 fi
+
+
 
 
 
@@ -11332,7 +11347,7 @@ if test "x${with_nspr_includes}" != "xno"; then
 	CPPFLAGS_save="$CPPFLAGS"
 	
 	echo $ac_n "checking for Mozilla nspr4 includes in $with_nspr_includes""... $ac_c" 1>&6
-echo "configure:11336: checking for Mozilla nspr4 includes in $with_nspr_includes" >&5
+echo "configure:11351: checking for Mozilla nspr4 includes in $with_nspr_includes" >&5
 	echo "$ac_t""""" 1>&6
 	
 	CPPFLAGS="$CPPFLAGS -I$with_nspr_includes"
@@ -11340,17 +11355,17 @@ echo "configure:11336: checking for Mozilla nspr4 includes in $with_nspr_include
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:11344: checking for $ac_hdr" >&5
+echo "configure:11359: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 11349 "configure"
+#line 11364 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:11354: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:11369: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -11384,7 +11399,7 @@ done
 	fi
 else
 	echo $ac_n "checking for Mozilla nspr4 includes""... $ac_c" 1>&6
-echo "configure:11388: checking for Mozilla nspr4 includes" >&5
+echo "configure:11403: checking for Mozilla nspr4 includes" >&5
 	echo "$ac_t""no" 1>&6
 fi
 
@@ -11401,7 +11416,7 @@ if test "x${with_nspr_libs}" != "xno" -a "x${have_nspr_includes}" != "xno"; then
 	
 	nsprlibs="-lplc4 -lplds4 -lnspr4 $PTHREAD_LIB"
 	echo $ac_n "checking for Mozilla nspr libraries""... $ac_c" 1>&6
-echo "configure:11405: checking for Mozilla nspr libraries" >&5
+echo "configure:11420: checking for Mozilla nspr libraries" >&5
 if eval "test \"`echo '$''{'moz_nspr_libs'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -11415,7 +11430,7 @@ else
 		fi
 		
 		cat > conftest.$ac_ext <<EOF
-#line 11419 "configure"
+#line 11434 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11426,7 +11441,7 @@ int main() {
 PR_Init()
 ; return 0; }
 EOF
-if { (eval echo configure:11430: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11445: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   moz_nspr_libs="yes"
 else
@@ -11450,7 +11465,7 @@ echo "$ac_t""$moz_nspr_libs" 1>&6
 	fi
 else
 	echo $ac_n "checking for Mozilla nspr4 libraries""... $ac_c" 1>&6
-echo "configure:11454: checking for Mozilla nspr4 libraries" >&5
+echo "configure:11469: checking for Mozilla nspr4 libraries" >&5
 	echo "$ac_t""no" 1>&6
 fi
 
@@ -11466,7 +11481,7 @@ if test "x${with_nss_includes}" != "xno" -a "x${have_nspr_libs}" != "xno"; then
 	CPPFLAGS_save="$CPPFLAGS"
 	
 	echo $ac_n "checking for Mozilla nss3 includes in $with_nss_includes""... $ac_c" 1>&6
-echo "configure:11470: checking for Mozilla nss3 includes in $with_nss_includes" >&5
+echo "configure:11485: checking for Mozilla nss3 includes in $with_nss_includes" >&5
 	echo "$ac_t""""" 1>&6
 
         if test "x${with_nspr_includes}" != "x"; then
@@ -11479,17 +11494,17 @@ echo "configure:11470: checking for Mozilla nss3 includes in $with_nss_includes"
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:11483: checking for $ac_hdr" >&5
+echo "configure:11498: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 11488 "configure"
+#line 11503 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:11493: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:11508: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -11528,7 +11543,7 @@ done
 	fi
 else
 	echo $ac_n "checking for Mozilla nss3 includes""... $ac_c" 1>&6
-echo "configure:11532: checking for Mozilla nss3 includes" >&5
+echo "configure:11547: checking for Mozilla nss3 includes" >&5
 	echo "$ac_t""no" 1>&6
 fi
 
@@ -11545,14 +11560,14 @@ if test "x${with_nss_libs}" != "xno" -a "x${have_nss_includes}" != "xno"; then
 	nsprlibs="-lplc4 -lplds4 -lnspr4 $PTHREAD_LIB"
 	nsslibs="-lssl3 -lsmime3 -lnss3"
 	echo $ac_n "checking for Mozilla nss libraries""... $ac_c" 1>&6
-echo "configure:11549: checking for Mozilla nss libraries" >&5
+echo "configure:11564: checking for Mozilla nss libraries" >&5
 if eval "test \"`echo '$''{'moz_nss_libs'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   
 		LDFLAGS="$LDFLAGS -L$with_nspr_libs $nsprlibs -L$with_nss_libs $nsslibs"
 		cat > conftest.$ac_ext <<EOF
-#line 11556 "configure"
+#line 11571 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11563,7 +11578,7 @@ int main() {
 NSS_Init()
 ; return 0; }
 EOF
-if { (eval echo configure:11567: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11582: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   moz_nss_libs="yes"
 else
@@ -11592,7 +11607,7 @@ EOF
 	fi
 else
 	echo $ac_n "checking for Mozilla nss libraries""... $ac_c" 1>&6
-echo "configure:11596: checking for Mozilla nss libraries" >&5
+echo "configure:11611: checking for Mozilla nss libraries" >&5
 	echo "$ac_t""no" 1>&6
 fi
 
@@ -11616,7 +11631,7 @@ fi
 		CPPFLAGS_save="$CPPFLAGS"
 		
 		echo $ac_n "checking for OpenSSL includes""... $ac_c" 1>&6
-echo "configure:11620: checking for OpenSSL includes" >&5
+echo "configure:11635: checking for OpenSSL includes" >&5
 		echo "$ac_t""""" 1>&6
 		
 		CPPFLAGS="$CPPFLAGS -I$with_openssl_includes"
@@ -11624,17 +11639,17 @@ echo "configure:11620: checking for OpenSSL includes" >&5
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:11628: checking for $ac_hdr" >&5
+echo "configure:11643: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 11633 "configure"
+#line 11648 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:11638: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:11653: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -11670,7 +11685,7 @@ done
 		fi
 	else
 		echo $ac_n "checking for OpenSSL includes""... $ac_c" 1>&6
-echo "configure:11674: checking for OpenSSL includes" >&5
+echo "configure:11689: checking for OpenSSL includes" >&5
 		echo "$ac_t""no" 1>&6
 	fi
 	
@@ -11690,7 +11705,7 @@ fi
 		esac
 	
 		echo $ac_n "checking for dlopen in -ldl""... $ac_c" 1>&6
-echo "configure:11694: checking for dlopen in -ldl" >&5
+echo "configure:11709: checking for dlopen in -ldl" >&5
 ac_lib_var=`echo dl'_'dlopen | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -11698,7 +11713,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-ldl  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 11702 "configure"
+#line 11717 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11709,7 +11724,7 @@ int main() {
 dlopen()
 ; return 0; }
 EOF
-if { (eval echo configure:11713: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11728: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -11731,14 +11746,14 @@ DL_LDFLAGS=""
 fi
 
 		echo $ac_n "checking for OpenSSL libraries""... $ac_c" 1>&6
-echo "configure:11735: checking for OpenSSL libraries" >&5
+echo "configure:11750: checking for OpenSSL libraries" >&5
 if eval "test \"`echo '$''{'openssl_libs'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   
 			LDFLAGS="$LDFLAGS $with_openssl_libs -lssl -lcrypto $DL_LDFLAGS"
 			cat > conftest.$ac_ext <<EOF
-#line 11742 "configure"
+#line 11757 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -11749,7 +11764,7 @@ int main() {
 SSL_read()
 ; return 0; }
 EOF
-if { (eval echo configure:11753: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:11768: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   openssl_libs="yes"
 else
@@ -11777,7 +11792,7 @@ EOF
 		fi
 	else
 		echo $ac_n "checking for OpenSSL libraries""... $ac_c" 1>&6
-echo "configure:11781: checking for OpenSSL libraries" >&5
+echo "configure:11796: checking for OpenSSL libraries" >&5
 		echo "$ac_t""no" 1>&6
 	fi
 else
@@ -11822,7 +11837,7 @@ fi
 # Extract the first word of "gtkdoc-mkdb", so it can be a program name with args.
 set dummy gtkdoc-mkdb; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:11826: checking for $ac_word" >&5
+echo "configure:11841: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_GTKDOC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -11854,7 +11869,7 @@ gtk_doc_min_version=0.6
 if $GTKDOC ; then 
     gtk_doc_version=`gtkdoc-mkdb --version`
     echo $ac_n "checking gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version""... $ac_c" 1>&6
-echo "configure:11858: checking gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version" >&5
+echo "configure:11873: checking gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version" >&5
     if perl <<EOF ; then
       exit (("$gtk_doc_version" =~ /^[0-9]+\.[0-9]+$/) &&
             ("$gtk_doc_version" >= "$gtk_doc_min_version") ? 0 : 1);
@@ -11900,7 +11915,7 @@ if test "${with_movemail+set}" = set; then
 fi
 
 echo $ac_n "checking for movemail""... $ac_c" 1>&6
-echo "configure:11904: checking for movemail" >&5
+echo "configure:11919: checking for movemail" >&5
 if test x$with_movemail = xyes -o x$with_movemail = x; then
     with_movemail=no
 fi
@@ -12339,8 +12354,10 @@ s%@ENABLE_PILOT_CONDUITS_TRUE@%$ENABLE_PILOT_CONDUITS_TRUE%g
 s%@ENABLE_PILOT_CONDUITS_FALSE@%$ENABLE_PILOT_CONDUITS_FALSE%g
 s%@KRB5_CFLAGS@%$KRB5_CFLAGS%g
 s%@KRB5_LDFLAGS@%$KRB5_LDFLAGS%g
+s%@KRB5_LIBS@%$KRB5_LIBS%g
 s%@KRB4_CFLAGS@%$KRB4_CFLAGS%g
 s%@KRB4_LDFLAGS@%$KRB4_LDFLAGS%g
+s%@KRB4_LIBS@%$KRB4_LIBS%g
 s%@NSPR_CFLAGS@%$NSPR_CFLAGS%g
 s%@NSPR_LDFLAGS@%$NSPR_LDFLAGS%g
 s%@NSS_CFLAGS@%$NSS_CFLAGS%g
