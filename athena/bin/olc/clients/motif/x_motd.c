@@ -22,61 +22,91 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.3 1989-07-31 16:00:07 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.4 1989-10-11 16:30:55 vanharen Exp $";
 #endif
 
 #include "xolc.h"
 
 ERRCODE
-x_get_motd(Request,type,file)
+x_get_motd(Request,type,file,dialog)
      REQUEST *Request;
      int type;
      char *file;
+     int dialog;
 {
   int status;
-  struct stat buf;
+  struct stat statbuf;
   Arg arg;
   char *motd;
   int fd;
+  Widget wl[2];
 
+  wl[0] = toplevel;
+  wl[1] = w_send_form;
+
+  MuSetCursors(wl, 2, XC_watch);
   status = OGetMOTD(Request,type,file);
   
   switch(status)
     {
     case SUCCESS:
-      stat(file, &buf);
-      if ((motd = malloc((1 + buf.st_size) * sizeof(char))) == (char *) NULL)
-	fprintf(stderr, "x_get_motd: unable to malloc space for motd.\n");
+
+      if (stat(file, &statbuf))
+	{
+	  fprintf(stderr, "motd: unable to stat motd file.\n");
+	  MuError("motd: unable to stat motd file.");
+	  MuSetCursors(wl, 2, XC_top_left_arrow);
+	  return(ERROR);
+	}
+	  
+      if ((motd = malloc((1 + statbuf.st_size) * sizeof(char)))
+	  == (char *) NULL)
+	{
+	  fprintf(stderr, "x_get_motd: unable to malloc space for motd.\n");
+	  MuError("x_get_motd: unable to malloc space for motd.");
+	  MuSetCursors(wl, 2, XC_top_left_arrow);
+	  return(ERROR);
+	}
+
       if ((fd = open(file, O_RDONLY, 0)) < 0)
-	fprintf(stderr, "x_get_motd: unable to open motd file for read.\n");
-      if ((read(fd, motd, buf.st_size)) != buf.st_size)
-	fprintf(stderr, "x_get_motd: unable to read motd correctly.\n");
+	{
+	  MuError("x_get_motd: unable to open motd file for read.");
+	  MuSetCursors(wl, 2, XC_top_left_arrow);
+	  return(ERROR);
+	}
+
+      if ((read(fd, motd, statbuf.st_size)) != statbuf.st_size)
+	{
+	  MuError("x_get_motd: unable to read motd correctly.");
+	  MuSetCursors(wl, 2, XC_top_left_arrow);
+	  return(ERROR);
+	}
+      
+
+      motd[statbuf.st_size] = '\0';
+      if (dialog)
+	{
+	  XtSetArg(arg, XmNmessageString, MotifString(motd));
+	  if (statbuf.st_size == 0)
+	    XtSetArg(arg, XmNmessageString, MotifString("There is no Message Of The Day right now.\nYou may want to check again later."));
+	  XtSetValues(w_motd_dlg, &arg, 1);
+	}
+      else
+	{
+	  XmTextSetString(w_motd_scrl, motd);
+	  if (statbuf.st_size == 0)
+	    XmTextSetString(w_motd_scrl, "There is no Message Of The Day right now.\nYou may want to check again later.");
+	}
       close(fd);
-      motd[buf.st_size] = '\0';
-/*
- * This part is gross.  I'm using this routine to set the motd for both a
- * dialog widget and a text widget, so I set them both here, and don't really
- * care which one I came here to do...  oh well.
- */
-      XmTextSetString(w_motd_scrl, motd);
-
-      XtSetArg(arg, XmNmessageString, XmStringLtoRCreate(motd, ""));
-      XtSetValues(w_motd_dlg, &arg, 1);
-
       free(motd);
+
       break;
 
     default:
-      XmTextSetString(w_motd_scrl, "An error has occurred.");
-
-      XtSetArg(arg, XmNmessageString,
-	       XmStringLtoRCreate("An error has occurred.", ""));
-      XtSetValues(w_motd_dlg, &arg, 1);
-
-      status = handle_response(Request,status);
+      status = handle_response(status, Request);
       break;
     }
 
+  MuSetCursors(wl, 2, XC_top_left_arrow);
   return(status);
 }
-  
