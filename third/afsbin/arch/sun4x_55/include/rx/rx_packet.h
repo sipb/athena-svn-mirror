@@ -207,12 +207,12 @@ struct rx_cbuf {
  * caller. */
 #define rx_GetInt32(p,off) (( (off) >= (p)->wirevec[1].iov_len) ? \
    rx_SlowGetInt32((p), (off)) :  \
-  *((int32 *)((p)->wirevec[1].iov_base + (off))))
+  *((int32 *)((char *)((p)->wirevec[1].iov_base) + (off))))
 
 #define rx_PutInt32(p,off,b) { \
        if ((off) >= (p)->wirevec[1].iov_len) \
 	  rx_SlowPutInt32((p), (off), (b));   \
-       else *((int32 *)((p)->wirevec[1].iov_base + (off))) = b; }
+       else *((int32 *)((char *)((p)->wirevec[1].iov_base) + (off))) = b; }
 
 #define rx_data(p, o, l) ((l=((struct rx_packet*)(p))->wirevec[(o+1)].iov_len),\
   (((struct rx_packet*)(p))->wirevec[(o+1)].iov_base))

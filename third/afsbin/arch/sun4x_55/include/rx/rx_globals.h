@@ -1,4 +1,4 @@
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx_globals.h,v 2.77 1996/04/24 17:02:36 zumach Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx_globals.h,v 2.83 1996/09/30 16:59:25 thakur Exp $ */
 /* $Source: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx_globals.h,v $ */
 
 /*
@@ -127,6 +127,10 @@ EXT int rx_nWaiting INIT(0);
  * to swallow anything larger. THIS MUST NEVER DECREASE WHILE AN APPLICATION
  * IS RUNNING! */
 EXT u_int32 rx_maxReceiveSize INIT(OLD_MAX_PACKET_SIZE*RX_MAX_FRAGS + UDP_HDR_SIZE*(RX_MAX_FRAGS-1));
+
+/* this is the maximum packet size that the user wants us to receive */
+/* this is set by rxTune if required */
+EXT u_int32 rx_maxReceiveSizeUser INIT(0xffffffff);
 
 #if (defined(AFS_SUN5_ENV) || defined(AFS_AOS_ENV)) && defined(KERNEL)
 EXT u_int32 rx_MyMaxSendSize INIT(OLD_MAX_PACKET_SIZE - RX_HEADER_SIZE);

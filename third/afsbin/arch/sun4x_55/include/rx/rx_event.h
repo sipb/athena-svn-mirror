@@ -1,4 +1,4 @@
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx_event.h,v 2.7 1995/12/06 21:01:28 zumach Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx_event.h,v 2.13 1996/05/14 17:35:54 zumach Exp $ */
 /* $Source: /afs/transarc.com/project/fs/dev/afs/rcs/rx/RCS/rx_event.h,v $ */
 
 /*
@@ -53,7 +53,7 @@ struct rxevent {
 #endif
 
 /* This routine must be called to initialize the event package.  nEvents is the number of events to allocate in a batch whenever more are needed.  If this is 0, a default number (10) will be allocated. */
-extern rxevent_Init(/* nEvents, scheduler */);
+extern void rxevent_Init(/* nEvents, scheduler */);
 
 /* Arrange for the indicated event at the appointed time.  When is a "struct clock", in the clock.c time base */
 extern struct rxevent *rxevent_Post(/* when, func, arg, arg1 */);
@@ -61,7 +61,7 @@ extern struct rxevent *rxevent_Post(/* when, func, arg, arg1 */);
 /* Remove the indicated event from the event queue.  The event must be pending.  Also see the warning, above.  The event pointer supplied is zeroed. */
 #ifdef RX_ENABLE_LOCKS
 #ifdef RX_REFCOUNT_CHECK
-extern rxevent_Cancel_1(/* event_ptr, call , type*/);
+extern void rxevent_Cancel_1(/* event_ptr, call , type*/);
 #define	rxevent_Cancel(event_ptr, call, type)			    \
 	BEGIN					    \
 	    if (event_ptr) {			    \
@@ -70,7 +70,7 @@ extern rxevent_Cancel_1(/* event_ptr, call , type*/);
 	    }					    \
 	END
 #else /* RX_REFCOUNT_CHECK */
-extern rxevent_Cancel_1(/* event_ptr, call*/);
+extern void rxevent_Cancel_1(/* event_ptr, call*/);
 #define	rxevent_Cancel(event_ptr, call, type)			    \
 	BEGIN					    \
 	    if (event_ptr) {			    \
@@ -80,7 +80,7 @@ extern rxevent_Cancel_1(/* event_ptr, call*/);
 	END
 #endif /* RX_REFCOUNT_CHECK */
 #else /* RX_ENABLE_LOCKS */
-extern rxevent_Cancel_1(/* event_ptr */);
+extern void rxevent_Cancel_1(/* event_ptr */);
 #define	rxevent_Cancel(event_ptr, call, type)			    \
 	BEGIN					    \
 	    if (event_ptr) {			    \
@@ -91,8 +91,6 @@ extern rxevent_Cancel_1(/* event_ptr */);
 #endif /* RX_ENABLE_LOCKS */
 
 /* The actions specified for each event that has reached the current clock time will be taken.  The current time returned by GetTime is used (warning:  this may be an old time if the user has not called clock_NewTime) */
-extern rxevent_RaiseEvents();
+extern int rxevent_RaiseEvents();
 
-/* This returns the time between the current clock value and the the next event's expiry time, in *interval.  The function value returned is 0 if there are no scheduled events, 1 if there are one or more scheduled events.  In the event that 0 is returned, *interval is not updated. */
-extern rxevent_TimeToNextEvent(/* interval */);
 #endif /* _EVENT_ */

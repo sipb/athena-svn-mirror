@@ -1,6 +1,6 @@
 /* Copyright (C) 1990 Transarc Corporation - All rights reserved */
 
-/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/config/RCS/stds.h,v 2.23 1995/09/07 14:59:45 zumach Exp $ */
+/* $Header: /afs/transarc.com/project/fs/dev/afs/rcs/config/RCS/stds.h,v 2.24 1996/09/26 17:20:00 zumach Exp $ */
 
 #ifndef TRANSARC_AFS_CONFIG_STDS_H
 #define TRANSARC_AFS_CONFIG_STDS_H	1
@@ -95,7 +95,15 @@ typedef short	         int16;
 typedef unsigned short u_int16;
 #ifdef	AFS_64BIT_ENV
 typedef int	         int32;
+#if defined(AFS_SGI53_ENV)
+/* While it's a warning for a 64 bit compile, it's an error for a 32 bit
+ * compile if the following is re-typedef'd...... And we need to be able to
+ * #undef it if required.
+ */
+#define u_int32 unsigned int;
+#else
 typedef unsigned int  u_int32;
+#endif
 #else	/* AFS_64BIT_ENV */
 typedef long	         int32;
 #endif	/* AFS_64BIT_ENV */

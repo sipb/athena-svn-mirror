@@ -13,7 +13,24 @@
 #ifndef KERNEL
 #include <afs/param.h>
 #endif
+
 #define VICEMAGIC       0x84fa1cb6
+
+#if     defined(AFS_HPUX102_ENV)
+
+#define DI_VICEP3(p)    ( *(long *) &((p)->di_ic.ic_uid_msb) )
+#define I_VICE3(p)      ( *(long *)( &((p)->i_icun.i_ic.ic_uid_msb) ) )
+
+/* macros to extract 32 bit uid from a dinode ptr */
+#define _GET_D_UID(DP)          _GET_DC_UID((DP)->di_ic)
+#define _GET_DC_UID(DC)    ((uid_t)((DC).ic_uid_msb << 16 | (DC).ic_uid_lsb))
+
+#else
+#define DI_VICEP3(p)    ( (p)->di_vicep3 )
+#define I_VICE3(p)      ( (p)->i_vicep3 )
+#endif
+
+
 #ifdef	AFS_AIX22_ENV
 #define	OLD_STUFF
 #endif
@@ -43,6 +60,27 @@
 #ifdef i_gen
 
 #ifdef	AFS_HPUX_ENV
+
+#if	defined(AFS_HPUX102_ENV)
+/* the VICEMAGIC field is moved to ic_flags. This is because VICEMAGIC
+** happens to set the LARGEUID bit in the ic_flags field.  UFS interprets
+** this as an inode which supports large uid's, hence does not do any UID
+** length conversion on the fly. We use the uid fields to store i_vicep3.
+*/
+#define i_vicemagic	i_icun.i_ic.ic_flags
+#define i_vicep1        i_icun.i_ic.ic_spare[0]
+#define i_vicep2        i_icun.i_ic.ic_spare[1]
+#define i_vicep4        i_icun.i_ic.ic_gen
+#define i_vicep3        ( *(long *)( &(i_icun.i_ic.ic_uid_msb) ) )
+
+#define di_vicemagic	di_ic.ic_flags
+#define di_vicep1       di_ic.ic_spare[0]
+#define di_vicep2       di_ic.ic_spare[1]
+#define di_vicep4       di_ic.ic_gen
+#define di_vicep3       ( *(long *)( &(di_ic.ic_uid_msb) ) )
+
+#else
+
 #define i_vicemagic	i_icun.i_ic.ic_gen
 #define i_vicep1        i_icun.i_ic.ic_spare[0]
 #define i_vicep2        i_icun.i_ic.ic_spare[1]
@@ -54,6 +92,8 @@
 #define di_vicep2       di_ic.ic_spare[1]
 #define di_vicep4       di_ic.ic_flags
 #define di_vicep3       di_ic.ic_size.val[0]
+#endif /* AFS_HPUX102_ENV */
+
 #else
 
 #ifndef	AFS_DEC_ENV

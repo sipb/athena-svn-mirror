@@ -62,8 +62,9 @@ bool_t xdr_AFSCallBack();
 struct AFSDBLockDesc {
 	char waitStates;
 	char exclLocked;
-	char readersReading;
-	char numWaiting;
+	short readersReading;
+	short numWaiting;
+	short spare;
 	int pid_last_reader;
 	int pid_writer;
 	int src_indicator;

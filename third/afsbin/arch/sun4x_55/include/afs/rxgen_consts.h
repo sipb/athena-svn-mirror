@@ -17,14 +17,18 @@
 #define	RXGEN_WAIT		1
 #define	RXGEN_DONTWAIT		0
 
+#ifndef AFS_SGI61_ENV
+/* SGI 6.1 and up do include xdr_char */
 #ifdef KERNEL
 /* kernel's xdr.h doesn't normally define these things, but we need them */
 /* some environments turn these into macros which don't compile... */
 #ifndef xdr_char
 extern bool_t	xdr_char();
 #endif /* xdr_char */
+
 #ifndef xdr_u_char
 extern bool_t	xdr_u_char();
 #endif /* xdr_u_char */
 #endif /* KERNEL */
+#endif /* AFS_SGI61_ENV */
 #endif /* _RXGEN_CONSTS_ */
