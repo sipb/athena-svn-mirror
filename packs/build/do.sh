@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.37 1999-07-14 21:06:47 danw Exp $
+# $Id: do.sh,v 1.38 1999-07-20 13:40:59 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -53,8 +53,9 @@ esac
 
 # Set up the build environment.
 umask 022
-export ATHENA_SYS ATHENA_SYS_COMPAT HOSTTYPE OS CONFIG_SITE PATH
+export ATHENA_SYS ATHENA_SYS_COMPAT HOSTTYPE OS CONFIG_SITE PATH M4
 CONFIG_SITE=$source/packs/build/config.site
+M4=$ATHTOOLROOT/usr/athena/bin/m4
 
 # Determine proper ATHENA_SYS and ATHENA_SYS_COMPAT value.
 case `uname -srm` in
@@ -115,7 +116,7 @@ case `uname -s` in
 SunOS)
 	OS=solaris
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
-	PATH=/usr/ccs/bin:$athtoolroot/usr/athena/bin:/usr/bin:/usr/ucb
+	PATH=$athtoolroot/usr/athena/bin:/usr/ccs/bin:/usr/bin:/usr/ucb
 	PATH=${PATH}:/usr/openwin/bin
 	CC=/usr/gcc/bin/gcc
 	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
@@ -177,7 +178,9 @@ elif [ -f configure.in ]; then
 			$maybe cp "$source/third/autoconf/config.guess" .
 			$maybe cp "$source/third/autoconf/config.sub" .
 			$maybe cp "$source/packs/build/aclocal.m4" .
-			$maybe autoconf || exit 1
+			$maybe autoconf \
+				-m ${ATHTOOLROOT}/usr/athena/lib/autoconf \
+				|| exit 1
 		fi
 		$maybe rm -f config.cache
 		$maybe "./$configure"
