@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.1 2001-09-10 16:45:33 ghudson Exp $
+# $Id: makeroot.sh,v 1.2 2001-09-12 22:31:45 rbasch Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -78,6 +78,52 @@ sun4)
   ln -s ../.srvd/usr/athena "$root/usr/athena"
   ln -s ../.srvd/usr/gcc "$root/usr/gcc"
   ln -s ../.srvd/usr/afsws "$root/usr/afsws"
+  ;;
+
+sgi)
+  seldir=/install/selections
+  dists="foundation applications dev dwb patches"
+  instopts="-r $root -a -N -Vinstmode:normal -Vstartup_script:ignore"
+  instopts="$instopts -Vdelay_idb_read:on -Voverlay_mode:silent"
+  instopts="$instopts -Vskip_rqs:true -Vverbosity:0"
+
+  # Copy the /os symlink.
+  (cd / && tar cf - os) | (cd "$root" && tar xf -)
+
+  # Install local packages.
+  for dist in $dists ; do
+    selfile=$seldir/default.$dist.local
+    if [ -f $selfile ]; then
+      inst $instopts -F $selfile
+    fi
+  done
+
+  # Hack to skip the repeated rebuilding of the file type database.
+  ftmakefile="$root/usr/lib/filetype/Makefile"
+  mv "$ftmakefile" "$ftmakefile.hold"
+
+  # Install symlink packages, skipping all man and relnotes packages.
+  for dist in $dists ; do
+    selfile=$seldir/default.$dist.link
+    echo "di *.man.*\ndi *.*.relnotes" | cat $selfile - > /tmp/selections
+    inst $instopts -F /tmp/selections -T/os
+  done
+
+  # Copy the flexlm license file, so we can run the compilers.
+  (cd / && tar cf - var/flexlm/license.dat) | (cd "$root" && tar xf -)
+
+  # Copy the compiler default options file.
+  cp /etc/compiler.defaults "$root/etc"
+
+  # The write build needs the tty group, which is not in the stock
+  # IRIX group file.
+  grep '^tty:' /etc/group >> "$root/etc/group"
+
+  # Make links into destination area.
+  ln -s ../.srvd/usr/athena "$root/usr/athena"
+  ln -s ../.srvd/usr/afsws "$root/usr/afsws"
+  ;;
+
 esac
 
 # The discuss build needs the discuss user to be in the passwd file.
