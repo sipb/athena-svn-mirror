@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.4 1998-04-18 16:59:44 danw Exp $
+# $Id: cshrc,v 1.5 1998-05-01 01:12:15 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -166,7 +166,7 @@ endif
 alias renew 'kinit $USER && fsid -a && zctl load /dev/null'
 
 #   alias for a convenient way to change terminal type
-alias term 'set noglob; unsetenv TERMCAP; eval `tset -s -I -Q - \!*`'
+alias term 'set noglob; unsetenv TERMCAP; eval `tset -s -I -Q \!*`'
 
 #   aliases dealing with mail
 alias mail 'Mail'
