@@ -1,7 +1,8 @@
-# $Id: Makefile,v 1.1 1997-10-18 05:01:40 ghudson Exp $
+# $Id: Makefile,v 1.2 1997-11-03 23:17:27 ghudson Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
+ATHRETCDIR=/etc/athena
 
 all:
 
@@ -9,7 +10,9 @@ check:
 
 install:
 	-mkdir -p ${DESTDIR}${INITD}
+	-mkdir -p ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0755 network ${DESTDIR}${INITD}
+	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 
 clean:
 
