@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.14 1992-06-18 17:12:33 lwvanels Exp $
+# $Id: reactivate.sh,v 1.15 1993-06-04 16:21:30 miki Exp $
 
 trap "" 1 15
 
@@ -49,6 +49,10 @@ RSAIX)
 	find /tmp -depth \( -type f -o -type l \) -print | xargs /bin/rm -f -
 	find /tmp -depth -type d -print | xargs /bin/rmdir 1>/dev/null 2>&1
 	;;
+
+SUN4)
+	/bin/rm -rf /tmp/* > /dev/null 2>&1
+	;;
 *)
 	/bin/mv /tmp/.X11-unix /tmp/../.X11-unix
 	/bin/rm -rf /tmp/ > /dev/null 2>&1
@@ -59,6 +63,8 @@ esac
 # Restore password and group files
 case "${MACHINE}" in
 RSAIX)
+	;;
+SUN4)
 	;;
 *)
 	if [ -f /etc/passwd.local ] ; then
