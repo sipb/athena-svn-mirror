@@ -47,6 +47,15 @@ cp -p /etc/defaultrouter "$swapmount/etc" || die
 cp -p /etc/networks "$swapmount/etc" || die
 cp -p "/etc/hostname.$NETDEV" "$swapmount/etc" || die
 
+# Great big kludge.  Some IDE based Ultras have a "dad" device of 134
+# while others have 136.  We need the name_to_major file in the miniroot
+# to match the device number of name_to_major on the root partition, since
+# that's what drvconfig will use to create the devices in the miniroot.
+#
+# We should find a better way to do this.
+dad=`awk '$1 == "dad" {print $2}' /etc/name_to_major`
+cp -p "$swapmount/etc/name_to_major.$dad" "$swapmount/etc/name_to_major" || die
+
 echo "Making devices..."
 (cd $swapmount && drvconfig -r devices "-p$swapmount/etc/path_to_inst") || die
 devlinks -r "$swapmount" || die
