@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_hand_resp.c,v 1.2 1989-07-31 15:11:28 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_hand_resp.c,v 1.3 1989-10-11 16:21:56 vanharen Exp $";
 #endif
 
 #include "xolc.h"
@@ -32,9 +32,10 @@ handle_response(response, req)
      int response;
      REQUEST *req;
 {
-  char message[256];
+  int status;
+  char message[BUF_SIZE];
 #ifdef KERBEROS
-  char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc. If you were having trouble\nwith a program, try again.\n\nIf you continue to have difficulty, feel free to contact a user\nconsultant by phone. Schedules and phone numbers are posted in\nthe clusters.";
+  char *kmessage = "\n\nIf you were having trouble with some other program, problems with your\nkerberos tickets may have been the reason.  Try the other program again\nafter getting new kerberos tickets with `kinit'.\n\nIf you continue to have difficulty, feel free to contact a user consultant\nby phone at 253-4435.\n\nOnce you have gotten new kerberos tickets, you may try to continue with OLC.\nIf you wish to continue, click on the `Try again' button below.\nIf you wish to exit OLC now, click on the `Quit' button.";
 #endif KERBEROS
 
   switch(response)
@@ -44,11 +45,16 @@ handle_response(response, req)
       return(NO_ACTION);
 
     case SIGNED_OFF:
-      popup_error("You have signed off of OLC.");
+      if(isme(req))
+        popup_error("You have signed off of OLC.");
+      else {
+	sprintf(message, "%s is singed off of OLC.",req->target.username);
+	popup_error(message);
+      }
       return(SUCCESS);
 
     case NOT_SIGNED_ON:
-      if(string_eq(req->target.username,req->requester.username))
+      if(isme(req))
 	popup_error("You are not signed on to OLC.");
       else {
 	sprintf(message, "%s (%d) is not signed on to OLC.",
@@ -58,20 +64,45 @@ handle_response(response, req)
       return(NO_ACTION);
 
     case NO_QUESTION:
-      sprintf(message,"%s (%d) does not have a question.",
-	      req->target.username, req->target.instance);
-      popup_error(message);
-      return(ERROR);
+      if(isme(req)) {
+	if(OLC) {
+	  popup_error("You do not have a question in OLC.\n\nIf you wish to ask another question, use 'olc' again.");
+
+/* 
+ * Something intelligent should be done here...  ask them if they want to
+ *  ask a new question in OLC, perhaps, and push them through that loop,
+ *  else, have them exit the client...   or something...
+ */
+	}
+	else {
+	  popup_error("You do not have a question in OLC.");
+	}
+      }
+      else {
+	sprintf(message,"%s (%d) does not have a question.",
+		req->target.username, req->target.instance);
+	popup_error(message);
+      }
+      return(NOT_CONNECTED);
 
     case HAS_QUESTION:
-      popup_error("You have a question.");
+      if(isme(req))
+        popup_error("You have a question.");
+      else {
+        sprintf(message, "%s (%d) does not have a question.",
+                req->target.username,req->target.instance);
+	popup_error(message);
+      }
       return(ERROR);
 
     case NOT_CONNECTED:
-      if(string_eq(req->target.username,req->requester.username))
-	popup_error("You are not connected nor do you seem to have a question.\nPerhaps you should ask one.\n");
+      if(isme(req)) {
+	sprintf(message, "You are not connected to a %s.",
+                OLC?"consultant":"user");
+	popup_error(message);
+      }
       else {
-        sprintf(message,"%s (%d) is not connected nor is asking a question.\n",
+        sprintf(message,"%s (%d) is not connected nor is asking a question.",
                 req->target.username,req->target.instance);
 	popup_error(message);
       }
@@ -82,13 +113,13 @@ handle_response(response, req)
       return(NO_ACTION);
 
     case TARGET_NOT_FOUND:
-      sprintf(message, "Target user %s (%d) unknown.\n",  req->target.username,
-              req->target.instance);
+      sprintf(message, "Target user %s (%d) not found.",
+	      req->target.username, req->target.instance);
       popup_error(message);
       return(ERROR);
 
     case REQUESTER_NOT_FOUND:
-      sprintf(message, "You [%s (%d)] are unknown.\n",
+      sprintf(message, "You [%s (%d)] are unknown.  There is a problem.",
               req->requester.username,
               req->requester.instance);
       popup_error(message);
@@ -103,50 +134,54 @@ handle_response(response, req)
       return(ERROR);
 
     case USER_NOT_FOUND:
-      sprintf(message, "User, %s, not found.\n",req->target.username);
+      sprintf(message, "User \"%s\" not found.",req->target.username);
+      popup_error(message);
+      return(ERROR);
+
+    case NAME_NOT_UNIQUE:
+      sprintf(message, "The string %s is not unique.",req->target.username);
       popup_error(message);
       return(ERROR);
 
 #ifdef KERBEROS     /* these error codes are < 100 */
     case MK_AP_TGTEXP:
+
     case RD_AP_EXP:
-      fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("Your Kerberos ticket has expired. ");
-      printf("To renew your Kerberos tickets,\n");
-      printf("type:    kinit\n");
+      strcpy(message, "Your Kerberos ticket has expired.  To renew your Kerberos tickets, type:\n\n        kinit"); 
       if(OLC)
-        printf("%s\n",kmessage);
-      exit(ERROR);
+	strcat(message, kmessage);
+      status = popup_option(message);
+      return(status);
+
     case NO_TKT_FIL:
-      fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("You do not have a Kerberos ticket file. To ");
-      printf("get one, \ntype:    kinit\n");
+      strcpy(message, "You do not have a Kerberos ticket file. To get one, type:\n\n        kinit"); 
       if(OLC)
-        printf("%s\n",kmessage);
-      exit(ERROR);
+	strcat(message, kmessage);
+      status = popup_option(message);
+      return(status);
+
     case TKT_FIL_ACC:
-      fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("Cannot access your Kerberos ticket file.\n");
-      printf("Try:              setenv   KRBTKFILE  /tmp/random\n");
-      printf("                  kinit\n");
+      strcpy(message, "Cannot access your Kerberos ticket file.  Try:\n\n        setenv   KRBTKFILE  /tmp/random\n        kinit");
       if(OLC)
-        printf("%s\n",kmessage);
-      exit(ERROR);
+	strcat(message, kmessage);
+      status = popup_option(message);
+      return(status);
+
     case RD_AP_TIME:
-      fprintf(stderr, "(%s)\n",krb_err_txt[response]);
-      printf("Kerberos authentication failed: workstation clock is");
-      printf("incorrect.\nPlease contact Athena operations and move to ");
-      printf("another worstation.\n");
+      strcpy(message, "Kerberos authentication failed: workstation clock is incorrect.\nPlease contact Athena operations and move to another workstation.");
       if(OLC)
-        printf("%s\n",kmessage);
-      exit(ERROR);
+	strcat(message, kmessage);
+      status = popup_option(message);
+      return(status);
+
 #endif KERBEROS
 
     case SUCCESS:
       return(SUCCESS);
 
     default:
-      fprintf(stderr, "Unknown response %d (fascinating)\n", response);
+      sprintf(message, "Unknown response %d (fascinating).", response);
+      MuErrorSync(message);
       return(ERROR);
     }
 }
@@ -154,10 +189,17 @@ handle_response(response, req)
 popup_error(message)
      char *message;
 {
+  MuError(message);
+}
+
+int
+popup_option(message)
+     char *message;
+{
   Arg arg;
 
-  fprintf(stderr, message);
-  XtSetArg(arg, XmNmessageString, XmStringLtoRCreate(message, ""));
-  XtSetValues(w_error_dlg, &arg, 1);
-  XtManageChild(w_error_dlg);
+  if (MuGetBoolean(message, "Try again", "Quit", NULL, TRUE, Mu_Popup_Center))
+    return(FAILURE);
+  else
+    return(ERROR);
 }
