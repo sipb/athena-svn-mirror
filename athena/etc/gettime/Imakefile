@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.9 1991-05-26 07:16:51 probe Exp $
+# $Id: Imakefile,v 1.10 1991-06-28 20:29:30 probe Exp $
 #
 
 #define ISUBDIRS	cleanup netconfig newsyslog rvd track xdm
@@ -18,3 +18,5 @@ install::
 	for i in ${SCRIPT}; do \
 		$(INSTALL) -m 0755 $$i.sh $(DESTDIR)$(ATHRETCDIR)/$$i; \
 		done
+
+install_man(reactivate.8,reactivate.8)
