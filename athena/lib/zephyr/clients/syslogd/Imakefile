@@ -5,17 +5,28 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v 1.1 1988-11-14 11:48:27 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v 1.2 1989-03-23 11:10:44 jtkohl Exp $
 /**/#
+
 LIBS= $(ZEPHYR_LIB) $(COMERR_LIB) $(KRB_LIB)
 LINCLUDES=-I.
 LINTLIBS=$(ZEPHYR_LINTLIB) $(COMERR_LINTLIB) $(KRB_LINTLIB)
 SRCS = syslogd.c
 OBJS = syslogd.o
+HDRS= syslog.h
+
+TSRCS= syslog.c systest.c
+TOBJS= syslog.o systest.o
+
+SRCDIR= ${SRCTOP}/clients/syslogd
+CODE= ${SRCS} ${HDRS} ${TSRCS} Imakefile
+
 #ifdef SYSLOG_COMPAT42
 DEFINES = -DCOMPAT42
 #endif
 
 normal_obj_rule()
+
+genutil(syslogtest, $(TOBJS),,)
 
 program(syslogd,$(OBJS),,$(LIBS),$(USRETCDIR))
