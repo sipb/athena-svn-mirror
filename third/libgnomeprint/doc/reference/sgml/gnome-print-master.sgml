@@ -1,0 +1,273 @@
+<refentry id="libgnomeprint-gnome-print-master">
+<refmeta>
+<refentrytitle>gnome-print-master</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEPRINT Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-print-master</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="GnomePrintMaster">GnomePrintMaster</link>;
+struct      <link linkend="GnomePrintMasterClass">GnomePrintMasterClass</link>;
+<link linkend="GnomePrintMaster">GnomePrintMaster</link>* <link linkend="gnome-print-master-new">gnome_print_master_new</link>    (void);
+<link linkend="GnomePrintMaster">GnomePrintMaster</link>* <link linkend="gnome-print-master-new-from-config">gnome_print_master_new_from_config</link>
+                                            (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);
+<link linkend="GnomePrintConfig">GnomePrintConfig</link>* <link linkend="gnome-print-master-get-config">gnome_print_master_get_config</link>
+                                            (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);
+<link linkend="GnomePrintContext">GnomePrintContext</link>* <link linkend="gnome-print-master-get-context">gnome_print_master_get_context</link>
+                                            (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-master-close">gnome_print_master_close</link>        (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-master-print">gnome_print_master_print</link>        (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-master-render">gnome_print_master_render</link>       (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *ctx);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-master-render-page">gnome_print_master_render_page</link>  (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
+                                             <link linkend="gint">gint</link> page,
+                                             <link linkend="gboolean">gboolean</link> pageops);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-master-get-pages">gnome_print_master_get_pages</link>    (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-print-master-get-page-size-from-config">gnome_print_master_get_page_size_from_config</link>
+                                            (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config,
+                                             <link linkend="gdouble">gdouble</link> *width,
+                                             <link linkend="gdouble">gdouble</link> *height);
+<link linkend="gint">gint</link>        <link linkend="gnome-print-master-print-to-file">gnome_print_master_print_to_file</link>
+                                            (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm,
+                                             <link linkend="gchar">gchar</link> *output);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomePrintMaster">struct GnomePrintMaster</title>
+<programlisting>struct GnomePrintMaster;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomePrintMasterClass">struct GnomePrintMasterClass</title>
+<programlisting>struct GnomePrintMasterClass;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-new">gnome_print_master_new ()</title>
+<programlisting><link linkend="GnomePrintMaster">GnomePrintMaster</link>* gnome_print_master_new    (void);</programlisting>
+<para>
+Create a new GnomePrintMaster.  All values are initialised
+to sensible defaults.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new GnomePrintMaster.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-new-from-config">gnome_print_master_new_from_config ()</title>
+<programlisting><link linkend="GnomePrintMaster">GnomePrintMaster</link>* gnome_print_master_new_from_config
+                                            (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-get-config">gnome_print_master_get_config ()</title>
+<programlisting><link linkend="GnomePrintConfig">GnomePrintConfig</link>* gnome_print_master_get_config
+                                            (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-get-context">gnome_print_master_get_context ()</title>
+<programlisting><link linkend="GnomePrintContext">GnomePrintContext</link>* gnome_print_master_get_context
+                                            (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);</programlisting>
+<para>
+Retrieve the GnomePrintContext which applications
+print to.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara> An initialised GnomePrintMaster.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The printing context.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-close">gnome_print_master_close ()</title>
+<programlisting><link linkend="gint">gint</link>        gnome_print_master_close        (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);</programlisting>
+<para>
+* Closes the GnomePrintMaster <parameter>gpm</parameter>, ready for printing or previewing.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara> A GnomePrintMaster which has had printing performed
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-print">gnome_print_master_print ()</title>
+<programlisting><link linkend="gint">gint</link>        gnome_print_master_print        (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);</programlisting>
+<para>
+Print the pages stored in the GnomePrintMaster to
+the phyisical printing device.
+</para>
+<para>
+If no printer has been set, then a dialogue is presented,
+asking the user for the printer to print to.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara> A completed GnomePrintMaster.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> Returns -1 on error.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-render">gnome_print_master_render ()</title>
+<programlisting><link linkend="gint">gint</link>        gnome_print_master_render       (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *ctx);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-render-page">gnome_print_master_render_page ()</title>
+<programlisting><link linkend="gint">gint</link>        gnome_print_master_render_page  (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm,
+                                             <link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
+                                             <link linkend="gint">gint</link> page,
+                                             <link linkend="gboolean">gboolean</link> pageops);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>pageops</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-get-pages">gnome_print_master_get_pages ()</title>
+<programlisting><link linkend="gint">gint</link>        gnome_print_master_get_pages    (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm);</programlisting>
+<para>
+Find the number of pages stored in a completed printout.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara> An initialised and closed GnomePrintMaster.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> If <parameter>gpm</parameter> has not been closed using
+<link linkend="gnome-print-master-close">gnome_print_master_close</link>(), then 0, otherwise the number
+of pages created by the application.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-get-page-size-from-config">gnome_print_master_get_page_size_from_config ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_print_master_get_page_size_from_config
+                                            (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config,
+                                             <link linkend="gdouble">gdouble</link> *width,
+                                             <link linkend="gdouble">gdouble</link> *height);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-master-print-to-file">gnome_print_master_print_to_file ()</title>
+<programlisting><link linkend="gint">gint</link>        gnome_print_master_print_to_file
+                                            (<link linkend="GnomePrintMaster">GnomePrintMaster</link> *gpm,
+                                             <link linkend="gchar">gchar</link> *output);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gpm</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>output</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,332 @@
+2002-07-28  Chema Celorio  <chema@ximian.com>
+
+	* 1.116.0
+
+2002-06-13  Chema Celorio  <chema@ximian.com>
+
+	* this is the gnome-2-0 branch
+
+2002-06-07  Chema Celorio  <chema@ximian.com>
+
+	* release 1.115.0
+
+2002-06-01  Chema Celorio  <chema@ximian.com>
+
+	* gpa-vendor.c: fix ifs indentation
+
+	* gpa-root.h: remove if 0'ed decls
+
+	* gpa-root.c (gpa_root_init): init members to NULL
+
+	* gpa-list.c (gpa_list_get_length): new
+
+	* gpa-printer.c (gpa_printer_get_by_id): return the printer found by id, remove
+	#warnings
+
+2002-05-27  Chema Celorio  <chema@ximian.com>
+
+	* release 1.114.0
+
+2002-05-27  Chema Celorio  <chema@ximian.com>
+
+	* gpa-private.h: include ../gnome-print-config.h
+
+	* gpa-node.h: remove all the duplicated declarations that where in gpa-private.h
+
+	* Makefile.am: install gpa-private
+
+	* gpa-private.h: move to here.
+
+2002-05-25  Chema Celorio  <chema@ximian.com>
+
+	* gpa-list.c: remove #if 0'ed code
+
+2002-05-25  Chema Celorio  <chema@celorio.com>
+
+	* gpa-utils.c (gpa_utils_dump_tree): new
+	(gpa_utils_dump_tree_with_level): new
+
+	* gpa-config.c (gpa_config_duplicate): fix if indentation
+	(gpa_config_new): use the macro cast rather than a plain cast.
+
+	* README: add file
+
+2002-05-16  Chema Celorio  <chema@celorio.com>
+
+	* gpa-root.c: remove #if 0'ed code. Fix "if" indentation
+
+	* gpa-root.c: remove unused function
+
+2002-05-15  Chema Celorio  <chema@celorio.com>
+
+	* Makefile.am : remove commented files
+
+	* gpa-key.c: fix the "if" indentation
+	* gpa-reference.c: ditto
+	* gpa-printer.c: ditto
+	* gpa-node.c: ditto
+	* gpa-option.c: ditto
+	
+2002-05-10  Chema Celorio  <chema@celorio.com>
+
+	* gpa-printer.c (gpa_printer_get_by_id): return NULL, because it always does anyway
+	but don't leak in the meantime. Add a #warning
+
+2002-05-08  Chema Celorio  <chema@celorio.com>
+
+	* gpa-option.c (gpa_option_list_new_from_tree): remove a g_print
+
+2002-05-05  Andreas J. Guelzow <aguelzow@taliesin.ca>
+
+	* gpa-config.c (gpa_config_duplicate) : new
+
+2002-03-29  Jody Goldberg <jody@gnome.org>
+
+	* Release 1.112.0
+
+2002-03-03  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-printer.c (gpa_printer_finalize): Remove name defined assertion,
+	remove hash table entry only if it refers to ourselves
+	(gpa_printer_new_from_tree): Remove id dictionary, do not check name
+	defines, redefine name if printer is otherwise good
+	(gpa_printer_list_load_from_dir): Keep local iddict, so home and
+	system identical printers will not be duplicated
+	(gpa_printer_new_from_model): Do not check namedict
+
+2002-02-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-utils.c (gpa_node_lookup_check): New method
+	(gpa_node_cache_timeout): Simple cache timeout handler
+	(gpa_node_cache): Timeout based cache implementation
+
+	* gpa-root.c (gpa_root_init): Use weakref-ed children
+	(gpa_root_vendors_gone): Ditto
+	(gpa_root_vendors_modified): Ditto
+	(gpa_root_media_gone): Ditto
+	(gpa_root_media_modified): Ditto
+	(gpa_root_finalize): Ditto
+	(gpa_root_get_child): Ditto
+	(gpa_root_lookup): Ditto
+	(gpa_root_get): Do not create static root node
+
+	* gpa-printer.c (gpa_printers_gone): Weak reference handler
+	(gpa_printer_list_load): Attach weak reference
+
+	* gpa-node.c (gpa_node_unref): Fix evil typo
+
+	* gpa-model.c (gpa_model_vendor_gone): Weak reference handler
+	(gpa_model_vendor_modified): Signal propagator
+	(gpa_model_finalize): Disconnect weakref and modified signal
+	(gpa_model_verify): Port to ref-by-name vendor
+	(gpa_model_get_child): Ditto
+	(gpa_model_new_from_tree): Ditto
+	(gpa_model_load): Ditto
+
+	* gpa-media.c (noGPA_MEDIA_DEBUG): Turn debug off
+
+	* gpa-list.c (gpa_list_finalize): Use gpa_node_detach_unref
+	(gpa_list_construct): Use gpa_node_attach
+
+	* gpa-key.c (gpa_key_finalize): Use gpa_node_detach_unref
+	(gpa_key_merge_from_option): unref option child
+
+2002-02-15  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-utils.c (gpa_node_cache_timeout): Timeout reference dropper
+	(gpa_node_cache): Add timing out reference to node
+
+	* gpa-media.c (gpa_media_gone): New weak ref notify handler
+	(gpa_media_load): Keep weak ref, reref medai node if file is intact
+
+2002-02-15  Morten Welinder  <terra@diku.dk>
+
+	* gpa-utils.c (gpa_quark_new): Shut this up.
+
+2002-02-15  Morten Welinder  <terra@diku.dk>
+
+	* gpa-model.c (gpa_model_new_from_info_tree): Leak plug.
+	* gpa-option.c (gpa_option_xml_check): More leak plugs.
+
+2002-02-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-vendor.c: Changed GPL->LGPL
+	(gpa_vendor_list_load): Declare static vendor list here
+	(gpa_vendor_get_by_id): Aks for vendor list each time
+	(gpa_vendor_new_from_tree): Make static
+
+	* gpa-vendor.h: Changed GPL->LGPL
+
+	* gpa-value.c: Ditto
+
+	* gpa-value.h: Ditto
+
+	* gpa-utils.c: Ditto
+
+	* gpa-utils.h: Ditto
+
+	* gpa-settings.c: Ditto
+
+	* gpa-settings.h: Ditto
+
+	* gpa-root.c: Ditto
+
+	* gpa-root.h: Ditto
+
+	* gpa-reference.c: Ditto
+
+	* gpa-reference.h: Ditto
+
+	* gpa-printer.h: Ditto
+
+	* gpa-option.c: Ditto
+
+	* gpa-option.h: Ditto
+
+	* gpa-node-private.h: Ditto
+
+	* gpa-node.c: Ditto
+
+	* gpa-node.h: Ditto
+
+	* gpa-model.c: Ditto
+
+	* gpa-model.h: Ditto
+
+	* gpa-media.c: Ditto
+
+	* gpa-media.h: Ditto
+
+	* gpa-list.c: Ditto
+
+	* gpa-list.h: Ditto
+
+	* gpa-key.c: Ditto
+
+	* gpa-key.h: Ditto
+
+	* gpa-config.c: Ditto
+
+	* gpa-config.h: Ditto
+
+2001-12-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-reference.c (gpa_reference_reference_modified): Use correct
+	signal signature
+
+2001-12-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-utils.c: Added private quarks (port from glib)
+
+	* gpa-node-private.h: Save 4 bytes on 64-bit machines by making
+	node id private quark. Added flags to 'modified' signal.
+
+	* gpa-node.c: Use new ID markup and signal signature change
+
+	* gpa-config.c: Ditto
+
+	* gpa-vendor.c: Ditto
+
+	* gpa-settings.c: Ditto
+
+	* gpa-root.c: Ditto
+
+	* gpa-reference.c: Ditto
+
+	* gpa-printer.c: Ditto
+
+	* gpa-option.c: Ditto
+
+	* gpa-model.c: Ditto
+
+	* gpa-list.c: Ditto
+
+	* gpa-key.c: Ditto
+
+2001-12-19  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-media.c (gpa_media_init_logicalorientations): Fixed typo
+
+2001-12-17  Lauris Kaplinski  <lauris@ximian.com>
+
+	* Makefile.am (CPPFLAGS): Added section, -DWE_ARE_LIBGNOMEPRINT_UI
+
+2001-12-14  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-option.c (gpa_option_new_node_from_tree): Accept 'Key' as
+	child of 'Node'
+
+	* gpa-media.c (gpa_media_read_layouts_from_tree): use more meaningful
+	key names
+	(gpa_media_init_layouts): Ditto
+
+2001-12-11  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-root.c (gpa_root_lookup): Rearrange
+	(gpa_root_init): Mark global instance
+	(gpa_root): Use global instance
+
+	* gpa-key.c (gpa_key_lookup): Use helper
+
+2001-12-10  jacob berkman  <jacob@ximian.com>
+
+	* Makefile.am (libgpa_la_SOURCES): add gpa-node.h
+
+2001-12-09  Lauris Kaplinski  <lauris@ximian.com>
+
+	* gpa-utils.c (gpa_xml_node_get_name): New xml helper
+	(gpa_xml_node_get_child): Ditto
+
+	* gpa-root.c (gpa_root_init): Initialize media
+	(gpa_root_finalize): Finalize media
+	(gpa_root_get_child): Get media
+	(gpa_root_lookup): Lookup media
+
+	* gpa-option.h: Change type enumerations, #define some types for future
+
+	* gpa-option.c (gpa_option_node_new): New method
+	(gpa_option_list_new): New method
+	(gpa_option_item_new): New method
+	(gpa_option_string_new): New method
+	(gpa_option_key_new): New method
+	(gpa_option_node_append_child): New method
+	(gpa_option_list_append_child): New method
+	(gpa_option_item_append_child): New method
+	(gpa_option_key_append_child): New method
+
+	* gpa-node.c (gpa_node_get_length_path_value): New convenience method
+
+	* gpa-node-private.h: #define GPA_NODE_PARENT convenience macro
+
+	* gpa-key.c (gpa_key_new_from_option): New option enums
+	(gpa_key_write): Ditto
+	(gpa_key_merge_from_option): Ditto
+
+	* Makefile.am (libgpa_la_SOURCES): Added gpa-media.c, gpa-media.h
+
+	* gpa-media.c: New file
+
+	* gpa-media.h: New file
+
+2001-09-19  Darin Adler  <darin@bentspoon.com>
+
+	* gpa-key.c:
+	* gpa-key.h:
+	* gpa-model.c:
+	* gpa-model.h:
+	* gpa-option.c:
+	* gpa-option.h:
+	* gpa-printer.c:
+	* gpa-printer.h:
+	* gpa-settings.c:
+	* gpa-settings.h:
+	* gpa-value.c:
+	* gpa-value.h:
+	* gpa-vendor.c:
+	* gpa-vendor.h:
+	Fix libxml includes.
+
+2001-08-18  Darin Adler  <darin@bentspoon.com>
+
+	* Makefile.am: Remove extra -I.
+

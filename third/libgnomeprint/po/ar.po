@@ -1,0 +1,288 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Sayed Jaffer Al-Mosawi <mosawi@arabeyes.org>, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprint\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-05-15 11:44+0300\n"
+"Last-Translator: Sayed Jaffer Al-Mosawi <mosawi@arabeyes.org>\n"
+"Language-Team: Arabic <contact@arabeyes.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0beta1\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "اطبع معلومات اكتشاف العيوب"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "تحاول أن تفعل كل شيء آليا"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "البحث عن ملفات الخطوط في المجلدات تتابعيا"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "ابدأ من من خريطة خط صفر بدلا من ترجمة القديم"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr "إعادة التأكد من ملفات الخطوط كلها حتى خرائط الخطوط من نفس اﻹصدارة"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "ضمّن حقل التنبيه للخط (معلومات حقوق النشر) في خريطة الخط"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "أنشيء $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "انشيء"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "اكتب خريطة خط الإخراج في الملف المحدد (- لأداة اﻹخراج القياسية)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+"ترجع the $FONTMAPDIR_STATIC و $FONTMAPDIR_DYNAMIC المستخدم إلى تنصيب gnome-"
+"print)"
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "ملف لوصف الترادفات المعروفة"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "المسار"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "حدد الخط (الخطوط) الافتراضي ﻷي محلي"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[LOCALE[,LOCALE]:fontname]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "The quick brown fox jumps over the lazy dog."
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "وحدة"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "وحدات"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "نقطة"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "Pt"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "نقاط"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "Pts"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "وحدة لمساحة المستخدم"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "المستخدم"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "وحدات لمساحة المستخدم"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "بيكسل"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "Px"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "بكسلات"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "مئوي"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "بالمائة"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "ملليميتر"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "مم"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "ملليميترات"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "سنتمتر"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "سم"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "سنتيمترات"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "متر"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "م"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meters"
+msgstr "أمتار"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "بوصة"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "بوصة"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "بوصات"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "مخصص"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "مستقيم"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "مدوّر 90 درجة"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "مدوّر 180 درجة"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "مدوّر 270 درجة"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "طولي"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "عرضي"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "طولي مقلوب"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "عرضي مقلوب"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "عادي"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "قاعدة بيانات ورق الطباعة"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "وصف شجرة GPA"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "اطبع ملف نص"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "استخدم 'GnomePrintMaster' للطباعة"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "حفظ ﻹخراج الطباعة في ملف عن ملفات ('-' لأداة اﻹخراج القياسية)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "قسم الوظيفة إلى بونوبو"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr "نرجمة من ملف عن ملفات"
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "صفحة Gnome-print تجريبية، معكوسة"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "صفحة Gnome-print تجريبية، مائلة"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "صفحة Gnome-print تجريبية، مائلة. صغيرة"
+
+#~ msgid "meters"
+#~ msgstr "أمتار"

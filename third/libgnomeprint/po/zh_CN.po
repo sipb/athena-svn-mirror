@@ -1,0 +1,321 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# Wang Jian <lark@linux.net.cn>, 2001
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprint\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-03-02 23:50+0800\n"
+"Last-Translator: Wang Jian <lark@linux.net.cn>\n"
+"Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "打印调试信息"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "尝试自动完成所有事"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "递归搜索目录查找字体文件"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "从空的字体表开始，而不是分析旧的"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr "重新确认所有字体文件，即使字体映射是同一版本"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "包括字体注意事项(版权数据)到字体表"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "创建 $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "创建"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "将输出的字体表写入到指定文件(- 输出到标准输出)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr "返回该 gnome-print 使用的 $FONTMAPDIR_STATIC 和 $FONTMAPDIR_DYNAMIC"
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "描述已知别名的文件"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "路径"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "指定任意区域设置的默认字体"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[LOCALE[,LOCALE]:fontname]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "The quick brown fox jumps over 懒狗。"
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "单位"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "单位"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "点"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "Pt"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "点"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "Pts"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "用户空间单位"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "用户"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "用户空间单位"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "像素"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "Px"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "像素"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "百分比"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "百分比"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "毫米"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "毫米"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "厘米"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "厘米"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "米"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "m"
+
+#: libgnomeprint/gnome-print-unit.c:41
+#, fuzzy
+msgid "Meters"
+msgstr "米"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "英寸"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "in"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "英寸"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "自定义"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "直接"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "旋转 90 度"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "旋转 180 度"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "旋转 270 度"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "纵向"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "横向"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "颠倒纵向"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "颠倒横向"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "普通"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "打印纸数据库"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "描述 GPA 树"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "打印文本文件"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "使用 GnomePrintMaster 进行打印"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "将打印输出至文件(- 表示标准输出)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "在 bonobo 之间划分任务"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr ""
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "Gnome-print 测试页，旋转"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "Gnome-print 测试页，斜体"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Gnome-print 测试页，斜体、小"
+
+#~ msgid "meters"
+#~ msgstr "米"
+
+#~ msgid "Default Key"
+#~ msgstr "默认键"
+
+#~ msgid "Printer is active"
+#~ msgstr "打印机是活动的"
+
+#~ msgid "Printer is ready to print"
+#~ msgstr "打印机就绪"
+
+#~ msgid "Printer is off-line"
+#~ msgstr "打印机不在线"
+
+#~ msgid "Can not communicate with printer"
+#~ msgstr "无法同打印机通信"
+
+#~ msgid "Unknown status"
+#~ msgstr "位置状态"
+
+#~ msgid "Default Settings"
+#~ msgstr "默认设置"
+
+#~ msgid "Do not try to read existing fontmaps"
+#~ msgstr "不读取已有的字体表"
+
+#~ msgid "Output file name"
+#~ msgstr "输出文件名"
+
+#~ msgid "Load aliases from given file"
+#~ msgstr "从指定文件中装载别名"
+
+#~ msgid "Search list of well-known font paths"
+#~ msgstr "周知的字体路径搜索列表"
+
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "状态正在载入 %s = %d\n"

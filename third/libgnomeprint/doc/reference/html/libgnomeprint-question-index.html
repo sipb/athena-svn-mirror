@@ -1,0 +1,286 @@
+<HTML
+><HEAD
+><TITLE
+>Common Questions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME Print Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="GNOME Print Overview"
+HREF="libgnomeprint.html"><LINK
+REL="PREVIOUS"
+TITLE="Mailing lists and bug reports"
+HREF="libgnomeprint-resources.html"><LINK
+REL="NEXT"
+TITLE="API Reference"
+HREF="libgnomeprintunsorted.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="libgnomeprint-resources.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="libgnomeprint.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="index.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Print Reference Manual</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="libgnomeprintunsorted.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="LIBGNOMEPRINT-QUESTION-INDEX"
+></A
+>Common Questions</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN201"
+></A
+><H2
+>Name</H2
+>Common Questions&nbsp;--&nbsp;Find answers to common questions in the GNOME Print manual</DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN204"
+></A
+><H2
+>Questions and Answers</H2
+><P
+>This is an "index" of the reference manual organized by common "How do
+I..." questions. If you aren't sure which documentation to read for
+the question you have, this list is a good place to start.</P
+><DIV
+CLASS="QANDASET"
+><DL
+><DT
+>1. <A
+HREF="libgnomeprint-question-index.html#AEN208"
+>General</A
+></DT
+><DD
+><DL
+><DT
+>1.1. <A
+HREF="libgnomeprint-question-index.html#AEN211"
+>Where can I get help with GNOME Print, submit a bug report, or make a feature 
+request?</A
+></DT
+>
+
+
+<DT
+>1.2. <A
+HREF="libgnomeprint-question-index.html#AEN217"
+>How does memory management work in GNOME Print? Should I free data returned
+from functions?</A
+></DT
+>
+
+&#13;</DL
+></DD
+></DL
+>
+<DIV
+CLASS="QANDADIV"
+><H4
+><A
+NAME="AEN208"
+></A
+>1. General</H4
+>
+
+<DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN211"
+></A
+><B
+>1.1. </B
+>Where can I get help with GNOME Print, submit a bug report, or make a feature 
+request?</P
+></DIV
+>
+
+<DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+></P
+><P
+>See the <A
+HREF="libgnomeprint-resources.html"
+>documentation on this topic</A
+>.</P
+>&#13;</DIV
+>&#13;</DIV
+>
+
+
+<DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN217"
+></A
+><B
+>1.2. </B
+>How does memory management work in GNOME Print? Should I free data returned
+from functions?</P
+></DIV
+>
+
+<DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+></P
+><P
+>See the documentation for GObject. Note
+specifically g_object_ref() and g_object_unref().</P
+>
+
+<P
+>For strings returned from functions, they will be declared "const"
+(using <a
+href="../glib/glib-Standard-Macros.html#G-CONST-RETURN-CAPS"
+>G_CONST_RETURN</a>) if they
+should not be freed. Non-const strings should be freed with g_free(). Arrays follow the same rule.  (If
+you find an exception to the rules, please report a bug to <A
+HREF="http://bugzilla.gnome.org"
+TARGET="_top"
+>http://bugzilla.gnome.org</A
+>.)</P
+>&#13;</DIV
+>&#13;</DIV
+>&#13;</DIV
+></DIV
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="libgnomeprint-resources.html"
+><B
+>&lt;&lt;&lt;&nbsp;Mailing lists and bug reports</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="libgnomeprintunsorted.html"
+><B
+>API Reference&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

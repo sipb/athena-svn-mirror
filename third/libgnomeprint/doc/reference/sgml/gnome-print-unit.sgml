@@ -1,0 +1,244 @@
+<refentry id="libgnomeprint-gnome-print-unit">
+<refmeta>
+<refentrytitle>gnome-print-unit</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMEPRINT Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-print-unit</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="GnomePrintUnit">GnomePrintUnit</link>;
+enum        <link linkend="GnomePrintUnitBase">GnomePrintUnitBase</link>;
+#define     <link linkend="GNOME-PRINT-PS-UNIT-CAPS">GNOME_PRINT_PS_UNIT</link>
+#define     <link linkend="GNOME-PRINT-UNITS-ALL-CAPS">GNOME_PRINT_UNITS_ALL</link>
+const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome-print-unit-get-identity">gnome_print_unit_get_identity</link>
+                                            (<link linkend="guint">guint</link> base);
+const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome-print-unit-get-default">gnome_print_unit_get_default</link>
+                                            (void);
+const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome-print-unit-get-by-name">gnome_print_unit_get_by_name</link>
+                                            (const <link linkend="guchar">guchar</link> *name);
+const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* <link linkend="gnome-print-unit-get-by-abbreviation">gnome_print_unit_get_by_abbreviation</link>
+                                            (const <link linkend="guchar">guchar</link> *abbreviation);
+<link linkend="GList">GList</link>*      <link linkend="gnome-print-unit-get-list">gnome_print_unit_get_list</link>       (<link linkend="guint">guint</link> bases);
+void        <link linkend="gnome-print-unit-free-list">gnome_print_unit_free_list</link>      (<link linkend="GList">GList</link> *units);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-print-convert-distance">gnome_print_convert_distance</link>    (<link linkend="gdouble">gdouble</link> *distance,
+                                             const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *from,
+                                             const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *to);
+<link linkend="gboolean">gboolean</link>    <link linkend="gnome-print-convert-distance-full">gnome_print_convert_distance_full</link>
+                                            (<link linkend="gdouble">gdouble</link> *distance,
+                                             const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *from,
+                                             const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *to,
+                                             <link linkend="gdouble">gdouble</link> ctmscale,
+                                             <link linkend="gdouble">gdouble</link> devicescale);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomePrintUnit">struct GnomePrintUnit</title>
+<programlisting>struct GnomePrintUnit {
+
+	guint version : 8; /* Has to be 0 at moment */
+	guint base : 8; /* Base */
+	gdouble unittobase;
+	/* I am not absolutely sure, but seems that gettext can do the magic */
+	guchar *name;
+	guchar *abbr;
+	guchar *plural;
+	guchar *abbr_plural;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomePrintUnitBase">enum GnomePrintUnitBase</title>
+<programlisting>typedef enum {
+	GNOME_PRINT_UNIT_DIMENSIONLESS = (1 &lt;&lt; 0), /* For percentages and like */
+	GNOME_PRINT_UNIT_ABSOLUTE = (1 &lt;&lt; 1), /* Real world distances - i.e. mm, cm... */
+	GNOME_PRINT_UNIT_DEVICE = (1 &lt;&lt; 2), /* Semi-real device-dependent distances i.e. pixels */
+	GNOME_PRINT_UNIT_USERSPACE = (1 &lt;&lt; 3) /* Mathematical coordinates */
+} GnomePrintUnitBase;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-PRINT-PS-UNIT-CAPS">GNOME_PRINT_PS_UNIT</title>
+<programlisting>#define GNOME_PRINT_PS_UNIT (gnome_print_unit_get_identity (GNOME_PRINT_UNIT_ABSOLUTE))
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-PRINT-UNITS-ALL-CAPS">GNOME_PRINT_UNITS_ALL</title>
+<programlisting>#define GNOME_PRINT_UNITS_ALL (GNOME_PRINT_UNIT_DIMENSIONLESS | GNOME_PRINT_UNIT_ABSOLUTE | GNOME_PRINT_UNIT_DEVICE | GNOME_PRINT_UNIT_USERSPACE)
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-unit-get-identity">gnome_print_unit_get_identity ()</title>
+<programlisting>const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* gnome_print_unit_get_identity
+                                            (<link linkend="guint">guint</link> base);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>base</parameter>&nbsp;:</term>
+<listitem><simpara> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-unit-get-default">gnome_print_unit_get_default ()</title>
+<programlisting>const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* gnome_print_unit_get_default
+                                            (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-unit-get-by-name">gnome_print_unit_get_by_name ()</title>
+<programlisting>const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* gnome_print_unit_get_by_name
+                                            (const <link linkend="guchar">guchar</link> *name);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-unit-get-by-abbreviation">gnome_print_unit_get_by_abbreviation ()</title>
+<programlisting>const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* gnome_print_unit_get_by_abbreviation
+                                            (const <link linkend="guchar">guchar</link> *abbreviation);</programlisting>
+<para>
+get a unit based on its abbreviation like "cm" "pts" or "in".</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>abbreviation</parameter>&nbsp;:</term>
+<listitem><simpara> an ascii string poiting to the abbreviation
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a constant pointer to a GnomePrintUnit, NULL on error
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-unit-get-list">gnome_print_unit_get_list ()</title>
+<programlisting><link linkend="GList">GList</link>*      gnome_print_unit_get_list       (<link linkend="guint">guint</link> bases);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>bases</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-unit-free-list">gnome_print_unit_free_list ()</title>
+<programlisting>void        gnome_print_unit_free_list      (<link linkend="GList">GList</link> *units);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>units</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-convert-distance">gnome_print_convert_distance ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_print_convert_distance    (<link linkend="gdouble">gdouble</link> *distance,
+                                             const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *from,
+                                             const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *to);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>distance</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>from</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>to</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-print-convert-distance-full">gnome_print_convert_distance_full ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    gnome_print_convert_distance_full
+                                            (<link linkend="gdouble">gdouble</link> *distance,
+                                             const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *from,
+                                             const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *to,
+                                             <link linkend="gdouble">gdouble</link> ctmscale,
+                                             <link linkend="gdouble">gdouble</link> devicescale);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>distance</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>from</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>to</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>ctmscale</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>devicescale</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

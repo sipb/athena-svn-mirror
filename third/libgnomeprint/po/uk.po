@@ -1,0 +1,283 @@
+# Ukrainian translation of libgnomeprint.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Yuriy Syrota <rasta@renome.rovno.ua>, 2001.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprint\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-11-06 09:04--500\n"
+"Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "Надрукувати налагоджувальну інформацію"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "Спробувати зробити все автоматично"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "Рекурсивний пошук файлів шрифтів у каталогах"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Починати з порожнього fontmap, замість аналізу старого"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr "Перевіряти всі файли шрифтів, навіть для fontmap тієї ж версії"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "Включати примітки (дані про авторскі права) з шрифта в fontmap"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Створити $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "Створити"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "Записати вивід fontmap у вказаний файл (- для stdout)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+"Повернути $FONTMAPDIR_STATIC і $FONTMAPDIR_DYNAMICБ що використовуються у "
+"цій gnome-print."
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "Файл, що описує відомі псевдоніми"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "ШЛЯХ"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "Вказати типовий шрифт для будь-якої локалі"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[ЛОКАЛЬ[,ЛОКАЛЬ]:назва_шрифта]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr ""
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "Одиниця"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "Одиниці"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "Пункт"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "п"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "Пункти"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "п"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "Користувацька одиниця"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "Користувацька"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "Користувацькі одиниці"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "Точка"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "т"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "Точок"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "Відсоток"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "Відсотки"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "Міліметр"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "мм"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "Міліметри"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "Сантиметр"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "см"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "Сантиметри"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "Метр"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "м"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meters"
+msgstr "Метри"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "Дюйм"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "д"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "Дюйми"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "Інший"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "Прямий"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "Повернутий на 90 ґрадусів"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "Повернутий на 180 ґрадусів"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "Повернутий на 270 ґрадусів"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "Портрет"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "Альбом"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "Перевернутий портрет"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "Перевернутий альбом"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "Простий"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "База аркушів для друку"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "Описати дерево GPA"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "Надрукувати текстовий файл"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "Використовувати для друку GnomePrintMaster"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "Вивести видрук в метафайл (\"-\" для stdout)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "Розділити роботу з Bonobo"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr "Отримати з метафайла"
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "Пробна сторінка Gnome-print, повернута"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "Пробна сторінка Gnome-print, нахилена"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Пробна сторінка Gnome-print, нахилена мала"

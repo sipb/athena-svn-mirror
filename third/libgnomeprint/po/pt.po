@@ -1,0 +1,331 @@
+# libgnomeprint's Portuguese Translation
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Duarte Loreto <happyguy_pt@hotmail.com>, 2001, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-05-28 02:55+0000\n"
+"Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "Imprimir informação de depuração"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "Tenta fazer tudo automaticamente"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "Procurar ficheiros de fontes recursivamente nos directórios"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Começar com mapa de fontes vazio, em vez de parsear antigo"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr ""
+"Verifica novamente todos os ficheiros de fontes, mesmo para mapas de fontes "
+"da mesma versão"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "Incluir campo de nota de fonte (dados de Copyright) no mapa de fontes"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Criar $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "Criar "
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr ""
+"Escrever mapa de fontes gerado para ficheiro especificado (- para stdout)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+"Devolver os $FONTMAPDIR_STATIC e $FONTMAPDIR_DYNAMIC utilizados para esta "
+"instalação do gnome-print)"
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "Ficheiro a descrever alias conhecidos"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "CAMINHO"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "Especificar fonte(s) de defeito para qualquer local"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[LOCAL[,LOCAL]:nomefonte]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "The quick brown fox jumps over the lazy dog."
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "Unidade"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "Unidades"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "Ponto"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "Pt"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "Pontos"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "Pts"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "Unidade de espaço de utilizador"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "Utilizador"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "Unidades de espaço de utilizador"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "Pixel"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "Px"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "Pixels"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "Percentagem"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "Percentos"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "Milímetro"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "Milímetros"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "Centímetro"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "cm"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "Centímetros"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "Metro"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "m"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meters"
+msgstr "Metros"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "Polegada"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "pl"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "Polegadas"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "Customizado"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "Direito"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "Rodado 90 graus"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "Rodado 180 graus"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "Rodado 270 graus"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "Retrato"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "Paisagem"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "Retrato invertido"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "Paisagem invertida"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "Simples"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "Base de dados de Papel de Impressão"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "Descrever Árvore GPA"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "Imprimir ficheiro de texto"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "Utilizar GnomePrintMaster para impressão"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "Despejar impressão para metafile ('-' para stdout)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "Dividir trabalho entre o bonobo"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr "Renderizar de ficheiro metafile"
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "Página de teste Gnome-print, rodada"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "Página de teste Gnome-print, inclinada"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Página de teste Gnome-print, inclinada. Pequena"
+
+#~ msgid "meters"
+#~ msgstr "metros"
+
+#~ msgid "Default Key"
+#~ msgstr "Chave Defeito"
+
+#~ msgid "Printer is active"
+#~ msgstr "Impressora está activa"
+
+#~ msgid "Printer is ready to print"
+#~ msgstr "Impressora está pronta a imprimir"
+
+#~ msgid "Printer is off-line"
+#~ msgstr "Impressora está desligada"
+
+#~ msgid "Can not communicate with printer"
+#~ msgstr "Incapaz de comunicar com a impressora"
+
+#~ msgid "Unknown status"
+#~ msgstr "Estado desconhecido"
+
+#~ msgid "Default Settings"
+#~ msgstr "Definições de Defeito"
+
+#~ msgid "Do not try to read existing fontmaps"
+#~ msgstr "Não tentar ler mapas de fontes existentes"
+
+#~ msgid "Maximum recursion depth"
+#~ msgstr "Profundidade máxima da recursão"
+
+#~ msgid "DEPTH"
+#~ msgstr "PROFUNDIDADE"
+
+#~ msgid "Output file name"
+#~ msgstr "Nome ficheiro resultados"
+
+#~ msgid "Load aliases from given file"
+#~ msgstr "Ler alias para ficheiro indicado"
+
+#~ msgid "Search list of well-known font paths"
+#~ msgstr "Procurar lista de caminhos conhecidos de fontes"
+
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "estado de leitura %s = %d\n"

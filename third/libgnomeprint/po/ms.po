@@ -1,0 +1,308 @@
+# libgnomeprint
+# Jika takut risiko, Jangan bicara tentang Perjuangan
+# Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnomeprint HEAD\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-01-12 08:13+0800\n"
+"Last-Translator: Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>\n"
+"Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "Cetak maklumat nyahpepijat"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "Cuba untuk melakukan semuanya secara automatik"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "Cari di direktori secara rekursif untuk fail font"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "Bermula daripada sifar, selain dari menghantar yang lama"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr "Tentusahkan lagi semua fail font, walaupun fontmaps bagi versi sama"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "Sertakan medan notis font (Data hakcipta) ke fontmap"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "Cipta $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "Cipta"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "Tulis output fontmap ke fail yang dinyatakan (- untuk stdout)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+"Pulangkan $FONTMAPDIR_STATIC dan $FONTMAPDIR_DYNAMIC digunakan untuk "
+"pemasangan gnome-print ini"
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "Fail menghuraikan alias dikenali"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "PATH"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "Nyatakan font default untuk sebarang locale"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[LOCALE[,LOCALE]:namafont]"
+
+# Ditujukan buat Abit & Tiong yang dah tiada :(
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "Seekor arnab memakan kangkung bersama tiong."
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "A4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "Unit"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "Unit"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "Titik"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "Ttk"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "Titik"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "Ttk"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "Unit ruangpengguna"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "Pengguna"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "Unit ruangpengguna"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "Piksel"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "Px"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "Piksel"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "Peratus"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "Peratus"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "Milimeter"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "mm"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "Milimeter"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "Sentimeter"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "sm"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "Sentimeter"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "Meter"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "m"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meters"
+msgstr "Meter"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "Inci"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "in"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "Inci"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "Sendiri"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "Tegak"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "Dikilas 90 darjah"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "Dikilas 180 darjah"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "Dikilas 270 darjah"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "Potret"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "Lanskap"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "Potret tertonggeng"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "Lanskap tertonggeng"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "Jelas"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "Pangkalandata Kertas Cetakan"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "Hurai Pepohon GPA"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "Cetak fail teks"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "Guna GnomePrintMaster untuk mencetak"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "Tulis output fontmap ke fail meta (- untuk stdout)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "Pisahkan kerja antara bonobo"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr "Render dari failmeta"
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "Halaman ujian Gnome-print, dikilas"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "Halaman ujian Gnome-print, disengetkan"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "Halaman ujian Gnome-print. Kecil"
+
+#~ msgid "meters"
+#~ msgstr "meter"
+
+#~ msgid "Default Key"
+#~ msgstr "Kekunci Default"
+
+#~ msgid "Printer is active"
+#~ msgstr "Pencetak adalah aktif"
+
+#~ msgid "Printer is ready to print"
+#~ msgstr "Pencetak bersedia untuk mencetak"
+
+#~ msgid "Printer is off-line"
+#~ msgstr "pencetak adalah luar-talian"
+
+#~ msgid "Can not communicate with printer"
+#~ msgstr "Tak dapat bekomunikais dengan pencetak"
+
+#~ msgid "Unknown status"
+#~ msgstr "Status Entah"
+
+#~ msgid "Default Settings"
+#~ msgstr "Tetapan Default"

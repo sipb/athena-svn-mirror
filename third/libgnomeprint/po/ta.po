@@ -1,0 +1,285 @@
+# Tamil translation of libgnomeprint.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# B Muthukumar <kulirnila@yahoo.com>, 2002.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Tamil libgnomeprint 1.7\n"
+"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"PO-Revision-Date: 2002-05-21 22:31--600\n"
+"Last-Translator: B Muthukumar <kulirnila@yahoo.com>\n"
+"Language-Team: Tamil <tamilinix@yahoogroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: installer/gnome-font-install.c:141
+msgid "Print out debugging information"
+msgstr "À¢¨Æ¿£ìÌò ¾¸Åø¸¨Ç «îº¢Î"
+
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr "«¨Éò¨¾Ôõ ¾¡É¡¸ ¦ºöÂ ÓÂÖ¸¢ÈÐ"
+
+#: installer/gnome-font-install.c:145
+msgid "Search directories recursively for font files"
+msgstr "±ØòÐÕ §¸¡ôÒì¸¡¸ «¨¼×¸¨Ç «Äº¢ò §¾Î"
+
+#: installer/gnome-font-install.c:147
+msgid "Start from zero fontmap, instead of parsing old one"
+msgstr "À¨ÆÂ¨¾ ÑÏ¸¢¬öÅ¨¾ Å¢ðÎ, ÍÆ¢-±ØòÐÕÅ¢ÅÃ¨½Â¢ý ¦¾¡¼íÌ"
+
+#: installer/gnome-font-install.c:149
+msgid "Reverifies all font files, even for fontmaps of same version"
+msgstr "´ò¾ ±ØòÐÕÅ¢ÅÃ¨½ ¯ðÀ¼, ±øÄ¡ ±ØòÐÕ§¸¡ôÒì¸¨ÇÔõ ¦ÀÂÃºÃ¢À¡÷ì¸¢ÈÐ"
+
+#: installer/gnome-font-install.c:151
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr "±ØòÐÕì ÌÈ¢ôÒô ÒÄò¨¾(¿¸ÖÃ¢¨Áò ¾Ã¨Å) ±ØòÐÕÅ¢ÅÃ¨½Â¢ø §º÷"
+
+#: installer/gnome-font-install.c:153
+msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+msgstr "$HOME/.gnome/fonts/gnome-print.fontmap ³î ¦ºö¾Õ"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "Create "
+msgstr "¦ºö¾Õ"
+
+#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
+msgid "/gnome-print.fontmap"
+msgstr "/gnome-print.fontmap"
+
+#: installer/gnome-font-install.c:159
+msgid "Write output fontmap to specified file (- for stdout)"
+msgstr "¦ÅÇ¢Â£Î ±ØòÐÕÅ¢ÅÃ¨½¨Â ÌÈ¢ôÀ¢ð¼ §¸¡ôÀ¢ø ±ØÐ (- stdout üÌ)"
+
+#: installer/gnome-font-install.c:161
+msgid ""
+"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+"print installation)"
+msgstr ""
+
+#: installer/gnome-font-install.c:164
+msgid "File describing known aliases"
+msgstr "¦¾Ã¢ó¾ ÁÚ¦ÀÂ÷¸¨Ç Å¢ÇìÌõ §¸¡ôÒ"
+
+#: installer/gnome-font-install.c:164 tests/testprint.c:71
+#: tests/testprint.c:73 tests/testprint.c:75
+msgid "PATH"
+msgstr "ÅÆ¢"
+
+#: installer/gnome-font-install.c:167
+msgid "Specify default font(s) for any locale"
+msgstr "¦¸¡¼¡¿¢¨Ä ±ØòÐÕì¸¨Ç ±ó¾ ¯ñ½¢¨ÄìÌõ ÌÈ¢ôÀ¢Î"
+
+#: installer/gnome-font-install.c:167
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr "[¯ñ½¢¨Ä[,¯ñ½¢¨Ä]±ØòÐÕô¦ÀÂ÷]"
+
+#: libgnomeprint/gnome-font-face.c:446
+msgid "The quick brown fox jumps over the lazy dog."
+msgstr "¸¡Å¢ ¿¢È Å¢¨Ã¿Ã¢ ÁÊ¿¡ö §Áø À¡öó¾Ð"
+
+#. fixme: fill in all papers and units
+#. fixme: load papers from file
+#. fixme: use some fancy unit program
+#.
+#. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
+#.
+#: libgnomeprint/gnome-print-paper.c:44
+msgid "A4"
+msgstr "²4"
+
+#. Do not insert any elements before/between first 4
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Unit"
+msgstr "«ÄÌ"
+
+#: libgnomeprint/gnome-print-unit.c:33
+msgid "Units"
+msgstr "«ÄÌ¸û"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Point"
+msgstr "ÒûÇ¢"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pt"
+msgstr "ÒûÇ¢"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Points"
+msgstr "ÒûÇ¢¸û"
+
+#: libgnomeprint/gnome-print-unit.c:34
+msgid "Pts"
+msgstr "ÒûÇ¢¸û"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace unit"
+msgstr "ÀÂÉ÷ ­¼ «ÄÌ"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "User"
+msgstr "ÀÂÉ÷"
+
+#: libgnomeprint/gnome-print-unit.c:35
+msgid "Userspace units"
+msgstr "ÀÂÉ÷ ­¼ «ÄÌ¸û"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixel"
+msgstr "À¢ì¦ºø"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Px"
+msgstr "À¢ì¦ºø"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Pixels"
+msgstr "À¢ì¦ºø¸û"
+
+#. You can add new elements from this point forward
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percent"
+msgstr "º¾Å£¾õ"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "%"
+msgstr "%"
+
+#: libgnomeprint/gnome-print-unit.c:38
+msgid "Percents"
+msgstr "º¾Å£¾í¸û"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeter"
+msgstr "Á¢øÄ¢Á£ð¼÷"
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "mm"
+msgstr "Á¢.Á£."
+
+#: libgnomeprint/gnome-print-unit.c:39
+msgid "Millimeters"
+msgstr "Á¢øÄ¢Á£ð¼÷¸û"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeter"
+msgstr "¦ºýÊÁ£ð¼÷"
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "cm"
+msgstr "¦º.Á£."
+
+#: libgnomeprint/gnome-print-unit.c:40
+msgid "Centimeters"
+msgstr "¦ºýÊÁ£ð¼÷¸û"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "Meter"
+msgstr "Á£ð¼÷"
+
+#: libgnomeprint/gnome-print-unit.c:41
+msgid "m"
+msgstr "Á£."
+
+#: libgnomeprint/gnome-print-unit.c:41
+#, fuzzy
+msgid "Meters"
+msgstr "Á£ð¼÷"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inch"
+msgstr "«íÌÄõ"
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "in"
+msgstr "«í."
+
+#: libgnomeprint/gnome-print-unit.c:42
+msgid "Inches"
+msgstr "«íÌÄí¸û"
+
+#: libgnomeprint/gpa/gpa-media.c:246
+msgid "Custom"
+msgstr "ÅÆì¸õ"
+
+#: libgnomeprint/gpa/gpa-media.c:268
+msgid "Straight"
+msgstr "§¿÷"
+
+#: libgnomeprint/gpa/gpa-media.c:275
+msgid "Rotated 90 degrees"
+msgstr "90 À¡¨¸¸û ÍÆüÈ¢ÂÐ"
+
+#: libgnomeprint/gpa/gpa-media.c:282
+msgid "Rotated 180 degrees"
+msgstr "180 À¡¨¸¸û ÍÆüÈ¢ÂÐ"
+
+#: libgnomeprint/gpa/gpa-media.c:289
+msgid "Rotated 270 degrees"
+msgstr "270 À¡¨¸¸û ÍÆüÈ¢ÂÐ"
+
+#: libgnomeprint/gpa/gpa-media.c:308
+msgid "Portrait"
+msgstr "ÓØ×ÕÅõ"
+
+#: libgnomeprint/gpa/gpa-media.c:315
+msgid "Landscape"
+msgstr "Å¢ÂÛÕÅõ"
+
+#: libgnomeprint/gpa/gpa-media.c:322
+msgid "Upside down portrait"
+msgstr "¾¨Ä¸£ú ÓØ×ÕÅõ"
+
+#: libgnomeprint/gpa/gpa-media.c:329
+msgid "Upside down landscape"
+msgstr "¾¨Ä¸£ú Å¢ÂÛÕÅõ"
+
+#: libgnomeprint/gpa/gpa-media.c:348
+msgid "Plain"
+msgstr "­ÂøÒ"
+
+#: tests/testprint.c:69
+msgid "Print Paper database"
+msgstr "«îÍò ¾¡û ¾Ã×ò¾Çõ"
+
+#: tests/testprint.c:70
+msgid "Describe GPA Tree"
+msgstr "¢.À¢.². ÁÃò¨¾ Å¢ÇìÌ"
+
+#: tests/testprint.c:71
+msgid "Print text file"
+msgstr "¯¨Ãì§¸¡ô¨À «îº¢Î"
+
+#: tests/testprint.c:72
+msgid "Use GnomePrintMaster for printing"
+msgstr "«îº¢¼ §¿¡õ-¾¨Ä¨ÁÂî¨ºô ÀÂýÀÎòÐ"
+
+#: tests/testprint.c:73
+msgid "Dump printout to metafile ('-' for stdout)"
+msgstr "¦ÅÇ¢Â£ð¨¼ ¦Áð¼¡§¸¡ôÀ¢ø ¦À¡¾¢('-' stdout üÌ)"
+
+#: tests/testprint.c:74
+msgid "Split job between bonobo"
+msgstr "¦À¡É¦À¡Å¢¼õ §Å¨Ä¨Âô À¸¢÷"
+
+#: tests/testprint.c:75
+msgid "Render from metafile"
+msgstr "¦Áð¼¡§¸¡ôÀ¢Ä¢ÕóÐ ´ôÀ¨¼"
+
+#: tests/testprint.c:156
+msgid "Gnome-print test page, rotated"
+msgstr "ÍÆüÈ¢Â §¿¡õ-«îÍî §º¡¾¨Éô Àì¸õ"
+
+#: tests/testprint.c:173
+msgid "Gnome-print test page, slanted"
+msgstr "º¡öò¾ §¿¡õ-«îÍî §º¡¾¨Éô Àì¸õ"
+
+#: tests/testprint.c:181
+msgid "Gnome-print test page, slanted. Small"
+msgstr "º¡öò¾ §¿¡õ-«îÍî §º¡¾¨Éô Àì¸õ. º¢È¢ÂÐ"
+
+#~ msgid "meters"
+#~ msgstr "Á£ð¼÷¸û"

@@ -1,0 +1,322 @@
+<!-- ##### SECTION Title ##### -->
+gnome-font-face
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO gnome_font_face_ref ##### -->
+<para>
+
+</para>
+
+@f: 
+
+
+<!-- ##### MACRO gnome_font_face_unref ##### -->
+<para>
+
+</para>
+
+@f: 
+
+
+<!-- ##### FUNCTION gnome_font_face_find ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_find_closest ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_find_closest_from_weight_slant ##### -->
+<para>
+
+</para>
+
+@family: 
+@weight: 
+@italic: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_find_closest_from_pango_font ##### -->
+<para>
+
+</para>
+
+@pfont: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_find_closest_from_pango_description ##### -->
+<para>
+
+</para>
+
+@desc: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_find_from_family_and_style ##### -->
+<para>
+
+</para>
+
+@family: 
+@style: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_font ##### -->
+<para>
+
+</para>
+
+@face: 
+@size: 
+@xres: 
+@yres: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_font_default ##### -->
+<para>
+
+</para>
+
+@face: 
+@size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_name ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_family_name ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_species_name ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_ps_name ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_num_glyphs ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_lookup_default ##### -->
+<para>
+
+</para>
+
+@face: 
+@unicode: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_stdbbox ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_glyph_stdbbox ##### -->
+<para>
+
+</para>
+
+@face: 
+@glyph: 
+@bbox: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_glyph_stdadvance ##### -->
+<para>
+
+</para>
+
+@face: 
+@glyph: 
+@advance: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_glyph_stdoutline ##### -->
+<para>
+
+</para>
+
+@face: 
+@glyph: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_glyph_stdkerning ##### -->
+<para>
+
+</para>
+
+@face: 
+@glyph0: 
+@glyph1: 
+@kerning: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_sample ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_weight_code ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_is_italic ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_is_fixed_width ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_ascender ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_descender ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_underline_position ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_underline_thickness ##### -->
+<para>
+
+</para>
+
+@face: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_glyph_width ##### -->
+<para>
+
+</para>
+
+@face: 
+@glyph: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_glyph_kerning ##### -->
+<para>
+
+</para>
+
+@face: 
+@glyph1: 
+@glyph2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_font_face_get_glyph_ps_name ##### -->
+<para>
+
+</para>
+
+@face: 
+@glyph: 
+@Returns: 
+
+

@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<Model Id="STYLUS-COLOR-740" Version="1.0">
+  <Name>Stylus Color 740</Name>
+  <Vendor>EPSON</Vendor>
+  <Version>0.0.1</Version>
+  <Options>
+    <Option Id="Engine">
+      <Option Id="Backend" Type="List" Default="omni">
+        <Item Id="omni">
+          <Name>OMNi</Name>
+          <Key Id="Driver" Value="OMNi">
+	    <Key Id="Module" Value="libgnomeprint-omni2.so">
+	      <Key Id="OmniModule" Value="libEpson_Stylus_Color_740.so"/>
+	    </Key>
+	  </Key>
+        </Item>
+        <Item Id="GS">
+          <Name>GhostScript</Name>
+	  <Key Id="Driver" Value="gnome-print-ps"/>
+        </Item>
+      </Option>
+    </Option>
+    <Option Id="Output">
+      <Option Id="Media">
+	<Option Id="PhysicalSize" Type="List" Default="A4">
+	  <Item Id="A4">
+	    <Name>A4</Name>
+	    <Key Id="Width" Value="595.2755906"/>
+	    <Key Id="Height" Value="841.8897638"/>
+	  </Item>
+	  <Item Id="USLetter">
+	    <Name>US Letter</Name>
+	    <Key Id="Width" Value="612"/>
+	    <Key Id="Height" Value="792"/>
+	  </Item>
+	  <Item Id="USLegal">
+	    <Name>US Legal</Name>
+	    <Key Id="Width" Value="612"/>
+	    <Key Id="Height" Value="1008"/>
+	  </Item>
+	  <Item Id="Executive">
+	    <Name>Executive</Name>
+	    <Key Id="Width" Value="522"/>
+	    <Key Id="Height" Value="756"/>
+	  </Item>
+	</Option>
+      </Option>
+      <Option Id="Resolution" Type="List" Default="360x360">
+        <Item Id="360x360">
+	  <Name>360 x 360 DPI</Name>
+	  <Key Id="DPI" Value="360">
+	    <Key Id="X" Value="360"/>
+	    <Key Id="Y" Value="360"/>
+	  </Key>
+	</Item>
+        <Item Id="720x720">
+	  <Name>720 x 720 DPI</Name>
+	  <Key Id="DPI" Value="720">
+	    <Key Id="X" Value="720"/>
+	    <Key Id="Y" Value="720"/>
+	  </Key>
+	</Item>
+      </Option>
+    </Option>
+    <Option Id="Transport">
+      <Option Id="Backend" Type="List" Default="file">
+        <Item Id="file">
+	  <Name>File</Name>
+	  <Key Id="Module" Value="libgnomeprint-file.so"/>
+	  <Option Type="String" Id="FileName" Default="output.omni"/>
+	</Item>
+      </Option>
+    </Option>
+  </Options>
+</Model>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Vendor Id="HP">
+    <Name>Hewlett Packard</Name>
+    <URL>http://www.hp.com</URL>
+    <Models>
+ 	<Model Id="HP-LASERJET-4ML">
+	    <Name>LaserJet 4ML</Name>
+	</Model>
+	<!-- disabled by chema, May-08-2002
+ 	<Model Id="HP-LASERJET-4L">
+	    <Name>LaserJet 4L</Name>
+	</Model>
+	-->
+    </Models>
+</Vendor>

@@ -1,0 +1,209 @@
+<!-- ##### SECTION Title ##### -->
+gnome-glyphlist
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GnomeGlyphList ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gnome_glyphlist_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_ref ##### -->
+<para>
+
+</para>
+
+@gl: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_unref ##### -->
+<para>
+
+</para>
+
+@gl: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_duplicate ##### -->
+<para>
+
+</para>
+
+@gl: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_check ##### -->
+<para>
+
+</para>
+
+@gl: 
+@rules: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_from_text_dumb ##### -->
+<para>
+
+</para>
+
+@font: 
+@color: 
+@kerning: 
+@letterspace: 
+@text: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_from_text_sized_dumb ##### -->
+<para>
+
+</para>
+
+@font: 
+@color: 
+@kerning: 
+@letterspace: 
+@text: 
+@length: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_advance ##### -->
+<para>
+
+</para>
+
+@gl: 
+@advance: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_kerning ##### -->
+<para>
+
+</para>
+
+@gl: 
+@kerning: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_letterspace ##### -->
+<para>
+
+</para>
+
+@gl: 
+@letterspace: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_font ##### -->
+<para>
+
+</para>
+
+@gl: 
+@font: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_color ##### -->
+<para>
+
+</para>
+
+@gl: 
+@color: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_moveto ##### -->
+<para>
+
+</para>
+
+@gl: 
+@x: 
+@y: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_rmoveto ##### -->
+<para>
+
+</para>
+
+@gl: 
+@x: 
+@y: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_glyph ##### -->
+<para>
+
+</para>
+
+@gl: 
+@glyph: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_glyphs ##### -->
+<para>
+
+</para>
+
+@gl: 
+@glyphs: 
+@num_glyphs: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_text_dumb ##### -->
+<para>
+
+</para>
+
+@gl: 
+@text: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_text_sized_dumb ##### -->
+<para>
+
+</para>
+
+@gl: 
+@text: 
+@length: 
+
+
+<!-- ##### FUNCTION gnome_glyphlist_bbox ##### -->
+<para>
+
+</para>
+
+@gl: 
+@transform: 
+@flags: 
+@bbox: 
+@Returns: 
+
+

@@ -1,0 +1,2134 @@
+<HTML
+><HEAD
+><TITLE
+>gnome-glyphlist</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GNOME Print Reference Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="API Reference"
+HREF="libgnomeprintunsorted.html"><LINK
+REL="PREVIOUS"
+TITLE="gnome-font"
+HREF="libgnomeprint-gnome-font.html"><LINK
+REL="NEXT"
+TITLE="gnome-pgl"
+HREF="libgnomeprint-gnome-pgl.html"><META
+NAME="GENERATOR"
+CONTENT="GTK-Doc V0.10 (SGML mode)"><STYLE
+TYPE="text/css"
+>.synopsis, .classsynopsis {
+    background: #eeeeee;
+    border: solid 1px #aaaaaa;
+    padding: 0.5em;
+}
+.programlisting {
+    background: #eeeeff;
+    border: solid 1px #aaaaff;
+    padding: 0.5em;
+}
+.variablelist {
+    padding: 4px;
+    margin-left: 3em;
+}
+.navigation {
+    background: #ffeeee;
+    border: solid 1px #ffaaaa;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.navigation a {
+    color: #770000;
+}
+.navigation a:visited {
+    color: #550000;
+}
+.navigation .title {
+    font-size: 200%;
+}</STYLE
+></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><TABLE
+WIDTH="100%"
+CLASS="navigation"
+SUMMARY="Navigation header"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+><A
+ACCESSKEY="p"
+HREF="libgnomeprint-gnome-font.html"
+><IMG
+SRC="left.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Prev"></A
+></TD
+><TD
+><A
+ACCESSKEY="u"
+HREF="libgnomeprintunsorted.html"
+><IMG
+SRC="up.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Up"></A
+></TD
+><TD
+><A
+ACCESSKEY="h"
+HREF="index.html"
+><IMG
+SRC="home.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Home"></A
+></TD
+><TH
+WIDTH="100%"
+align="center"
+>GNOME Print Reference Manual</TH
+><TD
+><A
+ACCESSKEY="n"
+HREF="libgnomeprint-gnome-pgl.html"
+><IMG
+SRC="right.png"
+WIDTH="24"
+HEIGHT="24"
+BORDER="0"
+ALT="Next"></A
+></TD
+></TR
+></TABLE
+><H1
+><A
+NAME="LIBGNOMEPRINT-GNOME-GLYPHLIST"
+></A
+>gnome-glyphlist</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1899"
+></A
+><H2
+>Name</H2
+>gnome-glyphlist&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1902"
+></A
+><H2
+>Synopsis</H2
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>;
+<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-NEW"
+>gnome_glyphlist_new</A
+>         (void);
+<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-REF"
+>gnome_glyphlist_ref</A
+>         (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl);
+<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-UNREF"
+>gnome_glyphlist_unref</A
+>       (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl);
+<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-DUPLICATE"
+>gnome_glyphlist_duplicate</A
+>   (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl);
+gboolean    <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-CHECK"
+>gnome_glyphlist_check</A
+>           (const <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gboolean rules);
+<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-FROM-TEXT-DUMB"
+>gnome_glyphlist_from_text_dumb</A
+>
+                                            (<A
+HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
+>GnomeFont</A
+> *font,
+                                             guint32 color,
+                                             gdouble kerning,
+                                             gdouble letterspace,
+                                             const guchar *text);
+<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-FROM-TEXT-SIZED-DUMB"
+>gnome_glyphlist_from_text_sized_dumb</A
+>
+                                            (<A
+HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
+>GnomeFont</A
+> *font,
+                                             guint32 color,
+                                             gdouble kerning,
+                                             gdouble letterspace,
+                                             const guchar *text,
+                                             gint length);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-ADVANCE"
+>gnome_glyphlist_advance</A
+>         (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gboolean advance);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-KERNING"
+>gnome_glyphlist_kerning</A
+>         (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gdouble kerning);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-LETTERSPACE"
+>gnome_glyphlist_letterspace</A
+>     (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gdouble letterspace);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-FONT"
+>gnome_glyphlist_font</A
+>            (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             <A
+HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
+>GnomeFont</A
+> *font);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-COLOR"
+>gnome_glyphlist_color</A
+>           (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             guint32 color);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-MOVETO"
+>gnome_glyphlist_moveto</A
+>          (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gdouble x,
+                                             gdouble y);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-RMOVETO"
+>gnome_glyphlist_rmoveto</A
+>         (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gdouble x,
+                                             gdouble y);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-GLYPH"
+>gnome_glyphlist_glyph</A
+>           (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gint glyph);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-GLYPHS"
+>gnome_glyphlist_glyphs</A
+>          (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gint *glyphs,
+                                             gint num_glyphs);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-TEXT-DUMB"
+>gnome_glyphlist_text_dumb</A
+>       (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             const guchar *text);
+void        <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-TEXT-SIZED-DUMB"
+>gnome_glyphlist_text_sized_dumb</A
+> (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             const guchar *text,
+                                             gint length);
+ArtDRect*   <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOME-GLYPHLIST-BBOX"
+>gnome_glyphlist_bbox</A
+>            (const <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             const gdouble *transform,
+                                             gint flags,
+                                             ArtDRect *bbox);&#13;</PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1979"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1982"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1984"
+></A
+><H3
+><A
+NAME="GNOMEGLYPHLIST"
+></A
+>struct GnomeGlyphList</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GnomeGlyphList;</PRE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1989"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-NEW"
+></A
+>gnome_glyphlist_new ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* gnome_glyphlist_new         (void);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN1996"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2001"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-REF"
+></A
+>gnome_glyphlist_ref ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* gnome_glyphlist_ref         (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2009"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2014"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2019"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-UNREF"
+></A
+>gnome_glyphlist_unref ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* gnome_glyphlist_unref       (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2027"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2032"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2037"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-DUPLICATE"
+></A
+>gnome_glyphlist_duplicate ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* gnome_glyphlist_duplicate   (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2045"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2050"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2055"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-CHECK"
+></A
+>gnome_glyphlist_check ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>gboolean    gnome_glyphlist_check           (const <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gboolean rules);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2064"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2069"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>rules</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2074"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2079"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-FROM-TEXT-DUMB"
+></A
+>gnome_glyphlist_from_text_dumb ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* gnome_glyphlist_from_text_dumb
+                                            (<A
+HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
+>GnomeFont</A
+> *font,
+                                             guint32 color,
+                                             gdouble kerning,
+                                             gdouble letterspace,
+                                             const guchar *text);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2091"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>font</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2096"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2101"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>kerning</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2106"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>letterspace</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2111"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2116"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2121"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-FROM-TEXT-SIZED-DUMB"
+></A
+>gnome_glyphlist_from_text_sized_dumb ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+>* gnome_glyphlist_from_text_sized_dumb
+                                            (<A
+HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
+>GnomeFont</A
+> *font,
+                                             guint32 color,
+                                             gdouble kerning,
+                                             gdouble letterspace,
+                                             const guchar *text,
+                                             gint length);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2134"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>font</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2139"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2144"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>kerning</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2149"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>letterspace</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2154"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2159"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>length</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2164"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2169"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-ADVANCE"
+></A
+>gnome_glyphlist_advance ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_advance         (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gboolean advance);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2177"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2182"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>advance</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2187"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-KERNING"
+></A
+>gnome_glyphlist_kerning ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_kerning         (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gdouble kerning);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2195"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2200"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>kerning</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2205"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-LETTERSPACE"
+></A
+>gnome_glyphlist_letterspace ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_letterspace     (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gdouble letterspace);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2213"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2218"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>letterspace</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2223"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-FONT"
+></A
+>gnome_glyphlist_font ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_font            (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             <A
+HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
+>GnomeFont</A
+> *font);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2231"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2236"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>font</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2241"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-COLOR"
+></A
+>gnome_glyphlist_color ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_color           (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             guint32 color);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2249"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2254"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>color</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2259"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-MOVETO"
+></A
+>gnome_glyphlist_moveto ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_moveto          (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gdouble x,
+                                             gdouble y);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2268"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2273"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2278"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2283"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-RMOVETO"
+></A
+>gnome_glyphlist_rmoveto ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_rmoveto         (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gdouble x,
+                                             gdouble y);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2292"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2297"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2302"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>y</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2307"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-GLYPH"
+></A
+>gnome_glyphlist_glyph ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_glyph           (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gint glyph);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2315"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2320"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>glyph</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2325"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-GLYPHS"
+></A
+>gnome_glyphlist_glyphs ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_glyphs          (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             gint *glyphs,
+                                             gint num_glyphs);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2334"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2339"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>glyphs</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2344"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>num_glyphs</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2349"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-TEXT-DUMB"
+></A
+>gnome_glyphlist_text_dumb ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_text_dumb       (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             const guchar *text);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2357"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2362"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2367"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-TEXT-SIZED-DUMB"
+></A
+>gnome_glyphlist_text_sized_dumb ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_glyphlist_text_sized_dumb (<A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             const guchar *text,
+                                             gint length);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2376"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2381"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2386"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>length</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2391"
+></A
+><H3
+><A
+NAME="GNOME-GLYPHLIST-BBOX"
+></A
+>gnome_glyphlist_bbox ()</H3
+><PRE
+CLASS="PROGRAMLISTING"
+>ArtDRect*   gnome_glyphlist_bbox            (const <A
+HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
+>GnomeGlyphList</A
+> *gl,
+                                             const gdouble *transform,
+                                             gint flags,
+                                             ArtDRect *bbox);</PRE
+><P
+></P
+><P
+></P
+><TABLE
+CLASS="variablelist"
+BORDER="0"
+CELLSPACING="0"
+CELLPADDING="4"
+><TBODY
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2402"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>gl</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2407"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>transform</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2412"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>flags</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2417"><SPAN
+STYLE="white-space: nowrap"
+><TT
+CLASS="PARAMETER"
+><I
+>bbox</I
+></TT
+>&nbsp;:</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+NAME="AEN2422"><SPAN
+STYLE="white-space: nowrap"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</SPAN
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>&#13;</P
+></TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><TABLE
+CLASS="navigation"
+WIDTH="100%"
+SUMMARY="Navigation footer"
+CELLPADDING="2"
+CELLSPACING="2"
+><TR
+VALIGN="middle"
+><TD
+ALIGN="left"
+><A
+ACCESSKEY="p"
+HREF="libgnomeprint-gnome-font.html"
+><B
+>&lt;&lt;&lt;&nbsp;gnome-font</B
+></A
+></TD
+><TD
+ALIGN="right"
+><A
+ACCESSKEY="n"
+HREF="libgnomeprint-gnome-pgl.html"
+><B
+>gnome-pgl&nbsp;&gt;&gt;&gt;</B
+></A
+></TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

@@ -1,0 +1,129 @@
+<!-- ##### SECTION Title ##### -->
+gnome-print-unit
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GnomePrintUnit ##### -->
+<para>
+
+</para>
+
+@version: 
+@base: 
+@unittobase: 
+@name: 
+@abbr: 
+@plural: 
+@abbr_plural: 
+
+<!-- ##### ENUM GnomePrintUnitBase ##### -->
+<para>
+
+</para>
+
+@GNOME_PRINT_UNIT_DIMENSIONLESS: 
+@GNOME_PRINT_UNIT_ABSOLUTE: 
+@GNOME_PRINT_UNIT_DEVICE: 
+@GNOME_PRINT_UNIT_USERSPACE: 
+
+<!-- ##### MACRO GNOME_PRINT_PS_UNIT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GNOME_PRINT_UNITS_ALL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gnome_print_unit_get_identity ##### -->
+<para>
+
+</para>
+
+@base: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_get_default ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_get_by_name ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_get_by_abbreviation ##### -->
+<para>
+
+</para>
+
+@abbreviation: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_get_list ##### -->
+<para>
+
+</para>
+
+@bases: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_unit_free_list ##### -->
+<para>
+
+</para>
+
+@units: 
+
+
+<!-- ##### FUNCTION gnome_print_convert_distance ##### -->
+<para>
+
+</para>
+
+@distance: 
+@from: 
+@to: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_print_convert_distance_full ##### -->
+<para>
+
+</para>
+
+@distance: 
+@from: 
+@to: 
+@ctmscale: 
+@devicescale: 
+@Returns: 
+
+
