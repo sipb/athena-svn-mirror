@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 2003-04-06 21:09:14 ghudson Exp $
+# $Id: Makefile,v 1.14 2003-04-07 21:54:51 ghudson Exp $
 
 INSTALL=/install
 INSTALL_DEV=/install/devices
@@ -10,7 +10,7 @@ check:
 install:
 	mkdir -p ${DESTDIR}${INSTALL}
 	mkdir -p ${DESTDIR}${INSTALL_DEV}
-	install -c -m 0444 athchanges ${DESTDIR}${INSTALL}
+	install -c -m 0555 athchanges ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.SEAGATE-ST39173WC-6244 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST315320A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST320011A ${DESTDIR}${INSTALL}
@@ -36,7 +36,7 @@ install:
 	install -c -m 0444 install1.sh ${DESTDIR}${INSTALL}
 	install -c -m 0444 install2.sh ${DESTDIR}${INSTALL}
 	install -c -m 0444 update2.sh ${DESTDIR}${INSTALL}
-	install -c -m 0444 oschanges ${DESTDIR}${INSTALL}
+	install -c -m 0555 oschanges ${DESTDIR}${INSTALL}
 	install -c -m 0444 os-link-2.6 ${DESTDIR}${INSTALL}
 	install -c -m 0444 startup ${DESTDIR}${INSTALL}
 	install -c -m 0444 athenainstall ${DESTDIR}${INSTALL}
