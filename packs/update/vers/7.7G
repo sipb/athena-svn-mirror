@@ -1,0 +1,17 @@
+#!/bin/sh -
+# Version-specific update script for 7.7G
+
+echo "NEWTTYS=true"			>> ${CONFVARS}
+
+case ${MACH} in
+DS*)
+	;;
+RSAIX)
+	;;
+SUN*)
+        cp -p /srvd/etc/minor_perm /etc/minor_perm
+        if [ ! -f /dev/audio ]
+          chmod 0666 /dev/audio
+        fi
+	;;
+esac
