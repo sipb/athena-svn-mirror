@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_secure.c,v 1.2 2000-04-03 19:01:48 mwhitson Exp $";
+"$Id: lpd_secure.c,v 1.2.2.1 2000-11-08 22:01:13 ghudson Exp $";
 
 
 #include "lp.h"
@@ -416,8 +416,8 @@ int Krb5_receive( int *sock, char *user, char *jobsize, int from_server,
 		status = JABORT;
 		plp_snprintf( error, errlen, "Krb5_receive: ACK 0 write error - %s",
 			Errormsg(errno) );
-	} else if( (status = server_krb5_auth( keytab, service, *sock,
-		&from, error, errlen, tempfile )) ){
+	} else if( (status = server_krb5_auth( Kerberos_keytab_DYN, service, 
+		*sock, &from, error, errlen, tempfile )) ){
 		plp_snprintf( error, errlen, "Krb5_receive: receive error '%s'\n", error );
 	} else {
 		DEBUGF(DRECV1)("Krb5_receive: from '%s'", from );
