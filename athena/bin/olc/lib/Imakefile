@@ -1,7 +1,0 @@
-#
-# $Id: Imakefile,v 1.2 1991-03-24 18:24:35 lwvanels Exp $
-# $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/Imakefile,v $
-#
-
-#define IHaveSubdirs
-SUBDIRS=olc_help olcr_help motif_help

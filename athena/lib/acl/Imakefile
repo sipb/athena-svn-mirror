@@ -1,7 +1,0 @@
-ProfiledObjectRule()
-SimpleLint(acl,acl_files.c)
-SimpleLibrary(acl,acl_files.o,${ATHLIBDIR})
-
-depend::
-	makedepend ${CFLAGS} acl_files.c
-
