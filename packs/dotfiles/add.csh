@@ -1,6 +1,6 @@
 #!/bin/csh -f
 #
-# add <addargs> <attachargs> <lockername> <lockername> ...
+# add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
 #	-v	verbose
 #	-f	add lockers to the front of the path
@@ -9,7 +9,7 @@
 #	-e	perform operations for the .environment file (changing
 #		  $athena_path, $athena_manpath instead of $PATH,
 #		  etc.)
-#	-a	pass further options to attach (passes 1,2?)
+#	-a	pass further options to attach
 #
 # fix bugs section of attach manpage
 
@@ -19,7 +19,7 @@
 
 set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
               add_opts add_attach add_dirs add_bin add_bindir \
-              add_man add_mandir add_i)
+              add_man add_mandir add_print add_i)
 
 set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
 
@@ -34,6 +34,10 @@ while ( $#add_opts > 0 )
 
     case -f:
       set add_front
+      breaksw
+
+    case -p:
+      set add_print
       breaksw
 
     case -w:
@@ -72,18 +76,40 @@ while ( $#add_opts > 0 )
 
 end
 
-if ( $?add_verbose ) attach -n -h $add_attach
-
-set add_dirs = `attach -p $add_attach`
-
 set ATHENA_SYS = `fs sysname | awk -F\' '{ print $2 }'`
 
 set add_bindir = arch/$ATHENA_SYS/bin
 set add_mandir = arch/$ATHENA_SYS/man
 
+#
+# Print the filtered path and exit.
+#
+
+if ( $?add_print ) then
+  echo $PATH | sed -e "s-/mit/\([^/]*\)/$add_bindir-{add \1}-g"
+  goto finish
+endif
+
+#
+# Call attach. Once for a normal add, twice for a verbose to get
+# interesting output from attach.
+#
+
+if ( $?add_verbose ) attach -n -h $add_attach
+
+set add_dirs = `attach -p $add_attach`
+
+#
+# Loop through all of the lockers attach told us about.
+#
+
 foreach add_i ($add_dirs)
   unset add_bin
   unset add_man
+
+#
+# Find the bin directory
+#
 
   if ( -d $add_i/$add_bindir ) then
     set add_bin = $add_i/$add_bindir
@@ -93,6 +119,10 @@ foreach add_i ($add_dirs)
     endif
   endif
 
+#
+# Find the man directory
+#
+
   if ( -d $add_i/$add_mandir ) then
     set add_man = $add_i/$add_mandir
   else
@@ -100,6 +130,11 @@ foreach add_i ($add_dirs)
       set add_man = $add_i/man
     endif
   endif
+
+#
+# Add the bin and man directories, as appropriate, to the head or
+# tail of the path, to PATH and MANPATH or athena_path and athena_manpath.
+#
 
   if ( $?add_bin || $?add_man ) then
      switch ($?add_env$?add_front)
@@ -160,6 +195,10 @@ foreach add_i ($add_dirs)
 end
 
 finish:
+
+#
+# We were never here.
+#
 
 foreach add_i ($add_vars)
   unset $add_i
