@@ -48,6 +48,7 @@ main(argc, argv)
     int code;
     int errflg=0;
     int quiet = 0;	
+    int v4 = 1;
     
     retval = krb5_init_context(&kcontext);
     if (retval) {
@@ -64,6 +65,7 @@ main(argc, argv)
 	    quiet = 1;
 	    break;	
 	case 'c':
+	    v4 = 0;	/* Don't do krb4 kdestroy if cache name given. */
 	    if (cache == NULL) {
 		cache_name = optarg;
 		
@@ -114,7 +116,7 @@ main(argc, argv)
 	errflg = 1;
     }
 #ifdef KRB5_KRB4_COMPAT
-    if (dest_tkt() != KSUCCESS) {
+    if (v4 && dest_tkt() != KSUCCESS) {
 	if (quiet)
 	    fprintf(stderr, "Kerberos 4 ticket file NOT destroyed!\n");
 	else
