@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.31 1993-02-08 13:55:56 probe Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.32 1993-02-25 15:13:21 probe Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -162,7 +162,7 @@ static XtResource my_resources[] = {
   {"srvdcheck", XtCFile, XtRString, sizeof(String),
      Offset(srvdcheck), XtRImmediate, (caddr_t) "/srvd/.rvdinfo"},
   {"fontPath", XtCString, XtRString, sizeof(String),
-     Offset(fontpath), XtRImmediate, (caddr_t) "/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/athena/lib/X11/fonts/100dpi/" },
+     Offset(fontpath), XtRImmediate, (caddr_t) "/usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/" },
   {"loginName", XtCString, XtRString, sizeof(String),
      Offset(loginName), XtRImmediate, (caddr_t) "" },
   {"blankAllScreens", XtCBoolean, XtRBoolean, sizeof(Boolean),
