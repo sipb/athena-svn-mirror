@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: do_update.sh,v 1.4 1996-05-16 21:38:04 cfields Exp $
+# $Id: do_update.sh,v 1.5 1996-06-06 18:28:56 cfields Exp $
 #
 
 ROOT=${ROOT-}; export ROOT
@@ -8,6 +8,7 @@ ROOT=${ROOT-}; export ROOT
 CONFCHG=/tmp/conf.list; export CONFCHG
 CONFVARS=/tmp/update.conf; export CONFVARS
 CONFDIR="${CONFDIR-/etc/athena}"; export CONFDIR
+OLDBINS="/tmp/bins.list"; export OLDBINS
 
 LIBDIR=${LIBDIR-/srvd/usr/athena/lib/update};  export LIBDIR
 PATH=/srvd/bin:/srvd/etc:/srvd/etc/athena:/srvd/bin/athena:/srvd/usr/bin:/srvd/usr/etc:/srvd/usr/athena/etc:/srvd/usr/ucb:/srvd/usr/new:$LIBDIR:/bin:/etc:/usr/bin:/usr/etc:/usr/ucb ; export PATH
@@ -153,6 +154,7 @@ if [ "${VERSION}" != "${NEWVERS}" ]; then
 	echo "Version-specific updating.."
 	cp /dev/null ${CONFCHG}
 	cp /dev/null ${CONFVARS}
+	cp /dev/null ${OLDBINS}
 	upvers  $VERSION $NEWVERS $LIBDIR
 fi
 
@@ -425,6 +427,17 @@ EOF
 	echo "done"
 fi
 
+if [ -s ${OLDBINS} ]; then
+	echo $N "Making copies of OS binaries we need... $C"
+	mkdir -p /tmp/bin
+	bins="`cat ${OLDBINS}`"
+	for i in $bins; do
+		cp -p $i /tmp/bin/`basename $i`
+	done
+	PATH=/tmp/bin:$PATH; export PATH
+	echo "done."
+fi
+
 echo $N "Tracking Changes... $C"
 if [ "${FULLCOPY}" = "true" ]; then
 	if [ -f ${ROOT}/etc/Xibm ]; then
@@ -484,7 +497,7 @@ case ${MACH} in
 	SUN*)
 		;;
 	INDY)
-		(cd ${ROOT}/dev; ./MAKEDEV)
+#		(cd ${ROOT}/dev; ./MAKEDEV)
 		;;
 	*)
 		(cd ${ROOT}/dev; ./MAKEDEV -v ws)
@@ -598,7 +611,7 @@ echo "done"
 
 # Re-customize the workstation
 if [ "${PUBLIC}" = "true" ]; then
-	/bin/rm -rf /${SERVERDIR}
+	rm -rf /${SERVERDIR}
 fi
 
 if [ -d ${ROOT}/${SITE}/server ]; then
