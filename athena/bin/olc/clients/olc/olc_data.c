@@ -12,28 +12,31 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_data.c,v $
- *	$Id: olc_data.c,v 1.8 1990-07-16 08:21:21 lwvanels Exp $
+ *	$Id: olc_data.c,v 1.9 1990-11-14 11:20:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_data.c,v 1.8 1990-07-16 08:21:21 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_data.c,v 1.9 1990-11-14 11:20:38 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
 #ifndef TESTHOST
 char *OLC_PROMPT = "olc> ";
 char *OLCR_PROMPT = "olcr> ";
-#else TESTHOST
+#else /* TESTHOST */
 char *OLC_PROMPT = "olc test> ";
 char *OLCR_PROMPT = "olcr test> ";
-#endif TESTHOST
+#endif /* TESTHOST */
 
 /* Where to find help. */
 
