@@ -13,6 +13,10 @@ umask 022
 case $1 in 
 'start')
 
+# Let the log host know that we're booting.
+
+logger -p user.notice "Booting"
+
 echo  "MIT configuration..." > /dev/console
 
 # Read configuration variables
@@ -201,6 +205,25 @@ echo  "Starting Athena daemons: \c"				>/dev/console
 echo "inetd... \c"						>/dev/console
 /etc/athena/inetd &
 
+if [ "${KRBSRV}" != "false" -a -f /.k ]; then
+	echo "kerberos... \c"					>/dev/console
+	if [ "${KRBSRV}" = "true" ]; then
+		krbopt="-n"
+	else
+		krbopt="-r ${KRBSRV} -n"
+	fi
+	/usr/athena/etc/kerberos $krbopt &
+	if [ "${KADMSRV}" = "true" ]; then
+		echo "kadmind... \c"				>/dev/console
+		/usr/athena/etc/kadmind $krbopt &
+	fi
+fi
+
+if [ "${KNETD}" = "true" ]; then
+	echo "knetd... \c"					>/dev/console
+	/usr/athena/etc/knetd &
+fi
+
 if [ "${SNMP}" = "true" ]; then
 	echo  "snmpd... \c"					>/dev/console
 	/etc/athena/snmpd &
@@ -211,9 +234,14 @@ if [ "${SENDMAIL}" = "true" ]; then
 	/usr/lib/sendmail -bd -q1h;
 fi
 
+if [ "${OLC}" = "true" ]; then
+	echo "olcd... \c"					>/dev/console
+        /usr/athena/etc/olcd &
+fi
+
 if [ "${ZSERVER}" = "true" ] ; then
-	echo  "zephyrd... \c"
-	/usr/athena/etc/zephyrd
+	echo  "zephyrd... \c"					>/dev/console
+	/usr/athena/etc/zephyrd &
 fi
 
 if [ "${ZCLIENT}" = "true" ]; then
