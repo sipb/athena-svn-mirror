@@ -33,7 +33,7 @@
 
 # Extended flags needed for additional authenticators.  You may need to modify.
 
-KRBCFLAGS=
+KRBCFLAGS= -DHAVE_AFS_STRING_TO_KEY -DHAVE_KRB_GET_PHOST -DHAVE_KRB_REALMOFHOST
 KRBLDFLAGS= -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err
 
 krb:	# Kerberos IV flags
