@@ -26,7 +26,7 @@ chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
 %post
 chkconfig --add olc
 
-[ grep -q OLC /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+grep -q OLC /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 OLC=false;		export OLC		#  OLC daemon?
 EOF
 

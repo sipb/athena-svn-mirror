@@ -32,15 +32,15 @@ mkdir -p $RPM_BUILD_ROOT/var/athena
 %post
 chkconfig --add athena-xntp
 
-[ grep -q TIMESRV /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+grep -q TIMESRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMESRV=false;		export TIMESRV		#  Time server?
 EOF
 
-[ grep -q TIMECLIENT /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+grep -q TIMECLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMECLIENT=true;	export TIMECLIENT	#  Timed client?
 EOF
 
-[ grep -q TIMEHUB /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+grep -q TIMEHUB /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMEHUB=time.MIT.EDU;	export TIMEHUB		#  Authoritative time source
 EOF
 

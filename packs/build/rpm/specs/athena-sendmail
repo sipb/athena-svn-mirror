@@ -35,7 +35,7 @@ ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
 chkconfig --add athena-sendmail
 /usr/sbin/sendmail -bi
 
-[ grep -q SENDMAIL /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+grep -q SENDMAIL /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 SENDMAIL=false;		export SENDMAIL		#  Sendmail daemon?
 EOF
 
