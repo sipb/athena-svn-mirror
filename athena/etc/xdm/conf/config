@@ -1,7 +1,7 @@
 # Display Manager Configuration File
 
 #prog	command line
-X	/etc/Xqvss -v :0 -fp /etc/athena/login/fonts/
+#X	/etc/Xqvss -v :0 -fp /etc/athena/login/fonts/
 #X	/etc/Xqdss -v :0 -fp /etc/athena/login/fonts/
 #X	/etc/Xibm -all -v :0 -fp /etc/athena/login/fonts/
 #X	/etc/Xmfbpmax -bc v :0 -fp /etc/athena/login/fonts/
