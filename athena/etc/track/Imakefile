@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.5 1991-07-17 10:16:04 epeisach Exp $
+ * $Id: Imakefile,v 1.6 1994-04-07 12:57:09 miki Exp $
  */
 
 #define ISUBDIRS doc
@@ -9,6 +9,9 @@ LIBS= -ll $(OSLIBS)
 
 #ifdef _AUX_SOURCE
 OSLIBS= -lc -lPW
+#endif
+#ifdef SOLARIS
+OSLIBS= -ladm -lmail
 #endif
 
 SimpleProgram(track,$(OBJS),$(LIBS),$(ATHETCDIR))
