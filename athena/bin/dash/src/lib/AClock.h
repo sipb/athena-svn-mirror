@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/AClock.h,v $
- * $Author: vanharen $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -49,11 +49,9 @@ typedef struct {
   int timerid;
   int update;
   Boolean keepRound;
-#ifdef SHAPE
   Boolean round;
   Pixmap mask;
   GC setGC, eraseGC;
-#endif
 } AClockPart;
 
 typedef struct _AClockRec {
@@ -90,9 +88,7 @@ typedef struct _AClockClassRec *AClockJetClass;
 #define XjNkeepRound "keepRound"
 #define XjNhands "hands"
 #define XjNhighlight "highlight"
-#ifdef SHAPE
 #define XjCRound "Round"
 #define XjNround "round"
-#endif
 
 #endif /* _Xj_AClock_h */
