@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.1,v $
-.\"	$Author: jfc $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.1,v 1.5 1990-03-06 07:17:49 jfc Exp $
+.\"	$Author: raeburn $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.1,v 1.6 1990-07-15 18:32:15 raeburn Exp $
 .\"
 .\" Copyright 1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
@@ -46,9 +46,7 @@ only retrieves four headers at one time in order to reduce the
 competition for the mailbox lock on the post office.  If more than four mail
 messages are waiting,
 .I zmailnotify 
-should be run multiple times.  If executed from a
-.I zwgc(1)
-description file, this will happen automatically.
+will only retrieve the four most recent mail headers.
 .PP
 To check for mail already waiting when you log in, use the standard MH
 program
