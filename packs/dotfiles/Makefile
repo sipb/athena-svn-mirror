@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 2002-08-29 19:45:04 mwhitson Exp $
+# $Id: Makefile,v 1.13 2003-02-19 23:53:24 rbasch Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
@@ -39,6 +39,7 @@ install:
 	install -c -m 0644 env_setup ${DESTDIR}${SYSTEM}
 	install -c -m 0444 lockers.7 ${DESTDIR}${ATHMANDIR}/man7
 	install -c -m 0644 login ${DESTDIR}${SYSTEM}
+	install -c -m 0755 mksessiondir.sh ${DESTDIR}${SYSTEM}/mksessiondir
 	install -c -m 0644 bashrc ${DESTDIR}${SYSTEM}
 	install -c -m 0644 bash_login ${DESTDIR}${SYSTEM}
 	install -c -m 0444 renew.1 ${DESTDIR}${ATHMANDIR}/man1
