@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *	$Id: olc_stock.c,v 1.13 1990-11-14 11:24:06 lwvanels Exp $
+ *	$Id: olc_stock.c,v 1.14 1991-03-07 13:21:49 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.13 1990-11-14 11:24:06 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.14 1991-03-07 13:21:49 lwvanels Exp $";
 #endif
 #endif
 
@@ -37,7 +37,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define STOCK_DIR "stock_answers"
+#define STOCK_DIR "/mit/olc-stock/stock_answers"
 #define BROWSER "/mit/olc-stock/browser"
 #define MAGIC  "/mit/olc-stock/MAGIC"
 
@@ -113,7 +113,7 @@ do_olc_stock(arguments)
 	}
     }
 
-  strcpy(bfile, STOCK_DIR);
+  strcpy(bfile, "/.");
   if (topic[0] != NULL)  {
     strcat(bfile, "/");
     strcat(bfile, topic);
@@ -121,17 +121,21 @@ do_olc_stock(arguments)
 
   make_temp_name(file);
   
-  switch(fork()) 
+  switch(vfork()) 
     {
     case -1:                /* error */
       perror("stock: fork");
       fprintf(stderr, "stock: can't fork to execute OLC browser\n");
       return(ERROR);
     case 0:                 /* child */
-      execlp(BROWSER, BROWSER, "-s", file, "-f", bfile, 0);
+      if (topic[0] != NULL)
+	execlp(BROWSER, BROWSER, "-s", file, "-r", STOCK_DIR, "-f", topic,
+	       0);
+      else
+	execlp(BROWSER, BROWSER, "-s", file, "-r", STOCK_DIR, 0);
       perror("stock: execlp");
       fprintf(stderr, "stock: could not exec OLC browser\n");
-      exit(ERROR);
+      _exit(ERROR);
     default:                /* parent */
       (void) wait(0);
     }
