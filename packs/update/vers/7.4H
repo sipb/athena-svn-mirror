@@ -1,0 +1,14 @@
+#!/bin/sh -
+
+case "${MACH}" in
+RS*)
+	echo "Installing XKeysymDB symlink"
+	ln -s /usr/athena/lib/X11/XKeysymDB /usr/lib/X11/XKeysymDB
+
+	echo "Fixing rdist"
+	chmod 755 /usr/ucb/rdist
+	;;
+DS*)
+	echo "NEWTTYS=true"		>> ${CONFVARS}
+	;;
+esac
