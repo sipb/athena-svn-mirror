@@ -4,6 +4,7 @@ AC_INIT(mkcred.c)
 AC_PROG_CC
 AC_PROG_INSTALL
 
+AC_CHECK_HEADERS(ndbm.h db.h)
 AC_CHECK_FUNC(dbm_open, :,
     AC_CHECK_LIB(db, dbm_open))
 
