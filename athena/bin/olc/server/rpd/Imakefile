@@ -1,0 +1,43 @@
+/*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/Imakefile,v $
+ * $Id: Imakefile,v 1.1 1990-11-18 18:53:38 lwvanels Exp $
+ */
+
+/* #define Profiling */
+
+#ifdef Profiling
+LIBSUFFIX=_p
+EXTRA_LOAD_FLAGS=-pg
+#endif
+
+S_SRCS=	rpd.c
+
+S_OBJS=	rpd.o
+
+C_SRCS=	oreplay.c
+
+C_OBJS= oreplay.o
+
+#ifdef Profiling
+DEFINES= -DPROFILE
+.c.o:
+	$(CC) -pg -c $(CFLAGS) $*.c
+#else
+DEFINES=
+#endif /* Profiling */
+
+
+CLIENT_LIBRARIES=	$(HesiodLib)
+
+INCLUDES= -I.
+
+NormalProgramTarget(oreplay,$(C_OBJS),,$(CLIENT_LIBRARIES),)
+NormalProgramTarget(rpd,$(S_OBJS),,,)
+
+SaberProgramTarget(oreplay,$(C_SRCS),$(C_OBJS),$(CLIENT_LIBRARIES),)
+SaberProgramTarget(rpd,$(S_SRCS),$(S_OBJS),,)
+
+DependTarget()
+LintTarget()
+
+AllTarget(oreplay rpd)

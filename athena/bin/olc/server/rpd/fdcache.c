@@ -1,0 +1,243 @@
+/*
+ * File descriptor Cache
+ */
+
+#ifndef lint
+#ifndef SABER
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/fdcache.c,v 1.1 1990-11-18 18:52:10 lwvanels Exp $";
+#endif
+#endif
+
+#include "rpd.h"
+
+/* Note: cachesize must be a power of two.  Also, the maximum limit on open */
+/* file descriptors in a process should be taken into account. */
+
+#define CACHESIZE 16
+#define inc_hand (clock_hand = (clock_hand++)&(CACHESIZE-1));
+
+#define LOG_DIRECTORY "/usr/spool/olc"
+
+extern int errno;
+
+static struct entry cache[CACHESIZE];
+static struct entry *buckets[CACHESIZE];
+static int clock_hand = 0;
+
+/*
+ * init_cache
+ *
+ * Sets up cache for use
+ *
+ * Returns: nothing
+ */
+
+void
+init_cache()
+{
+  int i;
+
+  for(i=0;i<CACHESIZE;i++) {
+    cache[i].fd = -1;
+    cache[i].use = 1;
+    cache[i].question = NULL;
+    cache[i].next = NULL;
+  }
+}
+
+/*
+ * get_log
+ * 
+ * Returns: Pointer to buffer with the log of the question, NULL if the
+ * question doesn't exist or there was an error.  Result will be
+ * the length of the buffer, or negative for an error
+ *
+ */
+
+char *
+get_log(username,instance,result)
+     char *username;
+     int instance;
+     int *result;
+{
+  int hash,found;
+  int fd;
+  int new;
+  struct entry *head,*ptr;
+  char filename[MAXPATHLEN];
+  struct stat file_stat;
+
+  /* Mark and Increment clock hand */
+  cache[clock_hand].use = 1;
+  inc_hand;
+
+  hash = get_bucket_index(username,instance);
+  head = buckets[hash];
+
+  found = 0;
+  ptr = head;
+  while (ptr != NULL) {
+    if (strcmp(username,ptr->username) && (instance == ptr->instance)) {
+      found = 1;
+      break;
+    }
+    ptr = ptr->next;
+  }
+
+  if (found == 0) {
+    /* not found in the cache; check disk */
+    sprintf(filename,"%s/%s_%d.log",LOG_DIRECTORY,username,instance);
+    if ((fd = open(filename,O_RDONLY,0)) < 0) {
+      *result = 0;
+      return(NULL);
+    }
+
+    /* Get a free cache table entry, clearing if necessary */
+    new = allocate_entry();
+
+    /* copy infomration over */
+    cache[new].fd = fd;
+    strcpy(cache[new].username,username);
+    cache[new].instance = instance;
+
+    /* Stat the file to get size and last mod time */
+    if (fstat(fd,&file_stat) < 0) {
+      perror("fdcache: fstat");
+      close(fd);
+      cache[new].use = 1;
+      cache[new].fd = -1;
+      *result = errno;
+      return(NULL);
+    }
+    cache[new].last_mod = file_stat.st_mtime;
+    cache[new].length = file_stat.st_size;
+
+    /* Malloc buffer big enough for the file */
+    if ((cache[new].question = malloc(file_stat.st_size)) == NULL) {
+      fprintf(stderr,"fdcache: malloc: error alloc'ing %d bytes\n",
+	      file_stat.st_size);
+      close(fd);
+      cache[new].use = 1;
+      cache[new].fd = -1;
+      *result = -1;
+      return(NULL);
+    }
+    
+    /* Read file into buffer */
+    if (read(cache[new].fd,cache[new].question,cache[new].length) !=
+	cache[new].length) {
+      perror("fdcache: read");
+      close(fd);
+      cache[new].use = 1;
+      cache[new].fd = -1;
+      free(cache[new].question);
+      *result = -1;
+      return(NULL);
+    }
+    
+    /* Add to the head of the linked list */
+    cache[new].next = head;
+    buckets[hash] = &cache[new];
+
+    /* Set result to file size, and return pointer to text */
+    *result = cache[new].length;
+    return(cache[new].question);
+  }
+  else {
+    /* found in the cache! */
+    ptr->use = 0;
+    
+    /* Check to see that it's a recent copy */
+    if (fstat(ptr->fd,&file_stat) < 0) {
+      delete_entry(ptr);
+      if (errno == ENOENT) /* Question gone; not an error */
+	*result = 0;
+      else {               /* Some other error */
+	perror("fdcache: fstat");
+	*result = errno;
+      }
+	return(NULL);
+    }
+
+    /* Check to see if the cache is current */
+    if (file_stat.st_mtime > ptr->last_mod) {
+      /* File has been modified, need to re-read */
+      free(ptr->question);
+      ptr->length = file_stat.st_size;
+      
+      /* Alloc new amount of memory */
+      if ((ptr->question = malloc(file_stat.st_size)) == NULL) {
+	fprintf(stderr,"fdcache: malloc: error alloc'ing %d bytes\n",
+		file_stat.st_size);
+	delete_entry(ptr);
+	*result = -1;
+	return(NULL);
+      }
+      
+      /* Read file into buffer */
+      if (read(ptr->fd,ptr->question,ptr->length) != ptr->length) {
+	perror("fdcache: read");
+	delete_entry(ptr);
+	*result = -1;
+	return(NULL);
+      }
+    }
+    
+    /* Return size and buffer */
+    *result = ptr->length;
+    return(ptr->question);
+  }
+}
+
+
+/* Returns the index of the hash bucket in the cache array */
+
+ int
+get_bucket_index(username,instance)
+     char *username;
+     int instance;
+{
+  char *foo;
+  
+  foo = username;
+  while (*foo != '\0') {
+    instance += *foo;
+    foo++;
+  }
+  return(instance&(CACHESIZE-1));
+}
+
+ int
+allocate_entry()
+{
+  int new;
+
+  while (cache[clock_hand].use == 0) {
+    cache[clock_hand].use = 1;
+    inc_hand;
+  }
+
+  /* found an entry; mark it as touched, and increment hand past it */
+
+  new = clock_hand;
+  cache[new].use = 0;
+  inc_hand;
+
+  /* If it's in use, clean it up */
+  delete_entry(&cache[new]);
+  return(new);
+}
+
+void
+delete_entry(ent)
+  struct entry *ent;
+{
+
+  close(ent->fd);
+  ent->fd = -1;
+  if (ent->question != NULL) {
+    free(ent->question);
+    ent->question = NULL;
+  }
+  ent->use = 1;
+}
