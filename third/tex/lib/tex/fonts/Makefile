@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1996-10-29 17:00:20 ghudson Exp $
+# $Id: Makefile,v 1.5 1996-11-14 22:33:16 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
@@ -50,8 +50,8 @@ CMTFMS=		cmb10.tfm cmbsy10.tfm cmbx10.tfm cmbx12.tfm \
 		cmti12.tfm cmti7.tfm cmti8.tfm cmti9.tfm cmtt10.tfm \
 		cmtt12.tfm cmtt8.tfm cmtt9.tfm cmu10.tfm cmvtt10.tfm \
 		cmbsy5.tfm cmbsy6.tfm cmbsy7.tfm cmbsy8.tfm cmbsy9.tfm \
-		cmcsc8.tfm cmcsc9.tfm cmex7.tfm cmex8.tfm cmex9.tfm \
-		cmmib5.tfm cmmib6.tfm cmmib7.tfm cmmib8.tfm cmmib9.tfm
+		cmcsc8.tfm cmcsc9.tfm cmex7.tfm cmex8.tfm cmmib5.tfm \
+		cmmib6.tfm cmmib7.tfm cmmib8.tfm cmmib9.tfm
 
 NORMAL600PK=${NORMALTFMS:.tfm=.600pk}
 NORMAL657PK=${NORMALTFMS:.tfm=.657pk}
