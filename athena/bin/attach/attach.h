@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.11 1991-06-02 23:36:27 probe Exp $
+ * $Id: attach.h,v 1.12 1991-06-08 20:41:13 probe Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -67,7 +67,6 @@
  */
 #if defined(_IBMR2)
 #define MOUNT_CMD	"/etc/mount"
-#define UMOUNT_CMD	"/etc/umount"
 #endif
 
 

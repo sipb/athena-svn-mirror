@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.5 1991-06-02 23:36:38 probe Exp $
+ * $Id: unmount.c,v 1.6 1991-06-08 20:41:01 probe Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.5 1991-06-02 23:36:38 probe Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.6 1991-06-08 20:41:01 probe Exp $";
 
 #include "attach.h"
 
@@ -38,7 +38,6 @@ unmount_42(errname, mntpt, dev)
 	char *dev;
 {
 #ifdef UMOUNT_CMD
-
 	int status;
 
 #ifdef _IBMR2
@@ -64,12 +63,42 @@ unmount_42(errname, mntpt, dev)
 		wait(&status);
 		break;
 	}
-
 	return(status ? FAILURE : SUCCESS);
-
 
 #else /* !UMOUNT_CMD */
 
+#if defined(_AIX) && (AIXV > 30)
+#include <sys/fullstat.h>
+
+    struct stat statb;
+
+    if (statx(mntpt, &statb, 0, STX_NORMAL) < 0) {
+	fprintf(stderr,
+		"%s: Directory %s appears to have already been removed\n",
+		errname, mntpt);
+	return(SUCCESS);
+    }
+    if ((statb.st_flag & FS_MOUNT) == 0) {
+	fprintf(stderr,
+		"%s: Directory %s is no longer a mount point\n",
+		errname, mntpt);
+	return(SUCCESS);
+    }
+    if (uvmount(statb.st_vfs, 0)) {
+	if (errno == EINVAL || errno == ENOENT) {
+	    fprintf(stderr,
+		    "%s: Directory %s appears to already be unmounted\n",
+		    errname, mntpt);
+	    return(SUCCESS);
+	} else {
+	    fprintf(stderr, "%s: Unable to unmount %s: %s\n", errname,
+		    mntpt, sys_errlist[errno]);
+	    return (FAILURE);
+	}
+    }
+    return(SUCCESS);
+
+#else /* !AIX 3.1 */
 	
 	FILE *tmpmnt, *mnted;
 	char *tmpname;
@@ -96,7 +125,7 @@ unmount_42(errname, mntpt, dev)
 	}
 	/* this hack to avoid ugly ifdef's */
 #define unmount(x) umount(fsdata.fd_dev)
-#endif						/* ultrix */
+#endif /* ultrix */
 
 	if (unmount(dev ? dev : mntpt) < 0) {
 		if (errno == EINVAL || errno == ENOENT
@@ -161,6 +190,7 @@ unmount_42(errname, mntpt, dev)
     
 	return (SUCCESS);
 #endif /* ultrix */
+#endif /* !AIX 3.1 */
 #endif /* !UMOUNT_CMD */
 }
 
