@@ -92,7 +92,7 @@ extern int has_question,
 
 /* File locations */
 
-#define HELP_PATH "/afs/athena/astaff/project/olcdev/vax/clients/motif/help/"
+#define HELP_PATH "/afs/athena/astaff/project/olcdev/src/clients/motif/help/"
 
 /*
  * Function Prototypes
