@@ -7,6 +7,7 @@ export SHELL
 
 attach -n -h -q -f register
 
+/usr/bin/X11/xset -display :0 fp= "/usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/100dpi/"
 /mit/register/xregister
 
 detach -q register
