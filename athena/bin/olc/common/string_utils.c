@@ -16,12 +16,12 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v $
- *	$Id: string_utils.c,v 1.10 1990-05-25 11:01:12 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: string_utils.c,v 1.11 1990-07-16 08:25:45 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.10 1990-05-25 11:01:12 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/string_utils.c,v 1.11 1990-07-16 08:25:45 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>

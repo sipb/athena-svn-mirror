@@ -6,12 +6,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.h,v $
- *	$Id: olc.h,v 1.5 1990-05-26 12:03:44 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: olc.h,v 1.6 1990-07-16 08:21:29 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.h,v 1.5 1990-05-26 12:03:44 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.h,v 1.6 1990-07-16 08:21:29 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>

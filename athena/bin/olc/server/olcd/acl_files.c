@@ -6,12 +6,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Id: acl_files.c,v 1.5 1990-05-26 11:03:46 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: acl_files.c,v 1.6 1990-07-16 08:29:41 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.5 1990-05-26 11:03:46 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.6 1990-07-16 08:29:41 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>

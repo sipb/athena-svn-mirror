@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v $
- *	$Id: p_connect.c,v 1.8 1990-05-26 12:11:00 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: p_connect.c,v 1.9 1990-07-16 08:19:34 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.8 1990-05-26 12:11:00 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.9 1990-07-16 08:19:34 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>

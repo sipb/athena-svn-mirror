@@ -7,12 +7,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- *	$Id: syslog.c,v 1.5 1990-05-26 11:07:00 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: syslog.c,v 1.6 1990-07-16 08:31:04 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.5 1990-05-26 11:07:00 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.6 1990-07-16 08:31:04 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>

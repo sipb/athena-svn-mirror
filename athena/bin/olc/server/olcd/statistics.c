@@ -10,12 +10,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v $
- *	$Id: statistics.c,v 1.6 1990-05-26 11:06:54 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: statistics.c,v 1.7 1990-07-16 08:31:00 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.6 1990-05-26 11:06:54 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/statistics.c,v 1.7 1990-07-16 08:31:00 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>

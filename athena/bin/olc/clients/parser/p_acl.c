@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v $
- *	$Id: p_acl.c,v 1.3 1990-05-26 12:10:19 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: p_acl.c,v 1.4 1990-07-16 08:18:50 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v 1.3 1990-05-26 12:10:19 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_acl.c,v 1.4 1990-07-16 08:18:50 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
