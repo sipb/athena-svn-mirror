@@ -102,6 +102,9 @@
 # desktop entry spec to allow this
 0:32   string          [Desktop\ Entry]                        application/x-gnome-app-info
 
+# Theme ("Metatheme") support
+0:40   string          [X-GNOME-Metatheme]                     application/x-gnome-theme
+
 # special Nautilus link type
 0:32	string		\<nautilus_object\ nautilus_link	application/x-nautilus-link
 
@@ -146,6 +149,7 @@
 0	string		.ra\375					audio/x-real-audio
 8	string		WAVE					audio/x-wav
 8	string		WAV\ 					audio/x-wav
+8	string		CDXA					video/mpeg
 0	string		RIFF					audio/x-riff
 # The below is set to 'application/x-ogg' at the request of Ogg Vorbis developers
 0	string		OggS					application/x-ogg
@@ -172,6 +176,8 @@
 8	string		\x13\x7A\x2B				application/x-font-sunos-news
 0	string		%!PS-AdobeFont-1.			application/x-font-type1
 6	string		%!PS-AdobeFont-1.			application/x-font-type1
+0	string		%!FontType1-1.				application/x-font-type1
+6	string		%!FontType1-1.				application/x-font-type1
 0	string		STARTFONT\040				application/x-font-bdf
 0	string		\001fcp					application/x-font-pcf
 0	string		D1.0\015				application/x-font-speedo
@@ -186,6 +192,7 @@
 0	string		MZ					application/x-ms-dos-executable
 0	string		%!					application/postscript
 0       string          BZh                                     application/x-bzip
+0	string		\x1f\x8b				application/x-gzip
 0	string		\037\235				application/x-compress
 0	string		\367\002				application/x-dvi
 0	string		\367\203				application/x-font-tex
@@ -202,8 +209,9 @@
 0	string		Article					message/news
 0	string		Received:				message/rfc822
 0	string		[playlist]				audio/x-scpls
-
-
-
-
+0	string		fLaC					application/x-flac
+32769	string		CD001					application/x-iso-image
+37633	string		CD001					application/x-iso-image
+32776	string		CDROM					application/x-iso-image
+0       string          OTTO                                    application/x-font-otf
 

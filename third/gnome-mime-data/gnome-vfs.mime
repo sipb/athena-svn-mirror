@@ -63,7 +63,7 @@ application/vnd.ms-excel
 	ext: xls xla xlt xlc xld
 
 application/vnd.ms-powerpoint
-	ext: ppt
+	ext: ppt pps
 
 # StarOffice 5.x document types
 application/vnd.stardivision.calc
@@ -168,6 +168,9 @@ application/x-dvi
 application/x-e-theme
 	ext: etheme ETHEME
 
+application/x-flac
+	ext: flac
+
 application/x-font-afm
 	ext: afm
 
@@ -215,6 +218,9 @@ application/x-gzip
 
 application/x-hdf
 	ext: hdf
+
+application/x-iso-image
+	ext:iso
 
 application/x-java-byte-code
 	ext: class
@@ -272,6 +278,9 @@ application/x-ogg
 
 application/x-oleo
 	ext: oleo
+
+application/x-palm-database
+	ext: pdb
 
 application/x-php
 	ext: php php3 php4
@@ -356,6 +365,9 @@ audio/ac3
 audio/basic
 	ext: snd
 
+audio/mpeg
+	ext: mp1
+
 audio/prs.sid
 	ext: sid psid
 
@@ -376,6 +388,9 @@ audio/x-mp3
 
 audio/x-mpegurl
 	ext: m3u
+
+audio/x-ms-asx
+	ext: asx
 
 audio/x-real-audio
 	ext: rm ra ram
@@ -424,7 +439,7 @@ image/png
 	ext: png
 
 image/svg
-	ext: svg
+	ext: svg svgz
 
 image/tiff
 	ext: tif tiff
@@ -654,6 +669,7 @@ text/x-python
 
 text/x-readme
 	regex: README.*
+	regex: TODO*
 
 text/x-scheme
 	ext: scm
@@ -719,7 +735,7 @@ video/x-fli
 	ext: fli
 
 video/x-ms-asf
-	ext: asf asx
+	ext: asf
 
 video/x-ms-wmv
 	ext: wmv
