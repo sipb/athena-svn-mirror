@@ -1,9 +1,8 @@
 #!/bin/sh
-# $Id: do.sh,v 1.67 2001-05-04 14:46:13 ghudson Exp $
+# $Id: do.sh,v 1.68 2001-09-16 17:26:56 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
-athtoolroot=$ATHTOOLROOT
 contained=false
 mungepath=true
 n=""
@@ -17,9 +16,6 @@ usage() {
 
 while getopts pcd:ns:t: opt; do
   case "$opt" in
-  c)
-    contained=true
-    ;;
   p)
     mungepath=false
     ;;
@@ -32,9 +28,6 @@ while getopts pcd:ns:t: opt; do
     ;;
   s)
     source=$OPTARG
-    ;;
-  t)
-    athtoolroot=$OPTARG
     ;;
   \?)
     usage
@@ -53,20 +46,9 @@ dist|prepare|clean|all|check|install)
   ;;
 esac
 
-case $contained,$athtoolroot in
-true,)
-  athtoolroot=$srvd
-  ;;
-true,?*)
-  echo "The -t option and -c flag are mutually exclusive." 1>&2
-  exit 1
-  ;;
-esac
-
 # Set up the build environment.
 umask 022
-export ATHENA_SYS ATHENA_SYS_COMPAT ATHENA_HOSTTYPE OS PATH M4
-M4=$athtoolroot/usr/athena/bin/m4
+export ATHENA_SYS ATHENA_SYS_COMPAT ATHENA_HOSTTYPE OS PATH
 
 # Determine proper ATHENA_SYS and ATHENA_SYS_COMPAT value.
 case `uname -srm` in
@@ -166,23 +148,10 @@ Linux)
   ERROR_CFLAGS=-Werror
   ;;
 esac
-PATH=$athtoolroot/usr/athena/bin:$PATH
+PATH=/usr/athena/bin:$PATH
 
 if [ false = "$mungepath" ]; then
   PATH=$savepath
-fi
-
-if [ -n "$athtoolroot" ]; then
-  ext=${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}
-  LD_LIBRARY_PATH=$athtoolroot/usr/athena/lib$ext
-  REPLISPDIR=$athtoolroot/usr/athena/share/rep/lisp
-  REPEXECDIR=$athtoolroot/usr/athena/libexec/rep
-  export LD_LIBRARY_PATH REPLISPDIR REPEXECDIR
-  if [ irix = "$OS" ]; then
-    # libtool likes to use this variable, which overrides LD_LIBRARY_PATH.
-    LD_LIBRARYN32_PATH=$LD_LIBRARY_PATH
-    export LD_LIBRARYN32_PATH
-  fi
 fi
 
 # Determine the Athena version
@@ -196,7 +165,7 @@ export ATHENA_MAJOR_VERSION ATHENA_MINOR_VERSION ATHENA_PATCH_VERSION
 
 # Determine if gmake is available. (It should be, unless this is a
 # full build and we haven't built it yet.)
-if [ -x $athtoolroot/usr/athena/bin/gmake ]; then
+if [ -x /usr/athena/bin/gmake ]; then
   MAKE=gmake
 else
   MAKE=make
@@ -205,11 +174,10 @@ fi
 export WARN_CFLAGS ERROR_CFLAGS CC CXX MAKE
 
 if [ -r Makefile.athena ]; then
-  export SRVD SOURCE COMPILER ATHTOOLROOT
+  export SRVD SOURCE COMPILER
   SRVD=$srvd
   SOURCE=$source
   COMPILER=$CC
-  ATHTOOLROOT=$athtoolroot
   if [ dist = "$operation" ]; then
     export CONFIG_SITE XCONFIGDIR
     CONFIG_SITE=$source/packs/build/config.site
@@ -217,8 +185,6 @@ if [ -r Makefile.athena ]; then
   fi
   $MAKE $n -f Makefile.athena "$operation"
 elif [ -f configure.in ]; then
-  export ATHTOOLROOT
-  ATHTOOLROOT=$athtoolroot
   if [ -x configure.athena ]; then
     configure=configure.athena
   else
@@ -237,7 +203,7 @@ elif [ -f configure.in ]; then
       $maybe cp "$source/packs/build/autoconf/config.guess" .
       $maybe cp "$source/packs/build/autoconf/config.sub" .
       $maybe cp "$source/packs/build/aclocal.m4" .
-      $maybe autoconf -m ${ATHTOOLROOT}/usr/athena/share/autoconf || exit 1
+      $maybe autoconf || exit 1
     fi
     $maybe cp "$source/packs/build/config.site" config.site.athena
     ;;
@@ -272,21 +238,20 @@ elif [ -r Imakefile ]; then
     ;;
   prepare)
     $maybe imake "-Iconfig" -DUseInstalled "-DTOPDIR=`pwd`" \
-      "-DTOOLROOT=$athtoolroot" "-DXCONFIGDIR=`pwd`/config"
+      "-DXCONFIGDIR=`pwd`/config"
     $maybe $MAKE Makefiles
     ;;
   clean)
     $MAKE $n clean
     ;;
   all)
-    $MAKE $n includes depend all TOP=`pwd` MAKE="$MAKE TOP=`pwd`" \
-      ATHTOOLROOT=$ATHTOOLROOT
+    $MAKE $n includes depend all TOP=`pwd` MAKE="$MAKE TOP=`pwd`"
     ;;
   check)
     ;;
   install)
     $MAKE $n install install.man "DESTDIR=$srvd" TOP=`pwd` \
-      MAKE="$MAKE TOP=`pwd`" ATHTOOLROOT=$ATHTOOLROOT
+      MAKE="$MAKE TOP=`pwd`"
     ;;
   esac
 elif [ -r Makefile ]; then
@@ -294,16 +259,16 @@ elif [ -r Makefile ]; then
   dist|prepare)
     ;;
   clean)
-    $MAKE $n clean "ATHTOOLROOT=$athtoolroot"
+    $MAKE $n clean
     ;;
   all)
-    $MAKE $n all CC="$CC" "ATHTOOLROOT=$athtoolroot"
+    $MAKE $n all CC="$CC"
     ;;
   check)
     $MAKE $n check
     ;;
   install)
-    $MAKE $n install "DESTDIR=$srvd" "ATHTOOLROOT=$athtoolroot"
+    $MAKE $n install "DESTDIR=$srvd"
     ;;
   esac
 else
