@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 1997-01-30 22:29:34 ghudson Exp $
+# $Id: Makefile.athena,v 1.3.8.1 1999-11-09 03:15:59 tb Exp $
 
 SHELL=/bin/sh
 
@@ -15,4 +15,6 @@ all:
 check:
 
 install:
+	mkdir -p $$SRVD/usr/athena/lib/X11/fonts/misc
+	touch $$SRVD/usr/athena/lib/X11/fonts/misc/fonts.dir
 	${MAKE} install install.man "DESTDIR=$$SRVD"

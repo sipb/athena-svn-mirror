@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.3 1998-11-04 17:21:15 danw Exp $
+# $Id: Makefile.in,v 1.3.4.1 1999-11-09 03:17:50 tb Exp $
 #	Makefile.in	4.3	6/11/83
 #
 # C Shell with process control; VM/UNIX VAX Makefile
@@ -464,6 +464,8 @@ vgrind:
 	@vgrind -t -x -h Index index >/crp/bill/csh/index.t
 
 install: tcsh 
+	mkdir -p ${DESTBIN}
+	mkdir -p ${DESTMAN}
 	-rm -f ${DESTBIN}/tcsh
 	cp tcsh ${DESTBIN}/tcsh
 	chmod 555 ${DESTBIN}/tcsh
