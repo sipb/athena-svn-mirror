@@ -46,7 +46,7 @@
 
 #if ! lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.2 1990-03-23 13:22:20 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/com_err.c,v 1.3 1992-07-16 18:21:42 miki Exp $";
 #endif	/* ! lint */
 
 static void
@@ -91,6 +91,8 @@ void com_err_va (whoami, code, fmt, args)
     const char *fmt;
     va_list args;
 {
+  if (! com_err_hook)
+        com_err_hook = default_com_err_proc;
     (*com_err_hook) (whoami, code, fmt, args);
 }
 
