@@ -5,6 +5,7 @@ sun4)
 	echo "/etc/inet/services"		>> "$CONFCHG"
 
 	echo "/var/spool/cron/crontabs/lp"	>> "$DEADFILES"
+	echo "/etc/nscd.conf"			>> "$DEADFILES"
 
 	# The appletalk driver wasn't installed properly in 8.1.0 because
 	# the finish-update script was buggy.  Try again.
