@@ -5,8 +5,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
  *	$Author: ambar $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.6 1987-08-27 16:57:12 ambar Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.7 1987-11-17 14:28:36 ambar Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.6  87/08/27  16:57:12  ambar
+ * zephyrisation now works.
+ * 
  * Revision 1.5  87/08/25  18:31:49  ambar
  * fixed core-dumping bug (core-dumped on unknown user).
  * 
@@ -21,7 +24,7 @@
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.6 1987-08-27 16:57:12 ambar Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.7 1987-11-17 14:28:36 ambar Exp $";
 
 #endif lint
 
@@ -118,6 +121,7 @@ struct utmp user;
 #define NMAX sizeof(user.ut_name)
 #define LMAX sizeof(user.ut_line)
 #define HMAX sizeof(user.ut_host)
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
 
 struct person {			/* one for each person fingered */
 	char *name;		/* name */
@@ -1051,7 +1055,7 @@ findwhen(pers)
 				if (count++ == MAXSEARCH)
 					goto fudged;
 				if (!strncmp(bp->ut_name, pers->name,
-					     strlen(pers->name))) {
+					     MIN(strlen(pers->name)+1, NMAX))) {
 					(void) strncpy(pers->tty,
 						       bp->ut_line, LMAX);
 					(void) strncpy(pers->host,
