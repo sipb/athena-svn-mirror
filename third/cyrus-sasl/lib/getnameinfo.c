@@ -1,6 +1,6 @@
 /*
  * Mar  8, 2000 by Hajimu UMEMOTO <ume@mahoroba.org>
- * $Id: getnameinfo.c,v 1.1.1.1 2002-10-13 18:01:33 ghudson Exp $
+ * $Id: getnameinfo.c,v 1.1.1.2 2003-02-12 22:33:35 ghudson Exp $
  *
  * This module is besed on ssh-1.2.27-IPv6-1.5 written by
  * KIKUCHI Takahiro <kick@kyoto.wide.ad.jp>
@@ -59,7 +59,9 @@
  */
 
 #include "config.h"
-#include <arpa/inet.h>
+#ifndef WIN32
+# include <arpa/inet.h>
+#endif /* WIN32 */
 #include <stdio.h>
 #include <string.h>
 

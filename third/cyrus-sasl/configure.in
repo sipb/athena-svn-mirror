@@ -1,7 +1,7 @@
 dnl configure.in for the SASL library
 dnl Rob Siemborski
 dnl Rob Earhart
-dnl $Id: configure.in,v 1.1.1.1 2002-10-13 18:02:19 ghudson Exp $
+dnl $Id: configure.in,v 1.1.1.2 2003-02-12 22:34:21 ghudson Exp $
 dnl
 dnl Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
 dnl
@@ -58,7 +58,7 @@ dnl
 dnl REMINDER: When changing the version number here, please also update
 dnl the values in win32/include/config.h and include/sasl.h as well.
 dnl
-AM_INIT_AUTOMAKE(cyrus-sasl, 2.1.8)
+AM_INIT_AUTOMAKE(cyrus-sasl, 2.1.12)
 CMU_INIT_AUTOMAKE
 
 # and include our config dir scripts
@@ -85,7 +85,7 @@ dnl let's just link against local.  otherwise we never find anything useful.
 if test "$ac_cv_prog_gcc" = yes; then
   dnl xxx we should add -W at some point (but that might scare people)
   CFLAGS="-Wall ${CFLAGS}"
-  GCC_VERSION=`gcc -v 2>&1 | sed -n -e '/version/s/.*version \([[0-9]]\)\..*/\1/p'`
+  GCC_VERSION=`$CC -v 2>&1 | sed -n -e '/version/s/.*version \([[0-9]]\)\..*/\1/p'`
   if test "$GCC_VERSION" != "3"; then
     CPPFLAGS="${CPPFLAGS} -I/usr/local/include"
   fi
@@ -196,6 +196,9 @@ fi
 
 AM_CONDITIONAL(SAMPLE, test "$enable_sample" = yes)
 
+dnl call before we do the berkeley DB checks
+CMU_SOCKETS
+
 dnl we extracted this to config/sasldb.m4
 SASL_DB_PATH_CHECK()
 SASL_DB_CHECK()
@@ -240,8 +243,6 @@ fi
 
 dnl See if we can provide a default logging function...
 AC_CHECK_FUNCS(syslog)
-
-CMU_SOCKETS
 
 AC_ARG_WITH(pam, [  --with-pam=DIR          use PAM (rooted in DIR) [yes] ],
 	with_pam=$withval,
@@ -378,36 +379,7 @@ else
   AC_MSG_RESULT(disabled)
 fi
 
-dnl Test for OpenSSL (required for OTP, SRP and NTLM)
-AC_ARG_WITH(with-openssl,[  --with-openssl=PATH     use OpenSSL from PATH],
-	with_openssl="${withval}")
-
-case "$with_openssl" in
-	no) with_openssl="no";;
-	""|yes) 
-	  dnl if openssl has been compiled with the rsaref2 libraries,
-	  dnl we need to include the rsaref libraries in the crypto check
-                LIB_RSAREF=""
-	        AC_CHECK_LIB(rsaref, RSAPublicEncrypt,
-		       LIB_RSAREF="-lRSAglue -lrsaref"; cmu_have_rsaref=yes,
-		       cmu_have_rsaref=no)
-
-		AC_CHECK_HEADER(openssl/evp.h, [
-			AC_CHECK_LIB(crypto, EVP_DigestInit,
-					with_openssl="yes",
-					with_openssl="no", $LIB_RSAREF)],
-			with_openssl=no)
-		;;
-	*)
-		if test -d $with_openssl; then
-		  CPPFLAGS="${CPPFLAGS} -I${with_openssl}/include"
-		  LDFLAGS="${LDFLAGS} -L${with_openssl}/lib"
-		else
-		  with_openssl="no"
-		fi
-		;;
-esac
-
+CMU_HAVE_OPENSSL
 AC_MSG_CHECKING(for OpenSSL)
 AC_MSG_RESULT($with_openssl)
 

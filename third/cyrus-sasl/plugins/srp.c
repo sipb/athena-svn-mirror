@@ -1,7 +1,7 @@
 /* SRP SASL plugin
  * Ken Murchison
  * Tim Martin  3/17/00
- * $Id: srp.c,v 1.1.1.1 2002-10-13 18:01:58 ghudson Exp $
+ * $Id: srp.c,v 1.1.1.2 2003-02-12 22:33:48 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -56,9 +56,7 @@
 #include <openssl/hmac.h>
 
 #include <sasl.h>
-#if OPENSSL_VERSION_NUMBER < 0x00907000L
 #define MD5_H  /* suppress internal MD5 */
-#endif
 #include <saslplug.h>
 
 #include "plugin_common.h"
@@ -75,7 +73,7 @@
 
 /*****************************  Common Section  *****************************/
 
-static const char plugin_id[] = "$Id: srp.c,v 1.1.1.1 2002-10-13 18:01:58 ghudson Exp $";
+static const char plugin_id[] = "$Id: srp.c,v 1.1.1.2 2003-02-12 22:33:48 ghudson Exp $";
 
 /* Size of diffie-hellman secrets a and b */
 #define BITSFORab 64
@@ -251,8 +249,9 @@ typedef struct context {
     int            bufsize;
     char           sizebuf[4];
     int            cursize;
-    int            size;
-    int            needsize;
+    unsigned int   size; /* size of buffer */
+    unsigned int   needsize; /* remaining bytes to get size of buffer */
+    unsigned int   in_maxbuf; /* maximum incoming buffer */
     
 } context_t;
 
@@ -376,7 +375,7 @@ static int srp_decode_once(void *context,
 			   unsigned *outputlen)
 {
     context_t *text = (context_t *) context;
-    int tocopy;
+    unsigned int tocopy;
     unsigned diff;
     int ret;
     
@@ -401,7 +400,7 @@ static int srp_decode_once(void *context,
 	    text->cursize = 0;
 	    text->size = ntohl(text->size);
 	    
-	    if ((text->size > 0xFFFF) || (text->size < 0)) {
+	    if (text->size > text->in_maxbuf) {
 		return SASL_FAIL; /* too big probably error */
 	    }
 	    
@@ -2317,6 +2316,8 @@ static int srp_server_mech_step2(context_t *text,
 				"Error setting options");
 	return result;   
     }
+
+    text->in_maxbuf = params->props.maxbufsize;
     
     /* Calculate K (and B) */
     result = ServerCalculateK(text, &text->v,
@@ -3306,7 +3307,9 @@ srp_client_mech_step2(context_t *text,
 				"Error setting options");
 	goto cleanup;
     }
-    
+
+    text->in_maxbuf = params->props.maxbufsize;
+
     /* Send out:
      *
      * A - client's public key

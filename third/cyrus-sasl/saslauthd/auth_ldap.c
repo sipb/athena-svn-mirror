@@ -31,7 +31,7 @@
  * END SYNOPSIS */
 
 #ifdef __GNUC__
-#ident "$Id: auth_ldap.c,v 1.1.1.1 2002-10-13 18:01:10 ghudson Exp $"
+#ident "$Id: auth_ldap.c,v 1.1.1.2 2003-02-12 22:33:28 ghudson Exp $"
 #endif
 
 /* PUBLIC DEPENDENCIES */
@@ -64,9 +64,18 @@ auth_ldap(
   /* END PARAMETERS */
   )
 {
+	static LAK *lak = NULL;
 	int rc = 0;
 
-	rc = lak_authenticate(login, realm, password, SASLAUTHD_CONF_FILE);
+	if (lak == NULL) {
+		rc = lak_init(SASLAUTHD_CONF_FILE, &lak);
+		if (rc != LAK_OK) {
+			lak = NULL;
+			RETURN("NO");
+		}
+	}
+
+	rc = lak_authenticate(lak, login, realm, password);
     	if (rc == LAK_OK) {
 		RETURN("OK");
 	} else {

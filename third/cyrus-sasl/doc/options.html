@@ -1,6 +1,6 @@
 <HTML><HEAD>
 <title>Options for Cyrus SASL</title>
-<!-- $Id: options.html,v 1.1.1.1 2002-10-13 18:01:15 ghudson Exp $ -->
+<!-- $Id: options.html,v 1.1.1.2 2003-02-12 22:33:55 ghudson Exp $ -->
 </HEAD>
 <BODY>
 <h1>Options for Cyrus SASL</h1>
@@ -60,11 +60,12 @@ used by sasl_checkpass (possible values: 'auxprop', 'pwcheck',
 <TD>reauth_timeout</TD><TD>DIGEST-MD5</TD>
 <TD>Length in time (in minutes) that authentication info will be
 cached for a fast reauth.  A value of 0 will disable reauth.</TD>
-<TD>1440 (24 hours)</TD>
+<TD>0</TD>
 </TR>
 <TR>
 <TD>saslauthd_path</TD><TD>SASL Library</TD>
-<TD>Path to saslauthd binary</TD><TD>system dependant</TD>
+<TD>Path to saslauthd run directory (<b>including</b> the "/mux" named pipe)</TD>
+<TD>system dependant</TD>
 </TR>
 <TR>
 <TD>sasldb_path</TD><TD>sasldb plugin</TD>

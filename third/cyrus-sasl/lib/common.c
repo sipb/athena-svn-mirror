@@ -1,7 +1,7 @@
 /* common.c - Functions that are common to server and clinet
  * Rob Siemborski
  * Tim Martin
- * $Id: common.c,v 1.1.1.1 2002-10-13 18:01:56 ghudson Exp $
+ * $Id: common.c,v 1.1.1.2 2003-02-12 22:33:52 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -70,10 +70,15 @@
 #include <unistd.h>
 #endif
 
+static int _sasl_getpath(void *context __attribute__((unused)), const char **path);
+
 static const char build_ident[] = "$Build: libsasl " PACKAGE "-" VERSION " $";
 
+/* It turns out to be conveinent to have a shared sasl_utils_t */
+LIBSASL_VAR const sasl_utils_t *sasl_global_utils = NULL;
+
 /* Should be a null-terminated array that lists the available mechanisms */
-static const char **global_mech_list = NULL;
+static char **global_mech_list = NULL;
 
 void *free_mutex = NULL;
 
@@ -322,7 +327,7 @@ void sasl_done(void)
 
   _sasl_free_utils(&sasl_global_utils);
 
-  sasl_FREE(global_mech_list);
+  if(global_mech_list) sasl_FREE(global_mech_list);
   global_mech_list = NULL;
 
   /* in case of another init/done */
@@ -407,9 +412,6 @@ int _sasl_conn_init(sasl_conn_t *conn,
 
   RETURN(conn, SASL_OK);
 }
-
-/* It turns out to be conveinent to have a shared sasl_utils_t */
-const sasl_utils_t *sasl_global_utils = NULL;
 
 int _sasl_common_init(void)
 {
@@ -1038,20 +1040,6 @@ _sasl_getsimple(void *context,
 }
 
 static int
-_sasl_getpath(void *context __attribute__((unused)),
-	      const char **path)
-{
-  if (! path)
-    return SASL_BADPARAM;
-
-  *path = getenv(SASL_PATH_ENV_VAR);
-  if (! *path)
-    *path = PLUGINDIR;
-
-  return SASL_OK;
-}
-
-static int
 _sasl_verifyfile(void *context __attribute__((unused)),
 		 char *file  __attribute__((unused)),
 		 int type  __attribute__((unused)))
@@ -1326,7 +1314,10 @@ _sasl_log (sasl_conn_t *conn,
     }
   }
 
-  out[outlen]=0; /* put 0 at end */
+  /* put 0 at end */
+  result = _buf_alloc(&out, &alloclen, outlen+1);
+  if (result != SASL_OK) goto done;
+  out[outlen]=0;
 
   va_end(ap);    
 
@@ -1634,7 +1625,7 @@ int _sasl_ipfromstring(const char *addr,
 	return SASL_BADPARAM;
 
     if (out) {
-	if (outlen < (unsigned)ai->ai_addrlen) {
+	if (outlen < (socklen_t)ai->ai_addrlen) {
 	    freeaddrinfo(ai);
 	    return SASL_BUFOVER;
 	}
@@ -1707,7 +1698,7 @@ int _sasl_build_mechlist(void)
     for (p = olist; p; p = p_next) {
 	p_next = p->next;
 
-	global_mech_list[count++] = p->d;
+	global_mech_list[count++] = (char *) p->d;
 
     	sasl_FREE(p);
     }
@@ -1741,3 +1732,190 @@ int sasl_listmech(sasl_conn_t *conn,
     
     PARAMERROR(conn);
 }
+
+
+#ifndef WIN32
+static int
+_sasl_getpath(void *context __attribute__((unused)),
+	      const char **path)
+{
+  if (! path)
+    return SASL_BADPARAM;
+
+  *path = getenv(SASL_PATH_ENV_VAR);
+  if (! *path)
+    *path = PLUGINDIR;
+
+  return SASL_OK;
+}
+
+#else
+/* Return NULL on failure */
+static int
+_sasl_getpath(void *context __attribute__((unused)), const char **path)
+{
+    /* Open registry entry, and find all registered SASL libraries.
+     *
+     * Registry location:
+     *
+     *     SOFTWARE\\Carnegie Mellon\\Project Cyrus\\SASL Library
+     *
+     * Key - value:
+     *
+     *     "SearchPath" - value: PATH like (';' delimited) list
+     *                    of directories where to search for plugins
+     *                    The list may contain references to environment
+     *                    variables (e.g. %PATH%).
+     *
+     */
+    HKEY  hKey;
+    DWORD ret;
+    DWORD ValueType;		    /* value type */
+    DWORD cbData;		    /* value size */
+    BYTE * ValueData;		    /* value */
+    DWORD cbExpandedData;	    /* "expanded" value size */
+    BYTE * ExpandedValueData;	    /* "expanded" value */
+    char * return_value;	    /* function return value */
+    char * tmp;
+
+    /* Initialization */
+    ExpandedValueData = NULL;
+    ValueData = NULL;
+    return_value = NULL;
+
+    /* Open the registry */
+    ret = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+		       SASL_ROOT_KEY,
+		       0,
+		       KEY_READ,
+		       &hKey);
+
+    if (ret != ERROR_SUCCESS) { 
+		/* no registry entry */
+		*path = PLUGINDIR;
+		return SASL_OK; 
+	}
+
+    /* figure out value type and required buffer size */
+    /* the size will include space for terminating NUL if required */
+    RegQueryValueEx (hKey,
+		     SASL_PATH_SUBKEY,
+		     NULL,	    /* reserved */
+		     &ValueType,
+		     NULL,
+		     &cbData);
+ 
+    /* Only accept string related types */
+    if (ValueType != REG_EXPAND_SZ &&
+	ValueType != REG_MULTI_SZ &&
+	ValueType != REG_SZ) {
+	return_value = NULL;
+	goto CLEANUP;
+    }
+
+    /* Any high water mark? */
+    ValueData = sasl_ALLOC(cbData);
+    if (ValueData == NULL) {
+	return_value = NULL;
+	goto CLEANUP;
+    };
+
+    RegQueryValueEx (hKey,
+		     SASL_PATH_SUBKEY,
+		     NULL,	    /* reserved */
+		     &ValueType,
+		     ValueData,
+		     &cbData);
+
+    switch (ValueType) {
+    case REG_EXPAND_SZ:
+        /* : A random starting guess */
+        cbExpandedData = cbData + 1024;
+        ExpandedValueData = sasl_ALLOC(cbExpandedData);
+        if (ExpandedValueData == NULL) {
+            return_value = NULL;
+            goto CLEANUP;
+        };
+
+        cbExpandedData = ExpandEnvironmentStrings(
+                                                  ValueData,
+                                                  ExpandedValueData,
+                                                  cbExpandedData);
+
+        if (cbExpandedData == 0) {
+            /* : GetLastError() contains the reason for failure */
+            return_value = NULL;
+            goto CLEANUP;
+        }
+
+        /* : Must retry expansion with the bigger buffer */
+        if (cbExpandedData > cbData + 1024) {
+            /* : Memory leak here if can't realloc */
+            ExpandedValueData = sasl_REALLOC(ExpandedValueData, cbExpandedData);
+            if (ExpandedValueData == NULL) {
+                return_value = NULL;
+                goto CLEANUP;
+            };
+
+            cbExpandedData = ExpandEnvironmentStrings(
+                                                      ValueData,
+                                                      ExpandedValueData,
+                                                      cbExpandedData);
+
+            /* : This should not happen */
+            if (cbExpandedData == 0) {
+                /* : GetLastError() contains the reason for failure */
+                return_value = NULL;
+                goto CLEANUP;
+            }
+        }
+
+        sasl_FREE(ValueData);
+        ValueData = ExpandedValueData;
+        /* : This is to prevent automatical freeing of this block on cleanup */
+        ExpandedValueData = NULL;
+
+        break;
+
+    case REG_MULTI_SZ:
+        tmp = ValueData;
+
+        /* : We shouldn't overflow here, as the buffer is guarantied
+           : to contain at least two consequent NULs */
+        while (1) {
+            if (tmp[0] == '\0') {
+                /* : Stop the process if we found the end of the string (two consequent NULs) */
+                if (tmp[1] == '\0') {
+                    break;
+                }
+
+                /* : Replace delimiting NUL with our delimiter characted */
+                tmp[0] = PATHS_DELIMITER;
+            }
+            tmp += strlen(tmp);
+        }
+        break;
+
+    case REG_SZ:
+        /* Do nothing, it is good as is */
+        break;
+
+    default:
+        return_value = NULL;
+        goto CLEANUP;
+    }
+
+    return_value = ValueData;
+
+    CLEANUP:
+    RegCloseKey(hKey);
+    if (ExpandedValueData != NULL) sasl_FREE(ExpandedValueData);
+    if (return_value == NULL) {
+	if (ValueData != NULL) sasl_FREE(ValueData);
+    }
+    *path = return_value;
+
+	return SASL_OK;
+}
+
+#endif

@@ -1,4 +1,7 @@
 /* saslauthd.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
+#ifndef _SASLAUTHD_H
+#define _SASLAUTHD_H
+
 #include <stdio.h>
 
 
@@ -19,13 +22,6 @@
 
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
 #undef TIME_WITH_SYS_TIME
-
-/* Symbols that need defining */
-/* do we have gssapi.h or gssapi/gssapi.h? */
-#undef HAVE_GSSAPI_H
-
-/* what flavor of GSSAPI are we using? */
-#undef HAVE_GSS_C_NT_HOSTBASED_SERVICE
 
 /* Do we have kerberos for plaintext password checking? */
 #undef HAVE_KRB
@@ -52,10 +48,15 @@
 /* Are we building with doors */
 #undef USE_DOORS
 
-/* Things SASLAUTHd doesn't really care about */
-#undef HAVE_SASLAUTHD
+/* Do we have OpenSSL? */
+#undef HAVE_OPENSSL
+
+/* DES configuration */
 #undef WITH_DES
 #undef WITH_SSL_DES
+
+/* Things SASLAUTHd doesn't really care about */
+#undef HAVE_SASLAUTHD
 #undef STATIC_GSSAPIV2
 #undef STATIC_KERBEROS4
 #undef STATIC_PLAIN
@@ -152,6 +153,15 @@
 /* define if your compiler has __attribute__ */
 #undef HAVE___ATTRIBUTE__
 
+/* Define if you have the gssapi.h header file */
+#undef HAVE_GSSAPI_H
+
+/* Define if your GSSAPI implimentation defines GSS_C_NT_HOSTBASED_SERVICE */
+#undef HAVE_GSS_C_NT_HOSTBASED_SERVICE
+
+/* Define if your GSSAPI implimentation defines GSS_C_NT_HOSTBASED_SERVICE */
+#undef HAVE_GSS_C_NT_HOSTBASED_SERVICE
+
 
 #ifndef HAVE___ATTRIBUTE__
 /* Can't use attributes... */
@@ -214,3 +224,4 @@ struct iovec {
 #define NI_WITHSCOPEID  0
 #endif
 
+#endif

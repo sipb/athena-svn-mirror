@@ -59,14 +59,33 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AFS_CLIENT_LIBS = @AFS_CLIENT_LIBS@
+AFS_CLIENT_LIBS_STATIC = @AFS_CLIENT_LIBS_STATIC@
+AFS_INC_FLAGS = @AFS_INC_FLAGS@
+AFS_KTC_LIBS = @AFS_KTC_LIBS@
+AFS_KTC_LIBS_STATIC = @AFS_KTC_LIBS_STATIC@
+AFS_LIBAUDIT = @AFS_LIBAUDIT@
+AFS_LIBDES = @AFS_LIBDES@
+AFS_LIBDESA = @AFS_LIBDESA@
+AFS_LIB_FLAGS = @AFS_LIB_FLAGS@
+AFS_RX_LIBS = @AFS_RX_LIBS@
+AFS_TOP_DIR = @AFS_TOP_DIR@
 AWK = @AWK@
 CC = @CC@
 COMPAT_OBJ = @COMPAT_OBJ@
 CPP = @CPP@
+DB_INC_FLAGS = @DB_INC_FLAGS@
+DB_LIB_FLAGS = @DB_LIB_FLAGS@
 DYNSASLFLAGS = @DYNSASLFLAGS@
 GSSAPIBASE_LIBS = @GSSAPIBASE_LIBS@
 GSSAPI_LIBS = @GSSAPI_LIBS@
+KRB_INC_FLAGS = @KRB_INC_FLAGS@
+KRB_LIB_FLAGS = @KRB_LIB_FLAGS@
 LDAP_LIBS = @LDAP_LIBS@
+LIBSSL_INC_DIR = @LIBSSL_INC_DIR@
+LIBSSL_INC_FLAGS = @LIBSSL_INC_FLAGS@
+LIBSSL_LIB_DIR = @LIBSSL_LIB_DIR@
+LIBSSL_LIB_FLAGS = @LIBSSL_LIB_FLAGS@
 LIB_CRYPT = @LIB_CRYPT@
 LIB_DES = @LIB_DES@
 LIB_DYN_SASL = @LIB_DYN_SASL@
@@ -79,6 +98,7 @@ MAIN_COMPAT_OBJ = @MAIN_COMPAT_OBJ@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 PLAIN_LIBS = @PLAIN_LIBS@
+RPATH = @RPATH@
 SASLFLAGS = @SASLFLAGS@
 SASL_DB_BACKEND = @SASL_DB_BACKEND@
 SASL_DB_BACKEND_STATIC = @SASL_DB_BACKEND_STATIC@
@@ -94,10 +114,10 @@ EXTRA_PROGRAMS = testsaslauthd
 
 saslauthd_SOURCES = mechanisms.c globals.h 		    mechanisms.h auth_dce.c auth_dce.h auth_getpwent.c 		    auth_getpwent.h auth_krb5.c auth_krb5.h auth_krb4.c 		    auth_krb4.h auth_pam.c auth_pam.h auth_rimap.c 		    auth_rimap.h auth_shadow.c auth_shadow.h auth_sia.c 		    auth_sia.h auth_sasldb.c auth_sasldb.h lak.c lak.h 		    auth_ldap.c auth_ldap.h
 
-EXTRA_saslauthd_sourced = saslauthd-unix.c saslauthd-doors.c getaddrinfo.c 			  getnameinfo.c
+EXTRA_saslauthd_sources = saslauthd-unix.c saslauthd-doors.c getaddrinfo.c 			  getnameinfo.c
 
 saslauthd_DEPENDENCIES = @MAIN_COMPAT_OBJ@ @COMPAT_OBJ@
-saslauthd_LDADD = @COMPAT_OBJ@ @MAIN_COMPAT_OBJ@ @SASL_KRB_LIB@ 		  @GSSAPIBASE_LIBS@ @GSSAPI_LIBS@ @PLAIN_LIBS@ @LIB_SIA@ 		  @LIB_SOCKET@ @SASL_DB_LIB@ @LIB_PAM@ @LDAP_LIBS@
+saslauthd_LDADD = @COMPAT_OBJ@ @MAIN_COMPAT_OBJ@ @SASL_KRB_LIB@ 		  @GSSAPIBASE_LIBS@ @GSSAPI_LIBS@ @LIB_CRYPT@ @LIB_SIA@ 		  @LIB_SOCKET@ @SASL_DB_LIB@ @LIB_PAM@ @LDAP_LIBS@
 
 
 testsaslauthd_SOURCES = testsaslauthd.c
