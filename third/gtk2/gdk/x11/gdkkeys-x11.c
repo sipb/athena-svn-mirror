@@ -24,6 +24,8 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/.
  */
 
+#include <config.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,8 +40,6 @@
 #include "gdkinternals.h"
 #include "gdkdisplay-x11.h"
 #include "gdkkeysyms.h"
-
-#include "config.h"
 
 #ifdef HAVE_XKB
 #include <X11/XKBlib.h>
@@ -70,7 +70,7 @@ struct _GdkKeymapX11
   guint lock_keysym;
   GdkModifierType group_switch_mask;
   GdkModifierType num_lock_mask;
-  gint num_lock_index;
+  gboolean sun_keypad;
   PangoDirection current_direction;
   gboolean have_direction;
   guint current_serial;
@@ -125,7 +125,7 @@ gdk_keymap_x11_init (GdkKeymapX11 *keymap)
   keymap->mod_keymap = NULL;
   
   keymap->num_lock_mask = 0;
-  keymap->num_lock_index = 1;
+  keymap->sun_keypad = FALSE;
   keymap->group_switch_mask = 0;
   keymap->lock_keysym = GDK_Caps_Lock;
   keymap->have_direction = FALSE;
@@ -206,11 +206,25 @@ gdk_keymap_get_for_display (GdkDisplay *display)
 }
 
 /* Find the index of the group/level pair within the keysyms for a key.
+ * We round up the number of keysyms per keycode to the next even number,
+ * otherwise we lose a whole group of keys
  */
 #define KEYSYM_INDEX(keymap_impl, group, level) \
-  (2 * ((group) % (keymap_impl->keysyms_per_keycode / 2)) + (level))
+  (2 * ((group) % (int)((keymap_impl->keysyms_per_keycode + 1) / 2)) + (level))
 #define KEYSYM_IS_KEYPAD(s) (((s) >= 0xff80 && (s) <= 0xffbd) || \
                              ((s) >= 0x11000000 && (s) <= 0x1100ffff))
+
+static int
+get_symbol (const KeySym *syms, GdkKeymapX11 *keymap_x11, int group, int level)
+{
+  int index;
+
+  index = KEYSYM_INDEX(keymap_x11, group, level);
+  if (index > keymap_x11->keysyms_per_keycode)
+      return NoSymbol;
+
+  return syms[index];
+}
 
 static void
 update_keymaps (GdkKeymapX11 *keymap_x11)
@@ -228,7 +242,6 @@ update_keymaps (GdkKeymapX11 *keymap_x11)
       gint i;
       gint map_size;
       gint keycode;
-      char *server_vendor;
 
       keymap_x11->current_serial = display_x11->keymap_serial;
       
@@ -257,7 +270,7 @@ update_keymaps (GdkKeymapX11 *keymap_x11)
 	  /* Check both groups */
 	  for (i = 0 ; i < 2 ; i++)
 	    {
-	      if (syms[KEYSYM_INDEX (keymap_x11, i, 0)] == GDK_Tab)
+	      if (get_symbol (syms, keymap_x11, i, 0) == GDK_Tab)
 		syms[KEYSYM_INDEX (keymap_x11, i, 1)] = GDK_ISO_Left_Tab;
 	    }
 
@@ -265,12 +278,12 @@ update_keymaps (GdkKeymapX11 *keymap_x11)
            * If there is one keysym and the key symbol has upper and lower
            * case variants fudge the keymap
            */
-          if (syms[KEYSYM_INDEX (keymap_x11, 0, 1)] == 0)
+          if (get_symbol (syms, keymap_x11, 0, 1) == 0)
             {
               guint lower;
               guint upper;
 
-              gdk_keyval_convert_case (syms[KEYSYM_INDEX (keymap_x11, 0, 0)], &lower, &upper);
+              gdk_keyval_convert_case (get_symbol (syms, keymap_x11, 0, 0), &lower, &upper);
               if (lower != upper)
                 {
                   syms[KEYSYM_INDEX (keymap_x11, 0, 0)] = lower;
@@ -298,6 +311,7 @@ update_keymaps (GdkKeymapX11 *keymap_x11)
           gint keycode = keymap_x11->mod_keymap->modifiermap[i];
           gint j;
           KeySym *syms;
+	  guint mask;
 
           /* Ignore invalid keycodes. */
           if (keycode < keymap_x11->min_keycode ||
@@ -306,11 +320,10 @@ update_keymaps (GdkKeymapX11 *keymap_x11)
 
           syms = keymap_x11->keymap + (keycode - keymap_x11->min_keycode) * keymap_x11->keysyms_per_keycode;
 
-          /* GDK_MOD1_MASK is 1 << 3 for example, i.e. the
-           * fourth modifier, i / keyspermod is the modifier
-           * index
+          /* The fourth modifier, GDK_MOD1_MASK is 1 << 3.
+	   * Each group of max_keypermod entries refers to the same modifier.
            */
-          guint mask = 1 << ( i / keymap_x11->mod_keymap->max_keypermod);
+          mask = 1 << (i / keymap_x11->mod_keymap->max_keypermod);
 
           switch (mask)
             {
@@ -318,22 +331,17 @@ update_keymaps (GdkKeymapX11 *keymap_x11)
               /* Get the Lock keysym.  If any keysym bound to the Lock modifier
                * is Caps_Lock, we will interpret the modifier as Caps_Lock;
                * otherwise, if any is bound to Shift_Lock, we will interpret
-               * the modifier as Shift_Lock.
+               * the modifier as Shift_Lock. Otherwise, the lock modifier
+	       * has no effect.
                */
-              if (keymap_x11->lock_keysym != GDK_Caps_Lock)
-                {
-                  for (j = 0; j < keymap_x11->keysyms_per_keycode; j++)
-                    {
-                      if (syms[j] == GDK_Caps_Lock)
-                        {
-                          keymap_x11->lock_keysym = GDK_Caps_Lock;
-                          break;
-                        }
-                      else if (syms[j] == GDK_Shift_Lock &&
-                               keymap_x11->lock_keysym == GDK_VoidSymbol)
-                        keymap_x11->lock_keysym = GDK_Shift_Lock;
-                    }
-                }
+	      for (j = 0; j < keymap_x11->keysyms_per_keycode; j++)
+		{
+		  if (syms[j] == GDK_Caps_Lock)
+		    keymap_x11->lock_keysym = GDK_Caps_Lock;
+		  else if (syms[j] == GDK_Shift_Lock &&
+			   keymap_x11->lock_keysym == GDK_VoidSymbol)
+		    keymap_x11->lock_keysym = GDK_Shift_Lock;
+		}
               break;
 
             case GDK_CONTROL_MASK:
@@ -368,13 +376,11 @@ update_keymaps (GdkKeymapX11 *keymap_x11)
        * modifier is on in the third element of the keysym array, instead
        * of the second.
        */
-      server_vendor = ServerVendor (xdisplay);
-      if (server_vendor &&
-          (strcmp (server_vendor, "Sun Microsystems, Inc.") == 0) &&
+      if ((strcmp (ServerVendor (xdisplay), "Sun Microsystems, Inc.") == 0) &&
           (keymap_x11->keysyms_per_keycode > 2))
-        keymap_x11->num_lock_index = 2;
+        keymap_x11->sun_keypad = TRUE;
       else
-        keymap_x11->num_lock_index = 1;
+        keymap_x11->sun_keypad = FALSE;
     }
 }
 
@@ -384,6 +390,23 @@ get_keymap (GdkKeymapX11 *keymap_x11)
   update_keymaps (keymap_x11);
   
   return keymap_x11->keymap;
+}
+
+#define GET_EFFECTIVE_KEYMAP(keymap) get_effective_keymap ((keymap), G_STRFUNC)
+
+static GdkKeymap *
+get_effective_keymap (GdkKeymap  *keymap,
+		       const char *function)
+{
+  if (!keymap)
+    {
+      GDK_NOTE (MULTIHEAD,
+		g_message ("reverting to default display keymap in %s",
+			   function));
+      return gdk_keymap_get_default ();
+    }
+
+  return keymap;
 }
 
 #if HAVE_XKB
@@ -452,13 +475,7 @@ _gdk_keymap_keys_changed (GdkDisplay *display)
 PangoDirection
 gdk_keymap_get_direction (GdkKeymap *keymap)
 {
-  if (!keymap)
-    {
-      keymap = gdk_keymap_get_for_display (gdk_display_get_default ());
-      GDK_NOTE (MULTIHEAD,
-		g_message ("_multihead : reverting to default display keymap "
-			   "in gdk_keymap_get_direction"));
-    }
+  keymap = GET_EFFECTIVE_KEYMAP (keymap);
   
 #if HAVE_XKB
   if (KEYMAP_USE_XKB (keymap))
@@ -513,14 +530,7 @@ gdk_keymap_get_entries_for_keyval (GdkKeymap     *keymap,
   g_return_val_if_fail (n_keys != NULL, FALSE);
   g_return_val_if_fail (keyval != 0, FALSE);
 
-  if (!keymap)
-    {
-      keymap = gdk_keymap_get_for_display (gdk_display_get_default ());
-      GDK_NOTE (MULTIHEAD,
-		g_message ("_multihead : reverting to default display keymap "
-			   "in gdk_keymap_get_entries_for_keyval\n"));
-    }
-
+  keymap = GET_EFFECTIVE_KEYMAP (keymap);
   keymap_x11 = GDK_KEYMAP_X11 (keymap);
   
   retval = g_array_new (FALSE, FALSE, sizeof (GdkKeymapKey));
@@ -667,14 +677,7 @@ gdk_keymap_get_entries_for_keycode (GdkKeymap     *keymap,
   g_return_val_if_fail (keymap == NULL || GDK_IS_KEYMAP (keymap), FALSE);
   g_return_val_if_fail (n_entries != NULL, FALSE);
 
-  if (!keymap)
-    {
-      keymap = gdk_keymap_get_for_display (gdk_display_get_default ());
-      GDK_NOTE (MULTIHEAD,
-		g_message ("_multihead : reverting to default display keymap "
-			   "in gdk_keymap_get_entries_for_keycode\n"));
-    }
-
+  keymap = GET_EFFECTIVE_KEYMAP (keymap);
   keymap_x11 = GDK_KEYMAP_X11 (keymap);
 
   update_keyrange (keymap_x11);
@@ -840,15 +843,8 @@ gdk_keymap_lookup_key (GdkKeymap          *keymap,
   g_return_val_if_fail (keymap == NULL || GDK_IS_KEYMAP (keymap), 0);
   g_return_val_if_fail (key != NULL, 0);
   g_return_val_if_fail (key->group < 4, 0);
-  
-  if (!keymap)
-    {
-      keymap = gdk_keymap_get_for_display (gdk_display_get_default ());
-      GDK_NOTE (MULTIHEAD,
-		g_message ("_multihead : reverting to default display keymap "
-			   "in gdk_keymap_lookup_key\n"));
-    }
 
+  keymap = GET_EFFECTIVE_KEYMAP (keymap);
   keymap_x11 = GDK_KEYMAP_X11 (keymap);
   
 #ifdef HAVE_XKB
@@ -863,14 +859,17 @@ gdk_keymap_lookup_key (GdkKeymap          *keymap,
     {
       const KeySym *map = get_keymap (keymap_x11);
       const KeySym *syms = map + (key->keycode - keymap_x11->min_keycode) * keymap_x11->keysyms_per_keycode;
-      return syms [KEYSYM_INDEX (keymap_x11, key->group, key->level)];
+      return get_symbol (syms, keymap_x11, key->group, key->level);
     }
 }
 
 #ifdef HAVE_XKB
-/* This is copied straight from XFree86 Xlib, because I needed to
- * add the group and level return. It's unchanged for ease of
- * diff against the Xlib sources; don't reformat it.
+/* This is copied straight from XFree86 Xlib, to:
+ *  - add the group and level return.
+ *  - change the interpretation of mods_rtrn as described
+ *    in the docs for gdk_keymap_translate_keyboard_state()
+ * It's unchanged for ease of diff against the Xlib sources; don't
+ * reformat it.
  */
 static Bool
 MyEnhancedXkbTranslateKeyCode(register XkbDescPtr     xkb,
@@ -924,29 +923,48 @@ MyEnhancedXkbTranslateKeyCode(register XkbDescPtr     xkb,
     if (type->map) { /* find the column (shift level) within the group */
         register int i;
         register XkbKTMapEntryPtr entry;
+	/* ---- Begin section modified for GDK  ---- */
+	int found = 0;
+	
         for (i=0,entry=type->map;i<type->map_count;i++,entry++) {
-            if ((entry->active)&&((mods&type->mods.mask)==entry->mods.mask)) {
+	    if (mods_rtrn) {
+		int bits = 0;
+		unsigned long tmp = entry->mods.mask;
+		while (tmp) {
+		    if ((tmp & 1) == 1)
+			bits++;
+		    tmp >>= 1;
+		}
+		/* We always add one-modifiers levels to mods_rtrn since
+		 * they can't wipe out bits in the state unless the
+		 * level would be triggered. But return other modifiers
+		 * 
+		 */
+		if (bits == 1 || (mods&type->mods.mask)==entry->mods.mask)
+		    *mods_rtrn |= entry->mods.mask;
+	    }
+	    
+            if (!found&&entry->active&&((mods&type->mods.mask)==entry->mods.mask)) {
                 col+= entry->level;
                 if (type->preserve)
                     preserve= type->preserve[i].mask;
 
-                /* ---- Begin stuff GDK adds to the original Xlib version ---- */
-                
                 if (level_rtrn)
                   *level_rtrn = entry->level;
                 
-                /* ---- End stuff GDK adds to the original Xlib version ---- */
-                
-                break;
+                found = 1;
             }
         }
+	/* ---- End section modified for GDK ---- */
     }
 
     if (keysym_rtrn!=NULL)
         *keysym_rtrn= syms[col];
     if (mods_rtrn) {
-        *mods_rtrn= type->mods.mask&(~preserve);
-
+	/* ---- Begin section modified for GDK  ---- */
+        *mods_rtrn &= ~preserve;
+	/* ---- End section modified for GDK ---- */
+	
         /* ---- Begin stuff GDK comments out of the original Xlib version ---- */
         /* This is commented out because xkb_info is a private struct */
 
@@ -991,11 +1009,12 @@ translate_keysym (GdkKeymapX11   *keymap_x11,
   const KeySym *map = get_keymap (keymap_x11);
   const KeySym *syms = map + (hardware_keycode - keymap_x11->min_keycode) * keymap_x11->keysyms_per_keycode;
 
-#define SYM(k,g,l) syms[KEYSYM_INDEX (k,g,l)]
+#define SYM(k,g,l) get_symbol (syms, k,g,l)
 
   GdkModifierType shift_modifiers;
   gint shift_level;
   guint tmp_keyval;
+  gint num_lock_index;
 
   shift_modifiers = GDK_SHIFT_MASK;
   if (keymap_x11->lock_keysym == GDK_Shift_Lock)
@@ -1010,26 +1029,28 @@ translate_keysym (GdkKeymapX11   *keymap_x11,
   /* Hack: On Sun, the Num Lock modifier uses the third element in the
    * keysym array, and Mode_Switch does not apply for a keypad key.
    */
-  if (group != 0 && keymap_x11->num_lock_index > 1)
+  if (keymap_x11->sun_keypad)
     {
-      gint i;
-
-      for (i = 0; i < keymap_x11->keysyms_per_keycode; i++)
-        {
-          if (KEYSYM_IS_KEYPAD (SYM (keymap_x11, 0, i)))
-            {
-              group = 0;
-              break;
-            }
-        }
+      num_lock_index = 2;
+      
+      if (group != 0)
+	{
+	  gint i;
+	  
+	  for (i = 0; i < keymap_x11->keysyms_per_keycode; i++)
+	    if (KEYSYM_IS_KEYPAD (SYM (keymap_x11, 0, i)))
+	      group = 0;
+	}
     }
+  else
+    num_lock_index = 1;
 
   if ((state & keymap_x11->num_lock_mask) &&
-      KEYSYM_IS_KEYPAD (SYM (keymap_x11, group, keymap_x11->num_lock_index)))
+      KEYSYM_IS_KEYPAD (SYM (keymap_x11, group, num_lock_index)))
     {
       /* Shift, Shift_Lock cancel Num_Lock
        */
-      shift_level = (state & shift_modifiers) ? 0 : keymap_x11->num_lock_index;
+      shift_level = (state & shift_modifiers) ? 0 : num_lock_index;
       if (!SYM (keymap_x11, group, shift_level) && SYM (keymap_x11, group, 0))
         shift_level = 0;
 
@@ -1086,6 +1107,49 @@ translate_keysym (GdkKeymapX11   *keymap_x11,
  * affected by the active keyboard group. The @level is derived from
  * @state. For convenience, #GdkEventKey already contains the translated
  * keyval, so this function isn't as useful as you might think.
+ *
+ * <note><para>
+ * @consumed_modifiers gives modifiers that should be masked out
+ * from @state when comparing this key press to a hot key. For
+ * instance, on a US keyboard, the <literal>plus</literal>
+ * symbol is shifted, so when comparing a key press to a
+ * <literal>&lt;Control&gt;plus</literal> accelerator &lt;Shift&gt; should
+ * be masked out.
+ * </para>
+ * <informalexample><programlisting>
+ * &sol;* We want to ignore irrelevant modifiers like ScrollLock *&sol;
+ * &num;define ALL_ACCELS_MASK (GDK_CONTROL_MASK | GDK_SHIFT_MASK | GDK_MOD1_MASK)
+ * gdk_keymap_translate_keyboard_state (keymap, event->hardware_keycode,
+ *                                      event->state, event->group,
+ *                                      &amp;keyval, NULL, NULL, &amp;consumed);
+ * if (keyval == GDK_PLUS &&
+ *     (event->state &amp; ~consumed &amp; ALL_ACCELS_MASK) == GDK_CONTROL_MASK)
+ *   &sol;* Control was pressed *&sol;
+ * </programlisting></informalexample>
+ * <para>
+ * An older interpretation @consumed_modifiers was that it contained
+ * all modifiers that might affect the translation of the key;
+ * this allowed accelerators to be stored with irrelevant consumed
+ * modifiers, by doing:</para>
+ * <informalexample><programlisting>
+ * &sol;* XXX Don't do this XXX *&sol;
+ * if (keyval == accel_keyval &&
+ *     (event->state &amp; ~consumed &amp; ALL_ACCELS_MASK) == (accel_mods &amp; ~consumed))
+ *   &sol;* Accelerator was pressed *&sol;
+ * </programlisting></informalexample>
+ * <para>
+ * However, this did not work if multi-modifier combinations were
+ * used in the keymap, since, for instance, <literal>&lt;Control&gt;</literal>
+ * would be masked out even if only <literal>&lt;Control&gt;&lt;Alt&gt;</literal>
+ * was used in the keymap. To support this usage as well as well as
+ * possible, all <emphasis>single modifier</emphasis> combinations
+ * that could affect the key for any combination of modifiers will
+ * be returned in @consumed_modifiers; multi-modifier combinations
+ * are returned only when actually found in @state. When you store
+ * accelerators, you should always store them with consumed modifiers
+ * removed. Store <literal>&lt;Control&gt;plus</literal>,
+ * not <literal>&lt;Control&gt;&lt;Shift&gt;plus</literal>,
+ * </para></note>
  * 
  * Return value: %TRUE if there was a keyval bound to the keycode/state/group
  **/
@@ -1105,7 +1169,8 @@ gdk_keymap_translate_keyboard_state (GdkKeymap       *keymap,
 
   g_return_val_if_fail (keymap == NULL || GDK_IS_KEYMAP (keymap), FALSE);
   g_return_val_if_fail (group < 4, FALSE);
-  
+
+  keymap = GET_EFFECTIVE_KEYMAP (keymap);  
   keymap_x11 = GDK_KEYMAP_X11 (keymap);
 
   if (keyval)
