@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Subscription list for workstations with large unified partition
-## $Id: sys_rvd.big,v 1.1 2001-08-16 14:46:53 ghudson Exp $
+## $Id: sys_rvd.big,v 1.1.2.1 2001-08-21 00:25:24 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: track-srvd.sh,v 1.1 2001-08-16 14:46:53 ghudson Exp $
+# $Id: track-srvd.sh,v 1.1.2.1 2001-08-21 00:24:57 ghudson Exp $
 
 # track-srvd: Track the srvd on a Solaris machine, deciding between
 # the regular subscription list (sys_rvd) and the list for machines
