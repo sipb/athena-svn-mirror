@@ -140,7 +140,9 @@ exceptword:   WORD
 	{
 	    /* set force_links bit, add to e->names.
 	     */
-	    add_list_elt( wordbuf, FORCE_LINK, LIST( e->names));
+	    if ( file_pat( wordbuf))
+		 add_list_elt( re_conv( wordbuf), FORCE_LINK, &e->patterns);
+	    else add_list_elt( wordbuf,		  FORCE_LINK, LIST( e->names));
 	}
 	;
 shellcmd: nullcmd NEWLINE
