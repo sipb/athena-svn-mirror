@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+ * Copyright (c) 1998-2001 Sendmail, Inc. and its suppliers.
+ *	All rights reserved.
  * Copyright (c) 1983 Eric P. Allman.  All rights reserved.
  * Copyright (c) 1988, 1993
  *	The Regents of the University of California.  All rights reserved.
@@ -10,77 +11,82 @@
  *
  */
 
-#ifndef lint
-static char copyright[] =
-"@(#) Copyright (c) 1988, 1993\n\
-	The Regents of the University of California.  All rights reserved.\n";
-#endif /* not lint */
+#include <sm/gen.h>
 
-#ifndef lint
-static char sccsid[] = "@(#)praliases.c	8.21 (Berkeley) 12/27/1998";
-#endif /* not lint */
+SM_IDSTR(copyright,
+"@(#) Copyright (c) 1998-2001 Sendmail, Inc. and its suppliers.\n\
+	All rights reserved.\n\
+     Copyright (c) 1983 Eric P. Allman.  All rights reserved.\n\
+     Copyright (c) 1988, 1993\n\
+	The Regents of the University of California.  All rights reserved.\n")
 
-#if !defined(NDBM) && !defined(NEWDB)
-  ERROR README:	You must define one of NDBM or NEWDB in order to compile
-  ERROR README:	praliases.
-#endif
+SM_IDSTR(id, "@(#)$Id: praliases.c,v 1.3 2003-04-08 15:42:15 zacheiss Exp $")
 
-#ifdef NDBM
-# define DB_DBM_HSEARCH 1
-# include <db.h>
-#endif
-#ifndef NOT_SENDMAIL
+#include <sys/types.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <unistd.h>
+#ifdef EX_OK
+# undef EX_OK		/* unistd.h may have another use for this */
+#endif /* EX_OK */
+#include <sysexits.h>
+
+$ifndef NOT_SENDMAIL
 # define NOT_SENDMAIL
-#endif
-#include <sendmail.h>
-#include <pathnames.h>
-#ifdef NEWDB
-# include <db.h>
-# ifndef DB_VERSION_MAJOR
-#  define DB_VERSION_MAJOR 1
-# endif
-#endif
-
-#if defined(IRIX64) || defined(IRIX5) || defined(IRIX6) || \
-    defined(BSD4_4) || defined(__osf__) || defined(__GNU_LIBRARY__)
-# ifndef HASSTRERROR
-#  define HASSTRERROR	1	/* has strerror(3) */
-# endif
-#endif
-
-#if !HASSTRERROR
-extern char	*strerror __P((int));
-#endif
+#endif /* ! NOT_SENDMAIL */
+#include <sendmail/sendmail.h>
+#include <sendmail/pathnames.h>
+#include <libsmdb/smdb.h>
 
 static void praliases __P((char *, int, char **));
-#ifdef NDBM
-static void praliases_dbm __P((char *, int, char **));
-#endif
+
+uid_t	RealUid;
+gid_t	RealGid;
+char	*RealUserName;
+uid_t	RunAsUid;
+uid_t	RunAsGid;
+char	*RunAsUserName;
+int	Verbose = 2;
+bool	DontInitGroups = false;
+uid_t	TrustedUid = 0;
+BITMAP256 DontBlameSendmail;
+
+# define DELIMITERS		" ,/"
+# define PATH_SEPARATOR		':'
 
 int
 main(argc, argv)
 	int argc;
 	char **argv;
 {
-	extern char *optarg;
-	extern int optind;
 	char *cfile;
-#if _FFR_GRAB_ALIASFILE_OPTION
 	char *filename = NULL;
-#else
-	char *filename = "/etc/aliases";
-#endif
-	FILE *cfp;
+	SM_FILE_T *cfp;
 	int ch;
 	char afilebuf[MAXLINE];
 	char buf[MAXLINE];
+	struct passwd *pw;
+	static char rnamebuf[MAXNAME];
+	extern char *optarg;
+	extern int optind;
 
-	cfile = _PATH_SENDMAILCF;
-#if _FFR_GRAB_ALIASFILE_OPTION
-	while ((ch = getopt(argc, argv, "C:f:")) != EOF)
-#else
-	while ((ch = getopt(argc, argv, "f:")) != EOF)
-#endif
+	clrbitmap(DontBlameSendmail);
+	RunAsUid = RealUid = getuid();
+	RunAsGid = RealGid = getgid();
+	pw = getpwuid(RealUid);
+	if (pw != NULL)
+	{
+		if (strlen(pw->pw_name) > MAXNAME - 1)
+			pw->pw_name[MAXNAME] = 0;
+		sm_snprintf(rnamebuf, sizeof rnamebuf, "%s", pw->pw_name);
+	}
+	else
+		(void) sm_snprintf(rnamebuf, sizeof rnamebuf,
+		    "Unknown UID %d", (int) RealUid);
+	RunAsUserName = RealUserName = rnamebuf;
+
+	cfile = getcfname(0, 0, SM_GET_SENDMAIL_CF, NULL);
+	while ((ch = getopt(argc, argv, "C:f:")) != -1)
 	{
 		switch ((char)ch) {
 		case 'C':
@@ -91,12 +97,8 @@ main(argc, argv)
 			break;
 		case '?':
 		default:
-			(void)fprintf(stderr,
-#if _FFR_GRAB_ALIASFILE_OPTION
-				"usage: praliases [-C cffile] [-f aliasfile]\n");
-#else
-				"usage: praliases [-f aliasfile]\n");
-#endif
+			(void) sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
+			    "usage: praliases [-C cffile] [-f aliasfile]\n");
 			exit(EX_USAGE);
 		}
 	}
@@ -109,22 +111,28 @@ main(argc, argv)
 		exit(EX_OK);
 	}
 
-	if ((cfp = fopen(cfile, "r")) == NULL)
+	if ((cfp = sm_io_open(SmFtStdio, SM_TIME_DEFAULT, cfile, SM_IO_RDONLY,
+			      NULL)) == NULL)
 	{
-		fprintf(stderr, "praliases: ");
-		perror(cfile);
+		(void) sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
+				     "praliases: %s: %s\n", cfile,
+				     sm_errstring(errno));
 		exit(EX_NOINPUT);
 	}
 
-	while (fgets(buf, sizeof(buf), cfp) != NULL)
+	while (sm_io_fgets(cfp, SM_TIME_DEFAULT, buf, sizeof(buf)) != NULL)
 	{
 		register char *b, *p;
+
+		b = strchr(buf, '\n');
+		if (b != NULL)
+			*b = '\0';
 
 		b = buf;
 		switch (*b++)
 		{
 		  case 'O':		/* option -- see if alias file */
-			if (strncasecmp(b, " AliasFile", 10) == 0 &&
+			if (sm_strncasecmp(b, " AliasFile", 10) == 0 &&
 			    !(isascii(b[10]) && isalnum(b[10])))
 			{
 				/* new form -- find value */
@@ -141,15 +149,15 @@ main(argc, argv)
 			}
 
 			/* this is the A or AliasFile option -- save it */
-			if (strlen(b) >= sizeof afilebuf)
+			if (sm_strlcpy(afilebuf, b, sizeof afilebuf) >=
+			    sizeof afilebuf)
 			{
-				fprintf(stderr,
-					"AliasFile filename too long: %.30s...\n",
+				(void) sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
+				    "praliases: AliasFile filename too long: %.30s\n",
 					b);
-				(void) fclose(cfp);
+				(void) sm_io_close(cfp, SM_TIME_DEFAULT);
 				exit(EX_CONFIG);
 			}
-			strcpy(afilebuf, b);
 			b = afilebuf;
 
 			for (p = b; p != NULL; )
@@ -160,13 +168,51 @@ main(argc, argv)
 					break;
 				b = p;
 
-				p = strpbrk(p, " ,/");
+				p = strpbrk(p, DELIMITERS);
+
 				/* find end of spec */
 				if (p != NULL)
-					p = strpbrk(p, ",\n");
-				if (p != NULL)
-					*p++ = '\0';
+				{
+					bool quoted = false;
 
+					for (; *p != '\0'; p++)
+					{
+						/*
+						**  Don't break into a quoted
+						**  string.
+						*/
+
+						if (*p == '"')
+							quoted = !quoted;
+						else if (*p == ',' && !quoted)
+							break;
+					}
+
+					/* No more alias specs follow */
+					if (*p == '\0')
+					{
+						/* chop trailing whitespace */
+						while (isascii(*p) &&
+						       isspace(*p) &&
+						       p > b)
+							p--;
+						*p = '\0';
+						p = NULL;
+					}
+				}
+
+				if (p != NULL)
+				{
+					char *e = p - 1;
+
+					/* chop trailing whitespace */
+					while (isascii(*e) &&
+					       isspace(*e) &&
+					       e > b)
+						e--;
+					*++e = '\0';
+					*p++ = '\0';
+				}
 				praliases(b, argc, argv);
 			}
 
@@ -174,198 +220,177 @@ main(argc, argv)
 			continue;
 		}
 	}
-	(void) fclose(cfp);
+	(void) sm_io_close(cfp, SM_TIME_DEFAULT);
 	exit(EX_OK);
+	/* NOTREACHED */
+	return EX_OK;
 }
 
 static void
 praliases(filename, argc, argv)
 	char *filename;
-	int  argc;
+	int argc;
 	char **argv;
 {
-#ifdef NEWDB
-	DB *db;
-	DBT newdbkey, newdbcontent;
-	char buf[MAXNAME];
-#endif
-	char *class;
+	int result;
+	char *colon;
+	char *db_name;
+	char *db_type;
+	SMDB_DATABASE *database = NULL;
+	SMDB_CURSOR *cursor = NULL;
+	SMDB_DBENT db_key, db_value;
+	SMDB_DBPARAMS params;
+	SMDB_USER_INFO user_info;
 
-	class = strchr(filename, ':');
-	if (class != NULL)
+	colon = strchr(filename, PATH_SEPARATOR);
+	if (colon == NULL)
 	{
-		if (strncasecmp(filename, "dbm:", 4) == 0)
+		db_name = filename;
+		db_type = SMDB_TYPE_DEFAULT;
+	}
+	else
+	{
+		*colon = '\0';
+		db_name = colon + 1;
+		db_type = filename;
+	}
+
+	/* clean off arguments */
+	for (;;)
+	{
+		while (isascii(*db_name) && isspace(*db_name))
+			db_name++;
+
+		if (*db_name != '-')
+			break;
+		while (*db_name != '\0' &&
+		       !(isascii(*db_name) && isspace(*db_name)))
+			db_name++;
+	}
+
+	/* Skip non-file based DB types */
+	if (db_type != NULL && *db_type != '\0')
+	{
+		if (db_type != SMDB_TYPE_DEFAULT &&
+		    strcmp(db_type, "hash") != 0 &&
+		    strcmp(db_type, "btree") != 0 &&
+		    strcmp(db_type, "dbm") != 0)
 		{
-#ifdef NDBM
-			praliases_dbm(class + 1, argc, argv);
+			sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
+				      "praliases: Skipping non-file based alias type %s\n",
+				db_type);
 			return;
-#else
-			fprintf(stderr, "class dbm not available\n");
-			exit(EX_DATAERR);
-#endif
 		}
-		filename = class + 1;
 	}
-#ifdef NEWDB
-	if (strlen(filename) + 4 >= sizeof buf)
-	{
-		fprintf(stderr, "Alias filename too long: %.30s...\n", filename);
-		exit(EX_USAGE);
-	}
-	(void) strcpy(buf, filename);
-	(void) strcat(buf, ".db");
-# if DB_VERSION_MAJOR < 2
-	db = dbopen(buf, O_RDONLY, 0444, DB_HASH, NULL);
-# else
-	db = NULL;
-	errno = db_open(buf, DB_HASH, DB_RDONLY, 0444, NULL, NULL, &db);
-# endif
-	if (db != NULL)
-	{
-		if (!argc)
-		{
-# if DB_VERSION_MAJOR > 1
-			DBC *dbc;
-# endif
-			bzero(&newdbkey, sizeof newdbkey);
-			bzero(&newdbcontent, sizeof newdbcontent);
 
-# if DB_VERSION_MAJOR < 2
-			while(!db->seq(db, &newdbkey, &newdbcontent, R_NEXT))
-# else
-#  if DB_VERSION_MAJOR > 2 || DB_VERSION_MINOR >=6
-			if ((errno = db->cursor(db, NULL, &dbc, 0)) == 0)
-#  else
-			if ((errno = db->cursor(db, NULL, &dbc)) == 0)
-#  endif
-			{
-				while ((errno = dbc->c_get(dbc, &newdbkey,
-							   &newdbcontent,
-							   DB_NEXT)) == 0)
-# endif
-				printf("%.*s:%.*s\n",
-					(int) newdbkey.size,
-					(char *) newdbkey.data,
-					(int) newdbcontent.size,
-					(char *) newdbcontent.data);
-# if DB_VERSION_MAJOR > 1
-				(void) dbc->c_close(dbc);
-			}
-			else
-			{
-				fprintf(stderr,
-					"praliases: %s: Could not set cursor: %s\n",
-					buf, strerror(errno));
-				errno = db->close(db, 0);
-				exit(EX_DATAERR);
-			}
-# endif
-		}
-		else for (; *argv; ++argv)
-		{
-			bzero(&newdbkey, sizeof newdbkey);
-			bzero(&newdbcontent, sizeof newdbcontent);
-			newdbkey.data = *argv;
-			newdbkey.size = strlen(*argv) + 1;
-# if DB_VERSION_MAJOR < 2
-			if (!db->get(db, &newdbkey, &newdbcontent, 0))
-# else
-			if ((errno = db->get(db, NULL, &newdbkey,
-					     &newdbcontent, 0)) == 0)
-# endif
-				printf("%s:%.*s\n", (char *) newdbkey.data,
-					(int) newdbcontent.size,
-					(char *) newdbcontent.data);
-			else
-				printf("%s: No such key\n",
-					(char *) newdbkey.data);
-		}
-# if DB_VERSION_MAJOR < 2
-		(void)db->close(db);
-# else
-		errno = db->close(db, 0);
-# endif
-	}
-	else
+	if (*db_name == '\0' || (db_type != NULL && *db_type == '\0'))
 	{
-#endif
-#ifdef NDBM
-		praliases_dbm(filename, argc, argv);
-#endif
-#ifdef NEWDB
+		if (colon != NULL)
+			*colon = ':';
+		(void) sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
+		    "praliases: illegal alias specification: %s\n", filename);
+		goto fatal;
 	}
-#endif
+
+	memset(&params, '\0', sizeof params);
+	params.smdbp_cache_size = 1024 * 1024;
+
+	user_info.smdbu_id = RunAsUid;
+	user_info.smdbu_group_id = RunAsGid;
+	(void) sm_strlcpy(user_info.smdbu_name, RunAsUserName,
+			  SMDB_MAX_USER_NAME_LEN);
+
+	result = smdb_open_database(&database, db_name, O_RDONLY, 0,
+				    SFF_ROOTOK, db_type, &user_info, &params);
+	if (result != SMDBE_OK)
+	{
+		sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
+			      "praliases: %s: open: %s\n",
+			      db_name, sm_errstring(result));
+		goto fatal;
+	}
+
+	if (argc == 0)
+	{
+		memset(&db_key, '\0', sizeof db_key);
+		memset(&db_value, '\0', sizeof db_value);
+
+		result = database->smdb_cursor(database, &cursor, 0);
+		if (result != SMDBE_OK)
+		{
+			(void) sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
+			    "praliases: %s: set cursor: %s\n", db_name,
+			    sm_errstring(result));
+			goto fatal;
+		}
+
+		while ((result = cursor->smdbc_get(cursor, &db_key, &db_value,
+						   SMDB_CURSOR_GET_NEXT)) ==
+						   SMDBE_OK)
+		{
+#if 0
+			/* skip magic @:@ entry */
+			if (db_key.size == 2 &&
+			    db_key.data[0] == '@' &&
+			    db_key.data[1] == '\0' &&
+			    db_value.size == 2 &&
+			    db_value.data[0] == '@' &&
+			    db_value.data[1] == '\0')
+				continue;
+#endif /* 0 */
+
+			(void) sm_io_fprintf(smioout, SM_TIME_DEFAULT,
+					     "%.*s:%.*s\n",
+					     (int) db_key.size,
+					     (char *) db_key.data,
+					     (int) db_value.size,
+					     (char *) db_value.data);
+		}
+
+		if (result != SMDBE_OK && result != SMDBE_LAST_ENTRY)
+		{
+			(void) sm_io_fprintf(smioerr, SM_TIME_DEFAULT,
+				"praliases: %s: get value at cursor: %s\n",
+				db_name, sm_errstring(result));
+			goto fatal;
+		}
+	}
+	else for (; *argv != NULL; ++argv)
+	{
+		int get_res;
+
+		memset(&db_key, '\0', sizeof db_key);
+		memset(&db_value, '\0', sizeof db_value);
+		db_key.data = *argv;
+		db_key.size = strlen(*argv);
+		get_res = database->smdb_get(database, &db_key, &db_value, 0);
+		if (get_res == SMDBE_NOT_FOUND)
+		{
+			db_key.size++;
+			get_res = database->smdb_get(database, &db_key,
+						     &db_value, 0);
+		}
+		if (get_res == SMDBE_OK)
+		{
+			(void) sm_io_fprintf(smioout, SM_TIME_DEFAULT,
+					     "%.*s:%.*s\n",
+					     (int) db_key.size,
+					     (char *) db_key.data,
+					     (int) db_value.size,
+					     (char *) db_value.data);
+		}
+		else
+			(void) sm_io_fprintf(smioout, SM_TIME_DEFAULT,
+					     "%s: No such key\n",
+					     (char *)db_key.data);
+	}
+
+ fatal:
+	if (cursor != NULL)
+		(void) cursor->smdbc_close(cursor);
+	if (database != NULL)
+		(void) database->smdb_close(database);
+	if (colon != NULL)
+		*colon = ':';
+	return;
 }
-
-#ifdef NDBM
-static void
-praliases_dbm(filename, argc, argv)
-	char *filename;
-	int  argc;
-	char **argv;
-{
-	DBM *dbp;
-	datum content, key;
-
-	if ((dbp = dbm_open(filename, O_RDONLY, 0)) == NULL)
-	{
-		(void)fprintf(stderr,
-		    "praliases: %s: %s\n", filename, strerror(errno));
-		exit(EX_OSFILE);
-	}
-	if (!argc)
-	{
-		for (key = dbm_firstkey(dbp);
-		    key.dptr != NULL; key = dbm_nextkey(dbp))
-		{
-			content = dbm_fetch(dbp, key);
-			(void)printf("%.*s:%.*s\n",
-				(int) key.dsize, key.dptr,
-				(int) content.dsize, content.dptr);
-		}
-	}
-	else
-	{
-		for (; *argv; ++argv)
-		{
-			/*
-			**  Use the sendmail adaptive algorithm of trying
-			**  the key first without, then if needed with,
-			**  the terminating NULL byte.
-			*/
-			key.dptr = *argv;
-			key.dsize = strlen(*argv);
-			content = dbm_fetch(dbp, key);
-			if (content.dptr == NULL)
-			{
-				key.dsize++;
-				content = dbm_fetch(dbp, key);
-			}
-			if (content.dptr != NULL)
-				(void)printf("%s:%.*s\n", key.dptr,
-					(int) content.dsize, content.dptr);
-			else
-				(void)printf("%s: No such key\n", key.dptr);
-		}
-	}
-	dbm_close(dbp);
-}
-#endif
-
-#if !HASSTRERROR
-
-char *
-strerror(eno)
-	int eno;
-{
-	extern int sys_nerr;
-	extern char *sys_errlist[];
-	static char ebuf[60];
-
-	if (eno >= 0 && eno < sys_nerr)
-		return sys_errlist[eno];
-	(void) sprintf(ebuf, "Error %d", eno);
-	return ebuf;
-}
-
-#endif /* !HASSTRERROR */
