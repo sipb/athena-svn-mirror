@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.c,v $
- *      $Author: jfc $
+ *      $Author: marc $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.22 1991-06-20 14:39:05 jfc Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.23 1992-04-16 19:11:03 marc Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -46,7 +46,7 @@ static void setup_signals(), detach();
 int zwgc_debug = 0;
 #endif
 
-static char *zwgc_version_string = "0.4.4";
+static char *zwgc_version_string = "0.4.5";
 
 /*
  * description_filename_override - <<<>>>
