@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_client_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.5 1987-07-14 16:47:46 jtkohl Exp $";
+static char rcsid_client_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/client.c,v 1.6 1987-07-24 15:12:57 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -38,6 +38,8 @@ static char rcsid_client_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/at
 
 #include "zserver.h"
 #include <sys/socket.h>
+
+static void clt_free();
 
 /*
  * register a client: allocate space, find or insert the address in the
@@ -95,6 +97,8 @@ ZServerDesc_t *server;
 	(*client)->zct_sin.sin_port = notice->z_port;
 	(*client)->zct_sin.sin_family = AF_INET;
 	(*client)->zct_subs = NULLZST;
+	(*client)->zct_subs = NULLZST;
+	(*client)->zct_principal = strsave(notice->z_sender);
 
 	/* chain him in to the clients list in the host list*/
 
@@ -130,7 +134,7 @@ ZHostList_t *host;
 		     clients = clients->q_forw)
 			if (clients->zclt_client == client) {
 				xremque(clients);
-				xfree(client);
+				clt_free(client);
 				xfree(clients);
 				return;
 			}
@@ -172,3 +176,14 @@ ZNotice_t *notice;
 	return(NULLZCNT);
 }
 
+/*
+ * Free storage in use by client
+ */
+
+static void
+clt_free(client)
+ZClient_t *client;
+{
+	xfree(client->zct_principal);
+	xfree(client);
+}
