@@ -49,7 +49,6 @@
 #include <time.h>
 #endif
 #include <sys/types.h>
-#include <sys/timeb.h>
 #include <sys/resource.h>
 #ifdef POSIX
 #include <sys/utsname.h>
