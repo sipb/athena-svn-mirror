@@ -53,6 +53,7 @@ sgi)
 	echo "/etc/services"			>> "$CONFCHG"
 	echo "/etc/aliases"			>> "$CONFCHG"
 	echo "/usr/etc/resolv.conf"		>> "$DEADFILES"
+	echo "/etc/athena/.rc.conf.sync"	>> "$DEADFILES"
 	;;
 
 esac
