@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.1 1998-05-04 22:23:44 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-05-07 21:53:43 ghudson Exp $
 
 # these are only appropriate for BSD 4.4 or derivatives, and are used in
 # development.  normal builds will be done in the top level directory and
@@ -49,7 +49,7 @@ MARGS =	"SYSTYPE=${SYSTYPE}" "SHELL=${SHELL}" "A=${A}" "O=${O}" \
 
 all::
 
-all depend install::
+all depend::
 	@(cd ${SYSTYPE}; pwd; ${MAKE} ${MARGS} $@)
 
 distclean:: clean
