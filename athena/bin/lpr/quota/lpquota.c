@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.4 1990-05-01 14:23:13 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.5 1990-06-26 13:51:13 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.4 1990-05-01 14:23:13 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.5 1990-06-26 13:51:13 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -125,6 +125,7 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
     int create_flag=0;		/* Create user */
     int print_flag=0;		/* Allow printing status */
     modify_user_type set_allow_printing;
+    modify_account_type set_group_printing;
     int allow_printing = -1;
          /* The following is a one of ... */
     int inc_flag = 0;		/* Increment quota */
@@ -132,8 +133,17 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
     int set_flag = 0;		/* Set quota */
     int adj_flag = 0;		/* Adjust quota usage */
     int l_flag = 0;		/* Log flag */
+
+    int grp_flag = 0;           /* Are we accessing a group account */
+    int add_admin_flag = 0;     /* Add admin to a group */
+    int del_admin_flag = 0;     /* Delete admin from a group */
+    int add_user_flag = 0;      /* Add user to a group */
+    int del_user_flag = 0;      /* Delete user to a group */
+    int no_username_flag = 0;   /* True if no username required */
+
     quota_value amount = -1;
-				  
+    quota_account account = 0;  /* Zero means no account specified */
+
     int ret;
     quota_identifier qid;
 
@@ -148,7 +158,8 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
     progname = (arg = rindex(argv[0], '/')) ? arg+1 : argv[0];
 
     while (--argc) {
-	if ((arg = *++argv)[0] == '-') {
+	arg = *++argv;
+	if (arg[0] == '-') {
 	    switch (arg[1]) {
 	    case 'Q':		/* printer name */
 		if(printer) {
@@ -184,6 +195,7 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 		    service = *++argv;
 		} else usage();
 		break;
+
 	    case 'c':
 		create_flag++;
 		break;
@@ -191,9 +203,11 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 	    case 'q':
 		query_flag++;
 		break;
+
 	    case 'l':
 		l_flag++;
 		break;
+
 	    case 'f':
 		if(arg[2]) 
 		    allow_printing = atoi(&arg[2]);
@@ -205,8 +219,6 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 		    fprintf(stderr,"%s: -f must be followed with either 0 or 1\n",progname);
 		    exit(1);
 		}
-		if(allow_printing) set_allow_printing = U_ALLOW_PRINT;
-		else set_allow_printing = U_DISALLOW_PRINT;
 		print_flag = 1;
 		break;
 
@@ -222,6 +234,20 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 		    exit(1);
 		}
 		inc_flag=1;
+		break;
+
+	    case 'g':
+		if(arg[2]) 
+		    account = atol(&arg[2]);
+		else if (argc > 1) {
+		    argc--;
+		    account = atol(*++argv);
+		} else usage();
+		if(account <= (long)0) {
+		    fprintf(stderr, "%s: Invalid group a/c number.\n",progname);
+		    exit(1);
+		}
+		grp_flag=1;
 		break;
 
 	    case 'd':
@@ -266,10 +292,41 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 		adj_flag=1;
 		break;
 
+	    case 'A':
+		del_admin_flag++;
+		break;
+
+	    case 'U':
+		del_user_flag++;
+		break;
+
+	    case 'p':
+		print_flag++;
+		allow_printing = 0;
+		break;
+
 	    default:
 		usage();
 	    }
 
+	} else if (arg[0] == '+') {
+	    switch (arg[1]) {
+	    case 'A':
+		add_admin_flag++;
+		break;
+
+	    case 'U':
+		add_user_flag++;
+		break;
+
+	    case 'p':
+		print_flag++;
+		allow_printing = 1;
+		break;
+
+	    default:
+		usage();
+	    }
 	} else {
 	    /* Get persons name */
 	    if(argc > 1) {
@@ -280,13 +337,38 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 	}
     }
 
+    if (print_flag) {
+	if (!grp_flag) {
+	    if(allow_printing) set_allow_printing = U_ALLOW_PRINT;
+	    else set_allow_printing = U_DISALLOW_PRINT;
+	} else {
+	    if(allow_printing) set_group_printing = A_ALLOW_PRINT;
+	    else set_group_printing = A_DISALLOW_PRINT;
+	}
+    }
+
     if(adj_flag + inc_flag + dec_flag + set_flag > 1) {
 	fprintf(stderr, "%s: May only specify one of -a, -i, -d, -s\n",progname);
 	exit(1);
     }
 
+    /* require username for the following group operations */
+    if (grp_flag) {
+	if (add_admin_flag || del_admin_flag || add_user_flag  || del_user_flag)
+	    no_username_flag = 0;
+	else
+	    no_username_flag = 1;
+    } else {
+	if (add_admin_flag || del_admin_flag || del_user_flag || 
+	    del_user_flag) {
+	    fprintf(stderr, "%s: May only specify one of +A, -A, +U, -U after the -g option\n",progname);
+	    exit(1);
+	}
+    }
+
     if(adj_flag + inc_flag + dec_flag + set_flag + create_flag +
-       print_flag + query_flag + l_flag == 0) query_flag++; 
+       print_flag + query_flag + l_flag + add_admin_flag +
+       del_admin_flag + add_user_flag + del_user_flag == 0) query_flag++; 
 
     if (printer == NULL && host== NULL && 
 	(printer = getenv("PRINTER")) == NULL) {
@@ -320,17 +402,20 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
     if (service == NULL)
 	service = DEFSERVICE;
 
-    if (username == NULL) {
-	username = savestr(getuser());
-	if (!strcmp(username,"???")) {
-	    fprintf(stderr,"Who are you?");
-	    exit(1);
+    if (grp_flag) {
+	if (!no_username_flag && username == NULL)
+	    fatal("require a username for the group account operation");
+    } else {
+	if (username == NULL) {
+	    username = savestr(getuser());
+	    if (!strcmp(username,"???")) {
+		fprintf(stderr,"Who are you?");
+		exit(1);
+	    }
 	}
     }
-	
 
-/* Contact.... */
-
+    /* Contact.... */
     hosttmp = krb_get_phost(host);
     if(hosttmp == NULL) {
 	fprintf(stderr, "Could not resolve name %s\n",host);
@@ -353,12 +438,16 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 	auth.dat[0]='\0';
     }
 
-/* Setup structures */
-    (void) strcpy((char *) qid.username, username);
+    /* Setup structures */
+    if (!no_username_flag) {
+	(void) strcpy((char *) qid.username, username);
+    } else {
+	qid.username[0] = '\0';
+    }
     (void) strcpy((char *) qid.service, service);
-    qid.account = 0;	/* XXX */
+    qid.account = (long) account;
 
-/* Do request */
+    /* Do request */
     pfm_$init(pfm_$init_signal_handlers);
     fst = pfm_$cleanup(crec);
     (void) signal (SIGILL, SIG_DFL);
@@ -379,6 +468,12 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 		fprintf(stderr, "Server tried passing a non-terminated string\n");
 		Exit(1);
 	    }
+
+	    if(fst.all == nca_status_$unk_if) {
+		fprintf(stderr, "This client will not work with the remote server - version skew\n");
+		Exit(1);
+	    }
+
 
 	    fprintf(stderr, "*** Exception raised - %s\n", error_text(fst));
 	    fprintf(stderr, "Error # %d\n", fst.all);
@@ -442,35 +537,84 @@ char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 #endif
 
 
-    if(create_flag) {
-	if(qmodify_user(h,&qid,&auth,U_NEW,(quota_value) 0)) Exit(3);
-    }	
-
-    if(inc_flag) {
-	if(qmodify_user(h,&qid,&auth,U_ADD,amount)) Exit(3);
-    }	
-
-    if(dec_flag) {
-	if(qmodify_user(h,&qid,&auth,U_SUBTRACT,amount)) Exit(3);
-    }	
-
-    if(set_flag) {
-	if(qmodify_user(h,&qid,&auth,U_SET,amount)) Exit(3);
-    }	
-    if(adj_flag) {
-	if(qmodify_user(h,&qid,&auth,U_ADJUST,amount)) Exit(3);
-    }	
-
-    if(print_flag) {
-	if(qmodify_user(h,&qid,&auth, set_allow_printing, (quota_value) 0)) Exit(3);
-    }
-
-    if(query_flag) {
-	if (query_quota(h,&qid,&auth)) Exit(3);
-    }
-
-    if(l_flag) {
-	if (query_logs(hl,&qid,&auth)) Exit(3);
+    if (!grp_flag) {
+	if(create_flag) {
+	    if(qmodify_user(h,&qid,&auth,U_NEW,(quota_value) 0)) Exit(3);
+	}	
+	if(inc_flag) {
+	    if(qmodify_user(h,&qid,&auth,U_ADD,amount)) Exit(3);
+	}	
+	if(dec_flag) {
+	    if(qmodify_user(h,&qid,&auth,U_SUBTRACT,amount)) Exit(3);
+	}	
+	if(set_flag) {
+	    if(qmodify_user(h,&qid,&auth,U_SET,amount)) Exit(3);
+	}	
+	if(adj_flag) {
+	    if(qmodify_user(h,&qid,&auth,U_ADJUST,amount)) Exit(3);
+	}	
+	if(print_flag) {
+	    if(qmodify_user(h,&qid,&auth, set_allow_printing, 
+			    (quota_value) 0)) Exit(3);
+	}
+	if(query_flag) {
+	    if (query_quota(h,&qid,&auth)) Exit(3);
+	}
+	if(l_flag) {
+	    if (query_logs(hl,&qid,&auth)) Exit(3);
+	}
+    } else {
+	if(create_flag) {
+	    if(qmodify_account(h,&auth,account,A_NEW,&qid,(quota_value) 0)) 
+		Exit(4);
+	}
+	if(inc_flag) {
+	    if(qmodify_account(h,&auth,account,A_ADD,&qid,amount)) 
+		Exit(4);
+	}	
+	if(dec_flag) {
+	    if(qmodify_account(h,&auth,account,A_SUBTRACT,&qid,amount)) 
+		Exit(4);
+	}	
+	if(set_flag) {
+	    if(qmodify_account(h,&auth,account,A_SET,&qid,amount)) 
+		Exit(4);
+	}	
+	if(adj_flag) {
+	    if(qmodify_account(h,&auth,account,A_ADJUST,&qid,amount)) 
+		Exit(4);
+	}	
+	if(print_flag) {
+	    if(qmodify_account(h,&auth,account,set_group_printing,
+			       &qid,(quota_value) 0)) 
+		Exit(4);
+	}
+	if (add_admin_flag) {
+	    if(qmodify_account(h,&auth,account,A_ADD_ADMIN,
+			       &qid,(quota_value) 0)) 
+		Exit(4);
+	}
+	if (del_admin_flag) {
+	    if(qmodify_account(h,&auth,account,A_DELETE_ADMIN,
+			       &qid,(quota_value) 0)) 
+		Exit(4);
+	}
+	if (add_user_flag) {
+	    if(qmodify_account(h,&auth,account,A_ADD_USER,
+			       &qid,(quota_value) 0)) 
+		Exit(4);
+	}
+	if (del_user_flag) {
+	    if(qmodify_account(h,&auth,account,A_DELETE_USER,
+			       &qid,(quota_value) 0)) 
+		Exit(4);
+	}
+	if(query_flag) {
+	    if (query_group_quota(h,account,&qid,&auth)) Exit(4);
+	}
+	if(l_flag) {
+	    if (query_group_logs(hl,account,&qid,&auth)) Exit(4);
+	}
     }
 }
 
@@ -506,18 +650,20 @@ krb_ktext *auth;
     if((qerr=QuotaQuery(h,auth,qid,&qret)))
 	return quota_error(qerr);
 
-    printf("Username\t: %s\n", qid->username);
+    printf("Username\t: %s  \t(Uid: %d)\n", qid->username, qret.uid);
     printf("Service\t\t: %s\n", qid->service);
     if(strcmp((char *) qret.currency, "cents")) {
 	printf("Usage:  %d %s	limit:	%d %s\n", 
 	       qret.usage, qret.currency, qret.limit, qret.currency);
-	if(qret.last_bill) printf("Last bill date: %s", ctime(&(qret.last_bill)));
+	if(qret.last_bill) 
+	    printf("Last bill date: %s", ctime(&(qret.last_bill)));
 	printf("Last bill: %d %s\t",qret.last_charge,qret.currency);
 	printf("Ytd billed: %d %s\n",qret.ytd_billed,qret.currency);
     } else {
 	printf("Usage: $%.2f\t\tLimit: $%.2f\n", 
 	       (float) qret.usage/100.0, (float) qret.limit/100.0);
-	if(qret.last_bill) printf("Last bill date: %s", ctime(&(qret.last_bill)));
+	if(qret.last_bill) 
+	    printf("Last bill date: %s", ctime(&(qret.last_bill)));
 	printf("Last bill: $%.2f\t",(float) qret.last_charge/100.0);
 	printf("Ytd billed: $%.2f\n",(float) qret.ytd_billed/100.0);
     }
@@ -525,6 +671,101 @@ krb_ktext *auth;
 
     return 0;
 }
+
+
+query_group_quota(h,acct,qid,auth)
+handle_t h;
+long acct;
+quota_identifier *qid;
+krb_ktext *auth;
+{
+    quota_error_code qerr;
+    qstartingpoint startadmin, startuser;
+    qmaxtotransfer maxadmin, maxuser;
+    quota_return qret;
+    int numadmin, numuser, flag;
+    int count_user, count_admin;
+    Principal admin[GQUOTA_MAX_ADMIN+1], user[GQUOTA_MAX_USER+1];
+    int first_run = 1;
+    int column, i, len;
+
+    /* Initialize */
+    startadmin = startuser = 0;
+    maxadmin = G_ADMINMAXRETURN;
+    maxuser = G_USERMAXRETURN;
+    count_user = count_admin = 1;
+
+    while (1) {
+	if (qerr=QuotaQueryAccount(h,auth,acct,qid,startadmin,maxadmin,
+				   startuser,maxuser,&qret,&numadmin,
+				   admin[count_admin], &numuser, 
+				   user[count_user], &flag))
+	    return quota_error(qerr);
+
+	count_admin += numadmin;
+	count_user  += numuser;
+
+	/* Display the quota usage the first time around */
+	if (first_run) {
+	    printf("Account\t\t: %d\n", acct);
+	    printf("Service\t\t: %s\n", qid->service);
+	    if(strcmp((char *) qret.currency, "cents")) {
+		printf("Usage:  %d %s	limit:	%d %s\n", 
+		       qret.usage, qret.currency, qret.limit, qret.currency);
+		if(qret.last_bill) 
+		    printf("Last bill date: %s", ctime(&(qret.last_bill)));
+		printf("Last bill: %d %s\t",qret.last_charge,qret.currency);
+		printf("Ytd billed: %d %s\n",qret.ytd_billed,qret.currency);
+	    } else {
+		printf("Usage: $%.2f\t\tLimit: $%.2f\n", 
+		       (float) qret.usage/100.0, (float) qret.limit/100.0);
+		if(qret.last_bill) 
+		    printf("Last bill date: %s", ctime(&(qret.last_bill)));
+		printf("Last bill: $%.2f\t",(float) qret.last_charge/100.0);
+		printf("Ytd billed: $%.2f\n",(float) qret.ytd_billed/100.0);
+	    }
+	    printf("%s\n", qret.message);
+	    first_run = 0;
+	}
+	
+	/* If we have no more admin and users then display the ones
+	 * we have accumulated 
+	 */
+	if (flag == GQUOTA_NONE) break;
+	
+	/* Hmm, there are more user and admins, we need to get them */
+	if (startuser == 0)
+	    startuser += numuser + 1;
+	else
+	    startuser += numuser;
+
+	if (startadmin == 0)
+	    startadmin += numadmin + 1;
+	else
+	    startadmin += numadmin;
+
+	if (flag != GQUOTA_BOTH) {
+	    if (flag == GQUOTA_MORE_USER)
+		startadmin = -1;  /* Ignore admin list when doing server query */
+	    else 
+		startuser = -1;
+	}
+    }
+    /* Now display the admin and users */
+    if (count_admin > 1) {
+	printf("\nList of group account administrators :\n");
+	for(i = 1; i < count_admin; i++)
+	    printf("\t%s\n", admin[i]);
+    }
+    if (count_user > 1) {
+	printf("\nList of group account users :\n");
+	for(i = 1; i < count_user; i++)
+	    printf("\t%s\n", user[i]);
+    }
+    return 0;
+}
+
+
 qmodify_user(h,qid,auth,qtype,qamount)
 handle_t h;
 quota_identifier *qid;
@@ -540,6 +781,24 @@ quota_value qamount;
     return 0;
 
 }
+
+qmodify_account(h,auth,qaccount,qtype,qid,qamount)
+handle_t h;
+quota_account qaccount;
+quota_identifier *qid;
+krb_ktext *auth;
+modify_account_type qtype;
+quota_value qamount;
+{
+    quota_error_code qerr;
+
+    if((qerr=QuotaModifyAccount(h,auth,qaccount,qtype,qid,qamount)))
+	return quota_error(qerr);
+
+    return 0;
+
+}
+
 query_logs(h,qid,auth)
 handle_t h;
 quota_identifier *qid;
@@ -552,7 +811,7 @@ krb_ktext *auth;
 	int i;
 	LogEnt LogEnts[LOGMAXRETURN], *lent;
 	int done = 0, any = 0;
-	char *chargestr="", who[MAX_K_NAME_SZ];
+	char *chargestr="", who[MAX_K_NAME_SZ], who1[MAX_K_NAME_SZ];
 	quota_currency currency;
 
 	start = 0;
@@ -562,7 +821,12 @@ krb_ktext *auth;
 			    (loggerflags) 0, &numtrans, LogEnts, currency))
 		return quota_error(qerr);
 	    if(numtrans == 0) {
-		if(any == 0) printf("No printer logs available for user.\n");
+		if(any == 0) {
+		    if (qid->account == 0)
+			printf("No printer logs available for user.\n");
+		    else
+			printf("No printer logs available for group account.\n");
+		}
 		printf("\n");
 		return 0;
 	    }
@@ -613,13 +877,46 @@ krb_ktext *auth;
 		break;
 	    case LO_CHARGE:
 		/* We know who it was, need to print sub time, service, where*/
-		printf("%.24s %d page%c @ %d %s/page on %s\n",
-		       ctime(&(lent->func_union.tagged_union.charge.ptime)),
-		       lent->func_union.tagged_union.charge.npages,
-		       (lent->func_union.tagged_union.charge.npages == 1) ? '\0' : 's', 
-		       lent->func_union.tagged_union.charge.pcost,
-		       currency, 
-		       lent->func_union.tagged_union.charge.where);
+		if (qid->account == 0) {
+		    printf("%.24s %d page%c @ %d %s/page on %s\n",
+			   ctime(&(lent->func_union.tagged_union.charge.ptime)),
+			   lent->func_union.tagged_union.charge.npages,
+			   (lent->func_union.tagged_union.charge.npages == 1) ? '\0' : 's', 
+			   lent->func_union.tagged_union.charge.pcost,
+			   currency, 
+			   lent->func_union.tagged_union.charge.where);
+		} else {
+		    (void) strcpy(who, (char *) lent->func_union.tagged_union.charge.wname);
+		    printf("%.24s %d page%c @ %d %s/page on %s by %s\n",
+			   ctime(&(lent->func_union.tagged_union.charge.ptime)),
+			   lent->func_union.tagged_union.charge.npages,
+			   (lent->func_union.tagged_union.charge.npages == 1) ? '\0' : 's', 
+			   lent->func_union.tagged_union.charge.pcost,
+			   currency, 
+			   lent->func_union.tagged_union.charge.where,
+			   who);
+		}
+		break;
+	    case LO_ADD_ADMIN:
+		chargestr = "added to admin";
+		goto rest1;
+	    case LO_ADD_USER:
+		chargestr = "added to user";
+		goto rest1;
+	    case LO_DELETE_ADMIN:
+		chargestr = "deleted from admin";
+		goto rest1;
+	    case LO_DELETE_USER:
+		chargestr = "deleted from user";
+		goto rest1;
+
+	    rest1:
+		(void) strcpy(who, (char *) lent->func_union.tagged_union.group.uname);
+		(void) strcpy(who1, (char *) lent->func_union.tagged_union.group.aname);
+
+		printf("%.24s %s was %s list by %s\n",
+		       ctime(&(lent->time)),
+		       who, chargestr, who1);
 		break;
 	    }
 	    if(lent->next == 0) done++;
@@ -630,6 +927,17 @@ krb_ktext *auth;
 
     /* All done !! */
     printf("\n");
+    return 0;
+    }
+
+
+query_group_logs(h,acct,qid,auth)
+handle_t h;
+long acct;
+quota_identifier *qid;
+krb_ktext *auth;
+
+    {
     return 0;
     }
 
