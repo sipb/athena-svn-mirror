@@ -1,8 +1,8 @@
 #!/bin/sh
-# $Id: do.sh,v 1.72 2002-03-04 14:16:11 ghudson Exp $
+# $Id: do.sh,v 1.73 2002-03-07 13:20:31 ghudson Exp $
 
 source=/mit/source
-srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
+srvd=/.srvd
 contained=false
 mungepath=true
 n=""
@@ -14,7 +14,7 @@ usage() {
   exit 1
 }
 
-while getopts pcd:ns:t: opt; do
+while getopts pd:ns: opt; do
   case "$opt" in
   p)
     mungepath=false

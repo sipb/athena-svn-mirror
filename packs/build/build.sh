@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.37 2002-03-04 14:16:09 ghudson Exp $
+# $Id: build.sh,v 1.38 2002-03-07 13:20:28 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -13,10 +13,10 @@ ignore=false
 nobuild=false
 log=false
 target=
-usage="build [-s srcdir] [-b builddir] [-d destdir] [-t target] [-k] [-n] [-l]"
+usage="build [-s srcdir] [-b builddir] [-d destdir] [-k] [-n] [-l]"
 usage="$usage [package [endpackage]]"
 
-while getopts s:b:d:t:knl opt; do
+while getopts s:b:d:knl opt; do
   case "$opt" in
   s)
     source="$OPTARG"
@@ -26,9 +26,6 @@ while getopts s:b:d:t:knl opt; do
     ;;
   d)
     srvd="$OPTARG"
-    ;;
-  t)
-    target="$OPTARG"
     ;;
   k)
     ignore=true
@@ -81,8 +78,7 @@ fi
 
 # Read in the list of packages, filtering for operating system.
 packages=`$awk -f $source/packs/build/getpackages.awk \
-  os="$os" start="$start" end="$end" target="$target" \
-  $source/packs/build/packages` || exit 1
+  os="$os" start="$start" end="$end" $source/packs/build/packages` || exit 1
 
 case $nobuild in
 true)
