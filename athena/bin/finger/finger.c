@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.38 2000-09-21 14:59:30 ghudson Exp $
+ * $Id: finger.c,v 1.39 2000-12-18 08:44:08 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.38 2000-09-21 14:59:30 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.39 2000-12-18 08:44:08 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -830,7 +830,7 @@ personprint(pers)
 	}
 	else if (pers->loggedin) {
 		if (*pers->host) {
-			if (pers->logintime) {
+			if (*pers->logintime) {
 				printf("\nOn since %s on %s from %s",
 				    pers->logintime, pers->tty, pers->host);
 			}
