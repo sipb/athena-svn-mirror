@@ -11,8 +11,12 @@ and ssh has the necessary privileges.)
 */
 
 /*
- * $Id: scp.c,v 1.1.1.3.6.1 2000-07-05 20:22:34 ghudson Exp $
+ * $Id: scp.c,v 1.1.1.3.6.2 2000-07-17 21:18:41 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/07/17 21:12:52  ghudson
+ * Report an error if close() fails.  This can happen for over-quota
+ * errors in AFS, but can't normally happen in local filesystems.
+ *
  * Revision 1.2  2000/07/05 12:38:55  rbasch
  * Don't use integer arithmetic to calculate the completion percentage
  * in sink().
@@ -129,7 +133,7 @@ and ssh has the necessary privileges.)
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$Id: scp.c,v 1.1.1.3.6.1 2000-07-05 20:22:34 ghudson Exp $
+ *	$Id: scp.c,v 1.1.1.3.6.2 2000-07-17 21:18:41 ghudson Exp $
  */
 
 #ifndef lint
@@ -1213,7 +1217,10 @@ bad:			run_err("%s: %s", np, strerror(errno));
 					run_err("%s: set mode: %s",
 					    np, strerror(errno));
 		}
-		(void)close(ofd);
+		if (close(ofd) == -1) {
+			wrerr = YES;
+			wrerrno = errno;
+		}
 		(void)response();
 		if (setimes && wrerr == NO) {
 			setimes = 0;
@@ -1339,7 +1346,7 @@ run_err(const char *fmt, ...)
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$Id: scp.c,v 1.1.1.3.6.1 2000-07-05 20:22:34 ghudson Exp $
+ *	$Id: scp.c,v 1.1.1.3.6.2 2000-07-17 21:18:41 ghudson Exp $
  */
 
 char *
