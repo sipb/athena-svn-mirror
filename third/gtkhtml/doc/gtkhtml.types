@@ -1,0 +1,5 @@
+#include <gtk/gtk.h>
+#include "gtkhtml.h"
+#include "gtkhtml-embedded.h"
+gtk_html_get_type 
+gtk_html_embedded_get_type

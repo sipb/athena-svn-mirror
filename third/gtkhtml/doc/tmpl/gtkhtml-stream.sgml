@@ -1,0 +1,63 @@
+<!-- ##### SECTION Title ##### -->
+GtkHTML stream
+
+<!-- ##### SECTION Short_Description ##### -->
+data stream for loading HTML contents into GtkHTML widget.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gtk_html_stream_new ##### -->
+<para>
+
+</para>
+
+@html: 
+@write_func: 
+@close_func: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_stream_write ##### -->
+<para>
+
+</para>
+
+@stream: 
+@buffer: 
+@size: 
+
+
+<!-- ##### FUNCTION gtk_html_stream_destroy ##### -->
+<para>
+
+</para>
+
+@stream: 
+
+
+<!-- ##### FUNCTION gtk_html_stream_ref ##### -->
+<para>
+
+</para>
+
+@handle: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_stream_unref ##### -->
+<para>
+
+</para>
+
+@handle: 
+
+

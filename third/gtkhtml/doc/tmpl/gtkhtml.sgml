@@ -1,0 +1,198 @@
+<!-- ##### SECTION Title ##### -->
+GtkHTML widget
+
+<!-- ##### SECTION Short_Description ##### -->
+widget for rendering HTML
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+GtkHTML widget is lightweight HTML viewer / container. It provides an easy way for
+viewing HTML documents in your application and for layout UI of your
+application throught HTML.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gtk_html_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_new_from_string ##### -->
+<para>
+
+</para>
+
+@str: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_construct ##### -->
+<para>
+
+</para>
+
+@html: 
+<!-- # Unused Parameters # -->
+@htmlw: 
+
+
+<!-- ##### FUNCTION gtk_html_load_from_string ##### -->
+<para>
+
+</para>
+
+@html: 
+@str: 
+@len: 
+
+
+<!-- ##### FUNCTION gtk_html_begin ##### -->
+<para>
+
+</para>
+
+@html: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_begin_content ##### -->
+<para>
+
+</para>
+
+@html: 
+@content_type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_write ##### -->
+<para>
+
+</para>
+
+@html: 
+@handle: 
+@buffer: 
+@size: 
+
+
+<!-- ##### FUNCTION gtk_html_end ##### -->
+<para>
+
+</para>
+
+@html: 
+@handle: 
+@status: 
+
+
+<!-- ##### FUNCTION gtk_html_save ##### -->
+<para>
+
+</para>
+
+@html: 
+@receiver: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_export ##### -->
+<para>
+
+</para>
+
+@html: 
+@type: 
+@receiver: 
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_print ##### -->
+<para>
+
+</para>
+
+@html: 
+@print_context: 
+
+
+<!-- ##### FUNCTION gtk_html_print_with_header_footer ##### -->
+<para>
+
+</para>
+
+@html: 
+@print_context: 
+@header_height: 
+@footer_height: 
+@header_print: 
+@footer_print: 
+@user_data: 
+
+
+<!-- ##### FUNCTION gtk_html_get_title ##### -->
+<para>
+
+</para>
+
+@html: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_jump_to_anchor ##### -->
+<para>
+
+</para>
+
+@html: 
+@anchor: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gtk_html_set_default_background_color ##### -->
+<para>
+
+</para>
+
+@html: 
+@c: 
+
+
+<!-- ##### FUNCTION gtk_html_set_default_content_type ##### -->
+<para>
+
+</para>
+
+@html: 
+@content_type: 
+
+
+<!-- ##### FUNCTION gtk_html_allow_selection ##### -->
+<para>
+
+</para>
+
+@html: 
+@allow: 
+
+
+<!-- ##### FUNCTION gtk_html_get_object_by_id ##### -->
+<para>
+
+</para>
+
+@html: 
+@id: 
+@Returns: 
+
+
