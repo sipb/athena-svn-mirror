@@ -2,7 +2,7 @@
 
 PATH=/bin:/bin/athena:/usr/ucb:/usr/bin:/usr/athena/bin
 
-if [ -f . /etc/athena/rc.conf ]; then
+if [ -f /etc/athena/rc.conf ]; then
 	. /etc/athena/rc.conf
 fi
 
