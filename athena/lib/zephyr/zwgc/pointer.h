@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/pointer.h,v $
- *      $Author: jtkohl $
- *	$Id: pointer.h,v 1.4 1989-11-15 10:43:47 jtkohl Exp $
+ *      $Author: ghudson $
+ *	$Id: pointer.h,v 1.5 1997-09-14 22:14:33 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.h,v $
- *      $Author: jtkohl $
- *	$Id: zwgc.h,v 1.3 1989-11-08 14:36:51 jtkohl Exp $
+ *      $Author: ghudson $
+ *	$Id: zwgc.h,v 1.4 1997-09-14 22:15:12 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

@@ -5,21 +5,24 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xerror.c,v $
- *      $Author: marc $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#include <sysdep.h>
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xerror_c[] = "$Id: xerror.c,v 1.2 1989-11-15 22:46:56 marc Exp $";
+static const char rcsid_xerror_c[] = "$Id: xerror.c,v 1.3 1997-09-14 22:14:55 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
 
+#ifndef X_DISPLAY_MISSING
+
 #include <X11/Xlib.h>
-#include <stdio.h>
 #include "mux.h"
 
 int xerror_happened;
@@ -46,3 +49,6 @@ void end_xerror_trap(dpy)
    XSync(dpy,False);
    XSetErrorHandler(NULL);
 }
+
+#endif
+

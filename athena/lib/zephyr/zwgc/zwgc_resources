@@ -4,8 +4,8 @@
 !	"mit-copyright.h".
 ! 
 !	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc_resources,v $
-!	$Author: marc $
-!	$Id: zwgc_resources,v 1.5 1990-05-14 16:30:30 marc Exp $
+!	$Author: ghudson $
+!	$Id: zwgc_resources,v 1.6 1997-09-14 22:15:12 ghudson Exp $
 !
 !
 ! Zwgc application specific global resources:

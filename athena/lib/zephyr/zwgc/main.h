@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/main.h,v $
- *      $Author: jtkohl $
- *	$Id: main.h,v 1.5 1989-11-15 22:48:20 jtkohl Exp $
+ *      $Author: ghudson $
+ *	$Id: main.h,v 1.6 1997-09-14 22:14:13 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -19,6 +19,7 @@
 #ifndef main_MODULE
 #define main_MODULE
 
+extern char *progname;
 extern char *subscriptions_filename_override;
 
 /*
@@ -34,10 +35,11 @@ extern void usage();
 
 #define USRDESC ".zwgc.desc"
 
-/* DEFDESC points to where the system default description is stored */
+/* DEFDESC points to a file (relative to the data directory) which has the
+ * system default description file */
 
 #ifndef DEFDESC
-#define DEFDESC "/usr/athena/lib/zephyr/zwgc.desc"
+#define DEFDESC "zwgc.desc"
 #endif
 
 #endif

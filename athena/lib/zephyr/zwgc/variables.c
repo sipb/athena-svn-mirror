@@ -5,15 +5,17 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/variables.c,v $
- *      $Author: jtkohl $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#include <sysdep.h>
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_variables_c[] = "$Id: variables.c,v 1.3 1989-11-15 16:35:07 jtkohl Exp $";
+static const char rcsid_variables_c[] = "$Id: variables.c,v 1.4 1997-09-14 22:14:52 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -24,8 +26,6 @@ static char rcsid_variables_c[] = "$Id: variables.c,v 1.3 1989-11-15 16:35:07 jt
 /*                                                                          */
 /****************************************************************************/
 
-#include <stdio.h>
-#include <ctype.h>
 #include "new_memory.h"
 #include "notice.h"
 #include "string_dictionary_aux.h"

@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.h,v $
- *      $Author: marc $
- *	$Id: xselect.h,v 1.4 1992-05-07 22:37:55 marc Exp $
+ *      $Author: ghudson $
+ *	$Id: xselect.h,v 1.5 1997-09-14 22:15:02 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

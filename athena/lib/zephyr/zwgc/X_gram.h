@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_gram.h,v $
- *      $Author: raeburn $
- *	$Id: X_gram.h,v 1.6 1990-10-22 06:28:17 raeburn Exp $
+ *      $Author: ghudson $
+ *	$Id: X_gram.h,v 1.7 1997-09-14 22:13:47 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

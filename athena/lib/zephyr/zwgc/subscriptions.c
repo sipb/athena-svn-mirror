@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/subscriptions.c,v $
- *      $Author: probe $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.10 1993-09-24 21:33:12 probe Exp $";
+static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.11 1997-09-14 22:14:45 ghudson Exp $";
 #endif
 
 /****************************************************************************/
@@ -22,9 +22,8 @@ static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.10 1993-09-24 21
 /*                                                                          */
 /****************************************************************************/
 
-#include <stdio.h>
+#include <sysdep.h>
 #include <zephyr/zephyr.h>
-#include <sys/param.h>
 #include <netdb.h>
 #include "new_memory.h"
 #include "new_string.h"

@@ -5,15 +5,17 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_fonts.c,v $
- *      $Author: lwvanels $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#include <sysdep.h>
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_X_fonts_c[] = "$Id: X_fonts.c,v 1.4 1992-08-26 04:21:31 lwvanels Exp $";
+static const char rcsid_X_fonts_c[] = "$Id: X_fonts.c,v 1.5 1997-09-14 22:13:40 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -24,7 +26,8 @@ static char rcsid_X_fonts_c[] = "$Id: X_fonts.c,v 1.4 1992-08-26 04:21:31 lwvane
 /*                                                                          */
 /****************************************************************************/
 
-#include <stdio.h>
+#ifndef X_DISPLAY_MISSING
+
 #include "X_fonts.h"
 #include "new_memory.h"
 #include "new_string.h"
@@ -297,3 +300,6 @@ XFontStruct *get_font(dpy,style,substyle,size,face)
    exit(1);
 #endif
 }
+
+#endif /* X_DISPLAY_MISSING */
+

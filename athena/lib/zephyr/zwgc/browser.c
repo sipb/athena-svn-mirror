@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/browser.c,v $
- *      $Author: marc $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,13 +13,12 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_browser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/browser.c,v 1.2 1989-11-02 01:54:59 marc Exp $";
+static char rcsid_browser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/browser.c,v 1.3 1997-09-14 22:13:48 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
 
-#include <stdio.h>
-#include <sys/types.h>
+#include <sysdep.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include "zwgc.h"

@@ -5,22 +5,21 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/file.c,v $
- *      $Author: jtkohl $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#include <sysdep.h>
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_file_c[] = "$Id: file.c,v 1.3 1989-11-15 16:35:04 jtkohl Exp $";
+static const char rcsid_file_c[] = "$Id: file.c,v 1.4 1997-09-14 22:14:03 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
 
-#include <errno.h>
-#include <sys/types.h>
-#include <stdio.h>
 #include <pwd.h>
 #include "new_memory.h"
 #include "new_string.h"

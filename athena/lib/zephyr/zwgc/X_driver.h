@@ -8,8 +8,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/X_driver.h,v $
- *      $Author: jtkohl $
- *	$Id: X_driver.h,v 1.4 1989-11-08 14:35:05 jtkohl Exp $
+ *      $Author: ghudson $
+ *	$Id: X_driver.h,v 1.5 1997-09-14 22:13:39 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

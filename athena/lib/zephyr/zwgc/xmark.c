@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xmark.c,v $
- *      $Author: jfc $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,10 +13,14 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.7 1991-08-27 16:50:32 jfc Exp $";
+static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.8 1997-09-14 22:14:57 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
+
+#include <sysdep.h>
+
+#ifndef X_DISPLAY_MISSING
 
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -24,7 +28,6 @@ static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.7 1991-08-27 16:50:32 jfc Exp $"
 #include "X_fonts.h"
 #include "xmark.h"
 #include "new_string.h"
-#include <stdio.h>
 
 int markblock[3] = { -1 , -1 , -1 };
 int markchar[3] = { -1 , -1 , -1 };
@@ -383,3 +386,6 @@ char *xmarkGetText()
 
     return(text_so_far);
 }
+
+#endif /* X_DISPLAY_MISSING */
+

@@ -5,15 +5,17 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/notice.c,v $
- *      $Author: probe $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#include <sysdep.h>
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_notice_c[] = "$Id: notice.c,v 1.9 1994-08-29 17:59:33 probe Exp $";
+static const char rcsid_notice_c[] = "$Id: notice.c,v 1.10 1997-09-14 22:14:27 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -308,7 +310,7 @@ char *decode_notice(notice)
      * Convert host notice sent from to ascii:
      */
     if (notice->z_sender_addr.s_addr) {
-	fromhost = gethostbyaddr(&(notice->z_sender_addr),
+	fromhost = gethostbyaddr((char *) &(notice->z_sender_addr),
 				 sizeof(struct in_addr), AF_INET);
 	var_set_variable("fromhost", fromhost ? fromhost->h_name :
 			 inet_ntoa(notice->z_sender_addr));

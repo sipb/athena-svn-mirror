@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/character_class.h,v $
- *      $Author: jtkohl $
- *	$Id: character_class.h,v 1.4 1989-11-09 12:26:20 jtkohl Exp $
+ *      $Author: ghudson $
+ *	$Id: character_class.h,v 1.5 1997-09-14 22:13:53 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

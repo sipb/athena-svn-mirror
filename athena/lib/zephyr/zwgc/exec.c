@@ -5,15 +5,17 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/exec.c,v $
- *      $Author: raeburn $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#include <sysdep.h>
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_exec_c[] = "$Id: exec.c,v 1.7 1991-01-09 02:35:57 raeburn Exp $";
+static const char rcsid_exec_c[] = "$Id: exec.c,v 1.8 1997-09-14 22:13:59 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -33,10 +35,6 @@ static char rcsid_exec_c[] = "$Id: exec.c,v 1.7 1991-01-09 02:35:57 raeburn Exp 
 #include "port.h"
 #include "variables.h"
 #include "notice.h"
-
-#if !defined(__STDC__) && !defined(const)
-#define const
-#endif
 
 static int exec_subtree(), exec_fields();
 
@@ -371,6 +369,7 @@ static struct _Opstuff {
     { exec_noop },                         /* substitute */
     { exec_noop },                         /* protect */
     { exec_noop },                         /* verbatim */
+    { exec_noop },                         /* stylestrip */
     { exec_noop },                         /* getenv */
     { exec_noop },                         /* upcase */
     { exec_noop },                         /* downcase */

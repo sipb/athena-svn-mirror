@@ -5,15 +5,17 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/eval.c,v $
- *      $Author: marc $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#include <sysdep.h>
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_eval_c[] = "$Id: eval.c,v 1.4 1992-06-20 04:03:14 marc Exp $";
+static const char rcsid_eval_c[] = "$Id: eval.c,v 1.5 1997-09-14 22:13:58 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -139,6 +141,7 @@ string eval_expr(expr)
       case SUBSTITUTE_OPCODE:
       case PROTECT_OPCODE:
       case VERBATIM_OPCODE:
+      case STYLESTRIP_OPCODE:
       case GETENV_OPCODE:
       case UPCASE_OPCODE:
       case DOWNCASE_OPCODE:
@@ -161,6 +164,9 @@ string eval_expr(expr)
 
 	  case VERBATIM_OPCODE:
 	    return(verbatim(first,0));
+
+	  case STYLESTRIP_OPCODE:
+	    return(stylestrip(first));
 
 	  case GETENV_OPCODE:
 	    result = getenv(first);

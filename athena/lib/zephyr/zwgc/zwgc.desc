@@ -4,8 +4,8 @@
 #	"mit-copyright.h".
 # 
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.desc,v $
-#	$Author: probe $
-#	$Id: zwgc.desc,v 1.12 1994-04-29 11:59:32 probe Exp $
+#	$Author: ghudson $
+#	$Id: zwgc.desc,v 1.13 1997-09-14 22:15:08 ghudson Exp $
 #
 #
 # Default WindowGram description file
@@ -87,14 +87,18 @@ match "WG_CTL_CLASS"
 #	put
 #	exit
 match "message"
-	case $instance
-	match "PERSONAL"
-		set type = "Personal"
-	match "URGENT"
-		set type = "Urgent"
-	default
+	if (downcase($recipient) == downcase($user)) then
+		case $instance
+		match "PERSONAL"
+			set type = "Personal"
+		match "URGENT"
+			set type = "Urgent"
+		default
+			set type = $instance
+		endcase
+	else
 		set type = "Instance "+$instance
-	endcase
+	endif
 
 	fields signature body
 	if ($body == "") then

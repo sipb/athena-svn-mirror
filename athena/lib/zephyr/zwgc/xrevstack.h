@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xrevstack.h,v $
- *      $Author: lwvanels $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #define _XREVSTACK_H_
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xrevstack_h[] = "$Id: xrevstack.h,v 1.3 1992-08-08 23:57:49 lwvanels Exp $";
+static char rcsid_xrevstack_h[] = "$Id: xrevstack.h,v 1.4 1997-09-14 22:15:00 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>

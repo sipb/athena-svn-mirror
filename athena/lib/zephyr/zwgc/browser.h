@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/browser.h,v $
- *      $Author: jtkohl $
- *	$Id: browser.h,v 1.3 1989-11-08 14:35:27 jtkohl Exp $
+ *      $Author: ghudson $
+ *	$Id: browser.h,v 1.4 1997-09-14 22:13:49 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

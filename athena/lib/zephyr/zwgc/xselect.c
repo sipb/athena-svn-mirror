@@ -5,15 +5,17 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xselect.c,v $
- *      $Author: marc $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
  *      "mit-copyright.h".
  */
 
+#include <sysdep.h>
+
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.10 1992-05-07 22:37:55 marc Exp $";
+static const char rcsid_xselect_c[] = "$Id: xselect.c,v 1.11 1997-09-14 22:15:01 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -21,7 +23,8 @@ static char rcsid_xselect_c[] = "$Id: xselect.c,v 1.10 1992-05-07 22:37:55 marc 
 /* xselect.c - ICCCM compliant cut-and-paste */
 /* also includes some other ICCCMisms, such as the WM_PROTOCOL handling */
 
-#include <stdio.h>
+#ifndef X_DISPLAY_MISSING
+
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
@@ -204,3 +207,6 @@ void xselGiveUpOwnership(dpy,w)
 
    ownership_end=ownership_start;  /* Is this right?  what should I use? */
 }
+
+#endif /* X_DISPLAY_MISSING */
+

@@ -5,8 +5,8 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/subscriptions.h,v $
- *      $Author: jtkohl $
- *	$Id: subscriptions.h,v 1.4 1989-11-15 22:47:38 jtkohl Exp $
+ *      $Author: ghudson $
+ *	$Id: subscriptions.h,v 1.5 1997-09-14 22:14:46 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file

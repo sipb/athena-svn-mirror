@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/substitute.c,v $
- *      $Author: jtkohl $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,11 +13,12 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_substitute_c[] = "$Id: substitute.c,v 1.3 1989-11-15 16:34:53 jtkohl Exp $";
+static char rcsid_substitute_c[] = "$Id: substitute.c,v 1.4 1997-09-14 22:14:46 ghudson Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
 
+#include <sysdep.h>
 #include "new_memory.h"
 #include "lexer.h"
 #include "substitute.h"
