@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.18 1999-05-10 23:05:31 danw Exp $
+# $Id: sendbug.sh,v 1.19 1999-07-28 00:37:37 danw Exp $
 
 # save PATH so we can restore it for user's $EDITOR later
 saved_path="$PATH"
@@ -55,7 +55,7 @@ cpu=`machtype -c`
 hostname=`hostname`
 dpy=`machtype -d`
 
-shell=`awk -F: '/^'$USER':/ { print $7; }' /etc/passwd 2>/dev/null`
+shell=`awk -F: '/^'$USER':/ { print $7; exit; }' /etc/passwd 2>/dev/null`
 case $shell in
 $SHELL)
     ;;
