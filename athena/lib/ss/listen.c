@@ -1,7 +1,7 @@
 /*
  * Listener loop for subsystem library libss.a.
  *
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.3 1992-08-02 03:05:07 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.4 1992-11-05 18:01:32 probe Exp $
  *	$Locker:  $
  * 
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -12,6 +12,7 @@
 #include "copyright.h"
 #include "ss_internal.h"
 #include <stdio.h>
+#include <strings.h>
 #include <setjmp.h>
 #include <signal.h>
 #include <sys/param.h>
@@ -21,7 +22,7 @@
 
 #ifndef	lint
 static char const rcs_id[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.3 1992-08-02 03:05:07 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.4 1992-11-05 18:01:32 probe Exp $";
 #endif
 
 #ifdef POSIX
@@ -29,8 +30,6 @@ static char const rcs_id[] =
 #else
 #define sigtype int
 #endif
-
-extern char *index();
 
 static ss_data *current_info;
 static jmp_buf listen_jmpb;
