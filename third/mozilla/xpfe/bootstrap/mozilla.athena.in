@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: mozilla.athena.in,v 1.4 2003-05-06 22:38:55 rbasch Exp $
+# $Id: mozilla.athena.in,v 1.5 2003-05-28 22:17:44 rbasch Exp $
 # Mozilla wrapper script for Athena.
 
 # Set up the environment.
@@ -150,6 +150,12 @@ fi
 for locker in $lockers ; do
   /bin/athena/attach -h -n -q $locker
 done
+
+# Add fonts for MathML.
+infoagents_bindir=`athdir /mit/infoagents`
+if [ -x $infoagents_bindir/add-mathml-fonts ]; then
+  $infoagents_bindir/add-mathml-fonts
+fi
 
 # If the user specified a profile to use, is otherwise manipulating
 # profiles, or is just looking for help, skip the check for a running
