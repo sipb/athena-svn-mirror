@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.19 1992-03-10 23:29:18 lwvanels Exp $
+ *	$Id: c_io.c,v 1.20 1992-03-30 15:39:08 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.19 1992-03-10 23:29:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.20 1992-03-30 15:39:08 lwvanels Exp $";
 #endif
 #endif
 
@@ -632,6 +632,7 @@ int sread(fd, buf, nbytes)
 	syslog(LOG_ERR,"sread select: %m");
 #endif
 	olc_perror("sread: select");
+	close(fd);
 	return(-1);
       }
     
@@ -640,6 +641,7 @@ int sread(fd, buf, nbytes)
 #ifdef DEBUG
       syslog(LOG_ERR,"sread read: %m");
 #endif
+      close(fd);
       return(n_read);
     }
     tot_read += n_read;
@@ -695,6 +697,7 @@ int swrite(fd, buf, nbytes)
 	syslog(LOG_ERR,"swrite select: %m");
 #endif
 	olc_perror("swrite: select");
+	close(fd);
 	return(-1);
       }
     
@@ -703,6 +706,7 @@ int swrite(fd, buf, nbytes)
 #ifdef DEBUG
       syslog(LOG_ERR,"swrite write: %m");
 #endif
+      close(fd);
       return(n_wrote);
     }
     tot_wrote += n_wrote;
