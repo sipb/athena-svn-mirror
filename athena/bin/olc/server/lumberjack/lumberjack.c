@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.7 1990-12-12 14:10:52 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.8 1990-12-12 17:00:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.7 1990-12-12 14:10:52 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.8 1990-12-12 17:00:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -54,11 +54,19 @@ main (argc, argv)
  *  Set up syslogging
  */
 
+#if defined(ultrix)
 #ifdef LOG_CONS
-  openlog("lumberjack", LOG_CONS | LOG_PID, LOG_LOCAL6);
+	openlog ("olc", LOG_CONS | LOG_PID);
 #else
-  openlog("lumberjack", LOG_PID, LOG_LOCAL6);
-#endif
+	openlog ("olc", LOG_PID);
+#endif /* LOG_CONS */
+#else
+#ifdef LOG_CONS
+	openlog ("olc", LOG_CONS | LOG_PID);
+#else
+	openlog ("olc", LOG_PID);
+#endif /* LOG_CONS */
+#endif /* ultrix */
 
 /*
  *  Chdir to the directory containing the done'd logs, in case we dump
