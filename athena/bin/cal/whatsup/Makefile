@@ -12,11 +12,11 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v $
 #	$Author: shanzer $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v 1.1 1987-10-29 12:36:00 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/Makefile,v 1.2 1987-10-29 12:36:52 shanzer Exp $
 #
 ###########################################################################
 
-INSTDIR= /usr/unsupported
+INSTDIR= /usr/athena
 
 SRCS=	   whatsup.c what_ifld.c what_itm.c  what_sel.c what_in.c what_sc.c \
 	   what_time.c
