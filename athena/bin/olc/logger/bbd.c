@@ -1,9 +1,9 @@
 /**********************************************************************
  * usage tracking daemon
  *
- * $Author: lwvanels $
+ * $Author: cfields $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.12 1992-08-31 14:42:35 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.13 1994-08-14 16:23:59 cfields Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.12 1992-08-31 14:42:35 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.13 1994-08-14 16:23:59 cfields Exp $";
 #endif
 #endif
 
@@ -24,6 +24,7 @@ static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/o
 #include <sys/types.h>
 #include <sys/errno.h>
 #include <sys/file.h>
+#include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -33,6 +34,9 @@ static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/o
 #if defined(__STDC__) && !defined(__HIGHC__)
 /* Stupid High-C claims to be ANSI but doesn't have the include files.. */
 #include <stdlib.h>
+#endif
+#ifdef SOLARIS
+#include <sys/termios.h>
 #endif
 
 #define SERVICE_NAME "ols"
@@ -162,7 +166,11 @@ main(argc, argv)
   int onoff;
   int len,rlen,i;
   int port=0;
+#ifdef SOLARIS
+  sigset_t oldmask,alarmmask;
+#else
   int oldmask,alarmmask;
+#endif
   char *pidfile = "/usr/local/bin/bbd.pid";
 
   for (i=1;i<argc;i++) {
@@ -307,8 +315,13 @@ main(argc, argv)
   if (tick != 0) {
     do_tick(0);
   }
-
+#ifdef SOLARIS
+  sigemptyset(&alarmmask);
+  sigemptyset(&oldmask);
+  sigaddset(&alarmmask,SIGALRM);
+#else
   alarmmask = sigmask(SIGALRM);
+#endif
   while (1) {
     len = sizeof(struct sockaddr_in);
     if ((rlen = recvfrom(fd,buf,1024,0,&from,&len)) < 0) {
@@ -316,7 +329,11 @@ main(argc, argv)
 	syslog(LOG_ERR,"recvfrom: %m");
       continue;
     }
+#ifdef SOLARIS
+    sigprocmask(SIG_BLOCK,alarmmask,oldmask);
+#else
     oldmask = sigblock(alarmmask);
+#endif
     if (buf[0] == 'S')
       handle_startup(fd,&buf[1],(rlen-1),from,lf);
     else {
@@ -324,7 +341,11 @@ main(argc, argv)
       write(log_fd,&buf[1],(rlen-1));
       write(log_fd,"\n",1);
     }
+#ifdef SOLARIS
+    sigprocmask(SIG_BLOCK,oldmask,alarmmask);
+#else
     (void) sigblock(oldmask);
+#endif
   }
 }
 
