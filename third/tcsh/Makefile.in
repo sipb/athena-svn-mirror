@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 1999-09-02 14:44:49 ghudson Exp $
+# $Id: Makefile.in,v 1.5 2002-04-16 06:02:11 ghudson Exp $
 #	Makefile.in	4.3	6/11/83
 #
 # C Shell with process control; VM/UNIX VAX Makefile
@@ -337,7 +337,7 @@ all: ${BUILD}
 
 tcsh:$(P) ${OBJS} 
 	rm -f tcsh core
-	${CC} -o tcsh ${LDFLAGS} ${CFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
+	./athstatic ${CC} -o tcsh ${LDFLAGS} ${CFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
 
 # Purify
 pure:$(P) ${OBJS} 

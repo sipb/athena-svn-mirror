@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.8 2000-03-15 20:53:35 ghudson Exp $
+# $Id: Makefile.in,v 1.9 2002-04-16 06:02:25 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -34,7 +34,8 @@ ATTACH_OBJS=suite.o agetopt.o add.o attach.o detach.o fsid.o zinit.o
 all: attach atconvert
 
 attach: ${ATTACH_OBJS}
-	${CC} ${LDFLAGS} -o attach ${ATTACH_OBJS} -lathdir ${ALL_LIBS}
+	./athstatic ${CC} ${LDFLAGS} -o attach ${ATTACH_OBJS} \
+	  -lathdir ${ALL_LIBS}
 
 atconvert: atconvert.o
 	${CC} ${LDFLAGS} -o atconvert atconvert.o ${ALL_LIBS}
