@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.18 2000-07-20 13:31:02 rbasch Exp $
+# $Id: Makefile,v 1.19 2000-10-25 20:52:07 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -61,6 +61,7 @@ install:
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
+	install -c -m 0644 inetd.options ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 inittab ${DESTDIR}${ETCDIR}
 	install -c -m 0644 lp ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 miser ${DESTDIR}${SGICONFIG}
