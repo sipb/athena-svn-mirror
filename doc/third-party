@@ -110,7 +110,7 @@ Distribution sites for software under third
 	nmh		ftp.math.gatech.edu:pub/nmh
 	nvi		http://www.bostic.com/vi/
 	patch		ftp.gnu.org:pub/gnu/patch
-	perl		ftp.gnu.org:pub/gnu/perl
+	perl		ftp.cpan.org:pub/CPAN/src
 	readline	ftp.gnu.org:pub/gnu/readline
 	rcs		ftp.gnu.org:pub/gnu/rcs
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
