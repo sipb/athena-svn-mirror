@@ -24,6 +24,7 @@
 #define GNOME_VFS_MIME_PRIVATE_H
 
 #include <libgnomevfs/gnome-vfs-mime-monitor.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 G_BEGIN_DECLS
 
@@ -40,6 +41,13 @@ gboolean         _gnome_vfs_file_date_tracker_date_has_changed    (FileDateTrack
 void             _gnome_vfs_mime_info_mark_gnome_mime_dir_dirty  (void);
 void             _gnome_vfs_mime_info_mark_user_mime_dir_dirty   (void);
 
+char * _gnome_vfs_get_slow_mime_type (const char *text_uri);
+
+
+/* Should be exported, but we're in API freeze */
+GnomeVFSMimeApplication *
+gnome_vfs_mime_get_default_application_for_scheme (const char *mime_type,
+						   const char *scheme);
 
 G_END_DECLS
 

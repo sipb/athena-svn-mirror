@@ -1,5 +1,4 @@
 <!-- ##### SECTION Title ##### -->
-
 Asynchronous File Operations
 
 <!-- ##### SECTION Short_Description ##### -->
@@ -115,11 +114,15 @@ POSIX-style file operations that run outside your main loop
 @callback_data: 
 
 
-<!-- ##### TYPEDEF GnomeVFSFindDirectoryResult ##### -->
+<!-- ##### STRUCT GnomeVFSFindDirectoryResult ##### -->
 <para>
 
 </para>
 
+@uri: 
+@result: 
+@reserved1: 
+@reserved2: 
 
 <!-- ##### FUNCTION gnome_vfs_async_set_job_limit ##### -->
 <para>

@@ -1,4 +1,11 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/* 
+ * THIS METHOD IS OBSOLETE, IT HAS BEEN SUPERSEDED BY THE HTTP NEON METHOD
+ * IN http-neon-method.c AND http-proxy.c
+ */
+
+
 /* http-authn.c - Basic authentication handling for HTTP
 
    Copyright (C) 2001 Eazel, Inc.
@@ -376,11 +383,21 @@ http_authn_get_header_for_uri (GnomeVFSURI *uri)
 	return result;
 }
 
+static int
+strcmp_allow_nulls (const char *s1, const char *s2)
+{
+        const char *t1, *t2;
+
+        t1 = (s1 == NULL ? "" : s1);
+        t2 = (s2 == NULL ? "" : s2);
+
+	return strcmp (t1, t2);
+}
 #define VERIFY_STRING_RESULT(function, expected) \
 	G_STMT_START {											\
 		char *result = function; 								\
 		if (!((result == NULL && expected == NULL)						\
-		      || (result != NULL && expected != NULL && strcmp (result, (char *)expected) == 0))) {	\
+		      || (strcmp_allow_nulls (result, (char *)expected) == 0))) {	\
 			test_failed ("%s:%s:%s: returned '%s' expected '%s'", __FILE__, __LINE__, #function, result, expected);	\
 		}											\
 	} G_STMT_END

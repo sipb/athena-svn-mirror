@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-transform">
+<refentry id="gnome-vfs-20-gnome-vfs-transform">
 <refmeta>
 <refentrytitle>gnome-vfs-transform</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -16,14 +16,16 @@
 
 
 <link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* (<link linkend="GnomeVFSTransformInitFunc">*GnomeVFSTransformInitFunc</link>)
-                                            (const char *method_name,
-                                             const char *config_args);
+                                            (const <link linkend="char">char</link> *method_name,
+                                             const <link linkend="char">char</link> *config_args);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> (<link linkend="GnomeVFSTransformFunc">*GnomeVFSTransformFunc</link>)     (<link linkend="GnomeVFSTransform">GnomeVFSTransform</link> *transform,
-                                             const char *old_uri,
-                                             char **new_uri,
+                                             const <link linkend="char">char</link> *old_uri,
+                                             <link linkend="char">char</link> **new_uri,
                                              <link linkend="GnomeVFSContext">GnomeVFSContext</link> *context);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -42,9 +44,9 @@
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSTransformInitFunc"/>GnomeVFSTransformInitFunc ()</title>
-<programlisting><link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* (*GnomeVFSTransformInitFunc)
-                                            (const char *method_name,
-                                             const char *config_args);</programlisting>
+<indexterm><primary>GnomeVFSTransformInitFunc</primary></indexterm><programlisting><link linkend="GnomeVFSTransform">GnomeVFSTransform</link>* (*GnomeVFSTransformInitFunc)
+                                            (const <link linkend="char">char</link> *method_name,
+                                             const <link linkend="char">char</link> *config_args);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -61,9 +63,9 @@
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSTransformFunc"/>GnomeVFSTransformFunc ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSTransformFunc)     (<link linkend="GnomeVFSTransform">GnomeVFSTransform</link> *transform,
-                                             const char *old_uri,
-                                             char **new_uri,
+<indexterm><primary>GnomeVFSTransformFunc</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSTransformFunc)     (<link linkend="GnomeVFSTransform">GnomeVFSTransform</link> *transform,
+                                             const <link linkend="char">char</link> *old_uri,
+                                             <link linkend="char">char</link> **new_uri,
                                              <link linkend="GnomeVFSContext">GnomeVFSContext</link> *context);</programlisting>
 <para>
 

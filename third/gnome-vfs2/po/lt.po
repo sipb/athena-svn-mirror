@@ -1,831 +1,1540 @@
 # Lithuanian translation of gnome-vfs
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Gediminas Paulauskas <menesis@delfi.lt>, 2000
+# Copyright (C) 2000-2004 Free Software Foundation, Inc.
+# Gediminas Paulauskas <menesis@delfi.lt>, 2000.
+# Tomas Kuliavas <tokul@users.sourceforge.net>, 2003.
+# Žygimantas Beručka <uid0@akl.lt>, 2004.
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs 1.0.4\n"
-"POT-Creation-Date: 2003-01-20 20:46+0100\n"
-"PO-Revision-Date: 2001-09-23 20:34+0200\n"
-"Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
+"Project-Id-Version: gnome-vfs HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 09:57+0200\n"
+"PO-Revision-Date: 2004-07-27 16:56+0300\n"
+"Last-Translator: Žygimantas Beručka <uid0@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-13\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: libgnomevfs/gnome-vfs-configuration.c:223
+#: daemon/gnome-vfs-daemon.c:596
+msgid "Could not initialize Bonobo"
+msgstr "Nepavyko inicijuoti Bonobo"
+
+#: daemon/gnome-vfs-daemon.c:603
+msgid "Could not initialize gnome vfs"
+msgstr "Nepavyko inicijuoti gnome vfs"
+
+#: libgnomevfs/eggdesktopentries.c:229
+#, c-format
+msgid "File could not be opened: %s"
+msgstr "Byla negalėjo būtų atidaryta: %s"
+
+#: libgnomevfs/eggdesktopentries.c:328
+#, c-format
+msgid "Failed to open file '%s': %s"
+msgstr "Nepavyko atidaryti bylos „%s“: %s"
+
+#: libgnomevfs/eggdesktopentries.c:341
+msgid "File is empty"
+msgstr "Byla yra tuščia"
+
+#: libgnomevfs/eggdesktopentries.c:363
+#, c-format
+msgid "Failed to read from file '%s': %s"
+msgstr "Nepavyko perskaityti bylos „%s“: %s"
+
+#: libgnomevfs/eggdesktopentries.c:575
+#, c-format
+msgid ""
+"desktop entries contain line '%s' which is not an entry, group, or comment"
+msgstr ""
+"darbastalio įrašuose yra eilutė „%s“, kuri nėra nei įrašas, nei grupė, nei "
+"komentaras"
+
+#: libgnomevfs/eggdesktopentries.c:648
+msgid "desktop entries file does not start with legal start group"
+msgstr "darbastalio įrašų byla prasideda neleistina pradžios grupe"
+
+#: libgnomevfs/eggdesktopentries.c:705
+#, c-format
+msgid "desktop entries contain line '%s' which is not UTF-8"
+msgstr "darbastalio įrašuose yra eilutė „%s“, kuri yra ne UTF-8"
+
+#: libgnomevfs/eggdesktopentries.c:728
+#, c-format
+msgid "desktop entries contain unknown encoding '%s'"
+msgstr "darbastalio įrašai yra nežinomos koduotės „%s“"
+
+#: libgnomevfs/eggdesktopentries.c:918 libgnomevfs/eggdesktopentries.c:1030
+#: libgnomevfs/eggdesktopentries.c:1215
+#, c-format
+msgid "desktop entries do not have group '%s'"
+msgstr "darbastalio įrašuose nėra grupės „%s“"
+
+#: libgnomevfs/eggdesktopentries.c:1042
+#, c-format
+msgid "desktop entries do not have key '%s'"
+msgstr "darbastalio įrašuose nėra rakto „%s“"
+
+#: libgnomevfs/eggdesktopentries.c:1098 libgnomevfs/eggdesktopentries.c:1271
+#: libgnomevfs/eggdesktopentries.c:1413 libgnomevfs/eggdesktopentries.c:1538
+#, c-format
+msgid ""
+"desktop entries contain key '%s' which has value that cannot be interpreted."
+msgstr "darbastalio įrašuose yra raktas „%s“, turintis nesuprantamą reikšmę."
+
+#: libgnomevfs/eggdesktopentries.c:1296
+#, c-format
+msgid ""
+"desktop entries contain no translated value for key '%s' with locale '%s'."
+msgstr "darbastalio įrašuose nėra išverstos rakto „%s“ reikšmės lokalei „%s“."
+
+#: libgnomevfs/eggdesktopentries.c:2229
+#, c-format
+msgid "desktop entries contain invalid escape sequence '%s'"
+msgstr "darbastalio įrašuose yra negalima pabėgimo seka „%s“"
+
+#: libgnomevfs/eggdesktopentries.c:2246
+msgid "desktop entries contain escape character at end of line"
+msgstr "darbastalio įrašų eilučių pabaigoje yra pabėgimo simbolis"
+
+#: libgnomevfs/eggdesktopentries.c:2271
+#, c-format
+msgid "Value '%s' cannot be interpreted as a number."
+msgstr "Reikšmė „%s“ negali būti interpretuojama kaip skaičius."
+
+#: libgnomevfs/eggdesktopentries.c:2298
+#, c-format
+msgid "Value '%s' cannot be interpreted as a boolean."
+msgstr "Reikšmė „%s“ negali būti interpretuojama kaip loginė."
+
+#: libgnomevfs/gnome-vfs-cdrom.c:210
+msgid "ISO 9660 Volume"
+msgstr "ISO 9660 skirsnis"
+
+#: libgnomevfs/gnome-vfs-configuration.c:227
 #, c-format
 msgid "%s:%d contains NUL characters."
-msgstr "%s:%d turi savyje NUL simboli�."
+msgstr "%s:%d turi savyje NUL simbolių."
 
-#: libgnomevfs/gnome-vfs-configuration.c:240
+#: libgnomevfs/gnome-vfs-configuration.c:244
 #, c-format
 msgid "%s:%d contains no method name."
 msgstr "%s:%d neturi savyje metodo vardo."
 
-#: libgnomevfs/gnome-vfs-configuration.c:269
+#: libgnomevfs/gnome-vfs-configuration.c:284
+#, c-format
+msgid "%s:%d has no options endmarker."
+msgstr "%s:%d neturi nustatymų pabaigos žymės."
+
+#: libgnomevfs/gnome-vfs-configuration.c:295
+#, c-format
+msgid "%s:%d has unknown options %s."
+msgstr "%s:%d turi nežinumus parametrus %s."
+
+#: libgnomevfs/gnome-vfs-configuration.c:314
 #, c-format
 msgid "%s:%d contains no module name."
 msgstr "%s:%d neturi savyje modulio vardo."
 
-#: libgnomevfs/gnome-vfs-configuration.c:322
+#: libgnomevfs/gnome-vfs-configuration.c:368
 #, c-format
 msgid "Configuration file `%s' was not found: %s"
-msgstr "Konfig�racijos byla �%s� nerasta: %s"
+msgstr "Konfigūracijos byla „%s“ nerasta: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:737
-#, c-format
-msgid "Unknown op type %u"
-msgstr "Ne�inomas op tipas %u"
+#: libgnomevfs/gnome-vfs-filesystem-type.c:37
+msgid "AFFS Volume"
+msgstr "AFFS skirsnis"
 
-#: libgnomevfs/gnome-vfs-job.c:1026 libgnomevfs/gnome-vfs-job.c:1171
+#: libgnomevfs/gnome-vfs-filesystem-type.c:38
+msgid "AFS Network Volume"
+msgstr "AFS tinklo skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:39
+msgid "Auto-detected Volume"
+msgstr "Auto-atpažintas skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:40
+#: libgnomevfs/gnome-vfs-filesystem-type.c:42
+msgid "CD-ROM Drive"
+msgstr "CD-ROM įrenginys"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:41
+msgid "CD Digital Audio"
+msgstr "Skaitmeninis audio CD"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:43
+msgid "Hardware Device Volume"
+msgstr "Aparatūros įrenginių skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:44
+#: libgnomevfs/gnome-vfs-filesystem-type.c:45
+msgid "Ext2 Linux Volume"
+msgstr "Ext2 Linux skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:46
+msgid "Ext3 Linux Volume"
+msgstr "Ext3 Linux skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:47
+#: libgnomevfs/gnome-vfs-filesystem-type.c:57
+#: libgnomevfs/gnome-vfs-filesystem-type.c:58
+msgid "MSDOS Volume"
+msgstr "MSDOS skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:48
+#: libgnomevfs/gnome-vfs-filesystem-type.c:49
+msgid "MacOS Volume"
+msgstr "MacOS skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:50
+msgid "CDROM Volume"
+msgstr "CDROM skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:51
+msgid "Hsfs CDROM Volume"
+msgstr "Hsfs CDROM skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:52
+msgid "JFS Volume"
+msgstr "JFS skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:53
+#: libgnomevfs/gnome-vfs-filesystem-type.c:60
+msgid "Windows NT Volume"
+msgstr "Windows NT skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:54
+#: libgnomevfs/gnome-vfs-filesystem-type.c:62
+#: libgnomevfs/gnome-vfs-filesystem-type.c:63
+msgid "System Volume"
+msgstr "Sisteminis skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:55
+msgid "Memory Volume"
+msgstr "Atmintinės skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:56
+msgid "Minix Volume"
+msgstr "Minix skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:59
+msgid "NFS Network Volume"
+msgstr "NFS tinklo skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:61
+msgid "Netware Volume"
+msgstr "Netware skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:64
+msgid "ReiserFS Linux Volume"
+msgstr "ReiserFS Linux skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:65
+msgid "Windows Shared Volume"
+msgstr "SMB tinklo skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:66
+msgid "SuperMount Volume"
+msgstr "SuperMount skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:67
+msgid "DVD Volume"
+msgstr "DVD skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:68
+msgid "Solaris/BSD Volume"
+msgstr "Solaris/BSD skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:69
+msgid "Udfs Solaris Volume"
+msgstr "Udfs Solaris skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:70
+msgid "Pcfs Solaris Volume"
+msgstr "Pcfs Solaris skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:71
+msgid "Sun SAM-QFS Volume"
+msgstr "Sun SAM-OFS skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:72
+msgid "Enhanced DOS Volume"
+msgstr "Pagerintas DOS skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:73
+msgid "Windows VFAT Volume"
+msgstr "Windows VFAT skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:74
+msgid "Xenix Volume"
+msgstr "Xenix skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:75
+msgid "XFS Linux Volume"
+msgstr "XFS Linux skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:76
+msgid "XIAFS Volume"
+msgstr "XIAFS skirsnis"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:104
+msgid "Unknown"
+msgstr "Nežinomas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:611
+#, fuzzy
+msgid "CD-ROM Disc"
+msgstr "CD-R diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:614
+msgid "Blank CD-R Disc"
+msgstr "Tuščias CD-R diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:616
+msgid "CD-R Disc"
+msgstr "CD-R diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:619
+msgid "Blank CD-RW Disc"
+msgstr "Tuščias CD-RW diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:621
+msgid "CD-RW Disc"
+msgstr "CD-RW diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:623
+msgid "DVD-ROM Disc"
+msgstr "DVD-ROM diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:626
+msgid "Blank DVD-R Disc"
+msgstr "Tuščias DVD-R diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:628
+msgid "DVD-R Disc"
+msgstr "DVD-R diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:631
+msgid "Blank DVD-RAM Disc"
+msgstr "Tuščias DVD-RAM diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:633
+msgid "DVD-RAM Disc"
+msgstr "DVD-RAM diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:636
+msgid "Blank DVD-RW Disc"
+msgstr "Tuščias DVD-RW diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:638
+msgid "DVD-RW Disc"
+msgstr "DVD-RW diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:641
+msgid "Blank DVD+RW Disc"
+msgstr "Tuščias DVD+RW diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:643
+msgid "DVD+RW Disc"
+msgstr "DVD+RW diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:646
+msgid "Blank DVD+R Disc"
+msgstr "Tuščias DVD+R diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:648
+msgid "DVD+R Disc"
+msgstr "DVD+R diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:650
+msgid "Optical Disc"
+msgstr "Optinis diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:656
+msgid "Audio Disc"
+msgstr "Audio diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:660
+msgid "Compact Flash Media"
+msgstr "„Compact Flash“ atmintukas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:662
+msgid "Memory Stick Media"
+msgstr "„Memory Stick“ atmintukas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:664
+msgid "Smart Media Media"
+msgstr "„Smart Media“ atmintukas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:666
+msgid "SD/MMC Media"
+msgstr "SD/MMC laikmena"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:668
+msgid "Floppy Disk"
+msgstr "Diskelis"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:675
+msgid "Mac OS disk"
+msgstr "Mac OS diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:677
+msgid "Mac OS X disk"
+msgstr "Mac OS X diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:691
+msgid "Windows Disk"
+msgstr "Windows diskas"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:697
+msgid "Linux Disk"
+msgstr "Linux diskas"
+
+#: libgnomevfs/gnome-vfs-job.c:734
+#, fuzzy, c-format
+msgid "Unknown operation type %u"
+msgstr "Nežinomas op tipas %u"
+
+#: libgnomevfs/gnome-vfs-job.c:1024 libgnomevfs/gnome-vfs-job.c:1169
 #, c-format
 msgid "Cannot create pipe for open GIOChannel: %s"
-msgstr ""
+msgstr "Nepavyko sukurti konvejerio, skirto atverti GIOChannel: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:1661
-#, fuzzy, c-format
+#: libgnomevfs/gnome-vfs-job.c:1687
+#, c-format
 msgid "Unknown job kind %u"
-msgstr "Ne�inomas job'o ID %d"
+msgstr "Nežinomas užduoties tipas %u"
 
-#: libgnomevfs/gnome-vfs-job.c:1694
+#: libgnomevfs/gnome-vfs-job.c:1720
 msgid "Operation stopped"
 msgstr "Operacija sustabdyta"
 
-#: libgnomevfs/gnome-vfs-parse-ls.c:652
+#: libgnomevfs/gnome-vfs-mime-handlers.c:83
+#: libgnomevfs/gnome-vfs-mime-handlers.c:305
+#: libgnomevfs/gnome-vfs-mime-handlers.c:356
+#: libgnomevfs/gnome-vfs-mime-handlers.c:650
+#: libgnomevfs/gnome-vfs-mime-handlers.c:669
+#: libgnomevfs/gnome-vfs-mime-handlers.c:687
+#: libgnomevfs/gnome-vfs-mime-handlers.c:706
+#: libgnomevfs/gnome-vfs-mime-handlers.c:725
+#: libgnomevfs/gnome-vfs-mime-handlers.c:866
+#: libgnomevfs/gnome-vfs-mime-handlers.c:888
+#: libgnomevfs/gnome-vfs-mime-handlers.c:907
+#: libgnomevfs/gnome-vfs-mime-handlers.c:926
+#: libgnomevfs/gnome-vfs-mime-handlers.c:979
+#: libgnomevfs/gnome-vfs-mime-handlers.c:996
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1013
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1031
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1049
+#: libgnomevfs/gnome-vfs-mime-info.c:647 libgnomevfs/gnome-vfs-mime-info.c:654
+#: libgnomevfs/gnome-vfs-mime-info.c:662 libgnomevfs/gnome-vfs-mime-info.c:669
+#: libgnomevfs/gnome-vfs-mime-info.c:677 libgnomevfs/gnome-vfs-mime-info.c:694
+#: libgnomevfs/gnome-vfs-mime-info.c:701 libgnomevfs/gnome-vfs-mime-info.c:708
+#: libgnomevfs/gnome-vfs-mime-info.c:715 libgnomevfs/gnome-vfs-mime-info.c:723
+#: libgnomevfs/gnome-vfs-mime-info.c:730
+msgid ""
+"Deprecated function.  User modifications to the MIME database are no longer "
+"supported."
+msgstr ""
+"Pasenus funkcija. Vartotojo modifikacijos MIME duombazei nebepalaikomos."
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:666
 #, c-format
 msgid "Could not parse: %s"
-msgstr "Negal�jau parsinti: %s"
+msgstr "Nepavyko apdoroti: %s"
 
-#: libgnomevfs/gnome-vfs-parse-ls.c:654
+#: libgnomevfs/gnome-vfs-parse-ls.c:668
 msgid "More parsing errors will be ignored."
-msgstr "V�lesn�s parsinimo klaidos bus ignoruotos."
+msgstr "Vėlesnės apdorojimo klaidos bus ignoruotos."
 
 #. GNOME_VFS_OK
-#: libgnomevfs/gnome-vfs-result.c:35
+#: libgnomevfs/gnome-vfs-result.c:38
 msgid "No error"
-msgstr "N�ra klaid�"
+msgstr "Nėra klaidų"
 
 #. GNOME_VFS_ERROR_NOT_FOUND
-#: libgnomevfs/gnome-vfs-result.c:36
+#: libgnomevfs/gnome-vfs-result.c:39
 msgid "File not found"
 msgstr "Byla nerasta"
 
 #. GNOME_VFS_ERROR_GENERIC
-#: libgnomevfs/gnome-vfs-result.c:37
+#: libgnomevfs/gnome-vfs-result.c:40
 msgid "Generic error"
-msgstr "Paprasta klaida"
+msgstr "Įprasta klaida"
 
 #. GNOME_VFS_ERROR_INTERNAL
-#: libgnomevfs/gnome-vfs-result.c:38
+#: libgnomevfs/gnome-vfs-result.c:41
 msgid "Internal error"
-msgstr "Vidin� klaida"
+msgstr "Vidinė klaida"
 
 #. GNOME_VFS_ERROR_BAD_PARAMETERS
-#: libgnomevfs/gnome-vfs-result.c:39
+#: libgnomevfs/gnome-vfs-result.c:42
 msgid "Invalid parameters"
-msgstr "Negaliojantys parametrai"
+msgstr "Netinkami parametrai"
 
 #. GNOME_VFS_ERROR_NOT_SUPPORTED
-#: libgnomevfs/gnome-vfs-result.c:40
+#: libgnomevfs/gnome-vfs-result.c:43
 msgid "Unsupported operation"
 msgstr "Nepalaikoma operacija"
 
 #. GNOME_VFS_ERROR_IO
-#: libgnomevfs/gnome-vfs-result.c:41
+#: libgnomevfs/gnome-vfs-result.c:44
 msgid "I/O error"
 msgstr "I/O klaida"
 
 #. GNOME_VFS_ERROR_CORRUPTED_DATA
-#: libgnomevfs/gnome-vfs-result.c:42
+#: libgnomevfs/gnome-vfs-result.c:45
 msgid "Data corrupted"
 msgstr "Duomenys sugadinti"
 
 #. GNOME_VFS_ERROR_WRONG_FORMAT
-#: libgnomevfs/gnome-vfs-result.c:43
+#: libgnomevfs/gnome-vfs-result.c:46
 msgid "Format not valid"
-msgstr "Formatas neteisingas"
+msgstr "Netinkamas formatas"
 
 #. GNOME_VFS_ERROR_BAD_FILE
-#: libgnomevfs/gnome-vfs-result.c:44
+#: libgnomevfs/gnome-vfs-result.c:47
 msgid "Bad file handle"
-msgstr ""
+msgstr "Bloga bylos rodyklė"
 
 #. GNOME_VFS_ERROR_TOO_BIG
-#: libgnomevfs/gnome-vfs-result.c:45
+#: libgnomevfs/gnome-vfs-result.c:48
 msgid "File too big"
-msgstr "Byla per didel�"
+msgstr "Byla per didelė"
 
 #. GNOME_VFS_ERROR_NO_SPACE
-#: libgnomevfs/gnome-vfs-result.c:46
+#: libgnomevfs/gnome-vfs-result.c:49
 msgid "No space left on device"
-msgstr "Kaupiklyje neb�ra vietos"
+msgstr "Kaupiklyje nebėra vietos"
 
 #. GNOME_VFS_ERROR_READ_ONLY
-#: libgnomevfs/gnome-vfs-result.c:47
+#: libgnomevfs/gnome-vfs-result.c:50
 msgid "Read-only file system"
-msgstr "Tik skaitoma byl� sistema"
+msgstr "Tik skaitoma bylų sistema"
 
 #. GNOME_VFS_ERROR_INVALID_URI
-#: libgnomevfs/gnome-vfs-result.c:48
+#: libgnomevfs/gnome-vfs-result.c:51
 msgid "Invalid URI"
-msgstr "Negaliojantis URI"
+msgstr "Blogas URI"
 
 #. GNOME_VFS_ERROR_NOT_OPEN
-#: libgnomevfs/gnome-vfs-result.c:49
+#: libgnomevfs/gnome-vfs-result.c:52
 msgid "File not open"
 msgstr "Byla neatidaryta"
 
 #. GNOME_VFS_ERROR_INVALID_OPEN_MODE
-#: libgnomevfs/gnome-vfs-result.c:50
+#: libgnomevfs/gnome-vfs-result.c:53
 msgid "Open mode not valid"
-msgstr "Atidarymo b�das negaliojantis"
+msgstr "Atidarymo būdas negaliojantis"
 
 #. GNOME_VFS_ERROR_ACCESS_DENIED
-#: libgnomevfs/gnome-vfs-result.c:51
+#: libgnomevfs/gnome-vfs-result.c:54
 msgid "Access denied"
-msgstr "Pri�jimas u�draustas"
+msgstr "Priėjimas uždraustas"
 
 #. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
-#: libgnomevfs/gnome-vfs-result.c:52
+#: libgnomevfs/gnome-vfs-result.c:55
 msgid "Too many open files"
-msgstr "Per daug atidaryt� byl�"
+msgstr "Per daug atidarytų bylų"
 
 #. GNOME_VFS_ERROR_EOF
-#: libgnomevfs/gnome-vfs-result.c:53
+#: libgnomevfs/gnome-vfs-result.c:56
 msgid "End of file"
 msgstr "Bylos pabaiga"
 
 #. GNOME_VFS_ERROR_NOT_A_DIRECTORY
-#: libgnomevfs/gnome-vfs-result.c:54
+#: libgnomevfs/gnome-vfs-result.c:57
 msgid "Not a directory"
-msgstr "Ne katalogas"
+msgstr "Ne aplankas"
 
 #. GNOME_VFS_ERROR_IN_PROGRESS
-#: libgnomevfs/gnome-vfs-result.c:55
+#: libgnomevfs/gnome-vfs-result.c:58
 msgid "Operation in progress"
 msgstr "Vyksta operacija"
 
 #. GNOME_VFS_ERROR_INTERRUPTED
-#: libgnomevfs/gnome-vfs-result.c:56
+#: libgnomevfs/gnome-vfs-result.c:59
 msgid "Operation interrupted"
 msgstr "Operacija pertraukta"
 
 #. GNOME_VFS_ERROR_FILE_EXISTS
-#: libgnomevfs/gnome-vfs-result.c:57
+#: libgnomevfs/gnome-vfs-result.c:60
 msgid "File exists"
 msgstr "Byla egzistuoja"
 
 #. GNOME_VFS_ERROR_LOOP
-#: libgnomevfs/gnome-vfs-result.c:58
+#: libgnomevfs/gnome-vfs-result.c:61
 msgid "Looping links encountered"
-msgstr "Rasti am�ini ciklai nuorodose"
+msgstr "Nuorodose rasti amžini ciklai"
 
 #. GNOME_VFS_ERROR_NOT_PERMITTED
-#: libgnomevfs/gnome-vfs-result.c:59
+#: libgnomevfs/gnome-vfs-result.c:62
 msgid "Operation not permitted"
-msgstr "Operacija neleid�iama"
+msgstr "Operacija neleidžiama"
 
 #. GNOME_VFS_ERROR_IS_DIRECTORY
-#: libgnomevfs/gnome-vfs-result.c:60
+#: libgnomevfs/gnome-vfs-result.c:63
 msgid "Is a directory"
-msgstr "Yra katalogas"
+msgstr "Yra aplankas"
 
-#. GNOME_VFS_ERROR_NO_MEMMORY
-#: libgnomevfs/gnome-vfs-result.c:61
+#. GNOME_VFS_ERROR_NO_MEMORY
+#: libgnomevfs/gnome-vfs-result.c:64
 msgid "Not enough memory"
 msgstr "Nepakanka atminties"
 
 #. GNOME_VFS_ERROR_HOST_NOT_FOUND
-#: libgnomevfs/gnome-vfs-result.c:62
+#: libgnomevfs/gnome-vfs-result.c:65
 msgid "Host not found"
 msgstr "Hostas nerastas"
 
 #. GNOME_VFS_ERROR_INVALID_HOST_NAME
-#: libgnomevfs/gnome-vfs-result.c:63
+#: libgnomevfs/gnome-vfs-result.c:66
 msgid "Host name not valid"
 msgstr "Hosto vardas neteisingas"
 
 #. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
-#: libgnomevfs/gnome-vfs-result.c:64
+#: libgnomevfs/gnome-vfs-result.c:67
 msgid "Host has no address"
 msgstr "Hostas neturi adreso"
 
 #. GNOME_VFS_ERROR_LOGIN_FAILED
-#: libgnomevfs/gnome-vfs-result.c:65
+#: libgnomevfs/gnome-vfs-result.c:68
 msgid "Login failed"
 msgstr "Prisijungimas nepavyko"
 
 #. GNOME_VFS_ERROR_CANCELLED
-#: libgnomevfs/gnome-vfs-result.c:66
+#: libgnomevfs/gnome-vfs-result.c:69
 msgid "Operation cancelled"
 msgstr "Operacija nutraukta"
 
 #. GNOME_VFS_ERROR_DIRECTORY_BUSY
-#: libgnomevfs/gnome-vfs-result.c:67
+#: libgnomevfs/gnome-vfs-result.c:70
 msgid "Directory busy"
-msgstr "Katalogas naudojamas"
+msgstr "Aplankas naudojamas"
 
 #. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
-#: libgnomevfs/gnome-vfs-result.c:68
+#: libgnomevfs/gnome-vfs-result.c:71
 msgid "Directory not empty"
-msgstr "Katalogas netu��ias"
+msgstr "Aplankas netuščias"
 
 #. GNOME_VFS_ERROR_TOO_MANY_LINKS
-#: libgnomevfs/gnome-vfs-result.c:69
+#: libgnomevfs/gnome-vfs-result.c:72
 msgid "Too many links"
-msgstr "Per daug nuorod�"
+msgstr "Per daug nuorodų"
 
 #. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
-#: libgnomevfs/gnome-vfs-result.c:70
+#: libgnomevfs/gnome-vfs-result.c:73
 msgid "Read only file system"
-msgstr "Tik skaitoma byl� sistema"
+msgstr "Tik skaitoma bylų sistema"
 
 #. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
-#: libgnomevfs/gnome-vfs-result.c:71
+#: libgnomevfs/gnome-vfs-result.c:74
 msgid "Not on the same file system"
-msgstr "Ne toje pa�ioje byl� sistemoje"
+msgstr "Ne toje pačioje bylų sistemoje"
 
 #. GNOME_VFS_ERROR_NAME_TOO_LONG
-#: libgnomevfs/gnome-vfs-result.c:72
+#: libgnomevfs/gnome-vfs-result.c:75
 msgid "Name too long"
 msgstr "Vardas per ilgas"
 
 #. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
-#: libgnomevfs/gnome-vfs-result.c:73
+#: libgnomevfs/gnome-vfs-result.c:76
 msgid "Service not available"
-msgstr ""
+msgstr "Paslauga neprieinama"
 
 #. GNOME_VFS_ERROR_SERVICE_OBSOLETE
-#: libgnomevfs/gnome-vfs-result.c:74
+#: libgnomevfs/gnome-vfs-result.c:77
 msgid "Request obsoletes service's data"
-msgstr ""
+msgstr "Užklausa paslaugos duomenis padaro nebereikalingais"
 
 #. GNOME_VFS_ERROR_PROTOCOL_ERROR
-#: libgnomevfs/gnome-vfs-result.c:75
+#: libgnomevfs/gnome-vfs-result.c:78
 msgid "Protocol error"
 msgstr "Protokolo klaida"
 
 #. GNOME_VFS_ERROR_NO_MASTER_BROWSER
-#: libgnomevfs/gnome-vfs-result.c:76
-#, fuzzy
+#: libgnomevfs/gnome-vfs-result.c:79
 msgid "Could not find master browser"
-msgstr "Negal�jau parsinti: %s"
+msgstr "Nepavyko rasti pagrindinės naršyklės"
 
-#: libgnomevfs/gnome-vfs-result.c:170
+#. GNOME_VFS_ERROR_NO_DEFAULT
+#: libgnomevfs/gnome-vfs-result.c:80
+msgid "No default action associated"
+msgstr "Nesusietas joks įprastas veiksmas"
+
+#. GNOME_VFS_ERROR_NO_HANDLER
+#: libgnomevfs/gnome-vfs-result.c:81
+msgid "No handler for URL scheme"
+msgstr "Nėra valdiklio URL schemai"
+
+#. GNOME_VFS_ERROR_PARSE
+#: libgnomevfs/gnome-vfs-result.c:82
+msgid "Error parsing command line"
+msgstr "Įvyko klaida apdorojant komandos eilutę"
+
+#. GNOME_VFS_ERROR_LAUNCH
+#: libgnomevfs/gnome-vfs-result.c:83
+msgid "Error launching command"
+msgstr "Paleidžiant komandą įvyko klaida"
+
+#. GNOME_VFS_ERROR_TIMEOUT
+#: libgnomevfs/gnome-vfs-result.c:84 libgnomevfs/gnome-vfs-result.c:86
+msgid "Timeout reached"
+msgstr "Operacijai skirtas laikas baigėsi"
+
+#. GNOME_VFS_ERROR_NAMESERVER
+#: libgnomevfs/gnome-vfs-result.c:85
+msgid "Nameserver error"
+msgstr "Vardų serverio klaida"
+
+#. GNOME_VFS_ERROR_LOCKED
+#: libgnomevfs/gnome-vfs-result.c:87
+msgid "The resource is locked"
+msgstr "Resursas yra užrakintas"
+
+#. GNOME_VFS_ERROR_DEPRECATED_FUNCTION
+#: libgnomevfs/gnome-vfs-result.c:88
+msgid "Function call deprecated"
+msgstr "Funkcijos užklausa yra pasenus"
+
+#: libgnomevfs/gnome-vfs-result.c:203
 msgid "Unknown error"
-msgstr "Ne�inoma klaida"
-
-#: libgnomevfs/gnome-vfs-utils.c:83
-msgid "1 byte"
-msgstr "1 baitas"
+msgstr "Nežinoma klaida"
 
 #: libgnomevfs/gnome-vfs-utils.c:85
 #, c-format
-msgid "%u bytes"
-msgstr "%u bait�"
+msgid "%u byte"
+msgid_plural "%u bytes"
+msgstr[0] "%u baitas"
+msgstr[1] "%u baitai"
+msgstr[2] "%u baitų"
 
-#: libgnomevfs/gnome-vfs-utils.c:92
+#: libgnomevfs/gnome-vfs-utils.c:91
 #, c-format
-msgid "%.1f K"
-msgstr "%.1f K"
+msgid "%.1f KB"
+msgstr "%.1f KB"
 
-#: libgnomevfs/gnome-vfs-utils.c:96
+#: libgnomevfs/gnome-vfs-utils.c:95
 #, c-format
 msgid "%.1f MB"
 msgstr "%.1f MB"
 
-#: libgnomevfs/gnome-vfs-utils.c:100
+#: libgnomevfs/gnome-vfs-utils.c:99
 #, c-format
 msgid "%.1f GB"
 msgstr "%.1f GB"
 
-#: libgnomevfs/gnome-vfs-utils.c:1109
+#: libgnomevfs/gnome-vfs-utils.c:1122
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:391
 msgid " (invalid Unicode)"
+msgstr " (netinkamas Unikodas)"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:573
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:629
+msgid "Floppy"
+msgstr "Diskelis"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:574
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:632
+msgid "CD-ROM"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:576
+#, fuzzy
+msgid "CD-R"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:577
+#, fuzzy
+msgid "CD-RW"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:578
+#, fuzzy
+msgid "DVD-ROM"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:579
+#, fuzzy
+msgid "DVD-RAM"
+msgstr "DVD-RAM diskas"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:580
+#, fuzzy
+msgid "DVD-R"
+msgstr "DVD"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:581
+#, fuzzy
+msgid "DVD-RW"
+msgstr "DVD-RW diskas"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:582
+#, fuzzy
+msgid "CD-ROM/DVD-ROM"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:583
+#, fuzzy
+msgid "CD-ROM/DVD-RAM"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:584
+#, fuzzy
+msgid "CD-ROM/DVD-R"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:585
+#, fuzzy
+msgid "CD-ROM/DVD-RW"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:586
+#, fuzzy
+msgid "CD-R/DVD-ROM"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:587
+msgid "CD-R/DVD-RAM"
 msgstr ""
 
-#: modules/file-method.c:382
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:588
+msgid "CD-R/DVD-R"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:589
+msgid "CD-R/DVD-RW"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:590
+#, fuzzy
+msgid "CD-RW/DVD-ROM"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:591
+msgid "CD-RW/DVD-RAM"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:592
+msgid "CD-RW/DVD-R"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:593
+msgid "CD-RW/DVD-RW"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:595
+msgid "Disk"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:596
+#, fuzzy
+msgid "USB Drive"
+msgstr "Zip diskas"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:597
+msgid "IEEE1394 Drive"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:598
+msgid "CF"
+msgstr ""
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:599
+#, fuzzy
+msgid "SD/MMC"
+msgstr "SD/MMC laikmena"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:600
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:604
+msgid "Memory Stick"
+msgstr "Atmintukas"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:601
+#, fuzzy
+msgid "Smart Media"
+msgstr "„Smart Media“ atmintukas"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:603
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:635
+msgid "Zip Drive"
+msgstr "Zip diskas"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:605
+msgid "Camera"
+msgstr "Kamera"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:606
+msgid "DVD"
+msgstr "DVD"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:822
+msgid "Root Volume"
+msgstr "Šakninis skirsnis"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:903
+msgid "Audio CD"
+msgstr "Audio CD"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:936
+msgid "Unknown volume"
+msgstr "Nežinomas skirsnis"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1116
+msgid "Network server"
+msgstr "Tinklo serveris"
+
+#. Handle floppy case
+#: libgnomevfs/gnome-vfs-volume-ops.c:112
+msgid ""
+"Unable to mount the floppy drive. There is probably no floppy in the drive."
+msgstr "Nepavyko prijungti diskelio. Greičiausiai diskelio nėra įrenginyje."
+
+#. All others
+#: libgnomevfs/gnome-vfs-volume-ops.c:116
+msgid "Unable to mount the volume. There is probably no media in the device."
+msgstr "Nepavyko prijungti skirsnio. Greičiausiai diskelio nėra įrenginyje."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:122
+msgid ""
+"Unable to mount the floppy drive. The floppy is probably in a format that "
+"cannot be mounted."
+msgstr ""
+"Nepavyko prijungti diskelio. Greičiausiai diskelio formatas toks, kurio "
+"negalima prijungti."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:125
+msgid ""
+"Unable to mount the selected volume. The volume is probably in a format that "
+"cannot be mounted."
+msgstr ""
+"Nepavyko prijungti skirsnio. Greičiausiai skirsnio formatas toks, kurio "
+"neina prijungti."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:130
+msgid "Unable to mount the selected floppy drive."
+msgstr "Nepavyko prijungti nurodyto diskelio."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:132
+msgid "Unable to mount the selected volume."
+msgstr "Nepavyko prijungti nurodyto skirsnio."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:144
+msgid "Unable to unmount the selected volume."
+msgstr "Nepavyko atjungti nurodyto skirsnio."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:256
+#: libgnomevfs/gnome-vfs-volume-ops.c:302
+msgid "Failed to start command"
+msgstr "Nepavyko įvykdyti komandos"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:292
+msgid "Unable to eject media"
+msgstr "Nepavyko išstumti disko"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:481
+msgid "Unable to unmount connected server"
+msgstr "Nepavyko atjungti prisijungusio serverio"
+
+#. Translate exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:175
+msgid "Applications"
+msgstr "Programos"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:178
+msgid "Cards"
+msgstr "Kortelės"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:181
+msgid "Files"
+msgstr "Bylos"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:184
+msgid "Folders"
+msgstr "Aplankai"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:187
+msgid "Help"
+msgstr "Pagalba"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:190
+msgid "Hosts"
+msgstr "Kompiuteriai"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:193
+msgid "Links"
+msgstr "Nuorodos"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:196
+msgid "Mail"
+msgstr "Paštas"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:199
+msgid "Tools"
+msgstr "Įrankiai"
+
+#. Translate exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:202
+msgid "Windows"
+msgstr "Langai"
+
+#: modules/computer-method.c:545
+msgid "Network"
+msgstr "Tinklas"
+
+#: modules/computer-method.c:563
+msgid "Home"
+msgstr "Namai"
+
+#: modules/computer-method.c:581
+msgid "Filesystem"
+msgstr "Bylų sistema"
+
+#: modules/file-method.c:386
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
-msgstr "Ne�inoma GnomeVFSSeekPosition %d"
+msgstr "Nežinoma GnomeVFSSeekPosition %d"
+
+#: modules/network-method.c:1395
+msgid "Windows Network"
+msgstr "Windows tinklas"
+
+#: modules/sftp-method.c:1339
+#, c-format
+msgid "The identity of the remote computer (%s) is unknown."
+msgstr "Nutolusio kompiuterio (%s) tapatybė yra nežinoma."
+
+#: modules/sftp-method.c:1340
+#, c-format
+msgid ""
+"This happens when you log in to a computer the first time.\n"
+"\n"
+"The identity sent by the remote computer is %s. If you want to be absolutely "
+"sure it is safe to continue, contact the system administrator."
+msgstr ""
+"Tai atsitinka kai jūs prisijungiate prie kompiuterio pirmą kartą.\n"
+"\n"
+"Nutolusio kompiuterio atsiųsta tapatybė yra %s. Jeigu norite būti visiškai "
+"tikri, kad tęsti yra saugu, susisiekit su sistemos administratoriumi."
+
+#: modules/sftp-method.c:1348
+msgid "Log In Anyway"
+msgstr "Vistiek prisijungti"
+
+#: modules/sftp-method.c:1349
+msgid "Cancel Login"
+msgstr "Atšaukti prisijungimą"
 
 #. FIXME: we probably shouldn't use printf to output the message
 #: modules/test-method.c:590
 #, c-format
 msgid "Didn't find a valid settings file at %s\n"
-msgstr ""
+msgstr "%s nepavyko rasti tinkamos nustatymų bylos\n"
 
 #: modules/test-method.c:592
 #, c-format
 msgid "Use the %s environment variable to specify a different location.\n"
-msgstr ""
+msgstr "Naudokite aplinkos kintamąjį %s, kad nurodyti kitą vietą.\n"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:1
 msgid "Standard Moniker factory"
-msgstr ""
+msgstr "Įprasta vardų gamykla"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:2
 msgid "file MonikerExtender"
-msgstr ""
+msgstr "bylos VardoIšplėtimas"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:3
 msgid "generic Gnome VFS moniker"
-msgstr ""
+msgstr "bendrinis Gnome VFS vardas"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:4
-#, fuzzy
 msgid "generic file moniker"
-msgstr "Paprasta klaida"
-
-#~ msgid "3D Studio image"
-#~ msgstr "3D Studio paveiksl�lis"
-
-#~ msgid "AIFC audio"
-#~ msgstr "AIFC garsas"
-
-#~ msgid "AIFF audio"
-#~ msgstr "AIFF garsas"
-
-#~ msgid "ANIM animation"
-#~ msgstr "ANIM animacija"
-
-#~ msgid "AbiWord document"
-#~ msgstr "AbiWord dokumentas"
-
-#~ msgid "Adobe FrameMaker font"
-#~ msgstr "Adobe FrameMaker �riftas"
-
-#~ msgid "ApplixWare Graphics image"
-#~ msgstr "ApplixWare Graphics paveiksl�lis"
-
-#~ msgid "Applixware Words document"
-#~ msgstr "Applixware Words dokumentas"
-
-#~ msgid "Applixware spreadsheet"
-#~ msgstr "Applixware spreadsheet"
-
-#~ msgid "AutoCAD image"
-#~ msgstr "AutoCAD br��inys"
-
-#~ msgid "BCPIO document"
-#~ msgstr "BCPIO dokumentas"
-
-#~ msgid "BDF font"
-#~ msgstr "BDF �riftas"
-
-#~ msgid "CGI program"
-#~ msgstr "CGI programa"
-
-#~ msgid "CGM image"
-#~ msgstr "CGM paveiksl�lis"
-
-#~ msgid "CPIO archive"
-#~ msgstr "CPIO archyvas"
-
-#~ msgid "DOS font"
-#~ msgstr "DOS �riftas"
-
-#~ msgid "DOS/Windows program"
-#~ msgstr "DOS/Windows programa"
-
-#~ msgid "DSSSL document"
-#~ msgstr "DSSSL dokumentas"
-
-#~ msgid "Debian package"
-#~ msgstr "Debian paketas"
-
-#~ msgid "Dia diagram"
-#~ msgstr "Dia diagrama"
-
-#~ msgid "GIF image"
-#~ msgstr "GIF paveiksl�lis"
-
-#~ msgid "GIMP document"
-#~ msgstr "GIMP dokumentas"
-
-#~ msgid "GMC link"
-#~ msgstr "GMC nuoroda"
-
-#~ msgid "Glade project"
-#~ msgstr "Glade projektas"
-
-#~ msgid "HDF document"
-#~ msgstr "HDF dokumentas"
-
-#~ msgid "HTML page"
-#~ msgstr "HTML puslapis"
-
-#~ msgid "IDL document"
-#~ msgstr "IDL dokumentas"
-
-#~ msgid "IEF image"
-#~ msgstr "IEF paveiksl�lis"
-
-#~ msgid "IFF image"
-#~ msgstr "IFF paveiksl�lis"
-
-#~ msgid "ILBM image"
-#~ msgstr "ILBM paveiksl�lis"
-
-#~ msgid "JBuilder Project"
-#~ msgstr "JBuilder Projektas"
-
-#~ msgid "JPEG image"
-#~ msgstr "JPEG paveiksl�lis"
-
-#~ msgid "KIllustrator document"
-#~ msgstr "KIllustrator dokumentas"
-
-#~ msgid "KWord document"
-#~ msgstr "KWord dokumentas"
-
-#~ msgid "LHA archive"
-#~ msgstr "LHA archyvas"
-
-#~ msgid "LHARC archive"
-#~ msgstr "LHARC archyvas"
-
-#~ msgid "LIBGRX font"
-#~ msgstr "LIBGRX �riftas"
-
-#~ msgid "LightWave object"
-#~ msgstr "LightWave objektas"
-
-#~ msgid "LightWave scene"
-#~ msgstr "LightWave scena"
-
-#~ msgid "MathML document"
-#~ msgstr "MathML dokumentas"
-
-#~ msgid "Microsoft PowerPoint document"
-#~ msgstr "Microsoft PowerPoint dokumentas"
-
-#~ msgid "Microsoft Word document"
-#~ msgstr "Microsoft Word dokumentas"
-
-#~ msgid "Nautilus link"
-#~ msgstr "Nautilus nuoroda"
-
-#~ msgid "ODA document"
-#~ msgstr "ODA dokumentas"
-
-#~ msgid "PBM image"
-#~ msgstr "PBM paveiksl�lis"
-
-#~ msgid "PCF font"
-#~ msgstr "PCF �riftas"
-
-#~ msgid "PDF document"
-#~ msgstr "PDF dokumentas"
-
-#~ msgid "PEF program"
-#~ msgstr "PEF programa"
-
-#~ msgid "PGM image"
-#~ msgstr "PGM paveiksl�lis"
-
-#~ msgid "PN RealAudio document"
-#~ msgstr "PN RealAudio dokumentas"
-
-#~ msgid "PNG image"
-#~ msgstr "PNG paveiksl�lis"
-
-#~ msgid "PNM image"
-#~ msgstr "PNM paveiksl�lis"
-
-#~ msgid "PPM image"
-#~ msgstr "PPM paveiksl�lis"
-
-#~ msgid "Photoshop document"
-#~ msgstr "Photoshop dokumentas"
-
-#~ msgid "PostScript Type 1 font"
-#~ msgstr "PostScript Type 1 �riftas"
-
-#~ msgid "PostScript document"
-#~ msgstr "PostScript dokumentas"
-
-#~ msgid "Quicken document"
-#~ msgstr "Quicken dokumentas"
-
-#~ msgid "Quicken for Windows document"
-#~ msgstr "Quicken for Windows dokumentas"
-
-#~ msgid "RAR archive"
-#~ msgstr "RAR archyvas"
-
-#~ msgid "README document"
-#~ msgstr "README dokumentas"
-
-#~ msgid "RGB image"
-#~ msgstr "RGB paveiksl�lis"
-
-#~ msgid "RPM package"
-#~ msgstr "RPM paketas"
-
-#~ msgid "RealAudio/Video document"
-#~ msgstr "RealAudio/Video dokumentas"
-
-#~ msgid "S/MIME file"
-#~ msgstr "S/MIME byla"
-
-#~ msgid "S/MIME signature"
-#~ msgstr "S/MIME para�as"
-
-#~ msgid "SGML document"
-#~ msgstr "SGML dokumentas"
-
-#~ msgid "SV4 CPIO archive"
-#~ msgstr "SV4 CPIO archyvas"
-
-#~ msgid "Setext document"
-#~ msgstr "Setext dokumentas"
-
-#~ msgid "Speech document"
-#~ msgstr "Speech dokumentas"
-
-#~ msgid "Speedo font"
-#~ msgstr "Speedo �riftas"
-
-#~ msgid "Spreadsheet Interchange document"
-#~ msgstr "Spreadsheet Interchange dokumentas"
-
-#~ msgid "Stampede package"
-#~ msgstr "Stampede paketas"
-
-#~ msgid "StarOffice Writer document"
-#~ msgstr "StarOffice Writer dokumentas"
-
-#~ msgid "SunOS News font"
-#~ msgstr "SunOS News �riftas"
-
-#~ msgid "TIFF image"
-#~ msgstr "TIFF paveiksl�lis"
-
-#~ msgid "TarGA image"
-#~ msgstr "TarGA paveiksl�lis"
-
-#~ msgid "TeX document"
-#~ msgstr "TeX dokumentas"
-
-#~ msgid "TeX dvi document"
-#~ msgstr "TeX dvi dokumentas"
-
-#~ msgid "TeX font"
-#~ msgstr "TeX �riftas"
-
-#~ msgid "TeXInfo document"
-#~ msgstr "TeXInfo dokumentas"
-
-#~ msgid "ToutDoux document"
-#~ msgstr "ToutDoux dokumentas"
-
-#~ msgid "TrueType font"
-#~ msgstr "TrueType �riftas"
-
-#~ msgid "Unidata netCDF document"
-#~ msgstr "Unidata netCDF dokumentas"
-
-#~ msgid "V font"
-#~ msgstr "V �riftas"
-
-#~ msgid "VRML document"
-#~ msgstr "VRML dokumentas"
-
-#~ msgid "WordPerfect document"
-#~ msgstr "WordPerfect dokumentas"
-
-#~ msgid "X bitmap image"
-#~ msgstr "X bitmap paveiksl�lis"
-
-#~ msgid "X window image"
-#~ msgstr "X window paveiksl�lis"
-
-#~ msgid "XML document"
-#~ msgstr "XML dokumentas"
-
-#~ msgid "XPM image"
-#~ msgstr "XPM paveiksl�lis"
-
-#~ msgid "address card"
-#~ msgstr "adreso kortel�"
-
-#~ msgid "ar archive"
-#~ msgstr "ar archyvas"
-
-#~ msgid "arj archive"
-#~ msgstr "arj archyvas"
-
-#~ msgid "authors list"
-#~ msgstr "autori� s�ra�as"
-
-#~ msgid "directory information file"
-#~ msgstr "katalogo informacijos byla"
-
-#~ msgid "email headers"
-#~ msgstr "el. pa�to antra�t�s"
-
-#~ msgid "email message"
-#~ msgstr "el. pa�to lai�kas"
-
-#~ msgid "encrypted message"
-#~ msgstr "u��ifruotas lai�kas"
-
-#~ msgid "folder"
-#~ msgstr "aplankas"
-
-#~ msgid "gtar archive"
-#~ msgstr "gtar archyvas"
-
-#~ msgid "help page"
-#~ msgstr "pagalbos puslapis"
-
-#~ msgid "multi-part message"
-#~ msgstr "keli� dali� lai�kas"
-
-#~ msgid "search results"
-#~ msgstr "paie�kos rezultatai"
-
-#~ msgid "signed message"
-#~ msgstr "pasira�ytas lai�kas"
-
-#~ msgid "symbolic link"
-#~ msgstr "simbolin� nuoroda"
-
-#~ msgid "tar archive"
-#~ msgstr "tar archyvas"
-
-#~ msgid "theme"
-#~ msgstr "tema"
-
-#~ msgid "troff document"
-#~ msgstr "troff dokumentas"
-
-#~ msgid "unknown type"
-#~ msgstr "ne�inomas tipas"
-
-#~ msgid "zip archive"
-#~ msgstr "zip archyvas"
-
-#~ msgid "zoo archive"
-#~ msgstr "zoo archyvas"
-
-#~ msgid "GNOME VFS already initialized."
-#~ msgstr "GNOME VFS jau inicializuota."
-
-#~ msgid "Dying."
-#~ msgstr "Mir�tu."
-
-#~ msgid "Error reading: %s"
-#~ msgstr "Klaida skaitant: %s"
-
-#~ msgid "Error writing: %s"
-#~ msgstr "Klaida ra�ant: %s"
-
-#~ msgid "Cannot write: %s"
-#~ msgstr "Negaliu ra�yti: %s"
-
-#~ msgid "Cannot create temporary file name `%s'"
-#~ msgstr "Negaliu sukurti laikinos bylos vardu �%s�"
-
-#~ msgid "Cannot create socket: %s"
-#~ msgstr "Negaliu sukurti lizdo: %s"
-
-#~ msgid "Cannot bind `%s': %s"
-#~ msgstr "Negaliu susieti �%s�: %s"
-
-#~ msgid "Cannot listen on `%s': %s"
-#~ msgstr "Negaliu klausytis per �%s�: %s"
-
-#~ msgid "Cannot accept connections on `%s': %s"
-#~ msgstr "Negaliu priimti prisijungim� per �%s�: %s"
-
-#~ msgid "Cannot initialize CORBA."
-#~ msgstr "Negaliu inicializuoti CORBA."
-
-#~ msgid "Usage: %s <ior> [<ior_fd>]\n"
-#~ msgstr "Vartojimas: %s <ior> [<ior_fd>]\n"
-
-#~ msgid "Got weird string from the slave process: `%s'"
-#~ msgstr "Gauta keista eilut� i� vaikinio proceso: �%s�"
-
-#~ msgid "Cannot get object for `%s'"
-#~ msgstr "Negaliu gauti objekto, skirto �%s�"
-
-#~ msgid "Cannot kill GNOME::VFS::Slave::Notify -- exception %s"
-#~ msgstr "Negaliu nu�udyti GNOME::VFS::Slave::Notify -- i�imtis %s"
-
-#~ msgid "Cannot connect socket `%s': %s"
-#~ msgstr "Negaliu prijungti lizdo �%s�: %s"
-
-#~ msgid "Cannot initialize GNOME::VFS:Slave::Notify"
-#~ msgstr "Negaliu inicializuoti GNOME::VFS:Slave::Notify"
-
+msgstr "bendrinis bylų vardas"
+
+#: schemas/desktop_default_applications.schemas.in.h:1
+msgid "Default component viewer application"
+msgstr "Įprastakomponentų peržiūros programa"
+
+#: schemas/desktop_default_applications.schemas.in.h:2
+msgid "Default terminal application"
+msgstr "Standartinė terminalo programa"
+
+#: schemas/desktop_default_applications.schemas.in.h:3
+msgid "Exec argument for default terminal"
+msgstr "Įprasto terminalo paleidimo argumentas"
+
+#: schemas/desktop_default_applications.schemas.in.h:5
+#, no-c-format
+msgid ""
+"The application to use for viewing files that require a component to view "
+"them. The parameter %s will be replaced by the file's URIs, the parameter %c "
+"will be replaced by the component IID."
+msgstr ""
+"Programa naudojama peržiūrėti bylas, kurios reikalauja specialaus peržiūros "
+"komponento. Parametras %s bus pakeistas bylos adresu, parametras %c bus "
+"pakeistas komponento IID."
+
+#: schemas/desktop_default_applications.schemas.in.h:6
+msgid ""
+"The default terminal application to use for applications that require a "
+"terminal."
+msgstr ""
+"Įprasta terminalo programa, naudojama su programomis, kurioms reikia "
+"terminalo."
+
+#: schemas/desktop_default_applications.schemas.in.h:7
+msgid "The exec argument to use for the default terminal application."
+msgstr "Argumentas naudojamas paleidžiant įprasta terminalo programą."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
+msgid "Run the command in a terminal"
+msgstr "Vykdyti komandą terminale"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
+msgid "The command used to handle \"aim\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „aim“ URL, jeigu įjungta."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
+msgid "The command used to handle \"callto\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „callto“ URL, jeigu įjungta."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
+msgid "The command used to handle \"ghelp\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „ghelp“ URL, jeigu įjungta."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
 #, fuzzy
-#~ msgid "Can open multiple files"
-#~ msgstr "Per daug atidaryt� byl�"
+msgid "The command used to handle \"h323\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti H323 URL, jei įjungta."
 
-#~ msgid "%s to retrieve"
-#~ msgstr "%s, kur� parsi�sti"
-
-#~ msgid "Closing connection to %s"
-#~ msgstr "U�darau jungt� su %s"
-
-#~ msgid "%s of %s read"
-#~ msgstr "%s i� %s perskaityti"
-
-#~ msgid "%s read"
-#~ msgstr "%s perskaityti"
-
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
 #, fuzzy
-#~ msgid "Go to the parent directory"
-#~ msgstr "Ne katalogas"
+msgid "The command used to handle \"http\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „ghelp“ URL, jeigu įjungta."
 
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
 #, fuzzy
-#~ msgid "Go to the home directory"
-#~ msgstr "Ne katalogas"
+msgid "The command used to handle \"https\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „trash“ URL, jei įjungta."
 
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
+msgid "The command used to handle \"info\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „info“ URL, jei įjungta."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
+msgid "The command used to handle \"mailto\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „mailto“ URL, jei įjungta."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
+msgid "The command used to handle \"man\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „man“ URL, jei įjungta."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
+msgid "The command used to handle \"trash\" URLs, if enabled."
+msgstr "Komanda naudojama apdoroti „trash“ URL, jei įjungta."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
+msgid "The handler for \"aim\" URLs"
+msgstr "Programa, kuriai perleisti „aim“ užklausas"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+msgid "The handler for \"callto\" URLs"
+msgstr "Programa, kuriai perleisti „callto“ užklausas"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
+msgid "The handler for \"ghelp\" URLs"
+msgstr "Programa, kuriai perleisti „ghelp“ užklausas"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
 #, fuzzy
-#~ msgid "Unknown sort rule %d"
-#~ msgstr "Ne�inomas job'o ID %d"
+msgid "The handler for \"h323\" URLs"
+msgstr "Programa, kuriai perleisti H323 užklausas"
 
-#~ msgid "HTTP server returned an invalid PROPFIND response"
-#~ msgstr "HTTP serveris gr��ino negalim� PROPFIND atsakym�"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
+#, fuzzy
+msgid "The handler for \"http\" URLs"
+msgstr "Programa, kuriai perleisti „ghelp“ užklausas"
 
-#~ msgid "ftpfs: Invalid host name."
-#~ msgstr "ftpfs: Negaliojantis hosto vardas."
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
+#, fuzzy
+msgid "The handler for \"https\" URLs"
+msgstr "Programa, kuriai perleisti „ghelp“ užklausas"
 
-#~ msgid "ftpfs: Invalid host address."
-#~ msgstr "ftpfs: Negaliojantis hosto adresas."
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
+msgid "The handler for \"info\" URLs"
+msgstr "Programa, kuriai perleisti „info“ užklausas"
 
-#~ msgid "ftpfs: making connection to %s"
-#~ msgstr "ftpfs: bandau prisijungti prie %s"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
+msgid "The handler for \"mailto\" URLs"
+msgstr "Programa, kuriai perleisti „mailto“ užklausas"
 
-#~ msgid "ftpfs: connection interrupted by user"
-#~ msgstr "ftpfs: jungtis pertraukta vartotojo"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
+msgid "The handler for \"man\" URLs"
+msgstr "Programa, kuriai perleisti „man“ užklausas"
 
-#~ msgid "ftpfs: connection to server failed: %s"
-#~ msgstr "ftpfs: prisijungimas prie serverio nepavyko: %s"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
+msgid "The handler for \"trash\" URLs"
+msgstr "Programa, kuriai perleisti „trash“ užklausas"
 
-#~ msgid "Waiting to retry... %d (Control-C to cancel)"
-#~ msgstr "Laukiu kito bandymo... %d (Control-C at�aukti)"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
+msgid ""
+"True if the command specified in the \"command\" key should handle \"aim\" "
+"URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „aim“ adresus."
 
-#~ msgid " FTP: Password required for "
-#~ msgstr " FTP: Slapta�odis reikalingas "
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
+msgid ""
+"True if the command specified in the \"command\" key should handle \"callto"
+"\" URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „callto“ adresus."
 
-#~ msgid "ftpfs: sending login name"
-#~ msgstr "ftpfs: siun�iu prisijungimo vard�"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
+msgid ""
+"True if the command specified in the \"command\" key should handle \"ghelp\" "
+"URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „ghelp“ adresus."
 
-#~ msgid "ftpfs: sending user password"
-#~ msgstr "ftpfs: siun�iu vartotojo slapta�od�"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
+#, fuzzy
+msgid ""
+"True if the command specified in the \"command\" key should handle \"h323\" "
+"URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų H323 adresus."
 
-#~ msgid "ftpfs: logged in"
-#~ msgstr "ftpfs: prisijungta"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
+#, fuzzy
+msgid ""
+"True if the command specified in the \"command\" key should handle \"http\" "
+"URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „ghelp“ adresus."
 
-#~ msgid "ftpfs: Login incorrect for user %s "
-#~ msgstr "ftpfs: neteisingas prisijungimas vartotojui %s"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
+#, fuzzy
+msgid ""
+"True if the command specified in the \"command\" key should handle \"https\" "
+"URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „ghelp“ adresus."
 
-#~ msgid "ftpfs: aborting transfer."
-#~ msgstr "ftpfs: nutraukiu siuntim�."
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
+msgid ""
+"True if the command specified in the \"command\" key should handle \"info\" "
+"URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „info“ adresus."
 
-#~ msgid "ftpfs: abort error: %s"
-#~ msgstr "ftpfs: nutraukimo klaida: %s"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
+msgid ""
+"True if the command specified in the \"command\" key should handle \"mailto"
+"\" URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „mailto“ adresus."
 
-#~ msgid "ftpfs: abort failed"
-#~ msgstr "ftpfs: nutraukimas nepavyko"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
+msgid ""
+"True if the command specified in the \"command\" key should handle \"man\" "
+"URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „man“ adresus."
 
-#~ msgid "ftpfs: could not setup passive mode"
-#~ msgstr "ftpfs: negal�jau pereiti � pasyv� re�im�"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
+msgid ""
+"True if the command specified in the \"command\" key should handle \"trash\" "
+"URLs."
+msgstr ""
+"Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+"apdorotų „trash“ adresus."
 
-#~ msgid "ftpfs: storing file %d (%d)"
-#~ msgstr "ftpfs: �ra�au byl� %d (%d)"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
+msgid ""
+"True if the command used to handle this type of URL should be run in a "
+"terminal."
+msgstr ""
+"Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti "
+"paleidžiama terminale."
 
-#~ msgid "ftpfs: CWD failed."
-#~ msgstr "ftpfs: CWD nepavyko."
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:33
+msgid "Whether the specified command should handle \"aim\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „aim“ adresus"
 
-#~ msgid "ftpfs: couldn't resolve symlink"
-#~ msgstr "ftpfs: negal�jau atsekti symlinko"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:34
+msgid "Whether the specified command should handle \"callto\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „callto“ adresus"
 
-#~ msgid "Resolving symlink..."
-#~ msgstr "Atseku symlink�..."
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:35
+msgid "Whether the specified command should handle \"ghelp\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „ghelp“ adresus"
 
-#~ msgid "ftpfs: Reading FTP directory %s... (don't use UNIX ls options)"
-#~ msgstr "ftpfs: Skaitau FTP katalog� %s... (nenaudok UNIX ls pasirink�i�)"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:36
+#, fuzzy
+msgid "Whether the specified command should handle \"h323\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti H323 adresus"
 
-#~ msgid "ftpfs: Reading FTP directory %s..."
-#~ msgstr "ftpfs: Skaitau FTP katalog� %s..."
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:37
+#, fuzzy
+msgid "Whether the specified command should handle \"http\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „ghelp“ adresus"
 
-#~ msgid "ftpfs: reading FTP directory interrupt by user"
-#~ msgstr "ftpfs: FTP katalogo skaitymas nutrauktas vartotojo"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:38
+#, fuzzy
+msgid "Whether the specified command should handle \"https\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „trash“ adresus"
 
-#~ msgid "ftpfs: got listing"
-#~ msgstr "ftpfs: gavau s�ra��"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:39
+msgid "Whether the specified command should handle \"info\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „info“ adresus"
 
-#~ msgid "ftpfs: failed; nowhere to fallback to"
-#~ msgstr "ftpfs: nepavyko; n�ra kur besugr��ti"
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:40
+msgid "Whether the specified command should handle \"mailto\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „mailto“ adresus"
 
-#~ msgid "Starting linear transfer..."
-#~ msgstr "Pradedu tiesin� siuntim�..."
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:41
+msgid "Whether the specified command should handle \"man\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „man“ adresus"
 
-#~ msgid "Preparing reget..."
-#~ msgstr "Paruo�iu gavimo prat�sim�..."
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:42
+msgid "Whether the specified command should handle \"trash\" URLs"
+msgstr "Ar nurodyta programa turėtų apdoroti „trash“ adresus"
+
+#: schemas/system_dns_sd.schemas.in.h:1
+msgid ""
+"Comma separated list of dns-sd domains that should be visible in the network "
+"location."
+msgstr ""
+"Kableliu atskirtų dns-sd domenų, kurie turėtų būti matomi tinklo vietoje, "
+"sąrašas."
+
+#: schemas/system_dns_sd.schemas.in.h:2
+msgid "Extra domains to look for dns-sd services in"
+msgstr "Papildomi domenai, kuriuose irgi ieškoti dns-sd paslaugų"
+
+#: schemas/system_dns_sd.schemas.in.h:3
+msgid "How to display local DNS-SD service"
+msgstr "Kaip rodyti vietinę DNS-SD paslaugą"
+
+#: schemas/system_dns_sd.schemas.in.h:4
+msgid "Possible values are \"merged\", \"separate\" and \"disabled\"."
+msgstr "Galimos reikšmės yra „merged“, „separate“ ir „disabled“."
+
+#: schemas/system_http_proxy.schemas.in.h:1
+msgid "Authenticate proxy server connections"
+msgstr "Tarpinėje stotyje naudoti autorizavimą"
+
+#: schemas/system_http_proxy.schemas.in.h:2
+msgid "Automatic proxy configuration URL"
+msgstr "Automatinių tarpinės stoties nustatymų adresas"
+
+#: schemas/system_http_proxy.schemas.in.h:3
+msgid "Enables the proxy settings when accessing HTTP over the Internet."
+msgstr ""
+"Įjungia tarpinės stoties panaudojimą, kai Internatas naršomas naudojant HTTP."
+
+#: schemas/system_http_proxy.schemas.in.h:4
+msgid "FTP proxy host name"
+msgstr "FTP tarpinės stoties vardas"
+
+#: schemas/system_http_proxy.schemas.in.h:5
+msgid "FTP proxy port"
+msgstr "FTP tarpinės stoties prievadas"
+
+#: schemas/system_http_proxy.schemas.in.h:6
+msgid "HTTP proxy host name"
+msgstr "HTTP tarpinės stoties vardas"
+
+#: schemas/system_http_proxy.schemas.in.h:7
+msgid "HTTP proxy password"
+msgstr "HTTP tarpinės stoties slaptažodis"
+
+#: schemas/system_http_proxy.schemas.in.h:8
+msgid "HTTP proxy port"
+msgstr "HTTP tarpinės stoties prievadas"
+
+#: schemas/system_http_proxy.schemas.in.h:9
+msgid "HTTP proxy username"
+msgstr "HTTP tarpinės stoties vartotojas"
+
+#: schemas/system_http_proxy.schemas.in.h:10
+msgid ""
+"If true, then connections to the proxy server require authentication. The "
+"username/password combo defined by \"/system/http_proxy/authentication_user"
+"\" and \"/system/http_proxy/authentication_password\"."
+msgstr ""
+"Jei teigiama, jungtims per tarpinę stotį yra būtinas autorizavimas. "
+"Vartotojo vardas ir slaptažodis yra saugomas „/system/http_proxy/"
+"authentication_user“ ir „/system/http_proxy/authentication_password“ "
+"raktuose."
+
+#: schemas/system_http_proxy.schemas.in.h:11
+msgid "Non-proxy hosts"
+msgstr "Adresai pasiekiami nenaudojant tarpinės stoties"
+
+#: schemas/system_http_proxy.schemas.in.h:12
+msgid "Password to pass as authentication when doing HTTP proxying."
+msgstr "Slaptažodis, naudojamas jungiantis per HTTP tarpinę stotį."
+
+#: schemas/system_http_proxy.schemas.in.h:13
+msgid "Proxy configuration mode"
+msgstr "Tarpinės stoties nustatymų režimas"
+
+#: schemas/system_http_proxy.schemas.in.h:14
+msgid "SOCKS proxy host name"
+msgstr "SOCKS tarpinės stoties vardas"
+
+#: schemas/system_http_proxy.schemas.in.h:15
+msgid "SOCKS proxy port"
+msgstr "SOCKS tarpinės stoties prievadas"
+
+#: schemas/system_http_proxy.schemas.in.h:16
+msgid "Secure HTTP proxy host name"
+msgstr "Tarpinė saugaus HTTP stotis"
+
+#: schemas/system_http_proxy.schemas.in.h:17
+msgid "Secure HTTP proxy port"
+msgstr "Saugaus HTTP tarpinės stoties prievadas"
+
+#: schemas/system_http_proxy.schemas.in.h:18
+msgid ""
+"Select the proxy configuration mode. Supported values are \"none\", \"manual"
+"\", \"auto\"."
+msgstr ""
+"Pasirinkite tarpinės stoties nustatymų režimą. Galimos reikšmės yra \"joks"
+"\", \"rankinis\", \"auto\"."
+
+#: schemas/system_http_proxy.schemas.in.h:19
+msgid "The machine name to proxy FTP through."
+msgstr "Kompiuteris, teikiantis tarpinės FTP stoties paslaugas."
+
+#: schemas/system_http_proxy.schemas.in.h:20
+msgid "The machine name to proxy HTTP through."
+msgstr "Kompiuteris, teikiantis tarpinės HTTP stoties paslaugas."
+
+#: schemas/system_http_proxy.schemas.in.h:21
+msgid "The machine name to proxy secure HTTP through."
+msgstr "Kompiuteris, teikiantis tarpinės saugaus HTTP stoties paslaugas."
+
+#: schemas/system_http_proxy.schemas.in.h:22
+msgid "The machine name to proxy socks through."
+msgstr "Kompiuteris, teikiantis tarpinės socks stoties paslaugas."
+
+#: schemas/system_http_proxy.schemas.in.h:23
+msgid ""
+"The port on the machine defined by \"/system/http_proxy/host\" that you "
+"proxy through."
+msgstr ""
+"Tarpinės http stoties prievadas, saugomas „/system/http_proxy/host“ rakte."
+
+#: schemas/system_http_proxy.schemas.in.h:24
+msgid ""
+"The port on the machine defined by \"/system/proxy/ftp_host\" that you proxy "
+"through."
+msgstr ""
+"Tarpinės ftp stoties prievadas, saugomas „/system/http_proxy/host“ rakte."
+
+#: schemas/system_http_proxy.schemas.in.h:25
+msgid ""
+"The port on the machine defined by \"/system/proxy/secure_host\" that you "
+"proxy through."
+msgstr ""
+"Tarpinės saugaus http stoties prievadas, saugomas „/system/http_proxy/host“ "
+"rakte."
+
+#: schemas/system_http_proxy.schemas.in.h:26
+msgid ""
+"The port on the machine defined by \"/system/proxy/socks_host\" that you "
+"proxy through."
+msgstr ""
+"Tarpinės socks stoties prievadas, saugomas „/system/http_proxy/host“ rakte."
+
+#: schemas/system_http_proxy.schemas.in.h:27
+msgid ""
+"This key contains a list of hosts which are connected to directly, rather "
+"than via the proxy (if it is active). The values can be hostnames, domains "
+"(using an initial wildcard like *.foo.com), IP host addresses (both IPv4 and "
+"IPv6) and network addresses with a netmask (something like 192.168.0.0/24)."
+msgstr ""
+"Šis raktas saugo adresus, prie kurių yra jungiamasi tiesiogiai, o ne per "
+"tarpinę stotį (jei tokia naudojama). Reikšmės gali saugoti mašinų vardus, "
+"domenus (su priekyje esančių apibendrinančiu simboliu, kaip *.example.com), "
+"mašinų IP adresus (tiek IPv4, tiek IPv6) bei tinklų adresus su tinklo "
+"kaukėmis (kažkas panašaus į 192.168.0.0/24)."
+
+#: schemas/system_http_proxy.schemas.in.h:28
+msgid "URL that provides proxy configuration values."
+msgstr "Adresas, kuriame saugomi tarpinės stoties nustatymai"
+
+#: schemas/system_http_proxy.schemas.in.h:29
+msgid "Use HTTP proxy"
+msgstr "Naudoti HTTP tarpinę stotį"
+
+#: schemas/system_http_proxy.schemas.in.h:30
+msgid "User name to pass as authentication when doing HTTP proxying."
+msgstr "Vartotojo vardas naudojamas jungiantis per HTTP tarpinę stotį."
+
+#: schemas/system_smb.schemas.in.h:1
+msgid "SMB workgroup"
+msgstr "SMB darbo grupė"
+
+#: schemas/system_smb.schemas.in.h:2
+msgid "The window workgroup the user is part of"
+msgstr "Windows darbo grupė, kuriai priklauso vartotojas"
+
+#~ msgid "CD Disc"
+#~ msgstr "CD diskas"
+
+#~ msgid "The command used to handle HTTP URLs, if enabled."
+#~ msgstr "Komanda naudojama apdoroti „HTTP“ URL, jei įjungta."
+
+#~ msgid "The command used to handle HTTPS URLs, if enabled."
+#~ msgstr "Komanda naudojama apdoroti „HTTPS“ URL, jei įjungta."
+
+#~ msgid "The handler for HTTP URLs"
+#~ msgstr "Programa, kuriai perleisti HTTP užklausas"
+
+#~ msgid "The handler for HTTPS URLs"
+#~ msgstr "Programa, kuriai perleisti HTTPS užklausas"
+
+#~ msgid ""
+#~ "True if the command specified in the \"command\" key should handle HTTP "
+#~ "URLs."
+#~ msgstr ""
+#~ "Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+#~ "apdorotų HTTP adresus."
+
+#~ msgid ""
+#~ "True if the command specified in the \"command\" key should handle HTTPS "
+#~ "URLs."
+#~ msgstr ""
+#~ "Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, "
+#~ "apdorotų HTTPS adresus."
+
+#~ msgid "Whether the specified command should handle HTTP URLs"
+#~ msgstr "Ar nurodyta programa turėtų apdoroti HTTP adresus"
+
+#~ msgid "Whether the specified command should handle HTTPS URLs"
+#~ msgstr "Ar nurodyta programa turėtų apdoroti HTTPS adresus"

@@ -27,6 +27,7 @@
 #include <bonobo-activation/bonobo-activation.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -37,10 +38,12 @@ append_comma_and_scheme (gpointer scheme,
 	char **string;
 
 	string = (char **) user_data;
-	if (strlen (*string) > 0) {
-		*string = g_strconcat (*string, ", ", scheme, NULL);
-	}
-	else {
+	if (*string != NULL) {
+		char *tmp;       	
+		tmp = g_strconcat (*string, ", ", scheme, NULL);
+		g_free (*string);
+		*string = tmp;
+	} else {
 		*string = g_strdup (scheme);
 	}
 }
@@ -51,7 +54,7 @@ format_supported_uri_schemes_for_display (GList *supported_uri_schemes)
 {
 	char *string;
 
-	string = g_strdup ("");
+	string = NULL;
 	g_list_foreach (supported_uri_schemes,
 			append_comma_and_scheme,
 			&string);
@@ -81,12 +84,16 @@ print_application (GnomeVFSMimeApplication *application)
         if (application == NULL) {
 	        puts ("(none)");
 	} else {
+		gchar *uri_schemes;
+
+		uri_schemes = format_supported_uri_schemes_for_display (application->supported_uri_schemes),
 	        printf ("name: %s\ncommand: %s\ncan_open_multiple_files: %s\nexpects_uris: %s\nsupported_uri_schemes: %s\nrequires_terminal: %s\n", 
 			application->name, application->command, 
 			(application->can_open_multiple_files ? "TRUE" : "FALSE"),
 			format_mime_application_argument_type_for_display (application->expects_uris),
-			format_supported_uri_schemes_for_display (application->supported_uri_schemes),
+			uri_schemes,
 			(application->requires_terminal ? "TRUE" : "FALSE"));
+		g_free (uri_schemes);
 	}
 }
 
@@ -151,7 +158,7 @@ print_application_list (GList *applications)
 int
 main (int argc, char **argv)
 {
-        const char *type;  
+        char *type;  
 	GnomeVFSMimeApplication *default_application;
 	Bonobo_ServerInfo *default_component;
 	GnomeVFSMimeAction *default_action;
@@ -162,53 +169,64 @@ main (int argc, char **argv)
 	GList *short_list_applications;
 
 	gnome_vfs_init ();
-
-	if (argc != 2) {
-		fprintf (stderr, "Usage: %s mime_type\n", *argv);
-		return 1;
+        if (argc != 2) {
+               fprintf (stderr, "Usage: %s mime_type\n", *argv);
+               return 1;
 	}
 
 	type = argv[1];
+
+	if (!gnome_vfs_mime_type_is_known (type)) {
+		fprintf (stderr, "Unknown mime type: %s\n", type);
+		return 1;
+	}
 	
 	description = gnome_vfs_mime_get_description (type);
 	printf ("Description: %s\n", description);
-
 
 	default_action = gnome_vfs_mime_get_default_action (type);
 	puts ("Default Action");
 	print_action (default_action);
 	puts ("");
+	gnome_vfs_mime_action_free (default_action);
 
 	default_application = gnome_vfs_mime_get_default_application (type);
 	puts("Default Application");
 	print_application (default_application);
 	puts ("");
+	gnome_vfs_mime_application_free (default_application);
 		
 	default_component = gnome_vfs_mime_get_default_component (type);
 	puts("Default Component");
 	print_component (default_component);
 	puts ("");
+	CORBA_free (default_component);
 
 	short_list_applications = gnome_vfs_mime_get_short_list_applications (type); 
 	puts("Short List Applications");
 	print_application_list (short_list_applications);
 	puts ("");
+	gnome_vfs_mime_application_list_free (short_list_applications);
 
 	short_list_components = gnome_vfs_mime_get_short_list_components (type); 
 	puts("Short List Components");
 	print_component_list (short_list_components);
 	puts ("");
+	gnome_vfs_mime_component_list_free (short_list_components);
 
 	all_applications = gnome_vfs_mime_get_all_applications (type); 
 	puts("All Applications");
 	print_application_list (all_applications);
 	puts ("");
+	gnome_vfs_mime_application_list_free (all_applications);
 
 	all_components = gnome_vfs_mime_get_all_components (type); 
 	puts("All Components");
 	print_component_list (all_components);
 	puts ("");
+	gnome_vfs_mime_component_list_free (all_components);
 
+	gnome_vfs_shutdown ();
 	return 0;
 }
 

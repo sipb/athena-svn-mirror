@@ -29,6 +29,7 @@
 #include <gmodule.h>
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs-transform.h>
+#include "gnome-vfs-daemon-method.h"
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -44,18 +45,52 @@ struct _ModuleElement {
 	GnomeVFSMethod *method;
 	GnomeVFSTransform *transform;
 	int nusers;
+	gboolean run_in_daemon;
 };
 typedef struct _ModuleElement ModuleElement;
 
 static gboolean method_already_initialized = FALSE;
 
+static gboolean gnome_vfs_is_daemon = FALSE;
+static GType daemon_volume_monitor_type = 0;
+static void (*daemon_force_probe_callback) (GnomeVFSVolumeMonitor *volume_monitor) = NULL;
+
 static GHashTable *module_hash = NULL;
 G_LOCK_DEFINE_STATIC (gnome_vfs_method_init);
-GStaticRecMutex module_hash_lock = G_STATIC_REC_MUTEX_INIT;
+static GStaticRecMutex module_hash_lock = G_STATIC_REC_MUTEX_INIT;
 
 static GList *module_path_list = NULL;
 
 
+/* Pass some integration stuff here, so we can make the library not depend
+   on the daemon-side code */
+void
+gnome_vfs_set_is_daemon (GType volume_monitor_type,
+			 GnomeVFSDaemonForceProbeCallback force_probe_callback)
+{
+	gnome_vfs_is_daemon = TRUE;
+	daemon_volume_monitor_type = volume_monitor_type;
+	daemon_force_probe_callback = force_probe_callback;
+}
+
+gboolean
+gnome_vfs_get_is_daemon (void)
+{
+	return gnome_vfs_is_daemon;
+}
+
+GType
+_gnome_vfs_get_daemon_volume_monitor_type (void)
+{
+	return daemon_volume_monitor_type;
+}
+
+GnomeVFSDaemonForceProbeCallback
+_gnome_vfs_get_daemon_force_probe_callback (void)
+{
+	return daemon_force_probe_callback;
+}
+
 static gboolean
 init_hash_table (void)
 {
@@ -270,6 +305,7 @@ gnome_vfs_add_module_to_hash_table (const gchar *name)
 	pid_t saved_uid;
 	gid_t saved_gid;
 	const char *args;
+	gboolean run_in_daemon;
 
 	g_static_rec_mutex_lock (&module_hash_lock);
 
@@ -278,49 +314,53 @@ gnome_vfs_add_module_to_hash_table (const gchar *name)
 	if (module_element != NULL)
 		goto add_module_out;
 
-	module_name = _gnome_vfs_configuration_get_module_path (name, &args);
+	module_name = _gnome_vfs_configuration_get_module_path (name, &args, &run_in_daemon);
 	if (module_name == NULL)
 		goto add_module_out;
 
-	/* Set the effective UID/GID to the user UID/GID to prevent attacks to
-           setuid/setgid executables.  */
-
-	saved_uid = geteuid ();
-	saved_gid = getegid ();
+	if (gnome_vfs_is_daemon || !run_in_daemon) {
+		/* Set the effective UID/GID to the user UID/GID to prevent attacks to
+		   setuid/setgid executables.  */
+		
+		saved_uid = geteuid ();
+		saved_gid = getegid ();
 #if defined(HAVE_SETEUID)
-	seteuid (getuid ());
+		seteuid (getuid ());
 #elif defined(HAVE_SETRESUID)
-	setresuid (-1, getuid (), -1);
+		setresuid (-1, getuid (), -1);
 #endif
 #if defined(HAVE_SETEGID)
-	setegid (getgid ());
+		setegid (getgid ());
 #elif defined(HAVE_SETRESGID)
-	setresgid (-1, getgid (), -1);
+		setresgid (-1, getgid (), -1);
 #endif
-
-	if (g_path_is_absolute (module_name))
-		load_module (module_name, name, args, &method, &transform);
-	else
-		load_module_in_path_list (module_name, name, args, &method, &transform);
-
+		
+		if (g_path_is_absolute (module_name))
+			load_module (module_name, name, args, &method, &transform);
+		else
+			load_module_in_path_list (module_name, name, args, &method, &transform);
+		
 #if defined(HAVE_SETEUID)
-	seteuid (saved_uid);
+		seteuid (saved_uid);
 #elif defined(HAVE_SETRESUID)
-	setresuid (-1, saved_uid, -1);
+		setresuid (-1, saved_uid, -1);
 #endif
 #if defined(HAVE_SETEGID)
-	setegid (saved_gid);
+		setegid (saved_gid);
 #elif defined(HAVE_SETRESGID)
-	setresgid (-1, saved_gid, -1);
+		setresgid (-1, saved_gid, -1);
 #endif
+	} else {
+		method = _gnome_vfs_daemon_method_get ();
+	}
 
 	if (method == NULL && transform == NULL)
 		goto add_module_out;
-
 	module_element = g_new (ModuleElement, 1);
 	module_element->name = g_strdup (name);
 	module_element->method = method;
 	module_element->transform = transform;
+	module_element->run_in_daemon = run_in_daemon;
 
 	g_hash_table_insert (module_hash, module_element->name, module_element);
 

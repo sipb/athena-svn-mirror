@@ -1,0 +1,294 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeVFSVolumeMonitor</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="volumes.html" title="Volumes and Drives Handling"><link rel="previous" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="next" href="networking.html" title="Networking"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-20-gnome-vfs-volume-monitor.html#id2624633" title="Object Hierarchy"><link rel="section" href="gnome-vfs-20-gnome-vfs-volume-monitor.html#id2624653" title="Signal Prototypes"><link rel="section" href="gnome-vfs-20-gnome-vfs-volume-monitor.html#id2624875" title="Description"><link rel="section" href="gnome-vfs-20-gnome-vfs-volume-monitor.html#id2624885" title="Details"><link rel="section" href="gnome-vfs-20-gnome-vfs-volume-monitor.html#id2625968" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-drive.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="volumes.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="networking.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-volume-monitor"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeVFSVolumeMonitor</span></h2><p>GnomeVFSVolumeMonitor &#8212; Monitors volume mounts and unmounts</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><a name="GnomeVFSVolumeMonitor"></a><pre class="synopsis">
+
+
+
+#define     <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GNOME-IS-VFS-VOLUME-MONITOR-CAPS">GNOME_IS_VFS_VOLUME_MONITOR</a>     (o)
+#define     <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GNOME-IS-VFS-VOLUME-MONITOR-CLASS-CAPS">GNOME_IS_VFS_VOLUME_MONITOR_CLASS</a>(k)
+#define     <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GNOME-VFS-TYPE-VOLUME-MONITOR-CAPS">GNOME_VFS_TYPE_VOLUME_MONITOR</a>
+#define     <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GNOME-VFS-VOLUME-MONITOR-CAPS">GNOME_VFS_VOLUME_MONITOR</a>        (o)
+#define     <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GNOME-VFS-VOLUME-MONITOR-CLASS-CAPS">GNOME_VFS_VOLUME_MONITOR_CLASS</a>  (k)
+struct      <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor-struct">GnomeVFSVolumeMonitor</a>;
+struct      <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitorClass">GnomeVFSVolumeMonitorClass</a>;
+<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a>* <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-get-volume-monitor">gnome_vfs_get_volume_monitor</a>
+                                            (void);
+<a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-emit-pre-unmount">gnome_vfs_volume_monitor_emit_pre_unmount</a>
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor,
+                                             <a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a> *volume);
+<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-get-connected-drives">gnome_vfs_volume_monitor_get_connected_drives</a>
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor);
+<a href="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDrive">GnomeVFSDrive</a>* <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-get-drive-by-id">gnome_vfs_volume_monitor_get_drive_by_id</a>
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor,
+                                             <a
+href="../glib/glib-Basic-Types.html#gulong"
+>gulong</a> id);
+<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-get-mounted-volumes">gnome_vfs_volume_monitor_get_mounted_volumes</a>
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor);
+<a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a>       <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-get-type">gnome_vfs_volume_monitor_get_type</a>
+                                            (void);
+<a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a>* <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-get-volume-by-id">gnome_vfs_volume_monitor_get_volume_by_id</a>
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor,
+                                             <a
+href="../glib/glib-Basic-Types.html#gulong"
+>gulong</a> id);
+<a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a>* <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-get-volume-for-path">gnome_vfs_volume_monitor_get_volume_for_path</a>
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor,
+                                             const char *path);
+<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a>* <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-ref">gnome_vfs_volume_monitor_ref</a>
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor);
+<a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        <a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#gnome-vfs-volume-monitor-unref">gnome_vfs_volume_monitor_unref</a>  (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor);
+</pre></div><div class="refsect1" lang="en"><a name="id2624633"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  <a
+href="../gobject/gobject-The-Base-Object-Type.html#GObject"
+>GObject</a>
+   +----GnomeVFSVolumeMonitor
+</pre></div><div class="refsect1" lang="en"><a name="id2624653"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor-drive-connected">drive-connected</a>"
+            <a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function      (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDrive">GnomeVFSDrive</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+"<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor-drive-disconnected">drive-disconnected</a>"
+            <a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function      (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDrive">GnomeVFSDrive</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+"<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor-volume-mounted">volume-mounted</a>"
+            <a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function      (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+"<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor-volume-pre-unmount">volume-pre-unmount</a>"
+            <a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function      (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+"<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor-volume-unmounted">volume-unmounted</a>"
+            <a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function      (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2624875"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2624885"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2624890"></a><h3><a name="GNOME-IS-VFS-VOLUME-MONITOR-CAPS"></a>GNOME_IS_VFS_VOLUME_MONITOR()</h3><a class="indexterm" name="id2624902"></a><pre class="programlisting">#define GNOME_IS_VFS_VOLUME_MONITOR(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_VFS_TYPE_VOLUME_MONITOR))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>o</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2624937"></a><h3><a name="GNOME-IS-VFS-VOLUME-MONITOR-CLASS-CAPS"></a>GNOME_IS_VFS_VOLUME_MONITOR_CLASS()</h3><a class="indexterm" name="id2624949"></a><pre class="programlisting">#define GNOME_IS_VFS_VOLUME_MONITOR_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), GNOME_VFS_TYPE_VOLUME_MONITOR))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>k</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2624984"></a><h3><a name="GNOME-VFS-TYPE-VOLUME-MONITOR-CAPS"></a>GNOME_VFS_TYPE_VOLUME_MONITOR</h3><a class="indexterm" name="id2624996"></a><pre class="programlisting">#define GNOME_VFS_TYPE_VOLUME_MONITOR        (gnome_vfs_volume_monitor_get_type ())
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625012"></a><h3><a name="GNOME-VFS-VOLUME-MONITOR-CAPS"></a>GNOME_VFS_VOLUME_MONITOR()</h3><a class="indexterm" name="id2625025"></a><pre class="programlisting">#define GNOME_VFS_VOLUME_MONITOR(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_VFS_TYPE_VOLUME_MONITOR, GnomeVFSVolumeMonitor))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>o</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2625060"></a><h3><a name="GNOME-VFS-VOLUME-MONITOR-CLASS-CAPS"></a>GNOME_VFS_VOLUME_MONITOR_CLASS()</h3><a class="indexterm" name="id2625071"></a><pre class="programlisting">#define GNOME_VFS_VOLUME_MONITOR_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), GNOME_VFS_TYPE_VOLUME_MONITOR, GnomeVFSVolumeMonitorClass))
+</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>k</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2625106"></a><h3><a name="GnomeVFSVolumeMonitor-struct"></a>struct GnomeVFSVolumeMonitor</h3><a class="indexterm" name="id2625118"></a><pre class="programlisting">struct GnomeVFSVolumeMonitor;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625133"></a><h3><a name="GnomeVFSVolumeMonitorClass"></a>struct GnomeVFSVolumeMonitorClass</h3><a class="indexterm" name="id2625145"></a><pre class="programlisting">struct GnomeVFSVolumeMonitorClass {
+
+	GObjectClass parent_class;
+	
+	void (* volume_mounted)	  	(GnomeVFSVolumeMonitor *volume_monitor,
+				   	 GnomeVFSVolume	       *volume);
+	void (* volume_pre_unmount)	(GnomeVFSVolumeMonitor *volume_monitor,
+				   	 GnomeVFSVolume	       *volume);
+	void (* volume_unmounted)	(GnomeVFSVolumeMonitor *volume_monitor,
+				   	 GnomeVFSVolume	       *volume);
+	void (* drive_connected) 	(GnomeVFSVolumeMonitor *volume_monitor,
+				   	 GnomeVFSDrive	       *drive);
+	void (* drive_disconnected)	(GnomeVFSVolumeMonitor *volume_monitor,
+				   	 GnomeVFSDrive         *drive);
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625170"></a><h3><a name="gnome-vfs-get-volume-monitor"></a>gnome_vfs_get_volume_monitor ()</h3><a class="indexterm" name="id2625181"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a>* gnome_vfs_get_volume_monitor
+                                            (void);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625225"></a><h3><a name="gnome-vfs-volume-monitor-emit-pre-unmount"></a>gnome_vfs_volume_monitor_emit_pre_unmount ()</h3><a class="indexterm" name="id2625238"></a><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        gnome_vfs_volume_monitor_emit_pre_unmount
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor,
+                                             <a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a> *volume);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>volume_monitor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>volume</tt></i> :</span></td><td>
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625315"></a><h3><a name="gnome-vfs-volume-monitor-get-connected-drives"></a>gnome_vfs_volume_monitor_get_connected_drives ()</h3><a class="indexterm" name="id2625328"></a><pre class="programlisting"><a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      gnome_vfs_volume_monitor_get_connected_drives
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>volume_monitor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625394"></a><h3><a name="gnome-vfs-volume-monitor-get-drive-by-id"></a>gnome_vfs_volume_monitor_get_drive_by_id ()</h3><a class="indexterm" name="id2625407"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDrive">GnomeVFSDrive</a>* gnome_vfs_volume_monitor_get_drive_by_id
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor,
+                                             <a
+href="../glib/glib-Basic-Types.html#gulong"
+>gulong</a> id);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>volume_monitor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625494"></a><h3><a name="gnome-vfs-volume-monitor-get-mounted-volumes"></a>gnome_vfs_volume_monitor_get_mounted_volumes ()</h3><a class="indexterm" name="id2625507"></a><pre class="programlisting"><a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      gnome_vfs_volume_monitor_get_mounted_volumes
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>volume_monitor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625573"></a><h3><a name="gnome-vfs-volume-monitor-get-type"></a>gnome_vfs_volume_monitor_get_type ()</h3><a class="indexterm" name="id2625586"></a><pre class="programlisting"><a
+href="../gobject/gobject-Type-Information.html#GType"
+>GType</a>       gnome_vfs_volume_monitor_get_type
+                                            (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2625622"></a><h3><a name="gnome-vfs-volume-monitor-get-volume-by-id"></a>gnome_vfs_volume_monitor_get_volume_by_id ()</h3><a class="indexterm" name="id2625635"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a>* gnome_vfs_volume_monitor_get_volume_by_id
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor,
+                                             <a
+href="../glib/glib-Basic-Types.html#gulong"
+>gulong</a> id);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>volume_monitor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625721"></a><h3><a name="gnome-vfs-volume-monitor-get-volume-for-path"></a>gnome_vfs_volume_monitor_get_volume_for_path ()</h3><a class="indexterm" name="id2625734"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a>* gnome_vfs_volume_monitor_get_volume_for_path
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor,
+                                             const char *path);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>volume_monitor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625822"></a><h3><a name="gnome-vfs-volume-monitor-ref"></a>gnome_vfs_volume_monitor_ref ()</h3><a class="indexterm" name="id2625834"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a>* gnome_vfs_volume_monitor_ref
+                                            (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>volume_monitor</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div><hr><div class="refsect2" lang="en"><a name="id2625900"></a><h3><a name="gnome-vfs-volume-monitor-unref"></a>gnome_vfs_volume_monitor_unref ()</h3><a class="indexterm" name="id2625912"></a><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        gnome_vfs_volume_monitor_unref  (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *volume_monitor);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>volume_monitor</tt></i> :</span></td><td>
+</td></tr></tbody></table></div><p>Since  2.6
+</p></div></div><div class="refsect1" lang="en"><a name="id2625968"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2625974"></a><h3><a name="GnomeVFSVolumeMonitor-drive-connected"></a>The "drive-connected" signal</h3><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function                  (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDrive">GnomeVFSDrive</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vfsvolumemonitor</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2626070"></a><h3><a name="GnomeVFSVolumeMonitor-drive-disconnected"></a>The "drive-disconnected" signal</h3><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function                  (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDrive">GnomeVFSDrive</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vfsvolumemonitor</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2626167"></a><h3><a name="GnomeVFSVolumeMonitor-volume-mounted"></a>The "volume-mounted" signal</h3><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function                  (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vfsvolumemonitor</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2626263"></a><h3><a name="GnomeVFSVolumeMonitor-volume-pre-unmount"></a>The "volume-pre-unmount" signal</h3><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function                  (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vfsvolumemonitor</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2626360"></a><h3><a name="GnomeVFSVolumeMonitor-volume-unmounted"></a>The "volume-unmounted" signal</h3><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        user_function                  (<a href="gnome-vfs-20-gnome-vfs-volume-monitor.html#GnomeVFSVolumeMonitor">GnomeVFSVolumeMonitor</a> *vfsvolumemonitor,
+                                            <a href="gnome-vfs-20-gnome-vfs-volume.html#GnomeVFSVolume">GnomeVFSVolume</a> *arg1,
+                                            <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vfsvolumemonitor</tt></i> :</span></td><td>the object which received the signal.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>arg1</tt></i> :</span></td><td>
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-20-gnome-vfs-drive.html"><b>&lt;&lt; GnomeVFSDrive</b></a></td><td align="right"><a accesskey="n" href="networking.html"><b>Networking &gt;&gt;</b></a></td></tr></table></body></html>

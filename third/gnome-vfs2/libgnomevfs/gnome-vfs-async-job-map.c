@@ -50,7 +50,14 @@ GnomeVFSJob *
 _gnome_vfs_async_job_map_get_job (const GnomeVFSAsyncHandle *handle)
 {
 	_gnome_vfs_async_job_map_assert_locked ();
-	g_assert (async_job_map != NULL);
+	
+	if (async_job_map == NULL) {
+		/* This can happen if cancellations are run after
+		 * shutdown or before any job is run. This is just
+		 * a special case of there handle not being in the
+		 * hash */
+		return NULL;
+	}
 
 	return g_hash_table_lookup (async_job_map, handle);
 }

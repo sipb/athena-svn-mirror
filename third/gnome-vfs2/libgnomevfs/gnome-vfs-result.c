@@ -29,7 +29,10 @@
 #include <errno.h>
 #include <netdb.h>
 
+/* AIX #defines h_errno */
+#ifndef h_errno
 extern int h_errno;
+#endif
 
 static char *status_strings[] = {
 	/* GNOME_VFS_OK */				N_("No error"),
@@ -58,7 +61,7 @@ static char *status_strings[] = {
 	/* GNOME_VFS_ERROR_LOOP */			N_("Looping links encountered"),
 	/* GNOME_VFS_ERROR_NOT_PERMITTED */		N_("Operation not permitted"),
 	/* GNOME_VFS_ERROR_IS_DIRECTORY */       	N_("Is a directory"),
-        /* GNOME_VFS_ERROR_NO_MEMMORY */             	N_("Not enough memory"),
+        /* GNOME_VFS_ERROR_NO_MEMORY */             	N_("Not enough memory"),
 	/* GNOME_VFS_ERROR_HOST_NOT_FOUND */		N_("Host not found"),
 	/* GNOME_VFS_ERROR_INVALID_HOST_NAME */		N_("Host name not valid"),
 	/* GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS */  	N_("Host has no address"),
@@ -73,7 +76,16 @@ static char *status_strings[] = {
 	/* GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE */     N_("Service not available"),
 	/* GNOME_VFS_ERROR_SERVICE_OBSOLETE */          N_("Request obsoletes service's data"),
 	/* GNOME_VFS_ERROR_PROTOCOL_ERROR */		N_("Protocol error"),
-	/* GNOME_VFS_ERROR_NO_MASTER_BROWSER */		N_("Could not find master browser")
+	/* GNOME_VFS_ERROR_NO_MASTER_BROWSER */		N_("Could not find master browser"),
+	/* GNOME_VFS_ERROR_NO_DEFAULT */		N_("No default action associated"),
+	/* GNOME_VFS_ERROR_NO_HANDLER */		N_("No handler for URL scheme"),
+	/* GNOME_VFS_ERROR_PARSE */			N_("Error parsing command line"),
+	/* GNOME_VFS_ERROR_LAUNCH */			N_("Error launching command"),
+	/* GNOME_VFS_ERROR_TIMEOUT */			N_("Timeout reached"),
+	/* GNOME_VFS_ERROR_NAMESERVER */                N_("Nameserver error"),
+	/* GNOME_VFS_ERROR_TIMEOUT */			N_("Timeout reached"),
+ 	/* GNOME_VFS_ERROR_LOCKED */			N_("The resource is locked"),
+	/* GNOME_VFS_ERROR_DEPRECATED_FUNCTION */       N_("Function call deprecated")
 };
 
 
@@ -90,29 +102,35 @@ gnome_vfs_result_from_errno_code (int errno_code)
 {
 	/* Please keep these in alphabetical order.  */
 	switch (errno_code) {
-	case E2BIG:     return GNOME_VFS_ERROR_TOO_BIG;
-	case EACCES:	return GNOME_VFS_ERROR_ACCESS_DENIED;
-	case EBUSY:	return GNOME_VFS_ERROR_DIRECTORY_BUSY;
-	case EBADF:	return GNOME_VFS_ERROR_BAD_FILE;
-	case EEXIST:	return GNOME_VFS_ERROR_FILE_EXISTS;
-	case EFAULT:	return GNOME_VFS_ERROR_INTERNAL;
-	case EFBIG:	return GNOME_VFS_ERROR_TOO_BIG;
-	case EINTR:	return GNOME_VFS_ERROR_INTERRUPTED;
-	case EINVAL:	return GNOME_VFS_ERROR_BAD_PARAMETERS;
-	case EIO:	return GNOME_VFS_ERROR_IO;
-	case EISDIR:	return GNOME_VFS_ERROR_IS_DIRECTORY;
-	case ELOOP:	return GNOME_VFS_ERROR_LOOP;
-	case EMFILE:	return GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES;
-	case EMLINK:	return GNOME_VFS_ERROR_TOO_MANY_LINKS;
-	case ENFILE:	return GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES;
-	case ENOTEMPTY: return GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY;
-	case ENOENT:	return GNOME_VFS_ERROR_NOT_FOUND;
-	case ENOMEM:	return GNOME_VFS_ERROR_NO_MEMORY;
-	case ENOSPC:	return GNOME_VFS_ERROR_NO_SPACE;
-	case ENOTDIR:	return GNOME_VFS_ERROR_NOT_A_DIRECTORY;
-	case EPERM:	return GNOME_VFS_ERROR_NOT_PERMITTED;
-	case EROFS:	return GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM;
-	case EXDEV:	return GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM;
+	case E2BIG:        return GNOME_VFS_ERROR_TOO_BIG;
+	case EACCES:	   return GNOME_VFS_ERROR_ACCESS_DENIED;
+	case EBUSY:	   return GNOME_VFS_ERROR_DIRECTORY_BUSY;
+	case EBADF:	   return GNOME_VFS_ERROR_BAD_FILE;
+	case ECONNREFUSED: return GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
+	case EEXIST:	   return GNOME_VFS_ERROR_FILE_EXISTS;
+	case EFAULT:	   return GNOME_VFS_ERROR_INTERNAL;
+	case EFBIG:	   return GNOME_VFS_ERROR_TOO_BIG;
+	case EINTR:	   return GNOME_VFS_ERROR_INTERRUPTED;
+	case EINVAL:	   return GNOME_VFS_ERROR_BAD_PARAMETERS;
+	case EIO:	   return GNOME_VFS_ERROR_IO;
+	case EISDIR:	   return GNOME_VFS_ERROR_IS_DIRECTORY;
+	case ELOOP:	   return GNOME_VFS_ERROR_LOOP;
+	case EMFILE:	   return GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES;
+	case EMLINK:	   return GNOME_VFS_ERROR_TOO_MANY_LINKS;
+	case ENETUNREACH:  return GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE;
+	case ENFILE:	   return GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES;
+#if ENOTEMPTY != EEXIST
+	case ENOTEMPTY:    return GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY;
+#endif
+	case ENOENT:	   return GNOME_VFS_ERROR_NOT_FOUND;
+	case ENOMEM:	   return GNOME_VFS_ERROR_NO_MEMORY;
+	case ENOSPC:	   return GNOME_VFS_ERROR_NO_SPACE;
+	case ENOTDIR:	   return GNOME_VFS_ERROR_NOT_A_DIRECTORY;
+	case EPERM:	   return GNOME_VFS_ERROR_NOT_PERMITTED;
+	case EROFS:	   return GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM;
+	case ETIMEDOUT:    return GNOME_VFS_ERROR_TIMEOUT;
+	case EXDEV:	   return GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM;
+	
 		/* FIXME bugzilla.eazel.com 1191: To be completed.  */
 	default:	return GNOME_VFS_ERROR_GENERIC;
 	}
@@ -143,11 +161,26 @@ gnome_vfs_result_from_errno (void)
 GnomeVFSResult
 gnome_vfs_result_from_h_errno (void)
 {
+	return gnome_vfs_result_from_h_errno_val (h_errno);
+}
+
+/**
+ * gnome_vfs_result_from_h_errno_val:
+ * @h_errno_code: A integer containing representing the same error codes
+ * as the system h_errno.
+ * 
+ * Converts the error code of @h_errno into a #GnomeVFSResult.
+ * 
+ * Return Value: The #GnomeVFSResult equivalent to the h_errno error code.
+ **/
+GnomeVFSResult
+gnome_vfs_result_from_h_errno_val (int h_errno_code)
+{
 	switch (h_errno) {
 	case HOST_NOT_FOUND:	return GNOME_VFS_ERROR_HOST_NOT_FOUND;
 	case NO_ADDRESS:	return GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS;
-	case TRY_AGAIN:		/* FIXME bugzilla.eazel.com 1190 */
-	case NO_RECOVERY:	/* FIXME bugzilla.eazel.com 1190 */
+	case TRY_AGAIN:		return GNOME_VFS_ERROR_NAMESERVER;
+	case NO_RECOVERY:	return GNOME_VFS_ERROR_NAMESERVER;
 	default:
 		return GNOME_VFS_ERROR_GENERIC;
 	}

@@ -1,314 +1,1029 @@
-# gnome-vfs Hungarian translations
-# Copyright (C) 2000-2001 Free Software Foundation, Inc.
-# Szabolcs BAN <shooby@gnome.hu>, 2000-2001.
-# Gergely Nagy <greg@gnome.hu>, 2001
-# Andras Timar <timar@gnome.hu>, 2001
+# Hungarian translation of gnome-vfs.
+# Copyright (C) 2000, 2001, 2002, 2003, 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-vfs package.
+# Szabolcs Ban <shooby@gnome.hu>, 2000, 2001.
+# Emese Kovacs <emese@gnome.hu>, 2001.
+# Gergely Nagy <greg@gnome.hu>, 2001.
+# Andras Timar <timar@gnome.hu>, 2001, 2002, 2003.
+# Laszlo Dvornik <dvornik@gnome.hu>, 2004.
+# Gabor Kelemen <kelemeng@gnome.hu>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs CVS HEAD\n"
-"POT-Creation-Date: 2003-01-20 20:46+0100\n"
-"PO-Revision-Date: 2002-12-19 11:20+0100\n"
-"Last-Translator: Andras Timar <timar@gnome.hu>\n"
-"Language-Team: Hungarian <hu@gnome.hu>\n"
+"Project-Id-Version: gnome-vfs\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 09:57+0200\n"
+"PO-Revision-Date: 2004-09-12 12:21+0200\n"
+"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
+"Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: libgnomevfs/gnome-vfs-configuration.c:223
+#: daemon/gnome-vfs-daemon.c:596
+msgid "Could not initialize Bonobo"
+msgstr "Nem lehet inicializálni a Bonobo-t"
+
+#: daemon/gnome-vfs-daemon.c:603
+msgid "Could not initialize gnome vfs"
+msgstr "Nem lehet inicializálni a gnome-vfs-t"
+
+#: libgnomevfs/eggdesktopentries.c:229
+#, c-format
+msgid "File could not be opened: %s"
+msgstr "Nem lehet megnyitni a fájlt: %s"
+
+#: libgnomevfs/eggdesktopentries.c:328
+#, c-format
+msgid "Failed to open file '%s': %s"
+msgstr "A(z) '%s' fájl megnyitása sikertelen: %s"
+
+#: libgnomevfs/eggdesktopentries.c:341
+msgid "File is empty"
+msgstr "A fájl üres"
+
+#: libgnomevfs/eggdesktopentries.c:363
+#, c-format
+msgid "Failed to read from file '%s': %s"
+msgstr "A(z) '%s' fájl olvasása sikertelen: %s"
+
+#: libgnomevfs/eggdesktopentries.c:575
+#, c-format
+msgid ""
+"desktop entries contain line '%s' which is not an entry, group, or comment"
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:648
+msgid "desktop entries file does not start with legal start group"
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:705
+#, c-format
+msgid "desktop entries contain line '%s' which is not UTF-8"
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:728
+#, c-format
+msgid "desktop entries contain unknown encoding '%s'"
+msgstr "a munkaasztal-bejegyzések ismeretlen '%s' kódolást tartalmaznak"
+
+#: libgnomevfs/eggdesktopentries.c:918 libgnomevfs/eggdesktopentries.c:1030
+#: libgnomevfs/eggdesktopentries.c:1215
+#, c-format
+msgid "desktop entries do not have group '%s'"
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:1042
+#, c-format
+msgid "desktop entries do not have key '%s'"
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:1098 libgnomevfs/eggdesktopentries.c:1271
+#: libgnomevfs/eggdesktopentries.c:1413 libgnomevfs/eggdesktopentries.c:1538
+#, c-format
+msgid ""
+"desktop entries contain key '%s' which has value that cannot be interpreted."
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:1296
+#, c-format
+msgid ""
+"desktop entries contain no translated value for key '%s' with locale '%s'."
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:2229
+#, c-format
+msgid "desktop entries contain invalid escape sequence '%s'"
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:2246
+msgid "desktop entries contain escape character at end of line"
+msgstr ""
+
+#: libgnomevfs/eggdesktopentries.c:2271
+#, c-format
+msgid "Value '%s' cannot be interpreted as a number."
+msgstr "A(z) '%s' értéket nem lehet számként értelmezni."
+
+#: libgnomevfs/eggdesktopentries.c:2298
+#, c-format
+msgid "Value '%s' cannot be interpreted as a boolean."
+msgstr "A(z) '%s' értéket nem lehet logikai értékként értelmezni."
+
+#: libgnomevfs/gnome-vfs-cdrom.c:210
+msgid "ISO 9660 Volume"
+msgstr "ISO 9660 kötet"
+
+#: libgnomevfs/gnome-vfs-configuration.c:227
 #, c-format
 msgid "%s:%d contains NUL characters."
 msgstr "%s:%d NUL karaktereket tartalmaz."
 
-#: libgnomevfs/gnome-vfs-configuration.c:240
+#: libgnomevfs/gnome-vfs-configuration.c:244
 #, c-format
 msgid "%s:%d contains no method name."
 msgstr "%s:%d nem tartalmaz metódusnevet."
 
-#: libgnomevfs/gnome-vfs-configuration.c:269
+#: libgnomevfs/gnome-vfs-configuration.c:284
+#, c-format
+msgid "%s:%d has no options endmarker."
+msgstr "%s:%d nem tartalmaz kapcsoló-végjelzőt."
+
+#: libgnomevfs/gnome-vfs-configuration.c:295
+#, c-format
+msgid "%s:%d has unknown options %s."
+msgstr "%s:%d ismeretlen %s kapcsolót tartalmaz."
+
+#: libgnomevfs/gnome-vfs-configuration.c:314
 #, c-format
 msgid "%s:%d contains no module name."
 msgstr "%s:%d nem tartalmaz modulnevet."
 
-#: libgnomevfs/gnome-vfs-configuration.c:322
+#: libgnomevfs/gnome-vfs-configuration.c:368
 #, c-format
 msgid "Configuration file `%s' was not found: %s"
-msgstr "'%s' konfigurációs fájlt nem található: %s"
+msgstr "'%s' konfigurációs fájl nem található: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:737
+#: libgnomevfs/gnome-vfs-filesystem-type.c:37
+msgid "AFFS Volume"
+msgstr "AFFS kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:38
+msgid "AFS Network Volume"
+msgstr "AFS hálózat kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:39
+msgid "Auto-detected Volume"
+msgstr "Automatikusan felismert kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:40
+#: libgnomevfs/gnome-vfs-filesystem-type.c:42
+msgid "CD-ROM Drive"
+msgstr "CD-ROM meghajtó"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:41
+msgid "CD Digital Audio"
+msgstr "CD Digitális Audio"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:43
+msgid "Hardware Device Volume"
+msgstr "Hardvereszköz kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:44
+#: libgnomevfs/gnome-vfs-filesystem-type.c:45
+msgid "Ext2 Linux Volume"
+msgstr "Ext2 Linux kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:46
+msgid "Ext3 Linux Volume"
+msgstr "Ext3 Linux kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:47
+#: libgnomevfs/gnome-vfs-filesystem-type.c:57
+#: libgnomevfs/gnome-vfs-filesystem-type.c:58
+msgid "MSDOS Volume"
+msgstr "MSDOS kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:48
+#: libgnomevfs/gnome-vfs-filesystem-type.c:49
+msgid "MacOS Volume"
+msgstr "MacOS kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:50
+msgid "CDROM Volume"
+msgstr "CD-ROM kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:51
+msgid "Hsfs CDROM Volume"
+msgstr "Hsfs CDROM kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:52
+msgid "JFS Volume"
+msgstr "JFS kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:53
+#: libgnomevfs/gnome-vfs-filesystem-type.c:60
+msgid "Windows NT Volume"
+msgstr "Windows NT kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:54
+#: libgnomevfs/gnome-vfs-filesystem-type.c:62
+#: libgnomevfs/gnome-vfs-filesystem-type.c:63
+msgid "System Volume"
+msgstr "Rendszer kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:55
+msgid "Memory Volume"
+msgstr "Memória kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:56
+msgid "Minix Volume"
+msgstr "Minix kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:59
+msgid "NFS Network Volume"
+msgstr "NFS hálózat kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:61
+msgid "Netware Volume"
+msgstr "Netware kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:64
+msgid "ReiserFS Linux Volume"
+msgstr "ReiserFS Linux kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:65
+msgid "Windows Shared Volume"
+msgstr "Windows megosztott kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:66
+msgid "SuperMount Volume"
+msgstr "SuperMount kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:67
+msgid "DVD Volume"
+msgstr "DVD kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:68
+msgid "Solaris/BSD Volume"
+msgstr "Solaris/BSD kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:69
+msgid "Udfs Solaris Volume"
+msgstr "Udfs Solaris kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:70
+msgid "Pcfs Solaris Volume"
+msgstr "Pcfs Solaris kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:71
+msgid "Sun SAM-QFS Volume"
+msgstr "Sun SAM-QFS kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:72
+msgid "Enhanced DOS Volume"
+msgstr "Enhanced DOS kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:73
+msgid "Windows VFAT Volume"
+msgstr "Windows VFAT kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:74
+msgid "Xenix Volume"
+msgstr "Xenix kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:75
+msgid "XFS Linux Volume"
+msgstr "XFS Linux kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:76
+msgid "XIAFS Volume"
+msgstr "XIAFS kötet"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:104
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:611
+msgid "CD-ROM Disc"
+msgstr "CD-ROM lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:614
+msgid "Blank CD-R Disc"
+msgstr "Üres CD-R lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:616
+msgid "CD-R Disc"
+msgstr "CD-R lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:619
+msgid "Blank CD-RW Disc"
+msgstr "Üres CD-RW lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:621
+msgid "CD-RW Disc"
+msgstr "CD-RW lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:623
+msgid "DVD-ROM Disc"
+msgstr "DVD-ROM lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:626
+msgid "Blank DVD-R Disc"
+msgstr "Üres DVD-R lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:628
+msgid "DVD-R Disc"
+msgstr "DVD-R lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:631
+msgid "Blank DVD-RAM Disc"
+msgstr "Üres DVD-RAM lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:633
+msgid "DVD-RAM Disc"
+msgstr "DVD-RAM lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:636
+msgid "Blank DVD-RW Disc"
+msgstr "Üres DVD-RW lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:638
+msgid "DVD-RW Disc"
+msgstr "DVD-RW lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:641
+msgid "Blank DVD+RW Disc"
+msgstr "Üres DVD+RW lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:643
+msgid "DVD+RW Disc"
+msgstr "DVD+RW lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:646
+msgid "Blank DVD+R Disc"
+msgstr "Üres DVD+R lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:648
+msgid "DVD+R Disc"
+msgstr "DVD+R lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:650
+msgid "Optical Disc"
+msgstr "Optikai lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:656
+msgid "Audio Disc"
+msgstr "Audio lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:660
+msgid "Compact Flash Media"
+msgstr "Compact Flash Media"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:662
+msgid "Memory Stick Media"
+msgstr "Memory Stick Media"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:664
+msgid "Smart Media Media"
+msgstr "Smart Media Media"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:666
+msgid "SD/MMC Media"
+msgstr "SD/MMC Media"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:668
+msgid "Floppy Disk"
+msgstr "Floppy-lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:675
+msgid "Mac OS disk"
+msgstr "Mac OS lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:677
+msgid "Mac OS X disk"
+msgstr "Mac OS X lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:691
+msgid "Windows Disk"
+msgstr "Windows lemez"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:697
+msgid "Linux Disk"
+msgstr "Linux lemez"
+
+#: libgnomevfs/gnome-vfs-job.c:734
 #, c-format
-msgid "Unknown op type %u"
-msgstr "Ismeretlen op típus: %u"
+msgid "Unknown operation type %u"
+msgstr "Ismeretlen %u művelettípus"
 
-#: libgnomevfs/gnome-vfs-job.c:1026 libgnomevfs/gnome-vfs-job.c:1171
+#: libgnomevfs/gnome-vfs-job.c:1024 libgnomevfs/gnome-vfs-job.c:1169
 #, c-format
 msgid "Cannot create pipe for open GIOChannel: %s"
 msgstr "Nem lehet csővezetéket létrehozni a GIOChannel megnyitásához: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:1661
+#: libgnomevfs/gnome-vfs-job.c:1687
 #, c-format
 msgid "Unknown job kind %u"
 msgstr "Ismeretlen munkatípus: %u"
 
-#: libgnomevfs/gnome-vfs-job.c:1694
+#: libgnomevfs/gnome-vfs-job.c:1720
 msgid "Operation stopped"
 msgstr "A művelet leállítva"
 
-#: libgnomevfs/gnome-vfs-parse-ls.c:652
+#: libgnomevfs/gnome-vfs-mime-handlers.c:83
+#: libgnomevfs/gnome-vfs-mime-handlers.c:305
+#: libgnomevfs/gnome-vfs-mime-handlers.c:356
+#: libgnomevfs/gnome-vfs-mime-handlers.c:650
+#: libgnomevfs/gnome-vfs-mime-handlers.c:669
+#: libgnomevfs/gnome-vfs-mime-handlers.c:687
+#: libgnomevfs/gnome-vfs-mime-handlers.c:706
+#: libgnomevfs/gnome-vfs-mime-handlers.c:725
+#: libgnomevfs/gnome-vfs-mime-handlers.c:866
+#: libgnomevfs/gnome-vfs-mime-handlers.c:888
+#: libgnomevfs/gnome-vfs-mime-handlers.c:907
+#: libgnomevfs/gnome-vfs-mime-handlers.c:926
+#: libgnomevfs/gnome-vfs-mime-handlers.c:979
+#: libgnomevfs/gnome-vfs-mime-handlers.c:996
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1013
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1031
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1049
+#: libgnomevfs/gnome-vfs-mime-info.c:647 libgnomevfs/gnome-vfs-mime-info.c:654
+#: libgnomevfs/gnome-vfs-mime-info.c:662 libgnomevfs/gnome-vfs-mime-info.c:669
+#: libgnomevfs/gnome-vfs-mime-info.c:677 libgnomevfs/gnome-vfs-mime-info.c:694
+#: libgnomevfs/gnome-vfs-mime-info.c:701 libgnomevfs/gnome-vfs-mime-info.c:708
+#: libgnomevfs/gnome-vfs-mime-info.c:715 libgnomevfs/gnome-vfs-mime-info.c:723
+#: libgnomevfs/gnome-vfs-mime-info.c:730
+msgid ""
+"Deprecated function.  User modifications to the MIME database are no longer "
+"supported."
+msgstr ""
+"Elavult funkció. A MIME-adatbázis felhasználói módosítása többé már nem "
+"támogatott."
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:666
 #, c-format
 msgid "Could not parse: %s"
-msgstr "Nem sikerült értelmezni: %s"
+msgstr "Nem lehet értelmezni: %s"
 
-#: libgnomevfs/gnome-vfs-parse-ls.c:654
+#: libgnomevfs/gnome-vfs-parse-ls.c:668
 msgid "More parsing errors will be ignored."
 msgstr "A többi értelmezési hiba figyelmen kívül lesz hagyva."
 
 #. GNOME_VFS_OK
-#: libgnomevfs/gnome-vfs-result.c:35
+#: libgnomevfs/gnome-vfs-result.c:38
 msgid "No error"
 msgstr "Nincs hiba"
 
 #. GNOME_VFS_ERROR_NOT_FOUND
-#: libgnomevfs/gnome-vfs-result.c:36
+#: libgnomevfs/gnome-vfs-result.c:39
 msgid "File not found"
 msgstr "A fájl nem található"
 
 #. GNOME_VFS_ERROR_GENERIC
-#: libgnomevfs/gnome-vfs-result.c:37
+#: libgnomevfs/gnome-vfs-result.c:40
 msgid "Generic error"
 msgstr "Általános hiba"
 
 #. GNOME_VFS_ERROR_INTERNAL
-#: libgnomevfs/gnome-vfs-result.c:38
+#: libgnomevfs/gnome-vfs-result.c:41
 msgid "Internal error"
 msgstr "Belső hiba"
 
 #. GNOME_VFS_ERROR_BAD_PARAMETERS
-#: libgnomevfs/gnome-vfs-result.c:39
+#: libgnomevfs/gnome-vfs-result.c:42
 msgid "Invalid parameters"
-msgstr "Rossz paraméterek"
+msgstr "Érvénytelen paraméterek"
 
 #. GNOME_VFS_ERROR_NOT_SUPPORTED
-#: libgnomevfs/gnome-vfs-result.c:40
+#: libgnomevfs/gnome-vfs-result.c:43
 msgid "Unsupported operation"
 msgstr "Nem támogatott művelet"
 
 #. GNOME_VFS_ERROR_IO
-#: libgnomevfs/gnome-vfs-result.c:41
+#: libgnomevfs/gnome-vfs-result.c:44
 msgid "I/O error"
 msgstr "I/O hiba"
 
 #. GNOME_VFS_ERROR_CORRUPTED_DATA
-#: libgnomevfs/gnome-vfs-result.c:42
+#: libgnomevfs/gnome-vfs-result.c:45
 msgid "Data corrupted"
 msgstr "Az adatok sérültek"
 
 #. GNOME_VFS_ERROR_WRONG_FORMAT
-#: libgnomevfs/gnome-vfs-result.c:43
+#: libgnomevfs/gnome-vfs-result.c:46
 msgid "Format not valid"
 msgstr "A formátum érvénytelen"
 
 #. GNOME_VFS_ERROR_BAD_FILE
-#: libgnomevfs/gnome-vfs-result.c:44
+#: libgnomevfs/gnome-vfs-result.c:47
 msgid "Bad file handle"
 msgstr "Rossz fájl handle"
 
 #. GNOME_VFS_ERROR_TOO_BIG
-#: libgnomevfs/gnome-vfs-result.c:45
+#: libgnomevfs/gnome-vfs-result.c:48
 msgid "File too big"
 msgstr "A fájl túl nagy"
 
 #. GNOME_VFS_ERROR_NO_SPACE
-#: libgnomevfs/gnome-vfs-result.c:46
+#: libgnomevfs/gnome-vfs-result.c:49
 msgid "No space left on device"
 msgstr "Nincs hely az eszközön"
 
 #. GNOME_VFS_ERROR_READ_ONLY
-#: libgnomevfs/gnome-vfs-result.c:47
+#: libgnomevfs/gnome-vfs-result.c:50
 msgid "Read-only file system"
 msgstr "Csak olvasható fájlrendszer"
 
 #. GNOME_VFS_ERROR_INVALID_URI
-#: libgnomevfs/gnome-vfs-result.c:48
+#: libgnomevfs/gnome-vfs-result.c:51
 msgid "Invalid URI"
-msgstr "Rossz URI"
+msgstr "Érvénytelen URI"
 
 #. GNOME_VFS_ERROR_NOT_OPEN
-#: libgnomevfs/gnome-vfs-result.c:49
+#: libgnomevfs/gnome-vfs-result.c:52
 msgid "File not open"
 msgstr "Nincs nyitva a fájl"
 
 #. GNOME_VFS_ERROR_INVALID_OPEN_MODE
-#: libgnomevfs/gnome-vfs-result.c:50
+#: libgnomevfs/gnome-vfs-result.c:53
 msgid "Open mode not valid"
-msgstr "A megnyitás módja nem helyes"
+msgstr "A megnyitás módja érvénytelen"
 
 #. GNOME_VFS_ERROR_ACCESS_DENIED
-#: libgnomevfs/gnome-vfs-result.c:51
+#: libgnomevfs/gnome-vfs-result.c:54
 msgid "Access denied"
 msgstr "Hozzáférés megtagadva"
 
 #. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
-#: libgnomevfs/gnome-vfs-result.c:52
+#: libgnomevfs/gnome-vfs-result.c:55
 msgid "Too many open files"
 msgstr "Túl sok nyitott fájl"
 
 #. GNOME_VFS_ERROR_EOF
-#: libgnomevfs/gnome-vfs-result.c:53
+#: libgnomevfs/gnome-vfs-result.c:56
 msgid "End of file"
 msgstr "Fájl vége"
 
 #. GNOME_VFS_ERROR_NOT_A_DIRECTORY
-#: libgnomevfs/gnome-vfs-result.c:54
+#: libgnomevfs/gnome-vfs-result.c:57
 msgid "Not a directory"
 msgstr "Nem könyvtár"
 
 #. GNOME_VFS_ERROR_IN_PROGRESS
-#: libgnomevfs/gnome-vfs-result.c:55
+#: libgnomevfs/gnome-vfs-result.c:58
 msgid "Operation in progress"
 msgstr "A művelet folyamatban"
 
 #. GNOME_VFS_ERROR_INTERRUPTED
-#: libgnomevfs/gnome-vfs-result.c:56
+#: libgnomevfs/gnome-vfs-result.c:59
 msgid "Operation interrupted"
 msgstr "A művelet megszakadt"
 
 #. GNOME_VFS_ERROR_FILE_EXISTS
-#: libgnomevfs/gnome-vfs-result.c:57
+#: libgnomevfs/gnome-vfs-result.c:60
 msgid "File exists"
 msgstr "A fájl létezik"
 
 #. GNOME_VFS_ERROR_LOOP
-#: libgnomevfs/gnome-vfs-result.c:58
+#: libgnomevfs/gnome-vfs-result.c:61
 msgid "Looping links encountered"
 msgstr "Ciklikus linket találtam"
 
 #. GNOME_VFS_ERROR_NOT_PERMITTED
-#: libgnomevfs/gnome-vfs-result.c:59
+#: libgnomevfs/gnome-vfs-result.c:62
 msgid "Operation not permitted"
 msgstr "A művelet nem megengedett"
 
 #. GNOME_VFS_ERROR_IS_DIRECTORY
-#: libgnomevfs/gnome-vfs-result.c:60
+#: libgnomevfs/gnome-vfs-result.c:63
 msgid "Is a directory"
 msgstr "Könyvtár"
 
-#. GNOME_VFS_ERROR_NO_MEMMORY
-#: libgnomevfs/gnome-vfs-result.c:61
+#. GNOME_VFS_ERROR_NO_MEMORY
+#: libgnomevfs/gnome-vfs-result.c:64
 msgid "Not enough memory"
 msgstr "Nincs elég memória"
 
 #. GNOME_VFS_ERROR_HOST_NOT_FOUND
-#: libgnomevfs/gnome-vfs-result.c:62
+#: libgnomevfs/gnome-vfs-result.c:65
 msgid "Host not found"
 msgstr "A gép nem található"
 
 #. GNOME_VFS_ERROR_INVALID_HOST_NAME
-#: libgnomevfs/gnome-vfs-result.c:63
+#: libgnomevfs/gnome-vfs-result.c:66
 msgid "Host name not valid"
-msgstr "A gépnév nem érvényes"
+msgstr "A gépnév érvénytelen"
 
 #. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
-#: libgnomevfs/gnome-vfs-result.c:64
+#: libgnomevfs/gnome-vfs-result.c:67
 msgid "Host has no address"
 msgstr "A gépnek nincs címe"
 
 #. GNOME_VFS_ERROR_LOGIN_FAILED
-#: libgnomevfs/gnome-vfs-result.c:65
+#: libgnomevfs/gnome-vfs-result.c:68
 msgid "Login failed"
 msgstr "A belépés nem sikerült"
 
 #. GNOME_VFS_ERROR_CANCELLED
-#: libgnomevfs/gnome-vfs-result.c:66
+#: libgnomevfs/gnome-vfs-result.c:69
 msgid "Operation cancelled"
-msgstr "A művelet leállítva"
+msgstr "A művelet megszakítva"
 
 #. GNOME_VFS_ERROR_DIRECTORY_BUSY
-#: libgnomevfs/gnome-vfs-result.c:67
+#: libgnomevfs/gnome-vfs-result.c:70
 msgid "Directory busy"
 msgstr "A könyvtár foglalt"
 
 #. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
-#: libgnomevfs/gnome-vfs-result.c:68
+#: libgnomevfs/gnome-vfs-result.c:71
 msgid "Directory not empty"
 msgstr "A könyvtár nem üres"
 
 #. GNOME_VFS_ERROR_TOO_MANY_LINKS
-#: libgnomevfs/gnome-vfs-result.c:69
+#: libgnomevfs/gnome-vfs-result.c:72
 msgid "Too many links"
 msgstr "Túl sok link"
 
 #. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
-#: libgnomevfs/gnome-vfs-result.c:70
+#: libgnomevfs/gnome-vfs-result.c:73
 msgid "Read only file system"
 msgstr "Csak olvasható fájlrendszer"
 
 #. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
-#: libgnomevfs/gnome-vfs-result.c:71
+#: libgnomevfs/gnome-vfs-result.c:74
 msgid "Not on the same file system"
 msgstr "Nem ugyanazon a fájlrendszeren van"
 
 #. GNOME_VFS_ERROR_NAME_TOO_LONG
-#: libgnomevfs/gnome-vfs-result.c:72
+#: libgnomevfs/gnome-vfs-result.c:75
 msgid "Name too long"
 msgstr "A név túl hosszú"
 
 #. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
-#: libgnomevfs/gnome-vfs-result.c:73
+#: libgnomevfs/gnome-vfs-result.c:76
 msgid "Service not available"
 msgstr "A szolgáltatás nem elérhető"
 
 #. GNOME_VFS_ERROR_SERVICE_OBSOLETE
-#: libgnomevfs/gnome-vfs-result.c:74
+#: libgnomevfs/gnome-vfs-result.c:77
 msgid "Request obsoletes service's data"
 msgstr "A kérés elavulttá teszi a szolgáltatás adatait"
 
 #. GNOME_VFS_ERROR_PROTOCOL_ERROR
-#: libgnomevfs/gnome-vfs-result.c:75
+#: libgnomevfs/gnome-vfs-result.c:78
 msgid "Protocol error"
 msgstr "Protokollhiba"
 
 #. GNOME_VFS_ERROR_NO_MASTER_BROWSER
-#: libgnomevfs/gnome-vfs-result.c:76
+#: libgnomevfs/gnome-vfs-result.c:79
 msgid "Could not find master browser"
-msgstr "Főtallózó (master browser) nem található"
+msgstr "Főböngésző (master browser) nem található"
 
-#: libgnomevfs/gnome-vfs-result.c:170
+#. GNOME_VFS_ERROR_NO_DEFAULT
+#: libgnomevfs/gnome-vfs-result.c:80
+msgid "No default action associated"
+msgstr "Nincs hozzárendelve alapértelmezett művelet"
+
+#. GNOME_VFS_ERROR_NO_HANDLER
+#: libgnomevfs/gnome-vfs-result.c:81
+msgid "No handler for URL scheme"
+msgstr "Nincs kezelő az URL-sémához"
+
+#. GNOME_VFS_ERROR_PARSE
+#: libgnomevfs/gnome-vfs-result.c:82
+msgid "Error parsing command line"
+msgstr "Hiba a parancssor értelmezése közben"
+
+#. GNOME_VFS_ERROR_LAUNCH
+#: libgnomevfs/gnome-vfs-result.c:83
+msgid "Error launching command"
+msgstr "Hiba a parancs indításakor"
+
+#. GNOME_VFS_ERROR_TIMEOUT
+#: libgnomevfs/gnome-vfs-result.c:84 libgnomevfs/gnome-vfs-result.c:86
+msgid "Timeout reached"
+msgstr "Időtúllépés"
+
+#. GNOME_VFS_ERROR_NAMESERVER
+#: libgnomevfs/gnome-vfs-result.c:85
+msgid "Nameserver error"
+msgstr "Névkiszolgáló hiba"
+
+#. GNOME_VFS_ERROR_LOCKED
+#: libgnomevfs/gnome-vfs-result.c:87
+msgid "The resource is locked"
+msgstr "Az erőforrás zárolva van"
+
+#. GNOME_VFS_ERROR_DEPRECATED_FUNCTION
+#: libgnomevfs/gnome-vfs-result.c:88
+msgid "Function call deprecated"
+msgstr "A függvényhívás elavult"
+
+#: libgnomevfs/gnome-vfs-result.c:203
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
-#: libgnomevfs/gnome-vfs-utils.c:83
-msgid "1 byte"
-msgstr "1 byte"
-
 #: libgnomevfs/gnome-vfs-utils.c:85
 #, c-format
-msgid "%u bytes"
-msgstr "%u byte"
+msgid "%u byte"
+msgid_plural "%u bytes"
+msgstr[0] "%u bájt"
+msgstr[1] "%u bájt"
 
-#: libgnomevfs/gnome-vfs-utils.c:92
+#: libgnomevfs/gnome-vfs-utils.c:91
 #, c-format
-msgid "%.1f K"
-msgstr "%.1f K"
+msgid "%.1f KB"
+msgstr "%.1f KB"
 
-#: libgnomevfs/gnome-vfs-utils.c:96
+#: libgnomevfs/gnome-vfs-utils.c:95
 #, c-format
 msgid "%.1f MB"
 msgstr "%.1f MB"
 
-#: libgnomevfs/gnome-vfs-utils.c:100
+#: libgnomevfs/gnome-vfs-utils.c:99
 #, c-format
 msgid "%.1f GB"
 msgstr "%.1f GB"
 
-#: libgnomevfs/gnome-vfs-utils.c:1109
+#: libgnomevfs/gnome-vfs-utils.c:1122
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:391
 msgid " (invalid Unicode)"
 msgstr " (érvénytelen Unicode)"
 
-#: modules/file-method.c:382
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:573
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:629
+msgid "Floppy"
+msgstr "Floppy"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:574
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:632
+msgid "CD-ROM"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:576
+msgid "CD-R"
+msgstr "CD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:577
+msgid "CD-RW"
+msgstr "CD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:578
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:579
+msgid "DVD-RAM"
+msgstr "DVD-RAM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:580
+msgid "DVD-R"
+msgstr "DVD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:581
+msgid "DVD-RW"
+msgstr "DVD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:582
+msgid "CD-ROM/DVD-ROM"
+msgstr "CD-ROM/DVD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:583
+msgid "CD-ROM/DVD-RAM"
+msgstr "CD-ROM/DVD-RAM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:584
+msgid "CD-ROM/DVD-R"
+msgstr "CD-ROM/DVD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:585
+msgid "CD-ROM/DVD-RW"
+msgstr "CD-ROM/DVD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:586
+msgid "CD-R/DVD-ROM"
+msgstr "CD-R/DVD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:587
+msgid "CD-R/DVD-RAM"
+msgstr "CD-R/DVD-RAM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:588
+msgid "CD-R/DVD-R"
+msgstr "CD-R/DVD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:589
+msgid "CD-R/DVD-RW"
+msgstr "CD-R/DVD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:590
+msgid "CD-RW/DVD-ROM"
+msgstr "CD-RW/DVD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:591
+msgid "CD-RW/DVD-RAM"
+msgstr "CD-RW/DVD-RAM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:592
+msgid "CD-RW/DVD-R"
+msgstr "CD-RW/DVD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:593
+msgid "CD-RW/DVD-RW"
+msgstr "CD-RW/DVD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:595
+msgid "Disk"
+msgstr "Lemez"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:596
+msgid "USB Drive"
+msgstr "USB-meghajtó"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:597
+msgid "IEEE1394 Drive"
+msgstr "IEEE1394-meghajtó"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:598
+msgid "CF"
+msgstr "CF"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:599
+msgid "SD/MMC"
+msgstr "SD/MMC"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:600
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:604
+msgid "Memory Stick"
+msgstr "Memory Stick"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:601
+msgid "Smart Media"
+msgstr "Smart Media"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:603
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:635
+msgid "Zip Drive"
+msgstr "Zip-meghajtó"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:605
+msgid "Camera"
+msgstr "Fényképezőgép"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:606
+msgid "DVD"
+msgstr "DVD"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:822
+msgid "Root Volume"
+msgstr "Root kötet"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:903
+msgid "Audio CD"
+msgstr "Audio CD"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:936
+msgid "Unknown volume"
+msgstr "Ismeretlen kötet"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1116
+msgid "Network server"
+msgstr "Hálózati kiszolgáló"
+
+#. Handle floppy case
+#: libgnomevfs/gnome-vfs-volume-ops.c:112
+msgid ""
+"Unable to mount the floppy drive. There is probably no floppy in the drive."
+msgstr ""
+"Nem lehet csatlakoztatni a floppy meghajtót. Valószínűleg nincs floppy a "
+"meghajtóban."
+
+#. All others
+#: libgnomevfs/gnome-vfs-volume-ops.c:116
+msgid "Unable to mount the volume. There is probably no media in the device."
+msgstr ""
+"Nem lehet csatlakoztatni a kötetet. Valószínűleg nincs adathordozó a "
+"meghajtóban."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:122
+msgid ""
+"Unable to mount the floppy drive. The floppy is probably in a format that "
+"cannot be mounted."
+msgstr ""
+"Nem lehet csatlakoztatni a floppy meghajtót. Valószínűleg a floppy olyan "
+"formátumú, amit nem lehet csatlakoztatni."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:125
+msgid ""
+"Unable to mount the selected volume. The volume is probably in a format that "
+"cannot be mounted."
+msgstr ""
+"Nem lehet csatlakoztatni a kötetet. Valószínűleg a kötet olyan formátumú, "
+"amit nem lehet csatlakoztatni."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:130
+msgid "Unable to mount the selected floppy drive."
+msgstr "Nem lehet csatlakoztatni a kijelölt floppy meghajtót."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:132
+msgid "Unable to mount the selected volume."
+msgstr "Nem lehet csatlakoztatni a kijelölt kötetet."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:144
+msgid "Unable to unmount the selected volume."
+msgstr "Nem lehet leválasztani a kijelölt kötetet."
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:256
+#: libgnomevfs/gnome-vfs-volume-ops.c:302
+msgid "Failed to start command"
+msgstr "Parancs indítása sikertelen"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:292
+msgid "Unable to eject media"
+msgstr "Nem lehet kiadni az adathordozót"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:481
+msgid "Unable to unmount connected server"
+msgstr "Nem lehet leválasztani a csatlakoztatott kiszolgálót"
+
+#. Translate exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:175
+msgid "Applications"
+msgstr "Alkalmazások"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:178
+msgid "Cards"
+msgstr "Kártyák"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:181
+msgid "Files"
+msgstr "Fájlok"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:184
+msgid "Folders"
+msgstr "Mappák"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:187
+msgid "Help"
+msgstr "Súgó"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:190
+msgid "Hosts"
+msgstr "Gépek"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:193
+msgid "Links"
+msgstr "Hivatkozások"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:196
+msgid "Mail"
+msgstr "Levelezés"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:199
+msgid "Tools"
+msgstr "Eszközök"
+
+#. Translate exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:202
+msgid "Windows"
+msgstr "Ablakok"
+
+#: modules/computer-method.c:545
+msgid "Network"
+msgstr "Hálózat"
+
+#: modules/computer-method.c:563
+msgid "Home"
+msgstr "Kezdőlap"
+
+#: modules/computer-method.c:581
+msgid "Filesystem"
+msgstr "Fájlrendszer"
+
+#: modules/file-method.c:386
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Ismeretlen GnomeVFSSeekPosition %d"
+
+#: modules/network-method.c:1395
+msgid "Windows Network"
+msgstr "Windows hálózat"
+
+#: modules/sftp-method.c:1339
+#, c-format
+msgid "The identity of the remote computer (%s) is unknown."
+msgstr "A távoli számítógép (%s) azonosítója ismeretlen."
+
+#: modules/sftp-method.c:1340
+#, c-format
+msgid ""
+"This happens when you log in to a computer the first time.\n"
+"\n"
+"The identity sent by the remote computer is %s. If you want to be absolutely "
+"sure it is safe to continue, contact the system administrator."
+msgstr ""
+"Ez akkor lehetséges, ha első alkalommal jelentkezik be egy számítógépre.\n"
+"\n"
+"A távoli számítógép által küldött azonosító %s. Ha teljesen biztos akar "
+"lenni, hogy ez biztonságos, lépjen kapcsolatba a rendszergazdával."
+
+#: modules/sftp-method.c:1348
+msgid "Log In Anyway"
+msgstr "Bejelentkezés mindenképpen"
+
+#: modules/sftp-method.c:1349
+msgid "Cancel Login"
+msgstr "Bejelentkezés megszakítása"
 
 #. FIXME: we probably shouldn't use printf to output the message
 #: modules/test-method.c:590
@@ -319,11 +1034,11 @@ msgstr "Nem található érvényes beállítófájl a következő helyen: %s\n"
 #: modules/test-method.c:592
 #, c-format
 msgid "Use the %s environment variable to specify a different location.\n"
-msgstr "Használd a %s környezeti változót egy másik hely megadására.\n"
+msgstr "Használja a(z) %s környezeti változót egy másik hely megadására.\n"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:1
 msgid "Standard Moniker factory"
-msgstr "Standard Moniker factory"
+msgstr "Szabványos Moniker factory"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:2
 msgid "file MonikerExtender"
@@ -336,3 +1051,393 @@ msgstr "általános Gnome VFS moniker"
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:4
 msgid "generic file moniker"
 msgstr "általános fájlmoniker"
+
+#: schemas/desktop_default_applications.schemas.in.h:1
+msgid "Default component viewer application"
+msgstr "Alapértelmezett komponensnéző alkalmazás"
+
+#: schemas/desktop_default_applications.schemas.in.h:2
+msgid "Default terminal application"
+msgstr "Alapértelmezett terminál alkalmazás"
+
+#: schemas/desktop_default_applications.schemas.in.h:3
+msgid "Exec argument for default terminal"
+msgstr "Az alapértelmezett terminál exec paramétere"
+
+#: schemas/desktop_default_applications.schemas.in.h:5
+#, no-c-format
+msgid ""
+"The application to use for viewing files that require a component to view "
+"them. The parameter %s will be replaced by the file's URIs, the parameter %c "
+"will be replaced by the component IID."
+msgstr ""
+
+#: schemas/desktop_default_applications.schemas.in.h:6
+msgid ""
+"The default terminal application to use for applications that require a "
+"terminal."
+msgstr ""
+
+#: schemas/desktop_default_applications.schemas.in.h:7
+msgid "The exec argument to use for the default terminal application."
+msgstr "Az alapértelmezett terminálalkalmazásnál használandó exec paraméter."
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
+msgid "Run the command in a terminal"
+msgstr "Parancs futtatása terminálban"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
+msgid "The command used to handle \"aim\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
+msgid "The command used to handle \"callto\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
+msgid "The command used to handle \"ghelp\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
+msgid "The command used to handle \"h323\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
+msgid "The command used to handle \"http\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
+msgid "The command used to handle \"https\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
+msgid "The command used to handle \"info\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
+msgid "The command used to handle \"mailto\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
+msgid "The command used to handle \"man\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
+msgid "The command used to handle \"trash\" URLs, if enabled."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
+msgid "The handler for \"aim\" URLs"
+msgstr "\"aim\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+msgid "The handler for \"callto\" URLs"
+msgstr "\"callto\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
+msgid "The handler for \"ghelp\" URLs"
+msgstr "\"ghelp\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
+msgid "The handler for \"h323\" URLs"
+msgstr "\"h323\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
+msgid "The handler for \"http\" URLs"
+msgstr "\"http\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
+msgid "The handler for \"https\" URLs"
+msgstr "\"https\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
+msgid "The handler for \"info\" URLs"
+msgstr "\"info\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
+msgid "The handler for \"mailto\" URLs"
+msgstr "\"mailto\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
+msgid "The handler for \"man\" URLs"
+msgstr "\"man\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
+msgid "The handler for \"trash\" URLs"
+msgstr "\"trash\" URL-ek kezelője"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
+msgid ""
+"True if the command specified in the \"command\" key should handle \"aim\" "
+"URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
+msgid ""
+"True if the command specified in the \"command\" key should handle \"callto"
+"\" URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
+msgid ""
+"True if the command specified in the \"command\" key should handle \"ghelp\" "
+"URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
+msgid ""
+"True if the command specified in the \"command\" key should handle \"h323\" "
+"URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
+msgid ""
+"True if the command specified in the \"command\" key should handle \"http\" "
+"URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
+msgid ""
+"True if the command specified in the \"command\" key should handle \"https\" "
+"URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
+msgid ""
+"True if the command specified in the \"command\" key should handle \"info\" "
+"URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
+msgid ""
+"True if the command specified in the \"command\" key should handle \"mailto"
+"\" URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
+msgid ""
+"True if the command specified in the \"command\" key should handle \"man\" "
+"URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
+msgid ""
+"True if the command specified in the \"command\" key should handle \"trash\" "
+"URLs."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
+msgid ""
+"True if the command used to handle this type of URL should be run in a "
+"terminal."
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:33
+msgid "Whether the specified command should handle \"aim\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:34
+msgid "Whether the specified command should handle \"callto\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:35
+msgid "Whether the specified command should handle \"ghelp\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:36
+msgid "Whether the specified command should handle \"h323\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:37
+msgid "Whether the specified command should handle \"http\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:38
+msgid "Whether the specified command should handle \"https\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:39
+msgid "Whether the specified command should handle \"info\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:40
+msgid "Whether the specified command should handle \"mailto\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:41
+msgid "Whether the specified command should handle \"man\" URLs"
+msgstr ""
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:42
+msgid "Whether the specified command should handle \"trash\" URLs"
+msgstr ""
+
+#: schemas/system_dns_sd.schemas.in.h:1
+msgid ""
+"Comma separated list of dns-sd domains that should be visible in the network "
+"location."
+msgstr ""
+"A hálózati helyen látható dns-sd tartományok vesszővel elválasztott listája."
+
+#: schemas/system_dns_sd.schemas.in.h:2
+msgid "Extra domains to look for dns-sd services in"
+msgstr ""
+
+#: schemas/system_dns_sd.schemas.in.h:3
+msgid "How to display local DNS-SD service"
+msgstr "Hogyan jelenítse meg a helyi DNS-SD szolgáltatást"
+
+#: schemas/system_dns_sd.schemas.in.h:4
+msgid "Possible values are \"merged\", \"separate\" and \"disabled\"."
+msgstr "Lehetséges értékek: \"merged\", \"separate\" és \"disabled\"."
+
+#: schemas/system_http_proxy.schemas.in.h:1
+msgid "Authenticate proxy server connections"
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:2
+msgid "Automatic proxy configuration URL"
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:3
+msgid "Enables the proxy settings when accessing HTTP over the Internet."
+msgstr "Proxy-beállítások bekapcsolása interneten keresztüli HTTP-eléréskor."
+
+#: schemas/system_http_proxy.schemas.in.h:4
+msgid "FTP proxy host name"
+msgstr "FTP-proxy gépnév"
+
+#: schemas/system_http_proxy.schemas.in.h:5
+msgid "FTP proxy port"
+msgstr "FTP-proxy port"
+
+#: schemas/system_http_proxy.schemas.in.h:6
+msgid "HTTP proxy host name"
+msgstr "HTTP-proxy gépnév"
+
+#: schemas/system_http_proxy.schemas.in.h:7
+msgid "HTTP proxy password"
+msgstr "HTTP-proxy jelszó"
+
+#: schemas/system_http_proxy.schemas.in.h:8
+msgid "HTTP proxy port"
+msgstr "HTTP-proxy port"
+
+#: schemas/system_http_proxy.schemas.in.h:9
+msgid "HTTP proxy username"
+msgstr "HTTP-proxy felhasználónév"
+
+#: schemas/system_http_proxy.schemas.in.h:10
+msgid ""
+"If true, then connections to the proxy server require authentication. The "
+"username/password combo defined by \"/system/http_proxy/authentication_user"
+"\" and \"/system/http_proxy/authentication_password\"."
+msgstr ""
+"Ha be van kapcsolva, akkor a proxy kiszolgálóhoz történő kapcsolódáshoz "
+"hitelesítés szükséges. A felhasználónév/jelszó párost a \"/system/http_proxy/"
+"authentication_user\" és a \"/system/http_proxy/authentication_password\" "
+"adja meg."
+
+#: schemas/system_http_proxy.schemas.in.h:11
+msgid "Non-proxy hosts"
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:12
+msgid "Password to pass as authentication when doing HTTP proxying."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:13
+msgid "Proxy configuration mode"
+msgstr "Proxy-beállítás módja"
+
+#: schemas/system_http_proxy.schemas.in.h:14
+msgid "SOCKS proxy host name"
+msgstr "SOCKS-proxy gépnév"
+
+#: schemas/system_http_proxy.schemas.in.h:15
+msgid "SOCKS proxy port"
+msgstr "SOCKS-proxy port"
+
+#: schemas/system_http_proxy.schemas.in.h:16
+msgid "Secure HTTP proxy host name"
+msgstr "Secure HTTP-proxy gépnév"
+
+#: schemas/system_http_proxy.schemas.in.h:17
+msgid "Secure HTTP proxy port"
+msgstr "Secure HTTP-proxy port"
+
+#: schemas/system_http_proxy.schemas.in.h:18
+msgid ""
+"Select the proxy configuration mode. Supported values are \"none\", \"manual"
+"\", \"auto\"."
+msgstr ""
+"Válassza ki a proxy-beállítás módját. Támogatott értékek: \"none\", \"manual"
+"\", \"auto\"."
+
+#: schemas/system_http_proxy.schemas.in.h:19
+msgid "The machine name to proxy FTP through."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:20
+msgid "The machine name to proxy HTTP through."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:21
+msgid "The machine name to proxy secure HTTP through."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:22
+msgid "The machine name to proxy socks through."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:23
+msgid ""
+"The port on the machine defined by \"/system/http_proxy/host\" that you "
+"proxy through."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:24
+msgid ""
+"The port on the machine defined by \"/system/proxy/ftp_host\" that you proxy "
+"through."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:25
+msgid ""
+"The port on the machine defined by \"/system/proxy/secure_host\" that you "
+"proxy through."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:26
+msgid ""
+"The port on the machine defined by \"/system/proxy/socks_host\" that you "
+"proxy through."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:27
+msgid ""
+"This key contains a list of hosts which are connected to directly, rather "
+"than via the proxy (if it is active). The values can be hostnames, domains "
+"(using an initial wildcard like *.foo.com), IP host addresses (both IPv4 and "
+"IPv6) and network addresses with a netmask (something like 192.168.0.0/24)."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:28
+msgid "URL that provides proxy configuration values."
+msgstr ""
+
+#: schemas/system_http_proxy.schemas.in.h:29
+msgid "Use HTTP proxy"
+msgstr "HTTP-proxy használata"
+
+#: schemas/system_http_proxy.schemas.in.h:30
+msgid "User name to pass as authentication when doing HTTP proxying."
+msgstr ""
+
+#: schemas/system_smb.schemas.in.h:1
+msgid "SMB workgroup"
+msgstr "SMB-munkacsoport"
+
+#: schemas/system_smb.schemas.in.h:2
+msgid "The window workgroup the user is part of"
+msgstr "A munkacsoport, amelyhez a felhasználó tartozik"

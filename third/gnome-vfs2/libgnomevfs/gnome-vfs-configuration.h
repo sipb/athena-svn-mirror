@@ -32,7 +32,7 @@ G_BEGIN_DECLS
 void         _gnome_vfs_configuration_add_directory   (const char *dir);
 gboolean     _gnome_vfs_configuration_init            (void);
 void         _gnome_vfs_configuration_uninit          (void);
-const gchar *_gnome_vfs_configuration_get_module_path (const gchar *method_name, const char ** args);
+const gchar *_gnome_vfs_configuration_get_module_path (const gchar *method_name, const char ** args, gboolean *daemon);
 GList       *_gnome_vfs_configuration_get_methods_list(void);
 
 

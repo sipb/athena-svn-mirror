@@ -1,4 +1,16 @@
 
+ GnomeVFS 2.4 TODO (Michael's wishlist)
+ =================
+
+	* backend test / validation framework
+		+ nail down woolly semantics:
+		+ if open SEEKABLE, then seek
+		  shouldn't return 'not supported'
+		+ consistant error return values for misc.
+		  methods.
+		+ URI / name escaping tests.
+
+
  GnomeVFS 2.0 TODO
  =================
 
@@ -13,15 +25,6 @@ sort of feature or change. We should highlight any changes
 that are really critical.
 
 --GNOME 2.0 platform--
-
-  * Use GTK 2.0
-
-  * Evaluate thread support in glib2 to see if we can move
-    away from directly using pthreads to improve portability.
-
-  * Function on the GNOME 2.0 supported platforms list whenever
-    such is drafted. Probably at least Linux, Solaris, FreeBSD.
-    Maybe HP-UX, IRIX, or Win32?
 
   * Communicate with application developers and get feedback
     on changes or additions they'd like to see in GnomeVFS APIs.
@@ -68,7 +71,6 @@ that are really critical.
   * CVS module
 
   * SSH module
-
 
 
 =======================================================================

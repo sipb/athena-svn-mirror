@@ -38,18 +38,31 @@ typedef struct GnomeVFSSocketBuffer GnomeVFSSocketBuffer;
 
 GnomeVFSSocketBuffer* gnome_vfs_socket_buffer_new      (GnomeVFSSocket       *socket);
 GnomeVFSResult        gnome_vfs_socket_buffer_destroy  (GnomeVFSSocketBuffer *socket_buffer,
-							gboolean              close_socket);
+							gboolean              close_socket,
+							GnomeVFSCancellation *cancellation);
 GnomeVFSResult        gnome_vfs_socket_buffer_read     (GnomeVFSSocketBuffer *socket_buffer, 
 							gpointer              buffer,
 							GnomeVFSFileSize      bytes, 
-							GnomeVFSFileSize     *bytes_read);
-GnomeVFSResult        gnome_vfs_socket_buffer_peekc    (GnomeVFSSocketBuffer *socket_buffer, 
-							char                 *character);
+							GnomeVFSFileSize     *bytes_read,
+							GnomeVFSCancellation *cancellation);
+GnomeVFSResult        gnome_vfs_socket_buffer_read_until (GnomeVFSSocketBuffer *socket_buffer,
+							gpointer buffer,
+							GnomeVFSFileSize bytes,
+							gconstpointer boundary,
+							GnomeVFSFileSize boundary_len,
+							GnomeVFSFileSize *bytes_read,
+							gboolean *got_boundary,
+							GnomeVFSCancellation *cancellation);
+GnomeVFSResult        gnome_vfs_socket_buffer_peekc    (GnomeVFSSocketBuffer *socket_buffer,
+							char                 *character,
+							GnomeVFSCancellation *cancellation);
 GnomeVFSResult        gnome_vfs_socket_buffer_write    (GnomeVFSSocketBuffer *socket_buffer,
 							gconstpointer         buffer,
 							GnomeVFSFileSize      bytes,
-							GnomeVFSFileSize     *bytes_written);
-GnomeVFSResult        gnome_vfs_socket_buffer_flush    (GnomeVFSSocketBuffer *socket_buffer);
+							GnomeVFSFileSize     *bytes_written,
+							GnomeVFSCancellation *cancellation);
+GnomeVFSResult        gnome_vfs_socket_buffer_flush    (GnomeVFSSocketBuffer *socket_buffer,
+							GnomeVFSCancellation *cancellation);
 
 G_END_DECLS
 

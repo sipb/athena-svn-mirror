@@ -2,7 +2,7 @@
 
 Name:		gnome-vfs
 Summary:	The GNOME virtual file-system libraries
-Version:	2.2.0
+Version:	2.8.0
 Release:	1_cvs
 License:	LGPL
 Group:		System Environment/Libraries
@@ -17,8 +17,8 @@ BuildRequires:	bonobo-activation-devel >= 1.0.0
 BuildRequires:	bonobo-devel >= 2.0.0
 BuildRequires:	GConf2-devel >= 1.1.1
 BuildRequires:	gtk2-devel >= @GTK_REQUIRED@
-BuildRequires:	ORBit-devel >= 2.4.0
-BuildRequires:	libxml2 >= 2.2.8
+BuildRequires:	ORBit-devel >= 2.9.0
+BuildRequires:	libxml2 >= 2.6.0
 
 %description
 GNOME VFS is the GNOME virtual file system. It is the foundation of the

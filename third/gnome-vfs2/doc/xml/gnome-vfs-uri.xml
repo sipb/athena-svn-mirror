@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-uri">
+<refentry id="gnome-vfs-20-gnome-vfs-uri">
 <refmeta>
-<refentrytitle>
-GnomeVFSURI</refentrytitle>
+<refentrytitle>GnomeVFSURI</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-GnomeVFSURI</refname><refpurpose>
+<refname>GnomeVFSURI</refname><refpurpose>
 Functions for manipulating URIs</refpurpose>
 </refnamediv>
 
@@ -18,7 +16,7 @@ Functions for manipulating URIs</refpurpose>
 
 
 
-typedef     <link linkend="GnomeVFSToplevelURI">GnomeVFSToplevelURI</link>;
+struct      <link linkend="GnomeVFSToplevelURI">GnomeVFSToplevelURI</link>;
 enum        <link linkend="GnomeVFSURIHideOptions">GnomeVFSURIHideOptions</link>;
 #define     <link linkend="GNOME-VFS-URI-MAGIC-CHR-CAPS">GNOME_VFS_URI_MAGIC_CHR</link>
 #define     <link linkend="GNOME-VFS-URI-MAGIC-STR-CAPS">GNOME_VFS_URI_MAGIC_STR</link>
@@ -28,11 +26,11 @@ enum        <link linkend="GnomeVFSURIHideOptions">GnomeVFSURIHideOptions</link>
 <link linkend="GnomeVFSURI">GnomeVFSURI</link>* <link linkend="gnome-vfs-uri-resolve-relative">gnome_vfs_uri_resolve_relative</link> (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *base,
                                              const <link linkend="gchar">gchar</link> *relative_reference);
 <link linkend="GnomeVFSURI">GnomeVFSURI</link>* <link linkend="gnome-vfs-uri-ref">gnome_vfs_uri_ref</link>              (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
-void        <link linkend="gnome-vfs-uri-unref">gnome_vfs_uri_unref</link>             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-uri-unref">gnome_vfs_uri_unref</link>             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
 <link linkend="GnomeVFSURI">GnomeVFSURI</link>* <link linkend="gnome-vfs-uri-append-string">gnome_vfs_uri_append_string</link>    (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
-                                             const char *uri_fragment);
+                                             const <link linkend="char">char</link> *uri_fragment);
 <link linkend="GnomeVFSURI">GnomeVFSURI</link>* <link linkend="gnome-vfs-uri-append-path">gnome_vfs_uri_append_path</link>      (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
-                                             const char *path);
+                                             const <link linkend="char">char</link> *path);
 <link linkend="GnomeVFSURI">GnomeVFSURI</link>* <link linkend="gnome-vfs-uri-append-file-name">gnome_vfs_uri_append_file_name</link> (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *filename);
 <link linkend="gchar">gchar</link>*      <link linkend="gnome-vfs-uri-to-string">gnome_vfs_uri_to_string</link>         (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
@@ -48,13 +46,13 @@ const <link linkend="gchar">gchar</link>* <link linkend="gnome-vfs-uri-get-schem
 <link linkend="guint">guint</link>       <link linkend="gnome-vfs-uri-get-host-port">gnome_vfs_uri_get_host_port</link>     (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
 const <link linkend="gchar">gchar</link>* <link linkend="gnome-vfs-uri-get-user-name">gnome_vfs_uri_get_user_name</link>    (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
 const <link linkend="gchar">gchar</link>* <link linkend="gnome-vfs-uri-get-password">gnome_vfs_uri_get_password</link>     (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
-void        <link linkend="gnome-vfs-uri-set-host-name">gnome_vfs_uri_set_host_name</link>     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-uri-set-host-name">gnome_vfs_uri_set_host_name</link>     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *host_name);
-void        <link linkend="gnome-vfs-uri-set-host-port">gnome_vfs_uri_set_host_port</link>     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-uri-set-host-port">gnome_vfs_uri_set_host_port</link>     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="guint">guint</link> host_port);
-void        <link linkend="gnome-vfs-uri-set-user-name">gnome_vfs_uri_set_user_name</link>     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-uri-set-user-name">gnome_vfs_uri_set_user_name</link>     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *user_name);
-void        <link linkend="gnome-vfs-uri-set-password">gnome_vfs_uri_set_password</link>      (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-uri-set-password">gnome_vfs_uri_set_password</link>      (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *password);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-uri-equal">gnome_vfs_uri_equal</link>             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *a,
                                              const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *b);
@@ -76,12 +74,14 @@ const <link linkend="gchar">gchar</link>* <link linkend="gnome-vfs-uri-get-fragm
 <link linkend="GList">GList</link>*      <link linkend="gnome-vfs-uri-list-ref">gnome_vfs_uri_list_ref</link>          (<link linkend="GList">GList</link> *list);
 <link linkend="GList">GList</link>*      <link linkend="gnome-vfs-uri-list-unref">gnome_vfs_uri_list_unref</link>        (<link linkend="GList">GList</link> *list);
 <link linkend="GList">GList</link>*      <link linkend="gnome-vfs-uri-list-copy">gnome_vfs_uri_list_copy</link>         (<link linkend="GList">GList</link> *list);
-void        <link linkend="gnome-vfs-uri-list-free">gnome_vfs_uri_list_free</link>         (<link linkend="GList">GList</link> *list);
-char*       <link linkend="gnome-vfs-uri-make-full-from-relative">gnome_vfs_uri_make_full_from_relative</link>
-                                            (const char *base_uri,
-                                             const char *relative_uri);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-uri-list-free">gnome_vfs_uri_list_free</link>         (<link linkend="GList">GList</link> *list);
+<link linkend="char">char</link>*       <link linkend="gnome-vfs-uri-make-full-from-relative">gnome_vfs_uri_make_full_from_relative</link>
+                                            (const <link linkend="char">char</link> *base_uri,
+                                             const <link linkend="char">char</link> *relative_uri);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -99,8 +99,9 @@ char*       <link linkend="gnome-vfs-uri-make-full-from-relative">gnome_vfs_uri_
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="GnomeVFSToplevelURI"/>GnomeVFSToplevelURI</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSToplevelURI"/>struct GnomeVFSToplevelURI</title>
+<indexterm><primary>GnomeVFSToplevelURI</primary></indexterm><programlisting>struct GnomeVFSToplevelURI {
+
 	/* Base object.  */
 	GnomeVFSURI uri;
 
@@ -119,14 +120,15 @@ char*       <link linkend="gnome-vfs-uri-make-full-from-relative">gnome_vfs_uri_
 	void *reserved1;
 	void *reserved2;
 
-} GnomeVFSToplevelURI;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSURIHideOptions"/>enum GnomeVFSURIHideOptions</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSURIHideOptions</primary></indexterm><programlisting>typedef enum
+{
 	GNOME_VFS_URI_HIDE_NONE = 0,
 	GNOME_VFS_URI_HIDE_USER_NAME = 1 &lt;&lt; 0,
 	GNOME_VFS_URI_HIDE_PASSWORD = 1 &lt;&lt; 1,
@@ -134,7 +136,7 @@ char*       <link linkend="gnome-vfs-uri-make-full-from-relative">gnome_vfs_uri_
 	GNOME_VFS_URI_HIDE_HOST_PORT = 1 &lt;&lt; 3,
 	GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD = 1 &lt;&lt; 4,
 	GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER = 1 &lt;&lt; 8
-} GnomeVFSURIHideOptions;
+} GnomeVFSURIHideOptions; 
 </programlisting>
 <para>
 Packed boolean bitfield controlling hiding of various elements
@@ -180,7 +182,7 @@ of a GnomeVFSURI when it is converted to a string.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-URI-MAGIC-CHR-CAPS"/>GNOME_VFS_URI_MAGIC_CHR</title>
-<programlisting>#define GNOME_VFS_URI_MAGIC_CHR	'#'
+<indexterm><primary>GNOME_VFS_URI_MAGIC_CHR</primary></indexterm><programlisting>#define GNOME_VFS_URI_MAGIC_CHR	'#'
 </programlisting>
 <para>
 The character used to divide location from
@@ -190,7 +192,7 @@ extra "arguments" passed to the method.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-URI-MAGIC-STR-CAPS"/>GNOME_VFS_URI_MAGIC_STR</title>
-<programlisting>#define GNOME_VFS_URI_MAGIC_STR "#"
+<indexterm><primary>GNOME_VFS_URI_MAGIC_STR</primary></indexterm><programlisting>#define GNOME_VFS_URI_MAGIC_STR "#"
 </programlisting>
 <para>
 The character used to divide location from
@@ -200,7 +202,7 @@ extra "arguments" passed to the method.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-URI-PATH-CHR-CAPS"/>GNOME_VFS_URI_PATH_CHR</title>
-<programlisting>#define GNOME_VFS_URI_PATH_CHR '/'
+<indexterm><primary>GNOME_VFS_URI_PATH_CHR</primary></indexterm><programlisting>#define GNOME_VFS_URI_PATH_CHR '/'
 </programlisting>
 <para>
 Defines the path seperator character.</para>
@@ -209,7 +211,7 @@ Defines the path seperator character.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-URI-PATH-STR-CAPS"/>GNOME_VFS_URI_PATH_STR</title>
-<programlisting>#define GNOME_VFS_URI_PATH_STR "/"
+<indexterm><primary>GNOME_VFS_URI_PATH_STR</primary></indexterm><programlisting>#define GNOME_VFS_URI_PATH_STR "/"
 </programlisting>
 <para>
 Defines the path seperator string.</para>
@@ -218,9 +220,11 @@ Defines the path seperator string.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-new"/>gnome_vfs_uri_new ()</title>
-<programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_new              (const <link linkend="gchar">gchar</link> *text_uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_new</primary></indexterm><programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_new              (const <link linkend="gchar">gchar</link> *text_uri);</programlisting>
 <para>
-Create a new URI from <parameter>text_uri</parameter>.</para>
+Create a new URI from <parameter>text_uri</parameter>. Unsupported and unsafe methods
+are not allowed and will result in <literal>null</literal>% being returned. URL
+transforms are allowed.</para>
 <para>
 
 </para><variablelist role="params">
@@ -232,7 +236,7 @@ Create a new URI from <parameter>text_uri</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-resolve-relative"/>gnome_vfs_uri_resolve_relative ()</title>
-<programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_resolve_relative (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *base,
+<indexterm><primary>gnome_vfs_uri_resolve_relative</primary></indexterm><programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_resolve_relative (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *base,
                                              const <link linkend="gchar">gchar</link> *relative_reference);</programlisting>
 <para>
 Create a new URI from <parameter>relative_reference</parameter>, relative to <parameter>base</parameter>.</para>
@@ -250,7 +254,7 @@ Create a new URI from <parameter>relative_reference</parameter>, relative to <pa
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-ref"/>gnome_vfs_uri_ref ()</title>
-<programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_ref              (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_ref</primary></indexterm><programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_ref              (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Increment <parameter>uri</parameter>'s reference count.</para>
 <para>
@@ -264,7 +268,7 @@ Increment <parameter>uri</parameter>'s reference count.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-unref"/>gnome_vfs_uri_unref ()</title>
-<programlisting>void        gnome_vfs_uri_unref             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_uri_unref             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Decrement <parameter>uri</parameter>'s reference count.  If the reference count reaches zero,
 <parameter>uri</parameter> is destroyed.</para>
@@ -277,8 +281,8 @@ Decrement <parameter>uri</parameter>'s reference count.  If the reference count 
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-append-string"/>gnome_vfs_uri_append_string ()</title>
-<programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_append_string    (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
-                                             const char *uri_fragment);</programlisting>
+<indexterm><primary>gnome_vfs_uri_append_string</primary></indexterm><programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_append_string    (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+                                             const <link linkend="char">char</link> *uri_fragment);</programlisting>
 <para>
 Create a new URI obtained by appending <parameter>path</parameter> to <parameter>uri</parameter>.  This will take care
 of adding an appropriate directory separator between the end of <parameter>uri</parameter> and
@@ -297,8 +301,8 @@ the start of <parameter>path</parameter> if necessary.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-append-path"/>gnome_vfs_uri_append_path ()</title>
-<programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_append_path      (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
-                                             const char *path);</programlisting>
+<indexterm><primary>gnome_vfs_uri_append_path</primary></indexterm><programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_append_path      (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+                                             const <link linkend="char">char</link> *path);</programlisting>
 <para>
 Create a new URI obtained by appending <parameter>path</parameter> to <parameter>uri</parameter>.  This will take care
 of adding an appropriate directory separator between the end of <parameter>uri</parameter> and
@@ -317,7 +321,7 @@ the start of <parameter>path</parameter> if necessary as well as escaping <param
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-append-file-name"/>gnome_vfs_uri_append_file_name ()</title>
-<programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_append_file_name (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<indexterm><primary>gnome_vfs_uri_append_file_name</primary></indexterm><programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_append_file_name (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *filename);</programlisting>
 <para>
 Create a new URI obtained by appending <parameter>file_name</parameter> to <parameter>uri</parameter>.  This will take care
@@ -337,7 +341,7 @@ the start of <parameter>file_name</parameter> if necessary.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-to-string"/>gnome_vfs_uri_to_string ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gnome_vfs_uri_to_string         (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<indexterm><primary>gnome_vfs_uri_to_string</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gnome_vfs_uri_to_string         (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSURIHideOptions">GnomeVFSURIHideOptions</link> hide_options);</programlisting>
 <para>
 Translate <parameter>uri</parameter> into a printable string.  The string will not contain the
@@ -357,7 +361,7 @@ user name etc.) should not be represented in the returned string.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-dup"/>gnome_vfs_uri_dup ()</title>
-<programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_dup              (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_dup</primary></indexterm><programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_dup              (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Duplicate <parameter>uri</parameter>.</para>
 <para>
@@ -371,7 +375,7 @@ Duplicate <parameter>uri</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-is-local"/>gnome_vfs_uri_is_local ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_is_local          (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_is_local</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_is_local          (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Check if <parameter>uri</parameter> is a local (native) file system.</para>
 <para>
@@ -385,7 +389,7 @@ Check if <parameter>uri</parameter> is a local (native) file system.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-has-parent"/>gnome_vfs_uri_has_parent ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_has_parent        (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_has_parent</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_has_parent        (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Check if URI has a parent or not.</para>
 <para>
@@ -399,7 +403,7 @@ Check if URI has a parent or not.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-parent"/>gnome_vfs_uri_get_parent ()</title>
-<programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_get_parent       (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_get_parent</primary></indexterm><programlisting><link linkend="GnomeVFSURI">GnomeVFSURI</link>* gnome_vfs_uri_get_parent       (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve <parameter>uri</parameter>'s parent URI.</para>
 <para>
@@ -413,7 +417,7 @@ Retrieve <parameter>uri</parameter>'s parent URI.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-toplevel"/>gnome_vfs_uri_get_toplevel ()</title>
-<programlisting><link linkend="GnomeVFSToplevelURI">GnomeVFSToplevelURI</link>* gnome_vfs_uri_get_toplevel
+<indexterm><primary>gnome_vfs_uri_get_toplevel</primary></indexterm><programlisting><link linkend="GnomeVFSToplevelURI">GnomeVFSToplevelURI</link>* gnome_vfs_uri_get_toplevel
                                             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve the toplevel URI in <parameter>uri</parameter>.</para>
@@ -428,7 +432,7 @@ Retrieve the toplevel URI in <parameter>uri</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-host-name"/>gnome_vfs_uri_get_host_name ()</title>
-<programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_host_name    (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_get_host_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_host_name    (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve the host name for <parameter>uri</parameter>.</para>
 <para>
@@ -442,7 +446,7 @@ Retrieve the host name for <parameter>uri</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-scheme"/>gnome_vfs_uri_get_scheme ()</title>
-<programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_scheme       (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_get_scheme</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_scheme       (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve the scheme used for <parameter>uri</parameter></para>
 <para>
@@ -456,7 +460,7 @@ Retrieve the scheme used for <parameter>uri</parameter></para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-host-port"/>gnome_vfs_uri_get_host_port ()</title>
-<programlisting><link linkend="guint">guint</link>       gnome_vfs_uri_get_host_port     (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_get_host_port</primary></indexterm><programlisting><link linkend="guint">guint</link>       gnome_vfs_uri_get_host_port     (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve the host port number in <parameter>uri</parameter>.</para>
 <para>
@@ -471,7 +475,7 @@ default port value for the specified toplevel access method is used.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-user-name"/>gnome_vfs_uri_get_user_name ()</title>
-<programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_user_name    (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_get_user_name</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_user_name    (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve the user name in <parameter>uri</parameter>.</para>
 <para>
@@ -485,7 +489,7 @@ Retrieve the user name in <parameter>uri</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-password"/>gnome_vfs_uri_get_password ()</title>
-<programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_password     (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_get_password</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_password     (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve the password for <parameter>uri</parameter>.</para>
 <para>
@@ -499,7 +503,7 @@ Retrieve the password for <parameter>uri</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-set-host-name"/>gnome_vfs_uri_set_host_name ()</title>
-<programlisting>void        gnome_vfs_uri_set_host_name     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<indexterm><primary>gnome_vfs_uri_set_host_name</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_uri_set_host_name     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *host_name);</programlisting>
 <para>
 Set <parameter>host_name</parameter> as the host name accessed by <parameter>uri</parameter>.</para>
@@ -515,7 +519,7 @@ Set <parameter>host_name</parameter> as the host name accessed by <parameter>uri
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-set-host-port"/>gnome_vfs_uri_set_host_port ()</title>
-<programlisting>void        gnome_vfs_uri_set_host_port     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<indexterm><primary>gnome_vfs_uri_set_host_port</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_uri_set_host_port     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="guint">guint</link> host_port);</programlisting>
 <para>
 Set the host port number in <parameter>uri</parameter>.  If <parameter>host_port</parameter> is zero, the default port
@@ -532,7 +536,7 @@ for <parameter>uri</parameter>'s toplevel access method is used.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-set-user-name"/>gnome_vfs_uri_set_user_name ()</title>
-<programlisting>void        gnome_vfs_uri_set_user_name     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<indexterm><primary>gnome_vfs_uri_set_user_name</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_uri_set_user_name     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *user_name);</programlisting>
 <para>
 Set <parameter>user_name</parameter> as the user name for <parameter>uri</parameter>.</para>
@@ -548,7 +552,7 @@ Set <parameter>user_name</parameter> as the user name for <parameter>uri</parame
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-set-password"/>gnome_vfs_uri_set_password ()</title>
-<programlisting>void        gnome_vfs_uri_set_password      (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
+<indexterm><primary>gnome_vfs_uri_set_password</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_uri_set_password      (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *password);</programlisting>
 <para>
 Set <parameter>password</parameter> as the password for <parameter>uri</parameter>.</para>
@@ -564,7 +568,7 @@ Set <parameter>password</parameter> as the password for <parameter>uri</paramete
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-equal"/>gnome_vfs_uri_equal ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_equal             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *a,
+<indexterm><primary>gnome_vfs_uri_equal</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_equal             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *a,
                                              const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *b);</programlisting>
 <para>
 Compare <parameter>a</parameter> and <parameter>b</parameter>.</para>
@@ -586,7 +590,7 @@ that unreserved characters may be escaped.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-is-parent"/>gnome_vfs_uri_is_parent ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_is_parent         (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *possible_parent,
+<indexterm><primary>gnome_vfs_uri_is_parent</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_is_parent         (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *possible_parent,
                                              const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *possible_child,
                                              <link linkend="gboolean">gboolean</link> recursive);</programlisting>
 <para>
@@ -610,7 +614,7 @@ search up through the hierarchy.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-path"/>gnome_vfs_uri_get_path ()</title>
-<programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_path         (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_get_path</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_path         (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve full path name for <parameter>uri</parameter>.</para>
 <para>
@@ -626,7 +630,7 @@ be modified nor freed.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-get-fragment-identifier"/>gnome_vfs_uri_get_fragment_identifier ()</title>
-<programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_fragment_identifier
+<indexterm><primary>gnome_vfs_uri_get_fragment_identifier</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_uri_get_fragment_identifier
                                             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 
@@ -641,7 +645,7 @@ be modified nor freed.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-extract-dirname"/>gnome_vfs_uri_extract_dirname ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gnome_vfs_uri_extract_dirname   (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_extract_dirname</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gnome_vfs_uri_extract_dirname   (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Extract the name of the directory in which the file pointed to by <parameter>uri</parameter> is
 stored as a newly allocated string.  The string will end with a
@@ -658,7 +662,7 @@ parent directory.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-extract-short-name"/>gnome_vfs_uri_extract_short_name ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gnome_vfs_uri_extract_short_name
+<indexterm><primary>gnome_vfs_uri_extract_short_name</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gnome_vfs_uri_extract_short_name
                                             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve base file name for <parameter>uri</parameter>, ignoring any trailing path separators.
@@ -682,7 +686,7 @@ unescaped short form of the name.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-extract-short-path-name"/>gnome_vfs_uri_extract_short_path_name ()</title>
-<programlisting><link linkend="gchar">gchar</link>*      gnome_vfs_uri_extract_short_path_name
+<indexterm><primary>gnome_vfs_uri_extract_short_path_name</primary></indexterm><programlisting><link linkend="gchar">gchar</link>*      gnome_vfs_uri_extract_short_path_name
                                             (const <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Retrieve base file name for <parameter>uri</parameter>, ignoring any trailing path separators.
@@ -706,7 +710,7 @@ escaped short form of the name.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-hequal"/>gnome_vfs_uri_hequal ()</title>
-<programlisting><link linkend="gint">gint</link>        gnome_vfs_uri_hequal            (<link linkend="gconstpointer">gconstpointer</link> a,
+<indexterm><primary>gnome_vfs_uri_hequal</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_vfs_uri_hequal            (<link linkend="gconstpointer">gconstpointer</link> a,
                                              <link linkend="gconstpointer">gconstpointer</link> b);</programlisting>
 <para>
 Function intended for use as a hash table "are these two items
@@ -725,7 +729,7 @@ the same" comparison. Useful for creating a hash table of URIs.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-hash"/>gnome_vfs_uri_hash ()</title>
-<programlisting><link linkend="guint">guint</link>       gnome_vfs_uri_hash              (<link linkend="gconstpointer">gconstpointer</link> p);</programlisting>
+<indexterm><primary>gnome_vfs_uri_hash</primary></indexterm><programlisting><link linkend="guint">guint</link>       gnome_vfs_uri_hash              (<link linkend="gconstpointer">gconstpointer</link> p);</programlisting>
 <para>
 Creates an integer value from a GnomeVFSURI, appropriate
 for using as the key to a hash table entry.</para>
@@ -740,11 +744,11 @@ for using as the key to a hash table entry.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-list-parse"/>gnome_vfs_uri_list_parse ()</title>
-<programlisting><link linkend="GList">GList</link>*      gnome_vfs_uri_list_parse        (const <link linkend="gchar">gchar</link> *uri_list);</programlisting>
+<indexterm><primary>gnome_vfs_uri_list_parse</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_uri_list_parse        (const <link linkend="gchar">gchar</link> *uri_list);</programlisting>
 <para>
-Extracts a list of <link linkend="GnomeVFSURI">GnomeVFSURI</link> objects from a standard text/uri-list,
+Extracts a list of <link linkend="GnomeVFSURI"><type>GnomeVFSURI</type></link> objects from a standard text/uri-list,
 such as one you would get on a drop operation.  Use
-<link linkend="gnome-vfs-uri-list-free">gnome_vfs_uri_list_free</link> when you are done with the list.</para>
+<link linkend="gnome-vfs-uri-list-free"><type>gnome_vfs_uri_list_free</type></link> when you are done with the list.</para>
 <para>
 
 </para><variablelist role="params">
@@ -756,7 +760,7 @@ such as one you would get on a drop operation.  Use
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-list-ref"/>gnome_vfs_uri_list_ref ()</title>
-<programlisting><link linkend="GList">GList</link>*      gnome_vfs_uri_list_ref          (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_uri_list_ref</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_uri_list_ref          (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
 Increments the reference count of the items in <parameter>list</parameter> by one.</para>
 <para>
@@ -770,7 +774,7 @@ Increments the reference count of the items in <parameter>list</parameter> by on
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-list-unref"/>gnome_vfs_uri_list_unref ()</title>
-<programlisting><link linkend="GList">GList</link>*      gnome_vfs_uri_list_unref        (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_uri_list_unref</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_uri_list_unref        (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
 Decrements the reference count of the items in <parameter>list</parameter> by one.
 Note that the list is *not freed* even if each member of the list
@@ -786,7 +790,7 @@ is freed.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-list-copy"/>gnome_vfs_uri_list_copy ()</title>
-<programlisting><link linkend="GList">GList</link>*      gnome_vfs_uri_list_copy         (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_uri_list_copy</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_uri_list_copy         (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
 Creates a duplicate of <parameter>list</parameter>, and references each member of
 that list.</para>
@@ -801,7 +805,7 @@ that list.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-list-free"/>gnome_vfs_uri_list_free ()</title>
-<programlisting>void        gnome_vfs_uri_list_free         (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_uri_list_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_uri_list_free         (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
 Decrements the reference count of each member of <parameter>list</parameter> by one,
 and frees the list itself.</para>
@@ -814,9 +818,9 @@ and frees the list itself.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-make-full-from-relative"/>gnome_vfs_uri_make_full_from_relative ()</title>
-<programlisting>char*       gnome_vfs_uri_make_full_from_relative
-                                            (const char *base_uri,
-                                             const char *relative_uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_make_full_from_relative</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_uri_make_full_from_relative
+                                            (const <link linkend="char">char</link> *base_uri,
+                                             const <link linkend="char">char</link> *relative_uri);</programlisting>
 <para>
 Returns a full URI given a full base URI, and a secondary URI which may
 be relative.</para>
@@ -829,7 +833,8 @@ be relative.</para>
 <varlistentry><term><parameter>relative_uri</parameter>&nbsp;:</term>
 <listitem><simpara> a URI fragment/reference to be appended to <parameter>base_uri</parameter>
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the URI (NULL for some bad errors).
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a newly allocated string containing the URI 
+(NULL for some bad errors).
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

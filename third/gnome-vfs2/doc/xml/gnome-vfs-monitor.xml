@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-monitor">
+<refentry id="gnome-vfs-20-gnome-vfs-monitor">
 <refmeta>
-<refentrytitle>
-Monitoring</refentrytitle>
+<refentrytitle>Monitoring</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-Monitoring</refname><refpurpose>
+<refname>Monitoring</refname><refpurpose>
 watch files for changes, and get called back if they do</refpurpose>
 </refnamediv>
 
@@ -26,13 +24,15 @@ watch files for changes, and get called back if they do</refpurpose>
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-monitor-cancel">gnome_vfs_monitor_cancel</link>     (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> *handle);
 enum        <link linkend="GnomeVFSMonitorType">GnomeVFSMonitorType</link>;
 enum        <link linkend="GnomeVFSMonitorEventType">GnomeVFSMonitorEventType</link>;
-void        (<link linkend="GnomeVFSMonitorCallback">*GnomeVFSMonitorCallback</link>)      (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> *handle,
+<link linkend="void">void</link>        (<link linkend="GnomeVFSMonitorCallback">*GnomeVFSMonitorCallback</link>)      (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> *handle,
                                              const <link linkend="gchar">gchar</link> *monitor_uri,
                                              const <link linkend="gchar">gchar</link> *info_uri,
                                              <link linkend="GnomeVFSMonitorEventType">GnomeVFSMonitorEventType</link> event_type,
                                              <link linkend="gpointer">gpointer</link> user_data);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -51,7 +51,7 @@ void        (<link linkend="GnomeVFSMonitorCallback">*GnomeVFSMonitorCallback</l
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-monitor-add"/>gnome_vfs_monitor_add ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_monitor_add        (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> **handle,
+<indexterm><primary>gnome_vfs_monitor_add</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_monitor_add        (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> **handle,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSMonitorType">GnomeVFSMonitorType</link> monitor_type,
                                              <link linkend="GnomeVFSMonitorCallback">GnomeVFSMonitorCallback</link> callback,
@@ -83,7 +83,7 @@ notified when any file in the directory changes.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-monitor-cancel"/>gnome_vfs_monitor_cancel ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_monitor_cancel     (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> *handle);</programlisting>
+<indexterm><primary>gnome_vfs_monitor_cancel</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_monitor_cancel     (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> *handle);</programlisting>
 <para>
 Cancel the monitor pointed to be <parameter>handle</parameter>.</para>
 <para>
@@ -97,7 +97,7 @@ Cancel the monitor pointed to be <parameter>handle</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSMonitorType"/>enum GnomeVFSMonitorType</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSMonitorType</primary></indexterm><programlisting>typedef enum {
   GNOME_VFS_MONITOR_FILE,
   GNOME_VFS_MONITOR_DIRECTORY
 } GnomeVFSMonitorType;
@@ -109,7 +109,7 @@ Type of resources that can be monitored.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSMonitorEventType"/>enum GnomeVFSMonitorEventType</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSMonitorEventType</primary></indexterm><programlisting>typedef enum {
   GNOME_VFS_MONITOR_EVENT_CHANGED,
   GNOME_VFS_MONITOR_EVENT_DELETED,
   GNOME_VFS_MONITOR_EVENT_STARTEXECUTING,
@@ -156,7 +156,7 @@ Types of events that can be monitored.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSMonitorCallback"/>GnomeVFSMonitorCallback ()</title>
-<programlisting>void        (*GnomeVFSMonitorCallback)      (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> *handle,
+<indexterm><primary>GnomeVFSMonitorCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeVFSMonitorCallback)      (<link linkend="GnomeVFSMonitorHandle">GnomeVFSMonitorHandle</link> *handle,
                                              const <link linkend="gchar">gchar</link> *monitor_uri,
                                              const <link linkend="gchar">gchar</link> *info_uri,
                                              <link linkend="GnomeVFSMonitorEventType">GnomeVFSMonitorEventType</link> event_type,
@@ -180,7 +180,7 @@ from <parameter>monitor_uri</parameter> if it was a directory monitor)
 <listitem><simpara> what happened to <parameter>info_uri</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
-<listitem><simpara> user data passed to <link linkend="gnome-vfs-monitor-add">gnome_vfs_monitor_add</link>() when the monitor was created
+<listitem><simpara> user data passed to <link linkend="gnome-vfs-monitor-add"><function>gnome_vfs_monitor_add()</function></link> when the monitor was created
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

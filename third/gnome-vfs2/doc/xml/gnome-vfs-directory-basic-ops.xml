@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-directory-basic-ops">
+<refentry id="gnome-vfs-20-gnome-vfs-directory-basic-ops">
 <refmeta>
-<refentrytitle>
-Basic Directory Operations</refentrytitle>
+<refentrytitle>Basic Directory Operations</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-Basic Directory Operations</refname><refpurpose>
+<refname>Basic Directory Operations</refname><refpurpose>
 Creating and removing directories.</refpurpose>
 </refnamediv>
 
@@ -35,6 +33,8 @@ Creating and removing directories.</refpurpose>
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -46,7 +46,7 @@ Creating and removing directories.</refpurpose>
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-make-directory"/>gnome_vfs_make_directory ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_make_directory     (const <link linkend="gchar">gchar</link> *text_uri,
+<indexterm><primary>gnome_vfs_make_directory</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_make_directory     (const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="guint">guint</link> perm);</programlisting>
 <para>
 Create <parameter>text_uri</parameter> as a directory.</para>
@@ -64,7 +64,7 @@ Create <parameter>text_uri</parameter> as a directory.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-make-directory-for-uri"/>gnome_vfs_make_directory_for_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_make_directory_for_uri
+<indexterm><primary>gnome_vfs_make_directory_for_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_make_directory_for_uri
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="guint">guint</link> perm);</programlisting>
 <para>
@@ -84,7 +84,7 @@ does not already exist at <parameter>uri</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-remove-directory"/>gnome_vfs_remove_directory ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_remove_directory   (const <link linkend="gchar">gchar</link> *text_uri);</programlisting>
+<indexterm><primary>gnome_vfs_remove_directory</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_remove_directory   (const <link linkend="gchar">gchar</link> *text_uri);</programlisting>
 <para>
 Remove <parameter>text_uri</parameter>.  <parameter>text_uri</parameter> must be an empty directory.</para>
 <para>
@@ -98,7 +98,7 @@ Remove <parameter>text_uri</parameter>.  <parameter>text_uri</parameter> must be
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-remove-directory-from-uri"/>gnome_vfs_remove_directory_from_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_remove_directory_from_uri
+<indexterm><primary>gnome_vfs_remove_directory_from_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_remove_directory_from_uri
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Remove <parameter>uri</parameter>.  <parameter>uri</parameter> must be an empty directory.</para>

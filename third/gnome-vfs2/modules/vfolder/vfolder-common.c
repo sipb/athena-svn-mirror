@@ -258,9 +258,11 @@ entry_reload_if_needed (Entry *entry)
 							 parsed[i]);
 			if (dep) {
 				vfolder_info_remove_entry (entry->info, dep);
+#if 0 /* vfolder_monitor_emit is not defined */
 				vfolder_monitor_emit (
 					entry_get_filename (dep),
 					GNOME_VFS_MONITOR_EVENT_DELETED);
+#endif
 				entry_unref (dep);
 			}
 		}

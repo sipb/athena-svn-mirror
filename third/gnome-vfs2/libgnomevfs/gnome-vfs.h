@@ -25,17 +25,33 @@
 #ifndef GNOME_VFS_H
 #define GNOME_VFS_H
 
+#include <libgnomevfs/gnome-vfs-address.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-cancellation.h>
+#include <libgnomevfs/gnome-vfs-context.h>
 #include <libgnomevfs/gnome-vfs-directory.h>
+#include <libgnomevfs/gnome-vfs-dns-sd.h>
+#include <libgnomevfs/gnome-vfs-drive.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-file-size.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
+#include <libgnomevfs/gnome-vfs-handle.h>
 #include <libgnomevfs/gnome-vfs-init.h>
+#include <libgnomevfs/gnome-vfs-job-limit.h>
+#include <libgnomevfs/gnome-vfs-mime-info-cache.h>
+#include <libgnomevfs/gnome-vfs-mime-monitor.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <libgnomevfs/gnome-vfs-module-callback.h>
 #include <libgnomevfs/gnome-vfs-monitor.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-resolve.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
+#include <libgnomevfs/gnome-vfs-volume-monitor.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
+#include <libgnomevfs/gnome-vfs-enum-types.h>
+#include <libgnomevfs/gnome-vfs-standard-callbacks.h>
 
 #endif /* GNOME_VFS_H */

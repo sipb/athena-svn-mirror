@@ -32,7 +32,7 @@
 
 #include <glib.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-monitor-private.h>
+#include <libgnomevfs/gnome-vfs-module-shared.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xmlmemory.h>
@@ -652,6 +652,51 @@ static void desktopdir_monitor_cb (GnomeVFSMonitorHandle    *handle,
 				   GnomeVFSMonitorEventType  event_type,
 				   gpointer                  user_data);
 
+
+static char *
+remove_double_slashes (const char *uri)
+{
+	const char *src;
+	char *dest;
+	char *result;
+	gboolean slash;
+
+	if (uri == NULL) {
+		return NULL;
+	}
+
+	result = malloc (strlen (uri) + 1);
+	if (result == NULL) {
+		return NULL;
+	}
+
+	src = uri;
+	dest = result;
+	slash = FALSE;
+
+	while (*src != '\0') {
+		/* Don't do anything if current char is a / and slash is TRUE*/
+		if ((*src == '/') && (slash != FALSE)) {
+			src++;
+			continue;
+		}
+
+		if ((*src == '/') && (slash == FALSE)) {
+			slash = TRUE;
+
+		} else {
+			slash = FALSE;
+		}
+
+		*dest = *src;
+		dest++;
+		src++;
+	}
+	*dest = '\0';
+
+	return result;
+}
+
 static ItemDir *
 itemdir_new (VFolderInfo *info, 
 	     const gchar *uri, 
@@ -659,11 +704,14 @@ itemdir_new (VFolderInfo *info,
 	     gint         weight)
 {
 	ItemDir *ret;
+	gchar *tmp_uri;
 
 	ret = g_new0 (ItemDir, 1);
 	ret->info   = info;
 	ret->weight = weight;
-	ret->uri    = vfolder_escape_home (uri);
+	tmp_uri = vfolder_escape_home (uri);
+	ret->uri    = remove_double_slashes (tmp_uri);
+	g_free (tmp_uri);
 	ret->type   = type;
 
 	info->item_dirs = g_slist_append (info->item_dirs, ret);
@@ -1158,6 +1206,7 @@ integrate_itemdir_entry_createupdate (ItemDir                  *id,
 	const gchar *rel_path;
 
 	rel_path  = strstr (full_uristr, id->uri);
+	g_assert (rel_path != NULL);
 	rel_path += strlen (id->uri);
 
 	/* Look for an existing entry with the same displayname */
@@ -1708,7 +1757,7 @@ vfolder_info_find_filenames (VFolderInfo *info)
 	 * paths specified in $GNOME2_PATH, for people installing in strange
 	 * places.
 	 */
-	if (strcmp (scheme, "applications-all-users")) {
+	if (!strcmp (scheme, "applications-all-users")) {
 		int i;
 		const char *path;
 		char *dir, **ppath;

@@ -507,6 +507,9 @@ gnome_vfs_directory_visit (const gchar *text_uri,
 	g_return_val_if_fail (text_uri != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
 	uri = gnome_vfs_uri_new (text_uri);
+	if (uri == NULL) {
+		return GNOME_VFS_ERROR_INVALID_URI;
+	}
 
 	result = directory_visit_internal (uri, NULL, NULL,
 					   info_options,

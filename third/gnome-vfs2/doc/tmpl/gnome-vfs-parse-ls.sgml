@@ -2,7 +2,7 @@
 gnome-vfs-parse-ls
 
 <!-- ##### SECTION Short_Description ##### -->
-
+convenience functions for modules which want to parse a ls-like directory listing
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>

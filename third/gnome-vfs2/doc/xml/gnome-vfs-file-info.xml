@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-file-info">
+<refentry id="gnome-vfs-20-gnome-vfs-file-info">
 <refmeta>
-<refentrytitle>
-GnomeVFSFileInfo</refentrytitle>
+<refentrytitle>GnomeVFSFileInfo</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-GnomeVFSFileInfo</refname><refpurpose>
+<refname>GnomeVFSFileInfo</refname><refpurpose>
 stores information about files, GnomeVFS equivalent of stat</refpurpose>
 </refnamediv>
 
@@ -24,9 +22,9 @@ enum        <link linkend="GnomeVFSFileInfoFields">GnomeVFSFileInfoFields</link>
 enum        <link linkend="GnomeVFSFilePermissions">GnomeVFSFilePermissions</link>;
 enum        <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link>;
 enum        <link linkend="GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</link>;
-typedef     <link linkend="GnomeVFSGetFileInfoResult">GnomeVFSGetFileInfoResult</link>;
+struct      <link linkend="GnomeVFSGetFileInfoResult">GnomeVFSGetFileInfoResult</link>;
 typedef     <link linkend="GnomeVFSInodeNumber">GnomeVFSInodeNumber</link>;
-typedef     <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>;
+struct      <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>;
 #define     <link linkend="GNOME-VFS-FILE-INFO-SYMLINK-CAPS">GNOME_VFS_FILE_INFO_SYMLINK</link>     (info)
 #define     <link linkend="GNOME-VFS-FILE-INFO-SET-SYMLINK-CAPS">GNOME_VFS_FILE_INFO_SET_SYMLINK</link> (info, value)
 #define     <link linkend="GNOME-VFS-FILE-INFO-LOCAL-CAPS">GNOME_VFS_FILE_INFO_LOCAL</link>       (info)
@@ -38,12 +36,12 @@ typedef     <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>;
 #define     <link linkend="GNOME-VFS-FILE-INFO-SET-SGID-CAPS">GNOME_VFS_FILE_INFO_SET_SGID</link>    (info, value)
 #define     <link linkend="GNOME-VFS-FILE-INFO-SET-STICKY-CAPS">GNOME_VFS_FILE_INFO_SET_STICKY</link>  (info, value)
 <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>* <link linkend="gnome-vfs-file-info-new">gnome_vfs_file_info_new</link>   (void);
-void        <link linkend="gnome-vfs-file-info-unref">gnome_vfs_file_info_unref</link>       (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);
-void        <link linkend="gnome-vfs-file-info-ref">gnome_vfs_file_info_ref</link>         (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);
-void        <link linkend="gnome-vfs-file-info-clear">gnome_vfs_file_info_clear</link>       (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);
-const char* <link linkend="gnome-vfs-file-info-get-mime-type">gnome_vfs_file_info_get_mime_type</link>
+<link linkend="void">void</link>        <link linkend="gnome-vfs-file-info-unref">gnome_vfs_file_info_unref</link>       (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-file-info-ref">gnome_vfs_file_info_ref</link>         (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-file-info-clear">gnome_vfs_file_info_clear</link>       (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-file-info-get-mime-type">gnome_vfs_file_info_get_mime_type</link>
                                             (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);
-void        <link linkend="gnome-vfs-file-info-copy">gnome_vfs_file_info_copy</link>        (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *dest,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-file-info-copy">gnome_vfs_file_info_copy</link>        (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *dest,
                                              const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *src);
 <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>* <link linkend="gnome-vfs-file-info-dup">gnome_vfs_file_info_dup</link>   (const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *orig);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-file-info-matches">gnome_vfs_file_info_matches</link>     (const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *a,
@@ -51,9 +49,11 @@ void        <link linkend="gnome-vfs-file-info-copy">gnome_vfs_file_info_copy</l
 <link linkend="GList">GList</link>*      <link linkend="gnome-vfs-file-info-list-ref">gnome_vfs_file_info_list_ref</link>    (<link linkend="GList">GList</link> *list);
 <link linkend="GList">GList</link>*      <link linkend="gnome-vfs-file-info-list-unref">gnome_vfs_file_info_list_unref</link>  (<link linkend="GList">GList</link> *list);
 <link linkend="GList">GList</link>*      <link linkend="gnome-vfs-file-info-list-copy">gnome_vfs_file_info_list_copy</link>   (<link linkend="GList">GList</link> *list);
-void        <link linkend="gnome-vfs-file-info-list-free">gnome_vfs_file_info_list_free</link>   (<link linkend="GList">GList</link> *list);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-file-info-list-free">gnome_vfs_file_info_list_free</link>   (<link linkend="GList">GList</link> *list);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -72,7 +72,7 @@ void        <link linkend="gnome-vfs-file-info-list-free">gnome_vfs_file_info_li
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSFileFlags"/>enum GnomeVFSFileFlags</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSFileFlags</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_FILE_FLAGS_NONE = 0,
 	GNOME_VFS_FILE_FLAGS_SYMLINK = 1 &lt;&lt; 0,
 	GNOME_VFS_FILE_FLAGS_LOCAL = 1 &lt;&lt; 1
@@ -80,7 +80,7 @@ void        <link linkend="gnome-vfs-file-info-list-free">gnome_vfs_file_info_li
 </programlisting>
 <para>
 Packed boolean bitfield representing special
-flags a <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> struct can have.</para>
+flags a <link linkend="GnomeVFSFileInfo"><type>GnomeVFSFileInfo</type></link> struct can have.</para>
 <para>
 
 </para><variablelist role="enum">
@@ -102,7 +102,7 @@ flags a <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> struct can have
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSFileType"/>enum GnomeVFSFileType</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSFileType</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_FILE_TYPE_UNKNOWN,
 	GNOME_VFS_FILE_TYPE_REGULAR,
 	GNOME_VFS_FILE_TYPE_DIRECTORY,
@@ -114,14 +114,13 @@ flags a <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> struct can have
 } GnomeVFSFileType;
 </programlisting>
 <para>
-Identifies the kind of file represented by a <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> struct. (note,
-use of MIME types is preferred as this field may eventually disappear)</para>
+Identifies the kind of file represented by a <link linkend="GnomeVFSFileInfo"><type>GnomeVFSFileInfo</type></link> struct.</para>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSFileInfoFields"/>enum GnomeVFSFileInfoFields</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSFileInfoFields</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_FILE_INFO_FIELDS_NONE = 0,
 	GNOME_VFS_FILE_INFO_FIELDS_TYPE = 1 &lt;&lt; 0,
 	GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS = 1 &lt;&lt; 1,
@@ -231,7 +230,7 @@ bitfield are valid
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSFilePermissions"/>enum GnomeVFSFilePermissions</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSFilePermissions</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_PERM_SUID = S_ISUID,
 	GNOME_VFS_PERM_SGID = S_ISGID,	
 	GNOME_VFS_PERM_STICKY = 01000,	/* S_ISVTX not defined on all systems */
@@ -351,7 +350,7 @@ into a nicer VFS-like enum.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSFileInfoOptions"/>enum GnomeVFSFileInfoOptions</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSFileInfoOptions</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_FILE_INFO_DEFAULT = 0,
 	GNOME_VFS_FILE_INFO_GET_MIME_TYPE = 1 &lt;&lt; 0,
 	GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE = 1 &lt;&lt; 1,
@@ -362,7 +361,7 @@ into a nicer VFS-like enum.</para>
 </programlisting>
 <para>
 Packed boolean bitfield representing options that can
-be passed into a <link linkend="gnome-vfs-get-file-info">gnome_vfs_get_file_info</link>() call (or other
+be passed into a <link linkend="gnome-vfs-get-file-info"><function>gnome_vfs_get_file_info()</function></link> call (or other
 related calls that return file info) and affect the operation
 of get_file_info.</para>
 <para>
@@ -407,7 +406,7 @@ remote file systems
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSSetFileInfoMask"/>enum GnomeVFSSetFileInfoMask</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSSetFileInfoMask</primary></indexterm><programlisting>typedef enum {
 	GNOME_VFS_SET_FILE_INFO_NONE = 0,
 	GNOME_VFS_SET_FILE_INFO_NAME = 1 &lt;&lt; 0,
 	GNOME_VFS_SET_FILE_INFO_PERMISSIONS = 1 &lt;&lt; 1,
@@ -417,7 +416,7 @@ remote file systems
 </programlisting>
 <para>
 Packed boolean bitfield representing the aspects of the file
-to be changed in a <link linkend="gnome-vfs-set-file-info">gnome_vfs_set_file_info</link>() call.</para>
+to be changed in a <link linkend="gnome-vfs-set-file-info"><function>gnome_vfs_set_file_info()</function></link> call.</para>
 <para>
 
 </para><variablelist role="enum">
@@ -448,19 +447,20 @@ to be changed in a <link linkend="gnome-vfs-set-file-info">gnome_vfs_set_file_in
 </varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSGetFileInfoResult"/>GnomeVFSGetFileInfoResult</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSGetFileInfoResult"/>struct GnomeVFSGetFileInfoResult</title>
+<indexterm><primary>GnomeVFSGetFileInfoResult</primary></indexterm><programlisting>struct GnomeVFSGetFileInfoResult {
+
 	GnomeVFSURI *uri;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *file_info;
-} GnomeVFSGetFileInfoResult;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSInodeNumber"/>GnomeVFSInodeNumber</title>
-<programlisting>typedef GnomeVFSFileSize GnomeVFSInodeNumber;
+<indexterm><primary>GnomeVFSInodeNumber</primary></indexterm><programlisting>typedef GnomeVFSFileSize GnomeVFSInodeNumber;
 </programlisting>
 <para>
 Represents the i-node of a file, this is a low level data structure
@@ -469,8 +469,9 @@ that the operating system uses to hold information about a file.</para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSFileInfo"/>GnomeVFSFileInfo</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSFileInfo"/>struct GnomeVFSFileInfo</title>
+<indexterm><primary>GnomeVFSFileInfo</primary></indexterm><programlisting>struct GnomeVFSFileInfo {
+
 	/* Base name of the file (no path).  */
 	char *name;
 
@@ -515,7 +516,7 @@ that the operating system uses to hold information about a file.</para>
            link points to.  */
 	char *symlink_name;
 
-	/* MIME type.  */
+	/* MIME type.  -- ascii string */
 	char *mime_type;
 
 	guint refcount;
@@ -527,7 +528,7 @@ that the operating system uses to hold information about a file.</para>
 	void *reserved3;
 	void *reserved4;
 	void *reserved5;
-} GnomeVFSFileInfo;
+};
 </programlisting>
 <para>
 The GnomeVFSFileInfo structure contains information about a file.</para>
@@ -536,7 +537,7 @@ The GnomeVFSFileInfo structure contains information about a file.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-SYMLINK-CAPS"/>GNOME_VFS_FILE_INFO_SYMLINK()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_SYMLINK(info)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_SYMLINK</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_SYMLINK(info)</programlisting>
 <para>
 Determines whether a file is a symbolic link given <parameter>info</parameter>.</para>
 <para>
@@ -548,7 +549,7 @@ Determines whether a file is a symbolic link given <parameter>info</parameter>.<
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-SET-SYMLINK-CAPS"/>GNOME_VFS_FILE_INFO_SET_SYMLINK()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_SET_SYMLINK(info, value)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_SET_SYMLINK</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_SET_SYMLINK(info, value)</programlisting>
 <para>
 Set the symbolic link field in <parameter>info</parameter> to <parameter>value</parameter>.</para>
 <para>
@@ -563,7 +564,7 @@ Set the symbolic link field in <parameter>info</parameter> to <parameter>value</
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-LOCAL-CAPS"/>GNOME_VFS_FILE_INFO_LOCAL()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_LOCAL(info)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_LOCAL</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_LOCAL(info)</programlisting>
 <para>
 Determines whether a file is local given <parameter>info</parameter>.</para>
 <para>
@@ -575,7 +576,7 @@ Determines whether a file is local given <parameter>info</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-SET-LOCAL-CAPS"/>GNOME_VFS_FILE_INFO_SET_LOCAL()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_SET_LOCAL(info, value)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_SET_LOCAL</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_SET_LOCAL(info, value)</programlisting>
 <para>
 Set the "local file" field in <parameter>info</parameter> to <parameter>value</parameter>.</para>
 <para>
@@ -590,7 +591,7 @@ Set the "local file" field in <parameter>info</parameter> to <parameter>value</p
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-SUID-CAPS"/>GNOME_VFS_FILE_INFO_SUID()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_SUID(info)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_SUID</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_SUID(info)</programlisting>
 <para>
 Determines whether a file belongs to the super user.</para>
 <para>
@@ -602,7 +603,7 @@ Determines whether a file belongs to the super user.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-SGID-CAPS"/>GNOME_VFS_FILE_INFO_SGID()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_SGID(info)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_SGID</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_SGID(info)</programlisting>
 <para>
 Determines whether a file belongs to the super user's group.</para>
 <para>
@@ -614,7 +615,7 @@ Determines whether a file belongs to the super user's group.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-STICKY-CAPS"/>GNOME_VFS_FILE_INFO_STICKY()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_STICKY(info)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_STICKY</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_STICKY(info)</programlisting>
 <para>
 Determines whether a file has the sticky bit set, given <parameter>info</parameter></para>
 <para>
@@ -626,7 +627,7 @@ Determines whether a file has the sticky bit set, given <parameter>info</paramet
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-SET-SUID-CAPS"/>GNOME_VFS_FILE_INFO_SET_SUID()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_SET_SUID(info, value)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_SET_SUID</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_SET_SUID(info, value)</programlisting>
 <para>
 Set the SUID field in <parameter>info</parameter> to <parameter>value</parameter>.</para>
 <para>
@@ -641,7 +642,7 @@ Set the SUID field in <parameter>info</parameter> to <parameter>value</parameter
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-SET-SGID-CAPS"/>GNOME_VFS_FILE_INFO_SET_SGID()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_SET_SGID(info, value)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_SET_SGID</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_SET_SGID(info, value)</programlisting>
 <para>
 Set the SGID field in <parameter>info</parameter> to <parameter>value</parameter>.</para>
 <para>
@@ -656,7 +657,7 @@ Set the SGID field in <parameter>info</parameter> to <parameter>value</parameter
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-FILE-INFO-SET-STICKY-CAPS"/>GNOME_VFS_FILE_INFO_SET_STICKY()</title>
-<programlisting>#define     GNOME_VFS_FILE_INFO_SET_STICKY(info, value)</programlisting>
+<indexterm><primary>GNOME_VFS_FILE_INFO_SET_STICKY</primary></indexterm><programlisting>#define     GNOME_VFS_FILE_INFO_SET_STICKY(info, value)</programlisting>
 <para>
 Set the sticky bit in <parameter>info</parameter> to <parameter>value</parameter>.</para>
 <para>
@@ -671,7 +672,7 @@ Set the sticky bit in <parameter>info</parameter> to <parameter>value</parameter
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-new"/>gnome_vfs_file_info_new ()</title>
-<programlisting><link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>* gnome_vfs_file_info_new   (void);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_new</primary></indexterm><programlisting><link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>* gnome_vfs_file_info_new   (void);</programlisting>
 <para>
 Allocate and initialize a new file information struct.</para>
 <para>
@@ -682,7 +683,7 @@ Allocate and initialize a new file information struct.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-unref"/>gnome_vfs_file_info_unref ()</title>
-<programlisting>void        gnome_vfs_file_info_unref       (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_unref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_file_info_unref       (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);</programlisting>
 <para>
 Destroy <parameter>info</parameter></para>
 <para>
@@ -694,7 +695,7 @@ Destroy <parameter>info</parameter></para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-ref"/>gnome_vfs_file_info_ref ()</title>
-<programlisting>void        gnome_vfs_file_info_ref         (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_ref</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_file_info_ref         (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);</programlisting>
 <para>
 Increment reference count</para>
 <para>
@@ -706,7 +707,7 @@ Increment reference count</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-clear"/>gnome_vfs_file_info_clear ()</title>
-<programlisting>void        gnome_vfs_file_info_clear       (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_clear</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_file_info_clear       (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);</programlisting>
 <para>
 Clear <parameter>info</parameter> so that it's ready to accept new data. This is
 supposed to be used when <parameter>info</parameter> already contains meaningful information which
@@ -720,7 +721,7 @@ we want to replace.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-get-mime-type"/>gnome_vfs_file_info_get_mime_type ()</title>
-<programlisting>const char* gnome_vfs_file_info_get_mime_type
+<indexterm><primary>gnome_vfs_file_info_get_mime_type</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_file_info_get_mime_type
                                             (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info);</programlisting>
 <para>
 Retrieve MIME type from <parameter>info</parameter>. There is no need to free the return
@@ -736,7 +737,7 @@ value.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-copy"/>gnome_vfs_file_info_copy ()</title>
-<programlisting>void        gnome_vfs_file_info_copy        (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *dest,
+<indexterm><primary>gnome_vfs_file_info_copy</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_file_info_copy        (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *dest,
                                              const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *src);</programlisting>
 <para>
 Copy information from <parameter>src</parameter> into <parameter>dest</parameter>.</para>
@@ -752,7 +753,7 @@ Copy information from <parameter>src</parameter> into <parameter>dest</parameter
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-dup"/>gnome_vfs_file_info_dup ()</title>
-<programlisting><link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>* gnome_vfs_file_info_dup   (const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *orig);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_dup</primary></indexterm><programlisting><link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link>* gnome_vfs_file_info_dup   (const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *orig);</programlisting>
 <para>
 Duplicates <parameter>orig</parameter> and returns it.</para>
 <para>
@@ -766,10 +767,11 @@ Duplicates <parameter>orig</parameter> and returns it.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-matches"/>gnome_vfs_file_info_matches ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_file_info_matches     (const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *a,
+<indexterm><primary>gnome_vfs_file_info_matches</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_file_info_matches     (const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *a,
                                              const <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *b);</programlisting>
 <para>
-Compare the two file info structs, return TRUE if they match.</para>
+Compare the two file info structs, return TRUE if they match exactly
+the same file data.</para>
 <para>
 
 </para><variablelist role="params">
@@ -784,7 +786,7 @@ Compare the two file info structs, return TRUE if they match.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-list-ref"/>gnome_vfs_file_info_list_ref ()</title>
-<programlisting><link linkend="GList">GList</link>*      gnome_vfs_file_info_list_ref    (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_list_ref</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_file_info_list_ref    (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
 Increments the reference count of the items in <parameter>list</parameter> by one.</para>
 <para>
@@ -798,7 +800,7 @@ Increments the reference count of the items in <parameter>list</parameter> by on
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-list-unref"/>gnome_vfs_file_info_list_unref ()</title>
-<programlisting><link linkend="GList">GList</link>*      gnome_vfs_file_info_list_unref  (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_list_unref</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_file_info_list_unref  (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
 Decrements the reference count of the items in <parameter>list</parameter> by one.
 Note that the list is *not freed* even if each member of the list
@@ -814,7 +816,7 @@ is freed.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-list-copy"/>gnome_vfs_file_info_list_copy ()</title>
-<programlisting><link linkend="GList">GList</link>*      gnome_vfs_file_info_list_copy   (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_list_copy</primary></indexterm><programlisting><link linkend="GList">GList</link>*      gnome_vfs_file_info_list_copy   (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
 Creates a duplicate of <parameter>list</parameter>, and references each member of
 that list.</para>
@@ -829,7 +831,7 @@ that list.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-file-info-list-free"/>gnome_vfs_file_info_list_free ()</title>
-<programlisting>void        gnome_vfs_file_info_list_free   (<link linkend="GList">GList</link> *list);</programlisting>
+<indexterm><primary>gnome_vfs_file_info_list_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_file_info_list_free   (<link linkend="GList">GList</link> *list);</programlisting>
 <para>
 Decrements the reference count of each member of <parameter>list</parameter> by one,
 and frees the list itself.</para>

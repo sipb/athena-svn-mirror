@@ -92,6 +92,40 @@ test_make_canonical_path (const char *input,
 	g_free (output);
 }
 
+const char* test_uris[][2] = 
+{
+	{ "http://www.gnome.org/", "index.html" },
+	{ "http://www.gnome.org/", "/index.html"},
+	{ "http://www.gnome.org/", "/index.html"},
+	{ "http://www.gnome.org", "index.html"},
+	{ "http://www.gnome.org", "/index.html"},
+	{ "http://www.gnome.org", "./index.html"},
+	{NULL, NULL}
+};
+
+
+static void
+test_make_full_from_relative  (const gchar* base, const gchar* relative, 
+			       const gchar* expected_result)
+{
+	GnomeVFSURI *base_uri;
+	GnomeVFSURI *vfs_uri;
+	gchar *str = NULL;
+
+	base_uri = gnome_vfs_uri_new (base);
+	vfs_uri = gnome_vfs_uri_resolve_relative (base_uri, relative);
+	str = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+	if (expected_result != NULL) {
+		if (strcmp (expected_result, str) != 0) {
+			test_failed ("test_make_full_from_relative (%s, %s) resulted in %s instead of %s\n", base, relative, str, expected_result);
+		}
+	}
+	gnome_vfs_uri_unref (base_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+	g_free (str);
+}
+
+
 static void
 test_uri_to_string (const char *input,
 		    const char *expected_output,
@@ -358,6 +392,9 @@ test_uri_is_parent_common (const char *parent, const char *item, gboolean deep, 
 		test_failed ("gnome_vfs_uri_is_parent (%s, %s) resulted in \"%s\" instead of \"%s\"",
 			     parent, item, result ? "TRUE" : "FALSE", expected_result ? "TRUE" : "FALSE");
 	}
+
+	gnome_vfs_uri_unref (item_uri);
+	gnome_vfs_uri_unref (parent_uri);
 }
 
 static void
@@ -372,18 +409,32 @@ test_uri_is_parent_shallow (const char *parent, const char *item, gboolean expec
 	test_uri_is_parent_common (parent, item, FALSE, expected_result);
 }
 
+static int
+strcmp_allow_nulls (const char *s1, const char *s2)
+{
+        const char *t1, *t2;
+
+        t1 = (s1 == NULL ? "" : s1);
+        t2 = (s2 == NULL ? "" : s2);
+
+	return strcmp (t1, t2);
+}
+
 #define VERIFY_STRING_RESULT(function, expected) \
 	G_STMT_START {											\
 		char *result = function; 								\
 		if (!((result == NULL && expected == NULL)						\
-		      || (result != NULL && expected != NULL && strcmp (result, (char *)expected) == 0))) {	\
+		      || (strcmp_allow_nulls (result, (char *)expected) == 0))) {			\
 			test_failed ("%s: returned '%s' expected '%s'", #function, result, expected);	\
 		}											\
+                g_free (result);                                                                      \
 	} G_STMT_END
 
 int
 main (int argc, char **argv)
 {
+	int i;
+
 	make_asserts_break ("GLib");
 	make_asserts_break ("GnomeVFS");
 
@@ -597,8 +648,8 @@ main (int argc, char **argv)
 	/* Test chained uris */
 	test_uri_to_string ("/tmp/t.efs#http:///foobar/", "file:///tmp/t.efs#http:/foobar/", GNOME_VFS_URI_HIDE_NONE);
 	test_uri_parent ("/tmp/t.efs#http:/", "file:///tmp/t.efs");
-	test_uri_to_string ("/tmp/t.efs#zip:/", "file:///tmp/t.efs#zip:/", GNOME_VFS_URI_HIDE_NONE);
-	test_uri_parent ("/tmp/t.efs#zip:/", "file:///tmp/t.efs");
+	test_uri_to_string ("/tmp/t.efs#gzip:/", "file:///tmp/t.efs#gzip:/", GNOME_VFS_URI_HIDE_NONE);
+	test_uri_parent ("/tmp/t.efs#gzip:/", "file:///tmp/t.efs");
 	test_uri_to_string ("/tmp/t.efs#unknownmethod:/", "file:///tmp/t.efs", GNOME_VFS_URI_HIDE_NONE);
 
 	/* Test fragment identifiers. */
@@ -672,6 +723,16 @@ main (int argc, char **argv)
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("/my/document.html"), NULL);
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("http://my/document.html"), NULL);
 	
+	/* Testing gnome_vfs_uri_make_full_from_relative */
+	/* (not an extensive testing, but a regression test */
+	i = 0;
+	while (test_uris[i][0] != NULL) {
+		test_make_full_from_relative (test_uris[i][0], test_uris[i][1],
+					      "http://www.gnome.org/index.html");
+		i++;
+	}
+
+
 	/* Report to "make check" on whether it all worked or not. */
 	return at_least_one_test_failed ? EXIT_FAILURE : EXIT_SUCCESS;
 }

@@ -28,24 +28,31 @@
 #include <libgnomevfs/gnome-vfs-result.h>
 
 G_BEGIN_DECLS
-	
-	/* functions to freeze/thaw the internal hash tables to 
-	   avoid writing them back to disk everytime you modify 
-	   them through the _set_ functions, or accidentally
-	   reloading them from disk during an edit.
-	 */
+
+const char 	*gnome_vfs_mime_get_value        		(const char *mime_type,
+								 const char *key);
+GnomeVFSResult   gnome_vfs_mime_set_value                       (const char *mime_type, 
+								 const char *key, 
+								 const char *value);
+
+gboolean	 gnome_vfs_mime_type_is_known			(const char *mime_type);
+
 void             gnome_vfs_mime_freeze                          (void);
 void             gnome_vfs_mime_thaw                            (void);
+
+GList 	   	*gnome_vfs_mime_get_extensions_list 		(const char *mime_type);
+void	   	 gnome_vfs_mime_extensions_list_free 		(GList      *list);
+
+GnomeVFSResult	 gnome_vfs_mime_set_registered_type_key 	(const char *mime_type, 
+							  	 const char *key, 
+							  	 const char *data);
 
 	/* forces a reload of the config files */
 void       	 gnome_vfs_mime_info_reload   	  	 	(void);
 
-
-gboolean	 gnome_vfs_mime_type_is_known			(const char *mime_type);
+#ifndef GNOME_VFS_DISABLE_DEPRECATED
 
 	/* functions which access to the .keys files */
-const char 	*gnome_vfs_mime_get_value        		(const char *mime_type,
-								 const char *key);
 GnomeVFSResult   gnome_vfs_mime_set_value                       (const char *mime_type, 
 								 const char *key, 
 								 const char *value);
@@ -53,20 +60,15 @@ GList      	*gnome_vfs_mime_get_key_list      		(const char *mime_type);
 void             gnome_vfs_mime_keys_list_free                  (GList *mime_type_list);
 
 	/* functions to access the .mime files */
-GList 	   	*gnome_vfs_mime_get_extensions_list 		(const char *mime_type);
-void	   	 gnome_vfs_mime_extensions_list_free 		(GList      *list);
 char 	   	*gnome_vfs_mime_get_extensions_string 	 	(const char *mime_type);
 char 	   	*gnome_vfs_mime_get_extensions_pretty_string    (const char *mime_type);
 GList 	        *gnome_vfs_get_registered_mime_types 	 	(void);
 void	         gnome_vfs_mime_registered_mime_type_list_free 	(GList      *list);
-GnomeVFSResult	 gnome_vfs_mime_set_registered_type_key 	(const char *mime_type, 
-							  	 const char *key, 
-							  	 const char *data);
 GnomeVFSResult   gnome_vfs_mime_set_extensions_list             (const char *mime_type, 
 								 const char *extensions_list);
 void             gnome_vfs_mime_registered_mime_type_delete     (const char *mime_type);
 void             gnome_vfs_mime_reset                           (void);
-
+#endif /* GNOME_VFS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

@@ -1,1092 +1,1482 @@
-# gnome-vfs ja.po
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# gnome-vfs ja.po.
+# Copyright (C) 2000-2004 Free Software Foundation, Inc.
 # Akira TAGOH <at@ff.iij4u.or.jp>, 2000.
+# Takeshi AIHANA <aihana@gnome.gr.jp>, 2003-2004.
+# KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs CVS-20010708\n"
-"POT-Creation-Date: 2003-01-20 20:46+0100\n"
-"PO-Revision-Date: 2001-07-08 02:06+0900\n"
-"Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
-"Language-Team: Japanese <translation@gnome.gr.jp>\n"
+"Project-Id-Version: gnome-vfs HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 09:57+0200\n"
+"PO-Revision-Date: 2004-09-03 22:39+0900\n"
+"Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
+"Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=euc-jp\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: libgnomevfs/gnome-vfs-configuration.c:223
+#: daemon/gnome-vfs-daemon.c:596
+msgid "Could not initialize Bonobo"
+msgstr "Bonobo ã‚’åˆæœŸåŒ–ã§ãã¾ã›ã‚“ã§ã—ãŸ"
+
+#: daemon/gnome-vfs-daemon.c:603
+msgid "Could not initialize gnome vfs"
+msgstr "GNOME ä»®æƒ³ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ  (gnome-vfs) ã‚’åˆæœŸåŒ–ã§ãã¾ã›ã‚“ã§ã—ãŸ"
+
+#: libgnomevfs/eggdesktopentries.c:229
+#, c-format
+msgid "File could not be opened: %s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã‘ã¾ã›ã‚“ã§ã—ãŸ: %s"
+
+#: libgnomevfs/eggdesktopentries.c:328
+#, c-format
+msgid "Failed to open file '%s': %s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« '%s' ã‚’é–‹ã‘ã¾ã›ã‚“ã§ã—ãŸ: %s"
+
+#: libgnomevfs/eggdesktopentries.c:341
+msgid "File is empty"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ãŒç©ºã§ã™"
+
+#: libgnomevfs/eggdesktopentries.c:363
+#, c-format
+msgid "Failed to read from file '%s': %s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« '%s' ã‹ã‚‰ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ: %s"
+
+#: libgnomevfs/eggdesktopentries.c:575
+#, c-format
+msgid ""
+"desktop entries contain line '%s' which is not an entry, group, or comment"
+msgstr ""
+".desktop ã‚¨ãƒ³ãƒˆãƒªã®è¡Œ '%s' ã¯ã‚¨ãƒ³ãƒˆãƒªã€ã‚°ãƒ«ãƒ¼ãƒ—ã¾ãŸã¯ã‚³ãƒ¡ãƒ³ãƒˆã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:648
+msgid "desktop entries file does not start with legal start group"
+msgstr ".desktop ã‚¨ãƒ³ãƒˆãƒªãƒ»ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ­£ã—ã„èµ·å‹•ã‚°ãƒ«ãƒ¼ãƒ—ã§é–‹å§‹ã—ã¦ã„ã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:705
+#, c-format
+msgid "desktop entries contain line '%s' which is not UTF-8"
+msgstr ".desktop ã‚¨ãƒ³ãƒˆãƒªã®è¡Œ '%s' ãŒ UTF-8 ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:728
+#, c-format
+msgid "desktop entries contain unknown encoding '%s'"
+msgstr ".desktop ã‚¨ãƒ³ãƒˆãƒªã«ä¸æ˜ãªã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚° '%s' ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:918 libgnomevfs/eggdesktopentries.c:1030
+#: libgnomevfs/eggdesktopentries.c:1215
+#, c-format
+msgid "desktop entries do not have group '%s'"
+msgstr ".desktop ã‚¨ãƒ³ãƒˆãƒªã«ã‚°ãƒ«ãƒ¼ãƒ— '%s' ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:1042
+#, c-format
+msgid "desktop entries do not have key '%s'"
+msgstr ".desktop ã‚¨ãƒ³ãƒˆãƒªã«ã‚­ãƒ¼ '%s' ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:1098 libgnomevfs/eggdesktopentries.c:1271
+#: libgnomevfs/eggdesktopentries.c:1413 libgnomevfs/eggdesktopentries.c:1538
+#, c-format
+msgid ""
+"desktop entries contain key '%s' which has value that cannot be interpreted."
+msgstr ".desktop ã‚¨ãƒ³ãƒˆãƒªã®ã‚­ãƒ¼ '%s' ã«ã¯è§£é‡ˆã™ã‚‹ã“ã¨ã®ã§ããªã„å€¤ãŒã‚ã‚Šã¾ã™ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:1296
+#, c-format
+msgid ""
+"desktop entries contain no translated value for key '%s' with locale '%s'."
+msgstr ""
+".desktop ã‚¨ãƒ³ãƒˆãƒªã®ã‚­ãƒ¼ '%s' ã¯ãƒ­ã‚±ãƒ¼ãƒ« '%s' ã§ç¿»è¨³ã•ã‚ŒãŸå€¤ãŒå«ã¾ã‚Œã¦ã„ã¾ã›"
+"ã‚“ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:2229
+#, c-format
+msgid "desktop entries contain invalid escape sequence '%s'"
+msgstr ""
+".desktop ã‚¨ãƒ³ãƒˆãƒªã«ä¸æ­£ãªã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ãƒ»ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ '%s' ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:2246
+msgid "desktop entries contain escape character at end of line"
+msgstr ".desktop ã‚¨ãƒ³ãƒˆãƒªã®è¡Œæœ«ã«ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—æ–‡å­—ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:2271
+#, c-format
+msgid "Value '%s' cannot be interpreted as a number."
+msgstr "å€¤ '%s' ã‚’æ•°å­—ã¨ã—ã¦è§£é‡ˆã§ãã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/eggdesktopentries.c:2298
+#, c-format
+msgid "Value '%s' cannot be interpreted as a boolean."
+msgstr "å€¤ '%s' ã‚’è«–ç†å€¤ã¨ã—ã¦è§£é‡ˆã§ãã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/gnome-vfs-cdrom.c:210
+msgid "ISO 9660 Volume"
+msgstr "ISO 9660 ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-configuration.c:227
 #, c-format
 msgid "%s:%d contains NUL characters."
-msgstr "%s:%d NUL ¥­¥ã¥é¥¯¥¿¤ò´Ş¤ó¤Ç¤¤¤Ş¤¹"
+msgstr "%s:%d ã« NUL æ–‡å­—ãŒã‚ã‚Šã¾ã™ã€‚"
 
-#: libgnomevfs/gnome-vfs-configuration.c:240
+#: libgnomevfs/gnome-vfs-configuration.c:244
 #, c-format
 msgid "%s:%d contains no method name."
-msgstr "%s:%d ¥á¥½¥Ã¥ÉÌ¾¤¬¤¢¤ê¤Ş¤»¤ó"
+msgstr "%s:%d ã«ãƒ¡ã‚½ãƒƒãƒ‰åãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
 
-#: libgnomevfs/gnome-vfs-configuration.c:269
+#: libgnomevfs/gnome-vfs-configuration.c:284
+#, c-format
+msgid "%s:%d has no options endmarker."
+msgstr "%s:%d ã«ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®ã‚¨ãƒ³ãƒ‰ãƒãƒ¼ã‚«ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/gnome-vfs-configuration.c:295
+#, c-format
+msgid "%s:%d has unknown options %s."
+msgstr "%s:%d ã«ä¸æ˜ãªã‚ªãƒ—ã‚·ãƒ§ãƒ³ %s ãŒã‚ã‚Šã¾ã™ã€‚"
+
+#: libgnomevfs/gnome-vfs-configuration.c:314
 #, c-format
 msgid "%s:%d contains no module name."
-msgstr "%s:%d ¥â¥¸¥å¡¼¥ëÌ¾¤¬¤¢¤ê¤Ş¤»¤ó"
+msgstr "%s:%d ã«ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«åãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
 
-#: libgnomevfs/gnome-vfs-configuration.c:322
+#: libgnomevfs/gnome-vfs-configuration.c:368
 #, c-format
 msgid "Configuration file `%s' was not found: %s"
-msgstr "¥³¥ó¥Õ¥£¥°¥Õ¥¡¥¤¥ë '%s' ¤Ï¸«¤Ä¤«¤ê¤Ş¤»¤ó: %s"
+msgstr "è¨­å®šãƒ•ã‚¡ã‚¤ãƒ« '%s' ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:737
+#: libgnomevfs/gnome-vfs-filesystem-type.c:37
+msgid "AFFS Volume"
+msgstr "AFFS ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:38
+msgid "AFS Network Volume"
+msgstr "AFS ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ»ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:39
+msgid "Auto-detected Volume"
+msgstr "è‡ªå‹•æ¤œå‡ºãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:40
+#: libgnomevfs/gnome-vfs-filesystem-type.c:42
+msgid "CD-ROM Drive"
+msgstr "CD-ROM ãƒ‰ãƒ©ã‚¤ãƒ–"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:41
+msgid "CD Digital Audio"
+msgstr "CD ãƒ‡ã‚£ã‚¸ã‚¿ãƒ«ãƒ»ã‚ªãƒ¼ãƒ‡ã‚£ã‚ª"
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:43
+msgid "Hardware Device Volume"
+msgstr "ãƒãƒ¼ãƒ‰ã‚¦ã‚§ã‚¢ãƒ»ãƒ‡ãƒã‚¤ã‚¹ãƒ»ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:44
+#: libgnomevfs/gnome-vfs-filesystem-type.c:45
+msgid "Ext2 Linux Volume"
+msgstr "Ext2 Linux ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:46
+msgid "Ext3 Linux Volume"
+msgstr "Ext3 Linux ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:47
+#: libgnomevfs/gnome-vfs-filesystem-type.c:57
+#: libgnomevfs/gnome-vfs-filesystem-type.c:58
+msgid "MSDOS Volume"
+msgstr "MS-DOS ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:48
+#: libgnomevfs/gnome-vfs-filesystem-type.c:49
+msgid "MacOS Volume"
+msgstr "MacOS ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:50
+msgid "CDROM Volume"
+msgstr "CD-ROM ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:51
+msgid "Hsfs CDROM Volume"
+msgstr "HSFS CD-ROM ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:52
+msgid "JFS Volume"
+msgstr "JFS ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:53
+#: libgnomevfs/gnome-vfs-filesystem-type.c:60
+msgid "Windows NT Volume"
+msgstr "Windows NT ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:54
+#: libgnomevfs/gnome-vfs-filesystem-type.c:62
+#: libgnomevfs/gnome-vfs-filesystem-type.c:63
+msgid "System Volume"
+msgstr "ã‚·ã‚¹ãƒ†ãƒ ãƒ»ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:55
+msgid "Memory Volume"
+msgstr "ãƒ¡ãƒ¢ãƒªãƒ»ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:56
+msgid "Minix Volume"
+msgstr "Minix ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:59
+msgid "NFS Network Volume"
+msgstr "NFS ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ»ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:61
+msgid "Netware Volume"
+msgstr "Netware ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:64
+msgid "ReiserFS Linux Volume"
+msgstr "ReiserFS Linux ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:65
+msgid "Windows Shared Volume"
+msgstr "Windows å…±æœ‰ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:66
+msgid "SuperMount Volume"
+msgstr "SuperMount ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:67
+msgid "DVD Volume"
+msgstr "DVD ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:68
+msgid "Solaris/BSD Volume"
+msgstr "Solaris/BSD ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:69
+msgid "Udfs Solaris Volume"
+msgstr "UDFS Solaris ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:70
+msgid "Pcfs Solaris Volume"
+msgstr "PCFS Solaris ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:71
+msgid "Sun SAM-QFS Volume"
+msgstr "Sun SAM-QFS ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:72
+msgid "Enhanced DOS Volume"
+msgstr "æ‹¡å¼µ DOS ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:73
+msgid "Windows VFAT Volume"
+msgstr "Windows VFAT ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:74
+msgid "Xenix Volume"
+msgstr "Xenix ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:75
+msgid "XFS Linux Volume"
+msgstr "XFS Linux ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:76
+msgid "XIAFS Volume"
+msgstr "XIAFS ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-filesystem-type.c:104
+msgid "Unknown"
+msgstr "ä¸æ˜"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:611
+msgid "CD-ROM Disc"
+msgstr "CD-ROM ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:614
+msgid "Blank CD-R Disc"
+msgstr "ç©ºã® CD-R ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:616
+msgid "CD-R Disc"
+msgstr "CD-R ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:619
+msgid "Blank CD-RW Disc"
+msgstr "ç©ºã® CD-RW ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:621
+msgid "CD-RW Disc"
+msgstr "CD-RW ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:623
+msgid "DVD-ROM Disc"
+msgstr "DVD-ROM ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:626
+msgid "Blank DVD-R Disc"
+msgstr "ç©ºã® DVD-R ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:628
+msgid "DVD-R Disc"
+msgstr "DVD-R ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:631
+msgid "Blank DVD-RAM Disc"
+msgstr "ç©ºã® DVD-RAM ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:633
+msgid "DVD-RAM Disc"
+msgstr "DVD-RAM ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:636
+msgid "Blank DVD-RW Disc"
+msgstr "ç©ºã® DVD-RW ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:638
+msgid "DVD-RW Disc"
+msgstr "DVD-RW ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:641
+msgid "Blank DVD+RW Disc"
+msgstr "ç©ºã® DVD+RW ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:643
+msgid "DVD+RW Disc"
+msgstr "DVD+RW ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:646
+msgid "Blank DVD+R Disc"
+msgstr "ç©ºã® DVD+R ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:648
+msgid "DVD+R Disc"
+msgstr "DVD+R ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:650
+msgid "Optical Disc"
+msgstr "å…‰å­¦ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:656
+msgid "Audio Disc"
+msgstr "ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªãƒ»ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:660
+msgid "Compact Flash Media"
+msgstr "ã‚³ãƒ³ãƒ‘ã‚¯ãƒˆãƒ»ãƒ•ãƒ©ãƒƒã‚·ãƒ¥"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:662
+msgid "Memory Stick Media"
+msgstr "ãƒ¡ãƒ¢ãƒªãƒ»ã‚¹ãƒ†ã‚£ãƒƒã‚¯"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:664
+msgid "Smart Media Media"
+msgstr "ã‚¹ãƒãƒ¼ãƒˆãƒ»ãƒ¡ãƒ‡ã‚£ã‚¢"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:666
+msgid "SD/MMC Media"
+msgstr "SD/MMC ãƒ¡ãƒ‡ã‚£ã‚¢"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:668
+msgid "Floppy Disk"
+msgstr "ãƒ•ãƒ­ãƒƒãƒ”ãƒ¼"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:675
+msgid "Mac OS disk"
+msgstr "Mac OS"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:677
+msgid "Mac OS X disk"
+msgstr "Mac OS X"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:691
+msgid "Windows Disk"
+msgstr "Windows"
+
+#: libgnomevfs/gnome-vfs-hal-mounts.c:697
+msgid "Linux Disk"
+msgstr "Linux"
+
+#: libgnomevfs/gnome-vfs-job.c:734
 #, c-format
-msgid "Unknown op type %u"
-msgstr "Ì¤ÃÎ¤Î op ¼ïÊÌ %u"
+msgid "Unknown operation type %u"
+msgstr "ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã®ç¨®é¡ %u ãŒä¸æ˜ã§ã™"
 
-#: libgnomevfs/gnome-vfs-job.c:1026 libgnomevfs/gnome-vfs-job.c:1171
+#: libgnomevfs/gnome-vfs-job.c:1024 libgnomevfs/gnome-vfs-job.c:1169
 #, c-format
 msgid "Cannot create pipe for open GIOChannel: %s"
-msgstr "GIOChannel ¤ò³«¤¯¤¿¤á¤Î¥Ñ¥¤¥×¤òºîÀ®¤¹¤ë¤³¤È¤¬½ĞÍè¤Ş¤»¤ó: %s"
+msgstr "GIOChannel ã‚’é–‹ããŸã‚ã®ãƒ‘ã‚¤ãƒ—ã‚’ä½œæˆã™ã‚‹ã“ã¨ãŒã§ãã¾ã›ã‚“: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:1661
+#: libgnomevfs/gnome-vfs-job.c:1687
 #, c-format
 msgid "Unknown job kind %u"
-msgstr "Ì¤ÃÎ¤Î¥¸¥ç¥Ö¼ïÊÌ %u"
+msgstr "ã‚¸ãƒ§ãƒ–ã®ç¨®é¡ %u ãŒä¸æ˜ã§ã™"
 
-#: libgnomevfs/gnome-vfs-job.c:1694
+#: libgnomevfs/gnome-vfs-job.c:1720
 msgid "Operation stopped"
-msgstr "Áàºî¤òÄä»ß¤·¤Ş¤·¤¿"
+msgstr "æ“ä½œã‚’åœæ­¢ã—ã¾ã—ãŸ"
 
-#: libgnomevfs/gnome-vfs-parse-ls.c:652
+#: libgnomevfs/gnome-vfs-mime-handlers.c:83
+#: libgnomevfs/gnome-vfs-mime-handlers.c:305
+#: libgnomevfs/gnome-vfs-mime-handlers.c:356
+#: libgnomevfs/gnome-vfs-mime-handlers.c:650
+#: libgnomevfs/gnome-vfs-mime-handlers.c:669
+#: libgnomevfs/gnome-vfs-mime-handlers.c:687
+#: libgnomevfs/gnome-vfs-mime-handlers.c:706
+#: libgnomevfs/gnome-vfs-mime-handlers.c:725
+#: libgnomevfs/gnome-vfs-mime-handlers.c:866
+#: libgnomevfs/gnome-vfs-mime-handlers.c:888
+#: libgnomevfs/gnome-vfs-mime-handlers.c:907
+#: libgnomevfs/gnome-vfs-mime-handlers.c:926
+#: libgnomevfs/gnome-vfs-mime-handlers.c:979
+#: libgnomevfs/gnome-vfs-mime-handlers.c:996
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1013
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1031
+#: libgnomevfs/gnome-vfs-mime-handlers.c:1049
+#: libgnomevfs/gnome-vfs-mime-info.c:647 libgnomevfs/gnome-vfs-mime-info.c:654
+#: libgnomevfs/gnome-vfs-mime-info.c:662 libgnomevfs/gnome-vfs-mime-info.c:669
+#: libgnomevfs/gnome-vfs-mime-info.c:677 libgnomevfs/gnome-vfs-mime-info.c:694
+#: libgnomevfs/gnome-vfs-mime-info.c:701 libgnomevfs/gnome-vfs-mime-info.c:708
+#: libgnomevfs/gnome-vfs-mime-info.c:715 libgnomevfs/gnome-vfs-mime-info.c:723
+#: libgnomevfs/gnome-vfs-mime-info.c:730
+msgid ""
+"Deprecated function.  User modifications to the MIME database are no longer "
+"supported."
+msgstr ""
+"å»ƒæ­¢äºˆå®šã®é–¢æ•°ã§ã™ã€‚MIME å‹ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«å¯¾ã™ã‚‹ãƒ¦ãƒ¼ã‚¶ã®å¤‰æ›´ã¯ã‚‚ã†ã‚µãƒãƒ¼ãƒˆã—ã¦"
+"ã„ã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/gnome-vfs-parse-ls.c:666
 #, c-format
 msgid "Could not parse: %s"
-msgstr "¹½Ê¸²òÀÏ¤Ç¤­¤Ş¤»¤ó¤Ç¤·¤¿: %s"
+msgstr "è§£æã§ãã¾ã›ã‚“ã§ã—ãŸ: %s"
 
-#: libgnomevfs/gnome-vfs-parse-ls.c:654
+#: libgnomevfs/gnome-vfs-parse-ls.c:668
 msgid "More parsing errors will be ignored."
-msgstr "¤³¤ì°Ê¾å¤Î¹½Ê¸²òÀÏ¥¨¥é¡¼¤ÏÌµ»ë¤¹¤ë¤Ç¤·¤ç¤¦"
+msgstr "ã“ã‚Œä»¥ä¸Šã®è§£æã‚¨ãƒ©ãƒ¼ã¯ç„¡è¦–ã•ã‚Œã¾ã™ã€‚"
 
 #. GNOME_VFS_OK
-#: libgnomevfs/gnome-vfs-result.c:35
+#: libgnomevfs/gnome-vfs-result.c:38
 msgid "No error"
-msgstr "¥¨¥é¡¼¤Ï¤¢¤ê¤Ş¤»¤ó"
+msgstr "ã‚¨ãƒ©ãƒ¼ã¯ã‚ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_NOT_FOUND
-#: libgnomevfs/gnome-vfs-result.c:36
+#: libgnomevfs/gnome-vfs-result.c:39
 msgid "File not found"
-msgstr "¥Õ¥¡¥¤¥ë¤¬¤¢¤ê¤Ş¤»¤ó"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_GENERIC
-#: libgnomevfs/gnome-vfs-result.c:37
+#: libgnomevfs/gnome-vfs-result.c:40
 msgid "Generic error"
-msgstr "°ìÈÌÅª¤Ê¥¨¥é¡¼"
+msgstr "ä¸€èˆ¬çš„ãªã‚¨ãƒ©ãƒ¼ã§ã™"
 
 #. GNOME_VFS_ERROR_INTERNAL
-#: libgnomevfs/gnome-vfs-result.c:38
+#: libgnomevfs/gnome-vfs-result.c:41
 msgid "Internal error"
-msgstr "ÆâÉôÅª¤Ê¥¨¥é¡¼"
+msgstr "å†…éƒ¨ã‚¨ãƒ©ãƒ¼ã§ã™"
 
 #. GNOME_VFS_ERROR_BAD_PARAMETERS
-#: libgnomevfs/gnome-vfs-result.c:39
+#: libgnomevfs/gnome-vfs-result.c:42
 msgid "Invalid parameters"
-msgstr "Ìµ¸ú¤Ê¥Ñ¥é¥á¡¼¥¿"
+msgstr "ç„¡åŠ¹ãªãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã§ã™"
 
 #. GNOME_VFS_ERROR_NOT_SUPPORTED
-#: libgnomevfs/gnome-vfs-result.c:40
+#: libgnomevfs/gnome-vfs-result.c:43
 msgid "Unsupported operation"
-msgstr "¥µ¥İ¡¼¥È³°¤ÎÆ°ºî"
+msgstr "ã‚µãƒãƒ¼ãƒˆå¤–ã®å‹•ä½œã§ã™"
 
 #. GNOME_VFS_ERROR_IO
-#: libgnomevfs/gnome-vfs-result.c:41
+#: libgnomevfs/gnome-vfs-result.c:44
 msgid "I/O error"
-msgstr "Æş½ĞÎÏ¥¨¥é¡¼"
+msgstr "å…¥å‡ºåŠ›ã‚¨ãƒ©ãƒ¼ã§ã™"
 
 #. GNOME_VFS_ERROR_CORRUPTED_DATA
-#: libgnomevfs/gnome-vfs-result.c:42
+#: libgnomevfs/gnome-vfs-result.c:45
 msgid "Data corrupted"
-msgstr "¥Ç¡¼¥¿¤¬²õ¤ì¤Æ¤¤¤ë"
+msgstr "ãƒ‡ãƒ¼ã‚¿ãŒå£Šã‚Œã¦ã„ã¾ã™"
 
 #. GNOME_VFS_ERROR_WRONG_FORMAT
-#: libgnomevfs/gnome-vfs-result.c:43
+#: libgnomevfs/gnome-vfs-result.c:46
 msgid "Format not valid"
-msgstr "¥Õ¥©¡¼¥Ş¥Ã¥È¤ÏÌµ¸ú"
+msgstr "ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆãŒç„¡åŠ¹ã§ã™"
 
 #. GNOME_VFS_ERROR_BAD_FILE
-#: libgnomevfs/gnome-vfs-result.c:44
+#: libgnomevfs/gnome-vfs-result.c:47
 msgid "Bad file handle"
-msgstr "¤ª¤«¤·¤Ê¥Õ¥¡¥¤¥ë¥Ï¥ó¥É¥ë"
+msgstr "ãŠã‹ã—ãªãƒ•ã‚¡ã‚¤ãƒ«ãƒ»ãƒãƒ³ãƒ‰ãƒ«ã§ã™"
 
 #. GNOME_VFS_ERROR_TOO_BIG
-#: libgnomevfs/gnome-vfs-result.c:45
+#: libgnomevfs/gnome-vfs-result.c:48
 msgid "File too big"
-msgstr "¥Õ¥¡¥¤¥ë¤ÏÂç¤­¤¹¤®¤ë"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ãŒå¤§ãã™ãã¾ã™"
 
 #. GNOME_VFS_ERROR_NO_SPACE
-#: libgnomevfs/gnome-vfs-result.c:46
+#: libgnomevfs/gnome-vfs-result.c:49
 msgid "No space left on device"
-msgstr "¥Ç¥Ğ¥¤¥¹¤Ë¶õ¤­¤¬Ìµ¤¤"
+msgstr "ãƒ‡ãƒã‚¤ã‚¹ã«ç©ºããŒã‚ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_READ_ONLY
-#: libgnomevfs/gnome-vfs-result.c:47
+#: libgnomevfs/gnome-vfs-result.c:50
 msgid "Read-only file system"
-msgstr "ÆÉ¤ß¼è¤êÀìÍÑ¤Î¥Õ¥¡¥¤¥ë¥·¥¹¥Æ¥à"
+msgstr "èª­ã¿å–ã‚Šå°‚ç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ»ã‚·ã‚¹ãƒ†ãƒ ã§ã™"
 
 #. GNOME_VFS_ERROR_INVALID_URI
-#: libgnomevfs/gnome-vfs-result.c:48
+#: libgnomevfs/gnome-vfs-result.c:51
 msgid "Invalid URI"
-msgstr "Ìµ¸ú¤Ê URI"
+msgstr "ç„¡åŠ¹ãª URI ã§ã™"
 
 #. GNOME_VFS_ERROR_NOT_OPEN
-#: libgnomevfs/gnome-vfs-result.c:49
+#: libgnomevfs/gnome-vfs-result.c:52
 msgid "File not open"
-msgstr "¥Õ¥¡¥¤¥ë¤¬³«¤±¤Ê¤¤"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ãŒé–‹ã‘ã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_INVALID_OPEN_MODE
-#: libgnomevfs/gnome-vfs-result.c:50
+#: libgnomevfs/gnome-vfs-result.c:53
 msgid "Open mode not valid"
-msgstr "¥ª¡¼¥×¥ó¥â¡¼¥É¤ÏÌµ¸ú"
+msgstr "ã‚ªãƒ¼ãƒ—ãƒ³ãƒ¢ãƒ¼ãƒ‰ã¯ç„¡åŠ¹ã§ã™"
 
 #. GNOME_VFS_ERROR_ACCESS_DENIED
-#: libgnomevfs/gnome-vfs-result.c:51
+#: libgnomevfs/gnome-vfs-result.c:54
 msgid "Access denied"
-msgstr "¥¢¥¯¥»¥¹¤ÏµñÈİ¤µ¤ì¤¿"
+msgstr "ã‚¢ã‚¯ã‚»ã‚¹ãŒæ‹’å¦ã•ã‚Œã¾ã—ãŸ"
 
 #. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
-#: libgnomevfs/gnome-vfs-result.c:52
+#: libgnomevfs/gnome-vfs-result.c:55
 msgid "Too many open files"
-msgstr "³«¤¤¤Æ¤¤¤ë¥Õ¥¡¥¤¥ë¤¬Â¿¤¹¤®¤ë"
+msgstr "é–‹ã„ã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ãŒå¤šã™ãã¾ã™"
 
 #. GNOME_VFS_ERROR_EOF
-#: libgnomevfs/gnome-vfs-result.c:53
+#: libgnomevfs/gnome-vfs-result.c:56
 msgid "End of file"
-msgstr "¥Õ¥¡¥¤¥ë¤Î½ªÃ¼"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã®çµ‚ç«¯ (EOF) ã§ã™"
 
 #. GNOME_VFS_ERROR_NOT_A_DIRECTORY
-#: libgnomevfs/gnome-vfs-result.c:54
+#: libgnomevfs/gnome-vfs-result.c:57
 msgid "Not a directory"
-msgstr "¥Ç¥£¥ì¥¯¥È¥ê¤Ç¤Ï¤Ê¤¤"
+msgstr "ãƒ•ã‚©ãƒ«ãƒ€ã§ã¯ã‚ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_IN_PROGRESS
-#: libgnomevfs/gnome-vfs-result.c:55
+#: libgnomevfs/gnome-vfs-result.c:58
 msgid "Operation in progress"
-msgstr "Áàºî¿Ê¹ÔÃæ"
+msgstr "æ“ä½œãŒé€²è¡Œä¸­ã§ã™"
 
 #. GNOME_VFS_ERROR_INTERRUPTED
-#: libgnomevfs/gnome-vfs-result.c:56
+#: libgnomevfs/gnome-vfs-result.c:59
 msgid "Operation interrupted"
-msgstr "ÁàºîÃæÃÇ"
+msgstr "æ“ä½œã‚’ä¸­æ–­ã—ã¾ã—ãŸ"
 
 #. GNOME_VFS_ERROR_FILE_EXISTS
-#: libgnomevfs/gnome-vfs-result.c:57
+#: libgnomevfs/gnome-vfs-result.c:60
 msgid "File exists"
-msgstr "¥Õ¥¡¥¤¥ë¤ÏÂ¸ºß¤·¤Æ¤¤¤ë"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã¯å­˜åœ¨ã—ã¦ã„ã¾ã™"
 
 #. GNOME_VFS_ERROR_LOOP
-#: libgnomevfs/gnome-vfs-result.c:58
+#: libgnomevfs/gnome-vfs-result.c:61
 msgid "Looping links encountered"
-msgstr "¥ë¡¼¥×¤·¤Æ¤¤¤ë¥ê¥ó¥¯¤ËÁø¶ø"
+msgstr "ãƒ«ãƒ¼ãƒ—ã—ã¦ã„ã‚‹ãƒªãƒ³ã‚¯ã«é­é‡ã—ã¾ã—ãŸ"
 
 #. GNOME_VFS_ERROR_NOT_PERMITTED
-#: libgnomevfs/gnome-vfs-result.c:59
+#: libgnomevfs/gnome-vfs-result.c:62
 msgid "Operation not permitted"
-msgstr "µö²Ä¤µ¤ì¤Æ¤¤¤Ê¤¤Áàºî"
+msgstr "è¨±å¯ã•ã‚Œã¦ã„ãªã„æ“ä½œã§ã™"
 
 #. GNOME_VFS_ERROR_IS_DIRECTORY
-#: libgnomevfs/gnome-vfs-result.c:60
+#: libgnomevfs/gnome-vfs-result.c:63
 msgid "Is a directory"
-msgstr "¤³¤ì¤Ï¥Ç¥£¥ì¥¯¥È¥ê"
+msgstr "ã“ã‚Œã¯ãƒ•ã‚©ãƒ«ãƒ€"
 
-#. GNOME_VFS_ERROR_NO_MEMMORY
-#: libgnomevfs/gnome-vfs-result.c:61
+#. GNOME_VFS_ERROR_NO_MEMORY
+#: libgnomevfs/gnome-vfs-result.c:64
 msgid "Not enough memory"
-msgstr "½½Ê¬¤Ê¥á¥â¥ê¤¬Ìµ¤¤"
+msgstr "ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_HOST_NOT_FOUND
-#: libgnomevfs/gnome-vfs-result.c:62
+#: libgnomevfs/gnome-vfs-result.c:65
 msgid "Host not found"
-msgstr "¥Û¥¹¥È¤¬¸«¤Ä¤«¤é¤Ê¤¤"
+msgstr "ãƒ›ã‚¹ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_INVALID_HOST_NAME
-#: libgnomevfs/gnome-vfs-result.c:63
+#: libgnomevfs/gnome-vfs-result.c:66
 msgid "Host name not valid"
-msgstr "¥Û¥¹¥ÈÌ¾¤¬Ìµ¸ú"
+msgstr "ãƒ›ã‚¹ãƒˆåãŒç„¡åŠ¹ã§ã™"
 
 #. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
-#: libgnomevfs/gnome-vfs-result.c:64
+#: libgnomevfs/gnome-vfs-result.c:67
 msgid "Host has no address"
-msgstr "¥Û¥¹¥È¤Ï¥¢¥É¥ì¥¹¤ò»ı¤Ã¤Æ¤¤¤Ê¤¤"
+msgstr "ãƒ›ã‚¹ãƒˆã¯ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’æŒã£ã¦ã„ã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_LOGIN_FAILED
-#: libgnomevfs/gnome-vfs-result.c:65
+#: libgnomevfs/gnome-vfs-result.c:68
 msgid "Login failed"
-msgstr "¥í¥°¥¤¥ó¤Ë¼ºÇÔ"
+msgstr "ãƒ­ã‚°ã‚¤ãƒ³ã«å¤±æ•—ã—ã¾ã—ãŸ"
 
 #. GNOME_VFS_ERROR_CANCELLED
-#: libgnomevfs/gnome-vfs-result.c:66
+#: libgnomevfs/gnome-vfs-result.c:69
 msgid "Operation cancelled"
-msgstr "Áàºî¤Ï¥­¥ã¥ó¥»¥ë¤µ¤ì¤¿"
+msgstr "æ“ä½œã¯ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã¾ã—ãŸ"
 
 #. GNOME_VFS_ERROR_DIRECTORY_BUSY
-#: libgnomevfs/gnome-vfs-result.c:67
+#: libgnomevfs/gnome-vfs-result.c:70
 msgid "Directory busy"
-msgstr "¥Ç¥£¥ì¥¯¥È¥ê¥Ó¥¸¡¼"
+msgstr "ãƒ•ã‚©ãƒ«ãƒ€ã«ã‚¢ã‚¯ã‚»ã‚¹ã§ãã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
-#: libgnomevfs/gnome-vfs-result.c:68
+#: libgnomevfs/gnome-vfs-result.c:71
 msgid "Directory not empty"
-msgstr "¥Ç¥£¥ì¥¯¥È¥ê¤Ï¶õ¤Ç¤Ï¤Ê¤¤"
+msgstr "ãƒ•ã‚©ãƒ«ãƒ€ã¯ç©ºã§ã¯ã‚ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_TOO_MANY_LINKS
-#: libgnomevfs/gnome-vfs-result.c:69
+#: libgnomevfs/gnome-vfs-result.c:72
 msgid "Too many links"
-msgstr "¥ê¥ó¥¯¤¬Â¿¤¹¤®¤ë"
+msgstr "ãƒªãƒ³ã‚¯ãŒå¤šã™ãã¾ã™"
 
 #. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
-#: libgnomevfs/gnome-vfs-result.c:70
+#: libgnomevfs/gnome-vfs-result.c:73
 msgid "Read only file system"
-msgstr "ÆÉ¤ß¼è¤êÀìÍÑ¤Î¥Õ¥¡¥¤¥ë¥·¥¹¥Æ¥à"
+msgstr "èª­ã¿å–ã‚Šå°‚ç”¨ã®ãƒ•ã‚¡ã‚¤ãƒ«ãƒ»ã‚·ã‚¹ãƒ†ãƒ ã§ã™"
 
 #. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
-#: libgnomevfs/gnome-vfs-result.c:71
+#: libgnomevfs/gnome-vfs-result.c:74
 msgid "Not on the same file system"
-msgstr "Æ±°ì¤Î¥Õ¥¡¥¤¥ë¥·¥¹¥Æ¥à¤Ç¤Ï¤Ê¤¤"
+msgstr "åŒä¸€ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ ã§ã¯ã‚ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_NAME_TOO_LONG
-#: libgnomevfs/gnome-vfs-result.c:72
+#: libgnomevfs/gnome-vfs-result.c:75
 msgid "Name too long"
-msgstr "Ì¾Á°¤¬Ä¹¤¹¤®¤ë"
+msgstr "åå‰ãŒé•·ã™ãã¾ã™"
 
 #. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
-#: libgnomevfs/gnome-vfs-result.c:73
+#: libgnomevfs/gnome-vfs-result.c:76
 msgid "Service not available"
-msgstr "¥µ¡¼¥Ó¥¹¤¬¤¢¤ê¤Ş¤»¤ó"
+msgstr "ã‚µãƒ¼ãƒ“ã‚¹ãŒã‚ã‚Šã¾ã›ã‚“"
 
 #. GNOME_VFS_ERROR_SERVICE_OBSOLETE
-#: libgnomevfs/gnome-vfs-result.c:74
+#: libgnomevfs/gnome-vfs-result.c:77
 msgid "Request obsoletes service's data"
-msgstr "ÇÑ¤ì¤¿¥µ¡¼¥Ó¥¹¤Î¥Ç¡¼¥¿¤òÍ×µá"
+msgstr "å»ƒæ­¢ã•ã‚ŒãŸã‚µãƒ¼ãƒ“ã‚¹ã®ãƒ‡ãƒ¼ã‚¿ã‚’è¦æ±‚ã—ã¾ã—ãŸ"
 
 #. GNOME_VFS_ERROR_PROTOCOL_ERROR
-#: libgnomevfs/gnome-vfs-result.c:75
+#: libgnomevfs/gnome-vfs-result.c:78
 msgid "Protocol error"
-msgstr "¥×¥í¥È¥³¥ë¥¨¥é¡¼"
+msgstr "ãƒ—ãƒ­ãƒˆã‚³ãƒ«ã®ã‚¨ãƒ©ãƒ¼ã§ã™"
 
 #. GNOME_VFS_ERROR_NO_MASTER_BROWSER
-#: libgnomevfs/gnome-vfs-result.c:76
-#, fuzzy
+#: libgnomevfs/gnome-vfs-result.c:79
 msgid "Could not find master browser"
-msgstr "¹½Ê¸²òÀÏ¤Ç¤­¤Ş¤»¤ó¤Ç¤·¤¿: %s"
+msgstr "ãƒã‚¹ã‚¿ãƒ¼ãƒ»ãƒ–ãƒ©ã‚¦ã‚¶ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
 
-#: libgnomevfs/gnome-vfs-result.c:170
+#. GNOME_VFS_ERROR_NO_DEFAULT
+#: libgnomevfs/gnome-vfs-result.c:80
+msgid "No default action associated"
+msgstr "é–¢é€£ã™ã‚‹ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã§ã¯ã‚ã‚Šã¾ã›ã‚“"
+
+#. GNOME_VFS_ERROR_NO_HANDLER
+#: libgnomevfs/gnome-vfs-result.c:81
+msgid "No handler for URL scheme"
+msgstr "URL ã‚¹ã‚­ãƒ¼ãƒã«å¯¾ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©ã§ã¯ã‚ã‚Šã¾ã›ã‚“"
+
+#. GNOME_VFS_ERROR_PARSE
+#: libgnomevfs/gnome-vfs-result.c:82
+msgid "Error parsing command line"
+msgstr "ã‚³ãƒãƒ³ãƒ‰ãƒ»ãƒ©ã‚¤ãƒ³ã‚’è§£æã™ã‚‹éš›ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ"
+
+#. GNOME_VFS_ERROR_LAUNCH
+#: libgnomevfs/gnome-vfs-result.c:83
+msgid "Error launching command"
+msgstr "ã‚³ãƒãƒ³ãƒ‰ã‚’èµ·å‹•ã™ã‚‹éš›ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ"
+
+#. GNOME_VFS_ERROR_TIMEOUT
+#: libgnomevfs/gnome-vfs-result.c:84 libgnomevfs/gnome-vfs-result.c:86
+msgid "Timeout reached"
+msgstr "ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã§ã™"
+
+#. GNOME_VFS_ERROR_NAMESERVER
+#: libgnomevfs/gnome-vfs-result.c:85
+msgid "Nameserver error"
+msgstr "ãƒãƒ¼ãƒ ã‚µãƒ¼ãƒã®ã‚¨ãƒ©ãƒ¼ã§ã™"
+
+#. GNOME_VFS_ERROR_LOCKED
+#: libgnomevfs/gnome-vfs-result.c:87
+msgid "The resource is locked"
+msgstr "ãƒªã‚½ãƒ¼ã‚¹ãŒãƒ­ãƒƒã‚¯ã•ã‚Œã¦ã„ã¾ã™"
+
+#. GNOME_VFS_ERROR_DEPRECATED_FUNCTION
+#: libgnomevfs/gnome-vfs-result.c:88
+msgid "Function call deprecated"
+msgstr "å»ƒæ­¢äºˆå®šã®é–¢æ•°å‘¼ã³å‡ºã—ã§ã™"
+
+#: libgnomevfs/gnome-vfs-result.c:203
 msgid "Unknown error"
-msgstr "Ì¤ÃÎ¤Î¥¨¥é¡¼"
-
-#: libgnomevfs/gnome-vfs-utils.c:83
-msgid "1 byte"
-msgstr "1 ¥Ğ¥¤¥È"
+msgstr "ä¸æ˜ãªã‚¨ãƒ©ãƒ¼ã§ã™"
 
 #: libgnomevfs/gnome-vfs-utils.c:85
 #, c-format
-msgid "%u bytes"
-msgstr "%u ¥Ğ¥¤¥È"
+msgid "%u byte"
+msgid_plural "%u bytes"
+msgstr[0] "%u ãƒã‚¤ãƒˆ"
+msgstr[1] "%u ãƒã‚¤ãƒˆ"
 
-#: libgnomevfs/gnome-vfs-utils.c:92
+#: libgnomevfs/gnome-vfs-utils.c:91
 #, c-format
-msgid "%.1f K"
-msgstr "%.1f K"
+msgid "%.1f KB"
+msgstr "%.1f Kãƒã‚¤ãƒˆ"
 
-#: libgnomevfs/gnome-vfs-utils.c:96
+#: libgnomevfs/gnome-vfs-utils.c:95
 #, c-format
 msgid "%.1f MB"
-msgstr "%.1f MB"
+msgstr "%.1f Mãƒã‚¤ãƒˆ"
 
-#: libgnomevfs/gnome-vfs-utils.c:100
+#: libgnomevfs/gnome-vfs-utils.c:99
 #, c-format
 msgid "%.1f GB"
-msgstr "%.1f GB"
+msgstr "%.1f Gãƒã‚¤ãƒˆ"
 
-#: libgnomevfs/gnome-vfs-utils.c:1109
+#: libgnomevfs/gnome-vfs-utils.c:1122
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:391
 msgid " (invalid Unicode)"
-msgstr ""
+msgstr " (Unicode ãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“)"
 
-#: modules/file-method.c:382
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:573
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:629
+msgid "Floppy"
+msgstr "ãƒ•ãƒ­ãƒƒãƒ”ãƒ¼"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:574
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:632
+msgid "CD-ROM"
+msgstr "CD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:576
+msgid "CD-R"
+msgstr "CD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:577
+msgid "CD-RW"
+msgstr "CD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:578
+msgid "DVD-ROM"
+msgstr "DVD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:579
+msgid "DVD-RAM"
+msgstr "DVD-RAM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:580
+msgid "DVD-R"
+msgstr "DVD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:581
+msgid "DVD-RW"
+msgstr "DVD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:582
+msgid "CD-ROM/DVD-ROM"
+msgstr "CD-ROM/DVD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:583
+msgid "CD-ROM/DVD-RAM"
+msgstr "CD-ROM/DVD-RAM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:584
+msgid "CD-ROM/DVD-R"
+msgstr "CD-ROM/DVD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:585
+msgid "CD-ROM/DVD-RW"
+msgstr "CD-ROM/DVD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:586
+msgid "CD-R/DVD-ROM"
+msgstr "CD-R/DVD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:587
+msgid "CD-R/DVD-RAM"
+msgstr "CD-R/DVD-RAM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:588
+msgid "CD-R/DVD-R"
+msgstr "CD-R/DVD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:589
+msgid "CD-R/DVD-RW"
+msgstr "CD-R/DVD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:590
+msgid "CD-RW/DVD-ROM"
+msgstr "CD-RW/DVD-ROM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:591
+msgid "CD-RW/DVD-RAM"
+msgstr "CD-RW/DVD-RAM"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:592
+msgid "CD-RW/DVD-R"
+msgstr "CD-RW/DVD-R"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:593
+msgid "CD-RW/DVD-RW"
+msgstr "CD-RW/DVD-RW"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:595
+msgid "Disk"
+msgstr "ãƒ‡ã‚£ã‚¹ã‚¯"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:596
+msgid "USB Drive"
+msgstr "USB ãƒ‰ãƒ©ã‚¤ãƒ–"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:597
+msgid "IEEE1394 Drive"
+msgstr "IEEE1394 ãƒ‰ãƒ©ã‚¤ãƒ–"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:598
+msgid "CF"
+msgstr "CF"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:599
+msgid "SD/MMC"
+msgstr "SD/MMC"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:600
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:604
+msgid "Memory Stick"
+msgstr "ãƒ¡ãƒ¢ãƒªãƒ»ã‚¹ãƒ†ã‚£ãƒƒã‚¯"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:601
+msgid "Smart Media"
+msgstr "ã‚¹ãƒãƒ¼ãƒˆãƒ»ãƒ¡ãƒ‡ã‚£ã‚¢"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:603
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:635
+msgid "Zip Drive"
+msgstr "Zip ãƒ‰ãƒ©ã‚¤ãƒ–"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:605
+msgid "Camera"
+msgstr "ã‚«ãƒ¡ãƒ©"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:606
+msgid "DVD"
+msgstr "DVD"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:822
+msgid "Root Volume"
+msgstr "Root ãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:903
+msgid "Audio CD"
+msgstr "ã‚ªãƒ¼ãƒ‡ã‚£ã‚ª CD"
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:936
+msgid "Unknown volume"
+msgstr "ä¸æ˜ãªãƒœãƒªãƒ¥ãƒ¼ãƒ "
+
+#: libgnomevfs/gnome-vfs-volume-monitor-daemon.c:1116
+msgid "Network server"
+msgstr "ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ»ã‚µãƒ¼ãƒ"
+
+#. Handle floppy case
+#: libgnomevfs/gnome-vfs-volume-ops.c:112
+msgid ""
+"Unable to mount the floppy drive. There is probably no floppy in the drive."
+msgstr ""
+"ãƒ•ãƒ­ãƒƒãƒ”ãƒ¼ãƒ»ãƒ‰ãƒ©ã‚¤ãƒ–ã‚’ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚ãŠãã‚‰ããƒ•ãƒ­ãƒƒãƒ”ãƒ¼ãŒãƒ‰ãƒ©ã‚¤ãƒ–ã«æŒ¿å…¥"
+"ã•ã‚Œã¦ã„ãªã„ã‚ˆã†ã§ã™ã€‚"
+
+#. All others
+#: libgnomevfs/gnome-vfs-volume-ops.c:116
+msgid "Unable to mount the volume. There is probably no media in the device."
+msgstr ""
+"ãƒœãƒªãƒ¥ãƒ¼ãƒ ã‚’ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚ãŠãã‚‰ããƒ‡ãƒã‚¤ã‚¹ã®ä¸­ã«ãƒ¡ãƒ‡ã‚£ã‚¢ãŒãªã„ã‚ˆã†ã§"
+"ã™ã€‚"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:122
+msgid ""
+"Unable to mount the floppy drive. The floppy is probably in a format that "
+"cannot be mounted."
+msgstr ""
+"ãƒ•ãƒ­ãƒƒãƒ”ãƒ¼ãƒ»ãƒ‰ãƒ©ã‚¤ãƒ–ã‚’ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã•ã‚Œã¦ã„ãªã„ãƒ•ãƒ­ãƒƒãƒ”ãƒ¼"
+"ã¯ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:125
+msgid ""
+"Unable to mount the selected volume. The volume is probably in a format that "
+"cannot be mounted."
+msgstr ""
+"é¸æŠã—ãŸãƒœãƒªãƒ¥ãƒ¼ãƒ ã‚’ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã•ã‚Œã¦ã„ãªã„ãƒœãƒªãƒ¥ãƒ¼ãƒ ã¯"
+"ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:130
+msgid "Unable to mount the selected floppy drive."
+msgstr "é¸æŠã—ãŸãƒ•ãƒ­ãƒƒãƒ”ãƒ¼ãƒ»ãƒ‰ãƒ©ã‚¤ãƒ–ã‚’ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:132
+msgid "Unable to mount the selected volume."
+msgstr "é¸æŠã—ãŸãƒœãƒªãƒ¥ãƒ¼ãƒ ã‚’ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:144
+msgid "Unable to unmount the selected volume."
+msgstr "é¸æŠã—ãŸãƒœãƒªãƒ¥ãƒ¼ãƒ ã‚’ã‚¢ãƒ³ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã€‚"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:256
+#: libgnomevfs/gnome-vfs-volume-ops.c:302
+msgid "Failed to start command"
+msgstr "ã‚³ãƒãƒ³ãƒ‰ã®èµ·å‹•ã«å¤±æ•—ã—ã¾ã—ãŸ"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:292
+msgid "Unable to eject media"
+msgstr "ãƒ¡ãƒ‡ã‚£ã‚¢ã‚’æ’å‡ºã§ãã¾ã›ã‚“"
+
+#: libgnomevfs/gnome-vfs-volume-ops.c:481
+msgid "Unable to unmount connected server"
+msgstr "æ¥ç¶šæ¸ˆã®ã‚µãƒ¼ãƒã‚’ã‚¢ãƒ³ãƒã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“"
+
+#. Translate exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:175
+msgid "Applications"
+msgstr "ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:178
+msgid "Cards"
+msgstr "ã‚«ãƒ¼ãƒ‰"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:181
+msgid "Files"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:184
+msgid "Folders"
+msgstr "ãƒ•ã‚©ãƒ«ãƒ€"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:187
+msgid "Help"
+msgstr "ãƒ˜ãƒ«ãƒ—"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:190
+msgid "Hosts"
+msgstr "ãƒ›ã‚¹ãƒˆ"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:193
+msgid "Links"
+msgstr "ãƒªãƒ³ã‚¯"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:196
+msgid "Mail"
+msgstr "ãƒ¡ãƒ¼ãƒ«"
+
+#. Translate  exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:199
+msgid "Tools"
+msgstr "ãƒ„ãƒ¼ãƒ«"
+
+#. Translate exactly the same in CDE's sys.dtwmrc file of the locale
+#: modules/cdemenu-desktop-method.c:202
+msgid "Windows"
+msgstr "Windows"
+
+#: modules/computer-method.c:545
+msgid "Network"
+msgstr "ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯"
+
+#: modules/computer-method.c:563
+msgid "Home"
+msgstr "ãƒ›ãƒ¼ãƒ "
+
+#: modules/computer-method.c:581
+msgid "Filesystem"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã‚·ã‚¹ãƒ†ãƒ "
+
+#: modules/file-method.c:386
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
-msgstr "Ì¤ÃÎ¤Î GnomeVFSSeekPosition %d ¤Ç¤¹"
+msgstr "ä¸æ˜ãª GnomeVFSSeekPosition %d ã§ã™"
+
+#: modules/network-method.c:1395
+msgid "Windows Network"
+msgstr "Windows ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯"
+
+#: modules/sftp-method.c:1339
+#, c-format
+msgid "The identity of the remote computer (%s) is unknown."
+msgstr "ãƒªãƒ¢ãƒ¼ãƒˆãƒ»ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿ (%s) ã‚’è­˜åˆ¥ã§ãã¾ã›ã‚“"
+
+#: modules/sftp-method.c:1340
+#, c-format
+msgid ""
+"This happens when you log in to a computer the first time.\n"
+"\n"
+"The identity sent by the remote computer is %s. If you want to be absolutely "
+"sure it is safe to continue, contact the system administrator."
+msgstr ""
+"ã“ã‚Œã¯ã€ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿ã¸åˆã‚ã¦ãƒ­ã‚°ã‚¤ãƒ³ã—ãŸéš›ã«ç™ºç”Ÿã—ã¾ã™ã€‚\n"
+"\n"
+"ãƒªãƒ¢ãƒ¼ãƒˆãƒ»ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿ã‹ã‚‰é€ã‚‰ã‚ŒãŸè­˜åˆ¥å­ã¯ %s ã§ã™ã€‚ãã®è­˜åˆ¥å­ãŒçµ¶å¯¾ç¢ºå®Ÿã ã¨"
+"æ€ã†å ´åˆã¯ã€ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†è€…ã«å•ã„åˆã‚ã›ã¦ä¸‹ã•ã„ã€‚"
+
+#: modules/sftp-method.c:1348
+msgid "Log In Anyway"
+msgstr "ã¨ã«ã‹ããƒ­ã‚°ã‚¤ãƒ³"
+
+#: modules/sftp-method.c:1349
+msgid "Cancel Login"
+msgstr "ã‚­ãƒ£ãƒ³ã‚»ãƒ«"
 
 #. FIXME: we probably shouldn't use printf to output the message
 #: modules/test-method.c:590
 #, c-format
 msgid "Didn't find a valid settings file at %s\n"
-msgstr ""
+msgstr "%s ã«é©åˆ‡ãªè¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“\n"
 
 #: modules/test-method.c:592
 #, c-format
 msgid "Use the %s environment variable to specify a different location.\n"
-msgstr ""
+msgstr "åˆ¥ã®å ´æ‰€ã‚’ç¤ºã™ç’°å¢ƒå¤‰æ•° %s ã‚’ä½¿ç”¨ã—ã¦ä¸‹ã•ã„ã€‚\n"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:1
 msgid "Standard Moniker factory"
-msgstr ""
+msgstr "æ¨™æº–ãƒ¢ãƒ‹ã‚«ã®ãƒ•ã‚¡ã‚¯ãƒˆãƒª"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:2
 msgid "file MonikerExtender"
-msgstr ""
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« MonikerExtender"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:3
 msgid "generic Gnome VFS moniker"
-msgstr ""
+msgstr "æ±ç”¨ GNOME VFS ãƒ¢ãƒ‹ã‚«"
 
 #: monikers/GNOME_VFS_Moniker_std.server.in.in.h:4
-#, fuzzy
 msgid "generic file moniker"
-msgstr "°ìÈÌÅª¤Ê¥¨¥é¡¼"
-
-#~ msgid "3D Studio image"
-#~ msgstr "3D Studio ²èÁü"
-
-#~ msgid "AIFC audio"
-#~ msgstr "AIFC ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "AIFF audio"
-#~ msgstr "AIFF ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "ANIM animation"
-#~ msgstr "ANIM ¥¢¥Ë¥á¡¼¥·¥ç¥ó"
-
-#~ msgid "AVI video"
-#~ msgstr "AVI ¥Ó¥Ç¥ª"
-
-#~ msgid "AbiWord document"
-#~ msgstr "AbiWord ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Adobe FrameMaker font"
-#~ msgstr "Adobe FrameMaker ¥Õ¥©¥ó¥È"
-
-#~ msgid "Adobe font metrics"
-#~ msgstr "Adobe ¥Õ¥©¥ó¥È¥á¥È¥ê¥Ã¥¯"
-
-#~ msgid "Andrew Toolkit inset"
-#~ msgstr "Andrew ¥Ä¡¼¥ë¥­¥Ã¥È"
-
-#~ msgid "ApplixWare Graphics image"
-#~ msgstr "ApplixWare ¥°¥é¥Õ¥£¥Ã¥¯¥¤¥á¡¼¥¸"
-
-#~ msgid "Applixware Words document"
-#~ msgstr "Applixware ¥ï¡¼¥É¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Applixware spreadsheet"
-#~ msgstr "Applixware ¥¹¥×¥ì¥Ã¥É¥·¡¼¥È"
-
-#~ msgid "AutoCAD image"
-#~ msgstr "AutoCAD ²èÁü"
-
-#~ msgid "BCPIO document"
-#~ msgstr "BCPIO ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "BDF font"
-#~ msgstr "BDF ¥Õ¥©¥ó¥È"
-
-#~ msgid "C shell script"
-#~ msgstr "C ¥·¥§¥ë¥¹¥¯¥ê¥×¥È"
-
-#~ msgid "C source code"
-#~ msgstr "C ¥½¡¼¥¹¥³¡¼¥É"
-
-#, fuzzy
-#~ msgid "C source code header"
-#~ msgstr "C ¥½¡¼¥¹¥³¡¼¥É"
-
-#~ msgid "C++ source code"
-#~ msgstr "C++ ¥½¡¼¥¹¥³¡¼¥É"
-
-#~ msgid "CGI program"
-#~ msgstr "CGI ¥×¥í¥°¥é¥à"
-
-#~ msgid "CGM image"
-#~ msgstr "CGM ²èÁü"
-
-#~ msgid "CMU raster image"
-#~ msgstr "CMU ¥é¥¹¥¿¡¼²èÁü"
-
-#~ msgid "CPIO archive"
-#~ msgstr "CPIO ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "CPIO archive (gzip-compressed)"
-#~ msgstr "CPIO ¥¢¡¼¥«¥¤¥Ö (gzip°µ½Ì)"
-
-#~ msgid "DCL script"
-#~ msgstr "DCL ¥¹¥¯¥ê¥×¥È"
-
-#~ msgid "DOS font"
-#~ msgstr "DOS ¥Õ¥©¥ó¥È"
-
-#~ msgid "DOS/Windows program"
-#~ msgstr "DOS/Windows ¥×¥í¥°¥é¥à"
-
-#~ msgid "DSSSL document"
-#~ msgstr "DSSSL ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "DXF vector graphic"
-#~ msgstr "DXF ¥Ù¥¯¥¿¡¼¥°¥é¥Õ¥£¥Ã¥¯"
-
-#~ msgid "Debian package"
-#~ msgstr "Debian ¥Ñ¥Ã¥±¡¼¥¸"
-
-#~ msgid "Dia diagram"
-#~ msgstr "Dia ¥À¥¤¥¢¥°¥é¥à"
-
-#~ msgid "Dolby Digital audio"
-#~ msgstr "Dolby ¥Ç¥¸¥¿¥ë¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "Emacs Lisp source code"
-#~ msgstr "Emacs Lisp ¥½¡¼¥¹¥³¡¼¥É"
-
-#~ msgid "Enlightenment theme"
-#~ msgstr "Enlightenment ¥Æ¡¼¥Ş"
-
-#~ msgid "FLC animation"
-#~ msgstr "FLC ¥¢¥Ë¥á¡¼¥·¥ç¥ó"
-
-#~ msgid "FLI animation"
-#~ msgstr "FLI ¥¢¥Ë¥á¡¼¥·¥ç¥ó"
-
-#~ msgid "FastTracker II audio"
-#~ msgstr "FastTracker II ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "Fortran source code"
-#~ msgstr "Fortran ¥½¡¼¥¹¥³¡¼¥É"
-
-#~ msgid "FrameMaker interchange document"
-#~ msgstr "FrameMaker interchange ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "G3 fax image"
-#~ msgstr "G3 ¥Õ¥¡¥Ã¥¯¥¹²èÁü"
-
-#~ msgid "GIF image"
-#~ msgstr "GIF ²èÁü"
-
-#~ msgid "GIMP document"
-#~ msgstr "GIMP ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "GMC link"
-#~ msgstr "GMC ¥ê¥ó¥¯"
-
-#~ msgid "GNOME application details"
-#~ msgstr "GNOME ¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤Î¾ÜºÙ"
-
-#~ msgid "GNU Oleo Spreadsheet"
-#~ msgstr "GNU Oleo ¥¹¥×¥ì¥Ã¥É¥·¡¼¥È"
-
-#~ msgid "GNU mail message"
-#~ msgstr "GNU mail ¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "GTK configuration"
-#~ msgstr "GTK ¤ÎÀßÄê"
-
-#~ msgid "Glade project"
-#~ msgstr "Glade ¥×¥í¥¸¥§¥¯¥È"
-
-#~ msgid "GnuCash Workbook"
-#~ msgstr "GnuCash ¥ï¡¼¥¯¥Ö¥Ã¥¯"
-
-#~ msgid "Gnumeric spreadsheet"
-#~ msgstr "Gnumeric ¥¹¥×¥ì¥Ã¥É¥·¡¼¥È"
-
-#~ msgid "HDF document"
-#~ msgstr "HDF ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "HTML page"
-#~ msgstr "HTML ¥Ú¡¼¥¸"
-
-#~ msgid "IDL document"
-#~ msgstr "IDL ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "IEF image"
-#~ msgstr "IEF ²èÁü"
-
-#~ msgid "IFF image"
-#~ msgstr "IFF ²èÁü"
-
-#~ msgid "ILBM image"
-#~ msgstr "ILBM ²èÁü"
-
-#~ msgid "ISI video"
-#~ msgstr "ISI ¥Ó¥Ç¥ª"
-
-#~ msgid "Impulse Tracker audio"
-#~ msgstr "Impulse Tracker ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "JBuilder Project"
-#~ msgstr "JBuilder ¥×¥í¥¸¥§¥¯¥È"
-
-#~ msgid "JPEG image"
-#~ msgstr "JPEG ²èÁü"
-
-#~ msgid "Java byte code"
-#~ msgstr "Java ¥Ğ¥¤¥È¥³¡¼¥É"
-
-#~ msgid "Java source code"
-#~ msgstr "Java ¥½¡¼¥¹¥³¡¼¥É"
-
-#~ msgid "KDE application details"
-#~ msgstr "KDE ¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤Î¾ÜºÙ"
-
-#~ msgid "KIllustrator document"
-#~ msgstr "KIllustrator ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "KPresenter presentation"
-#~ msgstr "KPresenter ¥×¥ì¥¼¥ó¥Æ¡¼¥·¥ç¥ó"
-
-#~ msgid "KSpread spreadsheet"
-#~ msgstr "KSpread ¥¹¥×¥ì¥Ã¥É¥·¡¼¥È"
-
-#~ msgid "KWord document"
-#~ msgstr "KWord ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Korn shell script"
-#~ msgstr "Korn ¥·¥§¥ë¥¹¥¯¥ê¥×¥È"
-
-#~ msgid "LHA archive"
-#~ msgstr "LHA ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "LHARC archive"
-#~ msgstr "LHARC ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "LIBGRX font"
-#~ msgstr "LIBGRX ¥Õ¥©¥ó¥È"
-
-#~ msgid "LightWave object"
-#~ msgstr "LightWave ¥ª¥Ö¥¸¥§¥¯¥È"
-
-#~ msgid "LightWave scene"
-#~ msgstr "LightWave ¥·¡¼¥ó"
-
-#~ msgid "Linux PSF console font"
-#~ msgstr "Linux PSF ¥³¥ó¥½¡¼¥ë¥Õ¥©¥ó¥È"
-
-#~ msgid "Lotus 1-2-3 spreadsheet"
-#~ msgstr "Lotus 1-2-3 ¥¹¥×¥ì¥Ã¥É¥·¡¼¥È"
-
-#~ msgid "M3 audio URL"
-#~ msgstr "M3 ¥ª¡¼¥Ç¥£¥ª URL"
-
-#~ msgid "MIDI audio"
-#~ msgstr "MIDI ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "MOD audio"
-#~ msgstr "MOD ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "MP3 audio"
-#~ msgstr "MP3 ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "MP3 audio playlist"
-#~ msgstr "MP3 ¥ª¡¼¥Ç¥£¥ª¥ê¥¹¥È"
-
-#~ msgid "MPEG video"
-#~ msgstr "MPEG ¥Ó¥Ç¥ª"
-
-#~ msgid "MS ASF video"
-#~ msgstr "MS ASF ¥Ó¥Ç¥ª"
-
-#~ msgid "MS video"
-#~ msgstr "MS ¥Ó¥Ç¥ª"
-
-#~ msgid "Macintosh AppleDouble-encoded file"
-#~ msgstr "Macintosh AppleDouble-encoded ¥Õ¥¡¥¤¥ë"
-
-#~ msgid "Macintosh BinHex-encoded file"
-#~ msgstr "Macintosh BinHex-encoded ¥Õ¥¡¥¤¥ë"
-
-#~ msgid "Macintosh StuffIt archive"
-#~ msgstr "Macintosh StuffIt ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "Macromedia Flash file"
-#~ msgstr "Macromedia Flash ¥Õ¥¡¥¤¥ë"
-
-#~ msgid "MathML document"
-#~ msgstr "MathML ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Microsoft Excel spreadsheet"
-#~ msgstr "Microsoft Excel ¥¹¥×¥ì¥Ã¥É¥·¡¼¥È"
-
-#~ msgid "Microsoft PowerPoint document"
-#~ msgstr "Microsoft PowerPoint ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Microsoft Word document"
-#~ msgstr "Microsoft Word ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Microsoft video"
-#~ msgstr "Microsoft ¥Ó¥Ç¥ª"
-
-#~ msgid "Nautilus link"
-#~ msgstr "Nautilus ¥ê¥ó¥¯"
-
-#~ msgid "ODA document"
-#~ msgstr "ODA ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "PBM image"
-#~ msgstr "PBM ²èÁü"
-
-#~ msgid "PCF font"
-#~ msgstr "PCF ¥Õ¥©¥ó¥È"
-
-#~ msgid "PDF document"
-#~ msgstr "PDF ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "PEF program"
-#~ msgstr "PEF ¥×¥í¥°¥é¥à"
-
-#~ msgid "PGM image"
-#~ msgstr "PGM ²èÁü"
-
-#~ msgid "PGN chess game"
-#~ msgstr "PGN ¥Á¥§¥¹¥²¡¼¥à"
-
-#~ msgid "PGP keys"
-#~ msgstr "PGP ¥­¡¼"
-
-#~ msgid "PGP message"
-#~ msgstr "PGP ¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "PGP signature"
-#~ msgstr "PGP ½ğÌ¾"
-
-#~ msgid "PGP-encrypted file"
-#~ msgstr "PGP Éä¹æ²½¥Õ¥¡¥¤¥ë"
-
-#~ msgid "PHP script"
-#~ msgstr "PHP ¥¹¥¯¥ê¥×¥È"
-
-#~ msgid "PN RealAudio document"
-#~ msgstr "PN RealAudio ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "PNG image"
-#~ msgstr "PNG ²èÁü"
-
-#~ msgid "PNM image"
-#~ msgstr "PNM ²èÁü"
-
-#~ msgid "PPM image"
-#~ msgstr "PPM ²èÁü"
-
-#~ msgid "Palm OS database"
-#~ msgstr "Palm OS ¥Ç¡¼¥¿¥Ù¡¼¥¹"
-
-#~ msgid "Perl script"
-#~ msgstr "Perl ¥¹¥¯¥ê¥×¥È"
-
-#~ msgid "Photoshop document"
-#~ msgstr "Photoshop ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "PostScript Type 1 font"
-#~ msgstr "PostScript Type 1 ¥Õ¥©¥ó¥È"
-
-#~ msgid "PostScript document"
-#~ msgstr "PostScript ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Python source code"
-#~ msgstr "Python ¥½¡¼¥¹¥³¡¼¥É"
-
-#~ msgid "QuickTime movie"
-#~ msgstr "QuickTime Æ°²è"
-
-#~ msgid "Quicken document"
-#~ msgstr "Quicken ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Quicken for Windows document"
-#~ msgstr "Quicken for Windows ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "RAR archive"
-#~ msgstr "RAR ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "README document"
-#~ msgstr "README ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "RGB image"
-#~ msgstr "RGB ²èÁü"
-
-#~ msgid "RIFF audio"
-#~ msgstr "RIFF ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "RPM package"
-#~ msgstr "RPM ¥Ñ¥Ã¥±¡¼¥¸"
-
-#~ msgid "RealAudio/Video document"
-#~ msgstr "RealAudio/Video ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "RealVideo video"
-#~ msgstr "RealVideo ¥Ó¥Ç¥ª"
-
-#~ msgid "S/MIME file"
-#~ msgstr "S/MIME ¥Õ¥¡¥¤¥ë"
-
-#~ msgid "S/MIME signature"
-#~ msgstr "S/MIME ½ğÌ¾"
-
-#~ msgid "SGI video"
-#~ msgstr "SGI ¥Ó¥Ç¥ª"
-
-#~ msgid "SGML document"
-#~ msgstr "SGML ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "SMIL script"
-#~ msgstr "SMIL ¥¹¥¯¥ê¥×¥È"
-
-#~ msgid "SQL code"
-#~ msgstr "SQL ¥³¡¼¥É"
-
-#~ msgid "SV4 CPIO archive"
-#~ msgstr "SV4 CPIO ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "SV4 CPIP archive (with CRC)"
-#~ msgstr "SV4 CPIP ¥¢¡¼¥«¥¤¥Ö (CRCÉÕ¤­)"
-
-#~ msgid "SVG art"
-#~ msgstr "SVG ¥¢¡¼¥È"
-
-#~ msgid "Scheme source code"
-#~ msgstr "Scheme ¥½¡¼¥¹¥³¡¼¥É"
-
-#~ msgid "Scream Tracker 3 audio"
-#~ msgstr "Scream Tracker 3 ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "Scream Tracker audio"
-#~ msgstr "Scream Tracker ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "Scream Tracker instrument"
-#~ msgstr "Scream Tracker ³Ú´ï"
-
-#~ msgid "Setext document"
-#~ msgstr "Setext ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Speech document"
-#~ msgstr "Speech ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Speedo font"
-#~ msgstr "Speedo ¥Õ¥©¥ó¥È"
-
-#~ msgid "Spreadsheet Interchange document"
-#~ msgstr "Spreadsheet Interchange ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Stampede package"
-#~ msgstr "Stampede ¥Ñ¥Ã¥±¡¼¥¸"
-
-#~ msgid "StarOffice Writer document"
-#~ msgstr "StarOffice Writer ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "StarOffice presentation"
-#~ msgstr "StarOffice ¥×¥ì¥¼¥ó¥Æ¡¼¥·¥ç¥ó"
-
-#~ msgid "StarOffice spreadsheet"
-#~ msgstr "StarOffice ¥¹¥×¥ì¥Ã¥É¥·¡¼¥È"
-
-#~ msgid "Sun mu-law audio"
-#~ msgstr "Sun mu-law ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "SunOS News font"
-#~ msgstr "SunOS News ¥Õ¥©¥ó¥È"
-
-#~ msgid "TIFF image"
-#~ msgstr "TIFF ²èÁü"
-
-#~ msgid "TarGA image"
-#~ msgstr "TarGA ²èÁü"
-
-#~ msgid "Tcl script"
-#~ msgstr "Tcl ¥¹¥¯¥ê¥×¥È"
-
-#~ msgid "TeX document"
-#~ msgstr "TeX ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "TeX dvi document"
-#~ msgstr "TeX dvi ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "TeX font"
-#~ msgstr "TeX ¥Õ¥©¥ó¥È"
-
-#~ msgid "TeX font metrics"
-#~ msgstr "TeX ¥Õ¥©¥ó¥È¥á¥È¥ê¥Ã¥¯"
-
-#~ msgid "TeXInfo document"
-#~ msgstr "TeXInfo ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "ToutDoux document"
-#~ msgstr "ToutDoux ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "TrueType font"
-#~ msgstr "TrueType ¥Õ¥©¥ó¥È"
-
-#~ msgid "USENET news message"
-#~ msgstr "USENET news ¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "Unidata netCDF document"
-#~ msgstr "Unidata netCDF ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "V font"
-#~ msgstr "V ¥Õ¥©¥ó¥È"
-
-#~ msgid "VOC audio"
-#~ msgstr "VOC ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "VRML document"
-#~ msgstr "VRML ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "Vivo video"
-#~ msgstr "Vivo ¥Ó¥Ç¥ª"
-
-#~ msgid "WAIS source code"
-#~ msgstr "WAIS ¥½¡¼¥¹¥³¡¼¥É"
-
-#~ msgid "Wavelet video"
-#~ msgstr "Wavelet ¥Ó¥Ç¥ª"
-
-#~ msgid "Windows bitmap image"
-#~ msgstr "Windows ¥Ó¥Ã¥È¥Ş¥Ã¥×²èÁü"
-
-#~ msgid "Windows icon image"
-#~ msgstr "Windows ¥¢¥¤¥³¥ó²èÁü"
-
-#~ msgid "Windows metafile graphics"
-#~ msgstr "Windows ¥á¥¿¥Õ¥¡¥¤¥ë²èÁü"
-
-#~ msgid "WordPerfect document"
-#~ msgstr "WordPerfect ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "X bitmap image"
-#~ msgstr "X ¥Ó¥Ã¥È¥Ş¥Ã¥×²èÁü"
-
-#~ msgid "X window image"
-#~ msgstr "X window ²èÁü"
-
-#~ msgid "XML document"
-#~ msgstr "XML ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "XPM image"
-#~ msgstr "XPM ²èÁü"
-
-#~ msgid "Xbase database"
-#~ msgstr "Xbase ¥Ç¡¼¥¿¥Ù¡¼¥¹"
-
-#~ msgid "active server page"
-#~ msgstr "active server page"
-
-#~ msgid "address card"
-#~ msgstr "¥¢¥É¥ì¥¹Ä¢"
-
-#~ msgid "ar archive"
-#~ msgstr "ar ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "arj archive"
-#~ msgstr "arj ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "authors list"
-#~ msgstr "ºî¼Ô¥ê¥¹¥È"
-
-#~ msgid "backup file"
-#~ msgstr "¥Ğ¥Ã¥¯¥¢¥Ã¥×¥Õ¥¡¥¤¥ë"
-
-#~ msgid "basic audio"
-#~ msgstr "°ìÈÌÅª¤Ê¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "bibliography record"
-#~ msgstr "»²¹ÍÊ¸¸¥°ìÍ÷"
-
-#~ msgid "binary program"
-#~ msgstr "¥Ğ¥¤¥Ê¥ê¡¼¥×¥í¥°¥é¥à"
-
-#~ msgid "block device"
-#~ msgstr "¥Ö¥í¥Ã¥¯¥Ç¥Ğ¥¤¥¹"
-
-#~ msgid "bzip-compressed file"
-#~ msgstr "bzip2°µ½Ì¥Õ¥¡¥¤¥ë"
-
-#~ msgid "calendar file"
-#~ msgstr "¥«¥ì¥ó¥À¡¼¥Õ¥¡¥¤¥ë"
-
-#~ msgid "calendar or event document"
-#~ msgstr "¥«¥ì¥ó¥À¡¼/¥¤¥Ù¥ó¥È¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "character device"
-#~ msgstr "¥­¥ã¥é¥¯¥¿¥Ç¥Ğ¥¤¥¹"
-
-#~ msgid "comma-separated text document"
-#~ msgstr "¥³¥ó¥Ş¤Ç¶èÀÚ¤é¤ì¤¿¥Æ¥­¥¹¥È¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "compound document"
-#~ msgstr "Ê£¹ç¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "compress-compressed file"
-#~ msgstr "compress°µ½Ì¥Õ¥¡¥¤¥ë"
-
-#~ msgid "compressed GIMP document"
-#~ msgstr "°µ½Ì¤µ¤ì¤¿GIMP¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "directory information file"
-#~ msgstr "¥Ç¥£¥ì¥¯¥È¥ê¾ğÊó¥Õ¥¡¥¤¥ë"
-
-#~ msgid "document type definition"
-#~ msgstr "¥É¥­¥å¥á¥ó¥È¼ïÊÌÄêµÁ"
-
-#~ msgid "email headers"
-#~ msgstr "¥á¡¼¥ë¥Ø¥Ã¥À"
-
-#~ msgid "email message"
-#~ msgstr "¥á¡¼¥ë¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "encrypted message"
-#~ msgstr "Éä¹æ²½¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "enriched text document"
-#~ msgstr "½¼¼Â¤·¤¿¥Æ¥­¥¹¥È¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "folder"
-#~ msgstr "¥Õ¥©¥ë¥À"
-
-#~ msgid "gtar archive"
-#~ msgstr "gtar ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "gzip-compressed file"
-#~ msgstr "gzip°µ½Ì¥Õ¥¡¥¤¥ë"
-
-#~ msgid "help page"
-#~ msgstr "¥Ø¥ë¥×¥Ú¡¼¥¸"
-
-#~ msgid "mail delivery report"
-#~ msgstr "¥á¡¼¥ëÇÛ¿®Êó¹ğ"
-
-#~ msgid "mail disposition report"
-#~ msgstr "¥á¡¼¥ë½èÍıÊó¹ğ"
-
-#~ msgid "mail system report"
-#~ msgstr "¥á¡¼¥ë¥·¥¹¥Æ¥àÊó¹ğ"
-
-#~ msgid "makefile"
-#~ msgstr "makefile"
-
-#~ msgid "manual page"
-#~ msgstr "¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸"
-
-#~ msgid "manual page (compressed)"
-#~ msgstr "¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸ (°µ½Ì)"
-
-#~ msgid "memory dump"
-#~ msgstr "¥á¥â¥ê¥À¥ó¥×"
-
-#~ msgid "message digest"
-#~ msgstr "¥á¥â¥êÍ×Ìó"
-
-#~ msgid "message in several formats"
-#~ msgstr "¤¤¤í¤ó¤Ê¥Õ¥©¡¼¥Ş¥Ã¥È¤Î¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "multi-part message"
-#~ msgstr "¥Ş¥ë¥Á¥Ñ¡¼¥È¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "named pipe"
-#~ msgstr "¥Ñ¥¤¥×"
-
-#~ msgid "object code"
-#~ msgstr "¥ª¥Ö¥¸¥§¥¯¥È¥³¡¼¥É"
-
-#~ msgid "ogg audio"
-#~ msgstr "ogg ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "partial email message"
-#~ msgstr "ÉÔ´°Á´¤Ê¥á¡¼¥ë¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "plain text document"
-#~ msgstr "¥×¥ì¥¤¥ó¥Æ¥­¥¹¥È¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "profiler results"
-#~ msgstr "¥×¥í¥Õ¥¡¥¤¥é¤Î·ë²Ì"
-
-#~ msgid "reference to remote file"
-#~ msgstr "¥ê¥â¡¼¥È¥Õ¥¡¥¤¥ë¤Ø¤Î»²¾È"
-
-#~ msgid "rejected patch file"
-#~ msgstr "¥ê¥¸¥§¥¯¥È¤µ¤ì¤¿¥Ñ¥Ã¥Á¥Õ¥¡¥¤¥ë"
-
-#~ msgid "rich text document"
-#~ msgstr "¥ê¥Ã¥Á¥Æ¥­¥¹¥È¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "search results"
-#~ msgstr "¸¡º÷·ë²Ì"
-
-#~ msgid "shared library"
-#~ msgstr "¶¦Í­¥é¥¤¥Ö¥é¥ê"
-
-#~ msgid "shell archive"
-#~ msgstr "¥·¥§¥ë¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "shell script"
-#~ msgstr "¥·¥§¥ë¥¹¥¯¥ê¥×¥È"
-
-#~ msgid "signed message"
-#~ msgstr "¥µ¥¤¥ó¤µ¤ì¤¿¥á¥Ã¥»¡¼¥¸"
-
-#~ msgid "socket"
-#~ msgstr "¥½¥±¥Ã¥È"
-
-#~ msgid "software author credits"
-#~ msgstr "¥½¥Õ¥È¥¦¥§¥¢ºî¼Ô¤Î¥¯¥ì¥¸¥Ã¥È"
-
-#~ msgid "software installation instructions"
-#~ msgstr "¥½¥Õ¥È¥¦¥§¥¢¥¤¥ó¥¹¥È¡¼¥ë¤Î¼ê°ú"
-
-#~ msgid "software license terms"
-#~ msgstr "¥½¥Õ¥È¥¦¥§¥¢¥é¥¤¥»¥ó¥¹µ¬Ìó"
-
-#~ msgid "source code patch"
-#~ msgstr "¥½¡¼¥¹¥³¡¼¥É¥Ñ¥Ã¥Á"
-
-#~ msgid "style sheet"
-#~ msgstr "¥¹¥¿¥¤¥ë¥·¡¼¥È"
-
-#~ msgid "symbolic link"
-#~ msgstr "¥·¥ó¥Ü¥ê¥Ã¥¯¥ê¥ó¥¯"
-
-#~ msgid "tab-separated text document"
-#~ msgstr "¥¿¥Ö¤Ç¶èÀÚ¤é¤ì¤¿¥Æ¥­¥¹¥È¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "tar archive"
-#~ msgstr "tar ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "tar archive (bzip2-compressed)"
-#~ msgstr "tar ¥¢¡¼¥«¥¤¥Ö (bzip2°µ½Ì)"
-
-#~ msgid "tar archive (gzip-compressed)"
-#~ msgstr "tar ¥¢¡¼¥«¥¤¥Ö (gzip°µ½Ì)"
-
-#~ msgid "theme"
-#~ msgstr "¥Æ¡¼¥Ş"
-
-#~ msgid "troff document"
-#~ msgstr "troff ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "troff me input document"
-#~ msgstr "troff me ÆşÎÏ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "troff mm input document"
-#~ msgstr "troff mm ÆşÎÏ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "troff ms input document"
-#~ msgstr "troff ms ÆşÎÏ¥É¥­¥å¥á¥ó¥È"
-
-#~ msgid "unknown type"
-#~ msgstr "Ì¤ÃÎ¤Î¼ïÊÌ"
-
-#~ msgid "ustar archive"
-#~ msgstr "ustar ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "wave audio"
-#~ msgstr "wave ¥ª¡¼¥Ç¥£¥ª"
-
-#~ msgid "web folder"
-#~ msgstr "¥¦¥§¥Ö¥Õ¥©¥ë¥À"
-
-#~ msgid "xfig vector graphic"
-#~ msgstr "xfig ¥Ù¥¯¥¿¡¼¥°¥é¥Õ¥£¥Ã¥¯"
-
-#~ msgid "zip archive"
-#~ msgstr "zip ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "zoo archive"
-#~ msgstr "zoo ¥¢¡¼¥«¥¤¥Ö"
-
-#~ msgid "GNOME VFS already initialized."
-#~ msgstr "GNOME VFS ¤Ï´û¤Ë½é´ü²½¤µ¤ì¤Æ¤¤¤Ş¤¹"
+msgstr "æ±ç”¨ãƒ•ã‚¡ã‚¤ãƒ«ãƒ»ãƒ¢ãƒ‹ã‚«"
+
+#: schemas/desktop_default_applications.schemas.in.h:1
+msgid "Default component viewer application"
+msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒ¼ãƒ»ãƒ“ãƒ¥ãƒ¼ã‚¢ãƒ»ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³"
+
+#: schemas/desktop_default_applications.schemas.in.h:2
+msgid "Default terminal application"
+msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚¿ãƒ¼ãƒŸãƒŠãƒ«ãƒ»ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³"
+
+#: schemas/desktop_default_applications.schemas.in.h:3
+msgid "Exec argument for default terminal"
+msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚¿ãƒ¼ãƒŸãƒŠãƒ«ã®å®Ÿè¡Œæ™‚å¼•æ•°"
+
+#: schemas/desktop_default_applications.schemas.in.h:5
+#, no-c-format
+msgid ""
+"The application to use for viewing files that require a component to view "
+"them. The parameter %s will be replaced by the file's URIs, the parameter %c "
+"will be replaced by the component IID."
+msgstr ""
+"é–²è¦§ã™ã‚‹ãŸã‚ã«ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒå¿…è¦ãªãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¡¨ç¤ºã™ã‚‹ãŸã‚ã«ä½¿ç”¨ã™ã‚‹ã‚¢ãƒ—ãƒª"
+"ã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã§ã™ã€‚%s ã¯ãƒ•ã‚¡ã‚¤ãƒ«ã® URI ã§ã€ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ %c ã¯ã‚³ãƒãƒ¼ãƒãƒ³ãƒˆã® IID ã§"
+"ç½®æ›ã•ã‚Œã¾ã™ã€‚"
+
+#: schemas/desktop_default_applications.schemas.in.h:6
+msgid ""
+"The default terminal application to use for applications that require a "
+"terminal."
+msgstr ""
+"ã‚¿ãƒ¼ãƒŸãƒŠãƒ«ã‚’å¿…è¦ã¨ã™ã‚‹ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãŒä½¿ç”¨ã™ã‚‹ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚¿ãƒ¼ãƒŸãƒŠãƒ«ãƒ»ã‚¢ãƒ—"
+"ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã§ã™ã€‚"
+
+#: schemas/desktop_default_applications.schemas.in.h:7
+msgid "The exec argument to use for the default terminal application."
+msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚¿ãƒ¼ãƒŸãƒŠãƒ«ãƒ»ã‚¢ãƒ—ã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãŒä½¿ç”¨ã™ã‚‹å®Ÿè¡Œæ™‚å¼•æ•°ã§ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:1
+msgid "Run the command in a terminal"
+msgstr "ç«¯æœ«ã§ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’å®Ÿè¡Œã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:2
+msgid "The command used to handle \"aim\" URLs, if enabled."
+msgstr "\"aim\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:3
+msgid "The command used to handle \"callto\" URLs, if enabled."
+msgstr "\"callto\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:4
+msgid "The command used to handle \"ghelp\" URLs, if enabled."
+msgstr "\"ghelp\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:5
+msgid "The command used to handle \"h323\" URLs, if enabled."
+msgstr "\"h323\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:6
+msgid "The command used to handle \"http\" URLs, if enabled."
+msgstr "\"http\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:7
+msgid "The command used to handle \"https\" URLs, if enabled."
+msgstr "\"https\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:8
+msgid "The command used to handle \"info\" URLs, if enabled."
+msgstr "\"info\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:9
+msgid "The command used to handle \"mailto\" URLs, if enabled."
+msgstr "\"mailto\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:10
+msgid "The command used to handle \"man\" URLs, if enabled."
+msgstr "\"man\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:11
+msgid "The command used to handle \"trash\" URLs, if enabled."
+msgstr "\"trash\" ã® URL ã‚’å‡¦ç†ã™ã‚‹éš›ã«ä½¿ç”¨ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã§ã™ (ä»»æ„)ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:12
+msgid "The handler for \"aim\" URLs"
+msgstr "URL \"aim\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:13
+msgid "The handler for \"callto\" URLs"
+msgstr "URL \"callto\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:14
+msgid "The handler for \"ghelp\" URLs"
+msgstr "URL \"ghelp\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:15
+msgid "The handler for \"h323\" URLs"
+msgstr "\"h323\" ã® URL ã®å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:16
+msgid "The handler for \"http\" URLs"
+msgstr "URL \"http\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:17
+msgid "The handler for \"https\" URLs"
+msgstr "URL \"https\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:18
+msgid "The handler for \"info\" URLs"
+msgstr "URL \"info\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:19
+msgid "The handler for \"mailto\" URLs"
+msgstr "URL \"mailto\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:20
+msgid "The handler for \"man\" URLs"
+msgstr "URL \"man\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:21
+msgid "The handler for \"trash\" URLs"
+msgstr "URL \"trash\" ã® å‡¦ç†"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:22
+msgid ""
+"True if the command specified in the \"command\" key should handle \"aim\" "
+"URLs."
+msgstr ""
+"URL \"aim\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«ã—ã¾"
+"ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:23
+msgid ""
+"True if the command specified in the \"command\" key should handle \"callto"
+"\" URLs."
+msgstr ""
+"URL \"callto\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«"
+"ã—ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:24
+msgid ""
+"True if the command specified in the \"command\" key should handle \"ghelp\" "
+"URLs."
+msgstr ""
+"URL \"ghelp\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«ã—"
+"ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:25
+msgid ""
+"True if the command specified in the \"command\" key should handle \"h323\" "
+"URLs."
+msgstr ""
+"\"h323\" ã® URL ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«"
+"ã—ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:26
+msgid ""
+"True if the command specified in the \"command\" key should handle \"http\" "
+"URLs."
+msgstr ""
+"URL \"http\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«ã—"
+"ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:27
+msgid ""
+"True if the command specified in the \"command\" key should handle \"https\" "
+"URLs."
+msgstr ""
+"URL \"https\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«ã—"
+"ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:28
+msgid ""
+"True if the command specified in the \"command\" key should handle \"info\" "
+"URLs."
+msgstr ""
+"URL \"info\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«ã—"
+"ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:29
+msgid ""
+"True if the command specified in the \"command\" key should handle \"mailto"
+"\" URLs."
+msgstr ""
+"URL \"mailto\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«"
+"ã—ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:30
+msgid ""
+"True if the command specified in the \"command\" key should handle \"man\" "
+"URLs."
+msgstr ""
+"URL \"man\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«ã—ã¾"
+"ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:31
+msgid ""
+"True if the command specified in the \"command\" key should handle \"trash\" "
+"URLs."
+msgstr ""
+"URL \"trash\" ã‚’å‡¦ç†ã™ã‚‹ã‚­ãƒ¼ \"command\" ã«ã‚³ãƒãƒ³ãƒ‰ã‚’æŒ‡å®šã™ã‚‹å ´åˆã¯ TRUE ã«ã—"
+"ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:32
+msgid ""
+"True if the command used to handle this type of URL should be run in a "
+"terminal."
+msgstr ""
+"ã“ã®ç¨®é¡ã® URL ã‚’å‡¦ç†ã™ã‚‹ã‚³ãƒãƒ³ãƒ‰ã‚’ç«¯æœ«å†…ã§å®Ÿè¡Œã™ã‚‹å ´åˆã¯ TRUE ã«ã—ã¾ã™ã€‚"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:33
+msgid "Whether the specified command should handle \"aim\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"aim\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:34
+msgid "Whether the specified command should handle \"callto\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"callto\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:35
+msgid "Whether the specified command should handle \"ghelp\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"ghelp\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:36
+msgid "Whether the specified command should handle \"h323\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ \"h323\" ã® URL ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:37
+msgid "Whether the specified command should handle \"http\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"http\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:38
+msgid "Whether the specified command should handle \"https\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"https\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:39
+msgid "Whether the specified command should handle \"info\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"info\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:40
+msgid "Whether the specified command should handle \"mailto\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"mailto\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:41
+msgid "Whether the specified command should handle \"man\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"man\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/desktop_gnome_url_handlers.schemas.in.h:42
+msgid "Whether the specified command should handle \"trash\" URLs"
+msgstr "æŒ‡å®šã—ãŸã‚³ãƒãƒ³ãƒ‰ã§ URL \"trash\" ã‚’å‡¦ç†ã™ã‚‹ã‹ã©ã†ã‹"
+
+#: schemas/system_dns_sd.schemas.in.h:1
+msgid ""
+"Comma separated list of dns-sd domains that should be visible in the network "
+"location."
+msgstr ""
+"ã‚³ãƒ³ãƒ (,) ã§åŒºåˆ‡ã£ãŸ DNS-SD ã®ãƒªã‚¹ãƒˆã§ã€\"ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯\" ã®ä¸­ã«è¡¨ç¤ºã•ã‚Œã¾"
+"ã™ã€‚"
+
+#: schemas/system_dns_sd.schemas.in.h:2
+msgid "Extra domains to look for dns-sd services in"
+msgstr "ã‚µãƒ¼ãƒ“ã‚¹ DNS-SD ã‹ã‚‰æ¤œç´¢ã™ã‚‹è¿½åŠ ãƒ‰ãƒ¡ã‚¤ãƒ³"
+
+#: schemas/system_dns_sd.schemas.in.h:3
+msgid "How to display local DNS-SD service"
+msgstr "ãƒ­ãƒ¼ã‚«ãƒ«ã® DNS-SD ã‚µãƒ¼ãƒ“ã‚¹ã®è¡¨ç¤ºæ–¹æ³•"
+
+#: schemas/system_dns_sd.schemas.in.h:4
+msgid "Possible values are \"merged\", \"separate\" and \"disabled\"."
+msgstr "è¨­å®šå¯èƒ½ãªå€¤: \"merged\"ã€\"separate\"ã€\"disabled\""
+
+#: schemas/system_http_proxy.schemas.in.h:1
+msgid "Authenticate proxy server connections"
+msgstr "èªè¨¼ãƒ—ãƒ­ã‚­ã‚·ãƒ»ã‚µãƒ¼ãƒã¸ã®æ¥ç¶š"
+
+#: schemas/system_http_proxy.schemas.in.h:2
+msgid "Automatic proxy configuration URL"
+msgstr "è‡ªå‹•ãƒ—ãƒ­ã‚­ã‚·è¨­å®šã® URL"
+
+#: schemas/system_http_proxy.schemas.in.h:3
+msgid "Enables the proxy settings when accessing HTTP over the Internet."
+msgstr "ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒƒãƒˆã¸ HTTP ã‚¢ã‚¯ã‚»ã‚¹ã™ã‚‹ã¨ãã«ãƒ—ãƒ­ã‚­ã‚·ã®è¨­å®šã‚’æœ‰åŠ¹ã«ã—ã¾ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:4
+msgid "FTP proxy host name"
+msgstr "FTP ãƒ—ãƒ­ã‚­ã‚·ã®ãƒ›ã‚¹ãƒˆå"
+
+#: schemas/system_http_proxy.schemas.in.h:5
+msgid "FTP proxy port"
+msgstr "FTP ãƒ—ãƒ­ã‚­ã‚·ã®ãƒãƒ¼ãƒˆç•ªå·"
+
+#: schemas/system_http_proxy.schemas.in.h:6
+msgid "HTTP proxy host name"
+msgstr "HTTP ãƒ—ãƒ­ã‚­ã‚·ã®ãƒ›ã‚¹ãƒˆå"
+
+#: schemas/system_http_proxy.schemas.in.h:7
+msgid "HTTP proxy password"
+msgstr "HTTP ãƒ—ãƒ­ã‚­ã‚·ã®ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰"
+
+#: schemas/system_http_proxy.schemas.in.h:8
+msgid "HTTP proxy port"
+msgstr "HTTP ãƒ—ãƒ­ã‚­ã‚·ã®ãƒãƒ¼ãƒˆç•ªå·"
+
+#: schemas/system_http_proxy.schemas.in.h:9
+msgid "HTTP proxy username"
+msgstr "HTTP ãƒ—ãƒ­ã‚­ã‚·ã®ãƒ¦ãƒ¼ã‚¶å"
+
+#: schemas/system_http_proxy.schemas.in.h:10
+msgid ""
+"If true, then connections to the proxy server require authentication. The "
+"username/password combo defined by \"/system/http_proxy/authentication_user"
+"\" and \"/system/http_proxy/authentication_password\"."
+msgstr ""
+"TRUE ã®å ´åˆã€ãƒ—ãƒ­ã‚­ã‚·ãƒ»ã‚µãƒ¼ãƒã¸ã®æ¥ç¶šã§èªè¨¼ãŒè¦æ±‚ã•ã‚Œã¾ã™ã€‚ãƒ¦ãƒ¼ã‚¶å/ãƒ‘ã‚¹ãƒ¯ãƒ¼"
+"ãƒ‰ã®çµ„ã¿åˆã‚ã›ã¯ \"/system/http_proxy/authentication_user\" ã¨ \"/system/"
+"http_proxy/authentication_password\" ã§å®šç¾©ã•ã‚Œã¾ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:11
+msgid "Non-proxy hosts"
+msgstr "ãƒ—ãƒ­ã‚­ã‚·ã§ã¯ãªã„ãƒ›ã‚¹ãƒˆå"
+
+#: schemas/system_http_proxy.schemas.in.h:12
+msgid "Password to pass as authentication when doing HTTP proxying."
+msgstr "HTTP ãƒ—ãƒ­ã‚­ã‚·ã‚’åˆ©ç”¨ã™ã‚‹ã¨ãã«èªè¨¼ã¨ã—ã¦å¼•ãæ¸¡ã™ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:13
+msgid "Proxy configuration mode"
+msgstr "ãƒ—ãƒ­ã‚­ã‚·è¨­å®šãƒ¢ãƒ¼ãƒ‰"
+
+#: schemas/system_http_proxy.schemas.in.h:14
+msgid "SOCKS proxy host name"
+msgstr "SOCKS ãƒ—ãƒ­ã‚­ã‚·ã®ãƒ›ã‚¹ãƒˆå"
+
+#: schemas/system_http_proxy.schemas.in.h:15
+msgid "SOCKS proxy port"
+msgstr "SOCKS ãƒ—ãƒ­ã‚­ã‚·ã®ãƒãƒ¼ãƒˆç•ªå·"
+
+#: schemas/system_http_proxy.schemas.in.h:16
+msgid "Secure HTTP proxy host name"
+msgstr "ã‚»ã‚­ãƒ¥ã‚¢ HTTP ãƒ—ãƒ­ã‚­ã‚·ã®ãƒ›ã‚¹ãƒˆå"
+
+#: schemas/system_http_proxy.schemas.in.h:17
+msgid "Secure HTTP proxy port"
+msgstr "ã‚»ã‚­ãƒ¥ã‚¢ HTTP ãƒ—ãƒ­ã‚­ã‚·ã®ãƒãƒ¼ãƒˆç•ªå·"
+
+#: schemas/system_http_proxy.schemas.in.h:18
+msgid ""
+"Select the proxy configuration mode. Supported values are \"none\", \"manual"
+"\", \"auto\"."
+msgstr ""
+"ãƒ—ãƒ­ã‚­ã‚·è¨­å®šãƒ¢ãƒ¼ãƒ‰ã‚’é¸æŠã—ã¾ã™ (åˆ©ç”¨å¯èƒ½ãªå€¤: \"none\", \"manual\", \"auto"
+"\")ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:19
+msgid "The machine name to proxy FTP through."
+msgstr "FTP ãƒ—ãƒ­ã‚­ã‚·ã¨ã—ã¦åˆ©ç”¨ã™ã‚‹ãƒã‚·ãƒ³ã®åå‰ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:20
+msgid "The machine name to proxy HTTP through."
+msgstr "HTTP ã®ãƒ—ãƒ­ã‚­ã‚·ã¨ã—ã¦åˆ©ç”¨ã™ã‚‹ãƒã‚·ãƒ³ã®åå‰ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:21
+msgid "The machine name to proxy secure HTTP through."
+msgstr "ã‚»ã‚­ãƒ¥ã‚¢ HTTP ã®ãƒ—ãƒ­ã‚­ã‚·ã¨ã—ã¦åˆ©ç”¨ã™ã‚‹ãƒã‚·ãƒ³ã®åå‰ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:22
+msgid "The machine name to proxy socks through."
+msgstr "SOCKS ãƒ—ãƒ­ã‚­ã‚·ã¨ã—ã¦åˆ©ç”¨ã™ã‚‹ãƒã‚·ãƒ³ã®åå‰ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:23
+msgid ""
+"The port on the machine defined by \"/system/http_proxy/host\" that you "
+"proxy through."
+msgstr ""
+"ãƒ—ãƒ­ã‚­ã‚·ã¨ã—ã¦åˆ©ç”¨ã™ã‚‹ã€\"/system/http_proxy/host\" ã§å®šç¾©ã•ã‚ŒãŸãƒã‚·ãƒ³ã®ãƒãƒ¼"
+"ãƒˆç•ªå·ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:24
+msgid ""
+"The port on the machine defined by \"/system/proxy/ftp_host\" that you proxy "
+"through."
+msgstr ""
+"ãƒ—ãƒ­ã‚­ã‚·ã¨ã—ã¦åˆ©ç”¨ã™ã‚‹ã€\"/system/proxy/ftp_host\" ã§å®šç¾©ã•ã‚ŒãŸãƒã‚·ãƒ³ã®ãƒãƒ¼ãƒˆ"
+"ç•ªå·ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:25
+msgid ""
+"The port on the machine defined by \"/system/proxy/secure_host\" that you "
+"proxy through."
+msgstr ""
+"ãƒ—ãƒ­ã‚­ã‚·ã¨ã—ã¦åˆ©ç”¨ã™ã‚‹ã€\"/system/proxy/secure_host\" ã§å®šç¾©ã•ã‚ŒãŸãƒã‚·ãƒ³ã®"
+"ãƒãƒ¼ãƒˆç•ªå·ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:26
+msgid ""
+"The port on the machine defined by \"/system/proxy/socks_host\" that you "
+"proxy through."
+msgstr ""
+"ãƒ—ãƒ­ã‚­ã‚·ã¨ã—ã¦åˆ©ç”¨ã™ã‚‹ã€\"/system/proxy/socks_host\" ã§å®šç¾©ã•ã‚ŒãŸãƒã‚·ãƒ³ã®ãƒãƒ¼"
+"ãƒˆç•ªå·ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:27
+msgid ""
+"This key contains a list of hosts which are connected to directly, rather "
+"than via the proxy (if it is active). The values can be hostnames, domains "
+"(using an initial wildcard like *.foo.com), IP host addresses (both IPv4 and "
+"IPv6) and network addresses with a netmask (something like 192.168.0.0/24)."
+msgstr ""
+"ã“ã®ã‚­ãƒ¼ã«ã¯ã€(ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªå ´åˆã¯) ãƒ—ãƒ­ã‚­ã‚·çµŒç”±ã§ã¯ãªãç›´æ¥æ¥ç¶šã•ã‚Œã‚‹å¤šãã®ãƒ›"
+"ã‚¹ãƒˆãŒå«ã¾ã‚Œã¦ã„ã¾ã™ã€‚ãƒ›ã‚¹ãƒˆåã€ãƒ‰ãƒ¡ã‚¤ãƒ³ (*.foo.com ã®ã‚ˆã†ã«å…ˆé ­ã«ãƒ¯ã‚¤ãƒ«ãƒ‰ãƒ»"
+"ã‚«ãƒ¼ãƒ‰ãŒä½¿ã‚ã‚Œã¾ã™)ã€IP ãƒ›ã‚¹ãƒˆãƒ»ã‚¢ãƒ‰ãƒ¬ã‚¹ (IPv4 ã¨ IPv6 ã®ä¸¡æ–¹)ã€ãƒãƒƒãƒˆãƒ»ãƒã‚¹"
+"ã‚¯ãŒä½µè¨˜ã•ã‚ŒãŸãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ãƒ»ã‚¢ãƒ‰ãƒ¬ã‚¹ (192.168.0.0/24ã®ã‚ˆã†ãªå€¤) ã¨ã„ã£ãŸå€¤ã«"
+"ãªã‚Šã¾ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:28
+msgid "URL that provides proxy configuration values."
+msgstr "ãƒ—ãƒ­ã‚­ã‚·ã®è¨­å®šå€¤ã‚’æä¾›ã™ã‚‹ URL ã§ã™ã€‚"
+
+#: schemas/system_http_proxy.schemas.in.h:29
+msgid "Use HTTP proxy"
+msgstr "HTTP ãƒ—ãƒ­ã‚­ã‚·ã®ä½¿ç”¨"
+
+#: schemas/system_http_proxy.schemas.in.h:30
+msgid "User name to pass as authentication when doing HTTP proxying."
+msgstr "HTTP ãƒ—ãƒ­ã‚­ã‚·ã‚’åˆ©ç”¨ã™ã‚‹ã¨ãã«èªè¨¼ã¨ã—ã¦å¼•ãæ¸¡ã™ãƒ¦ãƒ¼ã‚¶åã§ã™ã€‚"
+
+#: schemas/system_smb.schemas.in.h:1
+msgid "SMB workgroup"
+msgstr "SMB ãƒ¯ãƒ¼ã‚¯ã‚°ãƒ«ãƒ¼ãƒ—"
+
+#: schemas/system_smb.schemas.in.h:2
+msgid "The window workgroup the user is part of"
+msgstr "ãƒ¦ãƒ¼ã‚¶ãŒæ¥ç¶šã—ã¦ã„ã‚‹ Windows ãƒ¯ãƒ¼ã‚¯ã‚°ãƒ«ãƒ¼ãƒ—ã§ã™ã€‚"

@@ -70,8 +70,7 @@ typedef enum {
  * @GNOME_VFS_FILE_TYPE_BLOCK_DEVICE:
  * @GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
  *
- * Identifies the kind of file represented by a #GnomeVFSFileInfo struct. (note,
- * use of MIME types is preferred as this field may eventually disappear)
+ * Identifies the kind of file represented by a #GnomeVFSFileInfo struct. 
  **/
 
 typedef enum {
@@ -184,6 +183,8 @@ typedef enum {
 } GnomeVFSFilePermissions;
 
 
+#define GNOME_VFS_TYPE_FILE_INFO  (gnome_vfs_file_info_get_type ())
+
 /**
  * GnomeVFSFileInfo:
  * 
@@ -234,7 +235,7 @@ typedef struct {
            link points to.  */
 	char *symlink_name;
 
-	/* MIME type.  */
+	/* MIME type.  -- ascii string */
 	char *mime_type;
 
 	guint refcount;
@@ -405,6 +406,8 @@ typedef struct {
 	       : ((info)->permissions &= ~GNOME_VFS_PERM_STICKY))
 
 
+
+GType             gnome_vfs_file_info_get_type      (void);
 
 GnomeVFSFileInfo *gnome_vfs_file_info_new           (void);
 void              gnome_vfs_file_info_unref         (GnomeVFSFileInfo       *info);

@@ -1,5 +1,4 @@
 <!-- ##### SECTION Title ##### -->
-
 GnomeVFSURI
 
 <!-- ##### SECTION Short_Description ##### -->
@@ -16,11 +15,19 @@ Functions for manipulating URIs
 
 </para>
 
-<!-- ##### TYPEDEF GnomeVFSToplevelURI ##### -->
+<!-- ##### STRUCT GnomeVFSToplevelURI ##### -->
 <para>
 
 </para>
 
+@uri: 
+@host_name: 
+@host_port: 
+@user_name: 
+@password: 
+@urn: 
+@reserved1: 
+@reserved2: 
 
 <!-- ##### ENUM GnomeVFSURIHideOptions ##### -->
 <para>

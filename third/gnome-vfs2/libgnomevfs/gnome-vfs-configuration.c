@@ -53,6 +53,9 @@ struct _ModulePathElement {
 	char *method_name;
 	char *path;
 	char *args;
+
+	/* options */
+	gboolean daemon;
 };
 
 typedef struct _VfsDirSource VfsDirSource;
@@ -115,9 +118,7 @@ vfs_dir_source_free (VfsDirSource *vfs_source)
 
 
 static void
-hash_free_module_path (gpointer key,
-		       gpointer value,
-		       gpointer user_data)
+hash_free_module_path (gpointer value)
 {
 	ModulePathElement *module_path;
 
@@ -131,8 +132,6 @@ configuration_destroy (Configuration *configuration)
 {
 	g_return_if_fail (configuration != NULL);
 
-	g_hash_table_foreach (configuration->method_to_module_path,
-			      hash_free_module_path, NULL);
 	g_hash_table_destroy (configuration->method_to_module_path);
 	g_list_foreach (configuration->directories, (GFunc) vfs_dir_source_free, NULL);
 	g_list_free (configuration->directories);
@@ -215,9 +214,14 @@ parse_line (Configuration *configuration,
 	gchar *method_start;
 	char *module_name;
 	char *args = NULL;
+	char *option_start;
+	char *option;
 	GList *method_list;
 	GList *lp;
+	gboolean daemon;
 
+	daemon = FALSE;
+	
 	string_len = strlen (line_buffer);
 	if (string_len != line_len) {
 		g_warning (_("%s:%d contains NUL characters."),
@@ -264,6 +268,47 @@ parse_line (Configuration *configuration,
 	while (*p && g_ascii_isspace (*p))
 		p++;
 
+	if (*p == '[') {
+		p++;
+
+		while (TRUE) {
+			while (*p && g_ascii_isspace (*p))
+				p++;
+		
+			option_start = p;
+			while (*p && *p != ',' && *p != ']') {
+				p++;
+			}
+			
+			if (*p == '\0') {
+				g_warning (_("%s:%d has no options endmarker."),
+						   file_name, line_number);
+				retval = FALSE;
+				goto cleanup;
+			}
+
+			if (p != option_start) {
+				option = g_strndup (option_start, p - option_start);
+				if (strcmp (option, "daemon") == 0) {
+					daemon = TRUE;
+				} else {
+					g_warning (_("%s:%d has unknown options %s."),
+						   file_name, line_number, option);
+				}
+				g_free (option);
+			}
+
+			if (*p == ']') {
+				p++;
+				break;
+			}
+			p++;
+		}
+	}
+	
+	while (*p && g_ascii_isspace (*p))
+		p++;
+	
 	if (*p == '\0') {
 		if (method_list != NULL) {
 			g_warning (_("%s:%d contains no module name."),
@@ -293,6 +338,7 @@ parse_line (Configuration *configuration,
 
 		method_name = lp->data;
 		element = module_path_element_new (method_name, module_name, args);
+		element->daemon = daemon;
 		g_hash_table_insert (configuration->method_to_module_path,
 				     method_name, element);
 	}
@@ -355,7 +401,7 @@ configuration_load (void)
 	int i = 0;
 	DIR *dirh;
 
-	configuration->method_to_module_path = g_hash_table_new (g_str_hash, g_str_equal);
+	configuration->method_to_module_path = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, hash_free_module_path);
 
 	/* Go through the list of configuration directories and build up a list of config files */
 	for (list = configuration->directories; list && i < MAX_CFG_FILES; list = list->next) {
@@ -467,7 +513,7 @@ _gnome_vfs_configuration_init (void)
 		home_config = g_strdup_printf ("%s%c%s",
 					       home_dir,
 					       G_DIR_SEPARATOR,
-					       ".gnome/vfs/modules");
+					       ".gnome2/vfs/modules");
 		add_directory_internal (home_config);
 		g_free (home_config);
 	}
@@ -526,14 +572,12 @@ maybe_reload (void)
 
 	configuration->last_checked = time (NULL);
 
-	g_hash_table_foreach (configuration->method_to_module_path,
-			      hash_free_module_path, NULL);
 	g_hash_table_destroy (configuration->method_to_module_path);
 	configuration_load ();
 }
 
 const gchar *
-_gnome_vfs_configuration_get_module_path (const gchar *method_name, const char ** args)
+_gnome_vfs_configuration_get_module_path (const gchar *method_name, const char ** args, gboolean *daemon)
 {
 	ModulePathElement *element;
 
@@ -558,6 +602,8 @@ _gnome_vfs_configuration_get_module_path (const gchar *method_name, const char *
 
 	if (args)
 		*args = element->args;
+	if (daemon)
+		*daemon = element->daemon;
 	return element->path;
 }
 

@@ -179,3 +179,18 @@ _gnome_vfs_mime_sniff_buffer_get (GnomeVFSMimeSniffBuffer *buffer,
 	/* not enough data */
 	return GNOME_VFS_ERROR_EOF;
 }
+
+/*
+ * gnome_vfs_get_mime_type_for_buffer:
+ * @buffer: a sniff buffer referencing either a file or data in memory
+ *
+ * This routine uses a magic database to guess the mime type of the
+ * data represented by @buffer.
+ *
+ * Returns a pointer to an internal copy of the mime-type for @buffer.
+ */
+const char *
+gnome_vfs_get_mime_type_for_buffer (GnomeVFSMimeSniffBuffer *buffer)
+{
+	return _gnome_vfs_get_mime_type_internal (buffer, NULL, FALSE);
+}

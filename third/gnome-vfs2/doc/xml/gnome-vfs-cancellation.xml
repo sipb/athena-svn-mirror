@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-cancellation">
+<refentry id="gnome-vfs-20-gnome-vfs-cancellation">
 <refmeta>
-<refentrytitle>
-Cancellation</refentrytitle>
+<refentrytitle>Cancellation</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-Cancellation</refname><refpurpose>
+<refname>Cancellation</refname><refpurpose>
 halt in-progress operations</refpurpose>
 </refnamediv>
 
@@ -20,13 +18,15 @@ halt in-progress operations</refpurpose>
 
 <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link>* <link linkend="gnome-vfs-cancellation-new">gnome_vfs_cancellation_new</link>
                                             (void);
-void        <link linkend="gnome-vfs-cancellation-destroy">gnome_vfs_cancellation_destroy</link>  (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
-void        <link linkend="gnome-vfs-cancellation-cancel">gnome_vfs_cancellation_cancel</link>   (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-cancellation-destroy">gnome_vfs_cancellation_destroy</link>  (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-cancellation-cancel">gnome_vfs_cancellation_cancel</link>   (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="gboolean">gboolean</link>    <link linkend="gnome-vfs-cancellation-check">gnome_vfs_cancellation_check</link>    (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
-void        <link linkend="gnome-vfs-cancellation-ack">gnome_vfs_cancellation_ack</link>      (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-cancellation-ack">gnome_vfs_cancellation_ack</link>      (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="gint">gint</link>        <link linkend="gnome-vfs-cancellation-get-fd">gnome_vfs_cancellation_get_fd</link>   (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -45,7 +45,7 @@ void        <link linkend="gnome-vfs-cancellation-ack">gnome_vfs_cancellation_ac
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-cancellation-new"/>gnome_vfs_cancellation_new ()</title>
-<programlisting><link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link>* gnome_vfs_cancellation_new
+<indexterm><primary>gnome_vfs_cancellation_new</primary></indexterm><programlisting><link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link>* gnome_vfs_cancellation_new
                                             (void);</programlisting>
 <para>
 Create a new GnomeVFSCancellation object for reporting cancellation to a
@@ -58,7 +58,7 @@ GNOME VFS module.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-cancellation-destroy"/>gnome_vfs_cancellation_destroy ()</title>
-<programlisting>void        gnome_vfs_cancellation_destroy  (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<indexterm><primary>gnome_vfs_cancellation_destroy</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_cancellation_destroy  (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Destroy <parameter>cancellation</parameter>.</para>
 <para>
@@ -70,9 +70,10 @@ Destroy <parameter>cancellation</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-cancellation-cancel"/>gnome_vfs_cancellation_cancel ()</title>
-<programlisting>void        gnome_vfs_cancellation_cancel   (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<indexterm><primary>gnome_vfs_cancellation_cancel</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_cancellation_cancel   (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
-Send a cancellation request through <parameter>cancellation</parameter>.</para>
+Send a cancellation request through <parameter>cancellation</parameter>.
+Must be called on the main thread.</para>
 <para>
 
 </para><variablelist role="params">
@@ -82,7 +83,7 @@ Send a cancellation request through <parameter>cancellation</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-cancellation-check"/>gnome_vfs_cancellation_check ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_cancellation_check    (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<indexterm><primary>gnome_vfs_cancellation_check</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_cancellation_check    (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Check for pending cancellation.</para>
 <para>
@@ -96,12 +97,12 @@ Check for pending cancellation.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-cancellation-ack"/>gnome_vfs_cancellation_ack ()</title>
-<programlisting>void        gnome_vfs_cancellation_ack      (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<indexterm><primary>gnome_vfs_cancellation_ack</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_cancellation_ack      (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Acknowledge a cancellation.  This should be called if
-`<link linkend="gnome-vfs-cancellation-check">gnome_vfs_cancellation_check</link>()' returns <literal>TRUE</literal> or if `<link linkend="select">select</link>()' reports that
+`<link linkend="gnome-vfs-cancellation-check"><function>gnome_vfs_cancellation_check()</function></link>' returns <literal>TRUE</literal> or if `<link linkend="select"><function>select()</function></link>' reports that
 input is available on the file descriptor returned by
-`<link linkend="gnome-vfs-cancellation-get-fd">gnome_vfs_cancellation_get_fd</link>()'.</para>
+`<link linkend="gnome-vfs-cancellation-get-fd"><function>gnome_vfs_cancellation_get_fd()</function></link>'.</para>
 <para>
 
 </para><variablelist role="params">
@@ -111,7 +112,7 @@ input is available on the file descriptor returned by
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-cancellation-get-fd"/>gnome_vfs_cancellation_get_fd ()</title>
-<programlisting><link linkend="gint">gint</link>        gnome_vfs_cancellation_get_fd   (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<indexterm><primary>gnome_vfs_cancellation_get_fd</primary></indexterm><programlisting><link linkend="gint">gint</link>        gnome_vfs_cancellation_get_fd   (<link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Get a file descriptor -based notificator for <parameter>cancellation</parameter>.  When
 <parameter>cancellation</parameter> receives a cancellation request, a character will be made
@@ -119,7 +120,7 @@ available on the returned file descriptor for input.
 </para>
 <para>
 This is very useful for detecting cancellation during I/O operations: you
-can use the `<link linkend="select">select</link>()' call to check for available input/output on the file
+can use the `<link linkend="select"><function>select()</function></link>' call to check for available input/output on the file
 you are reading/writing, and on the notificator's file descriptor at the
 same time.  If a data is available on the notificator's file descriptor, you
 know you have to cancel the read/write operation.</para>

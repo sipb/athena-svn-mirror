@@ -62,7 +62,23 @@ G_BEGIN_DECLS
  * needs to run from within a terminal (for example, mpg123)
  **/
 #define GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL "requires_terminal"
+
+/** 
+ * GNOME_VFS_APPLICATION_REGISTRY_USES_GNOMEVFS
+ * 
+ * Application registry key for determining if an application
+ * is using gnome-vfs and thus can open any URI supported by
+ * gnome-vfs
+ */
 #define GNOME_VFS_APPLICATION_REGISTRY_USES_GNOMEVFS "uses_gnomevfs"
+
+/**
+ * GNOME_VFS_APPLICATION_REGISTRY_STARTUP_NOTIFY:
+ *
+ * Application registry key for determining if an application
+ * supports freedesktop.org-style startup notification.
+ **/
+#define GNOME_VFS_APPLICATION_REGISTRY_STARTUP_NOTIFY "startup_notify"
 	
 /*
  * Existance check

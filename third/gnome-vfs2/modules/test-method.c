@@ -586,7 +586,7 @@ vfs_module_init (const char *method_name, const char *args)
 
 	if (load_settings (conf_file) == FALSE) {
 
-	  // FIXME: we probably shouldn't use printf to output the message
+	  /* FIXME: we probably shouldn't use printf to output the message */
 	  printf (_("Didn't find a valid settings file at %s\n"), 
 		  conf_file);
 	  printf (_("Use the %s environment variable to specify a different location.\n"),

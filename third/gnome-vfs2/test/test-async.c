@@ -53,7 +53,6 @@ file_control_callback (GnomeVFSAsyncHandle *handle,
 			 gnome_vfs_result_to_string (result));
 	} else {
 		printf ("file_control result: %s\n", *(char **)operation_data);
-		g_free (operation_data);
 	}
 	
 	fprintf (stderr, "Now closing the file.\n");

@@ -1,4 +1,10 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/* 
+ * THIS METHOD IS OBSOLETE, IT HAS BEEN SUPERSEDED BY THE HTTP NEON METHOD
+ * IN http-neon-method.c AND http-proxy.c
+ */
+
 /* http-method.c - The HTTP method implementation for the GNOME Virtual File
    System.
 
@@ -62,8 +68,12 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <netdb.h>
 
-#define EAZEL_XML_NS "http://services.eazel.com/namespaces"
+/* This doesn't exist on HP/UX for example */
+#ifndef INET_ADDRSTRLEN
+#define INET_ADDRSTRLEN 16
+#endif
 
 #ifdef DEBUG_HTTP_ENABLE
 void
@@ -85,16 +95,10 @@ http_debug_printf (char *fmt, ...)
 	g_free (out);
 	va_end (args);
 }
-
-#define DEBUG_HTTP(x) my_debug_printf x
-
-/* #define ANALYZE_HTTP(x) my_debug_printf (x) */
-#define ANALYZE_HTTP(x) 
-
 #endif /* DEBUG_HTTP_ENABLE */
 
 /* What do we qualify ourselves as?  */
-/* FIXME bugzilla.eazel.com 1160: "gnome-vfs/1.0.0" may not be good. */
+/* FIXME bugzilla.gnome.org 41160: "gnome-vfs/1.0.0" may not be good. */
 #define USER_AGENT_STRING 	"gnome-vfs/" VERSION
 
 /* Custom User-Agent environment variable */
@@ -120,6 +124,8 @@ http_debug_printf (char *fmt, ...)
 #define KEY_GCONF_HTTP_AUTH_USER (PATH_GCONF_GNOME_VFS "/" "authentication_user")
 #define KEY_GCONF_HTTP_AUTH_PW (PATH_GCONF_GNOME_VFS "/" "authentication_password")
 #define KEY_GCONF_HTTP_USE_AUTH (PATH_GCONF_GNOME_VFS "/" "use_authentication")
+
+#define KEY_GCONF_HTTP_PROXY_IGNORE_HOSTS (PATH_GCONF_GNOME_VFS "/" "ignore_hosts")
 
 
 /* Some status code validation macros.  */
@@ -186,6 +192,25 @@ static GMutex *gl_mutex = NULL;		/* This mutex protects preference values
 					 */
 static gchar *gl_http_proxy = NULL;
 static gchar *gl_http_proxy_auth = NULL;
+static GSList *gl_ignore_hosts = NULL;	/* Elements are strings. */
+static GSList *gl_ignore_addrs = NULL;	/* Elements are ProxyHostAddrs */
+
+/* Store IP addresses that may represent network or host addresses and may be
+ * IPv4 or IPv6. */
+typedef enum {
+	PROXY_IPv4 = 4,
+	PROXY_IPv6 = 6
+} ProxyAddrType;
+
+typedef struct {
+	ProxyAddrType type;
+	struct in_addr addr;
+	struct in_addr mask;
+#ifdef ENABLE_IPV6
+	struct in6_addr addr6;
+	struct in6_addr mask6;
+#endif
+} ProxyHostAddr;
 
 typedef struct {
 	GnomeVFSSocketBuffer *socket_buffer;
@@ -210,6 +235,14 @@ typedef struct {
 	guint server_status;
 } HttpFileHandle;
 
+typedef struct {
+	char *username;
+	char *password;
+	char *keyring;
+	char *realm;
+	enum AuthnHeaderType type;
+} HttpAuthSave;
+
 static GnomeVFSResult resolve_409 		 (GnomeVFSMethod *method,
 						  GnomeVFSURI *uri,
 						  GnomeVFSContext *context);
@@ -219,13 +252,42 @@ static void	proxy_unset_authn 		 (void);
 static gboolean invoke_callback_send_additional_headers (GnomeVFSURI *uri,
 							 GList **list);
 static gboolean invoke_callback_headers_received (HttpFileHandle *handle);
+static gboolean invoke_callback_basic_authn_fill (HttpFileHandle *handle, 
+			     			  enum AuthnHeaderType authn_which);
 static gboolean invoke_callback_basic_authn	 (HttpFileHandle *handle, 
 			     			  enum AuthnHeaderType authn_which,
-			     			  gboolean previous_attempt_failed);
+			     			  gboolean previous_attempt_failed,
+						  HttpAuthSave **auth_save);
+static gboolean invoke_callback_save_authn	 (HttpFileHandle *handle, 
+			     			  enum AuthnHeaderType authn_which,
+						  HttpAuthSave *auth_save);
 static gboolean check_authn_retry_request 	 (HttpFileHandle * http_handle,
 			   			  enum AuthnHeaderType authn_which,
-			   			  const char *prev_authn_header);
+			   			  const char *prev_authn_header,
+						  gboolean first_request,
+						  HttpAuthSave **auth_save);
+static void parse_ignore_host 			 (gpointer data,
+						  gpointer user_data);
+#ifdef ENABLE_IPV6
+static void ipv6_network_addr 			 (const struct in6_addr *addr,
+						  const struct in6_addr *mask,
+						  struct in6_addr *res);
 
+/*Check whether the node is IPv6 enabled.*/
+static gboolean
+have_ipv6 (void)
+{
+	int s;
+
+	s = socket (AF_INET6, SOCK_STREAM, 0);
+	if (s != -1) {
+		close (s);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+#endif
 
 static GnomeVFSFileInfo *
 defaults_file_info_new (void)
@@ -361,7 +423,7 @@ http_status_to_vfs_result (guint status)
 	if (HTTP_20X (status))
 		return GNOME_VFS_OK;
 
-	/* FIXME bugzilla.eazel.com 1163 */
+	/* FIXME bugzilla.gnome.org 41163 */
 	/* mfleming--I've improved the situation slightly, but more
 	 * test cases need to be written to ensure that HTTP (esp DAV) does compatibile
 	 * things with the normal file method
@@ -551,7 +613,8 @@ parse_header (HttpFileHandle *handle,
 
 static GnomeVFSResult
 get_header (GnomeVFSSocketBuffer *socket_buffer,
-	    GString *s)
+	    GString *s,
+	    GnomeVFSCancellation *cancellation)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileSize bytes_read;
@@ -567,7 +630,7 @@ get_header (GnomeVFSSocketBuffer *socket_buffer,
 
 		/* ANALYZE_HTTP ("==> +get_header read"); */
 		result = gnome_vfs_socket_buffer_read (socket_buffer, &c, 1,
-				&bytes_read);
+						       &bytes_read, cancellation);
 		/* ANALYZE_HTTP ("==> -get_header read"); */
 
 		if (result != GNOME_VFS_OK) {
@@ -583,7 +646,7 @@ get_header (GnomeVFSSocketBuffer *socket_buffer,
 				char next;
 
 				result = gnome_vfs_socket_buffer_peekc (
-						socket_buffer, &next);
+						socket_buffer, &next, cancellation);
 				if (result != GNOME_VFS_OK) {
 					return result;
 				}
@@ -622,17 +685,23 @@ create_handle (GnomeVFSURI *uri,
 	GString *header_string;
 	GnomeVFSResult result;
 	guint server_status;
+	GnomeVFSCancellation *cancellation;
 
 	g_return_val_if_fail (p_handle != NULL, GNOME_VFS_ERROR_INTERNAL);
 
 	*p_handle = http_file_handle_new (socket_buffer, uri);
 
+	cancellation = NULL;
+	if (context != NULL) {
+		cancellation = gnome_vfs_context_get_cancellation(context);
+	}
+	
 	header_string = g_string_new (NULL);
 
 	ANALYZE_HTTP ("==> +create_handle");
 
 	/* This is the status report string, which is the first header.  */
-	result = get_header (socket_buffer, header_string);
+	result = get_header (socket_buffer, header_string, cancellation);
 	if (result != GNOME_VFS_OK) {
 		goto error;
 	}
@@ -649,7 +718,7 @@ create_handle (GnomeVFSURI *uri,
 
 	/* Header fetching loop.  */
 	for (;;) {
-		result = get_header (socket_buffer, header_string);
+		result = get_header (socket_buffer, header_string, cancellation);
 		if (result != GNOME_VFS_OK) {
 			break;
 		}
@@ -697,36 +766,41 @@ create_handle (GnomeVFSURI *uri,
  * Here's how the gconf gnome-vfs HTTP proxy variables
  * are intended to be used
  *
- * /system/gnome-vfs/use-http-proxy	
+ * /system/http_proxy/use_http_proxy	
  * 	Type: boolean
  *	If set to TRUE, the client should use an HTTP proxy to connect to all
- *	servers that are not "localhost".  The proxy is specified in other
- *	gconf variables below
+ *	servers (except those specified in the ignore_hosts key -- see below).
+ *	The proxy is specified in other gconf variables below.
  *
- * /system/gnome-vfs/http-proxy-host
+ * /system/http_proxy/host
  *	Type: string
- *	The hostname of the HTTP proxy this client should use.  If use-http-proxy
- *	is TRUE, this should be set.  If it is not set, the application should
- *	behave as if use-http-proxy is was set to FALSE.
+ *	The hostname of the HTTP proxy this client should use.  If
+ *	use-http-proxy is TRUE, this should be set.  If it is not set, the
+ *	application should behave as if use-http-proxy is was set to FALSE.
  *
- * /system/gnome-vfs/http-proxy-port
+ * /system/http_proxy/port
  *	Type: int
  *	The port number on the HTTP proxy host that the client should connect to
- *	If use-http-proxy and http-proxy-host are set but this is not set, 
- *	the application should use a default port value of 8080
+ *	If use_http_proxy and host are set but this is not set, the application
+ *	should use a default port value of 8080
  *
- * /system/gnome-vfs/http-proxy-authorization-user
+ * /system/http_proxy/authentication-user
  *	Type: string
  *	Username to pass to an authenticating HTTP proxy.
  *
- * /system/gnome-vfs/http-proxy-authorization-password
+ * /system/http_proxy/authentication_password
  *	Type: string
  *	Password to pass to an authenticating HTTP proxy.
  *  
- * /system/gnome-vfs/use-http-proxy-authorization
+ * /system/http_proxy/use-authentication
  *	Type: boolean
  * 	TRUE if the client should pass http-proxy-authorization-user and
  *	http-proxy-authorization-password an HTTP proxy
+ *
+ * /system/http_proxy/ignore_hosts
+ * 	Type: list of strings
+ * 	A list of hosts (hostnames, wildcard domains, IP addresses, and CIDR
+ * 	network addresses) that should be accessed directly.
  */
 
 static void
@@ -735,9 +809,17 @@ construct_gl_http_proxy (gboolean use_proxy)
 	g_free (gl_http_proxy);
 	gl_http_proxy = NULL;
 
+	g_slist_foreach (gl_ignore_hosts, (GFunc) g_free, NULL);
+	g_slist_free (gl_ignore_hosts);
+	gl_ignore_hosts = NULL;
+	g_slist_foreach (gl_ignore_addrs, (GFunc) g_free, NULL);
+	g_slist_free (gl_ignore_addrs);
+	gl_ignore_addrs = NULL;
+
 	if (use_proxy) {
 		char *proxy_host;
 		int   proxy_port;
+		GSList *ignore;
 
 		proxy_host = gconf_client_get_string (gl_client, KEY_GCONF_HTTP_PROXY_HOST, NULL);
 		proxy_port = gconf_client_get_int (gl_client, KEY_GCONF_HTTP_PROXY_PORT, NULL);
@@ -755,6 +837,102 @@ construct_gl_http_proxy (gboolean use_proxy)
 		
 		g_free (proxy_host);
 		proxy_host = NULL;
+
+		ignore = gconf_client_get_list (gl_client, KEY_GCONF_HTTP_PROXY_IGNORE_HOSTS, GCONF_VALUE_STRING, NULL);
+		g_slist_foreach (ignore, (GFunc) parse_ignore_host, NULL);
+		g_slist_foreach (ignore, (GFunc) g_free, NULL);
+		g_slist_free (ignore);
+		ignore = NULL;
+	}
+}
+
+static void
+parse_ignore_host (gpointer data, gpointer user_data)
+{
+	gchar *hostname, *input, *netmask;
+	gboolean ip_addr = FALSE, has_error = FALSE;
+	struct in_addr host;
+#ifdef ENABLE_IPV6
+	struct in6_addr host6;
+#endif
+	ProxyHostAddr *elt;
+	gint i;
+
+	input = (gchar*) data;
+	elt = g_new0 (ProxyHostAddr, 1);
+	if ((netmask = strchr (input, '/')) != NULL) {
+		hostname = g_strndup (input, netmask - input);
+		++netmask;
+	}
+	else {
+		hostname = g_ascii_strdown (input, -1);
+	}
+	if (inet_pton (AF_INET, hostname, &host) > 0) {
+		ip_addr = TRUE;
+		elt->type = PROXY_IPv4;
+		elt->addr.s_addr = host.s_addr;
+		if (netmask) {
+			gchar *endptr;
+			gint width = strtol (netmask, &endptr, 10);
+
+			if (*endptr != '\0' || width < 0 || width > 32) {
+				has_error = TRUE;
+			}
+			elt->mask.s_addr = htonl (~0 << width);
+			elt->addr.s_addr &= elt->mask.s_addr;
+		}
+		else {
+			elt->mask.s_addr = 0xffffffff;
+		}
+	}
+#ifdef ENABLE_IPV6
+	else if (have_ipv6 () && inet_pton (AF_INET6, hostname, &host6) > 0) {
+		ip_addr = TRUE;
+		elt->type = PROXY_IPv6;
+		for (i = 0; i < 16; ++i) {
+			elt->addr6.s6_addr[i] = host6.s6_addr[i];
+		}
+		if (netmask) {
+			gchar *endptr;
+			gint width = strtol (netmask, &endptr, 10);
+
+			if (*endptr != '\0' || width < 0 || width > 128) {
+				has_error = TRUE;
+			}
+			for (i = 0; i < 16; ++i) {
+				elt->mask6.s6_addr[i] = 0;
+			}
+			for (i=0; i < width/8; i++) {
+				elt->mask6.s6_addr[i] = 0xff;
+			}
+			elt->mask6.s6_addr[i] = (0xff << (8 - width % 8)) & 0xff;
+			ipv6_network_addr (&elt->addr6, &elt->mask6, &elt->addr6);
+		}
+		else {
+			for (i = 0; i < 16; ++i) {
+				elt->mask6.s6_addr[i] = 0xff;
+			}
+		}
+	}
+#endif
+
+	if (ip_addr) {
+		if (!has_error) {
+			gchar *dst = g_new0 (gchar, INET_ADDRSTRLEN);
+	
+			gl_ignore_addrs = g_slist_append (gl_ignore_addrs, elt);
+			DEBUG_HTTP (("Host %s/%s does not go through proxy.",
+					hostname,
+					inet_ntop(AF_INET, &elt->mask, dst, INET_ADDRSTRLEN)));
+			g_free (dst);
+		}
+		g_free (hostname);
+	}
+	else {
+		/* It is a hostname. */
+		gl_ignore_hosts = g_slist_append (gl_ignore_hosts, hostname);
+		DEBUG_HTTP (("Host %s does not go through proxy.", hostname));
+		g_free (elt);
 	}
 }
 
@@ -794,6 +972,7 @@ notify_gconf_value_changed (GConfClient *client,
 	key = gconf_entry_get_key (entry);
 
 	if (strcmp (key, KEY_GCONF_USE_HTTP_PROXY) == 0
+	    || strcmp (key, KEY_GCONF_HTTP_PROXY_IGNORE_HOSTS) == 0
 	    || strcmp (key, KEY_GCONF_HTTP_PROXY_HOST) == 0
 	    || strcmp (key, KEY_GCONF_HTTP_PROXY_PORT) == 0) {
 		gboolean use_proxy_value;
@@ -849,27 +1028,104 @@ host_port_from_string (const char *http_proxy,
 	return TRUE;
 }
 
+/* FIXME: should be done using AC_REPLACE_FUNCS */
+#ifndef HAVE_INET_PTON
+static int
+inet_pton(int af, const char *hostname, void *pton)
+{
+	struct in_addr in;
+	if (!inet_aton(hostname, &in))
+	    return 0;
+	memcpy(pton, &in, sizeof(in));
+	return 1;
+}
+#endif
+
+#ifdef ENABLE_IPV6
+static void
+ipv6_network_addr (const struct in6_addr *addr, const struct in6_addr *mask, struct in6_addr *res)
+{
+	gint i;
+
+	for (i = 0; i < 16; ++i) {
+		res->s6_addr[i] = addr->s6_addr[i] & mask->s6_addr[i];
+	}
+}
+#endif
+
 static gboolean
 proxy_should_for_hostname (const char *hostname)
 {
-	struct in_addr in, in_loop, in_mask;
-	gboolean ret;
+#ifdef ENABLE_IPV6
+	struct in6_addr in6, net6;
+#endif
+	struct in_addr in;
+	GSList *elt;
+	ProxyHostAddr *addr;
 
-	ret = TRUE;
 
-	/* Don't force "localhost" or 127.x.x.x through the proxy */
-	/* This is a special case that we'd like to generalize into a gconf config */
+	/* IPv4 address */
+	if (inet_pton (AF_INET, hostname, &in) > 0) {
+		for (elt = gl_ignore_addrs; elt; elt = g_slist_next (elt)) {
+			addr = (ProxyHostAddr*) (elt->data);
+			if (addr->type == PROXY_IPv4
+			    && (in.s_addr & addr->mask.s_addr) == addr->addr.s_addr) {
+				DEBUG_HTTP (("Host %s using direct connection.", hostname)); 
+				return FALSE;
+			}
+		}
+	}
+#ifdef ENABLE_IPV6
+	else if (have_ipv6 () && inet_pton (AF_INET6, hostname, &in6)) {
+		for (elt = gl_ignore_addrs; elt; elt = g_slist_next (elt)) {
+			addr = (ProxyHostAddr*) (elt->data);
+			ipv6_network_addr (&in6, &addr->mask6, &net6);
+			if (addr->type == PROXY_IPv6 
+			    && IN6_ARE_ADDR_EQUAL (&net6, &addr->addr6)) {
+				DEBUG_HTTP (("Host %s using direct connection.", hostname)); 
+				return FALSE;
+			}
+			/* Handle IPv6-wrapped IPv4 addresses. */
+			else if (addr->type == PROXY_IPv4
+			         && IN6_IS_ADDR_V4MAPPED (&net6)) {
+				guint32 v4addr;
 
-	inet_aton("127.0.0.0", &in_loop); 
-	inet_aton("255.0.0.0", &in_mask); 
+				v4addr = net6.s6_addr[12] << 24 | net6.s6_addr[13] << 16 | net6.s6_addr[14] << 8 | net6.s6_addr[15];
+				if ((v4addr & addr->mask.s_addr) != addr->addr.s_addr) {
+					DEBUG_HTTP (("Host %s using direct connection.", hostname)); 
+					return FALSE;
+				}
+			}
+		}
+	}
+#endif
+	/* All hostnames (foo.bar.com) -- independent of IPv4 or IPv6 */
 
-	if (hostname != NULL 
-		&& (g_ascii_strcasecmp (hostname, "localhost") == 0 || (inet_aton (hostname, &in) != 0
-			&& ((in.s_addr & in_mask.s_addr) == in_loop.s_addr)))) {
-		ret = FALSE;
+	/* If there are IPv6 addresses in the ignore_hosts list but we do not
+	 * have IPv6 available at runtime, then those addresses will also fall
+	 * through to here (and harmlessly fail to match). */
+	else {
+		gchar *hn = g_ascii_strdown (hostname, -1);
+
+		for (elt = gl_ignore_hosts; elt; elt = g_slist_next (elt)) {
+			if (*(gchar*) (elt->data) == '*' ) {
+				if (g_str_has_suffix (hn,
+						(gchar*) (elt->data) + 1)) {
+					DEBUG_HTTP (("Host %s using direct connection.", hn));
+					g_free (hn);
+					return FALSE;
+				}
+			}
+			else if (strcmp (hn, elt->data) == 0) {
+				DEBUG_HTTP (("Host %s using direct connection.", hn));
+				g_free (hn);
+				return FALSE;
+			}			
+		}
+		g_free (hn);
 	}
 
-	return ret;
+	return TRUE;
 }
 
 static char *
@@ -963,7 +1219,8 @@ https_proxy (GnomeVFSSocket **socket_return,
 	     gchar *proxy_host,
 	     gint proxy_port,
 	     gchar *server_host,
-	     gint server_port)
+	     gint server_port,
+	     GnomeVFSCancellation *cancellation)
 {
 	/* use CONNECT to do https proxying. It goes something like this:
 	 * >CONNECT server:port HTTP/1.0
@@ -990,7 +1247,7 @@ https_proxy (GnomeVFSSocket **socket_return,
 	gint fd;
 
 	result = gnome_vfs_inet_connection_create (&http_connection, 
-			proxy_host, proxy_port, NULL);
+			proxy_host, proxy_port, cancellation);
 
 	if (result != GNOME_VFS_OK) {
 		return result;
@@ -1003,39 +1260,39 @@ https_proxy (GnomeVFSSocket **socket_return,
 	buffer = g_strdup_printf ("CONNECT %s:%d HTTP/1.0\r\n\r\n",
 			server_host, server_port);
 	result = gnome_vfs_socket_write (http_socket, buffer, strlen(buffer),
-			&bytes);
+					 &bytes, cancellation);
 	g_free (buffer);
 
 	if (result != GNOME_VFS_OK) {
-		gnome_vfs_socket_close (http_socket);
+		gnome_vfs_socket_close (http_socket, cancellation);
 		return result;
 	}
 
 	buffer = proxy_get_authn_header_for_uri (NULL); /* FIXME need uri */
 	if (buffer != NULL) {
 		result = gnome_vfs_socket_write (http_socket, buffer, 
-				strlen(buffer), &bytes);
+						 strlen(buffer), &bytes, cancellation);
 		g_free (buffer);
 	}
 
 	if (result != GNOME_VFS_OK) {
-		gnome_vfs_socket_close (http_socket);
+		gnome_vfs_socket_close (http_socket, cancellation);
 		return result;
 	}
 
 	bytes = 8192;
 	buffer = g_malloc0 (bytes);
 
-	result = gnome_vfs_socket_read (http_socket, buffer, bytes-1, &bytes);
+	result = gnome_vfs_socket_read (http_socket, buffer, bytes-1, &bytes, cancellation);
 
 	if (result != GNOME_VFS_OK) {
-		gnome_vfs_socket_close (http_socket);
+		gnome_vfs_socket_close (http_socket, cancellation);
 		g_free (buffer);
 		return result;
 	}
 
 	if (!parse_status (buffer, &status_code)) {
-		gnome_vfs_socket_close (http_socket);
+		gnome_vfs_socket_close (http_socket, cancellation);
 		g_free (buffer);
 		return GNOME_VFS_ERROR_PROTOCOL_ERROR;
 	}
@@ -1043,7 +1300,7 @@ https_proxy (GnomeVFSSocket **socket_return,
 	result = http_status_to_vfs_result (status_code);
 
 	if (result != GNOME_VFS_OK) {
-		gnome_vfs_socket_close (http_socket);
+		gnome_vfs_socket_close (http_socket, cancellation);
 		g_free (buffer);
 		return result;
 	}
@@ -1053,10 +1310,10 @@ https_proxy (GnomeVFSSocket **socket_return,
 
 	g_free (buffer);
 
-	result = gnome_vfs_ssl_create_from_fd (&ssl, fd);
+	result = gnome_vfs_ssl_create_from_fd (&ssl, fd, cancellation);
 
 	if (result != GNOME_VFS_OK) {
-		gnome_vfs_socket_close (http_socket);
+		gnome_vfs_socket_close (http_socket, cancellation);
 		return result;
 	}
 
@@ -1093,7 +1350,9 @@ connect_to_uri (
 	g_return_val_if_fail (toplevel_uri != NULL, GNOME_VFS_ERROR_INTERNAL);
 
 	if (!g_ascii_strcasecmp (gnome_vfs_uri_get_scheme (&toplevel_uri->uri), 
-				"https")) {
+				"https") ||
+	    !g_ascii_strcasecmp (gnome_vfs_uri_get_scheme (&toplevel_uri->uri), 
+				"davs")) {
 		if (!gnome_vfs_ssl_enabled ()) {
 			return GNOME_VFS_ERROR_NOT_SUPPORTED;
 		}
@@ -1122,7 +1381,7 @@ connect_to_uri (
 			*p_proxy_connect = FALSE;
 
 			result = https_proxy (&socket, proxy_host, proxy_port,
-					toplevel_uri->host_name, host_port);
+					toplevel_uri->host_name, host_port, cancellation);
 
 			g_free (proxy_host);
 			proxy_host = NULL;
@@ -1152,7 +1411,7 @@ connect_to_uri (
 
 		if (https) {
 			result = gnome_vfs_ssl_create (&ssl, 
-					toplevel_uri->host_name, host_port);
+					toplevel_uri->host_name, host_port, cancellation);
 
 			if (result != GNOME_VFS_OK) {
 				return result;
@@ -1174,7 +1433,7 @@ connect_to_uri (
 	*p_socket_buffer = gnome_vfs_socket_buffer_new (socket);
 
 	if (*p_socket_buffer == NULL) {
-		gnome_vfs_socket_close (socket);
+		gnome_vfs_socket_close (socket, cancellation);
 		return GNOME_VFS_ERROR_INTERNAL;
 	}
 
@@ -1185,7 +1444,7 @@ error:
 }
 
 static GString *
-build_request (const char * method, GnomeVFSToplevelURI * toplevel_uri, gboolean proxy_connect)
+build_request (const char * method, GnomeVFSToplevelURI * toplevel_uri, gboolean proxy_connect, gboolean force_slash_at_end)
 {
 	gchar *uri_string = NULL;
 	GString *request;
@@ -1208,6 +1467,14 @@ build_request (const char * method, GnomeVFSToplevelURI * toplevel_uri, gboolean
 						      | GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD);
 	}
 
+	if (force_slash_at_end && uri_string[strlen (uri_string) - 1] != '/') {
+		char *tmp;
+
+		tmp = uri_string;
+		uri_string = g_strconcat (tmp, "/", NULL);
+		g_free (tmp);
+	}
+	
 	/* Request line.  */
 	request = g_string_new ("");
 
@@ -1224,7 +1491,7 @@ build_request (const char * method, GnomeVFSToplevelURI * toplevel_uri, gboolean
 		g_string_append_printf (request, "Host: %s:%d\r\n",
 					toplevel_uri->host_name, toplevel_uri->host_port);
 	} else {
-		g_string_append_printf (request, "Host: %s:80\r\n",
+		g_string_append_printf (request, "Host: %s\r\n",
 					toplevel_uri->host_name);
 	}
 
@@ -1246,7 +1513,8 @@ build_request (const char * method, GnomeVFSToplevelURI * toplevel_uri, gboolean
 static GnomeVFSResult
 xmit_request (GnomeVFSSocketBuffer *socket_buffer, 
 	      GString *request, 
-	      GByteArray *data)
+	      GByteArray *data,
+	      GnomeVFSCancellation *cancellation)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileSize bytes_written;
@@ -1255,7 +1523,8 @@ xmit_request (GnomeVFSSocketBuffer *socket_buffer,
 
 	/* Transmit the request headers.  */
 	result = gnome_vfs_socket_buffer_write (socket_buffer, request->str, 
-			request->len, &bytes_written);
+						request->len, &bytes_written,
+						cancellation);
 
 	if (result != GNOME_VFS_OK) {
 		goto error;
@@ -1266,17 +1535,28 @@ xmit_request (GnomeVFSSocketBuffer *socket_buffer,
 		ANALYZE_HTTP ("==> Writing data");
 		
 		result = gnome_vfs_socket_buffer_write (socket_buffer, 
-				data->data, data->len, &bytes_written);
+							data->data, data->len, &bytes_written,
+							cancellation);
 	}
 
 	if (result != GNOME_VFS_OK) {
 		goto error;
 	}
 
-	result = gnome_vfs_socket_buffer_flush (socket_buffer);	
+	result = gnome_vfs_socket_buffer_flush (socket_buffer, cancellation);	
 
 error:
 	return result;
+}
+
+static void
+http_auth_save_free (HttpAuthSave *auth_save)
+{
+	g_free (auth_save->username);
+	g_free (auth_save->password);
+	g_free (auth_save->keyring);
+	g_free (auth_save->realm);
+	g_free (auth_save);
 }
 
 static GnomeVFSResult
@@ -1285,7 +1565,8 @@ make_request (HttpFileHandle **handle_return,
 	      const gchar *method,
 	      GByteArray *data,
 	      gchar *extra_headers,
-	      GnomeVFSContext *context)
+	      GnomeVFSContext *context,
+	      gboolean force_slash_at_end)
 {
 	GnomeVFSSocketBuffer *socket_buffer;
 	GnomeVFSResult result;
@@ -1294,12 +1575,20 @@ make_request (HttpFileHandle **handle_return,
 	gboolean proxy_connect;
 	char *authn_header_request;
 	char *authn_header_proxy;
-
+	gboolean first_auth;
+	HttpAuthSave *auth_save;
+	GnomeVFSCancellation *cancellation;
+	
 	g_return_val_if_fail (handle_return != NULL, GNOME_VFS_ERROR_INTERNAL);
  	*handle_return = NULL;
 
 	ANALYZE_HTTP ("==> +make_request");
 
+	cancellation = NULL;
+	if (context != NULL) {
+		cancellation = gnome_vfs_context_get_cancellation(context);
+	}
+	
 	request 		= NULL;
 	proxy_connect 		= FALSE;
 	authn_header_request	= NULL;
@@ -1307,6 +1596,8 @@ make_request (HttpFileHandle **handle_return,
 	
 	toplevel_uri = (GnomeVFSToplevelURI *) uri;
 
+	first_auth = TRUE;
+	auth_save = NULL;
 	for (;;) {
 		GList *list;
 
@@ -1320,8 +1611,9 @@ make_request (HttpFileHandle **handle_return,
 		if (result != GNOME_VFS_OK) {
 			break;
 		}
-		
-		request = build_request (method, toplevel_uri, proxy_connect);
+
+		request = build_request (method, toplevel_uri, proxy_connect,
+					 force_slash_at_end);
 
 		authn_header_request = http_authn_get_header_for_uri (uri);
 
@@ -1365,7 +1657,7 @@ make_request (HttpFileHandle **handle_return,
 		/* Empty line ends header section.  */
 		g_string_append (request, "\r\n");
 
-		result = xmit_request (socket_buffer, request, data);
+		result = xmit_request (socket_buffer, request, data, cancellation);
 		g_string_free (request, TRUE);
 		request = NULL;
 
@@ -1380,22 +1672,39 @@ make_request (HttpFileHandle **handle_return,
 			socket_buffer = NULL;
 			break;
 		}
-
 		if ((*handle_return)->server_status == HTTP_STATUS_UNAUTHORIZED) {
-			if (! check_authn_retry_request (*handle_return, AuthnHeader_WWW, authn_header_request)) {
+			if (auth_save != NULL) {
+				http_auth_save_free (auth_save);
+				auth_save = NULL;
+			}
+			if (! check_authn_retry_request (*handle_return, AuthnHeader_WWW, authn_header_request, first_auth, &auth_save)) {
 				break;
 			}
 		} else if ((*handle_return)->server_status == HTTP_STATUS_PROXY_AUTH_REQUIRED) {
-			if (! check_authn_retry_request (*handle_return, AuthnHeader_WWW, authn_header_proxy)) {
+			if (auth_save != NULL) {
+				http_auth_save_free (auth_save);
+				auth_save = NULL;
+			}
+			if (! check_authn_retry_request (*handle_return, AuthnHeader_Proxy, authn_header_proxy, first_auth, &auth_save)) {
 				break;
 			}
 		} else {
 			break;
 		}
+		first_auth = FALSE;
 		http_file_handle_destroy (*handle_return);
 		*handle_return = NULL;
 	}
 
+	if (auth_save != NULL) {
+		invoke_callback_save_authn (*handle_return,
+					    auth_save->type,
+					    auth_save);
+		
+		http_auth_save_free (auth_save);
+		auth_save = NULL;
+	}
+	
 	g_free (authn_header_request);
 	g_free (authn_header_proxy);
 
@@ -1409,7 +1718,7 @@ make_request (HttpFileHandle **handle_return,
 	}
 	
 	if (socket_buffer != NULL) {
-		gnome_vfs_socket_buffer_destroy (socket_buffer, TRUE);
+		gnome_vfs_socket_buffer_destroy (socket_buffer, TRUE, cancellation);
 	}
 	
 	ANALYZE_HTTP ("==> -make_request");
@@ -1420,13 +1729,20 @@ static void
 http_handle_close (HttpFileHandle *handle, 
 		   GnomeVFSContext *context)
 {
+	GnomeVFSCancellation *cancellation;
+	
 	ANALYZE_HTTP ("==> +http_handle_close");
+	
+	cancellation = NULL;
+	if (context != NULL) {
+		cancellation = gnome_vfs_context_get_cancellation(context);
+	}
 	
 	if (handle != NULL) {
 		if (handle->socket_buffer) {
-			gnome_vfs_socket_buffer_flush (handle->socket_buffer);
+			gnome_vfs_socket_buffer_flush (handle->socket_buffer, cancellation);
 			gnome_vfs_socket_buffer_destroy (handle->socket_buffer,
-							 TRUE);
+							 TRUE, cancellation);
 			handle->socket_buffer = NULL;
 		}
 
@@ -1457,7 +1773,7 @@ do_open (GnomeVFSMethod *method,
 	
 	if (mode & GNOME_VFS_OPEN_READ) {
 		result = make_request (&handle, uri, "GET", NULL, NULL,
-				       context);
+				       context, FALSE);
 	} else {
 		handle = http_file_handle_new(NULL, uri); /* shrug */
 	}
@@ -1488,7 +1804,7 @@ do_create (GnomeVFSMethod *method,
 	 * playing with LOCK, but mod_dav cannot. */
 	HttpFileHandle *handle;
 	GnomeVFSResult result;
-	GByteArray *bytes = g_byte_array_new();
+	GByteArray *bytes;
 	
 	ANALYZE_HTTP ("==> +do_create");
 	DEBUG_HTTP (("+Create URI: '%s'", gnome_vfs_uri_get_path (uri)));
@@ -1505,7 +1821,7 @@ do_create (GnomeVFSMethod *method,
 		ANALYZE_HTTP ("==> Checking to see if file exists");
 		
 		result = make_request (&handle, uri, "HEAD", NULL, NULL,
-				       context);
+				       context, FALSE);
 		http_handle_close (handle, context);
 		
 		if (result != GNOME_VFS_OK &&
@@ -1518,14 +1834,15 @@ do_create (GnomeVFSMethod *method,
 	}
 	
 	ANALYZE_HTTP ("==> Creating initial file");
-	
-      	result = make_request (&handle, uri, "PUT", bytes, NULL, context);
+	bytes  = g_byte_array_new();
+      	result = make_request (&handle, uri, "PUT", bytes, NULL, context, FALSE);
 	http_handle_close(handle, context);
-	
+	g_byte_array_free (bytes, TRUE);
+		
 	if (result != GNOME_VFS_OK) {
 		/* the PUT failed */
 		
-		/* FIXME bugzilla.eazel.com 5131
+		/* FIXME bugzilla.gnome.org 45131
 		 * If you PUT a file with an invalid name to Xythos, it 
 		 * returns a 403 Forbidden, which is different from the behaviour
 		 * in MKCOL or MOVE.  Unfortunately, it is not possible to discern whether 
@@ -1540,10 +1857,7 @@ do_create (GnomeVFSMethod *method,
 		return result;
 	}
 
-	/* clean up */
-	g_byte_array_free (bytes, TRUE);
-	
-	/* FIXME bugzilla.eazel.com 1159: do we need to do something more intelligent here? */
+	/* FIXME bugzilla.gnome.org 41159: do we need to do something more intelligent here? */
 	result = do_open (method, method_handle, uri, GNOME_VFS_OPEN_WRITE, context);
 
 	DEBUG_HTTP (("-Create (%d) handle:0x%08x", result, (unsigned int)handle));
@@ -1598,7 +1912,7 @@ do_close (GnomeVFSMethod *method,
 
 		ANALYZE_HTTP ("==> doing PUT");
 		result = make_request (&new_handle, uri, "PUT", bytes, 
-				       extraheader, context);
+				       extraheader, context, FALSE);
 		g_free (extraheader);
 		http_handle_close (new_handle, context);
 	} else {
@@ -1649,10 +1963,17 @@ do_read (GnomeVFSMethod *method,
 {
 	HttpFileHandle *handle;
 	GnomeVFSResult result;
+	GnomeVFSCancellation *cancellation;
 
 	ANALYZE_HTTP ("==> +do_read");
 	DEBUG_HTTP (("+Read handle=0x%08x", (unsigned int) method_handle));
 
+	cancellation = NULL;
+	if (context != NULL) {
+		cancellation = gnome_vfs_context_get_cancellation(context);
+	}
+
+	
 	handle = (HttpFileHandle *) method_handle;
 
 	if (handle->file_info->flags & GNOME_VFS_FILE_INFO_FIELDS_SIZE) {
@@ -1663,7 +1984,7 @@ do_read (GnomeVFSMethod *method,
 	}
 
 	result = gnome_vfs_socket_buffer_read (handle->socket_buffer, buffer, 
-			num_bytes, bytes_read);
+					       num_bytes, bytes_read, cancellation);
 	
 	if (*bytes_read == 0) {
 		return GNOME_VFS_ERROR_EOF;
@@ -1677,7 +1998,25 @@ do_read (GnomeVFSMethod *method,
 	return result;
 }
 
+
 /* Directory handling - WebDAV servers only */
+static void
+process_resourcetype_node (GnomeVFSFileInfo *file_info, xmlNodePtr node)
+{
+	xmlNodePtr it;
+	
+	file_info->valid_fields |= 
+		GNOME_VFS_FILE_INFO_FIELDS_TYPE;
+	file_info->type = GNOME_VFS_FILE_TYPE_REGULAR;
+	
+	for (it = node->xmlChildrenNode; it != NULL; it = it->next) {
+		if ((!xmlIsBlankNode (it))
+		    && (it->name != NULL)
+		    && (strcmp (it->name, "collection") == 0)) {
+			file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
+		}
+	}
+}
 
 static void
 process_propfind_propstat (xmlNodePtr node, 
@@ -1718,26 +2057,14 @@ process_propfind_propstat (xmlNodePtr node,
 							GNOME_VFS_FILE_INFO_FIELDS_MTIME 
 							| GNOME_VFS_FILE_INFO_FIELDS_CTIME;
 					}
-				} else if (strcmp ((char *)l->name, "nautilus-treat-as-directory") == 0
-					   && l->ns != NULL && l->ns->href != NULL
-					   && strcmp (l->ns->href, EAZEL_XML_NS) == 0
-					   && g_ascii_strcasecmp (node_content_xml, "TRUE") == 0) {
-					treat_as_directory = TRUE;
-				}
+				} 
 				/* Unfortunately, we don't have a mapping for "creationdate" */
 
 				xmlFree (node_content_xml);
 				node_content_xml = NULL;
 			}
 			if (strcmp ((char *)l->name, "resourcetype") == 0) {
-				file_info->valid_fields |= 
-					GNOME_VFS_FILE_INFO_FIELDS_TYPE;
-				file_info->type = GNOME_VFS_FILE_TYPE_REGULAR;
-				
-				if (l->xmlChildrenNode && l->xmlChildrenNode->name 
-				    && strcmp ((char *)l->xmlChildrenNode->name, "collection") == 0) {
-					file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
-				}
+				process_resourcetype_node (file_info, l);
 			}
 			l = l->next;
 		}
@@ -1770,31 +2097,6 @@ process_propfind_propstat (xmlNodePtr node,
 		file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_TYPE;
 		file_info->type = GNOME_VFS_FILE_TYPE_REGULAR;
 	}
-}
-
-/* The problem here: Eazel Vault returns "https:" URI's which GnomeVFS doesn't recognize
- * So, if it's an https: uri scheme, just change it to "http" and we'll all be happy
- */
-static GnomeVFSURI *
-propfind_href_to_vfs_uri (const char *propfind_href_uri)
-{
-#ifdef THIS_IS_EVIL_AND_NOBODY_NEEDS_IT_ANY_MORE
-	size_t https_len = strlen ("https:");
-	GnomeVFSURI *ret;
-
-	if (strncmp (propfind_href_uri, "https:", https_len) == 0) {
-		char *new_uri;
-		new_uri = g_strconcat ("http:", https_len + propfind_href_uri, NULL);
-		ret = gnome_vfs_uri_new (new_uri);
-		g_free (new_uri);
-	} else {
-		ret = gnome_vfs_uri_new (propfind_href_uri);
-	}
-	
-	return ret;
-#else
-	return gnome_vfs_uri_new (propfind_href_uri);
-#endif
 }
 
 /* a strcmp that doesn't barf on NULLs */
@@ -1848,12 +2150,7 @@ unescape_unreserved_chars (const char *in_string)
 			*write_char++ = *read_char;
 		}
 	}
-	*write_char++ = '\0';
-	
-	if (strlen (in_string) != strlen (ret)) {
-		DEBUG_HTTP (("unescape_unreserved from '%s' to '%s'"));
-	}
-	
+	*write_char++ = '\0';       	
 	
 	return ret;
 }
@@ -1876,19 +2173,21 @@ find_child_node_named (xmlNodePtr node,
 	return NULL;
 }
 
-static guint
-get_propstat_status (xmlNodePtr propstat_node, 
-		     guint *p_status_code)
+/* Look for a <status> tag in the children of node, and returns
+ * the corresponding (HTTP) error code
+ */
+static gboolean
+get_status_node (xmlNodePtr node, guint *status_code)
 {
 	xmlNodePtr status_node;
 	char *status_string;
 	gboolean ret;
 
-	status_node = find_child_node_named (propstat_node, "status");
+	status_node = find_child_node_named (node, "status");
 
 	if (status_node != NULL) {
 		status_string =	xmlNodeGetContent (status_node);
-		ret = parse_status (status_string, p_status_code);
+		ret = parse_status (status_string, status_code);
 		xmlFree (status_string);
 	} else {
 		ret = FALSE;
@@ -1916,23 +2215,31 @@ process_propfind_response(xmlNodePtr n,
 			
 			if (nodecontent != NULL && *nodecontent != '\0' && rv == GNOME_VFS_OK) {
 				gint len;
-				GnomeVFSURI *uri = propfind_href_to_vfs_uri (nodecontent);
+				GnomeVFSURI *uri = gnome_vfs_uri_new (nodecontent);
 				
 				if (uri != NULL) {
 					if ((0 == null_handling_strcmp (base_uri->text, uri->text)) ||
 					    (0 == null_handling_strcmp (second_base->text, uri->text))) {
 						file_info->name = NULL; /* this file is the . directory */
 					} else {
-						/* extract_short_name returns unescaped */
+						if (file_info->name != NULL) {
+							/* Don't leak if a (potentially malicious)
+							 * server returns several href in its answer
+							 */
+							g_free (file_info->name);
+						}
 						file_info->name = gnome_vfs_uri_extract_short_name (uri);
-						gnome_vfs_uri_unref (uri);
-						
-						len = strlen (file_info->name) -1;
-						if (file_info->name[len] == '/') {
-							/* trim trailing `/` - it confuses stuff */
-							file_info->name[len] = '\0';
+						if (file_info->name != NULL) {
+							len = strlen (file_info->name) -1;
+							if (file_info->name[len] == '/') {
+								/* trim trailing `/` - it confuses stuff */
+								file_info->name[len] = '\0';
+							}
+						} else {
+							g_warning ("Invalid filename in PROPFIND '%s'; silently skipping", nodecontent);
 						}
 					}
+					gnome_vfs_uri_unref (uri);
 				} else {
 					g_warning ("Can't make URI from href in PROPFIND '%s'; silently skipping", nodecontent);
 				}
@@ -1942,7 +2249,7 @@ process_propfind_response(xmlNodePtr n,
 
 			xmlFree (nodecontent);
 		} else if (strcmp ((char *)n->name, "propstat") == 0) {
-			if (get_propstat_status (n, &status_code) && status_code == 200) {
+			if (get_status_node (n, &status_code) && status_code == 200) {
 				process_propfind_propstat (n->xmlChildrenNode, file_info);
 			}
 		}
@@ -1955,12 +2262,55 @@ process_propfind_response(xmlNodePtr n,
 }
 
 
+static gint /* GCompareFunc */
+http_glist_find_header (gconstpointer a, gconstpointer b)
+{
+	if ( NULL != a && NULL != b) {
+		return g_ascii_strncasecmp ( (const char *)a, (const char *)b, strlen((const char *)b));
+	} else {
+		return -1;
+	}
+}
+
+static char *
+redirect_parse_response_header (GList *response_headers)
+{
+	char *header;
+	const char *uri;
+	GList *node;
+	
+	node = g_list_find_custom (response_headers, (gpointer)"Location:", http_glist_find_header);
+	for (; node != NULL 
+	     ; node = g_list_find_custom (g_list_next (node), (gpointer)"Location:", http_glist_find_header)) {
+
+		header = (char *)node->data;
+
+		/* skip through the header name */
+		uri = strchr (header, (unsigned char)':');
+
+		if (uri == NULL) {
+			continue;
+		}
+
+		uri++;
+
+		/* skip to the uri */
+		for (; *uri != '\0' 
+			&& (*uri == ' ' || *uri == '\t') 
+		     ; uri++);
+
+		return g_strdup (uri);
+	}
+	return NULL;
+}
+
 
 static GnomeVFSResult
 make_propfind_request (HttpFileHandle **handle_return,
-	GnomeVFSURI *uri,
-	gint depth,
-	GnomeVFSContext *context)
+		       GnomeVFSURI *uri,
+		       gint depth,
+		       GnomeVFSContext *context,
+		       gboolean force_slash_at_end)
 {
 	GnomeVFSResult result = GNOME_VFS_OK;
 	GnomeVFSFileSize bytes_read, num_bytes=(64*1024);
@@ -1970,18 +2320,19 @@ make_propfind_request (HttpFileHandle **handle_return,
 	xmlNodePtr cur = NULL;
 	char *extraheaders = g_strdup_printf("Depth: %d\r\n", depth);
 	gboolean found_root_node_props;
+	char *redirect_to;
+	int redirect_depth;
+	GnomeVFSURI *redirect_uri;
 
 	GByteArray *request = g_byte_array_new();
 	char *request_str = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
-		"<D:propfind xmlns:D=\"DAV:\" xmlns:ns1000=\"" EAZEL_XML_NS "\">"
+		"<D:propfind xmlns:D=\"DAV:\" >"
 		"<D:prop>"
                 "<D:creationdate/>"
                 "<D:getcontentlength/>"
                 "<D:getcontenttype/>"
                 "<D:getlastmodified/>"
                 "<D:resourcetype/>"
-                "<ns1000:nautilus-treat-as-directory/>"
-		/*"<D:allprop/>"*/
 		"</D:prop>"
 		"</D:propfind>";
 
@@ -1996,10 +2347,37 @@ make_propfind_request (HttpFileHandle **handle_return,
 		http_cache_invalidate_uri_and_children (uri);
 	}
 
+	redirect_depth = 0;
+	redirect_uri = NULL;
+ redirect:
 	result = make_request (handle_return, uri, "PROPFIND", request, 
-			       extraheaders, context);
+			       extraheaders, context,
+			       (redirect_depth == 0) ? force_slash_at_end : FALSE);
+
+	/* Handle PROPFIND redirects. We often get this because we missed a / at the end
+	   of the uri for a folder */
+	if (result == GNOME_VFS_OK &&
+	    ((*handle_return)->server_status == 301 ||
+	     (*handle_return)->server_status == 302)) {
+		redirect_to = redirect_parse_response_header ((*handle_return)->response_headers);
+		redirect_depth++;
+		if (redirect_to != NULL && redirect_depth < 7) {
+			if (redirect_uri != NULL) {
+				gnome_vfs_uri_unref (redirect_uri);
+			}
+			redirect_uri = gnome_vfs_uri_new (redirect_to);
+
+			uri = redirect_uri;
+			http_handle_close (*handle_return, context);
+			*handle_return = NULL;
+			g_free (redirect_to);
+			goto redirect;
+		}
+		g_free (redirect_to);
+		result = GNOME_VFS_ERROR_TOO_MANY_LINKS;
+	}
 	
-	/* FIXME bugzilla.eazel.com 3834: It looks like some http
+	/* FIXME bugzilla.gnome.org 43834: It looks like some http
 	 * servers (eg, www.yahoo.com) treat PROPFIND as a GET and
 	 * return a 200 OK. Others may return access denied errors or
 	 * redirects or any other legal response. This case probably
@@ -2007,6 +2385,13 @@ make_propfind_request (HttpFileHandle **handle_return,
 	 */
 	if (result == GNOME_VFS_OK && (*handle_return)->server_status != 207) { /* Multi-Status */
 		DEBUG_HTTP (("HTTP server returned an invalid PROPFIND response: %d", (*handle_return)->server_status));
+		result = GNOME_VFS_ERROR_NOT_SUPPORTED;
+	}
+	/* Some servers (download.microsoft.com) will just close
+	 * the connection (EOF) without returning any HTTP status.
+	 */
+	if (result == GNOME_VFS_ERROR_EOF) {
+		DEBUG_HTTP (("HTTP server returned an empty PROPFIND response"));
 		result = GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 	
@@ -2018,7 +2403,6 @@ make_propfind_request (HttpFileHandle **handle_return,
 			if (result != GNOME_VFS_OK ) {
 				break;
 			}
-			
 			xmlParseChunk (parserContext, buffer, bytes_read, 0);
 			buffer[bytes_read]=0;
 		} while (bytes_read > 0);
@@ -2039,21 +2423,44 @@ make_propfind_request (HttpFileHandle **handle_return,
 		result = GNOME_VFS_ERROR_GENERIC;
 		goto cleanup;
 	}
-	
+
+#if 0
+	/* Enable this block of code if you want to dump the xml answer
+	 * sent by the server 
+	 */
+	{
+		xmlChar *query_result;
+		int result_len;
+		xmlDocDumpMemory (doc, &query_result, &result_len);
+		g_print ("propfind query result: %s\n", query_result);
+		g_free (query_result);
+	}	
+#endif
+
 	cur = doc->xmlRootNode;
-	
 	if (strcmp ((char *)cur->name, "multistatus") != 0) {
 		DEBUG_HTTP (("Couldn't find <multistatus>.\n"));
 		result = GNOME_VFS_ERROR_GENERIC;
 		goto cleanup;
 	}
-
 	cur = cur->xmlChildrenNode;
 	
 	found_root_node_props = FALSE;
 	while (cur != NULL) {
 		if (strcmp ((char *)cur->name, "response") == 0) {
-			GnomeVFSFileInfo *file_info =
+			GnomeVFSFileInfo *file_info;
+			guint status;
+			
+			/* Some webdav servers (eg resin) put the HTTP status
+			 * code for PROPFIND request in the xml answer instead
+			 * of directly sending a 404 
+			 */
+			if (get_status_node (cur, &status) && !HTTP_20X(status)) {
+				result = http_status_to_vfs_result (status);
+				goto cleanup;
+			}
+			
+			file_info = 
 				process_propfind_response (cur->xmlChildrenNode, uri);
 			
 			if (file_info->name != NULL) { 
@@ -2095,8 +2502,12 @@ make_propfind_request (HttpFileHandle **handle_return,
 	}
 
 cleanup:
+	if (redirect_uri != NULL) {
+		gnome_vfs_uri_unref (redirect_uri);
+	}
 	g_free(buffer);
 	g_free(extraheaders);
+	g_byte_array_free (request, TRUE);
 	xmlFreeParserCtxt(parserContext);
 	
 	if (result != GNOME_VFS_OK) {
@@ -2148,24 +2559,23 @@ do_open_directory(GnomeVFSMethod *method,
 
 	if (file_info_cached) {
 		handle = http_file_handle_new (NULL, uri);
+		gnome_vfs_file_info_unref (handle->file_info);
 		handle->file_info = file_info_cached;
 		handle->files = child_file_info_cached_list;
 		result = GNOME_VFS_OK;
 	} else {
-		result = make_propfind_request(&handle, uri, 1, context);
-		/* mfleming -- is this necessary?  Most DAV server's I've seen don't have the horrible
-		 * lack-of-trailing-/-is-a-301 problem for PROPFIND's
-		 */
-		if (result == GNOME_VFS_ERROR_NOT_FOUND) { /* 404 not found */
-			if (uri->text != NULL && *uri->text != '\0'
-			   && uri->text[strlen (uri->text) - 1] != '/') {
-				GnomeVFSURI *tmpuri = gnome_vfs_uri_append_path (uri, "/");
-				result = do_open_directory (method, (GnomeVFSMethodHandle **)&handle, tmpuri, options, context);
-				gnome_vfs_uri_unref (tmpuri);
+		/* Make sure we have a slash on the end of the uri for the
+		   folder PROPFIND request, see bugzilla #92908.
+		   This is not needed since we handle redirects, but it means
+		   we send less PROPFIND requests. */
+		result = make_propfind_request(&handle, uri, 1, context, TRUE);
 
-			}
+		/* Work around the case where there was a non-directory existing
+		   with that name and we got a 301 redirect, due to the slash
+		   added above */
+		if (result == GNOME_VFS_ERROR_NOT_SUPPORTED) {
+			result = GNOME_VFS_ERROR_NOT_A_DIRECTORY;
 		}
-
 		if (result == GNOME_VFS_OK
 		    && handle->file_info->type != GNOME_VFS_FILE_TYPE_DIRECTORY) {
 			result = GNOME_VFS_ERROR_NOT_A_DIRECTORY;
@@ -2269,7 +2679,7 @@ do_get_file_info (GnomeVFSMethod *method,
 		 * Start off by making a PROPFIND request.  Fall back to a HEAD if it fails
 		 */
 		
-		result = make_propfind_request (&handle, uri, 0, context);
+		result = make_propfind_request (&handle, uri, 0, context, FALSE);
 		
 		/* Note that theoretically we could not bother with this request if we get a 404 back,
 		 * but since some servers seem to return wierd things on PROPFIND (mostly 200 OK's...)
@@ -2292,11 +2702,12 @@ do_get_file_info (GnomeVFSMethod *method,
 
 				ANALYZE_HTTP ("==> do_get_file_info: do GET ");
 
-				result = make_request (&handle, uri, "GET", NULL, NULL, context);
+				result = make_request (&handle, uri, "GET", NULL, NULL, context, FALSE);
 				if (result == GNOME_VFS_OK) {
 					gnome_vfs_file_info_copy (file_info, handle->file_info);
 					http_cache_add_uri (uri, handle->file_info, FALSE);
 					http_handle_close (handle, context);
+					handle = NULL;
 				}
 
 				/* If we get a redirect, we should be
@@ -2317,7 +2728,7 @@ do_get_file_info (GnomeVFSMethod *method,
 			}
 			
 			if (result == GNOME_VFS_ERROR_NOT_FOUND) { /* 404 not found */
-				/* FIXME bugzilla.eazel.com 3835: mfleming: Is this code really appropriate?
+				/* FIXME bugzilla.gnome.org 43835: mfleming: Is this code really appropriate?
 				 * In any case, it doesn't seem to be appropriate for a DAV-enabled
 				 * server, since they don't seem to send 301's when you PROPFIND collections
 				 * without a trailing '/'.
@@ -2346,16 +2757,17 @@ do_get_file_info_from_handle (GnomeVFSMethod *method,
 			      GnomeVFSFileInfoOptions options,
 			      GnomeVFSContext *context)
 {
-	GnomeVFSResult result;
+	HttpFileHandle *handle;
 	
 	DEBUG_HTTP (("+Get_File_Info_From_Handle"));
 	
-	result = do_get_file_info (method, ((HttpFileHandle *)method_handle)->uri, 
-				   file_info, options, context);
-
+	handle = (HttpFileHandle *) method_handle;
+	
+	gnome_vfs_file_info_copy (file_info, handle->file_info);
+	
 	DEBUG_HTTP (("-Get_File_Info_From_Handle"));
 	
-	return result;
+	return GNOME_VFS_OK;
 }
 
 static gboolean
@@ -2387,7 +2799,7 @@ do_make_directory (GnomeVFSMethod *method,
 	 * So we do a PROPFIND first to find out
 	 */
 	/* FIXME check cache here */
-	result = make_propfind_request(&handle, uri, 0, context);
+	result = make_propfind_request(&handle, uri, 0, context, FALSE);
 
 	if (result == GNOME_VFS_OK) {
 		result = GNOME_VFS_ERROR_FILE_EXISTS;
@@ -2397,7 +2809,7 @@ do_make_directory (GnomeVFSMethod *method,
 		
 		if (result == GNOME_VFS_ERROR_NOT_FOUND) {
 			http_cache_invalidate_uri_parent (uri);
-			result = make_request (&handle, uri, "MKCOL", NULL, NULL, context);
+			result = make_request (&handle, uri, "MKCOL", NULL, NULL, context, FALSE);
 		}
 	}
 	http_handle_close (handle, context);
@@ -2430,7 +2842,7 @@ do_remove_directory(GnomeVFSMethod *method,
 	 * directory is not empty
 	 */
 	result = make_request (&handle, uri, "DELETE", NULL, NULL,
-			       context);
+			       context, FALSE);
 	http_handle_close (handle, context);
 	
 	DEBUG_HTTP (("-Remove_Directory (%d)", result));
@@ -2481,8 +2893,9 @@ do_move (GnomeVFSMethod *method,
 	destpath = gnome_vfs_uri_to_string (new_uri, GNOME_VFS_URI_HIDE_USER_NAME|GNOME_VFS_URI_HIDE_PASSWORD);
 	destheader = g_strdup_printf ("Destination: %s\r\nOverwrite: %c\r\n", destpath, force_replace ? 'T' : 'F' );
 
-	result = make_request (&handle, old_uri, "MOVE", NULL, destheader, context);
+	result = make_request (&handle, old_uri, "MOVE", NULL, destheader, context, FALSE);
 	http_handle_close (handle, context);
+	g_free (destheader);
 	handle = NULL;
 
 	if (result == GNOME_VFS_ERROR_NOT_FOUND) {
@@ -2543,7 +2956,7 @@ do_set_file_info (GnomeVFSMethod *method,
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 	
-	/* FIXME bugzilla.eazel.com 645: Make sure this returns an
+	/* FIXME bugzillagnome.org 40645: Make sure this returns an
 	 * error for incoming names with "/" characters in them,
 	 * instead of moving the file.
 	 */
@@ -2763,37 +3176,40 @@ invoke_callback_send_additional_headers (GnomeVFSURI  *uri,
 }
 
 static gboolean
-invoke_callback_basic_authn (HttpFileHandle *handle, 
-			     enum AuthnHeaderType authn_which,
-			     gboolean previous_attempt_failed)
+invoke_callback_basic_authn_fill (HttpFileHandle *handle, 
+				  enum AuthnHeaderType authn_which)
 {
-	GnomeVFSModuleCallbackAuthenticationIn in_args;
-	GnomeVFSModuleCallbackAuthenticationOut out_args;
+	GnomeVFSModuleCallbackFillAuthenticationIn in_args;
+	GnomeVFSModuleCallbackFillAuthenticationOut out_args;
 	gboolean ret;
+	char *username;
+	
 
 	ret = FALSE;
 	
 	memset (&in_args, 0, sizeof (in_args));
 	memset (&out_args, 0, sizeof (out_args));
 
-	in_args.previous_attempt_failed = previous_attempt_failed;
-		
 	in_args.uri = gnome_vfs_uri_to_string (handle->uri, GNOME_VFS_URI_HIDE_NONE);
+	in_args.server = (char *)gnome_vfs_uri_get_host_name (handle->uri);
+	in_args.port = gnome_vfs_uri_get_host_port (handle->uri);
+	username = (char *)gnome_vfs_uri_get_user_name (handle->uri);
+	if (username != NULL && username[0] != 0) {
+		in_args.username = username;
+	}
+	in_args.protocol = "http";
+	in_args.authtype = authn_which == AuthnHeader_WWW ? "basic" : "proxy";
 
-	ret = http_authn_parse_response_header_basic (authn_which, handle->response_headers, &in_args.realm);
+	ret = http_authn_parse_response_header_basic (authn_which, handle->response_headers, &in_args.object);
 		
 	if (!ret) {
 		goto error;
 	}
 
-	DEBUG_HTTP (("Invoking %s authentication callback for uri %s",
+	DEBUG_HTTP (("Invoking %s fill authentication callback for uri %s",
 		authn_which == AuthnHeader_WWW ? "basic" : "proxy", in_args.uri));
 
-	in_args.auth_type = AuthTypeBasic;
-
-	ret = gnome_vfs_module_callback_invoke (authn_which == AuthnHeader_WWW 
-						? GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION
-						: GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION, 
+	ret = gnome_vfs_module_callback_invoke (GNOME_VFS_MODULE_CALLBACK_FILL_AUTHENTICATION,
 						&in_args, sizeof (in_args), 
 						&out_args, sizeof (out_args)); 
 
@@ -2801,8 +3217,8 @@ invoke_callback_basic_authn (HttpFileHandle *handle,
 		DEBUG_HTTP (("No callback registered"));
 		goto error;
 	}
-
-	ret = (out_args.username != NULL);
+	
+	ret = out_args.valid;
 
 	if (!ret) {
 		DEBUG_HTTP (("No username provided by callback"));
@@ -2818,12 +3234,155 @@ invoke_callback_basic_authn (HttpFileHandle *handle,
 	}
 error:
 	g_free (in_args.uri);
-	g_free (in_args.realm);
+	g_free (in_args.object);
 	g_free (out_args.username);
+	g_free (out_args.domain);
 	g_free (out_args.password);
 
 	return ret;
 }
+
+
+static gboolean
+invoke_callback_basic_authn (HttpFileHandle *handle, 
+			     enum AuthnHeaderType authn_which,
+			     gboolean previous_attempt_failed,
+			     HttpAuthSave **auth_save_out)
+{
+	GnomeVFSModuleCallbackFullAuthenticationIn in_args;
+	GnomeVFSModuleCallbackFullAuthenticationOut out_args;
+	gboolean ret;
+	char *username;
+	HttpAuthSave *auth_save;
+
+	ret = FALSE;
+
+	*auth_save_out = NULL;
+	memset (&in_args, 0, sizeof (in_args));
+	memset (&out_args, 0, sizeof (out_args));
+
+	in_args.uri = gnome_vfs_uri_to_string (handle->uri, GNOME_VFS_URI_HIDE_NONE);
+	in_args.server = (char *)gnome_vfs_uri_get_host_name (handle->uri);
+	in_args.port = gnome_vfs_uri_get_host_port (handle->uri);
+	username = (char *)gnome_vfs_uri_get_user_name (handle->uri);
+	if (username != NULL && username[0] != 0) {
+		in_args.username = username;
+	}
+	in_args.protocol = "http";
+	in_args.authtype = authn_which == AuthnHeader_WWW ? "basic" : "proxy";
+
+	in_args.flags = GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_NEED_PASSWORD | GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_SAVING_SUPPORTED;
+	if (in_args.username == NULL) {
+		in_args.flags |= GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_NEED_USERNAME;
+	}	
+	if (previous_attempt_failed) {
+		in_args.flags |= GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_PREVIOUS_ATTEMPT_FAILED;
+	}
+	
+	in_args.default_user = in_args.username;
+	
+	ret = http_authn_parse_response_header_basic (authn_which, handle->response_headers, &in_args.object);
+
+	if (!ret) {
+		goto error;
+	}
+
+	DEBUG_HTTP (("Invoking %s authentication callback for uri %s",
+		authn_which == AuthnHeader_WWW ? "basic" : "proxy", in_args.uri));
+
+	ret = gnome_vfs_module_callback_invoke (GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION,
+						&in_args, sizeof (in_args), 
+						&out_args, sizeof (out_args)); 
+
+	if (!ret) {
+		DEBUG_HTTP (("No callback registered"));
+		goto error;
+	}
+
+	ret = !out_args.abort_auth;
+
+	if (!ret) {
+		DEBUG_HTTP (("No username provided by callback"));
+		goto error;
+	}
+
+	DEBUG_HTTP (("Back from authentication callback, adding credentials"));
+
+	username = (char *)gnome_vfs_uri_get_user_name (handle->uri);
+	if (username == NULL || username[0] == 0) {
+		username = out_args.username;
+	}
+
+	if (out_args.save_password) {
+		auth_save = g_new (HttpAuthSave, 1);
+		*auth_save_out = auth_save;
+		auth_save->username = g_strdup (username);
+		auth_save->password = g_strdup (out_args.password);
+		auth_save->keyring = g_strdup (out_args.keyring);
+		auth_save->realm = g_strdup (in_args.object);
+		auth_save->type = authn_which;
+	}
+	
+	if (authn_which == AuthnHeader_WWW) {
+		http_authn_session_add_credentials (handle->uri, username, out_args.password);
+	} else /* if (authn_which == AuthnHeader_Proxy) */ {
+		proxy_set_authn (username, out_args.password);
+	}
+error:
+	g_free (in_args.uri);
+	g_free (in_args.object);
+	g_free (out_args.username);
+	g_free (out_args.domain);
+	g_free (out_args.password);
+	g_free (out_args.keyring);
+
+	return ret;
+}
+
+static gboolean
+invoke_callback_save_authn (HttpFileHandle *handle, 
+			    enum AuthnHeaderType authn_which,
+			    HttpAuthSave *auth_save)
+{
+	GnomeVFSModuleCallbackSaveAuthenticationIn in_args;
+	GnomeVFSModuleCallbackSaveAuthenticationOut out_args;
+	gboolean ret;
+
+	ret = FALSE;
+
+	memset (&in_args, 0, sizeof (in_args));
+	memset (&out_args, 0, sizeof (out_args));
+
+	in_args.keyring = auth_save->keyring;
+
+	in_args.uri = gnome_vfs_uri_to_string (handle->uri, GNOME_VFS_URI_HIDE_NONE);
+	in_args.server = (char *)gnome_vfs_uri_get_host_name (handle->uri);
+	in_args.port = gnome_vfs_uri_get_host_port (handle->uri);
+	in_args.username = auth_save->username;
+	in_args.password = auth_save->password;
+	in_args.protocol = "http";
+	in_args.authtype = authn_which == AuthnHeader_WWW ? "basic" : "proxy";
+	in_args.object = auth_save->realm;
+
+	DEBUG_HTTP (("Invoking %s authentication save callback for uri %s",
+		authn_which == AuthnHeader_WWW ? "basic" : "proxy", in_args.uri));
+
+	ret = gnome_vfs_module_callback_invoke (GNOME_VFS_MODULE_CALLBACK_SAVE_AUTHENTICATION,
+						&in_args, sizeof (in_args), 
+						&out_args, sizeof (out_args)); 
+
+	if (!ret) {
+		DEBUG_HTTP (("No callback registered"));
+		goto error;
+	}
+
+error:
+	g_free (in_args.uri);
+
+	return ret;
+}
+
+
 
 static int
 strcmp_allow_nulls (const char *s1, const char *s2)
@@ -2842,11 +3401,14 @@ strcmp_allow_nulls (const char *s1, const char *s2)
 gboolean
 check_authn_retry_request (HttpFileHandle * http_handle,
 			   enum AuthnHeaderType authn_which,
-			   const char *prev_authn_header)
+			   const char *prev_authn_header,
+			   gboolean first_request,
+			   HttpAuthSave **auth_save)
 {
 	gboolean ret;
 	char *current_authn_header;
 
+	*auth_save = NULL;
 	current_authn_header = NULL;
 	
 	g_mutex_lock (gl_mutex);
@@ -2861,7 +3423,13 @@ check_authn_retry_request (HttpFileHandle * http_handle,
 
 	ret = FALSE;
 	if (0 == strcmp_allow_nulls (current_authn_header, prev_authn_header)) {
-		ret = invoke_callback_basic_authn (http_handle, authn_which, prev_authn_header == NULL);
+		if (first_request) {
+			ret = invoke_callback_basic_authn_fill (http_handle, authn_which);
+		}
+		if (!ret) {
+			/* TODO: shouldn't say previous_attempt_failed if the fill callback failed */
+			ret = invoke_callback_basic_authn (http_handle, authn_which, prev_authn_header == NULL, auth_save);
+		}
 	} else {
 		ret = TRUE;
 	}

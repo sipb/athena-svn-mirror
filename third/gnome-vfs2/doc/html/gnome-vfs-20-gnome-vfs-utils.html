@@ -1,0 +1,303 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-utils</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="data-types.html" title="Basic Data Types"><link rel="previous" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="next" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-20-gnome-vfs-utils.html#id2561396" title="Description"><link rel="section" href="gnome-vfs-20-gnome-vfs-utils.html#id2561406" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-uri.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="data-types.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-file-info.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-utils"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-vfs-utils</span></h2><p>gnome-vfs-utils &#8212; various utilities functions to manipulate uris</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-format-file-size-for-display">gnome_vfs_format_file_size_for_display</a>
+                                            (<a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> size);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-string">gnome_vfs_escape_string</a>         (const char *string);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-path-string">gnome_vfs_escape_path_string</a>    (const char *path);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-host-and-path-string">gnome_vfs_escape_host_and_path_string</a>
+                                            (const char *path);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-slashes">gnome_vfs_escape_slashes</a>        (const char *string);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-set">gnome_vfs_escape_set</a>            (const char *string,
+                                             const char *match_set);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-unescape-string">gnome_vfs_unescape_string</a>       (const char *escaped_string,
+                                             const char *illegal_characters);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-canonical">gnome_vfs_make_uri_canonical</a>    (const char *uri);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-path-name-canonical">gnome_vfs_make_path_name_canonical</a>
+                                            (const char *path);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-from-input">gnome_vfs_make_uri_from_input</a>   (const char *uri);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-from-input-with-dirs">gnome_vfs_make_uri_from_input_with_dirs</a>
+                                            (const char *uri,
+                                             GnomeVFSMakeURIDirs dirs);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-from-shell-arg">gnome_vfs_make_uri_from_shell_arg</a>
+                                            (const char *uri);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-full-from-relative">gnome_vfs_make_uri_full_from_relative</a>
+                                            (const char *base_uri,
+                                             const char *relative_uri);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-expand-initial-tilde">gnome_vfs_expand_initial_tilde</a>  (const char *path);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-unescape-string-for-display">gnome_vfs_unescape_string_for_display</a>
+                                            (const char *escaped);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-get-local-path-from-uri">gnome_vfs_get_local_path_from_uri</a>
+                                            (const char *uri);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-get-uri-from-local-path">gnome_vfs_get_uri_from_local_path</a>
+                                            (const char *local_full_path);
+<a
+href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-is-executable-command-string">gnome_vfs_is_executable_command_string</a>
+                                            (const char *command_string);
+<a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-list-deep-free">gnome_vfs_list_deep_free</a>        (<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *list);
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-get-volume-free-space">gnome_vfs_get_volume_free_space</a>
+                                            (const GnomeVFSURI *vfs_uri,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *size);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-icon-path-from-filename">gnome_vfs_icon_path_from_filename</a>
+                                            (const char *filename);
+<a
+href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-is-primary-thread">gnome_vfs_is_primary_thread</a>     (void);
+char*       <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-get-uri-scheme">gnome_vfs_get_uri_scheme</a>        (const char *uri);
+<a
+href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-uris-match">gnome_vfs_uris_match</a>            (const char *uri_1,
+                                             const char *uri_2);
+#define     <a href="gnome-vfs-20-gnome-vfs-utils.html#GNOME-VFS-ASSERT-PRIMARY-THREAD-CAPS">GNOME_VFS_ASSERT_PRIMARY_THREAD</a>
+#define     <a href="gnome-vfs-20-gnome-vfs-utils.html#GNOME-VFS-ASSERT-SECONDARY-THREAD-CAPS">GNOME_VFS_ASSERT_SECONDARY_THREAD</a>
+<a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-read-entire-file">gnome_vfs_read_entire_file</a>   (const char *uri,
+                                             int *file_size,
+                                             char **file_contents);
+</pre></div><div class="refsect1" lang="en"><a name="id2561396"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2561406"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2561412"></a><h3><a name="gnome-vfs-format-file-size-for-display"></a>gnome_vfs_format_file_size_for_display ()</h3><a class="indexterm" name="id2561423"></a><pre class="programlisting">char*       gnome_vfs_format_file_size_for_display
+                                            (<a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> size);</pre><p>
+Formats the file size passed in <i class="parameter"><tt>bytes</tt></i> in a way that is easy for
+the user to read. Gives the size in bytes, kilobytes, megabytes or
+gigabytes, choosing whatever is appropriate.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string with the size ready to be shown.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2561494"></a><h3><a name="gnome-vfs-escape-string"></a>gnome_vfs_escape_string ()</h3><a class="indexterm" name="id2561505"></a><pre class="programlisting">char*       gnome_vfs_escape_string         (const char *string);</pre><p>
+Escapes <i class="parameter"><tt>string</tt></i>, replacing any and all special characters 
+with equivalent escape sequences.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>string</tt></i> :</span></td><td> string to be escaped
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string equivalent to <i class="parameter"><tt>string</tt></i>
+but with all special characters escaped
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2561579"></a><h3><a name="gnome-vfs-escape-path-string"></a>gnome_vfs_escape_path_string ()</h3><a class="indexterm" name="id2561591"></a><pre class="programlisting">char*       gnome_vfs_escape_path_string    (const char *path);</pre><p>
+Escapes <i class="parameter"><tt>path</tt></i>, replacing only special characters that would not
+be found in paths (so '/', '&amp;', '=', and '?' will not be escaped by
+this function).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> string to be escaped
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string equivalent to <i class="parameter"><tt>path</tt></i> but
+with non-path characters escaped
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2561667"></a><h3><a name="gnome-vfs-escape-host-and-path-string"></a>gnome_vfs_escape_host_and_path_string ()</h3><a class="indexterm" name="id2561679"></a><pre class="programlisting">char*       gnome_vfs_escape_host_and_path_string
+                                            (const char *path);</pre><p>
+Escapes <i class="parameter"><tt>path</tt></i>, replacing only special characters that would not
+be found in paths or host name (so '/', '&amp;', '=', ':', '@' 
+and '?' will not be escaped by this function).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> string to be escaped
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string equivalent to <i class="parameter"><tt>path</tt></i> but
+with non-path/host characters escaped
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2561756"></a><h3><a name="gnome-vfs-escape-slashes"></a>gnome_vfs_escape_slashes ()</h3><a class="indexterm" name="id2561768"></a><pre class="programlisting">char*       gnome_vfs_escape_slashes        (const char *string);</pre><p>
+Escapes only '/' and '%' characters in <i class="parameter"><tt>string</tt></i>, replacing
+them with their escape sequence equivalents.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>string</tt></i> :</span></td><td> string to be escaped
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string equivalent to <i class="parameter"><tt>string</tt></i>,
+but with no unescaped '/' or '%' characters
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2561842"></a><h3><a name="gnome-vfs-escape-set"></a>gnome_vfs_escape_set ()</h3><a class="indexterm" name="id2561853"></a><pre class="programlisting">char*       gnome_vfs_escape_set            (const char *string,
+                                             const char *match_set);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>string</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>match_set</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2561931"></a><h3><a name="gnome-vfs-unescape-string"></a>gnome_vfs_unescape_string ()</h3><a class="indexterm" name="id2561943"></a><pre class="programlisting">char*       gnome_vfs_unescape_string       (const char *escaped_string,
+                                             const char *illegal_characters);</pre><p>
+Decodes escaped characters (i.e. PERCENTxx sequences) in <i class="parameter"><tt>escaped_string</tt></i>.
+Characters are encoded in PERCENTxy form, where xy is the ASCII hex code 
+for character 16x+y.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>escaped_string</tt></i> :</span></td><td> an escaped URI, path, or other string
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>illegal_characters</tt></i> :</span></td><td> a string containing a sequence of characters
+considered "illegal", '\0' is automatically in this list.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string with the unescaped equivalents, 
+or <tt class="literal">NULL</tt> if <i class="parameter"><tt>escaped_string</tt></i> contained one of the characters 
+in <i class="parameter"><tt>illegal_characters</tt></i>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562054"></a><h3><a name="gnome-vfs-make-uri-canonical"></a>gnome_vfs_make_uri_canonical ()</h3><a class="indexterm" name="id2562066"></a><pre class="programlisting">char*       gnome_vfs_make_uri_canonical    (const char *uri);</pre><p>
+Standarizes the format of the uri being passed, so that it can be used
+later in other functions that expect a canonical URI.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> and absolute or relative URI, it might have scheme.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string that contains the canonical 
+representation of <i class="parameter"><tt>uri</tt></i>.
+
+</td></tr></tbody></table></div><p>Since  2.2
+</p></div><hr><div class="refsect2" lang="en"><a name="id2562140"></a><h3><a name="gnome-vfs-make-path-name-canonical"></a>gnome_vfs_make_path_name_canonical ()</h3><a class="indexterm" name="id2562152"></a><pre class="programlisting">char*       gnome_vfs_make_path_name_canonical
+                                            (const char *path);</pre><p>
+Calls _gnome_vfs_canonicalize_pathname, allocating storage for the 
+result and providing for a cleaner memory management.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> a file path, relative or absolute
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a canonical version of <i class="parameter"><tt>path</tt></i>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562221"></a><h3><a name="gnome-vfs-make-uri-from-input"></a>gnome_vfs_make_uri_from_input ()</h3><a class="indexterm" name="id2562233"></a><pre class="programlisting">char*       gnome_vfs_make_uri_from_input   (const char *uri);</pre><p>
+Takes a user input path/URI and makes a valid URI out of it.
+</p><p>
+This function is the reverse of gnome_vfs_format_uri_for_display
+but it also handles the fact that the user could have typed
+arbitrary UTF8 in the entry showing the string.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a possibly mangled "uri", in UTF8
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated uri.
+
+</td></tr></tbody></table></div><p>Since  2.2
+</p></div><hr><div class="refsect2" lang="en"><a name="id2562305"></a><h3><a name="gnome-vfs-make-uri-from-input-with-dirs"></a>gnome_vfs_make_uri_from_input_with_dirs ()</h3><a class="indexterm" name="id2562318"></a><pre class="programlisting">char*       gnome_vfs_make_uri_from_input_with_dirs
+                                            (const char *uri,
+                                             GnomeVFSMakeURIDirs dirs);</pre><p>
+Determines a fully qualified URL from a relative or absolute input path.
+Basically calls gnome_vfs_make_uri_from_input except it specifically
+tries to support paths relative to the specified directories (can be homedir
+and/or current directory).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a relative or absolute path
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dirs</tt></i> :</span></td><td> directory to use as a base directory if <i class="parameter"><tt>uri</tt></i> is a relative path.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string containing the fully qualified URL
+
+</td></tr></tbody></table></div><p>Since  2.4
+</p></div><hr><div class="refsect2" lang="en"><a name="id2562417"></a><h3><a name="gnome-vfs-make-uri-from-shell-arg"></a>gnome_vfs_make_uri_from_shell_arg ()</h3><a class="indexterm" name="id2562430"></a><pre class="programlisting">char*       gnome_vfs_make_uri_from_shell_arg
+                                            (const char *uri);</pre><p>
+Similar to gnome_vfs_make_uri_from_input, except that:
+</p><p>
+1) guesses relative paths instead of http domains
+2) doesn't bother stripping leading/trailing white space
+3) doesn't bother with ~ expansion--that's done by the shell</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a possibly mangled "uri"
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated uri
+
+</td></tr></tbody></table></div><p>Since  2.2
+</p></div><hr><div class="refsect2" lang="en"><a name="id2562502"></a><h3><a name="gnome-vfs-make-uri-full-from-relative"></a>gnome_vfs_make_uri_full_from_relative ()</h3><a class="indexterm" name="id2562514"></a><pre class="programlisting">char*       gnome_vfs_make_uri_full_from_relative
+                                            (const char *base_uri,
+                                             const char *relative_uri);</pre><p>
+Returns a full URI given a full base URI, and a secondary URI which may
+be relative.
+</p><p>
+This function is deprecated, please use 
+gnome_vfs_uri_make_full_from_relative from gnome-vfs-uri.h</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>base_uri</tt></i> :</span></td><td> uri to use as the base for the full uri
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>relative_uri</tt></i> :</span></td><td> full or relative path to append to the base uri
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the URI (NULL for some bad errors).
+
+</td></tr></tbody></table></div><p>Since  2.2
+</p></div><hr><div class="refsect2" lang="en"><a name="id2562609"></a><h3><a name="gnome-vfs-expand-initial-tilde"></a>gnome_vfs_expand_initial_tilde ()</h3><a class="indexterm" name="id2562621"></a><pre class="programlisting">char*       gnome_vfs_expand_initial_tilde  (const char *path);</pre><p>
+If <i class="parameter"><tt>path</tt></i> starts with a ~, representing the user's home
+directory, expand it to the actual path location.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> a local file path which may start with a '~'
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string with the initial
+tilde (if there was one) converted to an actual path
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562691"></a><h3><a name="gnome-vfs-unescape-string-for-display"></a>gnome_vfs_unescape_string_for_display ()</h3><a class="indexterm" name="id2562703"></a><pre class="programlisting">char*       gnome_vfs_unescape_string_for_display
+                                            (const char *escaped);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>escaped</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562760"></a><h3><a name="gnome-vfs-get-local-path-from-uri"></a>gnome_vfs_get_local_path_from_uri ()</h3><a class="indexterm" name="id2562772"></a><pre class="programlisting">char*       gnome_vfs_get_local_path_from_uri
+                                            (const char *uri);</pre><p>
+Create a local path for a file:/// URI. Do not use with URIs
+of other methods.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> URI to convert to a local path
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string containing the local path 
+NULL is returned on error or if the uri isn't a file: URI
+without a fragment identifier (or chained URI).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562836"></a><h3><a name="gnome-vfs-get-uri-from-local-path"></a>gnome_vfs_get_uri_from_local_path ()</h3><a class="indexterm" name="id2562849"></a><pre class="programlisting">char*       gnome_vfs_get_uri_from_local_path
+                                            (const char *local_full_path);</pre><p>
+Returns a file:/// URI for the local path <i class="parameter"><tt>local_full_path</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>local_full_path</tt></i> :</span></td><td> a full local filesystem path (i.e. not relative)
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string containing the URI corresponding 
+to <i class="parameter"><tt>local_full_path</tt></i> (NULL for some bad errors).
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562924"></a><h3><a name="gnome-vfs-is-executable-command-string"></a>gnome_vfs_is_executable_command_string ()</h3><a class="indexterm" name="id2562936"></a><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
+>gboolean</a>    gnome_vfs_is_executable_command_string
+                                            (const char *command_string);</pre><p>
+Checks if <i class="parameter"><tt>command_string</tt></i> starts with the full path of an executable file
+or an executable in $PATH.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>command_string</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if command_string started with and executable file, 
+FALSE otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563005"></a><h3><a name="gnome-vfs-list-deep-free"></a>gnome_vfs_list_deep_free ()</h3><a class="indexterm" name="id2563016"></a><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#void"
+>void</a>        gnome_vfs_list_deep_free        (<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a> *list);</pre><p>
+Free <i class="parameter"><tt>list</tt></i>, and call <a
+href="../glib/glib-Memory-Allocation.html#g-free"
+><tt class="function">g_free()</tt></a> on all data members.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td> list to be freed
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563084"></a><h3><a name="gnome-vfs-get-volume-free-space"></a>gnome_vfs_get_volume_free_space ()</h3><a class="indexterm" name="id2563096"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_get_volume_free_space
+                                            (const GnomeVFSURI *vfs_uri,
+                                             <a href="gnome-vfs-20-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *size);</pre><p>
+Stores in <i class="parameter"><tt>size</tt></i> the amount of free space on a volume.
+This only works for URIs with the file: scheme.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>vfs_uri</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GNOME_VFS_OK on success, otherwise an error code
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563186"></a><h3><a name="gnome-vfs-icon-path-from-filename"></a>gnome_vfs_icon_path_from_filename ()</h3><a class="indexterm" name="id2563199"></a><pre class="programlisting">char*       gnome_vfs_icon_path_from_filename
+                                            (const char *filename);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>filename</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563255"></a><h3><a name="gnome-vfs-is-primary-thread"></a>gnome_vfs_is_primary_thread ()</h3><a class="indexterm" name="id2563267"></a><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
+>gboolean</a>    gnome_vfs_is_primary_thread     (void);</pre><p>
+Check if the current thread is the thread with the main glib event loop.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the current thread is the thread with the 
+main glib event loop
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2563313"></a><h3><a name="gnome-vfs-get-uri-scheme"></a>gnome_vfs_get_uri_scheme ()</h3><a class="indexterm" name="id2563325"></a><pre class="programlisting">char*       gnome_vfs_get_uri_scheme        (const char *uri);</pre><p>
+Retrieve the scheme used in <i class="parameter"><tt>uri</tt></i></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a stringified URI
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A newly allocated string containing the scheme, NULL
+if <i class="parameter"><tt>uri</tt></i> it doesn't seem to contain a scheme
+
+</td></tr></tbody></table></div><p>Since  2.2
+</p></div><hr><div class="refsect2" lang="en"><a name="id2563401"></a><h3><a name="gnome-vfs-uris-match"></a>gnome_vfs_uris_match ()</h3><a class="indexterm" name="id2563413"></a><pre class="programlisting"><a
+href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
+>gboolean</a>    gnome_vfs_uris_match            (const char *uri_1,
+                                             const char *uri_2);</pre><p>
+Compare two URIs.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri_1</tt></i> :</span></td><td> stringified URI to compare with <i class="parameter"><tt>uri_2</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>uri_2</tt></i> :</span></td><td> stringified URI to compare with <i class="parameter"><tt>uri_1</tt></i>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if they are the same, FALSE otherwise.
+
+</td></tr></tbody></table></div><p>Since  2.2
+</p></div><hr><div class="refsect2" lang="en"><a name="id2563512"></a><h3><a name="GNOME-VFS-ASSERT-PRIMARY-THREAD-CAPS"></a>GNOME_VFS_ASSERT_PRIMARY_THREAD</h3><a class="indexterm" name="id2563524"></a><pre class="programlisting">#define GNOME_VFS_ASSERT_PRIMARY_THREAD g_assert (gnome_vfs_is_primary_thread())
+</pre><p>
+Asserts that the current thread is the thread with 
+the main glib event loop</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2563546"></a><h3><a name="GNOME-VFS-ASSERT-SECONDARY-THREAD-CAPS"></a>GNOME_VFS_ASSERT_SECONDARY_THREAD</h3><a class="indexterm" name="id2563558"></a><pre class="programlisting">#define GNOME_VFS_ASSERT_SECONDARY_THREAD g_assert (!gnome_vfs_is_primary_thread())
+</pre><p>
+Asserts that the current thread is NOT the thread with
+the main glib event loop</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2563579"></a><h3><a name="gnome-vfs-read-entire-file"></a>gnome_vfs_read_entire_file ()</h3><a class="indexterm" name="id2563590"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_read_entire_file   (const char *uri,
+                                             int *file_size,
+                                             char **file_contents);</pre><p>
+Reads an entire file into memory for convenience. Beware accidentally
+loading large files into memory with this function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> URI of the file to read
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>file_size</tt></i> :</span></td><td> after reading the file, contains the size of the file read
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>file_contents</tt></i> :</span></td><td> contains the file_size bytes, the contents of the file at <i class="parameter"><tt>uri</tt></i>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+
+</td></tr></tbody></table></div><p>Since  2.2
+</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-20-gnome-vfs-uri.html"><b>&lt;&lt; GnomeVFSURI</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-20-gnome-vfs-file-info.html"><b>GnomeVFSFileInfo &gt;&gt;</b></a></td></tr></table></body></html>

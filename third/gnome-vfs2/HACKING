@@ -6,7 +6,7 @@ you don't need maintainer approval to commit to HEAD. You still need to get your
 reviewed by some other (competent) GNOME hacker.
 
 If you are unsure of your change, please feel free to send the patch to
-gnome-vfs@gnome.org and get our approval so we won't execute you when it breaks 
+gnome-vfs-list@gnome.org and get our approval so we won't execute you when it breaks 
 things / does them wrong.
 
 Please get approval for commits to the gnome-2-0 branch.

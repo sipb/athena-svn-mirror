@@ -176,6 +176,19 @@ typedef void	(* GnomeVFSAsyncWriteCallback)	(GnomeVFSAsyncHandle *handle,
 
 
 /**
+ * GnomeVFSAsyncSeekCallback:
+ * @handle: handle of the operation generating the callback
+ * @result: %GNOME_VFS_OK if the operation was successful, otherwise
+ * an error code.
+ * @callback_data: user data defined when the callback was established
+ *
+ * Basic callback from an async operation that passes no data back,
+ * informing the user of the @result of the operation.
+ **/
+typedef GnomeVFSAsyncCallback GnomeVFSAsyncSeekCallback;
+
+
+/**
  * GnomeVFSAsyncGetFileInfoCallback:
  * @handle: handle of the operation generating the callback
  * @results: #GList of #GnomeVFSFileInfoResult * items representing
@@ -355,6 +368,11 @@ void           gnome_vfs_async_write                  (GnomeVFSAsyncHandle      
 						       gconstpointer                          buffer,
 						       guint                                  bytes,
 						       GnomeVFSAsyncWriteCallback             callback,
+						       gpointer                               callback_data);
+void           gnome_vfs_async_seek                   (GnomeVFSAsyncHandle                   *handle,
+						       GnomeVFSSeekPosition                   whence,
+						       GnomeVFSFileOffset                     offset,
+						       GnomeVFSAsyncSeekCallback              callback,
 						       gpointer                               callback_data);
 void           gnome_vfs_async_get_file_info          (GnomeVFSAsyncHandle                  **handle_return,
 						       GList                                 *uri_list,

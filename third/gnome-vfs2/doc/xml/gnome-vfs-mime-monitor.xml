@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-mime-monitor">
+<refentry id="gnome-vfs-20-gnome-vfs-mime-monitor">
 <refmeta>
-<refentrytitle>
-MIME Database Monitor</refentrytitle>
+<refentrytitle>MIME Database Monitor</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-MIME Database Monitor</refname><refpurpose>
+<refname>MIME Database Monitor</refname><refpurpose>
 monitor the MIME database for changes (primarily for file browsers)</refpurpose>
 </refnamediv>
 
@@ -32,6 +30,8 @@ struct      <link linkend="GnomeVFSMIMEMonitorPrivate">GnomeVFSMIMEMonitorPrivat
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -43,27 +43,27 @@ struct      <link linkend="GnomeVFSMIMEMonitorPrivate">GnomeVFSMIMEMonitorPrivat
 <title>Details</title>
 <refsect2>
 <title><anchor id="GNOME-VFS-MIME-MONITOR-TYPE-CAPS"/>GNOME_VFS_MIME_MONITOR_TYPE</title>
-<programlisting>#define GNOME_VFS_MIME_MONITOR_TYPE        (gnome_vfs_mime_monitor_get_type ())
+<indexterm><primary>GNOME_VFS_MIME_MONITOR_TYPE</primary></indexterm><programlisting>#define GNOME_VFS_MIME_MONITOR_TYPE        (gnome_vfs_mime_monitor_get_type ())
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSMIMEMonitorPrivate"/>struct GnomeVFSMIMEMonitorPrivate</title>
-<programlisting>struct GnomeVFSMIMEMonitorPrivate;</programlisting>
+<indexterm><primary>GnomeVFSMIMEMonitorPrivate</primary></indexterm><programlisting>struct GnomeVFSMIMEMonitorPrivate;</programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-mime-monitor-get"/>gnome_vfs_mime_monitor_get ()</title>
-<programlisting><link linkend="GnomeVFSMIMEMonitor">GnomeVFSMIMEMonitor</link>* gnome_vfs_mime_monitor_get
+<indexterm><primary>gnome_vfs_mime_monitor_get</primary></indexterm><programlisting><link linkend="GnomeVFSMIMEMonitor">GnomeVFSMIMEMonitor</link>* gnome_vfs_mime_monitor_get
                                             (void);</programlisting>
 <para>
 Get access to the single global monitor.</para>
 <para>
 
 </para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the global <link linkend="GnomeVFSMIMEMonitor">GnomeVFSMIMEMonitor</link>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the global <link linkend="GnomeVFSMIMEMonitor"><type>GnomeVFSMIMEMonitor</type></link>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

@@ -71,3 +71,33 @@ gnome-vfs-inet-connection
 @Returns: 
 
 
+<!-- ##### FUNCTION gnome_vfs_inet_connection_create_from_address ##### -->
+<para>
+
+</para>
+
+@connection_return: 
+@address: 
+@host_port: 
+@cancellation: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_inet_connection_get_address ##### -->
+<para>
+
+</para>
+
+@connection: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_inet_connection_get_ip ##### -->
+<para>
+
+</para>
+
+@connection: 
+@Returns: 
+
+

@@ -36,6 +36,9 @@
 #include <libgnomevfs/gnome-vfs-directory.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-ssl.h>
+#include <libgnomevfs/gnome-vfs-module-callback.h>
+#include <libgnomevfs/gnome-vfs-standard-callbacks.h>
 #include <popt.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -141,11 +144,17 @@ do_ls (void)
 	GnomeVFSResult result;
 	GList *list, *node;
 	GnomeVFSFileInfo *info;
+	const char *path;
 
-	result = gnome_vfs_directory_list_load (
-		&list, cur_dir,
-		GNOME_VFS_FILE_INFO_DEFAULT |
-		GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
+	if (!arg_data [arg_cur])
+		path = cur_dir;
+	else
+		path = arg_data [arg_cur++];
+
+	result = gnome_vfs_directory_list_load
+		(&list, path,
+		 GNOME_VFS_FILE_INFO_DEFAULT |
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
 	if (show_if_error (result, "open directory ", cur_dir))
 		return;
 
@@ -213,20 +222,23 @@ list_commands (void)
 {
 	printf ("command can be one or all of:\n");
 	printf ("Main operations:\n");
-	printf (" * ls:                     list files\n");
-	printf (" * cd:                     enter storage\n");
-	printf (" * mv:                     move object\n");
-	printf (" * rm:                     remove stream\n");
-	printf (" * mkdir:                  make storage\n");
-	printf (" * rmdir:                  remove storage\n");
-	printf (" * info,stat:              get information on object\n");
-	printf (" * cat,type:               dump text file to console\n");
-	printf (" * dump:                   dump binary file to console\n");
+	printf (" * ls [opt_dir]            list files\n");
+	printf (" * cd [dir]                enter storage\n");
+	printf (" * mv <a> <b>              move object\n");
+	printf (" * rm <file>               remove stream\n");
+	printf (" * mkdir <dir>             make storage\n");
+	printf (" * rmdir <dir>             remove storage\n");
+	printf (" * info,stat <a>           get information on object\n");
+	printf (" * cat,type <a>            dump text file to console\n");
+	printf (" * dump <a>                dump binary file to console\n");
 	printf (" * sync:                   for sinkers\n");
+	printf (" * ssl:                    displays ssl enabled state\n");
+	printf (" * findtrash:              locates a trash directory for a URI\n");
 	printf (" * quit,exit,bye:          exit\n");
 	printf ("File operations:\n");
 	printf (" * open <handle> <name>:   open a file\n");
 	printf (" * create <handle> <name>: create a file\n");
+	printf (" * handleinfo <handle>:    information from handle\n");
 	printf (" * close <handle>:         close a file\n");
 	printf (" * read <handle> <bytes>:  read bytes from stream\n");
 	printf (" * seek <handle> <pos>:    seek set position\n");
@@ -541,23 +553,19 @@ do_findtrash (void)
 }
 
 static void
-do_info (void)
+do_ssl (void)
 {
-	char             *from;
-	GnomeVFSResult    result;
-	GnomeVFSFileInfo *info;
+	if (gnome_vfs_ssl_enabled ())
+		fprintf (stdout, "SSL enabled\n");
+	else
+		fprintf (stdout, "SSL disabled\n");
+}
+
+static void
+print_info (GnomeVFSFileInfo *info)
+{
 	const char *mime_type;
-       struct tm *loctime;
-
-	from = get_fname ();
-
-
-	info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (
-		from, info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
-
-	if (show_if_error (result, "getting info on: ", from))
-		return;
+	struct tm *loctime;
 
 	fprintf (stdout, "Name: '%s'\n", info->name);
 	if (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) {
@@ -586,8 +594,8 @@ do_info (void)
 			break;
 		case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
 			fprintf (stdout, "symlink\n");
-                       fprintf (stdout, "symlink points to: %s", 
-                                                     info->symlink_name);
+			fprintf (stdout, "symlink points to: %s", 
+				 info->symlink_name);
 			break;
 		default:
 			fprintf (stdout, "Error; invalid value");
@@ -609,18 +617,38 @@ do_info (void)
 
 	fprintf (stdout, "Mime Type: %s \n", mime_type);
         
-       loctime = localtime(&info->atime);
-       fprintf (stdout, "Last Accessed: %s", asctime(loctime));
-       loctime = localtime(&info->mtime);
-       fprintf (stdout, "Last Modified: %s", asctime(loctime));
-       loctime = localtime(&info->ctime);
-       fprintf (stdout, "Last Changed: %s", asctime(loctime));
+	loctime = localtime(&info->atime);
+	fprintf (stdout, "Last Accessed: %s", asctime(loctime));
+	loctime = localtime(&info->mtime);
+	fprintf (stdout, "Last Modified: %s", asctime(loctime));
+	loctime = localtime(&info->ctime);
+	fprintf (stdout, "Last Changed: %s", asctime(loctime));
         
-       fprintf (stdout, "uid: %d\n", info->uid);
-       fprintf (stdout, "gid: %d\n", info->gid);
+	fprintf (stdout, "uid: %d\n", info->uid);
+
+	fprintf (stdout, "gid: %d\n", info->gid);
 	fprintf (stdout, "\n");
 	/* FIXME bugzilla.eazel.com 2800: hack here; should dump them all */
-	
+}
+
+static void
+do_info (void)
+{
+	char             *from;
+	GnomeVFSResult    result;
+	GnomeVFSFileInfo *info;
+
+	from = get_fname ();
+
+
+	info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (
+		from, info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
+
+	if (show_if_error (result, "getting info on: ", from))
+		return;
+
+	print_info (info);
 	gnome_vfs_file_info_unref (info);
 }
 
@@ -876,6 +904,27 @@ do_close (void)
 	close_file (get_handle ());
 }
 
+static void
+do_handleinfo (void)
+{
+	const char *handlename = get_handle ();
+	GnomeVFSResult    result;
+	GnomeVFSHandle *handle = lookup_file (handlename);
+	GnomeVFSFileInfo *info;
+
+	if (!handle)
+		return;
+
+	info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info_from_handle (handle, info,
+						      GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
+
+	if (show_if_error (result, "getting info from handle: ", handlename))
+		return;
+
+	print_info (info);
+	gnome_vfs_file_info_unref (info);
+}
 
 /*
  * ---------------------------------------------------------------------
@@ -915,6 +964,42 @@ callback (GIOChannel *source,
 	return TRUE;
 }
 
+static char *
+get_input_string (const char *prompt)
+{
+	char buffer[512];
+
+	printf (prompt);
+	fgets (buffer, 511, stdin);
+	if (strchr (buffer, '\n'))
+		*strchr (buffer, '\n') = '\0';
+	
+	return g_strndup (buffer, 512);
+}
+
+static void
+authentication_callback (gconstpointer in, gsize in_size,
+			 gpointer out, gsize out_size,
+			 gpointer user_data)
+{
+ 	GnomeVFSModuleCallbackAuthenticationIn *in_real;
+ 	GnomeVFSModuleCallbackAuthenticationOut *out_real;
+
+ 	g_return_if_fail (sizeof (GnomeVFSModuleCallbackAuthenticationIn) == in_size
+ 		&& sizeof (GnomeVFSModuleCallbackAuthenticationOut) == out_size);
+
+	g_return_if_fail (in != NULL);
+	g_return_if_fail (out != NULL);
+
+ 	in_real = (GnomeVFSModuleCallbackAuthenticationIn *)in;
+ 	out_real = (GnomeVFSModuleCallbackAuthenticationOut *)out;
+	
+	printf ("Authenticate for uri: %s realm: %s\n", in_real->uri, in_real->realm);
+
+	out_real->username = get_input_string ("Username:\n");
+	out_real->password = get_input_string ("Password:\n");
+}
+
 int
 main (int argc, const char **argv)
 {
@@ -932,6 +1017,9 @@ main (int argc, const char **argv)
 	popt_context = poptGetContext ("test-vfs", argc, argv,
 				       options, 0);
 
+	while (poptGetNextOpt (popt_context) != -1)
+		;
+
 	if (interactive)
 		vfserr = stderr;
 	else
@@ -941,6 +1029,9 @@ main (int argc, const char **argv)
 		fprintf (vfserr, "Cannot initialize gnome-vfs.\n");
 		return 1;
 	}
+	gnome_vfs_module_callback_push
+		(GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION,
+		 authentication_callback, NULL, NULL);
 
 	instream = stdin;
 	args = poptGetArgs (popt_context);
@@ -957,7 +1048,7 @@ main (int argc, const char **argv)
 		
 	poptFreeContext (popt_context);
 
-	do {
+	while (!exit) {
 		char *ptr;
 
 		if (interactive) {
@@ -987,7 +1078,12 @@ main (int argc, const char **argv)
 		} else {
 			/* In non-interactive mode we just do this evil
 			 * thingie */
-			fgets (buffer, 1023, stdin);
+			buffer[0] = '\0';
+			fgets (buffer, 1023, instream);
+			if (!buffer [0]) {
+				exit = 1;
+				continue;
+			}
 		}
 
 		if (!buffer || buffer [0] == '#')
@@ -1026,6 +1122,8 @@ main (int argc, const char **argv)
 			do_info ();
 		else if (g_ascii_strcasecmp (ptr, "findtrash") == 0)
 			do_findtrash ();
+		else if (g_ascii_strcasecmp (ptr, "ssl") == 0)
+			do_ssl ();
 		else if (g_ascii_strcasecmp (ptr, "sync") == 0)
 			fprintf (vfserr, "a shell is like a boat, it lists or syncs (RMS)\n");
 		else if (g_ascii_strcasecmp (ptr,"help") == 0 ||
@@ -1046,6 +1144,8 @@ main (int argc, const char **argv)
 			do_create ();
 		else if (g_ascii_strcasecmp (ptr, "close") == 0)
 			do_close ();
+		else if (g_ascii_strcasecmp (ptr, "handleinfo") == 0)
+			do_handleinfo ();
 		else if (g_ascii_strcasecmp (ptr, "read") == 0)
 			do_read ();
 		else if (g_ascii_strcasecmp (ptr, "seek") == 0)
@@ -1056,7 +1156,7 @@ main (int argc, const char **argv)
 
 		g_strfreev (arg_data);
 		arg_data = NULL;
-	} while (!exit);
+	}
 
 	g_free (buffer);
 	g_free (cur_dir);
@@ -1065,3 +1165,4 @@ main (int argc, const char **argv)
 
 	return 0;
 }
+

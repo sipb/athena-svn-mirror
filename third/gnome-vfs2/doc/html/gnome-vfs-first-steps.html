@@ -1,83 +1,51 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>A Gentle Programming Primer</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
-        .synopsis, .classsynopsis {
-            background: #eeeeee;
-            border: solid 1px #aaaaaa;
-            padding: 0.5em;
-        }
-        .programlisting {
-            background: #eeeeff;
-            border: solid 1px #aaaaff;
-            padding: 0.5em;
-        }
-        .variablelist {
-            padding: 4px;
-            margin-left: 3em;
-        }
-        .navigation {
-            background: #ffeeee;
-            border: solid 1px #ffaaaa;
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-        }
-        .navigation a {
-            color: #770000;
-        }
-        .navigation a:visited {
-            color: #550000;
-        }
-        .navigation .title {
-            font-size: 200%;
-        }
-      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="about.html" title="Introduction to GnomeVFS"><link rel="previous" href="about.html" title="Introduction to GnomeVFS"><link rel="next" href="gnome-vfs-gnome-vfs-init.html" title="
-Initialization/Shutdown"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="about.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="about.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-init.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="sect1"><div class="titlepage"><div><h2 class="title" style="clear: both"><a name="gnome-vfs-first-steps"></a>A Gentle Programming Primer</h2></div></div><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>A Gentle Programming Primer</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="about.html" title="Introduction to GnomeVFS"><link rel="previous" href="about.html" title="Introduction to GnomeVFS"><link rel="next" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="subsection" href="gnome-vfs-first-steps.html#id2490182" title="Simple Sample Program"><link rel="subsection" href="gnome-vfs-first-steps.html#id2490204" title="Conversion of a Sample Code Block"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="about.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="about.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-init.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="gnome-vfs-first-steps"></a>A Gentle Programming Primer</h2></div></div><div></div></div><p>
       Using GnomeVFS in an existing application, or writing a new application
       with it, is actually very simple since GnomeVFS tries to mimic POSIX
-      file access syntax and semantics. That means that most &quot;standard unix calls&quot; 
+      file access syntax and semantics. That means that most "standard unix calls" 
       have a GnomeVFS equivalent that operates in a fairly similar manner. There are
       a few differences to keep in mind. 
 
       </p><div class="itemizedlist"><ul type="disc"><li><p>
-	    The most obvious is probably that all I/O operations return a GnomeVFSResult
+	    The most obvious is probably that all I/O operations return a <span class="type">GnomeVFSResult</span>
 	    indicating the success or failure of the operation. More on this later.
 	  </p></li><li><p>
 	    The types may be slightly different (but still parallel), for example rather than using an 
-	    int for a file-descriptor, GnomeVFS uses GnomeVFSHandle, a handle
+	    <span class="type">int</span> for a file-descriptor, GnomeVFS uses <span class="type">GnomeVFSHandle</span>, a handle
 	    to a particular URI.
 	  </p></li><li><p>
 	    Most operations come in Handle (think file descriptor) and URI form. The URI form may be
 	    more convenient if you do not want to track handles, etc, but just be aware that both are
-	    at your disposal and may be used interchangably. For example <tt>gnome_vfs_open</tt>
-	    and <tt>gnome_vfs_open_uri</tt>.
+	    at your disposal and may be used interchangably. For example <tt class="function">gnome_vfs_open</tt>
+	    and <tt class="function">gnome_vfs_open_uri</tt>.
 	  </p></li></ul></div><p>
     </p><p>
       By way of example, consider the basic read command:
-      <pre class="programlisting">
+      </p><pre class="programlisting">
 	ssize_t read (int fd, void *buf, size_t count);
-      </pre>
+      </pre><p>
     </p><p>
       The GnomeVFS equivalent is very similar, but you will notice slightly different data types. The
       consistent returning of a GnomeVFSResult also necessitated moving the return value of read into
-      a pass-back-value pointer <i><tt>bytes_read</tt></i>:
-      <pre class="programlisting">
+      a pass-back-value pointer <i class="parameter"><tt>bytes_read</tt></i>:
+      </p><pre class="programlisting">
 	GnomeVFSResult gnome_vfs_read (GnomeVFSHandle *handle,
 	                               gpointer buffer,
                                        GnomeVFSFileSize bytes,
                                        GnomeVFSFileSize *bytes_read);
-      </pre>
+      </pre><p>
     </p><p>
-      So <tt>gnome_vfs_read</tt> takes a GnomeVFSHandle, which functions
-      like a file descriptor, and attempts to read <i><tt>bytes</tt></i> bytes out of
-      <i><tt>handle</tt></i> into <i><tt>buffer</tt></i>. The number of bytes succesfully
-      read into <i><tt>buffer</tt></i> is returned in the pointer <i><tt>bytes_read</tt></i>.
-      The return value of the function, a GnomeVFSResult indicates the success of the
+      So <tt class="function">gnome_vfs_read</tt> takes a <span class="type">GnomeVFSHandle</span>, which functions
+      like a file descriptor, and attempts to read <i class="parameter"><tt>bytes</tt></i> bytes out of
+      <i class="parameter"><tt>handle</tt></i> into <i class="parameter"><tt>buffer</tt></i>. The number of bytes succesfully
+      read into <i class="parameter"><tt>buffer</tt></i> is returned in the pointer <i class="parameter"><tt>bytes_read</tt></i>.
+      The return value of the function, a <span class="type">GnomeVFSResult</span> indicates the success of the
       operation or any errors that might have occurred (for example, permission denied).
-      GnomeVFSResult is just an enumeration.
-    </p><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2778795"></a>Simple Sample Program</h3></div></div><p>
+      <span class="type">GnomeVFSResult</span> is just an enumeration.
+    </p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2490182"></a>Simple Sample Program</h3></div></div><div></div></div><p>
 	Now lets write a simple program to copy a fixed number of bytes from one file and append
 	it to another file.
       </p><p>
-	<pre class="programlisting">
+	</p><pre class="programlisting">
 
 #include &lt;libgnomevfs/gnome-vfs.h&gt;
 #include &lt;gnome.h&gt;
@@ -93,12 +61,12 @@ main (int argc, char **argv)
   const char *input_uri_string = argv[1];
   const char *output_uri_string = argv[2];
   GnomeVFSFileSize bytes_read, bytes_written;
-  gpointer buffer;
+  guint buffer[BYTES_TO_PROCESS];
   GnomeVFSResult result;
 
   /* remember to initialize GnomeVFS! */
   if (!gnome_vfs_init ()) {
-    printf (&quot;Could not initialize GnomeVFS\n&quot;);
+    printf ("Could not initialize GnomeVFS\n");
     return 1;
   }
 
@@ -110,7 +78,7 @@ main (int argc, char **argv)
   /* we use create instead of open, because open will not create the file if it does
      not already exist. The last argument is the permissions to use if the file is created,
      the second to last tells GnomeVFS that its ok if the file already exists, and just open it */
-  result = gnome_vfs_create (&amp;write_handle, output_uri_string, GNOME_VFS_OPEN_WRITE, FALSE, 0x777);
+  result = gnome_vfs_create (&amp;write_handle, output_uri_string, GNOME_VFS_OPEN_WRITE, FALSE, 0777);
   if (result != GNOME_VFS_OK) return print_error (result, output_uri_string);
 
   /* read data from the input uri */
@@ -134,12 +102,11 @@ print_error (GnomeVFSResult result, const char *uri_string)
   const char *error_string;
   /* get the string corresponding to this GnomeVFSResult value */
   error_string = gnome_vfs_result_to_string (result);
-  printf (&quot;Error %s occured opening location %s\n&quot;, error_string, uri_string);
+  printf ("Error %s occured opening location %s\n", error_string, uri_string);
   return 1;
 }
 
 
-	</pre>
-</p></div><div class="sect2"><div class="titlepage"><div><h3 class="title"><a name="id2778822"></a>Conversion of a Sample Code Block</h3></div></div><p>
-	</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="about.html"><b>&lt;&lt; Introduction to GnomeVFS</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-init.html"><b>
-Initialization/Shutdown &gt;&gt;</b></a></td></tr></table></body></html>
+	</pre><p>
+</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id2490204"></a>Conversion of a Sample Code Block</h3></div></div><div></div></div><p>
+	</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="about.html"><b>&lt;&lt; Introduction to GnomeVFS</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-20-gnome-vfs-init.html"><b>Initialization/Shutdown &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,47 +1,15 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Writing Modules</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
-        .synopsis, .classsynopsis {
-            background: #eeeeee;
-            border: solid 1px #aaaaaa;
-            padding: 0.5em;
-        }
-        .programlisting {
-            background: #eeeeff;
-            border: solid 1px #aaaaff;
-            padding: 0.5em;
-        }
-        .variablelist {
-            padding: 4px;
-            margin-left: 3em;
-        }
-        .navigation {
-            background: #ffeeee;
-            border: solid 1px #ffaaaa;
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-        }
-        .navigation a {
-            color: #770000;
-        }
-        .navigation a:visited {
-            color: #550000;
-        }
-        .navigation .title {
-            font-size: 200%;
-        }
-      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="previous" href="modules.html" title="Filesystem Modules"><link rel="next" href="gnome-vfs-gnome-vfs-mime.html" title="
-MIME typing"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="modules.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-mime.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-writing-modules"></a><div class="titlepage"></div><div class="refnamediv"><h2>Writing Modules</h2><p>Writing Modules &#8212; basic gnome-vfs module concepts</p></div><div class="refsect1"><a name="Introduction"></a><h2>Introduction</h2><p>This section will introduce the basic concepts that are
-      needed for writing GNOME Virtual File System modules.</p><div class="refsect2"><a name="uris"></a><h3>GNOME VFS URIs (Uniform Resource Identifiers)</h3><p>The GNOME Virtual file system uses URIs similiar to the
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Writing Modules</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="previous" href="modules.html" title="Filesystem Modules"><link rel="next" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-writing-modules.html#Introduction" title="Introduction"><link rel="section" href="gnome-vfs-writing-modules.html#id2670673" title="GNOME Virtual File System access method implementation"><link rel="section" href="gnome-vfs-writing-modules.html#id2670804" title="Implementing an access method in practice"><link rel="section" href="gnome-vfs-writing-modules.html#id2671165" title="Handling cancellation"><link rel="section" href="gnome-vfs-writing-modules.html#id2671409" title="Basic guidelines for writing a module"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="modules.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-mime.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-writing-modules"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">Writing Modules</span></h2><p>Writing Modules &#8212; basic gnome-vfs module concepts</p></div><div class="refsect1" lang="en"><a name="Introduction"></a><h2>Introduction</h2><p>This section will introduce the basic concepts that are
+      needed for writing GNOME Virtual File System modules.</p><div class="refsect2" lang="en"><a name="uris"></a><h3>GNOME VFS URIs (Uniform Resource Identifiers)</h3><p>The GNOME Virtual file system uses URIs similiar to the
         standard WWW URIs.  The basic difference between a VFS URI and
         WWW URI is that, while with WWW URIs you can only use a single
         protocol for accessing a certain file, with GNOME VFS URIs you
         can combine different access methods in sequence.</p><p>For example, suppose you want to access file
-        <tt>hello.c</tt> in a <tt>tar.gz</tt>
+        <tt class="filename">hello.c</tt> in a <tt class="filename">tar.gz</tt>
         file which is in turn accessible through FTP from a remote
-        machine.  In order to access this file, you would need to:</p><div class="orderedlist"><ol type="1"><li><p>Connect to the FTP site.</p></li><li><p>Fetch the <tt>tar.gz</tt>
-        file.</p></li><li><p>Decompress the <tt>tar.gz</tt> file using
-          GZIP.</p></li><li><p>Extract <tt>hello.c</tt> from the resulting
-          uncompressed <tt>tar</tt> file.</p></li></ol></div><p>The GNOME Virtual File System lets you express this by
+        machine.  In order to access this file, you would need to:</p><div class="orderedlist"><ol type="1"><li><p>Connect to the FTP site.</p></li><li><p>Fetch the <tt class="filename">tar.gz</tt>
+        file.</p></li><li><p>Decompress the <tt class="filename">tar.gz</tt> file using
+          GZIP.</p></li><li><p>Extract <tt class="filename">hello.c</tt> from the resulting
+          uncompressed <tt class="filename">tar</tt> file.</p></li></ol></div><p>The GNOME Virtual File System lets you express this by
         combining the three access methods (i.e. tar, GZIP and FTP)
         into a single URI.  Access methods are combined in the URI by
         using the `#' character, followed by the name for the access
@@ -54,80 +22,80 @@ MIME typing"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#84
         locate a specific file or directory.)</p><p>For example, in the case we outlined above, the URI would
         look something like:</p><pre class="programlisting">
 
-        ftp://username:password@host.net/path/to/file.tar.gz#gzip#tar/path/to/hello.c</pre><p>Each method/subpath couple is called a <i>URI
+        ftp://username:password@host.net/path/to/file.tar.gz#gzip:#tar:/path/to/hello.c</pre><p>Each method/subpath couple is called a <i class="firstterm">URI
       element</i>.  When URI elements are combined like this,
       each URI element uses the previous one to access a base resource
       into which it will look up a file, using the subpath
       information.  For this reason, we will say that each element is
-      the <i>parent</i> element for the following one.</p><p>The first URI element, the one which has no parent, is
-      called the <i>toplevel element</i>.  It does not
+      the <i class="firstterm">parent</i> element for the following one.</p><p>The first URI element, the one which has no parent, is
+      called the <i class="firstterm">toplevel element</i>.  It does not
       use the `#' character; instead, it uses the standard syntax of
       WWW URIs: </p><pre class="programlisting">
 
         method://user:password@host/path/to/file</pre><p>This way, normal WWW URIs can be used with the GNOME Virtual
       File System.</p><p>Toplevel elements are also special because they let users
         specify user names, passwords and host names, while
-        non-toplevel elements don't.</p></div><hr><div class="refsect2"><h3>The GnomeVFSURI type</h3><p>Within the GNOME Virtual File System library, URI elements
+        non-toplevel elements don't.</p></div><hr><div class="refsect2" lang="en"><a name="id2670608"></a><h3>The <span class="structname">GnomeVFSURI</span> type</h3><p>Within the GNOME Virtual File System library, URI elements
       are represented by a special type,
-      GnomeVFSURI, which is meant to represent
-      user-provided URIs in a machine-optimized way.  </p><p>Every GnomeVFSURI contains the
+      <span class="structname">GnomeVFSURI</span>, which is meant to represent
+      user-provided URIs in a machine-optimized way.  </p><p>Every <span class="structname">GnomeVFSURI</span> contains the
       following information:</p><div class="itemizedlist"><ul type="disc"><li><p>A reference counter</p></li><li><p>A pointer to the parent
-        GnomeVFSURI URI element.</p></li><li><p>The subpath.</p></li><li><p>The name of the access method.</p></li><li><p>A pointer to a
-        GnomeVFSMethod object, describing the
-        access method (see below).</p></li></ul></div></div></div><div class="refsect1"><h2>GNOME Virtual File System access method implementation</h2><p>In the GNOME Virtual File System, the implementations for
+        <span class="structname">GnomeVFSURI</span> URI element.</p></li><li><p>The subpath.</p></li><li><p>The name of the access method.</p></li><li><p>A pointer to a
+        <span class="structname">GnomeVFSMethod</span> object, describing the
+        access method (see below).</p></li></ul></div></div></div><div class="refsect1" lang="en"><a name="id2670673"></a><h2>GNOME Virtual File System access method implementation</h2><p>In the GNOME Virtual File System, the implementations for
     all the access methods are loaded at runtime, as shared library
-    modules.  The modules are loaded during parsing of the string URI:
-    if the parser encounters an access method for which no
+    modules.  The modules are loaded during parsing of the string URI.
+    If the parser encounters an access method for which no
     implementation is currently loaded, it retrieves the corresponding
     library file, dynamically links it into the executable, and
     initializes it.</p><p>After initialization, the module returns a special
-    GnomeVFSMethod object that contains
+    <span class="structname">GnomeVFSMethod</span> object that contains
     pointers to the various implementation functions for that specific
     method.  By storing a pointer to this object into the
-    GnomeVFSURI type, the VFS library is then
-    able to use these functions for file access.</p><div class="refsect2"><h3>How file access is performed</h3><p>When the VFS library needs to perform some file operation,
+    <span class="structname">GnomeVFSURI</span> type, the VFS library is then
+    able to use these functions for file access.</p><div class="refsect2" lang="en"><a name="id2670705"></a><h3>How file access is performed</h3><p>When the VFS library needs to perform some file operation,
       it performs the following steps:</p><div class="itemizedlist"><ul type="disc"><li><p>If the URI is given in textual form (i.e. as a
         string), it parses it and activates the necessary access method
         modules.</p></li><li><p>It retrieves a pointer to the lowmost
         level URI element.</p></li><li><p>It retrieves a pointer to the
-        GnomeVFSMethod object that corresponds
+        <span class="structname">GnomeVFSMethod</span> object that corresponds
         to the access method for that URI element.</p></li><li><p>It retrieves a pointer to the implementation
         function for that operation from the
-        GnomeVFSMethodobject.</p></li><li><p>It invokes that implementation function
+        <span class="structname">GnomeVFSMethod</span>object.</p></li><li><p>It invokes that implementation function
         passing the pointer to the lowmost level URI
         element.</p></li></ul></div><p>Combining the access methods is always done within the
       method implementation.  If the method implementation needs to do
       some file operation on the the parent URI element, it can do so
-      by simply invoking the corresponding VFS function in, by using
-      the parent pointer in the GnomeVFSURI
+      by simply invoking the corresponding VFS function, by using
+      the parent pointer in the <span class="structname">GnomeVFSURI</span>
       object. </p><p>For example, suppose you have to read a simple URI like
       the following:</p><pre class="programlisting">
 
-        file:/home/ettore/file.gz#gzip</pre><p>In this case, the GZIP method will be invoked with a
-      pointer to the GnomeVFSURI describing the
-      `gzip' part; then the GZIP method will be able to read
-      <tt>file.gz</tt> by just invoking the corresponding
-      GNOME VFS library function on its parent, and decompress it on
-      the fly. </p></div></div><div class="refsect1"><h2>Implementing an access method in practice</h2><p>Implementing a new access method is really not difficult at
-    all.  This section explains how this is done.</p><div class="refsect2"><h3>Using shared libraries</h3><p>Every module must be compiled as a shared library (i.e. a
-      <tt>.so</tt> file).</p><p>The current way for accessing the right module for the
+        file:/home/ettore/file.gz#gzip:</pre><p>In this case, the GZIP method will be invoked with a
+      pointer to the <span class="structname">GnomeVFSURI</span> describing the
+      `gzip' part. The GZIP method will be able to read
+      <tt class="filename">file.gz</tt> by just invoking the corresponding
+      GNOME VFS library function on its parent and decompressing it on
+      the fly. </p></div></div><div class="refsect1" lang="en"><a name="id2670804"></a><h2>Implementing an access method in practice</h2><p>Implementing a new access method is really not difficult at
+    all.  This section explains how this is done.</p><div class="refsect2" lang="en"><a name="id2670816"></a><h3>Using shared libraries</h3><p>Every module must be compiled as a shared library (i.e. a
+      <tt class="filename">.so</tt> file).</p><p>The current way for accessing the right module for the
       right method is very simple, and is based on file names.  In
-      practice, a module implementing access method named
-      <tt>foo</tt> must be named
-      <tt>libfoo.so</tt>.  For example, the module
-      implementing the <tt>ftp:</tt> access method is
-      called <tt>libftp.so</tt>, the module implementing
-      <tt>#gzip</tt> access is called
-      <tt>libgzip.so</tt> and so on.</p><p>This might change in the future.</p></div><hr><div class="refsect2"><h3>The initialization/shutdown functions</h3><p>Every shared library module must provide two functions:</p><pre class="programlisting">
+      practice, a module implementing an access method named
+      <tt class="filename">foo</tt> must be named
+      <tt class="filename">libfoo.so</tt>.  For example, the module
+      implementing the <tt class="filename">ftp:</tt> access method is
+      called <tt class="filename">libftp.so</tt>, the module implementing
+      <tt class="filename">#gzip:</tt> access is called
+      <tt class="filename">libgzip.so</tt> and so on.</p><p>This might change in the future.</p></div><hr><div class="refsect2" lang="en"><a name="id2670882"></a><h3>The initialization/shutdown functions</h3><p>Every shared library module must provide two functions:</p><pre class="programlisting">
 
-GnomeVFSMethod *vfs_module_init (void);
+GnomeVFSMethod *vfs_module_init (const char *method_name, const char *args);
 void vfs_module_shutdown (GnomeVFSMethod *method);</pre><p>These are the only functions that the VFS library will
       access directly.  All the other symbols (i.e. functions and
-      variables) in the module should be made static. </p><p><tt>vfs_module_init()</tt> is called
+      variables) in the module should be made static. </p><p><tt class="function">vfs_module_init()</tt> is called
       as soon as the module is loaded in memory.  It will have to
-      return a pointer to a GnomeVFSMethod
+      return a pointer to a <span class="structname">GnomeVFSMethod</span>
       object that will contain the pointers to the method's
-      implementation functions.  We will describe this later. </p><p><tt>vfs_module_shutdown</tt>, instead,
+      implementation functions.  We will describe this later. </p><p><tt class="function">vfs_module_shutdown</tt>, instead,
       is called before the module is unloaded or the program that uses
       it dies.  This functions should:</p><div class="itemizedlist"><ul type="disc"><li><p>Deallocate all the memory allocated by the
         module.</p></li><li><p>Close all the file descriptors associated with
@@ -135,99 +103,159 @@ void vfs_module_shutdown (GnomeVFSMethod *method);</pre><p>These are the only fu
         module.</p></li><li><p>In general, make sure that any operation that
         was going on before this function was called will be
         interrupted correctly, as soon as possible and without any
-        leaks.</p></li></ul></div></div><hr><div class="refsect2"><h3>The GnomeVFSMethod object</h3><p>This object is contains pointers to the module
+        leaks.</p></li></ul></div></div><hr><div class="refsect2" lang="en"><a name="id2670962"></a><h3>The <span class="structname">GnomeVFSMethod</span> object</h3><p>This object contains pointers to the module
       implementation functions.</p><pre class="programlisting">
+GnomeVFSResult (* open)              (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle  **method_handle_return,
+                                      GnomeVFSURI            *uri,
+                                      GnomeVFSOpenMode        mode,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* open)              (GnomeVFSMethodHandle **method_handle_return,
-                                      GnomeVFSURI *uri,
-                                      GnomeVFSOpenMode mode
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* create)            (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle  **method_handle_return,
+                                      GnomeVFSURI            *uri,
+                                      GnomeVFSOpenMode        mode,
+                                      gboolean                exclusive,
+                                      guint                   perm,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* create)            (GnomeVFSMethodHandle **method_handle_return,
-                                      GnomeVFSURI *uri,
-                                      GnomeVFSOpenMode mode,
-                                      gboolean exclusive,
-                                      guint perm
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* close)             (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *method_handle,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* close)             (GnomeVFSMethodHandle *method_handle
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* read)              (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *method_handle,
+                                      gpointer                buffer,
+                                      GnomeVFSFileSize        num_bytes,
+                                      GnomeVFSFileSize       *bytes_read_return,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* read)              (GnomeVFSMethodHandle *method_handle,
-                                      gpointer buffer,
-                                      GnomeVFSFileSize num_bytes,
-                                      GnomeVFSFileSize *bytes_read_return
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* write)             (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *method_handle,
+                                      gconstpointer           buffer,
+                                      GnomeVFSFileSize        num_bytes,
+                                      GnomeVFSFileSize       *bytes_written_return,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* write)             (GnomeVFSMethodHandle *method_handle,
-                                      gconstpointer buffer,
-                                      GnomeVFSFileSize num_bytes,
-                                      GnomeVFSFileSize *bytes_written_return
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* seek)              (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *method_handle,
+                                      GnomeVFSSeekPosition    whence,
+                                      GnomeVFSFileOffset      offset,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* seek)              (GnomeVFSMethodHandle *method_handle,
-                                      GnomeVFSSeekPosition  whence,
-                                      GnomeVFSFileOffset    offset
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* tell)              (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *method_handle,
+                                      GnomeVFSFileOffset     *offset_return);
 
-GnomeVFSResult (* tell)              (GnomeVFSMethodHandle *method_handle,
-                                      GnomeVFSFileOffset *offset_return);
-
-GnomeVFSResult (* truncate)          (GnomeVFSMethodHandle *method_handle,
-                                      GnomeVFSFileSize where
-                                      GnomeVFSCancellation *cancellation);
-
-GnomeVFSResult (* open_directory)    (GnomeVFSMethodHandle **method_handle,
-                                      GnomeVFSURI *uri,
+GnomeVFSResult (* truncate)          (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle  **method_handle,
+                                      GnomeVFSURI            *uri,
                                       GnomeVFSFileInfoOptions options,
-                                      const GList *meta_keys,
-                                      const GnomeVFSDirectoryFilter *filter
-                                      GnomeVFSCancellation *cancellation);
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* close_directory)   (GnomeVFSMethodHandle *method_handle
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* close_directory)   (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *method_handle,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* read_directory)    (GnomeVFSMethodHandle *method_handle,
-                                      GnomeVFSFileInfo *file_info
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* read_directory)    (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *method_handle,
+                                      GnomeVFSFileInfo       *file_info,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* get_file_info)     (GnomeVFSURI *uri,
-                                      GnomeVFSFileInfo *file_info,
+GnomeVFSResult (* get_file_info)     (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *uri,
+                                      GnomeVFSFileInfo       *file_info,
                                       GnomeVFSFileInfoOptions options,
-                                      const GList *meta_keys
-                                      GnomeVFSCancellation *cancellation);
+                                      GnomeVFSContext        *context);
 
 GnomeVFSResult (* get_file_info_from_handle)
-                                     (GnomeVFSMethodHandle *method_handle,
-                                      GnomeVFSFileInfo *file_info,
+                                     (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandl e  *method_handle,
+                                      GnomeVFSFileInfo       *file_info,
                                       GnomeVFSFileInfoOptions options,
-                                      const GList *meta_keys
-                                      GnomeVFSCancellation *cancellation);
+                                      GnomeVFSContext        *context);
 
-gboolean       (* is_local)          (const GnomeVFSURI *uri
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* truncate)          (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *uri,
+                                      GnomeVFSFileSize        length,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* rename)            (GnomeVFSURI *uri, const gchar *new_name
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* truncate_handle)   (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *handle,
+                                      GnomeVFSFileSize        length,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* make_directory)    (GnomeVFSURI *uri, guint perm
-                                      GnomeVFSCancellation *cancellation);
+gboolean (* is_local)                (GnomeVFSMethod         *method,
+                                      const GnomeVFSURI      *uri);
 
-GnomeVFSResult (* remove_directory)  (GnomeVFSURI *uri
-                                      GnomeVFSCancellation *cancellation);
+GnomeVFSResult (* make_directory)    (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *uri,
+                                      guint                   perm,
+                                      GnomeVFSContext        *context);
 
-GnomeVFSResult (* unlink)            (GnomeVFSURI *uri
-                                      GnomeVFSCancellation *cancellation);
-</pre></div></div><div class="refsect1"><h2>Handling cancellation</h2><p>As VFS operations might be very long, especially in the case
-    of transient errors (such as a network server that has gone down),
-    the GNOME Virtual File System Library provides a standard way for
-    handling cancellation of VFS operations.</p><div class="refsect2"><h3>The GnomeVFSCancellation object</h3><p>The object that encapsulates this functionality is
-      GnomeVFSCancellation.  Most
+GnomeVFSResult (* find_directory)    (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *find_near_uri,
+                                      GnomeVFSFindDirectoryKind kind,
+                                      GnomeVFSURI           **result_uri,
+                                      gboolean                create_if_needed,
+                                      gboolean                find_if_needed,
+                                      guint                   perm,
+                                      GnomeVFSContext        *context);
+
+GnomeVFSResult (* remove_directory)  (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *uri,
+                                      GnomeVFSContext        *context);
+
+GnomeVFSResult (* move)              (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *old_uri,
+                                      GnomeVFSURI            *new_uri,
+                                      gboolean                force_replace,
+                                      GnomeVFSContext        *context);
+
+GnomeVFSResult (* unlink)            (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *uri,
+                                      GnomeVFSContext        *context);
+
+GnomeVFSResult (* check_same_fs)     (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *a,
+                                      GnomeVFSURI            *b,
+                                      gboolean               *same_fs_return,
+                                      GnomeVFSContext        *context);
+
+GnomeVFSResult (* set_file_info)     (GnomeVFSMethod         *method,
+                                      GnomeVFSURI            *a,
+                                      const GnomeVFSFileInfo *info,
+                                      GnomeVFSSetFileInfoMask mask,
+                                      GnomeVFSContext        *context);
+
+GnomeVFSResult (* create_symbolic_link) (GnomeVFSMethod      *method,
+                                      GnomeVFSURI            *uri,
+                                      const gchar            *target_reference,
+                                      GnomeVFSContext        *context);
+
+GnomeVFSResult (* monitor_add)       (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle  **method_handle_return,
+                                      GnomeVFSURI            *uri,
+                                      GnomeVFSMonitorType     monitor_type);
+
+GnomeVFSResult (* monitor_cancel)    (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *handle);
+
+GnomeVFSResult (* file_control)      (GnomeVFSMethod         *method,
+                                      GnomeVFSMethodHandle   *method_handle,
+                                      const char             *operation,
+                                      gpointer                operation_data,
+                                      GnomeVFSContext        *context);
+</pre></div></div><div class="refsect1" lang="en"><a name="id2671165"></a><h2>Handling cancellation</h2><p>As VFS operations might take very long to complete, especially in the
+    case of transient errors (such as a network server that has gone down),
+    the GNOME Virtual File System Library provides a standard way to
+    handle the cancellation of VFS operations.</p><div class="refsect2" lang="en"><a name="id2671178"></a><h3>The <span class="structname">GnomeVFSCancellation</span> object</h3><p>The object that encapsulates this functionality is
+      <span class="structname">GnomeVFSCancellation</span>.  Most
       implementation functions get a pointer to such an object, and are
       expected to use this object to recognize when an operation should
       be interrupted.</p><p>The most simple way to check for a cancellation request is
       to poll the object with
-      <tt>gnome_vfs_cancellation_check()</tt>:</p><pre class="programlisting">
+      <tt class="function">gnome_vfs_cancellation_check()</tt>:</p><pre class="programlisting">
   
 gboolean gnome_vfs_cancellation_check (GnomeVFSCancellation *cancellation);</pre><p>This function will return a nonzero value if the current
       operation should be cancelled.</p><p>Notice that cancellation is an asynchronous operation that
@@ -237,18 +265,18 @@ gboolean gnome_vfs_cancellation_check (GnomeVFSCancellation *cancellation);</pre
       CORBA-driven processes, the request will be activated by a Unix
       signal.  So you can expect a cancellation request to happen (and
       consequently be signalled in
-      GnomeVFSCancellation) at any time.</p><p>For this reason, you should be calling this function
+      <span class="structname">GnomeVFSCancellation</span>) at any time.</p><p>For this reason, you should be calling this function
       periodically, whenever you are going to perform several
       iterations of the same task, or execute a single expensive task.
       When the function returns a nonzero value, the correct way to
       react is:</p><div class="orderedlist"><ol type="1"><li><p>Clean things up so that the result of the
         operations that have been performed are all
         cancelled.</p></li><li><p>Return the
-        GNOME_VFS_ERROR_CANCELLED error
-        code.</p></li></ol></div><p>But there are some other situations in which you want to
-      be able to interrupt a I/O operation when a cancellation request
+        <span class="symbol">GNOME_VFS_ERROR_CANCELLED</span> error
+        code.</p></li></ol></div><p>Note, there are some other situations in which you want to
+      be able to interrupt an I/O operation when a cancellation request
       is performed.  In such cases, polling is not a viable option.</p><p>For this reason,
-      GnomeVFSCancellation provides an
+      <span class="structname">GnomeVFSCancellation</span> provides an
       alternative way of sending notifications, using a file
       descriptor.  To use this feature, you should use the following
       function:</p><pre class="programlisting">
@@ -256,31 +284,31 @@ gboolean gnome_vfs_cancellation_check (GnomeVFSCancellation *cancellation);</pre
 gint gnome_vfs_cancellation_get_fd (GnomeVFSCancellation *cancellation); </pre><p>When this function is called, it will return an open file
       descriptor, which is the read-side of a pipe.  The pipe will be
       given a character from the write side as soon as a cancellation
-      request is sent.  For this reason, you can check for a
-      cancellation by using the <tt>select()</tt> system
-      call: as soon as <tt>select</tt> reports that some
-      data is available on the file descriptor, you know that a
+      request is sent.  You can check for a cancellation by using the 
+      <tt class="function">select()</tt> system call with this file descriptor.
+      As soon as <tt class="function">select</tt> reports that some
+      data is available on this file descriptor, you know that a
       cancellation is being requested.</p><p>For example, if you are reading from a file descriptor and
       you want to check for a pending cancellation at the same time,
-      you can set up <tt>select</tt>for checking if data
+      you can set up <tt class="function">select</tt>for checking if data
       is available on both the cancellation file descriptor and the
-      file descriptor you are reading from.</p></div><hr><div class="refsect2"><h3>Dealing with EINTR</h3><p>In order to maximize the chance of cancelling an operation
+      file descriptor you are reading from.</p></div><hr><div class="refsect2" lang="en"><a name="id2671332"></a><h3>Dealing with <span class="symbol">EINTR</span></h3><p>In order to maximize the chance of cancelling an operation
       immediately, the GNOME Virtual File System can sends a signal to
       the asynchronous thread or process.  This does not happen on all
       the systems and setups, though.</p><p>The result of this is that, if a process is in the middle
       of a Unix system call while receiving this signal, the system
-      call might be interrupted and return a EINTR
-      error.</p><p>For this reason, when you receive EINTR
+      call might be interrupted and return a <span class="symbol">EINTR</span>
+      error.</p><p>For this reason, when you receive <span class="symbol">EINTR</span>
       you should check if a cancellation request is pending, using
-      <tt>gnome_vfs_cancellation_check()</tt> on the
-      GnomeVFSCancellation object that the
+      <tt class="function">gnome_vfs_cancellation_check()</tt> on the
+      <span class="structname">GnomeVFSCancellation</span> object that the
       implementation function received:</p><div class="itemizedlist"><ul type="disc"><li><p>If a cancellation is indeed pending
-        (<tt>gnome_vfs_cancellation_check()</tt> returns a
+        (<tt class="function">gnome_vfs_cancellation_check()</tt> returns a
         nonzero value), you should cancel the operation, cleaning up
         all the effects, and return
-        GNOME_VFS_ERROR_INTERRUPTED or
-        GNOME_VFS_ERROR_CANCELLED</p></li><li><p>Otherwise, retry the system call as you would
-        normally do.</p></li></ul></div></div></div><div class="refsect1"><h2>Basic guidelines for writing a module</h2><p>Writing GNOME VFS modules is easy, but there are a few
+        <span class="symbol">GNOME_VFS_ERROR_INTERRUPTED</span> or
+        <span class="symbol">GNOME_VFS_ERROR_CANCELLED</span></p></li><li><p>Otherwise, retry the system call as you would
+        normally do.</p></li></ul></div></div></div><div class="refsect1" lang="en"><a name="id2671409"></a><h2>Basic guidelines for writing a module</h2><p>Writing GNOME VFS modules is easy, but there are a few
     things that you must keep in mind when hacking them:</p><div class="itemizedlist"><ul type="disc"><li><p>All of the code must be completely thread safe.
       The reason for this is that the asynchronous GNOME VFS engine
       will use threads when available; if you don't make sure that the
@@ -288,13 +316,13 @@ gint gnome_vfs_cancellation_get_fd (GnomeVFSCancellation *cancellation); </pre><
       will happen.  As debugging these problems can be very hard, it's
       important to write the code with threads in mind right from the
       start.</p></li><li><p>Use the special
-      <tt>gnome_vfs_*_cancellable()</tt> VFS functions
+      <tt class="function">gnome_vfs_*_cancellable()</tt> VFS functions
       instead of the standard non-cancellable ones, passing them the
-      same GnomeVFSCancellation object you
+      same <span class="structname">GnomeVFSCancellation</span> object you
       are given, so that the operation can always be interrrupted at
       any time.</p></li><li><p>The code should respect the basic GNOME
       guidelines for source code indentation and
-      style.</p></li></ul></div><div class="refsect2"><h3>How to make the code thread safe</h3><p>Although it might sound scary at first, making the code
+      style.</p></li></ul></div><div class="refsect2" lang="en"><a name="id2671459"></a><h3>How to make the code thread safe</h3><p>Although it might sound scary at first, making the code
       for the modules thread safe is not complicated at all.</p><p>First of all, make sure the amount of global variables is
       kept to the bare minimum.  If possible, you should avoid them at
       all cost.</p><p>For those cases where globals are inevitable (such as
@@ -302,8 +330,8 @@ gint gnome_vfs_cancellation_get_fd (GnomeVFSCancellation *cancellation); </pre><
       sure every variable is properly associated with a mutex, and
       that the mutex is locked before every access to this variable
       and released afterwards.  You can also use
-      <tt>G_LOCK_DEFINE_STATIC</tt>,
-      <tt>G_LOCK</tt> and <tt>G_UNLOCK</tt>
+      <tt class="function">G_LOCK_DEFINE_STATIC</tt>,
+      <tt class="function">G_LOCK</tt> and <tt class="function">G_UNLOCK</tt>
       for this.
       </p><p>Generally speaking, if you are going to dynamically
       allocate structures that are shared by more than one
@@ -322,10 +350,9 @@ gint gnome_vfs_cancellation_get_fd (GnomeVFSCancellation *cancellation); </pre><
 #define MUTEX_FREE(a)
 #define MUTEX_LOCK(a)
 #define MUTEX_UNLOCK(a)
-#endif</pre><p><tt>G_LOCK_DEFINE_STATIC</tt>,
-      <tt>G_LOCK</tt> and <tt>G_UNLOCK</tt> in
+#endif</pre><p><tt class="function">G_LOCK_DEFINE_STATIC</tt>,
+      <tt class="function">G_LOCK</tt> and <tt class="function">G_UNLOCK</tt> in
       GLib are always safe to use, as they are already defined to be
       nothing when thread support is not available.</p><p>(Probably it would be a good idea to have something in the
       private GNOME VFS API that does this stuff for all the
-      modules.)</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="modules.html"><b>&lt;&lt; Filesystem Modules</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-mime.html"><b>
-MIME typing &gt;&gt;</b></a></td></tr></table></body></html>
+      modules.)</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="modules.html"><b>&lt;&lt; Filesystem Modules</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-20-gnome-vfs-mime.html"><b>MIME typing &gt;&gt;</b></a></td></tr></table></body></html>

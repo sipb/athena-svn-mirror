@@ -46,6 +46,9 @@ extern int errno;
 #endif
 #include <string.h>
 #include <glib.h>
+#ifdef HAVE_LIBGEN_H
+#include <libgen.h>
+#endif
 
 #if __STDC__
 # define P_(s) s
@@ -217,10 +220,7 @@ char *filesystem_type (char *path, char *relpath, struct stat *statp);
    Return "unknown" if its filesystem type is unknown.  */
 
 char *
-filesystem_type (path, relpath, statp)
-     char *path;
-     char *relpath;
-     struct stat *statp;
+filesystem_type (char *path, char *relpath, struct stat *statp)
 {
   static char *current_fstype = NULL;
   static dev_t current_dev;
@@ -247,10 +247,7 @@ fstype_internal_error (int level, int num, char const *fmt, ...)
    Return "unknown" if its filesystem type is unknown.  */
 
 static char *
-filesystem_type_uncached (path, relpath, statp)
-     char *path;
-     char *relpath;
-     struct stat *statp;
+filesystem_type_uncached (char *path, char *relpath, struct stat *statp)
 {
   char *type = NULL;
 
@@ -260,8 +257,10 @@ filesystem_type_uncached (path, relpath, statp)
   struct mntent *mnt;
 
   mfp = setmntent (table, "r");
-  if (mfp == NULL)
+  if (mfp == NULL) {
     fstype_internal_error (1, errno, "%s", table);
+    goto no_mtab;
+  }
 
   /* Find the entry with the same device number as STATP, and return
      that entry's fstype. */
@@ -311,6 +310,7 @@ filesystem_type_uncached (path, relpath, statp)
 
   if (endmntent (mfp) == 0)
     fstype_internal_error (0, errno, "%s", table);
+ no_mtab:
 #endif
 
 #ifdef FSTYPE_GETMNT		/* Ultrix.  */
@@ -398,8 +398,7 @@ filesystem_type_uncached (path, relpath, statp)
    part of CP. */
 
 static int
-xatoi (cp)
-     char *cp;
+xatoi (char *cp)
 {
   int val;
   

@@ -1,0 +1,160 @@
+<!-- ##### SECTION ./tmpl/gnome-vfs-directory.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-directory.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-directory.sgml:Short_Description ##### -->
+
+Reading the contents of directories
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-directory.sgml:Title ##### -->
+
+Directory Operations
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-find-directory.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-find-directory.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-find-directory.sgml:Short_Description ##### -->
+
+utilities for locating standard directories such as the desktop and trash
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-find-directory.sgml:Title ##### -->
+
+Locating Standard Directories
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-metadata.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-metadata.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-metadata.sgml:Short_Description ##### -->
+
+attach extra pieces of information to files, such as icons or positions
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-metadata.sgml:Title ##### -->
+
+Metadata
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-volumes.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-volumes.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-volumes.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/gnome-vfs-volumes.sgml:Title ##### -->
+gnome-vfs-volumes
+
+
+<!-- ##### MACRO GNOME_VFS_METADATA_CONST ##### -->
+<para>
+
+</para>
+
+@obj: 
+
+<!-- ##### MACRO GNOME_VFS_TYPE_VFS_DEVICE_TYPE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GNOME_VFS_TYPE_VFS_VOLUME_TYPE ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GnomeVfsMetadataPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gnome_vfs_device_type_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION gnome_vfs_make_uri_dirs_get_type ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+<!-- ##### FUNCTION gnome_vfs_metadata_get_int ##### -->
+<para>
+
+</para>
+
+@self: 
+@key: 
+@Returns: 
+
+<!-- ##### FUNCTION gnome_vfs_metadata_new ##### -->
+<para>
+
+</para>
+
+@uri: 
+@Returns: 
+
+<!-- ##### FUNCTION gnome_vfs_metadata_set_int ##### -->
+<para>
+
+</para>
+
+@self: 
+@key: 
+@value: 
+
+<!-- ##### FUNCTION gnome_vfs_metadata_set_string ##### -->
+<para>
+
+</para>
+
+@self: 
+@key: 
+@value: 
+

@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-async-ops">
+<refentry id="gnome-vfs-20-gnome-vfs-async-ops">
 <refmeta>
-<refentrytitle>
-Asynchronous File Operations</refentrytitle>
+<refentrytitle>Asynchronous File Operations</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-Asynchronous File Operations</refname><refpurpose>
+<refname>Asynchronous File Operations</refname><refpurpose>
 POSIX-style file operations that run outside your main loop</refpurpose>
 </refnamediv>
 
@@ -21,137 +19,137 @@ POSIX-style file operations that run outside your main loop</refpurpose>
 #define     <link linkend="GNOME-VFS-PRIORITY-MIN-CAPS">GNOME_VFS_PRIORITY_MIN</link>
 #define     <link linkend="GNOME-VFS-PRIORITY-MAX-CAPS">GNOME_VFS_PRIORITY_MAX</link>
 #define     <link linkend="GNOME-VFS-PRIORITY-DEFAULT-CAPS">GNOME_VFS_PRIORITY_DEFAULT</link>
-void        (<link linkend="GnomeVFSAsyncCallback">*GnomeVFSAsyncCallback</link>)        (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<link linkend="void">void</link>        (<link linkend="GnomeVFSAsyncCallback">*GnomeVFSAsyncCallback</link>)        (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="GnomeVFSResult">GnomeVFSResult</link> result,
                                              <link linkend="gpointer">gpointer</link> callback_data);
 typedef     <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link>;
 typedef     <link linkend="GnomeVFSAsyncCreateCallback">GnomeVFSAsyncCreateCallback</link>;
 typedef     <link linkend="GnomeVFSAsyncCreateAsChannelCallback">GnomeVFSAsyncCreateAsChannelCallback</link>;
 typedef     <link linkend="GnomeVFSAsyncCloseCallback">GnomeVFSAsyncCloseCallback</link>;
-void        (<link linkend="GnomeVFSAsyncReadCallback">*GnomeVFSAsyncReadCallback</link>)    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<link linkend="void">void</link>        (<link linkend="GnomeVFSAsyncReadCallback">*GnomeVFSAsyncReadCallback</link>)    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="GnomeVFSResult">GnomeVFSResult</link> result,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_requested,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_read,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        (<link linkend="GnomeVFSAsyncWriteCallback">*GnomeVFSAsyncWriteCallback</link>)   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<link linkend="void">void</link>        (<link linkend="GnomeVFSAsyncWriteCallback">*GnomeVFSAsyncWriteCallback</link>)   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="GnomeVFSResult">GnomeVFSResult</link> result,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_requested,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_written,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-typedef     <link linkend="GnomeVFSFindDirectoryResult">GnomeVFSFindDirectoryResult</link>;
-void        <link linkend="gnome-vfs-async-set-job-limit">gnome_vfs_async_set_job_limit</link>   (int limit);
-int         <link linkend="gnome-vfs-async-get-job-limit">gnome_vfs_async_get_job_limit</link>   (void);
-void        <link linkend="gnome-vfs-async-cancel">gnome_vfs_async_cancel</link>          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle);
-void        <link linkend="gnome-vfs-async-open">gnome_vfs_async_open</link>            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+struct      <link linkend="GnomeVFSFindDirectoryResult">GnomeVFSFindDirectoryResult</link>;
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-set-job-limit">gnome_vfs_async_set_job_limit</link>   (<link linkend="int">int</link> limit);
+<link linkend="int">int</link>         <link linkend="gnome-vfs-async-get-job-limit">gnome_vfs_async_get_job_limit</link>   (void);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-cancel">gnome_vfs_async_cancel</link>          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-open">gnome_vfs_async_open</link>            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-open-uri">gnome_vfs_async_open_uri</link>        (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-open-uri">gnome_vfs_async_open_uri</link>        (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-open-as-channel">gnome_vfs_async_open_as_channel</link> (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-open-as-channel">gnome_vfs_async_open_as_channel</link> (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="guint">guint</link> advised_block_size,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenAsChannelCallback">GnomeVFSAsyncOpenAsChannelCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-open-uri-as-channel">gnome_vfs_async_open_uri_as_channel</link>
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-open-uri-as-channel">gnome_vfs_async_open_uri_as_channel</link>
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="guint">guint</link> advised_block_size,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenAsChannelCallback">GnomeVFSAsyncOpenAsChannelCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-create">gnome_vfs_async_create</link>          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-create">gnome_vfs_async_create</link>          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
                                              <link linkend="guint">guint</link> perm,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-create-uri">gnome_vfs_async_create_uri</link>      (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-create-uri">gnome_vfs_async_create_uri</link>      (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
                                              <link linkend="guint">guint</link> perm,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-create-symbolic-link">gnome_vfs_async_create_symbolic_link</link>
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-create-symbolic-link">gnome_vfs_async_create_symbolic_link</link>
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *uri_reference,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-create-as-channel">gnome_vfs_async_create_as_channel</link>
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-create-as-channel">gnome_vfs_async_create_as_channel</link>
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
                                              <link linkend="guint">guint</link> perm,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncCreateAsChannelCallback">GnomeVFSAsyncCreateAsChannelCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-create-uri-as-channel">gnome_vfs_async_create_uri_as_channel</link>
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-create-uri-as-channel">gnome_vfs_async_create_uri_as_channel</link>
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
                                              <link linkend="guint">guint</link> perm,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncCreateAsChannelCallback">GnomeVFSAsyncCreateAsChannelCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-close">gnome_vfs_async_close</link>           (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-close">gnome_vfs_async_close</link>           (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="GnomeVFSAsyncCloseCallback">GnomeVFSAsyncCloseCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-read">gnome_vfs_async_read</link>            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-read">gnome_vfs_async_read</link>            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="guint">guint</link> bytes,
                                              <link linkend="GnomeVFSAsyncReadCallback">GnomeVFSAsyncReadCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-write">gnome_vfs_async_write</link>           (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-write">gnome_vfs_async_write</link>           (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="guint">guint</link> bytes,
                                              <link linkend="GnomeVFSAsyncWriteCallback">GnomeVFSAsyncWriteCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-get-file-info">gnome_vfs_async_get_file_info</link>   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-get-file-info">gnome_vfs_async_get_file_info</link>   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GList">GList</link> *uri_list,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncGetFileInfoCallback">GnomeVFSAsyncGetFileInfoCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-set-file-info">gnome_vfs_async_set_file_info</link>   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-set-file-info">gnome_vfs_async_set_file_info</link>   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
                                              <link linkend="GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</link> mask,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncSetFileInfoCallback">GnomeVFSAsyncSetFileInfoCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-load-directory">gnome_vfs_async_load_directory</link>  (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-load-directory">gnome_vfs_async_load_directory</link>  (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options,
                                              <link linkend="guint">guint</link> items_per_notification,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncDirectoryLoadCallback">GnomeVFSAsyncDirectoryLoadCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
-void        <link linkend="gnome-vfs-async-load-directory-uri">gnome_vfs_async_load_directory_uri</link>
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-load-directory-uri">gnome_vfs_async_load_directory_uri</link>
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options,
                                              <link linkend="guint">guint</link> items_per_notification,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncDirectoryLoadCallback">GnomeVFSAsyncDirectoryLoadCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-async-xfer">gnome_vfs_async_xfer</link>         (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
@@ -160,28 +158,30 @@ void        <link linkend="gnome-vfs-async-load-directory-uri">gnome_vfs_async_l
                                              <link linkend="GnomeVFSXferOptions">GnomeVFSXferOptions</link> xfer_options,
                                              <link linkend="GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</link> error_mode,
                                              <link linkend="GnomeVFSXferOverwriteMode">GnomeVFSXferOverwriteMode</link> overwrite_mode,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncXferProgressCallback">GnomeVFSAsyncXferProgressCallback</link> progress_update_callback,
                                              <link linkend="gpointer">gpointer</link> update_callback_data,
                                              <link linkend="GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</link> progress_sync_callback,
                                              <link linkend="gpointer">gpointer</link> sync_callback_data);
-void        <link linkend="gnome-vfs-async-find-directory">gnome_vfs_async_find_directory</link>  (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-find-directory">gnome_vfs_async_find_directory</link>  (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GList">GList</link> *near_uri_list,
                                              <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</link> kind,
                                              <link linkend="gboolean">gboolean</link> create_if_needed,
                                              <link linkend="gboolean">gboolean</link> find_if_needed,
                                              <link linkend="guint">guint</link> permissions,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncFindDirectoryCallback">GnomeVFSAsyncFindDirectoryCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);
-void        <link linkend="gnome-vfs-async-file-control">gnome_vfs_async_file_control</link>    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
-                                             const char *operation,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-file-control">gnome_vfs_async_file_control</link>    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+                                             const <link linkend="char">char</link> *operation,
                                              <link linkend="gpointer">gpointer</link> operation_data,
                                              <link linkend="GDestroyNotify">GDestroyNotify</link> operation_data_destroy_func,
                                              <link linkend="GnomeVFSAsyncFileControlCallback">GnomeVFSAsyncFileControlCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -218,7 +218,7 @@ void        <link linkend="gnome-vfs-async-file-control">gnome_vfs_async_file_co
 <title>Details</title>
 <refsect2>
 <title><anchor id="GNOME-VFS-PRIORITY-MIN-CAPS"/>GNOME_VFS_PRIORITY_MIN</title>
-<programlisting>#define GNOME_VFS_PRIORITY_MIN     -10
+<indexterm><primary>GNOME_VFS_PRIORITY_MIN</primary></indexterm><programlisting>#define GNOME_VFS_PRIORITY_MIN     -10
 </programlisting>
 <para>
 The minimuum priority a job can have.</para>
@@ -227,7 +227,7 @@ The minimuum priority a job can have.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-PRIORITY-MAX-CAPS"/>GNOME_VFS_PRIORITY_MAX</title>
-<programlisting>#define GNOME_VFS_PRIORITY_MAX     10
+<indexterm><primary>GNOME_VFS_PRIORITY_MAX</primary></indexterm><programlisting>#define GNOME_VFS_PRIORITY_MAX     10
 </programlisting>
 <para>
 The maximuum priority a job can have.</para>
@@ -236,7 +236,7 @@ The maximuum priority a job can have.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-VFS-PRIORITY-DEFAULT-CAPS"/>GNOME_VFS_PRIORITY_DEFAULT</title>
-<programlisting>#define GNOME_VFS_PRIORITY_DEFAULT 0
+<indexterm><primary>GNOME_VFS_PRIORITY_DEFAULT</primary></indexterm><programlisting>#define GNOME_VFS_PRIORITY_DEFAULT 0
 </programlisting>
 <para>
 The default job priority. Its best to use this
@@ -246,7 +246,7 @@ unless you have a reason to do otherwise.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSAsyncCallback"/>GnomeVFSAsyncCallback ()</title>
-<programlisting>void        (*GnomeVFSAsyncCallback)        (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<indexterm><primary>GnomeVFSAsyncCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeVFSAsyncCallback)        (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="GnomeVFSResult">GnomeVFSResult</link> result,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -268,7 +268,7 @@ an error code.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSAsyncOpenCallback"/>GnomeVFSAsyncOpenCallback</title>
-<programlisting>typedef GnomeVFSAsyncCallback GnomeVFSAsyncOpenCallback;
+<indexterm><primary>GnomeVFSAsyncOpenCallback</primary></indexterm><programlisting>typedef GnomeVFSAsyncCallback GnomeVFSAsyncOpenCallback;
 </programlisting>
 <para>
 Basic callback from an async operation that passes no data back,
@@ -278,7 +278,7 @@ informing the user of the <parameter>result</parameter> of the operation.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSAsyncCreateCallback"/>GnomeVFSAsyncCreateCallback</title>
-<programlisting>typedef GnomeVFSAsyncCallback GnomeVFSAsyncCreateCallback;
+<indexterm><primary>GnomeVFSAsyncCreateCallback</primary></indexterm><programlisting>typedef GnomeVFSAsyncCallback GnomeVFSAsyncCreateCallback;
 </programlisting>
 <para>
 Basic callback from an async operation that passes no data back,
@@ -288,16 +288,16 @@ informing the user of the <parameter>result</parameter> of the operation.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSAsyncCreateAsChannelCallback"/>GnomeVFSAsyncCreateAsChannelCallback</title>
-<programlisting>typedef GnomeVFSAsyncOpenAsChannelCallback GnomeVFSAsyncCreateAsChannelCallback;
+<indexterm><primary>GnomeVFSAsyncCreateAsChannelCallback</primary></indexterm><programlisting>typedef GnomeVFSAsyncOpenAsChannelCallback GnomeVFSAsyncCreateAsChannelCallback;
 </programlisting>
 <para>
-Callback for the <link linkend="gnome-vfs-async-create-as-channel">gnome_vfs_async_create_as_channel</link>() function.</para>
+Callback for the <link linkend="gnome-vfs-async-create-as-channel"><function>gnome_vfs_async_create_as_channel()</function></link> function.</para>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSAsyncCloseCallback"/>GnomeVFSAsyncCloseCallback</title>
-<programlisting>typedef GnomeVFSAsyncCallback GnomeVFSAsyncCloseCallback;
+<indexterm><primary>GnomeVFSAsyncCloseCallback</primary></indexterm><programlisting>typedef GnomeVFSAsyncCallback GnomeVFSAsyncCloseCallback;
 </programlisting>
 <para>
 Basic callback from an async operation that passes no data back,
@@ -307,14 +307,14 @@ informing the user of the <parameter>result</parameter> of the operation.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSAsyncReadCallback"/>GnomeVFSAsyncReadCallback ()</title>
-<programlisting>void        (*GnomeVFSAsyncReadCallback)    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<indexterm><primary>GnomeVFSAsyncReadCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeVFSAsyncReadCallback)    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="GnomeVFSResult">GnomeVFSResult</link> result,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_requested,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_read,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
-Callback for the <link linkend="gnome-vfs-async-read">gnome_vfs_async_read</link>() function.</para>
+Callback for the <link linkend="gnome-vfs-async-read"><function>gnome_vfs_async_read()</function></link> function.</para>
 <para>
 
 </para><variablelist role="params">
@@ -330,7 +330,7 @@ an error code.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bytes_requested</parameter>&nbsp;:</term>
 <listitem><simpara> the number of bytes asked for in the call to
-<link linkend="gnome-vfs-async-read">gnome_vfs_async_read</link>().
+<link linkend="gnome-vfs-async-read"><function>gnome_vfs_async_read()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bytes_read</parameter>&nbsp;:</term>
 <listitem><simpara> the number of bytes actually read from <parameter>handle</parameter> into <parameter>buffer</parameter>.
@@ -341,14 +341,14 @@ an error code.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSAsyncWriteCallback"/>GnomeVFSAsyncWriteCallback ()</title>
-<programlisting>void        (*GnomeVFSAsyncWriteCallback)   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<indexterm><primary>GnomeVFSAsyncWriteCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeVFSAsyncWriteCallback)   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="GnomeVFSResult">GnomeVFSResult</link> result,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_requested,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_written,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
-Callback for the <link linkend="gnome-vfs-async-write">gnome_vfs_async_write</link>() function.</para>
+Callback for the <link linkend="gnome-vfs-async-write"><function>gnome_vfs_async_write()</function></link> function.</para>
 <para>
 
 </para><variablelist role="params">
@@ -364,7 +364,7 @@ an error code.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bytes_requested</parameter>&nbsp;:</term>
 <listitem><simpara> the number of bytes asked to write in the call to
-<link linkend="gnome-vfs-async-write">gnome_vfs_async_write</link>().
+<link linkend="gnome-vfs-async-write"><function>gnome_vfs_async_write()</function></link>.
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>bytes_written</parameter>&nbsp;:</term>
 <listitem><simpara> the number of bytes actually written to <parameter>handle</parameter> from <parameter>buffer</parameter>.
@@ -374,22 +374,23 @@ an error code.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSFindDirectoryResult"/>GnomeVFSFindDirectoryResult</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSFindDirectoryResult"/>struct GnomeVFSFindDirectoryResult</title>
+<indexterm><primary>GnomeVFSFindDirectoryResult</primary></indexterm><programlisting>struct GnomeVFSFindDirectoryResult {
+
 	GnomeVFSURI *uri;
 	GnomeVFSResult result;
 
 	/* Reserved to avoid future breaks in ABI compatibility */
 	void *reserved1;
 	void *reserved2;
-} GnomeVFSFindDirectoryResult;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-set-job-limit"/>gnome_vfs_async_set_job_limit ()</title>
-<programlisting>void        gnome_vfs_async_set_job_limit   (int limit);</programlisting>
+<indexterm><primary>gnome_vfs_async_set_job_limit</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_set_job_limit   (<link linkend="int">int</link> limit);</programlisting>
 <para>
 Restrict the number of worker threads used by Async operations
 to <parameter>limit</parameter>.</para>
@@ -402,7 +403,7 @@ to <parameter>limit</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-get-job-limit"/>gnome_vfs_async_get_job_limit ()</title>
-<programlisting>int         gnome_vfs_async_get_job_limit   (void);</programlisting>
+<indexterm><primary>gnome_vfs_async_get_job_limit</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_vfs_async_get_job_limit   (void);</programlisting>
 <para>
 Get the current maximuum allowable number of
 worker threads for Asynch operations.</para>
@@ -414,7 +415,7 @@ worker threads for Asynch operations.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-cancel"/>gnome_vfs_async_cancel ()</title>
-<programlisting>void        gnome_vfs_async_cancel          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle);</programlisting>
+<indexterm><primary>gnome_vfs_async_cancel</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_cancel          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle);</programlisting>
 <para>
 Cancel an asynchronous operation and close all its callbacks.
 Its possible to still receive another call or two on the callback.</para>
@@ -427,10 +428,10 @@ Its possible to still receive another call or two on the callback.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-open"/>gnome_vfs_async_open ()</title>
-<programlisting>void        gnome_vfs_async_open            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_open</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_open            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -463,10 +464,10 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-open-uri"/>gnome_vfs_async_open_uri ()</title>
-<programlisting>void        gnome_vfs_async_open_uri        (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_open_uri</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_open_uri        (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -499,17 +500,17 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-open-as-channel"/>gnome_vfs_async_open_as_channel ()</title>
-<programlisting>void        gnome_vfs_async_open_as_channel (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_open_as_channel</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_open_as_channel (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="guint">guint</link> advised_block_size,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenAsChannelCallback">GnomeVFSAsyncOpenAsChannelCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
-Open <parameter>text_uri</parameter> as a <link linkend="GIOChannel">GIOChannel</link>. Once the channel has been established
+Open <parameter>text_uri</parameter> as a <link linkend="GIOChannel"><type>GIOChannel</type></link>. Once the channel has been established
 <parameter>callback</parameter> will be called with <parameter>callback_data</parameter>, the result of the operation,
-and if the result was <literal>GNOME_VFS_OK</literal>, a reference to a <link linkend="GIOChannel">GIOChannel</link> pointing
+and if the result was <literal>GNOME_VFS_OK</literal>, a reference to a <link linkend="GIOChannel"><type>GIOChannel</type></link> pointing
 at <parameter>text_uri</parameter> in <parameter>open_mode</parameter>.</para>
 <para>
 
@@ -518,13 +519,13 @@ at <parameter>text_uri</parameter> in <parameter>open_mode</parameter>.</para>
 <listitem><simpara> A pointer to a pointer to a GnomeVFSHandle object
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text_uri</parameter>&nbsp;:</term>
-<listitem><simpara> string of the URI to open as a <link linkend="GIOChannel">GIOChannel</link>
+<listitem><simpara> string of the URI to open as a <link linkend="GIOChannel"><type>GIOChannel</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>open_mode</parameter>&nbsp;:</term>
 <listitem><simpara> open for reading, writing, random, etc
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>advised_block_size</parameter>&nbsp;:</term>
-<listitem><simpara> the preferred block size for <link linkend="GIOChannel">GIOChannel</link> to read
+<listitem><simpara> the preferred block size for <link linkend="GIOChannel"><type>GIOChannel</type></link> to read
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>priority</parameter>&nbsp;:</term>
 <listitem><simpara> a value from <literal>GNOME_VFS_PRIORITY_MIN</literal> to <literal>GNOME_VFS_PRIORITY_MAX</literal> (normally
@@ -540,18 +541,18 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-open-uri-as-channel"/>gnome_vfs_async_open_uri_as_channel ()</title>
-<programlisting>void        gnome_vfs_async_open_uri_as_channel
+<indexterm><primary>gnome_vfs_async_open_uri_as_channel</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_open_uri_as_channel
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="guint">guint</link> advised_block_size,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenAsChannelCallback">GnomeVFSAsyncOpenAsChannelCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
-Open <parameter>uri</parameter> as a <link linkend="GIOChannel">GIOChannel</link>. Once the channel has been established
+Open <parameter>uri</parameter> as a <link linkend="GIOChannel"><type>GIOChannel</type></link>. Once the channel has been established
 <parameter>callback</parameter> will be called with <parameter>callback_data</parameter>, the result of the operation,
-and if the result was <literal>GNOME_VFS_OK</literal>, a reference to a <link linkend="GIOChannel">GIOChannel</link> pointing
+and if the result was <literal>GNOME_VFS_OK</literal>, a reference to a <link linkend="GIOChannel"><type>GIOChannel</type></link> pointing
 at <parameter>uri</parameter> in <parameter>open_mode</parameter>.</para>
 <para>
 
@@ -560,13 +561,13 @@ at <parameter>uri</parameter> in <parameter>open_mode</parameter>.</para>
 <listitem><simpara> A pointer to a pointer to a GnomeVFSHandle object
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>uri</parameter>&nbsp;:</term>
-<listitem><simpara> URI to open as a <link linkend="GIOChannel">GIOChannel</link>
+<listitem><simpara> URI to open as a <link linkend="GIOChannel"><type>GIOChannel</type></link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>open_mode</parameter>&nbsp;:</term>
 <listitem><simpara> open for reading, writing, random, etc
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>advised_block_size</parameter>&nbsp;:</term>
-<listitem><simpara> the preferred block size for <link linkend="GIOChannel">GIOChannel</link> to read
+<listitem><simpara> the preferred block size for <link linkend="GIOChannel"><type>GIOChannel</type></link> to read
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>priority</parameter>&nbsp;:</term>
 <listitem><simpara> a value from <literal>GNOME_VFS_PRIORITY_MIN</literal> to <literal>GNOME_VFS_PRIORITY_MAX</literal> (normally
@@ -582,12 +583,12 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-create"/>gnome_vfs_async_create ()</title>
-<programlisting>void        gnome_vfs_async_create          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_create</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_create          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
                                              <link linkend="guint">guint</link> perm,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -630,12 +631,12 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-create-uri"/>gnome_vfs_async_create_uri ()</title>
-<programlisting>void        gnome_vfs_async_create_uri      (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_create_uri</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_create_uri      (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
                                              <link linkend="guint">guint</link> perm,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -678,11 +679,11 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-create-symbolic-link"/>gnome_vfs_async_create_symbolic_link ()</title>
-<programlisting>void        gnome_vfs_async_create_symbolic_link
+<indexterm><primary>gnome_vfs_async_create_symbolic_link</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_create_symbolic_link
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *uri_reference,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncOpenCallback">GnomeVFSAsyncOpenCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -716,19 +717,19 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-create-as-channel"/>gnome_vfs_async_create_as_channel ()</title>
-<programlisting>void        gnome_vfs_async_create_as_channel
+<indexterm><primary>gnome_vfs_async_create_as_channel</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_create_as_channel
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
                                              <link linkend="guint">guint</link> perm,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncCreateAsChannelCallback">GnomeVFSAsyncCreateAsChannelCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
-Open <parameter>text_uri</parameter> as a <link linkend="GIOChannel">GIOChannel</link>, creating it as necessary. Once the channel has 
+Open <parameter>text_uri</parameter> as a <link linkend="GIOChannel"><type>GIOChannel</type></link>, creating it as necessary. Once the channel has 
 been established <parameter>callback</parameter> will be called with <parameter>callback_data</parameter>, the result of the 
-operation, and if the result was <literal>GNOME_VFS_OK</literal>, a reference to a <link linkend="GIOChannel">GIOChannel</link> pointing
+operation, and if the result was <literal>GNOME_VFS_OK</literal>, a reference to a <link linkend="GIOChannel"><type>GIOChannel</type></link> pointing
 at <parameter>text_uri</parameter> in <parameter>open_mode</parameter>.</para>
 <para>
 
@@ -737,7 +738,7 @@ at <parameter>text_uri</parameter> in <parameter>open_mode</parameter>.</para>
 <listitem><simpara> A pointer to a pointer to a GnomeVFSHandle object
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>text_uri</parameter>&nbsp;:</term>
-<listitem><simpara> string of the URI to open as a <link linkend="GIOChannel">GIOChannel</link>, creating it as necessary
+<listitem><simpara> string of the URI to open as a <link linkend="GIOChannel"><type>GIOChannel</type></link>, creating it as necessary
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>open_mode</parameter>&nbsp;:</term>
 <listitem><simpara> open for reading, writing, random, etc
@@ -762,13 +763,13 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-create-uri-as-channel"/>gnome_vfs_async_create_uri_as_channel ()</title>
-<programlisting>void        gnome_vfs_async_create_uri_as_channel
+<indexterm><primary>gnome_vfs_async_create_uri_as_channel</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_create_uri_as_channel
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
                                              <link linkend="guint">guint</link> perm,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncCreateAsChannelCallback">GnomeVFSAsyncCreateAsChannelCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -803,11 +804,11 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-close"/>gnome_vfs_async_close ()</title>
-<programlisting>void        gnome_vfs_async_close           (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<indexterm><primary>gnome_vfs_async_close</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_close           (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="GnomeVFSAsyncCloseCallback">GnomeVFSAsyncCloseCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
-Close a handle opened with <link linkend="gnome-vfs-async-open">gnome_vfs_async_open</link>(). When the close
+Close a handle opened with <link linkend="gnome-vfs-async-open"><function>gnome_vfs_async_open()</function></link>. When the close
 has completed, <parameter>callback</parameter> will be called with <parameter>callback_data</parameter> and
 the result of the operation.</para>
 <para>
@@ -825,7 +826,7 @@ the result of the operation.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-read"/>gnome_vfs_async_read ()</title>
-<programlisting>void        gnome_vfs_async_read            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<indexterm><primary>gnome_vfs_async_read</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_read            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="guint">guint</link> bytes,
                                              <link linkend="GnomeVFSAsyncReadCallback">GnomeVFSAsyncReadCallback</link> callback,
@@ -855,7 +856,7 @@ result of the operation and <parameter>callback_data</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-write"/>gnome_vfs_async_write ()</title>
-<programlisting>void        gnome_vfs_async_write           (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<indexterm><primary>gnome_vfs_async_write</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_write           (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="guint">guint</link> bytes,
                                              <link linkend="GnomeVFSAsyncWriteCallback">GnomeVFSAsyncWriteCallback</link> callback,
@@ -885,10 +886,10 @@ result of the operation and <parameter>callback_data</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-get-file-info"/>gnome_vfs_async_get_file_info ()</title>
-<programlisting>void        gnome_vfs_async_get_file_info   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_get_file_info</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_get_file_info   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GList">GList</link> *uri_list,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncGetFileInfoCallback">GnomeVFSAsyncGetFileInfoCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -922,12 +923,12 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-set-file-info"/>gnome_vfs_async_set_file_info ()</title>
-<programlisting>void        gnome_vfs_async_set_file_info   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_set_file_info</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_set_file_info   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
                                              <link linkend="GnomeVFSSetFileInfoMask">GnomeVFSSetFileInfoMask</link> mask,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncSetFileInfoCallback">GnomeVFSAsyncSetFileInfoCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -967,11 +968,11 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-load-directory"/>gnome_vfs_async_load_directory ()</title>
-<programlisting>void        gnome_vfs_async_load_directory  (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_load_directory</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_load_directory  (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options,
                                              <link linkend="guint">guint</link> items_per_notification,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncDirectoryLoadCallback">GnomeVFSAsyncDirectoryLoadCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -1009,12 +1010,12 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-load-directory-uri"/>gnome_vfs_async_load_directory_uri ()</title>
-<programlisting>void        gnome_vfs_async_load_directory_uri
+<indexterm><primary>gnome_vfs_async_load_directory_uri</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_load_directory_uri
                                             (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSFileInfoOptions">GnomeVFSFileInfoOptions</link> options,
                                              <link linkend="guint">guint</link> items_per_notification,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncDirectoryLoadCallback">GnomeVFSAsyncDirectoryLoadCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
 <para>
@@ -1052,13 +1053,13 @@ in allocating threads from the thread pool.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-xfer"/>gnome_vfs_async_xfer ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_async_xfer         (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_xfer</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_async_xfer         (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GList">GList</link> *source_uri_list,
                                              <link linkend="GList">GList</link> *target_uri_list,
                                              <link linkend="GnomeVFSXferOptions">GnomeVFSXferOptions</link> xfer_options,
                                              <link linkend="GnomeVFSXferErrorMode">GnomeVFSXferErrorMode</link> error_mode,
                                              <link linkend="GnomeVFSXferOverwriteMode">GnomeVFSXferOverwriteMode</link> overwrite_mode,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncXferProgressCallback">GnomeVFSAsyncXferProgressCallback</link> progress_update_callback,
                                              <link linkend="gpointer">gpointer</link> update_callback_data,
                                              <link linkend="GnomeVFSXferProgressCallback">GnomeVFSXferProgressCallback</link> progress_sync_callback,
@@ -1075,10 +1076,10 @@ a decision or report on important error it will do so on <parameter>progress_syn
 <listitem><simpara> when the function returns will point to a handle for
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>source_uri_list</parameter>&nbsp;:</term>
-<listitem><simpara> <link linkend="GList">GList</link> of <link linkend="GnomeVFSURI">GnomeVFSURI</link> representing the files to be transferred
+<listitem><simpara> <link linkend="GList"><type>GList</type></link> of <link linkend="GnomeVFSURI"><type>GnomeVFSURI</type></link> representing the files to be transferred
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>target_uri_list</parameter>&nbsp;:</term>
-<listitem><simpara> <link linkend="GList">GList</link> of <link linkend="GnomeVFSURI">GnomeVFSURI</link>, the target locations for the elements
+<listitem><simpara> <link linkend="GList"><type>GList</type></link> of <link linkend="GnomeVFSURI"><type>GnomeVFSURI</type></link>, the target locations for the elements
 in <parameter>source_uri_list</parameter>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>xfer_options</parameter>&nbsp;:</term>
@@ -1117,13 +1118,13 @@ or <literal>GNOME_VFS_ERROR_BAD_PARAMETERS</literal> if something was wrong in t
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-find-directory"/>gnome_vfs_async_find_directory ()</title>
-<programlisting>void        gnome_vfs_async_find_directory  (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
+<indexterm><primary>gnome_vfs_async_find_directory</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_find_directory  (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GList">GList</link> *near_uri_list,
                                              <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</link> kind,
                                              <link linkend="gboolean">gboolean</link> create_if_needed,
                                              <link linkend="gboolean">gboolean</link> find_if_needed,
                                              <link linkend="guint">guint</link> permissions,
-                                             int priority,
+                                             <link linkend="int">int</link> priority,
                                              <link linkend="GnomeVFSAsyncFindDirectoryCallback">GnomeVFSAsyncFindDirectoryCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> user_data);</programlisting>
 <para>
@@ -1179,8 +1180,8 @@ file systems.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-file-control"/>gnome_vfs_async_file_control ()</title>
-<programlisting>void        gnome_vfs_async_file_control    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
-                                             const char *operation,
+<indexterm role="2.2"><primary>gnome_vfs_async_file_control</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_file_control    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+                                             const <link linkend="char">char</link> *operation,
                                              <link linkend="gpointer">gpointer</link> operation_data,
                                              <link linkend="GDestroyNotify">GDestroyNotify</link> operation_data_destroy_func,
                                              <link linkend="GnomeVFSAsyncFileControlCallback">GnomeVFSAsyncFileControlCallback</link> callback,
@@ -1188,7 +1189,7 @@ file systems.
 <para>
 Execute a backend dependent operation specified by the string <parameter>operation</parameter>.
 This is typically used for specialized vfs backends that need additional
-operations that gnome-vfs doesn't have. Compare it to the unix call <link linkend="ioctl">ioctl</link>().
+operations that gnome-vfs doesn't have. Compare it to the unix call <link linkend="ioctl"><function>ioctl()</function></link>.
 The format of <parameter>operation_data</parameter> depends on the operation. Operation that are
 backend specific are normally namespaced by their module name.
 </para>

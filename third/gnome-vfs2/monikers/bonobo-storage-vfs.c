@@ -73,8 +73,10 @@ vfs_open_stream (PortableServer_Servant  storage,
 	full = concat_dir_and_file (storage_vfs->path, path);
 	stream = bonobo_stream_vfs_open (full, mode, ev);
 	g_free (full);
-
-	return BONOBO_OBJREF (stream);
+	if (stream) 
+		return CORBA_Object_duplicate (BONOBO_OBJREF (stream), NULL);
+	else
+		return CORBA_OBJECT_NIL;
 }
 
 /*
@@ -201,7 +203,7 @@ bonobo_storage_vfs_open (const char *path,
 		}
 
 		if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) &&
-		    (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)) {
+		    (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY)) {
 			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 					     ex_Bonobo_Stream_IOError, NULL);
 			return NULL;
@@ -212,7 +214,7 @@ bonobo_storage_vfs_open (const char *path,
 			create = TRUE;
 		else
 			if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) &&
-			    (info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)) {
+			    (info->type != GNOME_VFS_FILE_TYPE_DIRECTORY)) {
 				CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 						     ex_Bonobo_Stream_IOError, NULL);
 				return NULL;
@@ -253,12 +255,18 @@ vfs_open_storage (PortableServer_Servant  storage,
 	if (result == GNOME_VFS_OK ||
 	    result == GNOME_VFS_ERROR_FILE_EXISTS)
 		new_storage = do_bonobo_storage_vfs_create (full);
-	else
+	else {
 		new_storage = NULL;
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_Bonobo_Storage_NoPermission, NULL);
+	}
 
 	g_free (full);
 
-	return BONOBO_OBJREF (new_storage);
+	if (new_storage)
+		return CORBA_Object_duplicate (BONOBO_OBJREF (new_storage), NULL);
+	else
+		return CORBA_OBJECT_NIL;
 }
 
 static void
@@ -274,7 +282,6 @@ vfs_erase (PortableServer_Servant storage,
 	full = concat_dir_and_file (storage_vfs->path, path);
 
 	result = gnome_vfs_unlink (full);
-
 	g_free (full);
 
 	if (result != GNOME_VFS_OK)

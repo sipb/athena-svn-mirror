@@ -41,7 +41,7 @@
       </And>
     </Query>
 
-    <!-- Accesories -->
+    <!-- Accessories -->
     <Folder>
       <Name>Accessories</Name>
       <Desktop>Accessories.directory</Desktop>
@@ -56,11 +56,27 @@
       </Query>
       <DontShowIfEmpty/>
     </Folder>
+    
+    <!-- Accessibility -->
+    <Folder>
+      <Name>Accessibility</Name>
+      <Desktop>Accessibility.directory</Desktop>
+      <Query>
+	<And>
+	  <Keyword>Application</Keyword>
+	  <Keyword>Accessibility</Keyword>
+	  <Not>
+	    <Keyword>Settings</Keyword>
+	  </Not>
+	</And>
+      </Query>
+      <DontShowIfEmpty/>
+    </Folder>
 
     <!-- Other, catch-all unmatched folder -->
     <Folder>
       <Name>Other</Name>
-      <Desktop>Applications.directory</Desktop>
+      <Desktop>Other.directory</Desktop>
       <OnlyUnallocated/>
       <Query>
 	<And>

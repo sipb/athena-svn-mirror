@@ -25,6 +25,7 @@
 #define GNOME_VFS_URI_H
 
 #include <glib/glist.h>
+#include <glib-object.h> /* For GType */
 
 G_BEGIN_DECLS
 
@@ -93,7 +94,8 @@ typedef struct {
  * Packed boolean bitfield controlling hiding of various elements
  * of a GnomeVFSURI when it is converted to a string.
  **/
-typedef enum {
+typedef enum
+{
 	GNOME_VFS_URI_HIDE_NONE = 0,
 	GNOME_VFS_URI_HIDE_USER_NAME = 1 << 0,
 	GNOME_VFS_URI_HIDE_PASSWORD = 1 << 1,
@@ -101,7 +103,10 @@ typedef enum {
 	GNOME_VFS_URI_HIDE_HOST_PORT = 1 << 3,
 	GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD = 1 << 4,
 	GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER = 1 << 8
-} GnomeVFSURIHideOptions;
+} GnomeVFSURIHideOptions; 
+
+GType gnome_vfs_uri_hide_options_get_type (void);
+#define GNOME_VFS_TYPE_VFS_URI_HIDE_OPTIONS (gnome_vfs_uri_hide_options_get_type())
 
 
 /**
@@ -194,6 +199,7 @@ void                 gnome_vfs_uri_list_free               (GList *list);
 
 char                *gnome_vfs_uri_make_full_from_relative (const char *base_uri,
 							    const char *relative_uri);
+
 
 G_END_DECLS
 

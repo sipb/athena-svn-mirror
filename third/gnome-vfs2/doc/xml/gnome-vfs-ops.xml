@@ -1,14 +1,12 @@
-<refentry id="gnome-vfs-gnome-vfs-ops">
+<refentry id="gnome-vfs-20-gnome-vfs-ops">
 <refmeta>
-<refentrytitle>
-File Operations</refentrytitle>
+<refentrytitle>File Operations</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>
-File Operations</refname><refpurpose>
+<refname>File Operations</refname><refpurpose>
 basic POSIX-style file operations</refpurpose>
 </refnamediv>
 
@@ -28,6 +26,8 @@ typedef     <link linkend="GnomeVFSMethodHandle">GnomeVFSMethodHandle</link>;
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -39,7 +39,7 @@ typedef     <link linkend="GnomeVFSMethodHandle">GnomeVFSMethodHandle</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSMethodHandle"/>GnomeVFSMethodHandle</title>
-<programlisting>typedef gpointer GnomeVFSMethodHandle;
+<indexterm><primary>GnomeVFSMethodHandle</primary></indexterm><programlisting>typedef gpointer GnomeVFSMethodHandle;
 </programlisting>
 <para>
 

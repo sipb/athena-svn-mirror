@@ -1565,11 +1565,11 @@ gnome_vfs_application_registry_get_mime_types (const char *app_id)
 		for (li = application->user_application->mime_types;
 		     li != NULL;
 		     li = li->next) {
-			Application *application = li->data;
-			if (g_list_find_custom (retval, application->app_id,
+			char *mimetype = li->data;
+			if (g_list_find_custom (retval, mimetype,
 						(GCompareFunc) strcmp) == NULL)
 				retval = g_list_prepend (retval,
-							 application->app_id);
+							 mimetype);
 		}
 	}
 

@@ -27,6 +27,7 @@
 #include <libgnomevfs/gnome-vfs-cancellation.h>
 #include <libgnomevfs/gnome-vfs-socket.h>
 #include <libgnomevfs/gnome-vfs-socket-buffer.h>
+#include <libgnomevfs/gnome-vfs-address.h>
 
 G_BEGIN_DECLS
 
@@ -37,6 +38,12 @@ GnomeVFSResult	 gnome_vfs_inet_connection_create
 					 const gchar *host_name,
 					 guint host_port,
 					 GnomeVFSCancellation *cancellation);
+
+GnomeVFSResult   gnome_vfs_inet_connection_create_from_address
+                                        (GnomeVFSInetConnection **connection_return,
+					 GnomeVFSAddress         *address,
+					 guint                    host_port,
+					 GnomeVFSCancellation    *cancellation);
 
 /* free the connection structure and close the socket */
 void		 gnome_vfs_inet_connection_destroy
@@ -55,6 +62,11 @@ GnomeVFSSocketBuffer *gnome_vfs_inet_connection_to_socket_buffer
                                         (GnomeVFSInetConnection *connection);
 
 int gnome_vfs_inet_connection_get_fd    (GnomeVFSInetConnection *connection);
+
+char *gnome_vfs_inet_connection_get_ip  (GnomeVFSInetConnection *connection);
+
+GnomeVFSAddress *gnome_vfs_inet_connection_get_address
+                                        (GnomeVFSInetConnection *connection);
 
 G_END_DECLS
 

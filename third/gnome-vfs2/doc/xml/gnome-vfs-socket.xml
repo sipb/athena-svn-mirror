@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-socket">
+<refentry id="gnome-vfs-20-gnome-vfs-socket">
 <refmeta>
 <refentrytitle>gnome-vfs-socket</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -18,26 +18,38 @@
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> (<link linkend="GnomeVFSSocketReadFunc">*GnomeVFSSocketReadFunc</link>)    (<link linkend="gpointer">gpointer</link> connection,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read);
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> (<link linkend="GnomeVFSSocketWriteFunc">*GnomeVFSSocketWriteFunc</link>)   (<link linkend="gpointer">gpointer</link> connection,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written);
-void        (<link linkend="GnomeVFSSocketCloseFunc">*GnomeVFSSocketCloseFunc</link>)      (<link linkend="gpointer">gpointer</link> connection);
-typedef     <link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link>;
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+<link linkend="void">void</link>        (<link linkend="GnomeVFSSocketCloseFunc">*GnomeVFSSocketCloseFunc</link>)      (<link linkend="gpointer">gpointer</link> connection,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+struct      <link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link>;
 <link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* <link linkend="gnome-vfs-socket-new">gnome_vfs_socket_new</link>        (<link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link> *impl,
-                                             void *connection);
+                                             <link linkend="void">void</link> *connection);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-socket-write">gnome_vfs_socket_write</link>       (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
-                                             int bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written);
-<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-socket-close">gnome_vfs_socket_close</link>       (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket);
+                                             <link linkend="int">int</link> bytes,
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-socket-close">gnome_vfs_socket_close</link>       (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-socket-read">gnome_vfs_socket_read</link>        (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read);
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-socket-free">gnome_vfs_socket_free</link>           (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket);
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-socket-set-timeout">gnome_vfs_socket_set_timeout</link> (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
+                                             <link linkend="GTimeVal">GTimeVal</link> *timeout,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -56,10 +68,11 @@ typedef     <link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSSocketReadFunc"/>GnomeVFSSocketReadFunc ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSSocketReadFunc)    (<link linkend="gpointer">gpointer</link> connection,
+<indexterm><primary>GnomeVFSSocketReadFunc</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSSocketReadFunc)    (<link linkend="gpointer">gpointer</link> connection,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read);</programlisting>
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -75,6 +88,9 @@ typedef     <link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link>;
 <varlistentry><term><parameter>bytes_read</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
@@ -82,10 +98,11 @@ typedef     <link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link>;
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSSocketWriteFunc"/>GnomeVFSSocketWriteFunc ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSSocketWriteFunc)   (<link linkend="gpointer">gpointer</link> connection,
+<indexterm><primary>GnomeVFSSocketWriteFunc</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> (*GnomeVFSSocketWriteFunc)   (<link linkend="gpointer">gpointer</link> connection,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written);</programlisting>
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -101,6 +118,9 @@ typedef     <link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link>;
 <varlistentry><term><parameter>bytes_written</parameter>&nbsp;:</term>
 <listitem><simpara>
 </simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
 
 
@@ -108,31 +128,37 @@ typedef     <link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link>;
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GnomeVFSSocketCloseFunc"/>GnomeVFSSocketCloseFunc ()</title>
-<programlisting>void        (*GnomeVFSSocketCloseFunc)      (<link linkend="gpointer">gpointer</link> connection);</programlisting>
+<indexterm><primary>GnomeVFSSocketCloseFunc</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeVFSSocketCloseFunc)      (<link linkend="gpointer">gpointer</link> connection,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>connection</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
 <listitem><simpara>
 
 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
-<title><anchor id="GnomeVFSSocketImpl"/>GnomeVFSSocketImpl</title>
-<programlisting>typedef struct {
+<title><anchor id="GnomeVFSSocketImpl"/>struct GnomeVFSSocketImpl</title>
+<indexterm><primary>GnomeVFSSocketImpl</primary></indexterm><programlisting>struct GnomeVFSSocketImpl {
+
   GnomeVFSSocketReadFunc read;
   GnomeVFSSocketWriteFunc write;
   GnomeVFSSocketCloseFunc close;
-} GnomeVFSSocketImpl;
+  GnomeVFSSocketSetTimeoutFunc set_timeout;
+};
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-socket-new"/>gnome_vfs_socket_new ()</title>
-<programlisting><link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* gnome_vfs_socket_new        (<link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link> *impl,
-                                             void *connection);</programlisting>
+<indexterm><primary>gnome_vfs_socket_new</primary></indexterm><programlisting><link linkend="GnomeVFSSocket">GnomeVFSSocket</link>* gnome_vfs_socket_new        (<link linkend="GnomeVFSSocketImpl">GnomeVFSSocketImpl</link> *impl,
+                                             <link linkend="void">void</link> *connection);</programlisting>
 <para>
 Creates a new GnomeVFS Socket using the specific implementation
 <parameter>impl</parameter>.</para>
@@ -152,10 +178,11 @@ implementation)
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-socket-write"/>gnome_vfs_socket_write ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_write       (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
+<indexterm><primary>gnome_vfs_socket_write</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_write       (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
-                                             int bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written);</programlisting>
+                                             <link linkend="int">int</link> bytes,
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_written,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Write <parameter>bytes</parameter> bytes of data from <parameter>buffer</parameter> to <parameter>socket</parameter>.</para>
 <para>
@@ -174,12 +201,16 @@ Write <parameter>bytes</parameter> bytes of data from <parameter>buffer</paramet
 <listitem><simpara> pointer to a GnomeVFSFileSize, will contain
 the number of bytes actually written to the socket on return.
 </simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> optional cancellation object
+</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-socket-close"/>gnome_vfs_socket_close ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_close       (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket);</programlisting>
+<indexterm><primary>gnome_vfs_socket_close</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_close       (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Close <parameter>socket</parameter>, freeing any resources it may be using.</para>
 <para>
@@ -188,15 +219,19 @@ Close <parameter>socket</parameter>, freeing any resources it may be using.</par
 <varlistentry><term><parameter>socket</parameter>&nbsp;:</term>
 <listitem><simpara> the socket to be closed
 </simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> optional cancellation object
+</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-socket-read"/>gnome_vfs_socket_read ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_read        (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
+<indexterm><primary>gnome_vfs_socket_read</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_read        (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
                                              <link linkend="gpointer">gpointer</link> buffer,
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes,
-                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read);</programlisting>
+                                             <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> *bytes_read,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
 <para>
 Read <parameter>bytes</parameter> bytes of data from the <parameter>socket</parameter> into <parameter>buffer</parameter>.</para>
 <para>
@@ -215,9 +250,56 @@ Read <parameter>bytes</parameter> bytes of data from the <parameter>socket</para
 <listitem><simpara> pointer to a GnomeVFSFileSize, will contain
 the number of bytes actually read from the socket on return.
 </simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> optional cancellation object
+</simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-socket-free"/>gnome_vfs_socket_free ()</title>
+<indexterm role="2.8"><primary>gnome_vfs_socket_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_socket_free           (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket);</programlisting>
+<para>
+Frees the memory allocated for <parameter>socket</parameter>, but does
+not call any <link linkend="GnomeVFSSocketImpl"><type>GnomeVFSSocketImpl</type></link> function.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>socket</parameter>&nbsp;:</term>
+<listitem><simpara> The <link linkend="GnomeVFSSocket"><type>GnomeVFSSocket</type></link> you want to free. 
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.8
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-socket-set-timeout"/>gnome_vfs_socket_set_timeout ()</title>
+<indexterm role="2.8"><primary>gnome_vfs_socket_set_timeout</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_socket_set_timeout (<link linkend="GnomeVFSSocket">GnomeVFSSocket</link> *socket,
+                                             <link linkend="GTimeVal">GTimeVal</link> *timeout,
+                                             <link linkend="GnomeVFSCancellation">GnomeVFSCancellation</link> *cancellation);</programlisting>
+<para>
+Set a timeout of <parameter>timeout</parameter>. If <parameter>timeout</parameter> is NULL following operations
+will block indefinitely).
+</para>
+<para>
+Note if you set <parameter>timeout</parameter> to 0 (means tv_sec and tv_usec are both 0)
+every following operation will return immediately. (This can be used
+for polling.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>socket</parameter>&nbsp;:</term>
+<listitem><simpara> socket to set the timeout of
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>timeout</parameter>&nbsp;:</term>
+<listitem><simpara> the timeout
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>cancellation</parameter>&nbsp;:</term>
+<listitem><simpara> optional cancellation object
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GnomeVFSResult indicating the success of the operation
+
+</simpara></listitem></varlistentry>
+</variablelist><para>Since  2.8
+</para></refsect2>
 
 </refsect1>
 

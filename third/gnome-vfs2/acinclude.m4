@@ -1,4 +1,4 @@
-AC_DEFUN(AM_GNOME_CHECK_TYPE,
+AC_DEFUN([AM_GNOME_CHECK_TYPE],
   [AC_CACHE_CHECK([$1 in <sys/types.h>], ac_cv_type_$1,
      [AC_TRY_COMPILE([
 #include <sys/types.h>
@@ -13,12 +13,12 @@ AC_DEFUN(AM_GNOME_CHECK_TYPE,
    fi
 ])
 
-AC_DEFUN(AM_GNOME_SIZE_T,
+AC_DEFUN([AM_GNOME_SIZE_T],
   [AM_GNOME_CHECK_TYPE(size_t, unsigned)
    AC_PROVIDE([AC_TYPE_SIZE_T])
 ])
 
-AC_DEFUN(AM_GNOME_OFF_T,
+AC_DEFUN([AM_GNOME_OFF_T],
   [AM_GNOME_CHECK_TYPE(off_t, long)
    AC_PROVIDE([AC_TYPE_OFF_T])
 ])
@@ -33,7 +33,7 @@ dnl Autoconf macros for libgnutls
 dnl AM_PATH_LIBGNUTLS([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND ]]])
 dnl Test for libgnutls, and define LIBGNUTLS_CFLAGS and LIBGNUTLS_LIBS
 dnl
-AC_DEFUN(AM_PATH_LIBGNUTLS,
+AC_DEFUN([AM_PATH_LIBGNUTLS],
 [dnl
 dnl Get the cflags and libraries from the libgnutls-config script
 dnl
@@ -183,3 +183,365 @@ main ()
 ])
 
 dnl end of Autoconf macros for libgnutls
+
+
+dnl macros for the neon bundeled build
+# Copyright (C) 1998-2004 Joe Orton <joe@manyfish.co.uk>  
+# Modifications by Christian Kellner <gicmo@gnome-de.org>
+
+AC_DEFUN([VFS_NEON_BUNDLED],[
+
+neon_bundled_srcdir=$1
+neon_bundled_builddir=$1
+
+# INLINED This was NEON_COMMON
+NEON_VERSIONS
+
+AC_MSG_NOTICE([using bundled neon ($NEON_VERSION)])
+NEON_BUILD_BUNDLED="yes"
+LIBNEON_SOURCE_CHECKS
+NEON_CFLAGS="$CFLAGS -I.. -I../.. -I$srcdir/$neon_bundled_srcdir"
+NEON_NEED_XML_PARSER=yes
+neon_library_message="included libneon (${NEON_VERSION})"
+
+AC_SUBST(NEON_BUILD_BUNDLED)
+
+# INLINED This was NEON_BUILD_LIBTOOL
+NEON_TARGET=libneon.la
+NEON_OBJEXT=lo
+
+# Using the default set of object files to build.
+# Add the extension to EXTRAOBJS
+ne="$NEON_EXTRAOBJS"
+NEON_EXTRAOBJS=
+for o in $ne; do
+	NEON_EXTRAOBJS="$NEON_EXTRAOBJS $o.$NEON_OBJEXT"
+done	
+
+NEON_SUPPORTS_DAV=yes
+NEONOBJS="$NEONOBJS \$(NEON_DAVOBJS)"
+# Turn on DAV locking please then.
+AC_DEFINE(USE_DAV_LOCKS, 1, [Support WebDAV locking through the library])
+
+AC_SUBST(NEON_TARGET)
+AC_SUBST(NEON_OBJEXT)
+AC_SUBST(NEONOBJS)
+AC_SUBST(NEON_EXTRAOBJS)
+AC_SUBST(NEON_LINK_FLAGS)
+AC_SUBST(NEON_SUPPORTS_DAV)
+
+#xml parser stuff
+PKG_CHECK_MODULES(LIBXML, libxml-2.0 >= $XML_REQUIRED)
+NEON_CFLAGS="$NEON_CFLAGS $LIBXML_CFLAGS" 
+NEON_LIBS="$NEON_LIBS $LIBXML_LIBS"
+
+AC_DEFINE(HAVE_LIBXML, 1, [Define if you have libxml])
+
+neon_xml_parser=libxml2
+
+])
+
+dnl Checks needed when compiling the neon source.
+AC_DEFUN([LIBNEON_SOURCE_CHECKS], [
+
+
+dnl Run all the normal C language/compiler tests
+AC_REQUIRE([NEON_COMMON_CHECKS])
+
+dnl Needed for building the MD5 code.
+AC_REQUIRE([AC_C_BIGENDIAN])
+dnl Is strerror_r present; if so, which variant
+AC_REQUIRE([AC_FUNC_STRERROR_R])
+
+AC_CHECK_HEADERS([strings.h sys/time.h limits.h sys/select.h arpa/inet.h \
+	signal.h sys/socket.h netinet/in.h netinet/tcp.h netdb.h])
+
+
+AC_REPLACE_FUNCS(strcasecmp)
+
+AC_CHECK_FUNCS(signal setvbuf setsockopt stpcpy)
+
+AC_CHECK_MEMBERS(struct tm.tm_gmtoff,,
+AC_MSG_WARN([no timezone handling in date parsing on this platform]),
+[#include <time.h>])
+
+ifdef([neon_no_zlib], [
+    neon_zlib_message="zlib disabled"
+    NEON_SUPPORTS_ZLIB=no
+], [
+    NEON_ZLIB()
+])
+
+# Conditionally enable ACL support
+AC_MSG_CHECKING([whether to enable ACL support in neon])
+if test "x$neon_no_acl" = "xyes"; then
+    AC_MSG_RESULT(no)
+else
+    AC_MSG_RESULT(yes)
+    NEON_EXTRAOBJS="$NEON_EXTRAOBJS ne_acl"
+fi
+
+NEON_SUPPORTS_SSL=yes
+AC_DEFINE(NEON_SSL, 1, [Build neon ssl support])
+
+if test "x$have_gssapi" = "xyes"; then
+
+	NEON_CFLAGS="$NEON_CFALGS $GSSAPI_CFLAGS"
+	NEON_LIBS="$NEON_LIBS $GSSAPI_LIBS"
+
+fi
+
+AC_SUBST(NEON_CFLAGS)
+AC_SUBST(NEON_LIBS)
+AC_SUBST(NEON_LTLIBS)
+
+])
+
+
+#copied and pasted unchanged form the neon macros files
+# Copyright (C) 1998-2004 Joe Orton <joe@manyfish.co.uk> 
+
+AC_DEFUN([NEON_VERSIONS], [
+
+# Define the current versions.
+NEON_VERSION_MAJOR=0
+NEON_VERSION_MINOR=24
+NEON_VERSION_RELEASE=6
+NEON_VERSION_TAG=
+
+NEON_VERSION="${NEON_VERSION_MAJOR}.${NEON_VERSION_MINOR}.${NEON_VERSION_RELEASE}${NEON_VERSION_TAG}"
+
+# libtool library interface versioning.  Release policy dictates that
+# for neon 0.x.y, each x brings an incompatible interface change, and
+# each y brings no interface change, and since this policy has been
+# followed since 0.1, x == CURRENT, y == RELEASE, 0 == AGE.  For
+# 1.x.y, this will become N + x == CURRENT, y == RELEASE, x == AGE,
+# where N is constant (and equal to CURRENT + 1 from the final 0.x
+# release)
+NEON_INTERFACE_VERSION="${NEON_VERSION_MINOR}:${NEON_VERSION_RELEASE}:0"
+
+AC_DEFINE_UNQUOTED(NEON_VERSION, "${NEON_VERSION}", 
+	[Define to be the neon version string])
+AC_DEFINE_UNQUOTED(NEON_VERSION_MAJOR, [(${NEON_VERSION_MAJOR})],
+	[Define to be major number of neon version])
+AC_DEFINE_UNQUOTED(NEON_VERSION_MINOR, [(${NEON_VERSION_MINOR})],
+	[Define to be minor number of neon version])
+
+])
+
+dnl AC_SEARCH_LIBS done differently. Usage:
+dnl   NE_SEARCH_LIBS(function, libnames, [extralibs], [actions-if-not-found],
+dnl                            [actions-if-found])
+dnl Tries to find 'function' by linking againt `-lLIB $NEON_LIBS' for each
+dnl LIB in libnames.  If link fails and 'extralibs' is given, will also
+dnl try linking against `-lLIB extralibs $NEON_LIBS`.
+dnl Once link succeeds, `-lLIB [extralibs]` is prepended to $NEON_LIBS, and
+dnl `actions-if-found' are executed, if given.
+dnl If link never succeeds, run `actions-if-not-found', if given, else
+dnl give an error and fail configure.
+AC_DEFUN([NE_SEARCH_LIBS], [
+
+AC_CACHE_CHECK([for library containing $1], [ne_cv_libsfor_$1], [
+AC_TRY_LINK_FUNC($1, [ne_cv_libsfor_$1="none needed"], [
+ne_sl_save_LIBS=$LIBS
+ne_cv_libsfor_$1="not found"
+for lib in $2; do
+    LIBS="$ne_sl_save_LIBS -l$lib $NEON_LIBS"
+    AC_TRY_LINK_FUNC($1, [ne_cv_libsfor_$1="-l$lib"; break])
+    m4_if($3, [], [], dnl If $3 is specified, then...
+              [LIBS="$ne_sl_save_LIBS -l$lib $3 $NEON_LIBS"
+               AC_TRY_LINK_FUNC($1, [ne_cv_libsfor_$1="-l$lib $3"; break])])
+done
+LIBS=$ne_sl_save_LIBS])])
+
+if test "$ne_cv_libsfor_$1" = "not found"; then
+   m4_if($4, [], [AC_MSG_ERROR([could not find library containing $1])], [$4])
+elif test "$ne_cv_libsfor_$1" != "none needed"; then 
+   NEON_LIBS="$ne_cv_libsfor_$1 $NEON_LIBS"
+   $5
+fi])
+
+
+dnl Check for presence and suitability of zlib library
+AC_DEFUN([NEON_ZLIB], [
+
+AC_ARG_WITH(zlib, AC_HELP_STRING([--without-zlib], [disable zlib support]),
+ne_use_zlib=$withval, ne_use_zlib=yes)
+
+NEON_SUPPORTS_ZLIB=no
+AC_SUBST(NEON_SUPPORTS_ZLIB)
+
+if test "$ne_use_zlib" = "yes"; then
+    AC_CHECK_HEADER(zlib.h, [
+  	AC_CHECK_LIB(z, inflate, [ 
+	    NEON_LIBS="$NEON_LIBS -lz"
+	    NEON_CFLAGS="$NEON_CFLAGS -DNEON_ZLIB"
+	    NEON_SUPPORTS_ZLIB=yes
+	    neon_zlib_message="found in -lz"
+	], [neon_zlib_message="zlib not found"])
+    ], [neon_zlib_message="zlib not found"])
+else
+    neon_zlib_message="zlib disabled"
+fi
+])
+
+AC_DEFUN([NE_MACOSX], [
+# Check for Darwin, which needs extra cpp and linker flags.
+AC_CACHE_CHECK([for Darwin], ne_cv_os_macosx, [
+case `uname -s 2>/dev/null` in
+Darwin) ne_cv_os_macosx=yes ;;
+*) ne_cv_os_macosx=no ;;
+esac])
+if test $ne_cv_os_macosx = yes; then
+  CPPFLAGS="$CPPFLAGS -no-cpp-precomp"
+  LDFLAGS="$LDFLAGS -flat_namespace"
+fi
+])
+
+AC_DEFUN([NEON_FORMAT_PREP], [
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(long long)
+if test "$GCC" = "yes"; then
+  AC_CACHE_CHECK([for gcc -Wformat -Werror sanity], ne_cv_cc_werror, [
+  # See whether a simple test program will compile without errors.
+  ne_save_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="$CPPFLAGS -Wformat -Werror"
+  AC_TRY_COMPILE([#include <sys/types.h>
+  #include <stdio.h>], [int i = 42; printf("%d", i);], 
+  [ne_cv_cc_werror=yes], [ne_cv_cc_werror=no])
+  CPPFLAGS=$ne_save_CPPFLAGS])
+  ne_fmt_trycompile=$ne_cv_cc_werror
+else
+  ne_fmt_trycompile=no
+fi
+])
+
+dnl NEON_FORMAT(TYPE[, HEADERS[, [SPECIFIER]])
+dnl
+dnl This macro finds out which modifier is needed to create a
+dnl printf format string suitable for printing integer type TYPE (which
+dnl may be an int, long, or long long).
+dnl The default specifier is 'd', if SPECIFIER is not given.  
+dnl TYPE may be defined in HEADERS; sys/types.h is always used first.
+AC_DEFUN([NEON_FORMAT], [
+
+AC_REQUIRE([NEON_FORMAT_PREP])
+
+AC_CHECK_SIZEOF($1, [$2])
+
+dnl Work out which specifier character to use
+m4_ifdef([ne_spec], [m4_undefine([ne_spec])])
+m4_if($#, 3, [m4_define(ne_spec,$3)], [m4_define(ne_spec,d)])
+
+AC_CACHE_CHECK([how to print $1], [ne_cv_fmt_$1], [
+ne_cv_fmt_$1=none
+if test $ne_fmt_trycompile = yes; then
+  oflags="$CPPFLAGS"
+  # Consider format string mismatches as errors
+  CPPFLAGS="$CPPFLAGS -Wformat -Werror"
+  dnl obscured for m4 quoting: "for str in d ld qd; do"
+  for str in ne_spec l]ne_spec[ q]ne_spec[; do
+    AC_TRY_COMPILE([#include <sys/types.h>
+$2
+#include <stdio.h>], [$1 i = 1; printf("%$str", i);], 
+	[ne_cv_fmt_$1=$str; break])
+  done
+  CPPFLAGS=$oflags
+else
+  # Best guess. Don't have to be too precise since we probably won't
+  # get a warning message anyway.
+  case $ac_cv_sizeof_$1 in
+  $ac_cv_sizeof_int) ne_cv_fmt_$1="ne_spec" ;;
+  $ac_cv_sizeof_long) ne_cv_fmt_$1="l]ne_spec[" ;;
+  $ac_cv_sizeof_long_long) ne_cv_fmt_$1="ll]ne_spec[" ;;
+  esac
+fi
+])
+
+if test "x$ne_cv_fmt_$1" = "xnone"; then
+  AC_MSG_ERROR([format string for $1 not found])
+fi
+
+AC_DEFINE_UNQUOTED([NE_FMT_]translit($1, a-z, A-Z), "$ne_cv_fmt_$1", 
+	[Define to be printf format string for $1])
+])
+
+dnl Wrapper for AC_CHECK_FUNCS; uses libraries from $NEON_LIBS.
+AC_DEFUN([NE_CHECK_FUNCS], [
+ne_cf_save_LIBS=$LIBS
+LIBS="$LIBS $NEON_LIBS"
+AC_CHECK_FUNCS($@)
+LIBS=$ne_cf_save_LIBS])
+
+
+dnl Find 'ar' and 'ranlib', fail if ar isn't found.
+AC_DEFUN([NE_FIND_AR], [
+
+# Search in /usr/ccs/bin for Solaris
+ne_PATH=$PATH:/usr/ccs/bin
+AC_PATH_TOOL(AR, ar, notfound, $ne_PATH)
+if test "x$AR" = "xnotfound"; then
+   AC_MSG_ERROR([could not find ar tool])
+fi
+AC_PATH_TOOL(RANLIB, ranlib, :, $ne_PATH)
+
+])
+
+dnl Less noisy replacement for PKG_CHECK_MODULES
+AC_DEFUN([NE_PKG_CONFIG], [
+
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+if test "$PKG_CONFIG" = "no"; then
+   : Not using pkg-config
+   $4
+else
+   AC_CACHE_CHECK([for $2 pkg-config data], ne_cv_pkg_$2,
+     [if $PKG_CONFIG $2; then
+        ne_cv_pkg_$2=yes
+      else
+        ne_cv_pkg_$2=no
+      fi])
+
+   if test "$ne_cv_pkg_$2" = "yes"; then
+      $1_CFLAGS=`$PKG_CONFIG --cflags $2`
+      $1_LIBS=`$PKG_CONFIG --libs $2`
+      : Using provided pkg-config data
+      $3
+   else
+      : No pkg-config for $2 provided
+      $4
+   fi
+fi])
+
+
+AC_DEFUN([NEON_COMMON_CHECKS], [
+
+# These checks are done whether or not the bundled neon build
+# is used.
+
+AC_REQUIRE([AC_PROG_CC])
+AC_REQUIRE([AC_PROG_CC_STDC])
+AC_REQUIRE([AC_LANG_C])
+AC_REQUIRE([AC_ISC_POSIX])
+AC_REQUIRE([AC_C_INLINE])
+AC_REQUIRE([AC_C_CONST])
+AC_REQUIRE([AC_TYPE_SIZE_T])
+AC_REQUIRE([AC_TYPE_OFF_T])
+
+AC_REQUIRE([NE_MACOSX])
+
+AC_REQUIRE([AC_PROG_MAKE_SET])
+
+AC_REQUIRE([AC_HEADER_STDC])
+
+AC_CHECK_HEADERS([errno.h stdarg.h string.h stdlib.h])
+
+NEON_FORMAT(size_t,,u) dnl size_t is unsigned; use %u formats
+NEON_FORMAT(off_t)
+NEON_FORMAT(ssize_t)
+
+])
+
+
+dnl end of neon macros

@@ -38,8 +38,4 @@ GnomeVFSResult _gnome_vfs_monitor_do_add (GnomeVFSMethod *method,
 
 GnomeVFSResult _gnome_vfs_monitor_do_cancel (GnomeVFSMonitorHandle *handle);
 
-/* this is for modules - should it be in a separate header file? */
-void gnome_vfs_monitor_callback (GnomeVFSMethodHandle *method_handle,
-                                 GnomeVFSURI *info_uri,
-                                 GnomeVFSMonitorEventType event_type);
 #endif /* GNOME_VFS_MONITOR_PRIVATE_H */

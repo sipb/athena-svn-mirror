@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-file-basic-ops">
+<refentry id="gnome-vfs-20-gnome-vfs-file-basic-ops">
 <refmeta>
 <refentrytitle>Basic File Operations</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -60,6 +60,8 @@ enum        <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link>;
 
 
 
+
+
 <refsect1>
 <title>Description</title>
 <para>
@@ -71,7 +73,7 @@ enum        <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="GnomeVFSOpenMode"/>enum GnomeVFSOpenMode</title>
-<programlisting>typedef enum {
+<indexterm><primary>GnomeVFSOpenMode</primary></indexterm><programlisting>typedef enum {
         GNOME_VFS_OPEN_NONE = 0,
         GNOME_VFS_OPEN_READ = 1 &lt;&lt; 0,
         GNOME_VFS_OPEN_WRITE = 1 &lt;&lt; 1,
@@ -86,7 +88,7 @@ file will be have to be accessed sequentially.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-create"/>gnome_vfs_create ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_create             (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> **handle,
+<indexterm><primary>gnome_vfs_create</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_create             (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> **handle,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
@@ -121,7 +123,7 @@ same name already exists.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-create-uri"/>gnome_vfs_create_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_create_uri         (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> **handle,
+<indexterm><primary>gnome_vfs_create_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_create_uri         (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> **handle,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode,
                                              <link linkend="gboolean">gboolean</link> exclusive,
@@ -155,7 +157,7 @@ same name already exists.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-open"/>gnome_vfs_open ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_open               (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> **handle,
+<indexterm><primary>gnome_vfs_open</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_open               (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> **handle,
                                              const <link linkend="gchar">gchar</link> *text_uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode);</programlisting>
 <para>
@@ -178,7 +180,7 @@ contain a pointer to a handle for the open file.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-open-uri"/>gnome_vfs_open_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_open_uri           (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> **handle,
+<indexterm><primary>gnome_vfs_open_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_open_uri           (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> **handle,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              <link linkend="GnomeVFSOpenMode">GnomeVFSOpenMode</link> open_mode);</programlisting>
 <para>
@@ -201,7 +203,7 @@ contain a pointer to a handle for the open file.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-close"/>gnome_vfs_close ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_close              (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle);</programlisting>
+<indexterm><primary>gnome_vfs_close</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_close              (<link linkend="GnomeVFSHandle">GnomeVFSHandle</link> *handle);</programlisting>
 <para>
 Close file associated with <parameter>handle</parameter>.</para>
 <para>
@@ -215,7 +217,7 @@ Close file associated with <parameter>handle</parameter>.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-unlink"/>gnome_vfs_unlink ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_unlink             (const <link linkend="gchar">gchar</link> *text_uri);</programlisting>
+<indexterm><primary>gnome_vfs_unlink</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_unlink             (const <link linkend="gchar">gchar</link> *text_uri);</programlisting>
 <para>
 Unlink <parameter>text_uri</parameter> (i.e. delete the file).</para>
 <para>
@@ -229,7 +231,7 @@ Unlink <parameter>text_uri</parameter> (i.e. delete the file).</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-unlink-from-uri"/>gnome_vfs_unlink_from_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_unlink_from_uri    (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_unlink_from_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_unlink_from_uri    (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Unlink <parameter>uri</parameter> (i.e. delete the file).</para>
 <para>
@@ -243,13 +245,13 @@ Unlink <parameter>uri</parameter> (i.e. delete the file).</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-move-uri"/>gnome_vfs_move_uri ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_move_uri           (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *old_uri,
+<indexterm><primary>gnome_vfs_move_uri</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_move_uri           (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *old_uri,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *new_uri,
                                              <link linkend="gboolean">gboolean</link> force_replace);</programlisting>
 <para>
 Move a file from URI <parameter>old_uri</parameter> to <parameter>new_uri</parameter>.  This will only work if <parameter>old_uri</parameter> 
 and <parameter>new_uri</parameter> are on the same file system.  Otherwise, it is necessary 
-to use the more general %<link linkend="gnome-vfs-xfer-uri">gnome_vfs_xfer_uri</link>() function.</para>
+to use the more general %<link linkend="gnome-vfs-xfer-uri"><function>gnome_vfs_xfer_uri()</function></link> function.</para>
 <para>
 
 </para><variablelist role="params">
@@ -268,13 +270,13 @@ is already a file at <parameter>new_uri</parameter>. If there is a file, it will
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-move"/>gnome_vfs_move ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_move               (const <link linkend="gchar">gchar</link> *old_text_uri,
+<indexterm><primary>gnome_vfs_move</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_move               (const <link linkend="gchar">gchar</link> *old_text_uri,
                                              const <link linkend="gchar">gchar</link> *new_text_uri,
                                              <link linkend="gboolean">gboolean</link> force_replace);</programlisting>
 <para>
 Move a file from URI <parameter>old_text_uri</parameter> to <parameter>new_text_uri</parameter>.  This will only work 
 if <parameter>old_text_uri</parameter> and <parameter>new_text_uri</parameter> are on the same file system.  Otherwise,
-it is necessary to use the more general %<link linkend="gnome-vfs-xfer-uri">gnome_vfs_xfer_uri</link>() function.</para>
+it is necessary to use the more general %<link linkend="gnome-vfs-xfer-uri"><function>gnome_vfs_xfer_uri()</function></link> function.</para>
 <para>
 
 </para><variablelist role="params">
@@ -293,7 +295,7 @@ file at <parameter>new_text_uri</parameter>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-check-same-fs-uris"/>gnome_vfs_check_same_fs_uris ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_check_same_fs_uris (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *source_uri,
+<indexterm><primary>gnome_vfs_check_same_fs_uris</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_check_same_fs_uris (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *source_uri,
                                              <link linkend="GnomeVFSURI">GnomeVFSURI</link> *target_uri,
                                              <link linkend="gboolean">gboolean</link> *same_fs_return);</programlisting>
 <para>
@@ -316,7 +318,7 @@ if <parameter>source_uri</parameter> and <parameter>target_uri</parameter> are o
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-check-same-fs"/>gnome_vfs_check_same_fs ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_check_same_fs      (const <link linkend="gchar">gchar</link> *source,
+<indexterm><primary>gnome_vfs_check_same_fs</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_check_same_fs      (const <link linkend="gchar">gchar</link> *source,
                                              const <link linkend="gchar">gchar</link> *target,
                                              <link linkend="gboolean">gboolean</link> *same_fs_return);</programlisting>
 <para>
@@ -338,7 +340,7 @@ Return <literal>TRUE</literal> if <parameter>source</parameter> and <parameter>t
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-uri-exists"/>gnome_vfs_uri_exists ()</title>
-<programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_exists            (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_uri_exists</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_uri_exists            (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Check if the URI points to an existing entity.</para>
 <para>
@@ -352,7 +354,7 @@ Check if the URI points to an existing entity.</para>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-create-symbolic-link"/>gnome_vfs_create_symbolic_link ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_create_symbolic_link
+<indexterm><primary>gnome_vfs_create_symbolic_link</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_create_symbolic_link
                                             (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri,
                                              const <link linkend="gchar">gchar</link> *target_reference);</programlisting>
 <para>

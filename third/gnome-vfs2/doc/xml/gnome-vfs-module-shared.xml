@@ -1,8 +1,8 @@
-<refentry id="gnome-vfs-gnome-vfs-module-shared">
+<refentry id="gnome-vfs-20-gnome-vfs-module-shared">
 <refmeta>
 <refentrytitle>gnome-vfs-module-shared</refentrytitle>
 <manvolnum>3</manvolnum>
-<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+<refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
@@ -16,17 +16,19 @@
 
 
 const <link linkend="gchar">gchar</link>* <link linkend="gnome-vfs-mime-type-from-mode">gnome_vfs_mime_type_from_mode</link>  (<link linkend="mode-t">mode_t</link> mode);
-void        <link linkend="gnome-vfs-stat-to-file-info">gnome_vfs_stat_to_file_info</link>     (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *file_info,
+<link linkend="void">void</link>        <link linkend="gnome-vfs-stat-to-file-info">gnome_vfs_stat_to_file_info</link>     (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *file_info,
                                              const struct <link linkend="stat">stat</link> *statptr);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-set-meta">gnome_vfs_set_meta</link>           (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
-                                             const char *file_name,
-                                             const char *meta_key);
+                                             const <link linkend="char">char</link> *file_name,
+                                             const <link linkend="char">char</link> *meta_key);
 <link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-set-meta-for-list">gnome_vfs_set_meta_for_list</link>  (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
-                                             const char *file_name,
+                                             const <link linkend="char">char</link> *file_name,
                                              const <link linkend="GList">GList</link> *meta_keys);
-const char* <link linkend="gnome-vfs-get-special-mime-type">gnome_vfs_get_special_mime_type</link> (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
+const <link linkend="char">char</link>* <link linkend="gnome-vfs-get-special-mime-type">gnome_vfs_get_special_mime_type</link> (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -45,7 +47,7 @@ const char* <link linkend="gnome-vfs-get-special-mime-type">gnome_vfs_get_specia
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-mime-type-from-mode"/>gnome_vfs_mime_type_from_mode ()</title>
-<programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_mime_type_from_mode  (<link linkend="mode-t">mode_t</link> mode);</programlisting>
+<indexterm><primary>gnome_vfs_mime_type_from_mode</primary></indexterm><programlisting>const <link linkend="gchar">gchar</link>* gnome_vfs_mime_type_from_mode  (<link linkend="mode-t">mode_t</link> mode);</programlisting>
 <para>
 Returns a MIME type based on the mode passed. It only works when mode
 references a special file (directory, device, fifo, socket or symlink)
@@ -63,7 +65,7 @@ Returns: a string containing the MIME type, if <parameter>mode</parameter> is a 
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-stat-to-file-info"/>gnome_vfs_stat_to_file_info ()</title>
-<programlisting>void        gnome_vfs_stat_to_file_info     (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *file_info,
+<indexterm><primary>gnome_vfs_stat_to_file_info</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_stat_to_file_info     (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *file_info,
                                              const struct <link linkend="stat">stat</link> *statptr);</programlisting>
 <para>
 
@@ -79,9 +81,9 @@ Returns: a string containing the MIME type, if <parameter>mode</parameter> is a 
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-set-meta"/>gnome_vfs_set_meta ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_set_meta           (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
-                                             const char *file_name,
-                                             const char *meta_key);</programlisting>
+<indexterm><primary>gnome_vfs_set_meta</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_set_meta           (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
+                                             const <link linkend="char">char</link> *file_name,
+                                             const <link linkend="char">char</link> *meta_key);</programlisting>
 <para>
 
 </para><variablelist role="params">
@@ -101,8 +103,8 @@ Returns: a string containing the MIME type, if <parameter>mode</parameter> is a 
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-set-meta-for-list"/>gnome_vfs_set_meta_for_list ()</title>
-<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_set_meta_for_list  (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
-                                             const char *file_name,
+<indexterm><primary>gnome_vfs_set_meta_for_list</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_set_meta_for_list  (<link linkend="GnomeVFSFileInfo">GnomeVFSFileInfo</link> *info,
+                                             const <link linkend="char">char</link> *file_name,
                                              const <link linkend="GList">GList</link> *meta_keys);</programlisting>
 <para>
 
@@ -123,7 +125,7 @@ Returns: a string containing the MIME type, if <parameter>mode</parameter> is a 
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-get-special-mime-type"/>gnome_vfs_get_special_mime_type ()</title>
-<programlisting>const char* gnome_vfs_get_special_mime_type (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
+<indexterm><primary>gnome_vfs_get_special_mime_type</primary></indexterm><programlisting>const <link linkend="char">char</link>* gnome_vfs_get_special_mime_type (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *uri);</programlisting>
 <para>
 Gets the MIME type for <parameter>uri</parameter>, this function only returns the type
 when the URI points to a file that can't be sniffed (sockets, 

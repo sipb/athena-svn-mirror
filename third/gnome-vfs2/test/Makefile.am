@@ -3,6 +3,7 @@ NULL =
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	-I$(top_builddir)/libgnomevfs           \
 	$(TEST_CFLAGS)				\
 	$(VFS_CFLAGS)				\
 	-DG_DISABLE_DEPRECATED			\
@@ -16,19 +17,18 @@ noinst_PROGRAMS =				\
 	test-directory				\
 	test-directory-visit			\
 	test-dirop				\
+	test-dns-sd				\
 	test-escape				\
 	test-find-directory			\
 	test-info				\
 	test-mime				\
 	test-mime-handlers			\
+	test-mime-info-cache			\
 	test-mime-handlers-set			\
-	test-mime-info				\
 	test-monitor				\
 	test-performance			\
-	test-resolv				\
 	test-seek				\
 	test-shell				\
-	test-subdir				\
 	test-symlinks				\
 	test-ssl				\
 	test-sync				\
@@ -36,6 +36,7 @@ noinst_PROGRAMS =				\
 	test-sync-write				\
 	test-unlink				\
 	test-uri				\
+	test-volumes				\
 	test-xfer				\
 	test-callback				\
 	test-module-selftest			\
@@ -66,11 +67,11 @@ test_async_LDADD = $(libraries)
 test_performance_SOURCES = test-performance.c
 test_performance_LDADD = $(libraries)
 
-test_resolv_SOURCES = test-resolv.c
-test_resolv_LDADD = $(libraries)
+#test_resolv_SOURCES = test-resolv.c
+#test_resolv_LDADD = $(libraries)
 
-test_subdir_SOURCES = test-subdir.c
-test_subdir_LDADD = $(libraries)
+#test_subdir_SOURCES = test-subdir.c
+#test_subdir_LDADD = $(libraries)
 
 test_async_directory_SOURCES = test-async-directory.c
 test_async_directory_LDADD = $(libraries)
@@ -95,6 +96,9 @@ test_mime_handlers_LDADD = $(libraries)
 
 test_mime_handlers_set_SOURCES = test-mime-handlers-set.c
 test_mime_handlers_set_LDADD = $(libraries)
+
+test_mime_info_cache_SOURCES = test-mime-info-cache.c
+test_mime_info_cache_LDADD = $(libraries)
 
 test_xfer_SOURCES = test-xfer.c
 test_xfer_LDADD = $(libraries)
@@ -129,17 +133,20 @@ test_escape_LDADD = $(libraries)
 test_uri_SOURCES = test-uri.c
 test_uri_LDADD = $(libraries)
 
+test_volumes_SOURCES = test-volumes.c
+test_volumes_LDADD = $(libraries)
+
 test_unlink_SOURCES = test-unlink.c
 test_unlink_LDADD = $(libraries)
 
 test_dirop_SOURCES = test-dirop.c
 test_dirop_LDADD = $(libraries)
 
+test_dns_sd_SOURCES = test-dns-sd.c
+test_dns_sd_LDADD = $(libraries)
+
 test_find_directory_SOURCES = test-find-directory.c
 test_find_directory_LDADD = $(libraries)
-
-test_mime_info_SOURCES = test-mime-info.c
-test_mime_info_LDADD = $(libraries)
 
 test_monitor_SOURCES = test-monitor.c
 test_monitor_LDADD = $(libraries)

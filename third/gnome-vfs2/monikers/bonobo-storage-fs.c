@@ -258,6 +258,7 @@ fs_list_contents (PortableServer_Servant   storage,
 	DIR *dir = NULL;
 	gint i, max, v, num_entries = 0;
 	gchar *full = NULL;
+	gchar *full_dir = NULL;
 
 	if (mask & ~(Bonobo_FIELD_CONTENT_TYPE | Bonobo_FIELD_SIZE |
 		     Bonobo_FIELD_TYPE)) {
@@ -265,9 +266,13 @@ fs_list_contents (PortableServer_Servant   storage,
 				     ex_Bonobo_Storage_NotSupported, NULL);
 		return CORBA_OBJECT_NIL;
 	}
-
-	if (!(dir = opendir (storage_fs->path)))
+         
+	full_dir = concat_dir_and_file (storage_fs->path, path);
+	if (!(dir = opendir (full_dir)))
+	                {
+			g_free (full_dir);
 			goto list_contents_except;
+			}
 	
 	for (max = 0; readdir (dir); max++)
 		/* do nothing */;
@@ -292,7 +297,7 @@ fs_list_contents (PortableServer_Servant   storage,
 		buf [i].size = 0;
 		buf [i].content_type = NULL;
 
-		full = concat_dir_and_file (storage_fs->path, de->d_name);
+		full = concat_dir_and_file (full_dir, de->d_name);
 		v = stat (full, &st);
 
 		if (v == -1) {
@@ -347,6 +352,7 @@ fs_list_contents (PortableServer_Servant   storage,
 	list->_length = num_entries; 
 
 	closedir (dir);
+	g_free (full_dir);
 	
 	return list; 
 
