@@ -1,16 +1,18 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.2 1990-11-01 18:45:08 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.3 1990-11-16 16:06:17 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/time.h>
 #include <utmp.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
-#include <WcCreate.h>
+#include "../wcl/WcCreate.h"
 #include <X11/StringDefs.h>
 #include <X11/Xaw/Label.h>
 #include <X11/Xaw/Text.h>
 #include <X11/Xlib.h>
+#include <X11/Xatom.h>
 
 #define OWL_AWAKE 0
 #define OWL_SLEEPY 1
@@ -24,7 +26,7 @@
 #define ACTIVATED 1
 #define REACTIVATING 2
 
-#define NOBODY 32767	/* UID for scripts to run as */
+#define DAEMON 1	/* UID for scripts to run as */
 
 /*
  * Function declarations.
@@ -33,7 +35,7 @@ extern void AriRegisterAthena ();
 static void move_instructions(), screensave(), unsave();
 static void blinkOwl(), initOwl(), catch_child();
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
-void idleReset(), loginACT();
+void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
 char *malloc();
 
 
@@ -47,9 +49,11 @@ typedef struct _XLoginResources {
   int blink_timeout;
   int reactivate_timeout;
   int activate_timeout;
+  int restart_timeout;
   String activate_prog;
   String reactivate_prog;
   String tty;
+  String session;
 } XLoginResources;
 
 /*
@@ -64,7 +68,9 @@ static XrmOptionDescRec options[] = {
   {"-reactivate","*reactivateProg",	XrmoptionSepArg,	NULL},
   {"-idle",	"*reactivateTimeout",	XrmoptionSepArg,	NULL},
   {"-wait",	"*activateTimeout",	XrmoptionSepArg,	NULL},
+  {"-restart",	"*restartTimeout",	XrmoptionSepArg,	NULL},
   {"-tty",	"*loginTty",		XrmoptionSepArg,	NULL},
+  {"-session",	"*sessionScript",	XrmoptionSepArg,	NULL},
 };
 
 /*
@@ -81,14 +87,18 @@ static XtResource my_resources[] = {
      Offset(move_timeout), XtRImmediate, (caddr_t) 20},
   {"blinkTimeout", XtCInterval, XtRInt, sizeof(int),
      Offset(blink_timeout), XtRImmediate, (caddr_t) 40},
-  {"reactivateProg", "Program", XtRString, sizeof(String),
+  {"reactivateProg", XtCFile, XtRString, sizeof(String),
      Offset(reactivate_prog), XtRImmediate, "/etc/athena/reactivate"},
   {"activateTimeout", XtCInterval, XtRInt, sizeof(int),
      Offset(activate_timeout), XtRImmediate, (caddr_t) 30},
+  {"restartTimeout", XtCInterval, XtRInt, sizeof(int),
+     Offset(restart_timeout), XtRImmediate, (caddr_t) (60 * 60 * 12)},
   {"reactivateTimeout", XtCInterval, XtRInt, sizeof(int),
      Offset(reactivate_timeout), XtRImmediate, (caddr_t) 300},
   {"loginTty", XtCFile, XtRString, sizeof(String),
      Offset(tty), XtRImmediate, (caddr_t) "ttyv0"},
+  {"sessionScript", XtCFile, XtRString, sizeof(String),
+     Offset(session), XtRImmediate, (caddr_t) "/etc/athena/xdm/Xsession"},
 };
 
 #undef Offset
@@ -100,17 +110,19 @@ XtActionsRec actions[] = {
     { "idleReset", idleReset },
     { "login", loginACT },
     { "reset", resetCB },
+    { "setCorrectFocus", setcorrectfocus },
 };
 
 
 
 
+#define CONSOLEPID "/etc/console.pid"
 char *utmpf = "/etc/utmp";
 
 /*
  * Globals.
  */
-XtIntervalId curr_timerid = NULL, blink_timerid = NULL, react_timerid = NULL;
+XtIntervalId curr_timerid = 0, blink_timerid = 0, react_timerid = 0;
 Widget appShell;
 Widget saver, ins;
 XLoginResources resources;
@@ -121,8 +133,11 @@ int owlNumBitmaps;
 unsigned int owlWidth, owlHeight;
 int owlState, owlDelta, owlTimeout;
 Pixmap owlBitmaps[20];
+struct timeval starttime;
 int activation_state, activation_pid;
 int attach_state, attach_pid;
+int attachhelp_state, attachhelp_pid, quota_pid;
+int exiting = FALSE;
 
 
 /******************************************************************************
@@ -139,6 +154,7 @@ main(argc, argv)
   char hname[64];
   Arg args[1];
   int i;
+  FILE *f;
 
   srandom(time(0) + getpid());
 
@@ -167,6 +183,7 @@ main(argc, argv)
 			   options, XtNumber(options),
 			   &argc, argv);
   app = XtWidgetToApplicationContext(appShell);
+  XtAppSetErrorHandler(app, localErrorHandler);
   dpy = XtDisplay(appShell);
   XtAppAddActions(app, actions, XtNumber(actions));
 
@@ -183,6 +200,16 @@ main(argc, argv)
    *  Register all Athena widget classes
    */
   AriRegisterAthena ( app );
+
+  /* clear console */
+  f = fopen(CONSOLEPID, "r");
+  if (f) {
+      fgets(hname, sizeof(hname), f);
+      i = atoi(hname);
+      if (i)
+	kill(i, SIGFPE);
+      fclose(f);
+  }
 
   /*
    *  Create widget tree below toplevel shell using Xrm database
@@ -221,7 +248,11 @@ main(argc, argv)
 			      screensave, NULL);
   blink_timerid = XtAddTimeOut(1000, blinkOwl, NULL);
   activation_state = ACTIVATED;
+  gettimeofday(&starttime, NULL);
   resetCB(namew, NULL, NULL);
+  /* tell display manager we're ready, just like X server handshake */
+  if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
+    kill(getppid(), SIGUSR1);
 
   XtMainLoop ( );
 }
@@ -266,8 +297,17 @@ start_reactivate(data, timerid)
      XtIntervalId  *timerid;
 {
     int in_use = 0;
-    int file;
+    int file, i;
+    char buf[16];
     struct utmp utmp;
+    struct timeval now;
+    FILE *f;
+
+    gettimeofday(&now, NULL);
+    if (now.tv_sec - starttime.tv_sec > resources.restart_timeout) {
+	fprintf(stderr, "Restarting X Server\n");
+	exit(0);
+    }
 
     if ((file = open(utmpf, O_RDONLY, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
@@ -286,18 +326,30 @@ start_reactivate(data, timerid)
 	return;
     }
 
+    /* clear console */
+    f = fopen(CONSOLEPID, "r");
+    if (f) {
+	fgets(buf, sizeof(buf), f);
+	i = atoi(buf);
+	if (i)
+	  kill(i, SIGFPE);
+	fclose(f);
+    }
+
+    activation_state = REACTIVATING;
     activation_pid = fork();
     switch (activation_pid) {
     case 0:
 	execl(resources.reactivate_prog, resources.reactivate_prog, 0);
 	fprintf(stderr, "XLogin: unable to exec reactivate program \"%s\"\n",
 		resources.reactivate_prog);
-	exit(1);
+	_exit(1);
     case -1:
 	fprintf(stderr, "XLogin: unable to fork for reactivatation\n");
+	activation_state = ACTIVATED;
 	break;
     default:
-	activation_state = REACTIVATING;
+	break;
     }
 
     react_timerid = XtAddTimeOut(resources.reactivate_timeout * 1000,
@@ -319,7 +371,11 @@ static void stop_activate(data, timerid)
      XtPointer  data;
      XtIntervalId  *timerid;
 {
-    
+    if (activation_state == ACTIVATED) return;
+
+    kill(activation_pid, SIGKILL);
+    fprintf(stderr, "Workstation activation failed to finish normally.\n");
+    activation_state = ACTIVATED;
 }
 
 
@@ -335,6 +391,7 @@ screensave(data, timerid)
 
   XtPopdown(WcFullNameToWidget(appShell, "*getSessionShell"));
   XtPopdown(WcFullNameToWidget(appShell, "*warningShell"));
+  XtPopdown(WcFullNameToWidget(appShell, "*queryShell"));
   XtPopup(saver, XtGrabNone);
   XtPopup(ins, XtGrabNone);
   unfocusACT();
@@ -358,9 +415,9 @@ screensave(data, timerid)
       first_time = FALSE;
     }
 
-  if (blink_timerid != NULL)	/* don't blink while screensaved... */
+  if (blink_timerid != 0)	/* don't blink while screensaved... */
     XtRemoveTimeOut(blink_timerid);
-  blink_timerid = NULL;
+  blink_timerid = 0;
 
   /* don't let the real screensaver kick in */
   XSetScreenSaver(dpy, 0, -1, DefaultBlanking, DefaultExposures);
@@ -377,6 +434,20 @@ unsave(w, popdown, event, bool)
      XEvent *event;
      Boolean *bool;
 {
+    char buf[16];
+    FILE *f;
+    int pid;
+
+    /* hide console */
+    f = fopen(CONSOLEPID, "r");
+    if (f) {
+	fgets(buf, sizeof(buf), f);
+	pid = atoi(buf);
+	if (pid)
+	  kill(pid, SIGUSR2);
+	fclose(f);
+    }
+
   if (popdown)
     {
       XtPopdown(ins);
@@ -387,14 +458,17 @@ unsave(w, popdown, event, bool)
   XSetScreenSaver(dpy, -1, -1, DefaultBlanking, DefaultExposures);
   resetCB(w, NULL, NULL);
 
-  if (curr_timerid != NULL)
+  if (curr_timerid != 0)
     XtRemoveTimeOut(curr_timerid);
   curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
 			      screensave, NULL);
   blink_timerid = XtAddTimeOut(random() % (10 * 1000),
 			       blinkOwl, NULL);
-  react_timerid = XtAddTimeOut(resources.activate_timeout * 1000,
-			       stop_activate, NULL);
+  if (react_timerid != 0)
+    XtRemoveTimeOut(react_timerid);
+  if (activation_state == REACTIVATING)
+    react_timerid = XtAddTimeOut(resources.activate_timeout * 1000,
+				 stop_activate, NULL);
 }
 
 
@@ -442,9 +516,27 @@ Cardinal *n;
 
     XtSetArg(args[0], XtNstring, &script);
     XtGetValues(WcFullNameToWidget(appShell, "*getsession*value"), args, 1);
+    unfocusACT(appShell, NULL, NULL, NULL);
+    XtUnmapWidget(appShell);
+    /* To clear the cut buffer in case someone types ^U while typing
+     * their password. */
+    XDeleteProperty(dpy, DefaultRootWindow(dpy), XA_CUT_BUFFER0);
+    XDeleteProperty(dpy, DefaultRootWindow(dpy), XA_CUT_BUFFER1);
+    XFlush(dpy);
 
-    tb.ptr = dologin(login, passwd, mode, script, resources.tty);
+    /* wait for activation to finish */
+    if (activation_state != ACTIVATED)
+      fprintf(stderr, "Waiting for workstation to finish activating...\n");
+    while (activation_state != ACTIVATED)
+      sigpause(0);
 
+    if (access("/srvd/.rvdinfo", F_OK) != 0)
+      tb.ptr = "Workstation failed to activate successfully.  Please notify Athena operations.";
+    else
+      tb.ptr = dologin(login, passwd, mode, script, resources.tty,
+		       resources.session, DisplayString(dpy));
+
+    XtMapWidget(appShell);
     XtPopup(WcFullNameToWidget(appShell, "*warningShell"), XtGrabExclusive);
     tb.firstPos = 0;
     tb.length = strlen(tb.ptr);
@@ -456,6 +548,16 @@ Cardinal *n;
     focusCB(appShell, "*warning*value", NULL);
     curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
 				screensave, NULL);
+}
+
+
+/* login failed: Set the exit flag, then return the message the usual way. */
+
+char *lose(msg)
+char *msg;
+{
+    exiting = TRUE;
+    return(msg);
 }
 
 
@@ -497,6 +599,28 @@ Cardinal *n;
 }
 
 
+void setcorrectfocus(w, event, p, n)
+Widget w;
+XEvent *event;
+String *p;
+Cardinal *n;
+{
+    Arg args[2];
+    char *win;
+    Cardinal i;
+    Boolean bool;
+
+    XtSetArg(args[0], XtNdisplayCaret, &bool);
+    XtGetValues(WcFullNameToWidget(appShell, "*name_input"), args, 1);
+    if (bool)
+      win = "*name_input";
+    else
+      win = "*pword_input";
+    i = 1;
+    focusACT(w, event, &win, &i);
+}
+
+
 void runACT(w, event, p, n)
 Widget w;
 XEvent *event;
@@ -508,16 +632,27 @@ Cardinal *n;
 
     unfocusACT(w, event, p, n);
     XtCloseDisplay(dpy);
-    setreuid(NOBODY, NOBODY);
+    setreuid(DAEMON, DAEMON);
     argv = (char **)malloc(sizeof(char *) * (*n + 3));
     argv[0] = "sh";
     argv[1] = "-c";
     for (i = 0; i < *n; i++)
       argv[i+2] = p[i];
     argv[i+2] = NULL;
+
+    /* wait for activation to finish */
+    if (activation_state != ACTIVATED)
+      fprintf(stderr, "Waiting for workstation to finish activating...\n");
+    while (activation_state != ACTIVATED)
+      sigpause(0);
+    if (access("/srvd/.rvdinfo", F_OK) != 0) {
+	fprintf(stderr, "Workstation failed to activate successfully.  Please notify Athena operations.");
+	return;
+    }
+
     execv("/bin/sh", argv);
     fprintf(stderr, "XLogin: unable to exec /bin/sh\n");
-    exit(3);
+    _exit(3);
 }
 
 
@@ -539,6 +674,8 @@ caddr_t unused;
 {
     XawTextBlock tb;
 
+    if (exiting == TRUE)
+      exit(0);
     focusCB(appShell, "*name_input", NULL);
     WcSetValueCB(appShell, "*lmenuEntry1.leftBitmap: check", NULL);
     WcSetValueCB(appShell, "*lmenuEntry1.leftBitmap: check", NULL);
@@ -563,6 +700,58 @@ caddr_t unused;
     curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
 			      screensave, NULL);
 }
+
+
+setvalue(w, done, unused)
+Widget w;
+int *done;
+{
+    *done = 1;
+}
+
+
+prompt_user(msg, abort_proc)
+char *msg;
+void (*abort_proc)();
+{
+    XawTextBlock tb;
+    XEvent e;
+    static void (*oldcallback)() = NULL;
+    int done;
+
+    XtPopup(WcFullNameToWidget(appShell, "*queryShell"), XtGrabExclusive);
+    tb.firstPos = 0;
+    tb.ptr = msg;
+    tb.length = strlen(msg);
+    tb.format = FMT8BIT;
+    XawTextReplace(WcFullNameToWidget(appShell, "*query*value"),
+		   0, 65536, &tb);
+    XtCallActionProc(WcFullNameToWidget(appShell, "*query*value"),
+		     "form-paragraph", &e, NULL, 0);
+    focusCB(appShell, "*query*value", NULL);
+    if (oldcallback)
+      XtRemoveCallback(WcFullNameToWidget(appShell, "*query*giveup"),
+		       XtNcallback, oldcallback, NULL);
+    else
+      XtAddCallback(WcFullNameToWidget(appShell, "*query*cont"),
+		    XtNcallback, setvalue, &done);
+    XtAddCallback(WcFullNameToWidget(appShell, "*query*giveup"),
+		  XtNcallback, abort_proc, NULL);
+    oldcallback = abort_proc;
+    curr_timerid = XtAddTimeOut(resources.save_timeout * 1000,
+				abort_proc, NULL);
+
+    /* repeat main_loop here so we can check status & return */
+    done = 0;
+    while (!done) {
+	XtAppNextEvent(_XtDefaultAppContext(), &e);
+	XtDispatchEvent(&e);
+    }
+
+    XtPopdown(WcFullNameToWidget(appShell, "*queryShell"));
+    XFlush(dpy);
+}
+
 
 
 #define updateOwl()	XCopyPlane(dpy, owlBitmaps[owlCurBitmap], \
@@ -642,7 +831,7 @@ static void initOwl(search)
   if (owl != NULL)
     {
       owlWindow = XtWindow(owl);
-      if (owlWindow != NULL)
+      if (owlWindow != None)
 	{
 	  XtSetArg(args[n], XtNlabel, &filenames); n++;
 	  XtSetArg(args[n], XtNforeground, &values.foreground); n++;
@@ -695,6 +884,16 @@ static void initOwl(search)
 }
 
 
+/* Called from within the toolkit */
+void localErrorHandler(s)
+String s;
+{
+    fprintf(stderr, "XLogin X error: %s\n", s);
+    cleanup(NULL);
+    exit(1);
+}
+
+
 static void catch_child()
 {
     int pid;
@@ -715,6 +914,10 @@ static void catch_child()
 	}
     } else if (pid == attach_pid) {
 	attach_state = status.w_retcode;
+    } else if (pid == attachhelp_pid) {
+	attachhelp_state = status.w_retcode;
+    } else if (pid == quota_pid) {
+	/* don't need to do anything here */
     } else
       fprintf(stderr, "XLogin: child %d exited with status %d\n",
 	      pid, status.w_retcode);
