@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.10 1990-01-17 05:42:28 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.11 1990-01-26 15:57:28 vanharen Exp $";
 #endif
 
 
@@ -254,31 +254,34 @@ write_message_to_user(k, message, flags)
     {
     case ERROR:
       set_status(k->user, UNKNOWN_STATUS);
-      (void) sprintf(msgbuf,"Unable to contact %s %s.  Cause unknown.\n",
+      (void) sprintf(msgbuf,"Unable to contact %s %s.  Cause unknown.",
 	      k->title, k->user->username);
-      if(!(flags & NO_RESPOND))
-	(void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
       log_daemon(k, msgbuf);
+      if(!(flags & NO_RESPOND))
+	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
+				     NO_RESPOND);
       status = ERROR;
       break;
 
     case MACHINE_DOWN:
-      set_status(k->user, UNKNOWN_STATUS);
-      (void) sprintf(msgbuf,"Unable to contact %s %s. Host machine down.\n",
+      set_status(k->user, MACHINE_DOWN);
+      (void) sprintf(msgbuf,"Unable to contact %s %s.  Host machine down.",
 	      k->title, k->user->username);
-      if(!(flags & NO_RESPOND))
-	(void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
       log_daemon(k, msgbuf);
+      if(!(flags & NO_RESPOND))
+	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
+				     NO_RESPOND);
       status = ERROR;
       break;
 
     case LOGGED_OUT:
       set_status(k->user, LOGGED_OUT);
-      (void) sprintf(msgbuf,"Unable to contact %s %s. User logged out.\n",
+      (void) sprintf(msgbuf,"Unable to contact %s %s.  User logged out.",
 	      k->title, k->user->username);
-      if(!(flags & NO_RESPOND))
-	(void) write_message_to_user(k->connected, msgbuf, NO_RESPOND);
       log_daemon(k, msgbuf);
+      if(!(flags & NO_RESPOND))
+	(void) write_message_to_user(k->connected, fmt("%s\n", msgbuf),
+				     NO_RESPOND);
       status = ERROR;
       break;
 
