@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.1 1990-05-15 08:25:12 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.2 1990-11-26 12:43:22 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZNewLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.1 1990-05-15 08:25:12 raeburn Exp $";
+static char rcsid_ZNewLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZNewLocU.c,v 1.2 1990-11-26 12:43:22 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -104,6 +104,7 @@ Code_t ZNewLocateUser(user, nlocs, auth)
 	    if (retnotice.z_kind == SERVACK &&
 		!strcmp(retnotice.z_opcode,LOCATE_LOCATE)) {
 		    ack = 1;
+		    ZFreeNotice (&retnotice);
 		    continue;
 	    } 	
 
@@ -125,23 +126,28 @@ Code_t ZNewLocateUser(user, nlocs, auth)
 
 	    __locate_list = (ZLocations_t *)malloc((unsigned)__locate_num*
 						   sizeof(ZLocations_t));
-	    if (!__locate_list)
+	    if (!__locate_list) {
+		    ZFreeNotice (&retnotice);
 		    return (ENOMEM);
+	    }
 	
 	    for (ptr=retnotice.z_message, i=0;i<__locate_num;i++) {
 		    __locate_list[i].host = malloc((unsigned)strlen(ptr)+1);
-		    if (!__locate_list[i].host)
+		    if (!__locate_list[i].host) {
+		    nomem:
+			    ZFreeNotice (&retnotice);
 			    return (ENOMEM);
+		    }
 		    (void) strcpy(__locate_list[i].host, ptr);
 		    ptr += strlen(ptr)+1;
 		    __locate_list[i].time = malloc((unsigned)strlen(ptr)+1);
 		    if (!__locate_list[i].time)
-			    return (ENOMEM);
+			    goto nomem;
 		    (void) strcpy(__locate_list[i].time, ptr);
 		    ptr += strlen(ptr)+1;
 		    __locate_list[i].tty = malloc((unsigned)strlen(ptr)+1);
 		    if (!__locate_list[i].tty)
-			    return (ENOMEM);
+			    goto nomem;
 		    (void) strcpy(__locate_list[i].tty, ptr);
 		    ptr += strlen(ptr)+1;
 	    }
