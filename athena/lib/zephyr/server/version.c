@@ -14,13 +14,13 @@
 #include <zephyr/mit-copyright.h>
 
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) $Revision: 3.18 $";
+char version[] = "Zephyr Server (DEBUG) $Revision: 3.19 $";
 #else
-char version[] = "Zephyr Server $Revision: 3.18 $";
+char version[] = "Zephyr Server $Revision: 3.19 $";
 #endif DEBUG
 #ifndef lint
 #ifndef SABER
-static char rcsid_version_c[] = "$Id: version.c,v 3.18 1989-12-06 09:10:31 jtkohl Exp $";
+static char rcsid_version_c[] = "$Id: version.c,v 3.19 1989-12-13 10:32:54 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987,1988,1989 Massachusetts Institute of Technology.\n";
 #ifdef CONCURRENT
 char concurrent[] = "Brain-dump concurrency enabled";
