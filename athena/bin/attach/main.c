@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.3 1990-04-20 01:30:35 jfc Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.4 1990-04-21 17:40:28 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -63,7 +63,7 @@ char	**ufs_explicit();
 struct _fstypes fstypes[] = {
     { "---", 0, -1, 0, (char *) 0, 0, null_detach, 0 },	/* The null type */
 #ifdef NFS
-    { "NFS", TYPE_NFS, MOUNT_NFS, FS_MNTPT | FS_REMOTE | FS_MNTPT_CANON, "rwn",
+    { "NFS", TYPE_NFS, MOUNT_NFS, FS_MNTPT | FS_REMOTE | FS_MNTPT_CANON, "rwnm",
 	      nfs_attach, nfs_detach, nfs_explicit },
 #endif
 #ifdef RVD
