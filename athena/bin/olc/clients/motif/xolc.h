@@ -10,8 +10,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/xolc.h,v $
- *      $Id: xolc.h,v 1.11 1991-08-23 13:56:33 raek Exp $
- *      $Author: raek $
+ *      $Id: xolc.h,v 1.11.1.1 1992-03-16 15:31:17 lwvanels Exp $
+ *      $Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -121,6 +121,9 @@ extern int has_question,
 #else
 # define P_(s) ()
 #endif
+
+/* converters.c */
+void add_converter P_((void));
 
 /* main.c */
 int main P_((int argc, char *argv[]));
