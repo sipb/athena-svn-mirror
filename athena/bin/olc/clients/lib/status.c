@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v $
- *	$Id: status.c,v 1.15 1991-01-21 01:14:45 lwvanels Exp $
+ *	$Id: status.c,v 1.16 1991-02-25 16:31:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.15 1991-01-21 01:14:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.16 1991-02-25 16:31:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,35 +34,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 extern long lc_time;
 extern LIST list_cache;
 #define LIST_LIFETIME 60
-
-/*
-ERRCODE
-OGetConnectedPerson(Request,data)
-     REQUEST *Request;
-     PERSON *data;
-{
-  int fd;
-  int status;
-
-  Request->request_type = OLC_CONNECTED; 
-  status = open_connection_to_daemon(Request, &fd);
-  if(status)
-    return(status);
-
-  status = send_request(fd,Request);
-  if(status)
-    {
-      close(fd);
-      return(status);
-    }
-
-  read_response(fd, &status);
-  if(status == SUCCESS)
-    read_person(fd,data);
-  close(fd);
-  return(status);
-}*/
-
 
 OListPerson(Request,data)
      REQUEST *Request;
