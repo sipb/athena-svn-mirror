@@ -1,0 +1,129 @@
+#ident "@(#)devlink.tab	1.39	94/02/23 SMI"
+#
+# Copyright (c) 1991 by Sun Microsystems, Inc.
+#
+#
+# This is the table used by devlinks
+#
+# Each entry should have 2 fields; but may have 3.  Fields are separated
+# by single tab ('\t') characters.
+#
+# The fields are:
+#
+# devfs-spec: a keyword-value set of devfs specifications, describing the set
+#	of devfs node entries to be linked.
+#
+#	The keywords are:
+#
+#	type - The devinfo node type (see <sys/sunddi.h> for possible values)
+#
+#	name - the devinfo node name (the part of a /devices entry that appears
+#		before the '@' or ':').
+#
+#	addr - the devinfo node address part (the portion of the name between
+#		the '@' and the ':').
+#
+#	minor - the minor-attributes (the portion of a /devices name after the
+#		':').
+#
+#	The keywords are separated from their valuse by an equals ('=') sign;
+#	keyword-value pairs are separated from each other by semicolons (';').
+#
+# dev name - the /dev name corresponding to the devfs node described by
+#	the devfs-spec field.  This specification is assume to start rooted at
+#	/dev; THE INITIAL /dev/ SHOULD NOT BE SPECIFIED!
+#	The name can contain a number of escape-sequences to include parts of
+#	the devfs-name in the /dev/-name.  These escape-sequences all start with
+#	a backslash ('\') character.  The current sequences are:
+#
+#	\D - the devfs 'name' field
+#
+#	\An - the 'n'th component of the address field (n=0 means the whole
+#		address field)
+#
+#	\Mn - the 'n'th component of the minor field (n=0 means the entire
+#		minor field).
+#
+#	\Nn - a sequential counter, starting at n (a *single* digit, giving
+#		a starting range of 0 through 9).
+#
+# extra dev link - a few devices need a second link; that is, a second link
+#	pointing to the first link.  This optional field specifies the /dev
+#	format of this second link.  This entry can also use the above-described
+#	escape-sequences.
+#
+# Fields can be blank; seperated by single tab characters,
+# Spaces are significant, and are considered part of a field. IN GENERAL THIS
+# MEANS THERE SHOULD BE NO SPACE CHARACTERS IN THIS FILE!
+# All fields must be present (even if blank)
+#
+#
+# devfs-spec	Dev-Namespec	Extra-Link
+#
+type=ddi_pseudo;name=win	win\M0
+type=ddi_pseudo;name=winlock	\D
+type=ddi_pseudo;name=mm	\M0
+type=ddi_pseudo;name=conskbd	kbd
+type=ddi_pseudo;name=consms	mouse
+type=ddi_pseudo;name=wc	\M0
+type=ddi_pseudo;name=dump	\M0
+type=ddi_pseudo;name=cn	\M0
+type=ddi_pseudo;name=lo	\M0
+type=ddi_pseudo;name=ptm	\M0
+type=ddi_pseudo;name=ptc	\M0
+type=ddi_pseudo;name=pts	pts/\M0
+type=ddi_pseudo;name=ptsl	\M0
+type=ddi_pseudo;name=log	\M0
+type=ddi_pseudo;name=sad	sad/\M0
+type=ddi_pseudo;name=sy	\M0
+type=ddi_pseudo;name=sw	\M0
+type=ddi_pseudo;name=clone	\M0
+type=ddi_pseudo;name=app	\M0
+type=ddi_network	\M0
+type=ddi_pseudo;name=openeepr	\M0
+type=ddi_pseudo;name=kstat	\M0
+type=ddi_pseudo;name=ksyms	\M0
+type=ddi_display	fbs/\M0	fb\N0
+type=ddi_pseudo;name=clone;minor=icmp	rawip
+type=ddi_pseudo;name=SUNW,bpp	\M0
+type=ddi_pseudo;name=eeprom	\M0
+type=ddi_pseudo;name=clone;minor=ipdcm	ipdcm
+type=ddi_pseudo;name=vol	\M0
+type=ddi_pseudo;name=profile	\M0
+type=ddi_parallel;name=mcpp	mcpp\N0
+type=ddi_pseudo;name=zsh	zsh\M0
+type=ddi_pseudo;name=clone;minor=zsh	zsh
+type=ddi_pseudo;name=SUNW,sx	\M0
+type=ddi_pseudo;name=sx_cmem	\D
+type=ddi_parallel;name=SUNW,spif;minor=stclp	printers/\N0
+type=ddi_pseudo;name=SUNW,spif;minor=stc	sad/stc\N0
+type=ddi_pseudo;name=tl;minor=ticots	ticots
+type=ddi_pseudo;name=tl;minor=ticotsord	ticotsord
+type=ddi_pseudo;name=tl;minor=ticlts	ticlts
+type=ddi_pseudo;name=md;minor=admin	md/admin
+type=ddi_pseudo;name=md;minor2=blk	md/dsk/d\M1
+type=ddi_pseudo;name=md;minor2=raw	md/rdsk/d\M1
+type=ddi_block:diskette;minor=c	diskette
+type=ddi_block:diskette;minor=c,raw	rdiskette
+type=ddi_block:diskette;minor=c	diskette0
+type=ddi_block:diskette;minor=c,raw	rdiskette0
+type=ddi_pseudo;name=consfb;minor=consfb	fb
+type=ddi_pseudo;name=SUNW,rtvc;minor=ctl	rtvc\M0
+type=ddi_pseudo;name=SUNW,rtvc	\M0
+type=ddi_display;name=SUNW,tcx	fbs/\M0	tcx\N0
+type=ddi_display;name=SUNW,leo	fbs/\M0	leo\N0
+type=ddi_display;name=gt;minor=gt1	fbs/\M0	gt\N0
+type=ddi_display;name=gt;minor=gt2	fbs/\M0	gt\N0
+type=ddi_display;name=gt;minor=gt3	fbs/\M0	gt\N0
+type=ddi_display;name=gt;minor=gt4	fbs/\M0	gt\N0
+type=ddi_display;name=gt;minor=gt5	fbs/\M0	gt\N0
+type=ddi_display;name=gt;minor=gta0	fbs/\M0	gta\N0
+type=ddi_display;name=gt;minor=gta1	fbs/\M0	gta\N0
+type=ddi_display;name=gt;minor=gta2	fbs/\M0	gta\N0
+type=ddi_display;name=gt;minor=gta3	fbs/\M0	gta\N0
+type=ddi_display;name=gt;minor=gta4	fbs/\M0	gta\N0
+type=ddi_display;name=gt;minor=gta5	fbs/\M0	gta\N0
+type=ddi_display;name=gt;minor=gt0	fbs/\M0	gt\N0
+type=ddi_display;name=cgtwelve	fbs/\M0	cgtwelve\N0
+type=ddi_pseudo;name=atalk;minor=elap	appletalk/lap/ethertalk0/control
+type=ddi_pseudo;name=atalk;minor=ddp	appletalk/ddp/socket
