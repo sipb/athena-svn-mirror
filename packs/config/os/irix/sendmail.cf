@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.9.2.2 1999-10-15 18:25:01 ghudson Exp $
+# $Id: sendmail.cf,v 1.9.2.2.2.1 1999-11-09 16:11:15 ghudson Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -25,6 +25,9 @@ Cwlocalhost $w
 
 # hosts we will relay mail for (other than localhost)
 CR
+
+# map for local configuration
+Kathconf text -o -v 1 /etc/athena/sendmail.conf
 
 ###################
 ###   Options   ###
@@ -183,7 +186,7 @@ R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
 
 # deliver mail
 R$*<@$=w>$*		$#local$:$1			Local mail
-R$*			$#smtp$@ATHENA.$D$:$1		All else to ATHENA
+R$*<@$+>$*		$#smtp$@$(athconf relay$:$2$)$:$1<@$2>$3
 
 #####################
 ###   Anti-spam   ###
