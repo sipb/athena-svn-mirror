@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 18:02:48 1995 ylo
 #
-# $Id: configure.in,v 1.5 1998-01-24 01:47:24 danw Exp $
+# $Id: configure.in,v 1.6 1998-02-28 19:08:18 ghudson Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.5  1998/01/24 01:47:24  danw
+# merge in changes for 1.2.22
+#
 # Revision 1.4  1997/11/19 22:37:17  danw
 # krb5 may need -lgen for regexp stuff
 #
@@ -1568,7 +1571,8 @@ if test $with_afs != no; then
 	ATHENA_LIBS="$ATHENA_LIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp -lsys"
 	AC_CHECK_FUNC(sigvec, :,
 		      [AC_CHECK_LIB(ucb, sigvec,
-				    [ATHENA_LIBS="$ATHENA_LIBS -lc -lucb"])])
+				    [ATHENA_LIBS="$ATHENA_LIBS -L/usr/ucblib -R/usr/ucblib -lc -lucb"],
+				    :, -L/usr/ucblib)])
 	AC_CHECK_FUNC(insque, :,
 		      [AC_CHECK_LIB(compat, insque,
 				    [ATHENA_LIBS="$ATHENA_LIBS -lcompat"])])

@@ -7104,7 +7104,7 @@ if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lucb  $LIBS"
+LIBS="-lucb -L/usr/ucblib $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 7110 "configure"
 #include "confdefs.h"
@@ -7132,20 +7132,21 @@ LIBS="$ac_save_LIBS"
 fi
 if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  ATHENA_LIBS="$ATHENA_LIBS -lc -lucb"
+  ATHENA_LIBS="$ATHENA_LIBS -L/usr/ucblib -R/usr/ucblib -lc -lucb"
 else
   echo "$ac_t""no" 1>&6
+:
 fi
 
 fi
 
 	echo $ac_n "checking for insque""... $ac_c" 1>&6
-echo "configure:7144: checking for insque" >&5
+echo "configure:7145: checking for insque" >&5
 if eval "test \"`echo '$''{'ac_cv_func_insque'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7149 "configure"
+#line 7150 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char insque(); below.  */
@@ -7168,7 +7169,7 @@ insque();
 
 ; return 0; }
 EOF
-if { (eval echo configure:7172: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7173: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_func_insque=yes"
 else
@@ -7186,7 +7187,7 @@ if eval "test \"`echo '$ac_cv_func_'insque`\" = yes"; then
 else
   echo "$ac_t""no" 1>&6
 echo $ac_n "checking for insque in -lcompat""... $ac_c" 1>&6
-echo "configure:7190: checking for insque in -lcompat" >&5
+echo "configure:7191: checking for insque in -lcompat" >&5
 ac_lib_var=`echo compat'_'insque | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -7194,7 +7195,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lcompat  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 7198 "configure"
+#line 7199 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -7205,7 +7206,7 @@ int main() {
 insque()
 ; return 0; }
 EOF
-if { (eval echo configure:7209: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:7210: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
