@@ -1,9 +1,9 @@
 #
-# $Id: Imakefile,v 1.2 1996-07-25 16:48:36 cfields Exp $
+# $Id: Imakefile,v 1.3 1996-08-05 02:34:07 cfields Exp $
 #
 
 CONFDIR=	/etc/athena/login/xdm
-XCONFIGS=	Xlogin Xreset
+XCONFIGS=	Xlogin Xreset Xstartup
 CONFIGS=	xdm-config Xaccess
 
 install::
