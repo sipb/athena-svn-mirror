@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.4 1996-08-12 19:31:05 cfields Exp $
+ *	$Id: machtype_sgi.c,v 1.5 1996-08-20 19:26:07 cfields Exp $
  *	$Locker:  $
  */
 
@@ -215,21 +215,15 @@ char	**argv;
     /* Print out vendor OS name */
     if (dobosN) {
       if (verbose) {
-#if defined(sgi)
-    printf("IRIX 5.2\n");
-#endif
+	printf(OSNAME " " OSVERS "\n");
       } else {
-#if defined(sgi)
-	printf("IRIX\n");
-#endif
+	printf(OSNAME "\n");
       }
     }
 
     /* Print out vendor OS version */
     if (dobosV) {
-#if defined(sgi)
-	printf("5.2\n");
-#endif
+	printf(OSVERS "\n");
     }
     if (dosysnam)
         printf("%s\n", ATHSYS);
