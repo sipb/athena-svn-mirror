@@ -1,11 +1,11 @@
 /* 
- * $Id: aklog_main.c,v 1.30 1998-01-20 23:19:43 ghudson Exp $
+ * $Id: aklog_main.c,v 1.31 1998-03-30 19:01:11 danw Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog_main.c,v 1.30 1998-01-20 23:19:43 ghudson Exp $";
+static const char rcsid[] = "$Id: aklog_main.c,v 1.31 1998-03-30 19:01:11 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -189,6 +189,16 @@ static int auth_to_cell(char *cell, char *realm)
     struct ktc_principal aclient;
     struct ktc_token atoken, btoken;
     
+    /* try to avoid an expensive call to get_cellconfig */
+    if (cell && ll_string(&authedcells, ll_s_check, cell)) {
+	if (dflag) {
+	    sprintf(msgbuf, "Already authenticated to %s (or tried to)\n", 
+		    cell);
+	    params.pstdout(msgbuf);
+	}
+	return(AKLOG_SUCCESS);
+    }
+
     memset(name, 0, sizeof(name));
     memset(instance, 0, sizeof(instance));
     memset(realm_of_user, 0, sizeof(realm_of_user));
