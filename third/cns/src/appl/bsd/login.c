@@ -1606,17 +1606,18 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 {
 	krb5_context context;
 	krb5_error_code retval;
-	krb5_principal	me = 0, server = 0;
-	krb5_ccache	ccache = NULL;
+	krb5_principal me = 0, server = 0;
+	krb5_ccache ccache = NULL;
 	krb5_creds my_creds;
 	krb5_timestamp now;
-	krb5_address **my_addresses = 0;
+	krb5_flags options = KDC_OPT_FORWARDABLE | KDC_OPT_PROXIABLE;
+
 	char *cache_name;
 
 	*etext = 0;
 	if (ret_cache_name)
 		*ret_cache_name = 0;
-	memset((char *)&my_creds, 0, sizeof(my_creds));
+	memset(&my_creds, 0, sizeof(my_creds));
 
 	retval = krb5_init_context(&context);
 	if (retval)
@@ -1624,20 +1625,20 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 
 	cache_name = krb5_cc_default_name(context);
 	krb5_init_ets(context);
-	
+
 	retval = krb5_425_conv_principal(context, name, instance, realm, &me);
 	if (retval) {
 		*etext = "while converting V4 principal";
 		goto cleanup;
 	}
-    
-	retval = krb5_cc_resolve (context, cache_name, &ccache);
+
+	retval = krb5_cc_resolve(context, cache_name, &ccache);
 	if (retval) {
 		*etext = "while resolving ccache";
 		goto cleanup;
 	}
 
-	retval = krb5_cc_initialize (context, ccache, me);
+	retval = krb5_cc_initialize(context, ccache, me);
 	if (retval) {
 		*etext = "while initializing cache";
 		goto cleanup;
@@ -1657,27 +1658,21 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 		goto cleanup;
 	}
 
-	retval = krb5_os_localaddr(context, &my_addresses);
-	if (retval) {
-		*etext = "when getting my address";
-		goto cleanup;
-	}
-
 	retval = krb5_timeofday(context, &now);
 	if (retval) {
 		*etext = "while getting time of day";
 		goto cleanup;
 	}
-	
+
 	my_creds.client = me;
 	my_creds.server = server;
 	my_creds.times.starttime = 0;
 	my_creds.times.endtime = now + lifetime*5*60;
 	my_creds.times.renew_till = 0;
-	
-	retval = krb5_get_in_tkt_with_password(context, 0, my_addresses,
-					       NULL, NULL, password, ccache,
-					       &my_creds, 0);
+
+	retval = krb5_get_in_tkt_with_password(context, options, NULL, NULL,
+					       NULL, password, ccache,
+					       &my_creds, NULL);
 	if (retval) {
 		*etext = "while calling krb5_get_in_tkt_with_password";
 		goto cleanup;
@@ -1697,8 +1692,6 @@ cleanup:
 		krb5_free_principal(context, me);
 	if (server)
 		krb5_free_principal(context, server);
-	if (my_addresses)
-		krb5_free_addresses(context, my_addresses);
 	if (ccache)
 		krb5_cc_close(context, ccache);
 	my_creds.client = 0;
