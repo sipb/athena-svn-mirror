@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.37 2000-05-31 17:57:44 ghudson Exp $
+# $Id: do-update.sh,v 1.38 2000-09-21 15:08:30 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -212,7 +212,8 @@ else
 		rm -f "$CONFDIR/rc.conf.orig"
 		cp -p "$CONFDIR/rc.conf" "$CONFDIR/rc.conf.orig"
 
-		echo "The following variables are being added to /etc/rc.conf:"
+		echo "The following variables are being added to" \
+			"/etc/athena/rc.conf:"
 		echo "	$vars"
 		for i in $vars; do
 			grep "^$i=" "/srvd$CONFDIR/rc.conf" \
