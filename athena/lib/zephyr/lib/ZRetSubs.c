@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.1 1987-07-09 20:03:42 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.2 1987-07-10 14:51:44 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -25,7 +25,7 @@ Code_t ZRetrieveSubscriptions(port,nsubs)
 	int i,retval;
 	ZNotice_t notice,retnotice;
 	ZPacket_t buffer;
-	char *ptr,*end;
+	char *ptr,*end,*ptr2;
 	
 	retval = ZFlushSubscriptions();
 
@@ -83,11 +83,14 @@ Code_t ZRetrieveSubscriptions(port,nsubs)
 			return (ENOMEM);
 		(void) strcpy(__subscriptions_list[i].classinst,ptr);
 		ptr += strlen(ptr)+1;
+		ptr2 = ptr;
+		if (!*ptr2)
+			ptr2 = "*";
 		__subscriptions_list[i].recipient = (char *)
-			malloc((unsigned)strlen(ptr)+1);
+			malloc((unsigned)strlen(ptr2)+1);
 		if (!__subscriptions_list[i].recipient)
 			return (ENOMEM);
-		(void) strcpy(__subscriptions_list[i].recipient,ptr);
+		(void) strcpy(__subscriptions_list[i].recipient,ptr2);
 		ptr += strlen(ptr)+1;
 	}
 
