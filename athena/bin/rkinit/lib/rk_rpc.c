@@ -1,5 +1,5 @@
 /* 
- * $Id: rk_rpc.c,v 1.4 1990-07-16 14:15:31 qjb Exp $
+ * $Id: rk_rpc.c,v 1.5 1990-08-01 11:53:04 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v $
  * $Author: qjb $
  *
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rk_rpc.c,v 1.4 1990-07-16 14:15:31 qjb Exp $";
+static char *rcsid = "$Id: rk_rpc.c,v 1.5 1990-08-01 11:53:04 qjb Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -137,7 +137,7 @@ int rki_get_packet(sock, type, length, data)
     }
 
     if (packet[PKT_TYPE] == MT_DROP) {
-	sprintf(errbuf, "Connection dropped by remote host");
+	BCLEAR(errbuf);
 	rkinit_errmsg(errbuf);
 	return(RKINIT_DROPPED);
     }
