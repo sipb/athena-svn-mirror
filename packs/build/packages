@@ -1,4 +1,4 @@
-# $Id: packages,v 1.274 2004-05-27 18:35:16 ghudson Exp $
+# $Id: packages,v 1.275 2004-06-19 00:40:25 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -181,6 +181,7 @@ third/glib2			requires libiconv,gettext
 third/gmp			except linux
 third/gnome2-user-docs		requires scrollkeeper
 third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,gnome-vfs2,GConf2,scrollkeeper,gnome-panel,libwnck,libglade2,gail
+third/gnome-audio
 third/gnome-desktop		requires gettext,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
 third/gnome-icon-theme		requires gettext,intltool
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm,esound

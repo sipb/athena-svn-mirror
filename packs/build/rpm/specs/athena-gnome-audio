@@ -1,0 +1,8 @@
+Name: athena-gnome-audio
+Summary: Sounds for GNOME events, for Athena
+License: LGPL
+Group: System Environment/Libraries
+
+%description
+The athena-gnome-audio package contains sounds for the GNOME GUI
+desktop environment.
