@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession.sun4,v 1.2 1993-08-04 13:10:45 vrt Exp $
+# $Id: Xsession.sun4,v 1.3 1993-08-11 17:26:57 cfields Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -29,13 +29,6 @@ case $defsession in
 	session="$defsessioncmd"
 	;;
 esac
-
-# Do something relatively sane with the keyboard mappings.
-cat <<EOF | xmodmap -
-clear mod4
-add mod1 = Alt_L
-add mod1 = Multi_key
-EOF
 
 # Set the tty characteristics of the parent (console window)
 # Redirect stdin since some versions of stty use it instead of stdout.
