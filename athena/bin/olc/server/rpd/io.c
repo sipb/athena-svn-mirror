@@ -5,7 +5,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.10 1991-09-22 11:32:42 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.11 1996-09-20 02:45:56 ghudson Exp $";
 #endif
 #endif
 
@@ -31,7 +31,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/time.h>
 #include <sys/errno.h>
 #include <ctype.h>
-#include <strings.h>
+#include <string.h>
 #if defined(_AIX) && defined(_IBMR2)
 #include <sys/select.h>
 #endif
@@ -42,16 +42,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 extern int      errno;
 extern char     *sys_errlist[];
 extern int      sys_nerr;
-#endif
-
-#ifdef NEEDS_SELECT_MACROS
-#define NBBY    8 /* number of bits in a byte */
-#define NFDBITS (sizeof(long) * NBBY)        /* bits per mask */
-
-#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
-#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
-#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
-
 #endif
 
 int
