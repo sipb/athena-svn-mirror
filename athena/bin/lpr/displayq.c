@@ -117,7 +117,7 @@ displayq(format)
 			    RM);
 		  }
 		  /* if printer is not on local machine, ignore LP */
-		  else if (strcmp (name, hp->h_name) != 0) *LP = '\0';
+		  else if (strcasecmp (name, hp->h_name) != 0) *LP = '\0';
 		}
 	}
 

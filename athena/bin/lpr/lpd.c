@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.2 1989-05-21 11:12:31 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.3 1989-12-13 15:23:02 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.2 1989-05-21 11:12:31 probe Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.3 1989-12-13 15:23:02 probe Exp $";
 #endif lint
 
 /*
@@ -426,7 +426,7 @@ chkhost(f)
 
 	strcpy(fromb, hp->h_name);
 	from = fromb;
-	if (!strcmp(from, host))
+	if (!strcasecmp(from, host))
 		return;
 
 #ifdef	ws
