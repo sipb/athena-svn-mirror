@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: vars.c,v 1.9 2000-03-31 16:21:14 mwhitson Exp $";
+"$Id: vars.c,v 1.10 2000-04-03 19:01:48 mwhitson Exp $";
 
 
 /* force local definitions */
@@ -97,16 +97,6 @@ struct keywords Pc_var_list[] = {
 { "as",  STRING_K,  &Accounting_start_DYN,0,0,"=jobstart $H $n $P $k $b $t"},
 	/* authentication type for client to server */
 { "auth",  STRING_K, &Auth_DYN,0,0 },
-   /*  client to server authentication filter */
-{ "auth_forward", STRING_K, &Auth_forward_DYN,0,0},
-   /*  server to server authentication remote server id */
-{ "auth_forward_id", STRING_K, &Auth_forward_id_DYN,0,0},
-   /*  server to server authentication transfer filter */
-{ "auth_forward_filter", STRING_K, &Auth_forward_filter_DYN,0,0},
-   /*  authentication server send filter */
-{ "auth_receive_filter", STRING_K, &Auth_receive_filter_DYN,0,0},
-   /* authentication server id */
-{ "auth_server_id", STRING_K, &Auth_server_id_DYN,0,0},
    /*  Athena compat: 'Z' means zephyr, not "pass to filter" */
 { "az",  FLAG_K,  &Athena_Z_compat_DYN,0,0},
    /*  end banner printing program overides bp */

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_remove.c,v 1.4 2000-03-31 16:21:13 mwhitson Exp $";
+"$Id: lpd_remove.c,v 1.5 2000-04-03 19:01:47 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -257,8 +257,8 @@ void Get_queue_remove( char *user, int *sock, struct line_list *tokens,
 		if( permission == P_REJECT ) {
 			/* If someone's using control bits and doesn't
 			   have normal permission, log it for posterity. */
-			if( Auth_client_id_DYN )
-				logmsg(LOG_INFO, "%s (auth): lprm %s:%s", Auth_client_id_DYN,
+			if( Perm_check.auth_client_id )
+				logmsg(LOG_INFO, "%s (auth): lprm %s:%s", Perm_check.auth_client_id,
 				       Printer_DYN, identifier);
 			else
 				logmsg(LOG_INFO, "%s@%s (unauth): lprm %s:%s", user,

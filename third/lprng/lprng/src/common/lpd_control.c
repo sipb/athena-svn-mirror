@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_control.c,v 1.5 2000-03-31 16:21:13 mwhitson Exp $";
+"$Id: lpd_control.c,v 1.6 2000-04-03 19:01:47 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -122,8 +122,8 @@ int Job_control( int *sock, char *input )
 		Perm_check.service, perm_str(permission) );
 
 	/* Keep a record of what everyone's doing with their bits */
-	if( Auth_client_id_DYN )
-		logmsg(LOG_INFO, "%s (auth): lpc %s", Auth_client_id_DYN, 
+	if( Perm_check.auth_client_id )
+		logmsg(LOG_INFO, "%s (auth): lpc %s", Perm_check.auth_client_id, 
 		       strstr(input, lpc_command));
 	else
 		logmsg(LOG_INFO, "%s@%s (unauth): lpc %s", user, 
