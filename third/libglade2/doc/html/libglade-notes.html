@@ -1,190 +1,19 @@
-<HTML
-><HEAD
-><TITLE
->Libglade Programming Notes</TITLE
-><META
-NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.74b"><LINK
-REL="HOME"
-TITLE="Libglade Reference Manual"
-HREF="libglade.html"><LINK
-REL="PREVIOUS"
-TITLE="Libglade Reference Manual"
-HREF="libglade.html"><LINK
-REL="NEXT"
-TITLE="Libglade Modules"
-HREF="libglade-modules.html"></HEAD
-><BODY
-CLASS="CHAPTER"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
-><DIV
-CLASS="NAVHEADER"
-><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TH
-COLSPAN="4"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="5"
->Libglade Reference Manual</FONT
-></TH
-></TR
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="libglade.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="libglade.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&nbsp;</B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="libglade-modules.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-></TABLE
-></DIV
-><DIV
-CLASS="CHAPTER"
-><H1
-><A
-NAME="LIBGLADE-NOTES"
->Libglade Programming Notes</A
-></H1
-><DIV
-CLASS="TOC"
-><DL
-><DT
-><B
->Table of Contents</B
-></DT
-><DT
-><A
-HREF="libglade-notes.html#LIBGLADE-BASICS"
->Libglade Programming Basics</A
-></DT
-><DT
-><A
-HREF="libglade-modules.html"
->Libglade Modules</A
-></DT
-><DT
-><A
-HREF="libglade-i18n.html"
->Internationalisation with Libglade</A
-></DT
-><DT
-><A
-HREF="libglade-extending.html"
->Extending Libglade</A
-></DT
-><DT
-><A
-HREF="libglade-embedding.html"
->Embedding Libglade Interfaces</A
-></DT
-></DL
-></DIV
-><P
->Libglade is an alternative to using Glade's code generation.
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Libglade Programming Notes</title><meta name="generator" content="DocBook XSL Stylesheets V1.61.2"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"><link rel="home" href="index.html" title="Libglade Reference Manual"><link rel="up" href="index.html" title="Libglade Reference Manual"><link rel="previous" href="index.html" title="Libglade Reference Manual"><link rel="next" href="libglade-modules.html" title="Libglade Modules"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="index.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libglade Reference Manual</th><td><a accesskey="n" href="libglade-modules.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="libglade-notes"></a>Libglade Programming Notes</h2></div></div><div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><a href="libglade-notes.html#libglade-basics">Libglade Programming Basics</a></dt><dt><a href="libglade-modules.html">Libglade Modules</a></dt><dt><a href="libglade-i18n.html">Internationalisation with Libglade</a></dt><dt><a href="libglade-extending.html">Extending Libglade</a></dt><dt><a href="libglade-embedding.html">Embedding Libglade Interfaces</a></dt></dl></div><p>Libglade is an alternative to using Glade's code generation.
     Instead of generating code from the XML interface description,
     libglade loads and parses the description at runtime.  It also
     provides functions that can be used to connect signal handlers to
-    parts of the interface.</P
-><P
->In this way, it allows you to separate your program code
+    parts of the interface.</p><p>In this way, it allows you to separate your program code
     from the interface code.  In fact, if you use the
     glade_xml_signal_autoconnect() function, the GUI code could be as
-    simple as the <TT
-CLASS="FILENAME"
->test-libglade.c</TT
-> example that
+    simple as the <tt class="filename">test-libglade.c</tt> example that
     comes with libglade.  Of course, you would also add your own
     signal handlers to the code.  Note that the signals are connected
     the same way as if you had hand coded the interface.  There is no
     extra overhead to user interfaces constructed by libglade (after
     the initial generating of course, and this is not much of an
-    overhead) when compared to a hand crafted interface.</P
-><BR
-CLEAR="all"><DIV
-CLASS="SECT1"
-><H1
-CLASS="SECT1"
-><A
-NAME="LIBGLADE-BASICS"
->Libglade Programming Basics</A
-></H1
-><P
->Your basic libglade program will look something like this:</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->#include &#60;gtk/gtk.h&#62;
-#include &#60;glade/glade.h&#62;
+    overhead) when compared to a hand crafted interface.</p><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="libglade-basics"></a>Libglade Programming Basics</h2></div></div><div></div></div><p>Your basic libglade program will look something like this:</p><pre class="programlisting">
+#include &lt;gtk/gtk.h&gt;
+#include &lt;glade/glade.h&gt;
 
 void some_signal_handler_func(GtkWidget *widget, gpointer user_data) {
   /* do something useful here */
@@ -193,7 +22,7 @@ void some_signal_handler_func(GtkWidget *widget, gpointer user_data) {
 int main(int argc, char *argv[]) {
     GladeXML *xml;
 
-    gtk_init(&#38;argc, &#38;argv);
+    gtk_init(&amp;argc, &amp;argv);
 
     /* load the interface */
     xml = glade_xml_new("filename.glade", NULL, NULL);
@@ -205,228 +34,48 @@ int main(int argc, char *argv[]) {
     gtk_main();
 
     return 0;
-}</PRE
-></TD
-></TR
-></TABLE
-><P
->This will create the interface from the file
-      <TT
-CLASS="FILENAME"
->filename.glade</TT
->, then connect all the
+}
+</pre><p>This will create the interface from the file
+      <tt class="filename">filename.glade</tt>, then connect all the
       signals in the interface.  The automatic signal connection is
       done by looking up function names in the global symbol table
       using gmodule.  This means that the interface file can use
       standard GTK functions such as
-      <TT
-CLASS="FUNCTION"
->gtk_widget_show</TT
->, or
-      <TT
-CLASS="FUNCTION"
->gtk_main_quit</TT
->, or others in the interface
-      and not have to write any code to connect the signals.</P
-><P
->The <TT
-CLASS="FUNCTION"
->some_signal_handler_func</TT
-> function
+      <tt class="function">gtk_widget_show</tt>, or
+      <tt class="function">gtk_main_quit</tt>, or others in the interface
+      and not have to write any code to connect the signals.</p><p>The <tt class="function">some_signal_handler_func</tt> function
       is not referenced anywhere in the program explicitely, but if
       any signals are defined in the interface description that use
       "some_signal_handler_func" as the handler name, then this
       function will automatically be connected.  Note that the
       function can not be static, since we require it to apear in the
       symbol table.  Here is an example of the XML that would cause
-      <TT
-CLASS="FUNCTION"
->some_signal_handler_func</TT
-> to be
-      connected:</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->&#60;widget class="GtkWindow" id="MainWindow"&#62;
-  &#60;property name="visible"&#62;yes&#60;/property&#62;
-  &#60;signal name="destroy" handler="some_signal_handler_func" /&#62;
+      <tt class="function">some_signal_handler_func</tt> to be
+      connected:</p><pre class="programlisting">
+&lt;widget class="GtkWindow" id="MainWindow"&gt;
+  &lt;property name="visible"&gt;yes&lt;/property&gt;
+  &lt;signal name="destroy" handler="some_signal_handler_func" /&gt;
   ...
-&#60;/widget&#62;</PRE
-></TD
-></TR
-></TABLE
-><DIV
-CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
-><P
-><B
->Note: </B
->If you wish to autoconnect handlers defined in the main
+&lt;/widget&gt;
+</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you wish to autoconnect handlers defined in the main
 	executable (not a shared library), you will need to pass a
 	linker flag to export the executable's symbols for dynamic
 	linking.  This flag is platform specific, but libtool can take
 	care of this for you.  Just add
-	<TT
-CLASS="PARAMETER"
-><I
->-export-dynamic</I
-></TT
-> argument to your link
+	<i class="parameter"><tt>-export-dynamic</tt></i> argument to your link
 	flags, and libtool will convert it to the correct
-	format.</P
-><P
->Many people did not see this problem on GNU/Linux with
-	GTK+ 1.2, because the <B
-CLASS="COMMAND"
->gtk-config</B
-> script
+	format.</p><p>Many people did not see this problem on GNU/Linux with
+	GTK+ 1.2, because the <b class="command">gtk-config</b> script
 	adds the correct flag on that platform.  Such programs would
-	sometimes break when run on alternative platforms.</P
-></BLOCKQUOTE
-></DIV
-><P
->To compile the program, we would use the following:</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->cc -o testprogram testprogram.c `pkg-config --cflags --libs libglade-2.0`</PRE
-></TD
-></TR
-></TABLE
-><P
->The <B
-CLASS="COMMAND"
->pkg-config</B
-> program is used to
+	sometimes break when run on alternative platforms.</p></div><p>To compile the program, we would use the following:</p><pre class="programlisting">
+cc -o testprogram testprogram.c `pkg-config --cflags --libs libglade-2.0`
+</pre><p>The <b class="command">pkg-config</b> program is used to
       deduce the compiler and link flags necessary to compile various
       modules.  If you are using automake or autoconf, you probably
       want to use the PKG_CHECK_MODULES macro.  This can be used to
       check for the presence of a collection of a number of packages,
-      and set some shell variables:</P
-><TABLE
-BORDER="0"
-BGCOLOR="#D6E8FF"
-WIDTH="100%"
-CELLPADDING="6"
-><TR
-><TD
-><PRE
-CLASS="PROGRAMLISTING"
->PKG_CHECK_MODULES(MYPROG, libglade-2.0 libgnomeui-2.0 &#62;= 1.110.0)
+      and set some shell variables:</p><pre class="programlisting">
+PKG_CHECK_MODULES(MYPROG, libglade-2.0 libgnomeui-2.0 &gt;= 1.110.0)
 AC_SUBST(MYPROG_CFLAGS)
-AC_SUBST(MYPROG_LIBS)</PRE
-></TD
-></TR
-></TABLE
-></DIV
-></DIV
-><DIV
-CLASS="NAVFOOTER"
-><BR
-CLEAR="all"><BR><TABLE
-WIDTH="100%"
-BORDER="0"
-BGCOLOR="#000000"
-CELLPADDING="1"
-CELLSPACING="0"
-><TR
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="left"
-><A
-HREF="libglade.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&#60;&#60;&#60; Previous Page</B
-></FONT
-></A
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#0000C0"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
-><A
-HREF="libglade.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Home</B
-></FONT
-></A
-></B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#00C000"
-ALIGN="center"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->&nbsp;</B
-></FONT
-></TD
-><TD
-WIDTH="25%"
-BGCOLOR="#C00000"
-ALIGN="right"
-><A
-HREF="libglade-modules.html"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Next Page &#62;&#62;&#62;</B
-></FONT
-></A
-></TD
-></TR
-><TR
-><TD
-COLSPAN="2"
-ALIGN="left"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Libglade Reference Manual</B
-></FONT
-></TD
-><TD
-COLSPAN="2"
-ALIGN="right"
-><FONT
-COLOR="#FFFFFF"
-SIZE="3"
-><B
->Libglade Modules</B
-></FONT
-></TD
-></TR
-></TABLE
-></DIV
-></BODY
-></HTML
->
+AC_SUBST(MYPROG_LIBS)
+</pre></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="index.html"><b>&lt;&lt; Libglade Reference Manual</b></a></td><td align="right"><a accesskey="n" href="libglade-modules.html"><b>Libglade Modules &gt;&gt;</b></a></td></tr></table></body></html>

@@ -4,12 +4,11 @@ Version: @VERSION@
 Release: 1
 Copyright: LGPL
 Group: System Environment/Libraries
-Source: ftp://ftp.gnome.org/pub/GNOME/earthquake/sources/libglade/libglade-%{version}.tar.gz
-BuildRoot: /var/tmp/%{name}-root
-Packager: James Henstridge <james@daa.com.au>
+Source: http://ftp.gnome.org/pub/GNOME/sources/libglade/2.4/libglade-%{version}.tar.gz
+BuildRoot: /var/tmp/%{name}-%{version}-root
 URL: http://www.gnome.org
 
-Requires: gtk+ >= 2.0.0
+Requires: gtk+ >= 2.4.0
 Requires: libxml2 >= 2.4.10
 
 %description
@@ -42,22 +41,11 @@ Libraries, include files, etc you can use to develop libglade applications.
 %setup
 
 %build
-%ifarch alpha
-	MYARCH_FLAGS="--host=alpha-redhat-linux"
-%endif
-
-CFLAGS="$RPM_OPT_FLAGS" ./configure $MYARCH_FLAGS --prefix=%{_prefix}
-
+%configure
 make
 
 %install
-[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
-
-make prefix=$RPM_BUILD_ROOT%{_prefix} install
-
-
-%clean
-[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+%makeinstall
 
 %post
 /sbin/ldconfig

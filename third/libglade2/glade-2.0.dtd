@@ -18,10 +18,14 @@
      GType for the property -->
 <!-- translatable specifies whether the property should be translated
      before use. -->
+<!-- context indicates that the value has a |-separated 
+     context which must be stripped before use, look up g_strip_context() 
+     in the GLib API documentation for details.-->
 <!ATTLIST property
   name CDATA #REQUIRED
   type CDATA #IMPLIED
   translatable (yes|no) 'no'
+  context (yes|no) 'no'
   agent CDATA #IMPLIED >
 
 <!ELEMENT atkproperty (#PCDATA | accessibility)* >
@@ -41,7 +45,7 @@
 
 <!ELEMENT accessibility (atkrelation | atkaction | atkproperty)* >
 
-<!ELEMENT signal EMPTY >
+<!ELEMENT signal (property*) >
 <!ATTLIST signal
   name CDATA #REQUIRED
   handler CDATA #REQUIRED

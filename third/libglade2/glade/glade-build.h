@@ -54,7 +54,7 @@ typedef void       (* GladeApplyCustomPropFunc)   (GladeXML *xml,
 
 /* register handlers for a widget */
 void glade_register_widget(GType type,
-			   GladeNewFunc new,
+			   GladeNewFunc new_func,
 			   GladeBuildChildrenFunc build_children,
 			   GladeFindInternalChildFunc find_internal_child);
 

@@ -34,14 +34,14 @@ clean-local:
 	rm -f intl/po2tbl.sed .memdump
 
 EXTRA_DIST = \
+  gtk-doc.make \
   glade-2.0.dtd \
   libglade.spec.in \
   libglade.spec \
   libglade-2.0.pc.in \
+  libglade-2.0-uninstalled.pc.in \
   libglade-convert.in \
   examples/simple.glade \
   examples/first.glade \
   examples/example.glade \
-  examples/bonobo.glade \
-  config.h.win32 \
-  makefile.mingw
+  examples/bonobo.glade
