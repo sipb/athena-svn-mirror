@@ -1,8 +1,9 @@
-# $Id: root.cshrc,v 1.1 1998-12-25 19:33:17 ghudson Exp $
+# $Id: root.cshrc,v 1.2 1999-04-03 01:26:42 jweiss Exp $
 
 # For interactive shells, set the prompt to show the host name.
 if ( (! $?ENVONLY) && $?prompt ) then
 	set prompt="`uname -n`# "
+	set nostat = (/afs/)
 endif
 
 set path=(/srvd/patch /usr/athena/bin /etc/athena /bin/athena /usr/sbin \
