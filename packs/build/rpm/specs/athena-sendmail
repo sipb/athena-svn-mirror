@@ -57,7 +57,23 @@ echo "%dir /var/spool/mqueue" >> rpm.filelist
 
 
 %triggerin -- setup
-cp /etc/aliases.athena /etc/aliases
+# /etc/aliases belongs to the setup RPM (as a %config(noreplace) file)
+# in RHEL 4.  Replace it with the Athena aliases file if it looks like
+# the Red Hat stock version.
+
+# If we ever revise the Athena aliases file and want to replace
+# customized aliases files with our new one (as was the old policy for
+# that file), we should introduce a versioned comment into the Athena
+# aliases file and replace this check with a check that the versioned
+# comment in /etc/aliases matches the one in /etc/aliases.athena.
+
+if ! grep -q '^#.*Athena' /etc/aliases; then
+  cp /etc/aliases /etc/aliases.old
+  cp /etc/aliases.athena /etc/aliases
+fi
+
+/usr/sbin/sendmail -bi
+exit 0
 
 %post
 grep -q ^SENDMAIL /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
@@ -68,7 +84,6 @@ EOF
 chkconfig --add athena-sendmail
 %endif
 cp /dev/null /etc/sendmail.st && chmod 644 /etc/sendmail.st
-/usr/sbin/sendmail -bi
 
 %ifos linux
 %preun
