@@ -19,7 +19,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/test/treaddir.c,v 1.1.1.1 2002-01-31 21:49:32 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/test/treaddir.c,v 1.1.1.2 2005-03-10 20:39:36 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -38,7 +39,7 @@ main(int ac, char **av)
 	return -1;
     }
 
-    for (i=1; i<ac; i++) {
+    for (i = 1; i < ac; i++) {
 	dirp = opendir(av[i]);
 	if (!dirp) {
 #ifdef AFS_NT40_ENV
@@ -55,17 +56,19 @@ main(int ac, char **av)
 	while (direntp = readdir(dirp)) {
 	    if (first) {
 		first = 0;
-		if (i > 1) printf("\n");
+		if (i > 1)
+		    printf("\n");
 	    }
 	    printf("%s\n", direntp->d_name);
 	}
 #ifdef AFS_NT40_ENV
 	if (errno) {
-	    printf("readdir failed in directory %s with errno=%d, NT error=%d\n",
-		   av[i], errno, GetLastError());
+	    printf
+		("readdir failed in directory %s with errno=%d, NT error=%d\n",
+		 av[i], errno, GetLastError());
 	}
 #endif
-	(void) closedir(dirp);
+	(void)closedir(dirp);
     }
 
     return 0;

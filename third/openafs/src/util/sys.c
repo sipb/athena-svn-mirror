@@ -10,14 +10,16 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/sys.c,v 1.1.1.1 2002-01-31 21:49:30 zacheiss Exp $");
- 
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/sys.c,v 1.1.1.2 2005-03-10 20:39:34 zacheiss Exp $");
+
 #include <stdio.h>
 
 #include "AFS_component_version_number.c"
 
-int main ()
+int
+main()
 {
-    printf ("%s\n", SYS_NAME);
+    printf("%s\n", SYS_NAME);
     return 0;
 }

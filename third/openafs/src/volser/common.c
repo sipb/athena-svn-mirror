@@ -10,35 +10,50 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/common.c,v 1.1.1.1 2002-01-31 21:32:10 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/common.c,v 1.1.1.2 2005-03-10 20:41:36 zacheiss Exp $");
 
 #include <stdio.h>
 #include <afs/afsutil.h>
 #include <afs/com_err.h>
 
-Log(a,b,c,d,e,f)
-char *a, *b, *c, *d, *e, *f; 
+#ifndef AFS_PTHREAD_ENV
+/*@printflike@*/ void
+Log(const char *format, ...)
 {
-	ViceLog(0, (a, b,c, d, e, f)); 
-}
+    va_list args;
 
-LogError(errcode)
-afs_int32 errcode;
-{
-    ViceLog(0, ("%s: %s\n", error_table_name(errcode),error_message(errcode)));
+    va_start(args, format);
+    vViceLog(0, (format, args));
+    va_end(args);
 }
-
-Abort(s,a,b,c,d,e,f,g,h,i,j) 
-char *s;
-{
-    ViceLog(0, ("Program aborted: "));
-    ViceLog(0, (s,a,b,c,d,e,f,g,h,i,j));
-    abort();
-}
+#endif
 
 void
-InitErrTabs()
+LogError(afs_int32 errcode)
 {
+    ViceLog(0,
+	    ("%s: %s\n", error_table_name(errcode), error_message(errcode)));
+}
+
+#ifndef AFS_PTHREAD_ENV
+/*@printflike@*/ void
+Abort(const char *format, ...)
+{
+    va_list args;
+
+    ViceLog(0, ("Program aborted: "));
+    va_start(args, format);
+    vViceLog(0, (format, args));
+    va_end(args);
+    abort();
+}
+#endif
+
+void
+InitErrTabs(void)
+{
+#ifndef AFS_PTHREAD_ENV
     initialize_KA_error_table();
     initialize_RXK_error_table();
     initialize_KTC_error_table();
@@ -46,5 +61,6 @@ InitErrTabs()
     initialize_CMD_error_table();
     initialize_VL_error_table();
     initialize_VOLS_error_table();
+#endif
     return;
 }

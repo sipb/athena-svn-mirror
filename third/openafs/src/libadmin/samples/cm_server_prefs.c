@@ -16,7 +16,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/samples/cm_server_prefs.c,v 1.1.1.2 2004-02-13 17:57:23 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/samples/cm_server_prefs.c,v 1.1.1.3 2005-03-10 20:41:27 zacheiss Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
@@ -32,18 +33,15 @@ pthread_mutex_t des_random_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rxkad_random_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif /* AFS_DARWIN_ENV */
 
-void Usage()
+void
+Usage()
 {
-    fprintf(stderr,
-	    "Usage: cm_server_prefs <host> <port>\n");
+    fprintf(stderr, "Usage: cm_server_prefs <host> <port>\n");
     exit(1);
 }
 
-void ParseArgs(
-    int argc,
-    char *argv[],
-    char **srvrName,
-    long *srvrPort)
+void
+ParseArgs(int argc, char *argv[], char **srvrName, long *srvrPort)
 {
     char **argp = argv;
 
@@ -59,7 +57,8 @@ void ParseArgs(
 	Usage();
 }
 
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
     int rc;
     afs_status_t st = 0;
@@ -100,9 +99,9 @@ int main(int argc, char *argv[])
     printf("\n");
     while (util_CMGetServerPrefsNext(iterator, &prefs, &st)) {
 	taddr = prefs.ipAddr;
-	printf("%d.%d.%d.%d\t\t\t%d\n",
-	       (taddr >> 24) & 0xff, (taddr >> 16) & 0xff,
-	       (taddr >> 8) & 0xff, taddr & 0xff, prefs.ipRank);
+	printf("%d.%d.%d.%d\t\t\t%d\n", (taddr >> 24) & 0xff,
+	       (taddr >> 16) & 0xff, (taddr >> 8) & 0xff, taddr & 0xff,
+	       prefs.ipRank);
     }
     if (st != ADMITERATORDONE) {
 	fprintf(stderr, "util_CMGetServerPrefsNext, status %d\n", st);

@@ -10,13 +10,15 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/test/ktest.c,v 1.1.1.1 2002-01-31 21:49:32 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/test/ktest.c,v 1.1.1.2 2005-03-10 20:39:36 zacheiss Exp $");
 
 #include "ktime.h"
 
 main(argc, argv)
-int argc;
-char **argv; {
+     int argc;
+     char **argv;
+{
     struct ktime ttime;
     long ntime, code;
 

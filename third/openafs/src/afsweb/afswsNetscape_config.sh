@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsweb/afswsNetscape_config.sh,v 1.1.1.1 2002-12-13 20:38:47 zacheiss Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsweb/afswsNetscape_config.sh,v 1.1.1.2 2005-03-10 20:34:29 zacheiss Exp $
 #
 # Installation and Configuration script for AFS Web Security Pack
 #
@@ -395,12 +395,3 @@ cp /tmp/newconf $ws_conf
 $ECHO ""
 
 $ECHO "  Installation of $PRODUCT complete."
-
-
-
-
-
-
-
-
-

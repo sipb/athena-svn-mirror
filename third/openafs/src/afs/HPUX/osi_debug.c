@@ -10,7 +10,8 @@
 #include <afsconfig.h>
 #include "param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/osi_debug.c,v 1.1.1.1 2002-01-31 21:48:50 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/osi_debug.c,v 1.1.1.2 2005-03-10 20:29:47 zacheiss Exp $");
 
 #include "sysincludes.h"
 #include "afsincludes.h"

@@ -12,7 +12,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/winsock_nt.c,v 1.1.1.1 2002-01-31 21:49:30 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/winsock_nt.c,v 1.1.1.2 2005-03-10 20:39:35 zacheiss Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
@@ -24,12 +25,13 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/winsoc
  * 
  * Returns 0 on success, -1 on error.
  */
-int afs_winsockInit(void)
+int
+afs_winsockInit(void)
 {
     static int once = 1;
 
     if (once) {
-	int code ;
+	int code;
 	WSADATA data;
 	WORD sockVersion;
 
@@ -46,7 +48,8 @@ int afs_winsockInit(void)
     return 0;
 }
 
-int afs_gettimeofday(struct timeval *tv, struct timezone *tz)
+int
+afs_gettimeofday(struct timeval *tv, struct timezone *tz)
 {
     struct _timeb myTime;
 

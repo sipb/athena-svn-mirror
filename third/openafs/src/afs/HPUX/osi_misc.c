@@ -13,12 +13,13 @@
  */
 
 #include <afsconfig.h>
-#include "../afs/param.h"
+#include "afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/osi_misc.c,v 1.1.1.1 2002-01-31 21:48:50 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/osi_misc.c,v 1.1.1.2 2005-03-10 20:39:47 zacheiss Exp $");
 
-#include "../afs/sysincludes.h"	/* Standard vendor system headers */
-#include "../afs/afsincludes.h"	/* Afs-based standard headers */
+#include "afs/sysincludes.h"	/* Standard vendor system headers */
+#include "afsincludes.h"	/* Afs-based standard headers */
 
 /*
  * afs_suser() returns true if the caller is superuser, false otherwise.
@@ -28,7 +29,8 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/os
  * Here we have to save and restore errno since the HP-UX suser() sets errno.
  */
 
-afs_suser() {
+afs_suser(void *credp)
+{
     int save_errno;
     int code;
 

@@ -32,6 +32,11 @@ extern long buf_bufferSize;
 #define CM_BUF_HASHSIZE	1024
 extern long buf_hashSize;
 
+/* cache type */
+#define CM_BUF_CACHETYPE_FILE 1
+#define CM_BUF_CACHETYPE_VIRTUAL 2
+extern int buf_cacheType;
+
 /* force it to be signed so that mod comes out positive or 0 */
 #define BUF_HASH(fidp,offsetp) ((((fidp)->vnode+((fidp)->unique << 5)	\
 				+(fidp)->volume+(fidp)->cell		\
@@ -67,7 +72,7 @@ typedef struct cm_buf {
 				 */
         struct cm_buf *allp;	/* next in all list */
 	osi_mutex_t mx;		/* mutex protecting structure except refcount */
-        int refCount;		/* reference count */
+    unsigned long refCount;		/* reference count (buf_globalLock) */
         long idCounter;		/* counter for softrefs; bumped at each recycle */
         long dirtyCounter;	/* bumped at each dirty->clean transition */
 #ifdef notdef
@@ -137,6 +142,8 @@ extern cm_buf_t **buf_fileHashTablepp;
 
 extern long buf_Init(cm_buf_ops_t *);
 
+extern void buf_Shutdown(void);
+
 extern long buf_CountFreeList(void);
 
 extern void buf_Release(cm_buf_t *);
@@ -189,6 +196,8 @@ extern long buf_FlushCleanPages(cm_scache_t *scp, cm_user_t *userp,
 	cm_req_t *reqp);
 
 extern long buf_SetNBuffers(long nbuffers);
+
+extern void buf_ForceTrace(BOOL flush);
 
 /* error codes */
 #define CM_BUF_EXISTS	1	/* buffer exists, and shouldn't */

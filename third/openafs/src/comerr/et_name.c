@@ -6,8 +6,10 @@
 
 #include <afsconfig.h>
 #include <afs/param.h>
+#include <afs/afsutil.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/comerr/et_name.c,v 1.1.1.1 2002-01-31 21:48:58 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/comerr/et_name.c,v 1.1.1.2 2005-03-10 20:30:15 zacheiss Exp $");
 
 #include "error_table.h"
 #include "mit-sipb-cr.h"
@@ -19,18 +21,16 @@ static const char copyright[] =
 #endif
 
 static const char char_set[] =
-	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
 
 static char buf[6];
 
-const char * error_table_name(num)
-    int num;
+const char *
+error_table_name(afs_int32 num)
 {
     int ch;
     int i;
     char *p;
-
-    extern char *lcstring();
 
     /* num = aa aaa abb bbb bcc ccc cdd ddd d?? ??? ??? */
     p = buf;
@@ -41,8 +41,8 @@ const char * error_table_name(num)
     for (i = 4; i >= 0; i--) {
 	ch = (num >> BITS_PER_CHAR * i) & ((1 << BITS_PER_CHAR) - 1);
 	if (ch != 0)
-	    *p++ = char_set[ch-1];
+	    *p++ = char_set[ch - 1];
     }
     *p = '\0';
-    return(lcstring (buf, buf, sizeof(buf)));
+    return (lcstring(buf, buf, sizeof(buf)));
 }

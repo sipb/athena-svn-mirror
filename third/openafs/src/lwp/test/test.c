@@ -10,7 +10,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/lwp/test/test.c,v 1.1.1.1 2002-01-31 21:49:13 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/lwp/test/test.c,v 1.1.1.2 2005-03-10 20:38:33 zacheiss Exp $");
 
 #include <stdio.h>
 #include <sys/time.h>
@@ -19,37 +20,40 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/lwp/test/te
 
 char semaphore;
 
-int OtherProcess()
-    {
-    for(;;)
-	{
+int
+OtherProcess()
+{
+    for (;;) {
 	LWP_SignalProcess(&semaphore);
-	}
     }
+}
 
 main(argc, argv)
-int argc; char *argv[];
-    {
+     int argc;
+     char *argv[];
+{
     struct timeval t1, t2;
     int pid, otherpid;
-    register int i,  count, x;
+    register int i, count, x;
     char *waitarray[2];
     static char c[] = "OtherProcess";
-    
+
     count = atoi(argv[1]);
 
-    assert(LWP_InitializeProcessSupport(0, &pid) == LWP_SUCCESS);
-    assert(LWP_CreateProcess(OtherProcess,4096,0, 0, c, &otherpid) == LWP_SUCCESS);
+    assert(LWP_InitializeProcessSupport(0, (PROCESS *) & pid) == LWP_SUCCESS);
+    assert(LWP_CreateProcess
+	   (OtherProcess, 4096, 0, 0, c,
+	    (PROCESS *) & otherpid) == LWP_SUCCESS);
 
     waitarray[0] = &semaphore;
     waitarray[1] = 0;
     gettimeofday(&t1, NULL);
-    for (i = 0; i < count; i++)
-	{
+    for (i = 0; i < count; i++) {
 	LWP_MwaitProcess(1, waitarray, 1);
-	}
+    }
     gettimeofday(&t2, NULL);
 
-    x = (t2.tv_sec -t1.tv_sec)*1000000 + (t2.tv_usec - t1.tv_usec);
-    printf("%d milliseconds for %d MWaits (%f usec per Mwait and Signal)\n", x/1000, count, (float)(x/count));
-    }
+    x = (t2.tv_sec - t1.tv_sec) * 1000000 + (t2.tv_usec - t1.tv_usec);
+    printf("%d milliseconds for %d MWaits (%f usec per Mwait and Signal)\n",
+	   x / 1000, count, (float)(x / count));
+}

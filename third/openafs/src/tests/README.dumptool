@@ -1,4 +1,4 @@
-$Id: README.dumptool,v 1.1.1.1 2002-01-31 21:33:53 zacheiss Exp $
+$Id: README.dumptool,v 1.1.1.2 2005-03-10 20:32:58 zacheiss Exp $
 
 This is the README for dumptool, a program to interactively restore
 AFS volume dump files.

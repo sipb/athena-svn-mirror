@@ -10,34 +10,37 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/test/testpart.c,v 1.1.1.1 2002-01-31 21:49:38 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/test/testpart.c,v 1.1.1.2 2005-03-10 20:39:55 zacheiss Exp $");
 
 #include <stdio.h>
 
 Log(a, b, c, d, e, f, g, h, i, j, k)
 {
-printf(a,b,c,d,e,f,g,h,i,j,k);
+    printf(a, b, c, d, e, f, g, h, i, j, k);
 }
 
-iopen() {}
+iopen()
+{
+}
 
 AssertionFailed()
 {
-printf("assertion failed\n");
-exit(-1);
+    printf("assertion failed\n");
+    exit(-1);
 }
 
 Abort()
 {
-printf("Aborting\n");
-exit(-1);
+    printf("Aborting\n");
+    exit(-1);
 }
 
 main(argc, argv)
-int argc;
-char **argv; {
+     int argc;
+     char **argv;
+{
     VInitVolumePackage(1, 0, 0, 0, 0);
     VPrintDiskStats();
 
 }
-

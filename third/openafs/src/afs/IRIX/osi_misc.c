@@ -11,14 +11,15 @@
  * Implementation of miscellaneous Irix routines.
  */
 #include <afsconfig.h>
-#include "../afs/param.h"
+#include "afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/IRIX/osi_misc.c,v 1.1.1.1 2002-01-31 21:32:43 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/IRIX/osi_misc.c,v 1.1.1.2 2005-03-10 20:29:49 zacheiss Exp $");
 
 #ifdef	AFS_SGI62_ENV
-#include "../afs/sysincludes.h"	/* Standard vendor system headers */
-#include "../afs/afsincludes.h"	/* Afs-based standard headers */
-#include "../afs/afs_stats.h"  /* statistics */
+#include "afs/sysincludes.h"	/* Standard vendor system headers */
+#include "afsincludes.h"	/* Afs-based standard headers */
+#include "afs/afs_stats.h"	/* statistics */
 
 
 
@@ -26,7 +27,10 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/IRIX/os
 /*
  * various special purpose routines
  */
-void afs_mpservice(void *a) {}
+void
+afs_mpservice(void *a)
+{
+}
 
 #ifdef AFS_SGI_VNODE_GLUE
 #include <sys/invent.h>
@@ -38,31 +42,32 @@ extern mutex_t afs_init_kern_lock;
  * Argument: flag
  * 0 = no numa, 1 = has numa, -1 = test for numa.
  */
-int afs_init_kernel_config(int flag)
+int
+afs_init_kernel_config(int flag)
 {
     static int afs_kern_inited = 0;
     int code = 0;
-    
+
     mutex_enter(&afs_init_kern_lock);
     if (!afs_kern_inited) {
 	afs_kern_inited = 1;
-	
+
 	if (flag == -1) {
 	    inventory_t *pinv;
 	    /* test for numa arch. */
 	    /* Determine if thisis a NUMA platform. Currently, this is true
 	     * only if it's an IP27 or IP35.
 	     */
-	    pinv = find_inventory((inventory_t*)NULL, INV_PROCESSOR,
-				  INV_CPUBOARD, -1, -1, -1);
+	    pinv =
+		find_inventory((inventory_t *) NULL, INV_PROCESSOR,
+			       INV_CPUBOARD, -1, -1, -1);
 	    if (!pinv)
 		code = ENODEV;
-	    else 
-		afs_is_numa_arch = ((pinv->inv_state == INV_IP27BOARD) || 
-				    (pinv->inv_state == INV_IP35BOARD)) 
-		  ? 1 : 0;
-	}
-	else
+	    else
+		afs_is_numa_arch = ((pinv->inv_state == INV_IP27BOARD)
+				    || (pinv->inv_state == INV_IP35BOARD))
+		    ? 1 : 0;
+	} else
 	    afs_is_numa_arch = flag;
     }
     mutex_exit(&afs_init_kern_lock);

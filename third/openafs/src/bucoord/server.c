@@ -11,7 +11,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/server.c,v 1.1.1.1 2002-01-31 21:48:56 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/server.c,v 1.1.1.2 2005-03-10 20:30:10 zacheiss Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
@@ -22,12 +23,13 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bucoord/ser
 
 /* services available on incoming message port */
 BC_Print(acall, acode, aflags, amessage)
-struct rx_call *acall;
-afs_int32 acode, aflags;
-char *amessage; {
+     struct rx_call *acall;
+     afs_int32 acode, aflags;
+     char *amessage;
+{
     struct rx_connection *tconn;
     struct rx_peer *tpeer;
-    
+
     tconn = rx_ConnectionOf(acall);
     tpeer = rx_PeerOf(tconn);
     printf("From %08x: %s <%d>\n", tpeer->host, amessage, acode);

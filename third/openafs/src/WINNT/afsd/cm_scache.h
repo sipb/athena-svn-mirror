@@ -24,7 +24,7 @@ typedef struct cm_fid {
 typedef struct cm_accessCache {
 	osi_queue_t q;			/* queue header */
         struct cm_user *userp;		/* user having access rights */
-        long rights;			/* rights */
+        unsigned long rights;		/* rights */
 } cm_accessCache_t;
 
 typedef struct cm_file_lock {
@@ -50,7 +50,7 @@ typedef struct cm_scache {
 	osi_queue_t q;			/* lru queue; cm_scacheLock */
 	struct cm_scache *nextp;	/* next in hash; cm_scacheLock */
 	cm_fid_t fid;
-        long flags;			/* flags; locked by mx */
+        unsigned long flags;		/* flags; locked by mx */
 
 	/* synchronization stuff */
         osi_mutex_t mx;			/* mutex for this structure */
@@ -58,7 +58,7 @@ typedef struct cm_scache {
         				 * write-locked to prevent buffers from
                                          * being created during a truncate op, etc.
                                          */
-        int refCount;			/* reference count; cm_scacheLock */
+        long refCount;			/* reference count; cm_scacheLock */
         osi_queueData_t *bufReadsp;	/* queue of buffers being read */
         osi_queueData_t *bufWritesp;	/* queue of buffers being written */
 
@@ -67,17 +67,17 @@ typedef struct cm_scache {
         long parentUnique;		/* for ACL callbacks */
 
 	/* local modification stat */
-        long mask;			/* for clientModTime, length and
+        unsigned long mask;		/* for clientModTime, length and
 					 * truncPos */
 
 	/* file status */
-	int fileType;			/* file type */
-	unsigned long clientModTime;	/* mtime */
-        unsigned long serverModTime;	/* at server, for concurrent call
+	unsigned int fileType;			/* file type */
+	time_t clientModTime;	/* mtime */
+        time_t serverModTime;	/* at server, for concurrent call
 					 * comparisons */
         osi_hyper_t length;		/* file length */
 	cm_prefetch_t prefetch;		/* prefetch info structure */
-        int unixModeBits;		/* unix protection mode bits */
+        unsigned int unixModeBits;	/* unix protection mode bits */
         int linkCount;			/* link count */
         long dataVersion;		/* data version */
         long owner;			/* file owner */
@@ -97,12 +97,12 @@ typedef struct cm_scache {
 					 * the link contents here.
                                          */
 	cm_fid_t *mountRootFidp;	/* mounted on root */
-	unsigned int mountRootGen;	/* time to update mountRootFidp? */
+	time_t    mountRootGen;	        /* time to update mountRootFidp? */
 	cm_fid_t *dotdotFidp;		/* parent of volume root */
 
 	/* callback info */
         struct cm_server *cbServerp;	/* server granting callback */
-        long cbExpires;			/* time callback expires */
+        time_t cbExpires;		/* time callback expires */
 
 	/* access cache */
         long anyAccess;			/* anonymous user's access */
@@ -118,7 +118,7 @@ typedef struct cm_scache {
         osi_hyper_t bulkStatProgress;	/* track bulk stats of large dirs */
 
         /* open state */
-        short openReads;		/* opens for reading */
+        short openReads;		/* open for reading */
         short openWrites;		/* open for writing */
         short openShares;		/* open for read excl */
         short openExcls;		/* open for exclusives */
@@ -136,10 +136,10 @@ typedef struct cm_scache {
 #define CM_SCACHETYPE_MOUNTPOINT	4	/* a mount point */
 
 /* flag bits */
-#define CM_SCACHEFLAG_STATD		1	/* status info is valid */
-#define CM_SCACHEFLAG_DELETED		2	/* file has been deleted */
-#define CM_SCACHEFLAG_CALLBACK		4	/* have a valid callback */
-#define CM_SCACHEFLAG_STORING		8	/* status being stored back */
+#define CM_SCACHEFLAG_STATD                 0x01        /* status info is valid */
+#define CM_SCACHEFLAG_DELETED           0x02    /* file has been deleted */
+#define CM_SCACHEFLAG_CALLBACK          0x04    /* have a valid callback */
+#define CM_SCACHEFLAG_STORING           0x08    /* status being stored back */
 #define CM_SCACHEFLAG_FETCHING		0x10	/* status being fetched */
 #define CM_SCACHEFLAG_SIZESTORING	0x20	/* status being stored that
 						 * changes the data; typically,
@@ -171,10 +171,10 @@ typedef struct cm_scache {
  * These flags correspond to individual RPCs that we may be making, and at most
  * one can be set in any one call to SyncOp.
  */
-#define CM_SCACHESYNC_FETCHSTATUS	1	/* fetching status info */
-#define CM_SCACHESYNC_STORESTATUS	2	/* storing status info */
-#define CM_SCACHESYNC_FETCHDATA		4	/* fetch data */
-#define CM_SCACHESYNC_STOREDATA		8	/* store data */
+#define CM_SCACHESYNC_FETCHSTATUS           0x01        /* fetching status info */
+#define CM_SCACHESYNC_STORESTATUS           0x02        /* storing status info */
+#define CM_SCACHESYNC_FETCHDATA             0x04        /* fetch data */
+#define CM_SCACHESYNC_STOREDATA             0x08        /* store data */
 #define CM_SCACHESYNC_STORESIZE		0x10	/* store new file size */
 #define CM_SCACHESYNC_GETCALLBACK	0x20	/* fetching a callback */
 #define CM_SCACHESYNC_STOREDATA_EXCL	0x40	/* store data */
@@ -240,7 +240,11 @@ extern void cm_MergeStatus(cm_scache_t *, struct AFSFetchStatus *, struct AFSVol
 
 extern void cm_AFSFidFromFid(struct AFSFid *, cm_fid_t *);
 
+extern void cm_HoldSCacheNoLock(cm_scache_t *);
+
 extern void cm_HoldSCache(cm_scache_t *);
+
+extern void cm_ReleaseSCacheNoLock(cm_scache_t *);
 
 extern void cm_ReleaseSCache(cm_scache_t *);
 
@@ -255,5 +259,7 @@ extern osi_queue_t *cm_allFileLocks;
 extern cm_scache_t **cm_hashTablep;
 
 extern void cm_DiscardSCache(cm_scache_t *scp);
+
+extern int cm_FindFileType(cm_fid_t *fidp);
 
 #endif /*  __CM_SCACHE_H_ENV__ */

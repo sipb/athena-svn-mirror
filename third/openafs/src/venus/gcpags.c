@@ -10,7 +10,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/gcpags.c,v 1.1.1.1 2002-01-31 21:49:33 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/gcpags.c,v 1.1.1.2 2005-03-10 20:39:39 zacheiss Exp $");
 
 #include <rx/xdr.h>
 #include <sys/ioctl.h>
@@ -41,17 +42,18 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/gcpag
 #include "AFS_component_version_number.c"
 
 main(argc, argv)
-int argc;
-char **argv; {
-    afs_int32 code=0;
+     int argc;
+     char **argv;
+{
+    afs_int32 code = 0;
     struct ViceIoctl blob;
-    
+
     blob.in = 0;
     blob.out = 0;
     blob.in_size = 0;
     blob.out_size = 0;
     code = pioctl(0, VIOC_GCPAGS, &blob, 1);
-    if(code)
+    if (code)
 	perror("disable gcpags failed");
 
     exit(code);

@@ -10,7 +10,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/istat.c,v 1.1.1.1 2002-01-31 21:49:28 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/istat.c,v 1.1.1.2 2005-03-10 20:39:19 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -19,10 +20,10 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/istat.c
 
 #include "AFS_component_version_number.c"
 
-main(argc,argv)
-char **argv;
+main(argc, argv)
+     char **argv;
 {
-    
+
     int fd;
     int ino;
     struct stat status;
@@ -41,7 +42,6 @@ char **argv;
 	perror("fstat");
 	exit(1);
     }
-    printf("links=%d, size=%d\n",
-    	status.st_nlink, status.st_size);
+    printf("links=%d, size=%d\n", status.st_nlink, status.st_size);
     exit(0);
 }

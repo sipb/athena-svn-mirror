@@ -10,7 +10,8 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/test/nsubr.c,v 1.1.1.1 2002-01-31 21:49:38 zacheiss Exp $");
+RCSID
+    ("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/test/nsubr.c,v 1.1.1.2 2005-03-10 20:39:55 zacheiss Exp $");
 
 #ifdef AFS_NAMEI_ENV
 #include <stdio.h>
@@ -34,7 +35,8 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/test/ns
 
 
 
-IHandle_t * GetLinkHandle(char *part, int volid)
+IHandle_t *
+GetLinkHandle(char *part, int volid)
 {
     int dev;
     Inode ino;
@@ -47,6 +49,9 @@ IHandle_t * GetLinkHandle(char *part, int volid)
     return lh;
 }
 
-void DFlushVolume(void) {} ;
+void
+DFlushVolume(void)
+{
+};
 
 #endif /* AFS_NAMEI_ENV */
