@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.23 2002-05-07 15:14:31 rbasch Exp $
+/* $Id: dm.c,v 1.24 2002-05-11 18:34:30 amb Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -63,10 +63,11 @@
 #endif
 
 #include <X11/Xlib.h>
+#include <X11/Xauth.h>
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.23 2002-05-07 15:14:31 rbasch Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.24 2002-05-11 18:34:30 amb Exp $";
 #endif
 
 /* Process states */
@@ -150,7 +151,7 @@ int main(int argc, char **argv)
   int pgrp, file, tries, count, redir = TRUE;
   char dpyname[10], dpyacl[40];
   Display *dpy;
-  XHostAddress *hosts;
+  XHostAddress *hosts, localhost;
   int nhosts, dpynum = 0;
   struct stat hostsinfo;
   Bool state;
@@ -169,6 +170,11 @@ int main(int argc, char **argv)
   sigemptyset(&sigact.sa_mask);
   sigact.sa_flags = 0;
   (void) sigemptyset(&sig_zero);
+
+  /* Create a localhost entity for access control purposes. */
+  localhost.family = FamilyLocalHost;
+  localhost.length = 0;
+  localhost.address = "";
 
 /*
  * Note about setting environment variables in dm:
@@ -431,9 +437,10 @@ int main(int argc, char **argv)
       if (hosts != NULL)
 	{
 	  XRemoveHosts(dpy, hosts, nhosts);
-	  XFlush(dpy);
 	  XFree(hosts);
 	}
+      XAddHost(dpy, &localhost);
+      XFlush(dpy);
     }
   /* else if (dpy == NULL)
    *   Could've sworn the X server was running now.
