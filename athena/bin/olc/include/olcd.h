@@ -16,8 +16,8 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *      $Author: raeburn $
- *      $Id: olcd.h,v 1.7 1990-01-05 06:55:31 raeburn Exp $
+ *      $Author: vanharen $
+ *      $Id: olcd.h,v 1.8 1990-01-10 10:28:10 vanharen Exp $
  */
 
 #ifndef __olcd_h
@@ -186,6 +186,7 @@ typedef struct t_ACL
 
 /* OLC procedure declarations. */
 
+#ifdef __STDC__
 extern ERRCODE olc_topic(int fd, REQUEST *request, int auth);             /* Change the current topic. */
 extern ERRCODE olc_comment(int fd, REQUEST *request, int auth);           /* Insert a comment in the log. */
 extern ERRCODE olc_describe(int fd, REQUEST *request, int auth);          /* Make more comments */
@@ -223,7 +224,7 @@ extern ERRCODE olc_get_accesses(int fd, REQUEST *request, int auth);
 
 /* Other external declarations. */
 
-extern void backup_data(void);      /* Backup the current state. */
+extern void backup_data(void);	/* Backup the current state. */
 
 KNUCKLE *create_user(PERSON *person);
 KNUCKLE *create_knuckle(USER *user);
@@ -234,6 +235,62 @@ void init_user(KNUCKLE *knuckle, PERSON *person);
 QUEUE_STATUS *get_status_info(void);
 
 extern char *fmt (const char *, ...);
+
+
+#else /* __STDC__ */
+
+extern olc_topic();		/* Change the current topic. */
+extern olc_comment();		/* Insert a comment in the log. */
+extern olc_describe();		/* Make more comments */
+extern olc_done();		/* Mark a question done. */
+extern olc_forward();		/* Forward a question. */
+extern olc_list();		/* List current conversations. */
+extern olc_mail();		/* Send mail to a user. */
+extern olc_on();		/* Sign on to OLC. */
+extern olc_off();		/* Sign off of OLC. */
+extern olc_replay();		/* Replay the conversation. */
+extern olc_send();		/* Send a message. */
+extern olc_who();		/* Print user's name. */
+extern olc_startup();		/* Start up an OLCR session. */
+extern olc_show();		/* Show any new messages. */
+extern olc_grab();		/* Grab a question on the queue. */
+extern olc_cancel();		/* Cancel a question. */
+extern olc_status();		/* Print user status information. */
+extern olc_ask();		/* ask a question */
+extern olc_chtopic();		/* change a topic */
+extern olc_list_topics();	/* list topics */
+extern olc_create_instance();	/* create a new instance */
+extern olc_default_instance();
+extern olc_motd();		/* retrieve the olc motd */
+extern olc_dump();		/* debugging info */
+extern olc_cancel();
+extern olc_verify_topic();
+extern olc_verify_instance();
+extern olc_load_user();
+extern olc_change_motd();
+extern olc_change_acl();
+extern olc_get_dbinfo();
+extern olc_list_acl();
+extern olc_change_dbinfo();
+extern olc_get_accesses();
+
+/* Other external declarations. */
+
+extern void backup_data();	/* Backup the current stats. */
+
+KNUCKLE *create_user();
+KNUCKLE *create_knuckle();
+
+void delete_user();
+void delete_knuckle();
+void init_user();
+QUEUE_STATUS *get_status_info();
+
+extern char *fmt ();
+
+#endif /* __STDC__ */
+
+
 
 /* Global variables */
 
@@ -275,6 +332,8 @@ extern int              needs_backup;
 #define GCHTOPIC_ACL            1<<11
 #define MOTD_ACL                1<<12
 
+
+#ifdef __STDC__
 /* These declarations should go elsewhere!!! */
 
 extern void	log_error (const char *message);
@@ -360,4 +419,5 @@ extern "C" {
 #if is_cplusplus
 };
 #endif
+#endif /* __STDC__ */
 #endif /* __olcd_h */
