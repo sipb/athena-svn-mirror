@@ -15,7 +15,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_util.c,v 1.1.1.1 2002-01-31 21:31:35 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_util.c,v 1.1.1.1.2.1 2003-01-03 18:52:44 ghudson Exp $");
 
 #include "../afs/stds.h"
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
@@ -27,7 +27,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_uti
 #ifdef AFS_SGI62_ENV
 #include "../h/hashing.h"
 #endif
-#if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX20_ENV)
+#if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN60_ENV)
 #include <netinet/in_var.h>
 #endif /* ! AFS_HPUX110_ENV */
 #endif /* !defined(UKERNEL) */
@@ -70,6 +70,16 @@ char *afs_cv2string(char *ttp, afs_uint32 aval)
     return tp;
 
 } /*afs_cv2string*/
+
+char *afs_strchr(char *s, int c)
+{
+    char *p;
+   
+    for (p = s; *p; p++)
+      if (*p == c)
+	return p;
+    return NULL;
+}
 
 void print_internet_address(char *preamble, struct srvAddr *sa,
 			    char *postamble, int flag)

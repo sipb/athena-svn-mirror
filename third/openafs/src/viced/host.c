@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.2.2.1 2002-11-13 19:52:47 ghudson Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/host.c,v 1.2.2.2 2003-01-03 18:53:21 ghudson Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -914,16 +914,19 @@ h_Enumerate(proc, param)
     free((void *)held);
 } /*h_Enumerate*/
 
-/* h_Enumerate_r: Calls (*proc)(host, held, param) for at least each host in
- * the at the start of the enumeration (perhaps more).  Hosts may be deleted
- * (have delete flag set); ditto for clients.  (*proc) is always called with
+/* h_Enumerate_r (revised):
+ * Calls (*proc)(host, held, param) for each host in hostList, starting
+ * at enumstart
+ * Hosts may be deleted (have delete flag set); ditto for clients.
+ * (*proc) is always called with
  * host h_held() and the global host lock (H_LOCK) locked.The hold state of the
  * host with respect to this lwp is passed to (*proc) as the param held.
  * The proc should return 0 if the host should be released, 1 if it should
  * be held after enumeration.
  */
-h_Enumerate_r(proc, param)
+h_Enumerate_r(proc, enumstart, param)
     int (*proc)();
+    struct host* enumstart;
     char *param;
 
 {
@@ -933,15 +936,14 @@ h_Enumerate_r(proc, param)
     if (hostCount == 0) {
 	return;
     }
-    for (host = hostList ; host ; host = host->next) {
+    for (host = enumstart ; host ; host = host->next) {
 	if (!(held = h_Held_r(host)))
 	    h_Hold_r(host);
 	held = (*proc)(host, held, param);
 	if (!held)
 	    h_Release_r(host);/* this might free up the host */
     }
-} /*h_Enumerate*/
-
+} /*h_Enumerate_r*/
 
 /* Host is returned held */
 struct host *h_GetHost_r(tcon)
@@ -958,6 +960,7 @@ struct host *h_GetHost_r(tcon)
     afs_int32 haddr;
     afs_int32 hport;
     int i, j, count;
+    char hoststr[16], hoststr2[16];
 
     haddr = rxr_HostOf(tcon);
     hport = rxr_PortOf(tcon);
@@ -976,7 +979,8 @@ retry:
 		/* Another thread is doing initialization */
 		h_Unlock_r(host);
 		if ( !held) h_Release_r(host);
-		ViceLog(125, ("Host %x starting h_Lookup again\n", host));
+		ViceLog(125, ("Host %s:%d starting h_Lookup again\n",
+			     afs_inet_ntoa_r(host->host, hoststr), host->port));
 		goto retry;
 	}
 	host->hostFlags &= ~ALTADDR;
@@ -984,7 +988,7 @@ retry:
 	code = RXAFSCB_WhoAreYou(host->callback_rxcon, &interf);
 	H_LOCK
 	if ( code == RXGEN_OPCODE ) {
-		identP = (struct Identity *)malloc(1);
+		identP = (struct Identity *)malloc(sizeof(struct Identity));
 		identP->valid = 0;
 		rx_SetSpecific(tcon, rxcon_ident_key, identP);
 		/* The host on this connection was unable to respond to 
@@ -993,8 +997,8 @@ retry:
 		 * that we maintain some extra callback state information */
 		if (host->interface) {
 		    ViceLog(0,
-			    ("Host %x used to support WhoAreYou, deleting.\n",
-			    host));
+			    ("Host %s:%d used to support WhoAreYou, deleting.\n",
+			    afs_inet_ntoa_r(host->host, hoststr), host->port));
 		    host->hostFlags |= HOSTDELETED;
 		    h_Unlock_r(host);
 		    if (!held) h_Release_r(host);
@@ -1013,8 +1017,8 @@ retry:
 		if ( !host->interface
 		  || !afs_uuid_equal(&interf.uuid, &host->interface->uuid) ) {
 		    ViceLog(25,
-			    ("Host %x has changed its identity, deleting.\n",
-			    host));
+			    ("Host %s:%d has changed its identity, deleting.\n",
+			    afs_inet_ntoa_r(host->host, hoststr), host->port));
 		    host->hostFlags |= HOSTDELETED;
 		    h_Unlock_r(host);
 		    if (!held) h_Release_r(host);
@@ -1022,7 +1026,6 @@ retry:
 		    goto retry;
 		}
 	} else {
-	    char hoststr[16];
 	    afs_inet_ntoa_r(host->host, hoststr);
 	    ViceLog(0,("CB: WhoAreYou failed for %s:%d, error %d\n", 
 		       hoststr, ntohs(host->port), code));
@@ -1034,12 +1037,13 @@ retry:
 	if ( ! (host->hostFlags & ALTADDR) ) 
 	{
         	/* another thread is doing the initialisation */
-		ViceLog(125, ("Host %x waiting for host-init to complete\n",
-				host));
+		ViceLog(125, ("Host %s:%d waiting for host-init to complete\n",
+			     afs_inet_ntoa_r(host->host, hoststr), host->port));
 		h_Lock_r(host);
 		h_Unlock_r(host);
 		if ( !held) h_Release_r(host);
-		ViceLog(125, ("Host %x starting h_Lookup again\n", host));
+		ViceLog(125, ("Host %s:%d starting h_Lookup again\n",
+			     afs_inet_ntoa_r(host->host, hoststr), host->port));
 		goto retry;
 	}
 	/* We need to check whether the identity in the host structure
@@ -1054,8 +1058,8 @@ retry:
 		host->hostFlags |= HOSTDELETED;
 		h_Unlock_r(host);
 		if (!held) h_Release_r(host);
-		ViceLog(0,("CB: new identity for host %x, deleting\n",
-			   host->host));
+		ViceLog(0, ("CB: new identity for host %s:%d, deleting\n",
+			   afs_inet_ntoa_r(host->host, hoststr), host->port));
 		goto retry;
 	}
     } else {
@@ -1069,12 +1073,12 @@ retry:
 		code = RXAFSCB_WhoAreYou(host->callback_rxcon, &interf);
 		H_LOCK
 		if ( code == RXGEN_OPCODE ) {
-		    identP = (struct Identity *)malloc(1);
+		  identP = (struct Identity *)malloc(sizeof(struct Identity));
 		    identP->valid = 0;
 		    rx_SetSpecific(tcon, rxcon_ident_key, identP);
 		    ViceLog(25,
-			    ("Host %x does not support WhoAreYou.\n",
-			    host->host));
+			    ("Host %s:%d does not support WhoAreYou.\n",
+			    afs_inet_ntoa_r(host->host, hoststr), host->port));
 		    code = 0;
 		} else if (code == 0) {
 		    interfValid = 1;
@@ -1082,7 +1086,8 @@ retry:
 		    identP->valid = 1;
 		    identP->uuid = interf.uuid;
 		    rx_SetSpecific(tcon, rxcon_ident_key, identP);
-		    ViceLog(25,("WhoAreYou success on %x\n", host->host));
+		    ViceLog(25, ("WhoAreYou success on %s:%d\n",
+				afs_inet_ntoa_r(host->host, hoststr), host->port));
 		}
 	    }
 	    if (code == 0 && !identP->valid) {
@@ -1098,8 +1103,9 @@ retry:
 		    if (!(held = h_Held_r(oldHost)))
 			h_Hold_r(oldHost);
 		    h_Lock_r(oldHost);
-		    ViceLog(25,("CB: new addr %x for old host %x\n",
-				host->host, oldHost->host));
+		    ViceLog(25, ("CB: new addr %s:%d for old host %s:%d\n",
+				afs_inet_ntoa_r(host->host, hoststr), host->port,
+				afs_inet_ntoa_r(oldHost->host, hoststr2), oldHost->port));
 		    host->hostFlags |= HOSTDELETED;
 		    h_Unlock_r(host);
 		    h_Release_r(host);
@@ -1113,15 +1119,14 @@ retry:
 						      &FS_HostUUID);
 		    H_LOCK
 		    if (code == 0) {
-			ViceLog(25,("InitCallBackState3 success on %x\n",
-				host->host));
+			ViceLog(25, ("InitCallBackState3 success on %s:%d\n",
+				    afs_inet_ntoa_r(host->host, hoststr), host->port));
 			assert(interfValid == 1);
 			initInterfaceAddr_r(host, &interf);
 		    }
 		}
 	   }
 	   if (code) {
-               char hoststr[16];
                afs_inet_ntoa_r(host->host, hoststr);
                ViceLog(0,("CB: RCallBackConnectBack failed for %s:%d\n", 
 			  hoststr, ntohs(host->port)));
@@ -1404,8 +1409,11 @@ ticket name length != 64
 	  code = pr_GetCPS(viceid, &client->CPS);
 	  H_LOCK
 	  if (code) {
-	    ViceLog(0, ("pr_GetCPS failed(%d) for user %d, host %x.%d\n",
-		    code, viceid, client->host->host, ntohs(client->host->port)));
+	    char hoststr[16];
+	    ViceLog(0, ("pr_GetCPS failed(%d) for user %d, host %s:%d\n",
+		       code, viceid,
+		       afs_inet_ntoa_r(client->host->host, hoststr),
+		       client->host->port));
 
 	    /* Although ubik_Call (called by pr_GetCPS) traverses thru
 	     * all protection servers and reevaluates things if no
@@ -1478,8 +1486,11 @@ int GetClient(tcon, cp)
     assert(client && client->tcon && rxr_CidOf(client->tcon) == client->sid);
     if (client &&
 	client->LastCall > client->expTime && client->expTime) {
-	ViceLog(1, ("Token for %s at %x.%d expired %d\n",
-		h_UserName(client), client->host->host, client->host->port, client->expTime));
+	char hoststr[16];
+	ViceLog(1, ("Token for %s at %s:%d expired %d\n",
+		h_UserName(client),
+		afs_inet_ntoa_r(client->host->host, hoststr),
+		client->host->port, client->expTime));
 	H_UNLOCK
 	return VICETOKENDEAD;
     }
@@ -1536,14 +1547,16 @@ static int h_PrintClient(host, held, file)
     int i;
     char tmpStr[256];
     char tbuffer[32];
+    char hoststr[16];
 
     H_LOCK
     if (host->hostFlags & HOSTDELETED) {
 	H_UNLOCK
 	return held;
     }
-    sprintf(tmpStr,"Host %x.%d down = %d, LastCall %s", host->host,
-	    host->port, (host->hostFlags & VENUSDOWN),
+    sprintf(tmpStr,"Host %s:%d down = %d, LastCall %s",
+	    afs_inet_ntoa_r(host->host, hoststr), host->port,
+	    (host->hostFlags & VENUSDOWN),
 	    afs_ctime((time_t *)&host->LastCall, tbuffer, sizeof(tbuffer)));
     STREAM_WRITE(tmpStr, strlen(tmpStr), 1, file);
     for (client = host->FirstClient; client; client=client->next) {
@@ -2054,9 +2067,9 @@ struct interfaceAddr *interf;
 	ViceLog(125,("initInterfaceAddr : host %x numAddr %d\n",
 		host->host, interf->numberOfInterfaces));
 
-	number   = interf->numberOfInterfaces;
-	myPort   = host->port;
-	myHost   = host->host; /* current interface address */
+	number = interf->numberOfInterfaces;
+	myPort = host->port;
+	myHost = host->host; /* current interface address */
 
 	/* validation checks */
 	if ( number < 0 || number > AFS_MAX_INTERFACE_ADDR )

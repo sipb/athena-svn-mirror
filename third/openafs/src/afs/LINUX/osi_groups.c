@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.1.1.1 2002-01-31 21:49:50 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.1.1.1.2.1 2003-01-03 18:52:48 ghudson Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -42,7 +42,7 @@ int set_pag_in_parent(int pag, int g0, int g1)
     gp = current->p_pptr->groups;
 
 
-    if (afs_get_pag_from_groups(gp[0], gp[1]) == NOPAG) {
+    if ((ngroups < 2) || (afs_get_pag_from_groups(gp[0], gp[1]) == NOPAG)) {
 	/* We will have to shift grouplist to make room for pag */
 	if (ngroups + 2 > NGROUPS) {
 	    return EINVAL;
@@ -162,39 +162,68 @@ asmlinkage int afs_xsetgroups32(int gidsetsize, gid_t *grouplist)
     return code;
 }
 #endif
+
 #if defined(AFS_SPARC64_LINUX20_ENV)
+/* Intercept the uid16 system call as used by 32bit programs. */
+extern int (*sys32_setgroupsp)(int gidsetsize, __kernel_gid_t32 *grouplist);
 asmlinkage int afs32_xsetgroups(int gidsetsize, __kernel_gid_t32 *grouplist)
 {
-    gid_t gl[NGROUPS];
-    int ret, i;
-    mm_segment_t old_fs = get_fs ();
+    int code;
+    cred_t *cr = crref();
+    afs_uint32 junk;
+    int old_pag;
 
-    if ((unsigned) gidsetsize > NGROUPS)
-	return -EINVAL;
-    for (i = 0; i < gidsetsize; i++, grouplist++)
-	if (__get_user (gl[i], grouplist))
-	    return -EFAULT;
-    set_fs (KERNEL_DS);
-    ret = afs_xsetgroups(gidsetsize, gl);
-    set_fs (old_fs);
-    return ret;
+    lock_kernel();
+    old_pag = PagInCred(cr);
+    crfree(cr);
+    unlock_kernel();
+
+    code = (*sys32_setgroupsp)(gidsetsize, grouplist);
+    if (code) {
+	return code;
+    }
+
+    lock_kernel();
+    cr = crref();
+    if (old_pag != NOPAG && PagInCred(cr) == NOPAG) {
+	/* re-install old pag if there's room. */
+	code = setpag(&cr, old_pag, &junk, 0);
+    }
+    crfree(cr);
+    unlock_kernel();
+
+    return code;
 }
 #ifdef AFS_LINUX24_ENV
+/* Intercept the uid32 system call as used by 32bit programs. */
+extern int (*sys32_setgroups32p)(int gidsetsize, __kernel_gid_t32 *grouplist);
 asmlinkage int afs32_xsetgroups32(int gidsetsize, __kernel_gid_t32 *grouplist)
 {
-    gid_t gl[NGROUPS];
-    int ret, i;
-    mm_segment_t old_fs = get_fs ();
+    int code;
+    cred_t *cr = crref();
+    afs_uint32 junk;
+    int old_pag;
 
-    if ((unsigned) gidsetsize > NGROUPS)
-	return -EINVAL;
-    for (i = 0; i < gidsetsize; i++, grouplist++)
-	if (__get_user (gl[i], grouplist))
-	    return -EFAULT;
-    set_fs (KERNEL_DS);
-    ret = afs_xsetgroups32(gidsetsize, gl);
-    set_fs (old_fs);
-    return ret;
+    lock_kernel();
+    old_pag = PagInCred(cr);
+    crfree(cr);
+    unlock_kernel();
+
+    code = (*sys32_setgroups32p)(gidsetsize, grouplist);
+    if (code) {
+	return code;
+    }
+
+    lock_kernel();
+    cr = crref();
+    if (old_pag != NOPAG && PagInCred(cr) == NOPAG) {
+	/* re-install old pag if there's room. */
+	code = setpag(&cr, old_pag, &junk, 0);
+    }
+    crfree(cr);
+    unlock_kernel();
+
+    return code;
 }
 #endif
 #endif

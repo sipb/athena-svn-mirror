@@ -1,5 +1,5 @@
 /* Generated from ../../../lib/asn1/asn1_err.et */
-/* $Id: asn1_err.h,v 1.1.1.1 2002-12-13 20:42:06 zacheiss Exp $ */
+/* $Id: asn1_err.h,v 1.1.2.1 2003-01-03 18:53:11 ghudson Exp $ */
 
 #ifndef __asn1_err_h__
 #define __asn1_err_h__

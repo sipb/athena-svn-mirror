@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_init.c,v 1.1.1.1 2002-01-31 21:49:54 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_init.c,v 1.1.1.1.2.1 2003-01-03 18:52:43 ghudson Exp $");
 
 #include "../afs/stds.h"
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
@@ -39,6 +39,7 @@ extern afs_rwlock_t afs_xaxs;
 extern afs_rwlock_t afs_xvolume;
 extern afs_rwlock_t afs_xuser;
 extern afs_rwlock_t afs_xserver;
+extern afs_rwlock_t afs_xsrvAddr;
 #ifndef AFS_AIX41_ENV
 extern afs_lock_t osi_fsplock;
 #endif
@@ -89,6 +90,7 @@ extern afs_int32 usedihint;
 
 /* afs_server.c */
 extern afs_int32 afs_setTime;
+extern afs_rwlock_t afs_xsrvAddr;
 
 /* Imported functions. */
 extern struct rx_securityClass *rxnull_NewServerSecurityObject();
@@ -102,7 +104,7 @@ extern afs_lock_t afs_ftf;
 /* Exported variables */
 struct osi_dev cacheDev;           /*Cache device*/
 afs_int32 cacheInfoModTime;			/*Last time cache info modified*/
-#if defined(AFS_OSF_ENV) || defined(AFS_DEC_ENV) || defined(AFS_DARWIN_ENV)
+#if defined(AFS_OSF_ENV) || defined(AFS_DEC_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
 struct mount *afs_cacheVfsp=0;
 #elif defined(AFS_LINUX20_ENV)
 struct super_block *afs_cacheSBp = 0;
@@ -439,11 +441,15 @@ afs_InitCacheInfo(afile)
 	      TO_KERNEL_SPACE();
 	  }
 #else
-#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_DARWIN_ENV)
         if (!VFS_STATFS(filevp->v_mount, &st, current_proc()))
 #else 
+#if defined(AFS_FBSD_ENV)
+        if (!VFS_STATFS(filevp->v_mount, &st, curproc))
+#else 
 	if (!VFS_STATFS(filevp->v_vfsp, &st))  
-#endif /* AFS_DARWIN_ENV || AFS_FBSD_ENV */
+#endif /* AFS_FBSD_ENV */
+#endif /* AFS_DARWIN_ENV */
 #endif /* AFS_LINUX20_ENV */
 #endif /* AIX41 */
 #endif /* OSF */
@@ -517,6 +523,8 @@ afs_ResourceInit(preallocs)
     RWLOCK_INIT(&afs_xvolume, "afs_xvolume");
     RWLOCK_INIT(&afs_xcell, "afs_xcell");
     RWLOCK_INIT(&afs_xserver, "afs_xserver");
+    RWLOCK_INIT(&afs_xsrvAddr, "afs_xsrvAddr");
+    RWLOCK_INIT(&afs_icl_lock, "afs_icl_lock");
     RWLOCK_INIT(&afs_xinterface, "afs_xinterface");
     LOCK_INIT(&afs_puttofileLock, "afs_puttofileLock");
 #ifndef	AFS_AIX32_ENV

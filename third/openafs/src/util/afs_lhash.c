@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/afs_lhash.c,v 1.1.1.1 2002-01-31 21:49:30 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/afs_lhash.c,v 1.1.1.1.2.1 2003-01-03 18:53:18 ghudson Exp $");
 
 #ifdef KERNEL
 #include "../afs/afs_atomlist.h"
@@ -22,6 +22,10 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/afs_lh
 #include <assert.h>
 #define CHECK_INVARIANTS
 #endif /* KERNEL */
+
+#ifndef NULL
+#define NULL 0
+#endif
 
 /* max hash table load factor */
 enum { LOAD_FACTOR = 5 };

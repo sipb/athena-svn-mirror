@@ -15,9 +15,10 @@
 #include <sys/time.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/assert.c,v 1.1.1.1 2002-01-31 21:32:09 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/assert.c,v 1.1.1.1.2.1 2003-01-03 18:53:18 ghudson Exp $");
 
 #include <stdio.h>
+#include "afsutil.h"
 
 #ifdef AFS_NT40_ENV
 void afs_NTAbort(void)
@@ -33,8 +34,7 @@ void AssertionFailed(char *file, int line)
     time_t when;
 
     time(&when);
-    strcpy(tdate, ctime(&when));
-    tdate[24] = '0';
+    afs_ctime(&when, tdate, 25);
     fprintf(stderr, "%s: Assertion failed! file %s, line %d.\n",
 	tdate, file, line);
     fflush(stderr);

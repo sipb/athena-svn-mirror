@@ -40,7 +40,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/crc.c,v 1.1.1.1 2002-12-13 20:42:06 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/crc.c,v 1.1.2.1 2003-01-03 18:53:11 ghudson Exp $");
 
 #if defined(UKERNEL)
 #include "../afs/sysincludes.h"

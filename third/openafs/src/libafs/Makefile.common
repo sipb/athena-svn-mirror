@@ -91,7 +91,9 @@ AFSAOBJS = \
 	afs_volume.o \
 	afsaux.o		\
 	Kvice.xdr.o	\
+	xdr_array.o	\
 	xdr_arrayn.o	\
+	xdr_int64.o	\
 	Kvice.cs.o	\
 	fcrypt.o		\
 	rx.o		\
@@ -118,13 +120,13 @@ AFSAOBJS = \
 	rxkad_client.o	\
 	rxkad_common.o	\
 	xdr_afsuuid.o	\
+	xdr.o		\
 	afs_uuid.o $(AFS_OS_OBJS)
 
 # These next two allow nfs and nonfs builds to occur in the same directory.
 AFSNFSOBJS = \
 	afs_nfsclnt.o	\
 	afs_nfsdisp.o	\
-	afs_nfsdisp_v3.o \
 	afs_call_nfs.o \
 	afs_pioctl_nfs.o \
 	$(AFS_OS_NFSOBJS)
@@ -259,8 +261,6 @@ afs_nfsclnt.o: $(AFS)/afs_nfsclnt.c
 	$(CRULE1);
 afs_nfsdisp.o: $(AFS)/afs_nfsdisp.c
 	$(CRULE1);
-afs_nfsdisp_v3.o: $(AFS)/afs_nfsdisp_v3.c
-	$(CRULE1);
 rx.o: $(RX)/rx.c
 	$(CRULE1);
 rx_clock.o: $(RX)/rx_clock.c
@@ -306,6 +306,12 @@ Kvice.cs.o: $(AFSINT)/Kvice.cs.c
 afsaux.o: $(AFSINT)/afsaux.c
 	$(CRULE1);
 xdr_arrayn.o: $(RX)/xdr_arrayn.c
+	$(CRULE1);
+xdr_array.o: $(RX)/xdr_array.c
+	$(CRULE1);
+xdr_int64.o: $(RX)/xdr_int64.c
+	$(CRULE1);
+xdr.o: $(RX)/xdr.c
 	$(CRULE1);
 Kvldbint.cs.o: $(AFSINT)/Kvldbint.cs.c
 	$(CRULE1);

@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/UKERNEL/afs_usrops.c,v 1.1.1.1 2002-01-31 21:49:58 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/UKERNEL/afs_usrops.c,v 1.1.1.1.2.1 2003-01-03 18:52:49 ghudson Exp $");
 
 
 #ifdef	UKERNEL
@@ -2219,7 +2219,7 @@ int uafs_LookupName(
 	/*
 	 * terminate the current component and skip over slashes
 	 */
-	nextPathP = strchr(pathP, '/');
+	nextPathP = afs_strchr(pathP, '/');
 	if (nextPathP != NULL) {
 	    while (*nextPathP == '/') {
 		*(nextPathP++) = '\0';
@@ -4274,7 +4274,7 @@ int uafs_statmountpoint_r(char *path)
      return -1;
     }
 
-    avc = (struct vcache *) vp;
+    avc = VTOAFS(vp);
 
     r = avc->mvstat;
     VN_RELE(vp);

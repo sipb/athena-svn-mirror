@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsweb/afswsNetscape_config.sh,v 1.1.1.1 2002-12-13 20:38:47 zacheiss Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsweb/afswsNetscape_config.sh,v 1.1.2.1 2003-01-03 18:52:52 ghudson Exp $
 #
 # Installation and Configuration script for AFS Web Security Pack
 #

@@ -11,7 +11,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/FBSD/osi_sleep.c,v 1.1.1.1 2002-01-31 21:48:49 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/FBSD/osi_sleep.c,v 1.1.1.1.2.1 2003-01-03 18:52:46 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -134,12 +134,17 @@ void afs_osi_Sleep(char *event)
     seq = evp->seq;
     while (seq == evp->seq) {
 	AFS_ASSERT_GLOCK();
-	assert_wait((vm_offset_t)(&evp->cond), 0);
 	AFS_GUNLOCK();
-	thread_block();
+        tsleep(event, PVFS, "afs_osi_Sleep", 0);
 	AFS_GLOCK();
     }
     relevent(evp);
+}
+
+int afs_osi_SleepSig(char *event)
+{
+    afs_osi_Sleep(event);
+    return 0;
 }
 
 /* osi_TimedSleep
@@ -156,20 +161,22 @@ static int osi_TimedSleep(char *event, afs_int32 ams, int aintok)
     int code = 0;
     struct afs_event *evp;
     int ticks;
-
+    int seq,prio;
+ 
     ticks = ( ams * afs_hz )/1000;
 
 
     evp = afs_getevent(event);
-
-    assert_wait((vm_offset_t)(&evp->cond), aintok);
+    seq=evp->seq;
     AFS_GUNLOCK();
-    thread_set_timeout(ticks);
-    thread_block();
+    if (aintok)
+       prio=PCATCH|PPAUSE;
+    else
+       prio=PVFS;
+    code=tsleep(event, prio, "afs_osi_TimedSleep", ticks);
     AFS_GLOCK();
-    /*    if (current_thread()->wait_result != THREAD_AWAKENED)
-	  code = EINTR; */
-    
+    if (seq == evp->seq)
+       code=EINTR;
     relevent(evp);
     return code;
 }
@@ -182,7 +189,7 @@ void afs_osi_Wakeup(char *event)
     evp = afs_getevent(event);
     if (evp->refcount > 1) {
 	evp->seq++;    
-	thread_wakeup((vm_offset_t)(&evp->cond));
+	wakeup(event);
     }
     relevent(evp);
 }

@@ -13,7 +13,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/osi_vfsops.c,v 1.1.1.1 2002-01-31 21:48:50 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/osi_vfsops.c,v 1.1.1.1.2.1 2003-01-03 18:52:47 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -90,11 +90,11 @@ int afs_root (struct vfs *afsp, struct vnode **avpp, char *unused1)
 	}
     }
     if (tvp) {
-	VN_HOLD((struct vnode *)tvp);
-	SET_V_FLAG( ((struct vnode *)tvp), VROOT);
+	VN_HOLD(AFSTOV(tvp));
+	SET_V_FLAG(AFSTOV(tvp), VROOT);
 
 	afs_globalVFS = afsp;
-	*avpp = (struct vnode *) tvp;
+	*avpp = AFSTOV(tvp);
     }
 
     afs_Trace2(afs_iclSetp, CM_TRACE_VFSROOT, ICL_TYPE_POINTER, *avpp,

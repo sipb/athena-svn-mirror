@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/recoverDb.c,v 1.1.1.1 2002-01-31 21:50:05 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/recoverDb.c,v 1.1.1.1.2.1 2003-01-03 18:52:54 ghudson Exp $");
 
 #include <stdio.h>
 #ifdef AFS_NT40_ENV
@@ -113,7 +113,7 @@ afs_int32
 Ask(st)
      char *st;
 {
-    char response;
+    int  response;
 
     while (1)
     {
@@ -123,7 +123,7 @@ Ask(st)
 	fflush(stdout);
 	response = getchar();
 	if      ( response == 'y' ) return(1);
-	else if ( response == 'n' ) return(0);
+	else if ( response == 'n' || response == EOF) return(0);
 	printf("please answer y/n\n");
     }
 }

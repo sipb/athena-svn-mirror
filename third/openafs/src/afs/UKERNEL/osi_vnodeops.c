@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/UKERNEL/osi_vnodeops.c,v 1.1.1.1 2002-01-31 21:48:51 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/UKERNEL/osi_vnodeops.c,v 1.1.1.1.2.1 2003-01-03 18:52:50 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -58,7 +58,7 @@ int afs_vrdwr(
 
 int afs_inactive(struct vcache *avc, struct AFS_UCRED *acred)
 {
-    struct vnode *vp = (struct vnode *)avc;
+    struct vnode *vp = AFSTOV(avc);
     if (afs_shuttingdown) return ;
 
     usr_assert(avc->vrefCount == 0);

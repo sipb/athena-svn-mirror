@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/kaserver.c,v 1.1.1.1 2002-01-31 21:31:53 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/kauth/kaserver.c,v 1.1.1.1.2.1 2003-01-03 18:53:03 ghudson Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -335,9 +335,8 @@ main (argc, argv)
 
     sca[RX_SCINDEX_NULL] = rxnull_NewServerSecurityObject();
 
-    /* These two lines disallow jumbograms */
-    rx_maxReceiveSize = OLD_MAX_PACKET_SIZE;
-    rxi_nSendFrags = rxi_nRecvFrags = 1;
+    /* Disable jumbograms */
+    rx_SetNoJumbo();
 
     tservice =
 	rx_NewService (0, KA_AUTHENTICATION_SERVICE, "AuthenticationService",

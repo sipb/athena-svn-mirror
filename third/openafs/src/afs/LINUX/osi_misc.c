@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_misc.c,v 1.3 2002-05-16 19:22:11 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_misc.c,v 1.3.2.1 2003-01-03 18:52:48 ghudson Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -52,7 +52,7 @@ int osi_lookupname(char *aname, uio_seg_t seg, int followlink,
 	    *dpp = dget(nd.dentry);
 	    code = 0;
 	} else
-	  code = ENOENT;
+	    code = ENOENT;
 	path_release(&nd);
     }
 #else
@@ -91,7 +91,7 @@ int osi_InitCacheInfo(char *aname)
 
     cacheInode = dp->d_inode->i_ino;
     cacheDev.dev = dp->d_inode->i_dev;
-    afs_fsfragsize = dp->d_inode->i_sb->s_blocksize;
+    afs_fsfragsize = dp->d_inode->i_sb->s_blocksize - 1;
     afs_cacheSBp = dp->d_inode->i_sb;
 
     dput(dp);
@@ -114,6 +114,7 @@ int osi_rdwr(int rw, struct osi_file *file, caddr_t addrp, size_t asize,
     KERNEL_SPACE_DECL;
     struct file *filp = &file->file;
     off_t offset = file->offset;
+    unsigned long savelim;
 
     /* Seek to the desired position. Return -1 on error. */
     if (filp->f_op->llseek) {
@@ -122,6 +123,9 @@ int osi_rdwr(int rw, struct osi_file *file, caddr_t addrp, size_t asize,
     }
     else
 	filp->f_pos = offset;
+
+    savelim = current->rlim[RLIMIT_FSIZE].rlim_cur;
+    current->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
 
     /* Read/Write the data. */
     TO_USER_SPACE();
@@ -132,6 +136,8 @@ int osi_rdwr(int rw, struct osi_file *file, caddr_t addrp, size_t asize,
     else /* all is well? */
 	code = asize;
     TO_KERNEL_SPACE();
+
+    current->rlim[RLIMIT_FSIZE].rlim_cur = savelim;
 
     if (code >=0) {
 	*resid = asize - code;
@@ -152,6 +158,10 @@ int osi_file_uio_rdwr(struct osi_file *osifile, uio_t *uiop, int rw)
     int code = 0;
     struct iovec *iov;
     int count;
+    unsigned long savelim;
+
+    savelim = current->rlim[RLIMIT_FSIZE].rlim_cur;
+    current->rlim[RLIMIT_FSIZE].rlim_cur = RLIM_INFINITY;
 
     if (uiop->uio_seg == AFS_UIOSYS)
 	TO_USER_SPACE();
@@ -165,7 +175,7 @@ int osi_file_uio_rdwr(struct osi_file *osifile, uio_t *uiop, int rw)
 	    uiop->uio_iovcnt--;
 	    continue;
 	}
-	
+
 	if (rw == UIO_READ)
 	    code = FOP_READ(filp, iov->iov_base, count);
 	else
@@ -185,6 +195,8 @@ int osi_file_uio_rdwr(struct osi_file *osifile, uio_t *uiop, int rw)
 
     if (uiop->uio_seg == AFS_UIOSYS)
 	TO_KERNEL_SPACE();
+
+    current->rlim[RLIMIT_FSIZE].rlim_cur = savelim;
 
     return code;
 }
@@ -300,7 +312,7 @@ void osi_linux_free_inode_pages(void)
 
     for (i=0; i<VCSIZE; i++) {
 	for(tvc = afs_vhashT[i]; tvc; tvc=tvc->hnext) {
-	    ip = (struct inode*)tvc;
+	    ip = AFSTOI(tvc);
 #if defined(AFS_LINUX24_ENV)
 	    if (ip->i_data.nrpages) {
 #else
@@ -329,7 +341,7 @@ void osi_linux_free_inode_pages(void)
 void osi_clear_inode(struct inode *ip)
 {
     cred_t *credp = crref();
-    struct vcache *vc = (struct vcache*)ip;
+    struct vcache *vcp = ITOAFS(ip);
 
 #if defined(AFS_LINUX24_ENV)
     if (atomic_read(&ip->i_count) > 1)
@@ -338,15 +350,15 @@ void osi_clear_inode(struct inode *ip)
 #endif
         printf("afs_put_inode: ino %d (0x%x) has count %d\n", ip->i_ino, ip);
 
-    ObtainWriteLock(&vc->lock, 504);
-    afs_InactiveVCache(vc, credp);
-    ReleaseWriteLock(&vc->lock);
+    afs_InactiveVCache(vcp, credp);
+    ObtainWriteLock(&vcp->lock, 504);
 #if defined(AFS_LINUX24_ENV)
     atomic_set(&ip->i_count, 0);
 #else
     ip->i_count = 0;
 #endif
     ip->i_nlink = 0; /* iput checks this after calling this routine. */
+    ReleaseWriteLock(&vcp->lock);
     crfree(credp);
 }
 
@@ -405,8 +417,8 @@ void osi_iput(struct inode *ip)
 void check_bad_parent(struct dentry *dp)
 {
   cred_t *credp;
-  struct vcache *vcp = (struct vcache*)dp->d_inode, *avc = NULL;
-  struct vcache *pvc = (struct vcache *)dp->d_parent->d_inode;
+  struct vcache *vcp = ITOAFS(dp->d_inode), *avc = NULL;
+  struct vcache *pvc = ITOAFS(dp->d_parent->d_inode);
 
   if (vcp->mvid->Fid.Volume != pvc->fid.Fid.Volume) { /* bad parent */
     credp = crref();

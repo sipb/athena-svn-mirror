@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/vlserver.c,v 1.1.1.1 2002-01-31 21:50:37 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/vlserver.c,v 1.1.1.1.2.1 2003-01-03 18:53:21 ghudson Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -262,8 +262,7 @@ char	**argv;
 	exit(2);
     }
     if (!rxJumbograms) {
-        rx_maxReceiveSize = OLD_MAX_PACKET_SIZE;
-	rxi_nSendFrags = rxi_nRecvFrags = 1;
+	rx_SetNoJumbo();
     }
     rx_SetRxDeadTime(50);
 

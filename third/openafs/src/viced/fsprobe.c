@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/fsprobe.c,v 1.1.1.1 2002-01-31 21:50:36 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/fsprobe.c,v 1.1.1.1.2.1 2003-01-03 18:53:20 ghudson Exp $");
 
 #include <afs/stds.h>
 #include <afs/afsint.h>
@@ -101,6 +101,9 @@ main(argc, argv)
     memset((char *)&host, 0, sizeof(struct sockaddr_in));
     host.sin_family = AF_INET;
     host.sin_addr.s_addr = inet_addr(av[0]);
+#ifdef STRUCT_SOCKADDR_HAS_SA_LEN
+    host.sin_len = sizeof(struct sockaddr_in);
+#endif
     if (host.sin_addr.s_addr != -1) {
 	strcpy(hnamebuf, av[0]);
 	hostname = hnamebuf;

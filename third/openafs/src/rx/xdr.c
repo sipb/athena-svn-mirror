@@ -34,7 +34,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr.c,v 1.1.1.1.2.1 2002-08-05 22:07:36 ghudson Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr.c,v 1.1.1.1.2.2 2003-01-03 18:53:09 ghudson Exp $");
 
 /*
  * xdr.c, Generic XDR routines implementation.
@@ -129,6 +129,49 @@ xdr_u_int(xdrs, up)
 	return (FALSE);
 }
 
+#else
+/*
+ * XDR afs_int32 integers
+ * same as xdr_u_long - open coded to save a proc call!
+ */
+bool_t
+xdr_int(xdrs, lp)
+	register XDR *xdrs;
+	int *lp;
+{
+
+	if (xdrs->x_op == XDR_ENCODE)
+		return (XDR_PUTINT32(xdrs, (long *)lp));
+
+	if (xdrs->x_op == XDR_DECODE)
+		return (XDR_GETINT32(xdrs, (long *)lp));
+
+	if (xdrs->x_op == XDR_FREE)
+		return (TRUE);
+
+	return (FALSE);
+}
+
+/*
+ * XDR unsigned afs_int32 integers
+ * same as xdr_long - open coded to save a proc call!
+ */
+bool_t
+xdr_u_int(xdrs, ulp)
+	register XDR *xdrs;
+	int *ulp;
+{
+
+	if (xdrs->x_op == XDR_DECODE)
+		return (XDR_GETINT32(xdrs, (long *)ulp));
+	if (xdrs->x_op == XDR_ENCODE)
+		return (XDR_PUTINT32(xdrs, (long *)ulp));
+	if (xdrs->x_op == XDR_FREE)
+		return (TRUE);
+	return (FALSE);
+}
+#endif
+
 
 /*
  * XDR afs_int32 integers
@@ -173,48 +216,7 @@ xdr_u_long(xdrs, ulp)
 
 	return (FALSE);
 }
-#else
-/*
- * XDR afs_int32 integers
- * same as xdr_u_long - open coded to save a proc call!
- */
-bool_t
-xdr_int(xdrs, lp)
-	register XDR *xdrs;
-	int *lp;
-{
 
-	if (xdrs->x_op == XDR_ENCODE)
-		return (XDR_PUTINT32(xdrs, (long *)lp));
-
-	if (xdrs->x_op == XDR_DECODE)
-		return (XDR_GETINT32(xdrs, (long *)lp));
-
-	if (xdrs->x_op == XDR_FREE)
-		return (TRUE);
-
-	return (FALSE);
-}
-
-/*
- * XDR unsigned afs_int32 integers
- * same as xdr_long - open coded to save a proc call!
- */
-bool_t
-xdr_u_int(xdrs, ulp)
-	register XDR *xdrs;
-	int *ulp;
-{
-
-	if (xdrs->x_op == XDR_DECODE)
-		return (XDR_GETINT32(xdrs, (long *)ulp));
-	if (xdrs->x_op == XDR_ENCODE)
-		return (XDR_PUTINT32(xdrs, (long *)ulp));
-	if (xdrs->x_op == XDR_FREE)
-		return (TRUE);
-	return (FALSE);
-}
-#endif
 /*
  * XDR chars
  */
@@ -556,7 +558,7 @@ xdr_string(xdrs, cpp, maxsize)
 	u_int size;
 	u_int nodesize;
 
-	if (maxsize > ((~0) >> 1) - 1) maxsize = ((~0) >> 1) - 1;
+        if (maxsize > ((~0) >> 1) - 1) maxsize = ((~0) >> 1) - 1;
 
 	/*
 	 * first deal with the length since xdr strings are counted-strings

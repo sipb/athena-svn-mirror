@@ -37,7 +37,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/crypt.c,v 1.1.1.1 2002-01-31 21:49:51 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/crypt.c,v 1.1.1.1.2.1 2003-01-03 18:53:00 ghudson Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <windows.h>
@@ -88,7 +88,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/crypt.c
  * define "LONG_IS_32_BITS" only if sizeof(long)==4.
  * This avoids use of bit fields (your compiler may be sloppy with them).
  */
-#if !defined(cray)
+#if !defined(cray) && !defined(AFS_ALPHA_LINUX20_ENV) && !defined(AFS_IA64_LINUX20_ENV)
 #define	LONG_IS_32_BITS
 #endif
 
@@ -249,13 +249,8 @@ typedef union {
 	struct {
 #if defined(LONG_IS_32_BITS)
 		/* long is often faster than a 32-bit bit field */
-#if defined(AFS_IA64_LINUX20_ENV)
-		int	i0;
-		int	i1;
-#else
 		long	i0;
 		long	i1;
-#endif
 #else
 		long	i0: 32;
 		long	i1: 32;

@@ -32,7 +32,7 @@ extern struct timeval time;
 #define	AFS_UCRED	ucred
 #define	AFS_PROC	proc_t
 
-#define osi_vnhold(avc, r)  do { VN_HOLD((struct vnode *)(avc)); } while(0)
+#define osi_vnhold(avc, r)  do { VN_HOLD(AFSTOV(avc)); } while(0)
 #define gop_rdwr(rw,gp,base,len,offset,segflg,unit,aresid) \
   vn_rdwr((rw),(gp),(base),(len),(offset),(segflg),(unit),(aresid),0)
 
@@ -87,11 +87,8 @@ extern void       afsHashRelease(tid_t key);
 extern caddr_t kmem_alloc();
 #include <sys/kthread_iface.h>	/* for kt_cred() */
 
+/* Expected to be available as a patch from HP */
+/* See section D of the top level README for details */
+#include <vfs_vm.h>
+
 #endif /* _OSI_MACHDEP_H_ */
-
-
-
-
-
-
-

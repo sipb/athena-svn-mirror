@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/ihandle.c,v 1.1.1.1.2.1 2002-11-13 19:52:55 ghudson Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/ihandle.c,v 1.1.1.1.2.2 2003-01-03 18:53:22 ghudson Exp $");
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -256,6 +256,9 @@ FdHandle_t *ih_open(IHandle_t *ihP)
     FdHandle_t *fdP;
     FD_t fd;
     FD_t closeFd;
+
+    if (!ihP) /* XXX should log here in the fileserver */
+	return NULL;
 
     IH_LOCK
 

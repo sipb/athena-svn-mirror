@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/bos/afs_bosAdmin.c,v 1.1.1.1 2002-01-31 21:50:50 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libadmin/bos/afs_bosAdmin.c,v 1.1.1.1.2.1 2003-01-03 18:53:04 ghudson Exp $");
 
 #include <stdio.h>
 #include <afs/stds.h>
@@ -64,8 +64,8 @@ extern int BOZO_RestartAll();
 extern int BOZO_SetCellName();
 extern int BOZO_SetNoAuthFlag();
 extern int BOZO_SetRestartTime();
-extern int BOZO_SetStatus(struct rx_connection *, const char *, long);
-extern int BOZO_SetTStatus(struct rx_connection *, const char *, long);
+extern int BOZO_SetStatus(struct rx_connection *, char *, afs_int32);
+extern int BOZO_SetTStatus(struct rx_connection *, char *, afs_int32);
 extern int BOZO_ShutdownAll();
 extern int BOZO_StartupAll();
 extern int BOZO_UnInstall();

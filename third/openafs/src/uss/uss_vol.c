@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol.c,v 1.1.1.1 2002-01-31 21:50:32 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol.c,v 1.1.1.1.2.1 2003-01-03 18:53:17 ghudson Exp $");
 
 #include "uss_vol.h"		/*Interface to this module*/
 #include "uss_common.h"		/*Common definitions*/
@@ -1114,7 +1114,7 @@ afs_int32 uss_vol_GetVolInfoFromMountPoint(a_mountpoint)
      */
     MapHostToNetwork(&vldbEntry);
     if (vldbEntry.volumeId[RWVOL] != volID) {
-	printf("s: Volume '%s' (ID %d) is not a read/write volume!!\n",
+	printf("%s: Volume '%s' (ID %d) is not a read/write volume!!\n",
 	       uss_whoami, uss_Volume, volID);
 	return(-1);
     }

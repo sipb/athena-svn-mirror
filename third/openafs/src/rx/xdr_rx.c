@@ -18,7 +18,7 @@
 #endif
 #include <afsconfig.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_rx.c,v 1.1.1.1 2002-01-31 21:48:30 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_rx.c,v 1.1.1.1.2.1 2003-01-03 18:53:09 ghudson Exp $");
 
 #ifdef KERNEL
 #ifndef UKERNEL
@@ -45,7 +45,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/xdr_rx.c
 #define u_quad_t __u_quad_t
 #endif
 #endif
-#include "../rpc/xdr.h"
+#include "../rx/xdr.h"
 #include "../netinet/in.h"
 #else /* !UKERNEL */
 #include "../afs/sysincludes.h"
@@ -102,11 +102,11 @@ void		xdrrx_destroy();
  * Ops vector for stdio type XDR
  */
 static struct xdr_ops	xdrrx_ops = {
-#if (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG != _MIPS_SZINT)) || defined(AFS_HPUX_64BIT_ENV)
+#if defined(KERNEL) && ((defined(AFS_SGI61_ENV) && (_MIPS_SZLONG != _MIPS_SZINT)) || defined(AFS_HPUX_64BIT_ENV))
 	xdrrx_getint64,
 	xdrrx_putint64,
-#endif /* (defined(AFS_SGI61_ENV) && (_MIPS_SZLONG != _MIPS_SZINT)) || defined(AFS_HPUX_64BIT_ENV) */
-#if !(defined(KERNEL) && defined(AFS_SUN57_ENV)) && !defined(AFS_HPUX_64BIT_ENV)
+#endif /* defined(KERNEL) && ((defined(AFS_SGI61_ENV) && (_MIPS_SZLONG != _MIPS_SZINT)) || defined(AFS_HPUX_64BIT_ENV)) */
+#if !(defined(KERNEL) && defined(AFS_SUN57_ENV)) 
 	xdrrx_getint32,	/* deserialize an afs_int32 */
 	xdrrx_putint32,	/* serialize an afs_int32 */
 #endif

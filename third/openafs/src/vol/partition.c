@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/partition.c,v 1.1.1.1 2002-01-31 21:32:10 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/partition.c,v 1.1.1.1.2.1 2003-01-03 18:53:22 ghudson Exp $");
 
 #include <ctype.h>
 #ifdef AFS_NT40_ENV
@@ -75,6 +75,9 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vol/partiti
 #else
 #if	defined(AFS_SUN_ENV)
 #include <sys/vfs.h>
+#ifndef AFS_SUN5_ENV
+#include <mntent.h>
+#endif
 #endif
 #ifdef AFS_SUN5_ENV
 #include <unistd.h>
@@ -194,9 +197,11 @@ static void VInitPartition_r(char *path, char *devname, Device dev)
     else
 	DiskPartitionList = dp;
     dp->next = 0;
-    strcpy(dp->name, path);
+    dp->name = (char *)malloc(strlen(path) + 1);
+    strncpy(dp->name, path, strlen(path) + 1);
 #if defined(AFS_NAMEI_ENV) && !defined(AFS_NT40_ENV)
     /* Create a lockfile for the partition, of the form /vicepa/Lock/vicepa */
+    dp->devName = (char *)malloc(2 * strlen(path) + 6);
     strcpy(dp->devName, path);
     strcat(dp->devName, "/");
     strcat(dp->devName, "Lock");
@@ -205,7 +210,8 @@ static void VInitPartition_r(char *path, char *devname, Device dev)
     close(open(dp->devName, O_RDWR | O_CREAT, 0600));
     dp->device = volutil_GetPartitionID(path);
 #else
-    strcpy(dp->devName, devname);
+    dp->devName = (char *)malloc(strlen(devname) + 1);
+    strncpy(dp->devName, devname, strlen(devname) + 1);
     dp->device = dev;
 #endif
     dp->lock_fd = -1;
@@ -303,7 +309,7 @@ int VCheckPartition(part, devname)
 	return -1;
 #endif
 
-#ifdef AFS_DUX40_ENV
+#if defined(AFS_DUX40_ENV) && !defined(AFS_NAMEI_ENV)
     if (status.st_ino != ROOTINO) {
 	Log("%s is not a mounted file system; ignored.\n", part);
 	return 0;
@@ -500,6 +506,7 @@ int VAttachPartitions(void)
 	    continue; /* Ignore any "special" partitions */
 
 #ifdef AFS_AIX42_ENV
+#ifndef AFS_NAMEI_ENV
 	{
 	    struct superblock fs;
 	    /* The Log statements are non-sequiters in the SalvageLog and don't
@@ -516,6 +523,7 @@ int VAttachPartitions(void)
 		continue;
 	    }
 	}
+#endif
 #endif
 
 	/* If we're going to always attach this partition, do it later. */

@@ -9,6 +9,8 @@
 
 //#define NOSERVICE 1
 
+#define NOMOREFILESFIX 1
+
 #include <afs/param.h>
 #include <afs/stds.h>
 
@@ -2276,6 +2278,7 @@ long smb_ReceiveNegotiate(smb_vc_t *vcp, smb_packet_t *inp, smb_packet_t *outp)
                 namep += entryLength;
                 tcounter++;		/* which proto entry we're looking at */
         }
+#ifndef NOMOREFILESFIX
 	/* 
 	 * NOTE: We can determine what OS (NT4.0, W2K, W9X, etc)
 	 * the client is running by reading the protocol signature.
@@ -2310,6 +2313,8 @@ long smb_ReceiveNegotiate(smb_vc_t *vcp, smb_packet_t *inp, smb_packet_t *outp)
 		       */
 	       }
 	}
+	// NOMOREFILESFIX
+#endif
 
         if (NTProtoIndex != -1) {
 		protoIndex = NTProtoIndex;
@@ -3826,6 +3831,7 @@ long smb_ReceiveCoreRename(smb_vc_t *vcp, smb_packet_t *inp, smb_packet_t *outp)
         smb_renameRock_t rock;
         cm_scache_t *oldDscp;
         cm_scache_t *newDscp;
+	cm_scache_t *tmpscp;
         char *oldLastNamep;
         char *newLastNamep;
         osi_hyper_t thyper;
@@ -3909,6 +3915,14 @@ long smb_ReceiveCoreRename(smb_vc_t *vcp, smb_packet_t *inp, smb_packet_t *outp)
          */
 	thyper.LowPart = 0;		/* search dir from here */
         thyper.HighPart = 0;
+	/* search for file to already exhist, if so return error*/
+
+	code = cm_Lookup(newDscp,newLastNamep,CM_FLAG_CHECKPATH,userp,&req,&tmpscp);
+	if((code != CM_ERROR_NOSUCHFILE) && (code != CM_ERROR_NOSUCHPATH) && (code != CM_ERROR_NOSUCHVOLUME) ) {
+	    cm_ReleaseSCache(tmpscp);
+	    return CM_ERROR_EXISTS; /* file exist, do not rename, also 
+				       fixes move*/
+	}
         code = cm_ApplyDir(oldDscp, smb_RenameProc, &rock, &thyper, userp, &req, NULL);
 
         if (code == CM_ERROR_STOPNOW)
@@ -6045,6 +6059,22 @@ void smb_NetbiosInit()
     int len;
     int lana_found = 0;
 
+    /*******************************************************************/
+    /*      ms loopback adapter scan                                   */
+    /*******************************************************************/
+    struct
+    {
+	ADAPTER_STATUS status;
+	NAME_BUFFER    NameBuff [30];
+    }       Adapter;
+    
+    int j;
+    BOOL wla_found;
+
+    /*      AFAIK, this is the default for the ms loopback adapter.*/
+    unsigned char kWLA_MAC[6] = { 0x02, 0x00, 0x4c, 0x4f, 0x4f, 0x50 };
+    /*******************************************************************/
+
     /* setup the NCB system */
     ncbp = GetNCB();
 #ifdef DJGPP
@@ -6082,11 +6112,34 @@ void smb_NetbiosInit()
 	    sprintf(s, "Netbios NCBRESET lana %d error code %d", lana_list.lana[i], code);
 	    afsi_log(s);
 	    lana_list.lana[i] = 255;  /* invalid lana */
-        }
-        else {
+        } else {
             sprintf(s, "Netbios NCBRESET lana %d succeeded", lana_list.lana[i]);
             afsi_log(s);
-        }
+	    /* check to see if this is the "Microsoft Loopback Adapter"        */
+	    memset( ncbp, 0, sizeof (*ncbp) );
+	    ncbp->ncb_command = NCBASTAT;
+	    ncbp->ncb_lana_num = lana_list.lana[i];
+	    strcpy( ncbp->ncb_callname,  "*               " );
+	    ncbp->ncb_buffer = (char *) &Adapter;
+	    ncbp->ncb_length = sizeof(Adapter);
+	    code = Netbios( ncbp );
+	    
+	    if ( code == 0 ) {
+		wla_found = TRUE;
+		for (j=0; wla_found && (j<6); j++)
+		    wla_found = ( Adapter.status.adapter_address[j] == kWLA_MAC[j] );
+		
+		if ( wla_found ) {
+		    sprintf(s, "Windows Loopback Adapter detected lana %d", lana_list.lana[i]);
+		    afsi_log(s);
+		    
+		    /* select this lana; no need to continue */
+		    lana_list.length = 1;
+		    lana_list.lana[0] = lana_list.lana[i];
+		    break;
+		}
+	    }
+	}
     }
 #else
     /* for DJGPP, there is no NCBENUM and NCBRESET is a real reset.  so

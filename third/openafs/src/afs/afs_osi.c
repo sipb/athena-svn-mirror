@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_osi.c,v 1.1.1.1 2002-01-31 21:34:02 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_osi.c,v 1.1.1.1.2.1 2003-01-03 18:52:43 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -56,7 +56,7 @@ void osi_Init()
     afs_global_owner = (thread_t)0;
 #elif defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
     lockinit(&afs_global_lock, PLOCK, "afs global lock", 0, 0);
-    afs_global_owner = (thread_t)0;
+    afs_global_owner = 0;
 #elif defined(AFS_AIX41_ENV)
     lock_alloc((void*)&afs_global_lock, LOCK_ALLOC_PIN, 1, 1);
     simple_lock_init((void *)&afs_global_lock);
@@ -91,10 +91,10 @@ register struct vcache *avc; {
     if (avc->opens > 0 || ((avc->v.v_flag & VTEXT) && !inode_uncache_try(avc))) return 1;
 #else
 #if defined(AFS_SGI_ENV)
-    if ((avc->opens > 0) || AFS_VN_MAPPED((struct vnode *)avc))
+    if ((avc->opens > 0) || AFS_VN_MAPPED(AFSTOV(avc)))
         return 1;
 #else
-    if (avc->opens > 0 || (avc->v.v_flag & VTEXT)) return(1);
+    if (avc->opens > 0 || (AFSTOV(avc)->v_flag & VTEXT)) return(1);
 #endif
 #endif /* AFS_MACH_ENV */
 #endif
@@ -315,9 +315,12 @@ void afs_osi_Invisible() {
 #if AFS_HPUX101_ENV
     set_system_proc(u.u_procp);
 #endif
-#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_DARWIN_ENV)
     /* maybe call init_process instead? */
     current_proc()->p_flag |= P_SYSTEM;
+#endif
+#if defined(AFS_FBSD_ENV)
+    curproc->p_flag |= P_SYSTEM;
 #endif
 #if defined(AFS_SGI_ENV)
     vrelvm();
@@ -368,7 +371,27 @@ afs_osi_SetTime(atv)
     stime(&sta);
     AFS_GLOCK();
 #else
-#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_FBSD_ENV)
+    /* does not impliment security features of kern_time.c:settime() */
+    struct timespec ts;
+    struct timeval tv,delta;
+    extern void (*lease_updatetime)();
+    int s;
+    AFS_GUNLOCK();
+    s=splclock();
+    microtime(&tv);
+    delta=*atv;
+    timevalsub(&delta, &tv);
+    ts.tv_sec=atv->tv_sec;
+    ts.tv_nsec=atv->tv_usec * 1000;
+    set_timecounter(&ts);
+    (void) splsoftclock();
+    lease_updatetime(delta.tv_sec);
+    splx(s);
+    resettodr();
+    AFS_GLOCK();
+#else
+#if defined(AFS_DARWIN_ENV)
     AFS_GUNLOCK();
     setthetime(atv);
     AFS_GLOCK();
@@ -396,7 +419,8 @@ afs_osi_SetTime(atv)
 #ifdef	AFS_AUX_ENV
     logtchg(atv->tv_sec);
 #endif
-#endif  /* AFS_DARWIN_ENV || AFS_FBSD_ENV */
+#endif  /* AFS_DARWIN_ENV */
+#endif  /* AFS_FBSD_ENV */
 #endif	/* AFS_SGI_ENV */
 #endif /* AFS_SUN55_ENV */
 #endif /* AFS_SUN5_ENV */
@@ -420,7 +444,7 @@ void *afs_osi_Alloc(size_t x)
     AFS_STATS(afs_stats_cmperf.OutStandingAllocs++);
     AFS_STATS(afs_stats_cmperf.OutStandingMemUsage += x);
 #ifdef AFS_LINUX20_ENV
-    return osi_linux_alloc(x);
+    return osi_linux_alloc(x, 1);
 #else
     size = x;
     tm = (struct osimem *) AFS_KALLOC(size);
@@ -775,6 +799,25 @@ void afs_osi_TraverseProcTable()
 }   
 #endif
 
+#if defined(AFS_LINUX22_ENV)
+void afs_osi_TraverseProcTable()
+{   
+    struct task_struct *p;
+
+#ifdef EXPORTED_TASKLIST_LOCK
+    read_lock(&tasklist_lock);
+#endif
+    for_each_task(p) if (p->pid) {
+        if (p->state & TASK_ZOMBIE)
+            continue;
+	afs_GCPAGs_perproc_func(p);
+    }
+#ifdef EXPORTED_TASKLIST_LOCK
+    read_unlock(&tasklist_lock);
+#endif
+}   
+#endif
+
 /* return a pointer (sometimes a static copy ) to the cred for a
  * given AFS_PROC.
  * subsequent calls may overwrite the previously returned value.
@@ -952,6 +995,29 @@ const struct AFS_UCRED *afs_osi_proc2cred(AFS_PROC *pr)
              sizeof(gid_t));
        pcred_unlock(pr);
        rv = &cr;
+    }
+    
+    return rv;
+}  
+#elif defined(AFS_LINUX22_ENV)
+const struct AFS_UCRED *afs_osi_proc2cred(AFS_PROC *pr)
+{   
+    struct AFS_UCRED *rv=NULL;
+    static struct AFS_UCRED cr;
+
+    if(pr == NULL) {
+       return NULL;
+    }
+   
+    if ((pr->state == TASK_RUNNING) ||
+	(pr->state == TASK_INTERRUPTIBLE) ||
+	(pr->state == TASK_UNINTERRUPTIBLE) ||
+	(pr->state == TASK_STOPPED)) {
+	cr.cr_ref=1;
+	cr.cr_uid=pr->uid;
+	cr.cr_ngroups=pr->ngroups;
+	memcpy(cr.cr_groups, pr->groups, NGROUPS * sizeof(gid_t));
+	rv = &cr;
     }
     
     return rv;

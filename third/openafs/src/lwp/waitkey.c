@@ -22,7 +22,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/lwp/waitkey.c,v 1.1.1.1 2002-01-31 21:32:00 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/lwp/waitkey.c,v 1.1.1.1.2.1 2003-01-03 18:53:06 ghudson Exp $");
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -253,7 +253,7 @@ int LWP_GetResponseKey(int seconds, char *key)
 #ifdef AFS_NT40_ENV
   *key = getche(); /* get char and echo it to screen */
 #else
-  *key = getchar();
+  *key = (char ) getchar();
 #endif
 
   return rc;

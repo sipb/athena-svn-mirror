@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_file.c,v 1.1.1.1 2002-01-31 21:31:36 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/SOLARIS/osi_file.c,v 1.1.1.1.2.1 2003-01-03 18:52:49 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -149,8 +149,11 @@ void *osi_VxfsOpen(ainode)
 }
 #endif /* AFS_HAVE_VXFS */
 
-void *osi_UfsOpen(ainode)
-    afs_int32 ainode;
+#if defined(AFS_SUN57_64BIT_ENV)
+void *osi_UfsOpen(ino_t ainode)
+#else
+void *osi_UfsOpen(afs_int32 ainode)
+#endif
 {
     struct inode *ip;
     register struct osi_file *afile = NULL;
@@ -339,13 +342,9 @@ afs_osi_Write(afile, offset, aptr, asize)
         osi_Panic("afs_osi_Write called with null param");
     if (offset != -1) afile->offset = offset;
     AFS_GUNLOCK();
-#ifdef AFS_SUN59_ENV
-    code = gop_rdwr(UIO_WRITE, afile->vnode, (caddr_t) aptr, asize, afile->offset,
-		  AFS_UIOSYS, 0, curproc->p_fsz_ctl.rlim_cur, &afs_osi_cred, &resid);
-#else
-    code = gop_rdwr(UIO_WRITE, afile->vnode, (caddr_t) aptr, asize, afile->offset,
-		  AFS_UIOSYS, 0,  (u.u_rlimit[RLIMIT_FSIZE].rlim_cur), &afs_osi_cred, &resid);
-#endif
+    code = gop_rdwr(UIO_WRITE, afile->vnode, (caddr_t) aptr, asize,
+		    afile->offset, AFS_UIOSYS, 0, RLIM64_INFINITY,
+		    &afs_osi_cred, &resid);
     AFS_GLOCK();
     if (code == 0) {
 	code = asize - resid;

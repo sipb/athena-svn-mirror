@@ -21,7 +21,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_attrs.c,v 1.1.1.1.2.2 2002-09-10 20:24:17 ghudson Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_attrs.c,v 1.1.1.1.2.3 2003-01-03 18:52:50 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -105,7 +105,17 @@ afs_CopyOutAttrs(avc, attrs)
      * anyway, so the difference between 512K and 1000000 shouldn't matter
      * much, and "&" is a lot faster than "%".
      */
-#if defined(AFS_SGI_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_AIX41_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+    /* nfs on these systems puts an 0 in nsec and stores the nfs usec (aka 
+       dataversion) in va_gen */
+
+    attrs->va_atime.tv_nsec = attrs->va_mtime.tv_nsec =
+	attrs->va_ctime.tv_nsec =0;
+    attrs->va_blocksize = PAGESIZE;		/* XXX Was 8192 XXX */
+    attrs->va_gen = hgetlo(avc->m.DataVersion);
+    attrs->va_flags = 0;
+#else
+#if defined(AFS_SGI_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_AIX41_ENV) 
     attrs->va_atime.tv_nsec = attrs->va_mtime.tv_nsec =
 	attrs->va_ctime.tv_nsec =
 	    (hgetlo(avc->m.DataVersion) & 0x7ffff) * 1000;
@@ -119,6 +129,7 @@ afs_CopyOutAttrs(avc, attrs)
 	attrs->va_ctime.tv_usec =
 	    (hgetlo(avc->m.DataVersion) & 0x7ffff);
     attrs->va_blocksize = PAGESIZE;		/* XXX Was 8192 XXX */
+#endif
 #endif
 #ifdef AFS_DEC_ENV
     /* Have to use real device #s in Ultrix, since that's how FS type is
@@ -136,14 +147,14 @@ afs_CopyOutAttrs(avc, attrs)
      * Below return 0 (and not 1) blocks if the file is zero length. This conforms
      * better with the other filesystems that do return 0.	
      */
-#if   defined(AFS_OSF_ENV) || defined(AFS_DARWIN_ENV)
+#if   defined(AFS_OSF_ENV)
 #ifdef	va_size_rsv
     attrs->va_size_rsv = 0;
 #endif
 /* XXX do this */
 /*    attrs->va_gen = avc->m.DataVersion;*/
     attrs->va_flags = 0;
-#endif	/* AFS_OSF_ENV || AFS_DARWIN_ENV */
+#endif	/* AFS_OSF_ENV */
 
 #if !defined(AFS_OSF_ENV) && !defined(AFS_DARWIN_ENV) && !defined(AFS_FBSD_ENV)
 #if !defined(AFS_HPUX_ENV)
@@ -168,7 +179,7 @@ afs_CopyOutAttrs(avc, attrs)
 
 #ifdef AFS_LINUX22_ENV
     /* And linux has it's own stash as well. */
-    vattr2inode((struct inode*)avc, attrs);
+    vattr2inode(AFSTOV(avc), attrs);
 #endif
     return 0;
 }
@@ -215,6 +226,12 @@ afs_getattr(OSI_VC_ARG(avc), attrs, acred)
 
 #if defined(AFS_SUN5_ENV)
     if (flags & ATTR_HINT) {
+       code = afs_CopyOutAttrs(avc, attrs);
+       return code;
+    }
+#endif
+#if defined(AFS_DARWIN_ENV)
+    if (avc->states & CUBCinit) {
        code = afs_CopyOutAttrs(avc, attrs);
        return code;
     }
@@ -289,8 +306,8 @@ afs_getattr(OSI_VC_ARG(avc), attrs, acred)
 		    attrs->va_nodeid = ip->i_ino;
 		}
 #else
-		if (avc->v.v_flag & VROOT) {
-		    struct vnode *vp = (struct vnode *)avc;
+		if (AFSTOV(avc)->v_flag & VROOT) {
+		    struct vnode *vp = AFSTOV(avc);
 
 		    vp = vp->v_vfsp->vfs_vnodecovered;
 		    if (vp) {	/* Ignore weird failures */

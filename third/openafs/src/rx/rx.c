@@ -16,7 +16,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.5.2.1 2002-11-13 19:52:57 ghudson Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.5.2.2 2003-01-03 18:53:07 ghudson Exp $");
 
 #ifdef KERNEL
 #include "../afs/sysincludes.h"
@@ -263,23 +263,31 @@ void rxi_StartUnlocked();
 struct rx_connection *rxLastConn = 0; 
 
 #ifdef RX_ENABLE_LOCKS
-/* The locking hierarchy for rx fine grain locking is composed of five
+/* The locking hierarchy for rx fine grain locking is composed of these
  * tiers:
+ *
+ * rx_connHashTable_lock - synchronizes conn creation, rx_connHashTable access
  * conn_call_lock - used to synchonize rx_EndCall and rx_NewCall
  * call->lock - locks call data fields.
- * Most any other lock - these are all independent of each other.....
- *	rx_freePktQ_lock
+ * These are independent of each other:
  *	rx_freeCallQueue_lock
- *	freeSQEList_lock
- *	rx_connHashTable_lock
- *	rx_serverPool_lock
  *	rxi_keyCreate_lock
+ * rx_serverPool_lock
+ * freeSQEList_lock
+ *
+ * serverQueueEntry->lock
+ * rx_rpc_stats
  * rx_peerHashTable_lock - locked under rx_connHashTable_lock
-
+ * peer->lock - locks peer data fields.
+ * conn_data_lock - that more than one thread is not updating a conn data
+ *		    field at the same time.
+ * rx_freePktQ_lock
+ *
  * lowest level:
- *	peer_lock - locks peer data fields.
- *	conn_data_lock - that more than one thread is not updating a conn data
- *		field at the same time.
+ *	multi_handle->lock
+ *	rxevent_lock
+ *	rx_stats_mutex
+ *
  * Do we need a lock to protect the peer field in the conn structure?
  *      conn->peer was previously a constant for all intents and so has no
  *      lock protecting this field. The multihomed client delta introduced
@@ -404,9 +412,9 @@ int rx_Init(u_int port)
 #ifdef RX_LOCKS_DB
     rxdb_init();
 #endif /* RX_LOCKS_DB */
-    MUTEX_INIT(&rx_stats_mutex, "rx_stats_mutex",MUTEX_DEFAULT,0);    
-    MUTEX_INIT(&rx_rpc_stats, "rx_rpc_stats",MUTEX_DEFAULT,0);    
-    MUTEX_INIT(&rx_freePktQ_lock, "rx_freePktQ_lock",MUTEX_DEFAULT,0);    
+    MUTEX_INIT(&rx_stats_mutex, "rx_stats_mutex",MUTEX_DEFAULT,0);
+    MUTEX_INIT(&rx_rpc_stats, "rx_rpc_stats",MUTEX_DEFAULT,0);
+    MUTEX_INIT(&rx_freePktQ_lock, "rx_freePktQ_lock",MUTEX_DEFAULT,0);
     MUTEX_INIT(&freeSQEList_lock, "freeSQEList lock",MUTEX_DEFAULT,0);
     MUTEX_INIT(&rx_freeCallQueue_lock, "rx_freeCallQueue_lock",
 	       MUTEX_DEFAULT,0);
@@ -1425,7 +1433,7 @@ osi_socket *socketp;
     } else {    /* otherwise allocate a new one and return that */
 	MUTEX_EXIT(&freeSQEList_lock);
 	sq = (struct rx_serverQueueEntry *) rxi_Alloc(sizeof(struct rx_serverQueueEntry));
-	MUTEX_INIT(&sq->lock, "server Queue lock",MUTEX_DEFAULT,0);	
+	MUTEX_INIT(&sq->lock, "server Queue lock",MUTEX_DEFAULT,0);
 	CV_INIT(&sq->cv, "server Queue lock", CV_DEFAULT, 0);
     }
 
@@ -1583,7 +1591,7 @@ rx_GetCall(tno, cur_service, socketp)
     } else {    /* otherwise allocate a new one and return that */
 	MUTEX_EXIT(&freeSQEList_lock);
 	sq = (struct rx_serverQueueEntry *) rxi_Alloc(sizeof(struct rx_serverQueueEntry));
-	MUTEX_INIT(&sq->lock, "server Queue lock",MUTEX_DEFAULT,0);	
+	MUTEX_INIT(&sq->lock, "server Queue lock",MUTEX_DEFAULT,0);
 	CV_INIT(&sq->cv, "server Queue lock", CV_DEFAULT, 0);
     }
     MUTEX_ENTER(&sq->lock);
@@ -1788,6 +1796,16 @@ afs_int32 rx_EndCall(call, rc)
 	 || (call->mode == RX_MODE_RECEIVING && call->rnext == 1)) {
 	    (void) rxi_ReadProc(call, &dummy, 1);
 	}
+
+	/* If we had an outstanding delayed ack, be nice to the server
+	 * and force-send it now.
+	 */
+	if (call->delayedAckEvent) {
+	    rxevent_Cancel(call->delayedAckEvent, call, RX_CALL_REFCOUNT_DELAY);
+	    call->delayedAckEvent = NULL;
+	    rxi_SendDelayedAck(NULL, call, NULL);
+	}
+
 	/* We need to release the call lock since it's lower than the
 	 * conn_call_lock and we don't want to hold the conn_call_lock
 	 * over the rx_ReadProc call. The conn_call_lock needs to be held
@@ -2390,9 +2408,9 @@ struct rx_packet *rxi_ReceivePacket(np, socket, host, port, tnop, newcallp)
 	addr.sin_family = AF_INET;
 	addr.sin_port = port;
 	addr.sin_addr.s_addr = host;
-#if  defined(AFS_OSF_ENV) && defined(_KERNEL)
+#ifdef STRUCT_SOCKADDR_HAS_SA_LEN 
         addr.sin_len = sizeof(addr);
-#endif  /* AFS_OSF_ENV */
+#endif  /* STRUCT_SOCKADDR_HAS_SA_LEN */
 	drop = (*rx_justReceived) (np, &addr);
 	/* drop packet if return value is non-zero */
 	if (drop) return np;
@@ -2744,8 +2762,11 @@ struct rx_packet *rxi_ReceivePacket(np, socket, host, port, tnop, newcallp)
 	    /* Respond immediately to ack packets requesting acknowledgement
              * (ping packets) */
 	    if (np->header.flags & RX_REQUEST_ACK) {
-		if (call->error) (void) rxi_SendCallAbort(call, 0, 1, 0);
-		else (void) rxi_SendAck(call, 0, 0, 0, 0, RX_ACK_PING_RESPONSE, 1);
+		if (call->error)
+		    (void) rxi_SendCallAbort(call, 0, 1, 0);
+		else
+		    (void) rxi_SendAck(call, 0, 0, np->header.serial, 0,
+				       RX_ACK_PING_RESPONSE, 1);
 	    }
 	    np = rxi_ReceiveAckPacket(call, np, 1);
 	    break;
@@ -3344,6 +3365,27 @@ static void rxi_UpdatePeerReach(conn, acall)
 	MUTEX_EXIT(&conn->conn_data_lock);
 }
 
+/* rxi_ComputePeerNetStats
+ *
+ * Called exclusively by rxi_ReceiveAckPacket to compute network link
+ * estimates (like RTT and throughput) based on ack packets.  Caller
+ * must ensure that the packet in question is the right one (i.e.
+ * serial number matches).
+ */
+static void
+rxi_ComputePeerNetStats(struct rx_call *call, struct rx_packet *p,
+	struct rx_ackPacket *ap, struct rx_packet *np)
+{
+    struct rx_peer *peer = call->conn->peer;
+
+    /* Use RTT if not delayed by client. */
+    if (ap->reason != RX_ACK_DELAY)
+	rxi_ComputeRoundTripTime(p, &p->timeSent, peer);
+#ifdef ADAPT_WINDOW
+    rxi_ComputeRate(peer, call, p, np, ap->reason);
+#endif
+}
+
 /* The real smarts of the whole thing.  */
 struct rx_packet *rxi_ReceiveAckPacket(call, np, istack)
     register struct rx_call *call;
@@ -3411,15 +3453,6 @@ struct rx_packet *rxi_ReceiveAckPacket(call, np, istack)
     }
 #endif
 
-    /* if a server connection has been re-created, it doesn't remember what
-	serial # it was up to.  An ack will tell us, since the serial field
-	contains the largest serial received by the other side */
-    MUTEX_ENTER(&conn->conn_data_lock);
-    if ((conn->type == RX_SERVER_CONNECTION) && (conn->serial < serial)) {
-	conn->serial = serial+1;
-    }
-    MUTEX_EXIT(&conn->conn_data_lock);
-
     /* Update the outgoing packet skew value to the latest value of
      * the peer's incoming packet skew value.  The ack packet, of
      * course, could arrive out of order, but that won't affect things
@@ -3435,22 +3468,9 @@ struct rx_packet *rxi_ReceiveAckPacket(call, np, istack)
     for (queue_Scan(&call->tq, tp, nxp, rx_packet)) {
 	if (tp->header.seq >= first) break;
 	call->tfirst = tp->header.seq + 1;
-	if (tp->header.serial == serial) {
-	  /* Use RTT if not delayed by client. */
-	  if (ap->reason != RX_ACK_DELAY)
-	      rxi_ComputeRoundTripTime(tp, &tp->timeSent, peer);
-#ifdef ADAPT_WINDOW
-	  rxi_ComputeRate(peer, call, tp, np, ap->reason);
-#endif
-	}
-	else if (tp->firstSerial == serial) {
-	    /* Use RTT if not delayed by client. */
-	    if (ap->reason != RX_ACK_DELAY)
-		rxi_ComputeRoundTripTime(tp, &tp->firstSent, peer);
-#ifdef ADAPT_WINDOW
-	  rxi_ComputeRate(peer, call, tp, np, ap->reason);
-#endif
-	}
+	if (serial && (tp->header.serial == serial ||
+		       tp->firstSerial == serial))
+	    rxi_ComputePeerNetStats(call, tp, ap, np);
 #ifdef	AFS_GLOBAL_RXLOCK_KERNEL
     /* XXX Hack. Because we have to release the global rx lock when sending
      * packets (osi_NetSend) we drop all acks while we're traversing the tq
@@ -3503,30 +3523,12 @@ struct rx_packet *rxi_ReceiveAckPacket(call, np, istack)
          * of this packet */
 #ifdef AFS_GLOBAL_RXLOCK_KERNEL
 #ifdef RX_ENABLE_LOCKS
-	if (tp->header.seq >= first) {
+	if (tp->header.seq >= first)
 #endif /* RX_ENABLE_LOCKS */
 #endif /* AFS_GLOBAL_RXLOCK_KERNEL */
-	if (tp->header.serial == serial) {
-	    /* Use RTT if not delayed by client. */
-	    if (ap->reason != RX_ACK_DELAY)
-		rxi_ComputeRoundTripTime(tp, &tp->timeSent, peer);
-#ifdef ADAPT_WINDOW
-	  rxi_ComputeRate(peer, call, tp, np, ap->reason);
-#endif
-	}
-	else if ((tp->firstSerial == serial)) {
-	    /* Use RTT if not delayed by client. */
-	    if (ap->reason != RX_ACK_DELAY)
-		rxi_ComputeRoundTripTime(tp, &tp->firstSent, peer);
-#ifdef ADAPT_WINDOW
-	  rxi_ComputeRate(peer, call, tp, np, ap->reason);
-#endif
-	}
-#ifdef AFS_GLOBAL_RXLOCK_KERNEL
-#ifdef RX_ENABLE_LOCKS
-	}
-#endif /* RX_ENABLE_LOCKS */
-#endif /* AFS_GLOBAL_RXLOCK_KERNEL */
+	    if (serial && (tp->header.serial == serial ||
+			   tp->firstSerial == serial))
+		rxi_ComputePeerNetStats(call, tp, ap, np);
 
 	/* Set the acknowledge flag per packet based on the
          * information in the ack packet. An acknowlegded packet can
@@ -4535,7 +4537,7 @@ struct rx_packet *rxi_SendAck(call, optionalPacket, seq, serial, pflags, reason,
 
     /* The skew computation used to be bogus, I think it's better now. */
     /* We should start paying attention to skew.    XXX  */
-    ap->serial = htonl(call->conn->maxSerial);
+    ap->serial = htonl(serial);
     ap->maxSkew	= 0;	/* used to be peer->inPacketSkew */
 
     ap->firstPacket = htonl(call->rnext); /* First packet not yet forwarded to reader */
@@ -6153,6 +6155,9 @@ static int MakeDebugCall(
     taddr.sin_family = AF_INET;
     taddr.sin_port = remotePort;
     taddr.sin_addr.s_addr = remoteAddr;
+#ifdef STRUCT_SOCKADDR_HAS_SA_LEN
+    taddr.sin_len = sizeof(struct sockaddr_in);
+#endif
     while(1) {
 	memset(&theader, 0, sizeof(theader));
 	theader.epoch = htonl(999);

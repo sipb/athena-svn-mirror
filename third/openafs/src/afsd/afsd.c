@@ -55,7 +55,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.1.1.1.2.1 2002-08-06 16:39:51 ghudson Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afsd/afsd.c,v 1.1.1.1.2.2 2003-01-03 18:52:51 ghudson Exp $");
 
 #define VFS 1
 
@@ -154,8 +154,12 @@ void set_staticaddrs(void);
 #if AFS_HAVE_STATVFS
 #include <sys/statvfs.h>
 #else
+#if defined(AFS_SUN_ENV)
+#include <sys/vfs.h>
+#else
 #if !defined(AFS_OSF_ENV) && !defined(AFS_DARWIN_ENV) && !defined(AFS_XBSD_ENV)
 #include <sys/statfs.h>
+#endif
 #endif
 #endif
 
@@ -342,8 +346,6 @@ int ParseCacheInfoFile()
 	    printf("\t%d out of 3 fields successfully parsed.\n",
 		   parseResult);
 
-	printf("\tcacheMountDir: '%s'\n\tcacheBaseDir: '%s'\n\tcacheBlocks: %d\n",
-	       cacheMountDir, cacheBaseDir, cacheBlocks);
 	return(1);
     }
 
@@ -1291,7 +1293,11 @@ mainproc(as, arock)
 	 * Cold shutdown is the default
 	 */
 	printf("afsd: Shutting down all afs processes and afs state\n");
-	call_syscall(AFSOP_SHUTDOWN, 1);
+	code = call_syscall(AFSOP_SHUTDOWN, 1);
+	if (code) {
+	    printf("afsd: AFS still mounted; Not shutting down\n");
+	    exit(1);
+	}
 	exit(0);
     }
     if (as->parms[21].items) {
@@ -1329,6 +1335,10 @@ mainproc(as, arock)
     }
     if (as->parms[27].items) {
 	/* -fakestat */
+	enable_fakestat = 2;
+    }
+    if (as->parms[28].items) {
+	/* -fakestat-all */
 	enable_fakestat = 1;
     }
 
@@ -1573,7 +1583,7 @@ mainproc(as, arock)
     if (enable_fakestat) {
 	if (afsd_verbose)
 	    printf("%s: Enabling fakestat support in kernel.\n", rn);
-	code = call_syscall(AFSOP_SET_FAKESTAT, 1);
+	code = call_syscall(AFSOP_SET_FAKESTAT, enable_fakestat);
 	if (code)
 	    printf("%s: Error enabling fakestat support.\n", rn);
     }
@@ -1931,7 +1941,8 @@ char **argv; {
 		), "Enable AFSDB support");
     cmd_AddParm(ts, "-files_per_subdir", CMD_SINGLE, CMD_OPTIONAL, "log(2) of the number of cache files per cache subdirectory");
     cmd_AddParm(ts, "-dynroot", CMD_FLAG, CMD_OPTIONAL, "Enable dynroot support");
-    cmd_AddParm(ts, "-fakestat", CMD_FLAG, CMD_OPTIONAL, "Enable fakestat support");
+    cmd_AddParm(ts, "-fakestat", CMD_FLAG, CMD_OPTIONAL, "Enable fakestat support for cross-cell mounts");
+    cmd_AddParm(ts, "-fakestat-all", CMD_FLAG, CMD_OPTIONAL, "Enable fakestat support for all mounts");
     return (cmd_Dispatch(argc, argv));
 }
 

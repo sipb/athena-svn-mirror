@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vsprocs.c,v 1.1.1.1 2002-01-31 21:32:10 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vsprocs.c,v 1.1.1.1.2.1 2003-01-03 18:53:23 ghudson Exp $");
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -97,7 +97,7 @@ char *partName;
 yesprompt(str)
 char *str;
 {
-    char response, c;
+    int response, c;
     int code;
 
     fprintf(STDERR, "Do you want to %s? [yn](n): ", str);
@@ -3810,7 +3810,7 @@ static afs_int32 CheckVolume(volumeinfo, aserver, apart, modentry, maxvolid)
 	       if (entry.serverFlags[j] & ITSROVOL) {
 		  /* Verify this volume exists and print message we are orphaning it */
 		  if (pass == 1) {
-		     MapPartIdIntoName(apart, entry.serverPartition[j]);
+		     MapPartIdIntoName(apart, pname);
 		     fprintf(STDERR,"*** Warning: Orphaned RO volume %u exists on %s %s\n",
 			     entry.volumeId[ROVOL],
 			     hostutil_GetNameByINet(entry.serverNumber[j]), pname);
@@ -4103,7 +4103,7 @@ UV_SyncVolume(aserver, apart, avolname, flags)
        if (modified && (code == VL_NOENT)) {
 	  fprintf(STDOUT,"\n**entry deleted**\n");
        } else if (modified) {
-	  EnumerateEntry(vldbentry);
+	  EnumerateEntry(&vldbentry);
        } else {
 	  fprintf(STDOUT,"\n**no change**\n");
        }

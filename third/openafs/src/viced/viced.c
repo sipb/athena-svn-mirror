@@ -19,7 +19,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.2 2002-02-24 10:40:17 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced.c,v 1.2.2.1 2003-01-03 18:53:21 ghudson Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,11 +36,11 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/viced
 #include <sys/file.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <sys/resource.h>
 #include <unistd.h>	/* sysconf() */
 #ifndef ITIMER_REAL
 #include <sys/time.h>
 #endif /* ITIMER_REAL */
+#include <sys/resource.h>
 #endif /* AFS_NT40_ENV */
 #include <afs/stds.h>
 #undef SHARED

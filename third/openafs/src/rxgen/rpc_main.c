@@ -36,7 +36,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxgen/rpc_main.c,v 1.1.1.1 2002-01-31 21:32:07 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxgen/rpc_main.c,v 1.1.1.1.2.1 2003-01-03 18:53:11 ghudson Exp $");
 
 #include <limits.h>
 #include <stdio.h>
@@ -95,7 +95,7 @@ int debug = 0;
 static char *cmdname;
 #ifdef	AFS_SUN5_ENV
 static char CPP[] = "/usr/ccs/lib/cpp";
-#elif defined(AFS_XBSD_ENV)
+#elif defined(AFS_XBSD_ENV) || defined(AFS_DARWIN60_ENV)
 static char CPP[] = "/usr/bin/cpp";
 #elif defined(AFS_NT40_ENV)
 static char CPP[MAXCMDLINE];
@@ -436,14 +436,7 @@ c_output(infile, define, extend, outfile, append)
 	    f_print(fout, "#include \"../h/stat.h\"\n");
 	    f_print(fout, "#include \"../netinet/in.h\"\n");
 	    f_print(fout, "#include \"../h/time.h\"\n");
-	    f_print(fout, "#ifndef AFS_LINUX22_ENV\n");
-	    f_print(fout, "#include \"../rpc/types.h\"\n");
-	    f_print(fout, "#endif /* AFS_LINUX22_ENV */\n");
-	    f_print(fout, "#ifdef AFS_LINUX22_ENV\n");
 	    f_print(fout, "#include \"../rx/xdr.h\"\n");
-	    f_print(fout, "#else /* AFS_LINUX22_ENV */\n");
-	    f_print(fout, "#include \"../rpc/xdr.h\"\n");
-	    f_print(fout, "#endif /* AFS_LINUX22_ENV */\n");
 	    f_print(fout, "#include \"../afsint/rxgen_consts.h\"\n");
 	} else {
 	    f_print(fout, "#include <rx/xdr.h>\n");
@@ -570,13 +563,7 @@ h_output(infile, define, extend, outfile, append)
 	f_print(fout, "#define u_quad_t __u_quad_t\n");
 	f_print(fout, "#endif\n");
 	f_print(fout, "#endif\n");
-	f_print(fout, "#ifdef AFS_LINUX22_ENV\n");
 	f_print(fout, "#include \"../rx/xdr.h\"\n");
-	f_print(fout, "#else /* AFS_LINUX22_ENV */\n");
-	f_print(fout, "extern bool_t xdr_int64();\n");
-	f_print(fout, "extern bool_t xdr_uint64();\n");
-	f_print(fout, "#include \"../rpc/xdr.h\"\n");
-	f_print(fout, "#endif /* AFS_LINUX22_ENV */\n");
 	f_print(fout, "#endif /* XDR_GETLONG */\n");
 	f_print(fout, "#endif   /* UKERNEL */\n");
 	f_print(fout, "#include \"../afsint/rxgen_consts.h\"\n");
@@ -752,11 +739,7 @@ int append;
 	    f_print(fout, "#include \"../netinet/in.h\"\n");
 	    f_print(fout, "#include \"../h/time.h\"\n");
 	    f_print(fout, "#include \"../rpc/types.h\"\n");
-	    f_print(fout, "#ifdef AFS_LINUX22_ENV\n");
 	    f_print(fout, "#include \"../rx/xdr.h\"\n");
-	    f_print(fout, "#else /* AFS_LINUX22_ENV */\n");
-	    f_print(fout, "#include \"../rpc/xdr.h\"\n");
-	    f_print(fout, "#endif /* AFS_LINUX22_ENV */\n");
 	    f_print(fout, "#include \"../afsint/rxgen_consts.h\"\n");
 	    f_print(fout, "#include \"../afs/afs_osi.h\"\n");
 	    f_print(fout, "#include \"../rx/rx.h\"\n");
@@ -827,11 +810,7 @@ int append;
 	    f_print(fout, "#include \"../netinet/in.h\"\n");
 	    f_print(fout, "#include \"../h/time.h\"\n");
 	    f_print(fout, "#include \"../rpc/types.h\"\n");
-	    f_print(fout, "#ifdef AFS_LINUX22_ENV\n");
 	    f_print(fout, "#include \"../rx/xdr.h\"\n");
-	    f_print(fout, "#else /* AFS_LINUX22_ENV */\n");
-	    f_print(fout, "#include \"../rpc/xdr.h\"\n");
-	    f_print(fout, "#endif /* AFS_LINUX22_ENV */\n");
 	    f_print(fout, "#include \"../afsint/rxgen_consts.h\"\n");
 	    f_print(fout, "#include \"../afs/afs_osi.h\"\n");
 	    f_print(fout, "#include \"../rx/rx.h\"\n");

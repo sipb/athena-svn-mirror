@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/read_pssword.c,v 1.1.1.1 2002-01-31 21:31:50 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/des/read_pssword.c,v 1.1.1.1.2.1 2003-01-03 18:53:00 ghudson Exp $");
 
 #include <mit-cpyright.h>
 #include <des.h>
@@ -310,7 +310,7 @@ lose:
     if (!ok)
 	memset(s, 0, maxa);
     printf("\n");
-#if defined(AFS_HPUX_ENV) || defined(AFS_XBSD_ENV)
+#if defined(AFS_HPUX_ENV) || defined(AFS_XBSD_ENV) || defined(AFS_DARWIN_ENV)
     /*
      * Restore the terminal to its previous characteristics.
      * Restore the old signal handler for SIGINT.

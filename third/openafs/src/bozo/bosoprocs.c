@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosoprocs.c,v 1.1.1.1 2002-01-31 21:33:02 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosoprocs.c,v 1.1.1.1.2.1 2003-01-03 18:52:53 ghudson Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -1179,7 +1179,7 @@ char **ainstance; {
 
 struct bozo_bosEntryStats bozo_bosEntryStats[] = {
     {NULL, 1,1, 0755, 02}, /* AFSDIR_SERVER_AFS_DIRPATH    */
-    {NULL, 1,1, 0700, 02}, /* AFSDIR_SERVER_ETC_DIRPATH    */
+    {NULL, 1,1, 0755, 02}, /* AFSDIR_SERVER_ETC_DIRPATH    */
     {NULL, 1,1, 0755, 02}, /* AFSDIR_SERVER_BIN_DIRPATH    */
     {NULL, 1,1, 0755, 02}, /* AFSDIR_SERVER_LOGS_DIRPATH   */
     {NULL, 1,0, 0700, 07}, /* AFSDIR_SERVER_BACKUP_DIRPATH */
@@ -1260,6 +1260,13 @@ int DirAccessOK ()
     for (i=0; i<bozo_nbosEntryStats; i++) {
 	struct bozo_bosEntryStats *e = &bozo_bosEntryStats[i];
 	if (!StatEachEntry (e)) {
+	    bozo_Log("unhappy with %s which is a %s that should "
+		     "have at least rights %o, at most rights %o %s\n",
+		     e->path, 
+		     e->dir ? "dir" : "file", 
+		     e->reqPerm, 
+		     e->proPerm, 
+		     e->rootOwner ? ", owned by root" : "");
 	    result = 0;
 	    break;
 	}
