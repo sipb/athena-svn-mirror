@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.6 1991-04-23 15:12:31 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.7 1991-04-23 16:09:47 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.6 1991-04-23 15:12:31 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.7 1991-04-23 16:09:47 lwvanels Exp $";
 #endif
 #endif
 
@@ -225,10 +225,10 @@ main(argc, argv)
       continue;
     }
     if (buf[0] == 'S')
-      handle_startup(fd,&buf[1],rlen,from,logfile);
+      handle_startup(fd,&buf[1],(rlen-1),from,logfile);
     else {
       write(log_fd,"VIEW ",5);
-      write(log_fd,&buf[1],rlen);
+      write(log_fd,&buf[1],(rlen-1));
       write(log_fd,"\n",1);
     }
   }
