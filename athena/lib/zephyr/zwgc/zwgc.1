@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.1,v $
-.\"	$Author: lwvanels $
-.\"	$Id: zwgc.1,v 1.19 1992-04-20 01:51:34 lwvanels Exp $
+.\"	$Author: cfields $
+.\"	$Id: zwgc.1,v 1.20 1995-08-22 21:38:32 cfields Exp $
 '	# end of TP (cf }N below)
 '	# copied here, since we use @ in some of our tags, and that
 '	# messes up \w and \h
@@ -820,6 +820,15 @@ WM_DELETE_WINDOW as contents.
 .TP
 EnableDelete
 Secondary value to enable WM_DELETE_WINDOW protocol on zgrams [default False]
+.TP
+global
+(logical) If true, zwgc creates a _SGI_DESKS_HINTS property on all zgrams, with
+_SGI_DESKS_ALWAYS_GLOBAL as contents. This results in zgrams appearing
+on all desks in SGI's 4Dwm window manager. Otherwise, zgrams appear and
+remain on whatever desk is in use at the time.
+.TP
+Global
+Secondary value to set _SGI_DESKS_HINTS property on zgrams [default True]
 .TP
 minTimeToLive
 Primary value which specifies the minimum amount of time (``minimum time to
