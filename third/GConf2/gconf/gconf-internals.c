@@ -2922,6 +2922,7 @@ gconf_activate_server (gboolean  start_if_not_found,
         {
           g_free (argv[1]);
           g_free (argv[2]);
+          close (p[1]);
           g_set_error (error,
                        GCONF_ERROR,
                        GCONF_ERROR_NO_SERVER,
@@ -2933,6 +2934,12 @@ gconf_activate_server (gboolean  start_if_not_found,
       
       g_free (argv[1]);
       g_free (argv[2]);
+
+      /* Close the write side of the pipe, so that we do not hang on the
+       * read() below, in case the server does not get as far as writing
+       * back to the pipe.
+       */
+      close (p[1]);
   
       /* Block until server starts up */
       read (p[0], buf, 1);
@@ -2945,11 +2952,14 @@ gconf_activate_server (gboolean  start_if_not_found,
       /* Make sure we can ping the new server, since it may have failed
        * to acquire the lock, and exited.
        */
-      CORBA_exception_init (&ev);
-      ConfigServer_ping (server, &ev);
-      if (ev._major != CORBA_NO_EXCEPTION)
-        server = CORBA_OBJECT_NIL;
-      CORBA_exception_free (&ev);  
+      if (server != CORBA_OBJECT_NIL)
+        {
+          CORBA_exception_init (&ev);
+          ConfigServer_ping (server, &ev);
+          if (ev._major != CORBA_NO_EXCEPTION)
+            server = CORBA_OBJECT_NIL;
+          CORBA_exception_free (&ev);
+        }
     }
   
  out:
@@ -2965,7 +2975,6 @@ gconf_activate_server (gboolean  start_if_not_found,
   g_string_free (failure_log, TRUE);
   
   close (p[0]);
-  close (p[1]);
   
   return server;
 }
