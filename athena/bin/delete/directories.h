@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.11 1991-02-28 18:42:35 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.h,v 1.12 1991-03-11 18:41:30 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -18,7 +18,15 @@ typedef short Boolean;
 #define False			(Boolean) 0
 
 
-#define size_to_k(x)		((x) / 1024 + (((x) % 1024) ? 1 : 0))
+#ifdef USE_BLOCKS
+#define specs_to_space(x)	((x).st_blocks)
+#define space_to_k(x)		((x) / 2 + (((x) % 2) ? 1 : 0))
+#define specs_to_k(x)		space_to_k((x).st_blocks)
+#else
+#define specs_to_space(x)	((x).st_size)
+#define space_to_k(x)		((x) / 1024 + (((x) % 1024) ? 1 : 0))
+#define specs_to_k(x)		space_to_k((x).st_size)
+#endif
 
 #define FOLLOW_LINKS		1
 #define DONT_FOLLOW_LINKS	0
@@ -32,36 +40,7 @@ typedef struct mystat {
      unsigned short st_mode;
      off_t st_size;
      time_t st_ctime;
-#ifdef notdef
-     /*
-      * I've tried, unsuccessfully, to figure out exactly what this
-      * field means and how I can use it.  Supposedly, it indicates
-      * the number of blocks the file actually occupies, i.e. the size
-      * of the file minus any holes in it there may be.  The question,
-      * however, is this: what's a "block?"
-      *
-      * At first, I thought that a block is as big as f_bsize returned
-      * by a statfs on the file.  But that doesn't prove to be the
-      * case, because my home directory in AFS has f_bsize of 8192,
-      * st_size of 8192, and st_blocks of 16 (!!), indicating that a
-      * block size of 512 bytes is being used.  Where does that size
-      * come from, and why isn't it consistent with the f_bsize
-      * retrieved from statfs?
-      *
-      * Until someone can answer these questions for me enough that
-      * I'm willing to trust the value in this field, I can't use it.
-      * Besides that, it doesn't even exist in the POSIX stat
-      * structure, so I'm not even sure it's worth trying to use it.
-      *
-      * Here's another dilemma: When I do a statfs on my home
-      * directory in AFS, it tells me that the f_bsize is 8192.  If
-      * that's the case, then when I create a one-character file in my
-      * home directory, my quota usage should go up by 8k.  But it
-      * doesn't, it goes up by just 1k.  Which means that the f_bsize
-      * I'm getting from statfs has nothing to do with the minimum
-      * block size of the filesystem.  So what *does* it have to do
-      * with?
-      */
+#ifdef USE_BLOCKS
      long st_blocks;
 #endif
 } mystat;
