@@ -44,9 +44,6 @@
 				greynetic -root				    \\n\
 				imsmap -root				    \\n\
 				spotlight -root				    \\n\
-	      \"Ripples (oily)\"	ripples -root -oily -light 2		    \\n\
-	      \"Ripples (stir)\"	ripples -root -oily -light 2 -stir	    \\n\
-	   \"Ripples (desktop)\"	ripples -root -water -light 6		    \\n\
 				hypercube -root				    \\n\
 				hyperball -root				    \\n\
 				halo -root				    \\n\
