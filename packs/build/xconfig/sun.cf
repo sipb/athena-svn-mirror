@@ -1,4 +1,4 @@
-XCOMM platform:  $XConsortium: sun.cf,v 1.68 91/07/30 11:34:39 rws Exp $
+XCOMM platform:  $XConsortium: sun.cf,v 1.69 91/09/09 18:23:59 rws Exp $
 
 #define OSName            SunOS 4.1.1
 XCOMM operating system:  OSName
@@ -11,7 +11,7 @@ XCOMM operating system:  OSName
 #define StandardDefines   -DNOSTDHDRS
 #endif
 
-#define HasSaberC	  YES		/* for machines that have it */
+#define HasSaberC	  YES
 #define HasNdbm		  YES
 #define HasShm		  YES
 #define HasSecureRPC	  YES
@@ -55,6 +55,7 @@ XCOMM operating system:  OSName
 
 #endif
 
+#define SharedAllocateLocalDefines -DINCLUDE_ALLOCA_H
 #define LibraryCCOptions /* don't want special floating point */
 
 #ifndef UseSunWindowsInServer
