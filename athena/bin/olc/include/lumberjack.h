@@ -10,7 +10,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/lumberjack.h,v $
- *	$Id: lumberjack.h,v 1.4 1990-12-12 14:09:34 lwvanels Exp $
+ *	$Id: lumberjack.h,v 1.5 1991-01-15 17:50:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -24,10 +24,11 @@
 #define DONE_DIR	"/usr/spool/olc/donelogs"
 
 #define DSPIPE	"/usr/athena/dspipe" /* name of program to send off logs */
+#define DSPAV0	"dspipe"	     /* argv[0] for DSPIPE */
 
 #define PREFIXFILE "/usr/lib/olc/ds_prefix" /* File with log prefix to use */
 
 #define LOCKFILE  "lockfile"	/* name of lockfile */
-#define SIZE	1024
+#define SIZE	256
 
 #endif /* __lumberjack_h */
