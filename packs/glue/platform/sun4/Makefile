@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1997-03-03 21:51:27 ghudson Exp $
+# $Id: Makefile,v 1.6 1997-03-03 21:52:48 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
