@@ -177,9 +177,9 @@ make_passwd_window (saver_info *si)
   }
 
   /* Find out how long we've actually been screen saved. */
-  if (XGetWindowProperty (si->dpy, si->default_screen->screensaver_window,
+  if (XGetWindowProperty (si->dpy, RootWindow (si->dpy, 0),
                           XA_SCREENSAVER_STATUS,
-                          0, 1, False, XA_INTEGER,
+                          0, 2, False, XA_INTEGER,
                           &type, &format, &nitems, &bytesafter,
                           &data) == Success
       && type == XA_INTEGER
@@ -194,6 +194,9 @@ make_passwd_window (saver_info *si)
   {
     pw->idle_time = 0;
   }
+
+  if (data != NULL)
+    XFree (data);
 
   pw->ratio = 1.0;
 
@@ -670,6 +673,11 @@ draw_passwd_window (saver_info *si)
     strftime (buf, sizeof(buf)-1, pw->date_label, tm);
 
     XSetFont (si->dpy, gc1, pw->date_font->fid);
+
+    /* Position below the logout label, if necessary. */
+    if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
+      y1 += pw->label_font->ascent + pw->label_font->descent;
+
     y1 += pw->shadow_width;
     y1 += (spacing + tb_height);
     y1 += spacing/2;
