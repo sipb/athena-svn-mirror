@@ -534,7 +534,7 @@ $(DEPEND):								@@\
 #define	DependTarget()							@@\
 DependDependency()							@@\
 									@@\
-depend::								@@\
+depend: Makefile							@@\
 	$(DEPEND) -s "# DO NOT DELETE" -- $(ALLDEFINES) -- $(SRCS)
 #endif /* DependTarget */
 
@@ -592,7 +592,7 @@ $(IMAKE):								@@\
 #define	BuildMakefileTarget(imakefile,imakeflags)			@@\
 ImakeDependency(Makefile)						@@\
 									@@\
-Makefile:: 								@@\
+Makefile: Imakefile $(ICONFIGFILES)					@@\
 	-@if [ -f Makefile ]; then \					@@\
 		echo "	$(RM) Makefile.bak; $(MV) Makefile Makefile.bak"; \ @@\
 		$(RM) Makefile.bak; $(MV) Makefile Makefile.bak; \	@@\
@@ -854,9 +854,9 @@ objs:	depends								@@\
  */
 #ifndef NormalLibraryTarget
 #define	NormalLibraryTarget(libname,objlist)				@@\
-AllTarget(lib/**/libname.a)						@@\
+AllTarget(concat(lib,libname).a)					@@\
 									@@\
-lib/**/libname.a: objlist						@@\
+concat(lib,libname).a: objlist						@@\
 	$(RM) $@							@@\
 	$(AR) $@ objlist						@@\
 	$(RANLIB) $@
