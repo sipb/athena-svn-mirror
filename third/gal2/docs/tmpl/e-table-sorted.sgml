@@ -1,0 +1,50 @@
+<!-- ##### SECTION Title ##### -->
+ETableSorted
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_SORTED_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableSorted ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_sorted_new ##### -->
+<para>
+
+</para>
+
+@etm: 
+@col: 
+@compare: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_sorted_resort ##### -->
+<para>
+
+</para>
+
+@ets: 
+@col: 
+@compare: 
+
+

@@ -1,0 +1,56 @@
+<!-- ##### SECTION Title ##### -->
+ETableColumnSpecification
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_COLUMN_SPECIFICATION_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableColumnSpecification ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_column_specification_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_column_specification_load_from_node ##### -->
+<para>
+
+</para>
+
+@state: 
+@node: 
+
+
+<!-- ##### FUNCTION e_table_column_specification_save_to_node ##### -->
+<para>
+
+</para>
+
+@state: 
+@parent: 
+@Returns: 
+
+

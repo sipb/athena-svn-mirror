@@ -1,0 +1,146 @@
+<refentry id="EReflow" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>EReflow</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>EReflow</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-REFLOW-TYPE-CAPS">E_REFLOW_TYPE</link>
+struct      <link linkend="EReflow-struct">EReflow</link>;
+void        <link linkend="e-reflow-add-item">e_reflow_add_item</link>               (<link linkend="EReflow">EReflow</link> *e_reflow,
+                                             <link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
+void        <link linkend="e-reflow-post-add-item">e_reflow_post_add_item</link>          (<link linkend="EReflow">EReflow</link> *e_reflow,
+                                             <link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="GnomeCanvasItem">GnomeCanvasItem</link>
+         +----<link linkend="GnomeCanvasGroup">GnomeCanvasGroup</link>
+               +----EReflow
+</synopsis>
+
+</refsect1>
+
+<refsect1>
+<title>Args</title>
+<synopsis>
+
+  &quot;<link linkend="EReflow--minimum-width">minimum_width</link>&quot;        <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="EReflow--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read
+  &quot;<link linkend="EReflow--height">height</link>&quot;               <link linkend="gdouble">gdouble</link>              : Read / Write
+  &quot;<link linkend="EReflow--empty-message">empty_message</link>&quot;        <link linkend="gchar">gchar</link>*               : Read / Write
+</synopsis>
+</refsect1>
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-REFLOW-TYPE-CAPS">E_REFLOW_TYPE</title>
+<programlisting>#define E_REFLOW_TYPE			(e_reflow_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EReflow-struct">struct EReflow</title>
+<programlisting>struct EReflow;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-reflow-add-item">e_reflow_add_item ()</title>
+<programlisting>void        e_reflow_add_item               (<link linkend="EReflow">EReflow</link> *e_reflow,
+                                             <link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>e_reflow</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-reflow-post-add-item">e_reflow_post_add_item ()</title>
+<programlisting>void        e_reflow_post_add_item          (<link linkend="EReflow">EReflow</link> *e_reflow,
+                                             <link linkend="GnomeCanvasItem">GnomeCanvasItem</link> *item);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>e_reflow</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>item</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+<refsect1>
+<title>Args</title>
+<variablelist>
+<varlistentry><term><anchor id="EReflow--minimum-width">&quot;<literal>minimum_width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EReflow--width">&quot;<literal>width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EReflow--height">&quot;<literal>height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+<varlistentry><term><anchor id="EReflow--empty-message">&quot;<literal>empty_message</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
+<listitem>
+<para>
+
+</para></listitem></varlistentry>
+
+</variablelist>
+</refsect1>
+
+
+
+
+</refentry>

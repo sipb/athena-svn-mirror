@@ -1,0 +1,194 @@
+<!-- ##### SECTION Title ##### -->
+ETableSortInfo
+
+<!-- ##### SECTION Short_Description ##### -->
+Sorting and grouping information handling.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+  The %ETableSortInfo is typically one of the elements of an
+  %ETableState object.
+</para>
+
+<para>
+  The %ETableSortInfo object is used to maintain the multi-level
+  sorting and multi-level grouping information that is used by the
+  ETable widget.  By appending sorting criterias (using the
+  e_table_sort_info_grouping_set_nth() and
+  e_table_sort_info_sorting_set_nth you can append new criteria about
+  how sorting and grouping should take place in the ETable.
+</para>
+
+<para>
+  This object emits the `sort_info_changed' and `group_info_changed'
+  signals when grouping and sorting are added, modified or removed.
+</para>
+
+<para>
+  You can at any point reduce the criteria by using the "truncate"
+  functions;  You can modify any criteria by using the "set"
+  functions, and you can get the individual state information by
+  using the "get" functions.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+  %ETable, %ETableState.
+</para>
+
+<!-- ##### MACRO E_TABLE_SORT_INFO_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableSortInfo ##### -->
+<para>
+</para>
+
+
+<!-- ##### STRUCT ETableSortColumn ##### -->
+<para>
+  The bit field ascending is interpreted as a boolean value that will
+  trigger ascending ordering.   The column is an integer that reflects
+  the column.
+</para>
+
+@column: 
+@ascending: 
+
+<!-- ##### FUNCTION e_table_sort_info_freeze ##### -->
+<para>
+
+</para>
+
+@info: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_thaw ##### -->
+<para>
+
+</para>
+
+@info: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_grouping_get_count ##### -->
+<para>
+
+</para>
+
+@info: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_grouping_truncate ##### -->
+<para>
+
+</para>
+
+@info: 
+@length: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_grouping_get_nth ##### -->
+<para>
+
+</para>
+
+@info: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_grouping_set_nth ##### -->
+<para>
+
+</para>
+
+@info: 
+@n: 
+@column: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_sorting_get_count ##### -->
+<para>
+
+</para>
+
+@info: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_sorting_truncate ##### -->
+<para>
+
+</para>
+
+@info: 
+@length: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_sorting_get_nth ##### -->
+<para>
+
+</para>
+
+@info: 
+@n: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_sorting_set_nth ##### -->
+<para>
+
+</para>
+
+@info: 
+@n: 
+@column: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_load_from_node ##### -->
+<para>
+
+</para>
+
+@info: 
+@node: 
+
+
+<!-- ##### FUNCTION e_table_sort_info_save_to_node ##### -->
+<para>
+
+</para>
+
+@info: 
+@parent: 
+@Returns: 
+
+
+<!-- ##### SIGNAL ETableSortInfo::sort-info-changed ##### -->
+<para>
+  This signal is emitted when the sort information has been changed
+  trough the API.
+</para>
+
+@etablesortinfo: the object which received the signal.
+
+<!-- ##### SIGNAL ETableSortInfo::group-info-changed ##### -->
+<para>
+  This signal is emitted when the grouping information has been
+  changed trough the API>
+</para>
+
+

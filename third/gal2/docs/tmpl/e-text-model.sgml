@@ -1,0 +1,94 @@
+<!-- ##### SECTION Title ##### -->
+ETextModel
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT ETextModel ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_text_model_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_text_model_changed ##### -->
+<para>
+
+</para>
+
+@model: 
+
+
+<!-- ##### FUNCTION e_text_model_get_text ##### -->
+<para>
+
+</para>
+
+@model: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_text_model_set_text ##### -->
+<para>
+
+</para>
+
+@model: 
+@text: 
+
+
+<!-- ##### FUNCTION e_text_model_insert ##### -->
+<para>
+
+</para>
+
+@model: 
+@position: 
+@text: 
+
+
+<!-- ##### FUNCTION e_text_model_insert_length ##### -->
+<para>
+
+</para>
+
+@model: 
+@position: 
+@text: 
+@length: 
+
+
+<!-- ##### FUNCTION e_text_model_delete ##### -->
+<para>
+
+</para>
+
+@model: 
+@position: 
+@length: 
+
+
+<!-- ##### SIGNAL ETextModel::changed ##### -->
+<para>
+
+</para>
+
+@etextmodel: the object which received the signal.
+

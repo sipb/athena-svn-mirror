@@ -1,0 +1,97 @@
+<!-- ##### SECTION Title ##### -->
+ETableExtras
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_EXTRAS_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF ETableExtras ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_extras_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_extras_add_cell ##### -->
+<para>
+
+</para>
+
+@extras: 
+@id: 
+@cell: 
+
+
+<!-- ##### FUNCTION e_table_extras_get_cell ##### -->
+<para>
+
+</para>
+
+@extras: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_extras_add_compare ##### -->
+<para>
+
+</para>
+
+@extras: 
+@id: 
+@compare: 
+
+
+<!-- ##### FUNCTION e_table_extras_get_compare ##### -->
+<para>
+
+</para>
+
+@extras: 
+@id: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_extras_add_pixbuf ##### -->
+<para>
+
+</para>
+
+@extras: 
+@id: 
+@pixbuf: 
+
+
+<!-- ##### FUNCTION e_table_extras_get_pixbuf ##### -->
+<para>
+
+</para>
+
+@extras: 
+@id: 
+@Returns: 
+
+

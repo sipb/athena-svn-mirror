@@ -1,0 +1,136 @@
+<refentry id="ECellToggle" revision="12 Jan 2001">
+<refmeta>
+<refentrytitle>ECellToggle</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GAL Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ECellToggle</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="E-CELL-TOGGLE-TYPE-CAPS">E_CELL_TOGGLE_TYPE</link>
+typedef     <link linkend="ECellToggle">ECellToggle</link>;
+<link linkend="ECell">ECell</link>*      <link linkend="e-cell-toggle-new">e_cell_toggle_new</link>               (int border,
+                                             int n_states,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> **images);
+void        <link linkend="e-cell-toggle-construct">e_cell_toggle_construct</link>         (<link linkend="ECellToggle">ECellToggle</link> *etog,
+                                             int border,
+                                             int n_states,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> **images);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----<link linkend="ECell">ECell</link>
+         +----ECellToggle
+</synopsis>
+
+</refsect1>
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="E-CELL-TOGGLE-TYPE-CAPS">E_CELL_TOGGLE_TYPE</title>
+<programlisting>#define E_CELL_TOGGLE_TYPE        (e_cell_toggle_get_type ())
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ECellToggle">ECellToggle</title>
+<programlisting>typedef struct {
+	ECell parent;
+
+	int        border;
+	int        n_states;
+	GdkPixbuf **images;
+
+	int        height;
+} ECellToggle;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="e-cell-toggle-new">e_cell_toggle_new ()</title>
+<programlisting><link linkend="ECell">ECell</link>*      e_cell_toggle_new               (int border,
+                                             int n_states,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> **images);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>border</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>n_states</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>images</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="e-cell-toggle-construct">e_cell_toggle_construct ()</title>
+<programlisting>void        e_cell_toggle_construct         (<link linkend="ECellToggle">ECellToggle</link> *etog,
+                                             int border,
+                                             int n_states,
+                                             <link linkend="GdkPixbuf">GdkPixbuf</link> **images);</programlisting>
+<para>
+Constructs the <parameter>etog</parameter> object with the <parameter>border</parameter>, <parameter>n_staes</parameter>, and <parameter>images</parameter>
+arguments.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>etog</parameter>&nbsp;:</entry>
+<entry> a fresh ECellToggle object
+</entry></row>
+<row><entry align="right"><parameter>border</parameter>&nbsp;:</entry>
+<entry> number of pixels used as a border
+</entry></row>
+<row><entry align="right"><parameter>n_states</parameter>&nbsp;:</entry>
+<entry> number of states the toggle will have
+</entry></row>
+<row><entry align="right"><parameter>images</parameter>&nbsp;:</entry>
+<entry> a collection of <parameter>n_states</parameter> images, one for each state.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

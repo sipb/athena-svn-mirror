@@ -1,0 +1,1087 @@
+# gal
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# Marius Andreiana <mandreiana@yahoo.com>, 2001.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gal\n"
+"POT-Creation-Date: 2003-06-25 10:34-0500\n"
+"PO-Revision-Date: 2001-01-23 11:22+0200\n"
+"Last-Translator: Marius Andreiana <mandreiana@yahoo.com>\n"
+"Language-Team: Română <ro@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gal/e-paned/e-paned.c:141
+msgid "Handle Size"
+msgstr ""
+
+#: gal/e-paned/e-paned.c:148
+msgid "Quantum"
+msgstr ""
+
+#: gal/e-table/e-cell-date.c:51
+msgid "?"
+msgstr "?"
+
+#: gal/e-table/e-cell-date.c:58
+#, fuzzy
+msgid "%l:%M %p"
+msgstr "%a %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:66
+msgid "Today %l:%M %p"
+msgstr "Astăzi %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:76
+msgid "Yesterday %l:%M %p"
+msgstr "Ieri %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:88
+msgid "%a %l:%M %p"
+msgstr "%a %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:96
+msgid "%b %d %l:%M %p"
+msgstr "%b %d %l:%M %p"
+
+#: gal/e-table/e-cell-date.c:98
+msgid "%b %d %Y"
+msgstr "%b %d %Y"
+
+#: gal/e-table/e-cell-pixbuf.c:392
+msgid "Selected Column"
+msgstr ""
+
+#: gal/e-table/e-cell-pixbuf.c:399
+msgid "Focused Column"
+msgstr ""
+
+#: gal/e-table/e-cell-pixbuf.c:406
+msgid "Unselected Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1516
+msgid "Strikeout Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1523
+msgid "Underline Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1530
+#, fuzzy
+msgid "Bold Column"
+msgstr "Adaugă o coloana..."
+
+#: gal/e-table/e-cell-text.c:1537
+#, fuzzy
+msgid "Color Column"
+msgstr "Formatează coloanele..."
+
+#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
+#: gal/e-text/e-text.c:3447 gal/e-text/e-text.c:3448
+#, fuzzy
+msgid "Editable"
+msgstr "Tabel"
+
+#: gal/e-table/e-cell-text.c:1551
+msgid "BG Color Column"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-field-chooser-dialog.c:88
+#: gal/e-table/e-table-field-chooser-item.c:660
+#: gal/e-table/e-table-field-chooser.c:91
+#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
+#: gal/widgets/e-categories.c:123
+msgid "Header"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:463
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
+#: gal/e-text/e-text.c:3312
+msgid "Model"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:470
+msgid "Message"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-field-chooser-item.c:667
+#: gal/e-table/e-table-group-container.c:976
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3489
+#: gal/e-text/e-text.c:3490
+msgid "Width"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-field-chooser-item.c:674
+#: gal/e-table/e-table-group-container.c:969
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3497
+#: gal/e-text/e-text.c:3498
+msgid "Height"
+msgstr ""
+
+#: gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config.glade.h:1
+msgid "<- _Remove"
+msgstr "<- _Elimină"
+
+#: gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config.glade.h:2
+msgid "A_vailable Fields:"
+msgstr "Câmpuri disponibile:"
+
+#: gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config.glade.h:3
+msgid "Ascending"
+msgstr "Crescător"
+
+#: gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config.glade.h:4
+msgid "Clear All"
+msgstr "Şterge tot"
+
+#: gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config.glade.h:5
+msgid "Descending"
+msgstr "Descrescător"
+
+#: gal/e-table/e-table-config-no-group.glade.h:6
+#: gal/e-table/e-table-config.glade.h:6
+msgid "Description"
+msgstr "Descriere"
+
+#: gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config.glade.h:7
+msgid "Group"
+msgstr "Grupează"
+
+#: gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config.glade.h:8
+msgid "Group Items By"
+msgstr "Grupează elementele după"
+
+#: gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config.glade.h:9
+msgid "Move _Down"
+msgstr "Mută _jos"
+
+#: gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config.glade.h:10
+msgid "Move _Up"
+msgstr "Mută _sus"
+
+#: gal/e-table/e-table-config-no-group.glade.h:11
+#: gal/e-table/e-table-config.glade.h:11
+msgid "Sh_ow these fields in order:"
+msgstr "Arată aceste câmpuri în _ordine:"
+
+#: gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config.glade.h:12
+msgid "Show Fields"
+msgstr "Arată câmpurile"
+
+#: gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config.glade.h:13
+msgid "Show field in View"
+msgstr "Arată câmpul in vizualizare"
+
+#: gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config.glade.h:14
+msgid "Sort"
+msgstr "Sortează"
+
+#: gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config.glade.h:15
+msgid "Sort Items By"
+msgstr "Sortează elementele după"
+
+#: gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config.glade.h:16
+msgid "Then By"
+msgstr "Apoi după"
+
+#: gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config.glade.h:17
+msgid "_Add ->"
+msgstr "_Adaugă ->"
+
+#: gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config.glade.h:18
+#, fuzzy
+msgid "_Fields Shown..."
+msgstr "_Câmpuri..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
+msgid "_Sort..."
+msgstr "_Sortează..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:20
+#: gal/e-table/e-table-config.glade.h:21
+msgid "dialog1"
+msgstr ""
+
+#: gal/e-table/e-table-config.c:154
+#, fuzzy
+msgid "State"
+msgstr "categorii"
+
+#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+msgid "(Ascending)"
+msgstr "(Crescător)"
+
+#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+msgid "(Descending)"
+msgstr "(Descrescător)"
+
+#: gal/e-table/e-table-config.c:318
+msgid "Not sorted"
+msgstr "Nesortat"
+
+#: gal/e-table/e-table-config.c:359
+msgid "No grouping"
+msgstr "Fără grupare"
+
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "_Grupează după..."
+
+#: gal/e-table/e-table-field-chooser.glade.h:1
+msgid "Field Chooser"
+msgstr "Selector câmpuri"
+
+#: gal/e-table/e-table-field-chooser.glade.h:2
+msgid ""
+"To add a column to your table, drag it into\n"
+"the location in which you want it to appear."
+msgstr ""
+"Pentru a adăuga o coloană la tabelul dvs., trăgeţi-o\n"
+"în locaţia în care doriţi să apară."
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1738
+msgid "DnD code"
+msgstr ""
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1752
+msgid "Full Header"
+msgstr ""
+
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+#, fuzzy
+msgid "Add a column..."
+msgstr "Adaugă o coloana..."
+
+#: gal/e-table/e-table-group-container.c:355
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:361
+#, c-format
+msgid "%s (%d item)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:362
+#, c-format
+msgid "%s (%d items)"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:906
+#: gal/e-table/e-table-group-container.c:907
+msgid "Alternating Row Colors"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:913
+#: gal/e-table/e-table-group-container.c:914
+msgid "Horizontal Draw Grid"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:920
+#: gal/e-table/e-table-group-container.c:921
+msgid "Vertical Draw Grid"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:927
+#: gal/e-table/e-table-group-container.c:928
+msgid "Draw focus"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:934
+#: gal/e-table/e-table-group-container.c:935
+msgid "Cursor mode"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:941
+#: gal/e-table/e-table-group-container.c:942
+msgid "Selection model"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:948
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+msgid "Length Threshold"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:955
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+msgid "Uniform row height"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:962
+#: gal/e-table/e-table-group-container.c:963
+msgid "Frozen"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:983
+msgid "Minimum width"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:984
+msgid "Minimum Width"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1451
+#, fuzzy
+msgid "Customize Current View"
+msgstr "Personalizeaza vizualizarea curentă..."
+
+#: gal/e-table/e-table-header-item.c:1471
+msgid "Sort Ascending"
+msgstr "Sortează crescător"
+
+#: gal/e-table/e-table-header-item.c:1472
+msgid "Sort Descending"
+msgstr "Sortează descrescător"
+
+#: gal/e-table/e-table-header-item.c:1473
+msgid "Unsort"
+msgstr "De-sortează"
+
+#: gal/e-table/e-table-header-item.c:1475
+msgid "Group By This Field"
+msgstr "Grupează după acest câmp"
+
+#: gal/e-table/e-table-header-item.c:1476
+msgid "Group By Box"
+msgstr "Grupează după cutie"
+
+#: gal/e-table/e-table-header-item.c:1478
+msgid "Remove This Column"
+msgstr "Elimină această coloană"
+
+#: gal/e-table/e-table-header-item.c:1479
+msgid "Add a Column..."
+msgstr "Adaugă o coloana..."
+
+#: gal/e-table/e-table-header-item.c:1481
+msgid "Alignment"
+msgstr "Aliniere"
+
+#: gal/e-table/e-table-header-item.c:1482
+msgid "Best Fit"
+msgstr "Cea mai bună potrivire"
+
+#: gal/e-table/e-table-header-item.c:1483
+msgid "Format Columns..."
+msgstr "Formatează coloanele..."
+
+#: gal/e-table/e-table-header-item.c:1485
+msgid "Customize Current View..."
+msgstr "Personalizeaza vizualizarea curentă..."
+
+#: gal/e-table/e-table-header-item.c:1745
+msgid "Fontset"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
+#, fuzzy
+msgid "Sort Info"
+msgstr "Sortează"
+
+#: gal/e-table/e-table-header-item.c:1773
+#: gal/menus/gal-view-factory-etable.c:37
+msgid "Table"
+msgstr "Tabel"
+
+#: gal/e-table/e-table-header-item.c:1780
+#, fuzzy
+msgid "Tree"
+msgstr "verde"
+
+#: gal/e-table/e-table.c:3242
+msgid "Always Search"
+msgstr ""
+
+#: gal/e-table/e-table.c:3249
+msgid "Use click to add"
+msgstr ""
+
+#: gal/e-table/e-tree-selection-model.c:767
+#: gal/widgets/e-selection-model-array.c:543
+msgid "Cursor Row"
+msgstr ""
+
+#: gal/e-table/e-tree-selection-model.c:774
+#: gal/widgets/e-selection-model-array.c:550
+#, fuzzy
+msgid "Cursor Column"
+msgstr "Culoare personala:"
+
+#: gal/menus/gal-define-views-dialog.c:74
+#: gal/menus/gal-define-views-model.c:185
+msgid "Collection"
+msgstr ""
+
+#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "Defineşte vizualizările pentru \"%s\""
+
+#: gal/menus/gal-define-views-dialog.c:292
+#: gal/menus/gal-define-views-dialog.c:294
+#, fuzzy
+msgid "Define Views"
+msgstr "Defineşte vizualizările pentru \"%s\""
+
+#: gal/menus/gal-define-views.glade.h:2
+#, no-c-format
+msgid "Define Views for \"%s\""
+msgstr "Defineşte vizualizările pentru \"%s\""
+
+#: gal/menus/gal-define-views.glade.h:5
+msgid "_Edit..."
+msgstr "_Editează..."
+
+#: gal/menus/gal-view-instance.c:575
+#, fuzzy
+msgid "Custom View"
+msgstr "Personalizeaza vizualizarea curentă..."
+
+#: gal/menus/gal-view-instance.c:576
+msgid "Save Custom View"
+msgstr ""
+
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Define Views..."
+msgstr "Defineşte vizualizările pentru \"%s\""
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:179
+msgid "Instance"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
+msgid "Create New View Named"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
+msgid "Replace Existing View"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+msgid ""
+"The current view will replace the given view.  Any folders\n"
+"set to this view wil be replaced with the current view."
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+msgid "This will create a new View."
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+msgid "*"
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr "Numele noii vizualizări:"
+
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr "Tipul de vizualizare:"
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.c:77
+#, fuzzy
+msgid "Factory"
+msgstr "categorii"
+
+#: gal/shortcut-bar/e-group-bar.c:541
+#, c-format
+msgid "Group %i"
+msgstr "Grupul %i"
+
+#. This is the default custom color
+#: gal/widgets/color-palette.c:393
+msgid "custom"
+msgstr "personal"
+
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: gal/widgets/color-palette.c:435
+msgid "Custom Color:"
+msgstr "Culoare personala:"
+
+#: gal/widgets/color-palette.c:443
+msgid "Choose Custom Color"
+msgstr "Alegeţi culoarea personală:"
+
+#: gal/widgets/color-palette.c:576
+msgid "black"
+msgstr "negru"
+
+#: gal/widgets/color-palette.c:577
+msgid "light brown"
+msgstr "maro deschis"
+
+#: gal/widgets/color-palette.c:578
+msgid "brown gold"
+msgstr "maro auriu"
+
+#: gal/widgets/color-palette.c:579
+msgid "dark green #2"
+msgstr "negru închis #2"
+
+#: gal/widgets/color-palette.c:580
+msgid "navy"
+msgstr "marină"
+
+#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+msgid "dark blue"
+msgstr "albastru închis"
+
+#: gal/widgets/color-palette.c:582
+msgid "purple #2"
+msgstr "vişiniu #2"
+
+#: gal/widgets/color-palette.c:583
+msgid "very dark gray"
+msgstr "gri foarte închis"
+
+#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+msgid "dark red"
+msgstr "roşu închis"
+
+#: gal/widgets/color-palette.c:587
+msgid "red-orange"
+msgstr "roşu oranj"
+
+#: gal/widgets/color-palette.c:588
+msgid "gold"
+msgstr "auriu"
+
+#: gal/widgets/color-palette.c:589
+msgid "dark green"
+msgstr "verde închis"
+
+#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
+msgid "dull blue"
+msgstr "albastru simplu"
+
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+msgid "blue"
+msgstr "albastru"
+
+#: gal/widgets/color-palette.c:592
+msgid "dull purple"
+msgstr "vişiniu simplu"
+
+#: gal/widgets/color-palette.c:593
+msgid "dark grey"
+msgstr "gri închis"
+
+#: gal/widgets/color-palette.c:596
+msgid "red"
+msgstr "roşu"
+
+#: gal/widgets/color-palette.c:597
+msgid "orange"
+msgstr "oranj"
+
+#: gal/widgets/color-palette.c:598
+msgid "lime"
+msgstr ""
+
+#: gal/widgets/color-palette.c:599
+msgid "dull green"
+msgstr "verde simplu"
+
+#: gal/widgets/color-palette.c:600
+msgid "dull blue #2"
+msgstr "albastru simplu #2"
+
+#: gal/widgets/color-palette.c:601
+msgid "sky blue #2"
+msgstr "albastru cer #2"
+
+#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+msgid "purple"
+msgstr "vişiniu"
+
+#: gal/widgets/color-palette.c:603
+msgid "gray"
+msgstr "gri"
+
+#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+msgid "magenta"
+msgstr "violet"
+
+#: gal/widgets/color-palette.c:607
+msgid "bright orange"
+msgstr "oranj intens"
+
+#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+msgid "yellow"
+msgstr "galben"
+
+#: gal/widgets/color-palette.c:609
+msgid "green"
+msgstr "verde"
+
+#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+msgid "cyan"
+msgstr "cyan"
+
+#: gal/widgets/color-palette.c:611
+msgid "bright blue"
+msgstr "albastru intens"
+
+#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+msgid "red purple"
+msgstr "roşu vişiniu"
+
+#: gal/widgets/color-palette.c:613
+msgid "light grey"
+msgstr "gri deschis"
+
+#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+msgid "pink"
+msgstr "roz"
+
+#: gal/widgets/color-palette.c:617
+msgid "light orange"
+msgstr "oranj deschis"
+
+#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+msgid "light yellow"
+msgstr "galben deschis"
+
+#: gal/widgets/color-palette.c:619
+msgid "light green"
+msgstr "verde deschis"
+
+#: gal/widgets/color-palette.c:620
+msgid "light cyan"
+msgstr "cyan deschis"
+
+#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+msgid "light blue"
+msgstr "albastru deschis"
+
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+msgid "light purple"
+msgstr "vişiniu deschis"
+
+#: gal/widgets/color-palette.c:623
+msgid "white"
+msgstr "alb"
+
+#: gal/widgets/color-palette.c:628
+msgid "purplish blue"
+msgstr "albastru vişiniu"
+
+#: gal/widgets/color-palette.c:632
+msgid "dark purple"
+msgstr "vişiniu închis"
+
+#: gal/widgets/color-palette.c:634
+msgid "sky blue"
+msgstr "albastru cer"
+
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+#, fuzzy
+msgid "Categories"
+msgstr "categorii"
+
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr ""
+
+#: gal/widgets/e-categories.c:540
+#, fuzzy
+msgid "Edit Categories"
+msgstr "categorii"
+
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr ""
+
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "Elementul(ele) aparţin la aceste _categorii:"
+
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "C_ategorii disponibile:"
+
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "categorii"
+
+#: gal/widgets/e-categories-master-list-array.c:67
+msgid "Birthday"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:68
+msgid "Business"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:69
+msgid "Competition"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:70
+#, fuzzy
+msgid "Favorites"
+msgstr "categorii"
+
+#: gal/widgets/e-categories-master-list-array.c:71
+msgid "Gifts"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:72
+msgid "Goals/Objectives"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:73
+msgid "Holiday"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:74
+msgid "Holiday Cards"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:75
+msgid "Hot Contacts"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:76
+msgid "Ideas"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:77
+msgid "International"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:78
+msgid "Key Customer"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:79
+msgid "Miscellaneous"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:80
+msgid "Personal"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:81
+msgid "Phone Calls"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:82
+msgid "Status"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:83
+#, fuzzy
+msgid "Strategies"
+msgstr "categorii"
+
+#: gal/widgets/e-categories-master-list-array.c:84
+msgid "Suppliers"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:85
+msgid "Time & Expenses"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:86
+msgid "VIP"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-array.c:87
+msgid "Waiting"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.c:143
+#: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-option-menu.c:168
+msgid "ECML"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.c:144
+#: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-option-menu.c:169
+msgid "ECategoriesMasterListCombo"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.c:198
+msgid "* Click here to add a category *"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.c:199
+#, fuzzy
+msgid "Category"
+msgstr "categorii"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
+#, fuzzy
+msgid "Add Category"
+msgstr "categorii"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+#, fuzzy
+msgid "Edit Category"
+msgstr "categorii"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+msgid "Edit Global Category List"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
+#, fuzzy
+msgid "_Edit category:"
+msgstr "categorii"
+
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#, fuzzy
+msgid "_New category:"
+msgstr "categorii"
+
+#: gal/widgets/e-categories-master-list-option-menu.c:69
+#, fuzzy
+msgid "All Categories"
+msgstr "C_ategorii disponibile:"
+
+#: gal/widgets/e-selection-model.c:210
+#, fuzzy
+msgid "Sorter"
+msgstr "Sortează"
+
+#: gal/widgets/e-selection-model.c:217
+msgid "Selection Mode"
+msgstr ""
+
+#: gal/widgets/e-selection-model.c:225
+msgid "Cursor Mode"
+msgstr ""
+
+#: gal/e-text/e-text.c:2561
+#, fuzzy
+msgid "Select All"
+msgstr "Şterge tot"
+
+#: gal/e-text/e-text.c:2573
+msgid "Input Methods"
+msgstr ""
+
+#: gal/e-text/e-text.c:3318 gal/e-text/e-text.c:3319
+msgid "Event Processor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3325 gal/e-text/e-text.c:3326
+msgid "Text"
+msgstr ""
+
+#: gal/e-text/e-text.c:3332 gal/e-text/e-text.c:3333
+#, fuzzy
+msgid "Bold"
+msgstr "auriu"
+
+#: gal/e-text/e-text.c:3339 gal/e-text/e-text.c:3340
+msgid "Strikeout"
+msgstr ""
+
+#: gal/e-text/e-text.c:3346 gal/e-text/e-text.c:3347
+msgid "Anchor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3354 gal/e-text/e-text.c:3355
+msgid "Justification"
+msgstr ""
+
+#: gal/e-text/e-text.c:3361 gal/e-text/e-text.c:3362
+msgid "Clip Width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3368 gal/e-text/e-text.c:3369
+msgid "Clip Height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3375 gal/e-text/e-text.c:3376
+msgid "Clip"
+msgstr ""
+
+#: gal/e-text/e-text.c:3382 gal/e-text/e-text.c:3383
+msgid "Fill clip rectangle"
+msgstr ""
+
+#: gal/e-text/e-text.c:3389 gal/e-text/e-text.c:3390
+msgid "X Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3396 gal/e-text/e-text.c:3397
+msgid "Y Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3403 gal/e-text/e-text.c:3404
+#, fuzzy
+msgid "Fill color"
+msgstr "Selector câmpuri"
+
+#: gal/e-text/e-text.c:3410 gal/e-text/e-text.c:3411 gal/e-text/e-text.c:3418
+#: gal/e-text/e-text.c:3419
+msgid "GDK fill color"
+msgstr ""
+
+#: gal/e-text/e-text.c:3425 gal/e-text/e-text.c:3426
+#, fuzzy
+msgid "Fill stipple"
+msgstr "vişiniu simplu"
+
+#: gal/e-text/e-text.c:3432 gal/e-text/e-text.c:3433
+msgid "Text width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3439 gal/e-text/e-text.c:3440
+msgid "Text height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3454 gal/e-text/e-text.c:3455
+msgid "Use ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3461 gal/e-text/e-text.c:3462
+msgid "Ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
+msgid "Line wrap"
+msgstr ""
+
+#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
+msgid "Break characters"
+msgstr ""
+
+#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
+msgid "Max lines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
+msgid "Draw borders"
+msgstr ""
+
+#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
+msgid "Allow newlines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
+msgid "Draw background"
+msgstr ""
+
+#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
+msgid "Draw button"
+msgstr ""
+
+#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
+#, fuzzy
+msgid "Cursor position"
+msgstr "Culoare personala:"
+
+#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
+msgid "IM Context"
+msgstr ""
+
+#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
+msgid "Handle Popup"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Late Yesterday %l:%M %p"
+#~ msgstr "Ieri %l:%M %p"
+
+#, fuzzy
+#~ msgid "Remove"
+#~ msgstr "<< Elimină"
+
+#, fuzzy
+#~ msgid "FIll stipple"
+#~ msgstr "vişiniu simplu"
+
+#~ msgid "Re_set to Factory Defaults..."
+#~ msgstr "Re_setează la setările implicite..."
+
+#~ msgid "_Copy..."
+#~ msgstr "_Copiază..."
+
+#~ msgid "_Delete..."
+#~ msgstr "_Şterge..."
+
+#~ msgid "_New..."
+#~ msgstr "_Nou..."
+
+#~ msgid "<< Remove"
+#~ msgstr "<< Elimină"
+
+#~ msgid "Add >>"
+#~ msgstr "Adaugă >>"
+
+#~ msgid "Available fields"
+#~ msgstr "Câmpuri disponibile"
+
+#~ msgid "Show in this order"
+#~ msgstr "Arată în această ordine"
+
+#~ msgid "Table HERE"
+#~ msgstr "Tabel AICI"
+
+#~ msgid "Configuring view: FIXME"
+#~ msgstr "Configurez vizualizarea"
+
+#~ msgid "Views for \"%s\""
+#~ msgstr "Vizualizări pentru \"%s\""

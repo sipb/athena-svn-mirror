@@ -1,0 +1,213 @@
+<!-- ##### SECTION Title ##### -->
+ETableHeader
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO E_TABLE_HEADER_TYPE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT ETableHeader ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_table_header_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_add_column ##### -->
+<para>
+
+</para>
+
+@eth: 
+@tc: 
+@pos: 
+
+
+<!-- ##### FUNCTION e_table_header_get_column ##### -->
+<para>
+
+</para>
+
+@eth: 
+@column: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_count ##### -->
+<para>
+
+</para>
+
+@eth: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_index ##### -->
+<para>
+
+</para>
+
+@eth: 
+@col: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_get_index_at ##### -->
+<para>
+
+</para>
+
+@eth: 
+@x_offset: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_get_columns ##### -->
+<para>
+
+</para>
+
+@eth: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_get_selected ##### -->
+<para>
+
+</para>
+
+@eth: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_total_width ##### -->
+<para>
+
+</para>
+
+@eth: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_move ##### -->
+<para>
+
+</para>
+
+@eth: 
+@source_index: 
+@target_index: 
+
+
+<!-- ##### FUNCTION e_table_header_remove ##### -->
+<para>
+
+</para>
+
+@eth: 
+@idx: 
+
+
+<!-- ##### FUNCTION e_table_header_set_size ##### -->
+<para>
+
+</para>
+
+@eth: 
+@idx: 
+@size: 
+
+
+<!-- ##### FUNCTION e_table_header_set_selection ##### -->
+<para>
+
+</para>
+
+@eth: 
+@allow_selection: 
+
+
+<!-- ##### FUNCTION e_table_header_col_diff ##### -->
+<para>
+
+</para>
+
+@eth: 
+@start_col: 
+@end_col: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_table_header_calc_widths ##### -->
+<para>
+
+</para>
+
+@eth: 
+
+
+<!-- ##### FUNCTION e_table_header_get_selected_indexes ##### -->
+<para>
+
+</para>
+
+@eth: 
+@Returns: 
+
+
+<!-- ##### SIGNAL ETableHeader::structure-change ##### -->
+<para>
+
+</para>
+
+@etableheader: the object which received the signal.
+
+<!-- ##### SIGNAL ETableHeader::dimension-change ##### -->
+<para>
+
+</para>
+
+@etableheader: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ETableHeader::request-width ##### -->
+<para>
+
+</para>
+
+@etableheader: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### ARG ETableHeader:width ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ETableHeader:sort_info ##### -->
+<para>
+
+</para>
+

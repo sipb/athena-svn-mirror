@@ -1,0 +1,1327 @@
+# gal translation to Catalan.
+# Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
+# Softcatalà <info@softcatala.org>, 2000, 2001.
+# Jordi Mallach <jordi@sindominio.net>, 2002.
+# 
+# Traductor de Softcatalà: Jordi Ferré <jordiferre@cataloniamail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: gal 2.0.0.4\n"
+"POT-Creation-Date: 2003-06-25 10:34-0500\n"
+"PO-Revision-Date: 2002-05-31 20:02+0200\n"
+"Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
+"Language-Team: Catalan <gnome@softcatala.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gal/e-paned/e-paned.c:141
+msgid "Handle Size"
+msgstr ""
+
+#: gal/e-paned/e-paned.c:148
+msgid "Quantum"
+msgstr ""
+
+# gal/e-table/e-cell-date.c:51
+#: gal/e-table/e-cell-date.c:51
+msgid "?"
+msgstr "?"
+
+# gal/e-table/e-cell-date.c:58
+#: gal/e-table/e-cell-date.c:58
+msgid "%l:%M %p"
+msgstr "%l:%M %p"
+
+# gal/e-table/e-cell-date.c:66
+#: gal/e-table/e-cell-date.c:66
+msgid "Today %l:%M %p"
+msgstr "Avui %l:%M %p"
+
+# gal/e-table/e-cell-date.c:81
+#: gal/e-table/e-cell-date.c:76
+msgid "Yesterday %l:%M %p"
+msgstr "Ahir %l:%M %p"
+
+# gal/e-table/e-cell-date.c:96
+#: gal/e-table/e-cell-date.c:88
+msgid "%a %l:%M %p"
+msgstr "%a %l:%M %p"
+
+# gal/e-table/e-cell-date.c:104
+#: gal/e-table/e-cell-date.c:96
+msgid "%b %d %l:%M %p"
+msgstr "%d %b %l:%M %p"
+
+# gal/e-table/e-cell-date.c:106
+#: gal/e-table/e-cell-date.c:98
+msgid "%b %d %Y"
+msgstr "%d %b %Y"
+
+#: gal/e-table/e-cell-pixbuf.c:392
+msgid "Selected Column"
+msgstr ""
+
+#: gal/e-table/e-cell-pixbuf.c:399
+msgid "Focused Column"
+msgstr ""
+
+#: gal/e-table/e-cell-pixbuf.c:406
+msgid "Unselected Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1516
+msgid "Strikeout Column"
+msgstr ""
+
+#: gal/e-table/e-cell-text.c:1523
+msgid "Underline Column"
+msgstr ""
+
+# gal/e-table/e-table-header-item.c:1473
+#: gal/e-table/e-cell-text.c:1530
+#, fuzzy
+msgid "Bold Column"
+msgstr "Afegeix una columna..."
+
+# gal/e-table/e-table-header-item.c:1477
+#: gal/e-table/e-cell-text.c:1537
+#, fuzzy
+msgid "Color Column"
+msgstr "Formata les columnes..."
+
+# gal/menus/gal-view-factory-etable.c:38
+#: gal/e-table/e-cell-text.c:1544 gal/menus/gal-define-views-model.c:178
+#: gal/e-text/e-text.c:3447 gal/e-text/e-text.c:3448
+#, fuzzy
+msgid "Editable"
+msgstr "Taula"
+
+#: gal/e-table/e-cell-text.c:1551
+msgid "BG Color Column"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:456
+#: gal/e-table/e-table-field-chooser-dialog.c:88
+#: gal/e-table/e-table-field-chooser-item.c:660
+#: gal/e-table/e-table-field-chooser.c:91
+#: gal/e-table/e-table-header-item.c:1759
+#: gal/e-table/e-table-selection-model.c:316 gal/widgets/e-categories.c:122
+#: gal/widgets/e-categories.c:123
+msgid "Header"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:463
+#: gal/e-table/e-table-selection-model.c:309 gal/e-table/e-table.c:3256
+#: gal/e-table/e-tree-selection-model.c:781 gal/e-text/e-text.c:3311
+#: gal/e-text/e-text.c:3312
+msgid "Model"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:470
+msgid "Message"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:477
+#: gal/e-table/e-table-field-chooser-item.c:667
+#: gal/e-table/e-table-group-container.c:976
+#: gal/e-table/e-table-group-container.c:977 gal/e-text/e-text.c:3489
+#: gal/e-text/e-text.c:3490
+msgid "Width"
+msgstr ""
+
+#: gal/e-table/e-table-click-to-add.c:484
+#: gal/e-table/e-table-field-chooser-item.c:674
+#: gal/e-table/e-table-group-container.c:969
+#: gal/e-table/e-table-group-container.c:970 gal/e-text/e-text.c:3497
+#: gal/e-text/e-text.c:3498
+msgid "Height"
+msgstr ""
+
+# gal/e-table/e-table-config.glade.h:1
+# gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config-no-group.glade.h:1
+#: gal/e-table/e-table-config.glade.h:1
+msgid "<- _Remove"
+msgstr "<- _Suprimeix"
+
+# gal/e-table/e-table-config.glade.h:2
+# gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config-no-group.glade.h:2
+#: gal/e-table/e-table-config.glade.h:2
+msgid "A_vailable Fields:"
+msgstr "C_amps disponibles:"
+
+# gal/e-table/e-table-config.glade.h:3
+# gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config-no-group.glade.h:3
+#: gal/e-table/e-table-config.glade.h:3
+msgid "Ascending"
+msgstr "Sentit ascendent"
+
+# gal/e-table/e-table-config.glade.h:4
+# gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-table/e-table-config.glade.h:4
+msgid "Clear All"
+msgstr "Esborra-ho tot"
+
+# gal/e-table/e-table-config.glade.h:5
+# gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config-no-group.glade.h:5
+#: gal/e-table/e-table-config.glade.h:5
+msgid "Descending"
+msgstr "Sentit descendent"
+
+# gal/e-table/e-table-config.glade.h:6
+# gal/e-table/e-table-config-no-group.glade.h:6
+# gal/menus/gal-define-views.glade.h:3
+#: gal/e-table/e-table-config-no-group.glade.h:6
+#: gal/e-table/e-table-config.glade.h:6
+msgid "Description"
+msgstr "Descripció"
+
+# gal/e-table/e-table-config.glade.h:7
+# gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config-no-group.glade.h:7
+#: gal/e-table/e-table-config.glade.h:7
+msgid "Group"
+msgstr "Agrupa"
+
+# gal/e-table/e-table-config.glade.h:8
+# gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config-no-group.glade.h:8
+#: gal/e-table/e-table-config.glade.h:8
+msgid "Group Items By"
+msgstr "Agrupa els elements per"
+
+# gal/e-table/e-table-config.glade.h:9
+# gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config-no-group.glade.h:9
+#: gal/e-table/e-table-config.glade.h:9
+msgid "Move _Down"
+msgstr "Fes b_aixar"
+
+# gal/e-table/e-table-config.glade.h:10
+# gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config-no-group.glade.h:10
+#: gal/e-table/e-table-config.glade.h:10
+msgid "Move _Up"
+msgstr "Fes p_ujar"
+
+# gal/e-table/e-table-config.glade.h:11
+# gal/e-table/e-table-config-no-group.glade.h:11
+#: gal/e-table/e-table-config-no-group.glade.h:11
+#: gal/e-table/e-table-config.glade.h:11
+msgid "Sh_ow these fields in order:"
+msgstr "Mo_stra aquests camps en ordre:"
+
+# gal/e-table/e-table-config.glade.h:12
+# gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config-no-group.glade.h:12
+#: gal/e-table/e-table-config.glade.h:12
+msgid "Show Fields"
+msgstr "Mostra els camps"
+
+# gal/e-table/e-table-config.glade.h:13
+# gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config-no-group.glade.h:13
+#: gal/e-table/e-table-config.glade.h:13
+msgid "Show field in View"
+msgstr "Mostra el camp a Visualitza"
+
+# gal/e-table/e-table-config.glade.h:14
+# gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/e-table/e-table-config.glade.h:14
+msgid "Sort"
+msgstr "Ordena"
+
+# gal/e-table/e-table-config.glade.h:15
+# gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config-no-group.glade.h:15
+#: gal/e-table/e-table-config.glade.h:15
+msgid "Sort Items By"
+msgstr "Ordena els elements per"
+
+# gal/e-table/e-table-config.glade.h:16
+# gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config-no-group.glade.h:16
+#: gal/e-table/e-table-config.glade.h:16
+msgid "Then By"
+msgstr "Després per"
+
+# gal/e-table/e-table-config.glade.h:17
+# gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config-no-group.glade.h:17
+#: gal/e-table/e-table-config.glade.h:17
+msgid "_Add ->"
+msgstr "_Afegeix ->"
+
+# gal/e-table/e-table-config.glade.h:18
+# gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config-no-group.glade.h:18
+#: gal/e-table/e-table-config.glade.h:18
+msgid "_Fields Shown..."
+msgstr "_Camps mostrats..."
+
+# gal/e-table/e-table-config.glade.h:20
+# gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config-no-group.glade.h:19
+#: gal/e-table/e-table-config.glade.h:20
+msgid "_Sort..."
+msgstr "_Ordena..."
+
+#: gal/e-table/e-table-config-no-group.glade.h:20
+#: gal/e-table/e-table-config.glade.h:21
+msgid "dialog1"
+msgstr ""
+
+# gal/widgets/e-categories-master-list-array.c:80
+#: gal/e-table/e-table-config.c:154
+#, fuzzy
+msgid "State"
+msgstr "Estat"
+
+# gal/e-table/e-table-config.c:300 gal/e-table/e-table-config.c:342
+#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+msgid "(Ascending)"
+msgstr "(Sentit ascendent)"
+
+# gal/e-table/e-table-config.c:300 gal/e-table/e-table-config.c:342
+#: gal/e-table/e-table-config.c:311 gal/e-table/e-table-config.c:353
+msgid "(Descending)"
+msgstr "(Sentit descendent)"
+
+# gal/e-table/e-table-config.c:307
+#: gal/e-table/e-table-config.c:318
+msgid "Not sorted"
+msgstr "Sense ordenació"
+
+# gal/e-table/e-table-config.c:348
+#: gal/e-table/e-table-config.c:359
+msgid "No grouping"
+msgstr "Sense agrupació"
+
+# gal/e-table/e-table-config.glade.h:19
+#: gal/e-table/e-table-config.glade.h:19
+msgid "_Group By..."
+msgstr "_Agrupa per..."
+
+# gal/e-table/e-table-field-chooser.glade.h:1
+#: gal/e-table/e-table-field-chooser.glade.h:1
+msgid "Field Chooser"
+msgstr "Selector de camp"
+
+# gal/e-table/e-table-field-chooser.glade.h:2
+#: gal/e-table/e-table-field-chooser.glade.h:2
+msgid ""
+"To add a column to your table, drag it into\n"
+"the location in which you want it to appear."
+msgstr ""
+"Per afegir una columna a la taula, arrossegueu-la\n"
+"a la ubicació on voleu que aparegui."
+
+#: gal/e-table/e-table-field-chooser-dialog.c:74
+#: gal/e-table/e-table-field-chooser-item.c:646
+#: gal/e-table/e-table-field-chooser.c:77
+#: gal/e-table/e-table-header-item.c:1738
+msgid "DnD code"
+msgstr ""
+
+#: gal/e-table/e-table-field-chooser-dialog.c:81
+#: gal/e-table/e-table-field-chooser-item.c:653
+#: gal/e-table/e-table-field-chooser.c:84
+#: gal/e-table/e-table-header-item.c:1752
+msgid "Full Header"
+msgstr ""
+
+# gal/e-table/e-table-field-chooser-dialog.c:126
+#: gal/e-table/e-table-field-chooser-dialog.c:123
+msgid "Add a column..."
+msgstr "Afegeix una columna..."
+
+# gal/e-table/e-table-group-container.c:354
+#: gal/e-table/e-table-group-container.c:355
+#, c-format
+msgid "%s : %s (%d item)"
+msgstr "%s : %s (%d element)"
+
+# gal/e-table/e-table-group-container.c:355
+#: gal/e-table/e-table-group-container.c:356
+#, c-format
+msgid "%s : %s (%d items)"
+msgstr "%s : %s (%d elements)"
+
+# gal/e-table/e-table-group-container.c:360
+#: gal/e-table/e-table-group-container.c:361
+#, c-format
+msgid "%s (%d item)"
+msgstr "%s (%d element)"
+
+# gal/e-table/e-table-group-container.c:361
+#: gal/e-table/e-table-group-container.c:362
+#, c-format
+msgid "%s (%d items)"
+msgstr "%s (%d elements)"
+
+#: gal/e-table/e-table-group-container.c:906
+#: gal/e-table/e-table-group-container.c:907
+msgid "Alternating Row Colors"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:913
+#: gal/e-table/e-table-group-container.c:914
+msgid "Horizontal Draw Grid"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:920
+#: gal/e-table/e-table-group-container.c:921
+msgid "Vertical Draw Grid"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:927
+#: gal/e-table/e-table-group-container.c:928
+msgid "Draw focus"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:934
+#: gal/e-table/e-table-group-container.c:935
+msgid "Cursor mode"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:941
+#: gal/e-table/e-table-group-container.c:942
+msgid "Selection model"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:948
+#: gal/e-table/e-table-group-container.c:949 gal/e-table/e-table.c:3228
+msgid "Length Threshold"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:955
+#: gal/e-table/e-table-group-container.c:956 gal/e-table/e-table.c:3235
+msgid "Uniform row height"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:962
+#: gal/e-table/e-table-group-container.c:963
+msgid "Frozen"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:983
+msgid "Minimum width"
+msgstr ""
+
+#: gal/e-table/e-table-group-container.c:984
+msgid "Minimum Width"
+msgstr ""
+
+# gal/e-table/e-table-header-item.c:1444
+#: gal/e-table/e-table-header-item.c:1451
+msgid "Customize Current View"
+msgstr "Personalitza la visualització actual"
+
+# gal/e-table/e-table-header-item.c:1465
+#: gal/e-table/e-table-header-item.c:1471
+msgid "Sort Ascending"
+msgstr "Ordena en sentit ascendent"
+
+# gal/e-table/e-table-header-item.c:1466
+#: gal/e-table/e-table-header-item.c:1472
+msgid "Sort Descending"
+msgstr "Ordena en sentit descendent"
+
+# gal/e-table/e-table-header-item.c:1467
+#: gal/e-table/e-table-header-item.c:1473
+msgid "Unsort"
+msgstr "Desordena-ho"
+
+# gal/e-table/e-table-header-item.c:1469
+#: gal/e-table/e-table-header-item.c:1475
+msgid "Group By This Field"
+msgstr "Agrupa per aquest camp"
+
+# gal/e-table/e-table-header-item.c:1470
+#: gal/e-table/e-table-header-item.c:1476
+msgid "Group By Box"
+msgstr "Agrupa per quadre"
+
+# gal/e-table/e-table-header-item.c:1472
+#: gal/e-table/e-table-header-item.c:1478
+msgid "Remove This Column"
+msgstr "Suprimeix aquesta columna"
+
+# gal/e-table/e-table-header-item.c:1473
+#: gal/e-table/e-table-header-item.c:1479
+msgid "Add a Column..."
+msgstr "Afegeix una columna..."
+
+# gal/e-table/e-table-header-item.c:1475
+#: gal/e-table/e-table-header-item.c:1481
+msgid "Alignment"
+msgstr "Alineació"
+
+# gal/e-table/e-table-header-item.c:1476
+#: gal/e-table/e-table-header-item.c:1482
+msgid "Best Fit"
+msgstr "Encaix més adequat"
+
+# gal/e-table/e-table-header-item.c:1477
+#: gal/e-table/e-table-header-item.c:1483
+msgid "Format Columns..."
+msgstr "Formata les columnes..."
+
+# gal/e-table/e-table-header-item.c:1479
+#: gal/e-table/e-table-header-item.c:1485
+msgid "Customize Current View..."
+msgstr "Personalitza la visualització actual..."
+
+#: gal/e-table/e-table-header-item.c:1745
+msgid "Fontset"
+msgstr ""
+
+#: gal/e-table/e-table-header-item.c:1766 gal/e-table/e-table-sorter.c:172
+#, fuzzy
+msgid "Sort Info"
+msgstr "Ordena per"
+
+# gal/menus/gal-view-factory-etable.c:38
+#: gal/e-table/e-table-header-item.c:1773
+#: gal/menus/gal-view-factory-etable.c:37
+msgid "Table"
+msgstr "Taula"
+
+# gal/widgets/color-palette.c:612
+#: gal/e-table/e-table-header-item.c:1780
+#, fuzzy
+msgid "Tree"
+msgstr "verd"
+
+#: gal/e-table/e-table.c:3242
+msgid "Always Search"
+msgstr ""
+
+#: gal/e-table/e-table.c:3249
+msgid "Use click to add"
+msgstr ""
+
+#: gal/e-table/e-tree-selection-model.c:767
+#: gal/widgets/e-selection-model-array.c:543
+msgid "Cursor Row"
+msgstr ""
+
+# gal/widgets/color-palette.c:438
+#: gal/e-table/e-tree-selection-model.c:774
+#: gal/widgets/e-selection-model-array.c:550
+#, fuzzy
+msgid "Cursor Column"
+msgstr "Color personalitzat:"
+
+# gal/widgets/e-categories-master-list-array.c:67
+#: gal/menus/gal-define-views-dialog.c:74
+#: gal/menus/gal-define-views-model.c:185
+#, fuzzy
+msgid "Collection"
+msgstr "Competició"
+
+# gal/menus/gal-define-views.glade.h:2
+#: gal/menus/gal-define-views-dialog.c:284
+#: gal/menus/gal-define-views.glade.h:4
+#, fuzzy, no-c-format
+msgid "Define Views for %s"
+msgstr "Defineix les visualitzacions per a \"%s\""
+
+# gal/menus/gal-define-views.glade.h:2
+#: gal/menus/gal-define-views-dialog.c:292
+#: gal/menus/gal-define-views-dialog.c:294
+#, fuzzy
+msgid "Define Views"
+msgstr "Defineix les visualitzacions per a \"%s\""
+
+# gal/menus/gal-define-views.glade.h:2
+#: gal/menus/gal-define-views.glade.h:2
+#, no-c-format
+msgid "Define Views for \"%s\""
+msgstr "Defineix les visualitzacions per a \"%s\""
+
+# gal/menus/gal-define-views.glade.h:9
+#: gal/menus/gal-define-views.glade.h:5
+msgid "_Edit..."
+msgstr "_Edita..."
+
+# gal/e-table/e-table-header-item.c:1444
+#: gal/menus/gal-view-instance.c:575
+#, fuzzy
+msgid "Custom View"
+msgstr "Personalitza la visualització actual"
+
+# gal/widgets/e-categories-master-list-array.c:76
+#: gal/menus/gal-view-instance.c:576
+#, fuzzy
+msgid "Save Custom View"
+msgstr "Client clau"
+
+# gal/menus/gal-define-views.glade.h:2
+#: gal/menus/gal-view-instance.c:580
+#, fuzzy
+msgid "Define Views..."
+msgstr "Defineix les visualitzacions per a \"%s\""
+
+#: gal/menus/gal-view-instance-save-as-dialog.c:179
+msgid "Instance"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:1
+msgid "Create New View Named"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:2
+msgid "Replace Existing View"
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:3
+msgid ""
+"The current view will replace the given view.  Any folders\n"
+"set to this view wil be replaced with the current view."
+msgstr ""
+
+#: gal/menus/gal-view-instance-save-as-dialog.glade.h:5
+msgid "This will create a new View."
+msgstr ""
+
+#: gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/widgets/gal-categories.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:1
+msgid "*"
+msgstr ""
+
+# gal/menus/gal-view-new-dialog.glade.h:1
+#: gal/menus/gal-view-new-dialog.glade.h:2
+msgid "Name of new view:"
+msgstr "Nom de la nova visualització:"
+
+# gal/menus/gal-view-new-dialog.glade.h:2
+#: gal/menus/gal-view-new-dialog.glade.h:3
+msgid "Type of view:"
+msgstr "Tipus de la visualització:"
+
+#: gal/menus/gal-view-new-dialog.c:70
+msgid "Name"
+msgstr ""
+
+# gal/widgets/e-categories-master-list-dialog.c:194
+#: gal/menus/gal-view-new-dialog.c:77
+#, fuzzy
+msgid "Factory"
+msgstr "Categoria"
+
+# gal/shortcut-bar/e-group-bar.c:631
+#: gal/shortcut-bar/e-group-bar.c:541
+#, c-format
+msgid "Group %i"
+msgstr "Agrupa %i"
+
+# gal/widgets/color-palette.c:396
+#. This is the default custom color
+#: gal/widgets/color-palette.c:393
+msgid "custom"
+msgstr "personalitzat"
+
+# gal/widgets/color-palette.c:438
+#. "Custom" color - we'll pop up a GnomeColorPicker
+#: gal/widgets/color-palette.c:435
+msgid "Custom Color:"
+msgstr "Color personalitzat:"
+
+# gal/widgets/color-palette.c:446
+#: gal/widgets/color-palette.c:443
+msgid "Choose Custom Color"
+msgstr "Trieu el color personalitzat"
+
+# gal/widgets/color-palette.c:579
+#: gal/widgets/color-palette.c:576
+msgid "black"
+msgstr "negre"
+
+# gal/widgets/color-palette.c:580
+#: gal/widgets/color-palette.c:577
+msgid "light brown"
+msgstr "marró clar"
+
+# gal/widgets/color-palette.c:581
+#: gal/widgets/color-palette.c:578
+msgid "brown gold"
+msgstr "marró daurat"
+
+# gal/widgets/color-palette.c:582
+#: gal/widgets/color-palette.c:579
+msgid "dark green #2"
+msgstr "verd fosc #2"
+
+# gal/widgets/color-palette.c:583
+#: gal/widgets/color-palette.c:580
+msgid "navy"
+msgstr "blau marí"
+
+# gal/widgets/color-palette.c:584 gal/widgets/color-palette.c:640
+#: gal/widgets/color-palette.c:581 gal/widgets/color-palette.c:637
+msgid "dark blue"
+msgstr "blau fosc"
+
+# gal/widgets/color-palette.c:585
+#: gal/widgets/color-palette.c:582
+msgid "purple #2"
+msgstr "porpra #2"
+
+# gal/widgets/color-palette.c:586
+#: gal/widgets/color-palette.c:583
+msgid "very dark gray"
+msgstr "gris molt fosc"
+
+# gal/widgets/color-palette.c:589 gal/widgets/color-palette.c:645
+#: gal/widgets/color-palette.c:586 gal/widgets/color-palette.c:642
+msgid "dark red"
+msgstr "vermell fosc"
+
+# gal/widgets/color-palette.c:590
+#: gal/widgets/color-palette.c:587
+msgid "red-orange"
+msgstr "vermell ataronjat"
+
+# gal/widgets/color-palette.c:591
+#: gal/widgets/color-palette.c:588
+msgid "gold"
+msgstr "daurat"
+
+# gal/widgets/color-palette.c:592
+#: gal/widgets/color-palette.c:589
+msgid "dark green"
+msgstr "verd fosc"
+
+# gal/widgets/color-palette.c:593 gal/widgets/color-palette.c:646
+#: gal/widgets/color-palette.c:590 gal/widgets/color-palette.c:643
+msgid "dull blue"
+msgstr "blau deslluït"
+
+# gal/widgets/color-palette.c:594 gal/widgets/color-palette.c:647
+#: gal/widgets/color-palette.c:591 gal/widgets/color-palette.c:644
+msgid "blue"
+msgstr "blau"
+
+# gal/widgets/color-palette.c:595
+#: gal/widgets/color-palette.c:592
+msgid "dull purple"
+msgstr "porpra deslluït"
+
+# gal/widgets/color-palette.c:596
+#: gal/widgets/color-palette.c:593
+msgid "dark grey"
+msgstr "gris fosc"
+
+# gal/widgets/color-palette.c:599
+#: gal/widgets/color-palette.c:596
+msgid "red"
+msgstr "vermell"
+
+# gal/widgets/color-palette.c:600
+#: gal/widgets/color-palette.c:597
+msgid "orange"
+msgstr "taronja"
+
+# gal/widgets/color-palette.c:601
+#: gal/widgets/color-palette.c:598
+msgid "lime"
+msgstr "verd llimona"
+
+# gal/widgets/color-palette.c:602
+#: gal/widgets/color-palette.c:599
+msgid "dull green"
+msgstr "verd deslluït"
+
+# gal/widgets/color-palette.c:603
+#: gal/widgets/color-palette.c:600
+msgid "dull blue #2"
+msgstr "blau deslluït #2"
+
+# gal/widgets/color-palette.c:604
+#: gal/widgets/color-palette.c:601
+msgid "sky blue #2"
+msgstr "blau cel #2"
+
+# gal/widgets/color-palette.c:605 gal/widgets/color-palette.c:644
+#: gal/widgets/color-palette.c:602 gal/widgets/color-palette.c:641
+msgid "purple"
+msgstr "porpra"
+
+# gal/widgets/color-palette.c:606
+#: gal/widgets/color-palette.c:603
+msgid "gray"
+msgstr "gris"
+
+# gal/widgets/color-palette.c:609 gal/widgets/color-palette.c:641
+#: gal/widgets/color-palette.c:606 gal/widgets/color-palette.c:638
+msgid "magenta"
+msgstr "magenta"
+
+# gal/widgets/color-palette.c:610
+#: gal/widgets/color-palette.c:607
+msgid "bright orange"
+msgstr "taronja brillant"
+
+# gal/widgets/color-palette.c:611 gal/widgets/color-palette.c:642
+#: gal/widgets/color-palette.c:608 gal/widgets/color-palette.c:639
+msgid "yellow"
+msgstr "groc"
+
+# gal/widgets/color-palette.c:612
+#: gal/widgets/color-palette.c:609
+msgid "green"
+msgstr "verd"
+
+# gal/widgets/color-palette.c:613 gal/widgets/color-palette.c:643
+#: gal/widgets/color-palette.c:610 gal/widgets/color-palette.c:640
+msgid "cyan"
+msgstr "blau pur"
+
+# gal/widgets/color-palette.c:614
+#: gal/widgets/color-palette.c:611
+msgid "bright blue"
+msgstr "blau brillant"
+
+# gal/widgets/color-palette.c:615 gal/widgets/color-palette.c:632
+#: gal/widgets/color-palette.c:612 gal/widgets/color-palette.c:629
+msgid "red purple"
+msgstr "vermell porpra"
+
+# gal/widgets/color-palette.c:616
+#: gal/widgets/color-palette.c:613
+msgid "light grey"
+msgstr "gris clar"
+
+# gal/widgets/color-palette.c:619 gal/widgets/color-palette.c:636
+#: gal/widgets/color-palette.c:616 gal/widgets/color-palette.c:633
+msgid "pink"
+msgstr "rosa"
+
+# gal/widgets/color-palette.c:620
+#: gal/widgets/color-palette.c:617
+msgid "light orange"
+msgstr "taronja clar"
+
+# gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:633
+#: gal/widgets/color-palette.c:618 gal/widgets/color-palette.c:630
+msgid "light yellow"
+msgstr "groc clar"
+
+# gal/widgets/color-palette.c:622
+#: gal/widgets/color-palette.c:619
+msgid "light green"
+msgstr "verd clar"
+
+# gal/widgets/color-palette.c:623
+#: gal/widgets/color-palette.c:620
+msgid "light cyan"
+msgstr "blau pur clar"
+
+# gal/widgets/color-palette.c:624 gal/widgets/color-palette.c:634
+#: gal/widgets/color-palette.c:621 gal/widgets/color-palette.c:631
+msgid "light blue"
+msgstr "blau clar"
+
+# gal/widgets/color-palette.c:625 gal/widgets/color-palette.c:638
+#: gal/widgets/color-palette.c:622 gal/widgets/color-palette.c:635
+msgid "light purple"
+msgstr "porpra clar"
+
+# gal/widgets/color-palette.c:626
+#: gal/widgets/color-palette.c:623
+msgid "white"
+msgstr "blanc"
+
+# gal/widgets/color-palette.c:631
+#: gal/widgets/color-palette.c:628
+msgid "purplish blue"
+msgstr "blau porpra"
+
+# gal/widgets/color-palette.c:635
+#: gal/widgets/color-palette.c:632
+msgid "dark purple"
+msgstr "porpra fosc"
+
+# gal/widgets/color-palette.c:637
+#: gal/widgets/color-palette.c:634
+msgid "sky blue"
+msgstr "blau cel"
+
+# gal/widgets/gal-categories.glade.h:4
+#: gal/widgets/e-categories.c:115 gal/widgets/e-categories.c:116
+#, fuzzy
+msgid "Categories"
+msgstr "categories"
+
+# gal/widgets/e-categories.c:394
+#: gal/widgets/e-categories.c:393
+msgid "Add to global category list"
+msgstr "Afegir a la llista global de categories"
+
+# gal/widgets/e-categories.c:395
+#: gal/widgets/e-categories.c:394
+msgid "Add all to global category list"
+msgstr "Afegir tots a la llista global de categories"
+
+# gal/widgets/e-categories.c:396
+#: gal/widgets/e-categories.c:395
+msgid "Remove from global category list"
+msgstr "Eliminar de la llista global de categories"
+
+# gal/widgets/e-categories.c:397
+#: gal/widgets/e-categories.c:396
+msgid "Remove all from global category list"
+msgstr "Eliminar tots de la llista global de categories"
+
+# gal/widgets/e-categories.c:540
+#: gal/widgets/e-categories.c:540
+msgid "Edit Categories"
+msgstr "Edita categories"
+
+# gal/widgets/gal-categories.glade.h:1
+#: gal/widgets/gal-categories.glade.h:2
+msgid "Edit Master Category List..."
+msgstr "Editar llista mestra de categories"
+
+# gal/widgets/gal-categories.glade.h:2
+#: gal/widgets/gal-categories.glade.h:3
+msgid "Item(s) belong to these _categories:"
+msgstr "El(s) element(s) pertanyen a les següents _categories:"
+
+# gal/widgets/gal-categories.glade.h:3
+#: gal/widgets/gal-categories.glade.h:4
+msgid "_Available Categories:"
+msgstr "C_ategories disponibles:"
+
+# gal/widgets/gal-categories.glade.h:4
+#: gal/widgets/gal-categories.glade.h:5
+msgid "categories"
+msgstr "categories"
+
+# gal/widgets/e-categories-master-list-array.c:65
+#: gal/widgets/e-categories-master-list-array.c:67
+msgid "Birthday"
+msgstr "Aniversari"
+
+# gal/widgets/e-categories-master-list-array.c:66
+#: gal/widgets/e-categories-master-list-array.c:68
+msgid "Business"
+msgstr "Negoci"
+
+# gal/widgets/e-categories-master-list-array.c:67
+#: gal/widgets/e-categories-master-list-array.c:69
+msgid "Competition"
+msgstr "Competició"
+
+# gal/widgets/e-categories-master-list-array.c:68
+#: gal/widgets/e-categories-master-list-array.c:70
+msgid "Favorites"
+msgstr "Favorits"
+
+# gal/widgets/e-categories-master-list-array.c:69
+#: gal/widgets/e-categories-master-list-array.c:71
+msgid "Gifts"
+msgstr "Regals"
+
+# gal/widgets/e-categories-master-list-array.c:70
+#: gal/widgets/e-categories-master-list-array.c:72
+msgid "Goals/Objectives"
+msgstr "Metes/Objectius"
+
+# gal/widgets/e-categories-master-list-array.c:71
+#: gal/widgets/e-categories-master-list-array.c:73
+msgid "Holiday"
+msgstr "Vacances"
+
+# gal/widgets/e-categories-master-list-array.c:72
+#: gal/widgets/e-categories-master-list-array.c:74
+msgid "Holiday Cards"
+msgstr "Cartes de vacances"
+
+# gal/widgets/e-categories-master-list-array.c:73
+#: gal/widgets/e-categories-master-list-array.c:75
+msgid "Hot Contacts"
+msgstr "Contactes importants"
+
+# gal/widgets/e-categories-master-list-array.c:74
+#: gal/widgets/e-categories-master-list-array.c:76
+msgid "Ideas"
+msgstr "Idees"
+
+# gal/widgets/e-categories-master-list-array.c:75
+#: gal/widgets/e-categories-master-list-array.c:77
+msgid "International"
+msgstr "Internacional"
+
+# gal/widgets/e-categories-master-list-array.c:76
+#: gal/widgets/e-categories-master-list-array.c:78
+msgid "Key Customer"
+msgstr "Client clau"
+
+# gal/widgets/e-categories-master-list-array.c:77
+#: gal/widgets/e-categories-master-list-array.c:79
+msgid "Miscellaneous"
+msgstr "Miscel·lània"
+
+# gal/widgets/e-categories-master-list-array.c:78
+#: gal/widgets/e-categories-master-list-array.c:80
+msgid "Personal"
+msgstr "Personal"
+
+# gal/widgets/e-categories-master-list-array.c:79
+#: gal/widgets/e-categories-master-list-array.c:81
+msgid "Phone Calls"
+msgstr "Trucades de telèfon"
+
+# gal/widgets/e-categories-master-list-array.c:80
+#: gal/widgets/e-categories-master-list-array.c:82
+msgid "Status"
+msgstr "Estat"
+
+# gal/widgets/e-categories-master-list-array.c:81
+#: gal/widgets/e-categories-master-list-array.c:83
+msgid "Strategies"
+msgstr "Estratègies"
+
+# gal/widgets/e-categories-master-list-array.c:82
+#: gal/widgets/e-categories-master-list-array.c:84
+msgid "Suppliers"
+msgstr "Suministradors"
+
+# gal/widgets/e-categories-master-list-array.c:83
+#: gal/widgets/e-categories-master-list-array.c:85
+msgid "Time & Expenses"
+msgstr "Temps i despeses"
+
+# gal/widgets/e-categories-master-list-array.c:84
+#: gal/widgets/e-categories-master-list-array.c:86
+msgid "VIP"
+msgstr "VIP"
+
+# gal/widgets/e-categories-master-list-array.c:85
+#: gal/widgets/e-categories-master-list-array.c:87
+msgid "Waiting"
+msgstr "Esperant"
+
+#: gal/widgets/e-categories-master-list-dialog.c:143
+#: gal/widgets/e-categories-master-list-dialog-model.c:192
+#: gal/widgets/e-categories-master-list-option-menu.c:168
+msgid "ECML"
+msgstr ""
+
+#: gal/widgets/e-categories-master-list-dialog.c:144
+#: gal/widgets/e-categories-master-list-dialog-model.c:193
+#: gal/widgets/e-categories-master-list-option-menu.c:169
+msgid "ECategoriesMasterListCombo"
+msgstr ""
+
+# gal/widgets/e-categories-master-list-dialog.c:193
+#: gal/widgets/e-categories-master-list-dialog.c:198
+msgid "* Click here to add a category *"
+msgstr "* Fes clic ací per a afegir una categoria *"
+
+# gal/widgets/e-categories-master-list-dialog.c:194
+#: gal/widgets/e-categories-master-list-dialog.c:199
+msgid "Category"
+msgstr "Categoria"
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:2
+#, fuzzy
+msgid "Add Category"
+msgstr "Afegir una categoria"
+
+# gal/widgets/e-categories.c:540
+#: gal/widgets/e-categories-master-list-dialog.glade.h:3
+#, fuzzy
+msgid "Edit Category"
+msgstr "Edita categories"
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:2
+#: gal/widgets/e-categories-master-list-dialog.glade.h:4
+msgid "Edit Global Category List"
+msgstr "Editar llista global de categories"
+
+# gal/widgets/e-categories.c:540
+#: gal/widgets/e-categories-master-list-dialog.glade.h:5
+#, fuzzy
+msgid "_Edit category:"
+msgstr "Edita categories"
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:1
+#: gal/widgets/e-categories-master-list-dialog.glade.h:6
+#, fuzzy
+msgid "_New category:"
+msgstr "Afegir una categoria"
+
+# gal/widgets/gal-categories.glade.h:3
+#: gal/widgets/e-categories-master-list-option-menu.c:69
+#, fuzzy
+msgid "All Categories"
+msgstr "C_ategories disponibles:"
+
+# gal/e-table/e-table-config.glade.h:14
+# gal/e-table/e-table-config-no-group.glade.h:14
+#: gal/widgets/e-selection-model.c:210
+#, fuzzy
+msgid "Sorter"
+msgstr "Ordena"
+
+#: gal/widgets/e-selection-model.c:217
+msgid "Selection Mode"
+msgstr ""
+
+#: gal/widgets/e-selection-model.c:225
+msgid "Cursor Mode"
+msgstr ""
+
+# gal/e-table/e-table-config.glade.h:4
+# gal/e-table/e-table-config-no-group.glade.h:4
+#: gal/e-text/e-text.c:2561
+#, fuzzy
+msgid "Select All"
+msgstr "Esborra-ho tot"
+
+#: gal/e-text/e-text.c:2573
+msgid "Input Methods"
+msgstr ""
+
+#: gal/e-text/e-text.c:3318 gal/e-text/e-text.c:3319
+msgid "Event Processor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3325 gal/e-text/e-text.c:3326
+msgid "Text"
+msgstr ""
+
+# gal/widgets/color-palette.c:591
+#: gal/e-text/e-text.c:3332 gal/e-text/e-text.c:3333
+#, fuzzy
+msgid "Bold"
+msgstr "daurat"
+
+#: gal/e-text/e-text.c:3339 gal/e-text/e-text.c:3340
+msgid "Strikeout"
+msgstr ""
+
+#: gal/e-text/e-text.c:3346 gal/e-text/e-text.c:3347
+msgid "Anchor"
+msgstr ""
+
+#: gal/e-text/e-text.c:3354 gal/e-text/e-text.c:3355
+msgid "Justification"
+msgstr ""
+
+#: gal/e-text/e-text.c:3361 gal/e-text/e-text.c:3362
+msgid "Clip Width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3368 gal/e-text/e-text.c:3369
+msgid "Clip Height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3375 gal/e-text/e-text.c:3376
+msgid "Clip"
+msgstr ""
+
+#: gal/e-text/e-text.c:3382 gal/e-text/e-text.c:3383
+msgid "Fill clip rectangle"
+msgstr ""
+
+#: gal/e-text/e-text.c:3389 gal/e-text/e-text.c:3390
+msgid "X Offset"
+msgstr ""
+
+#: gal/e-text/e-text.c:3396 gal/e-text/e-text.c:3397
+msgid "Y Offset"
+msgstr ""
+
+# gal/e-table/e-table-field-chooser.glade.h:1
+#: gal/e-text/e-text.c:3403 gal/e-text/e-text.c:3404
+#, fuzzy
+msgid "Fill color"
+msgstr "Selector de camp"
+
+#: gal/e-text/e-text.c:3410 gal/e-text/e-text.c:3411 gal/e-text/e-text.c:3418
+#: gal/e-text/e-text.c:3419
+msgid "GDK fill color"
+msgstr ""
+
+# gal/widgets/color-palette.c:595
+#: gal/e-text/e-text.c:3425 gal/e-text/e-text.c:3426
+#, fuzzy
+msgid "Fill stipple"
+msgstr "porpra deslluït"
+
+#: gal/e-text/e-text.c:3432 gal/e-text/e-text.c:3433
+msgid "Text width"
+msgstr ""
+
+#: gal/e-text/e-text.c:3439 gal/e-text/e-text.c:3440
+msgid "Text height"
+msgstr ""
+
+#: gal/e-text/e-text.c:3454 gal/e-text/e-text.c:3455
+msgid "Use ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3461 gal/e-text/e-text.c:3462
+msgid "Ellipsis"
+msgstr ""
+
+#: gal/e-text/e-text.c:3468 gal/e-text/e-text.c:3469
+msgid "Line wrap"
+msgstr ""
+
+#: gal/e-text/e-text.c:3475 gal/e-text/e-text.c:3476
+msgid "Break characters"
+msgstr ""
+
+#: gal/e-text/e-text.c:3482 gal/e-text/e-text.c:3483
+msgid "Max lines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3504 gal/e-text/e-text.c:3505
+msgid "Draw borders"
+msgstr ""
+
+#: gal/e-text/e-text.c:3511 gal/e-text/e-text.c:3512
+msgid "Allow newlines"
+msgstr ""
+
+#: gal/e-text/e-text.c:3518 gal/e-text/e-text.c:3519
+msgid "Draw background"
+msgstr ""
+
+#: gal/e-text/e-text.c:3525 gal/e-text/e-text.c:3526
+msgid "Draw button"
+msgstr ""
+
+# gal/widgets/color-palette.c:438
+#: gal/e-text/e-text.c:3532 gal/e-text/e-text.c:3533
+#, fuzzy
+msgid "Cursor position"
+msgstr "Color personalitzat:"
+
+#: gal/e-text/e-text.c:3539 gal/e-text/e-text.c:3540
+msgid "IM Context"
+msgstr ""
+
+#: gal/e-text/e-text.c:3546 gal/e-text/e-text.c:3547
+msgid "Handle Popup"
+msgstr ""
+
+# gal/e-table/e-cell-date.c:78
+#~ msgid "Late Yesterday %l:%M %p"
+#~ msgstr "Ahir tard %l:%M %p"
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:3
+#~ msgid "Modify a Category"
+#~ msgstr "Modificar una categoria"
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:4
+#~ msgid "Remove"
+#~ msgstr "Suprimeix"
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:5
+#~ msgid "_Category to Add:"
+#~ msgstr "_Categoria a afegir:"
+
+# gal/widgets/e-categories-master-list-dialog.glade.h:6
+#~ msgid "_Category to Modify:"
+#~ msgstr "_Categoria a modificar:"
+
+# gal/widgets/color-palette.c:595
+#, fuzzy
+#~ msgid "FIll stipple"
+#~ msgstr "porpra deslluït"
+
+# gal/menus/gal-define-views.glade.h:4
+#~ msgid "Re_set to Factory Defaults..."
+#~ msgstr "Re_cupera els valors per defecte originals..."
+
+# gal/menus/gal-define-views.glade.h:7
+#~ msgid "_Copy..."
+#~ msgstr "_Copia..."
+
+# gal/menus/gal-define-views.glade.h:8
+#~ msgid "_Delete..."
+#~ msgstr "_Suprimeix..."
+
+# gal/menus/gal-define-views.glade.h:10
+#~ msgid "_New..."
+#~ msgstr "_Nou..."
+
+# gal/e-table/e-table-group.glade.h:1
+#~ msgid "<< Remove"
+#~ msgstr "<< Suprimeix"
+
+# gal/e-table/e-table-group.glade.h:2
+#~ msgid "Add >>"
+#~ msgstr "Afegeix >>"
+
+# gal/e-table/e-table-group.glade.h:3
+#~ msgid "Available fields"
+#~ msgstr "Camps disponibles"
+
+# gal/e-table/e-table-group.glade.h:4
+#~ msgid "Show in this order"
+#~ msgstr "Mostra en aquest ordre"
+
+# gal/menus/gal-define-views.glade.h:6
+#~ msgid "Views for \"%s\""
+#~ msgstr "Visualitzacions per a \"%s\""
+
+#~ msgid "Group By"
+#~ msgstr "Agrupa per"
+
+#~ msgid "View Summary"
+#~ msgstr "Visualitza el resum"
+
+#~ msgid "Sort..."
+#~ msgstr "Ordena..."
+
+#~ msgid "Group By..."
+#~ msgstr "Agrupa per..."
+
+#~ msgid ""
+#~ "Icon, Attachment, Flag Status,\n"
+#~ "Full Name, Company, "
+#~ msgstr ""
+#~ "Icona, Fitxer adjunt, Estat del senyalador,\n"
+#~ "Nom complet, Empresa, "
+
+#~ msgid "None"
+#~ msgstr "Cap"
+
+#~ msgid "File As (ascending)"
+#~ msgstr "Arxiva com a (ascendent)"
+
+#~ msgid "Table HERE"
+#~ msgstr "Taula AQUÍ"
+
+#~ msgid "File By"
+#~ msgstr "Arxiva per"
+
+#~ msgid "window1"
+#~ msgstr "finestra1"
+
+#~ msgid "label1"
+#~ msgstr "etiqueta1"
+
+#~ msgid "label2"
+#~ msgstr "etiqueta2"
+
+#~ msgid "_Rename..."
+#~ msgstr "_Canvia el nom..."
+
+#~ msgid "Move Do_wn"
+#~ msgstr "Fes bai_xar"
