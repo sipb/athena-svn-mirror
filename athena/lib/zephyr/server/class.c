@@ -15,7 +15,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_class_c[] =
-    "$Id: class.c,v 1.17 1990-12-12 00:56:30 raeburn Exp $";
+    "$Id: class.c,v 1.18 1991-02-04 16:07:55 raeburn Exp $";
 #endif
 
 #include "zserver.h"			/* includes zephyr/zephyr.h */
@@ -177,7 +177,7 @@ class_deregister(ZClient_t *client, ZSubscr_t *subs)
 	subs->zst_dest.set_hash ();
 	unsigned long hashval = subs->zst_dest.hash() % HASHSIZE;
 
-#if 1
+#if 0
 	if (zdebug) {
 	    char buf[BUFSIZ];
 	    subs->zst_dest.print (buf);
