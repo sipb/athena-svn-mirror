@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: subscriptions.c,v 1.13 1999-06-01 19:01:19 ghudson Exp $
+ *      $Id: subscriptions.c,v 1.14 2003-11-04 19:22:06 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -12,7 +12,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.13 1999-06-01 19:01:19 ghudson Exp $";
+static char rcsid_subscriptions_c[] = "$Id: subscriptions.c,v 1.14 2003-11-04 19:22:06 ghudson Exp $";
 #endif
 
 /****************************************************************************/
@@ -373,7 +373,7 @@ void zwgc_startup()
       return;
 
     if (saved_subscriptions) {
-	TRAP(ZSubscribeTo(saved_subscriptions,number_of_saved_subscriptions,0),
+	TRAP(ZSubscribeToSansDefaults(saved_subscriptions,number_of_saved_subscriptions,0),
 	     "while resubscribing to zephyr messages");
 	free(saved_subscriptions);
 	saved_subscriptions = NULL;
