@@ -30,7 +30,7 @@ datadir=@datadir@
 srcdir=@srcdir@
 
 # Where to install LEIM files.
-INSTALLDIR=${datadir}/emacs/${version}/leim
+INSTALLDIR=$(DESTDIR)${datadir}/emacs/${version}/leim
 
 # On Xenix and the IBM RS6000, double-dot gets screwed up.
 dot = .
