@@ -31,7 +31,7 @@ SOFTWARE.
 #define _XawClockP_h
 
 #include <X11/Xos.h>		/* Needed for struct tm. */
-#include <X11/Xaw/Clock.h>
+#include "Clock.h"
 #include <X11/Xaw/SimpleP.h>
 
 #define SEG_BUFF_SIZE		128
