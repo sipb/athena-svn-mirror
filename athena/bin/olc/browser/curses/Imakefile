@@ -7,13 +7,21 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v $
 #	$Author: lwvanels $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.1 1991-02-25 16:11:37 lwvanels Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/Imakefile,v 1.2 1991-03-01 12:18:26 lwvanels Exp $
 #
 
-SRCS	= cref.c commands.c display.c cref_utils.c globals.c update.c signal.c
-OBJS	= cref.o commands.o display.o cref_utils.o globals.o update.o signal.o
+#define Logging
+
+SRCS	= cref.c commands.c display.c cref_utils.c globals.c update.c \
+	  signal.c log.c
+OBJS	= cref.o commands.o display.o cref_utils.o globals.o update.o \
+	  signal.o log.o
 
 SYS_LIBRARIES = $(CursesLib)
+
+#ifdef Logging
+DEFINES = -DLOG
+#endif
 
 NormalProgramTarget(olc_browser,$(OBJS),,,$(SYS_LIBRARIES))
 SaberProgramTarget(olc_browser,$(SRCS),$(OBJS),,$(SYS_LIBRARIES))
