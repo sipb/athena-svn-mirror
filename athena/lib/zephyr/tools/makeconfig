@@ -1,6 +1,6 @@
 # $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v $
 # $Author: raeburn $
-# $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v 1.12 1990-11-16 11:23:01 raeburn Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/tools/makeconfig,v 1.13 1991-03-18 15:36:11 raeburn Exp $
 #
 # Makefile for creating a Zephyr configuration
 #
@@ -23,7 +23,7 @@ LN	= ln -s
 CP	= cp
 SUBDIR	= et et/lib et/compile_et ss ss/lib ss/make_commands clients \
 	clients/syslogd clients/zaway \
-	clients/zbitmap clients/zctl clients/zinit clients/zleave \
+	clients/zbitmap clients/zctl clients/zleave \
 	clients/zlocate clients/zmailnotify clients/znol clients/zpopnotify \
 	clients/zshutdown_notify clients/zstat clients/zwrite \
 	include include/zephyr lib man man/man1 man/man8 server zhm zwgc \
