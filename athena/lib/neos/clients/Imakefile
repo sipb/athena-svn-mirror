@@ -2,7 +2,7 @@
  * Iakefile for the FX (file exchange) clients
  *
  * $Author: ghudson $
- * $Id: Imakefile,v 1.4 1997-10-13 22:44:57 ghudson Exp $
+ * $Id: Imakefile,v 1.5 1997-11-14 22:21:51 ghudson Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -17,8 +17,9 @@ AnsiCC()
 CLIENTS = turnin pickup collect uncollect return fxpurge \
 	 fxblanche fxcreate fxdestroy fxls fxping
 
-INCLUDES = -I../lib -I../rpc3.9/usr/include -I../include
-LIBS = -L../lib -L../rpc3.9/usr/lib -lfxcl -lhesiod -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lfxrpc
+INCLUDES = -I../lib -I../include
+LDDEFS = -L../lib
+LIBS = -lfxcl -lhesiod -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err
 FXOBJS = main.o fx_ct.o fx.o arg.o
 FXSRCS = main.c fx_ct.o fx.c arg.c
 
