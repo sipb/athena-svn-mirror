@@ -1,26 +1,29 @@
-#Disk geometry <ST38420A cyl 16706 alt 2 hd 16 sec 63>
-#Part      Tag    Flag     Cylinders         Size            Blocks
-#  0       root    wm       0 -   406      200.32MB    (407/0/0)     410256
-#  1       swap    wm    1119 -  2159      512.37MB    (1041/0/0)   1049328
+#
+# Disk geometry <ST38420A cyl 16706 alt 2 hd 16 sec 63>
+# Part      Tag    Flag     Cylinders         Size            Blocks
+#  0       root    wm       0 - 14043        6.75GB    (14044/0/0) 14156352
+#  1       swap    wm   14044 - 16124        1.00GB    (2081/0/0)   2097648
 #  2     backup    wm       0 - 16705        8.03GB    (16706/0/0) 16839648
-#  3 unassigned    wm    2160 -  2363      100.41MB    (204/0/0)     205632
+#  3 unassigned    wm   16125 - 16705      285.96MB    (581/0/0)     585648
 #  4 unassigned    wu       0                0         (0/0/0)            0
-#  5        usr    wm     407 -  1118      350.44MB    (712/0/0)     717696
-#  6        var    wm    2364 - 16705        6.89GB    (14342/0/0) 14456736
+#  5 unassigned    wm       0                0         (0/0/0)            0
+#  6 unassigned    wm       0                0         (0/0/0)            0
 #  7 unassigned    wm       0                0         (0/0/0)            0
+
+
 partition
 
 0
 root
 wm
 0
-407c
+14044c
 
 1
 swap
 wu
-1119
-1041c
+14044
+2081c
 
 2
 backup
@@ -31,8 +34,8 @@ wu
 3
 unassigned
 wm
-2160
-204c
+16125
+581c
 
 4
 unassigned
@@ -41,16 +44,16 @@ wm
 0c
 
 5
-usr
+unassigned
 wm
-407
-712c
+0
+0c
 
 6
-var
+unassigned
 wm
-2364
-14342c
+0
+0c
 
 7
 unassigned
@@ -63,4 +66,3 @@ y
 print
 q
 q
-
