@@ -5,7 +5,7 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.9 1987-12-06 22:14:08 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.login,v 1.10 1988-08-16 18:11:32 shanzer Exp $
 
 # Set initialization directory and make sure it exists.
 
