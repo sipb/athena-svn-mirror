@@ -94,27 +94,9 @@ if [ "${RVDCLIENT}" = "true" ]; then
 fi
 
 # Take a new release, if necessary.
-if [ "${AUTOUPDATE}" = "true" -a -f /srvd/auto_update ]; then
-	$ECHO "Checking /srvd/auto_update... \c"
-	/srvd/auto_update rc < /dev/console > /dev/console 2>&1
-	$ECHO "done."
-elif [ -f /srvd/.rvdinfo ]; then
-	NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
-	VERSION=`awk '{a=$5}; END{print a}' /etc/athena/version`
-	if [ "${NEWVERS}" != "${VERSION}" ]; then
-		cat <<EOF
-The workstation software version ($VERSION) does not match the
-version on the system packs ($NEWVERS).  A new version of software
-may be available.  Please contact Athena Operations (x3-1410) to
-have your workstation updated.
-EOF
-	 if [ ! -f /usr/tmp/update.check -a -f /usr/bsd/logger ]; then
-       	    /usr/bsd/logger -t `uname -n` -p user.notice at revision $VERSION
-	    cp /dev/null /usr/tmp/update.check
-	 fi
-	fi
-fi
-
+$ECHO "Checking /srvd/auto_update... \c"
+/srvd/auto_update rc < /dev/console > /dev/console 2>&1
+$ECHO "done."
 $ECHO ""
 
 # If this is a PUBLIC workstation, ensure that that there are no hacks.
