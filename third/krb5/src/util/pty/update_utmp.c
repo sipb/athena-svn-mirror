@@ -41,7 +41,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     char *username, *line, *host;
     int flags;
 {
-    struct utmp ent, ut;
+    struct utmp ent, ut, *utptr;
 #ifndef HAVE_SETUTENT
     struct stat statb;
     int tty;
@@ -121,25 +121,29 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 
     utmpname(UTMP_FILE);
     setutent();
+
+    /* Look for an existing utmp entry for this line, and use its id
+     * if found.  This also positions the file pointer properly for
+     * pututline().
+     */
+    strncpy(ut.ut_line, ent.ut_line, sizeof(ut.ut_line));
+    utptr = getutline(&ut);
+    if (utptr)
+      {
+	memcpy(ent.ut_id, utptr->ut_id, sizeof(ent.ut_id));
 /* If we need to preserve the user name in the wtmp structure and
  * Our flags tell us we can obtain it from the utmp and we succeed in
  * obtaining it, we then save the utmp structure we obtain, write
  * out the utmp structure and change the username pointer so  it is used by
  * update_wtmp.*/
 #ifdef WTMP_REQUIRES_USERNAME
-    if (( !username[0]) && (flags&PTY_UTMP_USERNAME_VALID)
-	&&line)  
-	{
-	  struct utmp *utptr;
-	  strncpy(ut.ut_line, ent.ut_line, sizeof(ut.ut_line));
-	  utptr = getutline(&ut);
-	  if (utptr)
-	    strncpy(userbuf,utptr->ut_user,sizeof(ut.ut_user));
-	  /* Reset the file pointer for pututline(). */
-	  setutent();
-	}
+	if (( !username[0]) && (flags&PTY_UTMP_USERNAME_VALID))
+	  strncpy(userbuf,utptr->ut_user,sizeof(ut.ut_user));
 #endif
-
+      }
+    else
+      setutent();		/* Reset the file pointer for pututline(). */
+	
     pututline(&ent);
     endutent();
     
