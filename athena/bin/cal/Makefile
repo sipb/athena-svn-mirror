@@ -7,13 +7,13 @@
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/Makefile,v $
 #	$Author: shanzer $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/Makefile,v 1.1 1987-10-29 12:18:43 shanzer Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/Makefile,v 1.2 1987-10-29 12:20:09 shanzer Exp $
 #
 #################################################################
 
 DESTDIR=
-GDBINCLUDES= ../../gdb_distribution/include
-GDBLIBDIR= ../../gdb_distribution/lib
+GDBINCLUDES= /usr/include
+GDBLIBDIR= /usr/athena/lib
 
 WHATSUPINCLUDES=../include
 CFLAGS=	 "-O -I${WHATSUPINCLUDES} -I${GDBINCLUDES} -L${GDBLIBDIR}"
