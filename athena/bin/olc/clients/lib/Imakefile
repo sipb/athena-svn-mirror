@@ -1,8 +1,10 @@
 # Imakefile for `clients/lib'.
 #
-# $Id: Imakefile,v 1.1 1990-01-19 05:32:23 raeburn Exp $
+# $Id: Imakefile,v 1.2 1990-11-13 14:19:14 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/Imakefile,v $
 #
+
+/* #define Profiling */
 
 SRCS=	ask.c connect.c consult.c generic.c instance.c io.c \
 	messages.c motd.c queue.c resolve.c send.c topic.c utils.c \
@@ -16,6 +18,12 @@ OBJS=	ask.o connect.o consult.o generic.o instance.o io.o \
 
 
 LibraryTarget(client,$(OBJS))
-TagsTarget()
+SaberLibraryTarget(client,$(SRCS),$(OBJS))
+
+#ifdef Profiling
+ProfiledLibraryObjectRule()
+ProfiledLibraryTarget(client,$(OBJS))
+#endif
+
 LintTarget()
 DependTarget()
