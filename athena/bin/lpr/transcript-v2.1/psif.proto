@@ -4,10 +4,12 @@
 # Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved. 
 # GOVERNMENT END USERS: See Notice file in TranScript library directory
 # -- probably /usr/lib/ps/Notice
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.1 1990-04-16 18:05:19 epeisach Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.2 1993-10-09 18:52:32 probe Exp $
 
 PATH=/bin:/usr/bin:/usr/ucb
 export PATH
+
+prog=`basename $prog`
 
 # set up initial undefined variable values
 width= length= indent= login= host= afile= 
@@ -25,11 +27,13 @@ VERBOSELOG=1
 BANNERFIRST=1
 BANNERLAST=0
 BANNERPRO=$PSLIBDIR/banner.pro
-LPS40BANNERPRO=$PSLIBDIR/lps40banner.pro
 LAPS=/usr/lib/dnet/lps40/laps
 PSTEXT=$PSLIBDIR/pstext
+PSBANNER=$PSLIBDIR/psbanner
 PSCOMM=$PSLIBDIR/pscomm
-export PSLIBDIR VERBOSELOG BANNERFIRST BANNERLAST BANNERPRO LPSBANNERPRO REVERSE PSTEXT LAPS
+
+export PSLIBDIR VERBOSELOG BANNERFIRST BANNERLAST BANNERPRO REVERSE \
+	PSTEXT PSBANNER PSCOMM LAPS
 
 # load the values from the .options file if present
 test -r ./.options && . ./.options
@@ -52,6 +56,8 @@ do	case "$1" in
 	-n*)	user=`expr $1 : '-.\(.*\)'` ;;
 	-h)	host=$2 ; shift ;;
 	-h*)	host=`expr $1 : '-.\(.*\)'` ;;
+	-P)	pname=$2 ; shift ;;
+	-P*)	pname=`expr $1 : '-.\(.*\)'` ;;
 	-*)	;; 
 	*)	afile=$1 ;;
 	esac
@@ -69,20 +75,16 @@ export PATH
 
 args="-p $prog -n $user -h $host ${account+-a ${account}} ${mediacost+-m ${mediacost}}"
 
+comm="$PSCOMM -P $pname $args $afile"
 
 prog=`basename $prog`
 case $prog in
-	psiflps40) comm="lps40comm -P $pname $args $afile" ;;
-	*) comm="$PSCOMM -P $pname $args $afile"
-esac
-
-case $prog in
 	psif|psiflps40) exec $comm ;;
-	psof) exec psbanner $pname ; exit 0 ;;
-	psoflps40) exec lps40psbanner $pname ; exit 0 ;;
+	psof|psoflps40) exec $PSBANNER $pname ; exit 0 ;;
 	psnf) psdit | $comm ;;
 	pstf) pscat | $comm ;;
 	psgf) psplot | $comm ;;
 	psvf|pscf|psdf|psrf) echo "$prog: filter not available." 1>&2  ;
 			psbad $prog $pname $user $host | $comm ;;
 esac
+
