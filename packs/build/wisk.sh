@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.64 $
+# $Revision: 1.65 $
 
 umask 2
 
@@ -61,7 +61,7 @@ set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 t
 
 set tools="athena/etc/synctree"
 
-set third="third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/wcl athena/lib/Mu third/supported/tcsh6 third/supported/emacs-19.30 third/supported/emacs-18.59 third/unsupported/perl-4.036 third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
+set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/wcl athena/lib/Mu third/supported/tcsh6 third/supported/emacs-19.30 third/supported/emacs-18.59 third/unsupported/perl-4.036 third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
 
 switch ( $machine )
   case decmips
@@ -573,18 +573,6 @@ endif # installonly
 		endif
 	endif
 	breaksw
-
-	case third/supported/afs
-	(echo In $package >> & $outfile )
-if ( $installonly == "0" ) then
-	(cd $BUILD/$package ; xmkmf . >>& $outfile)
-	(cd $BUILD/$package ; make >>& $outfile)
-endif # installonly
-	mkdir -p $BUILD/transarc
-	cp -rp $BUILD/$package/$AFS/dest/lib $BUILD/transarc >>& $outfile
-	cp -rp $BUILD/$package/$AFS/dest/include $BUILD/transarc  >>& $outfile
-	(cd $BUILD/$package; make install DESTDIR=$SRVD >>& $outfile)
-	breaksw	
 
 	case athena/lib/zephyr
 	(echo In $package >>& $outfile)
