@@ -367,7 +367,7 @@ socket_connect (struct hostent *h, int port)
 	struct sockaddr_in sin;
 	int fd;
 	int ret;
-	socklen_t len;
+	int len;
 	struct timeval tv;
 	int cancel_fd;
 	
