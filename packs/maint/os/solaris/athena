@@ -1,4 +1,4 @@
-# $Id: athena,v 1.18 2000-05-23 18:00:17 ghudson Exp $
+# $Id: athena,v 1.19 2000-06-21 20:51:56 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -161,6 +161,8 @@ if [ "$PUBLIC" = true ]; then
 		newv=`awk '{ a = $5; } END { print a; }' /srvd/.rvdinfo`
 		thisv=`awk '{ a = $5; } END { print a; }' /etc/athena/version`
 		if [ "$newv" = "$thisv" ]; then
+			echo "Running oscheck (this takes a few minutes)..."
+			oscheck
 			echo "Running track"
 			track
 			if [ -f /srvd/etc/athena/rc.conf ]; then
