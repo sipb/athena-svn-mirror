@@ -802,6 +802,14 @@ e_shell_startup_wizard_create (void)
 		return TRUE;
 	}
 
+	/* Local Athena hack: we don't want to inflict the startup
+           wizard on new users.  Set up the time zone here (why can't
+           Evolution use the system time zone?) and handle mail
+           accounts in evolution-mail.  */
+	bonobo_config_set_string(data->db, "/Calendar/Display/Timezone",
+				 "America/New_York", NULL);
+	return TRUE;
+
 	data->wizard = glade_xml_new (EVOLUTION_GLADEDIR "/evolution-startup-wizard.glade", NULL);
 	g_return_val_if_fail (data->wizard != NULL, FALSE);
 	data->dialog = glade_xml_get_widget (data->wizard, "startup-wizard");
