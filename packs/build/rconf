@@ -1,3 +1,2 @@
-link *
-copy *;dl
+copy *
 ignore *CVS
