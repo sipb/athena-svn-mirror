@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.14 1997-03-19 01:29:49 cfields Exp $
+# $Id: Xsession,v 1.15 1997-03-26 20:55:09 ghudson Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -46,7 +46,12 @@ fi
 test -f /usr/athena/lib/X11/keymaps/AthenaMods && \
   xmodmap /usr/athena/lib/X11/keymaps/AthenaMods
 
-$session
+# Only attempt using bugme if packs are actually available.
+if [ -x /usr/athena/bin/bugme ]; then
+	/usr/athena/bin/bugme $session
+else
+	$session
+fi
 
 status=$?
 if [ $status != 0 ]; then
