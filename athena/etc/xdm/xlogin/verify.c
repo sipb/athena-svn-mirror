@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.50 1994-04-30 13:22:51 vrt Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.51 1994-05-03 11:32:45 miki Exp $
  */
 
 #include <stdio.h>
@@ -257,10 +257,7 @@ char *display;
     setuidx(ID_REAL|ID_EFFECTIVE, pwd->pw_uid);
     setgidx(ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
 #else
-#ifdef SOLARIS
-    setuid(pwd->pw_uid);
-    setgid(pwd->pw_gid);
-#else
+#ifndef SOLARIS
     setruid(pwd->pw_uid);
     setrgid(pwd->pw_gid);
 #endif
@@ -348,7 +345,11 @@ char *display;
 	    _exit(-1);
 	default:
 	    while (attach_state == -1)
+#ifdef POSIX
+	      sigsuspend((sigset_t *)0);
+#else
 	      sigpause(0);
+#endif
 	    printf("\n");
 	    prompt_user("A summary of your waiting email is displayed in the console window.  Continue with full login session or logout now?", abort_verify);
 	}
@@ -648,7 +649,11 @@ struct passwd *pwd;
 	    _exit(-1);
 	default:
 	    while (attach_state == -1)
+#ifdef POSIX
+	      sigsuspend((sigset_t *)0);
+#else
 	      sigpause(0);
+#endif
 	}
     }
     if (pwd && added_to_passwd) {
@@ -957,7 +962,11 @@ struct passwd *pwd;
 	break;
     }
     while (attach_state == -1) {
+#ifdef POSIX
+        sigsuspend((sigset_t *)0);
+#else
 	sigpause(0);
+#endif
     }
 
     if (attach_state != 0 || !file_exists(pwd->pw_dir)) {
@@ -983,7 +992,11 @@ struct passwd *pwd;
 	    break;
 	}
 	while (attach_state == -1) {
+#ifdef POSIX
+	    sigsuspend((sigset_t *)0);
+#else
 	    sigpause(0);
+#endif
 	}
     }
 
@@ -1030,7 +1043,11 @@ struct passwd *pwd;
 	    break;
 	}
 	while (attachhelp_state == -1)
+#ifdef POSIX
+	  sigsuspend((sigset_t *)0);
+#else
 	  sigpause(0);
+#endif
 
 	if (chmod(buf, TEMP_DIR_PERM))
 	  return("Could not change protections on temporary directory.");
