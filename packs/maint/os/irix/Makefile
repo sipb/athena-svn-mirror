@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2000-04-28 15:07:23 ghudson Exp $
+# $Id: Makefile,v 1.8 2000-06-19 03:54:00 ghudson Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
@@ -9,10 +9,7 @@ ATHLOGINDIR=${ATHRETCDIR}/login
 ATHETCDIR=/usr/athena/etc
 CFLAGS=-g
 
-all: os-checkfiles
-
-os-checkfiles: os-checkfiles.o array.o
-	${CC} ${LDFLAGS} -o $@ os-checkfiles.o array.o
+all:
 
 check:
 
@@ -30,10 +27,10 @@ install:
 	install -c -m 0755 autoconfig.reboot ${DESTDIR}${INITD}
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
 	install -c -m 0755 network ${DESTDIR}${INITD}
-	install -c -m 0755 os-checkfiles ${DESTDIR}${ATHETCDIR}
 	install -c -m 0755 oscheck.sh ${DESTDIR}${ATHETCDIR}/oscheck
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	install -c -m 0755 xwrapper.sh ${DESTDIR}${ATHRETCDIR}/xwrapper
+	install -c -m 0755 ../../os-checkfiles ${DESTDIR}${ATHETCDIR}
 	rm -f ${DESTDIR}${RC0}/K07athena
 	ln -s ../init.d/athena ${DESTDIR}${RC0}/K07athena
 	rm -f ${DESTDIR}${RC0}/K79athena.config
