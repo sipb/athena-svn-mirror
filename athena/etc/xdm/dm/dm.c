@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66 1998-06-11 18:09:52 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66.2.1 1998-07-05 05:45:08 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66 1998-06-11 18:09:52 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.66.2.1 1998-07-05 05:45:08 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -110,6 +110,7 @@ static void console_login(char *conf, char *msg);
 static void start_console(char *line, char **argv);
 static void cleanup(char *tty);
 static pid_t fork_and_store(pid_t *var);
+static void x_stop_wait(void);
 #ifdef SOLARIS
 static int grabconsole(void);
 #endif
@@ -144,6 +145,7 @@ static int grabconsole(void)
     }
     if (ioctl(console, SRIOCSREDIR, p[1]) < 0) {
         fprintf(stderr, "dm:could not issue ioctl: %s\n",strerror(errno));
+	syslog(LOG_DEBUG, "Can't issue SRIOCSREDIR ioctl: %m");
 	exit(1);
     }
     return(p[0]);
@@ -367,10 +369,11 @@ int main(int argc, char **argv)
 		close(file);
 	    }
 
-	    if (x_running == NONEXISTENT) break;
-	    alarm(X_START_WAIT);
-	    alarm_running = RUNNING;
-	    sigsuspend(&sig_zero);
+	    if (x_running == STARTUP) {
+		alarm(X_START_WAIT);
+		alarm_running = RUNNING;
+		sigsuspend(&sig_zero);
+	    }
 	    if (x_running != RUNNING) {
 		syslog(LOG_DEBUG, "X failed to start; alarm_running=%d",
 		       alarm_running);
@@ -383,7 +386,7 @@ int main(int argc, char **argv)
 		 * process hasn't shut down.  Wait X_STOP_WAIT seconds
 		 * for that to happen.
 		 */
-		sleep(X_STOP_WAIT);
+		x_stop_wait();
 	    }
 	    sigact.sa_handler = SIG_IGN;
 	    sigaction(SIGUSR1, &sigact, NULL);
@@ -553,7 +556,7 @@ int main(int argc, char **argv)
 		 login_running, x_running);
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
 	  cleanup(logintty);
-	  sleep(X_STOP_WAIT);
+	  x_stop_wait();
 	  _exit(0);
 	}
     }
@@ -567,7 +570,6 @@ static void console_login(char *conf, char *msg)
     int i, graceful = FALSE, cfirst = TRUE, pgrp;
     char *nl = "\r\n";
     struct termios ttybuf;
-    sigset_t mask, omask;
     char *p, **cargv;
 
     syslog(LOG_DEBUG, "Performing console login: %s", msg);
@@ -584,16 +586,7 @@ static void console_login(char *conf, char *msg)
     if (x_running != NONEXISTENT)
 	kill(xpid, SIGTERM);
 
-    /* Wait X_STOP_WAIT seconds for children to exit and for the graphics
-     * device to recover.  Be paranoid about other signals interrupting
-     * the sleep and about prior alarms.
-     */
-    sigfillset(&mask);
-    sigdelset(&mask, SIGALRM);
-    sigprocmask(SIG_BLOCK, &mask, &omask);
-    alarm(0);
-    sleep(X_STOP_WAIT);
-    sigprocmask(SIG_SETMASK, &omask, NULL);
+    x_stop_wait();
 
     p = getconf(conf, "ttylogin");
     if (p == NULL) {
@@ -1097,4 +1090,20 @@ static pid_t fork_and_store(pid_t *var)
   *var = fork();
   sigprocmask(SIG_SETMASK, &omask, NULL);
   return *var;
+}
+
+static void x_stop_wait(void)
+{
+    sigset_t mask, omask;
+
+    /* Wait X_STOP_WAIT seconds for an X server to exit and for the
+     * graphics device to recover.  Be paranoid about other signals
+     * interrupting the sleep and about prior alarms.
+     */
+    sigfillset(&mask);
+    sigdelset(&mask, SIGALRM);
+    sigprocmask(SIG_BLOCK, &mask, &omask);
+    alarm(0);
+    sleep(X_STOP_WAIT);
+    sigprocmask(SIG_SETMASK, &omask, NULL);
 }
