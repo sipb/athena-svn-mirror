@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.22 2004-05-05 18:38:51 ghudson Exp $
+# $Id: makeroot.sh,v 1.23 2004-05-08 01:44:52 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -111,6 +111,12 @@ esac
 # at least on Solaris.
 mkdir -p "$root/bin/athena"
 cp /bin/athena/tcsh "$root/bin/athena/tcsh"
+
+# Make sure there is no smmsp user in the passwd file; Solaris has one
+# by default, and it confuses sendmail.
+grep -v '^smmsp' $root/etc/passwd > $root/etc/passwd.new
+mv $root/etc/passwd.new $root/etc/passwd
+chmod 644 $root/etc/passwd
 
 # The discuss build needs the discuss user to be in the passwd file.
 grep '^discuss' /etc/passwd >> $root/etc/passwd
