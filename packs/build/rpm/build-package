@@ -53,7 +53,7 @@ source_name=$package_name-$version
 
 # Make the environment suitable so that we can build packages that
 # use things in $destdir/athtools.
-PATH=$destdir/athtools/usr/athena/bin:$PATH
+export PATH=$destdir/athtools/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
 export ATHTOOLROOT=$destdir/athtools
 
 ## STEP 0: Prepare the "topdir" area.
