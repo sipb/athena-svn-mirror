@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.4 1999-11-08 22:20:39 danw Exp $
+# $Id: syncconf.sh,v 1.5 1999-11-10 06:01:27 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -346,7 +346,7 @@ if [ \$SNMP != $SNMP ]; then changes="\$changes SNMP"; fi
 if [ \$SAVECORE != $SAVECORE ]; then changes="\$changes SAVECORE"; fi
 if [ \$ACCOUNT != $ACCOUNT ]; then changes="\$changes ACCOUNT"; fi
 if [ \$QUOTAS != $QUOTAS ]; then changes="\$changes QUOTAS"; fi
-if [ \$HOST != $HOST ]; then changes="\$changes HOSTADDR"; fi
+if [ \$HOST != $HOST ]; then changes="\$changes HOSTADDR MAILRELAY"; fi
 if [ \$ADDR != $ADDR ]; then changes="\$changes HOSTADDR"; fi
 if [ \$MAILRELAY != $MAILRELAY ]; then changes="\$changes MAILRELAY"; fi
 EOF
