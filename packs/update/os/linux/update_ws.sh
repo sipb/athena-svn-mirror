@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.5 2000-02-15 16:13:27 ghudson Exp $
+# $Id: update_ws.sh,v 1.6 2000-02-23 21:32:23 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -21,7 +21,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do-update.
 
-PATH=/bin:/usr/bin:/sbin:/usr/sbin
+PATH=/etc/athena:/bin:/usr/bin:/sbin:/usr/sbin
 
 errorout() {
 	echo "$@" 1>&2
@@ -32,10 +32,14 @@ errorout() {
 
 # Process options.
 auto=false
-while getopts a opt; do
+dryrun=false
+while getopts an opt; do
 	case $opt in
 	a)
 		auto=true
+		;;
+	n)
+		dryrun=true
 		;;
 	\?)
 		echo "$0 [-a] [reactivate|rc]" 1>&2
@@ -141,46 +145,18 @@ if [ true = "$auto" -a reactivate = "$why" ]; then
 	fi
 fi
 
-# Define sed expressions to strip the path+extension and the version
-# part of an RPM name.
-strippath='s,^.*/\([^/]*\)\.[^\.]*\.rpm$,\1,'
-stripvers='s/^\(.*\)-[^-]*-[^-]*$/\1/'
-
-# Figure out what we need to delete.  On private machines, delete
-# anything in the old list and not in the new list.  On public
-# machines, delete anything installed on the machine and not in the
-# new list.
-sed -e "$strippath" -e "$stripvers" "$newlist" | sort \
-	> /var/athena/new-rpms-tmp
+# Translate public status into command-line flag.
 if [ true = "$PUBLIC" ]; then
-	rpm -qa | sed -e "$stripvers" | sort > /var/athena/old-rpms-tmp
+	publicflag=-p
 else
-	sed -e "$strippath" -e "$stripvers" "$oldlist" | sort \
-		> /var/athena/old-rpms-tmp
+	publicflag=
 fi
-removals=`comm -23 /var/athena/old-rpms-tmp /var/athena/new-rpms-tmp`
-rm -f /var/athena/old-rpms-tmp /var/athena/new-rpms-tmp
 
-# Prune packages we already have (at the same version) out of the new
-# list to find out what we need to update.
-rawupdates=`cat "$newlist"`
-updates=
-for filename in $rawupdates; do
-        listvers=`echo "$filename" | sed -e "$strippath"`
-        rpmname=`echo "$listvers" | sed -e "$stripvers"`
-        instvers=`rpm -q "$rpmname" 2>/dev/null`
-        echo "$filename $listvers $rpmname $instvers"
-        if [ "$listvers" != "$instvers" ]; then
-                updates="$updates $filename"
-        fi
-done
-
-# On public machines, force downgrades of packages someone might have
-# upgraded.
-if [ true = "$PUBLIC" ]; then
-	oldpackage=--oldpackage
-else
-	oldpackage=
+# If we're doing a dry run, here's where we get off the train.
+if [ true = "$dryrun" ]; then
+	echo "Package changes for update from $oldvers to $newvers:"
+	rpmupdate -n $publicflag "$oldlist" "$newlist" | sort
+	exit 0
 fi
 
 # Define how to clean up if the update fails.
@@ -191,18 +167,12 @@ failupdate() {
 	errorout "*** The update has failed ***"
 }
 
-# Go ahead and do the update.
+# Do the update.
 {
 	echo "Beginning update from $oldvers to $newvers at `date`."
 	echo "Athena Workstation ($hosttype) Version Update `date`" >> \
 		/etc/athena/version
-	if [ -n "$updates" ]; then
-		rpm --upgrade $oldpackage -v $updates || failupdate
-	fi
-	if [ -n "$removals" ]; then
-		rpm --erase -v $removals || logger -t $HOST -p user.notice \
-			"Update ($oldvers -> $newvers) package removal failed"
-	fi
+	rpmupdate $publicflag "$oldlist" "$newlist" || failupdate
 	echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
 		/etc/athena/version
 	echo "Ending update from $oldvers to $newvers at `date`."
