@@ -7,6 +7,10 @@ getcluster \- retrieve service cluster info from Hesiod as environment vars
 .B \-b
 ] [
 .B \-d
+] [
+.B -l local
+] [
+.B -f fallback
 ] hostname version
 .PP
 .SH DESCRIPTION
@@ -18,10 +22,10 @@ to the C shell, or, if the
 .B \-b
 flag is present, in Bourne shell syntax.
 .I Getcluster
-returns an exit status of 2 if no Hesiod information is available, or
+returns an exit status of 2 if no cluster information is available, or
 1 if any other error was encountered.
 .PP
-A Hesiod cluster record contains between two and four fields: a
+A cluster record contains between two and four fields: a
 variable name, a value, an optional version number, and an optional
 list of flags.  The version number is a dotted pair giving the major
 and minor numbers of the Athena release to which the variable
@@ -29,8 +33,20 @@ definition applies.  Currently, the only defined flag is 't',
 indicating that the Athena release specified by the version is in
 testing.
 .PP
+If a fallback cluster information file is specified with the
+.B \-f
+flag, that file is read and the cluster records in it are considered
+lower priority than the Hesiod cluster records. For each variable
+name in the Hesiod cluster record, no record with the same variable
+name in the fallback file will be considered. Similarly, if a local
+cluster information file is specified with the
+.B \-l
+flag, that file is read and the cluster records in it are considered
+higher priority than the Hesiod cluster records and fallback cluster
+records.
+.PP
 .I Getcluster
-may discard a Hesiod cluster record if it specifies a version which is
+may discard a cluster record if it specifies a version which is
 higher than the current workstation version (as given by the
 .I version
 argument on the command line).  A record with a new version is
@@ -104,7 +120,7 @@ to be accessed by the C shell in a user's .login file and the Bourne
 shell in a user's .profile, respectively.  It may also be invoked
 directly by any user.
 .PP
-Getcluster uses the Hesiod types "clustername" and "cluster".
+Getcluster uses the Hesiod type "cluster".
 .SH EXAMPLES
 # C shell example
 .br

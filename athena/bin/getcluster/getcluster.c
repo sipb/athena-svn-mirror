@@ -4,6 +4,8 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <limits.h>
+#include <string.h>
 #include <hesiod.h>
 
 #ifndef INADDR_NONE
@@ -13,29 +15,61 @@
 /* Delay attaching new packs by up to four hours. */
 #define UPDATE_INTERVAL (3600 * 4)
 
-extern int optind;
-
 static void usage(void);
 static void shellenv(char **hp, char *ws_version, int bourneshell);
 static void output_var(const char *var, const char *val, int bourneshell);
 static void upper(char *v);
+static void free_list(char **list);
+static char **readcluster(FILE *f);
+static char **merge(char **l1, char **l2);
 static int vercmp(const char *v1, const char *v2);
+static void *emalloc(size_t size);
 
 /* Make a hesiod cluster query for the machine you are on and produce a
  * set of environment variable assignments for the C shell or the Bourne
  * shell, depending on the '-b' flag
+ * If a localfile or a fallbackfile is specified, read cluster information
+ * from it as well. Variables in localfile override varibles obtained from
+ * Hesiod, and variables obtained from Hesiod override in fallbackfile.
+ * "Override" means that the presence of any instances of variable "foo"
+ * in one source will prevent any instances from a source being overridden.
+ * Example 1:
+ *   localfile: lpr myprinter
+ *   Hesiod:    syslib random-syspack-1 9.0
+ *              syslib random-syspack-2 9.1
+ *              syslib old-random-syspack
+ *   fallback:  syslib normal-syspack
  *
+ * lpr would be myprinter, and syslib would be negotiated among the three
+ * Hesiod entries.
+ *
+ * Example 2:
+ *   localfile: lpr myprinter
+ *              syslib new-spiffy-syspack
+ *   Hesiod:    syslib random-syspack-1 9.0
+ *              syslib random-syspack-2 9.1
+ *              syslib old-random-syspack
+ *   fallback:  syslib normal-syspack
+ *
+ * lpr would be myprinter, and syslib would be new-spiffy-syspack, regardless
+ * of the given version.
+ *
+ * 
  * If any stdio errors, truncate standard output to 0 and return an exit
  * status.
  */
 
 int main(int argc, char **argv)
 {
-  char buf[256], **hp, **hpp;
+  char buf[256], **hp, **fp, **lp, **or1, **or2;
   int debug = 0, bourneshell = 0, ch;
+  char *fallbackfile = NULL, *localfile = NULL;
+  FILE *f;
   void *hescontext;
+  extern int optind;
+  extern char *optarg;
 
-  while ((ch = getopt(argc, argv, "bd")) != -1)
+  while ((ch = getopt(argc, argv, "bdl:f:")) != -1)
     {
       switch (ch)
 	{
@@ -44,6 +78,12 @@ int main(int argc, char **argv)
 	  break;
 	case 'b':
 	  bourneshell = 1;
+	  break;
+	case 'f':
+	  fallbackfile = optarg;
+	  break;
+	case 'l':
+	  localfile = optarg;
 	  break;
 	default:
 	  usage();
@@ -55,53 +95,148 @@ int main(int argc, char **argv)
   if (argc != 2)
     usage();
 
+  fp = NULL;
+  if (fallbackfile != NULL)
+    {
+      f = fopen(fallbackfile, "r");
+      if (f == NULL)
+	{
+	  perror("fopen");
+	  fprintf(stderr, "Could not open fallback cluster file %s\n",
+		  fallbackfile);
+	}
+      else
+	{
+	  fp = readcluster(f);
+	  fclose(f);
+	}
+    }
+
+  lp = NULL;
+  if (localfile != NULL)
+    {
+      f = fopen(localfile, "r");
+      if (f == NULL)
+	{
+	  perror("fopen");
+	  fprintf(stderr, "Could not open local cluster file %s\n", localfile);
+	}
+      else
+	{
+	  lp = readcluster(f);
+	  fclose(f);
+	}
+    }
+
+  hp = NULL;
   if (debug)
     {
       /* Get clusterinfo records from standard input. */
-      hpp = (char **) malloc(100 * sizeof(char *));
-      hp = hpp;
-      while (fgets(buf, sizeof(buf), stdin) != NULL)
-	{
-	  *hpp = malloc(strlen(buf) + 1);
-	  strcpy(*hpp, buf);
-	  (*hpp)[strlen(buf) - 1] = 0;
-	  hpp++;
-	}
-      *hpp = NULL;
+      hp = readcluster(stdin);
     }
   else
     {
       /* Get clusterinfo records from Hesiod. */
       if (hesiod_init(&hescontext) != 0)
+	perror("hesiod_init");
+      else
 	{
-	  perror("hesiod_init");
-	  return 0;
-	}
-      hp = hesiod_resolve(hescontext, argv[0], "cluster");
-      if (hp == NULL && errno == ENOENT)
-	{
-	  fprintf(stderr, "No Hesiod information available for %s\n", argv[0]);
-	  return 2;
-	}
-      else if (hp == NULL)
-	{
-	  perror("hesiod_resolve");
-	  return 1;
+	  hp = hesiod_resolve(hescontext, argv[0], "cluster");
+	  if (hp == NULL && errno != ENOENT)
+	    perror("hesiod_resolve");
 	}
     }
 
-  shellenv(hp, argv[1], bourneshell);
+  if (hp == NULL && lp == NULL && fp == NULL)
+    {
+      fprintf(stderr, "No cluster information avaliable for %s\n", argv[0]);
+      return 2;
+    }
+
+  or1 = merge(lp, hp);
+  or2 = merge(or1, fp);
+  shellenv(or2, argv[1], bourneshell);
   if (!debug)
     {
-      hesiod_free_list(hescontext, hp);
+      if (hp != NULL)
+	hesiod_free_list(hescontext, hp);
       hesiod_end(hescontext);
     }
+  /* We don't bother to free memory we know we allocated just before exiting;
+   * it's not worth the trouble. */
   return (ferror(stdout)) ? 1 : 0;
+}
+
+static char **merge(char **l1, char **l2)
+{
+  int size, point, i, j, ret, sizefroml1;
+  char **lp, **nl;
+  char var[256], compvar[256], dummy[256];
+
+  if (l1 == NULL)
+    return l2;
+  if (l2 == NULL)
+    return l1;
+
+  size = 1;
+  for (i = 0; l1[i] != NULL; i++)
+    size++;
+  for (i = 0; l2[i] != NULL; i++)
+    size++;
+
+  nl = emalloc(sizeof(char *) * size);
+  point = 0;
+
+  /* Copy l1 to nl. */
+  for (i = 0; l1[i] != NULL; i++)
+    {
+      ret = sscanf(l1[i], "%s %s", var, dummy);
+      if (ret == 2) /* Ignore invalid lines. */
+	{
+	  nl[point] = l1[i];
+	  point++;
+	}
+    }
+  sizefroml1 = point;
+
+  /* For each entry in l2, add it to nl if nothing in l1 has that var. */
+  for (i = 0; l2[i] != NULL; i++)
+    {
+      ret = sscanf(l2[i], "%s %s", var, dummy);
+      if (ret < 2)
+	continue; /* Ignore invalid lines. */
+      for (j = 0; j < sizefroml1; j++)
+	{
+	  sscanf(nl[j], "%s", compvar);
+	  if (strcmp(var, compvar) == 0)
+	      break;
+	}
+      if (j == sizefroml1)
+	{
+	  nl[point] = l2[i];
+	  point++;
+	}
+    }
+  nl[point] = NULL;
+  return nl;
+}
+
+static void free_list(char **list)
+{
+  char **c;
+
+  if (list == NULL)
+      return;
+
+  for (c = list; *c != NULL; c++)
+    free(*c);
+  free(list);
 }
 
 static void usage()
 {
-  fprintf(stderr, "Usage: getcluster [-b] [-d] hostname version\n");
+  fprintf(stderr, "Usage: getcluster [-f fallbackfile] [-l localfile]"
+	  " [-b] [-d] hostname version\n");
   exit(1);
 }
 
@@ -194,9 +329,7 @@ static void shellenv(char **hp, char *ws_version, int bourneshell)
 	   * version we have, update the current best version and its
 	   * value. */
 	  if (!*compvers)
-	    {
-	      strcpy(defaultval, compval);
-	    }
+	    strcpy(defaultval, compval);
 	  else if (((autoupdate && !strchr(flags, 't')) ||
 		    (vercmp(compvers, ws_version) == 0)))
 	    {
@@ -281,4 +414,53 @@ static int vercmp(const char *v1, const char *v2)
   sscanf(v1, "%d.%d", &major1, &minor1);
   sscanf(v2, "%d.%d", &major2, &minor2);
   return (major1 != major2) ? (major1 - major2) : (minor1 - minor2);
+}
+
+static char **readcluster(FILE *f)
+{
+  char line[1024];
+  char **lp;
+  int nl, al;
+
+  nl = 0;
+  al = 10;
+  lp = emalloc(al * sizeof(char *));
+
+  lp[0] = NULL;
+  while (fgets(line, 1024, f) != NULL)
+    {
+      if (nl + 1 == al)
+	{
+	  al = al * 2;
+	  lp = realloc(lp, al * sizeof(char *));
+	  if (lp == NULL)
+	    {
+	      fprintf(stderr, "Out of memory.");
+	      exit(1);
+	    }
+	}
+      lp[nl] = strdup(line);
+      if (lp[nl] == NULL)
+	{
+	  fprintf(stderr, "Out of memory.");
+	  exit(1);
+	}
+      nl++;
+    }
+  lp[nl] = NULL;
+
+  return lp;
+}
+
+static void *emalloc(size_t size)
+{
+  void *p;
+
+  p = malloc(size);
+  if (p == NULL)
+    {
+      fprintf(stderr, "Out of memory.\n");
+      exit(1);
+    }
+  return p;
 }
