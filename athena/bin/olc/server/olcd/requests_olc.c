@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.7 1990-01-10 21:37:12 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.8 1990-01-17 05:45:36 vanharen Exp $";
 #endif
 
 
@@ -60,7 +60,7 @@ olc_on(fd, request, auth)
   KNUCKLE *target;
   KNUCKLE **k_ptr;
   int qcount = 0;
-  char msgbuf[BUFSIZE];
+  char msgbuf[BUF_SIZE];
   int status;
 
   status = find_knuckle(&(request->requester), &requester);
@@ -408,7 +408,7 @@ olc_who(fd,request,auth)
   KNUCKLE *target;
   KNUCKLE *knuckle;
   LIST list;
-  char message[BUFSIZE];
+  char message[BUF_SIZE];
   int status;
   
 /* don't want to cache info with this command */
@@ -439,13 +439,13 @@ olc_who(fd,request,auth)
   if(is_logout(requester) && is_active(requester))
     {
       if(requester->new_messages != (char *) NULL)
-	sprintf(message,"A consultant has sent you a response in OLC.\nTo see it, type 'show' at the OLC prompt.\n");
+	strcpy(message, "A consultant has sent you a response in OLC.\nTo see it, type 'show' at the OLC prompt.\n");
       else
-	sprintf(message,"Your question is still pending in OLC.\nCheck your mail for any responses.");
+	strcpy(message, "Your question is still pending in OLC.\nCheck your mail for any responses.\n");
       
       write_message_to_user(requester,message,NULL_FLAG);
 
-      sprintf(message,"%s has logged back in.", requester->user->username);
+      sprintf(message,"%s has logged back in.\n", requester->user->username);
  
 #ifdef LOG
       log_status(message);
@@ -492,7 +492,7 @@ olc_done(fd, request, auth)
 {
   KNUCKLE *target;
   KNUCKLE *requester;
-  char msgbuf[BUFSIZE];	      /* Message buffer. */
+  char msgbuf[BUF_SIZE];	      /* Message buffer. */
   int status;
   char *text;
 
@@ -555,7 +555,7 @@ olc_done(fd, request, auth)
 	  log_status(msgbuf);
 #endif LOG
 	  set_status(target,DONE);
-	  sprintf(msgbuf,"%s %s is done with question.", cap(target->title),
+	  sprintf(msgbuf,"%s %s is done with question.\n", cap(target->title),
 		  target->user->username);
 	  log_daemon(target,msgbuf);
 	  write_message_to_user(target->connected,msgbuf, /*???*/0);
@@ -646,7 +646,7 @@ olc_cancel(fd, request, auth)
 {
   KNUCKLE *target;
   KNUCKLE *requester;
-  char msgbuf[BUFSIZE];	      /* Message buffer. */
+  char msgbuf[BUF_SIZE];	      /* Message buffer. */
   int status;
   char *text;
 
@@ -793,7 +793,7 @@ olc_ask(fd, request, auth)
   KNUCKLE *target;
   KNUCKLE *requester;
   KNUCKLE **k_ptr;
-  char msgbuf[BUFSIZE];	      /* Message buffer. */
+  char msgbuf[BUF_SIZE];	      /* Message buffer. */
   char *question;
   int status;
   char topic[TOPIC_SIZE], *text;
@@ -941,7 +941,7 @@ olc_forward(fd, request,auth)
 {
   KNUCKLE *target;
   KNUCKLE *requester;
-  char msgbuf[BUFSIZE];	         /* Message buffer. */
+  char msgbuf[BUF_SIZE];	         /* Message buffer. */
   int  status;	                 /* Status flag */
 
   status = find_knuckle(&(request->requester), &requester);
@@ -995,7 +995,7 @@ olc_forward(fd, request,auth)
       log_status(msgbuf);
       
       write_message_to_user(target, 
-			    "You will receive a reply by mail.", 0);
+			    "You will receive a reply by mail.\n", 0);
       (void) sprintf(target->question->title, "%s: %s (unanswered)",
 		     target->user->username, target->question->topic);
       strcpy(target->question->logfile,"oga");
@@ -1014,13 +1014,13 @@ olc_forward(fd, request,auth)
       log_daemon(target,msgbuf);
       set_status(target,PENDING);
       
-      sprintf(msgbuf, 
-	      "Your question is being forwarded to another consultant...\n");
+      strcpy(msgbuf, 
+	     "Your question is being forwarded to another consultant...\n");
       write_message_to_user(target,msgbuf, 0);
       status = match_maker(target);
       if(status != CONNECTED)
 	{
-	  sprintf(msgbuf,"There is no consultant available right now");
+	  strcpy(msgbuf,"There is no consultant available right now.\n");
 	  write_message_to_user(target,msgbuf, 0);
 	  sprintf(msgbuf,"%s %s (%d)'s \"%s\" question forwarded (not connected).",
 		  target->title, 
@@ -1105,7 +1105,7 @@ olc_off(fd, request, auth)
 {
   KNUCKLE *target;
   KNUCKLE *requester;
-  char msgbuf[BUFSIZE];	        /* Message buffer. */
+  char msgbuf[BUF_SIZE];	        /* Message buffer. */
   int status;
 
   status = find_knuckle(&(request->requester), &requester);
@@ -1281,13 +1281,14 @@ olc_send(fd, request, auth)
     {
       sprintf(mesg,"%s %s (%d) has sent a message.\n",target->title,
 	      target->user->username, target->instance);
-      olc_broadcast_message("lonley_hearts",mesg, target->question->title);
+      olc_broadcast_message("lonely_hearts",mesg, target->question->title);
     }
 
-  if((!owns_question(target) && is_connected(target) &&
-      is_me(target,requester)) || (owns_question(target) &&
-                                   is_connected_to(target,requester)) ||
-     (is_me(target,requester) && owns_question(target)))
+  if ( (!owns_question(target) && is_connected(target) &&
+	is_me(target,requester))
+      ||  (owns_question(target) && is_connected_to(target,requester))
+		/** ||  (is_me(target,requester) && owns_question(target)) **/
+      )
     set_status(target->question->owner, SERVICED);
 
   needs_backup = TRUE;
@@ -1676,9 +1677,9 @@ olc_list(fd, request,auth)
   KNUCKLE *target;
   KNUCKLE **k_ptr;
   LIST *list;
-  char queues[NAME_LENGTH];
-  char topics[NAME_LENGTH];
-  char name[NAME_LENGTH];
+  char queues[NAME_SIZE];
+  char topics[NAME_SIZE];
+  char name[NAME_SIZE];
   char *buf_ptr;
   int  *topicP;
   int stati;
@@ -1719,13 +1720,13 @@ olc_list(fd, request,auth)
     {
       buf_ptr = read_text_from_fd(fd);
       if(buf_ptr != (char *) NULL)
-	strncpy(queues,buf_ptr,NAME_LENGTH-1);
+	strncpy(queues,buf_ptr,NAME_SIZE-1);
       buf_ptr = read_text_from_fd(fd);
        if(buf_ptr != (char *) NULL)
-	strncpy(topics,buf_ptr,NAME_LENGTH-1);
+	strncpy(topics,buf_ptr,NAME_SIZE-1);
       buf_ptr = read_text_from_fd(fd);
        if(buf_ptr != (char *) NULL)
-	strncpy(name,buf_ptr,NAME_LENGTH-1);
+	strncpy(name,buf_ptr,NAME_SIZE-1);
       read_int_from_fd(fd,&stati);
       send_response(fd,SUCCESS);
 
@@ -1909,7 +1910,7 @@ olc_chtopic(fd, request,auth)
       send_response(fd,SUCCESS);
       (void) strncpy(target->question->topic, text, TOPIC_SIZE);
       target->question->topic_code = code;
-      (void) sprintf(msg_buf, "Topic changed to '%s' by %s %s.", 
+      (void) sprintf(msg_buf, "Topic changed to '%s' by %s %s.\n", 
 		     text,
 		     requester->title,
 		     requester->user->username);
@@ -2070,7 +2071,7 @@ olc_mail(fd, request,auth)
   KNUCKLE *requester;
   KNUCKLE *target;
   FILE    *mailfile;		        /* Ptr. to mail file. */
-  char    tempfile[NAME_LENGTH];        /* Temporary file. */
+  char    tempfile[NAME_SIZE];        /* Temporary file. */
   char    *msgbuf;		        /* Ptr. to mail message. */
   int status;
 #ifdef LOG
@@ -2160,7 +2161,7 @@ olc_startup(fd, request, auth)
 #endif /* STDC */
 {
   KNUCKLE *requester;
-  char msgbuf[BUFSIZE];	
+  char msgbuf[BUF_SIZE];	
   int status,i,entries=0;
     
   status = find_knuckle(&(request->requester), &requester);
@@ -2232,7 +2233,7 @@ olc_grab(fd, request,auth)
   KNUCKLE    *requester;	 
   KNUCKLE    *knuckle;
   KNUCKLE    **k_ptr;
-  char msgbuf[BUFSIZE];	         /* Message buffer. */
+  char msgbuf[BUF_SIZE];	         /* Message buffer. */
   int status; 
   int qcount = 0;
 
