@@ -1,5 +1,5 @@
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/gdump_db.c,v $ */
-/* $Author: ilham $ */
+/* $Author: epeisach $ */
 
 /*
  * Copyright (c) 1990 by the Massachusetts Institute of Technology.
@@ -11,7 +11,7 @@
 
 FILE *fp;
 int clean;
-static char filename[] = "/tmp/group_dumpXXXXXX";
+static char *filename;
 
 /* long gquota_start_update(), gquota_end_update(); */
 int gquota_db_iterate();
@@ -27,9 +27,14 @@ char *argv[];
 
   signal(SIGINT, cleanup);
 
+  if (argc != 3) {
+      fprintf(stderr, "Usage: gdump_db gquota_db dump_file\n");
+      exit(1);
+  }
+
   gquota_db_set_name(argv[1]);
 
-  mktemp(filename);            /* create unique dump file */
+  filename = argv[2];
   fp = fopen(filename, "w");
   clean = 1;
 
