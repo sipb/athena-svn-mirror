@@ -559,7 +559,7 @@ button_widget_draw(ButtonWidget *button, guchar *rgb, int rowstride)
 {
 	GtkWidget *widget, *pwidget;
 	PanelWidget *panel;
-	int size, off, border;
+	int size, off, text_off, border;
 
 	g_return_if_fail(button != NULL);
 	g_return_if_fail(IS_BUTTON_WIDGET(button));
@@ -580,6 +580,18 @@ button_widget_draw(ButtonWidget *button, guchar *rgb, int rowstride)
 	
 	pwidget = widget->parent;
 	
+	if (always_text[button->tile] || button->force_label) {
+		if (size <= 30) {
+		  text_off = 7;
+		} else if (size <= 48) {
+		  text_off = 9;
+		} else {
+		  text_off = 14;
+		}
+	} else {
+	  text_off = 0;
+	}
+
 	if(tiles_enabled[button->tile]) {
 		GdkPixbuf *pb = NULL;
 		if(button->pressed && button->in_button) {
@@ -641,12 +653,13 @@ button_widget_draw(ButtonWidget *button, guchar *rgb, int rowstride)
 			else
 				interp = GDK_INTERP_HYPER;
 
-			scaled_pb = scale_pixbuf_to_square (pb, size, &w, &h,
-							    interp);
+			scaled_pb = scale_pixbuf_to_square (pb,
+							    size - text_off,
+							    &w, &h, interp);
 
 			art_affine_translate(affine,
 					     -border+off + (size-w)/2,
-					     -border+off + (size-h)/2);
+					     -border+off - (text_off*2/3) + (size-h)/2);
 
 			transform_pixbuf((rgb+border*rowstride+border*3),
 				         0, 0,
@@ -685,7 +698,8 @@ button_widget_draw_xlib(ButtonWidget *button, GdkPixmap *pixmap)
 	/*draw text*/
 	if (!pixmaps_enabled[button->tile] ||
 	    always_text[button->tile] ||
-	    !button->pixbuf) {
+	    !button->pixbuf ||
+	    button->force_label) {
 		char *text = g_strdup(button->text);
 		int twidth,theight;
 		GdkFont *font;
@@ -698,7 +712,14 @@ button_widget_draw_xlib(ButtonWidget *button, GdkPixmap *pixmap)
 
 		if(!text) text = g_strdup("XXX");
 		
-		font = gdk_fontset_load(_("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*"));
+		if (size <= 30) {
+		  font = gdk_fontset_load(_("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*"));
+		} else if (size <= 48) {
+		  font = gdk_fontset_load(_("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"));
+		} else {
+		  font = gdk_fontset_load(_("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*"));
+		}
+
 		if(!font)
 			font = gdk_font_load("fixed");
 		if(!font)
@@ -713,17 +734,10 @@ button_widget_draw_xlib(ButtonWidget *button, GdkPixmap *pixmap)
 			twidth = size;
 		
 		gdk_gc_set_foreground(gc,&widget->style->black);
-		gdk_draw_rectangle(pixmap,gc,TRUE,
-				   (widget->allocation.width/2)-(twidth/2)+off-1,
-				   (widget->allocation.height/2)-(theight/2)-1+off,
-				   twidth+2,
-				   theight+2);
-		gdk_gc_set_foreground(gc,&widget->style->white);
 		gdk_draw_string(pixmap,font,gc,
 				(widget->allocation.width/2)-(twidth/2)+off,
-				(widget->allocation.height/2)+(theight/2)+off,
+				(widget->allocation.height)-(theight/2)+off,
 				text);
-		gdk_gc_set_foreground(gc,&widget->style->black);
 		gdk_gc_set_clip_rectangle (gc, NULL);
 		if(font!=widget->style->font)
 			gdk_font_unref(font);
@@ -1023,6 +1037,13 @@ button_widget_new(char *filename,
 	button = BUTTON_WIDGET (gtk_type_new (button_widget_get_type ()));
 	
 	button->pixbuf = loadup_file(filename);
+	if (!button->pixbuf) {
+	  button->pixbuf = loadup_file("gnome-unknown.png");
+	  /* Label this button, regardless of the user's preferences. */
+	  button->force_label = 1;
+	} else {
+	  button->force_label = 0;
+	}
 	button->pixbuf_hc = make_hc_pixbuf(button->pixbuf);
 	button->filename = g_strdup(filename);
 	button->size = size;
@@ -1051,6 +1072,13 @@ button_widget_set_pixmap(ButtonWidget *button, char *pixmap, int size)
 		gdk_pixbuf_unref(button->pixbuf_hc);
 
 	button->pixbuf = loadup_file(pixmap);
+	if (!button->pixbuf) {
+	  button->pixbuf = loadup_file("gnome-unknown.png");
+	  /* Label this button, regardless of the user's preferences. */
+	  button->force_label = 1;
+	} else {
+	  button->force_label = 0;
+	}
 	button->pixbuf_hc = make_hc_pixbuf(button->pixbuf);
 
 	g_free(button->filename);

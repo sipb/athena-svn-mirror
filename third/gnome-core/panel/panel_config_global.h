@@ -24,6 +24,7 @@ struct _GlobalConfig {
 	gboolean drawer_auto_close;
 	gboolean simple_movement;
 	gboolean tiles_enabled[LAST_TILE];
+	gboolean text_enabled[LAST_TILE];
 	char *tile_up[LAST_TILE];
 	char *tile_down[LAST_TILE];
 	int tile_border[LAST_TILE];

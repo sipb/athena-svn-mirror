@@ -183,7 +183,7 @@ apply_global_config(void)
 
 	for(i = 0; i < LAST_TILE; i++) {
 		button_widget_set_flags(i, global_config.tiles_enabled[i],
-					1, 0);
+					1, global_config.text_enabled[i]);
 		button_widget_load_tile(i, global_config.tile_up[i],
 					global_config.tile_down[i],
 					global_config.tile_border[i],
@@ -1502,6 +1502,10 @@ load_up_globals(void)
 		global_config.tiles_enabled[i] =
 			gnome_config_get_bool(buf->str);
 
+		g_string_sprintf(buf,"text_labels_enabled_%d=FALSE",i);
+		global_config.text_enabled[i] =
+			gnome_config_get_bool(buf->str);
+ 
 		g_free(global_config.tile_up[i]);
 		g_string_sprintf(buf,"tile_up_%d=tiles/tile-%s-up.png",
 			   i, tile_def[i]);
@@ -1590,6 +1594,9 @@ write_global_config(void)
 		g_string_sprintf(buf,"new_tiles_enabled_%d",i);
 		gnome_config_set_bool(buf->str,
 				      global_config.tiles_enabled[i]);
+		g_string_sprintf(buf,"text_labels_enabled_%d",i);
+		gnome_config_set_bool(buf->str,
+				      global_config.text_enabled[i]);
 		g_string_sprintf(buf,"tile_up_%d",i);
 		gnome_config_set_string(buf->str,
 					global_config.tile_up[i]);
