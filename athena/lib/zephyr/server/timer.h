@@ -6,7 +6,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.3 1987-07-01 04:30:33 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/timer.h,v 1.4 1987-07-02 19:04:29 jtkohl Exp $
  *
  */
 
@@ -53,7 +53,7 @@ typedef struct _timer {
 #define ALARM_ARG(x)  ((x)->arg)
 #define TIMER_SIZE sizeof(struct _timer)
 
-long time();
+time_t time();
 #define NOW (time((time_t *)NULL))
 extern timer timer_set_rel(), timer_set_abs();
 extern void timer_reset(), timer_process();
