@@ -1,4 +1,4 @@
-# $Id: sshd_config,v 1.4 2001-11-28 19:27:01 zacheiss Exp $
+# $Id: sshd_config,v 1.5 2002-04-12 17:52:08 zacheiss Exp $
 
 # Athena sshd configuration file
 
@@ -17,6 +17,7 @@ RSAAuthentication no
 PubkeyAuthentication no
 StrictModes no
 KerberosOrLocalPasswd yes
+GssapiUseSessionCredCache no
 
 X11Forwarding yes
 X11DisplayOffset 10
