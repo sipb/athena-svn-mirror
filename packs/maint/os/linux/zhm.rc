@@ -32,7 +32,7 @@ RETVAL=0
 # See how we were called
 case "$1" in
   start)
-	echo -n "Starting Athena zephyr server: "
+	echo -n "Starting Athena zephyr host manager: "
 	daemon zhm
 	RETVAL=$?
 
@@ -41,7 +41,7 @@ case "$1" in
 	;;
 
   stop)
-	echo -n "Stopping Athena zephyr server: "
+	echo -n "Stopping Athena zephyr host manager: "
 	killproc zhm
 	RETVAL=$?
 
