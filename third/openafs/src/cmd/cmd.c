@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/cmd/cmd.c,v 1.1.1.1 2002-01-31 21:31:44 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/cmd/cmd.c,v 1.1.1.2 2004-02-13 17:52:25 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <ctype.h>
@@ -784,6 +784,9 @@ char **argv;
        otherwise it is a real nuisance */
     if (ts->parms[CMD_HELPPARM].items) {
 	PrintSyntax(ts);
+	/* Display full help syntax if we don't have subcommands */
+	if (noOpcodes)
+	    PrintFlagHelp(ts);
 	ResetSyntax(ts);
 	return 0;
     }

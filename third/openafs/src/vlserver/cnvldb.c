@@ -10,13 +10,20 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/cnvldb.c,v 1.1.1.1 2002-01-31 21:50:37 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/cnvldb.c,v 1.1.1.2 2004-02-13 17:54:40 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
 #include <errno.h>
 #include <stdio.h>
 #include <sys/file.h>
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+#endif
 #include "cnvldb.h"  /* CHANGEME! */
 #include <netinet/in.h>
 #include <afs/venus.h>
@@ -25,12 +32,11 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/cn
 #include <afs/fileutil.h>
 
 #include "vlserver.h"
-#include <strings.h>
 
 #define MAXSIZE 2048 /* most I'll get back from PIOCTL */
 #define	BADSERVERID	255	/* XXX */
 
-extern int errno;
+
 extern struct cmd_syndesc *cmd_CreateSyntax();
 static char pn[] = "cnvldb";
 static char tempname[] = "XXnewvldb";

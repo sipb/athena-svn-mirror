@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/budb/procs.c,v 1.1.1.1 2002-01-31 21:50:48 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/budb/procs.c,v 1.1.1.2 2004-02-13 17:53:15 zacheiss Exp $");
 
 #ifdef AFS_NT40_ENV
 #include <winsock2.h>
@@ -26,7 +26,13 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/budb/procs.
 #include <sys/param.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#ifdef HAVE_STRINGS_H
 #include <strings.h>
+#endif
+#endif
 #endif
 #include <sys/types.h>
 #include <afs/stds.h>

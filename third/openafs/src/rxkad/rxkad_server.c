@@ -14,7 +14,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_server.c,v 1.1.1.2 2002-12-13 20:42:06 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_server.c,v 1.1.1.3 2004-02-13 17:53:07 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -314,7 +314,7 @@ rxs_return_t rxkad_CheckResponse (aobj, aconn, apacket)
 				  kvno,
 				  client.name, client.instance, client.cell,
 				  &sessionkey, &host, &start, &end);
-	if (code) return RXKADBADTICKET;
+	if (code) return code;
     }
 
     /*

@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_nfsdisp.c,v 1.1.1.2 2002-12-13 20:42:54 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_nfsdisp.c,v 1.1.1.3 2004-02-13 17:52:01 zacheiss Exp $");
 
 /* Ugly Ugly Ugly  but precludes conflicting XDR macros; We want kernel xdr */
 #define __XDR_INCLUDE__
@@ -677,7 +677,7 @@ nfs3_to_afs_call(int which, caddr_t *args, nfs_fh3 **fhpp, nfs_fh3 **fh2pp)
     case NFSPROC3_LOOKUP:
     {
 	LOOKUP3args *arg = (LOOKUP3args *)args;
-#ifdef AFS_SUN57_ENV
+#ifdef AFS_SUN58_ENV
 	fhp1 = (nfs_fh3 *) &arg->what.dirp;
 #else
 	fhp1 = (nfs_fh3 *) &arg->what.dir;

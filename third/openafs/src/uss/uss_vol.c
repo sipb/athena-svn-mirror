@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol.c,v 1.1.1.2 2002-12-13 20:40:45 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol.c,v 1.1.1.3 2004-02-13 17:53:35 zacheiss Exp $");
 
 #include "uss_vol.h"		/*Interface to this module*/
 #include "uss_common.h"		/*Common definitions*/
@@ -27,7 +27,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol
 #include <sys/stat.h>
 #include <pwd.h>
 #include <netdb.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <afs/vlserver.h>
 #include <afs/auth.h>
 #include <afs/cellconfig.h>
@@ -38,7 +38,6 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_vol
 #include <afs/keys.h>
 #include <ubik.h>
 
-extern int errno;
 extern struct rx_connection *UV_Bind();
 extern  struct rx_securityClass *rxnull_NewClientSecurityObject();
 extern int line;
@@ -772,7 +771,7 @@ afs_int32 uss_vol_CreateVol(a_volname, a_server, a_partition, a_quota, a_mpoint,
 	else {
 	  uss_procs_PrintErr(line,
 			     "Couldn't create volume '%s' [error %d]: %s\n",
-			     a_volname, code, sys_errlist[errno]);
+			     a_volname, code, strerror(errno));
 	  return(1);
 	} /*Failure was NOT because it already existed*/
       } /*UV_CreateVolume failed*/
@@ -830,7 +829,7 @@ afs_int32 uss_vol_CreateVol(a_volname, a_server, a_partition, a_quota, a_mpoint,
 	    }
 	    else {
 	      fprintf(stderr,"%s: Can't mount volume '%s' on '%s': %s\n",
-		      uss_whoami, a_volname, a_mpoint, sys_errlist[errno]);
+		      uss_whoami, a_volname, a_mpoint, strerror(errno));
 	      if (Oldmpoint)
 		free(Oldmpoint);
 	      return(1);
@@ -864,7 +863,7 @@ afs_int32 uss_vol_CreateVol(a_volname, a_server, a_partition, a_quota, a_mpoint,
       if (chown(a_mpoint, o, -1)) {
 	fprintf(stderr,
 		"%s: Can't chown() mountpoint '%s' to owner '%s' (uid %d): %s\n",
-		uss_whoami, a_mpoint, a_owner, o, sys_errlist[errno]);
+		uss_whoami, a_mpoint, a_owner, o, strerror(errno));
 	if (Oldmpoint)
 	  free(Oldmpoint);
 	return(1);

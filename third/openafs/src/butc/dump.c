@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/dump.c,v 1.1.1.2 2002-12-13 20:41:03 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/butc/dump.c,v 1.1.1.3 2004-02-13 17:57:05 zacheiss Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV
@@ -455,6 +455,7 @@ error_exit:
      * If we hit the end, see if this is the first volume on the tape or not.
      * Also, mark the tape as finished if the tape contains other dumps.
      */
+    if (!code) code = rc;
     if (HITEOT(code)) {
         ErrorLog(2, taskId, code, tapeInfoPtr->error, 
 		 "Warning: Dump (%s) hit end-of-tape inferred\n", 

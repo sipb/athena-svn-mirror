@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.1.1.2 2002-12-13 20:41:33 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_groups.c,v 1.1.1.3 2004-02-13 17:53:34 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
@@ -33,14 +33,20 @@ static int afs_setgroups(cred_t **cr, int ngroups, gid_t *gidset, int change_par
  */
 int set_pag_in_parent(int pag, int g0, int g1)
 {
+#ifdef STRUCT_TASK_STRUCT_HAS_PARENT
+    gid_t *gp = current->parent->groups;
+#else
     gid_t *gp = current->p_pptr->groups;
+#endif
     int ngroups;
     int i;
 
     
+#ifdef STRUCT_TASK_STRUCT_HAS_PARENT
+    ngroups = current->parent->ngroups;
+#else
     ngroups = current->p_pptr->ngroups;
-    gp = current->p_pptr->groups;
-
+#endif
 
     if ((ngroups < 2) || (afs_get_pag_from_groups(gp[0], gp[1]) == NOPAG)) {
 	/* We will have to shift grouplist to make room for pag */
@@ -57,7 +63,11 @@ int set_pag_in_parent(int pag, int g0, int g1)
     if (ngroups < NGROUPS)
 	gp[ngroups] = NOGROUP;
 
+#ifdef STRUCT_TASK_STRUCT_HAS_PARENT
+    current->parent->ngroups = ngroups;
+#else
     current->p_pptr->ngroups = ngroups;
+#endif
     return 0;
 }
 
@@ -103,7 +113,7 @@ int setpag(cred_t **cr, afs_uint32 pagvalue, afs_uint32 *newpag, int change_pare
 extern long (*sys_setgroupsp)(int gidsetsize, gid_t *grouplist);
 asmlinkage long afs_xsetgroups(int gidsetsize, gid_t *grouplist)
 {
-    int code;
+    long code;
     cred_t *cr = crref();
     afs_uint32 junk;
     int old_pag;
@@ -127,15 +137,16 @@ asmlinkage long afs_xsetgroups(int gidsetsize, gid_t *grouplist)
     crfree(cr);
     unlock_kernel();
 
-    return code;
+    /* Linux syscall ABI returns errno as negative */
+    return (- code);
 }
 
 #if defined(AFS_LINUX24_ENV)
 /* Intercept the standard uid32 system call. */
-extern int (*sys_setgroups32p)(int gidsetsize, gid_t *grouplist);
-asmlinkage int afs_xsetgroups32(int gidsetsize, gid_t *grouplist)
+extern long (*sys_setgroups32p)(int gidsetsize, gid_t *grouplist);
+asmlinkage long afs_xsetgroups32(int gidsetsize, gid_t *grouplist)
 {
-    int code;
+    long code;
     cred_t *cr = crref();
     afs_uint32 junk;
     int old_pag;
@@ -146,6 +157,7 @@ asmlinkage int afs_xsetgroups32(int gidsetsize, gid_t *grouplist)
     unlock_kernel();
 
     code = (*sys_setgroups32p)(gidsetsize, grouplist);
+
     if (code) {
 	return code;
     }
@@ -159,16 +171,17 @@ asmlinkage int afs_xsetgroups32(int gidsetsize, gid_t *grouplist)
     crfree(cr);
     unlock_kernel();
 
-    return code;
+    /* Linux syscall ABI returns errno as negative */
+    return (- code);
 }
 #endif
 
-#if defined(AFS_SPARC64_LINUX20_ENV)
+#if defined(AFS_SPARC64_LINUX20_ENV) || defined(AFS_AMD64_LINUX20_ENV)
 /* Intercept the uid16 system call as used by 32bit programs. */
-extern int (*sys32_setgroupsp)(int gidsetsize, __kernel_gid_t32 *grouplist);
-asmlinkage int afs32_xsetgroups(int gidsetsize, __kernel_gid_t32 *grouplist)
+extern long (*sys32_setgroupsp)(int gidsetsize, old_gid_t *grouplist);
+asmlinkage long afs32_xsetgroups(int gidsetsize, old_gid_t *grouplist)
 {
-    int code;
+    long code;
     cred_t *cr = crref();
     afs_uint32 junk;
     int old_pag;
@@ -192,14 +205,15 @@ asmlinkage int afs32_xsetgroups(int gidsetsize, __kernel_gid_t32 *grouplist)
     crfree(cr);
     unlock_kernel();
 
-    return code;
+    /* Linux syscall ABI returns errno as negative */
+    return (- code);
 }
 #ifdef AFS_LINUX24_ENV
 /* Intercept the uid32 system call as used by 32bit programs. */
-extern int (*sys32_setgroups32p)(int gidsetsize, __kernel_gid_t32 *grouplist);
-asmlinkage int afs32_xsetgroups32(int gidsetsize, __kernel_gid_t32 *grouplist)
+extern long (*sys32_setgroups32p)(int gidsetsize, gid_t *grouplist);
+asmlinkage long afs32_xsetgroups32(int gidsetsize, gid_t *grouplist)
 {
-    int code;
+    long code;
     cred_t *cr = crref();
     afs_uint32 junk;
     int old_pag;
@@ -223,7 +237,8 @@ asmlinkage int afs32_xsetgroups32(int gidsetsize, __kernel_gid_t32 *grouplist)
     crfree(cr);
     unlock_kernel();
 
-    return code;
+    /* Linux syscall ABI returns errno as negative */
+    return (- code);
 }
 #endif
 #endif

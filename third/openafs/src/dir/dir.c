@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/dir.c,v 1.1.1.2 2002-12-13 20:40:24 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/dir.c,v 1.1.1.3 2004-02-13 17:53:44 zacheiss Exp $");
 
 #ifdef KERNEL
 #if !defined(UKERNEL)
@@ -76,7 +76,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/dir.c,v
 #ifndef AFS_LINUX20_ENV
 #include "../netinet/in.h"
 #endif
-#if !defined(AFS_SUN5_ENV) && !defined(AFS_LINUX20_ENV)
+#if !defined(AFS_SUN5_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_HPUX110_ENV)
 #include "../h/mbuf.h"
 #endif
 #else /* !defined(UKERNEL) */

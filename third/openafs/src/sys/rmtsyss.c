@@ -15,7 +15,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsyss.c,v 1.1.1.1 2002-01-31 21:50:28 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsyss.c,v 1.1.1.2 2004-02-13 17:52:12 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -25,7 +25,9 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsyss
 #include <sys/stat.h>
 #include <sys/file.h>
 #include <stdio.h>
+#include <errno.h>
 #include <rx/xdr.h>
+#include <errno.h>
 #include <signal.h>
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -33,7 +35,6 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsyss
 /*#include <afs/cellconfig.h>*/
 #include "rmtsys.h"
 
-extern int errno;   /* We ship this over the net if needed */
 extern RMTSYS_ExecuteRequest();
 
 #define	NFS_EXPORTER	    1	/* To probably handle more later */

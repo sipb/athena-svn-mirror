@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_osi.c,v 1.1.1.2 2002-12-13 20:40:54 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_osi.c,v 1.1.1.3 2004-02-13 17:53:38 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -289,9 +289,6 @@ void afs_osi_MaskSignals(){
     
 /* unmask signals in rxk listener */
 void afs_osi_UnmaskRxkSignals(){
-#ifdef AFS_LINUX22_ENV
-    osi_linux_unmask();
-#endif
 }
     
 /* register rxk listener proc info */
@@ -402,12 +399,18 @@ afs_osi_SetTime(atv)
 #endif
 #ifdef AFS_HPUX_ENV
     {
+#if !defined(AFS_HPUX1122_ENV)
+ /* drop the setting of the clock for now. spl7 is not
+ * known on hpux11.22
+ */
+
     register ulong_t s;
     struct timeval t;
     t.tv_sec = atv->tv_sec;
     t.tv_usec = atv->tv_usec;
     s = spl7(); time = t; (void) splx(s);
     resettodr(atv);
+#endif
     }
 #else
     {
@@ -494,6 +497,10 @@ void afs_osi_Free(void *x, size_t asize)
 #endif
 }
 
+void afs_osi_FreeStr(char *x)
+{
+    afs_osi_Free(x, strlen(x) + 1);
+}
 
 /* ? is it moderately likely that there are dirty VM pages associated with 
  * this vnode?
@@ -807,11 +814,19 @@ void afs_osi_TraverseProcTable()
 #ifdef EXPORTED_TASKLIST_LOCK
     read_lock(&tasklist_lock);
 #endif
+#ifdef DEFINED_FOR_EACH_PROCESS
+    for_each_process(p) if (p->pid) {
+        if (p->state & TASK_ZOMBIE)
+            continue;
+	afs_GCPAGs_perproc_func(p);
+    }
+#else
     for_each_task(p) if (p->pid) {
         if (p->state & TASK_ZOMBIE)
             continue;
 	afs_GCPAGs_perproc_func(p);
     }
+#endif
 #ifdef EXPORTED_TASKLIST_LOCK
     read_unlock(&tasklist_lock);
 #endif

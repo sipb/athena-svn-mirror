@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsysd.c,v 1.1.1.1 2002-01-31 21:49:28 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsysd.c,v 1.1.1.2 2004-02-13 17:52:06 zacheiss Exp $");
 
 #ifdef	AFS_AIX32_ENV
 #include <signal.h>
@@ -28,11 +28,12 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/sys/rmtsysd
 #include <netinet/in.h>
 #include <sys/stat.h>
 #include <sys/file.h>
+#include <errno.h>
 #include <stdio.h>
 #include <rx/xdr.h>
 #include "rmtsys.h"
 
-extern int errno;   /* We ship this over the net if needed */
+
 extern RMTSYS_ExecuteRequest();
 
 #define N_SECURITY_OBJECTS 1	/* No real security yet */

@@ -13,7 +13,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/fstrace.c,v 1.1.1.2 2002-12-13 20:39:12 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/fstrace.c,v 1.1.1.3 2004-02-13 17:52:07 zacheiss Exp $");
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -2104,11 +2104,10 @@ long call, parm0, parm1, parm2, parm3, parm4, parm5, parm6;
     }
 #if defined(AFS_SPARC64_LINUX20_ENV) || defined(AFS_SPARC_LINUX20_ENV)
     /* on sparc this function returns none value, so do it myself */
-    __asm__ __volatile__ ("
-	mov	%o0, %i0
-	ret
-	restore
-");
+    __asm__ __volatile__ (
+			  "mov	%o0, %i0\n\t"
+			  "ret\n\t"
+			  "restore");
 #endif
 #else
 #if !defined(AFS_SGI_ENV) && !defined(AFS_AIX32_ENV)

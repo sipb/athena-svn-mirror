@@ -24,7 +24,7 @@ RXGEN=${TOP_SRCDIR}/rxgen/rxgen
 TOP_SRCDIR=@TOP_SRCDIR@
 SYS_NAME=@AFS_SYSNAME@
 SHELL=/bin/sh
-KERNELDIR = ../libafs/
+KERNELDIR = ../libafs
 
 include ../config/Makefile.${SYS_NAME}
 
@@ -43,8 +43,7 @@ LDFLAGS = ${SHLIB_LDFLAGS}
  SHOBJS = afs_account.o afs_session.o afs_password.o \
 	  afs_pam_msg.o afs_message.o AFS_component_version_number.o
    OBJS = $(SHOBJS) test_pam.o
-INCLUDES=-I${TOP_SRCDIR}/config -I${TOP_INCDIR} \
-	-I/usr/include -I/usr/include/sys
+INCLUDES=-I${TOP_SRCDIR}/config -I${TOP_INCDIR}
 CFLAGS =  ${DEBUG} ${INCLUDES} ${PAM_CFLAGS}
 
 all: test_pam ${TOP_LIBDIR}/pam_afs.so.1 ${TOP_LIBDIR}/pam_afs.krb.so.1
@@ -70,7 +69,7 @@ afs_util_krb.o: afs_util.c afs_util.h
 pam_afs.so.1: $(SHOBJS) afs_setcred.o afs_auth.o afs_util.o
 	set -x; \
 	case "$(SYS_NAME)" in \
-	hp_ux*) \
+	hp_ux* | ia64_hpux*) \
 		$(LD) $(LDFLAGS) -c mapfile.hp -o $@ afs_setcred.o afs_auth.o afs_util.o\
 			$(SHOBJS) $(LIBS) ;; \
 	sun*_5*) \
@@ -87,7 +86,7 @@ pam_afs.so.1: $(SHOBJS) afs_setcred.o afs_auth.o afs_util.o
 pam_afs.krb.so.1: $(SHOBJS) afs_setcred_krb.o afs_auth_krb.o afs_util_krb.o
 	set -x; \
 	case "$(SYS_NAME)" in \
-	hp_ux*) \
+	hp_ux* | ia64_hpux*) \
 		$(LD) $(LDFLAGS) -c mapfile.hp -o $@ \
 			afs_setcred_krb.o afs_auth_krb.o afs_util_krb.o $(SHOBJS) $(LDFLAGS) $(KLIBS) ;; \
 	sun*_5*) \
@@ -104,7 +103,7 @@ pam_afs.krb.so.1: $(SHOBJS) afs_setcred_krb.o afs_auth_krb.o afs_util_krb.o
 test_pam: test_pam.o
 	set -x; \
 	case "$(SYS_NAME)" in \
-	hp_ux*) \
+	hp_ux* | ia64_hpux*) \
 		$(CC) $(CFLAGS) -o $@ test_pam.o ${PAMLIBS};; \
 	sun*_5*) \
 		$(CC) $(CFLAGS) -o $@ test_pam.o ${PAMLIBS};; \

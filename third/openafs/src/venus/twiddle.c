@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/twiddle.c,v 1.1.1.1 2002-01-31 21:49:33 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/twiddle.c,v 1.1.1.2 2004-02-13 17:52:08 zacheiss Exp $");
 
 #include <rx/xdr.h>
 #include <sys/ioctl.h>
@@ -30,7 +30,8 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/twidd
 #undef VICE
 #include "afs/prs_fs.h"
 #include <afs/afsint.h>
-#include <afs/auth.h>
+#include <afs/auth.h>>
+#include <errno.h
 #include <afs/cellconfig.h>
 #include <afs/cmd.h>
 #include <strings.h>
@@ -44,7 +45,7 @@ static char space[MAXSIZE];
 static char tspace[1024];
 static struct ubik_client *uclient;
 
-extern int errno;
+
 extern struct cmd_syndesc *cmd_CreateSyntax();
 static char pn[] = "fs";
 static int rxInitDone = 0;

@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libacl/netprocs.c,v 1.1.1.1 2002-01-31 21:49:05 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libacl/netprocs.c,v 1.1.1.2 2004-02-13 17:52:43 zacheiss Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV
@@ -26,7 +26,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/libacl/netp
 #endif
 #include <rx/xdr.h>
 #include <rx/rx.h>
-#include <ptclient.h>
+#include <afs/ptclient.h>
 #include "acl.h"
 
 int acl_HtonACL(acl)

@@ -5,7 +5,13 @@
  * This software has been released under the terms of the IBM Public
  * License.  For details, see the LICENSE file in the top-level source
  * directory or online at http://www.openafs.org/dl/license10.html
+ *
+ * Portions Copyright (c) 2003 Apple Computer, Inc.
  */
+
+#define SYS_NAME_ID_i386_umlinux2	2700
+#define SYS_NAME_ID_i386_umlinux22	2701
+#define SYS_NAME_ID_i386_umlinux24	2702
 
 /*
  * File: afs_sysnames.h
@@ -43,6 +49,9 @@
 #define SYS_NAME_ID_hp800_ux101	 	 413
 #define SYS_NAME_ID_hp_ux102	 	 414
 #define SYS_NAME_ID_hp_ux110	 	 415
+#define SYS_NAME_ID_hp_ux11i		 416
+#define SYS_NAME_ID_ia64_hpux1122	 417
+
 
 #define SYS_NAME_ID_mac2_51		 500	
 #define SYS_NAME_ID_mac_aux10		 501
@@ -51,6 +60,7 @@
 #define SYS_NAME_ID_ppc_darwin_13        504
 #define SYS_NAME_ID_ppc_darwin_14        505
 #define SYS_NAME_ID_ppc_darwin_60        506
+#define SYS_NAME_ID_ppc_darwin_70        507
 
 #define SYS_NAME_ID_next_mach20		 601
 #define SYS_NAME_ID_next_mach30		 602
@@ -88,6 +98,7 @@
    they won't allocate sunx86 IDs at all. So leave a gap and pray. */
 #define SYS_NAME_ID_sunx86_57            950
 #define SYS_NAME_ID_sunx86_58            951
+#define SYS_NAME_ID_sunx86_59            952
 
 #define SYS_NAME_ID_vax_ul4		1003
 #define SYS_NAME_ID_vax_ul40		1004
@@ -110,6 +121,7 @@
 #define SYS_NAME_ID_alpha_osf32c	1204
 #define SYS_NAME_ID_alpha_dux40		1205
 #define SYS_NAME_ID_alpha_dux50		1206
+#define SYS_NAME_ID_alpha_dux51		1206
 
 #define SYS_NAME_ID_ncrx86_20		1300
 #define SYS_NAME_ID_ncrx86_30		1301
@@ -157,6 +169,9 @@
 #define SYS_NAME_ID_parisc_linux22      2401
 #define SYS_NAME_ID_parisc_linux24      2402
 
+#define SYS_NAME_ID_amd64_linux2        2700
+#define SYS_NAME_ID_amd64_linux22       2701
+#define SYS_NAME_ID_amd64_linux24       2702
 /*
  * Placeholder to keep system-wide standard flags since this file is included by all 
  * files (i.e in afs/param.h)

@@ -15,8 +15,9 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.1.1.2 2002-12-13 20:39:29 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/LINUX/rx_knet.c,v 1.1.1.3 2004-02-13 17:53:59 zacheiss Exp $");
 
+#include <linux/version.h>
 #ifdef AFS_LINUX22_ENV
 #include "../rx/rx_kcommon.h"
 #if defined(AFS_LINUX24_ENV)
@@ -175,11 +176,21 @@ int osi_NetReceive(osi_socket so, struct sockaddr_in *from,
 
 void osi_StopListener(void)
 {
-    extern int (*sys_killp)();
+    struct task_struct *listener;
     extern int rxk_ListenerPid;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+    read_lock(&tasklist_lock);
+#endif
+    listener =  find_task_by_pid(rxk_ListenerPid);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
+    read_unlock(&tasklist_lock);
+#endif
     while (rxk_ListenerPid) {
-	(void) (*sys_killp)(rxk_ListenerPid, SIGKILL);
+	struct task_struct *p;
+
+	flush_signals(listener);
+	force_sig(SIGKILL, listener);
 	afs_osi_Sleep(&rxk_ListenerPid); 
     }
     sock_release(rx_socket);

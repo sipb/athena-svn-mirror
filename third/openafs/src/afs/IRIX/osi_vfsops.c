@@ -13,7 +13,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/IRIX/osi_vfsops.c,v 1.1.1.2 2002-12-13 20:39:21 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/IRIX/osi_vfsops.c,v 1.1.1.3 2004-02-13 17:52:30 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -518,7 +518,6 @@ afs_vget(OSI_VFS_DECL(afsp), vnode_t **avcp, struct fid *fidp)
 {
     struct VenusFid vfid;
     struct vrequest treq;
-    extern struct cell *afs_GetCellByIndex();
     register struct cell *tcell;
     register afs_int32 code = 0;
     afs_int32 ret;
@@ -537,13 +536,13 @@ afs_vget(OSI_VFS_DECL(afsp), vnode_t **avcp, struct fid *fidp)
     afid2 = (afs_fid2_t*)fidp;
     if (afid2->af_len == sizeof(afs_fid2_t) - sizeof(afid2->af_len)) {
 	/* It's a checkpoint restart fid. */
-	tcell = afs_GetCellByIndex(afid2->af_cell, READ_LOCK, 0 /* !refresh */);
+	tcell = afs_GetCellByIndex(afid2->af_cell, READ_LOCK);
 	if (!tcell) {
 	    code = ENOENT;
 	    goto out;
-        }
-	vfid.Cell = tcell->cell;
-	afs_PutCell(tcell, WRITE_LOCK);
+	}
+	vfid.Cell = tcell->cellNum;
+	afs_PutCell(tcell, READ_LOCK);
 	vfid.Fid.Volume = afid2->af_volid;
 	vfid.Fid.Vnode = afid2->af_vno;
 	vfid.Fid.Unique = afid2->af_uniq;

@@ -1345,8 +1345,8 @@ long smb_ReceiveTran2QFileInfo(smb_vc_t *vcp, smb_tran2Packet_t *p, smb_packet_t
 		*((LARGE_INTEGER *)op) = scp->length; op += 8;	/* EOF */
 		*((u_long *)op) = scp->linkCount; op += 4;
 		*op++ = ((fidp->flags & SMB_FID_DELONCLOSE) ? 1 : 0);
-		*op++ = 0;
 		*op++ = (scp->fileType == CM_SCACHETYPE_DIRECTORY ? 1 : 0);
+		*op++ = 0;
 		*op++ = 0;
 	}
 	else if (infoLevel == 0x103) {
@@ -2363,8 +2363,9 @@ nextEntry:
          * or if something went wrong, close the search.
          */
         /* ((searchFlags & 1) || ((searchFlags & 2) && eos) */
-	if ((searchFlags & 1) || (returnedNames == 0)
-        	|| code != 0) smb_DeleteDirSearch(dsp);
+	if ((searchFlags & 1) || (returnedNames == 0) || ((searchFlags & 2) &&
+							  eos) || code != 0)
+	    smb_DeleteDirSearch(dsp);
 	if (code)
         	smb_SendTran2Error(vcp, p, opx, code);
 	else {
@@ -3136,7 +3137,7 @@ long smb_ReceiveNTCreateX(smb_vc_t *vcp, smb_packet_t *inp, smb_packet_t *outp)
 	    || (fidflags & (SMB_FID_OPENDELETE | SMB_FID_OPENWRITE))) {
 		/* look up parent directory */
 		code = cm_NameI(baseDirp, spacep->data,
-				CM_FLAG_FOLLOW | CM_FLAG_CASEFOLD,
+				CM_FLAG_FOLLOW | CM_FLAG_CASEFOLD | CM_FLAG_CHECKPATH,
 				userp, tidPathp, &req, &dscp);
 
 		if (baseFid != 0) smb_ReleaseFID(baseFidp);

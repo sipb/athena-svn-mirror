@@ -15,13 +15,15 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_util.c,v 1.1.1.2 2002-12-13 20:41:48 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_util.c,v 1.1.1.3 2004-02-13 17:53:39 zacheiss Exp $");
 
 #include "../afs/stds.h"
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 
 #if !defined(UKERNEL)
+#if !defined(AFS_LINUX20_ENV)
 #include <net/if.h>
+#endif
 #include <netinet/in.h>
 
 #ifdef AFS_SGI62_ENV
@@ -81,6 +83,35 @@ char *afs_strchr(char *s, int c)
     return NULL;
 }
 
+int afs_strcasecmp(char *s1, char *s2)
+{
+    while (*s1 && *s2) {
+	char c1, c2;
+
+	c1 = *s1++;
+	c2 = *s2++;
+	if (c1 >= 'A' && c1 <= 'Z') c1 += 0x20;
+	if (c2 >= 'A' && c2 <= 'Z') c2 += 0x20;
+	if (c1 != c2)
+	    return c1-c2;
+    }
+
+    return *s1 - *s2;
+}
+
+char *afs_strdup(char *s)
+{
+    char *n;
+    int cc;
+
+    cc = strlen(s) + 1;
+    n = (char *) afs_osi_Alloc(cc);
+    if (n)
+	memcpy(n, s, cc);
+
+    return n;
+}
+
 void print_internet_address(char *preamble, struct srvAddr *sa,
 			    char *postamble, int flag)
 {
@@ -119,7 +150,11 @@ extern afs_int32 afs_showflags;
 
 afs_warn(a,b,c,d,e,f,g,h,i,j)
 char *a;
+#if defined(AFS_USE_VOID_PTR)
+void *b, *c, *d, *e, *f, *g, *h, *i, *j;
+#else
 long b,c,d,e,f,g,h,i,j;
+#endif
 {
     AFS_STATCNT(afs_warn);
     

@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/curseswindows.c,v 1.1.1.2 2002-12-13 20:40:24 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/curseswindows.c,v 1.1.1.3 2004-02-13 17:52:03 zacheiss Exp $");
 
 
 #if defined(AFS_HPUX110_ENV) && !defined(__HP_CURSES)
@@ -41,7 +41,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/cursesw
 #include "gtxobjects.h"
 #include "gtxframe.h"
 
-extern int errno;               /* everybody else puts it in errno.h */
+
 
 int curses_debug;			    /*Is debugging turned on?*/
 static char mn[] = "gator_curseswindows";   /*Module name*/
