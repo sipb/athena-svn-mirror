@@ -1,13 +1,13 @@
 /* 
- * $Id: krb.c,v 1.9 1994-05-05 12:35:11 miki Exp $
+ * $Id: krb.c,v 1.10 1994-05-26 15:13:59 cfields Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
- * $Author: miki $
+ * $Author: cfields $
  *
  * This file contains all of the kerberos part of rkinitd.
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.9 1994-05-05 12:35:11 miki Exp $";
+static char *rcsid = "$Id: krb.c,v 1.10 1994-05-26 15:13:59 cfields Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -18,6 +18,9 @@ static char *rcsid = "$Id: krb.c,v 1.9 1994-05-05 12:35:11 miki Exp $";
 #include <setjmp.h>
 #ifdef SYSV
 #include <netdb.h>
+#endif
+#ifdef sun
+#include <strings.h>
 #endif
 #include <pwd.h>
 #include <krb.h>
