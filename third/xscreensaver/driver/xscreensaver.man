@@ -534,10 +534,10 @@ Same as setting the \fIlock\fP resource to \fIfalse\fP.
 Same as the \fIlockTimeout\fP resource.
 .TP 8
 .B \-start\-locked
-Same as setting the \fstartLocked\fP resource to \fItrue\fP.
+Same as setting the \fIstartLocked\fP resource to \fItrue\fP.
 .TP 8
 .B \-no\-start\-locked
-Same as setting the \fstartLocked\fP resource to \fIfalse\fP.
+Same as setting the \fIstartLocked\fP resource to \fIfalse\fP.
 .TP 8
 .B \-lock\-command
 Same as the \fIlockCommand\fP resource.
