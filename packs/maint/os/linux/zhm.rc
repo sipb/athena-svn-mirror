@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# zhm:	Start the Athena zhm.
+#
+# chkconfig: 2345 80 30
+# description: Zhm startup.
+# processname: zhm
+#
+# config: /etc/sysconfig/network
+# config: /etc/sysconfig/athena
+# config: /etc/athena/rc.conf
+# config: /etc/sendmail.cf
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+. /etc/sysconfig/network
+. /etc/sysconfig/athena
+. /etc/athena/rc.conf
+
+# Check that networking is up.
+if [ ${NETWORKING} = "no" ]
+then
+	exit 0
+fi
+
+[ -f /etc/athena/zhm ] || exit 0
+
+[ "$ZCLIENT" = true ] || exit 0
+
+RETVAL=0
+
+# See how we were called
+case "$1" in
+  start)
+	echo -n "Starting Athena zephyr server: "
+	daemon zhm
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/zhm
+	;;
+
+  stop)
+	echo -n "Stopping Athena zephyr server: "
+	killproc zhm
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/zhm
+	;;
+
+  status)
+	status zhm
+	RETVAL=$?
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+
+  reload)
+	killall -HUP zhm
+	RETVAL=$?
+	;;
+
+  *)
+	echo "Usage: zhm {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL
