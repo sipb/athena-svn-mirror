@@ -1,5 +1,5 @@
-# $Id: Makefile.vms,v 1.1.1.1 1996-10-02 06:09:30 ghudson Exp $
-#	Makefile	4.3	6/11/83
+# $Id: Makefile.vms,v 1.1.1.2 1998-10-03 21:09:40 danw Exp $
+#	Makefile.vms	4.3	6/11/83
 #
 # C Shell with process control; VM/UNIX VAX Makefile
 # Bill Joy UC Berkeley; Jim Kulp IIASA, Austria
@@ -8,11 +8,8 @@
 # things; Paul Placeway, CIS Dept., Ohio State University
 #
 SHELL=/bin/sh
-VERSION=6.03
+VERSION=6.08
 BUILD=tcsh
-#BUILD=jump	# Build tcsh.a and link it with jump table libraries (linux)
-#BUILD=nojump	# Build tcsh.a and link it with shared libraries (linux)
-#BUILD=static	# Build tcsh.a and link it with static libraries (linux)
 
 ################################################################
 ## CFLAGS.  For various -D things, see config.h
@@ -48,25 +45,39 @@ LFLAGS=$(INCLUDES)
 # On the sparc, don't use -O2; it breaks setjmp() and vfork()
 #CFLAGS=-O $(INCLUDES)
 
-# gcc-2.1
+# gcc-2.1+
 #CFLAGS=-O2 $(INCLUDES)
+
+# lucid c on suns
+#CFLAGS=-O5 $(INCLUDES)
 
 # gcc 2.1 on linux
 #CFLAGS=-O6 -fomit-frame-pointer $(INCLUDES)
 
-#hpux 8.0
+# HP/UX 8.0, 9.0
 #CFLAGS= $(INCLUDES) +O3 -Aa
 
 # Ultrix 4.2a
 #CFLAGS= $(INCLUDES) -O -Olimit 2000
 
+# Intel Paragon OSF/1 with PGI compilers
+#CFLAGS=-O -Mnodebug -Mnoperfmon $(INCLUDES)
+
+# DEC Alpha OSF/1
+#CFLAGS= -O2 $(INCLUDES) -Olimit 2000	## Normal Optimization
+#CFLAGS= -O3 $(INCLUDES) -Olimit 2000	## Full Optimization - may not work
+#CF=-j
+#SUF=u
+#.SUFFIXES: .u
+
 # for silicon graphics (and other mips compilers) -- use the
 # global optimizer! (-O3).
 # On SGI 4.0+ you need to add -D__STDC__ too.
 #CFLAGS= -O3 $(INCLUDES) 
+#CFLAGS= -O3 $(INCLUDES) -Olimit 2000	## Ultrix 4.2a
 #CF=-j
 #SUF=u
-#.SUFFIXES: .u 				## Ultrix needs that
+#.SUFFIXES: .u 				## Ultrix and gnu-make need that
 
 # mips systems
 # CFLAGS= $(INCLUDES) -O -systype bsd43 -Wf,-XNd5000 -Wf,-XNp6000 -Olimit 2000
@@ -77,11 +88,23 @@ LFLAGS=$(INCLUDES)
 # Stardent Titan
 #CFLAGS = $(INCLUDES) -O -43
 
-# Stardent Stellar or sunos4 w/o gcc
+# Stardent Stellar or sunos4 /bin/cc or Solaris2.1 /opt/SUNWspro/bin/cc
 #CFLAGS = $(INCLUDES) -O4
+
+# Intergraph clipper CLIX 3.1
+#CFLAGS= -w -O2 $(INCLUDES)
 
 # Dnix 5.3
 #CFLAGS = -O -X7
+
+# Pyramid OS/x
+#CFLAGS = -OG
+
+# Multiflow (5M binary... if you choose -O5!)
+#CFLAGS = -O5 -sb_trace 0
+
+# DDE Supermax Unix SYSV Rel III.
+# CFLAGS= -O3
 
 # Apollo's with cc [apollo builtins don't work with gcc]
 # and apollo should not define __STDC__ if it does not have
@@ -95,14 +118,19 @@ LFLAGS=$(INCLUDES)
 # AU/X 2.0 needs a flag for POSIX (read the config file)
 #DFLAGS=-Zp
 # Tektronix 4300 running UTek 4.0 (BSD 4.2) needs:
-#DFLAGS = -DUTek
+#DFLAGS = -DUTek -DBSD
 # VMS_POSIX needs:
-DFLAGS=-D_VMS_POSIX
-#DFLAGS=
+#DFLAGS=-D_VMS_POSIX
+# Multiflow
+#DFLAGS=-DMULTIFLOW
+# DELL SVR4
+#DFLAGS=-DDELL
+DFLAGS=
+#DFLAGS=-D_PATH_TCSHELL='"${DESTBIN}/tcsh"'
 
 
 ################################################################
-## LDLAGS.  Define something here if you need to
+## LDFLAGS.  Define something here if you need to
 ################################################################
 LDFLAGS= 			## The simplest, suitable for all.
 #LDFLAGS= -s			## Stripped. Takes less space on disk.
@@ -111,45 +139,83 @@ LDFLAGS= 			## The simplest, suitable for all.
 #				## swap but external /usr/local/bin .
 #LDFLAGS= -s -n -Bstatic	## Without dynamic links. (SunOS)
 #LDFLAGS= -Wl,-s,-n		## Stripped, shared text (Unicos)
+#LDFLAGS= -s -static		## Link statically. (linux)
+#LDFLAGS= -s -N			## Impure executable (linux)
 
 ################################################################
 ## LIBES.  Pick one, or roll your own.
 ################################################################
-#LIBES= -ltermcap		## BSD style things, hpux
-#LIBES= -ltermc			## emx under OS/2
-#LIBES= -ltermcap -lsec		## Tek XD88/10 (UTekV) with PW_SHADOW
-#LIBES= -ltermcap -lsec		## Motorola MPC (sysV88) with PW_SHADOW
-#LIBES= -ltermcap -lcs		## Mach
-#LIBES= -lcurses		## Sys V3 w/o networking (and Sys V4)
-#LIBES= -lcurses -lc /usr/ucblib/libucb.a ## Sys V4 with BSDTIMES
-#LIBES= -lcurses		## Sys V4 w/o BSDTIMES or Solaris 2
-#LIBES= -lcurses -lnet		## Sys V3 with networking
-#LIBES= -lcurses -ldir		## Sys V2 w/o networking [needs directory lib]
-#LIBES= -lcurses -ldir -lnet	## Sys V2 with networking [needs directory lib]
-#LIBES= -lcurses -lsocket -lbsd	## Amdahl UTS 2.1
-#LIBES= -lcurses -lbsd		## For Irix3.1 on SGI-IRIS4D or ETA10
-#LIBES= -lcurses -lsun -lbsd -lc_s ## For Irix3.3 on SGI-IRIS4D (w/ yp)
-#LIBES= -lcurses -lbsd -lc_s	## For Irix3.3 on SGI-IRIS4D (wo/ yp)
-#LIBES= -lcurses -lbsd		## For aix on an IBM 370 or rs6000 or ps2
-#LIBES= -lcurses		## For aix on the rt
-#LIBES= -lcurses -lcposix	## ISC 2.2 
-#LIBES= -lcposix -lc_s -lcurses -linet ## ISC 2.2 with networking
-#LIBES= -lcurses -linet -lsec -lc_s  ## ISC 2.0.2 with networking
-#LIBES= -lcurses -lsec -lc_s    ## ISC 2.0.2 without networking
-#LIBES= -ltermcap -ldir -lx	## Xenix 386 style things
-#LIBES= -lcurses -lintl		## SCO SysVR3.2v2.0
-#LIBES= -lcurses -lintl -lsocket ## SCO+ODT1.1
-#LIBES= -lposix -ltermcap	## A/UX 2.0
-#LIBES= -ltermcap -lbsd		## DEC osf1 on the alpha
-#LIBES= -ltermcap -lseq		## Sequent's Dynix
-#LIBES= -lcurses -lsocket	## Intel's hypercube and ns32000 based Opus.
-#LIBES= -ldirent -lcurses       ## att3b1 stk cc w/o shared lib & directory lib
-#LIBES= -shlib -ldirent -lcurses ## att3b1 gcc1.40 w/ shared lib & directory lib
-LIBES=				## Minix, VMS_POSIX
-#LIBES= -lcurses		## For a stellar
-#LIBES= -lcurses -lnsl -lsocket -lc /usr/ucblib/libucb.a ## Stardent Vistra
+#LIBES= -ltermcap 			 ## BSD style things
+#LIBES= -ltermcap			 ## SunOS, HP-UX, pyramid
+#LIBES= -ltermcap			 ## Linux
+#LIBES= -ltermcap -lshadow		 ## Linux with PW_SHADOW
+#LIBES= -ltermcap -lsec			 ## Tek XD88/10 (UTekV) with PW_SHADOW
+#LIBES= -ltermcap -lsec			 ## Motorola MPC (sysV88) with PW_SHADOW
+#LIBES= -ltermcap -lcs			 ## Mach
+#LIBES= -ltermcap -lbsd			 ## DEC osf1 on the alpha
+#LIBES= -ltermcap -lbsd			 ## Intel paragon
+#LIBES= -ltermcap -lbsd			 ## Clipper intergraph
+#LIBES= -ltermcap -lseq			 ## Sequent's Dynix
+#LIBES= -ltermcap -lauth		 ## Ultrix with Enhanced Security
+#LIBES= -ltermcap -ldir -lx		 ## Xenix 386 style things
 #LIBES= -ltermcap -lndir -lsocket -ljobs ## masscomp RTU6.0
-#LIBES= -ltermcap -lauth        ## for Ultrix with Enhanced Security
+#LIBES= -lcurses			 ## AIX on the rt
+#LIBES= -lcurses			 ## TitanOS on the stellar
+#LIBES= -ltermlib -lsocket -lnsl	 ## SysV4 w/o BSDTIMES or Solaris 2
+#LIBES= -lcurses			 ## SysV3 w/o networking
+#LIBES= -lcurses -lnet			 ## SysV3 with networking
+#LIBES= -lcurses -ldir			 ## SysV2 w/o networking & dirlib
+#LIBES= -lcurses -ldir -lnet		 ## SysV2 with networking & dirlib
+#LIBES= -lcurses -lbsd			 ## AIX on the IBM 370 or rs6000 or ps2
+#LIBES= -lcurses -lbsd			 ## ETA10
+#LIBES= -lcurses -lbsd			 ## Irix3.1 on the SGI-IRIS4D
+#LIBES= -lcurses -lbsd -lc_s		 ## Irix3.3 on the SGI-IRIS4D w/o yp
+#LIBES= -lcurses -lsun -lbsd -lc_s	 ## Irix3.3 on the SGI-IRIS4D with yp
+#LIBES= -lcurses -lsocket -lbsd		 ## Amdahl UTS 2.1
+#LIBES= -lcurses -lsocket		 ## Intel's hypercube.
+#LIBES= -lcurses -lsocket		 ## ns32000 based Opus.
+#LIBES= -lcurses -lcposix		 ## ISC 2.2 without networking
+#LIBES= -lcposix -lc_s -lcurses -linet	 ## ISC 2.2 with networking
+#LIBES= -lcurses -lsec -lc_s		 ## ISC 2.0.2 without networking
+#LIBES= -lcurses -linet -lsec -lc_s	 ## ISC 2.0.2 with networking
+#LIBES= -lcurses -lintl -lcrypt		 ## SCO SysVR3.2v2.0
+#LIBES= -lcurses -lintl -lsocket -lcrypt ## SCO+ODT1.1
+#LIBES= -lposix -ltermcap		 ## A/UX 2.0
+#LIBES= -lposix -ltermcap -lc_s		 ## A/UX 3.0
+#LIBES= -ldirent -lcurses		 ## att3b1 cc w/o shared lib & dirlib
+#LIBES= -shlib -ldirent -lcurses	 ## att3b1 gcc with shared lib & dirlib
+#LIBES= -ltermlib -lsocket -lnsl -lc /usr/ucblib/libucb.a ## SysV4 with BSDTIMES
+#LIBES= -lcurses -lnsl -lsocket -lc /usr/ucblib/libucb.a ## Stardent Vistra
+#LIBES= -ltermc				 ## emx under OS/2
+LIBES=					 ## Minix, VMS_POSIX
+#LIBES= -ltermcap -lcrypt		 ## Multiflow
+#LIBES= -ltermcap -lcrypt		 ## NetBSD
+#LIBES= -lcurses 			 ## DDE Supermax
+
+################################################################
+## EXTRAFLAGS and EXTRALIBS
+################################################################
+# Compiling for HESIOD
+#HESDEF = -DHESIOD -I/usr/athena/include
+#HESLIB = -L/usr/athena/lib -lhesiod
+#
+# Compiling for AFS with kerberos authentication
+#AFSLIBDIR = /usr/afsws/lib
+#AFSDEF = -DAFS -I/usr/afsws/include
+#AFS33LIB = -laudit
+#
+#Solaris and HPUX require the BSD libraries with AFS.
+#We use -lc to use only what we require.
+#AFSAUXLIB = -lsocket -lnsl -lc -lucb                    # Solaris
+#AFSAUXLIB = -lc -lBSD                                   # HPUX   
+#
+#AFSLIB = -L$(AFSLIBDIR) -L$(AFSLIBDIR)/afs -lkauth -lprot -lubik\
+#         -lauth -lrxkad -lsys -ldes -lrx -llwp -lcom_err\
+#         $(AFSLIBDIR)/afs/util.a $(AFS33LIB) $(AFSAUXLIB)
+#
+
+EXTRAFLAGS = $(HESDEF) $(AFSDEF)
+EXTRALIBS = $(HESLIB) $(AFSLIB)
 
 
 # The difficult choice of a c-compiler...
@@ -162,15 +228,19 @@ LIBES=				## Minix, VMS_POSIX
 
 # The -B tells gcc to use /bin/ld. This is to avoid using the gnu ld, which
 # on the suns does not know how to make dynamically linked binaries.
-#CC=	gcc -Wall -B/bin/	
-#CC=	gcc -m486 -Wall # Generate code for Intel 486 (linux)
+#CC=	gcc -Wall -pipe -B/bin/	# -ansi -pedantic
+#CC=	gcc -m486 -pipe -Wall # Generate code for Intel 486 (linux)
 #CC=	cc
 #CC=	occ
 #CC=	acc
+#CC=	pcc
+#CC=	hc -w
 CC=	c89	# For VMS/POSIX
 #CC=	/bin/cc	# For suns, w/o gcc and SVR4
 #CC=	/usr/lib/sun.compile/cc  # FPS 500 (+FPX) with Sun C compiler
-#CC=	scc	# Alliant fx2800
+#CC=	/opt/SUNWspro/bin/cc	# Solaris 2.1
+#CC=	scc 	# Alliant fx2800
+#CC=	lcc	-wa 
 ED=	ed
 AS=	as
 RM=	rm
@@ -206,9 +276,9 @@ SHOBJS=	sh.${SUF} sh.dir.${SUF} sh.dol.${SUF} sh.err.${SUF} sh.exec.${SUF} \
 	ma.setp.${SUF} vms.termcap.${SUF}
 
 TWSRCS= tw.decls.h tw.h tw.help.c tw.init.c tw.parse.c tw.spell.c \
-	tw.comp.c
+	tw.comp.c tw.color.c
 TWOBJS=	tw.help.${SUF} tw.init.${SUF} tw.parse.${SUF} tw.spell.${SUF} \
-	tw.comp.${SUF}
+	tw.comp.${SUF} tw.color.${SUF}
 
 EDSRCS= ed.chared.c ed.decls.h ed.defns.c ed.h ed.init.c ed.inputl.c \
 	ed.refresh.c ed.screen.c ed.xmap.c ed.term.c ed.term.h
@@ -219,19 +289,21 @@ TCSRCS= tc.alloc.c tc.bind.c tc.const.c tc.decls.h tc.disc.c \
 	tc.func.c tc.os.c tc.os.h tc.printf.c tc.prompt.c \
 	tc.sched.c tc.sig.c tc.sig.h tc.str.c sh.types.h tc.vers.c tc.wait.h \
 	tc.who.c tc.h
-TCOBJS=	tc.alloc.${SUF} tc.bind.${SUF} tc.const.${SUF} tc.disc.${SUF} \
-	tc.func.${SUF} tc.os.${SUF} tc.printf.${SUF} \
+TCOBJS=	tc.alloc.${SUF} tc.bind.${SUF} tc.const.${SUF} tc.defs.${SUF} \
+	tc.disc.${SUF} tc.func.${SUF} tc.os.${SUF} tc.printf.${SUF} \
 	tc.prompt.${SUF} tc.sched.${SUF} tc.sig.${SUF} tc.str.${SUF} \
 	tc.vers.${SUF} tc.who.${SUF} 
 
-PVSRCS= Makefile Makefile.vms
+PVSRCS= Makefile.std Makefile.vms Makefile.in Makefile.win32
 AVSRCS= Fixes MAKEDIFFS MAKESHAR NewThings README FAQ \
 	WishList config_f.h eight-bit.me glob.3 patchlevel.h \
 	pathnames.h tcsh.man Ported src.desc Imakefile imake.config \
-	README.imake complete.tcsh vmsreadme.txt termcap.vms
+	README.imake complete.tcsh vmsreadme.txt termcap.vms snames.h \
+	host.defs gethost.c tcsh.man2html configure.in
+
 VHSRCS=${PVSRCS} ${AVSRCS}
 
-CONFSRCS=config/config.* 
+CONFSRCS=config/* 
 
 ALLSRCS=  ${SHSRCS} ${TWSRCS} ${EDSRCS} ${TCSRCS} ${VHSRCS}
 DISTSRCS= ${PSSRCS} ${TWSRCS} ${EDSRCS} ${TCSRCS} ${AVSRCS}
@@ -244,20 +316,24 @@ all: ${BUILD}
 
 tcsh:$(P) ${OBJS} 
 	rm -f tcsh core
-	${CC} -o tcsh ${LDFLAGS} ${CFLAGS} ${OBJS} ${LIBES}
+	${CC} -o tcsh ${LDFLAGS} ${CFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
 
-# Linux distribution
-jump: tcsh.a
-	${CC} ${LDFLAGS} ${CFLAGS} -o tcsh tcsh.a ${LIBES}
+# Purify
+pure:$(P) ${OBJS} 
+	rm -f tcsh core
+	purify `echo ${CC} | sed -e s,-B/bin/,,` -o tcsh ${LDFLAGS} ${CFLAGS} ${OBJS} ${LIBES} ${EXTRALIBS}
+# OS/2
+tcsh.exe: tcsh
+	emxbind tcsh
 
-nojump: tcsh.a
-	${CC} ${LDFLAGS} -nojump ${CFLAGS} -o tcsh tcsh.a ${LIBES}
+gethost:  gethost.c sh.err.h tc.const.h sh.h
+	rm -f gethost
+	${CC} -o gethost ${LDFLAGS} ${CFLAGS} ${DFLAGS} gethost.c ${LIBES} ${EXTRALIBS}
 
-static: tcsh.a
-	${CC} ${LDFLAGS} -static ${CFLAGS} -o tcsh tcsh.a ${LIBES}
-
-tcsh.a:$(P) ${OBJS}
-	$(LD) -x -r -o tcsh.a ${OBJS}
+tc.defs.c:	gethost host.defs
+	@rm -f $@
+	@echo "/* Do not edit this file, make creates it */" > $@
+	./gethost host.defs >> $@
 
 tcsh.ps: tcsh.man
 	rm -f tcsh.ps
@@ -265,13 +341,13 @@ tcsh.ps: tcsh.man
 
 
 #.c.${SUF}:
-#	${CC} ${CF} ${CFLAGS} ${DFLAGS} $<
+#	${CC} ${CF} ${CFLAGS} ${DFLAGS} ${EXTRAFLAGS} $<
 
 # _VMS_POSIX #module addition
 .c.${SUF}:
 	@(echo '\#module '`echo $< | sed -e 's/\./_/g'`; cat $<) > $*..c
-	@echo ${CC} ${CF} ${CFLAGS} ${DFLAGS} $*.c
-	@${CC} ${CF} ${CFLAGS} ${DFLAGS} $*..c
+	@echo ${CC} ${CF} ${CFLAGS} ${DFLAGS} ${EXTRAFLAGS} $*.c
+	@${CC} ${CF} ${CFLAGS} ${DFLAGS} ${EXTRAFLAGS} $*..c
 	@mv $*..o $*.o
 	@rm -f $*..c
 
@@ -307,7 +383,7 @@ ed.defns.h: ed.defns.c
 	@echo '/* Do not edit this file, make creates it. */' > $@
 	@echo '\#ifndef _h_ed_defns' >> $@
 	@echo '\#define _h_ed_defns' >> $@
-	grep '[FV]_' ed.defns.c | grep '\#define' >> $@
+	grep '[FV]_' ed.defns.c | grep '^\#define' >> $@
 	@echo '\#endif /* _h_ed_defns */' >> $@
 
 sh.err.h: sh.err.c
@@ -315,15 +391,19 @@ sh.err.h: sh.err.c
 	@echo '/* Do not edit this file, make creates it. */' > $@
 	@echo '\#ifndef _h_sh_err' >> $@
 	@echo '\#define _h_sh_err' >> $@
-	grep 'ERR_' sh.err.c | grep '\#define' >> $@
+	grep 'ERR_' sh.err.c | grep '^#define' >> $@
 	@echo '\#endif /* _h_sh_err */' >> $@
 
 tc.const.h: tc.const.c sh.char.h config.h config_f.h sh.types.h sh.err.h
 	@rm -f $@
 	@echo '/* Do not edit this file, make creates it. */' > $@
-	${CC} -E $(INCLUDES) ${DFLAGS} tc.const.c | grep 'Char STR' | \
-	    sed -e 's/Char \([a-zA-Z0-9_]*\)\(.*\)/extern Char \1[];/' | \
+	@echo '\#ifndef _h_tc_const' >> $@
+	@echo '\#define _h_tc_const' >> $@
+	${CC} -E $(INCLUDES) ${DFLAGS} -D_h_tc_const tc.const.c | \
+	    grep 'Char STR' | \
+	    sed -e 's/Char \([a-zA-Z0-9_]*\)\[\].*/extern Char \1[];/' | \
 	    sort >> $@
+	@echo '\#endif /* _h_tc_const */' >> $@
 
 csh.prof: ${OBJS} sh.prof.${SUF} mcrt0.${SUF}
 	rm -f csh.prof
@@ -334,10 +414,10 @@ sh.prof.${SUF}:
 	${CC} ${CF} ${CFLAGS} -DPROF sh.prof.c
 
 lint: tc.const.h ed.defns.h
-	lint ${LFLAGS} sh*.c tw*.c ed*.c tc.*.c ${LIBES}
+	lint ${DFLAGS} ${LFLAGS} sh*.c tw*.c ed*.c tc.*.c ${LIBES}
 
 alint: tc.const.h ed.defns.h
-	alint ${LFLAGS} sh*.c tw*.c ed*.c tc.*.c ${LIBES}
+	alint ${DFLAGS} ${LFLAGS} sh*.c tw*.c ed*.c tc.*.c ${LIBES}
 
 print:
 	@pr READ_ME
@@ -368,51 +448,69 @@ install: tcsh
 	-strip ${DESTBIN}/tcsh
 	chmod 555 ${DESTBIN}/tcsh
 
-manpage: tcsh.man
+install.man: tcsh.man
 	-rm -f ${DESTMAN}/tcsh.${MANSECT}
 	cp tcsh.man ${DESTMAN}/tcsh.${MANSECT}
 	chmod 444 ${DESTMAN}/tcsh.${MANSECT}
 
 # Amiga Unix
-#manpage: tcsh.man
+#install.man: tcsh.man
 #        compress tcsh.man
 #	cp tcsh.man.Z ${DESTMAN}/tcsh.Z
 #	chmod 444 ${DESTMAN}/tcsh.Z
 
 # Apple A/UX
-#manpage: tcsh.man
+#install.man: tcsh.man
 #	-rm -f ${DESTMAN}/tcsh.${MANSECT}.Z
 #	nroff -man tcsh.man | compress > ${DESTMAN}/tcsh.${MANSECT}.Z
 #	chmod 444 ${DESTMAN}/tcsh.${MANSECT}.Z
 
 clean:
-	${RM} -f a.out strings x.c xs.c tcsh tcsh.a _MAKE_LOG core
-	${RM} -f *.${SUF} sh.prof.c ed.defns.h tc.const.h sh.err.h
+	${RM} -f a.out strings x.c xs.c tcsh tcsh.a _MAKE_LOG core gethost
+	${RM} -f *.${SUF} sh.prof.c ed.defns.h tc.const.h sh.err.h tc.defs.c
+	${RM} -f tcsh.*.m tcsh.*.cat
 
 veryclean: clean
+	${RM} -f config.h
 	${RM} -f *~ #*
 
 tags:	/tmp
 	${CTAGS} sh*.c
 
-tar:
+tar.Z:
 	rm -f tcsh-${VERSION}.tar.Z
 	rm -rf tcsh-${VERSION} 
 	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
 	cp ${ALLSRCS} tcsh-${VERSION}
 	cp ${CONFSRCS} tcsh-${VERSION}/config
+	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
 	tar cvf - tcsh-${VERSION} | compress > tcsh-${VERSION}.tar.Z
 	rm -rf tcsh-${VERSION}
 
-shar:	
-	rm -f tcsh-*.shar
+tar.gz:
+	rm -f tcsh-${VERSION}.tar.gz
 	rm -rf tcsh-${VERSION} 
-	mkdir tcsh-${VERSION} tcsh-${VERSION}/config 
+	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
 	cp ${ALLSRCS} tcsh-${VERSION}
 	cp ${CONFSRCS} tcsh-${VERSION}/config
-	MAKESHAR -v -n tcsh-${VERSION} tcsh-${VERSION} \
-		 tcsh-${VERSION}/* tcsh-${VERSION}/config/*
+	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
+	tar cvf - tcsh-${VERSION} | gzip > tcsh-${VERSION}.tar.gz
 	rm -rf tcsh-${VERSION}
+
+shar:
+	rm -f tcsh-*.shar
+	rm -rf tcsh-${VERSION} 
+	mkdir tcsh-${VERSION} tcsh-${VERSION}/config
+	cp ${ALLSRCS} tcsh-${VERSION}
+	cp ${CONFSRCS} tcsh-${VERSION}/config
+	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
+	MAKESHAR -v -n tcsh-${VERSION} tcsh-${VERSION} \
+		 tcsh-${VERSION}/?* tcsh-${VERSION}/config/?* \
+		 tcsh-${VERSION}/?*/set?*
+	rm -rf tcsh-${VERSION}
+
+catalogs:
+	@(cd nls; make catalogs)
 
 tcsh-${VERSION}.tar.Z:
 	rm -rf tcsh-${VERSION} 
@@ -424,6 +522,7 @@ tcsh-${VERSION}.tar.Z:
 	mkdir tcsh-${VERSION}/config
 	cp ${CONFSRCS} tcsh-${VERSION}/config
 	cp Makefile tcsh-${VERSION}/Makefile.new
+	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
 	tar cvf - tcsh-${VERSION} | compress > tcsh-${VERSION}.tar.Z
 	rm -rf tcsh-${VERSION}
 
@@ -437,6 +536,7 @@ tcsh.tahoe-${VERSION}.tar.Z:
 	mkdir tcsh.tahoe-${VERSION}/config
 	cp ${CONFSRCS} tcsh.tahoe-${VERSION}/config
 	cp Makefile tcsh.tahoe-${VERSION}/Makefile.new
+	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
 	tar cvf - tcsh.tahoe-${VERSION} | compress > tcsh.tahoe-${VERSION}.tar.Z
 	rm -rf tcsh.tahoe-${VERSION}
 
@@ -450,6 +550,7 @@ tcsh.reno-${VERSION}.tar.Z:
 	mkdir tcsh.reno-${VERSION}/config
 	cp ${CONFSRCS} tcsh.reno-${VERSION}/config
 	cp Makefile tcsh.reno-${VERSION}/Makefile.new
+	tar cf - nls/Makefile nls/?*/set?* | (cd tcsh-${VERSION}; tar xpf -)
 	tar cvf - tcsh.reno-${VERSION} | compress > tcsh.reno-${VERSION}.tar.Z
 	rm -rf tcsh.reno-${VERSION}
 
@@ -488,3 +589,6 @@ glob.${SUF} sh.glob.${SUF}: glob.h
 # ed.defns.h
 EDDINC=tc.bind.${SUF} tc.func.${SUF} tc.os.${SUF}
 ${EDOBJS} ${EDDINC}: ed.defns.h
+
+# tc.defs.o
+tc.defs.${SUF}:	tc.defs.c sh.h

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.screen.c,v 1.1.1.1 1996-10-02 06:09:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.screen.c,v 1.1.1.2 1998-10-03 21:09:48 danw Exp $ */
 /*
  * ed.screen.c: Editor/termcap-curses interface
  */
@@ -36,21 +36,33 @@
  */
 #include "sh.h"
 
-RCSID("$Id: ed.screen.c,v 1.1.1.1 1996-10-02 06:09:27 ghudson Exp $")
+RCSID("$Id: ed.screen.c,v 1.1.1.2 1998-10-03 21:09:48 danw Exp $")
 
 #include "ed.h"
 #include "tc.h"
 #include "ed.defns.h"
 
+#ifndef POSIX
 /*
  * We don't prototype these, cause some systems have them wrong!
  */
-extern char *tgoto();
-extern char *tgetstr();
-extern char *tputs();
-extern int tgetent();
-extern int tgetflag();
-extern int tgetnum();
+extern int   tgetent	__P(());
+extern char *tgetstr	__P(());
+extern int   tgetflag	__P(());
+extern int   tgetnum	__P(());
+extern char *tgoto	__P(());
+# define PUTPURE putpure
+# define PUTRAW putraw
+#else
+extern int   tgetent	__P((char *, char *));
+extern char *tgetstr	__P((char *, char **));
+extern int   tgetflag	__P((char *));
+extern int   tgetnum	__P((char *));
+extern char *tgoto	__P((char *, int, int));
+extern void  tputs	__P((char *, int, void (*)(int)));
+# define PUTPURE ((void (*)__P((int))) putpure)
+# define PUTRAW ((void (*)__P((int))) putraw)
+#endif
 
 
 /* #define DEBUG_LITERAL */
@@ -139,109 +151,209 @@ static struct {
     { NULL, 0 }
 };
 
+#define T_al	0
+#define T_bl	1
+#define T_cd	2
+#define T_ce	3
+#define T_ch	4
+#define T_cl	5
+#define	T_dc	6
+#define	T_dl	7
+#define	T_dm	8
+#define	T_ed	9
+#define	T_ei	10
+#define	T_fs	11
+#define	T_ho	12
+#define	T_ic	13
+#define	T_im	14 
+#define	T_ip	15
+#define	T_kd	16
+#define	T_kl	17
+#define T_kr	18
+#define T_ku	19
+#define T_md	20
+#define T_me	21
+#define T_nd	22
+#define T_se	23
+#define T_so	24
+#define T_ts	25
+#define T_up	26
+#define T_us	27
+#define T_ue	28
+#define T_vb	29
+#define T_DC	30
+#define T_DO	31
+#define T_IC	32
+#define T_LE	33
+#define T_RI	34
+#define T_UP	35
+#define T_str	36
 static struct termcapstr {
     char   *name;
     char   *long_name;
     char   *str;
-}       tstr[] = {
+} tstr[T_str + 1];
 
-#define T_al	0
-    {	"al",	"add new blank line",		NULL },
-#define T_bl	1
-    {	"bl",	"audible bell",			NULL },
-#define T_cd	2
-    {	"cd",	"clear to bottom",		NULL },
-#define T_ce	3
-    {	"ce",	"clear to end of line",		NULL },
-#define T_ch	4
-    {	"ch",	"cursor to horiz pos",		NULL },
-#define T_cl	5
-    {	"cl",	"clear screen",			NULL },
-#define	T_dc	6
-    {	"dc",	"delete a character",		NULL },
-#define	T_dl	7
-    {	"dl",	"delete a line",		NULL },
-#define	T_dm	8
-    {	"dm",	"start delete mode",		NULL },
-#define	T_ed	9
-    {	"ed",	"end delete mode",		NULL },
-#define	T_ei	10
-    {	"ei",	"end insert mode",		NULL },
-#define	T_fs	11
-    {	"fs",	"cursor from status line",	NULL },
-#define	T_ho	12
-    {	"ho",	"home cursor",			NULL },
-#define	T_ic	13
-    {	"ic",	"insert character",		NULL },
-#define	T_im	14 
-    {	"im",	"start insert mode",		NULL },
-#define	T_ip	15
-    {	"ip",	"insert padding",		NULL },
-#define	T_kd	16
-    {	"kd",	"sends cursor down",		NULL },
-#define	T_kl	17
-    {	"kl",	"sends cursor left",		NULL },
-#define T_kr	18
-    {	"kr",	"sends cursor right",		NULL },
-#define T_ku	19
-    {	"ku",	"sends cursor up",		NULL },
-#define T_md	20
-    {	"md",	"begin bold",			NULL },
-#define T_me	21
-    {	"me",	"end attributes",		NULL },
-#define T_nd	22
-    {	"nd",	"non destructive space",	NULL },
-#define T_se	23
-    {	"se",	"end standout",			NULL },
-#define T_so	24
-    {	"so",	"begin standout",		NULL },
-#define T_ts	25
-    {	"ts",	"cursor to status line",	NULL },
-#define T_up	26
-    {	"up",	"cursor up one",		NULL },
-#define T_us	27
-    {	"us",	"begin underline",		NULL },
-#define T_ue	28
-    {	"ue",	"end underline",		NULL },
-#define T_vb	29
-    {	"vb",	"visible bell",			NULL },
-#define T_DC	30
-    {	"DC",	"delete multiple chars",	NULL },
-#define T_DO	31
-    {	"DO",	"cursor down multiple",		NULL },
-#define T_IC	32
-    {	"IC",	"insert multiple chars",	NULL },
-#define T_LE	33
-    {	"LE",	"cursor left multiple",		NULL },
-#define T_RI	34
-    {	"RI",	"cursor right multiple",	NULL },
-#define T_UP	35
-    {	"UP",	"cursor up multiple",		NULL },
-#define T_str	36
-    {	NULL,	NULL,		NULL }
-};
 
+#define T_am	0
+#define T_pt	1
+#define T_li	2
+#define T_co	3
+#define T_km	4
+#define T_xn	5
+#define T_val	6
 static struct termcapval {
     char   *name;
     char   *long_name;
     int     val;
-}       tval[] = {
-#define T_am	0
-    {	"am",	"Has automatic margins",		0 },
-#define T_pt	1
-    {	"pt",	"Can use physical tabs", 		0 },
-#define T_li	2
-    {	"li",	"Number of lines",	 		0 },
-#define T_co	3
-    {	"co",	"Number of columns",	 		0 },
-#define T_km	4
-    {	"km",	"Has meta key",		 		0 },
-#define T_xn	5
-    {	"xn",	"Newline ignored at right margin",	0 },
-#define T_val	6
-    {	NULL, 	NULL,		 			0 }
-};
+} tval[T_val + 1];
 
+void
+terminit()
+{
+#ifdef NLS_CATALOGS
+    int i;
+
+    for (i = 0; i < T_str + 1; i++)
+	xfree((ptr_t) tstr[i].long_name);
+
+    for (i = 0; i < T_val + 1; i++)
+	xfree((ptr_t) tval[i].long_name);
+#endif
+
+    tstr[T_al].name = "al";
+    tstr[T_al].long_name = CSAVS(4, 1, "add new blank line");
+
+    tstr[T_bl].name = "bl";
+    tstr[T_bl].long_name = CSAVS(4, 2, "audible bell");
+
+    tstr[T_cd].name = "cd";
+    tstr[T_cd].long_name = CSAVS(4, 3, "clear to bottom");
+
+    tstr[T_ce].name = "ce";
+    tstr[T_ce].long_name = CSAVS(4, 4, "clear to end of line");
+
+    tstr[T_ch].name = "ch";
+    tstr[T_ch].long_name = CSAVS(4, 5, "cursor to horiz pos");
+
+    tstr[T_cl].name = "cl";
+    tstr[T_cl].long_name = CSAVS(4, 6, "clear screen");
+
+    tstr[T_dc].name = "dc";
+    tstr[T_dc].long_name = CSAVS(4, 7, "delete a character");
+
+    tstr[T_dl].name = "dl";
+    tstr[T_dl].long_name = CSAVS(4, 8, "delete a line");
+
+    tstr[T_dm].name = "dm";
+    tstr[T_dm].long_name = CSAVS(4, 9, "start delete mode");
+
+    tstr[T_ed].name = "ed";
+    tstr[T_ed].long_name = CSAVS(4, 10, "end delete mode");
+
+    tstr[T_ei].name = "ei";
+    tstr[T_ei].long_name = CSAVS(4, 11, "end insert mode");
+
+    tstr[T_fs].name = "fs";
+    tstr[T_fs].long_name = CSAVS(4, 12, "cursor from status line");
+
+    tstr[T_ho].name = "ho";
+    tstr[T_ho].long_name = CSAVS(4, 13, "home cursor");
+
+    tstr[T_ic].name = "ic";
+    tstr[T_ic].long_name = CSAVS(4, 14, "insert character");
+
+    tstr[T_im].name = "im";
+    tstr[T_im].long_name = CSAVS(4, 15, "start insert mode");
+
+    tstr[T_ip].name = "ip";
+    tstr[T_ip].long_name = CSAVS(4, 16, "insert padding");
+
+    tstr[T_kd].name = "kd";
+    tstr[T_kd].long_name = CSAVS(4, 17, "sends cursor down");
+
+    tstr[T_kl].name = "kl";
+    tstr[T_kl].long_name = CSAVS(4, 18, "sends cursor left");
+
+    tstr[T_kr].name = "kr";
+    tstr[T_kr].long_name = CSAVS(4, 19, "sends cursor right");
+
+    tstr[T_ku].name = "ku";
+    tstr[T_ku].long_name = CSAVS(4, 20, "sends cursor up");
+
+    tstr[T_md].name = "md";
+    tstr[T_md].long_name = CSAVS(4, 21, "begin bold");
+
+    tstr[T_me].name = "me";
+    tstr[T_me].long_name = CSAVS(4, 22, "end attributes");
+
+    tstr[T_nd].name = "nd";
+    tstr[T_nd].long_name = CSAVS(4, 23, "non destructive space");
+
+    tstr[T_se].name = "se";
+    tstr[T_se].long_name = CSAVS(4, 24, "end standout");
+
+    tstr[T_so].name = "so";
+    tstr[T_so].long_name = CSAVS(4, 25, "begin standout");
+
+    tstr[T_ts].name = "ts";
+    tstr[T_ts].long_name = CSAVS(4, 26, "cursor to status line");
+
+    tstr[T_up].name = "up";
+    tstr[T_up].long_name = CSAVS(4, 27, "cursor up one");
+
+    tstr[T_us].name = "us";
+    tstr[T_us].long_name = CSAVS(4, 28, "begin underline");
+
+    tstr[T_ue].name = "ue";
+    tstr[T_ue].long_name = CSAVS(4, 29, "end underline");
+
+    tstr[T_vb].name = "vb";
+    tstr[T_vb].long_name = CSAVS(4, 30, "visible bell");
+
+    tstr[T_DC].name = "DC";
+    tstr[T_DC].long_name = CSAVS(4, 31, "delete multiple chars");
+
+    tstr[T_DO].name = "DO";
+    tstr[T_DO].long_name = CSAVS(4, 32, "cursor down multiple");
+
+    tstr[T_IC].name = "IC";
+    tstr[T_IC].long_name = CSAVS(4, 33, "insert multiple chars");
+
+    tstr[T_LE].name = "LE";
+    tstr[T_LE].long_name = CSAVS(4, 34, "cursor left multiple");
+
+    tstr[T_RI].name = "RI";
+    tstr[T_RI].long_name = CSAVS(4, 35, "cursor right multiple");
+
+    tstr[T_UP].name = "UP";
+    tstr[T_UP].long_name = CSAVS(4, 36, "cursor up multiple");
+
+    tstr[T_str].name = NULL;
+    tstr[T_str].long_name = NULL;
+
+
+    tval[T_am].name = "am";
+    tval[T_am].long_name = CSAVS(4, 37, "Has automatic margins");
+
+    tval[T_pt].name = "pt";
+    tval[T_pt].long_name = CSAVS(4, 38, "Can use physical tabs");
+
+    tval[T_li].name = "li";
+    tval[T_li].long_name = CSAVS(4, 39, "Number of lines");
+
+    tval[T_co].name = "co";
+    tval[T_co].long_name = CSAVS(4, 40, "Number of columns");
+
+    tval[T_km].name = "km";
+    tval[T_km].long_name = CSAVS(4, 41, "Has meta key");
+
+    tval[T_xn].name = "xn";
+    tval[T_xn].long_name = CSAVS(4, 42, "Newline ignored at right margin");
+
+    tval[T_val].name = NULL;
+    tval[T_val].long_name = NULL;
+}
 
 /*
  * A very useful table from justin@crim.ca (Justin Bur) :-)
@@ -315,7 +427,7 @@ TCalloc(t, cap)
 		continue;
 	    termbuf[tlen++] = '\0';
 	}
-    (void) memmove((ptr_t) termcap_alloc, (ptr_t) termbuf, TC_BUFSIZE);
+    (void) memmove((ptr_t) termcap_alloc, (ptr_t) termbuf, (size_t) TC_BUFSIZE);
     tloc = tlen;
     if (tloc + 3 >= TC_BUFSIZE) {
 	stderror(ERR_NAME | ERR_TCNOSTR);
@@ -334,19 +446,28 @@ TellTC(what)
 {
     struct termcapstr *t;
 
-    xprintf("\n\tTcsh thinks your terminal has the\n");
-    xprintf("\tfollowing characteristics:\n\n");
-    xprintf("\tIt has %d columns and %d lines\n",
+    USE(what);
+    xprintf(CGETS(7, 1, "\n\tTcsh thinks your terminal has the\n"));
+    xprintf(CGETS(7, 2, "\tfollowing characteristics:\n\n"));
+    xprintf(CGETS(7, 3, "\tIt has %d columns and %d lines\n"),
 	    Val(T_co), Val(T_li));
-    xprintf("\tIt has %s meta key\n", T_HasMeta ? "a" : "no");
-    xprintf("\tIt can%suse tabs\n", T_Tabs ? " " : "not ");
-    xprintf("\tIt %s automatic margins\n", (T_Margin&MARGIN_AUTO)?"has":"does not have");
-    if (T_Margin&MARGIN_AUTO)
-	xprintf("\tIt %s magic margins\n", (T_Margin&MARGIN_MAGIC)?"has":"does not have");
+    xprintf(CGETS(7, 4, "\tIt has %s meta key\n"), T_HasMeta ?
+	    CGETS(7, 5, "a") : CGETS(7, 6, "no"));
+    xprintf(CGETS(7, 7, "\tIt can%s use tabs\n"), T_Tabs ?
+	    "" : CGETS(7, 8, " not"));
+    xprintf(CGETS(7, 9, "\tIt %s automatic margins\n"),
+		    (T_Margin&MARGIN_AUTO)?
+		    CGETS(7, 10, "has"):
+		    CGETS(7, 11, "does not have"));
+    if (T_Margin & MARGIN_AUTO)
+	xprintf(CGETS(7, 12, "\tIt %s magic margins\n"),
+			(T_Margin & MARGIN_MAGIC) ?
+			CGETS(7, 10, "has"):
+			CGETS(7, 11, "does not have"));
 
     for (t = tstr; t->name != NULL; t++)
-	xprintf("\t%25s (%s) == %s\n", t->long_name, t->name,
-		t->str && *t->str ? t->str : "(empty)");
+	xprintf("\t%36s (%s) == %s\n", t->long_name, t->name,
+		t->str && *t->str ? t->str : CGETS(7, 13, "(empty)"));
     xputchar('\n');
 }
 
@@ -437,18 +558,18 @@ SetTC(what, how)
 		stderror(ERR_SETTCUS, tv->name);
 		return;
 	    }
-	    T_Tabs = Val(T_pt);
-	    T_HasMeta = Val(T_km);
-	    T_Margin = Val(T_am) ? MARGIN_AUTO : 0;
-	    T_Margin |= Val(T_xn) ? MARGIN_MAGIC : 0;
+	    T_Tabs = (Char) Val(T_pt);
+	    T_HasMeta = (Char) Val(T_km);
+	    T_Margin = (Char) Val(T_am) ? MARGIN_AUTO : 0;
+	    T_Margin |= (Char) Val(T_xn) ? MARGIN_MAGIC : 0;
 	    if (tv == &tval[T_am] || tv == &tval[T_xn]) 
 		ChangeSize(Val(T_li), Val(T_co));
 	    return;
 	}
 	else {
 	    tv->val = atoi(how);
-	    T_Cols = Val(T_co);
-	    T_Lines = Val(T_li);
+	    T_Cols = (Char) Val(T_co);
+	    T_Lines = (Char) Val(T_li);
 	    if (tv == &tval[T_co] || tv == &tval[T_li])
 		ChangeSize(Val(T_li), Val(T_co));
 	    return;
@@ -508,22 +629,26 @@ EchoTC(v)
 	return;
     (void) strcpy(cv, short2str(*v));
     if (strcmp(cv, "tabs") == 0) {
-	xprintf(fmts, T_Tabs ? "yes" : "no");
+	xprintf(fmts, T_Tabs ? CGETS(7, 14, "yes") :
+		CGETS(7, 15, "no"));
 	flush();
 	return;
     }
     else if (strcmp(cv, "meta") == 0) {
-	xprintf(fmts, Val(T_km) ? "yes" : "no");
+	xprintf(fmts, Val(T_km) ? CGETS(7, 14, "yes") :
+		CGETS(7, 15, "no"));
 	flush();
 	return;
     }
     else if (strcmp(cv, "xn") == 0) {
-	xprintf(fmts, T_Margin & MARGIN_MAGIC ? "yes" : "no");
+	xprintf(fmts, T_Margin & MARGIN_MAGIC ? CGETS(7, 14, "yes") :
+		CGETS(7, 15,  "no"));
 	flush();
 	return;
     }
     else if (strcmp(cv, "am") == 0) {
-	xprintf(fmts, T_Margin & MARGIN_AUTO ? "yes" : "no");
+	xprintf(fmts, T_Margin & MARGIN_AUTO ? CGETS(7, 14, "yes") :
+		CGETS(7, 15, "no"));
 	flush();
 	return;
     }
@@ -563,8 +688,8 @@ EchoTC(v)
     if (t->name == NULL)
 	scap = tgetstr(cv, &area);
     if (!scap || scap[0] == '\0') {
-	if (tgetflag(cv, &area)) {
-	    xprintf("yes\n");
+	if (tgetflag(cv)) {
+	    xprintf(CGETS(7, 14, "yes\n"));
 	    return;
 	}
 	if (silent)
@@ -613,7 +738,7 @@ EchoTC(v)
 	    else
 		stderror(ERR_NAME | ERR_TCARGS, cv, arg_need);
 	}
-	(void) tputs(scap, 1, putraw);
+	(void) tputs(scap, 1, PUTRAW);
 	break;
     case 1:
 	v++;
@@ -628,7 +753,7 @@ EchoTC(v)
 	    else
 		stderror(ERR_NAME | ERR_TCARGS, cv, arg_need);
 	}
-	(void) tputs(tgoto(scap, arg_cols, arg_rows), 1, putraw);
+	(void) tputs(tgoto(scap, arg_cols, arg_rows), 1, PUTRAW);
 	break;
     default:
 	/* This is wrong, but I will ignore it... */
@@ -659,7 +784,7 @@ EchoTC(v)
 	    else
 		stderror(ERR_NAME | ERR_TCARGS, cv, arg_need);
 	}
-	(void) tputs(tgoto(scap, arg_cols, arg_rows), arg_rows, putraw);
+	(void) tputs(tgoto(scap, arg_cols, arg_rows), arg_rows, PUTRAW);
 	break;
     }
     flush();
@@ -717,36 +842,55 @@ DefaultArrowKeys()
     static Char stOC[] = {033, 'O', 'C', '\0'};
     static Char stOD[] = {033, 'O', 'D', '\0'};
 
-    AddXkey(strA, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
-    AddXkey(strB, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
-    AddXkey(strC, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
-    AddXkey(strD, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
-    AddXkey(stOA, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
-    AddXkey(stOB, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
-    AddXkey(stOC, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
-    AddXkey(stOD, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
+    CStr cs;
+#ifdef _OSD_POSIX
+    if (strA[0] == 033)
+    {
+	strA[0] = CTL_ESC('\033');
+	strB[0] = CTL_ESC('\033');
+	strC[0] = CTL_ESC('\033');
+	strD[0] = CTL_ESC('\033');
+	stOA[0] = CTL_ESC('\033');
+	stOB[0] = CTL_ESC('\033');
+	stOC[0] = CTL_ESC('\033');
+	stOD[0] = CTL_ESC('\033');
+    }
+#endif
+
+    cs.len = 3;
+
+    cs.buf = strA; AddXkey(&cs, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
+    cs.buf = strB; AddXkey(&cs, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
+    cs.buf = strC; AddXkey(&cs, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
+    cs.buf = strD; AddXkey(&cs, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
+    cs.buf = stOA; AddXkey(&cs, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
+    cs.buf = stOB; AddXkey(&cs, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
+    cs.buf = stOC; AddXkey(&cs, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
+    cs.buf = stOD; AddXkey(&cs, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
+ 
     if (VImode) {
-	AddXkey(&strA[1], &arrow[A_K_UP].fun, arrow[A_K_UP].type);
-	AddXkey(&strB[1], &arrow[A_K_DN].fun, arrow[A_K_DN].type);
-	AddXkey(&strC[1], &arrow[A_K_RT].fun, arrow[A_K_RT].type);
-	AddXkey(&strD[1], &arrow[A_K_LT].fun, arrow[A_K_LT].type);
-	AddXkey(&stOA[1], &arrow[A_K_UP].fun, arrow[A_K_UP].type);
-	AddXkey(&stOB[1], &arrow[A_K_DN].fun, arrow[A_K_DN].type);
-	AddXkey(&stOC[1], &arrow[A_K_RT].fun, arrow[A_K_RT].type);
-	AddXkey(&stOD[1], &arrow[A_K_LT].fun, arrow[A_K_LT].type);
+	cs.len = 2;
+	cs.buf = &strA[1]; AddXkey(&cs, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
+	cs.buf = &strB[1]; AddXkey(&cs, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
+	cs.buf = &strC[1]; AddXkey(&cs, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
+	cs.buf = &strD[1]; AddXkey(&cs, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
+	cs.buf = &stOA[1]; AddXkey(&cs, &arrow[A_K_UP].fun, arrow[A_K_UP].type);
+	cs.buf = &stOB[1]; AddXkey(&cs, &arrow[A_K_DN].fun, arrow[A_K_DN].type);
+	cs.buf = &stOC[1]; AddXkey(&cs, &arrow[A_K_RT].fun, arrow[A_K_RT].type);
+	cs.buf = &stOD[1]; AddXkey(&cs, &arrow[A_K_LT].fun, arrow[A_K_LT].type);
     }
 }
 
 
 int
 SetArrowKeys(name, fun, type)
-    Char *name;
+    CStr *name;
     XmapVal *fun;
     int type;
 {
     int i;
     for (i = 0; i < 4; i++)
-	if (Strcmp(name, arrow[i].name) == 0) {
+	if (Strcmp(name->buf, arrow[i].name) == 0) {
 	    arrow[i].fun  = *fun;
 	    arrow[i].type = type;
 	    return 0;
@@ -754,14 +898,24 @@ SetArrowKeys(name, fun, type)
     return -1;
 }
 
-
 int
-ClearArrowKeys(name)
+IsArrowKey(name)
     Char *name;
 {
     int i;
     for (i = 0; i < 4; i++)
-	if (Strcmp(name, arrow[i].name) == 0) {
+	if (Strcmp(name, arrow[i].name) == 0)
+	    return 1;
+    return 0;
+}
+
+int
+ClearArrowKeys(name)
+    CStr *name;
+{
+    int i;
+    for (i = 0; i < 4; i++)
+	if (Strcmp(name->buf, arrow[i].name) == 0) {
 	    arrow[i].type = XK_NOD;
 	    return 0;
 	}
@@ -770,14 +924,18 @@ ClearArrowKeys(name)
 
 void
 PrintArrowKeys(name)
-    Char *name;
+    CStr *name;
 {
     int i;
 
     for (i = 0; i < 4; i++)
-	if (name == STRNULL || Strcmp(name, arrow[i].name) == 0)
-	    if (arrow[i].type != XK_NOD)
-		printOne(arrow[i].name, &arrow[i].fun, arrow[i].type);
+	if (name->len == 0 || Strcmp(name->buf, arrow[i].name) == 0)
+	    if (arrow[i].type != XK_NOD) {
+		CStr cs;
+		cs.buf = arrow[i].name;
+		cs.len = Strlen(cs.buf);
+		(void) printOne(&cs, &arrow[i].fun, arrow[i].type);
+	    }
 }
 
 
@@ -787,6 +945,7 @@ BindArrowKeys()
     KEYCMD *map, *dmap;
     int     i, j;
     char   *p;
+    CStr    cs;
 
     if (!GotTermCaps)
 	return;
@@ -799,6 +958,8 @@ BindArrowKeys()
 	p = tstr[arrow[i].key].str;
 	if (p && *p) {
 	    j = (unsigned char) *p;
+	    cs.buf = str2short(p);
+	    cs.len = Strlen(cs.buf);
 	    /*
 	     * Assign the arrow keys only if:
 	     *
@@ -807,19 +968,20 @@ BindArrowKeys()
 	     *    has re-assigned the leading character to be F_XKEY
 	     * 2. They are single arrow keys pointing to an unassigned key.
 	     */
-	    if (arrow[i].type == XK_NOD)
-		ClearXkey(map, str2short(p));
+	    if (arrow[i].type == XK_NOD) {
+		ClearXkey(map, &cs);
+	    }
 	    else {
 		if (p[1] && (dmap[j] == map[j] || map[j] == F_XKEY)) {
-		    AddXkey(str2short(p), &arrow[i].fun, arrow[i].type);
+		    AddXkey(&cs, &arrow[i].fun, arrow[i].type);
 		    map[j] = F_XKEY;
 		}
 		else if (map[j] == F_UNASSIGNED) {
-		    ClearXkey(map, str2short(p));
+		    ClearXkey(map, &cs);
 		    if (arrow[i].type == XK_CMD)
 			map[j] = arrow[i].fun.cmd;
 		    else
-			AddXkey(str2short(p), &arrow[i].fun, arrow[i].type);
+			AddXkey(&cs, &arrow[i].fun, arrow[i].type);
 		}
 	    }
 	}
@@ -838,26 +1000,26 @@ SetAttributes(atr)
 	    if (((cur_atr & BOLD) && !(atr & BOLD)) ||
 		((cur_atr & UNDER) && !(atr & UNDER)) ||
 		((cur_atr & STANDOUT) && !(atr & STANDOUT))) {
-		(void) tputs(Str(T_me), 1, putpure);
+		(void) tputs(Str(T_me), 1, PUTPURE);
 		cur_atr = 0;
 	    }
 	}
 	if ((atr & BOLD) != (cur_atr & BOLD)) {
 	    if (atr & BOLD) {
 		if (GoodStr(T_md) && GoodStr(T_me)) {
-		    (void) tputs(Str(T_md), 1, putpure);
+		    (void) tputs(Str(T_md), 1, PUTPURE);
 		    cur_atr |= BOLD;
 		}
 	    }
 	    else {
 		if (GoodStr(T_md) && GoodStr(T_me)) {
-		    (void) tputs(Str(T_me), 1, putpure);
+		    (void) tputs(Str(T_me), 1, PUTPURE);
 		    if ((cur_atr & STANDOUT) && GoodStr(T_se)) {
-			(void) tputs(Str(T_se), 1, putpure);
+			(void) tputs(Str(T_se), 1, PUTPURE);
 			cur_atr &= ~STANDOUT;
 		    }
 		    if ((cur_atr & UNDER) && GoodStr(T_ue)) {
-			(void) tputs(Str(T_ue), 1, putpure);
+			(void) tputs(Str(T_ue), 1, PUTPURE);
 			cur_atr &= ~UNDER;
 		    }
 		    cur_atr &= ~BOLD;
@@ -867,13 +1029,13 @@ SetAttributes(atr)
 	if ((atr & STANDOUT) != (cur_atr & STANDOUT)) {
 	    if (atr & STANDOUT) {
 		if (GoodStr(T_so) && GoodStr(T_se)) {
-		    (void) tputs(Str(T_so), 1, putpure);
+		    (void) tputs(Str(T_so), 1, PUTPURE);
 		    cur_atr |= STANDOUT;
 		}
 	    }
 	    else {
 		if (GoodStr(T_se)) {
-		    (void) tputs(Str(T_se), 1, putpure);
+		    (void) tputs(Str(T_se), 1, PUTPURE);
 		    cur_atr &= ~STANDOUT;
 		}
 	    }
@@ -881,13 +1043,13 @@ SetAttributes(atr)
 	if ((atr & UNDER) != (cur_atr & UNDER)) {
 	    if (atr & UNDER) {
 		if (GoodStr(T_us) && GoodStr(T_ue)) {
-		    (void) tputs(Str(T_us), 1, putpure);
+		    (void) tputs(Str(T_us), 1, PUTPURE);
 		    cur_atr |= UNDER;
 		}
 	    }
 	    else {
 		if (GoodStr(T_ue)) {
-		    (void) tputs(Str(T_ue), 1, putpure);
+		    (void) tputs(Str(T_ue), 1, PUTPURE);
 		    cur_atr &= ~UNDER;
 		}
 	    }
@@ -906,7 +1068,7 @@ void
 MoveToLine(where)		/* move to line <where> (first line == 0) */
     int     where;		/* as efficiently as possible; */
 {
-    int     del, i;
+    int     del;
 
     if (where == CursorV)
 	return;
@@ -919,7 +1081,10 @@ MoveToLine(where)		/* move to line <where> (first line == 0) */
 	return;
     }
 
-    if ((del = where - CursorV) > 0) {
+    del = where - CursorV;
+
+#ifndef WINNT
+    if (del > 0) {
 	while (del > 0) {
 	    if ((T_Margin & MARGIN_AUTO) && Display[CursorV][0] != '\0') {
 		/* move without newline */
@@ -929,7 +1094,7 @@ MoveToLine(where)		/* move to line <where> (first line == 0) */
 	    }
 	    else {
 		if ((del > 1) && GoodStr(T_DO)) {
-		    (void) tputs(tgoto(Str(T_DO), del, del), del, putpure);
+		    (void) tputs(tgoto(Str(T_DO), del, del), del, PUTPURE);
 		    del = 0;
 		}
 		else {
@@ -942,13 +1107,17 @@ MoveToLine(where)		/* move to line <where> (first line == 0) */
     }
     else {			/* del < 0 */
 	if (GoodStr(T_UP) && (-del > 1 || !GoodStr(T_up)))
-	    (void) tputs(tgoto(Str(T_UP), -del, -del), -del, putpure);
+	    (void) tputs(tgoto(Str(T_UP), -del, -del), -del, PUTPURE);
 	else {
+	    int i;
 	    if (GoodStr(T_up))
 		for (i = 0; i < -del; i++)
-		    (void) tputs(Str(T_up), 1, putpure);
+		    (void) tputs(Str(T_up), 1, PUTPURE);
 	}
     }
+#else /* WINNT */
+    NT_MoveToLineOrChar(del, 1);
+#endif /* !WINNT */
     CursorV = where;		/* now where is here */
 }
 
@@ -956,9 +1125,11 @@ void
 MoveToChar(where)		/* move to character position (where) */
     int     where;
 {				/* as efficiently as possible */
-    int     del, i;
+#ifndef WINNT
+    int     del;
 
 mc_again:
+#endif /* WINNT */
     if (where == CursorH)
 	return;
 
@@ -976,15 +1147,17 @@ mc_again:
 	return;
     }
 
+#ifndef WINNT
     del = where - CursorH;
 
     if ((del < -4 || del > 4) && GoodStr(T_ch))
 	/* go there directly */
-	(void) tputs(tgoto(Str(T_ch), where, where), where, putpure);
+	(void) tputs(tgoto(Str(T_ch), where, where), where, PUTPURE);
     else {
+	int i;
 	if (del > 0) {		/* moving forward */
 	    if ((del > 4) && GoodStr(T_RI))
-		(void) tputs(tgoto(Str(T_RI), del, del), del, putpure);
+		(void) tputs(tgoto(Str(T_RI), del, del), del, PUTPURE);
 	    else {
 		if (T_Tabs) {	/* if I can do tabs, use them */
 		    if ((CursorH & 0370) != (where & 0370)) {
@@ -1007,7 +1180,7 @@ mc_again:
 	}
 	else {			/* del < 0 := moving backward */
 	    if ((-del > 4) && GoodStr(T_LE))
-		(void) tputs(tgoto(Str(T_LE), -del, -del), -del, putpure);
+		(void) tputs(tgoto(Str(T_LE), -del, -del), -del, PUTPURE);
 	    else {		/* can't go directly there */
 		/* if the "cost" is greater than the "cost" from col 0 */
 		if (T_Tabs ? (-del > ((where >> 3) + (where & 07)))
@@ -1021,6 +1194,9 @@ mc_again:
 	    }
 	}
     }
+#else /* WINNT */
+    NT_MoveToLineOrChar(where, 0);
+#endif /* !WINNT */
     CursorH = where;		/* now where is here */
 }
 
@@ -1049,8 +1225,18 @@ so_write(cp, n)
 	    xprintf("so: litnum %d, litptr %x\r\n",
 		    *cp & CHAR, litptr[*cp & CHAR]);
 #endif /* DEBUG_LITERAL */
+#if defined(WINNT) && !defined(COLOR_LS_F)
+	    {
+		char buf[256], *ptr = &buf[0];
+		for (d = litptr[*cp++ & CHAR]; *d & LITERAL; d++)
+		    *ptr++ = (*d & CHAR);
+		flush();
+		set_cons_attr(buf);
+	    }
+#else /* !WINNT || COLOR_LS_F */
 	    for (d = litptr[*cp++ & CHAR]; *d & LITERAL; d++)
 		(void) putraw(*d & CHAR);
+#endif /* WINNT && !COLOR_LS_F */
 	    (void) putraw(*d);
 
 	}
@@ -1069,7 +1255,7 @@ so_write(cp, n)
 		if ((c = Display[CursorV][CursorH]) != '\0')
 		    so_write(&c, 1);
 		else
-		    putraw(' ');
+		    (void) putraw(' ');
 		CursorH = 1;
 	    }
 	}
@@ -1088,7 +1274,7 @@ DeleteChars(num)		/* deletes <num> characters */
 
     if (!T_CanDel) {
 #ifdef DEBUG_EDIT
-	xprintf("   ERROR: cannot delete   \n");
+	xprintf(CGETS(7, 16, "ERROR: cannot delete\r\n"));
 #endif /* DEBUG_EDIT */
 	flush();
 	return;
@@ -1096,7 +1282,7 @@ DeleteChars(num)		/* deletes <num> characters */
 
     if (num > TermH) {
 #ifdef DEBUG_SCREEN
-	xprintf("DeleteChars: num is riduculous: %d\r\n", num);
+	xprintf(CGETS(7, 17, "DeleteChars: num is riduculous: %d\r\n"), num);
 	flush();
 #endif /* DEBUG_SCREEN */
 	return;
@@ -1104,19 +1290,19 @@ DeleteChars(num)		/* deletes <num> characters */
 
     if (GoodStr(T_DC))		/* if I have multiple delete */
 	if ((num > 1) || !GoodStr(T_dc)) {	/* if dc would be more expen. */
-	    (void) tputs(tgoto(Str(T_DC), num, num), num, putpure);
+	    (void) tputs(tgoto(Str(T_DC), num, num), num, PUTPURE);
 	    return;
 	}
 
     if (GoodStr(T_dm))		/* if I have delete mode */
-	(void) tputs(Str(T_dm), 1, putpure);
+	(void) tputs(Str(T_dm), 1, PUTPURE);
 
     if (GoodStr(T_dc))		/* else do one at a time */
 	while (num--)
-	    (void) tputs(Str(T_dc), 1, putpure);
+	    (void) tputs(Str(T_dc), 1, PUTPURE);
 
     if (GoodStr(T_ed))		/* if I have delete mode */
-	(void) tputs(Str(T_ed), 1, putpure);
+	(void) tputs(Str(T_ed), 1, PUTPURE);
 }
 
 void
@@ -1128,7 +1314,7 @@ Insert_write(cp, num)		/* Puts terminal in insert character mode, */
 	return;
     if (!T_CanIns) {
 #ifdef DEBUG_EDIT
-	xprintf("   ERROR: cannot insert   \n");
+	xprintf(CGETS(7, 18, "ERROR: cannot insert\r\n"));
 #endif /* DEBUG_EDIT */
 	flush();
 	return;
@@ -1136,7 +1322,7 @@ Insert_write(cp, num)		/* Puts terminal in insert character mode, */
 
     if (num > TermH) {
 #ifdef DEBUG_SCREEN
-	xprintf("StartInsert: num is riduculous: %d\r\n", num);
+	xprintf(CGETS(7, 19, "StartInsert: num is riduculous: %d\r\n"), num);
 	flush();
 #endif /* DEBUG_SCREEN */
 	return;
@@ -1144,13 +1330,13 @@ Insert_write(cp, num)		/* Puts terminal in insert character mode, */
 
     if (GoodStr(T_IC))		/* if I have multiple insert */
 	if ((num > 1) || !GoodStr(T_ic)) {	/* if ic would be more expen. */
-	    (void) tputs(tgoto(Str(T_IC), num, num), num, putpure);
+	    (void) tputs(tgoto(Str(T_IC), num, num), num, PUTPURE);
 	    so_write(cp, num);	/* this updates CursorH/V */
 	    return;
 	}
 
     if (GoodStr(T_im) && GoodStr(T_ei)) { /* if I have insert mode */
-	(void) tputs(Str(T_im), 1, putpure);
+	(void) tputs(Str(T_im), 1, PUTPURE);
 
 	CursorH += num;
 	do 
@@ -1158,22 +1344,22 @@ Insert_write(cp, num)		/* Puts terminal in insert character mode, */
 	while (--num);
 
 	if (GoodStr(T_ip))	/* have to make num chars insert */
-	    (void) tputs(Str(T_ip), 1, putpure);
+	    (void) tputs(Str(T_ip), 1, PUTPURE);
 
-	(void) tputs(Str(T_ei), 1, putpure);
+	(void) tputs(Str(T_ei), 1, PUTPURE);
 	return;
     }
 
     do {
 	if (GoodStr(T_ic))	/* have to make num chars insert */
-	    (void) tputs(Str(T_ic), 1, putpure);	/* insert a char */
+	    (void) tputs(Str(T_ic), 1, PUTPURE);	/* insert a char */
 
 	(void) putraw(*cp++);
 
 	CursorH++;
 
 	if (GoodStr(T_ip))	/* have to make num chars insert */
-	    (void) tputs(Str(T_ip), 1, putpure);/* pad the inserted char */
+	    (void) tputs(Str(T_ip), 1, PUTPURE);/* pad the inserted char */
 
     } while (--num);
 
@@ -1189,7 +1375,7 @@ ClearEOL(num)			/* clear to end of line.  There are num */
 	return;
 
     if (T_CanCEOL && GoodStr(T_ce))
-	(void) tputs(Str(T_ce), 1, putpure);
+	(void) tputs(Str(T_ce), 1, PUTPURE);
     else {
 	for (i = 0; i < num; i++)
 	    (void) putraw(' ');
@@ -1202,11 +1388,11 @@ ClearScreen()
 {				/* clear the whole screen and home */
     if (GoodStr(T_cl))
 	/* send the clear screen code */
-	(void) tputs(Str(T_cl), Val(T_li), putpure);
+	(void) tputs(Str(T_cl), Val(T_li), PUTPURE);
     else if (GoodStr(T_ho) && GoodStr(T_cd)) {
-	(void) tputs(Str(T_ho), Val(T_li), putpure);	/* home */
+	(void) tputs(Str(T_ho), Val(T_li), PUTPURE);	/* home */
 	/* clear to bottom of screen */
-	(void) tputs(Str(T_cd), Val(T_li), putpure);
+	(void) tputs(Str(T_cd), Val(T_li), PUTPURE);
     }
     else {
 	(void) putraw('\r');
@@ -1215,28 +1401,32 @@ ClearScreen()
 }
 
 void
-Beep()
+SoundBeep()
 {				/* produce a sound */
     beep_cmd ();
     if (adrof(STRnobeep))
 	return;
 
     if (GoodStr(T_vb) && adrof(STRvisiblebell))
-	(void) tputs(Str(T_vb), 1, putpure);	/* visible bell */
+	(void) tputs(Str(T_vb), 1, PUTPURE);	/* visible bell */
     else if (GoodStr(T_bl))
 	/* what termcap says we should use */
-	(void) tputs(Str(T_bl), 1, putpure);
+	(void) tputs(Str(T_bl), 1, PUTPURE);
     else
-	(void) putraw('\007');	/* an ASCII bell; ^G */
+#ifndef WINNT
+	(void) putraw(CTL_ESC('\007'));	/* an ASCII bell; ^G */
+#else /* WINNT */
+	MessageBeep(MB_ICONQUESTION);
+#endif /* !WINNT */
 }
 
 void
 ClearToBottom()
 {				/* clear to the bottom of the screen */
     if (GoodStr(T_cd))
-	(void) tputs(Str(T_cd), Val(T_li), putpure);
+	(void) tputs(Str(T_cd), Val(T_li), PUTPURE);
     else if (GoodStr(T_ce))
-	(void) tputs(Str(T_ce), Val(T_li), putpure);
+	(void) tputs(Str(T_ce), Val(T_li), PUTPURE);
 }
 
 void
@@ -1280,7 +1470,7 @@ GetTermCaps()
 	ptr = "dumb";
 #endif /* apollo */
 
-    if (!ptr || !ptr[0])
+    if (!ptr || !ptr[0] || !strcmp(ptr, "wm") || !strcmp(ptr,"dmx"))
 	ptr = "dumb";
 
     setzero(bp, TC_BUFSIZE);
@@ -1289,14 +1479,15 @@ GetTermCaps()
     if (i <= 0) {
 	if (i == -1) {
 #if (SYSVREL == 0) || defined(IRIS3D)
-	    xprintf("tcsh: Cannot open /etc/termcap.\n");
+	    xprintf(CGETS(7, 20, "%s: Cannot open /etc/termcap.\n"), progname);
 	}
 	else if (i == 0) {
 #endif /* SYSVREL */
-	    xprintf("tcsh: No entry for terminal type \"%s\"\n",
+	    xprintf(CGETS(7, 21,
+			  "%s: No entry for terminal type \"%s\"\n"), progname,
 		    getenv("TERM"));
 	}
-	xprintf("tcsh: using dumb terminal settings.\n");
+	xprintf(CGETS(7, 22, "%s: using dumb terminal settings.\n"), progname);
 	Val(T_co) = 80;		/* do a dumb terminal */
 	Val(T_pt) = Val(T_km) = Val(T_li) = 0;
 	for (t = tstr; t->name != NULL; t++)
@@ -1319,13 +1510,13 @@ GetTermCaps()
     if (Val(T_li) < 1)
 	Val(T_li) = 24;
 
-    T_Cols = Val(T_co);
-    T_Lines = Val(T_li);
+    T_Cols = (Char) Val(T_co);
+    T_Lines = (Char) Val(T_li);
     if (T_Tabs)
-	T_Tabs = Val(T_pt);
-    T_HasMeta = Val(T_km);
-    T_Margin = Val(T_am) ? MARGIN_AUTO : 0;
-    T_Margin |= Val(T_xn) ? MARGIN_MAGIC : 0;
+	T_Tabs = (Char) Val(T_pt);
+    T_HasMeta = (Char) Val(T_km);
+    T_Margin = (Char) Val(T_am) ? MARGIN_AUTO : 0;
+    T_Margin |= (Char) Val(T_xn) ? MARGIN_MAGIC : 0;
     T_CanCEOL = GoodStr(T_ce);
     T_CanDel = GoodStr(T_dc) || GoodStr(T_DC);
     T_CanIns = GoodStr(T_im) || GoodStr(T_ic) || GoodStr(T_IC);
@@ -1340,15 +1531,16 @@ GetTermCaps()
 
 #ifdef DEBUG_SCREEN
     if (!T_CanUP) {
-	xprintf("tcsh: WARNING: Your terminal cannot move up.\n");
-	xprintf("Editing may be odd for long lines.\n");
+	xprintf(CGETS(7, 23, "%s: WARNING: Your terminal cannot move up.\n",
+		progname));
+	xprintf(CGETS(7, 24, "Editing may be odd for long lines.\n"));
     }
     if (!T_CanCEOL)
-	xprintf("no clear EOL capability.\n");
+	xprintf(CGETS(7, 25, "no clear EOL capability.\n"));
     if (!T_CanDel)
-	xprintf("no delete char capability.\n");
+	xprintf(CGETS(7, 26, "no delete char capability.\n"));
     if (!T_CanIns)
-	xprintf("no insert char capability.\n");
+	xprintf(CGETS(7, 27, "no insert char capability.\n"));
 #endif /* DEBUG_SCREEN */
 
 
@@ -1427,6 +1619,9 @@ ChangeSize(lins, cols)
     Val(T_co) = (cols < 2) ? 80 : cols;
     Val(T_li) = (lins < 1) ? 24 : lins;
 
+#ifdef WINNT
+      nt_set_size(lins,cols);
+#endif /* WINNT */
 #ifdef KNOWsize
     /*
      * We want to affect the environment only when we have a valid
@@ -1453,7 +1648,8 @@ ChangeSize(lins, cols)
 	}
 
 	if ((tptr = getenv("TERMCAP")) != NULL) {
-	    Char    termcap[1024], backup[1024], *ptr;
+	    /* Leave 64 characters slop in case we enlarge the termcap string */
+	    Char    termcap[1024+64], backup[1024+64], *ptr;
 	    int     i;
 
 	    ptr = str2short(tptr);
@@ -1470,7 +1666,7 @@ ChangeSize(lins, cols)
 	    }
 	    else {
 		i = ptr - termcap + Strlen(buf);
-		(void) Strncpy(backup, termcap, i);
+		(void) Strncpy(backup, termcap, (size_t) i);
 		backup[i] = '\0';
 		Itoa(Val(T_co), buf);
 		(void) Strcat(backup + i, buf);
@@ -1488,13 +1684,18 @@ ChangeSize(lins, cols)
 	    }
 	    else {
 		i = ptr - backup + Strlen(buf);
-		(void) Strncpy(termcap, backup, i);
+		(void) Strncpy(termcap, backup, (size_t) i);
 		termcap[i] = '\0';
 		Itoa(Val(T_li), buf);
 		(void) Strcat(termcap, buf);
 		ptr = Strchr(ptr, ':');
 		(void) Strcat(termcap, ptr);
 	    }
+	    /*
+	     * Chop the termcap string at 1024 characters to avoid core-dumps
+	     * in the termcap routines
+	     */
+	    termcap[1023] = '\0';
 	    tsetenv(STRTERMCAP, termcap);
 	}
     }

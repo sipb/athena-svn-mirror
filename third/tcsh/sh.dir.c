@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.dir.c,v 1.1.1.1 1996-10-02 06:09:20 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.dir.c,v 1.1.1.2 1998-10-03 21:09:57 danw Exp $ */
 /*
  * sh.dir.c: Directory manipulation functions
  */
@@ -36,12 +36,13 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.dir.c,v 1.1.1.1 1996-10-02 06:09:20 ghudson Exp $")
+RCSID("$Id: sh.dir.c,v 1.1.1.2 1998-10-03 21:09:57 danw Exp $")
 
 /*
  * C Shell - directory management
  */
 
+static	void			 dstart		__P((const char *));
 static	struct directory	*dfind		__P((Char *));
 static	Char 			*dfollow	__P((Char *));
 static	void 	 	 	 printdirs	__P((int));
@@ -52,11 +53,17 @@ static  void 			 dextract	__P((struct directory *));
 static  int 			 skipargs	__P((Char ***, char *, char *));
 static	void			 dgetstack	__P((void));
 
-static struct directory dhead;		/* "head" of loop */
+static struct directory dhead INIT_ZERO_STRUCT;		/* "head" of loop */
 static int    printd;			/* force name to be printed */
-static Char   olddir[MAXPATHLEN+1];	/* old directory */
 
 int     bequiet = 0;		/* do not print dir stack -strike */
+
+static void
+dstart(from)
+    const char *from;
+{
+    xprintf(CGETS(12, 1, "%s: Trying to start from \"%s\"\n"), progname, from);
+}
 
 /*
  * dinit - initialize current working directory
@@ -69,15 +76,14 @@ dinit(hp)
     register Char *cp;
     register struct directory *dp;
     char    path[MAXPATHLEN];
-    static char *emsg = "tcsh: Trying to start from \"%s\"\n";
 
     /* Don't believe the login shell home, because it may be a symlink */
-    tcp = (char *) getwd(path);
+    tcp = (char *) getcwd(path, sizeof(path));
     if (tcp == NULL || *tcp == '\0') {
-	xprintf("tcsh: %s\n", path);
+	xprintf("%s: %s\n", progname, strerror(errno));
 	if (hp && *hp) {
 	    tcp = short2str(hp);
-	    xprintf(emsg, tcp);
+	    dstart(tcp);
 	    if (chdir(tcp) == -1)
 		cp = NULL;
 	    else
@@ -86,7 +92,7 @@ dinit(hp)
 	else
 	    cp = NULL;
 	if (cp == NULL) {
-	    xprintf(emsg, "/");
+	    dstart("/");
 	    if (chdir("/") == -1)
 		/* I am not even try to print an error message! */
 		xexit(1);
@@ -131,6 +137,7 @@ dinit(hp)
     dp->di_next = dp->di_prev = &dhead;
     printd = 0;
     dnewcwd(dp, 0);
+    set(STRdirstack, Strsave(dp->di_name), VAR_READWRITE|VAR_NOGLOB);
 }
 
 static void
@@ -141,22 +148,20 @@ Char *dp;
      * Don't call set() directly cause if the directory contains ` or
      * other junk characters glob will fail. 
      */
-    register Char **vec = (Char **) xmalloc((size_t) (2 * sizeof(Char **)));
+    set(STRowd, Strsave(varval(STRcwd)), VAR_READWRITE|VAR_NOGLOB);
+    set(STRcwd, Strsave(dp), VAR_READWRITE|VAR_NOGLOB);
 
-    vec[0] = Strsave(dp);
-    vec[1] = 0;
-    (void) Strcpy(olddir, value(STRcwd));
-    setq(STRcwd, vec, &shvhed);
     tsetenv(STRPWD, dp);
 }
 
-#define DIR_LONG  	0x01
-#define DIR_VERT  	0x02
-#define DIR_LINE  	0x04
-#define DIR_SAVE 	0x08
-#define DIR_LOAD	0x10
-#define DIR_CLEAR	0x20
-#define DIR_OLD	  	0x40
+#define DIR_PRINT	0x01	/* -p */
+#define DIR_LONG  	0x02	/* -l */
+#define DIR_VERT  	0x04	/* -v */
+#define DIR_LINE  	0x08	/* -n */
+#define DIR_SAVE 	0x10	/* -S */
+#define DIR_LOAD	0x20	/* -L */
+#define DIR_CLEAR	0x40	/* -c */
+#define DIR_OLD	  	0x80	/* - */
 
 static int
 skipargs(v, dstr, str)
@@ -166,22 +171,29 @@ skipargs(v, dstr, str)
 {
     Char  **n = *v, *s;
 
-    int dflag = 0;
-    for (n++; *n != NULL && (*n)[0] == '-'; n++) 
-	if (*(s = &((*n)[1])) == '\0')
+    int dflag = 0, loop = 1;
+    for (n++; loop && *n != NULL && (*n)[0] == '-'; n++) 
+	if (*(s = &((*n)[1])) == '\0')	/* test for bare "-" argument */
 	    dflag |= DIR_OLD;
 	else {
 	    char *p;
-	    if ((p = strchr(dstr, *s)) != NULL)
-		dflag |= (1 << (p - dstr));
-	    else {
-		stderror(ERR_DIRUS, short2str(**v), dstr, str);
-		break;
+	    while (loop && *s != '\0')	/* examine flags */
+	    {
+		if ((p = strchr(dstr, *s++)) != NULL)
+		    dflag |= (1 << (p - dstr));
+	        else {
+		    stderror(ERR_DIRUS, short2str(**v), dstr, str);
+		    loop = 0;	/* break from both loops */
+		    break;
+	        }
 	    }
 	}
     if (*n && (dflag & DIR_OLD))
 	stderror(ERR_DIRUS, short2str(**v), dstr, str);
     *v = n;
+    /* make -l, -v, and -n imply -p */
+    if (dflag & (DIR_LONG|DIR_VERT|DIR_LINE))
+	dflag |= DIR_PRINT;
     return dflag;
 }
 
@@ -194,8 +206,10 @@ dodirs(v, c)
     Char  **v;
     struct command *c;
 {
-    int dflag = skipargs(&v, "lvnSLc", "");
+    static char flags[] = "plvnSLc";
+    int dflag = skipargs(&v, flags, "");
 
+    USE(c);
     if ((dflag & DIR_CLEAR) != 0) {
 	struct directory *dp, *fdp;
 	for (dp = dcwd->di_next; dp != dcwd; ) {
@@ -208,13 +222,16 @@ dodirs(v, c)
 	dp->di_next = dp->di_prev = &dhead;
     }
     if ((dflag & DIR_LOAD) != 0) 
-	loaddirs(*v++);
+	loaddirs(*v);
     else if ((dflag & DIR_SAVE) != 0)
-	recdirs(*v++);
+	recdirs(*v, 1);
+
+    if (*v && (dflag & (DIR_SAVE|DIR_LOAD)))
+	v++;
 
     if (*v != NULL || (dflag & DIR_OLD))
-	stderror(ERR_DIRUS, "dirs", "lvnSLc", "");
-    if ((dflag & (DIR_CLEAR|DIR_LOAD|DIR_SAVE)) == 0)
+	stderror(ERR_DIRUS, "dirs", flags, "");
+    if ((dflag & (DIR_CLEAR|DIR_LOAD|DIR_SAVE)) == 0 || (dflag & DIR_PRINT))
 	printdirs(dflag);
 }
 
@@ -223,12 +240,10 @@ printdirs(dflag)
     int dflag;
 {
     register struct directory *dp;
-    Char   *s, *hp = value(STRhome);
+    Char   *s, *user;
     int     idx, len, cur;
     extern int T_Cols;
 
-    if (*hp == '\0')
-	hp = NULL;
     dp = dcwd;
     idx = 0;
     cur = 0;
@@ -239,33 +254,33 @@ printdirs(dflag)
 	    xprintf("%d\t", idx++);
 	    cur = 0;
 	}
-	len = Strlen(hp);
-	if (!(dflag & DIR_LONG) && hp != NULL && !eq(hp, STRslash) &&
-	    Strncmp(hp, dp->di_name, len) == 0 &&
-	    (dp->di_name[len] == '\0' || dp->di_name[len] == '/')) 
-	    len = Strlen(s = (dp->di_name + len)) + 2;
+	s = dp->di_name;		
+	user = NULL;
+	if (!(dflag & DIR_LONG) && (user = getusername(&s)) != NULL)
+	    len = (int) (Strlen(user) + Strlen(s) + 2);
 	else
-	    len = Strlen(s = dp->di_name) + 1;
+	    len = (int) (Strlen(s) + 1);
 
 	cur += len;
 	if ((dflag & DIR_LINE) && cur >= T_Cols - 1 && len < T_Cols) {
 	    xputchar('\n');
 	    cur = len;
 	}
-	xprintf(s != dp->di_name ? "~%S%c" : "%S%c",
-		s, (dflag & DIR_VERT) ? '\n' : ' ');
+	if (user) 
+	    xprintf("~%S", user);
+	xprintf("%S%c", s, (dflag & DIR_VERT) ? '\n' : ' ');
     } while ((dp = dp->di_prev) != dcwd);
     if (!(dflag & DIR_VERT))
 	xputchar('\n');
 }
 
 void
-dtildepr(home, dir)
-    register Char *home, *dir;
+dtildepr(dir)
+    Char *dir;
 {
-
-    if (!eq(home, STRslash) && prefix(home, dir))
-	xprintf("~%S", dir + Strlen(home));
+    Char* user;
+    if ((user = getusername(&dir)) != NULL)
+	xprintf("~%S%S", user, dir);
     else
 	xprintf("%S", dir);
 }
@@ -324,15 +339,15 @@ dnormalize(cp, exp)
         if (dotdot == 0)
 	    return (Strsave(cp));
 
-	cwd = (Char *) xmalloc((size_t) ((Strlen(dcwd->di_name) + 3) *
-					 sizeof(Char)));
+	cwd = (Char *) xmalloc((size_t) (((int) Strlen(dcwd->di_name) + 3) *
+					   sizeof(Char)));
 	(void) Strcpy(cwd, dcwd->di_name);
 
 	/*
 	 * If the path starts with a slash, we are not relative to
 	 * the current working directory.
 	 */
-	if ( *start == '/' )
+	if (ABSOLUTEP(start))
 	    *cwd = '\0';
 # ifdef apollo
 	slashslash = cwd[0] == '/' && cwd[1] == '/';
@@ -391,13 +406,13 @@ dnormalize(cp, exp)
 # endif /* apollo */
 
 	    if (buf[0]) {
-	        if ((TRM(cwd[(dotdot = Strlen(cwd)) - 1])) != '/')
+	        if ((TRM(cwd[(dotdot = (int) Strlen(cwd)) - 1])) != '/')
 		    cwd[dotdot++] = '/';
 	        cwd[dotdot] = '\0';
 	        dp = Strspl(cwd, TRM(buf[0]) == '/' ? &buf[1] : buf);
 	        xfree((ptr_t) cwd);
 	        cwd = dp;
-	        if ((TRM(cwd[(dotdot = Strlen(cwd)) - 1])) == '/')
+	        if ((TRM(cwd[(dotdot = (int) Strlen(cwd)) - 1])) == '/')
 		    cwd[--dotdot] = '\0';
 	    }
 	    if (!*cp)
@@ -421,13 +436,14 @@ dochngd(v, c)
 {
     register Char *cp;
     register struct directory *dp;
+    int dflag = skipargs(&v, "plvn", "[-|<dir>]");
 
-    int dflag = skipargs(&v, "lvn", "[-|<dir>]");
+    USE(c);
     printd = 0;
-    cp = (dflag & DIR_OLD) ? olddir : *v;
+    cp = (dflag & DIR_OLD) ? varval(STRowd) : *v;
 
     if (cp == NULL) {
-	if ((cp = value(STRhome)) == STRNULL || *cp == 0)
+	if ((cp = varval(STRhome)) == STRNULL || *cp == 0)
 	    stderror(ERR_NAME | ERR_NOHOMEDIR);
 	if (chdir(short2str(cp)) < 0)
 	    stderror(ERR_NAME | ERR_CANTCHANGE);
@@ -470,7 +486,8 @@ dgoto(cp)
 {
     Char   *dp;
 
-    if (*cp != '/') {
+    if (!ABSOLUTEP(cp))
+    {
 	register Char *p, *q;
 	int     cwdlen;
 
@@ -496,7 +513,11 @@ dgoto(cp)
     else
 	dp = cp;
 
+#ifdef WINNT
+    cp = SAVE(getcwd(NULL, 0));
+#else /* !WINNT */
     cp = dcanon(cp, dp);
+#endif /* WINNT */
     return cp;
 }
 
@@ -518,7 +539,7 @@ dfollow(cp)
 	char *dptr, *ptr;
 	if (chdir(dptr = short2str(cp)) < 0) 
 	    stderror(ERR_SYSTEM, dptr, strerror(errno));
-	else if ((ptr = getwd(ebuf)) && *ptr != '\0') {
+	else if ((ptr = getcwd(ebuf, sizeof(ebuf))) && *ptr != '\0') {
 		xfree((ptr_t) cp);
 		cp = Strsave(str2short(ptr));
 		return dgoto(cp);
@@ -528,7 +549,8 @@ dfollow(cp)
     }
 #endif /* apollo */
 	    
-    (void) strcpy(ebuf, short2str(cp));
+    (void) strncpy(ebuf, short2str(cp), MAXPATHLEN);
+    ebuf[MAXPATHLEN-1] = '\0';
     /*
      * if we are ignoring symlinks, try to fix relatives now.
      * if we are expading symlinks, it should be done by now.
@@ -577,7 +599,7 @@ dfollow(cp)
 	    }
 	}
     }
-    dp = value(cp);
+    dp = varval(cp);
     if ((dp[0] == '/' || dp[0] == '.') && chdir(short2str(dp)) >= 0) {
 	xfree((ptr_t) cp);
 	cp = Strsave(dp);
@@ -611,14 +633,15 @@ dopushd(v, c)
 {
     register struct directory *dp;
     register Char *cp;
-
-    int dflag = skipargs(&v, "lvn", " [-|<dir>|+<n>]");
+    int dflag = skipargs(&v, "plvn", " [-|<dir>|+<n>]");
+    
+    USE(c);
     printd = 1;
-    cp = (dflag & DIR_OLD) ? olddir : *v;
+    cp = (dflag & DIR_OLD) ? varval(STRowd) : *v;
 
     if (cp == NULL) {
 	if (adrof(STRpushdtohome)) {
-	    if ((cp = value(STRhome)) == STRNULL || *cp == 0)
+	    if ((cp = varval(STRhome)) == STRNULL || *cp == 0)
 		stderror(ERR_NAME | ERR_NOHOMEDIR);
 	    if (chdir(short2str(cp)) < 0)
 		stderror(ERR_NAME | ERR_CANTCHANGE);
@@ -723,10 +746,11 @@ dopopd(v, c)
 {
     Char *cp;
     register struct directory *dp, *p = NULL;
+    int dflag = skipargs(&v, "plvn", " [-|+<n>]");
 
-    int dflag = skipargs(&v, "lvn", " [-|+<n>]");
+    USE(c);
     printd = 1;
-    cp = (dflag & DIR_OLD) ? olddir : *v;
+    cp = (dflag & DIR_OLD) ? varval(STRowd) : *v;
 
     if (cp == NULL)
 	dp = dcwd;
@@ -749,8 +773,9 @@ dopopd(v, c)
     }
     dp->di_prev->di_next = dp->di_next;
     dp->di_next->di_prev = dp->di_prev;
-    if (dp == dcwd)
+    if (dp == dcwd) {
 	dnewcwd(p, dflag);
+    }
     else {
 	printdirs(dflag);
     }
@@ -798,14 +823,20 @@ dcanon(cp, p)
 #endif /* S_IFLNK */
 
     /*
+     * kim: if the path given is too long abort().
+     */
+    if (Strlen(cp) >= MAXPATHLEN)
+	abort();
+
+    /*
      * christos: if the path given does not start with a slash prepend cwd. If
      * cwd does not start with a slash or the result would be too long abort().
      */
-    if (*cp != '/') {
+    if (!ABSOLUTEP(cp)) {
 	Char    tmpdir[MAXPATHLEN];
 
-	p1 = value(STRcwd);
-	if (p1 == STRNULL || *p1 != '/')
+	p1 = varval(STRcwd);
+	if (p1 == STRNULL || ABSOLUTEP(p1))
 	    abort();
 	if (Strlen(p1) + Strlen(cp) + 1 >= MAXPATHLEN)
 	    abort();
@@ -834,22 +865,24 @@ dcanon(cp, p)
 		continue;
 	p = sp;			/* save start of component */
 	slash = 0;
-	while (*++p)		/* find next slash or end of path */
-	    if (*p == '/') {
-		slash = 1;
-		*p = 0;
-		break;
-	    }
+	if (*p) 
+	    while (*++p)	/* find next slash or end of path */
+		if (*p == '/') {
+		    slash = 1;
+		    *p = 0;
+		    break;
+		}
 
 #ifdef apollo
 	if (&cp[1] == sp && sp[0] == '.' && sp[1] == '.' && sp[2] == '\0')
 	    slashslash = 1;
 #endif /* apollo */
-	if (*sp == '\0')	/* if component is null */
+	if (*sp == '\0') {	/* if component is null */
 	    if (--sp == cp)	/* if path is one char (i.e. /) */ 
 		break;
 	    else
 		*sp = '\0';
+	}
 	else if (sp[0] == '.' && sp[1] == 0) {
 	    if (slash) {
 		for (p1 = sp, p2 = p + 1; (*p1++ = *p2++) != '\0';)
@@ -858,6 +891,8 @@ dcanon(cp, p)
 	    }
 	    else if (--sp != cp)
 		*sp = '\0';
+	    else
+		sp[1] = '\0';
 	}
 	else if (sp[0] == '.' && sp[1] == '.' && sp[2] == 0) {
 	    /*
@@ -868,11 +903,13 @@ dcanon(cp, p)
 	     */
 	    *--sp = 0;		/* form the pathname for readlink */
 #ifdef S_IFLNK			/* if we have symlinks */
-	    if (sp != cp && symlinks != SYM_IGNORE &&
+	    if (sp != cp && /* symlinks != SYM_IGNORE && */
 		(cc = readlink(short2str(cp), tlink,
 			       sizeof tlink)) >= 0) {
-		(void) Strcpy(link, str2short(tlink));
-		link[cc] = '\0';
+		tlink[cc] = '\0';
+		(void) Strncpy(link, str2short(tlink),
+		    sizeof(link) / sizeof(Char));
+		link[sizeof(link) / sizeof(Char) - 1] = '\0';
 
 		if (slash)
 		    *p = '/';
@@ -960,8 +997,10 @@ dcanon(cp, p)
 	    if (sp != cp && symlinks == SYM_CHASE &&
 		(cc = readlink(short2str(cp), tlink,
 			       sizeof tlink)) >= 0) {
-		(void) Strcpy(link, str2short(tlink));
-		link[cc] = '\0';
+		tlink[cc] = '\0';
+		(void) Strncpy(link, str2short(tlink),
+		    sizeof(link) / sizeof(Char));
+		link[sizeof(link) / sizeof(Char) - 1] = '\0';
 
 		/*
 		 * restore the '/'.
@@ -1044,17 +1083,18 @@ dcanon(cp, p)
      * fix home...
      */
 #ifdef S_IFLNK
-    p1 = value(STRhome);
-    cc = Strlen(p1);
+    p1 = varval(STRhome);
+    cc = (int) Strlen(p1);
     /*
      * See if we're not in a subdir of STRhome
      */
-    if (p1 && *p1 == '/' &&
-	(Strncmp(p1, cp, cc) != 0 || (cp[cc] != '/' && cp[cc] != '\0'))) {
+    if (p1 && *p1 == '/' && (Strncmp(p1, cp, (size_t) cc) != 0 ||
+	(cp[cc] != '/' && cp[cc] != '\0'))) {
 	static ino_t home_ino = (ino_t) -1;
-	static dev_t home_dev = -1;
+	static dev_t home_dev = (dev_t) -1;
 	static Char *home_ptr = NULL;
 	struct stat statbuf;
+	int found;
 
 	/*
 	 * Get dev and ino of STRhome
@@ -1068,11 +1108,13 @@ dcanon(cp, p)
 	/*
 	 * Start comparing dev & ino backwards
 	 */
-	p2 = Strcpy(link, cp);
-	for (sp = NULL; *p2 && stat(short2str(p2), &statbuf) != -1;) {
+	p2 = Strncpy(link, cp, sizeof(link) / sizeof(Char));
+	link[sizeof(link) / sizeof(Char) - 1] = '\0';
+	found = 0;
+	while (*p2 && stat(short2str(p2), &statbuf) != -1) {
 	    if (DEV_DEV_COMPARE(statbuf.st_dev, home_dev) &&
 			statbuf.st_ino == home_ino) {
-			sp = (Char *) - 1;
+			found = 1;
 			break;
 	    }
 	    if ((sp = Strrchr(p2, '/')) != NULL)
@@ -1081,7 +1123,7 @@ dcanon(cp, p)
 	/*
 	 * See if we found it
 	 */
-	if (*p2 && sp == (Char *) -1) {
+	if (*p2 && found) {
 	    /*
 	     * Use STRhome to make '~' work
 	     */
@@ -1117,6 +1159,7 @@ dnewcwd(dp, dflag)
     register struct directory *dp;
     int dflag;
 {
+    int print;
 
     if (adrof(STRdunique)) {
 	struct directory *dn;
@@ -1132,8 +1175,14 @@ dnewcwd(dp, dflag)
     dcwd = dp;
     dset(dcwd->di_name);
     dgetstack();
-    if (printd && !(adrof(STRpushdsilent))	/* PWP: pushdsilent */
-	&& !bequiet)		/* be quite while restoring stack -strike */
+    print = printd;		/* if printd is set, print dirstack... */
+    if (adrof(STRpushdsilent))	/* but pushdsilent overrides printd... */
+	print = 0;
+    if (dflag & DIR_PRINT)	/* but DIR_PRINT overrides pushdsilent... */
+	print = 1;
+    if (bequiet)		/* and bequiet overrides everything */
+	print = 0;
+    if (print)
 	printdirs(dflag);
     cwd_cmd();			/* PWP: run the defined cwd command */
 }
@@ -1176,19 +1225,20 @@ dsetstack()
 static void
 dgetstack()
 {
-    if (adrof(STRdirstack)) {
-	int i = 0;
-	Char **dblk, **dbp;
-	struct directory *dn;
+    int i = 0;
+    Char **dblk, **dbp;
+    struct directory *dn;
 
-	for (dn = dhead.di_prev; dn != &dhead; dn = dn->di_prev, i++) 
-	    continue;
-	dbp = dblk = (Char**) xmalloc((i + 1) * sizeof(Char *));
-	for (dn = dhead.di_prev; dn != &dhead; dn = dn->di_prev, dbp++) 
-	     *dbp = Strsave(dn->di_name);
-	*dbp = NULL;
-	setq(STRdirstack, dblk, &shvhed);
-    }
+    if (adrof(STRdirstack) == NULL) 
+    	return;
+
+    for (dn = dhead.di_prev; dn != &dhead; dn = dn->di_prev, i++) 
+	continue;
+    dbp = dblk = (Char**) xmalloc((size_t) (i + 1) * sizeof(Char *));
+    for (dn = dhead.di_prev; dn != &dhead; dn = dn->di_prev, dbp++) 
+	 *dbp = Strsave(dn->di_name);
+    *dbp = NULL;
+    setq(STRdirstack, dblk, &shvhed, VAR_READWRITE);
 }
 
 /*
@@ -1252,7 +1302,7 @@ loaddirs(fname)
     bequiet = 1;
     if (fname) 
 	loaddirs_cmd[1] = fname;
-    else if ((fname = value(STRdirsfile)) != STRNULL)
+    else if ((fname = varval(STRdirsfile)) != STRNULL)
 	loaddirs_cmd[1] = fname;
     else
 	loaddirs_cmd[1] = STRtildotdirs;
@@ -1268,48 +1318,64 @@ loaddirs(fname)
  * -strike
  */
 void
-recdirs(fname)
+recdirs(fname, def)
     Char *fname;
+    int def;
 {
     int     fp, ftmp, oldidfds;
     int     cdflag = 0;
-    extern int fast;
-    Char    buf[BUFSIZE];
+    extern struct directory *dcwd;
+    struct directory *dp;
+    unsigned int    num;
+    Char   *snum;
+    Char    qname[MAXPATHLEN*2];
 
-    if (!fast) {
-	if (!adrof(STRsavedirs))/* does it exist */
-	    return;
-	if (fname == NULL)
-	    if ((fname = value(STRdirsfile)) == STRNULL) {
-		fname = Strcpy(buf, value(STRhome));
-		(void) Strcat(buf, &STRtildotdirs[1]);
-	    }
-		
-	if ((fp = creat(short2str(fname), 0600)) == -1)
-	    return;
-	oldidfds = didfds;
-	didfds = 0;
-	ftmp = SHOUT;
-	SHOUT = fp;
-	{
-	    extern struct directory *dcwd;
-	    struct directory *dp = dcwd->di_next;
+    if (fname == NULL && !def) 
+	return;
 
-	    do {
-		if (dp == &dhead)
-		    continue;
-		if (cdflag == 0)
-		    cdflag++, xprintf("cd %s\n",
-				      short2str(dp->di_name));
-		else
-		    xprintf("pushd %s\n",
-			    short2str(dp->di_name));
-	    } while ((dp = dp->di_next) != dcwd->di_next);
-	}
-	(void) close(fp);
-	SHOUT = ftmp;
-	didfds = oldidfds;
+    if (fname == NULL) {
+	if ((fname = varval(STRdirsfile)) == STRNULL)
+	    fname = Strspl(varval(STRhome), &STRtildotdirs[1]);
+	else
+	    fname = Strsave(fname);
     }
+    else 
+	fname = globone(fname, G_ERROR);
+		
+    if ((fp = creat(short2str(fname), 0600)) == -1) {
+	xfree((ptr_t) fname);
+	return;
+    }
+
+    if ((snum = varval(STRsavedirs)) == STRNULL) 
+	num = (unsigned int) ~0;
+    else
+	num = (unsigned int) atoi(short2str(snum));
+
+    oldidfds = didfds;
+    didfds = 0;
+    ftmp = SHOUT;
+    SHOUT = fp;
+
+    dp = dcwd->di_next;
+    do {
+	if (dp == &dhead)
+	    continue;
+
+	if (cdflag == 0) {
+	    cdflag = 1;
+	    xprintf("cd %S\n", quote_meta(qname, dp->di_name));
+	}
+	else
+	    xprintf("pushd %S\n", quote_meta(qname, dp->di_name));
+
+	if (num-- == 0)
+	    break;
+
+    } while ((dp = dp->di_next) != dcwd->di_next);
+
+    (void) close(fp);
+    SHOUT = ftmp;
+    didfds = oldidfds;
+    xfree((ptr_t) fname);
 }
-
-

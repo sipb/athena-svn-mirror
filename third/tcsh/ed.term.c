@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.term.c,v 1.1.1.1 1996-10-02 06:09:28 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.term.c,v 1.1.1.2 1998-10-03 21:09:48 danw Exp $ */
 /*
  * ed.term.c: Low level terminal interface
  */
@@ -35,8 +35,9 @@
  * SUCH DAMAGE.
  */
 #include "sh.h"
+#ifndef WINNT
 
-RCSID("$Id: ed.term.c,v 1.1.1.1 1996-10-02 06:09:28 ghudson Exp $")
+RCSID("$Id: ed.term.c,v 1.1.1.2 1998-10-03 21:09:48 danw Exp $")
 
 #include "ed.h"
 #include "ed.term.h"
@@ -48,8 +49,8 @@ ttyperm_t ttylist = {
 	{ "iflag:", ICRNL, (INLCR|IGNCR) },
 	{ "oflag:", (OPOST|ONLCR), ONLRET },
 	{ "cflag:", 0, 0 },
-	{ "lflag:", (ISIG|ICANON|ECHO|ECHOE|ECHOCTL|IEXTEN|IDEFAULT),
-		    (NOFLSH|ECHONL|EXTPROC|FLUSHO) },
+	{ "lflag:", (ISIG|ICANON|ECHO|ECHOE|ECHOCTL|IEXTEN),
+		    (NOFLSH|ECHONL|EXTPROC|FLUSHO|IDEFAULT) },
 #else /* GSTTY */
 	{ "nrmal:", (ECHO|CRMOD|ANYP), (CBREAK|RAW|LCASE|VTDELAY|ALLDELAY) },
 	{ "local:", (LCRTBS|LCRTERA|LCRTKIL), (LPRTERA|LFLUSHO) },
@@ -90,7 +91,11 @@ ttyperm_t ttylist = {
 
 static struct tcshmodes {
     char *m_name;
+#ifdef SOLARIS2
+    unsigned long m_value;
+#else /* !SOLARIS2 */
     int   m_value;
+#endif /* SOLARIS2 */
     int   m_type;
 } modelist[] = {
 #if defined(POSIX) || defined(TERMIO)
@@ -530,15 +535,15 @@ static struct tcshmodes {
 
 /* Retry a system call */
 #define RETRY(x) \
-   do \
-	if ((x) == -1) \
+   for (;;) \
+	if ((x) == -1) { \
 	   if (errno != EINTR) \
 	       return -1; \
 	   else \
 	       continue; \
+	} \
 	else \
-	   break; \
-   while (1)
+	   break \
 
 /*ARGSUSED*/
 void
@@ -553,6 +558,7 @@ dosetty(v, t)
     int z = EX_IO;
     char cmdname[BUFSIZE];
 
+    USE(t);
     setname(strcpy(cmdname, short2str(*v++)));
 
     while (v && *v && v[0][0] == '-' && v[0][2] == '\0') 
@@ -575,7 +581,7 @@ dosetty(v, t)
 	    break;
 	default:
 	    stderror(ERR_NAME | ERR_SYSTEM, short2str(v[0]), 
-		     "Unknown switch");
+		     CGETS(8, 1, "Unknown switch"));
 	    break;
 	}
 
@@ -626,7 +632,7 @@ dosetty(v, t)
 	    if (strcmp(m->m_name, d) == 0)
 		break;
 	if (!m->m_name) 
-	    stderror(ERR_NAME | ERR_SYSTEM, d, "Invalid argument");
+	    stderror(ERR_NAME | ERR_SYSTEM, d, CGETS(8, 2, "Invalid argument"));
 
 	switch (x) {
 	case '+':
@@ -1111,3 +1117,11 @@ tty_printchar(s)
     xputchar('\n');
 }
 #endif /* DEBUG_TTY */
+#else /* WINNT */
+int
+tty_cooked_mode(td)
+    void *td;
+{
+    return do_nt_check_cooked_mode();
+}
+#endif /* !WINNT */

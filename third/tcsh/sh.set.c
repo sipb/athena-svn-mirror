@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.set.c,v 1.1.1.1 1996-10-02 06:09:22 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.set.c,v 1.1.1.2 1998-10-03 21:10:08 danw Exp $ */
 /*
  * sh.set.c: Setting and Clearing of variables
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.set.c,v 1.1.1.1 1996-10-02 06:09:22 ghudson Exp $")
+RCSID("$Id: sh.set.c,v 1.1.1.2 1998-10-03 21:10:08 danw Exp $")
 
 #include "ed.h"
 #include "tw.h"
@@ -69,23 +69,35 @@ update_vars(vp)
 	dohash(NULL, NULL);
     }
     else if (eq(vp, STRhistchars)) {
-	register Char *pn = value(vp);
+	register Char *pn = varval(vp);
 
 	HIST = *pn++;
 	HISTSUB = *pn;
+    }
+    else if (eq(vp, STRpromptchars)) {
+	register Char *pn = varval(vp);
+
+	PRCH = *pn++;
+	PRCHROOT = *pn;
     }
     else if (eq(vp, STRhistlit)) {
 	HistLit = 1;
     }
     else if (eq(vp, STRuser)) {
-	tsetenv(STRKUSER, value(vp));
-	tsetenv(STRLOGNAME, value(vp));
+	tsetenv(STRKUSER, varval(vp));
+	tsetenv(STRLOGNAME, varval(vp));
+    }
+    else if (eq(vp, STRgroup)) {
+	tsetenv(STRKGROUP, varval(vp));
     }
     else if (eq(vp, STRwordchars)) {
-	word_chars = value(vp);
+	word_chars = varval(vp);
+    }
+    else if (eq(vp, STRloginsh)) {
+	loginsh = 1;
     }
     else if (eq(vp, STRsymlinks)) {
-	register Char *pn = value(vp);
+	register Char *pn = varval(vp);
 
 	if (eq(pn, STRignore))
 	    symlinks = SYM_IGNORE;
@@ -97,29 +109,33 @@ update_vars(vp)
 	    symlinks = 0;
     }
     else if (eq(vp, STRterm)) {
-#ifdef DOESNT_WORK_RIGHT
-	register Char *cp;
-#endif /* DOESNT_WORK_RIGHT */
-	tsetenv(STRKTERM, value(vp));
+	Char *cp = varval(vp);
+	tsetenv(STRKTERM, cp);
 #ifdef DOESNT_WORK_RIGHT
 	cp = getenv("TERMCAP");
 	if (cp && (*cp != '/'))	/* if TERMCAP and not a path */
 	    Unsetenv(STRTERMCAP);
 #endif /* DOESNT_WORK_RIGHT */
 	GotTermCaps = 0;
+	if (noediting && Strcmp(cp, STRnetwork) != 0 &&
+	    Strcmp(cp, STRunknown) != 0 && Strcmp(cp, STRdumb) != 0) {
+	    editing = 1;
+	    noediting = 0;
+	    set(STRedit, Strsave(STRNULL), VAR_READWRITE);
+	}
 	ed_Init();		/* reset the editor */
     }
     else if (eq(vp, STRhome)) {
 	register Char *cp;
 
-	cp = Strsave(value(vp));	/* get the old value back */
+	cp = Strsave(varval(vp));	/* get the old value back */
 
 	/*
 	 * convert to cononical pathname (possibly resolving symlinks)
 	 */
 	cp = dcanon(cp, cp);
 
-	set(vp, Strsave(cp));	/* have to save the new val */
+	set(vp, Strsave(cp), VAR_READWRITE);	/* have to save the new val */
 
 	/* and now mirror home with HOME */
 	tsetenv(STRKHOME, cp);
@@ -129,10 +145,11 @@ update_vars(vp)
     }
     else if (eq(vp, STRedit)) {
 	editing = 1;
+	noediting = 0;
 	/* PWP: add more stuff in here later */
     }
     else if (eq(vp, STRshlvl)) {
-	tsetenv(STRKSHLVL, value(vp));
+	tsetenv(STRKSHLVL, varval(vp));
     }
     else if (eq(vp, STRbackslash_quote)) {
 	bslash_quote = 1;
@@ -148,6 +165,19 @@ update_vars(vp)
 	resetwatch();
     }
 #endif /* HAVENOUTMP */
+    else if (eq(vp, STRimplicitcd)) {
+	implicit_cd = ((eq(varval(vp), STRverbose)) ? 2 : 1);
+    }
+#ifdef COLOR_LS_F
+    else if (eq(vp, STRcolor)) {
+	set_color_context();
+    }
+#endif /* COLOR_LS_F */
+#if defined(KANJI) && defined(SHORT_STRINGS) && defined(DSPMBYTE)
+    else if(eq(vp, CHECK_MBYTEVAR) || eq(vp, STRnokanji)) {
+	update_dspmbyte_vars();
+    }
+#endif
 }
 
 
@@ -162,11 +192,37 @@ doset(v, c)
     Char  **vecp;
     bool    hadsub;
     int     subscr;
+    int	    flags = VAR_READWRITE;
+    bool    first_match = 0;
+    bool    last_match = 0;
+    bool    changed = 0;
 
+    USE(c);
     v++;
+    do {
+	changed = 0;
+	/*
+	 * Readonly addition From: Tim P. Starrin <noid@cyborg.larc.nasa.gov>
+	 */
+	if (*v && eq(*v, STRmr)) {
+	    flags = VAR_READONLY;
+	    v++;
+	    changed = 1;
+	}
+	if (*v && eq(*v, STRmf) && !last_match) {
+	    first_match = 1;
+	    v++;
+	    changed = 1;
+	}
+	if (*v && eq(*v, STRml) && !first_match) {
+	    last_match = 1;
+	    v++;
+	    changed = 1;
+	}
+    } while(changed);
     p = *v++;
     if (p == 0) {
-	prvars();
+	plist(&shvhed, flags);
 	return;
     }
     do {
@@ -212,14 +268,19 @@ doset(v, c)
 	    p = *e;
 	    *e = 0;
 	    vecp = saveblk(v);
-	    set1(vp, vecp, &shvhed);
+	    if (first_match)
+	       flags |= VAR_FIRST;
+	    else if (last_match)
+	       flags |= VAR_LAST;
+
+	    set1(vp, vecp, &shvhed, flags);
 	    *e = p;
 	    v = e + 1;
 	}
 	else if (hadsub)
 	    asx(vp, subscr, Strsave(p));
 	else
-	    set(vp, Strsave(p));
+	    set(vp, Strsave(p), flags);
 	update_vars(vp);
     } while ((p = *v++) != NULL);
 }
@@ -246,6 +307,8 @@ asx(vp, subscr, p)
 {
     register struct varent *v = getvx(vp, subscr);
 
+    if (v->v_flags & VAR_READONLY)
+	stderror(ERR_READONLY|ERR_NAME, v->v_name);
     xfree((ptr_t) v->vec[subscr - 1]);
     v->vec[subscr - 1] = globone(p, G_APPEND);
 }
@@ -275,6 +338,7 @@ dolet(v, dummy)
     bool    hadsub;
     int     subscr;
 
+    USE(dummy);
     v++;
     p = *v++;
     if (p == 0) {
@@ -333,18 +397,19 @@ dolet(v, dummy)
 		p = xset(p, &v);
 	    }
 	}
-	if (op == '=')
+	if (op == '=') {
 	    if (hadsub)
 		asx(vp, subscr, p);
 	    else
-		set(vp, p);
+		set(vp, p, VAR_READWRITE);
+	}
 	else if (hadsub) {
 	    struct varent *gv = getvx(vp, subscr);
 
 	    asx(vp, subscr, operate(op, gv->vec[subscr - 1], p));
 	}
 	else
-	    set(vp, operate(op, value(vp), p));
+	    set(vp, operate(op, varval(vp), p), VAR_READWRITE);
 	update_vars(vp);
 	xfree((ptr_t) vp);
 	if (c != '=')
@@ -381,7 +446,7 @@ operate(op, vp, p)
     if (op != '=') {
 	if (*vp)
 	    *v++ = vp;
-	opr[0] = op;
+	opr[0] = (Char) op;
 	opr[1] = 0;
 	*v++ = opr;
 	if (op == '<' || op == '>')
@@ -409,7 +474,7 @@ putn(n)
 	*putp++ = '-';
     }
     num = 2;			/* confuse lint */
-    if (sizeof(int) == num && ((unsigned int) n) == 32768) {
+    if (sizeof(int) == num && ((unsigned int) n) == 0x8000) {
 	*putp++ = '3';
 	n = 2768;
 #ifdef pdp11
@@ -418,7 +483,7 @@ putn(n)
     }
     else {
 	num = 4;		/* confuse lint */
-	if (sizeof(int) == num && ((unsigned int) n) == 2147483648) {
+	if (sizeof(int) == num && ((unsigned int) n) == 0x80000000) {
 	    *putp++ = '2';
 	    n = 147483648;
 	}
@@ -500,7 +565,7 @@ adrof1(name, v)
     register Char *name;
     register struct varent *v;
 {
-    register cmp;
+    int cmp;
 
     v = v->v_left;
     while (v && ((cmp = *name - *v->v_name) != 0 || 
@@ -516,64 +581,122 @@ adrof1(name, v)
  * The caller is responsible for putting value in a safe place
  */
 void
-set(var, val)
+set(var, val, flags)
     Char   *var, *val;
+    int	   flags;
 {
     register Char **vec = (Char **) xmalloc((size_t) (2 * sizeof(Char **)));
 
     vec[0] = val;
     vec[1] = 0;
-    set1(var, vec, &shvhed);
+    set1(var, vec, &shvhed, flags);
 }
 
 void
-set1(var, vec, head)
+set1(var, vec, head, flags)
     Char   *var, **vec;
     struct varent *head;
+    int flags;
 {
     register Char **oldv = vec;
 
-    gflag = 0;
-    tglob(oldv);
-    if (gflag) {
-	vec = globall(oldv);
-	if (vec == 0) {
+    if ((flags & VAR_NOGLOB) == 0) {
+	gflag = 0;
+	tglob(oldv);
+	if (gflag) {
+	    vec = globall(oldv);
+	    if (vec == 0) {
+		blkfree(oldv);
+		stderror(ERR_NAME | ERR_NOMATCH);
+		return;
+	    }
 	    blkfree(oldv);
-	    stderror(ERR_NAME | ERR_NOMATCH);
-	    return;
+	    gargv = 0;
 	}
-	blkfree(oldv);
-	gargv = 0;
     }
-    setq(var, vec, head);
+    /*
+     * Uniqueness addition from: Michael Veksler <mveksler@vnet.ibm.com>
+     */
+    if ( flags & (VAR_FIRST | VAR_LAST) ) {
+	/*
+	 * Code for -f (VAR_FIRST) and -l (VAR_LAST) options.
+	 * Method:
+	 *  Delete all duplicate words leaving "holes" in the word array (vec).
+	 *  Then remove the "holes", keeping the order of the words unchanged.
+	 */
+	if (vec && vec[0] && vec[1]) { /* more than one word ? */
+	    int i, j;
+	    int num_items;
+
+	    for (num_items = 0; vec[num_items]; num_items++)
+	        continue;
+	    if (flags & VAR_FIRST) {
+		/* delete duplications, keeping first occurance */
+		for (i = 1; i < num_items; i++)
+		    for (j = 0; j < i; j++)
+			/* If have earlier identical item, remove i'th item */
+			if (vec[i] && vec[j] && Strcmp(vec[j], vec[i]) == 0) {
+			    free(vec[i]);
+			    vec[i] = NULL;
+			    break;
+			}
+	    } else if (flags & VAR_LAST) {
+	      /* delete duplications, keeping last occurance */
+		for (i = 0; i < num_items - 1; i++)
+		    for (j = i + 1; j < num_items; j++)
+			/* If have later identical item, remove i'th item */
+			if (vec[i] && vec[j] && Strcmp(vec[j], vec[i]) == 0) {
+			    /* remove identical item (the first) */
+			    free(vec[i]);
+			    vec[i] = NULL;
+			}
+	    }
+	    /* Compress items - remove empty items */
+	    for (j = i = 0; i < num_items; i++)
+	       if (vec[i]) 
+		  vec[j++] = vec[i];
+
+	    /* NULL-fy remaining items */
+	    for (; j < num_items; j++)
+		 vec[j] = NULL;
+	}
+	/* don't let the attribute propagate */
+	flags &= ~(VAR_FIRST|VAR_LAST);
+    } 
+    setq(var, vec, head, flags);
 }
 
 
 void
-setq(name, vec, p)
+setq(name, vec, p, flags)
     Char   *name, **vec;
     register struct varent *p;
+    int flags;
 {
     register struct varent *c;
-    register f;
+    register int f;
 
     f = 0;			/* tree hangs off the header's left link */
     while ((c = p->v_link[f]) != 0) {
 	if ((f = *name - *c->v_name) == 0 &&
 	    (f = Strcmp(name, c->v_name)) == 0) {
+	    if (c->v_flags & VAR_READONLY)
+		stderror(ERR_READONLY|ERR_NAME, c->v_name);
 	    blkfree(c->vec);
-	    goto found;
+	    c->v_flags = flags;
+	    trim(c->vec = vec);
+	    return;
 	}
 	p = c;
 	f = f > 0;
     }
     p->v_link[f] = c = (struct varent *) xmalloc((size_t)sizeof(struct varent));
     c->v_name = Strsave(name);
+    c->v_flags = flags;
     c->v_bal = 0;
     c->v_left = c->v_right = 0;
     c->v_parent = p;
     balance(p, f, 0);
-found:
     trim(c->vec = vec);
 }
 
@@ -583,16 +706,24 @@ unset(v, c)
     Char   **v;
     struct command *c;
 {
-    bool did_only;
+    bool did_roe, did_edit;
 
-    did_only = adrof(STRrecognize_only_executables) != NULL;
+    USE(c);
+    did_roe = adrof(STRrecognize_only_executables) != NULL;
+    did_edit = adrof(STRedit) != NULL;
     unset1(v, &shvhed);
     if (adrof(STRhistchars) == 0) {
 	HIST = '!';
 	HISTSUB = '^';
     }
+    if (adrof(STRpromptchars) == 0) {
+	PRCH = '>';
+	PRCHROOT = '#';
+    }
     if (adrof(STRhistlit) == 0)
 	HistLit = 0;
+    if (adrof(STRloginsh) == 0)
+	loginsh = 0;
     if (adrof(STRwordchars) == 0)
 	word_chars = STR_WORD_CHARS;
     if (adrof(STRedit) == 0)
@@ -601,8 +732,19 @@ unset(v, c)
 	bslash_quote = 0;
     if (adrof(STRsymlinks) == 0)
 	symlinks = 0;
-    if (did_only && adrof(STRrecognize_only_executables) == 0)
+    if (adrof(STRimplicitcd) == 0)
+	implicit_cd = 0;
+    if (did_edit && noediting && adrof(STRedit) == 0)
+	noediting = 0;
+    if (did_roe && adrof(STRrecognize_only_executables) == 0)
 	tw_cmd_free();
+#ifdef COLOR_LS_F
+    if (adrof(STRcolor) == 0)
+	set_color_context();
+#endif /* COLOR_LS_F */
+#if defined(KANJI) && defined(SHORT_STRINGS) && defined(DSPMBYTE)
+    update_dspmbyte_vars();
+#endif
 }
 
 void
@@ -616,7 +758,10 @@ unset1(v, head)
     while (*++v) {
 	cnt = 0;
 	while ((vp = madrof(*v, head)) != NULL)
-	    unsetv1(vp), cnt++;
+	    if (vp->v_flags & VAR_READONLY)
+		stderror(ERR_READONLY|ERR_NAME, vp->v_name);
+	    else
+		unsetv1(vp), cnt++;
 	if (cnt == 0)
 	    setname(short2str(*v));
     }
@@ -638,7 +783,7 @@ unsetv1(p)
     register struct varent *p;
 {
     register struct varent *c, *pp;
-    register f;
+    register int f;
 
     /*
      * Free associated memory first to avoid complications.
@@ -658,6 +803,7 @@ unsetv1(p)
 	for (c = p->v_left; c->v_right; c = c->v_right)
 	    continue;
 	p->v_name = c->v_name;
+	p->v_flags = c->v_flags;
 	p->vec = c->vec;
 	p = c;
 	c = p->v_left;
@@ -681,7 +827,7 @@ void
 setNS(cp)
     Char   *cp;
 {
-    set(cp, Strsave(STRNULL));
+    set(cp, Strsave(STRNULL), VAR_READWRITE);
 }
 
 /*ARGSUSED*/
@@ -693,6 +839,7 @@ shift(v, c)
     register struct varent *argv;
     register Char *name;
 
+    USE(c);
     v++;
     name = *v;
     if (name == 0)
@@ -714,21 +861,29 @@ static void
 exportpath(val)
     Char  **val;
 {
-    Char    exppath[BUFSIZE];
+  Char    	*exppath;
+  size_t	exppath_size = BUFSIZE;
+  exppath = (Char *)xmalloc(sizeof(Char)*exppath_size);
 
     exppath[0] = 0;
     if (val)
 	while (*val) {
-	    if (Strlen(*val) + Strlen(exppath) + 2 > BUFSIZE) {
-		xprintf("Warning: ridiculously long PATH truncated\n");
+	  while (Strlen(*val) + Strlen(exppath) + 2 > exppath_size) {
+	    if ((exppath
+		 = (Char *)xrealloc(exppath, sizeof(Char)*(exppath_size *= 2)))
+		 == NULL) {
+		xprintf(CGETS(18, 1,
+			      "Warning: ridiculously long PATH truncated\n"));
 		break;
+	      }
 	    }
 	    (void) Strcat(exppath, *val++);
 	    if (*val == 0 || eq(*val, STRRparen))
-		break;
+	      break;
 	    (void) Strcat(exppath, STRsep);
-	}
-    tsetenv(STRKPATH, exppath);
+	  }
+  tsetenv(STRKPATH, exppath);
+  free(exppath);
 }
 
 #ifndef lint
@@ -878,11 +1033,12 @@ balance(p, f, d)
 }
 
 void
-plist(p)
+plist(p, what)
     register struct varent *p;
+    int what;
 {
     register struct varent *c;
-    register len;
+    register int len;
 
     if (setintr)
 #ifdef BSDSIGS
@@ -897,14 +1053,16 @@ plist(p)
 x:
 	if (p->v_parent == 0)	/* is it the header? */
 	    return;
-	len = blklen(p->vec);
-	xprintf("%S\t", p->v_name);
-	if (len != 1)
-	    xputchar('(');
-	blkpr(p->vec);
-	if (len != 1)
-	    xputchar(')');
-	xputchar('\n');
+	if ((p->v_flags & what) != 0) {
+	    len = blklen(p->vec);
+	    xprintf("%S\t", p->v_name);
+	    if (len != 1)
+		xputchar('(');
+	    blkpr(p->vec);
+	    if (len != 1)
+		xputchar(')');
+	    xputchar('\n');
+	}
 	if (p->v_right) {
 	    p = p->v_right;
 	    continue;
@@ -916,3 +1074,128 @@ x:
 	goto x;
     }
 }
+
+#if defined(KANJI) && defined(SHORT_STRINGS) && defined(DSPMBYTE)
+void
+update_dspmbyte_vars()
+{
+    int lp, iskcode;
+    Char *dstr1;
+
+    /* if variable "nokanji" is set, multi-byte display is disabled */
+    if (adrof(CHECK_MBYTEVAR) && !adrof(STRnokanji)) {
+	_enable_mbdisp = 1;
+	dstr1 = varval(CHECK_MBYTEVAR);
+	if(eq (dstr1, STRKSJIS))
+	    iskcode = 1;
+	else if (eq(dstr1, STRKEUC))
+	    iskcode = 2;
+	else if ((dstr1[0] - '0') >= 0 && (dstr1[0] - '0') <= 3) {
+	    iskcode = 0;
+	}
+	else {
+	    xprintf(CGETS(18, 2,
+	       "Warning: unknown multibyte display; using default(euc(JP))\n"));
+	    iskcode = 2;
+	}
+	for (lp = 0; lp < 256 && iskcode > 0; lp++) {
+	    switch (iskcode) {
+	    case 1:
+		/* Shift-JIS */
+		_cmap[lp] = _cmap_mbyte[lp];
+		_mbmap[lp] = _mbmap_sjis[lp];
+		break;
+	    case 2:
+		/* 2 ... euc */
+		_cmap[lp] = _cmap_mbyte[lp];
+		_mbmap[lp] = _mbmap_euc[lp];
+		break;
+	    default:
+		xprintf(CGETS(18, 3,
+		    "Warning: unknown multibyte code %d; multibyte disabled\n"),
+		    iskcode);
+		_cmap[lp] = _cmap_c[lp];
+		_mbmap[lp] = 0;	/* Default map all 0 */
+		_enable_mbdisp = 0;
+		break;
+	    }
+	}
+	if (iskcode == 0) {
+	    /* check original table */
+	    if (Strlen(dstr1) != 256) {
+		xprintf(CGETS(18, 4,
+       "Warning: Invalid multibyte table length (%d); multibyte disabled\n"),
+		    Strlen(dstr1));
+		_enable_mbdisp = 0;
+	    }
+	    for (lp = 0; lp < 256 && _enable_mbdisp == 1; lp++) {
+		if (!((dstr1[lp] - '0') >= 0 && (dstr1[lp] - '0') <= 3)) {
+		    xprintf(CGETS(18, 4,
+	   "Warning: bad multibyte code at offset +%d; multibyte diabled\n"),
+			lp);
+		    _enable_mbdisp = 0;
+		    break;
+		}
+	    }
+	    /* set original table */
+	    for (lp = 0; lp < 256; lp++) {
+		if (_enable_mbdisp == 1) {
+		    _cmap[lp] = _cmap_mbyte[lp];
+		    _mbmap[lp] = (unsigned short) ((dstr1[lp] - '0') & 0x0f);
+		}
+		else {
+		    _cmap[lp] = _cmap_c[lp];
+		    _mbmap[lp] = 0;	/* Default map all 0 */
+		}
+	    }
+	}
+    }
+    else {
+	for (lp = 0; lp < 256; lp++) {
+	    _cmap[lp] = _cmap_c[lp];
+	    _mbmap[lp] = 0;	/* Default map all 0 */
+	}
+	_enable_mbdisp = 0;
+    }
+#ifdef MBYTEDEBUG	/* Sorry, use for beta testing */
+    {
+	Char mbmapstr[300];
+	for (lp = 0; lp < 256; lp++) {
+	    mbmapstr[lp] = _mbmap[lp] + '0';
+	    mbmapstr[lp+1] = 0;
+	}
+	set(STRmbytemap, Strsave(mbmapstr), VAR_READWRITE);
+    }
+#endif /* MBYTEMAP */
+}
+
+/* dspkanji/dspmbyte autosetting */
+/* PATCH IDEA FROM Issei.Suzuki VERY THANKS */
+void
+autoset_dspmbyte(pcp)
+    Char *pcp;
+{
+    int i;
+    struct dspm_autoset_Table {
+	Char *n;
+	Char *v;
+    } dspmt[] = {
+	{ STRLANGEUC, STRKEUC },
+	{ STRLANGEUCB, STRKEUC },
+	{ STRLANGSJIS, STRKSJIS },
+	{ STRLANGSJISB, STRKSJIS },
+	{ NULL, NULL }
+    };
+
+    if (*pcp == '\0')
+	return;
+
+    for (i = 0; dspmt[i].n; i++) {
+	if (eq(pcp, dspmt[i].n)) {
+	    set(CHECK_MBYTEVAR, Strsave(dspmt[i].v), VAR_READWRITE);
+	    update_dspmbyte_vars();
+	    break;
+	}
+    }
+}
+#endif

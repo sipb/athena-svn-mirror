@@ -1,10 +1,10 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/mi.termios.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/mi.termios.c,v 1.1.1.2 1998-10-03 21:09:53 danw Exp $ */
 /* termios.c - fake termios interface using sgtty interface 
  * 	       by Magnus Doell and Bruce Evans.
  *
  */
 #include "sh.h"
-RCSID("$Id: mi.termios.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $")
+RCSID("$Id: mi.termios.c,v 1.1.1.2 1998-10-03 21:09:53 danw Exp $")
 
 #ifdef _MINIX
 

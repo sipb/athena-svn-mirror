@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.exp.c,v 1.1.1.1 1996-10-02 06:09:20 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.exp.c,v 1.1.1.2 1998-10-03 21:09:59 danw Exp $ */
 /*
  * sh.exp.c: Expression evaluations
  */
@@ -36,14 +36,14 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.exp.c,v 1.1.1.1 1996-10-02 06:09:20 ghudson Exp $")
+RCSID("$Id: sh.exp.c,v 1.1.1.2 1998-10-03 21:09:59 danw Exp $")
 
 /*
  * C shell
  */
 
-#define IGNORE	1	/* in ignore, it means to ignore value, just parse */
-#define NOGLOB	2	/* in ignore, it means not to globone */
+#define TEXP_IGNORE 1	/* in ignore, it means to ignore value, just parse */
+#define TEXP_NOGLOB 2	/* in ignore, it means not to globone */
 
 #define	ADDOP	1
 #define	MULOP	2
@@ -74,10 +74,11 @@ static	void	 evalav		__P((Char **));
 static	int	 isa		__P((Char *, int));
 static	int	 egetn		__P((Char *));
 
+
 #ifdef EDEBUG
 static	void	 etracc		__P((char *, Char *, Char ***));
 static	void	 etraci		__P((char *, int, Char ***));
-#endif
+#endif /* EDEBUG */
 
 
 /*
@@ -89,7 +90,7 @@ sh_access(fname, mode)
     Char *fname;
     int mode;
 {
-#ifdef POSIX
+#if defined(POSIX) && !defined(USE_ACCESS)
     struct stat     statb;
 #endif /* POSIX */
     char *name = short2str(fname);
@@ -97,7 +98,7 @@ sh_access(fname, mode)
     if (*name == '\0')
 	return 1;
 
-#ifndef POSIX
+#if !defined(POSIX) || defined(USE_ACCESS)
     return access(name, mode);
 #else /* POSIX */
 
@@ -154,12 +155,16 @@ sh_access(fname, mode)
      * and they define _SC_NGROUPS_MAX without having sysconf
      */
 #   undef _SC_NGROUPS_MAX	
-#   define GID_T int
+#   if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__bsdi__)
+#    define GID_T gid_t
+#   else
+#    define GID_T int
+#   endif
 #  else
 #   define GID_T gid_t
 #  endif /* __386BSD__ || BSD4_4 */
 	/* you can be in several groups */
-	int	n;
+	long	n;
 	GID_T	*groups;
 
 	/*
@@ -211,15 +216,15 @@ exp0(vp, ignore)
 
 #ifdef EDEBUG
     etraci("exp0 p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     if (**vp && eq(**vp, STRor2)) {
 	register int p2;
 
 	(*vp)++;
-	p2 = exp0(vp, (ignore & IGNORE) || p1);
+	p2 = exp0(vp, (ignore & TEXP_IGNORE) || p1);
 #ifdef EDEBUG
 	etraci("exp0 p2", p2, vp);
-#endif
+#endif /* EDEBUG */
 	return (p1 || p2);
     }
     return (p1);
@@ -234,15 +239,15 @@ exp1(vp, ignore)
 
 #ifdef EDEBUG
     etraci("exp1 p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     if (**vp && eq(**vp, STRand2)) {
 	register int p2;
 
 	(*vp)++;
-	p2 = exp1(vp, (ignore & IGNORE) || !p1);
+	p2 = exp1(vp, (ignore & TEXP_IGNORE) || !p1);
 #ifdef EDEBUG
 	etraci("exp1 p2", p2, vp);
-#endif
+#endif /* EDEBUG */
 	return (p1 && p2);
     }
     return (p1);
@@ -257,7 +262,7 @@ exp2(vp, ignore)
 
 #ifdef EDEBUG
     etraci("exp3 p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     if (**vp && eq(**vp, STRor)) {
 	register int p2;
 
@@ -265,7 +270,7 @@ exp2(vp, ignore)
 	p2 = exp2(vp, ignore);
 #ifdef EDEBUG
 	etraci("exp3 p2", p2, vp);
-#endif
+#endif /* EDEBUG */
 	return (p1 | p2);
     }
     return (p1);
@@ -280,7 +285,7 @@ exp2a(vp, ignore)
 
 #ifdef EDEBUG
     etraci("exp2a p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     if (**vp && eq(**vp, STRcaret)) {
 	register int p2;
 
@@ -288,7 +293,7 @@ exp2a(vp, ignore)
 	p2 = exp2a(vp, ignore);
 #ifdef EDEBUG
 	etraci("exp2a p2", p2, vp);
-#endif
+#endif /* EDEBUG */
 	return (p1 ^ p2);
     }
     return (p1);
@@ -303,7 +308,7 @@ exp2b(vp, ignore)
 
 #ifdef EDEBUG
     etraci("exp2b p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     if (**vp && eq(**vp, STRand)) {
 	register int p2;
 
@@ -311,7 +316,7 @@ exp2b(vp, ignore)
 	p2 = exp2b(vp, ignore);
 #ifdef EDEBUG
 	etraci("exp2b p2", p2, vp);
-#endif
+#endif /* EDEBUG */
 	return (p1 & p2);
     }
     return (p1);
@@ -328,16 +333,16 @@ exp2c(vp, ignore)
 
 #ifdef EDEBUG
     etracc("exp2c p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     if ((i = isa(**vp, EQOP)) != 0) {
 	(*vp)++;
 	if (i == EQMATCH || i == NOTEQMATCH)
-	    ignore |= NOGLOB;
+	    ignore |= TEXP_NOGLOB;
 	p2 = exp3(vp, ignore);
 #ifdef EDEBUG
 	etracc("exp2c p2", p2, vp);
-#endif
-	if (!(ignore & IGNORE))
+#endif /* EDEBUG */
+	if (!(ignore & TEXP_IGNORE))
 	    switch (i) {
 
 	    case EQEQ:
@@ -376,7 +381,7 @@ exp3(vp, ignore)
     p1 = exp3a(vp, ignore);
 #ifdef EDEBUG
     etracc("exp3 p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     if ((i = isa(**vp, RELOP)) != 0) {
 	(*vp)++;
 	if (**vp && eq(**vp, STRequal))
@@ -384,8 +389,8 @@ exp3(vp, ignore)
 	p2 = exp3(vp, ignore);
 #ifdef EDEBUG
 	etracc("exp3 p2", p2, vp);
-#endif
-	if (!(ignore & IGNORE))
+#endif /* EDEBUG */
+	if (!(ignore & TEXP_IGNORE))
 	    switch (i) {
 
 	    case GTR:
@@ -422,14 +427,14 @@ exp3a(vp, ignore)
     p1 = exp4(vp, ignore);
 #ifdef EDEBUG
     etracc("exp3a p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     op = **vp;
     if (op && any("<>", op[0]) && op[0] == op[1]) {
 	(*vp)++;
 	p2 = exp3a(vp, ignore);
 #ifdef EDEBUG
 	etracc("exp3a p2", p2, vp);
-#endif
+#endif /* EDEBUG */
 	if (op[0] == '<')
 	    i = egetn(p1) << egetn(p2);
 	else
@@ -452,15 +457,15 @@ exp4(vp, ignore)
     p1 = exp5(vp, ignore);
 #ifdef EDEBUG
     etracc("exp4 p1", p1, vp);
-#endif
+#endif /* EDEBUG */
     if (isa(**vp, ADDOP)) {
 	register Char *op = *(*vp)++;
 
 	p2 = exp4(vp, ignore);
 #ifdef EDEBUG
 	etracc("exp4 p2", p2, vp);
-#endif
-	if (!(ignore & IGNORE))
+#endif /* EDEBUG */
+	if (!(ignore & TEXP_IGNORE))
 	    switch (op[0]) {
 
 	    case '+':
@@ -489,15 +494,22 @@ exp5(vp, ignore)
     p1 = exp6(vp, ignore);
 #ifdef EDEBUG
     etracc("exp5 p1", p1, vp);
-#endif
+#endif /* EDEBUG */
+
     if (isa(**vp, MULOP)) {
 	register Char *op = *(*vp)++;
+	if ((ignore & TEXP_NOGLOB) != 0) 
+	    /* 
+	     * We are just trying to get the right side of
+	     * a =~ or !~ operator 
+	     */
+	    return Strsave(op);
 
 	p2 = exp5(vp, ignore);
 #ifdef EDEBUG
 	etracc("exp5 p2", p2, vp);
-#endif
-	if (!(ignore & IGNORE))
+#endif /* EDEBUG */
+	if (!(ignore & TEXP_IGNORE))
 	    switch (op[0]) {
 
 	    case '*':
@@ -531,7 +543,7 @@ exp6(vp, ignore)
     bool    ignore;
 {
     int     ccode, i = 0;
-    register Char *cp, *dp, *ep;
+    register Char *cp;
 
     if (**vp == 0)
 	stderror(ERR_NAME | ERR_EXPRESSION);
@@ -540,7 +552,7 @@ exp6(vp, ignore)
 	cp = exp6(vp, ignore);
 #ifdef EDEBUG
 	etracc("exp6 ! cp", cp, vp);
-#endif
+#endif /* EDEBUG */
 	i = egetn(cp);
 	xfree((ptr_t) cp);
 	return (putn(!i));
@@ -550,7 +562,7 @@ exp6(vp, ignore)
 	cp = exp6(vp, ignore);
 #ifdef EDEBUG
 	etracc("exp6 ~ cp", cp, vp);
-#endif
+#endif /* EDEBUG */
 	i = egetn(cp);
 	xfree((ptr_t) cp);
 	return (putn(~i));
@@ -560,7 +572,7 @@ exp6(vp, ignore)
 	ccode = exp0(vp, ignore);
 #ifdef EDEBUG
 	etraci("exp6 () ccode", ccode, vp);
-#endif
+#endif /* EDEBUG */
 	if (*vp == 0 || **vp == 0 || ***vp != ')')
 	    stderror(ERR_NAME | ERR_EXPRESSION);
 	(*vp)++;
@@ -585,7 +597,7 @@ exp6(vp, ignore)
 	    if (eq(*(*vp)++, STRRbrace))
 		break;
 	}
-	if (ignore & IGNORE)
+	if (ignore & TEXP_IGNORE)
 	    return (Strsave(STRNULL));
 	psavejob();
 	if (pfork(&faket, -1) == 0) {
@@ -596,181 +608,375 @@ exp6(vp, ignore)
 	pwait();
 	prestjob();
 #ifdef EDEBUG
-	etraci("exp6 {} status", egetn(value(STRstatus)), vp);
-#endif
-	return (putn(egetn(value(STRstatus)) == 0));
+	etraci("exp6 {} status", egetn(varval(STRstatus)), vp);
+#endif /* EDEBUG */
+	return (putn(egetn(varval(STRstatus)) == 0));
     }
     if (isa(**vp, ANYOP))
 	return (Strsave(STRNULL));
     cp = *(*vp)++;
-#define FILETESTS "erwxfdzoplstX"
-    if (*cp == '-' && any(FILETESTS, cp[1])) {
-	struct stat stb;
-	Char *ft;
-
-	for (ft = &cp[2]; *ft; ft++) 
-	    if (!any(FILETESTS, *ft))
-		stderror(ERR_NAME | ERR_FILEINQ);
-	/*
-	 * Detect missing file names by checking for operator in the file name
-	 * position.  However, if an operator name appears there, we must make
-	 * sure that there's no file by that name (e.g., "/") before announcing
-	 * an error.  Even this check isn't quite right, since it doesn't take
-	 * globbing into account.
-	 */
-	if (isa(**vp, ANYOP) && stat(short2str(**vp), &stb))
-	    stderror(ERR_NAME | ERR_FILENAME);
-
-	dp = *(*vp)++;
-	if (ignore & IGNORE)
-	    return (Strsave(STRNULL));
-	ep = globone(dp, G_ERROR);
-	ft = &cp[1];
-	do 
-	    switch (*ft) {
-
-	    case 'r':
-		i = !sh_access(ep, R_OK);
-		break;
-
-	    case 'w':
-		i = !sh_access(ep, W_OK);
-		break;
-
-	    case 'x':
-		i = !sh_access(ep, X_OK);
-		break;
-
-	    case 'X':	/* tcsh extension, name is an executable in the path
-			 * or a tcsh builtin command 
-			 */
-		i = find_cmd(ep, 0);
-		break;
-
-	    case 't':	/* SGI extension, true when file is a tty */
-		i = isatty(atoi(short2str(ep)));
-		break;
-
-	    default:
-		if (
-#ifdef S_IFLNK
-		    *ft == 'l' ? lstat(short2str(ep), &stb) :
-#endif
-		    stat(short2str(ep), &stb)) {
-		    xfree((ptr_t) ep);
-		    return (Strsave(STR0));
-		}
-		switch (*ft) {
-
-		case 'f':
-#ifdef S_ISREG
-		    i = S_ISREG(stb.st_mode);
+#ifdef convex
+# define FILETESTS "erwxfdzoplstSXLbcugkmKR"
 #else
-		    i = 0;
-#endif
-		    break;
-
-		case 'd':
-#ifdef S_ISDIR
-		    i = S_ISDIR(stb.st_mode);
-#else
-		    i = 0;
-#endif
-		    break;
-
-		case 'p':
-#ifdef S_ISFIFO
-		    i = S_ISFIFO(stb.st_mode);
-#else
-		    i = 0;
-#endif
-		    break;
-
-		case 'l':
-#ifdef S_ISLNK
-		    i = S_ISLNK(stb.st_mode);
-#else
-		    i = 0;
-#endif
-		    break;
-
-		/* 
-		 * ARGH!!! sgi defines (-s == ! -z) Why? Can you change it? 
-		 * Here I am not going to be compatible; they should fix it!
-		 */
-		case 's':
-# ifdef S_ISSOCK
-		    i = S_ISSOCK(stb.st_mode);
-# else
-		    i = 0;
-# endif
-		    break;
-
-		case 'b':
-#ifdef S_ISBLK
-		    i = S_ISBLK(stb.st_mode);
-#else
-		    i = 0;
-#endif
-		    break;
-
-		case 'c':
-#ifdef S_ISCHR
-		    i = S_ISCHR(stb.st_mode);
-#else
-		    i = 0;
-#endif
-		    break;
-
-		case 'u':
-#ifdef S_ISUID
-		    i = (S_ISUID & stb.st_mode) != 0;
-#else
-		    i = 0;
-#endif
-		    break;
-
-		case 'g':
-#ifdef S_ISGID
-		    i = (S_ISGID & stb.st_mode) != 0;
-#else
-		    i = 0;
-#endif
-		    break;
-
-		case 'k':
-#ifdef S_ISVTX
-		    i = (S_ISVTX & stb.st_mode) != 0;
-#else
-		    i = 0;
-#endif
-		    break;
-
-		case 'z':
-		    i = stb.st_size == 0;
-		    break;
-
-		case 'e':
-		    i = 1;
-		    break;
-
-		case 'o':
-		    i = stb.st_uid == uid;
-		    break;
-		}
-	    }
-	while (*++ft && i);
-#ifdef EDEBUG
-	etraci("exp6 -? i", i, vp);
-#endif
-	xfree((ptr_t) ep);
-	return (putn(i));
-    }
+# define FILETESTS "erwxfdzoplstSXLbcugkmK"
+#endif /* convex */
+#define FILEVALS  "ZAMCDIUGNFPL"
+    if (*cp == '-' && (any(FILETESTS, cp[1]) || any(FILEVALS, cp[1])))
+        return(filetest(cp, vp, ignore));
 #ifdef EDEBUG
     etracc("exp6 default", cp, vp);
-#endif
-    return (ignore & NOGLOB ? Strsave(cp) : globone(cp, G_ERROR));
+#endif /* EDEBUG */
+    return (ignore & TEXP_NOGLOB ? Strsave(cp) : globone(cp, G_APPEND));
 }
+
+
+/* 
+ * Extended file tests
+ * From: John Rowe <rowe@excc.exeter.ac.uk>
+ */
+Char *
+filetest(cp, vp, ignore)
+    Char *cp, ***vp;
+    bool ignore;
+{
+#ifdef convex
+    struct cvxstat stb, *st = NULL;
+# define TCSH_STAT	stat64
+#else
+# define TCSH_STAT	stat
+    struct stat stb, *st = NULL;
+#endif /* convex */
+
+#ifdef S_IFLNK
+# ifdef convex
+    struct cvxstat lstb, *lst = NULL;
+#  define TCSH_LSTAT lstat64
+# else
+#  define TCSH_LSTAT lstat
+    struct stat lstb, *lst = NULL;
+# endif /* convex */
+    char *filnam;
+#endif /* S_IFLNK */
+
+    int i = 0;
+    unsigned pmask = 0xffff;
+    bool altout = 0;
+    Char *ft = cp, *dp, *ep, *strdev, *strino, *strF, *str, valtest = '\0',
+    *errval = STR0;
+    char *string, string0[8];
+    time_t footime;
+    struct passwd *pw;
+    struct group *gr;
+
+    while(any(FILETESTS, *++ft))
+	continue;
+
+    if (!*ft && *(ft - 1) == 'L')
+	--ft;
+
+    if (any(FILEVALS, *ft)) {
+	valtest = *ft++;
+	/*
+	 * Value tests return '-1' on failure as 0 is
+	 * a legitimate value for many of them.
+	 * 'F' returns ':' for compatibility.
+	 */
+	errval = valtest == 'F' ? STRcolon : STRminus1;
+
+	if (valtest == 'P' && *ft >= '0' && *ft <= '7') {
+	    pmask = (char) *ft - '0';
+	    while ( *++ft >= '0' && *ft <= '7' )
+		pmask = 8 * pmask + ((char) *ft - '0');
+	}
+	if (Strcmp(ft, STRcolon) == 0 && any("AMCUGP", valtest)) {
+	    altout = 1;
+	    ++ft;
+	}
+    }
+
+    if (*ft || ft == cp + 1)
+	stderror(ERR_NAME | ERR_FILEINQ);
+
+    /*
+     * Detect missing file names by checking for operator in the file name
+     * position.  However, if an operator name appears there, we must make
+     * sure that there's no file by that name (e.g., "/") before announcing
+     * an error.  Even this check isn't quite right, since it doesn't take
+     * globbing into account.
+     */
+
+    if (isa(**vp, ANYOP) && TCSH_STAT(short2str(**vp), &stb))
+	stderror(ERR_NAME | ERR_FILENAME);
+
+    dp = *(*vp)++;
+    if (ignore & TEXP_IGNORE)
+	return (Strsave(STRNULL));
+    ep = globone(dp, G_APPEND);
+    ft = &cp[1];
+    do 
+	switch (*ft) {
+
+	case 'r':
+	    i = !sh_access(ep, R_OK);
+	    break;
+
+	case 'w':
+	    i = !sh_access(ep, W_OK);
+	    break;
+
+	case 'x':
+	    i = !sh_access(ep, X_OK);
+	    break;
+
+	case 'X':	/* tcsh extension, name is an executable in the path
+			 * or a tcsh builtin command 
+			 */
+	    i = find_cmd(ep, 0);
+	    break;
+
+	case 't':	/* SGI extension, true when file is a tty */
+	    i = isatty(atoi(short2str(ep)));
+	    break;
+
+	default:
+
+#ifdef S_IFLNK
+	    if (tolower(*ft) == 'l') {
+		if (!lst && TCSH_LSTAT(short2str(ep), lst = &lstb) == -1) {
+		    xfree((ptr_t) ep);
+		    return (Strsave(errval));
+		}
+		if (*ft == 'L')
+		    st = lst;
+	    }
+	    else 
+#endif /* S_IFLNK */
+		if (!st && TCSH_STAT(short2str(ep), st = &stb) == -1) {
+		    xfree((ptr_t) ep);
+		    return (Strsave(errval));
+		}
+
+	    switch (*ft) {
+
+	    case 'f':
+#ifdef S_ISREG
+		i = S_ISREG(st->st_mode);
+#else /* !S_ISREG */
+		i = 0;
+#endif /* S_ISREG */
+		break;
+
+	    case 'd':
+#ifdef S_ISDIR
+		i = S_ISDIR(st->st_mode);
+#else /* !S_ISDIR */
+		i = 0;
+#endif /* S_ISDIR */
+		break;
+
+	    case 'p':
+#ifdef S_ISFIFO
+		i = S_ISFIFO(st->st_mode);
+#else /* !S_ISFIFO */
+		i = 0;
+#endif /* S_ISFIFO */
+		break;
+
+	    case 'm' :
+#ifdef S_ISOFL
+	      i = S_ISOFL(st->st_dm_mode);
+#else /* !S_ISOFL */
+	      i = 0;
+#endif /* S_ISOFL */
+	      break ;
+
+	    case 'K' :
+#ifdef S_ISOFL
+	      i = stb.st_dm_key;
+#else /* !S_ISOFL */
+	      i = 0;
+#endif /* S_ISOFL */
+	      break ;
+  
+
+	    case 'l':
+#ifdef S_ISLNK
+		i = S_ISLNK(lst->st_mode);
+#else /* !S_ISLNK */
+		i = 0;
+#endif /* S_ISLNK */
+		break;
+
+	    case 'S':
+# ifdef S_ISSOCK
+		i = S_ISSOCK(st->st_mode);
+# else /* !S_ISSOCK */
+		i = 0;
+# endif /* S_ISSOCK */
+		break;
+
+	    case 'b':
+#ifdef S_ISBLK
+		i = S_ISBLK(st->st_mode);
+#else /* !S_ISBLK */
+		i = 0;
+#endif /* S_ISBLK */
+		break;
+
+	    case 'c':
+#ifdef S_ISCHR
+		i = S_ISCHR(st->st_mode);
+#else /* !S_ISCHR */
+		i = 0;
+#endif /* S_ISCHR */
+		break;
+
+	    case 'u':
+		i = (S_ISUID & st->st_mode) != 0;
+		break;
+
+	    case 'g':
+		i = (S_ISGID & st->st_mode) != 0;
+		break;
+
+	    case 'k':
+		i = (S_ISVTX & st->st_mode) != 0;
+		break;
+
+	    case 'z':
+		i = st->st_size == 0;
+		break;
+
+#ifdef convex
+	    case 'R':
+		i = (stb.st_dmonflags & IMIGRATED) == IMIGRATED;
+		break;
+#endif /* convex */
+
+	    case 's':
+		i = stb.st_size != 0;
+		break;
+
+	    case 'e':
+		i = 1;
+		break;
+
+	    case 'o':
+		i = st->st_uid == uid;
+		break;
+
+		/*
+		 * Value operators are a tcsh extension.
+		 */
+
+	    case 'D':
+		i = (int) st->st_dev;
+		break;
+
+	    case 'I':
+		i = (int) st->st_ino;
+		break;
+		
+	    case 'F':
+		strdev = putn( (int) st->st_dev);
+		strino = putn( (int) st->st_ino);
+		strF = (Char *) xmalloc((size_t) (2 + Strlen(strdev) + 
+					 Strlen(strino)) * sizeof(Char));
+		(void) Strcat(Strcat(Strcpy(strF, strdev), STRcolon), strino);
+		xfree((ptr_t) strdev);
+		xfree((ptr_t) strino);
+		xfree((ptr_t) ep);
+		return(strF);
+		
+	    case 'L':
+		if ( *(ft + 1) ) {
+		    i = 1;
+		    break;
+		}
+#ifdef S_ISLNK
+		filnam = short2str(ep);
+#ifdef PATH_MAX
+# define MY_PATH_MAX PATH_MAX
+#else /* !PATH_MAX */
+/* 
+ * I can't think of any more sensible alterative; readlink doesn't give 
+ * us an errno if the buffer isn't large enough :-(
+ */
+# define MY_PATH_MAX  2048
+#endif /* PATH_MAX */
+		i = readlink(filnam, string = (char *) 
+		      xmalloc((size_t) (1 + MY_PATH_MAX) * sizeof(char)),
+			MY_PATH_MAX);
+		if (i >= 0 && i <= MY_PATH_MAX)
+		    string[i] = '\0'; /* readlink does not null terminate */
+		strF = (i < 0) ? errval : str2short(string);
+		xfree((ptr_t) string);
+		xfree((ptr_t) ep);
+		return(Strsave(strF));
+
+#else /* !S_ISLNK */
+		i = 0;
+		break;
+#endif /* S_ISLNK */
+		
+
+	    case 'N':
+		i = (int) st->st_nlink;
+		break;
+
+	    case 'P':
+		string = string0 + 1;
+		(void) xsnprintf(string, sizeof(string0) - 1, "%o",
+		    pmask & (unsigned int) 
+		    ((S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID) & st->st_mode));
+		if (altout && *string != '0')
+		    *--string = '0';
+		xfree((ptr_t) ep);
+		return(Strsave(str2short(string)));
+
+	    case 'U':
+		if (altout && (pw = getpwuid(st->st_uid))) {
+		    xfree((ptr_t) ep);
+		    return(Strsave(str2short(pw->pw_name)));
+		}
+		i = (int) st->st_uid;
+		break;
+
+	    case 'G':
+		if ( altout && (gr = getgrgid(st->st_gid))) {
+		    xfree((ptr_t) ep);
+		    return(Strsave(str2short(gr->gr_name)));
+		}
+		i = (int) st->st_gid;
+		break;
+
+	    case 'Z':
+		i = (int) st->st_size;
+		break;
+
+	    case 'A': case 'M': case 'C':
+		footime = *ft == 'A' ? st->st_atime :
+		    *ft == 'M' ? st->st_mtime : st->st_ctime;
+		if (altout) {
+		    strF = str2short(ctime(&footime));
+		    if ((str = Strchr(strF, '\n')) != NULL)
+			*str = (Char) '\0';
+		    xfree((ptr_t) ep);
+		    return(Strsave(strF));
+		}
+		i = (int) footime;
+		break;
+
+	    }
+	}
+    while (*++ft && i);
+#ifdef EDEBUG
+    etraci("exp6 -? i", i, vp);
+#endif /* EDEBUG */
+    xfree((ptr_t) ep);
+    return (putn(i));
+}
+
 
 static void
 evalav(v)
@@ -781,7 +987,7 @@ evalav(v)
     struct command *t;
     register struct wordent *wdp = hp;
 
-    set(STRstatus, Strsave(STR0));
+    set(STRstatus, Strsave(STR0), VAR_READWRITE);
     hp->prev = hp->next = hp;
     hp->word = STRNULL;
     while (*v) {
@@ -810,6 +1016,8 @@ isa(cp, what)
 {
     if (cp == 0)
 	return ((what & RESTOP) != 0);
+    if (*cp == '\0')
+    	return 0;
     if (cp[1] == 0) {
 	if (what & ADDOP && (*cp == '+' || *cp == '-'))
 	    return (1);
@@ -884,4 +1092,4 @@ etracc(str, cp, vp)
     blkpr(*vp);
     xputchar('\n');
 }
-#endif
+#endif /* EDEBUG */

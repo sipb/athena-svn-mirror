@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.types.h,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.types.h,v 1.1.1.2 1998-10-03 21:10:09 danw Exp $ */
 /* sh.types.h: Do the necessary typedefs for each system.
  *             Up till now I avoided making this into a separate file
  *	       But I just wanted to eliminate the whole mess from sh.h
@@ -47,6 +47,29 @@
 
 
 /***
+ *** LynxOS 2.1
+ ***/
+#ifdef Lynx
+# ifndef _SIGMASK_T
+#  define _SIGMASK_T
+    typedef long sigmask_t;
+# endif /* _SIGMASK_T */
+# ifndef _PID_T
+#  define _PID_T
+# endif /* _PID_T */
+#endif
+
+/***
+ *** MachTen 
+ ***/
+#ifdef __MACHTEN__
+# ifndef _PID_T
+#  define _PID_T
+# endif
+#endif
+
+
+/***
  *** Suns running sunos3.x - sunos4.1.x
  ***/
 #if (defined(sun) || defined(__sun__)) && SYSVREL == 0
@@ -68,8 +91,10 @@
 # endif /* _SIZE_T */
 # ifndef __sys_stdtypes_h
 #  define __sys_stdtypes_h
-    typedef int pid_t;
-    typedef unsigned int speed_t;
+#   ifndef __lucid
+     typedef int pid_t;
+     typedef unsigned int speed_t;
+#   endif
 # endif /* __sys_stdtypes.h */
 # ifndef _PID_T
 #  define _PID_T
@@ -93,7 +118,7 @@
 
 
 /***
- *** Hp's running hpux 7.0
+ *** Hp's running hpux 7.0 or 8.0
  ***/
 #ifdef __hpux
 # ifndef _SIZE_T
@@ -125,10 +150,6 @@ extern uid_t getuid(), geteuid();
 extern gid_t getgid(), getegid();
 extern sigmask_t sigblock();
 extern sigmask_t sigsetmask();
-#ifdef notdef	/* XXX: Not true for 8.0 */
-extern void sigpause();
-extern sigmask_t sigspace();
-#endif
 extern pid_t getpid();
 extern pid_t fork();
 extern void perror();
@@ -138,7 +159,9 @@ extern void qsort();
 extern void free();
 extern unsigned int alarm();
 extern unsigned int sleep();
-#ifdef notdef	/* XXX: Not true for 8.0 */
+# if HPUXVERSION < 800	/* XXX: Not true for 8.0 */
+extern void sigpause();
+extern sigmask_t sigspace();
 extern int lstat();
 extern int readlink();
 extern int sigvector();
@@ -146,7 +169,7 @@ extern int gethostname();
 extern int ioctl();
 extern int nice();
 extern char *sbrk();
-#endif
+# endif /* HPUXVERSION < 800 */
 #endif /* __hpux */
 
 #if defined(_MINIX) || defined(__EMX__) || defined(COHERENT)
@@ -164,30 +187,17 @@ typedef char * caddr_t;
 #endif /* hp9000s500 */
 
 /***
- *** Data General 88000, running dgux ???
- *** ISN'T_THIS_REALLY_UGLY_OR_IS_IT_JUST_ME?
+ *** Data General AViiON 88000 or Pentium, running dgux 5.4R3 or R4.11
  ***/
 #ifdef DGUX
-/*
- * DGUX types
- */
-# ifdef ___int_size_t_h
-#  if defined(_TARGETTING_M88KBCS_OR_DGUX) || defined(_TARGETTING_M88KBCS_OR_M88KOCS_OR_DGUX)
-#   if defined(_USING_ANSI_C_OR_POSIX_OR_SYSV3_OR_BSD_OR_DGUX) || defined(_USING_ANSI_C_OR_POSIX_OR_XPG3_OR_SYSV3_OR_BSD_OR_DGUX)
-#    ifndef _SIZE_T
-#     define _SIZE_T
-#    endif /* _SIZE_T */
-#   endif  /* _USING_ANSI_C_OR_POSIX_OR_SYSV3_OR_BSD_OR_DGUX || _USING_ANSI_C_OR_POSIX_OR_XPG3_OR_SYSV3_OR_BSD_OR_DGUX */
-#  endif  /* _TARGETTING_M88KBCS_OR_DGUX || _TARGETTING_M88KBCS_OR_M88KOCS_OR_DGUX */
-# endif  /* ___int_size_t_h */
-
-# ifdef _USING_POSIX_OR_SYSV3_OR_BSD_OR_DGUX
-#  ifndef _PID_T
-#   define _PID_T
-#  endif /* _PID_T */
-# endif  /* _USING_POSIX_OR_SYSV3_OR_BSD_OR_DGUX */
-
-#endif
+# ifndef _SIZE_T
+#  define _SIZE_T size_t
+    typedef unsigned int size_t;
+# endif /* _SIZE_T */
+# ifndef _PID_T
+#  define _PID_T
+# endif /* _PID_T */
+#endif /* DGUX */
 
 
 /***
@@ -240,12 +250,34 @@ typedef char * caddr_t;
 
 
 /***
+ *** NeXT OS 3.x
+ ***/ 
+#ifdef NeXT
+# ifndef _SPEED_T
+#  define _SPEED_T
+   typedef unsigned int speed_t; 
+# endif /* _SPEED_T */
+#endif /* NeXT */
+
+/***
+ *** Utah's HPBSD
+ *** some posix & 4.4 BSD changes (pid_t is a short)
+ ***/
+#ifdef HPBSD
+# ifndef _PID_T
+#  define _PID_T
+# endif /* _PID_T */
+#endif /* HPBSD */
+
+
+/***
  *** Pyramid, BSD universe
  *** In addition to the size_t
  ***/
 #ifdef pyr
 # ifndef _PID_T
 #  define _PID_T
+   typedef short pid_t;
 # endif /* _PID_T */
 #endif /* pyr */
 
@@ -394,6 +426,14 @@ typedef char * caddr_t;
 # ifndef _SIZE_T
 #  define _SIZE_T
 # endif /* _SIZE_T */
+# ifndef _UID_T
+#  define _UID_T
+   typedef int uid_t;
+# endif /* _UID_T */
+# ifndef _GID_T
+#  define _GID_T
+   typedef int gid_t;
+# endif /* _GID_T */
 #endif /* UTek */
 
 /* 
@@ -475,6 +515,7 @@ typedef char * caddr_t;
 #ifdef apollo
 # ifndef _PID_T
 #  define _PID_T
+   typedef int pid_t;	/* Older versions might not like that */
 # endif /* _PID_T */
 #endif /* apollo */
 
@@ -486,6 +527,24 @@ typedef char * caddr_t;
 #  define _SIZE_T
 # endif /* _SIZE_T */
 #endif /* _VMS_POSIX */
+
+/***
+ *** a pdp/11, running 2BSD
+ ***/
+#ifdef pdp11
+# ifndef _PID_T
+#  define _PID_T
+# endif /* _PID_T */
+#endif /* pdp11 */
+
+/***
+ *** a Harris, running CX/UX
+ ***/
+#ifdef _CX_UX
+# ifndef _PID_T
+#  define _PID_T
+# endif /* _PID_T */
+#endif /* _CX_UX */
 
 /***
  *** Catch all for non POSIX and/or non ANSI systems.

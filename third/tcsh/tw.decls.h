@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.decls.h,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.decls.h,v 1.1.1.2 1998-10-03 21:10:20 danw Exp $ */
 /*
  * tw.decls.h: Tenex external declarations
  */
@@ -45,6 +45,7 @@ extern	void		  do_help		__P((Char *));
 /*
  * tw.parse.c
  */
+extern	 Char		 *dollar		__P((Char *, const Char *));
 extern	 int		  tenematch		__P((Char *, int, COMMAND));
 extern	 int		  t_search		__P((Char *, Char *, COMMAND, 
 						     int, int, int, Char *, 
@@ -73,6 +74,7 @@ extern	 void		  tw_bind_start		__P((DIR *, Char *));
 extern	 void		  tw_limit_start	__P((DIR *, Char *));
 extern	 void		  tw_sig_start		__P((DIR *, Char *));
 extern	 void		  tw_job_start		__P((DIR *, Char *));
+extern	 void		  tw_grpname_start	__P((DIR *, Char *));
 extern	 Char		 *tw_cmd_next		__P((Char *, int *));
 extern	 Char		 *tw_logname_next	__P((Char *, int *));
 extern	 Char		 *tw_shvar_next		__P((Char *, int *));
@@ -84,9 +86,11 @@ extern	 Char		 *tw_bind_next		__P((Char *, int *));
 extern	 Char		 *tw_limit_next		__P((Char *, int *));
 extern	 Char		 *tw_sig_next		__P((Char *, int *));
 extern	 Char		 *tw_job_next		__P((Char *, int *));
+extern	 Char		 *tw_grpname_next	__P((Char *, int *));
 extern	 void		  tw_dir_end		__P((void));
 extern	 void		  tw_cmd_free		__P((void));
 extern	 void		  tw_logname_end	__P((void));
+extern	 void		  tw_grpname_end	__P((void));
 extern	 Char		 *tw_item_add		__P((int));
 extern	 Char	        **tw_item_get		__P((void));
 extern	 void		  tw_item_free		__P((void));
@@ -95,7 +99,8 @@ extern	 Char		 *tw_item_find		__P((Char *));
 /*
  * tw.spell.c
  */
-extern	 int		  spell_me		__P((Char *, int, int));
+extern	 int		  spell_me		__P((Char *, int, int,
+						     Char *, int));
 extern	 int		  spdir			__P((Char *, Char *, Char *, 
 						     Char *));
 extern	 int		  spdist		__P((Char *, Char *));
@@ -109,4 +114,13 @@ extern	 void		  douncomplete		__P((Char **,
 						     struct command *));
 extern	 int		  tw_complete		__P((Char *, Char **, 
 						     Char **, int, int *));
+#ifdef COLOR_LS_F
+/*
+ * tw.color.c
+ */
+extern	 void		  set_color_context	__P((void));
+extern	 void		  print_with_color	__P((Char *, size_t, int));
+extern	 void		  parseLS_COLORS	__P((Char *));
+#endif /* COLOR_LS_F */
+
 #endif /* _h_tw_decls */

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sig.h,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.sig.h,v 1.1.1.2 1998-10-03 21:10:15 danw Exp $ */
 /*
  * tc.sig.h: Signal handling
  *
@@ -38,7 +38,7 @@
 #ifndef _h_tc_sig
 #define _h_tc_sig
 
-#if (SYSVREL > 0) || defined(BSD4_4) || defined(_MINIX)
+#if (SYSVREL > 0) || defined(BSD4_4) || defined(_MINIX) || defined(DGUX) || defined(WINNT)
 # include <signal.h>
 # ifndef SIGCHLD
 #  define SIGCHLD SIGCLD
@@ -47,9 +47,9 @@
 # include <sys/signal.h>
 #endif /* SYSVREL > 0 */
 
-#if defined(SUNOS4) || defined(DGUX) || defined(hp800)
+#if defined(SUNOS4) || defined(DGUX) || defined(hp800) || (SYSVREL > 3 && defined(POSIXSIGS) && defined(VFORK))
 # define SAVESIGVEC
-#endif /* SUNOS4 || DGUX || hp800 */
+#endif /* SUNOS4 || DGUX || hp800 || SVR4 & POSIXSIGS & VFORK */
 
 #if (SYSVREL > 0 && SYSVREL < 3 && !defined(BSDSIGS)) || defined(_MINIX) || defined(COHERENT)
 /*
@@ -66,6 +66,11 @@
 #  define HAVE_SIGVEC
 #  define mysigvec(a, b, c)	sigaction(a, b, c)
 typedef struct sigaction sigvec_t;
+#  if defined(convex) || defined(__convex__)
+     /* eliminate compiler warnings since these are defined in signal.h  */
+#    undef sv_handler
+#    undef sv_flags
+#  endif
 #  define sv_handler sa_handler
 #  define sv_flags sa_flags
 # endif /* _SEQUENT || (_POSIX_SOURCE && !hpux) */
@@ -78,8 +83,15 @@ typedef struct sigvec sigvec_t;
 # endif /* hpux */
 
 # ifndef HAVE_SIGVEC
+#  ifdef POSIXSIGS
+#  define mysigvec(a, b, c)	sigaction(a, b, c)
+typedef struct sigaction sigvec_t;
+#   define sv_handler sa_handler
+#   define sv_flags sa_flags
+#  else /* BSDSIGS */
 #  define mysigvec(a, b, c)	sigvec(a, b, c)
 typedef struct sigvec sigvec_t;
+#  endif /* POSIXSIGS */
 # endif /* HAVE_SIGVEC */
 
 # undef HAVE_SIGVEC
@@ -135,7 +147,10 @@ typedef struct sigvec sigvec_t;
 # endif /* sigmask */
 # define	sigmask(s)	(1 << ((s)-1))
 # ifdef POSIXSIGS
-#  define 	sigpause(a)	bsd_sigpause(a)
+#  define 	sigpause(a)	(void) bsd_sigpause(a)
+#  ifdef WINNT
+#   undef signal
+#  endif /* WINNT */
 #  define 	signal(a, b)	bsd_signal(a, b)
 # endif /* POSIXSIGS */
 # ifndef _SEQUENT_
@@ -185,27 +200,27 @@ extern sigret_t synch_handler();
   * into registers 				- christos
   */
 # define savesigvec(sv)						\
-   (mysigvec(SIGINT,  (sigvec_t *) 0, &(sv)[0]),		\
-    mysigvec(SIGQUIT, (sigvec_t *) 0, &(sv)[1]),		\
-    mysigvec(SIGTSTP, (sigvec_t *) 0, &(sv)[2]),		\
-    mysigvec(SIGTTIN, (sigvec_t *) 0, &(sv)[3]),		\
-    mysigvec(SIGTTOU, (sigvec_t *) 0, &(sv)[4]),		\
-    mysigvec(SIGTERM, (sigvec_t *) 0, &(sv)[5]),		\
-    mysigvec(SIGHUP,  (sigvec_t *) 0, &(sv)[6]),		\
+   ((void) mysigvec(SIGINT,  (sigvec_t *) 0, &(sv)[0]),		\
+    (void) mysigvec(SIGQUIT, (sigvec_t *) 0, &(sv)[1]),		\
+    (void) mysigvec(SIGTSTP, (sigvec_t *) 0, &(sv)[2]),		\
+    (void) mysigvec(SIGTTIN, (sigvec_t *) 0, &(sv)[3]),		\
+    (void) mysigvec(SIGTTOU, (sigvec_t *) 0, &(sv)[4]),		\
+    (void) mysigvec(SIGTERM, (sigvec_t *) 0, &(sv)[5]),		\
+    (void) mysigvec(SIGHUP,  (sigvec_t *) 0, &(sv)[6]),		\
     sigblock(sigmask(SIGINT) | sigmask(SIGQUIT) | 		\
 	    sigmask(SIGTSTP) | sigmask(SIGTTIN) | 		\
 	    sigmask(SIGTTOU) | sigmask(SIGTERM) |		\
 	    sigmask(SIGHUP)))
 
 # define restoresigvec(sv, sm)					\
-    (void) (mysigvec(SIGINT,  &(sv)[0], (sigvec_t *) 0),	\
-	    mysigvec(SIGQUIT, &(sv)[1], (sigvec_t *) 0),	\
-	    mysigvec(SIGTSTP, &(sv)[2], (sigvec_t *) 0),	\
-	    mysigvec(SIGTTIN, &(sv)[3], (sigvec_t *) 0),	\
-	    mysigvec(SIGTTOU, &(sv)[4], (sigvec_t *) 0),	\
-	    mysigvec(SIGTERM, &(sv)[5], (sigvec_t *) 0),	\
-	    mysigvec(SIGHUP,  &(sv)[6], (sigvec_t *) 0),	\
-	    sigsetmask(sm))
+    (void) ((void) mysigvec(SIGINT,  &(sv)[0], (sigvec_t *) 0),	\
+	    (void) mysigvec(SIGQUIT, &(sv)[1], (sigvec_t *) 0),	\
+	    (void) mysigvec(SIGTSTP, &(sv)[2], (sigvec_t *) 0),	\
+	    (void) mysigvec(SIGTTIN, &(sv)[3], (sigvec_t *) 0),	\
+	    (void) mysigvec(SIGTTOU, &(sv)[4], (sigvec_t *) 0),	\
+	    (void) mysigvec(SIGTERM, &(sv)[5], (sigvec_t *) 0),	\
+	    (void) mysigvec(SIGHUP,  &(sv)[6], (sigvec_t *) 0),	\
+	    (void) sigsetmask(sm))
 # endif /* SAVESIGVEC */
 
 #endif /* _h_tc_sig */

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.wait.h,v 1.1.1.1 1996-10-02 06:09:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.wait.h,v 1.1.1.2 1998-10-03 21:10:17 danw Exp $ */
 /*
  * tc.wait.h: <sys/wait.h> for machines that don't have it or have it and
  *	      is incorrect.
@@ -68,7 +68,9 @@
 #  undef NEEDwait
 #  include "mi.wait.h"
 # else
-#  include <sys/wait.h>
+#  ifndef WINNT
+#   include <sys/wait.h>
+#  endif /* WINNT */
 # endif /* _MINIX */
 #endif /* SYSVREL == 0 || linux */
 

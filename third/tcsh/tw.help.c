@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.help.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tw.help.c,v 1.1.1.2 1998-10-03 21:10:21 danw Exp $ */
 /* tw.help.c: actually look up and print documentation on a file.
  *	      Look down the path for an appropriate file, then print it.
  *	      Note that the printing is NOT PAGED.  This is because the
@@ -39,7 +39,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tw.help.c,v 1.1.1.1 1996-10-02 06:09:24 ghudson Exp $")
+RCSID("$Id: tw.help.c,v 1.1.1.2 1998-10-03 21:10:21 danw Exp $")
 
 #include "tw.h"
 #include "tc.h"
@@ -62,7 +62,7 @@ do_help(command)
     Char   *cmd_p, *ep;
     char  **sp;
 
-    sigret_t(*orig_intr) ();
+    signalfun_t orig_intr;
     Char    curdir[MAXPATHLEN];	/* Current directory being looked at */
     register Char *hpath;	/* The environment parameter */
     Char    full[MAXPATHLEN];
@@ -106,7 +106,7 @@ do_help(command)
 
 	for (;;) {
 	    if (!*hpath) {
-		xprintf("No help file for %S\n", name);
+		xprintf(CGETS(28, 1, "No help file for %S\n"), name);
 		break;
 	    }
 	    nextslist(hpath, curdir);
@@ -117,21 +117,26 @@ do_help(command)
 	     * /bar/foo.1, /bar/foo.8, then finally /bar/foo.6.  This is so
 	     * that you don't spit a binary at the tty when $HPATH == $PATH.
 	     */
-	    copyn(full, curdir, sizeof(full) / sizeof(Char));
-	    catn(full, STRslash, sizeof(full) / sizeof(Char));
-	    catn(full, name, sizeof(full) / sizeof(Char));
+	    copyn(full, curdir, (int) (sizeof(full) / sizeof(Char)));
+	    catn(full, STRslash, (int) (sizeof(full) / sizeof(Char)));
+	    catn(full, name, (int) (sizeof(full) / sizeof(Char)));
 	    ep = &full[Strlen(full)];
 	    for (sp = h_ext; *sp; sp++) {
 		*ep = '\0';
-		catn(full, str2short(*sp), sizeof(full) / sizeof(Char));
+		catn(full, str2short(*sp), (int) (sizeof(full) / sizeof(Char)));
 		if ((f = open(short2str(full), O_RDONLY)) != -1)
 		    break;
 	    }
 	    if (f != -1) {
 		/* so cat it to the terminal */
-		orig_intr = (sigret_t (*)()) sigset(SIGINT, cleanf);
-		while (f != -1 && (len = read(f, (char *) buf, 512)) != 0)
+		orig_intr = (signalfun_t) sigset(SIGINT, cleanf);
+		while (f != -1 && (len = read(f, (char *) buf, 512)) > 0)
 		    (void) write(SHOUT, (char *) buf, (size_t) len);
+#ifdef convex
+		/* print error in case file is migrated */
+		if (len == -1)
+		    stderror(ERR_SYSTEM, progname, strerror(errno));
+#endif /* convex */
 		(void) sigset(SIGINT, orig_intr);
 		if (f != -1)
 		    (void) close(f);

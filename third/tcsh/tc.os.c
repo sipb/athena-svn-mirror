@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.os.c,v 1.1.1.1 1996-10-02 06:09:28 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.os.c,v 1.1.1.2 1998-10-03 21:10:13 danw Exp $ */
 /*
  * tc.os.c: OS Dependent builtin functions
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.os.c,v 1.1.1.1 1996-10-02 06:09:28 ghudson Exp $")
+RCSID("$Id: tc.os.c,v 1.1.1.2 1998-10-03 21:10:13 danw Exp $")
 
 #include "tw.h"
 #include "ed.h"
@@ -120,11 +120,11 @@ dosetpath(arglist, c)
 
     /* note that npaths != 0 */
 
-    spaths = (char **) xmalloc(npaths * sizeof *spaths);
+    spaths = (char **) xmalloc((size_t) npaths * sizeof *spaths);
     setzero((char *) spaths, npaths * sizeof *spaths);
-    cpaths = (char **) xmalloc((npaths + 1) * sizeof *cpaths);
+    cpaths = (char **) xmalloc((size_t) (npaths + 1) * sizeof *cpaths);
     setzero((char *) cpaths, (npaths + 1) * sizeof *cpaths);
-    cmds = (char **) xmalloc((ncmds + 1) * sizeof *cmds);
+    cmds = (char **) xmalloc((size_t) (ncmds + 1) * sizeof *cmds);
     setzero((char *) cmds, (ncmds + 1) * sizeof *cmds);
     for (i = 0; i < npaths; i++) {
 	char   *val = getenv(short2str(pathvars[i]));
@@ -132,8 +132,8 @@ dosetpath(arglist, c)
 	if (val == NULL)
 	    val = "";
 
-	spaths[i] = xmalloc((Strlen(pathvars[i]) + strlen(val)
-			     + 2) * sizeof **spaths);
+	spaths[i] = (char *) xmalloc((size_t) (Strlen(pathvars[i]) +
+				      strlen(val) + 2) * sizeof **spaths);
 	(void) strcpy(spaths[i], short2str(pathvars[i]));
 	(void) strcat(spaths[i], "=");
 	(void) strcat(spaths[i], val);
@@ -145,7 +145,7 @@ dosetpath(arglist, c)
 
 	if (val == NULL)
 	    goto abortpath;
-	cmds[i] = xmalloc(Strlen(val) + 1);
+	cmds[i] = (char *) xmalloc((size_t) Strlen(val) + 1);
 	(void) strcpy(cmds[i], short2str(val));
     }
 
@@ -373,10 +373,10 @@ dosetspath(v, c)
 	    p[i] = st->sf_id;
 	else {
 	    setname(s);
-	    stderror(ERR_NAME | ERR_STRING, "Bad cpu/site name");
+	    stderror(ERR_NAME | ERR_STRING, CGETS(23, 1, "Bad cpu/site name"));
 	}
 	if (i == MAXSITE - 1)
-	    stderror(ERR_NAME | ERR_STRING, "Site path too long");
+	    stderror(ERR_NAME | ERR_STRING, CGETS(23, 2, "Site path too long"));
     }
     if (setspath(p, i) == -1)
 	stderror(ERR_SYSTEM, "setspath", strerror(errno));
@@ -394,9 +394,9 @@ sitename(pid)
     struct sf *st;
 
     if ((ss = site(pid)) == -1 || (st = sfnum(ss)) == NULL)
-	return ("unknown");
+	return CGETS(23, 3, "unknown");
     else
-	return (st->sf_sname);
+	return st->sf_sname;
 }
 
 static int
@@ -416,15 +416,16 @@ migratepid(pid, new_site)
 
     if (need_local) {
 	if ((new_site = site(0)) == -1) {
-	    xprintf("site: %s\n", strerror(errno));
+	    xprintf(CGETS(23, 4, "site: %s\n"), strerror(errno));
 	    return (-1);
 	}
 	if ((st = sfnum(new_site)) == NULL) {
-	    xprintf("%d: Site not found\n", new_site);
+	    xprintf(CGETS(23, 5, "%d: Site not found\n"), new_site);
 	    return (-1);
 	}
 	if (setlocal(st->sf_local, strlen(st->sf_local)) == -1) {
-	    xprintf("setlocal: %s: %s\n", st->sf_local, strerror(errno));
+	    xprintf(CGETS(23, 6, "setlocal: %s: %s\n"),
+			  st->sf_local, strerror(errno));
 	    return (-1);
 	}
     }
@@ -441,7 +442,8 @@ domigrate(v, c)
     char   *s;
     Char   *cp;
     struct process *pp;
-    int     pid, err1 = 0;
+    int    err1 = 0;
+    int    pid = 0;
     siteno_t new_site = 0;
     sigmask_t omask;
 
@@ -468,7 +470,7 @@ domigrate(v, c)
 	dont_free = 1;
 	if ((st = sfname(s)) == NULL) {
 	    setname(s);
-	    stderror(ERR_NAME | ERR_STRING, "Site not found");
+	    stderror(ERR_NAME | ERR_STRING, CGETS(23, 7, "Site not found"));
 	}
 	dont_free = 0;
 	new_site = st->sf_id;
@@ -527,6 +529,47 @@ done:
 #endif /* TCF */
 
 /***
+ *** CRAY ddmode <velo@sesun3.epfl.ch> (Martin Ouwehand EPFL-SIC/SE)
+ ***/
+#if defined(_CRAY) && !defined(_CRAYMPP)
+void
+dodmmode(v, c)
+    Char  **v;
+    struct command *c;
+{
+    Char *cp = v[1];
+
+    USE(c);
+
+    if ( !cp ) {
+	int mode;
+
+	mode = dmmode(0);
+	dmmode(mode);
+	xprintf("%d\n",mode);
+    }
+    else {
+	if (cp[1] != '\0')
+	    stderror(ERR_NAME | ERR_STRING, 
+		     CGETS(23, 30, "Too many arguments"));
+	else
+	    switch(*cp) {
+	    case '0':
+		dmmode(0);
+		break;
+	    case '1':
+		dmmode(1);
+		break;
+	    default:
+		stderror(ERR_NAME | ERR_STRING, 
+			 CGETS(23, 31, "Invalid argument"));
+	    }
+    }
+}
+#endif /* _CRAY && !_CRAYMPP */
+
+
+/***
  *** CONVEX Warps.
  ***/
 
@@ -560,7 +603,7 @@ dowarp(v, c)
     if (setjmp(sigsys_buf)) {
 	signal(SIGSYS, old_sigsys_handler);
 	stderror(ERR_NAME | ERR_STRING, 
-		 "You're trapped in a universe you never made");
+		 CGETS(23, 8, "You're trapped in a universe you never made"));
 	return;
     }
     old_sigsys_handler = signal(SIGSYS, catch_sigsys);
@@ -570,7 +613,7 @@ dowarp(v, c)
     v++;
     if (*v == 0) {		/* display warp value */
 	if (warp < 0)
-	    stderror(ERR_NAME | ERR_STRING, "Getwarp failed");
+	    stderror(ERR_NAME | ERR_STRING, CGETS(23, 9, "Getwarp failed"));
 	we = getwarpbyvalue(warp);
 	if (we)
 	    printf("%s\n", we->w_name);
@@ -590,10 +633,10 @@ dowarp(v, c)
 		warp = -1;
 	}
 	if ((warp < 0) || (warp >= WARP_MAXLINK))
-	    stderror(ERR_NAME | ERR_STRING, "Invalid warp");
+	    stderror(ERR_NAME | ERR_STRING, CGETS(23, 10, "Invalid warp"));
 	if ((setwarp(warp) < 0) || (getwarp() != warp)) {
 	    (void) setwarp(oldwarp);
-	    stderror(ERR_NAME | ERR_STRING, "Setwarp failed");
+	    stderror(ERR_NAME | ERR_STRING, CGETS(23, 11, "Setwarp failed"));
 	}
     }
     signal(SIGSYS, old_sigsys_handler);
@@ -602,10 +645,10 @@ dowarp(v, c)
 #endif /* WARP */
 
 /***
- *** Masscomp
+ *** Masscomp or HCX
  ***/
 /* Added, DAS DEC-90. */
-#ifdef masscomp
+#if defined(masscomp) || defined(_CX_UX)
 /*ARGSUSED*/
 void
 douniverse(v, c)
@@ -613,17 +656,117 @@ douniverse(v, c)
     struct command *c;
 {
     register Char *cp = v[1];
+    register Char *cp2;		/* dunno how many elements v comes in with */
     char    ubuf[100];
+#ifdef BSDSIGS
+    register sigmask_t omask = 0;
+#endif /* BSDSIGS */
 
     if (cp == 0) {
 	(void) getuniverse(ubuf);
 	xprintf("%s\n", ubuf);
     }
-    else if (*cp == '\0' || setuniverse(short2str(cp)) != 0)
-	stderror(ERR_NAME | ERR_STRING, "Illegal universe");
+    else {
+	cp2 = v[2];
+	if (cp2 == 0) {
+	    if (*cp == '\0' || setuniverse(short2str(cp)) != 0)
+		stderror(ERR_NAME | ERR_STRING, CGETS(23, 12, "Illegal universe"));
+	    }
+	else {
+	    (void) getuniverse(ubuf);
+	    if (*cp == '\0' || setuniverse(short2str(cp)) != 0)
+	stderror(ERR_NAME | ERR_STRING, CGETS(23, 12, "Illegal universe"));
+	    if (setintr)
+#ifdef BSDSIGS
+		omask = sigblock(sigmask(SIGINT)) & ~sigmask(SIGINT);
+#else /* !BSDSIGS */
+		(void) sighold(SIGINT);
+#endif /* BSDSIGS */
+	    lshift(v, 2);
+	    if (setintr)
+#ifdef BSDSIGS
+		(void) sigsetmask(omask);
+#else /* !BSDSIGS */
+		(void) sigrelse (SIGINT);
+#endif /* BSDSIGS */
+	    reexecute(c);
+	    (void) setuniverse(ubuf);
+	}
+    }
 }
-#endif /* masscomp */
+#endif /* masscomp || _CX_UX */
 
+#if defined(_CX_UX)
+/*ARGSUSED*/
+void
+doatt(v, c)
+    register Char **v;
+    struct command *c;
+{
+    register Char *cp = v[1];
+    char    ubuf[100];
+#ifdef BSDSIGS
+    register sigmask_t omask = 0;
+#endif /* BSDSIGS */
+
+    if (cp == 0)
+	(void) setuniverse("att");
+    else {
+	(void) getuniverse(ubuf);
+	(void) setuniverse("att");
+	if (setintr)
+#ifdef BSDSIGS
+	    omask = sigblock(sigmask(SIGINT)) & ~sigmask(SIGINT);
+#else /* !BSDSIGS */
+	    (void) sighold(SIGINT);
+#endif /* BSDSIGS */
+	lshift(v, 1);
+	if (setintr)
+#ifdef BSDSIGS
+	    (void) sigsetmask(omask);
+#else /* !BSDSIGS */
+	    (void) sigrelse (SIGINT);
+#endif /* BSDSIGS */
+	reexecute(c);
+	(void) setuniverse(ubuf);
+    }
+}
+
+/*ARGSUSED*/
+void
+doucb(v, c)
+    register Char **v;
+    struct command *c;
+{
+    register Char *cp = v[1];
+    char    ubuf[100];
+#ifdef BSDSIGS
+    register sigmask_t omask = 0;
+#endif /* BSDSIGS */
+
+    if (cp == 0)
+	(void) setuniverse("ucb");
+    else {
+	(void) getuniverse(ubuf);
+	(void) setuniverse("ucb");
+	if (setintr)
+#ifdef BSDSIGS
+	    omask = sigblock(sigmask(SIGINT)) & ~sigmask(SIGINT);
+#else /* !BSDSIGS */
+	    (void) sighold(SIGINT);
+#endif /* BSDSIGS */
+	lshift(v, 1);
+	if (setintr)
+#ifdef BSDSIGS
+	    (void) sigsetmask(omask);
+#else /* !BSDSIGS */
+	    (void) sigrelse (SIGINT);
+#endif /* BSDSIGS */
+	reexecute(c);
+	(void) setuniverse(ubuf);
+    }
+}
+#endif /* _CX_UX */
 
 #ifdef _SEQUENT_
 /*
@@ -668,19 +811,35 @@ pr_stat_sub(p2, p1, pr)
 #endif /* _SEQUENT_ */
 
 
+#ifdef NEEDmemset
+/* This is a replacement for a missing memset function */
+ptr_t xmemset(loc, value, len)
+    ptr_t loc;
+    int len;
+    size_t value;
+{
+    char *ptr = (char *) loc;
+  
+    while (len--)
+	*ptr++ = value;
+    return loc;
+}
+#endif /* NEEDmemset */
+
+
 #ifdef NEEDmemmove
 /* memmove():
  * 	This is the ANSI form of bcopy() with the arguments backwards...
  *	Unlike memcpy(), it handles overlaps between source and 
  *	destination memory
  */
-void*
+ptr_t
 xmemmove(vdst, vsrc, len)
     ptr_t vdst;
     const ptr_t vsrc;
     size_t len;
 {
-    const char *src = (char *) vsrc;
+    const char *src = (const char *) vsrc;
     char *dst = (char *) vdst;
 
     if (src == dst)
@@ -701,6 +860,7 @@ xmemmove(vdst, vsrc, len)
 #endif /* NEEDmemmove */
 
 
+#ifndef WINNT
 #ifdef tcgetpgrp
 int
 xtcgetpgrp(fd)
@@ -728,6 +888,7 @@ xtcsetpgrp(fd, pgrp)
 }
 
 #endif	/* tcgetpgrp */
+#endif /* WINNT */
 
 
 #ifdef YPBUGS
@@ -736,13 +897,14 @@ fix_yp_bugs()
 {
     char   *mydomain;
 
+    extern int yp_get_default_domain __P((char **));
     /*
      * PWP: The previous version assumed that yp domain was the same as the
      * internet name domain.  This isn't allways true. (Thanks to Mat Landau
      * <mlandau@bbn.com> for the original version of this.)
      */
     if (yp_get_default_domain(&mydomain) == 0) {	/* if we got a name */
-	extern void yp_unbind();
+	extern void yp_unbind __P((const char *));
 
 	yp_unbind(mydomain);
     }
@@ -799,7 +961,7 @@ osinit()
 #ifdef aiws
     {
 	struct sigstack inst;
-	inst.ss_sp = xmalloc(4192) + 4192;
+	inst.ss_sp = (char *) xmalloc((size_t) 4192) + 4192;
 	inst.ss_onstack = 0;
 	sigstack(&inst, NULL);
     }
@@ -815,39 +977,40 @@ char *
 xstrerror(i)
     int i;
 {
-    static char errbuf[40]; /* 64 bit num */
+    static char errbuf[128];
 
-    if (i >= 0 && i < sys_nerr) 
+    if (i >= 0 && i < sys_nerr) {
 	return sys_errlist[i];
-    else {
-	xsprintf(errbuf, "Unknown Error: %d", i);
+    } else {
+	(void) xsnprintf(errbuf, sizeof(errbuf),
+	    CGETS(23, 13, "Unknown Error: %d"), i);
 	return errbuf;
     }
 }
 #endif /* strerror */
     
 #ifdef gethostname
-# if !defined(_MINIX) && !defined(__EMX__)
+# if !defined(_MINIX) && !defined(__EMX__) && !defined(WINNT)
 #  include <sys/utsname.h>
-# endif /* !_MINIX && !__EMX__ */
+# endif /* !_MINIX && !__EMX__ && !WINNT */
 
 int
 xgethostname(name, namlen)
     char   *name;
     int     namlen;
 {
-# if !defined(_MINIX) && !defined(__EMX__)
+# if !defined(_MINIX) && !defined(__EMX__) && !defined(WINNT)
     int     i, retval;
     struct utsname uts;
 
     retval = uname(&uts);
 
 #  ifdef DEBUG
-    xprintf("sysname:  %s\n", uts.sysname);
-    xprintf("nodename: %s\n", uts.nodename);
-    xprintf("release:  %s\n", uts.release);
-    xprintf("version:  %s\n", uts.version);
-    xprintf("machine:  %s\n", uts.machine);
+    xprintf(CGETS(23, 14, "sysname:  %s\n"), uts.sysname);
+    xprintf(CGETS(23, 15, "nodename: %s\n"), uts.nodename);
+    xprintf(CGETS(23, 16, "release:  %s\n"), uts.release);
+    xprintf(CGETS(23, 17, "version:  %s\n"), uts.version);
+    xprintf(CGETS(23, 18, "machine:  %s\n"), uts.machine);
 #  endif /* DEBUG */
     i = strlen(uts.nodename) + 1;
     (void) strncpy(name, uts.nodename, i < namlen ? i : namlen);
@@ -886,10 +1049,10 @@ xnice(incr)
 } /* end xnice */
 #endif /* nice */
 
-#ifdef getwd
-static char *strrcpy __P((char *, char *));
+#ifdef NEEDgetcwd
+static char *strnrcpy __P((char *, char *, size_t));
 
-/* xgetwd():
+/* xgetcwd():
  *	Return the pathname of the current directory, or return
  *	an error message in pathname.
  */
@@ -905,104 +1068,97 @@ static char *strrcpy __P((char *, char *));
  *  consequences: it supports no job control and it has a filesystem
  *  without "." and ".." !!!
  */
-static int pathsize;			/* pathname length */
-
 char *
-xgetwd(pathname)
-	char *pathname;
+xgetcwd(pathname, pathlen)
+    char *pathname;
+    size_t pathlen;
 {
-	char pathbuf[MAXNAMLEN];	/* temporary pathname buffer */
-	char *pnptr = &pathbuf[(sizeof pathbuf)-1]; /* pathname pointer */
-	char *prepend();		/* prepend dirname to pathname */
-	dev_t rdev;			/* root device number */
-	DIR *dirp;			/* directory stream */
-	ino_t rino;			/* root inode number */
-	off_t rsize;			/* root size */
-	struct direct *dir;		/* directory entry struct */
-	struct stat d ,dd;		/* file status struct */
+    char pathbuf[MAXNAMLEN];	/* temporary pathname buffer */
+    char *pnptr = &pathbuf[(sizeof pathbuf)-1]; /* pathname pointer */
+    dev_t rdev;			/* root device number */
+    DIR *dirp = NULL;		/* directory stream */
+    ino_t rino;			/* root inode number */
+    off_t rsize;		/* root size */
+    struct direct *dir;		/* directory entry struct */
+    struct stat d, dd;		/* file status struct */
+    int serrno;
 
-	pathsize = 0;
-	*pnptr = '\0';
-	stat("/.", &d);
-	rdev = d.st_dev;
-	rino = d.st_ino;
-	rsize = d.st_size;
-	for (;;) {
-		stat(".", &d);
-		if (d.st_ino == rino && d.st_dev == rdev && d.st_size == rsize)
-			break;		/* reached root directory */
-		if ((dirp = opendir("..")) == NULL) {
-        		(void) xsprintf(pathname,
-                        "getwd: Cannot open \"..\" (%s)", strerror(errno));
-			goto fail;
-		}
-		if (chdir("..") < 0) {
-        		(void) xsprintf(pathname,
-                        "getwd: Cannot chdir to \"..\" (%s)", strerror(errno));
-			goto fail;
-		}
-		do {
-			if((dir = readdir(dirp)) == NULL) {
-				closedir(dirp);
-        			(void) xsprintf(pathname,
-                        	"getwd: Read error in \"..\" (%s)",
-				strerror(errno));
-				goto fail;
-			}
-			stat(dir->d_name, &dd);
-		} while (dd.st_ino  != d.st_ino  ||
-			 dd.st_dev  != d.st_dev  ||
-			 dd.st_size != d.st_size
-			);
-		closedir(dirp);
-		pnptr = prepend("/", prepend(dir->d_name, pnptr));
+    *pnptr = '\0';
+    (void) stat("/.", &d);
+    rdev = d.st_dev;
+    rino = d.st_ino;
+    rsize = d.st_size;
+    for (;;) {
+	if (stat(".", &d) == -1) {
+	    (void) xsnprintf(pathname, pathlen, CGETS(23, 24,
+		"getcwd: Cannot stat \".\" (%s)"), strerror(errno));
+	    goto fail;
 	}
+	if (d.st_ino == rino && d.st_dev == rdev && d.st_size == rsize)
+	    break;		/* reached root directory */
+	if ((dirp = opendir("..")) == NULL) {
+	    (void) xsnprintf(pathname, pathlen, CGETS(23, 19,
+		"getcwd: Cannot open \"..\" (%s)"), strerror(errno));
+	    goto fail;
+	}
+	if (chdir("..") == -1) {
+	    (void) xsnprintf(pathname, pathlen, CGETS(23, 20,
+		"getcwd: Cannot chdir to \"..\" (%s)"), strerror(errno));
+	    goto fail;
+	}
+	do {
+	    if ((dir = readdir(dirp)) == NULL) {
+		(void) xsnprintf(pathname, pathlen, 
+		    CGETS(23, 21, "getcwd: Read error in \"..\" (%s)"),
+		    strerror(errno));
+		goto fail;
+	    }
+	    if (stat(dir->d_name, &dd) == -1) {
+		(void) xsnprintf(pathname, pathlen,
+		    CGETS(23, 25, "getcwd: Cannot stat directory \"%s\" (%s)"),
+		    dir->d_name, strerror(errno));
+		goto fail;
+	    }
+	} while (dd.st_ino  != d.st_ino  ||
+		 dd.st_dev  != d.st_dev  ||
+		 dd.st_size != d.st_size);
+	(void) closedir(dirp);
+	dirp = NULL;
+	pnptr = strnrcpy(dirp->d_name, pnptr, pnptr - pathbuf);
+	pnptr = strnrcpy("/", pnptr, pnptr - pathbuf);
+    }
 
-	if (*pnptr == '\0')		/* current dir == root dir */
-		strcpy(pathname, "/");
-	else {
-		strcpy(pathname, pnptr);
-		if (chdir(pnptr) < 0) {
-        		(void) xsprintf(pathname,
-                        "getwd: Cannot change back to \".\" (%s)",
-			strerror(errno));
-			return (NULL);
-		}
+    if (*pnptr == '\0')		/* current dir == root dir */
+	(void) strncpy(pathname, "/", pathlen);
+    else {
+	(void) strncpy(pathname, pnptr, pathlen);
+	pathname[pathlen - 1] = '\0';
+	if (chdir(pnptr) == -1) {
+	    (void) xsnprintf(pathname, MAXPATHLEN, CGETS(23, 22,
+		    "getcwd: Cannot change back to \".\" (%s)"),
+		    strerror(errno));
+	    return NULL;
 	}
-	return (pathname);
+    }
+    return pathname;
 
 fail:
-	chdir(prepend(".", pnptr));
-	return (NULL);
-}
-
-/* prepend():
- *	 tacks a directory name onto the front of a pathname.
- */
-static char *
-prepend(dirname, pathname)
-	register char *dirname;
-	register char *pathname;
-{
-	register int i;			/* directory name size counter */
-
-	for (i = 0; *dirname != '\0'; i++, dirname++)
-		continue;
-	if ((pathsize += i) < MAXNAMLEN)
-		while (i-- > 0)
-			*--pathname = *--dirname;
-	return (pathname);
+    serrno = errno;
+    (void) chdir(strnrcpy(".", pnptr, pnptr - pathbuf));
+    errno = serrno;
+    return NULL;
 }
 
 # else /* ! hp9000s500 */
 
-#if (SYSVREL != 0 && !defined(d_fileno)) || defined(_VMS_POSIX)
-# define d_fileno d_ino
-#endif
+#  if (SYSVREL != 0 && !defined(d_fileno)) || defined(_VMS_POSIX) || defined(WINNT)
+#   define d_fileno d_ino
+#  endif
 
-char   *
-xgetwd(pathname)
+char *
+xgetcwd(pathname, pathlen)
     char   *pathname;
+    size_t pathlen;
 {
     DIR    *dp;
     struct dirent *d;
@@ -1010,12 +1166,14 @@ xgetwd(pathname)
     struct stat st_root, st_cur, st_next, st_dotdot;
     char    pathbuf[MAXPATHLEN], nextpathbuf[MAXPATHLEN * 2];
     char   *pathptr, *nextpathptr, *cur_name_add;
+    int	   save_errno = 0;
 
     /* find the inode of root */
     if (stat("/", &st_root) == -1) {
-	(void) xsprintf(pathname,
-			"getwd: Cannot stat \"/\" (%s)", strerror(errno));
-	return (NULL);
+	(void) xsnprintf(pathname, pathlen, CGETS(23, 23, 
+			"getcwd: Cannot stat \"/\" (%s)"),
+			strerror(errno));
+	return NULL;
     }
     pathbuf[MAXPATHLEN - 1] = '\0';
     pathptr = &pathbuf[MAXPATHLEN - 1];
@@ -1024,11 +1182,12 @@ xgetwd(pathname)
 
     /* find the inode of the current directory */
     if (lstat(".", &st_cur) == -1) {
-	(void) xsprintf(pathname,
-			"getwd: Cannot stat \".\" (%s)", strerror(errno));
-	return (NULL);
+	(void) xsnprintf(pathname, pathlen, CGETS(23, 24,
+			 "getcwd: Cannot stat \".\" (%s)"),
+			 strerror(errno));
+	return NULL;
     }
-    nextpathptr = strrcpy(nextpathptr, "../");
+    nextpathptr = strnrcpy(nextpathptr, "../", nextpathptr - nextpathbuf);
 
     /* Descend to root */
     for (;;) {
@@ -1036,30 +1195,37 @@ xgetwd(pathname)
 	/* look if we found root yet */
 	if (st_cur.st_ino == st_root.st_ino &&
 	    DEV_DEV_COMPARE(st_cur.st_dev, st_root.st_dev)) {
-	    (void) strcpy(pathname, *pathptr != '/' ? "/" : pathptr);
-	    return (pathname);
+	    (void) strncpy(pathname, *pathptr != '/' ? "/" : pathptr, pathlen);
+	    pathname[pathlen - 1] = '\0';
+	    return pathname;
 	}
 
 	/* open the parent directory */
 	if (stat(nextpathptr, &st_dotdot) == -1) {
-	    (void) xsprintf(pathname,
-			    "getwd: Cannot stat directory \"%s\" (%s)",
-			    nextpathptr, strerror(errno));
-	    return (NULL);
+	    (void) xsnprintf(pathname, pathlen, CGETS(23, 25,
+			     "getcwd: Cannot stat directory \"%s\" (%s)"),
+			     nextpathptr, strerror(errno));
+	    return NULL;
 	}
 	if ((dp = opendir(nextpathptr)) == NULL) {
-	    (void) xsprintf(pathname,
-			    "getwd: Cannot open directory \"%s\" (%s)",
-			    nextpathptr, strerror(errno));
-	    return (NULL);
+	    (void) xsnprintf(pathname, pathlen, CGETS(23, 26,
+			     "getcwd: Cannot open directory \"%s\" (%s)"),
+			     nextpathptr, strerror(errno));
+	    return NULL;
 	}
 
 	/* look in the parent for the entry with the same inode */
 	if (DEV_DEV_COMPARE(st_dotdot.st_dev, st_cur.st_dev)) {
 	    /* Parent has same device. No need to stat every member */
-	    for (d = readdir(dp); d != NULL; d = readdir(dp)) 
+	    for (d = readdir(dp); d != NULL; d = readdir(dp)) {
+#ifdef __clipper__
+		if (((unsigned long)d->d_fileno & 0xffff) == st_cur.st_ino)
+		    break;
+#else
 		if (d->d_fileno == st_cur.st_ino)
 		    break;
+#endif
+	    }
 	}
 	else {
 	    /* 
@@ -1069,12 +1235,18 @@ xgetwd(pathname)
 	    for (d = readdir(dp); d != NULL; d = readdir(dp)) {
 		if (ISDOT(d->d_name) || ISDOTDOT(d->d_name))
 		    continue;
-		(void) strcpy(cur_name_add, d->d_name);
+		(void)strncpy(cur_name_add, d->d_name,
+		    &nextpathbuf[sizeof(nextpathbuf) - 1] - cur_name_add);
 		if (lstat(nextpathptr, &st_next) == -1) {
-		    (void) xsprintf(pathname, "getwd: Cannot stat \"%s\" (%s)",
-				    d->d_name, strerror(errno));
-		    (void) closedir(dp);
-		    return (NULL);
+		    /*
+		     * We might not be able to stat() some path components
+		     * if we are using afs, but this is not an error as
+		     * long as we find the one we need; we also save the
+		     * first error to report it if we don't finally succeed.
+		     */
+		    if (save_errno == 0)
+			save_errno = errno;
+		    continue;
 		}
 		/* check if we found it yet */
 		if (st_next.st_ino == st_cur.st_ino &&
@@ -1083,41 +1255,47 @@ xgetwd(pathname)
 	    }
 	}
 	if (d == NULL) {
-	    (void) xsprintf(pathname, "getwd: Cannot find \".\" in \"..\"");
+	    (void) xsnprintf(pathname, pathlen, CGETS(23, 27,
+			     "getcwd: Cannot find \".\" in \"..\" (%s)"),
+			     strerror(save_errno ? save_errno : ENOENT));
 	    (void) closedir(dp);
-	    return (NULL);
+	    return NULL;
 	}
+	else
+	    save_errno = 0;
 	st_cur = st_dotdot;
-	pathptr = strrcpy(pathptr, d->d_name);
-	pathptr = strrcpy(pathptr, "/");
-	nextpathptr = strrcpy(nextpathptr, "../");
-	(void) closedir(dp);
+	pathptr = strnrcpy(pathptr, d->d_name, pathptr - pathbuf);
+	pathptr = strnrcpy(pathptr, "/", pathptr - pathbuf);
+	nextpathptr = strnrcpy(nextpathptr, "../", nextpathptr - nextpathbuf);
 	*cur_name_add = '\0';
+	(void) closedir(dp);
     }
-} /* end getwd */
+} /* end getcwd */
+# endif /* hp9000s500 */
 
-/* strrcpy():
- *	Like strcpy, going backwards and returning the new pointer
+/* strnrcpy():
+ *	Like strncpy, going backwards and returning the new pointer
  */
 static char *
-strrcpy(ptr, str)
+strnrcpy(ptr, str, siz)
     register char *ptr, *str;
+    size_t siz;
 {
     register int len = strlen(str);
+    if (siz == 0)
+	return ptr;
 
-    while (len)
+    while (len && siz--)
 	*--ptr = str[--len];
 
     return (ptr);
-} /* end strrcpy */
-# endif /* hp9000s500 */
-#endif /* getwd */
+} /* end strnrcpy */
+#endif /* getcwd */
 
 #ifdef apollo
 /***
  *** Domain/OS
  ***/
-#undef value			/* XXX: Careful here */
 #include <apollo/base.h>
 #include <apollo/loader.h>
 #include <apollo/error.h>
@@ -1135,7 +1313,7 @@ apperr(st)
     e_sub[e_subl] = '\0';
     e_code[e_codel] = '\0';
     e_mod[e_modl] = '\0';
-    (void) xsprintf(buf, "%s (%s/%s)", e_code, e_sub, e_mod);
+    (void) xsnprintf(buf, sizeof(buf), "%s (%s/%s)", e_code, e_sub, e_mod);
 
     return(buf);
 }
@@ -1186,7 +1364,8 @@ getv(v)
     else if (eq(v, STRsys53))
 	return(0);
     else 
-	stderror(ERR_NAME | ERR_SYSTEM, short2str(v), "Invalid system type");
+	stderror(ERR_NAME | ERR_SYSTEM, short2str(v),
+		 CGETS(23, 28, "Invalid system type"));
     /*NOTREACHED*/
     return(0);
 }
@@ -1202,7 +1381,8 @@ dover(v, c)
     setname(short2str(*v++));
     if (!*v) {
 	if (!(p = tgetenv(STRSYSTYPE)))
-	    stderror(ERR_NAME | ERR_STRING, "System type is not set");
+	    stderror(ERR_NAME | ERR_STRING,
+		     CGETS(23, 29, "System type is not set"));
 	xprintf("%S\n", p);
     }
     else {

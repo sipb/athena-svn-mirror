@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.disc.c,v 1.1.1.1 1996-10-02 06:09:28 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.disc.c,v 1.1.1.2 1998-10-03 21:10:11 danw Exp $ */
 /*
  * tc.disc.c: Functions to set/clear line disciplines
  *
@@ -37,7 +37,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.disc.c,v 1.1.1.1 1996-10-02 06:09:28 ghudson Exp $")
+RCSID("$Id: tc.disc.c,v 1.1.1.2 1998-10-03 21:10:11 danw Exp $")
 
 #ifdef OREO
 #include <compat.h>
@@ -112,16 +112,16 @@ int     f;
 	if ((comp & COMPAT_BSDTTY) != COMPAT_BSDTTY) {
 	    (void) setcompat(comp | COMPAT_BSDTTY);
 	    if (ioctl(f, TIOCGLTC, (ioctl_t) & ltcbuf) != 0)
-		xprintf("Couldn't get local chars.\n");
+		xprintf(CGETS(21, 1, "Couldn't get local chars.\n"));
 	    else {
-		ltcbuf.t_suspc = '\032';	/* ^Z */
-		ltcbuf.t_dsuspc = '\031';	/* ^Y */
-		ltcbuf.t_rprntc = '\022';	/* ^R */
-		ltcbuf.t_flushc = '\017';	/* ^O */
-		ltcbuf.t_werasc = '\027';	/* ^W */
-		ltcbuf.t_lnextc = '\026';	/* ^V */
+		ltcbuf.t_suspc = CTL_ESC('\032');        /* ^Z */
+		ltcbuf.t_dsuspc = CTL_ESC('\031');       /* ^Y */
+		ltcbuf.t_rprntc = CTL_ESC('\022');       /* ^R */
+		ltcbuf.t_flushc = CTL_ESC('\017');       /* ^O */
+		ltcbuf.t_werasc = CTL_ESC('\027');       /* ^W */
+		ltcbuf.t_lnextc = CTL_ESC('\026');       /* ^V */
 		if (ioctl(f, TIOCSLTC, (ioctl_t) & ltcbuf) != 0)
-		    xprintf("Couldn't set local chars.\n");
+		    xprintf(CGETS(21, 2, "Couldn't set local chars.\n"));
 	    }
 	    termiob.c_cc[VSWTCH] = '\0';
 	    if (ioctl(f, TCSETAF, (ioctl_t) & termiob) != 0)
@@ -183,7 +183,7 @@ int f;
     if (add_discipline) {
 	add_discipline = 0;
 #if defined(OREO) || defined(IRIS4D)
-	return (ioctl(f, TCSETAF, &otermiob));
+	return (ioctl(f, TCSETAF, (ioctl_t) & otermiob));
 #endif /* OREO || IRIS4D */
 
 #ifdef _IBMR2

@@ -63,6 +63,9 @@ static char sccsid[] = "@(#)glob.c	5.12 (Berkeley) 6/24/91";
 #include <ctype.h>
 typedef void * ptr_t;
 #endif
+#ifdef WINNT
+	#pragma warning(disable:4244)
+#endif /* WINNT */
 
 #define Char __Char
 #include "sh.h"
@@ -96,11 +99,14 @@ static	int	 glob3		__P((Char *, Char *, Char *, Char *,
 				     glob_t *, int));
 static	int	 globextend	__P((Char *, glob_t *));
 static	int	 match		__P((Char *, Char *, Char *, int));
+#ifndef __clipper__
 static	int	 compare	__P((const ptr_t, const ptr_t));
+#endif
 static 	DIR	*Opendir	__P((Char *));
 #ifdef S_IFLNK
 static	int	 Lstat		__P((Char *, struct stat *));
 #endif
+static	int	 Stat		__P((Char *, struct stat *sb));
 static 	Char 	*Strchr		__P((Char *, int));
 #ifdef DEBUG
 static	void	 qprintf	__P((Char *));
@@ -137,21 +143,30 @@ static	void	 qprintf	__P((Char *));
 #define	M_SET		META('[')
 #define	ismeta(c)	(((c)&M_META) != 0)
 
+int
+globcharcoll(c1, c2)
+    int c1, c2;
+{
+#if defined(NLS) && defined(LC_COLLATE) && !defined(NOSTRCOLL)
+    char s1[2], s2[2];
+
+    if (c1 == c2)
+	return (0);
+    s1[0] = c1;
+    s2[0] = c2;
+    s1[1] = s2[1] = '\0';
+    return strcoll(s1, s2);
+#else
+    return (c1 - c2);
+#endif
+}
+
 /*
  * Need to dodge two kernel bugs:
  * opendir("") != opendir(".")
  * NAMEI_BUG: on plain files trailing slashes are ignored in some kernels.
  *            POSIX specifies that they should be ignored in directories.
  */
-
-/*
- * For operating systems with single case filenames (OS/2)
- */
-#ifdef CASE_INSENSITIVE
-# define samecase(x) (isupper(x) ? tolower(x) : (x))
-#else
-# define samecase(x) (x)
-#endif /* CASE_INSENSITIVE */
 
 static DIR *
 Opendir(str)
@@ -254,7 +269,13 @@ static int
 compare(p, q)
     const ptr_t  p, q;
 {
+#if defined(NLS) && !defined(NOSTRCOLL)
+    errno = 0;  /* strcoll sets errno, another brain-damage */
+ 
+    return (strcoll(*(char **) p, *(char **) q));
+#else
     return (strcmp(*(char **) p, *(char **) q));
+#endif /* NLS && !NOSTRCOLL */
 }
 
 /*
@@ -268,7 +289,7 @@ int
 glob(pattern, flags, errfunc, pglob)
     const char *pattern;
     int     flags;
-    int     (*errfunc) __P((char *, int));
+    int     (*errfunc) __P((const char *, int));
     glob_t *pglob;
 {
     int     err, oldpathc;
@@ -461,6 +482,7 @@ glob2(pathbuf, pathend, pattern, pglob, no_match)
     for (;;) {
 	if (*pattern == EOS) {	/* end of pattern? */
 	    *pathend = EOS;
+
 	    if (Lstat(pathbuf, &sbuf))
 		return (0);
 
@@ -513,17 +535,21 @@ glob3(pathbuf, pathend, pattern, restpattern, pglob, no_match)
     struct dirent *dp;
     int     err;
     Char m_not = (pglob->gl_flags & GLOB_ALTNOT) ? M_ALTNOT : M_NOT;
+    char cpathbuf[MAXPATHLEN], *ptr;;
 
     *pathend = EOS;
     errno = 0;
 
-    if (!(dirp = Opendir(pathbuf)))
+    if (!(dirp = Opendir(pathbuf))) {
 	/* todo: don't call for ENOENT or ENOTDIR? */
-	if ((pglob->gl_errfunc && (*pglob->gl_errfunc) (pathbuf, errno)) ||
+	for (ptr = cpathbuf; (*ptr++ = (char) *pathbuf++) != EOS;)
+	    continue;
+	if ((pglob->gl_errfunc && (*pglob->gl_errfunc) (cpathbuf, errno)) ||
 	    (pglob->gl_flags & GLOB_ERR))
 	    return (GLOB_ABEND);
 	else
 	    return (0);
+    }
 
     err = 0;
 
@@ -642,7 +668,8 @@ match(name, pat, patend, m_not)
 		++pat;
 	    while (((c = *pat++) & M_MASK) != M_END) {
 		if ((*pat & M_MASK) == M_RNG) {
-		    if (c <= k && k <= pat[1])
+		    if (globcharcoll(CHAR(c), CHAR(k)) <= 0 &&
+			globcharcoll(CHAR(k), CHAR(pat[1])) <= 0)
 			ok = 1;
 		    pat += 2;
 		}

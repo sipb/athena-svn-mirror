@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.print.c,v 1.1.1.1 1996-10-02 06:09:22 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/sh.print.c,v 1.1.1.2 1998-10-03 21:10:05 danw Exp $ */
 /*
  * sh.print.c: Primitive Output routines.
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: sh.print.c,v 1.1.1.1 1996-10-02 06:09:22 ghudson Exp $")
+RCSID("$Id: sh.print.c,v 1.1.1.2 1998-10-03 21:10:05 danw Exp $")
 
 #include "ed.h"
 
@@ -52,21 +52,21 @@ static	void	p2dig	__P((int));
  * C Shell
  */
 
-#ifdef BSDLIMIT
+#if defined(BSDLIMIT) || defined(RLIMIT_CPU)
 void
 psecs(l)
     long    l;
 {
     register int i;
 
-    i = l / 3600;
+    i = (int) (l / 3600);
     if (i) {
 	xprintf("%d:", i);
-	i = l % 3600;
+	i = (int) (l % 3600);
 	p2dig(i / 60);
 	goto minsec;
     }
-    i = l;
+    i = (int) l;
     xprintf("%d", i / 60);
 minsec:
     i %= 60;
@@ -90,14 +90,14 @@ pcsecs(l)			/* PWP: print mm:ss.dd, l is in sec*100 */
 {
     register int i;
 
-    i = l / 360000;
+    i = (int) (l / 360000);
     if (i) {
 	xprintf("%d:", i);
-	i = (l % 360000) / 100;
+	i = (int) ((l % 360000) / 100);
 	p2dig(i / 60);
 	goto minsec;
     }
-    i = l / 100;
+    i = (int) (l / 100);
     xprintf("%d", i / 60);
 minsec:
     i %= 60;
@@ -118,6 +118,7 @@ p2dig(i)
 char    linbuf[2048];		/* was 128 */
 char   *linp = linbuf;
 bool    output_raw = 0;		/* PWP */
+bool    xlate_cr   = 0;		/* HE */
 
 void
 xputchar(c)
@@ -129,7 +130,7 @@ xputchar(c)
     c &= CHAR | QUOTE;
     if (!output_raw && (c & QUOTE) == 0) {
 	if (Iscntrl(c)) {
-	    if (c != '\t' && c != '\n' && c != '\r') {
+	    if (c != '\t' && c != '\n' && (xlate_cr || c != '\r')) {
 		xputchar('^' | atr);
 		if (c == ASCII)
 		    c = '?';
@@ -178,7 +179,7 @@ putpure(c)
 {
     c &= CHAR;
 
-    *linp++ = c;
+    *linp++ = (char) c;
     if (linp >= &linbuf[sizeof linbuf - 10])
 	flush();
     return (1);
@@ -193,7 +194,9 @@ draino()
 void
 flush()
 {
-    register int unit;
+    int unit;
+    static int interrupted = 0;
+    size_t sz;
 
     /* int lmode; */
 
@@ -201,6 +204,12 @@ flush()
 	return;
     if (GettingInput && !Tty_raw_mode && linp < &linbuf[sizeof linbuf - 10])
 	return;
+    if (interrupted) {
+	interrupted = 0;
+	linp = linbuf;		/* avoid resursion as stderror calls flush */
+	stderror(ERR_SILENT);
+    }
+    interrupted = 1;
     if (haderr)
 	unit = didfds ? 2 : SHDIAG;
     else
@@ -215,6 +224,37 @@ flush()
     }
 #endif
 #endif
-    (void) write(unit, linbuf, (size_t) (linp - linbuf));
+    sz = (size_t) (linp - linbuf);
+    if (write(unit, linbuf, sz) == -1)
+	switch (errno) {
+#ifdef EIO
+	/* We lost our tty */
+	case EIO:
+#endif
+#ifdef ENXIO
+	/*
+	 * Deal with Digital Unix 4.0D bogocity, returning ENXIO when
+	 * we lose our tty.
+	 */
+	case ENXIO:
+#endif
+	/*
+	 * IRIX 6.4 bogocity?
+	 */
+#ifdef ENOTTY
+	case ENOTTY:
+#endif
+#ifdef EBADF
+	case EBADF:
+#endif
+	/* Nothing to do, but die */
+	    xexit(1);
+	    break;
+	default:
+	    stderror(ERR_SILENT);
+	    break;
+	}
+
     linp = linbuf;
+    interrupted = 0;
 }

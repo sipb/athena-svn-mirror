@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.refresh.c,v 1.1.1.1 1996-10-02 06:09:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/ed.refresh.c,v 1.1.1.2 1998-10-03 21:09:47 danw Exp $ */
 /*
  * ed.refresh.c: Lower level screen refreshing functions
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: ed.refresh.c,v 1.1.1.1 1996-10-02 06:09:27 ghudson Exp $")
+RCSID("$Id: ed.refresh.c,v 1.1.1.2 1998-10-03 21:09:47 danw Exp $")
 
 #include "ed.h"
 /* #define DEBUG_UPDATE */
@@ -47,15 +47,20 @@ RCSID("$Id: ed.refresh.c,v 1.1.1.1 1996-10-02 06:09:27 ghudson Exp $")
 
 Char   *litptr[256];
 static int vcursor_h, vcursor_v;
+static int rprompt_h, rprompt_v;
 
 static	void	Draw 			__P((int));
 static	void	Vdraw 			__P((int));
+static	void	RefreshPromptpart	__P((Char *));
 static	void	update_line 		__P((Char *, Char *, int));
 static	void	str_insert		__P((Char *, int, int, Char *, int));
 static	void	str_delete		__P((Char *, int, int, int));
 static	void	str_cp			__P((Char *, Char *, int));
 static	void	PutPlusOne		__P((int));
 static	void	cpy_pad_spaces		__P((Char *, Char *, int));
+#if defined(DSPMBYTE)
+static	Char 	*update_line_fix_mbyte_point __P((Char *, Char *, int));
+#endif
 #if defined(DEBUG_UPDATE) || defined(DEBUG_REFRESH) || defined(DEBUG_LITERAL)
 static	void	dprintf			__P((char *, ...));
 #ifdef DEBUG_UPDATE
@@ -79,7 +84,7 @@ Char *f, *t;
  *	debugging cause you'll mangle up the file descriptors!
  */
 static void
-#if __STDC__
+#ifdef FUNCPROTO
 dprintf(char *fmt, ...)
 #else
 dprintf(va_list)
@@ -92,7 +97,7 @@ dprintf(va_list)
     if ((dtty = getenv("DEBUGTTY"))) {
 	int o;
 	va_list va;
-#if __STDC__
+#ifdef FUNCPROTO
 	va_start(va, fmt);
 #else
 	char *fmt;
@@ -146,15 +151,42 @@ Draw(c)				/* draw c, expand tabs, ctl chars */
 	}
     }
     else if (Iscntrl(ch)) {
+#ifndef _OSD_POSIX
 	Vdraw('^');
-	if (ch == '\177') {
+	if (ch == CTL_ESC('\177')) {
 	    Vdraw('?');
 	}
 	else {
 	    /* uncontrolify it; works only for iso8859-1 like sets */
 	    Vdraw((c | 0100));
+#else /*_OSD_POSIX*/
+	if (ch == CTL_ESC('\177')) {
+	    Vdraw('^');
+	    Vdraw('?');
+	}
+	else {
+	    if (Isupper(_toebcdic[_toascii[c]|0100])
+		|| strchr("@[\\]^_", _toebcdic[_toascii[c]|0100]) != NULL)
+	    {
+		Vdraw('^');
+		Vdraw(_toebcdic[_toascii[c]|0100]);
+	    }
+	    else
+	    {
+		Vdraw('\\');
+		Vdraw(((c >> 6) & 7) + '0');
+		Vdraw(((c >> 3) & 7) + '0');
+		Vdraw((c & 7) + '0');
+	    }
+#endif /*_OSD_POSIX*/
 	}
     }
+#ifdef KANJI
+    else if (!adrof(STRnokanji)) {
+	Vdraw(c);
+	return;
+    }
+#endif
     else {
 	Vdraw('\\');
 	Vdraw(((c >> 6) & 7) + '0');
@@ -175,7 +207,7 @@ Vdraw(c)			/* draw char c onto V lines */
 # endif /* SHORT_STRNGS */
 #endif  /* DEBUG_REFRESH */
 
-    Vdisplay[vcursor_v][vcursor_h] = c;
+    Vdisplay[vcursor_v][vcursor_h] = (Char) c;
     vcursor_h++;		/* advance to next place */
     if (vcursor_h >= TermH) {
 	Vdisplay[vcursor_v][TermH] = '\0';	/* assure end of line */
@@ -191,37 +223,18 @@ Vdraw(c)			/* draw char c onto V lines */
     }
 }
 
-
 /*
- *  Refresh()
- *	draws the new virtual screen image from the current input
- *  	line, then goes line-by-line changing the real image to the new
- *	virtual image. The routine to re-draw a line can be replaced
- *	easily in hopes of a smarter one being placed there.
+ *  RefreshPromptpart()
+ *	draws a prompt element, expanding literals (we know it's ASCIZ)
  */
-static int OldvcV = 0;
-void
-Refresh()
+static void
+RefreshPromptpart(buf)
+    Char *buf;
 {
-    register int cur_line;
     register Char *cp;
-    int     cur_h, cur_v = 0, new_vcv;
-    Char    oldgetting;
     unsigned int litnum = 0;
 
-#ifdef DEBUG_REFRESH
-    dprintf("PromptBuf = :%s:\r\n", short2str(PromptBuf));
-    dprintf("InputBuf = :%s:\r\n", short2str(InputBuf));
-#endif /* DEBUG_REFRESH */
-    oldgetting = GettingInput;
-    GettingInput = 0;		/* avoid re-entrance via SIGWINCH */
-
-    /* reset the Vdraw cursor */
-    vcursor_h = 0;
-    vcursor_v = 0;
-
-    /* draw prompt, we know it's ASCIZ */
-    for (cp = PromptBuf; *cp; cp++) {
+    for (cp = buf; *cp; cp++) {
 	if (*cp & LITERAL) {
 	    if (litnum < (sizeof(litptr) / sizeof(litptr[0]))) {
 		litptr[litnum] = cp;
@@ -245,6 +258,43 @@ Refresh()
 	else
 	    Draw(*cp);
     }
+}
+
+/*
+ *  Refresh()
+ *	draws the new virtual screen image from the current input
+ *  	line, then goes line-by-line changing the real image to the new
+ *	virtual image. The routine to re-draw a line can be replaced
+ *	easily in hopes of a smarter one being placed there.
+ */
+static int OldvcV = 0;
+void
+Refresh()
+{
+    register int cur_line;
+    register Char *cp;
+    int     cur_h, cur_v = 0, new_vcv;
+    int     rhdiff;
+    Char    oldgetting;
+
+#ifdef DEBUG_REFRESH
+    dprintf("PromptBuf = :%s:\r\n", short2str(PromptBuf));
+    dprintf("InputBuf = :%s:\r\n", short2str(InputBuf));
+#endif /* DEBUG_REFRESH */
+    oldgetting = GettingInput;
+    GettingInput = 0;		/* avoid re-entrance via SIGWINCH */
+
+    /* reset the Vdraw cursor, temporarily draw rprompt to calculate its size */
+    vcursor_h = 0;
+    vcursor_v = 0;
+    RefreshPromptpart(RPromptBuf);
+    rprompt_h = vcursor_h;
+    rprompt_v = vcursor_v;
+
+    /* reset the Vdraw cursor, draw prompt */
+    vcursor_h = 0;
+    vcursor_v = 0;
+    RefreshPromptpart(PromptBuf);
     cur_h = -1;			/* set flag in case I'm not set */
 
     /* draw the current input buffer */
@@ -256,10 +306,27 @@ Refresh()
 	Draw(*cp);
     }
 
-    if (cur_h == -1) {		/* if I havn't been set yet, I'm at the end */
+    if (cur_h == -1) {		/* if I haven't been set yet, I'm at the end */
 	cur_h = vcursor_h;
 	cur_v = vcursor_v;
     }
+
+    rhdiff = TermH - vcursor_h - rprompt_h;
+    if (rprompt_h != 0 && rprompt_v == 0 && vcursor_v == 0 && rhdiff > 1) {
+			/*
+			 * have a right-hand side prompt that will fit on
+			 * the end of the first line with at least one
+			 * character gap to the input buffer.
+			 */
+	while (--rhdiff > 0)		/* pad out with spaces */
+	    Draw(' ');
+	RefreshPromptpart(RPromptBuf);
+    }
+    else {
+	rprompt_h = 0;			/* flag "not using rprompt" */
+	rprompt_v = 0;
+    }
+
     new_vcv = vcursor_v;	/* must be done BEFORE the NUL is written */
     Vdraw('\0');		/* put NUL on end */
 
@@ -274,6 +341,9 @@ Refresh()
     for (cur_line = 0; cur_line <= new_vcv; cur_line++) {
 	/* NOTE THAT update_line MAY CHANGE Display[cur_line] */
 	update_line(Display[cur_line], Vdisplay[cur_line], cur_line);
+#ifdef WINNT
+	flush();
+#endif /* WINNT */
 
 	/*
 	 * Copy the new line to be the current one, and pad out with spaces
@@ -283,7 +353,7 @@ Refresh()
 	 */
 	cpy_pad_spaces(Display[cur_line], Vdisplay[cur_line], TermH);
 #ifdef notdef
-	(void) Strncpy(Display[cur_line], Vdisplay[cur_line], TermH);
+	(void) Strncpy(Display[cur_line], Vdisplay[cur_line], (size_t) TermH);
 	Display[cur_line][TermH] = '\0';	/* just in case */
 #endif
     }
@@ -302,6 +372,9 @@ Refresh()
     dprintf("\r\nCursorH = %d, CursorV = %d, cur_h = %d, cur_v = %d\r\n",
 	    CursorH, CursorV, cur_h, cur_v);
 #endif /* DEBUG_REFRESH */
+#ifdef WINNT
+    flush();
+#endif /* WINNT */
     MoveToLine(cur_v);		/* go to where the cursor is */
     MoveToChar(cur_h);
     SetAttributes(0);		/* Clear all attributes */
@@ -419,6 +492,26 @@ str_cp(a, b, n)
 }
 
 
+#if defined(DSPMBYTE) /* BY TAGA Nayuta VERY THANKS */
+static Char *
+update_line_fix_mbyte_point(start, target, d)
+     Char *start, *target;
+     int d;
+{
+    if (_enable_mbdisp) {
+	while (*start) {
+	    if (target == start)
+		break;
+	    if (target < start)
+		return target + d;
+	    if (Ismbyte1(*start) && Ismbyte2(*(start + 1)))
+		start++;
+	    start++;
+	}
+    }
+    return target;
+}
+#endif
 
 /* ****************************************************************
     update_line() is based on finding the middle difference of each line
@@ -676,6 +769,17 @@ update_line(old, new, cur_line)
      */
     MoveToLine(cur_line);
 
+#if defined(DSPMBYTE) /* BY TAGA Nayuta VERY THANKS */
+    ofd = update_line_fix_mbyte_point(old, ofd, -1);
+    osb = update_line_fix_mbyte_point(old, osb,  1);
+    ose = update_line_fix_mbyte_point(old, ose, -1);
+    ols = update_line_fix_mbyte_point(old, ols,  1);
+    nfd = update_line_fix_mbyte_point(new, nfd, -1);
+    nsb = update_line_fix_mbyte_point(new, nsb,  1);
+    nse = update_line_fix_mbyte_point(new, nse, -1);
+    nls = update_line_fix_mbyte_point(new, nls,  1);
+#endif
+
     /*
      * at this point we have something like this:
      * 
@@ -739,20 +843,20 @@ update_line(old, new, cur_line)
 		    dprintf("   ERROR: cannot insert in early first diff\n");
 #endif  /* DEBUG_UPDATE */
 		Insert_write(nfd, fx);
-		str_insert(old, ofd - old, TermH, nfd, fx);
+		str_insert(old, (int) (ofd - old), TermH, nfd, fx);
 	    }
 	    /*
 	     * write (nsb-nfd) - fx chars of new starting at (nfd + fx)
 	     */
 	    so_write(nfd + fx, (nsb - nfd) - fx);
-	    str_cp(ofd + fx, nfd + fx, (nsb - nfd) - fx);
+	    str_cp(ofd + fx, nfd + fx, (int) ((nsb - nfd) - fx));
 	}
 	else {
 #ifdef DEBUG_UPDATE
 	    dprintf("without anything to save\r\n");
 #endif  /* DEBUG_UPDATE */
 	    so_write(nfd, (nsb - nfd));
-	    str_cp(ofd, nfd, (nsb - nfd));
+	    str_cp(ofd, nfd, (int) (nsb - nfd));
 	    /*
 	     * Done
 	     */
@@ -784,13 +888,13 @@ update_line(old, new, cur_line)
 		    dprintf("   ERROR: cannot delete in first diff\n");
 #endif /* DEBUG_UPDATE */
 		DeleteChars(-fx);
-		str_delete(old, ofd - old, TermH, -fx);
+		str_delete(old, (int) (ofd - old), TermH, -fx);
 	    }
 	    /*
 	     * write (nsb-nfd) chars of new starting at nfd
 	     */
 	    so_write(nfd, (nsb - nfd));
-	    str_cp(ofd, nfd, (nsb - nfd));
+	    str_cp(ofd, nfd, (int) (nsb - nfd));
 
 	}
 	else {
@@ -804,7 +908,14 @@ update_line(old, new, cur_line)
 #ifdef DEBUG_REFRESH
 	    dprintf("cleareol %d\n", (oe - old) - (ne - new));
 #endif  /* DEBUG_UPDATE */
+#ifndef WINNT
 	    ClearEOL((oe - old) - (ne - new));
+#else
+	    /*
+	     * The calculation above does not work too well on NT
+	     */
+	    ClearEOL(TermH - CursorH);
+#endif /*WINNT*/
 	    /*
 	     * Done
 	     */
@@ -850,14 +961,24 @@ update_line(old, new, cur_line)
 	    so_write(nse, (nls - nse));
 	}
 	else {
+	    int olen = oe - old + fx;
+	    if (olen > TermH)
+		olen = TermH;
 #ifdef DEBUG_UPDATE
 	    dprintf("but with nothing left to save\r\n");
 #endif /* DEBUG_UPDATE */
 	    so_write(nse, (nls - nse));
 #ifdef DEBUG_REFRESH
-	    dprintf("cleareol %d\n", (oe - old) + fx - (ne - new));
+	    dprintf("cleareol %d\n", olen - (ne - new));
 #endif /* DEBUG_UPDATE */
-	    ClearEOL((oe - old) + fx - (ne - new));
+#ifndef WINNT
+	    ClearEOL(olen - (ne - new));
+#else
+	    /*
+	     * The calculation above does not work too well on NT
+	     */
+	    ClearEOL(TermH - CursorH);
+#endif /*WINNT*/
 	}
     }
 
@@ -892,21 +1013,21 @@ update_line(old, new, cur_line)
 		    dprintf("   ERROR: cannot insert in late first diff\n");
 #endif /* DEBUG_UPDATE */
 		Insert_write(nfd, fx);
-		str_insert(old, ofd - old, TermH, nfd, fx);
+		str_insert(old, (int) (ofd - old), TermH, nfd, fx);
 	    }
 
 	    /*
 	     * write (nsb-nfd) - fx chars of new starting at (nfd + fx)
 	     */
 	    so_write(nfd + fx, (nsb - nfd) - fx);
-	    str_cp(ofd + fx, nfd + fx, (nsb - nfd) - fx);
+	    str_cp(ofd + fx, nfd + fx, (int) ((nsb - nfd) - fx));
 	}
 	else {
 #ifdef DEBUG_UPDATE
 	    dprintf("without anything to save\r\n");
 #endif /* DEBUG_UPDATE */
 	    so_write(nfd, (nsb - nfd));
-	    str_cp(ofd, nfd, (nsb - nfd));
+	    str_cp(ofd, nfd, (int) (nsb - nfd));
 	}
     }
 
@@ -1074,7 +1195,7 @@ PutPlusOne(c)
     int    c;
 {
     (void) putraw(c);
-    Display[CursorV][CursorH++] = c;
+    Display[CursorV][CursorH++] = (Char) c;
     if (CursorH >= TermH) {	/* if we must overflow */
 	CursorH = 0;
 	CursorV++;
@@ -1094,8 +1215,8 @@ PutPlusOne(c)
 
 void
 RefPlusOne()
-{				/* we added just one char, handle it fast *//* a
-				 * ssumes that screen cursor == real cursor */
+{				/* we added just one char, handle it fast.
+				 * assumes that screen cursor == real cursor */
     register Char c, mc;
 
     c = Cursor[-1] & CHAR;	/* the char we just added */
@@ -1103,16 +1224,43 @@ RefPlusOne()
     if (c == '\t' || Cursor != LastChar) {
 	Refresh();		/* too hard to handle */
 	return;
+    }
+
+    if (rprompt_h != 0 && (TermH - CursorH - rprompt_h < 3)) {
+	Refresh();		/* clear out rprompt if less than one char gap*/
+	return;
     }				/* else (only do at end of line, no TAB) */
 
     if (Iscntrl(c)) {		/* if control char, do caret */
+#ifndef _OSD_POSIX
 	mc = (c == '\177') ? '?' : (c | 0100);
 	PutPlusOne('^');
 	PutPlusOne(mc);
+#else /*_OSD_POSIX*/
+	if (_toascii[c] == '\177' || Isupper(_toebcdic[_toascii[c]|0100])
+		|| strchr("@[\\]^_", _toebcdic[_toascii[c]|0100]) != NULL)
+	{
+	    mc = (_toascii[c] == '\177') ? '?' : _toebcdic[_toascii[c]|0100];
+	    PutPlusOne('^');
+	    PutPlusOne(mc);
+	}
+	else
+	{
+	    PutPlusOne('\\');
+	    PutPlusOne(((c >> 6) & 7) + '0');
+	    PutPlusOne(((c >> 3) & 7) + '0');
+	    PutPlusOne((c & 7) + '0');
+	}
+#endif /*_OSD_POSIX*/
     }
     else if (Isprint(c)) {	/* normal char */
 	PutPlusOne(c);
     }
+#ifdef KANJI
+    else if (!adrof(STRnokanji)) {
+	PutPlusOne(c);
+    }
+#endif
     else {
 	PutPlusOne('\\');
 	PutPlusOne(((c >> 6) & 7) + '0');
