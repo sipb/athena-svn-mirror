@@ -5,7 +5,7 @@
  * This is a simpler, faster, replacement for "post" for use
  * when "sendmail" is the transport system.
  *
- * $Id: spost.c,v 1.2 1999-06-02 16:54:09 danw Exp $
+ * $Id: spost.c,v 1.3 2000-05-08 15:47:28 ghudson Exp $
  */
 
 #include <h/mh.h>
@@ -513,6 +513,8 @@ putfmt (char *name, char *str, FILE *out)
 
 	    while ((cp = getname(str))) {
 		mp = getm( cp, NULL, 0, AD_HOST, NULL);
+		if (mp == NULL)
+		    continue;
 		if (f == 0) {
 		    f = mp;
 		    mp->m_next = mp;
@@ -632,6 +634,8 @@ putadr (char *name, struct mailname *nl)
 			    linepos = namelen;
 		    }
 		    mp2 = getm( cp, NULL, 0, AD_HOST, NULL);
+		    if (mp2 == NULL)
+			continue;
 		    if (akvisible()) {
 			mp2->m_pers = getcpy(mp->m_mbox);
 			linepos = putone( adrformat(mp2), linepos, namelen );
