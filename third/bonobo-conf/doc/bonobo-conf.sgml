@@ -1,0 +1,534 @@
+<!doctype book PUBLIC "-//Davenport//DTD DocBook V3.0//EN" [
+<!entity bonobo-config-utils SYSTEM "sgml/bonobo-config-utils.sgml">
+<!entity bonobo-config-database SYSTEM "sgml/bonobo-config-database.sgml">
+<!entity bonobo-property-editor SYSTEM "sgml/bonobo-property-editor.sgml">
+]>
+<book>
+  <bookinfo>
+    <title>The Bonobo Configuration System</title>
+    <author>
+      <firstname>Dietmar</firstname>
+      <surname>Maurer</surname>
+    </author>
+    <address>
+      <email>dietmar@ximian.com</email>
+    </address>
+  </bookinfo>
+  <chapter id="intro">
+    <title>Bonobo Configuration System Features</title>
+
+    <sect1>
+      <title>Introduction</title>
+      <para>
+	The Bonobo Configuration System (BCS) consists of several parts. An API
+	to access configuration data, a database to store configuration values
+	in XML format and a system to visualise and edit configuration
+	data. The whole system is built on top of bonobo and ORBit (CORBA).
+      </para>
+      <para>
+	There are several APIs to access the configuration data, and the API
+	can be chosen through the bonobo moniker system. It is up to the
+	programmer to decide which interface is best for a given application.
+      </para>
+      <para>
+	The configuration system allows you to store the data with various
+	backends. Although BCS is shipped with it's own XML based
+	backend, it is also possible to use GConf, or LDAP as backend.
+	The configuration database architecture is a reimplementation of
+	the GConf architecture developed by Havoc Pennington using
+	Bonobo-native idioms. 
+      </para>
+      <para>
+	Some configuration systems only permit you to store a limited set of
+	types. We have removed that limitation so that we can now store
+	<type>CORBA:any</type> which is very convenient in some situations.
+      </para>
+
+    </sect1>
+
+    <sect1>
+      <title>Configuration Databases</title>
+      <para>
+	Configuration databases are the low level API to access configuration
+	data. All other APIs are build on top of this one. There are some handy
+	C wrapper <link linkend="bonobo-conf-bonobo-config-database">functions
+	</link> in case you don't want to use the CORBA interface. This also
+	provides a smooth migration path if you previously used GConf or the
+	old gnome-config system.
+      </para>
+
+      <para>
+	As mentioned above BCS allows you to use various kinds of databases to
+	actually store the data. A convenient way is to use the XML based
+	standard database, called "xmldb". This format is human readable and
+	also provides a way to store localised values. It can be used together
+	with the xml-i18n-tools.
+      </para>
+      
+      <para>
+	There is a simple plug-in mechanism for database backends - namely
+	monikers. For example you can access "xmldb" databases through the
+	"xmldb:" moniker, and the GConf database is available through the
+	"gconf:" moniker.
+      </para>
+    </sect1>
+
+    <sect1>
+      <title>Directory Hierarchy and Names</title>
+      <para>
+	BCS can store a whole configuration tree, just like a file
+	system. Each directory can contain zero or more entries (configuration
+	values). Directories and entries use a different name space, so there
+	are no conflicts if a directory and a value use the same name.
+      </para>
+
+      <para>
+	We use a slash (<literal>/</literal>) as directory delimiter, and names
+	may not contain colons (<literal>:</literal>).
+      </para>
+    </sect1>
+
+    <sect1>
+      <title>Default Values</title>
+      <para>
+	Most applications wants to provide some default values for
+	configuration data, which can then be overwritten by the user. Default
+	values are most often stored in some system directory (read only),
+	whereas the user specific data is stored in the users home directory.
+	For example an application stores default values in
+	<filename>/usr/etc/appname.xmldb</filename>, and user specified value
+	in <filename>~/.appname.xmldb</filename>.
+      </para>
+
+      <para>
+	Another scenario is that the default values are stored somewhere at a
+	LDAP server, or there is a group-ware server which provides default
+	values. In both cases user specified values can either be stored in the
+	users home directory, or at the LDAP/group-ware server.
+      </para>
+ 
+      <para>
+	To reach a maximum of flexibility BCS allows you to combine
+	databases. That way is possible to add one database to another, which
+	is then used to lookup default values.
+      </para>
+      
+    </sect1>
+
+    <sect1>
+      <title>Documentation for values</title>
+      <para>
+	BCS does not treat documentation as special data type. Documentation is
+	handled like any other (string) data. The convention is to store all
+	documentations inside the <literal>/doc/</literal> directory, so that
+	one can lookup the documentation for <literal>$(key)</literal> at
+	<literal>/doc/$(key)</literal>.
+      </para>
+      
+    </sect1>
+
+
+    <sect1>
+      <title>Notifications</title>
+      <para>
+	BCS also supports a data change notification service. All interested
+	applications are notified if configuration data is changed. This makes
+	it possible that configuration takes effect on-the-fly without
+	restarting any application.
+      </para>
+
+      <para>
+	We use the BonoboEventSource interface to implement notifications. Each
+	ConfigDatabase is aggregated with such an event source, and emits the
+	following events:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>
+	    <literal>Bonobo/Property:change:$(key)</literal>
+	  </term>
+	  <listitem>
+	    <para>
+	      You should listen to those events if you are interested
+	      in changes somewhere in the hierarchy below $(key)
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>
+	    <literal>Bonobo/ConfigDatabase:change$(dir):$(name)</literal>
+	  </term>
+	  <listitem>
+	    <para>
+	      This format is well suited if you want to listen to changes
+	      in a specified directory $(dir), or listen to changes of a 
+	      specific value.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	A common situation is where you want to listen to all changes inside a
+	single directory. You can use the following mask to listen to changes
+	in directory <literal>/testdir</literal>:
+	<programlisting>
+mask = "Bonobo/ConfigDatabase:change/testdir:";
+
+bonobo_event_source_client_add_listener (db, change_cb, mask, ev, NULL);
+	</programlisting>
+      </para>
+
+      <para>
+	If you want to listen to a specific value, say "value1", you can use:
+	<programlisting>
+mask = "Bonobo/ConfigDatabase:change/testdir:value1";
+	</programlisting>
+      </para>
+
+    </sect1>
+
+    <sect1>
+      <title>Monikers</title>
+      <para>
+	You can access the whole configuration system with monikers. Monikers
+	are used to name objects, and they effectively implement an object
+	naming space. The following table contains the moniker names together
+	with the interfaces they are able to resolve. Some of the monikers are
+	also able to use parent monikers if present.
+      </para>
+
+      <table frame=all><title>BCS Monikers</title>
+	<tgroup cols=3 align=left colsep=1 rowsep=1>
+	  <thead>
+	    <row>
+	      <entry>moniker name</entry>
+	      <entry>parent moniker interface</entry>
+	      <entry>provided interfaces</entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row>
+	      <entry>xmldb:</entry>
+	      <entry>Bonobo/ConfigDatabase</entry>
+	      <entry>Bonobo/ConfigDatabase</entry>
+	    </row>
+	    <row>
+	      <entry>gconf:</entry>
+	      <entry>-</entry>
+	      <entry>Bonobo/ConfigDatabase</entry>
+	    </row>
+	    <row>
+	      <entry morerows=4>config:</entry>
+	      <entry morerows=4>Bonobo/ConfigDatabase</entry>
+	      <entry>Bonobo/Property</entry>
+	    </row>
+	    <row>
+	      <entry>Bonobo/PropertyBag</entry>
+	    </row>
+	    <row>
+	      <entry>Bonobo/Control</entry>
+	    </row>
+	    <row>
+	      <entry>Bonobo/PropertyEditor</entry>
+	    </row>
+	    <row>
+	      <entry>Bonobo/ConfigDatabase</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>     
+ 
+      <para>
+	You can get configuration database interfaces with the "xmldb:" and
+	"gconf:" monikers. Additional interfaces are provided by the "config:"
+	moniker. Here are some examples on how to use those monikers.
+      </para>
+
+      <para>
+	If you want direct access to a xml file containing configuration data
+	you can use:
+
+	<programlisting>
+Bonobo_ConfigDatabase db;
+
+db =  bonobo_get_object ("xmldb:~/test.xmldb", 
+	                 Bonobo/ConfigDatabase", ev);
+      </programlisting>
+      </para>
+
+      <para>
+	You can then pass that database object to other functions to get and
+	set values:
+	<programlisting>
+autosave = bonobo_config_get_bool (db, "/gnumeric/autosave", ev);
+
+bonobo_config_set_bool (db, "/gnumeric/autosave", FALSE, ev);
+	</programlisting>
+      </para>
+	  
+      <para>
+	As mentioned above you can use a parent moniker with the xmldb moniker.
+	The parent is then used to lookup default values:
+	<programlisting>
+Bonobo_ConfigDatabase db;
+char *moniker_name;
+
+moniker_name = "xmldb:~/test-defaults.xmldb#xmldb:~/test.xmldb";
+db =  bonobo_get_object (moniker_name, Bonobo/ConfigDatabase", ev);
+	</programlisting>
+      </para>
+
+      <para>
+	The configuration moniker is invoked by using the "config:" prefix. The
+	string afterwards is the configuration locator. The moniker support
+	being queried against the "Bonobo/Property" or "Bonobo/PropertyBag"
+	depending on whether we are requesting a set of attributes, or a single
+	attribute. You can also query for a "Bonobo/Control" if you want to
+	display or edit the value within your application.
+      </para>
+
+      <para>
+	For example, retrieving the configuration information for a specific
+	configuration property in Gnumeric would work like this:
+	<programlisting>
+Bonobo_Property auto_save;
+CORBA_Any value;
+	
+auto_save = bonobo_get_object ("config:gnumeric/auto-save", 
+	                       "IDL:Bonobo/Property:1.0", ev);
+value = bonobo_property_get_value (auto_save, ev);
+	</programlisting>
+      </para>
+
+
+    </sect1>
+
+    <sect1>
+      <title>Bonobo Controls and Property Editors</title>
+      <para>
+	As already mentioned the "config:" moniker can be queried for a
+	"Bonobo/Control" or "Bonobo/PropertyEditor". BCS uses a slightly
+	extended version of Controls, called PropertyEditors. A PropertyEditor
+	is simply a Control which is able to edit and view properties.
+      </para>
+
+      <para>
+	BCS comes with a set of PropertyEditors to edit all basic types, and
+	there are default editors for structures and lists. This way you can
+	display and edit values with arbitrary types. It is also possible to
+	develop your own PropertyEditor.
+      </para>
+
+      <para>
+	Here is the code to get a widget which is able to edit a configuration
+	value:
+	<programlisting>
+Bonobo_Control  control;
+GtkWidget      *widget;
+
+control = bonobo_get_object ("config:gnumeric/auto-save", 
+	                     "IDL:Bonobo/Control:1.0", ev);
+
+widget = bonobo_widget_new_control_from_objref (control, NULL);
+	</programlisting>
+      </para>
+
+      <para>
+	Another common scenario is that you need a property editor for a
+	property contained in a PropertyBag. The following code returns a
+	widget which is able to edit the property <parameter>"name"</parameter>
+	within the PropertyBag <parameter>bag</parameter>. The type of the
+	property has to be <parameter>TC_long</parameter>.
+	<programlisting>
+widget = bonobo_config_widget_new (TC_long, bag, "name", NULL, ev);
+	</programlisting>
+      </para>
+
+      <sect2>
+	<title>Preferences Dialogs</title>
+
+	<para>
+	  This section of the documentation is out of date. Please take a look
+	  at
+	  <filename>bonobo-conf/examples/evolution-calendar-config.c</filename>
+	  for an example on how to write preferences dialogs.
+	</para>
+	<para>
+	  Almost every application needs a prferences dialog. BCS supports the
+	  automatic creation of such dialogs from PropertyControls:
+	  <programlisting>
+Bonobo_ConfigControl config_control;
+GtkWidget            *dialog;
+
+dialog = bonobo_preferences_new (config_control);
+gtk_widget_show (dialog);
+	  </programlisting>
+	</para>
+	
+	<para>
+	  So the real question is how to create such PropertyControls. On way
+	  is to use the standard Bonobo PropertyControl
+	  implementation. Another, and by far simpler way is to use a
+	  BonoboConfigControl object:
+	  <programlisting>
+BonoboConfigControl *config_control;
+Bonobo_PropertyBag   pb;
+GtkWidget           *dialog;
+
+config_control = bonobo_config_control_new (NULL);
+
+pb = bonobo_get_object ("config:eog/display", "Bonobo/PropertyBag", ev);
+
+bonobo_config_control_add_page (config_control, "Title", pb, NULL, NULL);
+
+dialog = bonobo_preferences_new (BONOBO_OBJREF (config_control));
+	  </programlisting>
+	</para>
+
+	<para>
+	  The above code creates a full featured preferences dialog with a
+	  default layout. You are also able to provide your own layout by
+	  passing a callback function to
+	  <function>bonobo_config_control_add_page()</function>. The following
+	  code creates a Page containing a single PropertyEditor widget.
+	  <programlisting>
+create_page_callback_fn (BonoboConfigControl *control,
+	                 Bonobo_PropertyBag   pb,
+	                 gpointer             closure,
+	                 CORBA_Environment   *ev)
+{
+	GtkWidget *w;
+
+	w = bonobo_config_widget_new (TC_Bonobo_StorageType, pb, "test-enum", 
+				      NULL, ev);
+	gtk_widget_show (w);
+
+	return w;
+}
+	  </programlisting>
+	<para>
+
+      </sect2>
+     </sect1>
+    
+    <sect1>
+      <title>Data Types</title>
+      <para>
+	We do not make any limitation on data types. Instead BCS allows you to
+	store <type>CORBA:any</type>. 
+      </para>
+
+    </sect1>
+   
+
+  </chapter>
+
+  <chapter id="xmldb-format">
+    <title>XMLDB Database Format</title>
+     <sect1>
+      <title>Overview</title>
+      <para>
+	We have decided to use an XML based format because it is human readable
+	any easy to edit. You can use this format for small or medium sized
+	configuration databases. Please keep in mind that the whole XML tree is
+	held in memory, so storing a big database with several megabytes is a
+	bad idea.
+      </para>
+
+      <para>
+	XMLDB files are split into sections, and each section contains the
+	entries for a specified directory. The directory name is specified with
+	the path attribute of the section element. The section without a path is
+	the root directory.
+	<programlisting>
+&#60;?xml version="1.0"?&#62;
+&#60;bonobo-conf&#62;
+  &#60;section&#62;
+    &#60;entry name="value1" type="string" value="a value in the root dir"/&#62;
+  &#60;/section&#62;
+
+  &#60;section path="subdir"&#62;
+    &#60;entry name="test-long" type="long" value="5"/&#62;
+    &#60;entry name="test-string" type="string" value="test"/&#62;
+  &#60;/section>
+
+  &#60;section path="doc/subdir"&#62;
+    &#60;entry name="test-string" type="string" value="a string"/&#62;
+  &#60;/section&#62;
+&#60;/bonobo-conf&#62;
+	</programlisting>
+      <para>
+
+      <para>
+	The <markup role="xml">&#60;entry&#62</markup> element has several
+	formats. The simplest form is when the type and the value are specified
+	as attributes of the element, as used in the previous example. XMLDB knows
+	the following type string:
+      </para>
+
+      <table frame=all><title>Type attribute values</title>
+	<tgroup cols=2 align=left colsep=1 rowsep=1>
+	  <thead>
+	    <row>
+	      <entry>attrivute value</entry>
+	      <entry>description</entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    <row><entry>short</entry><entry>16bit signed integer</entry></row>
+	    <row><entry>ushort</entry><entry>16bit unsigned integer</entry></row>
+	    <row><entry>long</entry><entry>32bit signed integer</entry></row>
+	    <row><entry>ulong</entry><entry>32bit unsigned integer</entry></row>
+	    <row><entry>float</entry><entry>single precision floating point</entry></row>
+	    <row><entry>double</entry><entry>double precision floating point</entry></row>
+	    <row><entry>char</entry><entry>8bit character</entry></row>
+	    <row><entry>string</entry><entry>string</entry></row>
+	    <row><entry>boolean</entry><entry>boolean values</entry></row>
+	  </tbody>
+	</tgroup>
+      </table>     
+
+      <para>
+	Another form is to use an <markup>&#60;value&#62;</markup> element. This
+	format is especially useful for localised values. You can use the
+	<application>xml-i18n-tools</application> to generate such files:
+	<programlisting>
+&#60;entry name="test-string" type="string"&#62;
+  &#60;value&#62;a string&#60;/value&#62;
+  &#60;value xml:lang="de"&#62;ein string&#60;/value&#62;
+&#60;/entry&#62;
+	</programlisting>
+      </para>
+
+      <para>
+	The last form is to use a <markup>&#60;any&#62;</markup> element. This
+	form is used to store complex data types:
+	<programlisting>
+&#60;entry name="storagetype"&#62;
+  &#60;any&#62;
+    &#60;type name="StorageType" repo_id="IDL:Bonobo/StorageType:1.0" 
+     tckind="17" length="0" sub_parts="2"&#62;
+      &#60;subnames&#62;
+        &#60;name&#62;STORAGE_TYPE_REGULAR&#60;/name&#62;
+        &#60;name&#62;STORAGE_TYPE_DIRECTORY&#60;/name&#62;
+      &#60;/subnames&#62;
+    &#60;/type&#62;
+    &#60;value&#62;0&#60;/value&#62;
+  &#60;/any&#62;
+&#60;/entry&#62;
+	</programlisting>
+
+      </para>
+
+    </sect1>
+  </chapter>
+
+  <chapter id="funcref">
+    <title>Function Reference</title>
+    &bonobo-config-database;
+    &bonobo-config-utils;
+    &bonobo-property-editor;
+  </chapter>
+</book>

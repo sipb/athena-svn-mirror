@@ -1,0 +1,572 @@
+# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+AWK = @AWK@
+BONOBO_CFLAGS = @BONOBO_CFLAGS@
+BONOBO_CONF_CFLAGS = @BONOBO_CONF_CFLAGS@
+BONOBO_CONF_LIBS = @BONOBO_CONF_LIBS@
+BONOBO_LIBS = @BONOBO_LIBS@
+BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CPP = @CPP@
+DATADIRNAME = @DATADIRNAME@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_LIBS = @GCONF_LIBS@
+GENCAT = @GENCAT@
+GLIBC21 = @GLIBC21@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_CONFIG = @GLIB_CONFIG@
+GLIB_LIBS = @GLIB_LIBS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
+GNOMEUI_LIBS = @GNOMEUI_LIBS@
+GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
+GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
+GNOME_CONFIG = @GNOME_CONFIG@
+GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
+GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
+GNOME_LIBDIR = @GNOME_LIBDIR@
+GNOME_LIBS = @GNOME_LIBS@
+GNORBA_CFLAGS = @GNORBA_CFLAGS@
+GNORBA_LIBS = @GNORBA_LIBS@
+GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_CONFIG = @GTK_CONFIG@
+GTK_LIBS = @GTK_LIBS@
+HTML_DIR = @HTML_DIR@
+INSTOBJEXT = @INSTOBJEXT@
+INTLBISON = @INTLBISON@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
+LIBICONV = @LIBICONV@
+LIBS = @LIBS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+MSGFMT = @MSGFMT@
+OAF_CFLAGS = @OAF_CFLAGS@
+OAF_CONFIG = @OAF_CONFIG@
+OAF_LIBS = @OAF_LIBS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_CFLAGS = @ORBIT_CFLAGS@
+ORBIT_CONFIG = @ORBIT_CONFIG@
+ORBIT_IDL = @ORBIT_IDL@
+ORBIT_LIBS = @ORBIT_LIBS@
+PACKAGE = @PACKAGE@
+POFILES = @POFILES@
+POSUB = @POSUB@
+RANLIB = @RANLIB@
+STRIP = @STRIP@
+USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
+ZVT_LIBS = @ZVT_LIBS@
+
+INCLUDES =          -DGNOMELOCALEDIR=\""$(datadir)/locale"\"                -I.                                                     -I$(srcdir) -I$(top_srcdir)                             -I$(top_builddir)                                       -I$(includedir)                                         $(BONOBO_CONF_CFLAGS)
+
+
+CORBA_SOURCE =  	Bonobo_Config.h			Bonobo_Config-common.c		Bonobo_Config-stubs.c		Bonobo_Config-skels.c
+
+
+idl_flags = `gnome-config --cflags idl`
+
+noinst_PROGRAMS = test-config-moniker config-moniker-demo wombat-example
+
+lib_LTLIBRARIES = libbonobo_conf.la
+
+libbonobo_confincludedir = $(includedir)/bonobo-conf
+libbonobo_confinclude_HEADERS =  	Bonobo_Config.h					bonobo-config-database.h			bonobo-config-subdir.h				bonobo-property-frame.h				bonobo-property-bag-proxy.h			bonobo-property-editor.h			bonobo-config-utils.h				bonobo-preferences.h				bonobo-config-control.h
+
+
+libbonobo_conf_la_SOURCES =  	$(CORBA_SOURCE)					gtkwtreeitem.h					gtkwtreeitem.c					gtkwtree.h					gtkwtree.c					bonobo-config-utils.h				bonobo-config-utils.c				bonobo-config-database.h			bonobo-config-database.c			bonobo-config-subdir.h				bonobo-config-subdir.c				bonobo-config-bag.h				bonobo-config-bag.c				bonobo-config-bag-property.h			bonobo-config-bag-property.c			bonobo-config-property.h			bonobo-config-property.c			bonobo-subproperty.h				bonobo-subproperty.c				bonobo-property-proxy.h				bonobo-property-proxy.c				bonobo-property-bag-proxy.h			bonobo-property-bag-proxy.c			bonobo-property-editor.h			bonobo-property-editor.c			bonobo-property-bag-editor.h			bonobo-property-bag-editor.c			bonobo-property-editor-basic.c			bonobo-property-editor-boolean.c		bonobo-property-editor-filename.c		bonobo-property-editor-color.c			bonobo-property-editor-option.c			bonobo-property-editor-default.c		bonobo-property-editor-enum.c			bonobo-property-frame.h				bonobo-property-frame.c				bonobo-preferences.h				bonobo-preferences.c				bonobo-config-control.h 			bonobo-config-control.c	
+
+
+#	bonobo-property-editor-struct.h		\
+#	bonobo-property-editor-struct.c		\
+#	bonobo-property-editor-list.h		\
+#	bonobo-property-editor-list.c	
+
+test_config_moniker_SOURCES = test-config-moniker.c
+test_config_moniker_LDADD = libbonobo_conf.la $(BONOBO_LIBS)
+
+config_moniker_demo_SOURCES = config-moniker-demo.c
+config_moniker_demo_LDADD = libbonobo_conf.la $(BONOBO_LIBS) 
+
+wombat_example_SOURCES = wombat-example.c
+wombat_example_LDADD = libbonobo_conf.la $(BONOBO_LIBS) 
+
+BUILT_SOURCES = $(CORBA_SOURCE)
+
+CLEANFILES =  $(BUILT_SOURCES)
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+libbonobo_conf_la_LDFLAGS = 
+libbonobo_conf_la_LIBADD = 
+libbonobo_conf_la_OBJECTS =  Bonobo_Config-common.lo \
+Bonobo_Config-stubs.lo Bonobo_Config-skels.lo gtkwtreeitem.lo \
+gtkwtree.lo bonobo-config-utils.lo bonobo-config-database.lo \
+bonobo-config-subdir.lo bonobo-config-bag.lo \
+bonobo-config-bag-property.lo bonobo-config-property.lo \
+bonobo-subproperty.lo bonobo-property-proxy.lo \
+bonobo-property-bag-proxy.lo bonobo-property-editor.lo \
+bonobo-property-bag-editor.lo bonobo-property-editor-basic.lo \
+bonobo-property-editor-boolean.lo bonobo-property-editor-filename.lo \
+bonobo-property-editor-color.lo bonobo-property-editor-option.lo \
+bonobo-property-editor-default.lo bonobo-property-editor-enum.lo \
+bonobo-property-frame.lo bonobo-preferences.lo bonobo-config-control.lo
+noinst_PROGRAMS =  test-config-moniker$(EXEEXT) \
+config-moniker-demo$(EXEEXT) wombat-example$(EXEEXT)
+PROGRAMS =  $(noinst_PROGRAMS)
+
+test_config_moniker_OBJECTS =  test-config-moniker.$(OBJEXT)
+test_config_moniker_DEPENDENCIES =  libbonobo_conf.la
+test_config_moniker_LDFLAGS = 
+config_moniker_demo_OBJECTS =  config-moniker-demo.$(OBJEXT)
+config_moniker_demo_DEPENDENCIES =  libbonobo_conf.la
+config_moniker_demo_LDFLAGS = 
+wombat_example_OBJECTS =  wombat-example.$(OBJEXT)
+wombat_example_DEPENDENCIES =  libbonobo_conf.la
+wombat_example_LDFLAGS = 
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(libbonobo_confinclude_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(libbonobo_conf_la_SOURCES) $(test_config_moniker_SOURCES) $(config_moniker_demo_SOURCES) $(wombat_example_SOURCES)
+OBJECTS = $(libbonobo_conf_la_OBJECTS) $(test_config_moniker_OBJECTS) $(config_moniker_demo_OBJECTS) $(wombat_example_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps bonobo-conf/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libbonobo_conf.la: $(libbonobo_conf_la_OBJECTS) $(libbonobo_conf_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libbonobo_conf_la_LDFLAGS) $(libbonobo_conf_la_OBJECTS) $(libbonobo_conf_la_LIBADD) $(LIBS)
+
+mostlyclean-noinstPROGRAMS:
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+
+distclean-noinstPROGRAMS:
+
+maintainer-clean-noinstPROGRAMS:
+
+test-config-moniker$(EXEEXT): $(test_config_moniker_OBJECTS) $(test_config_moniker_DEPENDENCIES)
+	@rm -f test-config-moniker$(EXEEXT)
+	$(LINK) $(test_config_moniker_LDFLAGS) $(test_config_moniker_OBJECTS) $(test_config_moniker_LDADD) $(LIBS)
+
+config-moniker-demo$(EXEEXT): $(config_moniker_demo_OBJECTS) $(config_moniker_demo_DEPENDENCIES)
+	@rm -f config-moniker-demo$(EXEEXT)
+	$(LINK) $(config_moniker_demo_LDFLAGS) $(config_moniker_demo_OBJECTS) $(config_moniker_demo_LDADD) $(LIBS)
+
+wombat-example$(EXEEXT): $(wombat_example_OBJECTS) $(wombat_example_DEPENDENCIES)
+	@rm -f wombat-example$(EXEEXT)
+	$(LINK) $(wombat_example_LDFLAGS) $(wombat_example_OBJECTS) $(wombat_example_LDADD) $(LIBS)
+
+install-libbonobo_confincludeHEADERS: $(libbonobo_confinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libbonobo_confincludedir)
+	@list='$(libbonobo_confinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libbonobo_confincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libbonobo_confincludedir)/$$p; \
+	done
+
+uninstall-libbonobo_confincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libbonobo_confinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libbonobo_confincludedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = bonobo-conf
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+Bonobo_Config-common.lo Bonobo_Config-common.o : Bonobo_Config-common.c \
+	Bonobo_Config.h
+Bonobo_Config-skels.lo Bonobo_Config-skels.o : Bonobo_Config-skels.c \
+	Bonobo_Config.h
+Bonobo_Config-stubs.lo Bonobo_Config-stubs.o : Bonobo_Config-stubs.c \
+	Bonobo_Config.h
+bonobo-config-bag-property.lo bonobo-config-bag-property.o : \
+	bonobo-config-bag-property.c ../config.h \
+	bonobo-config-bag-property.h bonobo-config-bag.h \
+	bonobo-config-database.h Bonobo_Config.h
+bonobo-config-bag.lo bonobo-config-bag.o : bonobo-config-bag.c \
+	../config.h bonobo-config-bag.h bonobo-config-database.h \
+	Bonobo_Config.h bonobo-config-bag-property.h
+bonobo-config-control.lo bonobo-config-control.o : \
+	bonobo-config-control.c ../config.h \
+	bonobo-property-bag-editor.h bonobo-property-bag-proxy.h \
+	bonobo-config-control.h
+bonobo-config-database.lo bonobo-config-database.o : \
+	bonobo-config-database.c ../config.h bonobo-config-database.h \
+	Bonobo_Config.h
+bonobo-config-property.lo bonobo-config-property.o : \
+	bonobo-config-property.c ../config.h bonobo-config-property.h \
+	bonobo-config-database.h Bonobo_Config.h
+bonobo-config-subdir.lo bonobo-config-subdir.o : bonobo-config-subdir.c \
+	../config.h bonobo-config-subdir.h Bonobo_Config.h
+bonobo-config-utils.lo bonobo-config-utils.o : bonobo-config-utils.c \
+	../config.h bonobo-config-utils.h
+bonobo-preferences.lo bonobo-preferences.o : bonobo-preferences.c \
+	bonobo-preferences.h
+bonobo-property-bag-editor.lo bonobo-property-bag-editor.o : \
+	bonobo-property-bag-editor.c ../config.h \
+	bonobo-property-editor.h Bonobo_Config.h gtkwtree.h \
+	gtkwtreeitem.h
+bonobo-property-bag-proxy.lo bonobo-property-bag-proxy.o : \
+	bonobo-property-bag-proxy.c ../config.h bonobo-property-proxy.h \
+	bonobo-property-bag-proxy.h
+bonobo-property-editor-basic.lo bonobo-property-editor-basic.o : \
+	bonobo-property-editor-basic.c ../config.h \
+	bonobo-property-editor.h Bonobo_Config.h
+bonobo-property-editor-boolean.lo bonobo-property-editor-boolean.o : \
+	bonobo-property-editor-boolean.c ../config.h \
+	bonobo-property-editor.h Bonobo_Config.h
+bonobo-property-editor-color.lo bonobo-property-editor-color.o : \
+	bonobo-property-editor-color.c ../config.h \
+	bonobo-property-editor.h Bonobo_Config.h
+bonobo-property-editor-default.lo bonobo-property-editor-default.o : \
+	bonobo-property-editor-default.c ../config.h \
+	bonobo-property-editor.h Bonobo_Config.h bonobo-config-utils.h
+bonobo-property-editor-enum.lo bonobo-property-editor-enum.o : \
+	bonobo-property-editor-enum.c ../config.h \
+	bonobo-property-editor.h Bonobo_Config.h
+bonobo-property-editor-filename.lo bonobo-property-editor-filename.o : \
+	bonobo-property-editor-filename.c ../config.h \
+	bonobo-property-editor.h Bonobo_Config.h
+bonobo-property-editor-option.lo bonobo-property-editor-option.o : \
+	bonobo-property-editor-option.c ../config.h \
+	bonobo-property-editor.h Bonobo_Config.h
+bonobo-property-editor.lo bonobo-property-editor.o : \
+	bonobo-property-editor.c ../config.h bonobo-property-editor.h \
+	Bonobo_Config.h
+bonobo-property-frame.lo bonobo-property-frame.o : \
+	bonobo-property-frame.c bonobo-property-frame.h \
+	bonobo-property-bag-proxy.h
+bonobo-property-proxy.lo bonobo-property-proxy.o : \
+	bonobo-property-proxy.c ../config.h bonobo-property-proxy.h \
+	bonobo-property-bag-proxy.h
+bonobo-subproperty.lo bonobo-subproperty.o : bonobo-subproperty.c \
+	bonobo-subproperty.h bonobo-property-editor.h Bonobo_Config.h
+config-moniker-demo.o: config-moniker-demo.c bonobo-config-database.h \
+	Bonobo_Config.h bonobo-preferences.h bonobo-config-control.h \
+	bonobo-property-editor.h bonobo-property-frame.h \
+	bonobo-property-bag-proxy.h
+gtkwtree.lo gtkwtree.o : gtkwtree.c gtkwtree.h gtkwtreeitem.h
+gtkwtreeitem.lo gtkwtreeitem.o : gtkwtreeitem.c gtkwtree.h \
+	gtkwtreeitem.h
+test-config-moniker.o: test-config-moniker.c bonobo-config-utils.h
+wombat-example.o: wombat-example.c bonobo-config-database.h \
+	Bonobo_Config.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
+
+install-data-am: install-libbonobo_confincludeHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES \
+		uninstall-libbonobo_confincludeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) \
+		$(DESTDIR)$(libbonobo_confincludedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
+		mostlyclean-tags mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-noinstPROGRAMS clean-tags clean-generic \
+		mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-noinstPROGRAMS \
+		distclean-tags distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-noinstPROGRAMS \
+distclean-noinstPROGRAMS clean-noinstPROGRAMS \
+maintainer-clean-noinstPROGRAMS uninstall-libbonobo_confincludeHEADERS \
+install-libbonobo_confincludeHEADERS tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+$(CORBA_SOURCE): ../idl/Bonobo_Config.idl
+	orbit-idl $(top_srcdir)/idl/Bonobo_Config.idl -I$(top_srcdir)/idl $(idl_flags)
+
+dist-hook:
+	cd $(distdir) ; rm -f $(BUILT_SOURCES)
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

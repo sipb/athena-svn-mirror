@@ -1,0 +1,88 @@
+/*
+ * Bonobo_Config.idl: The Bonobo Configuration System
+ *
+ * Author:
+ *	Dietmar Maurer (dietmar@ximian.com)
+ */
+
+#ifndef __BONOBO_CONFIG_IDL__
+#define __BONOBO_CONFIG_IDL__
+
+%{
+#pragma include_defs bonobo/Bonobo.h
+%}
+#pragma inhibit push
+
+#include <Bonobo_Property.idl>
+#include <Bonobo_Control.idl>
+
+#pragma inhibit pop
+
+module Bonobo {
+
+	module Config {
+
+		typedef string FileName;
+
+		typedef sequence<string> StringSeq;
+
+		struct Color {
+			double r,g,b,a;
+		};
+	};
+
+	typedef sequence<string> KeyList;
+
+	/*
+	 * aggregated with an event source
+	 *
+	 */
+	interface ConfigDatabase : Unknown {
+
+		enum DBFlags {
+			DEFAULT,
+			WRITE,
+			MANDATORY
+		};
+
+		exception BackendFailed {};
+		exception InvalidType {};
+		exception NotFound {};
+
+		readonly attribute boolean writeable;
+
+		any          getValue    (in string key, in string locale)
+			raises (NotFound, BackendFailed);
+
+		void         setValue    (in string key, in any value)
+			raises (BackendFailed);
+
+		any          getDefault  (in string key, in string locale)
+			raises (NotFound, BackendFailed);
+
+		KeyList      listDirs    (in string dir)
+			raises (NotFound, BackendFailed);
+
+		KeyList      listKeys    (in string dir)
+			raises (NotFound, BackendFailed);
+
+		boolean      dirExists   (in string dir)
+			raises (BackendFailed);
+		
+		void         removeValue (in string key)
+			raises (BackendFailed);
+
+		void         removeDir   (in string dir)
+			raises (BackendFailed);
+
+		void         addDatabase (in ConfigDatabase db, 
+					  in string dir, in DBFlags flags)
+			raises (BackendFailed);
+
+		void         sync        ()
+			raises (BackendFailed);
+	};
+
+};
+
+#endif /* ! __BONOBO_CONFIG_IDL__ */
