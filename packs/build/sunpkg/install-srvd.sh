@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: install-srvd.sh,v 1.2 2004-04-06 23:36:53 rbasch Exp $
+# $Id: install-srvd.sh,v 1.3 2004-04-12 02:45:38 rbasch Exp $
 
 # This script installs packages for a new release into the srvd,
 # running pkgadd with the srvd as the target root, and copying
@@ -12,7 +12,7 @@
 
 prog=$0
 maybe=
-no_links=false
+init_dest=false
 newver=
 pkgsrc=
 source=/mit/source
@@ -27,7 +27,7 @@ while getopts d:Nnp:s: opt; do
     srvd=$OPTARG
     ;;
   N)
-    no_links=true
+    init_dest=true
     ;;
   n)
     maybe=echo
@@ -87,7 +87,7 @@ if [ ! -d "$pkgsrc" ]; then
   exit 1
 fi
 
-if [ -n "$oldver" -a "$no_links" = false -a ! -d "$srvd/pkg/$oldver" ]; then
+if [ -n "$oldver" -a "$init_dest" = true -a ! -d "$srvd/pkg/$oldver" ]; then
   echo "$srvd/pkg/$oldver is not a valid directory" 1>&2
   exit 1
 fi
@@ -125,6 +125,13 @@ fi
 $maybe mkdir -p "$srvd/var" || exit 1
 $maybe chown root "$srvd/var" || exit 1
 
+if [ "$init_dest" = true ]; then
+  $maybe rm -rf "$pkgdest"
+elif [ ! -d "$pkgdest" ]; then
+  # If the srvd package directory does not yet exist, we want to create
+  # symlinks back to the packages in the old version.
+  init_dest=true
+fi
 $maybe mkdir -p "$pkgdest" || exit 1
 
 # Set up /bin and /usr/vice symlinks if necessary.
@@ -144,6 +151,9 @@ for pkg in $pkgs ; do
     echo "$pkg is not a valid package in $pkgsrc" 1>&2
   elif pkginfo -q -c MITdontinstall -d "$pkgsrc" "$pkg" ; then
     echo "Skipping uninstallable package $pkg"
+  elif [ "$init_dest" = false ] &&
+      cmp -s "$pkgsrc/$pkg/pkginfo" "$pkgdest/$pkg/pkginfo" ; then
+    echo "Skipping $pkg (already installed)"
   else
     echo "$pkg"
     # Create OS directories ahead of time to avoid pkgadd complaints
@@ -172,8 +182,8 @@ for pkg in $pkgs ; do
 done
 
 # Make links back to the packages in the old (current) release which
-# are not being updated.
-if [ -n "$oldver" -a "$no_links" = false ]; then
+# are not being replaced in the new version.
+if [ -n "$oldver" -a "$init_dest" = true ]; then
   echo "Making links to existing packages ..."
   $maybe perl $source/packs/build/sunpkg/link-pkgs.pl -d "$srvd/pkg" \
     "$newver" "$oldver" || exit 1
@@ -193,6 +203,9 @@ if [ -z "$maybe" ]; then
   done
   cp $tmporder "$pkgdest/.order-version"
   rm -f $tmporder
+
+  # Create .rvdinfo.
+  rm -f "$srvd/.rvdinfo"
   echo "Athena RVD (sun4) Version $newver `date`" > "$srvd/.rvdinfo"
   chmod 444 "$srvd/.rvdinfo"
 fi
