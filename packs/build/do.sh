@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.39 1999-07-21 12:56:18 ghudson Exp $
+# $Id: do.sh,v 1.40 1999-08-05 17:56:58 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -116,27 +116,27 @@ case `uname -s` in
 SunOS)
 	OS=solaris
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
-	PATH=$athtoolroot/usr/athena/bin:/usr/ccs/bin:/usr/bin:/usr/ucb
-	PATH=${PATH}:/usr/openwin/bin
+	PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
 	CC=/usr/gcc/bin/gcc
 	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 	ERROR_CFLAGS=-Werror
 	;;
 IRIX)
 	OS=irix
-	PATH=$athtoolroot/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
+	PATH=/usr/bsd:/usr/bin:/usr/bin/X11
 	CC=cc
 	WARN_CFLAGS=-fullwarn
 	ERROR_CFLAGS=-w2
 	;;
 Linux)
 	OS=linux
-	PATH=$athtoolroot/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
+	PATH=/usr/bin:/bin:/usr/X11R6/bin
 	CC=cc
 	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 	ERROR_CFLAGS=-Werror
 	;;
 esac
+PATH=$athtoolroot/usr/athena/bin:$PATH
 
 # Determine if gmake is available. (It should be, unless this is a
 # full build and we haven't built it yet.)
