@@ -22,7 +22,8 @@
 BEGIN_GNOME_DECLS
 
 #include <glib.h>
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 /*
  * Convert loaded Freetype TTF face to Type1

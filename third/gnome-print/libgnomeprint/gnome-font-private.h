@@ -22,6 +22,8 @@
 
 BEGIN_GNOME_DECLS
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include <freetype/freetype.h>
 #include <libgnomeprint/gp-character-block.h>
 #include <libgnomeprint/gp-fontmap.h>
