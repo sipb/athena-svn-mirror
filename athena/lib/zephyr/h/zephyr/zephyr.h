@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.13 1987-09-15 10:45:03 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v 1.14 1987-09-24 10:54:18 jtkohl Exp $ */
 
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
@@ -197,6 +197,7 @@ extern int ZMakeAuthentication();
 #define LOGIN_USER_LOGIN	"USER_LOGIN"	/* Opcode: Normal User login */
 #define LOGIN_QUIET_LOGIN	"QUIET_LOGIN"	/* Opcode: Quiet login */
 #define LOGIN_USER_LOGOUT	"USER_LOGOUT"	/* Opcode: User logout */
+#define	LOGIN_USER_FLUSH	"USER_FLUSH"	/* Opcode: flush all locs */
 
 	/* Locate class messages */
 #define LOCATE_CLASS		"USER_LOCATE"	/* Class */
