@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: fix-xconfig.sh,v 1.1 2000-09-04 16:49:10 ghudson Exp $
+# $Id: fix-xconfig.sh,v 1.1.2.1 2000-09-23 19:32:51 ghudson Exp $
 
 # fix-xconfig: Modify the X configuration to match timings retrieved
 # from read-edid and to have the desired maximum resolution.  Run from
