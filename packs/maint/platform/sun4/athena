@@ -13,9 +13,13 @@ umask 022
 case $1 in 
 'start')
 
-# Let the log host know that we're booting.
+# Let the log host know that we're booting, and whether there was a panic.
 
-logger -p user.notice "Booting"
+panic=`dmesg | awk '
+	/^panic/	{ panic = " (" $0 ")"; boots = 0; }
+	/UNIX(R)/	{ if (++boots == 2) panic = ""; }
+	END		{ print panic; }'`
+logger -p user.notice "Booting$panic"
 
 echo  "MIT configuration..." > /dev/console
 
