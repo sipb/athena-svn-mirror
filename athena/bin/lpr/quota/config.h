@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/config.h,v 1.1 1990-08-21 20:40:57 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/config.h,v 1.2 1990-11-08 09:50:35 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/config.h,v $ */
 /* $Author: epeisach $ */
 
@@ -14,7 +14,7 @@
 #define __CONFIG_H__
 
 /* Define NDBM if your system uses NDBM */
-#if !defined(ultrix) && (defined(vax) || defined(ibm032))
+#if (!defined(ultrix) && (defined(vax) || defined(ibm032))) || defined(Ultrix40)
 #define NDBM 
 #endif
 
@@ -25,6 +25,7 @@
 #define DEFREPORTFILE	"/usr/spool/quota/report"
 #define DEFCAPFILE      "/usr/spool/quota/quotacap"
 #define LOGTRANSFILE    "/usr/spool/quota/logtrans"
+#define SHUTDOWNFILE	"/usr/spool/quota/shutdown_for_backup"
 #define DEFQUOTA        500
 #define DEFCURRENCY     "cents"
 #define DEFSERVICE	"athena"
