@@ -1,4 +1,4 @@
-# $Id: packages,v 1.222 2003-03-26 06:38:13 ghudson Exp $
+# $Id: packages,v 1.223 2003-03-27 19:41:02 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -276,7 +276,6 @@ third/vte			except linux requires gettext,glib2,pango,libzvt,Xft
 third/wcl			requires openmotif
 third/x11-ssh-askpass
 third/x3270
-third/xalf			requires gtk,control-center
 third/xmh
 third/xntp			package ntp
 third/xpm			on solaris
