@@ -1,5 +1,6 @@
-# $Id: .build,v 1.1 1996-10-10 21:04:23 ghudson Exp $
+# $Id: .build,v 1.2 1996-10-12 04:52:35 ghudson Exp $
 
+CC="$compiler" export CC
 echo In ${package}: make clean && make clean &&
 echo In ${package}: make && make &&
 echo In ${package}: make install DESTDIR=$srvd && make install DESTDIR=$srvd &&
