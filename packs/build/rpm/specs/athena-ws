@@ -88,6 +88,11 @@ for i in 1 2 3 4 5 6; do
   fi
 done
 
+if grep -q /sbin/update /etc/inittab; then
+  sed -e '/\/sbin\/update/d' /etc/inittab > /etc/inittab.new
+  mv /etc/inittab.new /etc/inittab
+fi
+
 %triggerin -- dev
 # Make sure the permissions on the sound devices are appropriate
 chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
