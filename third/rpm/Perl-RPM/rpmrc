@@ -1,2 +1,0 @@
-include: /usr/lib/rpm/rpmrc
-macrofiles: /usr/lib/rpm/macros:rpmmacro
