@@ -7,7 +7,5 @@ sun4)
   ;;
 
 sgi)
-  chmod o-w /var/adm/appletalk/icons
-  echo "/etc/inetd.conf"				>> "$CONFCHG"
   ;;
 esac
