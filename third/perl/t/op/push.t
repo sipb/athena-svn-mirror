@@ -1,6 +1,6 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/push.t,v 1.1.1.1 1996-10-02 06:40:14 ghudson Exp $
+# $RCSfile: push.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:08 $
 
 @tests = split(/\n/, <<EOF);
 0 3,			0 1 2,		3 4 5 6 7
@@ -28,11 +28,16 @@ if (join(':',@x) eq '1:2:3:1:2:3:4') {print "ok 2\n";} else {print "not ok 2\n";
 $test = 3;
 foreach $line (@tests) {
     ($list,$get,$leave) = split(/,\t*/,$line);
-    @list = split(' ',$list);
+    ($pos, $len, @list) = split(' ',$list);
     @get = split(' ',$get);
     @leave = split(' ',$leave);
     @x = (0,1,2,3,4,5,6,7);
-    @got = splice(@x,@list);
+    if (defined $len) {
+	@got = splice(@x, $pos, $len, @list);
+    }
+    else {
+	@got = splice(@x, $pos);
+    }
     if (join(':',@got) eq join(':',@get) &&
 	join(':',@x) eq join(':',@leave)) {
 	print "ok ",$test++,"\n";

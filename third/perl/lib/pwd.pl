@@ -1,20 +1,8 @@
 ;# pwd.pl - keeps track of current working directory in PWD environment var
 ;#
-;# $RCSfile: pwd.pl,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:24 $
+;# $RCSfile: pwd.pl,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:48:14 $
 ;#
 ;# $Log: not supported by cvs2svn $
-;# Revision 4.0.1.1  92/06/08  13:45:22  lwall
-;# patch20: support added to pwd.pl to strip automounter crud
-;# 
-;# Revision 4.0  91/03/20  01:26:03  lwall
-;# 4.0 baseline.
-;# 
-;# Revision 3.0.1.2  91/01/11  18:09:24  lwall
-;# patch42: some .pl files were missing their trailing 1;
-;# 
-;# Revision 3.0.1.1  90/08/09  04:01:24  lwall
-;# patch19: Initial revision
-;# 
 ;#
 ;# Usage:
 ;#	require "pwd.pl";
@@ -46,6 +34,7 @@ sub main'initpwd {
 
 sub main'chdir {
     local($newdir) = shift;
+    $newdir =~ s|/{2,}|/|g;
     if (chdir $newdir) {
 	if ($newdir =~ m#^/#) {
 	    $ENV{'PWD'} = $newdir;

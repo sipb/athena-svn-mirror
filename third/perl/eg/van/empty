@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/van/empty,v 1.1.1.1 1996-10-02 06:40:07 ghudson Exp $
+# $RCSfile: empty,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:51 $
 
 # This script empties a trashcan.
 

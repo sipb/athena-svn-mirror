@@ -1,8 +1,8 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/split.t,v 1.1.1.1 1996-10-02 06:40:14 ghudson Exp $
+# $RCSfile: split.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:18 $
 
-print "1..12\n";
+print "1..20\n";
 
 $FS = ':';
 
@@ -47,11 +47,46 @@ $_ = join(':', split(/:/,'1:2:3:4:5:6:::', 999));
 print $_ eq '1:2:3:4:5:6:::' ? "ok 10\n" : "not ok 10 $_\n";
 
 # Does assignment to a list imply split to one more field than that?
-$foo = `./perl -D1024 -e '(\$a,\$b) = split;' 2>&1`;
-print $foo =~ /DEBUGGING/ || $foo =~ /num\(3\)/ ? "ok 11\n" : "not ok 11\n";
+if ($^O eq 'MSWin32') { $foo = `.\\perl -D1024 -e "(\$a,\$b) = split;" 2>&1` }
+else                  { $foo = `./perl -D1024 -e '(\$a,\$b) = split;' 2>&1` }
+if ($foo =~ /DCL-W-NOCOMD/) {
+  $foo = `\$ mcr sys\$disk:[]perl. "-D1024" -e "(\$a,\$b) = split;"`;
+}
+print $foo =~ /DEBUGGING/ || $foo =~ /SV = IV\(3\)/ ? "ok 11\n" : "not ok 11\n";
 
 # Can we say how many fields to split to when assigning to a list?
 ($a,$b) = split(' ','1 2 3 4 5 6', 2);
 $_ = join(':',$a,$b);
 print $_ eq '1:2 3 4 5 6' ? "ok 12\n" : "not ok 12 $_\n";
+
+# do subpatterns generate additional fields (without trailing nulls)?
+$_ = join '|', split(/,|(-)/, "1-10,20,,,");
+print $_ eq "1|-|10||20" ? "ok 13\n" : "not ok 13\n";
+
+# do subpatterns generate additional fields (with a limit)?
+$_ = join '|', split(/,|(-)/, "1-10,20,,,", 10);
+print $_ eq "1|-|10||20||||||" ? "ok 14\n" : "not ok 14\n";
+
+# is the 'two undefs' bug fixed?
+(undef, $a, undef, $b) = qw(1 2 3 4);
+print "$a|$b" eq "2|4" ? "ok 15\n" : "not ok 15\n";
+
+# .. even for locals?
+{
+  local(undef, $a, undef, $b) = qw(1 2 3 4);
+  print "$a|$b" eq "2|4" ? "ok 16\n" : "not ok 16\n";
+}
+
+# check splitting of null string
+$_ = join('|', split(/x/,   '',-1), 'Z');
+print $_ eq "Z" ? "ok 17\n" : "#$_\nnot ok 17\n";
+
+$_ = join('|', split(/x/,   '', 1), 'Z');
+print $_ eq "Z" ? "ok 18\n" : "#$_\nnot ok 18\n";
+
+$_ = join('|', split(/(p+)/,'',-1), 'Z');
+print $_ eq "Z" ? "ok 19\n" : "#$_\nnot ok 19\n";
+
+$_ = join('|', split(/.?/,  '',-1), 'Z');
+print $_ eq "Z" ? "ok 20\n" : "#$_\nnot ok 20\n";
 

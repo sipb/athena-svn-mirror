@@ -1,9 +1,14 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/oct.t,v 1.1.1.1 1996-10-02 06:40:15 ghudson Exp $
+# $RCSfile: oct.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:20 $
 
-print "1..3\n";
+print "1..8\n";
 
-if (oct('01234') == 01234) {print "ok 1\n";} else {print "not ok 1\n";}
-if (oct('0x1234') == 0x1234) {print "ok 2\n";} else {print "not ok 2\n";}
-if (hex('01234') == 0x1234) {print "ok 3\n";} else {print "not ok 3\n";}
+print +(oct('01234') == 01234) ? "ok" : "not ok", " 1\n";
+print +(oct('0x1234') == 0x1234) ? "ok" : "not ok", " 2\n";
+print +(hex('01234') == 0x1234) ? "ok" : "not ok", " 3\n";
+print +(oct('20000000000') == 020000000000) ? "ok" : "not ok", " 4\n";
+print +(oct('x80000000') == 0x80000000) ? "ok" : "not ok", " 5\n";
+print +(hex('80000000') == 0x80000000) ? "ok" : "not ok", " 6\n";
+print +(oct('1234') == 668) ? "ok" : "not ok", " 7\n";
+print +(hex('1234') == 4660) ? "ok" : "not ok", " 8\n";

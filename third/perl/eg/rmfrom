@@ -1,6 +1,6 @@
 #!/usr/bin/perl -n
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/rmfrom,v 1.1.1.1 1996-10-02 06:40:05 ghudson Exp $
+# $RCSfile: rmfrom,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:44 $
 
 # A handy (but dangerous) script to put after a find ... -print.
 

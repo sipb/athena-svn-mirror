@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/g/gsh.man,v 1.1.1.1 1996-10-02 06:40:06 ghudson Exp $
+.\" $RCSfile: gsh.man,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:48 $
 .TH GSH 8 "13 May 1988"
 .SH NAME
 gsh \- global shell

@@ -33,15 +33,19 @@ package bigint;
 #   bgcd(BINT,BINT) return BINT         greatest common divisor
 #   bnorm(BINT) return BINT             normalization
 #
+
+$zero = 0;
+
 
 # normalize string form of number.   Strip leading zeros.  Strip any
 #   white space and add a sign, if missing.
 # Strings that are not numbers result the value 'NaN'.
+
 sub main'bnorm { #(num_str) return num_str
     local($_) = @_;
     s/\s+//g;                           # strip white space
     if (s/^([+-]?)0*(\d+)$/$1$2/) {     # test if number
-	substr($_,0,0) = '+' unless $1; # Add missing sign
+	substr($_,$[,0) = '+' unless $1; # Add missing sign
 	s/^-0/+0/;
 	$_;
     } else {
@@ -53,8 +57,8 @@ sub main'bnorm { #(num_str) return num_str
 #   Assumes normalized value as input.
 sub internal { #(num_str) return int_num_array
     local($d) = @_;
-    ($is,$il) = (substr($d,0,1),length($d)-2);
-    substr($d,0,1) = '';
+    ($is,$il) = (substr($d,$[,1),length($d)-2);
+    substr($d,$[,1) = '';
     ($is, reverse(unpack("a" . ($il%5+1) . ("a5" x ($il/5)), $d)));
 }
 
@@ -87,7 +91,7 @@ sub abs { # post-normalized abs for internal use
 
 # Compares 2 values.  Returns one of undef, <0, =0, >0. (suitable for sort)
 sub main'bcmp { #(num_str, num_str) return cond_code
-    local($x,$y) = (&'bnorm($_[0]),&'bnorm($_[1]));
+    local($x,$y) = (&'bnorm($_[$[]),&'bnorm($_[$[+1]));
     if ($x eq 'NaN') {
 	undef;
     } elsif ($y eq 'NaN') {
@@ -99,17 +103,27 @@ sub main'bcmp { #(num_str, num_str) return cond_code
 
 sub cmp { # post-normalized compare for internal use
     local($cx, $cy) = @_;
-    $cx cmp $cy
-    &&
-    (
-	ord($cy) <=> ord($cx)
-	||
-	($cx cmp ',') * (length($cy) <=> length($cx) || $cy cmp $cx)
-    );
+    return 0 if ($cx eq $cy);
+
+    local($sx, $sy) = (substr($cx, 0, 1), substr($cy, 0, 1));
+    local($ld);
+
+    if ($sx eq '+') {
+      return  1 if ($sy eq '-' || $cy eq '+0');
+      $ld = length($cx) - length($cy);
+      return $ld if ($ld);
+      return $cx cmp $cy;
+    } else { # $sx eq '-'
+      return -1 if ($sy eq '+');
+      $ld = length($cy) - length($cx);
+      return $ld if ($ld);
+      return $cy cmp $cx;
+    }
+
 }
 
 sub main'badd { #(num_str, num_str) return num_str
-    local(*x, *y); ($x, $y) = (&'bnorm($_[0]),&'bnorm($_[1]));
+    local(*x, *y); ($x, $y) = (&'bnorm($_[$[]),&'bnorm($_[$[+1]));
     if ($x eq 'NaN') {
 	'NaN';
     } elsif ($y eq 'NaN') {
@@ -132,12 +146,12 @@ sub main'badd { #(num_str, num_str) return num_str
 }
 
 sub main'bsub { #(num_str, num_str) return num_str
-    &'badd($_[0],&'bneg($_[1]));    
+    &'badd($_[$[],&'bneg($_[$[+1]));    
 }
 
 # GCD -- Euclids algorithm Knuth Vol 2 pg 296
 sub main'bgcd { #(num_str, num_str) return num_str
-    local($x,$y) = (&'bnorm($_[0]),&'bnorm($_[1]));
+    local($x,$y) = (&'bnorm($_[$[]),&'bnorm($_[$[+1]));
     if ($x eq 'NaN' || $y eq 'NaN') {
 	'NaN';
     } else {
@@ -154,11 +168,11 @@ sub add { #(int_num_array, int_num_array) return int_num_array
     $car = 0;
     for $x (@x) {
 	last unless @y || $car;
-	$x -= 1e5 if $car = (($x += shift(@y) + $car) >= 1e5);
+	$x -= 1e5 if $car = (($x += shift(@y) + $car) >= 1e5) ? 1 : 0;
     }
     for $y (@y) {
 	last unless $car;
-	$y -= 1e5 if $car = (($y += $car) >= 1e5);
+	$y -= 1e5 if $car = (($y += $car) >= 1e5) ? 1 : 0;
     }
     (@x, @y, $car);
 }
@@ -176,7 +190,7 @@ sub sub { #(int_num_array, int_num_array) return int_num_array
 
 # multiply two numbers -- stolen from Knuth Vol 2 pg 233
 sub main'bmul { #(num_str, num_str) return num_str
-    local(*x, *y); ($x, $y) = (&'bnorm($_[0]), &'bnorm($_[1]));
+    local(*x, *y); ($x, $y) = (&'bnorm($_[$[]), &'bnorm($_[$[+1]));
     if ($x eq 'NaN') {
 	'NaN';
     } elsif ($y eq 'NaN') {
@@ -187,7 +201,7 @@ sub main'bmul { #(num_str, num_str) return num_str
 	local($signr) = (shift @x ne shift @y) ? '-' : '+';
 	@prod = ();
 	for $x (@x) {
-	    ($car, $cty) = (0, 0);
+	    ($car, $cty) = (0, $[);
 	    for $y (@y) {
 		$prod = $x * $y + $prod[$cty] + $car;
 		$prod[$cty++] =
@@ -202,16 +216,16 @@ sub main'bmul { #(num_str, num_str) return num_str
 
 # modulus
 sub main'bmod { #(num_str, num_str) return num_str
-    (&'bdiv(@_))[1];
+    (&'bdiv(@_))[$[+1];
 }
 
 sub main'bdiv { #(dividend: num_str, divisor: num_str) return num_str
-    local (*x, *y); ($x, $y) = (&'bnorm($_[0]), &'bnorm($_[1]));
+    local (*x, *y); ($x, $y) = (&'bnorm($_[$[]), &'bnorm($_[$[+1]));
     return wantarray ? ('NaN','NaN') : 'NaN'
 	if ($x eq 'NaN' || $y eq 'NaN' || $y eq '+0');
     return wantarray ? ('+0',$x) : '+0' if (&cmp(&abs($x),&abs($y)) < 0);
     @x = &internal($x); @y = &internal($y);
-    $srem = $y[0];
+    $srem = $y[$[];
     $sr = (shift @x ne shift @y) ? '-' : '+';
     $car = $bar = $prd = 0;
     if (($dd = int(1e5/($y[$#y]+1))) != 1) {
@@ -228,21 +242,21 @@ sub main'bdiv { #(dividend: num_str, divisor: num_str) return num_str
     else {
 	push(@x, 0);
     }
-    @q = (); ($v2,$v1) = @y[$#y-1,$#y];
+    @q = (); ($v2,$v1) = @y[-2,-1];
     while ($#x > $#y) {
-	($u2,$u1,$u0) = @x[($#x-2)..$#x];
+	($u2,$u1,$u0) = @x[-3..-1];
 	$q = (($u0 == $v1) ? 99999 : int(($u0*1e5+$u1)/$v1));
 	--$q while ($v2*$q > ($u0*1e5+$u1-$q*$v1)*1e5+$u2);
 	if ($q) {
 	    ($car, $bar) = (0,0);
-	    for ($y = 0, $x = $#x-$#y-1; $y <= $#y; ++$y,++$x) {
+	    for ($y = $[, $x = $#x-$#y+$[-1; $y <= $#y; ++$y,++$x) {
 		$prd = $q * $y[$y] + $car;
 		$prd -= ($car = int($prd * 1e-5)) * 1e5;
 		$x[$x] += 1e5 if ($bar = (($x[$x] -= $prd + $bar) < 0));
 	    }
 	    if ($x[$#x] < $car + $bar) {
 		$car = 0; --$q;
-		for ($y = 0, $x = $#x-$#y-1; $y <= $#y; ++$y,++$x) {
+		for ($y = $[, $x = $#x-$#y+$[-1; $y <= $#y; ++$y,++$x) {
 		    $x[$x] -= 1e5
 			if ($car = (($x[$x] += $y[$y] + $car) > 1e5));
 		}
@@ -263,7 +277,7 @@ sub main'bdiv { #(dividend: num_str, divisor: num_str) return num_str
 	else {
 	    @d = @x;
 	}
-	(&external($sr, @q), &external($srem, @d, 0));
+	(&external($sr, @q), &external($srem, @d, $zero));
     } else {
 	&external($sr, @q);
     }

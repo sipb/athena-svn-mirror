@@ -1,4 +1,4 @@
-;# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/importenv.pl,v 1.1.1.1 1996-10-02 06:40:27 ghudson Exp $
+;# $RCSfile: importenv.pl,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:48:14 $
 
 ;# This file, when interpreted, pulls the environment into normal variables.
 ;# Usage:
@@ -8,7 +8,7 @@
 
 local($tmp,$key) = '';
 
-foreach $key (keys(ENV)) {
+foreach $key (keys(%ENV)) {
     $tmp .= "\$$key = \$ENV{'$key'};" if $key =~ /^[A-Za-z]\w*$/;
 }
 eval $tmp;

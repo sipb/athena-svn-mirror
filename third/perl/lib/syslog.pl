@@ -2,39 +2,7 @@
 # syslog.pl
 #
 # $Log: not supported by cvs2svn $
-# Revision 4.0.1.1  92/06/08  13:48:05  lwall
-# patch20: new warning for ambiguous use of unary operators
 # 
-# Revision 4.0  91/03/20  01:26:24  lwall
-# 4.0 baseline.
-# 
-# Revision 3.0.1.4  90/11/10  01:41:11  lwall
-# patch38: syslog.pl was referencing an absolute path
-# 
-# Revision 3.0.1.3  90/10/15  17:42:18  lwall
-# patch29: various portability fixes
-# 
-# Revision 3.0.1.1  90/08/09  03:57:17  lwall
-# patch19: Initial revision
-# 
-# Revision 1.2  90/06/11  18:45:30  18:45:30  root ()
-# - Changed 'warn' to 'mail|warning' in test call (to give example of
-#   facility specification, and because 'warn' didn't work on HP-UX).
-# - Fixed typo in &openlog ("ncons" should be "cons").
-# - Added (package-global) $maskpri, and &setlogmask.
-# - In &syslog:
-#   - put argument test ahead of &connect (why waste cycles?),
-#   - allowed facility to be specified in &syslog's first arg (temporarily
-#     overrides any $facility set in &openlog), just as in syslog(3C),
-#   - do a return 0 when bit for $numpri not set in log mask (see syslog(3C)),
-#   - changed $whoami code to use getlogin, getpwuid($<) and 'syslog'
-#     (in that order) when $ident is null,
-#   - made PID logging consistent with syslog(3C) and subject to $lo_pid only,
-#   - fixed typo in "print CONS" statement ($<facility should be <$facility).
-#   - changed \n to \r in print CONS (\r is useful, $message already has a \n).
-# - Changed &xlate to return -1 for an unknown name, instead of croaking.
-# 
-#
 # tom christiansen <tchrist@convex.com>
 # modified to use sockets by Larry Wall <lwall@jpl-devvax.jpl.nasa.gov>
 # NOTE: openlog now takes three arguments, just like openlog(3)
@@ -63,7 +31,15 @@ package syslog;
 
 $host = 'localhost' unless $host;	# set $syslog'host to change
 
+if ($] >= 5) {
+    warn "You should 'use Sys::Syslog' instead; continuing" # if $^W
+} 
+
 require 'syslog.ph';
+
+ eval 'use Socket; 1' 			||
+     eval { require "socket.ph" } 	||
+     require "sys/socket.ph";
 
 $maskpri = &LOG_UPTO(&LOG_DEBUG);
 
@@ -164,25 +140,25 @@ sub main'syslog {
 
 sub xlate {
     local($name) = @_;
-    $name =~ y/a-z/A-Z/;
+    $name = uc $name;
     $name = "LOG_$name" unless $name =~ /^LOG_/;
     $name = "syslog'$name";
-    eval(&$name) || -1;
+    defined &$name ? &$name : -1;
 }
 
 sub connect {
     $pat = 'S n C4 x8';
 
-    $af_unix = 1;
-    $af_inet = 2;
+    $af_unix = &AF_UNIX;
+    $af_inet = &AF_INET;
 
-    $stream = 1;
-    $datagram = 2;
+    $stream = &SOCK_STREAM;
+    $datagram = &SOCK_DGRAM;
 
     ($name,$aliases,$proto) = getprotobyname('udp');
     $udp = $proto;
 
-    ($name,$aliase,$port,$proto) = getservbyname('syslog','udp');
+    ($name,$aliases,$port,$proto) = getservbyname('syslog','udp');
     $syslog = $port;
 
     if (chop($myname = `hostname`)) {

@@ -1,8 +1,8 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/cmd/mod.t,v 1.1.1.1 1996-10-02 06:40:15 ghudson Exp $
+# $RCSfile: mod.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:27 $
 
-print "1..7\n";
+print "1..11\n";
 
 print "ok 1\n" if 1;
 print "not ok 1\n" unless 1;
@@ -20,14 +20,28 @@ do {$x[$x] = $x;} while ($x++) < 10;
 if (join(' ',@x) eq '0 1 2 3 4 5 6 7 8 9 10') {
 	print "ok 5\n";
 } else {
-	print "not ok 5\n";
+	print "not ok 5 @x\n";
 }
 
 $x = 15;
 $x = 10 while $x < 10;
 if ($x == 15) {print "ok 6\n";} else {print "not ok 6\n";}
 
-open(foo,'TEST') || open(foo,'t/TEST');
+open(foo,'./TEST') || open(foo,'TEST') || open(foo,'t/TEST');
 $x = 0;
 $x++ while <foo>;
 print $x > 50 && $x < 1000 ? "ok 7\n" : "not ok 7\n";
+
+$x = -0.5;
+print "not " if scalar($x) < 0 and $x >= 0;
+print "ok 8\n";
+
+print "not " unless (-(-$x) < 0) == ($x < 0);
+print "ok 9\n";
+
+print "ok 10\n" if $x < 0;
+print "not ok 10\n" unless $x < 0;
+
+print "ok 11\n" unless $x > 0;
+print "not ok 11\n" if $x > 0;
+

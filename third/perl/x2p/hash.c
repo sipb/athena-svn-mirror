@@ -1,24 +1,17 @@
-/* $RCSfile: hash.c,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:21 $
+/* $RCSfile: hash.c,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:08 $
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
- * Revision 4.0.1.1  91/06/07  12:15:55  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  01:57:49  lwall
- * 4.0 baseline.
- * 
  */
 
 #include <stdio.h>
 #include "EXTERN.h"
-#include "handy.h"
-#include "util.h"
 #include "a2p.h"
+#include "util.h"
 
 STR *
 hfetch(tb,key)
@@ -77,7 +70,7 @@ STR *val;
 	if (strNE(entry->hent_key,key))	/* is this it? */
 	    continue;
 	/*NOSTRICT*/
-	safefree((char*)entry->hent_val);
+	Safefree(entry->hent_val);
 	entry->hent_val = val;
 	return TRUE;
     }
@@ -139,6 +132,7 @@ char *key;
 }
 #endif
 
+void
 hsplit(tb)
 HASH *tb;
 {
@@ -200,6 +194,7 @@ register HASH *tb;
 }
 #endif
 
+int
 hiterinit(tb)
 register HASH *tb;
 {

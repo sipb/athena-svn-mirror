@@ -1,40 +1,36 @@
-/* $RCSfile: a2py.c,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:20 $
+/* $RCSfile: a2py.c,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:10 $
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
- * Revision 4.0.1.2  92/06/08  16:15:16  lwall
- * patch20: in a2p, now warns about spurious backslashes
- * patch20: in a2p, now allows [ to be backslashed in pattern
- * patch20: in a2p, now allows numbers of the form 2.
- * 
- * Revision 4.0.1.1  91/06/07  12:12:59  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  01:57:26  lwall
- * 4.0 baseline.
- * 
  */
 
 #ifdef OS2
 #include "../patchlevel.h"
 #endif
 #include "util.h"
-char *index();
 
 char *filename;
 char *myname;
 
 int checkers = 0;
+
+int oper0();
+int oper1();
+int oper2();
+int oper3();
+int oper4();
+int oper5();
 STR *walk();
 
 #ifdef OS2
+static void
 usage()
 {
-    printf("\nThis is the AWK to PERL translator, version 4.0, patchlevel %d\n", PATCHLEVEL);
+    printf("\nThis is the AWK to PERL translator, version 5.0, patchlevel %d\n", PATCHLEVEL);
     printf("\nUsage: %s [-D<number>] [-F<char>] [-n<fieldlist>] [-<number>] filename\n", myname);
     printf("\n  -D<number>      sets debugging flags."
            "\n  -F<character>   the awk script to translate is always invoked with"
@@ -46,13 +42,14 @@ usage()
     exit(1);
 }
 #endif
+
+int
 main(argc,argv,env)
 register int argc;
 register char **argv;
 register char **env;
 {
     register STR *str;
-    register char *s;
     int i;
     STR *tmpstr;
 
@@ -82,6 +79,9 @@ register char **env;
 	    break;
 	case 'n':
 	    namelist = savestr(argv[0]+2);
+	    break;
+	case 'o':
+	    old_awk = TRUE;
 	    break;
 	case '-':
 	    argc--,argv++;
@@ -159,16 +159,15 @@ register char **env;
     /* second pass to produce new program */
 
     tmpstr = walk(0,0,root,&i,P_MIN);
-    str = str_make("#!");
+    str = str_make(STARTPERL);
+    str_cat(str, "\neval 'exec ");
     str_cat(str, BIN);
-    str_cat(str, "/perl\neval \"exec ");
-    str_cat(str, BIN);
-    str_cat(str, "/perl -S $0 $*\"\n\
+    str_cat(str, "/perl -S $0 ${1+\"$@\"}'\n\
     if $running_under_some_shell;\n\
 			# this emulates #! processing on NIH machines.\n\
 			# (remove #! line above if indigestible)\n\n");
     str_cat(str,
-      "eval '$'.$1.'$2;' while $ARGV[0] =~ /^([A-Za-z_]+=)(.*)/ && shift;\n");
+      "eval '$'.$1.'$2;' while $ARGV[0] =~ /^([A-Za-z_0-9]+=)(.*)/ && shift;\n");
     str_cat(str,
       "			# process any FOO=bar switches\n\n");
     if (do_opens && opens) {
@@ -200,6 +199,7 @@ register char **env;
 
 int idtype;
 
+int
 yylex()
 {
     register char *s = bufptr;
@@ -209,7 +209,7 @@ yylex()
   retry:
 #ifdef YYDEBUG
     if (yydebug)
-	if (index(s,'\n'))
+	if (strchr(s,'\n'))
 	    fprintf(stderr,"Tokener at %s",s);
 	else
 	    fprintf(stderr,"Tokener at %s\n",s);
@@ -839,6 +839,7 @@ register char *s;
     return s;
 }
 
+void
 yyerror(s)
 char *s;
 {
@@ -869,7 +870,7 @@ register char *s;
 	    else
 		s++;
 	}
-	if (index("eE",*s) && index("+-0123456789",s[1])) {
+	if (strchr("eE",*s) && strchr("+-0123456789",s[1])) {
 	    *d++ = *s++;
 	    if (*s == '+' || *s == '-')
 		*d++ = *s++;
@@ -883,8 +884,10 @@ register char *s;
     return s;
 }
 
+int
 string(ptr,len)
 char *ptr;
+int len;
 {
     int retval = mop;
 
@@ -899,6 +902,7 @@ char *ptr;
     return retval;
 }
 
+int
 oper0(type)
 int type;
 {
@@ -912,6 +916,7 @@ int type;
     return retval;
 }
 
+int
 oper1(type,arg1)
 int type;
 int arg1;
@@ -927,6 +932,7 @@ int arg1;
     return retval;
 }
 
+int
 oper2(type,arg1,arg2)
 int type;
 int arg1;
@@ -944,6 +950,7 @@ int arg2;
     return retval;
 }
 
+int
 oper3(type,arg1,arg2,arg3)
 int type;
 int arg1;
@@ -963,6 +970,7 @@ int arg3;
     return retval;
 }
 
+int
 oper4(type,arg1,arg2,arg3,arg4)
 int type;
 int arg1;
@@ -984,6 +992,7 @@ int arg4;
     return retval;
 }
 
+int
 oper5(type,arg1,arg2,arg3,arg4,arg5)
 int type;
 int arg1;
@@ -1009,6 +1018,7 @@ int arg5;
 
 int depth = 0;
 
+void
 dump(branch)
 int branch;
 {
@@ -1036,6 +1046,7 @@ int branch;
     }
 }
 
+int
 bl(arg,maybe)
 int arg;
 int maybe;
@@ -1050,6 +1061,7 @@ int maybe;
 	return arg;
 }
 
+void
 fixup(str)
 STR *str;
 {
@@ -1075,6 +1087,7 @@ STR *str;
     }
 }
 
+void
 putlines(str)
 STR *str;
 {
@@ -1151,6 +1164,7 @@ STR *str;
     }
 }
 
+void
 putone()
 {
     register char *t;
@@ -1173,6 +1187,7 @@ putone()
     fputs(tokenbuf,stdout);
 }
 
+int
 numary(arg)
 int arg;
 {
@@ -1187,6 +1202,7 @@ int arg;
     return arg;
 }
 
+int
 rememberargs(arg)
 int arg;
 {
@@ -1209,6 +1225,7 @@ int arg;
     return arg;
 }
 
+int
 aryrefarg(arg)
 int arg;
 {
@@ -1223,6 +1240,7 @@ int arg;
     return arg;
 }
 
+int
 fixfargs(name,arg,prevargs)
 int name;
 int arg;
@@ -1261,6 +1279,7 @@ int prevargs;
     return numargs;
 }
 
+int
 fixrargs(name,arg,prevargs)
 char *name;
 int arg;
@@ -1278,10 +1297,10 @@ int prevargs;
 	numargs = fixrargs(name,ops[arg+3].ival,numargs);
     }
     else {
-	char tmpbuf[128];
-
+	char *tmpbuf = safemalloc(strlen(name) + (sizeof(prevargs) * 3) + 5);
 	sprintf(tmpbuf,"%s:%d",name,prevargs);
 	str = hfetch(curarghash,tmpbuf);
+	safefree(tmpbuf);
 	if (str && strEQ(str->str_ptr,"*")) {
 	    if (type == OVAR || type == OSTAR) {
 		ops[arg].ival &= ~255;
@@ -1295,4 +1314,3 @@ int prevargs;
     }
     return numargs;
 }
-

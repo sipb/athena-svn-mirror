@@ -1,6 +1,6 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/auto.t,v 1.1.1.1 1996-10-02 06:40:13 ghudson Exp $
+# $RCSfile: auto.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:08 $
 
 print "1..34\n";
 

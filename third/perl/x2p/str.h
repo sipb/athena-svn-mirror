@@ -1,17 +1,11 @@
-/* $RCSfile: str.h,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:21 $
+/* $RCSfile: str.h,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:11 $
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
- * Revision 4.0.1.1  91/06/07  12:20:22  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  01:58:21  lwall
- * 4.0 baseline.
- * 
  */
 
 struct string {
@@ -35,9 +29,25 @@ struct string {
 EXT STR **tmps_list;
 EXT long tmps_max INIT(-1);
 
-char *str_2ptr();
-double str_2num();
-STR *str_mortal();
-STR *str_make();
-STR *str_nmake();
-char *str_gets();
+double str_2num _(( STR *str ));
+char * str_2ptr _(( STR *str ));
+char * str_append_till _(( STR *str, char *from, int delim, char *keeplist ));
+void str_cat _(( STR *str, char *ptr ));
+void str_chop _(( STR *str, char *ptr ));
+void str_dec _(( STR *str ));
+void str_free _(( STR *str ));
+char * str_gets _(( STR *str, FILE *fp ));
+void str_grow _(( STR *str, int len ));
+void str_inc _(( STR *str ));
+int str_len _(( STR *str ));
+STR * str_make _(( char *s ));
+STR * str_mortal _(( STR *oldstr ));
+void str_ncat _(( STR *str, char *ptr, int len ));
+STR * str_new _(( int len ));
+STR * str_nmake _(( double n ));
+void str_nset _(( STR *str, char *ptr, int len ));
+void str_numset _(( STR *str, double num ));
+void str_replace _(( STR *str, STR *nstr ));
+void str_scat _(( STR *dstr, STR *sstr ));
+void str_set _(( STR *str, char *ptr ));
+void str_sset _(( STR *dstr, STR *sstr ));

@@ -1,45 +1,26 @@
-/* $RCSfile: form.h,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:01 $
+/*    form.h
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
- * $Log: not supported by cvs2svn $
- * Revision 4.0.1.1  91/06/07  11:08:20  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  01:19:37  lwall
- * 4.0 baseline.
- * 
  */
 
-#define F_NULL 0
-#define F_LEFT 1
-#define F_RIGHT 2
-#define F_CENTER 3
-#define F_LINES 4
-#define F_DECIMAL 5
+#define FF_END		0
+#define FF_LINEMARK	1
+#define FF_LITERAL	2
+#define FF_SKIP		3
+#define FF_FETCH	4
+#define FF_CHECKNL	5
+#define FF_CHECKCHOP	6
+#define FF_SPACE	7
+#define FF_HALFSPACE	8
+#define FF_ITEM		9
+#define FF_CHOP		10
+#define FF_LINEGLOB	11
+#define FF_DECIMAL	12
+#define FF_NEWLINE	13
+#define FF_BLANK	14
+#define FF_MORE		15
 
-struct formcmd {
-    struct formcmd *f_next;
-    ARG *f_expr;
-    STR *f_unparsed;
-    line_t f_line;
-    char *f_pre;
-    short f_presize;
-    short f_size;
-    short f_decimals;
-    char f_type;
-    char f_flags;
-};
-
-#define FC_CHOP 1
-#define FC_NOBLANK 2
-#define FC_MORE 4
-#define FC_REPEAT 8
-#define FC_DP 16
-
-#define Nullfcmd Null(FCMD*)
-
-EXT char *chopset INIT(" \n-");

@@ -1,21 +1,47 @@
-/* $RCSfile: EXTERN.h,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:02 $
+/*    EXTERN.h
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
- * $Log: not supported by cvs2svn $
- * Revision 4.0.1.1  91/06/07  10:10:32  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  00:58:26  lwall
- * 4.0 baseline.
- * 
  */
 
+/*
+ * EXT  designates a global var which is defined in perl.h
+ * dEXT designates a global var which is defined in another
+ *      file, so we can't count on finding it in perl.h
+ *      (this practice should be avoided).
+ */
 #undef EXT
-#define EXT extern
+#undef dEXT
+#undef EXTCONST
+#undef dEXTCONST
+#if defined(VMS) && !defined(__GNUC__)
+#  define EXT globalref
+#  define dEXT globaldef {"$GLOBAL_RW_VARS"} noshare
+#  define EXTCONST globalref
+#  define dEXTCONST globaldef {"$GLOBAL_RO_VARS"} readonly
+#else
+#  if (defined(_MSC_VER) && defined(_WIN32)) || (defined(__BORLANDC__) && defined(__WIN32__))
+#    ifdef PERLDLL
+#      define EXT extern __declspec(dllexport)
+#      define dEXT 
+#      define EXTCONST extern __declspec(dllexport) const
+#      define dEXTCONST const
+#    else
+#      define EXT extern __declspec(dllimport)
+#      define dEXT 
+#      define EXTCONST extern __declspec(dllimport) const
+#      define dEXTCONST const
+#    endif
+#  else
+#    define EXT extern
+#    define dEXT
+#    define EXTCONST extern const
+#    define dEXTCONST const
+#  endif
+#endif
 
 #undef INIT
 #define INIT(x)

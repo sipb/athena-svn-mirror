@@ -1,17 +1,11 @@
-/* $RCSfile: hash.h,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:21 $
+/* $RCSfile: hash.h,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:08 $
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
- * Revision 4.0.1.1  91/06/07  12:16:04  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  01:57:53  lwall
- * 4.0 baseline.
- * 
  */
 
 #define FILLPCT 60		/* don't make greater than 99 */
@@ -47,11 +41,12 @@ struct htbl {
     HENT	*tbl_eiter;	/* current entry of iterator */
 };
 
-STR *hfetch();
-bool hstore();
-bool hdelete();
-HASH *hnew();
-int hiterinit();
-HENT *hiternext();
-char *hiterkey();
-STR *hiterval();
+bool hdelete _((HASH *tb, char *key));
+STR * hfetch _(( HASH *tb, char *key ));
+int hiterinit _(( HASH *tb ));
+char * hiterkey _(( HENT *entry ));
+HENT * hiternext _(( HASH *tb ));
+STR * hiterval _(( HENT *entry ));
+HASH * hnew _(( void ));
+void hsplit _(( HASH *tb ));
+bool hstore _(( HASH *tb, char *key, STR *val ));

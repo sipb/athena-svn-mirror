@@ -1,8 +1,10 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/write.t,v 1.1.1.1 1996-10-02 06:40:14 ghudson Exp $
+# $RCSfile: write.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:17 $
 
-print "1..3\n";
+print "1..5\n";
+
+my $CAT = ($^O eq 'MSWin32') ? 'type' : 'cat';
 
 format OUT =
 the quick brown @<<
@@ -17,10 +19,12 @@ $foo
 ^<<<<<<...
 $foo
 now @<<the@>>>> for all@|||||men to come @<<<<
-'i' . 's', "time\n", $good, 'to'
+{
+    'i' . 's', "time\n", $good, 'to'
+}
 .
 
-open(OUT, '>Op.write.tmp') || die "Can't create Op.write.tmp";
+open(OUT, '>Op_write.tmp') || die "Can't create Op_write.tmp";
 
 $fox = 'foxiness';
 $good = 'good';
@@ -40,10 +44,13 @@ the course
 of huma...
 now is the time for all good men to come to\n";
 
-if (`cat Op.write.tmp` eq $right)
-    { print "ok 1\n"; unlink 'Op.write.tmp'; }
+if (`$CAT Op_write.tmp` eq $right)
+    { print "ok 1\n"; unlink 'Op_write.tmp'; }
 else
     { print "not ok 1\n"; }
+
+$fox = 'wolfishness';
+my $fox = 'foxiness';		# Test a lexical variable.
 
 format OUT2 =
 the quick brown @<<
@@ -57,9 +64,8 @@ now @<<the@>>>> for all@|||||men to come @<<<<
 'i' . 's', "time\n", $good, 'to'
 .
 
-open(OUT2, '>Op.write.tmp') || die "Can't create Op.write.tmp";
+open OUT2, '>Op_write.tmp' or die "Can't create Op_write.tmp";
 
-$fox = 'foxiness';
 $good = 'good';
 $multiline = "forescore\nand\nseven years\n";
 $foo = 'when in the course of human events it becomes necessary';
@@ -80,8 +86,8 @@ becomes
 necessary
 now is the time for all good men to come to\n";
 
-if (`cat Op.write.tmp` eq $right)
-    { print "ok 2\n"; unlink 'Op.write.tmp'; }
+if (`$CAT Op_write.tmp` eq $right)
+    { print "ok 2\n"; unlink 'Op_write.tmp'; }
 else
     { print "not ok 2\n"; }
 
@@ -92,6 +98,7 @@ $fox
 jumped
 @*
 $multiline
+and
 ^<<<<<<<<< ~~
 $foo
 now @<<the@>>>> for all@|||||men to come @<<<<
@@ -99,7 +106,7 @@ now @<<the@>>>> for all@|||||men to come @<<<<
 .
 EOFORMAT
 
-open(OUT2, '>Op.write.tmp') || die "Can't create Op.write.tmp";
+open(OUT2, '>Op_write.tmp') || die "Can't create Op_write.tmp";
 
 $fox = 'foxiness';
 $good = 'good';
@@ -114,6 +121,7 @@ jumped
 forescore
 and
 seven years
+and
 when in
 the course
 of human
@@ -122,8 +130,40 @@ becomes
 necessary
 now is the time for all good men to come to\n";
 
-if (`cat Op.write.tmp` eq $right)
-    { print "ok 3\n"; unlink 'Op.write.tmp'; }
+if (`$CAT Op_write.tmp` eq $right)
+    { print "ok 3\n"; unlink 'Op_write.tmp'; }
 else
     { print "not ok 3\n"; }
+
+# formline tests
+
+$mustbe = <<EOT;
+@ a
+@> ab
+@>> abc
+@>>>  abc
+@>>>>   abc
+@>>>>>    abc
+@>>>>>>     abc
+@>>>>>>>      abc
+@>>>>>>>>       abc
+@>>>>>>>>>        abc
+@>>>>>>>>>>         abc
+EOT
+
+$was1 = $was2 = '';
+for (0..10) {           
+  # lexical picture
+  $^A = '';
+  my $format1 = '@' . '>' x $_;
+  formline $format1, 'abc';
+  $was1 .= "$format1 $^A\n";
+  # global
+  $^A = '';
+  local $format2 = '@' . '>' x $_;
+  formline $format2, 'abc';
+  $was2 .= "$format2 $^A\n";
+}
+print $was1 eq $mustbe ? "ok 4\n" : "not ok 4\n";
+print $was2 eq $mustbe ? "ok 5\n" : "not ok 5\n";
 

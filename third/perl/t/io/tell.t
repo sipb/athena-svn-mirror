@@ -1,13 +1,13 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/io/tell.t,v 1.1.1.1 1996-10-02 06:40:16 ghudson Exp $
+# $RCSfile: tell.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:46:57 $
 
 print "1..13\n";
 
 $TST = 'tst';
 
-open($TST, '../Makefile') || (die "Can't open ../Makefile");
-
+open($TST, '../Configure') || (die "Can't open ../Configure");
+binmode $TST if $^O eq 'MSWin32';
 if (eof(tst)) { print "not ok 1\n"; } else { print "ok 1\n"; }
 
 $firstline = <$TST>;

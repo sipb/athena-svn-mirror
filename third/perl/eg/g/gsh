@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/g/gsh,v 1.1.1.1 1996-10-02 06:40:06 ghudson Exp $
+# $RCSfile: gsh,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:46 $
 
 # Do rsh globally--see man page
 

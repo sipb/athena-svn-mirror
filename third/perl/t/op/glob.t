@@ -1,15 +1,22 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/glob.t,v 1.1.1.1 1996-10-02 06:40:15 ghudson Exp $
+# $RCSfile: glob.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:18 $
 
-print "1..4\n";
+print "1..6\n";
 
-@ops = <op/*>;
-$list = join(' ',@ops);
+@oops = @ops = <op/*>;
 
-chop($otherway = `echo op/*`);
-
-print $list eq $otherway ? "ok 1\n" : "not ok 1\n$list\n$otherway\n";
+if ($^O eq 'MSWin32') {
+  map { $files{lc($_)}++ } <op/*>;
+  map { delete $files{"op/$_"} } split /[\s\n]/, `cmd /c "dir /b /l op & dir /b /l /ah op 2>nul"`,
+}
+else {
+  map { $files{$_}++ } <op/*>;
+  map { delete $files{$_} } split /[\s\n]/, `echo op/*`;
+}
+if (keys %files) {
+	print "not ok 1\t(",join(' ', sort keys %files),"\n";
+} else { print "ok 1\n"; }
 
 print $/ eq "\n" ? "ok 2\n" : "not ok 2\n";
 
@@ -20,3 +27,11 @@ while (<jskdfjskdfj* op/* jskdjfjkosvk*>) {
 print "${not}ok 3\n";
 
 print $/ eq "\n" ? "ok 4\n" : "not ok 4\n";
+
+# test the "glob" operator
+$_ = "op/*";
+@glops = glob $_;
+print "@glops" eq "@oops" ? "ok 5\n" : "not ok 5\n";
+
+@glops = glob;
+print "@glops" eq "@oops" ? "ok 6\n" : "not ok 6\n";

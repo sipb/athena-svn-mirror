@@ -1,6 +1,6 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/cmd/for.t,v 1.1.1.1 1996-10-02 06:40:15 ghudson Exp $
+# $RCSfile: for.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:26 $
 
 print "1..7\n";
 

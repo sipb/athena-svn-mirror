@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/muck.man,v 1.1.1.1 1996-10-02 06:40:05 ghudson Exp $
+.\" $RCSfile: muck.man,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:44 $
 .TH MUCK 1 "10 Jan 1989"
 .SH NAME
 muck \- make usage checker

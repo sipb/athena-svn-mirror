@@ -1,8 +1,33 @@
 #!./perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/t/op/sprintf.t,v 1.1.1.1 1996-10-02 06:40:13 ghudson Exp $
+# $RCSfile: sprintf.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:15 $
 
-print "1..1\n";
+print "1..4\n";
 
+$^W = 1;
+$SIG{__WARN__} = sub {
+    if ($_[0] =~ /^Invalid conversion/) {
+	$w++;
+    } else {
+	warn @_;
+    }
+};
+
+$w = 0;
 $x = sprintf("%3s %-4s%%foo %5d%c%3.1f","hi",123,456,65,3.0999);
-if ($x eq ' hi 123 %foo   456A3.1') {print "ok 1\n";} else {print "not ok 1 '$x'\n";}
+if ($x eq ' hi 123 %foo   456A3.1' && $w == 0) {
+    print "ok 1\n";
+} else {
+    print "not ok 1 '$x'\n";
+}
+
+for $i (2 .. 4) {
+    $f = ('%6 .6s', '%6. 6s', '%6.6 s')[$i - 2];
+    $w = 0;
+    $x = sprintf($f, '');
+    if ($x eq $f && $w == 1) {
+	print "ok $i\n";
+    } else {
+	print "not ok $i '$x' '$f' '$w'\n";
+    }
+}

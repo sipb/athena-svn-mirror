@@ -1,13 +1,15 @@
 case $CONFIG in
 '')
-    if test ! -f config.sh; then
-	ln ../config.sh . || \
-	ln ../../config.sh . || \
-	ln ../../../config.sh . || \
-	(echo "Can't find config.sh."; exit 1)
-    fi
-    . ./config.sh
-    ;;
+	if test -f config.sh; then TOP=.;
+	elif test -f ../config.sh; then TOP=..;
+	elif test -f ../../config.sh; then TOP=../..;
+	elif test -f ../../../config.sh; then TOP=../../..;
+	elif test -f ../../../../config.sh; then TOP=../../../..;
+	else
+		echo "Can't find config.sh."; exit 1
+	fi
+	. $TOP/config.sh
+	;;
 esac
 : This forces SH files to create target in same directory as SH file.
 : This is so that make depend always knows where to find SH derivatives.
@@ -21,23 +23,37 @@ echo "Extracting cflags (with variable substitutions)"
 : by putting a backslash in front.  You may delete these comments.
 rm -f cflags
 $spitshell >cflags <<!GROK!THIS!
+$startsh
 !GROK!THIS!
 
 : In the following dollars and backticks do not need the extra backslash.
 $spitshell >>cflags <<'!NO!SUBS!'
-case "$0" in
-*/*) cd `expr X$0 : 'X\(.*\)/'` ;;
-esac
 case $CONFIG in
 '')
-    if test ! -f config.sh; then
-	ln ../config.sh . || \
-	ln ../../config.sh . || \
-	ln ../../../config.sh . || \
-	(echo "Can't find config.sh."; exit 1)
-    fi 2>/dev/null
-    . ./config.sh
-    ;;
+	if test -f config.sh; then TOP=.;
+	elif test -f ../config.sh; then TOP=..;
+	elif test -f ../../config.sh; then TOP=../..;
+	elif test -f ../../../config.sh; then TOP=../../..;
+	elif test -f ../../../../config.sh; then TOP=../../../..;
+	else
+		echo "Can't find config.sh."; exit 1
+	fi
+	. $TOP/config.sh
+	;;
+esac
+
+perltype=''
+optdebug=''	# ensure -g used if building a -DDEBUGGING libperl
+case $# in
+2) case $1 in
+    *perl.*)    perltype='';;
+    *perld.*)   perltype='-DDEBUGGING'; optdebug='-g' ;;
+    *perle.*)   perltype='-DEMBED';;
+    *perlde.*)  perltype='-DDEBUGGING -DEMBED'; optdebug='-g' ;;
+    *perlm.*)   perltype='-DEMBED -DMULTIPLICITY';;
+    *perldm.*)  perltype='-DDEBUGGING -DEMBED -DMULTIPLICITY'; optdebug='-g' ;;
+    esac
+    shift ;;
 esac
 
 also=': '
@@ -49,7 +65,7 @@ case $# in
 0) set *.c; echo "The current C flags are:" ;;
 esac
 
-set `echo "$* " | sed 's/\.[oc] / /g'`
+set `echo "$* " | sed -e 's/\.[oc] / /g' -e 's/\.obj / /g'`
 
 for file do
 
@@ -65,57 +81,54 @@ for file do
     : or customize here
 
     case "$file" in
-    array) ;;
-    cmd) ;;
-    cons) ;;
-    consarg) ;;
-    doarg) ;;
+    DB_File) ;;
+    GDBM_File) ;;
+    NDBM_File) ;;
+    ODBM_File) ;;
+    POSIX) ;;
+    SDBM_File) ;;
+    av) ;;
+    deb) ;;
+    dl) ;;
     doio) ;;
-    dolist) ;;
+    doop) ;;
     dump) ;;
-    eval) ;;
-    form) ;;
-    hash) ;;
+    gv) ;;
+    hv) ;;
+    main) ;;
     malloc) ;;
+    mg) ;;
+    miniperlmain) ;;
+    op) ;;
     perl) ;;
+    perlmain) ;;
     perly) ;;
+    pp) ;;
+    pp_ctl) ;;
+    pp_hot) ;;
+    pp_sys) ;;
     regcomp) ;;
     regexec) ;;
-    stab) ;;
-    str) ;;
+    run) ;;
+    scope) ;;
+    sv) ;;
+    taint) ;;
     toke) ;;
     usersub) ;;
     util) ;;
-    tarray) ;;
-    tcmd) ;;
-    tcons) ;;
-    tconsarg) ;;
-    tdoarg) ;;
-    tdoio) ;;
-    tdolist) ;;
-    tdump) ;;
-    teval) ;;
-    tform) ;;
-    thash) ;;
-    tmalloc) ;;
-    tperl) ;;
-    tperly) ;;
-    tregcomp) ;;
-    tregexec) ;;
-    tstab) ;;
-    tstr) ;;
-    ttoke) ;;
-    tusersub) ;;
-    tutil) ;;
     *) ;;
     esac
 
-    echo "$cc -c $ccflags $optimize $large $split"
-    eval "$also "'"$cc -c $ccflags $optimize $large $split"'
+	if test "X$optdebug" != "X"; then
+		optimize="$optdebug"
+	fi
 
-    . ./config.sh
+    echo "$cc -c -DPERL_CORE $ccflags $optimize $perltype $large $split"
+    eval "$also "'"$cc -DPERL_CORE -c $ccflags $optimize $perltype $large $split"'
+
+    . $TOP/config.sh
 
 done
 !NO!SUBS!
-chmod +x cflags
+chmod 755 cflags
 $eunicefix cflags

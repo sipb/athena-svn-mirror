@@ -1,24 +1,67 @@
-/* $RCSfile: a2p.h,v $$Revision: 1.1.1.1 $$Date: 1996-10-02 06:40:20 $
+/* $RCSfile: a2p.h,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:05 $
  *
- *    Copyright (c) 1991, Larry Wall
+ *    Copyright (c) 1991-1997, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
  *
  * $Log: not supported by cvs2svn $
- * Revision 4.0.1.2  92/06/08  16:12:23  lwall
- * patch20: hash tables now split only if the memory is available to do so
- * 
- * Revision 4.0.1.1  91/06/07  12:12:27  lwall
- * patch4: new copyright notice
- * 
- * Revision 4.0  91/03/20  01:57:07  lwall
- * 4.0 baseline.
- * 
  */
 
 #define VOIDUSED 1
-#include "../config.h"
+#ifdef VMS
+#  include "config.h"
+#else
+#  include "../config.h"
+#endif
+
+#if defined(__STDC__) || defined(vax11c) || defined(_AIX) || defined(__stdc__) || defined(__cplusplus)
+# define STANDARD_C 1
+#endif
+
+/* Use all the "standard" definitions? */
+#if defined(STANDARD_C) && defined(I_STDLIB)
+#   include <stdlib.h>
+#endif /* STANDARD_C */
+
+#include <stdio.h>
+
+#ifdef I_MATH
+#include <math.h>
+#endif
+
+#ifdef I_SYS_TYPES
+#  include <sys/types.h>
+#endif
+
+#ifdef USE_NEXT_CTYPE
+
+#if NX_CURRENT_COMPILER_RELEASE >= 400
+#include <objc/NXCType.h>
+#else /*  NX_CURRENT_COMPILER_RELEASE < 400 */
+#include <appkit/NXCType.h>
+#endif /*  NX_CURRENT_COMPILER_RELEASE >= 400 */
+
+#else /* !USE_NEXT_CTYPE */
+#include <ctype.h>
+#endif /* USE_NEXT_CTYPE */
+
+#define MEM_SIZE Size_t
+
+#ifdef STANDARD_C
+#   include <stdlib.h>
+#else
+    Malloc_t malloc _((MEM_SIZE nbytes));
+    Malloc_t calloc _((MEM_SIZE elements, MEM_SIZE size));
+    Malloc_t realloc _((Malloc_t where, MEM_SIZE nbytes));
+    Free_t   free _((Malloc_t where));
+#endif
+
+#if defined(I_STRING) || defined(__cplusplus)
+#   include <string.h>
+#else
+#   include <strings.h>
+#endif
 
 #ifndef HAS_BCOPY
 #   define bcopy(s1,s2,l) memcpy(s2,s1,l)
@@ -27,7 +70,62 @@
 #   define bzero(s,l) memset(s,0,l)
 #endif
 
-#include "handy.h"
+#if !defined(HAS_STRCHR) && defined(HAS_INDEX) && !defined(strchr)
+#define strchr index
+#define strrchr rindex
+#endif
+
+
+#ifdef I_TIME
+#   include <time.h>
+#endif
+
+#ifdef I_SYS_TIME
+#   ifdef I_SYS_TIME_KERNEL
+#	define KERNEL
+#   endif
+#   include <sys/time.h>
+#   ifdef I_SYS_TIME_KERNEL
+#	undef KERNEL
+#   endif
+#endif
+
+#ifndef MSDOS
+#  if defined(HAS_TIMES) && defined(I_SYS_TIMES)
+#    include <sys/times.h>
+#  endif
+#endif
+
+#ifdef DOSISH
+# if defined(OS2)
+#   include "../os2ish.h"
+# else
+#   include "../dosish.h"
+# endif
+#else
+# if defined(VMS)
+#   define NO_PERL_TYPEDEFS
+#   include "vmsish.h"
+# endif
+#endif
+
+#ifndef STANDARD_C
+/* All of these are in stdlib.h or time.h for ANSI C */
+Time_t time();
+struct tm *gmtime(), *localtime();
+char *strchr(), *strrchr();
+char *strcpy(), *strcat();
+#endif /* ! STANDARD_C */
+
+#ifdef VMS
+#  include "handy.h"
+#else 
+#  include "../handy.h"
+#endif
+
+#undef Nullfp
+#define Nullfp Null(FILE*)
+
 #define Nullop 0
 
 #define OPROG		1
@@ -227,16 +325,14 @@ union u_ops {
 #else
 #define OPSMAX 50000
 #endif						 	/* 80286 hack */
-union u_ops ops[OPSMAX];
-
-#include <stdio.h>
-#include <ctype.h>
+EXT union u_ops ops[OPSMAX];
 
 typedef struct string STR;
 typedef struct htbl HASH;
 
 #include "str.h"
 #include "hash.h"
+
 
 /* A string is TRUE if not "" or "0". */
 #define True(val) (tmps = (val), (*tmps && !(*tmps == '0' && !tmps[1])))
@@ -252,12 +348,28 @@ EXT STR *Str;
 
 #define GROWSTR(pp,lp,len) if (*(lp) < (len)) growstr(pp,lp,len)
 
-STR *str_new();
-
-char *scanpat();
-char *scannum();
-
-void str_free();
+/* Prototypes for things in a2p.c */
+int aryrefarg _(( int arg ));
+int bl _(( int arg, int maybe ));
+void dump _(( int branch ));
+int fixfargs _(( int name, int arg, int prevargs ));
+int fixrargs _(( char *name, int arg, int prevargs ));
+void fixup _(( STR *str ));
+int numary _(( int arg ));
+int oper0 _(( int type ));
+int oper1 _(( int type, int arg1 ));
+int oper2 _(( int type, int arg1, int arg2 ));
+int oper3 _(( int type, int arg1, int arg2, int arg3 ));
+int oper4 _(( int type, int arg1, int arg2, int arg3, int arg4 ));
+int oper5 _(( int type, int arg1, int arg2, int arg3, int arg4, int arg5 ));
+void putlines _(( STR *str ));
+void putone _(( void ));
+int rememberargs _(( int arg ));
+char * scannum _(( char *s ));
+char * scanpat _(( char *s ));
+int string _(( char *ptr, int len ));
+void yyerror _(( char *s ));
+int yylex _(( void ));
 
 EXT int line INIT(0);
 
@@ -303,11 +415,12 @@ EXT bool nomemok INIT(FALSE);
 EXT char const_FS INIT(0);
 EXT char *namelist INIT(Nullch);
 EXT char fswitch INIT(0);
+EXT bool old_awk INIT(0);
 
 EXT int saw_FS INIT(0);
 EXT int maxfld INIT(0);
 EXT int arymax INIT(0);
-char *nameary[100];
+EXT char *nameary[100];
 
 EXT STR *opens;
 
@@ -336,3 +449,5 @@ EXT HASH *curarghash;
 #define P_POW		95
 #define P_AUTO		100
 #define P_MAX		999
+
+EXT int an;

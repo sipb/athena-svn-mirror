@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/eg/shmkill,v 1.1.1.1 1996-10-02 06:40:05 ghudson Exp $
+# $RCSfile: shmkill,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:45 $
 
 # A script to call from crontab periodically when people are leaving shared
 # memory sitting around unattached.
