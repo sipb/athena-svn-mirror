@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.2 1992-05-03 20:04:46 epeisach Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.3 1992-05-07 16:18:54 lwvanels Exp $
 # Builds xdm and installs it with Athenized config
 
 #ifdef _AIX
@@ -45,6 +45,7 @@ install_file(Xservers,$(ATHETCDIR)/xdm/Xservers)
 install_file(Xaccess,$(ATHETCDIR)/xdm/Xaccess)
 
 athena-verify.c: ../xlogin/verify.c
+	rm -f athena-verify.c
 	cp ../xlogin/verify.c athena-verify.c
 
 #ifdef _AIX
