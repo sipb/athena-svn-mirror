@@ -15,3 +15,13 @@ functions and aliases, indexed arrays of unlimited size and
 integer arithmetic in any base from two to 64. Bash is ultimately
 intended to conform to the IEEE POSIX P1003.2/ISO 9945.2 Shell and
 Tools standard.
+
+%post
+if [ ! -f /etc/shells ] || ! grep -q '^/bin/athena/bash$' /etc/shells; then
+  echo "/bin/athena/bash" >> /etc/shells
+fi
+
+%postun
+[ $1 = 0 ] || exit 0
+grep -v '^/bin/athena/bash$' < /etc/shells > /etc/shells.rpm
+mv /etc/shells.rpm /etc/shells
