@@ -1,9 +1,9 @@
 /*
  * The FX (File Exchange) Server
  *
- * $Author: epeisach $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.2 1992-04-30 10:02:31 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.3 1997-11-14 22:27:26 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -18,7 +18,7 @@
  */
 
 #ifndef lint
-static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.2 1992-04-30 10:02:31 epeisach Exp $";
+static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/server/util.c,v 1.3 1997-11-14 22:27:26 ghudson Exp $";
 #endif /* lint */
 
 #include <fxserver.h>
@@ -246,12 +246,11 @@ fatal(s, a, b, c, d, e)
     char *s;
     int a, b, c, d, e;
 {
-    extern char *sys_errlist[];
     extern int errno;
     
     printf("fxserver: fatal error - ");
     printf(s, a, b, c, d, e);
-    printf("\n  Last system error = %s\n", sys_errlist[errno]);
+    printf("\n  Last system error = %s\n", strerror(errno));
     exit(1);
 }
 
