@@ -1,9 +1,9 @@
 /**********************************************************************
  * Error table generator for kerberos
  *
- * $Author: probe $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/ets/mk_krb_err.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/ets/mk_krb_err.c,v 1.1 1993-10-12 03:02:49 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/ets/mk_krb_err.c,v 1.2 1996-08-10 05:40:15 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -17,7 +17,7 @@
 main()
 {
   int i;
-  char *msg;
+  const char *msg;
 
   printf("############################################################\n");
   printf("# File Exchange kerberos error table\n");
