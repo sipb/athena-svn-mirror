@@ -1,0 +1,2 @@
+# $Id: configure.athena,v 1.1 2000-03-29 19:53:12 ghudson Exp $
+./configure --without-odvipsk --without-oxdvik --disable-multiplatform
