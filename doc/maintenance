@@ -279,6 +279,27 @@ how they should be carried out:
 	  script (moving any relevant binaries into .deleted first),
 	  followed by a rebuild of packs/build/finish.
 
+One thing that needs to happen externally during a release cycle, if
+there is an OS upgrade involved, is the addition of compatibility
+symlinks under the arch directories of various lockers.  All of the
+lockers listed in packs/glue/install-afs-glue.sh definitely need to be
+hit, and the popular software lockers need to be hit as well.  Here is
+a reasonable list of popular lockers to get in addition to the glue
+ones:
+
+	consult
+	games
+	gnu
+	graphics
+	infoagents
+	outland
+	sipb
+	tcl
+	watchmaker
+
+In addition, the third-party software lockers need to be updated; they
+keep their own list.
+
 Clusters
 --------
 
