@@ -1,10 +1,11 @@
 #!/bin/sh
-# $Id: clean_tmp_areas.sh,v 1.11 1998-06-17 18:00:18 ghudson Exp $
+# $Id: clean_tmp_areas.sh,v 1.12 1998-09-22 01:55:09 ghudson Exp $
 # Script to clean up some temporary areas in a vaguely general manner.
 
 PATH=/bin/athena:/bin:/usr/bin
-dirs=/tmp:"-atime +1":/var/tmp:"-atime +2":/var/preserve:"-mtime +3"
+export PATH
 
+dirs=/tmp:"-atime +1":/var/tmp:"-atime +2":/var/preserve:"-mtime +3"
 xdev=-mount
 exceptions="! -type b ! -type c"
 args=
