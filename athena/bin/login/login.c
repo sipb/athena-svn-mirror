@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.31 1990-07-20 16:44:57 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.32 1990-11-28 17:48:27 epeisach Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.31 1990-07-20 16:44:57 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.32 1990-11-28 17:48:27 epeisach Exp $";
 #endif	/* lint */
 
 /*
@@ -93,7 +93,7 @@ typedef int sigtype;
 #define KRB_TK_DIR	"/tmp/tkt_" /* Where to put the ticket */
 #define KRBTKLIFETIME	96	/* 8 hours */
 
-#define PROTOTYPE_DIR	"/usr/prototype_user" /* Source for temp files */
+#define PROTOTYPE_DIR	"/usr/athena/lib/prototype_tmpuser" /* Source for temp files */
 #define TEMP_DIR_PERM	0755	/* Permission on temporary directories */
 
 #define MAXPWSIZE   	128	/* Biggest key getlongpass will return */
