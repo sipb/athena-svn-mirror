@@ -4,13 +4,22 @@ PATH=/bin:/bin/athena:/usr/ucb:/usr/bin:/usr/athena
 
 . /etc/rc.conf
 
+df="df -t 4.2"
+
 case `/bin/athena/machtype -c` in
 	CVAXSTAR) type="Digital VAXstation 3100";;
 	VAXSTAR) type="Digital VAX VS2000";;
 	MVAX-II) type="Digital Microvax II";;
 	RT*) type="IBM PC/RT";;
-	KN01) type="Digital DECstation 3100";;
-	*) type=`/bin/athena/machtype -c`;;
+	KN01) type="Digital DECstation 3100"
+		df="/bin/df";;
+	PS2-70) type="IBM PS/2 Model 70"
+		df="/bin/df";;
+	PS2-80) type="IBM PS/2 Model 80"
+		df="/bin/df";;
+	PS2*) type="IBM PS/2"
+		df="/bin/df";;
+	*) type=`/bin/athena/machtype -c -v`;;
 	esac
 
 echo `hostname` "is a" $type 					
@@ -31,11 +40,7 @@ machtype -v -d
 echo "Disks:"							
 machtype -v -r| awk '{printf("\t%s\n", $0)}'			
 echo "Disk space:"						
-if [ `/bin/athena/machtype -c` = "KN01" ]; then
-	/bin/df							
-else
-	/bin/df -t 4.2						
-fi
+$df
 echo								
 echo								
 echo -n "Press ENTER or RETURN to exit."
