@@ -12,52 +12,57 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v $
- *	$Id: sort.c,v 1.8 1990-07-16 08:17:12 lwvanels Exp $
+ *	$Id: sort.c,v 1.9 1990-11-13 15:45:11 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.8 1990-07-16 08:17:12 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.9 1990-11-13 15:45:11 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/sort.h>
 
-/* XXX */
-static int foo (status) int status; {
-    switch (status) {
-    case SERVICED:
-    case ACTIVE:
-    case PENDING:
-    case NOT_SEEN:
-    case DONE:
-    case CANCEL:
-	/* unconnected-consultant status: map to active-question */
-    case ON:
-    case FIRST:
-    case OFF:
-    case DUTY:
-    case SECOND:
-	return 1;
-    case REFERRED:
-	return 3;
-    case PICKUP:
-	return 2;
-    }
-    {
-	char buf[60];
-	OGetStatusString (status, buf);
-	printf ("*** foo(%08x[%s])\n", status, buf);
-    }
-    return 0x7000000;
+static int foo (status)
+     int status;
+{
+  switch (status) {
+  case SERVICED:
+  case ACTIVE:
+  case PENDING:
+  case NOT_SEEN:
+  case DONE:
+  case CANCEL:
+    /* unconnected-consultant status: map to active-question */
+  case ON:
+  case FIRST:
+  case OFF:
+  case DUTY:
+  case SECOND:
+    return 1;
+  case REFERRED:
+    return 3;
+  case PICKUP:
+    return 2;
+  }
+  {
+    char buf[60];
+    OGetStatusString (status, buf);
+    printf ("*** foo(%08x[%s])\n", status, buf);
+  }
+  return 0x7000000;
 }
+
 static int bar (status) int status; {
     return (status == ON
 	    || status == FIRST
@@ -66,27 +71,29 @@ static int bar (status) int status; {
 	    || status == SECOND);
 }
 
+#if 0
 #if __STDC__
 static void dump (LIST *person) {
 #else
 static void dump (person) LIST *person; {
 #endif
-    printf ("<%s,%s,u=%x,uk=%x,ck=%x>\n",
-	    person->user.username, person->connected.username,
-	    person->ustatus, person->ukstatus, person->ckstatus);
+  printf ("<%s,%s,u=%x,uk=%x,ck=%x>\n",
+	  person->user.username, person->connected.username,
+	  person->ustatus, person->ukstatus, person->ckstatus);
 }
+#endif
 
 #define cmp(a,b) ((a)<(b)?-1:((a)==(b)?0:1))
 #define sgn(n) ((n)<0?-1:((n)>0?1:0))
 /* qsort should be persuaded to pass this */
-const static sort_keys *keys;
+static sort_keys *keys;
 
 #if __STDC__
 static int compare (LIST *first, LIST *second) {
 #else
 static int compare (first, second) LIST *first, *second; {
 #endif
-    const sort_keys *k;
+    sort_keys *k;
     int order = 0;
 #if 0
     printf ("compare:\n1: ");
@@ -142,7 +149,7 @@ static int compare (first, second) LIST *first, *second; {
 
 ERRCODE OSortListByKeys (list, skeys)
     LIST *list;
-    const sort_keys *skeys;
+    sort_keys *skeys;
 {
     int n_entries;
     if (!list)
