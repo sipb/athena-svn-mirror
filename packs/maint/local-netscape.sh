@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-netscape.sh,v 1.6 2002-09-10 16:08:50 ghudson Exp $
+# $Id: local-netscape.sh,v 1.7 2002-10-17 05:13:03 ghudson Exp $
 
 # local-netscape: A cron job to copy part of the infoagents locker onto
 # local disk so that netscape can be started more quickly.
@@ -96,7 +96,7 @@ if [ -x "$script" ]; then
   rm -f "$script.adjusted"
   sed -e "s,$locker,$local,g" -e 's,^progname=.*$,progname=netscape,' \
     "$script" > $script.new
-  chmod a+x "$script.new"
+  chmod a+rx "$script.new"
   mv "$script.new" "$script.adjusted"
 fi
 
@@ -106,6 +106,6 @@ if [ -x "$script" ]; then
   rm -f "$script.adjusted"
   sed -e "s,$locker,$local,g" -e 's,^progname=.*$,progname=mozilla,' \
     "$script" > $script.new
-  chmod a+x "$script.new"
+  chmod a+rx "$script.new"
   mv "$script.new" "$script.adjusted"
 fi
