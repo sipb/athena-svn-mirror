@@ -124,7 +124,7 @@ static struct nlist nlst[] =
   {"cpu"},			/* 2 */
   {"v"},			/* 3 */
   {"nproc"},			/* 4 */
-  {"anoninfo"},			/* 5 */
+  {"k_anoninfo"},		/* 5 */
   {"freemem"},			/* 6 */
   {"maxmem"},			/* 7 */
   {"availrmem"},		/* 8 */
