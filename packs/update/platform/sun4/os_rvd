@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.21 1998-05-20 22:45:46 ghudson Exp $
+## $Id: os_rvd,v 1.22 1998-06-02 17:46:40 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -18,6 +18,10 @@ GLOBAL : *.CKP *.local *.pid :
 		usr
 		var
 		ufsboot
+		sbin
+		:
+	/sbin:::
+		-> cvcd
 		:
 	/etc:::			# These are specific to each machine.
 		.UNCON*
