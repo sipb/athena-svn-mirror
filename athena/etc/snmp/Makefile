@@ -1,7 +1,7 @@
 #
 # Makefile to install NYSERNet snmp distribution
 #
-DIRS=		lib src 
+DIRS=		lib server/src 
 
 DESTDIR=
 # customize these to your local configuration
