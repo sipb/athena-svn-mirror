@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.55 1993-04-28 14:46:23 vanharen Exp $
+ *	$Id: olcd.c,v 1.56 1993-05-14 14:32:55 vanharen Exp $
  *	$Author: vanharen $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.55 1993-04-28 14:46:23 vanharen Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.56 1993-05-14 14:32:55 vanharen Exp $";
 #endif
 #endif
 
@@ -77,6 +77,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #endif
 
 extern PROC  Proc_List[];	/* OLC Proceedure Table */
+extern PROC  Maint_Proc_List[];	/* OLC "Maintenance Mode" Proceedure Table */
 char DaemonHost[LINE_SIZE];	/* Name of daemon's machine. */
 struct sockaddr_in sin = { AF_INET }; /* Socket address. */
 int request_count = 0;
@@ -84,6 +85,8 @@ int request_counts[OLC_NUM_REQUESTS];
 long start_time;
 int select_timeout = 30;
 char DaemonInst[LINE_SIZE];	/* "olc", "olz", "olta", etc. */
+int maint_mode = 0;
+PROC proc_list[];
 
 #ifdef KERBEROS
 static long ticket_time = 0L;	/* Timer on kerberos ticket */
@@ -215,11 +218,18 @@ main (argc, argv)
 	    strcpy(DaemonInst, argv[arg]);
 	  upcase_string(DaemonInst);
 	}
+	else if (!strcmp(argv[arg], "-maint"))
+	  maint_mode = 1;
 	else {
 	    fprintf (stderr, "unknown argument: %s\n",argv[arg]);
 	    return 1;
 	}
     }
+
+    if (maint_mode)
+      proc_list = Maint_Proc_List;
+    else
+      proc_list = Proc_List;
 
 #ifdef KERBEROS
     setenv("KRBTKFILE",TICKET_FILE,TRUE);
@@ -649,26 +659,27 @@ process_request (fd, from)
 	send_response(fd,auth);
 	return;
     }
-    while  ((type != Proc_List[ind].proc_code)
-	    && (Proc_List[ind].proc_code != UNKNOWN_REQUEST))
+    while  ((type != proc_list[ind].proc_code)
+	    && (proc_list[ind].proc_code != UNKNOWN_REQUEST))
 	ind++;
 
-    if (Proc_List[ind].proc_code != UNKNOWN_REQUEST)
+    if (proc_list[ind].proc_code != UNKNOWN_REQUEST)
     {
 
 	++request_count;
 	++request_counts[ind];
 #if 0
 	printf("%d> Got %s request from %s\n",request_count,
-	       Proc_List[ind].description,
+	       proc_list[ind].description,
 	       request.requester.username);
 #endif
 
-	(*(Proc_List[ind].olc_proc))(fd, &request);
+	(*(proc_list[ind].olc_proc))(fd, &request);
     }
     else
     {
-      send_response(fd, UNKNOWN_REQUEST);
+      send_response(fd,
+		    maint_mode ? PERMISSION_DENIED : UNKNOWN_REQUEST);
     }
 
 
