@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.9 1990-01-17 02:40:43 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.10 1990-02-14 16:38:00 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -143,7 +143,7 @@ t_display_personal_status(Request,list,chart)
     {
       printf("Status for: %s (%s@%s)\n\n",list->user.realname,
 	     list->user.username,list->user.machine);
-      printf("   instance   nm     status     connected party     topic\n");
+      printf("   Instance   NM     Status     Connected to        Topic\n");
       for(l=list; l->ustatus != END_OF_LIST; ++l)
 	{
 	  if(Request->requester.instance == l->user.instance)
@@ -153,7 +153,7 @@ t_display_personal_status(Request,list,chart)
 	  if((l->nseen >=0) && (l->connected.uid >= 0))
 	    {
 	      OGetStatusString(l->ukstatus,cbuf);
-	      printf("[%d]%s       %c      %-10.10s %-9.9s (%d)%s      %s\n",
+	      printf("[%d]%s       %c      %-10.10s %-8.8s[%d]%s        %s\n",
 		     l->user.instance, l->user.instance > 9 ? "" : " ",
 		     l->umessage ? '*' : ' ', cbuf, l->connected.username,
 		     l->connected.instance,
@@ -406,4 +406,3 @@ t_pp_stati()
     }
   printf("\n");
 }
-
