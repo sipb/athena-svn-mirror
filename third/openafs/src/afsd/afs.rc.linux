@@ -82,7 +82,7 @@ athena_afsadjust () {
                     print int($2 * 3 / 4);
                   }' > /usr/vice/etc/cacheinfo.new
                   
-                if df -k /usr/vice/cache | grep /usr/vice/cache ; then
+                if df -k /usr/vice/cache | grep -q /usr/vice/cache ; then
                         mv /usr/vice/etc/cacheinfo.new /usr/vice/etc/cacheinfo
                 else
                         rm /usr/vice/etc/cacheinfo.new
