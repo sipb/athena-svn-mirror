@@ -6,18 +6,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v $
- *	$Id: hosthash.c,v 1.2 1991-01-27 22:05:39 lwvanels Exp $
+ *	$Id: hosthash.c,v 1.3 1991-03-27 14:02:52 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v 1.2 1991-01-27 22:05:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/hosthash.c,v 1.3 1991-03-27 14:02:52 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
 
 #include <polld.h>
 
