@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_cmdloop.c,v 1.25 1999-08-02 12:26:26 ghudson Exp $
+ *	$Id: p_cmdloop.c,v 1.25.8.1 2003-08-20 16:52:51 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_cmdloop.c,v 1.25 1999-08-02 12:26:26 ghudson Exp $";
+static char rcsid[] ="$Id: p_cmdloop.c,v 1.25.8.1 2003-08-20 16:52:51 ghudson Exp $";
 #endif
 #endif
 
@@ -184,8 +184,10 @@ do_command(Command_Table, arguments)
  *	ones in the table.  We check only as many characters as the command
  *	name has, so any unique specifier can be used for a command.  Each
  *	time a match is found, record its index in an array, and increment
- *	a counter.  If more than one match is found, print the possible
- *	commands for the user. If one match is found, return its index.
+ *	a counter.  If more than one match is found, and the matches don't
+ *	all lead to the same dispatch function, print the possible commands
+ *	for the user.  If only one match is found, or all matches have the
+ *	same dispatch, return the index of the first match.
  *	Otherwise, return an ERROR.
  */
 
@@ -220,10 +222,16 @@ command_index(Command_Table, command_name)
       return(matches[0]);
     else 
       {
-	printf("Could be one of:\n");
-	for (ind = 0; ind < match_count; ind++)
-	  printf("\t%s\n", Command_Table[matches[ind]].command_name);
-	return(NOT_UNIQUE);
+	Pfunction dispatch = Command_Table[matches[0]].command_function;
+	for (ind = 1; ind < match_count; ind++)
+	  if (Command_Table[matches[ind]].command_function != dispatch)
+	    {
+	      printf("Could be one of:\n");
+	      for (ind = 0; ind < match_count; ind++)
+		printf("\t%s\n", Command_Table[matches[ind]].command_name);
+	      return(NOT_UNIQUE);
+	    }
+	return(matches[0]);
       }
 }
 
