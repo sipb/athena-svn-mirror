@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v $
- * $Author: steiner $
+ * $Author: jtkohl $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -10,7 +10,7 @@
 
 #ifndef lint
 static char *rcsid_phost_c =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.4 1988-02-24 18:12:12 steiner Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/get_phost.c,v 4.5 1988-11-15 16:24:34 jtkohl Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
@@ -21,17 +21,20 @@ static char *rcsid_phost_c =
 char *index();
 
 /*
- * The convention established by the Kerberos-authenticated rcmd
- * services (rlogin, rsh, rcp) is that the principal host name is all
- * lower case characters.  Therefore, we can get this name from an
- * alias by taking the official, fully qualified hostname, stripping
- * off the domain info (ie, take everything up to but excluding the
- * '.') and translating it to lower case.
+ * This routine takes an alias for a host name and returns the first
+ * field, lower case, of its domain name.  For example, if "menel" is
+ * an alias for host officially named "menelaus" (in /etc/hosts), for
+ * the host whose official name is "MENELAUS.MIT.EDU", the name "menelaus"
+ * is returned.
  *
- * For example, if "menel" is an alias for host officially named
- * "menelaus" (in /etc/hosts), for the host whose official name is
- * "MENELAUS.MIT.EDU", the user could give the command "menel echo
- * foo" and we will resolve it to "menelaus".
+ * This is done for historical Athena reasons: the Kerberos name of
+ * rcmd servers (rlogin, rsh, rcp) is of the form "rcmd.host@realm"
+ * where "host"is the lowercase for of the host name ("menelaus").
+ * This should go away: the instance should be the domain name
+ * (MENELAUS.MIT.EDU).  But for now we need this routine...
+ *
+ * A pointer to the name is returned, if found, otherwise a pointer
+ * to the original "alias" argument is returned.
  */
 
 char * get_phost(alias)
