@@ -1,4 +1,4 @@
-.\" $Id: al_acct_create.3,v 1.1 1997-10-21 01:54:11 ghudson Exp $
+.\" $Id: al_acct_create.3,v 1.2 1997-11-13 21:59:47 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -136,9 +136,9 @@ login session.
 The user's home directory could not be attached; a temporary home
 directory was created instead.
 .TP 15
-.I AL_WNOTMPDIR
+.I AL_WNOHOMEDIR
 The user's home directory could not be attached and a temporary home
-directory could not be created.  The user has no home directory.
+directory was not created.  The user has no home directory.
 .TP 15
 .I AL_WNOATTACH
 The user's home directory was not attached because

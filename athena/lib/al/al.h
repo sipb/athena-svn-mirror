@@ -1,4 +1,4 @@
-/* $Id: al.h,v 1.2 1997-10-30 23:59:17 ghudson Exp $ */
+/* $Id: al.h,v 1.3 1997-11-13 21:59:30 ghudson Exp $ */
 
 /* Copyright 1997 by the Massachusetts Institute of Technology.
  *
@@ -42,7 +42,7 @@
 #define AL_WGROUP		12
 #define AL_WXTMPDIR		13
 #define AL_WTMPDIR		14
-#define AL_WNOTMPDIR		15
+#define AL_WNOHOMEDIR		15
 #define AL_WNOATTACH		16
 
 /* Public functions */
