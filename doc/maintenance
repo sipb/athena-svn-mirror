@@ -131,14 +131,14 @@ To set up a build machine, follow these instructions after installing:
 	* Set the root password.
 	* Put "builder rl" in /etc/athena/access.
 	* In /etc/athena/rc.conf, set SSHD and ACCESSON to true.  Set
-	  AFSADJUST to false.
+	  AFSADJUST, PUBLIC, and AUTOUPDATE to false.
+	* Create /rel/wash/afs and parents.
 	* Edit /usr/vice/etc/cacheinfo and change the AFS mountpoint
 	  from "/afs" to "/rel/wash/afs".
 	* Reboot.  (Remote access daemons should work without AFS,
 	  more or less.)
 	* Create symlinks /afs -> rel/wash/afs and /rel/afs ->
 	  wash/afs.
-	* Create /rel/wash/afs and parents.
 	* Run "/mit/source/packs/build/makeroot.sh /rel X.Y", where
 	  X.Y is the full release this build is for.
 	* Run "/mit/source/packs/build/makeroot.sh /rel/wash".
