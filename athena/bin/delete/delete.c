@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.10 1989-01-26 09:56:07 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.11 1989-01-26 10:47:48 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -21,9 +21,12 @@
 #include <strings.h>
 #include <sys/param.h>
 #include <sys/file.h>
+#include "util.h"
+#include "delete.h"
 
-#define ERROR_MASK 1
-#define NO_DELETE_MASK 2
+
+
+
 
 /*
  * ALGORITHM:
@@ -63,7 +66,7 @@
 
 int force, interactive, recursive, noop, verbose, filesonly, directoriesonly;
 char *whoami;
-char *lastpart(), *malloc();
+char *malloc();
 
 main(argc, argv)
 int argc;
@@ -239,37 +242,11 @@ int recursed;
 	  else
 	       return(do_move(filename, stat_buf, 0));
      }
-     return(0);
 }
 
 		 
 			 
 	       
-char *append(filepath, filename, print_errors)
-char *filepath, *filename;
-int print_errors;
-{
-     static char buf[MAXPATHLEN];
-
-     strcpy(buf, filepath);
-     if (buf[strlen(buf) - 1] == '/')
-	  buf[strlen(buf) - 1] = '\0';
-     if (strlen(buf) + strlen(filename) + 2 > MAXPATHLEN) {
-	  if (print_errors)
-	       fprintf(stderr, "%s: %s/%s: pathname too long\n", whoami,
-		       filepath, filename);
-	  *buf = '\0';
-	  return(buf);
-     }
-     strcat(buf, "/");
-     strcat(buf, filename);
-     return(buf);
-}
-    
-
-	  
-
-
 empty_directory(filename)
 char *filename;
 {
@@ -335,59 +312,6 @@ int recursed;
 }
 
 					 
-
-
-
-yes() {
-     char buf[BUFSIZ];
-     char *val;
-     
-     val = fgets(buf, BUFSIZ, stdin);
-     if (! val)
-	  exit(1);
-     if (! index(buf, '\n')) do
-	  fgets(buf + 1, BUFSIZ - 1, stdin);
-     while (! index(buf + 1, '\n'));
-     return(*buf == 'y');
-}
-
-
-
-
-	  
-char *lastpart(filename)
-char *filename;
-{
-     char *part;
-
-     part = rindex(filename, '/');
-
-     if (! part)
-	  part = filename;
-     else if (part == filename)
-	  part++;
-     else if (part - filename + 1 == strlen(filename)) {
-	  part = rindex(--part, '/');
-	  if (! part)
-	       part = filename;
-	  else
-	       part++;
-     }
-     else
-	  part++;
-
-     return(part);
-}
-
-
-
-
-is_dotfile(filename)
-char *filename;
-{
-     return (! (strcmp(filename, ".") && strcmp(filename, "..")));
-}
-
 
 
 
@@ -489,12 +413,3 @@ char *filename;
      return(0);
 }
 
-	  
-	       
-int is_deleted(filename)
-char *filename;
-{
-     return(! strncmp(filename, ".#", 2));
-}
-
-    
