@@ -10,13 +10,12 @@
  * routine to convert hostname into realm name.
  */
 
-#ifndef	lint
-static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v 1.1 1990-07-04 18:00:29 jfc Exp $";
-#endif	lint
-
 #include "config.h"
 #ifdef OLD_KERBEROS
+
+static char *rcsid_getrealm_c =
+  "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/getrealm.c,v 1.2 1990-07-04 18:00:58 jfc Exp $";
+
 #include <mit-copyright.h>
 #include <strings.h>
 #include <stdio.h>
