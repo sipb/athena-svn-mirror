@@ -11,6 +11,12 @@ sun4)
 NETDEV=le0;		export NETDEV		#  Network interface
 EOM
 	fi
+
+	sed -e '/	\/usr	/s/	yes	/	no	/' \
+		< /etc/vfstab > /etc/vfstab.new
+	rm -f /etc/vfstab.old
+	ln /etc/vfstab /etc/vfstab.old
+	mv /etc/vfstab.new /etc/vfstab
 	;;
 
 sgi)
