@@ -2,7 +2,7 @@
 
 # Top level Xsession file for all users
 #
-# $Id: Xsession,v 1.6 2004-06-07 19:10:49 rbasch Exp $
+# $Id: Xsession,v 1.7 2004-09-24 22:15:59 rbasch Exp $
 
 trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
 
@@ -90,21 +90,6 @@ kdestroy				# destroy tickets.
 cd /tmp
 unlog
 fsid -u -f $USER > /dev/null 2>&1
-
-# Send SIGHUP to processes which have our controlling tty open.
-ctty="`tty <&2 2>/dev/null`"
-if [ -c "$ctty" ]; then
-  trap "" HUP
-  case `uname` in
-  SunOS)
-    fuser -s HUP "$ctty" > /dev/null 2>&1
-    ;;
-  Linux)
-    fuser -k -HUP "$ctty" > /dev/null 2>&1
-    ;;
-  esac
-  trap HUP
-fi
 
 sleep 3					# let them see any messages (quickly)
 exit 0
