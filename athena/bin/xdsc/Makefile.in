@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1999-12-16 01:58:23 danw Exp $
+# $Id: Makefile.in,v 1.2 2000-04-05 19:21:04 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -42,6 +42,7 @@ check:
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${datadir}/X11/app-defaults
 	${INSTALL_PROGRAM} xdsc ${DESTDIR}${bindir}
 	${INSTALL} -m 444 ${srcdir}/Xdsc ${DESTDIR}${datadir}/X11/app-defaults
 	${INSTALL} -m 444 ${srcdir}/xdsc.1 ${DESTDIR}${mandir}/man1
