@@ -114,12 +114,33 @@ case ${AIS_OSVERSION} in
 	;;
 esac
 
-# On an O2, set the video refresh rate to 75 hz, if not already set.
-if [ "${AIS_CPUBOARD}" = "IP32" ]; then
-    if [ ! -f ${AIS_ROOT}/var/X11/Xvc/Crm0_TimingTable ]; then
-	# setmon -x actually modifies a file in the filesystem, hence
+# Set the video refresh rate to 75 hz on the O2 (CRM graphics),
+# 72 hz on Indy (XL or XZ graphics), if not already set.
+case "${AIS_GRAPHICS}" in
+    GR3-XZ)
+	gfxname=GR2
+	format=72hz
+	;;
+    Indy)
+	gfxname=NG1
+	format=72hz
+	;;
+    CRM)
+	gfxname=Crm
+	format=75hz
+	;;
+    *)
+	gfxname=
+	;;
+esac
+if [ -n "$gfxname" ]; then
+    if [ ! -f "${AIS_ROOT}/var/X11/Xvc/${gfxname}0_TimingTable" ]; then
+	# Make sure DISPLAY is not set, as setmon looks at it even
+	# when -p0 is specified.
+	# setmon -x actually stores the format in the above file, hence
 	# the chroot.
-	chroot ${AIS_ROOT} /usr/gfx/setmon -x 75hz
+	unset DISPLAY
+	chroot ${AIS_ROOT} /usr/gfx/setmon -x -p0 "$format"
     fi
 fi
 
