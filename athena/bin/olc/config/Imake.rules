@@ -1,6 +1,6 @@
 /**/###########################################################################
 /**/# Imake rules for building libraries, programs, scripts, and data files
-/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.12 1991-10-31 15:08:43 lwvanels Exp $
+/**/# rules:  $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.rules,v 1.13 1997-04-30 18:10:33 ghudson Exp $
 
 /* Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h". */
@@ -430,8 +430,9 @@ install:: program.script						@@\
 #ifndef LinkFileList
 #define LinkFileList(step,list,dir,sub)					@@\
 step:: list								@@\
-	@case '${MFLAGS}' in *[i]*) set +e;; esac; \			@@\
-	echo "	cd" dir; cd dir; for i in list; do (set -x; $(LN) sub/$$i .); done
+	@case ' ${MFLAGS} ' in *\ -[i]\ *) set +e;; *) set -e;; esac;\	@@\
+	echo "	cd" dir; cd dir;\					@@\
+	for i in list; do (set -x; $(LN) sub/$$i .); done
 #endif
 
 
@@ -443,7 +444,7 @@ step:: list								@@\
 #ifndef InstallMultipleDestFlags
 #define InstallMultipleDestFlags(step,list,dest,flags)			@@\
 step:: list								@@\
-	@case '${MFLAGS}' in *[i]*) set +e;; esac; \			@@\
+	@case ' ${MFLAGS} ' in *\ -[i]\ *) set +e;; *) set -e;; esac; \	@@\
 	for i in list; do \						@@\
 		(set -x; $(INSTALL) -c flags $$i dest); \		@@\
 	done
@@ -1040,7 +1041,7 @@ clean::									@@\
 #ifndef NamedTargetSubdirs
 #define NamedTargetSubdirs(name,dirs,verb,flags,subname)		@@\
 name::									@@\
-	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \			@@\
+	@case ' ${MFLAGS} ' in *\ -[ik]\ *) set +e;; *) set -e;; esac;\	@@\
 	for i in dirs ;\						@@\
 	do \								@@\
 		(cd $$i ; echo verb "in $(CURRENT_DIR)/$$i..."; \	@@\
@@ -1167,7 +1168,7 @@ MakeLintSubdirs(dirs,lintlib,lintlib)
 #ifndef MakeMakeSubdirs
 #define MakeMakeSubdirs(dirs,target)					@@\
 target::								@@\
-	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \			@@\
+	@case ' ${MFLAGS} ' in *\ -[ik]\ *) set +e;; *) set -e;; esac;\	@@\
 	for i in dirs ;\						@@\
 	do \								@@\
 		echo "making Makefiles in $(CURRENT_DIR)/$$i..."; \			@@\
