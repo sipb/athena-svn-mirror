@@ -1,7 +1,7 @@
 /* 
- * $Id: from.c,v 1.4 1991-06-28 16:47:28 akajerry Exp $
+ * $Id: from.c,v 1.5 1991-07-01 15:15:08 epeisach Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: akajerry $
+ * $Author: epeisach $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -9,20 +9,25 @@
  * and the old UCB from functionality.
  */
 
-#if !defined(lint) && !defined(SABER) && defined(RCS_HDRS)
-static char *rcsid = "$Id: from.c,v 1.4 1991-06-28 16:47:28 akajerry Exp $";
-#endif /* lint || SABER || RCS_HDRS */
+#if !defined(lint) && !defined(SABER)
+static char *rcsid = "$Id: from.c,v 1.5 1991-07-01 15:15:08 epeisach Exp $";
+#endif /* lint || SABER */
 
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <pwd.h>
 #include <strings.h>
-#include <malloc.h>
+#if defined(POSIX) || defined(_POSIX_SOURCE)
+#include <stdlib.h>
+#else
+extern char *malloc();
+#endif
 #ifdef HESIOD
 #include <hesiod.h>
 #endif
 #include <ctype.h>
+#include <sys/stat.h>
 
 #define NOTOK (-1)
 #define OK 0
@@ -32,13 +37,14 @@ static char *rcsid = "$Id: from.c,v 1.4 1991-06-28 16:47:28 akajerry Exp $";
 
 FILE 	*sfi, *sfo;
 char 	Errmsg[80];
-char	*malloc(), *getlogin(), *strdup(), *parse_from_field();
+char	*getlogin(), *strdup(), *parse_from_field();
 extern int	optind;
 extern char     *optarg;
 struct	passwd *getpwuid();
 uid_t	getuid();
 
-int	popmail_debug, verbose, unixmail, popmail, report;
+int	popmail_debug, verbose, unixmail, popmail, report, totals;
+int	exuser, nonomail;
 char	*progname, *sender, *user, *host;
 
 char	*headers[MAX_HEADER_LINES];
@@ -61,38 +67,54 @@ main(argc, argv)
 	int	argc;
 	char	**argv;
 {
-	int	retval = 1;
+	int	locmail = -1, remmail = -1;
 
-	PRS(argc,argv);
-	if (popmail)
-	  retval = getmail_pop(user, host);
+	parse_args(argc,argv);
 	if (unixmail)
-	  retval &= getmail_unix(user);
-	exit(retval);
+	  locmail = getmail_unix(user);
+	if (popmail)
+	  remmail = getmail_pop(user, host, locmail);
+	if (!nonomail && (report || verbose || totals) &&
+	    (unixmail == 0 || locmail == 0) &&
+	    (popmail == 0 || remmail == 0))
+	  if (exuser)
+	    printf ("%s doesn't have any mail waiting.\n", user);
+	  else
+	    puts("You don't have any mail waiting.");
+
+	exit (unixmail && locmail < 0 || popmail && remmail < 0);
 }
 
-PRS(argc,argv)
+parse_args(argc,argv)
 	int	argc;
-	char	**argv;
+	register char **argv;
 {
 	register struct passwd *pp;
+	char *cp;
 	int	c;
 	extern char	*getenv();
 #ifdef HESIOD
 	struct hes_postoffice *p;
-#endif HESIOD
+#endif
 
-	progname = argv[0];
+	cp = rindex(argv[0], '/');
+	if (cp)
+	    progname = cp + 1;
+	else
+	    progname = argv[0];
 	verbose = popmail_debug = 0;
 	host = user = sender = NULL;
 	unixmail = popmail = 1;
 	
 	optind = 1;
-	while ((c = getopt(argc,argv,"rvdpus:h:")) != EOF)
+	while ((c = getopt(argc,argv,"rvdnputs:h:")) != EOF)
 		switch(c) {
 		case 'r':
 		        /* report on no mail */
 		        report = 1;
+			break;
+		case 'n':
+			nonomail = 1;
 			break;
 		case 'v':
 		        /* verbose mode */
@@ -119,18 +141,27 @@ PRS(argc,argv)
 			/* specify pobox host */
 			host = optarg;
 			break;
+		case 't':
+			/* print total messages only */
+			totals = 1;
+			report = 0;
+			verbose = 0;
+			break;
 		case '?':
 			lusage();
-		      }
+		}
 	/* check mail for user */
-	if (optind < argc)
+	if (optind < argc) {
+		exuser = 1;
 		user = argv[optind];
-	else {
-		user = strdup(getlogin());
+	} else {
+		user = getenv ("USER");
+		if (user == NULL)
+			user = strdup(getlogin());
 		if (!user || !*user) {
 			pp = getpwuid((int) getuid());
 			if (pp == NULL) {
-				fprintf(stderr, "Who are you?\n");
+				fprintf (stderr, "%s: user not in password file\n", progname);
 				exit(1);
 			}
 			user = pp->pw_name;
@@ -146,36 +177,36 @@ PRS(argc,argv)
 	    if (p && !strcmp(p->po_type, "POP"))
 	      host = p->po_host;
 	  }
-#endif HESIOD
+#endif
 	  if (!host) {
+	    if (exuser)
+	      fprintf(stderr, "%s: can't find post office server for user %s.\n",
+		      progname, user);
+	    else
+	      fprintf(stderr, "%s: can't find post office server.\n", progname);
+
 	    if (!unixmail) {
-	      fprintf(stderr, "%s: can't find post office server\n",
-		      progname);
 	      return(1);
 	    }
-	    else {
-	      fprintf(stderr, "%s: can't find post office server\n",
-		      progname);
-	      fprintf(stderr, "Trying unix mail drop ...");
-	      popmail = 0;
-	    }
+	    fprintf(stderr, "%s: Trying unix mail drop...\n", progname);
+	    popmail = 0;
 	  }
 	}
 }
 
 lusage()
 {
-	printf("Usage: %s [-v] [-p | -u] [-s sender] [-h host] [user]\n", progname);
+	fprintf(stderr, "Usage: %s [-v | -r | -t] [-p | -u] [-s sender] [-h host] [user]\n", progname);
 	exit(1);
 }
 
 
-getmail_pop(user, host)
+getmail_pop(user, host, printhdr)
      char	*user,*host;
+     int	printhdr;
 {
 	int nmsgs, nbytes, linelength;
 	char response[128];
-	char *p;
 	register int i, j;
 	struct winsize windowsize;
 	int	header_scan();
@@ -188,39 +219,38 @@ getmail_pop(user, host)
 	if ((getline(response, sizeof response, sfi) != OK) ||
 	    (*response != '+')){
 		error(response);
-		return(1);
+		return -1;
 	}
 
 #ifdef KPOP
 	if (pop_command("USER %s", user) == NOTOK || 
 	    pop_command("PASS %s", user) == NOTOK)
-#else !KPOP
+#else
 	if (pop_command("USER %s", user) == NOTOK || 
 	    pop_command("RPOP %s", user) == NOTOK)
-#endif KPOP
+#endif
 	{
 		error(Errmsg);
 		(void) pop_command("QUIT");
-		return(1);
+		return -1;
 	}
 
 	if (pop_stat(&nmsgs, &nbytes) == NOTOK) {
 		error(Errmsg);
 		(void) pop_command("QUIT");
-		return(1);
+		return -1;
 	}
-	if (report && (nmsgs == 0)) {
-	  printf("You don't have any mail waiting.\n");
+	if (nmsgs == 0) {
 	  return(0);
 	}
-	if (verbose)
-	  if (nmsgs == 0) {
-	    printf("You don't have any mail waiting.\n");
-	    return(0);
-	  }
-	  else
-	    printf("You have %d messages (%d bytes) on %s:\n",
-		   nmsgs, nbytes, host);
+	if (verbose || totals)
+	    printf("You have %d %s (%d bytes) on %s%c\n",
+		   nmsgs, nmsgs > 1 ? "messages" : "message",
+		   nbytes, host, verbose ? ':' : '.');
+	if (totals)
+	    return nmsgs;
+	if (printhdr)
+	    puts("POP mail:");
 
 	/* find out how long the line is for the stdout */
 	if ((ioctl(1, TIOCGWINSZ, (void *)&windowsize) < 0) || 
@@ -231,12 +261,12 @@ getmail_pop(user, host)
 	
 	for (i = 1; i <= nmsgs; i++) {
 		if (verbose && !skip_message)
-			printf("\n");
+			putchar('\n');
 		num_headers = skip_message = 0;
 		if (pop_scan(i, header_scan) == NOTOK) {
 			error(Errmsg);
 			(void) pop_command("QUIT");
-			return(1);
+			return -1;
 		}
 		if (report) 
 		  print_report(headers, num_headers, linelength);
@@ -249,7 +279,7 @@ getmail_pop(user, host)
 	      }
 	
 	(void) pop_command("QUIT");
-	return(0);
+	return nmsgs;
 }
 
 header_scan(line, last_header)
@@ -266,6 +296,11 @@ header_scan(line, last_header)
 
 	for (i=0;line[i] && line[i]!=':';i++) ;
 	keyword=malloc((unsigned) i+1);
+	if (keyword == NULL)
+	  {
+	    fprintf (stderr, "%s: out of memory", progname);
+	    exit (1);
+	  }
 	(void) strncpy(keyword,line,i);
 	keyword[i]='\0';
 	MakeLowerCase(keyword);
@@ -335,9 +370,9 @@ pop_scan(msgno,action)
 error (s1, s2)
      char *s1, *s2;
 {
-  printf ("pop: ");
-  printf (s1, s2);
-  printf ("\n");
+  fprintf (stderr, "pop: ");
+  fprintf (stderr, s1, s2);
+  putc ('\n', stderr);
 }
 
 char *re_comp();
@@ -348,13 +383,13 @@ int list_compare(s,list)
       char *err;
 
       while (*list!=NULL) {
-              err=re_comp(*list++);
-              if (err) {
-                      fprintf(stderr,"%s: %s - %s\n",progname,err,*(--list));
-                      exit(1);
-                      }
-              if (re_exec(s))
-                      return(1);
+	      err=re_comp(*list++);
+	      if (err) {
+		      fprintf(stderr,"%s: %s - %s\n",progname,err,*(--list));
+		      exit(1);
+		      }
+	      if (re_exec(s))
+		      return(1);
       }
       return(0);
 }
@@ -378,8 +413,8 @@ char *strdup(s)
       if (!s)
 	      return(NULL);
       if (!(cp = malloc((unsigned) strlen(s)+1))) {
-              printf("Out of memory!!!\n");
-              abort();
+              fprintf(stderr, "%s: out of memory\n", progname);
+	      exit(1);
       }
       return(strcpy(cp,s));
 }
@@ -414,7 +449,7 @@ getmail_unix(user)
 {
 	char lbuf[BUFSIZ];
 	char lbuf2[BUFSIZ];
-	int havemail, stashed = 0;
+	int havemail = 0, stashed = 0;
 	register char *name;
 	char *getlogin();
 
@@ -423,33 +458,42 @@ getmail_unix(user)
 	    if (isupper(*name))
 	      *name = tolower(*name);
 
-	if (chdir("/usr/spool/mail") < 0)
-	  return(1);
-
+	if (chdir("/usr/spool/mail") < 0) {
+	    unixmail = 0;
+	    return -1;
+	}
 	if (freopen(user, "r", stdin) == NULL) {
-	  if(!popmail) {
-	    fprintf(stderr, "Can't open /usr/spool/mail/%s\n", user);
-	    exit(0);
-	  }
-	  else 
-	    return(1);
+	    if(!popmail)
+		  fprintf(stderr, "Can't open /usr/spool/mail/%s.\n", user);
+	    return -1;
 	}
 
 	while (fgets(lbuf, sizeof lbuf, stdin) != NULL)
 		if (lbuf[0] == '\n' && stashed) {
 			stashed = 0;
-			printf("%s", lbuf2);
-			havemail = 1;
+			if (!havemail && !totals && popmail)
+				puts("Local mail:");
+			if (!totals)
+				fputs(lbuf2, stdout);
+			havemail++;
 		} else if (strncmp(lbuf, "From ", 5) == 0 &&
 		    (sender == NULL || match(&lbuf[4], sender))) {
 			strcpy(lbuf2, lbuf);
 			stashed = 1;
 		}
-	if (stashed)
-		printf("%s", lbuf2);
-	if (!havemail && report)
-	  printf("You don't have any mail waiting.\n");
-	return(0);
+	if (stashed && !totals)
+		fputs(lbuf2, stdout);
+	if (totals && havemail) {
+		struct stat st;
+		if (fstat(0, &st) != -1)
+			printf("You have %d local message%s (%d bytes).\n",
+			       havemail, havemail > 1 ? "s" : "",
+			       st.st_size);
+		else
+			printf("You have %d local message%s.\n",
+			       havemail, havemail > 1 ? "s" : "");
+	}
+	return havemail;
 }
 
 match (line, str)
@@ -504,6 +548,11 @@ print_report(headers, num_headers, winlength)
   }
 
   buf = malloc(winlength+1);  /* add 1 for the NULL terminator */
+  if (buf == NULL)
+    {
+      fprintf (stderr, "from: out of memory");
+      exit (1);
+    }    
   buf[0] = '\0';
 
   strncpy(buf, from_field, winlength+1);
@@ -512,6 +561,11 @@ print_report(headers, num_headers, winlength)
     len = 30;
 
   buf1 = malloc(winlength-len+1);  /* add 1 for the NULL terminator */
+  if (buf == NULL)
+    {
+      fprintf (stderr, "from: out of memory");
+      exit (1);
+    }    
   buf1[0] = '\0';
 
   strncpy(buf1, subject_field, winlength - len - 1);
