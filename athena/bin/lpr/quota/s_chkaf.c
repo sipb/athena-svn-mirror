@@ -4,7 +4,7 @@
  * This set of routines periodically checks the accounting files and reports
  * any changes to the quota server.
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.4 1990-07-05 14:55:57 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.5 1990-07-10 21:37:54 epeisach Exp $
  */
 
 /*
@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.4 1990-07-05 14:55:57 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/s_chkaf.c,v 1.5 1990-07-10 21:37:54 epeisach Exp $";
 #endif
 
 /* We define this so it will be undefined later.. sys/dir.h has an error (sigh)*/
@@ -67,6 +67,7 @@ struct p_stat {
 
 char myhostname[MAXHOSTNAMELEN];
 char my_realm[REALM_SZ] = "\0";
+char *tktfilename = "/tmp/tkprintXXXXXX";
 
 main(argc,argv)
 int argc;
@@ -74,8 +75,10 @@ char *argv[];
 {
 #ifdef ultrix
     void (* savealarm)();
+    void cleanup();
 #else
     int (* savealarm)();
+    int cleanup();
 #endif
     unsigned oldalarmtime;
     status_$t fst;
@@ -95,10 +98,10 @@ char *argv[];
     (void) signal (SIGILL, SIG_DFL);
     (void) signal (SIGSEGV, SIG_DFL);
     (void) signal (SIGBUS, SIG_DFL);
-    (void) signal (SIGINT, exit);
-    (void) signal (SIGHUP, exit);
-    (void) signal (SIGQUIT, exit);
-    (void) signal (SIGTERM, exit);
+    (void) signal (SIGINT, cleanup);
+    (void) signal (SIGHUP, cleanup);
+    (void) signal (SIGQUIT, cleanup);
+    (void) signal (SIGTERM, cleanup);
     if (fst.all != pfm_$cleanup_set) {
 	syslog(LOG_ERR, "*** Exception raised - %s\n", error_text(fst));
 	syslog(LOG_ERR, "Error # %d\n", fst.all);
@@ -110,7 +113,7 @@ char *argv[];
     
     /* Set the kerberos ticket file */
 
-    if(setenv("KRBTKFILE", mktemp("/tmp/tkprintXXXXXX"), 1)) {
+    if(setenv("KRBTKFILE", mktemp(tktfilename), 1)) {
        fprintf(stderr, "Could not set KRBTKFILE environment\n");
        exit(1);
    }
@@ -652,3 +655,9 @@ mkreq:
 }
 
 
+/* Cleans up before exiting when a signal is trapped */
+cleanup()
+{
+    unlink(tktfilename);
+    exit(0);
+}
