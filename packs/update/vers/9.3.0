@@ -12,6 +12,7 @@ cat $LIBDIR/solaris-9.2-patches				>> $OLDPTCHS
 echo "/var/sadm/install/contents"			>> $DEADFILES
 
 cat $LIBDIR/solaris-9.2-os-symlinks			>> $DEADFILES
+cat $LIBDIR/solaris-9.2-os-files			>> $DEADFILES
 
 # Leftover from 9.1; if we leave it around, it sends the 9.3 update
 # into an infinite reboot cycle trying to run a nonexistent syncconf.
