@@ -40,7 +40,7 @@ librpclib.a: ${OBJS}
 install: $(HDRS) librpclib.a
 	@echo "Creating RPC header directory"
 	-mkdir ${DESTDIR}/usr/include/rpc && \
-		chown bin ${DESTDIR}/usr/include/rpc && \
+		/etc/chown bin ${DESTDIR}/usr/include/rpc && \
 		chmod 755 ${DESTDIR}/usr/include/rpc
 	@echo "Installing RPC header files"
 	-set -x;for i in $(HDRS) ; do \
