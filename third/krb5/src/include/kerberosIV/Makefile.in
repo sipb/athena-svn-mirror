@@ -1,0 +1,10 @@
+KRB4_HEADERS=krb.h des.h kadm.h mit-copyright.h
+
+all::
+
+clean::
+
+depend::
+
+install::
+

@@ -1,0 +1,36 @@
+This is TeX, Version 3.141 (C version d) (format=lplain 96.6.4)  10 SEP 1996 22:59
+**api-unit-test
+(api-unit-test.tex
+LaTeX Version 2.09 <25 March 1992>
+(prepared for MIT Athena) (/usr/athena/lib/tex/macros/latex/article.sty
+Standard Document Style `article' <14 Jan 92>.
+(/usr/athena/lib/tex/macros/latex/art10.sty)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+)
+(/mit/sipb/lib/tex/macros/times.sty (/mit/sipb/lib/tex/macros/psfonts.sty
+\@cmrfam=\fam11
+\@cmrscale=\count87
+))
+(fullpage.sty) (rcsid.sty) (api-unit-test.aux) [1
+
+] [2] [3] [4] [5] [6] [7]
+[8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22]
+[23] [24] [25] [26] [27] [28] [29] [30] [31] [32] [33] [34] [35] [36] [37]
+[38] [39] [40] [41] (api-unit-test.aux) ) 
+Here is how much of TeX's memory you used:
+ 228 strings out of 11976
+ 2193 string characters out of 87182
+ 34074 words of memory out of 262141
+ 2171 multiletter control sequences out of 9500
+ 28758 words of font info for 87 fonts, out of 100000 for 255
+ 14 hyphenation exceptions out of 607
+ 14i,6n,24p,438b,305s stack positions out of 300i,40n,60p,3000b,4000s
+
+Output written on api-unit-test.dvi (41 pages, 83152 bytes).

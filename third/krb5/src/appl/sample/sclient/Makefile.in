@@ -1,0 +1,18 @@
+CFLAGS = $(CCOPTS) $(DEFS) $(LOCALINCLUDE)
+
+all::
+
+sclient: sclient.o $(DEPLIBS)
+	$(LD) $(LDFLAGS) $(LDARGS) -o sclient sclient.o $(LIBS)
+
+sclient.o:	$(srcdir)/sclient.c
+
+all:: sclient
+
+
+clean::
+	$(RM) sclient.o sclient
+
+install::
+	$(INSTALL_PROGRAM) sclient ${DESTDIR}$(CLIENT_BINDIR)/sclient
+	$(INSTALL_DATA) $(srcdir)/sclient.M ${DESTDIR}$(CLIENT_MANDIR)/sclient.1
