@@ -15,7 +15,9 @@
 #define _Xj_Jets_h
 
 #include <strings.h>
+#include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <X11/Xresource.h>
 
 #define Boolean int
@@ -81,6 +83,8 @@ typedef struct _XjResource {
 typedef struct _CoreClassPart {
   char			*className;	/* name of this jet class */
   int			jetSize;
+  XjInitializeProc	classInitialize;
+  int			classInitialized;
   XjInitializeProc	initialize;
   XjPreRealizeProc	preRealize;
   XjRealizeProc		realize;
@@ -142,6 +146,7 @@ extern XrmDatabase rdb;
 
 extern char *XjMalloc(), *XjRealloc();
 extern Jet XjCreateRoot();
+extern void XjVaGetValues();
 extern Jet XjVaCreateJet();
 extern Jet XjFindJet();
 extern void XjReadCallback();
@@ -167,6 +172,7 @@ extern void XjResize();
 extern XjCallbackProc XjGetCallback();
 extern XjCallback *XjConvertStringToCallback();
 extern void XjStdinCallback();
+extern void XjExit();
 
 #define XjNwidth "width"
 #define XjCWidth "Width"
@@ -195,10 +201,14 @@ extern void XjStdinCallback();
 #define XjNpadding "padding"
 #define XjCReverseVideo "ReverseVideo"
 #define XjNreverseVideo "reverseVideo"
+#define XjCHighlightProc "HighlightProc"
+#define XjNhighlightProc "highlightProc"
+#define XjNunHighlightProc "unHighlightProc"
 
 #define XjRInt "Int"
-#define XjRJustify "XjRJustify"
-#define XjROrientation "XjROrientation"
+#define XjRJustify "Justify"
+#define XjROrientation "Orientation"
+#define XjRDirection "Direction"
 #define XjRBoolean "Boolean"
 #define XjRString "String"
 #define XjRFontStruct "FontStruct"
@@ -206,6 +216,7 @@ extern void XjStdinCallback();
 #define XjRColor "Color"
 #define XjRCallback "Callback"
 #define XjRPixmap "Pixmap"
+#define XjRJet "Jet"
 
 #define XjDefaultFont "XjDefaultFont"
 #define XjNone "none"
@@ -219,6 +230,14 @@ extern void XjStdinCallback();
 #define XjCenterJustify "center"
 #define XjVertical "vertical"
 #define XjHorizontal "horizontal"
+#define XjNorth "north"
+#define XjNorthEast "northeast"
+#define XjEast "east"
+#define XjSouthEast "southeast"
+#define XjSouth "south"
+#define XjSouthWest "southwest"
+#define XjWest "west"
+#define XjNorthWest "northwest"
 
 #define Top        -1
 #define Bottom      1
@@ -227,6 +246,15 @@ extern void XjStdinCallback();
 #define Center      0
 #define Vertical    0
 #define Horizontal  1
+
+#define North		0
+#define NorthEast	1
+#define East		2
+#define SouthEast	3
+#define South		4
+#define SouthWest	5
+#define West		6
+#define NorthWest	7
 
 #define XjCActivateProc "ActivateProc"
 #define XjNactivateProc "activateProc"
@@ -283,6 +311,7 @@ typedef struct _RootClassRec *RootJetClass;
 #define DECMIPS "decmips"
 #define PS2 "ps2"
 #define RSAIX "rsaix"
+#define SUN4 "sun4"
 #define UNKNOWN "unknown"
 
 #define VAXNUM 1<<0
@@ -290,6 +319,7 @@ typedef struct _RootClassRec *RootJetClass;
 #define DECMIPSNUM 1<<2
 #define PS2NUM 1<<3
 #define RSAIXNUM 1<<4
+#define SUN4NUM 1<<5
 #define UNKNOWNNUM 1<<15
 
 #if defined(vax)
@@ -312,12 +342,17 @@ typedef struct _RootClassRec *RootJetClass;
 #define MACHTYPE RSAIX
 #define MACHNUM RSAIXNUM
 #else
+#if defined(sun)
+#define MACHTYPE SUN4
+#define MACHNUM SUN4NUM
+#else
 #define MACHTYPE UNKNOWN
 #define MACHNUM UNKNOWNNUM
-#endif
-#endif
-#endif
-#endif
-#endif
+#endif				/* sun */
+#endif				/* _IBMR2 && _AIX */
+#endif				/* i386 && _AIX */
+#endif				/* ultrix && mips */
+#endif				/* ibm032 */
+#endif				/* vax */
 
-#endif /* _Xj_Jets_h */
+#endif				/* _Xj_Jets_h */
