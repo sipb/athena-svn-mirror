@@ -1,16 +1,10 @@
-#ifdef AFS
-AFSDEF=-DAFS
-AFSINC=-Iafsinc
-AFSFIL=afs.c
-AFSOBJ=afs.o
-#endif
 #ifdef ibm032
 CCFLG=-Hon=read_only_strings
 CC=/bin/hc
 #endif
 #ifdef vax
 CCFLG=
-CC=gcc
+CC=cc
 #endif
 #if defined(AIX) && defined(i386)
 CCFLG=-q
@@ -22,7 +16,13 @@ XSRCS = emul_re.c
 XOBJS = emul_re.o
 #endif
 
+AFSDEF=-DAFS
+AFSINC=
+AFSFIL=afs.c
+AFSOBJ=afs.o
+
 DEBUG=-O
+DEFINES=
 
 INCLUDES= $(AFSINC) $(XINCLUDES)
 LIBS = -lhesiod -lkrb -ldes -lrpcsvc -lzephyr -lcom_err $(XLIBS) $(AFSLIB)
