@@ -1,0 +1,632 @@
+2002-08-21  Havoc Pennington  <hp@redhat.com>
+
+	* panel-applet.c (panel_applet_handle_background_string): memory
+	leak fix from Arjan van de Ven <arjanv@redhat.com>
+
+2002-08-12  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c (panel_applet_focus): Allow applet to retain
+	focus if nothing else on the panel can get focus (bug #90317)
+
+2002-07-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: move LT_VERSION definition to
+	configure.in.
+
+2002-07-16  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c: 
+	(panel_applet_button_press): Give focus to applet when it is clicked 
+	on if the applet does not have a focusable child and the applet does
+	not have focus.
+
+	Fields focusable_child and hierarchy_changed_id are added to the data 
+	structure _PanelAppletPrivate to support caching whether an applet has
+	a focusable child and invalidating the cache if the hiererchy below
+	the applet changes. #86330.
+
+2002-07-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_expose): change how
+	the focus line is drawn. Patch from Padraig and
+	Rajkumar Siva. #84471.
+
+2002-07-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.h: don't include nls in factory
+	macros if ENABLE_NLS isn't defined. Include
+	libintl.h if it is.
+
+	* panel-applet.c: some docs updates.
+
+2002-06-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: fix warning.
+
+2002-06-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-test-applets.glade2: rename to .glade.
+
+	* Makefile.am:
+	* panel-test-applets.c: (main): update.
+
+2002-06-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: use $(prefix)/$(DATADIRNAME)/locale instead
+	of $datadir/locale for locale directory location. Reported
+	by Hidetoshit Tajima in #83623.
+
+2002-06-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_expose),
+	(panel_applet_class_init): disable padding of applets
+	for now. Causes quite a few problems (83254, 83607,
+	83606) which outweighs the benefit of a clear focus
+	indication.
+
+2002-05-29  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel_applet.c 
+	(panel_applet_expose): Calculate the focus box correctly, 
+	i.e. include line width for start and end lines.
+	(panel_applet_size_request): Correct typo in calculating required size.
+
+2002-05-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: don't define PANELRC.
+
+	* panel-applet.c: (panel_applet_factory_main): don't parse
+	the gnome-panelrc file.
+
+2002-05-27  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel_applet.c: Add new function panel_applet_size_request and 
+	panel_applet_size_allocate. The child of the PanelApplet is placed,
+	not at (0,0) in the PanelApplet but is offset by 
+	focus_width + 2 * focus_pad to allow room for the focus indicator to
+	be drawn.
+	(panel_applet_expose): Draw focus indicator when PanelApplet has focus.
+	
+2002-05-23  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* Makefile.am:
+	Add definition for PANELRC
+
+	* panel-applet.c
+	(panel_applet_factory_main):
+	Add call to gtk_rc_parse (PANELRC)
+	(panel_applet_expose): Use style's focus-line-width and
+	focus-padding when drawing focus indicator.
+	(panel_applet_focus): Allow PanelWidget to receive focus during focus
+	traversal if it has a tooltip (bug #81863)
+
+2002-05-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-shell.c: (impl_PanelAppletShell_popup_menu):
+	* panel-test-applets.c: (construct_moniker): kill debug.
+
+2002-05-13  Arvind Samptur   <arvind.samptur@wipro.com>
+
+	* panel-applet.c: (panel_applet_button_press)
+	stopped the propogation of the left click on applet
+	to PanelWidget.(bug 80717)
+
+2002-05-10  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c:
+	Update previous change so that Shift+F10 popups menu when applet is 
+	focused
+
+2002-05-01  Arvind Samptur   <arvind.samptur@wipro.com>
+
+	Review by: Alex Larsson, Glynn Foster
+
+	* panel-applet.c
+	* panel-applet-private.h: add parameters event button and time
+	to _panel_applet_popup_menu
+	
+	* panel-applet-shell.c: added impl_PanelAppletShell_popup_menu with
+	the same parameters.
+
+2002-04-22  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c (add_tab_bindings):
+	Remove bindings for GDK_ISO_Left_Tab as this breaks Shift+Tab
+	(bug 79465)	
+
+2002-04-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-private.h: add _panel_applet_popup_menu.
+
+	* panel-applet-shell.c: (impl_PanelAppletShell_popup_menu),
+	(panel_applet_shell_class_init): impl AppletShell::popup_menu.
+	
+	* panel-applet.c: (_panel_applet_popup_menu): rename to
+	indicate that it is private.
+	(panel_applet_setup): upd.
+
+	* panel-applet.h: add HAS_HANDLE flag.
+
+	* test-bonobo-applet.c: (test_applet_fill): test the new flag.
+
+2002-04-17  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel_applet.c (panel_widget_class_init):
+	Cause Ctrl+Tab and Crtl+Shift_Tab to move focus out of applet
+	
+2002-04-16  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet-marshal.list:
+	Add entry for move-focus-out-of-applet action signal
+
+	* panel-applet.[ch]:
+	Add action signal move-focus-out-of-applet and bind to Tab and
+	Shift+Tab to move focus to next and previous objects on the panel.
+	This was moved from PanelAppletFrame so it will work for applets
+	in a different process to the panel.
+
+2002-04-13  Alexander Larsson  <alla@lysator.liu.se>
+
+	* panel-applet.[ch]:
+	Add size hints support
+
+2002-04-09  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c (panel_applet_focus):
+	Fix bug which allow keynav for applets to work only the first time
+	the applet is visited
+
+2002-03-29  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_associate_schemas_in_dir): warn
+	if the gconf key has underscores.
+
+2002-03-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: kill glade conversion.
+
+	* panel-test-applets.glade2: check in.
+
+2002-03-11  Shivram U  <shivaram.upadhyayula@wipr0.com>
+
+	reviewed by Mark McLoughlin <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_parse_color): Not checking for '#' in
+	the color string. We will be passing the color with out the '#' now.
+	For eg: color:00ffff instead of color:#00ffff. Fix for #73440.
+
+2002-03-12  Michael Meeks  <michael@ximian.com>
+
+	* panel-applet.c (panel_applet_cnx_broken_callback):
+	left the leak I introduced for testing in there, doh.
+
+2002-03-08  Michael Meeks  <michael@ximian.com>
+
+	* panel-applet.c (panel_applet_factory_main_closure):
+	do the multi-display thing.
+	(panel_applet_instrument_for_failure): impl.
+	(panel_applet_factory_callback): listen for set_frame.
+	(panel_applet_set_frame_callback): if we're out of
+	proc wait for the cnx. to die & account for applets.
+	(panel_applet_cnx_broken_callback): handles broken
+	connections and plain destruction.
+	(panel_applet_idle_quit): delay destruction until idle.
+	(panel_applet_never_got_frame_timeout): handle panel
+	deaths before we got a frame.
+
+2002-03-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: don't install the test applet or its .server
+	file.
+
+2002-03-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_associate_schemas_in_dir): remove bogus
+	assertion.
+
+2002-03-04  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c (panel_applet_focus):
+	Cause focus to be moved to next applet when focus is on PanelApplet.
+	(This fixes bug 72952)
+
+2002-02-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add GNOMELOCALEDIR.
+
+	* panel-applet.c: (panel_applet_factory_main_closure),
+	(panel_applet_shlib_factory_closure): bind textdomain.
+
+	* panel-applet.h: bind applets texdomain, and set the
+	textdomain to the applets.
+
+	* test-bonobo-applet.c: include config.h.
+
+2002-02-15  Michael Meeks  <michael@ximian.com>
+
+	* panel-applet.c (panel_applet_add_preferences): add
+	pre-condition on prefs key, before using it.
+	(panel_applet_finalize): g_free (NULL) is safe.
+
+2002-02-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_finalize): release the
+	property bag.
+
+2002-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: install in the correct gladedir.
+
+2002-02-12  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* GNOME_TestApplet.server.in: Mark strings for l10n.
+	
+2002-02-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: dist the glade files.
+
+ 2002-02-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* panel-applet.c: #include <config.h>
+
+2002-02-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_associate_schemas_in_dir),
+	(panel_applet_add_preferences): use client->engine to stop
+	gconf spewing warnings. Thanks to Gediminas Paulauskas.
+
+2002-02-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c:
+	(panel_applet_handle_background_string): impl method to unify
+	background string parsing.
+	(panel_applet_get_background), (panel_applet_set_prop): use it.
+
+2002-02-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-test-applets.c, panel-test-applets.glade: little applet
+	testing utility.
+
+	* Makefile.am: add rules to build panel-test-applets and glade2 file.
+
+2002-02-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* test-bonobo-applet.c: test inheriting from PanelApplet
+	actually works.
+
+	* panel-applet.c: (panel_applet_factory_main_closure),
+	(panel_applet_shlib_factory_closure): error out if applet_type
+	isn't derived from PanelApplet.
+
+2002-02-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_associate_schemas_in_dir),
+	(panel_applet_add_preferences): use GConfClient where possible.
+	Still stuck with using gconf_engine_associate_schema, though.
+
+2002-02-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.[ch]: (panel_applet_factory_main),
+	(panel_applet_factory_main_closure), (panel_applet_shlib_factory),
+	(panel_applet_shlib_factory_closure): add applet_type arg.
+	(panel_applet_callback_data_new), (panel_applet_callback_data_free):
+	wrap the closure and applet type up for callback.
+
+	* GNOME_Panel_TestApplet.server.in: move to Vertigo namespace.
+
+	* test-bonobo-applet.c: update for factory macro change.
+
+2002-02-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-shell (impl_PanelAppletShell_getExpandFlags): kill.
+
+	* panel-applet.[ch]:
+	(panel_applet_get_expand_flags): rename to panel_applet_get_flags.
+	(panel_applet_set_expand_flags): rename to panel_applet_set_flags.
+	(panel_applet_get_prop), (panel_applet_property_bag): add flags
+	property.
+	(panel_applet_item_handle_get_object): add background, orient 
+	and size items.
+
+Fri Feb 08 15:16:50 2002  George Lebl <jirka@5z.com>
+
+	* panel-applet.[ch]: Implement panel_applet_get_background so
+	  that we can get the initial background on applet construction.
+
+2002-02-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-gconf.c: (panel_applet_gconf_get_full_key): fix
+	leak.
+
+2002-02-06  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c:
+	Add panel_applet_focus() which causes a widget within an applet to 
+	receive focus, if such exists, when focus is moved to applet. The
+	GTK_CAN_FOCUS flag is set for an applet only if no widget in the
+	applet can receive focus.
+
+2002-02-04  jacob berkman  <jacob@ximian.com>
+
+	* Makefile.am: our object files require the built sources
+
+2002-02-04  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* panel-applet.c: Set GTK_CAN_FOCUS flag for PanelApplet; add
+	panel_applet_expose() to draw focus indicator when PanelApplet has
+	focus; connect to popup_menu_signal to display context menu when
+	Shift+F10 is pressed. Call bonobo_control_do_popup_menu() when 
+	popping up context menu from keyboard to allow its position to be
+	corrected from pointer position to applet position. 
+	
+2002-01-28  Glynn Foster <glynn.foster@sun.com>
+
+	* Makefile.am: Change to use different CFLAGS so we don't 
+	link against non-used libraries.
+
+2002-01-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-gconf.c:
+	* panel-applet.c: fixup preconditions.
+
+	* test-bonobo-applet.c:
+	* (test_applet_handle_background_change): fix silly.
+
+2002-01-12  Alexander Larsson  <alla@lysator.liu.se>
+
+	* panel-applet-gconf.[hc]:
+	Export panel_applet_gconf_get_full_key() as this is quite
+	usefull for applets.
+
+2002-01-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_associate_schemas_in_dir):
+	fix leaks.
+
+2002-01-11  Glynn Foster  <glynn.foster@sun.com>
+
+	* panel-applet.c, panel-applet.h, test-bonobo-applet.c: Do what 
+	I was supposed to be doing before..but this time for real.
+	s/backgound/background.
+
+2002-01-11  Glynn Foster  <glynn.foster@sun.com>
+
+	* panel-applet.c: (panel_applet_set_prop): s/backgound/background
+
+2002-01-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c:
+	(panel_applet_parse_pixmap_str): fix silly.
+	(panel_applet_get_pixmap): create a new GC.
+	(panel_applet_set_prop): unref the pixmap.
+	(panel_applet_class_init): update signal param type.
+
+	* test-bonobo-applet.c:
+	(test_applet_handle_background_change): add a test to
+	demonstrate that this doesn't work yet.
+
+2002-01-08  Mark McLoughlin  <mark@skynet.ie>
+
+	Implement the applet side of the pixmap background stuff.
+
+	* panel-applet.[ch]: (panel_applet_finalize): free background.
+	(panel_applet_parse_pixmap_str), (panel_applet_get_pixmap): impl
+	parsing of pixmap string and copying pixmap area.
+	(panel_applet_set_prop): update for pixmap changes.
+	(panel_applet_class_init): update background-changed signal.
+
+	* panel-applet-marshal.list: change VOID:ENUM,POINTER,STRING to
+	VOID:ENUM,POINTER,OBJECT.
+
+2002-01-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* TODO: add pixmap bacground todo.
+
+	* panel-applet.c: (panel_applet_associate_schemas_in_dir):
+	fix horked error checking.
+
+2002-01-04  Glynn Foster  <glynn.foster@sun.com>
+
+	* panel-applet-gconf.h: Remove include of ghash.h. Not needed.
+
+2002-01-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_factory_main_closure),
+	(panel_applet_factory_main), (panel_applet_shlib_factory_closure),
+	(panel_applet_shlib_factory): fix precondition FIXMEs.
+
+Thu Jan 03 12:48:23 2002  George Lebl <jirka@5z.com>
+
+	* panel-applet.[ch]: mvoe gnome_program_init into the macro and
+	  remove unused parameters from the main functions.  though applets
+	  using the macro should see no difference and I don't think anyone
+	  used the main functions directly.
+
+Thu Dec 27 23:30:15 2001  George Lebl <jirka@5z.com>
+
+	* Makefile.am: fix including of marshal header file in the .c file
+
+	* panel-applet-masrhal.list, panel-applet.[ch]: Use actual GClosure
+	  inside the code and add closure types of main methods.  This
+	  way we also no longer look at out of scope local vars which has
+	  a fun effect on shlib applets.
+
+2001-12-20  Mark McLoughlin  <mark@skynet.ie>
+
+	Implement applet preferences handling in gconf. Applets should
+	install schemas without any applytos. The schemas will be associated
+	with the actual keys when we know where the applet should store its
+	preferences.
+
+	* panel-applet-gconf.[ch]: (panel_applet_gconf_get_full_key),
+	(panel_applet_gconf_set_bool), (panel_applet_gconf_set_int),
+	(panel_applet_gconf_set_string), (panel_applet_gconf_set_float),
+	(panel_applet_gconf_set_value), (panel_applet_gconf_get_bool),
+	(panel_applet_gconf_get_int), (panel_applet_gconf_get_string),
+	(panel_applet_gconf_get_float), (panel_applet_gconf_get_value):
+	impl convenience functions.
+
+	* panel-applet.[ch]: (panel_applet_associate_schemas_in_dir),
+	(panel_applet_add_preferences): impl associating a directory full
+	of schemas with the appropiate keys in the applets preferences
+	directory.
+	(panel_applet_get_preferences_key), (panel_applet_get_expand_flags),
+	(panel_applet_set_expand_flags), (panel_applet_get_size),
+	(panel_applet_get_orient): improve error checking.
+	(panel_applet_control_bound): cache the prefs dir.
+
+	* Makefile.am: add panel-applet-gconf.[ch].
+
+	* TODO: knock this off the todo list :-)
+
+2001-12-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* TODO: new file.
+
+2001-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	Turn the thing on its head. We now have a BonoboItemHandler
+	so that prefs_key can be set before we start constructing 
+	our widgetry. Unfortunately this means api changes.
+
+	* panel-applet.h:
+	(panel_applet_new): kill widget arg.
+	(panel_applet_construct): ditto.
+	(panel_applet_get_global_key): kill.
+	(panel_applet_get_private_key): kill.
+	(panel_applet_get_preferences_key): impl.
+	(panel_applet_factory_main): change callback to a
+	PanelAppletFactoryCallback.
+	(panel_applet_shlib_factory): impl.
+
+	* panel-applet.c:
+	(panel_applet_get_preferences_key): impl.
+	(panel_applet_finalize): free private_key and iid.
+	(panel_applet_control_bound): impl. Invoked when the control
+	is bound to a control frame. ItemHandler will have been
+	invoked at this stage if there are any args.
+	(panel_applet_item_handler_get_object): impl ItemHandler func.
+	This handles the setting of prefs_key as the applet is being
+	loaded.
+	(panel_applet_instance_init), (panel_applet_construct):
+	(panel_applet_new): upd.
+	(panel_applet_factory_callback): impl our
+	BonoboFactoryCallback.
+	(panel_applet_factory_main): upd.
+	(panel_applet_shlib_factory): impl.
+
+	* test-bonobo-applet.c:
+	(test_applet_fill): rename from test_applet_new and upd.
+	(test_applet_factory): upd for api changes.
+
+2001-12-14  Alex Larsson  <alexl@redhat.com>
+
+	* panel-applet.c (panel_applet_parse_color):
+	Make colors 4 chars per channel, they are 16bit.
+
+2001-12-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-shell.c:
+	(impl_PanelAppletShell_saveYourself): kill.
+	(panel_applet_shell_class_init): upd.
+
+	* panel-applet.[ch], panel-applet-private.h: 
+	(panel_applet_save_yourself): kill.
+	(panel_applet_class_init): kill "save_yuorself" signal.
+
+2001-12-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-shell.[ch], panel-applet.[ch],
+	  test-bonobo-applet.c: move to our reserved GNOME_Vertigo
+	  namespace.
+
+2001-12-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-shell.c: (impl_PanelAppletShell_getExpandFlags):
+	remove consts from args.
+
+	* panel-applet.h: add macro for completeness.
+
+2001-12-04  Alex Larsson  <alexl@redhat.com>
+
+	* panel-applet-shell.c:
+	(impl_PanelAppletShell_getExpandFlags): impl
+	(panel_applet_shell_class_init): Add above
+	
+	* panel-applet.[ch]: (panel_applet_get_expand_flags,
+	panel_applet_set_expand_flags): new functions
+
+2001-11-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-marshal.list: kill VOID:STRING,STRING.
+
+	* panel-applet.c:
+	(panel_applet_get_global_key): impl.
+	(panel_applet_get_private_key): impl.
+	(panel_applet_save_yourself): upd.
+	(panel_applet_finalize): free keys.
+	(panel_applet_class_init): upd.
+	(panel_applet_new): return a GtkWidget.
+
+	* test-bonobo-applet.c:
+	(test_applet_handle_save_yourself): upd.
+
+2001-11-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* libpanelapplet-2.0.pc.in: fixup.
+
+2001-11-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* GNOME_Panel_TestApplet.server.in: add icon.
+
+	* test-bonobo-applet.c:
+	(test_applet_handle_save_yourself): impl.
+	(test_applet_new): connect to "save_yourself".
+
+2001-11-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-marshal.list: add VOID:STRING,STRING.
+
+	* panel-applet-private.h: add panel_applet_save_yourself.
+
+	* panel-applet-shell.c:
+	(impl_PanelAppletShell_saveYourself), impl.
+	(panel_applet_shell_class_init): upd.
+
+	* panel-applet.c:
+	(panel_applet_save_yourself): impl.
+	(panel_applet_class_init): set up "save_yourself" signal.
+
+	* panel-applet.h: upd.
+
+2001-11-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.h: make panel_applet_new return
+	a GtkWidget.
+
+2001-11-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.c: (panel_applet_construct): remove
+	  lame gtk_widget_show_all. applets should show
+	  themselves.
+
+2001-11-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet.[ch]: (panel_applet_get_size),
+	(panel_applet_get_orient): new accessor methods.
+
+2001-11-28  Alex Larsson  <alexl@redhat.com>
+
+	* panel-applet.c (panel_applet_button_press):
+	Return TRUE if handled popup. This removes the double
+	popup menu bug.
+
+2001-11-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: include panel-applet-marshal.h in
+	  panel-applet-marshal.c. Not a very pretty hack.
+
+2001-11-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* *.*: Move from $(top_srcdir)/panel.
+

@@ -1,0 +1,890 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+AWK = @AWK@
+BONOBO_ACT_IDLDIR = @BONOBO_ACT_IDLDIR@
+BONOBO_IDLDIR = @BONOBO_IDLDIR@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CFLAGS = @CFLAGS@
+CPPFLAGS = @CPPFLAGS@
+DATADIRNAME = @DATADIRNAME@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+ESD_CFLAGS = @ESD_CFLAGS@
+ESD_CONFIG = @ESD_CONFIG@
+ESD_LIBS = @ESD_LIBS@
+EXEEXT = @EXEEXT@
+GCONFTOOL = @GCONFTOOL@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_REQUIRED = @GDK_PIXBUF_REQUIRED@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOME_VFS_MODULE_REQUIRED = @GNOME_VFS_MODULE_REQUIRED@
+GTKDOC = @GTKDOC@
+GTK_REQUIRED = @GTK_REQUIRED@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LDFLAGS = @LDFLAGS@
+LIBGLADE_REQUIRED = @LIBGLADE_REQUIRED@
+LIBGNOME_REQUIRED = @LIBGNOME_REQUIRED@
+LIBPANEL_APPLET_CFLAGS = @LIBPANEL_APPLET_CFLAGS@
+LIBPANEL_APPLET_LIBS = @LIBPANEL_APPLET_LIBS@
+LIBTOOL = @LIBTOOL@
+LIBWNCK_REQUIRED = @LIBWNCK_REQUIRED@
+LIB_PANEL_APPLET_LT_VERSION = @LIB_PANEL_APPLET_LT_VERSION@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_IDL = @ORBIT_IDL@
+ORBIT_REQUIRED = @ORBIT_REQUIRED@
+PACKAGE = @PACKAGE@
+PANELCONFIG_CFLAGS = @PANELCONFIG_CFLAGS@
+PANELCONFIG_LIBS = @PANELCONFIG_LIBS@
+PANEL_CFLAGS = @PANEL_CFLAGS@
+PANEL_LIBS = @PANEL_LIBS@
+PATH_TO_XRDB = @PATH_TO_XRDB@
+PERL = @PERL@
+PKG_CONFIG = @PKG_CONFIG@
+PNG_LIBS = @PNG_LIBS@
+POFILES = @POFILES@
+POSUB = @POSUB@
+RANLIB = @RANLIB@
+REBUILD = @REBUILD@
+SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
+STRIP = @STRIP@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
+WNCKLET_CFLAGS = @WNCKLET_CFLAGS@
+WNCKLET_LIBS = @WNCKLET_LIBS@
+XINERAMA_LIBS = @XINERAMA_LIBS@
+X_LIBS = @X_LIBS@
+cxxflags_set = @cxxflags_set@
+
+AUTOMAKE_OPTIONS = 1.3
+
+NULL = 
+
+INCLUDES =  	-I.								-I$(srcdir)							-I$(top_builddir)/gnome-panel					-DPANEL_DEBUG							-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"		-DGLADEDIR=\""$(datadir)/gnome/panel"\"				$(DISABLE_DEPRECATED_CFLAGS)					$(STANDARD_PROPERTIES_CFLAGS)					$(ALLOW_CRACKPOT_MENU_CODE)					$(PANEL_CFLAGS)							$(PANELCONFIG_CFLAGS)						$(WARN_CFLAGS)							$(NULL)
+
+
+# FIXME:
+# this define is to allow menu.c to continue
+# using deprecated gtk+ internals
+ALLOW_CRACKPOT_MENU_CODE = -DGTK_MENU_INTERNALS
+
+# Flags to make sure we're not using any deprecated functions
+DISABLE_DEPRECATED_CFLAGS =  	-DG_DISABLE_DEPRECATED						-DGDK_DISABLE_DEPRECATED					-DGTK_DISABLE_DEPRECATED					-DGDK_PIXBUF_DISABLE_DEPRECATED					-DGNOME_DISABLE_DEPRECATED					$(NULL)
+
+
+# Used by the GNOME_PROGRAM_STANDARD_PROPERTIES macros
+STANDARD_PROPERTIES_CFLAGS =  	-DPREFIX=\""$(prefix)"\"					-DSYSCONFDIR=\""$(sysconfdir)"\"				-DLIBDIR=\""$(libdir)"\"					-DDATADIR=\""$(datadir)"\"					$(NULL)
+
+
+bin_PROGRAMS =  	gnome-panel 				gnome-panel-preferences			gnome-panel-screenshot			gnome-desktop-item-edit
+
+
+CORBA_SRCLIST =  	GNOME_Panel-stubs.c		GNOME_Panel-skels.c		GNOME_Panel-common.c		GNOME_Panel.h			$(NULL)
+
+
+BUILT_SOURCES =  	$(CORBA_SRCLIST)		panel-typebuiltins.c		panel-typebuiltins.h		panel-marshal.c			panel-marshal.h
+
+
+EGG_ACCELERATORS_FILES =  	eggaccelerators.c       	eggaccelerators.h       	$(NULL)
+
+
+panel_sources =  	panel-typebuiltins.c		panel-typebuiltins.h		panel-marshal.c			panel-marshal.h			main.c				panel-widget.c  		basep-widget.c  		button-widget.c  		multiscreen-stuff.c		xstuff.c			session.c			foobar-widget.c			border-widget.c			edge-widget.c			aligned-widget.c		drawer-widget.c			sliding-widget.c		floating-widget.c		disclosure-widget.c		rgb-stuff.c			panel.c				applet.c			logout.c			drawer.c  			panel-config-global.c  		panel-util.c			panel-gconf.c			global-keys.c			panel-config.c  		distribution.c			gnome-run.c  			menu.c  			menu-util.c			menu-ditem.c			menu-fentry.c  			launcher.c			panel-applet-frame.c		panel-shell.c			quick-desktop-reader.c		panel-access.c			panel-stock-icons.c		$(NULL)
+
+
+panel_headers =  	panel-types.h			panel-widget.h			panel-main.h			basep-widget.h			button-widget.h			multiscreen-stuff.h		xstuff.h			session.h			foobar-widget.h			border-widget.h			edge-widget.h			aligned-widget.h		drawer-widget.h			sliding-widget.h		floating-widget.h		disclosure-widget.h		rgb-stuff.h			panel.h         		applet.h         		logout.h			drawer.h  			panel-util.h			global-keys.h			panel-config.h			panel-config-global.h  		panel-gconf.h			distribution.h			gnome-run.h  			menu.h  			menu-util.h			menu-ditem.h			menu-fentry.h  			launcher.h			panel-applet-frame.h		quick-desktop-reader.h		panel-shell.h			panel-stock-icons.h		$(NULL)
+
+
+gnome_panel_SOURCES =  	$(CORBA_SRCLIST)			$(EGG_ACCELERATORS_FILES)		$(panel_sources)			$(panel_headers)			$(NULL)
+
+
+gnome_panel_LDADD =  	$(X_LIBS)			$(PANEL_LIBS)			$(XINERAMA_LIBS)
+
+
+gnome_panel_LDFLAGS = -export-dynamic
+
+gnome_panel_preferences_SOURCES =  	gnome-panel-preferences.c		panel-gconf.c				panel-access.c
+
+
+gnome_panel_preferences_LDADD =  	$(X_LIBS)				$(PANELCONFIG_LIBS)           
+
+
+gnome_panel_preferences_LDFLAGS =  	-export-dynamic
+
+
+gnome_desktop_item_edit_SOURCES =  	gnome-desktop-item-edit.c 	menu-ditem.c		  	panel-util.c		  	panel-access.c		  	rgb-stuff.c
+
+
+gnome_desktop_item_edit_LDFLAGS = -export-dynamic
+
+gnome_desktop_item_edit_LDADD =  	$(X_LIBS)				$(PANEL_LIBS)
+
+
+gnome_panel_screenshot_SOURCES =  	gnome-panel-screenshot.c
+
+
+gnome_panel_screenshot_LDFLAGS = -export-dynamic
+
+gnome_panel_screenshot_LDADD =  	$(X_LIBS)			$(PANELCONFIG_LIBS)		$(PNG_LIBS)
+
+
+gladedir = $(datadir)/gnome/panel
+glade_DATA =  	gnome-panel-preferences.glade			gnome-panel-screenshot.glade
+
+
+EXTRA_DIST =  	GNOME_Panel.server.in				gnome-panel-preferences.desktop.in		$(glade_DATA)					nothing.cP					nothing.h					$(schemas_in_files)				$(ui_DATA)					panel-marshal.list				update-from-egg.sh				gnome-panelrc
+
+
+sysdir = $(datadir)/control-center-2.0/capplets
+sys_in_files = gnome-panel-preferences.desktop.in
+sys_DATA = $(sys_in_files:.desktop.in=.desktop)
+
+panel_enum_headers =  	$(top_srcdir)/gnome-panel/panel-types.h			$(top_srcdir)/gnome-panel/panel-widget.h		$(top_srcdir)/gnome-panel/basep-widget.h		$(top_srcdir)/gnome-panel/aligned-widget.h		$(top_srcdir)/gnome-panel/sliding-widget.h		$(top_builddir)/gnome-panel/GNOME_Panel.h
+
+
+uidir = $(datadir)/gnome-2.0/ui
+ui_DATA = GNOME_Panel_Popup.xml
+
+serverdir = $(libdir)/bonobo/servers
+server_in_files = GNOME_Panel.server.in
+server_DATA = $(server_in_files:.server.in=.server)
+
+rcdir = $(datadir)
+rc_DATA = gnome-panelrc
+
+schemasdir = $(sysconfdir)/gconf/schemas
+schemas_in_files = panel-global-config.schemas.in panel-per-panel-config.schemas.in
+schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
+
+CLEANFILES = $(BUILT_SOURCES)
+
+EGG_ACCELERATORS_DIR = $(srcdir)/../../libegg/libegg/treeviewutils
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  gnome-panel$(EXEEXT) gnome-panel-preferences$(EXEEXT) \
+gnome-panel-screenshot$(EXEEXT) gnome-desktop-item-edit$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+gnome_panel_OBJECTS =  GNOME_Panel-stubs.$(OBJEXT) \
+GNOME_Panel-skels.$(OBJEXT) GNOME_Panel-common.$(OBJEXT) \
+eggaccelerators.$(OBJEXT) panel-typebuiltins.$(OBJEXT) \
+panel-marshal.$(OBJEXT) main.$(OBJEXT) panel-widget.$(OBJEXT) \
+basep-widget.$(OBJEXT) button-widget.$(OBJEXT) \
+multiscreen-stuff.$(OBJEXT) xstuff.$(OBJEXT) session.$(OBJEXT) \
+foobar-widget.$(OBJEXT) border-widget.$(OBJEXT) edge-widget.$(OBJEXT) \
+aligned-widget.$(OBJEXT) drawer-widget.$(OBJEXT) \
+sliding-widget.$(OBJEXT) floating-widget.$(OBJEXT) \
+disclosure-widget.$(OBJEXT) rgb-stuff.$(OBJEXT) panel.$(OBJEXT) \
+applet.$(OBJEXT) logout.$(OBJEXT) drawer.$(OBJEXT) \
+panel-config-global.$(OBJEXT) panel-util.$(OBJEXT) \
+panel-gconf.$(OBJEXT) global-keys.$(OBJEXT) panel-config.$(OBJEXT) \
+distribution.$(OBJEXT) gnome-run.$(OBJEXT) menu.$(OBJEXT) \
+menu-util.$(OBJEXT) menu-ditem.$(OBJEXT) menu-fentry.$(OBJEXT) \
+launcher.$(OBJEXT) panel-applet-frame.$(OBJEXT) panel-shell.$(OBJEXT) \
+quick-desktop-reader.$(OBJEXT) panel-access.$(OBJEXT) \
+panel-stock-icons.$(OBJEXT)
+gnome_panel_DEPENDENCIES = 
+gnome_panel_preferences_OBJECTS =  gnome-panel-preferences.$(OBJEXT) \
+panel-gconf.$(OBJEXT) panel-access.$(OBJEXT)
+gnome_panel_preferences_DEPENDENCIES = 
+gnome_panel_screenshot_OBJECTS =  gnome-panel-screenshot.$(OBJEXT)
+gnome_panel_screenshot_DEPENDENCIES = 
+gnome_desktop_item_edit_OBJECTS =  gnome-desktop-item-edit.$(OBJEXT) \
+menu-ditem.$(OBJEXT) panel-util.$(OBJEXT) panel-access.$(OBJEXT) \
+rgb-stuff.$(OBJEXT)
+gnome_desktop_item_edit_DEPENDENCIES = 
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(glade_DATA) $(rc_DATA) $(schemas_DATA) $(server_DATA) \
+$(sys_DATA) $(ui_DATA)
+
+DIST_COMMON =  AUTHORS ChangeLog Makefile.am Makefile.in TODO
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(gnome_panel_SOURCES) $(gnome_panel_preferences_SOURCES) $(gnome_panel_screenshot_SOURCES) $(gnome_desktop_item_edit_SOURCES)
+OBJECTS = $(gnome_panel_OBJECTS) $(gnome_panel_preferences_OBJECTS) $(gnome_panel_screenshot_OBJECTS) $(gnome_desktop_item_edit_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps gnome-panel/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+gnome-panel$(EXEEXT): $(gnome_panel_OBJECTS) $(gnome_panel_DEPENDENCIES)
+	@rm -f gnome-panel$(EXEEXT)
+	$(LINK) $(gnome_panel_LDFLAGS) $(gnome_panel_OBJECTS) $(gnome_panel_LDADD) $(LIBS)
+
+gnome-panel-preferences$(EXEEXT): $(gnome_panel_preferences_OBJECTS) $(gnome_panel_preferences_DEPENDENCIES)
+	@rm -f gnome-panel-preferences$(EXEEXT)
+	$(LINK) $(gnome_panel_preferences_LDFLAGS) $(gnome_panel_preferences_OBJECTS) $(gnome_panel_preferences_LDADD) $(LIBS)
+
+gnome-panel-screenshot$(EXEEXT): $(gnome_panel_screenshot_OBJECTS) $(gnome_panel_screenshot_DEPENDENCIES)
+	@rm -f gnome-panel-screenshot$(EXEEXT)
+	$(LINK) $(gnome_panel_screenshot_LDFLAGS) $(gnome_panel_screenshot_OBJECTS) $(gnome_panel_screenshot_LDADD) $(LIBS)
+
+gnome-desktop-item-edit$(EXEEXT): $(gnome_desktop_item_edit_OBJECTS) $(gnome_desktop_item_edit_DEPENDENCIES)
+	@rm -f gnome-desktop-item-edit$(EXEEXT)
+	$(LINK) $(gnome_desktop_item_edit_LDFLAGS) $(gnome_desktop_item_edit_OBJECTS) $(gnome_desktop_item_edit_LDADD) $(LIBS)
+
+install-gladeDATA: $(glade_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gladedir)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gladeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(glade_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gladedir)/$$p; \
+	done
+
+install-rcDATA: $(rc_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(rcdir)
+	@list='$(rc_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(rcdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(rcdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(rcdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(rcdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-rcDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(rc_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(rcdir)/$$p; \
+	done
+
+install-schemasDATA: $(schemas_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(schemasdir)
+	@list='$(schemas_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemasdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemasdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(schemasdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(schemasdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-schemasDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(schemas_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(schemasdir)/$$p; \
+	done
+
+install-serverDATA: $(server_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-serverDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
+	done
+
+install-sysDATA: $(sys_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(sysdir)
+	@list='$(sys_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-sysDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(sys_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(sysdir)/$$p; \
+	done
+
+install-uiDATA: $(ui_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(uidir)
+	@list='$(ui_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-uiDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(ui_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(uidir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = gnome-panel
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+GNOME_Panel-common.o: GNOME_Panel-common.c GNOME_Panel.h
+GNOME_Panel-skels.o: GNOME_Panel-skels.c GNOME_Panel.h
+GNOME_Panel-stubs.o: GNOME_Panel-stubs.c GNOME_Panel.h
+aligned-widget.o: aligned-widget.c ../config.h panel-marshal.h \
+	aligned-widget.h border-widget.h basep-widget.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h \
+	panel-config-global.h foobar-widget.h multiscreen-stuff.h \
+	panel-typebuiltins.h
+applet.o: applet.c ../config.h basep-widget.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h drawer.h panel.h \
+	applet.h panel-config.h border-widget.h aligned-widget.h \
+	sliding-widget.h panel-util.h panel-config-global.h launcher.h \
+	logout.h menu-util.h menu.h panel-gconf.h session.h \
+	panel-applet-frame.h
+basep-widget.o: basep-widget.c ../config.h panel-marshal.h \
+	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
+	basep-widget.h panel-util.h panel-config-global.h \
+	foobar-widget.h drawer-widget.h drawer.h panel.h applet.h \
+	panel-config.h border-widget.h aligned-widget.h \
+	sliding-widget.h edge-widget.h xstuff.h multiscreen-stuff.h \
+	panel-typebuiltins.h panel-gconf.h
+border-widget.o: border-widget.c ../config.h border-widget.h \
+	basep-widget.h panel-widget.h button-widget.h panel-types.h \
+	GNOME_Panel.h panel-marshal.h panel-config-global.h \
+	panel-typebuiltins.h
+button-widget.o: button-widget.c ../config.h button-widget.h \
+	panel-types.h GNOME_Panel.h panel-widget.h basep-widget.h \
+	panel-main.h panel-util.h panel-config-global.h panel-marshal.h
+disclosure-widget.o: disclosure-widget.c ../config.h disclosure-widget.h
+distribution.o: distribution.c ../config.h distribution.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h applet.h menu.h \
+	menu-fentry.h panel-stock-icons.h
+drawer-widget.o: drawer-widget.c ../config.h drawer-widget.h \
+	basep-widget.h panel-widget.h button-widget.h panel-types.h \
+	GNOME_Panel.h drawer.h panel.h applet.h panel-config.h \
+	border-widget.h aligned-widget.h sliding-widget.h panel-util.h \
+	panel-config-global.h floating-widget.h multiscreen-stuff.h
+drawer.o: drawer.c ../config.h drawer.h panel.h basep-widget.h \
+	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
+	applet.h panel-config.h border-widget.h aligned-widget.h \
+	sliding-widget.h panel-util.h panel-config-global.h \
+	drawer-widget.h panel-gconf.h session.h xstuff.h
+edge-widget.o: edge-widget.c ../config.h edge-widget.h border-widget.h \
+	basep-widget.h panel-widget.h button-widget.h panel-types.h \
+	GNOME_Panel.h panel-config-global.h foobar-widget.h \
+	multiscreen-stuff.h
+eggaccelerators.o: eggaccelerators.c eggaccelerators.h
+floating-widget.o: floating-widget.c ../config.h floating-widget.h \
+	basep-widget.h panel-widget.h button-widget.h panel-types.h \
+	GNOME_Panel.h border-widget.h panel-marshal.h \
+	panel-config-global.h foobar-widget.h panel-util.h \
+	panel-gconf.h multiscreen-stuff.h
+foobar-widget.o: foobar-widget.c ../config.h foobar-widget.h \
+	panel-types.h GNOME_Panel.h menu.h panel-widget.h \
+	button-widget.h applet.h menu-util.h session.h xstuff.h \
+	basep-widget.h panel-config-global.h panel-util.h \
+	drawer-widget.h drawer.h panel.h panel-config.h border-widget.h \
+	aligned-widget.h sliding-widget.h gnome-run.h \
+	multiscreen-stuff.h panel-marshal.h panel-stock-icons.h
+global-keys.o: global-keys.c ../config.h global-keys.h applet.h \
+	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
+	gnome-run.h panel.h basep-widget.h menu.h panel-util.h \
+	panel-config-global.h eggaccelerators.h
+gnome-desktop-item-edit.o: gnome-desktop-item-edit.c ../config.h \
+	menu-ditem.h panel-util.h panel-widget.h button-widget.h \
+	panel-types.h GNOME_Panel.h panel-config-global.h nothing.cP \
+	rgb-stuff.h nothing.h
+gnome-panel-preferences.o: gnome-panel-preferences.c ../config.h \
+	panel-gconf.h panel-types.h GNOME_Panel.h
+gnome-panel-screenshot.o: gnome-panel-screenshot.c ../config.h
+gnome-run.o: gnome-run.c ../config.h gnome-run.h disclosure-widget.h \
+	menu-fentry.h menu.h panel-widget.h button-widget.h \
+	panel-types.h GNOME_Panel.h applet.h multiscreen-stuff.h \
+	panel-main.h panel-util.h panel-config-global.h panel-gconf.h \
+	quick-desktop-reader.h nothing.h panel-stock-icons.h
+launcher.o: launcher.c ../config.h launcher.h applet.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h basep-widget.h \
+	drawer-widget.h drawer.h panel.h panel-config.h border-widget.h \
+	aligned-widget.h sliding-widget.h panel-util.h \
+	panel-config-global.h menu-fentry.h menu.h panel-gconf.h \
+	panel-main.h session.h quick-desktop-reader.h
+logout.o: logout.c ../config.h logout.h panel-widget.h button-widget.h \
+	panel-types.h GNOME_Panel.h applet.h drawer-widget.h \
+	basep-widget.h drawer.h panel.h panel-config.h border-widget.h \
+	aligned-widget.h sliding-widget.h panel-util.h \
+	panel-config-global.h menu.h session.h
+main.o: main.c ../config.h drawer-widget.h basep-widget.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h drawer.h panel.h \
+	applet.h panel-config.h border-widget.h aligned-widget.h \
+	sliding-widget.h panel-util.h panel-config-global.h \
+	menu-fentry.h menu.h multiscreen-stuff.h panel-gconf.h \
+	panel-shell.h session.h xstuff.h panel-stock-icons.h
+menu-ditem.o: menu-ditem.c ../config.h menu-ditem.h panel-util.h \
+	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
+	panel-config-global.h
+menu-fentry.o: menu-fentry.c ../config.h menu-fentry.h \
+	quick-desktop-reader.h panel-util.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h \
+	panel-config-global.h session.h
+menu-util.o: menu-util.c ../config.h menu-util.h quick-desktop-reader.h \
+	basep-widget.h panel-widget.h button-widget.h panel-types.h \
+	GNOME_Panel.h foobar-widget.h multiscreen-stuff.h \
+	distribution.h applet.h panel-config-global.h panel-main.h \
+	panel-util.h menu.h
+menu.o: menu.c ../config.h menu.h panel-widget.h button-widget.h \
+	panel-types.h GNOME_Panel.h applet.h aligned-widget.h \
+	border-widget.h basep-widget.h distribution.h drawer-widget.h \
+	drawer.h panel.h panel-config.h sliding-widget.h panel-util.h \
+	panel-config-global.h edge-widget.h floating-widget.h \
+	foobar-widget.h gnome-run.h launcher.h logout.h nothing.h \
+	menu-fentry.h menu-util.h menu-ditem.h multiscreen-stuff.h \
+	panel-gconf.h panel-main.h session.h panel-applet-frame.h \
+	quick-desktop-reader.h xstuff.h panel-stock-icons.h
+multiscreen-stuff.o: multiscreen-stuff.c ../config.h multiscreen-stuff.h \
+	panel-util.h panel-widget.h button-widget.h panel-types.h \
+	GNOME_Panel.h panel-config-global.h panel.h basep-widget.h \
+	applet.h
+panel-access.o: panel-access.c panel-util.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h \
+	panel-config-global.h
+panel-applet-frame.o: panel-applet-frame.c ../config.h \
+	panel-applet-frame.h panel-widget.h button-widget.h \
+	panel-types.h GNOME_Panel.h applet.h panel-gconf.h panel-util.h \
+	panel-config-global.h session.h panel-marshal.h
+panel-config-global.o: panel-config-global.c ../config.h panel.h \
+	basep-widget.h panel-widget.h button-widget.h panel-types.h \
+	GNOME_Panel.h applet.h panel-util.h panel-config-global.h \
+	panel-gconf.h
+panel-config.o: panel-config.c ../config.h panel-config.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h border-widget.h \
+	basep-widget.h aligned-widget.h sliding-widget.h panel-util.h \
+	panel-config-global.h drawer-widget.h drawer.h panel.h applet.h \
+	edge-widget.h floating-widget.h multiscreen-stuff.h nothing.cP \
+	rgb-stuff.h nothing.h
+panel-gconf.o: panel-gconf.c ../config.h panel-gconf.h
+panel-marshal.o: panel-marshal.c panel-marshal.h
+panel-shell.o: panel-shell.c ../config.h panel-shell.h GNOME_Panel.h \
+	panel-util.h panel-widget.h button-widget.h panel-types.h \
+	panel-config-global.h
+panel-stock-icons.o: panel-stock-icons.c ../config.h panel-stock-icons.h \
+	panel-main.h
+panel-typebuiltins.o: panel-typebuiltins.c panel-typebuiltins.h \
+	panel-types.h GNOME_Panel.h basep-widget.h panel-widget.h \
+	button-widget.h aligned-widget.h border-widget.h \
+	sliding-widget.h
+panel-util.o: panel-util.c ../config.h panel-util.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h \
+	panel-config-global.h applet.h nothing.h
+panel-widget.o: panel-widget.c ../config.h applet.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h panel.h \
+	basep-widget.h panel-util.h panel-config-global.h \
+	panel-marshal.h rgb-stuff.h panel-typebuiltins.h \
+	drawer-widget.h drawer.h panel-config.h border-widget.h \
+	aligned-widget.h sliding-widget.h panel-applet-frame.h
+panel.o: panel.c ../config.h panel.h basep-widget.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h applet.h \
+	distribution.h drawer-widget.h drawer.h panel-config.h \
+	border-widget.h aligned-widget.h sliding-widget.h panel-util.h \
+	panel-config-global.h edge-widget.h floating-widget.h \
+	foobar-widget.h gnome-run.h launcher.h logout.h menu-fentry.h \
+	menu-util.h menu.h panel-gconf.h session.h panel-applet-frame.h \
+	global-keys.h
+quick-desktop-reader.o: quick-desktop-reader.c ../config.h panel-util.h \
+	panel-widget.h button-widget.h panel-types.h GNOME_Panel.h \
+	panel-config-global.h quick-desktop-reader.h
+rgb-stuff.o: rgb-stuff.c ../config.h rgb-stuff.h
+session.o: session.c ../config.h session.h panel-widget.h \
+	button-widget.h panel-types.h GNOME_Panel.h applet.h menu.h \
+	panel.h basep-widget.h panel-applet-frame.h \
+	panel-config-global.h panel-gconf.h panel-shell.h xstuff.h
+sliding-widget.o: sliding-widget.c ../config.h sliding-widget.h \
+	border-widget.h basep-widget.h panel-widget.h button-widget.h \
+	panel-types.h GNOME_Panel.h panel-config-global.h \
+	foobar-widget.h panel-marshal.h panel-util.h \
+	multiscreen-stuff.h panel-typebuiltins.h
+xstuff.o: xstuff.c ../config.h xstuff.h global-keys.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-binPROGRAMS
+install-exec: install-exec-am
+
+install-data-am: install-gladeDATA install-rcDATA install-schemasDATA \
+		install-serverDATA install-sysDATA install-uiDATA \
+		install-data-local
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-binPROGRAMS uninstall-gladeDATA uninstall-rcDATA \
+		uninstall-schemasDATA uninstall-serverDATA \
+		uninstall-sysDATA uninstall-uiDATA
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS) $(DATA)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(gladedir) \
+		$(DESTDIR)$(rcdir) $(DESTDIR)$(schemasdir) \
+		$(DESTDIR)$(serverdir) $(DESTDIR)$(sysdir) \
+		$(DESTDIR)$(uidir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
+		distclean-tags distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
+maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool uninstall-gladeDATA \
+install-gladeDATA uninstall-rcDATA install-rcDATA uninstall-schemasDATA \
+install-schemasDATA uninstall-serverDATA install-serverDATA \
+uninstall-sysDATA install-sysDATA uninstall-uiDATA install-uiDATA tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-local \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+$(gnome_panel_OBJECTS) $(gnome_panel_properties_OBJECTS) $(gnome_panel_screenshot_OBJECTS): $(BUILT_SOURCES)
+
+$(CORBA_SRCLIST): $(top_srcdir)/idl/GNOME_Panel.idl $(ORBIT_IDL)
+	$(ORBIT_IDL) -I $(BONOBO_IDLDIR) -I $(BONOBO_ACT_IDLDIR) $(top_srcdir)/idl/GNOME_Panel.idl
+
+@INTLTOOL_DESKTOP_RULE@
+
+panel-marshal.h: panel-marshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=panel_marshal > $@
+
+panel-marshal.c: panel-marshal.list $(GLIB_GENMARSHAL)
+	echo "#include \"panel-marshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) $< --body --prefix=panel_marshal >> $@
+
+panel-typebuiltins.c: @REBUILD@ $(panel_enum_headers)
+	glib-mkenums    --fhead "#include <glib-object.h>\n" \
+			--fhead "#include \"panel-typebuiltins.h\"\n\n" \
+			--fprod "\n/* enumerations from \"@filename@\" */" \
+			--fprod "\n#include \"@filename@\"\n" \
+			--vhead "static const G@Type@Value _@enum_name@_values[] = {" \
+			--vprod "  { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+			--vtail "  { 0, NULL, NULL }\n};\n\n" \
+			--vtail "GType\n@enum_name@_get_type (void)\n{\n" \
+			--vtail "  static GType type = 0;\n\n" \
+			--vtail "  if (!type)\n" \
+			--vtail "    type = g_@type@_register_static (\"@EnumName@\", _@enum_name@_values);\n\n" \
+			--vtail "  return type;\n}\n\n" \
+		$(panel_enum_headers) > $@
+
+panel-typebuiltins.h: @REBUILD@ $(panel_enum_headers)
+	glib-mkenums    --fhead "#ifndef __PANEL_TYPEBUILTINS_H__\n" \
+			--fhead "#define __PANEL_TYPEBUILTINS_H__ 1\n\n" \
+			--fhead "G_BEGIN_DECLS\n\n" \
+			--ftail "G_END_DECLS\n\n" \
+			--ftail "#endif /* __PANEL_TYPEBUILTINS_H__ */\n" \
+			--fprod "\n/* --- @filename@ --- */" \
+			--eprod "#define PANEL_TYPE_@ENUMNAME@ @enum_name@_get_type()\n" \
+			--eprod "GType @enum_name@_get_type (void);\n" \
+		$(panel_enum_headers) >  $@
+
+@INTLTOOL_SERVER_RULE@
+
+@INTLTOOL_SCHEMAS_RULE@
+
+install-data-local:
+	if test -z "$(DESTDIR)" ; then \
+		for p in $(schemas_DATA) ; do \
+			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/gnome-panel/$$p ; \
+		done \
+	fi
+
+dist-hook:
+	cd $(distdir) ; rm -f $(CLEANFILES)
+
+regenerate-built-sources:
+	EGGFILES="$(EGG_ACCELERATORS_FILES)" EGGDIR="$(EGG_ACCELERATORS_DIR)" $(srcdir)/update-from-egg.sh
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,44 @@
+2002-09-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-docs.sgml: s/GNOME_HelloApplet/My_HelloApplet/.
+	Small typo fix, fixes #90675.
+
+2002-07-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-docs.sgml:
+	* panel-applet-sections.txt:
+	* tmpl/panel-applet.sgml: Flush some docs updates.
+
+2001-01-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: pass --type-init-func="gtk_type_init(0)" to
+	gtkdoc-scangobj.
+
+2001-01-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: use CPPFLAGS.
+
+2002-01-19  Seth Nickell  <snickell@stanford.edu>
+
+
+	* tmpl/panel-applet.sgml:
+
+2001-12-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-docs.sgml: some work on porting section.
+
+2001-12-01  Laszlo Peter <laca@ireland.sun.com>
+
+	* Makefile.am: The Makefile in doc/reference/panel-applet 
+	ignores the CFLAGS and LDFLAGS when building panel-applet-scan 
+	so it breaks if prefix != /usr.
+
+2001-11-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* panel-applet-sections.txt: add panel_applet_get_orient
+	and panel_applet_get_size.
+
+2001-11-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: build against ../../../libpanel-applet.
+
