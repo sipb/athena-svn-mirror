@@ -10,11 +10,11 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.18 1990-11-15 13:07:35 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.19 1990-11-26 12:26:33 raeburn Exp $ */
 
 #ifndef lint
 static char rcsid_ZParseNotice_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.18 1990-11-15 13:07:35 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.19 1990-11-26 12:26:33 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -70,10 +70,6 @@ static char *next_field_1 (s) char *s; {
 }
 #define next_field(ptr)	ptr=next_field_1(ptr)
 #endif
-
-static int zzz = ZERR_BADPKT;
-#undef ZERR_BADPKT
-#define ZERR_BADPKT (abort(),zzz)
 
 Code_t ZParseNotice(buffer, len, notice)
     char *buffer;
