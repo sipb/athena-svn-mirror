@@ -365,34 +365,8 @@ do_authenticated1(Authctxt *authctxt)
 
 #if defined(AFS) || defined(KRB5)
 		case SSH_CMSG_HAVE_KERBEROS_TGT:
-			if (!options.kerberos_tgt_passing) {
-				verbose("Kerberos TGT passing disabled.");
-			} else {
-				char *kdata = packet_get_string(&dlen);
-				packet_check_eom();
-
-				/* XXX - 0x41, see creds_to_radix version */
-				if (kdata[0] != 0x41) {
-#ifdef KRB5
-					krb5_data tgt;
-					tgt.data = kdata;
-					tgt.length = dlen;
-
-					if (auth_krb5_tgt(s->authctxt, &tgt))
-						success = 1;
-					else
-						verbose("Kerberos v5 TGT refused for %.100s", s->authctxt->user);
-#endif /* KRB5 */
-				} else {
-#ifdef AFS
-					if (auth_krb4_tgt(s->authctxt, kdata))
-						success = 1;
-					else
-						verbose("Kerberos v4 TGT refused for %.100s", s->authctxt->user);
-#endif /* AFS */
-				}
-				xfree(kdata);
-			}
+		  	success = 
+			  do_auth1_kerberos_tgt_pass(s->authctxt, type);
 			break;
 #endif /* AFS || KRB5 */
 
@@ -446,6 +420,51 @@ do_authenticated1(Authctxt *authctxt)
 			packet_start_compression(compression_level);
 		}
 	}
+}
+
+/*
+ * This is called from both do_authenticated1(), for the normal case,
+ * and also from do_authloop(), for compatibility with ssh.com.
+ */
+
+int do_auth1_kerberos_tgt_pass(Authctxt *authctxt, int type)
+{
+	int success;
+	u_int dlen;
+
+#if defined(AFS) || defined(KRB5)
+	if (!options.kerberos_tgt_passing) {
+		verbose("Kerberos TGT passing disabled.");
+	} else {
+		char *kdata = packet_get_string(&dlen);
+		packet_check_eom();
+		
+		/* XXX - 0x41, see creds_to_radix version */
+		if (kdata[0] != 0x41) {
+#ifdef KRB5
+			krb5_data tgt;
+			tgt.data = kdata;
+			tgt.length = dlen;
+			
+			if (auth_krb5_tgt(authctxt, &tgt))
+				success = 1;
+			else
+				verbose("Kerberos v5 TGT refused for %.100s",
+				    authctxt->user);
+#endif /* KRB5 */
+		} else {
+#ifdef AFS
+			if (auth_krb4_tgt(authctxt, kdata))
+				success = 1;
+			else
+				verbose("Kerberos v4 TGT refused for %.100s",
+				    authctxt->user);
+#endif /* AFS */
+		}
+		xfree(kdata);
+	}
+#endif /* AFS || KRB5 */
+	return success;
 }
 
 /*

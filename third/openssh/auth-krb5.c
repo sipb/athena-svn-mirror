@@ -53,13 +53,47 @@ krb5_init(void *context)
 	Authctxt *authctxt = (Authctxt *)context;
 	krb5_error_code problem;
 	static int cleanup_registered = 0;
+	int fd;
+#ifndef HEIMDAL
+	krb5_rcache rcache;
+	krb5_data host_data;
+#endif	
 
 	if (authctxt->krb5_ctx == NULL) {
 		problem = krb5_init_context(&authctxt->krb5_ctx);
 		if (problem)
 			return (problem);
 		krb5_init_ets(authctxt->krb5_ctx);
+		
 	}
+	if (authctxt->krb5_auth_ctx == NULL) {
+		problem = krb5_auth_con_init(authctxt->krb5_ctx,
+		    &authctxt->krb5_auth_ctx);
+		if (problem)
+		    return problem;
+
+		host_data.data = "host";
+		host_data.length = strlen(host_data.data);
+		krb5_get_server_rcache(authctxt->krb5_ctx,
+				       &host_data, &rcache);
+		krb5_auth_con_setrcache(authctxt->krb5_ctx,
+		    authctxt->krb5_auth_ctx, 
+		    rcache);
+	
+		fd = packet_get_connection_in();
+#ifdef HEIMDAL
+		problem = krb5_auth_con_setaddrs_from_fd(authctxt->krb5_ctx,
+		   authctxt->krb5_auth_ctx, &fd);
+#else
+		problem = krb5_auth_con_genaddrs(authctxt->krb5_ctx, 
+		    authctxt->krb5_auth_ctx,fd,
+		    KRB5_AUTH_CONTEXT_GENERATE_REMOTE_FULL_ADDR |
+		    KRB5_AUTH_CONTEXT_GENERATE_LOCAL_FULL_ADDR);
+#endif
+		if (problem)
+		  return problem;
+	}
+
 	if (!cleanup_registered) {
 		fatal_add_cleanup(krb5_cleanup_proc, authctxt);
 		cleanup_registered = 1;
@@ -86,24 +120,6 @@ auth_krb5(Authctxt *authctxt, krb5_data *auth, char **client, krb5_data *reply)
 	reply->length = 0;
 
 	problem = krb5_init(authctxt);
-	if (problem)
-		goto err;
-
-	problem = krb5_auth_con_init(authctxt->krb5_ctx,
-	    &authctxt->krb5_auth_ctx);
-	if (problem)
-		goto err;
-
-	fd = packet_get_connection_in();
-#ifdef HEIMDAL
-	problem = krb5_auth_con_setaddrs_from_fd(authctxt->krb5_ctx,
-	    authctxt->krb5_auth_ctx, &fd);
-#else
-	problem = krb5_auth_con_genaddrs(authctxt->krb5_ctx, 
-	    authctxt->krb5_auth_ctx,fd,
-	    KRB5_AUTH_CONTEXT_GENERATE_REMOTE_FULL_ADDR |
-	    KRB5_AUTH_CONTEXT_GENERATE_LOCAL_FULL_ADDR);
-#endif
 	if (problem)
 		goto err;
 
@@ -174,11 +190,19 @@ auth_krb5_tgt(Authctxt *authctxt, krb5_data *tgt)
 	char *pname;
 	krb5_creds **creds;
 
-	if (authctxt->pw == NULL || authctxt->krb5_user == NULL)
+	problem = krb5_init(authctxt);
+	if (problem)
+	  	goto fail;
+
+	if (authctxt->pw == NULL)
 		return (0);
 
 	temporarily_use_uid(authctxt->pw);
 
+	problem = krb5_rd_cred(authctxt->krb5_ctx, authctxt->krb5_auth_ctx,
+			       tgt, &creds, NULL);
+	if (problem)
+	  	goto fail;
 #ifdef HEIMDAL
 	problem = krb5_cc_gen_new(authctxt->krb5_ctx, &krb5_fcc_ops, &ccache);
 #else
@@ -193,6 +217,11 @@ auth_krb5_tgt(Authctxt *authctxt, krb5_data *tgt)
 	if (problem)
 		goto fail;
 
+	problem = krb5_copy_principal(authctxt->krb5_ctx, (*creds)->client,
+				      &authctxt->krb5_user);
+	if (problem)
+	  	goto fail;
+
 	problem = krb5_cc_initialize(authctxt->krb5_ctx, ccache,
 	    authctxt->krb5_user);
 	if (problem)
@@ -204,10 +233,6 @@ auth_krb5_tgt(Authctxt *authctxt, krb5_data *tgt)
 	if (problem)
 		goto fail;
 #else
-	problem = krb5_rd_cred(authctxt->krb5_ctx, authctxt->krb5_auth_ctx,
-	    tgt, &creds, NULL);
-	if (problem)
-		goto fail;
 	problem = krb5_cc_store_cred(authctxt->krb5_ctx, ccache, *creds);
 	if (problem)
 		goto fail;

@@ -504,6 +504,40 @@ try_krb4_authentication(void)
 
 #ifdef KRB5
 static int
+ssh1_krb5_common(krb5_context *context, krb5_auth_context *auth_context)
+{
+	int problem;
+
+	if (*context == NULL) {
+		problem = krb5_init_context(context);
+		if (problem) {
+			debug("Kerberos v5: krb5_init_context failed");
+			return problem;
+		}
+	}
+	
+	if (*auth_context == NULL) {
+		problem = krb5_auth_con_init(*context, auth_context);
+		if (problem) {
+			debug("Kerberos v5: krb5_auth_con_init failed");
+			return problem;
+		}
+	}
+
+#ifndef HEIMDAL	
+	problem = krb5_auth_con_setflags(*context, *auth_context,
+					 KRB5_AUTH_CONTEXT_RET_TIME);
+	if (problem) {
+		debug("Kerberos v5: krb5_auth_con_setflags failed");
+		return problem;
+	}				 
+#endif
+
+	return 0;
+
+}
+
+static int
 try_krb5_authentication(char *host, krb5_context *context, krb5_auth_context *auth_context)
 {
 	krb5_error_code problem;
@@ -521,29 +555,11 @@ try_krb5_authentication(char *host, krb5_context *context, krb5_auth_context *au
 
 	memset(&ap, 0, sizeof(ap));
 
-	problem = krb5_init_context(context);
+	problem = ssh1_krb5_common(context, auth_context);
 	if (problem) {
-		debug("Kerberos v5: krb5_init_context failed");
-		ret = 0;
+	  	ret = 0;
 		goto out;
 	}
-	
-	problem = krb5_auth_con_init(*context, auth_context);
-	if (problem) {
-		debug("Kerberos v5: krb5_auth_con_init failed");
-		ret = 0;
-		goto out;
-	}
-
-#ifndef HEIMDAL
-	problem = krb5_auth_con_setflags(*context, *auth_context,
-					 KRB5_AUTH_CONTEXT_RET_TIME);
-	if (problem) {
-		debug("Keberos v5: krb5_auth_con_setflags failed");
-		ret = 0;
-		goto out;
-	}
-#endif
 
 	tkfile = krb5_cc_default_name(*context);
 	if (strncmp(tkfile, "FILE:", 5) == 0)
@@ -727,6 +743,10 @@ send_krb5_tgt(krb5_context context, krb5_auth_context auth_context)
 
 	memset(&creds, 0, sizeof(creds));
 	memset(&outbuf, 0, sizeof(outbuf));
+
+	problem = ssh1_krb5_common(&context, &auth_context);
+	if (problem)
+	  	goto out;
 
 	fd = packet_get_connection_in();
 

@@ -55,6 +55,7 @@ struct Session {
 	int	is_subsystem;
 };
 
+int      do_auth1_kerberos_tgt_pass(Authctxt *, int);
 void	 do_authenticated(Authctxt *);
 
 int	 session_open(Authctxt *, int);

@@ -181,9 +181,22 @@ do_authloop(Authctxt *authctxt)
 #endif /* KRB4 || KRB5 */
 
 #if defined(AFS) || defined(KRB5)
-			/* XXX - punt on backward compatability here. */
 		case SSH_CMSG_HAVE_KERBEROS_TGT: {
-		        packet_send_debug("Kerberos TGT passing disabled before authentication.");
+		        /*
+			 * This is for backwards compatability with SSH.COM's
+			 * implementation, which passes the TGT before
+			 * authenticating.
+			 *
+			 * Perhaps this should be disallowed from other
+			 * client versions?
+			 */
+			int s;
+
+			s = do_auth1_kerberos_tgt_pass(authctxt, type);
+			packet_start(s ? SSH_SMSG_SUCCESS : SSH_SMSG_FAILURE);
+			packet_send();
+			packet_write_wait();
+			nonauthentication = 1;
 		}
 			break;
 
@@ -392,10 +405,9 @@ Authctxt *
 do_authentication(void)
 {
 	Authctxt *authctxt;
-	struct passwd *pw;
-	int plen, status;
+	int status;
 	u_int ulen;
-	char *p, *user, *style = NULL;
+	char *user, *style = NULL;
 	char *filetext, *errmem;
 	const char *err;
 
