@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.3 1996-10-13 16:41:22 ghudson Exp $
+# $Id: Makefile.athena,v 1.4 1996-11-20 15:43:41 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -6,10 +6,8 @@ compiler.sun4:
 	@/bin/athena/attach -h -n -q sunsoft
 	@echo /mit/sunsoft/sun4bin/cc
 
-configure: force
+prepare:
 	./configure --prefix=/usr/gcc
-
-force:
 
 clean:
 	${MAKE} clean

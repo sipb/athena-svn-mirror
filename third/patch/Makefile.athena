@@ -1,11 +1,9 @@
-# $Id: Makefile.athena,v 1.1 1996-10-13 04:29:15 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1996-11-20 15:44:54 ghudson Exp $
 
 SHELL=/bin/sh
 
-configure: force
+prepare:
 	CC="$$COMPILER" ./configure
-
-force:
 
 clean:
 	${MAKE} clean

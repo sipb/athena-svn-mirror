@@ -1,9 +1,9 @@
-# $Id: Makefile.athena,v 1.2 1996-11-14 15:40:23 ghudson Exp $
+# $Id: Makefile.athena,v 1.3 1996-11-20 15:46:11 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
 
-configure:
+prepare:
 	cd web2c && CC="$$COMPILER" ./configure --prefix=/usr/athena
 	cd xdvi && imake "-I$$XCONFIGDIR" -DUseInstalled "-DSRCDIR=$$SOURCE"
 	cd xdvi && ${MAKE} Makefiles

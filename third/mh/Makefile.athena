@@ -1,8 +1,8 @@
-# $Id: Makefile.athena,v 1.1 1996-10-13 18:51:39 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1996-11-20 15:45:37 ghudson Exp $
 
 SHELL=/bin/sh
 
-configure:
+prepare:
 	cd conf && $$COMPILER mhconfig.c -o mhconfig
 	cd conf && ./mhconfig "MH.$$HOSTTYPE"
 

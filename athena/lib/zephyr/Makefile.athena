@@ -1,8 +1,8 @@
-# $Id: Makefile.athena,v 1.1 1996-10-12 22:05:21 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1996-11-20 15:41:35 ghudson Exp $
 
 SHELL=/bin/sh
 
-configure:
+prepare:
 	imake -DTOPDIR=`pwd` -I./config
 	${MAKE} Makefiles
 

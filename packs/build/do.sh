@@ -1,10 +1,10 @@
 #!/bin/sh
-# $Id: do.sh,v 1.5 1996-11-20 15:25:22 ghudson Exp $
+# $Id: do.sh,v 1.6 1996-11-20 15:47:02 ghudson Exp $
 
 source="/source"
 build="/build"
 srvd="/srvd"
-usage="do [-s srcdir] [-d destdir] [configure|clean|all|check|install]"
+usage="do [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
 
 while getopts s:b:d: opt; do
 	case "$opt" in
@@ -55,7 +55,7 @@ if [ -r Makefile.athena ]; then
 	make -f Makefile.athena "$operation"
 elif [ -x ./configure ]; then
 	case "$operation" in
-		configure)	rm -f config.cache; ./configure ;;
+		prepare)	rm -f config.cache; ./configure ;;
 		clean)		make clean ;;
 		all)		make all ;;
 		check)		;;
@@ -63,7 +63,7 @@ elif [ -x ./configure ]; then
 	esac
 elif [ -r Imakefile ]; then
 	case "$operation" in
-		configure)
+		prepare)
 			imake "-I$source/packs/build/config" -DUseInstalled \
 				"-DTOPDIR=$source"
 			make Makefiles
@@ -75,7 +75,7 @@ elif [ -r Imakefile ]; then
 	esac
 elif [ -r Makefile ]; then
 	case "$operation" in
-		configure)	;;
+		prepare)	;;
 		clean)		make clean ;;
 		all)		make all CC="$compiler" ;;
 		check)		;;

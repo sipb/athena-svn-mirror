@@ -1,8 +1,8 @@
-# $Id: Makefile.athena,v 1.2 1996-10-17 07:23:15 ghudson Exp $
+# $Id: Makefile.athena,v 1.3 1996-11-20 15:44:35 ghudson Exp $
 
 SHELL=/bin/sh
 
-configure:
+prepare:
 	rm -f config.sh
 	cp "config.sh.$$HOSTTYPE" config.sh
 	for i in *.SH x2p/*.SH; do sh $$i; done
