@@ -1,9 +1,15 @@
 DEFINES=-DRVD -DNAMESERVER -DVFS -DKRB5 -I$(KRB5DIR)/include $(MACHDEP)
 
-#if defined(SOLARIS)
-AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a /usr/athena/lib/libbsd.a
-#else
 AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
+
+#if defined(SOLARIS)
+MACHDEP = -DINITTAB
+AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a /usr/athena/lib/libbsd.a
+#endif
+
+#ifdef sgi
+MACHDEP = -DINITTAB
+AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
 #endif
 
 #ifdef ultrix
