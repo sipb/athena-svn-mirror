@@ -1,7 +1,7 @@
 #
 # Makefile for uip subdirectory
 #
-# $Id: Makefile.in,v 1.3 1999-02-23 17:00:44 danw Exp $
+# $Id: Makefile.in,v 1.4 1999-05-22 17:58:40 danw Exp $
 #
 
 SHELL = /bin/sh
@@ -257,6 +257,16 @@ install-lcmds:
 	$(LN) $(DESTDIR)$(bindir)/folder $(DESTDIR)$(bindir)/folders
 	$(LN) $(DESTDIR)$(bindir)/show   $(DESTDIR)$(bindir)/prev
 	$(LN) $(DESTDIR)$(bindir)/show   $(DESTDIR)$(bindir)/next
+	rm -f $(DESTDIR)/usr/athena/etc/rcvdist
+	rm -f $(DESTDIR)/usr/athena/etc/rcvpack
+	rm -f $(DESTDIR)/usr/athena/etc/rcvstore
+	rm -f $(DESTDIR)/usr/athena/etc/rcvtty
+	rm -f $(DESTDIR)/usr/athena/etc/slocal
+	ln -s ../libexec/rcvdist $(DESTDIR)/usr/athena/etc/rcvdist
+	ln -s ../libexec/rcvpack $(DESTDIR)/usr/athena/etc/rcvpack
+	ln -s ../libexec/rcvstore $(DESTDIR)/usr/athena/etc/rcvstore
+	ln -s ../libexec/rcvtty $(DESTDIR)/usr/athena/etc/rcvtty
+	ln -s ../libexec/slocal $(DESTDIR)/usr/athena/etc/slocl
 
 # install misc support binaries
 install-misc:
