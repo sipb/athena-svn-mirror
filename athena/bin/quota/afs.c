@@ -1,7 +1,7 @@
 /*
  * AFS quota routines
  *
- * $Id: afs.c,v 1.9 1992-05-29 19:47:29 lwvanels Exp $
+ * $Id: afs.c,v 1.10 1992-06-01 16:52:52 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -112,12 +112,12 @@ afswarn(path,foo,name)
     vs = (struct VolumeStatus *) foo;
 
     if (vs->MaxQuota && (vs->BlocksInUse > vs->MaxQuota)) {
-	sprintf(buf,"User %s over disk quota on %s, remove %dK\n", name,
+	sprintf(buf,"Oover disk quota on %s, remove %dK.\n",
 		path, (vs->BlocksInUse - vs->MaxQuota));
 	putwarning(buf);
     }
     else if (vs->MaxQuota && (vs->BlocksInUse >= vs->MaxQuota * 9 / 10)) {
-	sprintf(buf,"User %s has used %d%% of his disk quota on %s\n", name,
+	sprintf(buf,"%d%% of the disk quota on %s\n has been used.",
 		(int)((vs->BlocksInUse*100.0/vs->MaxQuota)+0.5), path);
 	putwarning(buf);
     }
