@@ -17,7 +17,7 @@
  * functions to get and put the session record.
  */
 
-static const char rcsid[] = "$Id: session.c,v 1.5 1997-10-31 00:03:23 ghudson Exp $";
+static const char rcsid[] = "$Id: session.c,v 1.6 1997-11-15 07:30:38 ghudson Exp $";
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -49,12 +49,13 @@ void zero_record(struct al_record *r)
 }
 
 /* This is an internal function.  Its contract is to open the session
- * record, lock it, and parse its contents into record.
+ * record, lock it, and parse its contents into record.  It always
+ * allocates one extra slot in record->gids and record->pids.
  */
 int al__get_session_record(const char *username,
 			   struct al_record *record)
 {
-  int fd, bufsize = 0, retval = AL_SUCCESS, i;
+  int fd, bufsize = 0, retval = AL_WBADSESSION, i;
   char *session_file, *buf = NULL, *ptr1;
   struct flock fl;
   sigset_t smask;
@@ -88,13 +89,14 @@ int al__get_session_record(const char *username,
       goto cleanup;
 
     case 1:			/* EOF */
-      return AL_SUCCESS;
+      retval = AL_SUCCESS;
+      goto cleanup;
 
     default:			/* got line */
       if (!strcmp(buf, "0") || !strcmp(buf, "1"))
 	record->passwd_added = buf[0] - '0';
       else
-	return AL_WBADSESSION;
+	goto cleanup;
       break;
     }
 
@@ -106,17 +108,13 @@ int al__get_session_record(const char *username,
       goto cleanup;
 
     case 1:			/* EOF */
-      zero_record(record);
-      return AL_WBADSESSION;
+      goto cleanup;
 
     default:			/* got line */
       if (!strcmp(buf, "0") || !strcmp(buf, "1"))
 	record->attached = buf[0] - '0';
       else
-	{
-	  zero_record(record);
-	  return AL_WBADSESSION;
-	}
+	goto cleanup;
       break;
     }
 
@@ -128,14 +126,12 @@ int al__get_session_record(const char *username,
       goto cleanup;
 
     case 1:			/* EOF */
-      zero_record(record);
-      return AL_WBADSESSION;
+      goto cleanup;
 
     default:			/* got line */
       if (!strcmp(buf, "0") || (buf[0] == '1' && strlen(buf) > 1))
 	{
-	  record->attached = buf[0] - '0';
-	  if (record->attached)
+	  if (buf[0] != '0')
 	    {
 	      record->old_homedir = strdup(buf + 1);
 	      if (!record->old_homedir)
@@ -146,10 +142,7 @@ int al__get_session_record(const char *username,
 	    }
 	}
       else
-	{
-	  zero_record(record);
-	  return AL_WBADSESSION;
-	}
+	goto cleanup;
       break;
     }
 
@@ -161,8 +154,7 @@ int al__get_session_record(const char *username,
       goto cleanup;
 
     case 1:			/* EOF */
-      zero_record(record);
-      return AL_WBADSESSION;
+      goto cleanup;
 
     default:			/* got line */
       /* Make sure it's a list of numbers each followed by a colon. */
@@ -171,15 +163,12 @@ int al__get_session_record(const char *username,
       while (*ptr1)
 	{
 	  if (!isdigit(*ptr1) || NULL == (ptr1 = strchr(ptr1, ':')))
-	    {
-	      retval = AL_WBADSESSION;
-	      goto cleanup;
-	    }
+	    goto cleanup;
 	  record->ngroups++;
 	  ptr1++;
 	}
       /* Parse the numbers into an array of gid_t. */
-      record->groups = malloc(record->ngroups * sizeof(gid_t));
+      record->groups = malloc((record->ngroups + 1) * sizeof(gid_t));
       if (!record->groups)
 	{
 	  retval = AL_ESESSION;
@@ -198,8 +187,7 @@ int al__get_session_record(const char *username,
       goto cleanup;
 
     case 1:			/* EOF */
-      zero_record(record);
-      return AL_WBADSESSION;
+      goto cleanup;
 
     default:			/* got line */
       /* Make sure it's a list of numbers each followed by a colon. */
@@ -208,15 +196,12 @@ int al__get_session_record(const char *username,
       while (*ptr1)
 	{
 	  if (!isdigit(*ptr1) || NULL == (ptr1 = strchr(ptr1, ':')))
-	    {
-	      retval = AL_WBADSESSION;
-	      goto cleanup;
-	    }
+	    goto cleanup;
 	  record->npids++;
 	  ptr1++;
 	}
       /* Parse the numbers into an array of pid_t. */
-      record->pids = malloc(record->npids * sizeof(pid_t));
+      record->pids = malloc((record->npids + 1) * sizeof(pid_t));
       if (!record->pids)
 	{
 	  retval = AL_ESESSION;
@@ -227,26 +212,12 @@ int al__get_session_record(const char *username,
 	record->pids[i++] = atoi(ptr1);
     }
 
-  /* Block signals that might kill process while record info on disk
-   * doesn't match reality.
-   */
-  sigemptyset(&smask);
-  sigaddset(&smask, SIGHUP);
-  sigaddset(&smask, SIGINT);
-  sigaddset(&smask, SIGQUIT);
-  sigaddset(&smask, SIGTSTP);
-  sigaddset(&smask, SIGALRM);
-  sigaddset(&smask, SIGCHLD);
-  sigprocmask(SIG_BLOCK, &smask, &(record->mask));
-  sigemptyset(&action.sa_mask);
-  action.sa_flags = 0;
-  action.sa_handler = SIG_DFL;
-  sigaction(SIGCHLD, &action, &(record->sigchld_action));
-
-  record->exists = 1;
-  return AL_SUCCESS;
+  retval = AL_SUCCESS;
 
 cleanup:
+  if (bufsize)
+    free(buf);
+
   if (retval == AL_ESESSION)
     {
       /* Relinquish the lock in case this OS violates POSIX.1 B.6.5.2
@@ -260,14 +231,38 @@ cleanup:
       else
 	close(fd);
     }
+  else
+    {
+      /* Block signals that might kill process while record info on disk
+       * doesn't match reality.
+       */
+      sigemptyset(&smask);
+      sigaddset(&smask, SIGHUP);
+      sigaddset(&smask, SIGINT);
+      sigaddset(&smask, SIGQUIT);
+      sigaddset(&smask, SIGTSTP);
+      sigaddset(&smask, SIGALRM);
+      sigaddset(&smask, SIGCHLD);
+      sigprocmask(SIG_BLOCK, &smask, &(record->mask));
+      sigemptyset(&action.sa_mask);
+      action.sa_flags = 0;
+      action.sa_handler = SIG_DFL;
+      sigaction(SIGCHLD, &action, &(record->sigchld_action));
+    }
 
-  if (record->old_homedir)
-    free(record->old_homedir);
-  if (record->groups)
-    free(record->groups);
-  if (record->pids)
-    free(record->pids);
-  zero_record(record);
+  if (retval == AL_SUCCESS)
+    record->exists = 1;
+  else
+    {
+      /* On either warning or error, zero out the record. */
+      if (record->old_homedir)
+	free(record->old_homedir);
+      if (record->groups)
+	free(record->groups);
+      if (record->pids)
+	free(record->pids);
+      zero_record(record);
+    }
   return retval;
 }
 
