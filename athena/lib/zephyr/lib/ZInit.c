@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v $
- *	$Author: raeburn $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.18 1991-03-21 11:42:53 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.19 1993-09-24 16:19:17 probe Exp $ */
 
 #ifndef lint
 static char rcsid_ZInitialize_c[] =
@@ -40,7 +40,7 @@ Code_t ZInitialize()
     initialize_krb_error_table();
 #endif
     
-    bzero((char *)&__HM_addr, sizeof(__HM_addr));
+    _BZERO((char *)&__HM_addr, sizeof(__HM_addr));
 
     __HM_addr.sin_family = AF_INET;
 
@@ -56,7 +56,7 @@ Code_t ZInitialize()
 
     __HM_addr.sin_port = hmserv->s_port;
 
-    bcopy(addr, (char *)&__HM_addr.sin_addr, 4);
+    _BCOPY(addr, (char *)&__HM_addr.sin_addr, 4);
 
     __HM_set = 0;
 

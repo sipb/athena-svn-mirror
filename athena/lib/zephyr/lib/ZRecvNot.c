@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.10 1991-12-04 13:48:15 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.11 1993-09-24 16:18:33 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZReceiveNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.10 1991-12-04 13:48:15 lwvanels Exp $";
+static char rcsid_ZReceiveNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.11 1993-09-24 16:18:33 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -42,7 +42,7 @@ Code_t ZReceiveNotice(notice, from)
     if (from)
 	*from = nextq->from;
     
-    bcopy(nextq->packet, buffer, len);
+    _BCOPY(nextq->packet, buffer, len);
 
     Z_RemQueue(nextq);
     

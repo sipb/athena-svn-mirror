@@ -4,16 +4,16 @@
  *	Created by:	Marc Horowitz
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZAsyncLocate.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1990,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZAsyncLocate.c,v 1.2 1991-12-04 13:51:16 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZAsyncLocate.c,v 1.3 1993-09-24 16:17:38 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZAsyncLocate_c[] = "$Id: ZAsyncLocate.c,v 1.2 1991-12-04 13:51:16 lwvanels Exp $";
+static char rcsid_ZAsyncLocate_c[] = "$Id: ZAsyncLocate.c,v 1.3 1993-09-24 16:17:38 probe Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -31,7 +31,7 @@ Code_t ZRequestLocations(user, zald, kind, auth)
 	if ((retval = ZOpenPort((u_short *)0)) != ZERR_NONE)
 	    return (retval);
 
-    (void) bzero((char *)&notice, sizeof(notice));
+    (void) _BZERO((char *)&notice, sizeof(notice));
     notice.z_kind = kind;
     notice.z_port = __Zephyr_port;
     notice.z_class = LOCATE_CLASS;
@@ -166,5 +166,5 @@ void ZFreeALD(zald)
 
    if (zald->user) free(zald->user);
    if (zald->version) free(zald->version);
-   bzero(zald, sizeof(*zald));
+   _BZERO(zald, sizeof(*zald));
 }

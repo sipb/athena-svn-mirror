@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.17 1992-08-26 04:39:13 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.18 1993-09-24 16:19:05 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.17 1992-08-26 04:39:13 lwvanels Exp $";
+static char rcsid_ZSubscriptions_c[] = "$Id: ZSubs.c,v 1.18 1993-09-24 16:19:05 probe Exp $";
 #endif
 
 #include <zephyr/zephyr_internal.h>
@@ -83,7 +83,7 @@ Z_Subscriptions(sublist, nitems, port, opcode, authit)
     if (!list)
         return (ENOMEM);
 
-    (void) bzero((char *)&notice, sizeof(notice));
+    (void) _BZERO((char *)&notice, sizeof(notice));
     notice.z_kind = ACKED;
     notice.z_port = port;
     notice.z_class = ZEPHYR_CTL_CLASS;

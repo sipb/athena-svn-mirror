@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.11 1991-12-04 13:48:22 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.12 1993-09-24 16:19:22 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZIfNotice_c[] = "$Id: ZIfNotice.c,v 1.11 1991-12-04 13:48:22 lwvanels Exp $";
+static char rcsid_ZIfNotice_c[] = "$Id: ZIfNotice.c,v 1.12 1993-09-24 16:19:22 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -44,7 +44,7 @@ Code_t ZIfNotice(notice, from, predicate, args)
 	    if ((*predicate)(&tmpnotice, args)) {
 		if (!(buffer = (char *) malloc((unsigned) qptr->packet_len)))
 		    return (ENOMEM);
-		bcopy(qptr->packet, buffer, qptr->packet_len);
+		_BCOPY(qptr->packet, buffer, qptr->packet_len);
 		if (from)
 		    *from = qptr->from;
 		if ((retval = ZParseNotice(buffer, qptr->packet_len, 

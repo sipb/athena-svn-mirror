@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.7 1991-12-04 13:50:58 lwvanels Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.8 1993-09-24 16:18:40 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.7 1991-12-04 13:50:58 lwvanels Exp $";
+static char rcsid_ZFormatRawNoticeList_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtRawLst.c,v 1.8 1993-09-24 16:18:40 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -45,13 +45,13 @@ Code_t ZFormatRawNoticeList(notice, list, nitems, buffer, ret_len)
     if (!(*buffer = (char *) malloc((unsigned) *ret_len)))
 	return (ENOMEM);
 
-    bcopy(header, *buffer, hdrlen);
+    _BCOPY(header, *buffer, hdrlen);
     
     ptr = *buffer+hdrlen;
 
     for (;nitems;nitems--, list++) {
 	i = strlen(*list)+1;
-	bcopy(*list, ptr, i);
+	_BCOPY(*list, ptr, i);
 	ptr += i;
     }
 

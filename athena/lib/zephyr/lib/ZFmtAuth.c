@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.12 1991-06-18 13:44:32 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.13 1993-09-24 16:18:59 probe Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.12 1991-06-18 13:44:32 jfc Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.13 1993-09-24 16:18:59 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -57,7 +57,7 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     if (newnotice.z_message_len+hdrlen > buffer_len)
 	return (ZERR_PKTLEN);
 
-    bcopy(newnotice.z_message, ptr, newnotice.z_message_len);
+    _BCOPY(newnotice.z_message, ptr, newnotice.z_message_len);
 
     *len = hdrlen+newnotice.z_message_len;
 

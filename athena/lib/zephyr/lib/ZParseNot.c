@@ -4,13 +4,13 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.23 1992-01-29 05:04:15 jfc Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.24 1993-09-24 16:19:13 probe Exp $ */
 
 #ifndef lint
 static char rcsid_ZParseNotice_c[] =
@@ -99,7 +99,7 @@ Code_t ZParseNotice(buffer, len, notice)
 #define BAD	goto badpkt
 #endif
 
-    bzero((char *)notice, sizeof(ZNotice_t));
+    _BZERO((char *)notice, sizeof(ZNotice_t));
 	
     ptr = buffer;
     end = buffer+len;
