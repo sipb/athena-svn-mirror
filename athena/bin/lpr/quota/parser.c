@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.3 1990-06-04 20:04:09 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v 1.4 1990-07-10 21:42:56 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/parser.c,v $ */
 /* $Author: epeisach $ */
 /*
@@ -11,6 +11,9 @@
 #include <logger_ncs.h>
 #include <strings.h>
 #include <sys/types.h>
+#if defined(ultrix) && defined(NULL)
+#undef NULL
+#endif
 #include <sys/param.h> 
 #include <errno.h>
 #include <sys/file.h>
@@ -24,27 +27,26 @@ logger_parse_quota(buf, out)
 char *buf;
 log_entity *out;
 {
-    
-
     /* Inital values are set here */
     Time t = -1;
     String_num name=0, inst=0, realm = 0, serv = 0;
-    String_num name1=0, inst1=0, realm1 = 0;
+    String_num name1=0, inst1=0, realm1 = 0, grp = 0;
     Function func = 999;
     Amount amt = 0;
     Time subt = -1;
     Num npages = 0, medcost = 0;
     String_num where = 0;
+    int is_group = 0;
 
     /* funcsel is the current state. States so far:
        0 = Any function
        1 = Must be an offset type
-       2 = must be a charge
      */
     int funcsel = 0;
     
     char *pos = NULL; /* Current position on the line */
     char cur[128];	/* Current inbuf */
+    char grp_str[128];
     char *curpos;
 
     if(buf == NULL) return -1; /* Don't have anything to parse */
@@ -91,81 +93,113 @@ log_entity *out;
 	if((serv = logger_add_string(cur + 2)) == 0) goto error;
 	break;
 
-#define CKSTATE(n) if(funcsel && funcsel != (n)) goto error; \
-	           funcsel = (n);
+#define CK_OFFSET   1
+#define CK_CHARGE   2
+#define CK_GROUP    4
+#define CK_ANY      (CK_OFFSET | CK_CHARGE | CK_GROUP)
+
+#define CKSTATE(n) if(funcsel && (funcsel & (n)) == 0) goto error; \
+	           funcsel = (funcsel | (n));
+
+
+    case 'g':
+	CKSTATE(CK_GROUP);
+	grp_str[0] = ':';
+	strncpy(&grp_str[1], (cur + 2), 120);
+	grp_str[127] = '\0';
+	is_group++;
+	if ((grp = logger_add_string(grp_str)) == 0) goto error;
+	break;
 
     case 'N':
-	CKSTATE(1);
+	CKSTATE(CK_ANY);
 	if((name1 = logger_add_string(cur + 2)) == 0) goto error;
 	break;
 
     case 'I':
-	CKSTATE(1);
+	CKSTATE(CK_ANY);
 	if((inst1 = logger_add_string(cur + 2)) == 0) goto error;
 	break;
 
     case 'R':
-	CKSTATE(1);
+	CKSTATE(CK_ANY);
 	if((realm1 = logger_add_string(cur + 2)) == 0) goto error;
 	break;
 
     case 'a':
-	CKSTATE(1);
+	CKSTATE(CK_OFFSET | CK_GROUP);
 	if(sscanf(cur + 2, "%d", &amt) != 1) goto error;
 	break;
 
     case 'p':
-	CKSTATE(2);
+	CKSTATE(CK_CHARGE | CK_GROUP);
 	if(sscanf(cur + 2, "%d", &npages) != 1) goto error;
 	break;
 
     case 'q':
-	CKSTATE(2);
+	CKSTATE(CK_CHARGE | CK_GROUP);
 	if(sscanf(cur + 2, "%d", &subt) != 1) goto error;
 	break;
 
     case 'c':
-	CKSTATE(2);
+	CKSTATE(CK_CHARGE | CK_GROUP);
 	if(sscanf(cur + 2, "%d", &medcost) != 1) goto error;
 	break;
 
     case 'w':
-	CKSTATE(2);
+	CKSTATE(CK_CHARGE | CK_GROUP);
 	if((where = logger_add_string(cur + 2)) == 0) goto error;
 	break;
 
     case 'f':
-	if(!strncasecmp(cur +2 , "add", 3)) {
+	/* Watch out for order, eg. 'add_admin' before 'add' etc. */
+	if(!strncasecmp(cur +2 , "add_admin", 9)) {
+	    func = LO_ADD_ADMIN; 
+	    CKSTATE(CK_GROUP);
+	    break;
+	} else if(!strncasecmp(cur +2 , "delete_admin", 12)) {
+	    func = LO_DELETE_ADMIN; 
+	    CKSTATE(CK_GROUP);
+	    break;
+	} else if(!strncasecmp(cur +2 , "add_user", 8)) {
+	    func = LO_ADD_USER; 
+	    CKSTATE(CK_GROUP);
+	    break;
+	} else if(!strncasecmp(cur +2 , "delete_user", 11)) {
+	    func = LO_DELETE_USER; 
+	    CKSTATE(CK_GROUP);
+	    break;
+	}if(!strncasecmp(cur +2 , "add", 3)) {
 	    func = LO_ADD; 
-	    CKSTATE(1);
+	    CKSTATE(CK_OFFSET);
 	    break;
 	} else if(!strncasecmp(cur +2 , "charge", 6)) {
 	    func = LO_CHARGE; 
-	    CKSTATE(2);
+	    CKSTATE(CK_CHARGE | CK_GROUP);
 	    break;
 	} else if(!strncasecmp(cur +2 , "subtract", 7)) {
 	    func = LO_SUBTRACT; 
-	    CKSTATE(1);
+	    CKSTATE(CK_OFFSET | CK_GROUP);
 	    break;
 	} else if(!strncasecmp(cur +2 , "set", 3)) {
 	    func = LO_SET; 
-	    CKSTATE(1);
+	    CKSTATE(CK_OFFSET | CK_GROUP);
 	    break;
 	} else if(!strncasecmp(cur +2 , "delete", 6)) {
 	    func = LO_DELETEUSER; 
-	    CKSTATE(1);
+	    CKSTATE(CK_OFFSET | CK_GROUP);
 	    break;
 	} else if(!strncasecmp(cur +2 , "allow", 5)) {
 	    func = LO_ALLOW; 
-	    CKSTATE(1);
+	    CKSTATE(CK_OFFSET | CK_GROUP);
 	    break;
-	} else if(!strncasecmp(cur +2 , "disallow", 7)) {
+	} else if(!strncasecmp(cur +2 , "disallow", 8)) {
 	    func = LO_DISALLOW; 
-	    CKSTATE(1);
+	    CKSTATE(CK_OFFSET | CK_GROUP);
 	    break;
 	} else if(!strncasecmp(cur +2 , "adjust", 6)) {
 	    func = LO_ADJUST; 
-	    CKSTATE(1);
+	    CKSTATE(CK_OFFSET | CK_GROUP);
 	    break;
 	}
 	goto error;
@@ -180,10 +214,17 @@ log_entity *out;
  done:
     if((funcsel == 0) || func == 999) goto error;
 
+    if (!is_group) {
+	out->user.name = name;
+	out->user.instance = inst;
+	out->user.realm = realm;
+    } else {
+	out->user.name = grp;
+	out->user.instance = grp;
+	out->user.realm = grp;
+    }
+
     out->time = t;
-    out->user.name = name;
-    out->user.instance = inst;
-    out->user.realm = realm;
     out->service = serv;
     out->func = func;
 
@@ -205,6 +246,20 @@ log_entity *out;
 	out->trans.charge.npages = npages;
 	out->trans.charge.med_cost = medcost;
 	out->trans.charge.where = where;
+	out->trans.charge.name = name1;
+	out->trans.charge.inst = inst1;
+	out->trans.charge.realm = realm1;	
+	break;
+    case LO_ADD_ADMIN:
+    case LO_DELETE_ADMIN:
+    case LO_ADD_USER:
+    case LO_DELETE_USER:
+	out->trans.group.uname  = name;
+	out->trans.group.uinst  = inst;
+	out->trans.group.urealm = realm;
+	out->trans.group.aname  = name1;
+	out->trans.group.ainst  = inst1;
+	out->trans.group.arealm = realm1;
 	break;
     default:
 	syslog(LOG_ERR, "Inconsistancy in parser func = %d\n", func);
@@ -212,12 +267,12 @@ log_entity *out;
     }
 
     /* We are done so return */
-    
     return 0;
 
  error:
     
-    syslog(LOG_ERR, "Could not parse line: %s, keyword: %s\n", buf, cur);
+    syslog(LOG_ERR, "Could not parse line (%d): %s, keyword: %s\n",
+	   funcsel, buf, cur);
     return -1;
 }
 
@@ -227,23 +282,35 @@ log_entity *line;
 char *buf;
 {
 
-    char *ret;
+    char *ret, *tmp;
     char buf1[128];
+    int is_group = 0;
+
     buf[0]='\0';
 
 #define ADDSTRING(f,n) if((n) != 0) { \
-		       if(!(ret = logger_num_to_string(n))) return -1; \
-		       sprintf(buf1,"%s=%s ", f, ret); strcat(buf, buf1); \
-		       }
+                         if(!(ret = logger_num_to_string(n))) return -1; \
+                         sprintf(buf1,"%s=%s ", f, ret); strcat(buf, buf1); \
+                         }
 
 #define ADDNUM(f,n) if((n) != 0) {sprintf(buf1,"%s=%d ",f,n); strcat(buf, buf1);}
 
 #define ADDTIME(f,n) if ((n) != -1) {sprintf(buf1,"%s=%d ",f,n); strcat(buf, buf1);}
 
     ADDTIME("t",line->time);
-    ADDSTRING("n", line->user.name);
-    ADDSTRING("i", line->user.instance);
-    ADDSTRING("r", line->user.realm);
+
+    tmp = logger_num_to_string(line->user.name);
+    if (!tmp) return -1;
+
+    if (tmp[0] != ':') {
+	ADDSTRING("n", line->user.name);
+	ADDSTRING("i", line->user.instance);
+	ADDSTRING("r", line->user.realm);
+    } else {
+	sprintf(buf1,"g=%s ", &tmp[1]); 
+	strcat(buf, buf1);
+	is_group++;
+    }
     ADDSTRING("s", line->service);
     switch(line->func) {
     case LO_ADD:
@@ -270,6 +337,18 @@ char *buf;
     case LO_ADJUST:
 	strcat(buf, "f=adjust ");
 	break;
+    case LO_ADD_ADMIN:
+	strcat(buf, "f=add_admin ");
+	break;
+    case LO_DELETE_ADMIN:
+	strcat(buf, "f=delete_admin ");
+	break;
+    case LO_ADD_USER:
+	strcat(buf, "f=add_user ");
+	break;
+    case LO_DELETE_USER:
+	strcat(buf, "f=delete_user ");
+	break;
     default: 
 	return -1;
     }
@@ -292,10 +371,23 @@ char *buf;
 	ADDNUM("p", line->trans.charge.npages);
 	ADDNUM("c", line->trans.charge.med_cost);
 	ADDSTRING("w", line->trans.charge.where);
+	ADDSTRING("N", line->trans.charge.name);
+	ADDSTRING("I", line->trans.charge.inst);
+	ADDSTRING("R", line->trans.charge.realm);
+	break;
+    case LO_ADD_ADMIN:
+    case LO_DELETE_ADMIN:
+    case LO_ADD_USER:
+    case LO_DELETE_USER:
+	ADDSTRING("n", line->trans.group.uname);
+	ADDSTRING("i", line->trans.group.uinst);
+	ADDSTRING("r", line->trans.group.urealm);
+	ADDSTRING("N", line->trans.group.aname);
+	ADDSTRING("I", line->trans.group.ainst);
+	ADDSTRING("R", line->trans.group.arealm);
 	break;
     }
 
     return 0;
 
 }
-    
