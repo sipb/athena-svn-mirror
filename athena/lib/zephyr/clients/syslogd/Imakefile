@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v 1.2 1989-03-23 11:10:44 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v 1.3 1989-03-23 14:54:59 jtkohl Exp $
 /**/#
 
 LIBS= $(ZEPHYR_LIB) $(COMERR_LIB) $(KRB_LIB)
@@ -15,8 +15,8 @@ SRCS = syslogd.c
 OBJS = syslogd.o
 HDRS= syslog.h
 
-TSRCS= syslog.c systest.c
-TOBJS= syslog.o systest.o
+TSRCS= logger.c syslog.c 
+TOBJS= logger.o syslog.o
 
 SRCDIR= ${SRCTOP}/clients/syslogd
 CODE= ${SRCS} ${HDRS} ${TSRCS} Imakefile
@@ -27,6 +27,8 @@ DEFINES = -DCOMPAT42
 
 normal_obj_rule()
 
-genutil(syslogtest, $(TOBJS),,)
+#ifdef SYSLOG_COMPAT42
+genutil(logger, $(TOBJS),,)
+#endif
 
 program(syslogd,$(OBJS),,$(LIBS),$(USRETCDIR))
