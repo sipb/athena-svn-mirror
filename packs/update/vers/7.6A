@@ -9,17 +9,9 @@ DS*)
 	echo "NEWUNIX=true"                     >> ${CONFVARS}
 	;;
 RSAIX)
-	echo -n "Updating /root ..."
-	cp /afs/rel-eng/system/rs_aix32/image/rconf.root /tmp/rconf
-	synctree -s /afs/rel-eng/system/rs_aix32/image/usr/lpp/bos/int_root -d / -nosrcrules -nodstrules -a /tmp/rconf
-	rm /tmp/rconf
-	echo -n "Updating /usr ..."
-	cp /afs/rel-eng/system/rs_aix32/image/rconf.usr /tmp/rconf
-	synctree -s /afs/rel-eng/system/rs_aix32/image/ -d / -nosrcrules -nodstrules -a /tmp/rconf
-	rm /tmp/rconf
-	sysck -y inventory
-	tcbck -y ALL
-	sh /afs/athena/system/rs_aix32/install/rc
-	echo "Done"
 	;;
+SUN*)
+	echo "Copying in new /etc/init.d/athena..."
+	cp -p /srvd/etc/init.d/athena /etc/init.d/athena
+	echo "Done."
 esac
