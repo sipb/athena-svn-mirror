@@ -17,7 +17,7 @@
  * function to check if a user is allowed to log in.
  */
 
-static const char rcsid[] = "$Id: allowed.c,v 1.3 1997-10-30 23:58:53 ghudson Exp $";
+static const char rcsid[] = "$Id: allowed.c,v 1.4 1997-11-20 22:18:35 ghudson Exp $";
 
 #include <errno.h>
 #include <hesiod.h>
@@ -63,6 +63,9 @@ int al_login_allowed(const char *username, int isremote,
   char *retfname = NULL;
   FILE *retfile;
   void *hescontext = NULL;
+
+  if (!al__username_valid(username))
+    return AL_ENOUSER;
 
   local_pwd = al__getpwnam(username);
 
