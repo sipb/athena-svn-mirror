@@ -1,8 +1,8 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: vrt $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.24 1993-06-29 15:10:48 vrt Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.25 1993-10-09 18:21:21 probe Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.24 1993-06-29 15:10:48 vrt Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.25 1993-10-09 18:21:21 probe Exp $";
 #endif
 
 /*
@@ -96,6 +96,7 @@ char    logname[ANAME_SZ + INST_SZ + REALM_SZ + 3];
 char	logname[32];		/* user's login name */
 #endif KERBEROS
 char	jobname[100];		/* job or file name */
+char	queuename[100];		/* print queue name */
 
 char	class[32];		/* classification field */
 char	width[10] = "-w";	/* page width in characters */
@@ -105,11 +106,7 @@ char	pxlength[10] = "-y";	/* page length in pixels */
 char	indent[10] = "-i0";	/* indentation size in characters */
 char	cost[10] = "-m";		/* Cost/page option */
 char    qacct[128] = "-a";
-#ifdef SOLARIS
 char	tpfile[] = "errsXXXXXX"; /* file name for filter output */
-#else
-char	tempfile[] = "errsXXXXXX"; /* file name for filter output */
-#endif
 int 	lflag;			/* Log info flag */
 int     account_flag = 0;
 
@@ -117,13 +114,8 @@ printjob()
 {
          struct stat stb;
 
-#ifdef SOLARIS
 	 register struct queue_ *q, **qp;
 	 struct queue_ **queue;
-#else
-	 register struct queue *q, **qp;
-	 struct queue **queue;
-#endif
 	 register int i, nitems;
 	 long pidoff;
 	 int count = 0;
@@ -139,11 +131,7 @@ printjob()
 	 signal(SIGQUIT, abortpr);
 	 signal(SIGTERM, abortpr);
 
-#ifdef SOLARIS
 	 (void) mktemp(tpfile);
-#else
-	 (void) mktemp(tempfile);
-#endif
 
 	 /*
 	  * uses short form file names
@@ -178,11 +166,7 @@ printjob()
 	 /*
 	  * search the spool directory for work and sort by queue order.
 	  */
-#ifdef SOLARIS
 	 if ((nitems = getq_(&queue)) < 0) {
-#else
-	 if ((nitems = getq(&queue)) < 0) {
-#endif
 		 syslog(LOG_ERR, "%s: can't scan %s", printer, SD);
 		 exit(1);
 	 }
@@ -265,11 +249,7 @@ again:
 	 /*
 	  * search the spool directory for more work.
 	  */
-#ifdef SOLARIS
 	if ((nitems = getq_(&queue)) < 0) {
-#else
-	if ((nitems = getq(&queue)) < 0) {
-#endif
 		syslog(LOG_ERR, "%s: can't scan %s", printer, SD);
 		exit(1);
 	}
@@ -281,11 +261,7 @@ again:
 			if (TR != NULL)		/* output trailer */
 				(void) write(ofd, TR, strlen(TR));
 		}
-#ifdef SOLARIS
 		(void) UNLINK(tpfile);
-#else
-		(void) UNLINK(tempfile);
-#endif
 		exit(0);
 	}
 	goto again;
@@ -383,9 +359,10 @@ printit(file)
 	 *                    (after we print it. (Pass 2 only)).
 	 *		M -- "mail" to user when done printing
 	 *
-	 *      Additions:  (Ilham)
+	 *      Additions:
 	 *              Z -- send zephyr message to user
 	 *              Q -- Account number for quota management
+	 * 		q -- printer queue name
 	 *      getline reads a line and expands tabs to blanks
 	 */
 
@@ -508,6 +485,13 @@ printit(file)
 		case 'M':
 		case 'Z':
 		case 'E':	/* From multics days */
+			continue;
+
+		case 'q':
+			if (line[1]) {
+			    strncpy(queuename, line+1, sizeof(queuename)-1);
+			    printer = queuename;
+			}
 			continue;
 		}
 
@@ -698,6 +682,8 @@ print(format, file)
 		av[0]++;
 	else
 		av[0] = prog;
+	av[n++] = "-P";
+	av[n++] = printer;
 	av[n++] = "-n";
 	av[n++] = logname;
 	av[n++] = "-h";
@@ -728,11 +714,7 @@ start:
 	if ((child = dofork(DORETURN)) == 0) {	/* child */
 		dup2(fi, 0);
 		dup2(fo, 1);
-#ifdef SOLARIS
 		n = open(tpfile, O_WRONLY|O_CREAT|O_TRUNC, 0664);
-#else
-		n = open(tempfile, O_WRONLY|O_CREAT|O_TRUNC, 0664);
-#endif
 		if (n >= 0)
 			dup2(n, 2);
 		for (n = 3; n < NOFILE; n++)
@@ -1144,13 +1126,8 @@ sendmail(user, bombed)
 			printf("\ncould not be printed without an account on %s\n", host);
 			break;
 		case FILTERERR:
-#ifdef SOLARIS
 			if (stat(tpfile, &stb) < 0 || stb.st_size == 0 ||
 			    (fp = fopen(tpfile, "r")) == NULL) {
-#else
-			if (stat(tempfile, &stb) < 0 || stb.st_size == 0 ||
-			    (fp = fopen(tempfile, "r")) == NULL) {
-#endif
 				printf("\nwas printed but had some errors\n");
 				break;
 			}
@@ -1254,11 +1231,7 @@ abortpr()
 	/* Drop lock on lock file as well */
 	if (lfd > 0)
 		(void) close(lfd);
-#ifdef SOLARIS
 	(void) UNLINK(tpfile);
-#else
-	(void) UNLINK(tempfile);
-#endif
 	kill(0, SIGINT);
 	if (ofilter > 0)
 		kill(ofilter, SIGCONT);
@@ -1444,7 +1417,9 @@ openpr()
 				  cp = OF;
 				else	
 				  cp++;
-				execl(OF, cp, width, length, 0);
+				execl(OF, cp, width, length,
+				      "-P", printer,
+				      0);
 				syslog(LOG_ERR, "%s: %s: %m", printer, OF);
 				exit(1);
 			      }
