@@ -1,6 +1,6 @@
 #if !defined(lint) && !defined(SABER)
 static char sccsid[] = "@(#)ns_req.c	4.47 (Berkeley) 7/1/91";
-static char rcsid[] = "$Id: ns_req.c,v 1.2 2000-04-22 04:39:50 ghudson Exp $";
+static char rcsid[] = "$Id: ns_req.c,v 1.2.4.1 2002-11-14 06:17:07 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -1434,7 +1434,7 @@ make_rr(const char *name, struct databuf *dp, u_char *buf,
 
 		/* first just copy over the type_covered, algorithm, */
 		/* labels, orig ttl, two timestamps, and the footprint */
-		if ((dp->d_size - 18) > buflen)
+		if (buflen < 18)
 			return (-1);  /* out of room! */
 		memcpy(cp, cp1, 18);
 		cp  += 18;

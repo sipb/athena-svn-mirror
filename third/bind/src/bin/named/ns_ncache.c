@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(SABER)
-static char rcsid[] = "$Id: ns_ncache.c,v 1.2 2000-04-22 04:39:49 ghudson Exp $";
+static char rcsid[] = "$Id: ns_ncache.c,v 1.2.4.1 2002-11-14 06:17:07 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -125,7 +125,7 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 		u_char *tp = cp;
 		u_char *cp1;
 		u_char data[MAXDATA];
-		size_t len = sizeof data;
+		u_char *eod = data + sizeof(data);
 
 		/* we store NXDOMAIN as T_SOA regardless of the query type */
 		if (hp->rcode == NXDOMAIN)
@@ -153,7 +153,7 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 		rdatap = tp;
 
 		/* origin */
-		n = dn_expand(msg, msg + msglen, tp, (char*)data, len);
+		n = dn_expand(msg, msg + msglen, tp, (char*)data, eod - data);
 		if (n < 0) {
 			ns_debug(ns_log_ncache, 3,
 				 "ncache: origin form error");
@@ -162,9 +162,8 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 		tp += n;
 		n = strlen((char*)data) + 1;
 		cp1 = data + n;
-		len -= n;
 		/* mail */
-		n = dn_expand(msg, msg + msglen, tp, (char*)cp1, len);
+		n = dn_expand(msg, msg + msglen, tp, (char*)cp1, eod - cp1);
 		if (n < 0) {
 			ns_debug(ns_log_ncache, 3, "ncache: mail form error");
 			return;
@@ -172,20 +171,20 @@ cache_n_resp(u_char *msg, int msglen, struct sockaddr_in from) {
 		tp += n;
 		n = strlen((char*)cp1) + 1;
 		cp1 += n;
-		len -= n;
 		n = 5 * INT32SZ;
+		if (n > (eod - cp1))	/* Can't happen. See MAXDATA. */
+			return;
 		BOUNDS_CHECK(tp, n);
 		memcpy(cp1, tp, n);
 		/* serial, refresh, retry, expire, min */
 		cp1 += n;
-		len -= n;
 		tp += n;
 		if (tp != rdatap + dlen) {
 			ns_debug(ns_log_ncache, 3, "ncache: form error");
 			return;
 		}
 		/* store the zone of the soa record */
-		n = dn_expand(msg, msg + msglen, cp, (char*)cp1, len);
+		n = dn_expand(msg, msg + msglen, cp, (char*)cp1, eod - cp1);
 		if (n < 0) {
 			ns_debug(ns_log_ncache, 3, "ncache: form error 2");
 			return;

@@ -1,6 +1,6 @@
 /*
  *	from db.h	4.16 (Berkeley) 6/1/90
- *	$Id: db_defs.h,v 1.2 2000-04-22 04:39:41 ghudson Exp $
+ *	$Id: db_defs.h,v 1.2.4.1 2002-11-14 06:17:07 ghudson Exp $
  */
 
 /* Copyright (c) 1985, 1990
@@ -78,7 +78,7 @@
 #define INVHASHSZ	919	/* size of inverse hash table */
 
 	/* max length of data in RR data field */
-#define MAXDATA		(2*MAXDNAME + 5*INT32SZ)
+#define MAXDATA		(3*MAXDNAME + 5*INT32SZ)
 
 #define DB_ROOT_TIMBUF	3600
 #define TIMBUF		300
