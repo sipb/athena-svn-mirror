@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1996-12-06 00:02:09 ghudson Exp $
+# $Id: Makefile,v 1.5 1997-02-25 19:03:04 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -27,8 +27,18 @@ install:
 	install -c -m 0644 named.root ${DESTDIR}${ETCDIR}
 	install -c -m 0644 resolv.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 shells ${DESTDIR}${ETCDIR}
+	rm -f ${DESTDIR}${ETCDIR}/krb.conf
+	ln -s athena/krb.conf ${DESTDIR}${ETCDIR}/krb.conf
+	rm -f ${DESTDIR}${ETCDIR}/krb.realms
+	ln -s athena/krb.realms ${DESTDIR}${ETCDIR}/krb.realms
 	rm -f ${DESTDIR}${ETCDIR}/passwd
 	ln -s ${CONFIG}/passwd/${ATHENA_SYS}/passwd ${DESTDIR}${ETCDIR}/passwd
+	rm -f ${DESTDIR}${ATHRECTDIR}/gdss_public_key
+	ln -s /afs/net.mit.edu/system/config/gdss_public_key \
+		${DESTDIR}${ATHRETCDIR}/gdss_public_key
+	rm -f ${DESTDIR}${ATHLIBDIR}/quickstations
+	ln -s ${CONFIG}/quick/quickstations \
+		${DESTDIR}${ATHLIBDIR}/quickstations
 	rm -f ${DESTDIR}${ATHLIBDIR}/Dash.menus
 	rm -f ${DESTDIR}${ATHLIBDIR}/Dash.menus.cmp
 	. ../build/version; \
