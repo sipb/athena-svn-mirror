@@ -1049,7 +1049,7 @@ read_value_type(const char *string)
       break;
     case 's':
     case 'S':
-      switch (value_type[1])
+      switch (string[1])
 	{
 	case 't':
 	case 'T':
