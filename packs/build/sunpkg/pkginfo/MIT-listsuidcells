@@ -1,3 +1,4 @@
 PKG=MIT-listsuidcells
 NAME=An Athena tool to find out what AFS cells are trusted with suid binaries
 DESC=An Athena tool to find out what AFS cells are trusted with suid binaries
+CATEGORY=system,MITcore

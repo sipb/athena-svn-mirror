@@ -1,3 +1,4 @@
 PKG=MIT-bind
 NAME=The Berkeley Internet Name Daemon, implementing DNS for Athena
 DESC=The BIND server and nameservice libraries, as configured for Athena workstations.
+CATEGORY=system,MITcore

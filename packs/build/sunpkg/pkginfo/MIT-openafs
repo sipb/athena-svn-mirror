@@ -1,3 +1,4 @@
 PKG=MIT-openafs
 NAME=Client software for the AFS filesystem.
-DESC=Client programs, libaries, kernel modules, and configuration files for  the AFS filesystem.
+DESC=Client programs, libaries, kernel modules, and configuration files for the AFS filesystem.
+CATEGORY=system,MITcore
