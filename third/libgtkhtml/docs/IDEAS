@@ -1,0 +1,17 @@
+
+* [daniel] Modular htmlstream
+  Htmlstream should be modular enough to have plugin access methods
+  for various ways of reading html, like files, http, etc.
+
+* [daniel] Translators (bigger than gtkhtml2, but yummie)
+  Translators a'la BeOS is a great thing. A translator is a module
+  that knows how to read certain dataformats and transform them into
+  others. If the system has a translator for a certain format, all
+  programs using the parent "mime-type" (e g: image) may access data
+  of that format. So an app that can only read png may use the
+  png->jpeg translator to render a jpeg. Gtkhtml2 should use
+  translators just like everyone else ;-)
+
+
+
+
