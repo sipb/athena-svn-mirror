@@ -49,9 +49,9 @@
 #include <X11/Xmu/WinUtil.h>
 #include <libart_lgpl/art_rgb_affine.h>
 
+#include <locale.h>
 #ifdef HAVE_PAPER_WIDTH
 #include <stdio.h>
-#include <locale.h>
 #include <langinfo.h>
 #endif
 
