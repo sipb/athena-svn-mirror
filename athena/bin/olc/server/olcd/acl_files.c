@@ -4,8 +4,13 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.2 1989-08-08 14:39:20 tjcoppet Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.3 1989-11-17 13:56:21 tjcoppet Exp $";
 #endif lint
+
+/* CHANGES from std. file:  fixed fd leak and null ptr. deref.
+ *                          increased cache size
+ *                          decreased lock time
+ */
 
 /*
 
@@ -38,7 +43,7 @@ All Rights Reserved.
 #define LINESIZE 2048		/* Maximum line length in an acl file */
 
 #define NEW_FILE "%s.~NEWACL~"	/* Format for name of altered acl file */
-#define WAIT_TIME 300		/* Maximum time allowed write acl file */
+#define WAIT_TIME 3		/* Maximum time allowed write acl file */
 
 #define CACHED_ACLS 15 /* How many acls to cache */
 				/* Each acl costs 1 open file descriptor */
@@ -182,6 +187,7 @@ FILE *f;
     if(fflush(f) < 0
        || fstat(fileno(f), &s) < 0
        || s.st_nlink == 0) {
+        perror("strange");
 	acl_abort(acl_file, f);
 	return(-1);
     }
