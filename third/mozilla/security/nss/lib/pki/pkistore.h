@@ -35,7 +35,7 @@
 #define PKISTORE_H
 
 #ifdef DEBUG
-static const char PKISTORE_CVS_ID[] = "@(#) $RCSfile: pkistore.h,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 12:52:18 $ $Name: not supported by cvs2svn $";
+static const char PKISTORE_CVS_ID[] = "@(#) $RCSfile: pkistore.h,v $ $Revision: 1.1.1.7 $ $Date: 2004-09-17 14:04:09 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSPKIT_H
