@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.28 1992-11-07 00:10:08 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.29 1992-11-08 18:14:38 probe Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -49,7 +49,7 @@
 #endif
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.28 1992-11-07 00:10:08 probe Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.29 1992-11-08 18:14:38 probe Exp $";
 #endif
 
 #ifndef NULL
@@ -197,9 +197,17 @@ char **argv;
     signal(SIGUSR2, setclflag);
 
     /* setup ttys */
+    if ((file = open("/dev/tty", O_RDWR, 0622)) >= 0) {
+	ioctl(file, TIOCNOTTY, 0);
+	close(file);
+    }
     close(0);
     close(1);
     close(2);
+#ifdef POSIX
+    setsid();
+#endif
+    setpgrp(0,0);
     strcpy(line, "/dev/");
     strcat(line, consoletty);
     open(line, O_RDWR, 0622);
@@ -325,7 +333,7 @@ char **argv;
 		}
 	    }
 	    close(pp[0]);
-#else /* ! AIX3.1 */
+#else /* !X11R3 */
 	    if (x_running == NONEXISTANT) break;
 	    alarm(X_START_WAIT);
 	    alarm_running = RUNNING;
@@ -345,8 +353,9 @@ char **argv;
 	if (x_running == RUNNING) break;
     }
     alarm(0);
-    if (x_running != RUNNING)
-      console_login("\nUnable to start X, doing console login instead.\n");
+    if (x_running != RUNNING) {
+	console_login("\nUnable to start X, doing console login instead.\n");
+    }
 
     /* start up console */
     strcpy(line, "/dev/");
@@ -1256,6 +1265,7 @@ char *name;
 	  i = strlen(p);
 	ret = malloc(i+1);
 	bcopy(p, ret, i+1);
+	ret[i] = 0;
 	return(ret);
     }
     return(NULL);
