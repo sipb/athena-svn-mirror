@@ -38,3 +38,5 @@ esac
 
 echo "/etc/krb.conf.v5"				>> "$DEADFILES"
 echo "/etc/named.mit"				>> "$DEADFILES"
+
+echo "/etc/athena/attach.conf"			>> "$CONFCHG"
