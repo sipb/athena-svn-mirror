@@ -1,4 +1,4 @@
-/* $Id: verify.c,v 1.2 1999-10-28 15:56:02 kcr Exp $ */
+/* $Id: verify.c,v 1.3 1999-10-30 11:59:58 kcr Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -765,7 +765,7 @@ char *strsave(s)
   return ret;
 }
 
-#ifdef HAVE_GETUTXENT
+#if HAVE_GETUTXENT && !HAVE_LOGIN
 void add_utmp(user, tty, display)
      char *user;
      char *tty;
@@ -807,7 +807,7 @@ void add_utmp(user, tty, display)
 
   updwtmpx(WTMPX_FILE, &utx_entry);
 }
-#else /* HAVE_GETUTXENT */
+#else /* HAVE_GETUTXENT && !HAVE_LOGIN */
 void add_utmp(user, tty, display)
      char *user;
      char *tty;
@@ -857,7 +857,7 @@ void add_utmp(user, tty, display)
     }
 #endif
 }
-#endif /* GETUTXENT */
+#endif /* GETUTXENT && !HAVE_LOGIN */
 
 #define MAXGNAMELENGTH	32
 
