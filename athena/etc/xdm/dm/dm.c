@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.53 1997-12-21 08:06:40 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.54 1997-12-31 22:43:58 danw Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -36,7 +36,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.53 1997-12-21 08:06:40 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.54 1997-12-31 22:43:58 danw Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -64,7 +64,6 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #ifdef SOLARIS
 #define L_INCR          1
 #define RAW     040
-#define BROKEN_CONSOLE_DRIVER
 #endif
 
 /* flags used by signal handlers */
@@ -305,11 +304,6 @@ char **argv;
     sigaction(SIGCHLD, &sigact, NULL);
     sigact.sa_handler = (void (*)())catchalarm;
     sigaction(SIGALRM, &sigact, NULL);
-    /* setup ttys */
-    if ((file = open("/dev/tty", O_RDWR, 0622)) >= 0) {
-	ioctl(file, TIOCNOTTY, 0);
-	close(file);
-    }
     close(0);
     close(1);
     close(2);
@@ -320,15 +314,13 @@ char **argv;
     dup2(0, 1);
     dup2(1, 2);
 
-#ifndef BROKEN_CONSOLE_DRIVER
     /* Set the console characteristics so we don't lose later */
 #ifdef TIOCCONS
     if (console)
       ioctl (0, TIOCCONS, 0);		/* Grab the console   */
 #endif  /* TIOCCONS */
-    setpgrp(0, pgrp=getpid()); /* Reset the tty pgrp  */
-    ioctl (0, TIOCSPGRP, &pgrp);
-#endif
+    setpgid(0, pgrp=getpid()); /* Reset the tty pgrp  */
+    tcsetpgrp(0, pgrp);
 
     /* save our pid file */
     if ((file = open(dmpidf, O_WRONLY|O_TRUNC|O_CREAT, 0644)) >= 0) {
@@ -464,12 +456,6 @@ char **argv;
 	    max_fd = sysconf(_SC_OPEN_MAX);
 	    for (file = 0; file < max_fd; file++)
 	      close(file);
-	    /* lose the controlling tty */
-	    file = open("/dev/tty", O_RDWR|O_NDELAY);
-	    if (file >= 0) {
-		(void) ioctl(file, TIOCNOTTY, (char *)NULL);
-		(void) close(file);
-	    }
 	    /* setup new tty */
 	    strcpy(line, "/dev/");
 	    strcat(line, logintty);
@@ -608,16 +594,13 @@ char *msg;
 	}
     }
 
-#ifndef BROKEN_CONSOLE_DRIVER
-    setpgrp(0, pgrp=0);		/* We have to reset the tty pgrp */
-    ioctl(0, TIOCSPGRP, &pgrp);
+    setpgid(0, pgrp=0);		/* We have to reset the tty pgrp */
+    tcsetpgrp(0, pgrp);
 #ifdef TIOCCONS
     ioctl (0, TIOCCONS, 0);		/* Grab the console   */
     ioctl (1, TIOCCONS, 0);		/* Grab the console   */
 #endif  /* TIOCCONS */
-    i = 0;
-    ioctl(0, TIOCFLUSH, &i);
-#endif
+    tcflush(0, TCIOFLUSH);
 
     (void) tcgetattr(0, &ttybuf);
     ttybuf.c_lflag |= (ICANON|ISIG|ECHO);
@@ -705,17 +688,11 @@ char **argv;
 	message("Giving up on console\n");
 #endif
 	/* Set the console characteristics so we don't lose later */
-#ifndef BROKEN_CONSOLE_DRIVER
 #ifdef TIOCCONS
 	ioctl (0, TIOCCONS, 0);		/* Grab the console   */
 #endif /* TIOCCONS */
-#ifdef SOLARIS
-	pgrp = setpgrp();		/* Reset the tty pgrp */
-#else
-    setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
-#endif
-    ioctl (0, TIOCSPGRP, &pgrp);
-#endif /* BROKEN_CONSOLE_DRIVER */
+	setpgid(0, pgrp=getpid());		/* Reset the tty pgrp */
+	tcsetpgrp(0, pgrp);
 	console_failed = TRUE;
 	return;
     }
@@ -732,11 +709,7 @@ char **argv;
 	for (file = 3; file < max_fd; file++)
 	  if (file != console_tty)
 	    close(file);
-	file = open("/dev/tty", O_RDWR|O_NDELAY);
-	if (file >= 0) {
-	    (void) ioctl(file, TIOCNOTTY, (char *)NULL);
-	    (void) close(file);
-	}
+	setsid();
 	dup2(console_tty, 0);
 	close(console_tty);
 #ifdef SOLARIS
@@ -749,6 +722,11 @@ char **argv;
 	tc.c_lflag = ISIG|ICANON|IEXTEN|ECHO|ECHOE|ECHOK|ECHOCTL;
 	tc.c_cc[VMIN] = 1;
 	tc.c_cc[VTIME] = 0;
+
+	/* assume that the OS requires us to initialize the remaining
+	   c_cc entries if and only if it defines the canonical values
+	   for us */
+#ifdef CERASE
 	tc.c_cc[VERASE] = CERASE;
 	tc.c_cc[VKILL] = CKILL;
 	tc.c_cc[VEOF] = CEOF;
@@ -779,6 +757,7 @@ char **argv;
 #ifdef VWERSE
 	tc.c_cc[VWERSE] = CWERASE;
 #endif
+#endif /* CERASE */
 	tcsetattr(0, TCSANOW, &tc);
 
 #ifdef DEBUG
@@ -828,16 +807,13 @@ void shutdown()
     if (x_running == RUNNING)
       kill(xpid, SIGTERM);
 
-#ifndef BROKEN_CONSOLE_DRIVER
-    setpgrp(0, pgrp=0);		/* We have to reset the tty pgrp */
-    ioctl(0, TIOCSPGRP, &pgrp);
+    setpgid(0, pgrp=0);		/* We have to reset the tty pgrp */
+    tcsetpgrp(0, pgrp);
 #ifdef TIOCCONS
     ioctl (0, TIOCCONS, 0);		/* Grab the console   */
     ioctl (1, TIOCCONS, 0);		/* Grab the console   */
 #endif  /* TIOCCONS */
-    i = 0;
-    ioctl(0, TIOCFLUSH, &i);
-#endif
+    tcflush(0, TCIOFLUSH);
 
     (void) tcgetattr(0, &tc);
     tc.c_lflag |= (ICANON|ISIG|ECHO);
@@ -949,8 +925,7 @@ char *tty;
     trace("Just came back from al_acct_revert\n");
 #endif
 
-    file = 0;
-    ioctl(0, TIOCFLUSH, &file);
+    tcflush(0, TCIOFLUSH);
 }
 
 
