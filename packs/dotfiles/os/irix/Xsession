@@ -1,0 +1,160 @@
+#!/bin/sh
+
+# Top level Xsession file for all users
+#
+# $Id: Xsession,v 1.1 1999-11-10 03:51:08 kcr Exp $
+
+trap "kdestroy; unlog; fsid -u -f $USER; exit 0" 1 2 15
+
+initlib="/usr/athena/lib/init"
+defsession=$1
+defsessioncmd="$2"
+
+aklog -path "$HOME"
+
+if [ -f .noignore ]; then
+	defsession=1;
+fi
+
+host=`hostname`
+ldesktop=.desktop-$host
+indydotdesktop=.desktop_indy
+o2dotdesktop=.desktop_o2
+sysdesktopdir=.desktophost/$host
+
+# The O2/6.3 dotdesktop directory is incompatible with the Indy/5.3/6.2
+# contents.  So, for an O2 machine, set the dotdesktop to be .desktop_o2.
+# If this directory does not yet exist, and the .desktop_indy does
+# exist, create .desktop_o2 as a copy of .desktop_indy; the autoconvert
+# program, called from Xsession.dt, will update the directory contents
+# as needed.
+# (see /var/X11/xdm/firsttime/autoconvert).
+machine=`uname -m`
+if [ "$machine" = "IP32" ]; then
+  dotdesktop=$o2dotdesktop
+  if [ -d $indydotdesktop -a ! -d $o2dotdesktop ]; then
+    cp -Rp $indydotdesktop $o2dotdesktop 2>/dev/null
+    if [ $? != 0 ]; then
+      # Copy failed, clean up
+      rm -rf $o2dotdesktop
+    fi
+  fi
+  # Remove an existing .desktop-<host> if it points to the indy directory.
+  # Also remove the flag file in athenahosts for consistency.
+  # (The proper link will be created below).
+  if [ -l $ldesktop -a -d $indydotdesktop ]; then
+    indyinode=`/sbin/stat -iq $indydotdesktop`
+    if [ "`/sbin/stat -iq $ldesktop`" = "$indyinode" ]; then
+      rm -f $ldesktop
+      rm -f $indydotdesktop/athenahosts/$host
+      rm -f $o2dotdesktop/athenahosts/$host
+    fi
+  fi
+else
+  # Not an O2
+  dotdesktop=$indydotdesktop
+fi
+
+hostdir=$dotdesktop/athenahosts
+
+if [ ! -r $hostdir ]; then
+  mkdir -p $hostdir
+fi
+
+if [ ! -r $ldesktop ]; then
+  ln -s $dotdesktop $ldesktop
+  if [ $? != 0 ]; then
+    echo "Warning: could not create desktop; things may break"
+  else
+    (echo "" > $hostdir/$host)
+  fi
+fi
+
+case $defsession in
+1|4)
+	if [ -r .xsession ]; then
+		session="./.xsession"
+
+		configchecks=$dotdesktop/configchecks
+		xsessioncheck=$configchecks/checkxsession
+		confirmdirectory=/usr/share/misc/sessionwarnings
+		if [ -d $confirmdirectory/C ]; then
+		    confirmdirectory=$confirmdirectory/C
+		fi
+
+		if [ $USER != root -a ! -f $xsessioncheck -a \
+			-r $confirmdirectory/xsession.msg ]; then
+		  xconfirm -file $confirmdirectory/xsession.msg -c > /dev/null
+
+		  if [ ! -d $configchecks ]; then
+		     mkdir -p $configchecks
+		  fi
+
+		  (echo "1" > $xsessioncheck)
+		fi
+	else
+		session="$initlib/xsession"
+	fi
+	;;
+2)
+	session="$initlib/xsession -nocalls"
+	;;
+3)
+	session="xterm -ls -geometry 80x24+280+220 -display :0.0"
+	;;
+5)
+	session="$defsessioncmd"
+	;;
+esac
+
+# Set the tty characteristics of the parent (console window)
+# Redirect stdin since some versions of stty use it instead of stdout.
+stty sane intr \^C 0<&1 2>/dev/null
+
+# Make random Athena modifications to keymap if required.
+
+test -f /usr/athena/lib/X11/keymaps/AthenaMods && \
+  xmodmap /usr/athena/lib/X11/keymaps/AthenaMods
+
+# Only attempt using bugme if packs are actually available.
+if [ -x /usr/athena/bin/bugme ]; then
+	/usr/athena/bin/bugme $session
+else
+	$session
+fi
+
+status=$?
+if [ $status != 0 ]; then
+		echo ERROR:
+		echo "Xsession returned non-zero status."
+		echo ""
+		echo 'Select the login option to "Ignore your customizations"'
+		echo 'to login and repair your dot files.'
+
+		if [ -r $hostdir/$host ]; then
+		  rm $ldesktop && rm $hostdir/$host
+		fi
+		rm -rf $sysdesktopdir
+		kdestroy			# destroy tickets.
+		cd /tmp
+		unlog
+		fsid -u -f $USER > /dev/null 2>&1
+		sleep 10
+		exit 1
+fi
+
+
+# Cannot detach homedir here, since this script is executed in the user's
+# homedir.
+
+if [ -r $hostdir/$host ]; then
+  rm $ldesktop && rm $hostdir/$host
+fi
+rm -rf $sysdesktopdir
+
+kdestroy				# destroy tickets.
+cd /tmp
+unlog
+fsid -u -f $USER > /dev/null 2>&1
+sleep 3					# let them see any messages (quickly)
+exit 0
