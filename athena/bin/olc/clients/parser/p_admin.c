@@ -8,12 +8,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: p_admin.c,v 1.7 1999-07-30 18:25:27 ghudson Exp $
+ *	$Id: p_admin.c,v 1.8 1999-08-02 12:25:20 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: p_admin.c,v 1.7 1999-07-30 18:25:27 ghudson Exp $";
+static char rcsid[] ="$Id: p_admin.c,v 1.8 1999-08-02 12:25:20 ghudson Exp $";
 #endif
 #endif
 
@@ -52,7 +52,7 @@ do_olc_zephyr(arguments)
 	    {
 	      what = 1;
 	      ++arguments;
-	      if((*arguments != NULL) && (*arguments != '-'))
+	      if((*arguments != NULL) && (*arguments[0] != '-'))
 		/* override default */
 		{
 		  how_long = atoi(*arguments);
