@@ -1,5 +1,4 @@
 INSTALL = :
-RANLIB = :
 thisconfigdir=.
 myfulldir=util/et
 mydir=.
@@ -21,7 +20,7 @@ LIBMINOR=0
 
 all-unix:: all-liblinks
 clean-unix:: clean-liblinks clean-libs clean-libobjs
-install-unix:: install-libs
+install-unix::
 
 LINTFLAGS=-uhvb 
 LINTFILES= error_message.c et_name.c init_et.c com_err.c add_to_error_table.c
