@@ -1,0 +1,17 @@
+Name: athena-ifplugd
+Summary: Ifplugd, an interface management daemon, for athena.
+License: GPL
+Group: System Environment/Daemons
+
+Requires: athena-libdaemon
+
+%description 
+Ifplugd is a Linux daemon which will automatically configure
+your ethernet device when a cable is plugged in and automatically
+unconfigure it if the cable is pulled.
+
+%post
+chkconfig --add athena-ifplugd
+
+%preun
+chkconfig --del athena-ifplugd
