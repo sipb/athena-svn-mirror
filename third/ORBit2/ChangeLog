@@ -1,6 +1,64 @@
-2002-11-11  Michael Meeks  <michael@ximian.com>
+2003-01-14  Michael Meeks  <michael@ximian.com>
 
-	* Version 2.4.4
+	* Version 2.6.0
+
+2003-01-09  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: remove 'development ver.' warning.
+
+	* Branch for gnome-2-2
+
+2003-01-06  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/server.c (CLOBBER_SYM):
+	actually clobber the symbol.
+
+2002-12-28  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.1
+
+2002-12-28  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/Makefile.am: define
+	TEST_SRCDIR
+
+	* test/everything/server.c (init_interfaces):
+	re-write.
+	(main): use TEST_SRCDIR.
+
+	* src/services/imodule/orbit-imodule-utils.c
+	(ORBit_imodule_jam_int): split out of
+	(ORBit_imodule_setup_label_any): here, fix memory
+	corrupting nasties with using '0', '1' for booleans,
+	and wrong 'node' for binops. Handle 'short' tc's.
+
+2002-12-17  Michael Meeks  <michael@ximian.com>
+
+	* src/idl-compiler/orbit-idl-c-typecode.c
+	(orbit_add_align): impl.
+	(orbit_find_c_align): re-write to use a string
+	list of the ALIGNOF defines.
+	(orbit_output_tcstruct_c_align): build a MAX
+	statement, where appropriate.
+
+2002-12-26  James Henstridge  <james@daa.com.au>
+
+	* src/orb/orb-core/Makefile.am (IDL_FLAGS): add -I. to IDL_FLAGS.
+	This gets rid of the multiple symbol definition errors with newer
+	autoconf and/or automake (not sure which one is causing the
+	problem).
+
+2002-12-02  Michael Meeks  <michael@ximian.com>
+
+	* src/idl-compiler/orbit-idl-utils.c
+	(oidl_param_info): bail out if we get an exception
+	as a parameter.
+
+2002-11-21  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_handle_exception_array): ensure we always
+	exit with an exception set, even with odd wire data.
 
 2002-11-05  Mark McLoughlin  <mark@skynet.ie>
 
@@ -9,13 +67,79 @@
 
 2002-11-05  Mark McLoughlin  <mark@skynet.ie>
 
-        * src/idl-compiler/orbit-idl-c-headers.c: (ch_prep):
-        out enum types declared as part of a typedef. Fixes #97238.
+	* src/idl-compiler/orbit-idl-c-headers.c: (ch_prep):
+	out enum types declared as part of a typedef. Fixes #97238.
+
+2002-11-04  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * configure.in:
+          - require pkg-config 0.14.0
+          - make AC_DEFINE* three-argument 
+            (someone might want to remove acconfig.h)
+        * autogen.sh:
+          - fail if configure failed
+
+2002-10-28  Marion Schuenemann <schuenemann@fokus.gmd.de>
+
+	* src/services/name/boot.c (main): move ORB
+	  init up the heap, so we can use eg. ORBIIOPIPName
+
+2002-10-24  Michael Meeks  <michael@ximian.com>
+
+	* test/echo-client-t.c (echo_client_thread):
+	add a threaded test client, so we at least know
+	where things break.
+
+2002-10-18  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.5.0
+
+2002-10-18  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/Makefile.am (INCLUDES): add
+	IDL_CFLAGS for the imodule service; we need a new
+	.pc.in file for that service I think, we don't want
+	to pollute the include space with libIDL unnecessarily.
 
 2002-10-18  Mark McLoughlin  <mark@skynet.ie>
 
-	* test/everything/client.c: (testIInterface): fix
-	broken build.
+	* src/services/imodule/orbit-imodule-utils.[ch]:
+	(typecodes_hash_foreach), (ORBit_imodule_get_typecodes_seq):
+	impl converting a typecode hash into a sequence.
+
+	* src/services/imodule/orbit-imodule.[ch]:
+	(ORBit_iinterface_from_tree): kill. Its useless.
+	(ORBit_iinterfaces_from_tree): return a sequence of
+	typecodes. Add docs.
+	(ORBit_iinterfaces_from_file): ditto.
+
+	* test/everything/client.c: (main): upd and test the
+	typecodes sequence.
+
+	* test/everything/server.c: (get_server): upd.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/services/imodule/orbit-imodule-utils.[ch]:
+	* src/services/imodule/orbit-imodule.[ch]:
+	Don't use a global has of TypeCodes.
+
+2002-10-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/services/imodule/*: added runtime IDL->IInterfaces
+	service.
+
+	* configure.in, src/services/Makefile.am: added build
+	for above.
+
+	* test/everything/Makefile.am: build against libORBit-imodule.
+
+	* test/everything/client.c: (main):
+	* test/everything/server.c: (init_iinterfaces), (get_server):
+	add --gen-imodule arg to run tests using runtime generated
+	IInterfaces.
+
+	* test/everything/test.sh: use it.
 
 2002-10-17  Albert Chin  <china@thewrittenword.com>
 
@@ -44,8 +168,11 @@
 
 2002-10-16  Michael Meeks  <michael@ximian.com>
 
+	* test/everything/client.c (testIInterface):
+	  add type regression tests for James' work.
+
 	* src/idl-compiler/orbit-idl-c-utils.c
-	(cbe_small_flatten_args): use _args[i] =...;
+	(orbit_cbe_flatten_args): use _args[i] =...;
 	initialization instead of array init, to make
 	HP/UX happy.
 
@@ -58,19 +185,42 @@
 
 	* src/idl-compiler/orbit-idl-c-typecode.c (cbe_tc_generate): same
 	here.
- 
+
 	* src/idl-compiler/orbit-idl-c-common.c (cc_output_class_id):
 	check for IMODULE symbol including file name.
 	(cc_output_itypes): and here.
- 
+
 	* src/idl-compiler/orbit-idl-c-headers.c (ch_type_alloc_and_tc):
 	only define typecode struct as static if the header matches the
 	imodule we are compiling.
 	(ch_output_itypes): and here too.
- 
+
 	* src/idl-compiler/orbit-idl-c-imodule.c
 	(orbit_idl_output_c_imodule): only define
 	ORBIT_IDL_C_IMODULE_filename.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/orb/orb-core/corba-typecode.c:
+	(CORBA_TypeCode_get_compact_typecode),
+	(CORBA_TypeCode_type_modifier),
+	(CORBA_TypeCode_concrete_base_type): add stubs for these
+	that just through a NO_IMPLEMENT exception.
+	(CORBA_TypeCode_kind), (CORBA_TypeCode_id), (CORBA_TypeCode_name),
+	(CORBA_TypeCode_member_count), (CORBA_TypeCode_member_name),
+	(CORBA_TypeCode_member_type), (CORBA_TypeCode_member_label),
+	(CORBA_TypeCode_discriminator_type),
+	(CORBA_TypeCode_default_index), (CORBA_TypeCode_length),
+	(CORBA_TypeCode_content_type), (CORBA_TypeCode_fixed_digits),
+	(CORBA_TypeCode_fixed_scale), (CORBA_TypeCode_member_visibility):
+	Add implementations for these. Based on original implementation
+	by Tom Tromey which was merged into the cpp branch by Sam Couter.
+
+2002-10-02  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/idl-compiler/orbit-idl-backend.c:
+	(load_language_backend): kill bogus g_module_close.
+	Thanks to Gergo for pointing it out.
 
 2002-09-30  ERDI Gergo  <cactus@cactus.rulez.org>
 
@@ -78,6 +228,10 @@
 	to correct type before storing it
 
 2002-09-30  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (find_tc): return
+	the typecode.
+	(testIInterface): do some tests on StrSeq.
 
 	* src/orb/orb-core/orbit-small.c
 	(orbit_small_marshal, orbit_small_demarshal),
@@ -101,6 +255,14 @@
 	silly things with the argument list length,
 	fixes #93928
 
+2002-09-24  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: require linc >= 0.7.0
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_real_state_changed): remove
+	nasty locking silly workaround.
+
 2002-09-20  Mark McLoughlin  <mark@skynet.ie>
 
 	* ORBit.spec.in: remove name-client-2 and
@@ -113,6 +275,68 @@
 	* test/poa/Makefile.am:
 	* test/inhibit/Makefile.am: add $(ORBIT_LIBS)
 	to LDADD.
+
+2002-09-17  Murray Cumming  <murrayc@usa.net>
+
+	* src/idl-compiler/orbit-idl-backend.c (orbit_idl_backend_output):
+	Warn if the specified idl compliler backend could not be found.
+
+2002-09-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Re-implement the idl-compiler language backend loading.
+
+	* configure.in: add src/idl-compiler/ORBit-idl-2.0.pc.
+
+	* src/idl-compiler/orbit-idl-backend.[ch]: implement.
+
+	* src/idl-compiler/Makefile.am: remove orbit-idl-backends.c
+	from the build and add orbit-idl-backend.[ch]. Install
+	orbit-idl-backend.h into $(prefix)/include/orbit-2.0/orbit-idl,
+	install the pkg-config file into $(prefix)/lib/pkgconfig.
+
+	* src/idl-compiler/orbit-idl-backends.c: remove.
+
+	* src/idl-compiler/orbit-idl-c-backend.[ch]: (orbit_idl_output_c):
+	return a bool.
+
+	* src/idl-compiler/orbit-idl-driver.c: (orbit_idl_to_backend):
+	hardwire in the c backend and use the loader for anything else.
+	Also return a bool.
+
+	* src/idl-compiler/orbit-idl-main.c: don't define the backend
+	directory here.
+
+	* src/idl-compiler/orbit-idl2.h: kill OIDL_Backend_Info.
+
+	* src/idl-compiler/orbit-idl3-types.h: upd.
+
+	* src/idl-compiler/ORBit-idl-2.0.pc.in: add
+
+2002-09-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Merged some stuff from orbit-cpp-cactus.
+
+	* include/orbit/orb-core/corba-typecode.h: include giop-basics.h
+	if we're using the headers internally.
+
+	* src/idl-compiler/Makefile.am: don't define -DDEBUG.
+
+	* src/orb/orb-core/corba-orb.c: (ORBit_TypeCode_allocate),
+	(CORBA_ORB_create_struct_tc), (CORBA_ORB_create_union_tc),
+	(CORBA_ORB_create_enum_tc), (CORBA_ORB_create_alias_tc),
+	(CORBA_ORB_create_exception_tc), (CORBA_ORB_create_interface_tc),
+	(CORBA_ORB_create_string_tc), (CORBA_ORB_create_wstring_tc),
+	(CORBA_ORB_create_fixed_tc), (CORBA_ORB_create_sequence_tc),
+	(CORBA_ORB_create_recursive_sequence_tc),
+	(CORBA_ORB_create_array_tc):
+	s/CORBA_TypeCode_allocate/ORBit_TypeCode_allocate/g
+
+2002-09-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/idl-compiler/*: chop, chop - take 2: a year on,
+	remove all the non-small code again, except this time
+	a lot more cleanly. That's 6,000 lines of code we don't
+	have to maintain anymore :-)
 
 2002-08-23  Michael Meeks  <michael@ximian.com>
 

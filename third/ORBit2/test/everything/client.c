@@ -26,6 +26,7 @@
 #include "everything.h"
 #include "constants.h"
 #include "orb-core/orb-core-private.h"
+#include "orbit-imodule.h"
 
 #define NUM_RUNS 1
 
@@ -307,7 +308,7 @@ testException (test_TestFactory   factory,
 	g_assert (rev->_major == CORBA_NO_EXCEPTION);
 }
 
-static gboolean
+static CORBA_TypeCode
 find_tc (CORBA_sequence_CORBA_TypeCode *tcs, 
 	 const char                    *repo_id)
 {
@@ -315,20 +316,20 @@ find_tc (CORBA_sequence_CORBA_TypeCode *tcs,
 
 	for (i = 0; i < tcs->_length; i++)
 		if (!strcmp (tcs->_buffer [i]->repo_id, repo_id))
-			return TRUE;
+			return tcs->_buffer [i];
 
-	return FALSE;
+	return NULL;
 }
 
 static void
 testIInterface (test_TestFactory   factory, 
 		CORBA_Environment *ev)
 {
+	CORBA_TypeCode    tc;
 	test_StructServer objref;
 	CORBA_char       *type_id;
 	ORBit_IInterface *iinterface;
 	CORBA_sequence_CORBA_TypeCode *tcs;
-	CORBA_TypeCode tc;
 
 	d_print ("Testing IInterface code...\n");
 	objref = test_TestFactory_getStructServer (factory, ev);
@@ -390,6 +391,12 @@ testIInterface (test_TestFactory   factory,
 	g_assert (find_tc (tcs, "IDL:orbit/test/Soup:1.0"));
 	g_assert (find_tc (tcs, "IDL:orbit/test/EnumUnion/Colour:1.0"));
 	g_assert (find_tc (tcs, "IDL:orbit/test/ArrayUnion:1.0"));
+	
+	tc = find_tc (tcs, "IDL:orbit/test/StrSeq:1.0");
+	g_assert (!strcmp (tc->repo_id, "IDL:orbit/test/StrSeq:1.0"));
+	g_assert (tc->kind == CORBA_tk_alias);
+	g_assert (tc->subtypes[0]->kind);
+
 	CORBA_free (tcs);
 
 	/* test subnames for unions correctly handle multiple case
@@ -1889,8 +1896,11 @@ test_init (CORBA_Environment *ev)
 int
 main (int argc, char *argv [])
 {
-	CORBA_Environment ev;
-	test_TestFactory  factory;
+	CORBA_Environment  ev;
+	test_TestFactory   factory;
+	ORBit_IInterfaces *interfaces = NULL;
+	gboolean           gen_imodule = FALSE;
+	int                i;
 
 	CORBA_exception_init (&ev);
 
@@ -1905,6 +1915,23 @@ main (int argc, char *argv [])
 */
 	global_orb = CORBA_ORB_init (&argc, argv, "", &ev);
 	g_assert (ev._major == CORBA_NO_EXCEPTION);
+
+	for (i = 0; i < argc; i++)
+		if (!strcmp (argv [i], "--gen-imodule"))
+			gen_imodule = TRUE;
+
+	if (gen_imodule) {
+		CORBA_sequence_CORBA_TypeCode *typecodes = NULL;
+
+		interfaces = ORBit_iinterfaces_from_file (
+				TEST_SRCDIR "/everything.idl", NULL, &typecodes);
+		g_assert (interfaces != NULL);
+		g_assert (typecodes != NULL);
+
+		CORBA_free (typecodes);
+
+		init_iinterfaces (interfaces, &ev);
+	}
 
 	test_init (&ev);
 	test_initial_references (global_orb, &ev);
@@ -1956,6 +1983,9 @@ main (int argc, char *argv [])
 	g_assert (ev._major == CORBA_NO_EXCEPTION);
 
 	g_warning ("released factory");
+
+	if (gen_imodule)
+		CORBA_free (interfaces);
 
 	CORBA_Object_release ((CORBA_Object) global_poa, &ev);
 	g_assert (ev._major == CORBA_NO_EXCEPTION);

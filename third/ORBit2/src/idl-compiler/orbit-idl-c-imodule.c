@@ -1,24 +1,25 @@
 #include "config.h"
 
 #include "orbit-idl-c-backend.h"
+
 #include <string.h>
 
 static void
-cc_small_build_interfaces (OIDL_C_Info *ci,
-			   IDL_tree     tree)
+ci_build_interfaces (OIDL_C_Info *ci,
+		     IDL_tree     tree)
 {
 	if (!tree)
 		return;
 
 	switch (IDL_NODE_TYPE (tree)) {
 	case IDLN_MODULE:
-		cc_small_build_interfaces (
+		ci_build_interfaces (
 			ci, IDL_MODULE (tree).definition_list);
 		break;
 	case IDLN_LIST: {
 		IDL_tree sub;
 		for (sub = tree; sub; sub = IDL_LIST (sub).next)
-			cc_small_build_interfaces (
+			ci_build_interfaces (
 				ci, IDL_LIST (sub).data);
 		break;
 	}
@@ -32,7 +33,7 @@ cc_small_build_interfaces (OIDL_C_Info *ci,
 
 		g_free (id);
 
-		cc_small_build_interfaces (
+		ci_build_interfaces (
 			ci, IDL_INTERFACE(tree).body);
 		break;
 	}
@@ -42,27 +43,27 @@ cc_small_build_interfaces (OIDL_C_Info *ci,
 }
 
 static void
-cc_small_build_types (OIDL_C_Info *ci,
-		      IDL_tree     tree,
-		      guint       *count)
+ci_build_types (OIDL_C_Info *ci,
+		IDL_tree     tree,
+		guint       *count)
 {
 	if (!tree)
 		return;
 
 	switch (IDL_NODE_TYPE (tree)) {
 	case IDLN_MODULE:
-		cc_small_build_types (
+		ci_build_types (
 			ci, IDL_MODULE (tree).definition_list, count);
 		break;
 	case IDLN_LIST: {
 		IDL_tree sub;
 		for (sub = tree; sub; sub = IDL_LIST (sub).next)
-			cc_small_build_types (
+			ci_build_types (
 				ci, IDL_LIST (sub).data, count);
 		break;
 	}
 	case IDLN_INTERFACE:
-		cc_small_build_types (
+		ci_build_types (
 			ci, IDL_INTERFACE(tree).body, count);
 		break;
 	case IDLN_TYPE_DCL: {
@@ -103,7 +104,7 @@ cc_small_build_types (OIDL_C_Info *ci,
 			if (IDL_NODE_TYPE(dcl) == IDLN_TYPE_STRUCT ||
 			    IDL_NODE_TYPE(dcl) == IDLN_TYPE_UNION ||
 			    IDL_NODE_TYPE(dcl) == IDLN_TYPE_ENUM)
-				cc_small_build_types (ci, dcl, count);
+				ci_build_types (ci, dcl, count);
 		}
 		break;
 	};
@@ -120,7 +121,7 @@ cc_small_build_types (OIDL_C_Info *ci,
 
 		/* if discriminator is an enum, register it */
 		if (IDL_NODE_TYPE (IDL_TYPE_UNION (tree).switch_type_spec) == IDLN_TYPE_ENUM)
-			cc_small_build_types (
+			ci_build_types (
 				ci, IDL_TYPE_UNION (tree).switch_type_spec, count);
 
 		/* check for nested structs/enums */
@@ -134,7 +135,7 @@ cc_small_build_types (OIDL_C_Info *ci,
 			if (IDL_NODE_TYPE(dcl) == IDLN_TYPE_STRUCT ||
 			    IDL_NODE_TYPE(dcl) == IDLN_TYPE_UNION ||
 			    IDL_NODE_TYPE(dcl) == IDLN_TYPE_ENUM)
-				cc_small_build_types (ci, dcl, count);
+				ci_build_types (ci, dcl, count);
 		}
 		break;
 	}
@@ -160,7 +161,7 @@ cc_small_build_types (OIDL_C_Info *ci,
 			if (IDL_NODE_TYPE(dcl) == IDLN_TYPE_STRUCT ||
 			    IDL_NODE_TYPE(dcl) == IDLN_TYPE_UNION ||
 			    IDL_NODE_TYPE(dcl) == IDLN_TYPE_ENUM)
-				cc_small_build_types (ci, dcl, count);
+				ci_build_types (ci, dcl, count);
 		}
 		break;
 	}
@@ -195,9 +196,9 @@ cc_small_build_types (OIDL_C_Info *ci,
 }
 
 void
-orbit_idl_output_c_imodule (OIDL_Output_Tree *tree,
-			    OIDL_Run_Info    *rinfo,
-			    OIDL_C_Info      *ci)
+orbit_idl_output_c_imodule (IDL_tree       tree,
+			    OIDL_Run_Info *rinfo,
+			    OIDL_C_Info   *ci)
 {
 	guint count;
 
@@ -213,14 +214,14 @@ orbit_idl_output_c_imodule (OIDL_Output_Tree *tree,
 		 ci->c_base_name);
 
 	count = 0;
-	cc_small_build_types (ci, tree->tree, &count);
+	ci_build_types (ci, tree, &count);
 
 	fprintf (ci->fh, "\tNULL\n};\n\n");
 
 	fprintf (ci->fh, "static ORBit_IInterface *%s__iinterfaces[] = {\n",
 		 ci->c_base_name);
 
-	cc_small_build_interfaces (ci, tree->tree);
+	ci_build_interfaces (ci, tree);
 
 	fprintf (ci->fh, "\tNULL\n};\n");
 
@@ -231,4 +232,3 @@ orbit_idl_output_c_imodule (OIDL_Output_Tree *tree,
 		 count, count, ci->c_base_name);
 	fprintf (ci->fh, "};\n\n");
 }
-
