@@ -26,6 +26,8 @@ MESSAGE
 exit 1
 fi
 
+cd os/linux && cc -O -o vortex-diag vortex-diag.c
+
 %install
 if [ X$RPM_BUILD_ROOT = X ]; then
   cat 1>&2 << MESSAGE
@@ -49,6 +51,7 @@ cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
 cp update_ws.8 $RPM_BUILD_ROOT/usr/athena/man/man8/update_ws.8
 cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
 cp XTerm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/XTerm.athena
+cp os/linux/vortex-diag $RPM_BUILD_ROOT/etc/athena/vortex-diag
 chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
 
 # This file actually goes in the athena-afs package.
@@ -213,6 +216,15 @@ EOF
   fi
 fi
 
+# A bug in the 3C509 driver causes Dell GX150 and GX240 machines to
+# fail to autonegotiate.  Twiddling the eeprom settings on the card
+# works around this problem, so do that for now.
+if /sbin/lspci -n | grep -q 10b7:9200; then
+  if /etc/athena/vortex-diag | grep -q "Would write"; then
+    /etc/athena/vortex-diag -w > /dev/null
+  fi
+fi
+
 # Turn on DontZap in the X configuration.
 if [ -f /etc/X11/XF86Config ]; then
   sed -e 's/#DontZap/DontZap/' < /etc/X11/XF86Config > /etc/X11/XF86Config.new
@@ -267,7 +279,7 @@ PUBLIC=false;		export PUBLIC		# Public workstation?
 EOF
 
 grep -q ^NOCREATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-NOCREATE=false;		export NOCREATE		# Disallow the public to login?
+NOCREATE=false;		export NOCREATE		# Create /etc/nocreate; see al_login_allowed(3)
 EOF
 
 grep -q ^NOATTACH /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
@@ -275,7 +287,7 @@ NOATTACH=false;		export NOATTACH		# Disallow attaching homedirs?
 EOF
 
 grep -q ^NOREMOTE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-NOREMOTE=false;		export NOREMOTE		# Deny access to remote users not in /etc/passwd
+NOREMOTE=false;		export NOREMOTE		# Create /etc/noremote; see al_login_allowed(3)
 EOF
 
 grep -q ^AUTOUPDATE /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
