@@ -1,3 +1,0 @@
-PKG=MIT-nautilus-media
-NAME=A Nautilus media package with views and thumbnailers, for Athena
-DESC=This package contains a Nautilus view for audio using GStreamer.

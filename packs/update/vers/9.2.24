@@ -1,5 +1,0 @@
-#!/bin/sh
-
-echo "/etc/mail/sendmail.cf"				>> $CONFCHG
-echo "/etc/inet/services"				>> $CONFCHG
-echo "/etc/mail/sendmail-noauth.cf"			>> $DEADFILES

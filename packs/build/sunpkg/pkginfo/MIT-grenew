@@ -1,3 +1,0 @@
-PKG=MIT-grenew
-NAME=Renew a user's Kerberos tickets
-DESC=This program presents a graphical user interface to allow users to renew their Kerberos tickets.

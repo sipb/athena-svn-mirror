@@ -1,3 +1,0 @@
-PKG=MIT-librkinit
-NAME=Support routines for contacting Athena rkinit servers
-DESC=This library contains the calls necessary to interface with the rkinit system of remote ticket establishment.

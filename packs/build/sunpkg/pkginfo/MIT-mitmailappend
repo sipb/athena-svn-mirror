@@ -1,3 +1,0 @@
-PKG=MIT-mitmailappend
-NAME=Append a message to an IMAP folder
-DESC=The mitmailappend program appends one message to a folder on an IMAP server.

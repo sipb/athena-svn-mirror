@@ -1,3 +1,0 @@
-PKG=MIT-rkinitd
-NAME=An Athena server for rkinit requests
-DESC=A server to allow users to obtain kerberos tickets on remote machines.
