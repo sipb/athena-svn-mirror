@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/Imakefile,v $
- *   $Author: epeisach $ 
+ *   $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -26,19 +26,20 @@ M_LIB		=
 #endif
 
 X_OBJS		=	Jets.o hash.o registerCallbacks.o \
-			Label.o Icon.o Form.o Button.o Window.o \
+			Label.o Form.o Button.o Window.o \
 			xcluster.o Tree.o Drawing.o read.o net.o check.o
 OBJS		=	cview.o net.o
 
 CFILES		=	hash.c registerCallbacks.c \
-			Jets.c Button.c Form.c Icon.c \
+			Jets.c Button.c Form.c \
 			Label.c Menu.c \
 			Tree.c Window.c \
 			Drawing.c \
 			xcluster.c read.c net.c check.c cview.c
 
-LIBS		=	-lX11 ${M_LIB} -lhesiod
+XLIB		=	-lX11
 HLIB		=	-lhesiod
+LIBS		=	-lX11 ${M_LIB} ${HLIB}
 
 #if defined(ibm032)
 DEFINES		=	-DSHAPE -D_BSD -D_BSD_INCLUDES -DAIXV=12 -DAPPDEFDIR=\"${ATHXAPPDIR}\"
@@ -50,8 +51,8 @@ DEFINES		=	-DSHAPE -DAPPDEFDIR=\"${ATHXAPPDIR}\"
 AnsiCC()
 
 SimpleProgram(${XCLUSTER},${X_OBJS},${LIBS},${ATHBINDIR}/${XCLUSTER})
-SimpleProgram($(CVIEW),$(OBJS),$(HLIB),$(ATHBINDIR)/$(CVIEW))
+SimpleProgram(${CVIEW},${OBJS},${HLIB},${ATHBINDIR}/${CVIEW})
 install_man(${XCLUSTER}.1,${XCLUSTER}.1)
-install_man($(CVIEW).1,$(CVIEW).1)
+install_man(${CVIEW}.1,${CVIEW}.1)
 install_file(${RESOURCES},${ATHXAPPDIR}/${RESOURCES})
 create_depend(${CFILES})
