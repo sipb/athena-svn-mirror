@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.6 1992-04-22 14:41:19 lwvanels Exp $
+ * $Id: Imakefile,v 1.7 1993-04-30 18:19:15 miki Exp $
  */
 
 #ifdef ULTRIX40
@@ -15,7 +15,14 @@ machtype_rios.o:
 
 SimpleProgram(machtype, machtype_rios.o,-lodm -lcfg -ldiag,$(ATHRBINDIR))
 #endif
-
+#if defined(SOLARIS)
+#define DONE
+machtype_sol.o:
+        $(RM) $@
+        . $(ATHVERS); \
+        $(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" $*.c
+SimpleProgram(machtype, machtype_sol.o,-lkvm,$(ATHRBINDIR))
+#endif
 #ifndef DONE
 machtype_std.o:
 	$(RM) $@
