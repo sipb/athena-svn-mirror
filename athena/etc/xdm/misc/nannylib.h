@@ -2,7 +2,8 @@
 int nanny_exchangeVars(varlist *, varlist **)
 #endif
 
-int nanny_setupUser(char *, int, char **, char **);
+int nanny_getNannyPid(int *);
+int nanny_setupUser(char *, char **, char **);
 int nanny_loginUser(char ***, char ***, char **);
 int nanny_logoutUser(void);
 int nanny_getTty(char *, int);
