@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.16 1997-02-06 09:07:50 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.16.2.1 1997-07-26 18:43:44 ghudson Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,6 +85,14 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  1997/07/18 18:53:14  danw
+ * from mwhitson: POSIX signal semantics fixes. (sigsetjmp/siglongjmp
+ * and SA_RESTART).
+ *
+ * Revision 1.16  1997/02/06 09:07:50  ghudson
+ * From Dan Winship: strip ^D at beginning of file, recognize and reject
+ * Framemaker and PDF files.
+ *
  * Revision 1.15  1996/09/20 02:09:04  ghudson
  * BSD -> ANSI string and memory functions
  *
@@ -311,7 +319,7 @@ private char *getpages =
 "\n(%%%%[ pagecount: )print statusdict/pagecount get exec(                )cvs \
 print(, %d %d ]%%%%)= flush\n%s";
 
-private jmp_buf initlabel, synclabel, sendlabel, croaklabel, snmplabel;
+private sigjmp_buf initlabel, synclabel, sendlabel, croaklabel, snmplabel;
 
 private char	*prog;			/* invoking program name */
 private char	*name;			/* user login name */
@@ -513,7 +521,7 @@ main(argc,argv)            /* MAIN ROUTINE */
     intstate = init;       /* We are initializing things now */
 #if defined(POSIX) && !defined(ultrix)
     (void) sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
+    sa.sa_flags = SA_RESTART;
 
     sa.sa_handler = GotDieSig;
     (void) sigaction(SIGINT, &sa, (struct sigaction *)0);
@@ -801,7 +809,7 @@ main(argc,argv)            /* MAIN ROUTINE */
 	/* fall through to spooler with new stdin */
 	streamin = fdopen(0,"r");
 
-	if( !setjmp(initlabel) ) {    /* Do this FIRST time through */
+	if( !sigsetjmp(initlabel, 1) ) {    /* Do this FIRST time through */
 	    ENDCRIT();        /* Make sure pipes get closed correctly */
 	    if(!gotsig) pause();    /* Wait for reverser to start */
 	    }
@@ -995,7 +1003,7 @@ printit:;
     if ((cpid = fork()) < 0) myexit1(prog, THROW_AWAY);
     else if (cpid) {/* START PARENT -- SENDER */
 
-	if( setjmp(sendlabel) ) goto donefile;
+	if( sigsetjmp(sendlabel, 1) ) goto donefile;
 	ENDCRIT();		/* Child state change and setjmp() */
 	if( gotsig & DIE_INT ) closedown();
 
@@ -1576,7 +1584,7 @@ union wait exitstatus;     /* Status returned by the child */
  */
 private VOID reapchildren() {
     intstate = croaking;    /* OK -- we are dying */
-    VOIDC setjmp(croaklabel);    /* Get back here when we get an alarm */
+    VOIDC sigsetjmp(croaklabel, 1);    /* Get back here when we get an alarm */
     VOIDC unlink(".banner");         /* get rid of banner file */
     VOIDC alarm(CROAKALARM);
     if( cpid != 0 ) VOIDC kill(cpid,SIGEMT);  /* This kills listener */
@@ -1673,7 +1681,7 @@ private VOID GotEmtSig() {
 		return;
 		}
 	    else {
-		longjmp(initlabel,1);
+		siglongjmp(initlabel,1);
 		}
 	    break;
 	case sending:
@@ -1715,13 +1723,13 @@ private VOID GotAlarmSig() {
 	    sprintf(mybuf, "Not Responding for %ld minutes",
 		(time((long*)0)-starttime+30)/60);
 	    Status(mybuf,1);
-	    longjmp(synclabel,1);
+	    siglongjmp(synclabel,1);
 	case syncsnmp:
 	    if( jobaborted ) dieanyway();   /* If already aborted, just croak */
 	    sprintf(mybuf, "Not Responding for %ld minutes",
 		(time((long*)0)-starttime+30)/60);
 	    Status(mybuf,1);
-	    longjmp(snmplabel,1);
+	    siglongjmp(snmplabel,1);
 	case sending:
 	    if( progress == oldprogress ) { /* Nothing written since last time */
 		getstatus = TRUE;
@@ -1742,7 +1750,7 @@ private VOID GotAlarmSig() {
 	    if( jobaborted ) dieanyway();   /* If already aborted, just croak */
 	    break;
 	case croaking:
-	    longjmp(croaklabel,1);
+	    siglongjmp(croaklabel,1);
 	case child:
 	    if( kill(getppid(),0) < 0 ) {  /* Missed death signal from parent */
 		fprintf(stderr,
@@ -1777,7 +1785,7 @@ private VOID GotDieSig(sig) int sig; {
 	    fprintf(stderr,"%s: abort (sending job)\n",prog);
 	    VOIDC fflush(stderr);
 	    abortjob();
-	    longjmp(sendlabel,1);
+	    siglongjmp(sendlabel,1);
 	case waiting:
 	    if( !jobaborted ) {
 	        fprintf(stderr,"%s: abort (waiting for job end)\n",prog);
@@ -1893,7 +1901,7 @@ private VOID hpcheck()
     private int status;
 
 
-    if( setjmp(snmplabel) ) goto tryagain;   /* Got an alarm */
+    if( sigsetjmp(snmplabel, 1) ) goto tryagain;   /* Got an alarm */
     VOIDC alarm(SYNCALARM);                 /* schedule an alarm/timeout */
 
     tryagain:
@@ -1952,7 +1960,7 @@ long    *pagecount;        /* The current page count in the printer */
     openprtread();    /* Open the printer for reading */
     while(TRUE) {
 	synccount++;
-	if( setjmp(synclabel) ) goto tryagain;   /* Got an alarm */
+	if( sigsetjmp(synclabel, 1) ) goto tryagain;   /* Got an alarm */
 	VOIDC alarm(SYNCALARM); /* schedule an alarm/timeout */
 	VOIDC sprintf(mybuf, getpages, mpid, synccount, "\004");
 	VOIDC write(fdsend, mybuf, strlen(mybuf)); /* Send program */
