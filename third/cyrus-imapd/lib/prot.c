@@ -41,7 +41,7 @@
  *
  */
 /*
- * $Id: prot.c,v 1.1.1.2 2003-02-14 21:39:13 ghudson Exp $
+ * $Id: prot.c,v 1.1.1.2.2.1 2003-11-04 19:32:33 ghudson Exp $
  */
 
 #include <config.h>
@@ -168,8 +168,8 @@ sasl_conn_t *conn;
 
     if (s->write) {
 	int result;
-	const int *maxp;
-	int max;
+	const unsigned int *maxp;
+	unsigned int max;
 
 	/* ask SASL for layer max */
 	result = sasl_getprop(conn, SASL_MAXOUTBUF, (const void **) &maxp);

@@ -13,7 +13,7 @@
 
 #include <sendmail.h>
 
-SM_RCSID("@(#)$Id: usersmtp.c,v 1.1.1.1 2003-04-08 15:09:11 zacheiss Exp $")
+SM_RCSID("@(#)$Id: usersmtp.c,v 1.1.1.1.2.1 2003-11-04 19:32:45 ghudson Exp $")
 
 #include <sysexits.h>
 
@@ -28,6 +28,8 @@ static int	smtprcptstat __P((ADDRESS *, MAILER *, MCI *, ENVELOPE *));
 extern void	*sm_sasl_malloc __P((unsigned long));
 extern void	sm_sasl_free __P((void *));
 #endif /* SASL */
+
+extern int noauthentication;
 
 /*
 **  USERSMTP -- run SMTP protocol from the user end.
@@ -1887,6 +1889,9 @@ smtpauth(m, mci, e)
 	int result;
 	int i;
 	bool usedgetauth;
+
+	if (noauthentication)
+	  return EX_UNAVAILABLE;
 
 	mci->mci_sasl_auth = false;
 	for (i = 0; i < SASL_MECH ; i++)

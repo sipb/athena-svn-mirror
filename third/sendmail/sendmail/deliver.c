@@ -14,7 +14,7 @@
 #include <sendmail.h>
 #include <sys/time.h>
 
-SM_RCSID("@(#)$Id: deliver.c,v 1.1.1.1 2003-04-08 15:09:24 zacheiss Exp $")
+SM_RCSID("@(#)$Id: deliver.c,v 1.1.1.1.2.1 2003-11-04 19:32:49 ghudson Exp $")
 
 #if HASSETUSERCONTEXT
 # include <login_cap.h>
@@ -44,6 +44,8 @@ static int	endtlsclt __P((MCI *));
 # if STARTTLS || SASL
 static bool	iscltflgset __P((ENVELOPE *, int));
 # endif /* STARTTLS || SASL */
+
+extern char *porttouse;
 
 /*
 **  SENDALL -- actually send all the messages.
@@ -1958,13 +1960,16 @@ deliver(e, firstto)
 			rcode = EX_CONFIG;
 			goto give_up;
 		}
-		if (pv[2] != NULL
+		if (pv[2] != NULL || porttouse != NULL
 # if NETUNIX
 		    && mux_path == NULL
 # endif /* NETUNIX */
 		    )
 		{
-			port = htons((unsigned short) atoi(pv[2]));
+			if (porttouse)
+				port = htons((unsigned short) atoi(porttouse));
+			else
+				port = htons((unsigned short) atoi(pv[2]));
 			if (port == 0)
 			{
 # ifdef NO_GETSERVBYNAME
