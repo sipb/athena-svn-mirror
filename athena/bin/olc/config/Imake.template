@@ -520,6 +520,9 @@
 #ifndef CURDIR
 #define CURDIR .
 #endif
+#ifndef CONFDIR
+#define CONFDIR ${TOP}/config
+#endif
 
             SHELL = BourneShell
 
@@ -600,13 +603,9 @@
 
     IMAKE_DEFINES = /* leave blank, for command line use only */
             IMAKE = imake
-#ifdef UseInstalled
-         IRULESRC = $(CONFIGDIR)	/* used in rules file */
-        IMAKE_CMD = $(IMAKE) -DUseInstalled -I$(IRULESRC) $(IMAKE_DEFINES) -s Makefile
-#else
-         IRULESRC = $(CONFIGSRC)
-        IMAKE_CMD = $(NEWTOP)$(IMAKE) -I$(NEWTOP)$(IRULESRC) $(IMAKE_DEFINES) -s Makefile
-#endif
+         IRULESRC = $(CONFIGDIR)
+        IMAKE_CMD = $(IMAKE) -I$(NEWTOP)$(IRULESRC) $(IMAKE_DEFINES) \
+			-s Makefile
      ICONFIGFILES = $(IRULESRC)/Imake.template $(IRULESRC)/Imake.rules \
 			$(IRULESRC)/Project.tmpl $(IRULESRC)/site.def \
 			$(IRULESRC)/$(MACROFILE)
