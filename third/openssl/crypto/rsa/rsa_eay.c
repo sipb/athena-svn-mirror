@@ -61,40 +61,43 @@
 #include <openssl/bn.h>
 #include <openssl/rsa.h>
 #include <openssl/rand.h>
+#include <openssl/engine.h>
 
 #ifndef RSA_NULL
 
-static int RSA_eay_public_encrypt(int flen, unsigned char *from,
+static int RSA_eay_public_encrypt(int flen, const unsigned char *from,
 		unsigned char *to, RSA *rsa,int padding);
-static int RSA_eay_private_encrypt(int flen, unsigned char *from,
+static int RSA_eay_private_encrypt(int flen, const unsigned char *from,
 		unsigned char *to, RSA *rsa,int padding);
-static int RSA_eay_public_decrypt(int flen, unsigned char *from,
+static int RSA_eay_public_decrypt(int flen, const unsigned char *from,
 		unsigned char *to, RSA *rsa,int padding);
-static int RSA_eay_private_decrypt(int flen, unsigned char *from,
+static int RSA_eay_private_decrypt(int flen, const unsigned char *from,
 		unsigned char *to, RSA *rsa,int padding);
-static int RSA_eay_mod_exp(BIGNUM *r0, BIGNUM *i, RSA *rsa);
+static int RSA_eay_mod_exp(BIGNUM *r0, const BIGNUM *i, RSA *rsa);
 static int RSA_eay_init(RSA *rsa);
 static int RSA_eay_finish(RSA *rsa);
 static RSA_METHOD rsa_pkcs1_eay_meth={
 	"Eric Young's PKCS#1 RSA",
 	RSA_eay_public_encrypt,
-	RSA_eay_public_decrypt,
-	RSA_eay_private_encrypt,
+	RSA_eay_public_decrypt, /* signature verification */
+	RSA_eay_private_encrypt, /* signing */
 	RSA_eay_private_decrypt,
 	RSA_eay_mod_exp,
-	BN_mod_exp_mont,
+	BN_mod_exp_mont, /* XXX probably we should not use Montgomery if  e == 3 */
 	RSA_eay_init,
 	RSA_eay_finish,
-	0,
+	0, /* flags */
 	NULL,
+	0, /* rsa_sign */
+	0  /* rsa_verify */
 	};
 
-RSA_METHOD *RSA_PKCS1_SSLeay(void)
+const RSA_METHOD *RSA_PKCS1_SSLeay(void)
 	{
 	return(&rsa_pkcs1_eay_meth);
 	}
 
-static int RSA_eay_public_encrypt(int flen, unsigned char *from,
+static int RSA_eay_public_encrypt(int flen, const unsigned char *from,
 	     unsigned char *to, RSA *rsa, int padding)
 	{
 	BIGNUM f,ret;
@@ -117,7 +120,7 @@ static int RSA_eay_public_encrypt(int flen, unsigned char *from,
 	case RSA_PKCS1_PADDING:
 		i=RSA_padding_add_PKCS1_type_2(buf,num,from,flen);
 		break;
-#ifndef NO_SHA
+#ifndef OPENSSL_NO_SHA
 	case RSA_PKCS1_OAEP_PADDING:
 	        i=RSA_padding_add_PKCS1_OAEP(buf,num,from,flen,NULL,0);
 		break;
@@ -136,13 +139,37 @@ static int RSA_eay_public_encrypt(int flen, unsigned char *from,
 
 	if (BN_bin2bn(buf,num,&f) == NULL) goto err;
 	
-	if ((rsa->_method_mod_n == NULL) && (rsa->flags & RSA_FLAG_CACHE_PUBLIC))
-		{
-		if ((rsa->_method_mod_n=BN_MONT_CTX_new()) != NULL)
-			if (!BN_MONT_CTX_set(rsa->_method_mod_n,rsa->n,ctx))
-			    goto err;
+	if (BN_ucmp(&f, rsa->n) >= 0)
+		{	
+		/* usually the padding functions would catch this */
+		RSAerr(RSA_F_RSA_EAY_PUBLIC_ENCRYPT,RSA_R_DATA_TOO_LARGE_FOR_MODULUS);
+		goto err;
 		}
 
+	if ((rsa->_method_mod_n == NULL) && (rsa->flags & RSA_FLAG_CACHE_PUBLIC))
+		{
+		BN_MONT_CTX* bn_mont_ctx;
+		if ((bn_mont_ctx=BN_MONT_CTX_new()) == NULL)
+			goto err;
+		if (!BN_MONT_CTX_set(bn_mont_ctx,rsa->n,ctx))
+			{
+			BN_MONT_CTX_free(bn_mont_ctx);
+			goto err;
+			}
+		if (rsa->_method_mod_n == NULL) /* other thread may have finished first */
+			{
+			CRYPTO_w_lock(CRYPTO_LOCK_RSA);
+			if (rsa->_method_mod_n == NULL)
+				{
+				rsa->_method_mod_n = bn_mont_ctx;
+				bn_mont_ctx = NULL;
+				}
+			CRYPTO_w_unlock(CRYPTO_LOCK_RSA);
+			}
+		if (bn_mont_ctx)
+			BN_MONT_CTX_free(bn_mont_ctx);
+		}
+		
 	if (!rsa->meth->bn_mod_exp(&ret,&f,rsa->e,rsa->n,ctx,
 		rsa->_method_mod_n)) goto err;
 
@@ -160,13 +187,14 @@ err:
 	BN_clear_free(&ret);
 	if (buf != NULL) 
 		{
-		memset(buf,0,num);
+		OPENSSL_cleanse(buf,num);
 		OPENSSL_free(buf);
 		}
 	return(r);
 	}
 
-static int RSA_eay_private_encrypt(int flen, unsigned char *from,
+/* signing */
+static int RSA_eay_private_encrypt(int flen, const unsigned char *from,
 	     unsigned char *to, RSA *rsa, int padding)
 	{
 	BIGNUM f,ret;
@@ -201,6 +229,13 @@ static int RSA_eay_private_encrypt(int flen, unsigned char *from,
 	if (i <= 0) goto err;
 
 	if (BN_bin2bn(buf,num,&f) == NULL) goto err;
+	
+	if (BN_ucmp(&f, rsa->n) >= 0)
+		{	
+		/* usually the padding functions would catch this */
+		RSAerr(RSA_F_RSA_EAY_PRIVATE_ENCRYPT,RSA_R_DATA_TOO_LARGE_FOR_MODULUS);
+		goto err;
+		}
 
 	if ((rsa->flags & RSA_FLAG_BLINDING) && (rsa->blinding == NULL))
 		RSA_blinding_on(rsa,ctx);
@@ -236,13 +271,13 @@ err:
 	BN_clear_free(&f);
 	if (buf != NULL)
 		{
-		memset(buf,0,num);
+		OPENSSL_cleanse(buf,num);
 		OPENSSL_free(buf);
 		}
 	return(r);
 	}
 
-static int RSA_eay_private_decrypt(int flen, unsigned char *from,
+static int RSA_eay_private_decrypt(int flen, const unsigned char *from,
 	     unsigned char *to, RSA *rsa, int padding)
 	{
 	BIGNUM f,ret;
@@ -275,6 +310,12 @@ static int RSA_eay_private_decrypt(int flen, unsigned char *from,
 	/* make data into a big number */
 	if (BN_bin2bn(from,(int)flen,&f) == NULL) goto err;
 
+	if (BN_ucmp(&f, rsa->n) >= 0)
+		{
+		RSAerr(RSA_F_RSA_EAY_PRIVATE_DECRYPT,RSA_R_DATA_TOO_LARGE_FOR_MODULUS);
+		goto err;
+		}
+
 	if ((rsa->flags & RSA_FLAG_BLINDING) && (rsa->blinding == NULL))
 		RSA_blinding_on(rsa,ctx);
 	if (rsa->flags & RSA_FLAG_BLINDING)
@@ -305,7 +346,7 @@ static int RSA_eay_private_decrypt(int flen, unsigned char *from,
 	case RSA_PKCS1_PADDING:
 		r=RSA_padding_check_PKCS1_type_2(to,num,buf,j,num);
 		break;
-#ifndef NO_SHA
+#ifndef OPENSSL_NO_SHA
         case RSA_PKCS1_OAEP_PADDING:
 	        r=RSA_padding_check_PKCS1_OAEP(to,num,buf,j,num,NULL,0);
                 break;
@@ -329,13 +370,14 @@ err:
 	BN_clear_free(&ret);
 	if (buf != NULL)
 		{
-		memset(buf,0,num);
+		OPENSSL_cleanse(buf,num);
 		OPENSSL_free(buf);
 		}
 	return(r);
 	}
 
-static int RSA_eay_public_decrypt(int flen, unsigned char *from,
+/* signature verification */
+static int RSA_eay_public_decrypt(int flen, const unsigned char *from,
 	     unsigned char *to, RSA *rsa, int padding)
 	{
 	BIGNUM f,ret;
@@ -366,14 +408,38 @@ static int RSA_eay_public_decrypt(int flen, unsigned char *from,
 		}
 
 	if (BN_bin2bn(from,flen,&f) == NULL) goto err;
+
+	if (BN_ucmp(&f, rsa->n) >= 0)
+		{
+		RSAerr(RSA_F_RSA_EAY_PUBLIC_DECRYPT,RSA_R_DATA_TOO_LARGE_FOR_MODULUS);
+		goto err;
+		}
+
 	/* do the decrypt */
 	if ((rsa->_method_mod_n == NULL) && (rsa->flags & RSA_FLAG_CACHE_PUBLIC))
 		{
-		if ((rsa->_method_mod_n=BN_MONT_CTX_new()) != NULL)
-			if (!BN_MONT_CTX_set(rsa->_method_mod_n,rsa->n,ctx))
-			    goto err;
+		BN_MONT_CTX* bn_mont_ctx;
+		if ((bn_mont_ctx=BN_MONT_CTX_new()) == NULL)
+			goto err;
+		if (!BN_MONT_CTX_set(bn_mont_ctx,rsa->n,ctx))
+			{
+			BN_MONT_CTX_free(bn_mont_ctx);
+			goto err;
+			}
+		if (rsa->_method_mod_n == NULL) /* other thread may have finished first */
+			{
+			CRYPTO_w_lock(CRYPTO_LOCK_RSA);
+			if (rsa->_method_mod_n == NULL)
+				{
+				rsa->_method_mod_n = bn_mont_ctx;
+				bn_mont_ctx = NULL;
+				}
+			CRYPTO_w_unlock(CRYPTO_LOCK_RSA);
+			}
+		if (bn_mont_ctx)
+			BN_MONT_CTX_free(bn_mont_ctx);
 		}
-
+		
 	if (!rsa->meth->bn_mod_exp(&ret,&f,rsa->e,rsa->n,ctx,
 		rsa->_method_mod_n)) goto err;
 
@@ -401,40 +467,74 @@ err:
 	BN_clear_free(&ret);
 	if (buf != NULL)
 		{
-		memset(buf,0,num);
+		OPENSSL_cleanse(buf,num);
 		OPENSSL_free(buf);
 		}
 	return(r);
 	}
 
-static int RSA_eay_mod_exp(BIGNUM *r0, BIGNUM *I, RSA *rsa)
+static int RSA_eay_mod_exp(BIGNUM *r0, const BIGNUM *I, RSA *rsa)
 	{
-	BIGNUM r1,m1;
+	BIGNUM r1,m1,vrfy;
 	int ret=0;
 	BN_CTX *ctx;
 
-	if ((ctx=BN_CTX_new()) == NULL) goto err;
 	BN_init(&m1);
 	BN_init(&r1);
+	BN_init(&vrfy);
+	if ((ctx=BN_CTX_new()) == NULL) goto err;
 
 	if (rsa->flags & RSA_FLAG_CACHE_PRIVATE)
 		{
 		if (rsa->_method_mod_p == NULL)
 			{
-			if ((rsa->_method_mod_p=BN_MONT_CTX_new()) != NULL)
-				if (!BN_MONT_CTX_set(rsa->_method_mod_p,rsa->p,
-						     ctx))
-					goto err;
+			BN_MONT_CTX* bn_mont_ctx;
+			if ((bn_mont_ctx=BN_MONT_CTX_new()) == NULL)
+				goto err;
+			if (!BN_MONT_CTX_set(bn_mont_ctx,rsa->p,ctx))
+				{
+				BN_MONT_CTX_free(bn_mont_ctx);
+				goto err;
+				}
+			if (rsa->_method_mod_p == NULL) /* other thread may have finished first */
+				{
+				CRYPTO_w_lock(CRYPTO_LOCK_RSA);
+				if (rsa->_method_mod_p == NULL)
+					{
+					rsa->_method_mod_p = bn_mont_ctx;
+					bn_mont_ctx = NULL;
+					}
+				CRYPTO_w_unlock(CRYPTO_LOCK_RSA);
+				}
+			if (bn_mont_ctx)
+				BN_MONT_CTX_free(bn_mont_ctx);
 			}
+
 		if (rsa->_method_mod_q == NULL)
 			{
-			if ((rsa->_method_mod_q=BN_MONT_CTX_new()) != NULL)
-				if (!BN_MONT_CTX_set(rsa->_method_mod_q,rsa->q,
-						     ctx))
-					goto err;
+			BN_MONT_CTX* bn_mont_ctx;
+			if ((bn_mont_ctx=BN_MONT_CTX_new()) == NULL)
+				goto err;
+			if (!BN_MONT_CTX_set(bn_mont_ctx,rsa->q,ctx))
+				{
+				BN_MONT_CTX_free(bn_mont_ctx);
+				goto err;
+				}
+			if (rsa->_method_mod_q == NULL) /* other thread may have finished first */
+				{
+				CRYPTO_w_lock(CRYPTO_LOCK_RSA);
+				if (rsa->_method_mod_q == NULL)
+					{
+					rsa->_method_mod_q = bn_mont_ctx;
+					bn_mont_ctx = NULL;
+					}
+				CRYPTO_w_unlock(CRYPTO_LOCK_RSA);
+				}
+			if (bn_mont_ctx)
+				BN_MONT_CTX_free(bn_mont_ctx);
 			}
 		}
-
+		
 	if (!BN_mod(&r1,I,rsa->q,ctx)) goto err;
 	if (!rsa->meth->bn_mod_exp(&m1,&r1,rsa->dmq1,rsa->q,ctx,
 		rsa->_method_mod_q)) goto err;
@@ -463,10 +563,28 @@ static int RSA_eay_mod_exp(BIGNUM *r0, BIGNUM *I, RSA *rsa)
 	if (!BN_mul(&r1,r0,rsa->q,ctx)) goto err;
 	if (!BN_add(r0,&r1,&m1)) goto err;
 
+	if (rsa->e && rsa->n)
+		{
+		if (!rsa->meth->bn_mod_exp(&vrfy,r0,rsa->e,rsa->n,ctx,NULL)) goto err;
+		/* If 'I' was greater than (or equal to) rsa->n, the operation
+		 * will be equivalent to using 'I mod n'. However, the result of
+		 * the verify will *always* be less than 'n' so we don't check
+		 * for absolute equality, just congruency. */
+		if (!BN_sub(&vrfy, &vrfy, I)) goto err;
+		if (!BN_mod(&vrfy, &vrfy, rsa->n, ctx)) goto err;
+		if (vrfy.neg)
+			if (!BN_add(&vrfy, &vrfy, rsa->n)) goto err;
+		if (!BN_is_zero(&vrfy))
+			/* 'I' and 'vrfy' aren't congruent mod n. Don't leak
+			 * miscalculated CRT output, just do a raw (slower)
+			 * mod_exp and return that instead. */
+			if (!rsa->meth->bn_mod_exp(r0,I,rsa->d,rsa->n,ctx,NULL)) goto err;
+		}
 	ret=1;
 err:
 	BN_clear_free(&m1);
 	BN_clear_free(&r1);
+	BN_clear_free(&vrfy);
 	BN_CTX_free(ctx);
 	return(ret);
 	}

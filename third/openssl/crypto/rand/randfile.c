@@ -61,7 +61,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef VMS
+#include "e_os.h"
+#include <openssl/crypto.h>
+#include <openssl/rand.h>
+
+#ifdef OPENSSL_SYS_VMS
 #include <unixio.h>
 #endif
 #ifndef NO_SYS_TYPES_H
@@ -73,15 +77,14 @@
 # include <sys/stat.h>
 #endif
 
-#include <openssl/e_os.h>
-#include <openssl/crypto.h>
-#include <openssl/rand.h>
-
 #undef BUFSIZE
 #define BUFSIZE	1024
 #define RAND_DATA 1024
 
 /* #define RFILE ".rnd" - defined in ../../e_os.h */
+
+/* Note that these functions are intended for seed files only.
+ * Entropy devices and EGD sockets are handled in rand_unix.c */
 
 int RAND_load_file(const char *file, long bytes)
 	{
@@ -117,11 +120,11 @@ int RAND_load_file(const char *file, long bytes)
 		if (bytes > 0)
 			{
 			bytes-=n;
-			if (bytes == 0) break;
+			if (bytes <= 0) break;
 			}
 		}
 	fclose(in);
-	memset(buf,0,BUFSIZE);
+	OPENSSL_cleanse(buf,BUFSIZE);
 err:
 	return(ret);
 	}
@@ -133,7 +136,7 @@ int RAND_write_file(const char *file)
 	FILE *out = NULL;
 	int n;
 	
-#if defined(O_CREAT) && !defined(WIN32)
+#if defined(O_CREAT) && !defined(OPENSSL_SYS_WIN32)
 	/* For some reason Win32 can't write to files created this way */
 	
 	/* chmod(..., 0600) is too late to protect the file,
@@ -165,7 +168,7 @@ int RAND_write_file(const char *file)
 		ret+=i;
 		if (n <= 0) break;
                 }
-#ifdef VMS
+#ifdef OPENSSL_SYS_VMS
 	/* Try to delete older versions of the file, until there aren't
 	   any */
 	{
@@ -183,38 +186,49 @@ int RAND_write_file(const char *file)
 				      some point... */
 		}
 	}
-#endif /* VMS */
+#endif /* OPENSSL_SYS_VMS */
 
 	fclose(out);
-	memset(buf,0,BUFSIZE);
+	OPENSSL_cleanse(buf,BUFSIZE);
 err:
 	return (rand_err ? -1 : ret);
 	}
 
-const char *RAND_file_name(char *buf, int size)
+const char *RAND_file_name(char *buf, size_t size)
 	{
-	char *s;
+	char *s=NULL;
 	char *ret=NULL;
 
-	s=getenv("RANDFILE");
+	if (OPENSSL_issetugid() == 0)
+		s=getenv("RANDFILE");
 	if (s != NULL)
 		{
-		strncpy(buf,s,size-1);
-		buf[size-1]='\0';
+		if(strlen(s) >= size)
+			return NULL;
+		strcpy(buf,s);
 		ret=buf;
 		}
 	else
 		{
-		s=getenv("HOME");
-		if (s == NULL) return(RFILE);
-		if (((int)(strlen(s)+strlen(RFILE)+2)) > size)
-			return(RFILE);
-		strcpy(buf,s);
-#ifndef VMS
-		strcat(buf,"/");
+		if (OPENSSL_issetugid() == 0)
+			s=getenv("HOME");
+#ifdef DEFAULT_HOME
+		if (s == NULL)
+			{
+			s = DEFAULT_HOME;
+			}
 #endif
-		strcat(buf,RFILE);
-		ret=buf;
+		if (s != NULL && (strlen(s)+strlen(RFILE)+2 < size))
+			{
+			strcpy(buf,s);
+#ifndef OPENSSL_SYS_VMS
+			strcat(buf,"/");
+#endif
+			strcat(buf,RFILE);
+			ret=buf;
+			}
+		else
+		  	buf[0] = '\0'; /* no file name */
 		}
 	return(ret);
 	}

@@ -165,6 +165,7 @@ static int b64_read(BIO *b, char *out, int outl)
 		{
 		i=ctx->buf_len-ctx->buf_off;
 		if (i > outl) i=outl;
+		OPENSSL_assert(ctx->buf_off+i < sizeof ctx->buf);
 		memcpy(out,&(ctx->buf[ctx->buf_off]),i);
 		ret=i;
 		out+=i;
@@ -465,7 +466,8 @@ static long b64_ctrl(BIO *b, int cmd, long num, void *ptr)
 		break;
 	case BIO_CTRL_WPENDING: /* More to write in buffer */
 		ret=ctx->buf_len-ctx->buf_off;
-		if ((ret == 0) && (ctx->base64.num != 0))
+		if ((ret == 0) && (ctx->encode != B64_NONE)
+			&& (ctx->base64.num != 0))
 			ret=1;
 		else if (ret <= 0)
 			ret=BIO_ctrl(b->next_bio,cmd,num,ptr);
@@ -500,7 +502,7 @@ again:
 				goto again;
 				}
 			}
-		else if (ctx->base64.num != 0)
+		else if (ctx->encode != B64_NONE && ctx->base64.num != 0)
 			{
 			ctx->buf_off=0;
 			EVP_EncodeFinal(&(ctx->base64),
