@@ -3,7 +3,7 @@
 
 # Initialize/Shutdown the standard and optional network software.
 #
-# $Revision: 1.1 $
+# $Revision: 1.2 $
 #
 # If the IP address for this host is the default 192.0.2.1 Internet test
 # address, the software is configured for loopback (standalone) mode.
@@ -433,6 +433,10 @@ case "$1" in
 		/usr/etc/mrouted `cat $CONFIG/mrouted.options 2> /dev/null` &
 							$ECHO " mrouted\c"
 	    fi
+            if $IS_ON staticroute; then
+                    /usr/etc/route add net default `cat $CONFIG/staticroute.options` 1 2>/dev/null &
+							$ECHO " route\c"
+	    fi
 	fi
 
 	# Start rpcbind(1M) if SVR4 networking has been installed.
@@ -452,6 +456,11 @@ case "$1" in
 	    /usr/sbin/named `cat $CONFIG/named.options 2> /dev/null` < /dev/null
 							$ECHO " named\c"
 	fi
+	if $IS_ON timeclient && test -x /etc/athena/gettime; then
+                 /etc/athena/gettime -s `cat $CONFIG/timeclient.options` &
+                                                        $ECHO " gettime\c"
+        fi
+
 
 
     $ECHO "."
@@ -796,4 +805,3 @@ esac
 
 # DECnet is a trademark of Digital Equipment Corp.
 # NFS is a trademark of Sun Microsystems, Inc.
-
