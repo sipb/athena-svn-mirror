@@ -51,18 +51,14 @@ char **argv;
 {
 	int i;
 	int catchem();
-#ifdef POSIX
-struct sigaction act;
+	struct sigaction act;
 
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
 	act.sa_handler= (void (*)()) catchem;
 	(void) sigaction(SIGINT, &act, NULL);
 	(void) sigaction(SIGQUIT, &act, NULL);
-#else
-	signal (SIGQUIT, catchem);
-	signal (SIGINT, catchem);
-#endif
+
 	strcpy (name, filename(argv[0]));
 
 	ancestor = getpid();
@@ -321,7 +317,7 @@ retest:
 			close (0);
 			dup(pipe3[0]);
 			close(pipe3[0]);
-			sprintf (buf, "%s/fmtxref", SRCDIR);
+			sprintf (buf, "%s/cxref/fmtxref", LIBEXECDIR);
 			execv (buf, fmtxref);
 			fprintf (stderr, "couldn't exec '%s'\n", buf);
 			exit (1);
@@ -350,7 +346,7 @@ retest:
 		dup(pipe2[0]);
 		close (pipe2[0]);
 
-		sprintf (buf, "%s/cxrfilt", SRCDIR);
+		sprintf (buf, "%s/cxref/cxrfilt", LIBEXECDIR);
 		execv (buf, cxrfilt);
 		fprintf (stderr, "couldn't exec '%s'\n", buf);
 		exit (1);
@@ -375,8 +371,8 @@ retest:
 		close (0);
 		dup(pipe1[0]);
 		close (pipe1[0]);
-		execv (SORT, sort1);
-		fprintf (stderr, "couldn't exec '%s'\n", SORT);
+		execvp ("sort", sort1);
+		fprintf (stderr, "couldn't exec 'sort'\n");
 		exit (1);
 		break;
 
@@ -388,7 +384,7 @@ retest:
 		dup(pipe1[1]);
 		close(pipe1[1]);	/* now writes to parent */
 
-		sprintf(buf, "%s/docxref", SRCDIR);
+		sprintf(buf, "%s/cxref/docxref", LIBEXECDIR);
 		execv (buf, docxref);
 		fprintf (stderr, "couldn't exec '%s'\n", buf);
 		exit (1);
@@ -438,7 +434,7 @@ retest:
 			close (0);
 			dup(pipe2[0]);
 			close(pipe2[0]);
-			sprintf (buf, "%s/fmtxref", SRCDIR);
+			sprintf (buf, "%s/cxref/fmtxref", LIBEXECDIR);
 			execv (buf, fmtxref);
 			fprintf (stderr, "couldn't exec '%s'\n", buf);
 			exit (1);
@@ -470,7 +466,7 @@ retest:
 		cxrfilt[1] = "-i";
 		cxrfilt[2] = NULL;
 
-		sprintf (buf, "%s/cxrfilt", SRCDIR);
+		sprintf (buf, "%s/cxref/cxrfilt", LIBEXECDIR);
 		execv (buf, cxrfilt);
 		fprintf (stderr, "couldn't exec '%s'\n", buf);
 		exit (1);
@@ -490,8 +486,8 @@ retest:
 		sprintf (buf, "/tmp/cxr.%d.1", ancestor);
 		open (buf, 0);		/* will be fd 0 */
 
-		execv (SORT, sort2);
-		fprintf (stderr, "couldn't exec '%s'\n", SORT);
+		execvp ("sort", sort2);
+		fprintf (stderr, "couldn't exec 'sort'\n");
 		exit (1);
 		break;
 
@@ -536,7 +532,7 @@ retest:
 			close (0);
 			dup(pipe2[0]);
 			close(pipe2[0]);
-			sprintf (buf, "%s/fmtxref", SRCDIR);
+			sprintf (buf, "%s/cxref/fmtxref", LIBEXECDIR);
 			execv (buf, fmtxref);
 			fprintf (stderr, "couldn't exec '%s'\n", buf);
 			exit (1);
@@ -568,7 +564,7 @@ retest:
 		cxrfilt[1] = "-f";
 		cxrfilt[2] = NULL;
 
-		sprintf (buf, "%s/cxrfilt", SRCDIR);
+		sprintf (buf, "%s/cxref/cxrfilt", LIBEXECDIR);
 		execv (buf, cxrfilt);
 		fprintf (stderr, "couldn't exec '%s'\n", buf);
 		exit (1);
@@ -588,8 +584,8 @@ retest:
 		sprintf (buf, "/tmp/cxr.%d.2", ancestor);
 		open (buf, 0);		/* will be fd 0 */
 
-		execv (SORT, sort3);
-		fprintf (stderr, "couldn't exec '%s'\n", SORT);
+		execvp ("sort", sort3);
+		fprintf (stderr, "couldn't exec 'sort'\n");
 		exit (1);
 		break;
 
@@ -619,18 +615,14 @@ char *fname;
 
 catchem()	/* simple signal catcher */
 {
-#ifdef POSIX
-struct sigaction act;
+	struct sigaction act;
 
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
 	act.sa_handler= (void (*)()) SIG_IGN;
 	(void) sigaction(SIGINT, &act, NULL);
 	(void) sigaction(SIGQUIT, &act, NULL);
-#else
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, SIG_IGN);
-#endif
+
 	deltemps();
 
 	exit (0);
