@@ -25,13 +25,13 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v $
  *	$Author: ghudson $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.8 1997-04-30 17:29:43 ghudson Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.9 1997-11-22 19:24:40 ghudson Exp $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.8 1997-04-30 17:29:43 ghudson Exp $";
+static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/signal.c,v 1.9 1997-11-22 19:24:40 ghudson Exp $";
 #endif
 #endif
 
@@ -39,6 +39,7 @@ static char *rcsid_cref_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 
 #include <signal.h>
 #include <curses.h>
+#include <termios.h>
 #include <browser/cref.h>
 #include <browser/cur_globals.h>
 
