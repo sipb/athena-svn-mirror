@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.3 1990-06-26 13:37:23 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.4 1990-08-25 14:05:43 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.3 1990-06-26 13:37:23 epeisach Exp $";
+static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.4 1990-08-25 14:05:43 epeisach Exp $";
 #endif lint
 
 /*
@@ -229,7 +229,10 @@ help(argc, argv)
 
 		printf("Commands may be abbreviated.  Commands are:\n\n");
 		for (c = cmdtab; c < &cmdtab[NCMDS]; c++) {
-			int len = strlen(c->c_name);
+		        int len;
+			if (!c->c_name)
+			    continue;
+			len = strlen(c->c_name);
 
 			if (len > width)
 				width = len;
@@ -285,7 +288,7 @@ log_cmdline(argc, argv)
 	name = pwentry->pw_name; /* get his name */
 
 	sprintf(logbuf,"%s LPC: ",name);
-	for (i=0 ;i <= argc; i++) {
+	for (i=0 ;i < argc; i++) {
 		strcat(logbuf,argv[i]);
 		strcat(logbuf," ");
 	}
