@@ -179,6 +179,9 @@ fi
 if [ -a config.status ]; then
   chmod ugo+x config.status
 fi
+if [ -a configure ]; then
+  chmod ugo+x configure
+fi
 
 EOF
 fi
