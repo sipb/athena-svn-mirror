@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.1 1987-06-12 16:59:04 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.2 1987-06-23 16:12:25 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -41,7 +41,8 @@ Code_t ZIfNotice(buffer,buffer_len,notice,auth,predicate,args)
 
 	for (;;qcount--) {
 		if ((retval = ZParseNotice(qptr->packet,qptr->packet_len,
-					   &tmpnotice,&tmpauth)) != ZERR_NONE)
+					   &tmpnotice,&tmpauth,&qptr->from))
+		    != ZERR_NONE)
 			return (retval);
 		if ((predicate)(&tmpnotice,args)) {
 			if (qptr->packet_len > buffer_len)
@@ -51,6 +52,7 @@ Code_t ZIfNotice(buffer,buffer_len,notice,auth,predicate,args)
 						   notice,auth))
 			    != ZERR_NONE)
 				return (retval);
+			*auth = tmpauth;
 			return (Z_RemQueue(qptr));
 		} 
 		/* Grunch! */
