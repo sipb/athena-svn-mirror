@@ -1,9 +1,8 @@
-# $Id: Makefile.in,v 1.2 1999-03-11 04:09:40 danw Exp $
+# $Id: Makefile.in,v 1.3 1999-03-19 16:35:09 danw Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
-RANLIB=@RANLIB@
 VPATH=@srcdir@
 srcdir=@srcdir@
 top_srcdir=@top_srcdir@
@@ -29,7 +28,7 @@ ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
 ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} ${REGEX_LIBS} \
 	 -lhesiod -lcom_err ${LIBS}
 
-all: attach attachandrun detach fsid zinit
+all: attach attachandrun detach fsid zinit atconvert
 
 attach: add.o attach.o agetopt.o
 	${CC} ${LDFLAGS} -o attach add.o attach.o agetopt.o -lathdir ${ALL_LIBS}
@@ -45,6 +44,9 @@ fsid: fsid.o agetopt.o
 
 zinit: zinit.o agetopt.o
 	${CC} ${LDFLAGS} -o zinit zinit.o agetopt.o ${ALL_LIBS}
+
+atconvert: atconvert.o
+	${CC} ${LDFLAGS} -o atconvert atconvert.o ${ALL_LIBS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
@@ -64,6 +66,7 @@ install:
 	${INSTALL} -m 4755 -o root zinit ${DESTDIR}${lbindir}
 	rm -f ${DESTDIR}${lsbindir}/zinit
 	ln -s ${lbindir}/zinit ${DESTDIR}${lsbindir}/zinit
+	${INSTALL} -m 755 -o root atconvert ${DESTDIR}${lbindir}
 	${INSTALL} -m 644 add.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 attach.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 644 attachandrun.1 ${DESTDIR}${mandir}/man1
@@ -76,6 +79,7 @@ install:
 clean:
 	rm -f add.o attach.o attachandrun.o detach.o fsid.o zinit.o
 	rm -f agetopt.o attach attachandrun detach fsid zinit
+	rm -f atconvert.o atconvert
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile
