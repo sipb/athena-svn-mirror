@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.6 1999-12-02 20:16:29 danw Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.7 2000-01-19 21:14:16 danw Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -259,6 +259,51 @@ static int attach_attachent(locker_context context, locker_attachent *at,
   return status;
 }
 
+/* This is a helper function used by check_mountoptions to determine
+ * if two strings affect the same option (either identically or
+ * oppositely). o1 and o2 are the option names, l1 and l2 are their
+ * lengths.
+ */
+static int same_option(char *o1, int l1, char *o2, int l2)
+{
+  int cmp;
+
+  /* If one is an explicit negation of the other, they're "the same". */
+  if ((l1 == l2 + 2) && !strncmp(o1, "no", 2) && !strncmp(o1 + 2, o2, l2))
+    return 1;
+  else if ((l2 == l1 + 2) && !strncmp(o2, "no", 2) && !strncmp(o1, o2 + 2, l1))
+    return 1;
+
+  cmp = strncmp(o1, o2, l1 < l2 ? l1 : l2);
+  if (cmp == 0)
+    cmp = l1 - l2;
+  if (cmp == 0)
+    return 1;
+
+  /* Make sure o1 comes first alphabetically to cut down on the number
+   * of comparisons.
+   */
+  if (cmp > 0)
+    {
+      char *tmp = o1;
+      int ltmp = l1;
+      o1 = o2;
+      l1 = l2;
+      o2 = tmp;
+      l2 = ltmp;
+    }
+
+  if (!strncmp(o1, "bg", l1) && !strncmp(o2, "fg", l2))
+    return 1;
+  else if (!strncmp(o1, "ro", l1) && !strncmp(o2, "rw", l2))
+    return 1;
+  else if (!strncmp(o1, "hard", l1) && !strncmp(o2, "soft", l2))
+    return 1;
+
+  /* They're different. */
+  return 0;
+}
+
 /* This function constructs a complete string of mount options for the
  * filesystem based on the authmode, options, mountoptions, and
  * attach.conf.
@@ -364,9 +409,7 @@ static int check_mountoptions(locker_context context, locker_attachent *at,
   p = mo;
   while (p)
     {
-      len = strcspn(p, "=,");
       q = strchr(p, ',');
-
       if (q)
 	{
 	  /* Read through options, looking for a match for p. If p
@@ -376,11 +419,7 @@ static int check_mountoptions(locker_context context, locker_attachent *at,
 	  while (q)
 	    {
 	      q++;
-	      if (!strncmp(p, q, len))
-		break;
-	      if (!strncmp(p, "no", 2) && !strncmp(p + 2, q, len - 2))
-		break;
-	      else if (!strncmp(q, "no", 2) && !strncmp(p, q + 2, len))
+	      if (same_option(p, strcspn(p, "=,"), q, strcspn(q, "=,")))
 		break;
 	      q = strchr(q, ',');
 	    }
