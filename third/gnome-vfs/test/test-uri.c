@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "gnome-vfs.h"
-#include "gnome-vfs-private-types.h"
 #include "gnome-vfs-private-utils.h"
 
 #define TEST_ASSERT(expression, message) \
@@ -289,33 +288,13 @@ test_uri_part (const char *input,
 
 }
 
-static void
-test_uri_to_path (const char *input_uri, 
-	          const char *expected_path) 
-{
-	GnomeVFSURI *uri;
-	const char *path;
-
-	uri = gnome_vfs_uri_new (input_uri);
-
-	path = gnome_vfs_uri_get_path (uri);
-
-	if (strcmp (path, expected_path) != 0) {
-		test_failed ("gnome_vfs_uri_get_path (%s) resulted in \"%s\" instead of \"%s\"",
-			     input_uri, path, expected_path);
-	}
-	gnome_vfs_uri_unref (uri);
-}
-
-
 /*
  * Ensure that gnome_vfs_uri_get_host_port
  * return expected results
  */  
 static void
 test_uri_host_port (const char *input, 
-	       guint expected_port
-	       )
+		    guint expected_port)
 {
 	GnomeVFSURI *uri;
 	gboolean success = FALSE;
@@ -337,6 +316,35 @@ test_uri_host_port (const char *input,
 	}
 }
 
+static void
+test_uri_is_parent_common (const char *parent, const char *item, gboolean deep, gboolean expected_result)
+{
+	GnomeVFSURI *item_uri;
+	GnomeVFSURI *parent_uri;
+	gboolean result;
+	
+	item_uri = gnome_vfs_uri_new (item);
+	parent_uri = gnome_vfs_uri_new (parent);
+	
+	result = gnome_vfs_uri_is_parent (parent_uri, item_uri, deep);
+	
+	if (result != expected_result) {
+		test_failed ("gnome_vfs_uri_is_parent (%s, %s) resulted in \"%s\" instead of \"%s\"",
+			     parent, item, result ? "TRUE" : "FALSE", expected_result ? "TRUE" : "FALSE");
+	}
+}
+
+static void
+test_uri_is_parent_deep (const char *parent, const char *item, gboolean expected_result)
+{
+	test_uri_is_parent_common (parent, item, TRUE, expected_result);
+}
+
+static void
+test_uri_is_parent_shallow (const char *parent, const char *item, gboolean expected_result)
+{
+	test_uri_is_parent_common (parent, item, FALSE, expected_result);
+}
 
 #define VERIFY_STRING_RESULT(function, expected) \
 	G_STMT_START {											\
@@ -460,9 +468,29 @@ main (int argc, char **argv)
 	test_uri_parent ("http:", "NULL");
 	test_uri_parent ("file:/", "NULL");
 	test_uri_parent ("FILE://", "NULL");
-	test_uri_parent ("man:as", "NULL");
-	test_uri_parent ("pipe:gnome-info2html2 as", "NULL");
+	test_uri_parent ("pipe:gnome-info2html2 as", "URI NULL");
 	test_uri_parent ("file:///my/document.html#fragment", "file:///my");
+
+	test_uri_is_parent_shallow ("file:///path", "file:///path/child", TRUE);
+	test_uri_is_parent_shallow ("file:///bla", "file:///path/child", FALSE);
+	test_uri_is_parent_shallow ("file:///path1/path2", "file:///path1/path2/child", TRUE);
+	test_uri_is_parent_shallow ("ftp://foobar.com", "ftp://foobar.com/child", TRUE);
+	test_uri_is_parent_shallow ("ftp://foobar.com/", "ftp://foobar.com/child", TRUE);
+	test_uri_is_parent_shallow ("ftp://foobar.com/path", "ftp://foobar.com/path/child", TRUE);
+	test_uri_is_parent_shallow ("file:///path1/path2", "file:///path1/path2/path3/path4/path5/child", FALSE);
+
+	test_uri_is_parent_deep ("file:///path", "file:///path/child", TRUE);
+	test_uri_is_parent_deep ("file:///path1/path2", "file:///path1/path2/child", TRUE);
+	test_uri_is_parent_deep ("ftp://foobar.com", "ftp://foobar.com/child", TRUE);
+	test_uri_is_parent_deep ("ftp://foobar.com/", "ftp://foobar.com/child", TRUE);
+	test_uri_is_parent_deep ("ftp://foobar.com/path", "ftp://foobar.com/path/child", TRUE);
+
+	test_uri_is_parent_deep ("file:///path", "file:///path/path1/child", TRUE);
+	test_uri_is_parent_deep ("file:///path1/path2", "file:///path1/path2/path3/child", TRUE);
+	test_uri_is_parent_deep ("file:///path1/path2", "file:///path1/path2/path3/path4/path5/child", TRUE);
+	test_uri_is_parent_deep ("ftp://foobar.com", "ftp://foobar.com/path1/child", TRUE);
+	test_uri_is_parent_deep ("ftp://foobar.com/", "ftp://foobar.com/path1/child", TRUE);
+	test_uri_is_parent_deep ("ftp://foobar.com/path1", "ftp://foobar.com/path1/path2/child", TRUE);
 
 	test_uri_has_parent ("", "URI NULL");
 	test_uri_has_parent ("http://www.eazel.com", "FALSE");
@@ -474,8 +502,7 @@ main (int argc, char **argv)
 	test_uri_has_parent ("http:", "FALSE");
 	test_uri_has_parent ("file:/", "FALSE");
 	test_uri_has_parent ("FILE://", "FALSE");
-	test_uri_has_parent ("man:as", "FALSE");
-	test_uri_has_parent ("pipe:gnome-info2html2 as", "FALSE");
+	test_uri_has_parent ("pipe:gnome-info2html2 as", "URI NULL");
 
 	/* Test uri canonicalization */
 	test_uri_to_string ("/////", "file:///", GNOME_VFS_URI_HIDE_NONE);
@@ -493,7 +520,7 @@ main (int argc, char **argv)
 	test_uri_to_string ("/a/b/c/../..", "file:///a", GNOME_VFS_URI_HIDE_NONE);
 	test_uri_to_string ("/a/../b/..", "file:///", GNOME_VFS_URI_HIDE_NONE);
 	test_uri_to_string ("/a/../b/../c", "file:///c", GNOME_VFS_URI_HIDE_NONE);
-
+	test_uri_to_string ("/a/../b/../c", "file:///c", GNOME_VFS_URI_HIDE_NONE);
 
 	test_make_canonical ("file:///%3F", "file:///%3F");
 	test_make_canonical ("file:///%78", "file:///x");
@@ -510,6 +537,7 @@ main (int argc, char **argv)
 	test_make_canonical ("http:///?", "http:///?");
 	test_make_canonical ("http:///&", "http:///&");
 	test_make_canonical ("http:///x", "http:///x");
+	test_make_canonical ("pipe:foo", "pipe:foo");
 	test_make_canonical ("eazel-services:///%3F", "eazel-services:///%3F");
 	test_make_canonical ("eazel-services:///%78", "eazel-services:///x");
 	test_make_canonical ("eazel-services:///?", "eazel-services:///?");
@@ -567,13 +595,20 @@ main (int argc, char **argv)
 
 	/* FIXME bugzilla.eazel.com 4102: illegal? */
 	test_uri_to_string ("file:foo", "file:foo", GNOME_VFS_URI_HIDE_NONE);
-	/* correct */
-	test_uri_to_string ("pipe:foo", "pipe:foo", GNOME_VFS_URI_HIDE_NONE);
 
 	/* FIXME bugzilla.eazel.com 3830: This turns a good path with
 	 * a redundant "/" in it into a completely different one.
 	 */
 	test_uri_to_string ("//foo", "file://foo", GNOME_VFS_URI_HIDE_NONE);
+
+	/* FIXME bugzilla.eazel.com 7774: Are any of these right?
+	 * Perhaps they should all return NULL?
+	 */
+	test_uri_to_string (".", "file:", GNOME_VFS_URI_HIDE_NONE);
+	test_uri_to_string ("./a", "file:a", GNOME_VFS_URI_HIDE_NONE);
+	test_uri_to_string ("../a", "file:../a", GNOME_VFS_URI_HIDE_NONE);
+	test_uri_to_string ("../a", "file:../a", GNOME_VFS_URI_HIDE_NONE);
+	test_uri_to_string ("../../a", "file:a", GNOME_VFS_URI_HIDE_NONE);
 
 	/* FIXME bugzilla.eazel.com 2801: Do we want GnomeVFSURI to
          * just refuse to deal with URIs that we don't have a module
@@ -594,20 +629,12 @@ main (int argc, char **argv)
 	test_uri_parent ("http://www.eazel.com?///xxx", "http://www.eazel.com?/");
 	test_uri_parent ("http://www.eazel.com/dir?xxx/yyy", "http://www.eazel.com/dir?xxx");
 
-	test_uri_to_path ("pipe:gnome-db2html2%20'%2Fgnome%2Fshare%2Fgnome%2Fhelp"
-			  "%2Fnautilus%2FC%2Fnautilus.sgml'%3Bmime-type%3Dtext%2Fhtml", 
-			  "gnome-db2html2%20'%2Fgnome%2Fshare%2Fgnome%2Fhelp"
-			  "%2Fnautilus%2FC%2Fnautilus.sgml'%3Bmime-type%3Dtext%2Fhtml");
-
-	test_uri_to_string ("pipe:gnome-db2html2%20'%2Fgnome%2Fshare%2Fgnome%2Fhelp"
-			    "%2Fnautilus%2FC%2Fnautilus.sgml'%3Bmime-type%3Dtext%2Fhtml", 
-			    "pipe:gnome-db2html2%20'%2Fgnome%2Fshare%2Fgnome%2Fhelp"
-			    "%2Fnautilus%2FC%2Fnautilus.sgml'%3Bmime-type%3Dtext%2Fhtml",
-			    GNOME_VFS_URI_HIDE_NONE);
-
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri (""), NULL);
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("/#"), NULL);
-	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:/path"), NULL);
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:/path"), "/path");
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file://path"), NULL);
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///path"), "/path");
+	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:////path"), "//path");
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/document.html"), "/my/document.html");
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/document.html#fragment"), NULL);
 	VERIFY_STRING_RESULT (gnome_vfs_get_local_path_from_uri ("file:///my/docu%20ment%23/path"), "/my/docu ment#/path");

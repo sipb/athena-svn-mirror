@@ -42,8 +42,13 @@
 
 #include <glib.h>
 
-#include "gnome-vfs.h"
-#include "gnome-vfs-private-types.h"
+#include <libgnomevfs/gnome-vfs.h>
+
+typedef struct GnomeVFSMessageCallbacks GnomeVFSMessageCallbacks;
+
+/* Used to report user-friendly status messages you might want to display. */
+typedef void (* GnomeVFSStatusCallback) (const gchar  *message,
+					 gpointer      callback_data);
 
 GnomeVFSMessageCallbacks*
      gnome_vfs_message_callbacks_new  (void);

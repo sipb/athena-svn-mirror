@@ -26,28 +26,28 @@
             Darin Adler <darin@eazel.com>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
 
-#include "gnome-vfs.h"
-#include "gnome-vfs-private.h"
+#include "gnome-vfs-utils.h"
 #include "gnome-vfs-private-utils.h"
-
+#include "gnome-vfs-private.h"
+#include "gnome-vfs.h"
 #include <ctype.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <unistd.h>
 #include <sys/types.h>
+#include <unistd.h>
+
 #if HAVE_SYS_STATVFS_H
 #include <sys/statvfs.h>
 #endif
+
 #if HAVE_SYS_VFS_H
 #include <sys/vfs.h>
 #elif HAVE_SYS_MOUNT_H
@@ -55,9 +55,7 @@
 #endif
 
 #define KILOBYTE_FACTOR 1024.0
-
 #define MEGABYTE_FACTOR (1024.0 * 1024.0)
-
 #define GIGABYTE_FACTOR (1024.0 * 1024.0 * 1024.0)
 
 gchar*
@@ -568,7 +566,7 @@ gnome_vfs_make_uri_canonical (const char *original_uri_text)
 	GnomeVFSURI *uri;
 	char *result;
 
-	uri = gnome_vfs_uri_new_private (original_uri_text, TRUE);
+	uri = gnome_vfs_uri_new_private (original_uri_text, TRUE, TRUE, FALSE);
 	if (uri == NULL) {
 		return NULL;;
 	} 
@@ -631,15 +629,24 @@ gnome_vfs_list_deep_free (GList *list)
 char *
 gnome_vfs_get_local_path_from_uri (const char *uri)
 {
-	if (!gnome_vfs_istr_has_prefix (uri, "file:///")) {
+	const char *path_part;
+
+	if (!gnome_vfs_istr_has_prefix (uri, "file:/")) {
 		return NULL;
 	}
 	
-	if (strchr (uri, '#') != NULL) {
+	path_part = uri + strlen ("file:");
+	if (strchr (path_part, '#') != NULL) {
 		return NULL;
 	}
 	
-	return gnome_vfs_unescape_string (uri + 7, "/");
+	if (gnome_vfs_istr_has_prefix (path_part, "///")) {
+		path_part += 2;
+	} else if (gnome_vfs_istr_has_prefix (path_part, "//")) {
+		return NULL;
+	}
+
+	return gnome_vfs_unescape_string (path_part, "/");
 }
 
 /**

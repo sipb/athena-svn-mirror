@@ -25,9 +25,8 @@
 #ifndef GNOME_VFS_MIME_HANDLERS_H
 #define GNOME_VFS_MIME_HANDLERS_H
 
-#include <glib.h>
+#include <libgnomevfs/gnome-vfs-result.h>
 #include <liboaf/liboaf.h>
-#include <libgnomevfs/gnome-vfs-types.h> /* for GnomeVFSResult */
 
 typedef enum {
 	GNOME_VFS_MIME_ACTION_TYPE_NONE,
@@ -91,14 +90,14 @@ GnomeVFSResult	 	 gnome_vfs_mime_set_can_be_executable   	   (const char        
 GnomeVFSResult           gnome_vfs_mime_set_short_list_applications        (const char              *mime_type,
 									    GList                   *application_ids);
 GnomeVFSResult           gnome_vfs_mime_set_short_list_components          (const char              *mime_type,
-									    GList                   *component_ids);
-GnomeVFSResult           gnome_vfs_mime_add_application_to_short_list      (const char              *uri,
+									    GList                   *component_iids);
+GnomeVFSResult           gnome_vfs_mime_add_application_to_short_list      (const char              *mime_type,
 									    const char              *application_id);
-GnomeVFSResult           gnome_vfs_mime_remove_application_from_short_list (const char              *uri,
+GnomeVFSResult           gnome_vfs_mime_remove_application_from_short_list (const char              *mime_type,
 									    const char              *application_id);
-GnomeVFSResult           gnome_vfs_mime_add_component_to_short_list        (const char              *uri,
+GnomeVFSResult           gnome_vfs_mime_add_component_to_short_list        (const char              *mime_type,
 									    const char              *iid);
-GnomeVFSResult           gnome_vfs_mime_remove_component_from_short_list   (const char              *uri,
+GnomeVFSResult           gnome_vfs_mime_remove_component_from_short_list   (const char              *mime_type,
 									    const char              *iid);
 GnomeVFSResult           gnome_vfs_mime_add_extension                      (const char              *mime_type,
 									    const char              *extension);

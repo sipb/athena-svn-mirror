@@ -1,1693 +1,1054 @@
-# Finnish translation for gnome-vfs.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000
-#
-# GNOME Finnish Translation Team: http://gnome-fi.sourceforge.net/
+# gnome-vfs Finnish translation
+# Suomennos: http://gnome-fi.sourceforge.net/
+#  
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Pauli Virtanen <pauli.virtanen@saunalahti.fi>, 2000-2001
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-vfs\n"
-"POT-Creation-Date: 2001-03-12 17:28-0800\n"
-"PO-Revision-Date: 2001-01-10 23:17+02:00\n"
+"Project-Id-Version: gnome-vfs 1.0.2\n"
+"POT-Creation-Date: 2002-01-20 06:32-0800\n"
+"PO-Revision-Date: 2001-10-06 20:52+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/mime/gnome-vfs.keys.in.h:1
-msgid "3D Studio image"
-msgstr "3D Studio -kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:2
-msgid "AIFC audio"
-msgstr "AIFC-‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:3
-msgid "AIFF audio"
-msgstr "AIFF-‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:4
-msgid "ANIM animation"
-msgstr "ANIM-animaatio"
-
-#: data/mime/gnome-vfs.keys.in.h:5
-msgid "AVI video"
-msgstr "AVI-video"
-
-#: data/mime/gnome-vfs.keys.in.h:6
-msgid "AbiWord document"
-msgstr "AbiWord-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:7
-msgid "Adobe FrameMaker font"
-msgstr "Adobe FrameMaker -kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:8
-msgid "Adobe font metrics"
-msgstr "Adobe-kirjasinmitat"
-
-#: data/mime/gnome-vfs.keys.in.h:9
-msgid "Andrew Toolkit inset"
-msgstr "Andrew Toolkit -osio"
-
-#: data/mime/gnome-vfs.keys.in.h:10
-msgid "ApplixWare Graphics image"
-msgstr "ApplixWare-kuvatiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:11
-msgid "Applixware Words document"
-msgstr "Applixware-tekstiasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:12
-msgid "Applixware spreadsheet"
-msgstr "Applixware-taulukko"
-
-#: data/mime/gnome-vfs.keys.in.h:13
-msgid "AutoCAD image"
-msgstr "AutoCAD-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:14
-msgid "BCPIO document"
-msgstr "BCPIO-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:15
-msgid "BDF font"
-msgstr "BDF-kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:16
-msgid "C shell script"
-msgstr "C-komentotulkkiskripti"
-
-#: data/mime/gnome-vfs.keys.in.h:17
-msgid "C source code"
-msgstr "C l‰hdekoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:18
-msgid "C++ source code"
-msgstr "C++ l‰hdekoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:19
-msgid "CGI program"
-msgstr "CGI-ohjelma"
-
-#: data/mime/gnome-vfs.keys.in.h:20
-msgid "CGM image"
-msgstr "CGM-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:21
-msgid "CMU raster image"
-msgstr "CMU-rasterikuva"
-
-#: data/mime/gnome-vfs.keys.in.h:22
-msgid "CPIO archive"
-msgstr "CPIO-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:23
-msgid "CPIO archive (gzip-compressed)"
-msgstr "CPIO-paketti (gzip-pakattu)"
-
-#: data/mime/gnome-vfs.keys.in.h:24
-msgid "DCL script"
-msgstr "DCL-skripti"
-
-#: data/mime/gnome-vfs.keys.in.h:25
-msgid "DOS font"
-msgstr "DOS-kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:26
-msgid "DOS/Windows program"
-msgstr "DOS/Windows-ohjelma"
-
-#: data/mime/gnome-vfs.keys.in.h:27
-msgid "DSSSL document"
-msgstr "DSSSL-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:28
-msgid "DXF vector graphic"
-msgstr "DXF-vektorigrafiikka"
-
-#: data/mime/gnome-vfs.keys.in.h:29
-msgid "Debian package"
-msgstr "Debian-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:30
-msgid "Dia diagram"
-msgstr "Dia-kaavio"
-
-#: data/mime/gnome-vfs.keys.in.h:31
-msgid "Dolby Digital audio"
-msgstr "Dolby-digitaali‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:32
-msgid "Emacs Lisp source code"
-msgstr "Emacs Lisp -l‰hdekoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:33
-msgid "Enlightenment theme"
-msgstr "Enlightenment-teema"
-
-#: data/mime/gnome-vfs.keys.in.h:34
-msgid "FLC animation"
-msgstr "FLC-animaatio"
-
-#: data/mime/gnome-vfs.keys.in.h:35
-msgid "FLI animation"
-msgstr "FLI-animaatio"
-
-#: data/mime/gnome-vfs.keys.in.h:36
-msgid "FastTracker II audio"
-msgstr "FastTracker II -‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:37
-msgid "Fortran source code"
-msgstr "Fortran-l‰hdekoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:38
-msgid "FrameMaker interchange document"
-msgstr "FrameMaker-v‰litysasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:39
-msgid "G3 fax image"
-msgstr "G3-faksikuva"
-
-#: data/mime/gnome-vfs.keys.in.h:40
-msgid "GIF image"
-msgstr "GIF-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:41
-msgid "GIMP document"
-msgstr "GIMP-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:42
-msgid "GMC link"
-msgstr "GMC-linkki"
-
-#: data/mime/gnome-vfs.keys.in.h:43
-msgid "GNOME application details"
-msgstr "GNOME-sovellustiedot"
-
-#: data/mime/gnome-vfs.keys.in.h:44
-msgid "GNU Oleo Spreadsheet"
-msgstr "GNU Oleo -taulukko"
-
-#: data/mime/gnome-vfs.keys.in.h:45
-msgid "GNU mail message"
-msgstr "GNU-postiviesti"
-
-#: data/mime/gnome-vfs.keys.in.h:46
-msgid "GTK configuration"
-msgstr "GTK-asetukset"
-
-#: data/mime/gnome-vfs.keys.in.h:47
-msgid "Glade project"
-msgstr "Glade-projekti"
-
-#: data/mime/gnome-vfs.keys.in.h:48
-msgid "GnuCash Workbook"
-msgstr "GnuCash-tyˆkirja"
-
-#: data/mime/gnome-vfs.keys.in.h:49
-msgid "Gnumeric spreadsheet"
-msgstr "Gnumeric-taulukko"
-
-#: data/mime/gnome-vfs.keys.in.h:50
-msgid "HDF document"
-msgstr "HDF-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:51
-msgid "HTML page"
-msgstr "HTML-sivu"
-
-#: data/mime/gnome-vfs.keys.in.h:52
-msgid "IDL document"
-msgstr "IDL-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:53
-msgid "IEF image"
-msgstr "IEF-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:54
-msgid "IFF image"
-msgstr "IFF-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:55
-msgid "ILBM image"
-msgstr "ILBM-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:56
-msgid "ISI video"
-msgstr "ISI-video"
-
-#: data/mime/gnome-vfs.keys.in.h:57
-msgid "Impulse Tracker audio"
-msgstr "Impulse Tracker -‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:58
-msgid "JBuilder Project"
-msgstr "JBuilder-projekti"
-
-#: data/mime/gnome-vfs.keys.in.h:59
-msgid "JPEG image"
-msgstr "JPEG-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:60
-msgid "Java byte code"
-msgstr "Java-tavukoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:61
-msgid "Java source code"
-msgstr "Java-l‰hdekoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:62
-msgid "KDE application details"
-msgstr "KDE-sovellustietoja"
-
-#: data/mime/gnome-vfs.keys.in.h:63
-msgid "KIllustrator document"
-msgstr "KIllustrator-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:64
-msgid "KPresenter presentation"
-msgstr "KPresenter-esitys"
-
-#: data/mime/gnome-vfs.keys.in.h:65
-msgid "KSpread spreadsheet"
-msgstr "KSpread-taulukko"
-
-#: data/mime/gnome-vfs.keys.in.h:66
-msgid "KWord document"
-msgstr "KWord-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:67
-msgid "Korn shell script"
-msgstr "Korn-komentotulkkiskripti"
-
-#: data/mime/gnome-vfs.keys.in.h:68
-msgid "LHA archive"
-msgstr "LHA-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:69
-msgid "LHARC archive"
-msgstr "LHARC-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:70
-msgid "LIBGRX font"
-msgstr "LIBGRX-kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:71
-msgid "LightWave object"
-msgstr "LightWave-esine"
-
-#: data/mime/gnome-vfs.keys.in.h:72
-msgid "LightWave scene"
-msgstr "LightWave-n‰kym‰"
-
-#: data/mime/gnome-vfs.keys.in.h:73
-msgid "Linux PSF console font"
-msgstr "Linux PSF -konsolikirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:74
-msgid "Lotus 1-2-3 spreadsheet"
-msgstr "Lotus 1-2-3 -taulukko"
-
-#: data/mime/gnome-vfs.keys.in.h:75
-msgid "M3 audio URL"
-msgstr "M3-‰‰ni URL"
-
-#: data/mime/gnome-vfs.keys.in.h:76
-msgid "MIDI audio"
-msgstr "MIDI-‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:77
-msgid "MOD audio"
-msgstr "MOD-‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:78
-msgid "MP3 audio"
-msgstr "MP3-‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:79
-msgid "MP3 audio playlist"
-msgstr "MP3-soittolista"
-
-#: data/mime/gnome-vfs.keys.in.h:80
-msgid "MPEG video"
-msgstr "MPEG-video"
-
-#: data/mime/gnome-vfs.keys.in.h:81
-msgid "MS ASF video"
-msgstr "MS ASF -video"
-
-#: data/mime/gnome-vfs.keys.in.h:82
-msgid "MS video"
-msgstr "MS-video"
-
-#: data/mime/gnome-vfs.keys.in.h:83
-msgid "Macintosh AppleDouble-encoded file"
-msgstr "Macintosh AppleDouble -koodattu tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:84
-msgid "Macintosh BinHex-encoded file"
-msgstr "Macintosh BinHex -koodattu tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:85
-msgid "Macintosh StuffIt archive"
-msgstr "Macintosh StuffIt -paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:86
-msgid "Macromedia Flash file"
-msgstr "Macromedia Flash -tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:87
-msgid "MathML document"
-msgstr "MathML-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:88
-msgid "Microsoft Excel spreadsheet"
-msgstr "Microsoft Excel -taulukko"
-
-#: data/mime/gnome-vfs.keys.in.h:89
-msgid "Microsoft PowerPoint document"
-msgstr "Microsoft PowerPoint -asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:90
-msgid "Microsoft Word document"
-msgstr "Microsoft Word -asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:91
-msgid "Microsoft video"
-msgstr "Microsoft-video"
-
-#: data/mime/gnome-vfs.keys.in.h:92
-msgid "Nautilus link"
-msgstr "Nautilus-linkki"
-
-#: data/mime/gnome-vfs.keys.in.h:93
-msgid "ODA document"
-msgstr "ODA-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:94
-msgid "PBM image"
-msgstr "PBM-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:95
-msgid "PCF font"
-msgstr "PCF-kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:96
-msgid "PDF document"
-msgstr "PDF-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:97
-msgid "PEF program"
-msgstr "PEF-ohjelma"
-
-#: data/mime/gnome-vfs.keys.in.h:98
-msgid "PGM image"
-msgstr "PGM-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:99
-msgid "PGN chess game"
-msgstr "PGN-shakkipeli"
-
-#: data/mime/gnome-vfs.keys.in.h:100
-msgid "PGP keys"
-msgstr "PGP-avaimet"
-
-#: data/mime/gnome-vfs.keys.in.h:101
-msgid "PGP message"
-msgstr "PGP-viesti"
-
-#: data/mime/gnome-vfs.keys.in.h:102
-msgid "PGP signature"
-msgstr "PGP-allekirjoitus"
-
-#: data/mime/gnome-vfs.keys.in.h:103
-msgid "PGP-encrypted file"
-msgstr "PGP-salattu tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:104
-msgid "PHP script"
-msgstr "PHP-skripti"
-
-#: data/mime/gnome-vfs.keys.in.h:105
-msgid "PN RealAudio document"
-msgstr "PN RealAudio -asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:106
-msgid "PNG image"
-msgstr "PNG-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:107
-msgid "PNM image"
-msgstr "PNM-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:108
-msgid "PPM image"
-msgstr "PPM-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:109
-msgid "Palm OS database"
-msgstr "Palm OS -tietokanta"
-
-#: data/mime/gnome-vfs.keys.in.h:110
-msgid "Perl script"
-msgstr "Perl-skripti"
-
-#: data/mime/gnome-vfs.keys.in.h:111
-msgid "Photoshop document"
-msgstr "Photoshop-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:112
-msgid "PostScript Type 1 font"
-msgstr "PostScript tyypin 1 kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:113
-msgid "PostScript document"
-msgstr "PostScript-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:114
-msgid "Python source code"
-msgstr "Python-l‰hdekoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:115
-msgid "QuickTime movie"
-msgstr "QuickTime-video"
-
-#: data/mime/gnome-vfs.keys.in.h:116
-msgid "Quicken document"
-msgstr "Quicken-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:117
-msgid "Quicken for Windows document"
-msgstr "Quicken Windowsille -asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:118
-msgid "RAR archive"
-msgstr "RAR-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:119
-msgid "README document"
-msgstr "LUEMINUT-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:120
-msgid "RGB image"
-msgstr "RGB-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:121
-msgid "RIFF audio"
-msgstr "RIFF-‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:122
-msgid "RPM package"
-msgstr "RPM-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:123
-msgid "RealAudio/Video document"
-msgstr "RealAudio/Video-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:124
-msgid "RealVideo video"
-msgstr "RealVideo-video"
-
-#: data/mime/gnome-vfs.keys.in.h:125
-msgid "S/MIME file"
-msgstr "S/MIME-tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:126
-msgid "S/MIME signature"
-msgstr "S/MIME-allekirjoitus"
-
-#: data/mime/gnome-vfs.keys.in.h:127
-msgid "SGI video"
-msgstr "SGI-video"
-
-#: data/mime/gnome-vfs.keys.in.h:128
-msgid "SGML document"
-msgstr "SGML-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:129
-msgid "SMIL script"
-msgstr "SMIL-skripti"
-
-#: data/mime/gnome-vfs.keys.in.h:130
-msgid "SQL code"
-msgstr "SQL-koodi"
-
-#: data/mime/gnome-vfs.keys.in.h:131
-msgid "SV4 CPIO archive"
-msgstr "SV4 CPIO -paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:132
-msgid "SV4 CPIP archive (with CRC)"
-msgstr "SV4 CPIP -paketti (CRC mukana)"
-
-#: data/mime/gnome-vfs.keys.in.h:133
-msgid "SVG art"
-msgstr "SVG-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:134
-msgid "Scheme source code"
-msgstr "Scheme-l‰hdekoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:135
-msgid "Scream Tracker 3 audio"
-msgstr "Scream Tracker 3 -‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:136
-msgid "Scream Tracker audio"
-msgstr "Scream Tracker -‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:137
-msgid "Scream Tracker instrument"
-msgstr "Scream Tracker -soitin"
-
-#: data/mime/gnome-vfs.keys.in.h:138
-msgid "Setext document"
-msgstr "Setext-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:139
-msgid "Speech document"
-msgstr "Puheasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:140
-msgid "Speedo font"
-msgstr "Speedo-kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:141
-msgid "Spreadsheet Interchange document"
-msgstr "Taulukkov‰litysasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:142
-msgid "Stampede package"
-msgstr "Stampede-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:143
-msgid "StarOffice Writer document"
-msgstr "StarOffice-tekstiasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:144
-msgid "StarOffice presentation"
-msgstr "StarOffice-esitys"
-
-#: data/mime/gnome-vfs.keys.in.h:145
-msgid "StarOffice spreadsheet"
-msgstr "StarOffice-taulukko"
-
-#: data/mime/gnome-vfs.keys.in.h:146
-msgid "Sun µ-law audio"
-msgstr "Sun µ-law -‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:147
-msgid "SunOS News font"
-msgstr "SunOS News -kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:148
-msgid "TIFF image"
-msgstr "TIFF-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:149
-msgid "TarGA image"
-msgstr "TarGA-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:150
-msgid "Tcl script"
-msgstr "Tcl-skripti"
-
-#: data/mime/gnome-vfs.keys.in.h:151
-msgid "TeX document"
-msgstr "TeX-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:152
-msgid "TeX dvi document"
-msgstr "TeX DVI -asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:153
-msgid "TeX font"
-msgstr "TeX-kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:154
-msgid "TeX font metrics"
-msgstr "TeX-kirjasinmitat"
-
-#: data/mime/gnome-vfs.keys.in.h:155
-msgid "TeXInfo document"
-msgstr "TeXInfo-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:156
-msgid "ToutDoux document"
-msgstr "ToutDoux-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:157
-msgid "TrueType font"
-msgstr "TrueType-kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:158
-msgid "USENET news message"
-msgstr "keskusteluryhm‰viesti"
-
-#: data/mime/gnome-vfs.keys.in.h:159
-msgid "Unidata netCDF document"
-msgstr "Unidata netCDF -asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:160
-msgid "V font"
-msgstr "V-kirjasin"
-
-#: data/mime/gnome-vfs.keys.in.h:161
-msgid "VOC audio"
-msgstr "VOC-‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:162
-msgid "VRML document"
-msgstr "VRML-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:163
-msgid "Vivo video"
-msgstr "Vivo-video"
-
-#: data/mime/gnome-vfs.keys.in.h:164
-msgid "WAIS source code"
-msgstr "WAIS-l‰hdekoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:165
-msgid "Wavelet video"
-msgstr "Wavelet-video"
-
-#: data/mime/gnome-vfs.keys.in.h:166
-msgid "Windows bitmap image"
-msgstr "Windows-bittikarttakuva"
-
-#: data/mime/gnome-vfs.keys.in.h:167
-msgid "Windows icon image"
-msgstr "Windows-kuvake"
-
-#: data/mime/gnome-vfs.keys.in.h:168
-msgid "Windows metafile graphics"
-msgstr "Windows-metagrafiikkatiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:169
-msgid "WordPerfect document"
-msgstr "WordPerfect-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:170
-msgid "X bitmap image"
-msgstr "X-bittikarttakuva"
-
-#: data/mime/gnome-vfs.keys.in.h:171
-msgid "X window image"
-msgstr "X-ikkunakuva"
-
-#: data/mime/gnome-vfs.keys.in.h:172
-msgid "XML document"
-msgstr "XML-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:173
-msgid "XPM image"
-msgstr "XPM-kuva"
-
-#: data/mime/gnome-vfs.keys.in.h:174
-msgid "Xbase database"
-msgstr "Xbase-tietokanta"
-
-#: data/mime/gnome-vfs.keys.in.h:175
-msgid "active server page"
-msgstr "aktiivinen palvelinsivu"
-
-#: data/mime/gnome-vfs.keys.in.h:176
-msgid "address card"
-msgstr "osoitekortti"
-
-#: data/mime/gnome-vfs.keys.in.h:177
-msgid "ar archive"
-msgstr "ar-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:178
-msgid "arj archive"
-msgstr "arj-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:179
-msgid "authors list"
-msgstr "tekij‰luettelo"
-
-#: data/mime/gnome-vfs.keys.in.h:180
-msgid "backup file"
-msgstr "varmuuskopio"
-
-#: data/mime/gnome-vfs.keys.in.h:181
-msgid "basic audio"
-msgstr "tavallinen ‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:182
-msgid "bibliography record"
-msgstr "bibliografiakohta"
-
-#: data/mime/gnome-vfs.keys.in.h:183
-msgid "binary program"
-msgstr "ohjelmatiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:184
-msgid "block device"
-msgstr "lohkolaite"
-
-#: data/mime/gnome-vfs.keys.in.h:185
-msgid "bzip-compressed file"
-msgstr "bzip-pakattu tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:186
-msgid "calendar file"
-msgstr "kalenteritiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:187
-msgid "calendar or event document"
-msgstr "kalenteri- tai tapahtuma-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:188
-msgid "character device"
-msgstr "merkkilaite"
-
-#: data/mime/gnome-vfs.keys.in.h:189
-msgid "comma-separated text document"
-msgstr "pilkuilla eroteltu teksti"
-
-#: data/mime/gnome-vfs.keys.in.h:190
-msgid "compound document"
-msgstr "yhdisteasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:191
-msgid "compress-compressed file"
-msgstr "compress-pakattu tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:192
-msgid "compressed GIMP document"
-msgstr "pakattu GIMP-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:193
-msgid "directory information file"
-msgstr "hakemistotiedot"
-
-#: data/mime/gnome-vfs.keys.in.h:194
-msgid "document type definition"
-msgstr "asiakirjatyyppim‰‰ritelm‰"
-
-#: data/mime/gnome-vfs.keys.in.h:195
-msgid "email headers"
-msgstr "s‰hkˆpostiotsikot"
-
-#: data/mime/gnome-vfs.keys.in.h:196
-msgid "email message"
-msgstr "s‰hkˆpostiviesti"
-
-#: data/mime/gnome-vfs.keys.in.h:197
-msgid "encrypted message"
-msgstr "salattu viesti"
-
-#: data/mime/gnome-vfs.keys.in.h:198
-msgid "enriched text document"
-msgstr "RTF-teksti"
-
-#: data/mime/gnome-vfs.keys.in.h:199
-msgid "folder"
-msgstr "hakemisto"
-
-#: data/mime/gnome-vfs.keys.in.h:200
-msgid "gtar archive"
-msgstr "gtar-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:201
-msgid "gzip-compressed file"
-msgstr "gzip-pakattu tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:202
-msgid "help page"
-msgstr "ohjesivu"
-
-#: data/mime/gnome-vfs.keys.in.h:203
-msgid "mail delivery report"
-msgstr "postinv‰litysraportti"
-
-#: data/mime/gnome-vfs.keys.in.h:204
-msgid "mail disposition report"
-msgstr "postinsijoitusraportti"
-
-#: data/mime/gnome-vfs.keys.in.h:205
-msgid "mail system report"
-msgstr "postij‰rjestelm‰raportti"
-
-#: data/mime/gnome-vfs.keys.in.h:206
-msgid "makefile"
-msgstr "makefile"
-
-#: data/mime/gnome-vfs.keys.in.h:207
-msgid "manual page"
-msgstr "manuaalisivu"
-
-#: data/mime/gnome-vfs.keys.in.h:208
-msgid "manual page (compressed)"
-msgstr "manuaalisivu (pakattu)"
-
-#: data/mime/gnome-vfs.keys.in.h:209
-msgid "memory dump"
-msgstr "muistivedos"
-
-#: data/mime/gnome-vfs.keys.in.h:210
-msgid "message digest"
-msgstr "viestitiivistelm‰"
-
-#: data/mime/gnome-vfs.keys.in.h:211
-msgid "message in several formats"
-msgstr "eri muotoisia viestej‰"
-
-#: data/mime/gnome-vfs.keys.in.h:212
-msgid "multi-part message"
-msgstr "moniosainen viesti"
-
-#: data/mime/gnome-vfs.keys.in.h:213
-msgid "named pipe"
-msgstr "nimetty putki"
-
-#: data/mime/gnome-vfs.keys.in.h:214
-msgid "object code"
-msgstr "objektikoodi"
-
-#: data/mime/gnome-vfs.keys.in.h:215
-msgid "ogg audio"
-msgstr "ogg-‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:216
-msgid "partial email message"
-msgstr "osittainen s‰hkˆpostiviesti"
-
-#: data/mime/gnome-vfs.keys.in.h:217
-msgid "plain text document"
-msgstr "pelkk‰ teksti"
-
-#: data/mime/gnome-vfs.keys.in.h:218
-msgid "profiler results"
-msgstr "profilointitulokset"
-
-#: data/mime/gnome-vfs.keys.in.h:219
-msgid "reference to remote file"
-msgstr "viite et‰tiedostoon"
-
-#: data/mime/gnome-vfs.keys.in.h:220
-msgid "rejected patch file"
-msgstr "hylkiintynyt patch-tiedosto"
-
-#: data/mime/gnome-vfs.keys.in.h:221
-msgid "rich text document"
-msgstr "RTF-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:222
-msgid "search results"
-msgstr "etsint‰tulokset"
-
-#: data/mime/gnome-vfs.keys.in.h:223
-msgid "shared library"
-msgstr "jaettu kirjasto"
-
-#: data/mime/gnome-vfs.keys.in.h:224
-msgid "shell archive"
-msgstr "shell-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:225
-msgid "shell script"
-msgstr "komentotulkkiskripti"
-
-#: data/mime/gnome-vfs.keys.in.h:226
-msgid "signed message"
-msgstr "allekirjoitettu viesti"
-
-#: data/mime/gnome-vfs.keys.in.h:227
-msgid "socket"
-msgstr "pistoke"
-
-#: data/mime/gnome-vfs.keys.in.h:228
-msgid "software author credits"
-msgstr "kiitos ohjelman tekijˆille"
-
-#: data/mime/gnome-vfs.keys.in.h:229
-msgid "software installation instructions"
-msgstr "ohjelman asennusohjeet"
-
-#: data/mime/gnome-vfs.keys.in.h:230
-msgid "software license terms"
-msgstr "ohjelman lisenssi"
-
-#: data/mime/gnome-vfs.keys.in.h:231
-msgid "source code patch"
-msgstr "l‰hdekoodipatch"
-
-#: data/mime/gnome-vfs.keys.in.h:232
-msgid "style sheet"
-msgstr "tyylisivu"
-
-#: data/mime/gnome-vfs.keys.in.h:233
-msgid "symbolic link"
-msgstr "symbolinen linkki"
-
-#: data/mime/gnome-vfs.keys.in.h:234
-msgid "tab-separated text document"
-msgstr "sarkaimilla eroteltu teksi"
-
-#: data/mime/gnome-vfs.keys.in.h:235
-msgid "tar archive"
-msgstr "tar-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:236
-msgid "tar archive (bzip2-compressed)"
-msgstr "tar-paketti (bzip2-pakattu)"
-
-#: data/mime/gnome-vfs.keys.in.h:237
-msgid "tar archive (gzip-compressed)"
-msgstr "tar-pakettu (gzip-pakattu)"
-
-#: data/mime/gnome-vfs.keys.in.h:238
-msgid "theme"
-msgstr "teema"
-
-#: data/mime/gnome-vfs.keys.in.h:239
-msgid "troff document"
-msgstr "troff-asiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:240
-msgid "troff me input document"
-msgstr "troff me -syˆteasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:241
-msgid "troff mm input document"
-msgstr "troff mm -syˆteasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:242
-msgid "troff ms input document"
-msgstr "troff ms -syˆteasiakirja"
-
-#: data/mime/gnome-vfs.keys.in.h:243
-msgid "unknown type"
-msgstr "tuntematon tyyppi"
-
-#: data/mime/gnome-vfs.keys.in.h:244
-msgid "ustar archive"
-msgstr "ustar-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:245
-msgid "wave audio"
-msgstr "aalto‰‰ni"
-
-#: data/mime/gnome-vfs.keys.in.h:246
-msgid "web folder"
-msgstr "www-hakemisto"
-
-#: data/mime/gnome-vfs.keys.in.h:247
-msgid "xfig vector graphic"
-msgstr "xfig-vektorigrafiikka"
-
-#: data/mime/gnome-vfs.keys.in.h:248
-msgid "zip archive"
-msgstr "zip-paketti"
-
-#: data/mime/gnome-vfs.keys.in.h:249
-msgid "zoo archive"
-msgstr "zoo-paketti"
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:336
-msgid "Dying."
-msgstr "Kuolee."
-
-#. FIXME bugzilla.eazel.com 1226:
-#: libgnomevfs-corba/gnome-vfs-slave.c:501
-#, c-format
-msgid "Error reading: %s"
-msgstr "Virhe lukiessa: %s"
-
-#. FIXME bugzilla.eazel.com 1226:
-#: libgnomevfs-corba/gnome-vfs-slave.c:523
-#, c-format
-msgid "Error writing: %s"
-msgstr "Virhe kirjoittaessa: %s"
-
-#. FIXME bugzilla.eazel.com 1226:
-#: libgnomevfs-corba/gnome-vfs-slave.c:572
-#, c-format
-msgid "Cannot write: %s"
-msgstr "Ei voi kirjoittaa: %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:601
-#, c-format
-msgid "Cannot create temporary file name `%s'"
-msgstr "V‰liaikaista tiedostonnime‰ '%s' ei voi luoda"
-
-#: libgnomevfs-corba/gnome-vfs-slave-notify.c:192
-#: libgnomevfs-corba/gnome-vfs-slave.c:615
-#, c-format
-msgid "Cannot create socket: %s"
-msgstr "Pistoketta ei voi luoda: %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:633
-#, c-format
-msgid "Cannot bind `%s': %s"
-msgstr "Pistoketta ei voi bindata '%s': %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:640
-#, c-format
-msgid "Cannot listen on `%s': %s"
-msgstr "Pistoketta ei voi kuunnella '%s': %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:663
-#, c-format
-msgid "Cannot accept connections on `%s': %s"
-msgstr "Pistokkeesta ei voi hyv‰ksy‰ yhteyksi‰ '%s': %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:1195
-msgid "Cannot initialize CORBA."
-msgstr "CORBAa ei voi alustaa."
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:1202
-msgid "Cannot resolve initial reference to RootPOA."
-msgstr "Alkuviittausta RootPOA:an ei voi selvitt‰‰."
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:1209
-msgid "Cannot activate POA manager."
-msgstr "POA-manageria ei voi aktivoida."
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:1234
-#, c-format
-msgid "Usage: %s <ior> [<ior_fd>]\n"
-msgstr "K‰yttˆ: %s <ior> [<ior_fd>]\n"
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:1245
-#, c-format
-msgid "Cannot open file descriptor %d."
-msgstr "Tiedostokahvaa %d ei voi avata."
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:1268
-#, c-format
-msgid "Notify interface for `%s' not found."
-msgstr "Ilmoitusrajapintaa IOR:lle '%s' ei lˆytynyt."
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:1278
-msgid "Cannot setup Request object."
-msgstr "Request-oliota ei voi alustaa."
-
-#: libgnomevfs-corba/gnome-vfs-slave.c:1285
-msgid "Cannot extract IOR."
-msgstr "IOR:‰‰ ei voi erottaa."
-
-#: libgnomevfs-corba/gnome-vfs-slave-launch.c:174
-#, c-format
-msgid "Got weird string from the slave process: `%s'"
-msgstr "Orjaprosessilta saatu kummallinen merkkijono: '%s'"
-
-#: libgnomevfs-corba/gnome-vfs-slave-launch.c:181
-#, c-format
-msgid "Cannot get object for `%s'"
-msgstr "IOR:in '%s' oliota ei voi hakea"
-
-#: libgnomevfs-corba/gnome-vfs-slave-notify.c:125
-#, c-format
-msgid "Cannot kill GNOME::VFS::Slave::Notify -- exception %s"
-msgstr "GNOME::VFS::Slave::Notify:‰ ei voi sulkea -- poikkeus %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave-notify.c:204
-#, c-format
-msgid "Cannot connect socket `%s': %s"
-msgstr "Pistoketta '%s' ei voi yhdist‰‰: %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave-notify.c:738
-msgid "Cannot initialize GNOME::VFS:Slave::Notify"
-msgstr "GNOME::VFS::Slave::Notify:‰ ei voi alustaa"
-
-#: libgnomevfs-corba/gnome-vfs-slave-process.c:120
-#, c-format
-msgid "Cannot reset GNOME::VFS::Slave %s -- exception %s"
-msgstr "GNOME::VFS::Slavea %s ei voi palauttaa -- poikkeus %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave-process.c:123
-#, c-format
-msgid "Cannot reset GNOME::VFS::Slave (IOR unknown) -- exception %s"
-msgstr "GNOME::VFS::Slavea (IOR tuntematon) ei voi palauttaa -- poikkeus %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave-process.c:154
-#, c-format
-msgid "Cannot kill GNOME::VFS::Slave %s -- exception %s"
-msgstr "GNOME::VFS::Slavea %s ei voi sulkea -- poikkeus %s"
-
-#: libgnomevfs-corba/gnome-vfs-slave-process.c:157
-#, c-format
-msgid "Cannot kill GNOME::VFS::Slave (IOR unknown) -- exception %s"
-msgstr "GNOME::VFS::Slavea (IOR tuntematon) ei voi sulkea -- poikkeus %s"
-
-#: libgnomevfs/gnome-vfs-configuration.c:187
+#: libgnomevfs/gnome-vfs-configuration.c:217
 #, c-format
 msgid "%s:%d contains NUL characters."
 msgstr "%s:%d sis‰lt‰‰ NUL-merkkej‰."
 
-#: libgnomevfs/gnome-vfs-configuration.c:204
+#: libgnomevfs/gnome-vfs-configuration.c:234
 #, c-format
 msgid "%s:%d contains no method name."
 msgstr "%s:%d ei sis‰ll‰ metodin nime‰."
 
-#: libgnomevfs/gnome-vfs-configuration.c:233
+#: libgnomevfs/gnome-vfs-configuration.c:263
 #, c-format
 msgid "%s:%d contains no module name."
 msgstr "%s:%d ei sis‰ll‰ moduulin nime‰."
 
-#: libgnomevfs/gnome-vfs-configuration.c:286
+#: libgnomevfs/gnome-vfs-configuration.c:316
 #, c-format
 msgid "Configuration file `%s' was not found: %s"
 msgstr "Asetustiedostoa '%s' ei lˆytynyt: %s"
 
-#: libgnomevfs/gnome-vfs-init.c:69
+#: libgnomevfs/gnome-vfs-init.c:79
 msgid "GNOME VFS already initialized."
 msgstr "GNOME VFS on jo alustettu."
 
-#: libgnomevfs/gnome-vfs-parse-ls.c:654
+#: libgnomevfs/gnome-vfs-parse-ls.c:650
 #, c-format
 msgid "Could not parse: %s"
 msgstr "Ei voitu tulkita: %s"
 
-#: libgnomevfs/gnome-vfs-parse-ls.c:656
+#: libgnomevfs/gnome-vfs-parse-ls.c:652
 msgid "More parsing errors will be ignored."
 msgstr "Mahdolliset seuraavat tulkkausvirheet j‰‰v‰t huomiotta."
 
 #. GNOME_VFS_OK
-#: libgnomevfs/gnome-vfs-result.c:39
+#: libgnomevfs/gnome-vfs-result.c:38
 msgid "No error"
 msgstr "Ei virhett‰"
 
 #. GNOME_VFS_ERROR_NOT_FOUND
-#: libgnomevfs/gnome-vfs-result.c:40
+#: libgnomevfs/gnome-vfs-result.c:39
 msgid "File not found"
 msgstr "Tiedostoa ei lˆytynyt"
 
 #. GNOME_VFS_ERROR_GENERIC
-#: libgnomevfs/gnome-vfs-result.c:41
+#: libgnomevfs/gnome-vfs-result.c:40
 msgid "Generic error"
 msgstr "Yleinen virhe"
 
 #. GNOME_VFS_ERROR_INTERNAL
-#: libgnomevfs/gnome-vfs-result.c:42
+#: libgnomevfs/gnome-vfs-result.c:41
 msgid "Internal error"
 msgstr "Sis‰inen virhe"
 
 #. GNOME_VFS_ERROR_BAD_PARAMETERS
-#: libgnomevfs/gnome-vfs-result.c:43
+#: libgnomevfs/gnome-vfs-result.c:42
 msgid "Invalid parameters"
 msgstr "Virheellisi‰ parametreja"
 
 #. GNOME_VFS_ERROR_NOT_SUPPORTED
-#: libgnomevfs/gnome-vfs-result.c:44
+#: libgnomevfs/gnome-vfs-result.c:43
 msgid "Unsupported operation"
 msgstr "Ei-tuettu toiminto"
 
 #. GNOME_VFS_ERROR_IO
-#: libgnomevfs/gnome-vfs-result.c:45
+#: libgnomevfs/gnome-vfs-result.c:44
 msgid "I/O error"
 msgstr "I/O-virhe"
 
 #. GNOME_VFS_ERROR_CORRUPTED_DATA
-#: libgnomevfs/gnome-vfs-result.c:46
+#: libgnomevfs/gnome-vfs-result.c:45
 msgid "Data corrupted"
 msgstr "Data vahingoittunut"
 
 #. GNOME_VFS_ERROR_WRONG_FORMAT
-#: libgnomevfs/gnome-vfs-result.c:47
+#: libgnomevfs/gnome-vfs-result.c:46
 msgid "Format not valid"
 msgstr "Muoto on virheellinen"
 
 #. GNOME_VFS_ERROR_BAD_FILE
-#: libgnomevfs/gnome-vfs-result.c:48
+#: libgnomevfs/gnome-vfs-result.c:47
 msgid "Bad file handle"
 msgstr "Virheellinen tiedostokahva"
 
 #. GNOME_VFS_ERROR_TOO_BIG
-#: libgnomevfs/gnome-vfs-result.c:49
+#: libgnomevfs/gnome-vfs-result.c:48
 msgid "File too big"
 msgstr "Tiedosto on liian suuri"
 
 #. GNOME_VFS_ERROR_NO_SPACE
-#: libgnomevfs/gnome-vfs-result.c:50
+#: libgnomevfs/gnome-vfs-result.c:49
 msgid "No space left on device"
 msgstr "Levyll‰ ei ole j‰ljell‰ tilaa"
 
 #. GNOME_VFS_ERROR_READ_ONLY
-#: libgnomevfs/gnome-vfs-result.c:51
+#: libgnomevfs/gnome-vfs-result.c:50
 msgid "Read-only file system"
 msgstr "Tiedostoj‰rjestelm‰st‰ voi vain lukea"
 
 #. GNOME_VFS_ERROR_INVALID_URI
-#: libgnomevfs/gnome-vfs-result.c:52
+#: libgnomevfs/gnome-vfs-result.c:51
 msgid "Invalid URI"
 msgstr "Virheellinen URI"
 
 #. GNOME_VFS_ERROR_NOT_OPEN
-#: libgnomevfs/gnome-vfs-result.c:53
+#: libgnomevfs/gnome-vfs-result.c:52
 msgid "File not open"
 msgstr "Tiedosto ei ole auki"
 
 #. GNOME_VFS_ERROR_INVALID_OPEN_MODE
-#: libgnomevfs/gnome-vfs-result.c:54
+#: libgnomevfs/gnome-vfs-result.c:53
 msgid "Open mode not valid"
 msgstr "Avaustapa on virheellinen"
 
 #. GNOME_VFS_ERROR_ACCESS_DENIED
-#: libgnomevfs/gnome-vfs-result.c:55
+#: libgnomevfs/gnome-vfs-result.c:54
 msgid "Access denied"
 msgstr "Ei k‰yttˆoikeutta"
 
 #. GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES
-#: libgnomevfs/gnome-vfs-result.c:56
+#: libgnomevfs/gnome-vfs-result.c:55
 msgid "Too many open files"
 msgstr "Liian monta tiedostoa avoinna"
 
 #. GNOME_VFS_ERROR_EOF
-#: libgnomevfs/gnome-vfs-result.c:57
+#: libgnomevfs/gnome-vfs-result.c:56
 msgid "End of file"
 msgstr "Tiedoston loppu"
 
 #. GNOME_VFS_ERROR_NOT_A_DIRECTORY
-#: libgnomevfs/gnome-vfs-result.c:58
+#: libgnomevfs/gnome-vfs-result.c:57
 msgid "Not a directory"
 msgstr "Ei ole hakemisto"
 
 #. GNOME_VFS_ERROR_IN_PROGRESS
-#: libgnomevfs/gnome-vfs-result.c:59
+#: libgnomevfs/gnome-vfs-result.c:58
 msgid "Operation in progress"
 msgstr "Toiminto k‰ynniss‰"
 
 #. GNOME_VFS_ERROR_INTERRUPTED
-#: libgnomevfs/gnome-vfs-result.c:60
+#: libgnomevfs/gnome-vfs-result.c:59
 msgid "Operation interrupted"
 msgstr "Toiminto keskeytetty"
 
 #. GNOME_VFS_ERROR_FILE_EXISTS
-#: libgnomevfs/gnome-vfs-result.c:61
+#: libgnomevfs/gnome-vfs-result.c:60
 msgid "File exists"
 msgstr "Tiedosto on olemassa"
 
 #. GNOME_VFS_ERROR_LOOP
-#: libgnomevfs/gnome-vfs-result.c:62
+#: libgnomevfs/gnome-vfs-result.c:61
 msgid "Looping links encountered"
 msgstr "Silmukkamaisia linkkej‰ havaittu"
 
 #. GNOME_VFS_ERROR_NOT_PERMITTED
-#: libgnomevfs/gnome-vfs-result.c:63
+#: libgnomevfs/gnome-vfs-result.c:62
 msgid "Operation not permitted"
 msgstr "Toiminto ei ole sallittu"
 
 #. GNOME_VFS_ERROR_IS_DIRECTORY
-#: libgnomevfs/gnome-vfs-result.c:64
+#: libgnomevfs/gnome-vfs-result.c:63
 msgid "Is a directory"
 msgstr "On hakemisto"
 
 #. GNOME_VFS_ERROR_NO_MEMMORY
-#: libgnomevfs/gnome-vfs-result.c:65
+#: libgnomevfs/gnome-vfs-result.c:64
 msgid "Not enough memory"
 msgstr "Ei tarpeeksi muistia"
 
 #. GNOME_VFS_ERROR_HOST_NOT_FOUND
-#: libgnomevfs/gnome-vfs-result.c:66
+#: libgnomevfs/gnome-vfs-result.c:65
 msgid "Host not found"
 msgstr "Konetta ei lˆytynyt"
 
 #. GNOME_VFS_ERROR_INVALID_HOST_NAME
-#: libgnomevfs/gnome-vfs-result.c:67
+#: libgnomevfs/gnome-vfs-result.c:66
 msgid "Host name not valid"
 msgstr "Koneen nimi ei kelpaa"
 
 #. GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS
-#: libgnomevfs/gnome-vfs-result.c:68
+#: libgnomevfs/gnome-vfs-result.c:67
 msgid "Host has no address"
 msgstr "Koneella ei ole osoitetta"
 
 #. GNOME_VFS_ERROR_LOGIN_FAILED
-#: libgnomevfs/gnome-vfs-result.c:69
+#: libgnomevfs/gnome-vfs-result.c:68
 msgid "Login failed"
 msgstr "Sis‰‰nkirjautuminen ep‰onnistui"
 
 #. GNOME_VFS_ERROR_CANCELLED
-#: libgnomevfs/gnome-vfs-result.c:70
+#: libgnomevfs/gnome-vfs-result.c:69
 msgid "Operation cancelled"
 msgstr "Toiminto peruttu"
 
 #. GNOME_VFS_ERROR_DIRECTORY_BUSY
-#: libgnomevfs/gnome-vfs-result.c:71
+#: libgnomevfs/gnome-vfs-result.c:70
 msgid "Directory busy"
 msgstr "Hakemistossa toimintaa"
 
 #. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
-#: libgnomevfs/gnome-vfs-result.c:72
+#: libgnomevfs/gnome-vfs-result.c:71
 msgid "Directory not empty"
 msgstr "Hakemisto ei ole tyhj‰"
 
 #. GNOME_VFS_ERROR_TOO_MANY_LINKS
-#: libgnomevfs/gnome-vfs-result.c:73
+#: libgnomevfs/gnome-vfs-result.c:72
 msgid "Too many links"
 msgstr "Liian monta linkki‰"
 
 #. GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
-#: libgnomevfs/gnome-vfs-result.c:74
+#: libgnomevfs/gnome-vfs-result.c:73
 msgid "Read only file system"
 msgstr "Tiedostoj‰rjestelm‰st‰ voi vain lukea"
 
 #. GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM
-#: libgnomevfs/gnome-vfs-result.c:75
+#: libgnomevfs/gnome-vfs-result.c:74
 msgid "Not on the same file system"
 msgstr "Eiv‰t ole samassa tiedostoj‰rjestelm‰ss‰"
 
 #. GNOME_VFS_ERROR_NAME_TOO_LONG
-#: libgnomevfs/gnome-vfs-result.c:76
+#: libgnomevfs/gnome-vfs-result.c:75
 msgid "Name too long"
 msgstr "Nimi on liian pitk‰"
 
 #. GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE
-#: libgnomevfs/gnome-vfs-result.c:77
+#: libgnomevfs/gnome-vfs-result.c:76
 msgid "Service not available"
 msgstr "Palvelu ei saatavilla"
 
 #. GNOME_VFS_ERROR_SERVICE_OBSOLETE
-#: libgnomevfs/gnome-vfs-result.c:78
+#: libgnomevfs/gnome-vfs-result.c:77
 msgid "Request obsoletes service's data"
 msgstr "Pyyntˆ vanhentaa palvelun datan"
+
+#. GNOME_VFS_ERROR_PROTOCOL_ERROR
+#: libgnomevfs/gnome-vfs-result.c:78
+msgid "Protocol error"
+msgstr "Protokollavirhe"
 
 #: libgnomevfs/gnome-vfs-result.c:141
 msgid "Unknown error"
 msgstr "Tuntematon virhe"
 
-#: libgnomevfs/gnome-vfs-utils.c:68
+#: libgnomevfs/gnome-vfs-utils.c:66
 msgid "1 byte"
 msgstr "1 tavu"
 
-#: libgnomevfs/gnome-vfs-utils.c:70
+#: libgnomevfs/gnome-vfs-utils.c:68
 #, c-format
 msgid "%u bytes"
 msgstr "%u tavua"
 
-#: libgnomevfs/gnome-vfs-utils.c:77
+#: libgnomevfs/gnome-vfs-utils.c:75
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: libgnomevfs/gnome-vfs-utils.c:81
+#: libgnomevfs/gnome-vfs-utils.c:79
 #, c-format
 msgid "%.1f MB"
 msgstr "%.1f Mt"
 
-#: libgnomevfs/gnome-vfs-utils.c:85
+#: libgnomevfs/gnome-vfs-utils.c:83
 #, c-format
 msgid "%.1f GB"
 msgstr "%.1f Gt"
 
-#: libgnomevfs-pthread/gnome-vfs-job.c:688
+#: libgnomevfs-pthread/gnome-vfs-job.c:713
 #, c-format
 msgid "Unknown op type %u"
 msgstr "Tuntematon op-tyyppi %u"
 
-#: libgnomevfs-pthread/gnome-vfs-job.c:974
-#: libgnomevfs-pthread/gnome-vfs-job.c:1119
+#: libgnomevfs-pthread/gnome-vfs-job.c:1003
+#: libgnomevfs-pthread/gnome-vfs-job.c:1148
 #, c-format
 msgid "Cannot create pipe for open GIOChannel: %s"
 msgstr "GIOChannelille ei voi luoda putkea: %s"
 
-#: libgnomevfs-pthread/gnome-vfs-job.c:1574
+#: libgnomevfs-pthread/gnome-vfs-job.c:1604
 #, c-format
 msgid "Unknown job kind %u"
-msgstr "Tuntematon tyˆntyyppi %u"
+msgstr "Tuntematon tyˆtyyppi %u"
 
-#: libgnomevfs-pthread/gnome-vfs-job.c:1605
+#: libgnomevfs-pthread/gnome-vfs-job.c:1640
 msgid "Operation stopped"
 msgstr "Toiminta pys‰ytetty"
 
-#: modules/efs-method.c:493 modules/file-method.c:371
+#: modules/file-method.c:380
 #, c-format
 msgid "Unknown GnomeVFSSeekPosition %d"
 msgstr "Tuntematon GnomeVFSSeekPosition %d"
 
-#: modules/http-method.c:1179
-#, c-format
-msgid "%s to retrieve"
-msgstr "Haettava %s"
+#~ msgid "3D Studio image"
+#~ msgstr "3D Studio -kuva"
 
-#: modules/http-method.c:1584
-#, c-format
-msgid "Closing connection to %s"
-msgstr "Suljetaan yhteys kohteeseen %s"
+#~ msgid "AIFC audio"
+#~ msgstr "AIFC-‰‰ni"
 
-#: modules/http-method.c:1850
-#, c-format
-msgid "%s of %s read"
-msgstr "%s/%s luettu"
+#~ msgid "AIFF audio"
+#~ msgstr "AIFF-‰‰ni"
 
-#: modules/http-method.c:1853
-#, c-format
-msgid "%s read"
-msgstr "%s luettu"
+#~ msgid "ANIM animation"
+#~ msgstr "ANIM-animaatio"
 
-#: test/gnome-file-selection/gnome-file-selection.c:667
-msgid "Back"
-msgstr "Takaisin"
+#~ msgid "AVI video"
+#~ msgstr "AVI-video"
 
-#: test/gnome-file-selection/gnome-file-selection.c:668
-msgid "Go to the previously visited directory"
-msgstr "Siirry edelliseen hakemistoon"
+#~ msgid "AbiWord document"
+#~ msgstr "AbiWord-asiakirja"
 
-#: test/gnome-file-selection/gnome-file-selection.c:676
-msgid "Up"
-msgstr "Ylˆs"
+#~ msgid "Adobe FrameMaker font"
+#~ msgstr "Adobe FrameMaker -kirjasin"
 
-#: test/gnome-file-selection/gnome-file-selection.c:677
-msgid "Go to the parent directory"
-msgstr "Siirry yl‰hakemistoon"
+#~ msgid "Adobe font metrics"
+#~ msgstr "Adobe-kirjasinmitat"
 
-#: test/gnome-file-selection/gnome-file-selection.c:685
-msgid "Forward"
-msgstr "Eteenp‰in"
+#~ msgid "Andrew Toolkit inset"
+#~ msgstr "Andrew Toolkit -osio"
 
-#: test/gnome-file-selection/gnome-file-selection.c:686
-msgid "Go to the next visited directory"
-msgstr "Siirry seuraavaan hakemistoon"
+#~ msgid "ApplixWare Graphics image"
+#~ msgstr "ApplixWare-kuvatiedosto"
 
-#: test/gnome-file-selection/gnome-file-selection.c:695
-msgid "Rescan"
-msgstr "Lue uudelleen"
+#~ msgid "Applixware Words document"
+#~ msgstr "Applixware-tekstiasiakirja"
 
-#: test/gnome-file-selection/gnome-file-selection.c:696
-msgid "Rescan the current directory"
-msgstr "Lue nykyinen hakemisto uudelleen"
+#~ msgid "Applixware spreadsheet"
+#~ msgstr "Applixware-taulukko"
 
-#: test/gnome-file-selection/gnome-file-selection.c:705
-msgid "Home"
-msgstr "Koti"
+#~ msgid "AutoCAD image"
+#~ msgstr "AutoCAD-kuva"
 
-#: test/gnome-file-selection/gnome-file-selection.c:706
-msgid "Go to the home directory"
-msgstr "Siirry kotihakemistoon"
+#~ msgid "BCPIO document"
+#~ msgstr "BCPIO-asiakirja"
 
-#: test/gnome-file-selection/gnome-file-selection.c:802
-msgid "Name"
-msgstr "Nimi"
+#~ msgid "BDF font"
+#~ msgstr "BDF-kirjasin"
 
-#: test/gnome-file-selection/gnome-file-selection.c:803
-msgid "Size"
-msgstr "Koko"
+#~ msgid "C shell script"
+#~ msgstr "C-komentotulkkiskripti"
 
-#: test/gnome-file-selection/gnome-file-selection.c:804
-msgid "Date"
-msgstr "P‰iv‰m‰‰r‰"
+#~ msgid "C source code"
+#~ msgstr "C l‰hdekoodi"
 
-#: test/gnome-file-selection/gnome-file-selection.c:833
-msgid "Enter name:"
-msgstr "Anna nimi:"
+#~ msgid "C++ source code"
+#~ msgstr "C++ l‰hdekoodi"
 
-#: test/gnome-file-selection/gnome-file-selection.c:856
-msgid "Show:"
-msgstr "N‰yt‰:"
+#~ msgid "CGI program"
+#~ msgstr "CGI-ohjelma"
 
-#: test/gnome-file-selection/gnome-file-selection.c:883
-msgid "Show dotfiles"
-msgstr "N‰yt‰  pisteell‰ alkavat tiedostot"
+#~ msgid "CGM image"
+#~ msgstr "CGM-kuva"
 
-#~ msgid "File Types and Programs"
-#~ msgstr "Tiedostotyypit ja ohjelmat"
+#~ msgid "CMU raster image"
+#~ msgstr "CMU-rasterikuva"
 
-#~ msgid "Specify which programs are used to open or view each file type"
-#~ msgstr "M‰‰rit‰, mill‰ ohjelmilla tiedostoja k‰sitell‰‰n"
+#~ msgid "CPIO archive"
+#~ msgstr "CPIO-paketti"
 
-#~ msgid "MIME Type"
-#~ msgstr "MIME-tyyppi"
+#~ msgid "CPIO archive (gzip-compressed)"
+#~ msgstr "CPIO-paketti (gzip-pakattu)"
 
-#~ msgid "Change Icon"
-#~ msgstr "Vaihda kuvaketta"
+#~ msgid "DCL script"
+#~ msgstr "DCL-skripti"
 
-#~ msgid "Change File Extensions"
-#~ msgstr "Muuta tiedostojen p‰‰tteit‰"
+#~ msgid "DOS font"
+#~ msgstr "DOS-kirjasin"
 
-#~ msgid "Default Action:"
-#~ msgstr "Oletustoiminto:"
+#~ msgid "DOS/Windows program"
+#~ msgstr "DOS/Windows-ohjelma"
 
-#~ msgid "Use Viewer"
-#~ msgstr "K‰yt‰ katselinta"
+#~ msgid "DSSSL document"
+#~ msgstr "DSSSL-asiakirja"
 
-#~ msgid "Open With Application"
-#~ msgstr "Avaa sovelluksella"
+#~ msgid "DXF vector graphic"
+#~ msgstr "DXF-vektorigrafiikka"
 
-#~ msgid "Edit List"
-#~ msgstr "Muokkaa luetteloa"
+#~ msgid "Debian package"
+#~ msgstr "Debian-paketti"
 
-#~ msgid "Add New MIME Type..."
-#~ msgstr "Lis‰‰ uusi MIME-tyyppi..."
+#~ msgid "Dia diagram"
+#~ msgstr "Dia-kaavio"
 
-#~ msgid "Delete This MIME Type"
-#~ msgstr "Poista t‰m‰ MIME-tyyppi"
+#~ msgid "Dolby Digital audio"
+#~ msgstr "Dolby-digitaali‰‰ni"
 
-#~ msgid "Revert to System Defaults"
-#~ msgstr "K‰yt‰ j‰rjestelm‰n oletuksia"
+#~ msgid "Emacs Lisp source code"
+#~ msgstr "Emacs Lisp -l‰hdekoodi"
 
-#~ msgid "None"
-#~ msgstr "Ei mik‰‰n"
+#~ msgid "Enlightenment theme"
+#~ msgstr "Enlightenment-teema"
 
-#~ msgid ""
-#~ "Reverting to system settings will lose any changes\n"
-#~ "you have ever made to File Types and Programs.\n"
-#~ "Revert anyway?"
-#~ msgstr ""
-#~ "Kun j‰rjestelm‰n oletukset otetaan k‰yttˆˆn, niin\n"
-#~ "kaikki tekem‰si muutokset h‰vi‰v‰t.\n"
-#~ "\n"
-#~ "Haluatko silti k‰ytt‰‰ j‰rjestelm‰n oletuksia?"
+#~ msgid "FLC animation"
+#~ msgstr "FLC-animaatio"
 
-#~ msgid "none"
-#~ msgstr "ei mik‰‰n"
+#~ msgid "FLI animation"
+#~ msgstr "FLI-animaatio"
 
-#~ msgid "View as %s"
-#~ msgstr "N‰yt‰ muotona %s"
+#~ msgid "FastTracker II audio"
+#~ msgstr "FastTracker II -‰‰ni"
 
-#~ msgid "Description"
-#~ msgstr "Kuvaus"
+#~ msgid "Fortran source code"
+#~ msgstr "Fortran-l‰hdekoodi"
 
-#~ msgid "Extension"
-#~ msgstr "P‰‰te"
+#~ msgid "FrameMaker interchange document"
+#~ msgstr "FrameMaker-v‰litysasiakirja"
 
-#~ msgid "Default Action"
-#~ msgstr "Oletustoiminto"
+#~ msgid "G3 fax image"
+#~ msgstr "G3-faksikuva"
 
-#~ msgid "Edit Applications List"
-#~ msgstr "Muokkaa sovellusluetteloa"
+#~ msgid "GIF image"
+#~ msgstr "GIF-kuva"
 
-#~ msgid "Select applications to appear in menu for MIME type \"%s\""
-#~ msgstr "Valitse sovellukset, jotka n‰kyv‰t MIME-tyypin \"%s\" valikossa"
+#~ msgid "GIMP document"
+#~ msgstr "GIMP-asiakirja"
 
-#~ msgid "Add Application..."
-#~ msgstr "Lis‰‰ sovellus..."
+#~ msgid "GMC link"
+#~ msgstr "GMC-linkki"
 
-#~ msgid "Edit Application..."
-#~ msgstr "Muokkaa sovellusta..."
+#~ msgid "GNOME application details"
+#~ msgstr "GNOME-sovellustiedot"
 
-#~ msgid "Delete Application"
-#~ msgstr "Poista sovellus"
+#~ msgid "GNU Oleo Spreadsheet"
+#~ msgstr "GNU Oleo -taulukko"
 
-#~ msgid "Edit Components List"
-#~ msgstr "Muokkaa komponenttiluetteloa"
+#~ msgid "GNU mail message"
+#~ msgstr "GNU-postiviesti"
 
-#~ msgid "Select views to appear in menu for MIME type \"%s\""
-#~ msgstr "Valitse n‰kym‰t, jotka ovat MIME-tyypin \"%s\" valikossa"
+#~ msgid "GTK configuration"
+#~ msgstr "GTK-asetukset"
 
-#~ msgid ""
-#~ "The MIME type entered contained upper case characters. Upper case characters "
-#~ "were changed to lower case for you."
-#~ msgstr ""
-#~ "Annetussa MIME-tyypiss‰ oli isoja kirjaimia, jotka muutetaan pieniksi."
+#~ msgid "Glade project"
+#~ msgstr "Glade-projekti"
 
-#~ msgid "Add New MIME Type"
-#~ msgstr "Lis‰‰ uusi MIME-tyyppi"
+#~ msgid "GnuCash Workbook"
+#~ msgstr "GnuCash-tyˆkirja"
 
-#~ msgid "Add MIME Type"
-#~ msgstr "Lis‰‰ MIME-tyyppi"
+#~ msgid "Gnumeric spreadsheet"
+#~ msgstr "Gnumeric-taulukko"
 
-#~ msgid "New MIME type (e.g. image/x-thumper):"
-#~ msgstr "Uusi MIME-tyyppi (esim. image/x-isku):"
+#~ msgid "HDF document"
+#~ msgstr "HDF-asiakirja"
 
-#~ msgid "Description (e.g. Thumper image):"
-#~ msgstr "Kuvaus (esim. Iskukuva):"
+#~ msgid "HTML page"
+#~ msgstr "HTML-sivu"
 
-#~ msgid "File Extensions "
-#~ msgstr "Tiedostojen p‰‰tteet:"
+#~ msgid "IDL document"
+#~ msgstr "IDL-asiakirja"
 
-#~ msgid "Add..."
-#~ msgstr "Lis‰‰..."
+#~ msgid "IEF image"
+#~ msgstr "IEF-kuva"
 
-#~ msgid "    Remove    "
-#~ msgstr "    Poista    "
+#~ msgid "IFF image"
+#~ msgstr "IFF-kuva"
 
-#~ msgid "Add New Extension"
-#~ msgstr "Lis‰‰ uusi p‰‰te"
+#~ msgid "ILBM image"
+#~ msgstr "ILBM-kuva"
 
-#~ msgid ""
-#~ "Type in the extensions for this mime-type (without dot).\n"
-#~ "You can enter several extensions seperated by a space,\n"
-#~ "for example: html htm"
-#~ msgstr ""
-#~ "Kirjoita t‰m‰n mime-tyypin tiedostojen p‰‰tteit‰ (ilman pistett‰).\n"
-#~ "Esimerkiksi:  html, htm"
+#~ msgid "ISI video"
+#~ msgstr "ISI-video"
 
-#~ msgid "Extension:"
-#~ msgstr "P‰‰tteet:"
+#~ msgid "Impulse Tracker audio"
+#~ msgstr "Impulse Tracker -‰‰ni"
 
-#~ msgid "You must enter a name."
-#~ msgstr "Nimi t‰ytyy antaa."
+#~ msgid "JBuilder Project"
+#~ msgstr "JBuilder-projekti"
 
-#~ msgid "You must enter a command."
-#~ msgstr "Komento t‰ytyy antaa."
+#~ msgid "JPEG image"
+#~ msgstr "JPEG-kuva"
 
-#~ msgid ""
-#~ "\"%s\" does not exist or is not executable.\n"
-#~ "Check your spelling and make sure you have\n"
-#~ "the right permissions to execute this file."
-#~ msgstr ""
-#~ "\"%s\" ei ole olemassa tai ei ole suoritettava.\n"
-#~ "Tarkista, ett‰ kirjoitit oikein, ja ett‰\n"
-#~ "sinulla on t‰m‰n tiedoston suoritusoikeudet."
+#~ msgid "Java byte code"
+#~ msgstr "Java-tavukoodi"
 
-#~ msgid ""
-#~ "The command \"%s\" cannot be found.\n"
-#~ "You must use a command that can work from any command line."
-#~ msgstr ""
-#~ "Komentoa \"%s\" ei lˆydy.\n"
-#~ "Sinun t‰ytyy k‰ytt‰‰ komentoa, joka toimii komentorivilt‰."
+#~ msgid "Java source code"
+#~ msgstr "Java-l‰hdekoodi"
 
-#~ msgid "Bad Application Name"
-#~ msgstr "Virheellinen sovelluksen nimi"
+#~ msgid "KDE application details"
+#~ msgstr "KDE-sovellustietoja"
 
-#~ msgid "Bad Application Command"
-#~ msgstr "Virheellinen sovelluksen komento"
+#~ msgid "KIllustrator document"
+#~ msgstr "KIllustrator-asiakirja"
 
-#~ msgid "Add Application"
-#~ msgstr "Lis‰‰ sovellus"
+#~ msgid "KPresenter presentation"
+#~ msgstr "KPresenter-esitys"
 
-#~ msgid "Edit Application"
-#~ msgstr "Muokkaussovellus"
+#~ msgid "KSpread spreadsheet"
+#~ msgstr "KSpread-taulukko"
 
-#~ msgid "Application Name:"
-#~ msgstr "Sovelluksen nimi:"
+#~ msgid "KWord document"
+#~ msgstr "KWord-asiakirja"
 
-#~ msgid "Application Command:"
-#~ msgstr "Sovelluksen komento:"
+#~ msgid "Korn shell script"
+#~ msgstr "Korn-komentotulkkiskripti"
 
-#~ msgid "Open Behavior"
-#~ msgstr "Avaamisk‰ytt‰ytyminen"
+#~ msgid "LHA archive"
+#~ msgstr "LHA-paketti"
 
-#~ msgid "Can open multiple files"
-#~ msgstr "Voi avata useita tiedostoja"
+#~ msgid "LHARC archive"
+#~ msgstr "LHARC-paketti"
 
-#~ msgid "Can open from URI"
-#~ msgstr "Voi avata URI:n"
+#~ msgid "LIBGRX font"
+#~ msgstr "LIBGRX-kirjasin"
 
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr "Hboxia ei lˆydy: k‰ytet‰‰n tavallista tiedoston valintaa"
+#~ msgid "LightWave object"
+#~ msgstr "LightWave-esine"
 
-#~ msgid "Preview"
-#~ msgstr "Esikatselu"
+#~ msgid "LightWave scene"
+#~ msgstr "LightWave-n‰kym‰"
 
-#~ msgid "Select an icon"
-#~ msgstr "Valitse kuvake"
+#~ msgid "Linux PSF console font"
+#~ msgstr "Linux PSF -konsolikirjasin"
+
+#~ msgid "Lotus 1-2-3 spreadsheet"
+#~ msgstr "Lotus 1-2-3 -taulukko"
+
+#~ msgid "M3 audio URL"
+#~ msgstr "M3-‰‰ni URL"
+
+#~ msgid "MIDI audio"
+#~ msgstr "MIDI-‰‰ni"
+
+#~ msgid "MOD audio"
+#~ msgstr "MOD-‰‰ni"
+
+#~ msgid "MP3 audio"
+#~ msgstr "MP3-‰‰ni"
+
+#~ msgid "MP3 audio playlist"
+#~ msgstr "MP3-soittolista"
+
+#~ msgid "MPEG video"
+#~ msgstr "MPEG-video"
+
+#~ msgid "MS ASF video"
+#~ msgstr "MS ASF -video"
+
+#~ msgid "MS video"
+#~ msgstr "MS-video"
+
+#~ msgid "Macintosh AppleDouble-encoded file"
+#~ msgstr "Macintosh AppleDouble -koodattu tiedosto"
+
+#~ msgid "Macintosh BinHex-encoded file"
+#~ msgstr "Macintosh BinHex -koodattu tiedosto"
+
+#~ msgid "Macintosh StuffIt archive"
+#~ msgstr "Macintosh StuffIt -paketti"
+
+#~ msgid "Macromedia Flash file"
+#~ msgstr "Macromedia Flash -tiedosto"
+
+#~ msgid "MathML document"
+#~ msgstr "MathML-asiakirja"
+
+#~ msgid "Microsoft Excel spreadsheet"
+#~ msgstr "Microsoft Excel -taulukko"
+
+#~ msgid "Microsoft PowerPoint document"
+#~ msgstr "Microsoft PowerPoint -asiakirja"
+
+#~ msgid "Microsoft Word document"
+#~ msgstr "Microsoft Word -asiakirja"
+
+#~ msgid "Microsoft video"
+#~ msgstr "Microsoft-video"
+
+#~ msgid "Nautilus link"
+#~ msgstr "Nautilus-linkki"
+
+#~ msgid "ODA document"
+#~ msgstr "ODA-asiakirja"
+
+#~ msgid "PBM image"
+#~ msgstr "PBM-kuva"
+
+#~ msgid "PCF font"
+#~ msgstr "PCF-kirjasin"
+
+#~ msgid "PDF document"
+#~ msgstr "PDF-asiakirja"
+
+#~ msgid "PEF program"
+#~ msgstr "PEF-ohjelma"
+
+#~ msgid "PGM image"
+#~ msgstr "PGM-kuva"
+
+#~ msgid "PGN chess game"
+#~ msgstr "PGN-shakkipeli"
+
+#~ msgid "PGP keys"
+#~ msgstr "PGP-avaimet"
+
+#~ msgid "PGP message"
+#~ msgstr "PGP-viesti"
+
+#~ msgid "PGP signature"
+#~ msgstr "PGP-allekirjoitus"
+
+#~ msgid "PGP-encrypted file"
+#~ msgstr "PGP-salattu tiedosto"
+
+#~ msgid "PHP script"
+#~ msgstr "PHP-skripti"
+
+#~ msgid "PN RealAudio document"
+#~ msgstr "PN RealAudio -asiakirja"
+
+#~ msgid "PNG image"
+#~ msgstr "PNG-kuva"
+
+#~ msgid "PNM image"
+#~ msgstr "PNM-kuva"
+
+#~ msgid "PPM image"
+#~ msgstr "PPM-kuva"
+
+#~ msgid "Palm OS database"
+#~ msgstr "Palm OS -tietokanta"
+
+#~ msgid "Perl script"
+#~ msgstr "Perl-skripti"
+
+#~ msgid "Photoshop document"
+#~ msgstr "Photoshop-asiakirja"
+
+#~ msgid "PostScript Type 1 font"
+#~ msgstr "PostScript tyypin 1 kirjasin"
+
+#~ msgid "PostScript document"
+#~ msgstr "PostScript-asiakirja"
+
+#~ msgid "Python source code"
+#~ msgstr "Python-l‰hdekoodi"
+
+#~ msgid "QuickTime movie"
+#~ msgstr "QuickTime-video"
+
+#~ msgid "Quicken document"
+#~ msgstr "Quicken-asiakirja"
+
+#~ msgid "Quicken for Windows document"
+#~ msgstr "Quicken Windowsille -asiakirja"
+
+#~ msgid "RAR archive"
+#~ msgstr "RAR-paketti"
+
+#~ msgid "README document"
+#~ msgstr "LUEMINUT-asiakirja"
+
+#~ msgid "RGB image"
+#~ msgstr "RGB-kuva"
+
+#~ msgid "RIFF audio"
+#~ msgstr "RIFF-‰‰ni"
+
+#~ msgid "RPM package"
+#~ msgstr "RPM-paketti"
+
+#~ msgid "RealAudio/Video document"
+#~ msgstr "RealAudio/Video-asiakirja"
+
+#~ msgid "RealVideo video"
+#~ msgstr "RealVideo-video"
+
+#~ msgid "S/MIME file"
+#~ msgstr "S/MIME-tiedosto"
+
+#~ msgid "S/MIME signature"
+#~ msgstr "S/MIME-allekirjoitus"
+
+#~ msgid "SGI video"
+#~ msgstr "SGI-video"
+
+#~ msgid "SGML document"
+#~ msgstr "SGML-asiakirja"
+
+#~ msgid "SMIL script"
+#~ msgstr "SMIL-skripti"
+
+#~ msgid "SQL code"
+#~ msgstr "SQL-koodi"
+
+#~ msgid "SV4 CPIO archive"
+#~ msgstr "SV4 CPIO -paketti"
+
+#~ msgid "SV4 CPIP archive (with CRC)"
+#~ msgstr "SV4 CPIP -paketti (CRC mukana)"
+
+#~ msgid "SVG art"
+#~ msgstr "SVG-kuva"
+
+#~ msgid "Scheme source code"
+#~ msgstr "Scheme-l‰hdekoodi"
+
+#~ msgid "Scream Tracker 3 audio"
+#~ msgstr "Scream Tracker 3 -‰‰ni"
+
+#~ msgid "Scream Tracker audio"
+#~ msgstr "Scream Tracker -‰‰ni"
+
+#~ msgid "Scream Tracker instrument"
+#~ msgstr "Scream Tracker -soitin"
+
+#~ msgid "Setext document"
+#~ msgstr "Setext-asiakirja"
+
+#~ msgid "Speech document"
+#~ msgstr "Puheasiakirja"
+
+#~ msgid "Speedo font"
+#~ msgstr "Speedo-kirjasin"
+
+#~ msgid "Spreadsheet Interchange document"
+#~ msgstr "Taulukkov‰litysasiakirja"
+
+#~ msgid "Stampede package"
+#~ msgstr "Stampede-paketti"
+
+#~ msgid "StarOffice Writer document"
+#~ msgstr "StarOffice-tekstiasiakirja"
+
+#~ msgid "StarOffice presentation"
+#~ msgstr "StarOffice-esitys"
+
+#~ msgid "StarOffice spreadsheet"
+#~ msgstr "StarOffice-taulukko"
+
+#~ msgid "Sun mu-law audio"
+#~ msgstr "Sun mu-law -‰‰ni"
+
+#~ msgid "SunOS News font"
+#~ msgstr "SunOS News -kirjasin"
+
+#~ msgid "TIFF image"
+#~ msgstr "TIFF-kuva"
+
+#~ msgid "TarGA image"
+#~ msgstr "TarGA-kuva"
+
+#~ msgid "Tcl script"
+#~ msgstr "Tcl-skripti"
+
+#~ msgid "TeX document"
+#~ msgstr "TeX-asiakirja"
+
+#~ msgid "TeX dvi document"
+#~ msgstr "TeX DVI -asiakirja"
+
+#~ msgid "TeX font"
+#~ msgstr "TeX-kirjasin"
+
+#~ msgid "TeX font metrics"
+#~ msgstr "TeX-kirjasinmitat"
+
+#~ msgid "TeXInfo document"
+#~ msgstr "TeXInfo-asiakirja"
+
+#~ msgid "ToutDoux document"
+#~ msgstr "ToutDoux-asiakirja"
+
+#~ msgid "TrueType font"
+#~ msgstr "TrueType-kirjasin"
+
+#~ msgid "USENET news message"
+#~ msgstr "keskusteluryhm‰viesti"
+
+#~ msgid "Unidata netCDF document"
+#~ msgstr "Unidata netCDF -asiakirja"
+
+#~ msgid "V font"
+#~ msgstr "V-kirjasin"
+
+#~ msgid "VOC audio"
+#~ msgstr "VOC-‰‰ni"
+
+#~ msgid "VRML document"
+#~ msgstr "VRML-asiakirja"
+
+#~ msgid "Vivo video"
+#~ msgstr "Vivo-video"
+
+#~ msgid "WAIS source code"
+#~ msgstr "WAIS-l‰hdekoodi"
+
+#~ msgid "Wavelet video"
+#~ msgstr "Wavelet-video"
+
+#~ msgid "Windows bitmap image"
+#~ msgstr "Windows-bittikarttakuva"
+
+#~ msgid "Windows icon image"
+#~ msgstr "Windows-kuvake"
+
+#~ msgid "Windows metafile graphics"
+#~ msgstr "Windows-metagrafiikkatiedosto"
+
+#~ msgid "WordPerfect document"
+#~ msgstr "WordPerfect-asiakirja"
+
+#~ msgid "X bitmap image"
+#~ msgstr "X-bittikarttakuva"
+
+#~ msgid "X window image"
+#~ msgstr "X-ikkunakuva"
+
+#~ msgid "XML document"
+#~ msgstr "XML-asiakirja"
+
+#~ msgid "XPM image"
+#~ msgstr "XPM-kuva"
+
+#~ msgid "Xbase database"
+#~ msgstr "Xbase-tietokanta"
+
+#~ msgid "active server page"
+#~ msgstr "aktiivinen palvelinsivu"
+
+#~ msgid "address card"
+#~ msgstr "osoitekortti"
+
+#~ msgid "ar archive"
+#~ msgstr "ar-paketti"
+
+#~ msgid "arj archive"
+#~ msgstr "arj-paketti"
+
+#~ msgid "authors list"
+#~ msgstr "tekij‰luettelo"
+
+#~ msgid "backup file"
+#~ msgstr "varmuuskopio"
+
+#~ msgid "basic audio"
+#~ msgstr "tavallinen ‰‰ni"
+
+#~ msgid "bibliography record"
+#~ msgstr "bibliografiakohta"
+
+#~ msgid "binary program"
+#~ msgstr "ohjelmatiedosto"
+
+#~ msgid "block device"
+#~ msgstr "lohkolaite"
+
+#~ msgid "bzip-compressed file"
+#~ msgstr "bzip-pakattu tiedosto"
+
+#~ msgid "calendar file"
+#~ msgstr "kalenteritiedosto"
+
+#~ msgid "calendar or event document"
+#~ msgstr "kalenteri- tai tapahtuma-asiakirja"
+
+#~ msgid "character device"
+#~ msgstr "merkkilaite"
+
+#~ msgid "comma-separated text document"
+#~ msgstr "pilkuilla eroteltu teksti"
+
+#~ msgid "compound document"
+#~ msgstr "yhdisteasiakirja"
+
+#~ msgid "compress-compressed file"
+#~ msgstr "compress-pakattu tiedosto"
+
+#~ msgid "compressed GIMP document"
+#~ msgstr "pakattu GIMP-asiakirja"
+
+#~ msgid "directory information file"
+#~ msgstr "hakemistotiedot"
+
+#~ msgid "document type definition"
+#~ msgstr "asiakirjatyyppim‰‰ritelm‰"
+
+#~ msgid "email headers"
+#~ msgstr "s‰hkˆpostiotsikot"
+
+#~ msgid "email message"
+#~ msgstr "s‰hkˆpostiviesti"
+
+#~ msgid "encrypted message"
+#~ msgstr "salattu viesti"
+
+#~ msgid "enriched text document"
+#~ msgstr "RTF-teksti"
+
+#~ msgid "folder"
+#~ msgstr "hakemisto"
+
+#~ msgid "gtar archive"
+#~ msgstr "gtar-paketti"
+
+#~ msgid "gzip-compressed file"
+#~ msgstr "gzip-pakattu tiedosto"
+
+#~ msgid "help page"
+#~ msgstr "ohjesivu"
+
+#~ msgid "mail delivery report"
+#~ msgstr "postinv‰litysraportti"
+
+#~ msgid "mail disposition report"
+#~ msgstr "postinsijoitusraportti"
+
+#~ msgid "mail system report"
+#~ msgstr "postij‰rjestelm‰raportti"
+
+#~ msgid "makefile"
+#~ msgstr "makefile"
+
+#~ msgid "manual page"
+#~ msgstr "manuaalisivu"
+
+#~ msgid "manual page (compressed)"
+#~ msgstr "manuaalisivu (pakattu)"
+
+#~ msgid "memory dump"
+#~ msgstr "muistivedos"
+
+#~ msgid "message digest"
+#~ msgstr "viestitiivistelm‰"
+
+#~ msgid "message in several formats"
+#~ msgstr "eri muotoisia viestej‰"
+
+#~ msgid "multi-part message"
+#~ msgstr "moniosainen viesti"
+
+#~ msgid "named pipe"
+#~ msgstr "nimetty putki"
+
+#~ msgid "object code"
+#~ msgstr "objektikoodi"
+
+#~ msgid "ogg audio"
+#~ msgstr "ogg-‰‰ni"
+
+#~ msgid "partial email message"
+#~ msgstr "osittainen s‰hkˆpostiviesti"
+
+#~ msgid "plain text document"
+#~ msgstr "pelkk‰ teksti"
+
+#~ msgid "profiler results"
+#~ msgstr "profilointitulokset"
+
+#~ msgid "reference to remote file"
+#~ msgstr "viite et‰tiedostoon"
+
+#~ msgid "rejected patch file"
+#~ msgstr "hylkiintynyt patch-tiedosto"
+
+#~ msgid "rich text document"
+#~ msgstr "RTF-asiakirja"
+
+#~ msgid "search results"
+#~ msgstr "etsint‰tulokset"
+
+#~ msgid "shared library"
+#~ msgstr "jaettu kirjasto"
+
+#~ msgid "shell archive"
+#~ msgstr "shell-paketti"
+
+#~ msgid "shell script"
+#~ msgstr "komentotulkkiskripti"
+
+#~ msgid "signed message"
+#~ msgstr "allekirjoitettu viesti"
+
+#~ msgid "socket"
+#~ msgstr "pistoke"
+
+#~ msgid "software author credits"
+#~ msgstr "kiitos ohjelman tekijˆille"
+
+#~ msgid "software installation instructions"
+#~ msgstr "ohjelman asennusohjeet"
+
+#~ msgid "software license terms"
+#~ msgstr "ohjelman lisenssi"
+
+#~ msgid "source code patch"
+#~ msgstr "l‰hdekoodipatch"
+
+#~ msgid "style sheet"
+#~ msgstr "tyylisivu"
+
+#~ msgid "symbolic link"
+#~ msgstr "symbolinen linkki"
+
+#~ msgid "tab-separated text document"
+#~ msgstr "sarkaimilla eroteltu teksi"
+
+#~ msgid "tar archive"
+#~ msgstr "tar-paketti"
+
+#~ msgid "tar archive (bzip2-compressed)"
+#~ msgstr "tar-paketti (bzip2-pakattu)"
+
+#~ msgid "tar archive (gzip-compressed)"
+#~ msgstr "tar-pakettu (gzip-pakattu)"
+
+#~ msgid "theme"
+#~ msgstr "teema"
+
+#~ msgid "troff document"
+#~ msgstr "troff-asiakirja"
+
+#~ msgid "troff me input document"
+#~ msgstr "troff me -syˆteasiakirja"
+
+#~ msgid "troff mm input document"
+#~ msgstr "troff mm -syˆteasiakirja"
+
+#~ msgid "troff ms input document"
+#~ msgstr "troff ms -syˆteasiakirja"
+
+#~ msgid "unknown type"
+#~ msgstr "tuntematon tyyppi"
+
+#~ msgid "ustar archive"
+#~ msgstr "ustar-paketti"
+
+#~ msgid "wave audio"
+#~ msgstr "aalto‰‰ni"
+
+#~ msgid "web folder"
+#~ msgstr "www-hakemisto"
+
+#~ msgid "xfig vector graphic"
+#~ msgstr "xfig-vektorigrafiikka"
+
+#~ msgid "zip archive"
+#~ msgstr "zip-paketti"
+
+#~ msgid "zoo archive"
+#~ msgstr "zoo-paketti"

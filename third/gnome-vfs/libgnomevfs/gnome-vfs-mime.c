@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 1998 Miguel de Icaza
  * Copyright (C) 1997 Paolo Molaro
- * Copyright (C) 2000 Eazel
+ * Copyright (C) 2000, 2001 Eazel, Inc.
  * All rights reserved.
  *
  * This file is part of the Gnome Library.
@@ -25,26 +25,20 @@
  */
 
 #include <config.h>
-
-#include "gnome-vfs.h"
 #include "gnome-vfs-mime.h"
-#include "gnome-vfs-mime-info.h"
-#include "gnome-vfs-mime-sniff-buffer.h"
-#include "gnome-vfs-mime-sniff-buffer-private.h"
-#include "gnome-vfs-mime-private.h"
-#include "gnome-vfs-module-shared.h"
-#include "gnome-vfs-private-utils.h"
 
-#include <string.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <time.h>
-#include <unistd.h>
+#include "gnome-vfs-mime-private.h"
+#include "gnome-vfs-mime-sniff-buffer-private.h"
+#include "gnome-vfs-module-shared.h"
+#include "gnome-vfs-ops.h"
+#include "gnome-vfs-result.h"
+#include "gnome-vfs-uri.h"
+#include <ctype.h>
 #include <dirent.h>
 #include <regex.h>
+#include <stdio.h>
 #include <string.h>
-#include <ctype.h>
+#include <time.h>
 
 static gboolean module_inited = FALSE;
 
@@ -74,10 +68,6 @@ struct FileDateTracker {
 	guint check_interval;
 	GHashTable *records;
 };
-
-/* chached localhostname */
-static char localhostname[1024];
-static gboolean got_localhostname = FALSE;
 
 /* These ones are used to automatically reload mime-types on demand */
 static mime_dir_source_t gnome_mime_dir, user_mime_dir;
@@ -619,7 +609,7 @@ gnome_vfs_get_mime_type (GnomeVFSURI *uri)
 
 static GnomeVFSResult
 file_seek_binder (gpointer context, GnomeVFSSeekPosition whence, 
-	GnomeVFSFileOffset offset)
+		  GnomeVFSFileOffset offset)
 {
 	FILE *file = (FILE *)context;
 	int result;
@@ -632,7 +622,7 @@ file_seek_binder (gpointer context, GnomeVFSSeekPosition whence,
 
 static GnomeVFSResult
 file_read_binder (gpointer context, gpointer buffer, 
-	GnomeVFSFileSize bytes, GnomeVFSFileSize *bytes_read)
+		  GnomeVFSFileSize bytes, GnomeVFSFileSize *bytes_read)
 {
 	FILE *file = (FILE *)context;	
 	*bytes_read = fread (buffer, 1, bytes, file);
@@ -643,7 +633,6 @@ file_read_binder (gpointer context, gpointer buffer,
 
 	return GNOME_VFS_OK;
 }
-
 
 /**
  * gnome_vfs_get_file_mime_type:
@@ -842,195 +831,6 @@ gnome_vfs_get_supertype_from_mime_type (const char *mime_type)
 		return NULL;
 	}
         return extract_prefix_add_suffix (mime_type, "/", "/*");
-}
-
-/**
- * gnome_uri_list_extract_uris:
- * @uri_list: an uri-list in the standard format.
- *
- * Extract URIs from a @uri-list and return a list
- *
- * Returns: a GList containing strings allocated with g_malloc.
- * You should use #gnome_uri_list_free_strings to free the
- * returned list
- */
-GList*
-gnome_uri_list_extract_uris (const char *uri_list)
-{
-	const guchar *p, *q;
-	gchar *retval;
-	GList *result = NULL;
-
-	g_return_val_if_fail (uri_list != NULL, NULL);
-
-	p = (const guchar *) uri_list;
-
-	/* We don't actually try to validate the URI according to RFC
-	 * 2396, or even check for allowed characters - we just ignore
-	 * comments and trim whitespace off the ends.  We also
-	 * allow LF delimination as well as the specified CRLF.
-	 */
-	while (p != NULL) {
-		if (*p != '#') {
-			while (isspace (*p)) {
-				p++;
-			}
-
-			q = p;
-			while (*q != '\0' && *q != '\n' && *q != '\r') {
-				q++;
-			}
-
-			if (q > p) {
-			        q--;
-				while (q > p && isspace (*q)) {
-					q--;
-				}
-
-				retval = g_malloc (q - p + 2);
-				strncpy (retval, p, q - p + 1);
-				retval[q - p + 1] = '\0';
-
-				result = g_list_prepend (result, retval);
-			}
-		}
-		p = strchr (p, '\n');
-		if (p != NULL) {
-			p++;
-		}
-	}
-
-	return g_list_reverse (result);
-}
-
-/**
- * gnome_uri_list_extract_filenames:
- * @uri_list: an uri-list in the standard format
- *
- * Extract local files from a @uri-list and return a list.  Note
- * that unlike the #gnome_uri_list_extract_uris function, this
- * will only return local files and not any other urls.
- *
- * Returns: a GList containing strings allocated with g_malloc.
- * You should use #gnome_uri_list_free_strings to free the
- * returned list.
- */
-GList*
-gnome_uri_list_extract_filenames (const char *uri_list)
-{
-	GList *tmp_list, *node, *result;
-
-	g_return_val_if_fail (uri_list != NULL, NULL);
-
-	result = gnome_uri_list_extract_uris (uri_list);
-
-	tmp_list = result;
-	while (tmp_list != NULL) {
-		char *s = tmp_list->data;
-
-		node = tmp_list;
-		tmp_list = tmp_list->next;
-
-		node->data = gnome_uri_extract_filename(s);
-
-		/* if we didn't get anything, just remove the element */
-		if (!node->data) {
-			result = g_list_remove_link(result, node);
-			g_list_free_1 (node);
-		}
-		g_free (s);
-	}
-	return result;
-}
-
-/**
- * gnome_uri_extract_filename:
- * @uri: a single URI
- *
- * If the @uri is a local file, return the local filename only
- * without the file:[//hostname] prefix.
- *
- * Returns: a newly allocated string if the @uri, or %NULL
- * if the @uri was not a local file
- */
-char *
-gnome_uri_extract_filename (const char *uri)
-{
-	char *hostname;
-	char *p, *result;
-	const char *path;
-
-	/* file uri with a hostname */
-	if (gnome_vfs_istr_has_prefix (uri, "file://")) {
-
-		hostname = g_strdup (&uri[strlen ("file://")]);
-		/* if we can't find the '/' this uri is bad */		
-		p = strchr (hostname,'/');
-		if (p == NULL) {
-			g_free (hostname);
-			return NULL;
-		}
-
-		/* if no hostname */
-		if (p == hostname) {
-			return hostname;
-		}
-
-		result = g_strdup (p);
-		*p = '\0';
-
-		/* gel local host name and cache it */
-		if (!got_localhostname) {
-			G_LOCK (mime_mutex);
-			if (gethostname (localhostname, sizeof (localhostname)) < 0) {
-				strcpy (localhostname, "");
-			}
-			got_localhostname = TRUE;
-			G_UNLOCK (mime_mutex);
-		}
-
-		/* if really local */
-		if (g_strcasecmp (hostname, localhostname) == 0
-			|| g_strcasecmp (hostname, "localhost") == 0) {
-			g_free (hostname);
-			return result;
-		}
-		
-		g_free (hostname);
-		g_free (result);
-		return NULL;
-
-	}
-	
-	/* if the file doesn't have the //, we take it containing 
-	 * a local path
-	 */
-	if (gnome_vfs_istr_has_prefix (uri, "file:")) {
-		
-		path = &uri[strlen ("file:")];
-
-		/* if empty bad */
-		if (*path == '\0') {
-			return NULL;
-		}
-
-		return g_strdup (path);
-	}
-
-	return NULL;
-}
-
-/**
- * gnome_uri_list_free_strings:
- * @list: A GList returned by gnome_uri_list_extract_uris() or gnome_uri_list_extract_filenames()
- *
- * Releases all of the resources allocated by @list.
- */
-void
-gnome_uri_list_free_strings (GList *list)
-{
-	g_list_foreach (list, (GFunc) g_free, NULL);
-	g_list_free (list);
 }
 
 static void

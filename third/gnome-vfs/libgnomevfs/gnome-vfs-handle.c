@@ -21,9 +21,8 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-handle.h"
 
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"

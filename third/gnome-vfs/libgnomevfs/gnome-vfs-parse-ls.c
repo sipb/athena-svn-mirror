@@ -25,26 +25,22 @@
 
    finduid, findgid are from GNU tar.  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-parse-ls.h"
 
-#ifndef NO_SYSLOG_H
-#  include <syslog.h>
-#endif
+#include "gnome-vfs-private.h"
+#include "gnome-vfs.h"
+#include <glib.h>
+#include <grp.h>
+#include <pwd.h>
 #include <stdio.h>
-#include <stdlib.h>	/* For atol () */
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
-#include <pwd.h>
-#include <grp.h>
-#include <glib.h>
-
-#include "gnome-vfs.h"
-#include "gnome-vfs-private.h"
 
 #ifndef TUNMLEN 
 #define TUNMLEN 256
@@ -574,7 +570,7 @@ gnome_vfs_parse_ls_lga (const gchar *p,
 		if (!is_num (columns[idx2]))
 			goto error;
 	
-		s->st_size = (size_t) atol (columns [idx2]);
+		s->st_size = (gsize) atol (columns [idx2]);
 #ifdef HAVE_ST_RDEV
 		s->st_rdev = 0;
 #endif

@@ -2,7 +2,7 @@
 /* gnome-vfs-method.h - Virtual class for access methods in the GNOME
    Virtual File System.
 
-   Copyright (C) 1999 Free Software Foundation
+   Copyright (C) 1999, 2001 Free Software Foundation
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -19,14 +19,41 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Ettore Perazzoli <ettore@comm2000.it> */
+   Author: Ettore Perazzoli <ettore@comm2000.it> 
+           Seth Nickell <snickell@stanford.edu>
+*/
 
-#ifndef _GNOME_VFS_METHOD_H
-#define _GNOME_VFS_METHOD_H
+#ifndef GNOME_VFS_METHOD_H
+#define GNOME_VFS_METHOD_H
+
+#include <libgnomevfs/gnome-vfs-context.h>
+#include <libgnomevfs/gnome-vfs-directory-filter.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
+#include <libgnomevfs/gnome-vfs-transform.h>
+
+/* Open mode.  If you don't set `GNOME_VFS_OPEN_RANDOM', you have to access the
+   file sequentially.  */
+typedef enum {
+        GNOME_VFS_OPEN_NONE = 0,
+        GNOME_VFS_OPEN_READ = 1 << 0,
+        GNOME_VFS_OPEN_WRITE = 1 << 1,
+        GNOME_VFS_OPEN_RANDOM = 1 << 2
+} GnomeVFSOpenMode;
+
+/* This is used to specify the start position for seek operations.  */
+typedef enum {
+        GNOME_VFS_SEEK_START,
+        GNOME_VFS_SEEK_CURRENT,
+        GNOME_VFS_SEEK_END
+} GnomeVFSSeekPosition;
+
+typedef gpointer GnomeVFSMethodHandle;
 
 #define _GNOME_VFS_METHOD_PARAM_CHECK(expression)			\
 	g_return_val_if_fail ((expression), GNOME_VFS_ERROR_BAD_PARAMETERS);
 
+typedef struct GnomeVFSMethod GnomeVFSMethod;
 
 typedef GnomeVFSMethod * (* GnomeVFSMethodInitFunc)(const char *method_name, const char *config_args);
 typedef void (*GnomeVFSMethodShutdownFunc)(GnomeVFSMethod *method);
@@ -193,7 +220,7 @@ typedef GnomeVFSResult (* GnomeVFSMethodCreateSymbolicLinkFunc)
 /* Structure defining an access method.	 This is also defined as an
    opaque type in `gnome-vfs-types.h'.	*/
 struct GnomeVFSMethod {
-	size_t method_table_size;			/* Used for versioning */
+	gsize method_table_size;			/* Used for versioning */
 	GnomeVFSMethodOpenFunc open;
 	GnomeVFSMethodCreateFunc create;
 	GnomeVFSMethodCloseFunc close;
@@ -223,4 +250,4 @@ gboolean	   gnome_vfs_method_init   (void);
 GnomeVFSMethod    *gnome_vfs_method_get    (const gchar *name);
 GnomeVFSTransform *gnome_vfs_transform_get (const gchar *name);
 
-#endif /* _GNOME_VFS_METHOD_H */
+#endif /* GNOME_VFS_METHOD_H */

@@ -21,22 +21,18 @@
 
    Author: Ettore Perazzoli <ettore@comm2000.it> */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-regexp-filter.h"
 
-#include <sys/types.h>
-#include <regex.h>
-
-#include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
+#include "gnome-vfs.h"
+#include <regex.h>
+#include <sys/types.h>
 
-
 struct GnomeVFSRegexpFilter {
 	regex_t regex;
 };
 
-
 GnomeVFSRegexpFilter *
 gnome_vfs_regexp_filter_new (const gchar *regexp,
 			     GnomeVFSDirectoryFilterOptions options)

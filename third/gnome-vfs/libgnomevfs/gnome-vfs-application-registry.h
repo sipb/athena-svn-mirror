@@ -28,9 +28,7 @@
 #ifndef GNOME_VFS_APPLICATION_REGISTRY_H
 #define GNOME_VFS_APPLICATION_REGISTRY_H
 
-#include <libgnomevfs/gnome-vfs-types.h> /* for GnomeVFSResult */
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <glib.h>
 
 #ifdef __cplusplus
 extern "C" {

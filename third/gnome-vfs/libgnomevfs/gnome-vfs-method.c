@@ -21,9 +21,8 @@
 
    Author: Ettore Perazzoli <ettore@gnu.org> */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-method.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -33,9 +32,9 @@
 #include <glib.h>
 #include <gmodule.h>
 
-#include "gnome-vfs-types.h"
-#include "gnome-vfs-private.h"
-#include "gnome-vfs-module.h"
+#include <libgnomevfs/gnome-vfs-transform.h>
+#include <libgnomevfs/gnome-vfs-module.h>
+#include <libgnomevfs/gnome-vfs-private.h>
 
 
 struct _ModuleElement {
@@ -218,13 +217,12 @@ load_module (const gchar *module_name, const char *method_name, const char *args
 		} else if (!VFS_METHOD_HAS_FUNC(temp_method, is_local)) {
 			g_warning ("module '%s' has no is-local fn", module_name);
 			return;
-		}
 #if 0
-		else if (!VFS_METHOD_HAS_FUNC(temp_method, get_file_info) {
+		} else if (!VFS_METHOD_HAS_FUNC(temp_method, get_file_info)) {
 			g_warning ("module '%s' has no get-file-info fn", module_name);
 			return;
-		}
 #endif
+		}
 
 		/* More advanced assumptions.  */
 		if (VFS_METHOD_HAS_FUNC(temp_method, tell) && !VFS_METHOD_HAS_FUNC(temp_method, seek)) {
@@ -265,7 +263,7 @@ load_module_in_path_list (const gchar *base_name, const char *method_name, const
 		gchar *name;
 
 		path = p->data;
-		name = g_strconcat (path, "/", base_name, NULL);
+		name = g_module_build_path (path, base_name);
 
 		load_module (name, method_name, args, method, transform);
 		g_free (name);

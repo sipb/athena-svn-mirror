@@ -21,9 +21,11 @@
 
    Author: Ettore Perazzoli <ettore@comm2000.it> */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-shellpattern-filter.h"
+
+#include "gnome-vfs.h"
+#include "gnome-vfs-private.h"
 
 #ifdef _POSIX_SOURCE
 #include <fnmatch.h>
@@ -35,9 +37,6 @@
 /* On Solaris 2.7 we need to undef this again.  */
 #undef _POSIX_SOURCE
 #endif
-
-#include "gnome-vfs.h"
-#include "gnome-vfs-private.h"
 
 
 struct GnomeVFSShellpatternFilter {

@@ -59,7 +59,7 @@ main (int argc, char **argv)
 		create = TRUE;
 		++argv;
 	}
-	
+
 	uri = gnome_vfs_uri_new (*argv);
 	error = gnome_vfs_find_directory (uri, GNOME_VFS_DIRECTORY_KIND_TRASH, &result, create, 
 		TRUE, 0777);
@@ -73,7 +73,13 @@ main (int argc, char **argv)
 			path = gnome_vfs_uri_to_string (result, GNOME_VFS_URI_HIDE_NONE);
 			g_print ("found it again in a cached entry at %s\n", path);
 			g_free (path);
+		} else {
+			g_print ("error %s finding cached trash entry near %s\n", gnome_vfs_result_to_string (error),
+				*argv);
 		}
+	} else {
+		g_print ("error %s finding trash near %s\n", gnome_vfs_result_to_string (error),
+			*argv);
 	}
 	
 	return 0;

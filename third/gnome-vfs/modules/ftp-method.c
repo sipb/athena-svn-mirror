@@ -47,10 +47,11 @@
 #include <arpa/inet.h>
 
 #include <gtk/gtk.h>
+#ifdef HAVE_GCONF
 #include <gconf/gconf-client.h>
+#endif
 
 #include "gnome-vfs-context.h"
-#include "gnome-vfs-types.h"
 #include "gnome-vfs-iobuf.h"
 #include "gnome-vfs-inet-connection.h"
 #include "gnome-vfs-method.h"
@@ -58,6 +59,7 @@
 #include "gnome-vfs-module-shared.h"
 #include "gnome-vfs-mime.h"
 #include "gnome-vfs-parse-ls.h"
+#include "gnome-vfs-utils.h"
 
 #include "ftp-method.h"
 
@@ -1141,13 +1143,23 @@ do_open_directory (GnomeVFSMethod *method,
 
 	/*g_print ("do_open_directory () in uri: %s\n", gnome_vfs_uri_get_path(uri));*/
 
+	/* LIST does not return an error if called on a file, but CWD
+	 * should. This allows us to have proper gnome-vfs semantics.
+	 * does the cwd break other things though?  ie, are
+	 * connections stateless?
+	 */
+	conn->fivefifty = GNOME_VFS_ERROR_NOT_A_DIRECTORY;
+	result = do_path_command (conn, "CWD", uri);
+	if (result != GNOME_VFS_OK) {
+		ftp_connection_release (conn);
+		return result;
+	}
+
 	if(strstr(conn->server_type,"MACOS")) {
 		/* don't ask for symlinks from MacOS servers */
-		result = do_path_transfer_command (conn, 
-			"LIST", uri, context);
+		result = do_transfer_command (conn, "LIST", context);
 	} else {
-		result = do_path_transfer_command (conn, 
-			"LIST -L", uri, context);
+		result = do_transfer_command (conn, "LIST -L", context);
 	}
 
 	if (result != GNOME_VFS_OK) {
@@ -1416,6 +1428,7 @@ GnomeVFSMethod *
 vfs_module_init (const char *method_name, 
 		 const char *args)
 {
+#ifdef HAVE_GCONF
 	char *argv[] = {"vfs-ftp-method"};
 	int argc = 1;
 
@@ -1428,6 +1441,7 @@ vfs_module_init (const char *method_name,
 		/* auto-initializes OAF if necessary */
 		gconf_init (argc, argv, NULL);
 	}
+#endif
 	
 	return &method;
 }

@@ -21,9 +21,8 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-iobuf.h"
 
 #include <unistd.h>
 #include <string.h>
@@ -263,4 +262,3 @@ gnome_vfs_iobuf_flush (GnomeVFSIOBuf *iobuf)
 
 	return flush (iobuf);
 }
-

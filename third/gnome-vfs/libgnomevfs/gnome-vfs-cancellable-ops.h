@@ -21,8 +21,13 @@
 
    Author: Ettore Perazzoli <ettore@gnu.org> */
 
-#ifndef _GNOME_VFS_CANCELLABLE_OPS_H
-#define _GNOME_VFS_CANCELLABLE_OPS_H
+#ifndef GNOME_VFS_CANCELLABLE_OPS_H
+#define GNOME_VFS_CANCELLABLE_OPS_H
+
+#include <libgnomevfs/gnome-vfs-directory.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
+#include <libgnomevfs/gnome-vfs-handle.h>
+#include <libgnomevfs/gnome-vfs-xfer.h>
 
 GnomeVFSResult gnome_vfs_open_uri_cancellable
 					(GnomeVFSHandle **handle,
@@ -146,4 +151,4 @@ GnomeVFSResult  gnome_vfs_directory_open_from_uri_cancellable
 					 const GnomeVFSDirectoryFilter *filter,
 					 GnomeVFSContext *context);
 
-#endif /* _GNOME_VFS_CANCELLABLE_OPS_H */
+#endif /* GNOME_VFS_CANCELLABLE_OPS_H */

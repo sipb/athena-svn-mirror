@@ -25,11 +25,10 @@
    meant to be used within the GNOME VFS and its modules: they are not for
    public consumption through the external API.  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-#include <string.h>
+#include "gnome-vfs-cancellable-ops.h"
 
+#include <string.h>
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
 
@@ -362,6 +361,10 @@ gnome_vfs_move_uri_cancellable (GnomeVFSURI *old,
 
 	if (! check_same_fs_in_uri (old, new))
 		return GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM;
+
+	if (gnome_vfs_uri_equal (old, new)) {
+		return GNOME_VFS_OK;
+	}
 
 	if (!VFS_METHOD_HAS_FUNC(old->method, move))
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;

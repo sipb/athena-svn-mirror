@@ -28,10 +28,14 @@
 #include <string.h>
 
 #include "gnome-vfs-mime.h"
-#include "gnome-vfs-method.h"
+
+#include "gnome-vfs-cancellation.h"
+#include "gnome-vfs-context.h"
 #include "gnome-vfs-module.h"
-#include "gnome-vfs-module-shared.h"
+#include "gnome-vfs-method.h"
 #include "gnome-vfs-utils.h"
+#include "gnome-vfs-module-shared.h"
+
 #include "pipe-method.h"
 
 struct _FileHandle {
@@ -109,6 +113,9 @@ set_default_file_info (GnomeVFSFileInfo *file_info,
 				   | GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS);
 }
 
+#define SAFE_POPEN_CHARACTERS "?'/. +:-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
+
 static GnomeVFSResult
 do_open (GnomeVFSMethod *method,
 	 GnomeVFSMethodHandle **method_handle,
@@ -127,6 +134,21 @@ do_open (GnomeVFSMethod *method,
 		return GNOME_VFS_ERROR_INVALID_OPEN_MODE;
 
 	real_uri = str_without_suffix (gnome_vfs_unescape_string (uri->text, ""));
+
+	/* Check that all the characters being passed to popen are "safe" */
+	/* If we allow just any characters through, it's easy to make URIs 
+	 * that make dangerous command lines here. If we prevent any 
+	 * interesting characters, then it's just simple parameters passed 
+	 * to the command that's the first thing passed in, which is much 
+	 * safer.
+	 * Without this "man:ls&shutdown -h now" would have undesired effects.
+	 */
+	if (strspn (real_uri, SAFE_POPEN_CHARACTERS) != strlen (real_uri)) {
+		g_message ("real_uri is %s, has illegal chars, failing", real_uri);
+		g_free (real_uri);
+		return GNOME_VFS_ERROR_NOT_PERMITTED;
+	}
+
 	fh = popen (real_uri, "r");
 	g_free (real_uri);
 

@@ -36,8 +36,7 @@
 
 #include "gnome-vfs-module.h"
 #include "gnome-vfs-mime.h"
-
-#include "gzip-method.h"
+#include "gnome-vfs-ops.h"
 
 
 struct _GZipMethodHandle {

@@ -21,14 +21,11 @@
 
    Author: Ettore Perazzoli <ettore@gnu.org> */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-directory.h"
 
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
-
-
 
 #define VFS_MAXIMUM_SYMBOLIC_LINK_DEPTH 256
 
@@ -651,7 +648,7 @@ load_from_handle (GList **list,
 
 /**
  * gnome_vfs_directory_list_load:
- * @list: An address of a pointer to a list
+ * @list: An address of a pointer to a list of GnomeVFSFileInfo
  * @text_uri: A text URI
  * @options: Options for loading the directory 
  * @filter: Filter to be applied to the files being read

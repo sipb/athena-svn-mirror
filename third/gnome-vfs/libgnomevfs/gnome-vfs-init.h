@@ -21,21 +21,26 @@
    Author: Ettore Perazzoli <ettore@comm2000.it>
 */
 
-#ifndef _GNOME_VFS_INIT_H
-#define _GNOME_VFS_INIT_H
+#ifndef GNOME_VFS_INIT_H
+#define GNOME_VFS_INIT_H
 
-gboolean gnome_vfs_init(void);
-gboolean gnome_vfs_initialized (void);
-void gnome_vfs_shutdown(void);
-
-/* Stuff for use in a GnomeModuleInfo */
-void gnome_vfs_loadinit(gpointer app, gpointer modinfo);
-void gnome_vfs_preinit(gpointer app, gpointer modinfo);
-void gnome_vfs_postinit(gpointer app, gpointer modinfo);
+#include <glib.h>
 
 #ifdef HAVE_POPT_H
 #include <popt.h>
 #endif
+
+gboolean gnome_vfs_init        (void);
+gboolean gnome_vfs_initialized (void);
+void     gnome_vfs_shutdown    (void);
+
+/* Stuff for use in a GnomeModuleInfo */
+void     gnome_vfs_loadinit    (gpointer app,
+				gpointer modinfo);
+void     gnome_vfs_preinit     (gpointer app,
+				gpointer modinfo);
+void     gnome_vfs_postinit    (gpointer app,
+				gpointer modinfo);
 
 #ifdef POPT_AUTOHELP
 extern struct poptOption gnome_vfs_options[];

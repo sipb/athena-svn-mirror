@@ -31,8 +31,17 @@
 #define _LARGEFILE64_SOURCE
 
 #include <glib.h>
+#if GNOME_PLATFORM_VERSION < 1095000
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#else
+/* FIXME: We need to use gettext, but we can't use the gettext helpers
+ * in libgnome since it depends on us, not the other way around.
+ * What's the good GNOME 2.0 solution for this?
+ */
+#define _(String) (String)
+#define N_(String) (String)
+#endif
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -306,11 +315,11 @@ do_read (GnomeVFSMethod *method,
 
 	file_handle = (FileHandle *) method_handle;
 
-	do
+	do {
 		read_val = read (file_handle->fd, buffer, num_bytes);
-	while (read_val == -1
-	       && errno == EINTR
-	       && ! gnome_vfs_context_check_cancellation (context));
+	} while (read_val == -1
+	         && errno == EINTR
+	         && ! gnome_vfs_context_check_cancellation (context));
 
 	if (read_val == -1) {
 		*bytes_read = 0;
@@ -592,12 +601,13 @@ get_stat_info (GnomeVFSFileInfo *file_info,
 	       GnomeVFSFileInfoOptions options,
 	       struct stat *statptr)
 {
-	GnomeVFSResult result;
 	struct stat statbuf;
 	gboolean followed_symlink;
+	gboolean is_symlink;
 	gboolean recursive;
-
-	result = GNOME_VFS_OK;
+	char *link_file_path;
+	char *symlink_name;
+	
 	followed_symlink = FALSE;
 	
 	recursive = FALSE;
@@ -612,13 +622,13 @@ get_stat_info (GnomeVFSFileInfo *file_info,
 		return gnome_vfs_result_from_errno ();
 	}
 
-	if ((options & GNOME_VFS_FILE_INFO_FOLLOW_LINKS) && S_ISLNK (statptr->st_mode)) {
+	is_symlink = S_ISLNK (statptr->st_mode);
+
+	if ((options & GNOME_VFS_FILE_INFO_FOLLOW_LINKS) && is_symlink) {
 		if (stat (full_name, statptr) != 0) {
 			if (errno == ELOOP) {
 				recursive = TRUE;
 			}
-
-			result = gnome_vfs_result_from_errno ();
 
 			/* It's a broken symlink, revert to the lstat. This is sub-optimal but
 			 * acceptable because it's not a common case.
@@ -633,19 +643,47 @@ get_stat_info (GnomeVFSFileInfo *file_info,
 
 	gnome_vfs_stat_to_file_info (file_info, statptr);
 
-	if (result == GNOME_VFS_OK && S_ISLNK (statptr->st_mode)) {
-		/* FIXME: call read_link in a loop unless recursive is TRUE.
-		 * Currently for more than one-level symlinks the symlink_name
-		 * field will be wrong when follow links is specified
+	if (is_symlink) {
+		symlink_name = NULL;
+		link_file_path = g_strdup (full_name);
+		
+		/* We will either successfully read the link name or return
+		 * NULL if read_link fails -- flag it as a valid field either
+		 * way.
 		 */
-		file_info->symlink_name = read_link (full_name);
-		if (file_info->symlink_name == NULL) {
-			return gnome_vfs_result_from_errno ();
-		}
 		file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME;
+
+		while (TRUE) {			
+			/* Deal with multiple-level symlinks by following them as
+			 * far as we can.
+			 */
+
+			g_free (symlink_name);
+			symlink_name = read_link (link_file_path);
+			if (symlink_name == NULL) {
+				g_free (link_file_path);
+				return gnome_vfs_result_from_errno ();
+			}
+			
+			if ((options & GNOME_VFS_FILE_INFO_FOLLOW_LINKS) == 0
+			                /* if we had an earlier ELOOP, don't get in an infinite loop here */
+			        || recursive
+					/* we don't care to follow links */
+				|| lstat (file_info->symlink_name, statptr) != 0
+					/* we can't make out where this points to */
+				|| !S_ISLNK (statptr->st_mode)) {
+					/* the next level is not a link */
+				break;
+			}
+			g_free (link_file_path);
+			link_file_path = g_strdup (symlink_name);
+		}
+		g_free (link_file_path);
+
+		file_info->symlink_name = symlink_name;
 	}
 
-	return result;
+	return GNOME_VFS_OK;
 }
 
 static GnomeVFSResult
@@ -1116,45 +1154,19 @@ find_trash_in_one_hierarchy_level (const char *current_directory, dev_t near_dev
 static char *
 find_trash_in_hierarchy (const char *start_dir, dev_t near_device_id, GnomeVFSContext *context)
 {
-	GList *current_directory_list;
 	GList *next_directory_list;
-	GList *list_iterator;
 	char *result;
-	int level;
 
 #ifdef DEBUG_FIND_DIRECTORY
 	g_print ("searching for trash in %s\n", start_dir);
 #endif
 
 	next_directory_list = NULL;
-	current_directory_list = NULL;
 
 	/* Search the top level. */
 	result = find_trash_in_one_hierarchy_level (start_dir, near_device_id, 
 		&next_directory_list, context);
-
-	for (level = 1; result == NULL && level < MAX_TRASH_SEARCH_DEPTH; level++) {
-		gnome_vfs_list_deep_free (current_directory_list);
-
-		current_directory_list = next_directory_list;
-		next_directory_list = NULL;
-
-		if (current_directory_list == NULL) {
-			/* Shallow hierarchy, bail. */
-			break;
-		}
-		for (list_iterator = current_directory_list; list_iterator != NULL;
-			list_iterator = list_iterator->next) {
-			result = find_trash_in_one_hierarchy_level (list_iterator->data, 
-				near_device_id, &next_directory_list, context);
-
-			if (result != NULL) {
-				break;
-			}
-		}
-	}
-
-	gnome_vfs_list_deep_free (current_directory_list);
+	
 	gnome_vfs_list_deep_free (next_directory_list);
 
 	return result;
@@ -1450,56 +1462,7 @@ static char *
 create_trash_near (const char *full_name_near, dev_t near_device_id, const char *disk_top_directory,
 	guint permissions, GnomeVFSContext *context)
 {
-	char *result;
-	const char *scanner;
-	int depth;
-	char *current_directory;
-
-	result = NULL;
-
-	/* Point at the last directory in the top directory path */
-	scanner = strrchr (disk_top_directory, G_DIR_SEPARATOR);
-	g_assert (scanner != NULL);
-
-#ifdef DEBUG_FIND_DIRECTORY
-	g_print ("creating trash near %s, disk top %s\n", full_name_near, disk_top_directory);
-#endif
-	scanner = full_name_near + strlen (disk_top_directory);
-	if (*scanner != '\0') {
-		/* Try creating the Trash as high up in the volume hierarchy as possible
-		 * this makes it faster to find and less likely that the user will try
-		 * to delete it as a part of throwing something into the Trash.
-		 */
-		for (depth = 1; depth < MAX_TRASH_SEARCH_DEPTH; depth++) {
-			g_assert (*scanner == G_DIR_SEPARATOR);
-
-			/* Special-case to handle "/" (and similar?) */
-			if (scanner == full_name_near) {
-				current_directory = g_strdup (G_DIR_SEPARATOR_S);
-			} else {
-				current_directory = g_strdup (full_name_near);
-				current_directory[scanner - full_name_near] = '\0';
-			}
-
-			result = try_creating_trash_in (current_directory, permissions);
-			g_free (current_directory);
-			if (result != NULL) {
-				break;
-			}
-
-			scanner = strchr (scanner + 1, G_DIR_SEPARATOR);
-			if (scanner == NULL) {
-				break;
-			}
-		}
-	}
-	if (result == NULL) {
-		/* full_name_near must be the top of the disk hierarchy, we have to create a Trash in it
-		 */
-		 result = try_creating_trash_in (full_name_near, permissions);
-	}
-
-	return result;
+	return try_creating_trash_in (disk_top_directory, permissions);
 }
 
 

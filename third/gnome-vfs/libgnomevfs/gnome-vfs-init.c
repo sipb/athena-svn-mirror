@@ -21,13 +21,13 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-init.h"
 
 #include "gnome-vfs.h"
 #include "gnome-vfs-backend.h"
 #include "gnome-vfs-private.h"
+#include "gnome-vfs-ssl-private.h"
 #include "gnome-vfs-mime.h"
 
 #ifdef USING_OAF
@@ -37,6 +37,8 @@
 
 static gboolean vfs_already_initialized = FALSE;
 G_LOCK_DEFINE_STATIC (vfs_already_initialized);
+
+static GPrivate * private_is_primary_thread;
 
 gboolean 
 gnome_vfs_init (void)
@@ -50,6 +52,8 @@ gnome_vfs_init (void)
 		if (oaf_orb_get() == NULL) {
 			oaf_init (0, bogus_argv);
 		}
+
+		gnome_vfs_ssl_init ();
 
 		retval = gnome_vfs_method_init ();
 		if (retval) {
@@ -65,6 +69,12 @@ gnome_vfs_init (void)
 		if (retval) {
 			signal (SIGPIPE, SIG_IGN);
 		}
+
+		if (g_thread_supported()) {
+			private_is_primary_thread = g_private_new (NULL);
+			g_private_set (private_is_primary_thread, GUINT_TO_POINTER (1));
+		}
+		
 	} else {
 		g_warning (_("GNOME VFS already initialized."));
 		retval = TRUE;	/* Who cares after all.  */
@@ -119,4 +129,14 @@ gnome_vfs_postinit(gpointer app, gpointer modinfo)
 
 	vfs_already_initialized = TRUE;
 	G_UNLOCK (vfs_already_initialized);
+}
+
+gboolean
+gnome_vfs_is_primary_thread (void)
+{
+	if (g_thread_supported()) {
+		return GPOINTER_TO_UINT(g_private_get (private_is_primary_thread)) == 1;
+	} else {
+		return TRUE;
+	}
 }

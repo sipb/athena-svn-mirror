@@ -27,8 +27,9 @@
 #ifndef GNOME_VFS_UTILS_H
 #define GNOME_VFS_UTILS_H
 
-#include <glib.h>
-#include "gnome-vfs-types.h"
+#include <libgnomevfs/gnome-vfs-file-size.h>
+#include <libgnomevfs/gnome-vfs-result.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 
 /* Makes a human-readable string. */
 char *gnome_vfs_format_file_size_for_display (GnomeVFSFileSize  size);
@@ -108,5 +109,10 @@ GnomeVFSResult	gnome_vfs_get_volume_free_space	(const GnomeVFSURI 	*vfs_uri,
 						 GnomeVFSFileSize 	*size);
 
 char *gnome_vfs_icon_path_from_filename       (const char *filename);
+
+/* TRUE if the current thread is the thread with the main glib event loop */
+#define GNOME_VFS_ASSERT_PRIMARY_THREAD g_assert (gnome_vfs_is_primary_thread())
+#define GNOME_VFS_ASSERT_SECONDARY_THREAD g_assert (!gnome_vfs_is_primary_thread())
+gboolean	gnome_vfs_is_primary_thread (void);
 
 #endif /* GNOME_VFS_UTILS_H */

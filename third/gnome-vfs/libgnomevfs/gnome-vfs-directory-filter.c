@@ -21,9 +21,8 @@
 
    Author: Ettore Perazzoli <ettore@comm2000.it> */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-directory-filter.h"
 
 #include "gnome-vfs.h"
 #include "gnome-vfs-private.h"

@@ -24,26 +24,25 @@
 #ifndef _GNOME_VFS_H
 #define _GNOME_VFS_H
 
-#include <glib.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif /*__cplusplus*/
 
-#include "gnome-vfs-constants.h"
-#include "gnome-vfs-types.h"
-
-#include "gnome-vfs-async-ops.h"
-#include "gnome-vfs-directory.h"
-#include "gnome-vfs-directory-filter.h"
-#include "gnome-vfs-file-info.h"
-#include "gnome-vfs-find-directory.h"
-#include "gnome-vfs-init.h"
-#include "gnome-vfs-xfer.h"
-#include "gnome-vfs-ops.h"
-#include "gnome-vfs-result.h"
-#include "gnome-vfs-uri.h"
-#include "gnome-vfs-utils.h"
+#include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-messages.h>
+#include <libgnomevfs/gnome-vfs-module-callback.h>
+#include <libgnomevfs/gnome-vfs-directory-filter.h>
+#include <libgnomevfs/gnome-vfs-directory.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
+#include <libgnomevfs/gnome-vfs-init.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-result.h>
+#include <libgnomevfs/gnome-vfs-transform.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-xfer.h>
 
 #ifdef __cplusplus
 }

@@ -23,20 +23,16 @@
 
 /* TODO: Cancellation throughout!  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
+#include "gnome-vfs-seekable.h"
 
-#include <stdio.h>
-#include <string.h>
-
-#include <stdlib.h> /* for mkstemp */
-#include <unistd.h> /* for close */
-
-#include <glib.h>
-
-#include "gnome-vfs.h"
 #include "gnome-vfs-private.h"
+#include "gnome-vfs.h"
+#include <glib.h>
+#include <stdio.h>
+#include <stdlib.h> /* for mkstemp */
+#include <string.h>
+#include <unistd.h> /* for close */
 
 static GnomeVFSResult	do_open		(GnomeVFSMethod *method,
 					 GnomeVFSMethodHandle **method_handle,
