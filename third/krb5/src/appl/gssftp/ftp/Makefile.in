@@ -1,28 +1,30 @@
+thisconfigdir=./..
+myfulldir=appl/gssftp/ftp
+mydir=ftp
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 #
 # appl/gssftp/ftp/Makefile.in
 #
 CFLAGS = -DGSSAPI -DFTP_BUFSIZ=10240 $(CCOPTS) $(DEFS) $(LOCALINCLUDE)
+PROG_LIBPATH=-L$(TOPLIBD)
+PROG_RPATH=$(KRB5_LIBDIR)
 
-COMERRLIB=$(BUILDTOP)/util/et/libcom_err.a
-
-SRCS	= cmds.c cmdtab.c domacro.c ftp.c getpass.c glob.c main.c pclose.c \
-	  radix.c ruserpass.c secure.c 
+SRCS	= $(srcdir)/cmds.c $(srcdir)/cmdtab.c $(srcdir)/domacro.c \
+	  $(srcdir)/ftp.c $(srcdir)/getpass.c $(srcdir)/glob.c \
+	  $(srcdir)/main.c $(srcdir)/pclose.c $(srcdir)/radix.c \
+	  $(srcdir)/ruserpass.c $(srcdir)/secure.c 
 
 
 OBJS	= cmds.o cmdtab.o domacro.o ftp.o getpass.o glob.o main.o pclose.o \
 	  radix.o ruserpass.o secure.o
-
-KLIB = @KRB4_LIB@ @KRB4_CRYPTO_LIB@ -lgssapi_krb5 -lkrb5 -lcrypto -lcom_err
-DEPKLIB = $(TOPLIBD)/gssapi/libgssapi_krb5.a $(TOPLIBD)/libkrb5.a \
-		$(TOPLIBD)/libcrypto.a $(COMERRLIB)
 
 LOCALINCLUDE = -I$(srcdir)/.. -I$(srcdir) @KRB4_INCLUDES@
 DEFINES = -DGSSAPI -DNOCONFIDENTIAL
 
 all::	ftp
 
-ftp:	$(OBJS) $(DEPKLIB)
-	$(LD) $(LDFLAGS) $(LDARGS) -o ftp $(OBJS) $(KLIB) $(LIBS)
+ftp:	$(OBJS) $(GSS_DEPLIBS) $(KRB5_BASE_DEPLIBS)
+	$(CC_LINK) -o ftp $(OBJS) $(GSS_LIBS) $(KRB4COMPAT_LIBS)
 
 clean::
 	$(RM) ftp
