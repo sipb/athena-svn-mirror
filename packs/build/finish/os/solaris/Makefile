@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 1999-03-30 16:09:00 ghudson Exp $
+# $Id: Makefile,v 1.7 1999-04-12 17:08:56 danw Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -6,6 +6,9 @@ ATHRBINDIR=/bin/athena
 ATHRETCDIR=/etc/athena
 ATHLIBDIR=/usr/athena/lib
 ATHMANDIR=/usr/athena/man
+
+STRIPFILES=${DESTDIR}${ATHRBINDIR}/* ${DESTDIR}${ATHRETCDIR}/* \
+	${DESTDIR}/usr/lib/sendmail
 
 all:
 
@@ -15,7 +18,7 @@ check:
 # unstripped binary.  If so, it updates the .unstripped version and
 # strips the file.
 install:
-	for f in ${DESTDIR}${ATHRBINDIR}/* ${DESTDIR}${ATHRETCDIR}/*; do \
+	for f in ${STRIPFILES}; do \
 		case $$f in \
 		*.unstripped) \
 			;; \
