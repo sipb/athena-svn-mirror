@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v $
- * $Author: ghudson $
+ * $Author: jweiss $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,12 +9,12 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.9 1996-09-19 22:39:19 ghudson Exp $";
+static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.10 1996-12-23 23:17:56 jweiss Exp $";
 #endif lint
 
 #include "globalmessage.h"
 #ifndef GMS_SERVER_MESSAGE
-#define GMS_SERVER_MESSAGE "/site/Message"
+#define GMS_SERVER_MESSAGE "/var/gms/Message"
 #endif /* GMS_SERVER_MESSAGE */
 
 #include <sys/types.h>
@@ -27,7 +27,7 @@ static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/reposit
 
 /*
  * This version of the daemon is run out of inetd, with a conf line of:
- * globalmessage dgram udp wait unswitched nobody /etc/messaged messaged
+ * globalmessage dgram udp wait unswitched nobody /usr/athena/etc/messaged messaged
  */
 #ifndef ultrix
 #include <syslog.h>

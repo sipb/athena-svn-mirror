@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.5 1994-04-30 13:12:53 vrt Exp $
+# $Id: Imakefile,v 1.6 1996-12-23 23:17:49 jweiss Exp $
 #
 
 PROJECT= gms
@@ -28,6 +28,3 @@ SimpleProgram($(SERVER),message_daemon.o $(LIB),$(LIBS),$(ATHETCDIR))
 install_man(get_message.1,get_message.1)
 
 build_library($(PROJECT),$(ETOBJS) $(OBJS))
-
-MDFLAGS=-DGMS_SERVER_MESSAGE=\"/site/Message\"
-SpecialObject(message_daemon.o,message_daemon.c,$(MDFLAGS))
