@@ -24,13 +24,13 @@
  */
 #ifdef TOPDIR
 #define UseInstalled
-#define ConfDir TOPDIR/config
+#define ConfDir /build/support/config/cf
 #endif
 
 #include <site.def>
 
 #ifndef ConfDir
-#define ConfDir ${TOP}/config
+#define ConfDir /build/support/config/cf
 #endif
 #ifndef NEWTOP
 #define NEWTOP .
@@ -180,7 +180,7 @@ XIFLAGS= -I$(XTOP)/config -DTOPDIR=$(XTOP) -DCURDIR=$(CWD)
 
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
-MKDIRHIER= sh $(IRULESRC)/mkdirhier.sh
+MKDIRHIER= /usr/athena/bin/mkdirhier
 
 ATHVERS = ${IRULESRC}/update.conf
 
