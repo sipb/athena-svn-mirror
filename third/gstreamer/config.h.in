@@ -1,46 +1,38 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* macro to use to show function name */
-#undef FUNCTION
+/* Define to 1 if translation of program messages to the user's native
+   language is requested. */
+#undef ENABLE_NLS
 
-/* Define the registry directory */
+/* gettext package name */
+#undef GETTEXT_PACKAGE
+
+/* Location of registry */
 #undef GST_CACHE_DIR
 
-/* Define if debugging messages should be colorized */
-#undef GST_DEBUG_COLOR
+/* macro to use to show function name */
+#undef GST_FUNCTION
 
-/* Define if DEBUG statements should be compiled in */
-#undef GST_DEBUG_ENABLED
+/* Defined if gcov is enabled to force a rebuild due to config.h changing */
+#undef GST_GCOV_ENABLED
 
-/* Disable autoplugger subsystem */
-#undef GST_DISABLE_AUTOPLUG
+/* Default errorlevel to use */
+#undef GST_LEVEL_DEFAULT
 
-/* Disable pipeline XML load/save */
-#undef GST_DISABLE_LOADSAVE
+/* GStreamer license */
+#undef GST_LICENSE
 
-/* Disable command-line parser */
-#undef GST_DISABLE_PARSE
+/* package origin */
+#undef GST_ORIGIN
 
-/* Disable plugin registry */
-#undef GST_DISABLE_REGISTRY
-
-/* Disable tracing subsystem */
-#undef GST_DISABLE_TRACE
-
-/* Disable typefind plugin */
-#undef GST_DISABLE_TYPEFIND
-
-/* Define if INFO statements should be compiled in */
-#undef GST_INFO_ENABLED
+/* package name in plugins */
+#undef GST_PACKAGE
 
 /* Define the version */
 #undef GST_VERSION
 
 /* Define the release version */
 #undef GST_VERSION_RELEASE
-
-/* Define if atomic.h header file is available */
-#undef HAVE_ATOMIC_H
 
 /* Define if the target CPU is an Alpha */
 #undef HAVE_CPU_ALPHA
@@ -69,8 +61,18 @@
 /* Define if the target CPU is a S390 */
 #undef HAVE_CPU_S390
 
-/* Define if the target CPU is a PPC */
+/* Define if the target CPU is a SPARC */
 #undef HAVE_CPU_SPARC
+
+/* Define if the target CPU is a x86_64 */
+#undef HAVE_CPU_X86_64
+
+/* Define if the GNU dcgettext() function is already present or preinstalled.
+   */
+#undef HAVE_DCGETTEXT
+
+/* Defined if we have dladdr () */
+#undef HAVE_DLADDR
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
@@ -80,6 +82,15 @@
 
 /* defined if the compiler implements __FUNCTION__ */
 #undef HAVE_FUNCTION
+
+/* Define to 1 if you have the `getpagesize' function. */
+#undef HAVE_GETPAGESIZE
+
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#undef HAVE_GETTEXT
+
+/* Define if you have the iconv() function. */
+#undef HAVE_ICONV
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -96,17 +107,20 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Defined if we have posix_memalign () */
-#undef HAVE_POSIX_MEMALIGN
+/* Define to 1 if you have a working `mmap' system call. */
+#undef HAVE_MMAP
 
 /* defined if the compiler implements __PRETTY_FUNCTION__ */
 #undef HAVE_PRETTY_FUNCTION
 
-/* Defined if libpthread has pthread_attr_setstack () */
-#undef HAVE_PTHREAD_ATTR_SETSTACK
+/* Defined if we have register_printf_function () */
+#undef HAVE_PRINTF_EXTENSION
 
 /* Define if RDTSC is available */
 #undef HAVE_RDTSC
+
+/* Defined if we have sigaction () */
+#undef HAVE_SIGACTION
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -129,8 +143,20 @@
 /* defined if we have ucontext.h */
 #undef HAVE_UCONTEXT_H
 
+/* defined if unaligned memory access works correctly */
+#undef HAVE_UNALIGNED_ACCESS
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define if valgrind should be used */
+#undef HAVE_VALGRIND
+
+/* Defined if compiling for Windows */
+#undef HAVE_WIN32
+
+/* gettext locale dir */
+#undef LOCALEDIR
 
 /* Name of package */
 #undef PACKAGE
@@ -163,9 +189,21 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Define if we should use i586 optimized stack functions */
+#undef USE_FAST_STACK_TRASH
+
+/* Define if we should poison deallocated memory */
+#undef USE_POISONING
+
 /* Version number of package */
 #undef VERSION
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
 #undef WORDS_BIGENDIAN
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif

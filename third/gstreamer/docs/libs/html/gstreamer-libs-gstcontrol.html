@@ -1,0 +1,318 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gstcontrol</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Library API Reference"><link rel="up" href="gstreamer-libs.html" title="GStreamer Libraries"><link rel="previous" href="gstreamer-libs-gstbytestream.html" title="gstbytestream"><link rel="next" href="gstreamer-libs-gstdataprotocol.html" title="gstdataprotocol"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-libs-gstbytestream.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer-libs.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Library API Reference</th><td><a accesskey="n" href="gstreamer-libs-gstdataprotocol.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-libs-gstcontrol"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gstcontrol</span></h2><p>gstcontrol &#8212; dynamic parameter functionality.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libs/control/control.h&gt;
+
+
+void        <a href="gstreamer-libs-gstcontrol.html#gst-control-init">gst_control_init</a>                (int *argc,
+                                             char **argv[]);
+
+GstDParamManager* <a href="gstreamer-libs-gstcontrol.html#gst-dpman-new">gst_dpman_new</a>             (gchar *name,
+                                             <a
+href="../gstreamer/GstElement.html"
+>GstElement</a> *parent);
+gboolean    <a href="gstreamer-libs-gstcontrol.html#gst-dpman-add-required-dparam-callback">gst_dpman_add_required_dparam_callback</a>
+                                            (GstDParamManager *dpman,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name,
+                                             GstDPMUpdateFunction update_func,
+                                             gpointer update_data);
+gboolean    <a href="gstreamer-libs-gstcontrol.html#gst-dpman-add-required-dparam-direct">gst_dpman_add_required_dparam_direct</a>
+                                            (GstDParamManager *dpman,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name,
+                                             gpointer update_data);
+gboolean    <a href="gstreamer-libs-gstcontrol.html#gst-dpman-add-required-dparam-array">gst_dpman_add_required_dparam_array</a>
+                                            (GstDParamManager *dpman,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name,
+                                             gpointer update_data);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dpman-remove-required-dparam">gst_dpman_remove_required_dparam</a>
+                                            (GstDParamManager *dpman,
+                                             const gchar *dparam_name);
+gboolean    <a href="gstreamer-libs-gstcontrol.html#gst-dpman-attach-dparam">gst_dpman_attach_dparam</a>         (GstDParamManager *dpman,
+                                             const gchar *dparam_name,
+                                             GstDParam *dparam);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dpman-detach-dparam">gst_dpman_detach_dparam</a>         (GstDParamManager *dpman,
+                                             const gchar *dparam_name);
+GstDParam*  <a href="gstreamer-libs-gstcontrol.html#gst-dpman-get-dparam">gst_dpman_get_dparam</a>            (GstDParamManager *dpman,
+                                             const gchar *dparam_name);
+GType       <a href="gstreamer-libs-gstcontrol.html#gst-dpman-get-dparam-type">gst_dpman_get_dparam_type</a>       (GstDParamManager *dpman,
+                                             const gchar *dparam_name);
+GParamSpec** <a href="gstreamer-libs-gstcontrol.html#gst-dpman-list-dparam-specs">gst_dpman_list_dparam_specs</a>    (GstDParamManager *dpman);
+GParamSpec* <a href="gstreamer-libs-gstcontrol.html#gst-dpman-get-param-spec">gst_dpman_get_param_spec</a>        (GstDParamManager *dpman,
+                                             const gchar *dparam_name);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dpman-set-rate">gst_dpman_set_rate</a>              (GstDParamManager *dpman,
+                                             gint rate);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dpman-register-mode">gst_dpman_register_mode</a>         (GstDParamManagerClass *klass,
+                                             gchar *modename,
+                                             GstDPMModePreProcessFunction preprocessfunc,
+                                             GstDPMModeProcessFunction processfunc,
+                                             GstDPMModeSetupFunction setupfunc,
+                                             GstDPMModeTeardownFunction teardownfunc);
+gboolean    <a href="gstreamer-libs-gstcontrol.html#gst-dpman-set-mode">gst_dpman_set_mode</a>              (GstDParamManager *dpman,
+                                             gchar *modename);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dpman-set-parent">gst_dpman_set_parent</a>            (GstDParamManager *dpman,
+                                             <a
+href="../gstreamer/GstElement.html"
+>GstElement</a> *parent);
+GstDParamManager* <a href="gstreamer-libs-gstcontrol.html#gst-dpman-get-manager">gst_dpman_get_manager</a>     (<a
+href="../gstreamer/GstElement.html"
+>GstElement</a> *parent);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dpman-bypass-dparam">gst_dpman_bypass_dparam</a>         (GstDParamManager *dpman,
+                                             const gchar *dparam_name);
+
+GstDParam*  <a href="gstreamer-libs-gstcontrol.html#gst-dparam-new">gst_dparam_new</a>                  (GType type);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dparam-attach">gst_dparam_attach</a>               (GstDParam *dparam,
+                                             GstDParamManager *manager,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dparam-detach">gst_dparam_detach</a>               (GstDParam *dparam);
+void        <a href="gstreamer-libs-gstcontrol.html#gst-dparam-do-update-default">gst_dparam_do_update_default</a>    (GstDParam *dparam,
+                                             gint64 timestamp,
+                                             GValue *value,
+                                             GstDParamUpdateInfo update_info);
+GstDParam*  <a href="gstreamer-libs-gstcontrol.html#gst-dpsmooth-new">gst_dpsmooth_new</a>                (GType type);
+</pre></div><div class="refsect1" lang="en"><a name="id3000815"></a><h2>Description</h2><p>
+This library provides a Manager that maintains a list of dynamically
+controlable parameters for a GstElement.
+Just think of a volume slider in a mixer.
+</p><p>
+To use this library one needs to add some code to initialize it.
+</p><div class="example"><a name="id3000830"></a><p class="title"><b>Example 1. Adding the control library to a project</b></p><pre class="programlisting">
+...
+#include &lt;gst/gst.h&gt;
+#include &lt;gst/control/control.h&gt;
+...
+gst_init(&amp;argc,&amp;argv);
+gst_control_init(&amp;argc,&amp;argv);
+...
+</pre></div><p>
+The next step is to get hold of the GstDParamManager instance of a GstElement.
+</p></div><div class="refsect1" lang="en"><a name="id3000847"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3000856"></a><h3><a name="gst-control-init"></a>gst_control_init ()</h3><a class="indexterm" name="id3000866"></a><pre class="programlisting">void        gst_control_init                (int *argc,
+                                             char **argv[]);</pre><p>
+Initializes the GStreamer control library, registering modes and units</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> pointer to application's argc
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> pointer to application's argv
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3000941"></a><h3><a name="gst-dpman-new"></a>gst_dpman_new ()</h3><a class="indexterm" name="id3000951"></a><pre class="programlisting">GstDParamManager* gst_dpman_new             (gchar *name,
+                                             <a
+href="../gstreamer/GstElement.html"
+>GstElement</a> *parent);</pre><p>
+Creates a new instance of a dynamic parameter manager.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> name of the new <span class="type">GstDParamManager</span> instance to create
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> <a
+href="../gstreamer/GstElement.html"
+><span class="type">GstElement</span></a> which creates this instance
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new instance of <span class="type">GstDParamManager</span>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001060"></a><h3><a name="gst-dpman-add-required-dparam-callback"></a>gst_dpman_add_required_dparam_callback ()</h3><a class="indexterm" name="id3001071"></a><pre class="programlisting">gboolean    gst_dpman_add_required_dparam_callback
+                                            (GstDParamManager *dpman,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name,
+                                             GstDPMUpdateFunction update_func,
+                                             gpointer update_data);</pre><p>
+Add a mandatory dynamic parameter to the manager, where the value can be
+updated by calling the supplied callback function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>param_spec</tt></i> :</span></td><td> the spacification of the new dparam
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>unit_name</tt></i> :</span></td><td> the unit name of the dparam
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>update_func</tt></i> :</span></td><td> callback to update the element with the new value
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>update_data</tt></i> :</span></td><td> will be included in the call to update_func
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> true if it was successfully added
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001224"></a><h3><a name="gst-dpman-add-required-dparam-direct"></a>gst_dpman_add_required_dparam_direct ()</h3><a class="indexterm" name="id3001236"></a><pre class="programlisting">gboolean    gst_dpman_add_required_dparam_direct
+                                            (GstDParamManager *dpman,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name,
+                                             gpointer update_data);</pre><p>
+Add a mandatory dynamic parameter to the manager, where the value can be
+updated by directly storing it into the provided memory location.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>param_spec</tt></i> :</span></td><td> the spacification of the new dparam
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>unit_name</tt></i> :</span></td><td> the unit name of the dparam
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>update_data</tt></i> :</span></td><td> pointer to the member to be updated
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> true if it was successfully added
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001366"></a><h3><a name="gst-dpman-add-required-dparam-array"></a>gst_dpman_add_required_dparam_array ()</h3><a class="indexterm" name="id3001378"></a><pre class="programlisting">gboolean    gst_dpman_add_required_dparam_array
+                                            (GstDParamManager *dpman,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name,
+                                             gpointer update_data);</pre><p>
+Add a mandatory dynamic parameter to the manager, where the values can be
+updated by storing them into the provided memory location.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>param_spec</tt></i> :</span></td><td> the spacification of the new dparam
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>unit_name</tt></i> :</span></td><td> the unit name of the dparam
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>update_data</tt></i> :</span></td><td> pointer to where the array will be stored
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> true if it was successfully added
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001508"></a><h3><a name="gst-dpman-remove-required-dparam"></a>gst_dpman_remove_required_dparam ()</h3><a class="indexterm" name="id3001519"></a><pre class="programlisting">void        gst_dpman_remove_required_dparam
+                                            (GstDParamManager *dpman,
+                                             const gchar *dparam_name);</pre><p>
+Removes the named dynamic parameter from the manager.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dparam_name</tt></i> :</span></td><td> the name of an existing parameter
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001594"></a><h3><a name="gst-dpman-attach-dparam"></a>gst_dpman_attach_dparam ()</h3><a class="indexterm" name="id3001605"></a><pre class="programlisting">gboolean    gst_dpman_attach_dparam         (GstDParamManager *dpman,
+                                             const gchar *dparam_name,
+                                             GstDParam *dparam);</pre><p>
+Adding a parameter controller to a dynamic parameter. Whenever the controller
+changes, the dynamic parameter of the GstElement will follow.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dparam_name</tt></i> :</span></td><td> a name previously added with gst_dpman_add_required_dparam
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dparam</tt></i> :</span></td><td> GstDParam instance to attach
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> true if it was successfully attached
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001713"></a><h3><a name="gst-dpman-detach-dparam"></a>gst_dpman_detach_dparam ()</h3><a class="indexterm" name="id3001724"></a><pre class="programlisting">void        gst_dpman_detach_dparam         (GstDParamManager *dpman,
+                                             const gchar *dparam_name);</pre><p>
+Removing a parameter controller from a dynamic parameter.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dparam_name</tt></i> :</span></td><td> the name of a parameter with a previously attached GstDParam
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001798"></a><h3><a name="gst-dpman-get-dparam"></a>gst_dpman_get_dparam ()</h3><a class="indexterm" name="id3001809"></a><pre class="programlisting">GstDParam*  gst_dpman_get_dparam            (GstDParamManager *dpman,
+                                             const gchar *dparam_name);</pre><p>
+Fetches a dparam object that is registered by manager under the given name.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dparam_name</tt></i> :</span></td><td> the name of an existing dparam instance
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the dparam with the given name - or NULL otherwise
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001893"></a><h3><a name="gst-dpman-get-dparam-type"></a>gst_dpman_get_dparam_type ()</h3><a class="indexterm" name="id3001905"></a><pre class="programlisting">GType       gst_dpman_get_dparam_type       (GstDParamManager *dpman,
+                                             const gchar *dparam_name);</pre><p>
+Fetches the type of the supplied dynamic parameter.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dparam_name</tt></i> :</span></td><td> the name of dparam
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the type that this dparam requires/uses
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3001988"></a><h3><a name="gst-dpman-list-dparam-specs"></a>gst_dpman_list_dparam_specs ()</h3><a class="indexterm" name="id3002000"></a><pre class="programlisting">GParamSpec** gst_dpman_list_dparam_specs    (GstDParamManager *dpman);</pre><p>
+Fetches the list of parameter specifications, that this manager maintains.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the the parameter specifications as a NULL terminated array
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002062"></a><h3><a name="gst-dpman-get-param-spec"></a>gst_dpman_get_param_spec ()</h3><a class="indexterm" name="id3002073"></a><pre class="programlisting">GParamSpec* gst_dpman_get_param_spec        (GstDParamManager *dpman,
+                                             const gchar *dparam_name);</pre><p>
+Fetches a single parameter specification by its dparam name.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dparam_name</tt></i> :</span></td><td> the name of dparam
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the the parameter specifications for a given name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002157"></a><h3><a name="gst-dpman-set-rate"></a>gst_dpman_set_rate ()</h3><a class="indexterm" name="id3002169"></a><pre class="programlisting">void        gst_dpman_set_rate              (GstDParamManager *dpman,
+                                             gint rate);</pre><p>
+Sets the frame or sampling rate used by the machine.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>rate</tt></i> :</span></td><td> the new the frame/sample rate
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002241"></a><h3><a name="gst-dpman-register-mode"></a>gst_dpman_register_mode ()</h3><a class="indexterm" name="id3002252"></a><pre class="programlisting">void        gst_dpman_register_mode         (GstDParamManagerClass *klass,
+                                             gchar *modename,
+                                             GstDPMModePreProcessFunction preprocessfunc,
+                                             GstDPMModeProcessFunction processfunc,
+                                             GstDPMModeSetupFunction setupfunc,
+                                             GstDPMModeTeardownFunction teardownfunc);</pre><p>
+Registers a run-mode for the dparam manager. Each such mode has a defined
+run-time behaviour - that is, they differ in the way dynamic parameter
+changes are pushed into the underlying GstElements.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>klass</tt></i> :</span></td><td> GstDParamManagerClass class instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>modename</tt></i> :</span></td><td> the unique name of the new mode
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>preprocessfunc</tt></i> :</span></td><td> the function which will be called before each buffer is processed
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>processfunc</tt></i> :</span></td><td> the function which may be called throughout the processing of a buffer
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>setupfunc</tt></i> :</span></td><td> the function which initialises the mode when activated
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>teardownfunc</tt></i> :</span></td><td> the function which frees any resources the mode uses
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002422"></a><h3><a name="gst-dpman-set-mode"></a>gst_dpman_set_mode ()</h3><a class="indexterm" name="id3002433"></a><pre class="programlisting">gboolean    gst_dpman_set_mode              (GstDParamManager *dpman,
+                                             gchar *modename);</pre><p>
+Activate one of the registered modes.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>modename</tt></i> :</span></td><td> the name of the mode to use
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the mode was set, FALSE otherwise
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002516"></a><h3><a name="gst-dpman-set-parent"></a>gst_dpman_set_parent ()</h3><a class="indexterm" name="id3002527"></a><pre class="programlisting">void        gst_dpman_set_parent            (GstDParamManager *dpman,
+                                             <a
+href="../gstreamer/GstElement.html"
+>GstElement</a> *parent);</pre><p>
+Set a GstElement that parameters this manager should handle.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> the element that this GstDParamManager belongs to
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002601"></a><h3><a name="gst-dpman-get-manager"></a>gst_dpman_get_manager ()</h3><a class="indexterm" name="id3002612"></a><pre class="programlisting">GstDParamManager* gst_dpman_get_manager     (<a
+href="../gstreamer/GstElement.html"
+>GstElement</a> *parent);</pre><p>
+Fetch the GstElement that parameters are handled by this manager.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>parent</tt></i> :</span></td><td> the element that the desired GstDParamManager belongs to
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the GstDParamManager which belongs to this element or NULL
+if it doesn't exist
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002675"></a><h3><a name="gst-dpman-bypass-dparam"></a>gst_dpman_bypass_dparam ()</h3><a class="indexterm" name="id3002686"></a><pre class="programlisting">void        gst_dpman_bypass_dparam         (GstDParamManager *dpman,
+                                             const gchar *dparam_name);</pre><p>
+If a dparam is attached to this dparam_name, it will be detached
+and a warning will be issued. This should be called in the _set_property
+function of an element if the value it changes is also changed by a dparam.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dpman</tt></i> :</span></td><td> GstDParamManager instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>dparam_name</tt></i> :</span></td><td> the name of dparam
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002762"></a><h3><a name="gst-dparam-new"></a>gst_dparam_new ()</h3><a class="indexterm" name="id3002773"></a><pre class="programlisting">GstDParam*  gst_dparam_new                  (GType type);</pre><p>
+Create a new dynamic parameter controller.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the type that this dparam will store
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new instance of GstDParam
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002834"></a><h3><a name="gst-dparam-attach"></a>gst_dparam_attach ()</h3><a class="indexterm" name="id3002845"></a><pre class="programlisting">void        gst_dparam_attach               (GstDParam *dparam,
+                                             GstDParamManager *manager,
+                                             GParamSpec *param_spec,
+                                             gchar *unit_name);</pre><p>
+Adding the parameter controller to the manager using the
+supplied specs and unit.
+See also <a href="gstreamer-libs-gstcontrol.html#gst-dpman-attach-dparam"><tt class="function">gst_dpman_attach_dparam()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dparam</tt></i> :</span></td><td> GstDParam instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>manager</tt></i> :</span></td><td> the GstDParamManager that this dparam belongs to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>param_spec</tt></i> :</span></td><td> the specification for the parameter
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>unit_name</tt></i> :</span></td><td> the name of the unit
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3002973"></a><h3><a name="gst-dparam-detach"></a>gst_dparam_detach ()</h3><a class="indexterm" name="id3002984"></a><pre class="programlisting">void        gst_dparam_detach               (GstDParam *dparam);</pre><p>
+Removes a previousely added parameter controller.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dparam</tt></i> :</span></td><td> GstDParam instance
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3003034"></a><h3><a name="gst-dparam-do-update-default"></a>gst_dparam_do_update_default ()</h3><a class="indexterm" name="id3003046"></a><pre class="programlisting">void        gst_dparam_do_update_default    (GstDParam *dparam,
+                                             gint64 timestamp,
+                                             GValue *value,
+                                             GstDParamUpdateInfo update_info);</pre><p>
+Default implementation for changing a dynamic parameter.
+Subclasses might overwrite the behaviour of this.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>dparam</tt></i> :</span></td><td> 
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>timestamp</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>update_info</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3003161"></a><h3><a name="gst-dpsmooth-new"></a>gst_dpsmooth_new ()</h3><a class="indexterm" name="id3003172"></a><pre class="programlisting">GstDParam*  gst_dpsmooth_new                (GType type);</pre><p>
+Create a new dynamic parameter controller which smoothes control changes.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the type that this dparam will store
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new instance of GstDParam
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-libs-gstbytestream.html"><b>&lt;&lt; gstbytestream</b></a></td><td align="right"><a accesskey="n" href="gstreamer-libs-gstdataprotocol.html"><b>gstdataprotocol &gt;&gt;</b></a></td></tr></table></body></html>

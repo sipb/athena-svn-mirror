@@ -22,11 +22,11 @@
 typedef struct
 {
   GMutex *mutex;
-  GCond  *cond;
-  gint    var;
+  GCond *cond;
+  gint var;
 } ThreadInfo;
 
-static void*
+static void *
 thread_loop (void *arg)
 {
   ThreadInfo *info = (ThreadInfo *) arg;
@@ -41,7 +41,7 @@ thread_loop (void *arg)
   g_print ("thread: wait ACK\n");
   g_cond_wait (info->cond, info->mutex);
   info->var = 1;
-  g_print ("thread: signal\n");
+  g_print ("thread: signal var change\n");
   g_cond_signal (info->cond);
   g_print ("thread: unlock\n");
   g_mutex_unlock (info->mutex);
@@ -50,12 +50,13 @@ thread_loop (void *arg)
   return NULL;
 }
 
-gint 
-main (gint argc, gchar *argv[]) 
+gint
+main (gint argc, gchar * argv[])
 {
   ThreadInfo *info;
   GThread *thread;
   GError *error = NULL;
+  gint res = 0;
 
   if (!g_thread_supported ())
     g_thread_init (NULL);
@@ -64,20 +65,17 @@ main (gint argc, gchar *argv[])
   info->mutex = g_mutex_new ();
   info->cond = g_cond_new ();
   info->var = 0;
-  
+
   g_print ("main: lock\n");
   g_mutex_lock (info->mutex);
 
-  thread = g_thread_create (thread_loop,
-	                    info, 
-			    TRUE, 
-			    &error);
+  thread = g_thread_create (thread_loop, info, TRUE, &error);
 
   if (error != NULL) {
     g_print ("Unable to start thread: %s\n", error->message);
     g_error_free (error);
-    g_free (info);
-    return -1;
+    res = -1;
+    goto done;
   }
 
   g_print ("main: wait spinup\n");
@@ -85,20 +83,22 @@ main (gint argc, gchar *argv[])
 
   g_print ("main: signal ACK\n");
   g_cond_signal (info->cond);
-  g_print ("main: wait\n");
+
+  g_print ("main: waiting for thread to change var\n");
   g_cond_wait (info->cond, info->mutex);
+
   g_print ("main: var == %d\n", info->var);
-  if (info->var != 1) 
+  if (info->var != 1)
     g_print ("main: !!error!! expected var == 1, got %d\n", info->var);
   g_mutex_unlock (info->mutex);
 
   g_print ("main: join\n");
   g_thread_join (thread);
 
+done:
   g_mutex_free (info->mutex);
   g_cond_free (info->cond);
   g_free (info);
 
-  return 0;
+  return res;
 }
-

@@ -30,9 +30,6 @@
 
 G_BEGIN_DECLS
 
-extern GstElementDetails gst_queue_details;
-
-
 #define GST_TYPE_QUEUE \
   (gst_queue_get_type())
 #define GST_QUEUE(obj) \
@@ -51,7 +48,14 @@ enum {
 };
 
 typedef struct _GstQueue GstQueue;
+typedef struct _GstQueueSize GstQueueSize;
 typedef struct _GstQueueClass GstQueueClass;
+
+struct _GstQueueSize {
+    guint   buffers;	/* no. of buffers */
+    guint   bytes;	/* no. of bytes */
+    guint64 time;	/* amount of time */
+};
 
 struct _GstQueue {
   GstElement element;
@@ -59,41 +63,52 @@ struct _GstQueue {
   GstPad *sinkpad;
   GstPad *srcpad;
 
-  /* the queue of buffers we're keeping our grubby hands on */
+  /* the queue of data we're keeping our grubby hands on */
   GQueue *queue;
 
-  guint level_buffers;	/* number of buffers queued here */
-  guint level_bytes;	/* number of bytes queued here */
-  guint64 level_time;	/* amount of time queued here */
+  GstQueueSize
+    cur_level,		/* currently in the queue */
+    max_size,		/* max. amount of data allowed in the queue */
+    min_threshold;	/* min. amount of data required to wake reader */
 
-  guint size_buffers;	/* size of queue in buffers */
-  guint size_bytes;	/* size of queue in bytes */
-  guint64 size_time;	/* size of queue in time */
+  /* whether we leak data, and at which end */
+  gint leaky;
 
-  gint leaky;		/* whether the queue is leaky, and if so at which end */
-  gint block_timeout;   /* microseconds until a blocked queue times out and returns GST_EVENT_FILLER. 
-                         * A value of -1 will block forever. */
-  gboolean may_deadlock; /* it the queue should fail on possible deadlocks */
+  /* number of nanoseconds until a blocked queue 'times out'
+   * to receive data and returns a filler event. -1 = disable */
+  guint64 block_timeout;
+
+  /* it the queue should fail on possible deadlocks */
+  gboolean may_deadlock;
+
   gboolean interrupt;
   gboolean flush;
 
   GMutex *qlock;	/* lock for queue (vs object lock) */
-  /* we are single reader and single writer queue */
-  gboolean reader;	/* reader waiting on empty queue */
-  gboolean writer;	/* writer waiting on full queue */
-  GCond *not_empty;	/* signals buffers now available for reading */
-  GCond *not_full;	/* signals space now available for writing */
+  GCond *item_add;	/* signals buffers now available for reading */
+  GCond *item_del;	/* signals space now available for writing */
+  GCond *event_done;	/* upstream event signaller */
 
   GTimeVal *timeval;	/* the timeout for the queue locking */
-  GAsyncQueue *events;	/* upstream events get decoupled here */
+  GQueue *events;	/* upstream events get decoupled here */
+
+  GstCaps *negotiated_caps;
+
+  GMutex *event_lock;	/* lock when handling the events queue */
+
+  gpointer _gst_reserved[GST_PADDING - 1];
 };
 
 struct _GstQueueClass {
   GstElementClass parent_class;
 
-  /* signal callbacks */
-  void (*low_watermark)		(GstQueue *queue, gint level);
-  void (*high_watermark)	(GstQueue *queue, gint level);
+  /* signals - 'running' is called from both sides
+   * which might make it sort of non-useful... */
+  void (*underrun)	(GstQueue *queue);
+  void (*running)	(GstQueue *queue);
+  void (*overrun)	(GstQueue *queue);
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType gst_queue_get_type (void);

@@ -1,0 +1,129 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstQuery</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstProbe.html" title="GstProbe"><link rel="next" href="GstQueue.html" title="GstQueue"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstProbe.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="GstQueue.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstQuery"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstQuery</span></h2><p>GstQuery &#8212; Dynamically register new query types</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a>;
+#define     <a href="gstreamer-GstQuery.html#GST-QUERY-TYPE-RATE-DEN-CAPS">GST_QUERY_TYPE_RATE_DEN</a>
+struct      <a href="gstreamer-GstQuery.html#GstQueryTypeDefinition">GstQueryTypeDefinition</a>;
+#define     <a href="gstreamer-GstQuery.html#GST-QUERY-TYPE-FUNCTION-CAPS">GST_QUERY_TYPE_FUNCTION</a>         (type, functionname, ...)
+<a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> <a href="gstreamer-GstQuery.html#gst-query-type-register">gst_query_type_register</a>        (const gchar *nick,
+                                             const gchar *description);
+<a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> <a href="gstreamer-GstQuery.html#gst-query-type-get-by-nick">gst_query_type_get_by_nick</a>     (const gchar *nick);
+gboolean    <a href="gstreamer-GstQuery.html#gst-query-types-contains">gst_query_types_contains</a>        (const <a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> *types,
+                                             <a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> type);
+G_CONST_RETURN <a href="gstreamer-GstQuery.html#GstQueryTypeDefinition">GstQueryTypeDefinition</a>* <a href="gstreamer-GstQuery.html#gst-query-type-get-details">gst_query_type_get_details</a>
+                                            (<a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> type);
+G_CONST_RETURN GList* <a href="gstreamer-GstQuery.html#gst-query-type-get-definitions">gst_query_type_get_definitions</a>
+                                            (void);
+</pre></div><div class="refsect1" lang="en"><a name="id2942857"></a><h2>Description</h2><p>
+GstQuery functions are used to register a new query types to the gstreamer core. 
+Query types can be used to perform queries on pads and elements.
+</p></div><div class="refsect1" lang="en"><a name="id2942869"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2942875"></a><h3><a name="GstQueryType"></a>enum GstQueryType</h3><a class="indexterm" name="id2942886"></a><pre class="programlisting">typedef enum {
+  GST_QUERY_NONE = 0,
+  GST_QUERY_TOTAL,
+  GST_QUERY_POSITION,
+  GST_QUERY_LATENCY,
+  GST_QUERY_JITTER,
+  GST_QUERY_START,
+  GST_QUERY_SEGMENT_END,
+  GST_QUERY_RATE
+} GstQueryType;
+</pre><p>
+Standard predefined Query types
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_QUERY_NONE</tt></span></td><td>invalid query type
+</td></tr><tr><td><span class="term"><tt class="literal">GST_QUERY_TOTAL</tt></span></td><td>total length of stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_QUERY_POSITION</tt></span></td><td>current position in stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_QUERY_LATENCY</tt></span></td><td>latency of stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_QUERY_JITTER</tt></span></td><td>current jitter of stream
+</td></tr><tr><td><span class="term"><tt class="literal">GST_QUERY_START</tt></span></td><td>start of configured segment
+</td></tr><tr><td><span class="term"><tt class="literal">GST_QUERY_SEGMENT_END</tt></span></td><td>end of configured segment
+</td></tr><tr><td><span class="term"><tt class="literal">GST_QUERY_RATE</tt></span></td><td>current rate of the stream
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943029"></a><h3><a name="GST-QUERY-TYPE-RATE-DEN-CAPS"></a>GST_QUERY_TYPE_RATE_DEN</h3><a class="indexterm" name="id2943041"></a><pre class="programlisting">#define GST_QUERY_TYPE_RATE_DEN          G_GINT64_CONSTANT (1000000)
+</pre><p>
+Rates are relative to this value
+</p></div><hr><div class="refsect2" lang="en"><a name="id2943057"></a><h3><a name="GstQueryTypeDefinition"></a>struct GstQueryTypeDefinition</h3><a class="indexterm" name="id2943070"></a><pre class="programlisting">struct GstQueryTypeDefinition {
+
+  GstQueryType   value;
+  gchar     	*nick;
+  gchar     	*description;
+};
+</pre><p>
+A Query Type definition
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> <i class="structfield"><tt>value</tt></i></span></td><td>the unique id of the Query type
+</td></tr><tr><td><span class="term">gchar *<i class="structfield"><tt>nick</tt></i></span></td><td>a short nick
+</td></tr><tr><td><span class="term">gchar *<i class="structfield"><tt>description</tt></i></span></td><td>a longer description of the query type
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943149"></a><h3><a name="GST-QUERY-TYPE-FUNCTION-CAPS"></a>GST_QUERY_TYPE_FUNCTION()</h3><a class="indexterm" name="id2943162"></a><pre class="programlisting">#define     GST_QUERY_TYPE_FUNCTION(type, functionname, ...)</pre><p>
+Convenience function to define a function that returns an array of query types.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>Type of first argument for function
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>functionname</tt></i> :</span></td><td>The name of the function
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>query types, 0 to end the list
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943225"></a><h3><a name="gst-query-type-register"></a>gst_query_type_register ()</h3><a class="indexterm" name="id2943237"></a><pre class="programlisting"><a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> gst_query_type_register        (const gchar *nick,
+                                             const gchar *description);</pre><p>
+Create a new GstQueryType based on the nick or return an
+allrady registered query with that nick</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>nick</tt></i> :</span></td><td> The nick of the new query
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>description</tt></i> :</span></td><td> The description of the new query
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new GstQueryType or an already registered query
+with the same nick.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943322"></a><h3><a name="gst-query-type-get-by-nick"></a>gst_query_type_get_by_nick ()</h3><a class="indexterm" name="id2943334"></a><pre class="programlisting"><a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> gst_query_type_get_by_nick     (const gchar *nick);</pre><p>
+Return the query registered with the given nick.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>nick</tt></i> :</span></td><td> The nick of the query
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The query with <i class="parameter"><tt>nick</tt></i> or GST_QUERY_NONE
+if the query was not registered.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943402"></a><h3><a name="gst-query-types-contains"></a>gst_query_types_contains ()</h3><a class="indexterm" name="id2943413"></a><pre class="programlisting">gboolean    gst_query_types_contains        (const <a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> *types,
+                                             <a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> type);</pre><p>
+See if the given query is inside the query array.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>types</tt></i> :</span></td><td> The query array to search
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the querytype to find
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the query is found inside the array
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943497"></a><h3><a name="gst-query-type-get-details"></a>gst_query_type_get_details ()</h3><a class="indexterm" name="id2943509"></a><pre class="programlisting">G_CONST_RETURN <a href="gstreamer-GstQuery.html#GstQueryTypeDefinition">GstQueryTypeDefinition</a>* gst_query_type_get_details
+                                            (<a href="gstreamer-GstQuery.html#GstQueryType">GstQueryType</a> type);</pre><p>
+Get details about the given query.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> The query to get details of
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The <a href="gstreamer-GstQuery.html#GstQueryTypeDefinition"><span class="type">GstQueryTypeDefinition</span></a> for <i class="parameter"><tt>query</tt></i> or NULL on failure.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2943587"></a><h3><a name="gst-query-type-get-definitions"></a>gst_query_type_get_definitions ()</h3><a class="indexterm" name="id2943600"></a><pre class="programlisting">G_CONST_RETURN GList* gst_query_type_get_definitions
+                                            (void);</pre><p>
+Get a list of all the registered query types.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A GList of <a href="gstreamer-GstQuery.html#GstQueryTypeDefinition"><span class="type">GstQueryTypeDefinition</span></a>.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2943652"></a><h2>See Also</h2><p>
+<a href="GstPad.html" title="GstPad"><span class="type">GstPad</span></a>, <a href="GstElement.html" title="GstElement"><span class="type">GstElement</span></a>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstProbe.html"><b>&lt;&lt; GstProbe</b></a></td><td align="right"><a accesskey="n" href="GstQueue.html"><b>GstQueue &gt;&gt;</b></a></td></tr></table></body></html>

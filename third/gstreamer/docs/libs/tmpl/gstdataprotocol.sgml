@@ -1,0 +1,169 @@
+<!-- ##### SECTION Title ##### -->
+gstdataprotocol
+
+<!-- ##### SECTION Short_Description ##### -->
+implements GStreamer Data Protocol to serialize buffers, caps and events.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+This helper library provides serialization of GstBuffer, GstCaps and
+GstEvent structures.
+</para>
+
+<para>
+This serialization can be useful when GStreamer needs to interface with
+the outside world to transport data between different GStreamer pipelines.
+The connections with the outside world generally don't have mechanisms
+to transport properties of these structures.
+</para>
+<para>
+For example, transporting buffers across named pipes doesn't keep the
+buffer size.  Network elements that transport GStreamer data across
+network connections also need a protocol to do this.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+#GstBuffer, #GstCaps, #GstEvent
+</para>
+
+<!-- ##### ENUM GstDPHeaderFlag ##### -->
+<para>
+
+</para>
+
+@GST_DP_HEADER_FLAG_NONE: 
+@GST_DP_HEADER_FLAG_CRC_HEADER: 
+@GST_DP_HEADER_FLAG_CRC_PAYLOAD: 
+@GST_DP_HEADER_FLAG_CRC: 
+
+<!-- ##### ENUM GstDPPayloadType ##### -->
+<para>
+
+</para>
+
+@GST_DP_PAYLOAD_NONE: 
+@GST_DP_PAYLOAD_BUFFER: 
+@GST_DP_PAYLOAD_CAPS: 
+@GST_DP_PAYLOAD_EVENT_NONE: 
+
+<!-- ##### FUNCTION gst_dp_header_payload_length ##### -->
+<para>
+
+</para>
+
+@header: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_header_payload_type ##### -->
+<para>
+
+</para>
+
+@header: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_header_from_buffer ##### -->
+<para>
+
+</para>
+
+@buffer: 
+@flags: 
+@length: 
+@header: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_packet_from_caps ##### -->
+<para>
+
+</para>
+
+@caps: 
+@flags: 
+@length: 
+@header: 
+@payload: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_packet_from_event ##### -->
+<para>
+
+</para>
+
+@event: 
+@flags: 
+@length: 
+@header: 
+@payload: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_buffer_from_header ##### -->
+<para>
+
+</para>
+
+@header_length: 
+@header: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_caps_from_packet ##### -->
+<para>
+
+</para>
+
+@header_length: 
+@header: 
+@payload: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_event_from_packet ##### -->
+<para>
+
+</para>
+
+@header_length: 
+@header: 
+@payload: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_validate_header ##### -->
+<para>
+
+</para>
+
+@header_length: 
+@header: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_validate_payload ##### -->
+<para>
+
+</para>
+
+@header_length: 
+@header: 
+@payload: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_dp_validate_packet ##### -->
+<para>
+
+</para>
+
+@header_length: 
+@header: 
+@payload: 
+@Returns: 
+
+

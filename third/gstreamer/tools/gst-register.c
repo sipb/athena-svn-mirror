@@ -20,38 +20,76 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <gst/gst.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 
 #include <fcntl.h>
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <errno.h>
+#include <locale.h>
 
-#include "config.h"
+#include "gst/gst-i18n-app.h"
 
-extern gboolean _gst_registry_auto_load;
 static gint num_features = 0;
 static gint num_plugins = 0;
 
 static void
-plugin_added_func (GstRegistry *registry, GstPlugin *plugin, gpointer user_data)
+plugin_added_func (GstRegistry * registry, GstPlugin * plugin,
+    gpointer user_data)
 {
-  g_print ("added plugin %s with %d feature(s)\n", plugin->name,
-           plugin->numfeatures);
+  g_print (_("Added plugin %s with %d %s.\n"), plugin->desc.name,
+      plugin->numfeatures,
+      ngettext ("feature", "features", plugin->numfeatures));
 
   num_features += plugin->numfeatures;
   num_plugins++;
 }
 
-int main (int argc,char *argv[])
+static void
+spawn_all_in_dir (const char *dirname)
+{
+  char *argv[2] = { NULL, NULL };
+  GDir *dir;
+  const char *file;
+
+  /* g_print("spawning all in %s\n", dirname); */
+
+  dir = g_dir_open (dirname, 0, NULL);
+  if (dir == NULL)
+    return;
+
+  while ((file = g_dir_read_name (dir))) {
+    argv[0] = g_build_filename (dirname, file, NULL);
+    g_print ("running %s\n", argv[0]);
+    g_spawn_sync (NULL, argv, NULL, G_SPAWN_FILE_AND_ARGV_ZERO, NULL, NULL,
+        NULL, NULL, NULL, NULL);
+    g_free (argv[0]);
+  }
+  g_dir_close (dir);
+}
+
+int
+main (int argc, char *argv[])
 {
   GList *registries;
-  GList *path_spill = NULL; /* used for path spill from failing registries */
+  GList *path_spill = NULL;     /* used for path spill from failing registries */
 
-    /* Init gst */
+#ifdef GETTEXT_PACKAGE
+  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+  textdomain (GETTEXT_PACKAGE);
+#endif
+
+  /* Init gst */
   _gst_registry_auto_load = FALSE;
   gst_init (&argc, &argv);
 
@@ -60,47 +98,75 @@ int main (int argc,char *argv[])
 
   while (registries) {
     GstRegistry *registry = GST_REGISTRY (registries->data);
-    if (path_spill)
-    {
+    GList *dir_list;
+    GList *iter;
+    char *dir;
+
+    if (path_spill) {
       GList *iter;
 
       /* add spilled paths to this registry;
        * since they're spilled they probably weren't loaded correctly
        * so we should give a lower priority registry the chance to do them */
-      for (iter = path_spill; iter; iter = iter->next)
-      {
-	g_print ("added path   %s to %s \n",
-                 (const char *) iter->data, registry->name);
-	gst_registry_add_path (registry, (const gchar *) iter->data);
+      for (iter = path_spill; iter; iter = iter->next) {
+        g_print (_("Added path   %s to %s \n"),
+            (const char *) iter->data, registry->name);
+        gst_registry_add_path (registry, (const gchar *) iter->data);
       }
       g_list_free (path_spill);
       path_spill = NULL;
     }
 
     g_signal_connect (G_OBJECT (registry), "plugin_added",
-		      G_CALLBACK (plugin_added_func), NULL);
+        G_CALLBACK (plugin_added_func), NULL);
 
     if (registry->flags & GST_REGISTRY_WRITABLE) {
-      g_print ("rebuilding %s\n", registry->name);
+      char *location;
+
+      g_object_get (registry, "location", &location, NULL);
+      g_print (_("Rebuilding %s (%s) ...\n"), registry->name, location);
+      g_free (location);
       gst_registry_rebuild (registry);
       gst_registry_save (registry);
-    }
-    else {
-      g_print ("trying to load %s\n", registry->name);
-      if (!gst_registry_load (registry))
-      {
-	g_print ("error loading %s\n", registry->name);
-	/* move over paths from this registry to the next one */
-	path_spill = g_list_concat (path_spill,
-	                            gst_registry_get_path_list (registry));
-	g_assert (path_spill != NULL);
+    } else {
+      g_print (_("Trying to load %s ...\n"), registry->name);
+      if (!gst_registry_load (registry)) {
+        g_print (_("Error loading %s\n"), registry->name);
+        /* move over paths from this registry to the next one */
+        path_spill = g_list_concat (path_spill,
+            gst_registry_get_path_list (registry));
+        /* this assertion triggers for a non-readable/writable user registry,
+         * see #148283 */
+        /* g_assert (path_spill != NULL); */
       }
+      /* also move over paths if the registry wasn't writable
+       * FIXME: we should check if the paths that were loaded from this
+       registry get removed from the path_list so we only try to
+       spill paths that could not be registered */
+      /* Until that is done, don't spill paths when registry is not writable
+         (e.g. case of user running gst-register and sysreg not writable) */
+
+      /*
+         path_spill = g_list_concat (path_spill,
+         gst_registry_get_path_list (registry));
+       */
     }
+
+    dir_list = gst_registry_get_path_list (registry);
+    for (iter = dir_list; iter; iter = iter->next) {
+      dir =
+          g_build_filename ((const char *) iter->data, "register-scripts",
+          NULL);
+      spawn_all_in_dir (dir);
+      g_free (dir);
+    }
+    g_list_free (dir_list);
+
     registries = g_list_next (registries);
   }
 
-  g_print ("loaded %d plugins with %d features\n", num_plugins, num_features);
+  g_print (_("Loaded %d plugins with %d %s.\n"), num_plugins, num_features,
+      ngettext ("feature", "features", num_features));
 
   return (0);
 }
-

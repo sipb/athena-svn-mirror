@@ -1,12 +1,5 @@
-GST_PLUGIN_PATH=$(shell cd $(top_builddir) && pwd)
-TESTS_ENVIRONMENT = GST_PLUGIN_PATH=$(GST_PLUGIN_PATH) GST_REGISTRY=$(GST_PLUGIN_PATH)/testsuite/test-registry.xml
+include ../Rules
 
-testprogs = clock1 clock2
-
-TESTS = $(testprogs)
-
-check_PROGRAMS = $(testprogs)
-
-LDADD = $(GST_LIBS) 
-AM_CFLAGS = $(GST_CFLAGS)
-
+tests_pass = signedness clock1 clock2
+tests_fail =
+tests_ignore =

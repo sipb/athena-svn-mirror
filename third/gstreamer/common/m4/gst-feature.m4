@@ -45,7 +45,10 @@ dnl GST_PLUGINS_YES will contain all plugins to be built
 dnl                 that were checked through GST_CHECK_FEATURE
 dnl GST_PLUGINS_NO will contain those that won't be built
 
-AC_DEFUN(GST_CHECK_FEATURE,
+AC_DEFUN([GST_CHECK_FEATURE],
+AC_MSG_NOTICE(***)
+AC_MSG_NOTICE(*** checking plugin: [$3] ***)
+AC_MSG_NOTICE(***)
 [dnl
 builtin(define, [gst_endisable], ifelse($5, [disabled], [enable], [disable]))dnl
 dnl if it is set to NO, then don't even consider it for building
@@ -98,13 +101,15 @@ fi
 dnl *** Warn if it's disabled or not found
 if test x$USE_[$1] = xyes; then
   ifelse([$6], , :, [$6])
-  GST_PLUGINS_YES="$GST_PLUGINS_YES \n\t[$3]"
+  if test "x$3" != "x"; then
+    GST_PLUGINS_YES="\t[$3]\n$GST_PLUGINS_YES"
+  fi
   AC_DEFINE(HAVE_[$1], , [support for features: $3])
 else
-  ifelse([$3], , :, [AC_MSG_NOTICE(
-These plugins will not be built: [$3]
-)])
-  GST_PLUGINS_NO="$GST_PLUGINS_NO \n\t[$3]"
+  ifelse([$3], , :, [AC_MSG_NOTICE(*** These plugins will not be built: [$3])])
+  if test "x$3" != "x"; then
+    GST_PLUGINS_NO="\t[$3]\n$GST_PLUGINS_NO"
+  fi
   ifelse([$7], , :, [$7])
 fi
 dnl *** Define the conditional as appropriate
@@ -120,7 +125,7 @@ dnl
 dnl This check was written for GStreamer: it should be renamed and checked
 dnl for portability if you decide to use it elsewhere.
 dnl
-AC_DEFUN(GST_CHECK_CONFIGPROG,
+AC_DEFUN([GST_CHECK_CONFIGPROG],
 [
   AC_PATH_PROG([$1]_CONFIG, [$2], no)
   if test x$[$1]_CONFIG = xno; then
@@ -128,7 +133,10 @@ AC_DEFUN(GST_CHECK_CONFIGPROG,
     [$1]_CFLAGS=
     HAVE_[$1]=no
   else
-    [$1]_LIBS=`[$2] --libs [$3]`
+    [$1]_LIBS=`[$2] --plugin-libs [$3] 2> /dev/null`
+    if test "x$[$1]_LIBS" = x; then
+      [$1]_LIBS=`[$2] --libs [$3]`
+    fi
     [$1]_CFLAGS=`[$2] --cflags [$3]`
     HAVE_[$1]=yes
   fi
@@ -146,7 +154,7 @@ dnl
 dnl This check was written for GStreamer: it should be renamed and checked
 dnl for portability if you decide to use it elsewhere.
 dnl
-AC_DEFUN(GST_CHECK_LIBHEADER,
+AC_DEFUN([GST_CHECK_LIBHEADER],
 [
   AC_CHECK_LIB([$2], [$3], HAVE_[$1]=yes, HAVE_[$1]=no,[$4])
   if test "x$HAVE_[$1]" = "xyes"; then
@@ -164,26 +172,38 @@ AC_DEFUN(GST_CHECK_LIBHEADER,
 ]
 )
 
+dnl 2004-02-14 Thomas - changed to get set properly and use proper output
+dnl 2003-06-27 Benjamin Otte - changed to make this work with gstconfig.h
 dnl
 dnl Add a subsystem --disable flag and all the necessary symbols and substitions
 dnl
-dnl GST_SUBSYSTEM_DISABLE(SYSNAME, [subsystem name])
+dnl GST_CHECK_SUBSYSTEM_DISABLE(SYSNAME, [subsystem name])
 dnl
-AC_DEFUN(GST_SUBSYSTEM_DISABLE,
-[AC_ARG_ENABLE(translit([$1], A-Z, a-z), 
-[  ]builtin(format, --disable-%-17s  disable %s, translit([$1], A-Z, a-z), $2),
-[ case "${enableval}" in
-    yes) GST_DISABLE_[$1]=no ;;
-    no) GST_DISABLE_[$1]=yes ;;
-    *) AC_MSG_ERROR(bad value ${enableval} for --enable-translit([$1], A-Z, a-z)) ;;
-  esac],
-[GST_DISABLE_[$1]=no]) dnl Default value
-if test x$GST_DISABLE_[$1] = xyes; then
-  AC_DEFINE(GST_DISABLE_[$1], 1, [Disable $2])
-  GST_DISABLE_[$1]_DEFINE=-DGST_DISABLE_[$1]
-fi
-AM_CONDITIONAL(GST_DISABLE_[$1], test x$GST_DISABLE_[$1] = xyes)
-AC_SUBST(GST_DISABLE_[$1]_DEFINE)
-GST_SUBSYSTEM_DISABLE_DEFINES="$GST_SUBSYTEM_DISABLE_DEFINES $GST_DISABLE_[$1]_DEFINE"
+AC_DEFUN([GST_CHECK_SUBSYSTEM_DISABLE],
+[
+  dnl this define will replace each literal subsys_def occurrence with
+  dnl the lowercase hyphen-separated subsystem
+  dnl e.g. if $1 is GST_DEBUG then subsys_def will be a macro with gst-debug
+  define([subsys_def],translit([$1], _A-Z, -a-z))
+
+  AC_ARG_ENABLE(subsys_def, 
+    AC_HELP_STRING(--disable-subsys_def, [disable $2]),
+    [
+      case "${enableval}" in
+        yes) GST_DISABLE_[$1]=no ;;
+        no) GST_DISABLE_[$1]=yes ;;
+        *) AC_MSG_ERROR([bad value ${enableval} for --enable-subsys_def]) ;;
+       esac
+    ],
+    [GST_DISABLE_[$1]=no]) dnl Default value
+
+  if test x$GST_DISABLE_[$1] = xyes; then
+    AC_MSG_NOTICE([disabled subsystem [$2]])
+    GST_DISABLE_[$1]_DEFINE="#define GST_DISABLE_$1 1" 
+  else
+    GST_DISABLE_[$1]_DEFINE="/* #undef GST_DISABLE_$1 */"
+  fi
+  AC_SUBST(GST_DISABLE_[$1]_DEFINE)
+  undefine([subsys_def])
 ])
 

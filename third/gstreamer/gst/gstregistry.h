@@ -30,10 +30,12 @@
 #define GLOBAL_REGISTRY_FILE     GLOBAL_REGISTRY_DIR"/registry.xml"
 #define GLOBAL_REGISTRY_FILE_TMP GLOBAL_REGISTRY_DIR"/.registry.xml.tmp"
 
-#define LOCAL_REGISTRY_DIR       ".gstreamer"
+#define LOCAL_REGISTRY_DIR       ".gstreamer-"GST_MAJORMINOR
 #define LOCAL_REGISTRY_FILE      LOCAL_REGISTRY_DIR"/registry.xml"
 #define LOCAL_REGISTRY_FILE_TMP  LOCAL_REGISTRY_DIR"/.registry.xml.tmp"
 
+/* compatibility for pre-POSIX defines */
+#ifdef S_IRUSR
 #define REGISTRY_DIR_PERMS (S_ISGID | \
                             S_IRUSR | S_IWUSR | S_IXUSR | \
 		            S_IRGRP | S_IXGRP | \
@@ -42,6 +44,12 @@
 #define REGISTRY_FILE_PERMS (S_IRUSR | S_IWUSR | \
                              S_IRGRP | S_IWGRP | \
 			     S_IROTH | S_IWOTH)
+#else
+#define REGISTRY_DIR_PERMS (S_ISGID | \
+                            S_IREAD | S_IWRITE | S_IEXEC)
+#define REGISTRY_TMPFILE_PERMS (S_IREAD | S_IWRITE)
+#define REGISTRY_FILE_PERMS (S_IREAD | S_IWRITE)
+#endif
 
 G_BEGIN_DECLS
 
@@ -86,7 +94,7 @@ struct _GstRegistry {
 
   GList 	*paths;
 
-  gpointer	 dummy[8];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstRegistryClass {
@@ -105,7 +113,7 @@ struct _GstRegistryClass {
   /* signals */
   void 			(*plugin_added)		(GstRegistry *registry, GstPlugin *plugin);
 
-  gpointer	 dummy[8];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 
@@ -125,29 +133,21 @@ void 			gst_registry_clear_paths	(GstRegistry *registry);
 gboolean		gst_registry_add_plugin		(GstRegistry *registry, GstPlugin *plugin);
 void			gst_registry_remove_plugin	(GstRegistry *registry, GstPlugin *plugin);
 
+GList*			gst_registry_plugin_filter	(GstRegistry *registry, 
+							 GstPluginFilter filter, 
+							 gboolean first, 
+							 gpointer user_data);
+GList*			gst_registry_feature_filter	(GstRegistry *registry, 
+							 GstPluginFeatureFilter filter, 
+							 gboolean first,
+							 gpointer user_data);
+
 GstPlugin*		gst_registry_find_plugin	(GstRegistry *registry, const gchar *name);
 GstPluginFeature*	gst_registry_find_feature	(GstRegistry *registry, const gchar *name, GType type);
 
 GstRegistryReturn	gst_registry_load_plugin	(GstRegistry *registry, GstPlugin *plugin);
 GstRegistryReturn	gst_registry_unload_plugin	(GstRegistry *registry, GstPlugin *plugin);
 GstRegistryReturn	gst_registry_update_plugin	(GstRegistry *registry, GstPlugin *plugin);
-
-/* the pool of registries */
-GList*			gst_registry_pool_list		(void);
-void			gst_registry_pool_add		(GstRegistry *registry, guint priority);
-void			gst_registry_pool_remove	(GstRegistry *registry);
-
-void			gst_registry_pool_add_plugin	(GstPlugin *plugin);
-
-void			gst_registry_pool_load_all	(void);
-
-GList*			gst_registry_pool_plugin_list	(void);
-GList*			gst_registry_pool_feature_list	(GType type);
-
-GstPlugin*		gst_registry_pool_find_plugin	(const gchar *name);
-GstPluginFeature*	gst_registry_pool_find_feature	(const gchar *name, GType type);
-
-GstRegistry*		gst_registry_pool_get_prefered	(GstRegistryFlags flags);
 
 G_END_DECLS
 

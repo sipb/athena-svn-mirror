@@ -24,14 +24,9 @@
 #ifndef __GST_SPIDER_IDENTITY_H__
 #define __GST_SPIDER_IDENTITY_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-GstElementDetails gst_spider_identity_details;
-
 
 #define GST_TYPE_SPIDER_IDENTITY \
   (gst_spider_identity_get_type())
@@ -59,7 +54,6 @@ struct _GstSpiderIdentity {
 	
   /* Caps from typefinding */
   GstCaps *caps;
-
 };
 
 struct _GstSpiderIdentityClass {

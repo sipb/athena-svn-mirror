@@ -1,4 +1,4 @@
-<chapter id="cha-buffers">
+<chapter id="chapter-buffers">
   <title>Buffers</title>
   <para> 
     Buffers contain the data that will flow through the pipeline you have
@@ -8,30 +8,36 @@
     to deal with buffers yourself; the elements will do that for you.
   </para>
   <para> 
-    The most important information in the buffer is:
+    A buffer consists of:
 
     <itemizedlist>
       <listitem>
         <para>
-          A pointer to a piece of memory.
+          a pointer to a piece of memory.
         </para>
       </listitem>
       <listitem>
         <para>
-          The size of the memory.
+          the size of the memory.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          a timestamp for the buffer.
         </para>
       </listitem>
       <listitem>
         <para>
           A refcount that indicates how many elements are using this
           buffer. This refcount will be used to destroy the buffer when no
-          element is having a reference to it.
+          element has a reference to it.
         </para>
       </listitem>
     </itemizedlist>
   </para>
 
-  <para> 
+  <para>
+    <!-- FIXME: this is outdated, there is no GstBufferPool in gst-0.8.X -->
     GStreamer provides functions to create custom buffer create/destroy algorithms, called
     a <classname>GstBufferPool</classname>. This makes it possible to efficiently 
     allocate and destroy buffer memory. It also makes it possible to exchange memory between

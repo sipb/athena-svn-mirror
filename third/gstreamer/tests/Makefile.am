@@ -1,10 +1,17 @@
 
-SUBDIRS = memchunk muxing sched threadstate seeking # bufspeed
+SUBDIRS = instantiate memchunk muxing sched threadstate seeking # bufspeed
 
-noinst_PROGRAMS = lat
+if GST_DISABLE_TRACE
+LAT = 
+else
+LAT = lat
 
-lat_CFLAGS = $(GST_CFLAGS)
-lat_LDFLAGS = $(GST_LIBS)
+endif
+
+noinst_PROGRAMS = $(LAT) spidey_bench mass_elements
+
+AM_CFLAGS = $(GST_OBJ_CFLAGS)
+LIBS = $(GST_OBJ_LIBS)
 
 EXTRA_DIST = README
-DIST_SUBDIRS= bufspeed memchunk muxing sched threadstate seeking
+DIST_SUBDIRS= bufspeed instantiate memchunk muxing sched threadstate seeking

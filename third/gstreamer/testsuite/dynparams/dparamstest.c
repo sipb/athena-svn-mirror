@@ -21,6 +21,10 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <gst/gst.h>
 #include <gst/control/control.h>
@@ -41,7 +45,7 @@ struct _GstDpTest
   GstPad *sinkpad;
   GstPad *srcpad;
   GstDParamManager *dpman;
-  
+
   gfloat float1;
   gfloat float2;
   gboolean bool1;
@@ -55,30 +59,21 @@ struct _GstDpTestClass
 
 GType gst_dptest_get_type (void);
 
-
-GstElementDetails gst_dptest_details = {
-  "DParamsTest",
-  "Filter",
-  "Test for the GstDParam code",
-  VERSION,
-  "Steve Baker <stevebaker_org@yahoo.co.uk>",
-  "(C) 2001",
-};
-
 enum
 {
   ARG_0,
 };
 
 
-static void 	gst_dptest_class_init 		(GstDpTestClass * klass);
-static void 	gst_dptest_init 		(GstDpTest * dptest);
+static void gst_dptest_base_init (gpointer g_class);
+static void gst_dptest_class_init (GstDpTestClass * klass);
+static void gst_dptest_init (GstDpTest * dptest);
 
-static void gst_dptest_set_property (GObject * object, guint prop_id, const GValue * value,
-				     GParamSpec * pspec);
+static void gst_dptest_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
 
-static GstElementStateReturn 	gst_dptest_change_state 	(GstElement *element);
-static void gst_dptest_chain (GstPad *pad, GstBuffer *buf);
+static GstElementStateReturn gst_dptest_change_state (GstElement * element);
+static void gst_dptest_chain (GstPad * pad, GstData * buf);
 
 static GstElementClass *parent_class = NULL;
 
@@ -89,7 +84,8 @@ gst_dptest_get_type (void)
 
   if (!dptest_type) {
     static const GTypeInfo dptest_info = {
-      sizeof (GstDpTestClass), NULL,
+      sizeof (GstDpTestClass),
+      gst_dptest_base_init,
       NULL,
       (GClassInitFunc) gst_dptest_class_init,
       NULL,
@@ -99,9 +95,22 @@ gst_dptest_get_type (void)
       (GInstanceInitFunc) gst_dptest_init,
     };
 
-    dptest_type = g_type_register_static (GST_TYPE_ELEMENT, "GstDpTest", &dptest_info, 0);
+    dptest_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstDpTest", &dptest_info, 0);
   }
   return dptest_type;
+}
+
+static void
+gst_dptest_base_init (gpointer g_class)
+{
+  static GstElementDetails dptest_details = GST_ELEMENT_DETAILS ("DParamTest",
+      "Filter",
+      "Test for the GstDParam code",
+      "Steve Baker <stevebaker_org@yahoo.co.uk>");
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details (element_class, &dptest_details);
 }
 
 static void
@@ -111,7 +120,7 @@ gst_dptest_class_init (GstDpTestClass * klass)
   GstElementClass *gstelement_class;
 
   gobject_class = (GObjectClass *) klass;
-  gstelement_class = (GstElementClass*)klass;
+  gstelement_class = (GstElementClass *) klass;
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
@@ -127,26 +136,24 @@ gst_dptest_init (GstDpTest * dptest)
 
   dptest->sinkpad = gst_pad_new ("sink", GST_PAD_SINK);
   gst_element_add_pad (GST_ELEMENT (dptest), dptest->sinkpad);
-  gst_pad_set_chain_function(dptest->sinkpad, gst_dptest_chain);
+  gst_pad_set_chain_function (dptest->sinkpad, gst_dptest_chain);
 
   dptest->srcpad = gst_pad_new ("src", GST_PAD_SRC);
   gst_element_add_pad (GST_ELEMENT (dptest), dptest->srcpad);
 
-  dptest->dpman = gst_dpman_new ("dptest_dpman", GST_ELEMENT(dptest));
+  dptest->dpman = gst_dpman_new ("dptest_dpman", GST_ELEMENT (dptest));
 
-  gst_dpman_add_required_dparam_direct (
-    dptest->dpman, 
-    g_param_spec_float("float1","float1","float1",
-                       0.0, 1.0, 0.5, G_PARAM_READWRITE),
-    "float",
-    &(dptest->float1)
-  );
-  
+  gst_dpman_add_required_dparam_direct (dptest->dpman,
+      g_param_spec_float ("float1", "float1", "float1",
+          0.0, 1.0, 0.5, G_PARAM_READWRITE), "float", &(dptest->float1)
+      );
+
   dptest->float1 = 0.0;
 }
 
 static void
-gst_dptest_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
+gst_dptest_set_property (GObject * object, guint prop_id, const GValue * value,
+    GParamSpec * pspec)
 {
   GstDpTest *dptest;
 
@@ -163,40 +170,64 @@ gst_dptest_set_property (GObject * object, guint prop_id, const GValue * value, 
 }
 
 static GstElementStateReturn
-gst_dptest_change_state (GstElement *element)
+gst_dptest_change_state (GstElement * element)
 {
   GstDpTest *dptest;
 
   g_return_val_if_fail (GST_IS_DPTEST (element), GST_STATE_FAILURE);
-  g_print("changing state\n");
 
   dptest = GST_DPTEST (element);
   if (GST_ELEMENT_CLASS (parent_class)->change_state)
     return GST_ELEMENT_CLASS (parent_class)->change_state (element);
-    
+
   return GST_STATE_SUCCESS;
 }
 
-static void 
-gst_dptest_chain (GstPad *pad, GstBuffer *buf)
+static void
+gst_dptest_chain (GstPad * pad, GstData * data)
 {
   GstDpTest *dptest;
-  gint i=0, frame_countdown;
+  gint frame_count;
 
-  dptest = GST_DPTEST(gst_pad_get_parent (pad));
-  g_assert(dptest);
+  dptest = GST_DPTEST (gst_pad_get_parent (pad));
+  g_assert (dptest);
+  g_print ("dp chain\n");
 
   /* we're using a made up buffer size of 64 and a timestamp of zero */
-  frame_countdown = GST_DPMAN_PREPROCESS(dptest->dpman, 64, 0LL);
-  
-  while(GST_DPMAN_PROCESS_COUNTDOWN(dptest->dpman, frame_countdown, i));
-  	
-  g_print("dp chain\n");
+  g_print ("preprocess\n");
+  frame_count = 0;
+  GST_DPMAN_PREPROCESS (dptest->dpman, 64, 0LL);
+
+  while (GST_DPMAN_PROCESS (dptest->dpman, frame_count)) {
+      ++frame_count;
+  }
+  g_print ("dp chain done\n");
 }
 
-int main(int argc,char *argv[]) {
+gboolean
+gst_dptest_register_elements (GstPlugin * plugin)
+{
+  return gst_element_register (plugin, "dptest", GST_RANK_NONE,
+      GST_TYPE_DPTEST);
+}
 
-  GstElementFactory *factory;
+static GstPluginDesc plugin_desc = {
+  GST_VERSION_MAJOR,
+  GST_VERSION_MINOR,
+  "dptest_elements",
+  "test elements",
+  &gst_dptest_register_elements,
+  NULL,
+  VERSION,
+  GST_LICENSE,
+  GST_PACKAGE,
+  GST_ORIGIN
+};
+
+int
+main (int argc, char *argv[])
+{
+
   GstElement *src;
   GstElement *sink;
   GstElement *testelement;
@@ -204,12 +235,11 @@ int main(int argc,char *argv[]) {
   GstDParamManager *dpman;
   GstDParam *dp_float1;
   GValue *dp_float1_value;
-  
+
   gst_init (&argc, &argv);
-  gst_control_init(&argc,&argv);
-  
-  factory = gst_element_factory_new ("dptest", GST_TYPE_DPTEST, &gst_dptest_details);
-  g_assert (factory != NULL);
+  gst_control_init (&argc, &argv);
+
+  _gst_plugin_register_static (&plugin_desc);
 
   pipeline = gst_element_factory_make ("pipeline", "pipeline");
   g_assert (pipeline);
@@ -223,58 +253,53 @@ int main(int argc,char *argv[]) {
   testelement = gst_element_factory_make ("dptest", "testelement");
   g_assert (testelement);
 
-  gst_element_link (src, testelement);
-  gst_element_link (testelement, sink);
+  gst_bin_add_many (GST_BIN (pipeline), src, testelement, sink, NULL);
+  gst_element_link_many (src, testelement, sink, NULL);
 
-  gst_bin_add (GST_BIN (pipeline), src);
-  gst_bin_add (GST_BIN (pipeline), testelement);
-  gst_bin_add (GST_BIN (pipeline), sink);
+  g_object_set (G_OBJECT (src), "num_buffers", 1, NULL);
 
-  g_print("playing pipeline\n");
-  
-  g_object_set (G_OBJECT (src), "num_buffers", 1, NULL);				    
-
+  g_print ("setting pipeline to play\n");
   gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PLAYING);
 
   /* test that dparam manager is accessable */
-  g_print("getting dparam manager\n");
+  g_print ("getting dparam manager\n");
   dpman = gst_dpman_get_manager (testelement);
-  gst_dpman_set_mode(dpman, "synchronous");
-  
-  g_assert(dpman);
-  g_assert(GST_IS_DPMAN (dpman));
+  gst_dpman_set_mode (dpman, "synchronous");
 
-  g_print("creating dparam for float1\n");
-  dp_float1 = gst_dparam_new(G_TYPE_FLOAT);;
-  g_assert(dp_float1);
-  g_assert(GST_IS_DPARAM (dp_float1));
+  g_assert (dpman);
+  g_assert (GST_IS_DPMAN (dpman));
 
-  g_print("attach dparam to float1\n");
-  g_assert(gst_dpman_attach_dparam (dpman, "float1", dp_float1));
+  g_print ("creating dparam for float1\n");
+  dp_float1 = gst_dparam_new (G_TYPE_FLOAT);;
+  g_assert (dp_float1);
+  g_assert (GST_IS_DPARAM (dp_float1));
 
-  dp_float1_value = g_new0(GValue,1);
-  g_value_init(dp_float1_value, G_TYPE_FLOAT);
-	
-  g_value_set_float(dp_float1_value, 0.1);
-  g_object_set_property(G_OBJECT(dp_float1), "value_float", dp_float1_value);
-  
-  g_print("iterate once\n");
+  g_print ("attach dparam to float1\n");
+  g_assert (gst_dpman_attach_dparam (dpman, "float1", dp_float1));
+
+  dp_float1_value = g_new0 (GValue, 1);
+  g_value_init (dp_float1_value, G_TYPE_FLOAT);
+
+  g_value_set_float (dp_float1_value, 0.1);
+  g_object_set_property (G_OBJECT (dp_float1), "value_float", dp_float1_value);
+
+  g_print ("iterate once\n");
   gst_bin_iterate (GST_BIN (pipeline));
 
-  g_print("check that value changed\n");
-  g_assert(GST_DPTEST(testelement)->float1 == 0.1F);
-  g_assert(!GST_DPARAM_READY_FOR_UPDATE(dp_float1));
-  
-  g_print("nulling pipeline\n");
+  g_print ("check that value changed\n");
+  g_assert (GST_DPTEST (testelement)->float1 == 0.1F);
+  g_assert (!GST_DPARAM_READY_FOR_UPDATE (dp_float1));
+
+  g_print ("nulling pipeline\n");
   gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_NULL);
 
-  g_print("playing pipeline\n");
+  g_print ("playing pipeline\n");
   gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PLAYING);
 
-  g_print("iterate twice\n");
+  g_print ("iterate twice\n");
 
   g_object_set (G_OBJECT (src), "num_buffers", 2, NULL);
   gst_bin_iterate (GST_BIN (pipeline));
-    
+
   return 0;
 }

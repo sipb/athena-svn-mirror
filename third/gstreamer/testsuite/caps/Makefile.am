@@ -1,16 +1,36 @@
-GST_PLUGIN_PATH=$(shell cd $(top_builddir) && pwd)
-TESTS_ENVIRONMENT = GST_PLUGIN_PATH=$(GST_PLUGIN_PATH) GST_REGISTRY=$(GST_PLUGIN_PATH)/testsuite/test-registry.xml
+include ../Rules
 
-testprogs = intersection compatibility normalisation
+tests_pass = \
+	app_fixate \
+	enumcaps \
+	intersection \
+	compatibility \
+	deserialize \
+	normalisation \
+	union \
+	string-conversions \
+	fixed \
+	fraction-convert \
+	fraction-multiply-and-zero \
+	intersect2 \
+	caps \
+	value_compare \
+	value_intersect \
+	value_serialize \
+	audioscale \
+	filtercaps \
+	eratosthenes \
+	renegotiate \
+	subtract \
+	sets \
+	simplify \
+	random \
+	structure
 
-TESTS = $(testprogs)
+EXTRA_DIST = caps_strings
 
-check_PROGRAMS = $(testprogs)
+noinst_HEADERS = \
+	caps.h
 
-intersection_LDADD = $(GST_LIBS) 
-intersection_CFLAGS = $(GST_CFLAGS) $(GNOME_CFLAGS) $(XML_CFLAGS)
-compatibility_LDADD = $(GST_LIBS) 
-compatibility_CFLAGS = $(GST_CFLAGS) $(GNOME_CFLAGS) $(XML_CFLAGS)
-normalisation_LDADD = $(GST_LIBS) 
-normalisation_CFLAGS = $(GST_CFLAGS) $(GNOME_CFLAGS) $(XML_CFLAGS)
-
+tests_fail = 
+tests_ignore =

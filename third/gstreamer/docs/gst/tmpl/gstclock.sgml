@@ -21,6 +21,27 @@ clock so that the clock is always a good measure of the time in the pipeline.
 #GstSystemClock
 </para>
 
+<!-- ##### STRUCT GstClock ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG GstClock:event-diff ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG GstClock:max-diff ##### -->
+<para>
+Maximum allowed diff for clock sync requests against the real time.
+</para>
+
+<!-- ##### ARG GstClock:stats ##### -->
+<para>
+Boolean property to activate stat generation on the clock.
+</para>
+
 <!-- ##### TYPEDEF GstClockTime ##### -->
 <para>
 A datatype to hold a time, measured in nanoseconds.
@@ -44,6 +65,14 @@ A detatype to hold the handle to an outstanding async clock callback
 Constant to define an undefined clock time
 </para>
 
+
+
+<!-- ##### MACRO GST_CLOCK_TIME_IS_VALID ##### -->
+<para>
+
+</para>
+
+@time: 
 
 
 <!-- ##### MACRO GST_SECOND ##### -->
@@ -98,6 +127,13 @@ Convert a GstClockTime to a GTimeVal
 
 @t: The GstClockTime to convert
 @tv: The target timeval
+
+
+<!-- ##### MACRO GST_CLOCK_ENTRY_TRACE_NAME ##### -->
+<para>
+The name used for tracing clock entry allocations.
+</para>
+
 
 
 <!-- ##### STRUCT GstClockEntry ##### -->
@@ -222,12 +258,6 @@ Get the clock flags
 @clock: the clock to query
 
 
-<!-- ##### STRUCT GstClock ##### -->
-<para>
-The GstClock object
-</para>
-
-
 <!-- ##### FUNCTION gst_clock_set_speed ##### -->
 <para>
 
@@ -308,6 +338,25 @@ The GstClock object
 </para>
 
 @clock: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_clock_get_event_time ##### -->
+<para>
+
+</para>
+
+@clock: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_clock_get_event_time_delay ##### -->
+<para>
+
+</para>
+
+@clock: 
+@delay: 
 @Returns: 
 
 
@@ -394,14 +443,4 @@ The GstClock object
 
 @id: 
 
-
-<!-- ##### ARG GstClock:max-diff ##### -->
-<para>
-Maximum allowed diff for clock sync requests against the real time.
-</para>
-
-<!-- ##### ARG GstClock:stats ##### -->
-<para>
-Boolean property to activate stat generation on the clock.
-</para>
 

@@ -2,11 +2,10 @@
 GstXML
 
 <!-- ##### SECTION Short_Description ##### -->
-Convert Elements into an XML presentation.
+XML save/restore operations of pipelines
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-All GstElements can be serialized to an XML presentation and subsequently loaded back.
 
 </para>
 
@@ -14,6 +13,50 @@ All GstElements can be serialized to an XML presentation and subsequently loaded
 <para>
 
 </para>
+
+<!-- ##### STRUCT GstXML ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstXML::object-loaded ##### -->
+<para>
+
+</para>
+
+@: 
+@: 
+@:
+
+@gstxml: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### STRUCT GstXMLNs ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gst_xml_write ##### -->
+<para>
+
+</para>
+
+@element: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_xml_write_file ##### -->
+<para>
+
+</para>
+
+@element: 
+@out: 
+@Returns: 
+
 
 <!-- ##### FUNCTION gst_xml_new ##### -->
 <para>
@@ -34,18 +77,6 @@ All GstElements can be serialized to an XML presentation and subsequently loaded
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_xml_parse_memory ##### -->
-<para>
-
-</para>
-
-@xml: 
-@buffer: 
-@size: 
-@root: 
-@Returns: 
-
-
 <!-- ##### FUNCTION gst_xml_parse_file ##### -->
 <para>
 
@@ -57,22 +88,15 @@ All GstElements can be serialized to an XML presentation and subsequently loaded
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_xml_write ##### -->
+<!-- ##### FUNCTION gst_xml_parse_memory ##### -->
 <para>
 
 </para>
 
-@element: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_xml_write_file ##### -->
-<para>
-
-</para>
-
-@element: 
-@out: 
+@xml: 
+@buffer: 
+@size: 
+@root: 
 @Returns: 
 
 
@@ -104,26 +128,4 @@ All GstElements can be serialized to an XML presentation and subsequently loaded
 @parent: 
 @Returns: 
 
-
-<!-- ##### SIGNAL GstXML::object-loaded ##### -->
-<para>
-
-</para>
-
-@: 
-@: 
-@:
-
-@gstxml: the object which received the signal.
-@arg1: 
-@arg2: 
-
-<!-- ##### SIGNAL GstXML::object-loaded ##### -->
-<para>
-
-</para>
-
-@gstxml: the object which received the signal.
-@arg1: 
-@arg2: 
 

@@ -28,28 +28,34 @@
 #include <gst/gstdata.h>
 #include <gst/gstformat.h>
 #include <gst/gstobject.h>
+#include <gst/gststructure.h>
 
 G_BEGIN_DECLS
 
-typedef enum {
-  GST_EVENT_UNKNOWN,
-  GST_EVENT_EOS,
-  GST_EVENT_FLUSH,
-  GST_EVENT_EMPTY,
-  GST_EVENT_DISCONTINUOUS,
-  GST_EVENT_NEW_MEDIA,
-  GST_EVENT_QOS,
-  GST_EVENT_SEEK,
-  GST_EVENT_SEEK_SEGMENT,
-  GST_EVENT_SEGMENT_DONE,
-  GST_EVENT_SIZE,
-  GST_EVENT_RATE,
-  GST_EVENT_FILLER,
-  GST_EVENT_TS_OFFSET,
-  GST_EVENT_INTERRUPT
-} GstEventType;
+GST_EXPORT GType _gst_event_type;
 
-extern GType _gst_event_type;
+typedef enum {
+  GST_EVENT_UNKNOWN		= 0,
+  GST_EVENT_EOS			= 1,
+  GST_EVENT_FLUSH		= 2,
+  GST_EVENT_EMPTY		= 3,
+  GST_EVENT_DISCONTINUOUS	= 4,
+  /*GST_EVENT_NEW_MEDIA		= 5, <- removed */
+  GST_EVENT_QOS			= 6,
+  GST_EVENT_SEEK		= 7,
+  GST_EVENT_SEEK_SEGMENT	= 8,
+  GST_EVENT_SEGMENT_DONE	= 9,
+  GST_EVENT_SIZE		= 10,
+  GST_EVENT_RATE		= 11,
+  GST_EVENT_FILLER		= 12,
+  GST_EVENT_TS_OFFSET		= 13,
+  GST_EVENT_INTERRUPT		= 14,
+  GST_EVENT_NAVIGATION		= 15,
+  GST_EVENT_TAG			= 16
+} GstEventType;
+#define GST_EVENT_ANY GST_EVENT_NAVIGATION
+
+#define GST_EVENT_TRACE_NAME	"GstEvent"
 
 #define GST_TYPE_EVENT		(_gst_event_type)
 #define GST_EVENT(event)	((GstEvent*)(event))
@@ -69,40 +75,42 @@ extern GType _gst_event_type;
 #define GST_SEEK_FLAGS_MASK	0xfff00000
 
 typedef enum {
-  GST_EVENT_FLAG_NONE 		= 0,
+  GST_EVENT_FLAG_NONE		= 0,
 
   /* indicates negative rates are supported */
-  GST_RATE_FLAG_NEGATIVE  	= (1 << 1) 
+  GST_RATE_FLAG_NEGATIVE	= (1 << 1)
 } GstEventFlag;
 
 typedef struct
 {
-  GstEventType 	type;
-  GstEventFlag 	flags;
+  GstEventType	type;
+  GstEventFlag	flags;
 } GstEventMask;
 
+#ifndef GST_DISABLE_DEPRECATED
 #ifdef G_HAVE_ISO_VARARGS
 #define GST_EVENT_MASK_FUNCTION(type,functionname, ...)      \
 static const GstEventMask*                              \
-functionname (type pad)                            	\
-{                                               	\
+functionname (type pad)					\
+{							\
   static const GstEventMask masks[] = {                 \
     __VA_ARGS__,					\
     { 0, }						\
-  };                                             	\
-  return masks;                                  	\
+  };							\
+  return masks;						\
 }
 #elif defined(G_HAVE_GNUC_VARARGS)
 #define GST_EVENT_MASK_FUNCTION(type,functionname, a...)     \
 static const GstEventMask*                              \
-functionname (type pad)                            	\
-{                                               	\
+functionname (type pad)					\
+{							\
   static const GstEventMask masks[] = {                 \
     a,							\
     { 0, }						\
-  };                                             	\
-  return masks;                                  	\
+  };							\
+  return masks;						\
 }
+#endif
 #endif
 
 /* seek events, extends GstEventFlag */
@@ -129,7 +137,7 @@ typedef enum {
 
 typedef struct
 {
-  GstFormat 	format;
+  GstFormat	format;
   gint64	value;
 } GstFormatValue;
 
@@ -159,45 +167,49 @@ struct _GstEvent {
 
   union {
     struct {
-      GstSeekType 	type;
-      gint64      	offset;
-      gint64      	endoffset;
-      GstSeekAccuracy 	accuracy;
+      GstSeekType	type;
+      gint64		offset;
+      gint64		endoffset;
+      GstSeekAccuracy	accuracy;
     } seek;
     struct {
-      GstFormatValue 	offsets[8];
-      gint      	noffsets;
+      GstFormatValue	offsets[8];
+      gint		noffsets;
       gboolean		new_media;
     } discont;
     struct {
-      GstFormat 	format;
-      gint64      	value;
+      GstFormat		format;
+      gint64		value;
     } size;
     struct {
-      gdouble      	value;
+      gdouble		value;
     } rate;
+    struct {
+      GstStructure	*structure;
+    } structure;
   } event_data;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
-void 		_gst_event_initialize 		(void);
-
-void		gst_event_print_stats		(void);
+void		_gst_event_initialize		(void);
 	
-GstEvent*	gst_event_new	        	(GstEventType type);
+GType		gst_event_get_type		(void);
+GstEvent*	gst_event_new			(GstEventType type);
 
 /* refcounting */
-#define         gst_event_ref(ev)             	gst_data_ref (GST_DATA (ev))
-#define         gst_event_ref_by_count(ev,c)  	gst_data_ref_by_count (GST_DATA (ev), c)
-#define         gst_event_unref(ev)           	gst_data_unref (GST_DATA (ev))
+#define         gst_event_ref(ev)		GST_EVENT (gst_data_ref (GST_DATA (ev)))
+#define         gst_event_ref_by_count(ev,c)	GST_EVENT (gst_data_ref_by_count (GST_DATA (ev), c))
+#define         gst_event_unref(ev)		gst_data_unref (GST_DATA (ev))
 /* copy buffer */
-#define         gst_event_copy(ev)         	GST_EVENT (gst_data_copy (GST_DATA (ev)))
+#define         gst_event_copy(ev)		GST_EVENT (gst_data_copy (GST_DATA (ev)))
 
-gboolean 	gst_event_masks_contains 	(const GstEventMask *masks, GstEventMask *mask);
+gboolean	gst_event_masks_contains	(const GstEventMask *masks, GstEventMask *mask);
 
 /* seek event */
 GstEvent*	gst_event_new_seek		(GstSeekType type, gint64 offset);
 
-GstEvent* 	gst_event_new_segment_seek 	(GstSeekType type, gint64 start, gint64 stop);
+GstEvent*	gst_event_new_segment_seek	(GstSeekType type, gint64 start, gint64 stop);
 
 
 /* size events */
@@ -206,6 +218,9 @@ GstEvent*	gst_event_new_size		(GstFormat format, gint64 value);
 /* discontinous event */
 GstEvent*	gst_event_new_discontinuous	(gboolean new_media,
 						 GstFormat format1, ...);
+GstEvent*	gst_event_new_discontinuous_valist	(gboolean new_media,
+						 GstFormat format1,
+						 va_list var_args);
 gboolean	gst_event_discont_get_value	(GstEvent *event, GstFormat format, gint64 *value);
 
 #define		gst_event_new_filler()		gst_event_new(GST_EVENT_FILLER)

@@ -1,5 +1,5 @@
 /* GStreamer
- * Copyright (C) <1999> Erik Walthinsen <omega@cse.ogi.edu>
+ * Copyright (C) 1999, 2003 Erik Walthinsen <omega@cse.ogi.edu>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -15,6 +15,11 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
+ *
+ *
+ * Much of the code in this file is taken from the Linux kernel. 
+ * The code is relicensed under the LGPL with the kind permission of
+ * Linus Torvalds,Ralf Baechle and Alan Cox
  */
 
 #ifndef __GST_ATOMIC_IMPL_H__
@@ -33,7 +38,7 @@ G_BEGIN_DECLS
 #if defined (GST_CAN_INLINE) || defined (__GST_ATOMIC_C__)
   
 /***** Intel x86 *****/
-#if defined (HAVE_CPU_I386) && defined(__GNUC__)
+#if (defined (HAVE_CPU_I386) || defined (HAVE_CPU_X86_64)) && defined(__GNUC__)
 
 #ifdef GST_CONFIG_NO_SMP
 #define SMP_LOCK ""
@@ -84,15 +89,15 @@ gst_atomic_int_dec_and_test (GstAtomicInt *aint)
 #define SMP_SYNC        ""
 #define SMP_ISYNC
 #else
-#define SMP_SYNC        "sync"
-#define SMP_ISYNC       "\n\tisync"
+#define SMP_SYNC        "\tsync\n"
+#define SMP_ISYNC       "\tisync\n"
 #endif
 
 /* Erratum #77 on the 405 means we need a sync or dcbt before every stwcx.
  * The old ATOMIC_SYNC_FIX covered some but not all of this.
  */
 #ifdef GST_CONFIG_IBM405_ERR77
-#define PPC405_ERR77(ra,rb)     "dcbt " #ra "," #rb ";"
+#define PPC405_ERR77(ra,rb)     "\tdcbt " #ra "," #rb "\n"
 #else
 #define PPC405_ERR77(ra,rb)
 #endif
@@ -108,11 +113,11 @@ gst_atomic_int_add (GstAtomicInt *aint, gint val)
   int t;
 
   __asm__ __volatile__(
-    "1:     lwarx   %0,0,%3         # atomic_add\n\
-            add     %0,%2,%0\n"
+    "1:     lwarx   %0,0,%3\n"
+    "       add     %0,%2,%0\n"
             PPC405_ERR77(0,%3)
-    "       stwcx.  %0,0,%3 \n\
-            bne-    1b"
+    "       stwcx.  %0,0,%3 \n"
+    "       bne-    1b\n"
       : "=&r" (t), "=m" (aint->counter)
       : "r" (val), "r" (&aint->counter), "m" (aint->counter)
       : "cc");
@@ -124,11 +129,11 @@ gst_atomic_int_inc (GstAtomicInt *aint)
   int t;
 
   __asm__ __volatile__(
-    "1:     lwarx   %0,0,%2         # atomic_inc\n\
-            addic   %0,%0,1\n"
+    "1:     lwarx   %0,0,%2\n"
+    "       addic   %0,%0,1\n"
             PPC405_ERR77(0,%2)
-    "       stwcx.  %0,0,%2 \n\
-            bne-    1b"
+    "       stwcx.  %0,0,%2\n"
+    "       bne-    1b\n"
       : "=&r" (t), "=m" (aint->counter)
       : "r" (&aint->counter), "m" (aint->counter)
       : "cc");
@@ -140,11 +145,11 @@ gst_atomic_int_dec_and_test (GstAtomicInt *aint)
   int t;
 
   __asm__ __volatile__(
-    "1:     lwarx   %0,0,%1         # atomic_dec_return\n\
-            addic   %0,%0,-1\n"
+    "1:     lwarx   %0,0,%1\n"
+    "       addic   %0,%0,-1\n"
             PPC405_ERR77(0,%1)
-    "       stwcx.  %0,0,%1\n\
-            bne-    1b"
+    "       stwcx.  %0,0,%1\n"
+    "       bne-    1b\n"
             SMP_ISYNC
       : "=&r" (t)
       : "r" (&aint->counter)
@@ -206,7 +211,8 @@ gst_atomic_int_dec_and_test (GstAtomicInt *aint)
 }
 
 /***** Sun SPARC *****/
-#elif defined(HAVE_CPU_SPARC) && defined(__GNUC__)
+#elif 0 && defined(HAVE_CPU_SPARC) && defined(__GNUC__)
+/* allegedly broken again */
 
 GST_INLINE_FUNC void 	gst_atomic_int_destroy 	(GstAtomicInt *aint) { } 
 
@@ -243,19 +249,38 @@ gst_atomic_int_read (GstAtomicInt *aint)
 GST_INLINE_FUNC void 
 gst_atomic_int_add (GstAtomicInt *aint, gint val)
 {
-  register volatile int *ptr asm ("g1");
-  register int increment asm ("g2");
+  volatile int increment, *ptr;
+  int lock = 1;
+  int ignore = 0;
 
-  ptr = &aint->counter;
-  increment = val;
+  ptr = &(aint->counter);
 
-  __asm__ __volatile__(
-    "mov    %%o7, %%g4\n\t"
-    "call   ___atomic_add\n\t"
-    " add   %%o7, 8, %%o7\n"
-      : "=&r" (increment)
-      : "0" (increment), "r" (ptr)
-      : "g3", "g4", "g7", "memory", "cc");
+#if __GNUC__ > 3 || (__GNUC__ >=3 && __GNUC_MINOR__ >= 2)
+ __asm__ __volatile__("1: ldstub [%[ptr] + 3], %[lock]\n"
+		      "\torcc %[lock], 0, %[ignore]\n"
+		      "\tbne 1b\n" /* go back until we have the lock */
+		      "\tld [%[ptr]], %[inc]\n"
+		      "\tsra %[inc], 8, %[inc]\n"
+		      "\tadd %[inc], %[val], %[inc]\n"
+		      "\tsll %[inc], 8, %[lock]\n"
+		      "\tst %[lock],[%[ptr]]\n" /* Release the lock */
+		      : [inc] "=&r" (increment), [lock] "=r" (lock),
+		        [ignore] "=&r" (ignore)
+		      : "0" (increment), [ptr] "r" (ptr), [val] "r" (val)
+		      );
+#else
+ __asm__ __volatile__("1: ldstub [%4 + 3], %1\n"
+		      "\torcc %1, 0, %2\n"
+		      "\tbne 1b\n" /* go back until we have the lock */
+		      "\tld [%4], %0\n"
+		      "\tsra %0, 8, %0\n"
+		      "\tadd %0, %5, %0\n"
+		      "\tsll %0, 8, %1\n"
+		      "\tst %1,[%4]\n" /* Release the lock */
+		      : "=&r" (increment), "=r" (lock), "=&r" (ignore)
+		      : "0" (increment), "r" (ptr), "r" (val)
+		      );
+#endif
 }
 
 GST_INLINE_FUNC void
@@ -267,25 +292,46 @@ gst_atomic_int_inc (GstAtomicInt *aint)
 GST_INLINE_FUNC gboolean
 gst_atomic_int_dec_and_test (GstAtomicInt *aint)
 {
-  register volatile int *ptr asm ("g1");
-  register int increment asm ("g2");
+  volatile int increment, *ptr;
+  int lock = 1;
+  int ignore = 0;
 
   ptr = &aint->counter;
-  increment = val;
 
-  __asm__ __volatile__(
-    "mov    %%o7, %%g4\n\t"
-    "call   ___atomic_sub\n\t"
-    " add   %%o7, 8, %%o7\n"
-      : "=&r" (increment)
-      : "0" (increment), "r" (ptr)
-      : "g3", "g4", "g7", "memory", "cc");
+#if __GNUC__ > 3 || (__GNUC__ >=3 && __GNUC_MINOR__ >= 2)
+  __asm__ __volatile__("1: ldstub [%[ptr] + 3], %[lock]\n"
+		       "\torcc %[lock], 0, %[ignore]\n"
+		       "\tbne 1b\n" /* go back until we have the lock */
+		       "\tld [%[ptr]], %[inc]\n"
+		       "\tsra %[inc], 8, %[inc]\n"
+		       "\tsub %[inc], 1, %[inc]\n"
+		       "\tsll %[inc], 8, %[lock]\n"
+		       "\tst %[lock],[%[ptr]]\n" /* Release the lock */
+		       : [inc] "=&r" (increment), [lock] "=r" (lock),
+		         [ignore] "=&r" (ignore)
+		       : "0" (increment), [ptr] "r" (ptr)
+		       );
+#else
+  __asm__ __volatile__("1: ldstub [%4 + 3], %1\n"
+		       "\torcc %1, 0, %2\n"
+		       "\tbne 1b\n" /* go back until we have the lock */
+		       "\tld [%4], %0\n"
+		       "\tsra %0, 8, %0\n"
+		       "\tsub %0, 1, %0\n"
+		       "\tsll %0, 8, %1\n"
+		       "\tst %1,[%4]\n" /* Release the lock */
+		       : "=&r" (increment), "=r" (lock), "=&r" (ignore)
+		       : "0" (increment), "r" (ptr)
+		       );
+#endif
 
   return increment == 0;
 }
 
 /***** MIPS *****/
-#elif defined(HAVE_CPU_MIPS) && defined(__GNUC__)
+/* This is disabled because the asm code is broken on most MIPS
+ * processors and doesn't generally compile. */
+#elif defined(HAVE_CPU_MIPS) && defined(__GNUC__) && 0
 
 GST_INLINE_FUNC void 	gst_atomic_int_init 	(GstAtomicInt *aint, gint val) { aint->counter = val; }
 GST_INLINE_FUNC void 	gst_atomic_int_destroy 	(GstAtomicInt *aint) { } 
@@ -377,7 +423,11 @@ gst_atomic_int_dec_and_test (GstAtomicInt *aint)
 }
 
 #else 
+
+/* no need warning about this if we can't do inline assembly */
+#ifdef __GNUC__
 #warning consider putting your architecture specific atomic implementations here
+#endif
 
 /*
  * generic implementation

@@ -44,27 +44,15 @@ main (int argc, char *argv[])
   g_assert (decode != NULL);
 
   /* add objects to the main bin */
-  gst_bin_add (GST_BIN (bin), filesrc);
-  gst_bin_add (GST_BIN (bin), queue);
+  gst_bin_add_many (GST_BIN (bin), filesrc, queue, NULL);
 
-  gst_bin_add (GST_BIN (thread), decode);
-  gst_bin_add (GST_BIN (thread), queue2);
+  gst_bin_add_many (GST_BIN (thread), decode, queue2, NULL);
 
   gst_bin_add (GST_BIN (thread2), osssink);
   
-  gst_pad_link (gst_element_get_pad (filesrc,"src"),
-                   gst_element_get_pad (queue,"sink"));
+  gst_element_link_many (filesrc, queue, decode, queue2, osssink, NULL);
 
-  gst_pad_link (gst_element_get_pad (queue,"src"),
-                   gst_element_get_pad (decode,"sink"));
-  gst_pad_link (gst_element_get_pad (decode,"src"),
-                   gst_element_get_pad (queue2,"sink"));
-
-  gst_pad_link (gst_element_get_pad (queue2,"src"),
-                   gst_element_get_pad (osssink,"sink"));
-
-  gst_bin_add (GST_BIN (bin), thread);
-  gst_bin_add (GST_BIN (bin), thread2);
+  gst_bin_add_many (GST_BIN (bin), thread, thread2, NULL);
 
   /* write the bin to stdout */
   gst_xml_write_file (GST_ELEMENT (bin), stdout);

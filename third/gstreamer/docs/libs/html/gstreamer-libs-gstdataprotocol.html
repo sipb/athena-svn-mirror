@@ -1,0 +1,245 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gstdataprotocol</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Library API Reference"><link rel="up" href="gstreamer-libs.html" title="GStreamer Libraries"><link rel="previous" href="gstreamer-libs-gstcontrol.html" title="gstcontrol"><link rel="next" href="gstreamer-libs-gstgetbits.html" title="gstgetbits"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-libs-gstcontrol.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer-libs.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Library API Reference</th><td><a accesskey="n" href="gstreamer-libs-gstgetbits.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-libs-gstdataprotocol"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gstdataprotocol</span></h2><p>gstdataprotocol &#8212; implements GStreamer Data Protocol to serialize buffers, caps and events.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libs/dataprotocol/dataprotocol.h&gt;
+
+
+enum        <a href="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag">GstDPHeaderFlag</a>;
+enum        <a href="gstreamer-libs-gstdataprotocol.html#GstDPPayloadType">GstDPPayloadType</a>;
+guint32     <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-header-payload-length">gst_dp_header_payload_length</a>    (const guint8 *header);
+<a href="gstreamer-libs-gstdataprotocol.html#GstDPPayloadType">GstDPPayloadType</a> <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-header-payload-type">gst_dp_header_payload_type</a> (const guint8 *header);
+gboolean    <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-header-from-buffer">gst_dp_header_from_buffer</a>       (const <a
+href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
+                                             <a href="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag">GstDPHeaderFlag</a> flags,
+                                             guint *length,
+                                             guint8 **header);
+gboolean    <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-packet-from-caps">gst_dp_packet_from_caps</a>         (const <a
+href="../gstreamer/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *caps,
+                                             <a href="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag">GstDPHeaderFlag</a> flags,
+                                             guint *length,
+                                             guint8 **header,
+                                             guint8 **payload);
+gboolean    <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-packet-from-event">gst_dp_packet_from_event</a>        (const <a
+href="../gstreamer/gstreamer-GstEvent.html#GstEvent"
+>GstEvent</a> *event,
+                                             <a href="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag">GstDPHeaderFlag</a> flags,
+                                             guint *length,
+                                             guint8 **header,
+                                             guint8 **payload);
+<a
+href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*  <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-buffer-from-header">gst_dp_buffer_from_header</a>       (guint header_length,
+                                             const guint8 *header);
+<a
+href="../gstreamer/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*    <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-caps-from-packet">gst_dp_caps_from_packet</a>         (guint header_length,
+                                             const guint8 *header,
+                                             const guint8 *payload);
+<a
+href="../gstreamer/gstreamer-GstEvent.html#GstEvent"
+>GstEvent</a>*   <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-event-from-packet">gst_dp_event_from_packet</a>        (guint header_length,
+                                             const guint8 *header,
+                                             const guint8 *payload);
+gboolean    <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-header">gst_dp_validate_header</a>          (guint header_length,
+                                             const guint8 *header);
+gboolean    <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-payload">gst_dp_validate_payload</a>         (guint header_length,
+                                             const guint8 *header,
+                                             const guint8 *payload);
+gboolean    <a href="gstreamer-libs-gstdataprotocol.html#gst-dp-validate-packet">gst_dp_validate_packet</a>          (guint header_length,
+                                             const guint8 *header,
+                                             const guint8 *payload);
+
+</pre></div><div class="refsect1" lang="en"><a name="id3007128"></a><h2>Description</h2><p>
+This helper library provides serialization of GstBuffer, GstCaps and
+GstEvent structures.
+</p><p>
+This serialization can be useful when GStreamer needs to interface with
+the outside world to transport data between different GStreamer pipelines.
+The connections with the outside world generally don't have mechanisms
+to transport properties of these structures.
+</p><p>
+For example, transporting buffers across named pipes doesn't keep the
+buffer size.  Network elements that transport GStreamer data across
+network connections also need a protocol to do this.
+</p></div><div class="refsect1" lang="en"><a name="id3007153"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3007159"></a><h3><a name="GstDPHeaderFlag"></a>enum GstDPHeaderFlag</h3><a class="indexterm" name="id3007170"></a><pre class="programlisting">typedef enum {
+  GST_DP_HEADER_FLAG_NONE        = 0,
+  GST_DP_HEADER_FLAG_CRC_HEADER  = (1 &lt;&lt; 0),
+  GST_DP_HEADER_FLAG_CRC_PAYLOAD = (1 &lt;&lt; 1),
+  GST_DP_HEADER_FLAG_CRC         = (1 &lt;&lt; 1) | (1 &lt;&lt;0),
+} GstDPHeaderFlag;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id3007191"></a><h3><a name="GstDPPayloadType"></a>enum GstDPPayloadType</h3><a class="indexterm" name="id3007202"></a><pre class="programlisting">typedef enum {
+  GST_DP_PAYLOAD_NONE            = 0,
+  GST_DP_PAYLOAD_BUFFER,
+  GST_DP_PAYLOAD_CAPS,
+  GST_DP_PAYLOAD_EVENT_NONE      = 64,
+} GstDPPayloadType;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id3007219"></a><h3><a name="gst-dp-header-payload-length"></a>gst_dp_header_payload_length ()</h3><a class="indexterm" name="id3007231"></a><pre class="programlisting">guint32     gst_dp_header_payload_length    (const guint8 *header);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> the byte header of the packet array
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the length of the payload this header describes.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007292"></a><h3><a name="gst-dp-header-payload-type"></a>gst_dp_header_payload_type ()</h3><a class="indexterm" name="id3007304"></a><pre class="programlisting"><a href="gstreamer-libs-gstdataprotocol.html#GstDPPayloadType">GstDPPayloadType</a> gst_dp_header_payload_type (const guint8 *header);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> the byte header of the packet array
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the <a href="gstreamer-libs-gstdataprotocol.html#GstDPPayloadType"><span class="type">GstDPPayloadType</span></a> the payload this header describes.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007372"></a><h3><a name="gst-dp-header-from-buffer"></a>gst_dp_header_from_buffer ()</h3><a class="indexterm" name="id3007385"></a><pre class="programlisting">gboolean    gst_dp_header_from_buffer       (const <a
+href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a> *buffer,
+                                             <a href="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag">GstDPHeaderFlag</a> flags,
+                                             guint *length,
+                                             guint8 **header);</pre><p>
+Creates a GDP header from the given buffer.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buffer</tt></i> :</span></td><td> a <a
+href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a> to create a header for
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> the <span class="type">GDPHeaderFlags</span> to create the header with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>length</tt></i> :</span></td><td> a guint pointer to store the header length in
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> a guint8 * pointer to store a newly allocated header byte array in
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the header was successfully created.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007535"></a><h3><a name="gst-dp-packet-from-caps"></a>gst_dp_packet_from_caps ()</h3><a class="indexterm" name="id3007546"></a><pre class="programlisting">gboolean    gst_dp_packet_from_caps         (const <a
+href="../gstreamer/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a> *caps,
+                                             <a href="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag">GstDPHeaderFlag</a> flags,
+                                             guint *length,
+                                             guint8 **header,
+                                             guint8 **payload);</pre><p>
+Creates a GDP packet from the given caps.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>caps</tt></i> :</span></td><td> a <a
+href="../gstreamer/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> to create a packet for
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> the <span class="type">GDPHeaderFlags</span> to create the header with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>length</tt></i> :</span></td><td> a guint pointer to store the header length in
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> a guint8 pointer to store a newly allocated header byte array in
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>payload</tt></i> :</span></td><td> a guint8 pointer to store a newly allocated payload byte array in
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the packet was successfully created.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007718"></a><h3><a name="gst-dp-packet-from-event"></a>gst_dp_packet_from_event ()</h3><a class="indexterm" name="id3007729"></a><pre class="programlisting">gboolean    gst_dp_packet_from_event        (const <a
+href="../gstreamer/gstreamer-GstEvent.html#GstEvent"
+>GstEvent</a> *event,
+                                             <a href="gstreamer-libs-gstdataprotocol.html#GstDPHeaderFlag">GstDPHeaderFlag</a> flags,
+                                             guint *length,
+                                             guint8 **header,
+                                             guint8 **payload);</pre><p>
+Creates a GDP packet from the given event.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td> a <a
+href="../gstreamer/gstreamer-GstEvent.html#GstEvent"
+><span class="type">GstEvent</span></a> to create a packet for
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> the <span class="type">GDPHeaderFlags</span> to create the header with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>length</tt></i> :</span></td><td> a guint pointer to store the header length in
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> a guint8 pointer to store a newly allocated header byte array in
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>payload</tt></i> :</span></td><td> a guint8 pointer to store a newly allocated payload byte array in
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the packet was successfully created.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007902"></a><h3><a name="gst-dp-buffer-from-header"></a>gst_dp_buffer_from_header ()</h3><a class="indexterm" name="id3007914"></a><pre class="programlisting"><a
+href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
+>GstBuffer</a>*  gst_dp_buffer_from_header       (guint header_length,
+                                             const guint8 *header);</pre><p>
+Creates a newly allocated <a
+href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a> from the given header.
+The buffer data needs to be copied into it before validating.
+</p><p>
+Use this function if you want to pre-allocate a buffer based on the
+packet header to read the packet payload in to.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header_length</tt></i> :</span></td><td> the length of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> the byte array of the packet header
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the buffer was successfully created.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008017"></a><h3><a name="gst-dp-caps-from-packet"></a>gst_dp_caps_from_packet ()</h3><a class="indexterm" name="id3008028"></a><pre class="programlisting"><a
+href="../gstreamer/gstreamer-GstCaps.html#GstCaps"
+>GstCaps</a>*    gst_dp_caps_from_packet         (guint header_length,
+                                             const guint8 *header,
+                                             const guint8 *payload);</pre><p>
+Creates a newly allocated <a
+href="../gstreamer/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a> from the given packet.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header_length</tt></i> :</span></td><td> the length of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> the byte array of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>payload</tt></i> :</span></td><td> the byte array of the packet payload
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the caps was successfully created.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008148"></a><h3><a name="gst-dp-event-from-packet"></a>gst_dp_event_from_packet ()</h3><a class="indexterm" name="id3008159"></a><pre class="programlisting"><a
+href="../gstreamer/gstreamer-GstEvent.html#GstEvent"
+>GstEvent</a>*   gst_dp_event_from_packet        (guint header_length,
+                                             const guint8 *header,
+                                             const guint8 *payload);</pre><p>
+Creates a newly allocated <a
+href="../gstreamer/gstreamer-GstEvent.html#GstEvent"
+><span class="type">GstEvent</span></a> from the given packet.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header_length</tt></i> :</span></td><td> the length of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> the byte array of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>payload</tt></i> :</span></td><td> the byte array of the packet payload
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the event was successfully created.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008278"></a><h3><a name="gst-dp-validate-header"></a>gst_dp_validate_header ()</h3><a class="indexterm" name="id3008289"></a><pre class="programlisting">gboolean    gst_dp_validate_header          (guint header_length,
+                                             const guint8 *header);</pre><p>
+Validates the given packet header by checking the CRC checksum.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header_length</tt></i> :</span></td><td> the length of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> the byte array of the packet header
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the CRC matches, or no CRC checksum is present.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008379"></a><h3><a name="gst-dp-validate-payload"></a>gst_dp_validate_payload ()</h3><a class="indexterm" name="id3008390"></a><pre class="programlisting">gboolean    gst_dp_validate_payload         (guint header_length,
+                                             const guint8 *header,
+                                             const guint8 *payload);</pre><p>
+Validates the given packet payload using the given packet header
+by checking the CRC checksum.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header_length</tt></i> :</span></td><td> the length of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> the byte array of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>payload</tt></i> :</span></td><td> the byte array of the packet payload
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the CRC matches, or no CRC checksum is present.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008503"></a><h3><a name="gst-dp-validate-packet"></a>gst_dp_validate_packet ()</h3><a class="indexterm" name="id3008514"></a><pre class="programlisting">gboolean    gst_dp_validate_packet          (guint header_length,
+                                             const guint8 *header,
+                                             const guint8 *payload);</pre><p>
+Validates the given packet by checking version information and checksums.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header_length</tt></i> :</span></td><td> the length of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td> the byte array of the packet header
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>payload</tt></i> :</span></td><td> the byte array of the packet payload
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the packet validates.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id3008627"></a><h2>See Also</h2><p>
+<a
+href="../gstreamer/gstreamer-GstBuffer.html#GstBuffer"
+><span class="type">GstBuffer</span></a>, <a
+href="../gstreamer/gstreamer-GstCaps.html#GstCaps"
+><span class="type">GstCaps</span></a>, <a
+href="../gstreamer/gstreamer-GstEvent.html#GstEvent"
+><span class="type">GstEvent</span></a>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-libs-gstcontrol.html"><b>&lt;&lt; gstcontrol</b></a></td><td align="right"><a accesskey="n" href="gstreamer-libs-gstgetbits.html"><b>gstgetbits &gt;&gt;</b></a></td></tr></table></body></html>

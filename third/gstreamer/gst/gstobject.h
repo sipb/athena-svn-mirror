@@ -27,29 +27,24 @@
 #include <gst/gstconfig.h>
 
 #include <glib-object.h>	/* note that this gets wrapped in __GST_OBJECT_H__ */
-#include <gst/gstmarshal.h>
 
-#include <gst/gsttrace.h>
 #include <gst/gsttypes.h>
 
 G_BEGIN_DECLS
 
-extern GType _gst_object_type;
+GST_EXPORT GType _gst_object_type;
 
-#define GST_TYPE_OBJECT                 (_gst_object_type)
-#define GST_IS_OBJECT(obj)             	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_OBJECT))
-#define GST_IS_OBJECT_CLASS(klass)     	(G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_OBJECT))
-#define GST_OBJECT_GET_CLASS(obj)    	(G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_OBJECT, GstObjectClass))
+#define GST_TYPE_OBJECT			(_gst_object_type)
+#define GST_IS_OBJECT(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_OBJECT))
+#define GST_IS_OBJECT_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_OBJECT))
+#define GST_OBJECT_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_OBJECT, GstObjectClass))
+#define GST_OBJECT(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_OBJECT, GstObject))
+#define GST_OBJECT_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_OBJECT, GstObjectClass))
 
-#define GST_OBJECT_CAST(obj)            ((GstObject*)(obj))
-#define GST_OBJECT_CLASS_CAST(klass)    ((GstObjectClass*)(klass))
-
-#ifdef GST_TYPE_PARANOID
-# define GST_OBJECT(obj)                (G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_OBJECT, GstObject))
-# define GST_OBJECT_CLASS(klass)        (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_OBJECT, GstObjectClass))
-#else
-# define GST_OBJECT                     GST_OBJECT_CAST
-# define GST_OBJECT_CLASS               GST_OBJECT_CLASS_CAST
+/* make sure we don't change the object size but stil make it compile
+ * without libxml */
+#ifdef GST_DISABLE_LOADSAVE_REGISTRY
+#define xmlNodePtr	gpointer
 #endif
 
 typedef enum
@@ -71,6 +66,8 @@ struct _GstObject {
   GstObject 	*parent;
 
   guint32 	flags;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 /* signal_object is used to signal to the whole class */
@@ -83,23 +80,19 @@ struct _GstObjectClass {
   /* signals */
   void		(*parent_set)		(GstObject *object, GstObject *parent);
   void		(*parent_unset)		(GstObject *object, GstObject *parent);
-#ifndef GST_DISABLE_LOADSAVE_REGISTRY
   void		(*object_saved)		(GstObject *object, xmlNodePtr parent);
-#endif
   void 		(*deep_notify)   	(GstObject *object, GstObject *orig, GParamSpec *pspec);
 
   /* functions go here */
   void		(*destroy)		(GstObject *object);
 
-#ifndef GST_DISABLE_LOADSAVE_REGISTRY
   xmlNodePtr	(*save_thyself)		(GstObject *object, xmlNodePtr parent);
   void		(*restore_thyself)	(GstObject *object, xmlNodePtr self);
-#endif
 
-  gpointer	dummy[4];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
-#define GST_FLAGS(obj)			(GST_OBJECT_CAST (obj)->flags)
+#define GST_FLAGS(obj)			(GST_OBJECT (obj)->flags)
 #define GST_FLAG_IS_SET(obj,flag)	(GST_FLAGS (obj) & (1<<(flag)))
 #define GST_FLAG_SET(obj,flag)		G_STMT_START{ (GST_FLAGS (obj) |= (1<<(flag))); }G_STMT_END
 #define GST_FLAG_UNSET(obj,flag)	G_STMT_START{ (GST_FLAGS (obj) &= ~(1<<(flag))); }G_STMT_END
@@ -111,10 +104,10 @@ struct _GstObjectClass {
 #define GST_OBJECT_FLOATING(obj)	(GST_FLAG_IS_SET (obj, GST_FLOATING))
 
 /* CR1: object locking - GObject 2.0 doesn't have threadsafe locking */
-#define GST_LOCK(obj)			(g_mutex_lock(GST_OBJECT_CAST(obj)->lock))
-#define GST_TRYLOCK(obj)		(g_mutex_trylock(GST_OBJECT_CAST(obj)->lock))
-#define GST_UNLOCK(obj)			(g_mutex_unlock(GST_OBJECT_CAST(obj)->lock))
-#define GST_GET_LOCK(obj)		(GST_OBJECT_CAST(obj)->lock)
+#define GST_LOCK(obj)			(g_mutex_lock(GST_OBJECT(obj)->lock))
+#define GST_TRYLOCK(obj)		(g_mutex_trylock(GST_OBJECT(obj)->lock))
+#define GST_UNLOCK(obj)			(g_mutex_unlock(GST_OBJECT(obj)->lock))
+#define GST_GET_LOCK(obj)		(GST_OBJECT(obj)->lock)
 
 
 /* normal GObject stuff */
@@ -122,7 +115,8 @@ GType		gst_object_get_type		(void);
 
 /* name routines */
 void		gst_object_set_name		(GstObject *object, const gchar *name);
-const gchar*	gst_object_get_name		(GstObject *object);
+G_CONST_RETURN gchar*
+		gst_object_get_name		(GstObject *object);
 
 /* parentage routines */
 void		gst_object_set_parent		(GstObject *object, GstObject *parent);
@@ -138,33 +132,36 @@ gboolean	gst_object_check_uniqueness	(GList *list, const gchar *name);
 xmlNodePtr	gst_object_save_thyself		(GstObject *object, xmlNodePtr parent);
 void		gst_object_restore_thyself	(GstObject *object, xmlNodePtr self);
 #else
+#if defined _GNUC_ && _GNUC_ >= 3
 #pragma GCC poison gst_object_save_thyself
 #pragma GCC poison gst_object_restore_thyself
 #endif
+#endif
 
-/* refcounting */
+/* refcounting + life cycle */
 GstObject *	gst_object_ref			(GstObject *object);
 void 		gst_object_unref		(GstObject *object);
 void 		gst_object_sink			(GstObject *object);
 
-void 		gst_object_swap			(GstObject **oldobj, GstObject *newobj);
-/* destroying an object */
-void 		gst_object_destroy		(GstObject *object);
+/* replace object pointer */
+void 		gst_object_replace		(GstObject **oldobj, GstObject *newobj);
 
 /* printing out the 'path' of the object */
 gchar *		gst_object_get_path_string	(GstObject *object);
 
 guint		gst_class_signal_connect	(GstObjectClass	*klass,
 						 const gchar	*name,
-						 gpointer	func,
-						 gpointer	func_data);
+						 gpointer	 func,
+						 gpointer	 func_data);
 
 #ifndef GST_DISABLE_LOADSAVE_REGISTRY
 void		gst_class_signal_emit_by_name	(GstObject	*object,
 		                                 const gchar	*name,
-						 xmlNodePtr self);
+						 xmlNodePtr 	 self);
 #else
+#if defined _GNUC_ && _GNUC_ >= 3
 #pragma GCC poison gst_class_signal_emit_by_name
+#endif
 #endif
 
 

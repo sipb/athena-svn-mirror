@@ -2,7 +2,7 @@
 GstThread
 
 <!-- ##### SECTION Short_Description ##### -->
-A bin that will become a thread
+A #GstBin that executes automatically using a separate thread
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -18,29 +18,10 @@ A Thread can act as a toplevel bin as it has its own scheduler.
 #GstBin, #GstPipeline
 </para>
 
-<!-- ##### ENUM GstThreadState ##### -->
-<para>
-Thread flags:
-</para>
-
-@GST_THREAD_STATE_STARTED: The thread is started
-@GST_THREAD_STATE_SPINNING: The thread is runnning
-@GST_THREAD_STATE_REAPING: The thread is ending.
-@GST_THREAD_FLAG_LAST: subclass use this to start their enumeration
-
 <!-- ##### STRUCT GstThread ##### -->
 <para>
-The GstThread object
-</para>
-
-
-<!-- ##### FUNCTION gst_thread_new ##### -->
-<para>
 
 </para>
-
-@name: 
-@Returns: 
 
 
 <!-- ##### SIGNAL GstThread::shutdown ##### -->
@@ -54,4 +35,53 @@ The GstThread object
 <para>
 The thread priority
 </para>
+
+<!-- ##### MACRO GST_TYPE_THREAD ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### VARIABLE gst_thread_current ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM GstThreadState ##### -->
+<para>
+Thread flags:
+</para>
+
+@GST_THREAD_STATE_SPINNING: The thread is runnning
+@GST_THREAD_STATE_REAPING: The thread is ending.
+@GST_THREAD_MUTEX_LOCKED: 
+@GST_THREAD_FLAG_LAST: subclass use this to start their enumeration
+
+<!-- ##### FUNCTION gst_thread_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_thread_set_priority ##### -->
+<para>
+
+</para>
+
+@thread: 
+@priority: 
+
+
+<!-- ##### FUNCTION gst_thread_get_current ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
 

@@ -24,13 +24,9 @@
 #ifndef __GST_FILESINK_H__
 #define __GST_FILESINK_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-GstElementDetails gst_filesink_details;
 
 
 #define GST_TYPE_FILESINK \
@@ -50,26 +46,24 @@ typedef struct _GstFileSinkClass GstFileSinkClass;
 typedef enum {
   GST_FILESINK_OPEN             = GST_ELEMENT_FLAG_LAST,
 
-  GST_FILESINK_FLAG_LAST 	= GST_ELEMENT_FLAG_LAST + 2,
+  GST_FILESINK_FLAG_LAST 	= GST_ELEMENT_FLAG_LAST + 2
 } GstFileSinkFlags;
 
 struct _GstFileSink {
   GstElement element;
 
   gchar *filename;
+  gchar *uri;
   FILE *file;
 
-  gint filenum;
-
   guint64 data_written;
-  gint maxfilesize;
 };
 
 struct _GstFileSinkClass {
   GstElementClass parent_class;
 
   /* signals */
-  void (*handoff) (GstElement *element,GstPad *pad);
+  void (*handoff) (GstElement *element, GstPad *pad);
 };
 
 GType gst_filesink_get_type(void);

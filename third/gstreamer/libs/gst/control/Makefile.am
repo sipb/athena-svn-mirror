@@ -1,6 +1,8 @@
-librarydir = $(libdir)
+lib_LTLIBRARIES = libgstcontrol-@GST_MAJORMINOR@.la
+AS_LIBTOOL_LIB = libgstcontrol-@GST_MAJORMINOR@
 
-library_LTLIBRARIES = libgstcontrol-@GST_MAJORMINOR@.la
+EXTRA_DIST = $(as_libtool_EXTRA_DIST)
+noinst_DATA = $(as_libtool_noinst_DATA_files)
 
 libgstcontrol_@GST_MAJORMINOR@_includedir = $(includedir)/gstreamer-@GST_MAJORMINOR@/gst/control
 libgstcontrol_@GST_MAJORMINOR@_include_HEADERS = \
@@ -20,6 +22,13 @@ libgstcontrol_@GST_MAJORMINOR@_la_SOURCES = \
     unitconvert.c \
     dplinearinterp.c
 
-libgstcontrol_@GST_MAJORMINOR@_la_CFLAGS = $(GST_CFLAGS) -finline-functions -ffast-math
-libgstcontrol_@GST_MAJORMINOR@_la_LDFLAGS = @GST_LT_LDFLAGS@ -version-info @GST_LIBVERSION@
+libgstcontrol_@GST_MAJORMINOR@_la_CFLAGS = $(GST_OBJ_CFLAGS) -I$(top_srcdir)/libs
+libgstcontrol_@GST_MAJORMINOR@_la_LDFLAGS = @GST_LIB_LDFLAGS@ $(as_libtool_LDFLAGS)
+# control uses log and exp, so we need -lm if xml is disabled
+libgstcontrol_@GST_MAJORMINOR@_la_LIBADD = $(GST_OBJ_LIBS) -lm
 
+install-data-local: as-libtool-install-data-local
+
+uninstall-local: as-libtool-uninstall-local
+
+include $(top_srcdir)/common/as-libtool.mak

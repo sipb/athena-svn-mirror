@@ -23,7 +23,6 @@
 #define __GST_DPARAM_H__
 
 #include <gst/gstobject.h>
-#include <gst/gstprops.h>
 #include "dparamcommon.h"
 
 G_BEGIN_DECLS
@@ -59,7 +58,7 @@ typedef struct _GstDParamClass GstDParamClass;
 
 typedef enum {
   GST_DPARAM_UPDATE_FIRST,
-  GST_DPARAM_UPDATE_NORMAL,
+  GST_DPARAM_UPDATE_NORMAL
 } GstDParamUpdateInfo;
 
 typedef void (*GstDParamDoUpdateFunction) (GstDParam *dparam, gint64 timestamp, GValue *value, GstDParamUpdateInfo update_info);
@@ -72,6 +71,7 @@ struct _GstDParam {
 	GMutex *lock;
 
 	gfloat value_float;
+        gdouble value_double;
 	gint value_int;
 	gint64 value_int64;
 	
@@ -84,6 +84,8 @@ struct _GstDParam {
 	gint64 last_update_timestamp;
 	gchar *unit_name;
 	gboolean is_log;
+
+        gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstDParamClass {
@@ -91,6 +93,8 @@ struct _GstDParamClass {
 
 	/* signal callbacks */
 	void (*value_changed) (GstDParam *dparam);
+
+        gpointer _gst_reserved[GST_PADDING];
 };
 
 

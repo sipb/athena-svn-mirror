@@ -20,40 +20,43 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include "gstaggregator.h"
 
+GST_DEBUG_CATEGORY_STATIC (gst_aggregator_debug);
+#define GST_CAT_DEFAULT gst_aggregator_debug
 
-GstElementDetails gst_aggregator_details = {
-  "Aggregator pipe fitting",
-  "Generic",
-  "LGPL",
-  "N-to-1 pipe fitting",
-  VERSION,
-  "Wim Taymans <wim.taymans@chello.be>",
-  "(C) 2001",
-};
+GstElementDetails gst_aggregator_details =
+GST_ELEMENT_DETAILS ("Aggregator pipe fitting",
+    "Generic",
+    "N-to-1 pipe fitting",
+    "Wim Taymans <wim.taymans@chello.be>");
 
 /* Aggregator signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
   ARG_NUM_PADS,
   ARG_SILENT,
   ARG_SCHED,
-  ARG_LAST_MESSAGE,
-  /* FILL ME */
+  ARG_LAST_MESSAGE
+      /* FILL ME */
 };
 
-GST_PAD_TEMPLATE_FACTORY (aggregator_src_factory,
-  "sink%d",
-  GST_PAD_SINK,
-  GST_PAD_REQUEST,
-  NULL			/* no caps */
-);
+GstStaticPadTemplate aggregator_src_template =
+GST_STATIC_PAD_TEMPLATE ("sink%d",
+    GST_PAD_SINK,
+    GST_PAD_REQUEST,
+    GST_STATIC_CAPS_ANY);
 
 #define GST_TYPE_AGGREGATOR_SCHED (gst_aggregator_sched_get_type())
 static GType
@@ -61,102 +64,113 @@ gst_aggregator_sched_get_type (void)
 {
   static GType aggregator_sched_type = 0;
   static GEnumValue aggregator_sched[] = {
-    { AGGREGATOR_LOOP,   	"1", "Loop Based"},
-    { AGGREGATOR_LOOP_SELECT,   "3", "Loop Based Select"},
-    { AGGREGATOR_CHAIN,      	"4", "Chain Based"},
+    {AGGREGATOR_LOOP, "1", "Loop Based"},
+    {AGGREGATOR_LOOP_SELECT, "3", "Loop Based Select"},
+    {AGGREGATOR_CHAIN, "4", "Chain Based"},
     {0, NULL, NULL},
   };
+
   if (!aggregator_sched_type) {
-    aggregator_sched_type = g_enum_register_static ("GstAggregatorSched", aggregator_sched);
+    aggregator_sched_type =
+        g_enum_register_static ("GstAggregatorSched", aggregator_sched);
   }
   return aggregator_sched_type;
 }
 
 #define AGGREGATOR_IS_LOOP_BASED(ag)	((ag)->sched != AGGREGATOR_CHAIN)
 
-static void 	gst_aggregator_class_init	(GstAggregatorClass *klass);
-static void 	gst_aggregator_init		(GstAggregator *aggregator);
+static GstPad *gst_aggregator_request_new_pad (GstElement * element,
+    GstPadTemplate * temp, const gchar * unused);
+static void gst_aggregator_update_functions (GstAggregator * aggregator);
 
-static GstPad* 	gst_aggregator_request_new_pad	(GstElement *element, GstPadTemplate *temp, const
-                                                 gchar *unused);
+static void gst_aggregator_finalize (GObject * object);
+static void gst_aggregator_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_aggregator_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 
-static void 	gst_aggregator_set_property 	(GObject *object, guint prop_id, 
-						 const GValue *value, GParamSpec *pspec);
-static void 	gst_aggregator_get_property 	(GObject *object, guint prop_id, 
-						 GValue *value, GParamSpec *pspec);
+static void gst_aggregator_chain (GstPad * pad, GstData * _data);
+static void gst_aggregator_loop (GstElement * element);
 
-static void  	gst_aggregator_chain 		(GstPad *pad, GstBuffer *buf);
-static void 	gst_aggregator_loop 		(GstElement *element);
+#define _do_init(bla) \
+  GST_DEBUG_CATEGORY_INIT (gst_aggregator_debug, "aggregator", 0, "aggregator element");
 
-static GstElementClass *parent_class = NULL;
-/*static guint gst_aggregator_signals[LAST_SIGNAL] = { 0 };*/
+GST_BOILERPLATE_FULL (GstAggregator, gst_aggregator, GstElement,
+    GST_TYPE_ELEMENT, _do_init);
 
-GType
-gst_aggregator_get_type (void) 
+static void
+gst_aggregator_base_init (gpointer g_class)
 {
-  static GType aggregator_type = 0;
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
 
-  if (!aggregator_type) {
-    static const GTypeInfo aggregator_info = {
-      sizeof(GstAggregatorClass),      
-      NULL,
-      NULL,
-      (GClassInitFunc)gst_aggregator_class_init,
-      NULL,
-      NULL,
-      sizeof(GstAggregator),
-      0,
-      (GInstanceInitFunc)gst_aggregator_init,
-    };
-    aggregator_type = g_type_register_static (GST_TYPE_ELEMENT, "GstAggregator", &aggregator_info, 0);
-  }
-  return aggregator_type;
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&aggregator_src_template));
+  gst_element_class_set_details (gstelement_class, &gst_aggregator_details);
 }
 
 static void
-gst_aggregator_class_init (GstAggregatorClass *klass) 
+gst_aggregator_finalize (GObject * object)
+{
+  GstAggregator *aggregator;
+
+  aggregator = GST_AGGREGATOR (object);
+
+  g_list_free (aggregator->sinkpads);
+  g_free (aggregator->last_message);
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+gst_aggregator_class_init (GstAggregatorClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
 
-  gobject_class = (GObjectClass*) klass;
-  gstelement_class = (GstElementClass*) klass;
-
-  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
+  gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_NUM_PADS,
-    g_param_spec_int ("num_pads", "Num pads", "The number of source pads",
-                      0, G_MAXINT, 0, G_PARAM_READABLE)); 
+      g_param_spec_int ("num_pads", "Num pads", "The number of source pads",
+          0, G_MAXINT, 0, G_PARAM_READABLE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SILENT,
-    g_param_spec_boolean ("silent", "Silent", "Don't produce messages",
-                      FALSE, G_PARAM_READWRITE)); 
+      g_param_spec_boolean ("silent", "Silent", "Don't produce messages",
+          FALSE, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SCHED,
-    g_param_spec_enum ("sched", "Scheduling", "The type of scheduling this element should use",
-                      GST_TYPE_AGGREGATOR_SCHED, AGGREGATOR_CHAIN, G_PARAM_READWRITE)); 
+      g_param_spec_enum ("sched", "Scheduling",
+          "The type of scheduling this element should use",
+          GST_TYPE_AGGREGATOR_SCHED, AGGREGATOR_CHAIN, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LAST_MESSAGE,
-    g_param_spec_string ("last_message", "Last message", "The current state of the element",
-                         NULL, G_PARAM_READABLE));
+      g_param_spec_string ("last_message", "Last message",
+          "The current state of the element", NULL, G_PARAM_READABLE));
 
-  gobject_class->set_property = GST_DEBUG_FUNCPTR(gst_aggregator_set_property);
-  gobject_class->get_property = GST_DEBUG_FUNCPTR(gst_aggregator_get_property);
+  gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_aggregator_finalize);
+  gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_aggregator_set_property);
+  gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_aggregator_get_property);
 
-  gstelement_class->request_new_pad = GST_DEBUG_FUNCPTR(gst_aggregator_request_new_pad);
+  gstelement_class->request_new_pad =
+      GST_DEBUG_FUNCPTR (gst_aggregator_request_new_pad);
 }
 
-static void 
-gst_aggregator_init (GstAggregator *aggregator) 
+static void
+gst_aggregator_init (GstAggregator * aggregator)
 {
   aggregator->srcpad = gst_pad_new ("src", GST_PAD_SRC);
+  gst_pad_set_getcaps_function (aggregator->srcpad, gst_pad_proxy_getcaps);
   gst_element_add_pad (GST_ELEMENT (aggregator), aggregator->srcpad);
 
   aggregator->numsinkpads = 0;
   aggregator->sinkpads = NULL;
   aggregator->silent = FALSE;
   aggregator->sched = AGGREGATOR_LOOP;
+  aggregator->last_message = NULL;
+
+  gst_aggregator_update_functions (aggregator);
 }
 
-static GstPad*
-gst_aggregator_request_new_pad (GstElement *element, GstPadTemplate *templ, const gchar *unused) 
+static GstPad *
+gst_aggregator_request_new_pad (GstElement * element, GstPadTemplate * templ,
+    const gchar * unused)
 {
   gchar *name;
   GstPad *sinkpad;
@@ -165,46 +179,48 @@ gst_aggregator_request_new_pad (GstElement *element, GstPadTemplate *templ, cons
   g_return_val_if_fail (GST_IS_AGGREGATOR (element), NULL);
 
   if (templ->direction != GST_PAD_SINK) {
-    g_warning ("gstaggregator: request new pad that is not a SRC pad\n");
+    g_warning ("gstaggregator: request new pad that is not a sink pad\n");
     return NULL;
   }
 
   aggregator = GST_AGGREGATOR (element);
 
-  name = g_strdup_printf ("sink%d",aggregator->numsinkpads);
-  
+  name = g_strdup_printf ("sink%d", aggregator->numsinkpads);
+
   sinkpad = gst_pad_new_from_template (templ, name);
   g_free (name);
-  
-  gst_pad_set_chain_function (sinkpad, gst_aggregator_chain);
+
+  if (!AGGREGATOR_IS_LOOP_BASED (aggregator)) {
+    gst_pad_set_chain_function (sinkpad, gst_aggregator_chain);
+  }
+  gst_pad_set_getcaps_function (sinkpad, gst_pad_proxy_getcaps);
   gst_element_add_pad (GST_ELEMENT (aggregator), sinkpad);
-  
+
   aggregator->sinkpads = g_list_prepend (aggregator->sinkpads, sinkpad);
   aggregator->numsinkpads++;
-  
+
   return sinkpad;
 }
 
 static void
-gst_aggregator_update_functions (GstAggregator *aggregator)
+gst_aggregator_update_functions (GstAggregator * aggregator)
 {
   GList *pads;
 
   if (AGGREGATOR_IS_LOOP_BASED (aggregator)) {
-    gst_element_set_loop_function (GST_ELEMENT (aggregator), GST_DEBUG_FUNCPTR (gst_aggregator_loop));
-  }
-  else {
+    gst_element_set_loop_function (GST_ELEMENT (aggregator),
+        GST_DEBUG_FUNCPTR (gst_aggregator_loop));
+  } else {
     gst_element_set_loop_function (GST_ELEMENT (aggregator), NULL);
   }
 
   pads = aggregator->sinkpads;
   while (pads) {
     GstPad *pad = GST_PAD (pads->data);
-		          
+
     if (AGGREGATOR_IS_LOOP_BASED (aggregator)) {
       gst_pad_set_get_function (pad, NULL);
-    }
-    else {
+    } else {
       gst_element_set_loop_function (GST_ELEMENT (aggregator), NULL);
     }
     pads = g_list_next (pads);
@@ -212,7 +228,8 @@ gst_aggregator_update_functions (GstAggregator *aggregator)
 }
 
 static void
-gst_aggregator_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+gst_aggregator_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
 {
   GstAggregator *aggregator;
 
@@ -235,7 +252,8 @@ gst_aggregator_set_property (GObject *object, guint prop_id, const GValue *value
 }
 
 static void
-gst_aggregator_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+gst_aggregator_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   GstAggregator *aggregator;
 
@@ -262,24 +280,26 @@ gst_aggregator_get_property (GObject *object, guint prop_id, GValue *value, GPar
   }
 }
 
-static void 
-gst_aggregator_push (GstAggregator *aggregator, GstPad *pad, GstBuffer *buf, guchar *debug) 
+static void
+gst_aggregator_push (GstAggregator * aggregator, GstPad * pad, GstBuffer * buf,
+    guchar * debug)
 {
   if (!aggregator->silent) {
     g_free (aggregator->last_message);
 
-    aggregator->last_message = g_strdup_printf ("%10.10s ******* (%s:%s)a (%d bytes, %"
-						G_GUINT64_FORMAT ")",
-            debug, GST_DEBUG_PAD_NAME (pad), GST_BUFFER_SIZE (buf), GST_BUFFER_TIMESTAMP (buf));
+    aggregator->last_message =
+        g_strdup_printf ("%10.10s ******* (%s:%s)a (%d bytes, %"
+        G_GUINT64_FORMAT ")", debug, GST_DEBUG_PAD_NAME (pad),
+        GST_BUFFER_SIZE (buf), GST_BUFFER_TIMESTAMP (buf));
 
     g_object_notify (G_OBJECT (aggregator), "last_message");
   }
 
-  gst_pad_push (aggregator->srcpad, buf);
+  gst_pad_push (aggregator->srcpad, GST_DATA (buf));
 }
 
-static void 
-gst_aggregator_loop (GstElement *element) 
+static void
+gst_aggregator_loop (GstElement * element)
 {
   GstAggregator *aggregator;
   GstBuffer *buf;
@@ -290,28 +310,36 @@ gst_aggregator_loop (GstElement *element)
   if (aggregator->sched == AGGREGATOR_LOOP) {
     GList *pads = aggregator->sinkpads;
 
+    /* we'll loop over all pads and try to pull from all
+     * active ones */
     while (pads) {
       GstPad *pad = GST_PAD (pads->data);
+
       pads = g_list_next (pads);
 
-      buf = gst_pad_pull (pad);
-      debug = "loop";
+      /* we need to check is the pad is usable. IS_USABLE will check
+       * if the pad is linked, if it is enabled (the element is
+       * playing and the app didn't gst_pad_set_enabled (pad, FALSE))
+       * and that the peer pad is also enabled.
+       */
+      if (GST_PAD_IS_USABLE (pad)) {
+        buf = GST_BUFFER (gst_pad_pull (pad));
+        debug = "loop";
 
-      gst_aggregator_push (aggregator, pad, buf, debug);
+        /* then push it forward */
+        gst_aggregator_push (aggregator, pad, buf, debug);
+      }
     }
-  }
-  else {
+  } else {
     if (aggregator->sched == AGGREGATOR_LOOP_SELECT) {
       GstPad *pad;
 
       debug = "loop_select";
 
-      pad = gst_pad_select (aggregator->sinkpads);
-      buf = gst_pad_pull (pad);
+      buf = GST_BUFFER (gst_pad_collectv (&pad, aggregator->sinkpads));
 
       gst_aggregator_push (aggregator, pad, buf, debug);
-    }
-    else {
+    } else {
       g_assert_not_reached ();
     }
   }
@@ -324,9 +352,10 @@ gst_aggregator_loop (GstElement *element)
  *
  * Chain a buffer on a pad.
  */
-static void 
-gst_aggregator_chain (GstPad *pad, GstBuffer *buf) 
+static void
+gst_aggregator_chain (GstPad * pad, GstData * _data)
 {
+  GstBuffer *buf = GST_BUFFER (_data);
   GstAggregator *aggregator;
 
   g_return_if_fail (pad != NULL);
@@ -338,12 +367,3 @@ gst_aggregator_chain (GstPad *pad, GstBuffer *buf)
 
   gst_aggregator_push (aggregator, pad, buf, "chain");
 }
-
-gboolean
-gst_aggregator_factory_init (GstElementFactory *factory)
-{
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (aggregator_src_factory));
-
-  return TRUE;
-}
-

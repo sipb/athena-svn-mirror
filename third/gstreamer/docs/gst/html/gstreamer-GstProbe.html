@@ -1,0 +1,154 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstProbe</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstPluginFeature.html" title="GstPluginFeature"><link rel="next" href="gstreamer-GstQuery.html" title="GstQuery"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstPluginFeature.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstQuery.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstProbe"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstProbe</span></h2><p>GstProbe &#8212; Receive callbacks of data passing</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a>;
+gboolean    (<a href="gstreamer-GstProbe.html#GstProbeCallback">*GstProbeCallback</a>)             (<a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe,
+                                             <a href="gstreamer-GstData.html#GstData">GstData</a> **data,
+                                             gpointer user_data);
+<a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a>*   <a href="gstreamer-GstProbe.html#gst-probe-new">gst_probe_new</a>                   (gboolean single_shot,
+                                             <a href="gstreamer-GstProbe.html#GstProbeCallback">GstProbeCallback</a> callback,
+                                             gpointer user_data);
+void        <a href="gstreamer-GstProbe.html#gst-probe-destroy">gst_probe_destroy</a>               (<a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe);
+gboolean    <a href="gstreamer-GstProbe.html#gst-probe-perform">gst_probe_perform</a>               (<a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe,
+                                             <a href="gstreamer-GstData.html#GstData">GstData</a> **data);
+struct      <a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a>;
+<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a>* <a href="gstreamer-GstProbe.html#gst-probe-dispatcher-new">gst_probe_dispatcher_new</a>
+                                            (void);
+void        <a href="gstreamer-GstProbe.html#gst-probe-dispatcher-destroy">gst_probe_dispatcher_destroy</a>    (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp);
+void        <a href="gstreamer-GstProbe.html#gst-probe-dispatcher-init">gst_probe_dispatcher_init</a>       (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp);
+void        <a href="gstreamer-GstProbe.html#gst-probe-dispatcher-set-active">gst_probe_dispatcher_set_active</a> (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp,
+                                             gboolean active);
+void        <a href="gstreamer-GstProbe.html#gst-probe-dispatcher-add-probe">gst_probe_dispatcher_add_probe</a>  (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp,
+                                             <a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe);
+void        <a href="gstreamer-GstProbe.html#gst-probe-dispatcher-remove-probe">gst_probe_dispatcher_remove_probe</a>
+                                            (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp,
+                                             <a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe);
+gboolean    <a href="gstreamer-GstProbe.html#gst-probe-dispatcher-dispatch">gst_probe_dispatcher_dispatch</a>   (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp,
+                                             <a href="gstreamer-GstData.html#GstData">GstData</a> **data);
+</pre></div><div class="refsect1" lang="en"><a name="id2940201"></a><h2>Description</h2><p>
+PadProbes are used to be signalled with a callback when certain GstData
+passes through pads.
+</p><p>
+Probes are usually used in combination with a probe dispatcher that will
+enumerate all registered probes to signal them.
+</p></div><div class="refsect1" lang="en"><a name="id2940218"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2940224"></a><h3><a name="GstProbe"></a>struct GstProbe</h3><a class="indexterm" name="id2940235"></a><pre class="programlisting">struct GstProbe {
+
+  gboolean		single_shot;
+  
+  GstProbeCallback 	callback;
+  gpointer 		user_data;
+};
+</pre><p>
+The probe structure
+</p></div><hr><div class="refsect2" lang="en"><a name="id2940251"></a><h3><a name="GstProbeCallback"></a>GstProbeCallback ()</h3><a class="indexterm" name="id2940262"></a><pre class="programlisting">gboolean    (*GstProbeCallback)             (<a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe,
+                                             <a href="gstreamer-GstData.html#GstData">GstData</a> **data,
+                                             gpointer user_data);</pre><p>
+The function that will be called when a probe is activated.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>probe</tt></i> :</span></td><td>The probe that signalled the callback
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>The GstData that triggered the probe
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>TRUE if the GstData should be removed from the stream.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2940365"></a><h3><a name="gst-probe-new"></a>gst_probe_new ()</h3><a class="indexterm" name="id2940376"></a><pre class="programlisting"><a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a>*   gst_probe_new                   (gboolean single_shot,
+                                             <a href="gstreamer-GstProbe.html#GstProbeCallback">GstProbeCallback</a> callback,
+                                             gpointer user_data);</pre><p>
+Create a new probe with the specified parameters</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>single_shot</tt></i> :</span></td><td> TRUE if a single shot probe is required
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td> the function to call when the probe is triggered
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> data passed to the callback function
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new <a href="gstreamer-GstProbe.html#GstProbe"><span class="type">GstProbe</span></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2940489"></a><h3><a name="gst-probe-destroy"></a>gst_probe_destroy ()</h3><a class="indexterm" name="id2940501"></a><pre class="programlisting">void        gst_probe_destroy               (<a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe);</pre><p>
+Free the memeory associated with the probe.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>probe</tt></i> :</span></td><td> The probe to destroy
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2940551"></a><h3><a name="gst-probe-perform"></a>gst_probe_perform ()</h3><a class="indexterm" name="id2940563"></a><pre class="programlisting">gboolean    gst_probe_perform               (<a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe,
+                                             <a href="gstreamer-GstData.html#GstData">GstData</a> **data);</pre><p>
+Perform the callback associated with the given probe.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>probe</tt></i> :</span></td><td> The probe to trigger
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> the GstData that triggered the probe.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the result of the probe callback function.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2940646"></a><h3><a name="GstProbeDispatcher"></a>struct GstProbeDispatcher</h3><a class="indexterm" name="id2940657"></a><pre class="programlisting">struct GstProbeDispatcher {
+
+  gboolean		active;
+  
+  GSList		*probes;
+};
+</pre><p>
+The structure of the probe dispatcher
+</p></div><hr><div class="refsect2" lang="en"><a name="id2940674"></a><h3><a name="gst-probe-dispatcher-new"></a>gst_probe_dispatcher_new ()</h3><a class="indexterm" name="id2940685"></a><pre class="programlisting"><a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a>* gst_probe_dispatcher_new
+                                            (void);</pre><p>
+Create a new probe dispatcher</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new probe dispatcher.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2940726"></a><h3><a name="gst-probe-dispatcher-destroy"></a>gst_probe_dispatcher_destroy ()</h3><a class="indexterm" name="id2940738"></a><pre class="programlisting">void        gst_probe_dispatcher_destroy    (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp);</pre><p>
+Free the memory allocated by the probe dispatcher. All pending
+probes are removed first.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>disp</tt></i> :</span></td><td> the dispatcher to destroy
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2940790"></a><h3><a name="gst-probe-dispatcher-init"></a>gst_probe_dispatcher_init ()</h3><a class="indexterm" name="id2940802"></a><pre class="programlisting">void        gst_probe_dispatcher_init       (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp);</pre><p>
+Initialize the dispatcher. Useful for statically allocated probe
+dispatchers.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>disp</tt></i> :</span></td><td> the dispatcher to initialize
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2940854"></a><h3><a name="gst-probe-dispatcher-set-active"></a>gst_probe_dispatcher_set_active ()</h3><a class="indexterm" name="id2940866"></a><pre class="programlisting">void        gst_probe_dispatcher_set_active (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp,
+                                             gboolean active);</pre><p>
+Activate or deactivate the given dispatcher
+dispatchers.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>disp</tt></i> :</span></td><td> the dispatcher to activate
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>active</tt></i> :</span></td><td> boolean to indicate activation or deactivation
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2940939"></a><h3><a name="gst-probe-dispatcher-add-probe"></a>gst_probe_dispatcher_add_probe ()</h3><a class="indexterm" name="id2940952"></a><pre class="programlisting">void        gst_probe_dispatcher_add_probe  (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp,
+                                             <a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe);</pre><p>
+Adds the given probe to the dispatcher.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>disp</tt></i> :</span></td><td> the dispatcher to add the probe to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>probe</tt></i> :</span></td><td> the probe to add to the dispatcher
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2941025"></a><h3><a name="gst-probe-dispatcher-remove-probe"></a>gst_probe_dispatcher_remove_probe ()</h3><a class="indexterm" name="id2941038"></a><pre class="programlisting">void        gst_probe_dispatcher_remove_probe
+                                            (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp,
+                                             <a href="gstreamer-GstProbe.html#GstProbe">GstProbe</a> *probe);</pre><p>
+Removes the given probe from the dispatcher.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>disp</tt></i> :</span></td><td> the dispatcher to remove the probe from
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>probe</tt></i> :</span></td><td> the probe to remove from the dispatcher
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2941111"></a><h3><a name="gst-probe-dispatcher-dispatch"></a>gst_probe_dispatcher_dispatch ()</h3><a class="indexterm" name="id2941123"></a><pre class="programlisting">gboolean    gst_probe_dispatcher_dispatch   (<a href="gstreamer-GstProbe.html#GstProbeDispatcher">GstProbeDispatcher</a> *disp,
+                                             <a href="gstreamer-GstData.html#GstData">GstData</a> **data);</pre><p>
+Trigger all registered probes on the given dispatcher.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>disp</tt></i> :</span></td><td> the dispatcher to dispatch
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td> the data that triggered the dispatch
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if all callbacks returned TRUE.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstPluginFeature.html"><b>&lt;&lt; GstPluginFeature</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstQuery.html"><b>GstQuery &gt;&gt;</b></a></td></tr></table></body></html>

@@ -45,13 +45,12 @@
 /***** PowerPC *****/
 #elif defined (HAVE_CPU_PPC) && defined(__GNUC__)
 
-/* should bring this in line with others and use an "r" */
 #define GST_ARCH_SET_SP(stackpointer) \
-    __asm__("lwz 1,%0" : : "m"(stackpointer))
+    __asm__("lwz r1,%0" : : "m"(stackpointer))
   
 #define GST_ARCH_CALL(target) \
-    __asm__( "mr 0,%0\n\t" \
-             "mtlr 0\n\t" \
+    __asm__( "mr r0,%0\n\t" \
+             "mtlr r0\n\t" \
              "blrl" : : "r"(target) );
   
 struct minimal_ppc_stackframe {
@@ -179,6 +178,19 @@ struct minimal_s390_stackframe {
     sp = ((unsigned long *)(sp)) - 24; \
     ((struct minimal_s390_stackframe *)sp)->back_chain = 0;
 
+
+/***** M68K *****/
+#elif defined(HAVE_CPU_M68K) && defined(__GNUC__)
+
+/* From Matthias Urlichs <smurf@smurf.noris.de> */
+
+#define GST_ARCH_SET_SP(stackpointer) \
+    __asm__( "move.l %0, %%sp\n" : : "r" (stackpointer))
+
+#define GST_ARCH_CALL(target) \
+    __asm__( "jbsr (%0)" : : "r" (target))
+
+#define GST_ARCH_SETUP_STACK(sp) sp -= 4
 
 #elif defined(HAVE_MAKECONTEXT)
 

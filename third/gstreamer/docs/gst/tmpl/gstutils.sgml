@@ -2,17 +2,26 @@
 GstUtils
 
 <!-- ##### SECTION Short_Description ##### -->
-Utility functions
+various utility functions
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Some convenience functions
+
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
 </para>
+
+<!-- ##### FUNCTION gst_util_set_value_from_string ##### -->
+<para>
+
+</para>
+
+@value: 
+@value_str: 
+
 
 <!-- ##### FUNCTION gst_util_set_object_arg ##### -->
 <para>
@@ -24,95 +33,6 @@ Some convenience functions
 @value: 
 
 
-<!-- ##### FUNCTION gst_util_set_value_from_string ##### -->
-<para>
-
-</para>
-
-@value: 
-@value_str: 
-
-
-<!-- ##### FUNCTION gst_util_get_int_arg ##### -->
-<para>
-
-</para>
-
-@object: 
-@argname: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_util_get_bool_arg ##### -->
-<para>
-
-</para>
-
-@object: 
-@argname: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_util_get_long_arg ##### -->
-<para>
-
-</para>
-
-@object: 
-@argname: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_util_get_float_arg ##### -->
-<para>
-
-</para>
-
-@object: 
-@argname: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_util_get_double_arg ##### -->
-<para>
-
-</para>
-
-@object: 
-@argname: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_util_get_string_arg ##### -->
-<para>
-
-</para>
-
-@object: 
-@argname: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_util_get_pointer_arg ##### -->
-<para>
-
-</para>
-
-@object: 
-@argname: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_util_get_int64_arg ##### -->
-<para>
-
-</para>
-
-@object: 
-@argname: 
-@Returns: 
-
-
 <!-- ##### FUNCTION gst_util_dump_mem ##### -->
 <para>
 
@@ -122,15 +42,14 @@ Some convenience functions
 @size: 
 
 
-<!-- ##### FUNCTION gst_util_has_arg ##### -->
+<!-- ##### FUNCTION gst_print_pad_caps ##### -->
 <para>
 
 </para>
 
-@object: 
-@argname: 
-@arg_type: 
-@Returns: 
+@buf: 
+@indent: 
+@pad: 
 
 
 <!-- ##### FUNCTION gst_print_element_args ##### -->
@@ -143,13 +62,173 @@ Some convenience functions
 @element: 
 
 
-<!-- ##### FUNCTION gst_print_pad_caps ##### -->
+<!-- ##### MACRO GST_BOILERPLATE_FULL ##### -->
 <para>
 
 </para>
 
-@buf: 
-@indent: 
-@pad: 
+@type: 
+@type_as_function: 
+@parent_type: 
+@parent_type_macro: 
+@additional_initializations: 
+
+
+<!-- ##### MACRO GST_BOILERPLATE ##### -->
+<para>
+
+</para>
+
+@type: 
+@type_as_function: 
+@parent_type: 
+@parent_type_macro: 
+
+
+<!-- ##### MACRO GST_CALL_PARENT ##### -->
+<para>
+
+</para>
+
+@parent_class_cast: 
+@name: 
+@args: 
+
+
+<!-- ##### MACRO GST_CALL_PARENT_WITH_DEFAULT ##### -->
+<para>
+
+</para>
+
+@parent_class_cast: 
+@name: 
+@args: 
+@def_return: 
+
+
+<!-- ##### MACRO GST_HAVE_UNALIGNED_ACCESS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_READ_UINT8 ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### MACRO GST_READ_UINT16_LE ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### MACRO GST_READ_UINT16_BE ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### MACRO GST_READ_UINT32_LE ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### MACRO GST_READ_UINT32_BE ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### MACRO GST_READ_UINT64_LE ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### MACRO GST_READ_UINT64_BE ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### MACRO GST_WRITE_UINT8 ##### -->
+<para>
+
+</para>
+
+@data: 
+@num: 
+
+
+<!-- ##### MACRO GST_WRITE_UINT16_LE ##### -->
+<para>
+
+</para>
+
+@data: 
+@num: 
+
+
+<!-- ##### MACRO GST_WRITE_UINT16_BE ##### -->
+<para>
+
+</para>
+
+@data: 
+@num: 
+
+
+<!-- ##### MACRO GST_WRITE_UINT32_LE ##### -->
+<para>
+
+</para>
+
+@data: 
+@num: 
+
+
+<!-- ##### MACRO GST_WRITE_UINT32_BE ##### -->
+<para>
+
+</para>
+
+@data: 
+@num: 
+
+
+<!-- ##### MACRO GST_WRITE_UINT64_LE ##### -->
+<para>
+
+</para>
+
+@data: 
+@num: 
+
+
+<!-- ##### MACRO GST_WRITE_UINT64_BE ##### -->
+<para>
+
+</para>
+
+@data: 
+@num: 
 
 

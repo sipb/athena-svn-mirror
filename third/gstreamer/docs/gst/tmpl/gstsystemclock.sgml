@@ -2,7 +2,7 @@
 GstSystemClock
 
 <!-- ##### SECTION Short_Description ##### -->
-A default clock that uses the current system time
+Default clock that uses the current system time
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -14,6 +14,23 @@ system time.
 <para>
 #GstClock
 </para>
+
+<!-- ##### STRUCT GstSystemClock ##### -->
+<para>
+
+</para>
+
+@clock: 
+@mutex: 
+@cond: 
+@_gst_reserved: 
+
+<!-- ##### MACRO GST_TYPE_SYSTEM_CLOCK ##### -->
+<para>
+
+</para>
+
+
 
 <!-- ##### FUNCTION gst_system_clock_obtain ##### -->
 <para>

@@ -28,8 +28,6 @@
 
 G_BEGIN_DECLS
 
-extern GstElementDetails gst_pipeline_details;
-
 #define GST_TYPE_PIPELINE 		(gst_pipeline_get_type ())
 #define GST_PIPELINE(obj) 		(G_TYPE_CHECK_INSTANCE_CAST ((obj), GST_TYPE_PIPELINE, GstPipeline))
 #define GST_IS_PIPELINE(obj) 		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_PIPELINE))
@@ -43,18 +41,17 @@ typedef struct _GstPipelineClass GstPipelineClass;
 struct _GstPipeline {
   GstBin 	 bin;
 
-  gpointer	 dummy[32];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstPipelineClass {
   GstBinClass parent_class;
 
-  gpointer	 dummy[32];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType		gst_pipeline_get_type		(void);
 GstElement*	gst_pipeline_new		(const gchar *name);
-#define		gst_pipeline_destroy(pipeline)	gst_object_destroy(GST_OBJECT(pipeline))
 
 
 G_END_DECLS

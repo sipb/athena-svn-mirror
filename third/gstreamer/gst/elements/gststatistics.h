@@ -24,12 +24,9 @@
 #define __GST_STATISTICS_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-GstElementDetails gst_statistics_details;
 
 
 #define GST_TYPE_STATISTICS \

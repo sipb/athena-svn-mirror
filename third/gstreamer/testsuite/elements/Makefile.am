@@ -1,19 +1,20 @@
-if BUILD_FAILING_TESTS
-tests_failing = fake
-else
-tests_failing =
-endif
-tests_working = name tee property
+include ../Rules
 
-GST_PLUGIN_PATH=$(shell cd $(top_builddir) && pwd)
+# disable gst-compprep-check until it doesn't leave stray files for distcheck
+tests_pass = name tee property fake gst-inspect-check struct_size
+tests_fail =
+tests_ignore =
 
-TESTS_ENVIRONMENT = GST_PLUGIN_PATH=$(GST_PLUGIN_PATH) GST_REGISTRY=`pwd`test-registry.xml
+noinst_HEADERS = property.h struct_i386.h
 
-TESTS = $(tests_working)
+gst_inspect_check_SOURCES =
+gst-inspect-check$(EXEEXT): $(srcdir)/gst-inspect-check.in
+	sed s/@[G]ST_MAJORMINOR@/@GST_MAJORMINOR@/ \
+		$(srcdir)/gst-inspect-check.in >gst-inspect-check$(EXEEXT)
+	chmod +x gst-inspect-check$(EXEEXT)
 
-check_PROGRAMS = $(tests_failing) $(tests_working)
-
-EXTRA_DIST = property.h
-LDADD = $(GST_LIBS) 
-AM_CFLAGS = $(GST_CFLAGS)
-
+#gst_compprep_check_SOURCES =
+#gst-compprep-check$(EXEEXT):
+#	cp $(srcdir)/gst-compprep-check.in gst-compprep-check$(EXEEXT)
+	
+EXTRA_DIST = gst-inspect-check.in gst-compprep-check.in

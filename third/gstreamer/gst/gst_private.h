@@ -25,35 +25,83 @@
 #define __GST_PRIVATE_H__
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
-
-/***** until we have gettext set up properly, don't even try this*/
-#if 0
-# ifdef ENABLE_NLS
-#  include <libintl.h>
-#  define _(String) dgettext(PACKAGE,String)
-#  ifdef gettext_noop
-#   define N_(String) gettext_noop(String)
-#  else /* gettext_noop */
-#   define N_(String) (String)
-#  endif /* gettext_noop */
-# else /* ENABLE_NLS */
-#  define _(String) (String)
-#  define N_(String) (String)
-#  define textdomain(String) (String)
-#  define gettext(String) (String)
-#  define dgettext(Domain,String) (String)
-#  define dcgettext(Domain,String,Type) (String)
-#  define bindtextdomain(Domain,Directory) (Domain)
-# endif /* ENABLE_NLS */
+#  include "config.h"
 #endif
 
-#endif /* HAVE_CONFIG_H */
+/* This needs to be before glib.h, since it might be used in inline
+ * functions */
+extern const char             *g_log_domain_gstreamer;
 
+#include <glib.h>
 
 #include <stdlib.h>
 #include <string.h>
 
+gboolean __gst_in_valgrind (void);
+
+/*** debugging categories *****************************************************/
+
+#ifndef GST_DISABLE_GST_DEBUG
+
 #include <gst/gstinfo.h>
+
+extern GstDebugCategory *GST_CAT_GST_INIT;
+extern GstDebugCategory *GST_CAT_COTHREADS;
+extern GstDebugCategory *GST_CAT_COTHREAD_SWITCH;
+extern GstDebugCategory *GST_CAT_AUTOPLUG;
+extern GstDebugCategory *GST_CAT_AUTOPLUG_ATTEMPT;
+extern GstDebugCategory *GST_CAT_PARENTAGE;
+extern GstDebugCategory *GST_CAT_STATES;
+extern GstDebugCategory *GST_CAT_PLANNING;
+extern GstDebugCategory *GST_CAT_SCHEDULING;
+extern GstDebugCategory *GST_CAT_BUFFER;
+extern GstDebugCategory *GST_CAT_CAPS;
+extern GstDebugCategory *GST_CAT_CLOCK;
+extern GstDebugCategory *GST_CAT_ELEMENT_PADS;
+extern GstDebugCategory *GST_CAT_PADS;
+extern GstDebugCategory *GST_CAT_PIPELINE;
+extern GstDebugCategory *GST_CAT_PLUGIN_LOADING;
+extern GstDebugCategory *GST_CAT_PLUGIN_INFO;
+extern GstDebugCategory *GST_CAT_PROPERTIES;
+extern GstDebugCategory *GST_CAT_THREAD;
+extern GstDebugCategory *GST_CAT_XML;
+extern GstDebugCategory *GST_CAT_NEGOTIATION;
+extern GstDebugCategory *GST_CAT_REFCOUNTING;
+extern GstDebugCategory *GST_CAT_ERROR_SYSTEM;
+extern GstDebugCategory *GST_CAT_EVENT;
+extern GstDebugCategory *GST_CAT_PARAMS;
+extern GstDebugCategory *GST_CAT_CALL_TRACE;
+
+#else
+
+#define GST_CAT_GST_INIT         NULL
+#define GST_CAT_COTHREADS        NULL
+#define GST_CAT_COTHREAD_SWITCH  NULL
+#define GST_CAT_AUTOPLUG         NULL
+#define GST_CAT_AUTOPLUG_ATTEMPT NULL
+#define GST_CAT_PARENTAGE        NULL
+#define GST_CAT_STATES           NULL
+#define GST_CAT_PLANNING         NULL
+#define GST_CAT_SCHEDULING       NULL
+#define GST_CAT_DATAFLOW         NULL
+#define GST_CAT_BUFFER           NULL
+#define GST_CAT_CAPS             NULL
+#define GST_CAT_CLOCK            NULL
+#define GST_CAT_ELEMENT_PADS     NULL
+#define GST_CAT_PADS             NULL
+#define GST_CAT_PIPELINE         NULL
+#define GST_CAT_PLUGIN_LOADING   NULL
+#define GST_CAT_PLUGIN_INFO      NULL
+#define GST_CAT_PROPERTIES       NULL
+#define GST_CAT_THREAD           NULL
+#define GST_CAT_XML              NULL
+#define GST_CAT_NEGOTIATION      NULL
+#define GST_CAT_REFCOUNTING      NULL
+#define GST_CAT_ERROR_SYSTEM     NULL
+#define GST_CAT_EVENT            NULL
+#define GST_CAT_PARAMS           NULL
+#define GST_CAT_CALL_TRACE       NULL
+
+#endif
 
 #endif /* __GST_PRIVATE_H__ */

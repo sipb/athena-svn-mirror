@@ -30,19 +30,17 @@
 G_BEGIN_DECLS
 
 typedef enum {
-  GST_FORMAT_UNDEFINED 	=  0,
-  GST_FORMAT_DEFAULT   	=  1,
+  GST_FORMAT_UNDEFINED 	=  0, /* must be first in list */
+  GST_FORMAT_DEFAULT   	=  1, /* samples for audio, frames/fields for video */
   GST_FORMAT_BYTES   	=  2,
   GST_FORMAT_TIME 	=  3,
   GST_FORMAT_BUFFERS	=  4,
-  GST_FORMAT_PERCENT	=  5,
-  /* samples for audio, frames/fields for video */
-  GST_FORMAT_UNITS 	=  6
+  GST_FORMAT_PERCENT	=  5
 } GstFormat;
 
 /* a percentage is always relative to 1000000 */
-#define	GST_FORMAT_PERCENT_MAX		1000000LL
-#define	GST_FORMAT_PERCENT_SCALE	10000LL
+#define	GST_FORMAT_PERCENT_MAX		G_GINT64_CONSTANT (1000000)
+#define	GST_FORMAT_PERCENT_SCALE	G_GINT64_CONSTANT (10000)
 
 typedef struct _GstFormatDefinition GstFormatDefinition;
 
@@ -88,9 +86,10 @@ GstFormat	gst_format_get_by_nick		(const gchar *nick);
 gboolean	gst_formats_contains		(const GstFormat *formats, GstFormat format);
 
 /* query for format details */
-const GstFormatDefinition*	
+G_CONST_RETURN GstFormatDefinition*	
 		gst_format_get_details		(GstFormat format);
-const GList* 	gst_format_get_definitions 	(void);
+G_CONST_RETURN GList*
+		gst_format_get_definitions 	(void);
 
 G_END_DECLS
 

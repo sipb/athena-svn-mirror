@@ -25,12 +25,9 @@
 #define __GST_IDENTITY_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-GstElementDetails gst_identity_details;
 
 
 #define GST_TYPE_IDENTITY \
@@ -48,19 +45,26 @@ typedef struct _GstIdentity GstIdentity;
 typedef struct _GstIdentityClass GstIdentityClass;
 
 struct _GstIdentity {
-  GstElement element;
+  GstElement 	 element;
 
-  GstPad *sinkpad;
-  GstPad *srcpad;
+  GstPad 	*sinkpad;
+  GstPad 	*srcpad;
 
-  gboolean loop_based;
-  guint duplicate;
-  gint error_after;
-  gfloat drop_probability;
-  guint sleep_time;
-  gboolean silent;
-  gboolean dump;
-  gchar *last_message;
+  gboolean 	 loop_based;
+  guint 	 duplicate;
+  gint 	 	 error_after;
+  gfloat 	 drop_probability;
+  guint 	 sleep_time;
+  gboolean 	 silent;
+  gboolean 	 dump;
+  gboolean 	 sync;
+  gboolean 	 check_perfect;
+  GstClockTime   prev_timestamp;
+  GstClockTime   prev_duration;
+  guint64        prev_offset_end;
+  GstClock	*clock;
+  gchar 	*last_message;
+  GstCaps	*srccaps;
 };
 
 struct _GstIdentityClass {

@@ -1,29 +1,38 @@
-# FIXME : threads bytestream
-SUBDIRS = caps plugin elements clock refcounting threads indexers ## cleanup dynparams
+include Rules
 
-GST_PLUGIN_PATH = $(shell cd $(top_builddir) && pwd)
-TESTS_ENVIRONMENT = GST_PLUGIN_PATH=$(GST_PLUGIN_PATH) GST_REGISTRY=`pwd`/test-registry.xml
 
-if BUILD_FAILING_TESTS
-testprogs = test_gst_init
-inspectcheck = gst-inspect-check
+if GST_DISABLE_PARSE
+GST_PARSE_DIRS = 
 else
-testprogs =
-inspectcheck = 
+GST_PARSE_DIRS = parse
 endif
 
-TESTS = $(top_builddir)/tools/gst-register $(testprogs) $(inspectcheck)
+if GST_DISABLE_GST_DEBUG
+GST_DEBUG_DIRS = 
+else
+GST_DEBUG_DIRS = debug
+endif
 
-check_PROGRAMS = $(testprogs)
+SUBDIRS = \
+	bins bytestream caps cleanup clock \
+	$(GST_DEBUG_DIRS) \
+	dlopen dynparams \
+	elements ghostpads indexers negotiation \
+	$(GST_PARSE_DIRS) \
+	plugin refcounting schedulers states tags threads
 
-# we have nothing but apps here, we can do this safely
-LIBS = $(GST_LIBS)
-AM_CFLAGS = $(GST_CFLAGS)
+DIST_SUBDIRS = \
+	bins bytestream caps cleanup clock \
+	debug \
+	dlopen dynparams \
+	elements ghostpads indexers negotiation \
+	parse \
+	plugin refcounting schedulers states tags threads
+
+tests_pass = test_gst_init
+tests_fail = 
+tests_ignore =
 
 # we makes them, we gots to clean them
-CLEANFILES = test-registry.xml elementstest-registry.xml threadstest-registry.xml
+CLEANFILES += test-registry.xml
 
-DIST_SUBDIRS = bytestream caps cleanup clock dynparams elements indexers \
-		plugin refcounting threads
-
-EXTRA_DIST = gst-inspect-check

@@ -2,7 +2,7 @@
  * Copyright (C) 1999,2000 Erik Walthinsen <omega@cse.ogi.edu>
  *                    2000 Wim Taymans <wtay@chello.be>
  *
- * filename:
+ * gstparse.h: get a pipeline from a text pipeline description
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -37,17 +37,22 @@ typedef enum
   GST_PARSE_ERROR_SYNTAX,
   GST_PARSE_ERROR_NO_SUCH_ELEMENT,
   GST_PARSE_ERROR_NO_SUCH_PROPERTY,
-  GST_PARSE_ERROR_LINK
+  GST_PARSE_ERROR_LINK,
+  GST_PARSE_ERROR_COULD_NOT_SET_PROPERTY,
+  GST_PARSE_ERROR_EMPTY_BIN,
+  GST_PARSE_ERROR_EMPTY
 } GstParseError;
 
 
-GstBin*		gst_parse_launch	(const gchar *pipeline_description, GError **error);
-GstBin*		gst_parse_launchv	(const gchar **argv, GError **error);
+GstElement*	gst_parse_launch	(const gchar *pipeline_description, GError **error);
+GstElement*	gst_parse_launchv	(const gchar **argv, GError **error);
 
 #else /* GST_DISABLE_PARSE */
 
+#if defined _GNUC_ && _GNUC_ >= 3
 #pragma GCC poison gst_parse_launch
 #pragma GCC poison gst_parse_launchv
+#endif
 
 #endif /* GST_DISABLE_PARSE */
 

@@ -2,7 +2,7 @@
  * Copyright (C) 1999,2000 Erik Walthinsen <omega@cse.ogi.edu>
  *                    2000 Wim Taymans <wim.taymans@chello.be>
  *
- * gstxml.h: Header for XML save/restore operations
+ * gstxml.h: Header for XML save/restore operations of pipelines
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -48,7 +48,11 @@ struct _GstXML {
   GList      *topelements;
 
   xmlNsPtr ns;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
+
+typedef struct _GstXMLNs GstXMLNs;
 
 struct _GstXMLClass {
   GstObjectClass parent_class;
@@ -56,6 +60,8 @@ struct _GstXMLClass {
   /* signal callbacks */
   void (*object_loaded)         (GstXML *xml, GstObject *object, xmlNodePtr self);
   void (*object_saved)          (GstXML *xml, GstObject *object, xmlNodePtr self);
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType		gst_xml_get_type	(void);
@@ -83,6 +89,7 @@ G_END_DECLS
 
 #else /* GST_DISABLE_LOADSAVE */
 
+#if defined _GNUC_ && _GNUC_ >= 3
 #pragma GCC poison gst_xml_write
 #pragma GCC poison gst_xml_new
 #pragma GCC poison gst_xml_parse_doc
@@ -90,6 +97,7 @@ G_END_DECLS
 #pragma GCC poison gst_xml_parse_memory
 #pragma GCC poison gst_xml_get_element
 #pragma GCC poison gst_xml_get_topelements
+#endif
 
 #endif /* GST_DISABLE_LOADSAVE */
 

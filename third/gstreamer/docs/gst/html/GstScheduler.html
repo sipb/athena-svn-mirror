@@ -1,0 +1,301 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstScheduler</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstRegistryPool.html" title="GstRegistryPool"><link rel="next" href="GstSchedulerFactory.html" title="GstSchedulerFactory"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstRegistryPool.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="GstSchedulerFactory.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstScheduler"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstScheduler</span></h2><p>GstScheduler &#8212; Abstract class for objects that manage the scheduling of groups of elements</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="GstScheduler.html#GstScheduler-struct">GstScheduler</a>;
+enum        <a href="GstScheduler.html#GstSchedulerFlags">GstSchedulerFlags</a>;
+#define     <a href="GstScheduler.html#GST-SCHEDULER-PARENT-CAPS">GST_SCHEDULER_PARENT</a>            (sched)
+#define     <a href="GstScheduler.html#GST-SCHEDULER-STATE-CAPS">GST_SCHEDULER_STATE</a>             (sched)
+enum        <a href="GstScheduler.html#GstSchedulerState">GstSchedulerState</a>;
+void        <a href="GstScheduler.html#gst-scheduler-setup">gst_scheduler_setup</a>             (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);
+void        <a href="GstScheduler.html#gst-scheduler-reset">gst_scheduler_reset</a>             (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);
+void        <a href="GstScheduler.html#gst-scheduler-add-element">gst_scheduler_add_element</a>       (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+void        <a href="GstScheduler.html#gst-scheduler-remove-element">gst_scheduler_remove_element</a>    (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+void        <a href="GstScheduler.html#gst-scheduler-add-scheduler">gst_scheduler_add_scheduler</a>     (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched2);
+void        <a href="GstScheduler.html#gst-scheduler-remove-scheduler">gst_scheduler_remove_scheduler</a>  (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched2);
+<a href="gstreamer-GstTypes.html#GstElementStateReturn">GstElementStateReturn</a> <a href="GstScheduler.html#gst-scheduler-state-transition">gst_scheduler_state_transition</a>
+                                            (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                             gint transition);
+void        <a href="GstScheduler.html#gst-scheduler-scheduling-change">gst_scheduler_scheduling_change</a> (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+void        <a href="GstScheduler.html#gst-scheduler-lock-element">gst_scheduler_lock_element</a>      (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+void        <a href="GstScheduler.html#gst-scheduler-unlock-element">gst_scheduler_unlock_element</a>    (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+gboolean    <a href="GstScheduler.html#gst-scheduler-yield">gst_scheduler_yield</a>             (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+gboolean    <a href="GstScheduler.html#gst-scheduler-interrupt">gst_scheduler_interrupt</a>         (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+void        <a href="GstScheduler.html#gst-scheduler-error">gst_scheduler_error</a>             (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+void        <a href="GstScheduler.html#gst-scheduler-pad-link">gst_scheduler_pad_link</a>          (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);
+void        <a href="GstScheduler.html#gst-scheduler-pad-unlink">gst_scheduler_pad_unlink</a>        (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);
+<a href="GstPad.html" title="GstPad">GstPad</a>*     <a href="GstScheduler.html#gst-scheduler-pad-select">gst_scheduler_pad_select</a>        (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             GList *padlist);
+<a href="GstClock.html#GstClockReturn">GstClockReturn</a> <a href="GstScheduler.html#gst-scheduler-clock-wait">gst_scheduler_clock_wait</a>     (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                             <a href="GstClock.html#GstClockID">GstClockID</a> id,
+                                             <a href="GstClock.html#GstClockTimeDiff">GstClockTimeDiff</a> *jitter);
+gboolean    <a href="GstScheduler.html#gst-scheduler-iterate">gst_scheduler_iterate</a>           (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);
+void        <a href="GstScheduler.html#gst-scheduler-use-clock">gst_scheduler_use_clock</a>         (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstClock.html" title="GstClock">GstClock</a> *clock);
+void        <a href="GstScheduler.html#gst-scheduler-set-clock">gst_scheduler_set_clock</a>         (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstClock.html" title="GstClock">GstClock</a> *clock);
+<a href="GstClock.html" title="GstClock">GstClock</a>*   <a href="GstScheduler.html#gst-scheduler-get-clock">gst_scheduler_get_clock</a>         (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);
+void        <a href="GstScheduler.html#gst-scheduler-auto-clock">gst_scheduler_auto_clock</a>        (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);
+void        <a href="GstScheduler.html#gst-scheduler-show">gst_scheduler_show</a>              (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);
+#define     <a href="GstScheduler.html#GST-SCHEDULER-DEFAULT-NAME-CAPS">GST_SCHEDULER_DEFAULT_NAME</a>
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2956276"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----<a href="GstObject.html" title="GstObject">GstObject</a>
+         +----GstScheduler
+               +----GstOptGThreadScheduler
+               +----GstEntryGThreadScheduler
+               +----GstOptScheduler
+               +----GstGThreadScheduler
+               +----GstOptOmegaScheduler
+               +----GstOmegaScheduler
+</pre></div><div class="refsect1" lang="en"><a name="id2956358"></a><h2>Description</h2><p>
+This is a base class for custom schedulers.
+</p></div><div class="refsect1" lang="en"><a name="id2956369"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2956374"></a><h3><a name="GstScheduler-struct"></a>struct GstScheduler</h3><a class="indexterm" name="id2956385"></a><pre class="programlisting">struct GstScheduler;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2956401"></a><h3><a name="GstSchedulerFlags"></a>enum GstSchedulerFlags</h3><a class="indexterm" name="id2956412"></a><pre class="programlisting">typedef enum {
+  /* this scheduler works with a fixed clock */
+  GST_SCHEDULER_FLAG_FIXED_CLOCK	= GST_OBJECT_FLAG_LAST,
+  /* this scheduler supports select and lock calls */
+  GST_SCHEDULER_FLAG_NEW_API,
+
+  /* padding */
+  GST_SCHEDULER_FLAG_LAST 		= GST_OBJECT_FLAG_LAST + 4
+} GstSchedulerFlags;
+</pre><p>
+Flags for the scheduler
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_SCHEDULER_FLAG_FIXED_CLOCK</tt></span></td><td>The scheduler has a fixed clock
+</td></tr><tr><td><span class="term"><tt class="literal">GST_SCHEDULER_FLAG_NEW_API</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">GST_SCHEDULER_FLAG_LAST</tt></span></td><td>subclasses can start numbering their flags starting
+                          from here.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956482"></a><h3><a name="GST-SCHEDULER-PARENT-CAPS"></a>GST_SCHEDULER_PARENT()</h3><a class="indexterm" name="id2956493"></a><pre class="programlisting">#define GST_SCHEDULER_PARENT(sched)		((sched)-&gt;parent)
+</pre><p>
+Get the parent object of this scheduler.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td>the scheduler to get the parent of.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956529"></a><h3><a name="GST-SCHEDULER-STATE-CAPS"></a>GST_SCHEDULER_STATE()</h3><a class="indexterm" name="id2956541"></a><pre class="programlisting">#define GST_SCHEDULER_STATE(sched)		((sched)-&gt;state)
+</pre><p>
+Get the state of the scheduler.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td>the scheduler to get the state of.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956577"></a><h3><a name="GstSchedulerState"></a>enum GstSchedulerState</h3><a class="indexterm" name="id2956588"></a><pre class="programlisting">typedef enum {
+  GST_SCHEDULER_STATE_NONE,
+  GST_SCHEDULER_STATE_RUNNING,
+  GST_SCHEDULER_STATE_STOPPED,
+  GST_SCHEDULER_STATE_ERROR
+} GstSchedulerState;
+</pre><p>
+The state of the scheduler
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_SCHEDULER_STATE_NONE</tt></span></td><td>no state
+</td></tr><tr><td><span class="term"><tt class="literal">GST_SCHEDULER_STATE_RUNNING</tt></span></td><td>the scheduler is running
+</td></tr><tr><td><span class="term"><tt class="literal">GST_SCHEDULER_STATE_STOPPED</tt></span></td><td>the scheduler is stopped
+</td></tr><tr><td><span class="term"><tt class="literal">GST_SCHEDULER_STATE_ERROR</tt></span></td><td>the scheduler is in error
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956670"></a><h3><a name="gst-scheduler-setup"></a>gst_scheduler_setup ()</h3><a class="indexterm" name="id2956682"></a><pre class="programlisting">void        gst_scheduler_setup             (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);</pre><p>
+Prepare the scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956732"></a><h3><a name="gst-scheduler-reset"></a>gst_scheduler_reset ()</h3><a class="indexterm" name="id2956744"></a><pre class="programlisting">void        gst_scheduler_reset             (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);</pre><p>
+Reset the schedulers.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> a <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a> to reset.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956802"></a><h3><a name="gst-scheduler-add-element"></a>gst_scheduler_add_element ()</h3><a class="indexterm" name="id2956814"></a><pre class="programlisting">void        gst_scheduler_add_element       (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Add an element to the scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element to add to the scheduler
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956886"></a><h3><a name="gst-scheduler-remove-element"></a>gst_scheduler_remove_element ()</h3><a class="indexterm" name="id2956898"></a><pre class="programlisting">void        gst_scheduler_remove_element    (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Remove an element from the scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element to remove
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2956971"></a><h3><a name="gst-scheduler-add-scheduler"></a>gst_scheduler_add_scheduler ()</h3><a class="indexterm" name="id2956983"></a><pre class="programlisting">void        gst_scheduler_add_scheduler     (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched2);</pre><p>
+Notifies the scheduler that it has to monitor this scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> a  <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a> to add to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>sched2</tt></i> :</span></td><td> the <a href="GstScheduler.html" title="GstScheduler"><span class="type">GstScheduler</span></a> to add
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957072"></a><h3><a name="gst-scheduler-remove-scheduler"></a>gst_scheduler_remove_scheduler ()</h3><a class="indexterm" name="id2957084"></a><pre class="programlisting">void        gst_scheduler_remove_scheduler  (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched2);</pre><p>
+a Notifies the scheduler that it can stop monitoring this scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>sched2</tt></i> :</span></td><td> the scheduler to remove
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957158"></a><h3><a name="gst-scheduler-state-transition"></a>gst_scheduler_state_transition ()</h3><a class="indexterm" name="id2957170"></a><pre class="programlisting"><a href="gstreamer-GstTypes.html#GstElementStateReturn">GstElementStateReturn</a> gst_scheduler_state_transition
+                                            (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                             gint transition);</pre><p>
+Tell the scheduler that an element changed its state.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element with the state transition
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>transition</tt></i> :</span></td><td> the state transition
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GstElementStateReturn indicating success or failure
+of the state transition.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957278"></a><h3><a name="gst-scheduler-scheduling-change"></a>gst_scheduler_scheduling_change ()</h3><a class="indexterm" name="id2957290"></a><pre class="programlisting">void        gst_scheduler_scheduling_change (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Tell the scheduler that an element changed its scheduling strategy.
+An element could, for example, change its loop function or changes
+from a loop based element to a chain based element.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element that changed its scheduling strategy
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957366"></a><h3><a name="gst-scheduler-lock-element"></a>gst_scheduler_lock_element ()</h3><a class="indexterm" name="id2957378"></a><pre class="programlisting">void        gst_scheduler_lock_element      (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Acquire a lock on the given element in the given scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element to lock
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957450"></a><h3><a name="gst-scheduler-unlock-element"></a>gst_scheduler_unlock_element ()</h3><a class="indexterm" name="id2957462"></a><pre class="programlisting">void        gst_scheduler_unlock_element    (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Release the lock on the given element in the given scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element to unlock
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957535"></a><h3><a name="gst-scheduler-yield"></a>gst_scheduler_yield ()</h3><a class="indexterm" name="id2957547"></a><pre class="programlisting">gboolean    gst_scheduler_yield             (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Tell the scheduler to schedule another element.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element requesting a yield
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the element should save its state, FALSE
+if the scheduler can perform this action itself.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957631"></a><h3><a name="gst-scheduler-interrupt"></a>gst_scheduler_interrupt ()</h3><a class="indexterm" name="id2957642"></a><pre class="programlisting">gboolean    gst_scheduler_interrupt         (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Tell the scheduler to interrupt execution of this element.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element requesting an interrupt
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the element should return NULL from the chain/get
+function.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957727"></a><h3><a name="gst-scheduler-error"></a>gst_scheduler_error ()</h3><a class="indexterm" name="id2957738"></a><pre class="programlisting">void        gst_scheduler_error             (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Tell the scheduler an element was in error</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element with the error
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957810"></a><h3><a name="gst-scheduler-pad-link"></a>gst_scheduler_pad_link ()</h3><a class="indexterm" name="id2957822"></a><pre class="programlisting">void        gst_scheduler_pad_link          (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);</pre><p>
+Links the srcpad to the given sinkpad.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>srcpad</tt></i> :</span></td><td> the srcpad to link
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>sinkpad</tt></i> :</span></td><td> the sinkpad to link to
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2957916"></a><h3><a name="gst-scheduler-pad-unlink"></a>gst_scheduler_pad_unlink ()</h3><a class="indexterm" name="id2957928"></a><pre class="programlisting">void        gst_scheduler_pad_unlink        (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *srcpad,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *sinkpad);</pre><p>
+Unlinks the srcpad from the given sinkpad.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>srcpad</tt></i> :</span></td><td> the srcpad to unlink
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>sinkpad</tt></i> :</span></td><td> the sinkpad to unlink from
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958022"></a><h3><a name="gst-scheduler-pad-select"></a>gst_scheduler_pad_select ()</h3><a class="indexterm" name="id2958034"></a><pre class="programlisting"><a href="GstPad.html" title="GstPad">GstPad</a>*     gst_scheduler_pad_select        (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             GList *padlist);</pre><p>
+register the given padlist for a select operation.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>padlist</tt></i> :</span></td><td> the padlist to select on
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the pad which received a buffer.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958117"></a><h3><a name="gst-scheduler-clock-wait"></a>gst_scheduler_clock_wait ()</h3><a class="indexterm" name="id2958129"></a><pre class="programlisting"><a href="GstClock.html#GstClockReturn">GstClockReturn</a> gst_scheduler_clock_wait     (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element,
+                                             <a href="GstClock.html#GstClockID">GstClockID</a> id,
+                                             <a href="GstClock.html#GstClockTimeDiff">GstClockTimeDiff</a> *jitter);</pre><p>
+Wait till the clock reaches a specific time. The ClockID can
+be obtained from <a href="GstClock.html#gst-clock-new-single-shot-id"><span class="type">gst_clock_new_single_shot_id</span></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element that wants to wait
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>id</tt></i> :</span></td><td> the clockid to use
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>jitter</tt></i> :</span></td><td> the time difference between requested time and actual time
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the status of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958266"></a><h3><a name="gst-scheduler-iterate"></a>gst_scheduler_iterate ()</h3><a class="indexterm" name="id2958278"></a><pre class="programlisting">gboolean    gst_scheduler_iterate           (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);</pre><p>
+Perform one iteration on the scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a boolean indicating something usefull has happened.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958339"></a><h3><a name="gst-scheduler-use-clock"></a>gst_scheduler_use_clock ()</h3><a class="indexterm" name="id2958351"></a><pre class="programlisting">void        gst_scheduler_use_clock         (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstClock.html" title="GstClock">GstClock</a> *clock);</pre><p>
+Force the scheduler to use the given clock. The scheduler will
+always use the given clock even if new clock providers are added
+to this scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>clock</tt></i> :</span></td><td> the clock to use
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958425"></a><h3><a name="gst-scheduler-set-clock"></a>gst_scheduler_set_clock ()</h3><a class="indexterm" name="id2958437"></a><pre class="programlisting">void        gst_scheduler_set_clock         (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched,
+                                             <a href="GstClock.html" title="GstClock">GstClock</a> *clock);</pre><p>
+Set the clock for the scheduler. The clock will be distributed
+to all the elements managed by the scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>clock</tt></i> :</span></td><td> the clock to set
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958510"></a><h3><a name="gst-scheduler-get-clock"></a>gst_scheduler_get_clock ()</h3><a class="indexterm" name="id2958522"></a><pre class="programlisting"><a href="GstClock.html" title="GstClock">GstClock</a>*   gst_scheduler_get_clock         (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);</pre><p>
+Gets the current clock used by the scheduler.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GstClock
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958583"></a><h3><a name="gst-scheduler-auto-clock"></a>gst_scheduler_auto_clock ()</h3><a class="indexterm" name="id2958595"></a><pre class="programlisting">void        gst_scheduler_auto_clock        (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);</pre><p>
+Let the scheduler select a clock automatically.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958646"></a><h3><a name="gst-scheduler-show"></a>gst_scheduler_show ()</h3><a class="indexterm" name="id2958657"></a><pre class="programlisting">void        gst_scheduler_show              (<a href="GstScheduler.html" title="GstScheduler">GstScheduler</a> *sched);</pre><p>
+Dump the state of the scheduler</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sched</tt></i> :</span></td><td> the scheduler
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2958707"></a><h3><a name="GST-SCHEDULER-DEFAULT-NAME-CAPS"></a>GST_SCHEDULER_DEFAULT_NAME</h3><a class="indexterm" name="id2958720"></a><pre class="programlisting">#define GST_SCHEDULER_DEFAULT_NAME	"opt"
+</pre><p>
+
+</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstRegistryPool.html"><b>&lt;&lt; GstRegistryPool</b></a></td><td align="right"><a accesskey="n" href="GstSchedulerFactory.html"><b>GstSchedulerFactory &gt;&gt;</b></a></td></tr></table></body></html>

@@ -21,88 +21,77 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <gst/gst.h>
 
-#include "gstfilesink.h"
-#include "gstidentity.h"
+#include "gstaggregator.h"
 #include "gstfakesink.h"
 #include "gstfakesrc.h"
 #include "gstfdsink.h"
 #include "gstfdsrc.h"
-#include "gstmultidisksrc.h"
-#include "gstpipefilter.h"
-#include "gsttee.h"
-#include "gstaggregator.h"
-#include "gststatistics.h"
+#include "gstfilesink.h"
+#include "gstfilesrc.h"
+#include "gstidentity.h"
 #include "gstmd5sink.h"
+#include "gstmultifilesrc.h"
+#include "gstpipefilter.h"
+#include "gstshaper.h"
+#include "gststatistics.h"
+#include "gsttee.h"
+#include "gsttypefindelement.h"
 
-
-struct _elements_entry {
+struct _elements_entry
+{
   gchar *name;
-  GType (*type) (void);
-  GstElementDetails *details;
-  gboolean (*factoryinit) (GstElementFactory *factory);
+  guint rank;
+    GType (*type) (void);
 };
 
 
-extern GType gst_filesrc_get_type(void);
+extern GType gst_filesrc_get_type (void);
 extern GstElementDetails gst_filesrc_details;
 
 static struct _elements_entry _elements[] = {
-  { "fakesrc", 	    gst_fakesrc_get_type, 	&gst_fakesrc_details,		gst_fakesrc_factory_init },
-  { "fakesink",     gst_fakesink_get_type, 	&gst_fakesink_details,		gst_fakesink_factory_init },
-  { "filesrc", 	    gst_filesrc_get_type, 	&gst_filesrc_details,		NULL },
-  { "filesink",	    gst_filesink_get_type,      &gst_filesink_details, 		NULL },
-  { "identity",     gst_identity_get_type,  	&gst_identity_details,		NULL },
-  { "fdsink",       gst_fdsink_get_type, 	&gst_fdsink_details,		NULL },
-  { "fdsrc", 	    gst_fdsrc_get_type, 	&gst_fdsrc_details,		NULL },
-  { "multidisksrc", gst_multidisksrc_get_type,	&gst_multidisksrc_details,	NULL },
-  { "pipefilter",   gst_pipefilter_get_type, 	&gst_pipefilter_details,	NULL },
-  { "tee",     	    gst_tee_get_type, 		&gst_tee_details,		gst_tee_factory_init },
-  { "aggregator",   gst_aggregator_get_type, 	&gst_aggregator_details,	gst_aggregator_factory_init },
-  { "statistics",   gst_statistics_get_type, 	&gst_statistics_details,	NULL },
-  { "md5sink",      gst_md5sink_get_type, 	&gst_md5sink_details,		gst_md5sink_factory_init },
-  { NULL, 0 },
+  {"aggregator", GST_RANK_NONE, gst_aggregator_get_type},
+  {"fakesrc", GST_RANK_NONE, gst_fakesrc_get_type},
+  {"fakesink", GST_RANK_NONE, gst_fakesink_get_type},
+  {"fdsink", GST_RANK_NONE, gst_fdsink_get_type},
+  {"fdsrc", GST_RANK_NONE, gst_fdsrc_get_type},
+  {"filesrc", GST_RANK_NONE, gst_filesrc_get_type},
+  {"filesink", GST_RANK_NONE, gst_filesink_get_type},
+  {"identity", GST_RANK_NONE, gst_identity_get_type},
+  {"md5sink", GST_RANK_NONE, gst_md5sink_get_type},
+#ifndef HAVE_WIN32
+  {"multifilesrc", GST_RANK_NONE, gst_multifilesrc_get_type},
+  {"pipefilter", GST_RANK_NONE, gst_pipefilter_get_type},
+#endif
+  {"shaper", GST_RANK_NONE, gst_shaper_get_type},
+  {"statistics", GST_RANK_NONE, gst_statistics_get_type},
+  {"tee", GST_RANK_NONE, gst_tee_get_type},
+  {"typefind", GST_RANK_NONE, gst_type_find_element_get_type},
+  {NULL, 0},
 };
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-  gint i = 0;
+  struct _elements_entry *my_elements = _elements;
 
-  gst_plugin_set_longname (plugin, "Standard GST Elements");
-
-  while (_elements[i].name) {
-    factory = gst_element_factory_new (_elements[i].name,
-                                      (_elements[i].type) (),
-                                      _elements[i].details);
-
-    if (!factory)
-      {
-	g_warning ("gst_element_factory_new failed for `%s'",
-		   _elements[i].name);
-	continue;
-      }
-
-    gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-    if (_elements[i].factoryinit) {
-      _elements[i].factoryinit (factory);
-    }
-/*      g_print("added factory '%s'\n",_elements[i].name); */
-
-    i++;
+  while ((*my_elements).name) {
+    if (!gst_element_register (plugin, (*my_elements).name, (*my_elements).rank,
+            ((*my_elements).type) ()))
+      return FALSE;
+    my_elements++;
   }
-
-/*  INFO (GST_INFO_PLUGIN_LOAD,"gstelements: loaded %d standard elements", i);*/
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "gstelements",
-  plugin_init
-};
-
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "gstelements",
+    "standard GStreamer elements",
+    plugin_init, VERSION, GST_LICENSE, GST_PACKAGE, GST_ORIGIN)

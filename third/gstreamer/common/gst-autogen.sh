@@ -60,10 +60,8 @@ version_check ()
       echo "not found."
       continue
     }
-    # the following line is carefully crafted sed magic
-    # you don't want to mess with it
-    #pkg_version=`$COMMAND --version|head -n 1|sed 's/^[a-zA-z\.\ ()]*//;s/ .*$//'`
-    pkg_version=`$COMMAND --version|head -n 1|sed 's/^.*) //'|sed 's/ (.*)//'`
+    # strip everything that's not a digit, then use cut to get the first field
+    pkg_version=`$COMMAND --version|head -n 1|sed 's/^[^0-9]*//'|cut -d' ' -f1`
     debug "pkg_version $pkg_version"
     # remove any non-digit characters from the version numbers to permit numeric
     # comparison
@@ -166,12 +164,12 @@ autoheader_check ()
   fi
 
 }
-autoconf_2.52d_check ()
+autoconf_2_52d_check ()
 {
   # autoconf 2.52d has a weird issue involving a yes:no error
   # so don't allow it's use
   test -z "$NOCHECK" && {
-    ac_version=`$autoconf --version|head -n 1|sed 's/^[a-zA-z\.\ ()]*//;s/ .*$//'`
+    ac_version=`$autoconf --version|head -n 1|sed 's/^[a-zA-Z\.\ ()]*//;s/ .*$//'`
     if test "$ac_version" = "2.52d"; then
       echo "autoconf 2.52d has an issue with our current build."
       echo "We don't know who's to blame however.  So until we do, get a"
@@ -198,7 +196,7 @@ die_check ()
 
 autogen_options ()
 {
-  if test "x$1" == "x"; then
+  if test "x$1" = "x"; then
     return 0
   fi
 
@@ -260,6 +258,11 @@ autogen_options ()
           AUTOCONF=$optarg
           echo "+ using alternate autoconf in $optarg"
 	  CONFIGURE_DEF_OPT="$CONFIGURE_DEF_OPT --with-autoconf=$AUTOCONF"
+          shift
+          ;;
+      --disable*|--enable*|--with*)
+          echo "+ passing option $1 to configure"
+	  CONFIGURE_EXT_OPT="$CONFIGURE_EXT_OPT $1"
           shift
           ;;
        --) shift ; break ;;

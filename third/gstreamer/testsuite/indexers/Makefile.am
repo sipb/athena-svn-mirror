@@ -1,8 +1,5 @@
-testprogs = cache1 indexdump
+include ../Rules
 
-TESTS = $(testprogs)
-
-check_PROGRAMS = $(testprogs)
-
-LDADD = $(GST_LIBS) 
-AM_CFLAGS = $(GST_CFLAGS)
+tests_pass = cache1 indexdump
+tests_fail = 
+tests_ignore =
