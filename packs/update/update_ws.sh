@@ -6,7 +6,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do_update.
 #
-# $Id: update_ws.sh,v 1.8 1996-06-08 00:04:37 ghudson Exp $
+# $Id: update_ws.sh,v 1.9 1996-07-08 02:19:57 cfields Exp $
 #
 
 trap "" 1 15
@@ -66,15 +66,30 @@ if [ `expr $0 : '.*auto_update'` != "0" ]; then
 	AUTO=true;
 fi
 
-/etc/athena/save_cluster_info
-if [ ! -f /etc/athena/clusterinfo.bsh ]; then
+# The output of getcluster is relevant in two places:
+#
+#   The attaching of INSTLIB for the SGI.
+#     Passing AUTOUPDATE=false and NEWVERS for the version
+#     ensures that we will attach the INSTLIB that matches
+#     the attached system packs.
+#
+#   The OK case of the comparison of the workstation version
+#   with the version on the packs.
+#     In this case, VERSION and NEWVERS have essentially been
+#     compared to be equal, and therefore having passed NEWVERS
+#     rather than VERSION to getcluster is irrelevant. Passing
+#     AUTOUPDATE=false is also ok, since it doesn't affect the
+#     output of *RELEASE.
+#
+AUTOUPDATE=false /bin/athena/getcluster -b `$HOSTNAME` ${NEWVERS} > /tmp/clusterinfo.bsh
+if [ $? -ne 0 -o ! -s /tmp/clusterinfo.bsh ]; then
 	# No updates for machines without cluster info.
 	if [ "$AUTO" = false ]; then
 		echo "Cannot find Hesiod information for this machine, aborting update."
 	fi
 	exit 1
 fi
-. /etc/athena/clusterinfo.bsh
+. /tmp/clusterinfo.bsh
 
 case `echo $VERSION $NEWVERS | awk '(NR==1) { \
 	if ($1 == "Update") {print "OOPS"} \
