@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "logger.h"
 #include <sys/types.h>
+#ifdef _IBMR2
+#include <sys/select.h>
+#endif
 
 #define ISSET(n) FD_ISSET(n, bitmap)
 #define SET(n)	FD_SET(n, bitmap)
@@ -24,8 +27,6 @@ int argc;
 char *argv[];
 {
     int i;
-    log_entity *l;
-    char buf[1024];
     char *name;
     log_header head;
     int error=0;
