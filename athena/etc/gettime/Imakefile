@@ -1,9 +1,0 @@
-#
-# $Id: Imakefile,v 1.25 1999-09-02 14:41:45 ghudson Exp $
-#
-# Remember: most conditionalization should be done in the package, not here.
-
-create_dir($(ATHRETCDIR))
-create_dir($(ATHMANDIR)/man8)
-SimpleProgram(gettime,gettime.o,,$(ATHRETCDIR)/)
-install_man(gettime.8,gettime.8)

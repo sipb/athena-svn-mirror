@@ -1,7 +1,19 @@
-/*
- * gettime
+/* Copyright 1985-1999 by the Massachusetts Institute of Technology.
  *
- * Retrieve the time from a remote host and print it in ctime(3)
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+/* Retrieve the time from a remote host and print it in ctime(3)
  * format. The time is acquired via the protocol described in
  * RFC868. The name of the host to be queried is specified on the
  * command line, and if the -s option is also specified, and gettime
@@ -9,6 +21,8 @@
  * set. gettime makes five attempts at getting the time, each with
  * a five second timeout.
  */
+
+static const char rcsid[] = "$Id: gettime.c,v 1.15 1999-10-18 17:20:15 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,20 +36,10 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-static char rcsid[] = "$Id: gettime.c,v 1.14 1998-01-20 23:05:48 ghudson Exp $";
-
 #define UNIX_OFFSET_TO_1900 ((70 * 365UL + 17) * 24 * 60 * 60)
 #define TIME_SERVICE "time"
 #define MAX_TRIES 5
 #define TIMEOUT 5
-
-char *program_name;
-
-void myperror(char *what, int errnum)
-{
-  fprintf(stderr, "%s: %s: %s\n", program_name, what, strerror(errnum));
-  exit(1);
-}
 
 int main(int argc, char **argv)
 {
@@ -51,21 +55,17 @@ int main(int argc, char **argv)
   time_t now;
   int c, setflag = 0, errflag = 0;
   int granularity = 0;
+  char *program_name;
 
   /* Set up our program name. */
-  if (argv[0] != NULL)
-    {
-      program_name = strrchr(argv[0], '/');
-      if (program_name != NULL)
-	program_name++;
-      else
-	program_name = argv[0];
-    }
+  program_name = strrchr(argv[0], '/');
+  if (program_name != NULL)
+    program_name++;
   else
-    program_name = "gettime";
+    program_name = argv[0];
 
   /* Parse arguments. */
-  while ((c = getopt(argc, argv, "sg:")) != EOF)
+  while ((c = getopt(argc, argv, "sg:")) != -1)
     {
       switch (c)
 	{
@@ -127,7 +127,11 @@ int main(int argc, char **argv)
   /* Grab a socket. */
   time_socket = socket(AF_INET, SOCK_DGRAM, 0);
   if (time_socket < 0)
-    myperror("socket", errno);
+    {
+      fprintf(stderr, "%s: can't create socket: %s\n",
+	      program_name, strerror(errno));
+      exit(1);
+    }
 
   /* Set up destination address. */
   time_address.sin_family = AF_INET;
@@ -138,7 +142,11 @@ int main(int argc, char **argv)
   /* "Connect" the UDP socket to the time server address. */
   if (connect(time_socket, (struct sockaddr *)&time_address,
 	      sizeof(time_address)) < 0)
-    myperror("connect", errno);
+    {
+      fprintf(stderr, "%s: can't connect: %s\n", program_name,
+	      strerror(errno));
+      exit(1);
+    }
 
   /* Initialize info for select. */
   FD_ZERO(&read_set);
@@ -159,12 +167,19 @@ int main(int argc, char **argv)
 	continue;
 
       if (result < 0)		/* error from select */
-	myperror("select", errno);
+	{
+	  fprintf(stderr, "%s: select: %s\n", program_name, strerror(errno));
+	  exit(1);
+	}
 
       /* There must be data available. */
       result = recv(time_socket, buffer, sizeof(buffer), 0);
       if (result < 0)
-	myperror("recv", errno);
+	{
+	  fprintf(stderr, "%s: receive failed: %s\n", program_name,
+		  strerror(errno));
+	  exit(1);
+	}	  
 
       /* We should have received exactly four bytes in the packet. */
       if (result == 4)
@@ -183,8 +198,9 @@ int main(int argc, char **argv)
     }
 
   /* Convert RFC868 time to Unix time, and print it. */
-  now = ((buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3])
-    - UNIX_OFFSET_TO_1900;
+  now = (time_t)(((buffer[0] << 24) | (buffer[1] << 16) |
+		  (buffer[2] << 8) | buffer[3])
+		 - UNIX_OFFSET_TO_1900);
   fprintf(stdout, "%s", ctime(&now));
 
   /* Set the time if requested. */
@@ -198,9 +214,13 @@ int main(int argc, char **argv)
 	  current_time.tv_sec = now;
 	  current_time.tv_usec = 0;
 	  if (settimeofday(&current_time, &current_timezone) < 0)
-	    myperror("settimeofday", errno);
+	    {
+	      fprintf(stderr, "%s: can't set time: %s\n",
+		      program_name, strerror(errno));
+	      exit(1);
+	    }
 	}
     }
 
-  exit(0);
+  return 0;
 }
