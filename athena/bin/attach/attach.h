@@ -1,7 +1,7 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.h,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
@@ -15,6 +15,7 @@
 #include <strings.h>
 
 #include <sys/types.h>
+#include <sys/param.h>			/* MAXPATHLEN */
 #include <sys/time.h>
 #ifdef NFS
 #include <rpc/rpc.h>
@@ -62,22 +63,22 @@
  */
 
 struct _attachtab {
+	struct _attachtab	*next, *prev;
 	char		version[3];
 	char		explicit;
 	char		status;
+	char		mode;
 	struct _fstypes	*fs;
-	char		hesiodname[BUFSIZ];
-	char		host[BUFSIZ];
-	char		hostdir[BUFSIZ];
 	struct		in_addr hostaddr;
 	int		rmdir;
-	char		mntpt[BUFSIZ];
 	int		drivenum;
-	char		mode;
 	int		flags;
 	int		nowners;
-	int		owners[MAXOWNERS];
-	struct _attachtab	*next, *prev;
+	uid_t		owners[MAXOWNERS];
+	char		hesiodname[BUFSIZ];
+	char		host[BUFSIZ];
+	char		hostdir[MAXPATHLEN];
+	char		mntpt[MAXPATHLEN];
 };
 
 /*
@@ -292,7 +293,7 @@ extern	char	*inaddr_to_name();	/* convert host addr to host name */
 
 AUTH	*spoofunix_create_default();
 CLIENT	*rpc_create();
-extern char *strdup();
+extern char *strdup(), *strtok();
 extern int errno;
 extern unsigned long rvderrno;
 extern char *sys_errlist[];
