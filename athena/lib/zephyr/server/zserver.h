@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.21 1987-12-18 15:29:57 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.22 1988-01-20 15:34:35 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -290,11 +290,18 @@ extern char *pktypes[];			/* names of the packet types */
 /* the instance that matches all instances */
 #define	WILDCARD_INSTANCE	"*"
 
+/* Magic path names */
+#ifndef HESIOD
+#define SERVER_LIST_FILE	"/usr/athena/lib/zephyr/server.list"
+#endif !HESIOD
+
 /* ACL's for pre-registered classes */
 #define	ZEPHYR_ACL_DIR	"/usr/athena/lib/zephyr/"
 #define	ZEPHYR_CLASS_REGISTRY	"class-registry.acl"
+
 /* SERVER_SRVTAB is defined in zephyr.h */
 #define	ZEPHYR_SRVTAB	SERVER_SRVTAB
+
 #define	ZEPHYR_TKFILE	"/usr/athena/lib/zephyr/ztkts"
 
 /* debugging macros */
