@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.8 2000-04-27 14:18:14 rbasch Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.9 2000-05-02 17:25:04 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -1571,10 +1571,22 @@ static void initOwl(Widget search)
 
 	  values.function = GXcopy;
 	  valuemask = GCForeground | GCBackground | GCFunction;
+	  owlGC = XtGetGC(owl, valuemask, &values);
+	  if (auxConditions())
+	    {
+	      owlState = OWL_SLEEPY;
+	      owlDelta = OWL_SLEEPING;
+	    }
+	  else
+	    {
+	      owlState = OWL_AWAKE;
+	      owlDelta = OWL_BLINKINGCLOSED;
+	    }
+	  isDelta = OWL_BLINKINGCLOSED;
 
 	  owlNumBitmaps = 0;
 	  ptr = filenames;
-	  while (ptr != NULL && !done)
+	  while (*ptr && !done)
 	    {
 	      while (*ptr != '\0' && !isspace((unsigned char)*ptr))
 		ptr++;
@@ -1591,7 +1603,7 @@ static void initOwl(Widget search)
 							      &owlHeight,
 							      NULL, NULL);
 	      if (owlBitmaps[owlNumBitmaps] == None)
-		return; /* abort */
+		break;
 	      owlNumBitmaps++;
 	      if (!done)
 		{
@@ -1601,19 +1613,6 @@ static void initOwl(Widget search)
 		}
 	      filenames = ptr;
 	    }
-
-	  owlGC = XtGetGC(owl, valuemask, &values);
-	  if (auxConditions())
-	    {
-	      owlState = OWL_SLEEPY;
-	      owlDelta = OWL_SLEEPING;
-	    }
-	  else
-	    {
-	      owlState = OWL_AWAKE;
-	      owlDelta = OWL_BLINKINGCLOSED;
-	    }
-	  isDelta = OWL_BLINKINGCLOSED;
 	}
     }
 
@@ -1636,10 +1635,11 @@ static void initOwl(Widget search)
 
 	  values.function = GXcopy;
 	  valuemask = GCForeground | GCBackground | GCFunction;
+	  isGC = XtGetGC(is, valuemask, &values);
 
 	  isNumBitmaps = 0;
 	  ptr = filenames;
-	  while (ptr != NULL && !done)
+	  while (*ptr && !done)
 	    {
 	      while (*ptr != '\0' && !isspace((unsigned char)*ptr))
 		ptr++;
@@ -1656,7 +1656,7 @@ static void initOwl(Widget search)
 							    &isHeight,
 							    NULL, NULL);
 	      if (isBitmaps[isNumBitmaps] == None)
-		return; /* abort */
+		break;
 	      isNumBitmaps++;
 	      if (!done)
 		{
@@ -1666,8 +1666,6 @@ static void initOwl(Widget search)
 		}
 	      filenames = ptr;
 	    }
-
-	  isGC = XtGetGC(is, valuemask, &values);
 	}
     }
 }
