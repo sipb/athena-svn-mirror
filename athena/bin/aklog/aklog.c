@@ -1,11 +1,11 @@
 /*
- * $Id: aklog.c,v 1.6 1999-09-22 21:18:15 danw Exp $
+ * $Id: aklog.c,v 1.7 1999-09-24 20:12:45 danw Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog.c,v 1.6 1999-09-22 21:18:15 danw Exp $";
+static const char rcsid[] = "$Id: aklog.c,v 1.7 1999-09-24 20:12:45 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +18,7 @@ static const char rcsid[] = "$Id: aklog.c,v 1.6 1999-09-22 21:18:15 danw Exp $";
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include <krb.h>
 
 #include <afs/param.h>
@@ -38,7 +39,6 @@ static const char rcsid[] = "$Id: aklog.c,v 1.6 1999-09-22 21:18:15 danw Exp $";
 #define AFSDIR_CLIENT_ETC_DIRPATH AFSCONF_CLIENTNAME
 #endif
 
-#include "aklog.h"
 #include "linked_list.h"
 
 #define AFSKEY "afs"
@@ -84,13 +84,8 @@ struct afsconf_cell ak_cellconfig; /* General information about the cell */
 
 static char *progname = NULL;	/* Name of this program */
 static int dflag = FALSE;	/* Give debugging information */
-static int noauth = FALSE;	/* If true, don't try to get tokens */
-static int zsubs = FALSE;	/* Are we keeping track of zephyr subs? */
-static int hosts = FALSE;	/* Are we keeping track of hosts? */
 static int noprdb = FALSE;	/* Skip resolving name to id? */
 static int force = FALSE;	/* Bash identical tokens? */
-static linked_list zsublist;	/* List of zephyr subscriptions */
-static linked_list hostlist;	/* List of host addresses */
 static linked_list authedcells;	/* List of cells already logged to */
 
 /* This is a pretty gross hack.  Linking against the Transarc
@@ -266,176 +261,146 @@ static int auth_to_cell(char *cell, char *realm)
    */
   (void)ll_add_string(&authedcells, cell_to_use);
 
+  if (dflag)
+    printf("Authenticating to cell %s.\n", cell_to_use);
+
+  if (realm && realm[0])
+    strcpy(realm_of_cell, realm);
+  else
+    strcpy(realm_of_cell, afs_realm_of_cell(&ak_cellconfig));
+
+  /* We use the afs.<cellname> convention here... */
+  strcpy(name, AFSKEY);
+  strncpy(instance, cell_to_use, sizeof(instance));
+  instance[sizeof(instance)-1] = '\0';
+
   /*
-   * Record this cell in the list of zephyr subscriptions.  We may
-   * want zephyr subscriptions even if authentication fails.
-   * If this is done after we attempt to get tokens, aklog -zsubs
-   * can return something different depending on whether or not we
-   * are in -noauth mode.
+   * Extract the session key from the ticket file and hand-frob an
+   * afs style authenticator.
    */
-  if (ll_add_string(&zsublist, cell_to_use) == LL_FAILURE)
+
+  /*
+   * Try to obtain AFS tickets.  Because there are two valid service
+   * names, we will try both, but trying the more specific first.
+   *
+   * 	afs.<cell>@<realm>
+   * 	afs@<realm>
+   */
+  if (dflag)
+    printf("Getting tickets: %s.%s@%s\n", name, instance, realm_of_cell);
+  status = get_cred(name, instance, realm_of_cell, &c);
+  if (status == KDC_PR_UNKNOWN)
     {
-      fprintf(stderr,
-	      "%s: failure adding cell %s to zephyr subscriptions list.\n",
-	      progname, cell_to_use);
-      exit(AKLOG_MISC);
+      if (dflag)
+	printf("Getting tickets: %s@%s\n", name, realm_of_cell);
+      status = get_cred(name, "", realm_of_cell, &c);
     }
-  if (ll_add_string(&zsublist, local_cell) == LL_FAILURE)
+
+  if (status != KSUCCESS)
     {
-      fprintf(stderr,
-	      "%s: failure adding cell %s to zephyr subscriptions list.\n",
-	      progname, local_cell);
-      exit(AKLOG_MISC);
+      if (dflag)
+	printf("Kerberos error code returned by get_cred: %d\n", status);
+      fprintf(stderr, "%s: Couldn't get %s AFS tickets: %s\n",
+	      progname, cell_to_use, krb_err_txt[status]);
+      return(AKLOG_KERBEROS);
     }
 
-  if (!noauth)
+  strncpy(aserver.name, AFSKEY, MAXKTCNAMELEN - 1);
+  strncpy(aserver.instance, AFSINST, MAXKTCNAMELEN - 1);
+  strncpy(aserver.cell, cell_to_use, MAXKTCREALMLEN - 1);
+
+  strcpy (username, c.pname);
+  if (c.pinst[0])
+    {
+      strcat(username, ".");
+      strcat(username, c.pinst);
+    }
+
+  atoken.kvno = c.kvno;
+  atoken.startTime = c.issue_date;
+  /* ticket lifetime is in five-minutes blocks. */
+  atoken.endTime = c.issue_date + ((unsigned char)c.lifetime * 5 * 60);
+  memcpy(&atoken.sessionKey, c.session, 8);
+  atoken.ticketLen = c.ticket_st.length;
+  memcpy(atoken.ticket, c.ticket_st.dat, atoken.ticketLen);
+
+  if (!force &&
+      !ktc_GetToken(&aserver, &btoken, sizeof(btoken), &aclient) &&
+      atoken.kvno == btoken.kvno &&
+      atoken.ticketLen == btoken.ticketLen &&
+      !memcmp(&atoken.sessionKey, &btoken.sessionKey, sizeof(atoken.sessionKey)) &&
+      !memcmp(atoken.ticket, btoken.ticket, atoken.ticketLen))
     {
       if (dflag)
-	printf("Authenticating to cell %s.\n", cell_to_use);
+	printf("Identical tokens already exist; skipping.\n");
+      return 0;
+    }
 
-      if (realm && realm[0])
-	strcpy(realm_of_cell, realm);
-      else
-	strcpy(realm_of_cell, afs_realm_of_cell(&ak_cellconfig));
-
-      /* We use the afs.<cellname> convention here... */
-      strcpy(name, AFSKEY);
-      strncpy(instance, cell_to_use, sizeof(instance));
-      instance[sizeof(instance)-1] = '\0';
-
-      /*
-       * Extract the session key from the ticket file and hand-frob an
-       * afs style authenticator.
-       */
-
-      /*
-       * Try to obtain AFS tickets.  Because there are two valid service
-       * names, we will try both, but trying the more specific first.
-       *
-       * 	afs.<cell>@<realm>
-       * 	afs@<realm>
-       */
+  if (noprdb)
+    {
       if (dflag)
-	printf("Getting tickets: %s.%s@%s\n", name, instance, realm_of_cell);
-      status = get_cred(name, instance, realm_of_cell, &c);
-      if (status == KDC_PR_UNKNOWN)
-	{
-	  if (dflag)
-	    printf("Getting tickets: %s@%s\n", name, realm_of_cell);
-	  status = get_cred(name, "", realm_of_cell, &c);
-	}
-
-      if (status != KSUCCESS)
-	{
-	  if (dflag)
-	    printf("Kerberos error code returned by get_cred: %d\n", status);
-	  fprintf(stderr, "%s: Couldn't get %s AFS tickets: %s\n",
-		  progname, cell_to_use, krb_err_txt[status]);
-	  return(AKLOG_KERBEROS);
-	}
-
-      strncpy(aserver.name, AFSKEY, MAXKTCNAMELEN - 1);
-      strncpy(aserver.instance, AFSINST, MAXKTCNAMELEN - 1);
-      strncpy(aserver.cell, cell_to_use, MAXKTCREALMLEN - 1);
-
-      strcpy (username, c.pname);
-      if (c.pinst[0])
-	{
-	  strcat(username, ".");
-	  strcat(username, c.pinst);
-	}
-
-      atoken.kvno = c.kvno;
-      atoken.startTime = c.issue_date;
-      /* ticket lifetime is in five-minutes blocks. */
-      atoken.endTime = c.issue_date + ((unsigned char)c.lifetime * 5 * 60);
-      memcpy(&atoken.sessionKey, c.session, 8);
-      atoken.ticketLen = c.ticket_st.length;
-      memcpy(atoken.ticket, c.ticket_st.dat, atoken.ticketLen);
-
-      if (!force &&
-	  !ktc_GetToken(&aserver, &btoken, sizeof(btoken), &aclient) &&
-	  atoken.kvno == btoken.kvno &&
-	  atoken.ticketLen == btoken.ticketLen &&
-	  !memcmp(&atoken.sessionKey, &btoken.sessionKey, sizeof(atoken.sessionKey)) &&
-	  !memcmp(atoken.ticket, btoken.ticket, atoken.ticketLen))
-	{
-	  if (dflag)
-	    printf("Identical tokens already exist; skipping.\n");
-	  return 0;
-	}
-
-      if (noprdb)
-	{
-	  if (dflag)
-	    printf("Not resolving name %s to id (-noprdb set)\n", username);
-	}
-      else
-	{
-	  if ((status = krb_get_tf_realm(TKT_FILE, realm_of_user)) != KSUCCESS)
-	    {
-	      fprintf(stderr, "%s: Couldn't determine realm of user: %s)",
-		      progname, krb_err_txt[status]);
-	      return(AKLOG_KERBEROS);
-	    }
-	  if (strcmp(realm_of_user, realm_of_cell))
-	    {
-	      strcat(username, "@");
-	      strcat(username, realm_of_user);
-	    }
-
-	  if (dflag)
-	    printf("About to resolve name %s to id\n", username);
-
-	  if (!pr_Initialize (0, AFSDIR_CLIENT_ETC_DIRPATH, aserver.cell))
-	    status = pr_SNameToId (username, &viceId);
-
-	  if (dflag)
-	    {
-	      if (status)
-		printf("Error %d\n", status);
-	      else
-		printf("Id %d\n", viceId);
-	    }
-
-	  /*
-	   * This is a crock, but it is Transarc's crock, so
-	   * we have to play along in order to get the
-	   * functionality.  The way the afs id is stored is
-	   * as a string in the username field of the token.
-	   * Contrary to what you may think by looking at
-	   * the code for tokens, this hack (AFS ID %d) will
-	   * not work if you change %d to something else.
-	   */
-	  if ((status == 0) && (viceId != ANONYMOUSID))
-	    sprintf (username, "AFS ID %d", viceId);
-	}
-
-      if (dflag)
-	printf("Set username to %s\n", username);
-
-      /* Reset the "aclient" structure before we call ktc_SetToken.
-       * This structure was first set by the ktc_GetToken call when
-       * we were comparing whether identical tokens already existed.
-       */
-      strncpy(aclient.name, username, MAXKTCNAMELEN - 1);
-      strcpy(aclient.instance, "");
-      strncpy(aclient.cell, c.realm, MAXKTCREALMLEN - 1);
-
-      if (dflag)
-	printf("Getting tokens.\n");
-      if (status = ktc_SetToken(&aserver, &atoken, &aclient, 0))
-	{
-	  fprintf(stderr,
-		  "%s: unable to obtain tokens for cell %s (status: %d).\n",
-		  progname, cell_to_use, status);
-	  status = AKLOG_TOKEN;
-	}
+	printf("Not resolving name %s to id (-noprdb set)\n", username);
     }
   else
     {
+      if ((status = krb_get_tf_realm(TKT_FILE, realm_of_user)) != KSUCCESS)
+	{
+	  fprintf(stderr, "%s: Couldn't determine realm of user: %s)",
+		  progname, krb_err_txt[status]);
+	  return(AKLOG_KERBEROS);
+	}
+      if (strcmp(realm_of_user, realm_of_cell))
+	{
+	  strcat(username, "@");
+	  strcat(username, realm_of_user);
+	}
+
       if (dflag)
-	printf("Noauth mode; not authenticating.\n");
+	printf("About to resolve name %s to id\n", username);
+
+      if (!pr_Initialize (0, AFSDIR_CLIENT_ETC_DIRPATH, aserver.cell))
+	status = pr_SNameToId (username, &viceId);
+
+      if (dflag)
+	{
+	  if (status)
+	    printf("Error %d\n", status);
+	  else
+	    printf("Id %d\n", viceId);
+	}
+
+      /*
+       * This is a crock, but it is Transarc's crock, so
+       * we have to play along in order to get the
+       * functionality.  The way the afs id is stored is
+       * as a string in the username field of the token.
+       * Contrary to what you may think by looking at
+       * the code for tokens, this hack (AFS ID %d) will
+       * not work if you change %d to something else.
+       */
+      if ((status == 0) && (viceId != ANONYMOUSID))
+	sprintf (username, "AFS ID %d", viceId);
+    }
+
+  if (dflag)
+    printf("Set username to %s\n", username);
+
+  /* Reset the "aclient" structure before we call ktc_SetToken.
+   * This structure was first set by the ktc_GetToken call when
+   * we were comparing whether identical tokens already existed.
+   */
+  strncpy(aclient.name, username, MAXKTCNAMELEN - 1);
+  strcpy(aclient.instance, "");
+  strncpy(aclient.cell, c.realm, MAXKTCREALMLEN - 1);
+
+  if (dflag)
+    printf("Getting tokens.\n");
+  if (status = ktc_SetToken(&aserver, &atoken, &aclient, 0))
+    {
+      fprintf(stderr,
+	      "%s: unable to obtain tokens for cell %s (status: %d).\n",
+	      progname, cell_to_use, status);
+      status = AKLOG_TOKEN;
     }
 
   return(status);
@@ -590,64 +555,6 @@ static char *next_path(char *origpath)
   return(pathtocheck);
 }
 
-static void add_hosts(char *file)
-{
-  struct ViceIoctl vio;
-  char outbuf[BUFSIZ];
-  long *phosts;
-  int i;
-  struct hostent *hp;
-  struct in_addr in;
-
-  memset(outbuf, 0, sizeof(outbuf));
-
-  vio.out_size = sizeof(outbuf);
-  vio.in_size = 0;
-  vio.out = outbuf;
-
-  if (dflag)
-    printf("Getting list of hosts for %s\n", file);
-
-  /* Don't worry about errors. */
-  if (!pioctl(file, VIOCWHEREIS, &vio, 1))
-    {
-      phosts = (long *) outbuf;
-
-      /*
-       * Lists hosts that we care about.  If ALLHOSTS is defined,
-       * then all hosts that you ever may possible go through are
-       * included in this list.  If not, then only hosts that are
-       * the only ones appear.  That is, if a volume you must use
-       * is replaced on only one server, that server is included.
-       * If it is replicated on many servers, then none are included.
-       * This is not perfect, but the result is that people don't
-       * get subscribed to a lot of instances of FILSRV that they
-       * probably won't need which reduces the instances of
-       * people getting messages that don't apply to them.
-       */
-#ifndef ALLHOSTS
-      if (phosts[1] != '\0')
-	return;
-#endif
-      for (i = 0; phosts[i]; i++)
-	{
-	  if (hosts)
-	    {
-	      in.s_addr = phosts[i];
-	      if (dflag)
-		printf("Got host %s\n", inet_ntoa(in));
-	      ll_add_string(&hostlist, (char *)inet_ntoa(in));
-	    }
-	  if (zsubs && (hp=gethostbyaddr(&phosts[i],sizeof(long),AF_INET)))
-	    {
-	      if (dflag)
-		printf("Got host %s\n", hp->h_name);
-	      ll_add_string(&zsublist, hp->h_name);
-	    }
-	}
-    }
-}
-
 /*
  * This routine descends through a path to a directory, logging to
  * every cell it encounters along the way.
@@ -699,11 +606,6 @@ static int auth_to_path(char *path)
 	{
 	  /* skip over the '#' or '%' */
 	  cell = mountpoint + 1;
-	  /* Add this (cell:volumename) to the list of zsubs */
-	  if (zsubs)
-	    ll_add_string(&zsublist, cell);
-	  if (zsubs || hosts)
-	    add_hosts(pathtocheck);
 	  if (endofcell = strchr(mountpoint, VOLMARKER))
 	    {
 	      *endofcell = '\0';
@@ -749,14 +651,11 @@ static void usage(void)
   fprintf(stderr, "\nUsage: %s %s%s%s\n", progname,
 	  "[-d] [[-cell | -c] cell [-k krb_realm]] ",
 	  "[[-p | -path] pathname]\n",
-	  "    [-zsubs] [-hosts] [-noauth] [-noprdb]\n");
+	  "    [-noprdb]\n");
   fprintf(stderr, "    -d gives debugging information.\n");
   fprintf(stderr, "    krb_realm is the kerberos realm of a cell.\n");
   fprintf(stderr, "    pathname is the name of a directory to which ");
   fprintf(stderr, "you wish to authenticate.\n");
-  fprintf(stderr, "    -zsubs gives zephyr subscription information.\n");
-  fprintf(stderr, "    -hosts gives host address information.\n");
-  fprintf(stderr, "    -noauth does not attempt to get tokens.\n");
   fprintf(stderr, "    -noprdb means don't try to determine AFS ID.\n");
   fprintf(stderr, "    No commandline arguments means ");
   fprintf(stderr, "authenticate to the local cell.\n");
@@ -796,9 +695,6 @@ int main(int argc, char *argv[])
   ll_init(&cells);
   ll_init(&paths);
 
-  ll_init(&zsublist);
-  ll_init(&hostlist);
-
   /* Store the program name here for error messages */
   if (progname = strrchr(argv[0], DIR))
     progname++;
@@ -813,12 +709,6 @@ int main(int argc, char *argv[])
     {
       if (strcmp(argv[i], "-d") == 0)
 	dflag++;
-      else if (strcmp(argv[i], "-noauth") == 0)
-	noauth++;
-      else if (strcmp(argv[i], "-zsubs") == 0)
-	zsubs++;
-      else if (strcmp(argv[i], "-hosts") == 0)
-	hosts++;
       else if (strcmp(argv[i], "-noprdb") == 0)
 	noprdb++;
       else if (strcmp(argv[i], "-force") == 0)
@@ -952,20 +842,6 @@ int main(int argc, char *argv[])
        */
       if (somethingswrong && ((cells.nelements + paths.nelements) > 1))
 	status = AKLOG_SOMETHINGSWRONG;
-    }
-
-  /* If we are keeping track of zephyr subscriptions, print them. */
-  if (zsubs)
-    {
-      for (cur_node = zsublist.first; cur_node; cur_node = cur_node->next)
-	printf("zsub: %s\n", cur_node->data);
-    }
-
-  /* If we are keeping track of host information, print it. */
-  if (hosts)
-    {
-      for (cur_node = hostlist.first; cur_node; cur_node = cur_node->next)
-	printf("host: %s\n", cur_node->data);
     }
 
   exit(status);
