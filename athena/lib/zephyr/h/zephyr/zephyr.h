@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
  *	$Author: raeburn $
- *	$Id: zephyr.h,v 1.39 1990-12-21 17:19:50 raeburn Exp $
+ *	$Id: zephyr.h,v 1.40 1990-12-27 13:32:33 raeburn Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -180,6 +180,7 @@ extern "C" {
     extern Code_t ZParseNotice Zproto((char*, int, ZNotice_t *));
     extern Code_t ZReadAscii Zproto((char*, int, unsigned char*, int));
     extern Code_t ZSendPacket Zproto((char*, int, int));
+    extern Code_t ZSendList Zproto((ZNotice_t*, char *[], int, Z_AuthProc));
     extern Code_t ZFormatNotice Zproto((ZNotice_t*, char**, int*, Z_AuthProc));
     extern Code_t ZInitialize Zproto ((void));
     extern Code_t ZSetServerState Zproto((int));
