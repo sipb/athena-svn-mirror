@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.23 1992-05-26 20:03:01 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.24 1992-05-29 13:55:29 epeisach Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -7,6 +7,7 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <utmp.h>
+#include <fcntl.h>
 #include <X11/Intrinsic.h>
 #include <ctype.h>
 #include "../wcl/WcCreate.h"
@@ -351,12 +352,17 @@ main(argc, argv)
   else
     activation_state = ACTIVATED;
 
-  /* make another connection to the X server so that there won't be a
-   * window where there are no connections and the server resets.
+  /* Make another connection to the X server so that there won't be a
+   * period where there are no connections to the server, causing it
+   * to reset (as when a config_console is done and console is the
+   * only X program running). I.e., we don't close this connection,
+   * and the X socket is inherited by Xsession.
    */
   dpy1 = XOpenDisplay(DisplayString(dpy));
-  dup(XConnectionNumber(dpy1));
-  XCloseDisplay(dpy1);
+  
+  if ((i = XConnectionNumber(dpy1)) >= 0) {
+	  fcntl(i, F_SETFD, 0);
+  }
 
   setenv("PATH", defaultpath, 1);
 
