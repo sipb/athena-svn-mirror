@@ -20,7 +20,7 @@
  * a given root directory, presumably an Athena /os hierarchy.
  */
 
-static const char rcsid[] = "$Id: os-checkfiles.c,v 1.5 2004-04-15 17:58:22 rbasch Exp $";
+static const char rcsid[] = "$Id: os-checkfiles.c,v 1.6 2004-04-20 15:26:18 rbasch Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +29,7 @@ static const char rcsid[] = "$Id: os-checkfiles.c,v 1.5 2004-04-15 17:58:22 rbas
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <utime.h>
 #include <dirent.h>
 #include <limits.h>
 #include <fcntl.h>
@@ -253,6 +254,7 @@ void do_file(const char *path, const struct stat *statp, mode_t mode,
 {
   struct stat sb;
   char ospath[PATH_MAX+1];
+  struct utimbuf utbuf;
 
   if (statp == NULL
       || !S_ISREG(statp->st_mode)
@@ -283,6 +285,20 @@ void do_file(const char *path, const struct stat *statp, mode_t mode,
 	    }
 
 	  set_stat(path, mode, uid, gid);
+
+	  /* Set the restored file's modification time to the expected
+	   * value.  The file access time gets the same value, since it
+	   * is handy.
+	   */
+	  utbuf.actime = mtime;
+	  utbuf.modtime = mtime;
+	  if (utime(path, &utbuf) != 0)
+	    {
+	      fprintf(stderr,
+		      "%s: Cannot set modification time of %s: %s\n",
+		      progname, path, strerror(errno));
+	      exit(1);
+	    }
 	}
     }
 
