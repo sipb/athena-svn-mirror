@@ -59,10 +59,6 @@ fi
 
 # afsd is started by init.d/afs. We just do our little additions here.
 if [ "${AFSCLIENT}" != "false" ]; then
-	if [ -f  /afs/athena/service/aklog ]; then
-          cp -p /afs/athena.mit.edu/service/aklog /bin/athena/aklog
-	fi
-
 	sh /etc/athena/config_afs
 fi
 
