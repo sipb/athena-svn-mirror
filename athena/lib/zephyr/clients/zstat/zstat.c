@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v $
- *      $Author: jtkohl $
+ *      $Author: raeburn $
  *
  *      Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -12,16 +12,16 @@
  */
 
 #include <zephyr/zephyr.h>
-#include "../../server/zserver.h"
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <string.h>
+#include "zserver.h"
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_zstat_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v 1.8 1989-04-04 11:26:38 jtkohl Exp $";
+static char rcsid_zstat_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v 1.9 1990-11-14 18:32:06 raeburn Exp $";
 #endif SABER
 #endif lint
 		     
