@@ -236,7 +236,7 @@ int tf_init(tf_name, rw)
 	    return TKT_FIL_ACC;
 	}
     }
-    if (stat_buf.st_uid != me || !(stat_buf.st_mode & S_IFREG)
+    if ((stat_buf.st_uid != me && me != 0) || !(stat_buf.st_mode & S_IFREG)
 	|| stat_buf.st_nlink != 1 || stat_buf.st_mode & 077) {
 	return TKT_FIL_ACC;
     }
@@ -334,7 +334,7 @@ int tf_init(tf_name, rw)
 	    return TKT_FIL_ACC;
 	}
     }
-    if (stat_buf.st_uid != me || !(stat_buf.st_mode & S_IFREG)
+    if ((stat_buf.st_uid != me && me != 0) || !(stat_buf.st_mode & S_IFREG)
 	|| stat_buf.st_nlink != 1 || stat_buf.st_mode & 077) {
 	return TKT_FIL_ACC;
     }
