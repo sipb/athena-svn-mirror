@@ -17,7 +17,7 @@
  * functions to set up and revert user home directories.
  */
 
-static const char rcsid[] = "$Id: homedir.c,v 1.9 1999-03-03 00:48:44 danw Exp $";
+static const char rcsid[] = "$Id: homedir.c,v 1.10 1999-03-08 14:51:45 ghudson Exp $";
 
 #include <hesiod.h>
 #include <stdio.h>
@@ -44,6 +44,7 @@ int al__setup_homedir(const char *username, struct al_record *record,
   int status;
   char *tmpdir, *tmpfile, *saved_homedir;
   void *hescontext;
+  locker_context context;
   DIR *dir;
   struct dirent *entry;
 
@@ -89,7 +90,7 @@ int al__setup_homedir(const char *username, struct al_record *record,
 		       discard_locker_error, NULL);
   if (status == LOCKER_SUCCESS)
     {
-      status = locker_attach(context, user, NULL,
+      status = locker_attach(context, username, NULL,
 			     havecred ? LOCKER_AUTH_DEFAULT : LOCKER_AUTH_NONE,
 			     0, NULL, NULL);
       locker_end(context);
