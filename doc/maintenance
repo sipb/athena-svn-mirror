@@ -135,7 +135,9 @@ general architecture of the wash process is:
 
 The souce for the wash scripts lives in /afs/dev.mit.edu/service/wash.
 They are installed in /usr/local on the wash machines, along with a
-copy of krbtgp from the net-tools locker in /usr/local/bin.
+copy of krbtgp from the net-tools locker in /usr/local/bin.  Logs of
+the start and end times of the wash processes on each machine live in
+/var/wash/log.
 
 Imake templates
 ---------------
