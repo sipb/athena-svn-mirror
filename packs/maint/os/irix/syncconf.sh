@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.1 1999-01-22 04:01:56 rbasch Exp $
+# $Id: syncconf.sh,v 1.2 1999-01-29 03:20:28 rbasch Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -175,8 +175,7 @@ handle()
 		;;
 
 	SENDMAIL)
-		syncrc 0 K 20 mail "$SENDMAIL"
-		syncrc 2 S 50 mail "$SENDMAIL"
+		syncvar sendmail "$SENDMAIL"
 		;;
 
 	SNMP)
