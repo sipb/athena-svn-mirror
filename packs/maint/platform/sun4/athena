@@ -179,7 +179,7 @@ if [ -d /var/spool/mqueue ]; then
   (cd /var/spool/mqueue; rm -f nf* lf*)
 fi
 # Sync aliases db.
-newaliases
+/usr/lib/sendmail -bi
 
 # Start standard daemons
 echo ""								>/dev/console
