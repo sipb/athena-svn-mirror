@@ -3,7 +3,7 @@
  * Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
  **************************************************************************/
 /**** HEADER *****/
-static char *const _id = "$Id: checkcode.c,v 1.4 2003-02-28 20:41:20 zacheiss Exp $";
+static char *const _id = "$Id: checkcode.c,v 1.4.2.1 2003-09-15 19:51:29 ghudson Exp $";
 
 #include "ifhp.h"
 #include <zephyr/zephyr.h>
@@ -328,6 +328,10 @@ static void send_zephyr(char *error)
 	notice.z_sender = "daemon";
 	notice.z_recipient = Loweropts['n' - 'a'];
 	notice.z_default_format = "";
+
+	/* Don't send to <message,personal,*> */
+	if (!*notice.z_recipient)
+	  return;
 
 	plp_snprintf(msg, sizeof(msg), "%s", Upperopts['P' - 'A']);
 	plen = strlen(msg);
