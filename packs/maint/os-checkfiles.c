@@ -20,7 +20,7 @@
  * a given root directory, presumably an Athena /os hierarchy.
  */
 
-static const char rcsid[] = "$Id: os-checkfiles.c,v 1.1 2000-06-19 03:53:33 ghudson Exp $";
+static const char rcsid[] = "$Id: os-checkfiles.c,v 1.2 2000-06-28 20:26:07 rbasch Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,6 +50,8 @@ void do_file(const char *path, const struct stat *statp, mode_t mode,
 	     off_t size, uid_t uid, gid_t gid, int flags, time_t since);
 
 void do_symlink(const char *from, const struct stat *statp, const char *to);
+
+void do_hardlink(const char *path, const struct stat *statp, const char *to);
 
 void do_directory(const char *path, const struct stat *statp, mode_t mode,
 		  uid_t uid, gid_t gid);
@@ -230,6 +232,16 @@ int main(int argc, char **argv)
 	    }
 	  do_file(path, statp, mode, size, uid, gid, flags, since);
 	  break;
+	case 'h':
+	  if (sscanf(&inbuf[2], "%s", linkpath) != 1)
+	    {
+	      fprintf(stderr,
+		      "%s: Invalid hard link entry '%s', aborting\n",
+		      progname, inbuf);
+	      exit(1);
+	    }
+	  do_hardlink(path, statp, linkpath);
+	  break;
 	case 'd':
 	  if (sscanf(&inbuf[2], "%llo %llu %llu", &mode, &uid, &gid) != 3)
 	    {
@@ -321,7 +333,7 @@ void do_symlink(const char *from, const struct stat *statp, const char *to)
     }
   if (!result)
     {
-      printf("Relink %s to %s\n", from, to);
+      printf("Relink (symbolic) %s to %s\n", from, to);
       if (!noop)
 	{
 	  nuke(from, statp);
@@ -329,6 +341,45 @@ void do_symlink(const char *from, const struct stat *statp, const char *to)
 	    {
 	      fprintf(stderr, "%s: Cannot create symlink %s: %s\n",
 		      progname, from, strerror(errno));
+	      exit(1);
+	    }
+	}
+    }
+}
+
+/* Handle a hard link. */
+void do_hardlink(const char *path, const struct stat *statp, const char *to)
+{
+  struct stat to_stat;
+
+  if (lstat(to, &to_stat) != 0)
+    {
+      fprintf(stderr,
+	      "%s: Warning: %s (link to %s) does not exist\n",
+	      progname, to, path);
+      return;
+    }
+  if (S_ISDIR(to_stat.st_mode))
+    {
+      fprintf(stderr,
+	      "%s: Warning: %s (link to %s) is a directory\n",
+	      progname, to, path);
+      return;
+    }
+
+  if (statp == NULL
+      || statp->st_ino != to_stat.st_ino
+      || statp->st_dev != to_stat.st_dev)
+    {
+      printf("Relink (hard) %s to %s\n", path, to);
+      if (!noop)
+	{
+	  if (statp != NULL)
+	    nuke(path, statp);
+	  if (link(to, path) != 0)
+	    {
+	      fprintf(stderr, "%s: Cannot create hard link %s to %s: %s\n",
+		      progname, path, to, strerror(errno));
 	      exit(1);
 	    }
 	}
