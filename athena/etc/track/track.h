@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.4 1987-03-05 19:50:40 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.5 1987-10-09 18:45:10 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.4 1987-03-05 19:50:40 rfrench Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.5 1987-10-09 18:45:10 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -132,3 +132,6 @@ struct stamp {
 	int uid,gid,mode,dev;
 	long ftime;
 };
+
+extern int access();
+#define exists(p) access(p, 0)
