@@ -25,7 +25,6 @@ extern char errbuf[200] ;
 extern real conv ;
 extern real vconv ;
 extern real alpha ;
-extern integer mag ;
 extern int actualdpi ;
 extern int vactualdpi ;
 extern char *nextstring, *maxstring ;
@@ -111,7 +110,7 @@ vfontdef(s, siz)
    register integer i, j, fn ;
    register fontdesctype *fp ;
    register fontmaptype *cfnt ;
-   char *name, *area ;
+   char *nam, *area ;
    integer cksum, scsize, dssize ;
 
    fn = vfbyte() ;
@@ -129,16 +128,16 @@ vfontdef(s, siz)
    for (; i>0; i--)
       *nextstring++ = vfbyte() ;
    *nextstring++ = 0 ;
-   name = nextstring ;
+   nam = nextstring ;
    for (; j>0; j--)
       *nextstring++ = vfbyte() ;
    *nextstring++ = 0 ;
-   fp = matchfont(name, area, scsize, (char *)0) ;
+   fp = matchfont(nam, area, scsize, (char *)0) ;
    if (fp) {
-      nextstring = name ;
+      nextstring = nam ;
       fp->checksum = cksum ;
    } else {
-      fp = newfontdesc(cksum, scsize, dssize, name, area) ;
+      fp = newfontdesc(cksum, scsize, dssize, nam, area) ;
       fp->next = fonthead ;
       fonthead = fp ;
    }

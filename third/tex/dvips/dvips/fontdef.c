@@ -15,7 +15,7 @@ extern void skipover(), error() ;
  *   The external variables we use:
  */
 extern char *nextstring, *maxstring ;
-extern integer mag ;
+extern double mag ;
 extern fontdesctype *baseFonts[] ;
 #ifdef DEBUG
 extern integer debug_flag;
@@ -65,7 +65,7 @@ char *name, *area ;
    fp->area = area;
    fp->resfont = NULL ;
    fp->localfonts = NULL ;
-   fp->dpi = dpicheck((halfword)((float)mag*(float)fp->scaledsize*DPI/
+   fp->dpi = dpicheck((halfword)(mag*fp->scaledsize*DPI/
          ((float)fp->designsize*1000.0)+0.5)) ;
    fp->loadeddpi = fp->dpi ;
 #ifdef DEBUG
@@ -147,7 +147,7 @@ int siz ;
    for (; j>0; j--)
       *nextstring++ = dvibyte() ;
    *nextstring++ = 0 ;
-   fp = matchfont(name, area, scsize, (integer)0) ;
+   fp = matchfont(name, area, scsize, (char *)0) ;
    if (fp) {
       nextstring = name ;
       fp->checksum = cksum ;

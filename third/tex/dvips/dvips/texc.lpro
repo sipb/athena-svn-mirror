@@ -151,50 +151,45 @@ TeXDict begin           % start using it.
       setcachedevice
       ch-width ch-height true
       [1 0 0 -1 -.1 ch-xoff sub ch-yoff .1 sub]
-% begin code for uncompressed fonts only
-      {ch-image} imagemask
-      restore
-  } B
-% end code for uncompressed fonts only
-% % here's the alternate code for unpacking compressed fonts
-%      /id ch-image N                          % image data
-%      /rw ch-width 7 add 8 idiv string N      % row, initially zero
-%      /rc 0 N                                 % repeat count
-%      /gp 0 N                                 % image data pointer
-%      /cp 0 N                                 % column pointer
-%      { rc 0 ne { rc 1 sub /rc X rw } { G } ifelse } imagemask
-%    restore
-% } B
-% /G { { id gp get /gp gp 1 add N
-%   dup 18 mod S 18 idiv pl S get exec } loop } B
-% /adv { cp add /cp X } B
-% /chg { rw cp id gp 4 index getinterval putinterval
-%         dup gp add /gp X adv } B
-% /nd { /cp 0 N rw exit } B
-% /lsh { rw cp 2 copy get dup 0 eq { pop 1 } { dup 255 eq { pop 254 }
-%     { dup dup add 255 and S 1 and or } ifelse } ifelse put 1 adv } B
-% /rsh { rw cp 2 copy get dup 0 eq { pop 128 } { dup 255 eq { pop 127 }
-%     { dup 2 idiv S 128 and or } ifelse } ifelse put 1 adv } B
-% /clr { rw cp 2 index string putinterval adv } B
-% /set { rw cp fillstr 0 4 index getinterval putinterval adv } B
-% /fillstr 18 string 0 1 17 { 2 copy 255 put pop } for N
-% /pl [
-%    { adv 1 chg }
-%    { adv 1 chg nd }
-%    { 1 add chg }
-%    { 1 add chg nd }
-%    { adv lsh }
-%    { adv lsh nd }
-%    { adv rsh }
-%    { adv rsh nd }
-%    { 1 add adv }
-%    { /rc X nd }
-%    { 1 add set }
-%    { 1 add clr }
-%    { adv 2 chg }
-%    { adv 2 chg nd }
-%    { pop nd } ] dup { bind pop } forall N
-% % end of code for unpacking compressed fonts
+% here's the alternate code for unpacking compressed fonts
+     /id ch-image N                          % image data
+     /rw ch-width 7 add 8 idiv string N      % row, initially zero
+     /rc 0 N                                 % repeat count
+     /gp 0 N                                 % image data pointer
+     /cp 0 N                                 % column pointer
+     { rc 0 ne { rc 1 sub /rc X rw } { G } ifelse } imagemask
+   restore
+} B
+/G { { id gp get /gp gp 1 add N
+  dup 18 mod S 18 idiv pl S get exec } loop } B
+/adv { cp add /cp X } B
+/chg { rw cp id gp 4 index getinterval putinterval
+        dup gp add /gp X adv } B
+/nd { /cp 0 N rw exit } B
+/lsh { rw cp 2 copy get dup 0 eq { pop 1 } { dup 255 eq { pop 254 }
+    { dup dup add 255 and S 1 and or } ifelse } ifelse put 1 adv } B
+/rsh { rw cp 2 copy get dup 0 eq { pop 128 } { dup 255 eq { pop 127 }
+    { dup 2 idiv S 128 and or } ifelse } ifelse put 1 adv } B
+/clr { rw cp 2 index string putinterval adv } B
+/set { rw cp fillstr 0 4 index getinterval putinterval adv } B
+/fillstr 18 string 0 1 17 { 2 copy 255 put pop } for N
+/pl [
+   { adv 1 chg }
+   { adv 1 chg nd }
+   { 1 add chg }
+   { 1 add chg nd }
+   { adv lsh }
+   { adv lsh nd }
+   { adv rsh }
+   { adv rsh nd }
+   { 1 add adv }
+   { /rc X nd }
+   { 1 add set }
+   { 1 add clr }
+   { adv 2 chg }
+   { adv 2 chg nd }
+   { pop nd } ] dup { bind pop } forall N
+% end of code for unpacking compressed fonts
 
                % in the following, the font-cacheing mechanism requires that
                 % a name unique in the particular font be generated

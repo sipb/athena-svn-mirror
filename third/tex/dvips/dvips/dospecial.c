@@ -5,6 +5,7 @@
 #include "dvips.h" /* The copyright notice in that file is included too! */
 
 #include <ctype.h>
+#include <stdlib.h>
 extern int atoi();
 extern void fil2ps();
 extern FILE *search();
@@ -43,6 +44,15 @@ extern void stringend() ;
 extern void error() ;
 extern void psflush() ;
 extern void emspecial() ;
+#ifdef HPS
+extern void do_html() ;
+extern Boolean HPS_FLAG ;
+extern vertical_in_hps();
+extern Boolean NEED_NEW_BOX ;
+extern void start_new_box() ;
+extern Boolean PAGEUS_INTERUPPTUS ;
+extern integer HREF_COUNT ;
+#endif 
 /* IBM: color - begin */
 extern void pushcolor() ;
 extern void popcolor() ;
@@ -450,7 +460,7 @@ char *s ;
 {
    FILE *f = search(figpath, s, "r") ;
    if (f)
-      fclose(f) ;
+      close_file(f) ;
    return (f != 0) ;
 }
 
@@ -467,8 +477,18 @@ integer numbytes ;
    Boolean psfilewanted = 1 ;
    char *task = 0 ;
    char cmdbuf[111] ; 
-
-   if (nextstring + i > maxstring)
+#ifdef HPS
+if (HPS_FLAG && PAGEUS_INTERUPPTUS) {
+     HREF_COUNT-- ;
+     start_new_box() ;
+     PAGEUS_INTERUPPTUS = 0 ;
+     }
+if (HPS_FLAG && NEED_NEW_BOX) {
+       vertical_in_hps();
+       NEED_NEW_BOX = 0;
+       }
+#endif
+   if (nextstring + numbytes > maxstring)
       error("! out of string space in dospecial") ;
    for (i=numbytes; i>0; i--)
 #ifdef VMCMS /* IBM: VM/CMS */
@@ -552,7 +572,37 @@ case '!':
    return ;
 case 'h':
    if (strncmp(p, "header", 6)==0) return ;
-   if (strncmp(p, "html:", 5)==0) return ;
+#ifdef HPS
+   if (strncmp(p, "html:", 5)==0) {
+     if (! HPS_FLAG) return;
+	 		p += 5;
+			while (isspace(*p))
+   		p++;
+			if (*p == '<') {
+    			char               *sp = p;
+    			char               *str;
+    			int                 ii=0;int len;int lower_len;
+
+    			while ((*p) && (*p != '>')) {
+						ii++;
+						p++;
+   			 }
+    		str = (char *)mymalloc(ii+2);
+   			strncpy(str,sp+1,ii-1);
+    		str[ii-1] = 0;len=strlen(str);
+				if(len>6) lower_len=6; else lower_len=len;
+				for(ii=0;ii<lower_len;ii++) str[ii]=tolower(str[ii]);
+				do_html(str);
+   			free(str);
+				} else {
+    			printf("Error in html special\n");
+    			return;
+				}
+	return;
+   }
+#else
+   if (strncmp(p, "html:", 5)==0) return;
+#endif
 case 'w':
 case 'W':
    if (strncmp(p+1, "arning", 6) == 0) {
@@ -709,7 +759,7 @@ char *task, *iname ;
    char cmd[400] ;
    FILE *f ;
    if (0 != (f=search(pictpath, iname, "r"))) {
-      fclose(f) ;
+      close_file(f) ;
    } else {
       fprintf(stderr, " couldn't open %s\n", iname) ;
       return ;
@@ -734,3 +784,94 @@ char *task, *iname ;
       fprintf(stderr, "]") ;
 }
 
+/*
+ *   Handles specials encountered during bounding box calculations.
+ *   Currently we only deal with psfile's or PSfiles and only those
+ *   that do not use rotations.
+ */
+static float rbbox[4] ;
+float *bbdospecial(nbytes)
+int nbytes ;
+{
+   char *p = nextstring ;
+   int i, j ;
+   char seen[NKEYS] ;
+   float valseen[NKEYS] ;
+
+   if (nextstring + nbytes > maxstring) {
+      p = nextstring = mymalloc(1000 + 2 * nbytes) ;
+      maxstring = nextstring + 2 * nbytes + 700 ;
+   }
+   if (nextstring + nbytes > maxstring)
+      error("! out of string space in bbdospecial") ;
+   for (i=nbytes; i>0; i--)
+#ifdef VMCMS /* IBM: VM/CMS */
+      *p++ = ascii2ebcdic[(char)dvibyte()] ;
+#else
+#ifdef MVSXA /* IBM: MVS/XA */
+      *p++ = ascii2ebcdic[(char)dvibyte()] ;
+#else
+      *p++ = (char)dvibyte() ;
+#endif  /* IBM: VM/CMS */
+#endif
+   while (p[-1] <= ' ' && p > nextstring)
+      p-- ; /* trim trailing blanks */
+   if (p==nextstring) return 0 ; /* all blank is no-op */
+   *p = 0 ;
+   p = nextstring ;
+   while (*p <= ' ')
+      p++ ;
+   if (strncmp(p, "psfile", 6)==0 || strncmp(p, "PSfile", 6)==0) {
+      float originx = 0, originy = 0, hscale = 1, vscale = 1,
+            hsize = 0, vsize = 0 ;
+      for (j=0; j<NKEYS; j++)
+         seen[j] = 0 ;
+      j = 0 ;
+      while ((p=GetKeyVal(p, &j))) {
+         if (j >= 0 && j < NKEYS && KeyTab[j].Type == Number) {
+	    seen[j]++ ;
+	    valseen[j] = ValNum ;
+         }
+      }
+      /*
+       *   This code mimics what happens in @setspecial.
+       */
+      if (seen[3])
+         hsize = valseen[3] ;
+      if (seen[4])
+         vsize = valseen[4] ;
+      if (seen[5])
+         originx = valseen[5] ;
+      if (seen[6])
+         originy = valseen[6] ;
+      if (seen[7])
+         hscale = valseen[7] / 100.0 ;
+      if (seen[8])
+         vscale = valseen[8] / 100.0 ;
+      if (seen[10] && seen[12])
+         hsize = valseen[12] - valseen[10] ;
+      if (seen[11] && seen[13])
+         vsize = valseen[13] - valseen[11] ;
+      if (seen[14] || seen[15]) {
+         if (seen[14] && seen[15] == 0) {
+	    hscale = vscale = valseen[14] / (10.0 * hsize) ;
+         } else if (seen[15] && seen[14] == 0) {
+	    hscale = vscale = valseen[15] / (10.0 * vsize) ;
+         } else {
+            hscale = valseen[14] / (10.0 * hsize) ;
+            vscale = valseen[15] / (10.0 * vsize) ;
+         }
+      }
+      /* at this point, the bounding box in PostScript units relative to
+         the current dvi point is
+           originx originy originx+hsize*hscale originy+vsize*vscale
+         We'll let the bbox routine handle the remaining math.
+       */
+      rbbox[0] = originx ;
+      rbbox[1] = originy ;
+      rbbox[2] = originx+hsize*hscale ;
+      rbbox[3] = originx+vsize*vscale ;
+      return rbbox ;
+   }
+   return 0 ;
+}

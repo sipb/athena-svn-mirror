@@ -35,7 +35,9 @@
 #ifndef CONFIGFILE
 #define CONFIGFILE "config.ps"
 #endif
-
+#ifdef HPS
+#define HPSHEADER "hps.pro"
+#endif
 /* arguments to fopen */
 #define READ            "r"
 

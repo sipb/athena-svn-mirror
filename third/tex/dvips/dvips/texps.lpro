@@ -77,7 +77,7 @@ TeXDict begin
 % itself inside the macro;
         [ 2 index currentdict end definefont 3 -1 roll makefont
 % this involves a circumlocution to insert the setfont command.
-          /setfont load ] 
+          /setfont cvx ] 
 % Finally the macro is made executable and given the name /foo.
         cvx def } def
 %

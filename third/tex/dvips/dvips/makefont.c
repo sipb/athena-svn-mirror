@@ -2,6 +2,7 @@
  *   This software is Copyright 1988 by Radical Eye Software.
  */
 #include "dvips.h"
+#include <math.h>
 extern int quiet ;
 extern int filter ;
 extern int dontmakefont ;
@@ -106,9 +107,9 @@ register int n, bdpi ;
       t = t * 1.2 ;
    }
    if (neg)
-      return((int)(0.5 + bdpi / t)) ;
+      return((int)floor(0.5 + bdpi / t)) ;
    else
-      return((int)(0.5 + bdpi * t)) ;
+      return((int)floor(0.5 + bdpi * t)) ;
 }
 #ifdef MAKEPKCMD
 static char *defcommand = MAKEPKCMD " %n %d %b %m" ;

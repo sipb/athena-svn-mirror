@@ -71,6 +71,20 @@ struct dvistack {
   integer hh, vv ;
   integer h, v, w, x, y, z ;
 } stack[STACKSIZE] ;
+#ifdef HPS
+extern int pagecounter ;
+extern Boolean HPS_FLAG ;
+extern Boolean inHTMLregion ;
+extern void vertical_in_hps() ;
+extern end_current_box() ;
+extern start_new_box() ;
+integer vvmem, hhmem ;
+integer pushcount = 0 ;
+Boolean PAGEUS_INTERUPPTUS = 0 ;
+Boolean NEED_NEW_BOX = 0 ;
+extern integer HREF_COUNT ;
+extern int current_pushcount ;
+#endif 
 void
 dopage()
 {
@@ -106,11 +120,13 @@ dopage()
    emclear() ;
 #endif
    pageinit() ;
-
+   
    bopcolor(1) ;
    thinspace =  (integer)(0.025*DPI/conv) ; /* 0.025 inches */
    vertsmallspace = (integer)(0.025*VDPI/vconv) ; /* 0.025 inches */
-
+#ifdef HPS
+   if (HPS_FLAG) pagecounter++ ;
+#endif 
    w = x = y = z = 0 ;
    h = DPI / conv * hoff / 4736286.72 ;
    v = DPI / conv * voff / 4736286.72 ;
@@ -134,6 +150,17 @@ case 128: cmd = dvibyte() ; /* set1 command drops through to setchar */
 default: /* these are commands 0 (setchar0) thru 127 (setchar127) */
    charmove = 1 ;
 dochar:
+#ifdef HPS
+   if (HPS_FLAG && PAGEUS_INTERUPPTUS) {
+     HREF_COUNT-- ;
+     start_new_box() ;
+     PAGEUS_INTERUPPTUS = 0 ;
+     }
+   if (HPS_FLAG && NEED_NEW_BOX) {
+       vertical_in_hps();
+       NEED_NEW_BOX = 0;
+       }
+#endif
    cd = &(curfnt->chardesc[cmd]) ;
    if (cd->flags & EXISTS) {
       if (curfnt->loaded == 2) { /* virtual character being typeset */
@@ -194,12 +221,31 @@ case 132: case 137: /* rules */
    goto setmotion ;
  }
 case 141: /* push */
+#ifdef HPS
+    if (HPS_FLAG) pushcount++ ;
+  /*  if (HPS_FLAG && PAGEUS_INTERUPPTUS) {
+      HREF_COUNT-- ;
+      start_new_box() ;
+      PAGEUS_INTERUPPTUS = 0 ;
+     } */
+    if (HPS_FLAG && NEED_NEW_BOX) {
+       vertical_in_hps();
+       NEED_NEW_BOX = 0;
+       }
+    /* printf("push %i, %i\n", pushcount, inHTMLregion) ; */
+#endif
    sp->hh = hh ; sp->vv = vv ; sp->h = h ; sp->v = v ;
    sp->w = w ; sp->x = x ; sp->y = y ; sp->z = z ;
    if (++sp >= &stack[STACKSIZE]) error("! Out of stack space") ;
    goto beginloop ;
 case 140: /* eop or end of virtual character */
-   if (curpos == NULL) break ; /* eop */
+   if (curpos == NULL) { /* eop */
+#ifdef HPS
+     if (HPS_FLAG && inHTMLregion) PAGEUS_INTERUPPTUS = 1 ;
+    /* printf("Page interrupted"); */
+#endif
+     break;
+   }
    --frp ;
    curfnt = frp->curf ;
    thinspace = (curfnt) ? curfnt->thinspace : vertsmallspace ;
@@ -210,9 +256,23 @@ case 140: /* eop or end of virtual character */
       (sp-1)->hh = hh; /* retain `intelligence' of pixel width, if close */ 
    /* falls through */
 case 142: /* pop */
+#ifdef HPS
+   pushcount-- ;
+  /* printf("pop %i\n", pushcount) ; */
+#endif
    if (--sp < stack) error("! More pops than pushes") ;
-   hh = sp->hh ; vv = sp->vv ; h = sp->h ; v = sp->v ;
+#ifdef HPS
+   if (HPS_FLAG) {
+      hhmem = hh ; vvmem = vv ; 
+     }
+#endif
+   hh = sp->hh ; vv = sp->vv ; h = sp->h ; v = sp->v ; 
    w = sp->w ; x = sp->x ; y = sp->y ; z = sp->z ;
+#ifdef HPS
+   if (HPS_FLAG && inHTMLregion && (hhmem - hh > 30) && (pushcount > 0) &&
+       (pushcount < current_pushcount)) 
+     end_current_box() ;
+#endif
    goto beginloop ;
 case 143: /* right1 */
    p = signedbyte() ; goto horizontalmotion ;
@@ -335,6 +395,11 @@ verticalmotion:
         if (roundpos - vv > vmaxdrift) vv = roundpos - vmaxdrift ;
         else if (vv - roundpos > vmaxdrift) vv = roundpos + vmaxdrift ;
       }
+#ifdef HPS
+   /* printf("Doing vertical motion: p = %i, v = %i, vv = %i\n",p,v,vv); */
+		/* printf("inHTMLregion %i\n", inHTMLregion) ; */
+     if (HPS_FLAG && inHTMLregion) NEED_NEW_BOX = 1 /* vertical_in_hps() */;
+#endif   
       goto beginloop ;
 /*
  *   Horizontal motion is analogous. We know the exact width of each
@@ -351,6 +416,9 @@ horizontalmotion:
          hh = PixRound(h) ; goto beginloop ;
       }
       else hh += PixRound(p) ;
+#ifdef HPS
+    /* printf("Doing horizontal motion: p = %i, h = %i, hh = %i\n",p,h,hh); */
+#endif
 setmotion:
       roundpos = PixRound(h) ;
       if (roundpos - hh > maxdrift) { hh = roundpos - maxdrift ; }

@@ -20,7 +20,6 @@ extern char *newstring() ;
 extern void error() ;
 extern void copyfile() ;
 extern FILE *search() ;
-extern long lastheadermem ;
 extern char errbuf[] ;
 extern integer fontmem, swmem ;
 extern char *headerpath ;
@@ -28,6 +27,10 @@ extern char *infont ;
 extern int headersready ;
 #ifdef DEBUG
 extern integer debug_flag ;
+#endif
+#ifdef HPS
+extern Boolean noprocset ;
+extern Boolean HPS_FLAG ;
 #endif
 /*
  *   This more general routine adds a name to a list of unique
@@ -91,7 +94,6 @@ char *s ;
       if (mem < 0)
          mem = DNFONTCOST ;
       fclose(f) ;
-      lastheadermem = mem ;
 #ifdef DEBUG
       if (dd(D_HEADER))
          (void)fprintf(stderr, "Adding header file \"%s\" %ld\n",
@@ -156,6 +158,11 @@ send_headers() {
 #ifdef DEBUG
       if (dd(D_HEADER))
          (void)fprintf(stderr, "Sending header file \"%s\"\n", q) ;
+#endif
+#ifdef HPS
+     if (HPS_FLAG) {
+ 	     if (strcmp(q,"target.dct")==0) noprocset = 1 ;
+       }
 #endif
       copyfile(q) ;
    }

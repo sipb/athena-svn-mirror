@@ -6,14 +6,16 @@
  *   minimum.  We parse and then output it.
  */
 #include <stdio.h>
+#include <string.h>
 #define LINELENGTH (72)
 #define BUFLENGTH (1000)
+#ifdef putchar
 #undef putchar
+#endif
 #define putchar(a) (void)putc(a, out) ;
 FILE *in, *out ;
 static int linepos = 0 ;
 static int lastspecial = 1 ;
-extern int strlen() ;
 /*
  *   This next routine writes out a `special' character.  In this case,
  *   we simply put it out, since any special character terminates the

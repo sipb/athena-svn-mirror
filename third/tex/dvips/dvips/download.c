@@ -1,10 +1,16 @@
 /*
  *   Code to download a font definition at the beginning of a section.
+ * hacked by SPQR 8.95 to allow for non-partial downloading
+ *
  */
 #include "dvips.h" /* The copyright notice in that file is included too! */
+#include "t1part.h"
+#define DVIPS
+void downpsfont();
 /*
  *   These are the external routines we call.
  */
+extern int add_header() ;
 extern void numout() ;
 extern void mhexout() ;
 extern void cmdout() ;
@@ -13,7 +19,9 @@ extern void flip() ;
 extern void specialout() ;
 extern long getlong() ;
 extern void error() ;
-extern char *nextstring ;
+extern void copyfile() ;
+extern void newline() ;
+extern char *nextstring, *infont ;
 /*
  *   These are the external variables we access.
  */
@@ -24,9 +32,14 @@ extern long mbytesleft ;
 extern quarterword *raster ;
 extern quarterword *mraster ;
 extern Boolean compressed ;
-extern integer mag ;
+extern Boolean partialdownload ;
+extern double mag ;
 extern int actualdpi ;
 static unsigned char dummyend[8] = { 252 } ;
+extern int prettycolumn ;
+extern int quiet ;
+extern Boolean disablecomments ;
+
 /*
  *   We have a routine that downloads an individual character.
  */
@@ -185,8 +198,8 @@ register char *s ;
 register int n ;
 {
    n-- ;
-   *s++ = 'F' + n / sizeof(goodnames) ;
-   *s++ = goodnames[n % sizeof(goodnames)] ;
+   *s++ = 'F' + n / (sizeof(goodnames)-1) ;
+   *s++ = goodnames[n % (sizeof(goodnames)-1)] ;
    *s++ = 0 ;
 }
 void
@@ -199,6 +212,7 @@ int n ;
         makepsname(b, n) ;
 	cmdout(buf);
 }
+
 /*
  *   And the download procedure.
  */
@@ -210,9 +224,9 @@ int psfont ;
    register halfword bit ;
    register chardesctype *c ;
    int cc, maxcc = -1, numcc ;
-   float fontscale ;
+   double fontscale ;
    char name[10] ;
-
+   int non_empty=0;
    lastccout = -5 ;
    name[0] = '/' ;
    makepsname(name + 1, psfont) ;
@@ -220,18 +234,20 @@ int psfont ;
    curfnt->psname = psfont ;
    if (curfnt->resfont) {
       struct resfont *rf = curfnt->resfont ;
-
+      for (b=0; b<16; b++)
+        if(p->bitmap[b] !=0)
+            non_empty =1;
+      if(non_empty==0)
+        return;
       cmdout(name) ;
 /* following code re-arranged - Rob Hutchings 1992Apr02 */
-      c = curfnt->chardesc ;
-
       c = curfnt->chardesc + 255 ;
       cc = 255 ;
       numcc = 0 ;
       i = 0 ;
       for (b=15; b>=0; b--) {
          for (bit=1; bit; bit<<=1) {
-            if (p->bitmap[b] & bit) {
+             if (p->bitmap[b] & bit) {
                if (i > 0) {
                   numout((integer)i) ;
                   specialout('[') ;
@@ -256,15 +272,12 @@ int psfont ;
       if (rf->specialinstructions)
          cmdout(rf->specialinstructions) ;
       specialout ('}') ;
-/* 
- * Perhaps there is a good reason to avoid float in this code; but in general
- * arithmetic should be done in the driver rather than the interpreter - Rob 
- */
       numout((integer)numcc) ;
-      fontscale = ((float)(curfnt->scaledsize)) / 655360.0 ;
-      fontscale *= (((float)mag)/7200.0) ;
+      fontscale = ((double)(curfnt->scaledsize)) / 655360.0 ;
+/*   A long-standing bug here; was 7200.  Caught by Sergey Lesenko. */
+      fontscale *= (mag/7227.0) ;
       fontscale *= actualdpi ;
-      (void)sprintf(nextstring, "%f", fontscale) ;
+      (void)sprintf(nextstring, "%g", fontscale) ;
       cmdout(nextstring) ;
       (void)strcpy(nextstring, "/") ;
       (void)strcat(nextstring, rf->PSname) ;
@@ -291,6 +304,11 @@ int psfont ;
    }
    if (numcc <= 0)
       return ;
+   fontscale = ((double)(curfnt->scaledsize)) / 65536.0 ;
+   fontscale *= (mag/1000.0) ;
+   newline() ;
+   fprintf(bitfile, "%%DVIPSBitmapFont: %s %s %g %d\n", name+1, curfnt->name,
+                     fontscale, numcc) ;
    cmdout(name) ;
    numout((integer)numcc) ;
    numout((integer)maxcc + 1) ;
@@ -326,4 +344,97 @@ int psfont ;
       }
    }
    cmdout("E") ;
+   newline() ;
+   fprintf(bitfile, "%%EndDVIPSBitmapFont\n") ;
+}
+
+void downpsfont(p, all)
+charusetype *p, *all ;
+{
+    int GridCount ;
+    register int b;
+    register halfword bit ;
+    register chardesctype *c ;
+    struct resfont *rf ;
+    int cc;
+
+    curfnt = p->fd ;
+    rf = curfnt->resfont ;
+    if (rf == 0 || rf->Fontfile == NULL)
+       return ;
+    for (; all->fd; all++)
+       if (all->fd->resfont &&
+           strcmp(rf->PSname, all->fd->resfont->PSname) == 0)
+          break ;
+    if (all != p)
+       return ;
+    if (all->fd == 0)
+       error("! internal error in downpsfont") ;
+    if (!partialdownload) {
+        infont = all->fd->resfont->PSname ;
+	copyfile(all->fd->resfont->Fontfile);
+        infont = 0 ;
+	return;
+    }
+    for (cc=0; cc<256; cc++)
+       grid[cc] = 0 ;
+    for (; all->fd; all++) {
+        if (all->fd->resfont == 0 ||
+            strcmp(rf->PSname, all->fd->resfont->PSname))
+           continue ;
+        curfnt = all->fd ;
+        c = curfnt->chardesc + 255 ;
+        cc = 255 ;
+        for (b=15; b>=0; b--) {
+            for (bit=1; bit; bit<<=1) {
+                if (all->bitmap[b] & bit) {
+                    grid[cc]=1;
+                }
+                c-- ;
+                cc-- ;
+            }
+        }
+    }
+
+    for (GridCount=0,cc=0; cc<256; cc++) {
+/*      tmpgrid[cc]=grid[cc]; */
+        if(grid[cc] ==1) {
+            GridCount++;
+        }
+    }
+    if(GridCount!=0) {
+        if (!quiet) {
+           if (strlen(rf->Fontfile) + prettycolumn > STDOUTSIZE) {
+              fprintf(stderr, "\n") ;
+              prettycolumn = 0 ;
+           }
+           (void)fprintf(stderr, "<%s>", rf->Fontfile);
+	   prettycolumn += strlen(rf->Fontfile) + 2 ;
+	}
+        newline() ;
+        if (! disablecomments)
+           (void)fprintf(bitfile, "%%%%BeginFont: %s\n",  rf->PSname);
+        if(FontPart(bitfile, rf->Fontfile, rf->Vectfile) < 0)
+            exit(1);
+        if (! disablecomments)
+           (void)fprintf(bitfile, "%%%%EndFont \n");
+   }
+}
+
+void dopsfont(fs)
+sectiontype *fs ;
+{
+    charusetype *cu ;
+
+    cu = (charusetype *) (fs + 1) ;
+    line = getmem(BUFSIZ);
+    tmpline=line;
+    while (cu->fd) {
+       if (cu->psfused)
+          cu->fd->psflag = EXISTS ;
+       downpsfont(cu++, (charusetype *)(fs + 1)) ;
+    }
+    loadbase = ~FLG_LOAD_BASE;
+    FirstCharB=UnDefineChars(FirstCharB);
+    free(tmpline);
 }

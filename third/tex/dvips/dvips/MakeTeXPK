@@ -22,7 +22,7 @@
 #   Of course, it needs to be set up for your site.
 #
 TEXDIR=/usr/lib/tex
-LOCALDIR=/LocalLibrary/Fonts/TeXFonts
+LOCALDIR=/common/rokicki/cmps/dvips
 DESTDIR=$LOCALDIR/pk
 #
 # TEMPDIR needs to be unique for each process because of the possibility

@@ -6,13 +6,15 @@
  */
 #include "dvips.h" /* The copyright notice in that file is included too! */
 #include <ctype.h>
+extern int fclose();         /* these added to keep SunOS happy */
+extern int pclose();
 #ifdef OS2
 #include <stdlib.h>
 FILE *fat_fopen();
 #endif
 
 #if defined(SYSV) || defined(VMS) || defined(__THINK__) || defined(MSDOS) || defined(OS2) || defined(ATARIST)
-#define MAXPATHLEN (256)
+#define MAXPATHLEN (2000)
 #else
 #include <sys/param.h>          /* for MAXPATHLEN */
 #endif
@@ -40,6 +42,8 @@ extern integer debug_flag;
 extern char *mfmode ;
 extern int actualdpi ;
 char realnameoffile[MAXPATHLEN] ;
+int to_close ;
+extern char *figpath, *pictpath, *headerpath ;
 FILE *
 search(path, file, mode)
         char *path, *file, *mode ;
@@ -49,6 +53,14 @@ search(path, file, mode)
    register FILE *fd ;                  /* file desc of file */
    char fname[MAXPATHLEN] ;             /* to store file name */
    static char *home = 0 ;              /* home is where the heart is */
+   int len = strlen(file) ;
+   int tryz = 0 ;
+   if (len>=3 &&
+        ((file[len-2] == '.' && file[len-1] == 'Z') ||
+         (file[len-3] == '.' && file[len-2] == 'g' && file[len-1] == 'z')) &&
+        (path==figpath || path==pictpath || path==headerpath))
+      tryz = file[len-1] ;
+   to_close = USE_FCLOSE ;
 #ifdef MVSXA
 char fname_safe[256];
 register int i, firstext, lastext, lastchar;
@@ -67,6 +79,15 @@ register int i, firstext, lastext, lastchar;
    if (*file == DIRSEP) {               /* if full path name */
       if ((fd=fopen(file,mode)) != NULL) {
          strcpy(realnameoffile, file) ;
+         if (tryz) {
+            char *cmd = mymalloc(strlen(file) + 20) ;
+            strcpy(cmd, (tryz=='z' ? "gzip -d <" : "compress -d <")) ;
+            strcat(cmd, file) ;
+            fclose(fd) ;
+            fd = popen(cmd, "r") ;
+            to_close = USE_PCLOSE ;
+            free(cmd) ;
+         }
          return(fd) ;
       } else
          return(NULL) ;
@@ -196,6 +217,14 @@ if (strchr(nam,'=') != NULL) {
 #endif
       if ((fd=fopen(fname,mode)) != NULL) {
          strcpy(realnameoffile, fname) ;
+         if (tryz) {
+            char *cmd = mymalloc(strlen(file) + 20) ;
+            strcpy(cmd, (tryz=='z' ? "gzip -d <" : "compress -d <")) ;
+            strcat(cmd, file) ;
+            fclose(fd) ;
+            fd = popen(cmd, "r") ;
+            to_close = USE_PCLOSE ;
+         }
          return(fd);
       }
 
@@ -306,7 +335,8 @@ pksearch(path, file, mode, n, dpi, vdpi)
                          break ;
                case 'p': strcpy(nam, "pk") ; break ;
                case '%': strcpy(nam, "%") ; break ;
-               default: error("! bad format character in pk path") ;
+               default:  fprintf(stderr, "Format character: %c\n", *path) ;
+                         error("! bad format character in pk path") ;
             }
             nam = fname + strlen(fname) ;
             if (*path)
@@ -457,3 +487,13 @@ char *fname, *t;
    return (FILE *)NULL;
 }
 #endif
+
+int close_file(f)
+FILE *f ;
+{
+   switch(to_close) {
+case USE_PCLOSE:  return pclose(f) ;
+case USE_FCLOSE:  return fclose(f) ;
+default:          return -1 ;
+   }
+}
