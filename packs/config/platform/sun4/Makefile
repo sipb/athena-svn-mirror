@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1996-10-04 05:37:26 ghudson Exp $
+# $Id: Makefile,v 1.3 1996-12-18 18:18:51 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -35,10 +35,10 @@ install:
 	install -c -m 0644 SunType5Rubout ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 cron ${DESTDIR}${DEFAULT}
-	install -c -m 0644 crontab.root ${DESTDIR}${CRONTABS}
+	install -c -m 0644 crontab.root ${DESTDIR}${CRONTABS}/root
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf ${DESTDIR}${INET}
-	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}
+	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
 	install -c -m 0644 init ${DESTDIR}${DEFAULT}
 	install -c -m 0644 inittab ${DESTDIR}${ETCDIR}
 	install -c -m 0644 keytable.map ${DESTDIR}${KEYTABLES}
