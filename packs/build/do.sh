@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.10 1997-01-28 22:14:45 ghudson Exp $
+# $Id: do.sh,v 1.11 1997-02-27 18:30:53 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -41,8 +41,7 @@ case "`uname -a`" in
 SunOS*sun4*)
 	HOSTTYPE=sun4
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
-	PATH=/usr/ccs/bin:/usr/athena/bin:/usr/bin:/usr/ucb
-	PATH=${PATH}:/usr/openwin/bin
+	PATH=/usr/ccs/bin:/usr/athena/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
 	compiler="/usr/gcc/bin/gcc -DSOLARIS"
 	;;
 IRIX*)
