@@ -5,54 +5,43 @@
 #	RCS Information:
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.6 1987-08-10 02:12:28 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/dot.cshrc,v 1.7 1987-12-06 22:14:21 treese Exp $
 
-# First, source the standard csh startup script.  If it can't be found, notify
-# the user and execute some backup commands.  In particular, set a sane path.
-# Note that this path may be out of date, but it should be good enough in
-# an emergency.
+# Set the initialization directory pathname to find initialization files.
 
-if (-r /usr/athena/.cshrc) then
-	source /usr/athena/.cshrc
-else
-	echo "Unable to load system-wide cshrc file."
+set INITDIR = /usr/athena/lib/init
+
+# Now check to see if this is an interactive shell.  If it isn't (e.g.,
+# this is an rsh, we want to know about it.
+
+if ($?prompt) set interactive
+
+# Make sure that the initialization directory is present
+
+if (! -d ${INITDIR} && $?interactive) then
+	echo "System-wide initialization files not found."
 	echo "Some initialization has not been performed."
-	set athena_path = ( /usr/athena /bin/athena /usr/bin/X /usr/new \
-			 /usr/new/mh/bin /usr/ucb /bin /usr/bin /usr/games)
+	set path = (. /usr/athena /bin/athena /usr/bin/X /usr/new \
+			 /usr/new/mh/bin /usr/ucb /bin /usr/bin)
 endif
 
-# The personal bin directory to use is determined by the machine type:
-# rtbin for RT/PC's, vaxbin for VAXstations.
-# Note that the variable athena_path is set in the standard Athena .cshrc
-# file. It contains the standard system directories, which may be changed
-# in the future.  Additional directories should be added at the desired
-# place in the following command:
+# Source the various standard initialization files:
+#
+#	set_path -- sets the standard Athena command search path
+#	shell_init -- standard csh initialization (e.g., history)
+#	aliases -- standard aliases
+#	misc -- miscellaneous initialization
+#
+# All commands in those files can be overridden later by using the
+# 'unset' or 'unalias' commands, or by changing things using 'set'
+# or 'alias' again.
 
-set bindir = `/bin/athena/machtype`bin
-set path = (. $HOME/$bindir $athena_path)
+if (-r ${INITDIR}/set_path) source ${INITDIR}/set_path
+if (-r ${INITDIR}/shell_init) source ${INITDIR}/shell_init
+if (-r ${INITDIR}/aliases) source  ${INITDIR}/aliases
+if (-r ${INITDIR}/misc) source ${INITDIR}/misc
 
-# Set important CSH variables
+# Finally, source the personal startup file.  By keeping the commands
+# separate, you can easily keep up with changes in this file.
 
-set history = 20			# Save 20 past commands.
-set cdpath = (~)			# Search home directory on cd's
-set noclobber				# Don't overwrite existing files on
-					# redirection
-
-# Limit resources
-
-limit coredumpsize 0
-
-# Set the prompt depending on the hostname
-
-if ($?prompt) then
-	set prompt = "`hostname`% "
-endif
-
-# Useful aliases
-
-alias mail	'Mail'
-alias Mail	"echo 'Mail' is obsolete -- use 'inc' to read mail or 'comp' to send it; echo"
-
-# To enable T-shell line editing, uncomment the following line
-# set lineedit
-
+if (-r ~/.cshrc.mine) source ~/.cshrc.mine
