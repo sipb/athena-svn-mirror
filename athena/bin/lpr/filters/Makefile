@@ -26,7 +26,7 @@ all:	printer
 
 Makefile: Imakefile
 	-mv -f Makefile Makefile.bak
-	/lib/cpp -E Imakefile Makefile 
+	cc -E Imakefile > Makefile 
 
 printer: ${PRINTER}
 
