@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.19 2003-03-08 01:31:04 ghudson Exp $
+# $Id: Makefile.athena,v 1.20 2003-03-08 05:33:28 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -24,8 +24,8 @@ dist:
 # cc to be gcc.
 prepare:
 	rm -f obj/config.cache
-	cd obj && . ../compiler \
-	 && CC=$$cc ../src/configure --prefix=/usr/athena --disable-shared
+	cd obj && . ../compiler && CONFIG_SHELL=/bin/ksh CC=$$cc \
+	  ../src/configure --prefix=/usr/athena --disable-shared
 
 clean:
 	cd obj && ${MAKE} clean
