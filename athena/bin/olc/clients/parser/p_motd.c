@@ -21,12 +21,14 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.9 1990-04-25 19:35:40 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.10 1990-04-26 21:04:15 vanharen Exp $";
 #endif
 
 
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
+
+extern int num_of_args;
 
 do_olc_motd(arguments)
      char **arguments;
@@ -39,8 +41,8 @@ do_olc_motd(arguments)
   int change_flag = 0;
   char editor[NAME_SIZE];
 
-  file[0] = '\0';
-  editor[0] = '\0';
+  strcpy(file, "");
+  strcpy(editor, "");
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -92,6 +94,8 @@ do_olc_motd(arguments)
       arguments = handle_argument(arguments, &Request, &status);
       if(status)
 	return(ERROR);
+	
+      arguments += num_of_args;		/* HACKHACKHACK */
 	
       if(arguments == (char **) NULL)   /* error */
 	{

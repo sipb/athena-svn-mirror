@@ -20,12 +20,14 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.7 1990-04-25 16:45:28 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.8 1990-04-26 21:05:11 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 
+int num_of_args;		/* Serious hack.  Global var to indicate */
+				/* number of args popped off of arg array. */
 
 char **
 handle_argument(args, req, status)
@@ -33,7 +35,7 @@ handle_argument(args, req, status)
      REQUEST *req;
      int *status;
 {
-  
+  num_of_args = 0;
   *status = SUCCESS;
 
   if(string_eq(args[0],"-help"))
@@ -47,6 +49,7 @@ handle_argument(args, req, status)
 	    printf("Specified instance id \"%s\" is not a number.\n", *args);
 	    return((char **) NULL);
 	  }
+	num_of_args++;
 	req->requester.instance = atoi(*args);
 	return(args);
       }
@@ -64,6 +67,7 @@ handle_argument(args, req, status)
 	    printf("Specified instance id \"%s\" is not a number.\n", *args);
 	    return((char **) NULL);
 	  }
+	num_of_args++;
 	req->target.instance = atoi(*args);
 	return(args);
       }
@@ -84,6 +88,7 @@ handle_argument(args, req, status)
     if(*args)
 	{
 	  (void) strcpy(req->target.username,*args);
+	  num_of_args++;
 	  if((*(args+1) != (char *) NULL) && (*args[1] != '-') &&
 	     (*args[1] != '>'))
 	    {
