@@ -85,6 +85,12 @@ They have to be uudecoded and uncompressed before using them.  Neither
 of them is necessary for just building the library and using it to
 build delete et al -- they are just documentation about the library.
 
+The version of the com_err library I've included here is "in flux" --
+its authors tell me that several enhancements are planned for the near
+future.  When the library is worked into a more final form, it will
+probably be distributed (to comp.sources.unix, etc.) separately from
+delete.
+
 
 			     FINAL NOTES
 
