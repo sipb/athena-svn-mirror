@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.21 1996-09-19 22:13:18 ghudson Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.22 1996-10-10 18:27:16 ghudson Exp $";
 
 #include "attach.h"
 
@@ -179,6 +179,68 @@ struct _fstypes *get_fs(s)
     return (NULL);
 }
 
+/* Return the preference of a hesiod line, or -1 if the filesystem type
+ * does not admit a preference field. */
+static int get_preference(hesline)
+    char *hesline;
+{
+    char *p;
+    int i;
+
+    p = strchr(hesline, ' ');
+    if (p == NULL || (p - hesline == 3 && strncasecmp(hesline, "MUL", 3) == 0))
+	return (-1);
+
+    /* FS type okay; return the value of the fifth field. */
+    while (isspace(*p))
+	p++;
+    for (i = 2; i < 5; i++) {
+	while (*p && !isspace(*p))
+	    p++;
+	while (isspace(*p))
+	    p++;
+    }
+    return ((*p) ? atoi(p) : 0);
+}
+
+/* Reorder non-MUL entries in increasing order of their preference
+ * fields (fifth field), if present.  Anything with no preference field is
+ * assumed to have preference 0.  This sort has to be stable, so that we
+ * don't break DNS ordering if we happen to have it.  (That is, don't
+ * replace this function with a call to qsort(), at least until you're sure
+ * nobody is going to be relying on DNS ordering.)
+ *
+ * Note that lower preference is better, and anything with no preference
+ * field will have the best preference.  Hopefully any hesiod response that
+ * uses preference fields will use them everywhere. */
+static void sort_hesiod_data(hes)
+    char **hes;
+{
+    char **p1, **p2, **slot, *p;
+    int pref, pref2;
+
+    /* This doesn't need to be fast; do an insertion sort. */
+    for (p1 = hes; *p1; p1++) {
+	p = *p1;
+	pref = get_preference(p);
+	if (pref == -1)
+	    continue;
+	slot = p1;
+	for (p2 = p1 - 1; p2 >= hes; p2--) {
+	    pref2 = get_preference(*p2);
+	    if (pref2 == -1)
+		continue;
+	    /* If we have the right slot for p, stop. */
+	    if (pref2 <= pref)
+		break;
+	    /* Otherwise, shift the slot down one position. */
+	    *slot = *p2;
+	    slot = p2;
+	}
+	*slot = p;
+    }
+}
+
 /*
  * Build a Hesiod line either from a Hesiod query or internal frobbing
  * if explicit is set.
@@ -197,6 +259,8 @@ char **build_hesiod_line(name)
 #endif
 	    if (!realhes || !*realhes)
 		    fprintf(stderr, "%s: Can't resolve name\n", name);
+	    else
+		    sort_hesiod_data(realhes);
 	    return (realhes);
     }
 
