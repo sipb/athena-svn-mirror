@@ -4,7 +4,7 @@
 # for profit or used for commercial gain and the author is credited 
 # appropriately.
 #
-# $Revision: 1.7 $
+# $Revision: 1.8 $
 #
 # Sysinfo Makefile
 #
@@ -250,12 +250,12 @@ install: ${DESTDIR}$(LIBDIR) ${DESTDIR}$(BIN) metasysinfo
 	@$(MAKE) $(MFLAGS) $(MKPARAMS) install.cf CONFDIR=${CONFDIR}
 	@if [ ! -z "$(LIBDIR)" ]; then \
 		RTPLATFORM=`${BUILDINFO} -rtplatform`; \
-		build/mkdirhier $(LIBDIR)/$${RTPLATFORM}; \
-		echo "$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo $(BIN)/$(PROG)"; \
-		$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo $(BIN)/$(PROG); \
-		echo "$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} $(LIBDIR)/$${RTPLATFORM}/${PROG}"; \
-		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} $(LIBDIR)/$${RTPLATFORM}/${PROG}; \
-		strip $(LIBDIR)/$${RTPLATFORM}/${PROG}; \
+		build/mkdirhier ${DESTDIR}$(LIBDIR)/$${RTPLATFORM}; \
+		echo "$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo ${DESTDIR}$(BIN)/$(PROG)"; \
+		$(INSTALLPROG) -c -m 555 $(INSTALLOWN) metasysinfo ${DESTDIR}$(BIN)/$(PROG); \
+		echo "$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}$(LIBDIR)/$${RTPLATFORM}/${PROG}"; \
+		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}$(LIBDIR)/$${RTPLATFORM}/${PROG}; \
+		strip ${DESTDIR}$(LIBDIR)/$${RTPLATFORM}/${PROG}; \
 	else \
 		echo $(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}${BIN}/${PROG}; \
 		$(INSTALLPROG) -c ${INSTALLOPTS} ${PROG} ${DESTDIR}${BIN}/${PROG}; \
