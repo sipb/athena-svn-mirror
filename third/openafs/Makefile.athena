@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.14 2005-03-11 23:41:55 zacheiss Exp $
+# $Id: Makefile.athena,v 1.15 2005-03-14 08:44:49 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -309,8 +309,8 @@ install:
 	   install -c -m 555 ${AFS_SYSNAME}/dest/root.client${VICE}/afs.conf \
 		$$SRVD/etc/sysconfig/openafs ; \
 	   for arch in i686 athlon; do \
-		install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.o $$SRVD${VICE}/modload ; \
-		install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.o ; \
+		install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.ko $$SRVD${VICE}/modload ; \
+		install -c -m 444 ${AFS_SYSNAME}/dest/root.client${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.ko $$SRVD${VICE}/modload/libafs-$${LINUX_VERS}.$${arch}.mp.ko ; \
 	   done ; \
 	   ;; \
 	sun4) \
