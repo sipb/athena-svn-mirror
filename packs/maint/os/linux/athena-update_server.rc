@@ -1,0 +1,72 @@
+#!/bin/sh
+
+# athena-update_server:	Start update_server
+#
+# chkconfig: 2345 80 30
+# description: Start update_server.
+#
+# config: /etc/athena/rc.conf
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+. /etc/sysconfig/network
+. /etc/athena/rc.conf
+
+PATH=/etc/athena:/bin/athena:/usr/athena/bin:$PATH
+
+# Check that networking is up
+if [ ${NETWORKING} = "no" ]
+then
+	exit 0
+fi
+
+[ -f /usr/athena/etc/update_server ] || exit 0
+
+[ "$MRUPDATE" = true ] || exit 0
+
+RETVAL=0
+
+# See how we were called
+case "$1" in
+  start)
+        echo -n "Starting Athena update_server: "
+	daemon /usr/athena/etc/update_server 
+	RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-update_server
+	;;
+
+  stop)
+	echo -n "Stopping Athena update_server: "
+	killproc update_server
+        RETVAL=$?
+
+	echo
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athena-update_server
+	;;
+
+  status)
+	status update_server
+	RETVAL=$?
+	;;
+
+  restart)
+	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+
+  reload)
+	killall -HUP update_server
+	RETVAL=$?
+	;;
+
+  *)
+	echo "Usage: athena-update_server {start|stop|status|restart|reload}"
+	exit 1
+	;;
+esac
+
+exit $RETVAL
