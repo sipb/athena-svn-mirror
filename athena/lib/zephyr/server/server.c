@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.14 1987-09-28 16:38:15 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.15 1987-11-09 12:15:34 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -86,6 +86,9 @@ int timo_dead = TIMO_DEAD;
 
 long srv_rexmit_secs = REXMIT_SECS;
 
+#ifdef DEBUG
+extern int zalone;
+#endif DEBUG
 /*
  * Initialize the array of servers.  The `limbo' server goes in the first
  * slot (otherservers[0]).
@@ -102,12 +105,17 @@ server_init()
 
 	/* talk to hesiod here, set nservers */
 	if (!(hes_addrs = get_server_addrs(&nservers))) {
-		    syslog(LOG_ERR, "No servers?!?");
-		    exit(1);
-	    }
+		syslog(LOG_ERR, "No servers?!?");
+		exit(1);
+	}
 
-	/* increment servers to make room for 'limbo' */
-	nservers++;
+#ifdef DEBUG
+	if (zalone)
+		nservers = 1;
+	else
+#endif DEBUG
+		/* increment servers to make room for 'limbo' */
+		nservers++;
 
 	otherservers = (ZServerDesc_t *) xmalloc(nservers *
 						sizeof(ZServerDesc_t));
