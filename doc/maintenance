@@ -450,10 +450,9 @@ There are three rel-eng machines for each platform:
 
 	* A new release build machine, for building and doing
 	  incremental updates to releases which are still in testing.
-	  Before a new release goes into testing, this machine should
-	  perform the wash.  This machine may also be used by
-	  developers for building software, or if they want a snapshot
-	  of the new system packs to build things against.
+	  This machine also performs the wash.  This machine may also
+	  be used by developers for building software, or if they want
+	  a snapshot of the new system packs to build things against.
 
 	* A crash and burn machine, usually located in the release
 	  engineer's office for easy physical access.
@@ -463,7 +462,7 @@ Here is a list of the rel-eng machines for each platform:
 				Sun		Indy		O2
 
 Current release build		downy		snuggle		bounce
-New release build		whirlpool	kenmore		maytag
+New release build		whirlpool	(none)		maytag
 Crash and burn			sourcery	pyramids	reaper-man
 
 For reference, here are some names that fit various laundry and
