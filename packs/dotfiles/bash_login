@@ -1,12 +1,12 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.1 1999-06-11 15:28:08 tb Exp $
+# $Id: bash_login,v 1.2 1999-06-18 21:09:56 ghudson Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
 . ~/.bashrc
 
 # SGI xwsh runs shells as login shells. We don't want this.
-if [ ${XSESSION+set} == set ]; then
+if [ "${XSESSION+set}" == set ]; then
 	exit 0
 fi
 
@@ -19,7 +19,7 @@ fi
 /bin/stty sane			# Use sane control characters
 
 if [ sgi = "$HOSTTYPE" ]; then
-  /bin/stty intr ^C
+	/bin/stty intr ^C
 fi
 
 # *******************   ENVIRONMENT SETUP   *******************
@@ -29,7 +29,7 @@ fi
 
 # Check that user home directory is available
 
-if [ ${TMPHOME+set} == set ]; then
+if [ "${TMPHOME+set}" == set ]; then
 	echo "WARNING:"
 	echo ""
 	echo "Your home directory is currently unavailable."
@@ -58,7 +58,7 @@ fi
 # *******************   DEVICE SETUP   *******************
 
 # On IRIX, the terminal type may not be set yet.
-if [ ${term+set} != set ]; then
+if [ "${term+set}" != set ]; then
 	eval `tset -s -Q`
 fi
 
@@ -71,7 +71,7 @@ switch|network|dialup|unknown)
 	# ~/.bash_environment file to to the device you want to emulate
 	# (one that the system will recognize).
 	export DEF_TERM
-	if [ ${DEF_TERM+set} != set ]; then DEF_TERM=vt100; fi
+	if [ "${DEF_TERM+set}" != set ]; then DEF_TERM=vt100; fi
 	set noglob; eval `tset -s -I -Q "?${DEF_TERM}"` || unset noglob
 	;;
 esac
@@ -79,7 +79,7 @@ esac
 # If the login is on an X display but the DISPLAY variable has not 
 # been set, ask the user what the DISPLAY should be (e.g., rlogin)
 
-if [ ${DISPLAY+set} != set ]; then
+if [ "${DISPLAY+set}" != set ]; then
 	case $term in
 	xterm*)
 		echo -n "What DISPLAY are you using [default: none]? "
@@ -109,13 +109,13 @@ fi
 # Run default system startup activities.  To skip these, put the command
 # "set skip_tty_startup" in your ~/.bash_environment file.
 
-if [ ${ZEPHYR_CLIENT+set} != set ]; then
+if [ "${ZEPHYR_CLIENT+set}" != set ]; then
 	export ZEPHYR_CLIENT
 	ZEPHYR_CLIENT=zwgc
 fi
 
-if [ ${skip_tty_startup+set} != set]; then
-	if [ ${verbose_login+set} == set ]; then
+if [ "${skip_tty_startup+set}" != set ]; then
+	if [ "${verbose_login+set}" == set ]; then
 		 echo "Running standard startup activities ..."
 	fi
 	set IGNOREEOF			# ^D won't log you out
@@ -123,13 +123,14 @@ if [ ${skip_tty_startup+set} != set]; then
 	get_message -login		# Display current motd
 	from -t -n			# Check for mail
 	(olc who &) 2>&1 > /dev/null	# Ping the OLC server
-endif
+fi
 
 
 # Run the tty-session customizing commands in your ~/.startup.tty file.
 
 if [ -r ~/.startup.tty ]; then
-	if [ ${verbose_login+set} == set ]; then # Don't echo if noninteractive
+	# Don't echo if noninteractive
+	if [ "${verbose_login+set}" == set ]; then
 		echo "Running custom startup activities listed in ~/.startup.tty ..."
 	fi
 	. ~/.startup.tty
@@ -140,6 +141,6 @@ fi
 # you plan to run it yourself), put the commend "set skip_lert" in your
 # ~/.bash_environment file.
 
-if [ ${skip_lert+set} != set ]; then
+if [ "${skip_lert+set}" != set ]; then
 	lert -q				# Don't want to see server errors.
 fi
