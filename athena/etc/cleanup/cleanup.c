@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 2.1 1991-07-30 17:49:30 epeisach Exp $
+/* $Id: cleanup.c,v 2.2 1991-08-16 07:47:30 probe Exp $
  *
  * Cleanup program for stray processes
  *
@@ -13,7 +13,7 @@
  *    not in the password file (depending on command line options)
  *
  * 3. If the options indicate it, rebuild the password file from 
- *    logged in user list and hesiod.
+ *    logged in user list.
  */
 
 #include <stdio.h>
@@ -26,7 +26,6 @@
 #include <strings.h>
 #include <utmp.h>
 #include <pwd.h>
-#include <hesiod.h>
 #ifdef _IBMR2
 #include <usersec.h>
 #endif
@@ -35,7 +34,7 @@
 #endif
 #include <nlist.h>
 
-char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 2.1 1991-07-30 17:49:30 epeisach Exp $";
+char *version = "$Id: cleanup.c,v 2.2 1991-08-16 07:47:30 probe Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -230,10 +229,10 @@ int *get_logged_in()
 #ifdef _IBMR2
     int pwuid;
     struct utmp *u;
-#else /* !_IBMR2 */
+#else
     struct utmp u;
     struct passwd *p;
-#endif /* _IBMR2 */
+#endif
     static int uids[MAXUSERS];
 
 #ifndef _IBMR2
@@ -246,62 +245,63 @@ int *get_logged_in()
 #endif
 
     /* Always include root & daemon */
-    uids[0] = ROOTUID;
-    uids[1] = DAEMONUID;
+    i=0;
+    uids[i++] = ROOTUID;
+    uids[i++] = DAEMONUID;
 #ifdef DEBUG
     printf("Logged in: 0, 1");
 #endif
 
-    login[8] = 0;  /* make sure that this string will always end in NULL */
+    /* make sure that this string will always end in NULL */
+    login[8] = 0;
 
 #ifdef _IBMR2
     if (setuserdb(S_READ) < 0) {
-      fprintf(stderr, "cleanup: can't open user database\n");
-      /* this should probably completely blow out if this call fails */
-      return(NULL);
+	fprintf(stderr, "cleanup: can't open user database\n");
+	/* this should probably completely blow out if this call fails */
+	return(NULL);
     }
-    for (i = 2; (u = getutent()) != NULL && i < MAXUSERS;) {
-      if (u->ut_name[0] == 0)
-	continue;
-
+    while((u = getutent()) != NULL && i < MAXUSERS) {
+	if (u->ut_name[0] == 0)
+	    continue;
         if (u->ut_type != USER_PROCESS)
-        continue;
+	    continue;
 
-      strncpy(login, u->ut_name, 8);
-      if (getuserattr(login, S_ID, &pwuid, SEC_INT) < 0)
-        fprintf(stderr, "cleanup: Warning, could not get uid for user %s\n",
-                login);
-      else {
-          /* first check for duplicates */
-          for (j = 0; j < i; j++)
-            if (pwuid == uids[j])
-              break;
-          if (i == j) {
-              uids[i++] = pwuid;
+	strncpy(login, u->ut_name, 8);
+	if (getuserattr(login, S_ID, &pwuid, SEC_INT) < 0)
+	    fprintf(stderr, "cleanup: Warning, could not get uid for user %s\n",
+		    login);
+	else {
+	    /* first check for duplicates */
+	    for (j = 0; j < i; j++)
+		if (pwuid == uids[j])
+		    break;
+	    if (i == j) {
+		uids[i++] = pwuid;
 #ifdef DEBUG
-              printf(", %d", pwuid);
+		printf(", %d", pwuid);
 #endif
             }
         }
-      }
+    }
     uids[i] = -1;
     endutent();
     enduserdb();
-#else /* !_IBMR2 */
-    for (i = 2; read(fd, &u, sizeof(u)) > 0 && i < MAXUSERS;) {
+#else /* !RIOS */
+    while (read(fd, &u, sizeof(u)) > 0 && i < MAXUSERS) {
 	if (u.ut_name[0] == 0)
-	  continue;
+	    continue;
 
 	strncpy(login, u.ut_name, 8);
 	p = getpwnam(login);
 	if (p == 0)
-	  fprintf(stderr, "cleanup: Warning, could not get uid for user %s\n",
-		  login);
+	    fprintf(stderr, "cleanup: Warning, could not get uid for user %s\n",
+		    login);
 	else {
 	    /* first check for duplicates */
 	    for (j = 0; j < i; j++)
-	      if (p->pw_uid == uids[j])
-		break;
+		if (p->pw_uid == uids[j])
+		    break;
 	    if (i == j) {
 		uids[i++] = p->pw_uid;
 #ifdef DEBUG
@@ -313,10 +313,10 @@ int *get_logged_in()
     uids[i] = -1;
     close(fd);
 #endif /* _IBMR2 */
+
 #ifdef DEBUG
     printf("\n");
 #endif
-
     return(uids);
 }
 
@@ -404,6 +404,9 @@ struct cl_proc *get_processes()
 	read(kmem, &p, sizeof(p));
 #endif
 	if (p.p_pid == 0) continue;
+#ifdef _AIX
+	if (p.p_stat == SNONE) continue;
+#endif
 	procs[i].pid = p.p_pid;
 	procs[i].uid = p.p_uid;
     }
@@ -449,6 +452,79 @@ char *fn;
  * who should be in the passwd file.
  */
 
+#ifdef _IBMR2
+rewrite_passwd(users)
+int *users;
+{
+    int in_passwd[MAXUSERS], user=0;
+    int i, uid, temp;
+    char *usr;
+    char *empty = "\0";
+    
+    setuserdb(S_READ|S_WRITE);
+    usr = nextuser(S_LOCAL, NULL);
+    while (usr) {
+	if (getuserattr(usr, S_ID, &uid, SEC_INT) == -1)
+	    uid = -1;
+#ifdef DEBUG
+	printf("Checking user %s (uid %d)\n", usr, uid);
+#endif
+	/* Only purge temporary accounts */
+	if (getuserattr(usr, "athena_temp", &temp, SEC_INT) == 0) {
+	    for (i = 0; users[i] >= 0; i++)
+		if (users[i] == uid)
+		    break;
+
+	    /* if not supposed to be in passwd file, delete */
+	    if (users[i] < 0 || users[i] != uid) {
+#ifdef DEBUG
+		printf("Deleting user %s from passwd file\n", usr);
+#endif
+		putuserattr(usr, S_GROUPS, &empty, SEC_LIST);
+		putuserattr(usr, (char *)0, (char *)0, SEC_COMMIT);
+		rmufile(usr, 1, USER_TABLE);
+#if 0
+		usr = nextuser(S_LOCAL, NULL);	/* re-scan */
+		continue;
+#endif
+	    }
+	}
+	usr=nextuser(NULL, NULL);
+    }
+    enduserdb();
+    clean_groups();
+    return(0);
+}
+
+clean_groups()
+{
+    char *grp, *glist;
+    int grp_status;
+
+    setuserdb(S_READ|S_WRITE);
+    grp = nextgroup(S_LOCAL, NULL);
+    while (grp) {
+	if (getgroupattr(grp, "athena_temp", &grp_status, SEC_BOOL) == 0) {
+	    if ((getgroupattr(grp, S_USERS, &glist, SEC_LIST) == -1) ||
+		*glist == '\0') {
+#ifdef DEBUG
+		printf("Deleting group %s from group file\n", grp);
+#endif
+
+		rmufile(grp, 0, GROUP_TABLE);
+#if 0
+		grp = nextgroup(S_LOCAL, NULL);
+		continue;
+#endif
+	    }
+	}
+	grp = nextgroup(NULL, NULL);
+    }
+    enduserdb();
+}
+
+#else	/* !_IBMR2 */
+
 rewrite_passwd(users)
 int *users;
 {
@@ -460,10 +536,9 @@ int *users;
     if (in == NULL) {
         fprintf(stderr, "cleanup: unable to open /etc/passwd.local: %s\n",
 	        sys_errlist[errno]);
-        return(0); /* non fatal error */
+        return(0);				/* non fatal error */
     }
 
-#ifndef _IBMR2
     out = fopen("/etc/passwd.new", "w");
     if (out == NULL) {
 	fprintf(stderr, "cleanup: unable to open /etc/passwd.new: %s\n",
@@ -478,13 +553,10 @@ int *users;
 	fclose(out);
 	return(-1);
     }
-#endif
 
     /* copy /etc/passwd.local, keeping track of who is in it */
     while (in && fgets(buffer, sizeof(buffer), in)) {
-#ifndef _IBMR2
 	fputs(buffer, out);
-#endif
 	p = index(buffer, ':');
 	if (p) {
 	    p = index(p + 1, ':');
@@ -496,13 +568,10 @@ int *users;
     }
 
     fclose(in);
-#ifdef _IBMR2
-    setuserdb(S_READ|S_WRITE);
-#endif
     in = fopen("/etc/passwd", "r");
     if (in == NULL)
-      fprintf(stderr, "cleanup: unable to open /etc/passwd: %s\n",
-	      sys_errlist[errno]);
+	fprintf(stderr, "cleanup: unable to open /etc/passwd: %s\n",
+		sys_errlist[errno]);
 
     /* now process /etc/passwd, avoiding duplicates */
     while (in && fgets(buffer, sizeof(buffer), in)) {
@@ -524,8 +593,8 @@ int *users;
 	}
 
 	for (i = 0; i < user; i++)
-	  if (in_passwd[i] == uid)
-	    break;
+	    if (in_passwd[i] == uid)
+		break;
 	/* if already in passwd file, skip */
 	if (i < user && in_passwd[i] == uid) {
 #ifdef DEBUG
@@ -534,26 +603,9 @@ int *users;
 	    continue;
 	}
 
-#ifdef _IBMR2
-	for (i = 0; users[i] >= 0; i++)
-	  if (users[i] == uid)
-	    break;
-        /* if not supposed to be in passwd file, delete */
-        if (users[i] < 0 || users[i] != uid) {
-#ifdef DEBUG
-          printf("Deleting entry shouldn't be in passwd file: %s", buffer);
-#endif
-          rmufile(IDtouser(uid), 1, USER_TABLE);
-          continue;
-          }
-        in_passwd[user++] = uid;
-      }
-    fclose(in);
-    enduserdb();
-#else /* !_IBMR2 */
         for (i = 0; users[i] >= 0; i++)
-          if (users[i] == uid)
-            break;
+	    if (users[i] == uid)
+		break;
 	/* if not supposed to be in passwd file, skip */
 	if (users[i] < 0 || users[i] != uid) {
 #ifdef DEBUG
@@ -569,12 +621,12 @@ int *users;
     fclose(out);
 
     if (unlink("/etc/passwd"))
-      fprintf(stderr, "cleanup: unable to remove /etc/passwd: %s\n",
-	      sys_errlist[errno]);
+	fprintf(stderr, "cleanup: unable to remove /etc/passwd: %s\n",
+		sys_errlist[errno]);
     if (rename("/etc/passwd.new", "/etc/passwd"))
-      fprintf(stderr, "cleanup: failed to rename /etc/passwd.new to /etc/passwd: %s\n",
-	      sys_errlist[errno]);
-#endif /* _IBMR2 */
+	fprintf(stderr, "cleanup: failed to rename /etc/passwd.new to /etc/passwd: %s\n",
+		sys_errlist[errno]);
+
     in_passwd[user] = -1;
     make_group(in_passwd);
     return(0);
@@ -593,37 +645,25 @@ int *uids;
     char llist[MAXUSERS][9];
     struct passwd *pw;
     FILE *new, *old;
-#ifdef _IBMR2
-    int user, namelen;
-    char  *grpmems, group[9];
-    char newgroup[MAXUSERS*9];
-    group[8] = 0;
-#endif /* _IBMR2 */
-
-#ifdef _IBMR2
-    setuserdb(S_READ|S_WRITE);
-#endif
 
     if ((old = fopen("/etc/group", "r")) == NULL) {
-      fprintf(stderr,"cleanup: Couldn't open \"/etc/group\", %s.\n",
-              sys_errlist[errno]);
-      return;
+	fprintf(stderr,"cleanup: Couldn't open \"/etc/group\", %s.\n",
+		sys_errlist[errno]);
+	return;
     }
-#ifndef _IBMR2
     if ((new = fopen("/etc/group.new", "w")) == NULL) {
-      fprintf(stderr,"cleanup: Couldn't open \"/etc/group.new\", %s.\n",
-              sys_errlist[errno]);
-      fclose(old);
-      return;
+	fprintf(stderr,"cleanup: Couldn't open \"/etc/group.new\", %s.\n",
+		sys_errlist[errno]);
+	fclose(old);
+	return;
     }
     if (chmod("/etc/group.new", 0644)) {
-      fprintf(stderr, "cleanup: Couldn't change mode of \"/etc/group.new\", %s\n",
-              sys_errlist[errno]);
-      fclose(old);
-      fclose(new);
-      return;
+	fprintf(stderr, "cleanup: Couldn't change mode of \"/etc/group.new\", %s\n",
+		sys_errlist[errno]);
+	fclose(old);
+	fclose(new);
+	return;
     }
-#endif /* _IBMR2 */
 
 #ifdef DEBUG
     printf("UIDs for /etc/group:");
@@ -642,13 +682,9 @@ int *uids;
     printf("logins for /etc/group:");
 #endif
     for (i = 0; i < nuid; i++) {
-#ifdef _IBMR2
-        strcpy(llist[i], IDtouser(uids[i]));
-#else /* !_IBMR2 */
 	pw = getpwuid(uids[i]);
 	if (pw != NULL)
-	  strcpy(llist[i], pw->pw_name);
-#endif /* _IBMR2 */
+	    strcpy(llist[i], pw->pw_name);
 #ifdef DEBUG
 	printf(", %s", llist[i]);
 #endif
@@ -663,60 +699,19 @@ int *uids;
 	n = strlen(buf);
 	if (n) {
 	    if (buf[n - 1] == '\n')
-	      buf[n - 1] = 0;
+		buf[n - 1] = 0;
 	    else
-	      fprintf(stderr, "cleanup: warning, too long group entry truncated\n");
+		fprintf(stderr, "cleanup: warning, too long group entry truncated\n");
 	}
 	if ((p = index(buf, ':')) == 0) {
 	    fprintf(stderr, "cleanup: Corrupt group entry \"%s\".\n", buf);
 	    continue;
         }
-#ifdef _IBMR2
-        n = p - buf;
-        if (n < 9) {
-          strncpy(group, buf, n);
-          group[n] = '\0';
-        }
-        else {
-          fprintf(stderr, "cleanup: Corrupt group entry \"%s\".\n", buf);
-          continue;
-        }
-#endif
 	if ((p = index(p+1, ':')) == 0 ||
 	    (p = index(p+1, ':')) == 0) {
 	    fprintf(stderr, "cleanup: Corrupt group entry \"%s\".\n", buf);
 	    continue;
 	}
-#ifdef _IBMR2
-        getgroupattr(group, S_USERS, (void *)&grpmems, SEC_LIST);
-        user = 0;
-        newgroup[0] = NULL;
-        /* cons a new list of group members with only users that are
-           in the user database */
-        for (n = 0; n < nuid; n++) {
-          for (p = grpmems ; *p != '\0'; ) {
-            if (strcmp(p, llist[n]) == 0) {
-              namelen = strlen(llist[n]);
-              bcopy(llist[n], &newgroup[user], namelen+1);
-              user = user + namelen + 1;
-              break;
-            }
-            p = index(p, '\0') + 1;
-          }
-        }
-
-        /* change the list of members of the group */
-        if (newgroup[0] != NULL) {
-          newgroup[user] = '\0';
-          putgroupattr(group, S_USERS, newgroup, SEC_LIST);
-          continue;
-        }
-        /* Delete all NULL groups, except mit and those that where NULL
-           to begin with */
-        if ((grpmems[0] != NULL) && (group != "mit"))
-          rmufile(group, 0, GROUP_TABLE);
-
-#else /* !_IBMR2 */
 	match = 0;
 	if (p) p++;
 
@@ -724,9 +719,9 @@ int *uids;
 	while (p != NULL) {
 	    p1 = index(p, ',');
 	    if (p1)
-	      n = p1 - p;
+		n = p1 - p;
 	    else
-	      n = strlen(p);
+		n = strlen(p);
 	    /* compare against each user in the passwd file */
 	    for (i = 0; i < nuid; i++) {
 		if (!strncmp(p, llist[i], n)) {
@@ -735,33 +730,27 @@ int *uids;
 		}
 	    }
 	    if (match)
-	      break;
+		break;
 	    if (p1)
-	      p = p1 + 1;
+		p = p1 + 1;
 	    else
-	      p = NULL;
+		p = NULL;
 	}
 	if (match)
-	  fprintf(new, "%s\n", buf);
+	    fprintf(new, "%s\n", buf);
 #ifdef DEBUG
 	else
-	  printf("<<<%s\n", buf);
+	    printf("<<<%s\n", buf);
 #endif
-#endif /* _IBMR2 */
     }
-#ifdef _IBMR2
-    fclose(old);
-    putgroupattr(NULL, NULL, ((void *) 0), SEC_COMMIT);
-    enduserdb();
 
-#else /* !_IBMR2 */
     if (fclose(new) || fclose(old)) {
 	fprintf(stderr, "cleannup: Error closing group file: sys_errlist[errno]\n");
 	return;
     }
     if (unlink("/etc/group") == -1)
-      perror("unlink");
+	perror("unlink");
     if (rename("/etc/group.new", "/etc/group") == -1)
-      perror("rename");
-#endif /* _IBMR2 */
+	perror("rename");
 }
+#endif	/* !_IBMR2 */
