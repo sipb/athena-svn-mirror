@@ -15,8 +15,11 @@ the password is valid for the user.
 */
 
 /*
- * $Id: auth-passwd.c,v 1.10 1998-05-13 20:18:46 danw Exp $
+ * $Id: auth-passwd.c,v 1.11 1998-05-14 19:23:39 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.10  1998/05/13 20:18:46  danw
+ * merge in changes from 1.2.23
+ *
  * Revision 1.9  1998/04/09 22:51:45  ghudson
  * Support local accounts as determined by libal.
  *
@@ -602,7 +605,7 @@ int auth_password(const char *server_user, const char *password)
       krb5_free_principal(ssh_context, server);
       server = 0;
       if (problem)
-	goto errout;
+	goto trykrb4;
       else
 	{
 	  /* Verify tgt just obtained */
@@ -638,6 +641,7 @@ int auth_password(const char *server_user, const char *password)
                     ticket = NULL;
 		}
 	      
+	    trykrb4:
 	      ticket = xmalloc(strlen(ccname) + 1);
 	      (void) sprintf(ticket, "%s", ccname);
 	      
