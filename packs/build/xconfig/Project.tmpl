@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM X Window System Build Parameters
-XCOMM $XConsortium: Project.tmpl,v 1.139 91/10/10 19:39:06 rws Exp $
+XCOMM $XConsortium: Project.tmpl,v 1.142 92/01/25 16:44:02 rws Exp $
 
 /*****************************************************************************
  *                                                                           *
@@ -43,6 +43,12 @@ XCOMM $XConsortium: Project.tmpl,v 1.139 91/10/10 19:39:06 rws Exp $
 #endif
 #ifndef BuildXInputLib
 #define BuildXInputLib		YES
+#endif
+#ifndef BuildXTrapExt
+#define BuildXTrapExt		NO
+#endif
+#ifndef BuildXTrapLib
+#define BuildXTrapLib		NO
 #endif
 #ifndef InstallLibManPages
 #define InstallLibManPages	YES
@@ -122,6 +128,24 @@ XCOMM $XConsortium: Project.tmpl,v 1.139 91/10/10 19:39:06 rws Exp $
 #endif
 #ifndef ProfileLibXdmcp
 #define ProfileLibXdmcp		NO	/* profiled XDMCP library */
+#endif
+#ifndef DebugLibXinput
+#define DebugLibXinput		NO	/* debugged Xi library */
+#endif
+#ifndef ProfileLibXinput
+#define ProfileLibXinput	NO	/* profiled Xi library */
+#endif
+#ifndef DebugLibXTest
+#define DebugLibXTest		NO	/* debugged XTest library */
+#endif
+#ifndef ProfileLibXTest
+#define ProfileLibXTest		NO	/* profiled XTest library */
+#endif
+#ifndef DebugLibXTrap
+#define DebugLibXTrap		NO	/* debugged XTrap library */
+#endif
+#ifndef ProfileLibXTrap
+#define ProfileLibXTrap		NO	/* profiled XTrap library */
 #endif
 #ifndef ManDirectoryRoot
 #ifdef ProjectRoot
@@ -212,8 +236,15 @@ XCOMM $XConsortium: Project.tmpl,v 1.139 91/10/10 19:39:06 rws Exp $
 #define XInputDefines /**/
 #endif
 #endif
+#ifndef XTrapDefines
+#if BuildXTrapExt
+#define XTrapDefines -DXTRAP
+#else
+#define XTrapDefines /**/
+#endif
+#endif
 #ifndef BaseExtensionDefines
-#define BaseExtensionDefines -DSHAPE -DMULTIBUFFER -DMITMISC PexDefines ShmDefines XInputDefines
+#define BaseExtensionDefines -DSHAPE -DMULTIBUFFER -DMITMISC -DXTEST PexDefines ShmDefines XInputDefines XTrapDefines
 #endif
 #define ExtensionDefines BaseExtensionDefines ExtensionOSDefines
 #endif
@@ -434,6 +465,18 @@ XCOMM $XConsortium: Project.tmpl,v 1.139 91/10/10 19:39:06 rws Exp $
 #ifndef NormalLibXinput
 #define NormalLibXinput (!SharedLibXinput | ForceNormalLib)
 #endif
+#ifndef SharedLibXTest
+#define SharedLibXTest HasSharedLibraries
+#endif
+#ifndef NormalLibXTest
+#define NormalLibXTest (!SharedLibXTest | ForceNormalLib)
+#endif
+#ifndef SharedLibXTrap
+#define SharedLibXTrap 	HasSharedLibaries
+#endif
+#ifndef NormalLibXTrap
+#define NormalLibXTrap 	(!SharedLibXTrap | ForceNormalLib)
+#endif
 #ifndef SharedLibPhigs
 #define SharedLibPhigs NO	/* XXX - haven't made it sharable yet */
 #endif
@@ -530,14 +573,17 @@ XCOMM X Window System make variables; this need to be coordinated with rules
        AWIDGETSRC = $(LIBSRC)/Xaw
        OLDXLIBSRC = $(LIBSRC)/oldX
       XDMCPLIBSRC = $(LIBSRC)/Xdmcp
-      BDFTOSNFSRC = $(FONTSRC)/bdftosnf
+#ifdef SnfFonts
       BDFTOSNFSRC = $(FONTSRC)/clients/bdftosnf
+#else
       BDFTOPCFSRC = $(FONTSRC)/clients/bdftopcf
+#endif
      MKFONTDIRSRC = $(FONTSRC)/clients/mkfontdir
          FSLIBSRC = $(FONTSRC)/lib/fs
     FONTSERVERSRC = $(FONTSRC)/server
      EXTENSIONSRC = $(TOP)/extensions
          XILIBSRC = $(EXTENSIONSRC)/lib/xinput
+      XTESTLIBSRC = $(EXTENSIONSRC)/lib/xtest
       PHIGSLIBSRC = $(EXTENSIONSRC)/lib/PEX
 
 /*
@@ -586,6 +632,8 @@ XCOMM X Window System make variables; this need to be coordinated with rules
          SOXMUREV = SharedXmuRev
         SOXEXTREV = SharedXextRev
       SOXINPUTREV = SharedXinputRev
+       SOXTESTREV = SharedXTestRev
+       SOXTRAPREV = SharedXTrapRev
 #endif
 
 #if !SharedLibXext
@@ -619,6 +667,10 @@ XCOMM X Window System make variables; this need to be coordinated with rules
 #if !SharedLibXinput
         DEPXILIB = _UseCat($(USRLIBDIR),$(XILIBSRC),/libXi.a)
            XILIB = LoaderLibPrefix _Use(-lXi,$(DEPXILIB))
+#endif
+#if !SharedLibXTest
+     DEPXTESTLIB = _UseCat($(USRLIBDIR),$(XTESTLIBSRC),/libXtst.a)
+        XTESTLIB = LoaderLibPrefix _Use(-lXtst,$(DEPXTESTLIB))
 #endif
 #if !SharedLibPhigs
         DEPPHIGSLIB = _UseCat($(USRLIBDIR),$(PHIGSLIBSRC),/libphigs.a)
