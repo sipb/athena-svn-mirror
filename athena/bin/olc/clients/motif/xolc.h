@@ -1,3 +1,21 @@
+/*
+ * This file is part of the OLC On-Line Consulting System.
+ * It contains definitions and function prototypes for XOLH
+ *
+ *      Chris VanHaren
+ *      Lucien Van Elsen
+ *      MIT Project Athena
+ *
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
+ *
+ *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/xolc.h,v $
+ *      $Id: xolc.h,v 1.10 1991-03-24 14:31:46 lwvanels Exp $
+ *      $Author: lwvanels $
+ */
+
+#include <mit-copyright.h>
+
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 #include <olc/olc_parser.h>
@@ -55,6 +73,7 @@ extern Widget			/* Widget ID's */
 
   w_motd_dlg,
   w_help_dlg,
+  w_save_dlg,
 
   w_send_form,
   w_send_lbl,
@@ -89,72 +108,46 @@ extern int has_question,
 
 #define  MotifString(s)		XmStringLtoRCreate(s, XmSTRING_DEFAULT_CHARSET)
 #define  AddItemToList(l, s)	XmListAddItem(l, MotifString(s), 0);
-
-/* File locations */
-
-#define HELP_PATH "/afs/athena/astaff/project/olcdev/src/clients/motif/help/"
+#define STANDARD_CURSOR	SetCursor(0)
+#define WAIT_CURSOR	SetCursor(1)
 
 /*
  * Function Prototypes
  */
 
-#if defined(__STDC__) || defined(__cplusplus)
+#if defined(__STDC__)
 # define P_(s) s
 #else
 # define P_(s) ()
 #endif
 
-
-/* Cursor.c */
-void SetCursor P_((int wait));
-
 /* main.c */
+int main P_((int argc, char *argv[]));
 int olc_init P_((void));
 
-     /* procs.c */
-void Help P_((Widget w, int *tag, XmAnyCallbackStruct *callback_data));
-void olc_new_ques P_((Widget w, caddr_t *tag,
-		      XmAnyCallbackStruct *callback_data));
-void olc_clear_newq P_((Widget w, caddr_t *tag, 
-			XmAnyCallbackStruct *callback_data));
-void olc_send_newq P_((Widget w, caddr_t *tag,
-		       XmAnyCallbackStruct *callback_data));
-void olc_topic_select P_((Widget w, caddr_t *tag,
-			  XmListCallbackStruct *callback_data));
-void olc_cont_ques P_((Widget w, caddr_t *tag,
-		       XmAnyCallbackStruct *callback_data));
-int olc_topic P_((void));
-int olc_status P_((void));
-int olc_replay P_((void));
-void olc_done P_((Widget w, caddr_t *tag,
-		  XmAnyCallbackStruct *callback_data));
-void olc_cancel P_((Widget w, caddr_t *tag,
-		    XmAnyCallbackStruct *callback_data));
-void olc_savelog P_((Widget w, caddr_t *tag,
-		     XmAnyCallbackStruct *callback_data));
-void olc_stock P_((Widget w, caddr_t *tag,
-		   XmAnyCallbackStruct *callback_data));
-void olc_motd P_((Widget w, caddr_t *tag,
-		  XmAnyCallbackStruct *callback_data));
-void olc_update P_((Widget w, caddr_t *tag,
-		    XmAnyCallbackStruct *callback_data));
-void olc_help P_((Widget w, caddr_t *tag,
-		  XmAnyCallbackStruct *callback_data));
-void olc_quit P_((Widget w, caddr_t *tag,
-		  XmAnyCallbackStruct *callback_data));
-void dlg_ok P_((Widget w, int *tag,
-		XmAnyCallbackStruct *callback_data));
-void dlg_cancel P_((Widget w, int *tag,
-		    XmAnyCallbackStruct *callback_data));
-void olc_send P_((Widget w, caddr_t *tag,
-		  XmAnyCallbackStruct *callback_data));
-void olc_clear_msg P_((Widget w, caddr_t *tag,
-		       XmAnyCallbackStruct *callback_data));
-void olc_send_msg P_((Widget w, caddr_t *tag,
-		      XmAnyCallbackStruct *callback_data));
-void olc_close_msg P_((Widget w, caddr_t *tag,
-		       XmAnyCallbackStruct *callback_data));
-char *parse_text P_((char *string, int columns));
+/* procs.c */
+void olc_new_ques P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_clear_newq P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_send_newq P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_topic_select P_((Widget w, caddr_t *tag, XmListCallbackStruct *callback_data));
+void olc_cont_ques P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_status P_((void));
+void olc_replay P_((void));
+void olc_done P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_cancel P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_savelog P_((Widget w, caddr_t *tag, XmAnyCallbackStruct
+		     *callback_data));
+void save_cbk P_((Widget w, caddr_t *tag, XmSelectionBoxCallbackStruct *callback_data));
+void olc_stock P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_motd P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_update P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_help P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_quit P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void dlg_ok P_((Widget w, int tag, XmAnyCallbackStruct *callback_data));
+void olc_send P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_clear_msg P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_send_msg P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
+void olc_close_msg P_((Widget w, caddr_t *tag, XmAnyCallbackStruct *callback_data));
 
 /* visual.c */
 void MakeInterface P_((void));
@@ -173,7 +166,7 @@ int t_set_default_instance P_((REQUEST *Request));
 ERRCODE x_get_motd P_((REQUEST *Request, int type, char *file, int dialog));
 
 /* x_resolve.c */
-ERRCODE x_done P_((REQUEST *Request));
+void x_done P_((REQUEST *Request));
 ERRCODE x_cancel P_((REQUEST *Request));
 
 /* x_send.c */
@@ -184,8 +177,6 @@ ERRCODE x_list_topics P_((REQUEST *Request, char *file));
 
 /* x_utils.c */
 ERRCODE handle_response P_((int response, REQUEST *req));
-int popup_error P_((char *message));
 int popup_option P_((char *message));
-char *happy_message P_((void));
 
 #undef P_
