@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 1999-09-02 14:57:35 ghudson Exp $
+# $Id: Makefile,v 1.14 1999-10-15 21:26:23 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -80,6 +80,7 @@ install:
 	install -c -m 0644 rfindd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 routed ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 samba ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 sdpd ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 sendmail.cf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 services ${DESTDIR}${ETCDIR}
 	install -c -m 0644 shutdownreason ${DESTDIR}${AMCONFIGDIR}
