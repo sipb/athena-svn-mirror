@@ -70,7 +70,6 @@ InstallMultipleFlags($(FONTS),$(FONTINSTDIR),$(INSTDATFLAGS))
 MakeDirectories(install,$(LIBX3270DIR))
 
 version.o: $(VOBJS) version.txt mkversion.sh
-	@chmod +x mkversion.sh version.txt
 	sh ./mkversion.sh $(CC)
 
 fallbacks.c: mkfb X3270.xad
