@@ -1,0 +1,44 @@
+# $Id: configure.in,v 1.1 1999-10-28 15:40:02 kcr Exp $
+AC_INIT(xlogin.c)
+
+AC_CANONICAL_HOST
+case $host_os in
+
+solaris*)
+	AC_DEFINE(SOLARIS)
+	AC_DEFINE(SOLARIS_MAE)
+	AC_DEFINE(SYSV)
+dnl	MACHLIBS=-lbsd
+	;;
+irix*)
+	AC_DEFINE(SYSV)
+	LIBS="$LIBS ../misc/libnanny.a"
+	;;
+linux*)
+	;;
+esac
+
+AC_SUBST(HOSTTYPE)
+AC_SUBST(ATHENA_MAJOR_VERSION)
+AC_SUBST(ATHENA_MINOR_VERSION)
+AC_PROG_CC
+AC_PROG_INSTALL
+
+ATHENA_AFS("-lprot -lauth -lrxkad -lubik $(AFSDIR)/lib/afs/util.a \
+	-laudit -lsys -lrx -llwp -lsys")
+ATHENA_HESIOD
+ATHENA_KRB4
+ATHENA_KRB5
+dnl ATHENA_ZEPHYR
+
+AC_CHECK_LIB(util, logout)
+AC_CHECK_LIB(crypt, crypt)
+
+AC_PATH_XTRA
+
+AC_CHECK_HEADERS(util.h shadow.h limits.h utmpx.h sys/sysmacros.h)
+
+AC_CHECK_FUNCS(getspnam setlogin login)
+
+dnl #ifdef __NetBSD__  MACHLIBS =-lcompat
+AC_OUTPUT(Makefile)
