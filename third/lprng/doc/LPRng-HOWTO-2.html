@@ -32,7 +32,7 @@ The client programs are used to submit jobs to the print spooler
 program which performs the actual printing operations.
 In order to carry out these operations,
 the server may need to use other programs to convert print job files
-into a format acceptible to a printer,
+into a format acceptable to a printer,
 or perform various accounting or administrative functions.
 <H2><A NAME="ss2.1">2.1 Overview</A>
 </H2>
@@ -54,9 +54,9 @@ or perform various accounting or administrative functions.
 </CODE></BLOCKQUOTE>
 <P>Figure 1 shows the flow of data between the individual components of the
 LPRng print spooling system.
-A progam (or user) will use the <CODE>lpr</CODE> program to send a file
+A program (or user) will use the <CODE>lpr</CODE> program to send a file
 to the <CODE>lpd</CODE> server over a TCP/IP connection.
-The <CODE>lpd</CODE>server will store the file temporarily in a
+The <CODE>lpd</CODE> server will store the file temporarily in a
 spool queue directory.
 The information needed by the <CODE>lpr</CODE> and <CODE>lpd</CODE> programs to carry
 out this activity is stored in the
@@ -65,7 +65,7 @@ out this activity is stored in the
 It will select a job to be printed,
 open a connection to the printer,
 and then use a <I>filter</I> program to convert the file contents into a
-format suiteable for the printer.
+format suitable for the printer.
 If the file does not need conversion,
 then the <CODE>lpd</CODE> server will send the file directly to the printer.
 <P>The <CODE>lpd</CODE> server can also <CODE>forward</CODE> jobs to another print server
@@ -114,7 +114,7 @@ server to do the printing.
 psqueue:server
   :lp=/dev/lp0
   :sd=/var/spool/lpd/psqueue
-  :if=/usr/local/bin/psfilter
+  :if=/usr/local/libexec/filters/ifhp
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The <CODE>sd</CODE> (spool queue directory) entry specifies the directory where

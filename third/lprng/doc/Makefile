@@ -8,7 +8,7 @@
 ###########################################################################
 # MODULE: UTILS/Makefile
 # PURPOSE: generate utilities
-# $Id: Makefile,v 1.1.1.1 1999-02-17 15:29:15 ghudson Exp $
+# $Id: Makefile,v 1.1.1.2 2000-03-31 15:56:06 mwhitson Exp $
 ########################################################################## 
 
 
@@ -22,7 +22,7 @@ realclean mostlyclean distclean clean:
 install:
 	$(MAKE) MAKETARGET=$@ $(ALLDIRS)
 
-ALLDIRS = Intro Install Tutorial Macros
+ALLDIRS = Macros
 
 $(ALLDIRS): FRC
 	(cd $@; $(MAKE) $(MAKETARGET))

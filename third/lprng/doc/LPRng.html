@@ -25,7 +25,9 @@ LPRng Author</h2></center>
 
 <center>
 <h2>
-(<font size=+0>Updated March 28, 1999)</font></h2></center>
+<font size=+0>
+<date> 11 Feb 2000 (For LPRng-3.6.13)
+</font></h2></center>
 
 <center>
 <h2>
@@ -43,6 +45,7 @@ Latest stable distribution
 <br>Supported FILTERS distribution <a href="ftp://ftp.astart.com/pub/LPRng/FILTERS">ftp://ftp.astart.com/pub/LPRng/FILTERS</a>
 <br>Microsoft WINDOWS Applications <a href="ftp://ftp.astart.com/pub/LPRng/WINDOWS">ftp://ftp.astart.com/pub/LPRng/WINDOWS</a>
 <br>TOOLS for use with LPRng <a href="ftp://ftp.astart.com/pub/LPRng/TOOLS">ftp://ftp.astart.com/pub/LPRng/TOOLS</a>
+<br>LPRng CHANGE log <a href="ftp://ftp.astart.com/pub/LPRng/CHANGES">ftp://ftp.astart.com/pub/LPRng/CHANGES</a>
 <center>
 <h2>
 LPRng - An Enhanced Printer Spooler</h2></center>
@@ -78,7 +81,7 @@ has a selection of filter packages that
 support a wide range of printing functionality.
 <center>
 <h2>
-SVR4 LP and LPSTAT Emulation</h2></center>
+SVR4 LP and LPSTAT Emultation</h2></center>
 <p>LPRng provides emulation packages for the SVR4 lp and lpstat programs,
 eliminating the need for another print spooler package.
 These emulation packages can be modified according to local requirements,
@@ -95,30 +98,96 @@ system.
 Additional authentication support is extremely simple to add.
 <center>
 <h2>
-Licensing and Commercial Support</h2></center>
+Licensing, Commercial Support, and Y2k Compliance</h2></center>
 <p>
 LPRng is Open Source Software,
 and the current public distribution is available from the listed FTP and
 Web Sites.
-LPRng is distributed under an extremely liberal license agreement.
-Individuals,  educational institutions,
-and non-profit organizations may freely use the software,
-and can be distributed without charge.
-Licenses and support agreements for corporations,
-government organizations, and other sponsors may be obtained from
-<p><a href="http://www.astart.com">AStArt Technologies,
-</a>
+LPRng is distributed under the GPL or Artistic 
+<a href="license.txt">license</a>.
+Licenses and support agreements for users who do not want to use
+the terms of the above licenses
+may be obtained from
+<a href="http://www.astart.com">AStArt Technologies </a>
 which provides commercial
 support and enhancements for the LPRng and other network software.
 AStArt
 provides network and system consulting services for UNIX and NT systems,
 as well as real time and network software.
-<center>
-<h2>
-WEB, FTP and Associated Sites</h2></center>
+<p>
+The LPRng software has no known Year 2000 data dependencies.
+Where necessary,  dates are generated using values relative to
+the UNIX Epoch,  and will be consistent to 2034 at a conservative
+estimate. Details are available in the <a href="y2k.txt"> Y2K Compliance
+</a> file in the source distribution.
+<center><h1>LPRng Toolkit</h1></center>
+<p>
+LPRng support and interfaces are available
+for a wide variety of systems.  The following applications or
+toolkits can be used with LPRng.
+This easy integration of custom tools and Open Source
+applications make LPRng a flexible and sophisticated
+print spooler system.
+The following is a selection of the tools that are
+commonly used with LPRng.
+
+<center><h2>Samba</h2></center><p>
+
+<a href="http://www.samba.org">Samba (www.samba.org)</a>
+is an open source software suite that provides
+seamless file and print services to SMB/CIFS (Microsoft Windows)
+clients. Samba is freely available under the GNU General Public
+License.  LPRng printing support is part of the Samba Distribution,
+and LPRng has facilities to provide enhanced printing services to
+Samba users.
+
+<center><h2>LPInfo </h2></center><p>
+
+<a href="http://www.komar.org/komar/alek"> Alek Komarnitsky </a>
+(http://www.komar.org/komar/alek)
+(email: <a href="mailto:alek@komar.org">alek@komar.org</a>)
+has developed LPINFO, a command line/Web-based tool
+for use with LPRng.  This provides a simple to use Web Interface
+to LPRng with the functionality that both users and administrators
+need.
+LPInfo works fine on small sites but it really shines at
+managing large sites with its features that help handle large
+numbers of printers.
+Sites with over 1000 printers are easily managed with this software.
+
+<center><h2>IFHP Filter</h2></center><p>
+
+The IFHP (part of the LPRng distribution)
+print filter was designed to work with LPRng and provide
+support for LPRng to printer communication and job management.
+IFHP supports printers with PostScript, PJL, PCL, and text capability
+from HP, DEC, IBM, Lexmark, Xerox, Sun, Qume, and other manufacturers.
+In addition,
+it can be configured to handle a wide range of legacy or vintage printers
+as well.
+
+<center><h2>GhostScript, a2ps, and Document Conversion</h2></center><p>
+
+The <a href="http://www-inf.enst.fr/~demaille/a2ps">
+a2ps (http://www-inf.enst.fr/~demaille/a2ps) </a>
+utility
+can be used to automatically detect file types and convert
+them to PostScript.
+The IFHP Filter can be configured to use
+<a href="http://www.ghostscript.com"> GhostScript (www.ghostscript.com)</a>
+for printer specific format conversions
+such as PostScript to PCL or raster output.
+LPRng users commonly combine the two packages with LPRng support
+to provide automatic print formatting or specialized print format
+support.
+
+<p>
+PostScript(R) is a Registered Trademark of Adobe Systems Inc.
+<br>>
+PCL(R) is a Registered Trademark of Hewlett-Packard Co.
+<center> <h1> WEB, FTP and Associated Sites</h1></center>
 <p>Web Page: <a href="http://www.astart.com/LPRng.html">http://www.astart.com/LPRng.html</a>
 <p>The software may be obtained from
-<br>
 <a href="ftp://ftp.astart.com/pub/LPRng">ftp://ftp.astart.com/pub/LPRng</a>
 (Main
 site)
@@ -139,7 +208,7 @@ site)
 </a>(AU/NZ)
 <br><a href="ftp://ftp.lps.ens.fr/pub/software/plp/LPRng">ftp://ftp.lps.ens.fr/pub/software/plp/LPRng
 </a>(FR)
-<p>To join the LPRng mailing list, please send mail to <a href="mailto: lprng-request@iona.ie">lprng-request@iona.ie
+<p>To join the LPRng mailing list, please send mail to <a href="mailto: lprng-request@lprng.com">lprng-request@lprng.com
 </a>with
 the word 'subscribe' in the BODY
 <p>The LPRng mailing list is archived on

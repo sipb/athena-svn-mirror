@@ -46,7 +46,7 @@ that the networking support is set up correctly.</LI>
 <LI>When the system restarts, try using <CODE>lpq</CODE>
 to check to see if the <CODE>lpd</CODE> server is active.</LI>
 </OL>
-<P>James P. Dugal <CODE>&lt;jpd@usl.ed&gt;</CODE> has also makde the following
+<P>James P. Dugal <CODE>&lt;jpd@usl.ed&gt;</CODE> has also made the following
 suggestions as well.
 <BLOCKQUOTE><CODE>
 <PRE>
@@ -84,15 +84,15 @@ Sun Microsystems Newsprint by
 Christopher Hylands, Ptolemy Project Manager
 of the University of California.
 <P>The Sun Newsprint printer is actually
-an OEM version of the  Textronix PhaserII;
+an OEM version of the  Tektronix PhaserII;
 Sun Microsystems appears to have dropped support for Newsprint,
 and the recommended migration path is to buy a PostScript printer.
 If you want more information on using the Newsprint system,
 notes are available via
 <CODE>http://ptolemy.eecs.berkeley.edu/~cxh/lprng.html</CODE>.
 <P>Looking through the mailing list logs, it looks like everyone was
-having a hard time getting lprng to work with Sun's braindead
-newsprinters.  I tried using ghostscript, but the fonts were, IMHO,
+having a hard time getting lprng to work with Sun's brain-dead
+newsprinters.  I tried using GhostScript, but the fonts were, IMHO,
 ugly, so I spent a little time getting the newsprint fonts to work.
 <P>The key thing was to grab the file
 <CODE>/usr/newsprint/lpd/if</CODE>
@@ -126,21 +126,21 @@ directory would be <CODE> /etc/lp/printers/xsp524</CODE>.
 <BLOCKQUOTE><CODE>
 <PRE>
 sp524|524:
-    :mx#0:sf:sh:sb:
-    :lp=:rm=doppler:rp=xsp524:mx#0:
+    :mx=0:sf:sh:sb:
+    :lp=:rm=doppler:rp=xsp524:
     :sd=/var/spool/lpd/sp524d:
     :lf=/var/spool/lpd/sp524d/log:
 xsp524|Sun SPARCprinter NeWSprint printer:
-    :mx#0:sf:sb:sh:rs:
+    :mx=0:sf:sb:sh:rs:
     :lp=/dev/lpvi0:
     :sd=/etc/lp/printers/xsp524:
     :lf=/etc/lp/printers/xsp524/log:
     :af=/var/spool/lpd/xsp524/acct:
-    :if=/usr/local/lib/newsprint/if:
+    :if=/usr/local/libexec/newsprint/if:
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>The
-<CODE>/usr/local/lib/newsprint/if</CODE>
+<CODE>/usr/local/libexec/newsprint/if</CODE>
 was copied from
 <CODE>/usr/newsprint/lpd/if</CODE>
 in a SunOS4.x installation of the newsprint
@@ -234,7 +234,7 @@ section for details on how to install LPRng and
 deactivate the existing print support.
 <P>You may need to update the printcap file and filters.
 See 
-<A HREF="LPRng-HOWTO-8.html#printcapref">Using the Princap Database</A>
+<A HREF="LPRng-HOWTO-8.html#printcapref">Using the Printcap Database</A>
 for details.
 <H2><A NAME="ss5.4">5.4 AIX</A>
 </H2>
@@ -329,7 +329,7 @@ Parent Adapter:            ppa0 Available
 </PRE>
 </CODE></BLOCKQUOTE>
 
-Now define the characteristictics of the device:
+Now define the characteristics of the device:
 <BLOCKQUOTE><CODE>
 <PRE>
 Port Number: p
@@ -347,7 +347,7 @@ Send all characters to printer UNMODIFIED   no
 and select <CODE>yes</CODE>! We have had a lot of trouble with
 <CODE>no</CODE>.  This is very important! Expect erroneous output if
 you choose <CODE>no</CODE>. If you have already created a device
-file, change the characteristictics! SMIT's fast path is <CODE>smit
+file, change the characteristics! SMIT's fast path is <CODE>smit
 chdev</CODE>.
 <P>Finally remove all AIX printing commands like <CODE>qprt</CODE>,
 <CODE>lp</CODE>, <CODE>cancel</CODE>, <CODE>lpr</CODE>,
@@ -355,18 +355,20 @@ chdev</CODE>.
 <CODE>/usr/bin</CODE>. Do not remove <CODE>enq</CODE> and friends if
 you want to use the general queueing facility.
 <P>Now you can start your new <CODE>lpd</CODE>.
-<H2><A NAME="ss5.5">5.5 Appletalk Support</A>
+<H2><A NAME="ss5.5">5.5 AppleTalk Support</A>
 </H2>
 
 <P>Netatalk is used to communicate from TCP/IP to
-Appletalk printers and vice versa.
-The netalk distribution FAQ is at:
+AppleTalk printers and vice versa.
+The Netatalk distribution FAQ is at:
 <P>
 <A HREF="http://www.umich.edu/~rsug/netatalk">http://www.umich.edu/~rsug/netatalk</A><P>There are two issues with using netatalk.  The first issue
 has to do with printing to LPRng-served printers from Macs.
 The second issue has to do with printing from LPRng to
 network printers that speak AppleTalk.
+<P>And alternative version of AppleTalk support is available from
 <P>
+<A HREF="ftp://ftp.u.washington.edu/pub/user-supported/asun">ftp://ftp.u.washington.edu/pub/user-supported/asun</A><P>
 <H2><A NAME="ss5.6">5.6 Apple to LPRng Printing</A>
 </H2>
 
@@ -391,7 +393,7 @@ Edan Idzerda    &lt;edan@mtu.edu>
 System Administrator -- Michigan Technological University, Houghton MI USA
 </PRE>
 </CODE></BLOCKQUOTE>
-<H2><A NAME="ss5.7">5.7 LPRng to Appletalk Printing</A>
+<H2><A NAME="ss5.7">5.7 LPRng to AppleTalk Printing</A>
 </H2>
 
 <P>The netatalk package comes with a PostScript filter called <CODE>psf</CODE>.  After
@@ -460,17 +462,10 @@ Lab Engineer, CS Department
 University of Tennessee, Knoxville                   
 </PRE>
 </CODE></BLOCKQUOTE>
-<H2><A NAME="smb"></A> <A NAME="ss5.8">5.8 SAMBA Support</A>
+<H2><A NAME="smb"></A> <A NAME="ss5.8">5.8 SAMBA, SMB and LPRng</A>
 </H2>
 
-<P>From the
-<A HREF="http://www.samba.org">http://www.samba.org</A>
-Web Site.
-<P>
-<H3>What is SMB</H3>
-
-<P>This is a big question.
-<P>The very short answer is that it is the protocol by which a lot of
+<P>SMB is the protocol by which a lot of
 PC-related machines share files and printers and other information
 such as lists of available files and printers. Operating systems that
 support this natively include Windows NT, OS/2, and Linux and add on
@@ -479,88 +474,68 @@ VMS, Unix of all kinds, MVS, and more. There is no reason why Apple
 Macs and indeed any Web browser should not be able to speak this
 protocol, and current development (in which the Samba team is heavily
 involved) is aimed at exactly that. Alternatives to SMB include
-Netware, NFS, Appletalk, Banyan Vines, Decnet etc; many of these have
+Netware, NFS, AppleTalk, Banyan Vines, Decnet etc; many of these have
 advantages but none are both public specifications and widely
 implemented in desktop machines by default.
-<P>The Common Internet Filesystem is what the new SMB initiative is
-called. For details watch
+<P>SAMBA is a package that supports the SMB protocol and provides
+a simple and easy way to import and export file systems and printer
+facilities.
+The web site for SAMBA is
 <A HREF="http://www.samba.org">http://www.samba.org</A>.
-<P><B>WHAT CAN SAMBA DO?</B>
-<P>Here is a very short list of what samba includes, and what it does.
-<UL>
-<LI> a SMB server, to provide Windows NT and LAN Manager-style file and print
-services to SMB clients such as Windows 95, Warp Server, smbfs and others.</LI>
-<LI> a Netbios (rfc1001/1002) nameserver, which among other things gives
-browsing support. Samba can be the master browser on your LAN if you wish.</LI>
-<LI> a ftp-like SMB client so you can access PC resources (disks and
-printers) from unix, Netware and other operating systems</LI>
-<LI> a tar extension to the client for backing up PCs</LI>
-</UL>
-<P>For a much better overview have a look at the web site at
-<A HREF="http://www.samba.org">http://www.samba.org</A>
-and browse the user survey.
-<P>Related packages include:
-<UL>
-<LI> smbfs, a Linux-only filesystem allowing you to mount remote SMB
-filesystems from PCs on your Linux box. This is included as standard with
-Linux 2.0 and later.</LI>
-<LI> tcpdump-smb, a extension to tcpdump to allow you to investigate SMB
-networking problems over netbeui and tcp/ip.</LI>
-<LI> smblib, a library of smb functions which are designed to make it
-easy to smb-ise any particular application.</LI>
-</UL>
-<P><B>FTP SITE and WEB SITE</B>
-<P>The main anonymous ftp and web site for this software is found using
-<A HREF="http://www.samba.org">http://www.samba.org</A>.
-<P>As well as general information and documentation, this also has searchable
-archives of the mailing list and a user survey that shows who else is using
-this package. Have you registered with the survey yet? :-)
-<H3>Samba and LPRng</H3>
-
 <P>The SAMBA code is very easy to configure.  See the SAMBA
-documentation for details,  but you only need to modify
-the samba.conf file and put in the pathnames of the LPRng
-facilities.  The following is a sample.
-<P>
+<CODE>doc/text/Printing.txt</CODE> and related documentation for details.
+In the
+<CODE>samba.conf</CODE> file
+<CODE>[global]</CODE> section you specify the
+<CODE>print</CODE>, <CODE>lpq</CODE>, and <CODE>lprm</CODE> commands to be used,
+and in the <CODE>[printing]</CODE> section the location
+of a temporary directory to hold print jobs when they are submitted.
 <BLOCKQUOTE><CODE>
 <PRE>
-From: Sascha Ottolski &lt;alzhimer@cs.tu-berlin.de>
-Subject: Re: [LPRng] lprng-3.2.6 and smb on Linux
-webnut@conc.tds.net said:
-
- I have samba sending print from Win95 machines to LPRng.  The key to
- making it work is in the samba.conf file in the [global] section:
-
-[global]
+[printers]
+    path = /tmp
+    guest ok = no
+    print ok = yes
     printing = lprng
-    print command = /usr/local/bin/lpr  -P%p %s -r
+    load printers = yes 
+    printcap name = /etc/printcap
+    print command = /usr/local/bin/lpr  -P%p -r %s
     lpq command   = /usr/local/bin/lpq  -P%p
     lprm command  = /usr/local/bin/lprm -P%p %j
-    printcap name = /etc/printcap
-    load printers = no 
-[printers]
-   comment = All Printers
-   path = /tmp
-   browseable = no
-   printable = yes
-   guest ok = no
-   writable = no
-   create mode = 0700
-
-Note: the path= value specifies the spool directory where
-the print files are temporarily stored.  This should NOT
-be the LPRng spool directory,  but some other directory that
+    lppause command = lpc hold %p %j
+    lpresume command = lpc release %p %j
+    queuepause command = lpc -P%p stop
+    queueresume command = lpc -P%p start
+    #
+    # alternative to allow userid to be specified as well
+    #
+    # You will have to add the samba UID to the 'allow_user_setting'
+    #   option in the /etc/lpd.conf file.
+    # WARNING: the %U is the name the user requests.  If you have
+    # 'guest' printer use,  then you should be aware that this
+    # will allow anybody to impersonate a another user,  and they will
+    # be able to execute the various LPRng commands as that user.
+    #
+#   print command = /usr/local/bin/lpr -U%U -P%p -r %s
+#   lprm command  = /usr/local/bin/lprm -P%p -U%U %j
+#   lppause command = lpc -U%U hold %p %j
+#   lpresume command = lpc -U%U release %p %j
+#   queuepause command = lpc -U%U -P%p stop
+#   queueresume command = lpc -U%U -P%p start
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>The path= value specifies a directory where
+the print files are temporarily stored.  This must NOT
+be an LPRng printer spool directory,  but some other directory that
 Samba has write permissions for.
-</PRE>
-</CODE></BLOCKQUOTE>
+<P>If you plan to use SAMBA and LPRng,
+then you should use the old BSD format for the printcap files,
+i.e.- using the <CODE>\</CODE> line continuation indicator.
+<H2><A NAME="ss5.9">5.9 Printing to a NetBEUI Printer</A>
+</H2>
 
-<BLOCKQUOTE><CODE>
-<PRE>
-From: "Pascal A. Dupuis" &lt;dupuis@lei.ucl.ac.be>
-Subject: Re: LPRng-3.2.10 and SAMBA
-</PRE>
-</CODE></BLOCKQUOTE>
-<P>I include the smbprint script used to send stdin to a NetBEUI printer.
+<P>You can use the SAMBA smprint script to
+send a print job to an SMB client.
 <BLOCKQUOTE><CODE>
 <PRE>
 #!/bin/sh -x
@@ -591,34 +566,44 @@ Subject: Re: LPRng-3.2.10 and SAMBA
 # Should read the following variables set in the config file:
 #   server, service, password
 config_file=.config
-eval `cat $config_file`
-# echo "server $server, service $service" 2>&amp;1
-(
+eval `/bin/cat $config_file`
+# echo "server $server, service $service" 1>&amp;2
 # NOTE You may wish to add the line `echo translate' if you want automatic
 # CR/LF translation when printing.
-#       echo translate
+(
+#   echo translate
     echo "print -"
-    cat
+    /bin/cat
 ) | /usr/local/bin/smbclient "\\\\$server\\$service" \
-   $password -U $server -N -P
-# comment preceeding line and uncomment following 
-# to just test for correct filter working
-#) | cat > /dev/null
+   "$password" -U "$server" -N -P 1>&amp;2
 </PRE>
 </CODE></BLOCKQUOTE>
-<H2><A NAME="printspec"></A> <A NAME="ss5.9">5.9 Printer Specific notes</A>
+<P>If the above script was in <CODE>/usr/local/libexec/filters/smbprint</CODE>,
+the printcap entry for this printer would be:
+<BLOCKQUOTE><CODE>
+<PRE>
+pauls_pc:
+  :sd=/var/spool/lpd/%P
+  # we filter the output
+  :lp=|/usr/local/libexec/filters/smbprint
+  # you can add filters if you want to do specific actions
+  :ifhp=model=hp4
+  if=/usr/local/libexec/filters/ifhp
+</PRE>
+</CODE></BLOCKQUOTE>
+<H2><A NAME="printspec"></A> <A NAME="ss5.10">5.10 Printer Specific notes</A>
 </H2>
 
 <P>This is a small collection of miscellaneous notes about printers
 and applications.
-<H2><A NAME="ss5.10">5.10 HP Deskjet</A>
+<H2><A NAME="ss5.11">5.11 HP Deskjet</A>
 </H2>
 
 <P>
 <BLOCKQUOTE><CODE>
 <PRE>
 From: jarausch@igpm.rwth-aachen.de (Helmut Jarausch)
-Subject: Re: Using gs (ghostscript) as a filter? 
+Subject: Re: Using gs (GhostScript) as a filter? 
 To: lprng@iona.com
 Cc: Rick Gaine &lt;rgaine@nbcs.rutgers.edu>
 Sender: majordomo-owner@iona.com
@@ -628,8 +613,8 @@ Reply-To: lprng@iona.com
 >> 
 >> I would like to use LPRng 3.1.4 with an HP LaserJet 4P.  I'd like to be
 >> able to use gs to convert PostScript files so that I can print them on my
->> HP 4P.  Can I do this with LPRng?  If so, could someone semd me a printcap
->> entry?  I'd appreciate it.  I am not sure how I will be cconnecting the
+>> HP 4P.  Can I do this with LPRng?  If so, could someone send me a printcap
+>> entry?  I'd appreciate it.  I am not sure how I will be connecting the
 >> printer yet, but I am thinking either serial or network.  Probably serial
 >> though.  Thanks for any help.
 </PRE>
@@ -639,7 +624,7 @@ Reply-To: lprng@iona.com
 <PRE>
 djps
     :cm=Local Deskjet(GhostScript)
-    :sd=/var/spool/djps:sf:sh:mx#0
+    :sd=/var/spool/djps:sf:sh:mx=0
     :lp=/dev/plp
     :if=/usr/local/bin/LPRng/ps_to_deskjet:
 </PRE>
@@ -662,7 +647,7 @@ RWTH Aachen
 D 52056 Aachen, Germany
 </PRE>
 </CODE></BLOCKQUOTE>
-<H2><A NAME="ss5.11">5.11 HP LaserJet IIISiMX</A>
+<H2><A NAME="ss5.12">5.12 HP LaserJet IIISiMX</A>
 </H2>
 
 <P>
@@ -670,7 +655,7 @@ D 52056 Aachen, Germany
 <PRE>
 > From majordomo-owner@iona.com Mon Aug 31 11:17:26 1998
 > To: lprng@lprng.org
-> Subject: [LPRng] problems printing PS-level2 jobs on LJIIIsi's...
+> Subject: [LPRng] problems printing PS-level2 jobs on LjIIsi's...
 > Date: Mon, 31 Aug 1998 15:06:22 -0400
 > From: "John Saroglou" &lt;johny@yorku.ca>
 >
@@ -692,10 +677,10 @@ The Windows (you are under Windows, right?) HP driver for 3Si/3Si MX
 PostScript should produce only PS level 1.
 <P>Beware: latest version of Adobe Windows PS driver produces *ONLY* PS
 level 2.
-So if you have (or receive) level 2 files, read them using ghostscript
+So if you have (or receive) level 2 files, read them using GhostScript
 and print a screen dump :-) or as a bitmap. 
 <P>You can also convert them into PDF (using either Adobe distiller or
-ghostscript ps2pdf) then use <I>acroread</I> to print the result.
+GhostScript's ps2pdf) then use <I>acroread</I> to print the result.
 <I>Acroread</I> can
 produce either level 1 or level 2 PostScript. THE definite solution!
 <P>This trouble has nothing to do with the way they are connected,
@@ -712,7 +697,7 @@ Bertrand
 | F-35042 Rennes Cedex - FRANCE | http://www.irisa.fr/               |
 </PRE>
 </CODE></BLOCKQUOTE>
-<H2><A NAME="ss5.12">5.12 HP JetDirect Interface</A>
+<H2><A NAME="ss5.13">5.13 HP JetDirect Interface</A>
 </H2>
 
 <P>The  HPJetDirect  card  can  be configured through the front
@@ -918,7 +903,7 @@ authentication-trap: on
 # include the kernel (LOG_KERN), the mail system (LOG_MAIL), and the spooling
 # system (LOG_LPR).  The card only allows its syslog facility to be configured
 # to one of the local user values (LOG_LOCAL0 through LOG_LOCAL7).  The
-# selectable option strings, local0 through local7 (configured to LOG_LOCAL0
+# selectible option strings, local0 through local7 (configured to LOG_LOCAL0
 # through LOG_LOCAL7, respectively) are case insensitive.  The default
 # syslog-facility for the card is LOG_LPR.
 
@@ -953,7 +938,7 @@ old-idle-mode: off
 printer,  using the front panel switches,  to select the FIRST paper
 tray.  See your printer documentation on this.  Unfortunately,  different
 models of HP printers have different methods of handling paper trays.
-<H2><A NAME="ss5.13">5.13 Lexmark Printers</A>
+<H2><A NAME="ss5.14">5.14 Lexmark Printers</A>
 </H2>
 
 <P>Some Lexmark printers do not send
@@ -1000,7 +985,7 @@ running with ifhp right now with no extra options (just defaults).
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="P450"></A> <A NAME="ss5.14">5.14 Network Base Tektronix Phaser Printers</A>
+<H2><A NAME="P450"></A> <A NAME="ss5.15">5.15 Network Base Tektronix Phaser Printers</A>
 </H2>
 
 <P>The <CODE>ifhp</CODE> filter supports the
@@ -1015,10 +1000,10 @@ phaser:
  # You need to specify the IP address of the printer's network interface
  #  In this example it is 10.0.0.1 - replace with the correct value
  # The filter will actually open the connection.
- :if=/usr/local/lib/filter/ifhp -Tdev=10.0.0.1%9100,model=tek
+ :if=/usr/local/libexec/filters/ifhp -Tdev=10.0.0.1%9100,model=tek
 </PRE>
 </CODE></BLOCKQUOTE>
-<H2><A NAME="ss5.15">5.15 Duplex Printing</A>
+<H2><A NAME="ss5.16">5.16 Duplex Printing</A>
 </H2>
 
 <P>Duplex printing is when you print on both sides of a page.
@@ -1057,7 +1042,7 @@ this appears to be the only way to do it.
 <BLOCKQUOTE>
 <EM>Patrick Powell</EM>
 </BLOCKQUOTE>
-<H2><A NAME="ss5.16">5.16 Test Version  and Portability Testing</A>
+<H2><A NAME="ss5.17">5.17 Test Version  and Portability Testing</A>
 </H2>
 
 <P>The LPRng code has the ability to run as non-setuid software,
