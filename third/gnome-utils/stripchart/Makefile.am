@@ -37,7 +37,7 @@ confdir = $(datadir)/stripchart
 conf_DATA = stripchart.conf stripchart.params
 
 Utilitiesdir = $(datadir)/gnome/apps/Utilities
-Utilities_DATA = stripchart.desktop
+#Utilities_DATA = stripchart.desktop
 
 Appletdir = $(datadir)/applets/Monitors
 Applet_DATA = stripchart-applet.desktop
