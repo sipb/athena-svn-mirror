@@ -8,12 +8,6 @@ umask 022
 # alert for changes.
 platform=`uname -m`
 
-CPUTYPE=`/sbin/machtype -c`; export CPUTYPE
-if [ "$CPUTYPE" = SPARC/4 ]; then
-    echo "Setting monitor resolution..."
-    /os/usr/platform/$platform/sbin/eeprom output-device=screen:r1152x900x94
-    /os/usr/platform/$platform/sbin/eeprom fcode-debug?=true
-fi
 
 UPDATE_ROOT=/root; export UPDATE_ROOT
 echo "Mounting hard disk's root partition..."
@@ -24,7 +18,7 @@ echo "Making dirs on root"
 mkdir /root/var
 mkdir /root/usr
 mkdir /root/proc
-
+ln -s var/rtmp /root/tmp
 
 echo "Mount var, usr , var/usr/vice..."
 case $partitioning in
@@ -72,7 +66,6 @@ mkdir /root/var/etc
 
 echo "make it appear as  configured"
 rm /root/etc/.UNC*
-rm /root/etc/.sysidconfig.apps
 cp /cdrom/.sysIDtool.state /root/etc/default/
 
 echo "Installing Requested and Security patches for OS "
@@ -88,7 +81,7 @@ echo "the os part is installed"
 echo "tracking the srvd"
 /srvd/usr/athena/lib/update/track-srvd
 echo "copying kernel modules from /srvd/kernel"
-cp -p /srvd/kernel/fs/* /root/kernel/fs/
+cp -p -r /srvd/kernel/fs/* /root/kernel/fs/
 
 echo "Create devices and dev"
 cd /root
@@ -119,13 +112,12 @@ if=`ifconfig -au | awk -F: '/^[a-z]/ { if ($1 != "lo0") { print $1; exit; } }'`
 if [ -z "$if" ]; then if=le0; fi
 hostname=`echo $hostname | /usr/bin/tr "[A-Z]" "[a-z]"`
 echo "Host name is $hostname"
-echo "Gateway is $gateway"
 echo "Address is $netaddr"
 echo $hostname >etc/nodename
 echo $hostname >etc/hostname.$if
-echo $gateway >etc/defaultrouter
-netmask=`cat /devices/cnbdrv:netmask`
-echo "$netaddr  $netmask" > etc/inet/netmasks
+set -- `/etc/athena/netparams $netaddr`
+echo "$2  $1" > /root/etc/inet/netmasks
+echo "$4" >etc/defaultrouter
 echo "$netaddr	${hostname}.MIT.EDU $hostname" >>etc/inet/hosts
 
 cd /root
@@ -147,10 +139,6 @@ cp -p etc/shadow.local etc/shadow
 chmod 600 etc/shadow
 cp -p /srvd/etc/group etc/group
 cp -p /srvd/etc/athena/athinfo.access etc/athena/athinfo.access
-#ln -s ../var/adm/utmp etc/utmp
-#ln -s ../var/adm/utmpx etc/utmpx
-#ln -s ../var/adm/wtmp etc/wtmp
-#ln -s ../var/adm/wtmpx etc/wtmpx
 cp -p /srvd/etc/athena/*.conf etc/athena/
 echo "Updating dm config"
 cp -p /srvd/etc/athena/login/config etc/athena/login/config
