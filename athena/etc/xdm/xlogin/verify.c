@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.75 1996-11-26 21:51:58 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.76 1997-02-04 09:39:20 ghudson Exp $
  */
 
 #include <stdio.h>
@@ -1749,9 +1749,11 @@ krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
 		*ret_cache_name = 0;
 	memset((char *)&my_creds, 0, sizeof(my_creds));
 
-	krb5_init_context(&context);
-	cache_name = krb5_cc_default_name(context);
+	retval = krb5_init_context(&context);
+	if (retval)
+		return retval;
 
+	cache_name = krb5_cc_default_name(context);
 	krb5_init_ets(context);
 	
 	retval = krb5_425_conv_principal(context, name, instance, realm, &me);
@@ -1844,7 +1846,9 @@ krb5_error_code do_v5_kdestroy(cachename)
 	krb5_error_code retval;
 	krb5_ccache cache;
 
-	krb5_init_context(&context);
+	retval = krb5_init_context(&context);
+	if (retval)
+		return retval;
 
 	if (!cachename)
 		cachename = krb5_cc_default_name(context);
