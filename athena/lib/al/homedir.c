@@ -17,7 +17,7 @@
  * functions to set up and revert user home directories.
  */
 
-static const char rcsid[] = "$Id: homedir.c,v 1.4 1997-11-13 21:59:05 ghudson Exp $";
+static const char rcsid[] = "$Id: homedir.c,v 1.5 1997-11-15 18:44:32 danw Exp $";
 
 #include <hesiod.h>
 #include <stdio.h>
@@ -107,7 +107,7 @@ int al__setup_homedir(const char *username, struct al_record *record,
       while ((rpid = waitpid(pid, &status, 0)) < 0 && errno == EINTR)
 	;
 
-      if (rpid == 0 && WIFEXITED(status) && WEXITSTATUS(status) == 0 &&
+      if (rpid == pid && WIFEXITED(status) && WEXITSTATUS(status) == 0 &&
 	  access(local_pwd->pw_dir, F_OK) == 0)
 	{
 	  record->attached = 1;
