@@ -1,3 +1,32 @@
+Wed May 02 16:38:01 2001  George Lebl <jirka@5z.com>
+
+	* splash.c, Makefile.am, gnome-splash-1.4.0.png: Add code to pick a
+	  splash screen according to the version with the old
+	  gnome-splash.png as a fallback.  So this new 1.4 splashscreen will
+	  only show up in 1.4.0.x releases.  Just in case we forget to change
+	  it.  Also add a black shadow to the text on the splashscreen to make
+	  it nicer.
+
+2001-05-01  Glynn Foster <glynn.foster@sun.com>
+	* save.c: Get rid of stupid warning 
+
+Sun Apr 29 23:46:44 2001  George Lebl <jirka@5z.com>
+
+	* main.c: when GDM_GNOME_SESSION is set, use that session.  Command
+	  line still overrides it however
+
+2001-04-30  Glynn Foster <glynn.foster@sun.com>
+	* main.c: If using the --choose-session=ARG bit, then
+	  immediately set the value of the CurrentSession. This
+	  is mainly an untested fix for gdm
+
+2001-04-26  Glynn Foster  <glynn.foster@sun.com>
+
+	* default.in: So now we have [Classic] and [Default].
+	  Classic will be gmc and Default will be Nautilus.
+          Okay there's also [Nautilus] for some monkeys which 
+          will be removed later.
+
 2001-03-23  Glynn Foster <glynn.foster@sun.com>
 	* logout.c: Get rid of gsm-protocol calls since they are not 
 	  needed.

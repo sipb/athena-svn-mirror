@@ -1,10 +1,10 @@
 <HTML
 ><HEAD
 ><TITLE
->Menus</TITLE
+>Menu</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.61
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
 "><LINK
 REL="HOME"
 TITLE="Il pannello di GNOME"
@@ -13,7 +13,7 @@ REL="PREVIOUS"
 TITLE="Il Menu Principale"
 HREF="mainmenu.html"><LINK
 REL="NEXT"
-TITLE="Launchers"
+TITLE="Pulsanti di avvio"
 HREF="launchers.html"></HEAD
 ><BODY
 CLASS="SECT1"
@@ -68,67 +68,66 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="MENUS"
->Menus</A
+>Menu</A
 ></H1
 ><P
->   In addition to the <B
+>   In aggiunta al <B
 CLASS="GUIMENU"
->Main Menu</B
->, discussed in <A
+>Menu Principale</B
+>, discusso in  <A
 HREF="mainmenu.html"
 >la sezione <I
 >Il Menu Principale</I
 ></A
->, you can also add "normal menus" to a
-   <SPAN
+>, è inoltre possibile aggiungere "menu normali" ad un
+    <SPAN
 CLASS="INTERFACE"
->Panel</SPAN
->. An example menu, in this case a
-   <B
+>pannello</SPAN
+>.  Un menu di esempio, in questo caso un menu
+    <B
 CLASS="GUIMENU"
->Favorites</B
-> menu containing three application
-   launchers and one submenu titled <B
+>Preferiti</B
+> contenente tre pulsanti di avvio e un sottomenu
+    con titolo <B
 CLASS="GUISUBMENU"
 >Games</B
->, is
-   shown in <A
+>, è mostrato in <A
 HREF="menus.html#EXAMPLE-MENU-FIG"
 >Figura 6</A
->. Unlike the
-   <B
+>. Diversamente da <B
 CLASS="GUIMENU"
->Main Menu</B
->, normal menus only contain whatever
-   launchers and submenus you place in them - no default submenus,
-   <B
+>Menu
+      Principale</B
+>, i menu normali possono contenere unicamente pulsanti
+    di avvio e sottmenu che voi stessi inserirete al loro interno - nessun
+    sottomenu predefinito, il comando <B
 CLASS="GUIMENUITEM"
->Run...</B
-> command, etc. as the <B
+>Avvia...</B
+>,
+    etc. come invece accade per il <B
 CLASS="GUIMENU"
->Main
-   Menu</B
-> has.  You can also add any submenu of your
-   <B
+>Menu Principale</B
+>. È inoltre
+    possibile aggiungere qualunqune sottomenu del menu
+    <B
 CLASS="GUIMENU"
->Favorites</B
-> menu or the
-   <B
+>Preferiti</B
+> o del menu <B
 CLASS="GUIMENU"
->Programs</B
-> menu as a separate menu to a
-   <SPAN
+>Programmi</B
+> come
+    menu separato ad un <SPAN
 CLASS="INTERFACE"
->Panel</SPAN
->; to do so, bring up this submenu from
-   the <B
+>pannello</SPAN
+>. Per fare questo,
+    visualizzate il sottomenu da <B
 CLASS="GUIMENU"
->Main Menu</B
->,  right click on the submenu
-   title, and select <B
+>Menu Principale</B
+>, cliccate
+    con il tasto destro del mouse sul titolo del sottomenu e selezionate
+    <B
 CLASS="GUIMENUITEM"
->Add this as menu to
-   panel</B
+>Aggiungi come menu al pannello</B
 >.
   </P
 ><DIV
@@ -141,7 +140,7 @@ NAME="EXAMPLE-MENU-FIG"
 SRC="./figures/example_menu.png"></P
 ><P
 ><B
->Figura 6. An Example Menu</B
+>Figura 6. Un menu di esempio</B
 ></P
 ></DIV
 ><DIV
@@ -150,20 +149,20 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="ADDINGMENUS"
->Adding a Menu to a Panel</A
+>Aggiungere un menu ad un pannello</A
 ></H2
 ><P
->     To learn how
-    to add a menu to a <SPAN
+>    Per imparare come aggiungere un menu ad un <SPAN
 CLASS="INTERFACE"
->Panel</SPAN
->, see <A
+>pannello</SPAN
+>,
+    vedere <A
 HREF="appletadd.html#ADD"
 >la sezione <I
 >Adding objects to the panel</I
 ></A
 >.
-    </P
+   </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -171,22 +170,23 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="TEAROFF"
->Tearing Off a Menu</A
+>Sganciare un menu</A
 ></H2
 ><P
->    All menus in GNOME have the tear-off feature: if you left-click on
-    the "perforation" (thin dashed line at the top of the menu, right
-    above the menu title), the menu will be turned into a separate
-    window on your desktop, which will stay there even after you move
-    the mouse cursor elsewhere. This is very convenient if you will be
-    using the same command from some deeply nested submenu
-    frequently. To remove a "torn-off" menu from your desktop, click
-    on the <B
+>    Tutti i menu in Gnome hanno la possibilità di sganciarsi: se cliccate con il
+    tasto sinistra sulla "perforazione" (la sottile linea tratteggiata
+    all'inizio del menu, appena sopra il titolo di questo), il menu verrà
+    trasformato in una finestra a se stante sul vostro desktop, e resterà
+    staccato anche spostando altrove il puntatore del mouse. Questo risulta
+    molto conveniente quando è necessario utilizzare lo stesso comando più volte
+    che si trova in un sottomenu molto annidato. Per rimuovere questo tipo di
+    menu dal vostro desktop cliccate sul pulsante <B
 CLASS="GUIBUTTON"
->Close</B
-> button in the window title
-    (its appearance and location depends on the window manager you are
-    using, but usually it is the rightmost button, labelled by an "x").
+>Chiudi</B
+>
+    presente nella barra del titolo della finestra (la posizione e aspetta
+    dipendono da gestore di finestre che state utilzzando, ma genericamente
+    viene posizionato sulla destra e marcato con una "X").
    </P
 ></DIV
 ><DIV
@@ -195,80 +195,81 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="MENUSCONF"
->Configuring a Menu</A
+>Configurare un menu</A
 ></H2
 ><P
->     You can easily change a menu name and icon (for user menus
-     only, not for submenus taken from the <B
+>    È facilmente possibile modificare una voce del menu e la sua icona (solo per
+    i menu dell'utente, non per i sottomenu del <B
 CLASS="GUIMENU"
->Main
-     Menu</B
->). To do so, click on the menu, right-click
-     on the menu title (at the very top of the list, above all other
-     items), and select <B
+>Menu
+    Principale</B
+>). Per fare questo, cliccate sul menu, premete il tasto
+    destro del mouse sul titolo (la prima voce in alto, prima di tutte quelle
+    del menu) e selezionate <B
 CLASS="GUIMENUITEM"
->Properties&#8230;</B
->
-     from the pop-up menu. This will bring up the 
-     <SPAN
+>Proprietà</B
+> dal menu a
+    tendina. Questo vi mostrerà la finestra di dialogo <SPAN
 CLASS="INTERFACE"
->Desktop Entry Properties</SPAN
-> dialog, quite similar to
-     the <A
+>Proprietà
+    degli elementi del desktop</SPAN
+>, molto simile al <A
 HREF="launchers.html"
-><SPAN
+>dialogo <SPAN
 CLASS="INTERFACE"
->Launcher
-     Properties</SPAN
-> dialog</A
+>Proprietà pulsante di
+    avvio</SPAN
+></A
 >. 
-    </P
+   </P
 ><P
 >  
-     To add a new item to the menu, click on the menu button,
-     right-click on the Menu name, and select <B
+    Per aggiungere una nuova voce al menu, cliccate sul pulsante del menu,
+    premete il tasto destro del mouse sul nome del menu, e selezionate
+    <B
 CLASS="GUIMENUITEM"
->Add new
-     item to this menu</B
->. This will bring  up
-     <SPAN
+>Aggiungi nuovi elementi</B
+>. Questo mostrerà il
+    dialogo <SPAN
 CLASS="INTERFACE"
->Create Menu Item</SPAN
-> dialog, in which you
-     can enter the menu item name, comment, command, and type (see <A
+>Crea nuova voce nel menu</SPAN
+>, nel quale è
+    possibile inserire il nome della voce del menu, un commento, il comando, e
+    il tipo (vedi <A
 HREF="launchers.html"
 >la sezione <I
->Launchers</I
+>Pulsanti di avvio</I
 ></A
-> for more information).  To remove an item
-     from the menu, right-click on the item and choose <B
+> per maggiori informazioni). Per
+     rimuovere un oggetto dal menu, cliccateci sopra con il tasto destro del
+     mouse e selezionate <B
 CLASS="GUIMENUITEM"
->Remove
-     this item</B
+>Rimuovi questo elemento</B
 >.
-    </P
+   </P
 ><P
->     Finally, a frequently asked question is "How I can change the
-     font and the background used by the menus?" The answer is that it
-     is determined by the current GTK Theme, which can be changed
-     using the <TT
+>    Infine, una domanda posta di frequente è "Come posso cambiare il font e lo
+     sfondo utilizzato nei menu?". La risposta è che questo aspetto dipende dal
+    tema GTK utilizzato, che può essere cambiato utilizzando il
+    <TT
 CLASS="APPLICATION"
 >GNOME Control Center</TT
-> by
-     selecting <B
+>, che trovate in
+     <B
 CLASS="GUIMENU"
->Main Menu</B
+>Menu Principale</B
 >-&gt;<B
 CLASS="GUISUBMENU"
->Settings</B
+>Impostazioni</B
 >-&gt;<B
 CLASS="GUISUBMENU"
->User Interface</B
+>Deskstop</B
 >-&gt;<B
 CLASS="GUIMENUITEM"
->Themes</B
->.
-    </P
+>Selettore
+      temi</B
+>
+   </P
 ></DIV
 ></DIV
 ><DIV
@@ -321,7 +322,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Launchers</TD
+>Pulsanti di avvio</TD
 ></TR
 ></TABLE
 ></DIV

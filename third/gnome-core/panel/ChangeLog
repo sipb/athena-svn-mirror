@@ -1,3 +1,188 @@
+Tue May 08 15:39:54 2001  George Lebl <jirka@5z.com>
+
+	* foobar-widget.[ch]:  When the separator is on the end of the task menu
+	  kill it.  When a window loses focus or is killed wipe the icon in
+	  tasklist corner thing.
+
+Tue May 08 12:41:41 2001  George Lebl <jirka@5z.com>
+
+	* extern.c, foobar-widget.c, gnome-panel-properties.c, launcher.c,
+	  logout.c, menu-rh.c, menu.c, panel-util.c, panel.c:  Increase
+	  the paranoia level when dealing with strings.  Add an assload of
+	  checks for NULLs some preconditions asserts and warnings, possibly
+	  fixing some cornercase crashes.
+
+	* foobar-widget.c: Fix the "clicked on foobar tasklist and things
+	  crashed" bug
+
+	* menu-fentry.c:  Fix the crashes on startup bug (the /tmp/languages
+	  bug).  I should be publically flogged for this one.
+
+Tue May 08 01:45:32 2001  George Lebl <jirka@5z.com>
+
+	* launcher.c: some cleanup, and be paranoid about dentry we get
+	  from dentry edit and rather hoard it
+
+	* menu.c: We were forgetting to hoard launchers when adding from
+	  the launcher adding menu.  DUH!  Fixes #53626
+
+Mon May 07 17:13:35 2001  George Lebl <jirka@5z.com>
+
+	* icon-entry-hack.c: fix selection dialog issues
+
+Mon May 07 19:44:49 2001  George Lebl <jirka@5z.com>
+
+	* icon-entry-hack.c: attempt at fixingone of the icon entry issues.
+	  It may have been easier to just rewrite the damn thing.
+
+Thu May 03 18:29:11 2001  George Lebl <jirka@5z.com>
+
+	* menu-fentry.c: use the strcasecmp_no_locale function as the normal
+	  one sucks donkeydung in some locales.
+
+Thu May 03 00:08:22 2001  George Lebl <jirka@5z.com>
+
+	* aligned-widget.c: dragging an aligned widget around an offset
+	  screen now works
+
+	* basep-widget.[ch]: add a screen_change signal
+
+	* border-widget.c: minor cleanup
+
+	* menu-fentry.c: fix a warning
+
+Sun Apr 29 03:30:12 2001  George Lebl <jirka@5z.com>
+
+	* extern.c: cut down the "loading applet" icon to 14x14 since 18
+	  was still too big for drivemounts.
+
+Thu Apr 26 16:30:33 2001  George Lebl <jirka@5z.com>
+
+	* menu.c: fix a typo
+
+Tue Apr 24 19:09:55 2001  George Lebl <jirka@5z.com>
+
+	* Applying some of the ximian patches
+
+	* menu-fentry.c:  in fr_is_subdir, check for nullity or
+	  emptiness of the superdir
+
+	* foobar-widget.c, tasklist_icon.c:  Shade iconified tasks in
+	  the foobar tasklist
+
+	* menu.c:  Add "Edit menus..." item to the "Panel" menu
+
+	* menu-fentry.[ch], menu.c:  Allow a "Separator" .desktop type
+	  to properly read the ximian menus apparently
+
+	* menu.c:  Use gnome/apps rather then gnome/apps/ for adding
+	  menus to panel
+
+Tue Apr 24 13:55:29 2001  George Lebl <jirka@5z.com>
+
+	* session.c: If we can find an installed mozilla desktop file,
+	  then use it for the default config.  Only if we fail use the
+	  Netscape.desktop, which will by default launch mozilla anyway,
+	  but has a tendency to confuse RMS.  Which reminds me the
+	  Netscape.desktop.
+
+Tue Apr 24 13:41:08 2001  George Lebl <jirka@5z.com>
+
+	* session.c:  Most people hate the lock/logout buttons for their
+	  uselessness.  So in the default config I replaced it with the
+	  most useful applet of them all.  Fish.
+
+Sun Apr 22 21:59:04 2001  George Lebl <jirka@5z.com>
+
+	* extern.[ch]:  When an applet doesn't want session saving, don't
+	  bother trying to restart it.
+
+	* extern.[ch], session.c, panel.c, menu.c, launcher.c, applet.c:
+	  Save last location for a goad_id, and if an applet was started
+	  without specifying a position, then use this one.  This makes say
+	  the xchat applet always show up at the same place.  It also
+	  makes re-adding applets smarter.
+
+Sun Apr 22 20:13:03 2001  George Lebl <jirka@5z.com>
+
+	* applet-widget.c:  be clearer in applet_widget_init function docs
+
+	* basep-widget.c:  when leave happens remove the entry timeout and
+	  viceversa to avoid states when things don't show or don't hide
+
+Sat Apr 21 22:12:14 2001  George Lebl <jirka@5z.com>
+
+	* extern.c:  actually save the panel unique id with externs
+
+Sat Apr 21 11:38:36 2001  George Lebl <jirka@5z.com>
+
+	* icon-entry-hack.[ch], menu-properties.c, gnome-panel-properties.c,
+	  panel-util.c:  Sync entries at beginning in idle, and after entry
+	  change.  This way the initial setting actually works for
+	  everything, also ass a set_icon hack to do this as well.
+
+Thu Apr 19 15:58:19 2001  George Lebl <jirka@5z.com>
+
+	* multiscreen-stuff.[ch], foobar-widget.[ch], main.c,
+	  basep-widget.[ch], edge-widget.c, aligned-widget.c,
+	  Makefile.am, floating-widget.c, menu.c, scroll-menu.[ch],
+	  sliding-widget.c:  Begin on multiscreen stuff.  Currently
+	  just trying to get the screen size and position abstraction
+	  happening, just the very beginnings.  However it still works
+	  just like before as right now it always inits to one large
+	  screen.
+
+	* button-widget.c:  Fix the overlay window geometry calculation
+	  near panel edge
+
+	* foobar-widget.c:  Apparently users got utterly confused as to what
+	  the flower meant and most thought it was a fried egg.  So I changed
+	  it to the gnome foot as it servers a similar purpose as the main
+	  menu on a normal panel so it's more consistent.
+
+Thu Apr 19 12:26:44 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c, menu.c:  Add tooltips to menu and to hide buttons
+
+Tue Apr 17 13:20:07 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.[ch], gnome-panep-properties.c, main.c, panel-util.c,
+	  panel-widget.[ch], panel.c, panel_config_global.h, session.[ch]:
+	  Fix bug #17076, so now there is a auto show delay.  By default it
+	  is 0, which is the current behaviour.  Also changed the scale for
+	  the autohide delay to be maximum of 3000 not 10000.  I mean who
+	  wants the delay to be 10s.  This was making the setting hard to
+	  do since the useful range was very thin.  Some other cleanups
+	  and a warning fix.
+
+Mon Apr 09 18:02:27 2001  George Lebl <jirka@5z.com>
+
+	* icon-entry-hack.c: gah! add missing show for the icon entry hack
+
+2001-04-02  Fatih Demir <kabalak@gtranslator.org>
+
+	* panel.soundlist: Small update of the Turkish entry.
+
+Fri Mar 30 16:33:38 2001  George Lebl <jirka@5z.com>
+
+	* menu-properties.c, panel-util.c: use the icon hack properly and
+	  set the default icon BEFORE we hack the icon entry to avoid
+	  icons reverting bug which was very annoying.
+
+Thu Mar 29 11:46:53 2001  George Lebl <jirka@5z.com>
+
+	* basep-widget.c, foobar-widget.c:  remove the configure hack as
+	  apparently sawfish isn't too happy with it, this reintroduces the
+	  bug where you can lose panels by dragging them off in deskguide,
+	  but oh well.
+
+	* extern.c: make the "loading" image be 18x18 instead of 24x24 to fix
+	  bugs with drivemounts being separated
+
+	* xstuff.c: ignore panel windows when checking for swallows and
+	  status windows, and don't check for status windows on task changes,
+	  just on task new.
+
 2001-03-28  jacob berkman  <jacob@ximian.com>
 
 	* foobar-widget.c (set_the_task_submenu): make this a scrolled

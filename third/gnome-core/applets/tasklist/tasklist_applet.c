@@ -81,8 +81,15 @@ get_task_class (GwmhTask *task)
 {
 	XClassHint hint;
 	char *retval;
+	Status status;
 
-	if (!XGetClassHint (GDK_DISPLAY (), task->xwin, &hint))
+	gdk_error_trap_push ();
+	status = XGetClassHint (GDK_DISPLAY (), task->xwin, &hint);
+	gdk_flush ();
+	if (gdk_error_trap_pop ())
+		return NULL;
+
+	if ( ! status)
 		return NULL;
 
 	d(g_print ("name: %s\tclass: %s\n", hint.res_name, hint.res_class));
@@ -124,17 +131,22 @@ tasklist_task_get_label (TasklistTask *task, int width, gboolean add_groupcount)
 
 	das_string = task->gwmh_task->name;
 
-	if(!das_string)
-	  return g_strdup("");
+	if (das_string == NULL)
+		das_string = _("???");
 
 	label_len = gdk_string_width (tasklist->area->style->font, das_string);
 
 	overhead = tasklist->config.show_mini_icons ? 30 : 6;
 
 	if (add_groupcount) {
-		groupcount = g_strdup_printf ("(%d) ", g_slist_length (task->vtasks 
-								       ? task->vtasks 
-								       : task->group->vtasks));
+		GSList *vtasks = task->vtasks;
+		/* not sure why this was there but at least
+		 * now it has the correct logic, perhaps sometime
+		 * we'd want to draw a task with it's group count */
+		if (vtasks == NULL &&
+		    task->group != NULL)
+			vtasks = task->group->vtasks;
+		groupcount = g_strdup_printf ("(%d) ", g_slist_length (vtasks));
 		
 		overhead += 10 + gdk_string_width (tasklist->area->style->font, 
 						   groupcount);
@@ -163,8 +175,8 @@ tasklist_task_get_label (TasklistTask *task, int width, gboolean add_groupcount)
 			if (label_len <= allowed_width) {
 				str = gdk_wcstombs(wstr);
 				g_free(wstr);
-				return str;
-				}
+				goto finish_label_up;
+			}
 		}
 		wstr[len] = wstr[len+1] = '.';
 		wstr[len+2] = '\0'; /*wcscat(wstr,"..");*/
@@ -185,6 +197,8 @@ tasklist_task_get_label (TasklistTask *task, int width, gboolean add_groupcount)
 	} else {
 		str = g_strdup (das_string);
 	}
+
+finish_label_up:
 
 	if (task->gwmh_task && GWMH_TASK_ICONIFIED (task->gwmh_task)) {
 		tempstr = g_strdup_printf ("[%s]", str);	
@@ -263,7 +277,7 @@ is_task_really_visible (TasklistTask *task)
 	if (task->group && g_slist_length (task->group->vtasks) > task->tasklist->config.grouping_min)
 		return FALSE;
 	else if (task->task_group)
-		return g_slist_length (task->vtasks) > task->tasklist->config.grouping_min;;
+		return g_slist_length (task->vtasks) > task->tasklist->config.grouping_min;
 	return is_task_visible (task);
 }
 
@@ -666,8 +680,8 @@ real_layout_tasklist (gpointer data)
 		}
 		
 		if (tasklist->config.horz_fixed) {
-			curheight = (ROW_HEIGHT * get_horz_rows(tasklist)) / num_rows;
-			curwidth = (tasklist->config.horz_width) / num_cols;
+			curheight = (ROW_HEIGHT * get_horz_rows(tasklist) - (tasklist->config.sunken?4:0)) / num_rows;
+			curwidth = (tasklist->config.horz_width - (tasklist->config.sunken?4:0)) / num_cols;
 
 		} else {
 			int width;
@@ -682,7 +696,7 @@ real_layout_tasklist (gpointer data)
 
 			width -= DRAG_HANDLE_SIZE;
 
-			curheight = (ROW_HEIGHT * get_horz_rows(tasklist)) / num_rows;
+			curheight = (ROW_HEIGHT * get_horz_rows(tasklist) - (tasklist->config.sunken?4:0)) / num_rows;
 #if 0
 			/* If the total width is higher than allowed, 
 			   we use the "fixed" way instead */
@@ -693,8 +707,8 @@ real_layout_tasklist (gpointer data)
 		}
 
 
-		curx = 0;
-		cury = 0;
+		curx = (tasklist->config.sunken?2:0);
+		cury = (tasklist->config.sunken?2:0);
 
 
 		for (temp = tasklist->vtasks; temp != NULL; temp = temp->next) {
@@ -711,7 +725,7 @@ real_layout_tasklist (gpointer data)
 				if (curx >= tasklist->config.horz_width ||
 				    curx + curwidth > tasklist->config.horz_width) {
 					cury += curheight;
-					curx = 0;
+					curx = (tasklist->config.sunken?2:0);
 				}
 			} else {
 
@@ -719,7 +733,7 @@ real_layout_tasklist (gpointer data)
 
 				if (curx >= num_cols * curwidth) {
 					cury += curheight;
-					curx = 0;
+					curx = (tasklist->config.sunken?2:0);
 				}
 			}
 		}
@@ -750,9 +764,9 @@ real_layout_tasklist (gpointer data)
 
 		curheight = ROW_HEIGHT;
 		if (tasklist->config.follow_panel_size)
-			curwidth = tasklist->panel_size;
+			curwidth = tasklist->panel_size - (tasklist->config.sunken?4:0);
 		else
-			curwidth = tasklist->config.vert_width;
+			curwidth = tasklist->config.vert_width - (tasklist->config.sunken?4:0);
 		
 		if (tasklist->config.vert_width_full)
 			curwidth = MAX (curwidth, max_width (tasklist->vtasks));
@@ -760,8 +774,8 @@ real_layout_tasklist (gpointer data)
 		num_cols = 1;
 		num_rows = num;
 		
-		curx = 0;
-		cury = 0;
+		curx = (tasklist->config.sunken?2:0);
+		cury = (tasklist->config.sunken?2:0);
 
 		if (tasklist->config.vert_fixed) {
 			tasklist->vert_height = tasklist->config.vert_height;
@@ -786,9 +800,9 @@ real_layout_tasklist (gpointer data)
 
 			if (curx >= (tasklist->config.follow_panel_size?
 				     tasklist->panel_size:
-				     tasklist->config.vert_width) - 0) {
+				     tasklist->config.vert_width) - (tasklist->config.sunken?4:0)) {
 				cury += curheight;
-				curx = 0;
+				curx = (tasklist->config.sunken?2:0);
 			}
 		}
 
@@ -864,7 +878,9 @@ tasklist_group_destroy (TasklistTask *group)
 	g_hash_table_remove (group->tasklist->groups, group->group_name);
 
 	g_free (group->gwmh_task);
+	group->gwmh_task = NULL;
 	g_free (group->group_name);
+	group->group_name = NULL;
 
 	tasklist_clean_menu (group);
 
@@ -925,7 +941,7 @@ tasklist_task_destroy (GwmhTask *gtask, Tasklist *tasklist)
 }
 
 static TasklistTask *
-tasklist_group_new (TasklistTask *first_task, char *group_name)
+tasklist_group_new (TasklistTask *first_task, const char *group_name)
 {
 	TasklistTask *group;
 
@@ -935,9 +951,10 @@ tasklist_group_new (TasklistTask *first_task, char *group_name)
 	group = g_new0 (TasklistTask, 1);
 	group->tasklist = first_task->tasklist;
 	group->task_group = TRUE;
-	group->group_name = group_name;
+	group->group_name = g_strdup (group_name);
 	group->fullwidth = -1;
-	g_hash_table_insert (group->tasklist->groups, group_name, group);
+	g_hash_table_insert (group->tasklist->groups,
+			     group->group_name, group);
 
 	gdk_pixbuf_ref (first_task->icon->normal);
 	gdk_pixbuf_ref (first_task->icon->minimized);
@@ -949,7 +966,7 @@ tasklist_group_new (TasklistTask *first_task, char *group_name)
 	group->tasks = g_slist_prepend (group->tasks, first_task);
 
 	group->gwmh_task = g_new0 (GwmhTask, 1);
-	group->gwmh_task->name = group_name;
+	group->gwmh_task->name = group->group_name;
 
 	return group;
 }
@@ -985,18 +1002,19 @@ tasklist_task_new (GwmhTask *gtask, Tasklist *tasklist)
 	ttask->fullwidth = -1;
 
 	class = get_task_class (gtask);
-	if (!class)
+	if (class == NULL)
 		return;
 
 	ttask->group = g_hash_table_lookup (tasklist->groups, class);
 
-	if (!ttask->group)
+	if (ttask->group == NULL) {
 		ttask->group = tasklist_group_new (ttask, class);
-	else {
+	} else {
 		ttask->group->tasks = g_slist_prepend (ttask->group->tasks, ttask);
-		g_free (class);
 		fixup_vtask (ttask->group, NULL);
 	}
+
+	g_free (class);
 }
 
 static void
@@ -1183,7 +1201,7 @@ cb_motion_timeout (gpointer user_data)
 {
 	Tasklist *tasklist = user_data;
 	
-	if (tasklist->motion_task) {
+	if (tasklist->motion_task && !(tasklist->motion_task->task_group)) {
 		show_task (tasklist, tasklist->motion_task);
 	}
 
@@ -1221,6 +1239,123 @@ cb_drag_motion (GtkWidget *widget, GdkDragContext *context, int x, int y, guint 
 	return TRUE;
 }
 
+/* FIXME: This routine is one of the ugliest ones in existence,
+ * gtk purists should not look at it.  This should get rewritten such
+ * that each label has a widget with an inputonly window OR draw the
+ * tooltips ourselves.  However for the time being this is better then
+ * nothing I suppose.  Feel free to flame me for this.  Tooltips have
+ * been one of the more requested features for a LONG time.
+ *
+ * -George
+ */
+static gboolean
+cb_area_event (GtkWidget *widget, GdkEvent *event, Tasklist *tasklist)
+{
+	GSList *temp_tasks, *temp;
+	TasklistTask *task;
+
+	if ((event->type == GDK_LEAVE_NOTIFY ||
+	     event->type == GDK_ENTER_NOTIFY) &&
+	    event->crossing.detail == GDK_NOTIFY_INFERIOR)
+		return FALSE;
+
+	if (event->type == GDK_LEAVE_NOTIFY) {
+		gtk_tooltips_set_tip (tasklist->tooltips,
+				      tasklist->fake_tooltip_widget,
+				      NULL, NULL);
+		tasklist->tooltip_task = NULL;
+		return FALSE;
+	}
+
+	if (event->type == GDK_MOTION_NOTIFY ||
+	    event->type == GDK_ENTER_NOTIFY) {
+		int x, y;
+
+		if (event->type == GDK_MOTION_NOTIFY) {
+			x = event->motion.x;
+			y = event->motion.y;
+		} else {
+			x = event->crossing.x;
+			y = event->crossing.y;
+		}
+
+		temp_tasks = tasklist->vtasks;
+		for (temp = temp_tasks; temp != NULL; temp = temp->next) {
+			task = (TasklistTask *)temp->data;
+
+			if (!is_task_really_visible (task))
+				continue;
+
+			if (x >= task->x && 
+			    x <= task->x + task->width &&
+			    y >= task->y && 
+			    y <= task->y + task->height) {
+				/* This is it, and this is
+				 * also the utterly evil part */
+				if (tasklist->tooltip_task != task) {
+					char *label;
+					gboolean ignore;
+					gpointer old_data;
+					GdkEvent new_event = { 0 };
+					GtkWidget *fake = tasklist->fake_tooltip_widget;
+
+					tasklist->tooltip_task = task;
+
+					fake->allocation.x = task->x;
+					fake->allocation.y = task->y;
+					fake->allocation.width = task->width;
+					fake->allocation.height = task->height;
+					fake->window = tasklist->area->window;
+
+					label = tasklist_task_get_label
+						(task, 0, task->task_group);
+
+					gtk_tooltips_set_tip
+						(tasklist->tooltips,
+						 fake, label, NULL);
+
+					g_free (label);
+
+					if (event->type == GDK_ENTER_NOTIFY) {
+						new_event = *event;
+					} else {
+						new_event.type = GDK_ENTER_NOTIFY;
+						new_event.any.window = fake->window;
+					}
+
+					/* EEEEEEEEEEEEEVIL, this is the only
+					 * way to make gtk draw the tooltips
+					 * short of drawing them ourselves.
+					 * The tooltips unfortunately do a whole
+					 * bunch of internal checking so we abuse
+					 * the area window.  This way it will
+					 * appear almost as if the window belongs
+					 * to the fake rather then to the area,
+					 * at least for the duration of this call. */
+					old_data = fake->window->user_data;
+					fake->window->user_data = fake;
+					gtk_signal_emit_by_name (GTK_OBJECT (fake),
+								 "event",
+								 &new_event,
+								 &ignore);
+					fake->window->user_data = old_data;
+				}
+				break;
+			}
+		}
+		/* No task found, so we want to turn off the tooltip */
+		if (temp == NULL) {
+			gtk_tooltips_set_tip (tasklist->tooltips,
+					      tasklist->fake_tooltip_widget,
+					      NULL, NULL);
+			tasklist->tooltip_task = NULL;
+			return FALSE;
+		}
+	}
+
+	return FALSE;
+}
+
 /* This routine gets called when the tasklist is exposed */
 static gboolean
 cb_expose_event (GtkWidget *widget, GdkEventExpose *event, Tasklist *tasklist)
@@ -1230,10 +1365,11 @@ cb_expose_event (GtkWidget *widget, GdkEventExpose *event, Tasklist *tasklist)
 
 	temp_tasks = tasklist->vtasks;
 
-	gtk_paint_flat_box (tasklist->area->style, tasklist->area->window,
-			    tasklist->area->state, GTK_SHADOW_NONE,
-			    &event->area, tasklist->area, "button",
-			    0, 0, -1, -1);
+	gtk_paint_box (tasklist->area->style, tasklist->area->window,
+		       tasklist->area->state, 
+		       tasklist->config.sunken?GTK_SHADOW_IN:GTK_SHADOW_NONE,
+		       &event->area, tasklist->area, "button",
+		       0, 0, -1, -1);
 	
 	for (temp = temp_tasks; temp != NULL; temp = temp->next) {
 		GdkRectangle rect, dest;
@@ -1437,6 +1573,17 @@ tasklist_destroy (GtkObject *applet_widget, Tasklist *tasklist)
         #warning Here we save peoples memory by making this a shlib applet and leaking whatever we possibly can!
 #endif
 
+	if (tasklist->fake_tooltip_widget != NULL) {
+		tasklist->fake_tooltip_widget->window = NULL;
+		gtk_widget_unref (tasklist->fake_tooltip_widget);
+		tasklist->fake_tooltip_widget = NULL;
+	}
+
+	if (tasklist->tooltips != NULL) {
+		gtk_object_destroy (GTK_OBJECT (tasklist->tooltips));
+		tasklist->tooltips = NULL;
+	}
+
 	if (tasklist->groups != NULL) {
 		/* FIXME: we leak EVERYTHING here */
 		g_hash_table_destroy (tasklist->groups);
@@ -1470,6 +1617,16 @@ tasklist_new (void)
 		return NULL;
 	}
 
+	/* Some evil tooltip stuff, this is some pretty evil stuff */
+	tasklist->tooltips = gtk_tooltips_new ();
+	tasklist->fake_tooltip_widget = gtk_type_new (gtk_widget_get_type ());
+	GTK_WIDGET_SET_FLAGS (tasklist->fake_tooltip_widget, GTK_NO_WINDOW);
+	GTK_WIDGET_SET_FLAGS (tasklist->fake_tooltip_widget, GTK_VISIBLE);
+	GTK_WIDGET_SET_FLAGS (tasklist->fake_tooltip_widget, GTK_MAPPED);
+	gtk_widget_ref (tasklist->fake_tooltip_widget);
+	gtk_object_sink (GTK_OBJECT (tasklist->fake_tooltip_widget));
+	tasklist->tooltip_task = NULL;
+
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
 	
@@ -1478,7 +1635,6 @@ tasklist_new (void)
 			    GTK_SIGNAL_FUNC (ignore_1st_click), tasklist);
 
 	tasklist->area = gtk_drawing_area_new ();
-
 
 	gtk_widget_ensure_style (tasklist->area);
 	tasklist->unknown_icon = g_new (TasklistIcon, 1);
@@ -1500,7 +1656,12 @@ tasklist_new (void)
 
 	gtk_widget_set_events (tasklist->area, GDK_EXPOSURE_MASK | 
 			       GDK_BUTTON_PRESS_MASK |
-			       GDK_BUTTON_RELEASE_MASK);
+			       GDK_BUTTON_RELEASE_MASK |
+			       GDK_ENTER_NOTIFY_MASK |
+			       GDK_LEAVE_NOTIFY_MASK |
+			       GDK_POINTER_MOTION_MASK);
+	gtk_signal_connect (GTK_OBJECT (tasklist->area), "event",
+			    GTK_SIGNAL_FUNC (cb_area_event), tasklist);
 	gtk_signal_connect (GTK_OBJECT (tasklist->area), "expose_event",
 			    GTK_SIGNAL_FUNC (cb_expose_event), tasklist);
 	gtk_signal_connect (GTK_OBJECT (tasklist->area), "button_press_event",
@@ -1521,6 +1682,9 @@ tasklist_new (void)
 	gtk_container_add (GTK_CONTAINER (tasklist->handle), tasklist->area);
 	
 	tasklist_read_config (tasklist);
+
+	if ( ! tasklist->config.enable_tooltips)
+		gtk_tooltips_disable (tasklist->tooltips);
 	
 	applet_widget_register_stock_callback (
 		APPLET_WIDGET (tasklist->applet),

@@ -1,3 +1,7 @@
+2001-04-27  Leandro su Nerone  <leandro@firenze.linux.it>
+
+	* help/it/desk-guide.sgml: Little adjustment
+
 Thu Mar  1 05:21:04 2001  Tim Janik  <timj@gtk.org>
 
 	* gwmdesktop.c (thumb_queue_step): don't do thumbnail shooting on

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-core\n"
-"POT-Creation-Date: 2001-03-28 11:49-0500\n"
+"POT-Creation-Date: 2001-05-09 11:40-0400\n"
 "PO-Revision-Date: 2001-03-24 20:49EEST\n"
 "Last-Translator: Peteris Krisjanis <peterisk@apollo.lv>\n"
 "Language-Team: Latvian <peterisk@apollo.lv>\n"
@@ -41,7 +41,7 @@ msgid "No panel found\n"
 msgstr ""
 
 #: applets/desk-guide/deskguide_applet.c:76
-#: applets/tasklist/tasklist_properties.c:363
+#: applets/tasklist/tasklist_properties.c:385
 msgid "Display"
 msgstr "Displejs"
 
@@ -239,25 +239,25 @@ msgid "Desk Guide Alert"
 msgstr "Darbvirmsas Ceïveþa Brîdinâjums"
 
 #: applets/desk-guide/deskguide_applet.c:238 applets/fish/fish.c:944
-#: applets/gen_util/clock.c:584 applets/gen_util/mailcheck.c:1481
-#: applets/gen_util/printer.c:468 applets/tasklist/tasklist_applet.c:1529
-#: panel/drawer.c:487 panel/launcher.c:654 panel/menu.c:1730 panel/menu.c:5533
+#: applets/gen_util/clock.c:584 applets/gen_util/mailcheck.c:1517
+#: applets/gen_util/printer.c:468 applets/tasklist/tasklist_applet.c:1693
+#: panel/drawer.c:487 panel/launcher.c:656 panel/menu.c:1740 panel/menu.c:5585
 msgid "Properties..."
 msgstr "Rekvizîti..."
 
 #: applets/desk-guide/deskguide_applet.c:244 applets/fish/fish.c:951
-#: applets/gen_util/clock.c:612 applets/gen_util/mailcheck.c:1493
-#: applets/gen_util/printer.c:475 applets/tasklist/tasklist_applet.c:1537
-#: gnome-terminal/gnome-terminal.c:1587 gsm/session-properties.c:182
+#: applets/gen_util/clock.c:612 applets/gen_util/mailcheck.c:1529
+#: applets/gen_util/printer.c:475 applets/tasklist/tasklist_applet.c:1701
+#: gnome-terminal/gnome-terminal.c:1601 gsm/session-properties.c:182
 #: help-browser/window.c:255 panel/drawer.c:490 panel/gnome-run.c:554
-#: panel/launcher.c:657 panel/logout.c:113 panel/logout.c:194
-#: panel/menu.c:5542 panel/status.c:368 panel/swallow.c:426
+#: panel/launcher.c:659 panel/logout.c:115 panel/logout.c:196
+#: panel/menu.c:5594 panel/status.c:368 panel/swallow.c:426
 msgid "Help"
 msgstr "Palîdzîba"
 
 #: applets/desk-guide/deskguide_applet.c:251 applets/fish/fish.c:958
-#: applets/gen_util/clock.c:619 applets/gen_util/mailcheck.c:1499
-#: applets/gen_util/printer.c:481 applets/tasklist/tasklist_applet.c:1545
+#: applets/gen_util/clock.c:619 applets/gen_util/mailcheck.c:1535
+#: applets/gen_util/printer.c:481 applets/tasklist/tasklist_applet.c:1709
 msgid "About..."
 msgstr "Par..."
 
@@ -303,7 +303,7 @@ msgstr "Tavas GNOME Zivtiòas Vârds:"
 msgid "The Animation Filename:"
 msgstr "Animâcijas Datnes Nosaukums:"
 
-#: applets/fish/fish.c:535 applets/gen_util/mailcheck.c:1006
+#: applets/fish/fish.c:535 applets/gen_util/mailcheck.c:1021
 #: gnome-hint/gnome-hint-properties.c:146 panel/menu-properties.c:596
 #: panel/menu-properties.c:634 panel/panel-util.c:192
 #: panel/panel_config.c:1554 panel/swallow.c:261
@@ -381,7 +381,7 @@ msgstr ""
 #. This format string is used, to display the actual time in
 #. 24 hour format.
 #: applets/gen_util/clock.c:198 applets/gen_util/clock.c:400
-#: panel/foobar-widget.c:545 panel/foobar-widget.c:941
+#: panel/foobar-widget.c:542 panel/foobar-widget.c:980
 msgid "%H:%M"
 msgstr ""
 
@@ -414,7 +414,7 @@ msgstr ""
 msgid "%a, %d  %b  %Y %H:%M:%S %z"
 msgstr ""
 
-#: applets/gen_util/clock.c:504 applets/gen_util/mailcheck.c:1396
+#: applets/gen_util/clock.c:504 applets/gen_util/mailcheck.c:1431
 #: applets/gen_util/printer.c:425
 msgid "Can't create applet!\n"
 msgstr "Nevar izveidot sîkprogrammu!\n"
@@ -498,7 +498,7 @@ msgstr ""
 "Pulksteòa sîkprogramma dod Jûsu panelim vienkârðu vieglsvara datuma un laika "
 "parâdîðanu."
 
-#: applets/gen_util/mailcheck.c:207 applets/gen_util/mailcheck.c:1050
+#: applets/gen_util/mailcheck.c:207 applets/gen_util/mailcheck.c:1065
 msgid "Password:"
 msgstr "Parole:"
 
@@ -510,133 +510,138 @@ msgstr ""
 "Parâdîjusîes kïûda Remonte-client-error. Remonte-polling deaktivizçts. "
 "Varbût jûs lietojât nepareizu serveri/lietotâjvârdu/paroli?"
 
-#: applets/gen_util/mailcheck.c:471
+#: applets/gen_util/mailcheck.c:472
 msgid "You have new mail."
 msgstr "Jums ir jauns epasts."
 
-#: applets/gen_util/mailcheck.c:473
+#: applets/gen_util/mailcheck.c:474
 msgid "You have mail."
 msgstr "Jums ir epasts."
 
-#: applets/gen_util/mailcheck.c:477
+#: applets/gen_util/mailcheck.c:478
 #, c-format
 msgid "%d/%d messages"
 msgstr ""
 
-#: applets/gen_util/mailcheck.c:479
+#: applets/gen_util/mailcheck.c:480
 #, c-format
 msgid "%d messages"
 msgstr ""
 
-#: applets/gen_util/mailcheck.c:483
+#: applets/gen_util/mailcheck.c:484
 msgid "No mail."
 msgstr "Nav epasta."
 
-#: applets/gen_util/mailcheck.c:951
+#: applets/gen_util/mailcheck.c:966
 msgid "Mailbox resides on:"
 msgstr "Pastakastîte atrodas:"
 
-#: applets/gen_util/mailcheck.c:958
+#: applets/gen_util/mailcheck.c:973
 msgid "Local mailspool"
 msgstr "Lokâlâ epasta spole"
 
-#: applets/gen_util/mailcheck.c:966
+#: applets/gen_util/mailcheck.c:981
 msgid "Local maildir"
 msgstr "Lokâlâ epasta direktorija"
 
-#: applets/gen_util/mailcheck.c:974
+#: applets/gen_util/mailcheck.c:989
 msgid "Remote POP3-server"
 msgstr "Attâlinâtais POP3 serveris"
 
-#: applets/gen_util/mailcheck.c:982
+#: applets/gen_util/mailcheck.c:997
 msgid "Remote IMAP-server"
 msgstr "Attâlinâtais IMAP serveris"
 
-#: applets/gen_util/mailcheck.c:1002
+#: applets/gen_util/mailcheck.c:1017
 msgid "Mail spool file:"
 msgstr "Epasta spoles datne:"
 
-#: applets/gen_util/mailcheck.c:1019
+#: applets/gen_util/mailcheck.c:1034
 msgid "Mail server:"
 msgstr "Epasta serveris:"
 
-#: applets/gen_util/mailcheck.c:1036
+#: applets/gen_util/mailcheck.c:1051
 msgid "Username:"
 msgstr "Lietotâjvârds:"
 
-#: applets/gen_util/mailcheck.c:1068
+#: applets/gen_util/mailcheck.c:1083
+#, fuzzy
+msgid "Folder:"
+msgstr "Mape"
+
+#: applets/gen_util/mailcheck.c:1101
 msgid "Command to run before we check for mail:"
 msgstr ""
 
-#: applets/gen_util/mailcheck.c:1098
+#: applets/gen_util/mailcheck.c:1131
 msgid "Execute"
 msgstr "Palaist"
 
-#: applets/gen_util/mailcheck.c:1109
+#: applets/gen_util/mailcheck.c:1142
 msgid "Before each update:"
 msgstr "Pirms katras atjaunoðanas:"
 
-#: applets/gen_util/mailcheck.c:1130
+#: applets/gen_util/mailcheck.c:1163
 msgid "When new mail arrives:"
 msgstr "Kad jauna epasta ziòa pienâk, tad:"
 
-#: applets/gen_util/mailcheck.c:1149
+#: applets/gen_util/mailcheck.c:1182
 msgid "When clicked:"
 msgstr "Kad uzklikðíinâts:"
 
-#: applets/gen_util/mailcheck.c:1172
+#: applets/gen_util/mailcheck.c:1205
 msgid "Check for mail every"
 msgstr "Parbâudît epastu katras"
 
-#: applets/gen_util/mailcheck.c:1185
+#: applets/gen_util/mailcheck.c:1218
 msgid "minutes"
 msgstr "minûtes"
 
-#: applets/gen_util/mailcheck.c:1198
+#: applets/gen_util/mailcheck.c:1231
 msgid "seconds"
 msgstr "sekundes"
 
-#: applets/gen_util/mailcheck.c:1202
+#: applets/gen_util/mailcheck.c:1235
 msgid "Play a sound when new mail arrives"
 msgstr "Spçlç skaòu, kad ierodas jauns epasts"
 
-#: applets/gen_util/mailcheck.c:1213
+#: applets/gen_util/mailcheck.c:1246
 msgid "Select animation"
 msgstr "Izvçlies animâciju"
 
-#: applets/gen_util/mailcheck.c:1250
+#: applets/gen_util/mailcheck.c:1283
 msgid "Mail check properties"
 msgstr "Epasta pârbaudes rekvizîti"
 
-#: applets/gen_util/mailcheck.c:1256
+#: applets/gen_util/mailcheck.c:1289
 msgid "Mail check"
 msgstr "Epasta pârbaude"
 
-#: applets/gen_util/mailcheck.c:1259
+#: applets/gen_util/mailcheck.c:1292
 msgid "Mailbox"
 msgstr "Pastkastîte"
 
-#: applets/gen_util/mailcheck.c:1342
+#: applets/gen_util/mailcheck.c:1377
 msgid "Mail check Applet"
 msgstr "Epasta pârbaudes Aplets"
 
-#: applets/gen_util/mailcheck.c:1343
+#: applets/gen_util/mailcheck.c:1378
 msgid "(c) 1998-2000 the Free Software Foundation"
 msgstr "(c) 1998-2000 Brîvâs Programmatûras Fonds - Free Software Foundation"
 
-#: applets/gen_util/mailcheck.c:1345
+#: applets/gen_util/mailcheck.c:1380
 msgid "Mail check notifies you when new mail is on your mailbox"
 msgstr "Epasta pârbaude Jûs informç kad jaunas ziòas ir Jûsu paskastç"
 
-#: applets/gen_util/mailcheck.c:1459
+#: applets/gen_util/mailcheck.c:1495
 msgid "Text only"
 msgstr "Tikai teksts"
 
-#: applets/gen_util/mailcheck.c:1487
+#: applets/gen_util/mailcheck.c:1523
 msgid "Check for mail"
 msgstr "Parbâudît epastu"
 
-#: applets/gen_util/main.c:54 applets/tasklist/tasklist_applet.c:1643
+#: applets/gen_util/main.c:54 applets/tasklist/tasklist_applet.c:1807
 #, c-format
 msgid "Don't know how to activate `%s'\n"
 msgstr "Nezin kâ aktivizçt %s'\n"
@@ -676,17 +681,25 @@ msgid ""
 msgstr ""
 "Printera sîkprogramma atïauj vienkârði uzmest datnes uz tâs, lai izdrukâtu."
 
-#: applets/tasklist/tasklist_applet.c:1285
+#. Translators: Task with no name, should not really happen, so
+#. * this should signal that the panel is confused by this task
+#. * (thus question marks)
+#: applets/tasklist/tasklist_applet.c:135 panel/applet.c:433
+#: panel/foobar-widget.c:716
+msgid "???"
+msgstr "???"
+
+#: applets/tasklist/tasklist_applet.c:1421
 msgid "Copyright (C) 1999 Anders Carlsson"
 msgstr ""
 
-#: applets/tasklist/tasklist_applet.c:1287
+#: applets/tasklist/tasklist_applet.c:1423
 msgid ""
 "A tasklist for the GNOME desktop environment.\n"
 "Icons by Tuomas Kuosmanen (tigert@gimp.org)."
 msgstr ""
 
-#: applets/tasklist/tasklist_applet.c:1468
+#: applets/tasklist/tasklist_applet.c:1615
 #, fuzzy
 msgid "Tasklist: Unable to create applet widget"
 msgstr "Nevar izveidot datni: %s\n"
@@ -776,113 +789,121 @@ msgstr "Aizvçrt"
 msgid "Kill All"
 msgstr "Nobeigt programmu"
 
-#: applets/tasklist/tasklist_properties.c:149
+#: applets/tasklist/tasklist_properties.c:156
 msgid "Follow panel size"
 msgstr "Sekot paneïa izmçriem"
 
-#: applets/tasklist/tasklist_properties.c:158 panel/menu.c:4430
+#: applets/tasklist/tasklist_properties.c:165 panel/menu.c:4446
 msgid "Horizontal"
 msgstr "Horizontâli"
 
-#: applets/tasklist/tasklist_properties.c:168
-#: applets/tasklist/tasklist_properties.c:230
+#: applets/tasklist/tasklist_properties.c:175
+#: applets/tasklist/tasklist_properties.c:237
 msgid "Tasklist width:"
 msgstr "Uzdevumsaraksts:"
 
-#: applets/tasklist/tasklist_properties.c:175
+#: applets/tasklist/tasklist_properties.c:182
 msgid "Rows of tasks:"
 msgstr "Uzdevumu rindas:"
 
-#: applets/tasklist/tasklist_properties.c:189
+#: applets/tasklist/tasklist_properties.c:196
 msgid "Default task size:"
 msgstr "Noklusçtais uzdevuma izmçrs:"
 
-#: applets/tasklist/tasklist_properties.c:199
+#: applets/tasklist/tasklist_properties.c:206
 msgid "Tasklist width is fixed"
 msgstr "Uzdevumsaraksta platums ir fiksçts"
 
-#: applets/tasklist/tasklist_properties.c:204
+#: applets/tasklist/tasklist_properties.c:211
 msgid "Tasklist width is dynamic"
 msgstr "Uzdevumsaraksta platums ir mainîgs"
 
-#: applets/tasklist/tasklist_properties.c:209
-#: applets/tasklist/tasklist_properties.c:255
+#: applets/tasklist/tasklist_properties.c:216
+#: applets/tasklist/tasklist_properties.c:262
 msgid "Only use empty space"
 msgstr ""
 
-#: applets/tasklist/tasklist_properties.c:215 panel/menu.c:4431
+#: applets/tasklist/tasklist_properties.c:222 panel/menu.c:4447
 msgid "Vertical"
 msgstr "Vertikâli"
 
-#: applets/tasklist/tasklist_properties.c:223
+#: applets/tasklist/tasklist_properties.c:230
 msgid "Tasklist height:"
 msgstr "Uzdevumsaraksta augstums:"
 
-#: applets/tasklist/tasklist_properties.c:243
+#: applets/tasklist/tasklist_properties.c:250
 msgid "Tasklist height is fixed"
 msgstr "Uzdevumsaraksta augstums ir fiksçts"
 
-#: applets/tasklist/tasklist_properties.c:249
+#: applets/tasklist/tasklist_properties.c:256
 msgid "Tasklist height is dynamic"
 msgstr "Uzdevumsaraksta augstums ir mainîgs"
 
-#: applets/tasklist/tasklist_properties.c:261
+#: applets/tasklist/tasklist_properties.c:268
 #, fuzzy
 msgid "Tasklist width is that of longest title"
 msgstr "Uzdevumsaraksta platums ir fiksçts"
 
-#: applets/tasklist/tasklist_properties.c:269 panel/menu.c:4476
+#: applets/tasklist/tasklist_properties.c:276 panel/menu.c:4492
 msgid "Size"
 msgstr "Izmçrs"
 
-#: applets/tasklist/tasklist_properties.c:282
+#: applets/tasklist/tasklist_properties.c:289
 msgid "Which tasks to show"
 msgstr "Kurus uzdevumus râdît"
 
-#: applets/tasklist/tasklist_properties.c:293
+#: applets/tasklist/tasklist_properties.c:300
 msgid "Show normal applications"
 msgstr "Râdît parastas lietojumprogrammas"
 
-#: applets/tasklist/tasklist_properties.c:299
+#: applets/tasklist/tasklist_properties.c:306
 msgid "Show iconified (minimized) applications"
 msgstr "Râdît minimizçtâs lietojumprogrammas"
 
-#: applets/tasklist/tasklist_properties.c:306
+#: applets/tasklist/tasklist_properties.c:313
 msgid "Show normal applications on all desktops"
 msgstr "Râdît parastas lietojumprogrammas uz visâm darbvirsmâm"
 
-#: applets/tasklist/tasklist_properties.c:312
+#: applets/tasklist/tasklist_properties.c:319
 msgid "Show iconified (minimized) applications on all desktops"
 msgstr "Parâdi minimizçtâs lietojumprogrammas uz visâm darbvirsmâm"
 
 #. Miscellaneous frame
-#: applets/tasklist/tasklist_properties.c:316 help-browser/toc-man.c:25
-#: help-browser/toc2-man.c:27 panel/gnome-panel-properties.c:1061
-#: panel/gnome-panel-properties.c:1532 panel/panel_config.c:680
+#: applets/tasklist/tasklist_properties.c:323 help-browser/toc-man.c:25
+#: help-browser/toc2-man.c:27 panel/gnome-panel-properties.c:1071
+#: panel/gnome-panel-properties.c:1550 panel/panel_config.c:680
 msgid "Miscellaneous"
 msgstr "Daþâdi"
 
-#: applets/tasklist/tasklist_properties.c:327
+#: applets/tasklist/tasklist_properties.c:334
 msgid "Show mini icons"
 msgstr "Râdît mazâs ikonas"
 
-#: applets/tasklist/tasklist_properties.c:334
+#: applets/tasklist/tasklist_properties.c:341
 msgid "Confirm before killing windows"
 msgstr "Apstiprinât pirms logu piebeigðanas"
 
-#: applets/tasklist/tasklist_properties.c:341
+#: applets/tasklist/tasklist_properties.c:348
 msgid "Move iconified tasks to current workspace when restoring"
 msgstr "Atjaunojot, pârvietot samazinâtos uzdevumus uz paðreizçjo darbvidi"
 
-#: applets/tasklist/tasklist_properties.c:349
+#: applets/tasklist/tasklist_properties.c:355
+msgid "Display tooltips with full task names"
+msgstr ""
+
+#: applets/tasklist/tasklist_properties.c:363
 msgid "Enable task grouping"
 msgstr ""
 
-#: applets/tasklist/tasklist_properties.c:357
+#: applets/tasklist/tasklist_properties.c:371
 msgid "Number of tasks before grouping occurs"
 msgstr ""
 
-#: applets/tasklist/tasklist_properties.c:392
+#: applets/tasklist/tasklist_properties.c:380
+msgid "Sink tasklist into panel"
+msgstr ""
+
+#: applets/tasklist/tasklist_properties.c:414
 msgid "Tasklist properties"
 msgstr "Uzdevumsaraksta rekvizîti"
 
@@ -894,8 +915,8 @@ msgstr "Mape"
 msgid "Save"
 msgstr "Saglabât"
 
-#: gmenu/edit.c:325 gsm/session-properties.c:173 panel/launcher.c:532
-#: panel/menu.c:1330 panel/menu.c:1441
+#: gmenu/edit.c:325 gsm/session-properties.c:173 panel/launcher.c:534
+#: panel/menu.c:1338 panel/menu.c:1449
 msgid "Revert"
 msgstr "Atjaunot"
 
@@ -1108,7 +1129,7 @@ msgstr "Nevar izveidot direktoriju"
 msgid "untitled.desktop"
 msgstr "noklusçts.darbvirsma"
 
-#: gmenu/treenew.c:137 gmenu/treenew.c:144 panel/menu.c:742
+#: gmenu/treenew.c:137 gmenu/treenew.c:144 panel/menu.c:745
 msgid "untitled"
 msgstr "noklusçts"
 
@@ -1126,62 +1147,120 @@ msgstr "nevar izveidot lietotâja direktoriju: %s\n"
 msgid "GNOME was brought to you by"
 msgstr "GNOME jums piedâvâ"
 
-#. for languages that can't display aacute, replace 'á' with 'a'
-#: gnome-about/contributors.h:23
-msgid "Szabolcs 'Shooby' Bán"
+#: gnome-about/contributors.h:21
+msgid "Timur I. Bakeyev"
 msgstr ""
 
-#: gnome-about/contributors.h:70
-msgid "Gergõ Érdi"
-msgstr "Gergo Erdi"
+#. if your encoding allows it, use aacute (U00E1)
+#. * for the 'a' of 'Ban'
+#: gnome-about/contributors.h:24
+msgid "Szabolcs 'Shooby' Ban"
+msgstr ""
 
-#: gnome-about/contributors.h:88
+#: gnome-about/contributors.h:36
+msgid "Jerome Bolliet"
+msgstr ""
+
+#. if your encoding allows it, use eacute (U00E9) for the two
+#. * 'e' of 'Frederic'
+#: gnome-about/contributors.h:62
+msgid "Frederic Devernay"
+msgstr "Frédéric Devernay"
+
+#. if your encoding allows it, use odoubleacute (U0151) for the 'o'
+#. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
+#: gnome-about/contributors.h:75
+msgid "Gergo Erdi"
+msgstr "Gergo Érdi"
+
+#: gnome-about/contributors.h:82
+msgid "Raul Perusquia Flores"
+msgstr ""
+
+#: gnome-about/contributors.h:94
 msgid "The Mysterious GEGL"
 msgstr "Mistiskais GEGL"
 
-#. for languages that can't display ntilde, replace 'ñ' with 'n'
-#: gnome-about/contributors.h:175
-#, fuzzy
-msgid "Alexandre Muñiz"
+#: gnome-about/contributors.h:96
+msgid "Bjoern Giesler"
+msgstr ""
+
+#: gnome-about/contributors.h:102
+msgid "Dov Grobgeld"
+msgstr ""
+
+#: gnome-about/contributors.h:129
+msgid "Helmut Koeberle"
+msgstr ""
+
+#: gnome-about/contributors.h:163
+msgid "Matthew Marjanovic"
+msgstr ""
+
+#. If your encodings allows it, use ntilde (U00F1) for the 'n'
+#. * of 'Muniz'
+#: gnome-about/contributors.h:186
+msgid "Alexandre Muniz"
 msgstr "Alexandre Muniz"
 
-#: gnome-about/contributors.h:176
+#. Name in Hangeul is: Ub0a8 Uc131 Ud604
+#: gnome-about/contributors.h:188
 msgid "Sung-Hyun Nam"
 msgstr "Sung-Hyun Nam"
 
-#. languages that can't display adiaeresis, replace 'ä' with 'ae'
-#: gnome-about/contributors.h:181
-msgid "Martin Norbäck"
-msgstr "Martin Norback"
+#. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
+#. * of 'Norbaeck'
+#: gnome-about/contributors.h:194
+msgid "Martin Norbaeck"
+msgstr "Martin Norbäck"
 
-#. languages that can't display Odiaeresis, replace 'Ö' with 'Oe'
-#: gnome-about/contributors.h:187
-msgid "Tomas Ögren"
-msgstr "Tomas Oegren"
+#. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
+#. * of 'Oegren'
+#: gnome-about/contributors.h:201
+msgid "Tomas Oegren"
+msgstr "Tomas Ögren"
 
-#: gnome-about/contributors.h:216
+#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#: gnome-about/contributors.h:232
 msgid "Kazuhiro Sasayama"
 msgstr "Kazuhiro Sasayama"
 
-#. for languages that can't display ntilde, replace 'ñ' with 'n'
-#: gnome-about/contributors.h:223
-msgid "Iñigo Serna"
+#. If your encodings allows it, use ntilde (U00F1) for the 'n'
+#. * of 'Inigo'
+#: gnome-about/contributors.h:240
+msgid "Inigo Serna"
 msgstr "Inigo Serna"
 
-#. not really a person name :)
-#: gnome-about/contributors.h:236
+#: gnome-about/contributors.h:244
+msgid "Miroslav Silovic"
+msgstr ""
+
+#. not really a person name :) translate its meaning
+#: gnome-about/contributors.h:253
 msgid "The Squeaky Rubber Gnome"
 msgstr "The Squeaky Rubber Gnome"
 
-#: gnome-about/contributors.h:261
+#: gnome-about/contributors.h:259
+msgid "Istvan Szekeres"
+msgstr ""
+
+#: gnome-about/contributors.h:270
+msgid "Manish Vachharajani"
+msgstr ""
+
+#: gnome-about/contributors.h:271
+msgid "Neil Vachharajani"
+msgstr ""
+
+#: gnome-about/contributors.h:278
 msgid "Wanda the GNOME Fish"
 msgstr "GNOME Zivtiòa Vanda"
 
-#: gnome-about/contributors.h:274
+#: gnome-about/contributors.h:291
 msgid "... and many more"
 msgstr "... un daudzi citi"
 
-#: gnome-about/gnome-about.c:465 panel/foobar-widget.c:245
+#: gnome-about/gnome-about.c:465 panel/foobar-widget.c:242
 msgid "About GNOME"
 msgstr "Par GNOME"
 
@@ -1320,163 +1399,163 @@ msgstr "Parâdît dienas paziòojumu padomu vietâ"
 msgid "Message of the day file to use: "
 msgstr "Dienas paziòojuma datne: "
 
-#: gnome-terminal/gnome-terminal.c:233
+#: gnome-terminal/gnome-terminal.c:239
 msgid "Zvt terminal widget:     Michael Zucchi (zucchi@zedzone.mmc.com.au)"
 msgstr "Zvt terminâïa vidþets:     Michael Zucchi (zucchi@zedzone.mmc.com.au)"
 
-#: gnome-terminal/gnome-terminal.c:235
+#: gnome-terminal/gnome-terminal.c:241
 msgid "GNOME terminal:     Miguel de Icaza (miguel@kernel.org)"
 msgstr "GNOME terminâlis:     Migçls de Ikaza (miguel@kernel.org)"
 
-#: gnome-terminal/gnome-terminal.c:237
+#: gnome-terminal/gnome-terminal.c:243
 msgid "    Erik Troan (ewt@redhat.com)"
 msgstr "    Çriks Troans (ewt@redhat.com)"
 
-#: gnome-terminal/gnome-terminal.c:254
+#: gnome-terminal/gnome-terminal.c:260
 msgid "GNOME Terminal"
 msgstr "GNOME Terminâlis"
 
-#: gnome-terminal/gnome-terminal.c:257
+#: gnome-terminal/gnome-terminal.c:263
 msgid "The GNOME terminal emulation program."
 msgstr "GNOME terminâïa emulâcijas programma."
 
-#: gnome-terminal/gnome-terminal.c:610 gnome-terminal/gnome-terminal.c:1163
-#: gnome-terminal/gnome-terminal.c:1173 gnome-terminal/gnome-terminal.c:2384
-#: gnome-terminal/gnome-terminal.glade.h:8 panel/menu.c:4454
+#: gnome-terminal/gnome-terminal.c:622 gnome-terminal/gnome-terminal.c:1168
+#: gnome-terminal/gnome-terminal.c:1178 gnome-terminal/gnome-terminal.c:2401
+#: gnome-terminal/gnome-terminal.glade.h:8 panel/menu.c:4470
 msgid "Default"
 msgstr "Noklusçtais"
 
-#: gnome-terminal/gnome-terminal.c:788
+#: gnome-terminal/gnome-terminal.c:803
 msgid ""
 "You have switched the class of this window. Do you\n"
 " want to reconfigure this window to match the default\n"
 "configuration of the new class?"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:965
+#: gnome-terminal/gnome-terminal.c:980
 msgid "Linux console"
 msgstr "Linux konsole"
 
-#: gnome-terminal/gnome-terminal.c:966
+#: gnome-terminal/gnome-terminal.c:981
 msgid "Color Xterm"
 msgstr "Krâsu Xterm"
 
-#: gnome-terminal/gnome-terminal.c:967
+#: gnome-terminal/gnome-terminal.c:982
 msgid "rxvt"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:968
+#: gnome-terminal/gnome-terminal.c:983
 msgid "Custom"
 msgstr "Pçc Izvçles"
 
-#: gnome-terminal/gnome-terminal.c:973
+#: gnome-terminal/gnome-terminal.c:988
 msgid "White on black"
 msgstr "Balts uz melna"
 
-#: gnome-terminal/gnome-terminal.c:974
+#: gnome-terminal/gnome-terminal.c:989
 msgid "Black on white"
 msgstr "Melns uz balta"
 
-#: gnome-terminal/gnome-terminal.c:975
+#: gnome-terminal/gnome-terminal.c:990
 msgid "Green on black"
 msgstr "Zaïð uz melna"
 
-#: gnome-terminal/gnome-terminal.c:976
+#: gnome-terminal/gnome-terminal.c:991
 msgid "Black on light yellow"
 msgstr "Melns uz gaiði dzeltena"
 
-#: gnome-terminal/gnome-terminal.c:977
+#: gnome-terminal/gnome-terminal.c:992
 msgid "Custom colors"
 msgstr "Krâsas pçc izvçles"
 
-#: gnome-terminal/gnome-terminal.c:982
+#: gnome-terminal/gnome-terminal.c:997
 msgid "Left"
 msgstr "Pa Kreisi"
 
-#: gnome-terminal/gnome-terminal.c:983
+#: gnome-terminal/gnome-terminal.c:998
 msgid "Right"
 msgstr "Pa Labi"
 
-#: gnome-terminal/gnome-terminal.c:984
+#: gnome-terminal/gnome-terminal.c:999
 msgid "Hidden"
 msgstr "Slçpts"
 
-#: gnome-terminal/gnome-terminal.c:1150 panel/gnome-run.c:319
+#: gnome-terminal/gnome-terminal.c:1155 panel/gnome-run.c:319
 #: panel/gnome-run.c:439
 msgid "Browse..."
 msgstr "Lûkoties..."
 
-#: gnome-terminal/gnome-terminal.c:1403
+#: gnome-terminal/gnome-terminal.c:1417
 msgid "Color selector"
 msgstr "Krâsu izvçlçtâjs"
 
-#: gnome-terminal/gnome-terminal.c:1509 gnome-terminal/gnome-terminal.c:1526
+#: gnome-terminal/gnome-terminal.c:1523 gnome-terminal/gnome-terminal.c:1540
 msgid "_New terminal"
 msgstr "_Jauns terminâlis"
 
-#: gnome-terminal/gnome-terminal.c:1509 gnome-terminal/gnome-terminal.c:1526
+#: gnome-terminal/gnome-terminal.c:1523 gnome-terminal/gnome-terminal.c:1540
 msgid "Creates a new terminal window"
 msgstr "Izveido jaunu terminâïa logu"
 
-#: gnome-terminal/gnome-terminal.c:1511
+#: gnome-terminal/gnome-terminal.c:1525
 msgid "_Hide menubar"
 msgstr "_Slçpt izvçlnes joslu"
 
-#: gnome-terminal/gnome-terminal.c:1513
+#: gnome-terminal/gnome-terminal.c:1527
 msgid "_Close terminal"
 msgstr "_Aizvçrt terminâli"
 
-#: gnome-terminal/gnome-terminal.c:1528
+#: gnome-terminal/gnome-terminal.c:1542
 msgid "_Show menubar"
 msgstr "_Parâdît izvçlnes joslu"
 
-#: gnome-terminal/gnome-terminal.c:1528
+#: gnome-terminal/gnome-terminal.c:1542
 msgid "Toggles whether or not the menubar is displayed."
 msgstr "Nosaka vai izvçlnes josla ir/nav parâdîta."
 
-#: gnome-terminal/gnome-terminal.c:1530
+#: gnome-terminal/gnome-terminal.c:1544
 msgid "_Secure keyboard"
 msgstr "_Droðâ klaviatûra"
 
-#: gnome-terminal/gnome-terminal.c:1531
+#: gnome-terminal/gnome-terminal.c:1545
 msgid "Toggles whether or not the keyboard is grabbed by the terminal."
 msgstr "Klaviatûra ir/nav pakïauta terminâlim"
 
-#: gnome-terminal/gnome-terminal.c:1534 gnome-terminal/gnome-terminal.c:1563
+#: gnome-terminal/gnome-terminal.c:1548 gnome-terminal/gnome-terminal.c:1577
 msgid "_Reset Terminal"
 msgstr "_Pârstartçt Terminâli"
 
-#: gnome-terminal/gnome-terminal.c:1535 gnome-terminal/gnome-terminal.c:1564
+#: gnome-terminal/gnome-terminal.c:1549 gnome-terminal/gnome-terminal.c:1578
 msgid "Reset and _Clear"
 msgstr "Parstartçt un _Attîrît"
 
-#: gnome-terminal/gnome-terminal.c:1545
+#: gnome-terminal/gnome-terminal.c:1559
 msgid "_Open in browser"
 msgstr "_Atvçrt pârlûkprogrammâ"
 
-#: gnome-terminal/gnome-terminal.c:1566
+#: gnome-terminal/gnome-terminal.c:1580
 msgid "C_olor selector..."
 msgstr "K_râsas selektors..."
 
-#: gnome-terminal/gnome-terminal.c:1572
+#: gnome-terminal/gnome-terminal.c:1586
 msgid "File"
 msgstr "Datnes"
 
-#: gnome-terminal/gnome-terminal.c:1577
+#: gnome-terminal/gnome-terminal.c:1591
 msgid "Edit"
 msgstr "Rediìçt"
 
-#: gnome-terminal/gnome-terminal.c:1582 gsm/gsm-client-row.c:59
-#: panel/foobar-widget.c:997
+#: gnome-terminal/gnome-terminal.c:1596 gsm/gsm-client-row.c:59
+#: panel/foobar-widget.c:1039
 msgid "Settings"
 msgstr "Uzstâdîjumi"
 
-#: gnome-terminal/gnome-terminal.c:2040
+#: gnome-terminal/gnome-terminal.c:2054
 #, c-format
 msgid "The error was: %s"
 msgstr "Kïûda bija: %s"
 
-#: gnome-terminal/gnome-terminal.c:2041
+#: gnome-terminal/gnome-terminal.c:2055
 msgid ""
 "If you are using Linux 2.2.x with glibc 2.1.x, this\n"
 "is probably due to incorrectly setup Unix98 ptys.\n"
@@ -1490,7 +1569,7 @@ msgstr ""
 "Lûdzu izlasiet linux/Documentation/Changes kâ\n"
 "uzstâdît tâs pareizi."
 
-#: gnome-terminal/gnome-terminal.c:2046
+#: gnome-terminal/gnome-terminal.c:2060
 #, c-format
 msgid ""
 "There has been an error while trying to log in.\n"
@@ -1501,207 +1580,207 @@ msgstr ""
 "\n"
 "%s"
 
-#: gnome-terminal/gnome-terminal.c:2115
+#: gnome-terminal/gnome-terminal.c:2129 gnome-terminal/gnome-terminal.c:2535
 #, fuzzy
 msgid "Terminal"
 msgstr "GNOME Terminâlis"
 
-#: gnome-terminal/gnome-terminal.c:2605
+#: gnome-terminal/gnome-terminal.c:2622
 msgid "Terminal class name"
 msgstr "Terminâïa klases nosaukums"
 
-#: gnome-terminal/gnome-terminal.c:2605
+#: gnome-terminal/gnome-terminal.c:2622
 msgid "TCLASS"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2608
+#: gnome-terminal/gnome-terminal.c:2625
 msgid "Specifies font name"
 msgstr "Fontu nosaukums"
 
-#: gnome-terminal/gnome-terminal.c:2608
+#: gnome-terminal/gnome-terminal.c:2625
 msgid "FONT"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2611
+#: gnome-terminal/gnome-terminal.c:2628
 msgid "Do not start up shells as login shells"
 msgstr "Nesâknçt ðellèaulas kâ ieejas ðellèaulas"
 
-#: gnome-terminal/gnome-terminal.c:2614
+#: gnome-terminal/gnome-terminal.c:2631
 msgid "Start up shells as login shells"
 msgstr "Sâknçt ðellèaulas kâ ieejas ðellèaulas"
 
-#: gnome-terminal/gnome-terminal.c:2617
+#: gnome-terminal/gnome-terminal.c:2634
 msgid "Specifies the geometry for the main window"
 msgstr "Spcifizç galvenâ loga ìeometrijas izmçrus"
 
-#: gnome-terminal/gnome-terminal.c:2617
+#: gnome-terminal/gnome-terminal.c:2634
 msgid "GEOMETRY"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2620
+#: gnome-terminal/gnome-terminal.c:2637
 msgid "Execute this program instead of a shell"
 msgstr "Palaist ðo programmu ðellèaulas vietâ"
 
-#: gnome-terminal/gnome-terminal.c:2620 gnome-terminal/gnome-terminal.c:2623
+#: gnome-terminal/gnome-terminal.c:2637 gnome-terminal/gnome-terminal.c:2640
 msgid "COMMAND"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2623
+#: gnome-terminal/gnome-terminal.c:2640
 msgid "Execute this program the same way as xterm does"
 msgstr "Palaist ðo programmu tâpat kâ xterm to dara"
 
-#: gnome-terminal/gnome-terminal.c:2626
+#: gnome-terminal/gnome-terminal.c:2643
 msgid "Foreground color"
 msgstr "Priekðkrâsa"
 
-#: gnome-terminal/gnome-terminal.c:2626 gnome-terminal/gnome-terminal.c:2629
+#: gnome-terminal/gnome-terminal.c:2643 gnome-terminal/gnome-terminal.c:2646
 msgid "COLOR"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2629
+#: gnome-terminal/gnome-terminal.c:2646
 msgid "Background color"
 msgstr "Fona krâsa"
 
-#: gnome-terminal/gnome-terminal.c:2632
+#: gnome-terminal/gnome-terminal.c:2649
 #, fuzzy
 msgid "Solid background"
 msgstr "Fons"
 
-#: gnome-terminal/gnome-terminal.c:2632
+#: gnome-terminal/gnome-terminal.c:2649
 msgid "SOLID"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2635
-#: gnome-terminal/gnome-terminal.glade.h:21
+#: gnome-terminal/gnome-terminal.c:2652
+#: gnome-terminal/gnome-terminal.glade.h:22
 msgid "Background pixmap"
 msgstr "Fona attçliòð"
 
-#: gnome-terminal/gnome-terminal.c:2635
+#: gnome-terminal/gnome-terminal.c:2652
 msgid "PIXMAP"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2639
-#: gnome-terminal/gnome-terminal.glade.h:23
+#: gnome-terminal/gnome-terminal.c:2656
+#: gnome-terminal/gnome-terminal.glade.h:24
 msgid "Background pixmap scrolls"
 msgstr "Fona attçla ritinâðanâs"
 
-#: gnome-terminal/gnome-terminal.c:2639
+#: gnome-terminal/gnome-terminal.c:2656
 msgid "BGSCROLL"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2642
+#: gnome-terminal/gnome-terminal.c:2659
 #, fuzzy
 msgid "Background pixmap does not scroll"
 msgstr "Fona attçla ritinâðanâs"
 
-#: gnome-terminal/gnome-terminal.c:2642
+#: gnome-terminal/gnome-terminal.c:2659
 msgid "BGNOSCROLL"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2646
+#: gnome-terminal/gnome-terminal.c:2663
 #, fuzzy
 msgid "Shade background"
 msgstr "Fons"
 
-#: gnome-terminal/gnome-terminal.c:2646
+#: gnome-terminal/gnome-terminal.c:2663
 msgid "SHADED"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2649
+#: gnome-terminal/gnome-terminal.c:2666
 msgid "Do not shade background"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2649
+#: gnome-terminal/gnome-terminal.c:2666
 msgid "NOSHADED"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2652
+#: gnome-terminal/gnome-terminal.c:2669
 #, fuzzy
 msgid "Transparent background"
 msgstr "Caurspîdîgs"
 
-#: gnome-terminal/gnome-terminal.c:2652
+#: gnome-terminal/gnome-terminal.c:2669
 msgid "TRANSPARENT"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2655
+#: gnome-terminal/gnome-terminal.c:2672
 msgid "Update utmp entry"
 msgstr "Atjaunot utmp ierakstu"
 
-#: gnome-terminal/gnome-terminal.c:2655
+#: gnome-terminal/gnome-terminal.c:2672
 msgid "UTMP"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2658
+#: gnome-terminal/gnome-terminal.c:2675
 msgid "Do not update utmp entry"
 msgstr "Neatjaunot utmp ierakstu"
 
-#: gnome-terminal/gnome-terminal.c:2658
+#: gnome-terminal/gnome-terminal.c:2675
 msgid "NOUTMP"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2661
+#: gnome-terminal/gnome-terminal.c:2678
 msgid "Update wtmp entry"
 msgstr "Atjaunot wtmp ierakstu"
 
-#: gnome-terminal/gnome-terminal.c:2661
+#: gnome-terminal/gnome-terminal.c:2678
 msgid "WTMP"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2664
+#: gnome-terminal/gnome-terminal.c:2681
 msgid "Do not update wtmp entry"
 msgstr "Neatjaunot wtmp ierakstu"
 
-#: gnome-terminal/gnome-terminal.c:2664
+#: gnome-terminal/gnome-terminal.c:2681
 msgid "NOWTMP"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2667
+#: gnome-terminal/gnome-terminal.c:2684
 msgid "Update lastlog entry"
 msgstr "Atjaunot lastlog ierakstu"
 
-#: gnome-terminal/gnome-terminal.c:2667
+#: gnome-terminal/gnome-terminal.c:2684
 msgid "LASTLOG"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2670
+#: gnome-terminal/gnome-terminal.c:2687
 msgid "Do not update lastlog entry"
 msgstr "Neatjaunot lastlog ierakstu"
 
-#: gnome-terminal/gnome-terminal.c:2670
+#: gnome-terminal/gnome-terminal.c:2687
 msgid "NOLASTLOG"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2673
+#: gnome-terminal/gnome-terminal.c:2690
 msgid "Set the window title"
 msgstr "Uzstâdît loga virsrakstu"
 
-#: gnome-terminal/gnome-terminal.c:2673
+#: gnome-terminal/gnome-terminal.c:2690
 msgid "TITLE"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2676
+#: gnome-terminal/gnome-terminal.c:2693
 #, fuzzy
 msgid "Set the window icon"
 msgstr "Uzstâdît loga virsrakstu"
 
-#: gnome-terminal/gnome-terminal.c:2676
+#: gnome-terminal/gnome-terminal.c:2693
 msgid "ICON"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2679
+#: gnome-terminal/gnome-terminal.c:2696
 msgid "Set the TERM variable"
 msgstr "Uzstâdît TERM mainìgo"
 
-#: gnome-terminal/gnome-terminal.c:2679
+#: gnome-terminal/gnome-terminal.c:2696
 msgid "TERMNAME"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2682
+#: gnome-terminal/gnome-terminal.c:2699
 msgid "Try to start a TerminalFactory"
 msgstr "Mçìinât startçt TerminalFactory"
 
-#: gnome-terminal/gnome-terminal.c:2685
+#: gnome-terminal/gnome-terminal.c:2702
 msgid "Try to create the terminal with the TerminalFactory"
 msgstr "Mçìinât izveidot terminâli ar TerminalFactory"
 
@@ -1844,7 +1923,7 @@ msgstr "Nezinâms"
 msgid "State not reported within timeout."
 msgstr "Statuss nav sagaidîts."
 
-#: gsm/gsm-client-row.c:50 panel/menu.c:4456 panel/panel_config.c:1323
+#: gsm/gsm-client-row.c:50 panel/menu.c:4472 panel/panel_config.c:1323
 msgid "Normal"
 msgstr "Normâls"
 
@@ -2104,88 +2183,88 @@ msgstr ""
 msgid "Close"
 msgstr "Aizvçrt"
 
-#: gsm/splash.c:54
+#: gsm/splash.c:55
 #, fuzzy
 msgid "Audio Settings"
 msgstr "Uzstâdîjumi"
 
-#: gsm/splash.c:55 gsm/splash.c:56
+#: gsm/splash.c:56 gsm/splash.c:57
 msgid "Screensaver"
 msgstr ""
 
-#: gsm/splash.c:57 gsm/splash.c:58
+#: gsm/splash.c:58 gsm/splash.c:59
 msgid "Sawfish Window Manager"
 msgstr ""
 
-#: gsm/splash.c:59
+#: gsm/splash.c:60
 msgid "Enlightenment Window Manager"
 msgstr ""
 
-#: gsm/splash.c:60
+#: gsm/splash.c:61
 #, fuzzy
 msgid "Background Settings"
 msgstr "Fona tips"
 
-#: gsm/splash.c:61
+#: gsm/splash.c:62
 msgid "Keyboard Bell"
 msgstr ""
 
-#: gsm/splash.c:62
+#: gsm/splash.c:63
 #, fuzzy
 msgid "Mouse Settings"
 msgstr "Uzstâdîjumi"
 
-#: gsm/splash.c:63
+#: gsm/splash.c:64
 #, fuzzy
 msgid "Keyboard Settings"
 msgstr "Uzstâdîjumi"
 
-#: gsm/splash.c:64
+#: gsm/splash.c:65
 #, fuzzy
 msgid "The Panel"
 msgstr "GNOME Panelis"
 
-#: gsm/splash.c:65
+#: gsm/splash.c:66
 msgid "Session Manager Proxy"
 msgstr ""
 
-#: gsm/splash.c:66
+#: gsm/splash.c:67
 #, fuzzy
 msgid "Window Manager"
 msgstr "Logu Pârvaldnieka Darbîbas"
 
-#: gsm/splash.c:67 panel/menu.c:4901 panel/menu.c:4906 panel/menu.c:5241
+#: gsm/splash.c:68 panel/menu.c:4934 panel/menu.c:4939 panel/menu.c:5274
 msgid "Desktop"
 msgstr "Pamatvirsma"
 
-#: gsm/splash.c:68
+#: gsm/splash.c:69
 msgid "Nautilus"
 msgstr ""
 
-#: gsm/splash.c:277
+#: gsm/splash.c:278
 #, fuzzy, c-format
 msgid "Starting GNOME: %s"
 msgstr "Startçjam GNOME... %s"
 
-#: gsm/splash.c:279
+#: gsm/splash.c:280
 #, fuzzy
 msgid "Starting GNOME: done"
 msgstr "Startçjam GNOME"
 
-#: gsm/splash.c:406
+#: gsm/splash.c:431
 #, fuzzy
 msgid "GNOME"
 msgstr "GNOME Palîdzîba"
 
-#: gsm/splash.c:407
+#: gsm/splash.c:432
 msgid "-adobe-helvetica-bold-r-normal-*-*-240-*-*-p-*-*-*"
 msgstr ""
 
-#: gsm/splash.c:417
+#: gsm/splash.c:442 gsm/splash.c:451
 msgid "Starting GNOME"
 msgstr "Startçjam GNOME"
 
-#: gsm/splash.c:420
+#: gsm/splash.c:445 gsm/splash.c:454
 msgid "-adobe-helvetica-medium-r-normal-*-8-*-*-*-p-*-*-*"
 msgstr ""
 
@@ -2563,7 +2642,7 @@ msgstr "Uz Priekðu"
 msgid "Go to the next location in the history list"
 msgstr "Doties uz nâkoðo vietu vçstures sarakstâ"
 
-#: help-browser/window.c:244 panel/extern.c:467 panel/swallow.c:92
+#: help-browser/window.c:244 panel/extern.c:468 panel/swallow.c:92
 msgid "Reload"
 msgstr "Pârlâdçt"
 
@@ -2610,29 +2689,25 @@ msgstr ""
 "ði dokumentâcija\n"
 "instalçta jûsu sistçmâ."
 
-#: panel/applet.c:432
-msgid "???"
-msgstr "???"
-
-#: panel/applet.c:471
+#: panel/applet.c:472
 msgid "Remove from panel"
 msgstr "Dzçst no paneïa"
 
-#: panel/applet.c:478
+#: panel/applet.c:479
 msgid "Move"
 msgstr "Pârvietot"
 
-#: panel/applet.c:490 panel/menu.c:3416
+#: panel/applet.c:491 panel/menu.c:3432
 #, c-format
 msgid "Cannot find pixmap file %s"
 msgstr "Nevar atrast attçliòa datni %s"
 
-#: panel/applet.c:491 panel/applet.c:497 panel/menu.c:4872 panel/menu.c:4877
-#: panel/menu.c:5232
+#: panel/applet.c:492 panel/applet.c:498 panel/menu.c:4905 panel/menu.c:4910
+#: panel/menu.c:5265
 msgid "Panel"
 msgstr "Panelis"
 
-#: panel/applet.c:762
+#: panel/applet.c:763
 msgid "Can't find an empty spot"
 msgstr "Nevar atrast tukðu vietu"
 
@@ -2647,19 +2722,24 @@ msgstr "Nevar palaist CORBA"
 #: panel/applet-widget.c:1197 panel/applet-widget.c:1300
 #: panel/applet-widget.c:1370 panel/applet-widget.c:1399
 #: panel/applet-widget.c:1426 panel/applet-widget.c:1462
-#: panel/applet-widget.c:1595
+#: panel/applet-widget.c:1599
 msgid "CORBA Exception"
 msgstr "CORBA Izòçmums"
 
-#: panel/applet-widget.c:1997
+#: panel/applet-widget.c:2001
 msgid "Cannot create object"
 msgstr "Nevar izveidot objektu"
 
-#: panel/applet-widget.c:2002
+#: panel/applet-widget.c:2006
 msgid "Object created is not AppletWidget"
 msgstr "Izveidotais objekts nav ApletaVidþets"
 
-#: panel/button-widget.c:706
+#: panel/basep-widget.c:874
+#, fuzzy
+msgid "Hide this panel"
+msgstr "Izòemt ðo paneli"
+
+#: panel/button-widget.c:726
 msgid "-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*"
 msgstr ""
 
@@ -2718,25 +2798,25 @@ msgstr "Aktivizçt slçpjpogas"
 msgid "Enable hidebutton arrow"
 msgstr "Aktivizçt slçpjpogu bûltas"
 
-#: panel/drawer.c:184 panel/drawer.c:318 panel/gnome-panel-properties.c:565
-#: panel/menu.c:4579
+#: panel/drawer.c:184 panel/drawer.c:318 panel/gnome-panel-properties.c:575
+#: panel/menu.c:4595
 msgid "Drawer"
 msgstr "Atvilktne"
 
-#: panel/extern.c:451
+#: panel/extern.c:452
 msgid "Deskguide (the desktop pager)"
 msgstr ""
 
-#: panel/extern.c:453
+#: panel/extern.c:454
 #, fuzzy
 msgid "Tasklist"
 msgstr "Uzdevumi"
 
-#: panel/extern.c:455
+#: panel/extern.c:456
 msgid "The Battery"
 msgstr ""
 
-#: panel/extern.c:458
+#: panel/extern.c:459
 #, c-format
 msgid ""
 "%s applet appears to have died unexpectedly.\n"
@@ -2747,19 +2827,19 @@ msgid ""
 "the \"Applets\" submenu in the main menu.)"
 msgstr ""
 
-#: panel/extern.c:776
+#: panel/extern.c:777
 msgid "Couldn't add applet"
 msgstr "Nevar pievienot apletu"
 
-#: panel/extern.c:840
+#: panel/extern.c:922
 msgid "Whoops! for some reason we can't add to the panel"
 msgstr "Traki! kaut kâda iemesla dçï nevar pievienot panelî"
 
-#: panel/extern.c:941
+#: panel/extern.c:1025
 msgid "No socket was created"
 msgstr "Kontakts netika izveidots"
 
-#: panel/foobar-widget.c:202
+#: panel/foobar-widget.c:199
 msgid ""
 "Cannot execute the gmc-client program,\n"
 "perhaps gmc is not installed"
@@ -2767,7 +2847,7 @@ msgstr ""
 "Nevar palaist gmc-client programmu,\n"
 "iespçjams, ka gmc nav installçts"
 
-#: panel/foobar-widget.c:212
+#: panel/foobar-widget.c:209
 msgid ""
 "Cannot execute the gnome calendar,\n"
 "perhaps it's not installed.\n"
@@ -2777,471 +2857,479 @@ msgstr ""
 "iespçjams, ka nav instalçts.\n"
 "Tas atrodas gnome-pim pakotnç."
 
-#: panel/foobar-widget.c:225
+#: panel/foobar-widget.c:222
 msgid "News (www)"
 msgstr "Ziòas (www)"
 
-#: panel/foobar-widget.c:225
+#: panel/foobar-widget.c:222
 msgid "http://gnotices.gnome.org/gnome-news/"
 msgstr ""
 
-#: panel/foobar-widget.c:226
+#: panel/foobar-widget.c:223
 msgid "FAQ (www)"
 msgstr "Visbieþâk Uzdotie Jautâjumi - FAQ (www)"
 
-#: panel/foobar-widget.c:226
+#: panel/foobar-widget.c:223
 msgid "http://www.gnome.org/gnomefaq/html/"
 msgstr ""
 
-#: panel/foobar-widget.c:227
+#: panel/foobar-widget.c:224
 msgid "Mailing Lists (www)"
 msgstr "Epasta sarakste (www)"
 
-#: panel/foobar-widget.c:227
+#: panel/foobar-widget.c:224
 msgid "http://mail.gnome.org/mailman/listinfo/"
 msgstr ""
 
-#: panel/foobar-widget.c:229
+#: panel/foobar-widget.c:226
 msgid "Software (www)"
 msgstr "Programmatûra (www)"
 
-#: panel/foobar-widget.c:229
+#: panel/foobar-widget.c:226
 msgid "http://www.gnome.org/applist/list-martin.phtml"
 msgstr ""
 
-#: panel/foobar-widget.c:230
+#: panel/foobar-widget.c:227
 msgid "Development (www)"
 msgstr "Programmçðana (www)"
 
-#: panel/foobar-widget.c:230
+#: panel/foobar-widget.c:227
 msgid "http://developer.gnome.org/"
 msgstr ""
 
-#: panel/foobar-widget.c:231
+#: panel/foobar-widget.c:228
 msgid "Bug Tracking System (www)"
 msgstr "Kïûdu Medîðanas Sistçma (www)"
 
-#: panel/foobar-widget.c:231
+#: panel/foobar-widget.c:228
 msgid "http://bugs.gnome.org/"
 msgstr ""
 
-#: panel/foobar-widget.c:325
+#: panel/foobar-widget.c:322
 msgid "By Name"
 msgstr "Pçc Vârda"
 
-#: panel/foobar-widget.c:326
+#: panel/foobar-widget.c:323
 msgid "By Type"
 msgstr "Pçc Tipa"
 
-#: panel/foobar-widget.c:327
+#: panel/foobar-widget.c:324
 msgid "By Size"
 msgstr "Pçc Lieluma"
 
-#: panel/foobar-widget.c:328
+#: panel/foobar-widget.c:325
 msgid "By Time Last Accessed"
 msgstr "Pçc Laika Pçdçjais Atvçrtais"
 
-#: panel/foobar-widget.c:329
+#: panel/foobar-widget.c:326
 msgid "By Time Last Modified"
 msgstr "Pçc Laika Pçdçjais Modificçtais"
 
-#: panel/foobar-widget.c:330
+#: panel/foobar-widget.c:327
 msgid "By Time Last Changed"
 msgstr "Pçc Laika Pçdçjais Mainîtais"
 
-#: panel/foobar-widget.c:340
+#: panel/foobar-widget.c:337
 msgid "Arrange Icons"
 msgstr "Sakârtot Ikonas"
 
-#: panel/foobar-widget.c:353
+#: panel/foobar-widget.c:350
 msgid "Rescan Desktop Directory"
 msgstr "Pârskatît Darbvirsmas Direktoriju"
 
-#: panel/foobar-widget.c:356
+#: panel/foobar-widget.c:353
 msgid "Rescan Desktop Devices"
 msgstr "Parskatît Darbarvirsmas Iekârtas"
 
-#: panel/foobar-widget.c:365
+#: panel/foobar-widget.c:362
 msgid "Lock Screen"
 msgstr "Noslçgt Ekrânu"
 
-#: panel/foobar-widget.c:375
+#: panel/foobar-widget.c:372
 msgid "Log Out"
 msgstr "Iziet"
 
-#: panel/foobar-widget.c:383
+#: panel/foobar-widget.c:380
 msgid " Desktop "
 msgstr " Darbirsma "
 
-#: panel/foobar-widget.c:408
+#: panel/foobar-widget.c:405
 #, fuzzy
 msgid "can't fine real path"
 msgstr "nevar atrast reâlo ceïu"
 
-#: panel/foobar-widget.c:417
+#: panel/foobar-widget.c:414
 msgid "menu wasn't created"
 msgstr "izvçlne netika izveidota"
 
-#: panel/foobar-widget.c:459
+#: panel/foobar-widget.c:456
 msgid "%A %B %d"
 msgstr ""
 
-#: panel/foobar-widget.c:538
+#: panel/foobar-widget.c:535
 msgid "Today"
 msgstr "Ðodiena"
 
-#: panel/foobar-widget.c:539
+#: panel/foobar-widget.c:536
 msgid "This Week"
 msgstr "Ðî Nedçïa"
 
-#: panel/foobar-widget.c:540
+#: panel/foobar-widget.c:537
 msgid "This Month"
 msgstr "Ðis Mçnesis"
 
-#: panel/foobar-widget.c:546
+#: panel/foobar-widget.c:543
 msgid "%H:%M:%S"
 msgstr ""
 
-#: panel/foobar-widget.c:547
+#: panel/foobar-widget.c:544
 msgid "%l:%M %p"
 msgstr ""
 
-#: panel/foobar-widget.c:548
+#: panel/foobar-widget.c:545
 msgid "%l:%M:%S %p"
 msgstr ""
 
-#: panel/foobar-widget.c:555
+#: panel/foobar-widget.c:552
 msgid "Add appointement..."
 msgstr "Pievienot norîkojumu..."
 
-#: panel/foobar-widget.c:572
+#: panel/foobar-widget.c:569
 msgid "Format"
 msgstr "Formâts"
 
-#: panel/foobar-widget.c:980 panel/menu.c:3443 panel/menu.c:3450
-#: panel/menu.c:5169
+#: panel/foobar-widget.c:1021 panel/menu.c:3459 panel/menu.c:3466
+#: panel/menu.c:5202
 msgid "Programs"
 msgstr "Programmas"
 
-#: panel/foobar-widget.c:994 panel/menu.c:3587 panel/menu.c:5138
-#: panel/menu.c:5181 panel/menu.c:5187
+#: panel/foobar-widget.c:1036 panel/menu.c:3603 panel/menu.c:5171
+#: panel/menu.c:5214 panel/menu.c:5220
 msgid "Favorites"
 msgstr "Favorîti"
 
-#: panel/gnome-panel-properties.c:119 panel/menu-properties.c:534
+#: panel/gnome-panel-properties.c:120 panel/menu-properties.c:534
 msgid "Programs: "
 msgstr "Programmas: "
 
-#: panel/gnome-panel-properties.c:120 panel/menu-properties.c:541
+#: panel/gnome-panel-properties.c:121 panel/menu-properties.c:541
 msgid "Favorites: "
 msgstr "Favorîti: "
 
-#: panel/gnome-panel-properties.c:121 panel/menu-properties.c:548
+#: panel/gnome-panel-properties.c:122 panel/menu-properties.c:548
 msgid "Applets: "
 msgstr "Sîkprogrammas: "
 
-#: panel/gnome-panel-properties.c:122
+#: panel/gnome-panel-properties.c:123
 msgid "Distribution: "
 msgstr "Distribûcija: "
 
-#: panel/gnome-panel-properties.c:123
+#: panel/gnome-panel-properties.c:124
 msgid "KDE: "
 msgstr "KDE: "
 
-#: panel/gnome-panel-properties.c:124
+#: panel/gnome-panel-properties.c:125
 msgid "Panel: "
 msgstr "Panelis: "
 
-#: panel/gnome-panel-properties.c:125
+#: panel/gnome-panel-properties.c:126
 msgid "Desktop: "
 msgstr "Darbvirsma: "
 
 #. Animation enable
-#: panel/gnome-panel-properties.c:313
+#: panel/gnome-panel-properties.c:317
 msgid "Enable animations"
 msgstr "Aktivizçt animâcijas"
 
-#: panel/gnome-panel-properties.c:318
+#: panel/gnome-panel-properties.c:322
 msgid "Constant speed animations"
 msgstr "Vienmçrîga âtruma animâcijas"
 
 #. AutoHide Animation step_size scale frame
-#: panel/gnome-panel-properties.c:324
+#: panel/gnome-panel-properties.c:328
 msgid "Animation speed"
 msgstr "Animâcijas âtrums"
 
-#: panel/gnome-panel-properties.c:334 panel/gnome-panel-properties.c:352
-#: panel/menu.c:4418
+#: panel/gnome-panel-properties.c:338 panel/gnome-panel-properties.c:356
+#: panel/menu.c:4434
 msgid "Auto hide"
 msgstr "Autoslçpðana"
 
 #. ExplicitHide Animation step_size scale frame
-#: panel/gnome-panel-properties.c:341 panel/menu.c:4417
+#: panel/gnome-panel-properties.c:345 panel/menu.c:4433
 msgid "Explicit hide"
 msgstr "Precîzi pazust"
 
 #. DrawerHide Animation step_size scale frame
-#: panel/gnome-panel-properties.c:347
+#: panel/gnome-panel-properties.c:351
 msgid "Drawer sliding"
 msgstr "Atvilktnes slîdçðana"
 
 #. Minimize Delay scale frame
-#: panel/gnome-panel-properties.c:363
-msgid "Delay (ms)"
+#: panel/gnome-panel-properties.c:367
+#, fuzzy
+msgid "Hide delay (ms)"
+msgstr "Aizture (ms)"
+
+#. Minimize Delay scale frame
+#: panel/gnome-panel-properties.c:373
+#, fuzzy
+msgid "Show delay (ms)"
 msgstr "Aizture (ms)"
 
 #. Minimized size scale frame
-#: panel/gnome-panel-properties.c:369
+#: panel/gnome-panel-properties.c:379
 msgid "Size (pixels)"
 msgstr "Izmçrs (pikseïos)"
 
-#: panel/gnome-panel-properties.c:480
+#: panel/gnome-panel-properties.c:490
 msgid "Launcher icon"
 msgstr "Palaidçja ikona"
 
-#: panel/gnome-panel-properties.c:481
+#: panel/gnome-panel-properties.c:491
 msgid "Drawer icon"
 msgstr "Atvilknes ikona"
 
-#: panel/gnome-panel-properties.c:482
+#: panel/gnome-panel-properties.c:492
 msgid "Menu icon"
 msgstr "Izvçlnes ikona"
 
-#: panel/gnome-panel-properties.c:483
+#: panel/gnome-panel-properties.c:493
 msgid "Special icon"
 msgstr "Speciâla ikona"
 
 #. toggle button
-#: panel/gnome-panel-properties.c:495
+#: panel/gnome-panel-properties.c:505
 msgid "Tiles enabled"
 msgstr "Palikòi aktivizçti"
 
-#: panel/gnome-panel-properties.c:510
+#: panel/gnome-panel-properties.c:520
 msgid "Normal tile"
 msgstr "Normâls paliknis"
 
-#: panel/gnome-panel-properties.c:523
+#: panel/gnome-panel-properties.c:533
 msgid "Clicked tile"
 msgstr "Uzklikðíinâts paliknis"
 
 #. Minimized size scale frame
-#: panel/gnome-panel-properties.c:539
+#: panel/gnome-panel-properties.c:549
 msgid "Border width (tile only)"
 msgstr "Robeþas platums (tikai palikòiem)"
 
 #. Minimized size scale frame
-#: panel/gnome-panel-properties.c:545
+#: panel/gnome-panel-properties.c:555
 msgid "Depth (displacement when pressed)"
 msgstr "Dziïums (iegrime nospieþot)"
 
-#: panel/gnome-panel-properties.c:564
+#: panel/gnome-panel-properties.c:574
 msgid "Launcher"
 msgstr "Palaidçjs"
 
-#: panel/gnome-panel-properties.c:566 panel/gnome-panel-properties.c:1527
-#: panel/menu-properties.c:612 panel/menu.c:1475 panel/menu.c:2916
-#: panel/menu.c:2987 panel/menu.c:2992 panel/menu.c:4517 panel/menu.c:5430
+#: panel/gnome-panel-properties.c:576 panel/gnome-panel-properties.c:1545
+#: panel/menu-properties.c:612 panel/menu.c:1483 panel/menu.c:2930
+#: panel/menu.c:3003 panel/menu.c:3008 panel/menu.c:4533 panel/menu.c:5342
+#: panel/menu.c:5474 panel/menu.c:5494
 msgid "Menu"
 msgstr "Izvçlne"
 
-#: panel/gnome-panel-properties.c:567
+#: panel/gnome-panel-properties.c:577
 msgid "Special"
 msgstr "Speciâls"
 
-#: panel/gnome-panel-properties.c:577
+#: panel/gnome-panel-properties.c:587
 msgid "Button type: "
 msgstr "Pogu tips: "
 
 #. show/hide frame
-#: panel/gnome-panel-properties.c:610
+#: panel/gnome-panel-properties.c:620
 msgid "Make buttons flush with panel edge"
 msgstr "Izvçrst pogu lielumu lîdz paneïa malâm"
 
 #. only show tiles when mouse is over the button
-#: panel/gnome-panel-properties.c:617
+#: panel/gnome-panel-properties.c:627
 msgid "Show button tiles only when cursor is over the button"
 msgstr "Parâdît pogas virsrakstu tikai, kad kursors ir virs pogas"
 
 #. prelight on mouseovers hack (used to be saturation, hence
 #. * the config option name)
-#: panel/gnome-panel-properties.c:624
+#: panel/gnome-panel-properties.c:634
 msgid "Prelight buttons on mouseover"
 msgstr "Izgaismot pogas, kad kursors virspusç"
 
 #. Fast but low quality scaling (Nearest versus Hyperbolic)
-#: panel/gnome-panel-properties.c:630
+#: panel/gnome-panel-properties.c:640
 msgid "Fast but low quality scaling of button icons"
 msgstr ""
 
 #. Movement frame
-#: panel/gnome-panel-properties.c:687
+#: panel/gnome-panel-properties.c:697
 msgid "Default movement mode"
 msgstr "Noklusçtais kustîbas reþîms"
 
 #. Switched
-#: panel/gnome-panel-properties.c:697
+#: panel/gnome-panel-properties.c:707
 msgid "Switched movement (or use Ctrl)"
 msgstr "Pakïauta kustîba (vai lieto Ctrl)"
 
-#: panel/gnome-panel-properties.c:705
+#: panel/gnome-panel-properties.c:715
 msgid "Free movement (doesn't disturb other applets) (or use Alt)"
 msgstr "Brîvâ kustîba (neizkustinot citus apletus) (vai lieto Alt)"
 
-#: panel/gnome-panel-properties.c:713
+#: panel/gnome-panel-properties.c:723
 msgid "Push movement (or use Shift)"
 msgstr "Pârvietoðana piespieþot (vai lietojot Shift)"
 
-#: panel/gnome-panel-properties.c:718
+#: panel/gnome-panel-properties.c:728
 msgid "Padding between applets"
 msgstr ""
 
-#: panel/gnome-panel-properties.c:723
+#: panel/gnome-panel-properties.c:733
 msgid "Padding between applets and panel border"
 msgstr ""
 
-#: panel/gnome-panel-properties.c:795 panel/menu-properties.c:394
+#: panel/gnome-panel-properties.c:805 panel/menu-properties.c:394
 msgid "Off"
 msgstr "Izslçgt"
 
-#: panel/gnome-panel-properties.c:802 panel/menu-properties.c:404
+#: panel/gnome-panel-properties.c:812 panel/menu-properties.c:404
 msgid "In a submenu"
 msgstr "Apakðizvçlnç"
 
-#: panel/gnome-panel-properties.c:808
+#: panel/gnome-panel-properties.c:818
 msgid "In the menu"
 msgstr "Izvçlnç"
 
 #. Menu frame
-#: panel/gnome-panel-properties.c:827
+#: panel/gnome-panel-properties.c:837
 msgid "Menus"
 msgstr "Izvçlnes"
 
 #. large icons
-#: panel/gnome-panel-properties.c:837
+#: panel/gnome-panel-properties.c:847
 msgid "Use large icons"
 msgstr "Lietot lielâs ikonas"
 
 #. Dot Buttons
-#: panel/gnome-panel-properties.c:844
+#: panel/gnome-panel-properties.c:854
 msgid "Show [...] buttons"
 msgstr "Parâdît [...] pogas"
 
 #. Off Panel Popup menus
-#: panel/gnome-panel-properties.c:850
+#: panel/gnome-panel-properties.c:860
 msgid "Show popup menus outside of panels"
 msgstr "Parâdît âtrizvçlnes"
 
 #. Hungry Menus
-#: panel/gnome-panel-properties.c:856
+#: panel/gnome-panel-properties.c:866
 msgid "Keep menus in memory"
 msgstr "Paturçt izvçlnes atmiòâ"
 
 #. Merge system menus
-#: panel/gnome-panel-properties.c:863
+#: panel/gnome-panel-properties.c:873
 msgid "Merge in system menus"
 msgstr "Apvienot sistçmas izvçlnçs"
 
 #. Menu check
-#: panel/gnome-panel-properties.c:870
+#: panel/gnome-panel-properties.c:880
 msgid ""
 "Automatically re-check menus\n"
 "for newly installed software"
 msgstr ""
 
 #. Menu frame
-#: panel/gnome-panel-properties.c:877
+#: panel/gnome-panel-properties.c:887
 msgid "Global menu"
 msgstr "Galvenâ izvçlne"
 
-#: panel/gnome-panel-properties.c:1038
+#: panel/gnome-panel-properties.c:1048
 msgid "Press a key..."
 msgstr "Spiedied kâdu taustiòu..."
 
 #. Tooltips enable
-#: panel/gnome-panel-properties.c:1071
+#: panel/gnome-panel-properties.c:1081
 msgid "Tooltips enabled"
 msgstr "Knifi aktivizçti"
 
 #. Drawer/launcher auto close
-#: panel/gnome-panel-properties.c:1077
+#: panel/gnome-panel-properties.c:1087
 msgid "Close drawer if a launcher inside it is pressed"
 msgstr "Aizvçrt aizvilkni ja palaists kâds no tâs palaidçjiem"
 
 #. Autoraise
-#: panel/gnome-panel-properties.c:1083
+#: panel/gnome-panel-properties.c:1093
 msgid "Raise panels on mouse-over"
 msgstr "Paaugstinât paneïus, pelei slîdot pâri"
 
 #. Confirm panel removal
-#: panel/gnome-panel-properties.c:1089
+#: panel/gnome-panel-properties.c:1099
 msgid "Confirm the removal of panels with a dialog"
 msgstr "Apstiprinât paneïu likvidâciju ar dialoga paziòojumu"
 
 #. Collision avoidance
-#: panel/gnome-panel-properties.c:1095
+#: panel/gnome-panel-properties.c:1105
 msgid "Try to avoid overlapping panels"
 msgstr ""
 
 #. Layer frame
-#: panel/gnome-panel-properties.c:1101
+#: panel/gnome-panel-properties.c:1111
 #, fuzzy
 msgid "Panel treatment (GNOME compliant window managers only)"
 msgstr ""
 "Paturçt paneli zem logiem (tikai ar GNOME savietojamiem logu pârvâldniekiem)"
 
 #. Keep on bottom
-#: panel/gnome-panel-properties.c:1111
+#: panel/gnome-panel-properties.c:1121
 #, fuzzy
 msgid "Keep panels below other windows"
 msgstr "Atvçet jaunu pârlûka logu"
 
-#: panel/gnome-panel-properties.c:1118
+#: panel/gnome-panel-properties.c:1128
 msgid "Keep panels on the same level as other windows"
 msgstr ""
 
-#: panel/gnome-panel-properties.c:1125
+#: panel/gnome-panel-properties.c:1135
 #, fuzzy
 msgid "Keep panels above other windows"
 msgstr "Izveido jaunu terminâïa logu"
 
 #. Key Bindings frame
-#: panel/gnome-panel-properties.c:1131
+#: panel/gnome-panel-properties.c:1141
 msgid "Key Bindings"
 msgstr "Taustiòu Sasaistes"
 
 #. enabled
-#: panel/gnome-panel-properties.c:1144
+#: panel/gnome-panel-properties.c:1154
 msgid "Enable panel keybindings"
 msgstr "Aktivizçt paneïa taustiòsasaistes"
 
 #. menu key
-#: panel/gnome-panel-properties.c:1151
+#: panel/gnome-panel-properties.c:1161
 msgid "Popup menu key"
 msgstr "Âtrizvçlnes taustiòð"
 
-#: panel/gnome-panel-properties.c:1162 panel/gnome-panel-properties.c:1190
-#: panel/panel-util.c:637 panel/panel-util.c:694
+#: panel/gnome-panel-properties.c:1172 panel/gnome-panel-properties.c:1200
+#: panel/panel-util.c:638 panel/panel-util.c:695
 msgid "Disabled"
 msgstr "Izslçgts"
 
-#: panel/gnome-panel-properties.c:1173 panel/gnome-panel-properties.c:1201
+#: panel/gnome-panel-properties.c:1183 panel/gnome-panel-properties.c:1211
 msgid "Grab key..."
 msgstr "Paíert taustiòu..."
 
 #. run key...
-#: panel/gnome-panel-properties.c:1181
+#: panel/gnome-panel-properties.c:1191
 msgid "Run dialog key"
 msgstr "Palaiðanas dialoga taustiòð"
 
-#: panel/gnome-panel-properties.c:1512
+#: panel/gnome-panel-properties.c:1530
 msgid "Animation"
 msgstr "Animâcija"
 
-#: panel/gnome-panel-properties.c:1517
+#: panel/gnome-panel-properties.c:1535
 msgid "Buttons"
 msgstr "Pogas"
 
-#: panel/gnome-panel-properties.c:1522
+#: panel/gnome-panel-properties.c:1540
 msgid "Panel Objects"
 msgstr "Paneïa Objekti"
 
@@ -3277,7 +3365,7 @@ msgstr "Palaist"
 msgid "Run in terminal"
 msgstr "Palaist terminâlî"
 
-#: panel/gnome-run.c:512 panel/gnome-run.c:531 panel/menu.c:5218
+#: panel/gnome-run.c:512 panel/gnome-run.c:531 panel/menu.c:5251
 msgid "Run..."
 msgstr "Palaist..."
 
@@ -3285,7 +3373,7 @@ msgstr "Palaist..."
 msgid "This launch icon does not specify a program to run"
 msgstr "Ðî palaidçja ikona nav piesaistîta nevienai programmai"
 
-#: panel/launcher.c:85 panel/menu.c:2168
+#: panel/launcher.c:85 panel/menu.c:2178
 msgid "Can't get goad_id from desktop entry!"
 msgstr "Nevar dabût goad_id no darbvirsmas ieraksta!"
 
@@ -3293,53 +3381,58 @@ msgstr "Nevar dabût goad_id no darbvirsmas ieraksta!"
 msgid "App"
 msgstr "Programma"
 
-#: panel/launcher.c:474 panel/launcher.c:665 panel/menu.c:1646
+#: panel/launcher.c:474 panel/launcher.c:667 panel/menu.c:1654
 #, fuzzy, c-format
 msgid "Help on %s"
 msgstr "Palîdziba Palîdzîbai"
 
+#: panel/launcher.c:477 panel/launcher.c:670 panel/menu.c:1657
+#, fuzzy
+msgid "Application"
+msgstr "Darbîba"
+
 #. watch the enum at the top of the file
-#: panel/launcher.c:530
+#: panel/launcher.c:532
 msgid "Launcher properties"
 msgstr "Palaidçja rekvizîti"
 
-#: panel/launcher.c:717
+#: panel/launcher.c:721
 msgid "Create launcher applet"
 msgstr "Izveidot palaidçja sîkprogrammu"
 
-#: panel/logout.c:71 panel/menu.c:5014
+#: panel/logout.c:73 panel/menu.c:5047
 msgid "Log out"
 msgstr "Iziet"
 
-#: panel/logout.c:90
+#: panel/logout.c:92
 msgid "Log out of GNOME"
 msgstr "Iziet no GNOME"
 
-#: panel/logout.c:131 panel/logout.c:150 panel/menu.c:5002
+#: panel/logout.c:133 panel/logout.c:152 panel/menu.c:5035
 msgid "Lock screen"
 msgstr "Noslçgt ekrânu"
 
-#: panel/logout.c:183
+#: panel/logout.c:185
 msgid "Blank Screen Now"
 msgstr "Tagad Tukðu Ekrânu"
 
-#: panel/logout.c:185
+#: panel/logout.c:187
 msgid "Lock Screen Now"
 msgstr "Tagad Noslçgt Ekrânu"
 
-#: panel/logout.c:187
+#: panel/logout.c:189
 msgid "Kill Daemon"
 msgstr "Nokaut Dçmonu"
 
-#: panel/logout.c:189
+#: panel/logout.c:191
 msgid "Restart Daemon"
 msgstr "Pârstartçt Dçmonu"
 
-#: panel/logout.c:191
+#: panel/logout.c:193
 msgid "Preferences"
 msgstr "Opcijas"
 
-#: panel/main.c:220
+#: panel/main.c:404
 msgid ""
 "I've detected a panel already running.\n"
 "Start another panel as well?\n"
@@ -3349,7 +3442,7 @@ msgstr ""
 "Sâknçt vçl vienu paneli?\n"
 "(Jaunais panelis netiks pârstartçts.)"
 
-#: panel/main.c:231
+#: panel/main.c:415
 msgid ""
 "There was a problem registering the panel with the GOAD server.\n"
 "The panel will now exit."
@@ -3391,188 +3484,188 @@ msgstr "Izbeidz pasaules badu"
 msgid "Can't execute 'About GNOME'"
 msgstr "Nevar palaist 'Par GNOME'"
 
-#: panel/menu.c:249 panel/menu.c:968 panel/menu.c:985 panel/menu.c:2160
+#: panel/menu.c:249 panel/menu.c:976 panel/menu.c:993 panel/menu.c:2170
 msgid "Can't load entry"
 msgstr "Nevar ielâdçt ievadu"
 
-#: panel/menu.c:735
+#: panel/menu.c:738
 msgid "Cannot create an item with an empty command"
 msgstr "Nevar izveidot priekðmetu ar tukðu komandu"
 
-#: panel/menu.c:773
+#: panel/menu.c:781
 #, c-format
 msgid "Could not get file from path: %s"
 msgstr "Nevar dabût datni no ceïa: %s"
 
-#: panel/menu.c:777
+#: panel/menu.c:785
 #, c-format
 msgid "Could not open .order file: %s"
 msgstr "Nevar atvçrt .order datni: %s"
 
-#: panel/menu.c:785
+#: panel/menu.c:793
 #, c-format
 msgid "Could not open file '%s' for writing"
 msgstr "Nevar atvçrt datni '%s' ierakstam"
 
-#: panel/menu.c:804
+#: panel/menu.c:812
 msgid "Create menu item"
 msgstr "Izveidot izvçlnes priekðmetu"
 
-#: panel/menu.c:881
+#: panel/menu.c:889
 #, c-format
 msgid "Could not remove the menu item %s: %s\n"
 msgstr "Nevar izdzçst ðo izvçlnes priekðmetu %s: %s\n"
 
-#: panel/menu.c:888
+#: panel/menu.c:896
 #, c-format
 msgid "Could not get file name from path: %s"
 msgstr "Nevar dabût datni no ceïa: %s"
 
-#: panel/menu.c:895
+#: panel/menu.c:903
 #, fuzzy, c-format
 msgid "Could not get directory name from path: %s"
 msgstr "Nevar dabût datni no ceïa: %s"
 
-#: panel/menu.c:916
+#: panel/menu.c:924
 #, fuzzy, c-format
 msgid ""
 "Could not open .order file: %s\n"
 "%s"
 msgstr "Nevar atvçrt .order datni: %s"
 
-#: panel/menu.c:936
+#: panel/menu.c:944
 #, fuzzy, c-format
 msgid "Could not remove old order file %s: %s\n"
 msgstr "Nevar atvçrt .order datni: %s"
 
-#: panel/menu.c:944
+#: panel/menu.c:952
 #, fuzzy, c-format
 msgid ""
 "Could not rename tmp file: %s to %s\n"
 "%s"
 msgstr "Nevar pârsaukt tmp datni %s"
 
-#: panel/menu.c:964
+#: panel/menu.c:972
 msgid "No 'Exec' field in entry"
 msgstr "Nav 'Exec' lauka ievadâ."
 
 #. watch the enum at the top of the file
-#: panel/menu.c:1328 panel/menu.c:1439
+#: panel/menu.c:1336 panel/menu.c:1447
 msgid "Desktop entry properties"
 msgstr "Darbvirsmas ievada rekvizîti"
 
-#: panel/menu.c:1576
+#: panel/menu.c:1584
 msgid "Add this launcher to panel"
 msgstr "Pievienot ðo palaidçju panelî"
 
-#: panel/menu.c:1579
+#: panel/menu.c:1587
 msgid "Add this applet as a launcher to panel"
 msgstr "Pievienot ðo sîkprogrammu kâ palaidçju panelî."
 
-#: panel/menu.c:1589 panel/menu.c:1685
+#: panel/menu.c:1597 panel/menu.c:1695
 msgid "Add this to Favorites menu"
 msgstr "Pievienot ðo Favorîtu izvçlnei"
 
-#: panel/menu.c:1602
+#: panel/menu.c:1610
 msgid "Remove this item"
 msgstr "Izòemt ðo priekðmetu"
 
-#: panel/menu.c:1620
+#: panel/menu.c:1628
 msgid "Put into run dialog"
 msgstr "Ievietot palaiðanas dialogâ"
 
-#: panel/menu.c:1668
+#: panel/menu.c:1678
 msgid "Add this as drawer to panel"
 msgstr "Pievienot ðo kâ atvilkni panelî"
 
-#: panel/menu.c:1677
+#: panel/menu.c:1687
 msgid "Add this as menu to panel"
 msgstr "Pievienot ðo kâ izvçlni panelî"
 
-#: panel/menu.c:1697
+#: panel/menu.c:1707
 msgid "Add new item to this menu"
 msgstr "Pievienot jaunu priekðmetu ðai izvçlnei"
 
-#: panel/menu.c:1910 panel/menu.c:1988
+#: panel/menu.c:1920 panel/menu.c:1998
 msgid "..."
 msgstr "..."
 
-#: panel/menu.c:2139
+#: panel/menu.c:2149
 msgid "You already have a status dock on the panel. You can only have one"
 msgstr "Jums jau ir statusa doks panelî. Tâds var bût tikai viens"
 
-#: panel/menu.c:2594
+#: panel/menu.c:2608
 msgid "Adding tearoff when tearoffs are disabled"
 msgstr "Pievieno noplçðamâs lapas, kad tâs ir deaktivizçtas"
 
-#: panel/menu.c:2761
+#: panel/menu.c:2775
 msgid "Can't get goad_id for applet, ignoring it"
 msgstr "Nevar dabût sîkprogrammas goad_id, ignorçjam to"
 
-#: panel/menu.c:2992 panel/menu.c:2994
+#: panel/menu.c:3008 panel/menu.c:3010
 msgid " (empty)"
 msgstr " (tukðs)"
 
 #. applets
 #. launcher_add
-#: panel/menu.c:3099 panel/menu.c:5199
+#: panel/menu.c:3115 panel/menu.c:5232
 msgid "Applets"
 msgstr "Sîkprogrammas"
 
 #. Don't translate the first part of this string
-#: panel/menu.c:3281 panel/session.c:1354
+#: panel/menu.c:3297 panel/session.c:1388
 msgid "/panel/Config/clock_format=%I:%M:%S %p"
 msgstr ""
 
-#: panel/menu.c:3290
+#: panel/menu.c:3306
 msgid "You can only have one menu panel at a time."
 msgstr "Vienlaicîgi jums var bût tikai viens izvçlnes panelis."
 
-#: panel/menu.c:3328 panel/menu.c:3333 panel/menu.c:4762
+#: panel/menu.c:3344 panel/menu.c:3349 panel/menu.c:4785
 msgid "Create panel"
 msgstr "Izveidot paneli"
 
-#: panel/menu.c:3361
+#: panel/menu.c:3377
 msgid "Menu panel"
 msgstr "Izvçlòu panelis"
 
-#: panel/menu.c:3369 panel/menu.c:4409 panel/panel_config.c:1672
+#: panel/menu.c:3385 panel/menu.c:4425 panel/panel_config.c:1672
 #: panel/panel_config.c:1791
 msgid "Edge panel"
 msgstr "Malas panelis"
 
-#: panel/menu.c:3377 panel/menu.c:4410 panel/panel_config.c:1679
+#: panel/menu.c:3393 panel/menu.c:4426 panel/panel_config.c:1679
 #: panel/panel_config.c:1801
 msgid "Aligned panel"
 msgstr "Izlîdzinâts panelis"
 
-#: panel/menu.c:3385 panel/menu.c:4411 panel/panel_config.c:1685
+#: panel/menu.c:3401 panel/menu.c:4427 panel/panel_config.c:1685
 #: panel/panel_config.c:1811
 msgid "Sliding panel"
 msgstr "Slîdoðais panelis"
 
-#: panel/menu.c:3393 panel/menu.c:4412 panel/panel_config.c:1691
+#: panel/menu.c:3409 panel/menu.c:4428 panel/panel_config.c:1691
 #: panel/panel_config.c:1821
 msgid "Floating panel"
 msgstr "Plûstoðais panelis"
 
-#: panel/menu.c:3459 panel/menu.c:3462
+#: panel/menu.c:3475 panel/menu.c:3478
 msgid "No system menus found!"
 msgstr "Nav atrastas sistçmas izvçlnes!"
 
-#: panel/menu.c:3478
+#: panel/menu.c:3494
 msgid "Can't create the user menu directory"
 msgstr "Nevar izveidot lietotâja izvçlòu direktoriju"
 
-#: panel/menu.c:3557 panel/menu.c:3565 panel/menu.c:5078
+#: panel/menu.c:3573 panel/menu.c:3581 panel/menu.c:5111
 msgid "KDE menus"
 msgstr "KDE izvçlnes"
 
-#: panel/menu.c:3627
+#: panel/menu.c:3643
 msgid "You cannot remove your last panel."
 msgstr "Jûs nevarat izòemt pçdçjo paneli."
 
-#: panel/menu.c:3637
+#: panel/menu.c:3653
 msgid ""
 "When a panel is removed, the panel and its\n"
 "applet settings are lost. Remove this panel?"
@@ -3580,210 +3673,215 @@ msgstr ""
 "Kad mçs dzçðam paneli, visu ar to saistîto\n"
 "sîkprogrammu uzstâdijumi zûd. Dzçst ðo paneli?"
 
-#: panel/menu.c:3676 panel/menu.c:3681
+#: panel/menu.c:3692 panel/menu.c:3697 panel/menu.c:5330 panel/menu.c:5356
+#: panel/menu.c:5490
 #, fuzzy
 msgid "Main Menu"
 msgstr "Galvenâ izvçlne"
 
-#: panel/menu.c:4423
+#: panel/menu.c:4439
 msgid "With pixmap arrow"
 msgstr "Ar attçliòa bultu"
 
-#: panel/menu.c:4424
+#: panel/menu.c:4440
 msgid "Without pixmap"
 msgstr "Bez attçliòa"
 
-#: gnome-terminal/gnome-terminal.glade.h:22 panel/menu.c:4425
+#: gnome-terminal/gnome-terminal.glade.h:23 panel/menu.c:4441
 msgid "None"
 msgstr "Nekas"
 
-#: panel/menu.c:4436 panel/panel_config.c:1172
+#: panel/menu.c:4452 panel/panel_config.c:1172
 msgid "Ultra Tiny (12 pixels)"
 msgstr "Seviðíi Sîks (12 pikseïi)"
 
-#: panel/menu.c:4437 panel/panel_config.c:1180
+#: panel/menu.c:4453 panel/panel_config.c:1180
 msgid "Tiny (24 pixels)"
 msgstr "Sîks (24 pikseïi)"
 
-#: panel/menu.c:4438 panel/panel_config.c:1188
+#: panel/menu.c:4454 panel/panel_config.c:1188
 msgid "Small (36 pixels)"
 msgstr "Mazs (36 pikseïi)"
 
-#: panel/menu.c:4439 panel/panel_config.c:1196
+#: panel/menu.c:4455 panel/panel_config.c:1196
 msgid "Standard (48 pixels)"
 msgstr "Standarta (48 pikseïi)"
 
-#: panel/menu.c:4440 panel/panel_config.c:1204
+#: panel/menu.c:4456 panel/panel_config.c:1204
 msgid "Large (64 pixels)"
 msgstr "Liels (64 pikseïi)"
 
-#: panel/menu.c:4441 panel/panel_config.c:1212
+#: panel/menu.c:4457 panel/panel_config.c:1212
 msgid "Huge (80 pixels)"
 msgstr "Ïoti Liels (80 pikseïi)"
 
-#: panel/menu.c:4442 panel/panel_config.c:1220
+#: panel/menu.c:4458 panel/panel_config.c:1220
 msgid "Ridiculous (128 pixels)"
 msgstr "Gigantisks (128 pikseïi)"
 
-#: panel/menu.c:4447 panel/panel_config.c:1489
+#: panel/menu.c:4463 panel/panel_config.c:1489
 msgid "Standard"
 msgstr "Standarts"
 
 #. color frame
-#: panel/menu.c:4448 panel/panel_config.c:1493 panel/panel_config.c:1508
+#: panel/menu.c:4464 panel/panel_config.c:1493 panel/panel_config.c:1508
 msgid "Color"
 msgstr "Krâsa"
 
-#: panel/menu.c:4449 panel/panel_config.c:1497
+#: panel/menu.c:4465 panel/panel_config.c:1497
 msgid "Pixmap"
 msgstr "Attçls"
 
-#: panel/menu.c:4455
+#: panel/menu.c:4471
 msgid "Below"
 msgstr ""
 
-#: panel/menu.c:4457
+#: panel/menu.c:4473
 #, fuzzy
 msgid "Above"
 msgstr "Pârvietot"
 
-#: panel/menu.c:4462
+#: panel/menu.c:4478
 msgid "Avoid on maximize"
 msgstr ""
 
-#: panel/menu.c:4463
+#: panel/menu.c:4479
 msgid "Don't avoid on maximize"
 msgstr ""
 
-#: panel/menu.c:4467
+#: panel/menu.c:4483
 msgid "Type"
 msgstr "Tips"
 
-#: panel/menu.c:4470
+#: panel/menu.c:4486
 msgid "Hiding policy"
 msgstr "Slçpðanas paòçmieni"
 
-#: panel/menu.c:4473
+#: panel/menu.c:4489
 msgid "Hide buttons"
 msgstr "Slçpt pogas"
 
-#: panel/menu.c:4479
+#: panel/menu.c:4495
 msgid "Orientation"
 msgstr "Orientâcija"
 
-#: gnome-terminal/gnome-terminal.glade.h:20 panel/menu.c:4482
+#: gnome-terminal/gnome-terminal.glade.h:21 panel/menu.c:4498
 msgid "Background type"
 msgstr "Fona tips"
 
-#: panel/menu.c:4485
+#: panel/menu.c:4501
 msgid "Level"
 msgstr ""
 
-#: panel/menu.c:4488
+#: panel/menu.c:4504
 msgid "Maximize mode"
 msgstr ""
 
-#: panel/menu.c:4506
+#: panel/menu.c:4522
 msgid "Applet"
 msgstr "Aplets"
 
-#: panel/menu-properties.c:498 panel/menu-properties.c:520 panel/menu.c:4527
+#: panel/menu-properties.c:498 panel/menu-properties.c:520 panel/menu.c:4543
 msgid "Main menu"
 msgstr "Galvenâ izvçlne"
 
-#: panel/menu.c:4538
+#: panel/menu.c:4554
 msgid "Programs menu"
 msgstr "Pogrammu izvçlne"
 
-#: panel/menu.c:4548
+#: panel/menu.c:4564
 msgid "Favorites menu"
 msgstr "Favorîtu izvçlne"
 
-#: panel/menu.c:4559
+#: panel/menu.c:4575
 msgid "Launcher..."
 msgstr "Palaidçjs..."
 
-#: panel/menu.c:4568
+#: panel/menu.c:4584
 #, fuzzy
 msgid "Launcher from menu"
 msgstr "Palaidçja ikona"
 
-#: panel/menu.c:4590
+#: panel/menu.c:4606
 msgid "Log out button"
 msgstr "Izieðanas poga"
 
-#: panel/menu.c:4601
+#: panel/menu.c:4617
 msgid "Lock button"
 msgstr "Noslçgðanas poga"
 
-#: panel/menu.c:4612
+#: panel/menu.c:4628
 msgid "Run button"
 msgstr "Palaiðanas poga"
 
-#: panel/menu.c:4624
+#: panel/menu.c:4640
 msgid "Swallowed app..."
 msgstr "Norîtâ programma..."
 
-#: panel/menu.c:4632
+#: panel/menu.c:4648
 msgid "Status dock"
 msgstr "Satusa doks"
 
-#: panel/menu.c:4656 panel/menu.c:4661 panel/menu.c:4738
+#: panel/menu.c:4672 panel/menu.c:4677 panel/menu.c:4761
 msgid "Add to panel"
 msgstr "Pievienot panelim"
 
-#: panel/menu.c:4676
+#: panel/menu.c:4692
 msgid "Cannot execute panel global properties"
 msgstr "Nevar palaist paneïa globâlos rekvizîtus"
 
-#: panel/menu.c:4716
+#: panel/menu.c:4732
 msgid "Remove this panel..."
 msgstr "Izòemt ðo paneli..."
 
-#: panel/menu.c:4718 panel/menu.c:4773
+#: panel/menu.c:4734 panel/menu.c:4796
 msgid "Remove this panel"
 msgstr "Izòemt ðo paneli"
 
-#: panel/menu.c:4790
+#: panel/menu.c:4748
+msgid "Cannot launch gmenu!"
+msgstr ""
+
+#: panel/menu.c:4813
 msgid "Properties"
 msgstr "Rekvizîti"
 
-#: panel/menu.c:4801
+#: panel/menu.c:4824
 msgid "All properties..."
 msgstr "Visi rekvizîti..."
 
-#: panel/menu.c:4817
+#: panel/menu.c:4840
 msgid "Global Preferences..."
 msgstr "Globâlie uzstâdîjumi..."
 
-#: panel/menu.c:4828
+#: panel/menu-properties.c:211 panel/menu.c:4850 panel/menu.c:5590
+msgid "Edit menus..."
+msgstr "Labot izvçlnes..."
+
+#: panel/menu.c:4861
 #, fuzzy
 msgid "Reread all menus"
 msgstr "Red Hat izvçlnes"
 
-#: panel/menu.c:4843
+#: panel/menu.c:4876
 msgid "Panel Manual..."
 msgstr "Paneïa Rokasgrâmata..."
 
-#: panel/menu.c:4854
+#: panel/menu.c:4887
 msgid "Cannot execute xscreensaver"
 msgstr "Nevar palaist xscreensaver (ekrânglabâtâju)"
 
-#: panel/menu.c:4943
+#: panel/menu.c:4976
 msgid "About the panel..."
 msgstr "Par paneli..."
 
-#: panel/menu.c:4959
+#: panel/menu.c:4992
 msgid "About GNOME..."
 msgstr "Par GNOME..."
 
-#: panel/menu.c:5309
+#: panel/menu.c:5350
 msgid "Can't create menu, using main menu!"
 msgstr "Nevar izveidot izvçlni, izmantojot galveno izvçlni!"
-
-#: panel/menu-properties.c:211 panel/menu.c:5538
-msgid "Edit menus..."
-msgstr "Labot izvçlnes..."
 
 #: panel/menu-properties.c:192
 msgid "Can't open directory, using main menu!"
@@ -3833,7 +3931,7 @@ msgstr "Izvçlnes ceïð"
 msgid "Use custom icon for panel button"
 msgstr ""
 
-#: panel/panel.c:943
+#: panel/panel.c:951
 #, c-format
 msgid "Open URL: %s"
 msgstr "Atvçrt URL: %s"
@@ -3923,7 +4021,7 @@ msgid "Color to use:"
 msgstr "Lietot Krâsu:"
 
 #. image frame
-#: gnome-terminal/gnome-terminal.glade.h:27 panel/panel_config.c:1542
+#: gnome-terminal/gnome-terminal.glade.h:28 panel/panel_config.c:1542
 msgid "Image"
 msgstr "Attçls"
 
@@ -3952,7 +4050,7 @@ msgstr "Paneïa rekvizîti"
 msgid "Background"
 msgstr "Fons"
 
-#: panel/session.c:267
+#: panel/session.c:268
 msgid ""
 "An applet is not responding to a save request.\n"
 "Remove the applet or continue waiting?"
@@ -3960,20 +4058,20 @@ msgstr ""
 "Konkrçtâ sîkprogramma neatsaucas uz saglabâðanas pieprasîjumu.\n"
 "Izdzçst sîkprogrammu vai turpinât gaidît?"
 
-#: panel/session.c:278
+#: panel/session.c:279
 msgid "Remove applet"
 msgstr "Izdzçst sîkprogrammu"
 
-#: panel/session.c:281
+#: panel/session.c:282
 msgid "Continue waiting"
 msgstr "Turpinât gaidît"
 
-#: panel/session.c:290
+#: panel/session.c:291
 msgid "Timed out on sending session save to an applet"
 msgstr "Sûtîðanas laiks uz apletu par sesijas saglabâðanu izbeidzies"
 
 #. Don't translate the first part of this string
-#: panel/session.c:1581
+#: panel/session.c:1615
 msgid "/panel/Config/clock_format=%l:%M:%S %p"
 msgstr ""
 
@@ -4002,6 +4100,11 @@ msgstr "Garums"
 #: panel/swallow.c:283
 msgid "Height"
 msgstr "Augstums"
+
+#: panel/icon-entry-hack.c:268
+#, fuzzy
+msgid "Choose an icon"
+msgstr "Râdît mazâs ikonas"
 
 #.
 #. * Translatable strings file generated by Glade.
@@ -4043,7 +4146,8 @@ msgid "Silence terminal bell"
 msgstr "Noklusinât Terminâïa zvanu"
 
 #: gnome-terminal/gnome-terminal.glade.h:16
-msgid "Swap DEL/Backspace"
+#, fuzzy
+msgid "Swap Delete/Backspace"
 msgstr "Apmainît vietâm DEL/Backspace"
 
 #: gnome-terminal/gnome-terminal.glade.h:17
@@ -4051,26 +4155,29 @@ msgid "Use --login by default"
 msgstr "Noklusçjumâ lietot --login"
 
 #: gnome-terminal/gnome-terminal.glade.h:18
-msgid "Select-by-word characters:"
+msgid "Delete generates DEL/^H"
 msgstr ""
 
 #: gnome-terminal/gnome-terminal.glade.h:19
+msgid "Select-by-word characters:"
+msgstr ""
+
+#: gnome-terminal/gnome-terminal.glade.h:20
 msgid "General"
 msgstr "Galvenais"
 
-#: gnome-terminal/gnome-terminal.glade.h:24
+#: gnome-terminal/gnome-terminal.glade.h:25
 msgid "Transparent"
 msgstr "Caurspîdîgs"
 
-#: gnome-terminal/gnome-terminal.glade.h:25
+#: gnome-terminal/gnome-terminal.glade.h:26
 msgid "Pixmap file:"
 msgstr "Attçliòa datne:"
 
-#: gnome-terminal/gnome-terminal.glade.h:26
+#: gnome-terminal/gnome-terminal.glade.h:27
 msgid "Background should be shaded"
 msgstr "Fonam jâbût çnotam"
 
-#: gnome-terminal/gnome-terminal.glade.h:28
 #: gnome-terminal/gnome-terminal.glade.h:29
 #: gnome-terminal/gnome-terminal.glade.h:30
 #: gnome-terminal/gnome-terminal.glade.h:31
@@ -4086,55 +4193,56 @@ msgstr "Fonam jâbût çnotam"
 #: gnome-terminal/gnome-terminal.glade.h:41
 #: gnome-terminal/gnome-terminal.glade.h:42
 #: gnome-terminal/gnome-terminal.glade.h:43
-#: gnome-terminal/gnome-terminal.glade.h:49
+#: gnome-terminal/gnome-terminal.glade.h:44
 #: gnome-terminal/gnome-terminal.glade.h:50
+#: gnome-terminal/gnome-terminal.glade.h:51
 msgid "Pick a color"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.glade.h:44
+#: gnome-terminal/gnome-terminal.glade.h:45
 msgid "Color scheme:"
 msgstr "Krâsu tçma:"
 
-#: gnome-terminal/gnome-terminal.glade.h:45
+#: gnome-terminal/gnome-terminal.glade.h:46
 #, fuzzy
 msgid "Fore/Background Color:"
 msgstr "Burtu/Fona Krâsa:"
 
-#: gnome-terminal/gnome-terminal.glade.h:46
+#: gnome-terminal/gnome-terminal.glade.h:47
 msgid "Foreground color:"
 msgstr "Burtu krâsa:"
 
-#: gnome-terminal/gnome-terminal.glade.h:47
+#: gnome-terminal/gnome-terminal.glade.h:48
 msgid "Background color:"
 msgstr "Fona krâsa:"
 
-#: gnome-terminal/gnome-terminal.glade.h:48
+#: gnome-terminal/gnome-terminal.glade.h:49
 msgid "Color palette:"
 msgstr "Krâsu palete:"
 
-#: gnome-terminal/gnome-terminal.glade.h:51
+#: gnome-terminal/gnome-terminal.glade.h:52
 msgid "Colors"
 msgstr "Krâsas"
 
-#: gnome-terminal/gnome-terminal.glade.h:52
+#: gnome-terminal/gnome-terminal.glade.h:53
 #, fuzzy
 msgid "Scrollbar position:"
 msgstr "Ritjoslas pozîcija"
 
-#: gnome-terminal/gnome-terminal.glade.h:53
+#: gnome-terminal/gnome-terminal.glade.h:54
 #, fuzzy
 msgid "Scrollback lines:"
 msgstr "Atritinâðanâs lînijas"
 
-#: gnome-terminal/gnome-terminal.glade.h:54
+#: gnome-terminal/gnome-terminal.glade.h:55
 msgid "Scroll on keystroke"
 msgstr "Ritinât ar taustiòiem"
 
-#: gnome-terminal/gnome-terminal.glade.h:55
+#: gnome-terminal/gnome-terminal.glade.h:56
 msgid "Scroll on output"
 msgstr "Rîtinât pçc izvadîtâ satura"
 
-#: gnome-terminal/gnome-terminal.glade.h:56
+#: gnome-terminal/gnome-terminal.glade.h:57
 msgid "Scrolling"
 msgstr "Ritinâðana"
 

@@ -1,3 +1,33 @@
+Mon Apr 23 19:51:06 2001  George Lebl <jirka@5z.com>
+
+	* gnome-terminal.desktop:  prepend NO_XALF to the exec field so that
+	  xalf isn't started
+
+Thu Apr 19 15:46:59 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* gnome-terminal.c (preferences_cmd): set transient_for on the
+	preferences dialog.
+
+2001-04-19  Stanislav Brabec  <utx@penguin.cz>
+
+	* gnome-terminal.c: Removed obsolette enum *_ROW. Rows are now
+	decided by Glade.
+
+2001-04-18  Stanislav Brabec  <utx@penguin.cz>
+
+	* gnome-terminal.c, gnome-terminal.glade, gnome-terminal.glade.h:
+	Added support for del_is_del zvt feature in configuration. Changed
+	string "DEL" to "Delete" to make difference between character code
+	and key.
+
+	Ported from stable branch, after discussion with George Lebl.
+
+2001-04-02  Stanislav Brabec  <utx@penguin.cz> 
+
+        * gnome-terminal.c: Allow i18n for default window title when
+        saving session. Otherwise terminal is restored with english
+        title. Also caused problems with restoring session.
+
 Mon Mar 12 15:31:03 2001  George Lebl <jirka@5z.com>
 
 	* gnome-terminal.desktop:  Add DocPath

@@ -1,3 +1,127 @@
+2001-05-09  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* es.po: Updated Spanish file
+
+2001-05-07  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+
+2001-05-04  Emese Kovacs  <emese@gnome.hu>
+
+	* hu.po: Updated Hungarian file
+
+2001-05-02  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+
+2001-04-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated  Norwegian translation.
+	
+2001-04-30  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+Mon Apr 30 00:45:44 2001  George Lebl <jirka@5z.com>
+
+	* cs.po: update a bit
+
+2001-04-28  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2001-04-26  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-04-24  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation
+
+2001-03-23  Valek Filippov  <frob@df.ru>
+
+	* ru.po: Updated russian translatio
+
+Mon Apr 23 03:14:06 2001  George Lebl <jirka@5z.com>
+
+	* cs.po: update
+
+2001-04-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2001-04-22 Leandro Noferini <leandro@firenze.linux.it>
+
+	* it.po: Little typo corrected
+	
+2001-04-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+Sat Apr 21 15:24:25 2001  George Lebl <jirka@5z.com>
+
+	* POTFILES.in, POTFILES.skip: update
+
+	* cs.po: update
+
+2001-04-20  Christian Meyer  <chrisime@gnome.org>
+
+	de.po: Updated German translation.
+
+Fri Apr 20 04:04:32 2001  George Lebl <jirka@5z.com>
+
+	* cs.po: update
+
+2001-04-19  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+Thu Apr 19 01:19:24 2001  George Lebl <jirka@5z.com>
+
+	* cs.po: yay! 100% translations
+
+2001-04-18  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Added missing names and corrected non-ascii.
+
+2001-04-17  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Added misiing names.
+
+Mon Apr 16 08:48:51 2001  George Lebl <jirka@5z.com>
+
+	* cs.po: further updates
+
+Sun Apr 15 22:43:05 2001  George Lebl <jirka@5z.com>
+
+	* cs.po: Updated translation
+
+2001-04-16  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2001-04-15  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2001-04-13  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* az.po: Udated Azeri file
+	* bg_BG.cp1251.po -> bg.po: moved the name to its standard name
+	* *.po: removed non-ascii from the sources
+
+2001-04-11  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+
+	* it.po: Updated italian translation
+
+2001-04-07  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Fix (thanks to Detlef Reichl).
+
+2001-04-02  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated translation by Nilgün.
+
 2001-03-26  Gediminas Paulauskas <menesis@delfi.lt>
 
 	* lt.po: updated Lithuanian translation.

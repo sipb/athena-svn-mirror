@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-core-1.0.7\n"
-"POT-Creation-Date: 2001-03-28 11:49-0500\n"
+"POT-Creation-Date: 2001-05-09 11:40-0400\n"
 "PO-Revision-Date: 1999-11-11 05:04+0800\n"
 "Last-Translator: Dillion Chen <dillon.chen@turbolinux.com.cn>\n"
 "Language-Team: TLDN\n"
@@ -42,7 +42,7 @@ msgstr "Ã»ÓĞÕÒµ½Ãæ°å\n"
 # applets/desk-guide/deskguide_applet.c:70 applets/slashapp/properties.c:422
 # applets/tasklist/tasklist_properties.c:270
 #: applets/desk-guide/deskguide_applet.c:76
-#: applets/tasklist/tasklist_properties.c:363
+#: applets/tasklist/tasklist_properties.c:385
 msgid "Display"
 msgstr "ÏÔÊ¾"
 
@@ -291,9 +291,9 @@ msgstr "×ÀÃæÏòµ¼ÌáĞÑÄú"
 # applets/tasklist/tasklist_applet.c:689 applets/webcontrol/webcontrol.c:315
 # panel/drawer.c:375 panel/launcher.c:355 panel/menu.c:947 panel/menu.c:3646
 #: applets/desk-guide/deskguide_applet.c:238 applets/fish/fish.c:944
-#: applets/gen_util/clock.c:584 applets/gen_util/mailcheck.c:1481
-#: applets/gen_util/printer.c:468 applets/tasklist/tasklist_applet.c:1529
-#: panel/drawer.c:487 panel/launcher.c:654 panel/menu.c:1730 panel/menu.c:5533
+#: applets/gen_util/clock.c:584 applets/gen_util/mailcheck.c:1517
+#: applets/gen_util/printer.c:468 applets/tasklist/tasklist_applet.c:1693
+#: panel/drawer.c:487 panel/launcher.c:656 panel/menu.c:1740 panel/menu.c:5585
 msgid "Properties..."
 msgstr "ÊôĞÔ..."
 
@@ -301,12 +301,12 @@ msgstr "ÊôĞÔ..."
 # gnome-terminal/gnome-terminal.c:1595 gsm/session-properties.c:176
 # help-browser/window.c:207
 #: applets/desk-guide/deskguide_applet.c:244 applets/fish/fish.c:951
-#: applets/gen_util/clock.c:612 applets/gen_util/mailcheck.c:1493
-#: applets/gen_util/printer.c:475 applets/tasklist/tasklist_applet.c:1537
-#: gnome-terminal/gnome-terminal.c:1587 gsm/session-properties.c:182
+#: applets/gen_util/clock.c:612 applets/gen_util/mailcheck.c:1529
+#: applets/gen_util/printer.c:475 applets/tasklist/tasklist_applet.c:1701
+#: gnome-terminal/gnome-terminal.c:1601 gsm/session-properties.c:182
 #: help-browser/window.c:255 panel/drawer.c:490 panel/gnome-run.c:554
-#: panel/launcher.c:657 panel/logout.c:113 panel/logout.c:194
-#: panel/menu.c:5542 panel/status.c:368 panel/swallow.c:426
+#: panel/launcher.c:659 panel/logout.c:115 panel/logout.c:196
+#: panel/menu.c:5594 panel/status.c:368 panel/swallow.c:426
 msgid "Help"
 msgstr "°ïÖú"
 
@@ -322,8 +322,8 @@ msgstr "°ïÖú"
 # applets/slashapp/slashapp.c:636 applets/tasklist/tasklist_applet.c:683
 # applets/webcontrol/webcontrol.c:307 panel/menu.c:2602
 #: applets/desk-guide/deskguide_applet.c:251 applets/fish/fish.c:958
-#: applets/gen_util/clock.c:619 applets/gen_util/mailcheck.c:1499
-#: applets/gen_util/printer.c:481 applets/tasklist/tasklist_applet.c:1545
+#: applets/gen_util/clock.c:619 applets/gen_util/mailcheck.c:1535
+#: applets/gen_util/printer.c:481 applets/tasklist/tasklist_applet.c:1709
 msgid "About..."
 msgstr "¹ØÓÚ..."
 
@@ -384,7 +384,7 @@ msgstr "¶¯»­ÎÄ¼şÃû£º"
 # applets/fish/fish.c:247 gnome-terminal/gnome-terminal.c:1230
 # panel/menu.c:3587 panel/panel-util.c:78 panel/panel-util.c:116
 # panel/panel-util.c:154 panel/panel_config.c:740 panel/swallow.c:237
-#: applets/fish/fish.c:535 applets/gen_util/mailcheck.c:1006
+#: applets/fish/fish.c:535 applets/gen_util/mailcheck.c:1021
 #: gnome-hint/gnome-hint-properties.c:146 panel/menu-properties.c:596
 #: panel/menu-properties.c:634 panel/panel-util.c:192
 #: panel/panel_config.c:1554 panel/swallow.c:261
@@ -473,7 +473,7 @@ msgstr "%I:%M %p"
 #. This format string is used, to display the actual time in
 #. 24 hour format.
 #: applets/gen_util/clock.c:198 applets/gen_util/clock.c:400
-#: panel/foobar-widget.c:545 panel/foobar-widget.c:941
+#: panel/foobar-widget.c:542 panel/foobar-widget.c:980
 msgid "%H:%M"
 msgstr "%H:%M"
 
@@ -516,7 +516,7 @@ msgstr ""
 # applets/gen_util/clock.c:273 applets/gen_util/mailcheck.c:745
 # applets/gen_util/printer.c:381 applets/jbc/jbc-applet.c:129
 # applets/netload/netload.c:321
-#: applets/gen_util/clock.c:504 applets/gen_util/mailcheck.c:1396
+#: applets/gen_util/clock.c:504 applets/gen_util/mailcheck.c:1431
 #: applets/gen_util/printer.c:425
 msgid "Can't create applet!\n"
 msgstr "ÎŞ·¨´´½¨Ğ¡³ÌĞò£¡\n"
@@ -611,7 +611,7 @@ msgid ""
 "date and time"
 msgstr "Ê±ÖÓĞ¡³ÌĞòÈÃÄúµÄÃæ°åÄÜ±ã½İ¼òµ¥µØÏÔÊ¾ÈÕÆÚºÍÊ±¼ä"
 
-#: applets/gen_util/mailcheck.c:207 applets/gen_util/mailcheck.c:1050
+#: applets/gen_util/mailcheck.c:207 applets/gen_util/mailcheck.c:1065
 msgid "Password:"
 msgstr "ÃÜÂë£º"
 
@@ -624,152 +624,158 @@ msgstr ""
 "ÓÊ¼ş·şÎñÆ÷/ÓÃ»§Ãû/ÃÜÂëÃ»ÎÊÌâ°É£¿"
 
 # applets/gen_util/mailcheck.c:267
-#: applets/gen_util/mailcheck.c:471
+#: applets/gen_util/mailcheck.c:472
 msgid "You have new mail."
 msgstr "ÄúÓĞĞÂÓÊ¼ş¡£"
 
 # applets/gen_util/mailcheck.c:269
-#: applets/gen_util/mailcheck.c:473
+#: applets/gen_util/mailcheck.c:474
 msgid "You have mail."
 msgstr "ÄúÓĞÎ´¶ÁµÄÓÊ¼ş¡£"
 
-#: applets/gen_util/mailcheck.c:477
+#: applets/gen_util/mailcheck.c:478
 #, c-format
 msgid "%d/%d messages"
 msgstr ""
 
-#: applets/gen_util/mailcheck.c:479
+#: applets/gen_util/mailcheck.c:480
 #, c-format
 msgid "%d messages"
 msgstr ""
 
 # applets/gen_util/mailcheck.c:271
-#: applets/gen_util/mailcheck.c:483
+#: applets/gen_util/mailcheck.c:484
 msgid "No mail."
 msgstr "ÄúÃ»ÓĞÓÊ¼ş¡£"
 
-#: applets/gen_util/mailcheck.c:951
+#: applets/gen_util/mailcheck.c:966
 msgid "Mailbox resides on:"
 msgstr "ÓÊÏäµÄÎ»ÖÃ£º"
 
-#: applets/gen_util/mailcheck.c:958
+#: applets/gen_util/mailcheck.c:973
 msgid "Local mailspool"
 msgstr "±¾µØ mailspool"
 
-#: applets/gen_util/mailcheck.c:966
+#: applets/gen_util/mailcheck.c:981
 #, fuzzy
 msgid "Local maildir"
 msgstr "±¾µØ maildir"
 
-#: applets/gen_util/mailcheck.c:974
+#: applets/gen_util/mailcheck.c:989
 msgid "Remote POP3-server"
 msgstr "Ô¶³Ì POP3 ·şÎñÆ÷"
 
-#: applets/gen_util/mailcheck.c:982
+#: applets/gen_util/mailcheck.c:997
 msgid "Remote IMAP-server"
 msgstr "Ô¶³Ì IMAP ·şÎñÆ÷"
 
-#: applets/gen_util/mailcheck.c:1002
+#: applets/gen_util/mailcheck.c:1017
 msgid "Mail spool file:"
 msgstr "ÓÊ¼şÔİ´æÎÄ¼ş£º"
 
-#: applets/gen_util/mailcheck.c:1019
+#: applets/gen_util/mailcheck.c:1034
 msgid "Mail server:"
 msgstr "ÓÊ¼ş·şÎñÆ÷£º"
 
-#: applets/gen_util/mailcheck.c:1036
+#: applets/gen_util/mailcheck.c:1051
 msgid "Username:"
 msgstr "ÓÃ»§Ãû£º"
 
-#: applets/gen_util/mailcheck.c:1068
+# gmenu/desktop.c:80
+#: applets/gen_util/mailcheck.c:1083
+#, fuzzy
+msgid "Folder:"
+msgstr "ÎÄ¼ş¼Ğ"
+
+#: applets/gen_util/mailcheck.c:1101
 msgid "Command to run before we check for mail:"
 msgstr ""
 
 # applets/gen_util/mailcheck.c:557 applets/gen_util/mailcheck.c:578
-#: applets/gen_util/mailcheck.c:1098
+#: applets/gen_util/mailcheck.c:1131
 msgid "Execute"
 msgstr "Ö´ĞĞÃüÁî"
 
 # applets/gen_util/mailcheck.c:569
-#: applets/gen_util/mailcheck.c:1109
+#: applets/gen_util/mailcheck.c:1142
 #, fuzzy
 msgid "Before each update:"
 msgstr "Ã¿´Î¸üĞÂÖ®Ç°£º"
 
-#: applets/gen_util/mailcheck.c:1130
+#: applets/gen_util/mailcheck.c:1163
 msgid "When new mail arrives:"
 msgstr "ÓĞĞÂÓÊ¼şµ½´ïÊ±£º"
 
 # applets/gen_util/mailcheck.c:591
-#: applets/gen_util/mailcheck.c:1149
+#: applets/gen_util/mailcheck.c:1182
 #, fuzzy
 msgid "When clicked:"
 msgstr "±»µã»÷Ê±£º"
 
 # applets/gen_util/mailcheck.c:600
-#: applets/gen_util/mailcheck.c:1172
+#: applets/gen_util/mailcheck.c:1205
 msgid "Check for mail every"
 msgstr "¼ì²éÓÊ¼şµÄ¼ä¸ô£º"
 
-#: applets/gen_util/mailcheck.c:1185
+#: applets/gen_util/mailcheck.c:1218
 msgid "minutes"
 msgstr "·Ö"
 
-#: applets/gen_util/mailcheck.c:1198
+#: applets/gen_util/mailcheck.c:1231
 msgid "seconds"
 msgstr "Ãë"
 
-#: applets/gen_util/mailcheck.c:1202
+#: applets/gen_util/mailcheck.c:1235
 msgid "Play a sound when new mail arrives"
 msgstr "ĞÂÓÊ¼şµ½´ïÊ±²¥·ÅÒôÀÖ"
 
 # applets/gen_util/mailcheck.c:621
-#: applets/gen_util/mailcheck.c:1213
+#: applets/gen_util/mailcheck.c:1246
 msgid "Select animation"
 msgstr "¶¯»­Ñ¡Ôñ"
 
 # applets/gen_util/mailcheck.c:649
-#: applets/gen_util/mailcheck.c:1250
+#: applets/gen_util/mailcheck.c:1283
 msgid "Mail check properties"
 msgstr "ÓÊ¼ş¼ì²é³ÌĞòÊôĞÔ"
 
 # applets/gen_util/mailcheck.c:654
-#: applets/gen_util/mailcheck.c:1256
+#: applets/gen_util/mailcheck.c:1289
 msgid "Mail check"
 msgstr "ÓÊ¼ş¼ì²é³ÌĞò"
 
-#: applets/gen_util/mailcheck.c:1259
+#: applets/gen_util/mailcheck.c:1292
 msgid "Mailbox"
 msgstr "ÓÊÏä"
 
 # applets/gen_util/mailcheck.c:704
-#: applets/gen_util/mailcheck.c:1342
+#: applets/gen_util/mailcheck.c:1377
 msgid "Mail check Applet"
 msgstr "ÓÊ¼ş¼ì²éĞ¡³ÌĞò"
 
 # applets/gen_util/mailcheck.c:705
-#: applets/gen_util/mailcheck.c:1343
+#: applets/gen_util/mailcheck.c:1378
 #, fuzzy
 msgid "(c) 1998-2000 the Free Software Foundation"
 msgstr "(c) 1998-2000 the Free Software Foundation"
 
 # applets/gen_util/mailcheck.c:707
-#: applets/gen_util/mailcheck.c:1345
+#: applets/gen_util/mailcheck.c:1380
 msgid "Mail check notifies you when new mail is on your mailbox"
 msgstr "ÓÊ¼ş¼ì²é³ÌĞò»áÔÚÄúÓĞĞÂµÄµç×ÓÓÊ¼şµ½´ïµÄÊ±ºòÍ¨ÖªÄú"
 
 # applets/gen_util/mailcheck.c:772
-#: applets/gen_util/mailcheck.c:1459
+#: applets/gen_util/mailcheck.c:1495
 msgid "Text only"
 msgstr "ÎÄ±¾·½Ê½"
 
 # applets/gen_util/mailcheck.c:600
-#: applets/gen_util/mailcheck.c:1487
+#: applets/gen_util/mailcheck.c:1523
 #, fuzzy
 msgid "Check for mail"
 msgstr "¼ì²éÓÊ¼ş"
 
-#: applets/gen_util/main.c:54 applets/tasklist/tasklist_applet.c:1643
+#: applets/gen_util/main.c:54 applets/tasklist/tasklist_applet.c:1807
 #, c-format
 msgid "Don't know how to activate `%s'\n"
 msgstr "ÎŞ·¨Ö´ĞĞÃüÁî `%s'\n"
@@ -815,18 +821,27 @@ msgid ""
 "command"
 msgstr "´òÓ¡»úĞ¡³ÌĞòÄÜÈÃÄúÇáËÉ°ÑÎÄ¼ş×¥µ½´òÓ¡»úÉÏ£¬ÓÃÖ¸¶¨ÃüÁî½øĞĞ´òÓ¡¡£"
 
-#: applets/tasklist/tasklist_applet.c:1285
+# panel/applet.c:297
+#. Translators: Task with no name, should not really happen, so
+#. * this should signal that the panel is confused by this task
+#. * (thus question marks)
+#: applets/tasklist/tasklist_applet.c:135 panel/applet.c:433
+#: panel/foobar-widget.c:716
+msgid "???"
+msgstr "???"
+
+#: applets/tasklist/tasklist_applet.c:1421
 msgid "Copyright (C) 1999 Anders Carlsson"
 msgstr ""
 
-#: applets/tasklist/tasklist_applet.c:1287
+#: applets/tasklist/tasklist_applet.c:1423
 msgid ""
 "A tasklist for the GNOME desktop environment.\n"
 "Icons by Tuomas Kuosmanen (tigert@gimp.org)."
 msgstr ""
 
 # applets/slashapp/slashapp.c:258 gmenu/utils.c:31
-#: applets/tasklist/tasklist_applet.c:1468
+#: applets/tasklist/tasklist_applet.c:1615
 #, fuzzy
 msgid "Tasklist: Unable to create applet widget"
 msgstr "ÎŞ·¨´´½¨ÎÄ¼ş£º%s\n"
@@ -933,103 +948,103 @@ msgstr "¹Ø±Õ"
 msgid "Kill All"
 msgstr "É±ËÀ³ÌĞò"
 
-#: applets/tasklist/tasklist_properties.c:149
+#: applets/tasklist/tasklist_properties.c:156
 #, fuzzy
 msgid "Follow panel size"
 msgstr "ËæÃæ°å´óĞ¡"
 
 # applets/tasklist/tasklist_properties.c:144 panel/panel_config.c:548
-#: applets/tasklist/tasklist_properties.c:158 panel/menu.c:4430
+#: applets/tasklist/tasklist_properties.c:165 panel/menu.c:4446
 msgid "Horizontal"
 msgstr "Ë®Æ½"
 
 # applets/tasklist/tasklist_properties.c:152
 # applets/tasklist/tasklist_properties.c:201
-#: applets/tasklist/tasklist_properties.c:168
-#: applets/tasklist/tasklist_properties.c:230
+#: applets/tasklist/tasklist_properties.c:175
+#: applets/tasklist/tasklist_properties.c:237
 msgid "Tasklist width:"
 msgstr "ÈÎÎñÀ¸¿í¶È£º"
 
 # applets/tasklist/tasklist_properties.c:159
-#: applets/tasklist/tasklist_properties.c:175
+#: applets/tasklist/tasklist_properties.c:182
 msgid "Rows of tasks:"
 msgstr "ÈÎÎñÀ¸ĞĞÊı£º"
 
 # applets/tasklist/tasklist_properties.c:167
-#: applets/tasklist/tasklist_properties.c:189
+#: applets/tasklist/tasklist_properties.c:196
 msgid "Default task size:"
 msgstr "È±Ê¡ÈÎÎñÀ¸¿í¶È"
 
 # applets/tasklist/tasklist_properties.c:176
-#: applets/tasklist/tasklist_properties.c:199
+#: applets/tasklist/tasklist_properties.c:206
 msgid "Tasklist width is fixed"
 msgstr "ÈÎÎñÀ¸¿í¶È¹Ì¶¨"
 
 # applets/tasklist/tasklist_properties.c:180
-#: applets/tasklist/tasklist_properties.c:204
+#: applets/tasklist/tasklist_properties.c:211
 msgid "Tasklist width is dynamic"
 msgstr "ÈÎÎñÀ¸¿í¶È¶¯Ì¬¸Ä±ä"
 
-#: applets/tasklist/tasklist_properties.c:209
-#: applets/tasklist/tasklist_properties.c:255
+#: applets/tasklist/tasklist_properties.c:216
+#: applets/tasklist/tasklist_properties.c:262
 msgid "Only use empty space"
 msgstr "½öÊ¹ÓÃ¿Õ°×ÇøÓò"
 
 # applets/tasklist/tasklist_properties.c:186 panel/panel_config.c:560
-#: applets/tasklist/tasklist_properties.c:215 panel/menu.c:4431
+#: applets/tasklist/tasklist_properties.c:222 panel/menu.c:4447
 msgid "Vertical"
 msgstr "´¹Ö±"
 
 # applets/tasklist/tasklist_properties.c:193
-#: applets/tasklist/tasklist_properties.c:223
+#: applets/tasklist/tasklist_properties.c:230
 msgid "Tasklist height:"
 msgstr "ÈÎÎñÀÃ¸ß¶È£º"
 
 # applets/tasklist/tasklist_properties.c:209
-#: applets/tasklist/tasklist_properties.c:243
+#: applets/tasklist/tasklist_properties.c:250
 msgid "Tasklist height is fixed"
 msgstr "ÈÎÎñÀ¸¸ß¶È¹Ì¶¨"
 
 # applets/tasklist/tasklist_properties.c:213
-#: applets/tasklist/tasklist_properties.c:249
+#: applets/tasklist/tasklist_properties.c:256
 msgid "Tasklist height is dynamic"
 msgstr "ÈÎÎñÀ¸¸ß¶È¶¯Ì¬¸Ä±ä"
 
 # applets/tasklist/tasklist_properties.c:176
-#: applets/tasklist/tasklist_properties.c:261
+#: applets/tasklist/tasklist_properties.c:268
 #, fuzzy
 msgid "Tasklist width is that of longest title"
 msgstr "ÈÎÎñÀ¸¿í¶ÈºÍ×î³¤µÄ´°¿Ú±êÌâÒ»ÖÂ"
 
 # applets/mini-commander/src/preferences.c:487
 # applets/tasklist/tasklist_properties.c:220
-#: applets/tasklist/tasklist_properties.c:269 panel/menu.c:4476
+#: applets/tasklist/tasklist_properties.c:276 panel/menu.c:4492
 msgid "Size"
 msgstr "³ß´ç"
 
 # applets/gnome-pager/gnomepager_applet.c:353
 # applets/tasklist/tasklist_properties.c:233
-#: applets/tasklist/tasklist_properties.c:282
+#: applets/tasklist/tasklist_properties.c:289
 msgid "Which tasks to show"
 msgstr "ÏÔÊ¾ÄÄĞ©ÈÎÎñ"
 
 # applets/tasklist/tasklist_properties.c:241
-#: applets/tasklist/tasklist_properties.c:293
+#: applets/tasklist/tasklist_properties.c:300
 msgid "Show normal applications"
 msgstr "ÏÔÊ¾ÆÕÍ¨ÈÎÎñ"
 
 # applets/tasklist/tasklist_properties.c:244
-#: applets/tasklist/tasklist_properties.c:299
+#: applets/tasklist/tasklist_properties.c:306
 msgid "Show iconified (minimized) applications"
 msgstr "ÏÔÊ¾³ÉÎªÍ¼±ê(×îĞ¡»¯)µÄÈÎÎñ"
 
 # applets/tasklist/tasklist_properties.c:248
-#: applets/tasklist/tasklist_properties.c:306
+#: applets/tasklist/tasklist_properties.c:313
 msgid "Show normal applications on all desktops"
 msgstr "ÏÔÊ¾È«²¿×ÀÃæÉÏµÄÆÕÍ¨ÈÎÎñ"
 
 # applets/tasklist/tasklist_properties.c:251
-#: applets/tasklist/tasklist_properties.c:312
+#: applets/tasklist/tasklist_properties.c:319
 msgid "Show iconified (minimized) applications on all desktops"
 msgstr "ÏÔÊ¾È«²¿×ÀÃæÉÏ³ÉÎªÍ¼±ê(×îĞ¡»¯)µÄÈÎÎñ"
 
@@ -1037,36 +1052,44 @@ msgstr "ÏÔÊ¾È«²¿×ÀÃæÉÏ³ÉÎªÍ¼±ê(×îĞ¡»¯)µÄÈÎÎñ"
 # help-browser/toc2-man.c:27 panel/panel_config_global.c:503
 # panel/panel_config_global.c:623
 #. Miscellaneous frame
-#: applets/tasklist/tasklist_properties.c:316 help-browser/toc-man.c:25
-#: help-browser/toc2-man.c:27 panel/gnome-panel-properties.c:1061
-#: panel/gnome-panel-properties.c:1532 panel/panel_config.c:680
+#: applets/tasklist/tasklist_properties.c:323 help-browser/toc-man.c:25
+#: help-browser/toc2-man.c:27 panel/gnome-panel-properties.c:1071
+#: panel/gnome-panel-properties.c:1550 panel/panel_config.c:680
 msgid "Miscellaneous"
 msgstr "ÔÓÏî"
 
 # applets/tasklist/tasklist_properties.c:262
-#: applets/tasklist/tasklist_properties.c:327
+#: applets/tasklist/tasklist_properties.c:334
 msgid "Show mini icons"
 msgstr "ÏÔÊ¾Ğ¡Í¼±ê"
 
 # applets/tasklist/tasklist_properties.c:265
-#: applets/tasklist/tasklist_properties.c:334
+#: applets/tasklist/tasklist_properties.c:341
 msgid "Confirm before killing windows"
 msgstr "É±µô´°¿ÚÇ°¼ÓÒÔÈ·ÈÏ"
 
-#: applets/tasklist/tasklist_properties.c:341
+#: applets/tasklist/tasklist_properties.c:348
 msgid "Move iconified tasks to current workspace when restoring"
 msgstr "×îĞ¡»¯µÄÈÎÎñ¸´Ô­Ê±·Åµ½µ±Ç°×ÀÃæ"
 
-#: applets/tasklist/tasklist_properties.c:349
+#: applets/tasklist/tasklist_properties.c:355
+msgid "Display tooltips with full task names"
+msgstr ""
+
+#: applets/tasklist/tasklist_properties.c:363
 msgid "Enable task grouping"
 msgstr ""
 
-#: applets/tasklist/tasklist_properties.c:357
+#: applets/tasklist/tasklist_properties.c:371
 msgid "Number of tasks before grouping occurs"
 msgstr ""
 
+#: applets/tasklist/tasklist_properties.c:380
+msgid "Sink tasklist into panel"
+msgstr ""
+
 # applets/tasklist/tasklist_properties.c:282
-#: applets/tasklist/tasklist_properties.c:392
+#: applets/tasklist/tasklist_properties.c:414
 msgid "Tasklist properties"
 msgstr "´òÓ¡»úÊôĞÔ"
 
@@ -1081,8 +1104,8 @@ msgid "Save"
 msgstr "±£´æ"
 
 # gmenu/edit.c:336 gsm/session-properties.c:167
-#: gmenu/edit.c:325 gsm/session-properties.c:173 panel/launcher.c:532
-#: panel/menu.c:1330 panel/menu.c:1441
+#: gmenu/edit.c:325 gsm/session-properties.c:173 panel/launcher.c:534
+#: panel/menu.c:1338 panel/menu.c:1449
 msgid "Revert"
 msgstr "·´»Ú"
 
@@ -1345,7 +1368,7 @@ msgid "untitled.desktop"
 msgstr "ÎŞ±êÌâ.×ÀÃæ"
 
 # gmenu/treenew.c:137 gmenu/treenew.c:144
-#: gmenu/treenew.c:137 gmenu/treenew.c:144 panel/menu.c:742
+#: gmenu/treenew.c:137 gmenu/treenew.c:144 panel/menu.c:745
 msgid "untitled"
 msgstr "ÎŞ±êÌâ"
 
@@ -1365,64 +1388,123 @@ msgstr "ÎŞ·¨´´½¨ÓÃ»§Ä¿Â¼£º%s\n"
 msgid "GNOME was brought to you by"
 msgstr "GNOME ÓÉÏÂÃæÕâĞ©ÈËÍê³É£º"
 
-#. for languages that can't display aacute, replace 'á' with 'a'
-#: gnome-about/contributors.h:23
-msgid "Szabolcs 'Shooby' Bán"
+#: gnome-about/contributors.h:21
+msgid "Timur I. Bakeyev"
 msgstr ""
 
-#: gnome-about/contributors.h:70
-msgid "Gergõ Érdi"
+#. if your encoding allows it, use aacute (U00E1)
+#. * for the 'a' of 'Ban'
+#: gnome-about/contributors.h:24
+msgid "Szabolcs 'Shooby' Ban"
 msgstr ""
 
-#: gnome-about/contributors.h:88
+#: gnome-about/contributors.h:36
+msgid "Jerome Bolliet"
+msgstr ""
+
+#. if your encoding allows it, use eacute (U00E9) for the two
+#. * 'e' of 'Frederic'
+#: gnome-about/contributors.h:62
+msgid "Frederic Devernay"
+msgstr "Frederic Devernay"
+
+#. if your encoding allows it, use odoubleacute (U0151) for the 'o'
+#. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
+#: gnome-about/contributors.h:75
+msgid "Gergo Erdi"
+msgstr ""
+
+#: gnome-about/contributors.h:82
+msgid "Raul Perusquia Flores"
+msgstr ""
+
+#: gnome-about/contributors.h:94
 msgid "The Mysterious GEGL"
 msgstr ""
 
-#. for languages that can't display ntilde, replace 'ñ' with 'n'
-#: gnome-about/contributors.h:175
-msgid "Alexandre Muñiz"
+#: gnome-about/contributors.h:96
+msgid "Bjoern Giesler"
 msgstr ""
 
-#: gnome-about/contributors.h:176
+#: gnome-about/contributors.h:102
+msgid "Dov Grobgeld"
+msgstr ""
+
+#: gnome-about/contributors.h:129
+msgid "Helmut Koeberle"
+msgstr ""
+
+#: gnome-about/contributors.h:163
+msgid "Matthew Marjanovic"
+msgstr ""
+
+#. If your encodings allows it, use ntilde (U00F1) for the 'n'
+#. * of 'Muniz'
+#: gnome-about/contributors.h:186
+msgid "Alexandre Muniz"
+msgstr ""
+
+#. Name in Hangeul is: Ub0a8 Uc131 Ud604
+#: gnome-about/contributors.h:188
 msgid "Sung-Hyun Nam"
 msgstr ""
 
-#. languages that can't display adiaeresis, replace 'ä' with 'ae'
-#: gnome-about/contributors.h:181
-msgid "Martin Norbäck"
+#. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
+#. * of 'Norbaeck'
+#: gnome-about/contributors.h:194
+msgid "Martin Norbaeck"
 msgstr ""
 
-#. languages that can't display Odiaeresis, replace 'Ö' with 'Oe'
-#: gnome-about/contributors.h:187
-msgid "Tomas Ögren"
+#. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
+#. * of 'Oegren'
+#: gnome-about/contributors.h:201
+msgid "Tomas Oegren"
 msgstr ""
 
-#: gnome-about/contributors.h:216
+#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#: gnome-about/contributors.h:232
 msgid "Kazuhiro Sasayama"
 msgstr ""
 
-#. for languages that can't display ntilde, replace 'ñ' with 'n'
-#: gnome-about/contributors.h:223
-msgid "Iñigo Serna"
+#. If your encodings allows it, use ntilde (U00F1) for the 'n'
+#. * of 'Inigo'
+#: gnome-about/contributors.h:240
+msgid "Inigo Serna"
 msgstr ""
 
-#. not really a person name :)
-#: gnome-about/contributors.h:236
+#: gnome-about/contributors.h:244
+msgid "Miroslav Silovic"
+msgstr ""
+
+#. not really a person name :) translate its meaning
+#: gnome-about/contributors.h:253
 msgid "The Squeaky Rubber Gnome"
 msgstr ""
 
+#: gnome-about/contributors.h:259
+msgid "Istvan Szekeres"
+msgstr ""
+
+#: gnome-about/contributors.h:270
+msgid "Manish Vachharajani"
+msgstr ""
+
+#: gnome-about/contributors.h:271
+msgid "Neil Vachharajani"
+msgstr ""
+
 # applets/fish/fish.c:137
-#: gnome-about/contributors.h:261
+#: gnome-about/contributors.h:278
 #, fuzzy
 msgid "Wanda the GNOME Fish"
 msgstr "GNOME Ğ¡Óã Wanda"
 
-#: gnome-about/contributors.h:274
+#: gnome-about/contributors.h:291
 msgid "... and many more"
 msgstr "... »¹ÓĞºÜ¶à ..."
 
 # panel/menu.c:2614
-#: gnome-about/gnome-about.c:465 panel/foobar-widget.c:245
+#: gnome-about/gnome-about.c:465 panel/foobar-widget.c:242
 #, fuzzy
 msgid "About GNOME"
 msgstr "¹ØÓÚ GNOME"
@@ -1567,38 +1649,38 @@ msgstr "ÏÔÊ¾Ã¿ÈÕÒ»Ôò£¬¶ø²»ÊÇÃØ¾öÌáÊ¾"
 msgid "Message of the day file to use: "
 msgstr "Ã¿ÈÕÒ»ÔòÊ¹ÓÃµÄÎÄ¼ş£º"
 
-#: gnome-terminal/gnome-terminal.c:233
+#: gnome-terminal/gnome-terminal.c:239
 msgid "Zvt terminal widget:     Michael Zucchi (zucchi@zedzone.mmc.com.au)"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:235
+#: gnome-terminal/gnome-terminal.c:241
 msgid "GNOME terminal:     Miguel de Icaza (miguel@kernel.org)"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:237
+#: gnome-terminal/gnome-terminal.c:243
 msgid "    Erik Troan (ewt@redhat.com)"
 msgstr ""
 
 # gnome-terminal/gnome-terminal.c:208
-#: gnome-terminal/gnome-terminal.c:254
+#: gnome-terminal/gnome-terminal.c:260
 msgid "GNOME Terminal"
 msgstr "GNOME ÖÕ¶Ë"
 
 # gnome-terminal/gnome-terminal.c:211
-#: gnome-terminal/gnome-terminal.c:257
+#: gnome-terminal/gnome-terminal.c:263
 msgid "The GNOME terminal emulation program."
 msgstr "GNOME ÖÕ¶Ë·ÂÕæ³ÌĞò"
 
 # gnome-terminal/gnome-terminal.c:563 gnome-terminal/gnome-terminal.c:1105
 # gnome-terminal/gnome-terminal.c:1115 gnome-terminal/gnome-terminal.c:2226
-#: gnome-terminal/gnome-terminal.c:610 gnome-terminal/gnome-terminal.c:1163
-#: gnome-terminal/gnome-terminal.c:1173 gnome-terminal/gnome-terminal.c:2384
-#: gnome-terminal/gnome-terminal.glade.h:8 panel/menu.c:4454
+#: gnome-terminal/gnome-terminal.c:622 gnome-terminal/gnome-terminal.c:1168
+#: gnome-terminal/gnome-terminal.c:1178 gnome-terminal/gnome-terminal.c:2401
+#: gnome-terminal/gnome-terminal.glade.h:8 panel/menu.c:4470
 msgid "Default"
 msgstr "Ä¬ÈÏ"
 
 # gnome-terminal/gnome-terminal.c:741
-#: gnome-terminal/gnome-terminal.c:788
+#: gnome-terminal/gnome-terminal.c:803
 msgid ""
 "You have switched the class of this window. Do you\n"
 " want to reconfigure this window to match the default\n"
@@ -1608,160 +1690,160 @@ msgstr ""
 "Õâ¸ö´°¿ÚÀ´Æ¥ÅäĞÂÀàĞÍµÄÈ±Ê¡ÅäÖÃ?"
 
 # gnome-terminal/gnome-terminal.c:920
-#: gnome-terminal/gnome-terminal.c:965
+#: gnome-terminal/gnome-terminal.c:980
 msgid "Linux console"
 msgstr "Linux ¿ØÖÆÌ¨"
 
 # gnome-terminal/gnome-terminal.c:921
-#: gnome-terminal/gnome-terminal.c:966
+#: gnome-terminal/gnome-terminal.c:981
 msgid "Color Xterm"
 msgstr "²ÊÉ« Xterm"
 
 # gnome-terminal/gnome-terminal.c:922
-#: gnome-terminal/gnome-terminal.c:967
+#: gnome-terminal/gnome-terminal.c:982
 msgid "rxvt"
 msgstr "rxvt"
 
 # gnome-terminal/gnome-terminal.c:923
-#: gnome-terminal/gnome-terminal.c:968
+#: gnome-terminal/gnome-terminal.c:983
 msgid "Custom"
 msgstr "¶¨ÖÆ"
 
 # gnome-terminal/gnome-terminal.c:928
-#: gnome-terminal/gnome-terminal.c:973
+#: gnome-terminal/gnome-terminal.c:988
 msgid "White on black"
 msgstr "ºÚµ×°××Ö"
 
 # gnome-terminal/gnome-terminal.c:929
-#: gnome-terminal/gnome-terminal.c:974
+#: gnome-terminal/gnome-terminal.c:989
 msgid "Black on white"
 msgstr "°×µ×ºÚ×Ö"
 
 # gnome-terminal/gnome-terminal.c:930
-#: gnome-terminal/gnome-terminal.c:975
+#: gnome-terminal/gnome-terminal.c:990
 msgid "Green on black"
 msgstr "ºÚµ×ÂÌ×Ö"
 
 # gnome-terminal/gnome-terminal.c:931
-#: gnome-terminal/gnome-terminal.c:976
+#: gnome-terminal/gnome-terminal.c:991
 msgid "Black on light yellow"
 msgstr "Ç³»Æµ×ºÚ×Ö"
 
 # gnome-terminal/gnome-terminal.c:932
-#: gnome-terminal/gnome-terminal.c:977
+#: gnome-terminal/gnome-terminal.c:992
 msgid "Custom colors"
 msgstr "¶¨ÖÆÑÕÉ«"
 
 # gnome-terminal/gnome-terminal.c:937 panel/panel_config.c:317
-#: gnome-terminal/gnome-terminal.c:982
+#: gnome-terminal/gnome-terminal.c:997
 msgid "Left"
 msgstr "×ó"
 
 # gnome-terminal/gnome-terminal.c:938 panel/panel_config.c:328
-#: gnome-terminal/gnome-terminal.c:983
+#: gnome-terminal/gnome-terminal.c:998
 msgid "Right"
 msgstr "ÓÒ"
 
 # gnome-terminal/gnome-terminal.c:939
-#: gnome-terminal/gnome-terminal.c:984
+#: gnome-terminal/gnome-terminal.c:999
 msgid "Hidden"
 msgstr "Òş²Ø"
 
 # applets/drivemount/drivemount.c:536 gnome-terminal/gnome-terminal.c:1089
-#: gnome-terminal/gnome-terminal.c:1150 panel/gnome-run.c:319
+#: gnome-terminal/gnome-terminal.c:1155 panel/gnome-run.c:319
 #: panel/gnome-run.c:439
 msgid "Browse..."
 msgstr "ä¯ÀÀ..."
 
 # gnome-terminal/gnome-terminal.c:1430
-#: gnome-terminal/gnome-terminal.c:1403
+#: gnome-terminal/gnome-terminal.c:1417
 msgid "Color selector"
 msgstr "ÑÕÉ«Ñ¡ÔñÆ÷"
 
 # gnome-terminal/gnome-terminal.c:1517 gnome-terminal/gnome-terminal.c:1534
-#: gnome-terminal/gnome-terminal.c:1509 gnome-terminal/gnome-terminal.c:1526
+#: gnome-terminal/gnome-terminal.c:1523 gnome-terminal/gnome-terminal.c:1540
 msgid "_New terminal"
 msgstr "ĞÂÖÕ¶Ë (_N)"
 
 # gnome-terminal/gnome-terminal.c:1517 gnome-terminal/gnome-terminal.c:1534
-#: gnome-terminal/gnome-terminal.c:1509 gnome-terminal/gnome-terminal.c:1526
+#: gnome-terminal/gnome-terminal.c:1523 gnome-terminal/gnome-terminal.c:1540
 msgid "Creates a new terminal window"
 msgstr "´ò¿ªÒ»¸öĞÂÖÕ¶Ë´°¿Ú"
 
 # gnome-terminal/gnome-terminal.c:1519
-#: gnome-terminal/gnome-terminal.c:1511
+#: gnome-terminal/gnome-terminal.c:1525
 msgid "_Hide menubar"
 msgstr "Òş²Ø²Ëµ¥Ìõ (_H)"
 
 # gnome-terminal/gnome-terminal.c:1521
-#: gnome-terminal/gnome-terminal.c:1513
+#: gnome-terminal/gnome-terminal.c:1527
 msgid "_Close terminal"
 msgstr "¹Ø±ÕÖÕ¶Ë (_C)"
 
 # gnome-terminal/gnome-terminal.c:1536
-#: gnome-terminal/gnome-terminal.c:1528
+#: gnome-terminal/gnome-terminal.c:1542
 msgid "_Show menubar"
 msgstr "ÏÔÊ¾²Ëµ¥Ìõ (_S)"
 
 # gnome-terminal/gnome-terminal.c:1536
-#: gnome-terminal/gnome-terminal.c:1528
+#: gnome-terminal/gnome-terminal.c:1542
 msgid "Toggles whether or not the menubar is displayed."
 msgstr "ÇĞ»»²Ëµ¥ÌõÊÇ·ñÏÔÊ¾"
 
 # gnome-terminal/gnome-terminal.c:1538
-#: gnome-terminal/gnome-terminal.c:1530
+#: gnome-terminal/gnome-terminal.c:1544
 msgid "_Secure keyboard"
 msgstr "¼üÅÌÉÏËø (_S)"
 
 # gnome-terminal/gnome-terminal.c:1539
-#: gnome-terminal/gnome-terminal.c:1531
+#: gnome-terminal/gnome-terminal.c:1545
 msgid "Toggles whether or not the keyboard is grabbed by the terminal."
 msgstr "ÇĞ»»¼üÅÌÊÇ·ñ±»ÖÕ¶Ë²¶»ñ"
 
 # gnome-terminal/gnome-terminal.c:1542 gnome-terminal/gnome-terminal.c:1571
-#: gnome-terminal/gnome-terminal.c:1534 gnome-terminal/gnome-terminal.c:1563
+#: gnome-terminal/gnome-terminal.c:1548 gnome-terminal/gnome-terminal.c:1577
 msgid "_Reset Terminal"
 msgstr "¸´Î»ÖÕ¶Ë (_R)"
 
 # gnome-terminal/gnome-terminal.c:1543 gnome-terminal/gnome-terminal.c:1572
-#: gnome-terminal/gnome-terminal.c:1535 gnome-terminal/gnome-terminal.c:1564
+#: gnome-terminal/gnome-terminal.c:1549 gnome-terminal/gnome-terminal.c:1578
 msgid "Reset and _Clear"
 msgstr "¸´Î»²¢ÇÒÇåÆÁ (_C)"
 
 # gnome-terminal/gnome-terminal.c:1553
-#: gnome-terminal/gnome-terminal.c:1545
+#: gnome-terminal/gnome-terminal.c:1559
 msgid "_Open in browser"
 msgstr "ÔÚä¯ÀÀÊ±´ò¿ª (_O)"
 
 # gnome-terminal/gnome-terminal.c:1574
-#: gnome-terminal/gnome-terminal.c:1566
+#: gnome-terminal/gnome-terminal.c:1580
 msgid "C_olor selector..."
 msgstr "ÑÕÉ«Ñ¡ÔñÆ÷ (_o)"
 
 # gnome-terminal/gnome-terminal.c:1580
-#: gnome-terminal/gnome-terminal.c:1572
+#: gnome-terminal/gnome-terminal.c:1586
 msgid "File"
 msgstr "ÎÄ¼ş"
 
 # gnome-terminal/gnome-terminal.c:1585
-#: gnome-terminal/gnome-terminal.c:1577
+#: gnome-terminal/gnome-terminal.c:1591
 msgid "Edit"
 msgstr "±à¼­"
 
 # gnome-terminal/gnome-terminal.c:1590
-#: gnome-terminal/gnome-terminal.c:1582 gsm/gsm-client-row.c:59
-#: panel/foobar-widget.c:997
+#: gnome-terminal/gnome-terminal.c:1596 gsm/gsm-client-row.c:59
+#: panel/foobar-widget.c:1039
 msgid "Settings"
 msgstr "Éè¶¨"
 
 # gnome-terminal/gnome-terminal.c:1924
-#: gnome-terminal/gnome-terminal.c:2040
+#: gnome-terminal/gnome-terminal.c:2054
 #, c-format
 msgid "The error was: %s"
 msgstr "´íÎóÊÇ£º%s"
 
 # gnome-terminal/gnome-terminal.c:1925
-#: gnome-terminal/gnome-terminal.c:2041
+#: gnome-terminal/gnome-terminal.c:2055
 msgid ""
 "If you are using Linux 2.2.x with glibc 2.1.x, this\n"
 "is probably due to incorrectly setup Unix98 ptys.\n"
@@ -1774,7 +1856,7 @@ msgstr ""
 "\n"
 "¹ØÓÚÈçºÎÕıÈ·ÉèÖÃ£¬ÇëÔÄ¶Álinux/Documentation/Changes µµ¡£"
 
-#: gnome-terminal/gnome-terminal.c:2046
+#: gnome-terminal/gnome-terminal.c:2060
 #, c-format
 msgid ""
 "There has been an error while trying to log in.\n"
@@ -1786,225 +1868,225 @@ msgstr ""
 "%s"
 
 # gnome-terminal/gnome-terminal.c:208
-#: gnome-terminal/gnome-terminal.c:2115
+#: gnome-terminal/gnome-terminal.c:2129 gnome-terminal/gnome-terminal.c:2535
 #, fuzzy
 msgid "Terminal"
 msgstr "GNOME ÖÕ¶Ë"
 
-#: gnome-terminal/gnome-terminal.c:2605
+#: gnome-terminal/gnome-terminal.c:2622
 msgid "Terminal class name"
 msgstr "ÖÕ¶ËÀàÃû"
 
-#: gnome-terminal/gnome-terminal.c:2605
+#: gnome-terminal/gnome-terminal.c:2622
 msgid "TCLASS"
 msgstr "TCLASS"
 
-#: gnome-terminal/gnome-terminal.c:2608
+#: gnome-terminal/gnome-terminal.c:2625
 msgid "Specifies font name"
 msgstr "Ö¸¶¨×ÖÌåÃû"
 
-#: gnome-terminal/gnome-terminal.c:2608
+#: gnome-terminal/gnome-terminal.c:2625
 msgid "FONT"
 msgstr "×ÖÌå"
 
-#: gnome-terminal/gnome-terminal.c:2611
+#: gnome-terminal/gnome-terminal.c:2628
 msgid "Do not start up shells as login shells"
 msgstr "²»½«shell×÷ÎªµÇÂ¼shellÆô¶¯"
 
-#: gnome-terminal/gnome-terminal.c:2614
+#: gnome-terminal/gnome-terminal.c:2631
 msgid "Start up shells as login shells"
 msgstr "½«shell×÷ÎªµÇÂ¼shellÆô¶¯"
 
-#: gnome-terminal/gnome-terminal.c:2617
+#: gnome-terminal/gnome-terminal.c:2634
 msgid "Specifies the geometry for the main window"
 msgstr "Ö¸¶¨Ö÷´°¿ÚµÄ¼¸ºÎ³ß´ç"
 
-#: gnome-terminal/gnome-terminal.c:2617
+#: gnome-terminal/gnome-terminal.c:2634
 msgid "GEOMETRY"
 msgstr "³ß´ç"
 
-#: gnome-terminal/gnome-terminal.c:2620
+#: gnome-terminal/gnome-terminal.c:2637
 msgid "Execute this program instead of a shell"
 msgstr "Ö´ĞĞ±¾³ÌĞò´úÌæshell"
 
-#: gnome-terminal/gnome-terminal.c:2620 gnome-terminal/gnome-terminal.c:2623
+#: gnome-terminal/gnome-terminal.c:2637 gnome-terminal/gnome-terminal.c:2640
 msgid "COMMAND"
 msgstr "ÃüÁî"
 
-#: gnome-terminal/gnome-terminal.c:2623
+#: gnome-terminal/gnome-terminal.c:2640
 msgid "Execute this program the same way as xterm does"
 msgstr "ÏóxtermÄÇÑùÖ´ĞĞ±¾³ÌĞò"
 
-#: gnome-terminal/gnome-terminal.c:2626
+#: gnome-terminal/gnome-terminal.c:2643
 msgid "Foreground color"
 msgstr "Ç°¾°ÑÕÉ«"
 
-#: gnome-terminal/gnome-terminal.c:2626 gnome-terminal/gnome-terminal.c:2629
+#: gnome-terminal/gnome-terminal.c:2643 gnome-terminal/gnome-terminal.c:2646
 msgid "COLOR"
 msgstr "ÑÕÉ«"
 
-#: gnome-terminal/gnome-terminal.c:2629
+#: gnome-terminal/gnome-terminal.c:2646
 msgid "Background color"
 msgstr "±³¾°ÑÕÉ«"
 
 # panel/panel_config.c:696 panel/panel_config.c:909
-#: gnome-terminal/gnome-terminal.c:2632
+#: gnome-terminal/gnome-terminal.c:2649
 #, fuzzy
 msgid "Solid background"
 msgstr "±³¾°"
 
-#: gnome-terminal/gnome-terminal.c:2632
+#: gnome-terminal/gnome-terminal.c:2649
 msgid "SOLID"
 msgstr ""
 
 # gnome-terminal/gnome-terminal.c:1211
-#: gnome-terminal/gnome-terminal.c:2635
-#: gnome-terminal/gnome-terminal.glade.h:21
+#: gnome-terminal/gnome-terminal.c:2652
+#: gnome-terminal/gnome-terminal.glade.h:22
 msgid "Background pixmap"
 msgstr "±³¾°ÏñÆ¬"
 
-#: gnome-terminal/gnome-terminal.c:2635
+#: gnome-terminal/gnome-terminal.c:2652
 msgid "PIXMAP"
 msgstr ""
 
 # gnome-terminal/gnome-terminal.c:1242
-#: gnome-terminal/gnome-terminal.c:2639
-#: gnome-terminal/gnome-terminal.glade.h:23
+#: gnome-terminal/gnome-terminal.c:2656
+#: gnome-terminal/gnome-terminal.glade.h:24
 msgid "Background pixmap scrolls"
 msgstr "±³¾°Í¼Æ¬¾íÆÁ"
 
-#: gnome-terminal/gnome-terminal.c:2639
+#: gnome-terminal/gnome-terminal.c:2656
 msgid "BGSCROLL"
 msgstr ""
 
 # gnome-terminal/gnome-terminal.c:1242
-#: gnome-terminal/gnome-terminal.c:2642
+#: gnome-terminal/gnome-terminal.c:2659
 #, fuzzy
 msgid "Background pixmap does not scroll"
 msgstr "±³¾°Í¼Æ¬¾íÆÁ"
 
-#: gnome-terminal/gnome-terminal.c:2642
+#: gnome-terminal/gnome-terminal.c:2659
 msgid "BGNOSCROLL"
 msgstr ""
 
 # panel/panel_config.c:696 panel/panel_config.c:909
-#: gnome-terminal/gnome-terminal.c:2646
+#: gnome-terminal/gnome-terminal.c:2663
 #, fuzzy
 msgid "Shade background"
 msgstr "±³¾°"
 
-#: gnome-terminal/gnome-terminal.c:2646
+#: gnome-terminal/gnome-terminal.c:2663
 msgid "SHADED"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2649
+#: gnome-terminal/gnome-terminal.c:2666
 msgid "Do not shade background"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2649
+#: gnome-terminal/gnome-terminal.c:2666
 msgid "NOSHADED"
 msgstr ""
 
 # gnome-terminal/gnome-terminal.c:1255
-#: gnome-terminal/gnome-terminal.c:2652
+#: gnome-terminal/gnome-terminal.c:2669
 #, fuzzy
 msgid "Transparent background"
 msgstr "Í¸Ã÷"
 
-#: gnome-terminal/gnome-terminal.c:2652
+#: gnome-terminal/gnome-terminal.c:2669
 msgid "TRANSPARENT"
 msgstr ""
 
-#: gnome-terminal/gnome-terminal.c:2655
+#: gnome-terminal/gnome-terminal.c:2672
 msgid "Update utmp entry"
 msgstr "¸üĞÂutmp¼ÇÂ¼"
 
-#: gnome-terminal/gnome-terminal.c:2655
+#: gnome-terminal/gnome-terminal.c:2672
 msgid "UTMP"
 msgstr "UTMP"
 
 # gnome-terminal/gnome-terminal.c:2438
-#: gnome-terminal/gnome-terminal.c:2658
+#: gnome-terminal/gnome-terminal.c:2675
 msgid "Do not update utmp entry"
 msgstr "²»¸üĞÂutmp¼ÇÂ¼"
 
 # gnome-terminal/gnome-terminal.c:2438
-#: gnome-terminal/gnome-terminal.c:2658
+#: gnome-terminal/gnome-terminal.c:2675
 msgid "NOUTMP"
 msgstr "NOUTMP"
 
 # gnome-terminal/gnome-terminal.c:2441
-#: gnome-terminal/gnome-terminal.c:2661
+#: gnome-terminal/gnome-terminal.c:2678
 msgid "Update wtmp entry"
 msgstr "¸üĞÂwtmp¼ÇÂ¼"
 
 # gnome-terminal/gnome-terminal.c:2441
-#: gnome-terminal/gnome-terminal.c:2661
+#: gnome-terminal/gnome-terminal.c:2678
 msgid "WTMP"
 msgstr "WTMP"
 
 # gnome-terminal/gnome-terminal.c:2444
-#: gnome-terminal/gnome-terminal.c:2664
+#: gnome-terminal/gnome-terminal.c:2681
 msgid "Do not update wtmp entry"
 msgstr "²»¸üĞÂwtmp¼ÇÂ¼"
 
 # gnome-terminal/gnome-terminal.c:2444
-#: gnome-terminal/gnome-terminal.c:2664
+#: gnome-terminal/gnome-terminal.c:2681
 msgid "NOWTMP"
 msgstr "NOWTMP"
 
 # gnome-terminal/gnome-terminal.c:2435
-#: gnome-terminal/gnome-terminal.c:2667
+#: gnome-terminal/gnome-terminal.c:2684
 msgid "Update lastlog entry"
 msgstr "¸üĞÂlastlog¼ÇÂ¼"
 
-#: gnome-terminal/gnome-terminal.c:2667
+#: gnome-terminal/gnome-terminal.c:2684
 msgid "LASTLOG"
 msgstr "LASTLOG"
 
 # gnome-terminal/gnome-terminal.c:2438
-#: gnome-terminal/gnome-terminal.c:2670
+#: gnome-terminal/gnome-terminal.c:2687
 msgid "Do not update lastlog entry"
 msgstr "²»¸üĞÂlastlog¼ÇÂ¼"
 
-#: gnome-terminal/gnome-terminal.c:2670
+#: gnome-terminal/gnome-terminal.c:2687
 msgid "NOLASTLOG"
 msgstr "NOLASTLOG"
 
 # gnome-terminal/gnome-terminal.c:2447
-#: gnome-terminal/gnome-terminal.c:2673
+#: gnome-terminal/gnome-terminal.c:2690
 msgid "Set the window title"
 msgstr "ÉèÖÃ´°¿Ú±êÌâ"
 
 # gnome-terminal/gnome-terminal.c:2447
-#: gnome-terminal/gnome-terminal.c:2673
+#: gnome-terminal/gnome-terminal.c:2690
 msgid "TITLE"
 msgstr "±êÌâ"
 
 # gnome-terminal/gnome-terminal.c:2447
-#: gnome-terminal/gnome-terminal.c:2676
+#: gnome-terminal/gnome-terminal.c:2693
 msgid "Set the window icon"
 msgstr "ÉèÖÃ´°¿ÚÍ¼±ê"
 
-#: gnome-terminal/gnome-terminal.c:2676
+#: gnome-terminal/gnome-terminal.c:2693
 msgid "ICON"
 msgstr ""
 
 # gnome-terminal/gnome-terminal.c:2450
-#: gnome-terminal/gnome-terminal.c:2679
+#: gnome-terminal/gnome-terminal.c:2696
 msgid "Set the TERM variable"
 msgstr "ÉèÖÃTERM±äÁ¿"
 
 # gnome-terminal/gnome-terminal.c:2450
-#: gnome-terminal/gnome-terminal.c:2679
+#: gnome-terminal/gnome-terminal.c:2696
 msgid "TERMNAME"
 msgstr "ÖÕ¶ËÃû"
 
-#: gnome-terminal/gnome-terminal.c:2682
+#: gnome-terminal/gnome-terminal.c:2699
 msgid "Try to start a TerminalFactory"
 msgstr "ÊÔÍ¼Æğ¶¯ TerminalFactory"
 
-#: gnome-terminal/gnome-terminal.c:2685
+#: gnome-terminal/gnome-terminal.c:2702
 msgid "Try to create the terminal with the TerminalFactory"
 msgstr "ÊÔÍ¼ÓÃ TerminalFactory ´´½¨ÖÕ¶Ë"
 
@@ -2167,7 +2249,7 @@ msgid "State not reported within timeout."
 msgstr "ÏŞ¶¨Ê±¼äÄÚÃ»ÓĞ±¨¸æÆä×´Ì¬¡£"
 
 # applets/gen_util/mailcheck.c:271
-#: gsm/gsm-client-row.c:50 panel/menu.c:4456 panel/panel_config.c:1323
+#: gsm/gsm-client-row.c:50 panel/menu.c:4472 panel/panel_config.c:1323
 msgid "Normal"
 msgstr "Õı³£"
 
@@ -2467,101 +2549,101 @@ msgid "Close"
 msgstr "¹Ø±Õ"
 
 # gnome-terminal/gnome-terminal.c:1590
-#: gsm/splash.c:54
+#: gsm/splash.c:55
 #, fuzzy
 msgid "Audio Settings"
 msgstr "Éè¶¨"
 
-#: gsm/splash.c:55 gsm/splash.c:56
+#: gsm/splash.c:56 gsm/splash.c:57
 msgid "Screensaver"
 msgstr ""
 
-#: gsm/splash.c:57 gsm/splash.c:58
+#: gsm/splash.c:58 gsm/splash.c:59
 msgid "Sawfish Window Manager"
 msgstr ""
 
-#: gsm/splash.c:59
+#: gsm/splash.c:60
 msgid "Enlightenment Window Manager"
 msgstr ""
 
 # gnome-terminal/gnome-terminal.c:1193
-#: gsm/splash.c:60
+#: gsm/splash.c:61
 #, fuzzy
 msgid "Background Settings"
 msgstr "±³¾°ÀàĞÍ"
 
 # gnome-terminal/gnome-terminal.c:1590
-#: gsm/splash.c:61
+#: gsm/splash.c:62
 #, fuzzy
 msgid "Keyboard Bell"
 msgstr "Éè¶¨"
 
 # gnome-terminal/gnome-terminal.c:1590
-#: gsm/splash.c:62
+#: gsm/splash.c:63
 #, fuzzy
 msgid "Mouse Settings"
 msgstr "Éè¶¨"
 
 # gnome-terminal/gnome-terminal.c:1590
-#: gsm/splash.c:63
+#: gsm/splash.c:64
 #, fuzzy
 msgid "Keyboard Settings"
 msgstr "Éè¶¨"
 
 # panel/menu.c:543
-#: gsm/splash.c:64
+#: gsm/splash.c:65
 #, fuzzy
 msgid "The Panel"
 msgstr "GNOME Ãæ°å³ÌĞò"
 
-#: gsm/splash.c:65
+#: gsm/splash.c:66
 msgid "Session Manager Proxy"
 msgstr ""
 
 # applets/desk-guide/deskguide_applet.c:134
-#: gsm/splash.c:66
+#: gsm/splash.c:67
 #, fuzzy
 msgid "Window Manager"
 msgstr "ÅäºÏ´°¿Ú¹ÜÀíÆ÷"
 
 # applets/tasklist/tasklist_menu.c:201
-#: gsm/splash.c:67 panel/menu.c:4901 panel/menu.c:4906 panel/menu.c:5241
+#: gsm/splash.c:68 panel/menu.c:4934 panel/menu.c:4939 panel/menu.c:5274
 msgid "Desktop"
 msgstr "×ÀÃæ"
 
-#: gsm/splash.c:68
+#: gsm/splash.c:69
 msgid "Nautilus"
 msgstr ""
 
 # applets/mini-commander/src/command_line.c:116
 # applets/mini-commander/src/exec.c:63
-#: gsm/splash.c:277
+#: gsm/splash.c:278
 #, fuzzy, c-format
 msgid "Starting GNOME: %s"
 msgstr "ÕıÔÚÆô¶¯ GNOME... %s"
 
 # applets/mini-commander/src/command_line.c:116
 # applets/mini-commander/src/exec.c:63
-#: gsm/splash.c:279
+#: gsm/splash.c:280
 #, fuzzy
 msgid "Starting GNOME: done"
 msgstr "ÕıÔÚÆô¶¯ GNOME... %s"
 
 # help-browser/toc.c:159
-#: gsm/splash.c:406
+#: gsm/splash.c:431
 #, fuzzy
 msgid "GNOME"
 msgstr "GNOME°ïÖú"
 
-#: gsm/splash.c:407
+#: gsm/splash.c:432
 msgid "-adobe-helvetica-bold-r-normal-*-*-240-*-*-p-*-*-*"
 msgstr ""
 
-#: gsm/splash.c:417
+#: gsm/splash.c:442 gsm/splash.c:451
 msgid "Starting GNOME"
 msgstr "ÕıÔÚÆô¶¯ GNOME"
 
-#: gsm/splash.c:420
+#: gsm/splash.c:445 gsm/splash.c:454
 msgid "-adobe-helvetica-medium-r-normal-*-8-*-*-*-p-*-*-*"
 msgstr ""
 
@@ -3015,7 +3097,7 @@ msgid "Go to the next location in the history list"
 msgstr "µ½ÀúÊ·ÁĞ±íÖĞµÄÏÂÒ»¸öµØµã"
 
 # help-browser/window.c:196
-#: help-browser/window.c:244 panel/extern.c:467 panel/swallow.c:92
+#: help-browser/window.c:244 panel/extern.c:468 panel/swallow.c:92
 msgid "Reload"
 msgstr "ÖØÁ¬"
 
@@ -3070,35 +3152,30 @@ msgstr ""
 " \n"
 " "
 
-# panel/applet.c:297
-#: panel/applet.c:432
-msgid "???"
-msgstr "???"
-
 # panel/applet.c:337
-#: panel/applet.c:471
+#: panel/applet.c:472
 msgid "Remove from panel"
 msgstr "´ÓÃæ°åÉÏÈ¥µô"
 
 # gmenu/main.c:110 gmenu/main.c:140
-#: panel/applet.c:478
+#: panel/applet.c:479
 msgid "Move"
 msgstr "ÒÆ¶¯"
 
 # panel/menu.c:2069
-#: panel/applet.c:490 panel/menu.c:3416
+#: panel/applet.c:491 panel/menu.c:3432
 #, c-format
 msgid "Cannot find pixmap file %s"
 msgstr "ÕÒ²»µ½Í¼ÏóÎÄ¼ş %s"
 
 # panel/menu.c:2576
-#: panel/applet.c:491 panel/applet.c:497 panel/menu.c:4872 panel/menu.c:4877
-#: panel/menu.c:5232
+#: panel/applet.c:492 panel/applet.c:498 panel/menu.c:4905 panel/menu.c:4910
+#: panel/menu.c:5265
 msgid "Panel"
 msgstr "Ãæ°å"
 
 # panel/menu.c:2069
-#: panel/applet.c:762
+#: panel/applet.c:763
 msgid "Can't find an empty spot"
 msgstr "ÕÒ²»µ½¿ÕµÄµØ·½"
 
@@ -3113,7 +3190,7 @@ msgstr "ÎŞ·¨Æô¶¯ CORBA"
 #: panel/applet-widget.c:1197 panel/applet-widget.c:1300
 #: panel/applet-widget.c:1370 panel/applet-widget.c:1399
 #: panel/applet-widget.c:1426 panel/applet-widget.c:1462
-#: panel/applet-widget.c:1595
+#: panel/applet-widget.c:1599
 msgid "CORBA Exception"
 msgstr "CORBA Òì³£"
 
@@ -3121,15 +3198,21 @@ msgstr "CORBA Òì³£"
 # applets/gen_util/clock.c:273 applets/gen_util/mailcheck.c:745
 # applets/gen_util/printer.c:381 applets/jbc/jbc-applet.c:129
 # applets/netload/netload.c:321
-#: panel/applet-widget.c:1997
+#: panel/applet-widget.c:2001
 msgid "Cannot create object"
 msgstr "ÎŞ·¨´´½¨¶ÔÏó"
 
-#: panel/applet-widget.c:2002
+#: panel/applet-widget.c:2006
 msgid "Object created is not AppletWidget"
 msgstr "´´½¨µÄ²»ÊÇ AppletWidget ¶ÔÏó"
 
-#: panel/button-widget.c:706
+# panel/menu.c:2276
+#: panel/basep-widget.c:874
+#, fuzzy
+msgid "Hide this panel"
+msgstr "É¾³ı´ËÃæ°å"
+
+#: panel/button-widget.c:726
 msgid "-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*"
 msgstr ""
 
@@ -3200,27 +3283,27 @@ msgid "Enable hidebutton arrow"
 msgstr "Ê¹ÓÃÒş²Ø¼ıÍ·"
 
 # panel/drawer.c:160 panel/drawer.c:242
-#: panel/drawer.c:184 panel/drawer.c:318 panel/gnome-panel-properties.c:565
-#: panel/menu.c:4579
+#: panel/drawer.c:184 panel/drawer.c:318 panel/gnome-panel-properties.c:575
+#: panel/menu.c:4595
 msgid "Drawer"
 msgstr "³éÌë"
 
 # applets/desk-guide/deskguide_applet.c:75
-#: panel/extern.c:451
+#: panel/extern.c:452
 msgid "Deskguide (the desktop pager)"
 msgstr "×ÀÃæÏòµ¼(×ÀÃæÇĞ»»Æ÷)"
 
 # applets/gnome-pager/gnomepager_applet.c:322
-#: panel/extern.c:453
+#: panel/extern.c:454
 msgid "Tasklist"
 msgstr "ÈÎÎñÁĞ±í"
 
 # applets/battery/battery.c:143
-#: panel/extern.c:455
+#: panel/extern.c:456
 msgid "The Battery"
 msgstr "µç³Ø"
 
-#: panel/extern.c:458
+#: panel/extern.c:459
 #, c-format
 msgid ""
 "%s applet appears to have died unexpectedly.\n"
@@ -3241,19 +3324,19 @@ msgstr ""
 # applets/gen_util/clock.c:273 applets/gen_util/mailcheck.c:745
 # applets/gen_util/printer.c:381 applets/jbc/jbc-applet.c:129
 # applets/netload/netload.c:321
-#: panel/extern.c:776
+#: panel/extern.c:777
 msgid "Couldn't add applet"
 msgstr "ÎŞ·¨¼Ó½øĞ¡³ÌĞò"
 
-#: panel/extern.c:840
+#: panel/extern.c:922
 msgid "Whoops! for some reason we can't add to the panel"
 msgstr "àŞ! ³öÁËµãÎÊÌâÎÒÃÇÃ»·¨°ÑËü¼Óµ½Ãæ°åÉÏ"
 
-#: panel/extern.c:941
+#: panel/extern.c:1025
 msgid "No socket was created"
 msgstr "Ã»ÓĞ´´½¨ socket"
 
-#: panel/foobar-widget.c:202
+#: panel/foobar-widget.c:199
 msgid ""
 "Cannot execute the gmc-client program,\n"
 "perhaps gmc is not installed"
@@ -3261,7 +3344,7 @@ msgstr ""
 "ÎŞ·¨Ö´ĞĞ gmc-client ³ÌĞò£¬\n"
 "Ò²Ğí gmc Ã»ÓĞ°²×°"
 
-#: panel/foobar-widget.c:212
+#: panel/foobar-widget.c:209
 msgid ""
 "Cannot execute the gnome calendar,\n"
 "perhaps it's not installed.\n"
@@ -3271,416 +3354,424 @@ msgstr ""
 "Ò²ĞíËüÃ»ÓĞ°²×°¡£\n"
 "ËüÔÚ gnome-pim Èí¼ş°üÀï¡£"
 
-#: panel/foobar-widget.c:225
+#: panel/foobar-widget.c:222
 msgid "News (www)"
 msgstr "ĞÂÎÅ×é(WWW)"
 
-#: panel/foobar-widget.c:225
+#: panel/foobar-widget.c:222
 msgid "http://gnotices.gnome.org/gnome-news/"
 msgstr "http://gnotices.gnome.org/gnome-news/"
 
-#: panel/foobar-widget.c:226
+#: panel/foobar-widget.c:223
 msgid "FAQ (www)"
 msgstr "³£¼ûÎÊÌâ(WWW)"
 
-#: panel/foobar-widget.c:226
+#: panel/foobar-widget.c:223
 msgid "http://www.gnome.org/gnomefaq/html/"
 msgstr "http://www.gnome.org/gnomefaq/html/"
 
-#: panel/foobar-widget.c:227
+#: panel/foobar-widget.c:224
 msgid "Mailing Lists (www)"
 msgstr "ÓÊ¼şÁĞ±í(WWW)"
 
-#: panel/foobar-widget.c:227
+#: panel/foobar-widget.c:224
 msgid "http://mail.gnome.org/mailman/listinfo/"
 msgstr "http://mail.gnome.org/mailman/listinfo/"
 
-#: panel/foobar-widget.c:229
+#: panel/foobar-widget.c:226
 msgid "Software (www)"
 msgstr "Èí¼ş(WWW)"
 
-#: panel/foobar-widget.c:229
+#: panel/foobar-widget.c:226
 msgid "http://www.gnome.org/applist/list-martin.phtml"
 msgstr "http://www.gnome.org/applist/list-martin.phtml"
 
-#: panel/foobar-widget.c:230
+#: panel/foobar-widget.c:227
 msgid "Development (www)"
 msgstr "¿ª·¢(WWW)"
 
-#: panel/foobar-widget.c:230
+#: panel/foobar-widget.c:227
 msgid "http://developer.gnome.org/"
 msgstr "http://developer.gnome.org/"
 
-#: panel/foobar-widget.c:231
+#: panel/foobar-widget.c:228
 msgid "Bug Tracking System (www)"
 msgstr "´íÎó¸ú×ÙÏµÍ³(WWW)"
 
-#: panel/foobar-widget.c:231
+#: panel/foobar-widget.c:228
 msgid "http://bugs.gnome.org/"
 msgstr "http://bugs.gnome.org/"
 
-#: panel/foobar-widget.c:325
+#: panel/foobar-widget.c:322
 msgid "By Name"
 msgstr "°´Ãû×Ö"
 
-#: panel/foobar-widget.c:326
+#: panel/foobar-widget.c:323
 msgid "By Type"
 msgstr "°´ÀàĞÍ"
 
 # applets/mini-commander/src/preferences.c:487
 # applets/tasklist/tasklist_properties.c:220
-#: panel/foobar-widget.c:327
+#: panel/foobar-widget.c:324
 msgid "By Size"
 msgstr "°´´óĞ¡"
 
-#: panel/foobar-widget.c:328
+#: panel/foobar-widget.c:325
 msgid "By Time Last Accessed"
 msgstr "°´×îºó·ÃÎÊÊ±¼ä"
 
-#: panel/foobar-widget.c:329
+#: panel/foobar-widget.c:326
 msgid "By Time Last Modified"
 msgstr "°´×îºóĞŞ¸ÄÊ±¼ä"
 
 # applets/diskusage/diskusage.c:552
-#: panel/foobar-widget.c:330
+#: panel/foobar-widget.c:327
 msgid "By Time Last Changed"
 msgstr "°´×îºó±ä¸üÊ±¼ä"
 
-#: panel/foobar-widget.c:340
+#: panel/foobar-widget.c:337
 msgid "Arrange Icons"
 msgstr "ÅÅÁĞÍ¼±ê"
 
-#: panel/foobar-widget.c:353
+#: panel/foobar-widget.c:350
 msgid "Rescan Desktop Directory"
 msgstr "ÖØ²é×ÀÃæÄ¿Â¼"
 
-#: panel/foobar-widget.c:356
+#: panel/foobar-widget.c:353
 msgid "Rescan Desktop Devices"
 msgstr "ÖØ²é×ÀÃæÉè±¸"
 
 # panel/menu.c:2591
-#: panel/foobar-widget.c:365
+#: panel/foobar-widget.c:362
 msgid "Lock Screen"
 msgstr "Ëø×¡ÆÁÄ»"
 
 # panel/logout.c:51 panel/menu.c:2290 panel/menu.c:2625
-#: panel/foobar-widget.c:375
+#: panel/foobar-widget.c:372
 msgid "Log Out"
 msgstr "×¢Ïú"
 
 # applets/tasklist/tasklist_menu.c:201
-#: panel/foobar-widget.c:383
+#: panel/foobar-widget.c:380
 msgid " Desktop "
 msgstr " ×ÀÃæ "
 
-#: panel/foobar-widget.c:408
+#: panel/foobar-widget.c:405
 msgid "can't fine real path"
 msgstr "ÕÒ²»µ½ÕæÊµÂ·¾¶"
 
-#: panel/foobar-widget.c:417
+#: panel/foobar-widget.c:414
 msgid "menu wasn't created"
 msgstr "²Ëµ¥Ã»ÓĞ´´½¨"
 
 # applets/gen_util/clock.c:131
-#: panel/foobar-widget.c:459
+#: panel/foobar-widget.c:456
 msgid "%A %B %d"
 msgstr "%A %B %d"
 
-#: panel/foobar-widget.c:538
+#: panel/foobar-widget.c:535
 msgid "Today"
 msgstr "½ñÌì"
 
-#: panel/foobar-widget.c:539
+#: panel/foobar-widget.c:536
 msgid "This Week"
 msgstr "±¾ÖÜ"
 
-#: panel/foobar-widget.c:540
+#: panel/foobar-widget.c:537
 msgid "This Month"
 msgstr "±¾ÔÂ"
 
 # applets/mini-commander/src/message.c:105
-#: panel/foobar-widget.c:546
+#: panel/foobar-widget.c:543
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
 # applets/gen_util/clock.c:157
-#: panel/foobar-widget.c:547
+#: panel/foobar-widget.c:544
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
 # applets/gen_util/clock.c:157
-#: panel/foobar-widget.c:548
+#: panel/foobar-widget.c:545
 msgid "%l:%M:%S %p"
 msgstr "%I:%M %p"
 
 # panel/menu.c:2444
-#: panel/foobar-widget.c:555
+#: panel/foobar-widget.c:552
 msgid "Add appointement..."
 msgstr "ÁĞÈëÈÕ³Ì..."
 
 # applets/gen_util/clock.c:409
-#: panel/foobar-widget.c:572
+#: panel/foobar-widget.c:569
 msgid "Format"
 msgstr "¸ñÊ½"
 
 # applets/gkb/gkb.c:262
-#: panel/foobar-widget.c:980 panel/menu.c:3443 panel/menu.c:3450
-#: panel/menu.c:5169
+#: panel/foobar-widget.c:1021 panel/menu.c:3459 panel/menu.c:3466
+#: panel/menu.c:5202
 msgid "Programs"
 msgstr "³ÌĞò"
 
-#: panel/foobar-widget.c:994 panel/menu.c:3587 panel/menu.c:5138
-#: panel/menu.c:5181 panel/menu.c:5187
+#: panel/foobar-widget.c:1036 panel/menu.c:3603 panel/menu.c:5171
+#: panel/menu.c:5214 panel/menu.c:5220
 msgid "Favorites"
 msgstr "ÎÒµÄ×î°®"
 
 # applets/gkb/gkb.c:262
-#: panel/gnome-panel-properties.c:119 panel/menu-properties.c:534
+#: panel/gnome-panel-properties.c:120 panel/menu-properties.c:534
 msgid "Programs: "
 msgstr "³ÌĞò£º"
 
-#: panel/gnome-panel-properties.c:120 panel/menu-properties.c:541
+#: panel/gnome-panel-properties.c:121 panel/menu-properties.c:541
 msgid "Favorites: "
 msgstr "ÎÒµÄ×î°®£º"
 
 # panel/menu.c:1918
-#: panel/gnome-panel-properties.c:121 panel/menu-properties.c:548
+#: panel/gnome-panel-properties.c:122 panel/menu-properties.c:548
 msgid "Applets: "
 msgstr "Ğ¡³ÌĞò£º"
 
-#: panel/gnome-panel-properties.c:122
+#: panel/gnome-panel-properties.c:123
 msgid "Distribution: "
 msgstr "·¢ĞĞ°æ£º"
 
-#: panel/gnome-panel-properties.c:123
+#: panel/gnome-panel-properties.c:124
 msgid "KDE: "
 msgstr ""
 
 # panel/menu.c:2576
-#: panel/gnome-panel-properties.c:124
+#: panel/gnome-panel-properties.c:125
 msgid "Panel: "
 msgstr "Ãæ°å£º"
 
 # applets/tasklist/tasklist_menu.c:201
-#: panel/gnome-panel-properties.c:125
+#: panel/gnome-panel-properties.c:126
 msgid "Desktop: "
 msgstr "×ÀÃæ£º"
 
 # panel/panel_config_global.c:199
 #. Animation enable
-#: panel/gnome-panel-properties.c:313
+#: panel/gnome-panel-properties.c:317
 msgid "Enable animations"
 msgstr "ÔÊĞí¶¯»­"
 
 # panel/panel_config_global.c:204
-#: panel/gnome-panel-properties.c:318
+#: panel/gnome-panel-properties.c:322
 msgid "Constant speed animations"
 msgstr "¾ùËÙ¶¯»­"
 
 # panel/panel_config_global.c:238
 #. AutoHide Animation step_size scale frame
-#: panel/gnome-panel-properties.c:324
+#: panel/gnome-panel-properties.c:328
 msgid "Animation speed"
 msgstr "¶¯»­ËÙ¶È"
 
 # panel/panel_config.c:366 panel/panel_config.c:580
-#: panel/gnome-panel-properties.c:334 panel/gnome-panel-properties.c:352
-#: panel/menu.c:4418
+#: panel/gnome-panel-properties.c:338 panel/gnome-panel-properties.c:356
+#: panel/menu.c:4434
 msgid "Auto hide"
 msgstr "×Ô¶¯Òş²Ø"
 
 #. ExplicitHide Animation step_size scale frame
-#: panel/gnome-panel-properties.c:341 panel/menu.c:4417
+#: panel/gnome-panel-properties.c:345 panel/menu.c:4433
 msgid "Explicit hide"
 msgstr "ÏÔÊ½Òş²Ø"
 
 # panel/panel_config_global.c:569
 #. DrawerHide Animation step_size scale frame
-#: panel/gnome-panel-properties.c:347
+#: panel/gnome-panel-properties.c:351
 msgid "Drawer sliding"
 msgstr "³éÌë»¬¶¯"
 
 #. Minimize Delay scale frame
-#: panel/gnome-panel-properties.c:363
-msgid "Delay (ms)"
+#: panel/gnome-panel-properties.c:367
+#, fuzzy
+msgid "Hide delay (ms)"
+msgstr "ÑÓ³Ù (ms)"
+
+#. Minimize Delay scale frame
+#: panel/gnome-panel-properties.c:373
+#, fuzzy
+msgid "Show delay (ms)"
 msgstr "ÑÓ³Ù (ms)"
 
 #. Minimized size scale frame
-#: panel/gnome-panel-properties.c:369
+#: panel/gnome-panel-properties.c:379
 msgid "Size (pixels)"
 msgstr "³ß´ç (µãÊı)"
 
 # panel/panel_config_global.c:568
-#: panel/gnome-panel-properties.c:480
+#: panel/gnome-panel-properties.c:490
 msgid "Launcher icon"
 msgstr "Æô¶¯Æ÷Í¼±ê"
 
 # panel/panel_config_global.c:569
-#: panel/gnome-panel-properties.c:481
+#: panel/gnome-panel-properties.c:491
 msgid "Drawer icon"
 msgstr "³éÌëÍ¼±ê"
 
 # panel/panel_config_global.c:570
-#: panel/gnome-panel-properties.c:482
+#: panel/gnome-panel-properties.c:492
 msgid "Menu icon"
 msgstr "²Ëµ¥Í¼±ê"
 
 # help-browser/toc-man.c:22 help-browser/toc2-man.c:24
-#: panel/gnome-panel-properties.c:483
+#: panel/gnome-panel-properties.c:493
 msgid "Special icon"
 msgstr "ÌØÊâÍ¼±ê"
 
 # panel/panel_config_global.c:320 panel/panel_config_global.c:347
 #. toggle button
-#: panel/gnome-panel-properties.c:495
+#: panel/gnome-panel-properties.c:505
 msgid "Tiles enabled"
 msgstr "ÔÊĞíÏâ±ß"
 
 # panel/menu.c:3534 panel/menu.c:3574
-#: panel/gnome-panel-properties.c:510
+#: panel/gnome-panel-properties.c:520
 msgid "Normal tile"
 msgstr "Õı³£"
 
 # help-browser/gnome-help-browser.c:603
-#: panel/gnome-panel-properties.c:523
+#: panel/gnome-panel-properties.c:533
 msgid "Clicked tile"
 msgstr "µã»÷ºó"
 
 # panel/panel_config_global.c:379
 #. Minimized size scale frame
-#: panel/gnome-panel-properties.c:539
+#: panel/gnome-panel-properties.c:549
 msgid "Border width (tile only)"
 msgstr "Ïâ±ß¿í¶È (Ö»ÊÊÓÚÏâ±ß°´Å¥)"
 
 # panel/panel_config_global.c:386
 #. Minimized size scale frame
-#: panel/gnome-panel-properties.c:545
+#: panel/gnome-panel-properties.c:555
 msgid "Depth (displacement when pressed)"
 msgstr "Éî¶È (°´¶¯µÄ¾àÀë)"
 
 # panel/panel_config_global.c:568
-#: panel/gnome-panel-properties.c:564
+#: panel/gnome-panel-properties.c:574
 msgid "Launcher"
 msgstr "Æô¶¯Æ÷"
 
 # applets/gkb/gkb.c:288 panel/menu.c:1759 panel/menu.c:1803 panel/menu.c:1805
 # panel/menu.c:3233 panel/menu.c:3600
-#: panel/gnome-panel-properties.c:566 panel/gnome-panel-properties.c:1527
-#: panel/menu-properties.c:612 panel/menu.c:1475 panel/menu.c:2916
-#: panel/menu.c:2987 panel/menu.c:2992 panel/menu.c:4517 panel/menu.c:5430
+#: panel/gnome-panel-properties.c:576 panel/gnome-panel-properties.c:1545
+#: panel/menu-properties.c:612 panel/menu.c:1483 panel/menu.c:2930
+#: panel/menu.c:3003 panel/menu.c:3008 panel/menu.c:4533 panel/menu.c:5342
+#: panel/menu.c:5474 panel/menu.c:5494
 msgid "Menu"
 msgstr "²Ëµ¥"
 
 # help-browser/toc-man.c:22 help-browser/toc2-man.c:24
-#: panel/gnome-panel-properties.c:567
+#: panel/gnome-panel-properties.c:577
 msgid "Special"
 msgstr "ÌØ±ğ"
 
-#: panel/gnome-panel-properties.c:577
+#: panel/gnome-panel-properties.c:587
 msgid "Button type: "
 msgstr "°´Å¥ÀàĞÍ£º"
 
 #. show/hide frame
-#: panel/gnome-panel-properties.c:610
+#: panel/gnome-panel-properties.c:620
 msgid "Make buttons flush with panel edge"
 msgstr "Ê¹°´Å¥ºÍÃæ°å±ßÔµÆ½Æë"
 
 #. only show tiles when mouse is over the button
-#: panel/gnome-panel-properties.c:617
+#: panel/gnome-panel-properties.c:627
 msgid "Show button tiles only when cursor is over the button"
 msgstr "½öµ±Êó±êÖ¸µ½Ê±²ÅÏÔÊ¾Ïâ±ß"
 
 #. prelight on mouseovers hack (used to be saturation, hence
 #. * the config option name)
-#: panel/gnome-panel-properties.c:624
+#: panel/gnome-panel-properties.c:634
 msgid "Prelight buttons on mouseover"
 msgstr "Êó±êÖ¸µ½Ê±¼ÓÁÁ°´Å¥"
 
 #. Fast but low quality scaling (Nearest versus Hyperbolic)
-#: panel/gnome-panel-properties.c:630
+#: panel/gnome-panel-properties.c:640
 msgid "Fast but low quality scaling of button icons"
 msgstr "Ê¹ÓÃ¿ìËÙµ«·ÇÓÅÖÊµÄ·½·¨Ëõ·Å°´Å¥"
 
 #. Movement frame
-#: panel/gnome-panel-properties.c:687
+#: panel/gnome-panel-properties.c:697
 msgid "Default movement mode"
 msgstr "Ä¬ÈÏÒÆ¶¯Ä£Ê½"
 
 # panel/panel_config_global.c:483
 #. Switched
-#: panel/gnome-panel-properties.c:697
+#: panel/gnome-panel-properties.c:707
 msgid "Switched movement (or use Ctrl)"
 msgstr "½»»»Ê½ÒÆ¶¯ (»ò°´×¡ Ctrl)"
 
 # panel/panel_config_global.c:494
-#: panel/gnome-panel-properties.c:705
+#: panel/gnome-panel-properties.c:715
 msgid "Free movement (doesn't disturb other applets) (or use Alt)"
 msgstr "×ÔÓÉÒÆ¶¯ (²»¸ÉÈÅ±ğµÄĞ¡³ÌĞò) (»ò°´×¡ Alt)"
 
-#: panel/gnome-panel-properties.c:713
+#: panel/gnome-panel-properties.c:723
 msgid "Push movement (or use Shift)"
 msgstr "ÍÆ¶¯Ê½ÒÆ¶¯ (»ò°´×¡ Shift)"
 
-#: panel/gnome-panel-properties.c:718
+#: panel/gnome-panel-properties.c:728
 msgid "Padding between applets"
 msgstr "Ğ¡³ÌĞò¼äµÄ¼ä¸ô"
 
-#: panel/gnome-panel-properties.c:723
+#: panel/gnome-panel-properties.c:733
 msgid "Padding between applets and panel border"
 msgstr "Ğ¡³ÌĞòºÍÃæ°åµÄ¼ä¸ô"
 
 # applets/dialer/dialer.c:87 panel/menu.c:3461
-#: panel/gnome-panel-properties.c:795 panel/menu-properties.c:394
+#: panel/gnome-panel-properties.c:805 panel/menu-properties.c:394
 msgid "Off"
 msgstr "¹Ø±Õ"
 
 # panel/menu.c:3473
-#: panel/gnome-panel-properties.c:802 panel/menu-properties.c:404
+#: panel/gnome-panel-properties.c:812 panel/menu-properties.c:404
 msgid "In a submenu"
 msgstr "·Å×Ó²Ëµ¥Àï"
 
 # panel/menu.c:3485
-#: panel/gnome-panel-properties.c:808
+#: panel/gnome-panel-properties.c:818
 msgid "In the menu"
 msgstr "ÔÚ²Ëµ¥ÖĞ"
 
 # panel/panel_config_global.c:427
 #. Menu frame
-#: panel/gnome-panel-properties.c:827
+#: panel/gnome-panel-properties.c:837
 msgid "Menus"
 msgstr "²Ëµ¥"
 
 #. large icons
-#: panel/gnome-panel-properties.c:837
+#: panel/gnome-panel-properties.c:847
 msgid "Use large icons"
 msgstr "Ê¹ÓÃ´óÍ¼±ê"
 
 # panel/panel_config_global.c:446
 #. Dot Buttons
-#: panel/gnome-panel-properties.c:844
+#: panel/gnome-panel-properties.c:854
 msgid "Show [...] buttons"
 msgstr "ÏÔÊ¾ [...] °´Å¥"
 
 # panel/panel_config_global.c:455
 #. Off Panel Popup menus
-#: panel/gnome-panel-properties.c:850
+#: panel/gnome-panel-properties.c:860
 msgid "Show popup menus outside of panels"
 msgstr "ÔÚÃæ°åÍâÏÔÊ¾µ¯³ö²Ëµ¥"
 
 # panel/panel_config_global.c:464
 #. Hungry Menus
-#: panel/gnome-panel-properties.c:856
+#: panel/gnome-panel-properties.c:866
 msgid "Keep menus in memory"
 msgstr "²Ëµ¥±£ÁôÔÚÄÚ´æÖĞ"
 
 # gmenu/tree.c:419
 #. Merge system menus
-#: panel/gnome-panel-properties.c:863
+#: panel/gnome-panel-properties.c:873
 msgid "Merge in system menus"
 msgstr "²¢ÈëÏµÍ³²Ëµ¥"
 
 #. Menu check
-#: panel/gnome-panel-properties.c:870
+#: panel/gnome-panel-properties.c:880
 msgid ""
 "Automatically re-check menus\n"
 "for newly installed software"
@@ -3688,107 +3779,107 @@ msgstr "ĞÂ°²×°Èí¼şºó×Ô¶¯ÖØ²é²Ëµ¥"
 
 # panel/menu.c:3534 panel/menu.c:3574
 #. Menu frame
-#: panel/gnome-panel-properties.c:877
+#: panel/gnome-panel-properties.c:887
 msgid "Global menu"
 msgstr "È«¾Ö²Ëµ¥"
 
 # applets/mini-commander/src/mini-commander_applet.c:268
-#: panel/gnome-panel-properties.c:1038
+#: panel/gnome-panel-properties.c:1048
 msgid "Press a key..."
 msgstr "°´ÈÎÒâ¼ü..."
 
 # panel/panel_config_global.c:418
 #. Tooltips enable
-#: panel/gnome-panel-properties.c:1071
+#: panel/gnome-panel-properties.c:1081
 msgid "Tooltips enabled"
 msgstr "¿ªÆôÌáÊ¾"
 
 # panel/panel_config_global.c:531
 #. Drawer/launcher auto close
-#: panel/gnome-panel-properties.c:1077
+#: panel/gnome-panel-properties.c:1087
 msgid "Close drawer if a launcher inside it is pressed"
 msgstr "µã»÷Æô¶¯Æ÷ºó¹Ø±Õ³éÌë"
 
 #. Autoraise
-#: panel/gnome-panel-properties.c:1083
+#: panel/gnome-panel-properties.c:1093
 msgid "Raise panels on mouse-over"
 msgstr "Êó±êÖ¸µ½Ê±ÌáÉıÃæ°å"
 
 #. Confirm panel removal
-#: panel/gnome-panel-properties.c:1089
+#: panel/gnome-panel-properties.c:1099
 msgid "Confirm the removal of panels with a dialog"
 msgstr "É¾³ıÃæ°åÇ°ÒªÇóÈ·ÈÏ"
 
 #. Collision avoidance
-#: panel/gnome-panel-properties.c:1095
+#: panel/gnome-panel-properties.c:1105
 msgid "Try to avoid overlapping panels"
 msgstr "¾¡Á¿±ÜÃâÃæ°åÏà»¥ÖØµü"
 
 # panel/panel_config_global.c:522
 #. Layer frame
-#: panel/gnome-panel-properties.c:1101
+#: panel/gnome-panel-properties.c:1111
 msgid "Panel treatment (GNOME compliant window managers only)"
 msgstr "Ãæ°å´¦ÖÃ (½öÊÊÓÃÓÚ·ûºÏ GNOME µÄ´°¿Ú¹ÜÀíÆ÷)"
 
 # applets/tasklist/tasklist_menu.c:240
 #. Keep on bottom
-#: panel/gnome-panel-properties.c:1111
+#: panel/gnome-panel-properties.c:1121
 msgid "Keep panels below other windows"
 msgstr "Ãæ°åÒ»Ö±Ñ¹ÔÚÆäËü´°¿ÚÏÂ"
 
-#: panel/gnome-panel-properties.c:1118
+#: panel/gnome-panel-properties.c:1128
 msgid "Keep panels on the same level as other windows"
 msgstr "Ãæ°åºÍÆäËü´°¿Ú·ÅÔÚÍ¬Ò»¼¶±ğ"
 
 # gnome-terminal/gnome-terminal.c:2447
-#: panel/gnome-panel-properties.c:1125
+#: panel/gnome-panel-properties.c:1135
 msgid "Keep panels above other windows"
 msgstr "Ãæ°å·ÅÔÚÆäËü´°¿ÚÉÏ"
 
 #. Key Bindings frame
-#: panel/gnome-panel-properties.c:1131
+#: panel/gnome-panel-properties.c:1141
 msgid "Key Bindings"
 msgstr "°´¼ü¹ØÁª"
 
 # panel/panel_config_global.c:199
 #. enabled
-#: panel/gnome-panel-properties.c:1144
+#: panel/gnome-panel-properties.c:1154
 msgid "Enable panel keybindings"
 msgstr "ÆôÓÃ°´¼ü¹ØÁª"
 
 #. menu key
-#: panel/gnome-panel-properties.c:1151
+#: panel/gnome-panel-properties.c:1161
 msgid "Popup menu key"
 msgstr "µ¯³ö²Ëµ¥µÄ¼ü"
 
 # panel/panel_config_global.c:320 panel/panel_config_global.c:347
-#: panel/gnome-panel-properties.c:1162 panel/gnome-panel-properties.c:1190
-#: panel/panel-util.c:637 panel/panel-util.c:694
+#: panel/gnome-panel-properties.c:1172 panel/gnome-panel-properties.c:1200
+#: panel/panel-util.c:638 panel/panel-util.c:695
 msgid "Disabled"
 msgstr "Í£ÓÃ"
 
 # applets/mini-commander/src/mini-commander_applet.c:268
-#: panel/gnome-panel-properties.c:1173 panel/gnome-panel-properties.c:1201
+#: panel/gnome-panel-properties.c:1183 panel/gnome-panel-properties.c:1211
 msgid "Grab key..."
 msgstr "×¥È¡°´¼ü..."
 
 #. run key...
-#: panel/gnome-panel-properties.c:1181
+#: panel/gnome-panel-properties.c:1191
 msgid "Run dialog key"
 msgstr "µ¯³öÔËĞĞ±í¿òµÄ¼ü"
 
 # panel/panel_config_global.c:603
-#: panel/gnome-panel-properties.c:1512
+#: panel/gnome-panel-properties.c:1530
 msgid "Animation"
 msgstr "¶¯»­"
 
 # panel/panel_config.c:306
-#: panel/gnome-panel-properties.c:1517
+#: panel/gnome-panel-properties.c:1535
 msgid "Buttons"
 msgstr "°´Å¥"
 
 # panel/panel_config.c:879
-#: panel/gnome-panel-properties.c:1522
+#: panel/gnome-panel-properties.c:1540
 msgid "Panel Objects"
 msgstr "Ãæ°å¶ÔÏó"
 
@@ -3827,7 +3918,7 @@ msgid "Run in terminal"
 msgstr "ÔÚÖÕ¶ËÀïÔËĞĞ"
 
 # applets/cdplayer/cdplayer.c:345
-#: panel/gnome-run.c:512 panel/gnome-run.c:531 panel/menu.c:5218
+#: panel/gnome-run.c:512 panel/gnome-run.c:531 panel/menu.c:5251
 msgid "Run..."
 msgstr "ÔËĞĞ..."
 
@@ -3837,7 +3928,7 @@ msgid "This launch icon does not specify a program to run"
 msgstr "²¢Î´Ö¸¶¨Õâ¸öÆô¶¯Í¼±êÒªÖ´ĞĞµÄ³ÌĞò"
 
 # panel/menu.c:1357
-#: panel/launcher.c:85 panel/menu.c:2168
+#: panel/launcher.c:85 panel/menu.c:2178
 msgid "Can't get goad_id from desktop entry!"
 msgstr "²»ÄÜ´Ó×ÀÃæ¼ÇÂ¼ÖĞÈ¡µÃ goad_id"
 
@@ -3847,61 +3938,67 @@ msgid "App"
 msgstr "³ÌĞò"
 
 # help-browser/window.c:207
-#: panel/launcher.c:474 panel/launcher.c:665 panel/menu.c:1646
+#: panel/launcher.c:474 panel/launcher.c:667 panel/menu.c:1654
 #, fuzzy, c-format
 msgid "Help on %s"
 msgstr "¹ØÓÚ°ïÖú"
 
+# gsm/logout.c:240
+#: panel/launcher.c:477 panel/launcher.c:670 panel/menu.c:1657
+#, fuzzy
+msgid "Application"
+msgstr "¶¯×÷"
+
 # panel/launcher.c:276
 #. watch the enum at the top of the file
-#: panel/launcher.c:530
+#: panel/launcher.c:532
 msgid "Launcher properties"
 msgstr "Æô¶¯Æ÷ÊôĞÔ"
 
 # panel/launcher.c:386
-#: panel/launcher.c:717
+#: panel/launcher.c:721
 msgid "Create launcher applet"
 msgstr "½¨Á¢Æô¶¯Æ÷Ğ¡³ÌĞò"
 
 # panel/logout.c:51 panel/menu.c:2290 panel/menu.c:2625
-#: panel/logout.c:71 panel/menu.c:5014
+#: panel/logout.c:73 panel/menu.c:5047
 msgid "Log out"
 msgstr "ÍË³ö"
 
 # panel/logout.c:53
-#: panel/logout.c:90
+#: panel/logout.c:92
 msgid "Log out of GNOME"
 msgstr "ÍË³ö GNOME »·¾³"
 
 # panel/menu.c:2591
-#: panel/logout.c:131 panel/logout.c:150 panel/menu.c:5002
+#: panel/logout.c:133 panel/logout.c:152 panel/menu.c:5035
 msgid "Lock screen"
 msgstr "Ëø×¡ÆÁÄ»"
 
-#: panel/logout.c:183
+#: panel/logout.c:185
 msgid "Blank Screen Now"
 msgstr "Á¢¿ÌÇå¿ÕÆÁÄ»"
 
 # panel/menu.c:2591
-#: panel/logout.c:185
+#: panel/logout.c:187
 msgid "Lock Screen Now"
 msgstr "Á¢¿ÌËø×¡ÆÁÄ»"
 
 # gsm/save-session.c:41
-#: panel/logout.c:187
+#: panel/logout.c:189
 msgid "Kill Daemon"
 msgstr "É±ËÀºóÌ¨·şÎñ"
 
-#: panel/logout.c:189
+#: panel/logout.c:191
 msgid "Restart Daemon"
 msgstr "ÖØĞÂÆô¶¯ºóÌ¨·şÎñ"
 
-#: panel/logout.c:191
+#: panel/logout.c:193
 msgid "Preferences"
 msgstr "¸öÈËÉèÖÃ"
 
 # panel/main.c:133
-#: panel/main.c:220
+#: panel/main.c:404
 msgid ""
 "I've detected a panel already running.\n"
 "Start another panel as well?\n"
@@ -3911,7 +4008,7 @@ msgstr ""
 "»¹ÒªÆô¶¯ÁíÒ»¸öÃæ°åÂğ?\n"
 "(ĞÂÃæ°å½«²»»á±»ÖØÆğ)"
 
-#: panel/main.c:231
+#: panel/main.c:415
 msgid ""
 "There was a problem registering the panel with the GOAD server.\n"
 "The panel will now exit."
@@ -3955,55 +4052,55 @@ msgid "Can't execute 'About GNOME'"
 msgstr "ÎŞ·¨Ö´ĞĞ '¹ØÓÚ GNOME'"
 
 # panel/menu.c:569 panel/menu.c:1349
-#: panel/menu.c:249 panel/menu.c:968 panel/menu.c:985 panel/menu.c:2160
+#: panel/menu.c:249 panel/menu.c:976 panel/menu.c:993 panel/menu.c:2170
 msgid "Can't load entry"
 msgstr "²»ÄÜ×°ÈëÌõÄ¿"
 
-#: panel/menu.c:735
+#: panel/menu.c:738
 msgid "Cannot create an item with an empty command"
 msgstr "²»ÄÜÓÃ¿ÕµÄÃüÁî´´½¨Ñ¡Ïî"
 
 # applets/battery/read-battery.c:92
-#: panel/menu.c:773
+#: panel/menu.c:781
 #, c-format
 msgid "Could not get file from path: %s"
 msgstr "ÎŞ·¨ÔÚÈçÏÂÂ·¾¶ÕÒµ½ÎÄ¼ş£º%s"
 
 # applets/mixer/mixer.c:93
-#: panel/menu.c:777
+#: panel/menu.c:785
 #, c-format
 msgid "Could not open .order file: %s"
 msgstr "ÎŞ·¨´ò¿ª .order ÎÄ¼ş£º%s"
 
-#: panel/menu.c:785
+#: panel/menu.c:793
 #, c-format
 msgid "Could not open file '%s' for writing"
 msgstr "ÎŞ·¨´ò¿ª¿ÉĞ´ÎÄ¼ş '%s'"
 
 # gmenu/main.c:56 gmenu/main.c:126
-#: panel/menu.c:804
+#: panel/menu.c:812
 msgid "Create menu item"
 msgstr "´´½¨²Ëµ¥Ïî"
 
-#: panel/menu.c:881
+#: panel/menu.c:889
 #, c-format
 msgid "Could not remove the menu item %s: %s\n"
 msgstr "ÎŞ·¨É¾³ı²Ëµ¥Ñ¡Ïî %s£º%s\n"
 
 # applets/battery/read-battery.c:92
-#: panel/menu.c:888
+#: panel/menu.c:896
 #, c-format
 msgid "Could not get file name from path: %s"
 msgstr "ÎŞ·¨ÔÚÈçÏÂÂ·¾¶ÕÒµ½ÎÄ¼şÃû£º%s"
 
 # applets/battery/read-battery.c:92
-#: panel/menu.c:895
+#: panel/menu.c:903
 #, c-format
 msgid "Could not get directory name from path: %s"
 msgstr "ÎŞ·¨ÔÚÈçÏÂÂ·¾¶ÕÒµ½Ä¿Â¼Ãû£º%s"
 
 # applets/mixer/mixer.c:93
-#: panel/menu.c:916
+#: panel/menu.c:924
 #, c-format
 msgid ""
 "Could not open .order file: %s\n"
@@ -4013,13 +4110,13 @@ msgstr ""
 "%s"
 
 # applets/mixer/mixer.c:93
-#: panel/menu.c:936
+#: panel/menu.c:944
 #, c-format
 msgid "Could not remove old order file %s: %s\n"
 msgstr "ÎŞ·¨É¾³ı¾ÉµÄ order ÎÄ¼ş %s£º%s\n"
 
 # panel/menu.c:2069
-#: panel/menu.c:944
+#: panel/menu.c:952
 #, c-format
 msgid ""
 "Could not rename tmp file: %s to %s\n"
@@ -4028,148 +4125,148 @@ msgstr ""
 "ÎŞ·¨°ÑÁÙÊ±ÎÄ¼ş %s ¸ÄÃûÎª %s\n"
 "%s"
 
-#: panel/menu.c:964
+#: panel/menu.c:972
 msgid "No 'Exec' field in entry"
 msgstr "ÌõÄ¿ÖĞÃ»ÓĞ 'Ö´ĞĞ' ²¿·Ö"
 
 # panel/menu.c:772 panel/menu.c:812
 #. watch the enum at the top of the file
-#: panel/menu.c:1328 panel/menu.c:1439
+#: panel/menu.c:1336 panel/menu.c:1447
 msgid "Desktop entry properties"
 msgstr "×ÀÃæ¼ÇÂ¼ÊôĞÔ"
 
 # panel/menu.c:886
-#: panel/menu.c:1576
+#: panel/menu.c:1584
 msgid "Add this launcher to panel"
 msgstr "¼ÓÈëÕâ¸öÆô¶¯Æ÷µ½Ãæ°å"
 
 # panel/menu.c:886
-#: panel/menu.c:1579
+#: panel/menu.c:1587
 msgid "Add this applet as a launcher to panel"
 msgstr "½«Õâ¸öĞ¡³ÌĞò×÷ÎªÆô¶¯Æ÷¼Ó½øÃæ°å"
 
 # panel/menu.c:893 panel/menu.c:919
-#: panel/menu.c:1589 panel/menu.c:1685
+#: panel/menu.c:1597 panel/menu.c:1695
 msgid "Add this to Favorites menu"
 msgstr "¼Óµ½ 'ÎÒµÄ×î°®' ²Ëµ¥"
 
 # panel/menu.c:2276
-#: panel/menu.c:1602
+#: panel/menu.c:1610
 msgid "Remove this item"
 msgstr "É¾³ıÕâ¸öÑ¡Ïî"
 
-#: panel/menu.c:1620
+#: panel/menu.c:1628
 msgid "Put into run dialog"
 msgstr "·Å½øÔËĞĞ¿ò"
 
 # panel/menu.c:904
-#: panel/menu.c:1668
+#: panel/menu.c:1678
 msgid "Add this as drawer to panel"
 msgstr "½«Ëü×÷Îª³éÌë¼Ó½øÃæ°å"
 
 # panel/menu.c:912
-#: panel/menu.c:1677
+#: panel/menu.c:1687
 msgid "Add this as menu to panel"
 msgstr "½«Ëü×÷Îª²Ëµ¥¼Ó½øÃæ°å"
 
 # panel/menu.c:893 panel/menu.c:919
-#: panel/menu.c:1697
+#: panel/menu.c:1707
 msgid "Add new item to this menu"
 msgstr "¸øÕâ¸ö²Ëµ¥¼Ó½øĞÂÑ¡Ïî"
 
 # panel/menu.c:1148 panel/menu.c:1220
-#: panel/menu.c:1910 panel/menu.c:1988
+#: panel/menu.c:1920 panel/menu.c:1998
 msgid "..."
 msgstr "..."
 
-#: panel/menu.c:2139
+#: panel/menu.c:2149
 msgid "You already have a status dock on the panel. You can only have one"
 msgstr "ÄúµÄÃæ°åÀïÒÑ¾­ÓĞÒ»¸ö×´Ì¬Ö¸Ê¾Æ÷ÁË£¬²»ÄÜÔÙ¶à"
 
-#: panel/menu.c:2594
+#: panel/menu.c:2608
 msgid "Adding tearoff when tearoffs are disabled"
 msgstr ""
 
 # panel/menu.c:1643
-#: panel/menu.c:2761
+#: panel/menu.c:2775
 msgid "Can't get goad_id for applet, ignoring it"
 msgstr "²»ÄÜ´ÓĞ¡³ÌĞòÖĞÈ¡µÃ goad_id£¬Ëü±»ºöÂÔ"
 
 # panel/menu.c:1805
-#: panel/menu.c:2992 panel/menu.c:2994
+#: panel/menu.c:3008 panel/menu.c:3010
 msgid " (empty)"
 msgstr " (¿Õ)"
 
 # panel/menu.c:1918
 #. applets
 #. launcher_add
-#: panel/menu.c:3099 panel/menu.c:5199
+#: panel/menu.c:3115 panel/menu.c:5232
 msgid "Applets"
 msgstr "Ğ¡³ÌĞò"
 
 #. Don't translate the first part of this string
-#: panel/menu.c:3281 panel/session.c:1354
+#: panel/menu.c:3297 panel/session.c:1388
 msgid "/panel/Config/clock_format=%I:%M:%S %p"
 msgstr ""
 
-#: panel/menu.c:3290
+#: panel/menu.c:3306
 msgid "You can only have one menu panel at a time."
 msgstr "ÄúÖ»ÄÜÓĞÒ»¸ö²Ëµ¥Ãæ°å¡£"
 
 # panel/menu.c:2542
-#: panel/menu.c:3328 panel/menu.c:3333 panel/menu.c:4762
+#: panel/menu.c:3344 panel/menu.c:3349 panel/menu.c:4785
 msgid "Create panel"
 msgstr "´´½¨ĞÂµÄÃæ°å"
 
 # panel/menu.c:3516
-#: panel/menu.c:3361
+#: panel/menu.c:3377
 msgid "Menu panel"
 msgstr "²Ëµ¥Ãæ°å"
 
 # panel/menu.c:2046 panel/panel_config.c:890
-#: panel/menu.c:3369 panel/menu.c:4409 panel/panel_config.c:1672
+#: panel/menu.c:3385 panel/menu.c:4425 panel/panel_config.c:1672
 #: panel/panel_config.c:1791
 msgid "Edge panel"
 msgstr "±ßÔµÃæ°å"
 
 # panel/menu.c:2046 panel/panel_config.c:890
-#: panel/menu.c:3377 panel/menu.c:4410 panel/panel_config.c:1679
+#: panel/menu.c:3393 panel/menu.c:4426 panel/panel_config.c:1679
 #: panel/panel_config.c:1801
 msgid "Aligned panel"
 msgstr "¶ÔÆëµÄÃæ°å"
 
 # panel/menu.c:2046 panel/panel_config.c:890
-#: panel/menu.c:3385 panel/menu.c:4411 panel/panel_config.c:1685
+#: panel/menu.c:3401 panel/menu.c:4427 panel/panel_config.c:1685
 #: panel/panel_config.c:1811
 msgid "Sliding panel"
 msgstr "»¬¶¯Ãæ°å"
 
 # applets/gkb/gkb.c:200
-#: panel/menu.c:3393 panel/menu.c:4412 panel/panel_config.c:1691
+#: panel/menu.c:3409 panel/menu.c:4428 panel/panel_config.c:1691
 #: panel/panel_config.c:1821
 msgid "Floating panel"
 msgstr "Æ¯¸¡Ãæ°å"
 
 # panel/menu.c:2147
-#: panel/menu.c:3459 panel/menu.c:3462
+#: panel/menu.c:3475 panel/menu.c:3478
 msgid "No system menus found!"
 msgstr "Ã»ÓĞÕÒµ½ÏµÍ³²Ëµ¥!"
 
 # applets/slashapp/slashapp.c:258 gmenu/utils.c:31
-#: panel/menu.c:3478
+#: panel/menu.c:3494
 msgid "Can't create the user menu directory"
 msgstr "ÎŞ·¨´´½¨ÓÃ»§µÄ²Ëµ¥Ä¿Â¼"
 
 # panel/menu.c:2161 panel/menu.c:2167 panel/menu.c:2257 panel/menu.c:3102
-#: panel/menu.c:3557 panel/menu.c:3565 panel/menu.c:5078
+#: panel/menu.c:3573 panel/menu.c:3581 panel/menu.c:5111
 msgid "KDE menus"
 msgstr "KDE²Ëµ¥"
 
-#: panel/menu.c:3627
+#: panel/menu.c:3643
 msgid "You cannot remove your last panel."
 msgstr "Äú²»ÄÜÈ¥µô×îºóÒ»¸öÃæ°å¡£"
 
-#: panel/menu.c:3637
+#: panel/menu.c:3653
 msgid ""
 "When a panel is removed, the panel and its\n"
 "applet settings are lost. Remove this panel?"
@@ -4178,213 +4275,223 @@ msgstr ""
 "ÕæÒªÈ¥µôÕâ¸öÃæ°å?"
 
 # panel/menu.c:3523 panel/menu.c:3543
-#: panel/menu.c:3676 panel/menu.c:3681
+#: panel/menu.c:3692 panel/menu.c:3697 panel/menu.c:5330 panel/menu.c:5356
+#: panel/menu.c:5490
 #, fuzzy
 msgid "Main Menu"
 msgstr "Ö÷²Ëµ¥"
 
-#: panel/menu.c:4423
+#: panel/menu.c:4439
 msgid "With pixmap arrow"
 msgstr "Ê¹ÓÃ¼ıÍ·Í¼Æ¬"
 
-#: panel/menu.c:4424
+#: panel/menu.c:4440
 msgid "Without pixmap"
 msgstr "²»ÓÃÍ¼Æ¬"
 
 # gnome-terminal/gnome-terminal.c:1203
-#: gnome-terminal/gnome-terminal.glade.h:22 panel/menu.c:4425
+#: gnome-terminal/gnome-terminal.glade.h:23 panel/menu.c:4441
 msgid "None"
 msgstr "ÎŞ"
 
-#: panel/menu.c:4436 panel/panel_config.c:1172
+#: panel/menu.c:4452 panel/panel_config.c:1172
 msgid "Ultra Tiny (12 pixels)"
 msgstr "¼«Î¢Ğ¡ (12 ÏóËØ)"
 
-#: panel/menu.c:4437 panel/panel_config.c:1180
+#: panel/menu.c:4453 panel/panel_config.c:1180
 msgid "Tiny (24 pixels)"
 msgstr "Î¢Ğ¡ (24 ÏóËØ)"
 
-#: panel/menu.c:4438 panel/panel_config.c:1188
+#: panel/menu.c:4454 panel/panel_config.c:1188
 msgid "Small (36 pixels)"
 msgstr "Ğ¡ĞÍ (36 ÏóËØ)"
 
-#: panel/menu.c:4439 panel/panel_config.c:1196
+#: panel/menu.c:4455 panel/panel_config.c:1196
 msgid "Standard (48 pixels)"
 msgstr "±ê×¼ (48 ÏóËØ)"
 
-#: panel/menu.c:4440 panel/panel_config.c:1204
+#: panel/menu.c:4456 panel/panel_config.c:1204
 msgid "Large (64 pixels)"
 msgstr "´óĞÍ (64 ÏóËØ)"
 
-#: panel/menu.c:4441 panel/panel_config.c:1212
+#: panel/menu.c:4457 panel/panel_config.c:1212
 msgid "Huge (80 pixels)"
 msgstr "¾Ş´ó (80 ÏóËØ)"
 
-#: panel/menu.c:4442 panel/panel_config.c:1220
+#: panel/menu.c:4458 panel/panel_config.c:1220
 msgid "Ridiculous (128 pixels)"
 msgstr "»ÄÃı¾øÂ× (128 ÏóËØ)"
 
 # panel/panel_config.c:705
-#: panel/menu.c:4447 panel/panel_config.c:1489
+#: panel/menu.c:4463 panel/panel_config.c:1489
 msgid "Standard"
 msgstr "±ê×¼"
 
 # panel/panel_config.c:719
 #. color frame
-#: panel/menu.c:4448 panel/panel_config.c:1493 panel/panel_config.c:1508
+#: panel/menu.c:4464 panel/panel_config.c:1493 panel/panel_config.c:1508
 msgid "Color"
 msgstr "ÑÕÉ«"
 
 # panel/panel_config.c:712
-#: panel/menu.c:4449 panel/panel_config.c:1497
+#: panel/menu.c:4465 panel/panel_config.c:1497
 msgid "Pixmap"
 msgstr "Í¼Æ¬"
 
-#: panel/menu.c:4455
+#: panel/menu.c:4471
 msgid "Below"
 msgstr "Ö®ÏÂ"
 
 # gmenu/main.c:110 gmenu/main.c:140
-#: panel/menu.c:4457
+#: panel/menu.c:4473
 msgid "Above"
 msgstr "Ö®ÉÏ"
 
-#: panel/menu.c:4462
+#: panel/menu.c:4478
 msgid "Avoid on maximize"
 msgstr "×î´ó»¯Ê±Òª±Ü¿ª"
 
-#: panel/menu.c:4463
+#: panel/menu.c:4479
 msgid "Don't avoid on maximize"
 msgstr "×î´ó»¯Ê±²»±Ü¿ª"
 
-#: panel/menu.c:4467
+#: panel/menu.c:4483
 msgid "Type"
 msgstr "ÀàĞÍ"
 
-#: panel/menu.c:4470
+#: panel/menu.c:4486
 msgid "Hiding policy"
 msgstr "Òş²Ø²ßÂÔ"
 
 # panel/panel_config.c:376 panel/panel_config.c:590
-#: panel/menu.c:4473
+#: panel/menu.c:4489
 msgid "Hide buttons"
 msgstr "Òş²Ø°´Å¥"
 
 # panel/panel_config.c:538
-#: panel/menu.c:4479
+#: panel/menu.c:4495
 msgid "Orientation"
 msgstr "·½Ïò"
 
 # gnome-terminal/gnome-terminal.c:1193
-#: gnome-terminal/gnome-terminal.glade.h:20 panel/menu.c:4482
+#: gnome-terminal/gnome-terminal.glade.h:21 panel/menu.c:4498
 msgid "Background type"
 msgstr "±³¾°ÀàĞÍ"
 
-#: panel/menu.c:4485
+#: panel/menu.c:4501
 msgid "Level"
 msgstr "¼¶±ğ"
 
-#: panel/menu.c:4488
+#: panel/menu.c:4504
 msgid "Maximize mode"
 msgstr "×î´ó»¯Ä£Ê½"
 
 # panel/menu.c:1918
-#: panel/menu.c:4506
+#: panel/menu.c:4522
 msgid "Applet"
 msgstr "Ğ¡³ÌĞò"
 
 # panel/menu.c:3523 panel/menu.c:3543
-#: panel/menu-properties.c:498 panel/menu-properties.c:520 panel/menu.c:4527
+#: panel/menu-properties.c:498 panel/menu-properties.c:520 panel/menu.c:4543
 msgid "Main menu"
 msgstr "Ö÷²Ëµ¥"
 
 # applets/gkb/gkb.c:262
-#: panel/menu.c:4538
+#: panel/menu.c:4554
 msgid "Programs menu"
 msgstr "³ÌĞò²Ëµ¥"
 
 # gmenu/main.c:117
-#: panel/menu.c:4548
+#: panel/menu.c:4564
 msgid "Favorites menu"
 msgstr "ÎÒµÄ×î°®²Ëµ¥"
 
 # panel/panel_config_global.c:568
-#: panel/menu.c:4559
+#: panel/menu.c:4575
 msgid "Launcher..."
 msgstr "Æô¶¯Æ÷..."
 
 # panel/panel_config_global.c:568
-#: panel/menu.c:4568
+#: panel/menu.c:4584
 #, fuzzy
 msgid "Launcher from menu"
 msgstr "Æô¶¯Æ÷Í¼±ê"
 
 # panel/menu.c:2465
-#: panel/menu.c:4590
+#: panel/menu.c:4606
 msgid "Log out button"
 msgstr "ÍË³ö°´Å¥"
 
-#: panel/menu.c:4601
+#: panel/menu.c:4617
 msgid "Lock button"
 msgstr "ÆÁÄ»Ëø¶¨Å¥"
 
-#: panel/menu.c:4612
+#: panel/menu.c:4628
 msgid "Run button"
 msgstr "ÔËĞĞ°´Å¥"
 
 # panel/menu.c:2477
-#: panel/menu.c:4624
+#: panel/menu.c:4640
 msgid "Swallowed app..."
 msgstr "Ç©ÈëµÄ³ÌĞò"
 
-#: panel/menu.c:4632
+#: panel/menu.c:4648
 msgid "Status dock"
 msgstr "×´Ì¬Ìõ"
 
 # panel/menu.c:912
-#: panel/menu.c:4656 panel/menu.c:4661 panel/menu.c:4738
+#: panel/menu.c:4672 panel/menu.c:4677 panel/menu.c:4761
 msgid "Add to panel"
 msgstr "¼Ó½øÃæ°å"
 
-#: panel/menu.c:4676
+#: panel/menu.c:4692
 msgid "Cannot execute panel global properties"
 msgstr "ÎŞ·¨Ö´ĞĞÃæ°åÈ«¾ÖÊôĞÔ"
 
 # panel/menu.c:2276
-#: panel/menu.c:4716
+#: panel/menu.c:4732
 msgid "Remove this panel..."
 msgstr "É¾³ı´ËÃæ°å..."
 
 # panel/menu.c:2276
-#: panel/menu.c:4718 panel/menu.c:4773
+#: panel/menu.c:4734 panel/menu.c:4796
 msgid "Remove this panel"
 msgstr "É¾³ı´ËÃæ°å"
 
+#: panel/menu.c:4748
+msgid "Cannot launch gmenu!"
+msgstr ""
+
 # applets/fvwm-pager/fvwm-pager.c:412
-#: panel/menu.c:4790
+#: panel/menu.c:4813
 msgid "Properties"
 msgstr "ÊôĞÔ"
 
 # panel/menu.c:2508
-#: panel/menu.c:4801
+#: panel/menu.c:4824
 msgid "All properties..."
 msgstr "ËùÓĞÊôĞÔ..."
 
 # panel/menu.c:2508
-#: panel/menu.c:4817
+#: panel/menu.c:4840
 msgid "Global Preferences..."
 msgstr "È«¾Ö¸öÈËÉèÖÃ..."
 
+# panel/menu.c:2161 panel/menu.c:2167 panel/menu.c:2257 panel/menu.c:3102
+#: panel/menu-properties.c:211 panel/menu.c:4850 panel/menu.c:5590
+msgid "Edit menus..."
+msgstr "ĞŞ¸Ä²Ëµ¥..."
+
 # panel/menu.c:2138 panel/menu.c:2142 panel/menu.c:2233 panel/menu.c:3075
-#: panel/menu.c:4828
+#: panel/menu.c:4861
 msgid "Reread all menus"
 msgstr "ÖØĞÂ¶ÁÈ¡ËùÓĞ²Ëµ¥"
 
-#: panel/menu.c:4843
+#: panel/menu.c:4876
 msgid "Panel Manual..."
 msgstr "Ãæ°åÊÖ²á..."
 
-#: panel/menu.c:4854
+#: panel/menu.c:4887
 msgid "Cannot execute xscreensaver"
 msgstr "ÎŞ·¨Ö´ĞĞ xscreensaver ÆÁÄ»±£»¤"
 
@@ -4399,24 +4506,19 @@ msgstr "ÎŞ·¨Ö´ĞĞ xscreensaver ÆÁÄ»±£»¤"
 # applets/modemlights/modemlights.c:992 applets/netload/netload.c:339
 # applets/slashapp/slashapp.c:636 applets/tasklist/tasklist_applet.c:683
 # applets/webcontrol/webcontrol.c:307 panel/menu.c:2602
-#: panel/menu.c:4943
+#: panel/menu.c:4976
 msgid "About the panel..."
 msgstr "¹ØÓÚÃæ°å..."
 
 # panel/menu.c:2614
-#: panel/menu.c:4959
+#: panel/menu.c:4992
 msgid "About GNOME..."
 msgstr "¹ØÓÚ GNOME..."
 
 # panel/menu.c:3327
-#: panel/menu.c:5309
+#: panel/menu.c:5350
 msgid "Can't create menu, using main menu!"
 msgstr "ÎŞ·¨´´½¨²Ëµ¥£¬Ê¹ÓÃÖ÷²Ëµ¥!"
-
-# panel/menu.c:2161 panel/menu.c:2167 panel/menu.c:2257 panel/menu.c:3102
-#: panel/menu-properties.c:211 panel/menu.c:5538
-msgid "Edit menus..."
-msgstr "ĞŞ¸Ä²Ëµ¥..."
 
 # panel/menu.c:3327
 #: panel/menu-properties.c:192
@@ -4477,7 +4579,7 @@ msgstr "²Ëµ¥Â·¾¶"
 msgid "Use custom icon for panel button"
 msgstr "Ãæ°å°´Å¥Ê¹ÓÃ¶¨ÖÆµÄÍ¼±ê"
 
-#: panel/panel.c:943
+#: panel/panel.c:951
 #, c-format
 msgid "Open URL: %s"
 msgstr "´ò¿ª URL£º%s"
@@ -4574,7 +4676,7 @@ msgstr "Ê¹ÓÃµÄÑÕÉ«£º"
 
 # gnome-terminal/gnome-terminal.c:1191
 #. image frame
-#: gnome-terminal/gnome-terminal.glade.h:27 panel/panel_config.c:1542
+#: gnome-terminal/gnome-terminal.glade.h:28 panel/panel_config.c:1542
 msgid "Image"
 msgstr "Í¼Ïó"
 
@@ -4606,7 +4708,7 @@ msgstr "Ãæ°åÊôĞÔ"
 msgid "Background"
 msgstr "±³¾°"
 
-#: panel/session.c:267
+#: panel/session.c:268
 msgid ""
 "An applet is not responding to a save request.\n"
 "Remove the applet or continue waiting?"
@@ -4615,21 +4717,21 @@ msgstr ""
 "È¥µôËü»¹ÊÇ¼ÌĞøµÈ´ı?"
 
 # panel/applet.c:344
-#: panel/session.c:278
+#: panel/session.c:279
 msgid "Remove applet"
 msgstr "ÒÆ¶¯Ğ¡³ÌĞò"
 
 # applets/asclock/dialogs.c:235
-#: panel/session.c:281
+#: panel/session.c:282
 msgid "Continue waiting"
 msgstr "¼ÌĞøµÈ´ı"
 
-#: panel/session.c:290
+#: panel/session.c:291
 msgid "Timed out on sending session save to an applet"
 msgstr "ÏòĞ¡³ÌĞò·¢ËÍ±£´æ»á»°ÇëÇóÊ±³¬Ê±"
 
 #. Don't translate the first part of this string
-#: panel/session.c:1581
+#: panel/session.c:1615
 msgid "/panel/Config/clock_format=%l:%M:%S %p"
 msgstr ""
 
@@ -4666,6 +4768,12 @@ msgstr "¿í¶È"
 #: panel/swallow.c:283
 msgid "Height"
 msgstr "¸ß¶È"
+
+# applets/tasklist/tasklist_properties.c:262
+#: panel/icon-entry-hack.c:268
+#, fuzzy
+msgid "Choose an icon"
+msgstr "ÏÔÊ¾Ğ¡Í¼±ê"
 
 # gnome-terminal/gnome-terminal.c:1097
 #.
@@ -4713,7 +4821,8 @@ msgstr "¹Ø±ÕÖÕ¶ËÏìÁå"
 
 # gnome-terminal/gnome-terminal.c:1152
 #: gnome-terminal/gnome-terminal.glade.h:16
-msgid "Swap DEL/Backspace"
+#, fuzzy
+msgid "Swap Delete/Backspace"
 msgstr "½»»»DEL/Backspace¼ü"
 
 # gnome-terminal/gnome-terminal.c:1161
@@ -4721,8 +4830,12 @@ msgstr "½»»»DEL/Backspace¼ü"
 msgid "Use --login by default"
 msgstr "È±Ê¡Ê¹ÓÃ --login µÇÂ¼Ñ¡Ïî"
 
-# gnome-terminal/gnome-terminal.c:1170
 #: gnome-terminal/gnome-terminal.glade.h:18
+msgid "Delete generates DEL/^H"
+msgstr ""
+
+# gnome-terminal/gnome-terminal.c:1170
+#: gnome-terminal/gnome-terminal.glade.h:19
 #, fuzzy
 msgid "Select-by-word characters:"
 msgstr "¡®°´´ÊÑ¡Ôñ¡¯×Ö·û"
@@ -4735,26 +4848,25 @@ msgstr "¡®°´´ÊÑ¡Ôñ¡¯×Ö·û"
 # applets/modemlights/properties.c:244 applets/netload/properties.c:280
 # applets/slashapp/properties.c:347 gnome-terminal/gnome-terminal.c:1064
 # panel/panel_config_global.c:310
-#: gnome-terminal/gnome-terminal.glade.h:19
+#: gnome-terminal/gnome-terminal.glade.h:20
 msgid "General"
 msgstr "Ò»°ã"
 
 # gnome-terminal/gnome-terminal.c:1255
-#: gnome-terminal/gnome-terminal.glade.h:24
+#: gnome-terminal/gnome-terminal.glade.h:25
 msgid "Transparent"
 msgstr "Í¸Ã÷"
 
 # gnome-terminal/gnome-terminal.c:1227
-#: gnome-terminal/gnome-terminal.glade.h:25
+#: gnome-terminal/gnome-terminal.glade.h:26
 msgid "Pixmap file:"
 msgstr "Í¼Æ¬ÎÄ¼ş£º"
 
 # gnome-terminal/gnome-terminal.c:1282
-#: gnome-terminal/gnome-terminal.glade.h:26
+#: gnome-terminal/gnome-terminal.glade.h:27
 msgid "Background should be shaded"
 msgstr "½¥±ä±³¾°"
 
-#: gnome-terminal/gnome-terminal.glade.h:28
 #: gnome-terminal/gnome-terminal.glade.h:29
 #: gnome-terminal/gnome-terminal.glade.h:30
 #: gnome-terminal/gnome-terminal.glade.h:31
@@ -4770,67 +4882,68 @@ msgstr "½¥±ä±³¾°"
 #: gnome-terminal/gnome-terminal.glade.h:41
 #: gnome-terminal/gnome-terminal.glade.h:42
 #: gnome-terminal/gnome-terminal.glade.h:43
-#: gnome-terminal/gnome-terminal.glade.h:49
+#: gnome-terminal/gnome-terminal.glade.h:44
 #: gnome-terminal/gnome-terminal.glade.h:50
+#: gnome-terminal/gnome-terminal.glade.h:51
 msgid "Pick a color"
 msgstr ""
 
 # gnome-terminal/gnome-terminal.c:1298
-#: gnome-terminal/gnome-terminal.glade.h:44
+#: gnome-terminal/gnome-terminal.glade.h:45
 msgid "Color scheme:"
 msgstr "ÅäÉ«·½°¸"
 
 # gnome-terminal/gnome-terminal.c:1345
-#: gnome-terminal/gnome-terminal.glade.h:45
+#: gnome-terminal/gnome-terminal.glade.h:46
 #, fuzzy
 msgid "Fore/Background Color:"
 msgstr "Ç°¾°/±³¾°ÑÕÉ«£º"
 
 # gnome-terminal/gnome-terminal.c:1308
-#: gnome-terminal/gnome-terminal.glade.h:46
+#: gnome-terminal/gnome-terminal.glade.h:47
 msgid "Foreground color:"
 msgstr "Ç°¾°ÑÕÉ«£º"
 
 # gnome-terminal/gnome-terminal.c:1316
-#: gnome-terminal/gnome-terminal.glade.h:47
+#: gnome-terminal/gnome-terminal.glade.h:48
 msgid "Background color:"
 msgstr "±³¾°ÑÕÉ«£º"
 
 # gnome-terminal/gnome-terminal.c:1323
-#: gnome-terminal/gnome-terminal.glade.h:48
+#: gnome-terminal/gnome-terminal.glade.h:49
 msgid "Color palette:"
 msgstr "µ÷É«°å£º"
 
 # applets/another_clock/another_clock.c:225
 # applets/mini-commander/src/preferences.c:597
 # applets/multiload/load-graph.c:193 gnome-terminal/gnome-terminal.c:1295
-#: gnome-terminal/gnome-terminal.glade.h:51
+#: gnome-terminal/gnome-terminal.glade.h:52
 msgid "Colors"
 msgstr "É«²Ê"
 
 # gnome-terminal/gnome-terminal.c:1361
-#: gnome-terminal/gnome-terminal.glade.h:52
+#: gnome-terminal/gnome-terminal.glade.h:53
 #, fuzzy
 msgid "Scrollbar position:"
 msgstr "¹ö¶¯ÌõÎ»ÖÃ"
 
 # gnome-terminal/gnome-terminal.c:1372
-#: gnome-terminal/gnome-terminal.glade.h:53
+#: gnome-terminal/gnome-terminal.glade.h:54
 #, fuzzy
 msgid "Scrollback lines:"
 msgstr "¾í»ØĞĞÊı"
 
 # gnome-terminal/gnome-terminal.c:1386
-#: gnome-terminal/gnome-terminal.glade.h:54
+#: gnome-terminal/gnome-terminal.glade.h:55
 msgid "Scroll on keystroke"
 msgstr "»÷¼üÊ±¾íÆÁ"
 
 # gnome-terminal/gnome-terminal.c:1395
-#: gnome-terminal/gnome-terminal.glade.h:55
+#: gnome-terminal/gnome-terminal.glade.h:56
 msgid "Scroll on output"
 msgstr "Êä³öÊ±¾íÆÁ"
 
 # applets/slashapp/properties.c:356 gnome-terminal/gnome-terminal.c:1358
-#: gnome-terminal/gnome-terminal.glade.h:56
+#: gnome-terminal/gnome-terminal.glade.h:57
 msgid "Scrolling"
 msgstr "¾íÆÁ"
