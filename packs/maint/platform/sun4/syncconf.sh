@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.3 1997-03-28 10:43:13 ghudson Exp $
+# $Id: syncconf.sh,v 1.4 1997-06-27 23:16:11 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -24,7 +24,7 @@ syncrc()
 		prefix="$uprefix"
 	fi
 	if [ "$1$prefix" = 2S -a ! -h "/etc/rc2.d/S$3$4" ]; then
-		rc2added=1
+		mustreboot=1
 	fi
 	$maybe rm -f "/etc/rc$1.d/$lprefix$3$4" "/etc/rc$1.d/$uprefix$3$4"
 	$maybe ln -s "../init.d/$4" "/etc/rc$1.d/$prefix$3$4"
@@ -108,6 +108,10 @@ handle()
 		append	/etc/inet/hosts "#"
 		append	/etc/inet/hosts "127.0.0.1  localhost loghost"
 		append	/etc/inet/hosts "$ADDR  $HOST.MIT.EDU $HOST"
+
+		# Hostname configuration happens prior to rc scripts on
+		# Solaris.
+		mustreboot=1
 		;;
 
 	*)
@@ -182,7 +186,7 @@ if [ \$HOST != $HOST ]; then changes="\$changes HOSTADDR"; fi
 if [ \$ADDR != $ADDR ]; then changes="\$changes HOSTADDR"; fi
 EOF
 
-if [ -n "$rc2added" ]; then
+if [ -n "$mustreboot" ]; then
 	# Exit with status 1 to indicate need to reboot if run at startup.
 	exit 1
 fi
