@@ -17,13 +17,15 @@
  * for attach.
  */
 
-static char rcsid[] = "$Id: add.c,v 1.2 1998-04-17 22:31:55 cfields Exp $";
+static char rcsid[] = "$Id: add.c,v 1.3 1998-05-19 18:50:29 cfields Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/param.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <athdir.h>
 #include "stringlist.h"
 
@@ -58,6 +60,7 @@ void usage()
   fprintf(stderr, "Usage: add [-vdfrpwb] [-P $athena_path] "
 	  "[-M $athena_manpath] [-a attachflags]\n"
 	  "           [lockername] [lockername] ...\n");
+  fprintf(stderr, "   or: add [-dfrb] [pathname] [pathname] ...\n");
   exit(1);
 }
 
@@ -199,6 +202,7 @@ int addcmd(int argc, char **argv)
   char *path_string = NULL, *manpath_string = NULL, *empty_string = "";
   char path_delimiter = ':';
   char **found, **mountpoint, **ptr;
+  struct stat statbuf;
   FILE *shell;
 
   /* Redirect stdout to stderr, so attach output won't be interpreted
@@ -293,7 +297,7 @@ int addcmd(int argc, char **argv)
     {
       if (path_string == NULL || manpath_string == NULL)
 	{
-	  fprintf(stderr, "%s: -P and -M must both be specified\n");
+	  fprintf(stderr, "%s: -P and -M must both be specified\n", progname);
 	  usage();
 	}
 
@@ -325,26 +329,59 @@ int addcmd(int argc, char **argv)
       exit(0);
     }
 
-  /* Get information from attach... */
-
-  /* Create argv for attach... */
-  sl_add_string(&attach_args, "add", 0);
-  if (verbose == 0)
-    sl_add_string(&attach_args, "-q", 0);
-
-  /* The remaining arguments go to attach. */
-  while (optind < argc)
+  /* If the following args weren't explicitly handed to attach (via
+   * -a), and the first one looks like a pathname, then assume we've
+   * been passed a bunch of pathnames rather than lockernames. We
+   * store them directly in delta_path and leave mountpoint_list
+   * empty. This results in the code that processes mountpoint_list
+   * to generate delta_path being skipped.
+   */
+  if (!end_args && (argv[optind][0] == '.' || argv[optind][0] == '/'))
     {
-      if (sl_add_string(&attach_args, argv[optind++], 0))
+      for (; optind < argc; optind++)
 	{
-	  fprintf(stderr, "%s: out of memory (optind)\n", progname);
-	  exit(1);
+	  if (argv[optind][0] != '.' && argv[optind][0] != '/')
+	    {
+	      fprintf(stderr, "%s: only pathnames may be specified when "
+		      "pathnames are being added\n", progname);
+	      usage();
+	    }
+
+	  /* Make sure the directory exists, if we're adding it to the
+	   * path. Otherwise we don't care.
+	   */
+	  if (remove_from_path || stat(argv[optind], &statbuf) != -1)
+	    sl_add_string(&delta_path, argv[optind], 0);
+	  else
+	    fprintf(stderr, "%s: no such path: %s\n", progname,
+		    argv[optind]);
 	}
     }
+  else
+    {      
+      /* We were handed lockernames, so get path information from
+       * attach...
+       */
 
-  attachcmd(sl_grab_length(attach_args), sl_grab_string_array(attach_args),
-	    &mountpoint_list);
-  sl_free(&attach_args);
+      /* Create argv for attach... */
+      sl_add_string(&attach_args, "add", 0);
+      if (verbose == 0)
+	sl_add_string(&attach_args, "-q", 0);
+
+      /* The remaining arguments go to attach. */
+      while (optind < argc)
+	{
+	  if (sl_add_string(&attach_args, argv[optind++], 0))
+	    {
+	      fprintf(stderr, "%s: out of memory (optind)\n", progname);
+	      exit(1);
+	    }
+	}
+
+      attachcmd(sl_grab_length(attach_args), sl_grab_string_array(attach_args),
+		&mountpoint_list);
+      sl_free(&attach_args);
+    }
 
   /* Iterate over the mountpoints attach returned and find the
    * subdirectories we want. In the end, delta_path and delta_manpath
