@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.18 1991-01-06 01:15:37 lwvanels Exp $
+ *	$Id: backup.c,v 1.19 1991-03-07 13:33:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.18 1991-01-06 01:15:37 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.19 1991-03-07 13:33:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -567,9 +567,6 @@ char *file;
 	    {
 	      fprintf(fp,"\n\nknuckle...");
 	      fprintf(fp,"\ninstance:     %d", (*(k_again+i))->instance);
-	      fprintf(fp,"\npriority:     %d", (*(k_again+i))->priority);
-	      fprintf(fp,"\nqueue:        %d", (*(k_again+i))->queue);
-	      fprintf(fp,"\ntimestamp:    %d", (*(k_again+i))->timestamp);
 	      fprintf(fp,"\nstatus:       %d", (*(k_again+i))->status);
 	      fprintf(fp,"\ncusername:    %d", (*(k_again+i))->cusername);
 	      fprintf(fp,"\ncinstance:    %d", (*(k_again+i))->cinstance);
@@ -586,8 +583,6 @@ char *file;
 		  fprintf(fp,"\n\nquestion...");
 		  fprintf(fp,"\nlogfile:    %s",
 			  (*(k_again+i))->question->logfile);
-		  fprintf(fp,"\nlogtime:    %d",
-			  (*(k_again+i))->question->logfile_timestamp);
 		  fprintf(fp,"\nnseen:      %d",
 			  (*(k_again+i))->question->nseen);
 		  fprintf(fp,"\ntopic:      %s",
