@@ -1,7 +1,7 @@
 # Prototype global .login file
 # $Author: cfields $
 # $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v $
-# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.1 1994-12-18 04:09:31 cfields Exp $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/login,v 1.2 1995-01-20 09:20:51 cfields Exp $
 
 # This file is sourced by default user file ~/.login
 
@@ -102,4 +102,13 @@ if (-r ~/.startup.tty) then
 	  echo "Running custom startup activities listed in ~/.startup.tty ..."
 	endif
 	source ~/.startup.tty
+endif
+
+
+# Run notification system, mom. To skip this (a generally bad idea unless
+# you plan to run it yourself), put the commend "set skip_mom" in your
+# ~/.environment file.
+
+if (! $?skip_mom) then
+	mom -q				# Don't want to see server errors.
 endif
