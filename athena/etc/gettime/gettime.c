@@ -1,182 +1,195 @@
 /*
- *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
- *	$Author: ghudson $
- *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.11 1997-12-13 18:39:37 ghudson Exp $
+ * gettime
+ *
+ * Retrieve the time from a remote host and print it in ctime(3)
+ * format. The time is acquired via the protocol described in
+ * RFC868. The name of the host to be queried is specified on the
+ * command line, and if the -s option is also specified, and gettime
+ * is run as root, the clock on the local workstation will also be
+ * set. gettime makes five attempts at getting the time, each with
+ * a five second timeout.
  */
 
-#ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.11 1997-12-13 18:39:37 ghudson Exp $";
-#endif	lint
-
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <netinet/in.h>
 #include <netdb.h>
-#include <signal.h>
-#include <setjmp.h>
 
-#define DEFAULT_TIME_SERVER "dcn1.arpa"
+static char rcsid[] = "$Id: gettime.c,v 1.12 1997-12-13 23:07:06 cfields Exp $";
 
-/* On the RT, we need to explicitly make this an unsigned long.  Neither the
-   VAX or RT versions of pcc accept this syntax, however.
-   - Win Treese, 2/21/86
- */
+#define UNIX_OFFSET_TO_1900 ((70 * 365UL + 17) * 24 * 60 * 60)
+#define TIME_SERVICE "time"
+#define MAX_TRIES 5
+#define TIMEOUT 5
 
-#if defined(ibm032) && !defined(_pcc_)
-#define TM_OFFSET 2208988800UL
-#else
-#define TM_OFFSET 2208988800
-#endif rtpc
+char *program_name;
 
-extern int optind;
-extern char *optarg;
-
-char buffer[512];
-char *ctime();
-struct timeval tv;
-struct timezone tz;
-jmp_buf top_level;
-int hiccup();
-main(argc, argv)
-	int argc;
-	char *argv[];
+void myperror(char *what, int errnum)
 {
-	struct sockaddr_in sin;
-	struct servent *sp;
-	struct hostent *host;
-	int setflg = 0;
-	int granularity = 0;
-	register int s;
-	long hosttime;
-	register int *nettime;
-	char hostname[64];
-	int cc, host_retry, c;
-	extern int h_errno;
-#if defined(sun) || defined(vax) && !defined(ultrix)
-	int attempts = 0;
-#else
-	volatile int attempts = 0;
-#endif
-#ifdef POSIX
-	struct sigaction act;
-#endif	
-
-	strcpy (hostname, DEFAULT_TIME_SERVER);
-	while ((c = getopt(argc, argv, "sg:")) != -1) {
-		switch (c) {
-		case 's':
-			setflg++;
-			break;
-		case 'g':
-			granularity = atoi(optarg);
-			break;
-		case '?':
-			fprintf(stderr, "%s: Invalid argument %s\n", argv[0],
-				argv[optind]);
-			exit(11);
-		}
-	}
-	if (argc == optind + 1)
-		strcpy(hostname, argv[optind]);
-	else if (argc != 0) {
-		fprintf(stderr, "%s: Too many arguments\n", argv[0]);
-		exit(11);
-	}
-	sp = getservbyname("time", "udp");
-	if (sp == 0) {
-		fprintf (stderr, "%s: time/udp: unknown service.\n",
-			argv[0]);
-		exit (1);
-	}
-	host_retry = 0;
-	while (host_retry < 5) {
-	  host = gethostbyname(hostname);
-	  if ((host == NULL) && h_errno != TRY_AGAIN) {
-	    host_retry = 5;
-	  }
-	  host_retry++;
-	}
-	if (host == NULL) {
-	  fprintf (stderr, "%s: The timeserver host %s is unknown\n",
-		   argv[0], hostname);
-	  exit (2);
-	}
-	sin.sin_family = host->h_addrtype;
-#ifdef POSIX
-	memmove ((caddr_t)&sin.sin_addr, host->h_addr, 
-			host->h_length);
-#else
-	bcopy (host->h_addr, (caddr_t)&sin.sin_addr,
-			host->h_length);
-#endif
-	sin.sin_port = sp->s_port;
-	s = socket(AF_INET, SOCK_DGRAM, 0);
-	if (s < 0) {
-		perror ("gettime: socket");
-		exit (3);
-	}
-	if (connect (s, (caddr_t)&sin, sizeof (sin)) < 0) {
-		perror ("gettime: connect");
-		exit (4);
-	}
-	setjmp(top_level);
-	if (attempts++ > 5) {
-		close (s);
-		fprintf (stderr, "Failed to get time from %s\n",
-			 hostname);
-		exit (10);
-	}
-	alarm(0);
-#ifdef POSIX
-	sigemptyset(&act.sa_mask);
-	act.sa_flags = 0;
-	act.sa_handler= (void (*)()) hiccup;
-	(void) sigaction(SIGALRM, &act, NULL);
-#else
-	signal(SIGALRM, hiccup);
-#endif
-	alarm(5);
-	send (s, buffer, 40, 0); /* Send an empty packet */
-	cc = recv (s, buffer, 512, 0);
-	if (cc < 0) {
-		perror("recv");
-		close(s);
-		fprintf (stderr, "Failed to get time from %s\n",
-			 hostname);
-		exit (7);
-	}
-	if (cc != 4) {
-		close(s);
-		fprintf(stderr,
-			"Protocol error -- received %d bytes; expected 4.\n",
-			cc);
-		exit(8);
-	}
-	nettime = (int *)buffer;
-	hosttime = (long) ntohl (*nettime) - TM_OFFSET;
-	fprintf (stdout, "%s", ctime(&hosttime));
-	if (setflg) {
-		if (gettimeofday (&tv, &tz) < 0) {
-			perror ("gettime: gettimeofday");
-			exit (5);
-		}
-		if (tv.tv_sec < hosttime - granularity
-		    || tv.tv_sec >= hosttime + granularity) {
-			tv.tv_sec = hosttime;
-			tv.tv_usec = 0;
-			if (settimeofday (&tv, &tz) < 0) {
-				perror ("gettime: settimeofday");
-				exit (6);
-			}
-		}
-	}
-	close (s);
-	exit (0);
+  fprintf(stderr, "%s: %s: %s\n", program_name, what, strerror(errnum));
+  exit(1);
 }
-hiccup() {
-	longjmp (top_level,0);
+
+int main(int argc, char **argv)
+{
+  struct servent *service_info;
+  struct hostent *host_info = NULL;
+  struct sockaddr_in time_address;
+  char *time_hostname, buffer[20];
+  int tries, time_socket, result;
+  fd_set read_set;
+  struct timeval timeout, current_time;
+  struct timezone current_timezone;
+  time_t now;
+  int c, setflag = 0, errflag = 0;
+
+  /* Set up our program name. */
+  if (argv[0] != NULL)
+    {
+      program_name = strrchr(argv[0], '/');
+      if (program_name != NULL)
+	program_name++;
+      else
+	program_name = argv[0];
+    }
+  else
+    program_name = "gettime";
+
+  /* Parse arguments. */
+  while ((c = getopt(argc, argv, "s")) != EOF)
+    {
+      switch (c)
+	{
+	case 's':
+	  setflag = 1;
+	  break;
+	case '?':
+	  errflag = 1;
+	  break;
+	}
+    }
+
+  if (errflag || optind + 1 != argc)
+    {
+      fprintf(stderr, "usage: %s [-s] hostname\n", program_name);
+      exit(1);
+    }
+
+  time_hostname = argv[optind];
+
+  /* Look up port number for time service. */
+  service_info = getservbyname(TIME_SERVICE, "udp");
+  if (service_info == NULL)
+    {
+      fprintf(stderr, "%s: " TIME_SERVICE "/udp: unknown service\n",
+	      program_name);
+      exit(1);
+    }
+
+  /* Resolve hostname (try MAX_TRIES times). We do this in case the
+   * nameserver is just starting up (as in, everyone is just rebooting
+   * from a long power failure, and we are requesting name resolution
+   * before the server is ready).
+   */
+  for (tries = 0; tries < MAX_TRIES; tries++)
+    {
+      host_info = gethostbyname(time_hostname);
+      if (host_info != NULL || (host_info == NULL && h_errno != TRY_AGAIN))
+	break;
+    }
+
+  if (host_info == NULL)
+    {
+      fprintf(stderr, "%s: host %s unknown\n", program_name, time_hostname);
+      exit(1);
+    }
+
+  if (host_info->h_addrtype != AF_INET)
+    {
+      fprintf(stderr, "%s: can't handle address type %d\n",
+	      program_name, host_info->h_addrtype);
+      exit(1);
+    }
+
+  /* Grab a socket. */
+  time_socket = socket(AF_INET, SOCK_DGRAM, 0);
+  if (time_socket < 0)
+    myperror("socket", errno);
+
+  /* Set up destination address. */
+  time_address.sin_family = AF_INET;
+  memcpy(&time_address.sin_addr, host_info->h_addr,
+	 sizeof(time_address.sin_addr));
+  time_address.sin_port = service_info->s_port;
+
+  /* "Connect" the UDP socket to the time server address. */
+  if (connect(time_socket, (struct sockaddr *)&time_address,
+	      sizeof(time_address)) < 0)
+    myperror("connect", errno);
+
+  /* Initialize info for select. */
+  FD_ZERO(&read_set);
+
+  /* Attempt to acquire the time MAX_TRIES times at TIMEOUT interval. */
+  for (tries = 0; tries < MAX_TRIES; tries++)
+    {
+      /* Just send an empty packet. */
+      send(time_socket, buffer, 0, 0);
+
+      /* Wait a little while for a reply. */
+      FD_SET(time_socket, &read_set);
+      timeout.tv_sec = TIMEOUT;
+      timeout.tv_usec = 0;
+      result = select(time_socket + 1, &read_set, NULL, NULL, &timeout);
+
+      if (result == 0)		/* timed out, resend... */
+	continue;
+
+      if (result < 0)		/* error from select */
+	myperror("select", errno);
+
+      /* There must be data available. */
+      result = recv(time_socket, buffer, sizeof(buffer), 0);
+      if (result < 0)
+	myperror("recv", errno);
+
+      /* We should have received exactly four bytes in the packet. */
+      if (result == 4)
+	break;
+
+      fprintf(stderr, "%s: received %d bytes, expected 4\n", program_name,
+	      result);
+      exit(1);
+    }
+
+  if (tries == MAX_TRIES)
+    {
+      fprintf(stderr, "%s: Failed to get time from %s.\n", program_name,
+	      time_hostname);
+      exit(1);
+    }
+
+  /* Convert RFC868 time to Unix time, and print it. */
+  now = ((buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3])
+    - UNIX_OFFSET_TO_1900;
+  fprintf(stdout, "%s", ctime(&now));
+
+  /* Set the time if requested. */
+  if (setflag)
+    {
+      gettimeofday(&current_time, &current_timezone);
+      current_time.tv_sec = now;
+
+      if (settimeofday(&current_time, &current_timezone) < 0)
+	myperror("settimeofday", errno);
+    }
+
+  exit(0);
 }
