@@ -28,9 +28,9 @@ end		return END;
 
 .		{ return (*yytext); }
 %%
-static const char l_rcsid[] = "$Id: et_lex.lex.l,v 1.5 1997-12-19 03:04:10 ghudson Exp $";
+static const char l_rcsid[] = "$Id: et_lex.lex.l,v 1.6 1999-11-23 20:27:11 danw Exp $";
 
-int yywrap()
+int yywrap(void)
 {
 	return 1;
 }

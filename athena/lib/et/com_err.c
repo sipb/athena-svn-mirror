@@ -11,7 +11,7 @@
 #include "error_table.h"
 #include "com_err.h"
 
-static const char rcsid[] = "$Id: com_err.c,v 1.11 1999-11-15 15:22:35 ghudson Exp $";
+static const char rcsid[] = "$Id: com_err.c,v 1.12 1999-11-23 20:27:11 danw Exp $";
 
 static void default_com_err_proc(const char *progname, errcode_t code,
 				 const char *fmt, va_list args);
@@ -61,7 +61,7 @@ com_err_handler_t set_com_err_hook(com_err_handler_t new_proc)
     return x;
 }
 
-com_err_handler_t reset_com_err_hook()
+com_err_handler_t reset_com_err_hook(void)
 {
     return set_com_err_hook(NULL);
 }

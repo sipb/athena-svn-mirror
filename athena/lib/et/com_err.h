@@ -23,4 +23,6 @@ char const *error_message(errcode_t code);
 com_err_handler_t set_com_err_hook(com_err_handler_t handler);
 com_err_handler_t reset_com_err_hook(void);
 
+int init_error_table(const char *const *msgs, int base, int count);
+
 #endif

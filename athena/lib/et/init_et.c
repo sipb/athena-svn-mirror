@@ -1,5 +1,5 @@
 /*
- * $Id: init_et.c,v 1.3 1999-01-22 23:17:19 ghudson Exp $
+ * $Id: init_et.c,v 1.4 1999-11-23 20:27:11 danw Exp $
  *
  * Copyright 1986, 1987, 1988 by MIT Information Systems and
  *	the MIT Student Information Processing Board.
@@ -10,10 +10,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include "com_err.h"
 #include "error_table.h"
 #include "mit-sipb-copyright.h"
 
-static const char rcsid[] = "$Id: init_et.c,v 1.3 1999-01-22 23:17:19 ghudson Exp $";
+static const char rcsid[] = "$Id: init_et.c,v 1.4 1999-11-23 20:27:11 danw Exp $";
 
 struct foobar {
     struct et_list etl;

@@ -85,7 +85,7 @@ description	:	QUOTED_STRING
 #include <sys/time.h>
 #include "error_table.h"
 
-static const char rcsid[] = "$Id: error_table.y,v 1.5 1998-10-23 15:50:04 rbasch Exp $";
+static const char rcsid[] = "$Id: error_table.y,v 1.6 1999-11-23 20:27:11 danw Exp $";
 
 #include "et_lex.lex.c"
 
@@ -188,7 +188,7 @@ static int char_to_num(char c)
 		assert (diff < (1 << ERRCODE_RANGE));
 		return diff;
 	}
-	else if (isprint (c))
+	else if (isprint ((unsigned char)c))
 		fprintf (stderr,
 			 "Illegal character `%c' in error table name\n",
 			 c);

@@ -20,7 +20,7 @@
 static const char copyright[] =
     "Copyright 1987,1988 by MIT Student Information Processing Board";
 
-static const char rcsid[] = "$Id: compile_et.c,v 1.8 1998-01-15 19:06:32 danw Exp $";
+static const char rcsid[] = "$Id: compile_et.c,v 1.9 1999-11-23 20:27:11 danw Exp $";
 
 enum lang {
     lang_C,			/* ANSI C (default) */
@@ -47,7 +47,7 @@ static char *filename;			/* error table source */
 static enum lang language;
 static const char *whoami;
 
-char *xmalloc(unsigned int size)
+static char *xmalloc(unsigned int size)
 {
     char * p = malloc (size);
 
@@ -122,7 +122,7 @@ static const char warning[] =
 char c_file[MAXPATHLEN];	/* output file */
 char h_file[MAXPATHLEN];	/* output */
 
-static void usage() {
+static void usage(void) {
     fprintf (stderr, "%s: usage: %s ERROR_TABLE\n",
 	     whoami, whoami);
     exit (1);
@@ -268,6 +268,8 @@ int main(int argc, char **argv)
 	    table_name, (long) table_number, current);
     fputs("\n\nstatic struct et_list link = { 0, 0 };\n\n",
 	  cfile);
+    fprintf(cfile, "void initialize_%s_error_table (%s);\n\n",
+	    table_name, (language == lang_C) ? "void" : "");
     fprintf(cfile, "void initialize_%s_error_table (%s) {\n",
 	    table_name, (language == lang_C) ? "void" : "NOARGS");
     fputs("    if (!link.table) {\n", cfile);
