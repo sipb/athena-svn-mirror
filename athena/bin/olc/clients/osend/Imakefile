@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/osend/Imakefile,v $
- * $Id: Imakefile,v 1.2 1994-08-21 18:19:26 cfields Exp $
+ * $Id: Imakefile,v 1.3 1997-04-30 17:57:25 ghudson Exp $
  * Copyright (C) 1992 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -38,11 +38,9 @@ depend: Makefile
 LintTarget()
 
 #ifdef InstallAltLoc
-install::
-	(cd $(DESTDIR)/usr/athena/bin; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
+InstallProgram(osend,$(DESTDIR)/usr/athena/bin)
 #else
-install::
-	(cd $(DESTDIR)/usr/etc; $(RM) oshow; $(LN) oreplay oshow; $(RM) olist; $(LN) oreplay olist)
+InstallProgram(osend,$(DESTDIR)/usr/etc)
 #endif
 
 clean::
