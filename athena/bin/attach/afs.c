@@ -1,10 +1,10 @@
 /*
- * $Id: afs.c,v 1.10 1994-06-07 17:21:36 miki Exp $
+ * $Id: afs.c,v 1.11 1996-09-19 22:12:04 ghudson Exp $
  *
  * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Id: afs.c,v 1.10 1994-06-07 17:21:36 miki Exp $";
+static char *rcsid = "$Id: afs.c,v 1.11 1996-09-19 22:12:04 ghudson Exp $";
 
 #include "attach.h"
 
@@ -59,7 +59,7 @@ afs_attach(at, mopt, errorout)
 	
 	if (debug_flag)
 		printf("lstating %s...\n", at->hostdir);
-	setreuid(effective_uid, owner_uid);
+	seteuid(owner_uid);
 	if (stat(at->hostdir, &statbuf)) {
 		if (errno == ENOENT)
 			fprintf(stderr, "%s: %s does not exist\n",
@@ -67,13 +67,13 @@ afs_attach(at, mopt, errorout)
 		else
 			perror(at->hostdir);
 		error_status = ERR_ATTACHNOFILSYS;
-		setreuid(real_uid, effective_uid);
+		seteuid(effective_uid);
 		return(FAILURE);
 	}
 	if ((statbuf.st_mode & S_IFMT) != S_IFDIR) {
 		fprintf(stderr, "%s: %s is not a directory\n",
 			at->hesiodname, at->hostdir);
-		setreuid(real_uid, effective_uid);
+		seteuid(effective_uid);
 
 		error_status = ERR_ATTACHNOFILSYS;
 		return(FAILURE);
@@ -82,7 +82,7 @@ afs_attach(at, mopt, errorout)
 	if (debug_flag)
 		printf("lstating %s....\n", at->mntpt);
 	if (!lstat(at->mntpt, &statbuf)) {
-		setreuid(real_uid, effective_uid);
+		seteuid(effective_uid);
 		if ((statbuf.st_mode & S_IFMT) == S_IFLNK) {
 			len = readlink(at->mntpt, buf, sizeof(buf));
 			buf[len] = '\0';
@@ -141,7 +141,7 @@ afs_attach(at, mopt, errorout)
 			return(FAILURE);
 		}
 	}
-	setreuid(real_uid, effective_uid);
+	seteuid(effective_uid);
 
 	/*
 	 * Note: we do our own path canonicalization here, since
@@ -237,7 +237,7 @@ static int afs_auth_internal(errorname, afs_pathname, hostlist, flags)
 
 			if (debug_flag)
 				fputs(buff, stdout);
-			if (!(cp = index(buff, ':')))
+			if (!(cp = strchr(buff, ':')))
 				continue;
 			*cp = '\0';
 #ifdef ZEPHYR
@@ -307,7 +307,7 @@ char **afs_explicit(name)
       return (0);
     }
 	
-  dir = rindex(name, '/');
+  dir = strrchr(name, '/');
   (void) strcpy(newmntpt, afs_mount_dir);
   (void) strcat(newmntpt, dir);
   
