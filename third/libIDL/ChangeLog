@@ -1,3 +1,43 @@
+==================== 0.8.5 ====================
+
+2005-02-05  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* NEWS: Update.
+
+2004-11-12  Jules Colding  <colding@omesc.com>
+
+	* parser.y: add octet_type to const_type rule.
+
+2004-11-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* parser.y:
+	* util.c: (IDL_tree_is_recursive): Fix a couple of warnings
+	from sparse.
+
+2004-10-07  James Henstridge  <james@jamesh.id.au>
+
+	* acinclude.m4: quote macro names in AC_DEFUN() calls.
+
+	* .cvsignore: ignore install-sh, missing and mkinstalldirs.
+
+	* install-sh, missing, mkinstalldirs: remove from CVS, since the
+	autotools install these for us.
+
+2004-10-06  James Henstridge  <james@jamesh.id.au>
+
+	Fix for bug #154641:
+
+	* configure.in: update and simplify a bit.
+
+	* autogen.sh: use modern automake rather than 1.4 (this has been
+	tested with "make distcheck").
+
+2004-08-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 0.8.5.
+
+==================== 0.8.4 ====================
+
 2004-08-17  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 0.8.4.

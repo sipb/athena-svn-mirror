@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: IDL.h,v 1.1.1.1 2004-09-22 23:39:05 ghudson Exp $
+    $Id: IDL.h,v 1.1.1.2 2005-03-10 21:57:01 ghudson Exp $
 
 ***************************************************************************/
 #ifndef __IDL_H
@@ -45,8 +45,8 @@ extern "C" {
 #define LIBIDL_GEN_VERSION(a,b,c)	(((a) << 16) + ((b) << 8) + (c))
 #define LIBIDL_MAJOR_VERSION		0
 #define LIBIDL_MINOR_VERSION		8
-#define LIBIDL_MICRO_VERSION		4
-#define LIBIDL_VERSION_CODE		LIBIDL_GEN_VERSION(0,8,4)
+#define LIBIDL_MICRO_VERSION		5
+#define LIBIDL_VERSION_CODE		LIBIDL_GEN_VERSION(0,8,5)
 
 /* miscellaneous constants */
 #define IDL_SUCCESS			0

@@ -1,4 +1,4 @@
-This is libIDL2.info, produced by makeinfo version 4.6 from
+This is libIDL2.info, produced by makeinfo version 4.5 from
 libIDL2.texi.
 
 INFO-DIR-SECTION Libraries
@@ -31,7 +31,7 @@ File: libIDL2.info,  Node: Overview,  Next: Example,  Prev: Top,  Up: Top
 Overview
 ********
 
-libIDL is a library licensed under the GNU LGPL for creating trees of
+   libIDL is a library licensed under the GNU LGPL for creating trees of
 CORBA Interface Definition Language (IDL) files, which is a
 specification for defining portable interfaces.  libIDL was initially
 written for ORBit (the ORB from the GNOME project, and the primary
@@ -75,7 +75,7 @@ File: libIDL2.info,  Node: Example,  Next: Reference,  Prev: Overview,  Up: Top
 Usage
 *****
 
-The following C program using libIDL will parse an IDL file and print
+   The following C program using libIDL will parse an IDL file and print
 the Repository IDs of the interfaces in the IDL module.
 
      #include <assert.h>
@@ -294,7 +294,7 @@ File: libIDL2.info,  Node: Extensions,  Next: Tree Structure,  Prev: Functions, 
 Extensions
 **********
 
-This page documents extensions to standard IDL which libIDL will
+   This page documents extensions to standard IDL which libIDL will
 understand.  To maintain portability, it is recommended that these
 extensions are only used with some sort of C preprocessor define so they
 can be conditionally omitted.
@@ -339,12 +339,12 @@ Function Index
 Tag Table:
 Node: Top253
 Node: Overview699
-Node: Example2928
-Node: Reference4182
-Node: Data Types4539
-Node: Functions5608
-Node: Extensions10159
-Node: Tree Structure11020
-Node: Function Index11131
+Node: Example2931
+Node: Reference4188
+Node: Data Types4545
+Node: Functions5614
+Node: Extensions10165
+Node: Tree Structure11029
+Node: Function Index11140
 
 End Tag Table

@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: parser.y,v 1.1.1.1 2002-12-26 17:10:40 ghudson Exp $
+    $Id: parser.y,v 1.1.1.2 2005-03-10 21:56:55 ghudson Exp $
 
 ***************************************************************************/
 %{
@@ -847,6 +847,7 @@ context_expr:		TOK_CONTEXT '('
 
 const_type:		integer_type
 |			char_type
+|			octet_type
 |			wide_char_type
 |			boolean_type
 |			floating_pt_type
@@ -1739,7 +1740,7 @@ IDL_tree IDL_file_set (const char *filename, int line)
 	IDL_fileinfo *fi;
 	IDL_tree tree = NULL;
 
-	g_return_val_if_fail (__IDL_is_parsing, 0);
+	g_return_val_if_fail (__IDL_is_parsing, NULL);
 
 	if (filename) {
 		const char *oldfilename = __IDL_cur_filename;
