@@ -24,7 +24,9 @@ localedir = $(datadir)/locale
 EXTRA_DIST = combine-sh gettext.perl gettext-sh magic.add tcl_gettext.c \
 README-Tcl po-mode.el locale.alias
 DISTCLEANFILES = gettextize
-lisp_LISP = po-mode.el
+
+hackdir = $(datadir)/emacs/site-lisp
+hack_DATA = po-mode.el
 
 bin_SCRIPTS = gettextize
 
