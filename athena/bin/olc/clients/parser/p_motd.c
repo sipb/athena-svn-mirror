@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.1 1989-07-06 22:08:58 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.2 1989-07-13 12:09:19 tjcoppet Exp $";
 #endif
 
 
@@ -52,7 +52,7 @@ do_olc_motd(arguments)
 	  continue;
 	}
       arguments = handle_argument(arguments, &Request, &status);
-      if(!status)
+      if(status)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{

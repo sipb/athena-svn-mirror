@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.1 1989-07-06 22:09:11 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.2 1989-07-13 12:10:00 tjcoppet Exp $";
 #endif
 
 
@@ -67,7 +67,7 @@ do_olc_send(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(!status)
+      if(status)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
@@ -145,7 +145,7 @@ do_olc_comment(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(!status)
+      if(status)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
@@ -214,7 +214,7 @@ do_olc_mail(arguments)
 	}
       
       arguments = handle_argument(arguments, &Request, &status);
-      if(!status)
+      if(status)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{

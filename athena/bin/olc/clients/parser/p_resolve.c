@@ -98,7 +98,7 @@ do_olc_done(arguments)
 	}
 
       arguments = handle_argument(arguments, &Request, &status);
-      if(!status)
+      if(status)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
@@ -154,7 +154,7 @@ do_olc_cancel(arguments)
 	  continue;
 	}
       arguments = handle_argument(arguments, &Request, &status);
-      if(!status)
+      if(status)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
