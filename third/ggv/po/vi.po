@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv VERSION\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-10-17 11:06+0700\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-10 22:52+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -25,9 +25,9 @@ msgid "GGV PostScript viewer factory"
 msgstr "GGV PostScript viewer factory"
 
 #: bonobo/ggv-control-ui.xml.h:2
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "15_0%"
-msgstr "_50%"
+msgstr "15_0%"
 
 #: bonobo/ggv-control-ui.xml.h:3
 msgid "1:1"
@@ -40,11 +40,11 @@ msgstr "25%"
 
 #: bonobo/ggv-control-ui.xml.h:6
 msgid "Change zoom factor to default"
-msgstr ""
+msgstr "Đổi hệ số phóng về mặc định"
 
 #: bonobo/ggv-control-ui.xml.h:7
 msgid "Decrease zoom factor"
-msgstr ""
+msgstr "Giảm hệ số phóng"
 
 #: bonobo/ggv-control-ui.xml.h:8
 msgid "Fit"
@@ -60,12 +60,11 @@ msgstr "Khít bề _rộng"
 
 #: bonobo/ggv-control-ui.xml.h:11
 msgid "Fit to Page _Size"
-msgstr ""
+msgstr "Khít vừa _cỡ trang"
 
 #: bonobo/ggv-control-ui.xml.h:12
-#, fuzzy
 msgid "Fit to Page _Width"
-msgstr "Khít bề _rộng"
+msgstr "Khít bề _rộng trang"
 
 #: bonobo/ggv-control-ui.xml.h:13
 msgid "In"
@@ -73,7 +72,7 @@ msgstr "To"
 
 #: bonobo/ggv-control-ui.xml.h:14
 msgid "Increase zoom factor"
-msgstr ""
+msgstr "Tăng hệ số phóng"
 
 #: bonobo/ggv-control-ui.xml.h:15
 msgid "Other"
@@ -93,11 +92,11 @@ msgstr "Thu _nhỏ"
 
 #: bonobo/ggv-control-ui.xml.h:19
 msgid "Zoom the page to be as wide as the window"
-msgstr ""
+msgstr "Phóng trang rộng bằng cửa sổ"
 
 #: bonobo/ggv-control-ui.xml.h:20
 msgid "Zoom the page to fit in the window"
-msgstr ""
+msgstr "Phóng trang khít vừa cửa sổ"
 
 #: bonobo/ggv-control-ui.xml.h:22
 #, no-c-format
@@ -120,13 +119,13 @@ msgid "_50%"
 msgstr "_50%"
 
 #: bonobo/ggv-control-ui.xml.h:30
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "_75%"
-msgstr "_50%"
+msgstr "_75%"
 
 #: bonobo/ggv-control-ui.xml.h:31
 msgid "_Auto-fit"
-msgstr ""
+msgstr "_Tự động khít"
 
 #: bonobo/ggv-control-ui.xml.h:32
 msgid "_Default Zoom"
@@ -138,7 +137,7 @@ msgstr "_Khít cửa sổ"
 
 #: bonobo/ggv-control-ui.xml.h:34
 msgid "_No Auto-fit"
-msgstr ""
+msgstr "_Không tự động khít"
 
 #: bonobo/ggv-control-ui.xml.h:35
 msgid "_Zoom"
@@ -150,15 +149,15 @@ msgstr "10x14"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:2
 msgid "A0"
-msgstr ""
+msgstr "A0"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:3
 msgid "A1"
-msgstr ""
+msgstr "A1"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:4
 msgid "A2"
-msgstr ""
+msgstr "A2"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:5
 msgid "A3"
@@ -182,7 +181,7 @@ msgstr "B5"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:10
 msgid "BBox"
-msgstr ""
+msgstr "BBox"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:11
 msgid "Executive"
@@ -269,14 +268,12 @@ msgid "Tabloid"
 msgstr ""
 
 #: bonobo/ggv-postscript-view-ui.xml.h:32
-#, fuzzy
 msgid "_Document Orientation"
-msgstr "Hướng tài liệu"
+msgstr "_Hướng tài liệu"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:33
-#, fuzzy
 msgid "_Document Size"
-msgstr "Tựa tài liệu"
+msgstr "_Kích thước tài liệu"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:34
 msgid "_First page"
@@ -444,7 +441,6 @@ msgid "Toggle marked state of all pages"
 msgstr "Đảo đánh dấu mọi trang"
 
 #: bonobo/ggv-sidebar.c:310
-#, fuzzy
 msgid ""
 "Toggle marked state of all pages: previously marked pages will be unmarked "
 "and unmarked ones will become marked."
@@ -457,7 +453,6 @@ msgid "Toggle marked state of odd pages"
 msgstr "Đảo đánh dấu trang lẻ"
 
 #: bonobo/ggv-sidebar.c:323
-#, fuzzy
 msgid ""
 "Toggle marked state of odd pages: previously marked odd pages will be "
 "unmarked and unmarked ones will become marked."
@@ -470,7 +465,6 @@ msgid "Toggle marked state of even pages"
 msgstr "Đảo đánh dấu trang chẵn"
 
 #: bonobo/ggv-sidebar.c:337
-#, fuzzy
 msgid ""
 "Toggle marked state of even pages: previously marked even pages will be "
 "unmarked and unmarked ones will become marked."
@@ -496,24 +490,20 @@ msgid "GGV PostScript Viewer"
 msgstr "Bộ xem PostScript GGV"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Dùng mặc định GNOME"
+msgstr "_Dùng mặc định GNOME"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Hiện hình và chữ"
+msgstr "Hiện hình _và chữ"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Chỉ hiện hình"
+msgstr "Chỉ hiện _hình"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Chỉ hiện chữ"
+msgstr "Chỉ hiện _chữ"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -521,50 +511,43 @@ msgstr "Thông số GGV"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Cỡ mặc định:"
+msgstr "Cỡ phóng _mặc định:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
 msgid "A_uto-fit mode:"
-msgstr ""
+msgstr "Chế động tự động _khít:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Đơn vị gốc:"
+msgstr ""
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Cỡ trang dự phòng:"
+msgstr "Cỡ trang _dự phòng:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Đè kích thước tài liệu"
+msgstr "Đè _kích thước tài liệu"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Hướng dự phòng:"
+msgstr "Hướng _phương tiện dự phòng:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Đè hướng tài liệu"
+msgstr "Đè _hướng tài liệu"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Làm mượt"
+msgstr "Làm trơn"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
@@ -573,9 +556,8 @@ msgstr ""
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Theo dõi tập tin"
+msgstr "_Theo dõi tập tin"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -583,26 +565,22 @@ msgstr "Tài liệu"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Hiện khung bên"
+msgstr "Hiện khung _bên"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Đặt khung bên trong Nautilus bên phải"
+msgstr "Đặt _khung bên trong Nautilus bên phải"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Hiện thanh menu"
+msgstr "Hiện thanh _menu"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Hiện thanh công cụ"
+msgstr "Hiện thanh _công cụ"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -612,14 +590,13 @@ msgstr "Kiểu thanh công cụ"
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
 #, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Hiện thanh trạng thái"
+msgid "Show statusba_r"
+msgstr "Hiện thanh t_rạng thái"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Lưu vị trí"
+msgstr "Lưu _vị trí"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -627,58 +604,51 @@ msgstr "Bố trí"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Nhảy tới đầu trang"
+msgstr "Nhảy tới đầ_u trang"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
 msgid "Automatically _flip pages"
-msgstr ""
+msgstr "Tự động _lật trang"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Phác họa phần cuối cùng có thể xem khi đang cuộn"
+msgstr "Phác họa phần _cuối cùng có thể xem khi đang cuộn"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Phác họa phần cuối cùng có thể xem khi đang cuộn"
+msgstr "_Khoảng cuộn"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
-msgstr ""
+msgstr "Duyệt"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Bộ thông dịch:"
+msgstr "_Bộ thông dịch:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Làm mượt:"
+msgstr "Làm t_rơn:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
 msgid "Convert _PDF to PS:"
-msgstr ""
+msgstr "Chuyển _PDF sang PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -686,9 +656,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Lệnh in:"
+msgstr "Lệnh _in:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -720,7 +689,7 @@ msgstr "Thoát khỏi chương trình"
 
 #: src/ggv-ui.xml.h:7
 msgid "Fullscreen mode"
-msgstr ""
+msgstr "Chế độ toàn màn hình"
 
 #: src/ggv-ui.xml.h:8
 msgid "Help for this application"
@@ -796,7 +765,7 @@ msgstr "Ẩn/Hiện thanh công cụ"
 
 #: src/ggv-ui.xml.h:26
 msgid "Toggle fullscreen mode"
-msgstr ""
+msgstr "Bật/Tắt chế độ toàn màn hình"
 
 #: src/ggv-ui.xml.h:27
 msgid "_About..."
@@ -902,17 +871,15 @@ msgstr "điểm"
 
 #: src/ggvutils.c:79
 msgid "None"
-msgstr ""
+msgstr "Không"
 
 #: src/ggvutils.c:79
-#, fuzzy
 msgid "Fit to page width"
-msgstr "Khít bề rộng"
+msgstr "Khít bề rộng trang"
 
 #: src/ggvutils.c:79
-#, fuzzy
 msgid "Fit to page size"
-msgstr "Cỡ trang dự phòng:"
+msgstr "Cỡ trang dự phòng"
 
 #: src/gtkgs.c:358
 msgid "No document loaded."
@@ -936,30 +903,30 @@ msgstr "Lỗi bộ thông dịch."
 msgid "Error while decompressing file %s:\n"
 msgstr "Lỗi giải nén tập tin %s:\n"
 
-#: src/gtkgs.c:1424
-#, fuzzy, c-format
+#: src/gtkgs.c:1462
+#, c-format
 msgid "Error while converting pdf file %s:\n"
-msgstr "Lỗi quét tập tin PDF %s:\n"
+msgstr "Lỗi chuyển đổi tập tin PDF %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Không thể mở tập tin %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Tập tin không thể đọc được."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Lỗi quét tập tin %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Tập tin không phải là tài liệu PostScript."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Đã nạp tài liệu."
 

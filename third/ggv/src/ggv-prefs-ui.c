@@ -673,7 +673,7 @@ ggv_prefs_dialog_new()
         }
                                    
         /* show statusbar */
-        dlg->sbar = gtk_check_button_new_with_mnemonic(_("Show s_tatusbar"));
+        dlg->sbar = gtk_check_button_new_with_mnemonic(_("Show statusba_r"));
         gtk_table_attach(GTK_TABLE(table), dlg->sbar,
                          0, 1, 5, 6,
                          GTK_EXPAND | GTK_SHRINK | GTK_FILL,

@@ -1,16 +1,16 @@
-# German translation for ggv.
-# Copyright (C) 1999-2002 Free Software Foundation, Inc.
-# Benedikt Roth <Benedikt.Roth@gmx.net>, 2000.
+# German GGV translation
+# Copyright (C) 1999-2003 Free Software Foundation, Inc.
 # Karl Eichwalder <ke@suse.de>, 1999-2001.
-# Matthias Warkus <mawa@iname.com>, 1999-2001.
 # Christian Meyer <chrisime@gnome.org>, 2000-2002.
-# Christian Neumair <chris@gnome-de.org>, 2002.
+# Christian Neumair <chris@gnome-de.org>, 2002, 2003.
+# Benedikt Roth <Benedikt.Roth@gmx.net>, 2000.
+# Matthias Warkus <mawa@iname.com>, 1999-2001.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ggv 1.1.x\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-25 11:02+0100\n"
+"Project-Id-Version: ggv 1.99.x\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-21 00:05+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,15 +19,15 @@ msgstr ""
 
 #: bonobo/GNOME_GGV.server.in.in.h:1
 msgid "GGV PostScript Document Control"
-msgstr "GGV: Steuerung für PostScript-Dokument"
+msgstr "GGV Steuerung für PostScript-Dokument"
 
 #: bonobo/GNOME_GGV.server.in.in.h:2
 msgid "GGV PostScript View"
-msgstr "GGV: PostScript-Betrachter"
+msgstr "GGV PostScript-Betrachter"
 
 #: bonobo/GNOME_GGV.server.in.in.h:3
 msgid "GGV PostScript viewer factory"
-msgstr "GGV: PostScript-Betrachterfabrik"
+msgstr "GGV PostScript-Betrachterfabrik"
 
 #: bonobo/ggv-control-ui.xml.h:2
 #, no-c-format
@@ -130,7 +130,7 @@ msgstr "_75%"
 
 #: bonobo/ggv-control-ui.xml.h:31
 msgid "_Auto-fit"
-msgstr "_Auto-Einpassen"
+msgstr "A_uto-Einpassen"
 
 #: bonobo/ggv-control-ui.xml.h:32
 msgid "_Default Zoom"
@@ -357,7 +357,7 @@ msgstr ""
 
 #: bonobo/ggv-postscript-view.c:820
 msgid "Select a file to save pages as"
-msgstr "Eine Datei auswählen, um Seiten darin zu speichern"
+msgstr "Wählen Sie die Datei, unter der die Seiten gespeichert werden sollen"
 
 #: bonobo/ggv-postscript-view.c:832
 msgid ""
@@ -399,7 +399,7 @@ msgstr "Anzahl der Seiten"
 msgid "Page names"
 msgstr "Seitennamen"
 
-# Nummer > Zahl, da Seitenzahl soweit ich wei� die Anzahl der Seiten ist.
+# Nummer > Zahl, da Seitenzahl soweit ich weiß die Anzahl der Seiten ist.
 #: bonobo/ggv-postscript-view.c:2001
 msgid "Current page number"
 msgstr "Akuelle Seitennummer"
@@ -499,24 +499,20 @@ msgid "GGV PostScript Viewer"
 msgstr "GGV PostScript-Betrachter"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "GNOME-Vorgaben verwenden"
+msgstr "GNOME-_Vorgabe verwenden"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Icons und Text anzeigen"
+msgstr "Symbole _und Text anzeigen"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Nur Icons anzeigen"
+msgstr "Nur S_ymbole anzeigen"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Nur Text anzeigen"
+msgstr "Nur Te_xt anzeigen"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -524,63 +520,53 @@ msgstr "GGV: Einstellungen"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Vorgegebene Ansichtsgröße:"
+msgstr "Vorgegebene Ansichtsg_röße:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Auto-Einpassen:"
+msgstr "A_uto-Einpassen:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Koordinateneinheiten:"
+msgstr "K_oordinateneinheiten:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Seitengröße im Problemfall:"
+msgstr "Seitengröße im _Problemfall:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Dokumentengröße übergehen"
+msgstr "_Dokumentengröße übergehen"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Medien-Ausrichtung im Problemfall:"
+msgstr "_Medien-Ausrichtung im Problemfall:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Ausrichtung des Dokuments übergehen"
+msgstr "Ausrichtung des Dokuments über_gehen"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Kantenglättung"
+msgstr "_Kantenglättung"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "EOF-Kommentare berücksichtigen"
+msgstr "_EOF-Kommentare berücksichtigen"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Datei überwachen"
+msgstr "Datei ü_berwachen"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -588,44 +574,38 @@ msgstr "Dokument"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Seitenleiste anzeigen"
+msgstr "_Seitenleiste anzeigen"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Seitenleiste in Nautilus rechts anzeigen"
+msgstr "Seitenleiste in Nautilus _rechts anzeigen"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Menüleiste anzeigen"
+msgstr "_Menüleiste anzeigen"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Werkzeugleiste anzeigen"
+msgstr "_Werkzeugleiste anzeigen"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
 msgid "Toolbar style"
-msgstr "Werkzeugleisten-Stil"
+msgstr "Stil der Werkzeugleiste"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Statusleiste anzeigen"
+msgid "Show statusba_r"
+msgstr "S_tatusleiste anzeigen"
 
 # CHECK
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Geometrie speichern"
+msgstr "_Geometrie speichern"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -633,28 +613,24 @@ msgstr "Layout"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Zum Anfang der Seite springen"
+msgstr "Zum A_nfang der Seite springen"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Seiten automatisch wechseln"
+msgstr "A_utomatisch durch die Seiten blättern"
 
 # CHECK
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Beim Rollen den davor sichtbaren Bereich umranden"
+msgstr "Beim Rollen den _zuletzt sichtbaren Bereich umranden"
 
 # CHECK
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Anteil der sichtbaren Fläche zum Rollen"
+msgstr "An_teil der sichtbaren Fläche zum Rollen"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -662,33 +638,28 @@ msgstr "Navigation"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Interpreter:"
+msgstr "_Interpreter:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Kantenglättung:"
+msgstr "_Kantenglättung:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "PDF in PostScript-Konverter"
+msgstr "_PDF in PostScript-Konverter"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "GZip:"
+msgstr "_GZip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "BZip2:"
+msgstr "_BZip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -696,9 +667,8 @@ msgstr "GhostScript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Druckbefehl:"
+msgstr "_Druckbefehl:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -774,7 +744,7 @@ msgstr "Aktuelles Dokument neu einlesen"
 
 #: src/ggv-ui.xml.h:18
 msgid "Show Side_bar"
-msgstr "Seiten_leiste anzeigen"
+msgstr "_Seitenleiste anzeigen"
 
 #: src/ggv-ui.xml.h:19
 msgid "Show _Menus"
@@ -782,7 +752,7 @@ msgstr "_Menüs anzeigen"
 
 #: src/ggv-ui.xml.h:20
 msgid "Show _Statusbar"
-msgstr "_Statusleiste anzeigen"
+msgstr "S_tatusleiste anzeigen"
 
 #: src/ggv-ui.xml.h:21
 msgid "Show _Toolbar"
@@ -790,19 +760,19 @@ msgstr "_Werkzeugleiste anzeigen"
 
 #: src/ggv-ui.xml.h:22
 msgid "Show/hide the menus"
-msgstr "Die Menüs zeigen/verbergen"
+msgstr "Die Menüs anzeigen/verbergen"
 
 #: src/ggv-ui.xml.h:23
 msgid "Show/hide the sidebar"
-msgstr "Die Seitenleiste zeigen/verbergen"
+msgstr "Die Seitenleiste anzeigen/verbergen"
 
 #: src/ggv-ui.xml.h:24
 msgid "Show/hide the statusbar"
-msgstr "Die Statusleiste zeigen/verbergen"
+msgstr "Die Statusleiste anzeigen/verbergen"
 
 #: src/ggv-ui.xml.h:25
 msgid "Show/hide the toolbar"
-msgstr "Die Werkzeugleiste zeigen/verbergen"
+msgstr "Die Werkzeugleiste anzeigen/verbergen"
 
 #: src/ggv-ui.xml.h:26
 msgid "Toggle fullscreen mode"
@@ -834,7 +804,7 @@ msgstr "_Hilfe"
 
 #: src/ggv-ui.xml.h:33
 msgid "_Layout"
-msgstr "_Layout"
+msgstr "La_yout"
 
 #: src/ggv-ui.xml.h:34
 msgid "_Open"
@@ -871,7 +841,7 @@ msgstr ""
 "Walter Muellner <walter.muellner@telering.at>,\n"
 "Matthias Warkus <mawa@iname.com>,\n"
 "Benedikt Roth <Benedikt.Roth@gmx.net>,\n"
-"Christian Neumair <christian-neumair@web.de>"
+"Christian Neumair <chris@gnome-de.org>"
 
 #: src/ggv-window.c:578
 msgid "Gnome Ghostview"
@@ -907,11 +877,11 @@ msgstr "Zoll"
 
 #: src/ggvutils.c:54
 msgid "mm"
-msgstr "mm"
+msgstr "Millimeter"
 
 #: src/ggvutils.c:55
 msgid "cm"
-msgstr "cm"
+msgstr "Zentimeter"
 
 #: src/ggvutils.c:56
 msgid "point"
@@ -919,7 +889,7 @@ msgstr "Punkt"
 
 #: src/ggvutils.c:79
 msgid "None"
-msgstr "Keins"
+msgstr "Deaktiviert"
 
 #: src/ggvutils.c:79
 msgid "Fit to page width"
@@ -951,37 +921,37 @@ msgstr "Interpreter fehlgeschlagen."
 msgid "Error while decompressing file %s:\n"
 msgstr "Fehler beim Entpacken der Datei %s\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Fehler beim Konvertieren der PDF-Datei %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Datei %s konnte nicht geöffnet werden.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Die Datei ist nicht lesbar."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Fehler beim Einlesen der Datei %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Die Datei ist kein PostScript-Dokument."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Dokument geladen."
 
 #: src/main.c:57
 #, c-format
 msgid "Invalid geometry string \"%s\"\n"
-msgstr "Ungültige Geometrie-Zeichenkette »%s«\n"
+msgstr "Ungültige Geometrie-Zeichenkette Â»%sÂ«\n"
 
 #: src/main.c:175
 msgid "Specify the number of empty windows to open."
@@ -1002,6 +972,3 @@ msgstr "GEOMETRIE"
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
 msgstr "Bonobo konnte nicht initialisiert werden!\n"
-
-#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
-#~ msgstr "© 1998-2002 Free Software Foundation"

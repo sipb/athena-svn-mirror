@@ -1,18 +1,21 @@
+# translation of ggv.po to zh_CN
 # ggv
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001,2003 Free Software Foundation, Inc.
 # Wu Yulun <migr@operamail.com>, 2001.
 #   Zipeco <Zipeco@btamail.net.cn>, 2002
+# Xiong Jiang <jxiong@offtopic.org>, 2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-05-30 03:33\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-29 23:04+0800\n"
 "Last-Translator: Sun G11n <gnome_int_l10n@ireland.sun.com>\n"
-"Language-Team: Sun G11n <gnome_int_l10n@ireland.sun.com>\n"
+"Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
 
 #: bonobo/GNOME_GGV.server.in.in.h:1
 msgid "GGV PostScript Document Control"
@@ -27,9 +30,9 @@ msgid "GGV PostScript viewer factory"
 msgstr "GGV PostScrip 阅读器工作室"
 
 #: bonobo/ggv-control-ui.xml.h:2
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "15_0%"
-msgstr ""
+msgstr "_50%"
 
 #: bonobo/ggv-control-ui.xml.h:3
 msgid "1:1"
@@ -38,7 +41,7 @@ msgstr "1:1"
 #: bonobo/ggv-control-ui.xml.h:5
 #, no-c-format
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: bonobo/ggv-control-ui.xml.h:6
 msgid "Change zoom factor to default"
@@ -55,12 +58,11 @@ msgstr "适合"
 #: bonobo/ggv-control-ui.xml.h:9
 #, fuzzy
 msgid "Fit Width"
-msgstr "适合页面宽度(_w)"
+msgstr "适合页面宽度(_W)"
 
 #: bonobo/ggv-control-ui.xml.h:10
-#, fuzzy
 msgid "Fit _Width"
-msgstr "适合页面宽度(_w)"
+msgstr "适合页面宽度(_W)"
 
 #: bonobo/ggv-control-ui.xml.h:11
 msgid "Fit to Page _Size"
@@ -69,7 +71,7 @@ msgstr ""
 #: bonobo/ggv-control-ui.xml.h:12
 #, fuzzy
 msgid "Fit to Page _Width"
-msgstr "适合页面宽度(_w)"
+msgstr "适合页面宽度(_W)"
 
 #: bonobo/ggv-control-ui.xml.h:13
 msgid "In"
@@ -106,40 +108,39 @@ msgstr ""
 #: bonobo/ggv-control-ui.xml.h:22
 #, no-c-format
 msgid "_100%"
-msgstr ""
+msgstr "_100%"
 
 #: bonobo/ggv-control-ui.xml.h:24
 #, no-c-format
 msgid "_200%"
-msgstr ""
+msgstr "_200%"
 
 #: bonobo/ggv-control-ui.xml.h:26
 #, no-c-format
 msgid "_400%"
-msgstr ""
+msgstr "_400%"
 
 #: bonobo/ggv-control-ui.xml.h:28
 #, no-c-format
 msgid "_50%"
-msgstr ""
+msgstr "_50%"
 
 #: bonobo/ggv-control-ui.xml.h:30
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "_75%"
-msgstr ""
+msgstr "_50%"
 
 #: bonobo/ggv-control-ui.xml.h:31
 msgid "_Auto-fit"
 msgstr ""
 
 #: bonobo/ggv-control-ui.xml.h:32
-#, fuzzy
 msgid "_Default Zoom"
-msgstr "默认缩放"
+msgstr "默认缩放(_D)"
 
 #: bonobo/ggv-control-ui.xml.h:33
 msgid "_Fit Window"
-msgstr ""
+msgstr "适合窗口(_F)"
 
 #: bonobo/ggv-control-ui.xml.h:34
 msgid "_No Auto-fit"
@@ -203,9 +204,8 @@ msgid "Folio"
 msgstr "对开"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:14
-#, fuzzy
 msgid "GGV _Preferences"
-msgstr "GGV 的首选项"
+msgstr "GGV 首选项(_P)"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:15
 msgid "Go to first page"
@@ -322,7 +322,7 @@ msgstr "打印文档(_P)"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:42
 msgid "_Print marked pages"
-msgstr "打印被标记的页面(_P)"
+msgstr "打印标记的页面(_P)"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:43
 msgid "_Save marked pages"
@@ -330,7 +330,7 @@ msgstr "保存被标记的页面(_S)"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:44
 msgid "_Seascape"
-msgstr "海景(_S)"
+msgstr "从左到右(_S)"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:45
 msgid "_Size"
@@ -370,6 +370,8 @@ msgid ""
 "A file with this name already exists.\n"
 "Do you want to overwrite it?"
 msgstr ""
+"这个名字的文件已经存在。\n"
+"是否覆盖它？"
 
 #: bonobo/ggv-postscript-view.c:871
 msgid ""
@@ -437,7 +439,7 @@ msgstr "取代文档的尺寸"
 
 #: bonobo/ggv-postscript-view.c:2033
 msgid "Respect EOF comment"
-msgstr "期望EOF符"
+msgstr "尊重 EOF 文档结束注释"
 
 #: bonobo/ggv-postscript-view.c:2037
 msgid "Watch displayed file for changes"
@@ -445,7 +447,7 @@ msgstr "监视被显示文件的变动"
 
 #: bonobo/ggv-postscript-view.c:2041
 msgid "Antialiasing"
-msgstr "反锯齿处理"
+msgstr "字体平滑"
 
 #: bonobo/ggv-sidebar.c:309
 #, fuzzy
@@ -493,38 +495,38 @@ msgid "A Ghostscript frontend to visualize PostScript files"
 msgstr "用于阅读 PostScript 文件的 Ghostscript 前端"
 
 #: ggv.desktop.in.h:2
-#, fuzzy
 msgid "GGV PostScript Viewer"
-msgstr "GGV PostScript 查看"
+msgstr "GGV PostScript 查看器"
 
 #: src/ggv-prefs-ui.c:311
+#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr ""
+msgstr "使用 GNOME 默认值"
 
 #: src/ggv-prefs-ui.c:312
 #, fuzzy
 msgid "Show _both icons and text"
-msgstr "显示下一页"
+msgstr "显示图标和文字"
 
 #: src/ggv-prefs-ui.c:313
 #, fuzzy
 msgid "Show only _icons"
-msgstr "显示下一页"
+msgstr "只显示图标"
 
 #: src/ggv-prefs-ui.c:314
 #, fuzzy
 msgid "Show only t_ext"
-msgstr "显示下一页"
+msgstr "只显示文字"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
-msgstr "GGV 的首选项"
+msgstr "GGV 首选项"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
 #, fuzzy
 msgid "_Default Zoom:"
-msgstr "默认缩放"
+msgstr "默认缩放(_D)"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
@@ -565,7 +567,7 @@ msgstr "取代文档方向"
 #: src/ggv-prefs-ui.c:571
 #, fuzzy
 msgid "A_ntialiasing"
-msgstr "反锯齿处理"
+msgstr "字体平滑"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
@@ -590,8 +592,9 @@ msgid "_Show side panel"
 msgstr "显示侧面面板(_S)"
 
 #: src/ggv-prefs-ui.c:622
+#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr ""
+msgstr "将 Nautilus 中的侧边栏放置到右边"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
@@ -608,12 +611,12 @@ msgstr "显示工具栏(_T)"
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
 msgid "Toolbar style"
-msgstr ""
+msgstr "工具栏风格"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
 #, fuzzy
-msgid "Show s_tatusbar"
+msgid "Show statusba_r"
 msgstr "显示状态栏(_T)"
 
 #. save geometry
@@ -662,7 +665,7 @@ msgstr "解释器"
 #: src/ggv-prefs-ui.c:790
 #, fuzzy
 msgid "A_ntialiasing:"
-msgstr "反锯齿处理"
+msgstr "字体平滑"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
@@ -727,11 +730,11 @@ msgstr ""
 #: src/ggv-ui.xml.h:8
 #, fuzzy
 msgid "Help for this application"
-msgstr "关于本程序"
+msgstr "本程序的帮助"
 
 #: src/ggv-ui.xml.h:9
 msgid "New _window"
-msgstr "新建窗口(_w)"
+msgstr "新建窗口(_W)"
 
 #: src/ggv-ui.xml.h:10
 msgid "New window"
@@ -762,9 +765,8 @@ msgid "Reload"
 msgstr "重新加载"
 
 #: src/ggv-ui.xml.h:17
-#, fuzzy
 msgid "Reload current document"
-msgstr "从磁盘重新载入当前文档"
+msgstr "重新载入当前文档"
 
 #: src/ggv-ui.xml.h:18
 msgid "Show Side_bar"
@@ -804,22 +806,20 @@ msgid "Toggle fullscreen mode"
 msgstr "显示/屏蔽当前页(_c)"
 
 #: src/ggv-ui.xml.h:27
-#, fuzzy
 msgid "_About..."
-msgstr "关于..."
+msgstr "关于(_A)..."
 
 #: src/ggv-ui.xml.h:28
 msgid "_Close"
 msgstr "关闭(_C)"
 
 #: src/ggv-ui.xml.h:29
-#, fuzzy
 msgid "_Contents"
-msgstr "坐标单位"
+msgstr "内容(_C)"
 
 #: src/ggv-ui.xml.h:30
 msgid "_Edit"
-msgstr ""
+msgstr "编辑(_E)"
 
 #: src/ggv-ui.xml.h:31
 msgid "_File"
@@ -947,32 +947,32 @@ msgstr "解释器"
 msgid "Error while decompressing file %s:\n"
 msgstr "解压文件 %s 时出错：\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, fuzzy, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "扫描 PDF 文件 %s 时出错：\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, fuzzy, c-format
 msgid "Cannot open file %s.\n"
 msgstr "无法打开文件 %s\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 #, fuzzy
 msgid "File is not readable."
 msgstr "%s 不是一个常规的文件。"
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "扫描文件 %s 时出错\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 #, fuzzy
 msgid "The file is not a PostScript document."
 msgstr "选择一个 PostScript 文档"
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 #, fuzzy
 msgid "Document loaded."
 msgstr "文档标题"
@@ -983,14 +983,12 @@ msgid "Invalid geometry string \"%s\"\n"
 msgstr ""
 
 #: src/main.c:175
-#, fuzzy
 msgid "Specify the number of empty windows to open."
-msgstr "指定主窗口的几何尺寸"
+msgstr "指定要打开的空窗口的个数。"
 
 #: src/main.c:176
-#, fuzzy
 msgid "Number of empty windows"
-msgstr "页数"
+msgstr "空窗口个数"
 
 #: src/main.c:178
 msgid "X geometry specification (see \"X\" man page)."
@@ -1004,9 +1002,8 @@ msgstr "几何尺寸"
 msgid "Could not initialize Bonobo!\n"
 msgstr "无法初始化 Bonobo!\n"
 
-#, fuzzy
 #~ msgid "_Override Orientation"
-#~ msgstr "取代方向"
+#~ msgstr "取代方向(_O)"
 
 #~ msgid "_Override Size"
 #~ msgstr "取代页面尺寸(_O)"
@@ -1024,7 +1021,7 @@ msgstr "无法初始化 Bonobo!\n"
 #~ msgstr "默认显示工具栏"
 
 #~ msgid "Show statusbar by default"
-#~ msgstr "默认显式菜单栏"
+#~ msgstr "默认显示菜单栏"
 
 #~ msgid "Scan PDF"
 #~ msgstr "扫描 PDF"

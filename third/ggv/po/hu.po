@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 2.0\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-12-19 12:24+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-20 22:07+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -492,24 +492,20 @@ msgid "GGV PostScript Viewer"
 msgstr "GGV PostScript-néző"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "GNOME alapbeállítások használata"
+msgstr "_GNOME alapbeállítások használata"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Ikonok és szöveg megjelenítése"
+msgstr "Ikonok é_s szöveg megjelenítése"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Csak ikonok megjelenítése"
+msgstr "Csak _ikonok megjelenítése"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Csak szöveg megjelenítése"
+msgstr "Csak _szöveg megjelenítése"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -517,63 +513,53 @@ msgstr "GGV Beállítások"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Alapértelmezett nagyítás:"
+msgstr "_Alapértelmezett nagyítás:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Automatikus igazítás:"
+msgstr "_Automatikus igazítás:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Koordináta-egység:"
+msgstr "_Koordinátaegység:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Lapméret hiba esetén:"
+msgstr "_Lapméret hiba esetén:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "A dokumentum méretének felülbírálata"
+msgstr "A _dokumentum méretének felülbírálata"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Lap elhelyezkedése hiba esetén:"
+msgstr "Lap _elhelyezkedése hiba esetén:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "A dokumentum elhelyezkedését felülbírálja"
+msgstr "A d_okumentum elhelyezkedését felülbírálja"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Élsimítás"
+msgstr "Él_simítás"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Fájl végi megjegyzések figyelembevétele"
+msgstr "_Fájl végi megjegyzések figyelembevétele"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Fájl figyelése"
+msgstr "_Fájl figyelése"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -581,26 +567,22 @@ msgstr "Dokumentum"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Oldalsáv megjelenítése"
+msgstr "_Oldalsáv megjelenítése"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Az oldalsáv a jobb oldalon jelenjen meg"
+msgstr "Az _oldalsáv a jobb oldalon jelenjen meg"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Menük megjelenítése"
+msgstr "_Menük megjelenítése"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Eszköztár megjelenítése"
+msgstr "E_szköztár megjelenítése"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -609,15 +591,13 @@ msgstr "Eszköztár stílusa"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Állapotsor megjelenítése"
+msgid "Show statusba_r"
+msgstr "Á_llapotsor megjelenítése"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Geometria mentése"
+msgstr "_Geometria mentése"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -625,26 +605,22 @@ msgstr "Elrendezés"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Ugrás az oldal elejére"
+msgstr "_Ugrás az oldal elejére"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Oldalak automatikus megfordítása"
+msgstr "_Oldalak automatikus megfordítása"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Az utolsó látható rész megjelenítése görgetésnél"
+msgstr "Az _utolsó látható rész megjelenítése görgetésnél"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "A görgetendő látható terület nagysága"
+msgstr "A gö_rgetendő látható terület nagysága"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -652,33 +628,28 @@ msgstr "Navigáció"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Értelmező:"
+msgstr "É_rtelmező:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Élsimítás:"
+msgstr "Él_simítás:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "PDF konvertálása PS-be:"
+msgstr "_PDF konvertálása PS-be:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -686,9 +657,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Nyomtatási parancs:"
+msgstr "_Nyomtatási parancs:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -937,30 +907,30 @@ msgstr "Hiba történt az értelmezőben."
 msgid "Error while decompressing file %s:\n"
 msgstr "Hiba a '%s' fájl kitömörítése közben:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Hiba a(z) %s PDF-fájl konvertálása közben:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "A fájl megnyitása nem sikerült: %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "A fájl nem olvasható."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Hiba a fájl ellenőrzése közben: %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "A fájl nem PostScript dokumentum."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Dokumentum betöltve."
 
@@ -989,6 +959,9 @@ msgstr "GEOMETRY"
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
 msgstr "A Bonobo inicializálása nem sikerült!\n"
+
+#~ msgid "Default Zoom:"
+#~ msgstr "Alapértelmezett nagyítás:"
 
 #~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
 #~ msgstr "Copyright © 1998-2002 The Free Software Foundation"

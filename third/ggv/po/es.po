@@ -1,5 +1,5 @@
 # GGV's Spanish translation
-# Copyright (C) 1999-2002 Free Software Foundation, Inc.
+# Copyright © 1999-2002 the Free Software Foundation, Inc.
 # Pablo Saratxaga <pablo@mandrakesoft.com>, 1999-2000
 # Daniel M. German <dmg@csg.uwaterloo.ca>, 2000
 # Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002
@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 0.90\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-25 18:41+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-03 11:09+0100\n"
 "Last-Translator: Lucas 'Basurero' Vieites <basurero@jazzfree.com>\n"
 "Language-Team: gnome-es <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr "Control de documento PostScript GGV"
 # bonobo/GNOME_GGV.oaf.in.h:3
 #: bonobo/GNOME_GGV.server.in.in.h:2
 msgid "GGV PostScript View"
-msgstr "Vista PostScript GGV"
+msgstr "Vista postScript GGV"
 
 # bonobo/GNOME_GGV.oaf.in.h:4
 #: bonobo/GNOME_GGV.server.in.in.h:3
@@ -47,11 +47,11 @@ msgstr "25%"
 
 #: bonobo/ggv-control-ui.xml.h:6
 msgid "Change zoom factor to default"
-msgstr "Cambiar factor de zoom a predeterminado"
+msgstr "Cambiar el factor de acercamiento a predeterminado"
 
 #: bonobo/ggv-control-ui.xml.h:7
 msgid "Decrease zoom factor"
-msgstr "Disminuir factor de zoom"
+msgstr "Disminuir factor de acercamiento"
 
 #: bonobo/ggv-control-ui.xml.h:8
 msgid "Fit"
@@ -82,7 +82,7 @@ msgstr "Acercar"
 
 #: bonobo/ggv-control-ui.xml.h:14
 msgid "Increase zoom factor"
-msgstr "Aumentar factor de zoom"
+msgstr "Aumentar factor de acercamiento"
 
 #: bonobo/ggv-control-ui.xml.h:15
 msgid "Other"
@@ -142,7 +142,7 @@ msgstr "_Autoajuste"
 # bonobo/ggv-postscript-view.c:1098
 #: bonobo/ggv-control-ui.xml.h:32
 msgid "_Default Zoom"
-msgstr "Zoom pre_determinado"
+msgstr "Acercamiento pre_determinado"
 
 #: bonobo/ggv-control-ui.xml.h:33
 msgid "_Fit Window"
@@ -155,7 +155,7 @@ msgstr "Si_n autoajuste"
 # src/main.c:935
 #: bonobo/ggv-control-ui.xml.h:35
 msgid "_Zoom"
-msgstr "_Zoom"
+msgstr "Ace_rcamiento"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:1
 msgid "10x14"
@@ -495,7 +495,7 @@ msgstr "Comprobar cambios en el archivo mostrado ."
 # src/main.c:1773
 #: bonobo/ggv-postscript-view.c:2041
 msgid "Antialiasing"
-msgstr "Antialias"
+msgstr "Suavizado"
 
 #: bonobo/ggv-sidebar.c:309
 msgid "Toggle marked state of all pages"
@@ -553,24 +553,20 @@ msgid "GGV PostScript Viewer"
 msgstr "Visualizador PostScript GGV"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Usar predeterminados de GNOME"
+msgstr "_Usar predeterminados de GNOME"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Mostrar tanto iconos como texto"
+msgstr "Mostrar _tanto iconos como texto"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Mostrar sólo iconos"
+msgstr "Mostrar sólo _iconos"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Mostrar sólo texto"
+msgstr "Mostrar sólo t_exto"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -579,71 +575,61 @@ msgstr "Preferencias GGV"
 # bonobo/ggv-postscript-view.c:1098
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Zoom predeterminado:"
+msgstr "Acercamiento pre_determinado:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Modo autoajuste:"
+msgstr "Modo a_utoajuste:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Unidades de coordenadas:"
+msgstr "Unidades de _coordenadas:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Tamaño de página de recaída:"
+msgstr "Tamaño de página de _recaída:"
 
 # src/main.c:849
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Sobrescribir tamaño del documento"
+msgstr "Sobrescribir tamaño del _documento"
 
 # bonobo/ggv-postscript-view.c:1102
 # src/main.c:1760
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Orientación de recaída:"
+msgstr "Orientació_n de recaída:"
 
 # bonobo/ggv-postscript-view.c:1102
 # src/main.c:1760
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Sobrescribir orientación de documento"
+msgstr "So_brescribir orientación de documento"
 
 # bonobo/ggv-postscript-view.c:1118
 # src/main.c:1773
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Antialias"
+msgstr "Sua_vizado"
 
 # bonobo/ggv-postscript-view.c:1110
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Respetar comentarios EOF"
+msgstr "_Respetar comentarios EOF"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Archivo se comprobación"
+msgstr "Archi_vo de comprobación"
 
 # src/main.c:1825
 #: src/ggv-prefs-ui.c:603
@@ -652,26 +638,22 @@ msgstr "Documento"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Mostrar panel lateral"
+msgstr "Mo_strar panel lateral"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Poner el panel lateral a la derecha"
+msgstr "_Poner el panel lateral a la derecha"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Mostrar barra de menús"
+msgstr "Mostrar barra de _menús"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Mostrar barra de herramientas"
+msgstr "Mostrar barra de herramien_tas"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -680,15 +662,13 @@ msgstr "Estilo de la barra de herramientas"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Mostrar barra de estado"
+msgid "Show statusba_r"
+msgstr "Most_rar barra de estado"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Guardar geometría"
+msgstr "Guardar _geometría"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -696,26 +676,22 @@ msgstr "Disposición"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Saltar al principio de la página"
+msgstr "_Saltar al principio de la página"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Pasar páginas automáticamente"
+msgstr "Pasar _páginas automáticamente"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Trazar última parte visible al mover"
+msgstr "Trazar última parte visib_le al mover"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Tamaño del área visible que se moverá"
+msgstr "Tamaño del área _visible que se moverá"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -723,35 +699,30 @@ msgstr "Navegación"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Intérprete:"
+msgstr "_Intérprete:"
 
 # bonobo/ggv-postscript-view.c:1118
 # src/main.c:1773
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Antialias:"
+msgstr "S_uavizado:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Convertir PDF a PS:"
+msgstr "Convertir _PDF a PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 # bonobo/GNOME_GGV.oaf.in.h:3
 #: src/ggv-prefs-ui.c:877
@@ -760,9 +731,8 @@ msgstr "GhostScript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Comando de impresión:"
+msgstr "Comando de im_presión:"
 
 # bonobo/ggv-postscript-view-ui.xml.h:7
 #: src/ggv-prefs-ui.c:906
@@ -937,9 +907,9 @@ msgstr ""
 #: src/ggv-window.c:568
 msgid "translator_credits"
 msgstr ""
-"Lucas 'Basurero' Vieites <basurero@jazzfree.com>, 2002\n"
+"Lucas 'Basurero' Vieites <basurero@jazzfree.com>, 2002-2003\n"
 "Sun G11n <gnome_int_l10n@ireland.sun.com>, 2002\n"
-"Daniel M. German <dmg@csg.uwaterloo.ca>, 2000\n"
+"Daniel M. Germán <dmg@csg.uwaterloo.ca>, 2000\n"
 "Pablo Saratxaga <pablo@mandrakesoft.com>, 1999-2000"
 
 # src/callbacks.c:176
@@ -1039,35 +1009,35 @@ msgid "Error while decompressing file %s:\n"
 msgstr "Error al descomprimir el archivo %s:\n"
 
 # src/gtkgs.c:1262
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Error al convertir el archivo pdf %s:\n"
 
 # src/gtkgs.c:1533
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "No se puede abrir el archivo %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "El archivo no es legible."
 
 # src/gtkgs.c:1555
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Error al leer el archivo %s\n"
 
 # src/main.c:883
 # src/main.c:1123
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "El archivo no es un documento PostScript válido."
 
 # src/main.c:1825
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Documento cargado."
 

@@ -179,6 +179,7 @@ ggv_file_sel_request_uri(const gchar *title, const gchar *def_uri)
         sel = ggv_file_sel_new();
         fsel = GTK_FILE_SELECTION(sel);
         gtk_window_set_title(GTK_WINDOW(sel), title);
+        gtk_window_set_modal(GTK_WINDOW(sel),TRUE);
         if(def_uri != NULL)
                 ggv_file_sel_set_uri(GGV_FILE_SEL(sel), def_uri);
         g_signal_connect(G_OBJECT(fsel->ok_button), "clicked",

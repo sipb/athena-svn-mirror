@@ -1,21 +1,21 @@
 # translation of sk.po to Slovak
 # Slovak translation of sk.po
 # ggv Slovak translation
-# Copyright (C) 2000,2001,2002 Free Software Foundation, Inc.
-# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2000,2001,2002.
+# Copyright (C) 2000,2001,2002,2003 Free Software Foundation, Inc.
+# Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2000,2001,2002,2003.
 # Stanislav Višňovský <visnovsky@nenya.ms.mff.cuni.cz>, 2002
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sk\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-12-10 19:03+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-02-02 23:24+0100\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0\n"
+"X-Generator: KBabel 1.2\n"
 
 #: bonobo/GNOME_GGV.server.in.in.h:1
 msgid "GGV PostScript Document Control"
@@ -494,24 +494,20 @@ msgid "GGV PostScript Viewer"
 msgstr "Prehliadač pre PostScript GGV"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Použiť štandardné nastavenie GNOME"
+msgstr "Použiť š_tandardné nastavenie GNOME"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Zobraziť ikony aj text"
+msgstr "Zobraziť ikony _aj text"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Zobraziť iba ikony"
+msgstr "Zobraziť iba _ikony"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Zobraziť iba text"
+msgstr "Zobraziť iba _text"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -519,63 +515,53 @@ msgstr "Nastavenie GGV"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Štandardná mierka:"
+msgstr "Š_tandardná mierka:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Automatické prispôsobenie:"
+msgstr "_Automatické prispôsobenie:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Jednotky súradníc:"
+msgstr "_Jednotky súradníc:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Náhradná veľkosť stránky:"
+msgstr "_Náhradná veľkosť stránky:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Ignorovať veľkosť v dokumente"
+msgstr "Ignorovať veľkosť v _dokumente"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Náhradná orientácia papiera:"
+msgstr "Náhradná orientácia _papiera:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Ignorovať orientáciu dokumentu"
+msgstr "Ignorovať orientáciu _dokumentu"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Antialiasing"
+msgstr "Vy_hladenie"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Rešpektovať EOF komentáre"
+msgstr "_Rešpektovať EOF komentáre"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Sledovať súbor"
+msgstr "_Sledovať súbor"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -583,26 +569,22 @@ msgstr "Dokument"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Zobraziť bočný panel"
+msgstr "Zobraziť _bočný panel"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Umiestniť bočný panel vpravo"
+msgstr "Umiestniť bočný panel v_pravo"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Zobraziť menu"
+msgstr "Zobraziť _menu"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Zobraziť panel nástrojov"
+msgstr "Zobraziť _panel nástrojov"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -611,15 +593,13 @@ msgstr "Štýl panelu nástrojov"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Zobraziť stavový riadok"
+msgid "Show statusba_r"
+msgstr "Zobraziť _stavový riadok"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Uložiť umiestnenie okna"
+msgstr "Uložiť u_miestnenie okna"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -627,26 +607,22 @@ msgstr "Vzhľad"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Prejsť na začiatok stránky"
+msgstr "_Prejsť na začiatok stránky"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Automaticky prevrátiť stránky"
+msgstr "Automaticky _prevrátiť stránky"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Ohraničiť poslednú zobrazenú časť pri posune"
+msgstr "Ohraničiť _poslednú zobrazenú časť pri posune"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Veľkosť pri posune"
+msgstr "Veľkosť _viditeľnej časti pri posune"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -654,33 +630,28 @@ msgstr "Navigácia"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Interpreter:"
+msgstr "_Interpreter:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Vyhladzovanie:"
+msgstr "_Vyhladenie:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Previesť PDF na PS:"
+msgstr "Previesť _PDF na PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -688,9 +659,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Príkaz tlače:"
+msgstr "Príkaz _tlače:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -936,30 +906,30 @@ msgstr "Interpreter zlyhal."
 msgid "Error while decompressing file %s:\n"
 msgstr "Chyba pri rozbaľovaní súboru %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Chyba pri prevode PDF súboru %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Nemôžem otvoriť súbor %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Súbor nie je možné prečítať."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Chyba pri spracovávaní PDF súboru %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Súbor nie je dokument PostScript."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Dokument načítaný."
 
@@ -987,6 +957,3 @@ msgstr "GEOMETRY"
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
 msgstr "Nie je možné inicializovať Bonobo\n"
-
-#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
-#~ msgstr "Copyright (C) 1998-2002 The Free Software Foundation"

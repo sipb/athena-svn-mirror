@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2002-06-21 01:07+0200\n"
 "Last-Translator: Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
@@ -609,7 +609,7 @@ msgstr "Стил на лентата с инструменти"
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
 #, fuzzy
-msgid "Show s_tatusbar"
+msgid "Show statusba_r"
 msgstr "Показва лентата за състояние"
 
 #. save geometry
@@ -934,30 +934,30 @@ msgstr "Грешка на интерпретатора"
 msgid "Error while decompressing file %s:\n"
 msgstr "Грешка при разкомпресиране на файл %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, fuzzy, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Грешка при сканиране на pdf файл %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Не мога да отворя файл %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Файлът е нечитаем."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Грешка при сканиране на файл %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Файлът нею е PostScript документ."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Документът е зареден."
 

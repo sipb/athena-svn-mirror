@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 1.99.96.1\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-12-01 19:19+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-20 12:37+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: <tradgnome@softcatala.org> \n"
 "MIME-Version: 1.0\n"
@@ -494,24 +494,20 @@ msgid "GGV PostScript Viewer"
 msgstr "Visualitzador PostScript GGV"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Usa valors per defecte del GNOME"
+msgstr "_Usa valors per defecte del GNOME"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Mostra icones i text"
+msgstr "Mostra i_cones i text"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Mostra només icones"
+msgstr "Mostra només _icones"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Mostra només text"
+msgstr "Mostra només t_ext"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -519,63 +515,53 @@ msgstr "Preferències del GGV"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Zoom predeterminat:"
+msgstr "Zoom pre_determinat:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Mode d'autoajust:"
+msgstr "Mode d'a_utoajust:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Unitats de les coordinades:"
+msgstr "Unitats de les _coordinades:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Mida de la pàgina de provisió:"
+msgstr "Mida de la pàgina de _provisió:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Sobrescriu la mida del document"
+msgstr "Sobrescriu la mida del _document"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Orientació del medi de provisió:"
+msgstr "Orientació del _medi de provisió:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Sobrescriu l'orientació del document"
+msgstr "_Sobrescriu l'orientació del document"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Antitrepig"
+msgstr "A_ntitrepig"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Respecta els comentaris d'EOF"
+msgstr "_Respecta els comentaris d'EOF"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Mira un fitxer"
+msgstr "_Mira un fitxer"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -583,26 +569,22 @@ msgstr "Document"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Mostra la barra lateral"
+msgstr "_Mostra la barra lateral"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Posa la barra lateral a la dreta"
+msgstr "_Posa la barra lateral a la dreta"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Mostra la barra de menú"
+msgstr "Mostra la barra de _menú"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Mostra la barra d'eines"
+msgstr "Mostra la barra d'_eines"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -611,15 +593,13 @@ msgstr "Estil de la barra d'eines"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Mostra la barra d'estat"
+msgid "Show statusba_r"
+msgstr "Mostra la ba_rra d'estat"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Desa la geometria"
+msgstr "Desa la _geometria"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -627,26 +607,22 @@ msgstr "Format"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Salta al començament de la pàgina en utilitzar el teclat"
+msgstr "Sa_lta al començament de la pàgina en utilitzar el teclat"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Inverteix les pàgines automàticament"
+msgstr "_Inverteix les pàgines automàticament"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Posa contorn a la última part visible en desplaçar"
+msgstr "Posa contorn a la ú_ltima part visible en desplaçar"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Quantitat de àrea visible per a desplaçar"
+msgstr "Quantitat de àrea _visible per a desplaçar"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -654,33 +630,28 @@ msgstr "Navegació"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Intèrpret:"
+msgstr "_Intèrpret:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Antitrepig:"
+msgstr "A_ntitrepig:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Converteix PDF a PS:"
+msgstr "Converteix _PDF a PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -688,9 +659,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Ordre d'impressió:"
+msgstr "Ordre d'im_pressió:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -939,30 +909,30 @@ msgstr "L'intèrpret ha fallat."
 msgid "Error while decompressing file %s:\n"
 msgstr "S'ha produït un error en descomprimir el fitxer %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "S'ha produït un error en convertir el fitxer PDF %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "No es pot obrir el fitxer %s.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "No es pot llegir el fitxer."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "S'ha produït un error en escanejar el fitxer %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "El fitxer no és un document PostScript."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Document carregat."
 

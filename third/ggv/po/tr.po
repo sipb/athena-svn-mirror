@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 1.1.0\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2000-10-13 16:51+0200\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -636,9 +636,8 @@ msgstr ""
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "_Araç çubuğunu göster"
+msgid "Show statusba_r"
+msgstr ""
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
@@ -981,32 +980,32 @@ msgstr "Çevirmen"
 msgid "Error while decompressing file %s:\n"
 msgstr "%s dosyasını sıkıştırılmış halinden açarken hata oldu:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, fuzzy, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "PDF dosyası `%s''yi tararken hata oldu:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, fuzzy, c-format
 msgid "Cannot open file %s.\n"
 msgstr "%s dosyasını açamadım\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 #, fuzzy
 msgid "File is not readable."
 msgstr "%s normal bir dosya değildir."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "%s dosyasını tararken hata oldu\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 #, fuzzy
 msgid "The file is not a PostScript document."
 msgstr "Bir postscript belgesi yükle"
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 #, fuzzy
 msgid "Document loaded."
 msgstr "Belge"

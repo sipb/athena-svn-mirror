@@ -1,27 +1,27 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001 Free Software Foundation, Inc.
-# Josu Waliño <josu@elhuyar.com>, 2001
+# translation of ggv.HEAD.po to Hebrew
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2003
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ggv 1.99.3\n"
+"Project-Id-Version: ggv.HEAD\n"
 "POT-Creation-Date: 2003-02-04 14:42+0100\n"
-"PO-Revision-Date: 2001-05-25 13:35+0200\n"
-"Last-Translator: Unmantained\n"
-"Language-Team: Euskara\n"
+"PO-Revision-Date: 2003-01-27 22:09+0200\n"
+"Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
+"Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
 
 #: bonobo/GNOME_GGV.server.in.in.h:1
-#, fuzzy
 msgid "GGV PostScript Document Control"
-msgstr "Postscript dokumentu bat kargatzen du"
+msgstr "בקרת מסמך GGV PostScript"
 
 #: bonobo/GNOME_GGV.server.in.in.h:2
-#, fuzzy
 msgid "GGV PostScript View"
-msgstr "Ghostscript"
+msgstr "תצוגת GGV PostScript"
 
 #: bonobo/GNOME_GGV.server.in.in.h:3
 msgid "GGV PostScript viewer factory"
@@ -30,330 +30,309 @@ msgstr ""
 #: bonobo/ggv-control-ui.xml.h:2
 #, no-c-format
 msgid "15_0%"
-msgstr ""
+msgstr "15_0%"
 
 #: bonobo/ggv-control-ui.xml.h:3
 msgid "1:1"
-msgstr ""
+msgstr "1:1"
 
 #: bonobo/ggv-control-ui.xml.h:5
 #, no-c-format
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: bonobo/ggv-control-ui.xml.h:6
 msgid "Change zoom factor to default"
-msgstr ""
+msgstr "שנה את פקטור ההגדלה לברירת המחדל"
 
 #: bonobo/ggv-control-ui.xml.h:7
 msgid "Decrease zoom factor"
-msgstr ""
+msgstr "הקטן את פקטור ההגדלה"
 
 #: bonobo/ggv-control-ui.xml.h:8
 msgid "Fit"
-msgstr ""
+msgstr "התאם"
 
 #: bonobo/ggv-control-ui.xml.h:9
-#, fuzzy
 msgid "Fit Width"
-msgstr "Zooma txikiagotu"
+msgstr "התאם רוחב"
 
 #: bonobo/ggv-control-ui.xml.h:10
-#, fuzzy
 msgid "Fit _Width"
-msgstr "Zooma txikiagotu"
+msgstr "התאם _רוחב"
 
 #: bonobo/ggv-control-ui.xml.h:11
-#, fuzzy
 msgid "Fit to Page _Size"
-msgstr "Orrialde-ta_maina"
+msgstr "בתאם ל_גודל העמוד"
 
 #: bonobo/ggv-control-ui.xml.h:12
-#, fuzzy
 msgid "Fit to Page _Width"
-msgstr "Zooma txikiagotu"
+msgstr "התאם ל_רוחב העמוד"
 
 #: bonobo/ggv-control-ui.xml.h:13
 msgid "In"
-msgstr ""
+msgstr "פנימה"
 
 #: bonobo/ggv-control-ui.xml.h:14
 msgid "Increase zoom factor"
-msgstr ""
+msgstr "הגדל את פקטור ההתקרבות"
 
 #: bonobo/ggv-control-ui.xml.h:15
 msgid "Other"
-msgstr "Bestelakoa"
+msgstr "אחר"
 
 #: bonobo/ggv-control-ui.xml.h:16
 msgid "Out"
-msgstr ""
+msgstr "החוצה"
 
 #: bonobo/ggv-control-ui.xml.h:17
 msgid "Zoom _In"
-msgstr "Zooma ha_ndiagotu"
+msgstr "הת_קרב"
 
 #: bonobo/ggv-control-ui.xml.h:18
 msgid "Zoom _Out"
-msgstr "Zooma t_xikiagotu"
+msgstr "הת_רחק"
 
 #: bonobo/ggv-control-ui.xml.h:19
 msgid "Zoom the page to be as wide as the window"
-msgstr ""
+msgstr "התקרב לעמוד כך שיהיה רחב כגודל החלון"
 
 #: bonobo/ggv-control-ui.xml.h:20
 msgid "Zoom the page to fit in the window"
-msgstr ""
+msgstr "התקרב לעמוד כך שיתאים לגודל החלון"
 
 #: bonobo/ggv-control-ui.xml.h:22
 #, no-c-format
 msgid "_100%"
-msgstr ""
+msgstr "_100%"
 
 #: bonobo/ggv-control-ui.xml.h:24
 #, no-c-format
 msgid "_200%"
-msgstr ""
+msgstr "_200%"
 
 #: bonobo/ggv-control-ui.xml.h:26
 #, no-c-format
 msgid "_400%"
-msgstr ""
+msgstr "_400%"
 
 #: bonobo/ggv-control-ui.xml.h:28
 #, no-c-format
 msgid "_50%"
-msgstr ""
+msgstr "_50%"
 
 #: bonobo/ggv-control-ui.xml.h:30
 #, no-c-format
 msgid "_75%"
-msgstr ""
+msgstr "_75%"
 
 #: bonobo/ggv-control-ui.xml.h:31
 msgid "_Auto-fit"
-msgstr ""
+msgstr "התאם _אוטומטית"
 
 #: bonobo/ggv-control-ui.xml.h:32
-#, fuzzy
 msgid "_Default Zoom"
-msgstr "Lehenetsitako zooma"
+msgstr "הגדלה _ברירת מחדל"
 
 #: bonobo/ggv-control-ui.xml.h:33
-#, fuzzy
 msgid "_Fit Window"
-msgstr "_Leiho berria"
+msgstr "ה_תאם לחלון"
 
 #: bonobo/ggv-control-ui.xml.h:34
 msgid "_No Auto-fit"
-msgstr ""
+msgstr "_ללא התאמה אוטומטית"
 
 #: bonobo/ggv-control-ui.xml.h:35
 msgid "_Zoom"
-msgstr "_Zooma"
+msgstr "_הגדלה"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:1
 msgid "10x14"
-msgstr ""
+msgstr "10x14"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:2
 msgid "A0"
-msgstr ""
+msgstr "A0"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:3
 msgid "A1"
-msgstr ""
+msgstr "A1"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:4
 msgid "A2"
-msgstr ""
+msgstr "A2"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:5
 msgid "A3"
-msgstr ""
+msgstr "A3"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:6
 msgid "A4"
-msgstr ""
+msgstr "A4"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:7
 msgid "A5"
-msgstr ""
+msgstr "A5"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:8
 msgid "B4"
-msgstr ""
+msgstr "B4"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:9
 msgid "B5"
-msgstr ""
+msgstr "B5"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:10
 msgid "BBox"
-msgstr ""
+msgstr "BBox"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:11
 msgid "Executive"
-msgstr ""
+msgstr "מנהלי"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:12
-#, fuzzy
 msgid "First"
-msgstr "_Lehen orrialdea"
+msgstr "ראשון"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:13
 msgid "Folio"
-msgstr ""
+msgstr "פוליו"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:14
-#, fuzzy
 msgid "GGV _Preferences"
-msgstr "GGVren hobespenak"
+msgstr "_העדפות GGV"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:15
-#, fuzzy
 msgid "Go to first page"
-msgstr "Erakutsi lehen orrialdea"
+msgstr "לך לעמוד הראשון"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:16
-#, fuzzy
 msgid "Go to last page"
-msgstr "Erakutsi azken orrialdea"
+msgstr "לך לעמוד האחרון"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:17
-#, fuzzy
 msgid "Go to next page"
-msgstr "Erakutsi hurrengo orrialdea"
+msgstr "לך לעמוד הבא"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:18
-#, fuzzy
 msgid "Go to previous page"
-msgstr "Erakutsi aurreko orrialdea"
+msgstr "לך לעמוד הקודם"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:19
-#, fuzzy
 msgid "Last"
-msgstr "Diseinua"
+msgstr "אחרון"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:20
 msgid "Ledger"
-msgstr ""
+msgstr "ספר חשבונות"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:21
 msgid "Legal"
-msgstr ""
+msgstr "משפטי"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:22
 msgid "Letter"
-msgstr ""
+msgstr "מכתב"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:23
-#, fuzzy
 msgid "Next"
-msgstr "Hurrengo orrialdea"
+msgstr "הבא"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:24
 msgid "Open the preferences dialog"
-msgstr ""
+msgstr "פתח את תיבת דו-שיח העדפות"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:25
 msgid "Prev"
-msgstr ""
+msgstr "הקודם"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:26
 msgid "Print marked pages"
-msgstr "Markatutako orrialdeak inprimatzen ditu"
+msgstr "הדפס דפים מסומנים"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:27
-#, fuzzy
 msgid "Print the whole document"
-msgstr "Dokumentua inprimatzen du"
+msgstr "הדפס את כל המסמך"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:28
 msgid "Quarto"
-msgstr ""
+msgstr "קוורטו"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:29
-#, fuzzy
 msgid "Save marked pages to a file"
-msgstr "Markatutako orrialdeak fitxategi berri batean gordetzen ditu"
+msgstr "שמור עמודים מסומנים לקובץ"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:30
 msgid "Statement"
-msgstr ""
+msgstr "הצהרה"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:31
 msgid "Tabloid"
-msgstr ""
+msgstr "צהובון"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:32
-#, fuzzy
 msgid "_Document Orientation"
-msgstr "Jaramonik ez dokumentuaren orientazioari"
+msgstr "יישור _מסמך"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:33
-#, fuzzy
 msgid "_Document Size"
-msgstr "Dokumentuaren izenburua"
+msgstr "גודל ה_מסמך"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:34
 msgid "_First page"
-msgstr "_Lehen orrialdea"
+msgstr "עמוד _ראשון"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:35
 msgid "_Landscape"
-msgstr "_Horizontala"
+msgstr "ל_רוחב"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:36
 msgid "_Last page"
-msgstr "A_zken orrialdea"
+msgstr "עמוד _אחרון"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:37
 msgid "_Next page"
-msgstr "_Hurrengo orrialdea"
+msgstr "עמוד ה_בא"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:38
 msgid "_Orientation"
-msgstr "_Orientazioa"
+msgstr "_יישור"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:39
 msgid "_Portrait"
-msgstr "_Bertikala"
+msgstr "ל_אורך"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:40
 msgid "_Previous page"
-msgstr "_Aurreko orrialdea"
+msgstr "העמוד ה_קודם"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:41
-#, fuzzy
 msgid "_Print document"
-msgstr "Dokumentua inprimatzen du"
+msgstr "ה_דפס מסמך"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:42
-#, fuzzy
 msgid "_Print marked pages"
-msgstr "Markatutako orrialdeak inprimatzen ditu"
+msgstr "ה_דפס עמודים מסומנים"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:43
-#, fuzzy
 msgid "_Save marked pages"
-msgstr "Gorde _markatutako orrialdeak..."
+msgstr "_שמור עמודים מסומנים"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:44
 msgid "_Seascape"
-msgstr "E_tzanda"
+msgstr "_נוף ימי"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:45
 msgid "_Size"
-msgstr "_Tamaina"
+msgstr "_גודל"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:46
 msgid "_Upside down"
-msgstr "B_uruz behera"
+msgstr "_הפוך"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
 msgid "_View"
-msgstr "_Ikusi"
+msgstr "_תצוגה"
 
 #: bonobo/ggv-postscript-view.c:746
 #, c-format
@@ -361,116 +340,108 @@ msgid ""
 "Unable to execute print command:\n"
 "%s"
 msgstr ""
+"לא ניתן להפעיל את פקודת ההדפסה:\n"
+"%s"
 
 #: bonobo/ggv-postscript-view.c:800
-#, fuzzy
 msgid ""
 "No pages have been marked.\n"
 "Do you want to save the whole document?"
 msgstr ""
-"Ez dago markatutako orrialderik.\n"
-"Dokumentu osoa inprimatu nahi duzu?"
+"לא סומנו עמודים.\n"
+"האם ברצונך לשמור את כל המסמך?"
 
 #: bonobo/ggv-postscript-view.c:820
 msgid "Select a file to save pages as"
-msgstr ""
+msgstr "בחר קובץ כדי לשמור בשמו את העמודים"
 
 #: bonobo/ggv-postscript-view.c:832
 msgid ""
 "A file with this name already exists.\n"
 "Do you want to overwrite it?"
 msgstr ""
+"קובץ בשם זה כבר קיים.\n"
+"האם ברצונך להחליפו?"
 
 #: bonobo/ggv-postscript-view.c:871
-#, fuzzy
 msgid ""
 "No pages have been marked.\n"
 "Do you want to print the whole document?"
 msgstr ""
-"Ez dago markatutako orrialderik.\n"
-"Dokumentu osoa inprimatu nahi duzu?"
+"לא סומנו עמודים.\n"
+"האם ברצונך להדפיס את כל המסמך?"
 
 #: bonobo/ggv-postscript-view.c:1754
 msgid "Display"
-msgstr "Bistaratu"
+msgstr "תצוגה"
 
 #: bonobo/ggv-postscript-view.c:1951
-#, fuzzy
 msgid "GhostScript output"
-msgstr "Ghostscript"
+msgstr "פלט GhostScript"
 
 #: bonobo/ggv-postscript-view.c:1985
 msgid "Document title"
-msgstr "Dokumentuaren izenburua"
+msgstr "כותרת המסמך"
 
 #: bonobo/ggv-postscript-view.c:1989
 msgid "GGV control status"
-msgstr ""
+msgstr "מצב בקרה GGV"
 
 #: bonobo/ggv-postscript-view.c:1993
 msgid "Number of pages"
-msgstr ""
+msgstr "מספר עמודים"
 
 #: bonobo/ggv-postscript-view.c:1997
-#, fuzzy
 msgid "Page names"
-msgstr "Orrialde-ta_maina"
+msgstr "שמות העמודים"
 
 #: bonobo/ggv-postscript-view.c:2001
-#, fuzzy
 msgid "Current page number"
-msgstr "Zentratu orrialdea"
+msgstr "מספר העמוד הנוכחי"
 
 #: bonobo/ggv-postscript-view.c:2005
-#, fuzzy
 msgid "Document width"
-msgstr "Dokumentua"
+msgstr "רוחב המסמך"
 
 #: bonobo/ggv-postscript-view.c:2009
-#, fuzzy
 msgid "Document height"
-msgstr "Dokumentua"
+msgstr "גובה המסמך"
 
 #: bonobo/ggv-postscript-view.c:2013
-#, fuzzy
 msgid "Document orientation"
-msgstr "Jaramonik ez dokumentuaren orientazioari"
+msgstr "יישור המסמך"
 
 #: bonobo/ggv-postscript-view.c:2017
-#, fuzzy
 msgid "Default orientation"
-msgstr "Orientazio bertikala"
+msgstr "יישור ברירת מחדל"
 
 #: bonobo/ggv-postscript-view.c:2021
-#, fuzzy
 msgid "Default size"
-msgstr "Lehenetsitako zooma"
+msgstr "גודל ברירת מחדל"
 
 #: bonobo/ggv-postscript-view.c:2025
 msgid "Override document orientation"
-msgstr "Jaramonik ez dokumentuaren orientazioari"
+msgstr "החלף יישור מסמך"
 
 #: bonobo/ggv-postscript-view.c:2029
 msgid "Override document size"
-msgstr "Jaramonik ez dokumentuaren tamainari"
+msgstr "החלף גודל מסמך"
 
 #: bonobo/ggv-postscript-view.c:2033
 msgid "Respect EOF comment"
-msgstr "Errespetatu fitxategi-bukaerako iruzkina"
+msgstr "כבד הערות EOF"
 
 #: bonobo/ggv-postscript-view.c:2037
-#, fuzzy
 msgid "Watch displayed file for changes"
-msgstr "Bistaratzea eguneratzen du fitxategia aldatzen bada."
+msgstr "צפה בקבצים המוצגים לשינויים"
 
 #: bonobo/ggv-postscript-view.c:2041
 msgid "Antialiasing"
-msgstr "Antialiasa"
+msgstr "החלקת קצוות"
 
 #: bonobo/ggv-sidebar.c:309
-#, fuzzy
 msgid "Toggle marked state of all pages"
-msgstr "Marka jarri/kendu orrialde guztiei"
+msgstr ""
 
 #: bonobo/ggv-sidebar.c:310
 msgid ""
@@ -479,9 +450,8 @@ msgid ""
 msgstr ""
 
 #: bonobo/ggv-sidebar.c:322
-#, fuzzy
 msgid "Toggle marked state of odd pages"
-msgstr "Marka jarri/kendu orrialde bakoitiei"
+msgstr ""
 
 #: bonobo/ggv-sidebar.c:323
 msgid ""
@@ -490,9 +460,8 @@ msgid ""
 msgstr ""
 
 #: bonobo/ggv-sidebar.c:336
-#, fuzzy
 msgid "Toggle marked state of even pages"
-msgstr "Marka jarri/kendu orrialde bikoitiei"
+msgstr ""
 
 #: bonobo/ggv-sidebar.c:337
 msgid ""
@@ -502,199 +471,179 @@ msgstr ""
 
 #: bonobo/ggv-sidebar.c:350
 msgid "Clear marked state of all pages"
-msgstr ""
+msgstr "נקה את סימון המצב של כל העמודים"
 
 #: bonobo/ggv-sidebar.c:351
 msgid "Clear marked state of all pages: all pages will be unmarked."
-msgstr ""
+msgstr "נקה את סימון המצב של כל העמודים: כל העמודים יהיו לא מסומנים."
 
 #: ggv.desktop.in.h:1
 msgid "A Ghostscript frontend to visualize PostScript files"
-msgstr "PostScript fitxategiak ikusteko Ghostscript interfazea"
+msgstr "חזית Ghostscrip להצגת קבצי PostScript"
 
 #: ggv.desktop.in.h:2
-#, fuzzy
 msgid "GGV PostScript Viewer"
-msgstr "Ghostscript"
+msgstr "מציג GGV PostScript"
 
 #: src/ggv-prefs-ui.c:311
 msgid "_Use GNOME defaults"
-msgstr ""
+msgstr "_השתמש בברירת המחדל של GNOME"
 
 #: src/ggv-prefs-ui.c:312
 msgid "Show _both icons and text"
-msgstr ""
+msgstr "הצג _גם סמלים וגם מלל"
 
 #: src/ggv-prefs-ui.c:313
 msgid "Show only _icons"
-msgstr ""
+msgstr "הצג רק _סמלים"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Erakutsi hurrengo orrialdea"
+msgstr "הצג רק _מלל"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
-msgstr "GGVren hobespenak"
+msgstr "העדפות GGV"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Lehenetsitako zooma"
+msgstr "הגדלה _ברירת מחדל:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
 msgid "A_uto-fit mode:"
-msgstr ""
+msgstr "מצב התאמה _אוטמטית:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
 msgid "_Coordinate units:"
-msgstr ""
+msgstr "יחידות _שוות ערך:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Paper-tamaina lehenetsia"
+msgstr "_שחזור גודל עמוד:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Jaramonik ez dokumentuaren tamainari"
+msgstr "החלף גודל _מסמך"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Paperaren orientazio lehenetsia"
+msgstr "שחזור יישור _מדיה:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Jaramonik ez dokumentuaren orientazioari"
+msgstr "ה_חלף יישור מסמך"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Antialiasa"
+msgstr "ה_חלקת קצוות"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Errespetatu fitxategi-bukaerako iruzkinak"
+msgstr "_כבד הערות EOF"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Behatu fitxategia"
+msgstr "_צפה בקובץ"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
-msgstr "Dokumentua"
+msgstr "מסמך"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Erakutsi _alboko panela"
+msgstr "_הצג חלונית צד"
 
 #: src/ggv-prefs-ui.c:622
 msgid "_Put side panel on the right-hand side"
-msgstr ""
+msgstr "_שים את חלונית הצד בצד ימין"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Erakut_si menuak"
+msgstr "הצג _תפריט"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Erakutsi _tresna-barra"
+msgstr "הצג _סרגל כלים"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
 msgid "Toolbar style"
-msgstr ""
+msgstr "סגנון סרגל כלים"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
 msgid "Show statusba_r"
-msgstr "_Erakutsi egoera-barra"
+msgstr "הצג _שורת מצב"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Gorde geometria"
+msgstr "שמור _גיאומטריה"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
-msgstr "Diseinua"
+msgstr "סידור"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Joan orrialdearen hasierara teklatua erabiltzean"
+msgstr "_קפוץ להתחלת העמוד"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
 msgid "Automatically _flip pages"
-msgstr ""
+msgstr "ה_פוך עמודים אוטמטית"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
 msgid "Outline _last visible part when scrolling"
-msgstr ""
+msgstr "מתאר החלק הנראה ה_אחרון בזמן הגלילה"
 
 #: src/ggv-prefs-ui.c:742
 msgid "Amount of _visible area to scroll"
-msgstr ""
+msgstr "כמות האזור ה_נראה לגלילה"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
-msgstr ""
+msgstr "ניווט"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Interpretatzailea"
+msgstr "_מפרש:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Antialiasa"
+msgstr "ה_חלקת קצוות:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
 msgid "Convert _PDF to PS:"
-msgstr ""
+msgstr "המר _PDF ל PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -702,195 +651,187 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Inprimatzeko komandoa"
+msgstr "פקודת ה_דפסה:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
-msgstr "Inprimatzea"
+msgstr "הדפסה"
 
 #: src/ggv-ui.xml.h:1
 msgid "About this application"
-msgstr "Aplikazio honi buruz"
+msgstr "אודות יישום זה"
 
 #: src/ggv-ui.xml.h:2
 msgid "Cancel"
-msgstr ""
+msgstr "ביטול"
 
 #: src/ggv-ui.xml.h:3
 msgid "Close"
-msgstr "Itxi"
+msgstr "סגור"
 
 #: src/ggv-ui.xml.h:4
 msgid "Close this window"
-msgstr "Leiho hau ixten du"
+msgstr "סגור חלון זה"
 
 #: src/ggv-ui.xml.h:5
 msgid "E_xit"
-msgstr "I_rten"
+msgstr "_יציאה"
 
 #: src/ggv-ui.xml.h:6
 msgid "Exit the program"
-msgstr "Irten programatik"
+msgstr "צא מהתוכנית"
 
 #: src/ggv-ui.xml.h:7
 msgid "Fullscreen mode"
-msgstr ""
+msgstr "מצב מסך מלא"
 
 #: src/ggv-ui.xml.h:8
-#, fuzzy
 msgid "Help for this application"
-msgstr "Aplikazio honi buruz"
+msgstr "עזרה ליישום זה"
 
 #: src/ggv-ui.xml.h:9
 msgid "New _window"
-msgstr "_Leiho berria"
+msgstr "_חלון חדש"
 
 #: src/ggv-ui.xml.h:10
 msgid "New window"
-msgstr "Leiho berria"
+msgstr "חלון חדש"
 
 #: src/ggv-ui.xml.h:11
 msgid "Open"
-msgstr "Ireki"
+msgstr "פתיחה"
 
 #: src/ggv-ui.xml.h:12
-#, fuzzy
 msgid "Open a new PostScript document"
-msgstr "Postscript dokumentu bat kargatzen du"
+msgstr "פתח מסמך PostScript חדש"
 
 #: src/ggv-ui.xml.h:13
 msgid "Open a new window"
-msgstr "Leiho berria irekitzen du"
+msgstr "פתח חלון חדש"
 
 #: src/ggv-ui.xml.h:14
-#, fuzzy
 msgid "Open in new window"
-msgstr "Leiho berria irekitzen du"
+msgstr "פתח בחלון חדש"
 
 #: src/ggv-ui.xml.h:15
-#, fuzzy
 msgid "Open in this window"
-msgstr "Leiho berria irekitzen du"
+msgstr "פתח בחלון הנוכחי"
 
 #: src/ggv-ui.xml.h:16
 msgid "Reload"
-msgstr "Berritu"
+msgstr "טען מחדש"
 
 #: src/ggv-ui.xml.h:17
-#, fuzzy
 msgid "Reload current document"
-msgstr "Uneko dokumentua diskotik berritzen du"
+msgstr "טען מחדש את המסמך הנוכחי"
 
 #: src/ggv-ui.xml.h:18
 msgid "Show Side_bar"
-msgstr "Erakutsi _alboko barra"
+msgstr "הצג סרגל _צד"
 
 #: src/ggv-ui.xml.h:19
 msgid "Show _Menus"
-msgstr "Erakut_si menuak"
+msgstr "הצג _תפריטים"
 
 #: src/ggv-ui.xml.h:20
 msgid "Show _Statusbar"
-msgstr "_Erakutsi egoera-barra"
+msgstr "הצג _שורת מצב"
 
 #: src/ggv-ui.xml.h:21
 msgid "Show _Toolbar"
-msgstr "Erakutsi _tresna-barra"
+msgstr "הצג _סרגל כלים"
 
 #: src/ggv-ui.xml.h:22
-#, fuzzy
 msgid "Show/hide the menus"
-msgstr "Erakut_si menuak"
+msgstr "הצג/הסתר תפריטים"
 
 #: src/ggv-ui.xml.h:23
-#, fuzzy
 msgid "Show/hide the sidebar"
-msgstr "Ez erabili alboko barrarik"
+msgstr "הצג/הסתר סרגל צד"
 
 #: src/ggv-ui.xml.h:24
 msgid "Show/hide the statusbar"
-msgstr ""
+msgstr "הצג/הסתר את שורת המצב"
 
 #: src/ggv-ui.xml.h:25
-#, fuzzy
 msgid "Show/hide the toolbar"
-msgstr "Erakutsi _tresna-barra"
+msgstr "הצג/הסתר סרגל כלים"
 
 #: src/ggv-ui.xml.h:26
-#, fuzzy
 msgid "Toggle fullscreen mode"
-msgstr "Marka jarri/kendu _uneko orrialdeari"
+msgstr ""
 
 #: src/ggv-ui.xml.h:27
-#, fuzzy
 msgid "_About..."
-msgstr "Honi buruz..."
+msgstr "_אודות..."
 
 #: src/ggv-ui.xml.h:28
 msgid "_Close"
-msgstr "It_xi"
+msgstr "_סגור"
 
 #: src/ggv-ui.xml.h:29
 msgid "_Contents"
-msgstr ""
+msgstr "_תכנים"
 
 #: src/ggv-ui.xml.h:30
-#, fuzzy
 msgid "_Edit"
-msgstr "I_rten"
+msgstr "_עריכה"
 
 #: src/ggv-ui.xml.h:31
 msgid "_File"
-msgstr "_Fitxategia"
+msgstr "_קובץ"
 
 #: src/ggv-ui.xml.h:32
 msgid "_Help"
-msgstr "L_aguntza"
+msgstr "_עזרה"
 
 #: src/ggv-ui.xml.h:33
-#, fuzzy
 msgid "_Layout"
-msgstr "Diseinua"
+msgstr "_סידור"
 
 #: src/ggv-ui.xml.h:34
 msgid "_Open"
-msgstr "_Ireki"
+msgstr "_פתיחה"
 
 #: src/ggv-ui.xml.h:35
 msgid "_Reload"
-msgstr "_Berritu"
+msgstr "_טעינה מחדש"
 
 #: src/ggv-window.c:332 src/ggv-window.c:877
 msgid "GGV: no document loaded"
-msgstr ""
+msgstr "GGV: לא נטענו מסמכים"
 
 #: src/ggv-window.c:373
-#, fuzzy
 msgid "Select a PostScript document"
-msgstr "Postscript dokumentu bat kargatzen du"
+msgstr "בחר מסמך PostScript"
 
 #: src/ggv-window.c:382
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Unable to load file:\n"
 "%s"
-msgstr "Ezin da %s kargatu."
+msgstr ""
+"לא ניתן לטעון קובץ:\n"
+"%s"
 
 #. Translator Credits
 #: src/ggv-window.c:568
 msgid "translator_credits"
 msgstr ""
+"גיל אשר\n"
+"dolfin@rpg.org.il\n"
+"\n"
+"פרוייקט linBrew\n"
+"http://linbrew.sourceforge.net"
 
 #: src/ggv-window.c:578
 msgid "Gnome Ghostview"
-msgstr "Gnome-ren Ghostview"
+msgstr "Gnome Ghostview"
 
 #: src/ggv-window.c:581
-#, fuzzy
 msgid "The GNOME PostScript document previewer"
-msgstr "Postscript dokumentu bat kargatzen du"
+msgstr "מציג מסמכי PostScript של GNOME"
 
 #: src/ggv-window.c:1046
 msgid "GGV: "
@@ -898,427 +839,118 @@ msgstr "GGV: "
 
 #: src/ggvutils.c:42
 msgid "Portrait"
-msgstr "Bertikala"
+msgstr "לאורך"
 
 #: src/ggvutils.c:43
 msgid "Landscape"
-msgstr "Horizontala"
+msgstr "לרוחב"
 
 #: src/ggvutils.c:44
 msgid "Upside Down"
-msgstr "Buruz behera"
+msgstr "הפוך"
 
 #: src/ggvutils.c:45
 msgid "Seascape"
-msgstr "Etzanda"
+msgstr "נוף ימי"
 
 #: src/ggvutils.c:53
 msgid "inch"
-msgstr "hazbetea"
+msgstr "אינץ'"
 
 #: src/ggvutils.c:54
 msgid "mm"
-msgstr "mm"
+msgstr "מ\"מ"
 
 #: src/ggvutils.c:55
 msgid "cm"
-msgstr "cm"
+msgstr "ס\"מ"
 
 #: src/ggvutils.c:56
 msgid "point"
-msgstr "puntua"
+msgstr "נקודה"
 
 #: src/ggvutils.c:79
-#, fuzzy
 msgid "None"
-msgstr "Ez"
+msgstr "ללא"
 
 #: src/ggvutils.c:79
 msgid "Fit to page width"
-msgstr ""
+msgstr "התאם לרוחב העמוד"
 
 #: src/ggvutils.c:79
-#, fuzzy
 msgid "Fit to page size"
-msgstr "Paper-tamaina lehenetsia"
+msgstr "התאם לגודל העמוד"
 
 #: src/gtkgs.c:358
-#, fuzzy
 msgid "No document loaded."
-msgstr "Dokumentuaren izenburua"
+msgstr "לא נטענו מסמכים."
 
 #: src/gtkgs.c:491
-#, fuzzy
 msgid "File is not a valid PostScript document."
-msgstr "Postscript dokumentu bat kargatzen du"
+msgstr "הקובץ איננו מסמך PostScript תקני."
 
 #: src/gtkgs.c:1060
 msgid "Broken pipe."
-msgstr "Kanalizazio hautsia."
+msgstr "צינור שבור."
 
 #: src/gtkgs.c:1249
-#, fuzzy
 msgid "Interpreter failed."
-msgstr "Interpretatzailea"
+msgstr "המפרש נכשל."
 
 #. report error
 #: src/gtkgs.c:1352
 #, c-format
 msgid "Error while decompressing file %s:\n"
-msgstr "Errorea %s fitxategia deskonprimitzean:\n"
+msgstr "שגיאה בזמן הרחבת הקובץ %s:\n"
 
 #: src/gtkgs.c:1462
-#, fuzzy, c-format
+#, c-format
 msgid "Error while converting pdf file %s:\n"
-msgstr "Errorea %s pdf fitxategia eskaneatzean:\n"
+msgstr "שגיאה בזמן המרת קובץ PDF %s:\n"
 
 #: src/gtkgs.c:1792
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open file %s.\n"
-msgstr "Ezin da %s fitxategia ireki\n"
+msgstr "לא ניתן לפתוח הקובץ %s.\n"
 
 #: src/gtkgs.c:1794
-#, fuzzy
 msgid "File is not readable."
-msgstr "%s ez da fitxategi arrunta."
+msgstr "הקובץ אינו קריא."
 
 #: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
-msgstr "Errorea %s fitxategia eskaneatzean\n"
+msgstr "שגיאה בזמן סריקת הקובץ %s\n"
 
 #: src/gtkgs.c:1818
-#, fuzzy
 msgid "The file is not a PostScript document."
-msgstr "Postscript dokumentu bat kargatzen du"
+msgstr "הקובץ איננו מסמך PostScript."
 
 #: src/gtkgs.c:1858
-#, fuzzy
 msgid "Document loaded."
-msgstr "Dokumentuaren izenburua"
+msgstr "המסמך נטען."
 
 #: src/main.c:57
 #, c-format
 msgid "Invalid geometry string \"%s\"\n"
-msgstr ""
+msgstr "מחרוזת גיאומטריה שגויה \"%s\"\n"
 
 #: src/main.c:175
-#, fuzzy
 msgid "Specify the number of empty windows to open."
-msgstr "Leiho nagusiaren geometria zehazten du"
+msgstr "ציין את מספר החלונות הריקים לפתיחה."
 
 #: src/main.c:176
 msgid "Number of empty windows"
-msgstr ""
+msgstr "מספר חלונות ריקים"
 
 #: src/main.c:178
 msgid "X geometry specification (see \"X\" man page)."
-msgstr ""
+msgstr "מפרט גיאומטרית X (ראה עמודי המדריך של \"X\")."
 
 #: src/main.c:179
 msgid "GEOMETRY"
-msgstr "GEOMETRY"
+msgstr "גיאומטריה"
 
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
-msgstr "Ezin da Bonobo hasieratu!\n"
-
-#, fuzzy
-#~ msgid "Zoom to _Default"
-#~ msgstr "Zooma txikiagotu"
-
-#, fuzzy
-#~ msgid "Zoom to _Fit"
-#~ msgstr "Zooma txikiagotu"
-
-#, fuzzy
-#~ msgid "GGV _Preferences..."
-#~ msgstr "GGVren hobespenak"
-
-#, fuzzy
-#~ msgid "Override Orientation"
-#~ msgstr "Jaramonik ez dokumentuaren orientazioari"
-
-#, fuzzy
-#~ msgid "_Override Size"
-#~ msgstr "_Jaramonik ez dokumentuaren tamainari"
-
-#~ msgid "GNOME Ghostview"
-#~ msgstr "GNOMEren Ghostview"
-
-#~ msgid "Show side panel by default"
-#~ msgstr "Erakutsi alboko panela lehenespenez"
-
-#~ msgid "Show menubar by default"
-#~ msgstr "Erakutsi menu-barra lehenespenez"
-
-#~ msgid "Show toolbar by default"
-#~ msgstr "Erakutsi tresna-barra lehenespenez"
-
-#, fuzzy
-#~ msgid "Show labels in toolbar"
-#~ msgstr "Erakutsi _tresna-barra"
-
-#, fuzzy
-#~ msgid "Show statusbar by default"
-#~ msgstr "Erakutsi menu-barra lehenespenez"
-
-#~ msgid "Scan PDF"
-#~ msgstr "Eskaneatu PDF"
-
-#~ msgid "_Settings"
-#~ msgstr "E_zarpenak"
-
-#, fuzzy
-#~ msgid ""
-#~ "Ghostscript error:\n"
-#~ "Probably the file is not a PostScript file."
-#~ msgstr "PostScript fitxategiak ikusteko Ghostscript interfazea"
-
-#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
-#~ msgstr "Copyright © 1998-2002 The Free Software Foundation"
-
-#~ msgid "_Preferences..."
-#~ msgstr "_Hobespenak..."
-
-#~ msgid "I could not initialize Bonobo"
-#~ msgstr "Ezin da Bonobo hasieratu"
-
-#~ msgid "At end"
-#~ msgstr "Amaieran"
-
-#~ msgid "Unspecified"
-#~ msgstr "Zehaztugabea"
-
-#~ msgid "Unknown"
-#~ msgstr "Ezezaguna"
-
-#~ msgid "Encapsulated PostScript"
-#~ msgstr "Postscript kapsulatua"
-
-#~ msgid "Structured PostScript"
-#~ msgstr "Postscript egituratua"
-
-#~ msgid "Unstructured PostScript"
-#~ msgstr "Postscript egituratu gabea"
-
-#~ msgid ""
-#~ "Filename: %s %s. Magnification %3d%%. Document Orientation: %s. Override "
-#~ "Media: %s"
-#~ msgstr ""
-#~ "Fitxategi-izena: %s %s. Handitze-maila %%%3d. Dokumentuaren orientazioa: %"
-#~ "s. Jaramonik ez paperari: %s"
-
-#~ msgid "Yes"
-#~ msgstr "Bai"
-
-#~ msgid "gs warnings for %s"
-#~ msgstr "%s(r)entzako gs abisuak"
-
-#~ msgid "Opening %s..."
-#~ msgstr "%s irekitzen..."
-
-#~ msgid "Successfully loaded %s."
-#~ msgstr "%s behar bezala kargatu da."
-
-#~ msgid "Successfully saved marked pages to file %s."
-#~ msgstr "Markatutako orrialdeak behar bezala gorde dira %s fitxategian."
-
-#~ msgid "Unable to create %s."
-#~ msgstr "Ezin da %s sortu."
-
-#~ msgid "_Next Page"
-#~ msgstr "_Hurrengo orrialdea"
-
-#~ msgid "_Previous Page"
-#~ msgstr "_Aurreko orrialdea"
-
-#~ msgid "_First Page"
-#~ msgstr "_Lehen orrialdea"
-
-#~ msgid "_Last Page"
-#~ msgstr "A_zken orrialdea"
-
-#~ msgid "_Recenter Page"
-#~ msgstr "_Orrialdea birzentratu"
-
-#~ msgid "Toggle _all pages"
-#~ msgstr "Marka jarri/kendu o_rrialde guztiei"
-
-#~ msgid "Toggle o_dd pages"
-#~ msgstr "Marka jarri/kendu orrialde _bakoitiei"
-
-#~ msgid "Toggle _even pages"
-#~ msgstr "Marka jarri/kendu orrialde bi_koitiei"
-
-#~ msgid "_Unmark all pages"
-#~ msgstr "Ken_du marka orrialde guztiei"
-
-#~ msgid "Portrait orientation"
-#~ msgstr "Orientazio bertikala"
-
-#~ msgid "Landscape orientation"
-#~ msgstr "Orientazio horizontala"
-
-#~ msgid "_Upside Down"
-#~ msgstr "B_uruz behera"
-
-#~ msgid "Upside down orientation"
-#~ msgstr "Buruz beherako orientazioa"
-
-#~ msgid "Seascape orientation"
-#~ msgstr "Etzandako orientazioa"
-
-#~ msgid "_Override Document Orientation"
-#~ msgstr "_Jaramonik ez dokumentuaren orientazioari"
-
-#~ msgid "Override the orientation of the document."
-#~ msgstr "Jaramonik ez dokumentuaren orientazioari."
-
-#~ msgid "_Override Document Size"
-#~ msgstr "_Jaramonik ez dokumentuaren tamainari"
-
-#~ msgid "Override the size of page to use."
-#~ msgstr "Jaramonik ez orrialdearen tamainari."
-
-#~ msgid "Toggle menu visibility"
-#~ msgstr "Menua erakutsi/ezkutatu"
-
-#~ msgid "Toggle side panel visibility"
-#~ msgstr "Alboko panela erakutsi/ezkutatu"
-
-#~ msgid "Toggle toolbar visibility"
-#~ msgstr "Tresna-barra erakutsi/ezkutatu"
-
-#~ msgid "_Open..."
-#~ msgstr "_Ireki..."
-
-#~ msgid "Load a PostScript document"
-#~ msgstr "Postscript dokumentu bat kargatzen du"
-
-#~ msgid "_Print"
-#~ msgstr "I_nprimatu"
-
-#~ msgid "Prin_t marked pages"
-#~ msgstr "Inprima_tu markatutako orrialdeak"
-
-#~ msgid "Exit GGv"
-#~ msgstr "GGv-tik irteten da"
-
-#~ msgid "Show previous page"
-#~ msgstr "Erakutsi aurreko orrialdea"
-
-#~ msgid "Show first page"
-#~ msgstr "Erakutsi lehen orrialdea"
-
-#~ msgid "Show last page"
-#~ msgstr "Erakutsi azken orrialdea"
-
-#~ msgid "Center page"
-#~ msgstr "Zentratu orrialdea"
-
-#~ msgid "Antialiasin_g"
-#~ msgstr "A_ntialiasa"
-
-#~ msgid "Toggle antialiasing"
-#~ msgstr "Gaitu/Desgaitu antialiasa"
-
-#~ msgid "_Watch File"
-#~ msgstr "B_ehatu fitxategia"
-
-#~ msgid "Updates display if file changes."
-#~ msgstr "Bistaratzea eguneratzen du fitxategia aldatzen bada."
-
-#~ msgid "Orien_tation"
-#~ msgstr "Orien_tazioa"
-
-#~ msgid "_Document"
-#~ msgstr "_Dokumentua"
-
-#~ msgid "New"
-#~ msgstr "Berria"
-
-#~ msgid "Create a new window"
-#~ msgstr "Sortu leiho berria"
-
-# without the line break the buttons of toolbar ar e tooooo wiiiiide
-#~ msgid "Print marked"
-#~ msgstr ""
-#~ "Inprimatu\n"
-#~ "markatuak"
-
-#~ msgid "Save marked"
-#~ msgstr "Gorde markatuak"
-
-#~ msgid "Preferences"
-#~ msgstr "Hobespenak"
-
-#~ msgid "Configure the application"
-#~ msgstr "Konfiguratu aplikazioa"
-
-#~ msgid "Unmark all pages"
-#~ msgstr "Kendu marka orrialde guztiei"
-
-#~ msgid "Previous page"
-#~ msgstr "Aurreko orrialdea"
-
-#~ msgid "Zoom out"
-#~ msgstr "Zooma txikiagotu"
-
-#~ msgid "Zoom in"
-#~ msgstr "Zooma handiagotu"
-
-#~ msgid "Override media size"
-#~ msgstr "Jaramonik ez paperaren tamainari"
-
-#~ msgid "Do not use sidebar and toolbar (deprecated)"
-#~ msgstr "Ez erabili alboko barra eta tresna-barra (gutxietsiak)"
-
-#~ msgid "SPARTAN"
-#~ msgstr "SPARTAN"
-
-#~ msgid "Do not use sidebar"
-#~ msgstr "Ez erabili alboko barrarik"
-
-#~ msgid "NOSIDEBAR"
-#~ msgstr "NOSIDEBAR"
-
-#~ msgid "Do not use a menu bar"
-#~ msgstr "Ez erabili menu-barrarik"
-
-#~ msgid "NOMENUBAR"
-#~ msgstr "NOMENUBAR"
-
-#~ msgid "Do not use a tool bar"
-#~ msgstr "Ez erabili tresna-barrarik"
-
-#~ msgid "NOTOOLBAR"
-#~ msgstr "NOTOOLBAR"
-
-#~ msgid "Use the whole screen for the main window"
-#~ msgstr "Erabili pantaila osoa leiho nagusirako"
-
-#~ msgid "FULLSCREEN"
-#~ msgstr "FULLSCREEN"
-
-#~ msgid "%s does not exist."
-#~ msgstr "%s ez dago."
-
-#~ msgid ""
-#~ "PostScript(TM) document viewer.\n"
-#~ "Based on Tim Theisen's excellent Ghostview application."
-#~ msgstr ""
-#~ "PostScript(TM) dokumentu-ikustailea.\n"
-#~ "Tim Theisen-en Ghostview aplikazio ezin hobean oinarritua."
-
-#~ msgid "GGv: Open File"
-#~ msgstr "GGv: Ireki fitxategia"
-
-#~ msgid "There are no marked pages."
-#~ msgstr "Ez dago markatutako orrialderik."
-
-#~ msgid "GGv: Save marked pages"
-#~ msgstr "GGv: Gorde markatutako orrialdeak"
-
-#~ msgid "Couldn't find the GGv manual!"
-#~ msgstr "Ezin izan da GGv eskuliburua aurkitu!."
+msgstr "לא ניתן לאתחל את Bonobo!\n"

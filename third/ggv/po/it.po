@@ -1,80 +1,79 @@
 # Italian localisation file for Gnome-gv
 # (c) 2000-2001 Giovanni Bortolozzo, <borto@pluto.linux.it>
-#
+# (c) 2002-2003 Francesco Marletta, <francesco.marletta@tiscali.it>
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: ggv 1.0-beta1\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2001-05-24 18:33+02:00\n"
-"Last-Translator: Giovanni Bortolozzo, <borto@pluto.linux.it>\n"
-"Language-Team: Italiano <it@li.org> \n"
+"Project-Id-Version: ggv 2.0-beta1\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-24 09:51+0100\n"
+"Last-Translator: Francesco marletta, <francesco.marletta@tiscali.it>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/GNOME_GGV.server.in.in.h:1
 msgid "GGV PostScript Document Control"
-msgstr ""
+msgstr "PostScript (GGV)"
 
 #: bonobo/GNOME_GGV.server.in.in.h:2
-#, fuzzy
 msgid "GGV PostScript View"
-msgstr "Ghostscript"
+msgstr "Vista PostScript di GGV"
 
 #: bonobo/GNOME_GGV.server.in.in.h:3
 msgid "GGV PostScript viewer factory"
-msgstr ""
+msgstr "Fabbrica del visualizzatore PostScript GGV"
 
 #: bonobo/ggv-control-ui.xml.h:2
 #, no-c-format
 msgid "15_0%"
-msgstr ""
+msgstr "15_0%"
 
 #: bonobo/ggv-control-ui.xml.h:3
 msgid "1:1"
-msgstr ""
+msgstr "1:1"
 
 #: bonobo/ggv-control-ui.xml.h:5
 #, no-c-format
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: bonobo/ggv-control-ui.xml.h:6
 msgid "Change zoom factor to default"
-msgstr ""
+msgstr "Riporta lo zoom al valore predefinito"
 
 #: bonobo/ggv-control-ui.xml.h:7
 msgid "Decrease zoom factor"
-msgstr ""
+msgstr "Diminuisce il fattore di zoom"
 
 #: bonobo/ggv-control-ui.xml.h:8
 msgid "Fit"
-msgstr ""
+msgstr "Pagina"
 
 #: bonobo/ggv-control-ui.xml.h:9
 msgid "Fit Width"
-msgstr ""
+msgstr "Larghezza"
 
 #: bonobo/ggv-control-ui.xml.h:10
 msgid "Fit _Width"
-msgstr ""
+msgstr "Adatta alla _larghezza"
 
 #: bonobo/ggv-control-ui.xml.h:11
-#, fuzzy
 msgid "Fit to Page _Size"
-msgstr "Dimensione _pagina"
+msgstr "Adatta alla _pagina"
 
 #: bonobo/ggv-control-ui.xml.h:12
 msgid "Fit to Page _Width"
-msgstr ""
+msgstr "Adatta alla _larghezza"
 
 #: bonobo/ggv-control-ui.xml.h:13
 msgid "In"
-msgstr ""
+msgstr "Ingrand"
 
 #: bonobo/ggv-control-ui.xml.h:14
 msgid "Increase zoom factor"
-msgstr ""
+msgstr "Aumenta il fattore di zoom"
 
 #: bonobo/ggv-control-ui.xml.h:15
 msgid "Other"
@@ -82,68 +81,64 @@ msgstr "Altro"
 
 #: bonobo/ggv-control-ui.xml.h:16
 msgid "Out"
-msgstr ""
+msgstr "Riduci"
 
 #: bonobo/ggv-control-ui.xml.h:17
-#, fuzzy
 msgid "Zoom _In"
-msgstr "Ingrandisci"
+msgstr "_Ingrandisci"
 
 #: bonobo/ggv-control-ui.xml.h:18
-#, fuzzy
 msgid "Zoom _Out"
-msgstr "Riduci"
+msgstr "_Rimpicciolisci"
 
 #: bonobo/ggv-control-ui.xml.h:19
 msgid "Zoom the page to be as wide as the window"
-msgstr ""
+msgstr "Adatta la pagina alla larghezza della finestra"
 
 #: bonobo/ggv-control-ui.xml.h:20
 msgid "Zoom the page to fit in the window"
-msgstr ""
+msgstr "Adatta la pagina alla dimensione della finestra"
 
 #: bonobo/ggv-control-ui.xml.h:22
 #, no-c-format
 msgid "_100%"
-msgstr ""
+msgstr "_100%"
 
 #: bonobo/ggv-control-ui.xml.h:24
 #, no-c-format
 msgid "_200%"
-msgstr ""
+msgstr "_200%"
 
 #: bonobo/ggv-control-ui.xml.h:26
 #, no-c-format
 msgid "_400%"
-msgstr ""
+msgstr "_400%"
 
 #: bonobo/ggv-control-ui.xml.h:28
 #, no-c-format
 msgid "_50%"
-msgstr ""
+msgstr "_50%"
 
 #: bonobo/ggv-control-ui.xml.h:30
 #, no-c-format
 msgid "_75%"
-msgstr ""
+msgstr "_75%"
 
 #: bonobo/ggv-control-ui.xml.h:31
 msgid "_Auto-fit"
-msgstr ""
+msgstr "_Adatta automaticamente"
 
 #: bonobo/ggv-control-ui.xml.h:32
-#, fuzzy
 msgid "_Default Zoom"
-msgstr "Zoom predefinito"
+msgstr "_Zoom predefinito"
 
 #: bonobo/ggv-control-ui.xml.h:33
-#, fuzzy
 msgid "_Fit Window"
-msgstr "_Nuova finestra"
+msgstr "Adatta alla _finestra"
 
 #: bonobo/ggv-control-ui.xml.h:34
 msgid "_No Auto-fit"
-msgstr ""
+msgstr "_Non adattare automaticamente"
 
 #: bonobo/ggv-control-ui.xml.h:35
 msgid "_Zoom"
@@ -151,168 +146,153 @@ msgstr "_Zoom"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:1
 msgid "10x14"
-msgstr ""
+msgstr "10x14"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:2
 msgid "A0"
-msgstr ""
+msgstr "A0"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:3
 msgid "A1"
-msgstr ""
+msgstr "A1"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:4
 msgid "A2"
-msgstr ""
+msgstr "A2"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:5
 msgid "A3"
-msgstr ""
+msgstr "A3"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:6
 msgid "A4"
-msgstr ""
+msgstr "A4"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:7
 msgid "A5"
-msgstr ""
+msgstr "A5"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:8
 msgid "B4"
-msgstr ""
+msgstr "B4"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:9
 msgid "B5"
-msgstr ""
+msgstr "B5"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:10
 msgid "BBox"
-msgstr ""
+msgstr "BBox"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:11
 msgid "Executive"
-msgstr ""
+msgstr "Executive"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:12
 msgid "First"
-msgstr ""
+msgstr "Prima"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:13
 msgid "Folio"
-msgstr ""
+msgstr "Folio"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:14
-#, fuzzy
 msgid "GGV _Preferences"
-msgstr "Preferenze GGV"
+msgstr "_Preferenze di GGV"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:15
-#, fuzzy
 msgid "Go to first page"
-msgstr "Vai alla pagina seguente"
+msgstr "Vai alla prima pagina"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:16
-#, fuzzy
 msgid "Go to last page"
-msgstr "Vai alla pagina seguente"
+msgstr "Vai all'ultima pagina"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:17
-#, fuzzy
 msgid "Go to next page"
-msgstr "Vai alla pagina seguente"
+msgstr "Vai alla pagina successiva"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:18
-#, fuzzy
 msgid "Go to previous page"
 msgstr "Vai alla pagina precedente"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:19
-#, fuzzy
 msgid "Last"
-msgstr "Layout"
+msgstr "Ultima"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:20
 msgid "Ledger"
-msgstr ""
+msgstr "Ledger"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:21
 msgid "Legal"
-msgstr ""
+msgstr "Legal"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:22
 msgid "Letter"
-msgstr ""
+msgstr "Letter"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:23
-#, fuzzy
 msgid "Next"
-msgstr "Pagina seguente"
+msgstr "Succ"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:24
 msgid "Open the preferences dialog"
-msgstr ""
+msgstr "Apre la finestra delle preferenze"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:25
 msgid "Prev"
-msgstr ""
+msgstr "Prec"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:26
 msgid "Print marked pages"
 msgstr "Stampa le pagine marcate"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:27
-#, fuzzy
 msgid "Print the whole document"
-msgstr "Stampa il documento"
+msgstr "Stampa l'intero documento"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:28
 msgid "Quarto"
-msgstr ""
+msgstr "Quarto"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:29
-#, fuzzy
 msgid "Save marked pages to a file"
-msgstr "Salva le pagine marcate in un nuovo file"
+msgstr "Salva le pagine marcate in un file"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:30
 msgid "Statement"
-msgstr ""
+msgstr "Statement"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:31
 msgid "Tabloid"
-msgstr ""
+msgstr "Tabloid"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:32
-#, fuzzy
 msgid "_Document Orientation"
-msgstr "_Ignora orientazione del documento"
+msgstr "Orientamento del _documento"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:33
-#, fuzzy
 msgid "_Document Size"
-msgstr "_Documento"
+msgstr "Dimensione del _documento"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:34
-#, fuzzy
 msgid "_First page"
-msgstr "Pagina seguente"
+msgstr "_Prima pagina"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:35
 msgid "_Landscape"
 msgstr "_Orizzontale"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:36
-#, fuzzy
 msgid "_Last page"
-msgstr "Pagina seguente"
+msgstr "_Ultima pagina"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:37
-#, fuzzy
 msgid "_Next page"
-msgstr "Pagina seguente"
+msgstr "Pagina _successiva"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:38
-#, fuzzy
 msgid "_Orientation"
 msgstr "_Orientamento"
 
@@ -321,42 +301,36 @@ msgid "_Portrait"
 msgstr "_Verticale"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:40
-#, fuzzy
 msgid "_Previous page"
-msgstr "Pagina precedente"
+msgstr "Pagina p_recedente"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:41
-#, fuzzy
 msgid "_Print document"
-msgstr "Stampa il documento"
+msgstr "Stam_pa il documento"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:42
-#, fuzzy
 msgid "_Print marked pages"
-msgstr "Stampa le pagine marcate"
+msgstr "Sta_mpa le pagine marcate"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:43
-#, fuzzy
 msgid "_Save marked pages"
-msgstr "Salva le pagine _marcate..."
+msgstr "_Salva le pagine marcate..."
 
 #: bonobo/ggv-postscript-view-ui.xml.h:44
 msgid "_Seascape"
 msgstr "Orizzontale _invertito"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:45
-#, fuzzy
 msgid "_Size"
-msgstr "Dimensione _pagina"
+msgstr "Dimen_sione pagina"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:46
-#, fuzzy
 msgid "_Upside down"
 msgstr "_Capovolto"
 
 #: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
 msgid "_View"
-msgstr ""
+msgstr "_Vista"
 
 #: bonobo/ggv-postscript-view.c:746
 #, c-format
@@ -364,108 +338,98 @@ msgid ""
 "Unable to execute print command:\n"
 "%s"
 msgstr ""
+"Impossibile eseguire il comando di stampa:\n"
+"%s"
 
 #: bonobo/ggv-postscript-view.c:800
-#, fuzzy
 msgid ""
 "No pages have been marked.\n"
 "Do you want to save the whole document?"
 msgstr ""
 "Non è stata marcata nessuna pagina.\n"
-"Si vuole stampare l'intero documento?"
+"Salvare l'intero documento?"
 
 #: bonobo/ggv-postscript-view.c:820
 msgid "Select a file to save pages as"
-msgstr ""
+msgstr "Seleziona un file in cui salvare le pagine"
 
 #: bonobo/ggv-postscript-view.c:832
 msgid ""
 "A file with this name already exists.\n"
 "Do you want to overwrite it?"
 msgstr ""
+"Un file con questo nome esiste già.\n"
+"Sovrascriverlo?"
 
 #: bonobo/ggv-postscript-view.c:871
-#, fuzzy
 msgid ""
 "No pages have been marked.\n"
 "Do you want to print the whole document?"
 msgstr ""
 "Non è stata marcata nessuna pagina.\n"
-"Si vuole stampare l'intero documento?"
+"Stampare l'intero documento?"
 
 #: bonobo/ggv-postscript-view.c:1754
 msgid "Display"
-msgstr ""
+msgstr "Visualizza"
 
 #: bonobo/ggv-postscript-view.c:1951
-#, fuzzy
 msgid "GhostScript output"
-msgstr "Ghostscript"
+msgstr "Output di Ghostscript"
 
 #: bonobo/ggv-postscript-view.c:1985
-#, fuzzy
 msgid "Document title"
-msgstr "Documento"
+msgstr "Titolo del documento"
 
 #: bonobo/ggv-postscript-view.c:1989
 msgid "GGV control status"
-msgstr ""
+msgstr "Stato di controllo di GGV"
 
 #: bonobo/ggv-postscript-view.c:1993
 msgid "Number of pages"
-msgstr ""
+msgstr "Numero di pagine"
 
 #: bonobo/ggv-postscript-view.c:1997
-#, fuzzy
 msgid "Page names"
-msgstr "Dimensione _pagina"
+msgstr "Nomi delle pagine"
 
 #: bonobo/ggv-postscript-view.c:2001
-#, fuzzy
 msgid "Current page number"
-msgstr "Centra la pagina sullo schermo"
+msgstr "Numero della pagina corrente"
 
 #: bonobo/ggv-postscript-view.c:2005
-#, fuzzy
 msgid "Document width"
-msgstr "Documento"
+msgstr "Larghezza del documento"
 
 #: bonobo/ggv-postscript-view.c:2009
-#, fuzzy
 msgid "Document height"
-msgstr "Documento"
+msgstr "Altezza del documento"
 
 #: bonobo/ggv-postscript-view.c:2013
-#, fuzzy
 msgid "Document orientation"
-msgstr "Ignora l'orientamento del documento"
+msgstr "Orientamento del documento"
 
 #: bonobo/ggv-postscript-view.c:2017
-#, fuzzy
 msgid "Default orientation"
-msgstr "Orientamento verticale"
+msgstr "Orientamento predefinito"
 
 #: bonobo/ggv-postscript-view.c:2021
-#, fuzzy
 msgid "Default size"
-msgstr "Zoom predefinito"
+msgstr "Dimensione predefinita"
 
 #: bonobo/ggv-postscript-view.c:2025
 msgid "Override document orientation"
 msgstr "Ignora l'orientamento del documento"
 
 #: bonobo/ggv-postscript-view.c:2029
-#, fuzzy
 msgid "Override document size"
-msgstr "_Ignora la dimensione della pagina"
+msgstr "Ignora la dimensione della pagina"
 
 #: bonobo/ggv-postscript-view.c:2033
-#, fuzzy
 msgid "Respect EOF comment"
 msgstr "Rispetta i commenti EOF"
 
 #: bonobo/ggv-postscript-view.c:2037
-#, fuzzy
 msgid "Watch displayed file for changes"
 msgstr "Aggiorna la visualizzazione se il file cambia."
 
@@ -474,133 +438,128 @@ msgid "Antialiasing"
 msgstr "Antialiasing"
 
 #: bonobo/ggv-sidebar.c:309
-#, fuzzy
 msgid "Toggle marked state of all pages"
-msgstr "Seleziona tutte la pagine"
+msgstr "Inverti la marcatura di tutte le pagine"
 
 #: bonobo/ggv-sidebar.c:310
 msgid ""
 "Toggle marked state of all pages: previously marked pages will be unmarked "
 "and unmarked ones will become marked."
 msgstr ""
+"Inverti la marcatura di tutte le pagine: le pagine precedentemente marcate "
+"verranno non marcate e quelle non marcate diverranno marcate."
 
 #: bonobo/ggv-sidebar.c:322
-#, fuzzy
 msgid "Toggle marked state of odd pages"
-msgstr "Seleziona le pagine dispari"
+msgstr "Inverti la marcatura di tutte le pagine dispari"
 
 #: bonobo/ggv-sidebar.c:323
 msgid ""
 "Toggle marked state of odd pages: previously marked odd pages will be "
 "unmarked and unmarked ones will become marked."
 msgstr ""
+"Inverti la marcatura di tutte le pagine dispari: le pagine dispari "
+"precedentemente marcate saranno non marcate e quelle non marcate diverranno "
+"marcate."
 
 #: bonobo/ggv-sidebar.c:336
-#, fuzzy
 msgid "Toggle marked state of even pages"
-msgstr "Seleziona le pagine pari"
+msgstr "Inverti la marcatura di tutte le pagine pari"
 
 #: bonobo/ggv-sidebar.c:337
 msgid ""
 "Toggle marked state of even pages: previously marked even pages will be "
 "unmarked and unmarked ones will become marked."
 msgstr ""
+"Inverti la marcatura di tutte le pagine pari: le pagine pari precedentemente "
+"marcate saranno non marcate e quelle non marcate diverranno marcate."
 
 #: bonobo/ggv-sidebar.c:350
 msgid "Clear marked state of all pages"
-msgstr ""
+msgstr "Togli la marcatura di tutte le pagine"
 
 #: bonobo/ggv-sidebar.c:351
 msgid "Clear marked state of all pages: all pages will be unmarked."
 msgstr ""
+"Togli la marcatura di tutte le pagine: tutte le pagine saranno non marcate."
 
 #: ggv.desktop.in.h:1
 msgid "A Ghostscript frontend to visualize PostScript files"
-msgstr ""
+msgstr "Un frontend Ghostscript per visualizzare file PostScript"
 
 #: ggv.desktop.in.h:2
 msgid "GGV PostScript Viewer"
-msgstr ""
+msgstr "Visualizzatore PostScript GGV"
 
 #: src/ggv-prefs-ui.c:311
 msgid "_Use GNOME defaults"
-msgstr ""
+msgstr "_Usare le impostazioni predefinite di GNOME"
 
 #: src/ggv-prefs-ui.c:312
 msgid "Show _both icons and text"
-msgstr ""
+msgstr "Mostrare sia le icone _che il testo"
 
 #: src/ggv-prefs-ui.c:313
 msgid "Show only _icons"
-msgstr ""
+msgstr "Mostrare solo le _icone"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Mostra la pagina seguente"
+msgstr "Mostrare solo il t_esto"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
-msgstr "Preferenze GGV"
+msgstr "Preferenze di GGV"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Zoom predefinito"
+msgstr "_Zoom predefinito:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
 msgid "A_uto-fit mode:"
-msgstr ""
+msgstr "Adattamento a_utomatico:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Unità per le coordinate"
+msgstr "Unità per le _coordinate:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Dimensione di ripiego"
+msgstr "Dimensione di ri_piego della pagina:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "_Ignora la dimensione della pagina"
+msgstr "Ignorare la _dimensione del documento"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Orientamento di ripiego"
+msgstr "Orienta_mento di ripiego della pagina:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Ignora l'orientamento del documento"
+msgstr "I_gnorare l'orientamento del documento"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Antialiasing"
+msgstr "A_ntialiasing"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Rispetta i commenti EOF"
+msgstr "_Rispettare i commenti EOF"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Controlla file"
+msgstr "Ricaricare se il file cam_bia"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -608,100 +567,89 @@ msgstr "Documento"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Mostra il pannello laterale"
+msgstr "Mo_strare il pannello laterale"
 
 #: src/ggv-prefs-ui.c:622
 msgid "_Put side panel on the right-hand side"
-msgstr ""
+msgstr "_Posizionare il pannello laterale sul lato destro"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Mostra i _menu"
+msgstr "Mostrare la barra dei _menù"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Mosta la _barra degli strumenti"
+msgstr "Mostrare la barra degli s_trumenti"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
 msgid "Toolbar style"
-msgstr ""
+msgstr "Stile della barra strumenti"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Mosta la _barra degli strumenti"
+msgid "Show statusba_r"
+msgstr "Mostrare la barra di stat_o"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Salva la geometria"
+msgstr "Salvare la _geometria"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
-msgstr "Layout"
+msgstr "Aspetto"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Salta all'inizio della pagina quando si utilizza la tastiera"
+msgstr "_Saltare all'inizio della pagina"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
 msgid "Automatically _flip pages"
-msgstr ""
+msgstr "S_fogliare automaticamente le pagine"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
 msgid "Outline _last visible part when scrolling"
-msgstr ""
+msgstr "Evidenziare l'u_ltima parte visibile quando scorri"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Adatta il documento all'area visibile"
+msgstr "Quantità dell'area _visibile da scorrere"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
-msgstr ""
+msgstr "Navigazione"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Interprete"
+msgstr "_Interprete:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Antialiasing"
+msgstr "A_ntialiasing:"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
 msgid "Convert _PDF to PS:"
-msgstr ""
+msgstr "Convertitore _PDF in PS:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -709,31 +657,28 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Comando per la stampa"
+msgstr "Comando di stam_pa:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
 msgstr "Stampa"
 
 #: src/ggv-ui.xml.h:1
-#, fuzzy
 msgid "About this application"
-msgstr "Configura l'applicazione"
+msgstr "Informazioni sull'applicazione"
 
 #: src/ggv-ui.xml.h:2
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #: src/ggv-ui.xml.h:3
-#, fuzzy
 msgid "Close"
-msgstr "_Chiudi"
+msgstr "Chiudi"
 
 #: src/ggv-ui.xml.h:4
 msgid "Close this window"
-msgstr "Chiude questa finestra"
+msgstr "Chiudi questa finestra"
 
 #: src/ggv-ui.xml.h:5
 msgid "E_xit"
@@ -741,137 +686,119 @@ msgstr "_Esci"
 
 #: src/ggv-ui.xml.h:6
 msgid "Exit the program"
-msgstr ""
+msgstr "Uscire dal programma"
 
 #: src/ggv-ui.xml.h:7
 msgid "Fullscreen mode"
-msgstr ""
+msgstr "Schermo intero"
 
 #: src/ggv-ui.xml.h:8
-#, fuzzy
 msgid "Help for this application"
-msgstr "Configura l'applicazione"
+msgstr "Aiuto per l'applicazione"
 
 #: src/ggv-ui.xml.h:9
-#, fuzzy
 msgid "New _window"
 msgstr "_Nuova finestra"
 
 #: src/ggv-ui.xml.h:10
-#, fuzzy
 msgid "New window"
-msgstr "_Nuova finestra"
+msgstr "Nuova finestra"
 
 #: src/ggv-ui.xml.h:11
 msgid "Open"
 msgstr "Apri"
 
 #: src/ggv-ui.xml.h:12
-#, fuzzy
 msgid "Open a new PostScript document"
-msgstr "Apre un documento postscript"
+msgstr "Apre un nuovo documento PostScript"
 
 #: src/ggv-ui.xml.h:13
 msgid "Open a new window"
 msgstr "Apre una nuova finestra"
 
 #: src/ggv-ui.xml.h:14
-#, fuzzy
 msgid "Open in new window"
-msgstr "Apre una nuova finestra"
+msgstr "Apre in una nuova finestra"
 
 #: src/ggv-ui.xml.h:15
-#, fuzzy
 msgid "Open in this window"
-msgstr "Chiude questa finestra"
+msgstr "Apre in questa finestra"
 
 #: src/ggv-ui.xml.h:16
 msgid "Reload"
 msgstr "Ricarica"
 
 #: src/ggv-ui.xml.h:17
-#, fuzzy
 msgid "Reload current document"
-msgstr "Rilegge dal disco il documento corrente"
+msgstr "Ricarica il documento corrente"
 
 #: src/ggv-ui.xml.h:18
-#, fuzzy
 msgid "Show Side_bar"
-msgstr "Mosta la _barra degli strumenti"
+msgstr "Mostra la _barra laterale"
 
 #: src/ggv-ui.xml.h:19
 msgid "Show _Menus"
-msgstr "Mostra i _menu"
+msgstr "Mostra i _menù"
 
 #: src/ggv-ui.xml.h:20
-#, fuzzy
 msgid "Show _Statusbar"
-msgstr "Mosta la _barra degli strumenti"
+msgstr "Mostra la barra di _stato"
 
 #: src/ggv-ui.xml.h:21
 msgid "Show _Toolbar"
-msgstr "Mosta la _barra degli strumenti"
+msgstr "Mostra la barra degli s_trumenti"
 
 #: src/ggv-ui.xml.h:22
-#, fuzzy
 msgid "Show/hide the menus"
-msgstr "Mostra i _menu"
+msgstr "Mostra/nasconde i menù"
 
 #: src/ggv-ui.xml.h:23
-#, fuzzy
 msgid "Show/hide the sidebar"
-msgstr "Non utilizzare la barra laterale"
+msgstr "Mostra/nasconde la barra laterale"
 
 #: src/ggv-ui.xml.h:24
 msgid "Show/hide the statusbar"
-msgstr ""
+msgstr "Mostra/nasconde la barra di stato"
 
 #: src/ggv-ui.xml.h:25
-#, fuzzy
 msgid "Show/hide the toolbar"
-msgstr "Mosta la _barra degli strumenti"
+msgstr "Mosta/nasconde la barra degli strumenti"
 
 #: src/ggv-ui.xml.h:26
-#, fuzzy
 msgid "Toggle fullscreen mode"
-msgstr "Seleziona la pagina _corrente"
+msgstr "Commuta la modalità a schermo intero"
 
 #: src/ggv-ui.xml.h:27
 msgid "_About..."
-msgstr ""
+msgstr "_Informazioni..."
 
 #: src/ggv-ui.xml.h:28
 msgid "_Close"
 msgstr "_Chiudi"
 
 #: src/ggv-ui.xml.h:29
-#, fuzzy
 msgid "_Contents"
-msgstr "Unità per le coordinate"
+msgstr "_Manuale"
 
 #: src/ggv-ui.xml.h:30
-#, fuzzy
 msgid "_Edit"
-msgstr "_Esci"
+msgstr "_Modifica"
 
 #: src/ggv-ui.xml.h:31
-#, fuzzy
 msgid "_File"
-msgstr "_Controlla file"
+msgstr "_File"
 
 #: src/ggv-ui.xml.h:32
 msgid "_Help"
-msgstr ""
+msgstr "_Aiuto"
 
 #: src/ggv-ui.xml.h:33
-#, fuzzy
 msgid "_Layout"
-msgstr "Layout"
+msgstr "_Aspetto"
 
 #: src/ggv-ui.xml.h:34
-#, fuzzy
 msgid "_Open"
-msgstr "Apri"
+msgstr "_Apri"
 
 #: src/ggv-ui.xml.h:35
 msgid "_Reload"
@@ -879,24 +806,25 @@ msgstr "_Ricarica"
 
 #: src/ggv-window.c:332 src/ggv-window.c:877
 msgid "GGV: no document loaded"
-msgstr ""
+msgstr "GGV: nessun documento caricato"
 
 #: src/ggv-window.c:373
-#, fuzzy
 msgid "Select a PostScript document"
-msgstr "Apre un documento postscript"
+msgstr "Seleziona un documento PostScript"
 
 #: src/ggv-window.c:382
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Unable to load file:\n"
 "%s"
-msgstr "Impossibile caricare %s"
+msgstr ""
+"Impossibile caricare il file:\n"
+"%s"
 
 #. Translator Credits
 #: src/ggv-window.c:568
 msgid "translator_credits"
-msgstr ""
+msgstr "Francesco Marletta <francesco.marletta@tiscali.it>"
 
 #: src/ggv-window.c:578
 msgid "Gnome Ghostview"
@@ -904,11 +832,11 @@ msgstr "Gnome Ghostview"
 
 #: src/ggv-window.c:581
 msgid "The GNOME PostScript document previewer"
-msgstr ""
+msgstr "Il visualizzatore di documenti PostScript di GNOME"
 
 #: src/ggv-window.c:1046
 msgid "GGV: "
-msgstr ""
+msgstr "GGV: "
 
 #: src/ggvutils.c:42
 msgid "Portrait"
@@ -943,35 +871,32 @@ msgid "point"
 msgstr "punti"
 
 #: src/ggvutils.c:79
-#, fuzzy
 msgid "None"
-msgstr "No"
+msgstr "Nessuno"
 
 #: src/ggvutils.c:79
 msgid "Fit to page width"
-msgstr ""
+msgstr "Larghezza della pagina"
 
 #: src/ggvutils.c:79
 msgid "Fit to page size"
-msgstr ""
+msgstr "Dimensione della pagina"
 
 #: src/gtkgs.c:358
 msgid "No document loaded."
-msgstr ""
+msgstr "Nessun documento caricato."
 
 #: src/gtkgs.c:491
-#, fuzzy
 msgid "File is not a valid PostScript document."
-msgstr "Apre un documento postscript"
+msgstr "Il file non è un documento PostScript valido."
 
 #: src/gtkgs.c:1060
 msgid "Broken pipe."
 msgstr "Pipe interrotta."
 
 #: src/gtkgs.c:1249
-#, fuzzy
 msgid "Interpreter failed."
-msgstr "Interprete"
+msgstr "L'interprete ha fallito."
 
 #. report error
 #: src/gtkgs.c:1352
@@ -979,53 +904,49 @@ msgstr "Interprete"
 msgid "Error while decompressing file %s:\n"
 msgstr "Errore durante la decompressione del file %s:\n"
 
-#: src/gtkgs.c:1424
-#, fuzzy, c-format
+#: src/gtkgs.c:1462
+#, c-format
 msgid "Error while converting pdf file %s:\n"
-msgstr "Errore durante la scansione del file PDF %s:\n"
+msgstr "Errore durante la conversione del file PDF %s:\n"
 
-#: src/gtkgs.c:1754
-#, fuzzy, c-format
+#: src/gtkgs.c:1792
+#, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Impossibile aprire il file %s\n"
 
-#: src/gtkgs.c:1756
-#, fuzzy
+#: src/gtkgs.c:1794
 msgid "File is not readable."
-msgstr "%s non è un file regolare."
+msgstr "File non leggibile."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Errore durante la scansione del file %s\n"
 
-#: src/gtkgs.c:1780
-#, fuzzy
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
-msgstr "Apre un documento postscript"
+msgstr "Il file non è un documento PostScript."
 
-#: src/gtkgs.c:1820
-#, fuzzy
+#: src/gtkgs.c:1858
 msgid "Document loaded."
-msgstr "Documento"
+msgstr "Documento caricato."
 
 #: src/main.c:57
 #, c-format
 msgid "Invalid geometry string \"%s\"\n"
-msgstr ""
+msgstr "Stringa di geometria non valida \"%s\"\n"
 
 #: src/main.c:175
-#, fuzzy
 msgid "Specify the number of empty windows to open."
-msgstr "Specifica la geometria della finestra principale"
+msgstr "Specifica il numero di finestre vuote da aprire."
 
 #: src/main.c:176
 msgid "Number of empty windows"
-msgstr ""
+msgstr "Numero di finestre vuote"
 
 #: src/main.c:178
 msgid "X geometry specification (see \"X\" man page)."
-msgstr ""
+msgstr "Specifiche della geometria X (vedi la pagina man di \"X\")"
 
 #: src/main.c:179
 msgid "GEOMETRY"
@@ -1033,7 +954,19 @@ msgstr "GEOMETRIA"
 
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
-msgstr ""
+msgstr "Impossibile inizializzare Bonobo!\n"
+
+#~ msgid "_Override Orientation"
+#~ msgstr "_Ignora l'orientamento del documento"
+
+#~ msgid "_Override Size"
+#~ msgstr "Ignora la dimensione della pagina"
+
+#~ msgid "Scan PDF:"
+#~ msgstr "Leggi PDF:"
+
+#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
+#~ msgstr "Copyright (C) 1998-2002 The Free Software Foundation"
 
 #~ msgid "At end"
 #~ msgstr "Alla fine"
@@ -1064,7 +997,7 @@ msgstr ""
 #~ msgstr "Si"
 
 #~ msgid "gs warnings for %s"
-#~ msgstr "Messaggio di errore di gs per %s"
+#~ msgstr "Messaggio di avvertimento di gs per %s"
 
 #~ msgid "Opening %s..."
 #~ msgstr "Apertura di %s in corso..."
@@ -1117,9 +1050,6 @@ msgstr ""
 #~ msgid "Zoom to _Fit"
 #~ msgstr "Adatta"
 
-#~ msgid "Toggle menu visibility"
-#~ msgstr "Mostra/nasconde i menu"
-
 #~ msgid "Toggle side panel visibility"
 #~ msgstr "Mostra/nasconde il pannello laterale"
 
@@ -1147,6 +1077,9 @@ msgstr ""
 #~ msgid "Toggle antialiasing"
 #~ msgstr "Attiva/disattiva l'antialiasing"
 
+#~ msgid "_Document"
+#~ msgstr "_Documento"
+
 #~ msgid "New"
 #~ msgstr "Nuovo"
 
@@ -1171,49 +1104,29 @@ msgstr ""
 #~ msgid "Unmark all pages"
 #~ msgstr "Deseleziona tutte le pagine"
 
-#~ msgid "Override media size"
-#~ msgstr "Ignora la dimensione della pagina"
-
 #~ msgid "Show side panel by default"
 #~ msgstr "Mostra il pannello laterale all'avvio"
 
-#~ msgid "Show menubar by default"
-#~ msgstr "Mostra la barra dei menu all'avvio"
-
 #~ msgid "Show toolbar by default"
 #~ msgstr "Mostra la barra degli strumenti all'avvio"
-
-#~ msgid "Scan PDF"
-#~ msgstr "Leggi PDF"
-
-#~ msgid "Do not use sidebar and toolbar (deprecated)"
-#~ msgstr ""
-#~ "Non utilizzare né la barra laterale né la barra degli strumenti "
-#~ "(sconsigliato)"
 
 #~ msgid "SPARTAN"
 #~ msgstr "SEMPLICE"
 
 #~ msgid "NOSIDEBAR"
-#~ msgstr "SENZABARRALATERALE"
-
-#~ msgid "Do not use a menu bar"
-#~ msgstr "Non utilizzare la barra dei menu"
-
-#~ msgid "NOMENUBAR"
-#~ msgstr "SENZABARRAMENU"
+#~ msgstr "SENZA BARRA LATERALE"
 
 #~ msgid "Do not use a tool bar"
 #~ msgstr "Non utilizzare la barra degli strumenti"
 
 #~ msgid "NOTOOLBAR"
-#~ msgstr "SENZABARRASTRUMENTI"
+#~ msgstr "SENZA BARRA STRUMENTI"
 
 #~ msgid "Use the whole screen for the main window"
 #~ msgstr "Utilizza tutto lo schermo per la finestra principale"
 
 #~ msgid "FULLSCREEN"
-#~ msgstr "ATUTTOSCHERMO"
+#~ msgstr "A TUTTO SCHERMO"
 
 #~ msgid "%s does not exist."
 #~ msgstr "%s non esiste."
@@ -1227,9 +1140,6 @@ msgstr ""
 
 #~ msgid "GGv: Open File"
 #~ msgstr "GGv: Apri file"
-
-#~ msgid "There are no marked pages."
-#~ msgstr "Non è stata marcata nessuna pagina."
 
 #~ msgid "GGv: Save marked pages"
 #~ msgstr "GGv: Salva le pagine marcate"

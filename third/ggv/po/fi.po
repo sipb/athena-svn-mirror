@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 1.1.93\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
-"PO-Revision-Date: 2002-11-25 00:28+0200\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
+"PO-Revision-Date: 2003-01-22 22:44--200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
 "sourceforge.net>\n"
@@ -494,24 +494,20 @@ msgid "GGV PostScript Viewer"
 msgstr "GGV:n PostScript-katselin"
 
 #: src/ggv-prefs-ui.c:311
-#, fuzzy
 msgid "_Use GNOME defaults"
-msgstr "Käytä GNOMEn oletuksia"
+msgstr "Käytä _Gnomen oletuksia"
 
 #: src/ggv-prefs-ui.c:312
-#, fuzzy
 msgid "Show _both icons and text"
-msgstr "Näytä sekä kuvakkeet että teksti"
+msgstr "_Näytä sekä kuvakkeet että teksti"
 
 #: src/ggv-prefs-ui.c:313
-#, fuzzy
 msgid "Show only _icons"
-msgstr "Näytä vain kuvakkeet"
+msgstr "Näytä vain _kuvakkeet"
 
 #: src/ggv-prefs-ui.c:314
-#, fuzzy
 msgid "Show only t_ext"
-msgstr "Näytä vain teksti"
+msgstr "Näytä vain _teksti"
 
 #: src/ggv-prefs-ui.c:378
 msgid "GGV Preferences"
@@ -519,63 +515,53 @@ msgstr "GGV:n asetukset"
 
 #. zoom choice menu
 #: src/ggv-prefs-ui.c:389
-#, fuzzy
 msgid "_Default Zoom:"
-msgstr "Oletussuurennos:"
+msgstr "_Oletussuurennos:"
 
 #. auto-fit choice menu
 #: src/ggv-prefs-ui.c:424
-#, fuzzy
 msgid "A_uto-fit mode:"
-msgstr "Sovitustapa:"
+msgstr "So_vitustapa:"
 
 #. units choice menu
 #: src/ggv-prefs-ui.c:456
-#, fuzzy
 msgid "_Coordinate units:"
-msgstr "Koordinaattiyksiköt:"
+msgstr "Koordinaatti_yksiköt:"
 
 #. size choice menu
 #: src/ggv-prefs-ui.c:488
-#, fuzzy
 msgid "_Fallback page size:"
-msgstr "Oletuspaperikoko:"
+msgstr "Oletus_paperikoko:"
 
 #. override media size
 #: src/ggv-prefs-ui.c:519
-#, fuzzy
 msgid "Override _document size"
-msgstr "Sivuuta asiakirjan koko"
+msgstr "Sivuuta _asiakirjan koko"
 
 #. orientation choice menu
 #: src/ggv-prefs-ui.c:530
-#, fuzzy
 msgid "Fallback _media orientation:"
-msgstr "Paperin oletussuunta:"
+msgstr "Paperin oletus_suunta:"
 
 #. override orientation media
 #: src/ggv-prefs-ui.c:560
-#, fuzzy
 msgid "O_verride document orientation"
-msgstr "Jätä asiakirjan suunta huomiotta"
+msgstr "Jätä asiakirjan suunta _huomiotta"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:571
-#, fuzzy
 msgid "A_ntialiasing"
-msgstr "Pehmennys (antialiasointi)"
+msgstr "Peh_mennys (antialiasointi)"
 
 #. respect EOF
 #: src/ggv-prefs-ui.c:582
-#, fuzzy
 msgid "_Respect EOF comments"
-msgstr "Noudata tiedoston loppukommentteja"
+msgstr "Nou_data tiedoston loppukommentteja"
 
 #. watch file
 #: src/ggv-prefs-ui.c:593
-#, fuzzy
 msgid "_Watch file"
-msgstr "Tarkkaile tiedostoa"
+msgstr "Ta_rkkaile tiedostoa"
 
 #: src/ggv-prefs-ui.c:603
 msgid "Document"
@@ -583,26 +569,22 @@ msgstr "Asiakirja"
 
 #. show side panel
 #: src/ggv-prefs-ui.c:612
-#, fuzzy
 msgid "_Show side panel"
-msgstr "Näytä sivupaneeli"
+msgstr "N_äytä sivupaneeli"
 
 #: src/ggv-prefs-ui.c:622
-#, fuzzy
 msgid "_Put side panel on the right-hand side"
-msgstr "Sijoita sivupaneeli oikealle"
+msgstr "Si_joita sivupaneeli oikealle"
 
 #. show menubar
 #: src/ggv-prefs-ui.c:633
-#, fuzzy
 msgid "Show _menubar"
-msgstr "Näytä valikkopalkki"
+msgstr "Näytä _valikkopalkki"
 
 #. show toolbar
 #: src/ggv-prefs-ui.c:643
-#, fuzzy
 msgid "Show _toolbar"
-msgstr "Näytä työkalupalkki"
+msgstr "Näytä ty_ökalupalkki"
 
 #. toolbar style
 #: src/ggv-prefs-ui.c:654
@@ -611,15 +593,13 @@ msgstr "Työkalupalkin tyyli"
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Näytä tilarivi"
+msgid "Show statusba_r"
+msgstr "Näytä t_ilarivi"
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
-#, fuzzy
 msgid "Save _geometry"
-msgstr "Tallenna ikkunan mitat"
+msgstr "Tallenna _mitat"
 
 #: src/ggv-prefs-ui.c:697
 msgid "Layout"
@@ -627,26 +607,22 @@ msgstr "Asettelu"
 
 #. auto jump to beginning of page
 #: src/ggv-prefs-ui.c:707
-#, fuzzy
 msgid "_Jump to beginning of page"
-msgstr "Siirry sivun alkuun"
+msgstr "_Siirry sivun alkuun"
 
 #. automatically flip pages
 #: src/ggv-prefs-ui.c:717
-#, fuzzy
 msgid "Automatically _flip pages"
-msgstr "Kääntää sivut automaattisesti"
+msgstr "_Käännä sivut automaattisesti"
 
 #. show previously visible part
 #: src/ggv-prefs-ui.c:728
-#, fuzzy
 msgid "Outline _last visible part when scrolling"
-msgstr "Kehystä ennen vieritystä näkynyt osa"
+msgstr "Kehystä _ennen vieritystä näkynyt osa"
 
 #: src/ggv-prefs-ui.c:742
-#, fuzzy
 msgid "Amount of _visible area to scroll"
-msgstr "Vieritettävän näkyvän alueen määrä"
+msgstr "Vieritettävän _näkyvän alueen määrä"
 
 #: src/ggv-prefs-ui.c:759
 msgid "Navigation"
@@ -654,33 +630,28 @@ msgstr "Siirtyminen"
 
 #. interpreter
 #: src/ggv-prefs-ui.c:768
-#, fuzzy
 msgid "_Interpreter:"
-msgstr "Tulkki:"
+msgstr "_Tulkki:"
 
 #. antialiasing
 #: src/ggv-prefs-ui.c:790
-#, fuzzy
 msgid "A_ntialiasing:"
-msgstr "Pehmennys (antialiasointi):"
+msgstr "_Pehmennys (antialiasointi):"
 
 #. scan PDF command
 #: src/ggv-prefs-ui.c:812
-#, fuzzy
 msgid "Convert _PDF to PS:"
-msgstr "Muunna PDF PS:ksi:"
+msgstr "Muunna PD_F PS:ksi:"
 
 #. unzip command: gzip
 #: src/ggv-prefs-ui.c:834
-#, fuzzy
 msgid "_Gzip:"
-msgstr "Gzip:"
+msgstr "_Gzip:"
 
 #. unzip command: bzip2
 #: src/ggv-prefs-ui.c:856
-#, fuzzy
 msgid "_Bzip2:"
-msgstr "Bzip2:"
+msgstr "_Bzip2:"
 
 #: src/ggv-prefs-ui.c:877
 msgid "Ghostscript"
@@ -688,9 +659,8 @@ msgstr "Ghostscript"
 
 #. print command
 #: src/ggv-prefs-ui.c:886
-#, fuzzy
 msgid "_Print command:"
-msgstr "Tulostuskomento:"
+msgstr "_Tulostuskomento:"
 
 #: src/ggv-prefs-ui.c:906
 msgid "Printing"
@@ -936,30 +906,30 @@ msgstr "Tulkinta epäonnistui."
 msgid "Error while decompressing file %s:\n"
 msgstr "Tiedoston \"%s\" purkaminen epäonnistui:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Virhe pdf-tiedoston %s muuntamisessa:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Tiedostoa %s ei voi avata.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "Tiedostoa ei voi lukea."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Virhe lukiessa tiedostoa %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "Tiedosto ei ole PostScript-asiakirja."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "Asiakirja latautui."
 
@@ -987,6 +957,3 @@ msgstr "MITAT"
 #: src/main.c:225
 msgid "Could not initialize Bonobo!\n"
 msgstr "Bonobon alustus epäonnistui!\n"
-
-#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
-#~ msgstr "Copyright © 1998-2002 Free Software Foundation"

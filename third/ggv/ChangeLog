@@ -1,3 +1,37 @@
+2003-02-04  Jaka Mocnik  <jaka@gnu.org>
+
+	* configure.in: 1.99.98. tagged as GGV_1_99_98.
+	* bonobo/ggv-postscript-view.c, bonobo/ggv-control.c: flip
+	pages when using cursor keys to scroll.
+	
+2003-01-29  Jaka Mocnik  <jaka@gnu.org>
+
+	* src/ggv-file-sel.c: applied a patch from Satyajit Kanungo to make
+	the file selector modal.
+	
+2003-01-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-20  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Macedonian (mk) to ALL_LINGUAS
+
+2003-01-19  Jaka Mocnik  <jaka@gnu.org>
+
+	* bonobo/ggv-control.c (ggv_control_construct): don't unref the
+	widget. ps_view needs to hold the reference!
+	* src/ps.c (pages_new): fixed a possible buffer overflow.
+	* src/gtkgs.c: applied a patch from Satyajit Kanungo that allows
+	viewing of non-conformant PDFs.
+
+Wed Jan 15 17:51:50 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* bonobo/ggv-postscript-view.c (ps_view_get_tmp_file): return NULL
+	in error state instead of just returning.  Fixes a warning.  It
+	occurs to me that there is no code to handle this being NULL.
+	mkstemp almost never fails, so this is low priority.
+
 2002-12-23  Jaka Mocnik  <jaka@gnu.org>
 
 	* configure.in: bumped version to 1.99.97; tagged as GGV_1_99_97.

@@ -431,22 +431,22 @@ ggv_control_key_press_event(GtkWidget *widget, GdkEventKey *event,
 		}
 		break;
 	case GDK_Left:
-		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_LEFT, FALSE) &&
+		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_LEFT, TRUE) &&
 		   ggv_postscript_view_get_page_flip(ps_view))
 			ggv_postscript_view_goto_page(ps_view, gtk_gs_get_current_page(gs) - 1);
 		break;
 	case GDK_Right:
-		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_RIGHT, FALSE) &&
+		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_RIGHT, TRUE) &&
 		   ggv_postscript_view_get_page_flip(ps_view))
 			ggv_postscript_view_goto_page(ps_view, gtk_gs_get_current_page(gs) + 1);
 		break;
 	case GDK_Up:
-		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_UP, FALSE) &&
+		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_UP, TRUE) &&
 		   ggv_postscript_view_get_page_flip(ps_view))
 			ggv_postscript_view_goto_page(ps_view, gtk_gs_get_current_page(gs) - 1);
 		break;
 	case GDK_Down:
-		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_DOWN, FALSE) &&
+		if(!gtk_gs_scroll_step(gs, GTK_SCROLL_STEP_DOWN, TRUE) &&
 		   ggv_postscript_view_get_page_flip(ps_view))
 			ggv_postscript_view_goto_page(ps_view, gtk_gs_get_current_page(gs) + 1);
 		break;
@@ -886,8 +886,6 @@ ggv_control_construct (GgvControl *control, GgvPostScriptView *ps_view)
 					 G_CALLBACK(scrollbar_button_release_event),
 					 view);
 	gtk_container_add(GTK_CONTAINER(control->priv->root), view);
-	/* unref the GtkGS acquired from GgvPostScriptView */
-	gtk_widget_unref(view);
 	
 	bonobo_control_construct (BONOBO_CONTROL (control), control->priv->root);
 

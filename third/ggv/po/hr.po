@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2001-05-31 05:01+0200\n"
 "Last-Translator: Karl Eichwalder <keichwa@gmx.net>\n"
 "Language-Team: Croatian <hr@li.org>\n"
@@ -574,7 +574,7 @@ msgstr ""
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-msgid "Show s_tatusbar"
+msgid "Show statusba_r"
 msgstr ""
 
 #. save geometry
@@ -885,30 +885,30 @@ msgstr ""
 msgid "Error while decompressing file %s:\n"
 msgstr ""
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr ""
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr ""
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr ""
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr ""
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr ""
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr ""
 

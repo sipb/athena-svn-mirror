@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ggv 1.1.0\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2001-05-11 03:02+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -632,9 +632,8 @@ msgstr ""
 
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
-#, fuzzy
-msgid "Show s_tatusbar"
-msgstr "Rodyti įrankių _juostą"
+msgid "Show statusba_r"
+msgstr ""
 
 #. save geometry
 #: src/ggv-prefs-ui.c:687
@@ -976,32 +975,32 @@ msgstr "Interpretatorius"
 msgid "Error while decompressing file %s:\n"
 msgstr "Klaida išarchyvuojant bylą %s:\n"
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, fuzzy, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "Klaida skanuojant pdf bylą %s:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, fuzzy, c-format
 msgid "Cannot open file %s.\n"
 msgstr "Negaliu atidaryti bylos %s\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 #, fuzzy
 msgid "File is not readable."
 msgstr "%s nėra paprasta byla."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "Klaida skanuojant bylą %s\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 #, fuzzy
 msgid "The file is not a PostScript document."
 msgstr "Įkelti postscript dokumentą"
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 #, fuzzy
 msgid "Document loaded."
 msgstr "Dokumentas"

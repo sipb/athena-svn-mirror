@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
-"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"POT-Creation-Date: 2003-02-04 14:42+0100\n"
 "PO-Revision-Date: 2002-10-16 09:56+0200\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil <tamilgnome@yahoogroups.com>\n"
@@ -605,7 +605,7 @@ msgstr "¸ÕÅ¢ôÀð¨¼Â¢ý À¡½¢"
 #. show statusbar
 #: src/ggv-prefs-ui.c:676
 #, fuzzy
-msgid "Show s_tatusbar"
+msgid "Show statusba_r"
 msgstr "¿¢¨ÄôÀð¨¼¨Â ¸¡ðÎ¸"
 
 #. save geometry
@@ -927,30 +927,30 @@ msgstr "ÅÃ¢ ¦Á¡Æ¢Á¡üÈ¢ ¦¿¡ÊôÀ¨¼óÐûÇÐ."
 msgid "Error while decompressing file %s:\n"
 msgstr ""
 
-#: src/gtkgs.c:1424
+#: src/gtkgs.c:1462
 #, fuzzy, c-format
 msgid "Error while converting pdf file %s:\n"
 msgstr "%s pdf ¬Å½ò¨¾ ÅÕÎõ§À¡Ð À¢¨Æ:\n"
 
-#: src/gtkgs.c:1754
+#: src/gtkgs.c:1792
 #, c-format
 msgid "Cannot open file %s.\n"
 msgstr "%s §¸¡ôÒ ¾¢Èì¸ ÓÊÂÅ¢ø¨Ä.\n"
 
-#: src/gtkgs.c:1756
+#: src/gtkgs.c:1794
 msgid "File is not readable."
 msgstr "§¸¡ôÒ Å¡º¢ì¸ìÜÊÂÐ «øÄ."
 
-#: src/gtkgs.c:1777
+#: src/gtkgs.c:1815
 #, c-format
 msgid "Error while scanning file %s\n"
 msgstr "%s §¸¡ôÒ ÅÕÎõ§À¡Ð À¢¨Æ\n"
 
-#: src/gtkgs.c:1780
+#: src/gtkgs.c:1818
 msgid "The file is not a PostScript document."
 msgstr "þì§¸¡ôÒ µ÷ PostScript ¬Å½õ «øÄ."
 
-#: src/gtkgs.c:1820
+#: src/gtkgs.c:1858
 msgid "Document loaded."
 msgstr "¬Å½õ ²üÈôÀðÎûÇÐ."
 
