@@ -51,7 +51,7 @@ examples in the standards.
 Each C source file should begin with an MIT copyright statement, a
 comment describing what the file does, and a line:
 
-	static char rcsid[] = "$Id: ";
+	static char rcsid[] = "$Id: $";
 
 Each C header file should begin with:
 
