@@ -1,13 +1,19 @@
 #!/bin/sh
-# $Id: do.sh,v 1.12 1997-06-29 00:48:17 cfields Exp $
+# $Id: do.sh,v 1.13 1997-07-27 15:56:08 ghudson Exp $
 
+n=""
+maybe=""
 source="/source"
 build="/build"
 srvd="/srvd"
 usage="do [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
 
-while getopts s:b:d: opt; do
+while getopts ns:b:d: opt; do
 	case "$opt" in
+	n)
+		n="-n"
+		maybe="echo"
+		;;
 	s)
 		source="$OPTARG"
 		;;
@@ -60,33 +66,35 @@ if [ -r Makefile.athena ]; then
 	COMPILER="$compiler"
 	CONFIGDIR="$source/packs/build/config"
 	XCONFIGDIR="$source/packs/build/xconfig"
-	make -f Makefile.athena "$operation"
+	make $n -f Makefile.athena "$operation"
 elif [ -x ./configure ]; then
 	case "$operation" in
-		prepare)	rm -f config.cache; ./configure ;;
-		clean)		make clean ;;
-		all)		make all ;;
+		prepare)	$maybe rm -f config.cache
+				$maybe ./configure ;;
+		clean)		make $n clean ;;
+		all)		make $n all ;;
 		check)		;;
-		install)	make install "DESTDIR=$srvd" ;;
+		install)	make $n install "DESTDIR=$srvd" ;;
 	esac
 elif [ -r Imakefile ]; then
 	case "$operation" in
 		prepare)
-			imake "-I$source/packs/build/config" -DUseInstalled \
-				"-DTOPDIR=$source/packs/build"
-			make Makefiles
+			$maybe imake "-I$source/packs/build/config" \
+				-DUseInstalled "-DTOPDIR=$source/packs/build"
+			$maybe make Makefiles
+			$maybe make depend
 			;;
-		clean)		make clean ;;
-		all)		make depend all ;;
+		clean)		make $n clean ;;
+		all)		make $n all ;;
 		check)		;;
-		install)	make install install.man "DESTDIR=$srvd" ;;
+		install)	make $n install install.man "DESTDIR=$srvd" ;;
 	esac
 elif [ -r Makefile ]; then
 	case "$operation" in
 		prepare)	;;
-		clean)		make clean ;;
-		all)		make all CC="$compiler" ;;
+		clean)		make $n clean ;;
+		all)		make $n all CC="$compiler" ;;
 		check)		;;
-		install)	make install "DESTDIR=$srvd" ;;
+		install)	make $n install "DESTDIR=$srvd" ;;
 	esac
 fi
