@@ -1,12 +1,12 @@
 /* 
- * $Id: popmail.c,v 1.5 1996-09-19 22:37:02 ghudson Exp $
+ * $Id: popmail.c,v 1.6 1997-08-22 22:32:46 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/popmail.c,v $
  * $Author: ghudson $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: popmail.c,v 1.5 1996-09-19 22:37:02 ghudson Exp $";
+static char *rcsid = "$Id: popmail.c,v 1.6 1997-08-22 22:32:46 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -15,6 +15,7 @@ static char *rcsid = "$Id: popmail.c,v 1.5 1996-09-19 22:37:02 ghudson Exp $";
 #include <sys/socket.h>
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 #ifdef HESIOD
 #include <hesiod.h>
 #endif
@@ -33,6 +34,7 @@ FILE *sfo;
 char Errmsg[80];
 #ifdef KPOP
 char *PrincipalHostname();
+#define KPOP_PORT 1109
 #endif
 extern int popmail_debug;
 
@@ -48,6 +50,7 @@ char *host;
     KTEXT ticket = (KTEXT)NULL;
     int rem;
     long authopts;
+    char *hostname;
 #endif
     char *get_errmsg();
 
@@ -59,21 +62,21 @@ char *host;
 
 #ifdef KPOP
     sp = getservbyname("kpop", "tcp");
-    if (sp == 0) {
-	(void) strcpy(Errmsg, "tcp/kpop: unknown service");
-	return(NOTOK);
-    }
+    if (sp == 0) 
+        sin.sin_port = htons(KPOP_PORT);
+    else
+        sin.sin_port = sp->s_port;
 #else
     sp = getservbyname("pop", "tcp");
     if (sp == 0) {
 	(void) strcpy(Errmsg, "tcp/pop: unknown service");
 	return(NOTOK);
     }
+    sin.sin_port = sp->s_port;
 #endif
 
     sin.sin_family = hp->h_addrtype;
     memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
-    sin.sin_port = sp->s_port;
 #ifdef KPOP
     s = socket(AF_INET, SOCK_STREAM, 0);
 #else
@@ -91,18 +94,27 @@ char *host;
     }
 #ifdef KPOP
     ticket = (KTEXT)malloc( sizeof(KTEXT_ST) );
-    if (ticket == NULL)
-      {
+    if (ticket == NULL) {
 	fprintf (stderr, "from: out of memory");
 	exit (1);
-      }
+    }
     rem=KSUCCESS;
     authopts = 0L;
-    rem = krb_sendauth(authopts, s, ticket, "pop", hp->h_name,
-		       (char *) krb_realmofhost(hp->h_name),
+
+    /* We stash hp->h_name as krb_realmofhost may stomp on the
+       internal structures pointed by hp*/
+    hostname = malloc(strlen(hp->h_name)+1);
+    if (hostname == NULL) {
+	fprintf(stderr, "from: out of memory");
+	exit(1);
+    }
+    strcpy(hostname, hp->h_name);
+    rem = krb_sendauth(authopts, s, ticket, "pop", hostname,
+		       (char *) krb_realmofhost(hostname),
 		       0, (MSG_DAT *) 0, (CREDENTIALS *) 0,
 		       (bit_64 *) 0, (struct sockaddr_in *)0,
 		       (struct sockaddr_in *)0,"ZMAIL0.0");
+    free(hostname);
     if (rem != KSUCCESS) {
 	(void) sprintf(Errmsg, "kerberos error: %s",krb_err_txt[rem]);
 	(void) close(s);
