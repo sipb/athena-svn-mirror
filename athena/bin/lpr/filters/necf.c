@@ -17,13 +17,11 @@ static char sccsid[] = "@(#)necf.c	5.1 (Berkeley) 5/15/85";
 char	_sobuf[BUFSIZ];
 #endif
 #if defined(sun) && !defined(SOLARIS)
-char	_sobuf[BUFSIZ];
 #endif
 
 main()
 {
 #ifdef SOLARIS
-	extern unsigned char _sobuf[BUFSIZ];
 #else
 	extern char _sobuf[BUFSIZ];
 #endif
