@@ -1,10 +1,11 @@
-# $Id: Makefile,v 1.5 1997-01-27 13:56:22 ghudson Exp $
+# $Id: Makefile,v 1.6 1997-03-25 11:40:14 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
+ATHX11LIB=/usr/athena/lib/X11
+KEYMAPS=${ATHX11LIB}/keymaps
+APPDEFS=${ATHX11LIB}/app-defaults
 KEYTABLES=/usr/openwin/share/etc/keytables
-KEYMAPS=/usr/athena/lib/X11/keymaps
-APPDEFS=/usr/athena/lib/X11/app-defaults
 DEFAULT=/etc/default
 INET=/etc/inet
 MAIL=/etc/mail
@@ -23,14 +24,16 @@ check:
 install:
 	mkdir -p ${DESTDIR}${ETCDIR}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
-	mkdir -p ${DESTDIR}${KEYTABLES}
+	mkdir -p ${DESTDIR}${ATHX11LIB}
 	mkdir -p ${DESTDIR}${KEYMAPS}
 	mkdir -p ${DESTDIR}${APPDEFS}
+	mkdir -p ${DESTDIR}${KEYTABLES}
 	mkdir -p ${DESTDIR}${DEFAULT}
 	mkdir -p ${DESTDIR}${INET}
 	mkdir -p ${DESTDIR}${MAIL}
 	mkdir -p ${DESTDIR}${CRONTABS}
 	mkdir -p ${DESTDIR}${USRLIB}
+	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${ATHX11LIB}
 	install -c -m 0644 Athena4.kt ${DESTDIR}${KEYTABLES}
 	install -c -m 0644 Athena5.kt ${DESTDIR}${KEYTABLES}
 	install -c -m 0644 AthenaModifiers ${DESTDIR}${KEYMAPS}
