@@ -1,11 +1,7 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: miki $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.13 1992-07-17 11:33:07 miki Exp $
- */
-
-/*
+ *	$Id: config.h,v 1.14 1992-07-31 19:16:00 probe Exp $
+ *
  * Configuration defines
  *
  * Warning:  attach may not compile if NFS is not defined... given
@@ -14,12 +10,11 @@
  * 	extent, for KERBEROS.
  *
  * NEED_STRTOK means that we're on a system that does not have
- * strtok() support in libc.  In practice this usually means pre BSD
- * 4.3 systems.
+ * strtok() support in libc (usually pre BSD 4.3 systems).
  *
- * OLD-KERBEROS means we're compiling with the old, buggy kerberos
+ * OLD_KERBEROS means we're compiling with the old, buggy kerberos
  * library.  This is necessary because of release skew.  Note that the
- * some gratuitous name changes took place between the new and old
+ * same gratuitous name changes took place between the new and old
  * kerberos libraries.
  */
 
@@ -39,6 +34,8 @@
 #define ZEPHYR
 #define HESIOD
 #define KERBEROS
+
+#define ATHENA_COMPAT73		/* 7.3 fsid compatibility */
 
 /*
  * Other external filenames
@@ -126,11 +123,7 @@ struct mntent {
 
 /* These are not defined or recognized by the system, but they are useful
    to allow common data structures with systems that do have these defines */
-#ifdef _AIX
-#define	MOUNT_UFS	1
-#define	MOUNT_NFS	2
-#endif
-#if defined(sun)
+#if defined(_AIX) || defined(sun)
 #define	MOUNT_UFS	1
 #define	MOUNT_NFS	2
 #endif
