@@ -1,5 +1,7 @@
 bin_PROGRAMS = zenity
 
+bin_SCRIPTS = gdialog
+
 zenity_SOURCES = \
 	main.c		\
 	zenity.h	\
@@ -21,7 +23,8 @@ INCLUDES = \
 	-DZENITY_DATADIR=\""$(datadir)/zenity"\"
 
 zenity_LDADD = \
-	$(ZENITY_LIBS)
+	$(ZENITY_LIBS)		\
+	$(X_LIBS)
 
 gladedir = $(datadir)/zenity
 
