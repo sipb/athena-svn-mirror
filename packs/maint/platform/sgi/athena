@@ -12,7 +12,7 @@ else            # For a quiet startup and shutdown
 fi
 
 HOME=/; export HOME
-PATH=/bin:/usr/bsd:/usr/sbin:/etc:/sbin; export PATH
+PATH=/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/etc; export PATH
 
 umask 022
 
@@ -29,9 +29,9 @@ $ECHO "MIT configuration..."
 # Clean up the password file.
 
 $ECHO "Cleaning up passwd file: \c"
-if [ -f /etc/passwd.local -a -f /etc/shadow.local ]; then
+if [ -f /etc/passwd.local ]; then
 	$ECHO "recovered from passwd.local... \c"
-	/bin/cp /etc/passwd.local /etc/passwd
+	/sbin/cp /etc/passwd.local /etc/passwd
 fi
 $ECHO "done."
 
@@ -39,12 +39,12 @@ $ECHO "done."
 
 if [ -f /etc/group.local ]; then
 	$ECHO "Recovering group file... \c"
-	/bin/cp /etc/group.local /etc/group
+	/sbin/cp /etc/group.local /etc/group
 	$ECHO "done."
 fi
 
 # Remove old cruft and locks
-rm -rf /.deleted /etc/sm/* /etc/sm.bak/*
+rm -rf /.deleted
 
 # Reset time with the time hub
 if [ "${TIMECLIENT}" = "true" ]; then
@@ -68,27 +68,12 @@ if [ "${AFSSRV}" = "true" ]; then
 	fi
 fi
 
-# Start up afsd in foreground, in case any daemons are coming off AFS
+# afsd is started by init.d/afs. We just do our little additions here.
 if [ "${AFSCLIENT}" != "false" ]; then
-	if [ \( "${AFSADJUST}" = "true" -o "${PUBLIC}" = "true" \) \
-	     -a -d /usr/vice/cache/ ]; then
-
-		$ECHO "Adjusting the cache size..."
-		rm -f /usr/vice/etc/cacheinfo.old
-		mv -f /usr/vice/etc/cacheinfo /usr/vice/etc/cacheinfo.old
-		/bin/df /usr/vice/cache/ | \
-		  /bin/awk ' \
-			(NR == 2) { x = int($2*3/4); \
-			printf("/afs:/usr/vice/cache:%d\n",x);};' \
-		  > /usr/vice/etc/cacheinfo
-
-		sed -n -e '1s/^.*:\([^:]*\)$/New AFS cache size = \1K/p' \
-			/usr/vice/etc/cacheinfo
-	fi
-
 	if [ -f  /afs/athena/service/aklog ]; then
           cp -p /afs/athena.mit.edu/service/aklog /bin/athena/aklog
 	fi
+
 	sh /etc/athena/config_afs
 fi
 
@@ -107,7 +92,7 @@ $ECHO "done."
 $ECHO ""
 
 if [ "${PUBLIC}" = "true" ]; then
-	/bin/cp /dev/null /usr/tmp/attachtab
+	/sbin/cp /dev/null /usr/tmp/attachtab
 fi
 
 if [ "${RVDCLIENT}" = "true" ]; then
@@ -125,7 +110,7 @@ fi
 
 # Take a new release, if necessary.
 if [ "${AUTOUPDATE}" = "true" -a -f /srvd/auto_update ]; then
-	$ECHO  "Checking /srvd/auto_update... \c"
+	$ECHO "Checking /srvd/auto_update... \c"
 	/srvd/auto_update rc < /dev/console > /dev/console 2>&1
 	$ECHO "done."
 elif [ -f /srvd/.rvdinfo ]; then
@@ -153,33 +138,24 @@ if [ "${PUBLIC}" = "true" ]; then
 	$ECHO "Public workstation cleanup... \c"
 	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
-	rm -f /var/spool/cron/crontabs/root
-	cp -p /srvd/etc/crontab.root.add /var/spool/cron/crontabs/root
 	cp -p /srvd/etc/athena/attach.conf /etc/athena/attach.conf
 	cp -p /srvd/etc/inetd.conf /etc/inetd.conf
 	cp -p /srvd/etc/athena/inetd.conf /etc/athena/inetd.conf
-	cp -p /srvd/etc/minor_perm /etc/minor_perm
-	cp -p /srvd/etc/passwd.std /etc/passwd.local
+	cp -p /srvd/etc/passwd /etc/passwd.local
 	cp -p /etc/passwd.local /etc/passwd
-	cp -p /srvd/etc/shadow.std /etc/shadow.local
-	cp -p /etc/shadow.local /etc/shadow
-	chmod 600 /etc/shadow
-	chmod 666 /dev/audio /dev/audioctl
-	cp -p /srvd/etc/group.std /etc/group.local
+	rm -f /etc/shadow
+	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
-	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
+#?	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
 
 	cp /dev/null /etc/named.local
 	cp /dev/null /etc/X0.hosts
-	cp -p /etc/inet/hosts /etc/inet/hosts.save
 	if [ -f /srvd/.rvdinfo ]; then
             NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
 	    THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
 	    if [ "${NEWVERS}" = "${THISVERS}" ]; then
 		$ECHO "Running track..."
 		/usr/athena/etc/track
-		cp -p /etc/inet/hosts.save /etc/inet/hosts
-		rm -f /etc/inet/hosts.save
 		if [ -f /srvd/etc/athena/rc.conf ]; then
        			sed -n  -e "s/^HOST=[^;]*/HOST=${HOST}/" \
 			  -e "s/^ADDR=[^;]*/ADDR=${ADDR}/" \
@@ -192,37 +168,43 @@ if [ "${PUBLIC}" = "true" ]; then
         $ECHO "done."
 fi
 
-# Dealing with sendmail.cf
-#if [ "${NEWMAILCF}" = "true" ];then
-#	$ECHO "Copying sendmail.cf... \c"
-#	cp -p /srvd/etc/mail/sendmail.cf /etc/mail/sendmail.cf
-#	cp -p /srvd/etc/mail/aliases /etc/mail/aliases
-#fi
+if [ "${NEWMAILCF}" = "true" ];then
+	$ECHO "Updating sendmail.cf... \c"
+	cp -p /srvd/etc/sendmail.cf /etc/sendmail.cf
+#	cp -p /srvd/etc/aliases /etc/aliases
+	$ECHO "done."
+fi
 
-# Freeze the configuration if we aren't running sendmail.
-# (init.d/mail freezes it if we are running sendmail)
+if [ -f /etc/sendmail.cf ]; then
+	$ECHO "Freezing sendmail configuration... \c"
+	/usr/lib/sendmail -bz
+	$ECHO "done."
+fi
+
+# Clean up old lock files if not running sendmail. (init.d/mail does
+# this if we are running sendmail)
 if [ "${SENDMAIL}" = "false" ]; then
-$ECHO "Freezing sendmail configuration... \c"
-/usr/lib/sendmail -bz `cat $CONFIG/sendmail.options`
-$ECHO "done."
+	$ECHO "Removing lockfiles... \c"
+	rm -rf /var/spool/mqueue/[tnx]f*
+	$ECHO "done."
 fi
 
 # Start standard daemons
 $ECHO ""
-$ECHO  "Starting Athena daemons: \c"
+$ECHO "Starting Athena daemons: \c"
 
 # Start Athena's inetd
 $ECHO "inetd... \c"
 /etc/athena/inetd &
 
 if [ "${ZCLIENT}" = "true" ]; then
-	$ECHO  "zhm... \c"
+	$ECHO "zhm... \c"
 	rm -f /etc/athena/zhm.pid
 	/etc/athena/zhm &
 fi
 
 if [ "${MRUPDATE}" = "true" ]; then
-	$ECHO  "update_server... \c"
+	$ECHO "update_server... \c"
 	/usr/athena/etc/update_server &
 fi
 
@@ -245,21 +227,21 @@ mv /tmp/t1 /etc/motd
 chmod 644 /etc/motd
 $ECHO "done."
 
-$ECHO  "Fixing noattach, nocreate, noremote, and nologin... \c"
+$ECHO "Fixing noattach, nocreate, noremote, and nologin... \c"
 if [ "${NOCREATE}" = "true" ]; then
-	$ECHO "" >> /etc/nocreate
+	echo "" >> /etc/nocreate
 else
 	rm -f /etc/nocreate
 fi
 
 if [ "${NOATTACH}" = "true" ]; then
-	$ECHO  "" >> /etc/noattach
+	echo "" >> /etc/noattach
 else
 	rm -f /etc/noattach
 fi
 
 if [ "${NOREMOTE}" = "true" ]; then
-        $ECHO  "" >> /etc/noremote
+	echo "" >> /etc/noremote
 else
         rm -f /etc/noremote
 fi
