@@ -24,13 +24,9 @@
 #ifndef __GST_FDSINK_H__
 #define __GST_FDSINK_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-GstElementDetails gst_fdsink_details;
 
 
 #define GST_TYPE_FDSINK \

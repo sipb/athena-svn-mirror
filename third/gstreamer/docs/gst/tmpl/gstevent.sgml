@@ -2,7 +2,7 @@
 GstEvent
 
 <!-- ##### SECTION Short_Description ##### -->
-Event definitions.
+Structure describing events that are passed up and down a pipeline
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -24,8 +24,25 @@ gst_event_new_flush() creates a new flush event.
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
-#GstPad
+#GstPad, #GstElement
 </para>
+
+<!-- ##### MACRO GST_TYPE_EVENT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### STRUCT GstEvent ##### -->
+<para>
+
+</para>
+
+@data: 
+@type: 
+@timestamp: 
+@src: 
 
 <!-- ##### ENUM GstEventType ##### -->
 <para>
@@ -37,7 +54,6 @@ The different major types of events.
 @GST_EVENT_FLUSH: a flush event.
 @GST_EVENT_EMPTY: an empty event.
 @GST_EVENT_DISCONTINUOUS: a discontinuous event to indicate the stream has a discontinuity.
-@GST_EVENT_NEW_MEDIA: a new media stream is started
 @GST_EVENT_QOS: a quality of service event
 @GST_EVENT_SEEK: a seek event.
 @GST_EVENT_SEEK_SEGMENT: a segment seek with start and stop position
@@ -46,11 +62,36 @@ The different major types of events.
 @GST_EVENT_RATE: adjust the output rate of an element
 @GST_EVENT_FILLER: a dummy event that should be ignored by plugins
 @GST_EVENT_TS_OFFSET: an event to set the time offset on buffers
-@GST_EVENT_INTERRUPT: 
+@GST_EVENT_INTERRUPT: mainly used by _get based elements when they were interrupted
+                      while waiting for a buffer.
+@GST_EVENT_NAVIGATION: 
+@GST_EVENT_TAG: 
+
+<!-- ##### MACRO GST_EVENT_ANY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GST_EVENT_TRACE_NAME ##### -->
+<para>
+The name used for memory allocation tracing
+</para>
+
+
 
 <!-- ##### MACRO GST_EVENT_TYPE ##### -->
 <para>
 Get the event type.
+</para>
+
+@event: The event to query.
+
+
+<!-- ##### MACRO GST_EVENT_TIMESTAMP ##### -->
+<para>
+Get the timestamp of the event.
 </para>
 
 @event: The event to query.
@@ -64,12 +105,54 @@ The source object that generated this event
 @event: The event to query
 
 
-<!-- ##### MACRO GST_EVENT_TIMESTAMP ##### -->
+<!-- ##### MACRO GST_EVENT_IS_INTERRUPT ##### -->
 <para>
-Get the timestamp of the event.
+Check if the event is an interrupt event
 </para>
 
-@event: The event to query.
+@event: The event to check
+
+
+<!-- ##### MACRO GST_SEEK_FORMAT_SHIFT ##### -->
+<para>
+Shift for the format in the GstSeekType
+</para>
+
+
+
+<!-- ##### MACRO GST_SEEK_METHOD_SHIFT ##### -->
+<para>
+Shift for the method in the GstSeekType
+</para>
+
+
+
+<!-- ##### MACRO GST_SEEK_FLAGS_SHIFT ##### -->
+<para>
+Shift for the flags in the GstSeekType
+</para>
+
+
+
+<!-- ##### MACRO GST_SEEK_FORMAT_MASK ##### -->
+<para>
+Mask for the format in the GstSeekType
+</para>
+
+
+
+<!-- ##### MACRO GST_SEEK_METHOD_MASK ##### -->
+<para>
+Mask for the method in the GstSeekType
+</para>
+
+
+
+<!-- ##### MACRO GST_SEEK_FLAGS_MASK ##### -->
+<para>
+Mask for the flags in the GstSeekType
+</para>
+
 
 
 <!-- ##### ENUM GstEventFlag ##### -->
@@ -80,16 +163,49 @@ Event flags are used when querying for supported events
 @GST_EVENT_FLAG_NONE: no value
 @GST_RATE_FLAG_NEGATIVE: indicates negative rates are supported
 
+<!-- ##### MACRO GST_EVENT_MASK_FUNCTION ##### -->
+<para>
+A convenience macro to create event mask functions
+</para>
+
+@type: The type of the first argument of the function
+@functionname: the name of the function
+@...: event masks, the last element is marked with 0
+
+
 <!-- ##### ENUM GstSeekType ##### -->
 <para>
-The different types of seek events.
+The different types of seek events. When constructing a seek event a format,
+a seek method and optional flags are OR-ed together. The seek event is then
+inserted into the graph with #gst_pad_send_event() or #gst_element_send_event().
+
+Following example illustrates how to insert a seek event (1 second in the stream)
+in a pipeline.
+<example>
+<title>Insertion of a seek event into a pipeline</title>
+  <programlisting>
+  gboolean res;
+  GstEvent *event;
+
+  event = gst_event_new_seek (
+            GST_FORMAT_TIME |		/* seek on time */
+	    GST_SEEK_METHOD_SET |	/* set the absolute position */
+	    GST_SEEK_FLAG_FLUSH,	/* flush any pending data */
+	    1 * GST_SECOND);		/* the seek offset (1 second) */
+
+  res = gst_element_send_event (GST_ELEMENT (osssink), event);
+  if (!res) {
+    g_warning ("seek failed");
+  }
+  </programlisting>
+</example>
 </para>
 
 @GST_SEEK_METHOD_CUR: Seek to an relative position
 @GST_SEEK_METHOD_SET: Seek to an absolute position
 @GST_SEEK_METHOD_END: Seek relative to the end of the stream
 @GST_SEEK_FLAG_FLUSH: Flush any pending data while seeking
-@GST_SEEK_FLAG_ACCURATE: Seek as accuratly as possible
+@GST_SEEK_FLAG_ACCURATE: Seek as accurately as possible
 @GST_SEEK_FLAG_KEY_UNIT: Seek to a nearby key unit
 @GST_SEEK_FLAG_SEGMENT_LOOP: Loop between start and stop in a segmented seek
 
@@ -142,54 +258,20 @@ Get the offset of the seek event.
 @event: The event to query.
 
 
+<!-- ##### MACRO GST_EVENT_SEEK_ENDOFFSET ##### -->
+<para>
+The event stop position for a segment seek
+</para>
+
+@event: The event to query
+
+
 <!-- ##### MACRO GST_EVENT_SEEK_ACCURACY ##### -->
 <para>
 Indicates how accurate the event was performed.
 </para>
 
 @event: The event to query
-
-
-<!-- ##### MACRO GST_SEEK_FLAGS_MASK ##### -->
-<para>
-Mask for the flags in the GstSeekType
-</para>
-
-
-
-<!-- ##### MACRO GST_SEEK_FLAGS_SHIFT ##### -->
-<para>
-Shift for the flags in the GstSeekType
-</para>
-
-
-
-<!-- ##### MACRO GST_SEEK_FORMAT_MASK ##### -->
-<para>
-Mask for the format in the GstSeekType
-</para>
-
-
-
-<!-- ##### MACRO GST_SEEK_FORMAT_SHIFT ##### -->
-<para>
-Shift for the format in the GstSeekType
-</para>
-
-
-
-<!-- ##### MACRO GST_SEEK_METHOD_MASK ##### -->
-<para>
-Mask for the method in the GstSeekType
-</para>
-
-
-
-<!-- ##### MACRO GST_SEEK_METHOD_SHIFT ##### -->
-<para>
-Shift for the method in the GstSeekType
-</para>
-
 
 
 <!-- ##### MACRO GST_EVENT_DISCONT_NEW_MEDIA ##### -->
@@ -203,7 +285,7 @@ type.
 
 <!-- ##### MACRO GST_EVENT_DISCONT_OFFSET ##### -->
 <para>
-The offset of the discont event. A discont evetn can hold up to 8 different
+The offset of the discont event. A discont event can hold up to 8 different
 format/value pairs.
 </para>
 
@@ -217,22 +299,6 @@ Get the number of offset/value pairs this event has.
 </para>
 
 @event: The event to query.
-
-
-<!-- ##### MACRO GST_EVENT_RATE_VALUE ##### -->
-<para>
-Get access to the rate vale field
-</para>
-
-@event: The event to query
-
-
-<!-- ##### MACRO GST_EVENT_SEEK_ENDOFFSET ##### -->
-<para>
-The event stop position for a segment seek
-</para>
-
-@event: The event to query
 
 
 <!-- ##### MACRO GST_EVENT_SIZE_FORMAT ##### -->
@@ -251,15 +317,13 @@ The value of the size event
 @event: The event to query
 
 
-<!-- ##### STRUCT GstEvent ##### -->
+<!-- ##### MACRO GST_EVENT_RATE_VALUE ##### -->
 <para>
-The event structure
+Get access to the rate vale field
 </para>
 
-@data: 
-@type: 
-@timestamp: 
-@src: 
+@event: The event to query
+
 
 <!-- ##### FUNCTION gst_event_new ##### -->
 <para>
@@ -268,15 +332,6 @@ The event structure
 
 @type: 
 @Returns: 
-
-
-<!-- ##### MACRO gst_event_copy ##### -->
-<para>
-Copy the event using the event specific copy function
-</para>
-
-@ev: The event to copy
-@Returns: A new event that is a copy of the given input event
 
 
 <!-- ##### MACRO gst_event_ref ##### -->
@@ -302,6 +357,25 @@ Decrease the refcount of an event, freeing it if the refcount reaches 0
 </para>
 
 @ev: The event to unref
+
+
+<!-- ##### MACRO gst_event_copy ##### -->
+<para>
+Copy the event using the event specific copy function
+</para>
+
+@ev: The event to copy
+@Returns: A new event that is a copy of the given input event
+
+
+<!-- ##### FUNCTION gst_event_masks_contains ##### -->
+<para>
+
+</para>
+
+@masks: 
+@mask: 
+@Returns: 
 
 
 <!-- ##### FUNCTION gst_event_new_seek ##### -->
@@ -346,6 +420,17 @@ Decrease the refcount of an event, freeing it if the refcount reaches 0
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_event_new_discontinuous_valist ##### -->
+<para>
+
+</para>
+
+@new_media: 
+@format1: 
+@var_args: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_event_discont_get_value ##### -->
 <para>
 
@@ -369,22 +454,5 @@ Create a new dummy event that should be ignored
 Create a new flush event.
 </para>
 
-
-
-<!-- ##### FUNCTION gst_event_print_stats ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO GST_EVENT_MASK_FUNCTION ##### -->
-<para>
-A convenience macro to create event mask functions
-</para>
-
-@type: The type of the first argument of the function
-@functionname: the name of the function
-@...: event masks, the last element is marked with 0
 
 

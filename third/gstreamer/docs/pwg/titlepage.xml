@@ -41,9 +41,20 @@
 	  </para>
 	</authorblurb>
       </author>
+
+      <author>
+        <firstname>Ronald</firstname>
+        <othername>S.</othername>
+        <surname>Bultje</surname>
+        <authorblurb>
+          <para>
+            <email>rbultje@ronald.bitfreak.net</email>
+          </para>
+        </authorblurb>
+      </author>
     </authorgroup>
 
-    <legalnotice id="legalnotice">
+    <legalnotice id="misc-legalnotice">
       <para>
 	This material may be distributed only subject to the terms and
 	conditions set forth in the Open Publication License, v1.0 or later (the
@@ -53,6 +64,6 @@
       </para>
     </legalnotice>
 
-    <title>&GStreamer; Plugin Writer's Guide</title>
+    <title>&GStreamer; Plugin Writer's Guide (&GST_VERSION;)</title>
 
   </bookinfo>

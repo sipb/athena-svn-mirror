@@ -31,13 +31,39 @@ Use gst_scheduler_factory_destroy() to remove the factory from the global list.
 
 </para>
 
-<!-- ##### FUNCTION gst_scheduler_factory_create ##### -->
+<!-- ##### STRUCT GstSchedulerFactory ##### -->
 <para>
 
 </para>
 
-@factory: 
-@parent: 
+
+<!-- ##### MACRO GST_TYPE_SCHEDULER_FACTORY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gst_scheduler_register ##### -->
+<para>
+
+</para>
+
+@plugin: 
+@name: 
+@longdesc: 
+@type: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_scheduler_factory_new ##### -->
+<para>
+
+</para>
+
+@name: 
+@longdesc: 
+@type: 
 @Returns: 
 
 
@@ -58,6 +84,16 @@ Use gst_scheduler_factory_destroy() to remove the factory from the global list.
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_scheduler_factory_create ##### -->
+<para>
+
+</para>
+
+@factory: 
+@parent: 
+@Returns: 
+
+
 <!-- ##### FUNCTION gst_scheduler_factory_make ##### -->
 <para>
 
@@ -68,15 +104,12 @@ Use gst_scheduler_factory_destroy() to remove the factory from the global list.
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_scheduler_factory_new ##### -->
+<!-- ##### FUNCTION gst_scheduler_factory_set_default_name ##### -->
 <para>
 
 </para>
 
 @name: 
-@longdesc: 
-@type: 
-@Returns: 
 
 
 <!-- ##### FUNCTION gst_scheduler_factory_get_default_name ##### -->
@@ -85,13 +118,5 @@ Use gst_scheduler_factory_destroy() to remove the factory from the global list.
 </para>
 
 @Returns: 
-
-
-<!-- ##### FUNCTION gst_scheduler_factory_set_default_name ##### -->
-<para>
-
-</para>
-
-@name: 
 
 

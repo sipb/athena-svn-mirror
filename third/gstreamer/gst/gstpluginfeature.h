@@ -25,6 +25,7 @@
 #define __GST_PLUGIN_FEATURE_H__
 
 #include <glib-object.h>
+#include <gst/gsttypes.h>
 
 G_BEGIN_DECLS
 
@@ -43,25 +44,45 @@ typedef struct _GstPluginFeatureClass GstPluginFeatureClass;
 struct _GstPluginFeature {
   GObject 	 object;
 
+  /*< private >*/
   gchar 	*name;
-  gint   	 rank;
+  guint   	 rank;
 
-  /* --- private --- */
   gpointer 	 manager;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstPluginFeatureClass {
   GObjectClass	parent_class;
 
   void          (*unload_thyself)      (GstPluginFeature *feature);
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
+typedef struct {
+  const gchar 	*name;
+  GType		 type;
+} GstTypeNameData;
+
+/* filter */
+typedef gboolean        (*GstPluginFeatureFilter)       (GstPluginFeature *feature,
+                                                         gpointer user_data);
 
 /* normal GObject stuff */
 GType		gst_plugin_feature_get_type		(void);
 
 gboolean	gst_plugin_feature_ensure_loaded 	(GstPluginFeature *feature);
 void		gst_plugin_feature_unload_thyself 	(GstPluginFeature *feature);
+
+gboolean	gst_plugin_feature_type_name_filter	(GstPluginFeature *feature,
+							 GstTypeNameData *data);
+
+void		gst_plugin_feature_set_rank		(GstPluginFeature *feature, guint rank);
+void		gst_plugin_feature_set_name		(GstPluginFeature *feature, const gchar *name);
+guint		gst_plugin_feature_get_rank		(GstPluginFeature *feature);
+G_CONST_RETURN gchar *gst_plugin_feature_get_name	(GstPluginFeature *feature);
 
 G_END_DECLS
 

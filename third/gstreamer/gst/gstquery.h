@@ -2,7 +2,7 @@
  * Copyright (C) 1999,2000 Erik Walthinsen <omega@cse.ogi.edu>
  *                    2000 Wim Taymans <wim.taymans@chello.be>
  *
- * gstpad.h: Header for GstPad object
+ * gstquery.h: GstQuery API declaration
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,8 +39,8 @@ typedef enum {
   GST_QUERY_RATE
 } GstQueryType;
 
-/* rate is relative to 1000000LL  */
-#define GST_QUERY_TYPE_RATE_DEN          1000000LL
+/* rate is relative to 1000000  */
+#define GST_QUERY_TYPE_RATE_DEN          G_GINT64_CONSTANT (1000000)
 
 typedef struct _GstQueryTypeDefinition GstQueryTypeDefinition;
 
@@ -86,9 +86,9 @@ GstQueryType    	gst_query_type_get_by_nick     (const gchar *nick);
 gboolean        	gst_query_types_contains       (const GstQueryType *types, GstQueryType type);
 
 /* query for query details */
-const GstQueryTypeDefinition*      
+G_CONST_RETURN GstQueryTypeDefinition*      
                 	gst_query_type_get_details     (GstQueryType type);
-const GList*    	gst_query_type_get_definitions (void);
+G_CONST_RETURN GList*   gst_query_type_get_definitions (void);
 
 G_END_DECLS
 

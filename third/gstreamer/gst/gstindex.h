@@ -37,6 +37,8 @@ G_BEGIN_DECLS
 #define GST_IS_INDEX_CLASS(klass)	(GST_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_INDEX))
 #define GST_INDEX_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_INDEX, GstIndexClass))
 
+#define GST_TYPE_INDEX_ENTRY            (gst_index_entry_get_type())
+
 typedef struct _GstIndexEntry GstIndexEntry;
 typedef struct _GstIndexGroup GstIndexGroup;
 typedef struct _GstIndex GstIndex;
@@ -52,13 +54,13 @@ typedef enum {
   GST_INDEX_ENTRY_ID,
   GST_INDEX_ENTRY_ASSOCIATION,
   GST_INDEX_ENTRY_OBJECT,
-  GST_INDEX_ENTRY_FORMAT,
+  GST_INDEX_ENTRY_FORMAT
 } GstIndexEntryType;
 
 typedef enum {
   GST_INDEX_LOOKUP_EXACT,
   GST_INDEX_LOOKUP_BEFORE,
-  GST_INDEX_LOOKUP_AFTER,
+  GST_INDEX_LOOKUP_AFTER
 } GstIndexLookupMethod;
 
 #define GST_INDEX_NASSOCS(entry)		((entry)->data.assoc.nassocs)
@@ -76,9 +78,10 @@ struct _GstIndexAssociation {
 typedef enum {
   GST_ASSOCIATION_FLAG_NONE 	= 0,
   GST_ASSOCIATION_FLAG_KEY_UNIT = (1 << 0),
+  GST_ASSOCIATION_FLAG_DELTA_UNIT = (1 << 1),
 
   /* new flags should start here */
-  GST_ASSOCIATION_FLAG_LAST	= (1 << 8),
+  GST_ASSOCIATION_FLAG_LAST	= (1 << 8)
 } GstAssocFlags;
 
 #define GST_INDEX_FORMAT_FORMAT(entry)		((entry)->data.format.format)
@@ -168,7 +171,7 @@ struct _GstIndex {
   GHashTable		*writers;
   gint			 last_id;
 
-  gpointer		 dummy[8];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstIndexClass {
@@ -189,7 +192,7 @@ struct _GstIndexClass {
   /* signals */
   void		(*entry_added)		(GstIndex *index, GstIndexEntry *entry);
 
-  gpointer		 dummy[8];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType			gst_index_get_type		(void);
@@ -229,6 +232,8 @@ GstIndexEntry*		gst_index_get_assoc_entry_full	(GstIndex *index, gint id,
 							 gpointer user_data);
 
 /* working with index entries */
+GType gst_index_entry_get_type (void);
+GstIndexEntry *         gst_index_entry_copy            (GstIndexEntry *entry);
 void			gst_index_entry_free		(GstIndexEntry *entry);
 gboolean		gst_index_entry_assoc_map	(GstIndexEntry *entry,
 		                                         GstFormat format, gint64 *value);
@@ -251,10 +256,14 @@ struct _GstIndexFactory {
 	    
   gchar *longdesc;            /* long description of the index (well, don't overdo it..) */
   GType type;                 /* unique GType of the index */
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstIndexFactoryClass {
   GstPluginFeatureClass parent; 
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType 			gst_index_factory_get_type 	(void);

@@ -30,6 +30,7 @@
 
 G_BEGIN_DECLS
 
+
 #define GST_TYPE_FILESRC \
   (gst_filesrc_get_type())
 #define GST_FILESRC(obj) \
@@ -44,7 +45,7 @@ G_BEGIN_DECLS
 typedef enum {
   GST_FILESRC_OPEN              = GST_ELEMENT_FLAG_LAST,
 
-  GST_FILESRC_FLAG_LAST = GST_ELEMENT_FLAG_LAST + 2,
+  GST_FILESRC_FLAG_LAST = GST_ELEMENT_FLAG_LAST + 2
 } GstFileSrcFlags;
 
 typedef struct _GstFileSrc GstFileSrc;
@@ -57,20 +58,21 @@ struct _GstFileSrc {
   guint pagesize;			/* system page size*/
  
   gchar *filename;			/* filename */
+  gchar *uri;				/* caching the URI */
   gint fd;				/* open file descriptor*/
   off_t filelen;			/* what's the file length?*/
 
   off_t curoffset;			/* current offset in file*/
   off_t block_size;			/* bytes per read */
   gboolean touch;			/* whether to touch every page */
+  gboolean using_mmap;                  /* whether we opened it with mmap */
+  gboolean is_regular;                  /* whether it's (symlink to)
+                                           a regular file */
 
   GstBuffer *mapbuf;
   size_t mapsize;
 
-  GTree *map_regions;
-  GMutex *map_regions_lock;
-
-  gboolean seek_happened;
+  gint need_discont;
   gboolean need_flush;
 };
 

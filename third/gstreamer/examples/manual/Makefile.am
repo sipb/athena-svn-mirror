@@ -4,16 +4,22 @@ else
 GNOME=
 endif
 
-EXAMPLES = dynamic $(GNOME) helloworld helloworld2 queue threads xml-mp3
+if GST_DISABLE_LOADSAVE
+GST_LOADSAVE_SRC =
+else
+GST_LOADSAVE_SRC = xml-mp3
+endif
+
+EXAMPLES = dynamic $(GNOME) helloworld queue threads $(GST_LOADSAVE_SRC)
 noinst_PROGRAMS = $(EXAMPLES)
 
-LDADD = $(GST_LIBS)
-INCLUDES = $(GST_CFLAGS)
+LDADD = $(GST_OBJ_LIBS)
+INCLUDES = $(GST_OBJ_CFLAGS)
 
-#dynamic_LDADD = $(GST_LIBS) $(LIBGNOMEUI_LIBS)
-#dynamic_CFLAGS = $(GST_CFLAGS) $(LIBGNOMEUI_CFLAGS)
-gnome_LDADD = $(GST_LIBS) $(LIBGNOMEUI_LIBS)
-gnome_CFLAGS = $(GST_CFLAGS) $(LIBGNOMEUI_CFLAGS)
+#dynamic_LDADD = $(GST_OBJ_LIBS) $(LIBGNOMEUI_LIBS)
+#dynamic_CFLAGS = $(GST_OBJ_CFLAGS) $(LIBGNOMEUI_CFLAGS)
+gnome_LDADD = $(GST_OBJ_LIBS) $(LIBGNOMEUI_LIBS)
+gnome_CFLAGS = $(GST_OBJ_CFLAGS) $(LIBGNOMEUI_CFLAGS)
 
 EXTRA_DIST = extract.pl
 
@@ -23,5 +29,5 @@ EXTRA_DIST = extract.pl
 # also, it's a bit irritating that right now a change in any xml file
 # triggers a rebuild of all examples
 #%.c:
-dynamic.c gnome.c helloworld.c helloworld2.c queue.c threads.c xml-mp3.c: $(top_srcdir)/docs/manual/*.xml
-	$(srcdir)/extract.pl $@ $(top_srcdir)/docs/manual/*.xml
+dynamic.c gnome.c helloworld.c queue.c threads.c xml-mp3.c: $(top_srcdir)/docs/manual/*.xml
+	$(PERL_PATH) $(srcdir)/extract.pl $@ $(top_srcdir)/docs/manual/*.xml

@@ -40,6 +40,8 @@ G_BEGIN_DECLS
 typedef enum {
   /* this scheduler works with a fixed clock */
   GST_SCHEDULER_FLAG_FIXED_CLOCK	= GST_OBJECT_FLAG_LAST,
+  /* this scheduler supports select and lock calls */
+  GST_SCHEDULER_FLAG_NEW_API,
 
   /* padding */
   GST_SCHEDULER_FLAG_LAST 		= GST_OBJECT_FLAG_LAST + 4
@@ -72,7 +74,7 @@ struct _GstScheduler {
 
   GList			*schedulers;
 
-  gpointer		dummy[8];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstSchedulerClass {
@@ -87,14 +89,17 @@ struct _GstSchedulerClass {
   void 			(*remove_scheduler)	(GstScheduler *sched, GstScheduler *sched2);
   GstElementStateReturn (*state_transition)	(GstScheduler *sched, GstElement *element, gint transition);
   void			(*scheduling_change)	(GstScheduler *sched, GstElement *element);
-  void 			(*lock_element)		(GstScheduler *sched, GstElement *element);
-  void 			(*unlock_element)	(GstScheduler *sched, GstElement *element);
+  /* next two are optional, require NEW_API flag */
+  /* FIXME 0.9: rename to (un)lock_object */
+  void 			(*lock_element)		(GstScheduler *sched, GstObject *object);
+  void 			(*unlock_element)	(GstScheduler *sched, GstObject *object);
   gboolean		(*yield)		(GstScheduler *sched, GstElement *element);
   gboolean		(*interrupt)		(GstScheduler *sched, GstElement *element);
   void 			(*error)		(GstScheduler *sched, GstElement *element);
   void 			(*pad_link)		(GstScheduler *sched, GstPad *srcpad, GstPad *sinkpad);
   void 			(*pad_unlink)		(GstScheduler *sched, GstPad *srcpad, GstPad *sinkpad);
-  void 			(*pad_select)		(GstScheduler *sched, GList *padlist);
+  /* optional, requires NEW_API flag */
+  GstData *   		(*pad_select)		(GstScheduler *sched, GstPad **selected, GstPad **pads);
   GstClockReturn	(*clock_wait)		(GstScheduler *sched, GstElement *element,
 		  				 GstClockID id, GstClockTimeDiff *jitter);
   GstSchedulerState 	(*iterate)		(GstScheduler *sched);
@@ -105,12 +110,10 @@ struct _GstSchedulerClass {
   void                  (*object_sync)          (GstScheduler *sched, GstClock *clock, GstObject *object,
 			                         GstClockID id);
 
-  gpointer		dummy[8];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType			gst_scheduler_get_type		(void);
-
-#define         	gst_scheduler_destroy(sched)	gst_object_destroy(GST_OBJECT(sched))
 
 
 void			gst_scheduler_setup		(GstScheduler *sched);
@@ -121,14 +124,18 @@ void			gst_scheduler_add_scheduler	(GstScheduler *sched, GstScheduler *sched2);
 void			gst_scheduler_remove_scheduler	(GstScheduler *sched, GstScheduler *sched2);
 GstElementStateReturn	gst_scheduler_state_transition	(GstScheduler *sched, GstElement *element, gint transition);
 void			gst_scheduler_scheduling_change	(GstScheduler *sched, GstElement *element);
+#ifndef GST_DISABLE_DEPRECATED
 void			gst_scheduler_lock_element	(GstScheduler *sched, GstElement *element);
 void			gst_scheduler_unlock_element	(GstScheduler *sched, GstElement *element);
+#endif
 gboolean		gst_scheduler_yield		(GstScheduler *sched, GstElement *element);
 gboolean		gst_scheduler_interrupt		(GstScheduler *sched, GstElement *element);
 void			gst_scheduler_error		(GstScheduler *sched, GstElement *element);
 void			gst_scheduler_pad_link		(GstScheduler *sched, GstPad *srcpad, GstPad *sinkpad);
 void			gst_scheduler_pad_unlink	(GstScheduler *sched, GstPad *srcpad, GstPad *sinkpad);
+#ifndef GST_DISABLE_DEPRECATED
 GstPad*                 gst_scheduler_pad_select 	(GstScheduler *sched, GList *padlist);
+#endif
 GstClockReturn		gst_scheduler_clock_wait	(GstScheduler *sched, GstElement *element,
 							 GstClockID id, GstClockTimeDiff *jitter);
 gboolean		gst_scheduler_iterate		(GstScheduler *sched);
@@ -151,6 +158,9 @@ void			gst_scheduler_show		(GstScheduler *sched);
 #define GST_IS_SCHEDULER_FACTORY_CLASS(klass) 	(G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_SCHEDULER_FACTORY))
 #define GST_SCHEDULER_FACTORY_GET_CLASS(obj) 	(G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_SCHEDULER_FACTORY, GstSchedulerFactoryClass))
 
+/* change this to change the default scheduler */
+#define GST_SCHEDULER_DEFAULT_NAME	"opt"
+
 typedef struct _GstSchedulerFactory GstSchedulerFactory;
 typedef struct _GstSchedulerFactoryClass GstSchedulerFactoryClass;
 
@@ -159,14 +169,20 @@ struct _GstSchedulerFactory {
 
   gchar *longdesc;              /* long description of the scheduler (well, don't overdo it..) */
   GType type;                 	/* unique GType of the scheduler */
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstSchedulerFactoryClass {
   GstPluginFeatureClass parent;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType			gst_scheduler_factory_get_type		(void);
 
+gboolean		gst_scheduler_register			(GstPlugin *plugin, const gchar *name, 
+								 const gchar *longdesc, GType type);
 GstSchedulerFactory*	gst_scheduler_factory_new		(const gchar *name, const gchar *longdesc, GType type);
 void                    gst_scheduler_factory_destroy		(GstSchedulerFactory *factory);
 
@@ -176,7 +192,7 @@ GstScheduler*		gst_scheduler_factory_create		(GstSchedulerFactory *factory, GstE
 GstScheduler*		gst_scheduler_factory_make		(const gchar *name, GstElement *parent);
 
 void			gst_scheduler_factory_set_default_name	(const gchar* name);
-const gchar*		gst_scheduler_factory_get_default_name	(void);
+G_CONST_RETURN gchar*	gst_scheduler_factory_get_default_name	(void);
 
 
 G_END_DECLS

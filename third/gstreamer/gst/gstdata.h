@@ -26,6 +26,7 @@
 
 #include <glib-object.h>
 #include <gst/gstatomic.h>
+#include <gst/gsttypes.h>
 
 G_BEGIN_DECLS
 
@@ -40,6 +41,9 @@ G_BEGIN_DECLS
 #define GST_DATA_FLAG_SET(data,flag)	G_STMT_START{ (GST_DATA_FLAGS(data) |= (1<<(flag))); }G_STMT_END
 #define GST_DATA_FLAG_UNSET(data,flag) 	G_STMT_START{ (GST_DATA_FLAGS(data) &= ~(1<<(flag))); }G_STMT_END
 
+/* Macros for the GType */
+#define GST_TYPE_DATA                   (gst_data_get_type ())
+
 typedef struct _GstData GstData;
 
 typedef void       	(*GstDataFreeFunction)		(GstData *data);
@@ -52,8 +56,6 @@ typedef enum
   /* insert more */
   GST_DATA_FLAG_LAST 	= 8
 } GstDataFlags;
-
-#define GST_DATA_IS_READONLY(data)		(GST_DATA_FLAG_IS_SET((data), GST_DATA_READONLY))
 
 /* refcount */
 #define GST_DATA_REFCOUNT(data)			((GST_DATA(data))->refcount)
@@ -75,6 +77,8 @@ struct _GstData {
   /* utility function pointers, can override default */
   GstDataFreeFunction 	 free;		/* free the data */
   GstDataCopyFunction 	 copy;		/* copy the data */
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 /* function used by subclasses only */
@@ -86,14 +90,16 @@ void			gst_data_copy_into		(const GstData *data, GstData *target);
 
 /* basic operations on data */
 GstData*		gst_data_copy	 		(const GstData *data);
-gboolean 		gst_data_needs_copy_on_write 	(GstData *data);
+gboolean 		gst_data_is_writable	 	(GstData *data);
 GstData* 		gst_data_copy_on_write 		(GstData *data);
-void 			gst_data_free	 		(GstData *data);
 
 /* reference counting */
 GstData*		gst_data_ref			(GstData* data);
 GstData*		gst_data_ref_by_count		(GstData* data, gint count);
 void			gst_data_unref			(GstData* data);
+
+/* GType for GstData */
+GType                   gst_data_get_type               (void) G_GNUC_CONST;
 
 G_END_DECLS
 

@@ -1,4 +1,4 @@
-<chapter id="cha-dynamic">
+<chapter id="chapter-dynamic">
   <title>Dynamic pipelines</title>
   <para> 
     In this chapter we will see how you can create a dynamic pipeline. A
@@ -187,9 +187,5 @@ main (int argc, char *argv[])
     the newly created pad. We then added them to a new thread. 
     There are other possibilities to check the type of the pad, for
     example by using the MIME type and the properties of the pad.
-  </para>
-  <para>
-    Note that the pipeline has to be in the PAUSED state before changes
-    can be made to its structure.
   </para>
 </chapter>

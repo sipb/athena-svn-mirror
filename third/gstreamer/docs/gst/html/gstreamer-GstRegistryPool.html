@@ -1,0 +1,136 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstRegistryPool</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstRegistry.html" title="GstRegistry"><link rel="next" href="GstScheduler.html" title="GstScheduler"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstRegistry.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="GstScheduler.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstRegistryPool"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstRegistryPool</span></h2><p>GstRegistryPool &#8212; Management of a group of <a href="GstRegistry.html" title="GstRegistry"><span class="type">GstRegistry</span></a> objects</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+GList*      <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-list">gst_registry_pool_list</a>          (void);
+void        <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-add">gst_registry_pool_add</a>           (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             guint priority);
+void        <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-remove">gst_registry_pool_remove</a>        (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+void        <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-add-plugin">gst_registry_pool_add_plugin</a>    (<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);
+void        <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-load-all">gst_registry_pool_load_all</a>      (void);
+GList*      <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-plugin-filter">gst_registry_pool_plugin_filter</a> (<a href="gstreamer-GstPlugin.html#GstPluginFilter">GstPluginFilter</a> filter,
+                                             gboolean first,
+                                             gpointer user_data);
+GList*      <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-feature-filter">gst_registry_pool_feature_filter</a>
+                                            (<a href="GstPluginFeature.html#GstPluginFeatureFilter">GstPluginFeatureFilter</a> filter,
+                                             gboolean first,
+                                             gpointer user_data);
+GList*      <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-plugin-list">gst_registry_pool_plugin_list</a>   (void);
+GList*      <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-feature-list">gst_registry_pool_feature_list</a>  (GType type);
+<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a>*  <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-find-plugin">gst_registry_pool_find_plugin</a>   (const gchar *name);
+<a href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>* <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-find-feature">gst_registry_pool_find_feature</a>
+                                            (const gchar *name,
+                                             GType type);
+<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a>* <a href="gstreamer-GstRegistryPool.html#gst-registry-pool-get-prefered">gst_registry_pool_get_prefered</a> (<a href="GstRegistry.html#GstRegistryFlags">GstRegistryFlags</a> flags);
+</pre></div><div class="refsect1" lang="en"><a name="id2953176"></a><h2>Description</h2><p>
+The registry pool manages the available registries and plugins in
+the system.
+</p></div><div class="refsect1" lang="en"><a name="id2953187"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2953193"></a><h3><a name="gst-registry-pool-list"></a>gst_registry_pool_list ()</h3><a class="indexterm" name="id2953204"></a><pre class="programlisting">GList*      gst_registry_pool_list          (void);</pre><p>
+Get a list of all registries in the pool</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a Glist of GstRegistries, g_list_free after use.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953245"></a><h3><a name="gst-registry-pool-add"></a>gst_registry_pool_add ()</h3><a class="indexterm" name="id2953256"></a><pre class="programlisting">void        gst_registry_pool_add           (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             guint priority);</pre><p>
+Add the registry to the pool with the given priority.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to add
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>priority</tt></i> :</span></td><td> the priority of the registry
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953329"></a><h3><a name="gst-registry-pool-remove"></a>gst_registry_pool_remove ()</h3><a class="indexterm" name="id2953341"></a><pre class="programlisting">void        gst_registry_pool_remove        (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre><p>
+Remove the registry from the pool.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to remove
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953391"></a><h3><a name="gst-registry-pool-add-plugin"></a>gst_registry_pool_add_plugin ()</h3><a class="indexterm" name="id2953403"></a><pre class="programlisting">void        gst_registry_pool_add_plugin    (<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);</pre><p>
+Add the plugin to the global pool of plugins.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>plugin</tt></i> :</span></td><td> the plugin to add
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953454"></a><h3><a name="gst-registry-pool-load-all"></a>gst_registry_pool_load_all ()</h3><a class="indexterm" name="id2953466"></a><pre class="programlisting">void        gst_registry_pool_load_all      (void);</pre><p>
+Load all the registries in the pool. Registries with the
+GST_REGISTRY_DELAYED_LOADING will not be loaded.</p><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2953492"></a><h3><a name="gst-registry-pool-plugin-filter"></a>gst_registry_pool_plugin_filter ()</h3><a class="indexterm" name="id2953504"></a><pre class="programlisting">GList*      gst_registry_pool_plugin_filter (<a href="gstreamer-GstPlugin.html#GstPluginFilter">GstPluginFilter</a> filter,
+                                             gboolean first,
+                                             gpointer user_data);</pre><p>
+Runs a filter against all plugins in all registries and returns a GList with
+the results. If the first flag is set, only the first match is 
+returned (as a list with a single object).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>filter</tt></i> :</span></td><td> the filter to use
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first</tt></i> :</span></td><td> only return first match
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> user data passed to the filter function
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GList of plugins, g_list_free after use.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953612"></a><h3><a name="gst-registry-pool-feature-filter"></a>gst_registry_pool_feature_filter ()</h3><a class="indexterm" name="id2953624"></a><pre class="programlisting">GList*      gst_registry_pool_feature_filter
+                                            (<a href="GstPluginFeature.html#GstPluginFeatureFilter">GstPluginFeatureFilter</a> filter,
+                                             gboolean first,
+                                             gpointer user_data);</pre><p>
+Apply the filter function to all features and return a list
+of those features that satisfy the filter. If the first flag
+is TRUE, only the first match is returned in a GList with
+one element.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>filter</tt></i> :</span></td><td> the filter to apply to the feature list
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first</tt></i> :</span></td><td> return the first matching feature
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> data passed to the filter function
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GList of pluginfeatures, g_list_free after use.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953734"></a><h3><a name="gst-registry-pool-plugin-list"></a>gst_registry_pool_plugin_list ()</h3><a class="indexterm" name="id2953746"></a><pre class="programlisting">GList*      gst_registry_pool_plugin_list   (void);</pre><p>
+Get a list of all plugins in the pool.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GList of plugins, g_list_free after use.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953787"></a><h3><a name="gst-registry-pool-feature-list"></a>gst_registry_pool_feature_list ()</h3><a class="indexterm" name="id2953799"></a><pre class="programlisting">GList*      gst_registry_pool_feature_list  (GType type);</pre><p>
+Get a list of all pluginfeatures of the given type in the pool.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the type of the features to list.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GList of pluginfeatures, g_list_free after use.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953861"></a><h3><a name="gst-registry-pool-find-plugin"></a>gst_registry_pool_find_plugin ()</h3><a class="indexterm" name="id2953873"></a><pre class="programlisting"><a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a>*  gst_registry_pool_find_plugin   (const gchar *name);</pre><p>
+Get the named plugin from the registry pool</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the plugin to find
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The plugin with the given name or NULL if the plugin 
+was not found.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2953935"></a><h3><a name="gst-registry-pool-find-feature"></a>gst_registry_pool_find_feature ()</h3><a class="indexterm" name="id2953947"></a><pre class="programlisting"><a href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>* gst_registry_pool_find_feature
+                                            (const gchar *name,
+                                             GType type);</pre><p>
+Get the pluginfeature with the given name and type from the pool of
+registries.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the pluginfeature to find
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the type of the pluginfeature to find
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pluginfeature with the given name and type or NULL if the feature
+was not found.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2954033"></a><h3><a name="gst-registry-pool-get-prefered"></a>gst_registry_pool_get_prefered ()</h3><a class="indexterm" name="id2954046"></a><pre class="programlisting"><a href="GstRegistry.html" title="GstRegistry">GstRegistry</a>* gst_registry_pool_get_prefered (<a href="GstRegistry.html#GstRegistryFlags">GstRegistryFlags</a> flags);</pre><p>
+Get the prefered registry with the given flags</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> The flags for the prefered registry
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The registry with the flags.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2954108"></a><h2>See Also</h2><p>
+GstRegistry
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstRegistry.html"><b>&lt;&lt; GstRegistry</b></a></td><td align="right"><a accesskey="n" href="GstScheduler.html"><b>GstScheduler &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,68 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstFilter</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstEvent.html" title="GstEvent"><link rel="next" href="gstreamer-GstFormat.html" title="GstFormat"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstEvent.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstFormat.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstFilter"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstFilter</span></h2><p>GstFilter &#8212; Take data in and spit data out</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+gboolean    (<a href="gstreamer-GstFilter.html#GstFilterFunc">*GstFilterFunc</a>)                (gpointer obj,
+                                             gpointer user_data);
+GList*      <a href="gstreamer-GstFilter.html#gst-filter-run">gst_filter_run</a>                  (const GList *list,
+                                             <a href="gstreamer-GstFilter.html#GstFilterFunc">GstFilterFunc</a> func,
+                                             gboolean first,
+                                             gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2851492"></a><h2>Description</h2><p>
+Filters take data in and spit data out. They are the main Element in a filter graph.
+Filters have zero or more inputs and zero or more outputs. Filters are linked
+together to form filter graphs. A GstFilter is the base class and is not very usefull
+on its own.
+</p></div><div class="refsect1" lang="en"><a name="id2851506"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2851512"></a><h3><a name="GstFilterFunc"></a>GstFilterFunc ()</h3><a class="indexterm" name="id2851523"></a><pre class="programlisting">gboolean    (*GstFilterFunc)                (gpointer obj,
+                                             gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>obj</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2851600"></a><h3><a name="gst-filter-run"></a>gst_filter_run ()</h3><a class="indexterm" name="id2851611"></a><pre class="programlisting">GList*      gst_filter_run                  (const GList *list,
+                                             <a href="gstreamer-GstFilter.html#GstFilterFunc">GstFilterFunc</a> func,
+                                             gboolean first,
+                                             gpointer user_data);</pre><p>
+Iterates over the elements in <i class="parameter"><tt>list</tt></i>, calling <i class="parameter"><tt>func</tt></i> with the
+list item data for each item.  If <i class="parameter"><tt>func</tt></i> returns TRUE, <i class="parameter"><tt>data</tt></i> is
+prepended to the list of results returned.  If <i class="parameter"><tt>first</tt></i> is true,
+the search is halted after the first result is found.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td> a linked list
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>func</tt></i> :</span></td><td> the function to execute for each item
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first</tt></i> :</span></td><td> flag to stop execution after a successful item
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> user data
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the list of results
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstEvent.html"><b>&lt;&lt; GstEvent</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstFormat.html"><b>GstFormat &gt;&gt;</b></a></td></tr></table></body></html>

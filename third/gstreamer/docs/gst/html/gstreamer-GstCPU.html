@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstCpu</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-gstconfig.html" title="GstConfig"><link rel="next" href="gstreamer-GstData.html" title="GstData"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-gstconfig.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstData.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstCPU"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstCpu</span></h2><p>GstCpu &#8212; Descripe CPU features</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="gstreamer-GstCPU.html#GstCPUFlags">GstCPUFlags</a>;
+<a href="gstreamer-GstCPU.html#GstCPUFlags">GstCPUFlags</a> <a href="gstreamer-GstCPU.html#gst-cpu-get-flags">gst_cpu_get_flags</a>               (void);
+</pre></div><div class="refsect1" lang="en"><a name="id2790788"></a><h2>Description</h2><p>
+This module can be used when developing plugins. It is
+typically used to enable special optimisations based on the
+features of the CPU.
+</p><p>
+You'll get a bitmask of flags with <a href="gstreamer-GstCPU.html#gst-cpu-get-flags"><tt class="function">gst_cpu_get_flags()</tt></a>.
+</p></div><div class="refsect1" lang="en"><a name="id2790815"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2790821"></a><h3><a name="GstCPUFlags"></a>enum GstCPUFlags</h3><a class="indexterm" name="id2790832"></a><pre class="programlisting">typedef enum {
+  GST_CPU_FLAG_MMX      = (1&lt;&lt;0),
+  GST_CPU_FLAG_SSE      = (1&lt;&lt;1),
+  GST_CPU_FLAG_MMXEXT   = (1&lt;&lt;2),
+  GST_CPU_FLAG_3DNOW    = (1&lt;&lt;3)
+} GstCPUFlags;
+</pre><p>
+Flags that represent cpu capabilities
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_CPU_FLAG_MMX</tt></span></td><td>The cpu is mmx enabled
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CPU_FLAG_SSE</tt></span></td><td>The cpu is sse enabled
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CPU_FLAG_MMXEXT</tt></span></td><td>The cpu has extended mmx instructions
+</td></tr><tr><td><span class="term"><tt class="literal">GST_CPU_FLAG_3DNOW</tt></span></td><td>The cpu is 3DNOW enabled
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2790915"></a><h3><a name="gst-cpu-get-flags"></a>gst_cpu_get_flags ()</h3><a class="indexterm" name="id2790926"></a><pre class="programlisting"><a href="gstreamer-GstCPU.html#GstCPUFlags">GstCPUFlags</a> gst_cpu_get_flags               (void);</pre><p>
+Request a set of bits specifiying the features of the CPU.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>the features of the CPU
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-gstconfig.html"><b>&lt;&lt; GstConfig</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstData.html"><b>GstData &gt;&gt;</b></a></td></tr></table></body></html>

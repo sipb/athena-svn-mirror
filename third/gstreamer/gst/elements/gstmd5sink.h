@@ -25,12 +25,9 @@
 #define __GST_MD5SINK_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-GstElementDetails gst_md5sink_details;
 
 
 #define GST_TYPE_MD5SINK \
@@ -71,8 +68,6 @@ struct _GstMD5SinkClass {
 };
 
 GType				gst_md5sink_get_type		(void);
-
-gboolean 			gst_md5sink_factory_init 	(GstElementFactory *factory);
 
 G_END_DECLS
 

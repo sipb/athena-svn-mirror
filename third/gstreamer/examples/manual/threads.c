@@ -22,7 +22,7 @@ eos (GstElement *src, gpointer data)
 int 
 main (int argc, char *argv[]) 
 {
-  GstElement *filesrc, *decoder, *audiosink;
+  GstElement *filesrc, *demuxer, *decoder, *converter, *audiosink;
   GstElement *thread;
 
   if (argc < 2) {
@@ -43,8 +43,16 @@ main (int argc, char *argv[])
   g_signal_connect (G_OBJECT (filesrc), "eos",
                      G_CALLBACK (eos), thread);
 
-  /* create an ogg decoder */
-  decoder = gst_element_factory_make ("vorbisfile", "decoder");
+  /* create an ogg demuxer */
+  demuxer = gst_element_factory_make ("oggdemux", "demuxer");
+  g_assert (demuxer != NULL);
+
+  /* create a vorbis decoder */
+  decoder = gst_element_factory_make ("vorbisdec", "decoder");
+  g_assert (decoder != NULL);
+
+  /* create an audio converter */
+  converter = gst_element_factory_make ("audioconvert", "converter");
   g_assert (decoder != NULL);
 
   /* and an audio sink */
@@ -52,12 +60,12 @@ main (int argc, char *argv[])
   g_assert (audiosink != NULL);
 
   /* add objects to the thread */
-  gst_bin_add_many (GST_BIN (thread), filesrc, decoder, audiosink, NULL);
+  gst_bin_add_many (GST_BIN (thread), filesrc, demuxer, decoder, converter, audiosink, NULL);
   /* link them in the logical order */
-  gst_element_link_many (filesrc, decoder, audiosink, NULL);
+  gst_element_link_many (filesrc, demuxer, decoder, converter, audiosink, NULL);
 
   /* start playing */
-  gst_element_set_state (GST_ELEMENT (thread), GST_STATE_PLAYING);
+  gst_element_set_state (thread, GST_STATE_PLAYING);
 
   /* do whatever you want here, the thread will be playing */
   g_print ("thread is playing\n");
@@ -65,7 +73,7 @@ main (int argc, char *argv[])
   can_quit = TRUE;
   gst_main ();
 
-  gst_pipeline_destroy (thread);
+  gst_object_unref (GST_OBJECT (thread));
 
   exit (0);
 }

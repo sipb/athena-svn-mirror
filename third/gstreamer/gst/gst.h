@@ -27,52 +27,70 @@
 #include <glib.h>
 #include <popt.h>
 
-#include <gst/gstversion.h>
+#include <gst/gstenumtypes.h>
 #include <gst/gsttypes.h>
+#include <gst/gstversion.h>
 
-#include <gst/gstinfo.h>
-#include <gst/gstobject.h>
-#include <gst/gstpad.h>
+#include <gst/gstbin.h>
 #include <gst/gstbuffer.h>
-#include <gst/gstbufferpool-default.h>
+#include <gst/gstcaps.h>
+#include <gst/gstclock.h>
 #include <gst/gstcpu.h>
 #include <gst/gstelement.h>
-#include <gst/gstbin.h>
-#include <gst/gstindex.h>
-#include <gst/gstpipeline.h>
-#include <gst/gstthread.h>
-#include <gst/gsttype.h>
-#include <gst/gstautoplug.h>
-#include <gst/gstcaps.h>
-#include <gst/gstprops.h>
-#include <gst/gstplugin.h>
-#include <gst/gsturi.h>
-#include <gst/gstutils.h>
-#include <gst/gsttrace.h>
-#include <gst/gstxml.h>
-#include <gst/gstscheduler.h>
+#include <gst/gsterror.h>
 #include <gst/gstevent.h>
-#include <gst/gstclock.h>
+#include <gst/gstindex.h>
+#include <gst/gstinfo.h>
+#include <gst/gstinterface.h>
+#include <gst/gstmarshal.h>
+#include <gst/gstobject.h>
+#include <gst/gstpad.h>
+#include <gst/gstpipeline.h>
+#include <gst/gstplugin.h>
+#include <gst/gstscheduler.h>
+#include <gst/gststructure.h>
 #include <gst/gstsystemclock.h>
+#include <gst/gsttag.h>
+#include <gst/gsttaginterface.h>
+#include <gst/gstthread.h>
+#include <gst/gsttrace.h>
+#include <gst/gsttypefind.h>
+#include <gst/gsturi.h>
+#include <gst/gsturitype.h>
+#include <gst/gstutils.h>
+#include <gst/gstvalue.h>
+#include <gst/gstxml.h>
 
 #include <gst/gstparse.h>
 #include <gst/gstregistry.h>
-#include <gst/gstextratypes.h>
-#include <gst/gstenumtypes.h>
+#include <gst/gstregistrypool.h>
 
 /* API compatibility stuff */
 #include <gst/gstcompat.h>
 
 G_BEGIN_DECLS
 
+/* make our own type for poptOption because gtkdoc (1.2) can not handle functions with
+ * return types like 'struct abc'
+ * Filed as http://bugzilla.gnome.org/show_bug.cgi?id=148507
+ */
+typedef struct poptOption GstPoptOption;
+
+#ifndef GST_DISABLE_REGISTRY
+GST_EXPORT gboolean _gst_registry_auto_load;
+#endif
+
 /* initialize GST */
 void		gst_init			(int *argc, char **argv[]);
 gboolean	gst_init_check			(int *argc, char **argv[]);
-gboolean	gst_init_with_popt_table	(int *argc, char **argv[],
-						 const struct poptOption
+void		gst_init_with_popt_table	(int *argc, char **argv[],
+						 const GstPoptOption
 						 *popt_options);
-const struct
-poptOption*	gst_init_get_popt_table		(void);
+gboolean	gst_init_check_with_popt_table	(int *argc, char **argv[],
+						 const GstPoptOption
+						 *popt_options);
+
+const GstPoptOption *	gst_init_get_popt_table		(void);
 
 void		gst_use_threads			(gboolean use_threads);
 gboolean	gst_has_threads			(void);
@@ -81,7 +99,5 @@ void		gst_main			(void);
 void		gst_main_quit			(void);
 
 G_END_DECLS
-
-#include <gst/gstlog.h>
 
 #endif /* __GST_H__ */

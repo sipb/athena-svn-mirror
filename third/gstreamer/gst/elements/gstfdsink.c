@@ -20,86 +20,78 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <gstfdsink.h>
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#include "gstfdsink.h"
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 
+GST_DEBUG_CATEGORY_STATIC (gst_fdsink_debug);
+#define GST_CAT_DEFAULT gst_fdsink_debug
 
-GstElementDetails gst_fdsink_details = {
-  "Filedescriptor Sink",
-  "Sink/File",
-  "LGPL",
-  "Write data to a file descriptor",
-  VERSION,
-  "Erik Walthinsen <omega@cse.ogi.edu>",
-  "(C) 1999",
-};
+GstElementDetails gst_fdsink_details =
+GST_ELEMENT_DETAILS ("Filedescriptor Sink",
+    "Sink/File",
+    "Write data to a file descriptor",
+    "Erik Walthinsen <omega@cse.ogi.edu>");
 
 
 /* FdSink signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
   ARG_FD
 };
 
 
-static void 	gst_fdsink_class_init	(GstFdSinkClass *klass);
-static void 	gst_fdsink_init		(GstFdSink *fdsink);
+#define _do_init(bla) \
+    GST_DEBUG_CATEGORY_INIT (gst_fdsink_debug, "fdsink", 0, "fdsink element");
 
-static void 	gst_fdsink_set_property	(GObject *object, guint prop_id, 
-					 const GValue *value, GParamSpec *pspec);
-static void 	gst_fdsink_get_property	(GObject *object, guint prop_id, 
-					 GValue *value, GParamSpec *pspec);
+GST_BOILERPLATE_FULL (GstFdSink, gst_fdsink, GstElement, GST_TYPE_ELEMENT,
+    _do_init);
 
-static void 	gst_fdsink_chain	(GstPad *pad,GstBuffer *buf);
+static void gst_fdsink_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_fdsink_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 
-static GstElementClass *parent_class = NULL;
-/*static guint gst_fdsink_signals[LAST_SIGNAL] = { 0 };*/
+static void gst_fdsink_chain (GstPad * pad, GstData * _data);
 
-GType
-gst_fdsink_get_type (void) 
-{
-  static GType fdsink_type = 0;
-
-  if (!fdsink_type) {
-    static const GTypeInfo fdsink_info = {
-      sizeof(GstFdSinkClass),      NULL,
-      NULL,
-      (GClassInitFunc)gst_fdsink_class_init,
-      NULL,
-      NULL,
-      sizeof(GstFdSink),
-      0,
-      (GInstanceInitFunc)gst_fdsink_init,
-    };
-    fdsink_type = g_type_register_static (GST_TYPE_ELEMENT, "GstFdSink", &fdsink_info, 0);
-  }
-  return fdsink_type;
-}
 
 static void
-gst_fdsink_class_init (GstFdSinkClass *klass) 
+gst_fdsink_base_init (gpointer g_class)
+{
+  GstElementClass *gstelement_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_set_details (gstelement_class, &gst_fdsink_details);
+}
+static void
+gst_fdsink_class_init (GstFdSinkClass * klass)
 {
   GObjectClass *gobject_class;
 
-  gobject_class = (GObjectClass*)klass;
+  gobject_class = G_OBJECT_CLASS (klass);
 
-  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_FD,
-    g_param_spec_int ("fd", "fd", "An open file descriptor to write to",
-                      0, G_MAXINT, 1, G_PARAM_READWRITE));
+      g_param_spec_int ("fd", "fd", "An open file descriptor to write to",
+          0, G_MAXINT, 1, G_PARAM_READWRITE));
 
   gobject_class->set_property = gst_fdsink_set_property;
   gobject_class->get_property = gst_fdsink_get_property;
 }
 
-static void 
-gst_fdsink_init (GstFdSink *fdsink) 
+static void
+gst_fdsink_init (GstFdSink * fdsink)
 {
   fdsink->sinkpad = gst_pad_new ("sink", GST_PAD_SINK);
   gst_element_add_pad (GST_ELEMENT (fdsink), fdsink->sinkpad);
@@ -108,9 +100,10 @@ gst_fdsink_init (GstFdSink *fdsink)
   fdsink->fd = 1;
 }
 
-static void 
-gst_fdsink_chain (GstPad *pad, GstBuffer *buf) 
+static void
+gst_fdsink_chain (GstPad * pad, GstData * _data)
 {
+  GstBuffer *buf = GST_BUFFER (_data);
   GstFdSink *fdsink;
 
   g_return_if_fail (pad != NULL);
@@ -118,25 +111,27 @@ gst_fdsink_chain (GstPad *pad, GstBuffer *buf)
   g_return_if_fail (buf != NULL);
 
   fdsink = GST_FDSINK (gst_pad_get_parent (pad));
-  
+
   g_return_if_fail (fdsink->fd >= 0);
-  
+
   if (GST_BUFFER_DATA (buf)) {
-    GST_DEBUG (0,"writing %d bytes to file descriptor %d",GST_BUFFER_SIZE (buf), fdsink->fd);
+    GST_DEBUG ("writing %d bytes to file descriptor %d", GST_BUFFER_SIZE (buf),
+        fdsink->fd);
     write (fdsink->fd, GST_BUFFER_DATA (buf), GST_BUFFER_SIZE (buf));
   }
-  
+
   gst_buffer_unref (buf);
 }
 
-static void 
-gst_fdsink_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec) 
+static void
+gst_fdsink_set_property (GObject * object, guint prop_id, const GValue * value,
+    GParamSpec * pspec)
 {
   GstFdSink *fdsink;
-   
+
   /* it's not null if we got it, but it might not be ours */
   g_return_if_fail (GST_IS_FDSINK (object));
-  
+
   fdsink = GST_FDSINK (object);
 
   switch (prop_id) {
@@ -148,14 +143,15 @@ gst_fdsink_set_property (GObject *object, guint prop_id, const GValue *value, GP
   }
 }
 
-static void 
-gst_fdsink_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec) 
+static void
+gst_fdsink_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   GstFdSink *fdsink;
-   
+
   /* it's not null if we got it, but it might not be ours */
   g_return_if_fail (GST_IS_FDSINK (object));
-  
+
   fdsink = GST_FDSINK (object);
 
   switch (prop_id) {

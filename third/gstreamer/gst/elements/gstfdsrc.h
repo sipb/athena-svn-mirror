@@ -24,13 +24,9 @@
 #ifndef __GST_FDSRC_H__
 #define __GST_FDSRC_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-GstElementDetails gst_fdsrc_details;
 
 
 #define GST_TYPE_FDSRC \
@@ -56,14 +52,18 @@ struct _GstFdSrc {
   /* fd */
   gint fd;
 
-  gulong curoffset;			/* current offset in file */
-  gulong blocksize;		/* bytes per read */
-
-  gulong seq;				/* buffer sequence number */
+  gulong curoffset; /* current offset in file */
+  gulong blocksize; /* bytes per read */
+  guint64 timeout;  /* read timeout, in nanoseconds */
+  
+  gulong seq;       /* buffer sequence number */
 };
 
 struct _GstFdSrcClass {
   GstElementClass parent_class;
+
+  /* signals */
+  void (*timeout) (GstElement *element);
 };
 
 GType gst_fdsrc_get_type(void);

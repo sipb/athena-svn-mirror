@@ -1,8 +1,5 @@
 /* GStreamer
- * Copyright (C) 1999,2000 Erik Walthinsen <omega@cse.ogi.edu>
- *                    2000 Wim Taymans <wtay@chello.be>
- *
- * gstcaps.h: Header for caps subsystem
+ * Copyright (C) 2003 David A. Schleef <ds@schleef.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,167 +17,137 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 #ifndef __GST_CAPS_H__
 #define __GST_CAPS_H__
 
-#include <gst/gstprops.h>
+#include <gst/gstconfig.h>
+#include <gst/gststructure.h>
 
 G_BEGIN_DECLS
 
+#define GST_TYPE_CAPS             (gst_caps_get_type())
+#define GST_CAPS(object)          ((GstCaps*)object)
+#define GST_IS_CAPS(object)       ((object) && (GST_CAPS(object)->type == GST_TYPE_CAPS))
+
+#define GST_CAPS_FLAGS_ANY	  (1 << 0)
+
+#define GST_CAPS_ANY              gst_caps_new_any()
+#define GST_CAPS_NONE             gst_caps_new_empty()
+
+#define GST_STATIC_CAPS_ANY       GST_STATIC_CAPS("ANY")
+#define GST_STATIC_CAPS_NONE      GST_STATIC_CAPS("NONE")
+
+#define GST_CAPS_IS_SIMPLE(caps) (gst_caps_get_size(caps) == 1)
+#define gst_caps_is_simple(caps) GST_CAPS_IS_SIMPLE(caps)
+
+#ifndef GST_DISABLE_DEPRECATED
+#define GST_DEBUG_CAPS(string, caps) \
+  GST_DEBUG ( string "%s: " GST_PTR_FORMAT, caps)
+#endif
+
+#define GST_STATIC_CAPS(string) \
+{ \
+  /* caps */ { 0 }, \
+  /* string */ string, \
+}
+
 typedef struct _GstCaps GstCaps;
-
-extern GType _gst_caps_type;
-
-#define GST_TYPE_CAPS  (_gst_caps_type)
-
-typedef enum {
-  GST_CAPS_FIXED        = (1 << 0),     /* caps has no variable properties */
-  GST_CAPS_FLOATING     = (1 << 1)      /* caps is floating */
-} GstCapsFlags;
-
-#define GST_CAPS(caps)          ((GstCaps *)(caps))
-
-#define GST_CAPS_FLAGS(caps)            ((caps)->flags)
-#define GST_CAPS_FLAG_IS_SET(caps,flag) (GST_CAPS_FLAGS (caps) & flag)
-#define GST_CAPS_FLAG_SET(caps,flag)    (GST_CAPS_FLAGS (caps) |= (flag))
-#define GST_CAPS_FLAG_UNSET(caps,flag)  (GST_CAPS_FLAGS (caps) &= ~(flag))
-
-#define GST_CAPS_REFCOUNT(caps)         ((caps)->refcount)
-#define GST_CAPS_PROPERTIES(caps)       ((caps)->properties)
-#define GST_CAPS_NEXT(caps)             ((caps)->next)
-
-#define GST_CAPS_IS_FIXED(caps)         (GST_CAPS_FLAGS (caps) & GST_CAPS_FIXED)
-#define GST_CAPS_IS_FLOATING(caps)      (GST_CAPS_FLAGS (caps) & GST_CAPS_FLOATING)
-#define GST_CAPS_IS_CHAINED(caps)       (GST_CAPS_NEXT (caps) != NULL)
+typedef struct _GstStaticCaps GstStaticCaps;
 
 struct _GstCaps {
-  /* --- public ReadOnly --- */
-  gchar         *name;                  /* the name of this caps */
-  guint16        id;                    /* type id (major type) representing 
-                                           the mime type, it's stored as a GQuark 
-                                           for speed/space reasons */
+  GType type;
 
-  guint16        flags;                 /* flags */
-  guint          refcount;
+  guint16 flags;
+  GPtrArray *structs;
 
-  GstProps      *properties;            /* properties for this capability */
-  GstCaps       *next;                  /* not with a GList for efficiency */
+  gpointer _gst_reserved[GST_PADDING];
 };
 
+struct _GstStaticCaps {
+  GstCaps caps;
+  const char *string;
+  gpointer _gst_reserved[GST_PADDING];
+};
 
-/* factory macros which make it easier for plugins to instantiate */
+GType                    gst_caps_get_type                              (void) G_GNUC_CONST;
+GstCaps *                gst_caps_new_empty                             (void);
+GstCaps *                gst_caps_new_any                               (void);
+GstCaps *                gst_caps_new_simple                            (const char    *media_type,
+									 const char    *fieldname,
+									 ...);
+GstCaps *                gst_caps_new_full                              (GstStructure  *struct1,
+									                 ...);
+GstCaps *                gst_caps_new_full_valist                       (GstStructure  *structure,
+									 va_list        var_args);
+GstCaps *                gst_caps_copy                                  (const GstCaps *caps);
+void                     gst_caps_free                                  (GstCaps       *caps);
+G_CONST_RETURN GstCaps * gst_static_caps_get                            (GstStaticCaps *static_caps);
 
-#ifdef G_HAVE_ISO_VARARGS
-#define GST_CAPS_NEW(name, type, ...)           \
-gst_caps_new (                                  \
-  name,                                         \
-  type,                                         \
-  gst_props_new (                               \
-    __VA_ARGS__,                                \
-    NULL))
-
-#define GST_CAPS_FACTORY(factoryname, ...) 	\
-static GstCaps* 				\
-factoryname (void)                              \
-{                                               \
-  static GstCaps *caps = NULL;			\
-  if (!caps) {                              	\
-    caps = gst_caps_chain (__VA_ARGS__, NULL); 	\
-  }                                             \
-  return caps;                              	\
-}
-#elif defined(G_HAVE_GNUC_VARARGS)
-#define GST_CAPS_NEW(name, type, a...)          \
-gst_caps_new (                                  \
-  name,                                         \
-  type,                                         \
-  gst_props_new (                               \
-    a,                                          \
-    NULL))
-
-#define GST_CAPS_FACTORY(factoryname, a...) 	\
-static GstCaps* 				\
-factoryname (void)                              \
-{                                               \
-  static GstCaps *caps = NULL;			\
-  if (!caps) {                              	\
-    caps = gst_caps_chain (a, NULL);      	\
-  }                                             \
-  return caps;                              	\
-}
+/* manipulation */
+void                     gst_caps_append                                (GstCaps       *caps1,
+									 GstCaps       *caps2);
+void                     gst_caps_append_structure                      (GstCaps       *caps,
+									 GstStructure  *structure);
+int                      gst_caps_get_size                              (const GstCaps *caps);
+GstStructure *           gst_caps_get_structure                         (const GstCaps *caps,
+									 int            index);
+#ifndef GST_DISABLE_DEPRECATED
+GstCaps *                gst_caps_split_one                             (GstCaps       *caps);
+GstCaps *                gst_caps_copy_1                                (const GstCaps *caps);
 #endif
+void                     gst_caps_set_simple                            (GstCaps       *caps,
+									 char          *field, ...);
+void                     gst_caps_set_simple_valist                     (GstCaps       *caps,
+									 char          *field,
+									 va_list        varargs);
 
-#define GST_CAPS_GET(fact) (fact)()
-
-
-/* initialize the subsystem */
-void		_gst_caps_initialize			(void);
-
-GstCaps*	gst_caps_new				(const gchar *name, const gchar *mime, GstProps *props);
-GstCaps*	gst_caps_new_id				(const gchar *name, const guint16 id, GstProps *props);
-
-/* replace pointer to caps, doing proper refcounting */
-void            gst_caps_replace                        (GstCaps **oldcaps, GstCaps *newcaps);
-void            gst_caps_replace_sink                   (GstCaps **oldcaps, GstCaps *newcaps);
-
-/* caps lifecycle control */
-GstCaps*	gst_caps_unref				(GstCaps *caps);
-GstCaps*	gst_caps_ref				(GstCaps *caps);
-void            gst_caps_sink                           (GstCaps *caps);
-void		gst_caps_destroy			(GstCaps *caps);
-
-void		gst_caps_debug				(GstCaps *caps, const gchar *label);
-
-GstCaps*	gst_caps_copy				(GstCaps *caps);
-GstCaps*	gst_caps_copy_1				(GstCaps *caps);
-GstCaps*	gst_caps_copy_on_write			(GstCaps *caps);
-
-const gchar*	gst_caps_get_name			(GstCaps *caps);
-void		gst_caps_set_name			(GstCaps *caps, const gchar *name);
-
-const gchar*	gst_caps_get_mime			(GstCaps *caps);
-void		gst_caps_set_mime			(GstCaps *caps, const gchar *mime);
-
-guint16		gst_caps_get_type_id			(GstCaps *caps);
-void		gst_caps_set_type_id			(GstCaps *caps, guint16 type_id);
-
-GstCaps*	gst_caps_set_props			(GstCaps *caps, GstProps *props);
-GstProps*	gst_caps_get_props			(GstCaps *caps);
-
-#ifdef G_HAVE_ISO_VARARGS
-#define		gst_caps_set(caps, ...)			gst_props_set ((caps)->properties, __VA_ARGS__)
-#define		gst_caps_get(caps, ...)			gst_props_get ((caps)->properties, __VA_ARGS__)
-#elif defined(G_HAVE_GNUC_VARARGS)
-#define		gst_caps_set(caps, name, args...)	gst_props_set ((caps)->properties, name, ##args)
-#define		gst_caps_get(caps, name, args...)	gst_props_get ((caps)->properties, name, ##args)
+/* tests */
+gboolean                 gst_caps_is_any                                (const GstCaps *caps);
+gboolean                 gst_caps_is_empty                              (const GstCaps *caps);
+#ifndef GST_DISABLE_DEPRECATED
+gboolean                 gst_caps_is_chained                            (const GstCaps *caps);
+gboolean                 gst_caps_is_equal_fixed                        (const GstCaps *caps1,
+									 const GstCaps *caps2);
 #endif
+gboolean                 gst_caps_is_fixed                              (const GstCaps *caps);
+gboolean                 gst_caps_is_always_compatible                  (const GstCaps *caps1,
+						                 	 const GstCaps *caps2);
+gboolean		 gst_caps_is_subset				(const GstCaps *subset,
+									 const GstCaps *superset);
+gboolean		 gst_caps_is_equal				(const GstCaps *caps1,
+						                 	 const GstCaps *caps2);
 
-#define		gst_caps_get_int(caps,name,res)		gst_props_entry_get_int(gst_props_get_entry((caps)->properties,name),res)
-#define		gst_caps_get_float(caps,name,res)	gst_props_entry_get_float(gst_props_get_entry((caps)->properties,name),res)
-#define		gst_caps_get_fourcc_int(caps,name,res)	gst_props_entry_get_fourcc_int(gst_props_get_entry((caps)->properties,name),res)
-#define		gst_caps_get_boolean(caps,name,res)	gst_props_entry_get_boolean(gst_props_get_entry((caps)->properties,name),res)
-#define		gst_caps_get_string(caps,name,res)	gst_props_entry_get_string(gst_props_get_entry((caps)->properties,name),res)
-
-#define		gst_caps_has_property(caps, name)	gst_props_has_property ((caps)->properties, name)
-#define		gst_caps_has_property_typed(caps, name, type)	gst_props_has_property_typed ((caps)->properties, name, type)
-#define		gst_caps_has_fixed_property(caps, name)	gst_props_has_fixed_property ((caps)->properties, name)
-
-GstCaps*	gst_caps_get_by_name			(GstCaps *caps, const gchar *name);
-
-GstCaps* 	gst_caps_next 				(GstCaps *caps);
-GstCaps*	gst_caps_chain				(GstCaps *caps, ...); 
-GstCaps*	gst_caps_append				(GstCaps *caps, GstCaps *capstoadd); 
-GstCaps*	gst_caps_prepend			(GstCaps *caps, GstCaps *capstoadd); 
-
-gboolean	gst_caps_is_always_compatible		(GstCaps *fromcaps, GstCaps *tocaps);
-GstCaps*	gst_caps_intersect			(GstCaps *caps1, GstCaps *caps2);
-GstCaps*	gst_caps_normalize			(GstCaps *caps);
+/* operations */
+GstCaps *                gst_caps_intersect                             (const GstCaps *caps1,
+									 const GstCaps *caps2);
+GstCaps *                gst_caps_subtract				(const GstCaps *minuend,
+									 const GstCaps *subtrahend);
+GstCaps *                gst_caps_union                                 (const GstCaps *caps1,
+									 const GstCaps *caps2);
+GstCaps *                gst_caps_normalize                             (const GstCaps *caps);
+#ifndef GST_DISABLE_DEPRECATED
+GstCaps *                gst_caps_simplify                              (const GstCaps *caps);
+#endif
+gboolean                 gst_caps_do_simplify                           (GstCaps *caps);
 
 #ifndef GST_DISABLE_LOADSAVE
-xmlNodePtr      gst_caps_save_thyself			(GstCaps *caps, xmlNodePtr parent);
-GstCaps*	gst_caps_load_thyself			(xmlNodePtr parent);
+xmlNodePtr               gst_caps_save_thyself                          (const GstCaps *caps,
+									 xmlNodePtr     parent);
+GstCaps *                gst_caps_load_thyself                          (xmlNodePtr     parent);
 #endif
+
+/* utility */
+void                     gst_caps_replace                               (GstCaps      **caps,
+									 GstCaps       *newcaps);
+gchar *                  gst_caps_to_string                             (const GstCaps *caps);
+GstCaps *                gst_caps_from_string                           (const gchar   *string);
+
+gboolean                 gst_caps_structure_fixate_field_nearest_int    (GstStructure *structure,
+									 const char   *field_name,
+									 int           target);
+gboolean                 gst_caps_structure_fixate_field_nearest_double (GstStructure *structure,
+									 const char   *field_name,
+									 double        target);
 
 G_END_DECLS
 

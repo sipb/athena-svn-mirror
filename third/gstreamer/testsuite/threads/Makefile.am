@@ -1,18 +1,9 @@
-testprogs = thread1 thread2 thread3 thread5
-testsfailing = threadb threadc threadd threade threadf thread4
+include ../Rules
 
-TESTS = $(testprogs)
+tests_pass = thread1 thread2 thread3 thread4 threadf
+tests_fail = thread5 threadd threadg
 
-check_PROGRAMS = $(testprogs)
-
-noinst_PROGRAMS = $(testsfailing)
-
-GST_PLUGIN_PATH=$(shell cd $(top_builddir) && pwd)
-
-TESTS_ENVIRONMENT = GST_PLUGIN_PATH=$(GST_PLUGIN_PATH) GST_REGISTRY=`pwd`test-registry.xml
-
-LDADD = $(GST_LIBS) 
-AM_CFLAGS = $(GST_CFLAGS)
+tests_ignore = queue threade threadb threadc
 
 thread1_SOURCES = thread.c
 thread1_CFLAGS = -DTESTNUM=1 $(AM_CFLAGS)

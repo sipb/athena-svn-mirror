@@ -24,13 +24,10 @@
 #ifndef __GST_FAKESRC_H__
 #define __GST_FAKESRC_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
 
-GstElementDetails gst_fakesrc_details;
 
 typedef enum {
   FAKESRC_FIRST_LAST_LOOP = 1,
@@ -45,8 +42,7 @@ typedef enum {
 
 typedef enum {
   FAKESRC_DATA_ALLOCATE = 1,
-  FAKESRC_DATA_SUBBUFFER,
-  FAKESRC_DATA_BUFFERPOOL
+  FAKESRC_DATA_SUBBUFFER
 } GstFakeSrcDataType;
 
 typedef enum {
@@ -103,9 +99,9 @@ struct _GstFakeSrc {
   gint 		 rt_num_buffers; /* we are going to change this at runtime */
   guint64 	 buffer_count;
   gboolean 	 silent;
+  gboolean 	 signal_handoffs;
   gboolean 	 dump;
   gboolean 	 need_flush;
-  GstBufferPool *pool;
 
   gchar		*last_message;
 };
@@ -118,8 +114,6 @@ struct _GstFakeSrcClass {
 };
 
 GType gst_fakesrc_get_type(void);
-
-gboolean gst_fakesrc_factory_init (GstElementFactory *factory);
 
 G_END_DECLS
 

@@ -1,0 +1,270 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstRegistry</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstRealPad.html" title="GstRealPad"><link rel="next" href="gstreamer-GstRegistryPool.html" title="GstRegistryPool"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstRealPad.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstRegistryPool.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstRegistry"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstRegistry</span></h2><p>GstRegistry &#8212; Abstract base class for management of <a href="gstreamer-GstPlugin.html#GstPlugin"><span class="type">GstPlugin</span></a> objects</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="GstRegistry.html#GstRegistry-struct">GstRegistry</a>;
+#define     <a href="GstRegistry.html#GLOBAL-REGISTRY-DIR-CAPS">GLOBAL_REGISTRY_DIR</a>
+#define     <a href="GstRegistry.html#GLOBAL-REGISTRY-FILE-CAPS">GLOBAL_REGISTRY_FILE</a>
+#define     <a href="GstRegistry.html#GLOBAL-REGISTRY-FILE-TMP-CAPS">GLOBAL_REGISTRY_FILE_TMP</a>
+#define     <a href="GstRegistry.html#LOCAL-REGISTRY-DIR-CAPS">LOCAL_REGISTRY_DIR</a>
+#define     <a href="GstRegistry.html#LOCAL-REGISTRY-FILE-CAPS">LOCAL_REGISTRY_FILE</a>
+#define     <a href="GstRegistry.html#LOCAL-REGISTRY-FILE-TMP-CAPS">LOCAL_REGISTRY_FILE_TMP</a>
+#define     <a href="GstRegistry.html#REGISTRY-DIR-PERMS-CAPS">REGISTRY_DIR_PERMS</a>
+#define     <a href="GstRegistry.html#REGISTRY-TMPFILE-PERMS-CAPS">REGISTRY_TMPFILE_PERMS</a>
+#define     <a href="GstRegistry.html#REGISTRY-FILE-PERMS-CAPS">REGISTRY_FILE_PERMS</a>
+enum        <a href="GstRegistry.html#GstRegistryReturn">GstRegistryReturn</a>;
+enum        <a href="GstRegistry.html#GstRegistryFlags">GstRegistryFlags</a>;
+gboolean    <a href="GstRegistry.html#gst-registry-load">gst_registry_load</a>               (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+gboolean    <a href="GstRegistry.html#gst-registry-is-loaded">gst_registry_is_loaded</a>          (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+gboolean    <a href="GstRegistry.html#gst-registry-save">gst_registry_save</a>               (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+gboolean    <a href="GstRegistry.html#gst-registry-rebuild">gst_registry_rebuild</a>            (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+gboolean    <a href="GstRegistry.html#gst-registry-unload">gst_registry_unload</a>             (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+void        <a href="GstRegistry.html#gst-registry-add-path">gst_registry_add_path</a>           (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             const gchar *path);
+GList*      <a href="GstRegistry.html#gst-registry-get-path-list">gst_registry_get_path_list</a>      (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+void        <a href="GstRegistry.html#gst-registry-clear-paths">gst_registry_clear_paths</a>        (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);
+gboolean    <a href="GstRegistry.html#gst-registry-add-plugin">gst_registry_add_plugin</a>         (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);
+void        <a href="GstRegistry.html#gst-registry-remove-plugin">gst_registry_remove_plugin</a>      (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);
+GList*      <a href="GstRegistry.html#gst-registry-plugin-filter">gst_registry_plugin_filter</a>      (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPluginFilter">GstPluginFilter</a> filter,
+                                             gboolean first,
+                                             gpointer user_data);
+GList*      <a href="GstRegistry.html#gst-registry-feature-filter">gst_registry_feature_filter</a>     (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="GstPluginFeature.html#GstPluginFeatureFilter">GstPluginFeatureFilter</a> filter,
+                                             gboolean first,
+                                             gpointer user_data);
+<a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a>*  <a href="GstRegistry.html#gst-registry-find-plugin">gst_registry_find_plugin</a>        (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             const gchar *name);
+<a href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>* <a href="GstRegistry.html#gst-registry-find-feature">gst_registry_find_feature</a> (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             const gchar *name,
+                                             GType type);
+<a href="GstRegistry.html#GstRegistryReturn">GstRegistryReturn</a> <a href="GstRegistry.html#gst-registry-load-plugin">gst_registry_load_plugin</a>  (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);
+<a href="GstRegistry.html#GstRegistryReturn">GstRegistryReturn</a> <a href="GstRegistry.html#gst-registry-unload-plugin">gst_registry_unload_plugin</a>
+                                            (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);
+<a href="GstRegistry.html#GstRegistryReturn">GstRegistryReturn</a> <a href="GstRegistry.html#gst-registry-update-plugin">gst_registry_update_plugin</a>
+                                            (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2947792"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GstRegistry
+         +----GstXMLRegistry
+</pre></div><div class="refsect1" lang="en"><a name="id2947819"></a><h2>Description</h2><p>
+The registry holds the available plugins in the system.
+</p></div><div class="refsect1" lang="en"><a name="id2947830"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2947836"></a><h3><a name="GstRegistry-struct"></a>struct GstRegistry</h3><a class="indexterm" name="id2947847"></a><pre class="programlisting">struct GstRegistry;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2947862"></a><h3><a name="GLOBAL-REGISTRY-DIR-CAPS"></a>GLOBAL_REGISTRY_DIR</h3><a class="indexterm" name="id2947874"></a><pre class="programlisting">#define GLOBAL_REGISTRY_DIR      GST_CACHE_DIR
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2947890"></a><h3><a name="GLOBAL-REGISTRY-FILE-CAPS"></a>GLOBAL_REGISTRY_FILE</h3><a class="indexterm" name="id2947901"></a><pre class="programlisting">#define GLOBAL_REGISTRY_FILE     GLOBAL_REGISTRY_DIR"/registry.xml"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2947917"></a><h3><a name="GLOBAL-REGISTRY-FILE-TMP-CAPS"></a>GLOBAL_REGISTRY_FILE_TMP</h3><a class="indexterm" name="id2947929"></a><pre class="programlisting">#define GLOBAL_REGISTRY_FILE_TMP GLOBAL_REGISTRY_DIR"/.registry.xml.tmp"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2947946"></a><h3><a name="LOCAL-REGISTRY-DIR-CAPS"></a>LOCAL_REGISTRY_DIR</h3><a class="indexterm" name="id2947958"></a><pre class="programlisting">#define LOCAL_REGISTRY_DIR       ".gstreamer-"GST_MAJORMINOR
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2947973"></a><h3><a name="LOCAL-REGISTRY-FILE-CAPS"></a>LOCAL_REGISTRY_FILE</h3><a class="indexterm" name="id2947985"></a><pre class="programlisting">#define LOCAL_REGISTRY_FILE      LOCAL_REGISTRY_DIR"/registry.xml"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2948001"></a><h3><a name="LOCAL-REGISTRY-FILE-TMP-CAPS"></a>LOCAL_REGISTRY_FILE_TMP</h3><a class="indexterm" name="id2948012"></a><pre class="programlisting">#define LOCAL_REGISTRY_FILE_TMP  LOCAL_REGISTRY_DIR"/.registry.xml.tmp"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2948028"></a><h3><a name="REGISTRY-DIR-PERMS-CAPS"></a>REGISTRY_DIR_PERMS</h3><a class="indexterm" name="id2948040"></a><pre class="programlisting">#define     REGISTRY_DIR_PERMS</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2948055"></a><h3><a name="REGISTRY-TMPFILE-PERMS-CAPS"></a>REGISTRY_TMPFILE_PERMS</h3><a class="indexterm" name="id2948066"></a><pre class="programlisting">#define     REGISTRY_TMPFILE_PERMS</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2948082"></a><h3><a name="REGISTRY-FILE-PERMS-CAPS"></a>REGISTRY_FILE_PERMS</h3><a class="indexterm" name="id2948094"></a><pre class="programlisting">#define     REGISTRY_FILE_PERMS</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2948109"></a><h3><a name="GstRegistryReturn"></a>enum GstRegistryReturn</h3><a class="indexterm" name="id2948120"></a><pre class="programlisting">typedef enum {
+  GST_REGISTRY_OK			= (0),
+  GST_REGISTRY_LOAD_ERROR		= (1 &lt;&lt; 1),
+  GST_REGISTRY_SAVE_ERROR		= (1 &lt;&lt; 2),
+  GST_REGISTRY_PLUGIN_LOAD_ERROR	= (1 &lt;&lt; 3),
+  GST_REGISTRY_PLUGIN_SIGNATURE_ERROR	= (1 &lt;&lt; 4)
+} GstRegistryReturn;
+</pre><p>
+The return value of registry operations
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_REGISTRY_OK</tt></span></td><td>The registry reported no error.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_REGISTRY_LOAD_ERROR</tt></span></td><td>There was a load error
+</td></tr><tr><td><span class="term"><tt class="literal">GST_REGISTRY_SAVE_ERROR</tt></span></td><td>There was an error saving the registry
+</td></tr><tr><td><span class="term"><tt class="literal">GST_REGISTRY_PLUGIN_LOAD_ERROR</tt></span></td><td>There was an error loading a plugin
+</td></tr><tr><td><span class="term"><tt class="literal">GST_REGISTRY_PLUGIN_SIGNATURE_ERROR</tt></span></td><td>There was an error saving a plugin
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948222"></a><h3><a name="GstRegistryFlags"></a>enum GstRegistryFlags</h3><a class="indexterm" name="id2948234"></a><pre class="programlisting">typedef enum {
+  GST_REGISTRY_READABLE			= (1 &lt;&lt; 1),
+  GST_REGISTRY_WRITABLE			= (1 &lt;&lt; 2),
+  GST_REGISTRY_EXISTS			= (1 &lt;&lt; 3),
+  GST_REGISTRY_REMOTE			= (1 &lt;&lt; 4),
+  GST_REGISTRY_DELAYED_LOADING		= (1 &lt;&lt; 5)
+} GstRegistryFlags;
+</pre><p>
+Flags for the registry
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_REGISTRY_READABLE</tt></span></td><td>The registry can be read
+</td></tr><tr><td><span class="term"><tt class="literal">GST_REGISTRY_WRITABLE</tt></span></td><td>The registry can be written to
+</td></tr><tr><td><span class="term"><tt class="literal">GST_REGISTRY_EXISTS</tt></span></td><td>The registry exists
+</td></tr><tr><td><span class="term"><tt class="literal">GST_REGISTRY_REMOTE</tt></span></td><td>The registry is remote and might be slower
+</td></tr><tr><td><span class="term"><tt class="literal">GST_REGISTRY_DELAYED_LOADING</tt></span></td><td>The registry will be loaded on demand.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948334"></a><h3><a name="gst-registry-load"></a>gst_registry_load ()</h3><a class="indexterm" name="id2948345"></a><pre class="programlisting">gboolean    gst_registry_load               (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre><p>
+Load the given registry</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to load
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE on success.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948405"></a><h3><a name="gst-registry-is-loaded"></a>gst_registry_is_loaded ()</h3><a class="indexterm" name="id2948417"></a><pre class="programlisting">gboolean    gst_registry_is_loaded          (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre><p>
+Check if the given registry is loaded</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to check
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if loaded.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948478"></a><h3><a name="gst-registry-save"></a>gst_registry_save ()</h3><a class="indexterm" name="id2948489"></a><pre class="programlisting">gboolean    gst_registry_save               (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre><p>
+Save the contents of the given registry</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to save
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE on success
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948550"></a><h3><a name="gst-registry-rebuild"></a>gst_registry_rebuild ()</h3><a class="indexterm" name="id2948561"></a><pre class="programlisting">gboolean    gst_registry_rebuild            (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre><p>
+Rebuild the given registry</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to rebuild
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE on success
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948622"></a><h3><a name="gst-registry-unload"></a>gst_registry_unload ()</h3><a class="indexterm" name="id2948634"></a><pre class="programlisting">gboolean    gst_registry_unload             (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre><p>
+Unload the given registry</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to unload
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE on success
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948694"></a><h3><a name="gst-registry-add-path"></a>gst_registry_add_path ()</h3><a class="indexterm" name="id2948705"></a><pre class="programlisting">void        gst_registry_add_path           (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             const gchar *path);</pre><p>
+Add the given path to the registry. The syntax of the
+path is specific to the registry. If the path has already been
+added, do nothing.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to add the path to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> the path to add to the registry
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948780"></a><h3><a name="gst-registry-get-path-list"></a>gst_registry_get_path_list ()</h3><a class="indexterm" name="id2948792"></a><pre class="programlisting">GList*      gst_registry_get_path_list      (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre><p>
+Get the list of paths for the given registry.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to get the pathlist of
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A Glist of paths as strings. g_list_free after use.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948853"></a><h3><a name="gst-registry-clear-paths"></a>gst_registry_clear_paths ()</h3><a class="indexterm" name="id2948865"></a><pre class="programlisting">void        gst_registry_clear_paths        (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry);</pre><p>
+Clear the paths of the given registry</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to clear the paths of
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2948916"></a><h3><a name="gst-registry-add-plugin"></a>gst_registry_add_plugin ()</h3><a class="indexterm" name="id2948928"></a><pre class="programlisting">gboolean    gst_registry_add_plugin         (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);</pre><p>
+Add the plugin to the registry. The plugin-added signal will be emitted.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to add the plugin to
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>plugin</tt></i> :</span></td><td> the plugin to add
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE on success.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2949011"></a><h3><a name="gst-registry-remove-plugin"></a>gst_registry_remove_plugin ()</h3><a class="indexterm" name="id2949023"></a><pre class="programlisting">void        gst_registry_remove_plugin      (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);</pre><p>
+Remove the plugin from the registry.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to remove the plugin from
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>plugin</tt></i> :</span></td><td> the plugin to remove
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2949095"></a><h3><a name="gst-registry-plugin-filter"></a>gst_registry_plugin_filter ()</h3><a class="indexterm" name="id2949107"></a><pre class="programlisting">GList*      gst_registry_plugin_filter      (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPluginFilter">GstPluginFilter</a> filter,
+                                             gboolean first,
+                                             gpointer user_data);</pre><p>
+Runs a filter against all plugins in the registry and returns a GList with
+the results. If the first flag is set, only the first match is
+returned (as a list with a single object).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> registry to query
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>filter</tt></i> :</span></td><td> the filter to use
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first</tt></i> :</span></td><td> only return first match
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> user data passed to the filter function
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GList of plugins, g_list_free after use.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2949236"></a><h3><a name="gst-registry-feature-filter"></a>gst_registry_feature_filter ()</h3><a class="indexterm" name="id2949248"></a><pre class="programlisting">GList*      gst_registry_feature_filter     (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="GstPluginFeature.html#GstPluginFeatureFilter">GstPluginFeatureFilter</a> filter,
+                                             gboolean first,
+                                             gpointer user_data);</pre><p>
+Runs a filter against all features of the plugins in the registry
+and returns a GList with the results.
+If the first flag is set, only the first match is
+returned (as a list with a single object).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> registry to query
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>filter</tt></i> :</span></td><td> the filter to use
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>first</tt></i> :</span></td><td> only return first match
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> user data passed to the filter function
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a GList of plugin features, g_list_free after use.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2949378"></a><h3><a name="gst-registry-find-plugin"></a>gst_registry_find_plugin ()</h3><a class="indexterm" name="id2949390"></a><pre class="programlisting"><a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a>*  gst_registry_find_plugin        (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             const gchar *name);</pre><p>
+Find the plugin with the given name in the registry.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to search
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the plugin name to find
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The plugin with the given name or NULL if the plugin was not found.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2949474"></a><h3><a name="gst-registry-find-feature"></a>gst_registry_find_feature ()</h3><a class="indexterm" name="id2949486"></a><pre class="programlisting"><a href="GstPluginFeature.html" title="GstPluginFeature">GstPluginFeature</a>* gst_registry_find_feature (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             const gchar *name,
+                                             GType type);</pre><p>
+Find the pluginfeature with the given name and type in the registry.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to search
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the pluginfeature name to find
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> the pluginfeature type to find
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The pluginfeature with the given name and type or NULL
+if the plugin was not found.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2949592"></a><h3><a name="gst-registry-load-plugin"></a>gst_registry_load_plugin ()</h3><a class="indexterm" name="id2949604"></a><pre class="programlisting"><a href="GstRegistry.html#GstRegistryReturn">GstRegistryReturn</a> gst_registry_load_plugin  (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);</pre><p>
+Bring the plugin from the registry into memory.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to load the plugin from
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>plugin</tt></i> :</span></td><td> the plugin to load
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a value indicating the result
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2949687"></a><h3><a name="gst-registry-unload-plugin"></a>gst_registry_unload_plugin ()</h3><a class="indexterm" name="id2949699"></a><pre class="programlisting"><a href="GstRegistry.html#GstRegistryReturn">GstRegistryReturn</a> gst_registry_unload_plugin
+                                            (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);</pre><p>
+Unload the plugin from the given registry.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to unload the plugin from
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>plugin</tt></i> :</span></td><td> the plugin to unload
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a value indicating the result
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2949783"></a><h3><a name="gst-registry-update-plugin"></a>gst_registry_update_plugin ()</h3><a class="indexterm" name="id2949795"></a><pre class="programlisting"><a href="GstRegistry.html#GstRegistryReturn">GstRegistryReturn</a> gst_registry_update_plugin
+                                            (<a href="GstRegistry.html" title="GstRegistry">GstRegistry</a> *registry,
+                                             <a href="gstreamer-GstPlugin.html#GstPlugin">GstPlugin</a> *plugin);</pre><p>
+Update the plugin in the given registry.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>registry</tt></i> :</span></td><td> the registry to update
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>plugin</tt></i> :</span></td><td> the plugin to update
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a value indicating the result
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2949879"></a><h2>See Also</h2><p>
+<a href="gstreamer-GstPlugin.html#GstPlugin"><span class="type">GstPlugin</span></a>, <a href="GstPluginFeature.html" title="GstPluginFeature"><span class="type">GstPluginFeature</span></a>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstRealPad.html"><b>&lt;&lt; GstRealPad</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstRegistryPool.html"><b>GstRegistryPool &gt;&gt;</b></a></td></tr></table></body></html>

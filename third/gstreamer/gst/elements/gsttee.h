@@ -28,7 +28,6 @@
 
 G_BEGIN_DECLS
 
-extern GstElementDetails gst_tee_details;
 
 #define GST_TYPE_TEE \
   (gst_tee_get_type())
@@ -58,8 +57,6 @@ struct _GstTeeClass {
 };
 
 GType 	gst_tee_get_type	(void);
-
-gboolean 	gst_tee_factory_init 	(GstElementFactory *factory);
 
 G_END_DECLS
 

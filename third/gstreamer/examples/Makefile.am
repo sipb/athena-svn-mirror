@@ -4,13 +4,22 @@ else
 GST_LOADSAVE_DIRS = xml typefind
 endif
 
-SUBDIRS = autoplug $(GST_LOADSAVE_DIRS) \
-          helloworld helloworld2 \
-          queue queue2 queue3 queue4 \
-          launch thread plugins mixer cutter pingpong manual
+dirs = \
+	helloworld			\
+	queue				\
+	queue2				\
+	queue3				\
+	queue4				\
+	launch				\
+	thread				\
+	plugins				\
+	mixer				\
+	cutter				\
+	pingpong			\
+	manual				\
+	retag
 
-DIST_SUBDIRS = autoplug \
-          helloworld helloworld2 \
-          queue queue2 queue3 queue4 \
-          launch thread xml plugins typefind mixer cutter pingpong manual
+SUBDIRS = $(dirs)			\
+	$(GST_LOADSAVE_DIRS)
 
+DIST_SUBDIRS = $(dirs) xml typefind

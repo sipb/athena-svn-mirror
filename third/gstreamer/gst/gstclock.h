@@ -39,20 +39,23 @@ typedef guint64 	GstClockTime;
 typedef gint64 		GstClockTimeDiff;
 typedef gpointer 	GstClockID;
 
-#define GST_CLOCK_TIME_NONE  ((guint64)-1)
+#define GST_CLOCK_TIME_NONE  		((GstClockTime)-1)
+#define GST_CLOCK_TIME_IS_VALID(time)	((time) != GST_CLOCK_TIME_NONE)
 
-#define GST_SECOND  ((guint64) G_USEC_PER_SEC * 1000LL)
-#define GST_MSECOND ((guint64) GST_SECOND / 1000LL)
-#define GST_USECOND ((guint64) GST_SECOND / 1000000LL)
-#define GST_NSECOND ((guint64) GST_SECOND / 1000000000LL)
+#define GST_SECOND  (G_USEC_PER_SEC * G_GINT64_CONSTANT (1000))
+#define GST_MSECOND (GST_SECOND / G_GINT64_CONSTANT (1000))
+#define GST_USECOND (GST_SECOND / G_GINT64_CONSTANT (1000000))
+#define GST_NSECOND (GST_SECOND / G_GINT64_CONSTANT (1000000000))
 
 #define GST_CLOCK_DIFF(s, e) 		(GstClockTimeDiff)((s) - (e))
 #define GST_TIMEVAL_TO_TIME(tv)		((tv).tv_sec * GST_SECOND + (tv).tv_usec * GST_USECOND)
 #define GST_TIME_TO_TIMEVAL(t,tv)			\
 G_STMT_START { 						\
   (tv).tv_sec  =  (t) / GST_SECOND;			\
-  (tv).tv_usec = ((t) / GST_USECOND) % GST_MSECOND;	\
+  (tv).tv_usec = ((t) - (tv).tv_sec * GST_SECOND) / GST_USECOND;	\
 } G_STMT_END
+
+#define GST_CLOCK_ENTRY_TRACE_NAME "GstClockEntry"
 
 typedef struct _GstClockEntry 	GstClockEntry;
 typedef struct _GstClock 	GstClock;
@@ -66,13 +69,13 @@ typedef enum {
   /* --- protected --- */
   GST_CLOCK_ENTRY_OK,
   GST_CLOCK_ENTRY_EARLY,
-  GST_CLOCK_ENTRY_RESTART,
+  GST_CLOCK_ENTRY_RESTART
 } GstClockEntryStatus;
 
 typedef enum {
   /* --- protected --- */
   GST_CLOCK_ENTRY_SINGLE,
-  GST_CLOCK_ENTRY_PERIODIC,
+  GST_CLOCK_ENTRY_PERIODIC
 } GstClockEntryType;
 
 #define GST_CLOCK_ENTRY(entry)		((GstClockEntry *)(entry))
@@ -109,7 +112,7 @@ typedef enum
   GST_CLOCK_FLAG_CAN_DO_PERIODIC_SYNC   = (1 << 3),
   GST_CLOCK_FLAG_CAN_DO_PERIODIC_ASYNC  = (1 << 4),
   GST_CLOCK_FLAG_CAN_SET_RESOLUTION     = (1 << 5),
-  GST_CLOCK_FLAG_CAN_SET_SPEED          = (1 << 6),
+  GST_CLOCK_FLAG_CAN_SET_SPEED          = (1 << 6)
 } GstClockFlags;
 
 #define GST_CLOCK_FLAGS(clock)  (GST_CLOCK(clock)->flags)
@@ -125,16 +128,16 @@ struct _GstClock {
   gint64	 max_diff;
 
   /* --- private --- */
-  gboolean 	 accept_discont;
-  gdouble 	 speed;
   guint64	 resolution;
-  gboolean 	 active;
   GList		*entries;
   GMutex	*active_mutex;
   GCond		*active_cond;
   gboolean	 stats;
 
-  gpointer 	 dummy[4];
+  GstClockTime	 last_event;
+  GstClockTime	 max_event_diff;
+  
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstClockClass {
@@ -155,6 +158,7 @@ struct _GstClockClass {
   GstClockEntryStatus   (*wait_async)           (GstClock *clock, GstClockEntry *entry);
   void                  (*unschedule)        	(GstClock *clock, GstClockEntry *entry);
   void                  (*unlock)            	(GstClock *clock, GstClockEntry *entry);
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType           	gst_clock_get_type 		(void);
@@ -171,6 +175,9 @@ void 			gst_clock_reset			(GstClock *clock);
 gboolean		gst_clock_handle_discont	(GstClock *clock, guint64 time);
 
 GstClockTime		gst_clock_get_time		(GstClock *clock);
+GstClockTime		gst_clock_get_event_time	(GstClock *clock);
+GstClockTime		gst_clock_get_event_time_delay	(GstClock *clock, GstClockTime delay);
+
 
 GstClockID		gst_clock_get_next_id		(GstClock *clock);
 
@@ -191,6 +198,7 @@ GstClockReturn		gst_clock_id_wait_async		(GstClockID id,
 void 			gst_clock_id_unschedule		(GstClockID id);
 void			gst_clock_id_unlock		(GstClockID id);
 void			gst_clock_id_free		(GstClockID id);
+
 
 G_END_DECLS
 

@@ -1,16 +1,43 @@
-<chapter id="cha-quotes">
+<chapter id="chapter-quotes">
   <title>Quotes from the Developers</title>
   <para>
     As well as being a cool piece of software,
     <application>GStreamer</application> is a lively project, with
     developers from around the globe very actively contributing.
     We often hang out on the #gstreamer IRC channel on
-    irc.openprojects.net: the following are a selection of amusing<footnote>
+    irc.freenode.net: the following are a selection of amusing<footnote>
     <para>No guarantee of sense of humour compatibility is given.</para>
     </footnote> quotes from our conversations.
   </para>
 
   <variablelist>
+    <varlistentry>
+      <term>14 Jun 2004</term>
+      <listitem>
+        <para>
+          <emphasis>teuf</emphasis>: ok, things work much better when I don't write incredibly stupid and buggy code
+	</para>
+	<para>
+	  <emphasis>thaytan</emphasis>: I find that too
+	</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term>23 Nov 2003</term>
+      <listitem>
+        <para>
+          <emphasis>Uraeus</emphasis>: ah yes, the sleeping part, my mind
+          is not multitasking so I was still thinking about exercise
+        </para>
+        <para>
+          <emphasis>dolphy</emphasis>: Uraeus: your mind is multitasking
+        </para>
+        <para>
+          <emphasis>dolphy</emphasis>: Uraeus: you just miss low latency patches
+        </para>
+      </listitem>
+    </varlistentry>
+
     <varlistentry>
       <term>14 Sep 2002</term>
       <listitem>

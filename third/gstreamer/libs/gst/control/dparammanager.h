@@ -23,7 +23,6 @@
 #define __GST_DPMAN_H__
 
 #include <gst/gstobject.h>
-#include <gst/gstprops.h>
 #include <gst/control/dparamcommon.h>
 #include <gst/control/dparam.h>
 #include <gst/control/unitconvert.h>
@@ -50,7 +49,7 @@ G_BEGIN_DECLS
 typedef enum {
   GST_DPMAN_CALLBACK,
   GST_DPMAN_DIRECT,
-  GST_DPMAN_ARRAY,
+  GST_DPMAN_ARRAY
 } GstDPMUpdateMethod;
 
 typedef struct _GstDParamManagerClass GstDParamManagerClass;
@@ -74,14 +73,14 @@ struct _GstDParamManager {
         /* mode state */
 	GstDPMMode* mode;
 	gchar *mode_name;
-	
-	guint frames_to_process;  /* the number of frames in the current buffer */
-	guint next_update_frame;  /* the frame when the next update is required */
+
+	guint frames_to_process;  /* number of frames in the current buffer */
+	guint next_update_frame;  /* frame when the next update is required */
 
 	/* the following data is only used for async mode */
 	guint rate;               /* the frame/sample rate - */
-	guint rate_ratio;         /* number used to convert between samples and time */
-	guint num_frames;         /* the number of frames in the current buffer */
+	guint rate_ratio;         /* used to convert between samples and time */
+	guint num_frames;         /* number of frames in the current buffer */
 
 	gint64 time_buffer_ends;
 	gint64 time_buffer_starts;
@@ -91,7 +90,7 @@ struct _GstDParamManagerClass {
 	GstObjectClass parent_class;
 	GHashTable *modes;
 	/* signal callbacks */
-	void (*new_required_dparam) (GstDParamManager *dpman, gchar* dparam_name);
+	void (*new_required_dparam) (GstDParamManager *dpman, const gchar* dparam_name);
 };
 
 struct _GstDPMMode {
@@ -107,11 +106,11 @@ struct _GstDParamWrapper {
 	GstDParam *dparam;
 
 	guint next_update_frame;
-	
+
 	GstDPMUpdateMethod update_method;
 	gpointer update_data;
 	GstDPMUpdateFunction update_func;
-	
+
 	gchar *unit_name;
 	GstDParamUpdateInfo update_info;
 };
@@ -132,7 +131,8 @@ struct _GstDParamAsyncToUpdate {
 
 #define GST_DPMAN_PROCESS(dpman, frame_count) \
                          (frame_count < dpman->next_update_frame || \
-                         (dpman->next_update_frame < dpman->num_frames && (GST_DPMAN_PROCESSFUNC(dpman)(dpman, frame_count))))
+                         (dpman->next_update_frame < dpman->num_frames \
+                          && (GST_DPMAN_PROCESSFUNC(dpman)(dpman, frame_count))))
 
 #define GST_DPMAN_CALLBACK_UPDATE(dpwrap, value) ((dpwrap->update_func)(value, dpwrap->update_data))
 
@@ -157,18 +157,18 @@ gboolean gst_dpman_add_required_dparam_array (GstDParamManager *dpman,
                                               gchar *unit_name,
                                               gpointer update_data);
                                      
-void gst_dpman_remove_required_dparam (GstDParamManager *dpman, gchar *dparam_name);
-gboolean gst_dpman_attach_dparam (GstDParamManager *dpman, gchar *dparam_name, GstDParam *dparam);
-void gst_dpman_detach_dparam (GstDParamManager *dpman, gchar *dparam_name);                         
-GstDParam* gst_dpman_get_dparam(GstDParamManager *dpman, gchar *name);
-GType gst_dpman_get_dparam_type (GstDParamManager *dpman, gchar *name);
+void gst_dpman_remove_required_dparam (GstDParamManager *dpman, const gchar *dparam_name);
+gboolean gst_dpman_attach_dparam (GstDParamManager *dpman, const gchar *dparam_name, GstDParam *dparam);
+void gst_dpman_detach_dparam (GstDParamManager *dpman, const gchar *dparam_name);                         
+GstDParam* gst_dpman_get_dparam(GstDParamManager *dpman, const gchar *dparam_name);
+GType gst_dpman_get_dparam_type (GstDParamManager *dpman, const gchar *dparam_name);
 
 GParamSpec** gst_dpman_list_dparam_specs(GstDParamManager *dpman);
-GParamSpec* gst_dpman_get_param_spec (GstDParamManager *dpman, gchar *dparam_name);
-void gst_dpman_dparam_spec_has_changed (GstDParamManager *dpman, gchar *dparam_name);
+GParamSpec* gst_dpman_get_param_spec (GstDParamManager *dpman, const gchar *dparam_name);
+void gst_dpman_dparam_spec_has_changed (GstDParamManager *dpman, const gchar *dparam_name);
 
 void gst_dpman_set_rate(GstDParamManager *dpman, gint rate);
-void gst_dpman_bypass_dparam(GstDParamManager *dpman, gchar *dparam_name);
+void gst_dpman_bypass_dparam(GstDParamManager *dpman, const gchar *dparam_name);
 
 gboolean gst_dpman_set_mode(GstDParamManager *dpman, gchar *modename);
 void gst_dpman_register_mode (GstDParamManagerClass *klass,

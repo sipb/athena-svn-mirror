@@ -1,6 +1,7 @@
 /* GStreamer
  * Copyright (C) 1999,2000 Erik Walthinsen <omega@cse.ogi.edu>
  *                    2000 Wim Taymans <wtay@chello.be>
+ *                    2003 Colin Walters <walters@verbum.org>
  *
  * gstcpu.c: CPU detection and architecture-specific routines
  *
@@ -20,84 +21,113 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include "gst_private.h"
 #include <glib.h>
 
-#include "gst_private.h"
+
 #include "gstcpu.h"
+#include "gstinfo.h"
 
-static guint32 _gst_cpu_flags;
+static guint32 _gst_cpu_flags = 0;
 
-#ifdef HAVE_CPU_I386
-void gst_cpuid_i386 (int, unsigned long *, unsigned long *, unsigned long *, unsigned long *);
-#define gst_cpuid gst_cpuid_i386
+#if defined(HAVE_CPU_I386) && defined(__GNUC__)
+#define _gst_cpu_initialize_arch _gst_cpu_initialize_i386
+gboolean _gst_cpu_initialize_i386 (gulong * flags, GString * featurelist);
 #else
-#define gst_cpuid(o,a,b,c,d) (void)(a);(void)(b);(void)(c);
+#define _gst_cpu_initialize_arch _gst_cpu_initialize_none
+gboolean _gst_cpu_initialize_none (gulong * flags, GString * featurelist);
 #endif
-
-static gchar *
-stringcat (gchar * a, gchar * b)
-{
-  gchar *c;
-
-  if (a) {
-    c = g_strconcat (a, b, NULL);
-    g_free (a);
-  }
-  else {
-    c = g_strdup (b);
-  }
-  return c;
-}
 
 
 void
-_gst_cpu_initialize (void)
+_gst_cpu_initialize (gboolean opt)
 {
-  gchar *featurelist = NULL;
-  gboolean AMD;
+  GString *featurelist = g_string_new ("");
+  gulong flags = 0;
 
+  if (opt) {
+    if (!_gst_cpu_initialize_arch (&flags, featurelist))
+      g_string_append (featurelist, "NONE");
+  } else
+    g_string_append (featurelist, "(DISABLED)");
+
+  GST_CAT_INFO (GST_CAT_GST_INIT, "CPU features: (%08lx) %s", flags,
+      featurelist->str);
+  g_string_free (featurelist, TRUE);
+}
+
+gboolean
+_gst_cpu_initialize_none (gulong * flags, GString * featurelist)
+{
+  return FALSE;
+}
+
+#if defined(HAVE_CPU_I386) && defined(__GNUC__)
+static void
+gst_cpuid_i386 (int x, unsigned long *eax, unsigned long *ebx,
+    unsigned long *ecx, unsigned long *edx)
+{
+  unsigned long regs[4];
+
+  asm (
+      /* GCC-3.2 (and possibly others) don't clobber ebx properly,
+       * so we save/restore it directly. */
+"  movl %%ebx, %%esi\n" "  cpuid\n" "  movl %%eax, %0\n" "  movl %%ebx, %1\n" "  movl %%ecx, %2\n" "  movl %%edx, %3\n" "  movl %%esi, %%ebx\n":"=o" (regs[0]), "=o" (regs[1]), "=o" (regs[2]),
+      "=o" (regs
+          [3])
+:    "a" (x)
+:    "ecx", "edx", "esi");
+
+  *eax = regs[0];
+  *ebx = regs[1];
+  *ecx = regs[2];
+  *edx = regs[3];
+}
+
+gboolean
+_gst_cpu_initialize_i386 (gulong * flags, GString * featurelist)
+{
+  gboolean AMD;
   gulong eax = 0, ebx = 0, ecx = 0, edx = 0;
 
-  gst_cpuid (0, &eax, &ebx, &ecx, &edx);
+  gst_cpuid_i386 (0, &eax, &ebx, &ecx, &edx);
 
   AMD = (ebx == 0x68747541) && (ecx == 0x444d4163) && (edx == 0x69746e65);
 
-  gst_cpuid (1, &eax, &ebx, &ecx, &edx);
+  gst_cpuid_i386 (1, &eax, &ebx, &ecx, &edx);
 
   if (edx & (1 << 23)) {
     _gst_cpu_flags |= GST_CPU_FLAG_MMX;
-    featurelist = stringcat (featurelist, "MMX ");
+    g_string_append (featurelist, "MMX ");
 
     if (edx & (1 << 25)) {
       _gst_cpu_flags |= GST_CPU_FLAG_SSE;
       _gst_cpu_flags |= GST_CPU_FLAG_MMXEXT;
-      featurelist = stringcat (featurelist, "SSE ");
+      g_string_append (featurelist, "SSE ");
     }
 
-    gst_cpuid (0x80000000, &eax, &ebx, &ecx, &edx);
+    gst_cpuid_i386 (0x80000000, &eax, &ebx, &ecx, &edx);
 
     if (eax >= 0x80000001) {
 
-      gst_cpuid (0x80000001, &eax, &ebx, &ecx, &edx);
+      gst_cpuid_i386 (0x80000001, &eax, &ebx, &ecx, &edx);
 
       if (edx & (1 << 31)) {
-	_gst_cpu_flags |= GST_CPU_FLAG_3DNOW;
-	featurelist = stringcat (featurelist, "3DNOW ");
+        _gst_cpu_flags |= GST_CPU_FLAG_3DNOW;
+        g_string_append (featurelist, "3DNOW ");
       }
       if (AMD && (edx & (1 << 22))) {
-	_gst_cpu_flags |= GST_CPU_FLAG_MMXEXT;
-	featurelist = stringcat (featurelist, "MMXEXT ");
+        _gst_cpu_flags |= GST_CPU_FLAG_MMXEXT;
+        g_string_append (featurelist, "MMXEXT ");
       }
     }
   }
-
-  if (!_gst_cpu_flags) {
-    featurelist = stringcat (featurelist, "NONE");
-  }
-
-  GST_INFO (GST_CAT_GST_INIT, "CPU features: (%08lx) %s", edx, featurelist);
-  g_free (featurelist);
+  *flags = eax;
+  if (_gst_cpu_flags)
+    return TRUE;
+  return FALSE;
 }
+#endif
 
 GstCPUFlags
 gst_cpu_get_flags (void)

@@ -1,14 +1,14 @@
-<chapter id="cha-states">
+<chapter id="chapter-states">
   <title>Element states</title>
   <para> 
     Once you have created a pipeline packed with elements, nothing will happen
     right away. This is where the different states come into play. 
   </para>
 
-  <sect1 id="sec-states">
+  <sect1 id="section-states">
     <title>The different element states</title>
     <para> 
-      All elements can be in one of the following four states:
+      An element can be in one of the following four states:
       <itemizedlist>
         <listitem>
           <para>
@@ -37,23 +37,12 @@
     <para> 
       All elements start with the NULL state. The elements will go throught
       the following state changes: NULL -&gt; READY -&gt; PAUSED -&gt;
-      PLAYING. Remember when going from PLAYING to READY, GStreamer will
+      PLAYING.  When going from NULL to PLAYING, GStreamer will
       internally go throught the intermediate states.
     </para>
-    <para> 
-      The state of an element can be changed with the following code:
-    </para>
-    <programlisting>
-  GstElement *bin;
-
-  // create a bin, put elements in it and link them
-  ...
-  gst_element_set_state (bin, GST_STATE_PLAYING);
-  ...
-    </programlisting>
 
     <para> 
-      You can set the following states to an element:
+      You can set the following states on an element:
     </para>
     <informaltable pgwide="1" frame="none" role="enum">
     <tgroup cols="2">
@@ -70,7 +59,7 @@
       </row>
       <row>
         <entry><literal>GST_STATE_PAUSED</literal></entry>
-        <entry>temporary stops the data flow.
+        <entry>temporarily stops the data flow.
         </entry>
       </row>
       <row>
@@ -84,11 +73,11 @@
 
   </sect1>
 
-  <sect1 id="sec-states-null">
+  <sect1 id="section-states-null">
     <title>The NULL state</title>
     <para> 
       When you created the pipeline all of the elements will be in the NULL state. There is
-      nothing spectacular about the NULL state.
+      nothing special about the NULL state.
     </para> 
     <note>
       <para> 
@@ -98,7 +87,7 @@
     </note>
   </sect1>
 
-  <sect1 id="sec-states-ready">
+  <sect1 id="section-states-ready">
     <title>The READY state</title>
     <para> 
       You will start the pipeline by first setting it to the READY state. This will allow the 
@@ -119,15 +108,7 @@
     </note>
   </sect1>
 
-  <sect1 id="sec-states-playing">
-    <title>The PLAYING state</title>
-    <para> 
-      A Pipeline that is in the READY state can be started by setting it to the PLAYING state. At
-      that time data will start to flow all the way through the pipeline.
-    </para>
-  </sect1>
-
-  <sect1 id="sec-states-paused">
+  <sect1 id="section-states-paused">
     <title>The PAUSED state</title>
     <para> 
       A pipeline that is playing can be set to the PAUSED state. This will temporarily stop all
@@ -145,8 +126,16 @@
     </note>
     <para> 
       The pipeline has to be in the PAUSED or NULL state if you want to insert or modify an element
-      in the pipeline. We will cover dynamic pipeline behaviour in <xref linkend="cha-dynamic"/>.
+      in the pipeline. We will cover dynamic pipeline behaviour in <xref linkend="chapter-dynamic"/>.
     </para>
   </sect1>
+  <sect1 id="section-states-playing">
+    <title>The PLAYING state</title>
+    <para> 
+      A pipeline can be started by setting it to the PLAYING state. At
+      that time data will start to flow all the way through the pipeline.
+    </para>
+  </sect1>
+
 
 </chapter>

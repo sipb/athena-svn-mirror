@@ -20,51 +20,65 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <sys/time.h>
+#include <time.h>
 
-/* #define GST_DEBUG_ENABLED */
 #include "gst_private.h"
 
 #include "gstclock.h"
-#include "gstlog.h"
+#include "gstinfo.h"
 #include "gstmemchunk.h"
 
+#ifndef GST_DISABLE_TRACE
+/* #define GST_WITH_ALLOC_TRACE */
+#include "gsttrace.h"
+static GstAllocTrace *_gst_clock_entry_trace;
+#endif
+
+#define DEFAULT_EVENT_DIFF	(GST_SECOND)
 #define DEFAULT_MAX_DIFF	(2 * GST_SECOND)
 
-enum {
+enum
+{
   ARG_0,
   ARG_STATS,
   ARG_MAX_DIFF,
+  ARG_EVENT_DIFF
 };
 
 static GstMemChunk *_gst_clock_entries_chunk;
 
-static void		gst_clock_class_init		(GstClockClass *klass);
-static void		gst_clock_init			(GstClock *clock);
-static void             gst_clock_set_property		(GObject *object, guint prop_id, 
-							 const GValue *value, GParamSpec *pspec);
-static void             gst_clock_get_property		(GObject *object, guint prop_id, 
-							 GValue *value, GParamSpec * pspec);
-static void		gst_clock_update_stats		(GstClock *clock);
+void gst_clock_id_unlock (GstClockID id);
+
+
+static void gst_clock_class_init (GstClockClass * klass);
+static void gst_clock_init (GstClock * clock);
+static void gst_clock_dispose (GObject * object);
+
+static void gst_clock_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_clock_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
+static void gst_clock_update_stats (GstClock * clock);
 
 
 static GstObjectClass *parent_class = NULL;
+
 /* static guint gst_clock_signals[LAST_SIGNAL] = { 0 }; */
 
-static GMutex *_gst_clock_mutex;
-static GCond  *_gst_clock_cond;
-
 static GstClockID
-gst_clock_entry_new (GstClock *clock, GstClockTime time, 
-		     GstClockTime interval, GstClockEntryType type)
+gst_clock_entry_new (GstClock * clock, GstClockTime time,
+    GstClockTime interval, GstClockEntryType type)
 {
   GstClockEntry *entry;
 
   entry = gst_mem_chunk_alloc (_gst_clock_entries_chunk);
+#ifndef GST_DISABLE_TRACE
+  gst_alloc_trace_new (_gst_clock_entry_trace, entry);
+#endif
 
   entry->clock = clock;
   entry->time = time;
-  entry->interval = time;
+  entry->interval = interval;
   entry->type = type;
   entry->status = GST_CLOCK_ENTRY_OK;
 
@@ -82,14 +96,12 @@ gst_clock_entry_new (GstClock *clock, GstClockTime time,
  * Returns: An id that can be used to request the time notification.
  */
 GstClockID
-gst_clock_new_single_shot_id (GstClock *clock, GstClockTime time)
+gst_clock_new_single_shot_id (GstClock * clock, GstClockTime time)
 {
   g_return_val_if_fail (GST_IS_CLOCK (clock), NULL);
 
-  return gst_clock_entry_new (clock, 
-		  	      time, 
-			      GST_CLOCK_TIME_NONE, 
-			      GST_CLOCK_ENTRY_SINGLE);
+  return gst_clock_entry_new (clock,
+      time, GST_CLOCK_TIME_NONE, GST_CLOCK_ENTRY_SINGLE);
 }
 
 /**
@@ -105,17 +117,15 @@ gst_clock_new_single_shot_id (GstClock *clock, GstClockTime time)
  * Returns: An id that can be used to request the time notification.
  */
 GstClockID
-gst_clock_new_periodic_id (GstClock *clock, GstClockTime start_time,
-                           GstClockTime interval)
+gst_clock_new_periodic_id (GstClock * clock, GstClockTime start_time,
+    GstClockTime interval)
 {
   g_return_val_if_fail (GST_IS_CLOCK (clock), NULL);
-  g_return_val_if_fail (start_time != GST_CLOCK_TIME_NONE, NULL);
+  g_return_val_if_fail (GST_CLOCK_TIME_IS_VALID (start_time), NULL);
   g_return_val_if_fail (interval != 0, NULL);
 
-  return gst_clock_entry_new (clock, 
-		  	      start_time, 
-			      interval, 
-			      GST_CLOCK_ENTRY_PERIODIC);
+  return gst_clock_entry_new (clock,
+      start_time, interval, GST_CLOCK_ENTRY_PERIODIC);
 }
 
 /**
@@ -131,7 +141,7 @@ gst_clock_id_get_time (GstClockID id)
 {
   g_return_val_if_fail (id != NULL, GST_CLOCK_TIME_NONE);
 
-  return GST_CLOCK_ENTRY_TIME ((GstClockEntry *)id);
+  return GST_CLOCK_ENTRY_TIME ((GstClockEntry *) id);
 }
 
 
@@ -146,37 +156,40 @@ gst_clock_id_get_time (GstClockID id)
  * Returns: the result of the blocking wait.
  */
 GstClockReturn
-gst_clock_id_wait (GstClockID id, GstClockTimeDiff *jitter)
+gst_clock_id_wait (GstClockID id, GstClockTimeDiff * jitter)
 {
   GstClockEntry *entry;
   GstClock *clock;
   GstClockReturn res = GST_CLOCK_UNSUPPORTED;
   GstClockTime requested;
   GstClockClass *cclass;
-  
+
   g_return_val_if_fail (id != NULL, GST_CLOCK_ERROR);
 
   entry = (GstClockEntry *) id;
   requested = GST_CLOCK_ENTRY_TIME (entry);
 
-  if (requested == GST_CLOCK_TIME_NONE) {
+  if (!GST_CLOCK_TIME_IS_VALID (requested)) {
+    GST_CAT_DEBUG (GST_CAT_CLOCK, "invalid time requested, returning _TIMEOUT");
     return GST_CLOCK_TIMEOUT;
   }
 
   clock = GST_CLOCK_ENTRY_CLOCK (entry);
   cclass = GST_CLOCK_GET_CLASS (clock);
-  
+
   if (cclass->wait) {
     GstClockTime now;
-    
+
     GST_LOCK (clock);
     clock->entries = g_list_prepend (clock->entries, entry);
     GST_UNLOCK (clock);
 
+    GST_CAT_DEBUG (GST_CAT_CLOCK, "waiting on clock");
     do {
       res = cclass->wait (clock, entry);
     }
     while (res == GST_CLOCK_ENTRY_RESTART);
+    GST_CAT_DEBUG (GST_CAT_CLOCK, "done waiting");
 
     GST_LOCK (clock);
     clock->entries = g_list_remove (clock->entries, entry);
@@ -208,20 +221,20 @@ gst_clock_id_wait (GstClockID id, GstClockTimeDiff *jitter)
  */
 GstClockReturn
 gst_clock_id_wait_async (GstClockID id,
-		         GstClockCallback func, gpointer user_data)
+    GstClockCallback func, gpointer user_data)
 {
   GstClockEntry *entry;
   GstClock *clock;
   GstClockReturn res = GST_CLOCK_UNSUPPORTED;
   GstClockClass *cclass;
-  
+
   g_return_val_if_fail (id != NULL, GST_CLOCK_ERROR);
   g_return_val_if_fail (func != NULL, GST_CLOCK_ERROR);
 
   entry = (GstClockEntry *) id;
   clock = entry->clock;
 
-  if (GST_CLOCK_ENTRY_TIME (entry) == GST_CLOCK_TIME_NONE) {
+  if (!GST_CLOCK_TIME_IS_VALID (GST_CLOCK_ENTRY_TIME (entry))) {
     (func) (clock, GST_CLOCK_TIME_NONE, id, user_data);
     return GST_CLOCK_TIMEOUT;
   }
@@ -239,11 +252,11 @@ gst_clock_id_wait_async (GstClockID id,
 }
 
 static void
-gst_clock_reschedule_func (GstClockEntry *entry)
+gst_clock_reschedule_func (GstClockEntry * entry)
 {
   entry->status = GST_CLOCK_ENTRY_OK;
-  
-  gst_clock_id_unlock ((GstClockID)entry);
+
+  gst_clock_id_unlock ((GstClockID) entry);
 }
 
 /**
@@ -258,7 +271,7 @@ gst_clock_id_unschedule (GstClockID id)
   GstClockEntry *entry;
   GstClock *clock;
   GstClockClass *cclass;
-  
+
   g_return_if_fail (id != NULL);
 
   entry = (GstClockEntry *) id;
@@ -281,6 +294,9 @@ gst_clock_id_free (GstClockID id)
 {
   g_return_if_fail (id != NULL);
 
+#ifndef GST_DISABLE_TRACE
+  gst_alloc_trace_free (_gst_clock_entry_trace, id);
+#endif
   gst_mem_chunk_free (_gst_clock_entries_chunk, id);
 }
 
@@ -296,7 +312,7 @@ gst_clock_id_unlock (GstClockID id)
   GstClockEntry *entry;
   GstClock *clock;
   GstClockClass *cclass;
-  
+
   g_return_if_fail (id != NULL);
 
   entry = (GstClockEntry *) id;
@@ -326,24 +342,25 @@ gst_clock_get_type (void)
       NULL,
       NULL,
       sizeof (GstClock),
-      4,
+      0,
       (GInstanceInitFunc) gst_clock_init,
       NULL
     };
-    clock_type = g_type_register_static (GST_TYPE_OBJECT, "GstClock", 
-		    			 &clock_info,  G_TYPE_FLAG_ABSTRACT);
+
+    clock_type = g_type_register_static (GST_TYPE_OBJECT, "GstClock",
+        &clock_info, G_TYPE_FLAG_ABSTRACT);
   }
   return clock_type;
 }
 
 static void
-gst_clock_class_init (GstClockClass *klass)
+gst_clock_class_init (GstClockClass * klass)
 {
   GObjectClass *gobject_class;
   GstObjectClass *gstobject_class;
 
-  gobject_class = (GObjectClass*) klass;
-  gstobject_class = (GstObjectClass*) klass;
+  gobject_class = (GObjectClass *) klass;
+  gstobject_class = (GstObjectClass *) klass;
 
   parent_class = g_type_class_ref (GST_TYPE_OBJECT);
 
@@ -351,30 +368,36 @@ gst_clock_class_init (GstClockClass *klass)
     g_thread_init (NULL);
 
   _gst_clock_entries_chunk = gst_mem_chunk_new ("GstClockEntries",
-                     sizeof (GstClockEntry), sizeof (GstClockEntry) * 32,
-                     G_ALLOC_AND_FREE);
+      sizeof (GstClockEntry), sizeof (GstClockEntry) * 32, G_ALLOC_AND_FREE);
 
-  _gst_clock_mutex = g_mutex_new ();
-  _gst_clock_cond  = g_cond_new ();
+#ifndef GST_DISABLE_TRACE
+  _gst_clock_entry_trace =
+      gst_alloc_trace_register (GST_CLOCK_ENTRY_TRACE_NAME);
+#endif
 
+  gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_clock_dispose);
   gobject_class->set_property = GST_DEBUG_FUNCPTR (gst_clock_set_property);
   gobject_class->get_property = GST_DEBUG_FUNCPTR (gst_clock_get_property);
 
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_STATS,
-    g_param_spec_boolean ("stats", "Stats", "Enable clock stats",
-                          FALSE, G_PARAM_READWRITE));
+      g_param_spec_boolean ("stats", "Stats", "Enable clock stats",
+          FALSE, G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_MAX_DIFF,
-    g_param_spec_int64 ("max-diff", "Max diff", "The maximum amount of time to wait in nanoseconds",
-                        0, G_MAXINT64, DEFAULT_MAX_DIFF, G_PARAM_READWRITE));
+      g_param_spec_int64 ("max-diff", "Max diff",
+          "The maximum amount of time to wait in nanoseconds", 0, G_MAXINT64,
+          DEFAULT_MAX_DIFF, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_EVENT_DIFF,
+      g_param_spec_uint64 ("event-diff", "event diff",
+          "The amount of time that may elapse until 2 events are treated as happening at different times",
+          0, G_MAXUINT64, DEFAULT_EVENT_DIFF,
+          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 }
 
 static void
-gst_clock_init (GstClock *clock)
+gst_clock_init (GstClock * clock)
 {
   clock->max_diff = DEFAULT_MAX_DIFF;
 
-  clock->speed = 1.0;
-  clock->active = FALSE;
   clock->start_time = 0;
   clock->last_time = 0;
   clock->entries = NULL;
@@ -383,6 +406,17 @@ gst_clock_init (GstClock *clock)
 
   clock->active_mutex = g_mutex_new ();
   clock->active_cond = g_cond_new ();
+}
+
+static void
+gst_clock_dispose (GObject * object)
+{
+  GstClock *clock = GST_CLOCK (object);
+
+  g_mutex_free (clock->active_mutex);
+  g_cond_free (clock->active_cond);
+
+  G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 /**
@@ -396,18 +430,12 @@ gst_clock_init (GstClock *clock)
  * Returns: the new speed of the clock.
  */
 gdouble
-gst_clock_set_speed (GstClock *clock, gdouble speed)
+gst_clock_set_speed (GstClock * clock, gdouble speed)
 {
-  GstClockClass *cclass;
-
   g_return_val_if_fail (GST_IS_CLOCK (clock), 0.0);
 
-  cclass = GST_CLOCK_GET_CLASS (clock);
-
-  if (cclass->change_speed)
-    clock->speed = cclass->change_speed (clock, clock->speed, speed);
-
-  return clock->speed;
+  GST_WARNING_OBJECT (clock, "called deprecated function");
+  return 1.0;
 }
 
 /**
@@ -419,11 +447,12 @@ gst_clock_set_speed (GstClock *clock, gdouble speed)
  * Returns: the speed of the clock.
  */
 gdouble
-gst_clock_get_speed (GstClock *clock)
+gst_clock_get_speed (GstClock * clock)
 {
   g_return_val_if_fail (GST_IS_CLOCK (clock), 0.0);
 
-  return clock->speed;
+  GST_WARNING_OBJECT (clock, "called deprecated function");
+  return 1.0;
 }
 
 /**
@@ -436,17 +465,18 @@ gst_clock_get_speed (GstClock *clock)
  * Returns: the new resolution of the clock.
  */
 guint64
-gst_clock_set_resolution (GstClock *clock, guint64 resolution)
+gst_clock_set_resolution (GstClock * clock, guint64 resolution)
 {
   GstClockClass *cclass;
 
-  g_return_val_if_fail (GST_IS_CLOCK (clock), 0LL);
-  g_return_val_if_fail (resolution != 0, 0LL);
+  g_return_val_if_fail (GST_IS_CLOCK (clock), G_GINT64_CONSTANT (0));
+  g_return_val_if_fail (resolution != 0, G_GINT64_CONSTANT (0));
 
   cclass = GST_CLOCK_GET_CLASS (clock);
 
   if (cclass->change_resolution)
-    clock->resolution = cclass->change_resolution (clock, clock->resolution, resolution);
+    clock->resolution =
+        cclass->change_resolution (clock, clock->resolution, resolution);
 
   return clock->resolution;
 }
@@ -460,18 +490,18 @@ gst_clock_set_resolution (GstClock *clock, guint64 resolution)
  * Returns: the resolution of the clock in microseconds.
  */
 guint64
-gst_clock_get_resolution (GstClock *clock)
+gst_clock_get_resolution (GstClock * clock)
 {
   GstClockClass *cclass;
 
-  g_return_val_if_fail (GST_IS_CLOCK (clock), 0LL);
+  g_return_val_if_fail (GST_IS_CLOCK (clock), G_GINT64_CONSTANT (0));
 
   cclass = GST_CLOCK_GET_CLASS (clock);
 
   if (cclass->get_resolution)
     return cclass->get_resolution (clock);
 
-  return 1LL;
+  return G_GINT64_CONSTANT (1);
 }
 
 /**
@@ -483,36 +513,13 @@ gst_clock_get_resolution (GstClock *clock)
  * As soon as the clock is activated, the time will start ticking.
  */
 void
-gst_clock_set_active (GstClock *clock, gboolean active)
+gst_clock_set_active (GstClock * clock, gboolean active)
 {
-  GstClockTime time = 0LL;
-  GstClockClass *cclass;
-
   g_return_if_fail (GST_IS_CLOCK (clock));
 
-  clock->active = active;
+  GST_ERROR_OBJECT (clock, "called deprecated function that does nothing now.");
 
-  cclass = GST_CLOCK_GET_CLASS (clock);
-	        
-  if (cclass->get_internal_time) {
-    time = cclass->get_internal_time (clock);
-  }
-
-  GST_LOCK (clock);
-  if (active) {
-    clock->start_time = time - clock->last_time;
-    clock->accept_discont = TRUE;
-  }
-  else {
-    clock->last_time = time - clock->start_time;
-    clock->accept_discont = FALSE;
-  }
-  g_list_foreach (clock->entries, (GFunc) gst_clock_reschedule_func, NULL);
-  GST_UNLOCK (clock);
-
-  g_mutex_lock (clock->active_mutex);	
-  g_cond_broadcast (clock->active_cond);	
-  g_mutex_unlock (clock->active_mutex);	
+  return;
 }
 
 /**
@@ -524,11 +531,13 @@ gst_clock_set_active (GstClock *clock, gboolean active)
  * Returns: TRUE if the clock is active.
  */
 gboolean
-gst_clock_is_active (GstClock *clock)
+gst_clock_is_active (GstClock * clock)
 {
   g_return_val_if_fail (GST_IS_CLOCK (clock), FALSE);
 
-  return clock->active;
+  GST_WARNING_OBJECT (clock, "called deprecated function.");
+
+  return TRUE;
 }
 
 /**
@@ -538,23 +547,25 @@ gst_clock_is_active (GstClock *clock)
  * Reset the clock to time 0.
  */
 void
-gst_clock_reset (GstClock *clock)
+gst_clock_reset (GstClock * clock)
 {
-  GstClockTime time = 0LL;
+  GstClockTime time = G_GINT64_CONSTANT (0);
   GstClockClass *cclass;
 
   g_return_if_fail (GST_IS_CLOCK (clock));
 
+  GST_ERROR_OBJECT (clock, "called deprecated function.");
+
   cclass = GST_CLOCK_GET_CLASS (clock);
-	        
+
   if (cclass->get_internal_time) {
     time = cclass->get_internal_time (clock);
   }
 
   GST_LOCK (clock);
-  clock->active = FALSE;
+  //clock->active = FALSE;
   clock->start_time = time;
-  clock->last_time = 0LL;
+  clock->last_time = G_GINT64_CONSTANT (0);
   g_list_foreach (clock->entries, (GFunc) gst_clock_reschedule_func, NULL);
   GST_UNLOCK (clock);
 }
@@ -571,49 +582,11 @@ gst_clock_reset (GstClock *clock)
  * discontinuitity in the pipeline is honoured.
  */
 gboolean
-gst_clock_handle_discont (GstClock *clock, guint64 time)
+gst_clock_handle_discont (GstClock * clock, guint64 time)
 {
-  GstClockTime itime = 0LL;
+  GST_ERROR_OBJECT (clock, "called deprecated function.");
 
-  GST_DEBUG (GST_CAT_CLOCK, "clock discont %" G_GUINT64_FORMAT
-		            " %" G_GUINT64_FORMAT " %d",
-			    time, clock->start_time, clock->accept_discont);
-
-  if (time == GST_CLOCK_TIME_NONE)
-    return TRUE;
-
-  GST_LOCK (clock);
-  if (clock->accept_discont) {
-    GstClockClass *cclass;
-
-    cclass = GST_CLOCK_GET_CLASS (clock);
-	  
-    if (cclass->get_internal_time) {
-      itime = cclass->get_internal_time (clock);
-    }
-  }
-  else {
-    GST_UNLOCK (clock);
-    GST_DEBUG (GST_CAT_CLOCK, "clock discont refused %" G_GUINT64_FORMAT
-		              " %" G_GUINT64_FORMAT,
-			      time, clock->start_time);
-    return FALSE;
-  }
-
-  clock->start_time = itime - time;
-  clock->last_time = time;
-  clock->accept_discont = FALSE;
-  g_list_foreach (clock->entries, (GFunc) gst_clock_reschedule_func, NULL);
-  GST_UNLOCK (clock);
-
-  GST_DEBUG (GST_CAT_CLOCK, "new time %" G_GUINT64_FORMAT,
-	     gst_clock_get_time (clock));
-
-  g_mutex_lock (clock->active_mutex);
-  g_cond_broadcast (clock->active_cond);
-  g_mutex_unlock (clock->active_mutex);
-
-  return TRUE;
+  return FALSE;
 }
 
 /**
@@ -626,34 +599,81 @@ gst_clock_handle_discont (GstClock *clock, guint64 time)
  * Returns: the time of the clock.
  */
 GstClockTime
-gst_clock_get_time (GstClock *clock)
+gst_clock_get_time (GstClock * clock)
 {
-  GstClockTime ret = 0LL;
+  GstClockTime ret = G_GINT64_CONSTANT (0);
+  GstClockClass *cclass;
 
-  g_return_val_if_fail (GST_IS_CLOCK (clock), 0LL);
+  g_return_val_if_fail (GST_IS_CLOCK (clock), G_GINT64_CONSTANT (0));
 
-  if (!clock->active) {
-    /* clock is not activen return previous time */
-    ret = clock->last_time;
+  cclass = GST_CLOCK_GET_CLASS (clock);
+
+  if (cclass->get_internal_time) {
+    ret = cclass->get_internal_time (clock) - clock->start_time;
   }
-  else {
-    GstClockClass *cclass;
-
-    cclass = GST_CLOCK_GET_CLASS (clock);
-
-    if (cclass->get_internal_time) {
-      ret = cclass->get_internal_time (clock) - clock->start_time;
-    }
-    /* make sure the time is increasing, else return last_time */
-    if ((gint64) ret < (gint64) clock->last_time) {
-      ret = clock->last_time;
-    }
-    else {
-      clock->last_time = ret;
-    }
+  /* make sure the time is increasing, else return last_time */
+  if ((gint64) ret < (gint64) clock->last_time) {
+    ret = clock->last_time;
+  } else {
+    clock->last_time = ret;
   }
 
   return ret;
+}
+
+/**
+ * gst_clock_get_event_time:
+ * @clock: clock to query
+ * 
+ * Gets the "event time" of a given clock. An event on the clock happens
+ * whenever this function is called. This ensures that multiple events that
+ * happen shortly after each other are treated as if they happened at the same
+ * time. GStreamer uses to keep state changes of multiple elements in sync.
+ *
+ * Returns: the time of the event
+ */
+GstClockTime
+gst_clock_get_event_time (GstClock * clock)
+{
+  return gst_clock_get_event_time_delay (clock, 0);
+}
+
+/**
+ * gst_clock_get_event_time_delay:
+ * @clock: clock to query
+ * @delay: time before the event actually occurs
+ *
+ * Gets the "event time" of a given clock. An event on the clock happens
+ * whenever this function is called. This ensures that multiple events that
+ * happen shortly after each other are treated as if they happened at the same
+ * time. GStreamer uses to keep state changes of multiple elements in sync.
+ *
+ * When calling this function, the specified delay will be added to the current
+ * time to produce the event time. This can be used for events that are
+ * scheduled to happen at some point in the future.
+ *
+ * Returns: the time of the event
+ */
+GstClockTime
+gst_clock_get_event_time_delay (GstClock * clock, GstClockTime delay)
+{
+  GstClockTime time;
+
+  g_return_val_if_fail (GST_IS_CLOCK (clock), GST_CLOCK_TIME_NONE);
+
+  time = gst_clock_get_time (clock);
+
+  if (ABS (GST_CLOCK_DIFF (clock->last_event, time + delay)) <
+      clock->max_event_diff) {
+    GST_LOG_OBJECT (clock, "reporting last event time %" G_GUINT64_FORMAT,
+        clock->last_event);
+  } else {
+    clock->last_event = time + delay;
+    GST_LOG_OBJECT (clock, "reporting new event time %" G_GUINT64_FORMAT,
+        clock->last_event);
+  }
+
+  return clock->last_event;
 }
 
 /**
@@ -665,7 +685,7 @@ gst_clock_get_time (GstClock *clock)
  * Returns: a clockid or NULL is no event is pending.
  */
 GstClockID
-gst_clock_get_next_id (GstClock *clock)
+gst_clock_get_next_id (GstClock * clock)
 {
   GstClockEntry *entry = NULL;
 
@@ -680,37 +700,43 @@ gst_clock_get_next_id (GstClock *clock)
 }
 
 static void
-gst_clock_update_stats (GstClock *clock)
+gst_clock_update_stats (GstClock * clock)
 {
 }
 
 static void
-gst_clock_set_property (GObject *object, guint prop_id,
-     		        const GValue *value, GParamSpec *pspec)
+gst_clock_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
 {
   GstClock *clock;
-	     
+
   clock = GST_CLOCK (object);
 
   switch (prop_id) {
     case ARG_STATS:
       clock->stats = g_value_get_boolean (value);
+      g_object_notify (object, "stats");
       break;
     case ARG_MAX_DIFF:
       clock->max_diff = g_value_get_int64 (value);
+      g_object_notify (object, "max-diff");
+      break;
+    case ARG_EVENT_DIFF:
+      clock->max_event_diff = g_value_get_uint64 (value);
+      g_object_notify (object, "event-diff");
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
-   }
+  }
 }
 
 static void
-gst_clock_get_property (GObject *object, guint prop_id, 
-			GValue *value, GParamSpec * pspec)
+gst_clock_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec)
 {
   GstClock *clock;
-	     
+
   clock = GST_CLOCK (object);
 
   switch (prop_id) {
@@ -720,8 +746,11 @@ gst_clock_get_property (GObject *object, guint prop_id,
     case ARG_MAX_DIFF:
       g_value_set_int64 (value, clock->max_diff);
       break;
+    case ARG_EVENT_DIFF:
+      g_value_set_uint64 (value, clock->max_event_diff);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
-   }
+  }
 }

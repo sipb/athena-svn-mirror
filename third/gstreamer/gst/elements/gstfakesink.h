@@ -24,13 +24,9 @@
 #ifndef __GST_FAKESINK_H__
 #define __GST_FAKESINK_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
-
-GstElementDetails gst_fakesink_details;
 
 
 #define GST_TYPE_FAKESINK \
@@ -44,6 +40,16 @@ GstElementDetails gst_fakesink_details;
 #define GST_IS_FAKESINK_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_FAKESINK))
 
+typedef enum {
+  FAKESINK_STATE_ERROR_NONE = 0,
+  FAKESINK_STATE_ERROR_NULL_READY,
+  FAKESINK_STATE_ERROR_READY_PAUSED,
+  FAKESINK_STATE_ERROR_PAUSED_PLAYING,
+  FAKESINK_STATE_ERROR_PLAYING_PAUSED,
+  FAKESINK_STATE_ERROR_PAUSED_READY,
+  FAKESINK_STATE_ERROR_READY_NULL
+} GstFakeSinkStateError;
+
 typedef struct _GstFakeSink GstFakeSink;
 typedef struct _GstFakeSinkClass GstFakeSinkClass;
 
@@ -53,7 +59,9 @@ struct _GstFakeSink {
   gboolean 	 silent;
   gboolean 	 dump;
   gboolean 	 sync;
+  gboolean 	 signal_handoffs;
   GstClock 	*clock;
+  GstFakeSinkStateError state_error;
 
   gchar 	*last_message;
 };
@@ -66,8 +74,6 @@ struct _GstFakeSinkClass {
 };
 
 GType gst_fakesink_get_type(void);
-
-gboolean gst_fakesink_factory_init (GstElementFactory *factory);
 
 G_END_DECLS
 

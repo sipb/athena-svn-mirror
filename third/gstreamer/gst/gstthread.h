@@ -31,13 +31,14 @@
 
 G_BEGIN_DECLS
 
-extern GstElementDetails gst_thread_details;
-
+extern GPrivate *gst_thread_current;
 
 typedef enum {
-  GST_THREAD_STATE_STARTED	= GST_BIN_FLAG_LAST,
-  GST_THREAD_STATE_SPINNING,
+  GST_THREAD_STATE_SPINNING	= GST_BIN_FLAG_LAST,
   GST_THREAD_STATE_REAPING,
+  /* when iterating with mutex locked (special cases)
+     may only be set by thread itself */
+  GST_THREAD_MUTEX_LOCKED,
 
   /* padding */
   GST_THREAD_FLAG_LAST 		= GST_BIN_FLAG_LAST + 4
@@ -58,17 +59,11 @@ struct _GstThread {
 
   GThread 	*thread_id;		/* id of the thread, if any */
   GThreadPriority priority;
-  gpointer	*stack;
-  guint 	 stack_size;		/* stack size */
-  gint		 pid;			/* the pid of the thread */
-  gint		 ppid;			/* the pid of the thread's parent process */
+
   GMutex 	*lock;			/* thread lock/condititon pairs */
-  GCond 	*cond_t;		/* used to control the thread */
-  GCond 	*cond_m;		/* used to control main thread */
+  GCond 	*cond;			/* used to control the thread */
 
-  gint		 transition;		/* the current state transition */
-
-  gpointer 	 dummy[8];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstThreadClass {
@@ -77,7 +72,7 @@ struct _GstThreadClass {
   /* signals */
   void	(*shutdown)	(GstThread *thread);
 
-  gpointer 	 dummy[8];
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType 	gst_thread_get_type	(void);
@@ -85,9 +80,9 @@ GType 	gst_thread_get_type	(void);
 GstElement*	gst_thread_new		(const gchar *name);
 
 void		gst_thread_set_priority (GstThread *thread, GThreadPriority priority);
+GstThread *	gst_thread_get_current	(void);
 
 G_END_DECLS
 
 
-#endif /* __GST_THREAD_H__ */     
-
+#endif /* __GST_THREAD_H__ */

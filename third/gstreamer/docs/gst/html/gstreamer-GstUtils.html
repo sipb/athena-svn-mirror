@@ -1,0 +1,221 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstUtils</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="gstreamer-GstUriType.html" title="GstURIType"><link rel="next" href="gstreamer-GstValue.html" title="GstValue"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gstreamer-GstUriType.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstValue.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gstreamer-GstUtils"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstUtils</span></h2><p>GstUtils &#8212; various utility functions</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+void        <a href="gstreamer-GstUtils.html#gst-util-set-value-from-string">gst_util_set_value_from_string</a>  (GValue *value,
+                                             const gchar *value_str);
+void        <a href="gstreamer-GstUtils.html#gst-util-set-object-arg">gst_util_set_object_arg</a>         (GObject *object,
+                                             const gchar *name,
+                                             const gchar *value);
+void        <a href="gstreamer-GstUtils.html#gst-util-dump-mem">gst_util_dump_mem</a>               (const guchar *mem,
+                                             guint size);
+void        <a href="gstreamer-GstUtils.html#gst-print-pad-caps">gst_print_pad_caps</a>              (GString *buf,
+                                             gint indent,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *pad);
+void        <a href="gstreamer-GstUtils.html#gst-print-element-args">gst_print_element_args</a>          (GString *buf,
+                                             gint indent,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);
+#define     <a href="gstreamer-GstUtils.html#GST-BOILERPLATE-FULL-CAPS">GST_BOILERPLATE_FULL</a>            (type, type_as_function, parent_type, parent_type_macro, additional_initializations)
+#define     <a href="gstreamer-GstUtils.html#GST-BOILERPLATE-CAPS">GST_BOILERPLATE</a>                 (type,type_as_function,parent_type,parent_type_macro)
+#define     <a href="gstreamer-GstUtils.html#GST-CALL-PARENT-CAPS">GST_CALL_PARENT</a>                 (parent_class_cast, name, args)
+#define     <a href="gstreamer-GstUtils.html#GST-CALL-PARENT-WITH-DEFAULT-CAPS">GST_CALL_PARENT_WITH_DEFAULT</a>    (parent_class_cast, name, args, def_return)
+#define     <a href="gstreamer-GstUtils.html#GST-HAVE-UNALIGNED-ACCESS-CAPS">GST_HAVE_UNALIGNED_ACCESS</a>
+#define     <a href="gstreamer-GstUtils.html#GST-READ-UINT8-CAPS">GST_READ_UINT8</a>                  (data)
+#define     <a href="gstreamer-GstUtils.html#GST-READ-UINT16-LE-CAPS">GST_READ_UINT16_LE</a>              (data)
+#define     <a href="gstreamer-GstUtils.html#GST-READ-UINT16-BE-CAPS">GST_READ_UINT16_BE</a>              (data)
+#define     <a href="gstreamer-GstUtils.html#GST-READ-UINT32-LE-CAPS">GST_READ_UINT32_LE</a>              (data)
+#define     <a href="gstreamer-GstUtils.html#GST-READ-UINT32-BE-CAPS">GST_READ_UINT32_BE</a>              (data)
+#define     <a href="gstreamer-GstUtils.html#GST-READ-UINT64-LE-CAPS">GST_READ_UINT64_LE</a>              (data)
+#define     <a href="gstreamer-GstUtils.html#GST-READ-UINT64-BE-CAPS">GST_READ_UINT64_BE</a>              (data)
+#define     <a href="gstreamer-GstUtils.html#GST-WRITE-UINT8-CAPS">GST_WRITE_UINT8</a>                 (data, num)
+#define     <a href="gstreamer-GstUtils.html#GST-WRITE-UINT16-LE-CAPS">GST_WRITE_UINT16_LE</a>             (data, num)
+#define     <a href="gstreamer-GstUtils.html#GST-WRITE-UINT16-BE-CAPS">GST_WRITE_UINT16_BE</a>             (data, num)
+#define     <a href="gstreamer-GstUtils.html#GST-WRITE-UINT32-LE-CAPS">GST_WRITE_UINT32_LE</a>             (data, num)
+#define     <a href="gstreamer-GstUtils.html#GST-WRITE-UINT32-BE-CAPS">GST_WRITE_UINT32_BE</a>             (data, num)
+#define     <a href="gstreamer-GstUtils.html#GST-WRITE-UINT64-LE-CAPS">GST_WRITE_UINT64_LE</a>             (data, num)
+#define     <a href="gstreamer-GstUtils.html#GST-WRITE-UINT64-BE-CAPS">GST_WRITE_UINT64_BE</a>             (data, num)
+</pre></div><div class="refsect1" lang="en"><a name="id3006657"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id3006667"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id3006672"></a><h3><a name="gst-util-set-value-from-string"></a>gst_util_set_value_from_string ()</h3><a class="indexterm" name="id3006684"></a><pre class="programlisting">void        gst_util_set_value_from_string  (GValue *value,
+                                             const gchar *value_str);</pre><p>
+Converts the string to the type of the value and
+sets the value with it.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the value to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value_str</tt></i> :</span></td><td> the string to get the value from
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3006757"></a><h3><a name="gst-util-set-object-arg"></a>gst_util_set_object_arg ()</h3><a class="indexterm" name="id3006769"></a><pre class="programlisting">void        gst_util_set_object_arg         (GObject *object,
+                                             const gchar *name,
+                                             const gchar *value);</pre><p>
+Convertes the string value to the type of the objects argument and
+sets the argument with it.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>object</tt></i> :</span></td><td> the object to set the argument of
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the argument to set
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>value</tt></i> :</span></td><td> the string value to set
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3006864"></a><h3><a name="gst-util-dump-mem"></a>gst_util_dump_mem ()</h3><a class="indexterm" name="id3006876"></a><pre class="programlisting">void        gst_util_dump_mem               (const guchar *mem,
+                                             guint size);</pre><p>
+Dumps the memory block into a hex representation. Useful for debugging.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>mem</tt></i> :</span></td><td> a pointer to the memory to dump
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>size</tt></i> :</span></td><td> the size of the memory block to dump
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3006949"></a><h3><a name="gst-print-pad-caps"></a>gst_print_pad_caps ()</h3><a class="indexterm" name="id3006960"></a><pre class="programlisting">void        gst_print_pad_caps              (GString *buf,
+                                             gint indent,
+                                             <a href="GstPad.html" title="GstPad">GstPad</a> *pad);</pre><p>
+Write the pad capabilities in a human readable format into
+the given GString.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buf</tt></i> :</span></td><td> the buffer to print the caps in
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>indent</tt></i> :</span></td><td> initial indentation
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pad</tt></i> :</span></td><td> the pad to print the caps from
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007054"></a><h3><a name="gst-print-element-args"></a>gst_print_element_args ()</h3><a class="indexterm" name="id3007065"></a><pre class="programlisting">void        gst_print_element_args          (GString *buf,
+                                             gint indent,
+                                             <a href="GstElement.html" title="GstElement">GstElement</a> *element);</pre><p>
+Print the element argument in a human readable format in the given
+GString.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>buf</tt></i> :</span></td><td> the buffer to print the args in
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>indent</tt></i> :</span></td><td> initial indentation
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>element</tt></i> :</span></td><td> the element to print the args of
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007159"></a><h3><a name="GST-BOILERPLATE-FULL-CAPS"></a>GST_BOILERPLATE_FULL()</h3><a class="indexterm" name="id3007170"></a><pre class="programlisting">#define     GST_BOILERPLATE_FULL(type, type_as_function, parent_type, parent_type_macro, additional_initializations)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type_as_function</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent_type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent_type_macro</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>additional_initializations</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007260"></a><h3><a name="GST-BOILERPLATE-CAPS"></a>GST_BOILERPLATE()</h3><a class="indexterm" name="id3007272"></a><pre class="programlisting">#define     GST_BOILERPLATE(type,type_as_function,parent_type,parent_type_macro)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type_as_function</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent_type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>parent_type_macro</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007346"></a><h3><a name="GST-CALL-PARENT-CAPS"></a>GST_CALL_PARENT()</h3><a class="indexterm" name="id3007357"></a><pre class="programlisting">#define     GST_CALL_PARENT(parent_class_cast, name, args)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>parent_class_cast</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>args</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007418"></a><h3><a name="GST-CALL-PARENT-WITH-DEFAULT-CAPS"></a>GST_CALL_PARENT_WITH_DEFAULT()</h3><a class="indexterm" name="id3007429"></a><pre class="programlisting">#define     GST_CALL_PARENT_WITH_DEFAULT(parent_class_cast, name, args, def_return)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>parent_class_cast</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>args</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>def_return</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007504"></a><h3><a name="GST-HAVE-UNALIGNED-ACCESS-CAPS"></a>GST_HAVE_UNALIGNED_ACCESS</h3><a class="indexterm" name="id3007516"></a><pre class="programlisting">#define GST_HAVE_UNALIGNED_ACCESS 1
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id3007532"></a><h3><a name="GST-READ-UINT8-CAPS"></a>GST_READ_UINT8()</h3><a class="indexterm" name="id3007542"></a><pre class="programlisting">#define     GST_READ_UINT8(data)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007575"></a><h3><a name="GST-READ-UINT16-LE-CAPS"></a>GST_READ_UINT16_LE()</h3><a class="indexterm" name="id3007586"></a><pre class="programlisting">#define     GST_READ_UINT16_LE(data)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007619"></a><h3><a name="GST-READ-UINT16-BE-CAPS"></a>GST_READ_UINT16_BE()</h3><a class="indexterm" name="id3007630"></a><pre class="programlisting">#define     GST_READ_UINT16_BE(data)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007664"></a><h3><a name="GST-READ-UINT32-LE-CAPS"></a>GST_READ_UINT32_LE()</h3><a class="indexterm" name="id3007675"></a><pre class="programlisting">#define     GST_READ_UINT32_LE(data)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007708"></a><h3><a name="GST-READ-UINT32-BE-CAPS"></a>GST_READ_UINT32_BE()</h3><a class="indexterm" name="id3007720"></a><pre class="programlisting">#define     GST_READ_UINT32_BE(data)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007753"></a><h3><a name="GST-READ-UINT64-LE-CAPS"></a>GST_READ_UINT64_LE()</h3><a class="indexterm" name="id3007765"></a><pre class="programlisting">#define     GST_READ_UINT64_LE(data)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007798"></a><h3><a name="GST-READ-UINT64-BE-CAPS"></a>GST_READ_UINT64_BE()</h3><a class="indexterm" name="id3007809"></a><pre class="programlisting">#define     GST_READ_UINT64_BE(data)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007842"></a><h3><a name="GST-WRITE-UINT8-CAPS"></a>GST_WRITE_UINT8()</h3><a class="indexterm" name="id3007854"></a><pre class="programlisting">#define     GST_WRITE_UINT8(data, num)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>num</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007900"></a><h3><a name="GST-WRITE-UINT16-LE-CAPS"></a>GST_WRITE_UINT16_LE()</h3><a class="indexterm" name="id3007912"></a><pre class="programlisting">#define     GST_WRITE_UINT16_LE(data, num)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>num</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3007958"></a><h3><a name="GST-WRITE-UINT16-BE-CAPS"></a>GST_WRITE_UINT16_BE()</h3><a class="indexterm" name="id3007970"></a><pre class="programlisting">#define     GST_WRITE_UINT16_BE(data, num)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>num</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008016"></a><h3><a name="GST-WRITE-UINT32-LE-CAPS"></a>GST_WRITE_UINT32_LE()</h3><a class="indexterm" name="id3008028"></a><pre class="programlisting">#define     GST_WRITE_UINT32_LE(data, num)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>num</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008074"></a><h3><a name="GST-WRITE-UINT32-BE-CAPS"></a>GST_WRITE_UINT32_BE()</h3><a class="indexterm" name="id3008086"></a><pre class="programlisting">#define     GST_WRITE_UINT32_BE(data, num)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>num</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008132"></a><h3><a name="GST-WRITE-UINT64-LE-CAPS"></a>GST_WRITE_UINT64_LE()</h3><a class="indexterm" name="id3008144"></a><pre class="programlisting">#define     GST_WRITE_UINT64_LE(data, num)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>num</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id3008190"></a><h3><a name="GST-WRITE-UINT64-BE-CAPS"></a>GST_WRITE_UINT64_BE()</h3><a class="indexterm" name="id3008202"></a><pre class="programlisting">#define     GST_WRITE_UINT64_BE(data, num)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>num</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gstreamer-GstUriType.html"><b>&lt;&lt; GstURIType</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstValue.html"><b>GstValue &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,114 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GstThread</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GStreamer 0.8 Core API Reference"><link rel="up" href="gstreamer.html" title="GStreamer Core Library"><link rel="previous" href="GstTagSetter.html" title="GstTagSetter"><link rel="next" href="gstreamer-GstTypeFind.html" title="GstTypeFindElement"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GstTagSetter.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gstreamer.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GStreamer 0.8 Core API Reference</th><td><a accesskey="n" href="gstreamer-GstTypeFind.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GstThread"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GstThread</span></h2><p>GstThread &#8212; A <a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a> that executes automatically using a separate thread</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="GstThread.html#GstThread-struct">GstThread</a>;
+#define     <a href="GstThread.html#GST-TYPE-THREAD-CAPS">GST_TYPE_THREAD</a>
+extern      GPrivate *<a href="GstThread.html#gst-thread-current">gst_thread_current</a>;
+enum        <a href="GstThread.html#GstThreadState">GstThreadState</a>;
+<a href="GstElement.html" title="GstElement">GstElement</a>* <a href="GstThread.html#gst-thread-new">gst_thread_new</a>                  (const gchar *name);
+void        <a href="GstThread.html#gst-thread-set-priority">gst_thread_set_priority</a>         (<a href="GstThread.html" title="GstThread">GstThread</a> *thread,
+                                             GThreadPriority priority);
+<a href="GstThread.html" title="GstThread">GstThread</a>*  <a href="GstThread.html#gst-thread-get-current">gst_thread_get_current</a>          (void);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2997393"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----<a href="GstObject.html" title="GstObject">GstObject</a>
+         +----<a href="GstElement.html" title="GstElement">GstElement</a>
+               +----<a href="GstBin.html" title="GstBin">GstBin</a>
+                     +----GstThread
+</pre></div><div class="refsect1" lang="en"><a name="id2997434"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GstThread.html#GstThread--priority">priority</a>"             GstThreadPriority    : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2997465"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GstThread.html#GstThread-shutdown">shutdown</a>"  void        user_function      (<a href="GstThread.html" title="GstThread">GstThread</a> *gstthread,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2997508"></a><h2>Description</h2><p>
+A bin that will become a thread if possible when the pipeline is started
+up. It can contain any set of GstObjects. 
+</p><p>
+A Thread can act as a toplevel bin as it has its own scheduler.
+</p></div><div class="refsect1" lang="en"><a name="id2997524"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2997530"></a><h3><a name="GstThread-struct"></a>struct GstThread</h3><a class="indexterm" name="id2997541"></a><pre class="programlisting">struct GstThread;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2997556"></a><h3><a name="GST-TYPE-THREAD-CAPS"></a>GST_TYPE_THREAD</h3><a class="indexterm" name="id2997568"></a><pre class="programlisting">#define GST_TYPE_THREAD 		(gst_thread_get_type())
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2997583"></a><h3><a name="gst-thread-current"></a>gst_thread_current</h3><a class="indexterm" name="id2997594"></a><pre class="programlisting">extern GPrivate *gst_thread_current;
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2997609"></a><h3><a name="GstThreadState"></a>enum GstThreadState</h3><a class="indexterm" name="id2997620"></a><pre class="programlisting">typedef enum {
+  GST_THREAD_STATE_SPINNING	= GST_BIN_FLAG_LAST,
+  GST_THREAD_STATE_REAPING,
+  /* when iterating with mutex locked (special cases)
+     may only be set by thread itself */
+  GST_THREAD_MUTEX_LOCKED,
+
+  /* padding */
+  GST_THREAD_FLAG_LAST 		= GST_BIN_FLAG_LAST + 4
+} GstThreadState;
+</pre><p>
+Thread flags:
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">GST_THREAD_STATE_SPINNING</tt></span></td><td>The thread is runnning
+</td></tr><tr><td><span class="term"><tt class="literal">GST_THREAD_STATE_REAPING</tt></span></td><td>The thread is ending.
+</td></tr><tr><td><span class="term"><tt class="literal">GST_THREAD_MUTEX_LOCKED</tt></span></td><td>
+</td></tr><tr><td><span class="term"><tt class="literal">GST_THREAD_FLAG_LAST</tt></span></td><td>subclass use this to start their enumeration
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997704"></a><h3><a name="gst-thread-new"></a>gst_thread_new ()</h3><a class="indexterm" name="id2997716"></a><pre class="programlisting"><a href="GstElement.html" title="GstElement">GstElement</a>* gst_thread_new                  (const gchar *name);</pre><p>
+Create a new thread with the given name.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> the name of the thread
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new thread
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997776"></a><h3><a name="gst-thread-set-priority"></a>gst_thread_set_priority ()</h3><a class="indexterm" name="id2997787"></a><pre class="programlisting">void        gst_thread_set_priority         (<a href="GstThread.html" title="GstThread">GstThread</a> *thread,
+                                             GThreadPriority priority);</pre><p>
+change the thread's priority</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>thread</tt></i> :</span></td><td> the thread to change 
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>priority</tt></i> :</span></td><td> the new priority for the thread
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2997860"></a><h3><a name="gst-thread-get-current"></a>gst_thread_get_current ()</h3><a class="indexterm" name="id2997872"></a><pre class="programlisting"><a href="GstThread.html" title="GstThread">GstThread</a>*  gst_thread_get_current          (void);</pre><p>
+Gets the current GstThread.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The current GstThread or NULL if you are not running inside a 
+         <a href="GstThread.html" title="GstThread"><span class="type">GstThread</span></a>.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2997921"></a><h2>Properties</h2><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><a name="GstThread--priority"></a>"<tt class="literal">priority</tt>" (GstThreadPriority : Read / Write)</span></td><td><p>
+The thread priority
+</p></td></tr></tbody></table></div></div><div class="refsect1" lang="en"><a name="id2997961"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2997966"></a><h3><a name="GstThread-shutdown"></a>The "shutdown" signal</h3><pre class="programlisting">void        user_function                  (<a href="GstThread.html" title="GstThread">GstThread</a> *gstthread,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gstthread</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2998040"></a><h2>See Also</h2><p>
+<a href="GstBin.html" title="GstBin"><span class="type">GstBin</span></a>, <a href="GstPipeline.html" title="GstPipeline"><span class="type">GstPipeline</span></a>
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GstTagSetter.html"><b>&lt;&lt; GstTagSetter</b></a></td><td align="right"><a accesskey="n" href="gstreamer-GstTypeFind.html"><b>GstTypeFindElement &gt;&gt;</b></a></td></tr></table></body></html>

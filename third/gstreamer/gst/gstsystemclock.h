@@ -41,10 +41,17 @@ typedef struct _GstSystemClockClass GstSystemClockClass;
 
 struct _GstSystemClock {
   GstClock 	 clock;
+
+  GMutex *	 mutex;
+  GCond *	 cond;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 struct _GstSystemClockClass {
   GstClockClass  parent_class;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GType 			gst_system_clock_get_type 	(void);

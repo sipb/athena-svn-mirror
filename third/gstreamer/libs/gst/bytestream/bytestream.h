@@ -20,7 +20,9 @@
 #ifndef __GST_BYTESTREAM_H__
 #define __GST_BYTESTREAM_H__
 
-#include <gst/gst.h>
+#include <glib.h>
+#include <gst/gstpad.h>
+#include <gst/gstevent.h>
 
 G_BEGIN_DECLS
 
@@ -37,7 +39,7 @@ struct _GstByteStream {
 
   /* we keep state of assembled pieces */
   guint8	*assembled;
-  guint32	 assembled_len;
+  guint32	 assembled_len; /* only valid when assembled != NULL */
 
   /* this is needed for gst_bytestream_tell */
   guint64	 offset;
@@ -45,16 +47,20 @@ struct _GstByteStream {
 
   /* if we are in the seek state (waiting for DISCONT) */
   gboolean	 in_seek;
+
+  gpointer _gst_reserved[GST_PADDING];
 };
 
 GstByteStream*		gst_bytestream_new		(GstPad *pad);
 void			gst_bytestream_destroy		(GstByteStream *bs);
 
+void			gst_bytestream_reset		(GstByteStream *bs);
 guint32			gst_bytestream_read		(GstByteStream *bs, GstBuffer** buf, guint32 len);
 guint64			gst_bytestream_tell		(GstByteStream *bs);
 guint64			gst_bytestream_length		(GstByteStream *bs);
 gboolean		gst_bytestream_size_hint	(GstByteStream *bs, guint32 size);
-gboolean		gst_bytestream_seek		(GstByteStream *bs, gint64 offset, GstSeekType type);
+gboolean		gst_bytestream_seek		(GstByteStream *bs, gint64 offset, GstSeekType method);
+
 guint32			gst_bytestream_peek		(GstByteStream *bs, GstBuffer** buf, guint32 len);
 guint32			gst_bytestream_peek_bytes	(GstByteStream *bs, guint8** data, guint32 len);
 gboolean		gst_bytestream_flush		(GstByteStream *bs, guint32 len);

@@ -1,0 +1,295 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+                  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+<!ENTITY % image-entities SYSTEM "image.entities">
+%image-entities;
+<!ENTITY % version-entities SYSTEM "version.entities">
+%version-entities;
+
+<!-- Part 1: Overview -->
+<!ENTITY INTRO SYSTEM "intro.xml">
+<!ENTITY MOTIVATION SYSTEM "motivation.xml">
+<!ENTITY GOALS SYSTEM "goals.xml">
+
+<!-- Part 2: Basic Concepts -->
+<!ENTITY ELEMENTS SYSTEM "elements.xml">
+<!ENTITY PADS SYSTEM "pads.xml">
+<!ENTITY LINKS SYSTEM "links.xml">
+<!ENTITY BINS SYSTEM "bins.xml">
+<!ENTITY BUFFERS SYSTEM "buffers.xml">
+<!ENTITY STATES SYSTEM "states.xml">
+<!ENTITY PLUGINS SYSTEM "plugins.xml">
+
+<!-- Part 3: Basic API -->
+<!ENTITY INIT-API SYSTEM "init-api.xml">
+<!ENTITY ELEMENTS-API SYSTEM "elements-api.xml">
+<!ENTITY PADS-API SYSTEM "pads-api.xml">
+<!ENTITY LINKS-API SYSTEM "links-api.xml">
+<!ENTITY BINS-API SYSTEM "bins-api.xml">
+<!ENTITY BUFFERS-API SYSTEM "buffers-api.xml">
+<!ENTITY STATES-API SYSTEM "states-api.xml">
+<!ENTITY PLUGINS-API SYSTEM "plugins-api.xml">
+
+<!-- Part 4: Building An Application -->
+<!ENTITY HELLOWORLD SYSTEM "helloworld.xml">
+<!ENTITY FACTORIES SYSTEM "factories.xml">
+<!ENTITY AUTOPLUGGING SYSTEM "autoplugging.xml">
+<!ENTITY HELLOWORLD2 SYSTEM "helloworld2.xml">
+
+<!-- Part 5: Advanced Concepts -->
+<!ENTITY THREADS SYSTEM "threads.xml">
+<!ENTITY QUEUES SYSTEM "queues.xml">
+<!ENTITY COTHREADS SYSTEM "cothreads.xml">
+<!ENTITY SCHEDULERS SYSTEM "schedulers.xml">
+<!ENTITY CLOCKS SYSTEM "clocks.xml">
+<!ENTITY DYNAMIC SYSTEM "dynamic.xml">
+<!ENTITY TYPEDETECTION SYSTEM "typedetection.xml">
+<!ENTITY UTILITY SYSTEM "utility.xml">
+<!ENTITY DPARAMS SYSTEM "dparams-app.xml">
+
+<!ENTITY XML SYSTEM "xml.xml">
+<!ENTITY DEBUGGING SYSTEM "debugging.xml">
+<!ENTITY PROGRAMS SYSTEM "programs.xml">
+<!ENTITY COMPONENTS SYSTEM "components.xml">
+<!ENTITY GNOME SYSTEM "gnome.xml">
+<!ENTITY WIN32 SYSTEM "win32.xml">
+<!ENTITY QUOTES SYSTEM "quotes.xml">
+]>
+
+<book id="index">
+  <bookinfo>
+    
+    <authorgroup>
+      <author>
+	<firstname>Wim</firstname>
+	<surname>Taymans</surname>
+	<authorblurb>
+	  <para>
+	    <email>wim.taymans@chello.be</email>
+	  </para>
+	</authorblurb>
+      </author>
+      <author>
+	<firstname>Steve</firstname>
+	<surname>Baker</surname>
+	<authorblurb>
+	  <para>
+	    <email>stevebaker_org@yahoo.co.uk</email>
+	  </para>
+	</authorblurb>
+      </author>
+      <author>
+	<firstname>Andy</firstname>
+	<surname>Wingo</surname>
+	<authorblurb>
+	  <para>
+	    <email>wingo@pobox.com</email>
+	  </para>
+	</authorblurb>
+      </author>
+    </authorgroup>
+
+    <legalnotice id="misc-legalnotice">
+      <para>
+	This material may be distributed only subject to the terms and
+        conditions set forth in the Open Publication License, v1.0 or later (the
+        latest version is presently available at <ulink url="
+        http://www.opencontent.org/opl.shtml"
+        type="http">http://www.opencontent.org/opl.shtml</ulink> )
+      </para>
+    </legalnotice>
+
+    <title><application>GStreamer</application> Application Development Manual (&GST_VERSION;)</title>
+
+  </bookinfo>
+      
+<!-- ############# Overview - part ############### -->
+
+  <part id="part-overview"><title>Overview</title>
+    <partintro>
+      <para>
+        <xref linkend="part-overview"/> gives you an overview of
+        <application>GStreamer</application> design goals.
+
+        <xref linkend="part-basic-concepts"/> rapidly covers the basics of
+        <application>GStreamer</application> programming.
+
+        In <xref linkend="part-build-app"/> we will move on to the
+        examples. Since <application>GStreamer</application> uses <ulink
+        url="http://developer.gnome.org/arch/gtk/glib.html" type="http">GLib
+        2.0</ulink>, the reader is assumed to understand the basics of the
+        <ulink url="http://developer.gnome.org/doc/API/2.0/gobject/index.html"
+        type="http">GObject object model</ulink>.
+
+        For a gentle introduction to this system, you may wish to read the
+        <emphasis><ulink url="http://www.gtk.org/tutorial/" type="http">GTK+
+        Tutorial</ulink></emphasis>, Eric Harlow's book <emphasis>Developing
+        Linux Applications with GTK+ and GDK</emphasis> and the  <emphasis>
+        <ulink type="http"
+        url="http://www.le-hacker.org/papers/gobject/index.html">Glib Object
+        system</ulink></emphasis>.
+      </para>
+    </partintro>
+
+<!-- ############ Introduction - chapter ############# -->
+      &INTRO;
+
+      &MOTIVATION;
+
+      &GOALS;
+  </part>
+
+<!-- ############ Basic concepts - part ############# -->
+
+  <part id="part-basic-concepts"><title>Basic Concepts</title>
+    <partintro>
+      <para> 
+        We will first describe the basics of
+        <application>GStreamer</application> programming by introducing the
+        different objects needed to create a media pipeline.
+      </para>
+      <para> 
+        We will use a visual representation of these objects so that we can
+	visualize the more complex pipelines you will learn to build later on.
+      </para>
+    </partintro>
+
+      &ELEMENTS;
+
+      &PADS;
+
+      &PLUGINS;
+
+      &LINKS;
+
+      &BINS;
+
+      &BUFFERS;
+
+      &STATES;
+  </part>
+
+<!-- ############ Basic API - part ############# -->
+  <part id="part-basic-api"><title>Basic API</title>
+      &INIT-API;
+
+      &ELEMENTS-API;
+
+      &PADS-API;
+
+      &PLUGINS-API;
+
+      &LINKS-API;
+
+      &BINS-API;
+
+      &BUFFERS-API;
+
+      &STATES-API;
+
+ 
+  </part>
+
+<!-- ############ Building Apps - part ############# -->
+
+  <part id="part-build-app"><title>Building an application</title>
+
+    <partintro>
+      <para>
+        With the basic concepts out of the way, you're ready to start building a
+        full-scale <application>GStreamer</application> application. 
+      </para>
+      <para>
+        We assume the reader is familiar with GTK+/GNOME programming.
+      </para>
+    </partintro>
+
+      &HELLOWORLD;
+
+      &FACTORIES;
+
+  </part>
+
+<!-- ############ Advanced GStreamer - part ############# -->
+
+  <part id="part-advanced"><title>Advanced <application>GStreamer</application> concepts</title>
+
+    <partintro>
+      <para>
+        In this part we will cover the more advanced features of <application>GStreamer</application>.
+	With the basics you learned in the prevous part you should be 
+	able to create a 'simple' pipeline. If you want more control over
+	the media types and the pipeline you should use the more
+	low-level features of <application>GStreamer</application>.
+      </para>      
+    </partintro>
+
+      &THREADS;
+
+      &QUEUES;
+
+      &COTHREADS;
+
+      &SCHEDULERS;
+
+      &CLOCKS;
+
+      &DYNAMIC;
+
+      &TYPEDETECTION;
+
+      &AUTOPLUGGING;
+
+      &HELLOWORLD2;
+      
+      &DPARAMS;
+  </part>
+
+<!-- ############ XML in GStreamer - part ############# -->
+
+  <part id="part-xml-gstreamer"><title>XML in <application>GStreamer</application></title>
+
+    <partintro>
+      <para>
+        <application>GStreamer</application> has the possibility to serialize the pipelines you
+	create using an XML format. You can load a previously created pipeline by loading the XML
+	file.
+      </para>
+    </partintro>
+
+      &XML;
+  </part>
+
+
+<!-- ############ Appendices - part ############# -->
+
+  <part id="part-appendices">
+    <title>Appendices</title>
+
+    <partintro>
+      <para>
+        <application>GStreamer</application> comes prepackaged with a few
+        programs, and some useful debugging options.
+      </para>
+    </partintro>
+
+      &DEBUGGING;
+
+      &PROGRAMS;
+
+      &COMPONENTS;
+
+      &GNOME;
+
+      &WIN32;
+
+      &QUOTES;
+
+  </part>
+</book>
+
+
+
+
+
+

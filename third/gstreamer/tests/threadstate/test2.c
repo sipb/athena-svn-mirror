@@ -22,12 +22,12 @@
 typedef struct
 {
   GMutex *mutex;
-  GCond  *cond_t;
-  GCond  *cond_p;
-  gint    var;
+  GCond *cond_t;
+  GCond *cond_p;
+  gint var;
 } ThreadInfo;
 
-static void*
+static void *
 thread_loop (void *arg)
 {
   ThreadInfo *info = (ThreadInfo *) arg;
@@ -51,12 +51,13 @@ thread_loop (void *arg)
   return NULL;
 }
 
-gint 
-main (gint argc, gchar *argv[]) 
+gint
+main (gint argc, gchar * argv[])
 {
   ThreadInfo *info;
   GThread *thread;
   GError *error = NULL;
+  gint res = 0;
 
   if (!g_thread_supported ())
     g_thread_init (NULL);
@@ -66,20 +67,17 @@ main (gint argc, gchar *argv[])
   info->cond_t = g_cond_new ();
   info->cond_p = g_cond_new ();
   info->var = 0;
-  
+
   g_print ("main: lock\n");
   g_mutex_lock (info->mutex);
 
-  thread = g_thread_create (thread_loop,
-	                    info, 
-			    TRUE, 
-			    &error);
+  thread = g_thread_create (thread_loop, info, TRUE, &error);
 
   if (error != NULL) {
     g_print ("Unable to start thread: %s\n", error->message);
     g_error_free (error);
-    g_free (info);
-    return -1;
+    res = -1;
+    goto done;
   }
 
   g_print ("main: wait spinup\n");
@@ -92,18 +90,19 @@ main (gint argc, gchar *argv[])
   g_cond_wait (info->cond_t, info->mutex);
 
   g_print ("main: var == %d\n", info->var);
-  if (info->var != 1) 
+  if (info->var != 1) {
     g_print ("main: !!error!! expected var == 1, got %d\n", info->var);
+  }
   g_mutex_unlock (info->mutex);
 
   g_print ("main: join\n");
   g_thread_join (thread);
 
+done:
   g_mutex_free (info->mutex);
   g_cond_free (info->cond_t);
   g_cond_free (info->cond_p);
   g_free (info);
 
-  return 0;
+  return res;
 }
-

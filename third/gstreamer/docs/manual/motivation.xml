@@ -1,20 +1,20 @@
-<chapter id="cha-motivation">
+<chapter id="chapter-motivation">
   <title>Motivation</title>
   <para> 
     Linux has historically lagged behind other operating systems in the multimedia 
-    arena. Microsoft's Windows[tm] and Apple's MacOS[tm] both have strong support 
+    arena. Microsoft's <trademark>Windows</trademark> and Apple's <trademark>MacOS</trademark> both have strong support 
     for multimedia devices, multimedia content creation,
     playback, and realtime processing. Linux, on the other hand, has a poorly integrated 
     collection of multimedia utilities and applications available, which can hardly compete 
     with the professional level of software available for MS Windows and MacOS.
   </para>
 
-  <sect1 id="sec-motivation-problems">
+  <sect1 id="section-motivation-problems">
     <title>Current problems</title>
     <para> 
-      We descibe the typical problems in todays media handling on Linux.
+      We describe the typical problems in today's media handling on Linux.
     </para>
-    <sect2 id="sec-motivation-duplicate">
+    <sect2 id="section-motivation-duplicate">
       <title>Multitude of duplicate code</title>
       <para> 
         The Linux user who wishes to hear a sound file must hunt through their collection of 
@@ -28,7 +28,7 @@
       </para>
 
     </sect2>
-    <sect2 id="sec-motivation-goal">
+    <sect2 id="section-motivation-goal">
       <title>'One goal' media players/libraries</title>
       <para>
         Your typical MPEG player was designed to play MPEG video and audio. Most of
@@ -37,10 +37,10 @@
         filters or special effects to the video or audio data.
       </para> 
       <para>
-        If I wanted to convert an MPEG2 video stream into an AVI file, my best
+        If you want to convert an MPEG2 video stream into an AVI file, your best
         option would be to take all of the MPEG2 decoding algorithms out
-        of the player and duplicate them into my own AVI encoder. These 
-        algorithms cannot easily be shared accross applications.
+        of the player and duplicate them into your own AVI encoder. These 
+        algorithms cannot easily be shared across applications.
       </para> 
       <para>
         Attempts have been made to create libraries for handling various media types.
@@ -51,7 +51,7 @@
       </para> 
     </sect2>
   
-    <sect2 id="sec-motivation-plugin">
+    <sect2 id="section-motivation-plugin">
       <title>Non unified plugin mechanisms</title>
       <para> 
         Your typical media player might have a plugin for different media
@@ -69,12 +69,12 @@
         While GStreamer also uses it own plugin system it offers a very rich
 	framework for the plugin developper and ensures the plugin can be used
 	in a wide range of applications, transparently interacting with other
-	plugins. The Framework that GStreamer provides for the plugins is
+	plugins. The framework that GStreamer provides for the plugins is
 	flexible enough to host even the most demanding plugins.
       </para> 
     </sect2>
 
-    <sect2 id="sec-motivation-network">
+    <sect2 id="section-motivation-network">
       <title>Provision for network transparency</title>
       <para> 
         No infrastructure is present to allow network transparent media
@@ -82,20 +82,22 @@
         same encoder algorithms found in a non-distributed encoder.
       </para> 
       <para> 
-        No provisions have been made for emerging technologies such as
+        No provisions have been made for technologies such as
         the <ulink url="http://developer.gnome.org/arch/component/bonobo.html"
           type="http">GNOME object embedding using Bonobo</ulink>.
       </para> 
       <para> 
-        The GStreamer cores does not use network transparent technologies at the
+        The GStreamer core does not use network transparent technologies at the
 	lowest level as it only adds overhead for the local case. 
 	That said, it shouldn't be hard to create a wrapper around the
-	core components. 
+	core components.  There are tcp plugins now that implement a GStreamer
+	Data Protocol that allows pipelines to be slit over TCP.  These are 
+	located in the gst-plugins module directory gst/tcp.
       </para> 
     </sect2>
 
-    <sect2 id="sec-motivation-catchup">
-      <title>Catch up with the Windows(tm) world</title>
+    <sect2 id="section-motivation-catchup">
+      <title>Catch up with the <trademark>Windows</trademark> world</title>
       <para> 
         We need solid media handling if we want to see Linux succeed on
 	the desktop.

@@ -2,7 +2,7 @@
 GstScheduler
 
 <!-- ##### SECTION Short_Description ##### -->
-An abstract class for plugable schedulers.
+Abstract class for objects that manage the scheduling of groups of elements
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -13,6 +13,22 @@ This is a base class for custom schedulers.
 <para>
 
 </para>
+
+<!-- ##### STRUCT GstScheduler ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM GstSchedulerFlags ##### -->
+<para>
+Flags for the scheduler
+</para>
+
+@GST_SCHEDULER_FLAG_FIXED_CLOCK: The scheduler has a fixed clock
+@GST_SCHEDULER_FLAG_NEW_API: 
+@GST_SCHEDULER_FLAG_LAST: subclasses can start numbering their flags starting
+                          from here.
 
 <!-- ##### MACRO GST_SCHEDULER_PARENT ##### -->
 <para>
@@ -39,23 +55,6 @@ The state of the scheduler
 @GST_SCHEDULER_STATE_RUNNING: the scheduler is running
 @GST_SCHEDULER_STATE_STOPPED: the scheduler is stopped
 @GST_SCHEDULER_STATE_ERROR: the scheduler is in error
-
-<!-- ##### ENUM GstSchedulerFlags ##### -->
-<para>
-Flags for the scheduler
-</para>
-
-@GST_SCHEDULER_FLAG_FIXED_CLOCK: The scheduler has a fixed clock
-@GST_SCHEDULER_FLAG_LAST: subclasses can start numbering their flags starting
-                          from here.
-
-<!-- ##### MACRO gst_scheduler_destroy ##### -->
-<para>
-Destroy the scheduler
-</para>
-
-@sched: The scheduler to destroy.
-
 
 <!-- ##### FUNCTION gst_scheduler_setup ##### -->
 <para>
@@ -89,6 +88,24 @@ Destroy the scheduler
 
 @sched: 
 @element: 
+
+
+<!-- ##### FUNCTION gst_scheduler_add_scheduler ##### -->
+<para>
+
+</para>
+
+@sched: 
+@sched2: 
+
+
+<!-- ##### FUNCTION gst_scheduler_remove_scheduler ##### -->
+<para>
+
+</para>
+
+@sched: 
+@sched2: 
 
 
 <!-- ##### FUNCTION gst_scheduler_state_transition ##### -->
@@ -188,59 +205,6 @@ Destroy the scheduler
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_scheduler_add_scheduler ##### -->
-<para>
-
-</para>
-
-@sched: 
-@sched2: 
-
-
-<!-- ##### FUNCTION gst_scheduler_remove_scheduler ##### -->
-<para>
-
-</para>
-
-@sched: 
-@sched2: 
-
-
-<!-- ##### FUNCTION gst_scheduler_auto_clock ##### -->
-<para>
-
-</para>
-
-@sched: 
-
-
-<!-- ##### FUNCTION gst_scheduler_get_clock ##### -->
-<para>
-
-</para>
-
-@sched: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_scheduler_set_clock ##### -->
-<para>
-
-</para>
-
-@sched: 
-@clock: 
-
-
-<!-- ##### FUNCTION gst_scheduler_use_clock ##### -->
-<para>
-
-</para>
-
-@sched: 
-@clock: 
-
-
 <!-- ##### FUNCTION gst_scheduler_clock_wait ##### -->
 <para>
 
@@ -265,11 +229,53 @@ Destroy the scheduler
 @Returns: 
 
 
+<!-- ##### FUNCTION gst_scheduler_use_clock ##### -->
+<para>
+
+</para>
+
+@sched: 
+@clock: 
+
+
+<!-- ##### FUNCTION gst_scheduler_set_clock ##### -->
+<para>
+
+</para>
+
+@sched: 
+@clock: 
+
+
+<!-- ##### FUNCTION gst_scheduler_get_clock ##### -->
+<para>
+
+</para>
+
+@sched: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_scheduler_auto_clock ##### -->
+<para>
+
+</para>
+
+@sched: 
+
+
 <!-- ##### FUNCTION gst_scheduler_show ##### -->
 <para>
 
 </para>
 
 @sched: 
+
+
+<!-- ##### MACRO GST_SCHEDULER_DEFAULT_NAME ##### -->
+<para>
+
+</para>
+
 
 

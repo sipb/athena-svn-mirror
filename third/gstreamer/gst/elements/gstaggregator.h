@@ -28,12 +28,11 @@
 
 G_BEGIN_DECLS
 
-extern GstElementDetails gst_aggregator_details;
 
 typedef enum {
   AGGREGATOR_LOOP 		= 1,
   AGGREGATOR_LOOP_SELECT,
-  AGGREGATOR_CHAIN,
+  AGGREGATOR_CHAIN
 } GstAggregatorSchedType;
 
 #define GST_TYPE_AGGREGATOR \
@@ -69,8 +68,6 @@ struct _GstAggregatorClass {
 };
 
 GType 	gst_aggregator_get_type	(void);
-
-gboolean 	gst_aggregator_factory_init 	(GstElementFactory *factory);
 
 G_END_DECLS
 

@@ -2,7 +2,7 @@
 GstBin
 
 <!-- ##### SECTION Short_Description ##### -->
-Base container element
+Base class for elements that contain other elements
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -55,6 +55,40 @@ clock providers in the bin.
 
 </para>
 
+<!-- ##### STRUCT GstBin ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GstBin::element-added ##### -->
+<para>
+
+</para>
+
+@gstbin: the object which received the signal.
+@arg1: the element that was added to the bin
+
+<!-- ##### SIGNAL GstBin::element-removed ##### -->
+<para>
+
+</para>
+
+@gstbin: the object which received the signal.
+@arg1: the element that was removed from the bin
+
+<!-- ##### SIGNAL GstBin::iterate ##### -->
+<para>
+This signal is emitted when a bin iterates, either automatically or
+due to a #gst_bin_iterate() call.  The return value is used to
+determine if the object method handler processed any data.
+In most normal cases, a user-provided signal handler should return
+FALSE.
+</para>
+
+@gstbin: the object which received the signal.
+@Returns: TRUE if the state of the bin was advanced.
+
 <!-- ##### ENUM GstBinFlags ##### -->
 <para>
 Flags for a bin.
@@ -66,22 +100,6 @@ Flags for a bin.
 @GST_BIN_FLAG_FIXED_CLOCK: This bin uses a fixed clock, possibly the one set with gst_bin_use_clock().
 @GST_BIN_FLAG_LAST: 
 
-<!-- ##### STRUCT GstBin ##### -->
-<para>
-The GstBin object
-</para>
-
-
-<!-- ##### USER_FUNCTION GstBinPrePostIterateFunction ##### -->
-<para>
-The signature of the callback for the post and pre iterate function as set with
-gst_bin_set_pre_iterate_function() and gst_bin_set_post_iterate_function().
-</para>
-
-@bin: The bin that performed the callback
-@user_data: user data
-
-
 <!-- ##### FUNCTION gst_bin_new ##### -->
 <para>
 
@@ -89,14 +107,6 @@ gst_bin_set_pre_iterate_function() and gst_bin_set_post_iterate_function().
 
 @name: 
 @Returns: 
-
-
-<!-- ##### MACRO gst_bin_destroy ##### -->
-<para>
-Free the memory allocated by this bin
-</para>
-
-@bin: the bin to free
 
 
 <!-- ##### FUNCTION gst_bin_add ##### -->
@@ -125,6 +135,16 @@ Free the memory allocated by this bin
 
 @bin: 
 @element: 
+
+
+<!-- ##### FUNCTION gst_bin_remove_many ##### -->
+<para>
+
+</para>
+
+@bin: 
+@element_1: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION gst_bin_get_by_name ##### -->
@@ -156,55 +176,27 @@ Free the memory allocated by this bin
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_bin_iterate ##### -->
+<!-- ##### FUNCTION gst_bin_get_by_interface ##### -->
 <para>
 
 </para>
 
 @bin: 
+@interface: 
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_bin_set_post_iterate_function ##### -->
+<!-- ##### FUNCTION gst_bin_get_all_by_interface ##### -->
 <para>
 
 </para>
 
 @bin: 
-@func: 
-@user_data: 
+@interface: 
+@Returns: 
 
 
-<!-- ##### FUNCTION gst_bin_set_pre_iterate_function ##### -->
-<para>
-
-</para>
-
-@bin: 
-@func: 
-@user_data: 
-
-
-<!-- ##### FUNCTION gst_bin_child_state_change ##### -->
-<para>
-
-</para>
-
-@bin: 
-@oldstate: 
-@newstate: 
-@child: 
-
-
-<!-- ##### FUNCTION gst_bin_auto_clock ##### -->
-<para>
-
-</para>
-
-@bin: 
-
-
-<!-- ##### FUNCTION gst_bin_get_clock ##### -->
+<!-- ##### FUNCTION gst_bin_iterate ##### -->
 <para>
 
 </para>
@@ -222,19 +214,40 @@ Free the memory allocated by this bin
 @clock: 
 
 
-<!-- ##### SIGNAL GstBin::element-added ##### -->
+<!-- ##### FUNCTION gst_bin_get_clock ##### -->
 <para>
 
 </para>
 
-@gstbin: the object which received the signal.
-@arg1: the element that was added to the bin
+@bin: 
+@Returns: 
 
-<!-- ##### SIGNAL GstBin::element-removed ##### -->
+
+<!-- ##### FUNCTION gst_bin_auto_clock ##### -->
 <para>
 
 </para>
 
-@gstbin: the object which received the signal.
-@arg1: the element that was removed from the bin
+@bin: 
+
+
+<!-- ##### FUNCTION gst_bin_sync_children_state ##### -->
+<para>
+
+</para>
+
+@bin: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_bin_child_state_change ##### -->
+<para>
+
+</para>
+
+@bin: 
+@oldstate: 
+@newstate: 
+@child: 
+
 

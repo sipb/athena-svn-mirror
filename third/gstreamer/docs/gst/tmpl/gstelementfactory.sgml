@@ -54,29 +54,31 @@ so that the autopluggers can select a plugin more appropriatly
 #GstElement, #GstPlugin, #GstPluginFeature, #GstPadTemplate.
 </para>
 
-<!-- ##### STRUCT GstElementDetails ##### -->
-<para>
-This struct is used to define public information about the element.  It
-describes the element, mostly for the benefit of editors.
-</para>
-
-@longname: 
-@klass: 
-@license: 
-@description: 
-@version: 
-@author: 
-@copyright: 
-
-<!-- ##### FUNCTION gst_element_factory_new ##### -->
+<!-- ##### MACRO GST_TYPE_ELEMENT_FACTORY ##### -->
 <para>
 
 </para>
 
+
+
+<!-- ##### STRUCT GstElementFactory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION gst_element_register ##### -->
+<para>
+
+</para>
+
+@plugin: 
 @name: 
+@rank: 
 @type: 
-@details: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@elementname: 
 
 
 <!-- ##### FUNCTION gst_element_factory_find ##### -->
@@ -88,32 +90,84 @@ describes the element, mostly for the benefit of editors.
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_element_factory_add_pad_template ##### -->
-<para>
-
-</para>
-
-@elementfactory: 
-@templ: 
-
-
-<!-- ##### FUNCTION gst_element_factory_can_src_caps ##### -->
+<!-- ##### FUNCTION gst_element_factory_get_element_type ##### -->
 <para>
 
 </para>
 
 @factory: 
-@caps: 
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_element_factory_can_sink_caps ##### -->
+<!-- ##### FUNCTION gst_element_factory_get_longname ##### -->
 <para>
 
 </para>
 
 @factory: 
-@caps: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_element_factory_get_klass ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_element_factory_get_description ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_element_factory_get_author ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_element_factory_get_num_pad_templates ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_element_factory_get_pad_templates ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_element_factory_get_uri_type ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gst_element_factory_get_uri_protocols ##### -->
+<para>
+
+</para>
+
+@factory: 
 @Returns: 
 
 
@@ -137,51 +191,23 @@ describes the element, mostly for the benefit of editors.
 @Returns: 
 
 
-<!-- ##### FUNCTION gst_element_factory_make_or_warn ##### -->
-<para>
-
-</para>
-
-@factoryname: 
-@name: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gst_element_factory_set_rank ##### -->
+<!-- ##### FUNCTION gst_element_factory_can_src_caps ##### -->
 <para>
 
 </para>
 
 @factory: 
-@rank: 
+@caps: 
+@Returns: 
 
 
-<!-- ##### MACRO GST_ELEMENT_RANK_MARGINAL ##### -->
+<!-- ##### FUNCTION gst_element_factory_can_sink_caps ##### -->
 <para>
-The element is only marginally usefull for autoplugging
+
 </para>
 
-
-
-<!-- ##### MACRO GST_ELEMENT_RANK_NONE ##### -->
-<para>
-The plugin may not be used in autoplugging
-</para>
-
-
-
-<!-- ##### MACRO GST_ELEMENT_RANK_PRIMARY ##### -->
-<para>
-The plugin is well suited for autoplugging
-</para>
-
-
-
-<!-- ##### MACRO GST_ELEMENT_RANK_SECONDARY ##### -->
-<para>
-The plugin is suited for autoplugging but only as a second
-candidate.
-</para>
-
+@factory: 
+@caps: 
+@Returns: 
 
 
