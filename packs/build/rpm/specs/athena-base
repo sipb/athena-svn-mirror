@@ -2,6 +2,7 @@ Name: athena-base
 Summary: A few base files needed by any Athena package
 Copyright: MIT
 Group: System Environment/Base
+Requires: sh-utils
 
 %description
 A few base files needed by any Athena package
@@ -30,6 +31,9 @@ find $RPM_BUILD_ROOT -type f -or -type l |
   sort > rpm.filelist
 
 %post
+
+grep -s -q :101: /etc/group \
+	|| groupadd	-g 101 mit
 
 # Inaugurate /etc/athena/version
 if [ ! -f /etc/athena/version ]; then
