@@ -1,4 +1,4 @@
-# $Id: packages,v 1.91 1999-10-16 20:13:59 danw Exp $
+# $Id: packages,v 1.92 1999-11-10 03:49:30 kcr Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -43,6 +43,7 @@ athena/bin/athdir		requires athena/lib/athdir
 athena/bin/athinfo
 athena/bin/attach		requires locker
 athena/bin/bugme		requires Xj
+athena/bin/config_console
 athena/bin/cxref
 athena/bin/dash			requires Xj,krb5,athena/lib/athdir
 athena/bin/delete		requires afsbin,et
@@ -79,6 +80,7 @@ athena/etc/cleanup		requires al
 athena/etc/console		requires Xj
 athena/etc/cviewd		requires larv
 athena/etc/desync
+athena/etc/dm			requires al
 athena/etc/fxserver		requires fxcl,krb5,hesiod
 athena/etc/gettime
 athena/etc/larvnetd		requires larv,ares,hesiod
@@ -89,7 +91,7 @@ athena/etc/rkinitd		requires krb5,athena/lib/rkinit
 athena/etc/synctree
 athena/etc/track
 athena/etc/writed
-athena/etc/xdm			requires krb5,al,wcl,larv,Mu
+athena/etc/xlogin		requires krb5,al,wcl,larv
 
 athena/lib/Mu
 athena/lib/Xj
