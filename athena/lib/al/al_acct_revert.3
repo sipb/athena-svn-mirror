@@ -1,4 +1,4 @@
-.\" $Id: al_acct_revert.3,v 1.1 1997-10-21 01:54:11 ghudson Exp $
+.\" $Id: al_acct_revert.3,v 1.2 1998-01-26 06:35:52 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -24,7 +24,7 @@ al_acct_revert, al_acct_cleanup \- Revert a user's account setup
 .B int al_acct_revert(const char *\fIusername\fP, pid_t \fIsessionpid\fP)
 .B int al_acct_cleanup(const char *\fIusername\fP)
 .PP
-.B cc file.c -lal
+.B cc file.c -lal -lhesiod
 .fi
 .SH DESCRIPTION
 These functions remove entries from a user's list of active login

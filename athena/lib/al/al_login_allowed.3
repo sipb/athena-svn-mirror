@@ -1,4 +1,4 @@
-.\" $Id: al_login_allowed.3,v 1.1 1997-10-21 01:54:13 ghudson Exp $
+.\" $Id: al_login_allowed.3,v 1.2 1998-01-26 06:35:52 danw Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -24,7 +24,7 @@ al_login_allowed \- Determine if a user is allowed to log in
 .B int al_login_allowed(const char *\fIusername\fP, int \fIisremote\fP,
 .B 	char **\fIfiletext\fP)
 .PP
-.B cc file.c -lal
+.B cc file.c -lal -lhesiod
 .fi
 .SH DESCRIPTION
 This function determines whether the user
