@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.36 1999-01-24 21:47:33 ghudson Exp $
+ * $Id: finger.c,v 1.36.4.1 1999-11-08 19:18:14 tb Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.36 1999-01-24 21:47:33 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.36.4.1 1999-11-08 19:18:14 tb Exp $";
 #endif /*lint*/
 
 /*
@@ -67,6 +67,8 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
  * quick outputs.  The -b option briefens long format outputs.  The -p
  * option turns off plans for long format outputs.
  */
+
+#define _GNU_SOURCE /* Make UTMPX_FILE etc. visible on glibc systems */
 
 #include <sys/types.h>
 #include <sys/stat.h>
