@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v $
- *	$Id: t_status.c,v 1.18 1991-02-24 11:41:40 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_status.c,v 1.19 1991-08-23 13:35:49 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.18 1991-02-24 11:41:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.19 1991-08-23 13:35:49 raek Exp $";
 #endif
 #endif
 
@@ -215,7 +215,7 @@ t_display_personal_status(Request,list,chart)
 
 
 
-
+ERRCODE
 t_who(Request)
      REQUEST *Request;
 {
@@ -277,7 +277,7 @@ t_who(Request)
 
 
 
-
+ERRCODE
 t_input_status(Request,string)
      REQUEST *Request;
      char *string;

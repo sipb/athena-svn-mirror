@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_misc.c,v $
- *	$Id: t_misc.c,v 1.5 1990-11-14 14:59:05 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_misc.c,v 1.6 1991-08-23 13:35:43 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_misc.c,v 1.5 1990-11-14 14:59:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_misc.c,v 1.6 1991-08-23 13:35:43 raek Exp $";
 #endif
 #endif
 
@@ -33,7 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
-
+ERRCODE
 t_dump(Request,type,file)
      REQUEST *Request;
      int type;

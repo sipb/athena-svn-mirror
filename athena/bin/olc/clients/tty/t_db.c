@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v $
- *	$Id: t_db.c,v 1.5 1991-02-24 15:19:57 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_db.c,v 1.6 1991-08-23 13:35:34 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v 1.5 1991-02-24 15:19:57 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v 1.6 1991-08-23 13:35:34 raek Exp $";
 #endif
 #endif
 
@@ -49,7 +49,7 @@ t_load_user(Request)
   return(status);
 }
 
-
+ERRCODE
 t_dbinfo(Request,file)
      REQUEST *Request;
      char *file;
@@ -69,7 +69,7 @@ t_dbinfo(Request,file)
   return(status);
 }
 
-
+ERRCODE
 t_change_dbinfo(Request)
      REQUEST *Request;
 {

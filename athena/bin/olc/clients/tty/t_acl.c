@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_acl.c,v $
- *	$Id: t_acl.c,v 1.4 1990-11-14 14:54:06 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_acl.c,v 1.5 1991-08-23 13:35:14 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_acl.c,v 1.4 1990-11-14 14:54:06 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_acl.c,v 1.5 1991-08-23 13:35:14 raek Exp $";
 #endif
 #endif
 
@@ -75,7 +75,7 @@ t_set_acl(Request,acl,flag)
   return(SUCCESS);
 }
 
-
+ERRCODE
 t_list_acl(Request, acl, file)
      REQUEST *Request;
      char *acl;
@@ -107,7 +107,7 @@ t_list_acl(Request, acl, file)
   return(status);
 }
 
-
+ERRCODE
 t_get_accesses(Request,file)
      REQUEST *Request;
      char *file;

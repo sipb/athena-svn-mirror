@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.29 1991-04-08 20:44:35 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_utils.c,v 1.30 1991-08-23 13:35:55 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.29 1991-04-08 20:44:35 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.30 1991-08-23 13:35:55 raek Exp $";
 #endif
 #endif
 
@@ -88,6 +88,7 @@ display_file(filename)
   return(SUCCESS);
 }
 
+ERRCODE
 cat_file(file)
      char *file;
 {
@@ -109,6 +110,7 @@ cat_file(file)
   return(SUCCESS);
 }
 
+ERRCODE
 enter_message(file,editor)
      char *file;
      char *editor;
@@ -196,7 +198,7 @@ input_text_into_file(filename)
 }
 
 
-
+ERRCODE
 verify_terminal()
 {
   char *tty;
@@ -267,7 +269,7 @@ cooked_mode()
 #endif
 
 
-int
+ERRCODE
 handle_response(response, req)
      int response;
      REQUEST *req;
@@ -518,6 +520,7 @@ get_yn (prompt)
  * Notes:
  */
 
+ERRCODE
 what_now(file, edit_first, editor)
      char *file;
      int edit_first;

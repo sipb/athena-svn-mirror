@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v $
- *	$Id: t_messages.c,v 1.15 1990-11-16 07:57:11 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_messages.c,v 1.16 1991-08-23 13:35:40 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.15 1990-11-16 07:57:11 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.16 1991-08-23 13:35:40 raek Exp $";
 #endif
 #endif
 
@@ -197,7 +197,7 @@ t_show_message(Request, file, display, connected, noflush)
   return(status);
 }
 
-
+ERRCODE
 t_check_messages(Request)
      REQUEST *Request;
 {
@@ -223,6 +223,7 @@ t_check_messages(Request)
     return status;
 }
 
+ERRCODE
 t_check_connected_messages(Request)
      REQUEST *Request;
 {

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v $
- *	$Id: t_queue.c,v 1.12 1990-11-14 14:46:00 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_queue.c,v 1.13 1991-08-23 13:35:46 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.12 1990-11-14 14:46:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_queue.c,v 1.13 1991-08-23 13:35:46 raek Exp $";
 #endif
 #endif
 
@@ -33,7 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
-
+ERRCODE
 t_queue(Request,queue)
      REQUEST *Request;
      char *queue;

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v $
- *	$Id: t_instance.c,v 1.13 1990-11-14 14:45:20 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: t_instance.c,v 1.14 1991-08-23 13:35:37 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.13 1990-11-14 14:45:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.14 1991-08-23 13:35:37 raek Exp $";
 #endif
 #endif
 
@@ -33,7 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
 
-
+ERRCODE
 t_instance(Request,instance)
      REQUEST *Request;
      int instance;
@@ -99,7 +99,7 @@ take2:
 }
 
 
-
+ERRCODE
 t_set_default_instance(Request)
      REQUEST *Request;
 {
