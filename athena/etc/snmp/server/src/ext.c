@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.1 1990-04-23 14:29:00 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.2 1990-04-24 23:36:19 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/23  14:29:00  tom
+ * Initial revision
+ * 
  * Revision 1.1  89/11/03  15:42:37  snmpdev
  * Initial revision
  * 
@@ -24,7 +27,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.1 1990-04-23 14:29:00 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.2 1990-04-24 23:36:19 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -479,1008 +482,1008 @@ objident egpOutErrors = {
 #ifdef ATHENA
 objident machType = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 1, 1
 };
 
 objident machNDisplay = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 1, 2
 };
 
 objident machDisplay = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 1, 3
 };
 
 objident machNDisks = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 1, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 1, 4
 };
 
 objident machDisks = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 1, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 1, 5
 };
 
 objident machMemory = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 1, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 1, 6
 };
 
 objident rcHOST = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 1
 };
 
 objident rcADDR = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 2
 };
 
 objident rcMACHINE = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 3
 };
 
 objident rcSYSTEM = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 4
 };
 
 objident rcWS = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 5
 };
 
 objident rcTOEHOLD = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 6
 };
 
 objident rcPUBLIC = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 7
 };
 
 objident rcERRHALT = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 8
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 8
 };
 
 objident rcLPD = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 9
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 9
 };
 
 objident rcRVDSRV = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 10
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 10
 };
 
 objident rcRVDCLIENT = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 11
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 11
 };
 
 objident rcNFSSRV = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 12
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 12
 };
 
 objident rcNFSCLIENT = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 13
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 13
 };
 
 objident rcAFSSRV = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 14
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 14
 };
 
 objident rcAFSCLIENT = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 15
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 15
 };
 
 objident rcRPC = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 16
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 16
 };
 
 objident rcSAVECORE = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 17
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 17
 };
 
 objident rcPOP = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 18
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 18
 };
 
 objident rcSENDMAIL = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 19
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 19
 };
 
 objident rcQUOTAS = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 20
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 20
 };
 
 objident rcACCOUNT = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 21
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 21
 };
 
 objident rcOLC = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 22
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 22
 };
 
 objident rcTIMESRV = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 23
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 23
 };
 
 objident rcPCNAMED = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 24
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 24
 };
 
 objident rcNEWMAILCF = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 25
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 25
 };
 
 objident rcKNETD = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 26
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 26
 };
 
 objident rcTIMEHUB = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 27
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 27
 };
 
 objident rcZCLIENT = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 28
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 28
 };
 
 objident rcZSERVER = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 29
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 29
 };
 
 objident rcSMSUPDATE = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 30
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 30
 };
 
 objident rcINETD = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 31
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 31
 };
 
 objident rcNOCREATE = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 32
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 32
 };
 
 objident rcNOATTACH = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 33
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 1, 33
 };
 
 objident relVersion = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 2, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 2, 1
 };
 
 objident relDate = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 2, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 2, 2
 };
 
 objident kernVersion = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 2, 3
 };
 
 objident statTime = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 1
 };
 
 objident statLoad = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 2
 };
 
 #ifdef LOGIN
 objident statLogin = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 3
 };
 #endif LOGIN
 
 objident statDkNParts = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 4, 1
 };
 
 objident statDkTotal = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 4, 2
 };
 
 objident statDkUsed = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 4, 3
 };
 
 objident statDkFree = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 4, 4
 };
 
 objident statDkAvail = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 4, 5
 };
 
 objident statDkITotal = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 4, 6
 };
 
 objident statDkIUsed = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 4, 7
 };
 
 objident statDkIFree = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 4, 8
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 4, 8
 };
 
 objident vpR = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 1, 1
 };
 
 objident vpB = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 1, 2
 };
 
 objident vpW = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 1, 3
 };
 
 objident vpAvm = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 1, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 1, 4
 };
 
 objident vpFre = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 1, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 1, 5
 };
 
 objident vpRe = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 2, 1
 };
 
 objident vpAt = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 2, 2
 };
 
 objident vpPn = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 2, 3
 };
 
 objident vpPo = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 2, 4
 };
 
 objident vpFr = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 2, 5
 };
 
 objident vpDe = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 2, 6
 };
 
 objident vpSr = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 2, 7
 };
 
 objident vsSwpIn = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 1
 };
 
 objident vsSwpOut = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 2
 };
 
 objident vsPgSwpIn = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 3
 };
 
 objident vsPgSwpOut = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 4
 };
 
 objident vsAtFlt = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 5
 };
 
 objident vsPgSeqFre = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 6
 };
 
 objident vsPgRec = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 7
 };
 
 objident vsPgFRec = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 8
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 8
 };
 
 objident vsTotRec = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 9
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 9
 };
 
 objident vsFreRec = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 10
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 10
 };
 
 objident vsBlkPgFlt = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 11
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 11
 };
 
 objident vsZFCreat = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 12
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 12
 };
 
 objident vsZFFault = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 13
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 13
 };
 
 objident vsEFCreat = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 14
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 14
 };
 
 objident vsEFFault = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 15
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 15
 };
 
 objident vsSwpFree = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 16
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 16
 };
 
 objident vsInodeFre = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 17
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 17
 };
 
 objident vsFFCreat = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 18
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 18
 };
 
 objident vsFFFault = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 19
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 19
 };
 
 objident vsPgClock = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 20
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 20
 };
 
 objident vsClkRev = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 21
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 21
 };
 
 objident vsClkPgFre = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 22
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 22
 };
 
 objident vsConSwtch = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 23
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 23
 };
 
 objident vsDevInt = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 24
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 24
 };
 
 objident vsSoftInt = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 25
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 25
 };
 
 objident vsDMAInt = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 26
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 26
 };
 
 objident vsTrap = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 27
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 27
 };
 
 objident vsSysCall = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 28
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 28
 };
 
 objident vsNameLkp = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 3, 29
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 3, 29
 };
 
 objident vxCall = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 1
 };
 
 objident vxHit = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 2
 };
 
 objident vxStick = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 3
 };
 
 objident vxFlush = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 4
 };
 
 objident vxUnuse = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 5
 };
 
 objident vxFreCall = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 6
 };
 
 objident vxFreInuse = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 7
 };
 
 objident vxFreCache = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 8
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 8
 };
 
 objident vxFreSwap = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 4, 9
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 4, 9
 };
 
 objident vfFork = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 5, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 5, 1
 };
 
 objident vfPage = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 5, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 5, 2
 };
 
 objident vfVFork = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 5, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 5, 3
 };
 
 objident vfVPage = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 5, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 5, 4
 };
 
 objident vtRec = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 6, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 6, 1
 };
 
 objident vtPgIn = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 6, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 6, 2
 };
 
 objident vncsGood = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 7, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 7, 1
 };
 
 objident vncsBad = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 7, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 7, 2
 };
 
 objident vncsFalse = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 7, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 7, 3
 };
 
 objident vncsMiss = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 7, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 7, 4
 };
 
 objident vncsLong = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 7, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 7, 5
 };
 
 objident vncsTotal = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 7, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 7, 6
 };
 
 objident vnchGood = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 8, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 8, 1
 };
 
 objident vnchBad = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 8, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 8, 2
 };
 
 objident vnchFalse = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 8, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 8, 3
 };
 
 objident vnchMiss = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 8, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 8, 4
 };
 
 objident vnchLong = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 8, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 8, 5
 };
 
 objident vnchTotal = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 8, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 8, 6
 };
 
 objident vcUs = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 9, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 9, 1
 };
 
 objident vcNi = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 9, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 9, 2
 };
 
 objident vcSy = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 9, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 9, 3
 };
 
 objident vcId = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 9, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 9, 4
 };
 
 objident vmmIn = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 10, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 10, 1
 };
 
 objident vmmSy = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 10, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 10, 2
 };
 
 objident vmmCs = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 10, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 10, 10, 3
 };
 
 objident psTotal = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 1, 1
 };
 
 objident psUsed = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 1, 2
 };
 
 objident psTUsed = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 1, 3
 };
 
 objident psFree = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 1, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 1, 4
 };
 
 objident psWasted = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 1, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 1, 5
 };
 
 objident psMissing = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 1, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 1, 6
 };
 
 objident pfTotal = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 2, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 2, 1
 };
 
 objident pfUsed = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 2, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 2, 2
 };
 
 objident piTotal = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 3, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 3, 1
 };
 
 objident piUsed = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 3, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 3, 2
 };
 
 objident ppTotal = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 4, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 4, 1
 };
 
 objident ppUsed = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 4, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 4, 2
 };
 
 objident ptTotal = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 5, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 5, 1
 };
 
 objident ptUsed = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 5, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 5, 2
 };
 
 objident ptActive = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 11, 5, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 3, 11, 5, 3
 };
 
 
 #ifdef RPC
 objident rpcCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 1, 1
 };
 
 objident rpcBadCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 1, 2
 };
 
 objident rpcRetrans = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 1, 3
 };
 
 objident rpcBadXid = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 1, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 1, 4
 };
 
 objident rpcTimeout = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 1, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 1, 5
 };
 
 objident rpcWait = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 1, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 1, 6
 };
 
 objident rpcNewCred = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 1, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 1, 7
 };
 
 objident rpsCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 2, 1
 };
 
 objident rpsBadCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 2, 2
 };
 
 objident rpsNullRecv = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 2, 3
 };
 
 objident rpsBadLen = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 2, 4
 };
 
 objident rpsXDRCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 2, 5
 };
 
 objident rpsCredUt = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 10, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 2, 10, 1
 };
 
 objident rpsCredUtPag = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 10, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 2, 10, 2
 };
 
 objident rpsCredUtDir = {
         12,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 10, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 5, 2, 10, 3
 };
 #endif RPC
 
 #ifdef NFS
 objident ncCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 1
 };
 
 objident ncBadCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 2
 };
 
 objident ncNULL = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 3
 };
 
 objident ncGetAddr = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 4
 };
 
 objident ncSetAddr = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 5
 };
 
 objident ncRoot = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 6
 };
 
 objident ncLookup = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 7
 };
 
 objident ncReadLink = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 8
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 8
 };
 
 objident ncRead = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 9
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 9
 };
 
 objident ncWRCache = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 10
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 10
 };
 
 objident ncWrite = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 11
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 11
 };
 
 objident ncCreate = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 12
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 12
 };
 
 objident ncRemove = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 13
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 13
 };
 
 objident ncRename = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 14
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 14
 };
 
 objident ncLink = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 15
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 15
 };
 
 objident ncSymLink = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 16
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 16
 };
 
 objident ncMkDir = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 17
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 17
 };
 
 objident ncRmDir = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 18
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 18
 };
 
 objident ncReadDir = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 19
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 19
 };
 
 objident ncFSStat = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 20
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 20
 };
 
 objident ncNCLGet = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 21
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 21
 };
 
 objident ncNCLSleep = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 1, 22
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 1, 22
 };
 
 objident nsCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 1
 };
 
 objident nsBadCall = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 2
 };
 
 objident nsNull = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 3
 };
 
 objident nsGetAddr = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 4
 };
 
 objident nsSetAddr = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 5
 };
 
 objident nsRoot = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 6
 };
 
 objident nsLookup = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 7
 };
 
 objident nsReadLink = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 8
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 8
 };
 
 objident nsRead = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 9
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 9
 };
 
 objident nsWRCache = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 10
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 10
 };
 
 objident nsWrite = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 11
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 11
 };
 
 objident nsCreate = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 12
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 12
 };
 
 objident nsRemove = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 13
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 13
 };
 
 objident nsRename = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 14
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 14
 };
 
 objident nsLink = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 15
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 15
 };
 
 objident nsSymLink = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 16
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 16
 };
 
 objident nsMkDir = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 17
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 17
 };
 
 objident nsRmDir = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 18
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 18
 };
 
 objident nsReadDir = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 19
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 19
 };
 
 objident nsFSStat = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 6, 2, 20
+        1, 3, 6, 1, 4, 1, 20, 2, 6, 2, 20
 };
 #endif NFS
 
@@ -1488,214 +1491,214 @@ objident nsFSStat = {
 
 objident rvcBadBlock = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 1
 };
 
 objident rvcBadCkSum = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 2
 };
 
 objident rvcBadType = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 3
 };
 
 objident rvcBadState = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 4
 };
 
 objident rvcBadFormat = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 5
 };
 
 objident rvcTimeout = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 6
 };
 
 objident rvcBadNonce = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 7
 };
 
 objident rvcErrorRecv = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 8
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 8
 };
 
 objident rvcBadData = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 9
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 9
 };
 
 objident rvcBadVers = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 10
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 10
 };
 
 objident rvcPktRej = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 11
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 11
 };
 
 objident rvcPush = {
         11,			        	/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 12
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 12
 };
 
 objident rvcPktSent = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 13
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 13
 };
 
 objident rvcPktRecv = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 14
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 14
 };
 
 objident rvcQkRetrans = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 15
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 15
 };
 
 objident rvcLgRetrans = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 16
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 16
 };
 
 objident rvcBlockRd = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 17
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 17
 };
 
 objident rvcBlockWr = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 7, 1, 18
+        1, 3, 6, 1, 4, 1, 20, 2, 7, 1, 18
 };
 #endif RVD
 
 #ifdef AFS
 objident acPrimaryCell = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 8, 1, 1
 };
 
 objident acCacheSize = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 8, 1, 2
 };
 
 objident acCacheDir = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 8, 1, 3
 };
 #endif AFS
 
 #ifdef KERBEROS
 objident kcRealm = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 9, 1, 1
 };
 
 objident kcKey = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 9, 1, 2
 };
 
 objident kcServer = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 9, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 9, 1, 3
 };
 #endif KERBEROS
 
 #ifdef ZEPHYR
 objident zcPVersion = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 1, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 1, 1
 };
 
 objident zcServer = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 1, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 1, 2
 };
 
 objident zcQueue = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 1, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 1, 3
 };
 
 objident zcServChange = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 1, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 1, 4
 };
 
 objident zcHeader = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 1, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 1, 5
 };
 
 objident zcLooking = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 1, 6
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 1, 6
 };
 
 objident zcUptime = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 1, 7
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 1, 7
 };
 
 objident zcSize = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 1, 8
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 1, 8
 };
 
 objident zsPVersion = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 2, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 2, 1
 };
 
 objident zsHeader = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 2, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 2, 2
 };
 
 objident zsPacket = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 2, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 2, 3
 };
 
 objident zsUptime = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 2, 4
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 2, 4
 };
 
 objident zsState = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 10, 2, 5
+        1, 3, 6, 1, 4, 1, 20, 2, 10, 2, 5
 };
 #endif ZEPHYR
 
 objident mQueue = {
         10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 11, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 11, 1
 };
 
 objident mAliasUt = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 11, 2, 1
+        1, 3, 6, 1, 4, 1, 20, 2, 11, 2, 1
 };
 
 objident mAliasUtPag = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 11, 2, 2
+        1, 3, 6, 1, 4, 1, 20, 2, 11, 2, 2
 };
 
 objident mAliasUtDir = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 11, 2, 3
+        1, 3, 6, 1, 4, 1, 20, 2, 11, 2, 3
 };
 #endif ATHENA
 
