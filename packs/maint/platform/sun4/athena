@@ -160,6 +160,21 @@ fi
 
 echo ""								>/dev/console
 
+# The audio driver on the Sparcstation 5 has a habit of disappearing.
+# So we put it back periodically...
+if [ -f /kernel/drv/audiocs ]; then
+	case `/usr/athena/bin/sysinfo -show model +terse` in
+	  SPARCstation*)
+	      /bin/echo "Adding audio dev for Sparc 5... \c"	>/dev/console
+	      /usr/sbin/add_drv  -m '* 0755 root sys' -i 'SUNW,CS4231' /kernel/drv/audiocs > /dev/null 2>&1
+	      /usr/sbin/audlinks
+	      echo "done."					>/dev/console
+	      ;;
+	  *)
+	      ;;
+	esac
+fi
+
 # If this is a PUBLIC workstation, ensure that that there are no hacks.
 # Do not update rc.conf if the workstation and srvd are different versions.
 if [ "${PUBLIC}" = "true" ]; then
