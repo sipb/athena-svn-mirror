@@ -1,0 +1,49 @@
+% Copyright 1988 Michael Urban
+% Everyone is granted permission to copy, modify and redistribute
+% this file, provided that a currently-dated copy of this
+% copyright notice is included in the copy.
+% License is granted to produce fonts based on the information
+% in this file, provided that such fonts are redistributed
+% without charge to any third party.
+
+% SCCS ID @(#)calmatema.mf	1.1   10/1/86
+
+
+beginchar("C", shortwidth,xht#,dep#); "The ligature CH (calma)";
+	pickup elvishpen;
+	nutelco(w,shortstem, stemdepth);
+	nuluva (bowpoint, 0, true);
+endchar;
+
+beginchar("j", 1em#,xht#,dep#); "The letter j (anga)";
+	pickup elvishpen;
+	nutelco(w,shortstem, stemdepth);
+	nuluva (bowpoint,w-bowsize*em+leadgap, true);
+	nuluva (bowpoint, leadgap, true);
+endchar;
+
+beginchar("S", shortwidth,cap#,0); "The ligature SH (harma)";
+	pickup elvishpen;
+	nutelco(w,longstem, stemdepth);
+	nuluva (bowpoint, leadgap, true);
+endchar;
+
+beginchar("Z", 1em#,cap#,0); "The ligature ZH (anca)";
+	pickup elvishpen;
+	nutelco(w,longstem, stemdepth);
+	nuluva (bowpoint,w-bowsize*em+leadgap, true);
+	nuluva (bowpoint, leadgap, true);
+endchar;
+
+beginchar("O", shortwidth,xht#,0); "The letter o (anna)";
+	pickup elvishpen;
+	nutelco(w,shortstem, stemdepth);
+	nuluva (bowpoint, leadgap, true);
+endchar;
+
+beginchar("Y", 1em#,xht#,0); "The ligature ny (ngoldo)";
+	pickup elvishpen;
+	nutelco(w,shortstem, stemdepth);
+	nuluva (bowpoint,w-bowsize*em+leadgap, true);
+	nuluva (bowpoint, leadgap, true);
+endchar;
