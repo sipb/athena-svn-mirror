@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.35.0.1 1988-09-09 13:14:21 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.35.0.2 1988-09-21 13:17:11 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -50,11 +50,6 @@ extern long time();
 
 void init_hm(), detach(), handle_timeout(), resend_notices(), die_gracefully();
 int set_sig_type();
-
-#if BSD < 43
-char *upcase();
-#define strncasecmp(x, y, len) strcmp(x, upcase((y)), len)
-#endif /* BSD */
 
 main(argc, argv)
 char *argv[];
@@ -363,18 +358,6 @@ void init_hm()
      (void)signal (SIGALRM, set_sig_type);
      (void)signal (SIGTERM, set_sig_type);
 }
-
-#if BSD < 43
-char *upcase(s)
-     register char *s;
-{
-     char *r = s;
-  
-     for (; *s; s++)
-	  if (islower(*s)) *s = toupper(*s);
-     return(r);
-}
-#endif /* BSD */
 
 void detach()
 {
