@@ -1,9 +1,13 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.9 1990-07-17 14:18:10 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.0 1992-04-22 02:04:48 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  90/07/17  14:18:10  tom
+ * removed kcKey variable
+ * commented out variables for build on decmips
+ * 
  * Revision 1.8  90/07/16  21:57:55  tom
  * maybe this is it... all TIMES which really represented dates have been 
  * changed to strings. This was done to avoid confusion with the sysUpTime
@@ -49,7 +53,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.9 1990-07-17 14:18:10 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.0 1992-04-22 02:04:48 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -84,6 +88,34 @@ int	send_authen_traps;		/* do we send authen. traps? */
 struct  set_struct *setlst;		/* linked list of sets */
 int	adminstat[MAXIFS];		/* intf admin status list */
 int	tcprtoalg;			/* TCP RTO algorithm variable */
+
+#ifdef MIT
+char    lbuf[BUFSIZ];                   /* random buffer */
+
+char    supp_sysdescr[SNMPSTRLEN];     /* supplementary sysdescr */
+char    mail_q[SNMPSTRLEN];             /* path for mailq directory */
+char    mail_alias_file[SNMPSTRLEN];    /* path for mail aliases */
+char    rc_file[SNMPSTRLEN];            /* path for rc config file */
+char    rpc_cred_file[SNMPSTRLEN];      /* path for rpc cred file */
+char    afs_cache_file[SNMPSTRLEN];     /* path for afs cache file */
+char    afs_suid_file[SNMPSTRLEN];      /* path for afs setuid file */
+char    afs_cell_file[SNMPSTRLEN];      /* path for afs cell file */
+char    afs_cellserv_file[SNMPSTRLEN];  /* path for cellsrvdb */
+char    login_file[SNMPSTRLEN];         /* path for utmp */
+char    version_file[SNMPSTRLEN];       /* path for version file */
+char    syspack_file[SNMPSTRLEN];       /* path for syspack file */
+char    dns_stat_file[SNMPSTRLEN];      /* path for dns stat file */
+char    srv_file[SNMPSTRLEN];           /* path for mksrv file */
+char    user[SNMPSTRLEN];               /* default uid to run as */
+
+#ifdef RSPOS
+struct   mbuf *rthost[RTHASHSIZ];       /* routing table structs for rs6k */
+struct   mbuf *rtnet[RTHASHSIZ];
+#endif /* RSPOS */
+
+
+int     logintrap;                      /* whether to send login trap */
+#endif MIT
 
 /*
  *  C library calls.
@@ -514,8 +546,8 @@ objident machNDisplay = {
 };
 
 objident machDisplay = {
-        10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 1, 3
+        13,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 1, 3, 2, 1, 1
 };
 
 objident machNDisks = {
@@ -524,13 +556,18 @@ objident machNDisks = {
 };
 
 objident machDisks = {
-        10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 1, 5
+        13,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 1, 5, 2, 1, 1
 };
 
 objident machMemory = {
         10,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 1, 6
+};
+
+objident machName = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 1, 7
 };
 
 objident rcHOST = {
@@ -698,20 +735,155 @@ objident rcNOATTACH = {
         1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 33
 };
 
-objident relVersion = {
+objident rcAFSADJUST = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 34
+};
+
+objident rcSNMP = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 35
+};
+
+objident rcAUTOUPDATE = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 36
+};
+
+objident rcTIMECLIENT = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 37
+};
+
+objident rcKRBSRV = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 38
+};
+
+objident rcKADMSRV = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 39
+};
+
+objident rcNIPSRV = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 1, 40
+};
+
+objident rcFile = {
         11,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 2, 2, 1
 };
 
+objident relVersion = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 3, 1
+};
+
 objident relDate = {
         11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 2, 2
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 3, 2
+};
+
+objident packNum = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 5, 1
+};
+
+objident packName = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 5, 2, 1
+};
+
+objident packType = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 5, 2, 2
+};
+
+objident packVersion = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 5, 2, 3
+};
+
+objident packDate = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 5, 2, 4
+};
+
+objident srvNumber = {
+        11,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 6, 1
+};
+
+objident srvName = {
+        13,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 6, 2, 1, 1
+};
+
+objident srvType = {
+        13,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 6, 2, 1, 2
+};
+
+objident srvVersion = {
+        13,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 6, 2, 1, 3
+};
+
+objident srvFile = {
+        11,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 6, 3
+};
+
+#endif ATHENA
+
+objident snmpVersion = {
+        12,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 1, 1        
+};
+
+objident snmpCompTime = {
+        12,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 1, 2
+};
+
+objident osVendor = { 
+        12,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 2, 1
+};
+
+objident osType = {
+        12,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 2, 2
+};
+
+objident osVersion = {
+        12,                                     /* Length of variable */
+	1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 2, 3
 };
 
 objident kernVersion = {
-        10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 2, 3
+        13,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 2, 4, 1
 };
+
+objident kernDate = {
+        13,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 2, 4, 2
+};
+
+objident kernBuilder = {
+        13,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 2, 4, 3
+};
+
+objident machtypeVersion = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 2, 10, 6, 1
+};
+
+#ifdef ATHENA
+/* compatibility for pre 7.3 */
 
 objident statOVersion = {
         10,					/* Length of variable */
@@ -725,67 +897,79 @@ objident statTime = {
         1, 3, 6, 1, 4, 1, 20, 1, 3, 2
 };
 
-objident statLoad = {
-        10,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 3
+objident loadRunTime = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 3, 1, 1, 1
 };
 
-#ifdef LOGIN
+objident loadCPU = {
+        11,
+	1, 3, 6, 1, 4, 1, 20, 1, 3, 3, 2, 1, 1
+};
+
 objident statLogin = {
         10,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 3, 4
 };
-#endif LOGIN
+
+/* @begin(backward compatibility for pre 7.4) */
 
 objident statDkNParts = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 1
 };
 
 objident statDkPath = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 2
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 2
 };
 
 objident statDkDname = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 3
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 3
 };
 
 objident statDkTotal = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 4
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 4
 };
 
 objident statDkUsed = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 5
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 5
 };
 
 objident statDkFree = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 6
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 6
 };
 
 objident statDkAvail = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 7
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 7
 };
 
 objident statDkITotal = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 8
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 8
 };
 
 objident statDkIUsed = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 9
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 9
 };
 
 objident statDkIFree = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 10
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 10
 };
+
+objident statDkType = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 5, 1, 15
+};
+/* @end(backward compatibility for pre 7.4) */
+
 
 objident vpR = {
         12,					/* Length of variable */
@@ -822,7 +1006,7 @@ objident vpAt = {
         1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 2
 };
 
-objident vpPn = {
+objident vpPi = {
         12,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 3, 10, 2, 3
 };
@@ -1313,6 +1497,13 @@ objident rpsCredUtDir = {
         12,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 10, 3
 };
+
+objident rpsCredFile = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 5, 2, 10, 5
+};
+
+
 #endif RPC
 
 #ifdef NFS
@@ -1621,20 +1812,67 @@ objident rvcBlockWr = {
 #endif RVD
 
 #ifdef AFS
-objident acPrimaryCell = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 1
-};
 
 objident acCacheSize = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 2
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 1, 1
 };
 
-objident acCacheDir = {
-        11,					/* Length of variable */
-        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 3
+objident acCacheFile = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 1, 2
 };
+
+objident acThisCell = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 2, 1
+};
+
+objident acCellFile = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 2, 2
+};
+
+objident acNSuidCell = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 3, 1
+};
+
+objident acSuidCell = {
+        14,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 3, 2, 1, 1
+};
+
+objident acSuidFile = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 3, 3
+};
+
+objident acNCellSrv = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 9, 1
+};
+
+objident acCellSrvName = {
+        14,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 9, 2, 1, 1
+};
+
+objident acCellSrvAddr = {
+        14,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 9, 2, 1, 2
+};
+
+objident acCellSrvCom = {
+        14,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 9, 2, 1, 3
+};
+
+objident acCellSrvFile = {
+        12,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 8, 1, 9, 3
+};
+
 #endif AFS
 
 #ifdef KERBEROS
@@ -1731,7 +1969,184 @@ objident mAliasUtDir = {
         11,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 11, 2, 3
 };
+
+objident mAliasFile = {
+        11,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 11, 2, 5
+};
+
+#ifdef DNS
+objident dnsUpdateTime = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 1
+};
+
+objident dnsBootTime = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 2
+};
+
+objident dnsResetTime = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 3
+};
+
+objident dnsPacketIn = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 4
+};
+
+objident dnsPacketOut = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 5
+};
+
+objident dnsQuery = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 6
+};
+
+objident dnsIQuery = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 7
+};
+
+objident dnsDupQuery = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 8
+};
+
+objident dnsResponse = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 9
+};
+
+objident dnsDupResp = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 10
+};
+
+objident dnsOK = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 11
+};
+
+objident dnsFail = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 12
+};
+
+objident dnsFormErr = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 13
+};
+
+objident dnsSysQuery = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 14
+};
+
+objident dnsPrimeCache = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 15
+};
+
+objident dnsCheckNS = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 16
+};
+
+objident dnsBadResp = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 17
+};
+
+objident dnsMartian = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 18
+};
+
+objident dnsUnknown = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 19
+};
+
+objident dnsA = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 20
+};
+
+objident dnsNS = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 21
+};
+
+objident dnsCName = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 22
+};
+
+objident dnsSOA = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 23
+};
+
+objident dnsWKS = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 24
+};
+
+objident dnsPTR = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 25
+};
+
+objident dnsHInfo = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 26
+};
+
+objident dnsMX = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 27
+};
+
+objident dnsTXT = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 28
+};
+
+objident dnsUNSPECA = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 29
+};
+
+objident dnsAXFR = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 30
+};
+
+objident dnsANY = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 31
+};
+
+objident dnsStatFile = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 12, 40
+};
+
+#endif DNS
+
+#ifdef TIMED
+objident tdMaster = {
+        10,					/* Length of variable */
+        1, 3, 6, 1, 4, 1, 20, 1, 13, 1
+};
+#endif TIMED
+
 #endif MIT
+
 
 /*
  *  Structure which helps us build the SNMP variable tree.
@@ -1743,12 +2158,15 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
  */
 /*
  *  System Group as specified in RFC 1066.	3/3 variables
- *  (Overriding config file in favor of machType)
  */
 
-{ &sysID,             lu_machtype, NULL, N_MACHTYPE, NULL_OBJINST|VAL_STR },
+{ &sysID,             lu_vers,  NULL, N_VERID, NULL_OBJINST|VAL_STR },
 { &sysObjectID,       lu_vers,  NULL, N_VEREV, NULL_OBJINST|VAL_OBJ },
+#ifdef RSPOS
+{ &sysUpTime,         lu_status,NULL, N_LINIT, NULL_OBJINST|VAL_TIME },
+#else /* RSPOS */
 { &sysUpTime,         lu_vers,  NULL, N_LINIT, NULL_OBJINST|VAL_TIME },
+#endif /* RSPOS */
 /*
  *  Interfaces Group as specified in RFC 1066.	14/22 variables
  */
@@ -1758,7 +2176,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &ifType,            lu_intf,  NULL, N_IFTYP, VAL_INT },
 { &ifMtu,             lu_intf,  NULL, N_IFMTU, VAL_INT },
 { &ifSpeed,           lu_intf,  NULL, N_IFSPD, VAL_GAUGE },
-{ &ifAdminStatus,     lu_intf,  set_intf, N_IFATA, WRITE_VAR|VAL_INT },
+{ &ifAdminStatus,     lu_intf,  NULL, N_IFATA, WRITE_VAR|VAL_INT },
 { &ifOperStatus,      lu_intf,  NULL, N_IFSTA, VAL_INT },
 { &ifLastChange,      lu_intf,  NULL, N_IFLCG, VAL_TIME },
 { &ifInUcastPkts,     lu_intf,  NULL, N_IPKTS, VAL_CNTR },
@@ -1775,7 +2193,9 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 /*
  *  IP Group as specified in RFC 1066.		19/33 variables
  */
+#ifndef RSPOS
 { &ipForwarding,      lu_ipforw, NULL, N_IPFDI, NULL_OBJINST|VAL_INT },
+#endif /* RSPOS */
 { &ipDefaultTTL,      lu_ipstat, NULL, N_IPTTL, NULL_OBJINST|VAL_INT },
 { &ipInReceives,      lu_ipstat, NULL, N_IPINR, NULL_OBJINST|VAL_CNTR },
 { &ipInHdrErrors,     lu_ipstat, NULL, N_IPHRE, NULL_OBJINST|VAL_CNTR },
@@ -1869,9 +2289,9 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 #ifdef ATHENA
 { &machType,     lu_machtype, NULL, N_MACHTYPE,     NULL_OBJINST|VAL_STR  },
 { &machNDisplay, lu_machtype, NULL, N_MACHNDISPLAY, NULL_OBJINST|VAL_INT  },
-{ &machDisplay,  lu_machtype, NULL, N_MACHDISPLAY,  NULL_OBJINST|VAL_STR  },
+{ &machDisplay,  lu_machtype, NULL, N_MACHDISPLAY,  VAL_STR  },
 { &machNDisks,   lu_machtype, NULL, N_MACHNDISK,    NULL_OBJINST|VAL_INT  },
-{ &machDisks,    lu_machtype, NULL, N_MACHDISK,     NULL_OBJINST|VAL_STR  },
+{ &machDisks,    lu_machtype, NULL, N_MACHDISK,     VAL_STR  },
 { &machMemory,   lu_machtype, NULL, N_MACHMEMORY,   NULL_OBJINST|VAL_INT  },
 
 { &rcHOST,       lu_rcvar,    NULL, N_RCHOST,       NULL_OBJINST|VAL_STR  },
@@ -1907,29 +2327,60 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &rcINETD,      lu_rcvar,    NULL, N_RCINETD,      NULL_OBJINST|VAL_STR  },
 { &rcNOCREATE,   lu_rcvar,    NULL, N_RCNOCREATE,   NULL_OBJINST|VAL_STR  },
 { &rcNOATTACH,   lu_rcvar,    NULL, N_RCNOATTACH,   NULL_OBJINST|VAL_STR  },
+{ &rcAFSADJUST,  lu_rcvar,    NULL, N_RCAFSADJUST,  NULL_OBJINST|VAL_STR  },
+{ &rcSNMP,       lu_rcvar,    NULL, N_RCSNMP,       NULL_OBJINST|VAL_STR  },
+{ &rcAUTOUPDATE, lu_rcvar,    NULL, N_RCAUTOUPDATE, NULL_OBJINST|VAL_STR  },
+{ &rcTIMECLIENT, lu_rcvar,    NULL, N_RCTIMECLIENT, NULL_OBJINST|VAL_STR  },
+{ &rcKRBSRV,     lu_rcvar,    NULL, N_RCKRBSRV,     NULL_OBJINST|VAL_STR  },
+{ &rcKADMSRV,    lu_rcvar,    NULL, N_RCKADMSRV,    NULL_OBJINST|VAL_STR  },
+{ &rcNIPSRV,     lu_rcvar,    NULL, N_RCNIPSRV,     NULL_OBJINST|VAL_STR  },
+{ &rcFile,       lu_rcvar,    NULL, N_RCFILE,       NULL_OBJINST|VAL_STR  },
 { &relVersion,   lu_relvers,  NULL, N_RELVERSION,   NULL_OBJINST|VAL_STR  },
-{ &statOVersion, lu_relvers,  NULL, N_RELVERSION,   NULL_OBJINST|VAL_STR  },
+{ &relDate,      lu_relvers,  NULL, N_RELVERSDATE,  NULL_OBJINST|VAL_STR  },
+{ &statOVersion, lu_relvers,  NULL, N_RELVERSSTR,   NULL_OBJINST|VAL_STR  },
+{ &packNum,      lu_spnum,    NULL, N_SYSPACKNUM,   NULL_OBJINST|VAL_INT  },
+{ &packName,     lu_spvers,   NULL, N_SYSPACKNAME,  VAL_STR  },
+{ &packType,     lu_spvers,   NULL, N_SYSPACKTYPE,  VAL_STR  },
+{ &packVersion,  lu_spvers,   NULL, N_SYSPACKVERS,  VAL_STR  },
+{ &packDate,     lu_spvers,   NULL, N_SYSPACKDATE,  VAL_STR  },
+{ &srvNumber,    lu_service,  NULL, N_SRVNUMBER,    NULL_OBJINST|VAL_INT  },
+{ &srvName,      lu_servtbl,  NULL, N_SRVNAME,      VAL_STR  },
+{ &srvType,      lu_servtbl,  NULL, N_SRVTYPE,      VAL_STR  },
+{ &srvVersion,   lu_servtbl,  NULL, N_SRVVERSION,   VAL_STR  },
+{ &srvFile,      lu_service,  NULL, N_SRVFILE,      NULL_OBJINST|VAL_STR  },
 #endif ATHENA
 
-{ &statTime,     lu_status,   NULL, N_STATTIME,     NULL_OBJINST|VAL_INT },
-{ &statLoad,     lu_status,   NULL, N_STATLOAD,     NULL_OBJINST|VAL_INT  },
+{ &snmpVersion,  lu_snmpvers, NULL, N_SNMPVERS,     NULL_OBJINST|VAL_STR  },
+{ &snmpCompTime, lu_snmpvers, NULL, N_SNMPBUILD,    NULL_OBJINST|VAL_STR  },
 
-#ifdef LOGIN
+#ifdef ATHENA
+{ &osVendor,     lu_machtype, NULL, N_MACHOSVENDOR, NULL_OBJINST|VAL_STR  },
+{ &osType,       lu_machtype, NULL, N_MACHOS,       NULL_OBJINST|VAL_STR  },
+{ &osVersion,    lu_machtype, NULL, N_MACHOSVERSION,NULL_OBJINST|VAL_STR  },
+#endif /* ATHENA */
+
+{ &statTime,     lu_status,   NULL, N_STATTIME,     NULL_OBJINST|VAL_INT  },
+#ifndef RSPOS
+{ &loadRunTime,  lu_status,   NULL, N_STATLOAD,     NULL_OBJINST|VAL_INT  },
+#endif /* RSPOS */
 { &statLogin, 	 lu_status,   NULL, N_STATLOGIN,    NULL_OBJINST|VAL_INT  },
-#endif LOGIN
 
-#if !defined(decmips)
+#if !defined(ultrix) && !defined(RSPOS)
 { &statDkNParts, lu_ndparts,  NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
-{ &statDkPath,   lu_disk,     NULL, N_DKPATH,       NULL_OBJINST|VAL_STR  },
-{ &statDkDname,  lu_disk,     NULL, N_DKDNAME,      NULL_OBJINST|VAL_STR  },
-{ &statDkTotal,  lu_disk,     NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
-{ &statDkUsed,   lu_disk,     NULL, N_PTUSED,       NULL_OBJINST|VAL_INT  },
-{ &statDkFree,   lu_disk,     NULL, N_PTFREE,       NULL_OBJINST|VAL_INT  },
-{ &statDkAvail,  lu_disk,     NULL, N_PTAVAIL,      NULL_OBJINST|VAL_INT  },
-{ &statDkITotal, lu_disk,     NULL, N_PITOTAL,      NULL_OBJINST|VAL_INT  },
-{ &statDkIUsed,  lu_disk,     NULL, N_PIUSED,       NULL_OBJINST|VAL_INT  },
-{ &statDkIFree,  lu_disk,     NULL, N_PIFREE,       NULL_OBJINST|VAL_INT  },
+{ &statDkPath,   lu_disk,     NULL, N_DKPATH,       VAL_STR  },
+{ &statDkDname,  lu_disk,     NULL, N_DKDNAME,      VAL_STR  },
+{ &statDkTotal,  lu_disk,     NULL, N_PTTOTAL,      VAL_INT  },
+{ &statDkUsed,   lu_disk,     NULL, N_PTUSED,       VAL_INT  },
+{ &statDkFree,   lu_disk,     NULL, N_PTFREE,       VAL_INT  },
+{ &statDkAvail,  lu_disk,     NULL, N_PTAVAIL,      VAL_INT  },
+{ &statDkITotal, lu_disk,     NULL, N_PITOTAL,      VAL_INT  },
+{ &statDkIUsed,  lu_disk,     NULL, N_PIUSED,       VAL_INT  },
+{ &statDkIFree,  lu_disk,     NULL, N_PIFREE,       VAL_INT  },
+{ &statDkType,   lu_disk,     NULL, N_DKTYPE,       VAL_STR  },
+#endif
 
+#ifndef RSPOS
+#ifndef decmips
 { &vpR,          lu_vmstat,   NULL, N_VMPROCR,      NULL_OBJINST|VAL_INT  },
 { &vpB,          lu_vmstat,   NULL, N_VMPROCB,      NULL_OBJINST|VAL_INT  },
 { &vpW,          lu_vmstat,   NULL, N_VMPROCW,      NULL_OBJINST|VAL_INT  },
@@ -1938,7 +2389,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 
 { &vpRe,         lu_vmstat,   NULL, N_VMPAGERE,     NULL_OBJINST|VAL_GAUGE },
 { &vpAt,         lu_vmstat,   NULL, N_VMPAGEAT,     NULL_OBJINST|VAL_GAUGE },
-{ &vpPn,         lu_vmstat,   NULL, N_VMPAGEPN,     NULL_OBJINST|VAL_GAUGE },
+{ &vpPi,         lu_vmstat,   NULL, N_VMPAGEPI,     NULL_OBJINST|VAL_GAUGE },
 { &vpPo,         lu_vmstat,   NULL, N_VMPAGEPO,     NULL_OBJINST|VAL_GAUGE },
 { &vpFr,         lu_vmstat,   NULL, N_VMPAGEFR,     NULL_OBJINST|VAL_GAUGE },
 { &vpDe,         lu_vmstat,   NULL, N_VMPAGEDE,     NULL_OBJINST|VAL_GAUGE },
@@ -2032,8 +2483,9 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &ptTotal,      lu_pstat,    NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },
 { &ptUsed,       lu_pstat,    NULL, N_PTUSED,       NULL_OBJINST|VAL_INT  },
 { &ptActive,     lu_pstat,    NULL, N_PTACTIVE,     NULL_OBJINST|VAL_INT  },
-#endif (decmips)
-		 		
+#endif /* decmips */
+#endif /* RSPOS */		 	
+	
 #ifdef RPC		 
 { &rpcCall,      lu_rpccl,    NULL, N_RPCCCALL,     NULL_OBJINST|VAL_CNTR },
 { &rpcBadCall,   lu_rpccl,    NULL, N_RPCCBADCALL,  NULL_OBJINST|VAL_CNTR },
@@ -2051,6 +2503,7 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &rpsCredUt,    lu_tuchtime, NULL, N_RPCCRED,      NULL_OBJINST|VAL_STR  },
 { &rpsCredUtPag, lu_tuchtime, NULL, N_RPCCREDPAG,   NULL_OBJINST|VAL_STR  },
 { &rpsCredUtDir, lu_tuchtime, NULL, N_RPCCREDDIR,   NULL_OBJINST|VAL_STR  },
+{ &rpsCredFile,  lu_tuchtime, NULL, N_RPCCREDFILE,  NULL_OBJINST|VAL_STR  },
 #endif RPC
 
 #ifdef NFS		 				  
@@ -2120,11 +2573,16 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 #endif RVD
 
 #ifdef AFS
-{ &acCacheSize,  lu_afs,      NULL, N_AFSCCACHESIZE,NULL_OBJINST|VAL_INT  },
-#ifdef 0
-{ &acPrimaryCell,lu_afs,      NULL, N_AFSCPRIMCELL, NULL_OBJINST|VAL_INT  },
-{ &acCacheDir,   lu_afs,      NULL, N_AFSCCACHEDIR, NULL_OBJINST|VAL_STR  },
-#endif 0
+{ &acCacheSize,  lu_afs,      NULL, N_AFSCACHESIZE, NULL_OBJINST|VAL_INT  },
+{ &acCacheFile,  lu_afs,      NULL, N_AFSCACHEFILE, NULL_OBJINST|VAL_STR  },
+{ &acThisCell,   lu_afs,      NULL, N_AFSTHISCELL,  NULL_OBJINST|VAL_STR  },
+{ &acCellFile,   lu_afs,      NULL, N_AFSCELLFILE,  NULL_OBJINST|VAL_STR  },
+{ &acSuidCell,   lu_afsdb,    NULL, N_AFSSUIDCELL,  VAL_STR  },
+{ &acSuidFile,   lu_afs,      NULL, N_AFSSUIDFILE,  NULL_OBJINST|VAL_STR  },
+{ &acCellSrvName,lu_afsdb,    NULL, N_AFSDBNAME,    VAL_STR  },
+{ &acCellSrvAddr,lu_afsdb,    NULL, N_AFSDBADDR,    VAL_STR  },
+{ &acCellSrvCom, lu_afsdb,    NULL, N_AFSDBCOMMENT, VAL_STR  },
+{ &acCellSrvFile,lu_afs,      NULL, N_AFSSRVFILE,   NULL_OBJINST|VAL_STR  },
 #endif AFS
 
 #ifdef KERBEROS
@@ -2148,10 +2606,50 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &zsState,      lu_zephyr,   NULL, N_ZSSTATE,      NULL_OBJINST|VAL_STR  },
 #endif ZEPHYR
 
-{ &mQueue,       lu_mail,     NULL, 0,              NULL_OBJINST|VAL_INT  },
+{ &mQueue,       lu_mail,     NULL, N_MAILALIAS,    NULL_OBJINST|VAL_INT  },
 { &mAliasUt,     lu_tuchtime, NULL, N_MAILALIAS,    NULL_OBJINST|VAL_STR  },
 { &mAliasUtPag,  lu_tuchtime, NULL, N_MAILALIASPAG, NULL_OBJINST|VAL_STR  },
 { &mAliasUtDir,  lu_tuchtime, NULL, N_MAILALIASDIR, NULL_OBJINST|VAL_STR  },
+{ &mAliasFile,   lu_tuchtime, NULL, N_MAILALIASFILE,NULL_OBJINST|VAL_STR  },
+
+#ifdef DNS
+{ &dnsUpdateTime,lu_dns,      NULL, N_DNSUPDATETIME,NULL_OBJINST|VAL_STR  },
+{ &dnsBootTime,  lu_dns,      NULL, N_DNSBOOTTIME,  NULL_OBJINST|VAL_TIME },
+{ &dnsResetTime, lu_dns,      NULL, N_DNSRESETTIME, NULL_OBJINST|VAL_TIME },
+{ &dnsPacketIn,  lu_dns,      NULL, N_DNSPACKETIN,  NULL_OBJINST|VAL_CNTR },
+{ &dnsPacketOut, lu_dns,      NULL, N_DNSPACKETOUT, NULL_OBJINST|VAL_CNTR },
+{ &dnsQuery,     lu_dns,      NULL, N_DNSQUERY,     NULL_OBJINST|VAL_CNTR },
+{ &dnsIQuery,    lu_dns,      NULL, N_DNSIQUERY,    NULL_OBJINST|VAL_CNTR },
+{ &dnsDupQuery,  lu_dns,      NULL, N_DNSDUPQUERY,  NULL_OBJINST|VAL_CNTR },
+{ &dnsResponse,  lu_dns,      NULL, N_DNSRESPONSE,  NULL_OBJINST|VAL_CNTR },
+{ &dnsDupResp,   lu_dns,      NULL, N_DNSDUPRESP,   NULL_OBJINST|VAL_CNTR },
+{ &dnsOK,        lu_dns,      NULL, N_DNSOK,        NULL_OBJINST|VAL_CNTR },
+{ &dnsFail,      lu_dns,      NULL, N_DNSFAIL,      NULL_OBJINST|VAL_CNTR },
+{ &dnsFormErr,   lu_dns,      NULL, N_DNSFORMERR,   NULL_OBJINST|VAL_CNTR },
+{ &dnsSysQuery,  lu_dns,      NULL, N_DNSSYSQUERY,  NULL_OBJINST|VAL_CNTR },
+{ &dnsPrimeCache,lu_dns,      NULL, N_DNSPRIMECACHE,NULL_OBJINST|VAL_CNTR },
+{ &dnsCheckNS,   lu_dns,      NULL, N_DNSCHECKNS,   NULL_OBJINST|VAL_CNTR },
+{ &dnsBadResp,   lu_dns,      NULL, N_DNSBADRESP,   NULL_OBJINST|VAL_CNTR },
+{ &dnsMartian,   lu_dns,      NULL, N_DNSMARTIAN,   NULL_OBJINST|VAL_CNTR },
+{ &dnsUnknown,   lu_dns,      NULL, N_DNSUNKNOWN,   NULL_OBJINST|VAL_CNTR },
+{ &dnsA,         lu_dns,      NULL, N_DNSA,         NULL_OBJINST|VAL_CNTR },
+{ &dnsNS,        lu_dns,      NULL, N_DNSNS,        NULL_OBJINST|VAL_CNTR },
+{ &dnsCName,     lu_dns,      NULL, N_DNSCNAME,     NULL_OBJINST|VAL_CNTR },
+{ &dnsSOA,       lu_dns,      NULL, N_DNSSOA,       NULL_OBJINST|VAL_CNTR },
+{ &dnsWKS,       lu_dns,      NULL, N_DNSWKS,       NULL_OBJINST|VAL_CNTR },
+{ &dnsPTR,       lu_dns,      NULL, N_DNSPTR,       NULL_OBJINST|VAL_CNTR },
+{ &dnsHInfo,     lu_dns,      NULL, N_DNSHINFO,     NULL_OBJINST|VAL_CNTR },
+{ &dnsMX,        lu_dns,      NULL, N_DNSMX,        NULL_OBJINST|VAL_CNTR },
+{ &dnsTXT,       lu_dns,      NULL, N_DNSTXT,       NULL_OBJINST|VAL_CNTR },
+{ &dnsUNSPECA,   lu_dns,      NULL, N_DNSUNSPECA,   NULL_OBJINST|VAL_CNTR },
+{ &dnsAXFR,      lu_dns,      NULL, N_DNSAXFR,      NULL_OBJINST|VAL_CNTR },
+{ &dnsANY,       lu_dns,      NULL, N_DNSANY,       NULL_OBJINST|VAL_CNTR },
+{ &dnsStatFile,  lu_dns,      NULL, N_DNSSTATFILE,  NULL_OBJINST|VAL_STR  },
+#endif DNS
+
+#ifdef TIMED
+{ &tdMaster,     lu_timed,    NULL, N_TIMEDMASTER,  NULL_OBJINST|VAL_STR  },
+#endif TIMED
 #endif MIT
 
 /*
@@ -2164,6 +2662,12 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
  *  namelist structure for nl() call.  This will allow us to
  *  get variables from the kernel.
  */
+
+/* 
+ * It's people like IBM who create crap like AIX that gets me upset.
+ */
+
+#ifndef RSPOS
 
 struct nlist nl[] = 
 {
@@ -2209,7 +2713,11 @@ struct nlist nl[] =
   { "_eintrcnt" },      /* N_EINTCRNT - 32 */
   { "_dk_ndrive" },     /* N_DKNDRIVE - 33 */
   { "_xstats" },        /* N_XSTATS   - 34 */
+#ifdef decmips
+  { "_gnode" },         /* N_INODE    - 35 */
+#else  decmips
   { "_inode" },         /* N_INODE    - 35 */
+#endif decmips
   { "_text" },          /* N_XTEXT    - 36 */
   { "_proc" },          /* N_PROC     - 37 */
   { "_cons" },          /* N_CONS     - 38 */
@@ -2220,7 +2728,11 @@ struct nlist nl[] =
   { "_nproc" },         /* N_NPROC    - 43 */
   { "_ntext" },         /* N_NTEXT    - 44 */
   { "_nfile" },         /* N_NFILE    - 45 */
+#ifdef decmips
+  { "_ngnode" },        /* N_NINODE   - 46 */
+#else  decmips
   { "_ninode" },        /* N_NINODE   - 46 */
+#endif decmips
   { "_nswapmap" },      /* N_NSWAPMAP - 47 */
   { "_pt_tty" },        /* N_PTTTY    - 48 */
   { "_npty" },          /* N_NPTY     - 49 */
@@ -2263,3 +2775,90 @@ struct nlist nl[] =
     "",
 };
 
+#else /* RSPOS */
+
+
+struct nlist nl[] = 
+{
+  { "ifnet" },		/* N_IFNET    - 0  */
+  { "ipstat" },	        /* N_IPSTAT   - 1  */
+  { "rtnet" },		/* N_RTNET    - 2  */
+  { "rthashsize" },	/* N_RTHASH   - 3  */
+  { "rtstat" },	        /* N_RTSTAT   - 4  */
+  { "mbstat" },	        /* N_MBSTAT   - 5  */
+  { "icmpstat" },	/* N_ICMPSTAT - 6  */
+  { "tcb" },		/* N_TCB      - 7  */
+  { "boottime" },       /* N_BOOT     - 8  */
+  { "rthost" },	        /* N_RTHOST   - 9  */
+  { "tcpstat" },	/* N_TCPSTAT  - 10 */
+  { "udpstat" },	/* N_UDPSTAT  - 11 */
+  { "ipforwarding" },	/* N_IPFORWD  - 12 */
+  { "arptab" },	        /* N_ARPTAB   - 13 */
+  { "arptab_size" },	/* N_ARPSIZE  - 14 */
+
+  /*
+   * mit additions - here we jumble things up a bit based on machine type
+   * so we do get too contorted with the indices.
+   */
+
+#ifdef MIT
+  { "avenrun" },       /* N_AVENRUN  - 15 */
+  { "hz" },            /* N_HZ       - 16 */
+  { "cp_time" },       /* N_CPTIME   - 17 */
+  { "rate" },          /* N_RATE     - 18 */
+  { "total" },         /* N_TOTAL    - 19 */
+  { "deficit" },       /* N_DEFICIT  - 20 */
+  { "forkstat" },      /* N_FORKSTAT - 21 */
+  { "sum" },           /* N_SUM      - 22 */
+  { "firstfree" },     /* N_FIRSTFRE - 23 */
+  { "maxfree" },       /* N_MAXFREE  - 24 */
+  { "dk_xfer" },       /* N_DKXFER   - 25 */
+  { "rectime" },       /* N_RECTIME  - 26 */
+  { "pgintime" },      /* N_PGINTIME - 27 */
+  { "phz" },           /* N_PHZ      - 28 */
+  { "intrnames" },     /* N_INTRNAM  - 29 */
+  { "eintrnames" },    /* N_EINTERNAM- 30 */
+  { "intrcnt" },       /* N_INTCRNT  - 31 */
+  { "eintrcnt" },      /* N_EINTCRNT - 32 */
+  { "dk_ndrive" },     /* N_DKNDRIVE - 33 */
+  { "xstats" },        /* N_XSTATS   - 34 */
+  { "inode" },         /* N_INODE    - 35 */
+  { "text" },          /* N_XTEXT    - 36 */
+  { "proc" },          /* N_PROC     - 37 */
+  { "cons" },          /* N_CONS     - 38 */
+  { "file" },          /* N_FILE     - 39 */
+  { "Usrptmap "},      /* N_USRPTMAP - 40 */
+  { "usrpt" },         /* N_USRPT    - 41 */
+  { "swapmap" },       /* N_SWAPMAP  - 42 */
+  { "nproc" },         /* N_NPROC    - 43 */
+  { "ntext" },         /* N_NTEXT    - 44 */
+  { "nfile" },         /* N_NFILE    - 45 */
+  { "ninode" },        /* N_NINODE   - 46 */
+  { "nswapmap" },      /* N_NSWAPMAP - 47 */
+  { "pt_tty" },        /* N_PTTTY    - 48 */
+  { "npty" },          /* N_NPTY     - 49 */
+  { "dmmin" },         /* N_DMMIN    - 50 */
+  { "dmmax" },         /* N_DMMAX    - 51 */
+  { "nswdev" },        /* N_NSWDEV   - 52 */
+  { "swdevt" },        /* N_SWDEVT   - 53 */    
+  { "rec" },           /* N_REC      - 54 */
+  { "pgin" },          /* N_PGIN     - 55 */   
+  { "Sysmap" },        /* N_SYSMAP   - 56 */
+#ifdef VFS  
+  { "ncstats" },       /* N_NCSTATS  - 57 */
+#else  VFS
+  { "nchstats" },      /* N_NCHSTATS - 57 */
+#endif VFS
+#ifdef RPC
+  { "rcstat" },        /* N_RCSTAT   - 58 */
+  { "rsstat" },        /* N_RSSTAT   - 59 */
+#endif RPC
+#ifdef NFS
+  { "clstat" },        /* N_CLSSTAT  - 60 */
+  { "svstat" },        /* N_SVSSTAT  - 61 */
+#endif NFS
+#endif MIT
+    "",
+};
+
+#endif /* RSPOS */
