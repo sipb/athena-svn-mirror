@@ -90,7 +90,8 @@ install-smrsh: smrsh
 
 install-docs: smrsh.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} smrsh.${MAN8SRC} ${MAN8}/smrsh.${MAN8EXT}')
+`	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} smrsh.${MAN8SRC} ${MAN8}/smrsh.${MAN8EXT}')
 
 clean:
 	rm -f ${OBJS} smrsh
