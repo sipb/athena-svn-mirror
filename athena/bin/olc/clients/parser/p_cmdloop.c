@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.7 1990-04-26 08:15:34 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.8 1990-04-26 09:10:00 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -446,7 +446,7 @@ expand_variable(Request,var)
 	  sprintf(buf, "%2d", time_info->tm_year);
 	  break;
 	case 8:			/* milhour (24 hour time) */
-	  sprintf(buf, "%2d", time_info->tm_hour);
+	  sprintf(buf, "%2.2d", time_info->tm_hour);
 	  break;
 	case 9:			/* HOUR (hour number) */
 	  sprintf(buf, "%2.2d", ((time_info->tm_hour > 12)
