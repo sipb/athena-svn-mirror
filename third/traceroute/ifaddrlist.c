@@ -33,7 +33,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-    "@(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/ifaddrlist.c,v 1.2 1999-10-19 20:28:31 danw Exp $ (LBL)";
+    "@(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/ifaddrlist.c,v 1.3 1999-12-27 17:52:36 danw Exp $ (LBL)";
 #endif
 
 #include <sys/param.h>
@@ -67,7 +67,6 @@ struct rtentry;
 #endif
 
 #include "ifaddrlist.h"
-#include "savestr.h"
 
 
 /* Not all systems have IFF_LOOPBACK */
@@ -162,7 +161,7 @@ ifaddrlist(register struct ifaddrlist **ipaddrp, register char *errbuf,
 
 		sin = (struct sockaddr_in *)&ifr.ifr_addr;
 		al->addr = sin->sin_addr.s_addr;
-		al->device = savestr(device);
+		al->device = strdup(device);
 		++al;
 		++nipaddr;
 	}

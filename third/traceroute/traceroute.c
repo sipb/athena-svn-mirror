@@ -24,7 +24,7 @@ static const char copyright[] =
     "@(#) Copyright (c) 1988, 1989, 1991, 1994, 1995, 1996, 1997\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.3 1999-12-07 21:49:06 danw Exp $ (LBL)";
+    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.4 1999-12-27 17:52:37 danw Exp $ (LBL)";
 #endif
 
 /*
@@ -235,7 +235,6 @@ static const char rcsid[] =
 #endif
 
 #include "ifaddrlist.h"
-#include "savestr.h"
 
 /* Maximum number of gateways (include room for one noop) */
 #define NGATEWAYS ((int)((MAX_IPOPTLEN - IPOPT_MINOFF - 1) / sizeof(u_int32_t)))
@@ -1199,7 +1198,7 @@ gethostinfo(register char *hostname)
 	}
 	addr = inet_addr(hostname);
 	if ((int32_t)addr != -1) {
-		hi->name = savestr(hostname);
+		hi->name = strdup(hostname);
 		hi->n = 1;
 		hi->addrs = calloc(1, sizeof(hi->addrs[0]));
 		if (hi->addrs == NULL) {
@@ -1220,7 +1219,7 @@ gethostinfo(register char *hostname)
 		Fprintf(stderr, "%s: bad host %s\n", prog, hostname);
 		exit(1);
 	}
-	hi->name = savestr(hp->h_name);
+	hi->name = strdup(hp->h_name);
 	for (n = 0, p = hp->h_addr_list; *p != NULL; ++n, ++p)
 		continue;
 	hi->n = n;
