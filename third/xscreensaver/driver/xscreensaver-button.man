@@ -108,7 +108,7 @@ was started from.
 This program consists of essentially a single Athena Label widget.
 The program's useful resources are:
 .TP 8
-.B xss (\fPclass\fB Command)
+.B xscreensaver (\fPclass\fB Command)
 Specifies the screen saver driver to run.  Same as the
 .B \-xss
 option.

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpc.c,v 1.1.1.1 1999-05-04 18:06:53 danw Exp $";
+"$Id: lpc.c,v 1.1.1.1.2.1 1999-07-12 20:30:34 ghudson Exp $";
 
 
 /***************************************************************************
@@ -116,18 +116,6 @@ int main(int argc, char *argv[], char *envp[])
 
 	Get_parms(argc, argv);      /* scan input args */
 
-	/* get the printer name */
-	Get_printer();
-	Fix_Rm_Rp_info();
-	if( Server ){
-		DEBUG1("doaction: overriding Remotehost with '%s'", Server );
-		Set_DYN(&RemoteHost_DYN, Server );
-	}
-	if( RemoteHost_DYN == 0 ){
-		Diemsg( _("No remote host specified") );
-	}
-
-	DEBUG1("lpc: RemotePrinter_DYN '%s', RemoteHost_DYN '%s'", RemotePrinter_DYN, RemoteHost_DYN );
 	DEBUG1("lpc: Optind '%d', argc '%d'", Optind, argc );
 	if(DEBUGL1){
 		int ii;
@@ -136,11 +124,6 @@ int main(int argc, char *argv[], char *envp[])
 		}
 	}
 
-	if( Check_for_rg_group( Logname_DYN ) ){
-		fprintf( stderr, "cannot use printer - not in privileged group\n" );
-		Errorcode = 1;
-		exit(0);
-	}
 
 	if( Optind < argc ){
 		for( i = Optind; argv[i]; ++i ){
@@ -200,7 +183,17 @@ void doaction( struct line_list *args )
 			DEBUG1("doaction: overriding Remotehost with '%s'", Server );
 			Set_DYN(&RemoteHost_DYN, Server );
 		}
+	} else if( Printer_DYN == 0 ){
+		/* get the printer name */
+		Get_printer();
+		Fix_Rm_Rp_info();
+		if( Server ){
+			DEBUG1("doaction: overriding Remotehost with '%s'", Server );
+			Set_DYN(&RemoteHost_DYN, Server );
+		}
 	}
+
+	DEBUG1("lpc: RemotePrinter_DYN '%s', RemoteHost_DYN '%s'", RemotePrinter_DYN, RemoteHost_DYN );
 	if( action == OP_SERVER ){
 		Is_server = 1;
 		Setup_configuration();
