@@ -15,16 +15,19 @@
  *	Lucien Van Elsen
  *      MIT Project Athena
  *
- *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ *      Copyright (c) 1989,1991 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v $
+ *      $Id: x_motd.c,v 1.6 1991-03-24 14:26:03 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.5 1991-03-06 15:39:00 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.6 1991-03-24 14:26:03 lwvanels Exp $";
 #endif
+
+#include <mit-copyright.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -32,9 +35,6 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <Xm/Text.h>
 
 #include "xolc.h"
-
-#define STANDARD_CURSOR	SetCursor(0)
-#define WAIT_CURSOR	SetCursor(1)
 
 ERRCODE
 x_get_motd(Request,type,file,dialog)
@@ -60,7 +60,6 @@ x_get_motd(Request,type,file,dialog)
 
       if (stat(file, &statbuf))
 	{
-	  fprintf(stderr, "motd: unable to stat motd file.\n");
 	  MuError("motd: unable to stat motd file.");
 	  STANDARD_CURSOR;
 	  return(ERROR);
@@ -69,7 +68,6 @@ x_get_motd(Request,type,file,dialog)
       if ((motd = malloc((1 + statbuf.st_size) * sizeof(char)))
 	  == (char *) NULL)
 	{
-	  fprintf(stderr, "x_get_motd: unable to malloc space for motd.\n");
 	  MuError("x_get_motd: unable to malloc space for motd.");
 	  STANDARD_CURSOR;
 	  return(ERROR);
@@ -89,7 +87,6 @@ x_get_motd(Request,type,file,dialog)
 	  return(ERROR);
 	}
       
-
       motd[statbuf.st_size] = '\0';
       if (dialog)
 	{
@@ -100,9 +97,10 @@ x_get_motd(Request,type,file,dialog)
 	}
       else
 	{
-	  XmTextSetString(w_motd_scrl, motd);
 	  if (statbuf.st_size == 0)
 	    XmTextSetString(w_motd_scrl, "There is no Message Of The Day right now.\nYou may want to check again later.");
+	  else
+	    XmTextSetString(w_motd_scrl, motd);
 	}
       close(fd);
       free(motd);
