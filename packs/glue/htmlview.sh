@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: htmlview.sh,v 1.4 2002-08-23 03:04:16 rbasch Exp $
+# $Id: htmlview.sh,v 1.5 2003-04-30 07:29:12 jweiss Exp $
 
 # htmlview script adapted from the infoagents locker to take advantage
 # of the local netscape, if present.
@@ -67,16 +67,28 @@ url=`echo "$url" | sed 's/,/%2C/g'`
 # If $DISPLAY is not set, just start lynx
 case "$DISPLAY" in
   "")
-    exec /bin/athena/attachandrun infoagents lynx lynx "$url"
+    if [ $cert_required = true ]; then
+      echo "$0: Could not find or start any WWW browser that supports " \
+        "personal certificates while opening $url" >&2
+      exit 1
+    else
+      exec /bin/athena/attachandrun infoagents lynx lynx "$url"
+    fi
     ;;
 esac
 
 # Try to display the URL with the user's preferred viewer.
 /usr/athena/bin/gurlview "$url" && exit 0
-echo "$0: Could not run gurlview.  Will try Lynx." >&2
+if [ $cert_required = true ]; then
+  echo "$0: Could not find or start any WWW browser that supports " \
+    "personal certificates while opening $url" >&2
+  exit 1
+else
+  echo "$0: Could not run gurlview.  Will try Lynx." >&2
 
-# Start Lynx
-/bin/athena/attachandrun infoagents lynx lynx $lynx_flags "$url"
+  # Start Lynx
+  /bin/athena/attachandrun infoagents lynx lynx $lynx_flags "$url"
+fi
 
 echo "$0: Could not find or start any WWW browser." >&2
 exit 1
