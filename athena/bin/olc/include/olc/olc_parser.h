@@ -17,7 +17,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *	$Id: olc_parser.h,v 1.6 1990-11-15 09:07:51 lwvanels Exp $
+ *	$Id: olc_parser.h,v 1.7 1991-01-03 15:25:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -96,6 +96,7 @@ int do_olc_dbinfo P((char **arguments ));
 
 /* p_motd.c */
 int do_olc_motd P((char **arguments ));
+int do_olc_hours P((char **arguments ));
 
 /* p_queue.c */
 int do_olc_queue P((char **arguments ));
