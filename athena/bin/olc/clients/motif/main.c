@@ -26,7 +26,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.10 1991-03-24 14:30:37 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.11 1991-03-24 23:10:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -76,15 +76,8 @@ main(argc, argv)
      int argc;
      char *argv[];
 {  
-  char hostname[MAXHOSTNAMELEN];  /* Name of local machine. */
-  struct hostent *host;
-
   Arg args[10];
   int n = 0;
-
-#ifdef HESIOD
-  char **hp;                   /* return value of Hesiod resolver */
-#endif
 
   program = rindex(*argv,'/');
   if(program == (char *) NULL)
