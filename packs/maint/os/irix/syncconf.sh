@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.2 1999-01-29 03:20:28 rbasch Exp $
+# $Id: syncconf.sh,v 1.3 1999-03-03 06:29:48 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -161,12 +161,15 @@ handle()
 			case "$NFSSRV" in
 	                true)
 				remove $config/nfsd.options
+				syncvar lockd true
 				;;
 			false)
 				syncvar nfsd.options 0
+				syncvar lockd false
 				;;
 			*)
 				syncvar nfsd.options "$NFSSRV"
+				syncvar lockd true
 				;;
 			esac
 		else
