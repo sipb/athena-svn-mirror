@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_status.c,v $
- *	$Id: c_status.c,v 1.1 1990-12-12 13:59:01 lwvanels Exp $
+ *	$Id: c_status.c,v 1.2 1991-02-24 11:28:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_status.c,v 1.1 1990-12-12 13:59:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_status.c,v 1.2 1991-02-24 11:28:48 lwvanels Exp $";
 #endif
 #endif
 
@@ -40,29 +40,29 @@ OGetStatusString(status,string)
      int status;
      char *string;
 {
-  int index = 0;
+  int ind = 0;
   
-  while  ((status != Status_Table[index].status)
-          && (Status_Table[index].status != UNKNOWN_STATUS)) 
-    index++;
+  while  ((status != Status_Table[ind].status)
+          && (Status_Table[ind].status != UNKNOWN_STATUS)) 
+    ind++;
     
-  strcpy(string,Status_Table[index].label);
+  strcpy(string,Status_Table[ind].label);
 }
 
 OGetStatusCode(string,status)
      char *string;
      int *status;
 {
-  int index;
+  int ind;
 
   *status = -2;
 
-  for (index = 0; Status_Table[index].status != UNKNOWN_STATUS; index++)
+  for (ind = 0; Status_Table[ind].status != UNKNOWN_STATUS; ind++)
     {
-      if (string_equiv(string, Status_Table[index].label,
+      if (string_equiv(string, Status_Table[ind].label,
 		       strlen(string)))
 	if (*status == -2)
-	  *status = Status_Table[index].status;
+	  *status = Status_Table[ind].status;
     }
 
   if ((*status == UNKNOWN_STATUS) || (*status == -2))
