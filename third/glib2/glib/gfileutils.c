@@ -40,7 +40,6 @@
 #include <io.h>
 #ifndef F_OK
 #define	F_OK 0
-#define	X_OK 1
 #define	W_OK 2
 #define	R_OK 4
 #endif /* !F_OK */
@@ -64,6 +63,12 @@
 #endif
 
 #include "glibintl.h"
+
+#ifdef G_OS_WIN32
+#define G_IS_DIR_SEPARATOR(c) (c == G_DIR_SEPARATOR || c == '/')
+#else
+#define G_IS_DIR_SEPARATOR(c) (c == G_DIR_SEPARATOR)
+#endif
 
 /**
  * g_file_test:
@@ -115,11 +120,10 @@ g_file_test (const gchar *filename,
   if ((test & G_FILE_TEST_EXISTS) && (access (filename, F_OK) == 0))
     return TRUE;
   
+#ifndef G_OS_WIN32
   if ((test & G_FILE_TEST_IS_EXECUTABLE) && (access (filename, X_OK) == 0))
     {
-#ifndef G_OS_WIN32
       if (getuid () != 0)
-#endif	
 	return TRUE;
 
       /* For root, on some POSIX systems, access (filename, X_OK)
@@ -129,6 +133,7 @@ g_file_test (const gchar *filename,
     }
   else
     test &= ~G_FILE_TEST_IS_EXECUTABLE;
+#endif	
 
   if (test & G_FILE_TEST_IS_SYMLINK)
     {
@@ -164,6 +169,10 @@ g_file_test (const gchar *filename,
 	      ((s.st_mode & S_IXOTH) ||
 	       (s.st_mode & S_IXUSR) ||
 	       (s.st_mode & S_IXGRP)))
+	    return TRUE;
+#else
+	  if ((test & G_FILE_TEST_IS_EXECUTABLE) &&
+	      (s.st_mode & _S_IEXEC))
 	    return TRUE;
 #endif
 	}
@@ -639,22 +648,22 @@ g_file_get_contents (const gchar *filename,
  * g_mkstemp:
  * @tmpl: template filename
  *
- * Opens a temporary file. See the <function>mkstemp()</function> documentation
+ * Opens a temporary file. See the mkstemp() documentation
  * on most UNIX-like systems. This is a portability wrapper, which simply calls 
- * <function>mkstemp()</function> on systems that have it, and implements 
+ * mkstemp() on systems that have it, and implements 
  * it in GLib otherwise.
  *
  * The parameter is a string that should match the rules for
- * <function>mkstemp()</function>, i.e. end in "XXXXXX". The X string will 
+ * mkstemp(), i.e. end in "XXXXXX". The X string will 
  * be modified to form the name of a file that didn't exist.
  *
- * Return value: A file handle (as from <function>open()</function>) to the file
+ * Return value: A file handle (as from open()) to the file
  * opened for reading and writing. The file is opened in binary mode
  * on platforms where there is a difference. The file handle should be
- * closed with <function>close()</function>. In case of errors, -1 is returned.
+ * closed with close(). In case of errors, -1 is returned.
  */
-int
-g_mkstemp (char *tmpl)
+gint
+g_mkstemp (gchar *tmpl)
 {
 #ifdef HAVE_MKSTEMP
   return mkstemp (tmpl);
@@ -723,47 +732,52 @@ g_mkstemp (char *tmpl)
  * files (as returned by g_get_tmp_dir()). 
  *
  * @tmpl should be a string ending with six 'X' characters, as the
- * parameter to g_mkstemp() (or <function>mkstemp()</function>). 
+ * parameter to g_mkstemp() (or mkstemp()). 
  * However, unlike these functions, the template should only be a 
  * basename, no directory components are allowed. If template is %NULL, 
  * a default template is used.
  *
- * Note that in contrast to g_mkstemp() (and <function>mkstemp()</function>) 
+ * Note that in contrast to g_mkstemp() (and mkstemp()) 
  * @tmpl is not modified, and might thus be a read-only literal string.
  *
  * The actual name used is returned in @name_used if non-%NULL. This
  * string should be freed with g_free() when not needed any longer.
  *
- * Return value: A file handle (as from <function>open()</function>) to 
+ * Return value: A file handle (as from open()) to 
  * the file opened for reading and writing. The file is opened in binary 
  * mode on platforms where there is a difference. The file handle should be
- * closed with <function>close()</function>. In case of errors, -1 is returned 
+ * closed with close(). In case of errors, -1 is returned 
  * and @error will be set.
  **/
-int
-g_file_open_tmp (const char *tmpl,
-		 char      **name_used,
-		 GError    **error)
+gint
+g_file_open_tmp (const gchar *tmpl,
+		 gchar      **name_used,
+		 GError     **error)
 {
   int retval;
   const char *tmpdir;
   char *sep;
   char *fulltemplate;
+  const char *slash;
 
   if (tmpl == NULL)
     tmpl = ".XXXXXX";
 
-  if (strchr (tmpl, G_DIR_SEPARATOR)
+  if ((slash = strchr (tmpl, G_DIR_SEPARATOR)) != NULL
 #ifdef G_OS_WIN32
-      || strchr (tmpl, '/')
+      || (strchr (tmpl, '/') != NULL && (slash = "/"))
 #endif
-				    )
+      )
     {
+      char c[2];
+      c[0] = *slash;
+      c[1] = '\0';
+
       g_set_error (error,
 		   G_FILE_ERROR,
 		   G_FILE_ERROR_FAILED,
 		   _("Template '%s' invalid, should not contain a '%s'"),
-		   tmpl, G_DIR_SEPARATOR_S);
+		   tmpl, c);
 
       return -1;
     }
@@ -781,7 +795,7 @@ g_file_open_tmp (const char *tmpl,
 
   tmpdir = g_get_tmp_dir ();
 
-  if (tmpdir [strlen (tmpdir) - 1] == G_DIR_SEPARATOR)
+  if (G_IS_DIR_SEPARATOR (tmpdir [strlen (tmpdir) - 1]))
     sep = "";
   else
     sep = G_DIR_SEPARATOR_S;
@@ -964,8 +978,17 @@ g_build_path (const gchar *separator,
  * @Varargs: remaining elements in path, terminated by %NULL
  * 
  * Creates a filename from a series of elements using the correct
- * separator for filenames. This function behaves identically
- * to <literal>g_build_path (G_DIR_SEPARATOR_S, first_element, ....)</literal>.
+ * separator for filenames.
+ *
+ * On Unix, this function behaves identically to <literal>g_build_path
+ * (G_DIR_SEPARATOR_S, first_element, ....)</literal>.
+ *
+ * On Windows, it takes into account that either the backslash
+ * (<literal>\</literal> or slash (<literal>/</literal>) can be used
+ * as separator in filenames, but otherwise behaves as on Unix. When
+ * file pathname separators need to be inserted, the one that last
+ * previously occurred in the parameters (reading from left to right)
+ * is used.
  *
  * No attempt is made to force the resulting filename to be an absolute
  * path. If the first element is a relative path, the result will
@@ -977,6 +1000,7 @@ gchar *
 g_build_filename (const gchar *first_element, 
 		  ...)
 {
+#ifndef G_OS_WIN32
   gchar *str;
   va_list args;
 
@@ -985,4 +1009,168 @@ g_build_filename (const gchar *first_element,
   va_end (args);
 
   return str;
+#else
+  /* Code copied from g_build_pathv(), and modifed to use two
+   * alternative single-character separators.
+   */
+  va_list args;
+  GString *result;
+  gboolean is_first = TRUE;
+  gboolean have_leading = FALSE;
+  const gchar *single_element = NULL;
+  const gchar *next_element;
+  const gchar *last_trailing = NULL;
+  gchar current_separator = '\\';
+
+  va_start (args, first_element);
+
+  result = g_string_new (NULL);
+
+  next_element = first_element;
+
+  while (TRUE)
+    {
+      const gchar *element;
+      const gchar *start;
+      const gchar *end;
+
+      if (next_element)
+	{
+	  element = next_element;
+	  next_element = va_arg (args, gchar *);
+	}
+      else
+	break;
+
+      /* Ignore empty elements */
+      if (!*element)
+	continue;
+      
+      start = element;
+
+      if (TRUE)
+	{
+	  while (start &&
+		 (*start == '\\' || *start == '/'))
+	    {
+	      current_separator = *start;
+	      start++;
+	    }
+	}
+
+      end = start + strlen (start);
+      
+      if (TRUE)
+	{
+	  while (end >= start + 1 &&
+		 (end[-1] == '\\' || end[-1] == '/'))
+	    {
+	      current_separator = end[-1];
+	      end--;
+	    }
+	  
+	  last_trailing = end;
+	  while (last_trailing >= element + 1 &&
+		 (last_trailing[-1] == '\\' || last_trailing[-1] == '/'))
+	    last_trailing--;
+
+	  if (!have_leading)
+	    {
+	      /* If the leading and trailing separator strings are in the
+	       * same element and overlap, the result is exactly that element
+	       */
+	      if (last_trailing <= start)
+		single_element = element;
+		  
+	      g_string_append_len (result, element, start - element);
+	      have_leading = TRUE;
+	    }
+	  else
+	    single_element = NULL;
+	}
+
+      if (end == start)
+	continue;
+
+      if (!is_first)
+	g_string_append_len (result, &current_separator, 1);
+      
+      g_string_append_len (result, start, end - start);
+      is_first = FALSE;
+    }
+
+  va_end (args);
+
+  if (single_element)
+    {
+      g_string_free (result, TRUE);
+      return g_strdup (single_element);
+    }
+  else
+    {
+      if (last_trailing)
+	g_string_append (result, last_trailing);
+  
+      return g_string_free (result, FALSE);
+    }
+#endif
+}
+
+/**
+ * g_file_read_link:
+ * @filename: the symbolic link
+ * @error: return location for a #GError
+ *
+ * Reads the contents of the symbolic link @filename like the POSIX readlink() function.
+ * The returned string is in the encoding used for filenames. Use g_filename_to_utf8() to 
+ * convert it to UTF-8.
+ *
+ * Returns: A newly allocated string with the contents of the symbolic link, 
+ *          or %NULL if an error occurred.
+ *
+ * Since: 2.4
+ */
+gchar *
+g_file_read_link (const gchar *filename,
+	          GError     **error)
+{
+#ifdef HAVE_READLINK
+  gchar *buffer;
+  guint size;
+  gint read_size;    
+  
+  size = 256; 
+  buffer = g_malloc (size);
+  
+  while (TRUE) 
+    {
+      read_size = readlink (filename, buffer, size);
+      if (read_size < 0) {
+	g_free (buffer);
+	g_set_error (error,
+		     G_FILE_ERROR,
+		     g_file_error_from_errno (errno),
+		     _("Failed to read the symbolic link '%s': %s"),
+		     filename, g_strerror (errno));
+	
+	return NULL;
+      }
+    
+      if (read_size < size) 
+	{
+	  buffer[read_size] = 0;
+	  return buffer;
+	}
+      
+      size *= 2;
+      buffer = g_realloc (buffer, size);
+    }
+#else
+  g_set_error (error,
+	       G_FILE_ERROR,
+	       G_FILE_ERROR_INVAL,
+	       _("Symbolic links not supported"));
+	
+  return NULL;
+#endif
 }

@@ -29,6 +29,7 @@
 
 #include <glib/gtypes.h>
 #include <glib/gunicode.h>
+#include <glib/gutils.h>  /* for G_CAN_INLINE */
 
 G_BEGIN_DECLS
 
@@ -48,6 +49,9 @@ GStringChunk* g_string_chunk_new	   (gsize size);
 void	      g_string_chunk_free	   (GStringChunk *chunk);
 gchar*	      g_string_chunk_insert	   (GStringChunk *chunk,
 					    const gchar	 *string);
+gchar*	      g_string_chunk_insert_len	   (GStringChunk *chunk,
+					    const gchar	 *string,
+					    gssize        len);
 gchar*	      g_string_chunk_insert_const  (GStringChunk *chunk,
 					    const gchar	 *string);
 
@@ -111,6 +115,25 @@ void         g_string_printf            (GString	 *string,
 void         g_string_append_printf     (GString	 *string,
 					 const gchar	 *format,
 					 ...) G_GNUC_PRINTF (2, 3);
+
+/* -- optimize g_strig_append_c --- */
+#ifdef G_CAN_INLINE
+static inline GString*
+g_string_append_c_inline (GString *gstring,
+                          gchar    c)
+{
+  if (gstring->len < gstring->allocated_len && 0)
+    {
+      gstring->str[gstring->len++] = c;
+      gstring->str[gstring->len] = 0;
+    }
+  else
+    g_string_insert_c (gstring, -1, c);
+  return gstring;
+}
+#define g_string_append_c(gstr,c)       g_string_append_c_inline (gstr, c)
+#endif /* G_CAN_INLINE */
+
 
 #ifndef G_DISABLE_DEPRECATED
 

@@ -1,43 +1,74 @@
+# Process this file with autoconf to produce a configure script.
+# require autoconf 2.54
+AC_PREREQ(2.54)
+
 dnl ***********************************
 dnl *** include special GLib macros ***
 dnl ***********************************
 
-define(glib_configure_in)
-builtin(include, acglib.m4)dnl
-builtin(include, glib/libcharset/codeset.m4)dnl
-builtin(include, glib/libcharset/glibc21.m4)dnl
-builtin(include, m4macros/glib-gettext.m4)dnl
+m4_define(glib_configure_in)
+m4_include(acglib.m4)dnl
+m4_include(glib/libcharset/codeset.m4)dnl
+m4_include(glib/libcharset/glibc21.m4)dnl
+m4_include(m4macros/glib-gettext.m4)dnl
 
-# require autoconf 2.53
-AC_PREREQ(2.53)
-
-# Process this file with autoconf to produce a configure script.
-AC_INIT(glib/glib.h)
-
-# Save this value here, since automake will set cflags later
-cflags_set=${CFLAGS+set}
-
-GLIB_AC_DIVERT_BEFORE_HELP([
 #
 # The following version number definitions apply to GLib, GModule, GObject 
 # and GThread as a whole, so if changes occoured in any of them, they are all
 # treated with the same interface and binary age.
 #
 # Making releases:
-#   GLIB_MICRO_VERSION += 1;
-#   GLIB_INTERFACE_AGE += 1;
-#   GLIB_BINARY_AGE += 1;
-# if any functions have been added, set GLIB_INTERFACE_AGE to 0.
+#   glib_micro_version += 1;
+#   glib_interface_age += 1;
+#   glib_binary_age += 1;
+# if any functions have been added, set glib_interface_age to 0.
 # if backwards compatibility has been broken,
-# set GLIB_BINARY_AGE _and_ GLIB_INTERFACE_AGE to 0.
+# set glib_binary_age _and_ glib_interface_age to 0.
 #
-GLIB_MAJOR_VERSION=2
-GLIB_MINOR_VERSION=2
-GLIB_MICRO_VERSION=1
-GLIB_INTERFACE_AGE=1
-GLIB_BINARY_AGE=`expr 100 '*' $GLIB_MINOR_VERSION + $GLIB_MICRO_VERSION`
-GLIB_VERSION=$GLIB_MAJOR_VERSION.$GLIB_MINOR_VERSION.$GLIB_MICRO_VERSION
-])dnl
+m4_define([glib_major_version], [2])
+m4_define([glib_minor_version], [4])
+m4_define([glib_micro_version], [6])
+m4_define([glib_interface_age], [6])
+m4_define([glib_binary_age],
+          [m4_eval(100 * glib_minor_version + glib_micro_version)])
+m4_define([glib_version],
+          [glib_major_version.glib_minor_version.glib_micro_version])
+
+# libtool version related macros
+m4_define([glib_lt_release], [glib_major_version.glib_minor_version])
+m4_define([glib_lt_current],
+          [m4_eval(100 * glib_minor_version + glib_micro_version - glib_interface_age)])
+m4_define([glib_lt_revision], [glib_interface_age])
+m4_define([glib_lt_age], [m4_eval(glib_binary_age - glib_interface_age)])
+m4_define([glib_lt_current_minus_age],
+          [m4_eval(glib_lt_current - glib_lt_age)])
+
+# if the minor version number is odd, then we want debugging.  Otherwise
+# we only want minimal debugging support.
+m4_define([glib_debug_default],
+          [m4_if(m4_eval(glib_minor_version % 2), [1], [yes], [minimum])])dnl
+
+
+AC_INIT(glib, [glib_version],
+        [http://bugzilla.gnome.org/enter_bug.cgi?product=glib])
+
+AC_CONFIG_SRCDIR([glib/glib.h])
+
+# Save this value here, since automake will set cflags later
+cflags_set=${CFLAGS+set}
+
+AM_INIT_AUTOMAKE([no-define])
+
+# Specify a configuration file
+AM_CONFIG_HEADER([config.h])
+
+
+GLIB_MAJOR_VERSION=glib_major_version
+GLIB_MINOR_VERSION=glib_minor_version
+GLIB_MICRO_VERSION=glib_micro_version
+GLIB_INTERFACE_AGE=glib_interface_age
+GLIB_BINARY_AGE=glib_binary_age
+GLIB_VERSION=glib_version
 
 AC_SUBST(GLIB_MAJOR_VERSION)
 AC_SUBST(GLIB_MINOR_VERSION)
@@ -46,43 +77,35 @@ AC_SUBST(GLIB_VERSION)
 AC_SUBST(GLIB_INTERFACE_AGE)
 AC_SUBST(GLIB_BINARY_AGE)
 
+AC_DEFINE(GLIB_MAJOR_VERSION, [glib_major_version],
+	  [Define to the GLIB major version])
+AC_DEFINE(GLIB_MINOR_VERSION, [glib_minor_version],
+	  [Define to the GLIB minor version])
+AC_DEFINE(GLIB_MICRO_VERSION, [glib_micro_version],
+	  [Define to the GLIB micro version])
+AC_DEFINE(GLIB_INTERFACE_AGE, [glib_interface_age],
+	  [Define to the GLIB interface age])
+AC_DEFINE(GLIB_BINARY_AGE, [glib_binary_age],
+	  [Define to the GLIB binary age])
+
 # libtool versioning
-LT_RELEASE=$GLIB_MAJOR_VERSION.$GLIB_MINOR_VERSION
-LT_CURRENT=`expr 100 '*' $GLIB_MINOR_VERSION + $GLIB_MICRO_VERSION - $GLIB_INTERFACE_AGE`
-LT_REVISION=$GLIB_INTERFACE_AGE
-LT_AGE=`expr $GLIB_BINARY_AGE - $GLIB_INTERFACE_AGE`
-LT_CURRENT_MINUS_AGE=`expr $LT_CURRENT - $LT_AGE`
+LT_RELEASE=glib_lt_release
+LT_CURRENT=glib_lt_current
+LT_REVISION=glib_lt_revision
+LT_AGE=glib_lt_age
+LT_CURRENT_MINUS_AGE=glib_lt_current_minus_age
 AC_SUBST(LT_RELEASE)
 AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 AC_SUBST(LT_CURRENT_MINUS_AGE)
 
-VERSION=$GLIB_VERSION
-PACKAGE=glib
-
-AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
-
-# Specify a configuration file
-AM_CONFIG_HEADER(config.h)
-
-AC_DEFINE_UNQUOTED(GLIB_MAJOR_VERSION, $GLIB_MAJOR_VERSION,
-		   [Define to the GLIB major version])
-AC_DEFINE_UNQUOTED(GLIB_MINOR_VERSION, $GLIB_MINOR_VERSION,
-		   [Define to the GLIB minor version])
-AC_DEFINE_UNQUOTED(GLIB_MICRO_VERSION, $GLIB_MICRO_VERSION,
-		   [Define to the GLIB micro version])
-AC_DEFINE_UNQUOTED(GLIB_INTERFACE_AGE, $GLIB_INTERFACE_AGE,
-		   [Define to the GLIB interface age])
-AC_DEFINE_UNQUOTED(GLIB_BINARY_AGE, $GLIB_BINARY_AGE,
-		   [Define to the GLIB binary age])
-
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
 
 AC_CANONICAL_HOST
 
-AC_MSG_CHECKING(for the BeOS)
+AC_MSG_CHECKING([for the BeOS])
 case $host in
   *-*-beos*)
     glib_native_beos="yes"
@@ -108,6 +131,7 @@ case "$host" in
     GOBJECT_DEF=gobject.def
     GTHREAD_DEF=gthread.def
     TESTGMODULE_EXP=testgmodule.exp
+    glib_pid_type='void *'
     ;;
   *)
     glib_native_win32=no
@@ -120,10 +144,11 @@ case "$host" in
     GOBJECT_DEF=
     GTHREAD_DEF=
     TESTGMODULE_EXP=
+    glib_pid_type=int
     ;;
 esac
 AC_MSG_RESULT([$glib_native_win32])
-AM_CONDITIONAL(OS_WIN32, test "$glib_native_win32" = "yes")
+AM_CONDITIONAL(OS_WIN32, [test "$glib_native_win32" = "yes"])
 AC_SUBST(G_LIB_WIN32_RESOURCE)
 AC_SUBST(G_MODULE_WIN32_RESOURCE)
 AC_SUBST(G_OBJECT_WIN32_RESOURCE)
@@ -135,62 +160,83 @@ AC_SUBST(GTHREAD_DEF)
 AC_SUBST(TESTGMODULE_EXP)
 
 if test "$glib_native_win32" = "yes"; then
-  AC_CHECK_PROG(ms_librarian, lib.exe, yes, no)
+  AC_CHECK_PROG(ms_librarian, [lib.exe], [yes], [no])
 fi
-AM_CONDITIONAL(MS_LIB_AVAILABLE, test x$ms_librarian = xyes)
-
-GLIB_AC_DIVERT_BEFORE_HELP([
-# figure debugging default, prior to $ac_help setup
-case $GLIB_MINOR_VERSION in
-*[[13579]]) debug_default=yes ;;
-*)          debug_default=minimum ;;
-esac[]dnl
-])
+AM_CONDITIONAL(MS_LIB_AVAILABLE, [test x$ms_librarian = xyes])
 
 dnl declare --enable-* args and collect ac_help strings
-AC_ARG_ENABLE(debug, [  --enable-debug=[no/minimum/yes] turn on debugging [default=$debug_default]],,enable_debug=$debug_default)
-AC_ARG_ENABLE(gc_friendly, [  --enable-gc-friendly    turn on garbage collector friendliness [default=no]],,enable_gc_friendly=no)
-AC_ARG_ENABLE(mem_pools, [  --disable-mem-pools     disable all glib memory pools],,disable_mem_pools=no)
-AC_ARG_ENABLE(ansi, [  --enable-ansi           turn on strict ansi [default=no]],
-		    , enable_ansi=no)
-AC_ARG_ENABLE(threads, [  --enable-threads        turn on basic thread support [default=yes]
-                          ([=no] will override --with-threads)],,enable_threads=yes)
-AC_ARG_ENABLE(rebuilds, [  --disable-rebuilds      disable all source autogeneration rules],,enable_rebuilds=yes)
+AC_ARG_ENABLE(debug,
+              AC_HELP_STRING([--enable-debug=@<:@no/minimum/yes@:>@],
+                             [turn on debugging @<:@default=glib_debug_default@:>@]),,
+              enable_debug=glib_debug_default)
+
+AC_ARG_ENABLE(gc_friendly,
+              [AC_HELP_STRING([--enable-gc-friendly],
+                              [turn on garbage collector friendliness [default=no]])],,
+              [enable_gc_friendly=no])
+AC_ARG_ENABLE(mem_pools,
+              [AC_HELP_STRING([--disable-mem-pools],
+			      [disable all glib memory pools])],,
+	      [disable_mem_pools=no])
+AC_ARG_ENABLE(ansi,
+              [AC_HELP_STRING([--enable-ansi],
+                              [turn on strict ansi [default=no]])],,
+	      [enable_ansi=no])
+AC_ARG_ENABLE(threads,
+              [AC_HELP_STRING([--enable-threads],
+                              [turn on basic thread support [default=yes]
+([=no] will override --with-threads)])],,
+              [enable_threads=yes])
+AC_ARG_ENABLE(rebuilds,
+              [AC_HELP_STRING([--disable-rebuilds],
+                              [disable all source autogeneration rules])],,
+              [enable_rebuilds=yes])
 
 if test "x$enable_threads" != "xyes"; then
   enable_threads=no
 fi
 
-AC_DEFINE_UNQUOTED(G_COMPILED_WITH_DEBUGGING, "${enable_debug}",
+AC_DEFINE_UNQUOTED(G_COMPILED_WITH_DEBUGGING, ["${enable_debug}"],
 	[Whether glib was compiled with debugging enabled])
 
-AC_MSG_CHECKING(whether to enable garbage collector friendliness)
+AC_MSG_CHECKING([whether to enable garbage collector friendliness])
 if test "x$enable_gc_friendly" = "xyes"; then
   AC_DEFINE(ENABLE_GC_FRIENDLY, 1, [Whether to enable GC friendliness])
   AC_SUBST(ENABLE_GC_FRIENDLY)
-  AC_MSG_RESULT(yes)
+  AC_MSG_RESULT([yes])
 else
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([no])
 fi
 
-AC_MSG_CHECKING(whether to disable memory pools)
+AC_MSG_CHECKING([whether to disable memory pools])
 if test "x$disable_mem_pools" = "xno"; then
-  AC_MSG_RESULT(no)
+  AC_MSG_RESULT([no])
 else
-  AC_DEFINE(DISABLE_MEM_POOLS, 1, [Whether to disable memory pools])
+  AC_DEFINE(DISABLE_MEM_POOLS, [1], [Whether to disable memory pools])
   AC_SUBST(DISABLE_MEM_POOLS)
-  AC_MSG_RESULT(yes)
+  AC_MSG_RESULT([yes])
+fi
+
+if test "$glib_native_win32" = "yes"; then
+  if test x$enable_static = xyes -o x$enable_static = x; then
+    AC_MSG_WARN([Disabling static library build, must build as DLL on Windows.])
+    enable_static=no
+  fi
+  if test x$enable_shared = xno; then
+    AC_MSG_WARN([Enabling shared library build, must build as DLL on Windows.])
+  fi
+  enable_shared=yes
 fi
 
 dnl Checks for programs.
 AC_PROG_CC
 
 dnl Check for a working C++ compiler, but do not bail out, if none is found.
-AC_CHECK_PROGS(CXX, $CCC c++ g++ gcc CC cxx cc++ cl, gcc)
+AC_CHECK_PROGS(CXX, [$CCC c++ g++ gcc CC cxx cc++ cl], [gcc])
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 AC_TRY_COMPILE(,[class a { int b; } c;], ,CXX=)
-AM_CONDITIONAL(HAVE_CXX, test "$CXX" != "")
+AM_CONDITIONAL(HAVE_CXX, [test "$CXX" != ""])
 AC_LANG_RESTORE
 
 AM_PROG_CC_STDC
@@ -201,7 +247,7 @@ AC_SYS_LARGEFILE
 #
 # Find pkg-config
 #
-AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+AC_PATH_PROG(PKG_CONFIG, [pkg-config], [no])
 if test x$PKG_CONFIG = xno ; then
   AC_MSG_ERROR([*** pkg-config not found. See http://www.freedesktop.org/software/pkgconfig/])
 fi
@@ -264,13 +310,12 @@ if test x"$glib_native_win32" = xyes; then
   fi
 fi
 
-AC_CYGWIN
 AC_EXEEXT
 
 # define a MAINT-like variable REBUILD which is set if Perl
 # and awk are found, so autogenerated sources can be rebuilt
 AC_PROG_AWK
-AC_CHECK_PROGS(PERL, perl5 perl)
+AC_CHECK_PROGS(PERL, [perl5 perl])
 # We would like indent, but don't require it.
 AC_CHECK_PROG(INDENT, indent, indent)
 REBUILD=\#
@@ -285,7 +330,7 @@ AC_SUBST(REBUILD)
 # Need full path to Perl for glib-mkenums
 #
 if test "x$PERL" != x ; then
-  AC_PATH_PROG(PERL_PATH, $PERL)
+  AC_PATH_PROG(PERL_PATH, [$PERL])
 else
   PERL_PATH="/usr/bin/env perl"
 fi
@@ -297,30 +342,33 @@ dnl ***********************
 dnl
 dnl We do this before the gettext checks, to avoid distortion
 
-AC_ARG_WITH(libiconv, [  --with-libiconv=[no/gnu/native] use the libiconv library ],,with_libiconv=maybe)
+AC_ARG_WITH(libiconv,
+            [AC_HELP_STRING([--with-libiconv=@<:@no/gnu/native@:>@],
+                            [use the libiconv library])],,
+	    [with_libiconv=maybe])
 
 found_iconv=no
 case $with_libiconv in
   maybe)
     # Check in the C library first
-    AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
+    AC_CHECK_FUNC(iconv_open, [with_libiconv=no; found_iconv=yes])
     # Check if we have GNU libiconv
     if test $found_iconv = "no"; then
-      AC_CHECK_LIB(iconv, libiconv_open, with_libiconv=gnu; found_iconv=yes)
+      AC_CHECK_LIB(iconv, libiconv_open, [with_libiconv=gnu; found_iconv=yes])
     fi
     # Check if we have a iconv in -liconv, possibly from vendor
     if test $found_iconv = "no"; then
-      AC_CHECK_LIB(iconv, iconv_open, with_libiconv=native; found_iconv=yes)
+      AC_CHECK_LIB(iconv, iconv_open, [with_libiconv=native; found_iconv=yes])
     fi
     ;;
   no)
-    AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
+    AC_CHECK_FUNC(iconv_open, [with_libiconv=no; found_iconv=yes])
     ;;
   gnu|yes)
-    AC_CHECK_LIB(iconv, libiconv_open, with_libiconv=gnu; found_iconv=yes)
+    AC_CHECK_LIB(iconv, libiconv_open, [with_libiconv=gnu; found_iconv=yes])
     ;;
   native)
-    AC_CHECK_LIB(iconv, iconv_open, with_libiconv=native; found_iconv=yes)
+    AC_CHECK_LIB(iconv, iconv_open, [with_libiconv=native; found_iconv=yes])
     ;;
 esac
 
@@ -332,7 +380,7 @@ dnl
 dnl gettext support
 dnl
 
-ALL_LINGUAS="am az be bg bn ca cs da de el es et eu fi fr gl hi ja ko mn ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg bn ca cs cy da de el en_CA en_GB eo es et eu fa fi fr ga gl gu he hi hr id is it ja ko lt lv mk mn ms nb ne nl nn no pa pl pt pt_BR ro ru sk sl sq sr sr@ije sr@Latn sv ta tr uk vi wa yi zh_CN zh_TW"
 GLIB_GNU_GETTEXT
 
 if test "$gt_cv_have_gettext" != "yes" ; then
@@ -346,7 +394,7 @@ LIBS="$INTLLIBS $LIBS"
 
 GETTEXT_PACKAGE=glib20
 AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", 
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"], 
   [Define the gettext package to be used])
 
 GLIB_DEFINE_LOCALEDIR(GLIB_LOCALE_DIR)
@@ -374,7 +422,6 @@ esac
 
 dnl Initialize libtool
 AM_DISABLE_STATIC
-AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 if test "x$GCC" = "xyes"; then
@@ -480,6 +527,10 @@ if test x$ac_cv_sizeof_long_long = x8; then
 		done])
 	if test -n "$glib_cv_long_long_format"; then
 	  AC_MSG_RESULT(%${glib_cv_long_long_format}u)
+	  AC_DEFINE(HAVE_LONG_LONG_FORMAT,1,[define if system printf can print long long])
+	  if test x"$glib_cv_long_long_format" = xI64; then
+	    AC_DEFINE(HAVE_INT64_AND_I64,1,[define to support printing 64-bit integers with format I64])
+	  fi
         else
 	  AC_MSG_RESULT(none)
         fi
@@ -489,6 +540,8 @@ elif test x$ac_cv_sizeof___int64 = x8; then
 	# We know this is MSVC, and what the formats are
 	glib_cv_long_long_format=I64
 	AC_MSG_RESULT(%${glib_cv_long_long_format}u)
+        AC_DEFINE(HAVE_LONG_LONG_FORMAT,1,[define if system printf can print long long])
+	AC_DEFINE(HAVE_INT64_AND_I64,1,[define to support printing 64-bit integers with format I64])
 fi
 
 dnl long doubles were not used, and a portability problem
@@ -627,21 +680,6 @@ jm_GLIBC21
 AC_CHECK_HEADERS([stddef.h stdlib.h string.h])
 AC_CHECK_FUNCS(setlocale)
 
-AC_MSG_CHECKING(whether make is GNU Make)
-STRIP_BEGIN=
-STRIP_END=
-if $ac_make --version 2>/dev/null | grep '^GNU Make ' >/dev/null ; then
-        STRIP_BEGIN='$(strip $(STRIP_DUMMY)'
-        STRIP_END=')'
-        AC_MSG_RESULT(yes)
-else
-        AC_MSG_RESULT(no)
-fi
-STRIP_DUMMY=
-AC_SUBST(STRIP_DUMMY)
-AC_SUBST(STRIP_BEGIN)
-AC_SUBST(STRIP_END)
-
 # check additional type sizes
 AC_CHECK_SIZEOF(size_t)
 
@@ -691,54 +729,65 @@ fi
 AC_MSG_RESULT(unsigned $glib_size_type)
 
 # Check for some functions
-AC_CHECK_FUNCS(lstat strerror strsignal memmove mkstemp vsnprintf stpcpy strcasecmp strncasecmp poll getcwd nanosleep vasprintf unsetenv getc_unlocked)
+AC_CHECK_FUNCS(lstat strerror strsignal memmove mkstemp vsnprintf stpcpy strcasecmp strncasecmp poll getcwd nanosleep vasprintf setenv unsetenv getc_unlocked readlink symlink)
 
 AC_FUNC_VSNPRINTF_C99
 AC_FUNC_PRINTF_UNIX98
 
 #
-# Check whether to use trio printf
+# Check whether to use an included printf
 #
 
-AC_ARG_ENABLE(included-printf, [  --enable-included-printf    use included printf [default=auto]], enable_trio="$enableval")
+AC_ARG_ENABLE(included-printf,
+              [AC_HELP_STRING([--enable-included-printf],
+                              [use included printf [default=auto]])],
+              enable_included_printf="$enableval")
 
-need_trio=no
-if test "x$enable_trio" = "xyes" ; then
-  need_trio=yes
+need_included_printf=no
+if test "x$enable_included_printf" = "xyes" ; then
+  need_included_printf=yes
 fi
 if test "$ac_cv_func_vsnprintf_c99" != "yes" ; then
-  need_trio=yes
+  need_included_printf=yes
 fi
 if test "$ac_cv_func_printf_unix98" != "yes" ; then
-  need_trio=yes
+  need_included_printf=yes
 fi
 if test "x$ac_cv_sizeof_long_long" = "x8" &&
    test -z "$glib_cv_long_long_format" ; then
-  need_trio=yes
+  need_included_printf=yes
 fi
 
-if test "x$enable_trio" = "xno" && 
-   test "x$need_trio" = "xyes" ; then
+if test "x$enable_included_printf" = "xno" && 
+   test "x$need_included_printf" = "xyes" ; then
   AC_MSG_ERROR([
 *** Your C library's printf doesn't appear to have the features that
 *** GLib needs, but you specified --enable-included-printf=no.])
 fi
 
-enable_trio=$need_trio
+enable_included_printf=$need_included_printf
 
-AM_CONDITIONAL(HAVE_GOOD_PRINTF, test "$enable_trio" != "yes")
-if test "$enable_trio" != "yes" ; then 
+AM_CONDITIONAL(HAVE_GOOD_PRINTF, test "$enable_included_printf" != "yes")
+if test "$enable_included_printf" != "yes" ; then 
   AC_DEFINE(HAVE_GOOD_PRINTF,1,[define to use system printf])
 else
-  glib_cv_long_long_format="ll"
-  AC_DEFINE(HAVE_VASPRINTF,1)
-  AC_DEFINE(HAVE_C99_VSNPRINTF,1)
-  AC_DEFINE(HAVE_UNIX98_PRINTF,1)
-  if test "$glib_native_win32" != "yes" ; then
-    TRIO_LIBS=-lm
+  if test -z "$glib_cv_long_long_format" ; then
+    glib_cv_long_long_format="ll"
   fi
+  AC_DEFINE(HAVE_VASPRINTF,1)
 fi
-AC_SUBST(TRIO_LIBS)
+
+# Checks needed for gnulib vasnprintf
+bh_C_SIGNED
+jm_AC_TYPE_LONG_LONG
+gt_TYPE_LONGDOUBLE
+gt_TYPE_WCHAR_T
+gt_TYPE_WINT_T
+AC_TYPE_SIZE_T
+AC_CHECK_TYPES(ptrdiff_t)
+jm_AC_TYPE_INTMAX_T
+AC_CHECK_FUNCS(snprintf)
+AC_FUNC_SNPRINTF_C99
 
 # Check if bcopy can be used for overlapping copies, if memmove isn't found.
 # The check is borrowed from the PERL Configure script.
@@ -960,6 +1009,13 @@ if test -z "$G_MODULE_IMPL"; then
   *-*-mingw*|*-*-cygwin*) G_MODULE_IMPL=G_MODULE_IMPL_WIN32 ;;
   esac
 fi
+dnl *** force native AIX library loader
+dnl *** dlopen() filepath must be of the form /path/libname.a(libname.so)
+if test -z "$G_MODULE_IMPL"; then
+  case "$host" in
+  *-*-aix*) G_MODULE_IMPL=G_MODULE_IMPL_AR ;;
+  esac
+fi
 dnl *** dlopen() and dlsym() in system libraries
 if test -z "$G_MODULE_IMPL"; then
 	AC_CHECK_FUNC(dlopen,
@@ -1005,6 +1061,9 @@ if test "$G_MODULE_IMPL" = "G_MODULE_IMPL_DL"; then
 	LIBS="$G_MODULE_LIBS $LIBS"
 	LDFLAGS="$LDFLAGS $G_MODULE_LDFLAGS"
 dnl *** check for OSF1/5.0 RTLD_GLOBAL brokenness
+	echo "void glib_plugin_test(void) { }" > plugin.c
+	${SHELL} ./libtool --mode=compile ${CC} -shared \
+		-export-dynamic -o plugin.o plugin.c 2>&1 >/dev/null
 	AC_CACHE_CHECK([for RTLD_GLOBAL brokenness],
 		glib_cv_rtldglobal_broken,[
 		AC_TRY_RUN([
@@ -1015,19 +1074,20 @@ dnl *** check for OSF1/5.0 RTLD_GLOBAL brokenness
 #ifndef RTLD_LAZY
 #  define RTLD_LAZY 0
 #endif
-int pthread_create;
+int glib_plugin_test;
 int main () {
     void *handle, *global, *local;
-    global = &pthread_create;
-    handle = dlopen ("libpthread.so", RTLD_GLOBAL | RTLD_LAZY);
+    global = &glib_plugin_test;
+    handle = dlopen ("./.libs/plugin.o", RTLD_GLOBAL | RTLD_LAZY);
     if (!handle) return 0;
-    local = dlsym (handle, "pthread_create");
+    local = dlsym (handle, "glib_plugin_test");
     return global == local;
 }                       ],
 			[glib_cv_rtldglobal_broken=no],
 			[glib_cv_rtldglobal_broken=yes],
 			[glib_cv_rtldglobal_broken=no])
-		rm -f plugin.c plugin.o plugin.lo
+		rm -f plugin.c plugin.o plugin.lo .libs/plugin.o
+		rmdir .libs 2>/dev/null
 	])
 	if test "x$glib_cv_rtldglobal_broken" = "xyes"; then
   		G_MODULE_BROKEN_RTLD_GLOBAL=1
@@ -1081,6 +1141,9 @@ case "$host_os" in
     ;;
   cygwin* | mingw*)
     glib_gmodule_suffix='dll'
+    ;;
+  aix*)
+    glib_gmodule_suffix='a'
     ;;
   *)
     glib_gmodule_suffix='so'    
@@ -1175,13 +1238,15 @@ dnl ***********************
 dnl *** g_thread checks ***
 dnl ***********************
 
-AC_ARG_WITH(threads, [  --with-threads=[none/posix/dce/solaris/win32] specify a thread implementation to use],
-	if test "x$with_threads" = x; then
+AC_ARG_WITH(threads,
+           [AC_HELP_STRING([--with-threads=@<:@none/posix/dce/solaris/win32@:>@],
+                           [specify a thread implementation to use])],
+           [if test "x$with_threads" = x; then
 		want_threads=yes
-	else
+	    else
 		want_threads=$with_threads
-	fi,
-	want_threads=yes)
+	    fi],
+	   [want_threads=yes])
 if test "x$enable_threads" = "xno"; then
         want_threads=no
 fi
@@ -1261,6 +1326,13 @@ if test "x$want_threads" = xyes || test "x$want_threads" = xposix \
                          pthread_mutex_init (&m, pthread_mutexattr_default);],
 			have_threads=dce)
         fi
+	# Tru64Unix requires -pthread to find pthread.h. See #103020
+	CPPFLAGS="$CPPFLAGS -pthread"
+	if test "x$have_threads" = xno; then
+	AC_TRY_COMPILE([#include <pthread.h>],
+		       [pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;],
+		       have_threads=posix)
+        fi
 	CPPFLAGS="$glib_save_CPPFLAGS"
 fi
 if test "x$want_threads" = xyes || test "x$want_threads" = xwin32; then
@@ -1297,13 +1369,13 @@ dnl
 m4_define([glib_thread_test],[
 #include <pthread.h> 
 int check_me = 0;
-void* func(void* data) {return check_me = 42;}
-main()
+void* func(void* data) {check_me = 42; return &check_me;}
+int main()
  { pthread_t t; 
    void *ret;
-   pthread_create (&t, 0, func, 0);
+   pthread_create (&t, $1, func, 0);
    pthread_join (t, &ret);
-   exit (check_me != 42 || ret != 42);
+   exit (check_me != 42 || ret != &check_me);
 }])
 
 dnl
@@ -1325,21 +1397,28 @@ if test x"$have_threads" != xno; then
     # both CPPFLAG and LIBS. 
     # One of them does for most gcc versions and some other platforms/compilers
     # too and could be considered as the canonical way to go. 
-    for flag in pthread pthreads; do
-      glib_save_CFLAGS="$CFLAGS"
-      CFLAGS="$CFLAGS -$flag"
-      AC_TRY_RUN(glib_thread_test,
-                 glib_flag_works=yes,
-                 glib_flag_works=no,
-                 [AC_LINK_IFELSE(glib_thread_test,
-                                 glib_flag_works=yes,
-                                 glib_flag_works=no)])
-      CFLAGS="$glib_save_CFLAGS"
-      if test $glib_flag_works = yes ; then
-         G_THREAD_CFLAGS=-$flag
-	 G_THREAD_LIBS=-$flag
-      fi
-    done
+    case $host in
+      *-*-cygwin*)
+         # skip cygwin -pthread or -pthreads test
+         ;;
+      *)
+        for flag in pthread pthreads; do
+          glib_save_CFLAGS="$CFLAGS"
+          CFLAGS="$CFLAGS -$flag"
+          AC_TRY_RUN(glib_thread_test(0),
+                     glib_flag_works=yes,
+                     glib_flag_works=no,
+                     [AC_LINK_IFELSE(glib_thread_test(0),
+                                     glib_flag_works=yes,
+                                     glib_flag_works=no)])
+          CFLAGS="$glib_save_CFLAGS"
+          if test $glib_flag_works = yes ; then
+             G_THREAD_CFLAGS=-$flag
+	     G_THREAD_LIBS=-$flag
+          fi
+        done
+         ;;
+    esac 
   fi
 
   if test x"$G_THREAD_CFLAGS" = x; then
@@ -1388,6 +1467,10 @@ if test x"$have_threads" != xno; then
 		# We are not using gcc with -pthread. Catched above.
 		G_THREAD_CFLAGS="-Kthread"
 		G_THREAD_LIBS=$G_THREAD_CFLAGS
+		;;
+	*-mingw*)
+		# No flag needed when using MSVCRT.DLL
+		G_THREAD_CFLAGS=""
 		;;
 	*)
 		G_THREAD_CFLAGS="-D_REENTRANT" # good default guess otherwise
@@ -1455,10 +1538,10 @@ case $have_threads in
 			LIBS="$add_thread_lib $glib_save_LIBS"
 			
 			AC_MSG_CHECKING(for pthread_create/pthread_join$IN)
-			AC_TRY_RUN(glib_thread_test,
+			AC_TRY_RUN(glib_thread_test($defattr),
                                    glib_result=yes,
                                    glib_result=no,
-                                   [AC_LINK_IFELSE(glib_thread_test,
+                                   [AC_LINK_IFELSE(glib_thread_test($defattr),
                                                    glib_result=yes,
                                                    glib_result=no)])
                         AC_MSG_RESULT($glib_result)
@@ -1642,8 +1725,14 @@ int main () {
 			posix_priority_max=-1
 		else
 			AC_MSG_RESULT($posix_priority_min/$posix_priority_max)
+			AC_MSG_CHECKING(for pthread_setschedparam)
+			AC_TRY_LINK([#include <pthread.h>],
+		          [pthread_t t; pthread_setschedparam(t, 0, NULL)],
+			  [AC_MSG_RESULT(yes)
 			AC_DEFINE_UNQUOTED(POSIX_MIN_PRIORITY,$posix_priority_min,[Minimum POSIX RT priority])
-			AC_DEFINE_UNQUOTED(POSIX_MAX_PRIORITY,$posix_priority_max,[Maximum POSIX RT priority])
+			   AC_DEFINE_UNQUOTED(POSIX_MAX_PRIORITY,$posix_priority_max,[Maximum POSIX RT priority])],
+                          [AC_MSG_RESULT(no)
+                           AC_MSG_WARN($POSIX_NO_PRIORITIES)])
 		fi
 		posix_yield_func=none
 		AC_MSG_CHECKING(for posix yield function)
@@ -1664,32 +1753,6 @@ int main () {
 		fi
 		AC_DEFINE_UNQUOTED(POSIX_YIELD_FUNC,$posix_yield_func,[The POSIX RT yield function])
 		CPPFLAGS="$glib_save_CPPFLAGS"
-
-		AC_CACHE_CHECK([whether to use the PID niceness surrogate for thread priorities], 
-                               glib_cv_use_pid_surrogate, 
-                 [AC_TRY_RUN([
-#include <pthread.h> 
-#include <sys/types.h>
-#include <unistd.h>
-pid_t other_pid = 0;
-
-void* func(void* data) {other_pid = getpid();}
-main()
-{ pthread_t t; 
-  void *ret;
-  pthread_create (&t, 0, func, NULL);
-  pthread_join (t, &ret);
-  exit (getpid()==other_pid || 
-	$posix_priority_min != $posix_priority_max);
-}               ],
-		[glib_cv_use_pid_surrogate=yes],
-                [glib_cv_use_pid_surrogate=no],
-                [])])
-	  GLIB_ASSERT_SET(glib_cv_use_pid_surrogate)
-          if test "$glib_cv_use_pid_surrogate" = "yes" ; then
-	    AC_DEFINE(G_THREAD_USE_PID_SURROGATE, 1, 
-                      [whether to use the PID niceness surrogate for thread priorities])
-          fi
            
 	elif test x"$have_threads" = xwin32; then
 		# It's a pointer to a private struct
@@ -1762,6 +1825,76 @@ if test $mutex_has_default = yes ; then
 	fi
 	CPPFLAGS="$glib_save_CPPFLAGS"
 	LIBS="$glib_save_LIBS"
+fi
+
+dnl ********************************
+dnl *** g_atomic_* tests for gcc ***
+dnl ********************************
+
+AC_MSG_CHECKING([whether to use assembler code for atomic operations])
+
+if test x"$GCC" = xyes; then
+  case $host_cpu in
+    i386)
+      AC_MSG_RESULT([none])
+      glib_memory_barrier_needed=no
+      ;;
+    i?86)
+      AC_MSG_RESULT([i486])
+      AC_DEFINE_UNQUOTED(G_ATOMIC_I486, 1,
+		   	 [i486 atomic implementation])
+      glib_memory_barrier_needed=no
+      ;;
+    sparc*)
+      SPARCV9_WARNING="Try to rerun configure with CFLAGS='-mcpu=v9',
+		when you are using a sparc with v9 instruction set (most
+		sparcs nowadays). This will make the code for atomic
+		operations much faster.	The resulting code will not run
+		on very old sparcs though."
+
+      AC_LINK_IFELSE([[
+        main () 
+        {
+	  int tmp1, tmp2, tmp3;
+          __asm__ __volatile__("casx [%2], %0, %1" 
+	                       : "=&r" (tmp1), "=&r" (tmp2) : "r" (&tmp3));
+        }]],
+	AC_MSG_RESULT([sparcv9])
+        AC_DEFINE_UNQUOTED(G_ATOMIC_SPARCV9, 1,
+		   	   [sparcv9 atomic implementation]),
+	AC_MSG_RESULT([no])
+        AC_MSG_WARN([[$SPARCV9_WARNING]]))
+      glib_memory_barrier_needed=yes
+      ;;
+    alpha*)
+      AC_MSG_RESULT([alpha])
+      AC_DEFINE_UNQUOTED(G_ATOMIC_ALPHA, 1,
+		   	 [alpha atomic implementation])
+      glib_memory_barrier_needed=yes
+      ;;
+    x86_64)
+      AC_MSG_RESULT([x86_64])
+      AC_DEFINE_UNQUOTED(G_ATOMIC_X86_64, 1,
+		   	 [x86_64 atomic implementation])
+      glib_memory_barrier_needed=no
+     ;;
+    powerpc*)
+      AC_MSG_RESULT([powerpc])
+      AC_DEFINE_UNQUOTED(G_ATOMIC_POWERPC, 1,
+		   	 [powerpc atomic implementation])
+      glib_memory_barrier_needed=yes
+      ;;	
+    ia64)
+      AC_MSG_RESULT([ia64])
+      AC_DEFINE_UNQUOTED(G_ATOMIC_IA64, 1,
+		   	 [ia64 atomic implementation])
+      glib_memory_barrier_needed=yes
+      ;;	
+    *)
+      AC_MSG_RESULT([none])
+      glib_memory_barrier_needed=yes
+      ;;
+  esac
 fi
 
 dnl ****************************************
@@ -1840,87 +1973,39 @@ dnl **************************
 dnl *** Checks for gtk-doc ***
 dnl **************************
 
-AC_ARG_WITH(html-dir, [  --with-html-dir=PATH    path to installed docs])
+GTK_DOC_CHECK([1.0])
 
-if test "x$with_html_dir" = "x" ; then
-  HTML_DIR='${datadir}/gtk-doc/html'
-else
-  HTML_DIR=$with_html_dir
-fi
+AC_ARG_ENABLE(man,
+              [AC_HELP_STRING([--enable-man],
+                              [regenerate man pages from Docbook [default=no]])],enable_man=yes,
+              enable_man=no)
 
-AC_SUBST(HTML_DIR)
-
-AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
-
-AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
-
-gtk_doc_min_version=0.10
-if $GTKDOC ; then
-    gtk_doc_version=`gtkdoc-mkdb --version`
-    AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
-
-    IFS="${IFS= 	}"; gtk_save_IFS="$IFS"; IFS="."
-    set $gtk_doc_version
-    for min in $gtk_doc_min_version ; do
-        cur=$1; shift
-        if test -z $min ; then break; fi
-        if test -z $cur ; then GTKDOC=false; break; fi
-        if test $cur -gt $min ; then break ; fi
-        if test $cur -lt $min ; then GTKDOC=false; break ; fi
-    done
-    IFS="$gtk_save_IFS"
-
-    if $GTKDOC ; then
-      AC_MSG_RESULT(yes)
-    else
-      AC_MSG_RESULT(no)
-    fi
-fi
-
-AM_CONDITIONAL(HAVE_GTK_DOC, $GTKDOC)
-AC_SUBST(HAVE_GTK_DOC)
-
-AC_CHECK_PROG(DB2HTML, db2html, true, false)
-AM_CONDITIONAL(HAVE_DOCBOOK, $DB2HTML)
-
-dnl Let people disable the gtk-doc stuff.
-AC_ARG_ENABLE(gtk-doc, [  --enable-gtk-doc        use gtk-doc to build documentation [default=auto]], enable_gtk_doc="$enableval", enable_gtk_doc=no)
-
-if test x$enable_gtk_doc = xyes ; then
-  if test x$GTKDOC = xtrue ; then
-    enable_gtk_doc=yes
-  else
-    enable_gtk_doc=no 
+if test "${enable_man}" != no; then
+dnl
+dnl Check for xsltproc
+dnl
+AC_PATH_PROG([XSLTPROC], [xsltproc])
+  if test -z "$XSLTPROC"; then
+    enable_man=no
   fi
+
+  dnl check for DocBook DTD and stylesheets in the local catalog.
+  JH_CHECK_XML_CATALOG([-//OASIS//DTD DocBook XML V4.1.2//EN],
+     [DocBook XML DTD V4.1.2],,enable_man=no)
+  JH_CHECK_XML_CATALOG([http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl],
+     [DocBook XSL Stylesheets],,enable_man=no)
 fi
 
-dnl NOTE: We need to use a separate automake conditional for this
-dnl       to make this work with the tarballs.
-AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
+AM_CONDITIONAL(ENABLE_MAN, test x$enable_man != xno)
 
 dnl ******************************
 dnl *** output the whole stuff ***
 dnl ******************************
 
-AC_OUTPUT_COMMANDS([
-
-## Generate `glibconfig.h' in two cases
-## 1. `config.status' is run either explicitly, or via configure.
-##     Esp. not when it is run in `Makefile' to generate makefiles and
-##     config.h
-## 2. CONFIG_OTHER is set explicitly
-##
-## Case 1 is difficult.  We know that `automake' sets one of
-## CONFIG_FILES or CONFIG_HEADERS to empty.  This heuristic works
-## only when AM_CONFIG_HEADER is set, however.
-
-if test -n "${CONFIG_FILES}" && test -n "${CONFIG_HEADERS}"; then
-  # Both CONFIG_FILES and CONFIG_HEADERS are non-empty ==> Case 1
-  CONFIG_OTHER=${CONFIG_OTHER:-glibconfig.h}
-fi
-case "$CONFIG_OTHER" in
-*glibconfig.h*)
-	echo creating glibconfig.h
+dnl this section will only be run if config.status is invoked with no
+dnl arguments, or with "glibconfig.h" as an argument.
+AC_CONFIG_COMMANDS([glibconfig.h],
+[
 	outfile=glibconfig.h-tmp
 	cat > $outfile <<\_______EOF
 /* glibconfig.h
@@ -1969,10 +2054,6 @@ G_BEGIN_DECLS
 #define G_MAXLONG	$glib_Ml
 #define G_MAXULONG	$glib_Mul
 
-#define G_MININT64	((gint64)  0x8000000000000000)
-#define G_MAXINT64	((gint64)  0x7fffffffffffffff)
-#define G_MAXUINT64	((guint64) 0xffffffffffffffff)
-
 _______EOF
 
 
@@ -1987,6 +2068,7 @@ _______EOF
 	  cat >>$outfile <<_______EOF
 typedef signed $gint16 gint16;
 typedef unsigned $gint16 guint16;
+#define G_GINT16_MODIFIER $gint16_modifier
 #define G_GINT16_FORMAT $gint16_format
 #define G_GUINT16_FORMAT $guint16_format
 _______EOF
@@ -1997,6 +2079,7 @@ _______EOF
 	  cat >>$outfile <<_______EOF
 typedef signed $gint32 gint32;
 typedef unsigned $gint32 guint32;
+#define G_GINT32_MODIFIER $gint32_modifier
 #define G_GINT32_FORMAT $gint32_format
 #define G_GUINT32_FORMAT $guint32_format
 _______EOF
@@ -2013,11 +2096,13 @@ _______EOF
 
 	if test x$gint64_format != x ; then
 	  cat >>$outfile <<_______EOF
+#define G_GINT64_MODIFIER $gint64_modifier
 #define G_GINT64_FORMAT $gint64_format
 #define G_GUINT64_FORMAT $guint64_format
 _______EOF
         else
 	  cat >>$outfile <<_______EOF
+#undef G_GINT64_MODIFIER
 #undef G_GINT64_FORMAT
 #undef G_GUINT64_FORMAT
 _______EOF
@@ -2031,8 +2116,15 @@ _______EOF
 
 _______EOF
 
-echo "typedef signed $glib_size_type_define gssize;" >> $outfile
-echo "typedef unsigned $glib_size_type_define gsize;" >> $outfile
+        cat >>$outfile <<_______EOF
+typedef signed $glib_size_type_define gssize;
+typedef unsigned $glib_size_type_define gsize;
+#define G_GSIZE_MODIFIER $gsize_modifier
+#define G_GSSIZE_FORMAT $gssize_format
+#define G_GSIZE_FORMAT $gsize_format
+
+#define G_MAXSIZE	G_MAXU$glib_msize_type
+_______EOF
 
 	if test -z "$glib_unknown_void_p"; then
 	  cat >>$outfile <<_______EOF
@@ -2124,16 +2216,16 @@ struct _GStaticMutex
 {
   struct _GMutex *runtime_mutex;
   union {
-    char   pad[$g_mutex_sizeof];
+    char   pad[[$g_mutex_sizeof]];
     double dummy_double;
     void  *dummy_pointer;
     long   dummy_long;
   } static_mutex;
 };
 #define	G_STATIC_MUTEX_INIT	{ NULL, { { $g_mutex_contents} } }
-#define	g_static_mutex_get_mutex(mutex) \
-  (g_thread_use_default_impl ? ((GMutex*) &((mutex)->static_mutex)) : \
-   g_static_mutex_get_mutex_impl (&((mutex)->runtime_mutex)))
+#define	g_static_mutex_get_mutex(mutex) \\
+  (g_thread_use_default_impl ? ((GMutex*) &((mutex)->static_mutex)) : \\
+   g_static_mutex_get_mutex_impl_shortcut (&((mutex)->runtime_mutex)))
 _______EOF
 	else
 		cat >>$outfile <<_______EOF
@@ -2141,7 +2233,8 @@ $g_enable_threads_def G_THREADS_ENABLED
 #define G_THREADS_IMPL_$g_threads_impl_def
 typedef struct _GMutex* GStaticMutex;
 #define G_STATIC_MUTEX_INIT NULL
-#define g_static_mutex_get_mutex(mutex) (g_static_mutex_get_mutex_impl (mutex))
+#define g_static_mutex_get_mutex(mutex) \\
+  (g_static_mutex_get_mutex_impl_shortcut (mutex))
 _______EOF
 	fi
 
@@ -2153,12 +2246,16 @@ _______EOF
 typedef union _GSystemThread GSystemThread;
 union _GSystemThread
 {
-  char   data[$g_system_thread_sizeof];
+  char   data[[$g_system_thread_sizeof]];
   double dummy_double;
   void  *dummy_pointer;
   long   dummy_long;
 };
 _______EOF
+	if test x"$g_memory_barrier_needed" != xno; then
+	  echo >>$outfile
+	  echo "#define G_ATOMIC_OP_MEMORY_BARRIER_NEEDED 1" >>$outfile
+	fi
 
 	echo >>$outfile
 	g_bit_sizes="16 32 64"
@@ -2191,6 +2288,8 @@ _______EOF
 
 #define G_MODULE_SUFFIX "$g_module_suffix"
 
+typedef $g_pid_type GPid;
+
 G_END_DECLS
 
 #endif /* GLIBCONFIG_H */
@@ -2198,12 +2297,11 @@ _______EOF
 
 
 	if cmp -s $outfile glibconfig.h; then
-	  echo glibconfig.h is unchanged
+	  AC_MSG_NOTICE([glibconfig.h is unchanged])
 	  rm -f $outfile
 	else
 	  mv $outfile glibconfig.h
-	fi ;;
-esac
+	fi
 ],[
 
 # Note that if two cases are the same, case goes with the first one.
@@ -2252,11 +2350,13 @@ fi
 case 2 in
 $ac_cv_sizeof_short)		
   gint16=short
+  gint16_modifier='"h"'
   gint16_format='"hi"'
   guint16_format='"hu"'
   ;;
 $ac_cv_sizeof_int)		
   gint16=int
+  gint16_modifier='""'
   gint16_format='"i"'
   guint16_format='"u"'
   ;;
@@ -2264,16 +2364,19 @@ esac
 case 4 in
 $ac_cv_sizeof_short)		
   gint32=short
+  gint32_modifier='"h"'
   gint32_format='"hi"'
   guint32_format='"hu"'
   ;;
 $ac_cv_sizeof_int)		
   gint32=int
+  gint32_modifier='""'
   gint32_format='"i"'
   guint32_format='"u"'
   ;;
 $ac_cv_sizeof_long)		
   gint32=long
+  gint32_modifier='"l"'
   gint32_format='"li"'
   guint32_format='"lu"'
   ;;
@@ -2281,6 +2384,7 @@ esac
 case 8 in
 $ac_cv_sizeof_int)
   gint64=int
+  gint64_modifier='""'
   gint64_format='"i"'
   guint64_format='"u"'
   glib_extension=
@@ -2288,6 +2392,7 @@ $ac_cv_sizeof_int)
   ;;
 $ac_cv_sizeof_long)
   gint64=long
+  gint64_modifier='"l"'
   gint64_format='"li"'
   guint64_format='"lu"'
   glib_extension=
@@ -2296,6 +2401,7 @@ $ac_cv_sizeof_long)
 $ac_cv_sizeof_long_long)
   gint64='long long'
   if test -n "$glib_cv_long_long_format"; then
+    gint64_modifier='"'$glib_cv_long_long_format'"'
     gint64_format='"'$glib_cv_long_long_format'i"'
     guint64_format='"'$glib_cv_long_long_format'u"'
   fi
@@ -2305,6 +2411,7 @@ $ac_cv_sizeof_long_long)
 $ac_cv_sizeof___int64)
   gint64='__int64'
   if test -n "$glib_cv_long_long_format"; then
+    gint64_modifier='"'$glib_cv_long_long_format'"'
     gint64_format='"'$glib_cv_long_long_format'i"'
     guint64_format='"'$glib_cv_long_long_format'u"'
   fi
@@ -2316,6 +2423,27 @@ glib_size_t=$ac_cv_sizeof_size_t
 glib_size_type_define=$glib_size_type
 glib_void_p=$ac_cv_sizeof_long
 glib_long=$ac_cv_sizeof_void_p
+
+case $glib_size_type in
+short)
+  gsize_modifier='"h"'
+  gsize_format='"hu"'
+  gssize_format='"hi"'
+  glib_msize_type='SHRT'
+  ;;
+int)
+  gsize_modifier='""'
+  gsize_format='"u"'
+  gssize_format='"i"'
+  glib_msize_type='INT'
+  ;;
+long)
+  gsize_modifier='"l"'
+  gsize_format='"lu"'
+  gssize_format='"li"'
+  glib_msize_type='LONG'
+  ;;
+esac
 
 gintbits=`expr $ac_cv_sizeof_int \* 8`
 glongbits=`expr $ac_cv_sizeof_long \* 8`
@@ -2430,8 +2558,11 @@ g_mutex_sizeof="$glib_cv_sizeof_gmutex"
 g_system_thread_sizeof="$glib_cv_sizeof_system_thread"
 g_mutex_contents="$glib_cv_byte_contents_gmutex"
 
+g_memory_barrier_needed="$glib_memory_barrier_needed"
+
 g_module_suffix="$glib_gmodule_suffix"
 
+g_pid_type="$glib_pid_type"
 case $host in
   *-*-beos*)
     glib_os="#define G_OS_BEOS"
@@ -2451,7 +2582,7 @@ case $host in
 esac
 ])
 
-AC_OUTPUT([
+AC_CONFIG_FILES([
 glib-2.0.pc
 glib-2.0-uninstalled.pc
 gmodule-2.0.pc
@@ -2460,7 +2591,6 @@ gthread-2.0.pc
 gthread-2.0-uninstalled.pc
 gobject-2.0.pc
 gobject-2.0-uninstalled.pc
-glib.spec
 glib-zip
 glib-gettextize
 Makefile
@@ -2469,9 +2599,9 @@ build/win32/Makefile
 build/win32/dirent/Makefile
 glib/Makefile
 glib/libcharset/Makefile
-glib/trio/Makefile
-gmodule/gmoduleconf.h
+glib/gnulib/Makefile
 gmodule/Makefile
+gmodule/gmoduleconf.h
 gobject/Makefile
 gobject/glib-mkenums
 gthread/Makefile
@@ -2483,9 +2613,34 @@ docs/reference/glib/version.xml
 docs/reference/gobject/Makefile
 docs/reference/gobject/version.xml
 tests/Makefile
+tests/gobject/Makefile
 m4macros/Makefile
-],[
-chmod 0755 glib-zip
-chmod 0755 glib-gettextize
-chmod 0755 gobject/glib-mkenums
 ])
+
+AC_CONFIG_COMMANDS([chmod-scripts],
+[chmod 0755 glib-zip
+chmod 0755 glib-gettextize
+chmod 0755 gobject/glib-mkenums])
+
+# we want to invoke this macro solely so that the config.status script
+# and automake generated makefiles know about these generated files.
+# They are only needed to distcheck the package
+if false; then
+  AC_CONFIG_FILES([
+    INSTALL
+    README
+    config.h.win32
+    glibconfig.h.win32
+    glib/makefile.msc
+    glib/glib.rc
+    gmodule/makefile.msc
+    gmodule/gmodule.rc
+    gobject/makefile.msc
+    gobject/gobject.rc
+    gthread/makefile.msc
+    gthread/gthread.rc
+    tests/makefile.msc
+  ])
+fi
+
+AC_OUTPUT

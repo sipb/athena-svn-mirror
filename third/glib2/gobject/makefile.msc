@@ -20,7 +20,7 @@ all :				\
 	gmarshal.strings \
 	gobject-query.exe \
 	libgobject-2.0-0.dll	\
-	gobject-2.2s.lib \
+	gobject-2.4s.lib \
 	testgobject.exe	\
 	testoverride.exe
 
@@ -55,13 +55,13 @@ libgobject-2.0-0.dll : $(gobject_OBJECTS) gobject.def
 	$(CC) $(CFLAGS) -Fm -LD -Fe$@ $(gobject_OBJECTS) \
 	..\glib\glib-2.0.lib $(LDFLAGS) /implib:gobject-2.0.lib /def:gobject.def
 
-gobject-2.2s.lib : $(gobject_OBJECTS) 
+gobject-2.4s.lib : $(gobject_OBJECTS) 
 	lib /out:$@ $(gobject_OBJECTS)
 
 # link glib's static version to avoid installing 
 glib-genmarshal.exe : glib-genmarshal.c gmarshal.strings
 	$(CC) -Fe$@ $(CFLAGS) -UGOBJECT_COMPILATION glib-genmarshal.c \
-	..\glib\glib-2.2s.lib user32.lib advapi32.lib $(INTL_LIBS) $(LIBICONV_LIBS)
+	..\glib\glib-2.4s.lib user32.lib advapi32.lib $(INTL_LIBS) $(LIBICONV_LIBS)
 
 gobject-query.exe : gobject-query.c libgobject-2.0-0.dll
 	$(CC) -Fe$@ $(CFLAGS) -UGOBJECT_COMPILATION gobject-query.c \

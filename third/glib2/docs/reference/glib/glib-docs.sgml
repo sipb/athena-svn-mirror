@@ -8,6 +8,7 @@
 <!ENTITY glib-Byte-Order-Macros SYSTEM "xml/byte_order.xml">
 <!ENTITY glib-Numerical-Definitions SYSTEM "xml/numerical.xml">
 <!ENTITY glib-Miscellaneous-Macros SYSTEM "xml/macros_misc.xml">
+<!ENTITY glib-Atomic-Operations SYSTEM "xml/atomic_operations.xml">
 <!ENTITY glib-Memory-Allocation SYSTEM "xml/memory.xml">
 <!ENTITY glib-Error-Reporting SYSTEM "xml/error_reporting.xml">
 <!ENTITY glib-Warnings-and-Assertions SYSTEM "xml/warnings.xml">
@@ -53,12 +54,16 @@
 <!ENTITY glib-Fileutils SYSTEM "xml/fileutils.xml">
 <!ENTITY glib-Shell SYSTEM "xml/shell.xml">
 <!ENTITY glib-Markup SYSTEM "xml/markup.xml">
+<!ENTITY glib-i18n SYSTEM "xml/i18n.xml">
 
 <!ENTITY glib-Compiling SYSTEM "compiling.sgml">
 <!ENTITY glib-Building SYSTEM "building.sgml">
+<!ENTITY glib-Cross SYSTEM "cross.sgml">
 <!ENTITY glib-Running SYSTEM "running.sgml">
 <!ENTITY glib-Resources SYSTEM "resources.sgml">
 <!ENTITY glib-Changes SYSTEM "changes.sgml">
+
+<!ENTITY glib-gettextize SYSTEM "glib-gettextize.xml">
 
 <!ENTITY version SYSTEM "version.xml">
 ]>
@@ -78,33 +83,14 @@ OS/2 and BeOS. GLib is released under the GNU Library General Public License
 (GNU LGPL). 
     </para>
     <para>
-GLib depends on the following: 
-<variablelist>
-
-<varlistentry>
-<term><function>iconv()</function></term>
-<listitem><para>
-In order to implement conversions between character sets,
-GLib requires an implementation of the standard <function>iconv()</function> 
-routine. Most modern systems will have a suitable implementation, however
-many older systems lack an <function>iconv()</function> implementation. On 
-such systems, you must install the 
-<ulink url="http://clisp.cons.org/~haible/packages-libiconv.html">libiconv</ulink> library.
-</para></listitem>
-</varlistentry>
-
-<varlistentry>
-<term>a thread implementation</term>
-<listitem><para>
-The thread support in GLib can be based upon several native thread 
-implementations, e.g. POSIX threads, DCE threads or Solaris threads.
-</para></listitem>
-</varlistentry>
-
-</variablelist>    
+The general policy of GLib is that all functions are invisibly threadsafe with the 
+exception of data structure manipulation functions, where, if you have two threads
+manipulating the <emphasis>same</emphasis> data structure, they must use a lock to
+synchronize their operation.
     </para>
 
     &glib-Building;
+    &glib-Cross;
     &glib-Compiling;
     &glib-Running;
     &glib-Changes;
@@ -121,6 +107,7 @@ implementations, e.g. POSIX threads, DCE threads or Solaris threads.
     &glib-Byte-Order-Macros;
     &glib-Numerical-Definitions;
     &glib-Miscellaneous-Macros;
+    &glib-Atomic-Operations;
   </chapter>
 
   <chapter id="glib-core">
@@ -142,6 +129,7 @@ implementations, e.g. POSIX threads, DCE threads or Solaris threads.
     &glib-String-Utility-Functions;
     &glib-Character-Set-Conversion;
     &glib-Unicode-Manipulation;
+    &glib-i18n;
     &glib-Date-and-Time-Functions;
     &glib-Random-Numbers;   
     &glib-Hook-Functions;
@@ -179,4 +167,13 @@ implementations, e.g. POSIX threads, DCE threads or Solaris threads.
     &glib-Caches;
     &glib-Memory-Allocators;
   </chapter>
+
+  <chapter id="tools">
+    <title>GLib Tools</title>
+
+    &glib-gettextize;
+  </chapter>
+
+  <index/>
+
 </book>

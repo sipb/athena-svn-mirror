@@ -61,14 +61,11 @@ to_uri_tests[] = {
   { "c:\\windows", "otherhost", NULL, G_CONVERT_ERROR_NOT_ABSOLUTE_PATH},
 #endif
   { "etc", "localhost", NULL, G_CONVERT_ERROR_NOT_ABSOLUTE_PATH},
-#ifndef G_OS_WIN32
-  /* g_filename_to_utf8 uses current code page on Win32, these tests assume that
-   * local filenames *are* in UTF-8.
-   */
-  { "/etc/\xE5\xE4\xF6", NULL, NULL, G_CONVERT_ERROR_ILLEGAL_SEQUENCE},
+#ifndef G_PLATFORM_WIN32
+  { "/etc/\xE5\xE4\xF6", NULL, "file:///etc/%E5%E4%F6" },
   { "/etc/\xC3\xB6\xC3\xA4\xC3\xA5", NULL, "file:///etc/%C3%B6%C3%A4%C3%A5"},
 #endif
-  { "/etc", "\xC3\xB6\xC3\xA4\xC3\xA5", "file://%C3%B6%C3%A4%C3%A5/etc"},
+  { "/etc", "\xC3\xB6\xC3\xA4\xC3\xA5", NULL, G_CONVERT_ERROR_ILLEGAL_SEQUENCE},
   { "/etc", "\xE5\xE4\xF6", NULL, G_CONVERT_ERROR_ILLEGAL_SEQUENCE},
   { "/etc/file with #%", NULL, "file:///etc/file%20with%20%23%25"},
   { "", NULL, NULL, G_CONVERT_ERROR_NOT_ABSOLUTE_PATH},
@@ -86,12 +83,12 @@ to_uri_tests[] = {
   /* On Unix, '\\' is a normal character in the file name */
   { "/\"#%<>[\\]^`{|}\x7F", NULL, "file:///%22%23%25%3C%3E%5B%5C%5D%5E%60%7B%7C%7D%7F"},
 #endif
-  { "/;@+$,", NULL, "file:///%3B%40%2B%24%2C"},
+  { "/;@+$,", NULL, "file:///%3B@+$,"},
   /* This and some of the following are of course as such illegal file names on Windows,
    * and would not occur in real life.
    */
   { "/:", NULL, "file:///:"},
-  { "/?&=", NULL, "file:///?&="}, /* these are not escaped and other reserved characters are -- is that really what we want? */
+  { "/?&=", NULL, "file:///%3F&="}, 
   { "/", "0123456789-", NULL, G_CONVERT_ERROR_ILLEGAL_SEQUENCE},
   { "/", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "file://ABCDEFGHIJKLMNOPQRSTUVWXYZ/"},
   { "/", "abcdefghijklmnopqrstuvwxyz", "file://abcdefghijklmnopqrstuvwxyz/"},
@@ -101,7 +98,7 @@ to_uri_tests[] = {
   { "/", "/", NULL, G_CONVERT_ERROR_ILLEGAL_SEQUENCE},
   { "/", "@:", NULL, G_CONVERT_ERROR_ILLEGAL_SEQUENCE},
   { "/", "\x80\xFF", NULL, G_CONVERT_ERROR_ILLEGAL_SEQUENCE},
-  { "/", "\xC3\x80\xC3\xBF", "file://%C3%80%C3%BF/"},
+  { "/", "\xC3\x80\xC3\xBF", NULL, G_CONVERT_ERROR_ILLEGAL_SEQUENCE},
 };
 
 
@@ -129,11 +126,11 @@ from_uri_tests[] = {
 #endif
   { "file://otherhost/etc", "/etc", "otherhost"},
   { "file://otherhost/etc/%23%25%20file", "/etc/#% file", "otherhost"},
-  { "file://%C3%B6%C3%A4%C3%A5/etc", "/etc", "\xC3\xB6\xC3\xA4\xC3\xA5"},
-  { "file:////etc/%C3%B6%C3%C3%C3%A5", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
-  { "file://localhost/\xE5\xE4\xF6", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
+  { "file://%C3%B6%C3%A4%C3%A5/etc", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
+  { "file:////etc/%C3%B6%C3%C3%C3%A5", "//etc/\xc3\xb6\xc3\xc3\xc3\xa5", NULL},
+  { "file://localhost/\xE5\xE4\xF6", "/\xe5\xe4\xf6", "localhost"},
   { "file://\xE5\xE4\xF6/etc", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
-  { "file://localhost/%E5%E4%F6", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
+  { "file://localhost/%E5%E4%F6", "/\xe5\xe4\xf6", "localhost"},
   { "file://%E5%E4%F6/etc", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
   { "file:///some/file#bad", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
   { "file://some", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
@@ -162,7 +159,7 @@ from_uri_tests[] = {
   { "file://-_.!~*'()/", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
   { "file://\"<>[\\]^`{|}\x7F/", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
   { "file://;?&=+$,/", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
-  { "file://%C3%80%C3%BF/", "/", "\xC3\x80\xC3\xBF"},
+  { "file://%C3%80%C3%BF/", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
   { "file://@/", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
   { "file://:/", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
   { "file://#/", NULL, NULL, G_CONVERT_ERROR_BAD_URI},
@@ -313,6 +310,68 @@ run_from_uri_tests (void)
   g_print ("\n");
 }
 
+static gint
+safe_strcmp (const gchar *a, const gchar *b)
+{
+  return strcmp (a ? a : "", b ? b : "");
+}
+
+static void
+run_roundtrip_tests (void)
+{
+  int i;
+  gchar *uri, *hostname, *res;
+  GError *error;
+  
+  for (i = 0; i < G_N_ELEMENTS (to_uri_tests); i++)
+    {
+      if (to_uri_tests[i].expected_error != 0)
+	continue;
+
+      error = NULL;
+      uri = g_filename_to_uri (to_uri_tests[i].filename,
+			       to_uri_tests[i].hostname,
+			       &error);
+      
+      if (error != NULL)
+	{
+	  g_print ("g_filename_to_uri failed unexpectedly: %s\n", 
+		   error->message);
+	  any_failed = TRUE;
+	  continue;
+	}
+      
+      error = NULL;
+      res = g_filename_from_uri (uri, &hostname, &error);
+      if (error != NULL)
+	{
+	  g_print ("g_filename_from_uri failed unexpectedly: %s\n", 
+		   error->message);
+	  any_failed = TRUE;
+	  continue;
+	}
+
+      if (safe_strcmp (to_uri_tests[i].filename, res))
+	{
+	  g_message ("roundtrip test %d failed, filename modified: "
+		     " expected \"%s\", but got \"%s\"\n",
+		     i, to_uri_tests[i].filename, res);
+	  any_failed = TRUE;
+	}
+
+      if (safe_strcmp (to_uri_tests[i].hostname, hostname))
+	{
+	  g_print ("roundtrip test %d failed, hostname modified: "
+		     " expected \"%s\", but got \"%s\"\n",
+		   i, to_uri_tests[i].hostname, hostname);
+	  any_failed = TRUE;
+	}
+
+      /* Give some output */
+      g_print (".");
+    }
+}
+
 int
 main (int   argc,
       char *argv[])
@@ -330,6 +389,7 @@ main (int   argc,
 
   run_to_uri_tests ();
   run_from_uri_tests ();
+  run_roundtrip_tests ();
 
   return any_failed ? 1 : 0;
 }

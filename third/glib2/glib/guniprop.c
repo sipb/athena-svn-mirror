@@ -27,20 +27,32 @@
 
 #include "glib.h"
 #include "gunichartables.h"
+#include "gunicodeprivate.h"
 
+#define ATTR_TABLE(Page) (((Page) <= G_UNICODE_LAST_PAGE_PART1) \
+                          ? attr_table_part1[Page] \
+                          : attr_table_part2[(Page) - 0xe00])
 
 #define ATTTABLE(Page, Char) \
-  ((attr_table[Page] == G_UNICODE_MAX_TABLE_INDEX) ? 0 : (attr_data[attr_table[Page]][Char]))
+  ((ATTR_TABLE(Page) == G_UNICODE_MAX_TABLE_INDEX) ? 0 : (attr_data[ATTR_TABLE(Page)][Char]))
 
-/* We cheat a bit and cast type values to (char *).  We detect these
-   using the &0xff trick.  */
-#define TTYPE(Page, Char) \
-  ((type_table[Page] >= G_UNICODE_MAX_TABLE_INDEX) \
-   ? (type_table[Page] - G_UNICODE_MAX_TABLE_INDEX) \
-   : (type_data[type_table[Page]][Char]))
+#define TTYPE_PART1(Page, Char) \
+  ((type_table_part1[Page] >= G_UNICODE_MAX_TABLE_INDEX) \
+   ? (type_table_part1[Page] - G_UNICODE_MAX_TABLE_INDEX) \
+   : (type_data[type_table_part1[Page]][Char]))
 
+#define TTYPE_PART2(Page, Char) \
+  ((type_table_part2[Page] >= G_UNICODE_MAX_TABLE_INDEX) \
+   ? (type_table_part2[Page] - G_UNICODE_MAX_TABLE_INDEX) \
+   : (type_data[type_table_part2[Page]][Char]))
 
-#define TYPE(Char) (((Char) > (G_UNICODE_LAST_CHAR)) ? G_UNICODE_UNASSIGNED : TTYPE ((Char) >> 8, (Char) & 0xff))
+#define TYPE(Char) \
+  (((Char) <= G_UNICODE_LAST_CHAR_PART1) \
+   ? TTYPE_PART1 ((Char) >> 8, (Char) & 0xff) \
+   : (((Char) >= 0xe0000 && (Char) <= G_UNICODE_LAST_CHAR) \
+      ? TTYPE_PART2 (((Char) - 0xe0000) >> 8, (Char) & 0xff) \
+      : G_UNICODE_UNASSIGNED))
+
 
 #define ISDIGIT(Type) ((Type) == G_UNICODE_DECIMAL_NUMBER	\
 		       || (Type) == G_UNICODE_LETTER_NUMBER	\
@@ -331,16 +343,19 @@ gboolean
 g_unichar_iswide (gunichar c)
 {
   if (c < 0x1100)
-    return 0;
+    return FALSE;
 
-  return ((c >= 0x1100 && c <= 0x115f)	   /* Hangul Jamo */
-	  || (c >= 0x2e80 && c <= 0xa4cf && (c & ~0x0011) != 0x300a &&
-	      c != 0x303f)		   /* CJK ... Yi */
-	  || (c >= 0xac00 && c <= 0xd7a3)  /* Hangul Syllables */
-	  || (c >= 0xf900 && c <= 0xfaff)  /* CJK Compatibility Ideographs */
-	  || (c >= 0xfe30 && c <= 0xfe6f)  /* CJK Compatibility Forms */
-	  || (c >= 0xff00 && c <= 0xff5f)  /* Fullwidth Forms */
-	  || (c >= 0xffe0 && c <= 0xffe6));
+  return (c <= 0x115f  /* Hangul Jamo init. consonants */ 
+          || c == 0x2329 || c == 0x232a     /* angle brackets */
+          || (c >= 0x2e80 && c <= 0xa4cf && (c < 0x302a || c > 0x302f) 
+              && c != 0x303f && c != 0x3099 && c!= 0x309a) /* CJK ... Yi */
+          || (c >= 0xac00 && c <= 0xd7a3)   /* Hangul Syllables */
+          || (c >= 0xf900 && c <= 0xfaff)   /* CJK Compatibility Ideographs */
+          || (c >= 0xfe30 && c <= 0xfe6f)   /* CJK Compatibility Forms */
+          || (c >= 0xff00 && c <= 0xff60)   /* Fullwidth Forms */
+          || (c >= 0xffe0 && c <= 0xffe6)   /* Fullwidth Forms */
+          || (c >= 0x20000 && c <= 0x2fffd) /* CJK extra stuff */
+          || (c >= 0x30000 && c <= 0x3fffd));
 }
 
 /**
@@ -360,10 +375,10 @@ g_unichar_toupper (gunichar c)
   if (t == G_UNICODE_LOWERCASE_LETTER)
     {
       gunichar val = ATTTABLE (c >> 8, c & 0xff);
-      if (val >= 0xd800 && val < 0xdc00)
+      if (val >= 0x1000000)
 	{
-	  const guchar *p = special_case_table[val - 0xd800];
-	  return p[0] * 256 + p[1];
+	  const gchar *p = special_case_table + val - 0x1000000;
+	  return g_utf8_get_char (p);
 	}
       else
 	return val ? val : c;
@@ -397,10 +412,10 @@ g_unichar_tolower (gunichar c)
   if (t == G_UNICODE_UPPERCASE_LETTER)
     {
       gunichar val = ATTTABLE (c >> 8, c & 0xff);
-      if (val >= 0xd800 && val < 0xdc00)
+      if (val >= 0x1000000)
 	{
-	  const guchar *p = special_case_table[val - 0xd800];
-	  return p[0] * 256 + p[1];
+	  const gchar *p = special_case_table + val - 0x1000000;
+	  return g_utf8_get_char (p);
 	}
       else
 	return val ? val : c;
@@ -530,13 +545,13 @@ get_locale_type (void)
   return LOCALE_NORMAL;
 }
 
-static int
+static gint
 output_marks (const char **p_inout,
 	      char        *out_buffer,
-	      int          len,
 	      gboolean     remove_dot)
 {
   const char *p = *p_inout;
+  gint len = 0;
   
   while (*p)
     {
@@ -557,34 +572,24 @@ output_marks (const char **p_inout,
   return len;
 }
 
-static gsize
+static gint
 output_special_case (gchar *out_buffer,
-		     gsize  len,
-		     int    index,
+		     int    offset,
 		     int    type,
 		     int    which)
 {
-  const guchar *p = special_case_table[index];
+  const gchar *p = special_case_table + offset;
+  gint len;
 
   if (type != G_UNICODE_TITLECASE_LETTER)
-    p += 2; /* +2 to skip over "best single match" */
+    p = g_utf8_next_char (p);
 
   if (which == 1)
-    {
-      while (p[0] && p[1])
-	p += 2;
-      p += 2;
-    }
+    p += strlen (p) + 1;
 
-  while (TRUE)
-    {
-      gunichar ch = p[0] * 256 + p[1];
-      if (!ch)
-	break;
-
-      len += g_unichar_to_utf8 (ch, out_buffer ? out_buffer + len : NULL);
-      p += 2;
-    }
+  len = strlen (p);
+  if (out_buffer)
+    memcpy (out_buffer, p, len);
 
   return len;
 }
@@ -632,7 +637,7 @@ real_toupper (const gchar *str,
 		    }
 		  g_free (decomp);
 		  
-		  len = output_marks (&p, out_buffer, len, TRUE);
+		  len += output_marks (&p, out_buffer ? out_buffer + len : NULL, TRUE);
 
 		  continue;
 		}
@@ -652,7 +657,7 @@ real_toupper (const gchar *str,
 	  /* Nasty, need to move it after other combining marks .. this would go away if
 	   * we normalized first.
 	   */
-	  len = output_marks (&p, out_buffer, len, FALSE);
+	  len += output_marks (&p, out_buffer ? out_buffer + len : NULL, FALSE);
 
 	  /* And output as GREEK CAPITAL LETTER IOTA */
 	  len += g_unichar_to_utf8 (0x399, out_buffer ? out_buffer + len : NULL); 	  
@@ -661,9 +666,9 @@ real_toupper (const gchar *str,
 	{
 	  val = ATTTABLE (c >> 8, c & 0xff);
 
-	  if (val >= 0xd800 && val < 0xdc00)
+	  if (val >= 0x1000000)
 	    {
-	      len += output_special_case (out_buffer, len, val - 0xd800, t,
+	      len += output_special_case (out_buffer ? out_buffer + len : NULL, val - 0x1000000, t,
 					  t == G_UNICODE_LOWERCASE_LETTER ? 0 : 1);
 	    }
 	  else
@@ -733,6 +738,28 @@ g_utf8_strup (const gchar *str,
   return result;
 }
 
+/* traverses the string checking for characters with combining class == 230
+ * until a base character is found */
+static gboolean
+has_more_above (const gchar *str)
+{
+  const gchar *p = str;
+  gint combining_class;
+
+  while (*p)
+    {
+      combining_class = _g_unichar_combining_class (g_utf8_get_char (p));
+      if (combining_class == 230)
+        return TRUE;
+      else if (combining_class == 0)
+        break;
+
+      p = g_utf8_next_char (p);
+    }
+
+  return FALSE;
+}
+
 static gsize
 real_tolower (const gchar *str,
 	      gssize       max_len,
@@ -754,9 +781,46 @@ real_tolower (const gchar *str,
 
       if (locale_type == LOCALE_TURKIC && c == 'I')
 	{
-	  /* I => LATIN SMALL LETTER DOTLESS I */
-	  len += g_unichar_to_utf8 (0x131, out_buffer ? out_buffer + len : NULL); 
-	}
+          if (g_utf8_get_char (p) == 0x0307)
+            {
+              /* I + COMBINING DOT ABOVE => i (U+0069) */
+              len += g_unichar_to_utf8 (0x0069, out_buffer ? out_buffer + len : NULL); 
+              p = g_utf8_next_char (p);
+            }
+          else
+            {
+              /* I => LATIN SMALL LETTER DOTLESS I */
+              len += g_unichar_to_utf8 (0x131, out_buffer ? out_buffer + len : NULL); 
+            }
+        }
+      /* Introduce an explicit dot above when lowercasing capital I's and J's
+       * whenever there are more accents above. [SpecialCasing.txt] */
+      else if (locale_type == LOCALE_LITHUANIAN && 
+               (c == 0x00cc || c == 0x00cd || c == 0x0128))
+        {
+          len += g_unichar_to_utf8 (0x0069, out_buffer ? out_buffer + len : NULL); 
+          len += g_unichar_to_utf8 (0x0307, out_buffer ? out_buffer + len : NULL); 
+
+          switch (c)
+            {
+            case 0x00cc: 
+              len += g_unichar_to_utf8 (0x0300, out_buffer ? out_buffer + len : NULL); 
+              break;
+            case 0x00cd: 
+              len += g_unichar_to_utf8 (0x0301, out_buffer ? out_buffer + len : NULL); 
+              break;
+            case 0x0128: 
+              len += g_unichar_to_utf8 (0x0303, out_buffer ? out_buffer + len : NULL); 
+              break;
+            }
+        }
+      else if (locale_type == LOCALE_LITHUANIAN && 
+               (c == 'I' || c == 'J' || c == 0x012e) && 
+               has_more_above (p))
+        {
+          len += g_unichar_to_utf8 (g_unichar_tolower (c), out_buffer ? out_buffer + len : NULL); 
+          len += g_unichar_to_utf8 (0x0307, out_buffer ? out_buffer + len : NULL); 
+        }
       else if (c == 0x03A3)	/* GREEK CAPITAL LETTER SIGMA */
 	{
 	  if ((max_len < 0 || p < str + max_len) && *p)
@@ -784,9 +848,9 @@ real_tolower (const gchar *str,
 	{
 	  val = ATTTABLE (c >> 8, c & 0xff);
 
-	  if (val >= 0xd800 && val < 0xdc00)
+	  if (val >= 0x1000000)
 	    {
-	      len += output_special_case (out_buffer, len, val - 0xd800, t, 0);
+	      len += output_special_case (out_buffer ? out_buffer + len : NULL, val - 0x1000000, t, 0);
 	    }
 	  else
 	    {
@@ -878,9 +942,12 @@ gchar *
 g_utf8_casefold (const gchar *str,
 		 gssize       len)
 {
-  GString *result = g_string_new (NULL);
+  GString *result;
   const char *p;
 
+  g_return_val_if_fail (str != NULL, NULL);
+
+  result = g_string_new (NULL);
   p = str;
   while ((len < 0 || p < str + len) && *p)
     {
@@ -890,7 +957,7 @@ g_utf8_casefold (const gchar *str,
       int end = G_N_ELEMENTS (casefold_table);
 
       if (ch >= casefold_table[start].ch &&
-	  ch <= casefold_table[end - 1].ch)
+          ch <= casefold_table[end - 1].ch)
 	{
 	  while (TRUE)
 	    {
@@ -916,4 +983,65 @@ g_utf8_casefold (const gchar *str,
     }
 
   return g_string_free (result, FALSE); 
+}
+
+/**
+ * g_unichar_get_mirror_char:
+ * @ch: a unicode character
+ * @mirrored_ch: location to store the mirrored character
+ * 
+ * In Unicode, some characters are <firstterm>mirrored</firstterm>. This
+ * means that their images are mirrored horizontally in text that is laid
+ * out from right to left. For instance, "(" would become its mirror image,
+ * ")", in right-to-left text.
+ *
+ * If @ch has the Unicode mirrored property and there is another unicode
+ * character that typically has a glyph that is the mirror image of @ch's
+ * glyph, puts that character in the address pointed to by @mirrored_ch.
+ *
+ * Return value: %TRUE if @ch has a mirrored character and @mirrored_ch is
+ * filled in, %FALSE otherwise
+ *
+ * Since: 2.4
+ **/
+/* This code is adapted from FriBidi (http://fribidi.sourceforge.net/). 
+ * FriBidi is: Copyright (C) 1999,2000 Dov Grobgeld, and
+ *             Copyright (C) 2001,2002 Behdad Esfahbod.
+ */
+gboolean
+g_unichar_get_mirror_char (gunichar ch,
+                           gunichar *mirrored_ch)
+{
+  gint pos, step, size;
+  gboolean found;
+
+  size = G_N_ELEMENTS (bidi_mirroring_table);
+  pos = step = (size / 2) + 1;
+
+  while (step > 1)
+    {
+      gunichar cmp_ch = bidi_mirroring_table[pos].ch;
+      step = (step + 1) / 2;
+
+      if (cmp_ch < ch)
+        {
+          pos += step;
+          if (pos > size - 1)
+            pos = size - 1;
+        }
+      else if (cmp_ch > ch)
+        {
+          pos -= step;
+          if (pos < 0)
+            pos = 0;
+        }
+      else
+        break;
+    }
+  found = bidi_mirroring_table[pos].ch == ch;
+  if (mirrored_ch)
+    *mirrored_ch = found ? bidi_mirroring_table[pos].mirrored_ch : ch;
+
+  return found;
+
 }

@@ -139,6 +139,8 @@ g_io_error_get_from_g_error (GIOStatus status,
       case G_IO_STATUS_AGAIN:
         return G_IO_ERROR_AGAIN;
       case G_IO_STATUS_ERROR:
+	g_return_val_if_fail (err != NULL, G_IO_ERROR_UNKNOWN);
+	
         if (err->domain != G_IO_CHANNEL_ERROR)
           return G_IO_ERROR_UNKNOWN;
         switch (err->code)
@@ -179,6 +181,15 @@ g_io_channel_read (GIOChannel *channel,
 
   g_return_val_if_fail (channel != NULL, G_IO_ERROR_UNKNOWN);
   g_return_val_if_fail (bytes_read != NULL, G_IO_ERROR_UNKNOWN);
+
+  if (count == 0)
+    {
+      if (bytes_read)
+        *bytes_read = 0;
+      return G_IO_ERROR_NONE;
+    }
+
+  g_return_val_if_fail (buf != NULL, G_IO_ERROR_UNKNOWN);
 
   status = channel->funcs->io_read (channel, buf, count, bytes_read, &err);
 
@@ -235,7 +246,7 @@ g_io_channel_write (GIOChannel  *channel,
  *        file).
  * 
  * Sets the current position in the #GIOChannel, similar to the standard library
- * function <function>fseek()</function>. 
+ * function fseek(). 
  * 
  * Return value: %G_IO_ERROR_NONE if the operation was successful.
  *
@@ -282,7 +293,7 @@ g_io_channel_seek  (GIOChannel   *channel,
  * g_io_channel_new_file:
  * @filename: A string containing the name of a file.
  * @mode: One of "r", "w", "a", "r+", "w+", "a+". These have
- *        the same meaning as in <function>fopen()</function>.
+ *        the same meaning as in fopen().
  * @error: A location to return an error of type %G_FILE_ERROR.
  *
  * Open a file @filename as a #GIOChannel using mode @mode. This
@@ -536,9 +547,6 @@ g_io_channel_error_from_errno (gint en)
 #ifdef EAGAIN
   g_return_val_if_fail (en != EAGAIN, G_IO_CHANNEL_ERROR_FAILED);
 #endif
-#ifdef EINTR
-  g_return_val_if_fail (en != EINTR, G_IO_CHANNEL_ERROR_FAILED);
-#endif
 
   switch (en)
     {
@@ -550,13 +558,25 @@ g_io_channel_error_from_errno (gint en)
 
 #ifdef EFAULT
     case EFAULT:
-      g_warning("File descriptor outside valid address space.\n");
+      g_warning("Buffer outside valid address space.\n");
       return G_IO_CHANNEL_ERROR_FAILED;
 #endif
 
 #ifdef EFBIG
     case EFBIG:
       return G_IO_CHANNEL_ERROR_FBIG;
+#endif
+
+#ifdef EINTR
+    /* In general, we should catch EINTR before we get here,
+     * but close() is allowed to return EINTR by POSIX, so
+     * we need to catch it here; EINTR from close() is
+     * unrecoverable, because it's undefined whether
+     * the fd was actually closed or not, so we just return
+     * a generic error code.
+     */
+    case EINTR:
+      return G_IO_CHANNEL_ERROR_FAILED;
 #endif
 
 #ifdef EINVAL
@@ -728,7 +748,7 @@ g_io_channel_set_flags (GIOChannel *channel,
  * The values of the flags %G_IO_FLAG_IS_READABLE and %G_IO_FLAG_IS_WRITEABLE
  * are cached for internal use by the channel when it is created.
  * If they should change at some later point (e.g. partial shutdown
- * of a socket with the UNIX <function>shutdown()</function> function), the user
+ * of a socket with the UNIX shutdown() function), the user
  * should immediately call g_io_channel_get_flags () to update
  * the internal values of these flags.
  *
@@ -1635,8 +1655,8 @@ done:
  *
  * Reads all the remaining data from the file.
  *
- * Return value: %G_IO_STATUS_NORMAL on success. This function never
- *               returns %G_IO_STATUS_EOF.
+ * Return value: %G_IO_STATUS_NORMAL on success. 
+ * This function never returns %G_IO_STATUS_EOF.
  **/
 GIOStatus
 g_io_channel_read_to_end (GIOChannel	*channel,

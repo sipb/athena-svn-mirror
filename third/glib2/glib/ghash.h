@@ -65,6 +65,9 @@ gboolean    g_hash_table_lookup_extended   (GHashTable	   *hash_table,
 void	    g_hash_table_foreach	   (GHashTable	   *hash_table,
 					    GHFunc	    func,
 					    gpointer	    user_data);
+gpointer    g_hash_table_find	   (GHashTable	   *hash_table,
+					    GHRFunc	    predicate,
+					    gpointer	    user_data);
 guint	    g_hash_table_foreach_remove	   (GHashTable	   *hash_table,
 					    GHRFunc	    func,
 					    gpointer	    user_data);
@@ -92,10 +95,10 @@ gboolean g_int_equal (gconstpointer  v,
                       gconstpointer  v2);
 guint    g_int_hash  (gconstpointer  v);
 
-/* This "hash" function will just return the key's adress as an
- * unsigned integer. Useful for hashing on plain adresses or
+/* This "hash" function will just return the key's address as an
+ * unsigned integer. Useful for hashing on plain addresses or
  * simple integer values.
- * passing NULL into g_hash_table_new() as GHashFunc has the
+ * Passing NULL into g_hash_table_new() as GHashFunc has the
  * same effect as passing g_direct_hash().
  */
 guint    g_direct_hash  (gconstpointer  v) G_GNUC_CONST;

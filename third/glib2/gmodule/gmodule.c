@@ -68,7 +68,8 @@ struct _GModule
 
 /* --- prototypes --- */
 static gpointer		_g_module_open		(const gchar	*file_name,
-						 gboolean	 bind_lazy);
+						 gboolean	 bind_lazy,
+						 gboolean	 bind_local);
 static void		_g_module_close		(gpointer	 handle,
 						 gboolean	 is_unref);
 static gpointer		_g_module_self		(void);
@@ -147,13 +148,16 @@ g_module_set_error (const gchar *error)
 #include "gmodule-win32.c"
 #elif	(G_MODULE_IMPL == G_MODULE_IMPL_DYLD)
 #include "gmodule-dyld.c"
+#elif	(G_MODULE_IMPL == G_MODULE_IMPL_AR)
+#include "gmodule-ar.c"
 #else
 #undef	SUPPORT_OR_RETURN
 #define	SUPPORT_OR_RETURN(rv)	{ g_module_set_error ("dynamic modules are " \
                                               "not supported by this system"); return rv; }
 static gpointer
 _g_module_open (const gchar	*file_name,
-		gboolean	 bind_lazy)
+		gboolean	 bind_lazy,
+		gboolean	 bind_local)
 {
   return NULL;
 }
@@ -384,7 +388,8 @@ g_module_open (const gchar    *file_name,
 	  name = real_name;
 	}
       if (name)
-	handle = _g_module_open (name, (flags & G_MODULE_BIND_LAZY) != 0);
+	handle = _g_module_open (name, (flags & G_MODULE_BIND_LAZY) != 0,
+			(flags & G_MODULE_BIND_LOCAL) != 0);
     }
   else
     g_module_set_error_unduped (g_strdup_printf ("unable to access file \"%s\"", file_name));

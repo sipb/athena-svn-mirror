@@ -32,7 +32,9 @@ typedef struct _GSourceCallbackFuncs	GSourceCallbackFuncs;
 typedef struct _GSourceFuncs	        GSourceFuncs;
 
 typedef gboolean (*GSourceFunc)       (gpointer data);
-
+typedef void     (*GChildWatchFunc)   (GPid     pid,
+				       gint     status,
+				       gpointer data);
 struct _GSource
 {
   /*< private >*/
@@ -100,8 +102,7 @@ struct _GSourceFuncs
  * WSAEventSelect to signal events when a SOCKET is readable).
  *
  * On Win32, fd can also be the special value G_WIN32_MSG_HANDLE to
- * indicate polling for messages. These message queue GPollFDs should
- * be added with the g_main_poll_win32_msg_add function.
+ * indicate polling for messages.
  *
  * But note that G_WIN32_MSG_HANDLE GPollFDs should not be used by GDK
  * (GTK) programs, as GDK itself wants to read messages and convert them
@@ -187,6 +188,8 @@ void g_main_context_add_poll      (GMainContext *context,
 void g_main_context_remove_poll   (GMainContext *context,
 				   GPollFD      *fd);
 
+int g_main_depth (void);
+
 /* GMainLoop: */
 
 GMainLoop *g_main_loop_new        (GMainContext *context,
@@ -244,8 +247,9 @@ void     g_source_get_current_time (GSource        *source,
 
 /* Specific source types
  */
-GSource *g_idle_source_new    (void);
-GSource *g_timeout_source_new (guint         interval);
+GSource *g_idle_source_new        (void);
+GSource *g_child_watch_source_new (GPid pid);
+GSource *g_timeout_source_new     (guint interval);
 
 /* Miscellaneous functions
  */
@@ -279,36 +283,35 @@ gboolean g_source_remove_by_user_data        (gpointer       user_data);
 gboolean g_source_remove_by_funcs_user_data  (GSourceFuncs  *funcs,
 					      gpointer       user_data);
 
-/* Idles and timeouts */
-guint		g_timeout_add_full	(gint           priority,
-					 guint          interval, 
-					 GSourceFunc    function,
-					 gpointer       data,
-					 GDestroyNotify notify);
-guint		g_timeout_add		(guint          interval,
-					 GSourceFunc    function,
-					 gpointer       data);
-guint		g_idle_add	   	(GSourceFunc	function,
-					 gpointer	data);
-guint	   	g_idle_add_full		(gint   	priority,
-					 GSourceFunc	function,
-					 gpointer	data,
-					 GDestroyNotify notify);
-gboolean	g_idle_remove_by_data	(gpointer	data);
+/* Idles, child watchers and timeouts */
+guint    g_timeout_add_full     (gint            priority,
+				 guint           interval,
+				 GSourceFunc     function,
+				 gpointer        data,
+				 GDestroyNotify  notify);
+guint    g_timeout_add          (guint           interval,
+				 GSourceFunc     function,
+				 gpointer        data);
+guint    g_child_watch_add_full (gint            priority,
+				 GPid            pid,
+				 GChildWatchFunc function,
+				 gpointer        data,
+				 GDestroyNotify  notify);
+guint    g_child_watch_add      (GPid            pid,
+				 GChildWatchFunc function,
+				 gpointer        data);
+guint    g_idle_add             (GSourceFunc     function,
+				 gpointer        data);
+guint    g_idle_add_full        (gint            priority,
+				 GSourceFunc     function,
+				 gpointer        data,
+				 GDestroyNotify  notify);
+gboolean g_idle_remove_by_data  (gpointer        data);
 
 /* Hook for GClosure / GSource integration. Don't touch */
 GLIB_VAR GSourceFuncs g_timeout_funcs;
+GLIB_VAR GSourceFuncs g_child_watch_funcs;
 GLIB_VAR GSourceFuncs g_idle_funcs;
-
-#ifdef G_OS_WIN32
-
-/* This is used to add polling for Windows messages. GDK (GTK+) programs
- * should *not* use this.
- */
-void        g_main_poll_win32_msg_add (gint        priority,
-				       GPollFD    *fd,
-				       guint       hwnd);
-#endif /* G_OS_WIN32 */
 
 G_END_DECLS
 

@@ -29,6 +29,7 @@
 
 #include <glib/gerror.h>
 #include <glib/gtypes.h>
+#include <glib/gatomic.h>  /* for g_atomic_pointer_get */
 
 G_BEGIN_DECLS
 
@@ -135,6 +136,10 @@ void    g_thread_init_with_errorcheck_mutexes (GThreadFunctions* vtable);
 
 /* internal function for fallback static mutex implementation */
 GMutex* g_static_mutex_get_mutex_impl   (GMutex **mutex);
+
+#define g_static_mutex_get_mutex_impl_shortcut(mutex) \
+  (g_atomic_pointer_get ((gpointer*)mutex) ? *(mutex) : \
+   g_static_mutex_get_mutex_impl (mutex))
 
 /* shorthands for conditional and unconditional function calls */
 
@@ -284,6 +289,33 @@ gboolean  g_static_rw_lock_writer_trylock (GStaticRWLock* lock);
 void      g_static_rw_lock_writer_unlock  (GStaticRWLock* lock);
 void      g_static_rw_lock_free           (GStaticRWLock* lock);
 
+typedef enum
+{
+  G_ONCE_STATUS_NOTCALLED,
+  G_ONCE_STATUS_PROGRESS,
+  G_ONCE_STATUS_READY  
+} GOnceStatus;
+
+typedef struct _GOnce GOnce;
+struct _GOnce
+{
+  volatile GOnceStatus status;
+  volatile gpointer retval;
+};
+
+#define G_ONCE_INIT { G_ONCE_STATUS_NOTCALLED, NULL }
+
+gpointer g_once_impl (GOnce *once, GThreadFunc func, gpointer arg);
+
+#ifdef G_ATOMIC_OP_MEMORY_BARRIER_NEEDED
+# define g_once(once, func, arg) g_once_impl ((once), (func), (arg))
+#else /* !G_ATOMIC_OP_MEMORY_BARRIER_NEEDED*/
+# define g_once(once, func, arg) \
+  (((once)->status == G_ONCE_STATUS_READY) ? \
+   (once)->retval : \
+   g_once_impl ((once), (func), (arg)))
+#endif /* G_ATOMIC_OP_MEMORY_BARRIER_NEEDED */
+    
 /* these are some convenience macros that expand to nothing if GLib
  * was configured with --disable-threads. for using StaticMutexes,
  * you define them with G_LOCK_DEFINE_STATIC (name) or G_LOCK_DEFINE (name)

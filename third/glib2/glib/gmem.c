@@ -35,7 +35,7 @@
 #include <signal.h>
 
 #include "glib.h"
-
+#include "gthreadinit.h"
 
 /* notes on macros:
  * having DISABLE_MEM_POOLS defined, disables mem_chunks alltogether, their
@@ -228,14 +228,13 @@ static gboolean vtable_set = FALSE;
  * 
  * Checks whether the allocator used by g_malloc() is the system's
  * malloc implementation. If it returns %TRUE memory allocated with
- * <function>malloc()</function> can be used interchangeable with 
- * memory allocated using g_malloc(). This function is useful for 
- * avoiding an extra copy of allocated memory returned by a 
- * non-GLib-based API.
+ * malloc() can be used interchangeable with memory allocated using g_malloc(). 
+ * This function is useful for avoiding an extra copy of allocated memory returned
+ * by a non-GLib-based API.
  *
  * A different allocator can be set using g_mem_set_vtable().
  *
- * Return value: if %TRUE, <function>malloc()</function> and g_malloc() can be mixed.
+ * Return value: if %TRUE, malloc() and g_malloc() can be mixed.
  **/
 gboolean
 g_mem_is_system_malloc (void)
@@ -718,12 +717,12 @@ g_mem_chunk_destroy (GMemChunk *mem_chunk)
       g_free (temp_area);
     }
   
+  g_mutex_lock (mem_chunks_lock);
   if (mem_chunk->next)
     mem_chunk->next->prev = mem_chunk->prev;
   if (mem_chunk->prev)
     mem_chunk->prev->next = mem_chunk->next;
   
-  g_mutex_lock (mem_chunks_lock);
   if (mem_chunk == mem_chunks)
     mem_chunks = mem_chunks->next;
   g_mutex_unlock (mem_chunks_lock);
@@ -1253,13 +1252,22 @@ g_allocator_free (GAllocator *allocator)
 }
 
 void
-g_mem_init (void)
+_g_mem_thread_init (void)
 {
 #ifndef DISABLE_MEM_POOLS
   mem_chunks_lock = g_mutex_new ();
 #endif
 #ifndef G_DISABLE_CHECKS
-  mem_chunk_recursion = g_private_new (NULL);
   g_profile_mutex = g_mutex_new ();
 #endif
 }
+
+void
+_g_mem_thread_private_init (void)
+{
+#ifndef G_DISABLE_CHECKS
+  g_assert (mem_chunk_recursion == NULL);
+  mem_chunk_recursion = g_private_new (NULL);
+#endif
+}
+

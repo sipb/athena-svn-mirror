@@ -287,3 +287,21 @@ gchar c
 <RETURNS>gboolean</RETURNS>
 gchar c
 </FUNCTION>
+
+# g_atomic
+
+<FUNCTION>
+<NAME>g_atomic_int_inc</NAME>
+<RETURNS>void</RETURNS>
+gint *atomic
+</FUNCTION>
+
+<FUNCTION>
+<NAME>g_atomic_int_dec_and_test</NAME>
+<RETURNS>gboolean</RETURNS>
+gint *atomic
+</FUNCTION>
+
+<STRUCT>
+<NAME>GIConv</NAME>
+</STRUCT>

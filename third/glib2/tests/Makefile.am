@@ -1,4 +1,6 @@
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/glib -I$(top_srcdir)/gmodule @GLIB_DEBUG_FLAGS@
+SUBDIRS=gobject
+
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/glib -I$(top_srcdir)/gmodule $(GLIB_DEBUG_FLAGS)
 
 EFENCE=
 
@@ -26,7 +28,6 @@ endif
 EXTRA_DIST =					\
 	$(test_scripts)				\
 	makefile.msc.in				\
-	makefile.mingw.in			\
 	casefold.txt				\
 	casemap.txt				\
 	gen-casefold-txt.pl			\
@@ -35,7 +36,6 @@ EXTRA_DIST =					\
 	utf8.txt
 
 BUILT_EXTRA_DIST =				\
-	makefile.mingw				\
 	makefile.msc
 
 if HAVE_CXX
@@ -49,7 +49,7 @@ endif
 if ENABLE_TIMELOOP
 timeloop = timeloop timeloop-closure
 endif
-noinst_PROGRAMS = testglib patterntest testgdate testgdateparser unicode-normalize unicode-collate $(timeloop)
+noinst_PROGRAMS = testglib testgdate testgdateparser unicode-normalize unicode-collate $(timeloop)
 testglib_LDADD = $(libglib)
 patterntest_LDADD = $(libglib)
 testgdate_LDADD = $(libglib)
@@ -62,17 +62,25 @@ timeloop_closure_LDADD = $(libglib) $(libgobject)
 endif
 
 test_programs =					\
+	atomic-test				\
 	array-test				\
 	$(CXX_TEST)				\
+	child-test				\
+	completion-test				\
 	date-test				\
 	dirname-test				\
+	file-test				\
+	env-test				\
 	gio-test				\
 	hash-test				\
 	iochannel-test				\
 	list-test				\
 	mainloop-test				\
+	markup-escape-test			\
 	module-test				\
 	node-test				\
+	patterntest				\
+	printf-test				\
 	queue-test				\
 	qsort-test				\
 	rand-test				\
@@ -103,21 +111,28 @@ TESTS_ENVIRONMENT = srcdir=$(srcdir) \
 	LIBCHARSET_ALIAS_DIR=$(top_builddir)/glib/libcharset
 
 progs_ldadd = $(EFENCE) $(libglib) $(EFENCE)
-thread_ldadd = $(libgthread) @G_THREAD_LIBS@ $(progs_ldadd)
-module_ldadd = $(libgmodule) @G_MODULE_LIBS@ $(progs_ldadd)
+thread_ldadd = $(libgthread) $(G_THREAD_LIBS) $(progs_ldadd)
+module_ldadd = $(libgmodule) $(G_MODULE_LIBS) $(progs_ldadd)
 
+atomic_test_LDADD = $(progs_ldadd)
 array_test_LDADD = $(progs_ldadd)
+child_test_LDADD = $(thread_ldadd)
+completion_test_LDADD = $(progs_ldadd)
 date_test_LDADD = $(progs_ldadd)
 dirname_test_LDADD = $(progs_ldadd)
+file_test_LDADD = $(progs_ldadd)
+env_test_LDADD = $(progs_ldadd)
 gio_test_LDADD = $(progs_ldadd)
 hash_test_LDADD = $(progs_ldadd)
 iochannel_test_LDADD = $(progs_ldadd)
 list_test_LDADD = $(progs_ldadd)
 mainloop_test_LDADD = $(thread_ldadd)
 markup_test_LDADD = $(progs_ldadd)
+markup_escape_test_LDADD = $(progs_ldadd)
 module_test_LDADD = $(module_ldadd) $(module_test_exp)
-module_test_LDFLAGS = @G_MODULE_LDFLAGS@
+module_test_LDFLAGS = $(G_MODULE_LDFLAGS)
 node_test_LDADD = $(progs_ldadd)
+printf_test_LDADD = $(progs_ldadd)
 queue_test_LDADD = $(progs_ldadd)
 qsort_test_LDADD = $(progs_ldadd)
 rand_test_LDADD = $(progs_ldadd)
@@ -143,18 +158,12 @@ install-libLTLIBRARIES:
 	:
 
 libmoduletestplugin_a_la_SOURCES = libmoduletestplugin_a.c
-libmoduletestplugin_a_la_LDFLAGS = @G_MODULE_LDFLAGS@ -avoid-version -module $(no_undefined) -rpath $(libdir)
-libmoduletestplugin_a_la_LIBADD = @G_MODULE_LIBS@ $(libadd_libgmodule) $(libadd_libglib)
+libmoduletestplugin_a_la_LDFLAGS = $(G_MODULE_LDFLAGS) -avoid-version -module $(no_undefined) -rpath $(libdir)
+libmoduletestplugin_a_la_LIBADD = $(G_MODULE_LIBS) $(libadd_libgmodule) $(libadd_libglib)
 
 libmoduletestplugin_b_la_SOURCES = libmoduletestplugin_b.c
-libmoduletestplugin_b_la_LDFLAGS = @G_MODULE_LDFLAGS@ -avoid-version -module $(no_undefined) -rpath $(libdir)
-libmoduletestplugin_b_la_LIBADD = @G_MODULE_LIBS@ $(libadd_libgmodule) $(libadd_libglib)
-
-makefile.mingw: $(top_builddir)/config.status $(top_srcdir)/tests/makefile.mingw.in
-	cd $(top_builddir) && CONFIG_FILES=tests/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-makefile.msc: $(top_builddir)/config.status $(top_srcdir)/tests/makefile.msc.in
-	cd $(top_builddir) && CONFIG_FILES=tests/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+libmoduletestplugin_b_la_LDFLAGS = $(G_MODULE_LDFLAGS) -avoid-version -module $(no_undefined) -rpath $(libdir)
+libmoduletestplugin_b_la_LIBADD = $(G_MODULE_LIBS) $(libadd_libgmodule) $(libadd_libglib)
 
 dist-hook: $(BUILT_EXTRA_DIST)
 	files='$(BUILT_EXTRA_DIST)'; \
@@ -165,3 +174,5 @@ dist-hook: $(BUILT_EXTRA_DIST)
 	for f in $(srcdir)/markups/* ; do  \
 	  cp $$f $(distdir)/markups;       \
 	done
+
+DISTCLEANFILES = iochannel-test-outfile

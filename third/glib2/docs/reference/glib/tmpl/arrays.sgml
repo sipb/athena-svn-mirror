@@ -44,7 +44,7 @@ To free an array, use g_array_free().
 
   for (i = 0; i &lt; 10000; i++)
     if (g_array_index (garray, gint, i) != i)
-      g_print ("ERROR: got %d instead of %d\n",
+      g_print ("ERROR: got &percnt;d instead of &percnt;d\n",
                g_array_index (garray, gint, i), i);
 
   g_array_free (garray, TRUE);
@@ -212,9 +212,22 @@ g_array_remove_index().
 @Returns: the #GArray.
 
 
+<!-- ##### FUNCTION g_array_remove_range ##### -->
+<para>
+Removes the given number of elements starting at the given index from a
+#GArray.  The following elements are moved to close the gap.
+</para>
+
+@array: a @GArray.
+@index_: the index of the first element to remove.
+@length: the number of elements to remove.
+@Returns: the #GArray.
+@Since: 2.4
+
+
 <!-- ##### FUNCTION g_array_sort ##### -->
 <para>
-Sorts a #GArray using @compare_func which should be a <function>qsort()</function>-style comparison
+Sorts a #GArray using @compare_func which should be a qsort()-style comparison
 function (returns -1 for first arg is less than second arg, 0 for equal, 1 if
 first arg is greater than second arg).
 </para>
@@ -276,6 +289,6 @@ If @free_segment is %TRUE it frees the actual element data as well.
 
 @array: a #GArray.
 @free_segment: if %TRUE the actual element data is freed as well.
-@Returns: 
+@Returns: the element data if @free_segment is %FALSE, otherwise %NULL
 
 

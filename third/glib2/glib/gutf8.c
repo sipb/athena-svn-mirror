@@ -97,8 +97,9 @@
 
 #define UNICODE_VALID(Char)                   \
     ((Char) < 0x110000 &&                     \
-     ((Char) < 0xD800 || (Char) >= 0xE000) && \
-     (Char) != 0xFFFE && (Char) != 0xFFFF)
+     (((Char) & 0xFFFFF800) != 0xD800) &&     \
+     ((Char) < 0xFDD0 || (Char) > 0xFDEF) &&  \
+     ((Char) & 0xFFFE) != 0xFFFE)
    
      
 static const gchar utf8_skip_data[256] = {
@@ -201,7 +202,8 @@ g_utf8_prev_char (const gchar *p)
  * @p: pointer to the start of a UTF-8 encoded string.
  * @max: the maximum number of bytes to examine. If @max
  *       is less than 0, then the string is assumed to be
- *       nul-terminated.
+ *       nul-terminated. If @max is 0, @p will not be examined and 
+ *       may be %NULL.
  * 
  * Returns the length of the string in characters.
  *
@@ -213,6 +215,7 @@ g_utf8_strlen (const gchar *p,
 {
   glong len = 0;
   const gchar *start = p;
+  g_return_val_if_fail (p != NULL || max == 0, 0);
 
   if (max < 0)
     {
@@ -326,7 +329,7 @@ g_utf8_pointer_to_offset (const gchar *str,
  * @src: UTF-8 encoded string
  * @n: character count
  * 
- * Like the standard C <function>strncpy()</function> function, but 
+ * Like the standard C strncpy() function, but 
  * copies a given number of characters instead of a given number of 
  * bytes. The @src string must be valid UTF-8 encoded text. 
  * (Use g_utf8_validate() on all text before trying to use UTF-8 
@@ -727,9 +730,9 @@ g_utf8_get_char_extended (const  gchar *p,
  * overlong encodings of valid characters.
  * 
  * Return value: the resulting character. If @p points to a partial
- *    sequence at the end of a string that could begin a valid character,
- *    returns (gunichar)-2; otherwise, if @p does not point to a valid
- *    UTF-8 encoded Unicode character, returns (gunichar)-1.
+ *    sequence at the end of a string that could begin a valid 
+ *    character, returns (gunichar)-2; otherwise, if @p does not point 
+ *    to a valid UTF-8 encoded Unicode character, returns (gunichar)-1.
  **/
 gunichar
 g_utf8_get_char_validated (const  gchar *p,

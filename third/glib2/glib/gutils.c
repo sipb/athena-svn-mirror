@@ -83,6 +83,13 @@
 #include <libintl.h>
 #endif
 
+/* G_IS_DIR_SEPARATOR probably should be made public in GLib 2.4 */
+#ifdef G_OS_WIN32
+#define G_IS_DIR_SEPARATOR(c) (c == G_DIR_SEPARATOR || c == '/')
+#else
+#define G_IS_DIR_SEPARATOR(c) (c == G_DIR_SEPARATOR)
+#endif
+
 const guint glib_major_version = GLIB_MAJOR_VERSION;
 const guint glib_minor_version = GLIB_MINOR_VERSION;
 const guint glib_micro_version = GLIB_MICRO_VERSION;
@@ -166,7 +173,7 @@ my_strchrnul (const gchar *str, gchar c)
 
 #ifdef G_OS_WIN32
 
-gchar *inner_find_program_in_path (const gchar *program);
+static gchar *inner_find_program_in_path (const gchar *program);
 
 gchar*
 g_find_program_in_path (const gchar *program)
@@ -233,6 +240,9 @@ g_find_program_in_path (const gchar *program)
  *
  * Return value: absolute path, or NULL
  **/
+#ifdef G_OS_WIN32
+static
+#endif
 gchar*
 g_find_program_in_path (const gchar *program)
 {
@@ -250,7 +260,11 @@ g_find_program_in_path (const gchar *program)
    * don't look in PATH.
    */
   if (g_path_is_absolute (program)
-      || strchr (program, G_DIR_SEPARATOR) != NULL)
+      || strchr (program, G_DIR_SEPARATOR) != NULL
+#ifdef G_OS_WIN32
+      || strchr (program, '/') != NULL
+#endif
+      )
     {
       if (g_file_test (program, G_FILE_TEST_IS_EXECUTABLE))
         return g_strdup (program);
@@ -390,7 +404,9 @@ g_parse_debug_string  (const gchar     *string,
  * 
  * Return value: the name of the file without any leading directory components.
  *
- * Deprecated: Use g_path_get_basename() instead. 
+ * Deprecated: Use g_path_get_basename() instead, but notice that
+ * g_path_get_basename() allocates new memory for the returned string, unlike
+ * this function which returns a pointer into the argument.
  **/
 G_CONST_RETURN gchar*
 g_basename (const gchar	   *file_name)
@@ -400,6 +416,15 @@ g_basename (const gchar	   *file_name)
   g_return_val_if_fail (file_name != NULL, NULL);
   
   base = strrchr (file_name, G_DIR_SEPARATOR);
+
+#ifdef G_OS_WIN32
+  {
+    gchar *q = strrchr (file_name, '/');
+    if (base == NULL || (q != NULL && q > base))
+	base = q;
+  }
+#endif
+
   if (base)
     return base + 1;
 
@@ -411,6 +436,19 @@ g_basename (const gchar	   *file_name)
   return (gchar*) file_name;
 }
 
+/**
+ * g_path_get_basename:
+ * @file_name: the name of the file.
+ *
+ * Gets the last component of the filename. If @file_name ends with a 
+ * directory separator it gets the component before the last slash. If 
+ * @file_name consists only of directory separators (and on Windows, 
+ * possibly a drive letter), a single separator is returned. If
+ * @file_name is empty, it gets ".".
+ *
+ * Return value: a newly allocated string containing the last component of 
+ *   the filename.
+ */
 gchar*
 g_path_get_basename (const gchar   *file_name)
 {
@@ -427,7 +465,7 @@ g_path_get_basename (const gchar   *file_name)
   
   last_nonslash = strlen (file_name) - 1;
 
-  while (last_nonslash >= 0 && file_name [last_nonslash] == G_DIR_SEPARATOR)
+  while (last_nonslash >= 0 && G_IS_DIR_SEPARATOR (file_name [last_nonslash]))
     last_nonslash--;
 
   if (last_nonslash == -1)
@@ -442,7 +480,7 @@ g_path_get_basename (const gchar   *file_name)
 
   base = last_nonslash;
 
-  while (base >=0 && file_name [base] != G_DIR_SEPARATOR)
+  while (base >=0 && !G_IS_DIR_SEPARATOR (file_name [base]))
     base--;
 
 #ifdef G_OS_WIN32
@@ -462,16 +500,12 @@ g_path_is_absolute (const gchar *file_name)
 {
   g_return_val_if_fail (file_name != NULL, FALSE);
   
-  if (file_name[0] == G_DIR_SEPARATOR
-#ifdef G_OS_WIN32
-      || file_name[0] == '/'
-#endif
-				     )
+  if (G_IS_DIR_SEPARATOR (file_name[0]))
     return TRUE;
 
 #ifdef G_OS_WIN32
   /* Recognize drive letter on native Windows */
-  if (g_ascii_isalpha (file_name[0]) && file_name[1] == ':' && (file_name[2] == G_DIR_SEPARATOR || file_name[2] == '/'))
+  if (g_ascii_isalpha (file_name[0]) && file_name[1] == ':' && G_IS_DIR_SEPARATOR (file_name[2]))
     return TRUE;
 #endif /* G_OS_WIN32 */
 
@@ -484,23 +518,32 @@ g_path_skip_root (const gchar *file_name)
   g_return_val_if_fail (file_name != NULL, NULL);
   
 #ifdef G_PLATFORM_WIN32
-  /* Skip \\server\share (Win32) or //server/share (Cygwin) */
-  if (file_name[0] == G_DIR_SEPARATOR &&
-      file_name[1] == G_DIR_SEPARATOR &&
+  /* Skip \\server\share or //server/share */
+  if (G_IS_DIR_SEPARATOR (file_name[0]) &&
+      G_IS_DIR_SEPARATOR (file_name[1]) &&
       file_name[2])
     {
       gchar *p;
 
-      if ((p = strchr (file_name + 2, G_DIR_SEPARATOR)) > file_name + 2 &&
+      p = strchr (file_name + 2, G_DIR_SEPARATOR);
+#ifdef G_OS_WIN32
+      {
+	gchar *q = strchr (file_name + 2, '/');
+	if (p == NULL || (q != NULL && q < p))
+	  p = q;
+      }
+#endif
+      if (p &&
+	  p > file_name + 2 &&
 	  p[1])
 	{
 	  file_name = p + 1;
 
-	  while (file_name[0] && file_name[0] != G_DIR_SEPARATOR)
+	  while (file_name[0] && !G_IS_DIR_SEPARATOR (file_name[0]))
 	    file_name++;
 
 	  /* Possibly skip a backslash after the share name */
-	  if (file_name[0] == G_DIR_SEPARATOR)
+	  if (G_IS_DIR_SEPARATOR (file_name[0]))
 	    file_name++;
 
 	  return (gchar *)file_name;
@@ -509,16 +552,16 @@ g_path_skip_root (const gchar *file_name)
 #endif
   
   /* Skip initial slashes */
-  if (file_name[0] == G_DIR_SEPARATOR)
+  if (G_IS_DIR_SEPARATOR (file_name[0]))
     {
-      while (file_name[0] == G_DIR_SEPARATOR)
+      while (G_IS_DIR_SEPARATOR (file_name[0]))
 	file_name++;
       return (gchar *)file_name;
     }
 
 #ifdef G_OS_WIN32
   /* Skip X:\ */
-  if (g_ascii_isalpha (file_name[0]) && file_name[1] == ':' && file_name[2] == G_DIR_SEPARATOR)
+  if (g_ascii_isalpha (file_name[0]) && file_name[1] == ':' && G_IS_DIR_SEPARATOR (file_name[2]))
     return (gchar *)file_name + 3;
 #endif
 
@@ -534,10 +577,39 @@ g_path_get_dirname (const gchar	   *file_name)
   g_return_val_if_fail (file_name != NULL, NULL);
   
   base = strrchr (file_name, G_DIR_SEPARATOR);
+#ifdef G_OS_WIN32
+  {
+    gchar *q = strrchr (file_name, '/');
+    if (base == NULL || (q != NULL && q > base))
+	base = q;
+  }
+#endif
   if (!base)
+    {
+#ifdef G_OS_WIN32
+      if (g_ascii_isalpha (file_name[0]) && file_name[1] == ':')
+	{
+	  gchar drive_colon_dot[4];
+
+	  drive_colon_dot[0] = file_name[0];
+	  drive_colon_dot[1] = ':';
+	  drive_colon_dot[2] = '.';
+	  drive_colon_dot[3] = '\0';
+
+	  return g_strdup (drive_colon_dot);
+	}
+#endif
     return g_strdup (".");
-  while (base > file_name && *base == G_DIR_SEPARATOR)
+    }
+
+  while (base > file_name && G_IS_DIR_SEPARATOR (*base))
     base--;
+
+#ifdef G_OS_WIN32
+  if (base == file_name + 1 && g_ascii_isalpha (file_name[0]) && file_name[1] == ':')
+      base++;
+#endif
+
   len = (guint) 1 + base - file_name;
   
   base = g_new (gchar, len + 1);
@@ -594,6 +666,16 @@ g_get_current_dir (void)
   return dir;
 }
 
+/**
+ * g_getenv:
+ * @variable: the environment variable to get.
+ * 
+ * Returns an environment variable.
+ * 
+ * Return value: the value of the environment variable, or %NULL if the environment
+ * variable is not found. The returned string may be overwritten by the next call to g_getenv(),
+ * g_setenv() or g_unsetenv().
+ **/
 G_CONST_RETURN gchar*
 g_getenv (const gchar *variable)
 {
@@ -602,74 +684,145 @@ g_getenv (const gchar *variable)
 
   return getenv (variable);
 #else
-  G_LOCK_DEFINE_STATIC (getenv);
-  struct env_struct
-  {
-    gchar *key;
-    gchar *value;
-  } *env;
-  static GArray *environs = NULL;
+  GQuark quark;
   gchar *system_env;
-  guint length, i;
+  gchar *expanded_env;
+  guint length;
   gchar dummy[2];
 
   g_return_val_if_fail (variable != NULL, NULL);
   
-  G_LOCK (getenv);
-
-  if (!environs)
-    environs = g_array_new (FALSE, FALSE, sizeof (struct env_struct));
-
-  /* First we try to find the envinronment variable inside the already
-   * found ones.
-   */
-
-  for (i = 0; i < environs->len; i++)
-    {
-      env = &g_array_index (environs, struct env_struct, i);
-      if (strcmp (env->key, variable) == 0)
-	{
-	  g_assert (env->value);
-	  G_UNLOCK (getenv);
-	  return env->value;
-	}
-    }
-
-  /* If not found, we ask the system */
-
   system_env = getenv (variable);
   if (!system_env)
-    {
-      G_UNLOCK (getenv);
-      return NULL;
-    }
+    return NULL;
 
-  /* On Windows NT, it is relatively typical that environment variables
-   * contain references to other environment variables. Handle that by
-   * calling ExpandEnvironmentStrings.
+  /* On Windows NT, it is relatively typical that environment
+   * variables contain references to other environment variables. If
+   * so, use ExpandEnvironmentStrings(). (If all software was written
+   * in the best possible way, such environment variables would be
+   * stored in the Registry as REG_EXPAND_SZ type values, and would
+   * then get automatically expanded before the program sees them. But
+   * there is broken software that stores environment variables as
+   * REG_SZ values even if they contain references to other
+   * environment variables.
    */
 
-  g_array_set_size (environs, environs->len + 1);
-
-  env = &g_array_index (environs, struct env_struct, environs->len - 1);
+  if (strchr (system_env, '%') == NULL)
+    {
+      /* No reference to other variable(s), return value as such. */
+      return system_env;
+    }
 
   /* First check how much space we need */
   length = ExpandEnvironmentStrings (system_env, dummy, 2);
-
-  /* Then allocate that much, and actualy do the expansion and insert
-   * the new found pair into our buffer 
-   */
-
-  env->value = g_malloc (length);
-  env->key = g_strdup (variable);
-
-  ExpandEnvironmentStrings (system_env, env->value, length);
-
-  G_UNLOCK (getenv);
-  return env->value;
+  
+  expanded_env = g_malloc (length);
+  
+  ExpandEnvironmentStrings (system_env, expanded_env, length);
+  
+  quark = g_quark_from_string (expanded_env);
+  g_free (expanded_env);
+  
+  return g_quark_to_string (quark);
 #endif
 }
 
+/**
+ * g_setenv:
+ * @variable: the environment variable to set, must not contain '='.
+ * @value: the value for to set the variable to.
+ * @overwrite: whether to change the variable if it already exists.
+ *
+ * Sets an environment variable.
+ *
+ * Note that on some systems, the memory used for the variable and its value 
+ * can't be reclaimed later.
+ *
+ * Returns: %FALSE if the environment variable couldn't be set.
+ *
+ * Since: 2.4
+ */
+gboolean
+g_setenv (const gchar *variable, 
+	  const gchar *value, 
+	  gboolean     overwrite)
+{
+  gint result;
+#ifndef HAVE_SETENV
+  gchar *string;
+#endif
+
+  g_return_val_if_fail (strchr (variable, '=') == NULL, FALSE);
+
+#ifdef HAVE_SETENV
+  result = setenv (variable, value, overwrite);
+#else
+  if (!overwrite && g_getenv (variable) != NULL)
+    return TRUE;
+  
+  /* This results in a leak when you overwrite existing
+   * settings. It would be fairly easy to fix this by keeping
+   * our own parallel array or hash table.
+   */
+  string = g_strconcat (variable, "=", value, NULL);
+  result = putenv (string);
+#endif
+  return result == 0;
+}
+
+#ifndef HAVE_UNSETENV     
+/* According to the Single Unix Specification, environ is not in 
+ * any system header, although unistd.h often declares it.
+ */
+extern char **environ;
+#endif
+           
+/**
+ * g_unsetenv:
+ * @variable: the environment variable to remove, must not contain '='.
+ * 
+ * Removes an environment variable from the environment.
+ *
+ * Note that on some systems, the memory used for the variable and its value 
+ * can't be reclaimed. Furthermore, this function can't be guaranteed to operate in a 
+ * threadsafe way.
+ *
+ * Since: 2.4 
+ **/
+void
+g_unsetenv (const gchar *variable)
+{
+#ifdef HAVE_UNSETENV
+  g_return_if_fail (strchr (variable, '=') == NULL);
+
+  unsetenv (variable);
+#else
+  int len;
+  gchar **e, **f;
+
+  g_return_if_fail (strchr (variable, '=') == NULL);
+
+  len = strlen (variable);
+  
+  /* Mess directly with the environ array.
+   * This seems to be the only portable way to do this.
+   *
+   * Note that we remove *all* environment entries for
+   * the variable name, not just the first.
+   */
+  e = f = environ;
+  while (*e != NULL) 
+    {
+      if (strncmp (*e, variable, len) != 0 || (*e)[len] != '=') 
+	{
+	  *f = *e;
+	  f++;
+	}
+      e++;
+    }
+  *f = NULL;
+#endif
+}
 
 G_LOCK_DEFINE_STATIC (g_utils_global);
 
@@ -696,7 +849,7 @@ g_get_any_init (void)
 	  gsize k;    
 	  g_tmp_dir = g_strdup (P_tmpdir);
 	  k = strlen (g_tmp_dir);
-	  if (k > 1 && g_tmp_dir[k - 1] == G_DIR_SEPARATOR)
+	  if (k > 1 && G_IS_DIR_SEPARATOR (g_tmp_dir[k - 1]))
 	    g_tmp_dir[k - 1] = '\0';
 	}
 #endif
@@ -714,7 +867,13 @@ g_get_any_init (void)
       /* We check $HOME first for Win32, though it is a last resort for Unix
        * where we prefer the results of getpwuid().
        */
-      g_home_dir = g_strdup (g_getenv ("HOME"));
+      {
+	gchar *home = g_getenv ("HOME");
+      
+	/* Only believe HOME if it is an absolute path and exists */
+	if (home && g_path_is_absolute (home) && g_file_test (home, G_FILE_TEST_IS_DIR))
+	  g_home_dir = g_strdup (home);
+      }
       
       /* In case HOME is Unix-style (it happens), convert it to
        * Windows style.
@@ -826,8 +985,22 @@ g_get_any_init (void)
 	  }
 	if (pw)
 	  {
-	    g_user_name = g_strdup (pw->pw_name);
-	    g_real_name = g_strdup (pw->pw_gecos);
+ 	    g_user_name = g_strdup (pw->pw_name);
+
+	    if (pw->pw_gecos && *pw->pw_gecos != '\0') 
+	      {
+		gchar **gecos_fields;
+		gchar **name_parts;
+
+		/* split the gecos field and substitute '&' */
+		gecos_fields = g_strsplit (pw->pw_gecos, ",", 0);
+		name_parts = g_strsplit (gecos_fields[0], "&", 0);
+		pw->pw_name[0] = g_ascii_toupper (pw->pw_name[0]);
+		g_real_name = g_strjoinv (pw->pw_name, name_parts);
+		g_strfreev (gecos_fields);
+		g_strfreev (name_parts);
+	      }
+
 	    if (!g_home_dir)
 	      g_home_dir = g_strdup (pw->pw_dir);
 	  }
@@ -862,20 +1035,6 @@ g_get_any_init (void)
 	g_user_name = g_strdup ("somebody");
       if (!g_real_name)
 	g_real_name = g_strdup ("Unknown");
-      else
-	{
-	  gchar *p;
-
-	  for (p = g_real_name; *p; p++)
-	    if (*p == ',')
-	      {
-		*p = 0;
-		p = g_strdup (g_real_name);
-		g_free (g_real_name);
-		g_real_name = p;
-		break;
-	      }
-	}
     }
 }
 
@@ -936,7 +1095,7 @@ g_get_tmp_dir (void)
   return g_tmp_dir;
 }
 
-G_LOCK_DEFINE (g_prgname);
+G_LOCK_DEFINE_STATIC (g_prgname);
 static gchar *g_prgname = NULL;
 
 gchar*
@@ -960,7 +1119,7 @@ g_set_prgname (const gchar *prgname)
   G_UNLOCK (g_prgname);
 }
 
-G_LOCK_DEFINE (g_application_name);
+G_LOCK_DEFINE_STATIC (g_application_name);
 static gchar *g_application_name = NULL;
 
 /**
@@ -1077,18 +1236,11 @@ g_nullify_pointer (gpointer *nullify_location)
 gchar *
 g_get_codeset (void)
 {
-#ifdef HAVE_CODESET  
-  char *result = nl_langinfo (CODESET);
-  return g_strdup (result);
-#else
-#ifdef G_PLATFORM_WIN32
-  return g_strdup_printf ("CP%d", GetACP ());
-#else
-  /* FIXME: Do something more intelligent based on setlocale (LC_CTYPE, NULL)
-   */
-  return g_strdup ("ISO-8859-1");
-#endif
-#endif
+  const gchar *charset;
+
+  g_get_charset (&charset);
+
+  return strdup (charset);
 }
 
 #ifdef ENABLE_NLS

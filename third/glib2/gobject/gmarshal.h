@@ -139,15 +139,7 @@ extern void g_cclosure_marshal_VOID__OBJECT (GClosure     *closure,
                                              gpointer      invocation_hint,
                                              gpointer      marshal_data);
 
-/* STRING:OBJECT,POINTER (./gmarshal.list:43) */
-extern void g_cclosure_marshal_STRING__OBJECT_POINTER (GClosure     *closure,
-                                                       GValue       *return_value,
-                                                       guint         n_param_values,
-                                                       const GValue *param_values,
-                                                       gpointer      invocation_hint,
-                                                       gpointer      marshal_data);
-
-/* VOID:UINT,POINTER (./gmarshal.list:46) */
+/* VOID:UINT,POINTER (./gmarshal.list:45) */
 extern void g_cclosure_marshal_VOID__UINT_POINTER (GClosure     *closure,
                                                    GValue       *return_value,
                                                    guint         n_param_values,
@@ -155,7 +147,7 @@ extern void g_cclosure_marshal_VOID__UINT_POINTER (GClosure     *closure,
                                                    gpointer      invocation_hint,
                                                    gpointer      marshal_data);
 
-/* BOOL:FLAGS (./gmarshal.list:47) */
+/* BOOL:FLAGS (./gmarshal.list:46) */
 extern void g_cclosure_marshal_BOOLEAN__FLAGS (GClosure     *closure,
                                                GValue       *return_value,
                                                guint         n_param_values,
@@ -163,6 +155,14 @@ extern void g_cclosure_marshal_BOOLEAN__FLAGS (GClosure     *closure,
                                                gpointer      invocation_hint,
                                                gpointer      marshal_data);
 #define g_cclosure_marshal_BOOL__FLAGS	g_cclosure_marshal_BOOLEAN__FLAGS
+
+/* STRING:OBJECT,POINTER (./gmarshal.list:47) */
+extern void g_cclosure_marshal_STRING__OBJECT_POINTER (GClosure     *closure,
+                                                       GValue       *return_value,
+                                                       guint         n_param_values,
+                                                       const GValue *param_values,
+                                                       gpointer      invocation_hint,
+                                                       gpointer      marshal_data);
 
 G_END_DECLS
 

@@ -9,12 +9,13 @@
  * Significantly revised and rewinddir, seekdir and telldir added by Colin
  * Peters <colin@fu.is.saga-u.ac.jp>
  *	
- * $Revision: 1.1.1.1 $
+ * $Revision: 1.1.1.2 $
  * $Author: ghudson $
- * $Date: 2002-12-25 18:39:09 $
+ * $Date: 2004-09-21 02:11:38 $
  *
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>

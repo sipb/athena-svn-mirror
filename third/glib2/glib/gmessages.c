@@ -44,6 +44,7 @@
 #include "glib.h"
 #include "gdebug.h"
 #include "gprintfint.h"
+#include "gthreadinit.h"
 
 #ifdef G_OS_WIN32
 #include <io.h>
@@ -421,7 +422,6 @@ g_logv (const gchar   *log_domain,
 	const gchar   *format,
 	va_list	       args1)
 {
-  gchar buffer[1025];
   gboolean was_fatal = (log_level & G_LOG_FLAG_FATAL) != 0;
   gboolean was_recursion = (log_level & G_LOG_FLAG_RECURSION) != 0;
   gint i;
@@ -429,11 +429,6 @@ g_logv (const gchar   *log_domain,
   log_level &= G_LOG_LEVEL_MASK;
   if (!log_level)
     return;
-  
-  /* we use a stack buffer of fixed size, because we might get called
-   * recursively.
-   */
-  _g_vsnprintf (buffer, 1024, format, args1);
   
   for (i = g_bit_nth_msf (log_level, -1); i >= 0; i = g_bit_nth_msf (log_level, i))
     {
@@ -490,14 +485,33 @@ g_logv (const gchar   *log_domain,
 		}
 	    }
 
-	  log_func (log_domain, test_level, buffer, data);
+	  if (test_level & G_LOG_FLAG_RECURSION)
+	    {
+	      /* we use a stack buffer of fixed size, since we're likely
+	       * in an out-of-memory situation
+	       */
+	      gchar buffer[1025];
+	      gint size;
+	      size = _g_vsnprintf (buffer, 1024, format, args1);
+
+	      log_func (log_domain, test_level, buffer, data);
+	    }
+	  else
+	    {
+	      gchar *msg = g_strdup_vprintf (format, args1);
+
+	      log_func (log_domain, test_level, msg, data);
+
+	      g_free (msg);
+	    }
 
 	  if (test_level & G_LOG_FLAG_FATAL)
 	    {
 #ifdef G_OS_WIN32
 	      gchar *locale_msg = g_locale_from_utf8 (fatal_msg_buf, -1, NULL, NULL, NULL);
 	      
-	      MessageBox (NULL, locale_msg, NULL, MB_OK);
+	      MessageBox (NULL, locale_msg, NULL,
+			  MB_ICONERROR|MB_SETFOREGROUND);
 #endif
 #if defined (G_ENABLE_DEBUG) && (defined (SIGTRAP) || defined (G_OS_WIN32))
 	      if (!(test_level & G_LOG_FLAG_RECURSION))
@@ -528,12 +542,31 @@ g_log (const gchar   *log_domain,
   va_end (args);
 }
 
+#define CHAR_IS_SAFE(wc) (!((wc < 0x20 && wc != '\t' && wc != '\n' && wc != '\r') || \
+			    (wc == 0x7f) || \
+			    (wc >= 0x80 && wc < 0xa0)))
+     
 static gchar*
 strdup_convert (const gchar *string,
 		const gchar *charset)
 {
   if (!g_utf8_validate (string, -1, NULL))
-    return g_strconcat ("[Invalid UTF-8] ", string, NULL);
+    {
+      GString *gstring = g_string_new ("[Invalid UTF-8] ");
+      guchar *p;
+
+      for (p = (guchar *)string; *p; p++)
+	{
+	  if (CHAR_IS_SAFE(*p) &&
+	      !(*p == '\r' && *(p + 1) != '\n') &&
+	      *p < 0x80)
+	    g_string_append_c (gstring, *p);
+	  else
+	    g_string_append_printf (gstring, "\\x%02x", (guint)(guchar)*p);
+	}
+      
+      return g_string_free (gstring, FALSE);
+    }
   else
     {
       GError *err = NULL;
@@ -744,6 +777,66 @@ _g_log_fallback_handler (const gchar   *log_domain,
     write_string (fd, "\n");
 }
 
+static void
+escape_string (GString *string)
+{
+  const char *p = string->str;
+  gunichar wc;
+
+  while (p < string->str + string->len)
+    {
+      gboolean safe;
+	    
+      wc = g_utf8_get_char_validated (p, -1);
+      if (wc == (gunichar)-1 || wc == (gunichar)-2)  
+	{
+	  gchar *tmp;
+	  guint pos;
+
+	  pos = p - string->str;
+
+	  /* Emit invalid UTF-8 as hex escapes 
+           */
+	  tmp = g_strdup_printf ("\\x%02x", (guint)(guchar)*p);
+	  g_string_erase (string, pos, 1);
+	  g_string_insert (string, pos, tmp);
+
+	  p = string->str + (pos + 4); /* Skip over escape sequence */
+
+	  g_free (tmp);
+	  continue;
+	}
+      if (wc == '\r')
+	{
+	  safe = *(p + 1) == '\n';
+	}
+      else
+	{
+	  safe = CHAR_IS_SAFE (wc);
+	}
+      
+      if (!safe)
+	{
+	  gchar *tmp;
+	  guint pos;
+
+	  pos = p - string->str;
+	  
+	  /* Largest char we escape is 0x0a, so we don't have to worry
+	   * about 8-digit \Uxxxxyyyy
+	   */
+	  tmp = g_strdup_printf ("\\u%04x", wc); 
+	  g_string_erase (string, pos, g_utf8_next_char (p) - p);
+	  g_string_insert (string, pos, tmp);
+	  g_free (tmp);
+
+	  p = string->str + (pos + 6); /* Skip over escape sequence */
+	}
+      else
+	p = g_utf8_next_char (p);
+    }
+}
+
 void
 g_log_default_handler (const gchar   *log_domain,
 		       GLogLevelFlags log_level,
@@ -766,7 +859,7 @@ g_log_default_handler (const gchar   *log_domain,
 
   fd = mklevel_prefix (level_prefix, log_level);
 
-  gstring = g_string_new ("");
+  gstring = g_string_new (NULL);
   if (log_level & ALERT_LEVELS)
     g_string_append (gstring, "\n");
   if (!log_domain)
@@ -794,16 +887,22 @@ g_log_default_handler (const gchar   *log_domain,
     g_string_append (gstring, "(NULL) message");
   else
     {
+      GString *msg;
       const gchar *charset;
 
+      msg = g_string_new (message);
+      escape_string (msg);
+
       if (g_get_charset (&charset))
-	g_string_append (gstring, message);	/* charset is UTF-8 already */
+	g_string_append (gstring, msg->str);	/* charset is UTF-8 already */
       else
 	{
-	  string = strdup_convert (message, charset);
+	  string = strdup_convert (msg->str, charset);
 	  g_string_append (gstring, string);
 	  g_free (string);
 	}
+
+      g_string_free (msg, TRUE);
     }
   if (is_fatal)
     g_string_append (gstring, "\naborting...\n");
@@ -929,12 +1028,18 @@ g_printf_string_upper_bound (const gchar *format,
 }
 
 void
-g_messages_init (void)
+_g_messages_thread_init (void)
 {
   g_messages_lock = g_mutex_new ();
-  g_log_depth = g_private_new (NULL);
   g_messages_prefixed_init ();
   _g_debug_init ();
+}
+
+void
+_g_messages_thread_private_init (void)
+{
+  g_assert (g_log_depth == NULL);
+  g_log_depth = g_private_new (NULL);
 }
 
 gboolean _g_debug_initialized = FALSE;

@@ -267,6 +267,32 @@ g_array_remove_index_fast (GArray* farray,
   return farray;
 }
 
+GArray*
+g_array_remove_range (GArray       *farray,
+                      guint         index_,
+                      guint         length)
+{
+  GRealArray *array = (GRealArray*) farray;
+
+  g_return_val_if_fail (array, NULL);
+  g_return_val_if_fail (index_ < array->len, NULL);
+  g_return_val_if_fail (index_ + length <= array->len, NULL);
+
+  if (index_ + length != array->len)
+    g_memmove (g_array_elt_pos (array, index_), 
+               g_array_elt_pos (array, index_ + length), 
+               (array->len - (index_ + length)) * array->elt_size);
+
+  array->len -= length;
+#ifdef ENABLE_GC_FRIENDLY
+  g_array_elt_zero (array, array->len, length);
+#else /* !ENABLE_GC_FRIENDLY */
+  g_array_zero_terminate (array);
+#endif /* ENABLE_GC_FRIENDLY */
+
+  return farray;
+}
+
 void
 g_array_sort (GArray       *farray,
 	      GCompareFunc  compare_func)
@@ -414,7 +440,7 @@ g_ptr_array_maybe_expand (GRealPtrArray *array,
 #endif /* ENABLE_GC_FRIENDLY */
       array->alloc = g_nearest_pow (array->len + len);
       array->alloc = MAX (array->alloc, MIN_ARRAY_SIZE);
-      array->pdata = g_realloc (array->pdata, sizeof(gpointer) * array->alloc);
+      array->pdata = g_realloc (array->pdata, sizeof (gpointer) * array->alloc);
 #ifdef ENABLE_GC_FRIENDLY
       for ( ; old_alloc < array->alloc; old_alloc++)
 	array->pdata [old_alloc] = NULL;
@@ -506,6 +532,32 @@ g_ptr_array_remove_index_fast (GPtrArray* farray,
   return result;
 }
 
+void
+g_ptr_array_remove_range (GPtrArray* farray,
+                          guint      index_,
+                          guint      length)
+{
+  GRealPtrArray* array = (GRealPtrArray*) farray;
+
+  g_return_if_fail (array);
+  g_return_if_fail (index_ < array->len);
+  g_return_if_fail (index_ + length <= array->len);
+
+  if (index_ + length != array->len)
+    g_memmove (&array->pdata[index_],
+               &array->pdata[index_ + length], 
+               (array->len - (index_ + length)) * sizeof (gpointer));
+
+  array->len -= length;
+#ifdef ENABLE_GC_FRIENDLY
+  {
+    guint i;
+    for (i = 0; i < length; i++)
+      array->pdata[array->len + i] = NULL;
+  }
+#endif /* ENABLE_GC_FRIENDLY */
+}
+
 gboolean
 g_ptr_array_remove (GPtrArray* farray,
 		    gpointer data)
@@ -587,6 +639,29 @@ g_ptr_array_sort_with_data (GPtrArray        *array,
 		     user_data);
 }
 
+/**
+ * g_ptr_array_foreach:
+ * @array: a #GPtrArray
+ * @func: the function to call for each array element
+ * @user_data: user data to pass to the function
+ * 
+ * Calls a function for each element of a #GPtrArray.
+ *
+ * Since: 2.4
+ **/
+void
+g_ptr_array_foreach (GPtrArray *array,
+                     GFunc      func,
+                     gpointer   user_data)
+{
+  guint i;
+
+  g_return_if_fail (array);
+
+  for (i = 0; i < array->len; i++)
+    (*func) (array->pdata[i], user_data);
+}
+
 /* Byte arrays 
  */
 
@@ -646,6 +721,18 @@ GByteArray* g_byte_array_remove_index_fast (GByteArray *array,
   g_array_remove_index_fast((GArray*) array, index);
 
   return array;
+}
+
+GByteArray*
+g_byte_array_remove_range (GByteArray *array,
+                           guint index_,
+                           guint length)
+{
+  g_return_val_if_fail (array, NULL);
+  g_return_val_if_fail (index_ < array->len, NULL);
+  g_return_val_if_fail (index_ + length <= array->len, NULL);
+
+  return (GByteArray *)g_array_remove_range ((GArray*) array, index_, length);
 }
 
 void

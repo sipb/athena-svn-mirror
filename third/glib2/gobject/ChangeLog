@@ -1,3 +1,456 @@
+2004-08-13  Matthias Clasen  <clasen@redhat.com>
+
+	* === Released 2.4.6 ===
+
+2004-07-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.5 ===
+
+2004-07-28  Matthias Clasen  <mclasen@redhat.com>
+
+	* gtype.c (g_type_instance_get_private): Catch cases of 
+	forgotten g_type_add_private().  (#148368, Tommi Komulainen) 
+
+2004-07-21  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib-genmarshal.c (put_marshal_value_getters): Use the 
+	correct fields for enums and flags.  (#145015, Tommi Komulainen) 
+
+2004-07-12  Matthias Clasen  <mclasen@redhat.com>
+
+	* gsignal.c (g_signal_handler_is_connected): Don't choke
+	on a zero handler_id.
+
+2004-07-09  Matthias Clasen  <mclasen@redhat.com>
+
+ 	* === Released 2.4.4 ===
+
+Wed Jun 23 12:57:38 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gtype.h (G_DEFINE_TYPE_EXTENDED): Add an initializer for
+	the g_define_type_info.value_table.  (#144678,Mariano 
+	Suárez-Alvarez) 
+
+Fri Jun 18 22:55:36 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gsourceclosure.h (__G_SOURCECLOSURE_H__): Actually
+	define the guard after checking for it.  (#108038, 
+	Morten Welinder)
+
+2004-06-04  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.2 ===
+
+2004-04-30  Matthias Clasen  <mclasen@redhat.com>
+
+	* === Released 2.4.1 ===
+
+2004-04-22  Matthias Clasen  <mclasen@redhat.com>
+
+	* glib-mkenums.in: Actually convert escape chars in 
+	--vprod.   (#139058, Christophe Saout)
+
+2004-04-15  Matthias Clasen  <mclasen@redhat.com>
+
+	* gparamspecs.c (param_float_init): Correct the initial 
+	minimal value to be -G_MAXFLOAT. The initial values were 
+	inconsistant before, with the initial default being smaller 
+	than the inital minimum.	
+	(param_double_init): Correct the initial minimal value 
+	to be -G_MAXDOUBLE.
+
+Tue Mar  9 09:16:11 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.4.0 ===
+
+2004-03-10  Tor Lillqvist  <tml@iki.fi>
+
+	* gobject.def: Mark the two entries that shouldn't be in the
+	import library (see below) as PRIVATE.
+
+Tue Mar  9 09:16:11 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.6 ===
+
+2004-03-04  Tor Lillqvist  <tml@iki.fi>
+
+	* gobject.def: Another of the glib DLL's functions was erronously
+	present in the stable branch's gobject.def: g_unichar_validate,
+	and nobody noticed until too late. Thus there are applications
+	deployed that expect it to be found in the gobject DLL, and to
+	keep ABI compatibility, we must keep it there forever. Argh.
+
+Mon Mar  1 16:49:51 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.5 ===
+
+2004-03-01  Tor Lillqvist  <tml@iki.fi>
+
+	* gobject.def: Add g_slist_remove_all back for ABI
+	compatibility. That entry point actually is in the glib DLL, but
+	it was at some time many years ago by mistake added to
+	gobject.def. Thus there presumably are executables out there that
+	expect it to be exported from the gobject DLL. We don't want to
+	break those. (#134813, J. Ali Harlow)
+
+Fri Feb 27 01:49:22 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib-mkenums.in: Support parsing of intializers containing
+	macros with arguments.  (#129717)
+
+2003-02-28  Hans Breuer  <hans@breuer.org>
+
+	* gobject.def : added g_strv_get_type
+
+Tue Feb 24 14:09:21 2004  Owen Taylor  <otaylor@redhat.com>
+
+	* === Released 2.3.3 ===
+
+Fri Feb 20 02:44:54 2004  Tim Janik  <timj@gtk.org>
+
+	* gtype.h (G_DEFINE_TYPE_EXTENDED): added (GTypeFlags) cast needed by C++.
+
+Tue Feb  3 21:24:01 2004  Tim Janik  <timj@gtk.org>
+
+	* gtype.h (_G_TYPE_CVH): provide a short-cut version for
+	this macro in case value->g_type==checked_type for gcc, similar
+	to instance and class check short-cuts. this speeds up code that
+	makes frequent use of G_VALUE_HOLDS_*() (e.g. setters/getters).
+
+	* gtype.c (type_data_last_unref_Wm): don't call class-cache functions
+	for the uncached case, this rendered g_type_class_unref_uncached()
+	useless. pointed out by Stefan Westerfeld.
+
+Sat Jan 24 18:20:13 2004  Tim Janik  <timj@gtk.org>
+
+	* gtype.h: prefixed the parent_class variable defined by G_DEFINE_TYPE()
+	with type_name. removed type_parent_class argument
+	from G_DEFINE_TYPE_EXTENDED().
+
+2004-01-24  Tor Lillqvist  <tml@iki.fi>
+
+	* gobject.def: Add a missing entry.
+
+Sun Jan 11 15:34:35 2004  Manish Singh  <yosh@gimp.org>
+
+	* gsourceclosure.c: wrap g_io_channel_ref in a function that returns
+	the passed in GIOChannel, so we aren't abusing GBoxedCopyFunc
+	semantics. Fixes bug #131076.
+
+Sat Jan 10 23:55:42 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* glib-mkenums.1: Document the lowercase_name trigraph option.
+
+Sat Jan 10 02:43:20 2004  Tim Janik  <timj@gtk.org>
+
+	* gtype.h: made G_DEFINE_TYPE_INTERNAL() public by renaming it to
+	G_DEFINE_TYPE_EXTENDED() and moving it into the appropriate section.
+
+Fri Jan  9 23:41:00 2004  Matthias Clasen  <maclas@gmx.de>
+
+	* gboxed.h:
+	* gboxed.c (g_strv_get_type): Add a boxed type for nul-terminated
+	string arrays.  (#110528)
+
+Fri Jan  9 15:34:15 2004  Tim Janik  <timj@gtk.org>
+
+	* gtype.h: added convenience macros G_IMPLEMENT_INTERFACE() and
+	G_DEFINE_TYPE() plus variants.
+
+Fri Dec 26 01:34:01 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtype.c (g_type_class_peek_parent): Don't acquire a read lock 
+	here.  (#106433, Owen Taylor)
+
+Wed Dec 17 23:29:17 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gvalue.c (g_value_peek_pointer): Use g_assert() instead of
+	g_return_val_if_fail(), suggested by Sheldon Simms.
+
+2003-12-13  Hans Breuer  <hans@breuer.org>
+
+	gobject.def : update externals
+
+Sat Nov 29 14:57:20 2003  Tim Janik  <timj@gtk.org>
+
+	* gobject.c: fix g_object_set() within _init() implementations
+	not working for construct-only properties.
+	(g_object_init): make the object enter a construct_objects list.
+	(g_object_newv): remove object from construct_objects after creation.
+	(g_object_set_valist):
+	(g_object_set_property): allow construct-only properties for
+	objects which are in construct_objects.
+
+Thu Nov 27 17:53:52 2003  Tim Janik  <timj@gtk.org>
+
+	* gtype.[hc]:
+	(g_type_class_peek_static): variant of class_peek() which works for
+	static types only.
+
+	* gobject.c:
+	(g_object_do_class_init): make ::notify a run-action signal.
+	(g_object_newv): use g_type_class_peek_static() by default to
+	speed up common code path (trades two write-locks for one read-lock).
+	(g_object_disconnect):
+	(g_object_connect): allow signal specification words to be
+	seperated by '-'.
+	(g_object_set_valist):
+	(g_object_new_valist): don't leak values.
+	(g_object_get_property): check property for readability.
+	(g_object_set_property): check property for writability and to
+	not be construct-only.
+	(g_object_set_valist): check property to not be construct-only.
+
+Sat Oct 25 01:09:17 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gparam.h (struct _GParamSpecClass): Add /*< private >*/ 
+	marker for documentation purposes.
+
+Tue Oct 21 23:17:06 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* genums.h (struct _GEnumClass): 
+	* genums.h (struct _GFlagsClass): 
+	* gtypemodule.h (struct _GTypeModuleClass):
+	* gtypemodule.h (struct _GTypeModule): Add /*< public >*/ 
+	and /*< private >*/ markers for documentation purposes.
+
+Tue Oct 14 17:40:19 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gparamspecs.[ch]: Add a new GParamSpecOverride type
+	that is a pointer to a different paramspec in a parent
+	class or interface.
+
+	* gparam.[ch]: Add g_paramspec_get_redirect_target()
+	which follows GParamSpecOverride to the real property.
+	Make g_param_spec_pool_list() hand redirections, 
+	properties on interfaces.
+
+	* gobject.[ch] gobjectnotifyqueue.c: Add
+	g_object_interface_install_property,
+	g_object_interface_find_property,
+	g_object_interface_list_properties(). Redirect virtually all
+	publically exposed GParamSpec's to the redirect target if
+	any. (->constructor is the exception.)
+	(#105894)
+
+Mon Oct 20 22:06:12 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gobject.h (struct  _GObjectClass): Add /*< public >*/
+	and /*< private >*/ markers for documentation purposes.
+
+Sat Oct 18 01:24:14 2003  Matthias Clasen  <maclas@gmx.de>
+
+	* gtypeplugin.h (struct _GTypePluginClass): Add /*< public >*/
+	and /*< private >*/ markers for documentation purposes.
+
+Thu Oct  2 07:37:12 2003  Tim Janik  <timj@gtk.org>
+
+	* gtype.c: fix post class_init interface initialization logic
+	for child types.
+
+Thu Oct  2 01:16:50 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gtype.[ch]: Add g_type_add/remove_interface_check(),
+	which allows inserting a post-interface-initialization
+	check.
+
+	* testgobject.c: Fix a deprecated usage.
+
+Mon Sep 29 10:51:01 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gtype.[ch]: Add g_type_default_interface_ref/peek/unref
+	for accessing the default vtable of an interface.
+
+Fri Sep 26 17:24:53 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gtype.c (g_type_instance_get_private): You can
+	have instance_real_class_bsa be non-NULL, but still 
+	the class not be in the bsa. (Found by Kris Rietveld)
+
+2003-09-15  Matthias Clasen  <maclas@gmx.de>
+
+	* glib-genmarshal.c (complete_out_arg): Don't generate code 
+	using deprecated APIs.  (#122292, Christian Persch)
+
+Fri Sep 12 16:31:40 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gsignal.[ch]: Add g_signal_accumulator_true_handled(), to
+	do TRUE-stops-emit signals. (#80487, Ron Steinke)
+
+	* Makefile.am: Move testoverride.c and testifaceinit.c to
+	tests/gobject.
+
+2003-09-12  Matthias Clasen  <maclas@gmx.de>
+
+	Make the g_value_set_x_take_ownership() functions "official"
+	part of the API (#100948):
+	
+	* gvaluetypes.[hc]: Add g_value_take_string() (synonym to the
+	now deprecated g_value_set_string_take_ownership()).  
+
+	* gparam.[hc]: Add g_value_take_param() (synonym to the
+	now deprecated g_value_set_param_take_ownership()).  
+
+	* gobject.[hc]: Add g_value_take_object() (synonym to the
+	now deprecated g_value_set_object_take_ownership()).  
+
+	* gboxed.[hc]: Add g_value_take_boxed() (synonym to the
+	now deprecated g_value_set_boxed_take_ownership()).  
+
+Tue Sep  2 19:37:21 2003  Tim Janik  <timj@gtk.org>
+
+	* gtype.[hc]: added support for a "default vtable" per interface,
+	that interface vtables are initialized from.
+	the default vtable is initialized and finalized through class_init,
+	class_finalize and class_data from the interfaces GTypeInfo struct.
+	(type_data_last_unref_Wm): unload child plugin before unreffing
+	parent type.
+
+	testifaceinit.c: minor fixups. fixed up base_init() assertions, since
+	with a default vtable, base_init() may be called multiple times.
+	added default initializer to iface1.
+
+Tue Sep  2 14:53:41 2003  Tim Janik  <timj@gtk.org>
+
+	* gobject-query.c (main): fix iterating over fundamental types.
+
+	* gtype.c: applied patch from owen which keeps internal
+	class initialization state to maintain class and interface
+	initialization happen in the order of:
+	1. class' base_init
+	2. interface' base_init
+	=  interfaces added after here are immediately base_init-ialized
+	3. class_init
+	4. Interface_init
+	=  interfaces added here are immediately Interface_init-ialized
+
+Wed Aug 27 19:53:26 2003  Manish Singh  <yosh@gimp.org>
+
+	* gobject.c: removed stray change from previous commit.
+
+Wed Aug 27 01:25:40 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* Makefile.am testifaceinit.c: Add a detailed test case
+	for interface initialization, testing the ability to
+	add interfaces during class initialization and the ordering
+	of interface base_init, class init, and interface_init.
+	(Expected to fail at the moment.)
+
+Mon Aug 25 14:51:46 2003  Manish Singh  <yosh@gimp.org>
+
+	* gtypemodule.c (g_type_module_register_type): fix typo in last
+	commit, cast to GTypeValueTable * to get rid of const warning.
+
+Mon Aug 25 14:16:48 2003  Owen Taylor  <otaylor@redhat.com>
+ 
+ 	* gtypemodule.c (g_type_module_register_type): Clarify
+ 	docs on the return. Fix a memory leak if a type with a
+ 	value table is reloaded. (#112439, Daniel Yacob)
+ 
+Tue Aug 19 05:21:04 2003  Tim Janik  <timj@gtk.org>
+
+	* testgobject.c (main): check private instance data after
+	initialization.
+
+	* gtype.c: for instances with private data, store the real class
+	pointer in a bsearch array during class initialization.
+	(g_type_instance_get_private): fetch the real class of
+	an instance from the bsearch array if necessary.
+
+Tue Aug 19 04:08:14 2003  Tim Janik  <timj@gtk.org>
+
+	* gvalue.c: adapt to new gbsearcharray.h code.
+	(g_value_register_transform_func): turn transform function
+	replacement into a valid operation.
+
+        * gsignal.c: adapt to new gbsearcharray.h code.
+	
+	* gboxed.c: adapt to new gbsearcharray.h code.
+
+Tue Aug 19 01:31:28 2003  Tim Janik  <timj@gtk.org>
+
+	* gsignal.c: added optimizations to skip NOP signal emissions.
+
+2003-08-08  Matthias Clasen  <maclas@gmx.de>
+
+	* gobject.c (object_set_property): Improve the wording of the warning for invalid 
+	values.  (#117246, Mariano Suarez-Alvarez)
+	
+Wed Aug  6 09:57:14 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* testgobject.c (test_signal_accumulator): Add check
+	for instance private usage within in instance_init.
+	(Currently will fail.)
+
+2003-07-20  Hans Breuer  <hans@breuer.org>
+
+	* gobject.def : updated externals
+
+Tue Jul  8 22:29:31 2003  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* gtype.c (type_class_init_Wm): Only access node->data->instance
+	when the node is instantiable.
+
+Tue Jul  8 14:55:27 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gtype.c (type_class_init_Wm): Initialize
+	node->data->instance.private_size here rather than
+	in type_data_make_W() since the class init for the parent
+        class may have changed pnode->data->instance.private_size.
+	(#116921, reported by Soeren Sandmann)
+
+2003-06-18  Matthias Clasen  <maclas@gmx.de>
+
+	* Makefile.am (man_MANS): Removed, these are now installed from
+	docs/reference/gobject.
+
+Fri May 30 14:42:24 2003  Owen Taylor  <otaylor@redhat.com>
+ 
+ 	* gobject.c (g_value_set_object): Order refs/unrefs
+ 	so setting the same object back is safe. (#112861,
+ 	Morten Welinder)
+ 
+2003-03-24  Sven Neumann  <sven@gimp.org>
+
+	* gtype.c (type_data_finalize_class_ifaces_Wm): removed leftover
+	debugging message (bug #109093).
+
+Thu Feb 27 17:33:19 2003  Owen Taylor  <otaylor@redhat.com>
+
+	* gtype.[ch] testgobject.c: Add support for instance-private data. 
+	g_type_class_add_private(), g_type_instance_get_private(),
+	G_TYPE_INSTANCE_GET_PRIVATE(). (#101959, patch partly by
+	Mark McLoughlin, extensive feedback from Tim Janik.)
+
+2003-03-06  Matthias Clasen  <maclas@gmx.de>
+
+	* gsignal.c (g_signal_handlers_block_matched): 
+	(g_signal_handlers_unblock_matched): 
+	(g_signal_handlers_disconnect_matched): Fix 0/FALSE confusion.
+	(#107662, Morten Welinder)
+
+Mon Feb 17 20:59:47 2003  Tim Janik  <timj@gtk.org>
+
+	* gvalue.c (g_value_register_transform_func): don't assert the types
+	passed in to have value tables. this prevents dynamic types from
+	registering transform functions.
+
+Sun Feb  9 13:44:01 2003  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* gboxed.c (boxed_proxy_value_init): remove lookup of unused
+	BoxedNode.
+
+2003-02-07  Matthias Clasen  <maclas@gmx.de>
+
+	* gtypemodule.c: 
+	* gtype.c: 
+	* gsourceclosure.c: 
+	* gparamspecs.c: 
+	* gparam.c: 
+	* gobject.c: 
+	* gsignal.c: Remove all docs from gobject at Tims
+	request. Documentation is only for weenies anyway...	
+
 2003-01-12  Tor Lillqvist  <tml@iki.fi>
 
 	* gobject.def: Add g_type_interface_prerequisites. Thanks to

@@ -42,7 +42,11 @@ static gint	boxed_nodes_cmp		(gconstpointer	p1,
 
 /* --- variables --- */
 static GBSearchArray *boxed_bsa = NULL;
-static GBSearchConfig boxed_bconfig = G_STATIC_BCONFIG (sizeof (BoxedNode), boxed_nodes_cmp, 0);
+static const GBSearchConfig boxed_bconfig = {
+  sizeof (BoxedNode),
+  boxed_nodes_cmp,
+  0,
+};
 
 
 /* --- functions --- */
@@ -121,7 +125,7 @@ g_boxed_type_init (void)  /* sync with gtype.c */
   const GTypeFundamentalInfo finfo = { G_TYPE_FLAG_DERIVABLE, };
   GType type;
 
-  boxed_bsa = g_bsearch_array_new (&boxed_bconfig);
+  boxed_bsa = g_bsearch_array_create (&boxed_bconfig);
 
   /* G_TYPE_BOXED
    */
@@ -167,6 +171,18 @@ g_value_array_get_type (void)
 }
 
 GType
+g_strv_get_type (void)
+{
+  static GType type_id = 0;
+
+  if (!type_id)
+    type_id = g_boxed_type_register_static ("GStrv",
+					    (GBoxedCopyFunc) g_strdupv,
+					    (GBoxedFreeFunc) g_strfreev);
+  return type_id;
+}
+
+GType
 g_gstring_get_type (void)
 {
   static GType type_id = 0;
@@ -181,10 +197,6 @@ g_gstring_get_type (void)
 static void
 boxed_proxy_value_init (GValue *value)
 {
-  BoxedNode key, *node;
-
-  key.type = G_VALUE_TYPE (value);
-  node = g_bsearch_array_lookup (boxed_bsa, &boxed_bconfig, &key);
   value->data[0].v_pointer = NULL;
 }
 
@@ -321,7 +333,7 @@ g_boxed_type_register_static (const gchar   *name,
       key.type = type;
       key.copy = boxed_copy;
       key.free = boxed_free;
-      boxed_bsa = g_bsearch_array_insert (boxed_bsa, &boxed_bconfig, &key, TRUE);
+      boxed_bsa = g_bsearch_array_insert (boxed_bsa, &boxed_bconfig, &key);
     }
 
   return type;
@@ -503,6 +515,13 @@ g_value_set_static_boxed (GValue       *value,
 void
 g_value_set_boxed_take_ownership (GValue       *value,
 				  gconstpointer boxed)
+{
+  g_value_take_boxed (value, boxed);
+}
+
+void
+g_value_take_boxed (GValue       *value,
+		    gconstpointer boxed)
 {
   g_return_if_fail (G_VALUE_HOLDS_BOXED (value));
   g_return_if_fail (G_TYPE_IS_VALUE (G_VALUE_TYPE (value)));

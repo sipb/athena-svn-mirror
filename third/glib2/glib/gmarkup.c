@@ -1,6 +1,6 @@
 /* gmarkup.c - Simple XML-like parser
  *
- *  Copyright 2000 Red Hat, Inc.
+ *  Copyright 2000, 2003 Red Hat, Inc.
  *
  * GLib is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@
 
 #include "config.h"
 
+#include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,6 +49,7 @@ typedef enum
   STATE_AFTER_ELISION_SLASH, /* the slash that obviates need for end element */
   STATE_INSIDE_OPEN_TAG_NAME,
   STATE_INSIDE_ATTRIBUTE_NAME,
+  STATE_AFTER_ATTRIBUTE_NAME,
   STATE_BETWEEN_ATTRIBUTES,
   STATE_AFTER_ATTRIBUTE_EQUALS_SIGN,
   STATE_INSIDE_ATTRIBUTE_VALUE_SQ,
@@ -55,6 +57,7 @@ typedef enum
   STATE_INSIDE_TEXT,
   STATE_AFTER_CLOSE_TAG_SLASH,
   STATE_INSIDE_CLOSE_TAG_NAME,
+  STATE_AFTER_CLOSE_TAG_NAME,
   STATE_INSIDE_PASSTHROUGH,
   STATE_ERROR
 } GMarkupParseState;
@@ -334,8 +337,15 @@ unescape_text (GMarkupParseContext *context,
   const gchar *p;
   UnescapeState state;
   const gchar *start;
+  gboolean normalize_attribute;
 
-  str = g_string_new ("");
+  str = g_string_new (NULL);
+
+  if (context->state == STATE_INSIDE_ATTRIBUTE_VALUE_SQ ||
+      context->state == STATE_INSIDE_ATTRIBUTE_VALUE_DQ)
+    normalize_attribute = TRUE;
+  else
+    normalize_attribute = FALSE;
 
   state = USTATE_INSIDE_TEXT;
   p = text;
@@ -349,7 +359,26 @@ unescape_text (GMarkupParseContext *context,
         case USTATE_INSIDE_TEXT:
           {
             while (p != text_end && *p != '&')
-              p = g_utf8_next_char (p);
+	      {
+		if ((*p == '\t' || *p == '\n') && normalize_attribute)
+		  {
+		    g_string_append_len (str, start, p - start);
+		    g_string_append_c (str, ' ');
+		    p = g_utf8_next_char (p);
+		    start = p;
+		  }
+		else if (*p == '\r')
+		  {
+		    g_string_append_len (str, start, p - start);
+		    g_string_append_c (str, normalize_attribute ? ' ' : '\n');
+		    p = g_utf8_next_char (p);
+		    if (*p == '\n')
+		      p = g_utf8_next_char (p);
+		    start = p;
+		  }
+		else
+		  p = g_utf8_next_char (p);
+	      }
 
             if (p != start)
               {
@@ -635,16 +664,21 @@ unescape_text (GMarkupParseContext *context,
 static gboolean
 advance_char (GMarkupParseContext *context)
 {
+  g_return_val_if_fail (context->iter != context->current_text_end, FALSE);
 
   context->iter = g_utf8_next_char (context->iter);
   context->char_number += 1;
+
+  if (context->iter == context->current_text_end)
+    return FALSE;
+
   if (*context->iter == '\n')
     {
       context->line_number += 1;
       context->char_number = 1;
     }
 
-  return context->iter != context->current_text_end;
+  return TRUE;
 }
 
 static gboolean
@@ -681,7 +715,7 @@ add_to_partial (GMarkupParseContext *context,
                 const gchar         *text_end)
 {
   if (context->partial_chunk == NULL)
-    context->partial_chunk = g_string_new ("");
+    context->partial_chunk = g_string_new (NULL);
 
   if (text_start != text_end)
     g_string_append_len (context->partial_chunk, text_start,
@@ -750,6 +784,7 @@ find_current_text_end (GMarkupParseContext *context)
       context->current_text_end = p;
     }
 }
+
 
 static void
 add_attribute (GMarkupParseContext *context, char *name)
@@ -1103,33 +1138,34 @@ g_markup_parse_context_parse (GMarkupParseContext *context,
           break;
 
         case STATE_INSIDE_ATTRIBUTE_NAME:
-          /* Possible next states: AFTER_ATTRIBUTE_EQUALS_SIGN */
+          /* Possible next states: AFTER_ATTRIBUTE_NAME */
+
+          advance_to_name_end (context);
+	  add_to_partial (context, context->start, context->iter);
 
           /* read the full name, if we enter the equals sign state
            * then add the attribute to the list (without the value),
            * otherwise store a partial chunk to be prepended later.
            */
-          advance_to_name_end (context);
+          if (context->iter != context->current_text_end)
+	    context->state = STATE_AFTER_ATTRIBUTE_NAME;
+	  break;
 
-          if (context->iter == context->current_text_end)
-            {
-              /* The name hasn't necessarily ended. Merge with
-               * partial chunk, leave state unchanged.
-               */
-              add_to_partial (context, context->start, context->iter);
-            }
-          else
-            {
-              /* The name has ended. Combine it with the partial chunk
-               * if any; push it on the stack; enter next state.
-               */
-              add_to_partial (context, context->start, context->iter);
+	case STATE_AFTER_ATTRIBUTE_NAME:
+          /* Possible next states: AFTER_ATTRIBUTE_EQUALS_SIGN */
 
+	  skip_spaces (context);
+
+	  if (context->iter != context->current_text_end)
+	    {
+	      /* The name has ended. Combine it with the partial chunk
+	       * if any; push it on the stack; enter next state.
+	       */
               add_attribute (context, g_string_free (context->partial_chunk, FALSE));
-
+	      
               context->partial_chunk = NULL;
               context->start = NULL;
-
+	      
               if (*context->iter == '=')
                 {
                   advance_char (context);
@@ -1146,7 +1182,7 @@ g_markup_parse_context_parse (GMarkupParseContext *context,
                              utf8_str (context->iter, buf),
                              current_attribute (context),
                              current_element (context));
-
+		  
                 }
             }
           break;
@@ -1247,31 +1283,37 @@ g_markup_parse_context_parse (GMarkupParseContext *context,
 
         case STATE_AFTER_ATTRIBUTE_EQUALS_SIGN:
           /* Possible next state: INSIDE_ATTRIBUTE_VALUE_[SQ/DQ] */
-          if (*context->iter == '"')
-            {
-              advance_char (context);
-              context->state = STATE_INSIDE_ATTRIBUTE_VALUE_DQ;
-              context->start = context->iter;
-            }
-          else if (*context->iter == '\'')
-            {
-              advance_char (context);
-              context->state = STATE_INSIDE_ATTRIBUTE_VALUE_SQ;
-              context->start = context->iter;
-            }
-          else
-            {
-              gchar buf[7];
-              set_error (context,
-                         error,
-                         G_MARKUP_ERROR_PARSE,
-                         _("Odd character '%s', expected an open quote mark "
-                           "after the equals sign when giving value for "
-                           "attribute '%s' of element '%s'"),
-                         utf8_str (context->iter, buf),
-                         current_attribute (context),
-                         current_element (context));
-            }
+
+	  skip_spaces (context);
+
+	  if (context->iter != context->current_text_end)
+	    {
+	      if (*context->iter == '"')
+		{
+		  advance_char (context);
+		  context->state = STATE_INSIDE_ATTRIBUTE_VALUE_DQ;
+		  context->start = context->iter;
+		}
+	      else if (*context->iter == '\'')
+		{
+		  advance_char (context);
+		  context->state = STATE_INSIDE_ATTRIBUTE_VALUE_SQ;
+		  context->start = context->iter;
+		}
+	      else
+		{
+		  gchar buf[7];
+		  set_error (context,
+			     error,
+			     G_MARKUP_ERROR_PARSE,
+			     _("Odd character '%s', expected an open quote mark "
+			       "after the equals sign when giving value for "
+			       "attribute '%s' of element '%s'"),
+			     utf8_str (context->iter, buf),
+			     current_attribute (context),
+			     current_element (context));
+		}
+	    }
           break;
 
         case STATE_INSIDE_ATTRIBUTE_VALUE_SQ:
@@ -1414,88 +1456,89 @@ g_markup_parse_context_parse (GMarkupParseContext *context,
           break;
 
         case STATE_INSIDE_CLOSE_TAG_NAME:
-          /* Possible next state: AFTER_CLOSE_ANGLE */
+          /* Possible next state: AFTER_CLOSE_TAG_NAME */
           advance_to_name_end (context);
+	  add_to_partial (context, context->start, context->iter);
 
-          if (context->iter == context->current_text_end)
-            {
-              /* The name hasn't necessarily ended. Merge with
-               * partial chunk, leave state unchanged.
-               */
-              add_to_partial (context, context->start, context->iter);
-            }
-          else
-            {
-              /* The name has ended. Combine it with the partial chunk
-               * if any; check that it matches stack top and pop
-               * stack; invoke proper callback; enter next state.
-               */
-              gchar *close_name;
+          if (context->iter != context->current_text_end)
+	    context->state = STATE_AFTER_CLOSE_TAG_NAME;
+	  break;
 
-              add_to_partial (context, context->start, context->iter);
+	case STATE_AFTER_CLOSE_TAG_NAME:
+          /* Possible next state: AFTER_CLOSE_TAG_SLASH */
 
-              close_name = g_string_free (context->partial_chunk, FALSE);
-              context->partial_chunk = NULL;
+	  skip_spaces (context);
+	  
+	  if (context->iter != context->current_text_end)
+	    {
+	      gchar *close_name;
+
+	      /* The name has ended. Combine it with the partial chunk
+	       * if any; check that it matches stack top and pop
+	       * stack; invoke proper callback; enter next state.
+	       */
+	      close_name = g_string_free (context->partial_chunk, FALSE);
+	      context->partial_chunk = NULL;
               
-              if (*context->iter != '>')
-                {
-                  gchar buf[7];
-                  set_error (context,
-                             error,
-                             G_MARKUP_ERROR_PARSE,
-                             _("'%s' is not a valid character following "
-                               "the close element name '%s'; the allowed "
-                               "character is '>'"),
-                             utf8_str (context->iter, buf),
-                             close_name);
-                }
-              else if (context->tag_stack == NULL)
-                {
-                  set_error (context,
-                             error,
-                             G_MARKUP_ERROR_PARSE,
-                             _("Element '%s' was closed, no element "
-                               "is currently open"),
-                             close_name);
-                }
-              else if (strcmp (close_name, current_element (context)) != 0)
-                {
-                  set_error (context,
-                             error,
-                             G_MARKUP_ERROR_PARSE,
-                             _("Element '%s' was closed, but the currently "
-                               "open element is '%s'"),
-                             close_name,
-                             current_element (context));
-                }
-              else
-                {
-                  GError *tmp_error;
-                  advance_char (context);
-                  context->state = STATE_AFTER_CLOSE_ANGLE;
-                  context->start = NULL;
-
-                  /* call the end_element callback */
-                  tmp_error = NULL;
-                  if (context->parser->end_element)
-                    (* context->parser->end_element) (context,
-                                                      close_name,
-                                                      context->user_data,
-                                                      &tmp_error);
-
-                  
-                  /* Pop the tag stack */
-                  g_free (context->tag_stack->data);
-                  context->tag_stack = g_slist_delete_link (context->tag_stack,
-                                                            context->tag_stack);
-                  
-                  if (tmp_error)
+	      if (*context->iter != '>')
+		{
+		  gchar buf[7];
+		  set_error (context,
+			     error,
+			     G_MARKUP_ERROR_PARSE,
+			     _("'%s' is not a valid character following "
+			       "the close element name '%s'; the allowed "
+			       "character is '>'"),
+			     utf8_str (context->iter, buf),
+			     close_name);
+		}
+	      else if (context->tag_stack == NULL)
+		{
+		  set_error (context,
+			     error,
+			     G_MARKUP_ERROR_PARSE,
+			     _("Element '%s' was closed, no element "
+			       "is currently open"),
+			     close_name);
+		}
+	      else if (strcmp (close_name, current_element (context)) != 0)
+		{
+		  set_error (context,
+			     error,
+			     G_MARKUP_ERROR_PARSE,
+			     _("Element '%s' was closed, but the currently "
+			       "open element is '%s'"),
+			     close_name,
+			     current_element (context));
+		}
+	      else
+		{
+		  GError *tmp_error;
+		  advance_char (context);
+		  context->state = STATE_AFTER_CLOSE_ANGLE;
+		  context->start = NULL;
+		  
+		  /* call the end_element callback */
+		  tmp_error = NULL;
+		  if (context->parser->end_element)
+		    (* context->parser->end_element) (context,
+						      close_name,
+						      context->user_data,
+						      &tmp_error);
+		  
+		  
+		  /* Pop the tag stack */
+		  g_free (context->tag_stack->data);
+		  context->tag_stack = g_slist_delete_link (context->tag_stack,
+							    context->tag_stack);
+		  
+		  if (tmp_error)
                     {
                       mark_error (context, tmp_error);
                       g_propagate_error (error, tmp_error);
                     }
                 }
-
+	      
               g_free (close_name);
             }
           break;
@@ -1808,6 +1851,10 @@ append_escaped_text (GString     *str,
  * corresponding entities. This function would typically be used
  * when writing out a file to be parsed with the markup parser.
  * 
+ * Note that this function doesn't protect whitespace and line endings
+ * from being processed according to the XML rules for normalization
+ * of line endings and attribute values.
+ * 
  * Return value: escaped text
  **/
 gchar*
@@ -1821,8 +1868,314 @@ g_markup_escape_text (const gchar *text,
   if (length < 0)
     length = strlen (text);
 
-  str = g_string_new ("");
+  str = g_string_new (NULL);
   append_escaped_text (str, text, length);
 
   return g_string_free (str, FALSE);
+}
+
+/**
+ * find_conversion:
+ * @format: a printf-style format string
+ * @after: location to store a pointer to the character after
+ *   the returned conversion. On a %NULL return, returns the
+ *   pointer to the trailing NUL in the string
+ * 
+ * Find the next conversion in a printf-style format string.
+ * Partially based on code from printf-parser.c,
+ * Copyright (C) 1999-2000, 2002-2003 Free Software Foundation, Inc.
+ * 
+ * Return value: pointer to the next conversion in @format,
+ *  or %NULL, if none.
+ **/
+static const char *
+find_conversion (const char  *format,
+		 const char **after)
+{
+  const char *start = format;
+  const char *cp;
+  
+  while (*start != '\0' && *start != '%')
+    start++;
+
+  if (*start == '\0')
+    {
+      *after = start;
+      return NULL;
+    }
+
+  cp = start + 1;
+
+  if (*cp == '\0')
+    {
+      *after = cp;
+      return NULL;
+    }
+  
+  /* Test for positional argument.  */
+  if (*cp >= '0' && *cp <= '9')
+    {
+      const char *np;
+      
+      for (np = cp; *np >= '0' && *np <= '9'; np++)
+	;
+      if (*np == '$')
+	cp = np + 1;
+    }
+
+  /* Skip the flags.  */
+  for (;;)
+    {
+      if (*cp == '\'' ||
+	  *cp == '-' ||
+	  *cp == '+' ||
+	  *cp == ' ' ||
+	  *cp == '#' ||
+	  *cp == '0')
+	cp++;
+      else
+	break;
+    }
+
+  /* Skip the field width.  */
+  if (*cp == '*')
+    {
+      cp++;
+
+      /* Test for positional argument.  */
+      if (*cp >= '0' && *cp <= '9')
+	{
+	  const char *np;
+
+	  for (np = cp; *np >= '0' && *np <= '9'; np++)
+	    ;
+	  if (*np == '$')
+	    cp = np + 1;
+	}
+    }
+  else
+    {
+      for (; *cp >= '0' && *cp <= '9'; cp++)
+	;
+    }
+
+  /* Skip the precision.  */
+  if (*cp == '.')
+    {
+      cp++;
+      if (*cp == '*')
+	{
+	  /* Test for positional argument.  */
+	  if (*cp >= '0' && *cp <= '9')
+	    {
+	      const char *np;
+
+	      for (np = cp; *np >= '0' && *np <= '9'; np++)
+		;
+	      if (*np == '$')
+		cp = np + 1;
+	    }
+	}
+      else
+	{
+	  for (; *cp >= '0' && *cp <= '9'; cp++)
+	    ;
+	}
+    }
+
+  /* Skip argument type/size specifiers.  */
+  while (*cp == 'h' ||
+	 *cp == 'L' ||
+	 *cp == 'l' ||
+	 *cp == 'j' ||
+	 *cp == 'z' ||
+	 *cp == 'Z' ||
+	 *cp == 't')
+    cp++;
+	  
+  /* Skip the conversion character.  */
+  cp++;
+
+  *after = cp;
+  return start;
+}
+
+/**
+ * g_markup_vprintf_escaped:
+ * @format: printf() style format string
+ * @args: variable argument list, similar to vprintf()
+ * 
+ * Formats the data in @args according to @format, escaping
+ * all string and character arguments in the fashion
+ * of g_markup_escape_text(). See g_markup_printf_escaped().
+ * 
+ * Return value: newly allocated result from formatting
+ *  operation. Free with g_free().
+ *
+ * Since: 2.4
+ **/
+char *
+g_markup_vprintf_escaped (const char *format,
+			  va_list     args)
+{
+  GString *format1;
+  GString *format2;
+  GString *result = NULL;
+  gchar *output1 = NULL;
+  gchar *output2 = NULL;
+  const char *p, *op1, *op2;
+  va_list args2;
+
+  /* The technique here, is that we make two format strings that
+   * have the identical conversions in the identical order to the
+   * original strings, but differ in the text in-between. We
+   * then use the normal g_strdup_vprintf() to format the arguments
+   * with the two new format strings. By comparing the results,
+   * we can figure out what segments of the output come from
+   * the the original format string, and what from the arguments,
+   * and thus know what portions of the string to escape.
+   *
+   * For instance, for:
+   *
+   *  g_markup_printf_escaped ("%s ate %d apples", "Susan & Fred", 5);
+   *
+   * We form the two format strings "%sX%dX" and %sY%sY". The results
+   * of formatting with those two strings are
+   *
+   * "%sX%dX" => "Susan & FredX5X"
+   * "%sY%dY" => "Susan & FredY5Y"
+   *
+   * To find the span of the first argument, we find the first position
+   * where the two arguments differ, which tells us that the first
+   * argument formatted to "Susan & Fred". We then escape that
+   * to "Susan &amp; Fred" and join up with the intermediate portions
+   * of the format string and the second argument to get
+   * "Susan &amp; Fred ate 5 apples".
+   */
+
+  /* Create the two modified format strings
+   */
+  format1 = g_string_new (NULL);
+  format2 = g_string_new (NULL);
+  p = format;
+  while (TRUE)
+    {
+      const char *after;
+      const char *conv = find_conversion (p, &after);
+      if (!conv)
+	break;
+
+      g_string_append_len (format1, conv, after - conv);
+      g_string_append_c (format1, 'X');
+      g_string_append_len (format2, conv, after - conv);
+      g_string_append_c (format2, 'Y');
+
+      p = after;
+    }
+
+  /* Use them to format the arguments
+   */
+  G_VA_COPY (args2, args);
+  
+  output1 = g_strdup_vprintf (format1->str, args);
+  va_end (args);
+  if (!output1)
+    goto cleanup;
+  
+  output2 = g_strdup_vprintf (format2->str, args2);
+  va_end (args2);
+  if (!output2)
+    goto cleanup;
+
+  result = g_string_new (NULL);
+
+  /* Iterate through the original format string again,
+   * copying the non-conversion portions and the escaped
+   * converted arguments to the output string.
+   */
+  op1 = output1;
+  op2 = output2;
+  p = format;
+  while (TRUE)
+    {
+      const char *after;
+      const char *output_start;
+      const char *conv = find_conversion (p, &after);
+      char *escaped;
+      
+      if (!conv)	/* The end, after points to the trailing \0 */
+	{
+	  g_string_append_len (result, p, after - p);
+	  break;
+	}
+
+      g_string_append_len (result, p, conv - p);
+      output_start = op1;
+      while (*op1 == *op2)
+	{
+	  op1++;
+	  op2++;
+	}
+      
+      escaped = g_markup_escape_text (output_start, op1 - output_start);
+      g_string_append (result, escaped);
+      g_free (escaped);
+      
+      p = after;
+      op1++;
+      op2++;
+    }
+
+ cleanup:
+  g_string_free (format1, TRUE);
+  g_string_free (format2, TRUE);
+  g_free (output1);
+  g_free (output2);
+
+  if (result)
+    return g_string_free (result, FALSE);
+  else
+    return NULL;
+}
+
+/**
+ * g_markup_printf_escaped:
+ * @format: printf() style format string
+ * @Varargs: the arguments to insert in the format string
+ * 
+ * Formats arguments according to @format, escaping
+ * all string and character arguments in the fashion
+ * of g_markup_escape_text(). This is useful when you
+ * want to insert literal strings into XML-style markup
+ * output, without having to worry that the strings
+ * might themselves contain markup.
+ *
+ * <informalexample><programlisting>
+ * const char *store = "Fortnum &amp; Mason";
+ * const char *item = "Tea";
+ * char *output;
+ * &nbsp;
+ * output = g_markup_printf_escaped ("&lt;purchase&gt;"
+ *                                   "&lt;store&gt;&percnt;s&lt;/store&gt;"
+ *                                   "&lt;item&gt;&percnt;s&lt;/item&gt;"
+ *                                   "&lt;/purchase&gt;",
+ *                                   store, item);
+ * </programlisting></informalexample>
+ * 
+ * Return value: newly allocated result from formatting
+ *  operation. Free with g_free().
+ *
+ * Since: 2.4
+ **/
+char *
+g_markup_printf_escaped (const char *format, ...)
+{
+  char *result;
+  va_list args;
+  
+  va_start (args, format);
+  result = g_markup_vprintf_escaped (format, args);
+  va_end (args);
+
+  return result;
 }

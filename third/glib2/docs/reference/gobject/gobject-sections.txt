@@ -1,4 +1,4 @@
-<INCLUDE>gobject.h</INCLUDE>
+<INCLUDE>glib-object.h</INCLUDE>
 
 <SECTION>
 <FILE>gtype</FILE>
@@ -24,12 +24,12 @@ GTypeInfo
 GTypeFundamentalInfo
 GInterfaceInfo
 GTypeValueTable
-<TITLE>GType</TITLE>
 G_TYPE_FROM_INSTANCE
 G_TYPE_FROM_CLASS
 G_TYPE_FROM_INTERFACE
 G_TYPE_INSTANCE_GET_CLASS
 G_TYPE_INSTANCE_GET_INTERFACE
+G_TYPE_INSTANCE_GET_PRIVATE
 G_TYPE_CHECK_INSTANCE
 G_TYPE_CHECK_INSTANCE_CAST
 G_TYPE_CHECK_INSTANCE_TYPE
@@ -50,10 +50,15 @@ g_type_next_base
 g_type_is_a
 g_type_class_ref
 g_type_class_peek
+g_type_class_peek_static
 g_type_class_unref
 g_type_class_peek_parent
+g_type_class_add_private
 g_type_interface_peek
 g_type_interface_peek_parent
+g_type_default_interface_ref
+g_type_default_interface_peek
+g_type_default_interface_unref
 g_type_children
 g_type_interfaces
 g_type_interface_prerequisites
@@ -86,7 +91,18 @@ g_type_free_instance
 g_type_add_class_cache_func
 g_type_remove_class_cache_func
 g_type_class_unref_uncached
+g_type_add_interface_check
+g_type_remove_interface_check
+GTypeInterfaceCheckFunc
 g_type_value_table_peek
+
+G_DEFINE_TYPE
+G_DEFINE_TYPE_WITH_CODE
+G_DEFINE_ABSTRACT_TYPE
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE
+G_IMPLEMENT_INTERFACE
+G_DEFINE_TYPE_EXTENDED
+
 <SUBSECTION Private>
 G_TYPE_FUNDAMENTAL_SHIFT
 g_type_check_instance
@@ -97,6 +113,7 @@ g_type_check_class_is_a
 g_type_check_is_value_type
 g_type_check_value
 g_type_check_value_holds
+g_type_instance_get_private
 g_type_test_flags
 g_type_name_from_instance
 g_type_name_from_class
@@ -183,6 +200,7 @@ G_TYPE_MODULE_GET_CLASS
 <FILE>objects</FILE>
 GObject
 GObjectClass
+GObjectConstructParam
 GObjectGetPropertyFunc
 GObjectSetPropertyFunc
 GObjectFinalizeFunc
@@ -199,6 +217,10 @@ G_OBJECT_CLASS_NAME
 g_object_class_install_property
 g_object_class_find_property
 g_object_class_list_properties
+g_object_class_override_property
+g_object_interface_install_property
+g_object_interface_find_property
+g_object_interface_list_properties
 g_object_new
 g_object_newv
 GParameter
@@ -231,10 +253,9 @@ g_object_set_valist
 g_object_get_valist
 g_object_watch_closure
 g_object_run_dispose
-G_OBJECT_WARN_INVALID_PSPEC
 G_OBJECT_WARN_INVALID_PROPERTY_ID
 <SUBSECTION Private>
-GObjectConstructParam
+G_OBJECT_WARN_INVALID_PSPEC
 </SECTION>
 
 <SECTION>
@@ -278,12 +299,15 @@ g_pointer_type_register_static
 
 <SUBSECTION>
 G_TYPE_GSTRING
+G_TYPE_STRV
+GStrv
 
 <SUBSECTION Standard>
 G_TYPE_IS_BOXED
 
 <SUBSECTION Private>
 g_gstring_get_type
+g_strv_get_type
 </SECTION>
 
 <SECTION>
@@ -366,6 +390,7 @@ g_param_spec_get_qdata
 g_param_spec_set_qdata
 g_param_spec_set_qdata_full
 g_param_spec_steal_qdata
+g_param_spec_get_redirect_target
 g_param_spec_internal
 GParamSpecTypeInfo
 g_param_type_register_static
@@ -522,6 +547,7 @@ gchararray
 g_param_spec_string
 g_value_set_string
 g_value_set_static_string
+g_value_take_string
 g_value_set_string_take_ownership
 g_value_get_string
 g_value_dup_string
@@ -534,6 +560,7 @@ G_TYPE_PARAM_PARAM
 GParamSpecParam
 g_param_spec_param
 g_value_set_param
+g_value_take_param
 g_value_set_param_take_ownership
 g_value_get_param
 g_value_dup_param
@@ -547,6 +574,7 @@ GParamSpecBoxed
 g_param_spec_boxed
 g_value_set_boxed
 g_value_set_static_boxed
+g_value_take_boxed
 g_value_set_boxed_take_ownership
 g_value_get_boxed
 g_value_dup_boxed
@@ -569,6 +597,7 @@ G_TYPE_PARAM_OBJECT
 GParamSpecObject
 g_param_spec_object
 g_value_set_object
+g_value_take_object
 g_value_set_object_take_ownership
 g_value_get_object
 g_value_dup_object
@@ -587,6 +616,13 @@ G_TYPE_PARAM_VALUE_ARRAY
 GParamSpecValueArray
 g_param_spec_value_array
 
+<SUBSECTION Override>
+G_IS_PARAM_SPEC_OVERRIDE
+G_PARAM_SPEC_OVERRIDE
+G_TYPE_PARAM_OVERRIDE
+GParamSpecOverride
+g_param_spec_override
+
 <SUBSECTION Private>
 g_value_set_instance
 g_param_spec_types
@@ -595,6 +631,7 @@ g_param_spec_types
 <SECTION>
 <TITLE>Varargs Value Collection</TITLE>
 <FILE>value_collection</FILE>
+<INCLUDE>glib-object.h,gobject/gvaluecollector.h</INCLUDE>
 GTypeCValue
 G_VALUE_COLLECT
 G_VALUE_LCOPY
@@ -654,6 +691,7 @@ g_signal_remove_emission_hook
 g_signal_parse_name
 g_signal_get_invocation_hint
 g_signal_type_cclosure_new
+g_signal_accumulator_true_handled
 <SUBSECTION Private>
 g_signal_handlers_destroy
 </SECTION>
@@ -671,7 +709,6 @@ G_TYPE_CLOSURE
 GCClosure
 GClosureMarshal
 GClosureNotify
-GClosureNotifyData
 g_cclosure_new
 g_cclosure_new_swap
 g_cclosure_new_object
@@ -694,7 +731,31 @@ g_source_set_closure
 G_TYPE_IO_CHANNEL
 G_TYPE_IO_CONDITION
 
+<SUBSECTION>
+g_cclosure_marshal_VOID__VOID
+g_cclosure_marshal_VOID__BOOLEAN
+g_cclosure_marshal_VOID__CHAR
+g_cclosure_marshal_VOID__UCHAR
+g_cclosure_marshal_VOID__INT
+g_cclosure_marshal_VOID__UINT
+g_cclosure_marshal_VOID__LONG
+g_cclosure_marshal_VOID__ULONG
+g_cclosure_marshal_VOID__ENUM
+g_cclosure_marshal_VOID__FLAGS
+g_cclosure_marshal_VOID__FLOAT
+g_cclosure_marshal_VOID__DOUBLE
+g_cclosure_marshal_VOID__STRING
+g_cclosure_marshal_VOID__PARAM
+g_cclosure_marshal_VOID__BOXED
+g_cclosure_marshal_VOID__POINTER
+g_cclosure_marshal_VOID__OBJECT
+g_cclosure_marshal_STRING__OBJECT_POINTER
+g_cclosure_marshal_VOID__UINT_POINTER
+g_cclosure_marshal_BOOLEAN__FLAGS
+g_cclosure_marshal_BOOL__FLAGS
+
 <SUBSECTION Private>
+GClosureNotifyData
 g_closure_get_type
 g_cclosure_marshal_VOID__VOID
 g_cclosure_marshal_VOID__BOOLEAN

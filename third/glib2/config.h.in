@@ -47,6 +47,24 @@
 /* The size of system_thread, as computed by sizeof. */
 #undef GLIB_SIZEOF_SYSTEM_THREAD
 
+/* alpha atomic implementation */
+#undef G_ATOMIC_ALPHA
+
+/* i486 atomic implementation */
+#undef G_ATOMIC_I486
+
+/* ia64 atomic implementation */
+#undef G_ATOMIC_IA64
+
+/* powerpc atomic implementation */
+#undef G_ATOMIC_POWERPC
+
+/* sparcv9 atomic implementation */
+#undef G_ATOMIC_SPARCV9
+
+/* x86_64 atomic implementation */
+#undef G_ATOMIC_X86_64
+
 /* Whether glib was compiled with debugging enabled */
 #undef G_COMPILED_WITH_DEBUGGING
 
@@ -61,9 +79,6 @@
 
 /* Source file containing theread implementation */
 #undef G_THREAD_SOURCE
-
-/* whether to use the PID niceness surrogate for thread priorities */
-#undef G_THREAD_USE_PID_SURROGATE
 
 /* A 'va_copy' style function */
 #undef G_VA_COPY
@@ -83,6 +98,10 @@
 
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #undef HAVE_BIND_TEXTDOMAIN_CODESET
+
+/* Define if you have a version of the snprintf function with semantics as
+   specified by the ISO C99 standard. */
+#undef HAVE_C99_SNPRINTF
 
 /* Define if you have a version of the vsnprintf function with semantics as
    specified by the ISO C99 standard. */
@@ -118,8 +137,18 @@
 /* define to use system printf */
 #undef HAVE_GOOD_PRINTF
 
+/* define to support printing 64-bit integers with format I64 */
+#undef HAVE_INT64_AND_I64
+
+/* Define if you have the 'intmax_t' type in <stdint.h> or <inttypes.h>. */
+#undef HAVE_INTMAX_T
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define if <inttypes.h> exists, doesn't clash with <sys/types.h>, and
+   declares uintmax_t. */
+#undef HAVE_INTTYPES_H_WITH_UINTMAX
 
 /* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
 #undef HAVE_LANGINFO_CODESET
@@ -138,6 +167,15 @@
 
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
+
+/* Define if you have the 'long double' type. */
+#undef HAVE_LONG_DOUBLE
+
+/* Define if you have the 'long long' type. */
+#undef HAVE_LONG_LONG
+
+/* define if system printf can print long long */
+#undef HAVE_LONG_LONG_FORMAT
 
 /* Define to 1 if you have the `lstat' function. */
 #undef HAVE_LSTAT
@@ -172,20 +210,36 @@
 /* Have function pthread_attr_setstacksize */
 #undef HAVE_PTHREAD_ATTR_SETSTACKSIZE
 
+/* Define to 1 if the system has the type `ptrdiff_t'. */
+#undef HAVE_PTRDIFF_T
+
 /* Define to 1 if you have the <pwd.h> header file. */
 #undef HAVE_PWD_H
+
+/* Define to 1 if you have the `readlink' function. */
+#undef HAVE_READLINK
 
 /* Define to 1 if you have the <sched.h> header file. */
 #undef HAVE_SCHED_H
 
+/* Define to 1 if you have the `setenv' function. */
+#undef HAVE_SETENV
+
 /* Define to 1 if you have the `setlocale' function. */
 #undef HAVE_SETLOCALE
+
+/* Define to 1 if you have the `snprintf' function. */
+#undef HAVE_SNPRINTF
 
 /* Define to 1 if you have the <stddef.h> header file. */
 #undef HAVE_STDDEF_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
+
+/* Define if <stdint.h> exists, doesn't clash with <sys/types.h>, and declares
+   uintmax_t. */
+#undef HAVE_STDINT_H_WITH_UINTMAX
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
@@ -213,6 +267,9 @@
 
 /* Define to 1 if you have the `strsignal' function. */
 #undef HAVE_STRSIGNAL
+
+/* Define to 1 if you have the `symlink' function. */
+#undef HAVE_SYMLINK
 
 /* Define to 1 if you have the <sys/param.h> header file. */
 #undef HAVE_SYS_PARAM_H
@@ -257,6 +314,12 @@
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
 
+/* Define if you have the 'wchar_t' type. */
+#undef HAVE_WCHAR_T
+
+/* Define if you have the 'wint_t' type. */
+#undef HAVE_WINT_T
+
 /* Have a working bcopy */
 #undef HAVE_WORKING_BCOPY
 
@@ -271,9 +334,6 @@
 
 /* global 'sys_siglist' not declared */
 #undef NO_SYS_SIGLIST_DECL
-
-/* Name of package */
-#undef PACKAGE
 
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
@@ -332,9 +392,9 @@
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
    automatically deduced at run-time.
-        STACK_DIRECTION > 0 => grows toward higher addresses
-        STACK_DIRECTION < 0 => grows toward lower addresses
-        STACK_DIRECTION = 0 => direction of growth unknown */
+	STACK_DIRECTION > 0 => grows toward higher addresses
+	STACK_DIRECTION < 0 => grows toward lower addresses
+	STACK_DIRECTION = 0 => direction of growth unknown */
 #undef STACK_DIRECTION
 
 /* Define to 1 if you have the ANSI C header files. */
@@ -345,9 +405,6 @@
 
 /* Using a native implementation of iconv in a separate library */
 #undef USE_LIBICONV_NATIVE
-
-/* Version number of package */
-#undef VERSION
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
@@ -361,3 +418,12 @@
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
+
+/* Define to long or long long if <inttypes.h> and <stdint.h> don't define. */
+#undef intmax_t
+
+/* Define to empty if the C compiler doesn't support this keyword. */
+#undef signed
+
+/* Define to `unsigned' if <sys/types.h> does not define. */
+#undef size_t

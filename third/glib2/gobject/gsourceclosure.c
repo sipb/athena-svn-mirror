@@ -24,6 +24,16 @@
 #include "gvalue.h"
 #include "gvaluetypes.h"
 
+/* This is needed for a proper GBoxedCopyFunc, until the g_io_channel_ref API
+ * returns it's GIOChannel itself #131076.
+ */
+static GIOChannel *
+wrap_g_io_channel_ref (GIOChannel *channel)
+{
+  g_io_channel_ref (channel);
+  return channel;
+}
+
 GType
 g_io_channel_get_type (void)
 {
@@ -31,7 +41,7 @@ g_io_channel_get_type (void)
   
   if (our_type == 0)
     our_type = g_boxed_type_register_static ("GIOChannel",
-					     (GBoxedCopyFunc) g_io_channel_ref,
+					     (GBoxedCopyFunc) wrap_g_io_channel_ref,
 					     (GBoxedFreeFunc) g_io_channel_unref);
 
   return our_type;
@@ -154,17 +164,6 @@ static GSourceCallbackFuncs closure_callback_funcs = {
   closure_callback_get
 };
 
-/**
- * g_source_set_closure:
- * @source: the source
- * @closure: a #GClosure
- *
- * Set the callback for a source as a #GClosure.
- *
- * If the source is not one of the standard GLib types, the @closure_callback
- * and @closure_marshal fields of the GSourceFuncs structure must have been
- * filled in with pointers to appropriate functions.
- **/
 void
 g_source_set_closure (GSource  *source,
 		      GClosure *closure)

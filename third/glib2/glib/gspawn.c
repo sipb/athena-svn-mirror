@@ -39,6 +39,17 @@
 
 #include "glibintl.h"
 
+/* With solaris threads, fork() duplicates all threads, which
+ * a) could cause unexpected side-effects, and b) is expensive.
+ * Once we remove support for solaris threads, the FORK1 #define
+ * should be removedl
+ */
+#ifdef G_THREADS_IMPL_SOLARIS
+#define FORK1() fork1()
+#else
+#define FORK1() fork()
+#endif
+
 static gint g_execute (const gchar  *file,
                        gchar **argv,
                        gchar **envp,
@@ -58,7 +69,7 @@ static gboolean fork_exec_with_pipes (gboolean              intermediate_child,
                                       gboolean              file_and_argv_zero,
                                       GSpawnChildSetupFunc  child_setup,
                                       gpointer              user_data,
-                                      gint                 *child_pid,
+                                      GPid                 *child_pid,
                                       gint                 *standard_input,
                                       gint                 *standard_output,
                                       gint                 *standard_error,
@@ -79,7 +90,7 @@ g_spawn_error_quark (void)
  * @argv: child's argument vector
  * @envp: child's environment, or %NULL to inherit parent's
  * @flags: flags from #GSpawnFlags
- * @child_setup: function to run in the child just before <function>exec()</function>
+ * @child_setup: function to run in the child just before exec()
  * @user_data: user data for @child_setup
  * @child_pid: return location for child process ID, or %NULL
  * @error: return location for error
@@ -96,7 +107,7 @@ g_spawn_async (const gchar          *working_directory,
                GSpawnFlags           flags,
                GSpawnChildSetupFunc  child_setup,
                gpointer              user_data,
-               gint                 *child_pid,
+               GPid                 *child_pid,
                GError              **error)
 {
   g_return_val_if_fail (argv != NULL, FALSE);
@@ -148,7 +159,7 @@ read_data (GString *str,
 
  again:
   
-  bytes = read (fd, &buf, 4096);
+  bytes = read (fd, buf, 4096);
 
   if (bytes == 0)
     return READ_EOF;
@@ -179,19 +190,18 @@ read_data (GString *str,
  * @argv: child's argument vector
  * @envp: child's environment, or %NULL to inherit parent's
  * @flags: flags from #GSpawnFlags
- * @child_setup: function to run in the child just before <function>exec()</function>
+ * @child_setup: function to run in the child just before exec()
  * @user_data: user data for @child_setup
  * @standard_output: return location for child output 
  * @standard_error: return location for child error messages
- * @exit_status: child exit status, as returned by <function>waitpid()</function>
+ * @exit_status: child exit status, as returned by waitpid()
  * @error: return location for error
  *
  * Executes a child synchronously (waits for the child to exit before returning).
  * All output from the child is stored in @standard_output and @standard_error,
  * if those parameters are non-%NULL. If @exit_status is non-%NULL, the exit 
  * status of the child is stored there as it would be returned by 
- * <function>waitpid()</function>; standard UNIX macros such as 
- * <function>WIFEXITED()</function> and <function>WEXITSTATUS()</function> 
+ * waitpid(); standard UNIX macros such as WIFEXITED() and WEXITSTATUS() 
  * must be used to evaluate the exit status. If an error occurs, no data is 
  * returned in @standard_output, @standard_error, or @exit_status.
  * 
@@ -214,7 +224,7 @@ g_spawn_sync (const gchar          *working_directory,
 {
   gint outpipe = -1;
   gint errpipe = -1;
-  gint pid;
+  GPid pid;
   fd_set fds;
   gint ret;
   GString *outstr = NULL;
@@ -263,12 +273,12 @@ g_spawn_sync (const gchar          *working_directory,
 
   if (outpipe >= 0)
     {
-      outstr = g_string_new ("");
+      outstr = g_string_new (NULL);
     }
       
   if (errpipe >= 0)
     {
-      errstr = g_string_new ("");
+      errstr = g_string_new (NULL);
     }
 
   /* Read data until we get EOF on both pipes. */
@@ -415,7 +425,7 @@ g_spawn_sync (const gchar          *working_directory,
  * @argv: child's argument vector
  * @envp: child's environment, or %NULL to inherit parent's
  * @flags: flags from #GSpawnFlags
- * @child_setup: function to run in the child just before <function>exec()</function>
+ * @child_setup: function to run in the child just before exec()
  * @user_data: user data for @child_setup
  * @child_pid: return location for child process ID, or %NULL
  * @standard_input: return location for file descriptor to write to child's stdin, or %NULL
@@ -433,22 +443,21 @@ g_spawn_sync (const gchar          *working_directory,
  * will only be searched if you pass the %G_SPAWN_SEARCH_PATH flag.
  *
  * On Windows, the low-level child process creation API
- * (<function>CreateProcess()</function>)doesn't use argument vectors,
+ * (CreateProcess())doesn't use argument vectors,
  * but a command line. The C runtime library's
  * <function>spawn*()</function> family of functions (which
  * g_spawn_async_with_pipes() eventually calls) paste the argument
  * vector elements into a command line, and the C runtime startup code
  * does a corresponding recostruction of an argument vector from the
- * command line, to be passed to
- * <function>main()</function>. Complications arise when you have
+ * command line, to be passed to main(). Complications arise when you have
  * argument vector elements that contain spaces of double quotes. The
- * <function>spawn()</function> functions don't do any quoting or
+ * <function>spawn*()</function> functions don't do any quoting or
  * escaping, but on the other hand the startup code does do unquoting
  * and unescaping in order to enable receiving arguments with embedded
  * spaces or double quotes. To work around this asymmetry,
  * g_spawn_async_with_pipes() will do quoting and escaping on argument
  * vector elements that need it before calling the C runtime
- * <function>spawn()</function> function.
+ * spawn() function.
  *
  * @envp is a %NULL-terminated array of strings, where each string
  * has the form <literal>KEY=VALUE</literal>. This will become
@@ -458,10 +467,10 @@ g_spawn_sync (const gchar          *working_directory,
  * @flags should be the bitwise OR of any flags you want to affect the
  * function's behavior. On Unix, the %G_SPAWN_DO_NOT_REAP_CHILD means
  * that the child will not be automatically reaped; you must call
- * <function>waitpid()</function> or handle %SIGCHLD yourself, or the
+ * waitpid() or handle %SIGCHLD yourself, or the
  * child will become a zombie. On Windows, the flag means that a
  * handle to the child will be returned @child_pid. You must call
- * <function>CloseHandle()</function> on it eventually (or exit the
+ * CloseHandle() on it eventually (or exit the
  * process), or the child processs will continue to take up some table
  * space even after its death. Quite similar to zombies on Unix,
  * actually.
@@ -469,7 +478,7 @@ g_spawn_sync (const gchar          *working_directory,
  * %G_SPAWN_LEAVE_DESCRIPTORS_OPEN means that the parent's open file
  * descriptors will be inherited by the child; otherwise all
  * descriptors except stdin/stdout/stderr will be closed before
- * calling <function>exec()</function> in the child. %G_SPAWN_SEARCH_PATH 
+ * calling exec() in the child. %G_SPAWN_SEARCH_PATH 
  * means that <literal>argv[0]</literal> need not be an absolute path, it
  * will be looked for in the user's <envar>PATH</envar>. 
  * %G_SPAWN_STDOUT_TO_DEV_NULL means that the child's standard output will 
@@ -491,28 +500,26 @@ g_spawn_sync (const gchar          *working_directory,
  * platforms, the function is called in the child after GLib has
  * performed all the setup it plans to perform (including creating
  * pipes, closing file descriptors, etc.) but before calling
- * <function>exec()</function>. That is, @child_setup is called just
- * before calling <function>exec()</function> in the child. Obviously
+ * exec(). That is, @child_setup is called just
+ * before calling exec() in the child. Obviously
  * actions taken in this function will only affect the child, not the
- * parent. On Windows, there is no separate
- * <function>fork()</function> and <function>exec()</function>
+ * parent. On Windows, there is no separate fork() and exec()
  * functionality. Child processes are created and run right away with
- * one API call, <function>CreateProcess()</function>. @child_setup is
+ * one API call, CreateProcess(). @child_setup is
  * called in the parent process just before creating the child
  * process. You should carefully consider what you do in @child_setup
  * if you intend your software to be portable to Windows.
  *
  * If non-%NULL, @child_pid will on Unix be filled with the child's
  * process ID. You can use the process ID to send signals to the
- * child, or to <function>waitpid()</function> if you specified the
+ * child, or to waitpid() if you specified the
  * %G_SPAWN_DO_NOT_REAP_CHILD flag. On Windows, @child_pid will be
  * filled with a handle to the child process only if you specified the
  * %G_SPAWN_DO_NOT_REAP_CHILD flag. You can then access the child
  * process using the Win32 API, for example wait for its termination
  * with the <function>WaitFor*()</function> functions, or examine its
- * exit code with <function>GetExitCodeProcess()</function>. You
- * should close the handle with <function>CloseHandle()</function>
- * when you no longer need it.
+ * exit code with GetExitCodeProcess(). You should close the handle 
+ * with CloseHandle() when you no longer need it.
  *
  * If non-%NULL, the @standard_input, @standard_output, @standard_error
  * locations will be filled with file descriptors for writing to the child's
@@ -539,6 +546,9 @@ g_spawn_sync (const gchar          *working_directory,
  *
  * If an error occurs, @child_pid, @standard_input, @standard_output,
  * and @standard_error will not be filled with valid values.
+ *
+ * If @child_pid is not %NULL and an error does not occur then the returned
+ * pid must be closed using g_spawn_close_pid().
  * 
  * Return value: %TRUE on success, %FALSE if an error was set
  **/
@@ -549,7 +559,7 @@ g_spawn_async_with_pipes (const gchar          *working_directory,
                           GSpawnFlags           flags,
                           GSpawnChildSetupFunc  child_setup,
                           gpointer              user_data,
-                          gint                 *child_pid,
+                          GPid                 *child_pid,
                           gint                 *standard_input,
                           gint                 *standard_output,
                           gint                 *standard_error,
@@ -793,13 +803,36 @@ exec_err_to_g_error (gint en)
     }
 }
 
+static gssize
+write_all (gint fd, gconstpointer vbuf, gsize to_write)
+{
+  gchar *buf = (gchar *) vbuf;
+  
+  while (to_write > 0)
+    {
+      gssize count = write (fd, buf, to_write);
+      if (count < 0)
+        {
+          if (errno != EINTR)
+            return FALSE;
+        }
+      else
+        {
+          to_write -= count;
+          buf += count;
+        }
+    }
+  
+  return TRUE;
+}
+
 static void
 write_err_and_exit (gint fd, gint msg)
 {
   gint en = errno;
   
-  write (fd, &msg, sizeof(msg));
-  write (fd, &en, sizeof(en));
+  write_all (fd, &msg, sizeof(msg));
+  write_all (fd, &en, sizeof(en));
   
   _exit (1);
 }
@@ -1005,13 +1038,13 @@ fork_exec_with_pipes (gboolean              intermediate_child,
                       gboolean              file_and_argv_zero,
                       GSpawnChildSetupFunc  child_setup,
                       gpointer              user_data,
-                      gint                 *child_pid,
+                      GPid                 *child_pid,
                       gint                 *standard_input,
                       gint                 *standard_output,
                       gint                 *standard_error,
                       GError              **error)     
 {
-  gint pid = -1;
+  GPid pid = -1;
   gint stdin_pipe[2] = { -1, -1 };
   gint stdout_pipe[2] = { -1, -1 };
   gint stderr_pipe[2] = { -1, -1 };
@@ -1034,7 +1067,7 @@ fork_exec_with_pipes (gboolean              intermediate_child,
   if (standard_error && !make_pipe (stderr_pipe, error))
     goto cleanup_and_fail;
 
-  pid = fork ();
+  pid = FORK1 ();
 
   if (pid < 0)
     {      
@@ -1074,15 +1107,15 @@ fork_exec_with_pipes (gboolean              intermediate_child,
            * is to exit, so we can waitpid() it immediately.
            * Then the grandchild will not become a zombie.
            */
-          gint grandchild_pid;
+          GPid grandchild_pid;
 
-          grandchild_pid = fork ();
+          grandchild_pid = FORK1 ();
 
           if (grandchild_pid < 0)
             {
               /* report -1 as child PID */
-              write (child_pid_report_pipe[1], &grandchild_pid,
-                     sizeof(grandchild_pid));
+              write_all (child_pid_report_pipe[1], &grandchild_pid,
+                         sizeof(grandchild_pid));
               
               write_err_and_exit (child_err_report_pipe[1],
                                   CHILD_FORK_FAILED);              
@@ -1107,7 +1140,7 @@ fork_exec_with_pipes (gboolean              intermediate_child,
             }
           else
             {
-              write (child_pid_report_pipe[1], &grandchild_pid, sizeof(grandchild_pid));
+              write_all (child_pid_report_pipe[1], &grandchild_pid, sizeof(grandchild_pid));
               close_and_invalidate (&child_pid_report_pipe[1]);
               
               _exit (0);
@@ -1497,4 +1530,18 @@ g_execute (const gchar *file,
 
   /* Return the error from the last attempt (probably ENOENT).  */
   return -1;
+}
+
+/**
+ * g_spawn_close_pid:
+ * @pid: The process identifier to close
+ *
+ * On some platforms, notably WIN32, the #GPid type represents a resource
+ * which must be closed to prevent resource leaking. g_spawn_close_pid()
+ * is provided for this purpose. It should be used on all platforms, even
+ * though it doesn't do anything under UNIX.
+ **/
+void
+g_spawn_close_pid (GPid pid)
+{
 }
