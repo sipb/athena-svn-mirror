@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v $
- *	$Author: ghudson $
+ *	$Author: cfields $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.19 1997-06-02 07:41:19 ghudson Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.20 1998-03-17 03:51:10 cfields Exp $";
 #endif
 
 #include "attach.h"
@@ -22,8 +22,9 @@ extern int mul_attach();
  * arguments.  Branches to NFS or RVD attach routines as necessary.
  */
 
-attach(name)
+attach(name, mountpoint_list)
     const char *name;
+    string_list **mountpoint_list;
 {
     struct _attachtab at, *atp, *filsys;
     int i, count;
@@ -89,8 +90,11 @@ retry:
 	    unlock_attachtab();
 
 	    if (atp->fs->type == TYPE_MUL)
-		return mul_attach(atp, (struct mntopts *)0, 0);
+		return mul_attach(atp, (struct mntopts *)0, 0,
+				  mountpoint_list);
 	    
+	    if (mountpoint_list)
+	    	sl_add_string(mountpoint_list, atp->mntpt, 0);
 	    if (print_path)
 		printf("%s\n", atp->mntpt);
 	    else if(verbose)
@@ -174,7 +178,8 @@ retry:
 	 * Note try_attach will change attachtab appropriately if
 	 * successful.
 	 */
-	if (try_attach(name, &filsys[i], (i == count - 1)) == SUCCESS) {
+	if (try_attach(name, &filsys[i], (i == count - 1), mountpoint_list)
+	    == SUCCESS) {
 		free_attachtab();
 		mark_in_use(NULL);
 		end_critical_code();
@@ -213,10 +218,11 @@ retry:
  * successful, change the attachtab accordingly.
  */
 
-try_attach(name, at, errorout)
+try_attach(name, at, errorout, mountpoint_list)
     char *name;
     struct _attachtab *at;
     int errorout;
+    string_list **mountpoint_list;
 {
     struct _attachtab *atp;
     int status;
@@ -310,7 +316,7 @@ try_attach(name, at, errorout)
 			    return (FAILURE);
 		    }
 	    }
-	    status = (at->fs->attach)(at, &mopt, errorout);
+	    status = (at->fs->attach)(at, &mopt, errorout, mountpoint_list);
     } else {
 	    fprintf(stderr,
 		    "%s: Can't attach filesystem type \"%s\"\n", 
@@ -334,6 +340,8 @@ try_attach(name, at, errorout)
 			 progname, at->hesiodname, tmp,
 			 at->mntpt, (mopt.flags & M_RDONLY) ? "read-only" :
 			 "read-write");
+	if (mountpoint_list)
+		sl_add_string(mountpoint_list, at->mntpt, 0);
 	if (print_path)
 		printf("%s\n", at->mntpt);
 	at->status = STATUS_ATTACHED;
