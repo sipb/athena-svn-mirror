@@ -39,6 +39,11 @@ case "$1" in
 		switched,*)	opt=-S ;;
 	esac
 
+	# The new threaded libc in RH9 has the side effect
+	# that calls to malloc() from inside the krb5 library
+	# seem to occasionally hang after fork() has been called.
+	# Setting this enviroment variable disables the new libc features.
+	export LD_ASSUME_KERNEL=2.4.1
 	daemon /etc/athena/sshd $opt
 	RETVAL=$?
 
