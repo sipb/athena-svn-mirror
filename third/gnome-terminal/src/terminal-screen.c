@@ -36,10 +36,14 @@
 #include "skey-popup.h"
 #include <libgnome/gnome-util.h> /* gnome_util_user_shell */
 #include <libgnome/gnome-url.h> /* gnome_url_show */
+#include <libgnomevfs/gnome-vfs-utils.h> /* gnome_vfs_make_uri_from_input */
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+
+#define MONOSPACE_FONT_DIR "/desktop/gnome/interface"
+#define MONOSPACE_FONT_KEY MONOSPACE_FONT_DIR "/monospace_font_name"
 
 struct _TerminalScreenPrivate
 {
@@ -50,9 +54,11 @@ struct _TerminalScreenPrivate
   guint profile_forgotten_id;
   int id;
   GtkWidget *popup_menu;
-  char *raw_title;
-  char *cooked_title;
+  char *raw_title, *raw_icon_title;
+  char *cooked_title, *cooked_icon_title;
+  gboolean icon_title_set;
   char *matched_string;
+  int matched_flavor;
   char **override_command;
   GtkWidget *title_editor;
   GtkWidget *title_entry;
@@ -60,6 +66,7 @@ struct _TerminalScreenPrivate
   int child_pid;
   double font_scale;
   guint recheck_working_dir_idle;
+  guint gconf_connection_id;
 };
 
 static GList* used_ids = NULL;
@@ -67,9 +74,18 @@ static GList* used_ids = NULL;
 enum {
   PROFILE_SET,
   TITLE_CHANGED,
+  ICON_TITLE_CHANGED,
   SELECTION_CHANGED,
   ENCODING_CHANGED,
   LAST_SIGNAL
+};
+
+enum
+{
+  FLAVOR_AS_IS = 0,
+  FLAVOR_DEFAULT_TO_HTTP,
+  FLAVOR_MAILTO,
+  FLAVOR_SKEY
 };
 
 static void terminal_screen_init        (TerminalScreen      *screen);
@@ -77,14 +93,16 @@ static void terminal_screen_class_init  (TerminalScreenClass *klass);
 static void terminal_screen_finalize    (GObject             *object);
 static void terminal_screen_update_on_realize (GtkWidget      *widget,
                                                TerminalScreen *screen);
-static void     terminal_screen_popup_menu         (GtkWidget      *term,
+static gboolean terminal_screen_popup_menu         (GtkWidget      *term,
                                                     TerminalScreen *screen);
 static gboolean terminal_screen_button_press_event (GtkWidget      *term,
                                                     GdkEventButton *event,
                                                     TerminalScreen *screen);
 
-static void terminal_screen_widget_title_changed     (GtkWidget      *term,
-                                                      TerminalScreen *screen);
+static void terminal_screen_widget_title_changed      (GtkWidget      *term,
+                                                       TerminalScreen *screen);
+static void terminal_screen_widget_icon_title_changed (GtkWidget      *term,
+                                                       TerminalScreen *screen);
 
 static void terminal_screen_widget_child_died        (GtkWidget      *term,
                                                       TerminalScreen *screen);
@@ -99,16 +117,23 @@ static void terminal_screen_setup_dnd                (TerminalScreen *screen);
 
 static void reread_profile (TerminalScreen *screen);
 
-static void rebuild_title  (TerminalScreen *screen);
+static gboolean cook_title  (TerminalScreen *screen, const char *raw_title, char **old_cooked_title);
+
+static void terminal_screen_cook_title      (TerminalScreen *screen);
+static void terminal_screen_cook_icon_title (TerminalScreen *screen);
 
 static void queue_recheck_working_dir (TerminalScreen *screen);
+
+static void monospace_font_change_notify (GConfClient *client,
+					  guint        cnxn_id,
+					  GConfEntry  *entry,
+					  gpointer     user_data);
 
 static gboolean xfont_is_monospace                   (const char *fontname);
 static char*    make_xfont_monospace                 (const char *fontname);
 static char*    make_xfont_char_cell                 (const char *fontname);
 static char*    make_xfont_have_size_from_other_font (const char *fontname,
                                                      const char *other_font);
-static PangoFontDescription* make_font_monospace (const PangoFontDescription *font);
 
 static GdkFont* load_fonset_without_error (const gchar *fontset_name);
 
@@ -156,13 +181,51 @@ style_set_callback (GtkWidget *widget,
 }
 
 static void
+connect_monospace_font_change (TerminalScreen *screen)
+{
+  GError *err;
+  GConfClient *conf;
+  guint connection_id;
+
+  conf = gconf_client_get_default ();
+  
+  err = NULL;
+  gconf_client_add_dir (conf, MONOSPACE_FONT_DIR,
+                        GCONF_CLIENT_PRELOAD_ONELEVEL,
+                        &err);
+
+  if (err)
+    {
+      g_printerr (_("There was an error loading config from %s. (%s)\n"),
+                  MONOSPACE_FONT_DIR, err->message);
+      g_error_free (err);
+    }
+
+  err = NULL;
+  connection_id = gconf_client_notify_add (conf,
+					   MONOSPACE_FONT_DIR,
+					   monospace_font_change_notify,
+					   screen, 
+					   NULL, &err);
+
+  g_object_unref (conf);
+  
+  if (err)
+    {
+      g_printerr (_("There was an error subscribing to notification of monospace font changes. (%s)\n"),
+                  err->message);
+      g_error_free (err);
+    }
+  else
+    screen->priv->gconf_connection_id = connection_id;
+}
+
+static void
 terminal_screen_init (TerminalScreen *screen)
 {
-  char buf[PATH_MAX+1];
-  
   screen->priv = g_new0 (TerminalScreenPrivate, 1);
 
-  screen->priv->working_dir = g_strdup (getcwd (buf, sizeof (buf)));
+  screen->priv->working_dir = g_get_current_dir ();
   if (screen->priv->working_dir == NULL) /* shouldn't ever happen */
     screen->priv->working_dir = g_strdup (g_get_home_dir ());
   screen->priv->child_pid = -1;
@@ -176,11 +239,23 @@ terminal_screen_init (TerminalScreen *screen)
   g_object_ref (G_OBJECT (screen->priv->term));
   gtk_object_sink (GTK_OBJECT (screen->priv->term));
 
+#define USERCHARS "-A-Za-z0-9"
+#define PASSCHARS "-A-Za-z0-9,?;.:/!%$^*&~\"#'"
+#define HOSTCHARS "-A-Za-z0-9"
+#define SCHEME    "(news|telnet|nttp|file|https?|ftps?|webcal)"
+#define USER      "[" USERCHARS "]+(:["PASSCHARS "]+)?"
+
   terminal_widget_match_add (screen->priv->term,
-                             "(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?");
-  
+      "\\<(" SCHEME "://(" USER "@)?)[" HOSTCHARS ".]+(:[0-9]+)?"
+      "(/[-A-Za-z0-9_$.+!*(),;:@&=?/~#%]*[^]'.}>) \t\r\n,\\\"])?\\>", FLAVOR_AS_IS);
+
   terminal_widget_match_add (screen->priv->term,
-                             "(((news|telnet|nttp|file|http|ftp|https)://)|(www|ftp)[-A-Za-z0-9]*\\.)[-A-Za-z0-9\\.]+(:[0-9]*)?/[-A-Za-z0-9_\\$\\.\\+\\!\\*\\(\\),;:@&=\\?/~\\#\\%]*[^]'\\.}>\\) ,\\\"]");
+      "\\<(www|ftp)[" HOSTCHARS "]*\\.[" HOSTCHARS ".]+(:[0-9]+)?"
+      "(/[-A-Za-z0-9_$.+!*(),;:@&=?/~#%]*[^]'.}>) \t\r\n,\\\"])?\\>", FLAVOR_DEFAULT_TO_HTTP);
+
+  terminal_widget_match_add (screen->priv->term, 
+      
+      "\\<(mailto:)?[a-z0-9]+@[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)+\\>", FLAVOR_MAILTO);
 
   terminal_screen_setup_dnd (screen);
   
@@ -212,6 +287,10 @@ terminal_screen_init (TerminalScreen *screen)
                                          G_CALLBACK (terminal_screen_widget_title_changed),
                                          screen);
 
+  terminal_widget_connect_icon_title_changed (screen->priv->term,
+                                              G_CALLBACK (terminal_screen_widget_icon_title_changed),
+                                              screen);
+
   terminal_widget_connect_child_died (screen->priv->term,
                                       G_CALLBACK (terminal_screen_widget_child_died),
                                       screen);
@@ -223,6 +302,8 @@ terminal_screen_init (TerminalScreen *screen)
   terminal_widget_connect_encoding_changed (screen->priv->term,
                                             G_CALLBACK (terminal_screen_widget_encoding_changed),
                                             screen);
+
+  connect_monospace_font_change (screen);
 
   gtk_widget_show (screen->priv->term);
 }
@@ -253,6 +334,15 @@ terminal_screen_class_init (TerminalScreenClass *klass)
                   NULL, NULL,
                   g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);
+  
+  signals[ICON_TITLE_CHANGED] =
+    g_signal_new ("icon_title_changed",
+                  G_OBJECT_CLASS_TYPE (object_class),
+                  G_SIGNAL_RUN_LAST,
+                  G_STRUCT_OFFSET (TerminalScreenClass, icon_title_changed),
+                  NULL, NULL,
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
 
   signals[SELECTION_CHANGED] =
     g_signal_new ("selection_changed",
@@ -277,9 +367,20 @@ static void
 terminal_screen_finalize (GObject *object)
 {
   TerminalScreen *screen;
+  GConfClient *conf;
 
   screen = TERMINAL_SCREEN (object);
+
+  conf = gconf_client_get_default ();
   
+  if (screen->priv->gconf_connection_id)
+    gconf_client_notify_remove (conf, screen->priv->gconf_connection_id);
+  
+  gconf_client_remove_dir (conf, MONOSPACE_FONT_DIR,
+			   NULL);
+
+  g_object_unref (conf);
+
   used_ids = g_list_remove (used_ids, GINT_TO_POINTER (screen->priv->id));  
 
   if (screen->priv->title_editor)
@@ -294,6 +395,8 @@ terminal_screen_finalize (GObject *object)
   
   g_free (screen->priv->raw_title);
   g_free (screen->priv->cooked_title);
+  g_free (screen->priv->raw_icon_title);
+  g_free (screen->priv->cooked_icon_title);
   g_free (screen->priv->matched_string);
   g_strfreev (screen->priv->override_command);
   g_free (screen->priv->working_dir);
@@ -306,6 +409,7 @@ terminal_screen_finalize (GObject *object)
 static int
 next_unused_id (void)
 {
+  /* can't this be changed into a static unsigned long int? These ids are never used anyways...*/
   int i = 0;
 
   while (g_list_find (used_ids, GINT_TO_POINTER (i)))
@@ -351,13 +455,32 @@ const char*
 terminal_screen_get_title (TerminalScreen *screen)
 {
   if (screen->priv->cooked_title == NULL)
-    rebuild_title (screen);
+    terminal_screen_cook_title (screen);
 
   /* cooked_title may still be NULL */
-  if (screen->priv->cooked_title)
+  if (screen->priv->cooked_title != NULL)
     return screen->priv->cooked_title;
   else
     return "";
+}
+
+const char*
+terminal_screen_get_icon_title (TerminalScreen *screen)
+{
+  if (screen->priv->cooked_icon_title == NULL)
+    terminal_screen_cook_icon_title (screen);
+
+  /* cooked_icon_title may still be NULL */
+  if (screen->priv->cooked_icon_title != NULL)
+    return screen->priv->cooked_icon_title;
+  else
+    return "";
+}
+
+gboolean
+terminal_screen_get_icon_title_set (TerminalScreen *screen)
+{
+  return screen->priv->icon_title_set;
 }
 
 static void
@@ -374,7 +497,8 @@ reread_profile (TerminalScreen *screen)
 
   term = screen->priv->term;
 
-  rebuild_title (screen);
+  terminal_screen_cook_title (screen);
+  terminal_screen_cook_icon_title (screen);
   
   if (screen->priv->window)
     {
@@ -410,7 +534,7 @@ reread_profile (TerminalScreen *screen)
   if (terminal_profile_get_use_skey (screen->priv->profile))
     {
       terminal_widget_skey_match_add (screen->priv->term,
-				      "s/key ([0-9]*) ([-A-Za-z0-9]*)");
+				      "s/key [0-9]* [-A-Za-z0-9]*", FLAVOR_SKEY);
     }
   else
     {
@@ -448,52 +572,83 @@ reread_profile (TerminalScreen *screen)
                                       terminal_profile_get_delete_binding (profile));
 }
 
-static void
-rebuild_title  (TerminalScreen *screen)
+/**
+ * cook_title:
+ * @screen:
+ * @raw_title: main ingredient
+ * @old_cooked_title: pointer of the current cooked_title
+ * 
+ * Cook title according to the profile of @screen. If the result is different from
+ * <literal>*old_cooked_title</literal>, store it there.
+ * Returns: %TRUE or %FALSE according to whether the cooked_title was changed.
+ */
+
+static gboolean
+cook_title  (TerminalScreen *screen, const char *raw_title, char **old_cooked_title)
 {
   TerminalTitleMode mode;
+  char *new_cooked_title = NULL;
+
+  g_return_val_if_fail (old_cooked_title != NULL, FALSE);
 
   if (screen->priv->profile)
     mode = terminal_profile_get_title_mode (screen->priv->profile);
   else
     mode = TERMINAL_TITLE_REPLACE;
 
-  g_free (screen->priv->cooked_title);
-  
   switch (mode)
     {
     case TERMINAL_TITLE_AFTER:
-      screen->priv->cooked_title =
+      new_cooked_title =
         g_strconcat (terminal_profile_get_title (screen->priv->profile),
-                     (screen->priv->raw_title && *(screen->priv->raw_title)) ?
-                     " - " : "",
-                     screen->priv->raw_title,
+                     (raw_title && *raw_title) ? " - " : "",
+                     raw_title,
                      NULL);
       break;
     case TERMINAL_TITLE_BEFORE:
-      screen->priv->cooked_title =
-        g_strconcat (screen->priv->raw_title ?
-                     screen->priv->raw_title : "",
-                     (screen->priv->raw_title && *(screen->priv->raw_title)) ?
-                     " - " : "",
+      new_cooked_title =
+        g_strconcat (raw_title ? raw_title : "",
+                     (raw_title && *raw_title) ? " - " : "",
                      terminal_profile_get_title (screen->priv->profile),
                      NULL);
       break;
     case TERMINAL_TITLE_REPLACE:
-      if (screen->priv->raw_title)
-        screen->priv->cooked_title = g_strdup (screen->priv->raw_title);
+      if (raw_title)
+        new_cooked_title = g_strdup (raw_title);
       else
-        screen->priv->cooked_title = g_strdup (terminal_profile_get_title (screen->priv->profile));
+        new_cooked_title = g_strdup (terminal_profile_get_title (screen->priv->profile));
       break;
     case TERMINAL_TITLE_IGNORE:
-      screen->priv->cooked_title = g_strdup (terminal_profile_get_title (screen->priv->profile));
+      new_cooked_title = g_strdup (terminal_profile_get_title (screen->priv->profile));
       break;
-    default:
-      g_assert_not_reached ();
-      break;
+    /* no default so we get missing cases statically */
     }
-      
-  g_signal_emit (G_OBJECT (screen), signals[TITLE_CHANGED], 0);
+
+  if (*old_cooked_title == NULL || strcmp (new_cooked_title, *old_cooked_title) != 0)
+    {
+      g_free (*old_cooked_title);
+      *old_cooked_title = new_cooked_title;
+      return TRUE;
+    }
+  else
+    {
+      g_free (new_cooked_title);
+      return FALSE;
+    }
+}
+
+static void 
+terminal_screen_cook_title (TerminalScreen *screen)
+{
+  if (cook_title (screen, screen->priv->raw_title, &screen->priv->cooked_title))
+    g_signal_emit (G_OBJECT (screen), signals[TITLE_CHANGED], 0);
+}
+
+static void 
+terminal_screen_cook_icon_title (TerminalScreen *screen)
+{
+  if (cook_title (screen, screen->priv->raw_icon_title, &screen->priv->cooked_icon_title))
+    g_signal_emit (G_OBJECT (screen), signals[ICON_TITLE_CHANGED], 0);
 }
 
 static void
@@ -536,6 +691,42 @@ update_color_scheme (TerminalScreen *screen)
  * and on setting the font scale factor
  */
 static void
+monospace_font_change_notify (GConfClient *client,
+			      guint        cnxn_id,
+			      GConfEntry  *entry,
+			      gpointer     user_data)
+{
+  TerminalScreen *screen = TERMINAL_SCREEN (user_data);
+  GtkWidget *widget = screen->priv->term;
+  
+  if (strcmp (entry->key, MONOSPACE_FONT_KEY) == 0 &&
+      GTK_WIDGET_REALIZED (widget))
+    terminal_screen_update_on_realize (widget, screen);
+}
+
+PangoFontDescription *
+get_system_monospace_font (void)
+{
+  GConfClient *conf;
+  char *name;
+  PangoFontDescription *desc = NULL;
+
+  conf = gconf_client_get_default ();
+  name = gconf_client_get_string (conf, MONOSPACE_FONT_KEY, NULL);
+
+  if (name)
+    {
+      desc = pango_font_description_from_string (name);
+      g_free (name);
+    }
+  
+  if (!desc)
+    desc = pango_font_description_from_string ("Monospace 10");
+
+  return desc;
+}
+
+static void
 terminal_screen_update_on_realize (GtkWidget      *term,
                                    TerminalScreen *screen)
 {
@@ -547,53 +738,20 @@ terminal_screen_update_on_realize (GtkWidget      *term,
 
   if (terminal_widget_supports_pango_fonts ())
     {
+      PangoFontDescription *desc;
+
       if (terminal_profile_get_use_system_font (profile))
-        {
-          PangoFontDescription *desc;
-
-          /* Try creating monospace variant of system font */
-          desc = make_font_monospace (term->style->font_desc);
-
-          if (desc)
-            {
-              terminal_widget_set_pango_font (term, desc);
-              
-              pango_font_description_free (desc);
-            }
-          else
-            {
-              /* At least use the same size */
-              desc = pango_font_description_copy (terminal_profile_get_font (profile));
-
-              if (pango_font_description_get_set_fields (term->style->font_desc) &
-                  PANGO_FONT_MASK_SIZE)
-                {
-                  pango_font_description_set_size (desc,
-                                                   pango_font_description_get_size (term->style->font_desc));
-                }
-
-              pango_font_description_set_size (desc,
-                                               screen->priv->font_scale *
-                                               pango_font_description_get_size (desc));
-              
-              terminal_widget_set_pango_font (term, desc);
-
-              pango_font_description_free (desc);
-            }
-        }
+        desc = get_system_monospace_font ();
       else
-        {
-          PangoFontDescription *desc;
+        desc = pango_font_description_copy (terminal_profile_get_font (profile));
 
-          desc = pango_font_description_copy (terminal_profile_get_font (profile));
-          pango_font_description_set_size (desc,
-                                           screen->priv->font_scale *
-                                           pango_font_description_get_size (desc));          
-          
-          terminal_widget_set_pango_font (term, desc);
+      pango_font_description_set_size (desc,
+                                       screen->priv->font_scale *
+                                       pango_font_description_get_size (desc));
 
-          pango_font_description_free (desc);
-        }
+      terminal_widget_set_pango_font (term, desc);
+
+      pango_font_description_free (desc);
     }
   else
     {
@@ -605,11 +763,11 @@ terminal_screen_update_on_realize (GtkWidget      *term,
       
        if (terminal_profile_get_use_system_font (screen->priv->profile))
          {
-            GtkStyle *style;
+	    PangoFontDescription *desc;
             GdkFont *from_desc;
 
-            style = gtk_widget_get_style (GTK_WIDGET(term));
-            from_desc = gdk_font_from_description (style->font_desc);
+	    desc = get_system_monospace_font ();
+            from_desc = gdk_font_from_description (desc);
             
             if (from_desc != NULL)
               {
@@ -652,6 +810,8 @@ terminal_screen_update_on_realize (GtkWidget      *term,
                 g_free (font_name);
                 gdk_font_unref (from_desc);
               }
+
+	    pango_font_description_free (desc);
          }
        
        if (font == NULL)
@@ -781,50 +941,13 @@ terminal_screen_get_widget (TerminalScreen *screen)
 }
 
 static void
-show_fork_error_dialog (TerminalScreen *screen,
-                        GError         *err)
-{
-  GtkWidget *dialog;
-  
-  dialog = gtk_message_dialog_new ((GtkWindow*)
-                                   gtk_widget_get_ancestor (screen->priv->term,
-                                                            GTK_TYPE_WINDOW),
-                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                   GTK_MESSAGE_ERROR,
-                                   GTK_BUTTONS_CLOSE,
-                                   "%s", err->message);
-
-  g_signal_connect (G_OBJECT (dialog),
-                    "response",
-                    G_CALLBACK (gtk_widget_destroy),
-                    NULL);
-
-  gtk_widget_show (dialog);
-}
-
-static void
 show_command_error_dialog (TerminalScreen *screen,
-                        GError         *error)
+                           GError         *error)
 {
-  GtkWidget *dialog;
-
   g_return_if_fail (error != NULL);
   
-  dialog = gtk_message_dialog_new ((GtkWindow*)
-                                   gtk_widget_get_ancestor (screen->priv->term,
-                                                            GTK_TYPE_WINDOW),
-                                   GTK_DIALOG_DESTROY_WITH_PARENT,
-                                   GTK_MESSAGE_ERROR,
-                                   GTK_BUTTONS_CLOSE,
-                                   _("There was a problem with the command for this terminal: %s"),
-                                   error->message);
-
-  g_signal_connect (G_OBJECT (dialog),
-                    "response",
-                    G_CALLBACK (gtk_widget_destroy),
-                    NULL);
-
-  gtk_widget_show (dialog);
+  terminal_util_show_error_dialog ((GtkWindow*) gtk_widget_get_ancestor (screen->priv->term, GTK_TYPE_WINDOW), NULL,
+                                   _("There was a problem with the command for this terminal: %s"), error->message);
 }
 
 static gboolean
@@ -913,7 +1036,7 @@ get_child_environment (GtkWidget      *term,
   char **p;
   int i;
   char **retval;
-#define EXTRA_ENV_VARS 6
+#define EXTRA_ENV_VARS 7
   
   profile = screen->priv->profile;
 
@@ -932,7 +1055,8 @@ get_child_environment (GtkWidget      *term,
           (strncmp (*p, "WINDOWID=", 9) == 0) ||
           (strncmp (*p, "TERM=", 5) == 0)    ||
           (strncmp (*p, "GNOME_DESKTOP_ICON=", 19) == 0) ||
-          (strncmp (*p, "COLORTERM=", 10) == 0))
+          (strncmp (*p, "COLORTERM=", 10) == 0) ||
+	  (strncmp ( *p, "DISPLAY=", 8) == 0))
         {
           /* nothing: do not copy */
         }
@@ -949,6 +1073,9 @@ get_child_environment (GtkWidget      *term,
   ++i;
   retval[i] = g_strdup_printf ("WINDOWID=%ld",
                                GDK_WINDOW_XWINDOW (term->window));
+  ++i;
+  retval[i] = g_strdup_printf ("DISPLAY=%s", 
+			       gdk_display_get_name(gtk_widget_get_display(term)));
   ++i;
   
   retval[i] = NULL;
@@ -979,6 +1106,7 @@ terminal_screen_launch_child (TerminalScreen *screen)
 
   err = NULL;
   if (!terminal_widget_fork_command (screen->priv->term,
+                                     terminal_profile_get_login_shell (profile),
                                      terminal_profile_get_update_records (profile),
                                      path,
                                      argv,
@@ -987,7 +1115,9 @@ terminal_screen_launch_child (TerminalScreen *screen)
                                      &screen->priv->child_pid,
                                      &err))
     {
-      show_fork_error_dialog (screen, err);
+
+      terminal_util_show_error_dialog ((GtkWindow*) gtk_widget_get_ancestor (screen->priv->term, GTK_TYPE_WINDOW), NULL,
+                                       "%s", err->message);
       g_error_free (err);
     }
   
@@ -1019,13 +1149,15 @@ new_window_callback (GtkWidget      *menu_item,
                      TerminalScreen *screen)
 {
   char *name;
+  const char *dir;
 
   name = gdk_screen_make_display_name (gtk_widget_get_screen (menu_item));
+  dir = terminal_screen_get_working_dir (screen);
   
   terminal_app_new_terminal (terminal_app_get (),
                              terminal_profile_get_for_new_term (screen->priv->profile),
                              NULL,
-                             FALSE, FALSE, NULL, NULL, NULL, NULL, NULL, 1.0,
+                             FALSE, FALSE, NULL, NULL, NULL, dir, NULL, 1.0,
                              NULL, name, -1);
 
   g_free (name);
@@ -1035,11 +1167,22 @@ static void
 new_tab_callback (GtkWidget      *menu_item,
                   TerminalScreen *screen)
 {
+  const char *dir;
+
+  dir = terminal_screen_get_working_dir (screen);
+
   terminal_app_new_terminal (terminal_app_get (),
                              terminal_profile_get_for_new_term (screen->priv->profile),
                              screen->priv->window,
-                             FALSE, FALSE, NULL, NULL, NULL, NULL, NULL, 1.0,
+                             FALSE, FALSE, NULL, NULL, NULL, dir, NULL, 1.0,
                              NULL, NULL, -1);
+}
+
+static void
+close_tab_callback (GtkWidget      *menuitem,
+                    TerminalScreen *screen)
+{
+  terminal_screen_close (screen);
 }
 
 static void
@@ -1110,18 +1253,42 @@ secure_keyboard_callback (GtkWidget      *menu_item,
 
 static void
 open_url (TerminalScreen *screen,
-          const char     *orig_url)
+          const char     *orig_url,
+          int             flavor)
 {
   GError *err;
-  GtkWidget *dialog;
   char *url;
   
   g_return_if_fail (orig_url != NULL);
 
   /* this is to handle gnome_url_show reentrancy */
-  url = g_strdup (orig_url);
   g_object_ref (G_OBJECT (screen));
   
+  switch (flavor)
+    {
+    case FLAVOR_DEFAULT_TO_HTTP:
+      url = g_strdup_printf ("http:%s", orig_url);
+      break;
+    case FLAVOR_MAILTO:
+      if (strncmp ("mailto:", orig_url, 7) != 0)
+        {
+          url = g_strdup_printf ("mailto:%s", orig_url);
+        }
+      else
+        {
+          url = g_strdup (orig_url);
+        }
+      break;
+    case FLAVOR_AS_IS:
+    case FLAVOR_SKEY:
+      url = g_strdup (orig_url);
+      break;
+    default:
+      url = NULL;
+      g_assert_not_reached ();
+    }
+
+  g_printerr ("(%s)(%s)\n", orig_url, url);
   err = NULL;
   gnome_url_show (url, &err);
 
@@ -1135,21 +1302,11 @@ open_url (TerminalScreen *screen,
       else
         window = NULL;
       
-      dialog = gtk_message_dialog_new (window ? GTK_WINDOW (window) : NULL,
-                                       GTK_DIALOG_DESTROY_WITH_PARENT,
-                                       GTK_MESSAGE_ERROR,
-                                       GTK_BUTTONS_CLOSE,
+      terminal_util_show_error_dialog (window ? GTK_WINDOW (window) : NULL, NULL,
                                        _("Could not open the address \"%s\":\n%s"),
                                        url, err->message);
       
       g_error_free (err);
-      
-      g_signal_connect (G_OBJECT (dialog),
-                        "response",
-                        G_CALLBACK (gtk_widget_destroy),
-                        NULL);
-      
-      gtk_widget_show (dialog);
     }
 
   g_free (url);
@@ -1162,7 +1319,7 @@ open_url_callback (GtkWidget      *menu_item,
 {
   if (screen->priv->matched_string)
     {
-      open_url (screen, screen->priv->matched_string);
+      open_url (screen, screen->priv->matched_string, screen->priv->matched_flavor);
       g_free (screen->priv->matched_string);
       screen->priv->matched_string = NULL;
     }
@@ -1222,8 +1379,34 @@ append_stock_menuitem (GtkWidget  *menu,
                        gpointer    data)
 {
   GtkWidget *menu_item;
+  GtkWidget *image;
+  GConfClient *client;
+  GError *error;
+  gboolean use_image;
+
   
   menu_item = gtk_image_menu_item_new_from_stock (text, NULL);
+  image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (menu_item));
+
+  client = gconf_client_get_default ();
+  error = NULL;
+
+  use_image = gconf_client_get_bool (client,
+                                     "/desktop/gnome/interface/menus_have_icons",
+                                      &error);
+  if (error)
+    {
+      g_printerr (_("There was an error loading config value for whether to use image in menus. (%s)\n"),error->message);
+      g_error_free (error);
+    }
+  else
+    {
+      if (use_image)
+        gtk_widget_show (image);
+      else
+        gtk_widget_hide (image);
+    }
+
   gtk_widget_show (menu_item);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu),
                          menu_item);
@@ -1236,6 +1419,26 @@ append_stock_menuitem (GtkWidget  *menu,
   return menu_item;
 }
 
+static GtkWidget*
+append_check_menuitem (GtkWidget  *menu,
+                       const char *text,
+                       gboolean    active,
+                       GCallback   callback,
+                       gpointer    data)
+{
+  GtkWidget *menu_item;
+  
+  menu_item = gtk_check_menu_item_new_with_mnemonic (text);
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), active);
+
+  g_signal_connect (G_OBJECT (menu_item), "toggled", callback, data);
+
+  return menu_item;
+}
+
+
 static void
 terminal_screen_do_popup (TerminalScreen *screen,
                           GdkEventButton *event)
@@ -1246,6 +1449,7 @@ terminal_screen_do_popup (TerminalScreen *screen,
   GList *profiles;
   GList *tmp;
   GSList *group;
+  GtkClipboard *clip;
   
   if (screen->priv->popup_menu)
     gtk_widget_destroy (screen->priv->popup_menu);
@@ -1260,26 +1464,57 @@ terminal_screen_do_popup (TerminalScreen *screen,
                              GTK_WIDGET (screen->priv->term),
                              popup_menu_detach);
 
+  if (screen->priv->matched_string != NULL) 
+    {
+      menu_item = append_menuitem (screen->priv->popup_menu,
+                                   _("_Open Link"),
+                                   G_CALLBACK (open_url_callback),
+                                   screen);
+      
+      menu_item = append_menuitem (screen->priv->popup_menu,
+                                   _("_Copy Link Address"),
+                                   G_CALLBACK (copy_url_callback),
+                                   screen);
+  
+      menu_item = gtk_separator_menu_item_new ();
+      gtk_widget_show (menu_item);
+      gtk_menu_shell_append (GTK_MENU_SHELL (screen->priv->popup_menu),
+                             menu_item);
+    }
+ 
   menu_item = append_menuitem (screen->priv->popup_menu,
-                               _("_New Window"),
+                               _("Open _Terminal"),
                                G_CALLBACK (new_window_callback),
                                screen);
-  gtk_menu_item_set_accel_path (GTK_MENU_ITEM (menu_item),
-                                ACCEL_PATH_NEW_WINDOW);
   
   menu_item = append_menuitem (screen->priv->popup_menu,
-                               _("New _Tab"),
+                               _("Open Ta_b"),
                                G_CALLBACK (new_tab_callback),
                                screen);
-  gtk_menu_item_set_accel_path (GTK_MENU_ITEM (menu_item),
-                                ACCEL_PATH_NEW_TAB);
+
+  menu_item = gtk_separator_menu_item_new ();
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (screen->priv->popup_menu), menu_item);
+
+  if (terminal_window_get_screen_count (terminal_screen_get_window (screen)) > 1)
+    menu_item = append_menuitem (screen->priv->popup_menu,
+                                 _("C_lose Tab"),
+                                 G_CALLBACK (close_tab_callback),
+                                 screen);
+  else
+    menu_item = append_menuitem (screen->priv->popup_menu,
+                                 _("_Close Window"),
+                                 G_CALLBACK (close_tab_callback),
+                                 screen);
+
+  menu_item = gtk_separator_menu_item_new ();
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (screen->priv->popup_menu), menu_item);
 
   menu_item = append_stock_menuitem (screen->priv->popup_menu,
                                      GTK_STOCK_COPY,
                                      G_CALLBACK (copy_callback),
                                      screen);
-  gtk_menu_item_set_accel_path (GTK_MENU_ITEM (menu_item),
-                                ACCEL_PATH_COPY);
 
   if (!terminal_screen_get_text_selected (screen))
     gtk_widget_set_sensitive (menu_item, FALSE);
@@ -1288,11 +1523,15 @@ terminal_screen_do_popup (TerminalScreen *screen,
                                      GTK_STOCK_PASTE,
                                      G_CALLBACK (paste_callback),
                                      screen);
-  gtk_menu_item_set_accel_path (GTK_MENU_ITEM (menu_item),
-                                ACCEL_PATH_PASTE);
+  clip = gtk_clipboard_get (GDK_NONE);
+  gtk_widget_set_sensitive (menu_item, gtk_clipboard_wait_is_text_available (clip));
   
+  menu_item = gtk_separator_menu_item_new ();
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (screen->priv->popup_menu), menu_item);
+
   profile_menu = gtk_menu_new ();
-  menu_item = gtk_menu_item_new_with_mnemonic (_("_Profile"));
+  menu_item = gtk_menu_item_new_with_mnemonic (_("Change P_rofile"));
 
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item),
                              profile_menu);
@@ -1346,7 +1585,23 @@ terminal_screen_do_popup (TerminalScreen *screen,
 		   G_CALLBACK (configuration_callback),
 		   screen);
 
-  
+  menu_item = append_check_menuitem (screen->priv->popup_menu, 
+                                     _("Show _Menubar"), 
+                                     terminal_window_get_menubar_visible (screen->priv->window),
+                                     G_CALLBACK (show_menubar_callback),
+                                     screen);
+
+#if 0
+  append_menuitem (screen->priv->popup_menu,
+                   _("Secure _Keyboard"),
+                   G_CALLBACK (secure_keyboard_callback),
+                   screen);
+#endif
+ 
+  menu_item = gtk_separator_menu_item_new ();
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (screen->priv->popup_menu), menu_item);
+
   im_menu = gtk_menu_new ();
   menu_item = gtk_menu_item_new_with_mnemonic (_("_Input Methods"));
 
@@ -1361,42 +1616,7 @@ terminal_screen_do_popup (TerminalScreen *screen,
 
   gtk_menu_shell_append (GTK_MENU_SHELL (screen->priv->popup_menu),
                          menu_item);
-
-  if (terminal_window_get_menubar_visible (screen->priv->window))
-    menu_item = append_menuitem (screen->priv->popup_menu,
-				 _("Hide _Menubar"),
-				 G_CALLBACK (show_menubar_callback),
-				 screen);
-  else
-    menu_item =append_menuitem (screen->priv->popup_menu,
-				_("Show _Menubar"),
-				G_CALLBACK (show_menubar_callback),
-				screen);
-  gtk_menu_item_set_accel_path (GTK_MENU_ITEM (menu_item),
-				ACCEL_PATH_TOGGLE_MENUBAR);
-
-
-#if 0
-  append_menuitem (screen->priv->popup_menu,
-                   _("Secure _Keyboard"),
-                   G_CALLBACK (secure_keyboard_callback),
-                   screen);
-#endif
-
-  menu_item = append_menuitem (screen->priv->popup_menu,
-                               _("_Open Link"),
-                               G_CALLBACK (open_url_callback),
-                               screen);
-
-  gtk_widget_set_sensitive (menu_item, screen->priv->matched_string != NULL);
-  
-  menu_item = append_menuitem (screen->priv->popup_menu,
-                               _("_Copy Link Address"),
-                               G_CALLBACK (copy_url_callback),
-                               screen);
-
-  gtk_widget_set_sensitive (menu_item, screen->priv->matched_string != NULL);
-  
+ 
   gtk_menu_popup (GTK_MENU (screen->priv->popup_menu),
                   NULL, NULL,
                   NULL, NULL, 
@@ -1404,11 +1624,12 @@ terminal_screen_do_popup (TerminalScreen *screen,
                   event ? event->time : gtk_get_current_event_time ());
 }
 
-static void
+static gboolean
 terminal_screen_popup_menu (GtkWidget      *term,
                             TerminalScreen *screen)
 {
   terminal_screen_do_popup (screen, NULL);
+  return TRUE;
 }
 
 static gboolean
@@ -1428,7 +1649,8 @@ terminal_screen_button_press_event (GtkWidget      *widget,
   screen->priv->matched_string =
     terminal_widget_check_match (term,
                                  event->x / char_width,
-                                 event->y / char_height);
+                                 event->y / char_height,
+                                 &screen->priv->matched_flavor);
   dingus_button = ((event->button == 1) || (event->button == 2));
 
   if (dingus_button &&
@@ -1439,7 +1661,8 @@ terminal_screen_button_press_event (GtkWidget      *widget,
 
       skey_match = terminal_widget_skey_check_match (term,
 						     event->x / char_width,
-						     event->y / char_height);
+						     event->y / char_height,
+                                                     NULL);
       if (skey_match != NULL)
 	{
 	  terminal_skey_do_popup (screen, GTK_WINDOW (terminal_screen_get_window (screen)), skey_match);
@@ -1455,7 +1678,7 @@ terminal_screen_button_press_event (GtkWidget      *widget,
     {
       gtk_widget_grab_focus (widget);
       
-      open_url (screen, screen->priv->matched_string);
+      open_url (screen, screen->priv->matched_string, screen->priv->matched_flavor);
       g_free (screen->priv->matched_string);
       screen->priv->matched_string = NULL;
       return TRUE; /* don't do anything else such as select with the click */
@@ -1484,7 +1707,7 @@ terminal_screen_set_dynamic_title (TerminalScreen *screen,
 
   g_free (screen->priv->raw_title);
   screen->priv->raw_title = g_strdup (title);
-  rebuild_title (screen);
+  terminal_screen_cook_title (screen);
 
   if (screen->priv->title_entry &&
       screen->priv->raw_title)
@@ -1502,12 +1725,36 @@ terminal_screen_set_dynamic_title (TerminalScreen *screen,
     }
 }
 
+void
+terminal_screen_set_dynamic_icon_title (TerminalScreen *screen,
+                                        const char     *icon_title)
+{
+  g_return_if_fail (TERMINAL_IS_SCREEN (screen));
+  
+  if (screen->priv->icon_title_set && screen->priv->raw_icon_title && icon_title &&
+      strcmp (screen->priv->raw_icon_title, icon_title) == 0)
+    return;
+
+  g_free (screen->priv->raw_icon_title);
+  screen->priv->raw_icon_title = g_strdup (icon_title);
+  screen->priv->icon_title_set = TRUE;
+  terminal_screen_cook_icon_title (screen);
+}
+
 const char*
 terminal_screen_get_dynamic_title (TerminalScreen *screen)
 {
   g_return_val_if_fail (TERMINAL_IS_SCREEN (screen), NULL);
   
   return screen->priv->raw_title;
+}
+
+const char*
+terminal_screen_get_dynamic_icon_title (TerminalScreen *screen)
+{
+  g_return_val_if_fail (TERMINAL_IS_SCREEN (screen), NULL);
+  
+  return screen->priv->raw_icon_title;
 }
 
 void
@@ -1547,12 +1794,12 @@ terminal_screen_get_working_dir (TerminalScreen *screen)
         }
       else if (len == 0)
         {
-          /*
-           * On Solaris, readlink returns an empty string, but the
+          /* On Solaris, readlink returns an empty string, but the
            * link can be used as a directory, including as a target
            * of chdir().
            */
           char *cwd;
+
           cwd = g_get_current_dir ();
           if (cwd != NULL)
             {
@@ -1641,6 +1888,17 @@ terminal_screen_widget_title_changed (GtkWidget      *widget,
 }
 
 static void
+terminal_screen_widget_icon_title_changed (GtkWidget      *widget,
+                                           TerminalScreen *screen)
+{
+  terminal_screen_set_dynamic_icon_title (screen,
+                                          terminal_widget_get_icon_title (widget));  
+
+  queue_recheck_working_dir (screen);
+}
+
+
+static void
 terminal_screen_widget_child_died (GtkWidget      *term,
                                    TerminalScreen *screen)
 {
@@ -1659,6 +1917,8 @@ terminal_screen_widget_child_died (GtkWidget      *term,
       break;
     case TERMINAL_EXIT_RESTART:
       terminal_screen_launch_child (screen);
+      break;
+    case TERMINAL_EXIT_HOLD:
       break;
     }
 }
@@ -1706,7 +1966,7 @@ terminal_screen_edit_title (TerminalScreen *screen,
       old_transient_parent = NULL;      
       
       screen->priv->title_editor =
-        gtk_dialog_new_with_buttons (_("Change terminal title"),
+        gtk_dialog_new_with_buttons (_("Set Title"),
                                      NULL,
                                      GTK_DIALOG_DESTROY_WITH_PARENT,
                                      GTK_STOCK_CLOSE,
@@ -1724,6 +1984,8 @@ terminal_screen_edit_title (TerminalScreen *screen,
       gtk_window_set_resizable (GTK_WINDOW (screen->priv->title_editor),
                                 TRUE);
       
+      terminal_util_set_unique_role (GTK_WINDOW (screen->priv->title_editor), "gnome-terminal-change-title");
+
 #define PADDING 5
       
       vbox = gtk_vbox_new (FALSE, PADDING);
@@ -1741,7 +2003,6 @@ terminal_screen_edit_title (TerminalScreen *screen,
       
       gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
       gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
-      terminal_util_set_labelled_by (entry, GTK_LABEL (label));
       
       gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
       gtk_box_pack_end (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
@@ -2267,19 +2528,6 @@ make_xfont_have_size_from_other_font (const char *fontname,
   g_free (size_pixels);
   g_free (size_points);
 
-  return ret;
-}
-
-static PangoFontDescription*
-make_font_monospace (const PangoFontDescription *font)
-{
-  PangoFontDescription *ret;
-
-  ret = pango_font_description_copy (font);
-
-  /* FIXME */
-  pango_font_description_set_family (ret, "monospace");
-  
   return ret;
 }
 
