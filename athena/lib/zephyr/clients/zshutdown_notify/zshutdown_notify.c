@@ -5,7 +5,7 @@
  *	Created by:	C. Anthony Della Fera
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v $
- *	$Author: raeburn $
+ *	$Author: lwvanels $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -23,9 +23,9 @@
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.7 1990-10-19 08:22:52 raeburn Exp $";
-#endif SABER
-#endif lint
+static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.8 1991-12-05 15:32:18 lwvanels Exp $";
+#endif /* SABER */
+#endif /* lint */
 
 #define N_KIND		UNSAFE
 #define N_CLASS		"FILSRV"
