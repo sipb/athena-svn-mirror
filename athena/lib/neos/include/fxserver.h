@@ -3,7 +3,7 @@
  *
  * $Author: epeisach $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.1 1992-04-27 12:54:21 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxserver.h,v 1.2 1992-04-27 12:55:19 epeisach Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -34,8 +34,19 @@
  * used to locate and store files.
  */
 
+#if defined(_IBMR2)
+#define ROOT_DIR	"/usr/lpp/exchange/files"
+#define BACKUP_ROOT_DIR	"/usr/lpp/exchange/files.new" /* XXX */
+#else /* defined(_IBMR2) */
+#if defined(ultrix)
+#define ROOT_DIR	"/var/exchange/files"
+#define BACKUP_ROOT_DIR	"/var/exchange/files.new" /* XXX */
+#else
 #define ROOT_DIR	"/site/exchange/files"
 #define BACKUP_ROOT_DIR	"/site/exchange/files.new" /* XXX */
+#endif /* defined(ultrix) */
+#endif /* defined(_IBMR2) */
+
 #define INDEX_FILE	"INDEX"
 #define COURSE_INDEX	"COURSE_INDEX"
 #define DB_VERS_FILE	"DB_VERSION"
