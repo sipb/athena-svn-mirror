@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.5 1999-12-22 17:27:47 danw Exp $
+# $Id: configure.in,v 1.6 2001-04-04 21:24:40 ghudson Exp $
 AC_INIT(xlogin.c)
 
 test -z "$lsbindir" && lsbindir='${sbindir}'
@@ -12,7 +12,7 @@ solaris*)
 	;;
 esac
 
-AC_SUBST(HOSTTYPE)
+AC_SUBST(ATHENA_HOSTTYPE)
 AC_SUBST(ATHENA_MAJOR_VERSION)
 AC_SUBST(ATHENA_MINOR_VERSION)
 AC_PROG_CC

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.6 1999-11-17 13:22:53 ghudson Exp $
+# $Id: Makefile.in,v 1.7 2001-04-04 21:24:42 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -16,7 +16,7 @@ AFSDIR=@AFS_DIR@
 logindir=${sysconfdir}/login
 bitmapdir=${logindir}/bitmaps
 
-HOSTTYPE=@HOSTTYPE@
+ATHENA_HOSTTYPE=@ATHENA_HOSTTYPE@
 ATHENA_MAJOR_VERSION=@ATHENA_MAJOR_VERSION@
 ATHENA_MINOR_VERSION=@ATHENA_MINOR_VERSION@
 
@@ -33,7 +33,7 @@ LIBS=@X_LIBS@ -lWc -lXp -lXmu -lXaw -lXt -lX11 @X_EXTRA_LIBS@ \
 
 OBJS = xlogin.o verify.o SmeBSB.o StringToPixel.o Clock.o
 
-PRESOURCES=Xlogin.$(HOSTTYPE).presed
+PRESOURCES=Xlogin.$(ATHENA_HOSTTYPE).presed
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
