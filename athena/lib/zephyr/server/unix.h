@@ -5,7 +5,7 @@
  * Created by Ken Raeburn.
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/unix.h,v $
- * $Author: ghudson $
+ * $Author: cfields $
  * $Zephyr: unix.h,v 1.3 91/01/28 15:12:57 raeburn Exp $
  *
  * Copyright (c) 1990,1991 by the Massachusetts Institute of Technology.
@@ -29,6 +29,7 @@
 # define P(s) ()
 #endif
 
+#ifndef linux /* struct qelem is defined in stdlib.h */
 /*
  * Queue-handling functions.  This structure is basically a dummy;
  * as long as the start of another structure looks like this,
@@ -41,6 +42,8 @@ struct qelem {
 };
 void insque P((struct qelem*, struct qelem*));
 void remque P((struct qelem *));
+
+#endif /* linux */
 
 /* From the Error table library */
 char *error_message P((long));
