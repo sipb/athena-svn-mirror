@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.31 1992-06-17 15:26:37 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.32 1992-08-15 15:51:54 probe Exp $
  */
 
 #include <stdio.h>
@@ -425,11 +425,7 @@ char *display;
     }
 #endif /* XDM */
 
-#if defined(_AIX) && defined(_IBMR2)
-    i = setgidx(ID_SAVED|ID_REAL|ID_EFFECTIVE, pwd->pw_gid);
-#else
     i = setgid(pwd->pw_gid);
-#endif
     if (i)
       return(lose("Unable to set your primary GID.\n"));
 
@@ -437,10 +433,9 @@ char *display;
       prompt_user("Unable to set your group access list.  You may have insufficient permission to access some files.  Continue with this login session anyway?", abort_verify);
 
 #if defined(_AIX) && defined(_IBMR2)
-    i = setuidx(ID_LOGIN|ID_SAVED|ID_REAL|ID_EFFECTIVE, pwd->pw_uid);
-#else
-    i = setreuid(pwd->pw_uid, pwd->pw_uid);
+    setuidx(ID_LOGIN, pwd->pw_uid);
 #endif
+    i = setuid(pwd->pw_uid);
     if (i)
       return(lose("Unable to set your user ID.\n"));
 
