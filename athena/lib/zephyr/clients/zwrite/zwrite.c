@@ -18,7 +18,7 @@
 #include <netdb.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.22 1988-07-17 12:52:20 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.23 1988-07-20 10:28:39 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -277,10 +277,10 @@ send_off(notice, real)
 	    continue;
 	}
 	if (retnotice.z_kind == SERVNAK) {
-	    printf("Received authentication failure while sending to %s\n", 
+	    printf("Received authorization failure while sending to %s\n", 
 		   nrecips?notice->z_recipient:inst);
 	    ZFreeNotice(&retnotice);
-	    continue;
+	    break;			/* if auth fails, punt */
 	} 
 	if (retnotice.z_kind != SERVACK || !retnotice.z_message_len) {
 	    printf("Detected server failure while receiving acknowledgement for %s\n", 
