@@ -177,8 +177,6 @@ do
   --mode) prevopt="--mode" prev=mode ;;
   --mode=*) mode="$optarg" ;;
 
-  --preserve-dup-deps) duplicate_deps="yes" ;;
-
   --quiet | --silent)
     show=:
     ;;
@@ -759,7 +757,6 @@ compiler."
     linker_flags=
     dllsearchpath=
     lib_search_path=`pwd`
-    inst_prefix_dir=
 
     avoid_version=no
     dlfiles=
@@ -890,11 +887,6 @@ compiler."
 	  prev=
 	  continue
 	  ;;
-        inst_prefix)
-	  inst_prefix_dir="$arg"
-	  prev=
-	  continue
-	  ;;
 	release)
 	  release="-$arg"
 	  prev=
@@ -993,11 +985,6 @@ compiler."
 	else
 	  prev=expsyms_regex
 	fi
-	continue
-	;;
-
-      -inst-prefix-dir)
-	prev=inst_prefix
 	continue
 	;;
 
@@ -1343,32 +1330,11 @@ compiler."
     # Find all interdependent deplibs by searching for libraries
     # that are linked more than once (e.g. -la -lb -la)
     for deplib in $deplibs; do
-      if test "X$duplicate_deps" = "Xyes" ; then
-	case "$libs " in
-	*" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	esac
-      fi
+      case "$libs " in
+      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+      esac
       libs="$libs $deplib"
     done
-
-    if test "$linkmode" = lib; then
-      libs="$predeps $libs $compiler_lib_search_path $postdeps"
-
-      # Compute libraries that are listed more than once in $predeps
-      # $postdeps and mark them as special (i.e., whose duplicates are
-      # not to be eliminated).
-      pre_post_deps=
-      if test "X$duplicate_deps" = "Xyes" ; then
-	for pre_post_dep in $predeps $postdeps; do
-	  case "$pre_post_deps " in
-	  *" $pre_post_dep "*) specialdeplibs="$specialdeplibs $pre_post_deps" ;;
-	  esac
-	  pre_post_deps="$pre_post_deps $pre_post_dep"
-	done
-      fi
-      pre_post_deps=
-    fi
-
     deplibs=
     newdependency_libs=
     newlib_search_path=
@@ -1569,7 +1535,7 @@ compiler."
 
 	if test "$linkmode,$pass" = "lib,link" ||
 	   test "$linkmode,$pass" = "prog,scan" ||
-	   { test "$linkmode" = oldlib && test "$linkmode" = obj; }; then
+	   { test "$linkmode" != prog && test "$linkmode" != lib; }; then
 	   # Add dl[pre]opened files of deplib
 	  test -n "$dlopen" && dlfiles="$dlfiles $dlopen"
 	  test -n "$dlpreopen" && dlprefiles="$dlprefiles $dlpreopen"
@@ -1589,11 +1555,9 @@ compiler."
 	    tmp_libs=
 	    for deplib in $dependency_libs; do
 	      deplibs="$deplib $deplibs"
-              if test "X$duplicate_deps" = "Xyes" ; then
-	        case "$tmp_libs " in
-	        *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	        esac
-              fi
+	      case "$tmp_libs " in
+	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	      esac
 	      tmp_libs="$tmp_libs $deplib"
 	    done
 	  elif test "$linkmode" != prog && test "$linkmode" != lib; then
@@ -1716,11 +1680,9 @@ compiler."
 	      # or/and link against static libraries
 	      newdependency_libs="$deplib $newdependency_libs"
 	    fi
-	    if test "X$duplicate_deps" = "Xyes" ; then
-	      case "$tmp_libs " in
-	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	      esac
-	    fi
+	    case "$tmp_libs " in
+	    *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	    esac
 	    tmp_libs="$tmp_libs $deplib"
 	  done # for deplib
 	  continue
@@ -1912,16 +1874,7 @@ compiler."
 	    if test "$hardcode_direct" = yes; then
 	      add="$libdir/$linklib"
 	    elif test "$hardcode_minus_L" = yes; then
-	      # Try looking first in the location we're being installed to.
-	      add_dir=
-	      if test -n "$inst_prefix_dir"; then
-		case "$libdir" in
-		[\\/]*)
-		  add_dir="-L$inst_prefix_dir$libdir"
-		  ;;
-		esac
-	      fi
-	      add_dir="$add_dir -L$libdir"
+	      add_dir="-L$libdir"
 	      add="-l$name"
 	    elif test "$hardcode_shlibpath_var" = yes; then
 	      case :$finalize_shlibpath: in
@@ -1931,16 +1884,11 @@ compiler."
 	      add="-l$name"
 	    else
 	      # We cannot seem to hardcode it, guess we'll fake it.
-	      # Try looking first in the location we're being installed to.
-	      add_dir=
-	      if test -n "$inst_prefix_dir"; then
-		case "$libdir" in
-		[\\/]*)
-		  add_dir="-L$inst_prefix_dir$libdir"
-		  ;;
-		esac
+	      if test "X$installed" = Xyes; then
+	        add_dir="-L$libdir"
+	      else
+	        add_dir="-L$DESTDIR$libdir"
 	      fi
-	      add_dir="$add_dir -L$libdir"
 	      add="-l$name"
 	    fi
 
@@ -2037,11 +1985,9 @@ compiler."
 	  tmp_libs=
 	  for deplib in $dependency_libs; do
 	    newdependency_libs="$deplib $newdependency_libs"
-	    if test "X$duplicate_deps" = "Xyes" ; then
-	      case "$tmp_libs " in
-	      *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
-	      esac
-	    fi
+	    case "$tmp_libs " in
+	    *" $deplib "*) specialdeplibs="$specialdeplibs $deplib" ;;
+	    esac
 	    tmp_libs="$tmp_libs $deplib"
 	  done
 
@@ -2272,7 +2218,7 @@ compiler."
 
 	# Check that each of the things are valid numbers.
 	case $current in
-	[0-9]*) ;;
+	0 | [1-9] | [1-9][0-9] | [1-9][0-9][0-9]) ;;
 	*)
 	  $echo "$modename: CURRENT \`$current' is not a nonnegative integer" 1>&2
 	  $echo "$modename: \`$vinfo' is not valid version information" 1>&2
@@ -2281,7 +2227,7 @@ compiler."
 	esac
 
 	case $revision in
-	[0-9]*) ;;
+	0 | [1-9] | [1-9][0-9] | [1-9][0-9][0-9]) ;;
 	*)
 	  $echo "$modename: REVISION \`$revision' is not a nonnegative integer" 1>&2
 	  $echo "$modename: \`$vinfo' is not valid version information" 1>&2
@@ -2290,7 +2236,7 @@ compiler."
 	esac
 
 	case $age in
-	[0-9]*) ;;
+	0 | [1-9] | [1-9][0-9] | [1-9][0-9][0-9]) ;;
 	*)
 	  $echo "$modename: AGE \`$age' is not a nonnegative integer" 1>&2
 	  $echo "$modename: \`$vinfo' is not valid version information" 1>&2
@@ -2550,7 +2496,7 @@ EOF
 	    for i in $deplibs; do
 	      name="`expr $i : '-l\(.*\)'`"
 	      # If $name is empty we are operating on a -L argument.
-	      if test -n "$name" && test "$name" != "0"; then
+	      if test -n "$name" && test "$name" -ne "0"; then
 		libname=`eval \\$echo \"$libname_spec\"`
 		deplib_matches=`eval \\$echo \"$library_names_spec\"`
 		set dummy $deplib_matches
@@ -2638,6 +2584,13 @@ EOF
 			*) potlib=`$echo "X$potlib" | $Xsed -e 's,[^/]*$,,'`"$potliblink";;
 			esac
 		      done
+		      # It is ok to link against an archive when
+		      # building a shared library.
+		      if $AR -t $potlib > /dev/null 2>&1; then
+		        newdeplibs="$newdeplibs $a_deplib"
+		        a_deplib=""
+		        break 2
+		      fi
 		      if eval $file_magic_cmd \"\$potlib\" 2>/dev/null \
 			 | sed 10q \
 			 | egrep "$file_magic_regex" > /dev/null; then
@@ -3916,7 +3869,7 @@ fi\
 	fi
       done
       # Quote the link command for shipping.
-      relink_command="(cd `pwd`; $SHELL $0 --mode=relink $libtool_args @inst_prefix_dir@)"
+      relink_command="(cd `pwd`; $SHELL $0 --mode=relink $libtool_args)"
       relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
 
       # Only create the output if not a dry run.
@@ -4199,12 +4152,21 @@ relink_command=\"$relink_command\""
 	esac
 
 	# Add the libdir to current_libdirs if it is the destination.
+	DESTDIR=
 	if test "X$destdir" = "X$libdir"; then
 	  case "$current_libdirs " in
 	  *" $libdir "*) ;;
 	  *) current_libdirs="$current_libdirs $libdir" ;;
 	  esac
 	else
+	  case "$destdir" in
+	    *"$libdir")
+	      DESTDIR=`$echo "$destdir" | sed -e 's!'"$libdir"'$!!'`
+	      if test "X$destdir" != "X$DESTDIR$libdir"; then
+		DESTDIR=
+	      fi
+	      ;;
+	  esac
 	  # Note the libdir as a future libdir.
 	  case "$future_libdirs " in
 	  *" $libdir "*) ;;
@@ -4217,32 +4179,16 @@ relink_command=\"$relink_command\""
 	dir="$dir$objdir"
 
 	if test -n "$relink_command"; then
-	  # Determine the prefix the user has applied to our future dir.
-	  inst_prefix_dir=`$echo "$destdir" | sed "s%$libdir\$%%"`
-
-	  # Don't allow the user to place us outside of our expected
-	  # location b/c this prevents finding dependent libraries that
-	  # are installed to the same prefix.
-	  if test "$inst_prefix_dir" = "$destdir"; then
-	    $echo "$modename: error: cannot install \`$file' to a directory not ending in $libdir" 1>&2
-	    exit 1
-	  fi
-
-	  if test -n "$inst_prefix_dir"; then
-	    # Stick the inst_prefix_dir data into the link command.
-	    relink_command=`$echo "$relink_command" | sed "s%@inst_prefix_dir@%-inst-prefix-dir $inst_prefix_dir%"`
-	  else
-	    relink_command=`$echo "$relink_command" | sed "s%@inst_prefix_dir@%%"`
-	  fi
-
 	  $echo "$modename: warning: relinking \`$file'" 1>&2
+	  export DESTDIR
 	  $show "$relink_command"
 	  if $run eval "$relink_command"; then :
 	  else
 	    $echo "$modename: error: relink \`$file' with the above command before installing it" 1>&2
-	    exit 1
+	    continue
 	  fi
 	fi
+	unset DESTDIR
 
 	# See the names of the shared library.
 	set dummy $library_names
@@ -4690,14 +4636,14 @@ relink_command=\"$relink_command\""
       fi
 
       # Now prepare to actually exec the command.
-      exec_cmd="\$cmd$args"
+      exec_cmd="\"\$cmd\"$args"
     else
       # Display what would be done.
       if test -n "$shlibpath_var"; then
 	eval "\$echo \"\$shlibpath_var=\$$shlibpath_var\""
 	$echo "export $shlibpath_var"
       fi
-      $echo "$cmd$args"
+      eval \$echo \"\$cmd\"$args
       exit 0
     fi
     ;;
@@ -4813,9 +4759,23 @@ relink_command=\"$relink_command\""
 	;;
 
       *.lo)
-	if test "$build_old_libs" = yes; then
-	  oldobj=`$echo "X$name" | $Xsed -e "$lo2o"`
-	  rmfiles="$rmfiles $dir/$oldobj"
+	# Possibly a libtool object, so verify it.
+	if (sed -e '2q' $file | egrep "^# Generated by .*$PACKAGE") >/dev/null 2>&1; then
+
+	  # Read the .lo file
+	  . $dir/$name
+
+	  # Add PIC object to the list of files to remove.
+	  if test -n "$pic_object" \
+	     && test "$pic_object" != none; then
+	    rmfiles="$rmfiles $dir/$pic_object"
+	  fi
+
+	  # Add non-PIC object to the list of files to remove.
+	  if test -n "$non_pic_object" \
+	     && test "$non_pic_object" != none; then
+	    rmfiles="$rmfiles $dir/$non_pic_object"
+	  fi
 	fi
 	;;
 

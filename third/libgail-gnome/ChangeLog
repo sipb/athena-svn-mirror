@@ -1,3 +1,52 @@
+2004-05-11  Bill Haneman <bill.haneman@sun.com>
+
+	* gail-gnome/panel-applet-atk-object.[ch]
+	* gail-gnome/panel-applet-atk-object-factory.[ch]:
+	(panel_applet_atk_object_factory_create_accessible):
+	Changed to panel_applet_atk_object_factory_create_object;
+	Re-namespaced the "_accessible_" methods to "_atk_object_"
+	generally.
+	(panel_applet_atk_object_factory_create_object): 
+	Fixed problems with missing declaration.
+	Thanks to Stanislav Brabec for finding this!
+	
+2004-04-19  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Revved to 1.0.4.
+
+2004-03-31  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail-gnome/bonobo_plug_atk_object.c (bonobo_plug_get_index_in_parent):
+	New function to fix bug #134832.
+
+2004-03-05  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Revved to 1.0.3 
+
+	* gail-gnome/bonobo-accessibility-init.c:
+	(gail_bonobo_ui_register_atk_factories): 
+	Register an atk factory for PanelApplet instances.
+
+	* gail-gnome/panel-applet-atk-object-factory.h, gail-gnome/panel-applet-atk-object-factory.c:
+	New files, implementing factory instance for PanelAppletClass.
+
+	* gail-gnome/panel-applet-atk-object.h, gail-gnome/panel-applet-atk-object.c:
+	New files which implement AtkObject (and in particular AtkAction)
+	for instances of PanelApplet (which otherwise only inherit the
+	gail implementation for GailWidget).  Provides three actions for
+	panel applets, "press", "release", and "popup-menu".
+
+2003-11-05  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* gail-gnome/bonobo_socket_atk_object.c: Change bonobo_plug_finalize
+	to bonobo_socket_finalize
+
+2002-12-09  Bill Haneman <bill.haneman@sun.com>
+
+	* configure.in: Revved to 1.0.2 (matches dist now).
+	
+	* MAINTAINERS: Added file.
+
 2002-11-22  Bill Haneman <bill.haneman@sun.com>
 
 	* configure.in:

@@ -1,6 +1,6 @@
 /*
  * LIBGAIL-GNOME -  Accessibility Toolkit Implementation for Bonobo
- * Copyright 2002 Sun Microsystems Inc.
+ * Copyright 2002 - 2004 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,11 +26,13 @@
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-control-frame.h>
+#include <panel-applet.h>
 #include <libspi/accessible.h>
 #include "bonobo-control-accessible.h"
 #include "bonobo-control-frame-accessible.h"
 #include "bonobo_plug_atk_object_factory.h"
 #include "bonobo_socket_atk_object_factory.h"
+#include "panel-applet-atk-object-factory.h"
 #include "gail-gnome-debug.h"
 
 /* For automatic libgnome init */
@@ -81,6 +83,7 @@ gail_bonobo_ui_register_atk_factories (void)
   AtkRegistry *registry = atk_get_default_registry ();	
   atk_registry_set_factory_type (registry, BONOBO_TYPE_PLUG, BONOBO_TYPE_PLUG_ATK_OBJECT_FACTORY);
   atk_registry_set_factory_type (registry, BONOBO_TYPE_SOCKET, BONOBO_TYPE_SOCKET_ATK_OBJECT_FACTORY);   
+  atk_registry_set_factory_type (registry, PANEL_TYPE_APPLET, PANEL_APPLET_TYPE_ATK_OBJECT_FACTORY);
 }
 
 static void

@@ -95,18 +95,10 @@ NULL =
 
 noinst_PROGRAMS = test-gail-gnome
 
-INCLUDES = \
-	-I$(top_srcdir)				\
-	-I$(top_srcdir)/gail-gnome		\
-	$(GAIL_GNOME_DEBUG_CFLAGS)		\
-	$(TEST_CFLAGS)				\
-	$(NULL)
+INCLUDES =  	-I$(top_srcdir)					-I$(top_srcdir)/gail-gnome			$(GAIL_GNOME_DEBUG_CFLAGS)			$(TEST_CFLAGS)					$(NULL)
 
 
-LDADD = \
-	../gail-gnome/libgail-gnome.la		\
-	$(TEST_LIBS)				\
-	$(NULL)
+LDADD =  	../gail-gnome/libgail-gnome.la			$(TEST_LIBS)					$(NULL)
 
 
 TESTS = test-gail-gnome
@@ -136,7 +128,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = test-gail-gnome.c
 OBJECTS = test-gail-gnome.$(OBJEXT)

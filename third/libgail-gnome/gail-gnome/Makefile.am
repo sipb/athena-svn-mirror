@@ -8,6 +8,8 @@ gailgnome_c_sources =				\
 	bonobo_plug_atk_object_factory.c 	\
 	bonobo_socket_atk_object.c		\
 	bonobo_socket_atk_object_factory.c	\
+	panel-applet-atk-object-factory.c	\
+	panel-applet-atk-object.c		\
 	bonobo-accessibility-init.c		
 
 gailgnome_private_h_sources =			\
@@ -17,6 +19,8 @@ gailgnome_private_h_sources =			\
 	bonobo_plug_atk_object_factory.h 	\
 	bonobo_socket_atk_object.h		\
 	bonobo_socket_atk_object_factory.h	\
+	panel-applet-atk-object.h		\
+	panel-applet-atk-object-factory.h	\
         gail-gnome-debug.h
 
 gailgnome_public_h_sources =

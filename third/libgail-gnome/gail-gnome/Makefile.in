@@ -93,50 +93,26 @@ ms_librarian = @ms_librarian@
 
 module_LTLIBRARIES = libgail-gnome.la
 
-gailgnome_c_sources = \
-	bonobo-control-accessible.c		\
-	bonobo-control-frame-accessible.c 	\
-	bonobo_plug_atk_object.c		\
-	bonobo_plug_atk_object_factory.c 	\
-	bonobo_socket_atk_object.c		\
-	bonobo_socket_atk_object_factory.c	\
-	bonobo-accessibility-init.c		
+gailgnome_c_sources =  	bonobo-control-accessible.c			bonobo-control-frame-accessible.c 		bonobo_plug_atk_object.c			bonobo_plug_atk_object_factory.c 		bonobo_socket_atk_object.c			bonobo_socket_atk_object_factory.c		panel-applet-atk-object-factory.c		panel-applet-atk-object.c			bonobo-accessibility-init.c		
 
 
-gailgnome_private_h_sources = \
-	bonobo-control-accessible.h		\
-	bonobo-control-frame-accessible.h	\
-	bonobo_plug_atk_object.h		\
-	bonobo_plug_atk_object_factory.h 	\
-	bonobo_socket_atk_object.h		\
-	bonobo_socket_atk_object_factory.h	\
-        gail-gnome-debug.h
+gailgnome_private_h_sources =  	bonobo-control-accessible.h			bonobo-control-frame-accessible.h		bonobo_plug_atk_object.h			bonobo_plug_atk_object_factory.h 		bonobo_socket_atk_object.h			bonobo_socket_atk_object_factory.h		panel-applet-atk-object.h			panel-applet-atk-object-factory.h	        gail-gnome-debug.h
 
 
 gailgnome_public_h_sources = 
 
-libgail_gnome_la_SOURCES = \
-	$(gailgnome_c_sources)		\
-	$(gailgnome_private_h_sources)
+libgail_gnome_la_SOURCES =  	$(gailgnome_c_sources)			$(gailgnome_private_h_sources)
 
 
-INCLUDES = \
-	-I$(top_srcdir)		 	\
-	-DVERSION=\"$(VERSION)\"	\
-	$(GAIL_GNOME_DEBUG_CFLAGS)	\
-	$(DEPS_CFLAGS)
+INCLUDES =  	-I$(top_srcdir)		 		-DVERSION=\"$(VERSION)\"		$(GAIL_GNOME_DEBUG_CFLAGS)		$(DEPS_CFLAGS)
 
 
-libgail_gnome_la_LIBADD = \
-        $(DEPS_LIBS)
+libgail_gnome_la_LIBADD =          $(DEPS_LIBS)
 
 
 moduledir = $(libdir)/gtk-2.0/modules
 
-libgail_gnome_la_LDFLAGS = \
-        -no-undefined   \
-	-rpath $(moduledir) -module -avoid-version \
-        @LDFLAGS@	
+libgail_gnome_la_LDFLAGS =          -no-undefined   	-rpath $(moduledir) -module -avoid-version         @LDFLAGS@	
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -152,7 +128,8 @@ libgail_gnome_la_DEPENDENCIES =
 libgail_gnome_la_OBJECTS =  bonobo-control-accessible.lo \
 bonobo-control-frame-accessible.lo bonobo_plug_atk_object.lo \
 bonobo_plug_atk_object_factory.lo bonobo_socket_atk_object.lo \
-bonobo_socket_atk_object_factory.lo bonobo-accessibility-init.lo
+bonobo_socket_atk_object_factory.lo panel-applet-atk-object-factory.lo \
+panel-applet-atk-object.lo bonobo-accessibility-init.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -163,7 +140,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libgail_gnome_la_SOURCES)
 OBJECTS = $(libgail_gnome_la_OBJECTS)
@@ -299,7 +276,8 @@ bonobo-accessibility-init.lo bonobo-accessibility-init.o : \
 	bonobo-accessibility-init.c bonobo-control-accessible.h \
 	bonobo-control-frame-accessible.h \
 	bonobo_plug_atk_object_factory.h \
-	bonobo_socket_atk_object_factory.h gail-gnome-debug.h
+	bonobo_socket_atk_object_factory.h \
+	panel-applet-atk-object-factory.h gail-gnome-debug.h
 bonobo-control-accessible.lo bonobo-control-accessible.o : \
 	bonobo-control-accessible.c bonobo-control-accessible.h \
 	gail-gnome-debug.h
@@ -318,6 +296,12 @@ bonobo_socket_atk_object.lo bonobo_socket_atk_object.o : \
 bonobo_socket_atk_object_factory.lo bonobo_socket_atk_object_factory.o : \
 	bonobo_socket_atk_object_factory.c bonobo_socket_atk_object.h \
 	bonobo_socket_atk_object_factory.h
+panel-applet-atk-object-factory.lo panel-applet-atk-object-factory.o : \
+	panel-applet-atk-object-factory.c panel-applet-atk-object.h \
+	panel-applet-atk-object-factory.h
+panel-applet-atk-object.lo panel-applet-atk-object.o : \
+	panel-applet-atk-object.c panel-applet-atk-object.h \
+	gail-gnome-debug.h
 
 info-am:
 info: info-am
