@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v 1.2 1994-04-01 16:53:06 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v 1.3 1994-06-23 12:30:40 vrt Exp $
  */
 
 #ifndef lint
-static char *rcsid_access_off_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v 1.2 1994-04-01 16:53:06 miki Exp $";
+static char *rcsid_access_off_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v 1.3 1994-06-23 12:30:40 vrt Exp $";
 #endif lint
 
 #include <stdio.h>
@@ -22,7 +22,11 @@ char **argv;
     int status;
     char *pindex;
 
+#if defined(SOLARIS) || defined(_IBMR2)
+    if ((pidfile = fopen("/etc/athena/inetd.pid", "r")) == NULL) {
+#else
     if ((pidfile = fopen("/etc/inetd.pid", "r")) == NULL) {
+#endif
 	printf("cannot read process id file--daemon probably not running\n");
 	exit(1);
     }
