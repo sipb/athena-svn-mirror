@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1999-10-30 11:27:50 kcr Exp $
+# $Id: Makefile.in,v 1.2 1999-11-02 23:56:41 kcr Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -44,3 +44,9 @@ install:
 	${INSTALL} -m 444 ${srcdir}/config_console.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 444 ${srcdir}/hide_console.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 444 ${srcdir}/show_console.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f config_console.o config_console
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
