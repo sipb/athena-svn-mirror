@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.8 1991-09-25 11:41:30 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.9 1991-09-25 15:32:20 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.8 1991-09-25 11:41:30 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.9 1991-09-25 15:32:20 lwvanels Exp $";
 #endif
 #endif
 
@@ -118,7 +118,7 @@ do_tick(sig)
   long now;
 
   signal(SIGALRM,do_tick);
-  alarm(tick);
+  alarm(60 * tick);
   now = time(0);
   write(log_fd,"TICK ",5);
   write(log_fd,ctime(&now),25);
@@ -138,6 +138,7 @@ handle_hup(sig)
     syslog(LOG_ERR,"opening %s: %m");
     exit(1);
   }
+  do_tick();
 }
 
 main(argc, argv)
@@ -153,6 +154,7 @@ main(argc, argv)
   int len,rlen,i;
   int port=0;
   int oldmask,alarmmask;
+  char *pidfile = "/usr/local/bin/bbd.pid";
 
   for (i=1;i<argc;i++) {
     if (!strcmp(argv[i], "-nofork")) {
@@ -175,11 +177,24 @@ main(argc, argv)
       tick = atoi(argv[++i]);
       continue;
     }
+    if (!strcmp(argv[i], "-pidfile")) {
+      if (i+1 == argc) {
+	fprintf(stderr,"Must specify pid filename with -pidfile\n");
+	break;
+      }
+      pidfile = argv[++i];
+      continue;
+    }
     logfile = argv[i];
   }
 
   if (logfile == NULL) {
-    fprintf(stderr,"usage: bbd [-nofork] [-port portno] [-tick interval] logfile\n");
+    fprintf(stderr,"usage: bbd\n");
+    fprintf(stderr,"       [-nofork]\n");
+    fprintf(stderr,"       [-port portno]\n");
+    fprintf(stderr,"       [-tick interval]\n");
+    fprintf(stderr,"       [-pidfile filename]\n");
+    fprintf(stderr,"       logfile\n");
     exit(1);
   }
 
@@ -224,7 +239,7 @@ main(argc, argv)
   }
 
   if ((log_fd = open(logfile,O_WRONLY|O_CREAT|O_APPEND,0600)) < 0) {
-    syslog(LOG_ERR,"opening %s: %m");
+    syslog(LOG_ERR,"opening %s: %m",logfile);
     exit(1);
   }
 
@@ -233,6 +248,16 @@ main(argc, argv)
 #else
   openlog("bbd",LOG_CONS|LOG_PID,LOG_LOCAL2);
 #endif
+
+  unlink(pidfile);
+  if ((fd = open(pidfile,O_WRONLY|O_CREAT|O_TRUNC,0400)) < 0) {
+    syslog(LOG_ERR,"opening %s: %m",pidfile);
+    exit(1);
+  }
+
+  sprintf(buf,"%d\n",getpid());
+  write(fd,buf,strlen(buf));
+  close(fd);
 
   /* Create socket */
   if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -272,8 +297,6 @@ main(argc, argv)
 
   if (tick != 0) {
     do_tick();
-    alarm(tick);
-    signal(SIGALRM,do_tick);
   }
 
   alarmmask = sigmask(SIGALRM);
