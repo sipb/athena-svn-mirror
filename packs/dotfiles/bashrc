@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.10 1999-09-10 17:19:40 danw Exp $
+# $Id: bashrc,v 1.11 2000-02-11 20:52:29 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -51,7 +51,7 @@ if [ "${ENV_SET+set}" != set ]; then
 		athena_path=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin
 		athena_path=$athena_path:/bin:/usr/X11R6/bin:/usr/andrew/bin
 		athena_path=$athena_path:/usr/athena/etc:/usr/sbin:/sbin
-		MANPATH=/usr/athena/man:/usr/man
+		MANPATH=/usr/athena/man:/usr/man:/usr/X11R6/man
 		;;
 	*)
 		echo "Standard dotfiles do not support system type $HOSTTYPE."
