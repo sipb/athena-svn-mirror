@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.20 1991-07-22 09:13:58 epeisach Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.21 1991-07-26 17:13:36 probe Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -179,7 +179,7 @@ xlogin.Geometry: 		580x325+205+75
 *name_input.fromVert:		*welcome
 *name_input.fromHoriz:		*userName
 *name_input.vertDistance:	70
-*name_input.width:		180
+*name_input.width:		210
 *name_input.leftMargin:		4
 *name_input.translations:	#replace \n\
 	Ctrl<Key>a:	beginning-of-line() \n\
@@ -260,7 +260,7 @@ xlogin.Geometry: 		580x325+205+75
 *pword_input.fromVert:		*name_input
 *pword_input.fromHoriz:		*password
 *pword_input.vertDistance:	5
-*pword_input.Width:		180
+*pword_input.Width:		210
 *pword_input*echo:		False
 *pword_input*Foreground:	white
 *pword_input.translations:	#replace \n\
@@ -334,7 +334,7 @@ xlogin.Geometry: 		580x325+205+75
 
 *ooptions.wcClass:		menuButtonWidgetClass
 *ooptions.vertDistance:		40
-*ooptions.horizDistance:	70
+*ooptions.horizDistance:	100
 *ooptions.label:		Other Options
 *ooptions.fromVert:		*password
 *ooptions.fromHoriz:		*loptions
@@ -465,7 +465,7 @@ xlogin.Geometry: 		580x325+205+75
 
 *register.wcClass:		commandWidgetClass
 *register.vertDistance:		10
-*register.horizDistance:	180
+*register.horizDistance:	195
 *register.label:		Register for an Account
 *register.fromVert:		*loptions
 *register.callback:		attachAndRunCB(register,/mit/register/xregister)
