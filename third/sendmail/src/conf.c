@@ -1949,7 +1949,7 @@ getla()
 
 /* Non Apollo stuff removed by Don Lewis 11/15/93 */
 #ifndef lint
-static char  rcsid[] = "@(#)$Id: conf.c,v 1.2 1999-02-26 23:28:09 danw Exp $";
+static char  rcsid[] = "@(#)$Id: conf.c,v 1.3 1999-03-04 01:03:48 danw Exp $";
 #endif /* !lint */
 
 #ifdef apollo
@@ -4212,7 +4212,7 @@ sm_getpwnam(user)
 		if (pw)
 		{
 			memcpy(&tmp, pw, sizeof(struct passwd));
-			hesiod_free_passwd(hes_context);
+			hesiod_free_passwd(hes_context, pw);
 			pw = &tmp;
 		}
 		hesiod_end(hes_context);
@@ -4243,7 +4243,7 @@ sm_getpwuid(uid)
 		if (pw)
 		{
 			memcpy(&tmp, pw, sizeof(struct passwd));
-			hesiod_free_passwd(hes_context);
+			hesiod_free_passwd(hes_context, pw);
 			pw = &tmp;
 		}
 		hesiod_end(hes_context);
