@@ -1,3 +1,59 @@
+2003-09-14  Nikos Charonitakis  <frolix68@yahoo.gr>
+
+	* el.po: Updated Greek translation.
+
+2003-09-13  Danilo Šegan  <dsegan@gmx.net>
+
+	* sr.po, sr@Latn.po: Updated Serbian translation.
+
+2003-09-13  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2003-09-10  Pablo Gonzalo del Campo  <pablodc@bigfoot.com>
+
+        * es.po: Updated Spanish translation by
+                 Francisco Javier F. Serrador <serrador@arrakis.es>.
+
+2003-09-07  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Funda Wang <fundawang@linux.net.cn>.
+
+2003-09-06  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2003-09-06  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+2003-08-22  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+        * sk.po: Updated Slovak translation.
+
+2003-08-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Update Norwegian translation.
+
+2003-08-11  Pablo Gonzalo del Campo  <pablodc@bigfoot.com>
+
+        * es.po: Updated Spanish translation by
+                 Francisco Javier F. Serrador <serrador@arrakis.es>.
+
+2003-08-02  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2003-07-31  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2003-07-30  Christian Neumair  <chris@gnome-de.org>
+
+	* POTFILES.in: Removed some nonexisting, generated headers.
+	* de.po: Updated German translation.
+
 2003-07-27  Danilo Šegan  <dsegan@gmx.net>
 
 	* sr.po, sr@Latn.po: Updated Serbian translation by Serbian

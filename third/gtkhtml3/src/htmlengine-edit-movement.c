@@ -137,6 +137,8 @@ html_engine_jump_at (HTMLEngine *e,
 	g_return_if_fail (e != NULL);
 	g_return_if_fail (HTML_IS_ENGINE (e));
 
+	gtk_html_im_reset (e->widget);
+
 	obj = html_engine_get_object_at (e, x, y, &offset, TRUE);
 	if (obj == NULL)
 		return;

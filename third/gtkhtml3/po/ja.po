@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtkhtml evolution-1-4-branch\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-12 16:28+0900\n"
-"PO-Revision-Date: 2003-07-12 16:27+0900\n"
+"POT-Creation-Date: 2003-08-02 10:36+0900\n"
+"PO-Revision-Date: 2003-08-02 10:31+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -22,125 +22,11 @@ msgid "<None>"
 msgstr "<無し>"
 
 #: capplet/gnome-bindings-prop.c:211 capplet/main.c:241
-#: components/html-editor/cell.c:418 components/html-editor/image.c:531
+#: components/html-editor/cell.c:418 components/html-editor/image.c:545
 #: components/html-editor/rule.c:316 components/html-editor/table.c:530
 #: components/html-editor/table.c:614 components/html-editor/template.c:272
 msgid "Could not load glade file."
 msgstr "Glade ファイル (.glade) が読み込めませんでした。"
-
-#: capplet/gtkhtml-capplet.glade.h:1
-msgid "\n"
-msgstr "\n"
-
-#: capplet/gtkhtml-capplet.glade.h:3
-#: components/html-editor/gtkhtml-editor-properties.glade.h:1
-msgid "*"
-msgstr "*"
-
-#: capplet/gtkhtml-capplet.glade.h:4
-msgid "*********************"
-msgstr "*********************"
-
-#: capplet/gtkhtml-capplet.glade.h:5
-msgid "Add Keyboard Shortcuts"
-msgstr "キーボード・ショートカットの追加"
-
-#: capplet/gtkhtml-capplet.glade.h:6
-msgid "Automatically detect links"
-msgstr "リンクの自動検出"
-
-#: capplet/gtkhtml-capplet.glade.h:7
-msgid "Behavior"
-msgstr "動作"
-
-#: capplet/gtkhtml-capplet.glade.h:8
-msgid "Composer Properties"
-msgstr "コンポーザ・プロパティ"
-
-#: capplet/gtkhtml-capplet.glade.h:9
-msgid "Composer Properties planned"
-msgstr "構築済のコンポーザ・プロパティ"
-
-#: capplet/gtkhtml-capplet.glade.h:10
-msgid "Configure spell checking"
-msgstr "スペルチェックの設定"
-
-#: capplet/gtkhtml-capplet.glade.h:11
-msgid "Enable spell checking"
-msgstr "スペルチェックを有効にする"
-
-#: capplet/gtkhtml-capplet.glade.h:12
-msgid "Fixed width"
-msgstr "等幅フォント"
-
-#: capplet/gtkhtml-capplet.glade.h:13
-msgid "Fonts"
-msgstr "フォント"
-
-#: capplet/gtkhtml-capplet.glade.h:14
-msgid "For printing"
-msgstr "印刷用"
-
-#: capplet/gtkhtml-capplet.glade.h:15
-msgid "Grab keys"
-msgstr "キーの取得"
-
-#: capplet/gtkhtml-capplet.glade.h:16
-msgid "Information"
-msgstr "情報"
-
-#: capplet/gtkhtml-capplet.glade.h:17
-msgid "Keyboard Shortcuts"
-msgstr "キーボード・ショートカット"
-
-#: capplet/gtkhtml-capplet.glade.h:18
-#: components/html-editor/gtkhtml-editor-properties.glade.h:47
-msgid "Miscellaneous"
-msgstr "その他"
-
-#: capplet/gtkhtml-capplet.glade.h:19
-msgid "New shortcut:"
-msgstr "新しいショートカット:"
-
-#: capplet/gtkhtml-capplet.glade.h:20
-msgid "On screen"
-msgstr "画面表示用"
-
-#: capplet/gtkhtml-capplet.glade.h:21
-msgid "Select HTML fixed width font"
-msgstr "HTML 等幅フォントの選択"
-
-#: capplet/gtkhtml-capplet.glade.h:22
-msgid "Select HTML fixed width font for printing"
-msgstr "印刷用 HTML 等幅フォントの選択"
-
-#: capplet/gtkhtml-capplet.glade.h:23
-msgid "Select HTML variable width font"
-msgstr "HTML 可変幅フォントの選択"
-
-#: capplet/gtkhtml-capplet.glade.h:24
-msgid "Select HTML variable width font for printing"
-msgstr "印刷用 HTML 可変幅フォントの選択"
-
-#: capplet/gtkhtml-capplet.glade.h:25
-msgid "Shortcuts _type:"
-msgstr "ショートカットの型(_T):"
-
-#: capplet/gtkhtml-capplet.glade.h:26
-msgid "Show animated images"
-msgstr "画像のアニメーションを表示する"
-
-#: capplet/gtkhtml-capplet.glade.h:27
-msgid "Variable width"
-msgstr "可変幅フォント"
-
-#: capplet/gtkhtml-capplet.glade.h:28
-msgid "_Add"
-msgstr "追加(_A)"
-
-#: capplet/gtkhtml-capplet.glade.h:29
-msgid "_Delete"
-msgstr "削除(_D)"
 
 #: capplet/main.c:226
 msgid ""
@@ -861,7 +747,6 @@ msgid "Background"
 msgstr "背景"
 
 #: components/html-editor/cell.c:173 components/html-editor/cell.c:175
-#: components/html-editor/image.c:257 components/html-editor/image.c:260
 #: components/html-editor/text.c:108
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "いろはにほへと ちりぬるをわか 零壱弐三四伍"
@@ -899,6 +784,10 @@ msgstr "ページ"
 #: components/html-editor/gnome-gtkhtml-editor.c:68
 msgid "GtkHTML Editor Control"
 msgstr "GtkHTML エディタ・コントロール"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:1
+msgid "*"
+msgstr "*"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:2
 msgid "************"
@@ -1046,6 +935,10 @@ msgstr "場所"
 #: components/html-editor/gtkhtml-editor-properties.glade.h:46
 msgid "Middle"
 msgstr "中"
+
+#: components/html-editor/gtkhtml-editor-properties.glade.h:47
+msgid "Miscellaneous"
+msgstr "その他"
 
 #: components/html-editor/gtkhtml-editor-properties.glade.h:50
 msgid "Padding"
@@ -1219,7 +1112,19 @@ msgstr ""
 "@src@@alt@@width@@height@align=top border=0></td></tr><tr><td><b>[ここにコメ"
 "ントを入れて下さい]</td></tr></table></td></tr></table></center>"
 
-#: components/html-editor/image.c:691
+#: components/html-editor/image.c:258 components/html-editor/image.c:264
+msgid ""
+"This is sample text, designed to show you how text would flow around this "
+"image if you insert the image into your message."
+msgstr ""
+"これはサンプルで、メッセージの中に画像を挿入した場合、この画像の周辺にあるテ"
+"キストがどのように表示されるかを確認するためのものです。"
+
+#: components/html-editor/image.c:270
+msgid "No image selected"
+msgstr "画像が選択されていません"
+
+#: components/html-editor/image.c:705
 msgid ""
 "The editted image was removed from the document.\n"
 "Cannot apply your changes."
@@ -1706,3 +1611,81 @@ msgstr "印刷イメージのプレビューを表示します"
 #: src/testgtkhtml.c:973
 msgid "GtkHTML Test Application"
 msgstr "GtkHTML テスト・アプリケーション"
+
+#~ msgid "\n"
+#~ msgstr "\n"
+
+#~ msgid "*********************"
+#~ msgstr "*********************"
+
+#~ msgid "Add Keyboard Shortcuts"
+#~ msgstr "キーボード・ショートカットの追加"
+
+#~ msgid "Automatically detect links"
+#~ msgstr "リンクの自動検出"
+
+#~ msgid "Behavior"
+#~ msgstr "動作"
+
+#~ msgid "Composer Properties"
+#~ msgstr "コンポーザ・プロパティ"
+
+#~ msgid "Composer Properties planned"
+#~ msgstr "構築済のコンポーザ・プロパティ"
+
+#~ msgid "Configure spell checking"
+#~ msgstr "スペルチェックの設定"
+
+#~ msgid "Enable spell checking"
+#~ msgstr "スペルチェックを有効にする"
+
+#~ msgid "Fixed width"
+#~ msgstr "等幅フォント"
+
+#~ msgid "Fonts"
+#~ msgstr "フォント"
+
+#~ msgid "For printing"
+#~ msgstr "印刷用"
+
+#~ msgid "Grab keys"
+#~ msgstr "キーの取得"
+
+#~ msgid "Information"
+#~ msgstr "情報"
+
+#~ msgid "Keyboard Shortcuts"
+#~ msgstr "キーボード・ショートカット"
+
+#~ msgid "New shortcut:"
+#~ msgstr "新しいショートカット:"
+
+#~ msgid "On screen"
+#~ msgstr "画面表示用"
+
+#~ msgid "Select HTML fixed width font"
+#~ msgstr "HTML 等幅フォントの選択"
+
+#~ msgid "Select HTML fixed width font for printing"
+#~ msgstr "印刷用 HTML 等幅フォントの選択"
+
+#~ msgid "Select HTML variable width font"
+#~ msgstr "HTML 可変幅フォントの選択"
+
+#~ msgid "Select HTML variable width font for printing"
+#~ msgstr "印刷用 HTML 可変幅フォントの選択"
+
+#~ msgid "Shortcuts _type:"
+#~ msgstr "ショートカットの型(_T):"
+
+#~ msgid "Show animated images"
+#~ msgstr "画像のアニメーションを表示する"
+
+#~ msgid "Variable width"
+#~ msgstr "可変幅フォント"
+
+#~ msgid "_Add"
+#~ msgstr "追加(_A)"
+
+#~ msgid "_Delete"
+#~ msgstr "削除(_D)"

@@ -94,6 +94,7 @@ struct _GtkHTMLControlData {
 
 	CORBA_sequence_GNOME_Spell_Language *languages;
 	gboolean                block_language_changes;
+	gchar                  *language;
 	GNOME_Spell_Dictionary  dict;
 	EditorEngine           *editor_bonobo_engine;
 	BonoboObject           *persist_stream;
@@ -103,6 +104,7 @@ struct _GtkHTMLControlData {
 	GtkWidget *spell_dialog;
 	Bonobo_PropertyBag spell_control_pb;
 	gboolean has_spell_control;
+	gboolean has_spell_control_set;
 	gboolean spell_check_next;
 
 	GtkWidget *file_dialog;

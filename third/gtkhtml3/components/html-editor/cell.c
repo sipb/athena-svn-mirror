@@ -170,6 +170,7 @@ fill_sample (GtkHTMLEditCellProperties *d)
 				g_string_append (str, "<td>");
 
 			if (c == 1 && r == 0) {
+				/* string marked for translations is sample text. you may want to translate it to common sample text in your language */
 				g_string_append (str, _("The quick brown fox jumps over the lazy dog."));
 				g_string_append (str, " ");
 				g_string_append (str, _("The quick brown fox jumps over the lazy dog."));

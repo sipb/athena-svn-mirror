@@ -24,6 +24,7 @@
 
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkprivate.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 #include <string.h>
 
@@ -848,7 +849,7 @@ key_press_event (GtkWidget *widget, GdkEventKey *event)
 		}
 	}
 
-	if (retval)
+	if (retval && html_engine_get_editable (html->engine))
 		html_engine_reset_blinking_cursor (html->engine);
 
 	/* printf ("retval: %d\n", retval); */
@@ -2191,16 +2192,6 @@ next_uri (guchar **uri_list, gint *len, gint *list_len)
 	return uri;
 }
 
-static gchar *pic_extensions [] = {
-	".png",
-	".gif",
-	".jpg",
-	".xbm",
-	".xpm",
-	".bmp",
-	NULL
-};
-
 static gchar *known_protocols [] = {
 	"http://",
 	"ftp://",
@@ -2217,13 +2208,19 @@ new_obj_from_uri (HTMLEngine *e, gchar *uri, gint len)
 	gint i;
 
 	if (!strncmp (uri, "file:", 5)) {
-
-		for (i = 0; pic_extensions [i]; i++) {
-			if (!strcmp (uri + len - strlen (pic_extensions [i]), pic_extensions [i])) {
+		if (!HTML_IS_PLAIN_PAINTER(e->painter)) {
+			GdkPixbuf *pixbuf;
+			char *img_path = g_filename_from_uri (uri, NULL, NULL);
+			if (img_path) {
+				pixbuf = gdk_pixbuf_new_from_file(img_path, NULL);
+				g_free(img_path);
+			}
+			if (pixbuf) {
+				g_object_unref (pixbuf);
 				return html_image_new (e->image_factory, uri,
 						       NULL, NULL, -1, -1, FALSE, FALSE, 0,
 						       html_colorset_get_color (e->settings->color_set, HTMLTextColor),
-						       HTML_VALIGN_BOTTOM, TRUE);
+					 	       HTML_VALIGN_BOTTOM, TRUE);
 			}
 		}
 	}

@@ -956,6 +956,9 @@ get_offset_for_pointer (HTMLTextSlave *slave, HTMLPainter *painter, gint x, gint
 	if (x <= 0)
 		return 0;
 
+	if (slave->posLen == 1 && x > HTML_OBJECT (slave)->width / 2)
+		return 1;
+
 	if (x >= HTML_OBJECT (slave)->width)
 		return slave->posLen;
 				      

@@ -876,8 +876,7 @@ insert_object_do (HTMLEngine *e, HTMLObject *obj, guint *len, gint level, guint 
 	printf ("position after merge %d\n", e->cursor->position);
 #endif
 
-	html_cursor_destroy (e->cursor);
-	e->cursor = html_cursor_dup (orig);
+	html_cursor_copy (e->cursor, orig);
 	html_cursor_jump_to_position_no_spell (e->cursor, e, position_after);
 
 	if (check)

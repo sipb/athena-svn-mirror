@@ -87,7 +87,7 @@ calc_size (HTMLObject *self, HTMLPainter *painter, GList **changed_objs)
 
 	return FALSE;
 }
-
+
 void
 html_anchor_type_init (void)
 {

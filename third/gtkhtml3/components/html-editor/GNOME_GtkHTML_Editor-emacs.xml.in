@@ -93,7 +93,7 @@
 			_tip="Right justifies the paragraphs"
 			pixtype="stock" pixname="gtk-justify-right"/>
 
-			<cmd name="FormatBold" _label="_Bold" accel="*Ctrl*b"
+			<cmd name="FormatBold" _label="_Bold" accel=""
 			pixtype="stock" pixname="gtk-bold"/>
 			<cmd name="FormatItalic" _label="_Italic" accel="*Ctrl*i"
 			pixtype="stock" pixname="gtk-italic"/>
@@ -102,7 +102,7 @@
 			<cmd name="FormatStrikeout" _label="Strikeout"
 			pixtype="stock" pixname="gtk-strikethrough"/>
 			<cmd name="FormatFixed" _label="Typewriter" accel="*Ctrl*t"
-			pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/font-tt-16.png"/>
+			pixtype="filename" pixname="@ICONSDIR@/font-tt-16.png"/>
 			<cmd name="FormatSubscript" _label="Subscript"/>
 			<cmd name="FormatSuperscript" _label="Superscript"/>
 
@@ -128,21 +128,21 @@
 			<placeholder name="EditCutCopyPaste">
 				     <menuitem name="EditCut" verb="" accel="*Ctrl*X"/>
 				     <menuitem name="EditCopy" verb="" accel="*Ctrl*C"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/16_copy.png"/>
+                                     pixtype="filename" pixname="@ICONSDIR@/16_copy.png"/>
 				     <menuitem name="EditPaste" verb="" accel="*Ctrl*V"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/16_paste.png"/>
+                                     pixtype="filename" pixname="@ICONSDIR@/16_paste.png"/>
 				     <menuitem name="EditPasteQuotation" verb="" accel="*Ctrl**Shift*V"/>
 				     <separator/>
-				     <menuitem name="EditSelectAll" verb="" accel="*Ctrl*A"/>
+				     <menuitem name="EditSelectAll" verb="" accel=""/>
 			</placeholder>
 
 			<placeholder name="EditFindReplace">
-				     <menuitem name="EditFind" verb="" accel="*Ctrl*F"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/search-16.png"/>
-				     <menuitem name="EditFindRegex" verb="" accel="*Ctrl*E"/>
+				     <menuitem name="EditFind" verb="" accel=""
+                                     pixtype="filename" pixname="@ICONSDIR@/search-16.png"/>
+				     <menuitem name="EditFindRegex" verb="" accel=""/>
 				     <menuitem name="EditFindAgain" verb="" accel="*Ctrl*G"/>
 				     <menuitem name="EditReplace" verb="" accel="*Ctrl**Shift*F"
-                                     pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/search-and-replace-16.png"/>
+                                     pixtype="filename" pixname="@ICONSDIR@/search-and-replace-16.png"/>
 			</placeholder>
 
 			<placeholder name="EditMisc">
@@ -156,39 +156,39 @@
 		<submenu name="Insert" _label="_Insert">
 			<placeholder name="Component">
 				<menuitem name="InsertImage" verb=""
-                                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-image-16.png"/>
+                                pixtype="filename" pixname="@ICONSDIR@/insert-image-16.png"/>
 				<menuitem name="InsertLink"  verb=""
-                                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-link-16.png"/>
+                                pixtype="filename" pixname="@ICONSDIR@/insert-link-16.png"/>
 				<menuitem name="InsertRule"  verb=""
-				pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-rule-16.png"/>
+				pixtype="filename" pixname="@ICONSDIR@/insert-rule-16.png"/>
 				<menuitem name="InsertTable" verb=""
-                                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-table-16.png"/>
+                                pixtype="filename" pixname="@ICONSDIR@/insert-table-16.png"/>
 				<menuitem name="InsertTemplate" verb=""
-                                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-object-16.png"/>
+                                pixtype="filename" pixname="@ICONSDIR@/insert-object-16.png"/>
 				<menuitem name="InsertTextFile" verb=""/>
 				<menuitem name="InsertHTMLFile" verb=""/>
 				<submenu name="Smiley" _label="_Smiley"
-                                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-3.png">
+                                pixtype="filename" pixname="@ICONSDIR@/smiley-3.png">
 					<menuitem name="InsertSmiley3" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-3.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-3.png"/>
 					<menuitem name="InsertSmiley4" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-4.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-4.png"/>
 					<menuitem name="InsertSmiley5" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-5.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-5.png"/>
 					<menuitem name="InsertSmiley1" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-1.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-1.png"/>
 					<menuitem name="InsertSmiley2" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-2.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-2.png"/>
 					<menuitem name="InsertSmiley6" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-6.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-6.png"/>
 					<menuitem name="InsertSmiley8" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-8.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-8.png"/>
 					<menuitem name="InsertSmiley9" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-9.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-9.png"/>
 					<menuitem name="InsertSmiley10" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-10.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-10.png"/>
 					<menuitem name="InsertSmiley11" verb=""
-        	                        pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/smiley-11.png"/>
+        	                        pixtype="filename" pixname="@ICONSDIR@/smiley-11.png"/>
 				</submenu>
 			</placeholder>
 		</submenu>
@@ -268,9 +268,8 @@
 
 				<separator/>
 
-				<menuitem name="IndentMore" verb="" _label="_Increase Indent" accel="*Ctrl*bracketright"/>
-				<menuitem name="IndentLess" verb="" _label="_Decrease Indent" accel="*Ctrl*bracketleft"/>
-				<menuitem name="WrapLines" verb="" _label="_Wrap Lines" accel="*Ctrl*l"/>
+				<menuitem name="IndentMore" verb="" _label="_Increase Indent" accel="*Ctrl*TAB"/>
+				<menuitem name="IndentLess" verb="" _label="_Decrease Indent" accel="*Shift**Ctrl*TAB"/>
 
 				<separator/>
 
@@ -298,15 +297,15 @@
 		<separator/>
 
 		<toolitem name="InsertImage" verb="" _label="Image"
-                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-image-24.png"/>
+                pixtype="filename" pixname="@ICONSDIR@/insert-image-24.png"/>
 		<toolitem name="InsertLink" verb="" _label="Link"
-                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-link-24.png"/>
+                pixtype="filename" pixname="@ICONSDIR@/insert-link-24.png"/>
 		<toolitem name="InsertRule" verb="" _label="Rule"
-                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-rule-24.png"/>
+                pixtype="filename" pixname="@ICONSDIR@/insert-rule-24.png"/>
 		<toolitem name="InsertTable" verb="" _label="Table"
-                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-table-24.png"/>
+                pixtype="filename" pixname="@ICONSDIR@/insert-table-24.png"/>
 		<toolitem name="InsertTemplate" verb="" _label="Template"
-                pixtype="filename" pixname="/usr/share/gtkhtml-3.0/icons/insert-object-24.png"/>
+                pixtype="filename" pixname="@ICONSDIR@/insert-object-24.png"/>
 	</dockitem>
 
 </Root> 

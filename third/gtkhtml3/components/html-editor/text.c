@@ -105,6 +105,7 @@ fill_sample (GtkHTMLEditTextProperties *d)
 			     CVAL (2) ? "<u>" : "",
 			     CVAL (3) ? "<s>" : "",
 			     size, color,
+			     /* string marked for translations is sample text. you may want to translate it to common sample text in your language */
 			     _("The quick brown fox jumps over the lazy dog."), sa, NULL);
 	
 	gtk_html_load_from_string (d->sample, body, -1);

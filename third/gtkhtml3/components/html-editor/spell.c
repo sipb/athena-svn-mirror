@@ -133,7 +133,10 @@ spell_set_language (GtkHTML *html, const gchar *language, gpointer data)
 	GNOME_Spell_Dictionary_setLanguage (cd->dict, language, &ev);
 	CORBA_exception_free (&ev);
 
-	menubar_set_languages (cd, language);
+	g_free (cd->language);
+	cd->language = g_strdup (language);
+
+	menubar_set_languages (cd);
 }
 
 void
@@ -327,8 +330,10 @@ language_cb (BonoboUIComponent *uic, const char *path, Bonobo_UIComponent_EventT
 	}
 
 	html_engine_set_language (cd->html->engine, str->str);
+	g_free (cd->language);
+	cd->language = str->str;
 
-	g_string_free (str, TRUE);
+	g_string_free (str, FALSE);
 	g_string_free (lang, TRUE);
 }
 

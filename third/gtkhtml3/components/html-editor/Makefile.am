@@ -130,7 +130,7 @@ libgnome_gtkhtml_editor_3_0_la_SOURCES =	\
 	editor-control-shlib.c
 
 libgnome_gtkhtml_editor_3_0_la_LDFLAGS =	\
-	-avoid-version -no-undefined
+	-avoid-version -module
 
 libgnome_gtkhtml_editor_3_0_la_LIBADD =	\
 	$(LDADD)			\
@@ -166,8 +166,11 @@ server_DATA = $(server_in_files:.server.in.in=.server)
 GNOME_GtkHTML_Editor.xml: GNOME_GtkHTML_Editor.xml.in Makefile
 	sed -e 's|\@ICONSDIR\@|$(gtkhtml_data)/icons|g' $< > $@
 
+GNOME_GtkHTML_Editor-emacs.xml: GNOME_GtkHTML_Editor-emacs.xml.in Makefile
+	sed -e 's|\@ICONSDIR\@|$(gtkhtml_data)/icons|g' $< > $@
+
 uidir = $(gtkhtml_data)
-ui_DATA = GNOME_GtkHTML_Editor.xml
+ui_DATA = GNOME_GtkHTML_Editor.xml GNOME_GtkHTML_Editor-emacs.xml
 
 # The Test program
 
@@ -188,6 +191,7 @@ EXTRA_DIST =					\
 	ChangeLog				\
 	$(ui_DATA)				\
 	GNOME_GtkHTML_Editor.xml.in		\
+	GNOME_GtkHTML_Editor-emacs.xml.in	\
 	gtkhtml-editor-properties.glade		\
 	$(server_in_files) $(server_DATA)
 idldir = $(gtkhtml_data)
@@ -200,4 +204,5 @@ BUILT_SOURCES = $(IDL_GENERATED) $(SPELL_IDL_GENERATED) $(server_DATA)
 
 CLEANFILES = \
 	GNOME_GtkHTML_Editor.xml		\
+	GNOME_GtkHTML_Editor-emacs.xml		\
 	$(BUILT_SOURCES)

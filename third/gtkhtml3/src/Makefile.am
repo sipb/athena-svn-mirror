@@ -209,7 +209,6 @@ testgtkhtml_SOURCES = 		\
 	testgtkhtml.c		\
 	htmlurl.h		\
 	htmlurl.c
-testgtkhtml_LDFLAGS = -static
 testgtkhtml_LDADD =					\
 	libgtkhtml-@GTKHTML_RELEASE@.la			\
 	../a11y/libgtkhtml-a11y-@GTKHTML_RELEASE@.la 	\
