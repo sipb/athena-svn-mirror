@@ -1,0 +1,66 @@
+# Disk geometry: <ST330413A cyl 38790 alt 2 hd 16 sec 63>
+#Part      Tag    Flag     Cylinders         Size            Blocks
+#  0       root    wm       0 - 36707       17.64GB    (36708/0/0) 37001664
+#  1       swap    wu   36708 - 37748      512.37MB    (1041/0/0)   1049328
+#  2     backup    wu       0 - 38789       18.64GB    (38790/0/0) 39100320
+#  3 unassigned    wu   37749 - 38789      512.37MB    (1041/0/0)   1049328
+#  4 unassigned    wm       0                0         (0/0/0)            0
+#  5 unassigned    wm       0                0         (0/0/0)            0
+#  6 unassigned    wm       0                0         (0/0/0)            0
+#  7 unassigned    wm       0                0         (0/0/0)            0
+
+partition
+
+0
+root
+wm
+0
+36708c
+
+1
+swap
+wu
+36708
+1041c
+
+2
+backup
+wm
+0
+38790c
+
+3
+unassigned
+wm
+37749
+1041c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+unassigned
+wm
+0
+0c
+
+6
+unassigned
+wm
+0
+0c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q
