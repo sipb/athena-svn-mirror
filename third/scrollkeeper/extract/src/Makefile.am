@@ -9,7 +9,7 @@ LDADD = \
         $(XML_LIBS) \
         $(XSLT_LIBS) \
         $(top_builddir)/libs/libscrollkeeper.la \
-	$(INTLLIBS)
+	@LTLIBINTL@
 
 scrollkeeper_extract_SOURCES = \
         scrollkeeper-extract.c

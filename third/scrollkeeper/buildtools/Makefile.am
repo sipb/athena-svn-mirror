@@ -8,7 +8,7 @@ LDADD = \
         $(XML_LIBS) \
 	$(XSLT_LIBS) \
 	$(top_builddir)/libs/libscrollkeeper.la \
-	$(INTLLIBS)
+	@LTLIBINTL@
 
 noinst_PROGRAMS = \
 	scrollkeeper-tree-separate

@@ -2,13 +2,14 @@
 
 INCLUDES = \
 	-I$(top_srcdir)/libs \
-        $(XML_CFLAGS)
+        $(XML_CFLAGS) \
+	-DSCROLLKEEPER_SYSCONFDIR=\""$(sysconfdir)"\"
 
 LDADD = \
         $(XML_LIBS) \
 	$(XSLT_LIBS) \
 	$(top_builddir)/libs/libscrollkeeper.la \
-	$(INTLLIBS)
+	@LTLIBINTL@
 
 bin_PROGRAMS = scrollkeeper-preinstall scrollkeeper-update scrollkeeper-install scrollkeeper-uninstall scrollkeeper-get-cl 
 
