@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zephyr.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zephyr.c,v 1.2 1989-11-02 01:58:34 marc Exp $";
+static char rcsid_zephyr_c[] = "$Id: zephyr.c,v 1.3 1989-11-09 12:28:52 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -33,6 +33,7 @@ static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include "mux.h"
 #include "subscriptions.h"
 #include "variables.h"
+#include "pointer.h"
 
 /*
  *  Internal Routine:
@@ -187,7 +188,7 @@ void zephyr_init(notice_handler)
      * <<<>>>
      */
     mux_add_input_source(ZGetFD(), (void (*)())handle_zephyr_input,
-			 (void *)notice_handler);
+			 (pointer)notice_handler);
 }
 
 /*
