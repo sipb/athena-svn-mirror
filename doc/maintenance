@@ -150,6 +150,46 @@ start and end times of the wash processes on each machine live in
 machines" below to find out which machines take part in the wash
 process.
 
+To set up the source update on a machine:
+
+	* Ensure that it is in the set of machines installed onto by
+	  /afs/dev.mit.edu/service/wash/inst, and run that script to
+	  install the wash scripts onto that machine.
+
+	* Set up the cron job on the machine according to
+	  /afs/dev.mit.edu/service/wash/README.
+
+	* Ensure that the machine has a host key or rcmd srvtab.
+
+	* Ensure that rcmd.machinename has a PTS identity in the dev
+	  cell.
+
+	* Ensure that rcmd.machinename is in write:update.
+
+To set up the wash on a machine:
+
+	* Ensure that it is in the set of machines installed onto by
+	  /afs/dev.mit.edu/service/wash/inst, and run that script to
+	  install the wash scripts onto that machine.
+
+	* Set up cron jobs on the machine according to
+	  /afs/dev.mit.edu/service/wash/README.
+
+	* Ensure that the machine has a host key or rcmd srvtab.
+
+	* Ensure that rcmd.machinename has a PTS identity in the dev
+	  cell.
+
+	* Ensure that rcmd.machinename is in read:source.
+
+	* Ensure that
+	  /afs/dev.mit.edu/service/wash/status/machinename.mit.edu
+	  exists and that rcmd.machinename has write access to it.
+
+	* Ensure that /afs/dev.mit.edu/system/systemtype/srvd-current
+	  exists as a separate volume with adequate quota, and that
+	  rcmd.machinename has write access to it.
+
 Imake templates
 ---------------
 
