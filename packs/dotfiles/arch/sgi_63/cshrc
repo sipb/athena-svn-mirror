@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.1 1997-10-18 05:08:45 ghudson Exp $
+# $Id: cshrc,v 1.1.2.1 1997-11-04 18:58:49 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 

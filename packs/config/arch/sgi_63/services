@@ -1,7 +1,7 @@
 #
 # Network services, Internet style
 #
-# $Id: services,v 1.1 1997-10-18 05:07:05 ghudson Exp $
+# $Id: services,v 1.1.2.1 1997-11-04 18:58:36 ghudson Exp $
 #
 tcpmux		1/tcp			# TCP port multiplexer (RFC 1078)
 echo		7/tcp

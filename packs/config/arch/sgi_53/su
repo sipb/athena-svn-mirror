@@ -1,4 +1,4 @@
-#ident	"$Revision: 1.1 $"
+#ident	"$Revision: 1.1.2.1 $"
 #
 # su log file
 SULOG=/var/adm/sulog

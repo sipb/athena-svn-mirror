@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1997-10-18 04:58:40 ghudson Exp $
+# $Id: Makefile,v 1.1.2.1 1997-11-04 18:58:26 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc

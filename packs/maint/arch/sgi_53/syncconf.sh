@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.1 1997-11-03 23:17:28 ghudson Exp $
+# $Id: syncconf.sh,v 1.1.2.1 1997-11-04 18:58:16 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 1997-11-03 23:17:27 ghudson Exp $
+# $Id: Makefile,v 1.2.2.1 1997-11-04 18:58:13 ghudson Exp $
 
 SHELL=/bin/sh
 INITD=/etc/init.d
