@@ -101,6 +101,11 @@
         <long>Le groupe de travail Windows auquel appartient l&apos;utilisateur</long>
       </locale>
 
+      <locale name="gl">
+        <short>Grupo de traballo SMB</short>
+        <long>O grupo de traballo de Windows ao que pertence o usuario</long>
+      </locale>
+
       <locale name="gu">
         <short>SMB કામ કરતુ જૂથ</short>
         <long>વિન્ડોનુ કામ કરતુ જૂથ કે વપરાશર્ક્તા જેનો ભાગ છે</long>
@@ -151,6 +156,11 @@
         <long>Windows darbo grupė, kuriai priklauso vartotojas</long>
       </locale>
 
+      <locale name="mk">
+        <short>SMB работна група</short>
+        <long>Работната група од која што е дел корисникот</long>
+      </locale>
+
       <locale name="mn">
         <short>SMB ажлын хэсэг</short>
         <long>Цонхны ажлын хэсгийн хэрэглэгч бол:</long>
@@ -186,6 +196,11 @@
         <long>Windows arbeidsgruppe bruker er en del av</long>
       </locale>
 
+      <locale name="nso">
+        <short>Sehlopha sa mošomo sa SMB</short>
+        <long>Sehlopha sa mošomo sa lefesetere sa modiriši ke karolo ya</long>
+      </locale>
+
       <locale name="pa">
         <short>SMB ਵਰਕਗਰੁੱਪ</short>
         <long>ਵਿੰਡੋ ਵਰਕਗਰੁੱਪ ਉਪਭੋਗਤਾ(ਯੂਜਰ) ਹਿੱਸਾ ਹੈ</long>
@@ -212,8 +227,8 @@
       </locale>
 
       <locale name="ru">
-        <short>Рабочая группа для сети протокола SMB</short>
-        <long>Рабочая группа сети ОС Виндоуз (Windows), в которую входит пользователь</long>
+        <short>Рабочая группа SMB</short>
+        <long>Рабочая группа сети Windows, в которую входит пользователь</long>
       </locale>
 
       <locale name="sk">
@@ -274,6 +289,11 @@
       <locale name="zh_TW">
         <short>SMB 群組</short>
         <long>使用者的所屬的 window 群組</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Iqembu lokusebenza SMB</short>
+        <long>Ifasitela leqembu lomsebenzi umsebenzisi ayiqembu lalo</long>
       </locale>
     </schema>
   </schemalist>

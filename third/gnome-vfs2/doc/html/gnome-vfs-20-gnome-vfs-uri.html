@@ -1,4 +1,34 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeVFSURI</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="data-types.html" title="Basic Data Types"><link rel="previous" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="next" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="chapter" href="about.html" title="Introduction to GnomeVFS"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-init.html" title="Initialization/Shutdown"><link rel="chapter" href="data-types.html" title="Basic Data Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-uri.html" title="GnomeVFSURI"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info.html" title="GnomeVFSFileInfo"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-size.html" title="GnomeVFSFileSize"><link rel="chapter" href="gnome-vfs-file-and-dirs-ops.html" title="Files and Directories Manipulation"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-basic-ops.html" title="Basic File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-rw-ops.html" title="Reading and Writing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-xfer.html" title="File Transfers"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-trunc-ops.html" title="Truncating Files"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-async-ops.html" title="Asynchronous File Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-basic-ops.html" title="Basic Directory Operations"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-list-ops.html" title="Listing Directory Contents"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-directory-find-ops.html" title="Locating Standard Directories"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-monitor.html" title="Monitoring"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-cancellation.html" title="Cancellation"><link rel="chapter" href="volumes.html" title="Volumes and Drives Handling"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume.html" title="GnomeVFSVolume"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-drive.html" title="GnomeVFSDrive"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-volume-monitor.html" title="GnomeVFSVolumeMonitor"><link rel="chapter" href="networking.html" title="Networking"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-dns-sd.html" title="Zeroconf networking support"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-resolve.html" title="DNS Resolution"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-ssl.html" title="SSL support functions"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-socket-buffer.html" title="gnome-vfs-socket-buffer"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-inet-connection.html" title="gnome-vfs-inet-connection"><link rel="chapter" href="mime-registry.html" title="MIME Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-application-registry.html" title="Application Registry"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-database.html" title="File Types"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime-monitor.html" title="MIME Database Monitor"><link rel="chapter" href="modules.html" title="Filesystem Modules"><link rel="refentry" href="gnome-vfs-writing-modules.html" title="Writing Modules"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-mime.html" title="MIME typing"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module.html" title="gnome-vfs-module"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback-module-api.html" title="gnome-vfs-module-callback-module-api"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-context.html" title="GnomeVFSContext"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-transform.html" title="gnome-vfs-transform"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-parse-ls.html" title="gnome-vfs-parse-ls"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="refentry" href="gnome-vfs-20-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"><link rel="section" href="gnome-vfs-20-gnome-vfs-uri.html#id2551680" title="Description"><link rel="section" href="gnome-vfs-20-gnome-vfs-uri.html#id2551689" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-result.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="data-types.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-utils.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-uri"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeVFSURI</span></h2><p>GnomeVFSURI &#8212; 
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeVFSURI</title><meta name="generator" content="DocBook XSL Stylesheets V1.66.1"><link rel="start" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="data-types.html" title="Basic Data Types"><link rel="prev" href="gnome-vfs-20-gnome-vfs-result.html" title="GnomeVFSResult"><link rel="next" href="gnome-vfs-20-gnome-vfs-utils.html" title="gnome-vfs-utils"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-20-gnome-vfs-result.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="data-types.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-20-gnome-vfs-utils.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="gnome-vfs-20-gnome-vfs-uri"></a><div class="titlepage"></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeVFSURI</span></h2><p>GnomeVFSURI &#8212; 
 Functions for manipulating URIs</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
 
 
@@ -9,151 +39,65 @@ enum        <a href="gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSURIHideOptions">Gno
 #define     <a href="gnome-vfs-20-gnome-vfs-uri.html#GNOME-VFS-URI-MAGIC-STR-CAPS">GNOME_VFS_URI_MAGIC_STR</a>
 #define     <a href="gnome-vfs-20-gnome-vfs-uri.html#GNOME-VFS-URI-PATH-CHR-CAPS">GNOME_VFS_URI_PATH_CHR</a>
 #define     <a href="gnome-vfs-20-gnome-vfs-uri.html#GNOME-VFS-URI-PATH-STR-CAPS">GNOME_VFS_URI_PATH_STR</a>
-GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-new">gnome_vfs_uri_new</a>              (const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *text_uri);
+GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-new">gnome_vfs_uri_new</a>              (const gchar *text_uri);
 GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-resolve-relative">gnome_vfs_uri_resolve_relative</a> (const GnomeVFSURI *base,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *relative_reference);
+                                             const gchar *relative_reference);
 GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-ref">gnome_vfs_uri_ref</a>              (GnomeVFSURI *uri);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-unref">gnome_vfs_uri_unref</a>             (GnomeVFSURI *uri);
+void        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-unref">gnome_vfs_uri_unref</a>             (GnomeVFSURI *uri);
 GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-append-string">gnome_vfs_uri_append_string</a>    (const GnomeVFSURI *uri,
                                              const char *uri_fragment);
 GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-append-path">gnome_vfs_uri_append_path</a>      (const GnomeVFSURI *uri,
                                              const char *path);
 GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-append-file-name">gnome_vfs_uri_append_file_name</a> (const GnomeVFSURI *uri,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *filename);
-<a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-to-string">gnome_vfs_uri_to_string</a>         (const GnomeVFSURI *uri,
+                                             const gchar *filename);
+gchar*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-to-string">gnome_vfs_uri_to_string</a>         (const GnomeVFSURI *uri,
                                              <a href="gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSURIHideOptions">GnomeVFSURIHideOptions</a> hide_options);
 GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-dup">gnome_vfs_uri_dup</a>              (const GnomeVFSURI *uri);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a>    <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-is-local">gnome_vfs_uri_is_local</a>          (const GnomeVFSURI *uri);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a>    <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-has-parent">gnome_vfs_uri_has_parent</a>        (const GnomeVFSURI *uri);
+gboolean    <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-is-local">gnome_vfs_uri_is_local</a>          (const GnomeVFSURI *uri);
+gboolean    <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-has-parent">gnome_vfs_uri_has_parent</a>        (const GnomeVFSURI *uri);
 GnomeVFSURI* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-parent">gnome_vfs_uri_get_parent</a>       (const GnomeVFSURI *uri);
 <a href="gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSToplevelURI">GnomeVFSToplevelURI</a>* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-toplevel">gnome_vfs_uri_get_toplevel</a>
                                             (const GnomeVFSURI *uri);
-const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-host-name">gnome_vfs_uri_get_host_name</a>    (const GnomeVFSURI *uri);
-const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-scheme">gnome_vfs_uri_get_scheme</a>       (const GnomeVFSURI *uri);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-host-port">gnome_vfs_uri_get_host_port</a>     (const GnomeVFSURI *uri);
-const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-user-name">gnome_vfs_uri_get_user_name</a>    (const GnomeVFSURI *uri);
-const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-password">gnome_vfs_uri_get_password</a>     (const GnomeVFSURI *uri);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-set-host-name">gnome_vfs_uri_set_host_name</a>     (GnomeVFSURI *uri,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *host_name);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-set-host-port">gnome_vfs_uri_set_host_port</a>     (GnomeVFSURI *uri,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> host_port);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-set-user-name">gnome_vfs_uri_set_user_name</a>     (GnomeVFSURI *uri,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *user_name);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-set-password">gnome_vfs_uri_set_password</a>      (GnomeVFSURI *uri,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *password);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a>    <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-equal">gnome_vfs_uri_equal</a>             (const GnomeVFSURI *a,
+const gchar* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-host-name">gnome_vfs_uri_get_host_name</a>    (const GnomeVFSURI *uri);
+const gchar* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-scheme">gnome_vfs_uri_get_scheme</a>       (const GnomeVFSURI *uri);
+guint       <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-host-port">gnome_vfs_uri_get_host_port</a>     (const GnomeVFSURI *uri);
+const gchar* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-user-name">gnome_vfs_uri_get_user_name</a>    (const GnomeVFSURI *uri);
+const gchar* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-password">gnome_vfs_uri_get_password</a>     (const GnomeVFSURI *uri);
+void        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-set-host-name">gnome_vfs_uri_set_host_name</a>     (GnomeVFSURI *uri,
+                                             const gchar *host_name);
+void        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-set-host-port">gnome_vfs_uri_set_host_port</a>     (GnomeVFSURI *uri,
+                                             guint host_port);
+void        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-set-user-name">gnome_vfs_uri_set_user_name</a>     (GnomeVFSURI *uri,
+                                             const gchar *user_name);
+void        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-set-password">gnome_vfs_uri_set_password</a>      (GnomeVFSURI *uri,
+                                             const gchar *password);
+gboolean    <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-equal">gnome_vfs_uri_equal</a>             (const GnomeVFSURI *a,
                                              const GnomeVFSURI *b);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a>    <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-is-parent">gnome_vfs_uri_is_parent</a>         (const GnomeVFSURI *possible_parent,
+gboolean    <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-is-parent">gnome_vfs_uri_is_parent</a>         (const GnomeVFSURI *possible_parent,
                                              const GnomeVFSURI *possible_child,
-                                             <a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a> recursive);
-const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-path">gnome_vfs_uri_get_path</a>         (const GnomeVFSURI *uri);
-const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-fragment-identifier">gnome_vfs_uri_get_fragment_identifier</a>
+                                             gboolean recursive);
+const gchar* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-path">gnome_vfs_uri_get_path</a>         (const GnomeVFSURI *uri);
+const gchar* <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-get-fragment-identifier">gnome_vfs_uri_get_fragment_identifier</a>
                                             (const GnomeVFSURI *uri);
-<a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-extract-dirname">gnome_vfs_uri_extract_dirname</a>   (const GnomeVFSURI *uri);
-<a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-extract-short-name">gnome_vfs_uri_extract_short_name</a>
+gchar*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-extract-dirname">gnome_vfs_uri_extract_dirname</a>   (const GnomeVFSURI *uri);
+gchar*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-extract-short-name">gnome_vfs_uri_extract_short_name</a>
                                             (const GnomeVFSURI *uri);
-<a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-extract-short-path-name">gnome_vfs_uri_extract_short_path_name</a>
+gchar*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-extract-short-path-name">gnome_vfs_uri_extract_short_path_name</a>
                                             (const GnomeVFSURI *uri);
-<a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-hequal">gnome_vfs_uri_hequal</a>            (<a
-href="../glib/glib-Basic-Types.html#gconstpointer"
->gconstpointer</a> a,
-                                             <a
-href="../glib/glib-Basic-Types.html#gconstpointer"
->gconstpointer</a> b);
-<a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-hash">gnome_vfs_uri_hash</a>              (<a
-href="../glib/glib-Basic-Types.html#gconstpointer"
->gconstpointer</a> p);
-<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-parse">gnome_vfs_uri_list_parse</a>        (const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *uri_list);
-<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-ref">gnome_vfs_uri_list_ref</a>          (<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *list);
-<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-unref">gnome_vfs_uri_list_unref</a>        (<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *list);
-<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-copy">gnome_vfs_uri_list_copy</a>         (<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *list);
-<a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-free">gnome_vfs_uri_list_free</a>         (<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *list);
+gint        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-hequal">gnome_vfs_uri_hequal</a>            (gconstpointer a,
+                                             gconstpointer b);
+guint       <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-hash">gnome_vfs_uri_hash</a>              (gconstpointer p);
+GList*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-parse">gnome_vfs_uri_list_parse</a>        (const gchar *uri_list);
+GList*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-ref">gnome_vfs_uri_list_ref</a>          (GList *list);
+GList*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-unref">gnome_vfs_uri_list_unref</a>        (GList *list);
+GList*      <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-copy">gnome_vfs_uri_list_copy</a>         (GList *list);
+void        <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-free">gnome_vfs_uri_list_free</a>         (GList *list);
 char*       <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-make-full-from-relative">gnome_vfs_uri_make_full_from_relative</a>
                                             (const char *base_uri,
                                              const char *relative_uri);
-</pre></div><div class="refsect1" lang="en"><a name="id2551680"></a><h2>Description</h2><p>
+</pre></div><div class="refsect1" lang="en"><a name="id2528897"></a><h2>Description</h2><p>
 
-</p></div><div class="refsect1" lang="en"><a name="id2551689"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2551695"></a><h3><a name="GnomeVFSToplevelURI"></a>struct GnomeVFSToplevelURI</h3><a class="indexterm" name="id2551706"></a><pre class="programlisting">struct GnomeVFSToplevelURI {
+</p></div><div class="refsect1" lang="en"><a name="id2528907"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2528913"></a><h3><a name="GnomeVFSToplevelURI"></a>struct GnomeVFSToplevelURI</h3><a class="indexterm" name="id2528924"></a><pre class="programlisting">struct GnomeVFSToplevelURI {
 
 	/* Base object.  */
 	GnomeVFSURI uri;
@@ -176,7 +120,7 @@ char*       <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-make-full-fro
 };
 </pre><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2551727"></a><h3><a name="GnomeVFSURIHideOptions"></a>enum GnomeVFSURIHideOptions</h3><a class="indexterm" name="id2551738"></a><pre class="programlisting">typedef enum
+</p></div><hr><div class="refsect2" lang="en"><a name="id2528944"></a><h3><a name="GnomeVFSURIHideOptions"></a>enum GnomeVFSURIHideOptions</h3><a class="indexterm" name="id2528956"></a><pre class="programlisting">typedef enum
 {
 	GNOME_VFS_URI_HIDE_NONE = 0,
 	GNOME_VFS_URI_HIDE_USER_NAME = 1 &lt;&lt; 0,
@@ -197,55 +141,49 @@ of a GnomeVFSURI when it is converted to a string.</p><p>
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_VFS_URI_HIDE_HOST_PORT</tt></span></td><td> hide the port
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD</tt></span></td><td> hide the method (e.g. http, file)
 </td></tr><tr><td><span class="term"><tt class="literal">GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER</tt></span></td><td> hide the fragment identifier
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551875"></a><h3><a name="GNOME-VFS-URI-MAGIC-CHR-CAPS"></a>GNOME_VFS_URI_MAGIC_CHR</h3><a class="indexterm" name="id2551887"></a><pre class="programlisting">#define GNOME_VFS_URI_MAGIC_CHR	'#'
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529093"></a><h3><a name="GNOME-VFS-URI-MAGIC-CHR-CAPS"></a>GNOME_VFS_URI_MAGIC_CHR</h3><a class="indexterm" name="id2529105"></a><pre class="programlisting">#define GNOME_VFS_URI_MAGIC_CHR	'#'
 </pre><p>
 The character used to divide location from
 extra "arguments" passed to the method.</p><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2551908"></a><h3><a name="GNOME-VFS-URI-MAGIC-STR-CAPS"></a>GNOME_VFS_URI_MAGIC_STR</h3><a class="indexterm" name="id2551919"></a><pre class="programlisting">#define GNOME_VFS_URI_MAGIC_STR "#"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2529125"></a><h3><a name="GNOME-VFS-URI-MAGIC-STR-CAPS"></a>GNOME_VFS_URI_MAGIC_STR</h3><a class="indexterm" name="id2529137"></a><pre class="programlisting">#define GNOME_VFS_URI_MAGIC_STR "#"
 </pre><p>
 The character used to divide location from
 extra "arguments" passed to the method.</p><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2551939"></a><h3><a name="GNOME-VFS-URI-PATH-CHR-CAPS"></a>GNOME_VFS_URI_PATH_CHR</h3><a class="indexterm" name="id2551950"></a><pre class="programlisting">#define GNOME_VFS_URI_PATH_CHR '/'
+</p></div><hr><div class="refsect2" lang="en"><a name="id2529157"></a><h3><a name="GNOME-VFS-URI-PATH-CHR-CAPS"></a>GNOME_VFS_URI_PATH_CHR</h3><a class="indexterm" name="id2529168"></a><pre class="programlisting">#define GNOME_VFS_URI_PATH_CHR '/'
 </pre><p>
 Defines the path seperator character.</p><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2551969"></a><h3><a name="GNOME-VFS-URI-PATH-STR-CAPS"></a>GNOME_VFS_URI_PATH_STR</h3><a class="indexterm" name="id2551980"></a><pre class="programlisting">#define GNOME_VFS_URI_PATH_STR "/"
+</p></div><hr><div class="refsect2" lang="en"><a name="id2529187"></a><h3><a name="GNOME-VFS-URI-PATH-STR-CAPS"></a>GNOME_VFS_URI_PATH_STR</h3><a class="indexterm" name="id2529198"></a><pre class="programlisting">#define GNOME_VFS_URI_PATH_STR "/"
 </pre><p>
 Defines the path seperator string.</p><p>
 
-</p></div><hr><div class="refsect2" lang="en"><a name="id2552000"></a><h3><a name="gnome-vfs-uri-new"></a>gnome_vfs_uri_new ()</h3><a class="indexterm" name="id2552011"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_new              (const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *text_uri);</pre><p>
+</p></div><hr><div class="refsect2" lang="en"><a name="id2529217"></a><h3><a name="gnome-vfs-uri-new"></a>gnome_vfs_uri_new ()</h3><a class="indexterm" name="id2529228"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_new              (const gchar *text_uri);</pre><p>
 Create a new URI from <i class="parameter"><tt>text_uri</tt></i>. Unsupported and unsafe methods
 are not allowed and will result in <tt class="literal">null</tt>% being returned. URL
 transforms are allowed.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>text_uri</tt></i> :</span></td><td> A string representing a URI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new URI.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552085"></a><h3><a name="gnome-vfs-uri-resolve-relative"></a>gnome_vfs_uri_resolve_relative ()</h3><a class="indexterm" name="id2552096"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_resolve_relative (const GnomeVFSURI *base,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *relative_reference);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529302"></a><h3><a name="gnome-vfs-uri-resolve-relative"></a>gnome_vfs_uri_resolve_relative ()</h3><a class="indexterm" name="id2529314"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_resolve_relative (const GnomeVFSURI *base,
+                                             const gchar *relative_reference);</pre><p>
 Create a new URI from <i class="parameter"><tt>relative_reference</tt></i>, relative to <i class="parameter"><tt>base</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>base</tt></i> :</span></td><td> The base URI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>relative_reference</tt></i> :</span></td><td> A string representing a possibly relative URI reference
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new URI.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552191"></a><h3><a name="gnome-vfs-uri-ref"></a>gnome_vfs_uri_ref ()</h3><a class="indexterm" name="id2552202"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_ref              (GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529409"></a><h3><a name="gnome-vfs-uri-ref"></a>gnome_vfs_uri_ref ()</h3><a class="indexterm" name="id2529420"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_ref              (GnomeVFSURI *uri);</pre><p>
 Increment <i class="parameter"><tt>uri</tt></i>'s reference count.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <i class="parameter"><tt>uri</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552273"></a><h3><a name="gnome-vfs-uri-unref"></a>gnome_vfs_uri_unref ()</h3><a class="indexterm" name="id2552285"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        gnome_vfs_uri_unref             (GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529491"></a><h3><a name="gnome-vfs-uri-unref"></a>gnome_vfs_uri_unref ()</h3><a class="indexterm" name="id2529502"></a><pre class="programlisting">void        gnome_vfs_uri_unref             (GnomeVFSURI *uri);</pre><p>
 Decrement <i class="parameter"><tt>uri</tt></i>'s reference count.  If the reference count reaches zero,
 <i class="parameter"><tt>uri</tt></i> is destroyed.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552346"></a><h3><a name="gnome-vfs-uri-append-string"></a>gnome_vfs_uri_append_string ()</h3><a class="indexterm" name="id2552358"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_append_string    (const GnomeVFSURI *uri,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529564"></a><h3><a name="gnome-vfs-uri-append-string"></a>gnome_vfs_uri_append_string ()</h3><a class="indexterm" name="id2529576"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_append_string    (const GnomeVFSURI *uri,
                                              const char *uri_fragment);</pre><p>
 Create a new URI obtained by appending <i class="parameter"><tt>path</tt></i> to <i class="parameter"><tt>uri</tt></i>.  This will take care
 of adding an appropriate directory separator between the end of <i class="parameter"><tt>uri</tt></i> and
@@ -254,7 +192,7 @@ the start of <i class="parameter"><tt>path</tt></i> if necessary.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>uri_fragment</tt></i> :</span></td><td> A piece of a URI (ie a fully escaped partial path)
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new URI obtained by combining <i class="parameter"><tt>uri</tt></i> and <i class="parameter"><tt>path</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552477"></a><h3><a name="gnome-vfs-uri-append-path"></a>gnome_vfs_uri_append_path ()</h3><a class="indexterm" name="id2552489"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_append_path      (const GnomeVFSURI *uri,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529695"></a><h3><a name="gnome-vfs-uri-append-path"></a>gnome_vfs_uri_append_path ()</h3><a class="indexterm" name="id2529707"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_append_path      (const GnomeVFSURI *uri,
                                              const char *path);</pre><p>
 Create a new URI obtained by appending <i class="parameter"><tt>path</tt></i> to <i class="parameter"><tt>uri</tt></i>.  This will take care
 of adding an appropriate directory separator between the end of <i class="parameter"><tt>uri</tt></i> and
@@ -263,10 +201,8 @@ the start of <i class="parameter"><tt>path</tt></i> if necessary as well as esca
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> A non-escaped file path
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new URI obtained by combining <i class="parameter"><tt>uri</tt></i> and <i class="parameter"><tt>path</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552614"></a><h3><a name="gnome-vfs-uri-append-file-name"></a>gnome_vfs_uri_append_file_name ()</h3><a class="indexterm" name="id2552625"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_append_file_name (const GnomeVFSURI *uri,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *filename);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529831"></a><h3><a name="gnome-vfs-uri-append-file-name"></a>gnome_vfs_uri_append_file_name ()</h3><a class="indexterm" name="id2529843"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_append_file_name (const GnomeVFSURI *uri,
+                                             const gchar *filename);</pre><p>
 Create a new URI obtained by appending <i class="parameter"><tt>file_name</tt></i> to <i class="parameter"><tt>uri</tt></i>.  This will take care
 of adding an appropriate directory separator between the end of <i class="parameter"><tt>uri</tt></i> and
 the start of <i class="parameter"><tt>file_name</tt></i> if necessary.</p><p>
@@ -274,9 +210,7 @@ the start of <i class="parameter"><tt>file_name</tt></i> if necessary.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>filename</tt></i> :</span></td><td> any "regular" file name (can include #, /, etc)
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The new URI obtained by combining <i class="parameter"><tt>uri</tt></i> and <i class="parameter"><tt>path</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552745"></a><h3><a name="gnome-vfs-uri-to-string"></a>gnome_vfs_uri_to_string ()</h3><a class="indexterm" name="id2552756"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      gnome_vfs_uri_to_string         (const GnomeVFSURI *uri,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2529963"></a><h3><a name="gnome-vfs-uri-to-string"></a>gnome_vfs_uri_to_string ()</h3><a class="indexterm" name="id2529974"></a><pre class="programlisting">gchar*      gnome_vfs_uri_to_string         (const GnomeVFSURI *uri,
                                              <a href="gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSURIHideOptions">GnomeVFSURIHideOptions</a> hide_options);</pre><p>
 Translate <i class="parameter"><tt>uri</tt></i> into a printable string.  The string will not contain the
 URI elements specified by <i class="parameter"><tt>hide_options</tt></i>.</p><p>
@@ -285,116 +219,84 @@ URI elements specified by <i class="parameter"><tt>hide_options</tt></i>.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>hide_options</tt></i> :</span></td><td> Bitmask specifying what URI elements (e.g. password,
 user name etc.) should not be represented in the returned string.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A malloced printable string representing <i class="parameter"><tt>uri</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552859"></a><h3><a name="gnome-vfs-uri-dup"></a>gnome_vfs_uri_dup ()</h3><a class="indexterm" name="id2552870"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_dup              (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530077"></a><h3><a name="gnome-vfs-uri-dup"></a>gnome_vfs_uri_dup ()</h3><a class="indexterm" name="id2530088"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_dup              (const GnomeVFSURI *uri);</pre><p>
 Duplicate <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to a new URI that is exactly the same as <i class="parameter"><tt>uri</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552941"></a><h3><a name="gnome-vfs-uri-is-local"></a>gnome_vfs_uri_is_local ()</h3><a class="indexterm" name="id2552952"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a>    gnome_vfs_uri_is_local          (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530159"></a><h3><a name="gnome-vfs-uri-is-local"></a>gnome_vfs_uri_is_local ()</h3><a class="indexterm" name="id2530170"></a><pre class="programlisting">gboolean    gnome_vfs_uri_is_local          (const GnomeVFSURI *uri);</pre><p>
 Check if <i class="parameter"><tt>uri</tt></i> is a local (native) file system.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">FALSE</tt> if <i class="parameter"><tt>uri</tt></i> is not a local file system, <tt class="literal">TRUE</tt> otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553036"></a><h3><a name="gnome-vfs-uri-has-parent"></a>gnome_vfs_uri_has_parent ()</h3><a class="indexterm" name="id2553047"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a>    gnome_vfs_uri_has_parent        (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530254"></a><h3><a name="gnome-vfs-uri-has-parent"></a>gnome_vfs_uri_has_parent ()</h3><a class="indexterm" name="id2530265"></a><pre class="programlisting">gboolean    gnome_vfs_uri_has_parent        (const GnomeVFSURI *uri);</pre><p>
 Check if URI has a parent or not.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if <i class="parameter"><tt>uri</tt></i> has a parent, <tt class="literal">FALSE</tt> otherwise.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553125"></a><h3><a name="gnome-vfs-uri-get-parent"></a>gnome_vfs_uri_get_parent ()</h3><a class="indexterm" name="id2553136"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_get_parent       (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530343"></a><h3><a name="gnome-vfs-uri-get-parent"></a>gnome_vfs_uri_get_parent ()</h3><a class="indexterm" name="id2530354"></a><pre class="programlisting">GnomeVFSURI* gnome_vfs_uri_get_parent       (const GnomeVFSURI *uri);</pre><p>
 Retrieve <i class="parameter"><tt>uri</tt></i>'s parent URI.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to <i class="parameter"><tt>uri</tt></i>'s parent URI.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553208"></a><h3><a name="gnome-vfs-uri-get-toplevel"></a>gnome_vfs_uri_get_toplevel ()</h3><a class="indexterm" name="id2553220"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSToplevelURI">GnomeVFSToplevelURI</a>* gnome_vfs_uri_get_toplevel
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530425"></a><h3><a name="gnome-vfs-uri-get-toplevel"></a>gnome_vfs_uri_get_toplevel ()</h3><a class="indexterm" name="id2530438"></a><pre class="programlisting"><a href="gnome-vfs-20-gnome-vfs-uri.html#GnomeVFSToplevelURI">GnomeVFSToplevelURI</a>* gnome_vfs_uri_get_toplevel
                                             (const GnomeVFSURI *uri);</pre><p>
 Retrieve the toplevel URI in <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the toplevel URI object.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553286"></a><h3><a name="gnome-vfs-uri-get-host-name"></a>gnome_vfs_uri_get_host_name ()</h3><a class="indexterm" name="id2553298"></a><pre class="programlisting">const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* gnome_vfs_uri_get_host_name    (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530504"></a><h3><a name="gnome-vfs-uri-get-host-name"></a>gnome_vfs_uri_get_host_name ()</h3><a class="indexterm" name="id2530516"></a><pre class="programlisting">const gchar* gnome_vfs_uri_get_host_name    (const GnomeVFSURI *uri);</pre><p>
 Retrieve the host name for <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A string representing the host name.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553365"></a><h3><a name="gnome-vfs-uri-get-scheme"></a>gnome_vfs_uri_get_scheme ()</h3><a class="indexterm" name="id2553376"></a><pre class="programlisting">const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* gnome_vfs_uri_get_scheme       (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530583"></a><h3><a name="gnome-vfs-uri-get-scheme"></a>gnome_vfs_uri_get_scheme ()</h3><a class="indexterm" name="id2530594"></a><pre class="programlisting">const gchar* gnome_vfs_uri_get_scheme       (const GnomeVFSURI *uri);</pre><p>
 Retrieve the scheme used for <i class="parameter"><tt>uri</tt></i></p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A string representing the scheme
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553442"></a><h3><a name="gnome-vfs-uri-get-host-port"></a>gnome_vfs_uri_get_host_port ()</h3><a class="indexterm" name="id2553454"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gnome_vfs_uri_get_host_port     (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530660"></a><h3><a name="gnome-vfs-uri-get-host-port"></a>gnome_vfs_uri_get_host_port ()</h3><a class="indexterm" name="id2530672"></a><pre class="programlisting">guint       gnome_vfs_uri_get_host_port     (const GnomeVFSURI *uri);</pre><p>
 Retrieve the host port number in <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The host port number used by <i class="parameter"><tt>uri</tt></i>.  If the value is zero, the
 default port value for the specified toplevel access method is used.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553527"></a><h3><a name="gnome-vfs-uri-get-user-name"></a>gnome_vfs_uri_get_user_name ()</h3><a class="indexterm" name="id2553539"></a><pre class="programlisting">const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* gnome_vfs_uri_get_user_name    (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530745"></a><h3><a name="gnome-vfs-uri-get-user-name"></a>gnome_vfs_uri_get_user_name ()</h3><a class="indexterm" name="id2530757"></a><pre class="programlisting">const gchar* gnome_vfs_uri_get_user_name    (const GnomeVFSURI *uri);</pre><p>
 Retrieve the user name in <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A string representing the user name in <i class="parameter"><tt>uri</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553611"></a><h3><a name="gnome-vfs-uri-get-password"></a>gnome_vfs_uri_get_password ()</h3><a class="indexterm" name="id2553623"></a><pre class="programlisting">const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* gnome_vfs_uri_get_password     (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530829"></a><h3><a name="gnome-vfs-uri-get-password"></a>gnome_vfs_uri_get_password ()</h3><a class="indexterm" name="id2530841"></a><pre class="programlisting">const gchar* gnome_vfs_uri_get_password     (const GnomeVFSURI *uri);</pre><p>
 Retrieve the password for <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The password for <i class="parameter"><tt>uri</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553695"></a><h3><a name="gnome-vfs-uri-set-host-name"></a>gnome_vfs_uri_set_host_name ()</h3><a class="indexterm" name="id2553706"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        gnome_vfs_uri_set_host_name     (GnomeVFSURI *uri,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *host_name);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2530912"></a><h3><a name="gnome-vfs-uri-set-host-name"></a>gnome_vfs_uri_set_host_name ()</h3><a class="indexterm" name="id2530924"></a><pre class="programlisting">void        gnome_vfs_uri_set_host_name     (GnomeVFSURI *uri,
+                                             const gchar *host_name);</pre><p>
 Set <i class="parameter"><tt>host_name</tt></i> as the host name accessed by <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>host_name</tt></i> :</span></td><td> A string representing a host name.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553789"></a><h3><a name="gnome-vfs-uri-set-host-port"></a>gnome_vfs_uri_set_host_port ()</h3><a class="indexterm" name="id2553801"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        gnome_vfs_uri_set_host_port     (GnomeVFSURI *uri,
-                                             <a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a> host_port);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531007"></a><h3><a name="gnome-vfs-uri-set-host-port"></a>gnome_vfs_uri_set_host_port ()</h3><a class="indexterm" name="id2531019"></a><pre class="programlisting">void        gnome_vfs_uri_set_host_port     (GnomeVFSURI *uri,
+                                             guint host_port);</pre><p>
 Set the host port number in <i class="parameter"><tt>uri</tt></i>.  If <i class="parameter"><tt>host_port</tt></i> is zero, the default port
 for <i class="parameter"><tt>uri</tt></i>'s toplevel access method is used.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>host_port</tt></i> :</span></td><td> A TCP/IP port number.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553891"></a><h3><a name="gnome-vfs-uri-set-user-name"></a>gnome_vfs_uri_set_user_name ()</h3><a class="indexterm" name="id2553902"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        gnome_vfs_uri_set_user_name     (GnomeVFSURI *uri,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *user_name);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531109"></a><h3><a name="gnome-vfs-uri-set-user-name"></a>gnome_vfs_uri_set_user_name ()</h3><a class="indexterm" name="id2531120"></a><pre class="programlisting">void        gnome_vfs_uri_set_user_name     (GnomeVFSURI *uri,
+                                             const gchar *user_name);</pre><p>
 Set <i class="parameter"><tt>user_name</tt></i> as the user name for <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>user_name</tt></i> :</span></td><td> A string representing a user name on the host accessed by <i class="parameter"><tt>uri</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2553991"></a><h3><a name="gnome-vfs-uri-set-password"></a>gnome_vfs_uri_set_password ()</h3><a class="indexterm" name="id2554003"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        gnome_vfs_uri_set_password      (GnomeVFSURI *uri,
-                                             const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *password);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531209"></a><h3><a name="gnome-vfs-uri-set-password"></a>gnome_vfs_uri_set_password ()</h3><a class="indexterm" name="id2531221"></a><pre class="programlisting">void        gnome_vfs_uri_set_password      (GnomeVFSURI *uri,
+                                             const gchar *password);</pre><p>
 Set <i class="parameter"><tt>password</tt></i> as the password for <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>password</tt></i> :</span></td><td> A password string.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554086"></a><h3><a name="gnome-vfs-uri-equal"></a>gnome_vfs_uri_equal ()</h3><a class="indexterm" name="id2554097"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a>    gnome_vfs_uri_equal             (const GnomeVFSURI *a,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531303"></a><h3><a name="gnome-vfs-uri-equal"></a>gnome_vfs_uri_equal ()</h3><a class="indexterm" name="id2531315"></a><pre class="programlisting">gboolean    gnome_vfs_uri_equal             (const GnomeVFSURI *a,
                                              const GnomeVFSURI *b);</pre><p>
 Compare <i class="parameter"><tt>a</tt></i> and <i class="parameter"><tt>b</tt></i>.</p><p>
 
@@ -405,13 +307,9 @@ Compare <i class="parameter"><tt>a</tt></i> and <i class="parameter"><tt>b</tt><
 FIXME: This comparison should take into account the possiblity
 that unreserved characters may be escaped.
 ...or perhaps gnome_vfs_uri_new should unescape unreserved characters?
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554215"></a><h3><a name="gnome-vfs-uri-is-parent"></a>gnome_vfs_uri_is_parent ()</h3><a class="indexterm" name="id2554226"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a>    gnome_vfs_uri_is_parent         (const GnomeVFSURI *possible_parent,
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531433"></a><h3><a name="gnome-vfs-uri-is-parent"></a>gnome_vfs_uri_is_parent ()</h3><a class="indexterm" name="id2531444"></a><pre class="programlisting">gboolean    gnome_vfs_uri_is_parent         (const GnomeVFSURI *possible_parent,
                                              const GnomeVFSURI *possible_child,
-                                             <a
-href="../conglomerate/conglomerate-cong-plugin.html#gboolean"
->gboolean</a> recursive);</pre><p>
+                                             gboolean recursive);</pre><p>
 Check if <i class="parameter"><tt>possible_child</tt></i> is contained by <i class="parameter"><tt>possible_parent</tt></i>.
 If <i class="parameter"><tt>recursive</tt></i> is FALSE, just try the immediate parent directory, else
 search up through the hierarchy.</p><p>
@@ -420,27 +318,21 @@ search up through the hierarchy.</p><p>
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>possible_child</tt></i> :</span></td><td> A GnomeVFSURI.
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>recursive</tt></i> :</span></td><td> a flag to turn recursive check on.
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if <i class="parameter"><tt>possible_child</tt></i> is contained in  <i class="parameter"><tt>possible_child</tt></i>.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554368"></a><h3><a name="gnome-vfs-uri-get-path"></a>gnome_vfs_uri_get_path ()</h3><a class="indexterm" name="id2554379"></a><pre class="programlisting">const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* gnome_vfs_uri_get_path         (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531586"></a><h3><a name="gnome-vfs-uri-get-path"></a>gnome_vfs_uri_get_path ()</h3><a class="indexterm" name="id2531597"></a><pre class="programlisting">const gchar* gnome_vfs_uri_get_path         (const GnomeVFSURI *uri);</pre><p>
 Retrieve full path name for <i class="parameter"><tt>uri</tt></i>.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the full path name in <i class="parameter"><tt>uri</tt></i>.  Notice that the
 pointer points to the name store in <i class="parameter"><tt>uri</tt></i>, so the name returned must not
 be modified nor freed.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554460"></a><h3><a name="gnome-vfs-uri-get-fragment-identifier"></a>gnome_vfs_uri_get_fragment_identifier ()</h3><a class="indexterm" name="id2554472"></a><pre class="programlisting">const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>* gnome_vfs_uri_get_fragment_identifier
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531678"></a><h3><a name="gnome-vfs-uri-get-fragment-identifier"></a>gnome_vfs_uri_get_fragment_identifier ()</h3><a class="indexterm" name="id2531690"></a><pre class="programlisting">const gchar* gnome_vfs_uri_get_fragment_identifier
                                             (const GnomeVFSURI *uri);</pre><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
 
 
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554530"></a><h3><a name="gnome-vfs-uri-extract-dirname"></a>gnome_vfs_uri_extract_dirname ()</h3><a class="indexterm" name="id2554542"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      gnome_vfs_uri_extract_dirname   (const GnomeVFSURI *uri);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531748"></a><h3><a name="gnome-vfs-uri-extract-dirname"></a>gnome_vfs_uri_extract_dirname ()</h3><a class="indexterm" name="id2531760"></a><pre class="programlisting">gchar*      gnome_vfs_uri_extract_dirname   (const GnomeVFSURI *uri);</pre><p>
 Extract the name of the directory in which the file pointed to by <i class="parameter"><tt>uri</tt></i> is
 stored as a newly allocated string.  The string will end with a
 GNOME_VFS_URI_PATH_CHR.</p><p>
@@ -448,9 +340,7 @@ GNOME_VFS_URI_PATH_CHR.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the newly allocated string representing the
 parent directory.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554611"></a><h3><a name="gnome-vfs-uri-extract-short-name"></a>gnome_vfs_uri_extract_short_name ()</h3><a class="indexterm" name="id2554623"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      gnome_vfs_uri_extract_short_name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531829"></a><h3><a name="gnome-vfs-uri-extract-short-name"></a>gnome_vfs_uri_extract_short_name ()</h3><a class="indexterm" name="id2531841"></a><pre class="programlisting">gchar*      gnome_vfs_uri_extract_short_name
                                             (const GnomeVFSURI *uri);</pre><p>
 Retrieve base file name for <i class="parameter"><tt>uri</tt></i>, ignoring any trailing path separators.
 This matches the XPG definition of basename, but not g_basename. This is
@@ -464,9 +354,7 @@ See also: gnome_vfs_uri_extract_short_path_name.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the newly allocated string representing the
 unescaped short form of the name.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554707"></a><h3><a name="gnome-vfs-uri-extract-short-path-name"></a>gnome_vfs_uri_extract_short_path_name ()</h3><a class="indexterm" name="id2554719"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a>*      gnome_vfs_uri_extract_short_path_name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2531925"></a><h3><a name="gnome-vfs-uri-extract-short-path-name"></a>gnome_vfs_uri_extract_short_path_name ()</h3><a class="indexterm" name="id2531937"></a><pre class="programlisting">gchar*      gnome_vfs_uri_extract_short_path_name
                                             (const GnomeVFSURI *uri);</pre><p>
 Retrieve base file name for <i class="parameter"><tt>uri</tt></i>, ignoring any trailing path separators.
 This matches the XPG definition of basename, but not g_basename. This is
@@ -480,81 +368,51 @@ See also: gnome_vfs_uri_extract_short_name.</p><p>
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> A GnomeVFSURI
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the newly allocated string representing the
 escaped short form of the name.
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554803"></a><h3><a name="gnome-vfs-uri-hequal"></a>gnome_vfs_uri_hequal ()</h3><a class="indexterm" name="id2554814"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#gint"
->gint</a>        gnome_vfs_uri_hequal            (<a
-href="../glib/glib-Basic-Types.html#gconstpointer"
->gconstpointer</a> a,
-                                             <a
-href="../glib/glib-Basic-Types.html#gconstpointer"
->gconstpointer</a> b);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2532021"></a><h3><a name="gnome-vfs-uri-hequal"></a>gnome_vfs_uri_hequal ()</h3><a class="indexterm" name="id2532032"></a><pre class="programlisting">gint        gnome_vfs_uri_hequal            (gconstpointer a,
+                                             gconstpointer b);</pre><p>
 Function intended for use as a hash table "are these two items
 the same" comparison. Useful for creating a hash table of URIs.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>a</tt></i> :</span></td><td> a pointer to a GnomeVFSURI
 </td></tr><tr><td><span class="term"><i class="parameter"><tt>b</tt></i> :</span></td><td> a pointer to a GnomeVFSURI
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if the URIs are the same
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554904"></a><h3><a name="gnome-vfs-uri-hash"></a>gnome_vfs_uri_hash ()</h3><a class="indexterm" name="id2554915"></a><pre class="programlisting"><a
-href="../glib/glib-Basic-Types.html#guint"
->guint</a>       gnome_vfs_uri_hash              (<a
-href="../glib/glib-Basic-Types.html#gconstpointer"
->gconstpointer</a> p);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2532122"></a><h3><a name="gnome-vfs-uri-hash"></a>gnome_vfs_uri_hash ()</h3><a class="indexterm" name="id2532133"></a><pre class="programlisting">guint       gnome_vfs_uri_hash              (gconstpointer p);</pre><p>
 Creates an integer value from a GnomeVFSURI, appropriate
 for using as the key to a hash table entry.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>p</tt></i> :</span></td><td> a pointer to a GnomeVFSURI
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a hash key corresponding to <i class="parameter"><tt>p</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2554983"></a><h3><a name="gnome-vfs-uri-list-parse"></a>gnome_vfs_uri_list_parse ()</h3><a class="indexterm" name="id2554994"></a><pre class="programlisting"><a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*      gnome_vfs_uri_list_parse        (const <a
-href="../glib/glib-Basic-Types.html#gchar"
->gchar</a> *uri_list);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2532200"></a><h3><a name="gnome-vfs-uri-list-parse"></a>gnome_vfs_uri_list_parse ()</h3><a class="indexterm" name="id2532212"></a><pre class="programlisting">GList*      gnome_vfs_uri_list_parse        (const gchar *uri_list);</pre><p>
 Extracts a list of <span class="type">GnomeVFSURI</span> objects from a standard text/uri-list,
 such as one you would get on a drop operation.  Use
 <a href="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-free"><span class="type">gnome_vfs_uri_list_free</span></a> when you are done with the list.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri_list</tt></i> :</span></td><td>
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A GList of GnomeVFSURIs
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2555073"></a><h3><a name="gnome-vfs-uri-list-ref"></a>gnome_vfs_uri_list_ref ()</h3><a class="indexterm" name="id2555084"></a><pre class="programlisting"><a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*      gnome_vfs_uri_list_ref          (<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *list);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2532291"></a><h3><a name="gnome-vfs-uri-list-ref"></a>gnome_vfs_uri_list_ref ()</h3><a class="indexterm" name="id2532302"></a><pre class="programlisting">GList*      gnome_vfs_uri_list_ref          (GList *list);</pre><p>
 Increments the reference count of the items in <i class="parameter"><tt>list</tt></i> by one.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td> list of GnomeVFSURI elements
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <i class="parameter"><tt>list</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2555156"></a><h3><a name="gnome-vfs-uri-list-unref"></a>gnome_vfs_uri_list_unref ()</h3><a class="indexterm" name="id2555167"></a><pre class="programlisting"><a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*      gnome_vfs_uri_list_unref        (<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *list);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2532374"></a><h3><a name="gnome-vfs-uri-list-unref"></a>gnome_vfs_uri_list_unref ()</h3><a class="indexterm" name="id2532385"></a><pre class="programlisting">GList*      gnome_vfs_uri_list_unref        (GList *list);</pre><p>
 Decrements the reference count of the items in <i class="parameter"><tt>list</tt></i> by one.
 Note that the list is *not freed* even if each member of the list
 is freed.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td> list of GnomeVFSURI elements
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <i class="parameter"><tt>list</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2555241"></a><h3><a name="gnome-vfs-uri-list-copy"></a>gnome_vfs_uri_list_copy ()</h3><a class="indexterm" name="id2555252"></a><pre class="programlisting"><a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a>*      gnome_vfs_uri_list_copy         (<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *list);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2532459"></a><h3><a name="gnome-vfs-uri-list-copy"></a>gnome_vfs_uri_list_copy ()</h3><a class="indexterm" name="id2532470"></a><pre class="programlisting">GList*      gnome_vfs_uri_list_copy         (GList *list);</pre><p>
 Creates a duplicate of <i class="parameter"><tt>list</tt></i>, and references each member of
 that list.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td> list of GnomeVFSURI elements
 </td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly referenced duplicate of <i class="parameter"><tt>list</tt></i>
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2555325"></a><h3><a name="gnome-vfs-uri-list-free"></a>gnome_vfs_uri_list_free ()</h3><a class="indexterm" name="id2555336"></a><pre class="programlisting"><a
-href="../conglomerate/conglomerate-cong-plugin.html#void"
->void</a>        gnome_vfs_uri_list_free         (<a
-href="../glib/glib-Doubly-Linked-Lists.html#GList"
->GList</a> *list);</pre><p>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2532543"></a><h3><a name="gnome-vfs-uri-list-free"></a>gnome_vfs_uri_list_free ()</h3><a class="indexterm" name="id2532554"></a><pre class="programlisting">void        gnome_vfs_uri_list_free         (GList *list);</pre><p>
 Decrements the reference count of each member of <i class="parameter"><tt>list</tt></i> by one,
 and frees the list itself.</p><p>
 
 </p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>list</tt></i> :</span></td><td> list of GnomeVFSURI elements
-</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2555394"></a><h3><a name="gnome-vfs-uri-make-full-from-relative"></a>gnome_vfs_uri_make_full_from_relative ()</h3><a class="indexterm" name="id2555406"></a><pre class="programlisting">char*       gnome_vfs_uri_make_full_from_relative
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2532611"></a><h3><a name="gnome-vfs-uri-make-full-from-relative"></a>gnome_vfs_uri_make_full_from_relative ()</h3><a class="indexterm" name="id2532624"></a><pre class="programlisting">char*       gnome_vfs_uri_make_full_from_relative
                                             (const char *base_uri,
                                              const char *relative_uri);</pre><p>
 Returns a full URI given a full base URI, and a secondary URI which may

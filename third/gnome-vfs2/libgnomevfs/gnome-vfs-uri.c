@@ -163,7 +163,7 @@ split_toplevel_uri (const gchar *path, guint path_len,
 	success = FALSE;
 
 	if (path == NULL || path_len == 0) {
-		return NULL;
+		return g_strdup ("/");
 	}
 	
 
@@ -358,7 +358,7 @@ set_uri_element (GnomeVFSURI *uri,
 	char *escaped_text;
 
 	if (text == NULL || len == 0) {
-		uri->text = g_strdup("/");;
+		uri->text = g_strdup ("/");
 		return;
 	}
 
@@ -1742,18 +1742,21 @@ gnome_vfs_uri_extract_short_name (const GnomeVFSURI *uri)
 	short_path_name = gnome_vfs_unescape_string (escaped_short_path_name, "/");
 	g_free (escaped_short_path_name);
 
-	host_name = NULL;
 	if (short_path_name != NULL
-		&& strcmp (short_path_name, GNOME_VFS_URI_PATH_STR) == 0) {
-		host_name = gnome_vfs_uri_get_host_name (uri);
-	}
-
-	if (host_name == NULL || strlen (host_name) == 0) {
+		&& strcmp (short_path_name, GNOME_VFS_URI_PATH_STR) != 0) {
 		return short_path_name;
 	}
 
-	g_free (short_path_name);
-	return g_strdup (host_name);
+	host_name = gnome_vfs_uri_get_host_name (uri);
+
+	if (host_name != NULL && strlen (host_name) != 0) {
+		g_free (short_path_name);
+		return g_strdup (host_name);
+	} else if (short_path_name != NULL) {
+		return short_path_name;
+	} else {
+		return g_strdup (gnome_vfs_uri_get_path (uri));
+	}
 }
 
 /**

@@ -2,7 +2,8 @@ NULL =
 
 INCLUDES =					\
 	$(NEON_CFLAGS)				\
-	$(LIBGNOMEVFS_CFLAGS)		\
+	$(LIBGNOMEVFS_CFLAGS)			\
+	$(GSSAPI_CFLAGS)			\
         -I$(top_srcdir)                         \
         -I$(top_builddir)                       \
         -I$(top_srcdir)/libgnomevfs             \

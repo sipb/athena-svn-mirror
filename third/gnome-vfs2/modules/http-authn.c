@@ -402,6 +402,14 @@ strcmp_allow_nulls (const char *s1, const char *s2)
 		}											\
 	} G_STMT_END
 
+#define VERIFY_STRING_RESULT_NULL(function) \
+	G_STMT_START {											\
+		char *result = function; 								\
+		if (result != NULL) {									\
+			test_failed ("%s:%s:%s: returned '%s' expected '%s'", __FILE__, __LINE__, #function, result, NULL);	\
+		}											\
+	} G_STMT_END
+
 static gboolean at_least_one_test_failed = FALSE;
 
 static void
@@ -517,7 +525,7 @@ http_authn_self_test (void)
 
 	uri = gnome_vfs_uri_new ("http://host/path/");
 
-	VERIFY_STRING_RESULT (http_authn_get_header_for_uri (uri), NULL);
+	VERIFY_STRING_RESULT_NULL (http_authn_get_header_for_uri (uri));
 
 	http_authn_session_add_credentials (uri, "myuser", "mypasswd");
 
@@ -541,7 +549,7 @@ http_authn_self_test (void)
 	gnome_vfs_uri_unref (uri);
 	uri = gnome_vfs_uri_new ("http://host/");
 
-	VERIFY_STRING_RESULT (http_authn_get_header_for_uri (uri), NULL);
+	VERIFY_STRING_RESULT_NULL (http_authn_get_header_for_uri (uri));
 
 	gnome_vfs_uri_unref (uri);
 	uri = gnome_vfs_uri_new ("http://user:passwd@host/path");
@@ -552,12 +560,12 @@ http_authn_self_test (void)
 	gnome_vfs_uri_unref (uri);
 	uri = gnome_vfs_uri_new ("http://anotherhost/path");
 
-	VERIFY_STRING_RESULT (http_authn_get_header_for_uri (uri), NULL);
+	VERIFY_STRING_RESULT_NULL (http_authn_get_header_for_uri (uri));
 
 	http_authn_session_add_credentials (uri, "newuser", "newpasswd");
 	http_authn_session_add_credentials (uri, NULL, NULL);
 
-	VERIFY_STRING_RESULT (http_authn_get_header_for_uri (uri), NULL);
+	VERIFY_STRING_RESULT_NULL (http_authn_get_header_for_uri (uri));
 
 	return !at_least_one_test_failed;
 }

@@ -2,7 +2,7 @@
 <book xmlns="http://www.devhelp.net/book" title="GnomeVFS - Filesystem Abstraction library" link="index.html" author="Seth NickellChristophe Fergeau" name="gnome-vfs-2.0">
   <chapters>
     <sub name="Introduction to GnomeVFS" link="about.html">
-      <sub name="Uses and Purpose" link="about.html#id2498029"/>
+      <sub name="Uses and Purpose" link="about.html#id2475336"/>
       <sub name="A Gentle Programming Primer" link="gnome-vfs-first-steps.html"/>
     </sub>
     <sub name="Initialization/Shutdown" link="gnome-vfs-20-gnome-vfs-init.html"/>
@@ -42,9 +42,9 @@
       <sub name="Zeroconf networking support" link="gnome-vfs-20-gnome-vfs-dns-sd.html"/>
       <sub name="DNS Resolution" link="gnome-vfs-20-gnome-vfs-resolve.html"/>
       <sub name="SSL support functions" link="gnome-vfs-20-gnome-vfs-ssl.html"/>
-      <sub name="gnome-vfs-socket" link="gnome-vfs-20-gnome-vfs-socket.html"/>
-      <sub name="gnome-vfs-socket-buffer" link="gnome-vfs-20-gnome-vfs-socket-buffer.html"/>
-      <sub name="gnome-vfs-inet-connection" link="gnome-vfs-20-gnome-vfs-inet-connection.html"/>
+      <sub name="Unified network I/O" link="gnome-vfs-20-gnome-vfs-socket.html"/>
+      <sub name="Unified bufferd network I/O" link="gnome-vfs-20-gnome-vfs-socket-buffer.html"/>
+      <sub name="Internet connection" link="gnome-vfs-20-gnome-vfs-inet-connection.html"/>
     </sub>
     <sub name="MIME Registry" link="mime-registry.html">
       <sub name="Application Registry" link="gnome-vfs-20-gnome-vfs-application-registry.html"/>
@@ -122,6 +122,9 @@
     <function name="gnome_vfs_uri_list_free ()" link="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-list-free"/>
     <function name="gnome_vfs_uri_make_full_from_relative ()" link="gnome-vfs-20-gnome-vfs-uri.html#gnome-vfs-uri-make-full-from-relative"/>
     <function name="gnome_vfs_format_file_size_for_display ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-format-file-size-for-display"/>
+    <function name="gnome_vfs_format_uri_for_display ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-format-uri-for-display"/>
+    <function name="gnome_vfs_url_show ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-url-show"/>
+    <function name="gnome_vfs_url_show_with_env ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-url-show-with-env"/>
     <function name="gnome_vfs_escape_string ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-string"/>
     <function name="gnome_vfs_escape_path_string ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-path-string"/>
     <function name="gnome_vfs_escape_host_and_path_string ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-host-and-path-string"/>
@@ -129,6 +132,7 @@
     <function name="gnome_vfs_escape_set ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-escape-set"/>
     <function name="gnome_vfs_unescape_string ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-unescape-string"/>
     <function name="gnome_vfs_make_uri_canonical ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-canonical"/>
+    <function name="gnome_vfs_make_uri_canonical_strip_fragment ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-canonical-strip-fragment"/>
     <function name="gnome_vfs_make_path_name_canonical ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-path-name-canonical"/>
     <function name="gnome_vfs_make_uri_from_input ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-from-input"/>
     <function name="gnome_vfs_make_uri_from_input_with_dirs ()" link="gnome-vfs-20-gnome-vfs-utils.html#gnome-vfs-make-uri-from-input-with-dirs"/>
@@ -235,6 +239,8 @@
     <function name="GnomeVFSAsyncReadCallback ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSAsyncReadCallback"/>
     <function name="GnomeVFSAsyncWriteCallback ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSAsyncWriteCallback"/>
     <function name="struct GnomeVFSFindDirectoryResult" link="gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSFindDirectoryResult"/>
+    <function name="GnomeVFSAsyncFileControlCallback ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSAsyncFileControlCallback"/>
+    <function name="GnomeVFSAsyncSeekCallback" link="gnome-vfs-20-gnome-vfs-async-ops.html#GnomeVFSAsyncSeekCallback"/>
     <function name="gnome_vfs_async_set_job_limit ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-set-job-limit"/>
     <function name="gnome_vfs_async_get_job_limit ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-get-job-limit"/>
     <function name="gnome_vfs_async_cancel ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-cancel"/>
@@ -250,6 +256,7 @@
     <function name="gnome_vfs_async_close ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-close"/>
     <function name="gnome_vfs_async_read ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-read"/>
     <function name="gnome_vfs_async_write ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-write"/>
+    <function name="gnome_vfs_async_seek ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-seek"/>
     <function name="gnome_vfs_async_get_file_info ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-get-file-info"/>
     <function name="gnome_vfs_async_set_file_info ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-set-file-info"/>
     <function name="gnome_vfs_async_load_directory ()" link="gnome-vfs-20-gnome-vfs-async-ops.html#gnome-vfs-async-load-directory"/>
@@ -315,6 +322,7 @@
     <function name="gnome_vfs_volume_type_get_type ()" link="gnome-vfs-20-gnome-vfs-volume.html#gnome-vfs-volume-type-get-type"/>
     <function name="gnome_vfs_volume_unmount ()" link="gnome-vfs-20-gnome-vfs-volume.html#gnome-vfs-volume-unmount"/>
     <function name="gnome_vfs_volume_unref ()" link="gnome-vfs-20-gnome-vfs-volume.html#gnome-vfs-volume-unref"/>
+    <function name="gnome_vfs_connect_to_server ()" link="gnome-vfs-20-gnome-vfs-volume.html#gnome-vfs-connect-to-server"/>
     <function name="enum GnomeVFSDeviceType" link="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDeviceType"/>
     <function name="struct GnomeVFSDrive" link="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDrive-struct"/>
     <function name="struct GnomeVFSDriveClass" link="gnome-vfs-20-gnome-vfs-drive.html#GnomeVFSDriveClass"/>
@@ -334,6 +342,7 @@
     <function name="gnome_vfs_drive_get_id ()" link="gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-get-id"/>
     <function name="gnome_vfs_drive_get_mounted_volume ()" link="gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-get-mounted-volume"/>
     <function name="gnome_vfs_drive_get_mounted_volumes ()" link="gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-get-mounted-volumes"/>
+    <function name="gnome_vfs_drive_volume_list_free ()" link="gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-volume-list-free"/>
     <function name="gnome_vfs_drive_get_type ()" link="gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-get-type"/>
     <function name="gnome_vfs_drive_is_connected ()" link="gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-is-connected"/>
     <function name="gnome_vfs_drive_is_mounted ()" link="gnome-vfs-20-gnome-vfs-drive.html#gnome-vfs-drive-is-mounted"/>
@@ -379,6 +388,7 @@
     <function name="gnome_vfs_dns_sd_resolve_sync ()" link="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-resolve-sync"/>
     <function name="gnome_vfs_dns_sd_service_list_free ()" link="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-service-list-free"/>
     <function name="gnome_vfs_dns_sd_list_browse_domains_sync ()" link="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-dns-sd-list-browse-domains-sync"/>
+    <function name="gnome_vfs_get_default_browse_domains ()" link="gnome-vfs-20-gnome-vfs-dns-sd.html#gnome-vfs-get-default-browse-domains"/>
     <function name="gnome_vfs_resolve ()" link="gnome-vfs-20-gnome-vfs-resolve.html#gnome-vfs-resolve"/>
     <function name="gnome_vfs_resolve_free ()" link="gnome-vfs-20-gnome-vfs-resolve.html#gnome-vfs-resolve-free"/>
     <function name="gnome_vfs_resolve_next_address ()" link="gnome-vfs-20-gnome-vfs-resolve.html#gnome-vfs-resolve-next-address"/>
@@ -520,14 +530,14 @@
     <function name="struct GnomeVFSMIMEMonitorPrivate" link="gnome-vfs-20-gnome-vfs-mime-monitor.html#GnomeVFSMIMEMonitorPrivate"/>
     <function name="gnome_vfs_mime_monitor_get ()" link="gnome-vfs-20-gnome-vfs-mime-monitor.html#gnome-vfs-mime-monitor-get"/>
     <function name="GNOME VFS URIs (Uniform Resource Identifiers)" link="gnome-vfs-writing-modules.html#uris"/>
-    <function name="The GnomeVFSURI type" link="gnome-vfs-writing-modules.html#id2670608"/>
-    <function name="How file access is performed" link="gnome-vfs-writing-modules.html#id2670705"/>
-    <function name="Using shared libraries" link="gnome-vfs-writing-modules.html#id2670816"/>
-    <function name="The initialization/shutdown functions" link="gnome-vfs-writing-modules.html#id2670882"/>
-    <function name="The GnomeVFSMethod object" link="gnome-vfs-writing-modules.html#id2670962"/>
-    <function name="The GnomeVFSCancellation object" link="gnome-vfs-writing-modules.html#id2671178"/>
-    <function name="Dealing with EINTR" link="gnome-vfs-writing-modules.html#id2671332"/>
-    <function name="How to make the code thread safe" link="gnome-vfs-writing-modules.html#id2671459"/>
+    <function name="The GnomeVFSURI type" link="gnome-vfs-writing-modules.html#id2645280"/>
+    <function name="How file access is performed" link="gnome-vfs-writing-modules.html#id2645377"/>
+    <function name="Using shared libraries" link="gnome-vfs-writing-modules.html#id2645487"/>
+    <function name="The initialization/shutdown functions" link="gnome-vfs-writing-modules.html#id2645553"/>
+    <function name="The GnomeVFSMethod object" link="gnome-vfs-writing-modules.html#id2645633"/>
+    <function name="The GnomeVFSCancellation object" link="gnome-vfs-writing-modules.html#id2645850"/>
+    <function name="Dealing with EINTR" link="gnome-vfs-writing-modules.html#id2646004"/>
+    <function name="How to make the code thread safe" link="gnome-vfs-writing-modules.html#id2646130"/>
     <function name="gnome_vfs_mime_shutdown ()" link="gnome-vfs-20-gnome-vfs-mime.html#gnome-vfs-mime-shutdown"/>
     <function name="gnome_vfs_mime_type_from_name ()" link="gnome-vfs-20-gnome-vfs-mime.html#gnome-vfs-mime-type-from-name"/>
     <function name="gnome_vfs_mime_type_from_name_or_default ()" link="gnome-vfs-20-gnome-vfs-mime.html#gnome-vfs-mime-type-from-name-or-default"/>

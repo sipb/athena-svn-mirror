@@ -1,11 +1,22 @@
 <!-- ##### SECTION Title ##### -->
-gnome-vfs-socket-buffer
+Unified bufferd network I/O
 
 <!-- ##### SECTION Short_Description ##### -->
-
+Posix style buffered network input/output.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+The GnomeVFSSocketBuffer functions are very similar to the GnomeVFSSocket
+ones. The only difference is that all input/output is done through an internally
+managed buffer. This might increase I/O performance as well as give you the
+possibility to use some convenient functions like #gnome_vfs_socket_buffer_peekc
+and #gnome_vfs_socket_buffer_read_until.
+
+<para>
+</para>
+
+You can manually force all internally buffered data to get written with
+#gnome_vfs_socket_buffer_flush.
 
 </para>
 

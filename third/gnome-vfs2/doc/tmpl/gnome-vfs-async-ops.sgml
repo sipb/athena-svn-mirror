@@ -124,6 +124,23 @@ POSIX-style file operations that run outside your main loop
 @reserved1: 
 @reserved2: 
 
+<!-- ##### USER_FUNCTION GnomeVFSAsyncFileControlCallback ##### -->
+<para>
+
+</para>
+
+@handle: 
+@result: 
+@operation_data: 
+@callback_data: 
+
+
+<!-- ##### TYPEDEF GnomeVFSAsyncSeekCallback ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION gnome_vfs_async_set_job_limit ##### -->
 <para>
 
@@ -305,6 +322,18 @@ POSIX-style file operations that run outside your main loop
 @handle: 
 @buffer: 
 @bytes: 
+@callback: 
+@callback_data: 
+
+
+<!-- ##### FUNCTION gnome_vfs_async_seek ##### -->
+<para>
+
+</para>
+
+@handle: 
+@whence: 
+@offset: 
 @callback: 
 @callback_data: 
 

@@ -108,7 +108,11 @@ read_drives_from_daemon (GnomeVFSVolumeMonitorClient *volume_monitor_client)
 	GnomeVFSVolumeMonitor *volume_monitor;
 	int i;
 
+	if (volume_monitor_client->is_shutdown)
+		return;
+	
 	volume_monitor = GNOME_VFS_VOLUME_MONITOR (volume_monitor_client);
+
 	client = _gnome_vfs_get_client ();
 	daemon = _gnome_vfs_client_get_daemon (client);
 
@@ -147,7 +151,11 @@ read_volumes_from_daemon (GnomeVFSVolumeMonitorClient *volume_monitor_client)
 	GnomeVFSVolumeMonitor *volume_monitor;
 	int i;
 
+	if (volume_monitor_client->is_shutdown)
+		return;
+	
 	volume_monitor = GNOME_VFS_VOLUME_MONITOR (volume_monitor_client);
+	
 	client = _gnome_vfs_get_client ();
 	daemon = _gnome_vfs_client_get_daemon (client);
 
@@ -188,25 +196,10 @@ static void
 gnome_vfs_volume_monitor_client_finalize (GObject *object)
 {
 	GnomeVFSVolumeMonitorClient *volume_monitor_client;
-        CORBA_Environment ev;
-	GNOME_VFS_Daemon daemon;
-	GnomeVFSClient *client;
 
 	volume_monitor_client = GNOME_VFS_VOLUME_MONITOR_CLIENT (object);
 
-	client = _gnome_vfs_get_client ();
-	daemon = _gnome_vfs_client_get_daemon (client);
-
-	if (daemon != CORBA_OBJECT_NIL) {
-		GNOME_VFS_Daemon_deRegisterVolumeMonitor (daemon, BONOBO_OBJREF (client), &ev);
-		CORBA_exception_init (&ev);
-		
-		if (BONOBO_EX (&ev)) {
-			CORBA_exception_free (&ev);
-		}
-	
-		CORBA_Object_release (daemon, NULL);
-	}
+	g_assert (volume_monitor_client->is_shutdown);
 	
 	if (G_OBJECT_CLASS (parent_class)->finalize)
 		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
@@ -224,4 +217,31 @@ _gnome_vfs_volume_monitor_client_daemon_died (GnomeVFSVolumeMonitorClient *volum
 
 	read_drives_from_daemon (volume_monitor_client);
 	read_volumes_from_daemon (volume_monitor_client);
+}
+
+void
+_gnome_vfs_volume_monitor_client_shutdown (GnomeVFSVolumeMonitorClient *volume_monitor_client)
+{
+        CORBA_Environment ev;
+	GNOME_VFS_Daemon daemon;
+	GnomeVFSClient *client;
+
+	if (volume_monitor_client->is_shutdown)
+		return;
+	
+	volume_monitor_client->is_shutdown = TRUE;
+	
+	client = _gnome_vfs_get_client ();
+	daemon = _gnome_vfs_client_get_daemon (client);
+	
+	if (daemon != CORBA_OBJECT_NIL) {
+		GNOME_VFS_Daemon_deRegisterVolumeMonitor (daemon, BONOBO_OBJREF (client), &ev);
+		CORBA_exception_init (&ev);
+		
+		if (BONOBO_EX (&ev)) {
+			CORBA_exception_free (&ev);
+		}
+		
+		CORBA_Object_release (daemon, NULL);
+	}
 }

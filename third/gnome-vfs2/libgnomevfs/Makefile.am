@@ -129,8 +129,8 @@ libgnomevfs_2_la_LDFLAGS =			\
 
 libgnomevfsdaemon_2_la_LIBADD =			\
 	$(LIBGNOMEVFS_LIBS)			\
-	libgnomevfs-2.la			\
 	$(LIBGNOMEVFSDAEMON_LIBS)		\
+	libgnomevfs-2.la			\
 	$(NULL)
 
 libgnomevfsincludedir = $(includedir)/gnome-vfs-2.0/libgnomevfs

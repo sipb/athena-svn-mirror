@@ -39,6 +39,12 @@ typedef     <link linkend="GnomeVFSAsyncCloseCallback">GnomeVFSAsyncCloseCallbac
                                              <link linkend="GnomeVFSFileSize">GnomeVFSFileSize</link> bytes_written,
                                              <link linkend="gpointer">gpointer</link> callback_data);
 struct      <link linkend="GnomeVFSFindDirectoryResult">GnomeVFSFindDirectoryResult</link>;
+<link linkend="void">void</link>        (<link linkend="GnomeVFSAsyncFileControlCallback">*GnomeVFSAsyncFileControlCallback</link>)
+                                            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+                                             <link linkend="GnomeVFSResult">GnomeVFSResult</link> result,
+                                             <link linkend="gpointer">gpointer</link> operation_data,
+                                             <link linkend="gpointer">gpointer</link> callback_data);
+typedef     <link linkend="GnomeVFSAsyncSeekCallback">GnomeVFSAsyncSeekCallback</link>;
 <link linkend="void">void</link>        <link linkend="gnome-vfs-async-set-job-limit">gnome_vfs_async_set_job_limit</link>   (<link linkend="int">int</link> limit);
 <link linkend="int">int</link>         <link linkend="gnome-vfs-async-get-job-limit">gnome_vfs_async_get_job_limit</link>   (void);
 <link linkend="void">void</link>        <link linkend="gnome-vfs-async-cancel">gnome_vfs_async_cancel</link>          (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle);
@@ -122,6 +128,11 @@ struct      <link linkend="GnomeVFSFindDirectoryResult">GnomeVFSFindDirectoryRes
                                              <link linkend="gconstpointer">gconstpointer</link> buffer,
                                              <link linkend="guint">guint</link> bytes,
                                              <link linkend="GnomeVFSAsyncWriteCallback">GnomeVFSAsyncWriteCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data);
+<link linkend="void">void</link>        <link linkend="gnome-vfs-async-seek">gnome_vfs_async_seek</link>            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+                                             <link linkend="GnomeVFSSeekPosition">GnomeVFSSeekPosition</link> whence,
+                                             <link linkend="GnomeVFSFileOffset">GnomeVFSFileOffset</link> offset,
+                                             <link linkend="GnomeVFSAsyncSeekCallback">GnomeVFSAsyncSeekCallback</link> callback,
                                              <link linkend="gpointer">gpointer</link> callback_data);
 <link linkend="void">void</link>        <link linkend="gnome-vfs-async-get-file-info">gnome_vfs_async_get_file_info</link>   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GList">GList</link> *uri_list,
@@ -385,6 +396,41 @@ an error code.
 	void *reserved2;
 };
 </programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSAsyncFileControlCallback"/>GnomeVFSAsyncFileControlCallback ()</title>
+<indexterm><primary>GnomeVFSAsyncFileControlCallback</primary></indexterm><programlisting><link linkend="void">void</link>        (*GnomeVFSAsyncFileControlCallback)
+                                            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+                                             <link linkend="GnomeVFSResult">GnomeVFSResult</link> result,
+                                             <link linkend="gpointer">gpointer</link> operation_data,
+                                             <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>handle</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>operation_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSAsyncSeekCallback"/>GnomeVFSAsyncSeekCallback</title>
+<indexterm><primary>GnomeVFSAsyncSeekCallback</primary></indexterm><programlisting>typedef GnomeVFSAsyncCallback GnomeVFSAsyncSeekCallback;
+</programlisting>
+<para>
+Basic callback from an async operation that passes no data back,
+informing the user of the <parameter>result</parameter> of the operation.</para>
 <para>
 
 </para></refsect2>
@@ -885,6 +931,37 @@ result of the operation and <parameter>callback_data</parameter>.</para>
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
+<title><anchor id="gnome-vfs-async-seek"/>gnome_vfs_async_seek ()</title>
+<indexterm><primary>gnome_vfs_async_seek</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_seek            (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+                                             <link linkend="GnomeVFSSeekPosition">GnomeVFSSeekPosition</link> whence,
+                                             <link linkend="GnomeVFSFileOffset">GnomeVFSFileOffset</link> offset,
+                                             <link linkend="GnomeVFSAsyncSeekCallback">GnomeVFSAsyncSeekCallback</link> callback,
+                                             <link linkend="gpointer">gpointer</link> callback_data);</programlisting>
+<para>
+Set the current position for reading/writing through <parameter>handle</parameter>.
+When the operation is complete, <parameter>callback</parameter> will be called with the
+result of the operation and <parameter>callback_data</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>handle</parameter>&nbsp;:</term>
+<listitem><simpara> Handle for which the current position must be changed
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>whence</parameter>&nbsp;:</term>
+<listitem><simpara> Integer value representing the starting position
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><simpara> Number of bytes to skip from the position specified by <parameter>whence</parameter>
+(a positive value means to move forward; a negative one to move backwards)
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> function to be called when the operation is complete
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback_data</parameter>&nbsp;:</term>
+<listitem><simpara> data to pass <parameter>callback</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
 <title><anchor id="gnome-vfs-async-get-file-info"/>gnome_vfs_async_get_file_info ()</title>
 <indexterm><primary>gnome_vfs_async_get_file_info</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_get_file_info   (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> **handle_return,
                                              <link linkend="GList">GList</link> *uri_list,
@@ -1180,7 +1257,7 @@ file systems.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-async-file-control"/>gnome_vfs_async_file_control ()</title>
-<indexterm role="2.2"><primary>gnome_vfs_async_file_control</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_file_control    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
+<indexterm><primary>gnome_vfs_async_file_control</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_async_file_control    (<link linkend="GnomeVFSAsyncHandle">GnomeVFSAsyncHandle</link> *handle,
                                              const <link linkend="char">char</link> *operation,
                                              <link linkend="gpointer">gpointer</link> operation_data,
                                              <link linkend="GDestroyNotify">GDestroyNotify</link> operation_data_destroy_func,

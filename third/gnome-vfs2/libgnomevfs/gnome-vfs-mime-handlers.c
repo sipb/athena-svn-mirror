@@ -98,6 +98,13 @@ gnome_vfs_mime_get_default_action_type (const char *mime_type)
 {
 	const char *action_type_string;
 
+	/* TODO: gnome_vfs_mime_get_value below always returns NONE these days.
+	   We need to figure out what to really do here. For now, special case folders.
+	*/
+	if (g_str_has_prefix (mime_type, "x-directory/")) {
+		return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
+	}
+	
 	action_type_string = gnome_vfs_mime_get_value (mime_type, "default_action_type");
 
 	if (action_type_string != NULL && g_ascii_strcasecmp (action_type_string, "application") == 0) {
@@ -1222,24 +1229,41 @@ gnome_vfs_mime_application_new_from_id (const char *id)
 	if ((p = strstr (application->command, "%f")) != NULL
 		|| (p = strstr (application->command, "%d")) != NULL
 		|| (p = strstr (application->command, "%n")) != NULL) {
-		*p = '\0';
+
+	  	do {
+			*p = '\0';
+			p--;
+		} while (p >= application->command && g_ascii_isspace (*p)); 
+		
 		application->can_open_multiple_files = FALSE;
 		application->expects_uris = GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_PATHS; 
 		application->supported_uri_schemes = NULL;
 	} else if ((p = strstr (application->command, "%F")) != NULL
 		   || (p = strstr (application->command, "%D")) != NULL
 		   || (p = strstr (application->command, "%N")) != NULL) {
-		*p = '\0';
+	  	do {
+			*p = '\0';
+			p--;
+		} while (p >= application->command && g_ascii_isspace (*p)); 
+		
 		application->can_open_multiple_files = TRUE;
 		application->expects_uris = GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_PATHS; 
 		application->supported_uri_schemes = NULL;
 	} else if ((p = strstr (application->command, "%u")) != NULL) {
-		*p = '\0';
+		do {
+			*p = '\0';
+			p--;
+		} while (p >= application->command && g_ascii_isspace (*p)); 
+
 		application->can_open_multiple_files = FALSE;
 		application->expects_uris = GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS; 
 		application->supported_uri_schemes = _gnome_vfs_configuration_get_methods_list ();
 	} else if ((p = strstr (application->command, "%U")) != NULL) {
-		*p = '\0';
+		do {
+			*p = '\0';
+			p--;
+		} while (p >= application->command && g_ascii_isspace (*p)); 
+
 		application->can_open_multiple_files = TRUE;
 		application->expects_uris = GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS; 
 		application->supported_uri_schemes = _gnome_vfs_configuration_get_methods_list ();

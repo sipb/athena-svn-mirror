@@ -1,3 +1,60 @@
+gnome-vfs 2.8.4
+    * Bugs fixed:
+	+ Never return NULL on gnome_vfs_uri_extract_short_name calls
+	+ sftp-method: always check for the gnome_vfs_unescape_string
+	  return value
+	+ sftp-method: honor the force_replace flag on moves
+	+ gzip-method: correctly return GNOME_VFS_ERROR_EOF
+	+ Plug some memory leaks
+	+ Fix bogus warnings with later gcc versions
+	+ Various translation updates
+
+gnome-vfs 2.8.3
+  
+    * Bugs fixed:
+	+ Fix ftp upload corruptor
+	+ Handle several changes in mtab/fstab in the same second
+	+ Never set uri->text to NULL
+	+ Fix dvd+/-rw name unicode encoding
+	+ Some updates to desktop parser
+	+ Make duplication of symlinks work
+	+ Handle defaults.list files that have lists of desktop files
+	+ Handle new forms of filename encoding definitions
+	+ build fixes
+
+gnome-vfs 2.8.2
+
+    * Bugs fixed:
+	+ performance increase in gnome-vfs-volume-monitor
+	+ Update to latest eggdesktopentries.c, fixing leaks
+	+ Fix problem with http leak fix in last version
+	+ Fix leaks
+	+ Make folders open with components, to make run-dialog
+	  work for folders
+	+ Add support for additional headers to http backend
+	+ API docs updates
+	+ Default to the workgroup specified in smb.conf for network://
+	+ Fix queue handling for monitoring events
+	+ Add --disable-howl flag
+	+ Ignore smb files with empty names when enumerating
+    
+gnome-vfs 2.8.1
+
+    * Bugs fixed:
+        + ftp-method: Don't ask for password if hostname wrong
+	+ fix detection of and build with kerberos
+	+ allow unref of the volume monitor after shutdown
+	+ Fix http issues with gtik
+	+ Fix leaks
+	+ Fix default application handling. Now user defaults
+	  override system defaults.
+	+ Don't keep re-reading /etc/fstab
+	+ Read the right fstab file on solaris
+	+ sftp-method: use password if in uri
+	+ http-method: fix seek to end of file
+	+ http-method: various webdav fixes
+	+ Handle empty but non-null http proxy hostname.
+	
 gnome-vfs 2.8.0
 
     * Bugs fixed:

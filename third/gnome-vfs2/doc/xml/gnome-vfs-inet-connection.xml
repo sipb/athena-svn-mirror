@@ -1,12 +1,12 @@
 <refentry id="gnome-vfs-20-gnome-vfs-inet-connection">
 <refmeta>
-<refentrytitle>gnome-vfs-inet-connection</refentrytitle>
+<refentrytitle>Internet connection</refentrytitle>
 <manvolnum>3</manvolnum>
 <refmiscinfo>GNOME-VFS-2.0 Library</refmiscinfo>
 </refmeta>
 
 <refnamediv>
-<refname>gnome-vfs-inet-connection</refname><refpurpose></refpurpose>
+<refname>Internet connection</refname><refpurpose>Simple TCP/IP connection functions.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -54,6 +54,14 @@
 <refsect1>
 <title>Description</title>
 <para>
+A <link linkend="GnomeVFSInetConnection"><type>GnomeVFSInetConnection</type></link> represents a TCP/IP connection. You can either use
+<link linkend="gnome-vfs-inet-connection-create"><type>gnome_vfs_inet_connection_create</type></link> which will use the <link linkend="gnome-vfs-resolve"><type>gnome_vfs_resolve</type></link> DNS
+resolution functions internally or you can do the name resolution yourself
+and use <link linkend="gnome-vfs-inet-connection-create-from-address"><type>gnome_vfs_inet_connection_create_from_address</type></link> to connect to a specific
+address.
+
+After a connection has been established all I/O is done through a GnomeVFSSocket
+or a GnomeVFSSocketBuffer.
 
 </para>
 </refsect1>
@@ -169,7 +177,7 @@ Retrieve the UNIX file descriptor corresponding to <parameter>connection</parame
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-inet-connection-create-from-address"/>gnome_vfs_inet_connection_create_from_address ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_inet_connection_create_from_address</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_inet_connection_create_from_address
+<indexterm><primary>gnome_vfs_inet_connection_create_from_address</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_inet_connection_create_from_address
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> **connection_return,
                                              <link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address,
                                              <link linkend="guint">guint</link> host_port,
@@ -217,7 +225,7 @@ Since 2.8
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-inet-connection-get-ip"/>gnome_vfs_inet_connection_get_ip ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_inet_connection_get_ip</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_inet_connection_get_ip
+<indexterm><primary>gnome_vfs_inet_connection_get_ip</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_inet_connection_get_ip
                                             (<link linkend="GnomeVFSInetConnection">GnomeVFSInetConnection</link> *connection);</programlisting>
 <para>
 Retrieve the ip address of the other side of a connected <parameter>connection</parameter>.</para>

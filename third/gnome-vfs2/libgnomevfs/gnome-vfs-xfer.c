@@ -1367,19 +1367,41 @@ copy_symlink (GnomeVFSURI *source_uri,
 	      GnomeVFSURI *target_uri,
 	      const char *link_name,
 	      GnomeVFSXferErrorMode *error_mode,
+	      GnomeVFSXferOverwriteMode *overwrite_mode,
 	      GnomeVFSProgressCallbackState *progress,
 	      gboolean *skip)
 {
 	GnomeVFSResult result;
 	gboolean retry;
+	gboolean tried_remove, remove;
+
+	tried_remove = FALSE;
 
 	*skip = FALSE;
 	do {
 		retry = FALSE;
-		
+
 		result = gnome_vfs_create_symbolic_link (target_uri, link_name);
 
-		if (result != GNOME_VFS_OK) {
+		if (result == GNOME_VFS_ERROR_FILE_EXISTS) {
+			remove = FALSE;
+			
+			if (*overwrite_mode == GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE &&
+			    !tried_remove) {
+				remove = TRUE;
+				tried_remove = TRUE;
+			} else {
+				retry = handle_overwrite (&result,
+							  progress,
+							  error_mode,
+							  overwrite_mode,
+							  &remove,
+							  skip);
+			}
+			if (remove) {
+				gnome_vfs_unlink_from_uri (target_uri);
+			}
+		} else if (result != GNOME_VFS_OK) {
 			retry = handle_error (&result, progress, error_mode, skip);
 		} else if (result == GNOME_VFS_OK &&
 			   call_progress_with_uris_often (progress, source_uri,
@@ -1596,7 +1618,7 @@ copy_directory (GnomeVFSFileInfo *source_file_info,
 						gnome_vfs_file_info_unref (symlink_target_info);
 					} else {
 						result = copy_symlink (source_uri, dest_uri, info->symlink_name,
-								       error_mode, progress, &skip_child);
+								       error_mode, overwrite_mode, progress, &skip_child);
 					}
 				}
 				/* We don't want to overwrite a previous skip with FALSE, so we only
@@ -1724,7 +1746,8 @@ copy_items (const GList *source_uri_list,
 								 progress, &skip);
                                 } else if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
 					result = copy_symlink (source_uri, target_uri, info->symlink_name,
-							       error_mode, progress, &skip);
+							       error_mode, &overwrite_mode_abort,
+							       progress, &skip);
                                 }
 				/* just ignore all the other special file system objects here */
 
@@ -2176,6 +2199,8 @@ gnome_vfs_new_directory_with_unique_name (const GnomeVFSURI *target_dir_uri,
 		gnome_vfs_uri_unref (target_uri);
 	}
 
+	progress->progress_info->vfs_status = result;
+	
 	call_progress_uri (progress, NULL, target_uri,
 		GNOME_VFS_XFER_PHASE_OPENTARGET);
 

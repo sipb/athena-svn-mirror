@@ -62,6 +62,10 @@
 #include <sys/mnttab.h>
 #endif
 
+#ifdef HAVE_SYS_VFSTAB_H
+#include <sys/vfstab.h>
+#endif
+
 #if defined(HAVE_SYS_MNTCTL_H) && defined(HAVE_SYS_VMOUNT_H) && defined(HAVE_SYS_VFS_H)
 #include <sys/mntctl.h>
 #include <sys/vfs.h>
@@ -87,98 +91,111 @@
  * to avoid this...
  * Various ugly workarounds can be tried later.
  */
-dev_t
-_gnome_vfs_unix_mount_get_unix_device (GnomeVFSUnixMount *mount)
+GList *
+_gnome_vfs_unix_mount_get_unix_device (GList *mounts)
 {
-	struct stat statbuf;
-	dev_t unix_device;
-	pid_t pid;
-	int pipes[2];
-#ifdef HAVE_POLL
-	struct pollfd poll_fd;
-#else
-	struct timeval tv;
-	fd_set read_fds;
-#endif
-	int res;
-	int status;
+	GList *result = NULL;
 
-	if (pipe (pipes) == -1) {
-		return 0;
-	}
+	while (mounts) {
+		dev_t unix_device = 0;
+		pid_t pid;
+		int pipes[2];
+		int status;
 
-	pid = fork ();
-
-	if (pid == -1) {
-		close (pipes[0]);
-		close (pipes[1]);
-		return 0;
-	}
-
-	unix_device = 0;
-	
-	if (pid == 0) {
-		/* Child */
-		close (pipes[0]);
+		if (pipe (pipes) == -1)
+			goto error;
 
 		pid = fork ();
-
-		/* Fork an intermediate child that immediately exits so
-		 * we can waitpid it. This means the final process will get
-		 * owned by init and not go zombie
-		 */
-		if (pid == 0) {
-			/* Grandchild */
-			if (stat (mount->mount_path, &statbuf) == 0) {
-				write (pipes[1], (char *)&statbuf.st_dev, sizeof (dev_t));
-			}
-		} else {
+		if (pid == -1) {
+			close (pipes[0]);
 			close (pipes[1]);
+			goto error;
 		}
 
-		_exit (0);
-	} else {
+		if (pid == 0) {
+			/* Child */
+			close (pipes[0]);
+
+			/* Fork an intermediate child that immediately exits
+			 * so we can waitpid it. This means the final process
+			 * will get owned by init and not go zombie.
+			 */
+			pid = fork ();
+
+			if (pid == 0) {
+				/* Grandchild */
+				struct stat statbuf;
+				while (mounts) {
+					GnomeVFSUnixMount *mount = mounts->data;
+					unix_device =
+						stat (mount->mount_path, &statbuf) == 0
+						? statbuf.st_dev
+						: 0;
+					write (pipes[1], (char *)&unix_device, sizeof (dev_t));
+					mounts = mounts->next;
+				}
+			}
+			close (pipes[1]);
+			_exit (0);
+			g_assert_not_reached ();
+		}
+
 		/* Parent */
 		close (pipes[1]);
-		
-        wait_again:
+
+	retry_waitpid:
 		if (waitpid (pid, &status, 0) < 0) {
 			if (errno == EINTR)
-				goto wait_again;
+				goto retry_waitpid;
 			else if (errno == ECHILD)
 				; /* do nothing, child already reaped */
 			else
 				g_warning ("waitpid() should not fail in gnome_vfs_unix_mount_get_unix_device");
 		}
 
+		while (mounts) {
+			int res;
 
-		do {
+			do {
 #ifdef HAVE_POLL
-			poll_fd.fd = pipes[0];
-			poll_fd.events = POLLIN;
-			res = poll (&poll_fd, 1, STAT_TIMEOUT_SECONDS*1000);
+				struct pollfd poll_fd;
+				poll_fd.fd = pipes[0];
+				poll_fd.events = POLLIN;
+				res = poll (&poll_fd, 1, STAT_TIMEOUT_SECONDS * 1000);
 #else
-			tv.tv_sec = STAT_TIMEOUT_SECONDS;
-			tv.tv_usec = 0;
+				struct timeval tv;
+				fd_set read_fds;
+
+				tv.tv_sec = STAT_TIMEOUT_SECONDS;
+				tv.tv_usec = 0;
 			
-			FD_ZERO(&read_fds);
-			FD_SET(pipes[0], &read_fds);
+				FD_ZERO(&read_fds);
+				FD_SET(pipes[0], &read_fds);
 			
-			res = select (pipes[0] + 1,
-				      &read_fds, NULL, NULL, &tv);
+				res = select (pipes[0] + 1,
+					      &read_fds, NULL, NULL, &tv);
 #endif
-		} while (res == -1 && errno == EINTR);
-		
-		if (res > 0) {
-			if (read (pipes[0], (char *)&unix_device, sizeof (dev_t)) != sizeof (dev_t)) {
-				unix_device = 0; 
-			}
+			} while (res == -1 && errno == EINTR);
+
+			if (res <= 0 ||
+			    read (pipes[0], (char *)&unix_device, sizeof (dev_t)) != sizeof (dev_t))
+				break;
+
+			result = g_list_prepend (result, GUINT_TO_POINTER ((gulong)unix_device));
+			mounts = mounts->next;
 		}
 
 		close (pipes[0]);
+
+	error:
+		if (mounts) {
+			unix_device = 0;
+			result = g_list_prepend (result, GUINT_TO_POINTER ((gulong)unix_device));
+			mounts = mounts->next;
+		}
 	}
-	
-	return unix_device;
+
+	return g_list_reverse (result);
 }
 
 #ifndef HAVE_SETMNTENT
@@ -218,6 +235,7 @@ gboolean
 _gnome_vfs_get_current_unix_mounts (GList **return_list)
 {
 	static time_t last_mtime = 0;
+	static off_t last_size = 0;
 	struct mntent *mntent;
 	FILE *file;
 	char *read_file;
@@ -230,19 +248,19 @@ _gnome_vfs_get_current_unix_mounts (GList **return_list)
 	stat_file = get_mtab_monitor_file ();
 
 	*return_list = NULL;
-	
-	if (last_mtime != 0) {
-		if (stat (stat_file, &sb) < 0) {
-			g_warning ("Unable to stat %s: %s", stat_file,
-				   g_strerror (errno));
-			return TRUE;
-		}
-		
-		if (sb.st_mtime == last_mtime) {
-			return FALSE;
-		}
-		last_mtime = sb.st_mtime;
+
+	if (stat (stat_file, &sb) < 0) {
+		g_warning ("Unable to stat %s: %s", stat_file,
+			   g_strerror (errno));
+		return TRUE;
 	}
+
+	if (sb.st_mtime == last_mtime && sb.st_size == last_size) {
+		return FALSE;
+	}
+
+	last_mtime = sb.st_mtime;
+	last_size = sb.st_size;
 
 	file = setmntent (read_file, "r");
 	if (file == NULL) {
@@ -316,6 +334,7 @@ gboolean
 _gnome_vfs_get_current_unix_mounts (GList **return_list)
 {
 	static time_t last_mtime = 0;
+	static off_t last_size = 0;
 	struct mnttab mntent;
 	FILE *file;
 	char *read_file;
@@ -327,18 +346,19 @@ _gnome_vfs_get_current_unix_mounts (GList **return_list)
 	stat_file = get_mtab_monitor_file ();
 
 	*return_list = NULL;
-	
-	if (last_mtime != 0) {
-		if (stat (stat_file, &sb) < 0) {
-			g_warning ("Unable to stat %s: %s", stat_file,
-				   g_strerror (errno));
-			return TRUE;
-		}
-		
-		if (sb.st_mtime == last_mtime) {
-			return FALSE;
-		}
+
+	if (stat (stat_file, &sb) < 0) {
+		g_warning ("Unable to stat %s: %s", stat_file,
+			   g_strerror (errno));
+		return TRUE;
 	}
+
+	if (sb.st_mtime == last_mtime && sb.st_size == last_size) {
+		return FALSE;
+	}
+
+	last_mtime = sb.st_mtime;
+	last_size = sb.st_size;
 
 	file = setmntent (read_file, "r");
 	if (file == NULL) {
@@ -510,6 +530,7 @@ gboolean
 _gnome_vfs_get_unix_mount_table (GList **return_list)
 {
 	static time_t last_mtime = 0;
+	static off_t last_size = 0;
 	struct mntent *mntent;
 	FILE *file;
 	char *read_file;
@@ -521,18 +542,19 @@ _gnome_vfs_get_unix_mount_table (GList **return_list)
 	stat_file = read_file = get_fstab_file ();
 
 	*return_list = NULL;
-	
-	if (last_mtime != 0) {
-		if (stat (stat_file, &sb) < 0) {
-			g_warning ("Unable to stat %s: %s", stat_file,
-				   g_strerror (errno));
-			return TRUE;
-		}
-		
-		if (sb.st_mtime == last_mtime) {
-			return FALSE;
-		}
+
+	if (stat (stat_file, &sb) < 0) {
+		g_warning ("Unable to stat %s: %s", stat_file,
+			   g_strerror (errno));
+		return TRUE;
 	}
+
+	if (sb.st_mtime == last_mtime && sb.st_size == last_size) {
+		return FALSE;
+	}
+
+	last_mtime = sb.st_mtime;
+	last_size = sb.st_size;
 
 	file = setmntent (read_file, "r");
 	if (file == NULL) {
@@ -597,6 +619,7 @@ gboolean
 _gnome_vfs_get_unix_mount_table (GList **return_list)
 {
 	static time_t last_mtime = 0;
+	static off_t last_size = 0;
 	struct mnttab mntent;
 	FILE *file;
 	char *read_file;
@@ -607,18 +630,19 @@ _gnome_vfs_get_unix_mount_table (GList **return_list)
 	stat_file = read_file = get_fstab_file ();
 
 	*return_list = NULL;
-	
-	if (last_mtime != 0) {
-		if (stat (stat_file, &sb) < 0) {
-			g_warning ("Unable to stat %s: %s", stat_file,
-				   g_strerror (errno));
-			return TRUE;
-		}
-		
-		if (sb.st_mtime == last_mtime) {
-			return FALSE;
-		}
+
+	if (stat (stat_file, &sb) < 0) {
+		g_warning ("Unable to stat %s: %s", stat_file,
+			   g_strerror (errno));
+		return TRUE;
 	}
+
+	if (sb.st_mtime == last_mtime && sb.st_size == last_size) {
+		return FALSE;
+	}
+
+	last_mtime = sb.st_mtime;
+	last_size = sb.st_size;
 
 	file = setmntent (read_file, "r");
 	if (file == NULL) {
@@ -785,6 +809,7 @@ gboolean
 _gnome_vfs_get_unix_mount_table (GList **return_list)
 {
 	static time_t last_mtime = 0;
+	static off_t last_size = 0;
 	struct mntent *mntent;
 	FILE *file;
 	char *read_file;
@@ -797,17 +822,17 @@ _gnome_vfs_get_unix_mount_table (GList **return_list)
 
 	*return_list = NULL;
 	
-	if (last_mtime != 0) {
-		if (stat (stat_file, &sb) < 0) {
-			g_warning ("Unable to stat %s: %s", stat_file,
-				   g_strerror (errno));
-			return TRUE;
-		}
-		
-		if (sb.st_mtime == last_mtime) {
-			return FALSE;
-		}
+	if (stat (stat_file, &sb) < 0) {
+		g_warning ("Unable to stat %s: %s", stat_file,
+			   g_strerror (errno));
+		return TRUE;
 	}
+		
+	if (last_mtime != 0 && fsb.st_mtime == last_mtime && fsb.st_size == last_size) {
+		return FALSE;
+	}
+	last_mtime = fsb.st_mtime;
+	last_size = fsb.st_size;
 
 	file = setmntent (read_file, "r");
 	if (file == NULL) {
@@ -841,6 +866,7 @@ gboolean
 _gnome_vfs_get_unix_mount_table (GList **return_list)
 {
     	static time_t last_mtime = 0;
+	static off_t last_size = 0;
     	struct fstab *fstab = NULL;
 	char *stat_file;
 	struct stat fsb;
@@ -859,10 +885,11 @@ _gnome_vfs_get_unix_mount_table (GList **return_list)
 		return TRUE;
 	}
 
-	if (last_mtime != 0 && fsb.st_mtime == last_mtime) {
+	if (last_mtime != 0 && fsb.st_mtime == last_mtime && fsb.st_size == last_size) {
 	    	return FALSE;
 	}
 	last_mtime = fsb.st_mtime;
+	last_size = fsb.st_size;
  
 	*return_list = NULL;
 

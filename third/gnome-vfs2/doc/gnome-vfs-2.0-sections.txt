@@ -27,6 +27,9 @@ GNOME_VFS_SIZE_IS_UNSIGNED_LONG_LONG
 <SECTION>
 <FILE>gnome-vfs-utils</FILE>
 gnome_vfs_format_file_size_for_display
+gnome_vfs_format_uri_for_display
+gnome_vfs_url_show
+gnome_vfs_url_show_with_env
 gnome_vfs_escape_string
 gnome_vfs_escape_path_string
 gnome_vfs_escape_host_and_path_string
@@ -34,6 +37,7 @@ gnome_vfs_escape_slashes
 gnome_vfs_escape_set
 gnome_vfs_unescape_string
 gnome_vfs_make_uri_canonical
+gnome_vfs_make_uri_canonical_strip_fragment
 gnome_vfs_make_path_name_canonical
 gnome_vfs_make_uri_from_input
 gnome_vfs_make_uri_from_input_with_dirs
@@ -143,6 +147,8 @@ GnomeVFSAsyncCloseCallback
 GnomeVFSAsyncReadCallback
 GnomeVFSAsyncWriteCallback
 GnomeVFSFindDirectoryResult
+GnomeVFSAsyncFileControlCallback
+GnomeVFSAsyncSeekCallback
 gnome_vfs_async_set_job_limit
 gnome_vfs_async_get_job_limit
 gnome_vfs_async_cancel
@@ -158,6 +164,7 @@ gnome_vfs_async_create_uri_as_channel
 gnome_vfs_async_close
 gnome_vfs_async_read
 gnome_vfs_async_write
+gnome_vfs_async_seek
 gnome_vfs_async_get_file_info
 gnome_vfs_async_set_file_info
 gnome_vfs_async_load_directory
@@ -595,6 +602,7 @@ gnome_vfs_volume_ref
 gnome_vfs_volume_type_get_type
 gnome_vfs_volume_unmount
 gnome_vfs_volume_unref
+gnome_vfs_connect_to_server
 </SECTION>
 
 <SECTION>
@@ -618,6 +626,7 @@ gnome_vfs_drive_get_icon
 gnome_vfs_drive_get_id
 gnome_vfs_drive_get_mounted_volume
 gnome_vfs_drive_get_mounted_volumes
+gnome_vfs_drive_volume_list_free
 gnome_vfs_drive_get_type
 gnome_vfs_drive_is_connected
 gnome_vfs_drive_is_mounted
@@ -663,6 +672,7 @@ gnome_vfs_dns_sd_browse_sync
 gnome_vfs_dns_sd_resolve_sync
 gnome_vfs_dns_sd_service_list_free
 gnome_vfs_dns_sd_list_browse_domains_sync
+gnome_vfs_get_default_browse_domains
 </SECTION>
 
 <SECTION>

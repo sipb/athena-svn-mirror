@@ -59,7 +59,7 @@ gint     _gnome_vfs_unix_mount_point_compare    (GnomeVFSUnixMountPoint     *mou
 						 GnomeVFSUnixMountPoint     *mount_point2);
 gboolean _gnome_vfs_get_unix_mount_table        (GList                     **return_list);
 gboolean _gnome_vfs_get_current_unix_mounts     (GList                     **return_list);
-dev_t    _gnome_vfs_unix_mount_get_unix_device  (GnomeVFSUnixMount          *mount);
+GList *  _gnome_vfs_unix_mount_get_unix_device  (GList                      *mounts);
 void     _gnome_vfs_monitor_unix_mounts         (GnomeVFSUnixMountCallback   mount_table_changed,
 						 gpointer                    mount_table_changed_user_data,
 						 GnomeVFSUnixMountCallback   current_mounts_changed,

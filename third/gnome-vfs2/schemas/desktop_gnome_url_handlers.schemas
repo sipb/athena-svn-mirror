@@ -18,8 +18,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Дали избраната команда да обработва &quot;trash&quot; URL-та</short>
-        <long>Включено, ако командата в ключа &quot;команда&quot; ще изпълнява &quot;trash&quot; URL-та.</long>
+        <short>Дали избраната програма да обработва URL-та от тип &quot;trash&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;trash&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -87,9 +87,19 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « trash ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;trash&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;trash&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;trash&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;trash&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;trash&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;trash&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e a &quot;trash&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli a &quot;trash&quot; URL-eket.</long>
       </locale>
 
       <locale name="it">
@@ -110,6 +120,11 @@
       <locale name="lt">
         <short>Ar nurodyta programa turėtų apdoroti „trash“ adresus</short>
         <long>Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, apdorotų „trash“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;trash&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -142,6 +157,11 @@
         <long>True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «trash»-URLer.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;trash&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;trash&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;trash&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</short>
         <long>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;trash&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</long>
@@ -170,6 +190,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;trash&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;trash&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Či má určený príkaz spracovat URL trash</short>
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre trash.</long>
       </locale>
 
       <locale name="sq">
@@ -216,6 +241,11 @@
         <short>指定的命令應否處理 “trash”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “trash”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;trash&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;trash&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/trash/command</key>
@@ -234,8 +264,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Обработването на &quot;trash&quot; URL-та</short>
-        <long>Командата използвана за обработване на &quot;trash&quot; URL-та, е включена.</long>
+        <short>Програма за обработка на URL-та от тип &quot;trash&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;trash&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -303,14 +333,19 @@
         <long>Si vrai, le programme qui gère les URLs « trash ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;trash&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;trash&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;trash&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;trash&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;trash&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;trash&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;trash&quot; URL-ek kezelője</short>
-        
+        <long>A &quot;trash&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
       </locale>
 
       <locale name="it">
@@ -329,8 +364,13 @@
       </locale>
 
       <locale name="lt">
-        <short>Programa, kuriai perleisti „trash“ užklausas</short>
+        <short>Programa, kuriai perduoti „trash“ užklausas</short>
         <long>Komanda naudojama apdoroti „trash“ URL, jei įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;trash&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -363,6 +403,11 @@
         <long>Kommando som brukes til å håndtere «trash»-URLer, hvis aktivert.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;trash&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;trash&quot;, ge eba di kgontšhitšwe.</long>
+      </locale>
+
       <locale name="pa">
         <short>&quot;trash&quot; URL ਲਈ ਹੈਂਡਲਰ</short>
         <long>ਕਮਾਂਡ ਲਾਈਨ &quot;trash&quot; URL ਨੂੰ ਹੈਂਡਲ ਕਰੇਗੀ, ਜੇਕਰ ਯੋਗ ਕੀਤਾ ਤਾਂ|</long>
@@ -389,8 +434,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;trash&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;trash&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;trash&quot;</short>
+        <long>Команда, используемая для обработки URL типа &quot;trash&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre trash</short>
+        <long>Príkaz na podporu URL &quot;trash&quot;, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -437,6 +487,11 @@
         <short>處理 “trash”URL 的處理程序</short>
         <long>若有啟用，用來處理“trash”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;trash&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;trash&quot; URLs, uma ingunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/trash/needs_terminal</key>
@@ -455,8 +510,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -524,6 +579,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -531,7 +591,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -552,6 +612,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -584,6 +649,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -612,6 +682,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -658,6 +733,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
     </schema>
 
     <schema>
@@ -677,8 +757,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Дали избраната команда да обработва &quot;ghelp&quot; URL-та</short>
-        <long>Включено, ако командата в ключа &quot;команда&quot; ще изпълнява &quot;ghelp&quot; URL-та.</long>
+        <short>Дали избраната програма да обработва URL-та от тип &quot;ghelp&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;ghelp&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -746,9 +826,19 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « ghelp ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;ghelp&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;ghelp&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;ghelp&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;ghelp&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;ghelp&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;ghelp&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e a &quot;ghelp&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli a &quot;ghelp&quot; URL-eket.</long>
       </locale>
 
       <locale name="it">
@@ -769,6 +859,11 @@
       <locale name="lt">
         <short>Ar nurodyta programa turėtų apdoroti „ghelp“ adresus</short>
         <long>Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, apdorotų „ghelp“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;ghelp&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -801,6 +896,11 @@
         <long>True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «ghelp»-URLer.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;ghelp&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;ghelp&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ,  &quot;ghelp&quot;ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</short>
         <long>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;ghelp&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ </long>
@@ -829,6 +929,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;ghelp&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;ghelp&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre ghelp.</long>
       </locale>
 
       <locale name="sq">
@@ -875,6 +980,11 @@
         <short>指定的命令應否處理 “ghelp”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “ghelp”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;ghelp&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;ghelp&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/ghelp/command</key>
@@ -893,8 +1003,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Обработването на &quot;ghelp&quot; URL-та</short>
-        <long>Командата използвана за обработване на &quot;ghelp&quot; URL-та, е включена.</long>
+        <short>Програма за обработка на URL-та от тип &quot;ghelp&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;ghelp&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -962,14 +1072,19 @@
         <long>Si vrai, le programme qui gère les URLs « ghelp ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;ghelp&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;ghelp&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;ghelp&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;ghelp&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;ghelp&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;ghelp&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;ghelp&quot; URL-ek kezelője</short>
-        
+        <long>A &quot;ghelp&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
       </locale>
 
       <locale name="it">
@@ -988,8 +1103,13 @@
       </locale>
 
       <locale name="lt">
-        <short>Programa, kuriai perleisti „ghelp“ užklausas</short>
+        <short>Programa, kuriai perduoti „ghelp“ užklausas</short>
         <long>Komanda naudojama apdoroti „ghelp“ URL, jeigu įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;ghelp&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -1022,6 +1142,11 @@
         <long>Kommando som brukes til å håndtere «ghelp»-URLer, hvis aktivert.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;ghelp&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;ghelp&quot;, ge eba di kgontšhitšwe.</long>
+      </locale>
+
       <locale name="pa">
         <short>&quot;ghelp&quot; URL ਲਈ ਹੈਂਡਲਰ</short>
         <long>ਕਮਾਂਡ ਲਾਈਨ  &quot;ghelp&quot; URL ਨੂੰ ਹੈਂਡਲ ਕਰੇਗੀ, ਜੇਕਰ ਯੋਗ ਕੀਤਾ ਤਾਂ|</long>
@@ -1048,8 +1173,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;ghelp&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;ghelp&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;ghelp&quot;</short>
+        <long>Команда, используемая для обработки URL типа &quot;ghelp&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre ghelp</short>
+        <long>Príkaz na podporu URL ghelp, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -1096,6 +1226,11 @@
         <short>處理 “ghelp”URL 的處理程序</short>
         <long>若有啟用，用來處理“ghelp”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;ghelp&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;ghelp&quot; URLs, uma igunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/ghelp/needs_terminal</key>
@@ -1114,8 +1249,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -1183,6 +1318,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -1190,7 +1330,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -1211,6 +1351,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -1243,6 +1388,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -1271,6 +1421,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -1317,6 +1472,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
     </schema>
 
     <schema>
@@ -1336,8 +1496,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Дали избраната команда да обработва &quot;info&quot; URL-та</short>
-        <long>Включено, ако командата в ключа &quot;команда&quot; ще изпълнява &quot;info&quot; URL-та.</long>
+        <short>Дали избраната програма да обработва URL-та от тип &quot;info&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;info&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -1405,9 +1565,19 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « info ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;info&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;info&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;info&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;info&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;info&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;info&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e az &quot;info&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli az &quot;info&quot; URL-eket.</long>
       </locale>
 
       <locale name="it">
@@ -1428,6 +1598,11 @@
       <locale name="lt">
         <short>Ar nurodyta programa turėtų apdoroti „info“ adresus</short>
         <long>Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, apdorotų „info“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;info&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -1460,6 +1635,11 @@
         <long> True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «info»-URLer.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;info&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;info&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ,  &quot;info&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</short>
         <long>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;info&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ </long>
@@ -1488,6 +1668,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;info&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;info&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Či má určený príkaz spracovat URL info</short>
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre info.</long>
       </locale>
 
       <locale name="sq">
@@ -1534,6 +1719,11 @@
         <short>指定的命令應否處理 “info”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “info”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;info&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;info&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/info/command</key>
@@ -1552,8 +1742,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Обработването на &quot;info&quot; URL-та</short>
-        <long>Командата използвана за обработване на &quot;info&quot; URL-та, е включена.</long>
+        <short>Програма за обработка на URL-та от тип &quot;info&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;info&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -1621,14 +1811,19 @@
         <long>Si vrai, le programme qui gère les URLs « info ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;info&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;info&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;info&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;info&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;info&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;info&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;info&quot; URL-ek kezelője</short>
-        
+        <long>Az &quot;info&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
       </locale>
 
       <locale name="it">
@@ -1647,8 +1842,13 @@
       </locale>
 
       <locale name="lt">
-        <short>Programa, kuriai perleisti „info“ užklausas</short>
+        <short>Programa, kuriai perduoti „info“ užklausas</short>
         <long>Komanda naudojama apdoroti „info“ URL, jei įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;info&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -1681,6 +1881,11 @@
         <long>Kommando som brukes til å håndtere «info»-URLer, hvis aktivert.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;info&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;info&quot; , ge eba di kgontšhitšwe.</long>
+      </locale>
+
       <locale name="pa">
         <short>&quot;info&quot; URL ਲਈ ਹੈਂਡਲਰ</short>
         <long>ਕਮਾਂਡ ਲਾਈਨ &quot;info&quot; URL ਨੂੰ ਹੈਂਡਲ ਕਰੇਗੀ, ਜੇਕਰ ਯੋਗ ਕੀਤਾ ਤਾਂ|</long>
@@ -1707,8 +1912,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;info&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;info&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;info&quot;</short>
+        <long>Команда, используемая для обработки URL типа &quot;info&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre info</short>
+        <long>Príkaz na podporu URL info, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -1755,6 +1965,11 @@
         <short>處理 “info”URL 的處理程序</short>
         <long>若有啟用，用來處理“info”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;info&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;info&quot; URLs, uma ingunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/info/needs_terminal</key>
@@ -1773,8 +1988,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -1842,6 +2057,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -1849,7 +2069,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -1870,6 +2090,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -1902,6 +2127,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -1930,6 +2160,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -1976,6 +2211,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
      </schema>
 
     <schema>
@@ -1995,8 +2235,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Дали избраната команда да обработва &quot;man&quot; URL-та</short>
-        <long>Включено, ако командата в ключа &quot;команда&quot; ще изпълнява &quot;man&quot; URL-та.</long>
+        <short>Дали избраната програма да обработва URL-та от тип &quot;man&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;man&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -2064,9 +2304,19 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « man ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;man&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;man&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;man&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;man&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;man&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;man&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e a &quot;man&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli a &quot;man&quot; URL-eket.</long>
       </locale>
 
       <locale name="it">
@@ -2087,6 +2337,11 @@
       <locale name="lt">
         <short>Ar nurodyta programa turėtų apdoroti „man“ adresus</short>
         <long>Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, apdorotų „man“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;man&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -2119,6 +2374,11 @@
         <long> True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «man»-URLer.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;man&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;man&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;man&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</short>
         <long>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;man&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</long>
@@ -2147,6 +2407,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;man&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;man&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Či má určený príkaz spracovat URL man</short>
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre man.</long>
       </locale>
 
       <locale name="sq">
@@ -2193,6 +2458,11 @@
         <short>指定的命令應否處理 “man”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “man”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;man&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;man&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/man/command</key>
@@ -2211,8 +2481,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Обработването на &quot;man&quot; URL-та</short>
-        <long>Командата използвана за обработване на &quot;man&quot; URL-та, е включена.</long>
+        <short>Програма за обработка на URL-та от тип &quot;man&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;man&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -2280,14 +2550,19 @@
         <long>Si vrai, le programme qui gère les URLs « man ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;man&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;man&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;man&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;man&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;man&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;man&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;man&quot; URL-ek kezelője</short>
-        
+        <long>A &quot;man&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
       </locale>
 
       <locale name="it">
@@ -2306,8 +2581,13 @@
       </locale>
 
       <locale name="lt">
-        <short>Programa, kuriai perleisti „man“ užklausas</short>
+        <short>Programa, kuriai perduoti „man“ užklausas</short>
         <long>Komanda naudojama apdoroti „man“ URL, jei įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;man&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -2340,6 +2620,11 @@
         <long>Kommando som brukes til å håndtere «man»-URLer, hvis aktivert.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;man&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;man&quot;, ge eba di kgontšhitšwe.</long>
+      </locale>
+
       <locale name="pa">
         <short>&quot;man&quot; URL ਲਈ ਹੈਂਡਲਰ</short>
         <long>ਕਮਾਂਡ ਲਾਈਨ &quot;man&quot; URL ਨੂੰ ਹੈਂਡਲ ਕਰੇਗੀ, ਜੇਕਰ ਯੋਗ ਕੀਤਾ ਤਾਂ|</long>
@@ -2366,8 +2651,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;man&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;man&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;man&quot;</short>
+        <long>Команда, используемая для обработки URL типа &quot;man&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre man</short>
+        <long>Príkaz na podporu URL man, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -2414,6 +2704,11 @@
         <short>處理 “man”URL 的處理程序</short>
         <long>若有啟用，用來處理“man”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;man&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;man&quot; URLs, uma ingunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/man/needs_terminal</key>
@@ -2432,8 +2727,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -2501,6 +2796,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -2508,7 +2808,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -2529,6 +2829,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -2561,6 +2866,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -2589,6 +2899,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -2635,6 +2950,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
     </schema>
 
     <schema>
@@ -2651,6 +2971,11 @@
       <locale name="ar">
         <short>فيما إذا كان على الأمر المحدّد معالجة عناوين &quot;http&quot;</short>
         <long>إضبط لـtrue إذا كان على الأمر المحدّد في المفتاح &quot;command&quot; معالجة عناوين &quot;http&quot;.</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Дали избраната програма да обработва URL-та от тип &quot;http&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;http&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -2718,9 +3043,24 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « http ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;http&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;http&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;http&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;http&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;http&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;http&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e a &quot;http&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli a &quot;http&quot; URL-eket.</long>
+      </locale>
+
+      <locale name="it">
+        <short>Indica se il comando specificao deve gestire gli URL &quot;http&quot;</short>
+        <long>Impostare a vero affiché in programma specificato nella chiave &quot;command&quot; gestisca gli URL &quot;http&quot;.</long>
       </locale>
 
       <locale name="ja">
@@ -2731,6 +3071,16 @@
       <locale name="ko">
         <short>지정한 명령어로 &quot;http&quot; URL을 처리할 지 여부</short>
         <long>참이면 &quot;command&quot; 키에 지정한 명령어로 &quot;http&quot; URL을 처리합니다.</long>
+      </locale>
+
+      <locale name="lt">
+        <short>Ar nurodyta programa turėtų apdoroti „http“ adresus</short>
+        <long>Nustatykite į teigiamą reikšmę jei norite, kad programa, nurodyta „command“ rakte, apdorotų „http“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;http&quot; URL</short>
+        
       </locale>
 
       <locale name="ms">
@@ -2756,6 +3106,11 @@
       <locale name="no">
         <short>Om oppgitt kommando skal håndtere «http»-URLer</short>
         <long>True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «http»-URLer.</long>
+      </locale>
+
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;http&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;http&quot;.</long>
       </locale>
 
       <locale name="pa">
@@ -2786,6 +3141,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;http&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;http&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Či má určený príkaz spracovat URL http</short>
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre http.</long>
       </locale>
 
       <locale name="sq">
@@ -2832,6 +3192,11 @@
         <short>指定的命令應否處理 “http”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “http”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;http&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;http&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/http/command</key>
@@ -2847,6 +3212,11 @@
       <locale name="ar">
         <short>معالج عناوين &quot;http&quot;</short>
         <long>الأمر المستخدم لمعالجة عناوين &quot;http&quot;، في حال تمكينها.</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Програма за обработка на URL-та от тип &quot;http&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;http&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -2914,14 +3284,24 @@
         <long>Si vrai, le programme qui gère les URLs « http ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;http&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;http&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;http&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;http&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;http&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;http&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;http&quot; URL-ek kezelője</short>
-        
+        <long>A &quot;http&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
+      </locale>
+
+      <locale name="it">
+        <short>Gestore di URL &quot;http&quot;</short>
+        <long>Il comando usato per gestire gli URL &quot;http&quot;, se abilitati.</long>
       </locale>
 
       <locale name="ja">
@@ -2932,6 +3312,16 @@
       <locale name="ko">
         <short>&quot;http&quot; URL에 대한 핸들러</short>
         <long>&quot;http&quot; URL을 처리할 경우 사용할 명령.</long>
+      </locale>
+
+      <locale name="lt">
+        <short>Programa, kuriai perduoti „http“ užklausas</short>
+        <long>Komanda naudojama apdoroti „http“ URL, jeigu įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;http&quot; URL</short>
+        
       </locale>
 
       <locale name="ms">
@@ -2957,6 +3347,11 @@
       <locale name="no">
         <short>Håndterer for «http»-URLer</short>
         <long>Kommando som brukes til å håndtere «http»-URLer, hvis aktivert.</long>
+      </locale>
+
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;http&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;http&quot;, ge eba di kgontšhitšwe.</long>
       </locale>
 
       <locale name="pa">
@@ -2985,8 +3380,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;http&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;http&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;http&quot;</short>
+        <long>Команда, используемая для обработки URL типа &quot;http&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre http</short>
+        <long>Príkaz na podporu URL http, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -3033,6 +3433,11 @@
         <short>處理 “http”URL 的處理程序</short>
         <long>若有啟用，用來處理“http”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;http&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;http&quot; URLs, uma ingunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/http/needs_terminal</key>
@@ -3051,8 +3456,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -3120,6 +3525,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -3127,7 +3537,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -3148,6 +3558,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -3180,6 +3595,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -3208,6 +3628,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -3254,6 +3679,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
     </schema>
 
     <schema>
@@ -3270,6 +3700,11 @@
       <locale name="ar">
         <short>فيما إذا كان على الأمر المحدّد معالجة عناوين &quot;https&quot;</short>
         <long>إضبط لـtrue إذا كان على الأمر المحدّد في المفتاح &quot;command&quot; معالجة عناوين &quot;https&quot;.</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Дали избраната програма да обработва URL-та от тип &quot;https&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;https&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -3337,9 +3772,24 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « https ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;https&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;https&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;https&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;https&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;https&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;https&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e a &quot;https&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli a &quot;https&quot; URL-eket.</long>
+      </locale>
+
+      <locale name="it">
+        <short>Indica se il comando specificato deve gestire gli URL &quot;https&quot;</short>
+        <long>Impostare a vero affiché in programma specificato nella chiave &quot;command&quot; gestisca gli URL &quot;https&quot;.</long>
       </locale>
 
       <locale name="ja">
@@ -3350,6 +3800,16 @@
       <locale name="ko">
         <short>지정한 명령어로 &quot;https&quot; URL을 처리할 지 여부</short>
         <long>참이면 &quot;command&quot; 키에 지정한 명령어로 &quot;https&quot; URL을 처리합니다.</long>
+      </locale>
+
+      <locale name="lt">
+        <short>Ar nurodyta programa turėtų apdoroti „https“ adresus</short>
+        <long>Nustatykite į teigiamą reikšmę jei norite, kad programa, nurodyta „command“ rakte, apdorotų „https“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;https&quot; URL</short>
+        
       </locale>
 
       <locale name="ms">
@@ -3375,6 +3835,11 @@
       <locale name="no">
         <short>Om oppgitt kommando skal håndtere «https»-URLer</short>
         <long>True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «https»-URLer.</long>
+      </locale>
+
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;https&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;https&quot;.</long>
       </locale>
 
       <locale name="pa">
@@ -3405,6 +3870,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;https&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;https&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Či má určený príkaz spracovat URL https</short>
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre https.</long>
       </locale>
 
       <locale name="sq">
@@ -3451,6 +3921,11 @@
         <short>指定的命令應否處理 “https”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “https”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;https&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;https&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/https/command</key>
@@ -3466,6 +3941,11 @@
       <locale name="ar">
         <short>معالج عناوين &quot;https&quot;</short>
         <long>الأمر المستخدم لمعالجة عناوين &quot;https&quot;، في حال تمكينها.</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Програма за обработка на URL-та от тип &quot;https&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;https&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -3533,14 +4013,24 @@
         <long>Si vrai, le programme qui gère les URLs « https ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;https&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;https&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;https&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;http&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;https&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;http&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;https&quot; URL-ek kezelője</short>
-        
+        <long>A &quot;https&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
+      </locale>
+
+      <locale name="it">
+        <short>Gestore di URL &quot;https&quot;</short>
+        <long>Il comando usato per gestire gli URL &quot;https&quot;, se abilitati.</long>
       </locale>
 
       <locale name="ja">
@@ -3551,6 +4041,16 @@
       <locale name="ko">
         <short>&quot;https&quot; URL에 대한 핸들러</short>
         <long>&quot;https&quot; URL을 처리할 경우 사용할 명령.</long>
+      </locale>
+
+      <locale name="lt">
+        <short>Programa, kuriai perduoti „https“ užklausas</short>
+        <long>Komanda naudojama apdoroti „https“ URL, jei įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;https&quot; URL</short>
+        
       </locale>
 
       <locale name="ms">
@@ -3576,6 +4076,11 @@
       <locale name="no">
         <short>Håndterer for «https»-URLer</short>
         <long>Kommando som brukes til å håndtere «https»-URLer, hvis aktivert.</long>
+      </locale>
+
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;https&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;https&quot;, ge eba di kgontšhitšwe.</long>
       </locale>
 
       <locale name="pa">
@@ -3604,8 +4109,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;https&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;https&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;https&quot;</short>
+        <long>Команда, используемая для обработки ссылок URL типа &quot;https&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre https</short>
+        <long>Príkaz na podporu URL https, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -3652,6 +4162,11 @@
         <short>處理 “https”URL 的處理程序</short>
         <long>若有啟用，用來處理“https”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;https&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;https&quot; URLs, uma ingunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/https/needs_terminal</key>
@@ -3670,8 +4185,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -3739,6 +4254,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -3746,7 +4266,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -3767,6 +4287,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -3799,6 +4324,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -3827,6 +4357,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -3873,6 +4408,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
     </schema>
 
     <schema>
@@ -3892,8 +4432,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Дали избраната команда да обработва &quot;mailto&quot; URL-та</short>
-        <long>Включено, ако командата в ключа &quot;команда&quot; ще изпълнява &quot;mailto&quot; URL-та.</long>
+        <short>Дали избраната програма да обработва URL-та от тип &quot;mailto&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;mailto&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -3961,9 +4501,19 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « mailto ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;mailto&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;mailto&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;mailto&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;mailto&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;mailto&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;mailto&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e a &quot;mailto&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli a &quot;mailto&quot; URL-eket.</long>
       </locale>
 
       <locale name="it">
@@ -3984,6 +4534,11 @@
       <locale name="lt">
         <short>Ar nurodyta programa turėtų apdoroti „mailto“ adresus</short>
         <long>Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, apdorotų „mailto“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;mailto&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -4016,6 +4571,11 @@
         <long> True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «mailto»-URLer.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;mailto&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;mailto&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;mailto&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</short>
         <long>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;mailto&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</long>
@@ -4044,6 +4604,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;mailto&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;mailto&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Či má určený príkaz spracovat URL mailto</short>
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre mailto.</long>
       </locale>
 
       <locale name="sq">
@@ -4090,6 +4655,11 @@
         <short>指定的命令應否處理 “mailto”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “mailto”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;mailto&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;mailto&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/mailto/command</key>
@@ -4108,8 +4678,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Обработването на &quot;mailto&quot; URL-та</short>
-        <long>Командата използвана за обработване на &quot;mailto&quot; URL-та, е включена.</long>
+        <short>Програма за обработка на URL-та от тип &quot;mailto&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;mailto&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -4177,14 +4747,19 @@
         <long>Si vrai, le programme qui gère les URLs « mailto ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;mailto&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;mailto&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;mailto&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;mailto&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;mailto&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;mailto&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;mailto&quot; URL-ek kezelője</short>
-        
+        <long>A &quot;mailto&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
       </locale>
 
       <locale name="it">
@@ -4203,8 +4778,13 @@
       </locale>
 
       <locale name="lt">
-        <short>Programa, kuriai perleisti „mailto“ užklausas</short>
+        <short>Programa, kuriai perduoti „mailto“ užklausas</short>
         <long>Komanda naudojama apdoroti „mailto“ URL, jei įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;mailto&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -4237,6 +4817,11 @@
         <long>Kommando som brukes til å håndtere «mailto»-URLer, hvis aktivert.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;mailto&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;mailto&quot;, ge eba di kgontšhitšwe.</long>
+      </locale>
+
       <locale name="pa">
         <short>&quot;mailto&quot; URL ਲਈ ਹੈਂਡਲਰ</short>
         <long>ਕਮਾਂਡ ਲਾਈਨ &quot;mailto&quot;  URL ਨੂੰ ਹੈਂਡਲ ਕਰੇਗੀ, ਜੇਕਰ ਯੋਗ ਕੀਤਾ ਤਾਂ|</long>
@@ -4263,8 +4848,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;mailto&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;mailto&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;mailto&quot;</short>
+        <long>Команда, используемая для обработки URL типа &quot;mailto&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre mailto</short>
+        <long>Príkaz na podporu URL mailto, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -4311,6 +4901,11 @@
         <short>處理 “mailto”URL 的處理程序</short>
         <long>若有啟用，用來處理“mailto”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;mailto&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;mailto&quot; URLs, uma ingunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/mailto/needs_terminal</key>
@@ -4329,8 +4924,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -4398,6 +4993,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -4405,7 +5005,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -4426,6 +5026,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -4458,6 +5063,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -4486,6 +5096,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -4532,6 +5147,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
     </schema>
 
     <schema>
@@ -4551,8 +5171,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Дали избраната команда да обработва &quot;aim&quot; URL-та</short>
-        <long>Включено, ако командата в ключа &quot;команда&quot; ще изпълнява &quot;aim&quot; URL-та.</long>
+        <short>Дали избраната програма да обработва URL-та от тип &quot;aim&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;aim&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -4620,9 +5240,19 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « aim ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;aim&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;aim&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;aim&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;aim&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;aim&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;aim&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e az &quot;aim&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli az &quot;aim&quot; URL-eket.</long>
       </locale>
 
       <locale name="it">
@@ -4643,6 +5273,11 @@
       <locale name="lt">
         <short>Ar nurodyta programa turėtų apdoroti „aim“ adresus</short>
         <long>Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, apdorotų „aim“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда треба да се справи со &quot;aim&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -4675,6 +5310,11 @@
         <long>True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «aim»-URLer.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;aim&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;aim&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ,&quot;aim&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</short>
         <long>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ,&quot;aim&quot;  ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ </long>
@@ -4703,6 +5343,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;aim&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;aim&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Či má určený príkaz spracovat URL aim</short>
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre aim.</long>
       </locale>
 
       <locale name="sq">
@@ -4749,6 +5394,11 @@
         <short>指定的命令應否處理 “aim”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “aim”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;aim&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;aim&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/aim/command</key>
@@ -4767,8 +5417,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Обработването на &quot;aim&quot; URL-та</short>
-        <long>Командата използвана за обработване на &quot;aim&quot; URL-та, е включена.</long>
+        <short>Програма за обработка на URL-та от тип &quot;aim&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;aim&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -4836,14 +5486,19 @@
         <long>Si vrai, le programme qui gère les URLs « aim ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;aim&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;aim&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;aim&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;aim&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;aim&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;aim&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;aim&quot; URL-ek kezelője</short>
-        
+        <long>Az &quot;aim&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
       </locale>
 
       <locale name="it">
@@ -4862,8 +5517,13 @@
       </locale>
 
       <locale name="lt">
-        <short>Programa, kuriai perleisti „aim“ užklausas</short>
+        <short>Programa, kuriai perduoti „aim“ užklausas</short>
         <long>Komanda naudojama apdoroti „aim“ URL, jeigu įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;aim&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -4896,6 +5556,11 @@
         <long>Kommando som brukes til å håndtere «aim»-URLer, hvis aktivert.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;aim&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;aim&quot; , ge eba di kgontšhitšwe.</long>
+      </locale>
+
       <locale name="pa">
         <short>&quot;aim&quot; URL ਲਈ ਹੈਂਡਲਰ</short>
         <long>ਕਮਾਂਡ ਲਾਈਨ &quot;aim&quot; URL ਨੂੰ ਹੈਂਡਲ ਕਰੇਗੀ, ਜੇਕਰ ਯੋਗ ਕੀਤਾ ਤਾਂ|</long>
@@ -4922,8 +5587,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;aim&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;aim&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;aim&quot;</short>
+        <long>Команда, используемая для обработки URL типа &quot;aim&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre aim</short>
+        <long>Príkaz na podporu URL aim, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -4970,6 +5640,11 @@
         <short>沒有處理 “aim”URL 的處理程序</short>
         <long>若有啟用，用來處理“aim”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;aim&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;aim&quot; URLs, uma igunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/aim/needs_terminal</key>
@@ -4988,8 +5663,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -5057,6 +5732,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -5064,7 +5744,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -5085,6 +5765,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -5117,6 +5802,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -5145,6 +5835,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -5191,6 +5886,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
     </schema>
 
     <schema>
@@ -5210,8 +5910,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Дали избраната команда да обработва &quot;callto&quot; URL-та</short>
-        <long>Включено, ако командата в ключа &quot;команда&quot; ще изпълнява &quot;callto&quot; URL-та.</long>
+        <short>Дали избраната програма да обработва URL-та от тип &quot;callto&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;callto&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -5279,9 +5979,19 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « callto ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;callto&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;callto&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;callto&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;callto&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;callto&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;callto&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e a &quot;callto&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli a &quot;callto&quot; URL-eket.</long>
       </locale>
 
       <locale name="it">
@@ -5302,6 +6012,11 @@
       <locale name="lt">
         <short>Ar nurodyta programa turėtų apdoroti „callto“ adresus</short>
         <long>Nustatykite teigiamai norėdami, kad programa, nurodyta „command“ rakte, apdorotų „callto“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;callto&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -5334,6 +6049,11 @@
         <long>True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «callto»-URLer.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;callto&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;callto&quot;.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ, &quot;callto&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ</short>
         <long>ਸਹੀ ਕਰ ਦਿਉ ਤਾਂ ਕਿ ਕਾਰਜ ਜੋ ਕਿ &quot;ਕਮਾਂਡ&quot; ਵਿੱਚ ਨਿਰਧਾਰਿਤ ਹੈ,  &quot;callto&quot; ਯੂਆਰਐਲ਼ ਨੂੰ ਵਰਤ ਸਕੇ </long>
@@ -5362,6 +6082,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа &quot;callto&quot;</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа &quot;callto&quot;.</long>
+      </locale>
+
+      <locale name="sk">
+        
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre callto.</long>
       </locale>
 
       <locale name="sq">
@@ -5408,6 +6133,11 @@
         <short>指定的命令應否處理 “callto”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “callto”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;callto&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;callto&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/callto/command</key>
@@ -5426,8 +6156,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Обработването на &quot;callto&quot; URL-та</short>
-        <long>Командата използвана за обработване на &quot;callto&quot; URL-та, е включена.</long>
+        <short>Програма за обработка на URL-та от тип &quot;callto&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;callto&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -5495,14 +6225,19 @@
         <long>Si vrai, le programme qui gère les URLs « callto ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;callto&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;callto&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;callto&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;callto&quot; URLs ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;callto&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;callto&quot; URL ને નિયંત્રત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;callto&quot; URL-ek kezelője</short>
-        
+        <long>A &quot;callto&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
       </locale>
 
       <locale name="it">
@@ -5521,8 +6256,13 @@
       </locale>
 
       <locale name="lt">
-        <short>Programa, kuriai perleisti „callto“ užklausas</short>
+        <short>Programa, kuriai perduoti „callto“ užklausas</short>
         <long>Komanda naudojama apdoroti „callto“ URL, jeigu įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;callto&quot; URL</short>
+        
       </locale>
 
       <locale name="mn">
@@ -5555,6 +6295,11 @@
         <long>Kommando som brukes til å håndtere «callto»-URLer, hvis aktivert.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;callto&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;callto&quot;, ge eba di kgontšhitšwe.</long>
+      </locale>
+
       <locale name="pa">
         <short>&quot;callto&quot; URL ਲਈ ਹੈਂਡਲਰ</short>
         <long>ਕਮਾਂਡ ਲਾਈਨ  &quot;callto&quot; URL ਨੂੰ ਹੈਂਡਲ ਕਰੇਗੀ, ਜੇਕਰ ਯੋਗ ਕੀਤਾ ਤਾਂ|</long>
@@ -5581,8 +6326,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа &quot;callto&quot;</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа &quot;callto&quot;, если ключ установлен</long>
+        <short>Обработчик URL типа &quot;callto&quot;</short>
+        <long>Команда, используемая для обработки URL типа &quot;callto&quot;, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre callto</short>
+        <long>Príkaz na podporu URL callto, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -5629,6 +6379,11 @@
         <short>處理 “callto”URL 的處理程序</short>
         <long>若有啟用，用來處理“callto”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;callto&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;callto&quot; URLs, uma igunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/callto/needs_terminal</key>
@@ -5647,8 +6402,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -5716,6 +6471,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -5723,7 +6483,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -5744,6 +6504,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -5776,6 +6541,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -5804,6 +6574,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -5850,6 +6625,11 @@
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
+      </locale>
     </schema>
 
     <schema>
@@ -5866,6 +6646,11 @@
       <locale name="ar">
         <short>فيما إذا كان على الأمر المحدّد معالجة عناوين &quot;h323&quot;</short>
         <long>إضبط لـtrue إذا كان على الأمر المحدّد في المفتاح &quot;command&quot; معالجة عناوين &quot;h323&quot;.</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Дали избраната програма да обработва URL-та от тип &quot;h323&quot;</short>
+        <long>Включено, ако програмата в ключа &quot;програма&quot; ще изпълнява URL-та от тип &quot;h323&quot;.</long>
       </locale>
 
       <locale name="bs">
@@ -5933,9 +6718,24 @@
         <long>Définir à vrai pour que le programme spécifié à la clé « command » gère les URLs « h323 ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>Indica se a instrución indicada debe manexar os URLs &quot;h323&quot;</short>
+        <long>Activada se a instrución indicada na clave &quot;command&quot; debe manexar os URLs &quot;h323&quot;.</long>
+      </locale>
+
       <locale name="gu">
-        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;h323&quot; URLs ને નિયંત્રિત કરે</short>
-        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;h323&quot; URLs ને નિયંત્રિત કરે.</long>
+        <short>શું સ્પષ્ટ કરેલ આદેશ &quot;h323&quot; URL ને નિયંત્રિત કરે</short>
+        <long>સાચું જો &quot;command&quot; કી માં સ્પષ્ટ કરેલ આદેશ &quot;h323&quot; URL ને નિયંત્રિત કરે.</long>
+      </locale>
+
+      <locale name="hu">
+        <short>A megadott parancs kezelje-e a &quot;h323&quot; URL-eket</short>
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancs kezeli a &quot;h323&quot; URL-eket.</long>
+      </locale>
+
+      <locale name="it">
+        <short>Indica se il comando specificato deve gestire gli URL &quot;h323&quot;</short>
+        <long>Impostare a vero affiché in programma specificato nella chiave &quot;command&quot; gestisca gli URL &quot;h323&quot;</long>
       </locale>
 
       <locale name="ja">
@@ -5946,6 +6746,16 @@
       <locale name="ko">
         <short>지정한 명령어로 &quot;h323&quot; URL을 처리할 지 여부</short>
         <long>참이면 &quot;command&quot; 키에 지정한 명령어로 &quot;h323&quot; URL을 처리합니다.</long>
+      </locale>
+
+      <locale name="lt">
+        <short>Ar nurodyta programa turėtų apdoroti „h323“ adresus</short>
+        <long>Nustatykite į teigiamą reikšmę jei norite, kad programa, nurodyta „command“ rakte, apdorotų „h323“ adresus.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Дали наведената команда да се справи со &quot;h323&quot; URL</short>
+        
       </locale>
 
       <locale name="ms">
@@ -5971,6 +6781,11 @@
       <locale name="no">
         <short>Om oppgitt kommando skal håndtere «h323»-URLer</short>
         <long>True hvis programmet oppgitt i «command»-nøkkelen skal håndtere «h323»-URLer.</long>
+      </locale>
+
+      <locale name="nso">
+        <short>Ge eba taelo e laeditšwego e swanetše go swaragana le di-STS tša &quot;h323&quot;</short>
+        <long>Ke therešo gore ge taelo e laeditšwe go &quot;command&quot; senotlelo se swanetše go swaragana le di-STS tša &quot;h323&quot;.</long>
       </locale>
 
       <locale name="pa">
@@ -6001,6 +6816,11 @@
       <locale name="ru">
         <short>Будет ли указанная команда обрабатывать ссылки (URL) типа h323</short>
         <long>Если этот ключ установлен, то программа, определённая в ключе &quot;command&quot;, будет обрабатывать ссылки (URL) типа h323.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Či má určený príkaz spracovat URL h323</short>
+        <long>Nastavte na true, ak program zadaný v &quot;príkaz&quot; podporuje URL pre h323.</long>
       </locale>
 
       <locale name="sq">
@@ -6047,6 +6867,11 @@
         <short>指定的命令應否處理 “h323”URL</short>
         <long>如設定為真，在「指令」欄中指定的指令為處理 “h323”URL 的程式。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Noma umlayezo oshiwo ungaphatha &quot;h323&quot; URLs</short>
+        <long>Iqiniso uma umlayezo oshiwo ku nkinombo &quot;command&quot; ungaphatha &quot;h323&quot; URLs.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/h323/command</key>
@@ -6062,6 +6887,11 @@
       <locale name="ar">
         <short>معالج عناوين &quot;h323&quot;</short>
         <long>الأمر المستخدم لمعالجة عناوين &quot;h323&quot;، في حال تمكينها.</long>
+      </locale>
+
+      <locale name="bg">
+        <short>Програма за обработка на URL-та от тип &quot;h323&quot;</short>
+        <long>Програмата използвана за обработване на URL-та от тип &quot;h323&quot;, ако е включена.</long>
       </locale>
 
       <locale name="bs">
@@ -6129,14 +6959,24 @@
         <long>Si vrai, le programme qui gère les URLs « h323 ».</long>
       </locale>
 
+      <locale name="gl">
+        <short>O manexador de URLs &quot;h323&quot;</short>
+        <long>A instrución usada para manexar os URLs &quot;h323&quot;, se está habilitada.</long>
+      </locale>
+
       <locale name="gu">
-        <short>&quot;h323&quot; URLs માટે નિયંત્રક</short>
-        <long>&quot;H323&quot; URLs ને નિયંત્રિત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
+        <short>&quot;h323&quot; URL માટે નિયંત્રક</short>
+        <long>&quot;H323&quot; URL ને નિયંત્રિત કરવા માટેનો આદેશ, જો સક્રિય હોય.</long>
       </locale>
 
       <locale name="hu">
         <short>&quot;h323&quot; URL-ek kezelője</short>
-        
+        <long>A &quot;h323&quot; URL-ek kezelésére használt parancs, ha engedélyezve van.</long>
+      </locale>
+
+      <locale name="it">
+        <short>Gestore di URL &quot;h323&quot;</short>
+        <long>Il comando usato per gestire gli URL &quot;h323&quot;, se abilitati.</long>
       </locale>
 
       <locale name="ja">
@@ -6147,6 +6987,16 @@
       <locale name="ko">
         <short>&quot;h323&quot; URL에 대한 핸들러</short>
         <long>&quot;h323&quot; URL을 처리할 경우 사용할 명령.</long>
+      </locale>
+
+      <locale name="lt">
+        <short>Programa, kuriai perduoti „h323“ užklausas</short>
+        <long>Komanda naudojama apdoroti „h323“ URL, jei įjungta.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Справувачот за &quot;h323&quot; URL</short>
+        
       </locale>
 
       <locale name="ms">
@@ -6172,6 +7022,11 @@
       <locale name="no">
         <short>Håndterer for «h323»-URLer</short>
         <long>Kommando som brukes til å håndtere «h323»-URLer, hvis aktivert.</long>
+      </locale>
+
+      <locale name="nso">
+        <short>Seswari sa di-STS tša &quot;h323&quot;</short>
+        <long>Taelo e dirišeditšwego go swaragana le di-STS tša &quot;h323&quot;, ge eba di kgontšhitšwe.</long>
       </locale>
 
       <locale name="pa">
@@ -6200,8 +7055,13 @@
       </locale>
 
       <locale name="ru">
-        <short>Обработчик ссылок (URL) типа h232</short>
-        <long>Команда, используемая для обработки ссылок (URL) типа h323, если ключ установлен</long>
+        <short>Обработчик URL типа h232</short>
+        <long>Команда, используемая для обработки URL типа h323, если ключ установлен</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Podpora URL pre h323</short>
+        <long>Príkaz na podporu URL h323, ak je povolená.</long>
       </locale>
 
       <locale name="sq">
@@ -6248,6 +7108,11 @@
         <short>處理 “h323”URL 的處理程序</short>
         <long>若有啟用，用來處理“h323”URL 的指令。</long>
       </locale>
+
+      <locale name="zu">
+        <short>Umphathi we &quot;h323&quot; URLs</short>
+        <long>Umlayezo osetshenziswa ukuphatha &quot;h323&quot; URLs, uma ingunyaziwe.</long>
+      </locale>
     </schema>
     <schema>
       <key>/schemas/desktop/gnome/url-handlers/h323/needs_terminal</key>
@@ -6266,8 +7131,8 @@
       </locale>
 
       <locale name="bg">
-        <short>Пускане на командата в терминал</short>
-        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в конзола.</long>
+        <short>Пускане на програмата в терминал</short>
+        <long>Включено, ако програмата, която ще обработва това URL трябва да бъде пусната в терминал.</long>
       </locale>
 
       <locale name="bs">
@@ -6335,6 +7200,11 @@
         <long>Vrai si le programme qui gère cette URL doit être lancée dans un terminal.</long>
       </locale>
 
+      <locale name="gl">
+        <short>Executar a instrución nun terminal</short>
+        <long>Activada se a instrución usada para manexar este tipo de URL debe ser executada nun terminal.</long>
+      </locale>
+
       <locale name="gu">
         <short>આદેશને ટર્મિનલમાં કાર્યક્રમ ચલાવો</short>
         <long>સાચું જો આ પ્રકારના URL ને નિયંત્રિત કરવા માટેનો આદેશ ટર્મિનલમાં ચાલે.</long>
@@ -6342,7 +7212,7 @@
 
       <locale name="hu">
         <short>Parancs futtatása terminálban</short>
-        
+        <long>Ha igazra van állítva, a &quot;command&quot; kulcsban beállított parancsnak terminálban kell futnia.</long>
       </locale>
 
       <locale name="it">
@@ -6363,6 +7233,11 @@
       <locale name="lt">
         <short>Vykdyti komandą terminale</short>
         <long>Teigiama, jei komanda naudojama apdoroti šio tipo adresams turėtų būti paleidžiama terminale.</long>
+      </locale>
+
+      <locale name="mk">
+        <short>Изврши ја командата во терминал</short>
+        
       </locale>
 
       <locale name="mn">
@@ -6395,6 +7270,11 @@
         <long>True hvis programmet for å håndtere denne type URL skal kjøres i en terminal.</long>
       </locale>
 
+      <locale name="nso">
+        <short>Phethagatša taelo kgokaganong ya dithapo</short>
+        <long>Ke therešo gore ge taelo e dirišeditšwego go swaragana le mohuta wo wa STS e swanetše go phethagatšwa kgokaganong ya dithapo.</long>
+      </locale>
+
       <locale name="pa">
         <short>ਕਮਾਂਡਜ ਨੂੰ ਟਰਮੀਨਲ ਵਿੱਚ ਚਲਾਉ</short>
         <long>ਸਹੀ, ਜੇਕਰ ਕਾਰਜ ਜੋ ਕਿ ਇਸ ਯੂਆਰਐਲ ਨੂੰ ਵਰਤਦਾ ਹੈ, ਟਰਮੀਨਲ ਵਿੱਚ ਚੱਲੇ </long>
@@ -6423,6 +7303,11 @@
       <locale name="ru">
         <short>Запускать программу в терминале</short>
         <long>Если этот ключ установлен, то программа,определённая для обработки ссылки (URL), будет запускаться в терминале.</long>
+      </locale>
+
+      <locale name="sk">
+        <short>Spustiť program v termináli</short>
+        <long>Nastavte na true, ak sa má program pre toto URL spustiť v termináli.</long>
       </locale>
 
       <locale name="sq">
@@ -6468,6 +7353,11 @@
       <locale name="zh_TW">
         <short>在終端機中執行命令</short>
         <long>若為真，處理此 URL 的程式必須在終端機中執行。</long>
+      </locale>
+
+      <locale name="zu">
+        <short>Sebenzisa isilayezo esigungwini</short>
+        <long>Iqiniso uma umlayezo ozosetshenziswa ukuphatha loluhlobo lweURL lingasetshenziswa esigungwini.</long>
       </locale>
     </schema>
   </schemalist>

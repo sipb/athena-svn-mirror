@@ -6,933 +6,426 @@
 #define ORBIT2_STUBS_API
 #include "GNOME_VFS_Daemon.h"
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonMonitor_Cancel(GNOME_VFS_DaemonMonitor _obj,
-			       CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
+GNOME_VFS_Result GNOME_VFS_DaemonMonitor_Cancel(GNOME_VFS_DaemonMonitor _obj, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonMonitor__iinterface.methods, 0, &_ORBIT_retval, NULL, NULL, ev, GNOME_VFS_DaemonMonitor__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonMonitor__epv, Cancel),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonMonitor_Cancel);
 
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonMonitor__iinterface.methods, 0,
-		       &_ORBIT_retval, NULL, NULL, ev,
-		       GNOME_VFS_DaemonMonitor__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonMonitor__epv,
-				       Cancel),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonMonitor_Cancel);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
-
-void
-GNOME_VFS_Client_MonitorCallback(GNOME_VFS_Client _obj,
-				 const GNOME_VFS_DaemonMonitor monitor,
-				 const CORBA_char * monitor_uri,
-				 const CORBA_char * info_uri,
-				 const CORBA_long event_type,
-				 CORBA_Environment * ev)
-{
-   gpointer _args[4];
-
-   _args[0] = (gpointer) & monitor;
-   _args[1] = (gpointer) & monitor_uri;
-   _args[2] = (gpointer) & info_uri;
-   _args[3] = (gpointer) & event_type;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Client__iinterface.methods, 0, NULL,
-		       _args, NULL, ev, GNOME_VFS_Client__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Client__epv,
-				       MonitorCallback),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Client_MonitorCallback);
+void GNOME_VFS_Client_MonitorCallback(GNOME_VFS_Client _obj, const GNOME_VFS_DaemonMonitor monitor, const CORBA_char * monitor_uri, const CORBA_char * info_uri, const CORBA_long event_type, CORBA_Environment *ev){
+gpointer _args[4];
+_args[0] = (gpointer)&monitor;
+_args[1] = (gpointer)&monitor_uri;
+_args[2] = (gpointer)&info_uri;
+_args[3] = (gpointer)&event_type;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Client__iinterface.methods, 0, NULL, _args, NULL, ev, GNOME_VFS_Client__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Client__epv, MonitorCallback),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Client_MonitorCallback);
 
 }
-
-void
-GNOME_VFS_Client_VolumeMounted(GNOME_VFS_Client _obj,
-			       const GNOME_VFS_Volume * volume,
-			       CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) volume;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Client__iinterface.methods, 1, NULL,
-		       _args, NULL, ev, GNOME_VFS_Client__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Client__epv,
-				       VolumeMounted),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Client_VolumeMounted);
+void GNOME_VFS_Client_VolumeMounted(GNOME_VFS_Client _obj, const GNOME_VFS_Volume* volume, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)volume;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Client__iinterface.methods, 1, NULL, _args, NULL, ev, GNOME_VFS_Client__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Client__epv, VolumeMounted),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Client_VolumeMounted);
 
 }
-
-void
-GNOME_VFS_Client_VolumePreUnmount(GNOME_VFS_Client _obj, const CORBA_long id,
-				  CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & id;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Client__iinterface.methods, 2, NULL,
-		       _args, NULL, ev, GNOME_VFS_Client__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Client__epv,
-				       VolumePreUnmount),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Client_VolumePreUnmount);
+void GNOME_VFS_Client_VolumePreUnmount(GNOME_VFS_Client _obj, const CORBA_long id, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&id;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Client__iinterface.methods, 2, NULL, _args, NULL, ev, GNOME_VFS_Client__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Client__epv, VolumePreUnmount),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Client_VolumePreUnmount);
 
 }
-
-void
-GNOME_VFS_Client_VolumeUnmounted(GNOME_VFS_Client _obj, const CORBA_long id,
-				 CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & id;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Client__iinterface.methods, 3, NULL,
-		       _args, NULL, ev, GNOME_VFS_Client__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Client__epv,
-				       VolumeUnmounted),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Client_VolumeUnmounted);
+void GNOME_VFS_Client_VolumeUnmounted(GNOME_VFS_Client _obj, const CORBA_long id, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&id;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Client__iinterface.methods, 3, NULL, _args, NULL, ev, GNOME_VFS_Client__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Client__epv, VolumeUnmounted),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Client_VolumeUnmounted);
 
 }
-
-void
-GNOME_VFS_Client_DriveConnected(GNOME_VFS_Client _obj,
-				const GNOME_VFS_Drive * drive,
-				CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) drive;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Client__iinterface.methods, 4, NULL,
-		       _args, NULL, ev, GNOME_VFS_Client__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Client__epv,
-				       DriveConnected),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Client_DriveConnected);
+void GNOME_VFS_Client_DriveConnected(GNOME_VFS_Client _obj, const GNOME_VFS_Drive* drive, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)drive;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Client__iinterface.methods, 4, NULL, _args, NULL, ev, GNOME_VFS_Client__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Client__epv, DriveConnected),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Client_DriveConnected);
 
 }
-
-void
-GNOME_VFS_Client_DriveDisconnected(GNOME_VFS_Client _obj, const CORBA_long id,
-				   CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & id;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Client__iinterface.methods, 5, NULL,
-		       _args, NULL, ev, GNOME_VFS_Client__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Client__epv,
-				       DriveDisconnected),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Client_DriveDisconnected);
+void GNOME_VFS_Client_DriveDisconnected(GNOME_VFS_Client _obj, const CORBA_long id, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&id;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Client__iinterface.methods, 5, NULL, _args, NULL, ev, GNOME_VFS_Client__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Client__epv, DriveDisconnected),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Client_DriveDisconnected);
 
 }
+CORBA_boolean GNOME_VFS_ClientCall_ModuleCallbackInvoke(GNOME_VFS_ClientCall _obj, const CORBA_char * name, const CORBA_any* module_in, CORBA_any** module_out, CORBA_Environment *ev){
+CORBA_boolean _ORBIT_retval;
+gpointer _args[3];
+_args[0] = (gpointer)&name;
+_args[1] = (gpointer)module_in;
+_args[2] = module_out;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_ClientCall__iinterface.methods, 0, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_ClientCall__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_ClientCall__epv, ModuleCallbackInvoke),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_ClientCall_ModuleCallbackInvoke);
 
-CORBA_boolean
-GNOME_VFS_ClientCall_ModuleCallbackInvoke(GNOME_VFS_ClientCall _obj,
-					  const CORBA_char * name,
-					  const CORBA_any * module_in,
-					  CORBA_any ** module_out,
-					  CORBA_Environment * ev)
-{
-   CORBA_boolean _ORBIT_retval;
-   gpointer _args[3];
-
-   _args[0] = (gpointer) & name;
-   _args[1] = (gpointer) module_in;
-   _args[2] = module_out;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_ClientCall__iinterface.methods, 0,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_ClientCall__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_ClientCall__epv,
-				       ModuleCallbackInvoke),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_ClientCall_ModuleCallbackInvoke);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonHandle_Close(GNOME_VFS_DaemonHandle _obj, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[2];
+_args[0] = (gpointer)&client_call;
+_args[1] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 0, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonHandle__epv, Close),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Close);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonHandle_Close(GNOME_VFS_DaemonHandle _obj,
-			     const GNOME_VFS_ClientCall client_call,
-			     const GNOME_VFS_Client client,
-			     CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[2];
-
-   _args[0] = (gpointer) & client_call;
-   _args[1] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 0,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonHandle__epv,
-				       Close),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Close);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonHandle_Read(GNOME_VFS_DaemonHandle _obj, GNOME_VFS_buffer** buf, const GNOME_VFS_FileSize num_bytes, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[4];
+_args[0] = buf;
+_args[1] = (gpointer)&num_bytes;
+_args[2] = (gpointer)&client_call;
+_args[3] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 1, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonHandle__epv, Read),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Read);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonHandle_Read(GNOME_VFS_DaemonHandle _obj,
-			    GNOME_VFS_buffer ** buf,
-			    const GNOME_VFS_FileSize num_bytes,
-			    const GNOME_VFS_ClientCall client_call,
-			    const GNOME_VFS_Client client,
-			    CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[4];
-
-   _args[0] = buf;
-   _args[1] = (gpointer) & num_bytes;
-   _args[2] = (gpointer) & client_call;
-   _args[3] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 1,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonHandle__epv, Read),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Read);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonHandle_Write(GNOME_VFS_DaemonHandle _obj, const GNOME_VFS_buffer* buf, GNOME_VFS_FileSize* bytes_written_return, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[4];
+_args[0] = (gpointer)buf;
+_args[1] = &bytes_written_return;
+_args[2] = (gpointer)&client_call;
+_args[3] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 2, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonHandle__epv, Write),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Write);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonHandle_Write(GNOME_VFS_DaemonHandle _obj,
-			     const GNOME_VFS_buffer * buf,
-			     GNOME_VFS_FileSize * bytes_written_return,
-			     const GNOME_VFS_ClientCall client_call,
-			     const GNOME_VFS_Client client,
-			     CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[4];
-
-   _args[0] = (gpointer) buf;
-   _args[1] = &bytes_written_return;
-   _args[2] = (gpointer) & client_call;
-   _args[3] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 2,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonHandle__epv,
-				       Write),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Write);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonHandle_Seek(GNOME_VFS_DaemonHandle _obj, const CORBA_long whence, const GNOME_VFS_FileOffset offset, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[4];
+_args[0] = (gpointer)&whence;
+_args[1] = (gpointer)&offset;
+_args[2] = (gpointer)&client_call;
+_args[3] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 3, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonHandle__epv, Seek),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Seek);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonHandle_Seek(GNOME_VFS_DaemonHandle _obj,
-			    const CORBA_long whence,
-			    const GNOME_VFS_FileOffset offset,
-			    const GNOME_VFS_ClientCall client_call,
-			    const GNOME_VFS_Client client,
-			    CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[4];
-
-   _args[0] = (gpointer) & whence;
-   _args[1] = (gpointer) & offset;
-   _args[2] = (gpointer) & client_call;
-   _args[3] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 3,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonHandle__epv, Seek),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Seek);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonHandle_Tell(GNOME_VFS_DaemonHandle _obj, GNOME_VFS_FileOffset* offset, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[3];
+_args[0] = &offset;
+_args[1] = (gpointer)&client_call;
+_args[2] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 4, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonHandle__epv, Tell),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Tell);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonHandle_Tell(GNOME_VFS_DaemonHandle _obj,
-			    GNOME_VFS_FileOffset * offset,
-			    const GNOME_VFS_ClientCall client_call,
-			    const GNOME_VFS_Client client,
-			    CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[3];
-
-   _args[0] = &offset;
-   _args[1] = (gpointer) & client_call;
-   _args[2] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 4,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonHandle__epv, Tell),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Tell);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonHandle_GetFileInfo(GNOME_VFS_DaemonHandle _obj, GNOME_VFS_FileInfo** file_info, const CORBA_long options, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[4];
+_args[0] = file_info;
+_args[1] = (gpointer)&options;
+_args[2] = (gpointer)&client_call;
+_args[3] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 5, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonHandle__epv, GetFileInfo),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonHandle_GetFileInfo);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonHandle_GetFileInfo(GNOME_VFS_DaemonHandle _obj,
-				   GNOME_VFS_FileInfo ** file_info,
-				   const CORBA_long options,
-				   const GNOME_VFS_ClientCall client_call,
-				   const GNOME_VFS_Client client,
-				   CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[4];
-
-   _args[0] = file_info;
-   _args[1] = (gpointer) & options;
-   _args[2] = (gpointer) & client_call;
-   _args[3] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 5,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonHandle__epv,
-				       GetFileInfo),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonHandle_GetFileInfo);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonHandle_Truncate(GNOME_VFS_DaemonHandle _obj, const GNOME_VFS_FileSize length, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[3];
+_args[0] = (gpointer)&length;
+_args[1] = (gpointer)&client_call;
+_args[2] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 6, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonHandle__epv, Truncate),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Truncate);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonHandle_Truncate(GNOME_VFS_DaemonHandle _obj,
-				const GNOME_VFS_FileSize length,
-				const GNOME_VFS_ClientCall client_call,
-				const GNOME_VFS_Client client,
-				CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[3];
-
-   _args[0] = (gpointer) & length;
-   _args[1] = (gpointer) & client_call;
-   _args[2] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonHandle__iinterface.methods, 6,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonHandle__epv,
-				       Truncate),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Truncate);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonDirHandle_Close(GNOME_VFS_DaemonDirHandle _obj, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[2];
+_args[0] = (gpointer)&client_call;
+_args[1] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonDirHandle__iinterface.methods, 0, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonDirHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonDirHandle__epv, Close),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonDirHandle_Close);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonDirHandle_Close(GNOME_VFS_DaemonDirHandle _obj,
-				const GNOME_VFS_ClientCall client_call,
-				const GNOME_VFS_Client client,
-				CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[2];
-
-   _args[0] = (gpointer) & client_call;
-   _args[1] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonDirHandle__iinterface.methods,
-		       0, &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonDirHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonDirHandle__epv,
-				       Close),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonDirHandle_Close);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_DaemonDirHandle_Read(GNOME_VFS_DaemonDirHandle _obj, GNOME_VFS_FileInfoList** file_info_list, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[3];
+_args[0] = file_info_list;
+_args[1] = (gpointer)&client_call;
+_args[2] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_DaemonDirHandle__iinterface.methods, 1, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_DaemonDirHandle__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_DaemonDirHandle__epv, Read),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_DaemonDirHandle_Read);
 
-GNOME_VFS_Result
-GNOME_VFS_DaemonDirHandle_Read(GNOME_VFS_DaemonDirHandle _obj,
-			       GNOME_VFS_FileInfoList ** file_info_list,
-			       const GNOME_VFS_ClientCall client_call,
-			       const GNOME_VFS_Client client,
-			       CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[3];
-
-   _args[0] = file_info_list;
-   _args[1] = (gpointer) & client_call;
-   _args[2] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_DaemonDirHandle__iinterface.methods,
-		       1, &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_DaemonDirHandle__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_DaemonDirHandle__epv,
-				       Read),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_DaemonDirHandle_Read);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
-
-void
-GNOME_VFS_Daemon_registerClient(GNOME_VFS_Daemon _obj,
-				const GNOME_VFS_Client client,
-				CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Daemon__iinterface.methods, 0, NULL,
-		       _args, NULL, ev, GNOME_VFS_Daemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Daemon__epv,
-				       registerClient),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Daemon_registerClient);
+void GNOME_VFS_Daemon_registerClient(GNOME_VFS_Daemon _obj, const GNOME_VFS_Client client, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Daemon__iinterface.methods, 0, NULL, _args, NULL, ev, GNOME_VFS_Daemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Daemon__epv, registerClient),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Daemon_registerClient);
 
 }
-
-void
-GNOME_VFS_Daemon_deRegisterClient(GNOME_VFS_Daemon _obj,
-				  const GNOME_VFS_Client client,
-				  CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Daemon__iinterface.methods, 1, NULL,
-		       _args, NULL, ev, GNOME_VFS_Daemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Daemon__epv,
-				       deRegisterClient),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Daemon_deRegisterClient);
+void GNOME_VFS_Daemon_deRegisterClient(GNOME_VFS_Daemon _obj, const GNOME_VFS_Client client, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Daemon__iinterface.methods, 1, NULL, _args, NULL, ev, GNOME_VFS_Daemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Daemon__epv, deRegisterClient),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Daemon_deRegisterClient);
 
 }
-
-void
-GNOME_VFS_Daemon_registerVolumeMonitor(GNOME_VFS_Daemon _obj,
-				       const GNOME_VFS_Client client,
-				       CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Daemon__iinterface.methods, 2, NULL,
-		       _args, NULL, ev, GNOME_VFS_Daemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Daemon__epv,
-				       registerVolumeMonitor),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Daemon_registerVolumeMonitor);
+void GNOME_VFS_Daemon_registerVolumeMonitor(GNOME_VFS_Daemon _obj, const GNOME_VFS_Client client, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Daemon__iinterface.methods, 2, NULL, _args, NULL, ev, GNOME_VFS_Daemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Daemon__epv, registerVolumeMonitor),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Daemon_registerVolumeMonitor);
 
 }
-
-void
-GNOME_VFS_Daemon_deRegisterVolumeMonitor(GNOME_VFS_Daemon _obj,
-					 const GNOME_VFS_Client client,
-					 CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Daemon__iinterface.methods, 3, NULL,
-		       _args, NULL, ev, GNOME_VFS_Daemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Daemon__epv,
-				       deRegisterVolumeMonitor),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Daemon_deRegisterVolumeMonitor);
+void GNOME_VFS_Daemon_deRegisterVolumeMonitor(GNOME_VFS_Daemon _obj, const GNOME_VFS_Client client, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Daemon__iinterface.methods, 3, NULL, _args, NULL, ev, GNOME_VFS_Daemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Daemon__epv, deRegisterVolumeMonitor),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Daemon_deRegisterVolumeMonitor);
 
 }
+GNOME_VFS_VolumeList* GNOME_VFS_Daemon_getVolumes(GNOME_VFS_Daemon _obj, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_VolumeList* _ORBIT_retval;
+gpointer _args[1];
+_args[0] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Daemon__iinterface.methods, 4, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_Daemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Daemon__epv, getVolumes),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Daemon_getVolumes);
 
-GNOME_VFS_VolumeList *
-GNOME_VFS_Daemon_getVolumes(GNOME_VFS_Daemon _obj,
-			    const GNOME_VFS_Client client,
-			    CORBA_Environment * ev)
-{
-   GNOME_VFS_VolumeList *_ORBIT_retval;
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Daemon__iinterface.methods, 4,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_Daemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Daemon__epv, getVolumes),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Daemon_getVolumes);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_DriveList* GNOME_VFS_Daemon_getDrives(GNOME_VFS_Daemon _obj, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_DriveList* _ORBIT_retval;
+gpointer _args[1];
+_args[0] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Daemon__iinterface.methods, 5, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_Daemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Daemon__epv, getDrives),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Daemon_getDrives);
 
-GNOME_VFS_DriveList *
-GNOME_VFS_Daemon_getDrives(GNOME_VFS_Daemon _obj,
-			   const GNOME_VFS_Client client,
-			   CORBA_Environment * ev)
-{
-   GNOME_VFS_DriveList *_ORBIT_retval;
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Daemon__iinterface.methods, 5,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_Daemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Daemon__epv, getDrives),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Daemon_getDrives);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
-
-void
-GNOME_VFS_Daemon_emitPreUnmountVolume(GNOME_VFS_Daemon _obj,
-				      const GNOME_VFS_Client client,
-				      const CORBA_long volume_id,
-				      CORBA_Environment * ev)
-{
-   gpointer _args[2];
-
-   _args[0] = (gpointer) & client;
-   _args[1] = (gpointer) & volume_id;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Daemon__iinterface.methods, 6, NULL,
-		       _args, NULL, ev, GNOME_VFS_Daemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Daemon__epv,
-				       emitPreUnmountVolume),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Daemon_emitPreUnmountVolume);
+void GNOME_VFS_Daemon_emitPreUnmountVolume(GNOME_VFS_Daemon _obj, const GNOME_VFS_Client client, const CORBA_long volume_id, CORBA_Environment *ev){
+gpointer _args[2];
+_args[0] = (gpointer)&client;
+_args[1] = (gpointer)&volume_id;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Daemon__iinterface.methods, 6, NULL, _args, NULL, ev, GNOME_VFS_Daemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Daemon__epv, emitPreUnmountVolume),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Daemon_emitPreUnmountVolume);
 
 }
-
-void
-GNOME_VFS_Daemon_forceProbe(GNOME_VFS_Daemon _obj,
-			    const GNOME_VFS_Client client,
-			    CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_Daemon__iinterface.methods, 7, NULL,
-		       _args, NULL, ev, GNOME_VFS_Daemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_Daemon__epv, forceProbe),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_Daemon_forceProbe);
+void GNOME_VFS_Daemon_forceProbe(GNOME_VFS_Daemon _obj, const GNOME_VFS_Client client, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_Daemon__iinterface.methods, 7, NULL, _args, NULL, ev, GNOME_VFS_Daemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_Daemon__epv, forceProbe),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_Daemon_forceProbe);
 
 }
-
-void
-GNOME_VFS_AsyncDaemon_Cancel(GNOME_VFS_AsyncDaemon _obj,
-			     const GNOME_VFS_ClientCall client_call,
-			     CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & client_call;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 0,
-		       NULL, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       Cancel),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Cancel);
+void GNOME_VFS_AsyncDaemon_Cancel(GNOME_VFS_AsyncDaemon _obj, const GNOME_VFS_ClientCall client_call, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&client_call;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 0, NULL, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, Cancel),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Cancel);
 
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_Open(GNOME_VFS_AsyncDaemon _obj, GNOME_VFS_DaemonHandle* handle_return, const CORBA_char * uri, const CORBA_long open_mode, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[5];
+_args[0] = &handle_return;
+_args[1] = (gpointer)&uri;
+_args[2] = (gpointer)&open_mode;
+_args[3] = (gpointer)&client_call;
+_args[4] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 1, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, Open),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Open);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_Open(GNOME_VFS_AsyncDaemon _obj,
-			   GNOME_VFS_DaemonHandle * handle_return,
-			   const CORBA_char * uri, const CORBA_long open_mode,
-			   const GNOME_VFS_ClientCall client_call,
-			   const GNOME_VFS_Client client,
-			   CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[5];
-
-   _args[0] = &handle_return;
-   _args[1] = (gpointer) & uri;
-   _args[2] = (gpointer) & open_mode;
-   _args[3] = (gpointer) & client_call;
-   _args[4] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 1,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv, Open),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Open);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_Create(GNOME_VFS_AsyncDaemon _obj, GNOME_VFS_DaemonHandle* handle_return, const CORBA_char * uri, const CORBA_long open_mode, const CORBA_boolean exclusive, const CORBA_long perm, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[7];
+_args[0] = &handle_return;
+_args[1] = (gpointer)&uri;
+_args[2] = (gpointer)&open_mode;
+_args[3] = (gpointer)&exclusive;
+_args[4] = (gpointer)&perm;
+_args[5] = (gpointer)&client_call;
+_args[6] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 2, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, Create),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Create);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_Create(GNOME_VFS_AsyncDaemon _obj,
-			     GNOME_VFS_DaemonHandle * handle_return,
-			     const CORBA_char * uri,
-			     const CORBA_long open_mode,
-			     const CORBA_boolean exclusive,
-			     const CORBA_long perm,
-			     const GNOME_VFS_ClientCall client_call,
-			     const GNOME_VFS_Client client,
-			     CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[7];
-
-   _args[0] = &handle_return;
-   _args[1] = (gpointer) & uri;
-   _args[2] = (gpointer) & open_mode;
-   _args[3] = (gpointer) & exclusive;
-   _args[4] = (gpointer) & perm;
-   _args[5] = (gpointer) & client_call;
-   _args[6] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 2,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       Create),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Create);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_OpenDirectory(GNOME_VFS_AsyncDaemon _obj, GNOME_VFS_DaemonDirHandle* handle_return, const CORBA_char * uri, const CORBA_long options, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[5];
+_args[0] = &handle_return;
+_args[1] = (gpointer)&uri;
+_args[2] = (gpointer)&options;
+_args[3] = (gpointer)&client_call;
+_args[4] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 3, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, OpenDirectory),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_OpenDirectory);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_OpenDirectory(GNOME_VFS_AsyncDaemon _obj,
-				    GNOME_VFS_DaemonDirHandle * handle_return,
-				    const CORBA_char * uri,
-				    const CORBA_long options,
-				    const GNOME_VFS_ClientCall client_call,
-				    const GNOME_VFS_Client client,
-				    CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[5];
-
-   _args[0] = &handle_return;
-   _args[1] = (gpointer) & uri;
-   _args[2] = (gpointer) & options;
-   _args[3] = (gpointer) & client_call;
-   _args[4] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 3,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       OpenDirectory),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_OpenDirectory);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_GetFileInfo(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, GNOME_VFS_FileInfo** file_info, const CORBA_long options, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[5];
+_args[0] = (gpointer)&uri;
+_args[1] = file_info;
+_args[2] = (gpointer)&options;
+_args[3] = (gpointer)&client_call;
+_args[4] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 4, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, GetFileInfo),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_GetFileInfo);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_GetFileInfo(GNOME_VFS_AsyncDaemon _obj,
-				  const CORBA_char * uri,
-				  GNOME_VFS_FileInfo ** file_info,
-				  const CORBA_long options,
-				  const GNOME_VFS_ClientCall client_call,
-				  const GNOME_VFS_Client client,
-				  CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[5];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = file_info;
-   _args[2] = (gpointer) & options;
-   _args[3] = (gpointer) & client_call;
-   _args[4] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 4,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       GetFileInfo),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_GetFileInfo);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_Truncate(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, const GNOME_VFS_FileSize length, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[4];
+_args[0] = (gpointer)&uri;
+_args[1] = (gpointer)&length;
+_args[2] = (gpointer)&client_call;
+_args[3] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 5, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, Truncate),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Truncate);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_Truncate(GNOME_VFS_AsyncDaemon _obj,
-			       const CORBA_char * uri,
-			       const GNOME_VFS_FileSize length,
-			       const GNOME_VFS_ClientCall client_call,
-			       const GNOME_VFS_Client client,
-			       CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[4];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = (gpointer) & length;
-   _args[2] = (gpointer) & client_call;
-   _args[3] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 5,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       Truncate),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Truncate);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+CORBA_boolean GNOME_VFS_AsyncDaemon_IsLocal(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+CORBA_boolean _ORBIT_retval;
+gpointer _args[3];
+_args[0] = (gpointer)&uri;
+_args[1] = (gpointer)&client_call;
+_args[2] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 6, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, IsLocal),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_IsLocal);
 
-CORBA_boolean
-GNOME_VFS_AsyncDaemon_IsLocal(GNOME_VFS_AsyncDaemon _obj,
-			      const CORBA_char * uri,
-			      const GNOME_VFS_ClientCall client_call,
-			      const GNOME_VFS_Client client,
-			      CORBA_Environment * ev)
-{
-   CORBA_boolean _ORBIT_retval;
-   gpointer _args[3];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = (gpointer) & client_call;
-   _args[2] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 6,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       IsLocal),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_IsLocal);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_FindDirectory(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * find_near_uri, const CORBA_long kind, CORBA_string* result_uri, const CORBA_boolean create_if_needed, const CORBA_boolean find_if_needed, const CORBA_unsigned_long perm, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[8];
+_args[0] = (gpointer)&find_near_uri;
+_args[1] = (gpointer)&kind;
+_args[2] = &result_uri;
+_args[3] = (gpointer)&create_if_needed;
+_args[4] = (gpointer)&find_if_needed;
+_args[5] = (gpointer)&perm;
+_args[6] = (gpointer)&client_call;
+_args[7] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 7, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, FindDirectory),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_FindDirectory);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_FindDirectory(GNOME_VFS_AsyncDaemon _obj,
-				    const CORBA_char * find_near_uri,
-				    const CORBA_long kind,
-				    CORBA_string * result_uri,
-				    const CORBA_boolean create_if_needed,
-				    const CORBA_boolean find_if_needed,
-				    const CORBA_unsigned_long perm,
-				    const GNOME_VFS_ClientCall client_call,
-				    const GNOME_VFS_Client client,
-				    CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[8];
-
-   _args[0] = (gpointer) & find_near_uri;
-   _args[1] = (gpointer) & kind;
-   _args[2] = &result_uri;
-   _args[3] = (gpointer) & create_if_needed;
-   _args[4] = (gpointer) & find_if_needed;
-   _args[5] = (gpointer) & perm;
-   _args[6] = (gpointer) & client_call;
-   _args[7] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 7,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       FindDirectory),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_FindDirectory);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_MakeDirectory(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, const CORBA_unsigned_long perm, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[4];
+_args[0] = (gpointer)&uri;
+_args[1] = (gpointer)&perm;
+_args[2] = (gpointer)&client_call;
+_args[3] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 8, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, MakeDirectory),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MakeDirectory);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_MakeDirectory(GNOME_VFS_AsyncDaemon _obj,
-				    const CORBA_char * uri,
-				    const CORBA_unsigned_long perm,
-				    const GNOME_VFS_ClientCall client_call,
-				    const GNOME_VFS_Client client,
-				    CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[4];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = (gpointer) & perm;
-   _args[2] = (gpointer) & client_call;
-   _args[3] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 8,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       MakeDirectory),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MakeDirectory);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_RemoveDirectory(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[3];
+_args[0] = (gpointer)&uri;
+_args[1] = (gpointer)&client_call;
+_args[2] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 9, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, RemoveDirectory),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_RemoveDirectory);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_RemoveDirectory(GNOME_VFS_AsyncDaemon _obj,
-				      const CORBA_char * uri,
-				      const GNOME_VFS_ClientCall client_call,
-				      const GNOME_VFS_Client client,
-				      CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[3];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = (gpointer) & client_call;
-   _args[2] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 9,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       RemoveDirectory),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_RemoveDirectory);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_Move(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * old_uri, const CORBA_char * new_uri, const CORBA_boolean force_replace, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[5];
+_args[0] = (gpointer)&old_uri;
+_args[1] = (gpointer)&new_uri;
+_args[2] = (gpointer)&force_replace;
+_args[3] = (gpointer)&client_call;
+_args[4] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 10, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, Move),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Move);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_Move(GNOME_VFS_AsyncDaemon _obj,
-			   const CORBA_char * old_uri,
-			   const CORBA_char * new_uri,
-			   const CORBA_boolean force_replace,
-			   const GNOME_VFS_ClientCall client_call,
-			   const GNOME_VFS_Client client,
-			   CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[5];
-
-   _args[0] = (gpointer) & old_uri;
-   _args[1] = (gpointer) & new_uri;
-   _args[2] = (gpointer) & force_replace;
-   _args[3] = (gpointer) & client_call;
-   _args[4] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 10,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv, Move),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Move);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_Unlink(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[3];
+_args[0] = (gpointer)&uri;
+_args[1] = (gpointer)&client_call;
+_args[2] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 11, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, Unlink),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Unlink);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_Unlink(GNOME_VFS_AsyncDaemon _obj,
-			     const CORBA_char * uri,
-			     const GNOME_VFS_ClientCall client_call,
-			     const GNOME_VFS_Client client,
-			     CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[3];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = (gpointer) & client_call;
-   _args[2] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 11,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       Unlink),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Unlink);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_CheckSameFS(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri_a, const CORBA_char * uri_b, CORBA_boolean* same_fs, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[5];
+_args[0] = (gpointer)&uri_a;
+_args[1] = (gpointer)&uri_b;
+_args[2] = &same_fs;
+_args[3] = (gpointer)&client_call;
+_args[4] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 12, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, CheckSameFS),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_CheckSameFS);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_CheckSameFS(GNOME_VFS_AsyncDaemon _obj,
-				  const CORBA_char * uri_a,
-				  const CORBA_char * uri_b,
-				  CORBA_boolean * same_fs,
-				  const GNOME_VFS_ClientCall client_call,
-				  const GNOME_VFS_Client client,
-				  CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[5];
-
-   _args[0] = (gpointer) & uri_a;
-   _args[1] = (gpointer) & uri_b;
-   _args[2] = &same_fs;
-   _args[3] = (gpointer) & client_call;
-   _args[4] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 12,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       CheckSameFS),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_CheckSameFS);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_SetFileInfo(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, const GNOME_VFS_FileInfo* info, const CORBA_long mask, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[5];
+_args[0] = (gpointer)&uri;
+_args[1] = (gpointer)info;
+_args[2] = (gpointer)&mask;
+_args[3] = (gpointer)&client_call;
+_args[4] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 13, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, SetFileInfo),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_SetFileInfo);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_SetFileInfo(GNOME_VFS_AsyncDaemon _obj,
-				  const CORBA_char * uri,
-				  const GNOME_VFS_FileInfo * info,
-				  const CORBA_long mask,
-				  const GNOME_VFS_ClientCall client_call,
-				  const GNOME_VFS_Client client,
-				  CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[5];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = (gpointer) info;
-   _args[2] = (gpointer) & mask;
-   _args[3] = (gpointer) & client_call;
-   _args[4] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 13,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       SetFileInfo),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_SetFileInfo);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_CreateSymbolicLink(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, const CORBA_char * target_reference, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[4];
+_args[0] = (gpointer)&uri;
+_args[1] = (gpointer)&target_reference;
+_args[2] = (gpointer)&client_call;
+_args[3] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 14, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, CreateSymbolicLink),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_CreateSymbolicLink);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_CreateSymbolicLink(GNOME_VFS_AsyncDaemon _obj,
-					 const CORBA_char * uri,
-					 const CORBA_char * target_reference,
-					 const GNOME_VFS_ClientCall
-					 client_call,
-					 const GNOME_VFS_Client client,
-					 CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[4];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = (gpointer) & target_reference;
-   _args[2] = (gpointer) & client_call;
-   _args[3] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 14,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       CreateSymbolicLink),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_CreateSymbolicLink);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }
+GNOME_VFS_Result GNOME_VFS_AsyncDaemon_MonitorAdd(GNOME_VFS_AsyncDaemon _obj, const CORBA_char * uri, const CORBA_long monitor_type, GNOME_VFS_DaemonMonitor* monitor, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev){
+GNOME_VFS_Result _ORBIT_retval;
+gpointer _args[5];
+_args[0] = (gpointer)&uri;
+_args[1] = (gpointer)&monitor_type;
+_args[2] = &monitor;
+_args[3] = (gpointer)&client_call;
+_args[4] = (gpointer)&client;
+ORBit_c_stub_invoke (_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 15, &_ORBIT_retval, _args, NULL, ev, GNOME_VFS_AsyncDaemon__classid, G_STRUCT_OFFSET (POA_GNOME_VFS_AsyncDaemon__epv, MonitorAdd),
+(ORBitSmallSkeleton) _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MonitorAdd);
 
-GNOME_VFS_Result
-GNOME_VFS_AsyncDaemon_MonitorAdd(GNOME_VFS_AsyncDaemon _obj,
-				 const CORBA_char * uri,
-				 const CORBA_long monitor_type,
-				 GNOME_VFS_DaemonMonitor * monitor,
-				 const GNOME_VFS_ClientCall client_call,
-				 const GNOME_VFS_Client client,
-				 CORBA_Environment * ev)
-{
-   GNOME_VFS_Result _ORBIT_retval;
-   gpointer _args[5];
-
-   _args[0] = (gpointer) & uri;
-   _args[1] = (gpointer) & monitor_type;
-   _args[2] = &monitor;
-   _args[3] = (gpointer) & client_call;
-   _args[4] = (gpointer) & client;
-   ORBit_c_stub_invoke(_obj, &GNOME_VFS_AsyncDaemon__iinterface.methods, 15,
-		       &_ORBIT_retval, _args, NULL, ev,
-		       GNOME_VFS_AsyncDaemon__classid,
-		       G_STRUCT_OFFSET(POA_GNOME_VFS_AsyncDaemon__epv,
-				       MonitorAdd),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MonitorAdd);
-
-   return _ORBIT_retval;
+return _ORBIT_retval;
 }

@@ -331,7 +331,8 @@ send_uri_changes_now (GnomeVFSMonitorHandle *monitor_handle,
 	l = monitor_handle->pending_callbacks;
 	while (l != NULL) {
 		callback_data = l->data;
-		if (strcmp (callback_data->info_uri, uri) == 0) {
+		if (callback_data->send_state != CALLBACK_STATE_SENT &&
+		    strcmp (callback_data->info_uri, uri) == 0) {
 			callback_data->send_at = now;
 		}
 		l = l->next;

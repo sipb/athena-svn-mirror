@@ -59,7 +59,7 @@ struct      <link linkend="GnomeVFSAddress">GnomeVFSAddress</link>;
 <title>Details</title>
 <refsect2>
 <title><anchor id="gnome-vfs-resolve"/>gnome_vfs_resolve ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_resolve</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_resolve            (const <link linkend="char">char</link> *hostname,
+<indexterm><primary>gnome_vfs_resolve</primary></indexterm><programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_resolve            (const <link linkend="char">char</link> *hostname,
                                              <link linkend="GnomeVFSResolveHandle">GnomeVFSResolveHandle</link> **handle);</programlisting>
 <para>
 Tries to resolve <parameter>hostname</parameter>. If the operation was successful you can
@@ -81,7 +81,7 @@ gnome_vfs_resolve_next_address.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-resolve-free"/>gnome_vfs_resolve_free ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_resolve_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_resolve_free          (<link linkend="GnomeVFSResolveHandle">GnomeVFSResolveHandle</link> *handle);</programlisting>
+<indexterm><primary>gnome_vfs_resolve_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_resolve_free          (<link linkend="GnomeVFSResolveHandle">GnomeVFSResolveHandle</link> *handle);</programlisting>
 <para>
 Use this function to free a <link linkend="GnomeVFSResolveHandle"><type>GnomeVFSResolveHandle</type></link> returned by
 gnome_vfs_resolve.</para>
@@ -95,7 +95,7 @@ gnome_vfs_resolve.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-resolve-next-address"/>gnome_vfs_resolve_next_address ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_resolve_next_address</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_resolve_next_address  (<link linkend="GnomeVFSResolveHandle">GnomeVFSResolveHandle</link> *handle,
+<indexterm><primary>gnome_vfs_resolve_next_address</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    gnome_vfs_resolve_next_address  (<link linkend="GnomeVFSResolveHandle">GnomeVFSResolveHandle</link> *handle,
                                              <link linkend="GnomeVFSAddress">GnomeVFSAddress</link> **address);</programlisting>
 <para>
 Stores the next <link linkend="GnomeVFSAddress"><type>GnomeVFSAddress</type></link> available in <parameter>handle</parameter> of the
@@ -117,7 +117,7 @@ former lookup in <parameter>address</parameter>.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-resolve-reset-to-beginning"/>gnome_vfs_resolve_reset_to_beginning ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_resolve_reset_to_beginning</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_resolve_reset_to_beginning
+<indexterm><primary>gnome_vfs_resolve_reset_to_beginning</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_resolve_reset_to_beginning
                                             (<link linkend="GnomeVFSResolveHandle">GnomeVFSResolveHandle</link> *handle);</programlisting>
 <para>
 Reset <parameter>handle</parameter> so that a following call to gnome_vfs_resolve_next_address
@@ -138,7 +138,7 @@ will return the first resolved address.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-address-dup"/>gnome_vfs_address_dup ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_address_dup</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_address_dup      (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
+<indexterm><primary>gnome_vfs_address_dup</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_address_dup      (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
 <para>
 Duplicates <parameter>adderss</parameter>.</para>
 <para>
@@ -154,7 +154,7 @@ Duplicates <parameter>adderss</parameter>.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-address-free"/>gnome_vfs_address_free ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_address_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_address_free          (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
+<indexterm><primary>gnome_vfs_address_free</primary></indexterm><programlisting><link linkend="void">void</link>        gnome_vfs_address_free          (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
 <para>
 Frees the memory allocated for <parameter>address</parameter>.</para>
 <para>
@@ -167,7 +167,7 @@ Frees the memory allocated for <parameter>address</parameter>.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-address-get-family-type"/>gnome_vfs_address_get_family_type ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_address_get_family_type</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_vfs_address_get_family_type
+<indexterm><primary>gnome_vfs_address_get_family_type</primary></indexterm><programlisting><link linkend="int">int</link>         gnome_vfs_address_get_family_type
                                             (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
 <para>
 Use this function to retrive the address family of <parameter>address</parameter>.</para>
@@ -184,7 +184,7 @@ Use this function to retrive the address family of <parameter>address</parameter
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-address-get-ipv4"/>gnome_vfs_address_get_ipv4 ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_address_get_ipv4</primary></indexterm><programlisting><link linkend="guint32">guint32</link>     gnome_vfs_address_get_ipv4      (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
+<indexterm><primary>gnome_vfs_address_get_ipv4</primary></indexterm><programlisting><link linkend="guint32">guint32</link>     gnome_vfs_address_get_ipv4      (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
 <para>
 </para>
 <para>
@@ -214,7 +214,7 @@ code should be protocol independent.
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-address-new-from-ipv4"/>gnome_vfs_address_new_from_ipv4 ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_address_new_from_ipv4</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_address_new_from_ipv4
+<indexterm><primary>gnome_vfs_address_new_from_ipv4</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_address_new_from_ipv4
                                             (<link linkend="guint32">guint32</link> ipv4_address);</programlisting>
 <para>
 Creates a new <link linkend="GnomeVFSAddress"><type>GnomeVFSAddress</type></link> from <parameter>ipv4_address</parameter>.
@@ -235,7 +235,7 @@ code should be protocol independent.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-address-new-from-sockaddr"/>gnome_vfs_address_new_from_sockaddr ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_address_new_from_sockaddr</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_address_new_from_sockaddr
+<indexterm><primary>gnome_vfs_address_new_from_sockaddr</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_address_new_from_sockaddr
                                             (struct <link linkend="sockaddr">sockaddr</link> *sa,
                                              <link linkend="int">int</link> len);</programlisting>
 <para>
@@ -257,7 +257,7 @@ or <literal>NULL</literal> if <parameter>sa</parameter> was invalid or the addre
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-address-new-from-string"/>gnome_vfs_address_new_from_string ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_address_new_from_string</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_address_new_from_string
+<indexterm><primary>gnome_vfs_address_new_from_string</primary></indexterm><programlisting><link linkend="GnomeVFSAddress">GnomeVFSAddress</link>* gnome_vfs_address_new_from_string
                                             (const <link linkend="char">char</link> *address);</programlisting>
 <para>
 Creates a new <link linkend="GnomeVFSAddress"><type>GnomeVFSAddress</type></link> from the given string or <literal>NULL</literal>
@@ -275,7 +275,7 @@ if <parameter>address</parameter> isn't a valid.</para>
 </para></refsect2>
 <refsect2>
 <title><anchor id="gnome-vfs-address-to-string"/>gnome_vfs_address_to_string ()</title>
-<indexterm role="2.8"><primary>gnome_vfs_address_to_string</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_address_to_string     (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
+<indexterm><primary>gnome_vfs_address_to_string</primary></indexterm><programlisting><link linkend="char">char</link>*       gnome_vfs_address_to_string     (<link linkend="GnomeVFSAddress">GnomeVFSAddress</link> *address);</programlisting>
 <para>
 Translate <parameter>address</parameter> to a printable string.</para>
 <para>

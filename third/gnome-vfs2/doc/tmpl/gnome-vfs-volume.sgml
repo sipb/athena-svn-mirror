@@ -275,3 +275,13 @@ Abstraction for a mounted file system or a network location.
 @volume: 
 
 
+<!-- ##### FUNCTION gnome_vfs_connect_to_server ##### -->
+<para>
+
+</para>
+
+@uri: 
+@display_name: 
+@icon: 
+
+

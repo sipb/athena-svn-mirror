@@ -419,7 +419,7 @@ static void construct_gl_http_proxy(gboolean use_proxy)
 	    gconf_client_get_int(gl_client,
 				 KEY_GCONF_HTTP_PROXY_PORT, NULL);
 
-	if (proxy_host) {
+	if (proxy_host && proxy_host[0] != '\0') {
 	    if (0 != proxy_port && 0xffff >= (unsigned) proxy_port) {
 		gl_http_proxy =
 		    g_strdup_printf("%s:%u", proxy_host, (unsigned)

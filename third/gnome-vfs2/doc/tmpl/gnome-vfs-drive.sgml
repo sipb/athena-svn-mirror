@@ -132,9 +132,11 @@ Container for GnomeVFSVolume (floppy drive, CD reader, ...)
 
 </para>
 
-@volume: 
+@drive: 
 @callback: 
 @user_data: 
+<!-- # Unused Parameters # -->
+@volume: 
 
 
 <!-- ##### FUNCTION gnome_vfs_drive_get_activation_uri ##### -->
@@ -216,6 +218,14 @@ Container for GnomeVFSVolume (floppy drive, CD reader, ...)
 
 @drive: 
 @Returns: 
+
+
+<!-- ##### FUNCTION gnome_vfs_drive_volume_list_free ##### -->
+<para>
+
+</para>
+
+@volumes: 
 
 
 <!-- ##### FUNCTION gnome_vfs_drive_get_type ##### -->

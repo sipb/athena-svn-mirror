@@ -412,7 +412,10 @@ flush (GnomeVFSSocketBuffer *socket_buffer,
 		if (result != GNOME_VFS_OK) {
 			return result;
 		}
-		
+
+		memmove (output_buffer->data,
+			 output_buffer->data + bytes_written,
+			 output_buffer->byte_count - bytes_written);
 		output_buffer->byte_count -= bytes_written;
 	}
 

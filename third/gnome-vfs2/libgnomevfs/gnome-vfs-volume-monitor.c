@@ -148,11 +148,15 @@ G_LOCK_DEFINE_STATIC (volume_monitor_ref);
 
 /** 
  * gnome_vfs_volume_monitor_ref:
- * @volume_monitor:
+ * @volume_monitor: a #GnomeVFSVolumeMonitor
  *
+ * Increases the reference count of a #GnomeVFSVolumeMonitor by one.
  *
+ * You shouldn't use this function unless you know what you are doing:
+ * #GnomeVFSVolumeMonitor is to be used as a singleton object, see
+ * gnome_vfs_get_volume_monitor() for more details.
  *
- * Returns:
+ * Returns: @volume_monitor with its refcount increased by one.
  *
  * Since: 2.6
  */
@@ -171,9 +175,13 @@ gnome_vfs_volume_monitor_ref (GnomeVFSVolumeMonitor *volume_monitor)
 
 /** 
  * gnome_vfs_volume_monitor_unref:
- * @volume_monitor:
+ * @volume_monitor: a #GnomeVFSVolumeMonitor
  *
+ * Decreases the reference count of a #GnomeVFSVolumeMonitor by one.
  *
+ * You shouldn't use this function unless you know what you are doing:
+ * #GnomeVFSVolumeMonitor is to be used as a singleton object, see
+ * gnome_vfs_get_volume_monitor() for more details.
  *
  * Since: 2.6
  */
@@ -252,9 +260,13 @@ _gnome_vfs_get_volume_monitor_internal (gboolean create)
 /** 
  * gnome_vfs_get_volume_monitor:
  *
+ * Returns a pointer to the #GnomeVFSVolumeMonitor singleton.
+ * #GnomeVFSVolumeMonitor is a singleton, this means it is guaranteed to
+ * exist and be valid until gnome_vfs_shutdown() is called. Consequently,
+ * it doesn't need to be refcounted since gnome-vfs will hold a reference to 
+ * it until it is shut down.
  *
- *
- * Returns:
+ * Returns: a pointer to the #GnomeVFSVolumeMonitor singleton.
  *
  * Since: 2.6
  */
@@ -270,6 +282,10 @@ _gnome_vfs_volume_monitor_shutdown (void)
 	G_LOCK (the_volume_monitor);
 	
 	if (the_volume_monitor != NULL) {
+		if (!gnome_vfs_get_is_daemon ()) {
+			_gnome_vfs_volume_monitor_client_shutdown (GNOME_VFS_VOLUME_MONITOR_CLIENT (the_volume_monitor));
+		}
+		
 		gnome_vfs_volume_monitor_unref (the_volume_monitor);
 		the_volume_monitor = NULL;
 	}
@@ -397,11 +413,16 @@ _gnome_vfs_volume_monitor_find_connected_server_by_gconf_id (GnomeVFSVolumeMonit
 
 /** 
  * gnome_vfs_volume_monitor_get_volume_by_id:
- * @volume_monitor:
- * @id:
+ * @volume_monitor: a #GnomeVFSVolumeMonitor
+ * @id: the #GnomeVFSVolume id to look for
  *
+ * Looks for a #GnomeVFSVolume whose id is @id. A valid @volume_monitor to pass
+ * to this function can be acquired using gnome_vfs_get_volume_monitor()
  *
- * Returns:
+ * Returns: the #GnomeVFSVolume corresponding to @id, or NULL if no 
+ * #GnomeVFSVolume with a matching id could be found. The caller owns a 
+ * reference on the returned volume, and must call @gnome_vfs_volume_unref
+ * when it no longer needs it.
  *
  * Since: 2.6
  */
@@ -446,11 +467,16 @@ gnome_vfs_volume_monitor_get_volume_by_id (GnomeVFSVolumeMonitor *volume_monitor
 
 /** 
  * gnome_vfs_volume_monitor_get_drive_by_id:
- * @volume_monitor:
- * @id:
+ * @volume_monitor: a #GnomeVFSVolumeMonitor
+ * @id: the #GnomeVFSVolume id to look for
  *
+ * Looks for a #GnomeVFSDrive whose id is @id. A valid @volume_monitor to pass
+ * to this function can be acquired using gnome_vfs_get_volume_monitor()
  *
- * Returns:
+ * Returns: the #GnomeVFSDrive corresponding to @id, or NULL if no 
+ * #GnomeVFSDrive with a matching id could be found. The caller owns a 
+ * reference on the returned drive, and must call @gnome_vfs_drive_unref
+ * when it no longer needs it.
  *
  * Since: 2.6
  */
@@ -517,9 +543,10 @@ _gnome_vfs_volume_monitor_disconnect_all (GnomeVFSVolumeMonitor *volume_monitor)
 
 /** 
  * gnome_vfs_volume_monitor_emit_pre_unmount:
- * @volume_monitor:
- * @volume:
+ * @volume_monitor: the #GnomeVFSVolumeMonitor
+ * @volume: a #GnomeVFSVolume
  *
+ * Emits the "pre-unmount" signal on @volume. 
  *
  * Since: 2.6
  */
@@ -630,11 +657,13 @@ _gnome_vfs_volume_monitor_disconnected (GnomeVFSVolumeMonitor *volume_monitor,
 
 /** 
  * gnome_vfs_volume_monitor_get_mounted_volumes:
- * @volume_monitor:
+ * @volume_monitor: the #GnomeVFSVolumeMonitor
  *
+ * Gets the list of all the mounted #GnomeVFSVolume volumes.
  *
- *
- * Returns:
+ * Returns: #GList of #GnomeVFSVolume. The #GnomeVFSVolume objects must be 
+ * unreffed by the caller when no longer needed with gnome_vfs_volume_unref()
+ * and the #GList must be freed.
  *
  * Since: 2.6
  */

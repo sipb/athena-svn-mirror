@@ -531,9 +531,9 @@ _hal_get_drive_name (GnomeVFSHalVolume *vol, GnomeVFSHalDrive *drive,
 		if( dvdram )
 			second = "/DVD-RAM";
 		if( dvdplusr && dvdr )
-			second = "/DVD±R";
+			second = "/DVD\302\261R";
 		if( dvdplusr && dvdplusrw && dvdr )
-			second = "/DVD±RW";
+			second = "/DVD\302\261RW";
 
 		name = g_strdup_printf ("%s%s", first, second);
 	} else if (strcmp (drive->type, "floppy") == 0) {

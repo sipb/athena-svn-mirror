@@ -44,6 +44,7 @@
 #define PATH_GCONF_GNOME_VFS_DNS_SD "/system/dns_sd"
 #define PATH_GCONF_GNOME_VFS_DNS_SD_DISPLAY_LOCAL "/system/dns_sd/display_local"
 #define PATH_GCONF_GNOME_VFS_DNS_SD_EXTRA_DOMAINS "/system/dns_sd/extra_domains"
+#define DEFAULT_WORKGROUP_NAME "X-GNOME-DEFAULT-WORKGROUP"
 
 typedef struct {
 	char *display_name;
@@ -1219,7 +1220,7 @@ notify_gconf_value_changed (GConfClient *client,
 
 	current_workgroup = gconf_client_get_string (client, PATH_GCONF_GNOME_VFS_SMB_WORKGROUP, NULL);
 	if (current_workgroup == NULL) {
-		current_workgroup = g_strdup ("workgroup");
+		current_workgroup = g_strdup (DEFAULT_WORKGROUP_NAME);
 	}
 
 	G_UNLOCK (network);
@@ -1345,7 +1346,7 @@ vfs_module_init (const char *method_name, const char *args)
 
 	current_workgroup = gconf_client_get_string (gconf_client, PATH_GCONF_GNOME_VFS_SMB_WORKGROUP, NULL);
 	if (current_workgroup == NULL) {
-		current_workgroup = g_strdup ("workgroup");
+		current_workgroup = g_strdup (DEFAULT_WORKGROUP_NAME);
 	}
 
 	setting = gconf_client_get_string (gconf_client, PATH_GCONF_GNOME_VFS_DNS_SD_DISPLAY_LOCAL, NULL);

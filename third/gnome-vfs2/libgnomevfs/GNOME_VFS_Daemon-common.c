@@ -11,898 +11,169 @@
 static const CORBA_unsigned_long ORBit_zero_int = 0;
 
 #ifndef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonMonitor_Cancel(POA_GNOME_VFS_DaemonMonitor *
-						 _o_servant,
-						 gpointer _o_retval,
-						 gpointer * _o_args,
-						 CORBA_Context _o_ctx,
-						 CORBA_Environment * _o_ev,
-						 GNOME_VFS_Result
-						 (*_impl_Cancel)
-						 (PortableServer_Servant
-						  _servant,
-						  CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval = _impl_Cancel(_o_servant, _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonMonitor_Cancel(POA_GNOME_VFS_DaemonMonitor             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Cancel)(PortableServer_Servant _servant, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Cancel (_o_servant, _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Client_MonitorCallback(POA_GNOME_VFS_Client *
-						   _o_servant,
-						   gpointer _o_retval,
-						   gpointer * _o_args,
-						   CORBA_Context _o_ctx,
-						   CORBA_Environment * _o_ev,
-						   void
-						   (*_impl_MonitorCallback)
-						   (PortableServer_Servant
-						    _servant,
-						    const
-						    GNOME_VFS_DaemonMonitor
-						    monitor,
-						    const CORBA_char *
-						    monitor_uri,
-						    const CORBA_char *
-						    info_uri,
-						    const CORBA_long
-						    event_type,
-						    CORBA_Environment * ev))
-{
-   _impl_MonitorCallback(_o_servant,
-			 *(const GNOME_VFS_DaemonMonitor *) _o_args[0],
-			 *(const CORBA_char * *) _o_args[1],
-			 *(const CORBA_char * *) _o_args[2],
-			 *(const CORBA_long *) _o_args[3], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Client_MonitorCallback(POA_GNOME_VFS_Client             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_MonitorCallback)(PortableServer_Servant _servant, const GNOME_VFS_DaemonMonitor monitor, const CORBA_char * monitor_uri, const CORBA_char * info_uri, const CORBA_long event_type, CORBA_Environment *ev)) {
+_impl_MonitorCallback (_o_servant, *(const GNOME_VFS_DaemonMonitor *)_o_args[0], *(const CORBA_char * *)_o_args[1], *(const CORBA_char * *)_o_args[2], *(const CORBA_long *)_o_args[3], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Client_VolumeMounted(POA_GNOME_VFS_Client *
-						 _o_servant,
-						 gpointer _o_retval,
-						 gpointer * _o_args,
-						 CORBA_Context _o_ctx,
-						 CORBA_Environment * _o_ev,
-						 void (*_impl_VolumeMounted)
-						 (PortableServer_Servant
-						  _servant,
-						  const GNOME_VFS_Volume *
-						  volume,
-						  CORBA_Environment * ev))
-{
-   _impl_VolumeMounted(_o_servant, (const GNOME_VFS_Volume *) _o_args[0],
-		       _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Client_VolumeMounted(POA_GNOME_VFS_Client             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_VolumeMounted)(PortableServer_Servant _servant, const GNOME_VFS_Volume* volume, CORBA_Environment *ev)) {
+_impl_VolumeMounted (_o_servant, (const GNOME_VFS_Volume*)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Client_VolumePreUnmount(POA_GNOME_VFS_Client *
-						    _o_servant,
-						    gpointer _o_retval,
-						    gpointer * _o_args,
-						    CORBA_Context _o_ctx,
-						    CORBA_Environment * _o_ev,
-						    void
-						    (*_impl_VolumePreUnmount)
-						    (PortableServer_Servant
-						     _servant,
-						     const CORBA_long id,
-						     CORBA_Environment * ev))
-{
-   _impl_VolumePreUnmount(_o_servant, *(const CORBA_long *) _o_args[0],
-			  _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Client_VolumePreUnmount(POA_GNOME_VFS_Client             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_VolumePreUnmount)(PortableServer_Servant _servant, const CORBA_long id, CORBA_Environment *ev)) {
+_impl_VolumePreUnmount (_o_servant, *(const CORBA_long *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Client_VolumeUnmounted(POA_GNOME_VFS_Client *
-						   _o_servant,
-						   gpointer _o_retval,
-						   gpointer * _o_args,
-						   CORBA_Context _o_ctx,
-						   CORBA_Environment * _o_ev,
-						   void
-						   (*_impl_VolumeUnmounted)
-						   (PortableServer_Servant
-						    _servant,
-						    const CORBA_long id,
-						    CORBA_Environment * ev))
-{
-   _impl_VolumeUnmounted(_o_servant, *(const CORBA_long *) _o_args[0], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Client_VolumeUnmounted(POA_GNOME_VFS_Client             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_VolumeUnmounted)(PortableServer_Servant _servant, const CORBA_long id, CORBA_Environment *ev)) {
+_impl_VolumeUnmounted (_o_servant, *(const CORBA_long *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Client_DriveConnected(POA_GNOME_VFS_Client *
-						  _o_servant,
-						  gpointer _o_retval,
-						  gpointer * _o_args,
-						  CORBA_Context _o_ctx,
-						  CORBA_Environment * _o_ev,
-						  void (*_impl_DriveConnected)
-						  (PortableServer_Servant
-						   _servant,
-						   const GNOME_VFS_Drive *
-						   drive,
-						   CORBA_Environment * ev))
-{
-   _impl_DriveConnected(_o_servant, (const GNOME_VFS_Drive *) _o_args[0],
-			_o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Client_DriveConnected(POA_GNOME_VFS_Client             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_DriveConnected)(PortableServer_Servant _servant, const GNOME_VFS_Drive* drive, CORBA_Environment *ev)) {
+_impl_DriveConnected (_o_servant, (const GNOME_VFS_Drive*)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Client_DriveDisconnected(POA_GNOME_VFS_Client *
-						     _o_servant,
-						     gpointer _o_retval,
-						     gpointer * _o_args,
-						     CORBA_Context _o_ctx,
-						     CORBA_Environment *
-						     _o_ev,
-						     void
-						     (*_impl_DriveDisconnected)
-						     (PortableServer_Servant
-						      _servant,
-						      const CORBA_long id,
-						      CORBA_Environment * ev))
-{
-   _impl_DriveDisconnected(_o_servant, *(const CORBA_long *) _o_args[0],
-			   _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Client_DriveDisconnected(POA_GNOME_VFS_Client             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_DriveDisconnected)(PortableServer_Servant _servant, const CORBA_long id, CORBA_Environment *ev)) {
+_impl_DriveDisconnected (_o_servant, *(const CORBA_long *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_ClientCall_ModuleCallbackInvoke
-   (POA_GNOME_VFS_ClientCall * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    CORBA_boolean(*_impl_ModuleCallbackInvoke) (PortableServer_Servant
-						_servant,
-						const CORBA_char * name,
-						const CORBA_any * module_in,
-						CORBA_any ** module_out,
-						CORBA_Environment * ev))
-{
-   *(CORBA_boolean *) _o_retval =
-      _impl_ModuleCallbackInvoke(_o_servant,
-				 *(const CORBA_char * *) _o_args[0],
-				 (const CORBA_any *) _o_args[1],
-				 (CORBA_any **) _o_args[2], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_ClientCall_ModuleCallbackInvoke(POA_GNOME_VFS_ClientCall             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+CORBA_boolean (*_impl_ModuleCallbackInvoke)(PortableServer_Servant _servant, const CORBA_char * name, const CORBA_any* module_in, CORBA_any** module_out, CORBA_Environment *ev)) {
+*(CORBA_boolean *)_o_retval = _impl_ModuleCallbackInvoke (_o_servant, *(const CORBA_char * *)_o_args[0], (const CORBA_any*)_o_args[1], (CORBA_any**)_o_args[2], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonHandle_Close(POA_GNOME_VFS_DaemonHandle *
-					       _o_servant, gpointer _o_retval,
-					       gpointer * _o_args,
-					       CORBA_Context _o_ctx,
-					       CORBA_Environment * _o_ev,
-					       GNOME_VFS_Result(*_impl_Close)
-					       (PortableServer_Servant
-						_servant,
-						const GNOME_VFS_ClientCall
-						client_call,
-						const GNOME_VFS_Client client,
-						CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Close(_o_servant, *(const GNOME_VFS_ClientCall *) _o_args[0],
-		  *(const GNOME_VFS_Client *) _o_args[1], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Close(POA_GNOME_VFS_DaemonHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Close)(PortableServer_Servant _servant, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Close (_o_servant, *(const GNOME_VFS_ClientCall *)_o_args[0], *(const GNOME_VFS_Client *)_o_args[1], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonHandle_Read(POA_GNOME_VFS_DaemonHandle *
-					      _o_servant, gpointer _o_retval,
-					      gpointer * _o_args,
-					      CORBA_Context _o_ctx,
-					      CORBA_Environment * _o_ev,
-					      GNOME_VFS_Result(*_impl_Read)
-					      (PortableServer_Servant
-					       _servant,
-					       GNOME_VFS_buffer ** buf,
-					       const GNOME_VFS_FileSize
-					       num_bytes,
-					       const GNOME_VFS_ClientCall
-					       client_call,
-					       const GNOME_VFS_Client client,
-					       CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Read(_o_servant, (CORBA_sequence_CORBA_octet **) _o_args[0],
-		 *(const CORBA_unsigned_long_long *) _o_args[1],
-		 *(const GNOME_VFS_ClientCall *) _o_args[2],
-		 *(const GNOME_VFS_Client *) _o_args[3], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Read(POA_GNOME_VFS_DaemonHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Read)(PortableServer_Servant _servant, GNOME_VFS_buffer** buf, const GNOME_VFS_FileSize num_bytes, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Read (_o_servant, (CORBA_sequence_CORBA_octet**)_o_args[0], *(const CORBA_unsigned_long_long *)_o_args[1], *(const GNOME_VFS_ClientCall *)_o_args[2], *(const GNOME_VFS_Client *)_o_args[3], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonHandle_Write(POA_GNOME_VFS_DaemonHandle *
-					       _o_servant, gpointer _o_retval,
-					       gpointer * _o_args,
-					       CORBA_Context _o_ctx,
-					       CORBA_Environment * _o_ev,
-					       GNOME_VFS_Result(*_impl_Write)
-					       (PortableServer_Servant
-						_servant,
-						const GNOME_VFS_buffer * buf,
-						GNOME_VFS_FileSize *
-						bytes_written_return,
-						const GNOME_VFS_ClientCall
-						client_call,
-						const GNOME_VFS_Client client,
-						CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Write(_o_servant, (const CORBA_sequence_CORBA_octet *) _o_args[0],
-		  *(CORBA_unsigned_long_long * *)_o_args[1],
-		  *(const GNOME_VFS_ClientCall *) _o_args[2],
-		  *(const GNOME_VFS_Client *) _o_args[3], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Write(POA_GNOME_VFS_DaemonHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Write)(PortableServer_Servant _servant, const GNOME_VFS_buffer* buf, GNOME_VFS_FileSize* bytes_written_return, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Write (_o_servant, (const CORBA_sequence_CORBA_octet*)_o_args[0], *(CORBA_unsigned_long_long* *)_o_args[1], *(const GNOME_VFS_ClientCall *)_o_args[2], *(const GNOME_VFS_Client *)_o_args[3], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonHandle_Seek(POA_GNOME_VFS_DaemonHandle *
-					      _o_servant, gpointer _o_retval,
-					      gpointer * _o_args,
-					      CORBA_Context _o_ctx,
-					      CORBA_Environment * _o_ev,
-					      GNOME_VFS_Result(*_impl_Seek)
-					      (PortableServer_Servant
-					       _servant,
-					       const CORBA_long whence,
-					       const GNOME_VFS_FileOffset
-					       offset,
-					       const GNOME_VFS_ClientCall
-					       client_call,
-					       const GNOME_VFS_Client client,
-					       CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Seek(_o_servant, *(const CORBA_long *) _o_args[0],
-		 *(const CORBA_long_long *) _o_args[1],
-		 *(const GNOME_VFS_ClientCall *) _o_args[2],
-		 *(const GNOME_VFS_Client *) _o_args[3], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Seek(POA_GNOME_VFS_DaemonHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Seek)(PortableServer_Servant _servant, const CORBA_long whence, const GNOME_VFS_FileOffset offset, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Seek (_o_servant, *(const CORBA_long *)_o_args[0], *(const CORBA_long_long *)_o_args[1], *(const GNOME_VFS_ClientCall *)_o_args[2], *(const GNOME_VFS_Client *)_o_args[3], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonHandle_Tell(POA_GNOME_VFS_DaemonHandle *
-					      _o_servant, gpointer _o_retval,
-					      gpointer * _o_args,
-					      CORBA_Context _o_ctx,
-					      CORBA_Environment * _o_ev,
-					      GNOME_VFS_Result(*_impl_Tell)
-					      (PortableServer_Servant
-					       _servant,
-					       GNOME_VFS_FileOffset * offset,
-					       const GNOME_VFS_ClientCall
-					       client_call,
-					       const GNOME_VFS_Client client,
-					       CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Tell(_o_servant, *(CORBA_long_long * *)_o_args[0],
-		 *(const GNOME_VFS_ClientCall *) _o_args[1],
-		 *(const GNOME_VFS_Client *) _o_args[2], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Tell(POA_GNOME_VFS_DaemonHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Tell)(PortableServer_Servant _servant, GNOME_VFS_FileOffset* offset, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Tell (_o_servant, *(CORBA_long_long* *)_o_args[0], *(const GNOME_VFS_ClientCall *)_o_args[1], *(const GNOME_VFS_Client *)_o_args[2], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonHandle_GetFileInfo
-   (POA_GNOME_VFS_DaemonHandle * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    GNOME_VFS_Result(*_impl_GetFileInfo) (PortableServer_Servant _servant,
-					  GNOME_VFS_FileInfo ** file_info,
-					  const CORBA_long options,
-					  const GNOME_VFS_ClientCall
-					  client_call,
-					  const GNOME_VFS_Client client,
-					  CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_GetFileInfo(_o_servant, (GNOME_VFS_FileInfo **) _o_args[0],
-			*(const CORBA_long *) _o_args[1],
-			*(const GNOME_VFS_ClientCall *) _o_args[2],
-			*(const GNOME_VFS_Client *) _o_args[3], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonHandle_GetFileInfo(POA_GNOME_VFS_DaemonHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_GetFileInfo)(PortableServer_Servant _servant, GNOME_VFS_FileInfo** file_info, const CORBA_long options, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_GetFileInfo (_o_servant, (GNOME_VFS_FileInfo**)_o_args[0], *(const CORBA_long *)_o_args[1], *(const GNOME_VFS_ClientCall *)_o_args[2], *(const GNOME_VFS_Client *)_o_args[3], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonHandle_Truncate(POA_GNOME_VFS_DaemonHandle *
-						  _o_servant,
-						  gpointer _o_retval,
-						  gpointer * _o_args,
-						  CORBA_Context _o_ctx,
-						  CORBA_Environment * _o_ev,
-						  GNOME_VFS_Result
-						  (*_impl_Truncate)
-						  (PortableServer_Servant
-						   _servant,
-						   const GNOME_VFS_FileSize
-						   length,
-						   const GNOME_VFS_ClientCall
-						   client_call,
-						   const GNOME_VFS_Client
-						   client,
-						   CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Truncate(_o_servant,
-		     *(const CORBA_unsigned_long_long *) _o_args[0],
-		     *(const GNOME_VFS_ClientCall *) _o_args[1],
-		     *(const GNOME_VFS_Client *) _o_args[2], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonHandle_Truncate(POA_GNOME_VFS_DaemonHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Truncate)(PortableServer_Servant _servant, const GNOME_VFS_FileSize length, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Truncate (_o_servant, *(const CORBA_unsigned_long_long *)_o_args[0], *(const GNOME_VFS_ClientCall *)_o_args[1], *(const GNOME_VFS_Client *)_o_args[2], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonDirHandle_Close
-   (POA_GNOME_VFS_DaemonDirHandle * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    GNOME_VFS_Result(*_impl_Close) (PortableServer_Servant _servant,
-				    const GNOME_VFS_ClientCall client_call,
-				    const GNOME_VFS_Client client,
-				    CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Close(_o_servant, *(const GNOME_VFS_ClientCall *) _o_args[0],
-		  *(const GNOME_VFS_Client *) _o_args[1], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonDirHandle_Close(POA_GNOME_VFS_DaemonDirHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Close)(PortableServer_Servant _servant, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Close (_o_servant, *(const GNOME_VFS_ClientCall *)_o_args[0], *(const GNOME_VFS_Client *)_o_args[1], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_DaemonDirHandle_Read(POA_GNOME_VFS_DaemonDirHandle
-						 * _o_servant,
-						 gpointer _o_retval,
-						 gpointer * _o_args,
-						 CORBA_Context _o_ctx,
-						 CORBA_Environment * _o_ev,
-						 GNOME_VFS_Result(*_impl_Read)
-						 (PortableServer_Servant
-						  _servant,
-						  GNOME_VFS_FileInfoList **
-						  file_info_list,
-						  const GNOME_VFS_ClientCall
-						  client_call,
-						  const GNOME_VFS_Client
-						  client,
-						  CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Read(_o_servant,
-		 (CORBA_sequence_GNOME_VFS_FileInfo **) _o_args[0],
-		 *(const GNOME_VFS_ClientCall *) _o_args[1],
-		 *(const GNOME_VFS_Client *) _o_args[2], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_DaemonDirHandle_Read(POA_GNOME_VFS_DaemonDirHandle             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Read)(PortableServer_Servant _servant, GNOME_VFS_FileInfoList** file_info_list, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Read (_o_servant, (CORBA_sequence_GNOME_VFS_FileInfo**)_o_args[0], *(const GNOME_VFS_ClientCall *)_o_args[1], *(const GNOME_VFS_Client *)_o_args[2], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Daemon_registerClient(POA_GNOME_VFS_Daemon *
-						  _o_servant,
-						  gpointer _o_retval,
-						  gpointer * _o_args,
-						  CORBA_Context _o_ctx,
-						  CORBA_Environment * _o_ev,
-						  void (*_impl_registerClient)
-						  (PortableServer_Servant
-						   _servant,
-						   const GNOME_VFS_Client
-						   client,
-						   CORBA_Environment * ev))
-{
-   _impl_registerClient(_o_servant, *(const GNOME_VFS_Client *) _o_args[0],
-			_o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Daemon_registerClient(POA_GNOME_VFS_Daemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_registerClient)(PortableServer_Servant _servant, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+_impl_registerClient (_o_servant, *(const GNOME_VFS_Client *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Daemon_deRegisterClient(POA_GNOME_VFS_Daemon *
-						    _o_servant,
-						    gpointer _o_retval,
-						    gpointer * _o_args,
-						    CORBA_Context _o_ctx,
-						    CORBA_Environment * _o_ev,
-						    void
-						    (*_impl_deRegisterClient)
-						    (PortableServer_Servant
-						     _servant,
-						     const GNOME_VFS_Client
-						     client,
-						     CORBA_Environment * ev))
-{
-   _impl_deRegisterClient(_o_servant, *(const GNOME_VFS_Client *) _o_args[0],
-			  _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Daemon_deRegisterClient(POA_GNOME_VFS_Daemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_deRegisterClient)(PortableServer_Servant _servant, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+_impl_deRegisterClient (_o_servant, *(const GNOME_VFS_Client *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Daemon_registerVolumeMonitor(POA_GNOME_VFS_Daemon
-							 * _o_servant,
-							 gpointer _o_retval,
-							 gpointer * _o_args,
-							 CORBA_Context _o_ctx,
-							 CORBA_Environment *
-							 _o_ev,
-							 void
-							 (*_impl_registerVolumeMonitor)
-							 (PortableServer_Servant
-							  _servant,
-							  const
-							  GNOME_VFS_Client
-							  client,
-							  CORBA_Environment *
-							  ev))
-{
-   _impl_registerVolumeMonitor(_o_servant,
-			       *(const GNOME_VFS_Client *) _o_args[0], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Daemon_registerVolumeMonitor(POA_GNOME_VFS_Daemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_registerVolumeMonitor)(PortableServer_Servant _servant, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+_impl_registerVolumeMonitor (_o_servant, *(const GNOME_VFS_Client *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Daemon_deRegisterVolumeMonitor
-   (POA_GNOME_VFS_Daemon * _o_servant, gpointer _o_retval, gpointer * _o_args,
-    CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    void (*_impl_deRegisterVolumeMonitor) (PortableServer_Servant _servant,
-					   const GNOME_VFS_Client client,
-					   CORBA_Environment * ev))
-{
-   _impl_deRegisterVolumeMonitor(_o_servant,
-				 *(const GNOME_VFS_Client *) _o_args[0],
-				 _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Daemon_deRegisterVolumeMonitor(POA_GNOME_VFS_Daemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_deRegisterVolumeMonitor)(PortableServer_Servant _servant, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+_impl_deRegisterVolumeMonitor (_o_servant, *(const GNOME_VFS_Client *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Daemon_getVolumes(POA_GNOME_VFS_Daemon *
-					      _o_servant, gpointer _o_retval,
-					      gpointer * _o_args,
-					      CORBA_Context _o_ctx,
-					      CORBA_Environment * _o_ev,
-					      GNOME_VFS_VolumeList *
-					      (*_impl_getVolumes)
-					      (PortableServer_Servant
-					       _servant,
-					       const GNOME_VFS_Client client,
-					       CORBA_Environment * ev))
-{
-   *(GNOME_VFS_VolumeList * *)_o_retval =
-      _impl_getVolumes(_o_servant, *(const GNOME_VFS_Client *) _o_args[0],
-		       _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Daemon_getVolumes(POA_GNOME_VFS_Daemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_VolumeList* (*_impl_getVolumes)(PortableServer_Servant _servant, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_VolumeList* *)_o_retval = _impl_getVolumes (_o_servant, *(const GNOME_VFS_Client *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Daemon_getDrives(POA_GNOME_VFS_Daemon *
-					     _o_servant, gpointer _o_retval,
-					     gpointer * _o_args,
-					     CORBA_Context _o_ctx,
-					     CORBA_Environment * _o_ev,
-					     GNOME_VFS_DriveList *
-					     (*_impl_getDrives)
-					     (PortableServer_Servant _servant,
-					      const GNOME_VFS_Client client,
-					      CORBA_Environment * ev))
-{
-   *(GNOME_VFS_DriveList * *)_o_retval =
-      _impl_getDrives(_o_servant, *(const GNOME_VFS_Client *) _o_args[0],
-		      _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Daemon_getDrives(POA_GNOME_VFS_Daemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_DriveList* (*_impl_getDrives)(PortableServer_Servant _servant, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_DriveList* *)_o_retval = _impl_getDrives (_o_servant, *(const GNOME_VFS_Client *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Daemon_emitPreUnmountVolume(POA_GNOME_VFS_Daemon *
-							_o_servant,
-							gpointer _o_retval,
-							gpointer * _o_args,
-							CORBA_Context _o_ctx,
-							CORBA_Environment *
-							_o_ev,
-							void
-							(*_impl_emitPreUnmountVolume)
-							(PortableServer_Servant
-							 _servant,
-							 const
-							 GNOME_VFS_Client
-							 client,
-							 const CORBA_long
-							 volume_id,
-							 CORBA_Environment *
-							 ev))
-{
-   _impl_emitPreUnmountVolume(_o_servant,
-			      *(const GNOME_VFS_Client *) _o_args[0],
-			      *(const CORBA_long *) _o_args[1], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Daemon_emitPreUnmountVolume(POA_GNOME_VFS_Daemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_emitPreUnmountVolume)(PortableServer_Servant _servant, const GNOME_VFS_Client client, const CORBA_long volume_id, CORBA_Environment *ev)) {
+_impl_emitPreUnmountVolume (_o_servant, *(const GNOME_VFS_Client *)_o_args[0], *(const CORBA_long *)_o_args[1], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_Daemon_forceProbe(POA_GNOME_VFS_Daemon *
-					      _o_servant, gpointer _o_retval,
-					      gpointer * _o_args,
-					      CORBA_Context _o_ctx,
-					      CORBA_Environment * _o_ev,
-					      void (*_impl_forceProbe)
-					      (PortableServer_Servant
-					       _servant,
-					       const GNOME_VFS_Client client,
-					       CORBA_Environment * ev))
-{
-   _impl_forceProbe(_o_servant, *(const GNOME_VFS_Client *) _o_args[0],
-		    _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_Daemon_forceProbe(POA_GNOME_VFS_Daemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_forceProbe)(PortableServer_Servant _servant, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+_impl_forceProbe (_o_servant, *(const GNOME_VFS_Client *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Cancel(POA_GNOME_VFS_AsyncDaemon *
-					       _o_servant, gpointer _o_retval,
-					       gpointer * _o_args,
-					       CORBA_Context _o_ctx,
-					       CORBA_Environment * _o_ev,
-					       void (*_impl_Cancel)
-					       (PortableServer_Servant
-						_servant,
-						const GNOME_VFS_ClientCall
-						client_call,
-						CORBA_Environment * ev))
-{
-   _impl_Cancel(_o_servant, *(const GNOME_VFS_ClientCall *) _o_args[0],
-		_o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Cancel(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+void (*_impl_Cancel)(PortableServer_Servant _servant, const GNOME_VFS_ClientCall client_call, CORBA_Environment *ev)) {
+_impl_Cancel (_o_servant, *(const GNOME_VFS_ClientCall *)_o_args[0], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Open(POA_GNOME_VFS_AsyncDaemon *
-					     _o_servant, gpointer _o_retval,
-					     gpointer * _o_args,
-					     CORBA_Context _o_ctx,
-					     CORBA_Environment * _o_ev,
-					     GNOME_VFS_Result(*_impl_Open)
-					     (PortableServer_Servant _servant,
-					      GNOME_VFS_DaemonHandle *
-					      handle_return,
-					      const CORBA_char * uri,
-					      const CORBA_long open_mode,
-					      const GNOME_VFS_ClientCall
-					      client_call,
-					      const GNOME_VFS_Client client,
-					      CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Open(_o_servant, *(GNOME_VFS_DaemonHandle * *)_o_args[0],
-		 *(const CORBA_char * *) _o_args[1],
-		 *(const CORBA_long *) _o_args[2],
-		 *(const GNOME_VFS_ClientCall *) _o_args[3],
-		 *(const GNOME_VFS_Client *) _o_args[4], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Open(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Open)(PortableServer_Servant _servant, GNOME_VFS_DaemonHandle* handle_return, const CORBA_char * uri, const CORBA_long open_mode, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Open (_o_servant, *(GNOME_VFS_DaemonHandle* *)_o_args[0], *(const CORBA_char * *)_o_args[1], *(const CORBA_long *)_o_args[2], *(const GNOME_VFS_ClientCall *)_o_args[3], *(const GNOME_VFS_Client *)_o_args[4], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Create(POA_GNOME_VFS_AsyncDaemon *
-					       _o_servant, gpointer _o_retval,
-					       gpointer * _o_args,
-					       CORBA_Context _o_ctx,
-					       CORBA_Environment * _o_ev,
-					       GNOME_VFS_Result(*_impl_Create)
-					       (PortableServer_Servant
-						_servant,
-						GNOME_VFS_DaemonHandle *
-						handle_return,
-						const CORBA_char * uri,
-						const CORBA_long open_mode,
-						const CORBA_boolean exclusive,
-						const CORBA_long perm,
-						const GNOME_VFS_ClientCall
-						client_call,
-						const GNOME_VFS_Client client,
-						CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Create(_o_servant, *(GNOME_VFS_DaemonHandle * *)_o_args[0],
-		   *(const CORBA_char * *) _o_args[1],
-		   *(const CORBA_long *) _o_args[2],
-		   *(const CORBA_boolean *) _o_args[3],
-		   *(const CORBA_long *) _o_args[4],
-		   *(const GNOME_VFS_ClientCall *) _o_args[5],
-		   *(const GNOME_VFS_Client *) _o_args[6], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Create(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Create)(PortableServer_Servant _servant, GNOME_VFS_DaemonHandle* handle_return, const CORBA_char * uri, const CORBA_long open_mode, const CORBA_boolean exclusive, const CORBA_long perm, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Create (_o_servant, *(GNOME_VFS_DaemonHandle* *)_o_args[0], *(const CORBA_char * *)_o_args[1], *(const CORBA_long *)_o_args[2], *(const CORBA_boolean *)_o_args[3], *(const CORBA_long *)_o_args[4], *(const GNOME_VFS_ClientCall *)_o_args[5], *(const GNOME_VFS_Client *)_o_args[6], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_OpenDirectory
-   (POA_GNOME_VFS_AsyncDaemon * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    GNOME_VFS_Result(*_impl_OpenDirectory) (PortableServer_Servant _servant,
-					    GNOME_VFS_DaemonDirHandle *
-					    handle_return,
-					    const CORBA_char * uri,
-					    const CORBA_long options,
-					    const GNOME_VFS_ClientCall
-					    client_call,
-					    const GNOME_VFS_Client client,
-					    CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_OpenDirectory(_o_servant,
-			  *(GNOME_VFS_DaemonDirHandle * *)_o_args[0],
-			  *(const CORBA_char * *) _o_args[1],
-			  *(const CORBA_long *) _o_args[2],
-			  *(const GNOME_VFS_ClientCall *) _o_args[3],
-			  *(const GNOME_VFS_Client *) _o_args[4], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_OpenDirectory(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_OpenDirectory)(PortableServer_Servant _servant, GNOME_VFS_DaemonDirHandle* handle_return, const CORBA_char * uri, const CORBA_long options, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_OpenDirectory (_o_servant, *(GNOME_VFS_DaemonDirHandle* *)_o_args[0], *(const CORBA_char * *)_o_args[1], *(const CORBA_long *)_o_args[2], *(const GNOME_VFS_ClientCall *)_o_args[3], *(const GNOME_VFS_Client *)_o_args[4], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_GetFileInfo(POA_GNOME_VFS_AsyncDaemon
-						    * _o_servant,
-						    gpointer _o_retval,
-						    gpointer * _o_args,
-						    CORBA_Context _o_ctx,
-						    CORBA_Environment * _o_ev,
-						    GNOME_VFS_Result
-						    (*_impl_GetFileInfo)
-						    (PortableServer_Servant
-						     _servant,
-						     const CORBA_char * uri,
-						     GNOME_VFS_FileInfo **
-						     file_info,
-						     const CORBA_long options,
-						     const
-						     GNOME_VFS_ClientCall
-						     client_call,
-						     const GNOME_VFS_Client
-						     client,
-						     CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_GetFileInfo(_o_servant, *(const CORBA_char * *) _o_args[0],
-			(GNOME_VFS_FileInfo **) _o_args[1],
-			*(const CORBA_long *) _o_args[2],
-			*(const GNOME_VFS_ClientCall *) _o_args[3],
-			*(const GNOME_VFS_Client *) _o_args[4], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_GetFileInfo(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_GetFileInfo)(PortableServer_Servant _servant, const CORBA_char * uri, GNOME_VFS_FileInfo** file_info, const CORBA_long options, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_GetFileInfo (_o_servant, *(const CORBA_char * *)_o_args[0], (GNOME_VFS_FileInfo**)_o_args[1], *(const CORBA_long *)_o_args[2], *(const GNOME_VFS_ClientCall *)_o_args[3], *(const GNOME_VFS_Client *)_o_args[4], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Truncate(POA_GNOME_VFS_AsyncDaemon *
-						 _o_servant,
-						 gpointer _o_retval,
-						 gpointer * _o_args,
-						 CORBA_Context _o_ctx,
-						 CORBA_Environment * _o_ev,
-						 GNOME_VFS_Result
-						 (*_impl_Truncate)
-						 (PortableServer_Servant
-						  _servant,
-						  const CORBA_char * uri,
-						  const GNOME_VFS_FileSize
-						  length,
-						  const GNOME_VFS_ClientCall
-						  client_call,
-						  const GNOME_VFS_Client
-						  client,
-						  CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Truncate(_o_servant, *(const CORBA_char * *) _o_args[0],
-		     *(const CORBA_unsigned_long_long *) _o_args[1],
-		     *(const GNOME_VFS_ClientCall *) _o_args[2],
-		     *(const GNOME_VFS_Client *) _o_args[3], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Truncate(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Truncate)(PortableServer_Servant _servant, const CORBA_char * uri, const GNOME_VFS_FileSize length, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Truncate (_o_servant, *(const CORBA_char * *)_o_args[0], *(const CORBA_unsigned_long_long *)_o_args[1], *(const GNOME_VFS_ClientCall *)_o_args[2], *(const GNOME_VFS_Client *)_o_args[3], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_IsLocal(POA_GNOME_VFS_AsyncDaemon *
-						_o_servant,
-						gpointer _o_retval,
-						gpointer * _o_args,
-						CORBA_Context _o_ctx,
-						CORBA_Environment * _o_ev,
-						CORBA_boolean(*_impl_IsLocal)
-						(PortableServer_Servant
-						 _servant,
-						 const CORBA_char * uri,
-						 const GNOME_VFS_ClientCall
-						 client_call,
-						 const GNOME_VFS_Client
-						 client,
-						 CORBA_Environment * ev))
-{
-   *(CORBA_boolean *) _o_retval =
-      _impl_IsLocal(_o_servant, *(const CORBA_char * *) _o_args[0],
-		    *(const GNOME_VFS_ClientCall *) _o_args[1],
-		    *(const GNOME_VFS_Client *) _o_args[2], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_IsLocal(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+CORBA_boolean (*_impl_IsLocal)(PortableServer_Servant _servant, const CORBA_char * uri, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(CORBA_boolean *)_o_retval = _impl_IsLocal (_o_servant, *(const CORBA_char * *)_o_args[0], *(const GNOME_VFS_ClientCall *)_o_args[1], *(const GNOME_VFS_Client *)_o_args[2], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_FindDirectory
-   (POA_GNOME_VFS_AsyncDaemon * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    GNOME_VFS_Result(*_impl_FindDirectory) (PortableServer_Servant _servant,
-					    const CORBA_char * find_near_uri,
-					    const CORBA_long kind,
-					    CORBA_string * result_uri,
-					    const CORBA_boolean
-					    create_if_needed,
-					    const CORBA_boolean
-					    find_if_needed,
-					    const CORBA_unsigned_long perm,
-					    const GNOME_VFS_ClientCall
-					    client_call,
-					    const GNOME_VFS_Client client,
-					    CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_FindDirectory(_o_servant, *(const CORBA_char * *) _o_args[0],
-			  *(const CORBA_long *) _o_args[1],
-			  *(CORBA_string * *)_o_args[2],
-			  *(const CORBA_boolean *) _o_args[3],
-			  *(const CORBA_boolean *) _o_args[4],
-			  *(const CORBA_unsigned_long *) _o_args[5],
-			  *(const GNOME_VFS_ClientCall *) _o_args[6],
-			  *(const GNOME_VFS_Client *) _o_args[7], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_FindDirectory(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_FindDirectory)(PortableServer_Servant _servant, const CORBA_char * find_near_uri, const CORBA_long kind, CORBA_string* result_uri, const CORBA_boolean create_if_needed, const CORBA_boolean find_if_needed, const CORBA_unsigned_long perm, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_FindDirectory (_o_servant, *(const CORBA_char * *)_o_args[0], *(const CORBA_long *)_o_args[1], *(CORBA_string* *)_o_args[2], *(const CORBA_boolean *)_o_args[3], *(const CORBA_boolean *)_o_args[4], *(const CORBA_unsigned_long *)_o_args[5], *(const GNOME_VFS_ClientCall *)_o_args[6], *(const GNOME_VFS_Client *)_o_args[7], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MakeDirectory
-   (POA_GNOME_VFS_AsyncDaemon * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    GNOME_VFS_Result(*_impl_MakeDirectory) (PortableServer_Servant _servant,
-					    const CORBA_char * uri,
-					    const CORBA_unsigned_long perm,
-					    const GNOME_VFS_ClientCall
-					    client_call,
-					    const GNOME_VFS_Client client,
-					    CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_MakeDirectory(_o_servant, *(const CORBA_char * *) _o_args[0],
-			  *(const CORBA_unsigned_long *) _o_args[1],
-			  *(const GNOME_VFS_ClientCall *) _o_args[2],
-			  *(const GNOME_VFS_Client *) _o_args[3], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MakeDirectory(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_MakeDirectory)(PortableServer_Servant _servant, const CORBA_char * uri, const CORBA_unsigned_long perm, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_MakeDirectory (_o_servant, *(const CORBA_char * *)_o_args[0], *(const CORBA_unsigned_long *)_o_args[1], *(const GNOME_VFS_ClientCall *)_o_args[2], *(const GNOME_VFS_Client *)_o_args[3], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_RemoveDirectory
-   (POA_GNOME_VFS_AsyncDaemon * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    GNOME_VFS_Result(*_impl_RemoveDirectory) (PortableServer_Servant _servant,
-					      const CORBA_char * uri,
-					      const GNOME_VFS_ClientCall
-					      client_call,
-					      const GNOME_VFS_Client client,
-					      CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_RemoveDirectory(_o_servant, *(const CORBA_char * *) _o_args[0],
-			    *(const GNOME_VFS_ClientCall *) _o_args[1],
-			    *(const GNOME_VFS_Client *) _o_args[2], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_RemoveDirectory(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_RemoveDirectory)(PortableServer_Servant _servant, const CORBA_char * uri, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_RemoveDirectory (_o_servant, *(const CORBA_char * *)_o_args[0], *(const GNOME_VFS_ClientCall *)_o_args[1], *(const GNOME_VFS_Client *)_o_args[2], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Move(POA_GNOME_VFS_AsyncDaemon *
-					     _o_servant, gpointer _o_retval,
-					     gpointer * _o_args,
-					     CORBA_Context _o_ctx,
-					     CORBA_Environment * _o_ev,
-					     GNOME_VFS_Result(*_impl_Move)
-					     (PortableServer_Servant _servant,
-					      const CORBA_char * old_uri,
-					      const CORBA_char * new_uri,
-					      const CORBA_boolean
-					      force_replace,
-					      const GNOME_VFS_ClientCall
-					      client_call,
-					      const GNOME_VFS_Client client,
-					      CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Move(_o_servant, *(const CORBA_char * *) _o_args[0],
-		 *(const CORBA_char * *) _o_args[1],
-		 *(const CORBA_boolean *) _o_args[2],
-		 *(const GNOME_VFS_ClientCall *) _o_args[3],
-		 *(const GNOME_VFS_Client *) _o_args[4], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Move(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Move)(PortableServer_Servant _servant, const CORBA_char * old_uri, const CORBA_char * new_uri, const CORBA_boolean force_replace, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Move (_o_servant, *(const CORBA_char * *)_o_args[0], *(const CORBA_char * *)_o_args[1], *(const CORBA_boolean *)_o_args[2], *(const GNOME_VFS_ClientCall *)_o_args[3], *(const GNOME_VFS_Client *)_o_args[4], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Unlink(POA_GNOME_VFS_AsyncDaemon *
-					       _o_servant, gpointer _o_retval,
-					       gpointer * _o_args,
-					       CORBA_Context _o_ctx,
-					       CORBA_Environment * _o_ev,
-					       GNOME_VFS_Result(*_impl_Unlink)
-					       (PortableServer_Servant
-						_servant,
-						const CORBA_char * uri,
-						const GNOME_VFS_ClientCall
-						client_call,
-						const GNOME_VFS_Client client,
-						CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_Unlink(_o_servant, *(const CORBA_char * *) _o_args[0],
-		   *(const GNOME_VFS_ClientCall *) _o_args[1],
-		   *(const GNOME_VFS_Client *) _o_args[2], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_Unlink(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_Unlink)(PortableServer_Servant _servant, const CORBA_char * uri, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_Unlink (_o_servant, *(const CORBA_char * *)_o_args[0], *(const GNOME_VFS_ClientCall *)_o_args[1], *(const GNOME_VFS_Client *)_o_args[2], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_CheckSameFS(POA_GNOME_VFS_AsyncDaemon
-						    * _o_servant,
-						    gpointer _o_retval,
-						    gpointer * _o_args,
-						    CORBA_Context _o_ctx,
-						    CORBA_Environment * _o_ev,
-						    GNOME_VFS_Result
-						    (*_impl_CheckSameFS)
-						    (PortableServer_Servant
-						     _servant,
-						     const CORBA_char * uri_a,
-						     const CORBA_char * uri_b,
-						     CORBA_boolean * same_fs,
-						     const
-						     GNOME_VFS_ClientCall
-						     client_call,
-						     const GNOME_VFS_Client
-						     client,
-						     CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_CheckSameFS(_o_servant, *(const CORBA_char * *) _o_args[0],
-			*(const CORBA_char * *) _o_args[1],
-			*(CORBA_boolean * *)_o_args[2],
-			*(const GNOME_VFS_ClientCall *) _o_args[3],
-			*(const GNOME_VFS_Client *) _o_args[4], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_CheckSameFS(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_CheckSameFS)(PortableServer_Servant _servant, const CORBA_char * uri_a, const CORBA_char * uri_b, CORBA_boolean* same_fs, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_CheckSameFS (_o_servant, *(const CORBA_char * *)_o_args[0], *(const CORBA_char * *)_o_args[1], *(CORBA_boolean* *)_o_args[2], *(const GNOME_VFS_ClientCall *)_o_args[3], *(const GNOME_VFS_Client *)_o_args[4], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_SetFileInfo(POA_GNOME_VFS_AsyncDaemon
-						    * _o_servant,
-						    gpointer _o_retval,
-						    gpointer * _o_args,
-						    CORBA_Context _o_ctx,
-						    CORBA_Environment * _o_ev,
-						    GNOME_VFS_Result
-						    (*_impl_SetFileInfo)
-						    (PortableServer_Servant
-						     _servant,
-						     const CORBA_char * uri,
-						     const GNOME_VFS_FileInfo
-						     * info,
-						     const CORBA_long mask,
-						     const
-						     GNOME_VFS_ClientCall
-						     client_call,
-						     const GNOME_VFS_Client
-						     client,
-						     CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_SetFileInfo(_o_servant, *(const CORBA_char * *) _o_args[0],
-			(const GNOME_VFS_FileInfo *) _o_args[1],
-			*(const CORBA_long *) _o_args[2],
-			*(const GNOME_VFS_ClientCall *) _o_args[3],
-			*(const GNOME_VFS_Client *) _o_args[4], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_SetFileInfo(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_SetFileInfo)(PortableServer_Servant _servant, const CORBA_char * uri, const GNOME_VFS_FileInfo* info, const CORBA_long mask, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_SetFileInfo (_o_servant, *(const CORBA_char * *)_o_args[0], (const GNOME_VFS_FileInfo*)_o_args[1], *(const CORBA_long *)_o_args[2], *(const GNOME_VFS_ClientCall *)_o_args[3], *(const GNOME_VFS_Client *)_o_args[4], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_CreateSymbolicLink
-   (POA_GNOME_VFS_AsyncDaemon * _o_servant, gpointer _o_retval,
-    gpointer * _o_args, CORBA_Context _o_ctx, CORBA_Environment * _o_ev,
-    GNOME_VFS_Result(*_impl_CreateSymbolicLink) (PortableServer_Servant
-						 _servant,
-						 const CORBA_char * uri,
-						 const CORBA_char *
-						 target_reference,
-						 const GNOME_VFS_ClientCall
-						 client_call,
-						 const GNOME_VFS_Client
-						 client,
-						 CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_CreateSymbolicLink(_o_servant, *(const CORBA_char * *) _o_args[0],
-			       *(const CORBA_char * *) _o_args[1],
-			       *(const GNOME_VFS_ClientCall *) _o_args[2],
-			       *(const GNOME_VFS_Client *) _o_args[3], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_CreateSymbolicLink(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_CreateSymbolicLink)(PortableServer_Servant _servant, const CORBA_char * uri, const CORBA_char * target_reference, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_CreateSymbolicLink (_o_servant, *(const CORBA_char * *)_o_args[0], *(const CORBA_char * *)_o_args[1], *(const GNOME_VFS_ClientCall *)_o_args[2], *(const GNOME_VFS_Client *)_o_args[3], _o_ev);
 }
-
-void
-_ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MonitorAdd(POA_GNOME_VFS_AsyncDaemon *
-						   _o_servant,
-						   gpointer _o_retval,
-						   gpointer * _o_args,
-						   CORBA_Context _o_ctx,
-						   CORBA_Environment * _o_ev,
-						   GNOME_VFS_Result
-						   (*_impl_MonitorAdd)
-						   (PortableServer_Servant
-						    _servant,
-						    const CORBA_char * uri,
-						    const CORBA_long
-						    monitor_type,
-						    GNOME_VFS_DaemonMonitor *
-						    monitor,
-						    const GNOME_VFS_ClientCall
-						    client_call,
-						    const GNOME_VFS_Client
-						    client,
-						    CORBA_Environment * ev))
-{
-   *(GNOME_VFS_Result *) _o_retval =
-      _impl_MonitorAdd(_o_servant, *(const CORBA_char * *) _o_args[0],
-		       *(const CORBA_long *) _o_args[1],
-		       *(GNOME_VFS_DaemonMonitor * *)_o_args[2],
-		       *(const GNOME_VFS_ClientCall *) _o_args[3],
-		       *(const GNOME_VFS_Client *) _o_args[4], _o_ev);
+void _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MonitorAdd(POA_GNOME_VFS_AsyncDaemon             *_o_servant, gpointer            _o_retval,gpointer           *_o_args,CORBA_Context       _o_ctx,CORBA_Environment  *_o_ev,
+GNOME_VFS_Result (*_impl_MonitorAdd)(PortableServer_Servant _servant, const CORBA_char * uri, const CORBA_long monitor_type, GNOME_VFS_DaemonMonitor* monitor, const GNOME_VFS_ClientCall client_call, const GNOME_VFS_Client client, CORBA_Environment *ev)) {
+*(GNOME_VFS_Result *)_o_retval = _impl_MonitorAdd (_o_servant, *(const CORBA_char * *)_o_args[0], *(const CORBA_long *)_o_args[1], *(GNOME_VFS_DaemonMonitor* *)_o_args[2], *(const GNOME_VFS_ClientCall *)_o_args[3], *(const GNOME_VFS_Client *)_o_args[4], _o_ev);
 }
 
 #endif
@@ -924,28 +195,28 @@ _ORBIT_skel_small_GNOME_VFS_AsyncDaemon_MonitorAdd(POA_GNOME_VFS_AsyncDaemon *
 && (TC_IMPL_TC_GNOME_VFS_Result_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Result)
 #define TC_DEF_TC_GNOME_VFS_Result 1
-static const CORBA_TypeCode anon_subtypes_array5[] =
-   { (CORBA_TypeCode) & TC_CORBA_long_struct };
+static CORBA_TypeCode anon_subtypes_array5[] = {(CORBA_TypeCode)&TC_CORBA_long_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_Result_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_alias,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_LONG,
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array5,
-   CORBA_OBJECT_NIL,
-   "Result",
-   "IDL:GNOME/VFS/Result:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_Result_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_alias,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_LONG,
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array5,
+CORBA_OBJECT_NIL,
+"Result",
+"IDL:GNOME/VFS/Result:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_FileOffset_0 == 'G') \
@@ -966,28 +237,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Result_struct = {
 && (TC_IMPL_TC_GNOME_VFS_FileOffset_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_FileOffset)
 #define TC_DEF_TC_GNOME_VFS_FileOffset 1
-static const CORBA_TypeCode anon_subtypes_array12[] =
-   { (CORBA_TypeCode) & TC_CORBA_long_long_struct };
+static CORBA_TypeCode anon_subtypes_array12[] = {(CORBA_TypeCode)&TC_CORBA_long_long_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_FileOffset_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_alias,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_LONG_LONG,
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array12,
-   CORBA_OBJECT_NIL,
-   "FileOffset",
-   "IDL:GNOME/VFS/FileOffset:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_FileOffset_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_alias,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_LONG_LONG,
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array12,
+CORBA_OBJECT_NIL,
+"FileOffset",
+"IDL:GNOME/VFS/FileOffset:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_FileSize_0 == 'G') \
@@ -1008,28 +279,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_FileOffset_struct = {
 && (TC_IMPL_TC_GNOME_VFS_FileSize_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_FileSize)
 #define TC_DEF_TC_GNOME_VFS_FileSize 1
-static const CORBA_TypeCode anon_subtypes_array19[] =
-   { (CORBA_TypeCode) & TC_CORBA_unsigned_long_long_struct };
+static CORBA_TypeCode anon_subtypes_array19[] = {(CORBA_TypeCode)&TC_CORBA_unsigned_long_long_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_FileSize_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_alias,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_LONG_LONG,
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array19,
-   CORBA_OBJECT_NIL,
-   "FileSize",
-   "IDL:GNOME/VFS/FileSize:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_FileSize_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_alias,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_LONG_LONG,
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array19,
+CORBA_OBJECT_NIL,
+"FileSize",
+"IDL:GNOME/VFS/FileSize:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_Time_0 == 'G') \
@@ -1050,28 +321,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_FileSize_struct = {
 && (TC_IMPL_TC_GNOME_VFS_Time_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Time)
 #define TC_DEF_TC_GNOME_VFS_Time 1
-static const CORBA_TypeCode anon_subtypes_array26[] =
-   { (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct };
+static CORBA_TypeCode anon_subtypes_array26[] = {(CORBA_TypeCode)&TC_CORBA_unsigned_long_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_Time_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_alias,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_LONG,
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array26,
-   CORBA_OBJECT_NIL,
-   "Time",
-   "IDL:GNOME/VFS/Time:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_Time_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_alias,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_LONG,
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array26,
+CORBA_OBJECT_NIL,
+"Time",
+"IDL:GNOME/VFS/Time:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 == 'G') \
@@ -1092,29 +363,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Time_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_octet_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_octet)
 #define TC_DEF_TC_CORBA_sequence_CORBA_octet 1
-static const CORBA_TypeCode anon_subtypes_array29[] =
-   { (CORBA_TypeCode) & TC_CORBA_octet_struct };
+static CORBA_TypeCode anon_subtypes_array29[] = {(CORBA_TypeCode)&TC_CORBA_octet_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array29,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array29,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 == 'G') \
@@ -1135,29 +405,28 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_octet_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_octet)
 #define TC_DEF_TC_CORBA_sequence_CORBA_octet 1
-static const CORBA_TypeCode anon_subtypes_array36[] =
-   { (CORBA_TypeCode) & TC_CORBA_octet_struct };
+static CORBA_TypeCode anon_subtypes_array36[] = {(CORBA_TypeCode)&TC_CORBA_octet_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array36,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array36,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_buffer_0 == 'G') \
@@ -1178,29 +447,28 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct = {
 && (TC_IMPL_TC_GNOME_VFS_buffer_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_buffer)
 #define TC_DEF_TC_GNOME_VFS_buffer 1
-static const CORBA_TypeCode anon_subtypes_array39[] =
-   { (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_octet_struct };
+static CORBA_TypeCode anon_subtypes_array39[] = {(CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_buffer_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_alias,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array39,
-   CORBA_OBJECT_NIL,
-   "buffer",
-   "IDL:GNOME/VFS/buffer:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_buffer_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_alias,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array39,
+CORBA_OBJECT_NIL,
+"buffer",
+"IDL:GNOME/VFS/buffer:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_FileInfo_0 == 'G') \
@@ -1221,42 +489,29 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_buffer_struct = {
 && (TC_IMPL_TC_GNOME_VFS_FileInfo_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_FileInfo)
 #define TC_DEF_TC_GNOME_VFS_FileInfo 1
-static const char *anon_subnames_array41[] =
-   { "name", "valid_fields", "type", "permissions", "flags", "device",
-"inode", "link_count", "uid", "gid", "size", "block_count", "io_block_size", "atime", "mtime", "ctime",
-"symlink_name", "mime_type" };
-static const CORBA_TypeCode anon_subtypes_array42[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct,
-(CORBA_TypeCode) & TC_CORBA_unsigned_long_struct, (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct,
-(CORBA_TypeCode) & TC_CORBA_unsigned_long_struct, (CORBA_TypeCode) & TC_GNOME_VFS_FileSize_struct,
-(CORBA_TypeCode) & TC_CORBA_unsigned_long_struct, (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct,
-(CORBA_TypeCode) & TC_CORBA_unsigned_long_struct, (CORBA_TypeCode) & TC_GNOME_VFS_FileSize_struct,
-(CORBA_TypeCode) & TC_GNOME_VFS_FileSize_struct, (CORBA_TypeCode) & TC_CORBA_unsigned_long_struct,
-(CORBA_TypeCode) & TC_GNOME_VFS_Time_struct, (CORBA_TypeCode) & TC_GNOME_VFS_Time_struct,
-(CORBA_TypeCode) & TC_GNOME_VFS_Time_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array41[] = {"name", "valid_fields", "type", "permissions", "flags", "device", "inode", "link_count", "uid", "gid", "size", "block_count", "io_block_size", "atime", "mtime", "ctime", "symlink_name", "mime_type"};
+static CORBA_TypeCode anon_subtypes_array42[] = {(CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_long_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_long_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_long_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_long_struct, (CORBA_TypeCode)&TC_GNOME_VFS_FileSize_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_long_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_long_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_long_struct, (CORBA_TypeCode)&TC_GNOME_VFS_FileSize_struct, (CORBA_TypeCode)&TC_GNOME_VFS_FileSize_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_long_struct, (CORBA_TypeCode)&TC_GNOME_VFS_Time_struct, (CORBA_TypeCode)&TC_GNOME_VFS_Time_struct, (CORBA_TypeCode)&TC_GNOME_VFS_Time_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_FileInfo_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_LONG_LONG,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_POINTER, 1))),
-   0,
-   18,
-   (CORBA_TypeCode *) anon_subtypes_array42,
-   CORBA_OBJECT_NIL,
-   "FileInfo",
-   "IDL:GNOME/VFS/FileInfo:1.0",
-   (char **) anon_subnames_array41,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_FileInfo_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_LONG_LONG, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_POINTER, 1))),
+0,
+18
+,
+(CORBA_TypeCode *)anon_subtypes_array42,
+CORBA_OBJECT_NIL,
+"FileInfo",
+"IDL:GNOME/VFS/FileInfo:1.0",
+(char **)anon_subnames_array41,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_FileInfo_0 == 'G') \
@@ -1277,30 +532,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_FileInfo_struct = {
 && (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_FileInfo_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_FileInfo)
 #define TC_DEF_TC_CORBA_sequence_GNOME_VFS_FileInfo 1
-static const CORBA_TypeCode anon_subtypes_array45[] =
-   { (CORBA_TypeCode) & TC_GNOME_VFS_FileInfo_struct };
+static CORBA_TypeCode anon_subtypes_array45[] = {(CORBA_TypeCode)&TC_GNOME_VFS_FileInfo_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_FileInfo_struct
-   = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array45,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_FileInfo_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array45,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_FileInfo_0 == 'G') \
@@ -1321,30 +574,28 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_FileInfo_struct
 && (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_FileInfo_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_FileInfo)
 #define TC_DEF_TC_CORBA_sequence_GNOME_VFS_FileInfo 1
-static const CORBA_TypeCode anon_subtypes_array52[] =
-   { (CORBA_TypeCode) & TC_GNOME_VFS_FileInfo_struct };
+static CORBA_TypeCode anon_subtypes_array52[] = {(CORBA_TypeCode)&TC_GNOME_VFS_FileInfo_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_FileInfo_struct
-   = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array52,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_FileInfo_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array52,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_FileInfoList_0 == 'G') \
@@ -1365,29 +616,28 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_FileInfo_struct
 && (TC_IMPL_TC_GNOME_VFS_FileInfoList_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_FileInfoList)
 #define TC_DEF_TC_GNOME_VFS_FileInfoList 1
-static const CORBA_TypeCode anon_subtypes_array55[] =
-   { (CORBA_TypeCode) & TC_CORBA_sequence_GNOME_VFS_FileInfo_struct };
+static CORBA_TypeCode anon_subtypes_array55[] = {(CORBA_TypeCode)&TC_CORBA_sequence_GNOME_VFS_FileInfo_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_FileInfoList_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_alias,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array55,
-   CORBA_OBJECT_NIL,
-   "FileInfoList",
-   "IDL:GNOME/VFS/FileInfoList:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_FileInfoList_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_alias,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array55,
+CORBA_OBJECT_NIL,
+"FileInfoList",
+"IDL:GNOME/VFS/FileInfoList:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_Volume_0 == 'G') \
@@ -1408,40 +658,29 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_FileInfoList_struct = {
 && (TC_IMPL_TC_GNOME_VFS_Volume_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Volume)
 #define TC_DEF_TC_GNOME_VFS_Volume 1
-static const char *anon_subnames_array57[] =
-   { "id", "volume_type", "device_type", "drive", "activation_uri",
-"filesystem_type", "display_name", "icon", "is_user_visible", "is_read_only", "is_mounted", "device_path",
-"unix_device", "gconf_id", "hal_udi" };
-static const CORBA_TypeCode anon_subtypes_array58[] =
-   { (CORBA_TypeCode) & TC_CORBA_long_struct,
-(CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_long_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_boolean_struct, (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-(CORBA_TypeCode) & TC_CORBA_boolean_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array57[] = {"id", "volume_type", "device_type", "drive", "activation_uri", "filesystem_type", "display_name", "icon", "is_user_visible", "is_read_only", "is_mounted", "device_path", "unix_device", "gconf_id", "hal_udi"};
+static CORBA_TypeCode anon_subtypes_array58[] = {(CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_Volume_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_CHAR,
-       MAX(ORBIT_ALIGNOF_CORBA_POINTER, MAX(ORBIT_ALIGNOF_CORBA_LONG, 1))),
-   0,
-   15,
-   (CORBA_TypeCode *) anon_subtypes_array58,
-   CORBA_OBJECT_NIL,
-   "Volume",
-   "IDL:GNOME/VFS/Volume:1.0",
-   (char **) anon_subnames_array57,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_Volume_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_CHAR, MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, 1))),
+0,
+15
+,
+(CORBA_TypeCode *)anon_subtypes_array58,
+CORBA_OBJECT_NIL,
+"Volume",
+"IDL:GNOME/VFS/Volume:1.0",
+(char **)anon_subnames_array57,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Volume_0 == 'G') \
@@ -1462,29 +701,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Volume_struct = {
 && (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Volume_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_Volume)
 #define TC_DEF_TC_CORBA_sequence_GNOME_VFS_Volume 1
-static const CORBA_TypeCode anon_subtypes_array61[] =
-   { (CORBA_TypeCode) & TC_GNOME_VFS_Volume_struct };
+static CORBA_TypeCode anon_subtypes_array61[] = {(CORBA_TypeCode)&TC_GNOME_VFS_Volume_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Volume_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array61,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Volume_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array61,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Volume_0 == 'G') \
@@ -1505,29 +743,28 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Volume_struct = {
 && (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Volume_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_Volume)
 #define TC_DEF_TC_CORBA_sequence_GNOME_VFS_Volume 1
-static const CORBA_TypeCode anon_subtypes_array68[] =
-   { (CORBA_TypeCode) & TC_GNOME_VFS_Volume_struct };
+static CORBA_TypeCode anon_subtypes_array68[] = {(CORBA_TypeCode)&TC_GNOME_VFS_Volume_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Volume_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array68,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Volume_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array68,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_VolumeList_0 == 'G') \
@@ -1548,29 +785,28 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Volume_struct = {
 && (TC_IMPL_TC_GNOME_VFS_VolumeList_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_VolumeList)
 #define TC_DEF_TC_GNOME_VFS_VolumeList 1
-static const CORBA_TypeCode anon_subtypes_array71[] =
-   { (CORBA_TypeCode) & TC_CORBA_sequence_GNOME_VFS_Volume_struct };
+static CORBA_TypeCode anon_subtypes_array71[] = {(CORBA_TypeCode)&TC_CORBA_sequence_GNOME_VFS_Volume_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_VolumeList_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_alias,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array71,
-   CORBA_OBJECT_NIL,
-   "VolumeList",
-   "IDL:GNOME/VFS/VolumeList:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_VolumeList_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_alias,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array71,
+CORBA_OBJECT_NIL,
+"VolumeList",
+"IDL:GNOME/VFS/VolumeList:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_CORBA_long_0 == 'G') \
@@ -1591,29 +827,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_VolumeList_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_long_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_long)
 #define TC_DEF_TC_CORBA_sequence_CORBA_long 1
-static const CORBA_TypeCode anon_subtypes_array74[] =
-   { (CORBA_TypeCode) & TC_CORBA_long_struct };
+static CORBA_TypeCode anon_subtypes_array74[] = {(CORBA_TypeCode)&TC_CORBA_long_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_long_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array74,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_long_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array74,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_Drive_0 == 'G') \
@@ -1634,39 +869,29 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_long_struct = {
 && (TC_IMPL_TC_GNOME_VFS_Drive_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_Drive)
 #define TC_DEF_TC_GNOME_VFS_Drive 1
-static const char *anon_subnames_array76[] =
-   { "id", "device_type", "volumes", "device_path", "activation_uri",
-"display_name", "icon", "is_user_visible", "is_connected", "hal_udi" };
-static const CORBA_TypeCode anon_subtypes_array77[] =
-   { (CORBA_TypeCode) & TC_CORBA_long_struct,
-(CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_long_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_boolean_struct, (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array76[] = {"id", "device_type", "volumes", "device_path", "activation_uri", "display_name", "icon", "is_user_visible", "is_connected", "hal_udi"};
+static CORBA_TypeCode anon_subtypes_array77[] = {(CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_sequence_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_Drive_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_CHAR,
-       MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-	   MAX(ORBIT_ALIGNOF_CORBA_STRUCT,
-	       MAX(ORBIT_ALIGNOF_CORBA_LONG, 1)))),
-   0,
-   10,
-   (CORBA_TypeCode *) anon_subtypes_array77,
-   CORBA_OBJECT_NIL,
-   "Drive",
-   "IDL:GNOME/VFS/Drive:1.0",
-   (char **) anon_subnames_array76,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_Drive_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_CHAR, MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, MAX (ORBIT_ALIGNOF_CORBA_LONG, 1)))),
+0,
+10
+,
+(CORBA_TypeCode *)anon_subtypes_array77,
+CORBA_OBJECT_NIL,
+"Drive",
+"IDL:GNOME/VFS/Drive:1.0",
+(char **)anon_subnames_array76,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Drive_0 == 'G') \
@@ -1687,29 +912,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Drive_struct = {
 && (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Drive_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_Drive)
 #define TC_DEF_TC_CORBA_sequence_GNOME_VFS_Drive 1
-static const CORBA_TypeCode anon_subtypes_array80[] =
-   { (CORBA_TypeCode) & TC_GNOME_VFS_Drive_struct };
+static CORBA_TypeCode anon_subtypes_array80[] = {(CORBA_TypeCode)&TC_GNOME_VFS_Drive_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Drive_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array80,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Drive_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array80,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Drive_0 == 'G') \
@@ -1730,29 +954,28 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Drive_struct = {
 && (TC_IMPL_TC_CORBA_sequence_GNOME_VFS_Drive_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_VFS_Drive)
 #define TC_DEF_TC_CORBA_sequence_GNOME_VFS_Drive 1
-static const CORBA_TypeCode anon_subtypes_array87[] =
-   { (CORBA_TypeCode) & TC_GNOME_VFS_Drive_struct };
+static CORBA_TypeCode anon_subtypes_array87[] = {(CORBA_TypeCode)&TC_GNOME_VFS_Drive_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Drive_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array87,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Drive_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array87,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_DriveList_0 == 'G') \
@@ -1773,29 +996,28 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_GNOME_VFS_Drive_struct = {
 && (TC_IMPL_TC_GNOME_VFS_DriveList_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_DriveList)
 #define TC_DEF_TC_GNOME_VFS_DriveList 1
-static const CORBA_TypeCode anon_subtypes_array90[] =
-   { (CORBA_TypeCode) & TC_CORBA_sequence_GNOME_VFS_Drive_struct };
+static CORBA_TypeCode anon_subtypes_array90[] = {(CORBA_TypeCode)&TC_CORBA_sequence_GNOME_VFS_Drive_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_DriveList_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_alias,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array90,
-   CORBA_OBJECT_NIL,
-   "DriveList",
-   "IDL:GNOME/VFS/DriveList:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_DriveList_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_alias,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array90,
+CORBA_OBJECT_NIL,
+"DriveList",
+"IDL:GNOME/VFS/DriveList:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_CORBA_sequence_CORBA_string_0 == 'G') \
@@ -1816,29 +1038,28 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_DriveList_struct = {
 && (TC_IMPL_TC_CORBA_sequence_CORBA_string_15 == 'n') \
 ) && !defined(TC_DEF_TC_CORBA_sequence_CORBA_string)
 #define TC_DEF_TC_CORBA_sequence_CORBA_string 1
-static const CORBA_TypeCode anon_subtypes_array93[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+static CORBA_TypeCode anon_subtypes_array93[] = {(CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_sequence,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER,
-       MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array93,
-   CORBA_OBJECT_NIL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_sequence,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, 1))),
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array93,
+CORBA_OBJECT_NIL,
+NULL,
+NULL,
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackQuestionIn_0 == 'G') \
@@ -1859,33 +1080,29 @@ const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_string_struct = {
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackQuestionIn_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackQuestionIn)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackQuestionIn 1
-static const char *anon_subnames_array95[] =
-   { "primary_message", "secondary_message", "choices" };
-static const CORBA_TypeCode anon_subtypes_array96[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_sequence_CORBA_string_struct };
+static const char *anon_subnames_array95[] = {"primary_message", "secondary_message", "choices"};
+static CORBA_TypeCode anon_subtypes_array96[] = {(CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_sequence_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackQuestionIn_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_LONG,
-       MAX(ORBIT_ALIGNOF_CORBA_STRUCT, MAX(ORBIT_ALIGNOF_CORBA_POINTER, 1))),
-   0,
-   3,
-   (CORBA_TypeCode *) anon_subtypes_array96,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackQuestionIn",
-   "IDL:GNOME/VFS/ModuleCallbackQuestionIn:1.0",
-   (char **) anon_subnames_array95,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackQuestionIn_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_STRUCT, MAX (ORBIT_ALIGNOF_CORBA_POINTER, 1))),
+0,
+3
+,
+(CORBA_TypeCode *)anon_subtypes_array96,
+CORBA_OBJECT_NIL,
+"ModuleCallbackQuestionIn",
+"IDL:GNOME/VFS/ModuleCallbackQuestionIn:1.0",
+(char **)anon_subnames_array95,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackQuestionOut_0 == 'G') \
@@ -1906,30 +1123,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackQuestionOut_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackQuestionOut)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackQuestionOut 1
-static const char *anon_subnames_array98[] = { "answer" };
-static const CORBA_TypeCode anon_subtypes_array99[] =
-   { (CORBA_TypeCode) & TC_CORBA_short_struct };
+static const char *anon_subnames_array98[] = {"answer"};
+static CORBA_TypeCode anon_subtypes_array99[] = {(CORBA_TypeCode)&TC_CORBA_short_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackQuestionOut_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_SHORT,
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array99,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackQuestionOut",
-   "IDL:GNOME/VFS/ModuleCallbackQuestionOut:1.0",
-   (char **) anon_subnames_array98,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackQuestionOut_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_SHORT,
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array99,
+CORBA_OBJECT_NIL,
+"ModuleCallbackQuestionOut",
+"IDL:GNOME/VFS/ModuleCallbackQuestionOut:1.0",
+(char **)anon_subnames_array98,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackAuthenticationIn_0 == 'G') \
@@ -1950,34 +1166,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackAuthenticationIn_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackAuthenticationIn)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackAuthenticationIn 1
-static const char *anon_subnames_array101[] =
-   { "uri", "realm", "previous_attempt_failed", "auth_type" };
-static const CORBA_TypeCode anon_subtypes_array102[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-(CORBA_TypeCode) & TC_CORBA_unsigned_short_struct };
+static const char *anon_subnames_array101[] = {"uri", "realm", "previous_attempt_failed", "auth_type"};
+static CORBA_TypeCode anon_subtypes_array102[] = {(CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_unsigned_short_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackAuthenticationIn_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_SHORT,
-       MAX(ORBIT_ALIGNOF_CORBA_CHAR, MAX(ORBIT_ALIGNOF_CORBA_POINTER, 1))),
-   0,
-   4,
-   (CORBA_TypeCode *) anon_subtypes_array102,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackAuthenticationIn",
-   "IDL:GNOME/VFS/ModuleCallbackAuthenticationIn:1.0",
-   (char **) anon_subnames_array101,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackAuthenticationIn_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_SHORT, MAX (ORBIT_ALIGNOF_CORBA_CHAR, MAX (ORBIT_ALIGNOF_CORBA_POINTER, 1))),
+0,
+4
+,
+(CORBA_TypeCode *)anon_subtypes_array102,
+CORBA_OBJECT_NIL,
+"ModuleCallbackAuthenticationIn",
+"IDL:GNOME/VFS/ModuleCallbackAuthenticationIn:1.0",
+(char **)anon_subnames_array101,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackAuthenticationOut_0 == 'G') \
@@ -1998,32 +1209,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackAuthenticationOut_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackAuthenticationOut)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackAuthenticationOut 1
-static const char *anon_subnames_array104[] =
-   { "username", "no_username", "password" };
-static const CORBA_TypeCode anon_subtypes_array105[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_boolean_struct, (CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array104[] = {"username", "no_username", "password"};
+static CORBA_TypeCode anon_subtypes_array105[] = {(CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackAuthenticationOut_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_CHAR, MAX(ORBIT_ALIGNOF_CORBA_POINTER, 1)),
-   0,
-   3,
-   (CORBA_TypeCode *) anon_subtypes_array105,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackAuthenticationOut",
-   "IDL:GNOME/VFS/ModuleCallbackAuthenticationOut:1.0",
-   (char **) anon_subnames_array104,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackAuthenticationOut_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_CHAR, MAX (ORBIT_ALIGNOF_CORBA_POINTER, 1)),
+0,
+3
+,
+(CORBA_TypeCode *)anon_subtypes_array105,
+CORBA_OBJECT_NIL,
+"ModuleCallbackAuthenticationOut",
+"IDL:GNOME/VFS/ModuleCallbackAuthenticationOut:1.0",
+(char **)anon_subnames_array104,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackFullAuthenticationIn_0 == 'G') \
@@ -2044,37 +1252,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackFullAuthenticationIn_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackFullAuthenticationIn)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackFullAuthenticationIn 1
-static const char *anon_subnames_array107[] =
-   { "flags", "uri", "protocol", "server", "object", "port", "authtype",
-"username", "domain", "default_user", "default_domain" };
-static const CORBA_TypeCode anon_subtypes_array108[] =
-   { (CORBA_TypeCode) & TC_CORBA_long_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array107[] = {"flags", "uri", "protocol", "server", "object", "port", "authtype", "username", "domain", "default_user", "default_domain"};
+static CORBA_TypeCode anon_subtypes_array108[] = {(CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackFullAuthenticationIn_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER, MAX(ORBIT_ALIGNOF_CORBA_LONG, 1)),
-   0,
-   11,
-   (CORBA_TypeCode *) anon_subtypes_array108,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackFullAuthenticationIn",
-   "IDL:GNOME/VFS/ModuleCallbackFullAuthenticationIn:1.0",
-   (char **) anon_subnames_array107,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackFullAuthenticationIn_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_LONG, 1)),
+0,
+11
+,
+(CORBA_TypeCode *)anon_subtypes_array108,
+CORBA_OBJECT_NIL,
+"ModuleCallbackFullAuthenticationIn",
+"IDL:GNOME/VFS/ModuleCallbackFullAuthenticationIn:1.0",
+(char **)anon_subnames_array107,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackFullAuthenticationOut_0 == 'G') \
@@ -2095,35 +1295,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackFullAuthenticationOut_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackFullAuthenticationOut)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackFullAuthenticationOut 1
-static const char *anon_subnames_array110[] =
-   { "abort_auth", "username", "domain", "password", "save_password",
-"keyring" };
-static const CORBA_TypeCode anon_subtypes_array111[] =
-   { (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array110[] = {"abort_auth", "username", "domain", "password", "save_password", "keyring"};
+static CORBA_TypeCode anon_subtypes_array111[] = {(CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackFullAuthenticationOut_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER, MAX(ORBIT_ALIGNOF_CORBA_CHAR, 1)),
-   0,
-   6,
-   (CORBA_TypeCode *) anon_subtypes_array111,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackFullAuthenticationOut",
-   "IDL:GNOME/VFS/ModuleCallbackFullAuthenticationOut:1.0",
-   (char **) anon_subnames_array110,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackFullAuthenticationOut_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_CHAR, 1)),
+0,
+6
+,
+(CORBA_TypeCode *)anon_subtypes_array111,
+CORBA_OBJECT_NIL,
+"ModuleCallbackFullAuthenticationOut",
+"IDL:GNOME/VFS/ModuleCallbackFullAuthenticationOut:1.0",
+(char **)anon_subnames_array110,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackFillAuthenticationIn_0 == 'G') \
@@ -2144,36 +1338,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackFillAuthenticationIn_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackFillAuthenticationIn)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackFillAuthenticationIn 1
-static const char *anon_subnames_array113[] =
-   { "uri", "protocol", "server", "object", "port", "authtype", "username",
-"domain" };
-static const CORBA_TypeCode anon_subtypes_array114[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_long_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array113[] = {"uri", "protocol", "server", "object", "port", "authtype", "username", "domain"};
+static CORBA_TypeCode anon_subtypes_array114[] = {(CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackFillAuthenticationIn_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_POINTER, 1)),
-   0,
-   8,
-   (CORBA_TypeCode *) anon_subtypes_array114,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackFillAuthenticationIn",
-   "IDL:GNOME/VFS/ModuleCallbackFillAuthenticationIn:1.0",
-   (char **) anon_subnames_array113,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackFillAuthenticationIn_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_POINTER, 1)),
+0,
+8
+,
+(CORBA_TypeCode *)anon_subtypes_array114,
+CORBA_OBJECT_NIL,
+"ModuleCallbackFillAuthenticationIn",
+"IDL:GNOME/VFS/ModuleCallbackFillAuthenticationIn:1.0",
+(char **)anon_subnames_array113,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackFillAuthenticationOut_0 == 'G') \
@@ -2194,33 +1381,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackFillAuthenticationOut_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackFillAuthenticationOut)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackFillAuthenticationOut 1
-static const char *anon_subnames_array116[] =
-   { "valid", "username", "domain", "password" };
-static const CORBA_TypeCode anon_subtypes_array117[] =
-   { (CORBA_TypeCode) & TC_CORBA_boolean_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array116[] = {"valid", "username", "domain", "password"};
+static CORBA_TypeCode anon_subtypes_array117[] = {(CORBA_TypeCode)&TC_CORBA_boolean_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackFillAuthenticationOut_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_POINTER, MAX(ORBIT_ALIGNOF_CORBA_CHAR, 1)),
-   0,
-   4,
-   (CORBA_TypeCode *) anon_subtypes_array117,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackFillAuthenticationOut",
-   "IDL:GNOME/VFS/ModuleCallbackFillAuthenticationOut:1.0",
-   (char **) anon_subnames_array116,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackFillAuthenticationOut_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_POINTER, MAX (ORBIT_ALIGNOF_CORBA_CHAR, 1)),
+0,
+4
+,
+(CORBA_TypeCode *)anon_subtypes_array117,
+CORBA_OBJECT_NIL,
+"ModuleCallbackFillAuthenticationOut",
+"IDL:GNOME/VFS/ModuleCallbackFillAuthenticationOut:1.0",
+(char **)anon_subnames_array116,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackSaveAuthenticationIn_0 == 'G') \
@@ -2241,37 +1424,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackSaveAuthenticationIn_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackSaveAuthenticationIn)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackSaveAuthenticationIn 1
-static const char *anon_subnames_array119[] =
-   { "keyring", "uri", "protocol", "server", "object", "port", "authtype",
-"username", "domain", "password" };
-static const CORBA_TypeCode anon_subtypes_array120[] =
-   { (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_long_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct, (CORBA_TypeCode) & TC_CORBA_string_struct,
-(CORBA_TypeCode) & TC_CORBA_string_struct };
+static const char *anon_subnames_array119[] = {"keyring", "uri", "protocol", "server", "object", "port", "authtype", "username", "domain", "password"};
+static CORBA_TypeCode anon_subtypes_array120[] = {(CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_long_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct, (CORBA_TypeCode)&TC_CORBA_string_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackSaveAuthenticationIn_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   MAX(ORBIT_ALIGNOF_CORBA_LONG, MAX(ORBIT_ALIGNOF_CORBA_POINTER, 1)),
-   0,
-   10,
-   (CORBA_TypeCode *) anon_subtypes_array120,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackSaveAuthenticationIn",
-   "IDL:GNOME/VFS/ModuleCallbackSaveAuthenticationIn:1.0",
-   (char **) anon_subnames_array119,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackSaveAuthenticationIn_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+MAX (ORBIT_ALIGNOF_CORBA_LONG, MAX (ORBIT_ALIGNOF_CORBA_POINTER, 1)),
+0,
+10
+,
+(CORBA_TypeCode *)anon_subtypes_array120,
+CORBA_OBJECT_NIL,
+"ModuleCallbackSaveAuthenticationIn",
+"IDL:GNOME/VFS/ModuleCallbackSaveAuthenticationIn:1.0",
+(char **)anon_subnames_array119,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ModuleCallbackSaveAuthenticationOut_0 == 'G') \
@@ -2292,30 +1467,29 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_VFS_ModuleCallbackSaveAuthenticationOut_15 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_VFS_ModuleCallbackSaveAuthenticationOut)
 #define TC_DEF_TC_GNOME_VFS_ModuleCallbackSaveAuthenticationOut 1
-static const char *anon_subnames_array122[] = { "empty" };
-static const CORBA_TypeCode anon_subtypes_array123[] =
-   { (CORBA_TypeCode) & TC_CORBA_long_struct };
+static const char *anon_subnames_array122[] = {"empty"};
+static CORBA_TypeCode anon_subtypes_array123[] = {(CORBA_TypeCode)&TC_CORBA_long_struct};
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct
-   TC_GNOME_VFS_ModuleCallbackSaveAuthenticationOut_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_struct,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_LONG,
-   0,
-   1,
-   (CORBA_TypeCode *) anon_subtypes_array123,
-   CORBA_OBJECT_NIL,
-   "ModuleCallbackSaveAuthenticationOut",
-   "IDL:GNOME/VFS/ModuleCallbackSaveAuthenticationOut:1.0",
-   (char **) anon_subnames_array122,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ModuleCallbackSaveAuthenticationOut_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_struct,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_LONG,
+0,
+1
+,
+(CORBA_TypeCode *)anon_subtypes_array123,
+CORBA_OBJECT_NIL,
+"ModuleCallbackSaveAuthenticationOut",
+"IDL:GNOME/VFS/ModuleCallbackSaveAuthenticationOut:1.0",
+(char **)anon_subnames_array122,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_DaemonMonitor_0 == 'G') \
@@ -2339,23 +1513,24 @@ const struct CORBA_TypeCode_struct
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonMonitor_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_objref,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_POINTER,
-   0,
-   0,
-   NULL,
-   CORBA_OBJECT_NIL,
-   "DaemonMonitor",
-   "IDL:GNOME/VFS/DaemonMonitor:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonMonitor_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_objref,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_POINTER,
+0,
+0
+,
+NULL,
+CORBA_OBJECT_NIL,
+"DaemonMonitor",
+"IDL:GNOME/VFS/DaemonMonitor:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_Client_0 == 'G') \
@@ -2379,23 +1554,24 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonMonitor_struct = {
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_Client_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_objref,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_POINTER,
-   0,
-   0,
-   NULL,
-   CORBA_OBJECT_NIL,
-   "Client",
-   "IDL:GNOME/VFS/Client:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_Client_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_objref,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_POINTER,
+0,
+0
+,
+NULL,
+CORBA_OBJECT_NIL,
+"Client",
+"IDL:GNOME/VFS/Client:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_ClientCall_0 == 'G') \
@@ -2419,23 +1595,24 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Client_struct = {
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_ClientCall_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_objref,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_POINTER,
-   0,
-   0,
-   NULL,
-   CORBA_OBJECT_NIL,
-   "ClientCall",
-   "IDL:GNOME/VFS/ClientCall:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_ClientCall_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_objref,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_POINTER,
+0,
+0
+,
+NULL,
+CORBA_OBJECT_NIL,
+"ClientCall",
+"IDL:GNOME/VFS/ClientCall:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_DaemonHandle_0 == 'G') \
@@ -2459,23 +1636,24 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_ClientCall_struct = {
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonHandle_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_objref,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_POINTER,
-   0,
-   0,
-   NULL,
-   CORBA_OBJECT_NIL,
-   "DaemonHandle",
-   "IDL:GNOME/VFS/DaemonHandle:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonHandle_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_objref,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_POINTER,
+0,
+0
+,
+NULL,
+CORBA_OBJECT_NIL,
+"DaemonHandle",
+"IDL:GNOME/VFS/DaemonHandle:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_DaemonDirHandle_0 == 'G') \
@@ -2499,23 +1677,24 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonHandle_struct = {
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonDirHandle_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_objref,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_POINTER,
-   0,
-   0,
-   NULL,
-   CORBA_OBJECT_NIL,
-   "DaemonDirHandle",
-   "IDL:GNOME/VFS/DaemonDirHandle:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonDirHandle_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_objref,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_POINTER,
+0,
+0
+,
+NULL,
+CORBA_OBJECT_NIL,
+"DaemonDirHandle",
+"IDL:GNOME/VFS/DaemonDirHandle:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_Daemon_0 == 'G') \
@@ -2539,23 +1718,24 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_DaemonDirHandle_struct = {
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_Daemon_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_objref,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_POINTER,
-   0,
-   0,
-   NULL,
-   CORBA_OBJECT_NIL,
-   "Daemon",
-   "IDL:GNOME/VFS/Daemon:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_Daemon_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_objref,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_POINTER,
+0,
+0
+,
+NULL,
+CORBA_OBJECT_NIL,
+"Daemon",
+"IDL:GNOME/VFS/Daemon:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 #if ( (TC_IMPL_TC_GNOME_VFS_AsyncDaemon_0 == 'G') \
@@ -2579,23 +1759,24 @@ const struct CORBA_TypeCode_struct TC_GNOME_VFS_Daemon_struct = {
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_VFS_AsyncDaemon_struct = {
-   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-   CORBA_tk_objref,
-   0,
-   0,
-   ORBIT_ALIGNOF_CORBA_POINTER,
-   0,
-   0,
-   NULL,
-   CORBA_OBJECT_NIL,
-   "AsyncDaemon",
-   "IDL:GNOME/VFS/AsyncDaemon:1.0",
-   NULL,
-   NULL,
-   -1,
-   0,
-   0, 0
+struct CORBA_TypeCode_struct TC_GNOME_VFS_AsyncDaemon_struct = {
+{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+CORBA_tk_objref,
+0,
+0,
+ORBIT_ALIGNOF_CORBA_POINTER,
+0,
+0
+,
+NULL,
+CORBA_OBJECT_NIL,
+"AsyncDaemon",
+"IDL:GNOME/VFS/AsyncDaemon:1.0",
+NULL,
+NULL,
+-1,
+0,
+0, 0
 };
 #endif
 
@@ -2629,597 +1810,611 @@ CORBA_unsigned_long GNOME_VFS_AsyncDaemon__classid = 0;
 
 /* Interface type data */
 
+
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-ORBit_IMethod GNOME_VFS_DaemonMonitor__imethods[] = {
-   {
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_GNOME_VFS_Result, "Cancel", 6,
-    0 | ORBit_I_COMMON_FIXED_SIZE}
+ORBit_IMethod GNOME_VFS_DaemonMonitor__imethods [] = {
+	{
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Cancel", 6,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+};static CORBA_string GNOME_VFS_DaemonMonitor__base_itypes[] = {
+"IDL:Bonobo/Unknown:1.0",
+"IDL:omg.org/CORBA/Object:1.0"
 };
-static CORBA_string GNOME_VFS_DaemonMonitor__base_itypes[] = {
-   "IDL:Bonobo/Unknown:1.0",
-   "IDL:omg.org/CORBA/Object:1.0"
-};
-
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
 ORBit_IInterface GNOME_VFS_DaemonMonitor__iinterface = {
-   TC_GNOME_VFS_DaemonMonitor, {1, 1, GNOME_VFS_DaemonMonitor__imethods,
-				FALSE},
-   {2, 2, GNOME_VFS_DaemonMonitor__base_itypes, FALSE}
+TC_GNOME_VFS_DaemonMonitor,{1, 1, GNOME_VFS_DaemonMonitor__imethods, FALSE},
+{2, 2, GNOME_VFS_DaemonMonitor__base_itypes, FALSE}
 };
 
-static ORBit_IArg GNOME_VFS_Client_MonitorCallback__arginfo[] = {
-   {TC_GNOME_VFS_DaemonMonitor, ORBit_I_ARG_IN, "monitor"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "monitor_uri"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "info_uri"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "event_type"}
+static ORBit_IArg GNOME_VFS_Client_MonitorCallback__arginfo [] = {
+	{ TC_GNOME_VFS_DaemonMonitor,  ORBit_I_ARG_IN , "monitor" },
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "monitor_uri" },
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "info_uri" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "event_type" }
 };
-static ORBit_IArg GNOME_VFS_Client_VolumeMounted__arginfo[] = {
-   {TC_GNOME_VFS_Volume, ORBit_I_ARG_IN, "volume"}
+static ORBit_IArg GNOME_VFS_Client_VolumeMounted__arginfo [] = {
+	{ TC_GNOME_VFS_Volume,  ORBit_I_ARG_IN , "volume" }
 };
-static ORBit_IArg GNOME_VFS_Client_VolumePreUnmount__arginfo[] = {
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "id"}
+static ORBit_IArg GNOME_VFS_Client_VolumePreUnmount__arginfo [] = {
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "id" }
 };
-static ORBit_IArg GNOME_VFS_Client_VolumeUnmounted__arginfo[] = {
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "id"}
+static ORBit_IArg GNOME_VFS_Client_VolumeUnmounted__arginfo [] = {
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "id" }
 };
-static ORBit_IArg GNOME_VFS_Client_DriveConnected__arginfo[] = {
-   {TC_GNOME_VFS_Drive, ORBit_I_ARG_IN, "drive"}
+static ORBit_IArg GNOME_VFS_Client_DriveConnected__arginfo [] = {
+	{ TC_GNOME_VFS_Drive,  ORBit_I_ARG_IN , "drive" }
 };
-static ORBit_IArg GNOME_VFS_Client_DriveDisconnected__arginfo[] = {
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "id"}
+static ORBit_IArg GNOME_VFS_Client_DriveDisconnected__arginfo [] = {
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "id" }
 };
 
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-ORBit_IMethod GNOME_VFS_Client__imethods[] = {
-   {
-    {4, 4, GNOME_VFS_Client_MonitorCallback__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_void, "MonitorCallback", 15,
-    0 | ORBit_I_METHOD_1_WAY}
-   , {
-      {1, 1, GNOME_VFS_Client_VolumeMounted__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "VolumeMounted", 13,
-      0 | ORBit_I_METHOD_1_WAY}
-   , {
-      {1, 1, GNOME_VFS_Client_VolumePreUnmount__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "VolumePreUnmount", 16,
-      0 | ORBit_I_METHOD_1_WAY}
-   , {
-      {1, 1, GNOME_VFS_Client_VolumeUnmounted__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "VolumeUnmounted", 15,
-      0 | ORBit_I_METHOD_1_WAY}
-   , {
-      {1, 1, GNOME_VFS_Client_DriveConnected__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "DriveConnected", 14,
-      0 | ORBit_I_METHOD_1_WAY}
-   , {
-      {1, 1, GNOME_VFS_Client_DriveDisconnected__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "DriveDisconnected", 17,
-      0 | ORBit_I_METHOD_1_WAY}
+ORBit_IMethod GNOME_VFS_Client__imethods [] = {
+	{
+		{ 4, 4, GNOME_VFS_Client_MonitorCallback__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "MonitorCallback", 15,
+		0 | ORBit_I_METHOD_1_WAY
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Client_VolumeMounted__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "VolumeMounted", 13,
+		0 | ORBit_I_METHOD_1_WAY
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Client_VolumePreUnmount__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "VolumePreUnmount", 16,
+		0 | ORBit_I_METHOD_1_WAY
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Client_VolumeUnmounted__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "VolumeUnmounted", 15,
+		0 | ORBit_I_METHOD_1_WAY
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Client_DriveConnected__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "DriveConnected", 14,
+		0 | ORBit_I_METHOD_1_WAY
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Client_DriveDisconnected__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "DriveDisconnected", 17,
+		0 | ORBit_I_METHOD_1_WAY
+}
+};static CORBA_string GNOME_VFS_Client__base_itypes[] = {
+"IDL:Bonobo/Unknown:1.0",
+"IDL:omg.org/CORBA/Object:1.0"
 };
-static CORBA_string GNOME_VFS_Client__base_itypes[] = {
-   "IDL:Bonobo/Unknown:1.0",
-   "IDL:omg.org/CORBA/Object:1.0"
-};
-
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
 ORBit_IInterface GNOME_VFS_Client__iinterface = {
-   TC_GNOME_VFS_Client, {6, 6, GNOME_VFS_Client__imethods, FALSE},
-   {2, 2, GNOME_VFS_Client__base_itypes, FALSE}
+TC_GNOME_VFS_Client,{6, 6, GNOME_VFS_Client__imethods, FALSE},
+{2, 2, GNOME_VFS_Client__base_itypes, FALSE}
 };
 
-static ORBit_IArg GNOME_VFS_ClientCall_ModuleCallbackInvoke__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "name"},
-   {TC_CORBA_any, ORBit_I_ARG_IN, "module_in"},
-   {TC_CORBA_any, ORBit_I_ARG_OUT, "module_out"}
+static ORBit_IArg GNOME_VFS_ClientCall_ModuleCallbackInvoke__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "name" },
+	{ TC_CORBA_any,  ORBit_I_ARG_IN , "module_in" },
+	{ TC_CORBA_any,  ORBit_I_ARG_OUT , "module_out" }
 };
 
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-ORBit_IMethod GNOME_VFS_ClientCall__imethods[] = {
-   {
-    {3, 3, GNOME_VFS_ClientCall_ModuleCallbackInvoke__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_CORBA_boolean, "ModuleCallbackInvoke", 20,
-    0 | ORBit_I_COMMON_FIXED_SIZE}
+ORBit_IMethod GNOME_VFS_ClientCall__imethods [] = {
+	{
+		{ 3, 3, GNOME_VFS_ClientCall_ModuleCallbackInvoke__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_CORBA_boolean, "ModuleCallbackInvoke", 20,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+};static CORBA_string GNOME_VFS_ClientCall__base_itypes[] = {
+"IDL:Bonobo/Unknown:1.0",
+"IDL:omg.org/CORBA/Object:1.0"
 };
-static CORBA_string GNOME_VFS_ClientCall__base_itypes[] = {
-   "IDL:Bonobo/Unknown:1.0",
-   "IDL:omg.org/CORBA/Object:1.0"
-};
-
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
 ORBit_IInterface GNOME_VFS_ClientCall__iinterface = {
-   TC_GNOME_VFS_ClientCall, {1, 1, GNOME_VFS_ClientCall__imethods, FALSE},
-   {2, 2, GNOME_VFS_ClientCall__base_itypes, FALSE}
+TC_GNOME_VFS_ClientCall,{1, 1, GNOME_VFS_ClientCall__imethods, FALSE},
+{2, 2, GNOME_VFS_ClientCall__base_itypes, FALSE}
 };
 
-static ORBit_IArg GNOME_VFS_DaemonHandle_Close__arginfo[] = {
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonHandle_Close__arginfo [] = {
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_DaemonHandle_Read__arginfo[] = {
-   {TC_GNOME_VFS_buffer, ORBit_I_ARG_OUT, "buf"},
-   {TC_GNOME_VFS_FileSize, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "num_bytes"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonHandle_Read__arginfo [] = {
+	{ TC_GNOME_VFS_buffer,  ORBit_I_ARG_OUT , "buf" },
+	{ TC_GNOME_VFS_FileSize,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "num_bytes" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_DaemonHandle_Write__arginfo[] = {
-   {TC_GNOME_VFS_buffer, ORBit_I_ARG_IN, "buf"},
-   {TC_GNOME_VFS_FileSize, ORBit_I_ARG_OUT | ORBit_I_COMMON_FIXED_SIZE,
-    "bytes_written_return"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonHandle_Write__arginfo [] = {
+	{ TC_GNOME_VFS_buffer,  ORBit_I_ARG_IN , "buf" },
+	{ TC_GNOME_VFS_FileSize,  ORBit_I_ARG_OUT | ORBit_I_COMMON_FIXED_SIZE, "bytes_written_return" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_DaemonHandle_Seek__arginfo[] = {
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "whence"},
-   {TC_GNOME_VFS_FileOffset, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "offset"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonHandle_Seek__arginfo [] = {
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "whence" },
+	{ TC_GNOME_VFS_FileOffset,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "offset" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_DaemonHandle_Tell__arginfo[] = {
-   {TC_GNOME_VFS_FileOffset, ORBit_I_ARG_OUT | ORBit_I_COMMON_FIXED_SIZE,
-    "offset"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonHandle_Tell__arginfo [] = {
+	{ TC_GNOME_VFS_FileOffset,  ORBit_I_ARG_OUT | ORBit_I_COMMON_FIXED_SIZE, "offset" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_DaemonHandle_GetFileInfo__arginfo[] = {
-   {TC_GNOME_VFS_FileInfo, ORBit_I_ARG_OUT, "file_info"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "options"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonHandle_GetFileInfo__arginfo [] = {
+	{ TC_GNOME_VFS_FileInfo,  ORBit_I_ARG_OUT , "file_info" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "options" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_DaemonHandle_Truncate__arginfo[] = {
-   {TC_GNOME_VFS_FileSize, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "length"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonHandle_Truncate__arginfo [] = {
+	{ TC_GNOME_VFS_FileSize,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "length" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
 
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-ORBit_IMethod GNOME_VFS_DaemonHandle__imethods[] = {
-   {
-    {2, 2, GNOME_VFS_DaemonHandle_Close__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_GNOME_VFS_Result, "Close", 5,
-    0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {4, 4, GNOME_VFS_DaemonHandle_Read__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Read", 4,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {4, 4, GNOME_VFS_DaemonHandle_Write__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Write", 5,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {4, 4, GNOME_VFS_DaemonHandle_Seek__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Seek", 4,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {3, 3, GNOME_VFS_DaemonHandle_Tell__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Tell", 4,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {4, 4, GNOME_VFS_DaemonHandle_GetFileInfo__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "GetFileInfo", 11,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {3, 3, GNOME_VFS_DaemonHandle_Truncate__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Truncate", 8,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
+ORBit_IMethod GNOME_VFS_DaemonHandle__imethods [] = {
+	{
+		{ 2, 2, GNOME_VFS_DaemonHandle_Close__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Close", 5,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 4, 4, GNOME_VFS_DaemonHandle_Read__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Read", 4,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 4, 4, GNOME_VFS_DaemonHandle_Write__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Write", 5,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 4, 4, GNOME_VFS_DaemonHandle_Seek__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Seek", 4,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 3, 3, GNOME_VFS_DaemonHandle_Tell__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Tell", 4,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 4, 4, GNOME_VFS_DaemonHandle_GetFileInfo__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "GetFileInfo", 11,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 3, 3, GNOME_VFS_DaemonHandle_Truncate__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Truncate", 8,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+};static CORBA_string GNOME_VFS_DaemonHandle__base_itypes[] = {
+"IDL:Bonobo/Unknown:1.0",
+"IDL:omg.org/CORBA/Object:1.0"
 };
-static CORBA_string GNOME_VFS_DaemonHandle__base_itypes[] = {
-   "IDL:Bonobo/Unknown:1.0",
-   "IDL:omg.org/CORBA/Object:1.0"
-};
-
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
 ORBit_IInterface GNOME_VFS_DaemonHandle__iinterface = {
-   TC_GNOME_VFS_DaemonHandle, {7, 7, GNOME_VFS_DaemonHandle__imethods, FALSE},
-   {2, 2, GNOME_VFS_DaemonHandle__base_itypes, FALSE}
+TC_GNOME_VFS_DaemonHandle,{7, 7, GNOME_VFS_DaemonHandle__imethods, FALSE},
+{2, 2, GNOME_VFS_DaemonHandle__base_itypes, FALSE}
 };
 
-static ORBit_IArg GNOME_VFS_DaemonDirHandle_Close__arginfo[] = {
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonDirHandle_Close__arginfo [] = {
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_DaemonDirHandle_Read__arginfo[] = {
-   {TC_GNOME_VFS_FileInfoList, ORBit_I_ARG_OUT, "file_info_list"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_DaemonDirHandle_Read__arginfo [] = {
+	{ TC_GNOME_VFS_FileInfoList,  ORBit_I_ARG_OUT , "file_info_list" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
 
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-ORBit_IMethod GNOME_VFS_DaemonDirHandle__imethods[] = {
-   {
-    {2, 2, GNOME_VFS_DaemonDirHandle_Close__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_GNOME_VFS_Result, "Close", 5,
-    0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {3, 3, GNOME_VFS_DaemonDirHandle_Read__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Read", 4,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
+ORBit_IMethod GNOME_VFS_DaemonDirHandle__imethods [] = {
+	{
+		{ 2, 2, GNOME_VFS_DaemonDirHandle_Close__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Close", 5,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 3, 3, GNOME_VFS_DaemonDirHandle_Read__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Read", 4,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+};static CORBA_string GNOME_VFS_DaemonDirHandle__base_itypes[] = {
+"IDL:Bonobo/Unknown:1.0",
+"IDL:omg.org/CORBA/Object:1.0"
 };
-static CORBA_string GNOME_VFS_DaemonDirHandle__base_itypes[] = {
-   "IDL:Bonobo/Unknown:1.0",
-   "IDL:omg.org/CORBA/Object:1.0"
-};
-
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
 ORBit_IInterface GNOME_VFS_DaemonDirHandle__iinterface = {
-   TC_GNOME_VFS_DaemonDirHandle, {2, 2, GNOME_VFS_DaemonDirHandle__imethods,
-				  FALSE},
-   {2, 2, GNOME_VFS_DaemonDirHandle__base_itypes, FALSE}
+TC_GNOME_VFS_DaemonDirHandle,{2, 2, GNOME_VFS_DaemonDirHandle__imethods, FALSE},
+{2, 2, GNOME_VFS_DaemonDirHandle__base_itypes, FALSE}
 };
 
-static ORBit_IArg GNOME_VFS_Daemon_registerClient__arginfo[] = {
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_Daemon_registerClient__arginfo [] = {
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_Daemon_deRegisterClient__arginfo[] = {
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_Daemon_deRegisterClient__arginfo [] = {
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_Daemon_registerVolumeMonitor__arginfo[] = {
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_Daemon_registerVolumeMonitor__arginfo [] = {
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_Daemon_deRegisterVolumeMonitor__arginfo[] = {
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_Daemon_deRegisterVolumeMonitor__arginfo [] = {
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_Daemon_getVolumes__arginfo[] = {
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_Daemon_getVolumes__arginfo [] = {
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_Daemon_getDrives__arginfo[] = {
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_Daemon_getDrives__arginfo [] = {
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_Daemon_emitPreUnmountVolume__arginfo[] = {
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "volume_id"}
+static ORBit_IArg GNOME_VFS_Daemon_emitPreUnmountVolume__arginfo [] = {
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "volume_id" }
 };
-static ORBit_IArg GNOME_VFS_Daemon_forceProbe__arginfo[] = {
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_Daemon_forceProbe__arginfo [] = {
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
 
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-ORBit_IMethod GNOME_VFS_Daemon__imethods[] = {
-   {
-    {1, 1, GNOME_VFS_Daemon_registerClient__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_void, "registerClient", 14,
-    0}
-   , {
-      {1, 1, GNOME_VFS_Daemon_deRegisterClient__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "deRegisterClient", 16,
-      0}
-   , {
-      {1, 1, GNOME_VFS_Daemon_registerVolumeMonitor__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "registerVolumeMonitor", 21,
-      0}
-   , {
-      {1, 1, GNOME_VFS_Daemon_deRegisterVolumeMonitor__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "deRegisterVolumeMonitor", 23,
-      0}
-   , {
-      {1, 1, GNOME_VFS_Daemon_getVolumes__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_VolumeList, "getVolumes", 10,
-      0}
-   , {
-      {1, 1, GNOME_VFS_Daemon_getDrives__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_DriveList, "getDrives", 9,
-      0}
-   , {
-      {2, 2, GNOME_VFS_Daemon_emitPreUnmountVolume__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "emitPreUnmountVolume", 20,
-      0}
-   , {
-      {1, 1, GNOME_VFS_Daemon_forceProbe__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_void, "forceProbe", 10,
-      0}
+ORBit_IMethod GNOME_VFS_Daemon__imethods [] = {
+	{
+		{ 1, 1, GNOME_VFS_Daemon_registerClient__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "registerClient", 14,
+		0
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Daemon_deRegisterClient__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "deRegisterClient", 16,
+		0
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Daemon_registerVolumeMonitor__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "registerVolumeMonitor", 21,
+		0
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Daemon_deRegisterVolumeMonitor__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "deRegisterVolumeMonitor", 23,
+		0
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Daemon_getVolumes__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_VolumeList, "getVolumes", 10,
+		0
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Daemon_getDrives__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_DriveList, "getDrives", 9,
+		0
+}
+, 	{
+		{ 2, 2, GNOME_VFS_Daemon_emitPreUnmountVolume__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "emitPreUnmountVolume", 20,
+		0
+}
+, 	{
+		{ 1, 1, GNOME_VFS_Daemon_forceProbe__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "forceProbe", 10,
+		0
+}
+};static CORBA_string GNOME_VFS_Daemon__base_itypes[] = {
+"IDL:Bonobo/Unknown:1.0",
+"IDL:omg.org/CORBA/Object:1.0"
 };
-static CORBA_string GNOME_VFS_Daemon__base_itypes[] = {
-   "IDL:Bonobo/Unknown:1.0",
-   "IDL:omg.org/CORBA/Object:1.0"
-};
-
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
 ORBit_IInterface GNOME_VFS_Daemon__iinterface = {
-   TC_GNOME_VFS_Daemon, {8, 8, GNOME_VFS_Daemon__imethods, FALSE},
-   {2, 2, GNOME_VFS_Daemon__base_itypes, FALSE}
+TC_GNOME_VFS_Daemon,{8, 8, GNOME_VFS_Daemon__imethods, FALSE},
+{2, 2, GNOME_VFS_Daemon__base_itypes, FALSE}
 };
 
-static ORBit_IArg GNOME_VFS_AsyncDaemon_Cancel__arginfo[] = {
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_Cancel__arginfo [] = {
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_Open__arginfo[] = {
-   {TC_GNOME_VFS_DaemonHandle, ORBit_I_ARG_OUT, "handle_return"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "open_mode"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_Open__arginfo [] = {
+	{ TC_GNOME_VFS_DaemonHandle,  ORBit_I_ARG_OUT , "handle_return" },
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "open_mode" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_Create__arginfo[] = {
-   {TC_GNOME_VFS_DaemonHandle, ORBit_I_ARG_OUT, "handle_return"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "open_mode"},
-   {TC_CORBA_boolean, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "exclusive"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "perm"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_Create__arginfo [] = {
+	{ TC_GNOME_VFS_DaemonHandle,  ORBit_I_ARG_OUT , "handle_return" },
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "open_mode" },
+	{ TC_CORBA_boolean,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "exclusive" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "perm" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_OpenDirectory__arginfo[] = {
-   {TC_GNOME_VFS_DaemonDirHandle, ORBit_I_ARG_OUT, "handle_return"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "options"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_OpenDirectory__arginfo [] = {
+	{ TC_GNOME_VFS_DaemonDirHandle,  ORBit_I_ARG_OUT , "handle_return" },
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "options" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_GetFileInfo__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_GNOME_VFS_FileInfo, ORBit_I_ARG_OUT, "file_info"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "options"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_GetFileInfo__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_GNOME_VFS_FileInfo,  ORBit_I_ARG_OUT , "file_info" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "options" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_Truncate__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_GNOME_VFS_FileSize, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "length"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_Truncate__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_GNOME_VFS_FileSize,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "length" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_IsLocal__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_IsLocal__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_FindDirectory__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "find_near_uri"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "kind"},
-   {TC_CORBA_string, ORBit_I_ARG_OUT, "result_uri"},
-   {TC_CORBA_boolean, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "create_if_needed"},
-   {TC_CORBA_boolean, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "find_if_needed"},
-   {TC_CORBA_unsigned_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "perm"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_FindDirectory__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "find_near_uri" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "kind" },
+	{ TC_CORBA_string,  ORBit_I_ARG_OUT , "result_uri" },
+	{ TC_CORBA_boolean,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "create_if_needed" },
+	{ TC_CORBA_boolean,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "find_if_needed" },
+	{ TC_CORBA_unsigned_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "perm" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_MakeDirectory__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_CORBA_unsigned_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "perm"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_MakeDirectory__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_CORBA_unsigned_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "perm" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_RemoveDirectory__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_RemoveDirectory__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_Move__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "old_uri"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "new_uri"},
-   {TC_CORBA_boolean, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "force_replace"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_Move__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "old_uri" },
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "new_uri" },
+	{ TC_CORBA_boolean,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "force_replace" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_Unlink__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_Unlink__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_CheckSameFS__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri_a"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri_b"},
-   {TC_CORBA_boolean, ORBit_I_ARG_OUT | ORBit_I_COMMON_FIXED_SIZE, "same_fs"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_CheckSameFS__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri_a" },
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri_b" },
+	{ TC_CORBA_boolean,  ORBit_I_ARG_OUT | ORBit_I_COMMON_FIXED_SIZE, "same_fs" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_SetFileInfo__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_GNOME_VFS_FileInfo, ORBit_I_ARG_IN, "info"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "mask"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_SetFileInfo__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_GNOME_VFS_FileInfo,  ORBit_I_ARG_IN , "info" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "mask" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_CreateSymbolicLink__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_CORBA_string, ORBit_I_ARG_IN, "target_reference"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_CreateSymbolicLink__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "target_reference" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
-static ORBit_IArg GNOME_VFS_AsyncDaemon_MonitorAdd__arginfo[] = {
-   {TC_CORBA_string, ORBit_I_ARG_IN, "uri"},
-   {TC_CORBA_long, ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE,
-    "monitor_type"},
-   {TC_GNOME_VFS_DaemonMonitor, ORBit_I_ARG_OUT, "monitor"},
-   {TC_GNOME_VFS_ClientCall, ORBit_I_ARG_IN, "client_call"},
-   {TC_GNOME_VFS_Client, ORBit_I_ARG_IN, "client"}
+static ORBit_IArg GNOME_VFS_AsyncDaemon_MonitorAdd__arginfo [] = {
+	{ TC_CORBA_string,  ORBit_I_ARG_IN , "uri" },
+	{ TC_CORBA_long,  ORBit_I_ARG_IN | ORBit_I_COMMON_FIXED_SIZE, "monitor_type" },
+	{ TC_GNOME_VFS_DaemonMonitor,  ORBit_I_ARG_OUT , "monitor" },
+	{ TC_GNOME_VFS_ClientCall,  ORBit_I_ARG_IN , "client_call" },
+	{ TC_GNOME_VFS_Client,  ORBit_I_ARG_IN , "client" }
 };
 
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
-ORBit_IMethod GNOME_VFS_AsyncDaemon__imethods[] = {
-   {
-    {1, 1, GNOME_VFS_AsyncDaemon_Cancel__arginfo, FALSE},
-    {0, 0, NULL, FALSE},
-    {0, 0, NULL, FALSE},
-    TC_void, "Cancel", 6,
-    0}
-   , {
-      {5, 5, GNOME_VFS_AsyncDaemon_Open__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Open", 4,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {7, 7, GNOME_VFS_AsyncDaemon_Create__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Create", 6,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {5, 5, GNOME_VFS_AsyncDaemon_OpenDirectory__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "OpenDirectory", 13,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {5, 5, GNOME_VFS_AsyncDaemon_GetFileInfo__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "GetFileInfo", 11,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {4, 4, GNOME_VFS_AsyncDaemon_Truncate__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Truncate", 8,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {3, 3, GNOME_VFS_AsyncDaemon_IsLocal__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_CORBA_boolean, "IsLocal", 7,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {8, 8, GNOME_VFS_AsyncDaemon_FindDirectory__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "FindDirectory", 13,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {4, 4, GNOME_VFS_AsyncDaemon_MakeDirectory__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "MakeDirectory", 13,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {3, 3, GNOME_VFS_AsyncDaemon_RemoveDirectory__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "RemoveDirectory", 15,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {5, 5, GNOME_VFS_AsyncDaemon_Move__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Move", 4,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {3, 3, GNOME_VFS_AsyncDaemon_Unlink__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "Unlink", 6,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {5, 5, GNOME_VFS_AsyncDaemon_CheckSameFS__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "CheckSameFS", 11,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {5, 5, GNOME_VFS_AsyncDaemon_SetFileInfo__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "SetFileInfo", 11,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {4, 4, GNOME_VFS_AsyncDaemon_CreateSymbolicLink__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "CreateSymbolicLink", 18,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
-   , {
-      {5, 5, GNOME_VFS_AsyncDaemon_MonitorAdd__arginfo, FALSE},
-      {0, 0, NULL, FALSE},
-      {0, 0, NULL, FALSE},
-      TC_GNOME_VFS_Result, "MonitorAdd", 10,
-      0 | ORBit_I_COMMON_FIXED_SIZE}
+ORBit_IMethod GNOME_VFS_AsyncDaemon__imethods [] = {
+	{
+		{ 1, 1, GNOME_VFS_AsyncDaemon_Cancel__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+TC_void, "Cancel", 6,
+		0
+}
+, 	{
+		{ 5, 5, GNOME_VFS_AsyncDaemon_Open__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Open", 4,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 7, 7, GNOME_VFS_AsyncDaemon_Create__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Create", 6,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 5, 5, GNOME_VFS_AsyncDaemon_OpenDirectory__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "OpenDirectory", 13,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 5, 5, GNOME_VFS_AsyncDaemon_GetFileInfo__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "GetFileInfo", 11,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 4, 4, GNOME_VFS_AsyncDaemon_Truncate__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Truncate", 8,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 3, 3, GNOME_VFS_AsyncDaemon_IsLocal__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_CORBA_boolean, "IsLocal", 7,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 8, 8, GNOME_VFS_AsyncDaemon_FindDirectory__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "FindDirectory", 13,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 4, 4, GNOME_VFS_AsyncDaemon_MakeDirectory__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "MakeDirectory", 13,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 3, 3, GNOME_VFS_AsyncDaemon_RemoveDirectory__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "RemoveDirectory", 15,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 5, 5, GNOME_VFS_AsyncDaemon_Move__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Move", 4,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 3, 3, GNOME_VFS_AsyncDaemon_Unlink__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "Unlink", 6,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 5, 5, GNOME_VFS_AsyncDaemon_CheckSameFS__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "CheckSameFS", 11,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 5, 5, GNOME_VFS_AsyncDaemon_SetFileInfo__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "SetFileInfo", 11,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 4, 4, GNOME_VFS_AsyncDaemon_CreateSymbolicLink__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "CreateSymbolicLink", 18,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+, 	{
+		{ 5, 5, GNOME_VFS_AsyncDaemon_MonitorAdd__arginfo, FALSE },
+		{ 0, 0, NULL, FALSE },
+		{ 0, 0, NULL, FALSE },
+		TC_GNOME_VFS_Result, "MonitorAdd", 10,
+		0| ORBit_I_COMMON_FIXED_SIZE
+}
+};static CORBA_string GNOME_VFS_AsyncDaemon__base_itypes[] = {
+"IDL:Bonobo/Unknown:1.0",
+"IDL:omg.org/CORBA/Object:1.0"
 };
-static CORBA_string GNOME_VFS_AsyncDaemon__base_itypes[] = {
-   "IDL:Bonobo/Unknown:1.0",
-   "IDL:omg.org/CORBA/Object:1.0"
-};
-
 #ifdef ORBIT_IDL_C_IMODULE_GNOME_VFS_Daemon
 static
 #endif
 ORBit_IInterface GNOME_VFS_AsyncDaemon__iinterface = {
-   TC_GNOME_VFS_AsyncDaemon, {16, 16, GNOME_VFS_AsyncDaemon__imethods, FALSE},
-   {2, 2, GNOME_VFS_AsyncDaemon__base_itypes, FALSE}
+TC_GNOME_VFS_AsyncDaemon,{16, 16, GNOME_VFS_AsyncDaemon__imethods, FALSE},
+{2, 2, GNOME_VFS_AsyncDaemon__base_itypes, FALSE}
 };
+
