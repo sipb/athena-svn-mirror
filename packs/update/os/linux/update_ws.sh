@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.12 2000-05-17 20:24:12 ghudson Exp $
+# $Id: update_ws.sh,v 1.13 2000-07-09 05:31:49 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -210,6 +210,16 @@ if [ ! -r "$oldlist" ]; then
 	errorout "Cannot read old release list $oldlist."
 fi
 
+if [ true = "$PUBLIC" -a -d /var/server ]; then
+	rm -rf /var/server
+fi
+if [ -d /var/server ]; then
+	MACH=$MACHINE VERS=$newvers mkserv updatetest
+	if [ $? -ne 0 ]; then
+		errorout "Not all mkserv services available for $newvers."
+	fi
+fi
+
 # If we're doing a dry run, here's where we get off the train.
 if [ true = "$dryrun" ]; then
 	echo "Package changes for update from $oldvers to $newvers:"
@@ -230,11 +240,14 @@ failupdate() {
 	echo "Beginning update from $oldvers to $newvers at `date`."
 	echo "Athena Workstation ($hosttype) Version Update `date`" >> \
 		/etc/athena/version
-	rpmupdate $publicflag "$oldlist" "$newlist" || failupdate
+	rpmupdate -h $publicflag "$oldlist" "$newlist" || failupdate
 	cp "$newlist" "$oldlist" || failupdate
 	kudzu -q
 	echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
 		/etc/athena/version
+	if [ -d /var/server ]; then
+		mkserv -v update < /dev/null
+	fi
 	echo "Ending update from $oldvers to $newvers at `date`."
 } 2>&1 | tee /var/athena/update.log
 
