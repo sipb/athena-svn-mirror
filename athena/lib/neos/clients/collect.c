@@ -3,7 +3,7 @@
  *
  * $Author: brlewis $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.2 1990-09-25 15:18:40 brlewis Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.3 1990-10-02 10:40:26 brlewis Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.2 1990-09-25 15:18:40 brlewis Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/collect.c,v 1.3 1990-10-02 10:40:26 brlewis Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -112,7 +112,7 @@ do_dump(fxp, criterion, verbose, listonly, preserve)
   if (count == 0) {
     if (verbose) {
       if (criterion->author)
-	printf("%s:\n", criterion->author);
+	printf("%s:\n", full_name(criterion->author));
       printf("No papers turned in\n");
     }
     return(0L);
