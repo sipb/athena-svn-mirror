@@ -258,7 +258,6 @@ sgi)
 	;;
 esac
 
-echo "/.cshrc"						>> "$CONFCHG"
 echo "/etc/athena/athinfo.defs"				>> "$CONFCHG"
 echo "/etc/athena/attach.conf"				>> "$CONFCHG"
 echo "/etc/athena/inetd.conf"				>> "$CONFCHG"
