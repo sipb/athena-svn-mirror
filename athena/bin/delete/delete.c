@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.13 1989-01-27 02:55:37 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.14 1989-01-27 08:15:43 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -183,7 +183,7 @@ int recursed;
      }
      
      /* is the file a directory? */
-     if (stat_buf.st_mode & S_IFDIR) {
+     if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 	  /* is the file a dot file? */
 	  if (is_dotfile(filename)) {
 	       if (! force)
@@ -352,7 +352,8 @@ int no_delete_mask;
 	  if (! yes())
 	       return(NO_DELETE_MASK);
      }
-     else if ((! force) && access(filename, W_OK)) {
+     else if ((! force) && ((stat_buf.st_mode & S_IFMT) != S_IFLNK)
+	      && access(filename, W_OK)) {
 	  printf("%s: override protection %o for %s? ", whoami,
 		 stat_buf.st_mode & 0777, filename);
 	  if (! yes())
@@ -395,7 +396,7 @@ char *filename;
      if (lstat(filename, &stat_buf))
 	  return(1);
 
-     if (stat_buf.st_mode & S_IFDIR) {
+     if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 	  dirp = opendir(filename);
 	  if (! dirp)
 	       return(1);
