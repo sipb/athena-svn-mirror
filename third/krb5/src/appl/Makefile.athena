@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.2 1999-03-11 04:11:46 danw Exp $
+# $Id: Makefile.athena,v 1.2.4.1 1999-11-08 21:09:07 tb Exp $
 
 SHELL=/bin/sh
 
@@ -9,9 +9,15 @@ clean:
 	${MAKE} clean
 
 all:
-	${MAKE} all
+	. ./logindir && ${MAKE} all LOGINDIR="$$logindir"
 
 check:
 
 install:
-	${MAKE} install DESTDIR="$$SRVD"
+	mkdir -p "$$SRVD/usr/athena/bin"
+	mkdir -p "$$SRVD/usr/athena/etc"
+	mkdir -p "$$SRVD/usr/athena/man/man1"
+	mkdir -p "$$SRVD/usr/athena/man/man8"
+	mkdir -p "$$SRVD/etc/athena"
+	. ./logindir && mkdir -p "$$SRVD/$$logindir"
+	. ./logindir && ${MAKE} install DESTDIR="$$SRVD" LOGINDIR="$$logindir"
