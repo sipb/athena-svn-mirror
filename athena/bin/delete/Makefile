@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.13 1989-11-06 21:33:08 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.14 1989-11-06 22:01:19 jik Exp $
 #
 
 DESTDIR=
@@ -23,16 +23,22 @@ LIBS= 		-lcom_err -lsys
 LINTFLAGS=	$(DEFINES) $(INCLUDES) $(CDEBUGFLAGS) -u
 LINTLIBS=	
 SRCS= 		delete.c undelete.c directories.c pattern.c util.c\
-		expunge.c lsdel.c col.c shell_regexp.c delete_errs.c\
+		expunge.c lsdel.c col.c shell_regexp.c\
 		errors.c stack.c
 INCS= 		col.h delete.h directories.h expunge.h lsdel.h\
 		mit-copyright.h pattern.h undelete.h util.h\
-		shell_regexp.h delete_errs.h errors.h stack.h
+		shell_regexp.h errors.h stack.h
+ETS=		delete_errs.h delete_errs.c
+
 MANS= 		man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
 		man1/undelete.1
+
+ETSRCS=		et/Makefile et/com_err.3 et/compile_et.1\
+		et/com_err.texinfo et/error_table.y et/et_lex.lex.l\
+		et/texinfo.tex et/*.c et/*.h et/*.et
 ARCHIVE=	README Makefile MANIFEST PATCHLEVEL $(SRCS) $(INCS)\
 		$(MANS) 
-ARCHIVEDIRS= 	man1
+ARCHIVEDIRS= 	man1 et et/profiled
 
 DELETEOBJS= 	delete.o util.o delete_errs.o errors.o
 UNDELETEOBJS= 	undelete.o directories.o util.o pattern.o\
@@ -130,7 +136,7 @@ tar: $(ARCHIVE)
 	fi ; \
 	exit 0; \
 	done
-	tar cvf - $(ARCHIVE) | compress > delete.tar.Z
+	tar cvf - $(ARCHIVE) $(ETSRCS) | compress > delete.tar.Z
 
 shar: $(ARCHIVE)
 	@echo "Checking to see if everything's checked in...."
@@ -143,7 +149,7 @@ shar: $(ARCHIVE)
 	fi ; \
 	exit 0; \
 	done
-	makekit -oMANIFEST -h2 MANIFEST $(ARCHIVEDIRS) $(ARCHIVE)
+	makekit -oMANIFEST -h2 MANIFEST $(ARCHIVEDIRS) $(ARCHIVE) $(ETSRCS)
 
 patch: $(ARCHIVE)
 	@echo "Checking to see if everything's checked in...."
@@ -164,12 +170,12 @@ clean:
 	-rm -f *~ *.bak *.o delete undelete lsdel expunge purge\
 		delete_errs.h delete_errs.c
 
-depend: $(SRCS) $(INCS)
+depend: $(SRCS) $(INCS) $(ETS)
 	/usr/athena/makedepend -v $(CFLAGS) -s'# DO NOT DELETE' $(SRCS)
 
-$(DELETESRC): delete_errs.h
-$(EXPUNGESRC): delete_errs.h
-$(UNDELETESRC): delete_errs.h
-$(LSDELSRC): delete_errs.h
+$(DELETEOBJS): delete_errs.h
+$(EXPUNGEOBJS): delete_errs.h
+$(UNDELETEOBJS): delete_errs.h
+$(LSDELOBJS): delete_errs.h
 
 # DO NOT DELETE THIS LINE -- makedepend depends on it
