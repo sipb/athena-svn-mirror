@@ -3,7 +3,7 @@
  *
  * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.7 1997-10-13 22:45:01 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.8 1997-11-14 22:23:05 ghudson Exp $
  *
  * Copyright (c) 1989, Massachusetts Institute of Technology
  *
@@ -43,12 +43,8 @@ FXCLOBJ = _fx_lengthen.o	fx_create.o		fx_move.o \
 	${ETSDIR}/krb_err.o	${ETSDIR}/rpc_err.o \
 	${PROTDIR}/fx_prot_clnt.o ${PROTDIR}/fx_prot_xdr.o
 
-#if defined(_IBMR2) || defined(sun) || defined(sgi)
 INCLUDES = -I../include
-#else
-INCLUDES = -I../rpc3.9/usr/include -I../include
-#endif
-LIBS = -L../rpc3.9/usr/lib -L/usr/athena/lib -lhesiod -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lfxrpc
+LIBS = -lhesiod -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lfxrpc
 
 DEFINES = ${INCLUDES} -DKERBEROS -DHESIOD
 

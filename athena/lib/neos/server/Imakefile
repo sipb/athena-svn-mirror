@@ -2,7 +2,7 @@
  * Imakefile for the FX (file exchange) server
  *
  * $Author: ghudson $
- * $Id: Imakefile,v 1.3 1997-10-13 22:45:07 ghudson Exp $
+ * $Id: Imakefile,v 1.4 1997-11-14 22:26:16 ghudson Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -16,19 +16,13 @@
 PROTDIR=../protocol
 ETSDIR=../ets
 
-/* RS/6000 should use RPC from libc */
-#if !defined(_IBMR2)
-RPCINC=-I../rpc3.9/usr/include
-#endif
-
-RPCLIB = -L../rpc3.9/usr/lib -lfxrpc
-
-INCLUDES = ${RPCINC} -I../include
+INCLUDES = -I../include
 
 KRBLIBS = -lkrb4 -ldes425 -lkrb5 -lcrypto
 /**/#HESLIBS = -lhesiod
 
-LIBS = -L../lib -lacl ${KRBLIBS} -lcom_err ${RPCLIB} ${HESLIBS}
+LDDEFS = -L../lib
+LIBS = -lacl ${KRBLIBS} -lcom_err ${HESLIBS}
 
 /**/# Define KERBEROS for Kerberos support
 DEFKRB = -DKERBEROS
@@ -54,7 +48,7 @@ MALLOCOBJ = malloc.o
 
 FXSRVOBJS = \
 	${ETSDIR}/fxserver_err.o \
-	${PROTDIR}/local_prot_clnt.o \
+	${PROTDIR}/fx_prot_clnt.o \
 	${PROTDIR}/fx_prot_svc.o \
 	${PROTDIR}/fx_prot_xdr.o \
 	db.o \
