@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v $
- *      $Author: jfc $
+ *      $Author: lwvanels $
  *
  *      Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -22,7 +22,7 @@
 #include "zserver.h"
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.11 1991-06-20 09:15:21 jfc Exp $";
+static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.12 1992-08-26 04:40:06 lwvanels Exp $";
 #endif
 		     
 extern long atol();
@@ -342,6 +342,7 @@ srv_stat(host)
 	printf("\n");
 	
 	(void) close(sock);
+	ZFreeNotice(&notice);
 	return(0);
 }
 

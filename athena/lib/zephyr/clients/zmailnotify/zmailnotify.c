@@ -17,7 +17,7 @@
 
 #ifndef lint
 static char rcsid_zwmnotify_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.16 1992-02-15 23:14:27 lwvanels Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.17 1992-08-26 04:39:48 lwvanels Exp $";
 #endif
 
 #include <sys/uio.h>
@@ -463,6 +463,7 @@ char *host;
 		       0, (MSG_DAT *) 0, (CREDENTIALS *) 0,
 		       (bit_64 *) 0, (struct sockaddr_in *)0,
 		       (struct sockaddr_in *)0,"ZMAIL0.0");
+    free(ticket);
     if (rem != KSUCCESS) {
 	(void) sprintf(Errmsg, "kerberos error: %s",krb_err_txt[rem]);
 	(void) close(s);
