@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.11 2000-04-16 17:43:03 ghudson Exp $
+# $Id: update_ws.sh,v 1.12 2000-05-17 20:24:12 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -232,6 +232,7 @@ failupdate() {
 		/etc/athena/version
 	rpmupdate $publicflag "$oldlist" "$newlist" || failupdate
 	cp "$newlist" "$oldlist" || failupdate
+	kudzu -q
 	echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
 		/etc/athena/version
 	echo "Ending update from $oldvers to $newvers at `date`."
