@@ -12,7 +12,7 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.2 1988-11-15 15:44:22 jtkohl Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.3 1989-01-21 17:21:54 jtkohl Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -51,7 +51,7 @@ char *
 krb_getrealm(host)
 char *host;
 {
-	char *domain, *trans_idx;
+	char *domain;
 	FILE *trans_file;
 	char trans_host[MAXHOSTNAMELEN+1];
 	char trans_realm[REALM_SZ+1];
