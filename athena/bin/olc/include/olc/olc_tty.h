@@ -1,6 +1,6 @@
 /*
  * This file is part of the OLC On-Line Consulting System.
- * It contains definitions common to all parts of OLC.
+ * It contains some random definitions for the tty library.
  *
  *      Win Treese
  *      Dan Morgan
@@ -11,18 +11,20 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *      Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1985,1988 by the Massachusetts Institute of Technology
+ * Copyright (C) 1985,1988,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
- *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v 1.3 1989-08-22 13:59:01 tjcoppet Exp $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
+ *	$Id: olc_tty.h,v 1.4 1990-05-25 15:45:17 vanharen Exp $
+ *	$Author: vanharen $
  */
+
+#include <mit-copyright.h>
 
 extern int OLC, OLCR, OLCA;
 
 #define DEFAULT_EDITOR "/usr/athena/emacs"
 #define NO_EDITOR      "madman_across_the_water"
-
-#define newline() write(1,"\n",1);
