@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.8 1990-11-15 08:56:51 lwvanels Exp $
+ *	$Id: c_io.c,v 1.9 1990-11-15 13:20:43 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.8 1990-11-15 08:56:51 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.9 1990-11-15 13:20:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -437,7 +437,7 @@ read_text_from_fd(fd)
       return((char *) NULL);
     }
 
-  if ((rtff_buf = malloc((unsigned) (nchars + 1))) == (char *) NULL) 
+  if ((rtff_buf = (char *)malloc((unsigned) (nchars + 1))) == (char *) NULL) 
     {
       perror("read_text: Can't allocate memory.");
       return((char *) NULL);
