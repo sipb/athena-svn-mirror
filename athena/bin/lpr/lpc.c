@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.4 1990-08-25 14:05:43 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.5 1991-01-23 13:19:38 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.4 1990-08-25 14:05:43 epeisach Exp $";
+static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.5 1991-01-23 13:19:38 epeisach Exp $";
 #endif lint
 
 /*
@@ -54,6 +54,7 @@ char	*margv[20];
 int	top;
 int	intr();
 struct	cmd *getcmd();
+extern struct cmd cmdtab[];
 
 jmp_buf	toplevel;
 
@@ -121,7 +122,6 @@ cmdscanner(top)
 	int top;
 {
 	register struct cmd *c;
-	extern struct cmd cmdtab[];
 	extern int help();
 
 	if (!top)
