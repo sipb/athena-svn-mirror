@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.9 2001-06-12 17:27:33 ghudson Exp $
+;; $Id: site-init.jl,v 1.10 2001-06-20 17:38:44 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -34,6 +34,7 @@
 				    '(skip-tasklist . t)
 				    '(sticky-viewport . t)
 				    '(frame-type . border-only))
+(add-window-matcher 'WM_NAME "Console" '(never-focus . t))
 
 ;; Workaround for Maple 6.0, which otherwise comes up with no border
 ;; for some reason.
