@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
-"POT-Creation-Date: 2002-11-25 21:03-0500\n"
+"POT-Creation-Date: 2002-06-01 01:48+0200\n"
 "PO-Revision-Date: 2002-05-31 23:33GMT -03:00\n"
 "Last-Translator: Pablo Gonzalo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: español <traductores@es.gnome.org>\n"
@@ -497,8 +497,7 @@ msgstr "Mostrar Hilos"
 
 #: src/procdialogs.c:570
 msgid "Show warning dialog when ending or killing processes"
-msgstr ""
-"Mostrar cuadro de advertencia cuando se esta finalizando o matando procesos"
+msgstr "Mostrar cuadro de advertencia cuando se esta finalizando o matando procesos"
 
 #: src/procdialogs.c:577
 msgid "Show warning dialog when hiding processes"
@@ -601,7 +600,7 @@ msgstr "Durmiendo"
 msgid " (thread)"
 msgstr " (hilo)"
 
-#: src/proctable.c:938
+#: src/proctable.c:935
 #, c-format
 msgid "%s could not be found."
 msgstr "no se pudo encontrar %s"
@@ -633,3 +632,4 @@ msgstr "%.1f GB"
 
 #~ msgid "Process Manager"
 #~ msgstr "Gestor de procesos"
+

@@ -1,6 +1,6 @@
 # Danish translation of procman.
-# Copyright (C) 2001, 02 Free Software Foundation, Inc.
-# Ole Laursen <olau@hardworking.dk>, 2001, 02.
+# Copyright (C) 2001, 02, 03 Free Software Foundation, Inc.
+# Ole Laursen <olau@hardworking.dk>, 2001, 02, 03.
 #
 # Konventioner:
 #
@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: procman\n"
-"POT-Creation-Date: 2002-11-25 21:03-0500\n"
-"PO-Revision-Date: 2002-05-11 13:18+0200\n"
+"POT-Creation-Date: 2003-01-01 18:18+0100\n"
+"PO-Revision-Date: 2003-01-01 15:00+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -162,11 +162,11 @@ msgstr "Skjul en proces"
 
 #: src/interface.c:64 src/interface.c:240
 msgid "End _Process"
-msgstr "Afslut _process"
+msgstr "Afslut _proces"
 
 #: src/interface.c:64
 msgid "Force a process to finish."
-msgstr "Tving en proces til at afslutte"
+msgstr "Tving en proces til at slutte"
 
 #: src/interface.c:69 src/procdialogs.c:146 src/procdialogs.c:724
 msgid "_Kill Process"
@@ -234,7 +234,7 @@ msgstr "Afslut proces"
 
 #: src/interface.c:150
 msgid "Force a process to finish"
-msgstr "Tving en proces til at afslutte"
+msgstr "Tving en proces til at slutte"
 
 #: src/interface.c:155 src/procdialogs.c:145 src/procdialogs.c:723
 msgid "Kill Process"
@@ -280,16 +280,18 @@ msgstr "Brugt plads"
 msgid "Total Space"
 msgstr "Total plads"
 
+# history unødvendigt
 #: src/interface.c:300
 #, no-c-format
 msgid "% CPU Usage History"
-msgstr "% processorforbrug-historie"
+msgstr "% processorforbrug"
 
-# ingen grund til at tage 'swap' med her, det er blot en overskrift
+# ingen grund til at tage 'swap' med her, det er blot en overskrift,
+# ligeledes for 'history' 
 #: src/interface.c:306
 #, no-c-format
 msgid "% Memory / Swap Usage History"
-msgstr "% hukommelsesforbrug-historie"
+msgstr "% hukommelsesforbrug"
 
 #: src/interface.c:327
 msgid "CPU Used :"
@@ -298,7 +300,7 @@ msgstr "Processorforbrug:"
 # der skal bruges små korte overskrifter
 #: src/interface.c:356 src/proctable.c:128
 msgid "Memory"
-msgstr "Huk."
+msgstr "Hukom."
 
 #: src/interface.c:361 src/interface.c:397
 msgid "Used :"
@@ -310,7 +312,7 @@ msgstr "Total:"
 
 #: src/interface.c:392
 msgid "Swap"
-msgstr "Byt om"
+msgstr "Reservehukom."
 
 #: src/interface.c:422 src/procdialogs.c:657
 msgid "Devices"
@@ -409,7 +411,7 @@ msgid ""
 msgstr ""
 "Procesnavn: %s\n"
 "\n"
-"Du har ikke de nødvendige rettigheder til at afslutte denne proces. Du kan "
+"Du har ikke de nødvendige rettigheder til at slutte denne proces. Du kan "
 "indtaste administratoradgangskoden for at opnå disse rettigheder."
 
 #: src/procactions.c:145
@@ -507,7 +509,7 @@ msgstr "Vis advarselsvindue ved afslutning eller drab af processer"
 
 #: src/procdialogs.c:577
 msgid "Show warning dialog when hiding processes"
-msgstr "Vis advarselsvindue ved skjulelse af processer"
+msgstr "Vis advarselsvindue ved skjul af processer"
 
 #: src/procdialogs.c:586
 msgid "Process _Fields"
@@ -543,7 +545,7 @@ msgstr "Forkert adgangskode."
 
 #: src/procman.c:46
 msgid "show simple dialog to end processes and logout"
-msgstr "Vis simpelt vindue til at afslutte processer og logge ud"
+msgstr "Vis simpelt vindue til at slutte processer og logge ud"
 
 #: src/proctable.c:126
 msgid "Process Name"

@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: procman VERSION\n"
-"POT-Creation-Date: 2002-11-25 21:03-0500\n"
-"PO-Revision-Date: 2002-10-21 19:10+0200\n"
+"POT-Creation-Date: 2002-12-15 17:46+0100\n"
+"PO-Revision-Date: 2002-12-15 17:47+0100\n"
 "Last-Translator: Andras Timar <timar@gnome.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgstr ""
 
 #: src/callbacks.c:147
 msgid "(C) 2001 Kevin Vandersloot"
-msgstr "(C) 2001 Kevin Vandersloot"
+msgstr "© 2001 Kevin Vandersloot"
 
 #: src/callbacks.c:148
 msgid "Simple process viewer using libgtop"
@@ -605,7 +605,7 @@ msgstr "%s nem található."
 #: src/util.c:194
 #, c-format
 msgid "%d bytes"
-msgstr "%d bájt"
+msgstr "%d byte"
 
 #: src/util.c:197
 #, c-format

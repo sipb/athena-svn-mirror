@@ -1386,7 +1386,7 @@ fi
 
 PACKAGE=gnome-system-monitor
 
-VERSION=2.0.3
+VERSION=2.0.4
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -3735,7 +3735,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-ALL_LINGUAS="am ar az be bg ca cs da de el es fr gl hu it ja ko lv mk ms nl no pl pt pt_BR ro ru sk sl sq sv tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el es fi fr gl he hu it ja ko lv mk ms nl no pl pt pt_BR ro ru sk sl sq sv tr uk vi zh_CN zh_TW"
 
 GETTEXT_PACKAGE=gnome-system-monitor
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: procman\n"
-"POT-Creation-Date: 2002-11-25 21:03-0500\n"
+"POT-Creation-Date: 2002-06-08 12:21+0200\n"
 "PO-Revision-Date: 2001-07-29 12:32+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -592,7 +592,7 @@ msgstr "Spi"
 msgid " (thread)"
 msgstr " (nit)"
 
-#: src/proctable.c:938
+#: src/proctable.c:935
 #, c-format
 msgid "%s could not be found."
 msgstr "%s ni bil najden."
