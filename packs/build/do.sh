@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.76 2003-01-24 19:45:01 ghudson Exp $
+# $Id: do.sh,v 1.77 2003-01-26 05:56:25 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -151,6 +151,11 @@ else
 fi
 
 export WARN_CFLAGS ERROR_CFLAGS CC CXX MAKE
+
+# GConf schemas need to be installed from RPM %post scriptlets, not
+# make install rules.
+GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
+export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 
 if [ -r Makefile.athena ]; then
   export SRVD SOURCE COMPILER
