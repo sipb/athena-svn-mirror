@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.2 1991-09-04 10:11:27 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.c,v 1.3 1991-12-17 10:26:54 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -137,9 +137,9 @@ static void realize(me)
   me->dClock.pmap_ht = (me->dClock.font->max_bounds.ascent
 			+ me->dClock.font->max_bounds.descent);
 
-  me->dClock.pmap = XCreatePixmap(me->core.display, me->core.window,
-				  w, me->dClock.pmap_ht,
-				  DefaultDepth(me->core.display,
+  me->dClock.pmap = XjCreatePixmap(me->core.display, me->core.window,
+				   w, me->dClock.pmap_ht,
+				   DefaultDepth(me->core.display,
 					     DefaultScreen(me->core.display)));
 
   me->dClock.colons_on = False;
@@ -160,10 +160,10 @@ static void realize(me)
   valuemask = ( GCForeground | GCBackground | GCFont
 	       | GCGraphicsExposures );
 
-  me->dClock.gc = XCreateGC(me->core.display,
-			    me->core.window,
-			    valuemask,
-			    &values);
+  me->dClock.gc = XjCreateGC(me->core.display,
+			     me->core.window,
+			     valuemask,
+			     &values);
   XCopyGC(me->core.display, DefaultGC(me->core.display,
 				      DefaultScreen(me->core.display)),
 	  GCFunction, me->dClock.gc);
@@ -173,10 +173,10 @@ static void realize(me)
   values.graphics_exposures = False;
   valuemask = GCForeground | GCFunction | GCGraphicsExposures;
 
-  me->dClock.gc_bkgnd = XCreateGC(me->core.display,
-				  me->core.window,
-				  valuemask,
-				  &values);
+  me->dClock.gc_bkgnd = XjCreateGC(me->core.display,
+				   me->core.window,
+				   valuemask,
+				   &values);
 
   me->dClock.timerid = XjAddWakeup(wakeup, me, 1000 * me->dClock.update);
 
@@ -209,8 +209,8 @@ static void move(me, x, y)
 static void destroy(me)
      DClockJet me;
 {
-  XFreeGC(me->core.display, me->dClock.gc);
-  XFreeGC(me->core.display, me->dClock.gc_bkgnd);
+  XjFreeGC(me->core.display, me->dClock.gc);
+  XjFreeGC(me->core.display, me->dClock.gc_bkgnd);
 
   (void)XjRemoveWakeup(me->dClock.timerid);
 }
@@ -313,15 +313,17 @@ static int draw(me)
   
   old_w = w;
 
-  if (me->dClock.update > 1)
+/*  if (me->dClock.update > 1) */
     return(1000 * me->dClock.update);
 
-  gettimeofday(&now, NULL);
+/*  gettimeofday(&now, NULL);
   return(1000 - (now.tv_usec / 1000));
+*/
 }
 
-static void wakeup(me)
+static void wakeup(me, id)
      DClockJet me;
+     int id;
 {
   me->dClock.timerid = XjAddWakeup(wakeup, me, draw(me));
 }

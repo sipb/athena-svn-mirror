@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/AClock.c,v 1.2 1991-09-04 10:09:55 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/AClock.c,v 1.3 1991-12-17 10:22:11 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -206,44 +206,44 @@ static void realize(me)
   values.background = me->aClock.background;
 
 #ifdef SHAPE
-  tmp = XCreatePixmap (XjDisplay(me), XjWindow(me), 1, 1, 1);
+  tmp = XjCreatePixmap (XjDisplay(me), XjWindow(me), 1, 1, 1);
   values.foreground = 0;
-  me->aClock.eraseGC = XCreateGC(XjDisplay(me), tmp, valuemask, &values);
+  me->aClock.eraseGC = XjCreateGC(XjDisplay(me), tmp, valuemask, &values);
   values.foreground = 1;
-  me->aClock.setGC = XCreateGC(XjDisplay(me), tmp, valuemask, &values);
-  XFreePixmap(XjDisplay(me), tmp);
+  me->aClock.setGC = XjCreateGC(XjDisplay(me), tmp, valuemask, &values);
+  XjFreePixmap(XjDisplay(me), tmp);
 #endif
 
   values.foreground = me->aClock.foreground;
   me->aClock.handsGC = me->aClock.highlightGC = me->aClock.foregroundGC
-			= XCreateGC(me->core.display,
-				    me->core.window,
-				    valuemask,
-				    &values);
+			= XjCreateGC(me->core.display,
+				     me->core.window,
+				     valuemask,
+				     &values);
 
   if (me->aClock.hands != me->aClock.foreground)
     {
       values.foreground = me->aClock.hands;
-      me->aClock.handsGC = XCreateGC(me->core.display,
-				     me->core.window,
-				     valuemask,
-				     &values);
+      me->aClock.handsGC = XjCreateGC(me->core.display,
+				      me->core.window,
+				      valuemask,
+				      &values);
     }
 
   if (me->aClock.highlight != me->aClock.foreground)
     {
       values.foreground = me->aClock.highlight;
-      me->aClock.highlightGC = XCreateGC(me->core.display,
-					 me->core.window,
-					 valuemask,
-					 &values);
+      me->aClock.highlightGC = XjCreateGC(me->core.display,
+					  me->core.window,
+					  valuemask,
+					  &values);
     }
 
   values.foreground = me->aClock.background;
-  me->aClock.backgroundGC = XCreateGC(me->core.display,
-				      me->core.window,
-				      valuemask,
-				      &values);
+  me->aClock.backgroundGC = XjCreateGC(me->core.display,
+				       me->core.window,
+				       valuemask,
+				       &values);
 
   me->aClock.h = me->aClock.m = me->aClock.s = -1;
   me->aClock.timerid = XjAddWakeup(wakeup, me, 1000 * me->aClock.update);
@@ -319,10 +319,10 @@ static void resize(me, size)
 	   * allocate a pixmap to draw shapes in
 	   */
 	  if (me->aClock.mask)
-	    XFreePixmap(XjDisplay(me), me->aClock.mask);
+	    XjFreePixmap(XjDisplay(me), me->aClock.mask);
 
-	  me->aClock.mask = XCreatePixmap (XjDisplay(me), XjWindow(me),
-					   size->width, size->height, 1);
+	  me->aClock.mask = XjCreatePixmap (XjDisplay(me), XjWindow(me),
+					    size->width, size->height, 1);
 
 	  /* erase the pixmap */
 	  XFillRectangle (XjDisplay(me), me->aClock.mask, me->aClock.eraseGC,
@@ -502,10 +502,10 @@ static int update(me, expose)
 
   me->aClock.h = h; me->aClock.m = m; me->aClock.s = s;  
 
-  if (me->aClock.update > 1)
+/*  if (me->aClock.update > 1) */
     return(1000 * me->aClock.update);
 
-  return(1000 - (now.tv_usec / 1000));
+/*  return(1000 - (now.tv_usec / 1000)); */
 }
 
 static void drawTicks(me)
@@ -555,8 +555,9 @@ static void drawTicks(me)
     }
 }
 
-static void wakeup(me)
+static void wakeup(me, id)
      AClockJet me;
+     int id;
 {
   me->aClock.timerid = XjAddWakeup(wakeup, me, update(me, 0));
 }
@@ -572,8 +573,8 @@ static void expose(me, event)
 static void destroy(me)
      AClockJet me;
 {
-  XFreeGC(me->core.display, me->aClock.backgroundGC);
-  XFreeGC(me->core.display, me->aClock.foregroundGC);
+  XjFreeGC(me->core.display, me->aClock.backgroundGC);
+  XjFreeGC(me->core.display, me->aClock.foregroundGC);
 
   (void)XjRemoveWakeup(me->aClock.timerid);
 }
