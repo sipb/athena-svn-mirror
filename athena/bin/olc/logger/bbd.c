@@ -1,9 +1,9 @@
 /**********************************************************************
  * usage tracking daemon
  *
- * $Author: cfields $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.14 1995-08-23 20:02:58 cfields Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.15 1997-04-30 18:18:34 ghudson Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.14 1995-08-23 20:02:58 cfields Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.15 1997-04-30 18:18:34 ghudson Exp $";
 #endif
 #endif
 
@@ -29,13 +29,16 @@ static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/o
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <sys/time.h>
+#include <sys/resource.h>
+#include <unistd.h>
+#include <limits.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #if defined(__STDC__)
 #include <stdlib.h>
 #endif
-#if defined(SOLARIS) || defined(sgi)
-#include <sys/termios.h>
+#ifdef POSIX
+#include <termios.h>
 #endif
 
 #define SERVICE_NAME "ols"
@@ -67,7 +70,8 @@ handle_startup(s,msg,len,from,logfile)
   if (cfile[0] == '\0') {
     /* initialize filename and counter */
     sprintf(cfile,"%s.cnt",logfile);
-    if ((fd = open(cfile,O_RDONLY,0644)) < 0) {
+    fd = open(cfile,O_RDONLY,0644);
+    if (fd < 0) {
       if (errno != ENOENT) {
 	syslog(LOG_ERR,"Could not open counter file %s: %m", cfile);
 	exit(1);
@@ -87,7 +91,8 @@ handle_startup(s,msg,len,from,logfile)
 
   /* Save it to the counter file */
   sprintf(buf,"%d\n",counter);
-  if ((fd = open(cfile,O_WRONLY|O_CREAT,0644)) < 0) {
+  fd = open(cfile,O_WRONLY|O_CREAT,0644);
+  if (fd < 0) {
     syslog(LOG_ERR,"Could not open counter file %s for writing: %m", cfile);
     exit(1);
   }
@@ -119,7 +124,17 @@ do_tick(sig)
 {
   long now;
 
+#ifdef POSIX
+  struct sigaction action;
+
+  action.sa_flags = 0;
+  sigemptyset(&action.sa_mask);
+  action.sa_handler = do_tick;
+  sigaction(SIGALRM, &action, NULL);
+#else /* not POSIX */
   signal(SIGALRM,do_tick);
+#endif /* not POSIX */
+
   alarm(60 * tick);
   now = time(0);
   write(log_fd,"TICK ",5);
@@ -139,9 +154,12 @@ int
 handle_hup(sig)
      int sig;
 {
-  signal(SIGHUP,handle_hup);
+#ifndef POSIX
+  signal(SIGHUP,handle_hup);    /* Reset the handler if needed (non-POSIX) */
+#endif
   close(log_fd);
-  if ((log_fd = open(lf,O_WRONLY|O_CREAT|O_APPEND,0600)) < 0) {
+  log_fd = open(lf,O_WRONLY|O_CREAT|O_APPEND,0600);
+  if (log_fd < 0) {
     syslog(LOG_ERR,"opening %s: %m");
     exit(1);
   }
@@ -165,8 +183,9 @@ main(argc, argv)
   int onoff;
   int len,rlen,i;
   int port=0;
-#if defined(SOLARIS) || defined(sgi)
+#ifdef POSIX
   sigset_t oldmask,alarmmask;
+  struct sigaction action;
 #else
   int oldmask,alarmmask;
 #endif
@@ -219,7 +238,17 @@ main(argc, argv)
 #endif
 
   if (!nofork) {
-    int max_fd = getdtablesize ();
+    int max_fd;
+#ifdef RLIMIT_NOFILE
+    struct rlimit rl;
+
+    if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
+      max_fd = OPEN_MAX; /* either that or abort()... --bert 29jan1996 */
+    else
+      max_fd = (int)rl.rlim_cur;
+#else
+    max_fd = getdtablesize();
+#endif
     
     switch (fork()) {
     case 0:                             /* child */
@@ -254,7 +283,8 @@ main(argc, argv)
     }
   }
 
-  if ((log_fd = open(lf,O_WRONLY|O_CREAT|O_APPEND,0600)) < 0) {
+  log_fd = open(lf,O_WRONLY|O_CREAT|O_APPEND,0600);
+  if (log_fd < 0) {
     syslog(LOG_ERR,"opening %s: %m",lf);
     exit(1);
   }
@@ -266,7 +296,8 @@ main(argc, argv)
 #endif
 
   unlink(pidfile);
-  if ((fd = open(pidfile,O_WRONLY|O_CREAT|O_TRUNC,0400)) < 0) {
+  fd = open(pidfile,O_WRONLY|O_CREAT|O_TRUNC,0400);
+  if (fd < 0) {
     syslog(LOG_ERR,"opening %s: %m",pidfile);
     exit(1);
   }
@@ -276,7 +307,8 @@ main(argc, argv)
   close(fd);
 
   /* Create socket */
-  if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+  fd = socket(AF_INET, SOCK_DGRAM, 0);
+  if (fd < 0) {
     syslog(LOG_ERR,"opening datagram socket: %m");
     exit(1);
   }
@@ -284,8 +316,8 @@ main(argc, argv)
 
   /* Find port number if not already defined */
   if (port == 0) {
-    if ((service = getservbyname(SERVICE_NAME,"tcp")) == (struct servent *)
-	NULL) {
+    service = getservbyname(SERVICE_NAME,"tcp");
+    if (service == NULL) {
       syslog(LOG_ERR,"error getting service %s/udp: %m",SERVICE_NAME);
       exit(1);
     }
@@ -309,27 +341,35 @@ main(argc, argv)
     exit(1);
   }
   
+#ifdef POSIX
+  action.sa_flags = 0;
+  sigemptyset(&action.sa_mask);
+  action.sa_handler = handle_hup;
+  sigaction(SIGHUP, &action, NULL);
+#else /* not POSIX */
   signal(SIGHUP,handle_hup);
+#endif /* not POSIX */
 
   if (tick != 0) {
     do_tick(0);
   }
-#if defined(SOLARIS) || defined(sgi)
+
+#ifdef POSIX
   sigemptyset(&alarmmask);
-  sigemptyset(&oldmask);
-  sigaddset(&alarmmask,SIGALRM);
+  sigaddset(&alarmmask, SIGALRM);
 #else
   alarmmask = sigmask(SIGALRM);
 #endif
   while (1) {
     len = sizeof(struct sockaddr_in);
-    if ((rlen = recvfrom(fd,buf,1024,0,&from,&len)) < 0) {
+    rlen = recvfrom(fd,buf,1024,0,&from,&len);
+    if (rlen < 0) {
       if (errno != EINTR)
 	syslog(LOG_ERR,"recvfrom: %m");
       continue;
     }
-#if defined(SOLARIS) || defined(sgi)
-    sigprocmask(SIG_BLOCK,&alarmmask,&oldmask);
+#ifdef POSIX
+    sigprocmask(SIG_BLOCK, &alarmmask, &oldmask);
 #else
     oldmask = sigblock(alarmmask);
 #endif
@@ -340,8 +380,8 @@ main(argc, argv)
       write(log_fd,&buf[1],(rlen-1));
       write(log_fd,"\n",1);
     }
-#if defined(SOLARIS) || defined(sgi)
-    sigprocmask(SIG_BLOCK,&oldmask,&alarmmask);
+#ifdef POSIX
+    sigprocmask(SIG_BLOCK, &oldmask, NULL);
 #else
     (void) sigblock(oldmask);
 #endif
