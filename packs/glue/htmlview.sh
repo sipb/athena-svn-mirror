@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: htmlview.sh,v 1.1 2000-06-14 20:25:39 ghudson Exp $
+# $Id: htmlview.sh,v 1.2 2000-09-21 15:09:01 ghudson Exp $
 
 # htmlview script adapted from the infoagents locker to take advantage
 # of the local netscape, if present.
@@ -56,6 +56,9 @@ case "$url_arg" in
     fi
     ;;
 esac
+
+# Quote commas in the URL; they won't work with OpenUrl().
+url=`echo "$url" | sed 's/,/%2C/g'`
 
 # If $DISPLAY is not set, just start lynx
 case "$DISPLAY" in
