@@ -5,7 +5,7 @@ if [ "$ATHENA_ATTACHRUN_RECURSION" = $$ ]; then
 	echo "later." 1>&2
 	exit 1
 fi
-if attach -q mkserv; then
+if /bin/athena/attach -q mkserv; then
 	ATHENA_ATTACHRUN_RECURSION=$$ export ATHENA_ATTACHRUN_RECURSION
 	bindir=/mit/mkserv/arch/`machtype -S`/bin
 	if [ ! -x "$bindir/mkserv" ]; then
