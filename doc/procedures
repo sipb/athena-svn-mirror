@@ -155,16 +155,16 @@ briefly in comments at the top of the script.  Here are some use
 cases:
 
   # Import a nicely named tarfile.
-  $CVSROOT/CVSROOT/import.sh /tmp/bash-2.03.tar.gz 2.02
+  $CVSROOT/CVSROOT/import.sh /tmp/bash-2.03.tar.gz
 
   # Import a not so nicely named tarfile.
-  $CVSROOT/CVSROOT/import.sh -n pine -v 4.53 /tmp/pine4.53.tar.bz2 4.33
+  $CVSROOT/CVSROOT/import.sh -n pine -v 4.53 /tmp/pine4.53.tar.bz2
 
   # Import into a non-default repository directory.
-  $CVSROOT/CVSROOT/import.sh -d third/glib2 /tmp/glib-2.2.1.tar.bz2 2.2.0
+  $CVSROOT/CVSROOT/import.sh -d third/glib2 /tmp/glib-2.2.1.tar.bz2
 
-  # Import a package for the first time.
-  $CVSROOT/CVSROOT/import.sh /tmp/gnome-shiny-0.0.1.tar.gz ""
+  # Import when old-version detection doesn't work right
+  $CVSROOT/CVSROOT/import.sh -o 0.2.34 /tmp/esound-0.2.35.tar.bz2
 
 After the initial import, here are some things to pay attention to
 when adding or updating a piece of third-party software:
