@@ -137,16 +137,6 @@ options i810_audio ftsodell=1
 EOF
   fi
 fi
-# turn on gx150 USB support for machines that were originally installed with a
-# more ignorant kudzu
-if /sbin/lspci -n|grep -q 8086:2444 ; then
-  touch /etc/modules.conf
-  if grep -q usb-controller /etc/modules.conf ; then true ; else
-	cat >> /etc/modules.conf << EOF
-alias usb-controller usb-uhci
-EOF
-  fi
-fi
 
 # Turn on DontZap in the X configuration.
 if [ -f /etc/X11/XF86Config ]; then
