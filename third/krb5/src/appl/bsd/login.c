@@ -160,6 +160,8 @@ typedef sigtype (*handler)();
 #include "osconf.h"
 #endif /* KRB5_GET_TICKETS */
 
+#include <al.h>
+
 #ifdef KRB4_KLOGIN
 /* support for running under v4 klogind, -k -K flags */
 #define KRB4
@@ -267,7 +269,7 @@ static const char * krb_get_err_text(kerror)
  */
 int	timeout = 300;
 
-char term[64], *hostname, *username;
+char term[64], *hostname, *username, *namep = NULL;
 
 extern int errno;
 
@@ -432,7 +434,7 @@ int unix_needs_passwd ()
 int unix_passwd_okay (pass)
     char *pass;
 {
-    char user_pwcopy[9], *namep;
+    char user_pwcopy[9];
     char *crypt ();
 
     assert (pwd != 0);
@@ -1158,9 +1160,9 @@ int main(argc, argv)
 	char *p;
 	int fflag, hflag, pflag, rflag, cnt;
 	int kflag, Kflag, eflag;
-	int quietlog, passwd_req, ioctlval;
+	int quietlog, passwd_req, ioctlval, *warnings;
 	sigtype timedout();
-	char *domain, **envinit, *ttyn, *tty;
+	char *domain, **envinit, *ttyn, *tty, *errmem;
 	char tbuf[MAXPATHLEN + 2];
 	char *ttyname(), *stypeof(), *crypt(), *getpass();
 	time_t login_time;
@@ -1373,7 +1375,7 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	for (cnt = 0;; username = NULL) {
 #ifdef KRB5_GET_TICKETS
 		int kpass_ok,lpass_ok;
-		char user_pwstring[MAXPWSIZE];
+		char user_pwstring[MAXPWSIZE],*filetext;
 		/* variables from v5 kinit */
 #endif /* KRB5_GET_TICKETS */
 
@@ -1381,6 +1383,28 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 			fflag = 0;
 			getloginname();
 		}
+
+		retval = al_login_allowed(username,
+					  (hflag || rflag || kflag || Kflag),
+					  &filetext);
+		if (retval != AL_SUCCESS) {
+			/* Paranoia says to call getpass() if fflag is false,
+			 * but we're not paranoid. */
+			printf("You are not allowed to log in here: %s\n",
+			       al_strerror(retval, &errmem));
+			al_free_errmem(errmem);
+			if (filetext) {
+				fputs(filetext, stdout);
+				free(filetext);
+			}
+			goto bad_login;
+		}
+
+		/* Tentatively create the account prior to authentication. */
+		retval = al_acct_create(username, NULL, getpid(), 0, 0,
+					&warnings);
+		if (warnings)
+		    free(warnings);
 
 		lookup_user (username);	/* sets pwd */
 
@@ -1483,6 +1507,7 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 			destroy_tickets(); /* clean up tickets if login fails */
 
 		}
+		al_acct_revert(username, getpid());
 #endif /* KRB5_GET_TICKETS */
 #ifdef OLD_PASSWD
 		p = getpass ("Password:");
@@ -1542,6 +1567,61 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 		sleepexit(0);
 	}
 #endif
+
+#ifdef KRB5_GET_TICKETS
+		    /* Maybe telnetd got tickets for us?  */
+	if (!got_v5_tickets && have_v5_tickets (&me))
+	  got_v5_tickets = 1;
+#endif /* GET_KRB_TICKETS */
+
+#ifdef KRB4_GET_TICKETS
+	if ( login_krb4_convert && !got_v4_tickets) {
+
+
+	    if (got_v5_tickets)
+		try_convert524 (kcontext, me);
+
+	}
+#endif
+
+#ifdef SETPAG
+	try_setpag();
+#endif
+
+	retval = al_acct_create(username, namep, getpid(), got_v4_tickets, 1,
+				&warnings);
+	if (retval != AL_SUCCESS && retval != AL_WARNINGS) {
+		printf("%s!\n", al_strerror(retval, &errmem));
+		al_free_errmem(errmem);
+		sleepexit(0);
+	}
+	if (retval == AL_WARNINGS) {
+		for (cnt = 0; warnings[cnt] != AL_SUCCESS; cnt++) {
+			printf("Warning: %s\n",
+			       al_strerror(warnings[cnt], &errmem));
+			al_free_errmem(errmem);
+		}
+		free(warnings);
+	}
+	lookup_user(username);
+	if (!pwd) {
+		printf("Couldn't reread user passwd information!\n");
+		sleepexit(0);
+	}
+
+#if defined(KRB5_GET_TICKETS) || defined(KRB4_GET_TICKETS)
+#if defined(KRB5_GET_TICKETS) && defined(KRB4_GET_TICKETS)
+	if (login_krb4_get_tickets || login_krb5_get_tickets) {
+#elif defined(KRB4_GET_TICKETS)
+	if (login_krb4_get_tickets) {
+#else
+	if (login_krb5_get_tickets) {
+#endif
+	    /* Fork so that we can call kdestroy */
+	    dofork();
+	}
+#endif /* KRB4_GET_TICKETS */
+
 	if (chdir(pwd->pw_dir) < 0) {
 		printf("No directory %s!\n", pwd->pw_dir);
 		if (chdir("/"))
@@ -1572,34 +1652,6 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 	    (gr = getgrnam(TTYGRPNAME)) ? gr->gr_gid : pwd->pw_gid);
 
 	(void)chmod(ttyn, 0620);
-#ifdef KRB5_GET_TICKETS
-		    /* Maybe telnetd got tickets for us?  */
-	if (!got_v5_tickets && have_v5_tickets (&me))
-	  got_v5_tickets = 1;
-#endif /* GET_KRB_TICKETS */
-
-#ifdef KRB4_GET_TICKETS
-	if ( login_krb4_convert && !got_v4_tickets) {
-
-
-	    if (got_v5_tickets)
-		try_convert524 (kcontext, me);
-
-	}
-#endif
-
-#if defined(KRB5_GET_TICKETS) || defined(KRB4_GET_TICKETS)
-#if defined(KRB5_GET_TICKETS) && defined(KRB4_GET_TICKETS)
-	if (login_krb4_get_tickets || login_krb5_get_tickets) {
-#elif defined(KRB4_GET_TICKETS)
-	if (login_krb4_get_tickets) {
-#else
-	if (login_krb5_get_tickets) {
-#endif
-	    /* Fork so that we can call kdestroy */
-	    dofork();
-	}
-#endif /* KRB4_GET_TICKETS */
 
 /* If the user's shell does not do job control we should put it in a
    different process group than than us, and set the tty process group
@@ -1905,8 +1957,6 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 #endif /* KRB4_KLOGIN */
 		else
 			syslog(LOG_NOTICE, "ROOT LOGIN %s", tty);
-
-	afs_login ();
 
 	if (!quietlog) {
 #ifdef KRB4_KLOGIN
@@ -2380,6 +2430,8 @@ void sleepexit(eval)
 	if (login_krb4_get_tickets && krbflag)
 	    (void) destroy_tickets();
 #endif /* KRB4_GET_TICKETS */
+	if (username)
+	    al_acct_revert(username, getpid());
 	sleep((u_int)5);
 	exit(eval);
 }
@@ -2446,6 +2498,7 @@ dofork()
     /* Run destroy_tickets to destroy tickets */
     (void) destroy_tickets();		/* If this fails, we lose quietly */
     afs_cleanup ();
+    al_acct_revert(username, getpid());
 #ifdef _IBMR2
     update_ref_count(-1);
 #endif
