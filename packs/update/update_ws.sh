@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.42 2000-02-18 15:08:27 ghudson Exp $
+# $Id: update_ws.sh,v 1.43 2000-03-13 18:09:26 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -254,17 +254,27 @@ sun4,8.[01].*|sun4,7.*)
 	;;
 esac
 
-# The Indy 6.2 -> 6.5 update consumes an additional 100MB of the
-# root partition; the O2 6.3 -> 6.5 update adds 40MB to root.
+# Ensure that we have enough disk space on the IRIX root partition
+# for an OS upgrade.
 # We also require a minimum of 64MB of memory on all SGI's.
 case "$HOSTTYPE" in
 sgi)
 	case "`uname -r`" in
 	6.2)
-		rootneeded=100
+		rootneeded=130
 		;;
 	6.3)
-		rootneeded=40
+		rootneeded=70
+		;;
+	6.5)
+		case "`uname -R | awk '{ print $2; }'`" in
+		6.5.3m)
+			rootneeded=30
+			;;
+		*)
+			rootneeded=0
+			;;
+		esac
 		;;
 	*)
 		rootneeded=0
