@@ -1,3 +1,27 @@
+2001-11-20  Dan Winship  <danw@ximian.com>
+
+	* e-passwords.c (e_passwords_forget_password): Clear the password
+	in bonobo-conf as well. Fixes ximian 14893.
+
+2001-11-13  Ettore Perazzoli  <ettore@ximian.com>
+
+	* Makefile.am (libeutil_la_LIBADD): Remove `-lc'.  It makes the
+	mailer do strange things when it calls `fork()', thus breaking
+	e.g. mail sending through sendmail.
+
+2001-11-13  JP Rosevear  <jpr@ximian.com>
+ 
+ 	* e-pilot-map.c (real_e_pilot_map_insert): only insert non-0 pids
+ 	into the pid map
+ 	(e_pilot_map_insert): remove and free old keys/values here -
+ 	including possibly orphaned keys
+ 	(e_pilot_map_remove_by_uid): only free things if they should have
+ 	been found
+
+2001-11-13  JP Rosevear  <jpr@ximian.com>
+
+	* Makefile.am (libeutil_la_LIBADD): Explicitly add -lc
+
 2001-10-30  Damon Chaplin  <damon@ximian.com>
 
 	* e-time-utils.c (e_time_parse_date): added a 2nd format, with the

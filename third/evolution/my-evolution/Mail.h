@@ -84,9 +84,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_FolderInfo_MessageCount
       *GNOME_Evolution_FolderInfo_MessageCount__alloc(void);
-   extern gpointer GNOME_Evolution_FolderInfo_MessageCount__free(gpointer mem,
-								 gpointer dat,
-								 CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_FolderInfo_MessageCount__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_GNOME_Evolution_MailConfig) && !defined(_GNOME_Evolution_MailConfig_defined)
 #define ORBIT_DECL_GNOME_Evolution_MailConfig 1
@@ -128,9 +126,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_MailConfig_Identity
       *GNOME_Evolution_MailConfig_Identity__alloc(void);
-   extern gpointer GNOME_Evolution_MailConfig_Identity__free(gpointer mem,
-							     gpointer dat,
-							     CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_MailConfig_Identity__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Evolution_MailConfig_Service_defined)
 #define _GNOME_Evolution_MailConfig_Service_defined 1
@@ -156,9 +152,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_MailConfig_Service
       *GNOME_Evolution_MailConfig_Service__alloc(void);
-   extern gpointer GNOME_Evolution_MailConfig_Service__free(gpointer mem,
-							    gpointer dat,
-							    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_MailConfig_Service__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(_GNOME_Evolution_MailConfig_Account_defined)
 #define _GNOME_Evolution_MailConfig_Account_defined 1
@@ -186,9 +180,7 @@ extern "C"
 #endif
    extern GNOME_Evolution_MailConfig_Account
       *GNOME_Evolution_MailConfig_Account__alloc(void);
-   extern gpointer GNOME_Evolution_MailConfig_Account__free(gpointer mem,
-							    gpointer dat,
-							    CORBA_boolean free_strings);	/* ORBit internal use */
+   extern gpointer GNOME_Evolution_MailConfig_Account__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
 #if !defined(ORBIT_DECL_GNOME_Evolution_MailFilter) && !defined(_GNOME_Evolution_MailFilter_defined)
 #define ORBIT_DECL_GNOME_Evolution_MailFilter 1
@@ -241,11 +233,9 @@ extern "C"
    typedef struct
    {
       void *_private;
-      
-	 GNOME_Evolution_MessageList(*getMessageList) (PortableServer_Servant
-						       _servant,
-						       CORBA_Environment *
-						       ev);
+       GNOME_Evolution_MessageList(*getMessageList) (PortableServer_Servant
+						     _servant,
+						     CORBA_Environment * ev);
    }
    POA_GNOME_Evolution_FolderBrowser__epv;
    typedef struct

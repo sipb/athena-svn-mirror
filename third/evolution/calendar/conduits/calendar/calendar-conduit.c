@@ -261,14 +261,16 @@ get_default_timezone (void)
 
 	CORBA_exception_free (&ev);
 
-	location = bonobo_config_get_string (db, "/Calendar/Display/Timezone", NULL);
-	if (location == NULL)
-		goto cleanup;
+	location = bonobo_config_get_string_with_default (db,
+		"/Calendar/Display/Timezone", "UTC", NULL);
+	if (!location || !location[0]) {
+		g_free (location);
+		location = g_strdup ("UTC");
+	}
 	
 	timezone = icaltimezone_get_builtin_timezone (location);
 	g_free (location);
 
- cleanup:
 	bonobo_object_release_unref (db, NULL);
 
 	return timezone;	
@@ -974,8 +976,6 @@ pre_sync (GnomePilotConduit *conduit,
 
 	ctxt->dbi = dbi;	
 	ctxt->client = NULL;
-
-	gnome_pilot_conduit_warning (conduit, "Random warning");
 
 	if (start_calendar_server (ctxt) != 0) {
 		WARN(_("Could not start wombat server"));

@@ -3,19 +3,19 @@
 # Gaute Hvoslef Kvalnes <ai98ghk@stud.hib.no>, 2000.
 # Kjartan Maraas  <kmaraas@gnome.org>, 2001.
 # Roy-Magne Mo <rmo@sunnmore.net>, 2001
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-0.11\n"
-"POT-Creation-Date: 2001-11-05 21:34-0500\n"
+"POT-Creation-Date: 2001-11-21 15:19-0500\n"
 "PO-Revision-Date: 2000-10-31 20:17+02:00\n"
 "Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
-"Language-Team: Norwegian (Nynorsk)\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: addressbook/backend/ebook/GNOME_Evolution_Addressbook_LDIF_Importer.oaf.in.h:1
-#, fuzzy
 msgid "Factory to import LDIF files into Evolution."
 msgstr "Øydelagd oppsettfil."
 
@@ -48,7 +48,7 @@ msgid "Email"
 msgstr "E-post"
 
 #: addressbook/backend/ebook/e-card-simple.c:63
-#: addressbook/gui/contact-editor/e-contact-editor.c:1651
+#: addressbook/gui/contact-editor/e-contact-editor.c:1659
 msgid "Primary"
 msgstr "Primær"
 
@@ -59,15 +59,15 @@ msgstr "Privat"
 
 #: addressbook/backend/ebook/e-card-simple.c:64
 #: addressbook/backend/ebook/e-card-simple.c:94
-#: addressbook/gui/contact-editor/e-contact-editor.c:1636
+#: addressbook/gui/contact-editor/e-contact-editor.c:1644
 #: addressbook/gui/widgets/e-addressbook-view.c:883
 msgid "Assistant"
 msgstr "Assistent"
 
 #: addressbook/backend/ebook/e-card-simple.c:65
 #: addressbook/backend/ebook/e-card-simple.c:70
-#: addressbook/gui/contact-editor/e-contact-editor.c:1637
-#: addressbook/gui/contact-editor/e-contact-editor.c:1704
+#: addressbook/gui/contact-editor/e-contact-editor.c:1645
+#: addressbook/gui/contact-editor/e-contact-editor.c:1712
 msgid "Business"
 msgstr "Firma"
 
@@ -78,12 +78,12 @@ msgid "Bus"
 msgstr "Oppteke"
 
 #: addressbook/backend/ebook/e-card-simple.c:66
-#: addressbook/gui/contact-editor/e-contact-editor.c:1640
+#: addressbook/gui/contact-editor/e-contact-editor.c:1648
 msgid "Callback"
 msgstr "Ring tilbake"
 
 #: addressbook/backend/ebook/e-card-simple.c:67
-#: addressbook/gui/contact-editor/e-contact-editor.c:1642
+#: addressbook/gui/contact-editor/e-contact-editor.c:1650
 msgid "Company"
 msgstr "Firma"
 
@@ -94,8 +94,8 @@ msgstr "Kopier"
 
 #: addressbook/backend/ebook/e-card-simple.c:68
 #: addressbook/backend/ebook/e-card-simple.c:71
-#: addressbook/gui/contact-editor/e-contact-editor.c:1643
-#: addressbook/gui/contact-editor/e-contact-editor.c:1705
+#: addressbook/gui/contact-editor/e-contact-editor.c:1651
+#: addressbook/gui/contact-editor/e-contact-editor.c:1713
 msgid "Home"
 msgstr "Heim"
 
@@ -109,17 +109,17 @@ msgid "Org"
 msgstr "Org"
 
 #: addressbook/backend/ebook/e-card-simple.c:72
-#: addressbook/gui/contact-editor/e-contact-editor.c:1647
+#: addressbook/gui/contact-editor/e-contact-editor.c:1655
 msgid "Mobile"
 msgstr "Mobil"
 
 #: addressbook/backend/ebook/e-card-simple.c:73
-#: addressbook/gui/contact-editor/e-contact-editor.c:1641
+#: addressbook/gui/contact-editor/e-contact-editor.c:1649
 msgid "Car"
 msgstr "Bil"
 
 #: addressbook/backend/ebook/e-card-simple.c:74
-#: addressbook/gui/contact-editor/e-contact-editor.c:1639
+#: addressbook/gui/contact-editor/e-contact-editor.c:1647
 #: addressbook/gui/widgets/e-addressbook-view.c:863
 msgid "Business Fax"
 msgstr "Firma-fax"
@@ -130,13 +130,13 @@ msgid "Bus Fax"
 msgstr "Firma-fax"
 
 #: addressbook/backend/ebook/e-card-simple.c:75
-#: addressbook/gui/contact-editor/e-contact-editor.c:1645
+#: addressbook/gui/contact-editor/e-contact-editor.c:1653
 #: addressbook/gui/widgets/e-addressbook-view.c:864
 msgid "Home Fax"
 msgstr "Heime-faks"
 
 #: addressbook/backend/ebook/e-card-simple.c:76
-#: addressbook/gui/contact-editor/e-contact-editor.c:1638
+#: addressbook/gui/contact-editor/e-contact-editor.c:1646
 msgid "Business 2"
 msgstr "Firma 2"
 
@@ -146,44 +146,44 @@ msgid "Bus 2"
 msgstr "Oppteke"
 
 #: addressbook/backend/ebook/e-card-simple.c:77
-#: addressbook/gui/contact-editor/e-contact-editor.c:1644
+#: addressbook/gui/contact-editor/e-contact-editor.c:1652
 msgid "Home 2"
 msgstr "Heim 2"
 
 #: addressbook/backend/ebook/e-card-simple.c:78
-#: addressbook/gui/contact-editor/e-contact-editor.c:1646
+#: addressbook/gui/contact-editor/e-contact-editor.c:1654
 #: addressbook/gui/widgets/e-addressbook-view.c:867
 msgid "ISDN"
 msgstr "ISDN"
 
 #: addressbook/backend/ebook/e-card-simple.c:79
 #: addressbook/backend/ebook/e-card-simple.c:85
-#: addressbook/gui/contact-editor/e-contact-editor.c:1648
-#: addressbook/gui/contact-editor/e-contact-editor.c:1706
+#: addressbook/gui/contact-editor/e-contact-editor.c:1656
+#: addressbook/gui/contact-editor/e-contact-editor.c:1714
 #: mail/mail-config.glade.h:49
 msgid "Other"
 msgstr "Anna"
 
 #: addressbook/backend/ebook/e-card-simple.c:80
-#: addressbook/gui/contact-editor/e-contact-editor.c:1649
+#: addressbook/gui/contact-editor/e-contact-editor.c:1657
 #: addressbook/gui/widgets/e-addressbook-view.c:869
 msgid "Other Fax"
 msgstr "Alternativ faks"
 
 #: addressbook/backend/ebook/e-card-simple.c:81
-#: addressbook/gui/contact-editor/e-contact-editor.c:1650
+#: addressbook/gui/contact-editor/e-contact-editor.c:1658
 #: addressbook/gui/widgets/e-addressbook-view.c:870
 msgid "Pager"
 msgstr "Personsøkjar"
 
 #: addressbook/backend/ebook/e-card-simple.c:82
-#: addressbook/gui/contact-editor/e-contact-editor.c:1652
+#: addressbook/gui/contact-editor/e-contact-editor.c:1660
 #: addressbook/gui/widgets/e-addressbook-view.c:871
 msgid "Radio"
 msgstr "Radio"
 
 #: addressbook/backend/ebook/e-card-simple.c:83
-#: addressbook/gui/contact-editor/e-contact-editor.c:1653
+#: addressbook/gui/contact-editor/e-contact-editor.c:1661
 #: addressbook/gui/widgets/e-addressbook-view.c:872
 msgid "Telex"
 msgstr "Telex"
@@ -196,7 +196,7 @@ msgstr "TTY/TDD-telefon"
 
 #: addressbook/backend/ebook/e-card-simple.c:86
 #: addressbook/gui/component/e-address-popup.c:484
-#: addressbook/gui/contact-editor/e-contact-editor.c:1679
+#: addressbook/gui/contact-editor/e-contact-editor.c:1687
 #: addressbook/gui/widgets/e-addressbook-view.c:875
 #, fuzzy
 msgid "Email 2"
@@ -204,7 +204,7 @@ msgstr "E-post 2"
 
 #: addressbook/backend/ebook/e-card-simple.c:87
 #: addressbook/gui/component/e-address-popup.c:494
-#: addressbook/gui/contact-editor/e-contact-editor.c:1680
+#: addressbook/gui/contact-editor/e-contact-editor.c:1688
 #: addressbook/gui/widgets/e-addressbook-view.c:876
 msgid "Email 3"
 msgstr "E-post 3"
@@ -212,7 +212,7 @@ msgstr "E-post 3"
 #: addressbook/backend/ebook/e-card-simple.c:88
 #: addressbook/gui/widgets/e-addressbook-view.c:877
 msgid "Web Site"
-msgstr ""
+msgstr "Nettstad"
 
 #: addressbook/backend/ebook/e-card-simple.c:88
 msgid "Url"
@@ -281,12 +281,11 @@ msgstr "Ektefelle"
 #: addressbook/backend/ebook/e-card-simple.c:97
 #: addressbook/gui/widgets/e-addressbook-view.c:886
 msgid "Note"
-msgstr "Notat"
+msgstr "Merknad"
 
 #: addressbook/backend/ebook/e-card-simple.c:98
-#, fuzzy
 msgid "Calendar URI"
-msgstr "Skriv ut alle"
+msgstr "Kalendar URI"
 
 #: addressbook/backend/ebook/e-card-simple.c:98
 msgid "CALUri"
@@ -328,9 +327,8 @@ msgid "%x"
 msgstr "%x"
 
 #: addressbook/backend/ebook/e-card.c:3712
-#, fuzzy
 msgid "Card: "
-msgstr "Teikn"
+msgstr "Kort:"
 
 #: addressbook/backend/ebook/e-card.c:3714
 #, fuzzy
@@ -576,7 +574,7 @@ msgstr "Kort 1:"
 #: addressbook/conduit/address-conduit.c:1533
 #: addressbook/gui/component/addressbook-factory.c:50
 #: calendar/conduits/calendar/calendar-conduit.c:1449
-#: calendar/conduits/todo/todo-conduit.c:1128
+#: calendar/conduits/todo/todo-conduit.c:1130
 #: calendar/gui/alarm-notify/notify-main.c:171 calendar/gui/main.c:62
 #: tools/evolution-addressbook-export.c:60
 #: tools/evolution-addressbook-import.c:86
@@ -584,7 +582,7 @@ msgid "Could not initialize Bonobo"
 msgstr "Kunne ikkje initialisere Bonobo"
 
 #: addressbook/backend/pas/pas-backend-file.c:259
-#: addressbook/backend/pas/pas-backend-ldap.c:2212
+#: addressbook/backend/pas/pas-backend-ldap.c:2215
 msgid "Searching..."
 msgstr "Søkjer ..."
 
@@ -629,11 +627,11 @@ msgstr "&Suspender ..."
 msgid "Modifying card from LDAP server..."
 msgstr ""
 
-#: addressbook/backend/pas/pas-backend-ldap.c:2157
+#: addressbook/backend/pas/pas-backend-ldap.c:2160
 msgid "Receiving LDAP search results..."
 msgstr ""
 
-#: addressbook/backend/pas/pas-backend-ldap.c:2162
+#: addressbook/backend/pas/pas-backend-ldap.c:2165
 msgid "Restarting search."
 msgstr ""
 
@@ -647,14 +645,14 @@ msgstr ""
 
 #: addressbook/conduit/address-conduit.c:1089
 #: calendar/conduits/calendar/calendar-conduit.c:981
-#: calendar/conduits/todo/todo-conduit.c:692
+#: calendar/conduits/todo/todo-conduit.c:694
 #, fuzzy
 msgid "Could not start wombat server"
 msgstr "Kunne ikkje starta underprosess."
 
 #: addressbook/conduit/address-conduit.c:1090
 #: calendar/conduits/calendar/calendar-conduit.c:982
-#: calendar/conduits/todo/todo-conduit.c:693
+#: calendar/conduits/todo/todo-conduit.c:695
 #, fuzzy
 msgid "Could not start wombat"
 msgstr "Kunne ikkje starta %1."
@@ -711,10 +709,10 @@ msgstr "Legg adresse til adresseboka"
 
 #: addressbook/gui/component/addressbook-component.c:71
 #: calendar/gui/dialogs/comp-editor-util.c:310
-#: calendar/gui/dialogs/comp-editor-util.c:366 shell/e-shortcuts.c:1061
-#, fuzzy
+#: calendar/gui/dialogs/comp-editor-util.c:366 shell/e-local-storage.c:172
+#: shell/e-shortcuts.c:1061
 msgid "Contacts"
-msgstr "&Innhald ..."
+msgstr "Kontakter"
 
 #: addressbook/gui/component/addressbook-component.c:71
 #, fuzzy
@@ -722,9 +720,8 @@ msgid "Folder containing contact information"
 msgstr "Les filinformasjon"
 
 #: addressbook/gui/component/addressbook-component.c:73
-#, fuzzy
 msgid "LDAP Server"
-msgstr "Tenar:"
+msgstr "LDAP-tenar"
 
 #: addressbook/gui/component/addressbook-component.c:73
 #, fuzzy
@@ -733,9 +730,8 @@ msgstr "Les filinformasjon"
 
 #: addressbook/gui/component/addressbook-component.c:526
 #: ui/evolution-addressbook.xml.h:11
-#, fuzzy
 msgid "New Contact"
-msgstr "&Ny kontakt"
+msgstr "Ny kontakt"
 
 #: addressbook/gui/component/addressbook-component.c:526
 #, fuzzy
@@ -759,12 +755,11 @@ msgstr "KDE adressebok"
 
 #: addressbook/gui/component/addressbook-config.glade.h:1
 msgid "389"
-msgstr ""
+msgstr "389"
 
 #: addressbook/gui/component/addressbook-config.glade.h:2
-#, fuzzy
 msgid "Account Name"
-msgstr "Små ikon"
+msgstr "Kontonamn"
 
 #: addressbook/gui/component/addressbook-config.glade.h:3
 #, fuzzy
@@ -791,9 +786,8 @@ msgid "Basic"
 msgstr "Enkel"
 
 #: addressbook/gui/component/addressbook-config.glade.h:8
-#, fuzzy
 msgid "De_lete"
-msgstr "Slett"
+msgstr "S_lett"
 
 #: addressbook/gui/component/addressbook-config.glade.h:9
 msgid "Email Address:"
@@ -805,7 +799,6 @@ msgid ""
 msgstr ""
 
 #: addressbook/gui/component/addressbook-config.glade.h:11
-#, fuzzy
 msgid "One"
 msgstr "Ein"
 
@@ -864,9 +857,8 @@ msgid ""
 msgstr ""
 
 #: addressbook/gui/component/addressbook-config.glade.h:23
-#, fuzzy
 msgid "_Account name:"
-msgstr "Små ikon"
+msgstr "Konton_amn:"
 
 #: addressbook/gui/component/addressbook-config.glade.h:24
 #: addressbook/gui/contact-editor/contact-editor.glade.h:19
@@ -896,15 +888,18 @@ msgid "_Port:"
 msgstr "_Port:"
 
 #: addressbook/gui/component/addressbook-config.glade.h:28
-#, fuzzy
 msgid "_Server name:"
-msgstr "Lagra melding"
+msgstr "_Tenarnamn;"
 
 #: addressbook/gui/component/addressbook-factory.c:70
 #: calendar/gui/alarm-notify/notify-main.c:174 calendar/gui/main.c:134
 #, fuzzy
 msgid "Could not initialize gnome-vfs"
 msgstr "Kunne ikkje initiere Bonobo"
+
+#: addressbook/gui/component/addressbook-storage.c:167
+msgid "Other Contacts"
+msgstr "Andre kontakter"
 
 #: addressbook/gui/component/addressbook.c:468
 #, fuzzy
@@ -941,45 +936,54 @@ msgstr ""
 msgid "Enter password for %s (user %s)"
 msgstr "Oppgi ditt OpenPGP-passord"
 
-#: addressbook/gui/component/addressbook.c:760
+#: addressbook/gui/component/addressbook.c:786
 #: calendar/gui/cal-search-bar.c:55
 msgid "Any field contains"
 msgstr ""
 
-#: addressbook/gui/component/addressbook.c:761
+#: addressbook/gui/component/addressbook.c:787
 msgid "Name contains"
 msgstr ""
 
-#: addressbook/gui/component/addressbook.c:762
+#: addressbook/gui/component/addressbook.c:788
 #, fuzzy
 msgid "Email contains"
 msgstr "Små ikon"
 
-#: addressbook/gui/component/addressbook.c:763
+#: addressbook/gui/component/addressbook.c:789
 #: calendar/gui/cal-search-bar.c:59
-#, fuzzy
 msgid "Category is"
-msgstr "Kategoriar"
+msgstr "Kategori er"
 
 #. We attach subitems below
-#: addressbook/gui/component/addressbook.c:764 widgets/misc/e-filter-bar.h:104
+#: addressbook/gui/component/addressbook.c:790 widgets/misc/e-filter-bar.h:97
+#: widgets/misc/e-filter-bar.h:104
 msgid "Advanced..."
 msgstr "Avansert ..."
 
 #. All, unmatched, separator
-#: addressbook/gui/component/addressbook.c:1005
+#: addressbook/gui/component/addressbook.c:1031
 #: calendar/gui/cal-search-bar.c:412
 #, fuzzy
 msgid "Any Category"
 msgstr "Kategoriar"
 
-#: addressbook/gui/component/addressbook.c:1045
+#: addressbook/gui/component/addressbook.c:1071
 msgid "The URI that the Folder Browser will display"
 msgstr ""
 
+#.
+#. * This is the code for the UI thingie that lets you manipulate the e-mail
+#. * addresses (and *only* the e-mail addresses) associated with an existing
+#. * card.
+#.
+#: addressbook/gui/component/e-address-popup.c:178
+msgid "(none)"
+msgstr "(ingen)"
+
 #: addressbook/gui/component/e-address-popup.c:474
 #: addressbook/gui/contact-editor/contact-editor.glade.h:17
-#: addressbook/gui/contact-editor/e-contact-editor.c:1678
+#: addressbook/gui/contact-editor/e-contact-editor.c:1686
 msgid "Primary Email"
 msgstr "Primær e-post"
 
@@ -999,9 +1003,8 @@ msgid "Add address to existing contact \"%s\""
 msgstr ""
 
 #: addressbook/gui/component/e-address-popup.c:891
-#, fuzzy
 msgid "Querying Addressbook..."
-msgstr "A&dressebok ..."
+msgstr "Spør a&dresseboka ..."
 
 #: addressbook/gui/component/e-address-popup.c:973
 #: addressbook/gui/component/e-address-widget.c:387
@@ -1043,7 +1046,7 @@ msgstr ""
 #: addressbook/gui/component/select-names/e-select-names-popup.c:163
 #: addressbook/gui/component/select-names/e-select-names.c:777
 #: composer/e-msg-composer-attachment-bar.c:499 filter/filter-filter.c:436
-#: filter/filter-rule.c:625 shell/e-shortcuts-view.c:180
+#: filter/filter-rule.c:637 shell/e-shortcuts-view.c:180
 msgid "Remove"
 msgstr "Fjern"
 
@@ -1161,12 +1164,13 @@ msgid "Ca_tegories..."
 msgstr "Kategoriar ..."
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:5
+#, fuzzy
 msgid "Collaboration"
-msgstr ""
+msgstr "Samarbeid"
 
 #. Construct the app
 #: addressbook/gui/contact-editor/contact-editor.glade.h:6
-#: addressbook/gui/contact-editor/e-contact-editor.c:1285
+#: addressbook/gui/contact-editor/e-contact-editor.c:1293
 #, fuzzy
 msgid "Contact Editor"
 msgstr "Comment=X-redigering"
@@ -1218,9 +1222,8 @@ msgid "Wants to receive _HTML mail"
 msgstr ""
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:20
-#, fuzzy
 msgid "_Address..."
-msgstr "Adresse"
+msgstr "_Adresse ..."
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:21
 #, fuzzy
@@ -1246,8 +1249,8 @@ msgstr "&Innhald ..."
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:25
 #: calendar/gui/dialogs/alarm-page.glade.h:9
-#: calendar/gui/dialogs/meeting-page.c:704 filter/filter.glade.h:8
-#: mail/folder-browser.c:1505 mail/mail-config.glade.h:96
+#: calendar/gui/dialogs/meeting-page.c:707 filter/filter.glade.h:8
+#: mail/folder-browser.c:1468 mail/mail-config.glade.h:96
 #: ui/evolution-calendar.xml.h:38 ui/evolution-mail-message.xml.h:94
 #: ui/evolution-tasks.xml.h:15 ui/evolution.xml.h:35
 msgid "_Delete"
@@ -1259,19 +1262,16 @@ msgid "_Department:"
 msgstr "Avdeling:"
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:27
-#, fuzzy
 msgid "_Full Name..."
-msgstr "Fullt namn"
+msgstr "_Fullt namn ..."
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:28
-#, fuzzy
 msgid "_Home"
-msgstr "Heim"
+msgstr "_Heim"
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:29
-#, fuzzy
 msgid "_Job title:"
-msgstr "Jobb-tittel"
+msgstr "_Jobb-tittel:"
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:30
 msgid "_Manager's Name:"
@@ -1286,9 +1286,8 @@ msgid "_Nickname:"
 msgstr "Kalle_namn:"
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:33
-#, fuzzy
 msgid "_Office:"
-msgstr "K&ontor:"
+msgstr "K_ontor:"
 
 #: addressbook/gui/contact-editor/contact-editor.glade.h:34
 #, fuzzy
@@ -1317,19 +1316,30 @@ msgstr "&WINS-adresse:"
 
 #: addressbook/gui/contact-editor/e-contact-editor-confirm-delete.glade.h:1
 #, fuzzy
-msgid "Delete Contact?"
-msgstr "Slett kolonne"
+msgid ""
+"Are you sure you want\n"
+"to delete this contact?"
+msgstr "Er du sikker på at du vil sletta denne klassen?"
 
-#: addressbook/gui/contact-editor/e-contact-editor.c:755
+#: addressbook/gui/contact-editor/e-contact-editor-confirm-delete.glade.h:3
+msgid "Delete Contact?"
+msgstr "Slett kontakt?"
+
+#: addressbook/gui/contact-editor/e-contact-editor.c:756
+#, fuzzy
+msgid "Category editor not available."
+msgstr "Inga skildring tilgjengeleg"
+
+#: addressbook/gui/contact-editor/e-contact-editor.c:763
 msgid "This contact belongs to these categories:"
 msgstr ""
 
-#: addressbook/gui/contact-editor/e-contact-editor.c:1654
+#: addressbook/gui/contact-editor/e-contact-editor.c:1662
 #, fuzzy
 msgid "TTY/TDD"
 msgstr "TTY/TDD-telefon"
 
-#: addressbook/gui/contact-editor/e-contact-editor.c:2276
+#: addressbook/gui/contact-editor/e-contact-editor.c:2284
 #, fuzzy, c-format
 msgid "Could not find widget for a field: `%s'"
 msgstr ""
@@ -1348,14 +1358,12 @@ msgstr "Rediger fil"
 
 #: addressbook/gui/contact-editor/e-contact-quick-add.c:326
 #: addressbook/gui/widgets/e-addressbook-view.c:850
-#, fuzzy
 msgid "Full Name"
 msgstr "Fullt namn"
 
 #: addressbook/gui/contact-editor/e-contact-quick-add.c:332
-#, fuzzy
 msgid "E-mail"
-msgstr "E-post 2"
+msgstr "E-post"
 
 #. This is a filename. Translators take note.
 #: addressbook/gui/contact-editor/e-contact-save-as.c:106
@@ -1380,17 +1388,16 @@ msgid "Address _2:"
 msgstr "Adresse"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:2
-#, fuzzy
 msgid "Afghanistan"
-msgstr "Namn på assistent"
+msgstr "Afganistan"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:3
 msgid "Albania"
-msgstr ""
+msgstr "Albania"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:4
 msgid "Algeria"
-msgstr ""
+msgstr "Algerie"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:5
 msgid "American Samoa"
@@ -1398,11 +1405,11 @@ msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:6
 msgid "Andorra"
-msgstr ""
+msgstr "Andorra"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:7
 msgid "Angola"
-msgstr ""
+msgstr "Angola"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:8
 msgid "Anguilla"
@@ -1458,12 +1465,10 @@ msgid "Barbados"
 msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:21
-#, fuzzy
 msgid "Belarus"
-msgstr "år"
+msgstr "Kviterussland"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:22
-#, fuzzy
 msgid "Belgium"
 msgstr "Belgia"
 
@@ -1519,7 +1524,6 @@ msgid "Brunei Darussalam"
 msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:35
-#, fuzzy
 msgid "Bulgaria"
 msgstr "Bulgaria"
 
@@ -1720,12 +1724,10 @@ msgid "Gambia"
 msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:83
-#, fuzzy
 msgid "Georgia"
 msgstr "Georgia"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:84
-#, fuzzy
 msgid "Germany"
 msgstr "Tyskland"
 
@@ -1831,12 +1833,10 @@ msgid "Italy"
 msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:108
-#, fuzzy
 msgid "Jamaica"
 msgstr "Jamaica"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:109
-#, fuzzy
 msgid "Japan"
 msgstr "Japansk"
 
@@ -1997,7 +1997,7 @@ msgstr "Personsøkjar"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:145
 msgid "Namibia"
-msgstr ""
+msgstr "Namibia"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:146
 msgid "Nauru"
@@ -2023,9 +2023,8 @@ msgid "New Caledonia"
 msgstr "&Ny kontakt"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:151
-#, fuzzy
 msgid "New Zealand"
-msgstr "New Zealand"
+msgstr "Ny Zealand"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:152
 msgid "Nicaragua"
@@ -2196,7 +2195,6 @@ msgid "Slovakia"
 msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:191
-#, fuzzy
 msgid "Slovenia"
 msgstr "Slovenia"
 
@@ -2286,7 +2284,6 @@ msgid "Tokelau"
 msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:211
-#, fuzzy
 msgid "Tonga"
 msgstr "Tonga"
 
@@ -2333,7 +2330,6 @@ msgid "United Arab Emirates"
 msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:222
-#, fuzzy
 msgid "United Kingdom"
 msgstr "Storbritannia"
 
@@ -2385,7 +2381,6 @@ msgid "Yemen"
 msgstr "Send"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:234
-#, fuzzy
 msgid "Yugoslavia"
 msgstr "Jugoslavia"
 
@@ -2398,9 +2393,8 @@ msgid "Zimbabwe"
 msgstr ""
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:237
-#, fuzzy
 msgid "_Address:"
-msgstr "Adresse"
+msgstr "_Adresse:"
 
 #: addressbook/gui/contact-editor/fulladdr.glade.h:238
 #, fuzzy
@@ -2436,7 +2430,6 @@ msgid "Esq."
 msgstr ""
 
 #: addressbook/gui/contact-editor/fullname.glade.h:4
-#, fuzzy
 msgid "I"
 msgstr "I"
 
@@ -2446,11 +2439,11 @@ msgstr ""
 
 #: addressbook/gui/contact-editor/fullname.glade.h:6
 msgid "III"
-msgstr ""
+msgstr "III"
 
 #: addressbook/gui/contact-editor/fullname.glade.h:7
 msgid "Jr."
-msgstr ""
+msgstr "Jr."
 
 #: addressbook/gui/contact-editor/fullname.glade.h:8
 #, fuzzy
@@ -2467,11 +2460,11 @@ msgstr ""
 
 #: addressbook/gui/contact-editor/fullname.glade.h:11
 msgid "Ms."
-msgstr ""
+msgstr "Fr."
 
 #: addressbook/gui/contact-editor/fullname.glade.h:12
 msgid "Sr."
-msgstr ""
+msgstr "Sr."
 
 #: addressbook/gui/contact-editor/fullname.glade.h:13
 #, fuzzy
@@ -2494,9 +2487,8 @@ msgid "_Suffix:"
 msgstr "Etterstaving"
 
 #: addressbook/gui/contact-editor/fullname.glade.h:17
-#, fuzzy
 msgid "_Title:"
-msgstr "Tittel:"
+msgstr "_Tittel:"
 
 #: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:1
 #, fuzzy
@@ -2518,7 +2510,7 @@ msgstr ""
 #: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:6
 #: calendar/gui/dialogs/recurrence-page.glade.h:12 filter/filter.glade.h:10
 msgid "_Remove"
-msgstr "_Fjern"
+msgstr "Fje_rn"
 
 #: addressbook/gui/contact-list-editor/contact-list-editor.glade.h:7
 #, fuzzy
@@ -2669,7 +2661,7 @@ msgid "Success"
 msgstr "Vellukka"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:34
-#: camel/providers/imap/camel-imap-command.c:340 shell/e-shell.c:1894
+#: camel/providers/imap/camel-imap-command.c:355 shell/e-shell.c:1894
 #: shell/e-storage.c:528 shell/evolution-shell-component.c:1044
 msgid "Unknown error"
 msgstr "Ukjend feil"
@@ -2702,9 +2694,10 @@ msgstr ""
 "%1"
 
 #: addressbook/gui/widgets/e-addressbook-util.c:40
-#: calendar/gui/calendar-model.c:763 calendar/gui/calendar-model.c:1193
-#: calendar/gui/dialogs/task-details-page.glade.h:3 camel/camel-service.c:607
-#: camel/camel-service.c:643
+#: calendar/gui/calendar-model.c:763 calendar/gui/calendar-model.c:1197
+#: calendar/gui/dialogs/task-details-page.glade.h:3
+#: calendar/gui/e-calendar-table.c:481 calendar/gui/print.c:2255
+#: camel/camel-service.c:607 camel/camel-service.c:643
 msgid "Cancelled"
 msgstr "Avbroten"
 
@@ -2877,9 +2870,8 @@ msgid "Bottom:"
 msgstr "Botn:"
 
 #: addressbook/printing/e-contact-print.glade.h:6
-#, fuzzy
 msgid "Dimensions:"
-msgstr "Dimensjonar"
+msgstr "Mål:"
 
 #: addressbook/printing/e-contact-print.glade.h:7
 #, fuzzy
@@ -3062,29 +3054,33 @@ msgid "Untitled appointment"
 msgstr "&Endra avtale ..."
 
 #: calendar/cal-util/cal-util.c:498 calendar/cal-util/cal-util.c:520
-#: calendar/gui/dialogs/task-details-page.glade.h:6 mail/message-list.c:651
+#: calendar/gui/dialogs/task-details-page.glade.h:6
+#: calendar/gui/e-calendar-table.c:405 mail/message-list.c:651
 msgid "High"
 msgstr "Høg"
 
 #: calendar/cal-util/cal-util.c:500 calendar/cal-util/cal-util.c:522
-#: calendar/gui/calendar-model.c:1703
-#: calendar/gui/dialogs/task-details-page.glade.h:9 mail/message-list.c:650
+#: calendar/gui/calendar-model.c:1711
+#: calendar/gui/dialogs/task-details-page.glade.h:9
+#: calendar/gui/e-calendar-table.c:406 mail/message-list.c:650
 msgid "Normal"
 msgstr "Vanleg"
 
 #: calendar/cal-util/cal-util.c:502 calendar/cal-util/cal-util.c:524
-#: calendar/gui/dialogs/task-details-page.glade.h:8 mail/message-list.c:649
+#: calendar/gui/dialogs/task-details-page.glade.h:8
+#: calendar/gui/e-calendar-table.c:407 mail/message-list.c:649
 msgid "Low"
 msgstr "Låg"
 
 #. An empty string is the same as 'None'.
 #: calendar/cal-util/cal-util.c:518
 #: calendar/gui/dialogs/task-details-page.glade.h:13
+#: calendar/gui/e-calendar-table.c:408
 msgid "Undefined"
-msgstr ""
+msgstr "Udefinert"
 
-#: calendar/conduits/calendar/calendar-conduit.c:935
-#: calendar/conduits/todo/todo-conduit.c:647
+#: calendar/conduits/calendar/calendar-conduit.c:937
+#: calendar/conduits/todo/todo-conduit.c:649
 #, fuzzy
 msgid "Error while communicating with calendar server"
 msgstr "Feil ved tilkopling til tenar."
@@ -3095,8 +3091,8 @@ msgstr "Feil ved tilkopling til tenar."
 msgid "Could not read pilot's Calendar application block"
 msgstr "Kunne ikkje lasta kalender '%1'.\n"
 
-#: calendar/conduits/todo/todo-conduit.c:754
-#: calendar/conduits/todo/todo-conduit.c:757
+#: calendar/conduits/todo/todo-conduit.c:756
+#: calendar/conduits/todo/todo-conduit.c:759
 msgid "Could not read pilot's ToDo application block"
 msgstr ""
 
@@ -3160,10 +3156,24 @@ msgstr ""
 msgid "Factory for the alarm notification service"
 msgstr ""
 
+#: calendar/gui/alarm-notify/alarm-notify-dialog.c:216
+#, fuzzy
+msgid "Starting:"
+msgstr "Innstillingar"
+
+#: calendar/gui/alarm-notify/alarm-notify-dialog.c:218
+msgid "Ending:"
+msgstr ""
+
 #: calendar/gui/alarm-notify/alarm-notify-dialog.c:231
 #, fuzzy
 msgid "invalid time"
 msgstr "Slutt-tid:"
+
+#: calendar/gui/alarm-notify/alarm-notify-dialog.c:276
+#, fuzzy
+msgid "Evolution Alarm"
+msgstr "Evolution"
 
 #: calendar/gui/alarm-notify/alarm-notify-dialog.c:371
 #, fuzzy, c-format
@@ -3273,16 +3283,18 @@ msgid ""
 "Could not create the calendar view.  Please check your ORBit and OAF setup."
 msgstr ""
 
-#: calendar/gui/calendar-model.c:418 calendar/gui/calendar-model.c:984
+#: calendar/gui/calendar-model.c:418 calendar/gui/calendar-model.c:988
+#: calendar/gui/e-calendar-table.c:384
 msgid "Private"
 msgstr "Privat"
 
-#: calendar/gui/calendar-model.c:421 calendar/gui/calendar-model.c:986
+#: calendar/gui/calendar-model.c:421 calendar/gui/calendar-model.c:990
+#: calendar/gui/e-calendar-table.c:385
 #, fuzzy
 msgid "Confidential"
 msgstr "Eksponentiell"
 
-#: calendar/gui/calendar-model.c:424
+#: calendar/gui/calendar-model.c:424 calendar/gui/e-calendar-table.c:383
 #, fuzzy
 msgid "Public"
 msgstr "Praksis"
@@ -3305,32 +3317,37 @@ msgstr "E"
 msgid "W"
 msgstr "RW"
 
-#: calendar/gui/calendar-model.c:603 calendar/gui/calendar-model.c:1143
+#: calendar/gui/calendar-model.c:603 calendar/gui/calendar-model.c:1147
+#: calendar/gui/e-calendar-table.c:457
 msgid "Free"
 msgstr "Ledig"
 
-#: calendar/gui/calendar-model.c:605 calendar/gui/e-meeting-time-sel.c:427
+#: calendar/gui/calendar-model.c:605 calendar/gui/e-calendar-table.c:458
+#: calendar/gui/e-meeting-time-sel.c:427
 #: shell/evolution-shell-component.c:1029
 msgid "Busy"
 msgstr "Oppteke"
 
-#: calendar/gui/calendar-model.c:754 calendar/gui/calendar-model.c:1187
+#: calendar/gui/calendar-model.c:754 calendar/gui/calendar-model.c:1191
 #: calendar/gui/dialogs/task-details-page.glade.h:10
+#: calendar/gui/e-calendar-table.c:478 calendar/gui/print.c:2246
 msgid "Not Started"
 msgstr "Ikkje starta"
 
-#: calendar/gui/calendar-model.c:757 calendar/gui/calendar-model.c:1189
+#: calendar/gui/calendar-model.c:757 calendar/gui/calendar-model.c:1193
 #: calendar/gui/dialogs/task-details-page.glade.h:7
+#: calendar/gui/e-calendar-table.c:479 calendar/gui/print.c:2249
 msgid "In Progress"
 msgstr "Under arbeid"
 
-#: calendar/gui/calendar-model.c:760 calendar/gui/calendar-model.c:1191
+#: calendar/gui/calendar-model.c:760 calendar/gui/calendar-model.c:1195
 #: calendar/gui/dialogs/task-details-page.glade.h:4
-#: calendar/gui/e-meeting-model.c:328 calendar/gui/e-meeting-model.c:351
+#: calendar/gui/e-calendar-table.c:480 calendar/gui/e-meeting-model.c:329
+#: calendar/gui/e-meeting-model.c:352 calendar/gui/print.c:2252
 msgid "Completed"
 msgstr "Ferdig"
 
-#: calendar/gui/calendar-model.c:1048
+#: calendar/gui/calendar-model.c:1052
 msgid ""
 "The geographical position must be entered in the format: \n"
 "\n"
@@ -3338,7 +3355,7 @@ msgid ""
 msgstr ""
 
 #. An empty string is the same as 'None'.
-#: calendar/gui/calendar-model.c:1185 calendar/gui/dialogs/meeting-page.c:311
+#: calendar/gui/calendar-model.c:1189 calendar/gui/dialogs/meeting-page.c:312
 #: calendar/gui/dialogs/meeting-page.glade.h:1 mail/mail-account-gui.c:1485
 #: mail/mail-accounts.c:148 mail/mail-accounts.c:405
 #: mail/mail-config.glade.h:47
@@ -3348,27 +3365,29 @@ msgstr ""
 msgid "None"
 msgstr "Ingen"
 
-#: calendar/gui/calendar-model.c:1705
+#: calendar/gui/calendar-model.c:1713
 #, fuzzy
 msgid "Recurring"
 msgstr "Repetering"
 
-#: calendar/gui/calendar-model.c:1707
+#: calendar/gui/calendar-model.c:1715
 msgid "Assigned"
 msgstr ""
 
-#: calendar/gui/calendar-model.c:1713 calendar/gui/e-meeting-model.c:300
-#: calendar/gui/e-meeting-model.c:310 calendar/gui/e-meeting-model.c:536
+#: calendar/gui/calendar-model.c:1721 calendar/gui/e-meeting-model.c:301
+#: calendar/gui/e-meeting-model.c:311 calendar/gui/e-meeting-model.c:536
+#: calendar/gui/e-meeting-model.c:803
 #, fuzzy
 msgid "Yes"
 msgstr "Ja"
 
-#: calendar/gui/calendar-model.c:1713 calendar/gui/e-meeting-model.c:312
+#: calendar/gui/calendar-model.c:1721 calendar/gui/e-meeting-model.c:313
+#: calendar/gui/e-meeting-model.c:804
 msgid "No"
 msgstr "Nei"
 
 #. No time range is set, so don't start a query
-#: calendar/gui/calendar-model.c:1966 calendar/gui/e-day-view.c:1675
+#: calendar/gui/calendar-model.c:1974 calendar/gui/e-day-view.c:1675
 #: calendar/gui/e-week-view.c:1182
 #, fuzzy
 msgid "Searching"
@@ -3408,12 +3427,12 @@ msgstr "Skildringar"
 msgid "Comment contains"
 msgstr "ikkje inneheld"
 
-#: calendar/gui/cal-search-bar.c:416
+#: calendar/gui/cal-search-bar.c:416 mail/mail-ops.c:1075
 msgid "Unmatched"
 msgstr ""
 
 #: calendar/gui/component-factory.c:63 my-evolution/my-evolution.glade.h:7
-#: shell/e-shortcuts.c:1055
+#: shell/e-local-storage.c:171 shell/e-shortcuts.c:1055
 msgid "Calendar"
 msgstr "Kalender"
 
@@ -3421,8 +3440,9 @@ msgstr "Kalender"
 msgid "Folder containing appointments and events"
 msgstr ""
 
-#: calendar/gui/component-factory.c:68 my-evolution/e-summary-tasks.c:247
-#: my-evolution/e-summary-tasks.c:263 shell/e-shortcuts.c:1058
+#: calendar/gui/component-factory.c:68 calendar/gui/print.c:1733
+#: my-evolution/e-summary-tasks.c:247 my-evolution/e-summary-tasks.c:263
+#: shell/e-local-storage.c:177 shell/e-shortcuts.c:1058
 #: views/tasks/galview.xml.h:1
 msgid "Tasks"
 msgstr "Oppgåver"
@@ -3437,7 +3457,7 @@ msgstr "Fil alt i liste"
 msgid "Create a new appointment"
 msgstr "&Slett avtale"
 
-#: calendar/gui/component-factory.c:643 calendar/gui/e-day-view.c:3447
+#: calendar/gui/component-factory.c:643 calendar/gui/e-day-view.c:3523
 #, fuzzy
 msgid "New _Appointment"
 msgstr "&Vis avtale ..."
@@ -3521,7 +3541,7 @@ msgstr "Køyr %s med desse arguenta:"
 #: calendar/gui/dialogs/alarm-options.glade.h:8 filter/filter-datespec.c:83
 #, fuzzy
 msgid "days"
-msgstr " dag"
+msgstr "dagar"
 
 #: calendar/gui/dialogs/alarm-options.glade.h:9
 #, fuzzy
@@ -3563,9 +3583,8 @@ msgid "%d hours"
 msgstr "time/timar"
 
 #: calendar/gui/dialogs/alarm-page.c:328
-#, fuzzy
 msgid "1 hour"
-msgstr "time/timar"
+msgstr "1 time"
 
 #: calendar/gui/dialogs/alarm-page.c:333
 #, fuzzy, c-format
@@ -3672,7 +3691,7 @@ msgstr "Påminning:"
 
 #: calendar/gui/dialogs/alarm-page.glade.h:7
 #: calendar/gui/dialogs/recurrence-page.glade.h:8
-#: calendar/gui/e-itip-control.glade.h:11
+#: calendar/gui/e-itip-control.c:737 calendar/gui/e-itip-control.glade.h:11
 #, fuzzy
 msgid "Summary:"
 msgstr "Samandrag:"
@@ -3780,12 +3799,12 @@ msgstr "Fredag"
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:13
 #, fuzzy
 msgid "Hours"
-msgstr "time/timar"
+msgstr "Timar"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:14
 #, fuzzy
 msgid "Minutes"
-msgstr "minutt"
+msgstr "Minutt"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:15
 #: calendar/gui/dialogs/recurrence-page.c:959
@@ -3825,8 +3844,9 @@ msgstr "Sun"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:22
 #: calendar/gui/dialogs/recurrence-page.c:965
+#, fuzzy
 msgid "Sunday"
-msgstr "Sundag"
+msgstr "Søndag"
 
 #: calendar/gui/dialogs/cal-prefs-dialog.glade.h:23
 #, fuzzy
@@ -4053,38 +4073,38 @@ msgstr "Forfall"
 msgid "Could not update object!"
 msgstr "Kunne ikkje laga kio-jobb.\n"
 
-#: calendar/gui/dialogs/comp-editor.c:676
+#: calendar/gui/dialogs/comp-editor.c:678
 #, fuzzy
 msgid "Edit Appointment"
 msgstr "&Endra avtale ..."
 
-#: calendar/gui/dialogs/comp-editor.c:681
+#: calendar/gui/dialogs/comp-editor.c:683
 #, fuzzy, c-format
 msgid "Appointment - %s"
 msgstr "Avtale"
 
-#: calendar/gui/dialogs/comp-editor.c:684
+#: calendar/gui/dialogs/comp-editor.c:686
 #, fuzzy, c-format
 msgid "Task - %s"
 msgstr "Oppgåver"
 
-#: calendar/gui/dialogs/comp-editor.c:687
+#: calendar/gui/dialogs/comp-editor.c:689
 #, c-format
 msgid "Journal entry - %s"
 msgstr ""
 
-#: calendar/gui/dialogs/comp-editor.c:701
+#: calendar/gui/dialogs/comp-editor.c:703
 #, fuzzy
 msgid "No summary"
 msgstr "oppsummering"
 
-#: calendar/gui/dialogs/comp-editor.c:1059 mail/mail-callbacks.c:1891
+#: calendar/gui/dialogs/comp-editor.c:1061 mail/mail-callbacks.c:1897
 #: mail/mail-display.c:102
 #, fuzzy
 msgid "Overwrite file?"
 msgstr "Overskriv filer"
 
-#: calendar/gui/dialogs/comp-editor.c:1063 mail/mail-callbacks.c:1898
+#: calendar/gui/dialogs/comp-editor.c:1065 mail/mail-callbacks.c:1904
 #: mail/mail-display.c:106
 #, fuzzy
 msgid ""
@@ -4092,12 +4112,12 @@ msgid ""
 "Overwrite it?"
 msgstr "Ei fil med det namnet finst alt. Vil du skriva over den?"
 
-#: calendar/gui/dialogs/comp-editor.c:1109 ui/evolution-comp-editor.xml.h:13
+#: calendar/gui/dialogs/comp-editor.c:1111 ui/evolution-comp-editor.xml.h:13
 #: widgets/misc/e-filter-bar.h:101
 msgid "Save As..."
 msgstr "Lagre som ..."
 
-#: calendar/gui/dialogs/comp-editor.c:1270
+#: calendar/gui/dialogs/comp-editor.c:1272
 #, fuzzy
 msgid "Unable to obtain current version!"
 msgstr "Kan ikkje setja opp utskriftstenaren."
@@ -4162,7 +4182,7 @@ msgstr "Delegert"
 msgid "Enter Delegate"
 msgstr "Slett"
 
-#: calendar/gui/dialogs/event-editor.c:185
+#: calendar/gui/dialogs/event-editor.c:185 calendar/gui/print.c:2203
 #, fuzzy
 msgid "Appointment"
 msgstr "Avtale"
@@ -4177,13 +4197,15 @@ msgid "Recurrence"
 msgstr "Repetering"
 
 #: calendar/gui/dialogs/event-editor.c:202
-#: calendar/gui/dialogs/event-editor.c:352
+#: calendar/gui/dialogs/event-editor.c:260
+#: calendar/gui/dialogs/event-editor.c:362
 #, fuzzy
 msgid "Scheduling"
 msgstr "Køyreplan ..."
 
 #: calendar/gui/dialogs/event-editor.c:207
-#: calendar/gui/dialogs/event-editor.c:355
+#: calendar/gui/dialogs/event-editor.c:263
+#: calendar/gui/dialogs/event-editor.c:365
 msgid "Meeting"
 msgstr "Møte"
 
@@ -4233,7 +4255,7 @@ msgid "Pu_blic"
 msgstr "Praksis"
 
 #: calendar/gui/dialogs/event-page.glade.h:10
-#: calendar/gui/e-calendar-table.etspec.h:12
+#: calendar/gui/e-calendar-table.etspec.h:13
 #, fuzzy
 msgid "Show Time As"
 msgstr "Vis brukarar"
@@ -4254,19 +4276,19 @@ msgstr "Slutt-tid:"
 msgid "_Start time:"
 msgstr "Start-tid:"
 
-#: calendar/gui/dialogs/meeting-page.c:422
+#: calendar/gui/dialogs/meeting-page.c:425
 msgid "An organizer is required."
 msgstr ""
 
-#: calendar/gui/dialogs/meeting-page.c:443
+#: calendar/gui/dialogs/meeting-page.c:446
 msgid "At least one attendee is required."
 msgstr ""
 
-#: calendar/gui/dialogs/meeting-page.c:623
+#: calendar/gui/dialogs/meeting-page.c:626
 msgid "That person is already attending the meeting!"
 msgstr ""
 
-#: calendar/gui/dialogs/meeting-page.c:698
+#: calendar/gui/dialogs/meeting-page.c:701
 #, fuzzy
 msgid "_Delegate To..."
 msgstr "F&jern rad ..."
@@ -4279,53 +4301,60 @@ msgstr "Kontaktar"
 
 #: calendar/gui/dialogs/meeting-page.etspec.h:2
 #: calendar/gui/e-meeting-time-sel.etspec.h:2
-msgid "Common Name"
-msgstr ""
+#, fuzzy
+msgid "Click here to add an attendee"
+msgstr "Trykk her for å leggja til ein ny virtuell vert."
 
 #: calendar/gui/dialogs/meeting-page.etspec.h:3
 #: calendar/gui/e-meeting-time-sel.etspec.h:3
-#, fuzzy
-msgid "Delegated From"
-msgstr "Delegert"
+msgid "Common Name"
+msgstr ""
 
 #: calendar/gui/dialogs/meeting-page.etspec.h:4
 #: calendar/gui/e-meeting-time-sel.etspec.h:4
 #, fuzzy
-msgid "Delegated To"
+msgid "Delegated From"
 msgstr "Delegert"
 
 #: calendar/gui/dialogs/meeting-page.etspec.h:5
 #: calendar/gui/e-meeting-time-sel.etspec.h:5
-msgid "Language"
-msgstr "Språk"
+#, fuzzy
+msgid "Delegated To"
+msgstr "Delegert"
 
 #: calendar/gui/dialogs/meeting-page.etspec.h:6
 #: calendar/gui/e-meeting-time-sel.etspec.h:6
+msgid "Language"
+msgstr "Språk"
+
+#: calendar/gui/dialogs/meeting-page.etspec.h:7
+#: calendar/gui/e-meeting-time-sel.etspec.h:7
 #, fuzzy
 msgid "Member"
 msgstr "Medlemmer"
 
-#: calendar/gui/dialogs/meeting-page.etspec.h:7
-#: calendar/gui/e-meeting-time-sel.etspec.h:7
+#: calendar/gui/dialogs/meeting-page.etspec.h:8
+#: calendar/gui/e-itip-control.c:798
+#: calendar/gui/e-meeting-time-sel.etspec.h:8
 msgid "RSVP"
 msgstr ""
 
-#: calendar/gui/dialogs/meeting-page.etspec.h:8
-#: calendar/gui/e-meeting-time-sel.etspec.h:8
+#: calendar/gui/dialogs/meeting-page.etspec.h:9
+#: calendar/gui/e-meeting-time-sel.etspec.h:9
 #, fuzzy
 msgid "Role"
 msgstr "Mobil:"
 
-#: calendar/gui/dialogs/meeting-page.etspec.h:9
-#: calendar/gui/e-calendar-table.etspec.h:14
-#: calendar/gui/e-meeting-time-sel.etspec.h:9 filter/libfilter-i18n.h:49
+#: calendar/gui/dialogs/meeting-page.etspec.h:10
+#: calendar/gui/e-calendar-table.etspec.h:15
+#: calendar/gui/e-meeting-time-sel.etspec.h:10 filter/libfilter-i18n.h:49
 #: mail/message-list.etspec.h:8
 msgid "Status"
 msgstr "Status"
 
-#: calendar/gui/dialogs/meeting-page.etspec.h:10
-#: calendar/gui/e-calendar-table.etspec.h:17
-#: calendar/gui/e-meeting-time-sel.etspec.h:10 mail/mail-config.glade.h:85
+#: calendar/gui/dialogs/meeting-page.etspec.h:11
+#: calendar/gui/e-calendar-table.etspec.h:18
+#: calendar/gui/e-meeting-time-sel.etspec.h:11 mail/mail-config.glade.h:85
 #: shell/glade/e-active-connection-dialog.glade.h:5
 msgid "Type"
 msgstr "Type"
@@ -4362,8 +4391,9 @@ msgid "on"
 msgstr "Mån"
 
 #: calendar/gui/dialogs/recurrence-page.c:958 filter/filter-datespec.c:83
+#, fuzzy
 msgid "day"
-msgstr "dagen"
+msgstr "dag"
 
 #: calendar/gui/dialogs/recurrence-page.c:1088
 #, fuzzy
@@ -4478,7 +4508,7 @@ msgid "Progress"
 msgstr "Framgang"
 
 #: calendar/gui/dialogs/task-details-page.glade.h:12
-#: my-evolution/e-summary-preferences.c:966
+#: my-evolution/e-summary-preferences.c:965
 #, fuzzy
 msgid "URL:"
 msgstr "URL:"
@@ -4500,7 +4530,7 @@ msgstr "Status:"
 msgid "Assignment"
 msgstr "Avtale"
 
-#: calendar/gui/dialogs/task-page.glade.h:5
+#: calendar/gui/dialogs/task-page.glade.h:5 calendar/gui/e-itip-control.c:746
 #: calendar/gui/e-itip-control.glade.h:6
 #: composer/e-msg-composer-attachment.glade.h:2 mail/mail-config.glade.h:26
 msgid "Description:"
@@ -4516,65 +4546,121 @@ msgstr "Start-dato:"
 msgid "_Due Date:"
 msgstr "Forfallsdato:"
 
-#: calendar/gui/e-calendar-table.c:721 calendar/gui/e-day-view.c:2724
+#: calendar/gui/e-calendar-table.c:427
+#, c-format
+msgid "0%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:428
+#, c-format
+msgid "10%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:429
+#, c-format
+msgid "20%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:430
+#, c-format
+msgid "30%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:431
+#, c-format
+msgid "40%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:432
+#, c-format
+msgid "50%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:433
+#, c-format
+msgid "60%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:434
+#, c-format
+msgid "70%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:435
+#, c-format
+msgid "80%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:436
+#, c-format
+msgid "90%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:437
+#, c-format
+msgid "100%"
+msgstr ""
+
+#: calendar/gui/e-calendar-table.c:722 calendar/gui/e-day-view.c:2724
 #: calendar/gui/e-week-view.c:1822
 #, fuzzy
 msgid "Deleting selected objects"
 msgstr "Slett den valte oppgåva"
 
-#: calendar/gui/e-calendar-table.c:939 calendar/gui/e-day-view.c:3468
-#: calendar/gui/e-week-view.c:3395 mail/folder-browser.c:1484
+#: calendar/gui/e-calendar-table.c:941 calendar/gui/e-day-view.c:3544
+#: calendar/gui/e-week-view.c:3422 mail/folder-browser.c:1447
 #: shell/e-shortcuts-view.c:384
 msgid "_Open"
 msgstr "_Opne"
 
-#: calendar/gui/e-calendar-table.c:943 calendar/gui/e-day-view.c:3477
-#: calendar/gui/e-week-view.c:3404 ui/evolution-addressbook.xml.h:1
+#: calendar/gui/e-calendar-table.c:945 calendar/gui/e-day-view.c:3553
+#: calendar/gui/e-week-view.c:3431 ui/evolution-addressbook.xml.h:1
 #: ui/evolution-calendar.xml.h:1 ui/evolution-tasks.xml.h:1
 msgid "C_ut"
 msgstr "Kl_ipp ut"
 
-#: calendar/gui/e-calendar-table.c:945 calendar/gui/e-day-view.c:3479
-#: calendar/gui/e-week-view.c:3406 ui/evolution-addressbook.xml.h:33
+#: calendar/gui/e-calendar-table.c:947 calendar/gui/e-day-view.c:3555
+#: calendar/gui/e-week-view.c:3433 ui/evolution-addressbook.xml.h:33
 #: ui/evolution-calendar.xml.h:37 ui/evolution-mail-list.xml.h:24
 #: ui/evolution-tasks.xml.h:14
 msgid "_Copy"
 msgstr "_Kopier"
 
-#: calendar/gui/e-calendar-table.c:947 calendar/gui/e-day-view.c:3454
-#: calendar/gui/e-day-view.c:3481 calendar/gui/e-week-view.c:3382
-#: calendar/gui/e-week-view.c:3408 ui/evolution-addressbook.xml.h:36
+#: calendar/gui/e-calendar-table.c:949 calendar/gui/e-day-view.c:3530
+#: calendar/gui/e-day-view.c:3557 calendar/gui/e-week-view.c:3409
+#: calendar/gui/e-week-view.c:3435 ui/evolution-addressbook.xml.h:36
 #: ui/evolution-calendar.xml.h:40 ui/evolution-mail-list.xml.h:29
 #: ui/evolution-tasks.xml.h:17
 msgid "_Paste"
 msgstr "_Lim inn"
 
-#: calendar/gui/e-calendar-table.c:952
+#: calendar/gui/e-calendar-table.c:954
 #, fuzzy
 msgid "_Mark as Complete"
 msgstr "Marker alle som l&esne"
 
-#: calendar/gui/e-calendar-table.c:954
+#: calendar/gui/e-calendar-table.c:956
 #, fuzzy
 msgid "_Delete this Task"
 msgstr "Slett denne adressa"
 
-#: calendar/gui/e-calendar-table.c:957
+#: calendar/gui/e-calendar-table.c:959
 #, fuzzy
 msgid "_Mark Tasks as Complete"
 msgstr "Marker alle som l&esne"
 
-#: calendar/gui/e-calendar-table.c:959
+#: calendar/gui/e-calendar-table.c:961
 #, fuzzy
 msgid "_Delete Selected Tasks"
 msgstr "Slett den valte oppgåva"
 
-#: calendar/gui/e-calendar-table.c:1141 calendar/gui/e-day-view.c:7029
-#: calendar/gui/e-week-view.c:3889
+#: calendar/gui/e-calendar-table.c:1145 calendar/gui/e-day-view.c:7115
+#: calendar/gui/e-week-view.c:3918
 msgid "Updating objects"
 msgstr ""
 
-#: calendar/gui/e-calendar-table.c:1224
+#: calendar/gui/e-calendar-table.c:1228
+#: calendar/gui/e-calendar-table.etspec.h:6
 #, fuzzy
 msgid "Click to add a task"
 msgstr "Trykk her for å leggja til ein ny virtuell vert."
@@ -4604,54 +4690,54 @@ msgstr "Ein bandindeks må vera valt i treet."
 msgid "Alarms"
 msgstr "Alarm"
 
-#: calendar/gui/e-calendar-table.etspec.h:6 camel/camel-filter-driver.c:723
+#: calendar/gui/e-calendar-table.etspec.h:7 camel/camel-filter-driver.c:723
 #: camel/camel-filter-driver.c:837
 #, fuzzy
 msgid "Complete"
 msgstr "Ferdig"
 
-#: calendar/gui/e-calendar-table.etspec.h:7
+#: calendar/gui/e-calendar-table.etspec.h:8
 #, fuzzy
 msgid "Completion Date"
 msgstr "Fullføring"
 
-#: calendar/gui/e-calendar-table.etspec.h:8
+#: calendar/gui/e-calendar-table.etspec.h:9
 msgid "Due Date"
 msgstr "Forfallsdato"
 
-#: calendar/gui/e-calendar-table.etspec.h:9
+#: calendar/gui/e-calendar-table.etspec.h:10
 #, fuzzy
 msgid "End Date"
 msgstr "Slutt-dato"
 
-#: calendar/gui/e-calendar-table.etspec.h:10
+#: calendar/gui/e-calendar-table.etspec.h:11
 #, fuzzy
 msgid "Geographical Position"
 msgstr "Etikettplassering"
 
-#: calendar/gui/e-calendar-table.etspec.h:11
+#: calendar/gui/e-calendar-table.etspec.h:12
 msgid "Priority"
 msgstr "Prioritet"
 
-#: calendar/gui/e-calendar-table.etspec.h:13
+#: calendar/gui/e-calendar-table.etspec.h:14
 #, fuzzy
 msgid "Start Date"
 msgstr "Start-dato:"
 
 #. FIXME: Inbox shortcut should point to something else for
 #. people who won't care about using /Local Folders/Inbox
-#: calendar/gui/e-calendar-table.etspec.h:15
+#: calendar/gui/e-calendar-table.etspec.h:16
 #: my-evolution/component-factory.c:44 shell/e-shortcuts.c:1049
-#: shell/e-storage-set-view.c:1483
+#: shell/e-storage-set-view.c:1483 shell/e-summary-storage.c:79
 msgid "Summary"
 msgstr "Samandrag"
 
-#: calendar/gui/e-calendar-table.etspec.h:16
+#: calendar/gui/e-calendar-table.etspec.h:17
 #, fuzzy
 msgid "Task sort"
 msgstr "Oppgåver"
 
-#: calendar/gui/e-calendar-table.etspec.h:18
+#: calendar/gui/e-calendar-table.etspec.h:19
 msgid "URL"
 msgstr "URL"
 
@@ -4677,49 +4763,351 @@ msgstr "%1 %2"
 
 #. String to use in 12-hour time format for times in the morning.
 #: calendar/gui/e-day-view.c:612 calendar/gui/e-week-view.c:348
+#: calendar/gui/print.c:768
 msgid "am"
 msgstr "am"
 
 #. String to use in 12-hour time format for times in the afternoon.
 #: calendar/gui/e-day-view.c:615 calendar/gui/e-week-view.c:351
+#: calendar/gui/print.c:770
 msgid "pm"
 msgstr "pm"
 
-#: calendar/gui/e-day-view.c:3449 calendar/gui/e-week-view.c:3377
+#: calendar/gui/e-day-view.c:3525 calendar/gui/e-week-view.c:3404
 #, fuzzy
 msgid "New All Day _Event"
 msgstr "Ny &hending ..."
 
-#: calendar/gui/e-day-view.c:3459 calendar/gui/e-week-view.c:3387
+#: calendar/gui/e-day-view.c:3535 calendar/gui/e-week-view.c:3414
 #: ui/evolution-calendar.xml.h:17
 #, fuzzy
 msgid "Go to _Today"
 msgstr "Gå til &i dag"
 
-#: calendar/gui/e-day-view.c:3461 calendar/gui/e-week-view.c:3389
+#: calendar/gui/e-day-view.c:3537 calendar/gui/e-week-view.c:3416
 #, fuzzy
 msgid "_Go to Date..."
 msgstr "&Gå til side ..."
 
-#: calendar/gui/e-day-view.c:3470 calendar/gui/e-week-view.c:3397
+#: calendar/gui/e-day-view.c:3546 calendar/gui/e-week-view.c:3424
 #, fuzzy
 msgid "_Delete this Appointment"
 msgstr "&Slett avtale"
 
-#: calendar/gui/e-day-view.c:3489 calendar/gui/e-week-view.c:3422
+#: calendar/gui/e-day-view.c:3565 calendar/gui/e-week-view.c:3449
 #, fuzzy
 msgid "Make this Occurrence _Movable"
 msgstr "Se&nd avtale"
 
-#: calendar/gui/e-day-view.c:3491 calendar/gui/e-week-view.c:3424
+#: calendar/gui/e-day-view.c:3567 calendar/gui/e-week-view.c:3451
 #, fuzzy
 msgid "Delete this _Occurrence"
 msgstr "Erstatt denne førekomsten?"
 
-#: calendar/gui/e-day-view.c:3493 calendar/gui/e-week-view.c:3426
+#: calendar/gui/e-day-view.c:3569 calendar/gui/e-week-view.c:3453
 #, fuzzy
 msgid "Delete _All Occurrences"
 msgstr "Slettar klassen"
+
+#: calendar/gui/e-itip-control.c:524
+msgid "Meeting begins: <b>"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:529
+msgid "Task begins: <b>"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:534
+#, fuzzy
+msgid "Free/Busy info begins: <b>"
+msgstr "Informasjon"
+
+#: calendar/gui/e-itip-control.c:538
+msgid "Begins: <b>"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:550
+#, fuzzy
+msgid "Meeting ends: <b>"
+msgstr "Informasjon"
+
+#: calendar/gui/e-itip-control.c:553
+#, fuzzy
+msgid "Free/Busy info ends: <b>"
+msgstr "Informasjon"
+
+#: calendar/gui/e-itip-control.c:557
+msgid "Ends: <b>"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:571
+#, fuzzy
+msgid "Task Completed: <b>"
+msgstr "Ferdig"
+
+#: calendar/gui/e-itip-control.c:581
+msgid "Task Due: <b>"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:618 calendar/gui/e-itip-control.c:667
+#, fuzzy
+msgid "iCalendar Information"
+msgstr "Informasjon"
+
+#. Title
+#: calendar/gui/e-itip-control.c:633
+#, fuzzy
+msgid "iCalendar Error"
+msgstr "Skriv ut alle"
+
+#: calendar/gui/e-itip-control.c:698 calendar/gui/e-itip-control.c:714
+#, fuzzy
+msgid "An unknown person"
+msgstr "Ukjend feil"
+
+#. Describe what the user can do
+#: calendar/gui/e-itip-control.c:721
+msgid ""
+"<br> Please review the following information, and then select an action from "
+"the menu below."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:737
+msgid "<i>None</i>"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:778 calendar/gui/e-itip-control.c:794
+#: calendar/gui/e-itip-control.c:810 calendar/gui/e-itip-control.c:823
+#: calendar/gui/e-itip-control.c:837 calendar/gui/e-itip-control.c:851
+#, fuzzy
+msgid "Choose an action:"
+msgstr "Vel ikon"
+
+#: calendar/gui/e-itip-control.c:779
+msgid "Update"
+msgstr "Oppdater"
+
+#: calendar/gui/e-itip-control.c:780 calendar/gui/e-itip-control.c:799
+#: calendar/gui/e-itip-control.c:812 calendar/gui/e-itip-control.c:825
+#: calendar/gui/e-itip-control.c:839 calendar/gui/e-itip-control.c:853
+#: shell/e-shell.c:1884 widgets/misc/e-cell-date-edit.c:258
+msgid "OK"
+msgstr "OK"
+
+#: calendar/gui/e-itip-control.c:795
+msgid "Accept"
+msgstr "Godta"
+
+#: calendar/gui/e-itip-control.c:796
+#, fuzzy
+msgid "Tentatively accept"
+msgstr "Mellombels"
+
+#: calendar/gui/e-itip-control.c:797
+#, fuzzy
+msgid "Decline"
+msgstr "Slett"
+
+#: calendar/gui/e-itip-control.c:811
+#, fuzzy
+msgid "Send Free/Busy Information"
+msgstr "Informasjon"
+
+#: calendar/gui/e-itip-control.c:824
+msgid "Update respondent status"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:838
+#, fuzzy
+msgid "Send Latest Information"
+msgstr "Informasjon"
+
+#: calendar/gui/e-itip-control.c:852 ui/evolution-mail-global.xml.h:1
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: calendar/gui/e-itip-control.c:867
+#, fuzzy, c-format
+msgid "<b>%s</b> has published meeting information."
+msgstr "generer avlusingsinformasjon"
+
+#: calendar/gui/e-itip-control.c:868
+#, fuzzy
+msgid "Meeting Information"
+msgstr "Personleg informasjon"
+
+#: calendar/gui/e-itip-control.c:872
+#, c-format
+msgid "<b>%s</b> requests your presence at a meeting."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:873
+#, fuzzy
+msgid "Meeting Proposal"
+msgstr "Møte"
+
+#: calendar/gui/e-itip-control.c:877
+#, c-format
+msgid "<b>%s</b> wishes to add to an existing meeting."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:878
+#, fuzzy
+msgid "Meeting Update"
+msgstr "Møte"
+
+#: calendar/gui/e-itip-control.c:882
+#, fuzzy, c-format
+msgid "<b>%s</b> wishes to receive the latest meeting information."
+msgstr "generer avlusingsinformasjon"
+
+#: calendar/gui/e-itip-control.c:883
+msgid "Meeting Update Request"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:887
+#, fuzzy, c-format
+msgid "<b>%s</b> has replied to a meeting request."
+msgstr "Dette er ei repeterande hending."
+
+#: calendar/gui/e-itip-control.c:888
+#, fuzzy
+msgid "Meeting Reply"
+msgstr "Møte"
+
+#: calendar/gui/e-itip-control.c:892
+#, c-format
+msgid "<b>%s</b> has cancelled a meeting."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:893
+#, fuzzy
+msgid "Meeting Cancellation"
+msgstr "Vel ikon"
+
+#: calendar/gui/e-itip-control.c:897 calendar/gui/e-itip-control.c:947
+#: calendar/gui/e-itip-control.c:982
+#, c-format
+msgid "<b>%s</b> has sent an unintelligible message."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:898
+#, fuzzy
+msgid "Bad Meeting Message"
+msgstr "&Finn i melding ..."
+
+#: calendar/gui/e-itip-control.c:917
+#, c-format
+msgid "<b>%s</b> has published task information."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:918
+#, fuzzy
+msgid "Task Information"
+msgstr "Informasjon"
+
+#: calendar/gui/e-itip-control.c:922
+#, c-format
+msgid "<b>%s</b> requests you perform a task."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:923
+msgid "Task Proposal"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:927
+#, c-format
+msgid "<b>%s</b> wishes to add to an existing task."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:928
+#, fuzzy
+msgid "Task Update"
+msgstr "Slutt etter"
+
+#: calendar/gui/e-itip-control.c:932
+#, fuzzy, c-format
+msgid "<b>%s</b> wishes to receive the latest task information."
+msgstr "Dette er ei førehandsvising av det valte bakgrunnsbiletet."
+
+#: calendar/gui/e-itip-control.c:933
+msgid "Task Update Request"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:937
+#, fuzzy, c-format
+msgid "<b>%s</b> has replied to a task assignment."
+msgstr "Dette er ei repeterande hending."
+
+#: calendar/gui/e-itip-control.c:938
+#, fuzzy
+msgid "Task Reply"
+msgstr "Svar"
+
+#: calendar/gui/e-itip-control.c:942
+#, c-format
+msgid "<b>%s</b> has cancelled a task."
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:943
+#, fuzzy
+msgid "Task Cancellation"
+msgstr "Dette er inga lokal fil.\n"
+
+#: calendar/gui/e-itip-control.c:948
+#, fuzzy
+msgid "Bad Task Message"
+msgstr "Skriv ut alle"
+
+#: calendar/gui/e-itip-control.c:967
+#, fuzzy, c-format
+msgid "<b>%s</b> has published free/busy information."
+msgstr "Skriv avlusingsinformasjon"
+
+#: calendar/gui/e-itip-control.c:968
+#, fuzzy
+msgid "Free/Busy Information"
+msgstr "Informasjon"
+
+#: calendar/gui/e-itip-control.c:972
+#, fuzzy, c-format
+msgid "<b>%s</b> requests your free/busy information."
+msgstr "Prøv «%s --help» for meir informasjon\n"
+
+#: calendar/gui/e-itip-control.c:973
+msgid "Free/Busy Request"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:977
+#, fuzzy, c-format
+msgid "<b>%s</b> has replied to a free/busy request."
+msgstr "Dette er ei repeterande hending."
+
+#: calendar/gui/e-itip-control.c:978
+msgid "Free/Busy Reply"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:983
+#, fuzzy
+msgid "Bad Free/Busy Message"
+msgstr "Private meldingar"
+
+#: calendar/gui/e-itip-control.c:1052
+msgid "The message does not appear to be properly formed"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:1071
+#, fuzzy
+msgid "The message contains only unsupported requests."
+msgstr "Meldinga har ingen sendar"
+
+#: calendar/gui/e-itip-control.c:1099 calendar/gui/e-itip-control.c:1105
+msgid "The attachment does not contain a valid calendar message"
+msgstr ""
+
+#: calendar/gui/e-itip-control.c:1130
+msgid "The attachment has no viewable calendar items"
+msgstr ""
 
 #: calendar/gui/e-itip-control.c:1229
 msgid "Calendar file could not be updated!\n"
@@ -4748,24 +5136,19 @@ msgstr ""
 
 #: calendar/gui/e-itip-control.c:1316
 #, fuzzy
-msgid "I couldn't remove the item from your calendar file!\n"
-msgstr "Kunne ikkje lasta kalender '%1'.\n"
-
-#: calendar/gui/e-itip-control.c:1318
-#, fuzzy
 msgid "Removal Complete"
 msgstr "Ferdig"
 
-#: calendar/gui/e-itip-control.c:1350 calendar/gui/e-itip-control.c:1400
+#: calendar/gui/e-itip-control.c:1348 calendar/gui/e-itip-control.c:1398
 #, fuzzy
 msgid "Item sent!\n"
 msgstr "Dato"
 
-#: calendar/gui/e-itip-control.c:1352 calendar/gui/e-itip-control.c:1404
+#: calendar/gui/e-itip-control.c:1350 calendar/gui/e-itip-control.c:1402
 msgid "The item could not be sent!\n"
 msgstr ""
 
-#: calendar/gui/e-itip-control.c:1568
+#: calendar/gui/e-itip-control.c:1566
 msgid "Unable to find any of your identities in the attendees list!\n"
 msgstr ""
 
@@ -4811,96 +5194,106 @@ msgstr ""
 msgid "date-start"
 msgstr " start"
 
-#: calendar/gui/e-meeting-model.c:94
+#: calendar/gui/e-meeting-model.c:95
 #, fuzzy
 msgid "Chair Persons"
 msgstr "Bil-telefon"
 
-#: calendar/gui/e-meeting-model.c:95 calendar/gui/e-meeting-model.c:1504
+#: calendar/gui/e-meeting-model.c:96 calendar/gui/e-meeting-model.c:1535
 #, fuzzy
 msgid "Required Participants"
 msgstr "Tenarinformasjon"
 
-#: calendar/gui/e-meeting-model.c:96
+#: calendar/gui/e-meeting-model.c:97
 #, fuzzy
 msgid "Optional Participants"
 msgstr "Personleg informasjon"
 
-#: calendar/gui/e-meeting-model.c:97
+#: calendar/gui/e-meeting-model.c:98
 msgid "Non-Participants"
 msgstr ""
 
-#: calendar/gui/e-meeting-model.c:231 calendar/gui/e-meeting-model.c:248
-#: calendar/gui/e-meeting-model.c:532
+#: calendar/gui/e-meeting-model.c:232 calendar/gui/e-meeting-model.c:249
+#: calendar/gui/e-meeting-model.c:532 calendar/gui/e-meeting-model.c:771
 msgid "Individual"
 msgstr ""
 
-#: calendar/gui/e-meeting-model.c:233 calendar/gui/e-meeting-model.c:250
+#: calendar/gui/e-meeting-model.c:234 calendar/gui/e-meeting-model.c:251
+#: calendar/gui/e-meeting-model.c:772
 msgid "Group"
 msgstr "Gruppe"
 
-#: calendar/gui/e-meeting-model.c:235 calendar/gui/e-meeting-model.c:252
+#: calendar/gui/e-meeting-model.c:236 calendar/gui/e-meeting-model.c:253
+#: calendar/gui/e-meeting-model.c:773
 #, fuzzy
 msgid "Resource"
 msgstr "Kjelder"
 
-#: calendar/gui/e-meeting-model.c:237 calendar/gui/e-meeting-model.c:254
+#: calendar/gui/e-meeting-model.c:238 calendar/gui/e-meeting-model.c:255
+#: calendar/gui/e-meeting-model.c:774
 msgid "Room"
 msgstr ""
 
-#: calendar/gui/e-meeting-model.c:256 calendar/gui/e-meeting-model.c:291
-#: calendar/gui/e-meeting-model.c:356
+#: calendar/gui/e-meeting-model.c:257 calendar/gui/e-meeting-model.c:292
+#: calendar/gui/e-meeting-model.c:357 calendar/gui/e-meeting-model.c:775
+#: calendar/gui/e-meeting-model.c:791
 #: camel/providers/smtp/camel-smtp-transport.c:222
 #: widgets/misc/e-charset-picker.c:57 widgets/misc/e-charset-picker.c:439
 msgid "Unknown"
 msgstr "Ukjend"
 
-#: calendar/gui/e-meeting-model.c:266 calendar/gui/e-meeting-model.c:283
+#: calendar/gui/e-meeting-model.c:267 calendar/gui/e-meeting-model.c:284
+#: calendar/gui/e-meeting-model.c:787
 #, fuzzy
 msgid "Chair"
 msgstr "Teikn"
 
-#: calendar/gui/e-meeting-model.c:268 calendar/gui/e-meeting-model.c:285
-#: calendar/gui/e-meeting-model.c:534
+#: calendar/gui/e-meeting-model.c:269 calendar/gui/e-meeting-model.c:286
+#: calendar/gui/e-meeting-model.c:534 calendar/gui/e-meeting-model.c:788
 #, fuzzy
 msgid "Required Participant"
 msgstr "Tenarinformasjon"
 
-#: calendar/gui/e-meeting-model.c:270 calendar/gui/e-meeting-model.c:287
+#: calendar/gui/e-meeting-model.c:271 calendar/gui/e-meeting-model.c:288
+#: calendar/gui/e-meeting-model.c:789
 #, fuzzy
 msgid "Optional Participant"
 msgstr "Personleg informasjon"
 
-#: calendar/gui/e-meeting-model.c:272 calendar/gui/e-meeting-model.c:289
+#: calendar/gui/e-meeting-model.c:273 calendar/gui/e-meeting-model.c:290
+#: calendar/gui/e-meeting-model.c:790
 msgid "Non-Participant"
 msgstr ""
 
-#: calendar/gui/e-meeting-model.c:318 calendar/gui/e-meeting-model.c:341
-#: calendar/gui/e-meeting-model.c:542
+#: calendar/gui/e-meeting-model.c:319 calendar/gui/e-meeting-model.c:342
+#: calendar/gui/e-meeting-model.c:542 calendar/gui/e-meeting-model.c:816
 #, fuzzy
 msgid "Needs Action"
 msgstr "Vel ikon"
 
-#: calendar/gui/e-meeting-model.c:320 calendar/gui/e-meeting-model.c:343
+#: calendar/gui/e-meeting-model.c:321 calendar/gui/e-meeting-model.c:344
+#: calendar/gui/e-meeting-model.c:817
 msgid "Accepted"
 msgstr ""
 
-#: calendar/gui/e-meeting-model.c:322 calendar/gui/e-meeting-model.c:345
+#: calendar/gui/e-meeting-model.c:323 calendar/gui/e-meeting-model.c:346
+#: calendar/gui/e-meeting-model.c:818
 #, fuzzy
 msgid "Declined"
 msgstr "Slett"
 
-#: calendar/gui/e-meeting-model.c:324 calendar/gui/e-meeting-model.c:347
-#: calendar/gui/e-meeting-time-sel.c:426
+#: calendar/gui/e-meeting-model.c:325 calendar/gui/e-meeting-model.c:348
+#: calendar/gui/e-meeting-model.c:819 calendar/gui/e-meeting-time-sel.c:426
 msgid "Tentative"
 msgstr "Mellombels"
 
-#: calendar/gui/e-meeting-model.c:326 calendar/gui/e-meeting-model.c:349
+#: calendar/gui/e-meeting-model.c:327 calendar/gui/e-meeting-model.c:350
+#: calendar/gui/e-meeting-model.c:820
 #, fuzzy
 msgid "Delegated"
 msgstr "Slett"
 
-#: calendar/gui/e-meeting-model.c:330 calendar/gui/e-meeting-model.c:353
+#: calendar/gui/e-meeting-model.c:331 calendar/gui/e-meeting-model.c:354
 #, fuzzy
 msgid "In Process"
 msgstr "Framgong:"
@@ -4966,9 +5359,8 @@ msgid "_Autopick"
 msgstr "Automatisk"
 
 #: calendar/gui/e-meeting-time-sel.c:562
-#, fuzzy
 msgid ">_>"
-msgstr ">>"
+msgstr ">_>"
 
 #: calendar/gui/e-meeting-time-sel.c:579
 #, fuzzy
@@ -5011,7 +5403,7 @@ msgstr "Kunne ikkje lasta kalender '%1'.\n"
 msgid "The method required to load `%s' is not supported"
 msgstr "Metoden %1 er ikkje støtta."
 
-#: calendar/gui/e-week-view.c:3375 calendar/gui/e-week-view.c:3413
+#: calendar/gui/e-week-view.c:3402 calendar/gui/e-week-view.c:3440
 #, fuzzy
 msgid "New _Appointment..."
 msgstr "&Vis avtale ..."
@@ -5313,13 +5705,46 @@ msgstr "Denne månaden"
 msgid "Selected year (%Y)"
 msgstr "Gjeldande: %1"
 
-#: calendar/gui/print.c:2386
+#: calendar/gui/print.c:2205
+msgid "Task"
+msgstr "Oppgåve"
+
+#: calendar/gui/print.c:2262
+#, fuzzy, c-format
+msgid "Status: %s"
+msgstr "Status:"
+
+#: calendar/gui/print.c:2280
+#, c-format
+msgid "Priority: %s"
+msgstr "Prioritet: %s"
+
+#: calendar/gui/print.c:2294
+#, c-format
+msgid "Percent Complete: %i"
+msgstr "Prosent ferdig: %i"
+
+#: calendar/gui/print.c:2306
+#, c-format
+msgid "URL: %s"
+msgstr "URL: %s"
+
+#: calendar/gui/print.c:2320
+#, c-format
+msgid "Categories: %s"
+msgstr "Kategoriar %s"
+
+#: calendar/gui/print.c:2331
 #, fuzzy
+msgid "Contacts: "
+msgstr "&Innhald ..."
+
+#: calendar/gui/print.c:2386
 msgid "Print Calendar"
-msgstr "Skriv ut alle"
+msgstr "Skriv ut kalendar"
 
 #: calendar/gui/print.c:2477 calendar/gui/print.c:2569
-#: mail/mail-callbacks.c:2352 my-evolution/e-summary.c:614
+#: mail/mail-callbacks.c:2358 my-evolution/e-summary.c:619
 #: ui/evolution-addressbook.xml.h:17 ui/evolution-mail-message.xml.h:67
 msgid "Print Preview"
 msgstr "Førehandsvising av utskrift"
@@ -5330,9 +5755,8 @@ msgid "Print Item"
 msgstr "Utskriftssystem"
 
 #: calendar/gui/print.c:2587
-#, fuzzy
 msgid "Print Setup"
-msgstr "Speloppsett"
+msgstr "Utskriftoppsett"
 
 #: calendar/gui/tasks-control.c:126
 #, fuzzy
@@ -5450,8 +5874,8 @@ msgstr ""
 
 #: calendar/pcs/query.c:679
 msgid ""
-"contains? expects argument 1 to be one of \"any\", \"summary\", "
-"\"description\""
+"contains? expects argument 1 to be one of \"any\", \"summary\", \"description"
+"\""
 msgstr ""
 
 #: calendar/pcs/query.c:721
@@ -5547,7 +5971,7 @@ msgid "Unable to process spool folder"
 msgstr "Kan ikkje laga 'spool'-katalog"
 
 #: camel/camel-filter-driver.c:688
-#, fuzzy
+#, fuzzy, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Mottek meldingar frå %1"
 
@@ -5590,7 +6014,7 @@ msgstr ""
 "Feil ved lesing a fil:\n"
 "%1"
 
-#: camel/camel-filter-search.c:498 camel/camel-filter-search.c:505
+#: camel/camel-filter-search.c:502 camel/camel-filter-search.c:509
 #, fuzzy, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr ""
@@ -5760,74 +6184,74 @@ msgstr ""
 "Feil ved lesing a fil:\n"
 "%1"
 
-#: camel/camel-pgp-context.c:194
+#: camel/camel-pgp-context.c:193
 #, fuzzy, c-format
 msgid "Please enter your %s passphrase for %s"
 msgstr "Oppgi ditt OpenPGP-passord"
 
-#: camel/camel-pgp-context.c:197
+#: camel/camel-pgp-context.c:196
 #, fuzzy, c-format
 msgid "Please enter your %s passphrase"
 msgstr "Oppgi ditt OpenPGP-passord"
 
-#: camel/camel-pgp-context.c:561
+#: camel/camel-pgp-context.c:575
 #, fuzzy
 msgid "Cannot sign this message: no plaintext to sign"
 msgstr "Kan ikkje setja blokkstorleik for band."
 
-#: camel/camel-pgp-context.c:568 camel/camel-pgp-context.c:748
+#: camel/camel-pgp-context.c:582 camel/camel-pgp-context.c:762
 msgid "Cannot sign this message: no password provided"
 msgstr ""
 
-#: camel/camel-pgp-context.c:574 camel/camel-pgp-context.c:754
+#: camel/camel-pgp-context.c:588 camel/camel-pgp-context.c:768
 #, fuzzy, c-format
 msgid "Cannot sign this message: couldn't create pipe to GPG/PGP: %s"
 msgstr "Kunne ikkje laga katalog\n"
 
-#: camel/camel-pgp-context.c:741
+#: camel/camel-pgp-context.c:755
 msgid "Cannot sign this message: no plaintext to clearsign"
 msgstr ""
 
-#: camel/camel-pgp-context.c:939
+#: camel/camel-pgp-context.c:953
 msgid "Cannot verify this message: no plaintext to verify"
 msgstr ""
 
-#: camel/camel-pgp-context.c:945
+#: camel/camel-pgp-context.c:959
 #, fuzzy, c-format
 msgid "Cannot verify this message: couldn't create pipe to GPG/PGP: %s"
 msgstr "Kunne ikkje laga katalog\n"
 
-#: camel/camel-pgp-context.c:956
+#: camel/camel-pgp-context.c:970
 #, fuzzy, c-format
 msgid "Cannot verify this message: couldn't create temp file: %s"
 msgstr "Kunne ikkje laga katalog\n"
 
-#: camel/camel-pgp-context.c:1129
+#: camel/camel-pgp-context.c:1143
 msgid "Cannot encrypt this message: no plaintext to encrypt"
 msgstr ""
 
-#: camel/camel-pgp-context.c:1139
+#: camel/camel-pgp-context.c:1153
 msgid "Cannot encrypt this message: no password provided"
 msgstr ""
 
-#: camel/camel-pgp-context.c:1146
+#: camel/camel-pgp-context.c:1160
 #, fuzzy, c-format
 msgid "Cannot encrypt this message: couldn't create pipe to GPG/PGP: %s"
 msgstr "Kunne ikkje laga katalog\n"
 
-#: camel/camel-pgp-context.c:1155
+#: camel/camel-pgp-context.c:1169
 msgid "Cannot encrypt this message: no recipients specified"
 msgstr ""
 
-#: camel/camel-pgp-context.c:1323
+#: camel/camel-pgp-context.c:1337
 msgid "Cannot decrypt this message: no ciphertext to decrypt"
 msgstr ""
 
-#: camel/camel-pgp-context.c:1331
+#: camel/camel-pgp-context.c:1345
 msgid "Cannot decrypt this message: no password provided"
 msgstr ""
 
-#: camel/camel-pgp-context.c:1338
+#: camel/camel-pgp-context.c:1352
 #, fuzzy, c-format
 msgid "Cannot decrypt this message: couldn't create pipe to GPG/PGP: %s"
 msgstr "Kunne ikkje laga katalog\n"
@@ -5874,7 +6298,8 @@ msgstr ""
 
 #: camel/camel-remote-store.c:358 camel/camel-remote-store.c:420
 #: camel/camel-remote-store.c:481
-#: camel/providers/imap/camel-imap-command.c:386
+#: camel/providers/imap/camel-imap-command.c:228
+#: camel/providers/imap/camel-imap-command.c:401
 msgid "Operation cancelled"
 msgstr "Operasjonen vart avbroten"
 
@@ -5977,7 +6402,7 @@ msgid ""
 msgstr ""
 
 #: camel/camel-sasl-kerberos4.c:218
-#: camel/providers/imap/camel-imap-store.c:496
+#: camel/providers/imap/camel-imap-store.c:495
 msgid "Bad authentication response from server."
 msgstr ""
 
@@ -6129,28 +6554,10 @@ msgstr "Åtvaring ved &tilbaketrekte sertifikat"
 msgid "Cannot get folder: Invalid operation on this store"
 msgstr "Leitar etter tilleggsmodular"
 
-#: camel/camel-store.c:280
+#: camel/camel-store.c:282
 #, fuzzy
 msgid "Cannot create folder: Invalid operation on this store"
 msgstr "Leitar etter tilleggsmodular"
-
-#: camel/camel-tcp-stream-openssl.c:536
-#, fuzzy, c-format
-msgid ""
-"Issuer: %s\n"
-"Subject: %s"
-msgstr "Emne"
-
-#. construct our user prompt
-#: camel/camel-tcp-stream-openssl.c:541 camel/camel-tcp-stream-ssl.c:428
-#, c-format
-msgid ""
-"Bad certificate from %s:\n"
-"\n"
-"%s\n"
-"\n"
-"Do you wish to accept anyway?"
-msgstr ""
 
 #: camel/camel-tcp-stream-ssl.c:412
 #, c-format
@@ -6162,6 +6569,17 @@ msgid ""
 "Locality: %s\n"
 "State: %s\n"
 "Country: %s"
+msgstr ""
+
+#. construct our user prompt
+#: camel/camel-tcp-stream-ssl.c:428
+#, c-format
+msgid ""
+"Bad certificate from %s:\n"
+"\n"
+"%s\n"
+"\n"
+"Do you wish to accept anyway?"
 msgstr ""
 
 #: camel/camel-url.c:288
@@ -6207,26 +6625,26 @@ msgstr "Leitar etter tilleggsmodular"
 msgid "You cannot copy messages from this trash folder."
 msgstr "Vil du lagra denne artikkelen i Kladd-mappa?"
 
-#: camel/providers/imap/camel-imap-command.c:329
+#: camel/providers/imap/camel-imap-command.c:344
 #, fuzzy, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "Slett e-post frå tenaren"
 
-#: camel/providers/imap/camel-imap-command.c:339
+#: camel/providers/imap/camel-imap-command.c:354
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr ""
 
-#: camel/providers/imap/camel-imap-command.c:394
+#: camel/providers/imap/camel-imap-command.c:409
 msgid "Server response ended too soon."
 msgstr ""
 
-#: camel/providers/imap/camel-imap-command.c:586
+#: camel/providers/imap/camel-imap-command.c:601
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr ""
 
-#: camel/providers/imap/camel-imap-command.c:622
+#: camel/providers/imap/camel-imap-command.c:637
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr ""
@@ -6253,23 +6671,23 @@ msgstr ""
 msgid "Scanning for changed messages"
 msgstr "Melding"
 
-#: camel/providers/imap/camel-imap-folder.c:1562
-#: camel/providers/imap/camel-imap-folder.c:1974
+#: camel/providers/imap/camel-imap-folder.c:1566
+#: camel/providers/imap/camel-imap-folder.c:1978
 #, fuzzy
 msgid "This message is not currently available"
 msgstr "%1 er ikkje tilgjengeleg."
 
-#: camel/providers/imap/camel-imap-folder.c:1713
-#: camel/providers/imap/camel-imap-folder.c:1794
+#: camel/providers/imap/camel-imap-folder.c:1717
+#: camel/providers/imap/camel-imap-folder.c:1798
 msgid "Fetching summary information for new messages"
 msgstr ""
 
-#: camel/providers/imap/camel-imap-folder.c:1719
+#: camel/providers/imap/camel-imap-folder.c:1723
 #, fuzzy
 msgid "Scanning for new messages"
 msgstr "Melding"
 
-#: camel/providers/imap/camel-imap-folder.c:2011
+#: camel/providers/imap/camel-imap-folder.c:2015
 msgid "Could not find message body in FETCH response."
 msgstr ""
 
@@ -6333,28 +6751,28 @@ msgstr ""
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 
-#: camel/providers/imap/camel-imap-store.c:519
+#: camel/providers/imap/camel-imap-store.c:518
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr ""
 
-#: camel/providers/imap/camel-imap-store.c:529
+#: camel/providers/imap/camel-imap-store.c:528
 #: camel/providers/smtp/camel-smtp-transport.c:386
 #, fuzzy, c-format
 msgid "No support for authentication type %s"
 msgstr "Autentisering:"
 
-#: camel/providers/imap/camel-imap-store.c:553
+#: camel/providers/imap/camel-imap-store.c:552
 #, c-format
 msgid "%sPlease enter the IMAP password for %s@%s"
 msgstr ""
 
-#: camel/providers/imap/camel-imap-store.c:568
+#: camel/providers/imap/camel-imap-store.c:567
 #: camel/providers/smtp/camel-smtp-transport.c:430
 msgid "You didn't enter a password."
 msgstr ""
 
-#: camel/providers/imap/camel-imap-store.c:594
+#: camel/providers/imap/camel-imap-store.c:596
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -6362,12 +6780,12 @@ msgid ""
 "\n"
 msgstr ""
 
-#: camel/providers/imap/camel-imap-store.c:897
+#: camel/providers/imap/camel-imap-store.c:899
 #, fuzzy, c-format
 msgid "No such folder %s"
 msgstr "Vidaresendt melding"
 
-#: camel/providers/imap/camel-imap-store.c:1272
+#: camel/providers/imap/camel-imap-store.c:1274
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr ""
 
@@ -7493,67 +7911,66 @@ msgstr ""
 "Feil ved lesing av fil:\n"
 "%s"
 
-#: composer/e-msg-composer.c:879
+#: composer/e-msg-composer.c:894
 msgid "Save as..."
 msgstr "Lagre som ..."
 
-#: composer/e-msg-composer.c:888
+#: composer/e-msg-composer.c:903
 #, fuzzy
 msgid "Warning!"
 msgstr "Flyttar"
 
-#: composer/e-msg-composer.c:892
-#, fuzzy
+#: composer/e-msg-composer.c:907
 msgid "File exists, overwrite?"
-msgstr "Loggfil eksisterer, overskriv?"
+msgstr "Fila eksisterar, skriv over?"
 
-#: composer/e-msg-composer.c:914
+#: composer/e-msg-composer.c:929
 #, fuzzy, c-format
 msgid "Error saving file: %s"
 msgstr ""
 "Feil ved lesing a fil:\n"
 "%1"
 
-#: composer/e-msg-composer.c:933
+#: composer/e-msg-composer.c:948
 #, fuzzy, c-format
 msgid "Error loading file: %s"
 msgstr ""
 "Feil ved nedlasting av fil:\n"
 "%1"
 
-#: composer/e-msg-composer.c:1004
+#: composer/e-msg-composer.c:1019
 msgid ""
 "Unable to open the drafts folder for this account.\n"
 "Would you like to use the default drafts folder?"
 msgstr ""
 
-#: composer/e-msg-composer.c:1054
+#: composer/e-msg-composer.c:1069
 #, fuzzy, c-format
 msgid "Error accessing file: %s"
 msgstr ""
 "Feil ved lesing a fil:\n"
 "%1"
 
-#: composer/e-msg-composer.c:1062
+#: composer/e-msg-composer.c:1077
 #, fuzzy
 msgid "Unable to retrieve message from editor"
 msgstr "Kunne ikkje motta fil"
 
-#: composer/e-msg-composer.c:1069
+#: composer/e-msg-composer.c:1084
 #, fuzzy, c-format
 msgid ""
 "Unable to seek on file: %s\n"
 "%s"
 msgstr "Kunne ikkje lasta kalender '%1'.\n"
 
-#: composer/e-msg-composer.c:1076
+#: composer/e-msg-composer.c:1091
 #, fuzzy, c-format
 msgid ""
 "Unable to truncate file: %s\n"
 "%s"
 msgstr "Kunne ikkje lasta kalender '%1'.\n"
 
-#: composer/e-msg-composer.c:1085
+#: composer/e-msg-composer.c:1100
 #, fuzzy, c-format
 msgid ""
 "Error autosaving message: %s\n"
@@ -7562,13 +7979,13 @@ msgstr ""
 "Feil ved lesing a fil:\n"
 "%1"
 
-#: composer/e-msg-composer.c:1187
+#: composer/e-msg-composer.c:1202
 msgid ""
 "Ximian Evolution has found unsaved files from a previous session.\n"
 "Would you like to try to recover them?"
 msgstr ""
 
-#: composer/e-msg-composer.c:1341
+#: composer/e-msg-composer.c:1356
 #, fuzzy
 msgid ""
 "This message has not been sent.\n"
@@ -7578,31 +7995,31 @@ msgstr ""
 "Dette er siste trekk.\n"
 "Vil du leggja til fleire trekk?"
 
-#: composer/e-msg-composer.c:1348
+#: composer/e-msg-composer.c:1363
 #, fuzzy
 msgid "Warning: Modified Message"
 msgstr "Vidaresendt melding frå %1"
 
-#: composer/e-msg-composer.c:1371
+#: composer/e-msg-composer.c:1386
 msgid "Open file"
 msgstr "Opna fil"
 
-#: composer/e-msg-composer.c:1520
+#: composer/e-msg-composer.c:1535
 msgid "Insert File"
 msgstr "Set inn fil"
 
-#: composer/e-msg-composer.c:1895 composer/e-msg-composer.c:2336
+#: composer/e-msg-composer.c:1910 composer/e-msg-composer.c:2351
 #, fuzzy
 msgid "Compose a message"
 msgstr "Lukk melding"
 
-#: composer/e-msg-composer.c:2353
+#: composer/e-msg-composer.c:2368
 msgid ""
 "Could not create composer window:\n"
 "Unable to activate address selector control."
 msgstr ""
 
-#: composer/e-msg-composer.c:2376
+#: composer/e-msg-composer.c:2391 composer/e-msg-composer.c:2446
 #, fuzzy
 msgid ""
 "Could not create composer window:\n"
@@ -7620,13 +8037,14 @@ msgstr ""
 msgid "Cannot initialize Evolution's composer."
 msgstr "Kan ikkje initialisera lokale variablar"
 
-#: data/evolution.desktop.in.h:1 shell/main.c:83
-msgid "Evolution"
-msgstr "Evolution"
-
-#: data/evolution.desktop.in.h:2
+#: data/evolution.desktop.in.h:1
 msgid "The Evolution groupware suite"
 msgstr "Gruppevareverktyet Evolution"
+
+#: data/evolution.desktop.in.h:2
+#, fuzzy
+msgid "Ximian Evolution"
+msgstr "Evolution"
 
 #: data/evolution.keys.in.h:1
 msgid "address card"
@@ -7676,11 +8094,11 @@ msgid "Subject does not contain"
 msgstr "Emne"
 
 #. Remember the password?
-#: e-util/e-passwords.c:347 mail/mail-session.c:258
+#: e-util/e-passwords.c:360 mail/mail-session.c:267
 msgid "Remember this password"
 msgstr ""
 
-#: e-util/e-passwords.c:349 mail/mail-session.c:259
+#: e-util/e-passwords.c:362 mail/mail-session.c:268
 msgid "Remember this password for the remainder of this session"
 msgstr ""
 
@@ -7931,7 +8349,7 @@ msgid ""
 "Please go back and specify a valid folder to deliver mail to."
 msgstr ""
 
-#: filter/filter-folder.c:242 filter/vfolder-rule.c:356
+#: filter/filter-folder.c:242 filter/vfolder-rule.c:364
 #: mail/mail-account-gui.c:837
 #, fuzzy
 msgid "Select Folder"
@@ -7959,45 +8377,50 @@ msgstr ""
 msgid "Test"
 msgstr "Test"
 
-#: filter/filter-rule.c:708
+#: filter/filter-rule.c:217
+#, fuzzy
+msgid "You must name this filter."
+msgstr "Endra namnet på spelarane"
+
+#: filter/filter-rule.c:720
 #, fuzzy
 msgid "Rule name: "
 msgstr "Filnamn:"
 
-#: filter/filter-rule.c:712
+#: filter/filter-rule.c:724
 #, fuzzy
 msgid "Untitled"
 msgstr "Utan tittel"
 
-#: filter/filter-rule.c:729
+#: filter/filter-rule.c:741
 #, fuzzy
 msgid "If"
 msgstr "I"
 
-#: filter/filter-rule.c:747
+#: filter/filter-rule.c:759
 #, fuzzy
 msgid "Execute actions"
 msgstr "Køyr autorun.sh"
 
-#: filter/filter-rule.c:751
+#: filter/filter-rule.c:763
 msgid "if all criteria are met"
 msgstr ""
 
-#: filter/filter-rule.c:756
+#: filter/filter-rule.c:768
 msgid "if any criteria are met"
 msgstr ""
 
-#: filter/filter-rule.c:767
+#: filter/filter-rule.c:779
 #, fuzzy
 msgid "Add criterion"
 msgstr "Legg til kriterium"
 
-#: filter/filter-rule.c:852
+#: filter/filter-rule.c:864
 #, fuzzy
 msgid "incoming"
 msgstr "Koding"
 
-#: filter/filter-rule.c:852
+#: filter/filter-rule.c:864
 #, fuzzy
 msgid "outgoing"
 msgstr "Oversikt"
@@ -8014,12 +8437,11 @@ msgstr "Rediger filterreglar"
 
 #: filter/filter.glade.h:4
 msgid "Incoming"
-msgstr ""
+msgstr "Innkomande"
 
 #: filter/filter.glade.h:5
-#, fuzzy
 msgid "Outgoing"
-msgstr "Oversikt"
+msgstr "Utgåande"
 
 #: filter/filter.glade.h:6 filter/vfolder-editor.c:130
 #, fuzzy
@@ -8120,8 +8542,9 @@ msgid "Draft"
 msgstr "Kladd"
 
 #: filter/libfilter-i18n.h:20
+#, fuzzy
 msgid "ends with"
-msgstr ""
+msgstr "sluttar med"
 
 #: filter/libfilter-i18n.h:21
 #, fuzzy
@@ -8222,7 +8645,7 @@ msgstr "Svar til alle:"
 msgid "Score"
 msgstr "Poengsum"
 
-#: filter/libfilter-i18n.h:42 mail/mail-callbacks.c:1398
+#: filter/libfilter-i18n.h:42 mail/mail-callbacks.c:1404
 #, fuzzy
 msgid "Sender"
 msgstr "Send"
@@ -8251,8 +8674,9 @@ msgid "Specific header"
 msgstr ""
 
 #: filter/libfilter-i18n.h:48
+#, fuzzy
 msgid "starts with"
-msgstr ""
+msgstr "byrjar med"
 
 #: filter/libfilter-i18n.h:50
 msgid "Stop Processing"
@@ -8291,7 +8715,12 @@ msgstr "Rediger fil"
 msgid "Score Rules"
 msgstr "Rediger filterreglar"
 
-#: filter/vfolder-rule.c:205
+#: filter/vfolder-rule.c:204
+#, fuzzy
+msgid "You must name this vfolder."
+msgstr "Endra namnet på spelarane"
+
+#: filter/vfolder-rule.c:213
 msgid "You need to to specify at least one folder as a source."
 msgstr ""
 
@@ -8310,39 +8739,39 @@ msgstr "Flyttar"
 msgid "Please wait"
 msgstr ""
 
-#: importers/elm-importer.c:170 importers/netscape-importer.c:692
-#: importers/pine-importer.c:368
+#: importers/elm-importer.c:169 importers/netscape-importer.c:689
+#: importers/pine-importer.c:365
 #, fuzzy, c-format
 msgid "Importing %s as %s"
 msgstr "Flyttar"
 
-#: importers/elm-importer.c:376 importers/netscape-importer.c:785
-#: importers/pine-importer.c:474
+#: importers/elm-importer.c:375 importers/netscape-importer.c:782
+#: importers/pine-importer.c:471
 #, fuzzy, c-format
 msgid "Scanning %s"
 msgstr "Sender %1"
 
-#: importers/elm-importer.c:527 importers/netscape-importer.c:958
+#: importers/elm-importer.c:525 importers/netscape-importer.c:958
 #: importers/pine-importer.c:637 mail/component-factory.c:100
 #, fuzzy
 msgid "Mail"
 msgstr "Send"
 
-#: importers/elm-importer.c:547
+#: importers/elm-importer.c:545
 msgid ""
 "Evolution has found Elm mail files\n"
 "Would you like to import them into Evolution?"
 msgstr ""
 
-#: importers/elm-importer.c:576
+#: importers/elm-importer.c:574
 msgid "Elm"
 msgstr ""
 
-#: importers/evolution-gnomecard-importer.c:229 importers/pine-importer.c:642
+#: importers/evolution-gnomecard-importer.c:228 importers/pine-importer.c:642
 msgid "Addressbook"
 msgstr "Adressebok"
 
-#: importers/evolution-gnomecard-importer.c:247
+#: importers/evolution-gnomecard-importer.c:246
 msgid ""
 "Evolution has found GnomeCard files.\n"
 "Would you like them to be imported into Evolution?"
@@ -8463,38 +8892,38 @@ msgstr "Eigenskapar ..."
 msgid "Change this folder's properties"
 msgstr "Endra namnet på spelarane"
 
-#: mail/component-factory.c:805
+#: mail/component-factory.c:783
 msgid ""
 "Some of your mail settings seem corrupt, please check that everything is in "
 "order."
 msgstr ""
 
-#: mail/component-factory.c:973
+#: mail/component-factory.c:951
 #, fuzzy
 msgid "New Mail Message"
 msgstr "Legg til melding"
 
-#: mail/component-factory.c:973
+#: mail/component-factory.c:951
 #, fuzzy
 msgid "New _Mail Message"
 msgstr "Legg til melding"
 
-#: mail/component-factory.c:997
+#: mail/component-factory.c:975
 #, fuzzy
 msgid "Cannot initialize Evolution's mail component."
 msgstr "Kan ikkje initialisera lokale variablar"
 
-#: mail/component-factory.c:1006
+#: mail/component-factory.c:984
 #, fuzzy
 msgid "Cannot initialize Evolution's mail config component."
 msgstr "Kan ikkje initialisera lokale variablar"
 
-#: mail/component-factory.c:1012
+#: mail/component-factory.c:990
 #, fuzzy
 msgid "Cannot initialize Evolution's folder info component."
 msgstr "Kan ikkje initialisera lokale variablar"
 
-#: mail/component-factory.c:1228
+#: mail/component-factory.c:1206
 msgid "Cannot register storage with shell"
 msgstr ""
 
@@ -8515,185 +8944,189 @@ msgstr ""
 "%1:\n"
 "%2"
 
-#: mail/folder-browser.c:768
+#: mail/folder-browser.c:731
 #, fuzzy, c-format
 msgid "%d new"
 msgstr "Legg til &ny"
 
-#: mail/folder-browser.c:771 mail/folder-browser.c:776
-#: mail/folder-browser.c:798
+#: mail/folder-browser.c:734 mail/folder-browser.c:739
+#: mail/folder-browser.c:761
 msgid ", "
 msgstr ", "
 
-#: mail/folder-browser.c:772
+#: mail/folder-browser.c:735
 #, fuzzy, c-format
 msgid "%d hidden"
 msgstr "gøymt"
 
-#: mail/folder-browser.c:777
+#: mail/folder-browser.c:740
 #, fuzzy, c-format
 msgid "%d selected"
 msgstr "Slett"
 
-#: mail/folder-browser.c:800
+#: mail/folder-browser.c:763
 #, fuzzy, c-format
 msgid "%d unsent"
 msgstr "Legg til &ny"
 
-#: mail/folder-browser.c:802
+#: mail/folder-browser.c:765
 #, fuzzy, c-format
 msgid "%d sent"
 msgstr "Legg til &ny"
 
-#: mail/folder-browser.c:804
+#: mail/folder-browser.c:767
 #, fuzzy, c-format
 msgid "%d total"
 msgstr "(%1 totalt)"
 
-#: mail/folder-browser.c:1086
+#: mail/folder-browser.c:1049
 #, fuzzy
 msgid "Create vFolder from Search"
 msgstr "Mapper"
 
-#: mail/folder-browser.c:1467
+#: mail/folder-browser.c:1430
 #, fuzzy
 msgid "VFolder on _Subject"
 msgstr "Ingen emne"
 
-#: mail/folder-browser.c:1468
+#: mail/folder-browser.c:1431
 #, fuzzy
 msgid "VFolder on Se_nder"
 msgstr "Mappenamn:"
 
-#: mail/folder-browser.c:1469
+#: mail/folder-browser.c:1432
 #, fuzzy
 msgid "VFolder on _Recipients"
 msgstr "Mappa finst: "
 
-#: mail/folder-browser.c:1470
+#: mail/folder-browser.c:1433
 #, fuzzy
 msgid "VFolder on Mailing _List"
 msgstr "Fil alt i liste"
 
-#: mail/folder-browser.c:1474
+#: mail/folder-browser.c:1437
 #, fuzzy
 msgid "Filter on Sub_ject"
 msgstr "Ingen emne"
 
-#: mail/folder-browser.c:1475
+#: mail/folder-browser.c:1438
 #, fuzzy
 msgid "Filter on Sen_der"
 msgstr "Fil under:"
 
-#: mail/folder-browser.c:1476
+#: mail/folder-browser.c:1439
 #, fuzzy
 msgid "Filter on Re_cipients"
 msgstr "Skriv ut filer"
 
-#: mail/folder-browser.c:1477
+#: mail/folder-browser.c:1440
 #, fuzzy
 msgid "Filter on _Mailing List"
 msgstr "Fil alt i liste"
 
-#: mail/folder-browser.c:1485 ui/evolution-mail-message.xml.h:95
+#: mail/folder-browser.c:1448 ui/evolution-mail-message.xml.h:95
 #, fuzzy
 msgid "_Edit as New Message..."
 msgstr "Private meldingar"
 
-#: mail/folder-browser.c:1486 ui/evolution-mail-message.xml.h:104
+#: mail/folder-browser.c:1449 ui/evolution-mail-message.xml.h:104
 msgid "_Save As..."
 msgstr "_Lagre som ..."
 
-#: mail/folder-browser.c:1487
+#: mail/folder-browser.c:1450
 msgid "_Print"
-msgstr "_Skriv ut"
+msgstr "S_kriv ut"
 
-#: mail/folder-browser.c:1491 ui/evolution-mail-message.xml.h:103
+#: mail/folder-browser.c:1454 ui/evolution-mail-message.xml.h:103
 #, fuzzy
 msgid "_Reply to Sender"
 msgstr "Svar til avsendar:"
 
-#: mail/folder-browser.c:1492 ui/evolution-mail-message.xml.h:72
+#: mail/folder-browser.c:1455 ui/evolution-mail-message.xml.h:72
 #, fuzzy
 msgid "Reply to _List"
 msgstr "Svar til:"
 
-#: mail/folder-browser.c:1493 ui/evolution-mail-message.xml.h:71
+#: mail/folder-browser.c:1456 ui/evolution-mail-message.xml.h:71
 msgid "Reply to _All"
 msgstr "Svar til _alle"
 
-#: mail/folder-browser.c:1494
+#: mail/folder-browser.c:1457
 msgid "_Forward"
 msgstr "_Vidaresend"
 
-#: mail/folder-browser.c:1496 ui/evolution-mail-message.xml.h:42
+#: mail/folder-browser.c:1459 ui/evolution-mail-message.xml.h:42
 #, fuzzy
 msgid "Mar_k as Read"
 msgstr "Mar&ker som ulesen"
 
-#: mail/folder-browser.c:1497 ui/evolution-mail-message.xml.h:44
+#: mail/folder-browser.c:1460 ui/evolution-mail-message.xml.h:44
 #, fuzzy
 msgid "Mark as U_nread"
 msgstr "Mar&ker som ulesen"
 
-#: mail/folder-browser.c:1498
+#: mail/folder-browser.c:1461
 #, fuzzy
 msgid "Mark as _Important"
 msgstr "Marker som lesen"
 
-#: mail/folder-browser.c:1499
+#: mail/folder-browser.c:1462
 #, fuzzy
 msgid "Mark as Unim_portant"
 msgstr "Marker som lesen"
 
-#: mail/folder-browser.c:1503
+#: mail/folder-browser.c:1466
 #, fuzzy
 msgid "_Move to Folder..."
 msgstr "Flytt til mappe"
 
-#: mail/folder-browser.c:1504
+#: mail/folder-browser.c:1467
 #, fuzzy
 msgid "_Copy to Folder..."
 msgstr "Kopier til mappe"
 
-#: mail/folder-browser.c:1506 ui/evolution-mail-message.xml.h:106
+#: mail/folder-browser.c:1469 ui/evolution-mail-message.xml.h:106
 #, fuzzy
 msgid "_Undelete"
 msgstr "Slett"
 
-#: mail/folder-browser.c:1510
+#: mail/folder-browser.c:1473
 #, fuzzy
 msgid "Add Sender to Address Book"
 msgstr "Legg til i adresseboka"
 
-#: mail/folder-browser.c:1513
+#: mail/folder-browser.c:1476
 msgid "Apply Filters"
 msgstr ""
 
-#: mail/folder-browser.c:1515
+#: mail/folder-browser.c:1478
 #, fuzzy
 msgid "Create Ru_le From Message"
 msgstr "Mapper"
 
-#: mail/folder-browser.c:1665
+#: mail/folder-browser.c:1628
 #, fuzzy
 msgid "Filter on Mailing List"
 msgstr "Fil alt i liste"
 
-#: mail/folder-browser.c:1666
+#: mail/folder-browser.c:1629
 #, fuzzy
 msgid "VFolder on Mailing List"
 msgstr "Fil alt i liste"
 
-#: mail/folder-browser.c:1668
+#: mail/folder-browser.c:1631
 #, c-format
 msgid "Filter on Mailing List (%s)"
 msgstr ""
 
-#: mail/folder-browser.c:1669
+#: mail/folder-browser.c:1632
 #, fuzzy, c-format
 msgid "VFolder on Mailing List (%s)"
 msgstr "Fil alt i liste"
+
+#: mail/folder-browser.h:26
+msgid "Default"
+msgstr "Forvald"
 
 #: mail/folder-info.c:64
 #, fuzzy
@@ -8786,9 +9219,8 @@ msgid "Could not save signature file."
 msgstr "Kunne ikkje laga kio-jobb.\n"
 
 #: mail/mail-account-gui.c:1039
-#, fuzzy
 msgid "Save signature"
-msgstr "Vis sig&natur"
+msgstr "Lagre signatur"
 
 #: mail/mail-account-gui.c:1045
 #, fuzzy
@@ -8836,32 +9268,32 @@ msgid "Are you sure you want to delete this news account?"
 msgstr "Er du sikker på at du vil sletta denne klassen?"
 
 #. give our dialog an Close button and title
-#: mail/mail-accounts.c:790 mail/mail-config.glade.h:42
+#: mail/mail-accounts.c:783 mail/mail-config.glade.h:42
 #, fuzzy
 msgid "Mail Settings"
 msgstr "Skriftinnstillingar"
 
-#: mail/mail-autofilter.c:71
+#: mail/mail-autofilter.c:72
 #, fuzzy, c-format
 msgid "Mail to %s"
 msgstr "Postkasse: %1"
 
-#: mail/mail-autofilter.c:214
+#: mail/mail-autofilter.c:215
 #, fuzzy, c-format
 msgid "Subject is %s"
 msgstr "Emne"
 
-#: mail/mail-autofilter.c:230
+#: mail/mail-autofilter.c:231
 #, fuzzy, c-format
 msgid "Mail from %s"
 msgstr "Melding frå %s"
 
-#: mail/mail-autofilter.c:286
+#: mail/mail-autofilter.c:287
 #, fuzzy, c-format
 msgid "%s mailing list"
 msgstr "E-post&liste for språket:"
 
-#: mail/mail-autofilter.c:335 mail/mail-autofilter.c:355
+#: mail/mail-autofilter.c:336 mail/mail-autofilter.c:356
 #, fuzzy
 msgid "Add Filter Rule"
 msgstr "Filter-reglar"
@@ -8949,60 +9381,60 @@ msgstr "Ukjend feil"
 msgid "On %a, %Y-%m-%d at %H:%M, %%s wrote:"
 msgstr ""
 
-#: mail/mail-callbacks.c:1275 mail/message-browser.c:130
+#: mail/mail-callbacks.c:1281 mail/message-browser.c:130
 #, fuzzy
 msgid "Move message(s) to"
 msgstr "Flytta alle meldingar til papirkorga"
 
-#: mail/mail-callbacks.c:1277 mail/message-browser.c:132
+#: mail/mail-callbacks.c:1283 mail/message-browser.c:132
 #, fuzzy
 msgid "Copy message(s) to"
 msgstr "&Kopier bileteplassering"
 
-#: mail/mail-callbacks.c:1747
+#: mail/mail-callbacks.c:1753
 #, fuzzy, c-format
 msgid "Are you sure you want to edit all %d messages?"
 msgstr "Er du sikker på at du vil sletta %1?"
 
-#: mail/mail-callbacks.c:1772
+#: mail/mail-callbacks.c:1778
 #, fuzzy
 msgid ""
 "You may only edit messages saved\n"
 "in the Drafts folder."
 msgstr "Vil du lagra denne artikkelen i Kladd-mappa?"
 
-#: mail/mail-callbacks.c:1811
+#: mail/mail-callbacks.c:1817
 #, fuzzy
 msgid ""
 "You may only resend messages\n"
 "in the Sent folder."
 msgstr "Vil du lagra denne artikkelen i Kladd-mappa?"
 
-#: mail/mail-callbacks.c:1825
+#: mail/mail-callbacks.c:1831
 #, fuzzy, c-format
 msgid "Are you sure you want to resend all %d messages?"
 msgstr "Er du sikker på at du vil fjerna %1?"
 
-#: mail/mail-callbacks.c:1851
+#: mail/mail-callbacks.c:1857
 #, fuzzy
 msgid "No Message Selected"
 msgstr "Ingen rektangel valt!"
 
-#: mail/mail-callbacks.c:1945
+#: mail/mail-callbacks.c:1951
 #, fuzzy
 msgid "Save Message As..."
 msgstr "Lagra melding"
 
-#: mail/mail-callbacks.c:1947
+#: mail/mail-callbacks.c:1953
 #, fuzzy
 msgid "Save Messages As..."
 msgstr "Lagra melding"
 
-#: mail/mail-callbacks.c:2116 widgets/misc/e-messagebox.c:159
+#: mail/mail-callbacks.c:2122 widgets/misc/e-messagebox.c:159
 msgid "Warning"
 msgstr "Åtvaring"
 
-#: mail/mail-callbacks.c:2123
+#: mail/mail-callbacks.c:2129
 msgid ""
 "This operation will permanently erase all messages marked as deleted. If you "
 "continue, you will not be able to recover these messages.\n"
@@ -9010,33 +9442,33 @@ msgid ""
 "Really erase these messages?"
 msgstr ""
 
-#: mail/mail-callbacks.c:2130
+#: mail/mail-callbacks.c:2136
 #, fuzzy
 msgid "Do not ask me again."
 msgstr "Ikkje spør igjen"
 
-#: mail/mail-callbacks.c:2238
+#: mail/mail-callbacks.c:2244
 #, fuzzy, c-format
 msgid ""
 "Error loading filter information:\n"
 "%s"
 msgstr "Les filinformasjon"
 
-#: mail/mail-callbacks.c:2250
+#: mail/mail-callbacks.c:2256
 msgid "Filters"
 msgstr "Filter"
 
-#: mail/mail-callbacks.c:2313
+#: mail/mail-callbacks.c:2319
 #, fuzzy
 msgid "Print Message"
 msgstr "Private meldingar"
 
-#: mail/mail-callbacks.c:2359
+#: mail/mail-callbacks.c:2365
 #, fuzzy
 msgid "Printing of message failed"
 msgstr "Feil ved skriving av band-ID."
 
-#: mail/mail-callbacks.c:2461
+#: mail/mail-callbacks.c:2467
 #, fuzzy, c-format
 msgid "Are you sure you want to open all %d messages in separate windows?"
 msgstr "Er du sikker på at du vil sletta denne overføringa?"
@@ -9083,7 +9515,12 @@ msgstr ""
 msgid "Evolution Account Assistant"
 msgstr "KDeelop-installering"
 
-#: mail/mail-config.c:1643
+#: mail/mail-config.c:326
+#, fuzzy, c-format
+msgid "Account %d"
+msgstr "Små ikon"
+
+#: mail/mail-config.c:1859
 #, c-format
 msgid ""
 "Could not get inbox for new mail store:\n"
@@ -9091,11 +9528,19 @@ msgid ""
 "No shortcut will be created."
 msgstr ""
 
-#: mail/mail-config.c:1896
+#. Create the shortcut. FIXME: This only works if the
+#. * full name matches the path.
+#.
+#: mail/mail-config.c:1870
+#, fuzzy, c-format
+msgid "%s: Inbox"
+msgstr "Innboks"
+
+#: mail/mail-config.c:2112
 msgid "Checking Service"
 msgstr ""
 
-#: mail/mail-config.c:1967 mail/mail-config.c:1971
+#: mail/mail-config.c:2183 mail/mail-config.c:2187
 #, fuzzy
 msgid "Connecting to server..."
 msgstr " Koplar til tenar ..."
@@ -9213,7 +9658,7 @@ msgstr "Vis"
 msgid "Done"
 msgstr "Ferdig"
 
-#: mail/mail-config.glade.h:30
+#: mail/mail-config.glade.h:30 shell/e-local-storage.c:173
 msgid "Drafts"
 msgstr "Kladd"
 
@@ -9222,7 +9667,8 @@ msgstr "Kladd"
 msgid "E_nable"
 msgstr "på"
 
-#: mail/mail-config.glade.h:32 widgets/misc/e-filter-bar.h:103
+#: mail/mail-config.glade.h:32 widgets/misc/e-filter-bar.h:96
+#: widgets/misc/e-filter-bar.h:103
 #, fuzzy
 msgid "Edit..."
 msgstr "Rediger ..."
@@ -9382,6 +9828,7 @@ msgid "Sending Mail"
 msgstr "Sender e-post"
 
 #: mail/mail-config.glade.h:73 mail/message-list.etspec.h:6
+#: shell/e-local-storage.c:176
 msgid "Sent"
 msgstr "Sendt"
 
@@ -9589,9 +10036,8 @@ msgid "placeholder"
 msgstr "Bruk &plasshaldarar"
 
 #: mail/mail-config.glade.h:123
-#, fuzzy
 msgid "seconds."
-msgstr "sekund"
+msgstr "sekund."
 
 #: mail/mail-crypto.c:59
 #, fuzzy
@@ -9737,32 +10183,49 @@ msgstr "Cc"
 msgid "Bcc"
 msgstr "&Bcc:"
 
-#: mail/mail-format.c:2067
+#: mail/mail-format.c:1813
+msgid ""
+"This message is digitally signed. Click the lock icon for more information."
+msgstr ""
+
+#: mail/mail-format.c:1836
+msgid "Evolution does not recognize this type of signed message."
+msgstr ""
+
+#: mail/mail-format.c:1844
+msgid "This message is digitally signed and has been found to be authentic."
+msgstr ""
+
+#: mail/mail-format.c:1852
+msgid "This message is digitally signed but can not be proven to be authentic."
+msgstr ""
+
+#: mail/mail-format.c:2068
 #, c-format
 msgid "Pointer to FTP site (%s)"
 msgstr ""
 
-#: mail/mail-format.c:2081
+#: mail/mail-format.c:2082
 #, c-format
 msgid "Pointer to local file (%s) valid at site \"%s\""
 msgstr ""
 
-#: mail/mail-format.c:2086
+#: mail/mail-format.c:2087
 #, c-format
 msgid "Pointer to local file (%s)"
 msgstr ""
 
-#: mail/mail-format.c:2115
+#: mail/mail-format.c:2116
 #, c-format
 msgid "Pointer to remote data (%s)"
 msgstr ""
 
-#: mail/mail-format.c:2123
+#: mail/mail-format.c:2124
 #, c-format
 msgid "Pointer to unknown external data (\"%s\" type)"
 msgstr ""
 
-#: mail/mail-format.c:2128
+#: mail/mail-format.c:2129
 msgid "Malformed external-body part."
 msgstr ""
 
@@ -9898,6 +10361,11 @@ msgstr "Kopierer"
 #, fuzzy, c-format
 msgid "Scanning folders in \"%s\""
 msgstr "Leitar etter tilleggsmodular"
+
+#. Fill in the new fields
+#: mail/mail-ops.c:1061 shell/e-local-storage.c:178
+msgid "Trash"
+msgstr "Papirkorg"
 
 #: mail/mail-ops.c:1194
 #, fuzzy
@@ -10079,19 +10547,19 @@ msgstr "Avsluttar ..."
 msgid "Cancelled."
 msgstr "Avbroten."
 
-#: mail/mail-session.c:211
+#: mail/mail-session.c:220
 #, fuzzy
 msgid "User canceled operation."
 msgstr ""
 "Brukaren avbraut handling\n"
 "%1"
 
-#: mail/mail-session.c:310
+#: mail/mail-session.c:319
 #, fuzzy, c-format
 msgid "Enter Password for %s"
 msgstr "Oppgi ditt OpenPGP-passord"
 
-#: mail/mail-session.c:313
+#: mail/mail-session.c:322
 #, fuzzy
 msgid "Enter Password"
 msgstr "Lagra som"
@@ -10121,7 +10589,7 @@ msgstr "Lagar ei ny mappe"
 msgid "Updating vfolders for uri: %s"
 msgstr "Leitar etter tilleggsmodular"
 
-#: mail/mail-vfolder.c:414
+#: mail/mail-vfolder.c:419
 #, c-format
 msgid ""
 "The following vFolder(s):\n"
@@ -10130,17 +10598,22 @@ msgid ""
 "And have been updated."
 msgstr ""
 
-#: mail/mail-vfolder.c:816
+#: mail/mail-vfolder.c:728
+#, fuzzy
+msgid "VFolders"
+msgstr "Mapper"
+
+#: mail/mail-vfolder.c:824
 #, fuzzy
 msgid "Edit VFolder"
 msgstr "Rediger filterreglar"
 
-#: mail/mail-vfolder.c:832
+#: mail/mail-vfolder.c:840
 #, c-format
 msgid "Trying to edit a vfolder '%s' which doesn't exist."
 msgstr ""
 
-#: mail/mail-vfolder.c:886
+#: mail/mail-vfolder.c:894
 #, fuzzy
 msgid "New VFolder"
 msgstr "Ny mappe"
@@ -10227,12 +10700,11 @@ msgstr "Melding"
 
 #: mail/message-list.etspec.h:2
 msgid "Flagged"
-msgstr ""
+msgstr "Flagga"
 
 #: mail/message-list.etspec.h:4
-#, fuzzy
 msgid "Received"
-msgstr "Motta"
+msgstr "Mottatt"
 
 #: mail/message-list.etspec.h:7
 msgid "Size"
@@ -10363,27 +10835,27 @@ msgstr ""
 msgid "Dictionary.com Word of the Day"
 msgstr ""
 
-#: my-evolution/e-summary-preferences.c:467
+#: my-evolution/e-summary-preferences.c:466
 #, fuzzy
 msgid "Quotes of the Day"
 msgstr "Tips for dagen"
 
-#: my-evolution/e-summary-preferences.c:946
+#: my-evolution/e-summary-preferences.c:945
 #, fuzzy
 msgid "Add a news feed"
 msgstr "Legg til ei ny oppføring"
 
-#: my-evolution/e-summary-preferences.c:954
+#: my-evolution/e-summary-preferences.c:953
 #, fuzzy
 msgid "Enter the URL of the news feed you wish to add"
 msgstr "Oppgi namnet på gruppa du vil leggja til."
 
-#: my-evolution/e-summary-preferences.c:958
+#: my-evolution/e-summary-preferences.c:957
 #, fuzzy
 msgid "Name:"
 msgstr "Namn:"
 
-#: my-evolution/e-summary-preferences.c:1504
+#: my-evolution/e-summary-preferences.c:1503
 #, fuzzy
 msgid "Summary Settings"
 msgstr "Spørjinga inneheld"
@@ -10434,12 +10906,12 @@ msgstr "Områder"
 msgid "%A, %B %e %Y"
 msgstr "%1 bit %2 %3"
 
-#: my-evolution/e-summary.c:575 ui/my-evolution.xml.h:3
+#: my-evolution/e-summary.c:580 ui/my-evolution.xml.h:3
 #, fuzzy
 msgid "Print Summary"
 msgstr "Samandrag"
 
-#: my-evolution/e-summary.c:621
+#: my-evolution/e-summary.c:626
 #, fuzzy
 msgid "Printing of Summary failed"
 msgstr "Feil ved skriving av band-ID."
@@ -10448,6 +10920,41 @@ msgstr "Feil ved skriving av band-ID."
 #, fuzzy
 msgid "Executive summary component could not initialize Bonobo.\n"
 msgstr "Kunne ikkje initiere Bonobo"
+
+#: my-evolution/metar.c:29
+#, fuzzy
+msgid "°F"
+msgstr "°"
+
+#: my-evolution/metar.c:29
+#, fuzzy
+msgid "°C"
+msgstr "°"
+
+#: my-evolution/metar.c:33
+msgid "knots"
+msgstr "knop"
+
+#: my-evolution/metar.c:33
+#, fuzzy
+msgid "kph"
+msgstr "km/t"
+
+#: my-evolution/metar.c:38
+msgid "inHg"
+msgstr "inHg"
+
+#: my-evolution/metar.c:38
+msgid "mmHg"
+msgstr "mmHg"
+
+#: my-evolution/metar.c:41
+msgid "miles"
+msgstr "miles"
+
+#: my-evolution/metar.c:41
+msgid "kilometers"
+msgstr "kilometer"
 
 #: my-evolution/metar.c:44
 msgid "Clear sky"
@@ -10681,7 +11188,7 @@ msgstr "Moderat snø"
 #: my-evolution/metar.c:161
 #, fuzzy
 msgid "Heavy snow"
-msgstr "Overskriftsrader"
+msgstr "Tung snø"
 
 #: my-evolution/metar.c:162
 #, fuzzy
@@ -10788,7 +11295,7 @@ msgstr ""
 #: my-evolution/metar.c:189
 #, fuzzy
 msgid "Few ice crystals"
-msgstr "Færre kriterium"
+msgstr "Få iskrystallar"
 
 #: my-evolution/metar.c:190
 msgid "Moderate ice crystals"
@@ -10925,7 +11432,7 @@ msgstr "Kritisk feil"
 #: my-evolution/metar.c:225
 #, fuzzy
 msgid "Hailstorm"
-msgstr "Historie"
+msgstr "Haglstorm"
 
 #: my-evolution/metar.c:226
 #, fuzzy
@@ -10981,7 +11488,7 @@ msgstr ""
 #: my-evolution/metar.c:240
 #, fuzzy
 msgid "Small hailstorm"
-msgstr "Små steg:"
+msgstr "Liten haglstorm"
 
 #: my-evolution/metar.c:241
 #, fuzzy
@@ -11156,12 +11663,12 @@ msgstr "Lappar og anna"
 #: my-evolution/metar.c:284
 #, fuzzy
 msgid "Partial fog"
-msgstr "Katalog"
+msgstr "Delvis tåke"
 
 #: my-evolution/metar.c:286
 #, fuzzy
 msgid "Fog with wind"
-msgstr "Logg-vindauge"
+msgstr "Tåke med vind"
 
 #: my-evolution/metar.c:288
 #, fuzzy
@@ -11177,7 +11684,7 @@ msgstr "Skrifttype for helsing"
 #: my-evolution/metar.c:292
 #, fuzzy
 msgid "Smoke"
-msgstr "modem"
+msgstr "Røyk"
 
 #: my-evolution/metar.c:293
 msgid "Smoke in the vicinity"
@@ -11186,7 +11693,7 @@ msgstr ""
 #: my-evolution/metar.c:294
 #, fuzzy
 msgid "Thin smoke"
-msgstr "gjer trekk"
+msgstr "Tynn røyk"
 
 #: my-evolution/metar.c:295
 #, fuzzy
@@ -11221,7 +11728,7 @@ msgstr "Skiljeteikn for tusental:"
 #: my-evolution/metar.c:301
 #, fuzzy
 msgid "Smoke with wind"
-msgstr "&Slett avtale"
+msgstr "Røyk med vind"
 
 #: my-evolution/metar.c:303
 #, fuzzy
@@ -11230,8 +11737,9 @@ msgstr "&Teiknemodus"
 
 #. VOLCANIC_ASH
 #: my-evolution/metar.c:307
+#, fuzzy
 msgid "Volcanic ash"
-msgstr ""
+msgstr "Vulkansk oske"
 
 #: my-evolution/metar.c:308
 msgid "Volcanic ash in the vicinity"
@@ -11242,8 +11750,9 @@ msgid "Moderate volcanic ash"
 msgstr ""
 
 #: my-evolution/metar.c:311
+#, fuzzy
 msgid "Thick volcanic ash"
-msgstr ""
+msgstr "Tjukk vulkansk oske"
 
 #: my-evolution/metar.c:312
 msgid "Shallow volcanic ash"
@@ -11676,7 +12185,7 @@ msgstr ""
 #: my-evolution/metar.c:445
 #, fuzzy
 msgid "Moderate tornado"
-msgstr "moderert"
+msgstr "Moderat tornado"
 
 #: my-evolution/metar.c:446
 #, fuzzy
@@ -11770,7 +12279,7 @@ msgid "All news _feeds:"
 msgstr "&Alle felt"
 
 #: my-evolution/my-evolution.glade.h:6
-msgid "C_elcius"
+msgid "C_elsius"
 msgstr ""
 
 #: my-evolution/my-evolution.glade.h:8
@@ -11899,6 +12408,20 @@ msgstr "Vis detaljar"
 #, fuzzy
 msgid "Cancel Operation"
 msgstr "&Avbryt operasjon"
+
+#: shell/e-local-storage.c:174 shell/e-shortcuts.c:1052
+msgid "Inbox"
+msgstr "Innboks"
+
+#: shell/e-local-storage.c:175
+#, fuzzy
+msgid "Outbox"
+msgstr "Utboks"
+
+#: shell/e-local-storage.c:636
+#, fuzzy
+msgid "Local Folders"
+msgstr "Mapper"
 
 #: shell/e-setup.c:124
 #, fuzzy
@@ -12094,7 +12617,7 @@ msgid ""
 "to work it out."
 msgstr ""
 
-#: shell/e-shell-importer.c:151 shell/e-shell-startup-wizard.c:757
+#: shell/e-shell-importer.c:151 shell/e-shell-startup-wizard.c:799
 msgid "Please select the information that you would like to import:"
 msgstr ""
 
@@ -12173,8 +12696,9 @@ msgid "Filename:"
 msgstr "Filnamn:"
 
 #: shell/e-shell-importer.c:617
+#, fuzzy
 msgid "Select a file"
-msgstr "Vel fil"
+msgstr "Vel ei fil"
 
 #: shell/e-shell-importer.c:627
 msgid "File type:"
@@ -12189,17 +12713,17 @@ msgstr ""
 msgid "Import a single file"
 msgstr "Flyttar"
 
-#: shell/e-shell-importer.c:721 shell/e-shell-startup-wizard.c:586
+#: shell/e-shell-importer.c:721 shell/e-shell-startup-wizard.c:628
 msgid ""
 "Please wait...\n"
 "Scanning for existing setups"
 msgstr ""
 
-#: shell/e-shell-importer.c:724 shell/e-shell-startup-wizard.c:589
+#: shell/e-shell-importer.c:724 shell/e-shell-startup-wizard.c:631
 msgid "Starting Intelligent Importers"
 msgstr ""
 
-#: shell/e-shell-importer.c:848 shell/e-shell-startup-wizard.c:712
+#: shell/e-shell-importer.c:848 shell/e-shell-startup-wizard.c:754
 #, fuzzy, c-format
 msgid "From %s:"
 msgstr "Frå:"
@@ -12358,10 +12882,6 @@ msgid ""
 "in order to access that data again."
 msgstr ""
 
-#: shell/e-shell.c:1884 widgets/misc/e-cell-date-edit.c:258
-msgid "OK"
-msgstr "OK"
-
 #: shell/e-shell.c:1886
 #, fuzzy
 msgid "Invalid arguments"
@@ -12430,9 +12950,8 @@ msgid "Show the shortcuts as large icons"
 msgstr ""
 
 #: shell/e-shortcuts-view.c:239
-#, fuzzy
 msgid "_New Group..."
-msgstr "Ny gruppe ..."
+msgstr "_Ny gruppe ..."
 
 #: shell/e-shortcuts-view.c:240
 #, fuzzy
@@ -12520,10 +13039,6 @@ msgstr "Feil ved lagring av innstillingar."
 msgid "Shortcuts"
 msgstr "Snarvegar"
 
-#: shell/e-shortcuts.c:1052
-msgid "Inbox"
-msgstr "Innboks"
-
 #: shell/e-storage-set-view.c:658
 #, fuzzy, c-format
 msgid ""
@@ -12605,7 +13120,7 @@ msgid "%s (...)"
 msgstr ""
 
 #: shell/e-task-widget.c:196
-#, fuzzy
+#, fuzzy, c-format
 msgid "%s (%d%% complete)"
 msgstr "%1 av %2 ferdig"
 
@@ -12831,6 +13346,10 @@ msgstr "Ikkje spør igjen"
 msgid "Evolution can import data from the following files:"
 msgstr "Bruk på følgjande delar:"
 
+#: shell/main.c:83
+msgid "Evolution"
+msgstr "Evolution"
+
 #: shell/main.c:89
 #, fuzzy
 msgid "Evolution is now exiting ..."
@@ -12889,8 +13408,9 @@ msgid "Copy"
 msgstr "Kopier"
 
 #: ui/evolution-addressbook.xml.h:3 ui/evolution-calendar.xml.h:3
+#, fuzzy
 msgid "Copy the selection"
-msgstr "Kopier vald område"
+msgstr "Kopier utval"
 
 #: ui/evolution-addressbook.xml.h:4
 #, fuzzy
@@ -12946,7 +13466,7 @@ msgstr "Slett den valte oppgåva"
 #: ui/evolution-addressbook.xml.h:21
 #, fuzzy
 msgid "Select All"
-msgstr "Vel mappe"
+msgstr "Vel alle"
 
 #: ui/evolution-addressbook.xml.h:22
 #, fuzzy
@@ -13184,7 +13704,7 @@ msgstr "Slett denne adressa"
 #: ui/evolution-comp-editor.xml.h:5 ui/evolution-contact-editor.xml.h:3
 #, fuzzy
 msgid "Delete this item"
-msgstr "Slett denne adressa"
+msgstr "Slett dette elementet"
 
 #: ui/evolution-comp-editor.xml.h:6 ui/evolution-mail-messagedisplay.xml.h:3
 #: ui/evolution.xml.h:16
@@ -13244,8 +13764,9 @@ msgstr "Private meldingar"
 #: ui/evolution-contact-editor.xml.h:7
 #: ui/evolution-contact-list-editor.xml.h:6
 #: ui/evolution-message-composer.xml.h:21
+#, fuzzy
 msgid "Save _As..."
-msgstr "Lagre _som ..."
+msgstr "L_agre som ..."
 
 #: ui/evolution-contact-editor.xml.h:9
 msgid "Save the contact and close the dialog box"
@@ -13259,14 +13780,12 @@ msgid "_Save"
 msgstr "_Lagre"
 
 #: ui/evolution-contact-list-editor.xml.h:3
-#, fuzzy
 msgid "Delete this list"
-msgstr "Slett denne adressa"
+msgstr "Slett denne lista"
 
 #: ui/evolution-contact-list-editor.xml.h:4
-#, fuzzy
 msgid "Delete..."
-msgstr "Slett"
+msgstr "Slett ..."
 
 #: ui/evolution-contact-list-editor.xml.h:7
 msgid "Save the list and close the dialog box"
@@ -13326,10 +13845,6 @@ msgstr "Køyreplan ..."
 #, fuzzy
 msgid "Customise My Evolution"
 msgstr "Evalueringsfeil"
-
-#: ui/evolution-mail-global.xml.h:1
-msgid "Cancel"
-msgstr "Avbryt"
 
 #: ui/evolution-mail-global.xml.h:2
 #, fuzzy
@@ -13442,8 +13957,9 @@ msgid "Copy selected messages"
 msgstr "Sentrer dei valte elementa"
 
 #: ui/evolution-mail-list.xml.h:3
+#, fuzzy
 msgid "Cu_t"
-msgstr "K_lipp"
+msgstr "Klipp u_t"
 
 #: ui/evolution-mail-list.xml.h:4
 #, fuzzy
@@ -13688,9 +14204,8 @@ msgid "Force images in HTML mail to be loaded"
 msgstr ""
 
 #: ui/evolution-mail-message.xml.h:30
-#, fuzzy
 msgid "Forward"
-msgstr "Framover"
+msgstr "Vidaresend"
 
 #: ui/evolution-mail-message.xml.h:31
 #, fuzzy
@@ -13787,7 +14302,6 @@ msgid "Move selected messages to another folder"
 msgstr "Lagra side til ascii-fil"
 
 #: ui/evolution-mail-message.xml.h:53
-#, fuzzy
 msgid "Next"
 msgstr "Neste"
 
@@ -13992,16 +14506,16 @@ msgid "_Tools"
 msgstr "_Verkty"
 
 #: ui/evolution-mail-messagedisplay.xml.h:2 ui/evolution.xml.h:5
-#, fuzzy
 msgid "Close this window"
-msgstr "&Slett avtale"
+msgstr "Lukk vindauge"
 
 #: ui/evolution-mail-messagedisplay.xml.h:5
 #: ui/evolution-message-composer.xml.h:45
 #: ui/evolution-signature-editor.xml.h:6 ui/evolution-subscribe.xml.h:9
 #: ui/evolution.xml.h:33
+#, fuzzy
 msgid "_Close"
-msgstr "_Lukk"
+msgstr "L_ukk"
 
 #: ui/evolution-mail-messagedisplay.xml.h:8
 #: ui/evolution-message-composer.xml.h:55 ui/evolution.xml.h:50
@@ -14011,7 +14525,7 @@ msgstr "_Vis"
 #: ui/evolution-message-composer.xml.h:1
 #, fuzzy
 msgid "Attach"
-msgstr "&Legg ved"
+msgstr "Kople til"
 
 #: ui/evolution-message-composer.xml.h:4 ui/evolution-signature-editor.xml.h:2
 msgid "Close the current file"
@@ -14078,8 +14592,9 @@ msgid "S/MIME Sign"
 msgstr ""
 
 #: ui/evolution-message-composer.xml.h:20
+#, fuzzy
 msgid "Save As"
-msgstr "Lagra som"
+msgstr "Lagre som"
 
 #: ui/evolution-message-composer.xml.h:22
 msgid "Save _Draft"
@@ -14230,7 +14745,7 @@ msgstr "Mapper"
 #: ui/evolution-subscribe.xml.h:3
 #, fuzzy
 msgid "Refresh List"
-msgstr "Frisk &opp liste"
+msgstr "Frisk opp liste"
 
 #: ui/evolution-subscribe.xml.h:4
 msgid "Refresh List of Folders"
@@ -14521,9 +15036,8 @@ msgid "By Company"
 msgstr "Firma"
 
 #: views/addressbook/galview.xml.h:3
-#, fuzzy
 msgid "Phone List"
-msgstr "Telefonliste:"
+msgstr "Telefonliste"
 
 #: views/mail/galview.xml.h:1
 #, fuzzy
@@ -14559,9 +15073,8 @@ msgid "Selection:"
 msgstr "Utval:"
 
 #: widgets/e-timezone-dialog/e-timezone-dialog.glade.h:3
-#, fuzzy
 msgid "Time Zones"
-msgstr "Tidssone"
+msgstr "Tidssoner"
 
 #: widgets/e-timezone-dialog/e-timezone-dialog.glade.h:4
 msgid ""
@@ -14638,7 +15151,6 @@ msgid "Korean"
 msgstr "Koreansk"
 
 #: widgets/misc/e-charset-picker.c:65
-#, fuzzy
 msgid "Turkish"
 msgstr "Tyrkisk"
 
@@ -14651,14 +15163,12 @@ msgid "Western European"
 msgstr "Vesteuropeisk"
 
 #: widgets/misc/e-charset-picker.c:84
-#, fuzzy
 msgid "Traditional"
-msgstr "Tradisjonell KMail"
+msgstr "Tradisjonell"
 
 #: widgets/misc/e-charset-picker.c:85 widgets/misc/e-charset-picker.c:86
-#, fuzzy
 msgid "Simplified"
-msgstr "Forenkla kinesisk"
+msgstr "Forenkla"
 
 #: widgets/misc/e-charset-picker.c:90
 msgid "Ukrainian"
@@ -14700,6 +15210,15 @@ msgstr "Comment=X-redigering"
 #, fuzzy
 msgid "Save Search"
 msgstr "Søk"
+
+#: widgets/misc/e-filter-bar.h:94
+#, fuzzy
+msgid "Add to Saved Searches"
+msgstr "Søk"
+
+#: widgets/misc/e-filter-bar.h:95
+msgid "Clear"
+msgstr "Tøm"
 
 #: widgets/misc/e-filter-bar.h:102
 msgid "Show All"
@@ -14763,257 +15282,14 @@ msgid "init_bonobo(): could not initialize Bonobo"
 msgstr "Kunne ikkje initiere Bonobo"
 
 #, fuzzy
-#~ msgid "Other Contacts"
-#~ msgstr "Slett kolonne"
-
-#~ msgid "(none)"
-#~ msgstr "(ingen)"
-
-#, fuzzy
 #~ msgid ""
-#~ "Are you sure you want\n"
-#~ "to delete this contact?"
-#~ msgstr "Er du sikker på at du vil sletta denne klassen?"
+#~ "Issuer: %s\n"
+#~ "Subject: %s"
+#~ msgstr "Emne"
 
 #, fuzzy
-#~ msgid "Starting:"
-#~ msgstr "Innstillingar"
-
-#, fuzzy
-#~ msgid "Evolution Alarm"
-#~ msgstr "Evolution"
-
-#, fuzzy
-#~ msgid "Click here to add an attendee"
-#~ msgstr "Trykk her for å leggja til ein ny virtuell vert."
-
-#, fuzzy
-#~ msgid "Free/Busy info begins: <b>"
-#~ msgstr "Informasjon"
-
-#, fuzzy
-#~ msgid "Meeting ends: <b>"
-#~ msgstr "Informasjon"
-
-#, fuzzy
-#~ msgid "Free/Busy info ends: <b>"
-#~ msgstr "Informasjon"
-
-#, fuzzy
-#~ msgid "Task Completed: <b>"
-#~ msgstr "Ferdig"
-
-#, fuzzy
-#~ msgid "iCalendar Information"
-#~ msgstr "Informasjon"
-
-#, fuzzy
-#~ msgid "iCalendar Error"
-#~ msgstr "Skriv ut alle"
-
-#, fuzzy
-#~ msgid "An unknown person"
-#~ msgstr "Ukjend feil"
-
-#, fuzzy
-#~ msgid "Choose an action:"
-#~ msgstr "Vel ikon"
-
-#~ msgid "Update"
-#~ msgstr "Oppdater"
-
-#~ msgid "Accept"
-#~ msgstr "Godta"
-
-#, fuzzy
-#~ msgid "Tentatively accept"
-#~ msgstr "Mellombels"
-
-#, fuzzy
-#~ msgid "Decline"
-#~ msgstr "Slett"
-
-#, fuzzy
-#~ msgid "Send Free/Busy Information"
-#~ msgstr "Informasjon"
-
-#, fuzzy
-#~ msgid "Send Latest Information"
-#~ msgstr "Informasjon"
-
-#, fuzzy
-#~ msgid "<b>%s</b> has published meeting information."
-#~ msgstr "generer avlusingsinformasjon"
-
-#, fuzzy
-#~ msgid "Meeting Information"
-#~ msgstr "Personleg informasjon"
-
-#, fuzzy
-#~ msgid "Meeting Proposal"
-#~ msgstr "Møte"
-
-#, fuzzy
-#~ msgid "Meeting Update"
-#~ msgstr "Møte"
-
-#, fuzzy
-#~ msgid "<b>%s</b> wishes to receive the latest meeting information."
-#~ msgstr "generer avlusingsinformasjon"
-
-#, fuzzy
-#~ msgid "<b>%s</b> has replied to a meeting request."
-#~ msgstr "Dette er ei repeterande hending."
-
-#, fuzzy
-#~ msgid "Meeting Reply"
-#~ msgstr "Møte"
-
-#, fuzzy
-#~ msgid "Meeting Cancellation"
-#~ msgstr "Vel ikon"
-
-#, fuzzy
-#~ msgid "Bad Meeting Message"
-#~ msgstr "&Finn i melding ..."
-
-#, fuzzy
-#~ msgid "Task Information"
-#~ msgstr "Informasjon"
-
-#, fuzzy
-#~ msgid "Task Update"
-#~ msgstr "Slutt etter"
-
-#, fuzzy
-#~ msgid "<b>%s</b> wishes to receive the latest task information."
-#~ msgstr "Dette er ei førehandsvising av det valte bakgrunnsbiletet."
-
-#, fuzzy
-#~ msgid "<b>%s</b> has replied to a task assignment."
-#~ msgstr "Dette er ei repeterande hending."
-
-#, fuzzy
-#~ msgid "Task Reply"
-#~ msgstr "Svar"
-
-#, fuzzy
-#~ msgid "Task Cancellation"
-#~ msgstr "Dette er inga lokal fil.\n"
-
-#, fuzzy
-#~ msgid "Bad Task Message"
-#~ msgstr "Skriv ut alle"
-
-#, fuzzy
-#~ msgid "<b>%s</b> has published free/busy information."
-#~ msgstr "Skriv avlusingsinformasjon"
-
-#, fuzzy
-#~ msgid "Free/Busy Information"
-#~ msgstr "Informasjon"
-
-#, fuzzy
-#~ msgid "<b>%s</b> requests your free/busy information."
-#~ msgstr "Prøv «%s --help» for meir informasjon\n"
-
-#, fuzzy
-#~ msgid "<b>%s</b> has replied to a free/busy request."
-#~ msgstr "Dette er ei repeterande hending."
-
-#, fuzzy
-#~ msgid "Bad Free/Busy Message"
-#~ msgstr "Private meldingar"
-
-#, fuzzy
-#~ msgid "The message contains only unsupported requests."
-#~ msgstr "Meldinga har ingen sendar"
-
-#~ msgid "Task"
-#~ msgstr "Oppgåve"
-
-#, fuzzy
-#~ msgid "Status: %s"
-#~ msgstr "Status:"
-
-#, fuzzy
-#~ msgid "Priority: %s"
-#~ msgstr "Prioritet:"
-
-#, fuzzy
-#~ msgid "Percent Complete: %i"
-#~ msgstr "Ferdig"
-
-#~ msgid "URL: %s"
-#~ msgstr "URL: %s"
-
-#, fuzzy
-#~ msgid "Categories: %s"
-#~ msgstr "Kategoriar"
-
-#, fuzzy
-#~ msgid "Contacts: "
-#~ msgstr "&Innhald ..."
-
-#~ msgid "Default"
-#~ msgstr "Forvald"
-
-#, fuzzy
-#~ msgid "Account %d"
-#~ msgstr "Små ikon"
-
-#, fuzzy
-#~ msgid "%s: Inbox"
-#~ msgstr "Innboks"
-
-#~ msgid "Trash"
-#~ msgstr "Papirkorg"
-
-#, fuzzy
-#~ msgid "VFolders"
-#~ msgstr "Mapper"
-
-#, fuzzy
-#~ msgid "°F"
-#~ msgstr "°"
-
-#, fuzzy
-#~ msgid "°C"
-#~ msgstr "°"
-
-#~ msgid "knots"
-#~ msgstr "knop"
-
-#, fuzzy
-#~ msgid "kph"
-#~ msgstr "km/t"
-
-#~ msgid "inHg"
-#~ msgstr "inHg"
-
-#~ msgid "mmHg"
-#~ msgstr "mmHg"
-
-#~ msgid "miles"
-#~ msgstr "miles"
-
-#~ msgid "kilometers"
-#~ msgstr "kilometer"
-
-#, fuzzy
-#~ msgid "Outbox"
-#~ msgstr "Utboks"
-
-#, fuzzy
-#~ msgid "Local Folders"
-#~ msgstr "Mapper"
-
-#, fuzzy
-#~ msgid "Add to Saved Searches"
-#~ msgstr "Søk"
-
-#~ msgid "Clear"
-#~ msgstr "Tøm"
+#~ msgid "I couldn't remove the item from your calendar file!\n"
+#~ msgstr "Kunne ikkje lasta kalender '%1'.\n"
 
 #, fuzzy
 #~ msgid "Importing Data"
@@ -15104,10 +15380,6 @@ msgstr "Kunne ikkje initiere Bonobo"
 #, fuzzy
 #~ msgid "_Imperial"
 #~ msgstr "seriell"
-
-#, fuzzy
-#~ msgid "Ximian Evolution"
-#~ msgstr "Evolution"
 
 #, fuzzy
 #~ msgid "%s - Ximian Evolution %s"

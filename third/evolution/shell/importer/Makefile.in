@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -149,8 +149,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -247,7 +245,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libevolution_importer_la_SOURCES)
 OBJECTS = $(libevolution_importer_la_OBJECTS)
@@ -433,30 +431,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-GNOME_Evolution_Importer-common.lo GNOME_Evolution_Importer-common.o : \
-	GNOME_Evolution_Importer-common.c GNOME_Evolution_Importer.h
-GNOME_Evolution_Importer-skels.lo GNOME_Evolution_Importer-skels.o : \
-	GNOME_Evolution_Importer-skels.c GNOME_Evolution_Importer.h
-GNOME_Evolution_Importer-stubs.lo GNOME_Evolution_Importer-stubs.o : \
-	GNOME_Evolution_Importer-stubs.c GNOME_Evolution_Importer.h
-evolution-importer-client.lo evolution-importer-client.o : \
-	evolution-importer-client.c ../../config.h \
-	evolution-importer-client.h evolution-importer.h \
-	GNOME_Evolution_Importer.h evolution-importer-listener.h \
-	GNOME_Evolution_Importer.h
-evolution-importer-listener.lo evolution-importer-listener.o : \
-	evolution-importer-listener.c ../../config.h \
-	evolution-importer-listener.h GNOME_Evolution_Importer.h \
-	evolution-importer.h GNOME_Evolution_Importer.h
-evolution-importer.lo evolution-importer.o : evolution-importer.c \
-	../../config.h evolution-importer.h GNOME_Evolution_Importer.h \
-	GNOME_Evolution_Importer.h
-evolution-intelligent-importer.lo evolution-intelligent-importer.o : \
-	evolution-intelligent-importer.c ../../config.h \
-	evolution-intelligent-importer.h GNOME_Evolution_Importer.h \
-	GNOME_Evolution_Importer.h
-intelligent.lo intelligent.o : intelligent.c ../../config.h \
-	intelligent.h GNOME_Evolution_Importer.h
 
 info-am:
 info: info-am

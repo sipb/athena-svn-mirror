@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -149,8 +149,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -231,7 +229,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libcamelsendmail_la_SOURCES)
 OBJECTS = $(libcamelsendmail_la_OBJECTS)
@@ -397,35 +395,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-camel-sendmail-provider.lo camel-sendmail-provider.o : \
-	camel-sendmail-provider.c ../../../config.h \
-	../../../camel/camel-provider.h ../../../camel/camel-types.h \
-	../../../camel/camel-object.h camel-sendmail-transport.h \
-	../../../camel/camel-transport.h ../../../camel/camel-service.h \
-	../../../camel/camel-url.h ../../../camel/camel-operation.h \
-	../../../camel/camel-session.h ../../../e-util/e-msgport.h
-camel-sendmail-transport.lo camel-sendmail-transport.o : \
-	camel-sendmail-transport.c ../../../config.h \
-	camel-sendmail-transport.h ../../../camel/camel-transport.h \
-	../../../camel/camel-service.h ../../../camel/camel-object.h \
-	../../../camel/camel-types.h ../../../camel/camel-url.h \
-	../../../camel/camel-provider.h \
-	../../../camel/camel-operation.h \
-	../../../camel/camel-mime-message.h \
-	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
-	../../../camel/camel-data-wrapper.h \
-	../../../camel/camel-mime-utils.h \
-	../../../camel/camel-mime-parser.h \
-	../../../camel/camel-mime-filter.h \
-	../../../camel/camel-stream.h \
-	../../../camel/camel-internet-address.h \
-	../../../camel/camel-address.h \
-	../../../camel/camel-mime-filter-bestenc.h \
-	../../../camel/camel-charset-map.h \
-	../../../camel/camel-stream-fs.h \
-	../../../camel/camel-seekable-stream.h \
-	../../../camel/camel-exception.h \
-	../../../camel/camel-exception-list.def
 
 info-am:
 info: info-am

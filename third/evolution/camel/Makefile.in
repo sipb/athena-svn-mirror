@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -149,8 +149,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -195,18 +193,18 @@ sbin_PROGRAMS = camel-lock-helper
 lib_LTLIBRARIES = libcamel.la
 noinst_LTLIBRARIES = libcamel-static.la
 
-INCLUDES = -I.. -I$(srcdir)/.. 			 	-I$(top_srcdir)/intl			 	-I$(top_srcdir)/e-util			 	$(CAMEL_CFLAGS)				 	$(GNOME_INCLUDEDIR)			 	$(KRB4_CFLAGS)				 	$(NSPR_CFLAGS)				 	$(NSS_CFLAGS)				 	$(OPENSSL_CFLAGS)			 	-DCAMEL_SBINDIR=\""$(sbindir)"\"	 	-DCAMEL_PROVIDERDIR=\""$(providerdir)"\" 	-DG_LOG_DOMAIN=\"camel\"
+INCLUDES = -I.. -I$(srcdir)/.. 			 	-I$(top_srcdir)/intl			 	-I$(top_srcdir)/e-util			 	$(CAMEL_CFLAGS)				 	$(GNOME_INCLUDEDIR)			 	$(KRB4_CFLAGS)				 	$(NSPR_CFLAGS)				 	$(NSS_CFLAGS)				 	-DCAMEL_SBINDIR=\""$(sbindir)"\"	 	-DCAMEL_PROVIDERDIR=\""$(providerdir)"\" 	-DG_LOG_DOMAIN=\"camel\"
 
 
-libcamel_la_SOURCES =  	broken-date-parser.c				camel-address.c					camel-cipher-context.c				camel-cms-context.c				camel-data-wrapper.c				camel-digest-folder.c				camel-disco-diary.c				camel-disco-folder.c				camel-disco-store.c				camel-exception.c				camel-file-utils.c				camel-filter-driver.c				camel-filter-search.c				camel-folder-search.c				camel-folder-summary.c				camel-folder-thread.c				camel-folder.c					camel-html-parser.c				camel-internet-address.c			camel-lock.c					camel-lock-client.c				camel-medium.c					camel-mime-filter-bestenc.c			camel-mime-filter-basic.c			camel-mime-filter-charset.c			camel-mime-filter-crlf.c			camel-mime-filter-from.c			camel-mime-filter-html.c			camel-mime-filter-index.c			camel-mime-filter-linewrap.c			camel-mime-filter-save.c			camel-mime-filter.c				camel-mime-message.c				camel-mime-parser.c				camel-mime-part-utils.c				camel-mime-part.c				camel-mime-utils.c				camel-movemail.c				camel-multipart.c				camel-object.c					camel-operation.c				camel-pgp-context.c				camel-pgp-mime.c				camel-smime-context.c				camel-smime-utils.c				camel-provider.c				camel-remote-store.c				camel-sasl.c					camel-sasl-anonymous.c				camel-sasl-cram-md5.c				camel-sasl-digest-md5.c				camel-sasl-kerberos4.c				camel-sasl-login.c				camel-sasl-plain.c				camel-sasl-popb4smtp.c				camel-search-private.c				camel-seekable-stream.c				camel-seekable-substream.c			camel-service.c					camel-session.c					camel-store.c					camel-stream-buffer.c				camel-stream-filter.c				camel-stream-fs.c				camel-stream-mem.c				camel-stream-null.c				camel-stream.c					camel-tcp-stream-raw.c				camel-tcp-stream-ssl.c				camel-tcp-stream-openssl.c			camel-tcp-stream.c				camel-transport.c				camel-uid-cache.c				camel-url.c					camel-vee-folder.c				camel-vee-store.c				camel-vtrash-folder.c				camel-charset-map.c				camel.c						gstring-util.c					hash-table-utils.c				string-utils.c
+libcamel_la_SOURCES =  	broken-date-parser.c				camel-address.c					camel-cipher-context.c				camel-cms-context.c				camel-data-wrapper.c				camel-digest-folder.c				camel-disco-diary.c				camel-disco-folder.c				camel-disco-store.c				camel-exception.c				camel-file-utils.c				camel-filter-driver.c				camel-filter-search.c				camel-folder-search.c				camel-folder-summary.c				camel-folder-thread.c				camel-folder.c					camel-html-parser.c				camel-internet-address.c			camel-lock.c					camel-lock-client.c				camel-medium.c					camel-mime-filter-bestenc.c			camel-mime-filter-basic.c			camel-mime-filter-charset.c			camel-mime-filter-crlf.c			camel-mime-filter-from.c			camel-mime-filter-html.c			camel-mime-filter-index.c			camel-mime-filter-linewrap.c			camel-mime-filter-save.c			camel-mime-filter.c				camel-mime-message.c				camel-mime-parser.c				camel-mime-part-utils.c				camel-mime-part.c				camel-mime-utils.c				camel-movemail.c				camel-multipart.c				camel-object.c					camel-operation.c				camel-pgp-context.c				camel-pgp-mime.c				camel-smime-context.c				camel-smime-utils.c				camel-provider.c				camel-remote-store.c				camel-sasl.c					camel-sasl-anonymous.c				camel-sasl-cram-md5.c				camel-sasl-digest-md5.c				camel-sasl-kerberos4.c				camel-sasl-login.c				camel-sasl-plain.c				camel-sasl-popb4smtp.c				camel-search-private.c				camel-seekable-stream.c				camel-seekable-substream.c			camel-service.c					camel-session.c					camel-store.c					camel-stream-buffer.c				camel-stream-filter.c				camel-stream-fs.c				camel-stream-mem.c				camel-stream-null.c				camel-stream.c					camel-tcp-stream-raw.c				camel-tcp-stream-ssl.c				camel-tcp-stream.c				camel-transport.c				camel-uid-cache.c				camel-url.c					camel-vee-folder.c				camel-vee-store.c				camel-vtrash-folder.c				camel-charset-map.c				camel.c						gstring-util.c					hash-table-utils.c				string-utils.c
 
 
-libcamelinclude_HEADERS =  	broken-date-parser.h				camel-address.h					camel-charset-map.h				camel-cipher-context.h				camel-cms-context.h				camel-data-wrapper.h				camel-digest-folder.h				camel-disco-diary.h				camel-disco-folder.h				camel-disco-store.h				camel-exception-list.def			camel-exception.h				camel-file-utils.h				camel-filter-driver.h				camel-filter-search.h				camel-folder-search.h				camel-folder-summary.h				camel-folder-thread.h				camel-folder.h					camel-internet-address.h			camel-lock.h					camel-lock-client.h				camel-medium.h					camel-mime-filter-bestenc.h			camel-mime-filter-basic.h			camel-mime-filter-charset.h			camel-mime-filter-crlf.h			camel-mime-filter-from.h			camel-mime-filter-html.h			camel-mime-filter-index.h			camel-mime-filter-linewrap.h			camel-mime-filter-save.h			camel-mime-filter.h				camel-mime-message.h				camel-mime-parser.h				camel-mime-part-utils.h				camel-mime-part.h				camel-mime-utils.h				camel-movemail.h				camel-multipart.h				camel-object.h					camel-operation.h				camel-pgp-context.h				camel-pgp-mime.h				camel-smime-context.h				camel-smime-utils.h				camel-provider.h				camel-remote-store.h				camel-sasl.h					camel-sasl-anonymous.h				camel-sasl-cram-md5.h				camel-sasl-digest-md5.h				camel-sasl-kerberos4.h				camel-sasl-login.h				camel-sasl-plain.h				camel-sasl-popb4smtp.h				camel-seekable-stream.h				camel-seekable-substream.h			camel-service.h					camel-session.h					camel-store.h					camel-stream-buffer.h				camel-stream-filter.h				camel-stream-fs.h				camel-stream-mem.h				camel-stream-null.h				camel-stream.h					camel-tcp-stream-raw.h				camel-tcp-stream-ssl.h				camel-tcp-stream-openssl.h			camel-tcp-stream.h				camel-transport.h				camel-types.h					camel-uid-cache.h				camel-url.h					camel-vee-folder.h				camel-vee-store.h				camel-vtrash-folder.h				camel.h						gstring-util.h					hash-table-utils.h				string-utils.h
+libcamelinclude_HEADERS =  	broken-date-parser.h				camel-address.h					camel-charset-map.h				camel-cipher-context.h				camel-cms-context.h				camel-data-wrapper.h				camel-digest-folder.h				camel-disco-diary.h				camel-disco-folder.h				camel-disco-store.h				camel-exception-list.def			camel-exception.h				camel-file-utils.h				camel-filter-driver.h				camel-filter-search.h				camel-folder-search.h				camel-folder-summary.h				camel-folder-thread.h				camel-folder.h					camel-internet-address.h			camel-lock.h					camel-lock-client.h				camel-medium.h					camel-mime-filter-bestenc.h			camel-mime-filter-basic.h			camel-mime-filter-charset.h			camel-mime-filter-crlf.h			camel-mime-filter-from.h			camel-mime-filter-html.h			camel-mime-filter-index.h			camel-mime-filter-linewrap.h			camel-mime-filter-save.h			camel-mime-filter.h				camel-mime-message.h				camel-mime-parser.h				camel-mime-part-utils.h				camel-mime-part.h				camel-mime-utils.h				camel-movemail.h				camel-multipart.h				camel-object.h					camel-operation.h				camel-pgp-context.h				camel-pgp-mime.h				camel-smime-context.h				camel-smime-utils.h				camel-provider.h				camel-remote-store.h				camel-sasl.h					camel-sasl-anonymous.h				camel-sasl-cram-md5.h				camel-sasl-digest-md5.h				camel-sasl-kerberos4.h				camel-sasl-login.h				camel-sasl-plain.h				camel-sasl-popb4smtp.h				camel-seekable-stream.h				camel-seekable-substream.h			camel-service.h					camel-session.h					camel-store.h					camel-stream-buffer.h				camel-stream-filter.h				camel-stream-fs.h				camel-stream-mem.h				camel-stream-null.h				camel-stream.h					camel-tcp-stream-raw.h				camel-tcp-stream-ssl.h				camel-tcp-stream.h				camel-transport.h				camel-types.h					camel-uid-cache.h				camel-url.h					camel-vee-folder.h				camel-vee-store.h				camel-vtrash-folder.h				camel.h						gstring-util.h					hash-table-utils.h				string-utils.h
 
 
 libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
 
-libcamel_la_LIBADD = $(top_builddir)/e-util/libeutil.la 	$(CAMEL_LIBS)					$(KRB4_LDFLAGS)					$(NSPR_LDFLAGS)					$(NSS_LDFLAGS)					$(OPENSSL_LDFLAGS)
+libcamel_la_LIBADD = $(top_builddir)/e-util/libeutil.la 	$(CAMEL_LIBS)					$(KRB4_LDFLAGS)					$(NSPR_LDFLAGS)					$(NSS_LDFLAGS)
 
 
 libcamel_static_la_SOURCES = $(libcamel_la_SOURCES)
@@ -256,10 +254,10 @@ camel-seekable-stream.lo camel-seekable-substream.lo camel-service.lo \
 camel-session.lo camel-store.lo camel-stream-buffer.lo \
 camel-stream-filter.lo camel-stream-fs.lo camel-stream-mem.lo \
 camel-stream-null.lo camel-stream.lo camel-tcp-stream-raw.lo \
-camel-tcp-stream-ssl.lo camel-tcp-stream-openssl.lo camel-tcp-stream.lo \
-camel-transport.lo camel-uid-cache.lo camel-url.lo camel-vee-folder.lo \
-camel-vee-store.lo camel-vtrash-folder.lo camel-charset-map.lo camel.lo \
-gstring-util.lo hash-table-utils.lo string-utils.lo
+camel-tcp-stream-ssl.lo camel-tcp-stream.lo camel-transport.lo \
+camel-uid-cache.lo camel-url.lo camel-vee-folder.lo camel-vee-store.lo \
+camel-vtrash-folder.lo camel-charset-map.lo camel.lo gstring-util.lo \
+hash-table-utils.lo string-utils.lo
 libcamel_static_la_DEPENDENCIES =  $(top_builddir)/e-util/libeutil.la
 libcamel_static_la_OBJECTS =  broken-date-parser.lo camel-address.lo \
 camel-cipher-context.lo camel-cms-context.lo camel-data-wrapper.lo \
@@ -285,10 +283,10 @@ camel-seekable-stream.lo camel-seekable-substream.lo camel-service.lo \
 camel-session.lo camel-store.lo camel-stream-buffer.lo \
 camel-stream-filter.lo camel-stream-fs.lo camel-stream-mem.lo \
 camel-stream-null.lo camel-stream.lo camel-tcp-stream-raw.lo \
-camel-tcp-stream-ssl.lo camel-tcp-stream-openssl.lo camel-tcp-stream.lo \
-camel-transport.lo camel-uid-cache.lo camel-url.lo camel-vee-folder.lo \
-camel-vee-store.lo camel-vtrash-folder.lo camel-charset-map.lo camel.lo \
-gstring-util.lo hash-table-utils.lo string-utils.lo
+camel-tcp-stream-ssl.lo camel-tcp-stream.lo camel-transport.lo \
+camel-uid-cache.lo camel-url.lo camel-vee-folder.lo camel-vee-store.lo \
+camel-vtrash-folder.lo camel-charset-map.lo camel.lo gstring-util.lo \
+hash-table-utils.lo string-utils.lo
 sbin_PROGRAMS =  camel-lock-helper$(EXEEXT)
 PROGRAMS =  $(sbin_PROGRAMS)
 
@@ -309,7 +307,7 @@ DIST_COMMON =  README ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libcamel_la_SOURCES) $(libcamel_static_la_SOURCES) $(camel_lock_helper_SOURCES)
 OBJECTS = $(libcamel_la_OBJECTS) $(libcamel_static_la_OBJECTS) $(camel_lock_helper_OBJECTS)
@@ -567,467 +565,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-broken-date-parser.lo broken-date-parser.o : broken-date-parser.c \
-	broken-date-parser.h
-camel-address.lo camel-address.o : camel-address.c camel-address.h \
-	camel-object.h camel-types.h
-camel-charset-map.lo camel-charset-map.o : camel-charset-map.c \
-	../config.h camel-charset-map.h camel-charset-map-private.h \
-	hash-table-utils.h
-camel-cipher-context.lo camel-cipher-context.o : camel-cipher-context.c \
-	../config.h camel-cipher-context.h camel-session.h \
-	camel-object.h camel-types.h camel-provider.h \
-	../e-util/e-msgport.h camel-stream.h camel-exception.h \
-	camel-exception-list.def
-camel-cms-context.lo camel-cms-context.o : camel-cms-context.c \
-	../config.h camel-cms-context.h camel-session.h camel-object.h \
-	camel-types.h camel-provider.h ../e-util/e-msgport.h \
-	camel-stream.h camel-exception.h camel-exception-list.def \
-	camel-mime-message.h camel-mime-part.h camel-medium.h \
-	camel-data-wrapper.h camel-mime-utils.h camel-mime-parser.h \
-	camel-mime-filter.h camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h
-camel-data-wrapper.lo camel-data-wrapper.o : camel-data-wrapper.c \
-	../config.h camel-data-wrapper.h camel-object.h camel-types.h \
-	camel-mime-utils.h camel-stream.h camel-exception.h \
-	camel-exception-list.def camel-private.h ../e-util/e-msgport.h
-camel-digest-folder.lo camel-digest-folder.o : camel-digest-folder.c \
-	../config.h camel-digest-folder.h camel-folder.h camel-object.h \
-	camel-types.h camel-folder-summary.h camel-mime-parser.h \
-	camel-mime-utils.h camel-mime-filter.h camel-stream.h \
-	../libibex/ibex.h camel-mime-message.h camel-mime-part.h \
-	camel-medium.h camel-data-wrapper.h camel-internet-address.h \
-	camel-address.h camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-exception.h camel-exception-list.def camel-multipart.h \
-	camel-mime-message.h camel-folder-summary.h
-camel-disco-diary.lo camel-disco-diary.o : camel-disco-diary.c \
-	../config.h camel-disco-diary.h camel-object.h camel-types.h \
-	camel-disco-folder.h camel-folder.h camel-object.h \
-	camel-folder-summary.h camel-mime-parser.h camel-mime-utils.h \
-	camel-mime-filter.h camel-stream.h ../libibex/ibex.h \
-	camel-disco-store.h camel-remote-store.h camel-store.h \
-	camel-service.h camel-url.h camel-provider.h camel-operation.h \
-	camel-exception.h camel-exception-list.def camel-file-utils.h \
-	camel-operation.h camel-session.h ../e-util/e-msgport.h \
-	camel-store.h
-camel-disco-folder.lo camel-disco-folder.o : camel-disco-folder.c \
-	../config.h camel-disco-folder.h camel-folder.h camel-object.h \
-	camel-types.h camel-folder-summary.h camel-mime-parser.h \
-	camel-mime-utils.h camel-mime-filter.h camel-stream.h \
-	../libibex/ibex.h camel-disco-store.h camel-remote-store.h \
-	camel-store.h camel-service.h camel-url.h camel-provider.h \
-	camel-operation.h camel-exception.h camel-exception-list.def
-camel-disco-store.lo camel-disco-store.o : camel-disco-store.c \
-	../config.h camel-disco-store.h camel-remote-store.h \
-	camel-store.h camel-object.h camel-types.h camel-service.h \
-	camel-url.h camel-provider.h camel-operation.h \
-	camel-disco-diary.h camel-object.h camel-exception.h \
-	camel-exception-list.def camel-session.h ../e-util/e-msgport.h
-camel-exception.lo camel-exception.o : camel-exception.c ../config.h \
-	camel-exception.h camel-types.h camel-exception-list.def
-camel-file-utils.lo camel-file-utils.o : camel-file-utils.c \
-	camel-file-utils.h
-camel-filter-driver.lo camel-filter-driver.o : camel-filter-driver.c \
-	../config.h camel-filter-driver.h camel-object.h camel-types.h \
-	camel-session.h camel-provider.h ../e-util/e-msgport.h \
-	camel-folder.h camel-folder-summary.h camel-mime-parser.h \
-	camel-mime-utils.h camel-mime-filter.h camel-stream.h \
-	../libibex/ibex.h camel-uid-cache.h camel-filter-search.h \
-	camel-mime-message.h camel-mime-part.h camel-medium.h \
-	camel-data-wrapper.h camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-exception.h camel-exception-list.def camel-service.h \
-	camel-url.h camel-operation.h camel-mime-message.h \
-	../e-util/e-sexp.h ../e-util/e-memory.h
-camel-filter-search.lo camel-filter-search.o : camel-filter-search.c \
-	../config.h ../e-util/e-sexp.h camel-mime-message.h \
-	camel-mime-part.h camel-medium.h camel-data-wrapper.h \
-	camel-object.h camel-types.h camel-mime-utils.h \
-	camel-mime-parser.h camel-mime-filter.h camel-stream.h \
-	camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-filter-search.h camel-mime-message.h \
-	camel-folder-summary.h ../libibex/ibex.h camel-exception.h \
-	camel-exception-list.def camel-multipart.h camel-stream-mem.h \
-	camel-seekable-stream.h camel-search-private.h camel-url.h
-camel-folder-search.lo camel-folder-search.o : camel-folder-search.c \
-	../config.h camel-folder-search.h ../e-util/e-sexp.h \
-	../libibex/ibex.h camel-folder.h camel-object.h camel-types.h \
-	camel-folder-summary.h camel-mime-parser.h camel-mime-utils.h \
-	camel-mime-filter.h camel-stream.h string-utils.h \
-	camel-exception.h camel-exception-list.def camel-medium.h \
-	camel-data-wrapper.h camel-multipart.h camel-mime-message.h \
-	camel-mime-part.h camel-medium.h camel-internet-address.h \
-	camel-address.h camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-stream-mem.h camel-seekable-stream.h ../e-util/e-memory.h \
-	camel-search-private.h
-camel-folder-summary.lo camel-folder-summary.o : camel-folder-summary.c \
-	../config.h camel-folder-summary.h camel-mime-parser.h \
-	camel-object.h camel-types.h camel-mime-utils.h \
-	camel-mime-filter.h camel-stream.h ../libibex/ibex.h \
-	camel-file-utils.h camel-mime-filter-index.h \
-	camel-mime-filter-charset.h camel-mime-filter-save.h \
-	camel-mime-filter-basic.h camel-mime-filter-html.h \
-	camel-mime-message.h camel-mime-part.h camel-medium.h \
-	camel-data-wrapper.h camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-multipart.h camel-stream-mem.h camel-seekable-stream.h \
-	hash-table-utils.h ../e-util/md5-utils.h ../e-util/e-memory.h \
-	camel-private.h ../e-util/e-msgport.h
-camel-folder-thread.lo camel-folder-thread.o : camel-folder-thread.c \
-	../config.h camel-folder-thread.h camel-folder-summary.h \
-	camel-mime-parser.h camel-object.h camel-types.h \
-	camel-mime-utils.h camel-mime-filter.h camel-stream.h \
-	../libibex/ibex.h camel-folder.h ../e-util/e-memory.h
-camel-folder.lo camel-folder.o : camel-folder.c ../config.h \
-	camel-folder.h camel-object.h camel-types.h \
-	camel-folder-summary.h camel-mime-parser.h camel-mime-utils.h \
-	camel-mime-filter.h camel-stream.h ../libibex/ibex.h \
-	camel-exception.h camel-exception-list.def camel-store.h \
-	camel-service.h camel-url.h camel-provider.h camel-operation.h \
-	camel-mime-message.h camel-mime-part.h camel-medium.h \
-	camel-data-wrapper.h camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h string-utils.h \
-	../e-util/e-memory.h camel-operation.h camel-session.h \
-	../e-util/e-msgport.h camel-filter-driver.h camel-session.h \
-	camel-folder.h camel-uid-cache.h camel-private.h
-camel-html-parser.lo camel-html-parser.o : camel-html-parser.c \
-	camel-html-parser.h camel-object.h camel-types.h
-camel-internet-address.lo camel-internet-address.o : \
-	camel-internet-address.c camel-mime-utils.h \
-	camel-internet-address.h camel-address.h camel-object.h \
-	camel-types.h
-camel-lock-client.lo camel-lock-client.o : camel-lock-client.c \
-	../config.h camel-exception.h camel-types.h \
-	camel-exception-list.def camel-lock-helper.h \
-	camel-lock-client.h camel-exception.h
-camel-lock-helper.o: camel-lock-helper.c camel-lock-helper.h \
-	camel-lock.h camel-exception.h camel-types.h \
-	camel-exception-list.def
-camel-lock.lo camel-lock.o : camel-lock.c ../config.h camel-lock.h \
-	camel-exception.h camel-types.h camel-exception-list.def
-camel-medium.lo camel-medium.o : camel-medium.c ../config.h \
-	camel-medium.h camel-data-wrapper.h camel-object.h \
-	camel-types.h string-utils.h hash-table-utils.h
-camel-mime-filter-basic.lo camel-mime-filter-basic.o : \
-	camel-mime-filter-basic.c camel-mime-filter-basic.h \
-	camel-mime-filter.h camel-object.h camel-types.h \
-	camel-mime-utils.h
-camel-mime-filter-bestenc.lo camel-mime-filter-bestenc.o : \
-	camel-mime-filter-bestenc.c camel-mime-filter-bestenc.h \
-	camel-mime-filter.h camel-object.h camel-types.h \
-	camel-mime-part.h camel-medium.h camel-data-wrapper.h \
-	camel-mime-utils.h camel-mime-parser.h camel-stream.h \
-	camel-charset-map.h
-camel-mime-filter-charset.lo camel-mime-filter-charset.o : \
-	camel-mime-filter-charset.c camel-mime-filter-charset.h \
-	camel-mime-filter.h camel-object.h camel-types.h \
-	camel-charset-map.h
-camel-mime-filter-crlf.lo camel-mime-filter-crlf.o : \
-	camel-mime-filter-crlf.c camel-mime-filter-crlf.h \
-	camel-mime-filter.h camel-object.h camel-types.h
-camel-mime-filter-from.lo camel-mime-filter-from.o : \
-	camel-mime-filter-from.c camel-mime-filter-from.h \
-	camel-mime-filter.h camel-object.h camel-types.h
-camel-mime-filter-html.lo camel-mime-filter-html.o : \
-	camel-mime-filter-html.c camel-mime-filter-html.h \
-	camel-mime-filter.h camel-object.h camel-types.h \
-	camel-html-parser.h
-camel-mime-filter-index.lo camel-mime-filter-index.o : \
-	camel-mime-filter-index.c camel-mime-filter-index.h \
-	camel-mime-filter.h camel-object.h camel-types.h \
-	../libibex/ibex.h
-camel-mime-filter-linewrap.lo camel-mime-filter-linewrap.o : \
-	camel-mime-filter-linewrap.c camel-mime-filter-linewrap.h \
-	camel-mime-filter.h camel-object.h camel-types.h
-camel-mime-filter-save.lo camel-mime-filter-save.o : \
-	camel-mime-filter-save.c camel-mime-filter-save.h \
-	camel-mime-filter.h camel-object.h camel-types.h
-camel-mime-filter-stripheader.lo camel-mime-filter-stripheader.o : \
-	camel-mime-filter-stripheader.c camel-mime-filter-stripheader.h \
-	camel-mime-filter.h camel-object.h camel-types.h
-camel-mime-filter.lo camel-mime-filter.o : camel-mime-filter.c \
-	camel-mime-filter.h camel-object.h camel-types.h
-camel-mime-message.lo camel-mime-message.o : camel-mime-message.c \
-	../config.h camel-mime-message.h camel-mime-part.h \
-	camel-medium.h camel-data-wrapper.h camel-object.h \
-	camel-types.h camel-mime-utils.h camel-mime-parser.h \
-	camel-mime-filter.h camel-stream.h camel-internet-address.h \
-	camel-address.h camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-multipart.h camel-stream-mem.h camel-seekable-stream.h \
-	string-utils.h hash-table-utils.h camel-url.h \
-	camel-stream-filter.h camel-stream-null.h \
-	camel-mime-filter-charset.h camel-mime-filter-bestenc.h
-camel-mime-parser.lo camel-mime-parser.o : camel-mime-parser.c \
-	camel-mime-parser.h camel-object.h camel-types.h \
-	camel-mime-utils.h camel-mime-filter.h camel-stream.h \
-	camel-mime-utils.h camel-mime-filter.h camel-stream.h \
-	camel-seekable-stream.h
-camel-mime-part-utils.lo camel-mime-part-utils.o : \
-	camel-mime-part-utils.c ../config.h string-utils.h \
-	camel-mime-part-utils.h camel-mime-part.h camel-medium.h \
-	camel-data-wrapper.h camel-object.h camel-types.h \
-	camel-mime-utils.h camel-mime-parser.h camel-mime-filter.h \
-	camel-stream.h camel-mime-message.h camel-internet-address.h \
-	camel-address.h camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-multipart.h camel-seekable-substream.h \
-	camel-seekable-stream.h camel-stream-fs.h camel-stream-filter.h \
-	camel-stream-mem.h camel-mime-filter-basic.h \
-	camel-mime-filter-charset.h camel-mime-filter-crlf.h \
-	camel-html-parser.h camel-charset-map.h
-camel-mime-part.lo camel-mime-part.o : camel-mime-part.c ../config.h \
-	hash-table-utils.h camel-mime-parser.h camel-object.h \
-	camel-types.h camel-mime-utils.h camel-mime-filter.h \
-	camel-stream.h camel-stream-mem.h camel-seekable-stream.h \
-	camel-stream-filter.h camel-mime-filter-basic.h \
-	camel-mime-filter-crlf.h camel-mime-filter-charset.h \
-	camel-mime-part.h camel-medium.h camel-data-wrapper.h \
-	camel-mime-parser.h camel-mime-part-utils.h camel-mime-part.h \
-	camel-exception.h camel-exception-list.def camel-charset-map.h \
-	string-utils.h
-camel-mime-utils.lo camel-mime-utils.o : camel-mime-utils.c ../config.h \
-	camel-mime-utils.h camel-charset-map.h broken-date-parser.h
-camel-movemail.lo camel-movemail.o : camel-movemail.c ../config.h \
-	camel-movemail.h camel-exception.h camel-types.h \
-	camel-exception-list.def camel-exception.h camel-mime-parser.h \
-	camel-object.h camel-mime-utils.h camel-mime-filter.h \
-	camel-stream.h camel-mime-filter.h camel-mime-filter-from.h \
-	camel-lock-client.h
-camel-multipart.lo camel-multipart.o : camel-multipart.c ../config.h \
-	camel-stream-mem.h camel-seekable-stream.h camel-stream.h \
-	camel-object.h camel-types.h camel-multipart.h \
-	camel-data-wrapper.h camel-mime-part.h camel-medium.h \
-	camel-mime-utils.h camel-mime-parser.h camel-mime-filter.h \
-	camel-exception.h camel-exception-list.def \
-	../e-util/md5-utils.h
-camel-object.lo camel-object.o : camel-object.c ../config.h \
-	camel-object.h camel-types.h ../e-util/e-msgport.h
-camel-operation.lo camel-operation.o : camel-operation.c ../config.h \
-	camel-operation.h ../e-util/e-msgport.h
-camel-pgp-context.lo camel-pgp-context.o : camel-pgp-context.c \
-	../config.h camel-pgp-context.h camel-session.h camel-object.h \
-	camel-types.h camel-provider.h ../e-util/e-msgport.h \
-	camel-stream.h camel-exception.h camel-exception-list.def \
-	camel-cipher-context.h camel-stream-fs.h \
-	camel-seekable-stream.h camel-stream-mem.h camel-operation.h \
-	camel-charset-map.h
-camel-pgp-mime.lo camel-pgp-mime.o : camel-pgp-mime.c ../config.h \
-	camel-pgp-mime.h camel-multipart.h camel-data-wrapper.h \
-	camel-object.h camel-types.h camel-mime-part.h camel-medium.h \
-	camel-mime-utils.h camel-mime-parser.h camel-mime-filter.h \
-	camel-stream.h camel-pgp-context.h camel-session.h \
-	camel-provider.h ../e-util/e-msgport.h camel-exception.h \
-	camel-exception-list.def camel-cipher-context.h \
-	camel-mime-message.h camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-mime-filter-from.h camel-mime-filter-crlf.h \
-	camel-mime-filter-charset.h camel-stream-filter.h \
-	camel-stream-mem.h camel-seekable-stream.h camel-stream-fs.h
-camel-provider.lo camel-provider.o : camel-provider.c ../config.h \
-	camel-provider.h camel-types.h camel-object.h camel-exception.h \
-	camel-exception-list.def hash-table-utils.h
-camel-remote-store.lo camel-remote-store.o : camel-remote-store.c \
-	../config.h camel-remote-store.h camel-store.h camel-object.h \
-	camel-types.h camel-service.h camel-url.h camel-provider.h \
-	camel-operation.h camel-folder.h camel-folder-summary.h \
-	camel-mime-parser.h camel-mime-utils.h camel-mime-filter.h \
-	camel-stream.h ../libibex/ibex.h camel-exception.h \
-	camel-exception-list.def camel-session.h ../e-util/e-msgport.h \
-	camel-stream.h camel-stream-buffer.h camel-seekable-stream.h \
-	camel-tcp-stream.h camel-tcp-stream-raw.h camel-tcp-stream.h \
-	camel-tcp-stream-ssl.h camel-url.h string-utils.h \
-	camel-private.h camel-operation.h
-camel-sasl-anonymous.lo camel-sasl-anonymous.o : camel-sasl-anonymous.c \
-	../config.h camel-sasl-anonymous.h camel-sasl.h camel-object.h \
-	camel-types.h camel-exception.h camel-exception-list.def \
-	camel-service.h camel-url.h camel-provider.h camel-operation.h \
-	camel-internet-address.h camel-address.h
-camel-sasl-cram-md5.lo camel-sasl-cram-md5.o : camel-sasl-cram-md5.c \
-	../config.h camel-sasl-cram-md5.h camel-sasl.h camel-object.h \
-	camel-types.h camel-exception.h camel-exception-list.def \
-	camel-service.h camel-url.h camel-provider.h camel-operation.h \
-	camel-mime-utils.h camel-service.h ../e-util/md5-utils.h
-camel-sasl-digest-md5.lo camel-sasl-digest-md5.o : \
-	camel-sasl-digest-md5.c ../config.h camel-sasl-digest-md5.h \
-	camel-sasl.h camel-object.h camel-types.h camel-exception.h \
-	camel-exception-list.def camel-service.h camel-url.h \
-	camel-provider.h camel-operation.h camel-mime-utils.h \
-	camel-charset-map.h ../e-util/md5-utils.h
-camel-sasl-kerberos4.lo camel-sasl-kerberos4.o : camel-sasl-kerberos4.c \
-	../config.h
-camel-sasl-login.lo camel-sasl-login.o : camel-sasl-login.c ../config.h \
-	camel-sasl-login.h camel-sasl.h camel-object.h camel-types.h \
-	camel-exception.h camel-exception-list.def camel-service.h \
-	camel-url.h camel-provider.h camel-operation.h camel-service.h
-camel-sasl-plain.lo camel-sasl-plain.o : camel-sasl-plain.c ../config.h \
-	camel-sasl-plain.h camel-sasl.h camel-object.h camel-types.h \
-	camel-exception.h camel-exception-list.def camel-service.h \
-	camel-url.h camel-provider.h camel-operation.h camel-service.h
-camel-sasl-popb4smtp.lo camel-sasl-popb4smtp.o : camel-sasl-popb4smtp.c \
-	../config.h camel-sasl-popb4smtp.h camel-sasl.h camel-object.h \
-	camel-types.h camel-exception.h camel-exception-list.def \
-	camel-service.h camel-url.h camel-provider.h camel-operation.h \
-	camel-service.h camel-session.h ../e-util/e-msgport.h
-camel-sasl.lo camel-sasl.o : camel-sasl.c ../config.h camel-sasl.h \
-	camel-object.h camel-types.h camel-exception.h \
-	camel-exception-list.def camel-service.h camel-url.h \
-	camel-provider.h camel-operation.h camel-mime-utils.h \
-	camel-service.h camel-sasl-cram-md5.h camel-sasl.h \
-	camel-sasl-digest-md5.h camel-sasl-kerberos4.h \
-	camel-sasl-login.h camel-sasl-plain.h camel-sasl-popb4smtp.h
-camel-search-private.lo camel-search-private.o : camel-search-private.c \
-	../config.h camel-exception.h camel-types.h \
-	camel-exception-list.def camel-mime-message.h camel-mime-part.h \
-	camel-medium.h camel-data-wrapper.h camel-object.h \
-	camel-mime-utils.h camel-mime-parser.h camel-mime-filter.h \
-	camel-stream.h camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-multipart.h camel-stream-mem.h camel-seekable-stream.h \
-	../e-util/e-sexp.h camel-search-private.h
-camel-seekable-stream.lo camel-seekable-stream.o : \
-	camel-seekable-stream.c ../config.h camel-seekable-stream.h \
-	camel-stream.h camel-object.h camel-types.h
-camel-seekable-substream.lo camel-seekable-substream.o : \
-	camel-seekable-substream.c ../config.h \
-	camel-seekable-substream.h camel-seekable-stream.h \
-	camel-stream.h camel-object.h camel-types.h
-camel-service.lo camel-service.o : camel-service.c ../config.h \
-	../e-util/e-msgport.h ../e-util/e-host-utils.h camel-service.h \
-	camel-object.h camel-types.h camel-url.h camel-provider.h \
-	camel-operation.h camel-session.h camel-exception.h \
-	camel-exception-list.def camel-operation.h camel-private.h
-camel-session.lo camel-session.o : camel-session.c ../config.h \
-	camel-session.h camel-object.h camel-types.h camel-provider.h \
-	../e-util/e-msgport.h camel-store.h camel-service.h camel-url.h \
-	camel-operation.h camel-transport.h camel-exception.h \
-	camel-exception-list.def string-utils.h camel-url.h \
-	hash-table-utils.h camel-vee-store.h camel-store.h \
-	camel-private.h
-camel-smime-context.lo camel-smime-context.o : camel-smime-context.c \
-	../config.h camel-smime-context.h camel-session.h \
-	camel-object.h camel-types.h camel-provider.h \
-	../e-util/e-msgport.h camel-exception.h \
-	camel-exception-list.def camel-cms-context.h camel-stream.h \
-	camel-mime-message.h camel-mime-part.h camel-medium.h \
-	camel-data-wrapper.h camel-mime-utils.h camel-mime-parser.h \
-	camel-mime-filter.h camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-mime-filter-from.h camel-mime-filter-crlf.h \
-	camel-stream-filter.h camel-stream-fs.h camel-seekable-stream.h \
-	camel-stream-mem.h camel-mime-part.h camel-multipart.h
-camel-smime-utils.lo camel-smime-utils.o : camel-smime-utils.c \
-	../config.h camel-smime-utils.h camel-mime-part.h \
-	camel-medium.h camel-data-wrapper.h camel-object.h \
-	camel-types.h camel-mime-utils.h camel-mime-parser.h \
-	camel-mime-filter.h camel-stream.h camel-multipart.h
-camel-store.lo camel-store.o : camel-store.c ../config.h camel-session.h \
-	camel-object.h camel-types.h camel-provider.h \
-	../e-util/e-msgport.h camel-store.h camel-service.h camel-url.h \
-	camel-operation.h camel-folder.h camel-folder-summary.h \
-	camel-mime-parser.h camel-mime-utils.h camel-mime-filter.h \
-	camel-stream.h ../libibex/ibex.h camel-vtrash-folder.h \
-	camel-folder.h camel-vee-folder.h camel-exception.h \
-	camel-exception-list.def camel-private.h
-camel-stream-buffer.lo camel-stream-buffer.o : camel-stream-buffer.c \
-	../config.h camel-stream-buffer.h camel-seekable-stream.h \
-	camel-stream.h camel-object.h camel-types.h
-camel-stream-filter.lo camel-stream-filter.o : camel-stream-filter.c \
-	camel-stream-filter.h camel-stream.h camel-object.h \
-	camel-types.h camel-mime-filter.h
-camel-stream-fs.lo camel-stream-fs.o : camel-stream-fs.c ../config.h \
-	camel-operation.h camel-stream-fs.h camel-seekable-stream.h \
-	camel-stream.h camel-object.h camel-types.h camel-session.h \
-	camel-provider.h ../e-util/e-msgport.h
-camel-stream-mem.lo camel-stream-mem.o : camel-stream-mem.c ../config.h \
-	camel-stream-mem.h camel-seekable-stream.h camel-stream.h \
-	camel-object.h camel-types.h
-camel-stream-null.lo camel-stream-null.o : camel-stream-null.c \
-	../config.h camel-stream-null.h camel-stream.h camel-object.h \
-	camel-types.h
-camel-stream.lo camel-stream.o : camel-stream.c ../config.h \
-	camel-stream.h camel-object.h camel-types.h
-camel-tcp-stream-openssl.lo camel-tcp-stream-openssl.o : \
-	camel-tcp-stream-openssl.c ../config.h
-camel-tcp-stream-raw.lo camel-tcp-stream-raw.o : camel-tcp-stream-raw.c \
-	../config.h camel-tcp-stream-raw.h camel-tcp-stream.h \
-	camel-stream.h camel-object.h camel-types.h camel-operation.h
-camel-tcp-stream-ssl.lo camel-tcp-stream-ssl.o : camel-tcp-stream-ssl.c \
-	../config.h camel-tcp-stream-ssl.h camel-tcp-stream.h \
-	camel-stream.h camel-object.h camel-types.h camel-service.h \
-	camel-url.h camel-provider.h camel-operation.h camel-session.h \
-	../e-util/e-msgport.h
-camel-tcp-stream.lo camel-tcp-stream.o : camel-tcp-stream.c ../config.h \
-	camel-tcp-stream.h camel-stream.h camel-object.h camel-types.h
-camel-transport.lo camel-transport.o : camel-transport.c ../config.h \
-	camel-transport.h camel-service.h camel-object.h camel-types.h \
-	camel-url.h camel-provider.h camel-operation.h \
-	camel-exception.h camel-exception-list.def camel-private.h \
-	../e-util/e-msgport.h
-camel-uid-cache.lo camel-uid-cache.o : camel-uid-cache.c ../config.h \
-	camel-uid-cache.h
-camel-url.lo camel-url.o : camel-url.c ../config.h camel-url.h \
-	camel-types.h camel-exception.h camel-exception-list.def \
-	camel-mime-utils.h camel-object.h
-camel-vee-folder.lo camel-vee-folder.o : camel-vee-folder.c ../config.h \
-	camel-exception.h camel-types.h camel-exception-list.def \
-	camel-vee-folder.h camel-folder.h camel-object.h \
-	camel-folder-summary.h camel-mime-parser.h camel-mime-utils.h \
-	camel-mime-filter.h camel-stream.h ../libibex/ibex.h \
-	camel-store.h camel-service.h camel-url.h camel-provider.h \
-	camel-operation.h camel-folder-summary.h camel-mime-message.h \
-	camel-mime-part.h camel-medium.h camel-data-wrapper.h \
-	camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h \
-	camel-folder-search.h ../e-util/e-sexp.h camel-session.h \
-	../e-util/e-msgport.h camel-vee-store.h camel-store.h \
-	camel-private.h ../e-util/md5-utils.h ../e-util/e-memory.h
-camel-vee-store.lo camel-vee-store.o : camel-vee-store.c \
-	camel-exception.h camel-types.h camel-exception-list.def \
-	camel-vee-store.h camel-store.h camel-object.h camel-service.h \
-	camel-url.h camel-provider.h camel-operation.h \
-	camel-vee-folder.h camel-folder.h camel-folder-summary.h \
-	camel-mime-parser.h camel-mime-utils.h camel-mime-filter.h \
-	camel-stream.h ../libibex/ibex.h camel-private.h ../config.h \
-	../e-util/e-msgport.h
-camel-vtrash-folder.lo camel-vtrash-folder.o : camel-vtrash-folder.c \
-	../config.h camel-exception.h camel-types.h \
-	camel-exception-list.def camel-vtrash-folder.h camel-folder.h \
-	camel-object.h camel-folder-summary.h camel-mime-parser.h \
-	camel-mime-utils.h camel-mime-filter.h camel-stream.h \
-	../libibex/ibex.h camel-vee-folder.h camel-store.h \
-	camel-service.h camel-url.h camel-provider.h camel-operation.h \
-	camel-vee-store.h camel-store.h camel-mime-message.h \
-	camel-mime-part.h camel-medium.h camel-data-wrapper.h \
-	camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h
-camel.lo camel.o : camel.c ../config.h camel.h camel-cipher-context.h \
-	camel-session.h camel-object.h camel-types.h camel-provider.h \
-	../e-util/e-msgport.h camel-stream.h camel-exception.h \
-	camel-exception-list.def camel-cms-context.h \
-	camel-mime-message.h camel-mime-part.h camel-medium.h \
-	camel-data-wrapper.h camel-mime-utils.h camel-mime-parser.h \
-	camel-mime-filter.h camel-internet-address.h camel-address.h \
-	camel-mime-filter-bestenc.h camel-charset-map.h camel-folder.h \
-	camel-folder-summary.h ../libibex/ibex.h camel-digest-folder.h \
-	camel-disco-diary.h camel-disco-folder.h camel-disco-store.h \
-	camel-remote-store.h camel-store.h camel-service.h camel-url.h \
-	camel-operation.h camel-vee-folder.h camel-mime-filter-basic.h \
-	camel-mime-filter-charset.h camel-mime-filter-index.h \
-	camel-mime-filter-save.h camel-mime-filter-crlf.h \
-	camel-mime-part-utils.h camel-movemail.h camel-multipart.h \
-	camel-pgp-context.h camel-pgp-mime.h camel-seekable-stream.h \
-	camel-seekable-substream.h camel-smime-context.h \
-	camel-smime-utils.h camel-stream-buffer.h camel-stream-filter.h \
-	camel-stream-fs.h camel-stream-mem.h camel-tcp-stream-raw.h \
-	camel-tcp-stream.h camel-tcp-stream-ssl.h camel-transport.h \
-	camel-uid-cache.h gstring-util.h hash-table-utils.h \
-	string-utils.h camel-mime-utils.h
-gstring-util.lo gstring-util.o : gstring-util.c ../config.h \
-	gstring-util.h
-hash-table-utils.lo hash-table-utils.o : hash-table-utils.c \
-	hash-table-utils.h
-string-utils.lo string-utils.o : string-utils.c ../config.h \
-	string-utils.h
 
 info-am:
 info: info-recursive

@@ -1,11 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Configuring the Calendar</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -16,15 +16,10 @@ REL="PREVIOUS"
 TITLE="Advanced Configuration"
 HREF="config-prefs.html"><LINK
 REL="NEXT"
-TITLE="Managing the Contact Manager"
+TITLE="Managing the Addressbook"
 HREF="config-prefs-contact.html"></HEAD
 ><BODY
 CLASS="SECT1"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -45,20 +40,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="config-prefs.html"
->&#60;&#60;&#60; Previous</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Advanced Configuration</TD
+>Chapter 9. Advanced Configuration</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="config-prefs-contact.html"
->Next &#62;&#62;&#62;</A
+>Next</A
 ></TD
 ></TR
 ></TABLE
@@ -75,41 +70,38 @@ NAME="CONFIG-PREFS-CAL"
 ></H1
 ><P
 >          To set your calendar preferences, select
-          <B
+          <SPAN
 CLASS="GUIMENU"
->Settings</B
->-&gt;<B
+>Settings</SPAN
+>-&gt;<SPAN
 CLASS="GUIMENUITEM"
 >Calendar
-          Configuration</B
+          Settings</SPAN
 > from the Calendar
           view.  This will open up the
           <SPAN
 CLASS="INTERFACE"
 >Preferences</SPAN
-> window.  It contains three
-          tabs: <TT
+> window.  It contains four
+          tabs: <SPAN
 CLASS="GUILABEL"
-><B
->Calendar</B
-></TT
->, <TT
+>General</SPAN
+>, <SPAN
 CLASS="GUILABEL"
-><B
->TaskPad</B
-></TT
->, <TT
+>Display</SPAN
+>, <SPAN
 CLASS="GUILABEL"
-><B
->Reminders</B
-></TT
+>Task List</SPAN
+>, and <SPAN
+CLASS="GUILABEL"
+>Other</SPAN
 >.  The <SPAN
 CLASS="INTERFACE"
 >calendar
           preferences window</SPAN
 > is illustrated in <A
 HREF="config-prefs-cal.html#CONFIG-PREFS-CAL-FIG"
->Figure 2</A
+>Figure 9-2</A
 >.
 
       
@@ -118,6 +110,10 @@ CLASS="FIGURE"
 ><A
 NAME="CONFIG-PREFS-CAL-FIG"
 ></A
+><P
+><B
+>Figure 9-2. Calendar Preferences Dialog</B
+></P
 ><DIV
 CLASS="MEDIAOBJECT"
 ><P
@@ -126,10 +122,6 @@ SRC="figures/config-cal.png"
 ></IMG
 ></P
 ></DIV
-><P
-><B
->Figure 2. Calendar Preferences Dialog</B
-></P
 ></DIV
 >
       
@@ -139,15 +131,13 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="CONFIG-PREFS-CAL-TIME"
->Time Display Settings</A
+NAME="CONFIG-PREFS-CAL-GENERAL"
+>Calendar's General Settings</A
 ></H2
 ><P
->        The <TT
+>        The <SPAN
 CLASS="GUILABEL"
-><B
->Time display</B
-></TT
+>Time display</SPAN
 > tab lets you set the
         following:
         <P
@@ -155,6 +145,13 @@ CLASS="GUILABEL"
 ><DIV
 CLASS="VARIABLELIST"
 ><DL
+><DT
+>Time zone</DT
+><DD
+><P
+>		The city you're located in, to judge your time zone.
+	      </P
+></DD
 ><DT
 >Time format</DT
 ><DD
@@ -165,27 +162,41 @@ CLASS="VARIABLELIST"
               </P
 ></DD
 ><DT
->Weeks start on</DT
+>Work Week</DT
+><DD
+><P
+>                When does your work day start, and when does it end?
+		In the day and week views,
+		<SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> displays all the
+		hours in the range you select here, even if there are
+		no appointments for those times.  Of course, you can
+		still schedule an appointment outside of these hours,
+		and if you do, the display will be extended to show
+		it.
+	      </P
+></DD
+><DT
+>First day of the week</DT
 ><DD
 ><P
 >You can set weeks to start on Sunday or on Monday.</P
 ></DD
 ><DT
->Day range</DT
+>Start of day</DT
 ><DD
 ><P
->                 When does your work day start, and when does it end?
-                 In the day and week views,
-                 <TT
-CLASS="APPLICATION"
->Evolution</TT
-> displays all the
-                 hours in the range you select here, even if there are
-                 no appointments for those times.  Of course, you can
-                 still schedule an appointment outside of these hours,
-                 and if you do, the display will be extended to show
-                 it.
-               </P
+>		Says what time of the day your weekday starts.  This will show all times till the end of the day, regardless of there is an appointment during the time period.
+	      </P
+></DD
+><DT
+>End of day</DT
+><DD
+><P
+>		Sets the time the day ends at.
+	      </P
 ></DD
 ></DL
 ></DIV
@@ -197,247 +208,83 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="CONFIG-PREFS-CAL-COLOR"
->Calendar Colors</A
+NAME="CONFIG-PREFS-CAL-DISPLAY"
+>Display</A
 ></H2
 ><P
->        The <SPAN
+>	The <SPAN
 CLASS="INTERFACE"
->colors tab</SPAN
-> allows you to decide
-        what color your calendar will be.  The tab consists of a
-        sample calendar on the right and a list of ten items that can
-        be colored in different ways.  If you click on the color
-        button to the right of each item, you will bring up a
-        color-selector window where you can alter that
-        color.  By clicking <B
-CLASS="GUIBUTTON"
->OK</B
-> in the color
-        selection dialog, you can see the results of the color on the
-        sample calendar.
-     </P
+>Display</SPAN
+> section lets you configure some visual properties of the calendar.
+      </P
 ><P
->The display elements colors you can set are:
+>The display properties you can set are:
 
-          <P
-></P
-><UL
-><LI
-><P
->                <TT
-CLASS="GUILABEL"
-><B
->Outline:</B
-></TT
-> The lines between days
-                and at the top of the display.
-              </P
-></LI
-><LI
-><P
-> <TT
-CLASS="GUILABEL"
-><B
->Headings:</B
-></TT
-> Text color for day
-                and month names and other headings.
-              </P
-></LI
-><LI
-><P
-> <TT
-CLASS="GUILABEL"
-><B
->Empty days:</B
-></TT
-> This is the
-                background color for any time slots in which you have no appointments.
-               </P
-></LI
-><LI
-><P
->         
-             <TT
-CLASS="GUILABEL"
-><B
->Appointments:</B
-></TT
-> This is the
-                background color for any time slots in which you have appointments.
-               </P
-></LI
-><LI
-><P
-> <TT
-CLASS="GUILABEL"
-><B
->Highlighted day:</B
-></TT
-> The
-              background color for a selected time slot.
-             </P
-></LI
-><LI
-><P
->         
-              <TT
-CLASS="GUILABEL"
-><B
->Day numbers:</B
-></TT
-> Text color for date numbers.
-            </P
-></LI
-><LI
-><P
->              <TT
-CLASS="GUILABEL"
-><B
->Current day's number:</B
-></TT
-> Text color for today's date.
-             </P
-></LI
-><LI
-><P
-> <TT
-CLASS="GUILABEL"
-><B
->To-Do item that is not yet
-             due:</B
-></TT
-> Text color for To-Do list items that are
-             not yet due. 
-	    </P
-></LI
-><LI
-><P
-> <TT
-CLASS="GUILABEL"
-><B
->To-Do item that is due today:</B
-></TT
->
-             Text color for today's tasks.
-               </P
-></LI
-><LI
-><P
-> <TT
-CLASS="GUILABEL"
-><B
->To-Do item that is overdue:</B
-></TT
->
-             Text color for overdue tasks.
-               </P
-></LI
-></UL
->
-        </P
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="CONFIG-PREFS-CAL-TODO"
->To Do List Settings</A
-></H2
-><P
->       You can choose what information the To Do list displays and the
-       way it is displayed.  The two areas of the <SPAN
-CLASS="INTERFACE"
->To Do
-       List</SPAN
-> tab offer several options each:
-       <P
+	<P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
->Show on To Do List</DT
+>Time divisions</DT
 ><DD
 ><P
->                This box contains three items.  If you select the
-                check boxes next to them, that information will appear
-                in the To Do list for each task it contains:
-                <P
+>		Sets the increments shown on the daily view in the calendar.  You can set this to be:
+		<P
 ></P
 ><UL
 ><LI
 ><P
-><TT
-CLASS="GUILABEL"
-><B
->Due Date</B
-></TT
-></P
+>		      5 minutes
+		    </P
 ></LI
 ><LI
 ><P
-><TT
-CLASS="GUILABEL"
-><B
->Time Until Due</B
-></TT
-></P
+>		      10 minutes
+		    </P
 ></LI
 ><LI
 ><P
-><TT
-CLASS="GUILABEL"
-><B
->Priority</B
-></TT
-></P
+>		      15 minutes
+		    </P
+></LI
+><LI
+><P
+>		      30 minutes
+		    </P
+></LI
+><LI
+><P
+>		      60 minutes
+		    </P
 ></LI
 ></UL
 >
-               </P
+              </P
 ></DD
 ><DT
->Style Options</DT
+>Show appointment end times in week and month views</DT
 ><DD
 ><P
->                 Select among the following checkboxes to determine
-                 how your To Do list will look:
-                <P
-></P
-><UL
-><LI
+>		If there is space, <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> will show the end times in the week and month views for each appointment.
+              </P
+></DD
+><DT
+>Compress weekends in month view</DT
+><DD
 ><P
-><TT
-CLASS="GUILABEL"
-><B
->Highlight overdue items</B
-></TT
-></P
-></LI
-><LI
+>		If checked, your weekends will be shown in one box, instead of one for each day in the month view.
+	      </P
+></DD
+><DT
+>Show week numbers in date navigator</DT
+><DD
 ><P
-><TT
-CLASS="GUILABEL"
-><B
->Highlight items due today</B
-></TT
-></P
-></LI
-><LI
-><P
-><TT
-CLASS="GUILABEL"
-><B
->Highlight not yet due items</B
-></TT
-></P
-></LI
-></UL
->                 
-               </P
+>		This will show the week numbers next to the respective weeks in the calendar.
+	      </P
 ></DD
 ></DL
 ></DIV
@@ -449,69 +296,69 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="CONFIG-PREFS-CAL-ALARMS"
->Alarms Settings</A
+NAME="CONFIG-PREFS-CAL-TASKLIST"
+>Task List Settings</A
 ></H2
 ><P
->  
-        The <SPAN
-CLASS="INTERFACE"
->alarms tab</SPAN
-> enables you to select from three boxes:
-        <P
+>       You can choose what information the To Do list displays and the
+       way it is displayed.
+       <P
 ></P
-><UL
-><LI
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Tasks due today</DT
+><DD
 ><P
-><TT
-CLASS="GUILABEL"
-><B
->Beep on display alarms</B
-></TT
->: select
-	    this box to have <TT
-CLASS="APPLICATION"
->Evolution</TT
-> beep
-	    at you for any alarms you have set. These beeps
-	    are distinct from full-fledged audio alarms. If you leave this box
-	    unchecked, <TT
-CLASS="APPLICATION"
->Evolution</TT
-> will only
-	    alert you to events by opening a dialog box. 
-           </P
-></LI
-><LI
+>		Configures what color to set your tasks that are due today to.
+	      </P
+></DD
+><DT
+>Overdue tasks</DT
+><DD
 ><P
-><TT
-CLASS="GUILABEL"
-><B
->Audio alarms timeout after: </B
-></TT
+>		Configures what color to set your overdue items to.
+	      </P
+></DD
+></DL
+></DIV
 >
-	    Select this button to have your audio alarms stop
-	    automatically after a certain number of seconds.  </P
-></LI
-><LI
+      </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-PREFS-CAL-OTHER"
+>Other Calendar Settings</A
+></H2
 ><P
-><TT
-CLASS="GUILABEL"
-><B
->Enable snoozing for:</B
-></TT
-> If you
-	    would like to have the option to tell
-	    <TT
-CLASS="APPLICATION"
->Evolution</TT
-> to repeat an alarm in
-	    a few minutes, select this button and decide how long
-	    you'd like it to wait.
-           </P
-></LI
-></UL
->   
+> 
+	This configures miscellaneous items for the calendar and todo list's functionality.
+	<P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Ask for confirmation when deleting items</DT
+><DD
+><P
+>		When you delete an item in either the Task List or the Calendar, you will be prompted to confirm that you want to delete the item.
+	      </P
+></DD
+><DT
+>Create new appointments with a default reminder</DT
+><DD
+><P
+>		All your appointments will be created using a default reminder enabled.  You can still change what way you are reminded though.  If enabled, you can then set the time before your appointment to be reminded.
+	      </P
+></DD
+></DL
+></DIV
+>
       </P
 ></DIV
 ></DIV
@@ -531,7 +378,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="config-prefs.html"
->&#60;&#60;&#60; Previous</A
+>Prev</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -547,7 +394,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="config-prefs-contact.html"
->Next &#62;&#62;&#62;</A
+>Next</A
 ></TD
 ></TR
 ><TR
@@ -568,7 +415,7 @@ HREF="config-prefs.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Managing the Contact Manager</TD
+>Managing the Addressbook</TD
 ></TR
 ></TABLE
 ></DIV

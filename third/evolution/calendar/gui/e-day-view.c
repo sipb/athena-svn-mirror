@@ -3100,6 +3100,19 @@ e_day_view_on_time_canvas_button_press (GtkWidget      *widget,
 }
 
 
+/* Callback used when a component is destroyed.  Expects the closure data to be
+ * a pointer to a boolean; will set it to TRUE.
+ */
+static void
+comp_destroy_cb (GtkObject *object, gpointer data)
+{
+	gboolean *destroyed;
+
+	destroyed = data;
+	*destroyed = TRUE;
+}
+
+
 static gboolean
 e_day_view_on_long_event_button_press (EDayView		*day_view,
 				       gint		 event_num,
@@ -3122,12 +3135,26 @@ e_day_view_on_long_event_button_press (EDayView		*day_view,
 			return TRUE;
 		}
 	} else if (event->button == 3) {
+		EDayViewEvent *e;
+		gboolean destroyed;
+		guint id;
+
+		e = &g_array_index (day_view->long_events, EDayViewEvent, event_num);
+		destroyed = FALSE;
+		id = gtk_signal_connect (GTK_OBJECT (e->comp), "destroy",
+					 GTK_SIGNAL_FUNC (comp_destroy_cb), &destroyed);
+
 		if (!GTK_WIDGET_HAS_FOCUS (day_view))
 			gtk_widget_grab_focus (GTK_WIDGET (day_view));
 
-		e_day_view_on_event_right_click (day_view, event,
-						 E_DAY_VIEW_LONG_EVENT,
-						 event_num);
+		if (!destroyed) {
+			gtk_signal_disconnect (GTK_OBJECT (e->comp), id);
+
+			e_day_view_on_event_right_click (day_view, event,
+							 E_DAY_VIEW_LONG_EVENT,
+							 event_num);
+		}
+
 		return TRUE;
 	}
 	return FALSE;
@@ -3157,11 +3184,26 @@ e_day_view_on_event_button_press (EDayView	  *day_view,
 			return TRUE;
 		}
 	} else if (event->button == 3) {
+		EDayViewEvent *e;
+		gboolean destroyed;
+		guint id;
+
+		e = &g_array_index (day_view->events[day], EDayViewEvent, event_num);
+
+		destroyed = FALSE;
+		id = gtk_signal_connect (GTK_OBJECT (e->comp), "destroy",
+					 GTK_SIGNAL_FUNC (comp_destroy_cb), &destroyed);
+
 		if (!GTK_WIDGET_HAS_FOCUS (day_view))
 			gtk_widget_grab_focus (GTK_WIDGET (day_view));
 
-		e_day_view_on_event_right_click (day_view, event,
-						 day, event_num);
+		if (!destroyed) {
+			gtk_signal_disconnect (GTK_OBJECT (e->comp), id);
+
+			e_day_view_on_event_right_click (day_view, event,
+							 day, event_num);
+		}
+
 		return TRUE;
 	}
 	return FALSE;
@@ -3191,16 +3233,28 @@ e_day_view_on_long_event_click (EDayView *day_view,
 	if (!(cal_component_has_recurrences (event->comp))
 	    && (pos == E_DAY_VIEW_POS_LEFT_EDGE
 		|| pos == E_DAY_VIEW_POS_RIGHT_EDGE)) {
+		gboolean destroyed;
+		guint id;
+
 		if (!e_day_view_find_long_event_days (event,
 						      day_view->days_shown,
 						      day_view->day_starts,
 						      &start_day, &end_day))
 			return;
 
+		destroyed = FALSE;
+		id = gtk_signal_connect (GTK_OBJECT (event->comp), "destroy",
+					 GTK_SIGNAL_FUNC (comp_destroy_cb), &destroyed);
+
 		/* Grab the keyboard focus, so the event being edited is saved
 		   and we can use the Escape key to abort the resize. */
 		if (!GTK_WIDGET_HAS_FOCUS (day_view))
 			gtk_widget_grab_focus (GTK_WIDGET (day_view));
+
+		if (destroyed)
+			return;
+
+		gtk_signal_disconnect (GTK_OBJECT (event->comp), id);
 
 		if (gdk_pointer_grab (GTK_LAYOUT (day_view->top_canvas)->bin_window, FALSE,
 				      GDK_POINTER_MOTION_MASK
@@ -3265,10 +3319,22 @@ e_day_view_on_event_click (EDayView *day_view,
 	if (!(cal_component_has_recurrences (event->comp))
 	    && (pos == E_DAY_VIEW_POS_TOP_EDGE
 		|| pos == E_DAY_VIEW_POS_BOTTOM_EDGE)) {
+		gboolean destroyed;
+		guint id;
+
+		destroyed = FALSE;
+		id = gtk_signal_connect (GTK_OBJECT (event->comp), "destroy",
+					 GTK_SIGNAL_FUNC (comp_destroy_cb), &destroyed);
+
 		/* Grab the keyboard focus, so the event being edited is saved
 		   and we can use the Escape key to abort the resize. */
 		if (!GTK_WIDGET_HAS_FOCUS (day_view))
 			gtk_widget_grab_focus (GTK_WIDGET (day_view));
+
+		if (destroyed)
+			return;
+
+		gtk_signal_disconnect (GTK_OBJECT (event->comp), id);
 
 		if (gdk_pointer_grab (GTK_LAYOUT (day_view->main_canvas)->bin_window, FALSE,
 				      GDK_POINTER_MOTION_MASK
@@ -3403,6 +3469,8 @@ e_day_view_on_event_double_click (EDayView *day_view,
 				  gint event_num)
 {
 	EDayViewEvent *event;
+	gboolean destroyed;
+	guint id;
 
 	if (day == -1)
 		event = &g_array_index (day_view->long_events, EDayViewEvent,
@@ -3411,12 +3479,20 @@ e_day_view_on_event_double_click (EDayView *day_view,
 		event = &g_array_index (day_view->events[day], EDayViewEvent,
 					event_num);
 
+	destroyed = FALSE;
+	id = gtk_signal_connect (GTK_OBJECT (event->comp), "destroy",
+				 GTK_SIGNAL_FUNC (comp_destroy_cb), &destroyed);
+
 	e_day_view_stop_editing_event (day_view);
 
-	if (day_view->calendar)
-		gnome_calendar_edit_object (day_view->calendar, event->comp);
-	else
-		g_warning ("Calendar not set");
+	if (!destroyed) {
+		gtk_signal_disconnect (GTK_OBJECT (event->comp), id);
+
+		if (day_view->calendar)
+			gnome_calendar_edit_object (day_view->calendar, event->comp);
+		else
+			g_warning ("Calendar not set");
+	}
 }
 
 enum {
@@ -3673,6 +3749,8 @@ e_day_view_on_delete_appointment (GtkWidget *widget, gpointer data)
 {
 	EDayView *day_view;
 	EDayViewEvent *event;
+	gboolean destroyed;
+	guint id;
 
 	day_view = E_DAY_VIEW (data);
 
@@ -3680,10 +3758,18 @@ e_day_view_on_delete_appointment (GtkWidget *widget, gpointer data)
 	if (event == NULL)
 		return;
 
+	destroyed = FALSE;
+	id = gtk_signal_connect (GTK_OBJECT (event->comp), "destroy",
+				 GTK_SIGNAL_FUNC (comp_destroy_cb), &destroyed);
+
 	if (day_view->editing_event_day >= 0)
 		e_day_view_stop_editing_event (day_view);
 
-	e_day_view_delete_event_internal (day_view, event);
+	if (!destroyed) {
+		gtk_signal_disconnect (GTK_OBJECT (event->comp), id);
+
+		e_day_view_delete_event_internal (day_view, event);
+	}
 }
 
 void
@@ -7030,7 +7116,6 @@ selection_received (GtkWidget *invisible,
 	e_day_view_get_selected_time_range (day_view, &dtstart, &dtend);
 
 	if (kind == ICAL_VCALENDAR_COMPONENT) {
-		int num_found = 0;
 		icalcomponent_kind child_kind;
 		icalcomponent *subcomp;
 
@@ -7041,39 +7126,29 @@ selection_received (GtkWidget *invisible,
 			if (child_kind == ICAL_VEVENT_COMPONENT ||
 			    child_kind == ICAL_VTODO_COMPONENT ||
 			    child_kind == ICAL_VJOURNAL_COMPONENT) {
-				CalComponent *tmp_comp;
-
 				tt_start = icaltime_as_timet (icalcomponent_get_dtstart (subcomp));
 				tt_end = icaltime_as_timet (icalcomponent_get_dtend (subcomp));
 				ic_dur = icaldurationtype_from_int (tt_end - tt_start);
 				itime = icaltime_from_timet_with_zone (dtstart, FALSE, day_view->zone);
-				/* FIXME: Need to set TZID. */
+
 				icalcomponent_set_dtstart (subcomp, itime);
 				itime = icaltime_add (itime, ic_dur);
 				icalcomponent_set_dtend (subcomp, itime);
 
 				uid = cal_component_gen_uid ();
-				tmp_comp = cal_component_new ();
+				comp = cal_component_new ();
 				cal_component_set_icalcomponent (
-					tmp_comp, icalcomponent_new_clone (subcomp));
-				cal_component_set_uid (tmp_comp, uid);
+					comp, icalcomponent_new_clone (subcomp));
+				cal_component_set_uid (comp, uid);
+
+				cal_client_update_object (day_view->client, comp);
 
 				free (uid);
-				gtk_object_unref (GTK_OBJECT (tmp_comp));
+				gtk_object_unref (GTK_OBJECT (comp));
 
-				num_found++;
 			}
 			subcomp = icalcomponent_get_next_component (
 				icalcomp, ICAL_ANY_COMPONENT);
-		}
-
-		if (num_found) {
-			comp = cal_component_new ();
-			cal_component_set_icalcomponent (comp, icalcomp);
-
-			cal_client_update_object (day_view->client, comp);
-
-			gtk_object_unref (GTK_OBJECT (comp));
 		}
 	}
 	else {
@@ -7081,7 +7156,7 @@ selection_received (GtkWidget *invisible,
 		tt_end = icaltime_as_timet (icalcomponent_get_dtend (icalcomp));
 		ic_dur = icaldurationtype_from_int (tt_end - tt_start);
 		itime = icaltime_from_timet_with_zone (dtstart, FALSE, day_view->zone);
-		/* FIXME: Need to set TZID. */
+
 		icalcomponent_set_dtstart (icalcomp, itime);
 		itime = icaltime_add (itime, ic_dur);
 		icalcomponent_set_dtend (icalcomp, itime);

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -153,8 +153,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -280,7 +278,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libcal_client_la_SOURCES) $(libcal_client_static_la_SOURCES) $(client_test_SOURCES)
 OBJECTS = $(libcal_client_la_OBJECTS) $(libcal_client_static_la_OBJECTS) $(client_test_OBJECTS)
@@ -453,42 +451,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-cal-client-multi.lo cal-client-multi.o : cal-client-multi.c \
-	../../config.h cal-client-multi.h cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h cal-query.h \
-	evolution-calendar.h
-cal-client-types.lo cal-client-types.o : cal-client-types.c \
-	../../config.h cal-client-types.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h
-cal-client.lo cal-client.o : cal-client.c ../../config.h \
-	cal-client-types.h ../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-util.h cal-query.h \
-	evolution-calendar.h cal-listener.h evolution-calendar.h \
-	../../libwombat/wombat-client.h ../../libwombat/wombat.h
-cal-listener.lo cal-listener.o : cal-listener.c ../../config.h \
-	cal-listener.h evolution-calendar.h
-cal-query.lo cal-query.o : cal-query.c ../../config.h cal-query.h \
-	evolution-calendar.h query-listener.h
-client-test.o: client-test.c ../../config.h cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h cal-query.h \
-	evolution-calendar.h
-evolution-calendar-common.lo evolution-calendar-common.o : \
-	evolution-calendar-common.c evolution-calendar.h
-evolution-calendar-skels.lo evolution-calendar-skels.o : \
-	evolution-calendar-skels.c evolution-calendar.h
-evolution-calendar-stubs.lo evolution-calendar-stubs.o : \
-	evolution-calendar-stubs.c evolution-calendar.h
-query-listener.lo query-listener.o : query-listener.c ../../config.h \
-	query-listener.h evolution-calendar.h
 
 info-am:
 info: info-am

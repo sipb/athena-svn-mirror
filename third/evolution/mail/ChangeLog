@@ -1,3 +1,66 @@
+2001-11-14  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* mail-autofilter.c (rule_match_recipients, rule_from_message,
+	rule_from_mlist): s/_/U_/ (filter_rule_set_name requires UTF-8 string)
+
+2001-11-14  Dan Winship  <danw@ximian.com>
+
+	* main.c (segv_redirect): Instead of doing pthread_exit() after
+	redirecting the SEGV, try to lock a mutex we know is already
+	locked. This will hopefully help debug a bunch of bugs where the
+	crashed thread seems to be missing from the bug-buddy report.
+
+2001-11-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-session.c (pass_got): Call e_passwords_remember_password()
+	for account passwords if the user set the "remember password"
+	checkbox.
+
+2001-11-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-vfolder.c (vfolder_load_storage): Add a NULL check for
+	rule->name.
+	(mail_vfolder_add_uri): Same here.
+
+2001-11-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (forward_message): If we already have the
+	message loaded in the mail-display, don't bother re-loading. This
+	happens to fix bug #14848.
+
+2001-11-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-tools.c (mail_tools_x_evolution_message_parse): Was
+	x_evolution_message_parse from folder-browser.c. A space char is
+	no longer used to separate the folder URI and the first uid,
+	instead this is now done with a nul-char so update to parse the
+	newer/better format.
+
+	* component-factory.c (destination_folder_handle_drop): Update to
+	parse the new/better format.
+
+	* folder-browser.c (x_evolution_message_parse): Moved to
+	mail-tools.c
+	(message_list_drag_data_get): Instead of placing a space char
+	after the folder URI, instead use a nul-char.
+
+2001-11-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c (pgp_path_changed): Call
+	mail_config_pgp_type_detect_from_path() instead of doing our own
+	lame auto-detection that didn't even work ;-)
+
+	* mail-config.c (auto_detect_pgp_variables): Execute the pgp
+	binary and look at it's version string if we have a version string
+	to compare to.
+	(mail_config_pgp_type_detect_from_path): New function that takes a
+	pgp path and attempts to figure out what pgp version it is.
+
+2001-11-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (try_inline_pgp): Add a "x-inline-pgp-hack=true"
+	paramter to the multipart's content-type.
+
 2001-11-05  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* mail-account-editor.c (construct): Don't make the account editor

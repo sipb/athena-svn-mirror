@@ -28,15 +28,13 @@ _ORBIT_skel_GNOME_Evolution_WombatClient_getPassword
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_9))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_9))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 prompt = (void *) _ORBIT_curptr;
 	 _ORBIT_curptr += sizeof(prompt[_ORBIT_tmpvar_8]) * _ORBIT_tmpvar_9;
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_11))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_11))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 key = (void *) _ORBIT_curptr;
@@ -114,8 +112,7 @@ _ORBIT_skel_GNOME_Evolution_WombatClient_forgetPassword
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 
-	    (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
 	 key = (void *) _ORBIT_curptr;
@@ -194,10 +191,7 @@ POA_GNOME_Evolution_WombatClient__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Evolution_WombatClient,
-	 "IDL:GNOME/Evolution/WombatClient:1.0",
-	 (ORBit_local_objref_init) &
-
-	 init_local_objref_GNOME_Evolution_WombatClient };
+"IDL:GNOME/Evolution/WombatClient:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_Evolution_WombatClient };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
@@ -242,10 +236,7 @@ POA_GNOME_Evolution_Config__init(PortableServer_Servant servant,
 {
    static const PortableServer_ClassInfo class_info =
       { (ORBit_impl_finder) & get_skel_GNOME_Evolution_Config,
-	 "IDL:GNOME/Evolution/Config:1.0",
-	 (ORBit_local_objref_init) & init_local_objref_GNOME_Evolution_Config
-
-      };
+"IDL:GNOME/Evolution/Config:1.0", (ORBit_local_objref_init) & init_local_objref_GNOME_Evolution_Config };
    PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
 				    env);
    ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->

@@ -1,3 +1,20 @@
+2001-11-14  Iain Holmes  <iain@ximian.com>
+
+	* my-evolution.glade: Spell celsius right.
+
+2001-11-13  Damon Chaplin  <damon@ximian.com>
+
+	* e-summary.c (e_summary_init): make the timezone default to UTC.
+
+2001-11-08  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-summary-preferences.c: Removed `morons.org'.
+
+2001-11-06  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-preferences.c (make_initial_weather_list): Don't free the
+	vector. Doh!
+
 2001-10-31  Iain Holmes  <iain@ximian.com>
 
 	* Locations: Removed Frobisher.

@@ -1,30 +1,25 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
->Setting up your synchronization system</TITLE
+>Oppsett av synkronisering</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
 REL="UP"
-TITLE="Konfigurasjon og håndtering av Evolution"
+TITLE="Konfigurasjon og håndtering av Ximian Evolution"
 HREF="config.html"><LINK
 REL="PREVIOUS"
-TITLE="General Preferences"
-HREF="config-prefs-general.html"><LINK
+TITLE="Managing the Addressbook"
+HREF="config-prefs-contact.html"><LINK
 REL="NEXT"
-TITLE="Utfyllende menyreferanse"
-HREF="p2934.html"></HEAD
+TITLE="Quick Reference"
+HREF="menuref.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
-BGCOLOR="#FFFFFF"
-TEXT="#000000"
-LINK="#0000FF"
-VLINK="#840084"
-ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -44,8 +39,8 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="config-prefs-general.html"
->&#60;&#60;&#60; Previous</A
+HREF="config-prefs-contact.html"
+>Prev</A
 ></TD
 ><TD
 WIDTH="80%"
@@ -57,8 +52,8 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="p2934.html"
->Next &#62;&#62;&#62;</A
+HREF="menuref.html"
+>Next</A
 ></TD
 ></TR
 ></TABLE
@@ -70,11 +65,10 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="CONFIG-SYNC"
->Setting up your synchronization system</A
+>Chapter 10. Oppsett av synkronisering</A
 ></H1
 ><P
->        Synchronization presents you with two issues you'll need to
-        address. 
+>        Synkronisering presenterer to problemer du må håndtere.
         <P
 ></P
 ><TABLE
@@ -82,19 +76,17 @@ BORDER="0"
 ><TBODY
 ><TR
 ><TD
->            Your computer needs to recognize and access your handheld.
-            At this time, <TT
+>            Din datamaskin må gjenkjenne og godta din håndholdte.
+            For tiden støtter, <SPAN
 CLASS="APPLICATION"
->Evolution</TT
-> only
-            supports Palm-OS devices like the PalmPilot and the
-            Handspring Visor.
+>Ximian Evolution</SPAN
+>
+            kun Palm-OS enheter som PalmPilot og Handspring Visor.
           </TD
 ></TR
 ><TR
 ><TD
->           You should decide what sort of synchronization behavior you
-           want.
+>           Du må bestemme hvilken oppførsel du ønsker for synkroniseringen.
           </TD
 ></TR
 ></TBODY
@@ -104,77 +96,68 @@ CLASS="APPLICATION"
 >
     </P
 ><P
->       If you haven't used a handheld device with your computer
-       before, you'll need to run the GNOME <TT
+>       Hvis du ikke har brukt en håndholdt enhet mot din datamaskin
+       før må du kjøre GNOME <SPAN
 CLASS="APPLICATION"
->Control
-       Center</TT
-> by selecting
-       <B
+>kontrollsenter</SPAN
+>
+       ved å velge <SPAN
 CLASS="GUIMENU"
->System</B
->-&gt;<B
+>System</SPAN
+>-&gt;<SPAN
 CLASS="GUIMENUITEM"
->Settings</B
+>       Innstillinger</SPAN
 >,
-       and make sure that <TT
+       og sørge for at <SPAN
 CLASS="APPLICATION"
->Pilot Link</TT
-> is
-       properly configured.
+>Pilot Link</SPAN
+> er
+       konfigurert på en korrekt måte.
     </P
 ><P
->        Once your computer and your Palm-OS device are talking happily
-        to each other, select the <A
+>        Når din datamaskin og din Palm-OS-enhet snakker med hverandre,
+        velg <A
 HREF="apx-gloss.html#CONDUIT"
 ><I
 CLASS="GLOSSTERM"
->conduits</I
+>komponenter</I
 ></A
-> you want under the
-        <TT
+> du ønsker under
+        <SPAN
 CLASS="GUILABEL"
-><B
->Pilot Conduits</B
-></TT
-> section of the Control
-        Center.  You may use conduits to synchronize data with several
-        applications; the <TT
+>Pilot-komponenter</SPAN
+> seksjonen i kontrollsenteret
+        Du kan bruke komponenter for synkronisering av data mot flere
+        applikasjoner; <SPAN
 CLASS="APPLICATION"
->Ximian Evolution</TT
+>Ximian Evolution</SPAN
 >
-        conduits are labelled <TT
+        komponentene er merket <SPAN
 CLASS="GUILABEL"
-><B
->EAddress</B
-></TT
->, for the
-        address cards in your Contact Manager,
-        <TT
+>EAdresse</SPAN
+>, for
+        kontaktene i din adressebok, <SPAN
 CLASS="GUILABEL"
-><B
->ECalendar</B
-></TT
->, for your Calendar, and
-        <TT
+>EKalender</SPAN
+>,
+        for din kalender, og <SPAN
 CLASS="GUILABEL"
-><B
->ETodo</B
-></TT
->, for your Task List.
+>EOppgave</SPAN
+>, for din
+        oppgaveliste.
     </P
 ><P
->      To enable a conduit, click the
-        <B
+>      For å aktivere en komponent klikker du
+        <SPAN
 CLASS="GUIBUTTON"
->Enable</B
-> to enable it, and click
-        <B
+>Aktiver</SPAN
+>. Klikk så
+        <SPAN
 CLASS="GUIBUTTON"
->Settings</B
-> to change what it will do when
-        activated.  Your options may vary depending on the conduit,
-        but typically they will be:
+>Innstillinger</SPAN
+> for å endre oppførsel ved
+        aktivering. Dine valg vil variere avhengig av komponent,
+        men vil typisk være:
 
         <P
 ></P
@@ -182,53 +165,53 @@ CLASS="GUIBUTTON"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
->Disabled</DT
+>Deaktivert:</DT
 ><DD
 ><P
->                  Do nothing.
+>                  Ikke gjør noe.
                </P
 ></DD
 ><DT
->Synchronize</DT
+>Synkroniser:</DT
 ><DD
 ><P
->                  Copy new data from the computer to the handheld, and
-                  from the handheld to the computer.  Remove items
-                  that were on both systems but have been deleted on
-                  one.
+>                  Kopier nye data fra datamaskinen til den håndholdte og
+                  fra den håndholdte til datamaskinen. Fjern oppføringer
+                  som var på begge systemene men har blitt slettet på
+                  en av dem.
                </P
 ></DD
 ><DT
->Copy From Pilot</DT
+>Kopier fra pilot:</DT
 ><DD
 ><P
->                  If there is any new data on the the handheld device,
-                  copy it to the computer.
+>                  Hvis det finnes nye data på den håndholdte enheten,
+                  kopier disse til datamaskinen.
                </P
 ></DD
 ><DT
->Copy To Pilot</DT
+>Kopier til pilot:</DT
 ><DD
 ><P
->                 Copy new data from the computer to the handheld. 
+>                 Kopier nye data fra datamaskinen til den håndholdte. 
                </P
 ></DD
 ><DT
->Merge From Pilot</DT
+>Flett fra pilot:</DT
 ><DD
 ><P
->                  Copy new data from the handheld to the computer, and
-                  remove any information from the computer that has
-                  been deleted on the handheld.
+>                  Kopier nye data fra den håndholdte til datamaskinen, og
+                  fjern all informasjon fra datamaskinen som også er slettet
+                  på den håndholdte.
                </P
 ></DD
 ><DT
->Merge To Pilot</DT
+>Flett til pilot:</DT
 ><DD
 ><P
->                  Copy new data from the computer to the handheld, and
-                  remove any information from the handheld that has
-                  been deleted on the computer.
+>                  Kopier nye data fra datamaskinen til den håndtholdte og
+                  fjern all informasjon fra den håndholdte hvis den også
+                  er slettet på datamaskinen.
                </P
 ></DD
 ></DL
@@ -236,59 +219,31 @@ CLASS="VARIABLELIST"
 >
     </P
 ><P
->      Select the behavior you want for each conduit you choose to use.
-      If you're not sure, go ahead and stick with
-      <TT
+>      Velg oppførselen du ønsker for hver komponent du velger å bruke.
+      Hvis du er usikker kan du bruke
+      <SPAN
 CLASS="GUILABEL"
-><B
->Synchronize</B
-></TT
->.  Then, put your handheld on
-      its cradle and press the HotSync button.
+>Synkroniser</SPAN
+>.  Plasser så din håndholdte i
+      dokken og trykk på HotSync knappen.
     </P
 ><P
 > 
          <DIV
 CLASS="TIP"
-><P
-></P
-><TABLE
+><BLOCKQUOTE
 CLASS="TIP"
-WIDTH="100%"
-BORDER="0"
-><TR
-><TD
-WIDTH="25"
-ALIGN="CENTER"
-VALIGN="TOP"
-><IMG
-SRC="./stylesheet-images/tip.gif"
-HSPACE="5"
-ALT="Tip"></TD
-><TH
-ALIGN="LEFT"
-VALIGN="CENTER"
-><B
->Data Loss Prevention</B
-></TH
-></TR
-><TR
-><TD
->&nbsp;</TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
 ><P
->	    It's always a good idea to make a backup.  To do that,
-	    make a copy of the <TT
+><B
+>Forhindring av datatap: </B
+>	    Det er alltid lurt å ta en sikkerhetskopi. For å gjøre dette
+	    lager du en kopi av katalogen <TT
 CLASS="FILENAME"
 >evolution</TT
 >
-	    directory inside your home directory.
+	    i din hjemmekatalog.
           </P
-></TD
-></TR
-></TABLE
+></BLOCKQUOTE
 ></DIV
 >
        </P
@@ -308,8 +263,8 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="config-prefs-general.html"
->&#60;&#60;&#60; Previous</A
+HREF="config-prefs-contact.html"
+>Prev</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -324,8 +279,8 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="p2934.html"
->Next &#62;&#62;&#62;</A
+HREF="menuref.html"
+>Next</A
 ></TD
 ></TR
 ><TR
@@ -333,7 +288,7 @@ HREF="p2934.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->General Preferences</TD
+>Managing the Addressbook</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -346,7 +301,7 @@ HREF="config.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Utfyllende menyreferanse</TD
+>Quick Reference</TD
 ></TR
 ></TABLE
 ></DIV

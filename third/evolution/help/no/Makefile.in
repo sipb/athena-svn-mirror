@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -184,8 +184,6 @@ NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
-OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -249,7 +247,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -371,7 +369,7 @@ omf: omf_timestamp
 omf_timestamp: $(omffile)
 	-for file in $(srcdir)/$(omffile); do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-	  scrollkeeper-preinstall $(docdir)/$(docname).sgml $$file $(omf_dir)/$$basefile; \
+	  scrollkeeper-preinstall $(docdir)/index.html $$file $(omf_dir)/$$basefile; \
 	done
 	touch omf_timestamp
 
@@ -405,14 +403,19 @@ app-dist-hook: index.html
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
 	  cp $$file $(distdir)/$(docname)/stylesheet-images/$$basefile ; \
 	done
-	-if [ -e topic.dat ]; then \
+	-if [ -f topic.dat ]; then \
 		cp $(srcdir)/topic.dat $(distdir); \
 	 fi
 
 install-data-am: index.html omf
 	-$(mkinstalldirs) $(DESTDIR)$(docdir)/stylesheet-images
 	-$(mkinstalldirs) $(DESTDIR)$(docdir)/figures
-	-cp $(srcdir)/$(sgml_files) $(DESTDIR)$(docdir)
+	-$(mkinstalldirs) $(DESTDIR)$(docdir)/sgml
+
+	-for file in $(sgml_files); do \
+         $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(docdir)/sgml ; \
+        done
+
 	-for file in $(srcdir)/$(docname)/*.html $(srcdir)/$(docname)/*.css; do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/$$basefile; \
@@ -425,7 +428,7 @@ install-data-am: index.html omf
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/stylesheet-images/$$basefile; \
 	done
-	-if [ -e $(srcdir)/topic.dat ]; then \
+	-if [ -f $(srcdir)/topic.dat ]; then \
 		$(INSTALL_DATA) $(srcdir)/topic.dat $(DESTDIR)$(docdir); \
 	 fi
 

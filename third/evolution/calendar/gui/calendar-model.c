@@ -768,6 +768,7 @@ get_status (CalComponent *comp)
 	}
 }
 
+#if 0
 static void *
 get_location (CalComponent *comp)
 {
@@ -776,6 +777,7 @@ get_location (CalComponent *comp)
 	cal_component_get_location (comp, &location);
 	return (void*) location;
 }
+#endif
 
 /* value_at handler for the calendar table model */
 static void *
@@ -902,8 +904,10 @@ calendar_model_value_at (ETableModel *etm, int col, int row)
 	case CAL_COMPONENT_FIELD_COMPONENT:
 		return comp;
 
+#if 0
 	case CAL_COMPONENT_FIELD_LOCATION :
 		return get_location (comp);
+#endif
 
 	default:
 		g_message ("calendar_model_value_at(): Requested invalid column %d", col);
@@ -1208,6 +1212,7 @@ set_status (CalComponent *comp, const char *value)
 	}
 }
 
+#if 0
 static void
 set_location (CalComponent *comp, const char *value)
 {
@@ -1218,6 +1223,7 @@ set_location (CalComponent *comp, const char *value)
 
 	cal_component_set_location (comp, value);
 }
+#endif
 
 /* set_value_at handler for the calendar table model */
 static void
@@ -1302,9 +1308,11 @@ calendar_model_set_value_at (ETableModel *etm, int col, int row, const void *val
 		set_status (comp, value);
 		break;
 
+#if 0
 	case CAL_COMPONENT_FIELD_LOCATION :
 		set_location (comp, value);
 		break;
+#endif
 
 	default:
 		g_message ("calendar_model_set_value_at(): Requested invalid column %d", col);
@@ -1672,7 +1680,7 @@ date_value_to_string (ETableModel *etm, const void *value)
 	e_time_format_date_and_time (&tmp_tm, priv->use_24_hour_format,
 				     TRUE, FALSE,
 				     buffer, sizeof (buffer));
-	return g_strdup (buffer);
+	return e_utf8_from_locale_string (buffer);
 }
 
 
@@ -1690,7 +1698,7 @@ calendar_model_value_to_string (ETableModel *etm, int col, const void *value)
 	case CAL_COMPONENT_FIELD_TRANSPARENCY:
 	case CAL_COMPONENT_FIELD_URL:
 	case CAL_COMPONENT_FIELD_STATUS:
-		return e_utf8_from_locale_string (value);
+		return g_strdup (value);
 
 	case CAL_COMPONENT_FIELD_COMPLETED:
 	case CAL_COMPONENT_FIELD_DTEND:
