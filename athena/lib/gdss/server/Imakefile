@@ -1,5 +1,0 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/server/Imakefile,v 1.1 1993-05-25 16:56:33 mar Exp $ */
-
-DEFINES = -I../include
-
-build_program(gdssrv,gdssrv.o,,../lib/libgdss.a)
