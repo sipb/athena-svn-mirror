@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.9 1991-01-06 02:40:04 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.10 1991-01-15 18:07:34 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.9 1991-01-06 02:40:04 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.10 1991-01-15 18:07:34 lwvanels Exp $";
 #endif
 #endif
 
@@ -21,7 +21,13 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/dir.h>
 #include <sys/file.h>
+#include <sys/wait.h>
 #include <stdio.h>
+#if !defined(_AIX) && !defined(SYSV) && !defined(WEXITSTATUS)
+/* BSD, need to define macro to get at exit status */
+#define	WEXITSTATUS(st)	(st).w_retcode
+#define	WTERMSIG(st)	(st).w_termsig
+#endif
 
 #include <olcd.h>
 
@@ -37,18 +43,21 @@ main (argc, argv)
   int fd;			/* file descriptor of control file */
   int retval;			/* Error code returned by system */
   FILE *file;			/* file stream used to read control file */
+#if !defined(_AIX) && !defined(SYSV)
+  union wait status;
+#else
+  int status;
+#endif
 
   char logname[SIZE];		/* name of log file */
   char title[SIZE];		/* title assigned to log */
   char topic[SIZE];		/* topic of question, also meeting name */
   char username[SIZE];		/* name of person that asked the question */
 
-  char syscmd[SIZE];		/* buffer for constructing sys call */
-  char logbuf[255];		/* buffer for constructing error message */
+  char logbuf[SIZE];		/* buffer for constructing error message */
 
-  char *temp;			/* pointer used for walking over title to */
-				/* remove 's */
   char  prefix[128];		/* prefix for discuss meeting names */
+  char *temp;
 
 /*
  *  Set up syslogging
@@ -83,7 +92,7 @@ main (argc, argv)
  *  If we can't open/create the lock file and lock it, exit.
  */
 
-  if ((lock_fd = open(LOCKFILE, O_CREAT, 0)) < 0)
+  if ((lock_fd = open(LOCKFILE, O_CREAT, 0666)) < 0)
     {
       syslog(LOG_ERR,"open (lock file): %m");
       exit(-1);
@@ -158,13 +167,6 @@ main (argc, argv)
 	  }
 	  title[strlen(title) - 1] = '\0';
 	  
-	  temp = title;
-	  while (*temp != '\0') {
-	    if (*temp == '\'') *temp = '\"';
-	    temp++;
-	  }
-
-
 	  if (fgets(topic, SIZE, file) == NULL)  {
 	    sprintf(logbuf,"unable to get topic from %s %%m",
 		    next->d_name);
@@ -187,22 +189,52 @@ main (argc, argv)
 /* If we've made it this far, we've got everything we need to ship to
  * discuss.
  */ 
-	  sprintf(syscmd, "%s %s%s -t \'%s: %s\' < %s",
-		  DSPIPE, prefix, topic, username, title, logname);
-	  retval = system(syscmd);
-	  /* dspipe sometimes looses and returns a bogus error value (36096) */
-	  if (retval != 0) {
-	    sprintf(logbuf,"Bad exit status %d in: %s %%m", retval, syscmd);
-	    syslog(LOG_WARNING,logbuf);
+#if defined(_AIX) || defined(SYSV)
+	  retval = fork();
+#else
+	  retval = vfork();
+#endif
+	  if (retval == -1) {
+	    perror("lumberjack: fork");
+	    continue;
 	  }
-	  else
-	    {
+	  if (retval == 0) {
+	    char av1[SIZE], av3[SIZE]; 
+	    int fd = open(logname, O_RDONLY);
+	    if (fd == -1) {
+	      perror("lumberjack: open");
+	      return -errno;
+	    }
+	    if (dup2(fd, 2) == -1) {
+	      perror("lumberjack: dup2");
+	      return -errno;
+	    }
+	    sprintf (av1, "%s%s", prefix, topic);
+	    sprintf (av3, "%s: %s", username, title);
+	    retval = execl(DSPIPE, DSPAV0, av1, "-t", av3, NULL);
+	    perror("lumberjack: execl");
+	    return (-retval);
+	  }
+ 	  /* Assume dspipe is the only child */
+ 	  retval = wait(&status);
+ 	  if (retval == -1) {
+	    perror("lumberjack: wait");
+	    continue;
+	  }
+ 	  if (WIFEXITED(status)) {
+	    /* dspipe sometimes loses and returns a bogus error value (36096) */
+	    if (WEXITSTATUS(status) != 0) {
+	      fprintf(stderr, "lumberjack: %s exited %d\n", DSPIPE,
+		      WEXITSTATUS(status));
+	    } else {
 	      unlink(logname);
 	      unlink(next->d_name);
 	    }
+	  } else /* signal */
+	    fprintf(stderr, "lumberjack: %s edited with signal %d\n",
+		    DSPIPE, WTERMSIG(status));
 	}
     }
-
   closedir(dirp);
   flock(lock_fd, LOCK_UN);
 }
