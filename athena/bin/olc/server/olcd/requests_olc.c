@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.34 1991-01-08 16:42:15 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.35 1991-01-15 17:53:54 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.34 1991-01-08 16:42:15 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.35 1991-01-15 17:53:54 lwvanels Exp $";
 #endif
 #endif
 
@@ -1086,13 +1086,6 @@ olc_forward(fd, request)
 	    (void) write_message_to_user(target,
 					 msgbuf,
 					 NULL_FLAG);
-	    sprintf(msgbuf,
-		    "%s %s [%d]'s \"%s\" question forwarded.",
-		    target->title, 
-		    target->user->username,
-		    target->instance,
-		    target->question->topic);
-	    olc_broadcast_message("forward",msgbuf,target->question->topic);
 	  }
 	}
       }
@@ -1109,6 +1102,15 @@ olc_forward(fd, request)
 	set_status(target,PICKUP);
 	dest_q = "pickup";
       }
+
+    sprintf(msgbuf,
+	    "%s %s [%d]'s \"%s\" question forwarded to %s.",
+	    target->title, 
+	    target->user->username,
+	    target->instance,
+	    target->question->topic,
+	    dest_q);
+    olc_broadcast_message("forward",msgbuf,target->question->topic);
 
     (void) sprintf(msgbuf, "Question forwarded by %s to %s.",
 		   requester->user->username, dest_q);
@@ -1298,7 +1300,9 @@ olc_send(fd, request)
   if ((msg = read_text_from_fd(fd)) == (char *) NULL)
     return(send_response(fd, ERROR));
   
-  new_message(target, requester,  msg);
+  if (!isme(request))
+    new_message(target, requester,  msg);
+
   log_message(target,requester,msg);
 
   if(is_me(target,requester) && !is_connected(target))
