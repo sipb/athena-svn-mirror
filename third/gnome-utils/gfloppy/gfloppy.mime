@@ -1,2 +1,0 @@
-x-device/floppy
-	regex: .*/fd[0-9]+$
