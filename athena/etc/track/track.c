@@ -1,8 +1,15 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.2 1988-06-10 12:27:18 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.3 1988-06-10 15:56:55 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.2  88/06/10  12:27:18  don
+ * added -I option, and changed -I to -d, -d to -W.
+ * changed the way default subscriptiolist & statfile names get made.
+ * slightly improved write_stat's memory-use.
+ * fixed a glitch in justshow();
+ * added sync() call at end of readstat().
+ * 
  * Revision 4.1  88/05/04  18:11:38  shanzer
  * made sort_entries() run before justshow(), so that the augmented
  * entrylist gets dumped.
@@ -99,7 +106,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.2 1988-06-10 12:27:18 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.3 1988-06-10 15:56:55 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -191,6 +198,7 @@ char **argv;
 				getwd(  fromroot);
 				strcat( strcat( fromroot, "/"), scratch);
 			}
+			else if (! scratch[1]) *fromroot = '\0';
 			else strcpy( fromroot, scratch);
 			break;
 
@@ -219,6 +227,7 @@ char **argv;
 				getwd(  toroot);
 				strcat( strcat( toroot, "/"), scratch);
 			}
+			else if (! scratch[1]) *toroot = '\0';
 			else strcpy( toroot, scratch);
 			break;
 
@@ -477,7 +486,7 @@ setlock()
 		do_gripe();
 		exit(0);
 	}
-	if ( close( creat( lockpath,0))) {
+	if ( close( creat( lockpath,220))) {
 		sprintf( errmsg, "can't create lockfile %s\n", lockpath);
 		do_panic();
 	}
