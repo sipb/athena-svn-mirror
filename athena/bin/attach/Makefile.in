@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.12 2004-09-10 21:10:56 zacheiss Exp $
+# $Id: Makefile.in,v 1.13 2005-03-12 17:29:49 ghudson Exp $
 
 SHELL=/bin/sh
 INSTALL=@INSTALL@
@@ -23,8 +23,7 @@ LIBS=@LIBS@
 KRB4_LIBS=@KRB4_LIBS@
 REGEX_LIBS=@REGEX_LIBS@
 ZEPHYR_LIBS=-lzephyr
-AFS_LIBS=-lprot -lauth -lrxkad -lubik @AFS_DIR@/lib/afs/util.a -laudit \
-	 -lsys -lrx -llwp -lsys
+AFS_LIBS=-lprot -lauth -lrxkad -lubik -laudit -lsys -lrx -llwp -lsys -lafsutil
 ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
 ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} ${REGEX_LIBS} \
 	 -lhesiod -lcom_err ${LIBS}
