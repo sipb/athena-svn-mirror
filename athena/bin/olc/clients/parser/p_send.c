@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v $
- *	$Id: p_send.c,v 1.14 1991-01-15 17:46:14 lwvanels Exp $
+ *	$Id: p_send.c,v 1.15 1991-01-21 17:18:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.14 1991-01-15 17:46:14 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.15 1991-01-21 17:18:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -209,6 +209,7 @@ do_olc_mail(arguments)
   int status;
   int checkhub = 0;
   int noedit = 0;
+  int header = TRUE;
   int i = 0;
 
   file[0] = '\0';
@@ -255,6 +256,13 @@ do_olc_mail(arguments)
       if (string_equiv(*arguments, "-noedit", max(strlen(*arguments),2)))
 	{
 	  noedit = TRUE;
+	  arguments++;
+	  continue;
+	}
+
+      if (string_equiv(*arguments, "-noheader", max(strlen(*arguments),2)))
+	{
+	  header = FALSE;
 	  arguments++;
 	  continue;
 	}
@@ -318,12 +326,13 @@ do_olc_mail(arguments)
 	  printf("Usage is: \tmail  [<username> <instance id>] ");
 	  printf("[-editor <editor>]\n\t\t[-file <file name>] ");
 	  printf("[-smopt <[\\-]sendmail options>] [-checkhub]\n");
-	  printf("\t\t[-noedit] [-instance <instance id>]\n");
+	  printf("\t\t[-noedit] [-instance <instance id>] ");
+	  printf(" [-noheader]\n");
 	  return(ERROR);
 	}
     }
   
-  status = t_mail(&Request, file, editor, smargsP, checkhub,noedit);
+  status = t_mail(&Request, file, editor, smargsP, checkhub,noedit,header);
   
   return(status);
 }
