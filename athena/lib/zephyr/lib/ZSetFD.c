@@ -10,18 +10,18 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetFD.c,v 1.2 1987-06-10 13:29:11 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSetFD.c,v 1.3 1987-06-28 22:46:47 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-Code_t ZSetFD(port)
-	int	port;
+Code_t ZSetFD(fd)
+	int	fd;
 {
 	ZClosePort();
 
-	__Zephyr_fd = port;
+	__Zephyr_fd = fd;
 	__Zephyr_open = 0;
 	
 	return (ZERR_NONE);
