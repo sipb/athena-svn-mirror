@@ -518,6 +518,7 @@ if ( $installonly == "0" ) then
 	endif
 endif # installonly
 	(cd /build/$package/mit ;  make -k install SUBDIRS="util clients demos" DESTDIR=$SRVD >>& $outfile)
+	(cd /build/$package/mit/include/bitmaps; make install INCDIR=$SRVD/usr/athena/lib/X11 >>& $outfile)
 	rehash
 	breaksw
 
