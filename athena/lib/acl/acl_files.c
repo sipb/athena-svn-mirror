@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v $
- *	$Author: vrt $
+ *	$Author: epeisach $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.9 1993-04-28 09:33:16 vrt Exp $";
-#endif lint
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.10 1993-10-17 19:03:41 epeisach Exp $";
+#endif /* lint */
 
 /*
 
@@ -69,6 +69,8 @@ extern int errno;
 
 extern char *malloc(), *calloc();
 extern time_t time();
+
+static int acl_abort();
 
 /* Canonicalize a principal name */
 /* If instance is missing, it becomes "" */
