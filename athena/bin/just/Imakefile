@@ -1,0 +1,15 @@
+/* 
+ *
+ * $Id: Imakefile,v 1.1 1991-03-21 10:47:20 epeisach Exp $
+ *
+*/
+
+
+SimpleProgram(just,just.o,,$(ATHBINDIR))
+
+install::
+	$(RM) ${DESTDIR}${CONFDIR}/fill
+	ln ${DESTDIR}${CONFDIR}/just ${DESTDIR}${CONFDIR}/fill
+
+install_man(just.1,just.1)
+install_man(fill.1,fill.1)
