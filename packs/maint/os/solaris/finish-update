@@ -104,9 +104,8 @@ start)
 		done
 
 		echo "Starting AFS filesystem"
-		modload /kernel/misc/nfssrv
-		modload /kernel/fs/afs
-		/etc/afsd -nosettime -daemons 4
+		modload /kernel/fs/sparcv9/afs
+		/etc/athena/afsd -nosettime -daemons 4
 
 		rm -rf /cdrom /patches
 		ln -s "$UPDATE_ROOT/install/cdrom" /cdrom
