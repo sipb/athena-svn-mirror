@@ -1,0 +1,21 @@
+/*
+ * Project-specific code
+ */
+
+#define LibraryObjectRule	NormalLibraryObjectRule
+#define SpecialObjectRule	SpecialObjectRule
+#define	LibraryTarget		NormalLibraryTarget
+
+all :: Makefile
+
+CONFIGDIR	=	CONFDIR
+
+COMMONLIB	=	$(TOP)/common/libcommon.a
+PARSER		=	$(TOP)/clients/parser/libparser.a
+TTY		=	$(TOP)/clients/tty/libtty.a
+CLIENTLIB	=	$(TOP)/clients/lib/libclient.a
+
+#define DebuggableDebugFlags -g
+
+INCROOT		=	$(TOP)/include
+STD_INCLUDES	=	-I$(TOP)/include
