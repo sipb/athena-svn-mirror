@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.5 1990-04-17 08:56:18 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.6 1990-04-17 09:11:24 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.5 1990-04-17 08:56:18 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.6 1990-04-17 09:11:24 epeisach Exp $";
 #endif lint
 
 /*
@@ -315,7 +315,7 @@ printit(file)
 	 */
 	for (i = 0; i < 4; i++)
 		strcpy(fonts[i], ifonts[i]);
-	strcpy(width+2, "0");
+	sprintf(&width[2], "%d", PW);
 	strcpy(indent+2, "0");
 
 	/*
@@ -332,6 +332,7 @@ printit(file)
 	 *		T -- "title" for pr
 	 *		H -- "host name" of machine where lpr was done
 	 *              P -- "person" user's login name
+	 *		W -- "width" width of page
 	 *              I -- "indent" amount to indent output
 	 *              f -- "file name" name of text file to print
 	 *		l -- "file name" text file with control chars
