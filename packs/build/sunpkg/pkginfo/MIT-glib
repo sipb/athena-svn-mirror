@@ -1,0 +1,3 @@
+PKG=MIT-glib
+NAME=The glib utility library, for Athena
+DESC=glib is a library of utility and portability functions.  It is a basic component of the GNOME (GNU Network Object Model Environment) system.

@@ -1,0 +1,16 @@
+dnl Process this file with autoconf to produce a configure script.
+dnl $Id: configure.in,v 1.1 2002-01-23 22:15:29 mwhitson Exp $
+
+AC_INIT(authwatch.c)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+ATHENA_KRB5_REQUIRED
+ATHENA_KRB5
+
+dnl "gnome-config --libs" returns -lintl before -lgnome, which will
+dnl fail if libintl is static.  This hack gets an extra -lintl at the
+dnl end of the link line.
+AC_CHECK_LIB(intl, gettext)
+
+AC_OUTPUT(Makefile)

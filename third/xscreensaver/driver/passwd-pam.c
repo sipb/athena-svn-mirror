@@ -57,16 +57,12 @@ extern char *blurb(void);
 
 #include <sys/stat.h>
 
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include "prefs.h"
+
 extern sigset_t block_sigchld (void);
 extern void unblock_sigchld (void);
-
-/* blargh */
-#undef  Bool
-#undef  True
-#undef  False
-#define Bool  int
-#define True  1
-#define False 0
 
 #undef countof
 #define countof(x) (sizeof((x))/sizeof(*(x)))
@@ -173,7 +169,7 @@ static void *suns_pam_implementation_blows = 0;
    to root.
  */
 Bool
-pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
+pam_passwd_valid_p (const char *typed_passwd, saver_preferences *p)
 {
   const char *service = PAM_SERVICE_NAME;
   pam_handle_t *pamh = 0;
@@ -184,14 +180,14 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   sigset_t set;
   struct timespec timeout;
 
-  struct passwd *p = getpwuid (getuid ());
-  if (!p) return False;
+  struct passwd *pw = getpwuid (getuid ());
+  if (!pw) return False;
 
-  user = strdup (p->pw_name);
+  user = strdup (pw->pw_name);
 
   c.user = user;
   c.typed_passwd = typed_passwd;
-  c.verbose_p = verbose_p;
+  c.verbose_p = p->verbose_p;
 
   pc.conv = &pam_conversation;
   pc.appdata_ptr = (void *) &c;
@@ -204,7 +200,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   /* Initialize PAM.
    */
   status = pam_start (service, c.user, &pc, &pamh);
-  if (verbose_p)
+  if (p->verbose_p)
     fprintf (stderr, "%s: pam_start (\"%s\", \"%s\", ...) ==> %d (%s)\n",
              blurb(), service, c.user,
              status, PAM_STRERROR (pamh, status));
@@ -218,7 +214,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   {
     char *tty = strdup (":0.0");
     status = pam_set_item (pamh, PAM_TTY, tty);
-    if (verbose_p)
+    if (p->verbose_p)
       fprintf (stderr, "%s:   pam_set_item (p, PAM_TTY, \"%s\") ==> %d (%s)\n",
                blurb(), tty, status, PAM_STRERROR(pamh, status));
     free (tty);
@@ -253,7 +249,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   sigtimedwait (&set, NULL, &timeout);
   unblock_sigchld();
 
-  if (verbose_p)
+  if (p->verbose_p)
     fprintf (stderr, "%s:   pam_authenticate (...) ==> %d (%s)\n",
              blurb(), status, PAM_STRERROR(pamh, status));
   if (status == PAM_SUCCESS)  /* Win! */
@@ -268,7 +264,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
          credentials when using PAM_REINITIALIZE_CRED.
        */
       int status2 = pam_setcred (pamh, PAM_REINITIALIZE_CRED);
-      if (verbose_p)
+      if (p->verbose_p)
         fprintf (stderr, "%s:   pam_setcred (...) ==> %d (%s)\n",
                  blurb(), status2, PAM_STRERROR(pamh, status2));
       goto DONE;
@@ -280,7 +276,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   user = strdup ("root");
   c.user = user;
   status = pam_set_item (pamh, PAM_USER, c.user);
-  if (verbose_p)
+  if (p->verbose_p)
     fprintf (stderr, "%s:   pam_set_item(p, PAM_USER, \"%s\") ==> %d (%s)\n",
              blurb(), c.user, status, PAM_STRERROR(pamh, status));
   if (status != PAM_SUCCESS) goto DONE;
@@ -292,7 +288,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   sigtimedwait(&set, NULL, &timeout);
   unblock_sigchld();
 
-  if (verbose_p)
+  if (p->verbose_p)
     fprintf (stderr, "%s:   pam_authenticate (...) ==> %d (%s)\n",
              blurb(), status, PAM_STRERROR(pamh, status));
 
@@ -302,7 +298,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
     {
       int status2 = pam_end (pamh, status);
       pamh = 0;
-      if (verbose_p)
+      if (p->verbose_p)
         fprintf (stderr, "%s: pam_end (...) ==> %d (%s)\n",
                  blurb(), status2,
                  (status2 == PAM_SUCCESS ? "Success" : "Failure"));

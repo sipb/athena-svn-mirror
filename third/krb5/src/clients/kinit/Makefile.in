@@ -3,6 +3,7 @@ myfulldir=clients/kinit
 mydir=kinit
 BUILDTOP=$(REL)..$(S)..
 
+DEFINES=-DKINIT_DEFAULT_BOTH
 PROG_LIBPATH=-L$(TOPLIBD)
 PROG_RPATH=$(KRB5_LIBDIR)
 

@@ -1,0 +1,3 @@
+PKG=MIT-xdsc
+NAME=X interface to the Discuss conferencing and mail archiving system
+DESC=An X front-end to the discuss system.

@@ -1,0 +1,3 @@
+PKG=MIT-gnome-mime-data
+NAME=The GNOME MIME database, for Athena
+DESC=The GNOME MIME database contains a basic set of applications and MIME types for a GNOME system.

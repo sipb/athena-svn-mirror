@@ -25,7 +25,7 @@ SM_UNUSED(static char copyright[]) =
 	The Regents of the University of California.  All rights reserved.\n";
 #endif /* ! lint */
 
-SM_RCSID("@(#)$Id: main.c,v 1.1.1.1 2003-04-08 15:09:04 zacheiss Exp $")
+SM_RCSID("@(#)$Id: main.c,v 1.4 2003-11-02 03:14:43 zacheiss Exp $")
 
 
 #if NETINET || NETINET6
@@ -98,6 +98,8 @@ char		*CommandLineArgs;	/* command line args for pid file */
 bool		Warn_Q_option = false;	/* warn about Q option use */
 static int	MissingFds = 0;	/* bit map of fds missing on startup */
 char		*Mbdb = "pw";	/* mailbox database defaults to /etc/passwd */
+int		noauthentication = 0; /* Use authentication? */
+char		*porttouse = NULL; /* port for outgoing mail, overriding cf file  */
 
 #ifdef NGROUPS_MAX
 GIDSET_T	InitialGidSet[NGROUPS_MAX];
@@ -373,23 +375,23 @@ main(argc, argv, envp)
 
 #if _FFR_QUARANTINE
 # if defined(__osf__) || defined(_AIX3)
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:xQ:"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:P:p:q:R:r:sTtV:vX:xQ:U"
 # endif /* defined(__osf__) || defined(_AIX3) */
 # if defined(sony_news)
-#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:p:q:R:r:sTtV:vX:Q:"
+#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:P:p:q:R:r:sTtV:vX:Q:U"
 # endif /* defined(sony_news) */
 # ifndef OPTIONS
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:Q:"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:P:p:q:R:r:sTtV:vX:Q:U"
 # endif /* ! OPTIONS */
 #else /* _FFR_QUARANTINE */
 # if defined(__osf__) || defined(_AIX3)
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:x"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:P:p:q:R:r:sTtV:vX:xU"
 # endif /* defined(__osf__) || defined(_AIX3) */
 # if defined(sony_news)
-#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:p:q:R:r:sTtV:vX:"
+#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:P:p:q:R:r:sTtV:vX:U"
 # endif /* defined(sony_news) */
 # ifndef OPTIONS
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:P:p:q:R:r:sTtV:vX:U"
 # endif /* ! OPTIONS */
 #endif /* _FFR_QUARANTINE */
 
@@ -626,6 +628,15 @@ main(argc, argv, envp)
 	ExternalEnviron = environ;
 	emptyenviron[0] = NULL;
 	environ = emptyenviron;
+
+	/* Restore KRB5CCNAME and KRBTKFILE from the old environment.
+	 * We may need them later if we're doing SMTP authentication.
+	 */
+	setuserenv("KRB5CCNAME", NULL);
+	setuserenv("KRBTKFILE", NULL);
+
+	/* Flag to determine if we should use a mailhub or not. */
+	setuserenv("DIRECT_DELIVERY", NULL);
 
 	/*
 	**  restore any original TZ setting until TimeZoneSpec has been
@@ -955,6 +966,10 @@ main(argc, argv, envp)
 			}
 			break;
 
+		  case 'P':
+			porttouse = newstr(optarg);
+			break;
+
 #if _FFR_QUARANTINE
 		  case 'Q':	/* change quarantining on queued items */
 			/* sanity check */
@@ -1114,6 +1129,10 @@ main(argc, argv, envp)
 			CHECK_AGAINST_OPMODE(j);
 			GrabTo = true;
 			break;
+
+		  case 'U':    /* Don't even bother trying authentication. */
+			noauthentication = 1;
+		        break;
 
 		  case 'V':	/* DSN ENVID: set "original" envelope id */
 			CHECK_AGAINST_OPMODE(j);

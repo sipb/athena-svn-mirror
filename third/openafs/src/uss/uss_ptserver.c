@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_ptserver.c,v 1.1.1.2 2004-02-13 17:52:07 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_ptserver.c,v 1.2 2003-03-20 00:09:42 zacheiss Exp $");
 
 #include "uss_ptserver.h"	/*Module interface*/
 #include <afs/ptclient.h>	/*Protection Server client interface*/

@@ -32,6 +32,7 @@
 extern const krb5_kt_ops krb5_ktf_ops;
 extern const krb5_kt_ops krb5_ktf_writable_ops;
 extern const krb5_kt_ops krb5_kts_ops;
+extern const krb5_kt_ops krb5_kta_ops;
 
 struct krb5_kt_typelist {
     const krb5_kt_ops *ops;
@@ -49,7 +50,11 @@ static struct krb5_kt_typelist krb5_kt_typelist_srvtab = {
     &krb5_kts_ops,
     &krb5_kt_typelist_file
 };
-static struct krb5_kt_typelist *kt_typehead = &krb5_kt_typelist_srvtab;
+static struct krb5_kt_typelist krb5_kt_typelist_any = {
+    &krb5_kta_ops,
+    &krb5_kt_typelist_srvtab
+};
+static struct krb5_kt_typelist *kt_typehead = &krb5_kt_typelist_any;
 
 
 /*

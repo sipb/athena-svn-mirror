@@ -1,0 +1,16 @@
+#!/bin/sh
+
+PATH=/usr/athena/bin:$PATH
+vers=`chroot ${PKG_INSTALL_ROOT:-/} \
+  /usr/athena/bin/scrollkeeper-config --version`
+log=$PKG_INSTALL_ROOT/usr/athena/var/log/scrollkeeper.log
+if [ "$UPDATE" = yes ] ; then
+  action="Upgrading to"
+else
+  action=Installing
+fi
+echo "`date +\"%b %d %X\"` $action ScrollKeeper $vers..." >> $log
+chroot ${PKG_INSTALL_ROOT:-/} \
+  /usr/athena/bin/scrollkeeper-rebuilddb >> $log 2>&1
+
+exit 0

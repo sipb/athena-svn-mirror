@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.1.1.3 2000-03-31 15:47:54 mwhitson Exp $";
+"$Id: lpr.c,v 1.16 2002-11-22 23:34:13 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -22,6 +22,7 @@
 #include "linksupport.h"
 #include "patchlevel.h"
 #include "printjob.h"
+#include "sendauth.h"
 #include "sendjob.h"
 
 /**** ENDINCLUDE ****/
@@ -69,7 +70,7 @@ int main(int argc, char *argv[], char *envp[])
 	(void) plp_signal (SIGINT, cleanup_INT);
 	(void) plp_signal (SIGQUIT, cleanup_QUIT);
 	(void) plp_signal (SIGTERM, cleanup_TERM);
-	(void) plp_signal (SIGCHLD, (plp_sigfunc_t)SIG_DFL);
+	(void) plp_signal (SIGCHLD, SIG_DFL);
 
 	/*
 	 * set up the defaults
@@ -124,23 +125,22 @@ int main(int argc, char *argv[], char *envp[])
 		fatal( LOG_INFO,_("cannot use printer - not in privileged group\n") );
 	}
 	if( Remote_support_DYN
-		&& safestrpbrk( "rR", Remote_support_DYN ) == 0 ){
+		&& strpbrk( "rR", Remote_support_DYN ) == 0 ){
 		Errorcode = 1;
 		fatal(LOG_INFO, _("no remote support for %s@%s"),
 			RemotePrinter_DYN,RemoteHost_DYN );
 	}
 
 	/* we check to see if we need to do control file filtering */
-	/* we do not do any translation of formats */
 	s = 0;
 	if( Lpr_bounce_DYN ) s = Control_filter_DYN;
-	if( (status = Fix_control( &prjob, s, 0 )) ){
+	if( (status = Fix_control( &prjob, s )) ){
 		fatal(LOG_INFO,_("cannot print job due to control filter error") );
 	}
 
 	/* Send job to the LPD server for the printer */
 
-	Errorcode = Send_job( &prjob, &prjob, Connect_timeout_DYN,
+	Errorcode = Send_job( &prjob, Connect_timeout_DYN,
 		Connect_interval_DYN,
 		Max_connect_interval_DYN,
 		Send_job_rw_timeout_DYN );
@@ -153,7 +153,7 @@ int main(int argc, char *argv[], char *envp[])
 		if( !Verbose ){
 			Write_fd_str(2,"Status Information:\n ");
 			s = Join_line_list(&Status_lines,"\n ");
-			if( (t = safestrrchr(s,' ')) ) *t = 0;
+			if( (t = strrchr(s,' ')) ) *t = 0;
 			Write_fd_str(2,s);
 			if(s) free(s); s = 0;
 		} else {
@@ -164,20 +164,6 @@ int main(int argc, char *argv[], char *envp[])
 			Write_fd_str(2,buffer);
 		}
 		cleanup(0);
-	}
-
-	if( LP_mode ){
-		char *id;
-		int n;
-		char msg[SMALLBUFFER];
-		id = Find_str_value(&prjob.info,IDENTIFIER,Value_sep);
-		if( id ){
-			plp_snprintf( msg,sizeof(msg)-1,"request id is %s\n", id );
-		} else {
-			n = Find_decimal_value(&prjob.info,NUMBER,Value_sep);
-			plp_snprintf( msg,sizeof(msg)-1,"request id is %d\n", n );
-		}
-		Write_fd_str(1, msg );
 	}
 
 	/* the dreaded -r (remove files) option */
@@ -232,7 +218,7 @@ int main(int argc, char *argv[], char *envp[])
 	return;
 }
 
- void send_to_logger (int sfd, int mfd, struct job *job,const char *header, char *fmt){;}
+ void send_to_logger (struct job *job,const char *header, char *fmt){;}
 
 /* VARARGS2 */
 #ifdef HAVE_STDARGS
@@ -274,9 +260,9 @@ int main(int argc, char *argv[], char *envp[])
 
 
  char LPR_optstr[]    /* LPR options */
- = "1:2:3:4:#:AC:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkm:nprstvw:" ;
+ = "1:2:3:4:#:A:C:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkm:nprstvw:z" ;
  char LPR_bsd_optstr[]    /* LPR options */
- = "1:2:3:4:#:AC:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkmnprstvw:" ;
+ = "1:2:3:4:#:A:C:D:F:J:K:NP:QR:T:U:VZ:bcdfghi:lkmnprstvw:z" ;
  char LP_optstr[]    /* LP options */
  = 	"cmprswd:D:f:H:n:o:P:q:S:t:T:y:";
 
@@ -285,13 +271,56 @@ void Get_parms(int argc, char *argv[] )
 	int option, i;
 	char *name, *s;
 
-	if( argv[0] && (name = safestrrchr( argv[0], '/' )) ) {
+	/* Make zephyring the default, unless the user explicitly
+	 * turns it off.
+	 */
+	Zephyr = 1;
+
+	/* If LPROPT environment variable is set, prepend those
+	 * options to the command line.
+	 */
+	s = getenv( "LPROPT" );
+	if( s ){
+		char *p, *opts, **nargv;
+		int n;
+
+		n = 0;
+		p = opts = safestrdup(s,__FILE__,__LINE__);
+		while( *p ){
+			n++;
+			while( *p && !isspace(*p) )
+				p++;
+			while( isspace(*p) )
+				p++;
+		}
+
+		nargv = malloc_or_die((n + argc + 1) * sizeof(char *),
+				      __FILE__,__LINE__);
+		nargv[0] = argv[0];
+		for( n = 0, p = opts; *p; ){
+			nargv[++n] = p;
+			while( *p && !isspace(*p) )
+				p++;
+			if( *p ){
+				*p++ = '\0';
+				while( isspace(*p) )
+					p++;
+			}
+		}
+		for( i = 1; i < argc; i++ )
+			nargv[n + i] = argv[i];
+
+		argv = nargv;
+		argc += n;
+	}
+
+	if( argv[0] && (name = strrchr( argv[0], '/' )) ) {
 		++name;
 	} else {
 		name = argv[0];
 	}
 	/* check to see if we simulate (poorly) the LP options */
-	if( name && safestrcmp( name, "lp" ) == 0 ){
+	if( name && strcmp( name, "lp" ) == 0 ){
 		LP_mode = 1;
 	}
 	DEBUG1("Get_parms: LP_mode %d", LP_mode );
@@ -324,10 +353,10 @@ void Get_parms(int argc, char *argv[] )
 						Diemsg( _("-ncopies -number of copies must be greater than 0\n"));
 					}
 					break;
-		case 'o':	if( safestrcasecmp( Optarg, "nobanner" ) == 0 ){
+		case 'o':	if( strcasecmp( Optarg, "nobanner" ) == 0 ){
 						No_header = 1;
-					} else if( safestrncasecmp( Optarg, "width", 5 ) == 0 ){
-						s = safestrchr( Optarg, '=' );
+					} else if( strncasecmp( Optarg, "width", 5 ) == 0 ){
+						s = strchr( Optarg, '=' );
 						if( s ){
 							Pwidth = atoi( s+1 );
 						}
@@ -386,6 +415,9 @@ void Get_parms(int argc, char *argv[] )
 		case '4':
 		    Check_str_dup( option, &Font4_JOB, Optarg, M_FONT);
 			break;
+		case 'A':
+		    Check_str_dup( option, &Auth_JOB, Optarg, M_DEFAULT);
+		    break;
 		case 'C':
 		    Check_str_dup( option, &Classname_JOB, Optarg,
 			   M_CLASSNAME);
@@ -413,7 +445,7 @@ void Get_parms(int argc, char *argv[] )
 			}
 		    break;
 		case 'N':
-			Check_for_nonprintable_DYN = 0;
+		        Zephyr = 0;
 			break;
 		case 'P':
 		    if( Printer_DYN ){
@@ -433,7 +465,8 @@ void Get_parms(int argc, char *argv[] )
 		case 'T':
 		    Check_str_dup( option, &Prtitle_JOB, Optarg, M_PRTITLE);
 		    break;
-		case 'U': Check_str_dup( option, &Username_JOB, Optarg, M_BNRNAME );
+		case 'U':
+		    Check_str_dup( option, &Username_JOB, Optarg, M_BNRNAME );
 		    break;
 		case 'V':
 			++Verbose;
@@ -488,7 +521,6 @@ void Get_parms(int argc, char *argv[] )
 		case 'f':
 		case 'g':
 		case 'n':
-		case 'p':
 		case 't':
 		case 'v':
 		    if( Format ){
@@ -499,6 +531,8 @@ void Get_parms(int argc, char *argv[] )
 		    break;
 		case 'w':
 		    Check_int_dup( option, &Pwidth, Optarg, 0);
+		    break;
+		case 'z':
 		    break;
 
 		/* Throw a sop to the whiners - let them wipe themselves out... */
@@ -532,17 +566,19 @@ void Get_parms(int argc, char *argv[] )
  usage summary: %s [ -Pprinter[@host] ] [-(K|#)copies] [-Cclass][-Jinfo]\n\
    [-Raccountname] [-m mailaddr] [-Ttitle] [-i indent]\n\
    [-wnum ][ -Zoptions ] [ -Uuser ] [ -Fformat ] [ -bhkr ]\n\
-   [-Ddebugopt ] [ filenames ...  ]\n\
+   [-Ddebugopt ] [-A authtype ] [ filenames ...  ]\n\
+ -A authtype - use authentication authtype instead of the default\n\
  -b,l        - binary or literal format\n\
  -Cclass  - job class\n\
  -F format   - job format filter\n\
-   -c,d,f,g,l,m,p,t,v are also format specifications\n\
+   -c,d,f,g,l,m,t,v are also format specifications\n\
  -h          - no header or banner page\n\
  -i indent   - indentation\n\
  -Jinfo   - banner and job information\n\
  -k          - non seKure filter operation, create temp file for input\n\
  -K copies, -# copies   - number of copies\n\
  -m mailaddr - mail error status to mailaddr\n\
+ -N          - Disable zephyr notification of completed jobs\n\
  -Pprinter[@host] - printer on host (default environment variable PRINTER)\n\
  -r          - remove named files after spooling\n\
  -w width    - width to use\n\
@@ -609,8 +645,8 @@ void usage(void)
 
 
  void get_job_number( struct job *job );
- double Copy_stdin( struct job *job );
- double Check_files( struct job *job );
+ off_t Copy_stdin( struct job *job );
+ off_t Check_files( struct job *job );
 
 /***************************************************************************
  * Commentary:
@@ -636,7 +672,7 @@ int Make_job( struct job *job )
 	char *s, *name, *t;		/* buffer where we allocate stuff */
 	void *p;
 	int i, n, tempfd;
-	double job_size = 0;
+	int job_size = 0;
 	struct line_list *lp;
 	char *tempfile;
 
@@ -644,6 +680,7 @@ int Make_job( struct job *job )
 	Fix_Rm_Rp_info();
 
 	if(DEBUGL4)Dump_line_list("Make_job - PC_entry",&PC_entry_line_list );
+	Set_var_list( Pc_var_list, &PC_entry_line_list );
 	if(DEBUGL4)Dump_parms("Make_job",Pc_var_list);
 
 	/* check for priority in range */
@@ -681,7 +718,7 @@ int Make_job( struct job *job )
 			name = 0;
 			for( i = 0; i < Files.count; ++i ){
 				s = Files.list[i];
-				if( safestrcmp(s, "-" ) == 0 ) s = "(stdin)";
+				if( strcmp(s, "-" ) == 0 ) s = "(stdin)";
 				if( name ){
 					t = name;
 					name = safestrdup3(name,",",s,__FILE__,__LINE__);
@@ -708,35 +745,7 @@ int Make_job( struct job *job )
 	if( Username_JOB ){
 		/* check to see if you were root */
 		if( 0 != OriginalRUID ){
-			struct line_list user_list;
-			char *str, *t;
-			struct passwd *pw;
-			int found, uid;
-
-			DEBUG2("Make_job: checking '%s' for -U perms",
-				Allow_user_setting_DYN );
-			Init_line_list(&user_list);
-			Split( &user_list, Allow_user_setting_DYN,File_sep,0,0,0,0,0);
-			
-			found = 0;
-			for( i = 0; !found && i < user_list.count; ++i ){
-				str = user_list.list[i];
-				DEBUG2("Make_job: checking '%s'", str );
-				uid = strtol( str, &t, 10 );
-				if( str == t || *t ){
-					/* try getpasswd */
-					pw = getpwnam( str );
-					if( pw ){
-						uid = pw->pw_uid;
-					}
-				}
-				DEBUG2( "Make_job: uid '%d'", uid );
-				found = ( uid == OriginalRUID );
-				DEBUG2( "Make_job: found '%d'", found );
-			}
-			if( !found ){
-				Diemsg( _("-U (username) can only be used by ROOT") );
-			}
+			Diemsg( _("-U (username) can only be used by ROOT") );
 		}
 		Bnrname_JOB = Username_JOB;
 	} else {
@@ -758,8 +767,8 @@ int Make_job( struct job *job )
 	if( isupper(Format) ) Format = tolower(Format);
 
 	DEBUG1("Make_job: after checking format '%c'", Format );
-	if( safestrchr( "aios", Format )
-		|| (Formats_allowed_DYN && !safestrchr( Formats_allowed_DYN, Format ) )){
+	if( strchr( "aios", Format )
+		|| (Formats_allowed_DYN && !strchr( Formats_allowed_DYN, Format ) )){
 		Diemsg( _("Bad format specification '%c'"), Format );
 	}
 
@@ -785,6 +794,26 @@ int Make_job( struct job *job )
 	}
 	if( Force_queuename_DYN ){
 		Set_str_value(&job->info,QUEUENAME,Force_queuename_DYN);
+	}
+
+	/* Figure out how to specify '-z' option */
+	if( Zephyr ){
+		if( Extended_notification_DYN ){
+			static char m[M_MAILNAME+1];
+
+			plp_snprintf( m, M_MAILNAME + 1, "zephyr%%%s",
+				      Logname_DYN );
+			Mailname_JOB = m;
+		} else if( Athena_Z_compat_DYN || KA_DYN ){
+			Zopts_JOB = Logname_DYN;
+		}
+	}
+
+	if( Auth_JOB ){
+		/* Edit our copy of the printcap record: Fix_auth
+		 * will update Auth_DYN from it later.
+		 */
+		Set_str_value(&PC_entry_line_list, "auth", Auth_JOB);
 	}
 
 	get_job_number(job);
@@ -858,9 +887,8 @@ int Make_job( struct job *job )
 			fatal(LOG_INFO,"Make_job: no bq_format value");
 		}
 		Set_str_value(lp,FORMAT,Bounce_queue_format_DYN);
-		Set_str_value(lp,"N","(lpr_filter)");
 		Set_flag_value(lp,COPIES,1);
-		Set_double_value(lp,SIZE,job_size);
+		Set_decimal_value(lp,SIZE,job_size);
 		if( !name ) Set_str_value(&job->info,TRANSFERNAME,0);
 	}
 	if(DEBUGL2) Dump_job( "Make_job - final value", job );
@@ -912,10 +940,10 @@ void get_job_number( struct job *job )
  * 3. stat the  temporary file to prevent games
  ***************************************************************************/
 
-double Copy_stdin( struct job *job )
+off_t Copy_stdin( struct job *job )
 {
 	int fd, count;
-	double size = 0;
+	off_t size = 0;
 	char *tempfile;
 	struct line_list *lp;
 	char buffer[LARGEBUFFER];
@@ -949,7 +977,7 @@ double Copy_stdin( struct job *job )
 	Set_flag_value(lp,COPIES,1);
 	plp_snprintf(buffer,sizeof(buffer),"%c",Format);
 	Set_str_value(lp,FORMAT,buffer);
-	Set_double_value(lp,SIZE,size);
+	Set_flag_value(lp,SIZE,size);
 
 	return( size );
 }
@@ -962,10 +990,10 @@ double Copy_stdin( struct job *job )
  * 5. Put information in the data_file{} entry
  ***************************************************************************/
 
-double Check_files( struct job *job )
+off_t Check_files( struct job *job )
 {
-	double size = 0;
-	int i, fd, printable;
+	off_t size = 0;
+	int i, fd, printable, n;
 	struct stat statb;
 	char *s;
 	char buffer[SMALLBUFFER];
@@ -977,7 +1005,7 @@ double Check_files( struct job *job )
 	for( i = 0; i < Files.count; ++i){
 		s = Files.list[i];
 		DEBUG2( "Check_files: doing '%s'", s );
-		if( safestrcmp( s, "-" ) == 0 ){
+		if( strcmp( s, "-" ) == 0 ){
 			size += Copy_stdin( job );
 			continue;
 		}
@@ -1001,15 +1029,16 @@ double Check_files( struct job *job )
 			Set_flag_value(lp,COPIES,1);
 			plp_snprintf(buffer,sizeof(buffer),"%c",Format);
 			Set_str_value(lp,FORMAT,buffer);
-			size = size + statb.st_size;
-			Set_double_value(lp,SIZE,(double)(statb.st_size) );
+			n = statb.st_size;
+			size += n;
+			Set_flag_value(lp,SIZE,n);
 			DEBUG2( "Check_files: printing '%s'", s );
 		} else {
 			DEBUG2( "Check_files: not printing '%s'", s );
 		}
 	}
 	if( Copies ) size *= Copies;
-	DEBUG2( "Check_files: %d files, size %0.0f", job->datafiles.count, size );
+	DEBUG2( "Check_files: %d files, size %d", job->datafiles.count, size );
 	return( size );
 }
 
@@ -1257,4 +1286,3 @@ int Start_worker( struct line_list *l, int fd )
 {
 	return(-1);
 }
- void Dispatch_input(int *talk, char *input ){}

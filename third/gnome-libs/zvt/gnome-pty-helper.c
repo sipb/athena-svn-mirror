@@ -28,12 +28,6 @@
  */
 #include <config.h>
 
-/* Use this to pull SCM_RIGHTS definition on IRIX */
-#if defined(irix) || defined (__irix__) || defined(sgi) || defined (__sgi__)
-#    define _XOPEN_SOURCE 1
-extern char *strdup(const char *);
-#endif
-
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -97,7 +91,7 @@ typedef struct pty_info pty_info;
 
 static pty_info *pty_list;
 
-#ifdef HAVE_SENDMSG
+#if defined(HAVE_SENDMSG) && !defined(__sgi)
 #include <sys/socket.h>
 #include <sys/uio.h>
 
@@ -157,7 +151,7 @@ pass_fd (int client_fd, int fd)
 	return 0;
 }
 
-#elif defined(__sgi) && !defined(HAVE_SENDMSG)
+#elif defined(__sgi)
 
 /* 
  * IRIX 6.2 is like 4.3BSD; it will not have HAVE_SENDMSG set, 

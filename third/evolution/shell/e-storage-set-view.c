@@ -184,10 +184,12 @@ storage_sort_callback (ETreeMemory *etmm,
 
 	if (path_1_local && path_2_local)
 		return 0;
+	/* Athena local hack: put local folders last, to emphasize MIT
+	   mail folders. */
 	if (path_1_local)
-		return -1;
-	if (path_2_local)
 		return 1;
+	if (path_2_local)
+		return -1;
 	
 	return g_utf8_collate (e_tree_model_value_at (E_TREE_MODEL (etmm), node1, 0),
 	                       e_tree_model_value_at (E_TREE_MODEL (etmm), node2, 0));

@@ -1,0 +1,8 @@
+Name: athena-gathlogout
+Summary: Confirms user desire to logout and does so
+License: MIT
+Group: User Interface/Desktops
+
+%description
+gathlogout displays a dialog confirming that the user wishes to log
+out.  If the user says yes, gathlogout logs the user out.

@@ -44,9 +44,8 @@
 #include <utmp.h>
 #include <getopt.h>
 
-#ifndef _PATH_LOGIN
-#define _PATH_LOGIN "/bin/login"
-#endif
+#undef _PATH_LOGIN
+#define _PATH_LOGIN "/usr/athena/etc/login.krb5"
 
 #ifdef linux
 #include <sys/param.h>

@@ -1,5 +1,5 @@
 /* 
- * $Id: aklog_main.c,v 1.1.1.1 2003-02-13 00:14:43 zacheiss Exp $
+ * $Id: aklog_main.c,v 1.4 2003-08-07 20:22:07 zacheiss Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
@@ -7,7 +7,7 @@
 
 #if !defined(lint) && !defined(SABER)
 static char *rcsid =
-	"$Id: aklog_main.c,v 1.1.1.1 2003-02-13 00:14:43 zacheiss Exp $";
+	"$Id: aklog_main.c,v 1.4 2003-08-07 20:22:07 zacheiss Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -74,7 +74,6 @@ u_long ntohl(u_long x)
 
 #else /* !WINDOWS */
 #include <afs/stds.h>
-#include <afs/com_err.h>
 
 #include <afs/param.h>
 #ifdef AFS_SUN5_ENV
@@ -147,7 +146,7 @@ static long cm_SearchCellFile_CallBack();
  * Why doesn't AFS provide these prototypes?
  */
 
-extern int afsconf_GetLocalCell(struct afsconf_dir *, char *, int32);
+extern int afsconf_GetLocalCell(struct afsconf_dir *, char *, afs_int32);
 extern int afsconf_GetCellInfo(struct afsconf_dir *, char *, char *,
 			       struct afsconf_cell *);
 extern int afsconf_Close(struct afsconf_dir *);
@@ -155,11 +154,11 @@ extern int ktc_GetToken(struct ktc_principal *, struct ktc_token *, int,
 			struct ktc_principal *);
 extern int ktc_SetToken(struct ktc_principal *, struct ktc_token *,
 			struct ktc_principal *, int);
-extern int32 pr_Initialize(int32, char *, char *, int32);
-extern int pr_SNameToId(char *, int32 *);
-extern int pr_CreateUser(char *, int32 *);
+extern afs_int32 pr_Initialize(afs_int32, char *, char *, afs_int32);
+extern int pr_SNameToId(char *, afs_int32 *);
+extern int pr_CreateUser(char *, afs_int32 *);
 extern int pr_End();
-extern int pioctl(char *, int32, struct ViceIoctl *, int32);
+extern int pioctl(char *, afs_int32, struct ViceIoctl *, afs_int32);
 
 /*
  * Other prototypes
@@ -229,6 +228,10 @@ static char *copy_string(string)
 
     return (new_string);
 }
+#ifndef PRE_AFS35
+#include <afs/dirpath.h>
+#endif /* !PRE_AFS35 */
+
 
 
 #ifdef __STDC__
@@ -248,9 +251,8 @@ static int get_cellconfig(cell, cellconfig, local_cell, linkedcell)
     memset((char *)cellconfig, 0, sizeof(*cellconfig));
 
 #ifndef WINDOWS
-
 #ifndef AFSCONF_CLIENTNAME
-#define	AFSCONF_CLIENTNAME	"/usr/vice/etc"
+#define	AFSCONF_CLIENTNAME	AFSDIR_CLIENT_ETC_DIRPATH
 #endif
 
     if (!(configdir = afsconf_Open(AFSCONF_CLIENTNAME))) {
@@ -400,7 +402,7 @@ static int auth_to_cell(context, cell, realm)
 {
     int status = AKLOG_SUCCESS;
     char username[BUFSIZ];	/* To hold client username structure */
-    long viceId;		/* AFS uid of user */
+    afs_int32 viceId;		/* AFS uid of user */
 
     char name[ANAME_SZ];	/* Name of afs key */
     char instance[INST_SZ];	/* Instance of afs key */
@@ -410,7 +412,7 @@ static int auth_to_cell(context, cell, realm)
     char cell_to_use[MAXCELLCHARS+1]; /* Cell to authenticate to */
     static char lastcell[MAXCELLCHARS+1] = { 0 };
 #ifndef WINDOWS
-    static char confname[512] = AFSCONF_CLIENTNAME;
+    static char confname[512]  = "";
 #endif
     krb5_creds *v5cred = NULL;
     CREDENTIALS c;
@@ -419,8 +421,10 @@ static int auth_to_cell(context, cell, realm)
     struct ktc_token atoken, btoken;
 
 #ifdef ALLOW_REGISTER
-    int32 id;
+    afs_int32 id;
 #endif /* ALLOW_REGISTER */
+    if (confname[0] == 0)
+      strcpy (confname,  AFSCONF_CLIENTNAME);
 
     memset(name, 0, sizeof(name));
     memset(instance, 0, sizeof(instance));
@@ -530,15 +534,22 @@ static int auth_to_cell(context, cell, realm)
 	 * However, if "cell" == "realm", the first lookup is not done.
 	 *
 	 */
-
+	
+	/* We modify this behavior to always check afs/<cell>@<realm>, even 
+	 * if the cell and the realm have the same name.  Needed if we want
+	 * to be able to authenticate to the athena.mit.edu cell. 
+	 */
+	
 	strcpy(name, AFSKEY);
-
-	if (strcasecmp(cell_to_use, realm_of_cell) != 0) {
-	    strncpy(instance, cell_to_use, sizeof(instance));
-	    instance[sizeof(instance)-1] = '\0';
-	} else {
-	    instance[0] = '\0';
-	}
+	strncpy(instance, cell_to_use, sizeof(instance));
+	instance[sizeof(instance)-1] = '\0';
+	
+	/* if (strcasecmp(cell_to_use, realm_of_cell) != 0) {
+	 *   strncpy(instance, cell_to_use, sizeof(instance));
+	 *   instance[sizeof(instance)-1] = '\0';
+	 * } else {
+	 *    instance[0] = '\0';
+	 * }
 	
 	/* 
 	 * Extract the session key from the ticket file and hand-frob an
@@ -567,7 +578,12 @@ static int auth_to_cell(context, cell, realm)
 	status = params.get_cred(context, name, instance, realm_of_cell,
 			 &c, &v5cred);
 
-	if (status == KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN) {
+	/* 
+	 * Some versions of the Heimdal KDC return KRB5KRB_ERR_GENERIC instead
+	 * of a more correct error code when you attempt to get credentials for
+	 * for a nonexistant principal.  We compensate for that behavior.
+	 */
+	if (status == KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN || status == KRB5KRB_ERR_GENERIC) {
 		if (instance[0] != '\0') {
 			status = params.get_cred(context, name, "",
 						realm_of_cell, &c, &v5cred);
@@ -728,7 +744,7 @@ static int auth_to_cell(context, cell, realm)
 		strncpy(aclient.cell, c.realm, MAXKTCREALMLEN - 1);
 		if ((status = ktc_SetToken(&aserver, &atoken, &aclient, 0))) {
 		    sprintf(msgbuf, "%s: unable to obtain tokens for cell %s "
-			    "(status: %d).\n", progname, cell_to_use, status);
+			    "(status: %s).\n", progname, cell_to_use, error_message(status));
 		    params.pstderr(msgbuf);
 		    status = AKLOG_TOKEN;
 		}
@@ -790,8 +806,8 @@ static int auth_to_cell(context, cell, realm)
 #ifndef WINDOWS
 	if ((status = ktc_SetToken(&aserver, &atoken, &aclient, afssetpag))) {
 	    sprintf(msgbuf, 
-		    "%s: unable to obtain tokens for cell %s (status: %d).\n",
-		    progname, cell_to_use, status);
+		    "%s: unable to obtain tokens for cell %s (status: %s).\n",
+		    progname, cell_to_use, error_message (status));
 	    params.pstderr(msgbuf);
 	    status = AKLOG_TOKEN;
 	}
@@ -1124,7 +1140,7 @@ static int auth_to_path(context, path)
     if (path[0] == DIR)
 	strcpy(pathtocheck, path);
     else {
-	if (params.getwd(pathtocheck) == NULL) {
+	if (params.getcwd(pathtocheck, MAXPATHLEN + 1) == NULL) {
 	    sprintf(msgbuf, "Unable to find current working directory:\n");
 	    params.pstderr(msgbuf);
 	    sprintf(msgbuf, "%s\n", pathtocheck);
@@ -1291,9 +1307,8 @@ void aklog(argc, argv, a_params)
 	progname = argv[0];
 
     krb5_init_context(&context);
+#if !defined(TARGET_OS_MAC)
     krb524_init_ets(context);
-#ifndef WINDOWS
-	initialize_ktc_error_table ();
 #endif
 
     memcpy((char *)&params, (char *)a_params, sizeof(aklog_params));

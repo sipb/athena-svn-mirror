@@ -1,0 +1,3 @@
+P MIT-libxml      An XML library used by GNOME, for Athena
+P MIT-ORBit       The ORBit object request broker, for Athena
+P MIT-dustbuster  Restrict the lifetime of a command to the current login session

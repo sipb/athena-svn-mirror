@@ -2,7 +2,7 @@
 /*
  * vmhsbr.c -- routines to help vmh along
  *
- * $Id: vmhsbr.c,v 1.1.1.1 1999-02-07 18:14:17 danw Exp $
+ * $Id: vmhsbr.c,v 1.2 2003-03-20 17:19:30 ghudson Exp $
  */
 
 /*
@@ -24,7 +24,7 @@ static	FILE *fp = NULL;
 static int PEERrfd = NOTOK;
 static int PEERwfd = NOTOK;
 
-extern int  errno;
+#include <errno.h>
 
 /*
  * static prototypes

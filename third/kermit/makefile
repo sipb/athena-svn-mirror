@@ -976,13 +976,12 @@ install:
 	cp $(BINARY) $(DESTDIR)$(BINDIR)/kermit || exit 1;\
 	chmod 755    $(DESTDIR)$(BINDIR)/kermit || exit 1;\
 	rm -f        $(DESTDIR)$(BINDIR)/kermit-sshsub;\
-	ln -s        $(DESTDIR)$(BINDIR)/kermit\
-		     $(DESTDIR)$(BINDIR)/kermit-sshsub || exit 1;\
+	ln -s        kermit $(DESTDIR)$(BINDIR)/kermit-sshsub || exit 1;\
 	echo 'set flag=f\nPrC Removing binaries' >&3;\
 	echo "RmF $(DESTDIR)$(BINDIR)/kermit-sshsub" >&3;\
 	echo "RmF $(DESTDIR)$(BINDIR)/kermit" >&3;\
 	if test -f ckermit.ini; then\
-		echo "#!$(DESTDIR)$(BINDIR)/kermit" >\
+		echo "#!$(BINDIR)/kermit" >\
 			$(DESTDIR)$(BINDIR)/_tmp.ini;\
 		cat ckermit.ini >> $(DESTDIR)$(BINDIR)/_tmp.ini;\
 		mv $(DESTDIR)$(BINDIR)/_tmp.ini\
@@ -1003,20 +1002,20 @@ install:
 	echo " for details.";\
 	echo;\
 	echo MANDIR=$(MANDIR);\
-	if test -n "$(MANDIR)"; then\
-		if test -d $(MANDIR); then\
-			echo  "$(MANDIR) exists...";\
+	if test -n "$(DESTDIR)$(MANDIR)"; then\
+		if test -d $(DESTDIR)$(MANDIR); then\
+			echo  "$(DESTDIR)$(MANDIR) exists...";\
 		else\
-			echo "Creating $(MANDIR)...";\
-			mkdir $(MANDIR) || exit 1;\
-			chmod 755 $(MANDIR) || exit 1;\
+			echo "Creating $(DESTDIR)$(MANDIR)...";\
+			mkdir $(DESTDIR)$(MANDIR) || exit 1;\
+			chmod 755 $(DESTDIR)$(MANDIR) || exit 1;\
 		fi;\
 		echo "Installing man page...";\
-		rm -f $(MANDIR)/kermit.$(MANEXT);\
-		cp    ckuker.nr $(MANDIR)/kermit.$(MANEXT) || exit 1;\
-		chmod 644       $(MANDIR)/kermit.$(MANEXT) || exit 1;\
+		rm -f $(DESTDIR)$(MANDIR)/kermit.$(MANEXT);\
+		cp    ckuker.nr $(DESTDIR)$(MANDIR)/kermit.$(MANEXT) || exit 1;\
+		chmod 644       $(DESTDIR)$(MANDIR)/kermit.$(MANEXT) || exit 1;\
 		echo 'set flag=f\nPrC Removing man pages' >&3;\
-		echo "RmF $(MANDIR)/kermit.$(MANEXT)" >&3;\
+		echo "RmF $(DESTDIR)$(MANDIR)/kermit.$(MANEXT)" >&3;\
 		echo 'EfM' >&3;\
 		echo;\
 	else\

@@ -38,7 +38,7 @@
  * software for any purpose.  It is provided "as is" without express or 
  * implied warranty.
  *
- * $Revision: 1.1.1.4 $
+ * $Revision: 1.3 $
  *
  * Version 1.0 April 27, 1998.
  * - Initial version

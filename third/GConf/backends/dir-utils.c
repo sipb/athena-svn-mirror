@@ -116,7 +116,7 @@ _gconf_get_root_dir (const char *address, guint * pflags,
   if (root_dir[len - 1] == '/')
     root_dir[len - 1] = '\0';
 
-  if (mkdir (root_dir, dir_mode) < 0)
+  if (gconf_mkdir_private (root_dir) < 0)
     {
       if (errno != EEXIST)
 	{

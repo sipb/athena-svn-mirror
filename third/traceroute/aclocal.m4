@@ -1,4 +1,4 @@
-dnl @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/aclocal.m4,v 1.1.1.1 1997-09-24 06:24:33 ghudson Exp $ (LBL)
+dnl @(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/aclocal.m4,v 1.2 2000-04-11 22:47:47 ghudson Exp $ (LBL)
 dnl
 dnl Copyright (c) 1995, 1996, 1997
 dnl	The Regents of the University of California.  All rights reserved.
@@ -77,7 +77,7 @@ AC_DEFUN(AC_LBL_C_INIT,
 		    AC_MSG_CHECKING(gcc version)
 		    AC_CACHE_VAL(ac_cv_lbl_gcc_vers,
 			ac_cv_lbl_gcc_vers=`$CC -v 2>&1 | \
-			    sed -n -e '$s/.* //' -e '$s/\..*//p'`)
+			    sed -n -e '$s/\..*//' -e '$s/.* //p'`)
 		    AC_MSG_RESULT($ac_cv_lbl_gcc_vers)
 		    if test $ac_cv_lbl_gcc_vers -gt 1 ; then
 			    $1="-O2"

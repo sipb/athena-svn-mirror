@@ -1,0 +1,3 @@
+PKG=MIT-intlfonts
+NAME=International fonts for Emacs and other programs
+DESC=International fonts for many languages suitable for use in Emacs and elsewhere. 

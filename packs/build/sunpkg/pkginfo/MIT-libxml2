@@ -1,0 +1,3 @@
+PKG=MIT-libxml2
+NAME=An XML library used by GNOME, for Athena
+DESC=The athena-libxml2 package contains an XML library, which allows you to manipulate XML files.  XML (eXtensible Markup Language) is a data format for structured document interchange.  Because libxml version 2 changes the API of libxml and many programs still use libxml version 1, version 2 is canonically distributed and packaged as "libxml2".

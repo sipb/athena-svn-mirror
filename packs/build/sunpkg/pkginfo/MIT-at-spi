@@ -1,0 +1,3 @@
+PKG=MIT-at-spi
+NAME=Assistive Technology Service Provider Interface, for Athena
+DESC=at-spi allows assistive technologies to access GTK-based applications. Essentially it exposes the internals of applications for automation, so tools such as screen readers, magnifiers, or even scripting interfaces can query and interact with GUI controls.

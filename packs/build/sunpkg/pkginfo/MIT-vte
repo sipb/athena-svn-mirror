@@ -1,0 +1,3 @@
+PKG=MIT-vte
+NAME=A terminal emulator widget, for Athena
+DESC=VTE is a terminal emulator widget for use with GTK+ 2.0.

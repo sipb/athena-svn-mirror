@@ -130,7 +130,7 @@ by `ediff-make-frame-position' and for related customization.
 
      To start Ediff with an iconified Control Panel, you should set this
      variable to `t' and `ediff-prefer-long-help-message' to `nil'
-     (*note Quick Help Customization::).  This behavior is useful only
+     (*note Quick Help Customization::.).  This behavior is useful only
      if icons are allowed to accept keybord input (which depend on the
      window manager and other factors).
 
@@ -282,7 +282,7 @@ regions:
      Ediff uses these faces to highlight current differences on devices
      where Emacs can display faces.  These and subsequently described
      faces can be set either in `.emacs' or in `.Xdefaults'.  The X
-     resource for Ediff is `Ediff', _not_ `emacs'.  Please refer to
+     resource for Ediff is `Ediff', *not* `emacs'.  Please refer to
      Emacs manual for the information on how to set X resources.
 
 `ediff-fine-diff-face-A'
@@ -349,7 +349,7 @@ would use the pre-defined fase `bold-italic' to highlight the current
 difference region in buffer A (this face is not a good choice, by the
 way).
 
-   If you are unhappy with just _some_ of the aspects of the default
+   If you are unhappy with just *some* of the aspects of the default
 faces, you can modify them when Ediff is being loaded using
 `ediff-load-hook'.  For instance:
 
@@ -643,10 +643,10 @@ the difference regions in buffers A and B as explained above.
    In addition to the state of merge and state of difference
 indicators, while merging with an ancestor file or buffer, Ediff
 informs the user when the current difference region in the (normally
-invisible) ancestor buffer is empty via the _AncestorEmpty_ indicator.
+invisible) ancestor buffer is empty via the *AncestorEmpty* indicator.
 This helps determine if the changes made to the original in variants A
 and B represent pure insertion or deletion of text: if the mode line
-shows _AncestorEmpty_ and the corresponding region in buffers A or B is
+shows *AncestorEmpty* and the corresponding region in buffers A or B is
 not empty, this means that new text was inserted.  If this indicator is
 not present and the difference regions in buffers A or B are non-empty,
 this means that text was modified.  Otherwise, the original text was
@@ -737,7 +737,7 @@ merge buffer when Ediff quits.  If the value is `nil', nothing is done
 to the merge buffer--it will be the user's responsibility to save it.
 If the value is `t', the user will be asked where to save the buffer
 and whether to delete it afterwards.  It the value is neither `nil' nor
-`t', the merge buffer is saved _only_ if this merge session was invoked
+`t', the merge buffer is saved *only* if this merge session was invoked
 from a group of related Ediff session, such as those that result from
 `ediff-merge-directories', `ediff-merge-directory-revisions', etc.
 *Note Session Groups::.  This behavior is implemented in the function

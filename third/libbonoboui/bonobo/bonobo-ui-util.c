@@ -358,6 +358,13 @@ bonobo_ui_util_xml_set_image (GtkImage     *image,
 	} else
 		return;
 
+	if (!text) {
+		if (g_getenv ("BONOBO_DEBUG"))
+			g_warning ("Missing pixname on '%s'",
+				    bonobo_ui_xml_make_path (node));
+		return;
+	}
+
 	if (!strcmp (type, "stock")) {
 		if (gtk_icon_factory_lookup_default (text))
 			bonobo_ui_image_set_stock (image, text, icon_size);

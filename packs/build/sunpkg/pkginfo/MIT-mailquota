@@ -1,0 +1,3 @@
+PKG=MIT-mailquota
+NAME=Display post office resource usage and limits
+DESC=The mailquota program prints out a user's mail resource usage and limits on the post office server.

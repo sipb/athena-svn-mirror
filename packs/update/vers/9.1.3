@@ -1,0 +1,18 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  if [ -d /var/sadm/pkg/SUNWski ]; then
+    pkgrm -n -a $LIBDIR/noask SUNWski
+  fi
+  echo "112438-01"					>> "$PATCHES"
+  echo "OSCHANGES=true"					>> "$CONFVARS"
+  ;;
+
+sgi)
+  echo "OSCHANGES=true"					>> "$CONFVARS"
+  ;;
+esac
+
+echo "/etc/athena/ndc"					>> "$DEADFILES"
+echo "/usr/andrew"					>> "$DEADFILES"

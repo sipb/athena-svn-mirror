@@ -3,8 +3,9 @@
 "#error Put this file in /usr/lib/X11/app-defaults/XScreenSaver instead.",
 "*timeout:		0:10:00",
 "*cycle:			0:10:00",
-"*lockTimeout:		0:00:00",
+"*lockTimeout:		0:01:00",
 "*passwdTimeout:		0:00:30",
+"*maxIdleTime:		0:20:00",
 "*dpmsEnabled:		False",
 "*dpmsStandby:		2:00:00",
 "*dpmsSuspend:		2:00:00",
@@ -15,7 +16,7 @@
 "*imageDirectory:	",
 "*nice:			10",
 "*memoryLimit:		0",
-"*lock:			False",
+"*lock:			True",
 "*lockVTs:		True",
 "*verbose:		False",
 "*timestamp:		True",
@@ -39,166 +40,167 @@
 "*demoCommand: xscreensaver-demo",
 "*prefsCommand: xscreensaver-demo -prefs",
 "*helpURL: http://www.jwz.org/xscreensaver/man.html",
-"*loadURL: gnome-url-show '%s' || gnome-moz-remote --newwin '%s'",
+"*loadURL: htmlview '%s'",
 "*manualCommand: yelp 'man:%s' || gnome-help-browser 'man:%s'",
 "*dateFormat:		%d-%b-%y (%a); %I:%M %p",
 "*installColormap:	True",
+"*renew:	invalid",
+"*renewCommand:	fsid -a > /dev/null && zctl load /dev/null > /dev/null",
 "*programs:								      \
-		 \"Qix (solid)\" 	qix -root -solid -segments 100		    \\n\
-	   \"Qix (transparent)\" 	qix -root -count 4 -solid -transparent	    \\n\
-		\"Qix (linear)\" 	qix -root -count 5 -solid -transparent	      \
+-		 \"Qix (solid)\" 	qix -root -solid -segments 100		    \\n\
+-	   \"Qix (transparent)\" 	qix -root -count 4 -solid -transparent	    \\n\
+-		\"Qix (linear)\" 	qix -root -count 5 -solid -transparent	      \
 				  -linear -segments 250 -size 100	    \\n\
 -		   \"Qix (xor)\" 	qix -root -linear -count 5 -size 200	      \
 				  -spread 30 -segments 75 -solid -xor	    \\n\
 									      \
-	  \"Attraction (balls)\" 	attraction -root -mode balls		    \\n\
-	  \"Attraction (lines)\" 	attraction -root -mode lines -points 3	      \
+-	  \"Attraction (balls)\" 	attraction -root -mode balls		    \\n\
+-	  \"Attraction (lines)\" 	attraction -root -mode lines -points 3	      \
 				  -segments 200				    \\n\
 -	   \"Attraction (poly)\" 	attraction -root -mode polygons		    \\n\
-	\"Attraction (splines)\" 	attraction -root -mode splines -segments      \
+-	\"Attraction (splines)\" 	attraction -root -mode splines -segments      \
 				  300					    \\n\
-	\"Attraction (orbital)\" 	attraction -root -mode lines -radius 300      \
+-	\"Attraction (orbital)\" 	attraction -root -mode lines -radius 300      \
 				  -orbit -vmult 0.5			    \\n\
 									      \
-				pyro -root				    \\n\
-				rocks -root				    \\n\
-				helix -root				    \\n\
-				pedal -root				    \\n\
-				rorschach -root -offset 7		    \\n\
-				hopalong -root				    \\n\
-				greynetic -root				    \\n\
-				imsmap -root				    \\n\
-				slidescreen -root			    \\n\
-				decayscreen -root			    \\n\
-				jigsaw -root				    \\n\
-				blitspin -root -grab			    \\n\
-				slip -root				    \\n\
-				distort -root				    \\n\
-				spotlight -root				    \\n\
-	      \"Ripples (oily)\"	ripples -root -oily -light 2		    \\n\
-	      \"Ripples (stir)\"	ripples -root -oily -light 2 -stir	    \\n\
-	   \"Ripples (desktop)\"	ripples -root -water -light 6		    \\n\
-				hypercube -root				    \\n\
+-				pyro -root				    \\n\
+-				rocks -root				    \\n\
+-				helix -root				    \\n\
+-				pedal -root				    \\n\
+-				rorschach -root -offset 7		    \\n\
+-				hopalong -root				    \\n\
+-				greynetic -root				    \\n\
+-				imsmap -root				    \\n\
+-				slidescreen -root			    \\n\
+-				decayscreen -root			    \\n\
+-				jigsaw -root				    \\n\
+-				blitspin -root -grab			    \\n\
+-				slip -root				    \\n\
+-				distort -root				    \\n\
+-				spotlight -root				    \\n\
+-	      \"Ripples (oily)\"	ripples -root -oily -light 2		    \\n\
+-	      \"Ripples (stir)\"	ripples -root -oily -light 2 -stir	    \\n\
+-	   \"Ripples (desktop)\"	ripples -root -water -light 6		    \\n\
+-				hypercube -root				    \\n\
 -				hyperball -root				    \\n\
-				halo -root				    \\n\
-				maze -root				    \\n\
-				noseguy -root				    \\n\
-				flame -root				    \\n\
-				lmorph -root				    \\n\
-				deco -root				    \\n\
-				moire -root				    \\n\
-				moire2 -root				    \\n\
-				lightning -root				    \\n\
-				strange -root				    \\n\
-				spiral -root				    \\n\
-				laser -root				    \\n\
-				grav -root				    \\n\
-	       \"Grav (trails)\" 	grav -root -trail -decay		    \\n\
-				drift -root				    \\n\
-				ifs -root				    \\n\
-				julia -root				    \\n\
-				penrose -root				    \\n\
-				sierpinski -root			    \\n\
-				braid -root				    \\n\
-				galaxy -root				    \\n\
-				bouboule -root				    \\n\
-				swirl -root				    \\n\
-				flag -root				    \\n\
-				sphere -root				    \\n\
-				forest -root				    \\n\
-				lisa -root				    \\n\
-				lissie -root				    \\n\
-				goop -root -max-velocity 0.5 -elasticity      \
+-				halo -root				    \\n\
+-				maze -root				    \\n\
+-				noseguy -root				    \\n\
+-				flame -root				    \\n\
+-				lmorph -root				    \\n\
+-				deco -root				    \\n\
+-				moire -root				    \\n\
+-				moire2 -root				    \\n\
+-				lightning -root				    \\n\
+-				strange -root				    \\n\
+-				spiral -root				    \\n\
+-				laser -root				    \\n\
+-				grav -root				    \\n\
+-	       \"Grav (trails)\" 	grav -root -trail -decay		    \\n\
+-				drift -root				    \\n\
+-				ifs -root				    \\n\
+-				julia -root				    \\n\
+-				penrose -root				    \\n\
+-				sierpinski -root			    \\n\
+-				braid -root				    \\n\
+-				galaxy -root				    \\n\
+-				bouboule -root				    \\n\
+-				swirl -root				    \\n\
+-				flag -root				    \\n\
+-				sphere -root				    \\n\
+-				forest -root				    \\n\
+-				lisa -root				    \\n\
+-				lissie -root				    \\n\
+-				goop -root -max-velocity 0.5 -elasticity      \
 				  0.9					    \\n\
-				starfish -root				    \\n\
-	     \"Starfish (blob)\" 	starfish -root -blob			    \\n\
-				munch -root				    \\n\
-				fadeplot -root				    \\n\
+-				starfish -root				    \\n\
+-	     \"Starfish (blob)\" 	starfish -root -blob			    \\n\
+-				munch -root				    \\n\
+-				fadeplot -root				    \\n\
 				coral -root -delay 0			    \\n\
-				mountain -root				    \\n\
-				triangle -root -delay 1			    \\n\
-				worm -root				    \\n\
-				rotor -root				    \\n\
-				ant -root				    \\n\
-				demon -root				    \\n\
-				loop -root				    \\n\
-				vines -root				    \\n\
-				kaleidescope -root			    \\n\
-				xjack -root				    \\n\
-				xlyap -root -randomize			    \\n\
+-				mountain -root				    \\n\
+-				triangle -root -delay 1			    \\n\
+-				worm -root				    \\n\
+-				rotor -root				    \\n\
+-				ant -root				    \\n\
+-				demon -root				    \\n\
+-				loop -root				    \\n\
+-				vines -root				    \\n\
+-				kaleidescope -root			    \\n\
+-				xjack -root				    \\n\
 				cynosure -root				    \\n\
-				flow -root				    \\n\
-				epicycle -root				    \\n\
-				interference -root			    \\n\
-				truchet -root -randomize		    \\n\
-				bsod -root				    \\n\
-				crystal -root				    \\n\
-				discrete -root				    \\n\
-				kumppa -root				    \\n\
-				rd-bomb -root				    \\n\
-	    \"RD-Bomb (mobile)\" 	rd-bomb -root -speed 1 -size 0.1	    \\n\
-				sonar -root				    \\n\
-				t3d -root				    \\n\
-				penetrate -root				    \\n\
-				deluxe -root				    \\n\
-				compass -root				    \\n\
-				squiral -root				    \\n\
-				xflame -root				    \\n\
-				wander -root				    \\n\
-	      \"Wander (spots)\" 	wander -root -advance 0 -size 10 -circles     \
+-				flow -root				    \\n\
+-				epicycle -root				    \\n\
+-				interference -root			    \\n\
+-				truchet -root -randomize		    \\n\
+-				bsod -root				    \\n\
+-				crystal -root				    \\n\
+-				discrete -root				    \\n\
+-				kumppa -root				    \\n\
+-				rd-bomb -root				    \\n\
+-	    \"RD-Bomb (mobile)\" 	rd-bomb -root -speed 1 -size 0.1	    \\n\
+-				sonar -root				    \\n\
+-				t3d -root				    \\n\
+-				penetrate -root				    \\n\
+-				deluxe -root				    \\n\
+-				compass -root				    \\n\
+-				squiral -root				    \\n\
+-				xflame -root				    \\n\
+-				wander -root				    \\n\
+-	      \"Wander (spots)\" 	wander -root -advance 0 -size 10 -circles     \
 				  -length 10000 -reset 100000		    \\n\
-				critical -root				    \\n\
-				phosphor -root				    \\n\
-				xmatrix -root				    \\n\
-				petri -root -size 2 -count 20		    \\n\
-		     \"Petri 2\" 	petri -root -minlifespeed 0.02		      \
+-				critical -root				    \\n\
+-				phosphor -root				    \\n\
+-				xmatrix -root				    \\n\
+-				petri -root -size 2 -count 20		    \\n\
+-		     \"Petri 2\" 	petri -root -minlifespeed 0.02		      \
 				  -maxlifespeed 0.03 -minlifespan 1	      \
 				  -maxlifespan 1 -instantdeathchan 0	      \
 				  -minorchan 0 -anychan 0.3		    \\n\
-				shadebobs -root				    \\n\
-				ccurve -root				    \\n\
-				blaster -root				    \\n\
-				bumps -root				    \\n\
-				xteevee -root				    \\n\
-				xanalogtv -root				    \\n\
-				xspirograph -root			    \\n\
-				nerverot -root				    \\n\
+-				shadebobs -root				    \\n\
+-				ccurve -root				    \\n\
+-				blaster -root				    \\n\
+-				bumps -root				    \\n\
+-				xteevee -root				    \\n\
+-				xanalogtv -root				    \\n\
+-				xspirograph -root			    \\n\
+-				nerverot -root				    \\n\
 -	    \"NerveRot (dense)\"	nerverot -root -count 1000		    \\n\
 -	    \"NerveRot (thick)\"	nerverot -root -count 100 -line-width 4       \
 			        -max-nerve-radius 0.8 -nervousness 0.5 -db  \\n\
-				xrayswarm -root				    \\n\
+-				xrayswarm -root				    \\n\
 -	       \"Zoom (Fatbits)\"	zoom -root				    \\n\
-	       \"Zoom (Lenses)\"	zoom -root -lenses			    \\n\
-				rotzoomer -root				    \\n\
+-	       \"Zoom (Lenses)\"	zoom -root -lenses			    \\n\
+-				rotzoomer -root				    \\n\
 -	   \"RotZoomer (mobile)\" rotzoomer -root -move			    \\n\
 -	   \"RotZoomer (sweep)\"  rotzoomer -root -sweep			    \\n\
-				whirlwindwarp -root			    \\n\
- 	            \"WhirlyGig\"	whirlygig -root				    \\n\
- 	            \"SpeedMine\"	speedmine -root				    \\n\
- 	            \"SpeedWorm\"	speedmine -root -worm			    \\n\
- 	                	vermiculate -root			    \\n\
- 	                	twang -root				    \\n\
- 	                	apollonian -root			    \\n\
- 	                	euler2d -root				    \\n\
-	     \"Euler2d (dense)\"	euler2d -root -count 4000 -eulertail 400      \
+-				whirlwindwarp -root			    \\n\
+- 	            \"WhirlyGig\"	whirlygig -root				    \\n\
+- 	            \"SpeedMine\"	speedmine -root				    \\n\
+- 	            \"SpeedWorm\"	speedmine -root -worm			    \\n\
+- 	                	vermiculate -root			    \\n\
+- 	                	twang -root				    \\n\
+- 	                	apollonian -root			    \\n\
+- 	                	euler2d -root				    \\n\
+-	     \"Euler2d (dense)\"	euler2d -root -count 4000 -eulertail 400      \
 				  -ncolors 230				    \\n\
 - 	                	juggle -root				    \\n\
- 	                	polyominoes -root			    \\n\
+- 	                	polyominoes -root			    \\n\
 - 	                	thornbird -root				    \\n\
- 	                	fluidballs -root			    \\n\
- 	                	anemone -root				    \\n\
- 	                	halftone -root				    \\n\
- 	                	metaballs -root				    \\n\
- 	                	eruption -root				    \\n\
- 	                	popsquares -root			    \\n\
- 	                	barcode -root				    \\n\
- 	                	piecewise -root				    \\n\
- 	                	cloudlife -root				    \\n\
-		   \"FontGlide\"	fontglide -root -page			    \\n\
-	\"FontGlide (scroller)\"	fontglide -root -scroll			    \\n\
-				apple2 -root				    \\n\
-                                bubbles -root				    \\n\
-				pong -root				    \\n\
+- 	                	fluidballs -root			    \\n\
+- 	                	anemone -root				    \\n\
+- 	                	halftone -root				    \\n\
+- 	                	metaballs -root				    \\n\
+- 	                	eruption -root				    \\n\
+- 	                	popsquares -root			    \\n\
+- 	                	barcode -root				    \\n\
+- 	                	piecewise -root				    \\n\
+- 	                	cloudlife -root				    \\n\
+-		   \"FontGlide\"	fontglide -root -page			    \\n\
+-	\"FontGlide (scroller)\"	fontglide -root -scroll			    \\n\
+-				apple2 -root				    \\n\
+-                               bubbles -root				    \\n\
+-				pong -root				    \\n\
 - default-n:			webcollage -root			    \\n\
 - default-n:  \"WebCollage (whacked)\"					      \
 				webcollage -root -filter		      \
@@ -315,8 +317,11 @@
 "*Dialog.shadowThickness:	2",
 "*passwd.heading.label:		XScreenSaver %s",
 "*passwd.body.label:		This display is locked.",
+"*passwd.body.idleLabel:		This display is locked due to idle time.",
 "*passwd.user.label:		User:",
 "*passwd.passwd.label:		Password:",
+"*passwd.idle.label:		Idle time:",
+"*passwd.logout.label:		Press Ctrl-L to logout",
 "*passwd.passwdFont:		*-courier-medium-r-*-*-*-140-*-*-*-iso8859-1",
 "*passwd.thermometer.width:	8",
 "*splash.heading.label:		XScreenSaver %s",
@@ -418,6 +423,7 @@
 "*fadeTicksLabel.labelString:	Fade Ticks",
 "*lockLabel.labelString:		Lock Timeout",
 "*passwdLabel.labelString:	Password Timeout",
+"*maxIdleLabel.labelString:	Maximum Idle Time",
 "*preferencesForm*XmTextField.columns:	8",
 "*verboseToggle.labelString:	Verbose",
 "*cmapToggle.labelString:	Install Colormap",

@@ -1,0 +1,3 @@
+PKG=MIT-access
+NAME=Utilities to turn on or off remote access to Athena workstations.
+DESC=The access_on and access_off utilities are used on Athena workstations to permit and deny, respectively, access to the workstation by remote users.

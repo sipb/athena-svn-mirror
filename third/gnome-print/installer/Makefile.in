@@ -436,7 +436,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 install-data-local: gnome-font-install
-	$(PERL) $(top_srcdir)/run-gnome-font-install ./gnome-font-install $(datadir) $(top_srcdir) $(sysconfdir)
+	$(PERL) $(top_srcdir)/run-gnome-font-install ./gnome-font-install $(datadir) $(top_srcdir) $(DESTDIR)$(datadir)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,0 +1,35 @@
+#!/sbin/sh
+# $Id: athena-ntp.rc,v 1.1 2002-08-27 17:33:13 zacheiss Exp $
+#
+# athena-ntp: Stop/Start the Athena ntpd
+#
+. /etc/athena/rc.conf
+
+HOME=/; export HOME
+PATH=/etc/athena:/bin/athena:/bin:/usr/ucb:/usr/sbin:/etc:/sbin:/usr/athena/etc
+export PATH
+
+umask 022
+
+if [ "$TIMECLIENT" != true ]; then
+  exit 0
+fi
+
+case "$1" in
+start)
+  echo "Setting time: \c"
+  gettime -s "$TIMEHUB"
+  echo "Starting Athena ntpd."
+  ntpd &
+  ;;
+stop)
+  kill `cat /var/athena/ntpd.pid`
+  ;;
+restart)
+  $0 stop
+  $0 start
+  ;;
+*)
+  echo "Usage: $0 {start|stop|restart}"
+  ;;
+esac

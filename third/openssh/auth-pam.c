@@ -38,7 +38,7 @@ extern char *__progname;
 
 extern int use_privsep;
 
-RCSID("$Id: auth-pam.c,v 1.1.1.3 2003-02-05 19:03:50 zacheiss Exp $");
+RCSID("$Id: auth-pam.c,v 1.3 2003-02-06 03:45:44 zacheiss Exp $");
 
 #define NEW_AUTHTOK_MSG \
 	"Warning: Your password has expired, please change it now."
@@ -419,6 +419,24 @@ char **fetch_pam_environment(void)
 #else /* HAVE_PAM_GETENVLIST */
 	return(NULL);
 #endif /* HAVE_PAM_GETENVLIST */
+}
+
+/* Set a PAM environment string. We need to do this so that the session
+ * modules can handle things like Kerberos/GSI credentials that appear
+ * during the ssh authentication process.
+ */
+
+int do_pam_putenv(char *name, char *value) {
+	char *compound;
+	int ret=1;
+	
+	compound=xmalloc(strlen(name)+strlen(value)+2);
+	if (compound) {
+		sprintf(compound,"%s=%s",name,value);
+		ret=pam_putenv(__pamh,compound);
+		xfree(compound);
+	}
+	return(ret);
 }
 
 void free_pam_environment(char **env)

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Change /etc/lpd.conf and /etc/lpd.perms to class config.
+sed -e 's|^f none \(etc/lpd\.conf\) |e config \1 |' \
+    -e 's|^f none \(etc/lpd\.perms\) |e config \1 |'

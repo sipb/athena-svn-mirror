@@ -82,7 +82,7 @@ VERSION = @VERSION@
 X11_LIB = @X11_LIB@
 X_CFLAGS = @X_CFLAGS@
 
-SUBDIRS = lib util doc pic
+SUBDIRS = lib
 EXTRA_DIST = Makefile.unx ONEWS UNCOMPRESSED_GIF autogen.sh libungif.spec test-unx libungif.lsm TODO BUGS
 TESTS = test-unx
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

@@ -130,6 +130,7 @@ int
 	donelclchars,	/* the user has set "localchars" */
 	donebinarytoggle,	/* the user has put us in binary */
 	dontlecho,	/* do we suppress local echoing right now? */
+	dontfallback = 0,
 	globalmode;
 
 char *prompt = 0;
@@ -2283,8 +2284,6 @@ Scheduler(block)
 telnet(user)
     char *user;
 {
-    int printed_encrypt = 0;
-    
     sys_telnet_init();
 
 #if	defined(AUTHENTICATION) || defined(ENCRYPTION) 
@@ -2342,28 +2341,26 @@ telnet(user)
 	while (1) {
 	    if (my_want_state_is_wont(TELOPT_AUTHENTICATION)) {
 		printf("\nServer refused to negotiate authentication, which is required\n");
-		printf("for encryption.  Good-bye.\n\r");
-		Exit(1);
+		printf("for encryption.\n\r");
+		break;
 	    }
 	    if (auth_has_failed) {
 		printf("\nNegotiation of authentication, which is required for encryption,\n");
-		printf("has failed.  Good-bye.\n\r");
-		Exit(1);
+		printf("has failed.\n\r");
+		break;
 	    }
 	    if (my_want_state_is_dont(TELOPT_ENCRYPT) ||
 		my_want_state_is_wont(TELOPT_ENCRYPT)) {
-		printf("\nServer refused to negotiate encryption.  Good-bye.\n\r");
-		Exit(1);
+		printf("\nServer refused to negotiate encryption.\n\r");
+		break;
 	    }
 	    if (encrypt_is_encrypting())
 		break;
 	    if (time(0) > time_out) {
-		printf("\nEncryption could not be enabled.  Good-bye.\n\r");
-		Exit(1);
+		printf("\nEncryption could not be enabled.\n\r");
+		break;
 	    }
-	    if (printed_encrypt == 0) {
-		    printed_encrypt = 1;
-		    printf("Waiting for encryption to be negotiated...\n");
+	    if (!intr_waiting) {
 		    /*
 		     * Turn on MODE_TRAPSIG and then turn off localchars 
 		     * so that ^C will cause telnet to exit.
@@ -2377,10 +2374,14 @@ telnet(user)
 	    }
 	    telnet_spin();
 	}
-	if (printed_encrypt) {
-		printf("done.\n");
+	fflush(stdout);
+	if (intr_waiting) {
 		intr_waiting = 0;
 		setconnmode(0);
+	}
+	if (dontfallback && !encrypt_is_encrypting()) {
+		printf("Good bye.\n\r");
+		Exit(1);
 	}
     }
 #endif

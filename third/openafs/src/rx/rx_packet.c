@@ -14,7 +14,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.1.1.3 2004-02-13 17:53:48 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx_packet.c,v 1.3 2004-02-13 18:58:42 zacheiss Exp $");
 
 #ifdef KERNEL
 #if defined(UKERNEL)

@@ -1665,6 +1665,8 @@ static int envvarok(varp)
 	    strcmp(varp, "RESOLV_HOST_CONF") && /* linux */
 	    strcmp(varp, "NLSPATH") && /* locale stuff */
 	    strncmp(varp, "LC_", strlen("LC_")) && /* locale stuff */
+	    strcmp(varp, "HES_DOMAIN") &&  /* hesiod */
+	    strcmp(varp, "HESIOD_CONFIG") && /* hesiod */
 	    strcmp(varp, "IFS")) {
 		return 1;
 	} else {

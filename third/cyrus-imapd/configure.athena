@@ -1,0 +1,13 @@
+#!/bin/sh
+
+common_options="--disable-server --disable-sieve --disable-murder \
+    --with-auth=unix"
+
+case $ATHENA_HOSTTYPE in
+linux)
+  exec ./configure $common_options --with-bdb-incdir=/usr/include/db4  
+  ;;
+sun4)
+  exec ./configure $common_options
+  ;;
+esac

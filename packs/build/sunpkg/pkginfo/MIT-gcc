@@ -1,0 +1,3 @@
+PKG=MIT-gcc
+NAME=Various compilers, for Athena
+DESC=The gcc package contains the GNU Compiler Collection, including compilers for C, C++, and other languages.  It is intended primarily for building the rest of the Athena release, and is not a supported part of the Athena environment.

@@ -51,6 +51,7 @@
   Trevor Blackwell <tlb@tlb.org>
 */
 
+#include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Intrinsic.h>
 #include <assert.h>

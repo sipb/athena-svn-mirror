@@ -28,6 +28,9 @@
 #include "rfc822.h"
 #include "utf8.h"
 #include "smtp.h"
+#ifdef HESIOD
+#include <hesiod.h>
+#endif
 
 char *UW_copyright = "The IMAP toolkit provided in this Distribution is\nCopyright 1988-2003 University of Washington.\nThe full text of our legal notices is contained in the file called\nCPYRIGHT, included with this Distribution.\n";
 
@@ -601,6 +604,82 @@ DRIVER *mail_valid_net (char *name,DRIVER *drv,char *host,char *mailbox)
 }
 
 
+#ifdef HESIOD
+/* Mail lookup and validate hesiod information
+ * Accepts: NETMBX structure to process
+ * Returns: T on success, NIL on failure
+ */
+
+static long mail_valid_hesiod (NETMBX *mb)
+{
+  char *user;
+  struct hesiod_postoffice *office;
+  struct servent *serv;
+  char tmp[MAILTMPLEN], service[NETMAXSRV];
+  void *hcontext;
+
+  if (mb->user && *mb->user)	/* Allows for the /user=foo switch */
+    user = mb->user;
+  else
+    user = myusername ();
+  sprintf (tmp,"Hesiod lookup for \"%s\"",user);
+  mm_log (tmp,NIL);
+
+  if (hesiod_init (&hcontext) == 0) {
+    office = hesiod_getmailhost (hcontext,user);
+    if (office && *office->hesiod_po_type
+	&& *office->hesiod_po_host && *office->hesiod_po_name) {
+      sprintf(tmp,"Hesiod answer: %s %s %s",
+	      office->hesiod_po_type,office->hesiod_po_host,
+	      office->hesiod_po_name);
+      mm_log(tmp,NIL);
+    }
+    else {
+      sprintf (tmp,"Hesiod error while determining PO server for \"%s\"",user);
+      mm_log (tmp,ERROR);
+      if (office)
+	hesiod_free_postoffice (hcontext,office);
+      hesiod_end (hcontext);
+      return NIL;
+    }
+  }
+  else {
+      sprintf(tmp,
+	      "Hesiod initialization error determining PO server for \"%s\"",
+	      user);
+      mm_log(tmp,ERROR);
+      return NIL;
+  }
+
+  strcpy(mb->host,office->hesiod_po_host);
+  strcpy(mb->user,office->hesiod_po_name);
+  /* Set service if it isn't specified, but don't force compliance. */
+  if (!*mb->service) {
+    if (!strcmp (office->hesiod_po_type,"POP"))
+      strcpy (mb->service,"pop3");
+    else if (!strcmp (office->hesiod_po_type,"IMAP"))
+      strcpy (mb->service,"imap");
+    else {
+      sprintf (tmp,"Hesiod error while determining PO server for \"%s\"",user);
+      mm_log (tmp,ERROR);
+      return NIL;
+    }
+  }
+
+#ifdef KERBEROS
+  /* kpop runs on a different port from pop3, so we have to set an override. */
+  if (!mb->port && mb->krbflag && !strcmp (mb->service,"pop3"))
+    mb->port = 1109;
+#endif
+
+  hesiod_free_postoffice (hcontext,office);
+  hesiod_end (hcontext);
+
+  return T;
+}
+#endif /* HESIOD */
+
+
 /* Mail validate network mailbox name
  * Accepts: mailbox name
  *	    NETMBX structure to return values
@@ -679,6 +758,12 @@ long mail_valid_net_parse_work (char *name,NETMBX *mb,char *service)
       else {			/* non-argument switch */
 	if (!compare_cstring (s,"anonymous")) mb->anoflag = T;
 	else if (!compare_cstring (s,"debug")) mb->dbgflag = T;
+#ifdef HESIOD
+	else if (!compare_cstring (s,"hesiod")) mb->hesflag = T;
+#endif
+#ifdef KERBEROS
+	else if (!compare_cstring (s,"kerberos")) mb->krbflag = T;
+#endif
 	else if (!compare_cstring (s,"readonly")) mb->readonlyflag = T;
 	else if (!compare_cstring (s,"secure")) mb->secflag = T;
 	else if (!compare_cstring (s,"norsh")) mb->norsh = T;
@@ -714,6 +799,12 @@ long mail_valid_net_parse_work (char *name,NETMBX *mb,char *service)
       return NIL;
     } while (c);		/* see if anything more to parse */
   }
+#ifdef HESIOD
+  if (mb->hesflag) {
+    if (!mail_valid_hesiod (mb))
+      return NIL;
+  }
+#endif
 				/* default mailbox name */
   if (!*mb->mailbox) strcpy (mb->mailbox,"INBOX");
 				/* default service name */

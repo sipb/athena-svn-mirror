@@ -1,0 +1,3 @@
+PKG=MIT-cyrus-sasl
+NAME=The Cyrus SASL library, for Athena.
+DESC=The cyrus-sasl package contains the Cyrus implementation of SASL, from Carnegie Mellon University.  SASL is the Simple Authentication and Security Layer, a method for adding authentication support to connection-based protocols.

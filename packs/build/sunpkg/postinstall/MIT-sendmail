@@ -1,0 +1,15 @@
+#!/bin/sh
+
+grep -s '^SENDMAIL=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+SENDMAIL=false;		export SENDMAIL		#  Sendmail daemon?
+EOF
+
+# Initialize the status file.
+cp /dev/null $PKG_INSTALL_ROOT/etc/sendmail.st && \
+  chmod 644 $PKG_INSTALL_ROOT/etc/sendmail.st
+
+# Initialize the alias database.
+chroot ${PKG_INSTALL_ROOT:-/} /usr/lib/sendmail -bi
+
+exit 0

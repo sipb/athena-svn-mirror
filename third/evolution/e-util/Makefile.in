@@ -186,6 +186,7 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RESOLV_LIBS = @RESOLV_LIBS@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
@@ -338,7 +339,7 @@ pilot_sources = \
 
 
 @ENABLE_PILOT_CONDUITS_TRUE@pilot_compile = $(pilot_sources)
-@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = 
+@ENABLE_PILOT_CONDUITS_FALSE@pilot_compile = empty.c
 
 libeconduit_la_SOURCES = $(pilot_compile)
 
@@ -373,7 +374,7 @@ am__objects_1 =
 am__objects_2 = $(am__objects_1) e-pilot-map.lo e-pilot-settings.lo \
 	e-pilot-util.lo
 @ENABLE_PILOT_CONDUITS_TRUE@am__objects_3 = $(am__objects_2)
-@ENABLE_PILOT_CONDUITS_FALSE@am__objects_3 =
+@ENABLE_PILOT_CONDUITS_FALSE@am__objects_3 = empty.lo
 am_libeconduit_la_OBJECTS = $(am__objects_3)
 libeconduit_la_OBJECTS = $(am_libeconduit_la_OBJECTS)
 libedb3util_la_LDFLAGS =
@@ -441,7 +442,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/e-trie.Plo ./$(DEPDIR)/e-url.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-util-marshal.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/e-xml-hash-utils.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/md5-utils.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/empty.Plo ./$(DEPDIR)/md5-utils.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -563,6 +564,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-url.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-util-marshal.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/e-xml-hash-utils.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/empty.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5-utils.Plo@am__quote@
 
 distclean-depend:
@@ -896,6 +898,8 @@ e-util-marshal.c: e-util-marshal.h
 	( @GLIB_GENMARSHAL@ --prefix=e_util_marshal e-util-marshal.list --body > e-util-marshal.c.tmp \
 	&& mv e-util-marshal.c.tmp e-util-marshal.c ) \
 	|| ( rm -f e-util-marshal.c.tmp && exit 1 )
+@ENABLE_PILOT_CONDUITS_FALSE@empty.c:
+@ENABLE_PILOT_CONDUITS_FALSE@	cp /dev/null $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

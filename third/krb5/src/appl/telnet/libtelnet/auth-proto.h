@@ -67,7 +67,8 @@ void auth_send_retry (void);
 void auth_is (unsigned char *, int);
 void auth_reply (unsigned char *, int);
 void auth_finished (Authenticator *, int);
-int auth_wait (char *);
+void auth_wait (char *);
+int auth_check (char *);
 int auth_must_encrypt (void);
 void auth_disable_name (char *);
 void auth_gen_printsub (unsigned char *, int, unsigned char *, unsigned int);
@@ -83,7 +84,6 @@ void auth_name (unsigned char *, int);
 int auth_sendname (unsigned char *, int);
 void auth_debug (int);
 void auth_printsub (unsigned char *, int, unsigned char *, unsigned int);
-
 
 #ifdef	KRB4
 int kerberos4_init (Authenticator *, int);

@@ -161,6 +161,20 @@ static char *temp_auth_type;
 int authorized;		/* Auth succeeded and was accepted by krb4 or gssapi */
 int have_creds;		/* User has credentials on disk */
 
+#include <al.h>
+#include <locker.h>
+int ftp_locker_errfun(void *data, char *fmt, va_list arg);
+#include <krb5.h>
+krb5_context kcontext;
+krb5_ccache ccache;
+int have_creds = 0;
+#ifdef SIGSYS
+void try_afscall(int (*func)());
+#else
+#define try_afscall(func) func()
+#endif /* SIGSYS */
+extern int setpag(), ktc_ForgetAllTokens();
+
 /*
  * File containing login names
  * NOT to be used on this machine.
@@ -221,6 +235,7 @@ char	hostname[MAXHOSTNAMELEN];
 char	remotehost[MAXHOSTNAMELEN];
 char	rhost_addra[16];
 char	*rhost_sane;
+int	al_local_acct;
 
 /* Defines for authlevel */
 #define AUTHLEVEL_NONE		0
@@ -291,9 +306,9 @@ main(argc, argv, envp)
 	extern char *optarg;
 	extern int optopt;
 #ifdef KRB5_KRB4_COMPAT
-	char *option_string = "AaCcdlp:r:s:T:t:U:u:vw:";
+	char *option_string = "AaCcdElp:r:s:T:t:U:u:vw:";
 #else /* !KRB5_KRB4_COMPAT */
-	char *option_string = "AaCcdlp:r:T:t:U:u:vw:";
+	char *option_string = "AaCcdElp:r:T:t:U:u:vw:";
 #endif /* KRB5_KRB4_COMPAT */
 	ftpusers = _PATH_FTPUSERS_DEFAULT;
 
@@ -324,6 +339,11 @@ main(argc, argv, envp)
 
 		case 'd':
 			debug = 1;
+			break;
+
+		case 'E':
+			if (!authlevel)
+				authlevel = AUTHLEVEL_AUTHENTICATE;
 			break;
 
 		case 'l':
@@ -692,6 +712,8 @@ user(name)
 #ifdef HAVE_GETUSERSHELL
 	char *getusershell();
 #endif
+	char *errmem;
+	int status;
 
 	if (logged_in) {
 		if (guest) {
@@ -722,6 +744,23 @@ user(name)
 		reply(530,
 		      "Must perform authentication before identifying USER.");
 		return;
+	}
+
+	status = al_login_allowed(name, 1, &al_local_acct, NULL);
+	if (status != AL_SUCCESS) {
+		reply(530, "User %s access denied: %s", name,
+		      al_strerror(status, &errmem));
+		al_free_errmem(errmem);
+		return;
+	}
+	if (!al_local_acct) {
+		status = al_acct_create(name, getpid(), 0, 0, NULL);
+		if (status != AL_SUCCESS && status != AL_WARNINGS) {
+		    reply(530, "User %s access denied: %s", name,
+			  al_strerror(status, &errmem));
+		    al_free_errmem(errmem);
+		    return;
+		}
 	}
 
 	pw = sgetpwnam(name);
@@ -808,7 +847,7 @@ user(name)
 		} else
 			result = 232;
 		reply(result, "%s", buf);
-		syslog(authorized ? LOG_INFO : LOG_ERR, "%s", buf);
+		syslog(result < 500 ? LOG_INFO : LOG_ERR, "%s", buf);
 
 		if (result == 232)
 			login(NULL, result);
@@ -895,6 +934,8 @@ end_login()
 	(void) krb5_seteuid((uid_t)0);
 	if (logged_in)
 		pty_logwtmp(ttyline, "", "");
+	if (pw)
+		al_acct_revert(pw->pw_name, getpid());
 	if (have_creds) {
 #ifdef GSSAPI
 		krb5_cc_destroy(kcontext, ccache);
@@ -902,6 +943,7 @@ end_login()
 #ifdef KRB5_KRB4_COMPAT
 		dest_tkt();
 #endif
+		try_afscall(ktc_ForgetAllTokens);
 		have_creds = 0;
 	}
 	pw = NULL;
@@ -932,6 +974,9 @@ char *name, *passwd;
 #endif /* KRB5_KRB4_COMPAT */
 	char ccname[MAXPATHLEN];
 
+	if (al_local_acct)
+		return 0;
+
 #ifdef GSSAPI
 	memset((char *)&my_creds, 0, sizeof(my_creds));
 	if (krb5_parse_name(kcontext, name, &me))
@@ -939,6 +984,7 @@ char *name, *passwd;
 	my_creds.client = me;
 
 	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%ld", (long) getpid());
+	setenv("KRB5CCNAME", ccname, 1);
 	if (krb5_cc_resolve(kcontext, ccname, &ccache))
 		return(0);
 	if (krb5_cc_initialize(kcontext, ccache, me))
@@ -960,12 +1006,12 @@ char *name, *passwd;
 	my_creds.times.endtime = now + 60 * 60 * 10;
 	my_creds.times.renew_till = 0;
 
-	if (krb5_get_in_tkt_with_password(kcontext, 0,
-					  0, NULL, 0 /*preauth*/,
-					  passwd,
-					  ccache,
-					  &my_creds, 0))
-		goto nuke_ccache;
+	if (krb5_get_init_creds_password(kcontext, &my_creds, me,
+					 passwd, NULL, NULL, 0, NULL, NULL))
+	  goto nuke_ccache;
+
+	if (krb5_cc_store_cred(kcontext, ccache, &my_creds))
+	  goto nuke_ccache;
 
 	if (!want_creds) {
 		krb5_cc_destroy(kcontext, ccache);
@@ -979,8 +1025,9 @@ char *name, *passwd;
 
 	sprintf(ccname, "%s_ftpd%ld", TKT_ROOT, (long) getpid());
 	krb_set_tkt_string(ccname);
+	setenv("KRBTKFILE", ccname, 1);
 
-	if (krb_get_pw_in_tkt(name, "", realm, "krbtgt", realm, 1, passwd))
+	if (krb_get_pw_in_tkt(name, "", realm, "krbtgt", realm, 120, passwd))
 		goto nuke_ccache;
 
 #ifndef GSSAPI
@@ -1036,8 +1083,9 @@ pass(passwd)
 	char *passwd;
 {
 	char *xpasswd, *salt;
+	int match;
 
-	if (authorized && !want_creds) {
+	if (authorized && !want_creds || have_creds) {
 		reply(202, "PASS command superfluous.");
 		return;
 	}
@@ -1061,13 +1109,19 @@ pass(passwd)
 #endif
 		/* Fail if:
 		 *   pw is NULL
-		 *   kpass fails and we want_creds
-		 *   kpass fails and the user has no local password
-		 *   kpass fails and the provided password doesn't match pw
+		 *   the user is local and the password doesn't match
+		 *   the user is non-local and kpass fails and we want creds
+		 *   the user is non-local and kpass fails and the
+		 *     password doesn't match.
+		 *
+		 * An empty password never matches.
 		 */
-		if (pw == NULL || (!kpass(pw->pw_name, passwd) &&
-				   (want_creds || !*pw->pw_passwd ||
-				    strcmp(xpasswd, pw->pw_passwd)))) {
+		match = pw && *pw->pw_passwd &&
+		  !strcmp(xpasswd, pw->pw_passwd);
+		if (pw == NULL ||
+		    (al_local_acct && !match) ||
+		    (!al_local_acct && !kpass(pw->pw_name, passwd) &&
+		     (want_creds || !match))) {
 			pw = NULL;
 			sleep(5);
 			if (++login_attempts >= 3) {
@@ -1093,6 +1147,28 @@ login(passwd, logincode)
 	char *passwd;
 	int logincode;
 {
+	int status, *warnings;
+	char *errmem;
+
+	try_afscall(setpag);
+	status = al_acct_create(pw->pw_name, getpid(), 1, 0, &warnings);
+	if (status != AL_SUCCESS) {
+		if (status == AL_WARNINGS) {
+			int i;
+			for (i = 0; warnings[i]; i++) {
+				lreply(230, "%s",
+				      al_strerror(warnings[i], &errmem));
+				al_free_errmem(errmem);
+			}
+			free(warnings);
+		} else {
+			reply(530, "User %s access denied: %s", pw->pw_name,
+			      al_strerror(status, &errmem));
+			al_free_errmem(errmem);
+			return;
+		}
+	}
+
 	if (have_creds) {
 #ifdef GSSAPI
 		const char *ccname = krb5_cc_get_name(kcontext, ccache);
@@ -1383,7 +1459,7 @@ dataconn(name, size, fmode)
 {
 	char sizebuf[32];
 	FILE *file;
-	int retry = 0, tos;
+	int retry = 0, tos, on = 1;
 
 	file_size = size;
 	byte_count = 0;
@@ -1411,6 +1487,9 @@ dataconn(name, size, fmode)
 		    sizeof(int));
 #endif
 #endif
+		setsockopt(pdata, SOL_SOCKET, SO_KEEPALIVE,
+			   (void *)&on, sizeof(on));
+
 		reply(150, "Opening %s mode data connection for %s%s.",
 		     type == TYPE_A ? "ASCII" : "BINARY", name, sizebuf);
 		return(fdopen(pdata, fmode));
@@ -1444,6 +1523,7 @@ dataconn(name, size, fmode)
 		data = -1;
 		return (NULL);
 	}
+	setsockopt(data, SOL_SOCKET, SO_KEEPALIVE, (void *)&on, sizeof(on));
 	reply(150, "Opening %s mode data connection for %s%s.",
 	     type == TYPE_A ? "ASCII" : "BINARY", name, sizebuf);
 	return (file);
@@ -1468,7 +1548,7 @@ secure_error(fmt, p1, p2, p3, p4, p5)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 #else
 	sprintf(buf, fmt, p1, p2, p3, p4, p5);
@@ -1800,10 +1880,10 @@ reply(n, fmt, p0, p1, p2, p3, p4, p5)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 #else
-	sprintf(buf, fmt, p0, p1, p2, p3, p4, p5);
+	snprintf(buf, sizeof(buf), fmt, p0, p1, p2, p3, p4, p5);
 #endif
 
 	if (auth_type) {
@@ -1918,7 +1998,7 @@ lreply(n, fmt, p0, p1, p2, p3, p4, p5)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsprintf(buf, fmt, ap);
+	vsnprintf(buf, sizeof(buf), fmt, ap);
 	va_end(ap);
 #else
 	sprintf(buf, fmt, p0, p1, p2, p3, p4, p5);
@@ -2105,6 +2185,7 @@ dologout(status)
 	if (logged_in) {
 		(void) krb5_seteuid((uid_t)0);
 		pty_logwtmp(ttyline, "", "");
+		al_acct_revert(pw->pw_name, getpid());
 	}
 	if (have_creds) {
 #ifdef GSSAPI
@@ -2113,6 +2194,7 @@ dologout(status)
 #ifdef KRB5_KRB4_COMPAT
 		dest_tkt();
 #endif
+		try_afscall(ktc_ForgetAllTokens);
 	}
 	/* beware of flushing buffers after a SIGPIPE */
 	_exit(status);
@@ -2214,6 +2296,7 @@ gunique(local)
 	struct stat st;
 	char *cp = strrchr(local, '/');
 	int count = 0;
+	int cplen;
 
 	if (cp)
 		*cp = '\0';
@@ -2226,9 +2309,10 @@ gunique(local)
 	(void) strncpy(new, local, sizeof(new) - 1);
 	new[sizeof(new) - 1] = '\0';
 	cp = new + strlen(new);
+	cplen = sizeof(new) - strlen(new) - 2;
 	*cp++ = '.';
 	for (count = 1; count < 100; count++) {
-		(void) sprintf(cp, "%d", count);
+		(void) snprintf(cp, cplen, "%d", count);
 		if (stat(new, &st) < 0)
 			return(new);
 	}
@@ -2382,7 +2466,6 @@ char *adata;
 		char service_name[MAXHOSTNAMELEN+10];
 		char **gservice;
 		struct hostent *hp;
-
 
 		kerror = radix_encode(adata, gout_buf, &length, 1);
 		if (kerror) {
@@ -2613,7 +2696,7 @@ char *fmt;
         va_start(ap, fmt);
         if (dlevel == PROT_C) rval = vfprintf(stream, fmt, ap);
         else {
-                vsprintf(s, fmt, ap);
+                vsnprintf(s, sizeof(s), fmt, ap);
                 rval = secure_write(fileno(stream), s, strlen(s));
         }
         va_end(ap);
@@ -2900,6 +2983,7 @@ ftpd_gss_convert_creds(name, creds)
 		return;
 
 	sprintf(ccname, "FILE:/tmp/krb5cc_ftpd%ld", (long) getpid());
+	setenv("KRB5CCNAME", ccname, 1);
 	if (krb5_cc_resolve(kcontext, ccname, &ccache))
 		return;
 	if (krb5_cc_initialize(kcontext, ccache, me))
@@ -2934,6 +3018,7 @@ ftpd_gss_convert_creds(name, creds)
 
 	sprintf(ccname, "%s_ftpd%ld", TKT_ROOT, (long) getpid());
 	krb_set_tkt_string(ccname);
+	setenv("KRBTKFILE", ccname, 1);
 
 	if (in_tkt(v4creds.pname, v4creds.pinst) != KSUCCESS)
 		goto cleanup;
@@ -2954,7 +3039,107 @@ cleanup_v4:
 cleanup:
 	krb5_cc_destroy(kcontext, ccache);
 }
-
-
 #endif /* GSSAPI */
 
+attach(pw, locker)
+	struct passwd *pw;
+	char *locker;
+{
+	locker_context context;
+	int status;
+
+	seteuid(0);
+	if (locker_init(&context, pw->pw_uid, ftp_locker_errfun, NULL) !=
+	    LOCKER_SUCCESS) {
+		reply(550, "Couldn't initialize locker library to attach.");
+		seteuid(pw->pw_uid);
+		return;
+	}
+
+	status = locker_attach(context, locker, NULL, LOCKER_AUTH_DEFAULT,
+			       LOCKER_ATTACH_OPT_REAUTH, NULL, NULL);
+
+	if (LOCKER_ATTACH_SUCCESS(status))
+	        ack("ATCH");
+	else
+	        reply(550, "Attach failed.");
+
+	locker_end(context);
+	seteuid(pw->pw_uid);
+}
+
+aklog(pw, cell)
+	struct passwd *pw;
+	char *cell;
+{
+	locker_context context;
+	int status;
+
+	seteuid(0);
+	if (locker_init(&context, pw->pw_uid, ftp_locker_errfun, NULL) !=
+	    LOCKER_SUCCESS) {
+		reply(550, "Couldn't initialize locker library to attach.");
+		seteuid(pw->pw_uid);
+		return;
+	}
+
+	if (locker_auth_to_cell(context, "aklog", cell,
+				LOCKER_AUTH_AUTHENTICATE) == LOCKER_SUCCESS)
+		ack("AKLG");
+	else
+		reply(550, "Authentication failed.");
+
+	locker_end(context);
+	seteuid(pw->pw_uid);
+}
+
+int ftp_locker_errfun(void *data, char *fmt, va_list arg)
+{
+  char *buf;
+  int bufsiz;
+
+  bufsiz = 512;
+  buf = malloc(bufsiz + 1);
+  if (!buf)
+    return 0;
+  buf[bufsiz] = '\0';
+
+  while (1)
+    {
+      vsnprintf(buf, bufsiz, fmt, arg);
+      if (strlen(buf) == bufsiz)
+	{
+	  char *nbuf;
+
+	  bufsiz *= 2;
+	  nbuf = realloc(buf, bufsiz + 1);
+	  if (!nbuf)
+	    {
+	      free(buf);
+	      return 0;
+	    }
+	  buf = nbuf;
+	  buf[bufsiz] = '\0';
+	}
+      else
+	{
+	  lreply(550, "%s", buf);
+	  free(buf);
+	  return 0;
+	}
+    }
+}
+
+#ifdef SIGSYS
+void try_afscall(int (*func)(void))
+{
+    struct sigaction sa, osa;
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = SIG_IGN;
+    sigaction(SIGSYS, &sa, &osa);
+    func();
+    sigaction(SIGSYS, &osa, NULL);
+}
+#endif /* SIGSYS */

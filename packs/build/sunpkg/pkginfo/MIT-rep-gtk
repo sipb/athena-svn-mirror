@@ -1,0 +1,3 @@
+PKG=MIT-rep-gtk
+NAME=GTK+/GNOME/libglade bindings for the rep Lisp interpreter, for Athena
+DESC=rep-gtk is a binding of GTK+/GNOME/libglade for the rep Lisp system.

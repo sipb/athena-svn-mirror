@@ -1,0 +1,3 @@
+PKG=MIT-quota
+NAME=Print disk usage and quota limits
+DESC=Quota displays a user's disk usage and limits on local and NFS mounted file systems, as well as AFS lockers that have been attached. If a user is specified (by name or by id), quota will return information on disk usage and limits for that user. Normal users can only check their own quotas. The super-user may check any quota on local filesystems.

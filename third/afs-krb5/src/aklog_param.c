@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_param.c,v 1.1.1.1 2003-02-13 00:14:44 zacheiss Exp $
+ * $Id: aklog_param.c,v 1.2 2003-02-14 23:16:06 zacheiss Exp $
  * 
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_param.c,v 1.1.1.1 2003-02-13 00:14:44 zacheiss Exp $";
+static char *rcsid = "$Id: aklog_param.c,v 1.2 2003-02-14 23:16:06 zacheiss Exp $";
 #endif /* lint || SABER */
 
 #include "aklog.h"
@@ -43,7 +43,6 @@ static char *rcsid = "$Id: aklog_param.c,v 1.1.1.1 2003-02-13 00:14:44 zacheiss 
 extern int readlink ARGS((char *, char *, size_t));
 #endif
 /* extern int lstat ARGS((char *, struct stat *)); */
-extern char *getwd ARGS((char *));
 #endif /* WINDOWS */
 
 extern int krb524_convert_creds_kdc(krb5_context, krb5_creds *, CREDENTIALS *);
@@ -210,7 +209,7 @@ void aklog_init_params(params)
 #ifndef WINDOWS
     params->readlink = readlink;
     params->isdir = isdir;
-    params->getwd = getwd;
+    params->getcwd = getcwd;
 #endif
     params->get_cred = get_cred;
     params->get_user_realm = get_user_realm;
@@ -218,3 +217,5 @@ void aklog_init_params(params)
     params->pstdout = pstdout;
     params->exitprog = exitprog;
 }
+
+

@@ -1,0 +1,3 @@
+PKG=MIT-bonobo-activation
+NAME=Bonobo object activation framework for GNOME, for Athena
+DESC=Bonobo Activation is an object activation framework for GNOME.

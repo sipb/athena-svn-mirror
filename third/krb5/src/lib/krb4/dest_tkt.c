@@ -88,7 +88,7 @@ dest_tkt()
      * vulnerable cases are unlikely to arise on a well-administered
      * system where the user is not deliberately being stupid.
      */
-    if (!(statpre.st_mode & S_IFREG) || me != statpre.st_uid
+    if (!(statpre.st_mode & S_IFREG) || (me != statpre.st_uid && me != 0)
 	|| statpre.st_nlink != 1)
 	return KFAILURE;
     /*

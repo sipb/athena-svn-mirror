@@ -1,0 +1,3 @@
+PKG=MIT-gms
+NAME=A library used by the global Athena message service
+DESC=The gms library defines error codes and constants used by get_message and messaged, the components of the global Athena message service.

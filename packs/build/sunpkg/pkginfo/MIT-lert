@@ -1,0 +1,3 @@
+PKG=MIT-lert
+NAME=Display Athena accounts notification messages
+DESC=The lert utility checks for messages to you from Athena Accounts, such as messages that your account is scheduled for deletion.

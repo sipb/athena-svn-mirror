@@ -1,0 +1,8 @@
+# $Id: configure.athena,v 1.8 2003-03-20 16:55:31 ghudson Exp $
+
+options="--with-x-toolkit --sharedstatedir=/var/tmp --with-pop \
+	    --with-hesiod --with-kerberos"
+
+# emacs's configure script can be confused by an inaccurate PWD, so unset it.
+unset PWD
+./configure $options

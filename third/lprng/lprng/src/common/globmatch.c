@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: globmatch.c,v 1.1.1.4 2000-03-31 15:47:58 mwhitson Exp $";
+"$Id: globmatch.c,v 1.2 2001-03-07 01:19:24 ghudson Exp $";
 
 #include "lp.h"
 
@@ -21,12 +21,12 @@ int glob_pattern( char *pattern, const char *str )
 	char *glob;
 
 	/* DEBUG4("glob_pattern: pattern '%s' to '%s'", pattern, str ); */
-	if( (glob = safestrpbrk( pattern, "*?[" )) ){
+	if( (glob = strpbrk( pattern, "*?[" )) ){
 		/* check the characters up to the glob length for a match */
 		len = glob - pattern;
 		c = *glob;
 	 	/* DEBUG4("glob_pattern: meta '%c', len %d", c, len ); */
-		if( (len == 0 || !safestrncasecmp( pattern, str, len )) ){
+		if( (len == 0 || !strncasecmp( pattern, str, len )) ){
 			/* matched: pattern xxxx*  to xxxx
 			 * now we have to do the remainder. We simply check for rest
 			 */
@@ -44,7 +44,7 @@ int glob_pattern( char *pattern, const char *str )
 				/* now we check for the characters in the pattern
 				 * this can have the format N or N-M
 				 */
-				glob = safestrchr( pattern, ']' );
+				glob = strchr( pattern, ']' );
 				if( glob == 0 ){
 					return( 1 );
 				}
@@ -85,7 +85,7 @@ int glob_pattern( char *pattern, const char *str )
 			}
 		}
 	} else {
-		result = safestrcasecmp( pattern, str );
+		result = strcasecmp( pattern, str );
 	}
 	return( result );
 }

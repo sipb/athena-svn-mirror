@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# The tetex build creates these directories with the sticky bit on,
+# but pkgadd does not set that bit on a directory whose permission
+# without the sticky bit is 755.  To avoid complaints by the integrity
+# checker, clear the bit on the directory in the package.
+sed \
+  -e \
+  's| \(usr/athena/share/texmf/fonts/pk/ljfour\) 1755| \1 0755|' \
+  -e \
+  's| \(usr/athena/share/texmf/fonts/pk/ljfour/jknappen\) 1755| \1 0755|' \
+  -e \
+  's| \(usr/athena/share/texmf/fonts/pk/ljfour/jknappen/ec\) 1755| \1 0755|' \
+  -e \
+  's| \(usr/athena/share/texmf/fonts/tfm/jknappen\) 1755| \1 0755|' \
+  -e \
+  's| \(usr/athena/share/texmf/fonts/tfm/jknappen/ec\) 1755| \1 0755|'

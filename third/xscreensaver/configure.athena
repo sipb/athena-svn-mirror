@@ -1,0 +1,4 @@
+# $Id: configure.athena,v 1.5 2004-03-17 16:06:20 rbasch Exp $
+
+CFLAGS="-g -I/usr/athena/include -std=gnu89" \
+  ./configure --without-gl --without-pam

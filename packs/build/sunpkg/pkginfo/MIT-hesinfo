@@ -1,0 +1,3 @@
+PKG=MIT-hesinfo
+NAME=An Athena program to fetch and print Hesiod records
+DESC=The hesinfo utility fetches and prints Hesiod records in a convenient and easy-to-read format.  

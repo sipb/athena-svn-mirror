@@ -20,7 +20,7 @@
       <applyto>/apps/evolution/shell/default_folders/mail_path</applyto>
       <owner>evolution</owner>
       <type>string</type>
-      <default>evolution:/local/Inbox</default>
+      <default>evolution:/MIT mail/INBOX</default>
       <locale name="C">
         <short>Path to the default mail folder</short>
       </locale>

@@ -1,0 +1,3 @@
+PKG=MIT-autoconf
+NAME=GNU autoconf as modified for Athena workstations.
+DESC=A modified version of the normal GNU autoconf utility, for use on Athena workstations.  Athena workstations should normally have this package installed.

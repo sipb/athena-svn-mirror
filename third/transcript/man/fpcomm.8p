@@ -1,18 +1,17 @@
 .TH FPCOMM 8 "18 August 1992" "MiLAN Technology"
 \" Copyright (c) 1991,1992 Milan Technology. All Rights Reserved.
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/fpcomm.8p,v 1.1.1.1 1996-10-07 20:25:38 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/fpcomm.8p,v 1.2 1996-10-14 05:09:41 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
 .SH NAME
-fpcomm\(em\*(TS Ethernet communication filter for
-communicating with \*(PS printers via FastPort printer
+fpcomm \- TranScript Ethernet communication filter for
+communicating with PostScript printers via FastPort printer
 servers
 .SH "SYNOPSIS"
 .B XPSLIBDIRX/fpcomm
 .SH "DESCRIPTION"
 This is the low-level \*(TS Ethernet communication filter for use
-by the  
-System V or BSD line printer spooling system for communicating with a \*(PS
+by the line printer spooling system for communicating with a \*(PS
 printer via a MiLAN FastPort print server. It is called from the
 printer interface script for the printer.
 There are a number of options for fpcomm that get set from the 
@@ -110,8 +109,6 @@ location of the configuration file
 .SH "SEE ALSO"
 transcript(1), lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinterface(8),
 psint(8) 
-.br
-.I System V Line Printer Spooling Utilities
 .br
 .I 4.2BSD Line Printer Spooler Manual
 .SH AUTHOR

@@ -1,0 +1,5 @@
+P MIT-krb5    Version 5 of the Kerberos system
+P MIT-ares    An asynchronous resolver library 
+P MIT-hesiod  The Athena Hesiod name service library
+P MIT-libss   The Athena ss library
+P MIT-libet   The com_err library; tools for building error code tables

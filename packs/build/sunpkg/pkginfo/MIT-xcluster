@@ -1,0 +1,3 @@
+PKG=MIT-xcluster
+NAME=Utilities to display cluster usage status
+DESC=The cview and xcluster utilities display MIT maps and Athena cluster locations and current cluster usage statistics.

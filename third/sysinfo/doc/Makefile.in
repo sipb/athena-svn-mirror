@@ -1,5 +1,5 @@
 #
-# $Revision: 1.1.1.1 $
+# $Revision: 1.2 $
 #
 # Makefile for SysInfo doc files
 #
@@ -70,19 +70,19 @@ mcdall: $(MANHTMLFILES) $(MANPSFILES)
 	done
 
 install: $(FILES)
-	@-$(MKDIRHIER) $(MAN1); \
-	$(MKDIRHIER) $(MAN3); \
-	$(MKDIRHIER) $(MAN5); \
-	$(MKDIRHIER) $(DOCDIR); \
-	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) sysinfo.man $(MAN1)/sysinfo.$(S1)"; \
+	@-$(MKDIRHIER) $(DESTDIR)$(MAN1); \
+	$(MKDIRHIER) $(DESTDIR)$(MAN3); \
+	$(MKDIRHIER) $(DESTDIR)$(MAN5); \
+	$(MKDIRHIER) $(DESTDIR)$(DOCDIR); \
+	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) sysinfo.man $(DESTDIR)$(MAN1)/sysinfo.$(S1)"; \
 	echo $$cmd; $$cmd; \
-	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) mcsysinfo.man $(MAN3)/mcsysinfo.$(S3)"; \
+	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) mcsysinfo.man $(DESTDIR)$(MAN3)/mcsysinfo.$(S3)"; \
 	echo $$cmd; $$cmd; \
-	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) sysinfo.cf.man $(MAN5)/sysinfo.cf.$(S5)"; \
+	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) sysinfo.cf.man $(DESTDIR)$(MAN5)/sysinfo.cf.$(S5)"; \
 	echo $$cmd; $$cmd; \
 	for f in $(DOCFILES) ; do \
 		b=`echo $$f | sed -e 's;.*/;;'`; \
-		cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$f $(DOCDIR)/$${b}"; \
+		cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$f $(DESTDIR)$(DOCDIR)/$${b}"; \
 		echo $$cmd; \
 		$$cmd; \
 	done

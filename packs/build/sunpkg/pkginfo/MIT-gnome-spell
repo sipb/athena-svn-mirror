@@ -1,0 +1,3 @@
+PKG=MIT-gnome-spell
+NAME=Bonobo spell-checking component, for Athena
+DESC=The gnome-spell package provides a Bonobo component to allow programs such as Evolution to incorporate spell-checking functionality.

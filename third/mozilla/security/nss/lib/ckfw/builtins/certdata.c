@@ -32,22 +32,22 @@
  * GPL.
  */
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:21:01 $ $Name: not supported by cvs2svn $""; @(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:21:01 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: certdata.c,v $ $Revision: 1.2 $ $Date: 2003-11-15 00:12:29 $ $Name: not supported by cvs2svn $""; @(#) $RCSfile: certdata.c,v $ $Revision: 1.2 $ $Date: 2003-11-15 00:12:29 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef BUILTINS_H
 #include "builtins.h"
 #endif /* BUILTINS_H */
 
-static const CK_OBJECT_CLASS cko_certificate = CKO_CERTIFICATE;
-static const CK_CERTIFICATE_TYPE ckc_x_509 = CKC_X_509;
-static const CK_BBOOL ck_false = CK_FALSE;
 static const CK_TRUST ckt_netscape_valid = CKT_NETSCAPE_VALID;
+static const CK_OBJECT_CLASS cko_certificate = CKO_CERTIFICATE;
 static const CK_TRUST ckt_netscape_trusted_delegator = CKT_NETSCAPE_TRUSTED_DELEGATOR;
 static const CK_OBJECT_CLASS cko_data = CKO_DATA;
 static const CK_BBOOL ck_true = CK_TRUE;
-static const CK_OBJECT_CLASS cko_netscape_builtin_root_list = CKO_NETSCAPE_BUILTIN_ROOT_LIST;
 static const CK_OBJECT_CLASS cko_netscape_trust = CKO_NETSCAPE_TRUST;
+static const CK_BBOOL ck_false = CK_FALSE;
+static const CK_CERTIFICATE_TYPE ckc_x_509 = CKC_X_509;
+static const CK_OBJECT_CLASS cko_netscape_builtin_root_list = CKO_NETSCAPE_BUILTIN_ROOT_LIST;
 #ifdef DEBUG
 static const CK_ATTRIBUTE_TYPE nss_builtins_types_0 [] = {
  CKA_CLASS,  CKA_TOKEN,  CKA_PRIVATE,  CKA_MODIFIABLE,  CKA_LABEL,  CKA_APPLICATION,  CKA_VALUE
@@ -440,6 +440,12 @@ static const CK_ATTRIBUTE_TYPE nss_builtins_types_128 [] = {
 static const CK_ATTRIBUTE_TYPE nss_builtins_types_129 [] = {
  CKA_CLASS,  CKA_TOKEN,  CKA_PRIVATE,  CKA_MODIFIABLE,  CKA_LABEL,  CKA_CERT_SHA1_HASH,  CKA_CERT_MD5_HASH,  CKA_ISSUER,  CKA_SERIAL_NUMBER,  CKA_TRUST_SERVER_AUTH,  CKA_TRUST_EMAIL_PROTECTION,  CKA_TRUST_CODE_SIGNING
 };
+static const CK_ATTRIBUTE_TYPE nss_builtins_types_130 [] = {
+ CKA_CLASS,  CKA_TOKEN,  CKA_PRIVATE,  CKA_MODIFIABLE,  CKA_LABEL,  CKA_CERTIFICATE_TYPE,  CKA_SUBJECT,  CKA_ID,  CKA_ISSUER,  CKA_SERIAL_NUMBER,  CKA_VALUE
+};
+static const CK_ATTRIBUTE_TYPE nss_builtins_types_131 [] = {
+ CKA_CLASS,  CKA_TOKEN,  CKA_PRIVATE,  CKA_MODIFIABLE,  CKA_LABEL,  CKA_CERT_SHA1_HASH,  CKA_CERT_MD5_HASH,  CKA_ISSUER,  CKA_SERIAL_NUMBER,  CKA_TRUST_SERVER_AUTH,  CKA_TRUST_EMAIL_PROTECTION,  CKA_TRUST_CODE_SIGNING
+};
 #ifdef DEBUG
 static const NSSItem nss_builtins_items_0 [] = {
   { (void *)&cko_data, (PRUint32)sizeof(CK_OBJECT_CLASS) },
@@ -448,7 +454,7 @@ static const NSSItem nss_builtins_items_0 [] = {
   { (void *)&ck_false, (PRUint32)sizeof(CK_BBOOL) },
   { (void *)"CVS ID", (PRUint32)7 },
   { (void *)"NSS", (PRUint32)4 },
-  { (void *)"@(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:21:01 $ $Name: not supported by cvs2svn $""; @(#) $RCSfile: certdata.c,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 13:21:01 $ $Name: not supported by cvs2svn $", (PRUint32)179 }
+  { (void *)"@(#) $RCSfile: certdata.c,v $ $Revision: 1.2 $ $Date: 2003-11-15 00:12:29 $ $Name: not supported by cvs2svn $""; @(#) $RCSfile: certdata.c,v $ $Revision: 1.2 $ $Date: 2003-11-15 00:12:29 $ $Name: not supported by cvs2svn $", (PRUint32)186 }
 };
 #endif /* DEBUG */
 static const NSSItem nss_builtins_items_1 [] = {
@@ -8075,6 +8081,101 @@ static const NSSItem nss_builtins_items_129 [] = {
   { (void *)&ckt_netscape_trusted_delegator, (PRUint32)sizeof(CK_TRUST) },
   { (void *)&ckt_netscape_trusted_delegator, (PRUint32)sizeof(CK_TRUST) }
 };
+static const NSSItem nss_builtins_items_130 [] = {
+  { (void *)&cko_certificate, (PRUint32)sizeof(CK_OBJECT_CLASS) },
+  { (void *)&ck_true, (PRUint32)sizeof(CK_BBOOL) },
+  { (void *)&ck_false, (PRUint32)sizeof(CK_BBOOL) },
+  { (void *)&ck_false, (PRUint32)sizeof(CK_BBOOL) },
+  { (void *)"MIT Certification Authority - Massachusetts Institute of Technology", (PRUint32)68 },
+  { (void *)&ckc_x_509, (PRUint32)sizeof(CK_CERTIFICATE_TYPE) },
+  { (void *)"\060\173\061\013\060\011\006\003\125\004\006\023\002\125\123\061"
+"\026\060\024\006\003\125\004\010\023\015\115\141\163\163\141\143"
+"\150\165\163\145\164\164\163\061\056\060\054\006\003\125\004\012"
+"\023\045\115\141\163\163\141\143\150\165\163\145\164\164\163\040"
+"\111\156\163\164\151\164\165\164\145\040\157\146\040\124\145\143"
+"\150\156\157\154\157\147\171\061\044\060\042\006\003\125\004\013"
+"\023\033\115\111\124\040\103\145\162\164\151\146\151\143\141\164"
+"\151\157\156\040\101\165\164\150\157\162\151\164\171"
+, (PRUint32)125 },
+  { (void *)"0", (PRUint32)2 },
+  { (void *)"\060\173\061\013\060\011\006\003\125\004\006\023\002\125\123\061"
+"\026\060\024\006\003\125\004\010\023\015\115\141\163\163\141\143"
+"\150\165\163\145\164\164\163\061\056\060\054\006\003\125\004\012"
+"\023\045\115\141\163\163\141\143\150\165\163\145\164\164\163\040"
+"\111\156\163\164\151\164\165\164\145\040\157\146\040\124\145\143"
+"\150\156\157\154\157\147\171\061\044\060\042\006\003\125\004\013"
+"\023\033\115\111\124\040\103\145\162\164\151\146\151\143\141\164"
+"\151\157\156\040\101\165\164\150\157\162\151\164\171"
+, (PRUint32)125 },
+  { (void *)"\002\001\000"
+, (PRUint32)3 },
+  { (void *)"\060\202\002\145\060\202\001\316\002\001\000\060\015\006\011\052"
+"\206\110\206\367\015\001\001\004\005\000\060\173\061\013\060\011"
+"\006\003\125\004\006\023\002\125\123\061\026\060\024\006\003\125"
+"\004\010\023\015\115\141\163\163\141\143\150\165\163\145\164\164"
+"\163\061\056\060\054\006\003\125\004\012\023\045\115\141\163\163"
+"\141\143\150\165\163\145\164\164\163\040\111\156\163\164\151\164"
+"\165\164\145\040\157\146\040\124\145\143\150\156\157\154\157\147"
+"\171\061\044\060\042\006\003\125\004\013\023\033\115\111\124\040"
+"\103\145\162\164\151\146\151\143\141\164\151\157\156\040\101\165"
+"\164\150\157\162\151\164\171\060\036\027\015\071\066\060\067\061"
+"\065\062\060\062\063\060\060\132\027\015\060\066\060\067\061\063"
+"\062\060\062\063\060\060\132\060\173\061\013\060\011\006\003\125"
+"\004\006\023\002\125\123\061\026\060\024\006\003\125\004\010\023"
+"\015\115\141\163\163\141\143\150\165\163\145\164\164\163\061\056"
+"\060\054\006\003\125\004\012\023\045\115\141\163\163\141\143\150"
+"\165\163\145\164\164\163\040\111\156\163\164\151\164\165\164\145"
+"\040\157\146\040\124\145\143\150\156\157\154\157\147\171\061\044"
+"\060\042\006\003\125\004\013\023\033\115\111\124\040\103\145\162"
+"\164\151\146\151\143\141\164\151\157\156\040\101\165\164\150\157"
+"\162\151\164\171\060\201\237\060\015\006\011\052\206\110\206\367"
+"\015\001\001\001\005\000\003\201\215\000\060\201\211\002\201\201"
+"\000\323\320\353\347\121\265\063\165\246\330\243\204\352\002\160"
+"\134\317\234\040\340\013\003\213\216\106\156\025\045\341\167\366"
+"\153\304\160\335\324\026\013\314\021\210\061\070\013\356\174\131"
+"\044\127\351\215\315\165\370\122\143\335\063\014\360\117\237\265"
+"\374\221\256\062\205\214\032\165\143\031\230\206\036\222\043\262"
+"\207\363\365\311\246\242\227\150\362\354\262\032\255\263\365\355"
+"\011\352\314\347\274\264\144\120\025\346\127\000\032\172\306\336"
+"\376\341\060\130\132\135\253\273\264\034\021\354\144\301\323\244"
+"\125\002\003\001\000\001\060\015\006\011\052\206\110\206\367\015"
+"\001\001\004\005\000\003\201\201\000\001\031\023\044\023\023\050"
+"\020\333\124\015\000\044\030\312\002\065\047\257\273\071\003\305"
+"\342\166\271\173\111\371\035\221\313\122\375\266\011\122\304\355"
+"\163\223\067\067\342\314\157\030\250\077\107\236\026\306\140\061"
+"\201\072\041\177\370\047\005\052\210\346\121\015\256\044\062\271"
+"\305\152\004\002\276\117\140\225\322\202\222\152\354\145\014\124"
+"\071\133\124\164\122\242\205\154\200\276\115\051\363\165\276\340"
+"\325\200\160\153\334\071\132\023\150\306\354\016\207\267\061\046"
+"\046\126\055\206\273\114\200\173\103"
+, (PRUint32)617 }
+};
+static const NSSItem nss_builtins_items_131 [] = {
+  { (void *)&cko_netscape_trust, (PRUint32)sizeof(CK_OBJECT_CLASS) },
+  { (void *)&ck_true, (PRUint32)sizeof(CK_BBOOL) },
+  { (void *)&ck_false, (PRUint32)sizeof(CK_BBOOL) },
+  { (void *)&ck_false, (PRUint32)sizeof(CK_BBOOL) },
+  { (void *)"MIT Certification Authority - Massachusetts Institute of Technology", (PRUint32)68 },
+  { (void *)"\275\131\175\003\063\156\345\155\223\252\026\131\172\202\360\113"
+"\021\317\062\332"
+, (PRUint32)20 },
+  { (void *)"\273\103\234\006\012\054\242\354\273\145\203\345\340\204\270\306"
+, (PRUint32)16 },
+  { (void *)"\060\173\061\013\060\011\006\003\125\004\006\023\002\125\123\061"
+"\026\060\024\006\003\125\004\010\023\015\115\141\163\163\141\143"
+"\150\165\163\145\164\164\163\061\056\060\054\006\003\125\004\012"
+"\023\045\115\141\163\163\141\143\150\165\163\145\164\164\163\040"
+"\111\156\163\164\151\164\165\164\145\040\157\146\040\124\145\143"
+"\150\156\157\154\157\147\171\061\044\060\042\006\003\125\004\013"
+"\023\033\115\111\124\040\103\145\162\164\151\146\151\143\141\164"
+"\151\157\156\040\101\165\164\150\157\162\151\164\171"
+, (PRUint32)125 },
+  { (void *)"\002\001\000"
+, (PRUint32)3 },
+  { (void *)&ckt_netscape_trusted_delegator, (PRUint32)sizeof(CK_TRUST) },
+  { (void *)&ckt_netscape_valid, (PRUint32)sizeof(CK_TRUST) },
+  { (void *)&ckt_netscape_valid, (PRUint32)sizeof(CK_TRUST) }
+};
 
 PR_IMPLEMENT_DATA(builtinsInternalObject)
 nss_builtins_data[] = {
@@ -8209,11 +8310,13 @@ nss_builtins_data[] = {
   { 11, nss_builtins_types_126, nss_builtins_items_126, {NULL} },
   { 12, nss_builtins_types_127, nss_builtins_items_127, {NULL} },
   { 11, nss_builtins_types_128, nss_builtins_items_128, {NULL} },
-  { 12, nss_builtins_types_129, nss_builtins_items_129, {NULL} }
+  { 12, nss_builtins_types_129, nss_builtins_items_129, {NULL} },
+  { 11, nss_builtins_types_130, nss_builtins_items_130, {NULL} },
+  { 12, nss_builtins_types_131, nss_builtins_items_131, {NULL} }
 };
 PR_IMPLEMENT_DATA(const PRUint32)
 #ifdef DEBUG
-  nss_builtins_nObjects = 129+1;
+  nss_builtins_nObjects = 131+1;
 #else
-  nss_builtins_nObjects = 129;
+  nss_builtins_nObjects = 131;
 #endif /* DEBUG */

@@ -1,0 +1,85 @@
+#! /bin/sh
+
+# This is the standard action script invoked by pkgadd for the "none"
+# (default) class in MIT/Athena packages.  It reads the package source
+# directory and the file list from standard input, and unpacks the
+# package's cpio archive on to the target base directory.
+
+scriptname=i.none
+
+# We run these commands by explicit path.
+cpio=/usr/bin/cpio
+bzcat=/usr/bin/bzcat
+gzcat=/usr/bin/gzcat
+zcat=/usr/bin/zcat
+
+# The PKGSAV environment variable is set to the package's save directory,
+# typically under /var/sadm/pkg/<package_name>.  We will stash the file
+# list there.
+filelist=${PKGSAV:?undefined}/filelist
+basedir=${BASEDIR:-/}
+
+umask 022
+
+# Read the package source directory from standard input, and make
+# sure the package contains a compressed archive.
+read pkgsrc
+if [ -z "$pkgsrc" ]; then
+  exit 0
+fi
+
+archive="$pkgsrc/archive/none"
+
+if [ -r "$archive.bz2" ]; then
+  uncompress=$bzcat
+  archive="$archive.bz2"
+elif [ -r "$archive.gz" ]; then
+  uncompress=$gzcat
+  archive="$archive.gz"
+elif [ -r "$archive.Z" ]; then
+  uncompress=$zcat
+  archive="$archive.Z"
+else
+  echo "ERROR : $scriptname cannot find compressed archive $archive."
+  exit 1
+fi
+
+if [ ! -x "$uncompress" ]; then
+  echo "Cannot find required executable $uncompress."
+  exit 1
+fi
+
+# If the save directory does not exist, stash the filelist in /tmp.
+if [ ! -d "$PKGSAV" ]; then
+  echo "WARNING : $scriptname cannot find save directory $PKGSAV."
+  filelist=/tmp/filelist$$
+  rm -rf $filelist
+fi
+
+cd $basedir || exit 1
+
+# Read the file list from standard input.
+# To be consistent with the Sun scripts, we conditionalize this on the
+# setting of the PKG_INIT_INSTALL variable, though that does not seem
+# to be set or used anywhere, and is not documented.
+if [ -z "$PKG_INIT_INSTALL" ]; then
+  while	read path ; do
+    echo "$path" >> $filelist
+  done
+  filelist_opt="-E $filelist"
+else
+  filelist_opt=
+fi
+
+# Uncompress and unpack the archive.
+$uncompress "$archive" | $cpio -C 512 -idukm $filelist_opt
+status=$?
+if [ $status -ne 0 ]; then
+  echo "Unarchiving of $archive failed with error $status"
+  exit 1
+fi
+
+# Clean up.
+rm -f "$filelist"
+
+exit 0

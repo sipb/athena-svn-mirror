@@ -83,7 +83,7 @@ while test $# -gt 0; do
     shift
 done
 
-the_libs="$the_libs -L$libdir -loaf `@ORBIT_CONFIG@ --use-service=name --libs server`"
+the_libs="$the_libs -L$libdir -loaf `@ORBIT_CONFIG@ --use-service=name --libs server` @INTLLIBS@"
 
 if test $includedir != /usr/include ; then
   the_flags="$the_flags -I$includedir `@ORBIT_CONFIG@ --cflags server`"

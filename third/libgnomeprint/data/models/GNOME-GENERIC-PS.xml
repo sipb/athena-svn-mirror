@@ -16,7 +16,7 @@
     </Option>
     <Option Id="Output">
       <Option Id="Media">
-        <Option Id="PhysicalSize" Type="List" Default="A4">
+        <Option Id="PhysicalSize" Type="List" Default="USLetter">
           <Fill Ref="Globals.Media.PhysicalSize"/>
         </Option>
 <!-- Tinkering with these may, or may not work -->

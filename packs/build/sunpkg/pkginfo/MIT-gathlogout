@@ -1,0 +1,3 @@
+PKG=MIT-gathlogout
+NAME=Confirms user desire to logout and does so
+DESC=gathlogout displays a dialog confirming that the user wishes to log out.  If the user says yes, gathlogout logs the user out.

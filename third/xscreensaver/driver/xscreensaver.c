@@ -152,6 +152,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <netdb.h>	/* for gethostbyname() */
+#include <signal.h>
 #ifdef HAVE_XMU
 # ifndef VMS
 #  include <X11/Xmu/Error.h>
@@ -202,6 +203,18 @@ static XrmOptionDescRec options [] = {
 
   /* useful for debugging */
   { "-no-capture-stderr",  ".captureStderr",	XrmoptionNoArg, "off" },
+
+  /* Athena additions */
+  { "-start-locked",	   ".startLocked",	XrmoptionNoArg, "on" },
+  { "-no-start-locked",	   ".startLocked",	XrmoptionNoArg, "off" },
+#if 0
+  /* Former Athena additions which don't seem to fit in now that most
+     command-line options have been removed.
+   */
+  { "-lock-command",	   ".lockCommand",	XrmoptionSepArg, 0 },
+  { "-unlock-command",	   ".unlockCommand",	XrmoptionSepArg, 0 },
+  { "-passwd",		   ".passwd",		XrmoptionSepArg, 0 },
+#endif
 
   /* There's really no reason to have these command-line args; they just
      lead to confusion when the .xscreensaver file has conflicting values.
@@ -511,7 +524,7 @@ lock_initialization (saver_info *si, int *argc, char **argv)
 #else /* !NO_LOCKING */
 
   /* Finish initializing locking, now that we're out of privileged code. */
-  if (! lock_init (*argc, argv, si->prefs.verbose_p))
+  if (! lock_init (&si->prefs))
     {
       si->locking_disabled_p = True;
       si->nolock_reason = "error getting password";
@@ -559,7 +572,6 @@ lock_initialization (saver_info *si, int *argc, char **argv)
 
 #endif /* NO_LOCKING */
 }
-
 
 /* Open the connection to the X server, and intern our Atoms.
  */
@@ -1153,16 +1165,18 @@ main_loop (saver_info *si)
 {
   saver_preferences *p = &si->prefs;
   Bool ok_to_unblank;
+  pid_t lock_command_pid = 0;
 
   while (1)
     {
       Bool was_locked = False;
 
-      if (p->verbose_p)
+      if (p->verbose_p && !p->start_locked_p)
 	fprintf (stderr, "%s: awaiting idleness.\n", blurb());
 
       check_for_leaks ("unblanked A");
-      sleep_until_idle (si, True);
+      if (!p->start_locked_p)
+	sleep_until_idle (si, True);
       check_for_leaks ("unblanked B");
 
       if (p->verbose_p)
@@ -1246,11 +1260,14 @@ main_loop (saver_info *si)
 
         si->emergency_lock_p = False;
 
-        if (!si->demoing_p &&           /* if not going into demo mode */
+        if ((!si->demoing_p &&          /* if not going into demo mode */
             p->lock_p &&                /* and locking is enabled */
             !si->locking_disabled_p &&  /* and locking is possible */
-            lock_timeout == 0)          /* and locking is not timer-deferred */
+            lock_timeout == 0) ||       /* and locking is not timer-deferred */
+	    p->start_locked_p) {        /* OR we're starting locked */
           set_locked_p (si, True);      /* then lock right now. */
+	  si->locked_due_to_idle_p = False;
+	}
 
         /* locked_p might be true already because of the above, or because of
            the LOCK ClientMessage.  But if not, and if we're supposed to lock
@@ -1262,6 +1279,23 @@ main_loop (saver_info *si)
           si->lock_id = XtAppAddTimeOut (si->app, lock_timeout,
                                          activate_lock_timer,
                                          (XtPointer) si);
+
+      if (si->locked_p && p->lock_command && *p->lock_command)
+	{
+	  lock_command_pid = fork ();
+	  switch (lock_command_pid)
+	    {
+	    case -1:
+	      fprintf (stderr, "%s: Could not fork to run lock command.\n",
+		       blurb());
+	      break;
+
+	    case 0:
+	      setsid ();
+	      system (p->lock_command);
+	      _exit (0);
+	    }
+	}
       }
 #endif /* !NO_LOCKING */
 
@@ -1320,6 +1354,29 @@ main_loop (saver_info *si)
       /* Kill before unblanking, to stop drawing as soon as possible. */
       kill_screenhack (si);
       unblank_screen (si);
+
+      if (si->locked_p)
+	{
+	  if (lock_command_pid > 0)
+	    {
+	      kill (-lock_command_pid, SIGTERM);
+	      lock_command_pid = 0;
+	    }
+	  if (p->unlock_command && *p->unlock_command)
+	    {
+	      switch (lock_command_pid)
+		{
+		case -1:
+		  fprintf (stderr, "%s: Could not fork to run unlock "
+			   "command.\n", blurb());
+		  break;
+
+		case 0:
+		  system (p->unlock_command);
+		  _exit (0);
+		}
+	    }
+	}
 
       set_locked_p (si, False);
       si->emergency_lock_p = False;
@@ -1394,6 +1451,9 @@ main_loop (saver_info *si)
           }
         XSync (si->dpy, False);
       }
+
+      if (p->start_locked_p)
+	break;
     }
 }
 
@@ -1444,6 +1504,8 @@ main (int argc, char **argv)
         if (ensure_no_screensaver_running (si->dpy, si->screens[i].screen))
           exit (1);
     }
+
+  load_init_file (p);
 
   lock_initialization (si, &argc, argv);
   print_lock_failure_banner (si);
@@ -1658,7 +1720,13 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
   if (event->xclient.message_type != XA_SCREENSAVER ||
       event->xclient.format != 32)
     {
-      bogus_clientmessage_warning (si, event);
+      /* Athena mod: sometimes we get bogus GNOME messages when
+	 windows are minimized or unminimized; it's probably sawfish's
+	 fault.  Suppress the resulting warnings unless we are verbose,
+	 since it seems to be harmless.  We can probably revert this if
+	 and when we switch to metacity. */
+      if (p->verbose_p)
+	bogus_clientmessage_warning (si, event);
       return False;
     }
 
@@ -1927,6 +1995,7 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
 	  sprintf (buf, "LOCK ClientMessage received; %s", response);
 	  clientmessage_response (si, window, False, buf, response);
 	  set_locked_p (si, True);
+	  si->locked_due_to_idle_p = False;
 	  si->selection_mode = 0;
 	  si->demoing_p = False;
 
@@ -2252,7 +2321,7 @@ display_is_on_console_p (saver_info *si)
 void
 check_for_leaks (const char *where)
 {
-#ifdef HAVE_SBRK
+#ifdef HAVE_SBRK_notdef
   static unsigned long last_brk = 0;
   int b = (unsigned long) sbrk(0);
   if (last_brk && last_brk < b)

@@ -215,12 +215,6 @@ int	flowcontrol;			/* Since emacs can alter the
 					   the original characteristics */
 int	confirm = 0;			/* ask if ~. is given before dying. */
 int	litout;
-#if defined(hpux) || defined(__hpux)
-char	*speeds[] =
-{ "0", "50", "75", "110", "134", "150", "200", "300", "600",
-    "900", "1200", "1800", "2400", "3600", "4800", "7200", "9600",
-    "19200", "38400", "EXTA", "EXTB" };
-#else
 /* Solaris note: There are higher values we could use.  But Casper Dik
    <Casper.Dik@Holland.Sun.Com> mentions in article
    <casper.938167062@uk-usenet.uk.sun.com> in comp.protocols.kerberos
@@ -233,9 +227,18 @@ char	*speeds[] =
    115200, 153600, 230400, 307200, 460800 as the higher values.
    (article <sh6711s713.fsf@lnscu4.lns.cornell.edu> in
    comp.protocols.kerberos, 1999-09-23) */
-char    *speeds[] =
-{ "0", "50", "75", "110", "134", "150", "200", "300",
-    "600", "1200", "1800", "2400", "4800", "9600", "19200", "38400" };
+char *speeds[] = {
+	"0", "50", "75", "110", "134", "150", "200", "300", "600",
+	"1200", "1800", "2400", "4800", "9600", "19200", "38400",
+};
+#define	NSPEEDS	(sizeof(speeds) / sizeof(speeds[0]))
+
+#ifdef POSIX_TERMIOS
+/* this must be in sync with the list above */
+speed_t b_speeds[] = {
+	B0, B50, B75, B110, B134, B150, B200, B300, B600,
+	B1200, B1800, B2400, B4800, B9600, B19200, B38400,
+};
 #endif
 char	term[256] = "network";
 
@@ -593,20 +596,17 @@ main(argc, argv)
     }
 #ifdef POSIX_TERMIOS
 	if (tcgetattr(0, &ttyb) == 0) {
-		int ospeed = cfgetospeed (&ttyb);
+		int i;
+		speed_t ospeed = cfgetospeed (&ttyb);
 
                 term[sizeof(term) - 1] = '\0';
 		(void) strncat(term, "/", sizeof(term) - 1 - strlen(term));
-		if (ospeed >= 50)
-			/* On some systems, ospeed is the baud rate itself,
-			   not a table index.  */
-			sprintf (term + strlen (term), "%d", ospeed);
-		else if (ospeed >= sizeof(speeds)/sizeof(char*))
-			/* Past end of table, but not high enough to
-			   look like a real speed.  */
-			(void) strncat (term, speeds[sizeof(speeds)/sizeof(char*) - 1], sizeof(term) - 1 - strlen(term));
-		else {
-			(void) strncat(term, speeds[ospeed], sizeof(term) - 1 - strlen(term));
+		for (i = 0; i < NSPEEDS; i++) {
+		    if (b_speeds[i] == ospeed) {
+			(void) strncat(term + strlen(term), speeds[i],
+				       sizeof(term) - 1 - strlen(term));
+			break;
+		    }
 		}
                 term[sizeof (term) - 1] = '\0';
 	}
@@ -719,6 +719,7 @@ main(argc, argv)
     rem = rcmd(&host, port,
 	       null_local_username ? "" : pwd->pw_name,
 	       name ? name : pwd->pw_name, term, 0);
+    rcmd_stream_init_normal();
 #endif /* KERBEROS */
 
     if (rem < 0)

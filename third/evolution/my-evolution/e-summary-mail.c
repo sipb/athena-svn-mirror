@@ -185,7 +185,7 @@ e_summary_mail_generate_html (ESummary *summary)
 	mail = summary->mail;
 	string = g_string_new ("<dl><dt><img src=\"myevo-mail-summary.png\" "
 	                       "align=\"middle\" alt=\"\" width=\"48\" "
-	                       "height=\"48\"> <b><a href=\"evolution:/local/Inbox\">");
+	                       "height=\"48\"> <b><a href=\"evolution:/MIT mail/INBOX\">");
 	g_string_append (string, _("Mail summary"));
 	g_string_append (string, "</a></b></dt><dd><table numcols=\"2\" width=\"100%\">");
 	

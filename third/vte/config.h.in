@@ -63,7 +63,7 @@
 /* Define to 1 if you have the `ptsname_r' function. */
 #undef HAVE_PTSNAME_R
 
-/* Define to 1 if you have the `sendmsg' function. */
+/* Define if you have the `sendmsg' function. */
 #undef HAVE_SENDMSG
 
 /* Define if you have the `socket' function. */
@@ -176,3 +176,12 @@
 
 /* Use all features. */
 #undef _GNU_SOURCE
+
+/* Needed to get declarations for msg_control and msg_controllen on Solaris */
+#undef _XOPEN_SOURCE
+
+/* Needed to get declarations for msg_control and msg_controllen on Solaris */
+#undef _XOPEN_SOURCE_EXTENDED
+
+/* Needed to get declarations for msg_control and msg_controllen on Solaris */
+#undef __EXTENSIONS__

@@ -1,0 +1,12 @@
+Name: athena-libsoup
+Summary: libsoup, an HTTP implementation, for Athena
+License: LGPL
+Group: Libraries/Network
+
+%description
+libsoup is an HTTP library implementation in C.  libsoup uses the Glib
+main loop and is designed to work well with GTK applications.  This
+enables GNOME applications to access HTTP servers on the network in a
+completely asynchronous fashion, very similar to the Gtk+ programming
+model (a synchronous operation mode is also supported for those who
+want it).

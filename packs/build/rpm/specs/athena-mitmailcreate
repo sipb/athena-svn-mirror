@@ -1,0 +1,10 @@
+Name: athena-mitmailcreate
+Summary: Create, remove, or subscribe or unsubscribe to IMAP folders
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+This package contains command line tools which create, remove, or
+subscribe or unsubscribe to folders on an IMAP server.

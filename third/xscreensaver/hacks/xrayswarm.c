@@ -279,9 +279,12 @@ static int initGraphics(void) {
       color.green=colors[n++]<<8;
       color.blue=colors[n++]<<8;
       color.flags=DoRed|DoGreen|DoBlue;
-      XAllocColor(dpy,cmap,&color);
-      xgcv.foreground=color.pixel;
-      fgc[i] = XCreateGC(dpy, win, GCForeground | GCFunction,&xgcv);
+      if (XAllocColor(dpy,cmap,&color)) {
+	xgcv.foreground=color.pixel;
+	fgc[i] = XCreateGC(dpy, win, GCForeground | GCFunction,&xgcv);
+      } else {
+	fgc[i] = fgc[i%2];
+      }
     }
   }
   cgc = XCreateGC(dpy,win,GCForeground|GCFunction,&xgcv);

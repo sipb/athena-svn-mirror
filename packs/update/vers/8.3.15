@@ -1,0 +1,11 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	;;
+
+sgi)
+	# Remove Netscape app-defaults file.
+	rm -rf /usr/lib/X11/app-defaults/Netscape
+	;;
+esac

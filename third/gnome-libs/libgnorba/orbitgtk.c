@@ -122,6 +122,7 @@ _gnorba_get_cookie_reliably (const char *setme)
 	char buf[64];
 	char *random_string = NULL;
 	char *name;
+	char *session_dir;
 	int fd = -1;
 	
 	pwent = getpwuid(getuid());
@@ -130,7 +131,12 @@ _gnorba_get_cookie_reliably (const char *setme)
 		goto out;
 	}
 	
-	name = g_strconcat ("/tmp/orbit-", pwent->pw_name, "/cookie", NULL);
+	/* Athena modification: Use the per-session temporary directory. */
+	session_dir = getenv("ATHENA_SESSION_TMPDIR");
+	if (session_dir)
+		name = g_strconcat (session_dir, "/orbit/cookie", NULL);
+	else
+		name = g_strconcat ("/tmp/orbit-", pwent->pw_name, "/cookie", NULL);
 	
 	if(setme) {
 		

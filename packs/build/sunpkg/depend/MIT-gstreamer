@@ -1,0 +1,5 @@
+P MIT-gettext    GNU library for producing multi-lingual messages, for Athena
+P MIT-glib2      The glib utility library (version 2), for Athena
+P MIT-libiconv   GNU libiconv character set conversion library, for Athena
+P MIT-libxml2    An XML library used by GNOME, for Athena
+P MIT-popt       A C library for parsing command line parameters, for Athena

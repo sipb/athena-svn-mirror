@@ -752,6 +752,12 @@ g_get_any_init (void)
 	      g_free (homepath);
 	    }
 	}
+#else /* G_OS_WIN32 */
+
+      /* Let HOME override the passwd file if the user really wants. */
+      if (g_getenv ("G_USE_HOME_FOR_HOMEDIR"))
+	g_home_dir = g_strdup (g_getenv ("HOME"));
+
 #endif /* G_OS_WIN32 */
       
 #ifdef HAVE_PWD_H

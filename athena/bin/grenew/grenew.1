@@ -1,0 +1,32 @@
+.\" 
+.\" modified from the manpage for "from"
+.\" $Id: grenew.1,v 1.1 2001-07-11 18:36:58 ghudson Exp $
+.\"
+.TH grenew 1
+.DA June 23, 2001
+.SH NAME
+grenew - get kerberos tickets, tokens, mappings, and zephyr authentication
+.SH SYNOPSIS
+grenew [ user ]
+.SH DESCRIPTION
+\fIgrenew\fR is a graphical interface duplicating the
+functionality of the \fIrenew\fR program. It first prompts the user
+for his or her password, and, using that password, attempts to
+get the user a new kerberos ticket-granting ticket.  The new 
+ticket will automatically expire 10 hours later. 
+
+If \fIgrenew\fR was able to obtain these tickets, it uses them, 
+and \fIfsid\fR, to reauthenticate the user to any file
+servers from which he or she has file systems attached. This
+re-authentication, like the new kerberos tickets, automatically
+expires after 10 hours.
+
+\fIgrenew\fR then attempts to re-authenticate the user to the
+zephyr servers by using \fIzctl\fR. This is necessary to
+authenticate zephyrgrams.
+
+.SH "AUTHORS"
+Neil Sanchala
+Copyright 2001 by the Massachusetts Institute of Technology.
+.SH "SEE ALSO"
+\fIkinit\fR(1), \fIrenew\fR(1), \fIfsid\fR(1), \fIzctl\fR(1)

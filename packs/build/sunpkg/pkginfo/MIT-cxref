@@ -1,0 +1,3 @@
+PKG=MIT-cxref
+NAME=A utility to cross-reference C source files.
+DESC=The cxref utility reads C source files and writes a cross reference of all the identifiers and constants in the files.  

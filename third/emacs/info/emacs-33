@@ -227,8 +227,8 @@ Key (Character) Index
 * C-h:                                   Help.
 * C-h a:                                 Apropos.
 * C-h b:                                 Misc Help.
-* C-h C:                                 Coding Systems.
 * C-h c:                                 Key Help.
+* C-h C:                                 Coding Systems.
 * C-h C-\:                               Select Input Method.
 * C-h C-c:                               Misc Help.
 * C-h C-d:                               Misc Help.
@@ -248,8 +248,8 @@ Key (Character) Index
 * C-h l:                                 Misc Help.
 * C-h m:                                 Misc Help.
 * C-h n:                                 Misc Help.
-* C-h P:                                 Misc Help.
 * C-h p:                                 Library Keywords.
+* C-h P:                                 Misc Help.
 * C-h s:                                 Syntax.
 * C-h t:                                 Basic.
 * C-h w:                                 Name Help.
@@ -557,7 +557,6 @@ Key (Character) Index
 * m (Calendar mode):                     Diary Commands.
 * M (Calendar mode):                     Lunar Phases.
 * M (Dired):                             Operating on Files.
-* m (Dired):                             Marks vs Flags.
 * m (Rmail):                             Rmail Reply.
 * M-!:                                   Single Shell.
 * M-$:                                   Spelling.

@@ -754,7 +754,7 @@ NS_IMETHODIMP nsBrowserContentHandler::GetDefaultArgs(PRUnichar **aDefaultArgs)
 
   nsCOMPtr<nsIPref> prefs(do_GetService(kPrefServiceCID));
   if (prefs) {
-    if (NeedHomepageOverride(prefs)) {
+    if (NeedHomepageOverride(prefs) && 0) {
       rv = prefs->GetLocalizedUnicharPref(PREF_HOMEPAGE_OVERRIDE_URL, aDefaultArgs);
       if (NS_SUCCEEDED(rv) && *aDefaultArgs)
         return NS_OK;

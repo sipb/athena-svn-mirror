@@ -1,0 +1,3 @@
+PKG=MIT-authwatch
+NAME=Warn user of expiring authentication
+DESC=This program runs in the background and warns the user if their Kerberos authentication is about to expire.

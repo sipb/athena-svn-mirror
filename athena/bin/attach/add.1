@@ -1,0 +1,174 @@
+.\" $Id: add.1,v 1.10 2001-03-17 16:51:54 ghudson Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH ADD 1
+.SH NAME
+add \- attach a filesystem, add it to your path and manpath
+
+.SH SYNOPSIS
+add [-f] [-r] [-q] [-w] [-a \fIattachopts\fP] filesystemname filesystemname ...
+
+add [-f] [-r] pathname pathname ...
+
+add [-p]
+
+.SH DESCRIPTION
+\fIadd\fR is an alias provided by the standard Athena dotfiles.  It is
+intended to make the process of using software that is stored in
+remote filesystems easier.  In normal use, it requires one argument,
+the name of a filesystem to \fIadd\fR.  In that case, it adds the
+appropriate binary directory (arch/sun4x_56/bin, decmipsbin, etc.) to
+the end of your command search path so that you can find programs in
+the locker, and adds the man directory to your MANPATH so that
+\fIman\fR can find manpages that may be installed in that filesystem.
+In addition, if no binary directory matches the current system, the
+\fIATHENA_SYS_COMPAT\fR environment variable (see below) may be
+consulted for a list of compatible binary directories.  (See
+.BR lockers (7)
+for suggestions on how to organize and maintain
+lockers.)
+
+A pathname (starting with a ``.'' or ``/'') may be specified in place
+of a filesystem name. In this case, the string is added directly to
+the path rather than being interpreted as a lockername and resolved
+into a pathname. Note that filesystem names and pathnames may not be
+mixed in a single invocation of add.
+
+When no arguments are used, \fIadd\fR will print out the (possibly
+abbreviated) value of the user's PATH variable.
+
+\fIadd\fR may also take multiple filesystem arguments. In this case,
+\fIadd locker1 locker2 locker3\fR is functionally equivalent to,
+though more efficient than, \fIadd locker1; add locker2; add
+locker3\fR. Thus when adding lockers to the front of your PATH, they
+will appear as \fIlocker3 locker2 locker1\fR at the front of your
+PATH.
+
+\fIadd\fR may be used interactively while logged in, or in your
+~/.environment file.
+
+Typing "alias add" in your C shell will reveal that it is an alias
+which evaluates the output of a special invocation of
+.BR attach (1)\fP.
+Note that Bourne shell output is also available.
+
+.SH OPTIONS
+\fIadd\fR accepts the following options:
+.TP 9
+.B \-f
+\fIadd\fR normally adds lockers to the end of your path. This option
+causes it to add lockers to the front of your path instead. If the
+locker is already in your path but not at the front, it will be moved
+there. However, when -f is used in your ~/.environment file, it does
+not affect lockers already in your path.
+
+This feature is useful when you want to cause programs in the lockers
+to replace programs found in other places, such as on the system
+packs. You usually want lockers added to the end of your path,
+however, to prevent the possibility of locker maintainers replacing
+important binaries with things you don't expect.
+.TP 9
+.B \-r
+This option causes \fIadd\fR to remove the specified lockers or
+pathnames from your path.
+.TP 9
+.B \-w
+This option causes \fIadd\fR to warn you in the event a locker you have
+asked to be added does not support your platform, or if a platform from
+\fIATHENA_SYS_COMPAT\fR (see below) is used.  In the former case, a
+binary directory will not be added to your PATH, but if a man
+directory exists it will still be added to your MANPATH. \fIadd\fR
+normally says nothing in either case.
+.TP 9
+.B \-p
+This option causes \fIadd\fR to print the contents of the user's PATH. In
+the case where a path element is of the form /mit/foo/arch/$ATHENA_SYS/bin,
+\fIadd\fR substitutes the string {add foo} for that path element. This
+serves to shorten and make more readable the user's PATH. In addition,
+if a path element is using compatibility, such as a sun4x_56 system
+having a sun4x_55 directory in its path, an asterisk will be added, as
+in {add foo*}.
+.TP 9
+.B \-P athena_path
+This option is used for supporting the use of \fIadd\fR in the user's
+~/.environment file. The user normally need never specify this option
+as that is taken care of by a special version of the alias that is in
+effect when the .environment file is run. This option is used to pass
+the \fIathena_path\fR shell variable to \fIadd\fR on the command line,
+and cause \fIadd\fR to modify that variable in its output instead of
+the environment variable PATH as it normally does. In the C shell
+case, \fIathena_path\fR is space-separated, and so must be quoted in
+the shell in order to be passed to \fIadd\fR as a single argument. In
+the Bourne shell case, \fIathena_path\fR is colon-separated, so this
+isn't necessary.
+.TP 9
+.B \-a
+This option causes \fIadd\fR to pass all remaining options on the command
+line directly to \fIattach\fR. This is useful for passing flags meant to
+be interpreted by \fIattach\fR and not by \fIadd\fR.
+.TP 9
+.B \-b
+This option causes \fIadd\fR to produce output suitable for interpretation
+by the Bourne shell. Note that this option is only intended for use by
+shell aliases or subroutines which call attach directly. Using this option
+explicitly on the command line with the C shell add alias will cause the
+alias to fail.
+.TP 9
+.B \-q
+This option is obsolete.
+.SH VARIABLES
+The shell variable \fIadd_flags\fR may be set to specify default flags
+that \fIadd\fR is intended to use for all commands. For example, if
+you desire that attach always give warnings for lockers that do not
+have binary directories supporting your platform, you might put a
+``set add_flags = "-w"'' in your ~/.cshrc.mine file.
+
+The environment variable \fIATHENA_SYS\fR is used to determine the
+sysname value when determining path names for new-style paths.
+
+The environment variable \fIATHENA_SYS_COMPAT\fR is a colon-separated
+list of fallback sysname values which are known to be generally
+compatible with the current system. Thus, on a Solaris 2.6 machine,
+\fIATHENA_SYS\fR may be set to sun4x_56, with \fIATHENA_SYS_COMPAT\fR
+set to sun4x_55:sun4m_54. Then if there is no arch/sun4x_56 directory
+available, arch/sun4x_55 will be checked, etc.
+
+.SH NOTE
+Most of the work of the \fIadd\fR alias is done by
+.BR attach (1)\fR,
+by giving it the option \fI-Padd\fR.
+
+.SH FILES
+.PP
+/usr/athena/lib/init/cshrc    global Athena cshrc file
+.br
+~/.cshrc                      user's cshrc file
+~/.environment                user's environment file
+
+.SH "SEE ALSO"
+attach(1), athdir(1), man(1), csh(1), lockers(7)
+
+.SH BUGS
+All of \fIadd\fR's visible output is sent to stderr. The stdout pipe
+is use strictly for the output of commands the shell is intended to
+evaluate.
+
+.SH AUTHORS
+Craig Fields, MIT Information Systems
+.br
+Dan Winship, MIT Information Systems
+.PP
+Copyright 1998 Massachusetts Institute of Technology

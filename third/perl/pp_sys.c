@@ -3839,6 +3839,12 @@ PP(pp_readdir)
             SvTAINTED_on(sv);
 #endif
         XPUSHs(sv_2mortal(sv));
+	sv = get_sv("_INO", TRUE);
+#ifdef BSD
+	sv_setiv(sv, dp->d_fileno);
+#else
+	sv_setiv(sv, dp->d_ino);
+#endif
     }
     while (gimme == G_ARRAY);
 

@@ -114,11 +114,11 @@ AC_SUBST(gnomelocaledir)
 
 AC_CHECK_LIB(m, floor)
 
-AC_CHECK_HEADERS(dlfcn.h locale.h)
+AC_CHECK_HEADERS(dlfcn.h locale.h libintl.h)
 
 AC_CACHE_CHECK([for gmodule support], ac_cv_gmodule,[
-  save_LDFLAGS="$LDFLAGS"
-  LDFLAGS="$LDFLAGS `glib-config --libs gmodule`"
+  save_LIBS="$LIBS"
+  LIBS="$LIBS `glib-config --libs gmodule`"
   AC_TRY_RUN([
 #include <gmodule.h>
 
@@ -126,7 +126,7 @@ int main()
 {
   return g_module_supported() == 0;
 }],ac_cv_gmodule=yes,ac_cv_gmodule=no,ac_cv_gmodule=yes)
-  LDFLAGS="$save_LDFLAGS"])
+  LIBS="$save_LIBS"])
 if test $ac_cv_gmodule = no; then
   AC_MSG_ERROR([Dynamic linking is not available on this platform. Some apps,
 like panel, will not run properly.])
@@ -376,7 +376,7 @@ AM_PATH_AUDIOFILE(0.1.5,AC_DEFINE(HAVE_LIBAUDIOFILE))
 dnl
 dnl These are for building the appropriate lib*
 dnl
-LIBGNOME_LIBS="$ESD_LIBS $AUDIOFILE_LIBS $DB_LIB $GLIB_LIBS $DL_LIB"
+LIBGNOME_LIBS="$ESD_LIBS $AUDIOFILE_LIBS $DB_LIB $GLIB_LIBS $DL_LIB $INTLLIBS"
 LIBGNOMEUI_LIBS="$LIBGNOME_LIBS $GDK_IMLIB_LIBS $GTK_LIBS"
 LIBGTKXMHTML_LIBS="$XPM_LIBS $JPEG_LIBS $PNG_LIBS $Z_LIBS $GTK_LIBS"
 LIBSUPPORT='$(top_builddir)/support/libgnomesupport.la'

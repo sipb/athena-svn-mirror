@@ -84,27 +84,14 @@
 #endif
 
 
-/* blargh */
-#undef  Bool
-#undef  True
-#undef  False
-#define Bool  int
-#define True  1
-#define False 0
-
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include "prefs.h"
 
 extern const char *blurb(void);
 
-static char *encrypted_root_passwd = 0;
 static char *encrypted_user_passwd = 0;
-
-#ifdef VMS
-# define ROOT "SYSTEM"
-#else
-# define ROOT "root"
-#endif
-
-
+static char *explicit_passwd = 0;
 
 #ifndef VMS
 
@@ -195,16 +182,6 @@ get_encrypted_passwd(const char *user)
 	*s = 0;
     }
 
-#ifndef HAVE_PAM
-  /* We only issue this warning if not compiled with support for PAM.
-     If we're using PAM, it's not unheard of that normal pwent passwords
-     would be unavailable. */
-
-  if (!result)
-    fprintf (stderr, "%s: couldn't get password of \"%s\"\n",
-	     blurb(), (user ? user : "(null)"));
-#endif /* !HAVE_PAM */
-
   return result;
 }
 
@@ -230,7 +207,6 @@ pwent_priv_init (int argc, char **argv, Bool verbose_p)
 
   u = user_name();
   encrypted_user_passwd = get_encrypted_passwd(u);
-  encrypted_root_passwd = get_encrypted_passwd(ROOT);
   if (u) free (u);
 
   if (encrypted_user_passwd)
@@ -239,16 +215,14 @@ pwent_priv_init (int argc, char **argv, Bool verbose_p)
     return False;
 }
 
-
 Bool
-pwent_lock_init (int argc, char **argv, Bool verbose_p)
+pwent_lock_init (saver_preferences *p)
 {
   if (encrypted_user_passwd)
     return True;
   else
     return False;
 }
-
 
 
 static Bool
@@ -278,28 +252,44 @@ passwds_match_p (const char *cleartext, const char *ciphertext)
 
 
 /* This can be called at any time, and says whether the typed password
-   belongs to either the logged in user (real uid, not effective); or
-   to root.
+   belongs to the logged in user (real uid, not effective) or not.
  */
 Bool
-pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
+pwent_passwd_valid_p (const char *typed_passwd, saver_preferences *p)
 {
   if (encrypted_user_passwd &&
       passwds_match_p (typed_passwd, encrypted_user_passwd))
     return True;
-
-  /* do not allow root to have a null password. */
-  else if (typed_passwd[0] &&
-	   encrypted_root_passwd &&
-           passwds_match_p (typed_passwd, encrypted_root_passwd))
-    return True;
-
   else
     return False;
 }
 
 #else  /* VMS */
-Bool pwent_lock_init (int argc, char **argv, Bool verbose_p) { return True; }
+void pwent_lock_privileged_init (int argc, char **argv) { ; }
+Bool pwent_lock_init (saver_preferences *p) { return True; }
 #endif /* VMS */
+
+
+Bool
+explicit_lock_init (saver_preferences *p)
+{
+  if (p->passwd)
+    explicit_passwd = strdup(p->passwd);
+
+  if (explicit_passwd)
+    return True;
+  else
+    return False;
+}
+
+Bool
+explicit_passwd_valid_p (const char *typed_passwd, saver_preferences *p)
+{
+  if (explicit_passwd && *explicit_passwd &&
+      passwds_match_p (typed_passwd, explicit_passwd))
+    return True;
+  else
+    return False;
+}
 
 #endif /* NO_LOCKING -- whole file */

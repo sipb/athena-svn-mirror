@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# The MIT-ws package now installs the xterm app-defaults file under
+# /usr/openwin.  Remove the file previously installed under /usr/athena.
+if pkginfo -q MIT-ws ; then
+  removef MIT-ws /usr/athena/lib/X11/app-defaults/XTerm > /dev/null 2>&1
+  removef -f MIT-ws > /dev/null 2>&1
+  rm -f /usr/athena/lib/X11/app-defaults/XTerm
+fi

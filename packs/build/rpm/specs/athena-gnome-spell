@@ -1,0 +1,8 @@
+Name: athena-gnome-spell
+Summary: Bonobo spell-checking component, for Athena
+License: GPL
+Group: System Environment/Libraries
+
+%description
+The gnome-spell package provides a Bonobo component to allow programs
+such as Evolution to incorporate spell-checking functionality.

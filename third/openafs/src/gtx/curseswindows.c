@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/curseswindows.c,v 1.1.1.3 2004-02-13 17:52:03 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/gtx/curseswindows.c,v 1.2 2003-03-20 00:09:37 zacheiss Exp $");
 
 
 #if defined(AFS_HPUX110_ENV) && !defined(__HP_CURSES)

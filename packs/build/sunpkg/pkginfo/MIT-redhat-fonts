@@ -1,0 +1,3 @@
+PKG=MIT-redhat-fonts
+NAME=Red Hat Fonts
+DESC=Fonts pulled from Red Hat, to give users a consistent fontconfig experience.

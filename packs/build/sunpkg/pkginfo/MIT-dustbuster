@@ -1,0 +1,3 @@
+PKG=MIT-dustbuster
+NAME=Restrict the lifetime of a command to the current login session
+DESC=The dustbuster program runs a command and sends it a HUP when the current login session is over, as judged by the X server exiting (if XSESSION is set) or the controlling tty no longer being available.

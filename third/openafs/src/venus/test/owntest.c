@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/test/owntest.c,v 1.1.1.2 2004-02-13 17:54:27 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/venus/test/owntest.c,v 1.3 2004-02-13 18:58:47 zacheiss Exp $");
 
 #include <sys/types.h>
 #include <sys/file.h>

@@ -1,0 +1,3 @@
+PKG=MIT-syncupdate
+NAME=An Athena utility to sync files to disk before updating them
+DESC=The syncupdate utility provides a way to update files without fear that the updated file might contain garbled or partial data if the machine crashes before the data is written out to disk.

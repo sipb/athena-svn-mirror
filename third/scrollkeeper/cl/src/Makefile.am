@@ -7,7 +7,8 @@ INCLUDES = \
 LDADD = \
         $(XML_LIBS) \
 	$(XSLT_LIBS) \
-	$(top_builddir)/libs/libscrollkeeper.la
+	$(top_builddir)/libs/libscrollkeeper.la \
+	$(INTLLIBS)
 
 bin_PROGRAMS = scrollkeeper-preinstall scrollkeeper-update scrollkeeper-install scrollkeeper-uninstall scrollkeeper-get-cl 
 

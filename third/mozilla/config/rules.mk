@@ -734,6 +734,12 @@ endif # !NO_DIST_INSTALL
 	+$(LOOP_OVER_DIRS)
 
 ##############################################
+
+# Athena hack: don't install anything that is omitted from a distribution.
+ifdef NO_DIST_INSTALL
+NO_INSTALL = 1
+endif
+
 install:: $(SUBMAKEFILES) $(MAKE_DIRS)
 	+$(LOOP_OVER_DIRS)
 

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Change /etc/athena/athinfo.access to class confignoreplace.
+# Change /etc/athena/athinfo.defs to class config.
+sed -e 's|^f none \(etc/athena/athinfo\.access\) |e confignoreplace \1 |' \
+    -e 's|^f none \(etc/athena/athinfo\.defs\) |e config \1 |'

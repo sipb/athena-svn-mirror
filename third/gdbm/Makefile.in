@@ -30,6 +30,7 @@ CFLAGS = @CFLAGS@
 LDFLAGS = @LDFLAGS@
 
 # Common prefix for installation directories
+INSTALL_ROOT = $(DESTDIR)
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 binprefix = $(exec_prefix)

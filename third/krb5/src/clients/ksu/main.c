@@ -690,7 +690,6 @@ main (argc, argv)
 #endif /* HAVE_GETUSERSHELL */
     
     if (target_pwd->pw_uid){
-	
 	if(set_env_var("USER", target_pwd->pw_name)){
 	    fprintf(stderr,"ksu: couldn't set environment variable USER\n");
 	    sweep_up(ksu_context, cc_target);
@@ -718,6 +717,13 @@ main (argc, argv)
 	sweep_up(ksu_context, cc_target);
 	exit(1);
     } 			
+
+    {
+      char tkt[MAXPATHLEN];
+      sprintf(tkt, "/tmp/tkt_ksu%u", (unsigned int)getpid());
+      set_env_var( "KRBTKFILE", tkt);
+      unlink(tkt);
+    }
     
     /* set permissions */
     if (setgid(target_pwd->pw_gid) < 0) {

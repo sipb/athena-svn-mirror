@@ -1,0 +1,3 @@
+PKG=MIT-track
+NAME=An Athena program to maintain files between machines
+DESC=Track supports a librarian/subscriber model of file update.  That is, subscribing machines are able, but not obliged, to stay in synch with librarian machines' file-system contents.

@@ -1,0 +1,3 @@
+PKG=MIT-messaged
+NAME=A program to serve the global Athena message of the day
+DESC=The messaged program serves the current global Athena message of the day.

@@ -200,6 +200,12 @@
 /* define if your linux kernel exports sys_close */
 #undef EXPORTED_SYS_CLOSE
 
+/* define if your linux kernel exports sys_chdir */
+#undef EXPORTED_SYS_CHDIR
+
+/* define if your linux kernel exports sys_close */
+#undef EXPORTED_SYS_CLOSE
+
 /* define if your linux kernel exports sys_wait4 */
 #undef EXPORTED_SYS_WAIT4
 
@@ -256,6 +262,9 @@
 
 /* define if your struct task_struct has sig */
 #undef STRUCT_TASK_STRUCT_HAS_SIG
+
+/* define if your struct task_struct has sighand */
+#undef STRUCT_TASK_STRUCT_HAS_SIGHAND
 
 /* define if struct ufsvfs has vfs_dqrwlock */
 #undef HAVE_VFS_DQRWLOCK

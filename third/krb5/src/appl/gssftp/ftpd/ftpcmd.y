@@ -124,6 +124,7 @@ extern	int ccc_ok;
 extern	int timeout;
 extern	int maxtimeout;
 extern  int pdata;
+extern	int authlevel;
 extern	char hostname[], remotehost[];
 extern	char proctitle[];
 extern	char *globerr;
@@ -184,6 +185,7 @@ static char *copy(char *);
 	CDUP	STOU	SMNT	SYST	SIZE	MDTM
 	AUTH	ADAT	PROT    PBSZ
 	CCC
+	ATCH	AKLG
 
 	UMASK	IDLE	CHMOD
 
@@ -640,6 +642,20 @@ cmd:		USER SP username CRLF
 			auth_data((char *) $3);
 			free((char *) $3);
 		}
+	|	ATCH check_login SP STRING CRLF
+		{
+			if ($2 && $4 != NULL)
+				attach(pw, (char *) $4);
+			if ($4 != NULL)
+				free((char *) $4);
+		}
+	|	AKLG check_login SP STRING CRLF
+		{
+			if ($2 && $4 != NULL)
+				aklog(pw, (char *) $4);
+			if ($4 != NULL)
+				free((char *) $4);
+		}
 	|	QUIT CRLF
 		{
 			reply(221, "Goodbye.");
@@ -928,6 +944,8 @@ struct tab cmdtab[] = {		/* In order defined in RFC 765 */
 	{ "CCC",  CCC,  ARGS, 1,	"(clear command channel)" },
 	{ "SIZE", SIZE, OSTR, 1,	"<sp> path-name" },
 	{ "MDTM", MDTM, OSTR, 1,	"<sp> path-name" },
+	{ "ATCH", ATCH, STR1, 1,	"<sp> filesystem-name" },
+	{ "AKLG", AKLG, STR1, 1,	"<sp> cell" },
 	{ NULL,   0,    0,    0,	0 }
 };
 
@@ -1149,6 +1167,18 @@ getline(s, n, iop)
 	    }
 #endif /* GSSAPI */
 	    /* Other auth types go here ... */
+
+	    /* A password should never be MICed, but the CNS ftp
+	     * client and the pre-6/98 Krb5 client did this if you
+	     * authenticated but didn't encrypt.
+	     */
+	    if (authlevel && mic && !strncmp(s, "PASS", 4)) {
+	    	lreply(530, "There is a problem with your ftp client. Password refused.");
+		reply(530, "Enable encryption before logging in, or update your ftp program.");
+		*s = 0;
+		return s;
+	    }
+
 	}
 #if defined KRB5_KRB4_COMPAT || defined GSSAPI	/* or other auth types */
 	else {	/* !auth_type */

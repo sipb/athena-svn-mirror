@@ -1,7 +1,5 @@
 bin_PROGRAMS = zenity
 
-bin_SCRIPTS = gdialog
-
 zenity_SOURCES = \
 	main.c		\
 	zenity.h	\

@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vos.c,v 1.1.1.2 2002-12-13 20:41:56 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vos.c,v 1.3 2002-12-13 22:06:52 zacheiss Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV
@@ -2185,9 +2185,10 @@ static AddSite(as)
 register struct cmd_syndesc *as;
 {
    afs_int32 avolid, aserver, apart,code, err;
-   char apartName[10];
+   char apartName[10], avolname[VOLSER_MAXVOLNAME+1];
 
-	avolid = vsu_GetVolumeID(as->parms[2].items->data, cstruct, &err);
+	vsu_ExtractName(avolname, as->parms[2].items->data);
+	avolid = vsu_GetVolumeID(avolname, cstruct, &err);
 	if (avolid == 0) {
 	    if (err) PrintError("", err);
 	    else fprintf(STDERR, "vos: can't find volume '%s'\n", as->parms[2].items->data);
@@ -2223,9 +2224,10 @@ register struct cmd_syndesc *as;
 { 
 
     afs_int32 avolid, aserver, apart, code, err;
-    char apartName[10];
+    char apartName[10], avolname[VOLSER_MAXVOLNAME+1];
 
-	avolid = vsu_GetVolumeID(as->parms[2].items->data, cstruct, &err);
+	vsu_ExtractName(avolname, as->parms[2].items->data);
+	avolid = vsu_GetVolumeID(avolname, cstruct, &err);
 	if (avolid == 0) {
 	    if (err) PrintError("", err);
 	    else fprintf(STDERR, "vos: can't find volume '%s'\n", as->parms[2].items->data);

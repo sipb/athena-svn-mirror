@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include <syslog.h>
 #include <sys/file.h>
+#include <time.h>
 
 
 /* Linux gets this wrong */

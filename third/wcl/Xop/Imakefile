@@ -33,4 +33,4 @@ HEADERS = Xop.h XopOpenLook.h XopOpenLookP.h COPY.h
 
 #include "../WcLib.tmpl"
 
-InstallManPage(Xop,$(MANDIR))
+InstallManPage(Xop,$(LIBMANDIR))

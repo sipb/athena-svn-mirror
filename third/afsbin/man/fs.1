@@ -1,0 +1,294 @@
+.\" This file uses -man macros.
+.\" @(#)printf.3s  6.3 (Berkeley) 6/5/86
+.\" 
+.TH FS 1 "30 April 1990" " " " "
+.SH NAME
+fs - suite of commands for contacting the AFS File Server and configuring the Cache Manager.
+.SH SYNOPSIS
+\fBfs\fR <\fIoption\fR>
+.PP
+Each of the the following operation codes is a valid <\fIoption\fR> and has its own set of associated arguments.  See the "OPTIONS" section below for syntax definitions.
+.PP
+.I apropos        
+- search by help text
+.br
+.I cachesize       
+- set cache size
+.br
+.I checkservers    
+- check functioning servers
+.br
+.I checkvolumes    
+- check volume/name mappings
+.br
+.I cleanacl        
+- clean up access control list
+.br
+.I debug           
+- set debugging info
+.br
+.I diskfree        
+- show server disk space usage
+.br
+.I examine         
+- display volume status
+.br
+.I exportafs       
+- enable/disable exporters to AFS
+.br
+.I flush           
+- flush file from cache
+.br
+.I flushvolume     
+- flush all data in volume
+.br
+.I getcacheparms   
+- get cache usage info
+.br
+.I getcellstatus   
+- get cell status
+.br
+.I help            
+- get help on commands
+.br
+.I listacl         
+- list access control list
+.br
+.I listcells       
+- list configured cells
+.br
+.I listquota       
+- list volume quota
+.br
+.I lsmount         
+- list mount point
+.br
+.I mkmount         
+- make mount point
+.br
+.I monitor         
+- set cache monitor host address
+.br
+.I newcell         
+- configure new cell
+.br
+.I olsmount        
+- list mount point
+.br
+.I ormmount        
+- remove mount point
+.br
+.I quota           
+- show volume quota usage
+.br
+.I rmmount         
+- remove mount point
+.br
+.I setacl          
+- set access control list
+.br
+.I setcell         
+- set cell status
+.br
+.I setquota        
+- set volume quota
+.br
+.I setvol          
+- set volume status
+.br
+.I sysname         
+- get/set sysname (i.e. @sys) value
+.br
+.I whereis         
+- list file's location
+.br
+.I whichcell       
+- list file's cell
+.br
+.I wscell          
+- list workstation's cell
+.SH DESCRIPTION
+The commands in the \fIfs\fR suite belong to two functionally distinct subsets.  The commands in one subset contact the File Server process running on file server machines.  Some of these commands extend UNIX file system semantics by invoking file-related functions that UNIX does not provide (setting access control lists, for example).  The commands in the other subset configure the Cache Manager on the client machine where the command is issued, thus controlling aspects of its performance.
+.SH OPTIONS
+.I apropos
+- search by help text
+.br
+syntax: fs apropos  -topic <help string]>  [-help]
+.PP
+.I cachesize  
+- set cache size
+.br
+syntax: fs cachesize  [-blocks <size in 1K byte blocks (0 => reset)>]  [-reset]  [-help]
+.PP
+.I checkservers  
+- check functioning servers
+.br
+syntax: fs checkservers  [-fast]  [-dir <directory (ignored)>]  [-help]
+.PP
+.I checkvolumes 
+- check volume/name mappings
+.br
+syntax: fs checkvolumes  [-help]
+.br
+alias: \fIfs checkbackups\fR
+.PP
+.I cleanacl  
+- clean up access control list
+.br
+syntax: fs cleanacl  [-dir <directory>+]  [-help]
+.PP
+.I debug  
+- set debugging info
+.br
+syntax: fs debug  -debug <'on' or 'off'>  [-dafs <afs debug level>]  [-dnet <network debug level>]  [-help] 
+.PP
+.I diskfree  
+- show server disk space usage
+.br
+syntax: fs diskfree  [-dir <directory>+]  [-help] 
+.br
+alias: \fIfs df\fR
+.PP
+.I examine  
+- display volume status
+.br
+syntax: fs examine  [-dir <directory>+]  [-help] 
+.br
+aliases: \fIfs lv\fR and \fIfs listvol\fR
+.PP
+.I exportafs  
+- enable/disable exporters to AFS
+.br
+syntax: fs exportafs  -type <exporter name>  [-state <'on' or 'off'>]  [-help]
+.PP
+.I flush  
+- flush file from cache
+.br
+syntax: fs flush  -dir <directory>+  [-help]
+.PP
+.I flushvolume  
+- flush all data in volume 
+.br
+syntax: fs flushvolume  -dir <directory>+  [-help]
+.PP
+.I getcacheparms
+- get cache usage info
+.br
+syntax: fs getcacheparms  [-help]
+.PP
+.I getcellstatus  
+- get cell status
+.br
+syntax: fs getcellstatus  -cell <cell name>+  [-help]
+.PP
+.I help  
+- get help on commands
+.br
+syntax: fs help  [-topic <help string>+]  [-help]
+.PP
+.I listacl  
+- list access control list
+.br
+syntax: fs listacl  [-dir <directory>+]  [-help] 
+.br
+alias: \fIfs la\fR
+.PP
+.I listcells  
+- list configured cells
+.br
+syntax: fs listcells  [-help] 
+.PP
+.I listquota  
+-list volume quota
+.br
+syntax: fs listquota  [-dir <directory>+]  [-help]  
+.br
+alias: \fIfs lq\fR
+.PP
+.I lsmount  
+- list mount point 
+.br
+syntax: fs lsmount  -dir <directory>+  [-help] 
+.PP
+.I mkmount
+- make mount point
+.br
+syntax: fs mkmount  -dir <directory>  -vol <volume name>  [-cell <cell name>] @\[-rw]  [-fast]  [-root]  [-help]
+.PP
+.I monitor
+- set cache monitor host address
+.br
+syntax: fs monitor  [-server <host name or 'off'>]  [-help] 
+.br
+alias: \fIfs mariner\fR
+.PP
+.I newcell
+- configure new cell
+.br
+syntax: fs newcell -name <cell name>  -servers <primary servers>+  [-help] 
+.PP
+.I olsmount 
+- list mount point
+.br
+syntax: fs olsmount -dir <directory>+  [-help] 
+.PP
+.I ormmount
+- remove mount point  
+.br
+syntax: fs ormmount -dir <directory>+  [-help] 
+.PP
+.I quota 
+- show volume quota usage
+.br
+syntax: fs quota  [-dir <directory>+]  [-help] 
+.PP
+.I rmmount 
+- remove mount point
+.br
+syntax: fs rmmount  -dir <directory>+  [-help] 
+.PP
+.I setacl
+- set access control list
+.br
+syntax: fs setacl  -dir <directory>+ -acl <access list entries>+  [-clear]  [-negative]  [-help] 
+.br
+alias: \fIfs sa\fR
+.PP
+.I setcell
+- set cell status
+.br
+syntax: fs setcell  -cell <cell name>+  [-suid]  [-nosuid]  [-help]
+.PP
+.I setquota
+- set volume quota
+.br
+syntax: fs setquota  -dir <directory>+  -max <max quota in kbytes>  [-min <min quota in kybtes>]  [-help]
+.br
+alias: \fIfs sq\fR
+.PP
+.I setvol
+- set volume status
+.br
+syntax: fs setvol -dir <directory>+  [-max <disk space quota in 1K units>]  [-min <disk space guaranteed>]  [-motd <message of the day>]  [-offlinemsg <offline message>]  [-help] 
+.br
+alias: \fIfs sv\fR
+.PP
+.I sysname
+- get/set sysname (i.e. @sys) value
+.br
+syntax: fs sysname  [-newsys <new sysname>]  [-help]
+.PP
+.I whereis  
+- list file's location
+.br
+syntax: fs whereis  [-dir <directory>+]  [-help] 
+.PP
+.I whichcell 
+- list file's cell
+.br
+syntax: fs whichcell  [-dir <directory>+]  [-help] 
+.PP
+.I wscell 
+-list workstation's cell
+.br
+syntax: fs wscell  [-help] 

@@ -136,7 +136,8 @@ INCLUDES = \
 LDADD = \
         $(XML_LIBS) \
         $(XSLT_LIBS) \
-        $(top_builddir)/libs/libscrollkeeper.la
+        $(top_builddir)/libs/libscrollkeeper.la \
+	$(INTLLIBS)
 
 
 scrollkeeper_extract_SOURCES = \
@@ -303,9 +304,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-scrollkeeper-extract.o: scrollkeeper-extract.c ../../config.h \
-	../../libs/scrollkeeper.h
-
 info-am:
 info: info-am
 dvi-am:

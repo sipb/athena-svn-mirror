@@ -1,0 +1,17 @@
+#!/bin/sh
+
+script=/tmp/postinstall$$
+rm -rf $PKG_INSTALL_ROOT$script
+
+cat << 'EOF' > $PKG_INSTALL_ROOT$script
+PATH=/usr/athena/bin:$PATH
+umask 022
+mkdir -p /etc/athena/gtk-2.0
+gtk-query-immodules-2.0 > /etc/athena/gtk-2.0/gtk.immodules
+gdk-pixbuf-query-loaders > /etc/athena/gtk-2.0/gdk-pixbuf.loaders
+EOF
+
+chroot ${PKG_INSTALL_ROOT:-/} /bin/sh $script
+rm -f $PKG_INSTALL_ROOT$script
+
+exit 0

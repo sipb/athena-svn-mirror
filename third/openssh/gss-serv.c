@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Simon Wilkinson. All rights reserved.
+ * Copyright (c) 2001,2002 Simon Wilkinson. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,16 +38,19 @@
 #include "kex.h"
 #include "auth.h"
 #include "log.h"
+#include "channels.h"
 #include "session.h"
 #include "dispatch.h"
 #include "servconf.h"
+#include "compat.h"
+#include "monitor_wrap.h"
 
 #include "ssh-gss.h"
 
 extern ServerOptions options;
 extern u_char *session_id2;
 extern int session_id2_len;
-
+extern int is_local_acct;
 
 typedef struct ssh_gssapi_cred_cache {
 	char *filename;
@@ -67,23 +70,21 @@ static struct ssh_gssapi_cred_cache gssapi_cred_store = {NULL,NULL,NULL};
 #define krb5_get_err_text(context,code) error_message(code)
 #endif
 
-static krb5_context krb_context = NULL;
-
 /* Initialise the krb5 library, so we can use it for those bits that
  * GSSAPI won't do */
 
-int ssh_gssapi_krb5_init() {
+int ssh_gssapi_krb5_init(Authctxt *authctxt) {
 	krb5_error_code problem;
 	
-	if (krb_context !=NULL)
-		return 1;
-		
-	problem = krb5_init_context(&krb_context);
+	if (authctxt->krb5_ctx != NULL)
+	  return 1;
+
+	problem = krb5_init_context(&authctxt->krb5_ctx);
 	if (problem) {
 		log("Cannot initialize krb5 context");
 		return 0;
 	}
-	krb5_init_ets(krb_context);
+	krb5_init_ets(authctxt->krb5_ctx);
 
 	return 1;	
 }			
@@ -94,28 +95,36 @@ int ssh_gssapi_krb5_init() {
  */
 
 int
-ssh_gssapi_krb5_userok(char *name) {
+ssh_gssapi_krb5_userok(Authctxt *authctxt) {
 	krb5_principal princ;
 	int retval;
 
-	if (ssh_gssapi_krb5_init() == 0)
+	if (ssh_gssapi_krb5_init(authctxt) == 0)
 		return 0;
+
+	/* If this isn't a local account and the user hasn't specified
+	 * ticket forwarding, fail through to password authentication.
+	 * The shell the user gets won't be useful without tickets anyway.
+	 */
+	if (!is_local_acct && !gssapi_client_creds)
+	  	return 0;
 		
-	if ((retval=krb5_parse_name(krb_context, gssapi_client_name.value, 
+	if ((retval=krb5_parse_name(authctxt->krb5_ctx,
+				    gssapi_client_name.value, 
 				    &princ))) {
 		log("krb5_parse_name(): %.100s", 
-			krb5_get_err_text(krb_context,retval));
+			krb5_get_err_text(authctxt->krb5_ctx,retval));
 		return 0;
 	}
-	if (krb5_kuserok(krb_context, princ, name)) {
+	if (krb5_kuserok(authctxt->krb5_ctx, princ, authctxt->user)) {
 		retval = 1;
-		log("Authorized to %s, krb5 principal %s (krb5_kuserok)",name,
-		    (char *)gssapi_client_name.value);
+		log("Authorized to %s, krb5 principal %s (krb5_kuserok)",
+		    authctxt->user, (char *)gssapi_client_name.value);
 	}
 	else
 		retval = 0;
 	
-	krb5_free_principal(krb_context, princ);
+	krb5_free_principal(authctxt->krb5_ctx, princ);
 	return retval;
 }
 	
@@ -130,7 +139,7 @@ ssh_gssapi_krb5_userok(char *name) {
  */
 
 void
-ssh_gssapi_krb5_storecreds() {
+ssh_gssapi_krb5_storecreds(Authctxt *authctxt) {
 	krb5_ccache ccache;
 	krb5_error_code problem;
 	krb5_principal princ;
@@ -145,23 +154,19 @@ ssh_gssapi_krb5_storecreds() {
 		return;
 	}
 		
-	if (ssh_gssapi_krb5_init() == 0)
+	if (ssh_gssapi_krb5_init(authctxt) == 0)
 		return;
 
 	if (options.gss_use_session_ccache) {
-        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_%d_XXXXXX",geteuid());
+        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_p%d",getpid());
        
-        	if ((tmpfd = mkstemp(ccname))==-1) {
-                	log("mkstemp(): %.100s", strerror(errno));
-                	return;
-        	}
 	        if (fchmod(tmpfd, S_IRUSR | S_IWUSR) == -1) {
 	               	log("fchmod(): %.100s", strerror(errno));
 	               	close(tmpfd);
 	               	return;
 	        }
         } else {
-        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_%d",geteuid());
+        	snprintf(ccname,sizeof(ccname),"/tmp/krb5cc_p%d",getpid());
         	tmpfd = open(ccname, O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR);
         	if (tmpfd == -1) {
         		log("open(): %.100s", strerror(errno));
@@ -172,37 +177,37 @@ ssh_gssapi_krb5_storecreds() {
        	close(tmpfd);
         snprintf(name, sizeof(name), "FILE:%s",ccname);
  
-        if ((problem = krb5_cc_resolve(krb_context, name, &ccache))) {
+        if ((problem = krb5_cc_resolve(authctxt->krb5_ctx, name, &ccache))) {
                 log("krb5_cc_default(): %.100s", 
-                	krb5_get_err_text(krb_context,problem));
+                	krb5_get_err_text(authctxt->krb5_ctx,problem));
                 return;
         }
 
-	if ((problem = krb5_parse_name(krb_context, gssapi_client_name.value, 
+	if ((problem = krb5_parse_name(authctxt->krb5_ctx, gssapi_client_name.value, 
 				       &princ))) {
 		log("krb5_parse_name(): %.100s", 
-			krb5_get_err_text(krb_context,problem));
-		krb5_cc_destroy(krb_context,ccache);
+			krb5_get_err_text(authctxt->krb5_ctx,problem));
+		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
 		return;
 	}
 	
-	if ((problem = krb5_cc_initialize(krb_context, ccache, princ))) {
+	if ((problem = krb5_cc_initialize(authctxt->krb5_ctx, ccache, princ))) {
 		log("krb5_cc_initialize(): %.100s", 
-			krb5_get_err_text(krb_context,problem));
-		krb5_free_principal(krb_context,princ);
-		krb5_cc_destroy(krb_context,ccache);
+			krb5_get_err_text(authctxt->krb5_ctx,problem));
+		krb5_free_principal(authctxt->krb5_ctx,princ);
+		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
 		return;
 	}
 	
-	krb5_free_principal(krb_context,princ);
+	krb5_free_principal(authctxt->krb5_ctx,princ);
 
 	#ifdef HEIMDAL
-	if ((problem = krb5_cc_copy_cache(krb_context, 
+	if ((problem = krb5_cc_copy_cache(authctxt->krb5_ctx, 
 					   gssapi_client_creds->ccache,
 					   ccache))) {
 		log("krb5_cc_copy_cache(): %.100s", 
-			krb5_get_err_text(krb_context,problem));
-		krb5_cc_destroy(krb_context,ccache);
+			krb5_get_err_text(authctxt->krb5_ctx,problem));
+		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
 		return;
 	}
 	#else
@@ -211,21 +216,31 @@ ssh_gssapi_krb5_storecreds() {
 					       ccache))) {
 		log("gss_krb5_copy_ccache() failed");
 		ssh_gssapi_error(maj_status,min_status);
-		krb5_cc_destroy(krb_context,ccache);
+		krb5_cc_destroy(authctxt->krb5_ctx,ccache);
 		return;
 	}
 	#endif
 	
-	krb5_cc_close(krb_context,ccache);
-
-
 #ifdef USE_PAM
 	do_pam_putenv("KRB5CCNAME",name);
+#else
+	setenv("KRB5CCNAME", name, 1);
 #endif
 
 	gssapi_cred_store.filename=strdup(ccname);
 	gssapi_cred_store.envvar="KRB5CCNAME";
 	gssapi_cred_store.envval=strdup(name);
+
+	/* Populate the Kerberos specific members of the authctxt.
+	 * We'll need them later.
+	 */
+	krb5_copy_principal(authctxt->krb5_ctx, princ, &authctxt->krb5_user);
+	krb5_free_principal(authctxt->krb5_ctx, princ);
+
+	authctxt->krb5_fwd_ccache = ccache;
+	authctxt->krb5_ticket_file = 
+	  (char *)krb5_cc_get_name(authctxt->krb5_ctx, 
+				   authctxt->krb5_fwd_ccache);
 
 	return;
 }
@@ -346,12 +361,12 @@ ssh_gssapi_cleanup_creds(void *ignored)
 }
 
 void 
-ssh_gssapi_storecreds()
+ssh_gssapi_storecreds(Authctxt *authctxt)
 {
 	switch (gssapi_client_type) {
 #ifdef KRB5
 	case GSS_KERBEROS:
-		ssh_gssapi_krb5_storecreds();
+		ssh_gssapi_krb5_storecreds(authctxt);
 		break;
 #endif
 #ifdef GSI
@@ -402,14 +417,14 @@ ssh_gssapi_do_child(char ***envp, u_int *envsizep)
 #endif
 	case GSS_LAST_ENTRY:
 		debug("No GSSAPI credentials stored");
-		
+		break;
 	default:
 		log("ssh_gssapi_do_child: Unknown mechanism");
 	}
 }
 
 int
-ssh_gssapi_userok(char *user)
+ssh_gssapi_userok(Authctxt *authctxt)
 {
 	if (gssapi_client_name.length==0 || 
 	    gssapi_client_name.value==NULL) {
@@ -419,12 +434,12 @@ ssh_gssapi_userok(char *user)
 	switch (gssapi_client_type) {
 #ifdef KRB5
 	case GSS_KERBEROS:
-		return(ssh_gssapi_krb5_userok(user));
+		return(ssh_gssapi_krb5_userok(authctxt));
 		break; /* Not reached */
 #endif
 #ifdef GSI
 	case GSS_GSI:
-		return(ssh_gssapi_gsi_userok(user));
+		return(ssh_gssapi_gsi_userok(authctxt->user));
 		break; /* Not reached */
 #endif /* GSI */
 	case GSS_LAST_ENTRY:
@@ -436,151 +451,169 @@ ssh_gssapi_userok(char *user)
 	return(0);
 }
 
-int
-userauth_external(Authctxt *authctxt)
-{
-	packet_done();
+/* Stuff to play nicely with privsep */
 
-	return(ssh_gssapi_userok(authctxt->user));
+#if 0
+extern struct monitor *pmonitor;
+
+OM_uint32
+mm_ssh_gssapi_server_ctxt(Gssctxt **ctx, gss_OID oid) {
+	Buffer m;
+	
+	/* Client doesn't get to see the context */
+ 	*ctx=NULL;
+
+	buffer_init(&m)
+  	buffer_put_string(&m,oid->elements,oid->length);
+  	
+	mm_request_send(pmonitor->m_recvfd, MONITOR_REQ_GSSSETUP, &m);
+
+	debug3("%s: waiting for MONITOR_ANS_GSSSIGN",__func__);
+	mm_request_receive_expect(pmonitor->m_recvfd, MONITOR_ANS_SIGN, &m);
+	major=buffer_get_int(&m);
+
+	return(major);
 }
-
-void input_gssapi_token(int type, int plen, void *ctxt);
-void input_gssapi_exchange_complete(int type, int plen, void *ctxt);
-
-/* We only support those mechanisms that we know about (ie ones that we know
- * how to check local user kuserok and the like
- */
+	
 int
-userauth_gssapi(Authctxt *authctxt)
-{
-	gss_OID_desc	oid= {0,NULL};
-	Gssctxt		*ctxt;
-	int		mechs;
-	gss_OID_set	supported;
-	int		present;
-	OM_uint32	ms;
+mm_answer_gss_server_ctxt(int socket, Buffer *m) {
+	gss_OID_desc oid;
+	OM_uint32 major;
 	
-	if (!authctxt->valid || authctxt->user == NULL)
-		return 0;
-	mechs=packet_get_int();
-	if (mechs==0) {
-		debug("Mechanism negotiation is not supported");
-		return 0;
-	}
+	oid.elements=buffer_get_string(m,&oid.length);
+		
+	major=ssh_gssapi_server_ctxt(&gsscontext,&oid);
 
-	ssh_gssapi_supported_oids(&supported);
-	do {
-		if (oid.elements)
-			xfree(oid.elements);
-		oid.elements = packet_get_string(&oid.length);
-		gss_test_oid_set_member(&ms, &oid, supported, &present);
-		mechs--;
-	} while (mechs>0 && !present);
-	
-	if (!present) {
-		xfree(oid.elements);
-		return(0);
-	}
-	
-	ctxt=xmalloc(sizeof(Gssctxt));
-	authctxt->methoddata=(void *)ctxt;
-	
-	ssh_gssapi_build_ctx(ctxt);
-	ssh_gssapi_set_oid(ctxt,&oid);
-
-	if (ssh_gssapi_acquire_cred(ctxt))
-		return 0;
-
-	/* Send SSH_MSG_USERAUTH_GSSAPI_RESPONSE */
-
-	packet_start(SSH2_MSG_USERAUTH_GSSAPI_RESPONSE);
-	packet_put_string(oid.elements,oid.length);
-	packet_send();
-	packet_write_wait();
 	xfree(oid.elements);
-		
-	dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_TOKEN, 
-		     &input_gssapi_token);
-	authctxt->postponed = 1;
 	
-	return 0;
+	buffer_clear(m);
+	buffer_put_int(m,result);
+	
+	mm_request_send(socket,MONITOR_ANS_GSSSIGN,m);
+	
+	return(0);
 }
 
-void
-input_gssapi_token(int type, int plen, void *ctxt)
-{
-	Authctxt *authctxt = ctxt;
-	Gssctxt *gssctxt;
-	gss_buffer_desc send_tok,recv_tok;
-	OM_uint32 maj_status, min_status;
-	
-	if (authctxt == NULL || authctxt->methoddata == NULL)
-		fatal("No authentication or GSSAPI context");
-		
-	gssctxt=authctxt->methoddata;
+OM_uint32
+mm_ssh_gssapi_accept_ctx(Gssctxt *ctx, gss_buffer_desc *in,
+			 gss_buffer_desc *out, OM_uint32 *flags) {
 
-	recv_tok.value=packet_get_string(&recv_tok.length);
+	Buffer m;
+	OM_uint32, major;
 	
-	maj_status=ssh_gssapi_accept_ctx(gssctxt, &recv_tok, &send_tok, NULL);
-	packet_done();
+	buffer_init(&m);
+	buffer_put_string(&m, in->value, in->length);
+	mm_request_send(pmonitor->m_recvfd, MONITOR_REQ_GSSSTEP, &m);
 	
-	if (GSS_ERROR(maj_status)) {
-		/* Failure <sniff> */
-		authctxt->postponed = 0;
-		dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_TOKEN, NULL);
-		userauth_finish(authctxt, 0, "gssapi");
-	}
-			
-	if (send_tok.length != 0) {
-		/* Send a packet back to the client */
-	        packet_start(SSH2_MSG_USERAUTH_GSSAPI_TOKEN);
-                packet_put_string(send_tok.value,send_tok.length);
-                packet_send();
-                packet_write_wait();
-                gss_release_buffer(&min_status, &send_tok);                                     
-	}
+	debug3("%s: waiting for MONITOR_ANS_GSSSTEP", &m);
+	mm_request_receive_expect(pmonitor->m_recvfd, MONITOR_ANS_GSSSTEP, &m);
 	
-	if (maj_status == GSS_S_COMPLETE) {
-		dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_TOKEN,NULL);
-		dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE,
-			     &input_gssapi_exchange_complete);
-	}
+	major=buffer_get_int(&m);
+	*out->value=buffer->get_string(&m,&out->length);
+	flags=buffer_get_int(&m);
+
+	return(major);
 }
 
-/* This is called when the client thinks we've completed authentication.
- * It should only be enabled in the dispatch handler by the function above,
- * which only enables it once the GSSAPI exchange is complete.
- */
- 
-void
-input_gssapi_exchange_complete(int type, int plen, void *ctxt)
-{
-	Authctxt *authctxt = ctxt;
-	Gssctxt *gssctxt;
-	int authenticated;
+int
+mm_answer_gss_accept_ctxt(int socket, Buffer *m) {
+	gss_buffer_desc	in,out;
+	OM_uint32 major;
+	OM_uint32 flags = 0; /* GSI needs this */
 	
-	if (authctxt == NULL || authctxt->methoddata == NULL)
-		fatal("No authentication or GSSAPI context");
-		
-	gssctxt=authctxt->methoddata;
-
-	/* This should never happen, but better safe than sorry. */
-	if (gssctxt->status != GSS_S_COMPLETE) {
-		packet_disconnect("Context negotiation is not complete");
-	}
-
-	if (ssh_gssapi_getclient(gssctxt,&gssapi_client_type,
-				 &gssapi_client_name,
-				 &gssapi_client_creds)) {
-		fatal("Couldn't convert client name");
-	}
-				     		
-        authenticated = ssh_gssapi_userok(authctxt->user);
-
-	authctxt->postponed = 0;
-	dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_TOKEN, NULL);
-	dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE, NULL);
-	userauth_finish(authctxt, authenticated, "gssapi");
+	in.value = buffer_get_string(m,&in.length);
+	major=ssh_gssapi_accept_ctxt(gsscontext,&in,&out,&flags);
+	xfree(in.value);
+	
+	buffer_clear(m);
+	buffer_put_int(m, major);
+	buffer_put_string(m, out.value, out.length);
+	buffer_put_int(m, flags);
+	mm_request_send(socket,MONITOR_ANS_STEP,m);
+	
+	gss_release_buffer(out);
+	
+	return(0);
 }
 
+int
+mm_ssh_gssapi_userok(char *user) {
+	Buffer m;
+	
+	buffer_init(&m);
+	mm_request_send(pmonitor->m_recvfd, MONITOR_REQ_GSSUSEROK, &m);
+	
+	debug3("%s: waiting for MONTIOR_ANS_GSSUSEROK", __func__);
+	mm_request_receive_expect(pmonitor->m_recvfd, MONITOR_ANS_GSSUSEROK),
+				  &m);
+	
+	authenticated = buffer_get_int(&m);
+	
+	buffer_free(&m);
+	debug3("%s: user %sauthetnicated",__func__, authenticated ? "" : "not ");
+	return(authenticated);
+}
+
+int
+mm_answer_gss_userok(int socket, Buffer *m) {
+	authenticated = authctxt->valid && ssh_gssapi_userok(authctxt);
+	
+	buffer_clear(m);
+	buffer_put_int(m, authenticated);
+	
+	debug3("%s: sending result %d", __func__, authenticated);
+	mm_request_send(socket, MONITOR_ANS_GSSUSEROK, m);
+	
+	/* Monitor loop will terminate if authenticated */
+	return(authenticated);
+}
+
+OM_uint32
+mm_ssh_gssapi_sign(Gssctxt *ctx, gss_buffer_desc *data, gss_buffer_desc *hash) {
+	Buffer m;
+	OM_uint32 major, minor;
+	
+	buffer_init(&m);
+	buffer_put_string(&m, data->value, data->length);
+	
+	mm_request_send(pmonitor->m_recvfd, MONITOR_REQ_GSSSIGN, &m);
+	
+	debug3("%s: waiting for MONITOR_ANS_GSSSIGN",__func__);
+	mm_request_receive_expect(pmonitor->m_recvfd, MONITOR_ANS_GSSSIGN, &m);
+	major=buffer_get_int(&m);
+	*hash->value = buffer_get_string(&m, &hash->length);
+	
+	return(major);
+}
+	
+int
+mm_answer_gss_sign(int socket, Buffer *m) {
+	gss_buffer_desc data,hash;
+	OM_uint32 major;
+	
+	data.value = buffer_get_string(m,&data.length);
+	if (data.length != 20)
+		fatal("%s: data length incorrect: %d", __func__, datlen);
+	
+	/* Save the session ID - only first time round */
+	if (session_id2_len == 0) {
+		session_id2_len=data.length;
+		session_id2 = xmalloc(session_id2_len);
+		memcpy(session_id2, data.value, session_id2_len);
+	}
+	major=ssh_gssapi_sign(gsscontext, &data, &hash);
+	
+	xfree(data.value);
+	
+	buffer_clear(m);
+	buffer_put_int(m, major);
+	buffer_put_string(m, hash.value, hash.length);
+
+        mm_request_send(socket,MONITOR_ANS_GSSSIGN,m);
+        	
+	gss_release_buffer(hash);
+	
+	return(0);
+}
+#endif
 #endif /* GSSAPI */

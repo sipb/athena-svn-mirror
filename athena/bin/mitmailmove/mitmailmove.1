@@ -1,0 +1,85 @@
+.\" 
+.\" $Id: mitmailmove.1,v 1.1 2004-06-07 19:13:53 rbasch Exp $
+.\"
+.TH MITMAILMOVE 1 
+.SH NAME
+mitmailmove, mitmailcopy \- move or copy messages between IMAP folders
+.SH SYNOPSIS
+.B mitmailmove | mitmailcopy
+[
+.B \--by-uid
+] [
+.B \--debug
+] [
+.B \--help
+] [
+.B \--host
+.I name
+] [
+.B \--mailbox
+.I name
+] [
+.B \--no-create
+]
+.I message-ID
+[ ... ]
+.I target-mailbox
+.SH DESCRIPTION
+The 
+.I mitmailmove
+program 
+copies the specified messages from one folder to another on an IMAP server,
+and then marks the original messages for deletion.
+
+The
+.I mitmailcopy
+command performs only the copy operation.
+.SH OPTIONS
+.I mitmailmove
+and
+.I mitmailcopy
+understand the following options:
+.TP
+.B \--by-uid
+specify that the given message ID arguments are unique identifiers, not
+sequence numbers.
+.TP
+.B \--debug
+turn on debugging.
+.TP
+.B \--help
+display usage information and exit.
+.TP
+.B \--host \fIname\fR
+query the given host, instead of the default post office server.
+.TP
+.B \--mailbox \fIname\fR
+move or copy messages from the IMAP folder \fIname\fR.  If this option is
+not specified, messages are moved or copied from the INBOX folder.
+.TP
+.B \--no-create
+do not create the target mailbox automatically.  By default, the target
+mailbox will be created automatically if necessary.
+.SH ARGUMENTS
+.I mitmailmove
+and
+.I mitmailcopy
+require one or more message ID arguments to be given.  The ID is
+either the message's sequence number, or, if the
+.I \--by-uid
+option is given, its unique identifier.
+.I mitmailscan(1)
+can be used to obtain the message ID.
+
+The message ID argument can be \fB*\fR, to indicate the last message
+in the mailbox.  An argument of the form
+.IB ID1 : ID2
+can be used to specify a range of IDs.
+
+The final argument on the command line is taken as the target mailbox
+name.  Unless the
+.I \--no-create
+option is given, this mailbox will be created automatically if necessary.
+.SH "SEE ALSO"
+mitmailscan(1), mitmaildel(1), mitmailexp(1),
+imtest(1), RFC\-2060 (Internet Message Access Protocol - Version 4rev1)

@@ -44,6 +44,9 @@
      };	}G_STMT_END
 
 #else /* !G_DISABLE_CHECKS */
+#ifndef __GNUC__
+#define __PRETTY_FUNCTION__ ""
+#endif
 #define bonobo_return_if_fail(expr,opt_ev) G_STMT_START{		\
      if (!(expr)) {							\
          if (opt_ev)                                                    \

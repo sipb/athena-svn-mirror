@@ -14,11 +14,10 @@ set yesno = (no yes)
 onintr byebye
 
 # make sure that getans is there and ready
-if (! -e getans) then
+if (! -x getans) then
    echo 'This package is not complete.  The shell file "getans" is missing.'
    exit 10
 endif
-chmod +x getans
 
 if ($#argv > 0) then
 # fast track configuration

@@ -47,7 +47,7 @@
 <!ENTITY            newButton.accesskey   "C">
 
 <!-- manager entities -->
-<!ENTITY            pmTextA.label         "&brandShortName; stores information about your settings, preferences, bookmarks, stored messages and other user items in your user profile.">
+<!ENTITY            pmTextA.label         "&brandShortName; stores information about your settings, preferences, bookmarks, stored messages and other user items in your user profile. This window allows you to select which profile to use. It may also appear if the profile you are currently trying to use is in use elsewhere. Please select or create a profile that is not in use.">
 <!ENTITY            pmTextC.label         "You must select a profile, or create a new profile, the first time you start &brandShortName;.">
 <!ENTITY            pmTextB.label         "Indicates a profile created with a previous version of Netscape. These profiles must be copied and converted before they can be loaded with &brandShortName;. This is an automated process.">
 

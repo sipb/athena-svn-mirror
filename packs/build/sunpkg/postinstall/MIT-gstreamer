@@ -1,0 +1,10 @@
+#!/bin/sh
+
+PATH=/usr/athena/bin:$PATH
+umask 022
+
+# Create the gstreamer global registry.
+chroot ${PKG_INSTALL_ROOT:-/} \
+  /usr/athena/bin/gst-register --gst-mask=0 > /dev/null 2>&1
+
+exit 0

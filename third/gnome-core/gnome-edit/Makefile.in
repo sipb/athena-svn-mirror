@@ -394,8 +394,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-edit.o: gnome-edit.c
-
 info-am:
 info: info-am
 dvi-am:

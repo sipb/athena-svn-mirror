@@ -1,0 +1,9 @@
+Name: athena-mitmailscan
+Summary: Scan messages in an IMAP folder
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mitmailscan program scans a folder on an IMAP server for messages.

@@ -1,0 +1,104 @@
+#!/bin/sh
+#
+# $Id: redhat-fix,v 1.3 2004-03-11 04:14:35 zacheiss Exp $
+
+function PrintDefine() {
+    case $3 in
+    *ifn*)
+	echo "#ifndef $1" >> $4
+	;;
+    esac
+    case $3 in
+    *und*)
+	echo "#undef $1" >> $4
+	;;
+    esac
+    case $3 in
+    *def*)
+	echo "#define $1 $2" >> $4
+	;;
+    esac
+    case $3 in
+    *end*)
+	echo "#endif" >> $4
+	;;
+    esac
+    case $3 in
+    *inc*)
+	echo "#include $1" >> $4
+	;;
+    esac
+
+
+    case $3 in
+    *nl*)
+	echo "" >> $4
+	;;
+    esac
+}
+
+# PrintRedhatKernelFix arch mp file
+function PrintRedhatKernelFix() {
+    archlist="BOOT i586 i686 athlon"
+    arch="$1"
+    up=0
+    smp=0
+    ent=0
+    bm=0
+    hm=0
+    if [ "$2" = "MP" ]; then
+	smp=1
+    elif [ "$2" = "EP" ]; then
+	ent=1
+    elif [ "$2" = "BM" ]; then
+	bm=1
+    else
+	up=1
+    fi
+    file="$3"
+
+    # deal with the various boot kernels
+    boot=0
+    bootsmp=0
+
+    # arch of 'BOOT' == 386
+    if [ "$arch" = "BOOT" ]; then
+        if [ "$up" = 1 ]; then
+            boot=1
+            up=0
+        elif [ "$smp" = 1 ]; then
+            bootsmp=1
+            smp=0
+        fi
+        arch=i386
+    fi
+
+    rm -f $file
+    touch $file
+
+    PrintDefine "REDHAT_FIX_H" "" ifn,def,nl $file
+
+    PrintDefine "__BOOT_KERNEL_ENTERPRISE" $ent und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_BIGMEM" $bm und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_HUGEMEM" $hm und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_SMP" $smp und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_UP" $up und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_BOOT" $boot und,def,nl $file
+    PrintDefine "__BOOT_KERNEL_BOOTSMP" $bootsmp und,def,nl $file
+
+    PrintDefine \"/boot/kernel.h\" "" inc,nl $file	# include file
+
+    for ar in $archlist ; do
+	if [ "$ar" = "$arch" ]; then
+	    PrintDefine "__MODULE_KERNEL_$ar" "1" ifn,def,end $file
+	else
+	    PrintDefine "__MODULE_KERNEL_$ar" "" und $file	# undef
+        fi
+    done
+    echo "" >> $file
+
+    PrintDefine "" "" end $file
+}
+
+PrintRedhatKernelFix $1 $2 $3
+exit 0

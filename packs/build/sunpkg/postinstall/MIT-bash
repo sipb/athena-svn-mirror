@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# If /etc/shells exists, make sure it contains bash.
+if [ -f $PKG_INSTALL_ROOT/etc/shells ]; then
+  grep -s '^/bin/athena/bash$' $PKG_INSTALL_ROOT/etc/shells > /dev/null || \
+    echo "/bin/athena/bash" >> $PKG_INSTALL_ROOT/etc/shells
+fi
+
+exit 0

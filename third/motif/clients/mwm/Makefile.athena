@@ -1,0 +1,29 @@
+# $Id: Makefile.athena,v 1.4 2000-03-29 19:53:44 ghudson Exp $
+
+SHELL=/bin/sh
+
+dist:
+	mkdir -p config
+	cp $$XCONFIGDIR/README config
+	cp $$XCONFIGDIR/mkdirhier.sh config
+	cp $$XCONFIGDIR/rtcchack.bac config
+	cp $$XCONFIGDIR/site.def config
+	cp $$XCONFIGDIR/*.cf config
+	cp $$XCONFIGDIR/*.rules config
+	cp $$XCONFIGDIR/*.tmpl config
+
+prepare:
+	imake -Iconfig -DUseInstalled "-DXCONFIGDIR=`pwd`/config" \
+		-DMWM_ONLY
+	${MAKE} Makefiles
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} includes depend all
+
+check:
+
+install:
+	${MAKE} install install.man DESTDIR="$$SRVD"

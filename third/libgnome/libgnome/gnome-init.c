@@ -304,7 +304,6 @@ libgnome_userdir_setup (gboolean create_dirs)
 		if (errno != EEXIST) {
 			fprintf(stderr, _("Could not create per-user gnome configuration directory `%s': %s\n"),
 				gnome_user_dir, strerror(errno));
-			exit(1);
 		}
 	}
     
@@ -318,7 +317,6 @@ libgnome_userdir_setup (gboolean create_dirs)
 		if (errno != EEXIST) {
 			fprintf (stderr, _("Could not create per-user gnome configuration directory `%s': %s\n"),
 				 gnome_user_private_dir, strerror(errno));
-			exit(1);
 		}
 	}
 
@@ -327,14 +325,12 @@ libgnome_userdir_setup (gboolean create_dirs)
 	if (chmod (gnome_user_private_dir, 0700) < 0) {
 		fprintf(stderr, _("Could not set mode 0700 on private per-user gnome configuration directory `%s': %s\n"),
 			gnome_user_private_dir, strerror(errno));
-		exit(1);
 	}
   
 	if (mkdir (gnome_user_accels_dir, 0700) < 0) {
 		if (errno != EEXIST) {
 			fprintf(stderr, _("Could not create gnome accelerators directory `%s': %s\n"),
 				gnome_user_accels_dir, strerror(errno));
-			exit(1);
 		}
 	}
 }

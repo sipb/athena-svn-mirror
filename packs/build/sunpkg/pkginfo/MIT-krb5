@@ -1,0 +1,3 @@
+PKG=MIT-krb5
+NAME=Version 5 of the Kerberos system
+DESC=The Kerberos secure net authentication system.

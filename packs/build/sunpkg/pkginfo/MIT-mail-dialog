@@ -1,0 +1,3 @@
+PKG=MIT-mail-dialog
+NAME=Displays a dialog about the change in default mail client
+DESC=The mail-dialog program displays a dialog about how the default mail client has changed, and lets the user select how to proceed.  This program is used by the panel mail script and isn't terribly useful aside from that.

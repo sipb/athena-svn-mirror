@@ -1,0 +1,3 @@
+P MIT-larv    Library routines to send and receive larvnet status packects
+P MIT-ares    An asynchronous resolver library 
+P MIT-hesiod  The Athena Hesiod name service library

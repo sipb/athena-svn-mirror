@@ -54,6 +54,11 @@ static char *bash_special_tilde_expansions __P((char *));
 static int unquoted_tilde_word __P((const char *));
 static void initialize_group_array __P((void));
 
+#ifdef HESIOD
+#include <hesiod.h>
+static char *hes_gethomedir __P((char *));
+#endif
+
 /* A standard error message to use when getcwd() returns NULL. */
 char *bash_getcwd_errstr = "getcwd: cannot access parent directories";
 
@@ -651,9 +656,77 @@ bash_special_tilde_expansions (text)
   else if (DIGIT (*text) || ((*text == '+' || *text == '-') && DIGIT (text[1])))
     result = get_dirstack_from_string (text);
 #endif
+#ifdef HESIOD
+  /* Always use hesiod for ~~username. */
+  else if (*text == '~')
+    {
+      *text++;
+      result = hes_gethomedir(text);
+    }
+#endif
 
   return (result ? savestring (result) : (char *)NULL);
 }
+
+#ifdef HESIOD
+static char *
+hes_gethomedir (us)
+     char *us;
+{
+  char **res, **res1, *cp, *rp;
+  int which;
+
+  res = hes_resolve(us, "filsys");
+  rp = 0;
+  if (res != 0) {
+    extern char *strtok();
+    if ((*res) != 0) {
+      int i, lowest, new;
+
+      /* Use the first filesys if there's an ordered list */
+      lowest = -1;
+      which = 0;
+      if (res[1]) {
+        for (i = 0; res[i]; i++) {
+          cp = strrchr(res[i], ' ');
+          if (!cp)
+            return NULL;
+          new = atoi(cp + 1);
+          if (lowest == -1 || new < lowest) {
+            lowest = new;
+            which = i;
+          }
+        }
+      }
+      /*
+       * Look at the first token to determine how to interpret
+       * the rest of it.
+       * Yes, strtok is evil (it's not thread-safe), but it's also
+       * easy to use.
+       */
+      cp = strtok(res[which], " ");
+      if (strcmp(cp, "AFS") == 0) {
+        /* next token is AFS pathname.. */
+        cp = strtok(NULL, " ");
+        if (cp != NULL)
+          rp = savestring(cp);
+      } else if (strcmp(cp, "NFS") == 0) {
+        cp = NULL;
+        if ((strtok(NULL, " ")) && /* skip remote pathname */
+            (strtok(NULL, " ")) && /* skip host */
+            (strtok(NULL, " ")) && /* skip mode */
+            (cp = strtok(NULL, " "))) {
+          rp = savestring(cp);
+        }
+      }
+    }
+    for (res1 = res; *res1; res1++)
+      free(*res1);
+    return rp;
+  }
+  return NULL;
+}
+#endif /* HESIOD */
 
 /* Initialize the tilde expander.  In Bash, we handle `~-' and `~+', as
    well as handling special tilde prefixes; `:~" and `=~' are indications
@@ -665,6 +738,11 @@ tilde_initialize ()
 
   /* Tell the tilde expander that we want a crack first. */
   tilde_expansion_preexpansion_hook = bash_special_tilde_expansions;
+
+#ifdef HESIOD
+  /* Fall back to hesiod if the default behavior fails. */
+  tilde_expansion_failure_hook = hes_gethomedir;
+#endif
 
   /* Tell the tilde expander about special strings which start a tilde
      expansion, and the special strings that end one.  Only do this once.

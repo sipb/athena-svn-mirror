@@ -132,13 +132,10 @@ noinst_HEADERS = findme.h poptint.h system.h
 
 noinst_PROGRAMS = test1 test2 test3
 test1_SOURCES = test1.c
-test1_LDFLAGS = -all-static
 test1_LDADD = $(lib_LTLIBRARIES)
 test2_SOURCES = test2.c
-test2_LDFLAGS = -all-static
 test2_LDADD = $(lib_LTLIBRARIES)
 test3_SOURCES = test3.c
-test3_LDFLAGS = -all-static
 test3_LDADD = $(lib_LTLIBRARIES)
 
 noinst_SCRIPTS = testit.sh
@@ -152,6 +149,7 @@ TESTS = testit.sh
 include_HEADERS = popt.h
 lib_LTLIBRARIES = libpopt.la
 libpopt_la_SOURCES = popt.c findme.c poptparse.c poptconfig.c popthelp.c
+libpopt_la_LIBADD = $(LIBINTL) $(LIBICONV)
 
 man_MANS = popt.3
 
@@ -164,7 +162,7 @@ CONFIG_CLEAN_FILES = Doxyfile intl/Makefile
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libpopt_la_LDFLAGS =
-libpopt_la_LIBADD =
+libpopt_la_DEPENDENCIES =
 am_libpopt_la_OBJECTS = popt.lo findme.lo poptparse.lo poptconfig.lo \
 	popthelp.lo
 libpopt_la_OBJECTS = $(am_libpopt_la_OBJECTS)
@@ -174,12 +172,15 @@ PROGRAMS = $(noinst_PROGRAMS)
 am_test1_OBJECTS = test1.$(OBJEXT)
 test1_OBJECTS = $(am_test1_OBJECTS)
 test1_DEPENDENCIES = libpopt.la
+test1_LDFLAGS =
 am_test2_OBJECTS = test2.$(OBJEXT)
 test2_OBJECTS = $(am_test2_OBJECTS)
 test2_DEPENDENCIES = libpopt.la
+test2_LDFLAGS =
 am_test3_OBJECTS = test3.$(OBJEXT)
 test3_OBJECTS = $(am_test3_OBJECTS)
 test3_DEPENDENCIES = libpopt.la
+test3_LDFLAGS =
 SCRIPTS = $(noinst_SCRIPTS)
 
 

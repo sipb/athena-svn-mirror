@@ -1,7 +1,7 @@
 /* Kerberos4 SASL plugin
  * Rob Siemborski
  * Tim Martin 
- * $Id: kerberos4.c,v 1.1.1.2 2003-02-12 22:34:16 ghudson Exp $
+ * $Id: kerberos4.c,v 1.4 2003-11-04 19:25:23 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -49,7 +49,7 @@
 #include <krb.h>
 
 #ifdef WITH_DES
-# ifdef WITH_SSL_DES
+# if 0 && defined(WITH_SSL_DES)
 #  include <openssl/des.h>
 # else
 #  include <des.h>
@@ -115,7 +115,7 @@ extern int gethostname(char *, int);
 
 /*****************************  Common Section  *****************************/
 
-static const char plugin_id[] = "$Id: kerberos4.c,v 1.1.1.2 2003-02-12 22:34:16 ghudson Exp $";
+static const char plugin_id[] = "$Id: kerberos4.c,v 1.4 2003-11-04 19:25:23 ghudson Exp $";
 
 #ifndef KEYFILE
 #define KEYFILE "/etc/srvtab";
@@ -966,7 +966,7 @@ int kerberos4_server_plug_init(const sasl_utils_t *utils,
     
     /* fail if we can't open the srvtab file */
     if (access(srvtab, R_OK) != 0) {
-	utils->log(NULL, SASL_LOG_ERR,
+	utils->log(NULL, SASL_LOG_DEBUG,
 		   "can't access srvtab file %s: %m", srvtab, errno);
 	if(!(--refcount)) {
 	    utils->free(srvtab);
@@ -1033,13 +1033,13 @@ static int kerberosv4_client_mech_step(void *conn_context,
 	text->challenge=ntohl(text->challenge); 
 	
 	if (cparams->serverFQDN == NULL) {
-	    cparams->utils->log(NULL, SASL_LOG_ERR,
+	    cparams->utils->log(cparams->utils->conn, SASL_LOG_ERR,
 				"no 'serverFQDN' set");
 	    SETERROR(text->utils, "paramater error");
 	    return SASL_BADPARAM;
 	}
 	if (cparams->service == NULL) {
-	    cparams->utils->log(NULL, SASL_LOG_ERR,
+	    cparams->utils->log(cparams->utils->conn, SASL_LOG_ERR,
 				"no 'service' set");
 	    SETERROR(text->utils, "paramater error");
 	    return SASL_BADPARAM;
@@ -1077,7 +1077,7 @@ static int kerberosv4_client_mech_step(void *conn_context,
 		text->utils->seterror(text->utils->conn,SASL_NOLOG,
 				      "krb_mk_req() failed");
 		
-		cparams->utils->log(NULL, SASL_LOG_ERR, 
+		cparams->utils->log(cparams->utils->conn, SASL_LOG_ERR, 
 				    "krb_mk_req() failed: %s (%d)",
 				    get_krb_err_txt(result), result);
 		return SASL_FAIL;
@@ -1163,7 +1163,7 @@ static int kerberosv4_client_mech_step(void *conn_context,
 	KRB_UNLOCK_MUTEX(cparams->utils);
 	
 	if(result != 0) {
-	    cparams->utils->log(NULL, SASL_LOG_ERR,
+	    cparams->utils->log(cparams->utils->conn, SASL_LOG_ERR,
 				"krb_get_cred() failed: %s (%d)",
 				get_krb_err_txt(result), result);
 	    SETERROR(cparams->utils, "krb_get_cred() failed");
@@ -1383,7 +1383,7 @@ static int kerberosv4_client_mech_step(void *conn_context,
     }
     
     default:
-	cparams->utils->log(NULL, SASL_LOG_ERR,
+	cparams->utils->log(cparams->utils->conn, SASL_LOG_ERR,
 			    "Invalid Kerberos client step %d\n", text->state);
 	return SASL_FAIL;
     }

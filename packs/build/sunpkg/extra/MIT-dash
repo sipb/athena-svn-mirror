@@ -1,0 +1,19 @@
+#!/bin/sh
+
+athlibdir=/usr/athena/lib
+config=/afs/athena.mit.edu/system/config
+appdefs=/usr/athena/lib/X11/app-defaults
+
+mkdir -p $2$athlibdir
+mkdir -p $2$appdefs
+
+cp $1/packs/config/Dash.fallback $2$athlibdir
+chmod 644 $2$athlibdir/Dash.fallback
+cp $1/packs/config/os/$OS/Dash $2$appdefs
+chmod 644 $2$appdefs/Dash
+
+# Dash menus are versioned.  We pick up the version from the particular
+# version this Dash came from.
+. ./athena-version
+rm -f $2$athlibdir/Dash.menus
+ln -s $config/dash/Dash.menus-$major.$minor $2$athlibdir/Dash.menus

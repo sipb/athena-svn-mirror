@@ -10,7 +10,7 @@ divert(-1)
 #
 #  Definitions for Makefile construction for sendmail
 #
-#	$Id: library.m4,v 1.1.1.1 2003-04-08 15:11:55 zacheiss Exp $
+#	$Id: library.m4,v 1.2 2004-04-07 17:06:20 zacheiss Exp $
 #
 divert(0)dnl
 include(confBUILDTOOLSDIR`/M4/'bldM4_TYPE_DIR`/links.m4')dnl
@@ -27,7 +27,8 @@ bldCURRENT_PRODUCT.a: ${BEFORE} ${bldCURRENT_PRODUCT`OBJS'}
 ifdef(`bldLINK_SOURCES', `bldMAKE_SOURCE_LINKS(bldLINK_SOURCES)')
 
 install-`'bldCURRENT_PRODUCT: bldCURRENT_PRODUCT.a
-ifdef(`bldINSTALLABLE', `	${INSTALL} -c -o ${LIBOWN} -g ${LIBGRP} -m ${LIBMODE} bldCURRENT_PRODUCT.a ${DESTDIR}${LIBDIR}')
+ifdef(`bldINSTALLABLE', `	mkdir -p ${DESTDIR}${LIBDIR}
+	${INSTALL} -c -o ${LIBOWN} -g ${LIBGRP} -m ${LIBMODE} bldCURRENT_PRODUCT.a ${DESTDIR}${LIBDIR}')
 
 bldCURRENT_PRODUCT-clean:
 	rm -f ${OBJS} bldCURRENT_PRODUCT.a ${MANPAGES}

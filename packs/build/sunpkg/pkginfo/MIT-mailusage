@@ -1,0 +1,3 @@
+PKG=MIT-mailusage
+NAME=Display size of mail folders on a post office server
+DESC=The mailusage program prints out the total size of, and number of messages in, the user's mail folders on a post office server.

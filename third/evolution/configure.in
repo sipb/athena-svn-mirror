@@ -7,6 +7,9 @@ AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
 AM_CONFIG_HEADER(config.h)
 
+AC_CHECK_LIB(resolv, res_query, RESOLV_LIBS="-lresolv")
+AC_SUBST(RESOLV_LIBS)
+
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED(VERSION_COMMENT, "", [Define if you want a comment appended to the version number])
 
@@ -352,13 +355,15 @@ AC_CACHE_CHECK([db3 header version], ac_cv_db3_header_version,
 	ac_cv_db3_header_version=$evolution_db_version
 ])
 
+EVO_PTHREAD_CHECK
+
 AC_CACHE_CHECK([for db3 library name], ac_cv_db3_ldadd,
 [
 	LIBS_save="$LIBS"
 	ac_cv_db3_ldadd=""
 
 	for name in db db3 db-3.1; do
-		LIBS="$LIBS_save $with_db3_libs/lib${name}.a"
+		LIBS="$LIBS_save $with_db3_libs/lib${name}.a $PTHREAD_LIB"
 		AC_TRY_LINK([
 			#ifdef HAVE_DB3_DB_H
 			#include <db3/db.h>
@@ -369,7 +374,7 @@ AC_CACHE_CHECK([for db3 library name], ac_cv_db3_ldadd,
 			DB *db;
 			db_create (&db, 0, 0);
 		], [
-			ac_cv_db3_ldadd="$with_db3_libs/lib${name}.a"
+			ac_cv_db3_ldadd="$with_db3_libs/lib${name}.a $PTHREAD_LIB"
 			break
 		])
 	done
@@ -581,6 +586,9 @@ AC_SUBST(GNOME_PILOT_LIBS)
 dnl ********
 dnl Kerberos
 dnl ********
+AC_SEARCH_LIBS(gethostbyname, nsl)
+AC_SEARCH_LIBS(socket, socket)
+
 AC_ARG_WITH(krb5, [  --with-krb5=PREFIX      Location of Kerberos 5 libs/includes], with_krb5="$withval", with_krb5="no")
 AC_ARG_WITH(krb4, [  --with-krb4=PREFIX      Location of Kerberos 4 libs/includes], with_krb4="$withval", with_krb4="no")
 

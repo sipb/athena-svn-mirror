@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/third/tiff/config.site,v 1.1.1.1 2002-12-26 02:37:15 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/tiff/config.site,v 1.2 2003-01-25 05:53:12 ghudson Exp $
 #
 # TIFF Software
 #
@@ -41,21 +41,21 @@
 # Package controls.
 #
 #DSO="auto"			# auto|IRIX|IRIX52 enable DSO support for system
-#JPEG="no"			# yes|no configure JPEG support (see below)
-#ZIP="no"			# yes|no configure Deflate support (see below)
+JPEG="yes"			# yes|no configure JPEG support (see below)
+ZIP="yes"			# yes|no configure Deflate support (see below)
 #LIBGL="auto"			# yes|no|auto configure IRIS GL-based tools
 #LIBIMAGE="auto"		# yes|no|auto configure SGI RGB image tools
 #HTML="no"			# yes|no install HTML documentation
 
-#NONINTERACTIVE=yes		# yes|no Don't ask for confirmation on console
+NONINTERACTIVE=yes		# yes|no Don't ask for confirmation on console
 
 #
 # Directory parameters.
 #
-#DIR_BIN="/usr/local/bin"		# directory for tools
-#DIR_LIB="/usr/local/lib"		# directory for libraries
-#DIR_INC="/usr/local/include"		# directory for include files
-#DIR_MAN="/usr/local/man"		# directory for manual pages
+DIR_BIN="/usr/athena/bin"		# directory for tools
+DIR_LIB="/usr/athena/lib"		# directory for libraries
+DIR_INC="/usr/athena/include"		# directory for include files
+DIR_MAN="/usr/athena/man"		# directory for manual pages
 #DIR_HTML="/var/httpd/htdocs/tiff"	# directory for HTML documentation
 
 #
@@ -96,8 +96,8 @@
 # JPEG support requires release 5 or later of the IJG code,
 # which you can find on the Internet at ftp.uu.net:/graphics/jpeg/.
 #
-#DIRS_LIBINC="$DIRS_LIBINC ../src/jpeg-6b" # directory for jpeg include files
-#DIR_JPEGLIB=../src/jpeg-6b		# directory for libjpeg
+DIRS_LIBINC="/usr/athena/include"
+DIR_JPEGLIB="/usr/athena/lib"
 
 #
 # Deflate-specific parameters; used when Deflate support is enabled (see above).
@@ -112,7 +112,7 @@
 #     Look for it also at ftp://ftp.uu.net/pub/archiving/zip/zlib.
 #
 #DIRS_LIBINC="$DIRS_LIBINC ../zlib"	# directory for zlib include files
-#DIR_GZLIB="../zlib"			# directory for libz
+DIR_GZLIB="/usr/athena/lib"
 
 #
 # Miscellaneous parameters.
@@ -134,8 +134,8 @@
 #CC="gcc"				# name/pathname of C compiler
 #CCOMPILER=/opt/ansic/bin/$CC		# path to compiler if not in PATH.
 #ENVOPTS="-Aa"				# options for getting ANSI C
-#GCOPTS="-g"				# options to pass C compiler
-#OPTIMIZER="-O"				# Optimization options for compiler
+GCOPTS="-g"				# options to pass C compiler
+OPTIMIZER=""				# Optimization options for compiler
 #LDFLAGS="-Wl,-O"                       # Special linker flags.
 #LIBPORT='${PORT}/libport.a'		# library with emulation code
 #MACHDEPLIBS="-lm"			# extra libraries for linking

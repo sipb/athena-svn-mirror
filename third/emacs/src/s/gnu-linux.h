@@ -244,13 +244,13 @@ Boston, MA 02111-1307, USA.  */
    and is a very common addition to previous versions.  */
 
 #ifdef TERM
-#define LIBS_SYSTEM -lclient
-#define C_SWITCH_SYSTEM -D_BSD_SOURCE -I/usr/src/term
+#define LIBS_SYSTEM -lclient -lresolv
+#define C_SWITCH_SYSTEM -D_BSD_SOURCE -D_XOPEN_SOURCE -I/usr/src/term
 #else
 /* alane@wozzle.linet.org says that -lipc is not a separate library,
    since libc-4.4.1.  So -lipc was deleted.  */
-#define LIBS_SYSTEM
-#define C_SWITCH_SYSTEM -D_BSD_SOURCE
+#define LIBS_SYSTEM -lresolv
+#define C_SWITCH_SYSTEM -D_BSD_SOURCE -D_XOPEN_SOURCE
 #endif
 
 /* Paul Abrahams <abrahams@equinox.shaysnet.com> says this is needed.  */

@@ -1,0 +1,3 @@
+PKG=MIT-gtkhtml3
+NAME=GTK-based HTML rendering library, for Athena
+DESC=GtkHTML is a lightweight HTML rendering/printing/editing engine.

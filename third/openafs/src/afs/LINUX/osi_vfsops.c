@@ -15,7 +15,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.1.1.3 2004-02-13 17:53:26 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/LINUX/osi_vfsops.c,v 1.4 2004-02-13 18:58:36 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"

@@ -1,0 +1,240 @@
+#!/bin/sh
+
+# Build a standard Athena package into an RPM.
+# Currently this is hardwired for Linux.
+
+usage="build-package [-s srcdir] [-d destdir] [-v version] [-r release]"
+usage="$usage source rpmname"
+
+sourcedir=/mit/source
+destdir=/build
+
+while getopts s:d:v:r: opt; do
+  case "$opt" in
+  s)
+    sourcedir="$OPTARG"
+    ;;
+  d)
+    destdir="$OPTARG"
+    ;;
+  v)
+    version="$OPTARG"
+    ;;
+  r)
+    release="$OPTARG"
+    ;;
+  \?)
+    echo "$usage" 1>&2
+    exit 1
+    ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+
+if [ $# -ne 2 ]; then
+  echo "$usage" 1>&2
+  exit 1
+fi
+
+athena_dir=$1
+package_name=$2
+
+# XXX sigh.
+if [ third/krb5/src/appl = "$athena_dir" ]; then
+  athena_dir=third/krb5
+fi
+
+. $sourcedir/packs/build/version
+if [ "${version+set}" != set ]; then 
+  version=$major.$minor
+fi
+if [ "${release+set}" != set ]; then
+  release=$patch
+fi
+
+source_name=$package_name-$version
+
+# Determine appropriate path and RPM target.
+case `uname -s` in
+Linux)
+  OS=linux
+  PATH=/usr/bin:/bin:/usr/X11R6/bin
+  target=i386-athena-linux
+  rpmlib=/usr/lib/rpm
+  ;;
+SunOS)
+  OS=solaris
+  PATH=/usr/xpg4/bin:/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
+  target=sun4u-athena-solaris
+  rpmlib=/usr/athena/lib/rpm
+  ;;
+esac
+PATH=/usr/athena/bin:$PATH
+export PATH OS
+
+## STEP 0: Prepare the "topdir" area.
+
+echo "==== prepare topdir"
+
+mkdir -p \
+$destdir/BUILD \
+$destdir/SOURCES \
+$destdir/INSTALL \
+$destdir/SPECS \
+$destdir/SRPMS \
+$destdir/RPMS/i386 \
+$destdir/athtools 
+
+rm -f $destdir/rpmmacros
+cat > $destdir/rpmmacros <<EOF
+%_topdir	$destdir
+EOF
+
+rm -f $destdir/rpmrc
+cat > $destdir/rpmrc <<EOF
+macrofiles:	$rpmlib/macros:$rpmlib/%{_target}/macros:/etc/rpm/macros:/etc/rpm/%{_target}/macros:$destdir/rpmmacros
+EOF
+
+
+## STEP 1: Generate canonical source
+
+echo "==== prepare sources"
+
+# Copy in the sources.
+rm -rf $destdir/SOURCES/$source_name
+mkdir $destdir/SOURCES/$source_name
+cd $destdir/SOURCES
+(cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name; tar xfp -)
+
+# Run the prep script, if any.
+if [ -f $sourcedir/packs/build/rpm/prep/$package_name ]; then
+  $sourcedir/packs/build/rpm/prep/$package_name $sourcedir $source_name \
+    || exit 1
+fi
+
+# Copy in do.sh and run the "do dist" step to prepare a
+# self-sufficient source tree.
+cp $sourcedir/packs/build/do.sh $source_name/do.sh
+(cd $source_name && ./do.sh -s $sourcedir -d $destdir/INSTALL dist) || exit 1
+
+# Generate the sources file, and remove what we don't need any more.
+(cd $destdir/SOURCES && tar cf - $source_name | gzip -c > $source_name.tar.gz)
+rm -rf $source_name
+
+
+## STEP 2: Generate a specs file
+
+echo "==== create specs"
+
+spec_source=$sourcedir/packs/build/rpm/specs/$package_name
+
+# We fill in this; the rest is specified in the per-package file
+rm -f $destdir/SPECS/$source_name
+touch $destdir/SPECS/$source_name
+
+# Disable build root strip policy.  (This macro is expanded by rpm
+# at the end of the %install rule.  Normally it contains brp-strip
+# and brp-strip-comment-note as well as brp-compress; we don't want
+# those scripts to run because we prefer to install debugging
+# binaries.)
+echo "%define __spec_install_post $rpmlib/brp-compress || :" \
+  >> $destdir/SPECS/$source_name
+
+# Necessary preamble fields; fill them in if we need to.
+# Name, Summary, Copyright, Group, and %description may not be omitted.
+
+# Everything depends on athena-base.
+echo Requires: athena-base >> $destdir/SPECS/$source_name
+
+if grep -q Version: $spec_source; then :; else
+  echo "Version: $version" >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Release: $spec_source; then :; else
+  echo "Release: $release" >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Source: $spec_source; then :; else
+  echo "Source: $source_name.tar.gz" >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Distribution: $spec_source; then :; else
+  echo "Distribution: Athena $version" >> $destdir/SPECS/$source_name
+fi
+
+if grep -q Vendor: $spec_source; then :; else
+  echo "Vendor: MIT Athena" >> $destdir/SPECS/$source_name
+fi
+
+if grep -q BuildRoot: $spec_source; then :; else
+  echo 'BuildRoot: %{_tmppath}/%{name}-%{version}-root' >> \
+    $destdir/SPECS/$source_name
+fi
+
+# Now the file as we have it gets included.
+cat $spec_source >> $destdir/SPECS/$source_name
+
+# And finally the scripts get included.
+if grep -q %prep $spec_source; then :; else
+cat >> $destdir/SPECS/$source_name << 'EOF'
+%prep
+%setup
+
+EOF
+fi
+
+if grep -q %build $spec_source; then :; else 
+cat >> $destdir/SPECS/$source_name << 'EOF'
+%build
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT prepare
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT all
+
+EOF
+fi
+
+if grep -q %install $spec_source; then :; else
+cat >> $destdir/SPECS/$source_name << 'EOF'
+%install
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Don't try to install a /usr/athena/info/dir file.
+rm -f $RPM_BUILD_ROOT/usr/athena/info/dir
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist
+
+EOF
+fi
+
+if grep -q %files $spec_source; then :; else
+cat >> $destdir/SPECS/$source_name << 'EOF'
+%files -f rpm.filelist
+
+EOF
+fi
+
+if grep -q %post $spec_source; then :; else
+cat >> $destdir/SPECS/$source_name << 'EOF'
+%post
+for file in `find /usr/athena/info -type f ! -name dir`; do
+  install-info --info-dir=/usr/athena/info $file 2>/dev/null
+done
+exit 0
+EOF
+fi
+
+## STEP 3: Make the package.
+
+echo "==== build package"
+
+rpmbuild -ba -v --rcfile=$destdir/rpmrc --target=$target \
+  --buildroot=$destdir/INSTALL $destdir/SPECS/$source_name || exit 1
+
+
+## STEP 4: Copy the built package into athtools
+
+echo "==== save tools"
+
+(cd $destdir/INSTALL; tar cf - .) | (cd $destdir/athtools; tar xfp - .)

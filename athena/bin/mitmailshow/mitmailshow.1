@@ -1,0 +1,77 @@
+.\" 
+.\" $Id: mitmailshow.1,v 1.1 2004-01-21 23:08:35 rbasch Exp $
+.\"
+.TH MITMAILSHOW 1 
+.SH NAME
+mitmailshow \- show messages in an IMAP folder
+.SH SYNOPSIS
+.B mitmailshow
+[
+.B \--by-uid
+] [
+.B \--debug
+] [
+.B \--help
+] [
+.B \--host
+.I name
+] [
+.B \--mailbox
+.I name
+] [
+.B \--no-mark
+] [
+.B \--peek
+]
+.I message-ID
+[ ... ]
+.SH DESCRIPTION
+The 
+.I mitmailshow
+program displays each of the specified messages from a folder on an IMAP
+server to the standard output.  The output is not filtered; to process
+MIME messages, consider piping the output to the \fImhshow(1)\fR command.
+.SH OPTIONS
+.I mitmailshow
+understands the following options:
+.TP
+.B \--by-uid
+specify that the given message ID arguments are unique identifiers, not
+sequence numbers.
+.TP
+.B \--debug
+turn on debugging.
+.TP
+.B \--help
+display usage information and exit.
+.TP
+.B \--host \fIname\fR
+query the given host, instead of the default post office server.
+.TP
+.B \--mailbox \fIname\fR
+display messages from the IMAP folder \fIname\fR.  If this option is
+not specified,
+.I mitmailshow
+displays messages from the INBOX folder.
+.TP
+.B \--no-mark
+do not mark the message(s) as having been seen.
+.TP
+.B \--peek
+same as \fB--no-mark\fR.
+.SH ARGUMENTS
+.I mitmailshow
+requires one or more message ID arguments to be given.  The ID is
+either the message's sequence number, or, if the
+.I \--by-uid
+option is given, its unique identifier.
+.I mitmailscan(1)
+can be used to obtain the message ID.
+
+The message ID argument can be \fB*\fR, to indicate the last message
+in the mailbox.  An argument of the form
+.IB ID1 : ID2
+can be used to specify a range of IDs.
+.SH "SEE ALSO"
+mitmailscan(1), mitmaildel(1), mhshow(1),
+imtest(1), RFC\-2060 (Internet Message Access Protocol - Version 4rev1)

@@ -182,7 +182,7 @@ EXTRA_DIST = gnome-help-browser-help.html \
 	     default-page.html
 
 
-help_browser_helpdir = $(datadir)/gnome/help/help-browser/C
+help_browser_helpdir = $(datadir)/gnome/help/help-browser/es
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 

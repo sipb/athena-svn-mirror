@@ -2689,47 +2689,6 @@ else
 echo "$as_me: error: execution failed" >&2;}
    { (exit 1); exit 1; }; }
   fi
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-#include "conf$$e.h"
-
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
- et_foo_error_table;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  :
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-{ { echo "$as_me:$LINENO: error: cannot use et_foo_error_table" >&5
-echo "$as_me: error: cannot use et_foo_error_table" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
-  # Anything else we need to test for?
   rm -f conf$$e.et conf$$e.c conf$$e.h
   krb5_cv_compile_et_useful=yes
 
@@ -3841,7 +3800,7 @@ fi; if test $with_afs != no; then
 #define SETPAG 1
 _ACEOF
 
-	LOGINLIBS="$LOGINLIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp"
+	LOGINLIBS="$LOGINLIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik $with_afs/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys"
 fi
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -4302,6 +4261,134 @@ echo "${ECHO_T}Adding in krb4 rcp support" >&6
 	V4RCP=v4rcp
 	V4RCPO=v4rcp.o
 fi
+echo "$as_me:$LINENO: checking for res_send" >&5
+echo $ECHO_N "checking for res_send... $ECHO_C" >&6
+if test "${ac_cv_func_res_send+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char res_send (); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char res_send ();
+char (*f) ();
+
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_res_send) || defined (__stub___res_send)
+choke me
+#else
+f = res_send;
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_func_res_send=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_func_res_send=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_func_res_send" >&5
+echo "${ECHO_T}$ac_cv_func_res_send" >&6
+if test $ac_cv_func_res_send = yes; then
+  :
+else
+  echo "$as_me:$LINENO: checking for res_send in -lresolv" >&5
+echo $ECHO_N "checking for res_send in -lresolv... $ECHO_C" >&6
+if test "${ac_cv_lib_resolv_res_send+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lresolv  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char res_send ();
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+res_send ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_resolv_res_send=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_resolv_res_send=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_resolv_res_send" >&5
+echo "${ECHO_T}$ac_cv_lib_resolv_res_send" >&6
+if test $ac_cv_lib_resolv_res_send = yes; then
+  LOGINLIBS="$LOGINLIBS -lresolv"
+fi
+
+fi
+
 
 
 

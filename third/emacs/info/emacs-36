@@ -127,8 +127,8 @@ Concept Index
 * Browse-URL:                            Browse-URL.
 * buffer definitions index:              Imenu.
 * buffer list, customizable:             Buffer Menus.
-* buffer menu <1>:                       Buffer Menus.
-* buffer menu:                           Several Buffers.
+* buffer menu <1>:                       Several Buffers.
+* buffer menu:                           Buffer Menus.
 * buffer size, maximum:                  Buffers.
 * buffers:                               Buffers.
 * buggestion:                            Dissociated Press.
@@ -618,8 +618,8 @@ Concept Index
 * line-drawing characters (MS-DOS):      MS-DOS and MULE.
 * lines, highlighting:                   Highlight Interactively.
 * Lisp definitions, finding in sources:  Find-func.
-* Lisp editing <1>:                      Maintaining.
-* Lisp editing:                          Programs.
+* Lisp editing <1>:                      Programs.
+* Lisp editing:                          Maintaining.
 * Lisp files byte-compiled by XEmacs:    Lisp Libraries.
 * Lisp files, and multibyte operation:   Enabling Multibyte.
 * Lisp functions specific to Mac OS:     Mac Functions.
@@ -896,8 +896,8 @@ Concept Index
 * printing files (in Dired):             Operating on Files.
 * printing under MS-DOS:                 MS-DOS Processes.
 * program building:                      Building.
-* program editing <1>:                   Maintaining.
-* program editing:                       Programs.
+* program editing <1>:                   Programs.
+* program editing:                       Maintaining.
 * Prolog mode:                           Program Modes.
 * prompt:                                Minibuffer.
 * prompt, shell:                         History References.

@@ -4451,7 +4451,7 @@ extern int errno;
   The following declaration would cause problems for VMS and OS/2, in which
   errno is an "extern volatile int noshare"...
 */
- extern int errno;			/* Needed by most modules. */
+#include <errno.h>
 #endif /* __GLIBC__ */
 #endif /* OS2 */
 #endif /* VMS */

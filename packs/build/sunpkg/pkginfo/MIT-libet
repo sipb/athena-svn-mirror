@@ -1,0 +1,3 @@
+PKG=MIT-libet
+NAME=The com_err library; tools for building error code tables
+DESC=The com_err library: tools for building application error code tables which can coexist in the same number space.

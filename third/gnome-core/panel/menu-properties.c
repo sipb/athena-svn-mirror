@@ -92,7 +92,7 @@ get_pixmap(const char *menudir, gboolean main_menu)
 {
 	char *pixmap_name = NULL;
 	if (main_menu) {
-		pixmap_name = gnome_unconditional_pixmap_file("gnome-logo-icon-transparent.png");
+		pixmap_name = gnome_datadir_file("gnome/athena/menu-icon");
 	} else {
 		char *dentry_name;
 		GnomeDesktopEntry *item_info;
@@ -481,7 +481,7 @@ create_properties_dialog(Menu *menu)
 	gtk_container_set_border_width(GTK_CONTAINER(box),GNOME_PAD_SMALL);
 	gtk_container_add(GTK_CONTAINER(f),box);
 	
-	w = gtk_radio_button_new_with_label (NULL, _("Global main menu"));
+	w = gtk_radio_button_new_with_label (NULL, _("Panel context menu"));
 	global_main = w;
 	menu->dialog_info->global_main = w;
 	if((menu->path == NULL ||

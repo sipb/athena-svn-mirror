@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vfsck/setup.c,v 1.1.1.2 2004-02-13 17:53:03 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vfsck/setup.c,v 1.5 2004-01-07 14:04:05 zacheiss Exp $");
 
 #include <stdio.h>
 #define VICE
@@ -313,7 +313,21 @@ restat:
 	if (sblk.b_un.b_buf == NULL || asblk.b_un.b_buf == NULL)
 		errexit("cannot allocate space for superblock\n");
 		dev_bsize = secsize = DEV_BSIZE;
-
+#ifdef AFS_SUN5_ENV
+	/* Don't check logging filesystems unless user has
+	 * specified the force flag.
+	 */
+	if (!fflag)
+	  {
+	    sblock.fs_logbno = 0;
+	    (void) bread(fsreadfd, (char *)&sblock, SBLOCK, (long)SBSIZE);
+	    if (sblock.fs_logbno)
+	      {
+		printf("** %s is logging; skipping\n", sname);
+		exit(hotroot ? 40 : 0);
+	      }
+	  }
+#endif
 	/*
 	 * Read in the superblock, looking for alternates if necessary
 	 */

@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/cnvldb.c,v 1.1.1.2 2004-02-13 17:54:40 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/vlserver/cnvldb.c,v 1.3 2004-02-13 18:58:49 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>

@@ -2521,7 +2521,7 @@ echo "${ECHO_T}$GCJ" >&6
   fi
 
 if test -n "$HAVE_GCJ"; then
-  BUILDJAVAEXE=yes
+  BUILDJAVAEXE=no
 else
   BUILDJAVAEXE=no
 fi
@@ -2928,7 +2928,7 @@ echo "${ECHO_T}no" >&6
 fi
 
 if test -n "$HAVE_JAVACOMP" && test -n "$JAR"; then
-  BUILDJAVA=yes
+  BUILDJAVA=no
 else
   BUILDJAVA=no
 fi
@@ -3103,7 +3103,7 @@ fi
 echo "${ECHO_T}$ac_result" >&6
 
 if test -n "$HAVE_JAVAEXEC" && test $BUILDJAVA = yes; then
-  TESTJAVA=yes
+  TESTJAVA=no
 else
   TESTJAVA=no
 fi

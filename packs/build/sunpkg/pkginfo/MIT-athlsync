@@ -1,0 +1,3 @@
+PKG=MIT-athlsync
+NAME=Synchronize locker contents to local disk
+DESC=athlsync synchronizes the contents of a locker to local disk, making adjustments for copying out of AFS.

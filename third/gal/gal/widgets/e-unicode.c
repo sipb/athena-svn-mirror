@@ -33,6 +33,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
 #include <iconv.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>

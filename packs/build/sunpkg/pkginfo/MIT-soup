@@ -1,0 +1,3 @@
+PKG=MIT-soup
+NAME=Soup, a SOAP implementation, for Athena
+DESC=Soup is a SOAP (Simple Object Access Protocol) implementation in C. It  provides an queued asynchronous callback-based mechanism for sending  SOAP requests. A WSDL (Web Service Definition Language) to C compiler  which generates stubs for easily calling remote SOAP methods, and a  CORBA IDL to WSDL compiler are also included.

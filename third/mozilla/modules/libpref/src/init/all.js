@@ -461,6 +461,10 @@ pref("network.protocol-handler.expose-all", true);
 // Example: make IMAP an exposed protocol
 // pref("network.protocol-handler.expose.imap", true);
 
+// Athena customization: Use Evolution to handle mailto links.
+pref("network.protocol-handler.app.mailto", "evolution");
+pref("network.protocol-handler.external.mailto", true);
+
 pref("network.hosts.smtp_server",           "mail");
 pref("network.hosts.pop_server",            "mail");
 
@@ -603,7 +607,7 @@ pref("network.proxy.socks_port",            0);
 pref("network.proxy.socks_version",         5);
 pref("network.proxy.no_proxies_on",         "localhost, 127.0.0.1");
 pref("network.online",                      true); //online/offline
-pref("network.cookie.cookieBehavior",       3); // 0-Accept, 1-dontAcceptForeign, 2-dontUse, 3-p3p
+pref("network.cookie.cookieBehavior",       1); // 0-Accept, 1-dontAcceptForeign, 2-dontUse, 3-p3p
 pref("network.cookie.disableCookieForMailNews", true); // disable all cookies for mail
 pref("network.cookie.lifetimePolicy",       0); // accept normally, 1-askBeforeAccepting, 2-acceptForSession,3-acceptForNDays
 pref("network.cookie.alwaysAcceptSessionCookies", false);

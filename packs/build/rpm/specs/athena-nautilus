@@ -1,0 +1,8 @@
+Name: athena-nautilus
+Summary: A file manager and graphical shell, for Athena
+License: GPL
+Group: User Interface/Desktop
+
+%description
+Nautilus integrates access to files, applications, media, Internet-
+based resources and the Web.

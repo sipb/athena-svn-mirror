@@ -1,0 +1,16 @@
+#!/bin/sh
+# $Id: Xstartup,v 1.1 2000-04-25 13:51:59 rbasch Exp $
+
+# Xstartup
+#
+# This program is run as root by xlogin after the user is verified,
+# with $USER set to the name of the user logging in.  It is used to
+# claim various devices for the user logging in on the console.
+
+cd /dev
+
+# Claim the audio devices.
+chown $USER audio audioctl
+chmod   600 audio audioctl
+
+exit 0

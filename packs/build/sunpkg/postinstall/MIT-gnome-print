@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Adapted from gnome-print's spec file.
+chroot ${PKG_INSTALL_ROOT:-/} \
+  /usr/bin/perl /usr/athena/share/fonts/run-gnome-font-install \
+  /usr/athena/bin/gnome-font-install /usr/athena/share /usr/athena/share \
+  /etc/athena > /dev/null 2>&1
+
+exit 0

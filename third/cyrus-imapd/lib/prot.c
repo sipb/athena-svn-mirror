@@ -41,7 +41,7 @@
  *
  */
 /*
- * $Id: prot.c,v 1.1.1.3 2004-02-23 22:55:16 rbasch Exp $
+ * $Id: prot.c,v 1.3 2004-02-23 23:56:42 rbasch Exp $
  */
 
 #include <config.h>

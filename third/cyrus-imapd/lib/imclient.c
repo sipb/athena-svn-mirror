@@ -1,6 +1,6 @@
 /* imclient.c -- Streaming IMxP client library
  *
- * $Id: imclient.c,v 1.1.1.3 2004-02-23 22:54:45 rbasch Exp $
+ * $Id: imclient.c,v 1.5 2004-02-23 23:56:42 rbasch Exp $
  *
  * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
@@ -223,6 +223,7 @@ int imclient_connect(struct imclient **imclient,
 		     sasl_callback_t *cbs)
 {
     int s = -1;
+    int socket_error = 0;
     struct addrinfo hints, *res0 = NULL, *res;
     int saslresult;
     static int didinit;
@@ -239,17 +240,52 @@ int imclient_connect(struct imclient **imclient,
     if (getaddrinfo(host, port, &hints, &res0))
 	return -1;
     for (res = res0; res; res = res->ai_next) {
+	socket_error = 0;
 	s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (s < 0)
 	    continue;
+	/* Athena modification: Set the socket to be non-blocking for the
+	 * connect, so we can use our own (shorter) timeout.  After we are
+	 * successfully connected, we will set the socket back to blocking
+	 * mode.
+	 */
+	nonblock(s, 1);
 	if (connect(s, res->ai_addr, res->ai_addrlen) >= 0)
 	    break;
+	if (errno == EINPROGRESS) {
+	    struct timeval timeout;
+	    fd_set fds;
+	    time_t time_now, time_timeout;
+	    int len;
+	    int status;
+
+	    /* Wait up to 10 seconds to be connected. */
+	    time_now = time(NULL);
+	    time_timeout = time_now + 10;
+	    do {
+		FD_ZERO(&fds);
+		FD_SET(s, &fds);
+		timeout.tv_sec = time_timeout - time_now;
+		timeout.tv_usec = 0;
+		status = select(s + 1, NULL, &fds, NULL, &timeout);
+		if (!(status == -1 && errno == EINTR))
+		    break;
+		time_now = time(NULL);
+	    } while (time_now <= time_timeout);
+	    if (status > 0) {
+		/* Check if we are connected. */
+		len = sizeof(socket_error);
+		if (getsockopt(s, SOL_SOCKET, SO_ERROR, &socket_error, &len)
+		    == 0)
+		    break;
+	    }
+	}
 	close(s);
 	s = -1;
     }
     if (s < 0)
-	return errno;
-    /*    nonblock(s, 1); */
+	return (socket_error ? socket_error : errno);
+    nonblock(s, 0);
     *imclient = (struct imclient *)xzmalloc(sizeof(struct imclient));
     (*imclient)->fd = s;
     (*imclient)->saslconn = NULL;
@@ -1348,8 +1384,9 @@ static int imclient_authenticate_sub(struct imclient *imclient,
             imclient_writebase64(imclient, out, outlen);
         }
     } else {
+	/* Failed; cancel the authentication exchange.  Wait for
+	 * the server's BAD response before we return. */
 	imclient_write(imclient,"*\r\n", 3);
-	return saslresult;
     }
 
     outlen = 0;

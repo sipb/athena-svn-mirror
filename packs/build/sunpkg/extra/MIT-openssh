@@ -1,0 +1,22 @@
+#!/bin/sh
+
+etcdir=/etc
+initd=/etc/init.d
+rc2=/etc/rc2.d
+rc0=/etc/rc0.d
+
+mkdir -p $2$etcdir
+mkdir -p $2$initd
+mkdir -p $2$rc2
+mkdir -p $2$rc0
+
+cp $1/packs/config/ssh_config $2$etcdir
+chmod 644 $2$etcdir/ssh_config
+cp $1/packs/config/sshd_config $2$etcdir
+chmod 644 $2$etcdir/sshd_config
+cp $1/packs/maint/os/$OS/athena-opensshd.rc $2$initd/athena-opensshd
+chmod 755 $2$initd/athena-opensshd
+rm -f $2$rc2/S91athena-opensshd
+ln -s ../init.d/athena-opensshd $2$rc2/S91athena-opensshd
+rm -f $2$rc0/K91athena-opensshd
+ln -s ../init.d/athena-opensshd $2$rc0/K91athena-opensshd

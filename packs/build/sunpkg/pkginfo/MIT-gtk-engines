@@ -1,0 +1,3 @@
+PKG=MIT-gtk-engines
+NAME=Theme engines for GTK, for Athena
+DESC=The gtk2-engines package contains shared objects and configuration files that implement a number of GTK+ theme engines.  Theme engines provide different looks for GTK+, some of which resemble other toolkits or operating systems.

@@ -471,6 +471,7 @@ f_err:
 err:
 	return(ret);
 	}
+const char *CAN_2003_0078_patch_ID="CAN-2003-0078 patch 2003-02-19";
 
 static int do_uncompress(SSL *ssl)
 	{

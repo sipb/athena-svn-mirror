@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Change /etc/ifhp.conf to class config.
+sed -e 's|^f none \(etc/ifhp\.conf\) |e config \1 |'

@@ -36,10 +36,23 @@ RCSID("$OpenBSD: auth2.c,v 1.95 2002/08/22 21:33:58 markus Exp $");
 #include "pathnames.h"
 #include "monitor_wrap.h"
 
+#include <al.h>
+extern char *session_username;
+extern int is_local_acct;
+
+#ifdef GSSAPI
+#include "ssh-gss.h"
+#endif
+
 /* import */
 extern ServerOptions options;
 extern u_char *session_id2;
 extern int session_id2_len;
+extern int debug_flag;
+
+#ifdef WITH_AIXAUTHENTICATE
+extern char *aixloginmsg;
+#endif
 
 Authctxt *x_authctxt = NULL;
 
@@ -50,9 +63,15 @@ extern Authmethod method_pubkey;
 extern Authmethod method_passwd;
 extern Authmethod method_kbdint;
 extern Authmethod method_hostbased;
+extern Authmethod method_external;
+extern Authmethod method_gssapi;
 
 Authmethod *authmethods[] = {
 	&method_none,
+#ifdef GSSAPI
+	&method_external,
+	&method_gssapi,
+#endif
 	&method_pubkey,
 	&method_passwd,
 	&method_kbdint,
@@ -136,7 +155,9 @@ input_userauth_request(int type, u_int32_t seq, void *ctxt)
 	Authctxt *authctxt = ctxt;
 	Authmethod *m = NULL;
 	char *user, *service, *method, *style = NULL;
-	int authenticated = 0;
+	int authenticated = 0, status;
+	char *filetext, *errmem;
+	const char *err;
 
 	if (authctxt == NULL)
 		fatal("input_userauth_request: no authctxt");
@@ -152,6 +173,50 @@ input_userauth_request(int type, u_int32_t seq, void *ctxt)
 
 	if (authctxt->attempt++ == 0) {
 		/* setup auth context */
+		struct passwd *pw = NULL;
+
+		status = al_login_allowed(user, 1, &is_local_acct, &filetext);
+		if (status != AL_SUCCESS)
+		  {
+		    char *buf;
+
+		    err = al_strerror(status, &errmem);
+		    if (filetext && *filetext)
+		      {
+			buf = xmalloc(40 + strlen(err) + strlen(filetext));
+			sprintf(buf, "You are not allowed to log in here: "
+				"%s\n%s", err, filetext);
+		      }
+		    else
+		      {
+			buf = xmalloc(40 + strlen(err));
+			sprintf(buf, "You are not allowed to log in here: "
+				"%s\n", err);
+		      }
+		    packet_start(SSH2_MSG_DISCONNECT);
+		    packet_put_int(SSH2_DISCONNECT_ILLEGAL_USER_NAME);
+		    packet_put_cstring(buf);
+		    packet_put_cstring("");
+		    packet_send();
+		    packet_write_wait();
+
+		    fatal("Login denied: attempted login as %s from %s: %s",
+			  user, get_canonical_hostname(1), err);
+		  }
+		if (!is_local_acct)
+		  {
+		    status = al_acct_create(user, getpid(), 0, 0, NULL);
+		    if (status != AL_SUCCESS && debug_flag)
+		      {
+			err = al_strerror(status, &errmem);
+			debug("al_acct_create failed for user %s: %s", user,
+			      err);
+			al_free_errmem(errmem);
+		      }
+		    session_username = xstrdup(user);
+		    atexit(session_cleanup);
+		  }		
+		
 		authctxt->pw = PRIVSEP(getpwnamallow(user));
 		if (authctxt->pw && strcmp(service, "ssh-connection")==0) {
 			authctxt->valid = 1;
@@ -180,6 +245,12 @@ input_userauth_request(int type, u_int32_t seq, void *ctxt)
 	}
 	/* reset state */
 	auth2_challenge_stop(authctxt);
+
+#ifdef GSSAPI
+        dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_TOKEN, NULL);
+	dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE, NULL);
+#endif
+
 	authctxt->postponed = 0;
 
 	/* try to authenticate user */

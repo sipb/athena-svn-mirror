@@ -135,8 +135,8 @@ Index
 * ediff-make-buffers-readonly-at-startup: Miscellaneous.
 * ediff-make-frame-position:             Window and Frame Configuration.
 * ediff-make-wide-display-function:      Miscellaneous.
-* ediff-maybe-save-and-delete-merge <1>: Merging and diff3.
-* ediff-maybe-save-and-delete-merge:     Hooks.
+* ediff-maybe-save-and-delete-merge <1>: Hooks.
+* ediff-maybe-save-and-delete-merge:     Merging and diff3.
 * ediff-merge:                           Major Entry Points.
 * ediff-merge-buffers:                   Major Entry Points.
 * ediff-merge-buffers-with-ancestor:     Major Entry Points.
@@ -167,8 +167,8 @@ Index
 * ediff-patch-options:                   Patch and Diff Programs.
 * ediff-patch-program:                   Patch and Diff Programs.
 * ediff-prefer-iconified-control-frame:  Window and Frame Configuration.
-* ediff-prepare-buffer-hook <1>:         Customizing the Mode Line.
-* ediff-prepare-buffer-hook:             Hooks.
+* ediff-prepare-buffer-hook <1>:         Hooks.
+* ediff-prepare-buffer-hook:             Customizing the Mode Line.
 * ediff-profile:                         Other Session Commands.
 * ediff-quit-hook:                       Hooks.
 * ediff-quit-merge-hook <1>:             Merging and diff3.

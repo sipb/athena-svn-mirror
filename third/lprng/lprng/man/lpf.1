@@ -1,4 +1,4 @@
-.ds VE LPRng-3.6.13
+.ds VE LPRng-3.6.1
 .TH LPF 1 \*(VE "LPRng"
 .ig
 Thu Jul 20 07:19:29 PDT 1995 Patrick Powell
@@ -41,7 +41,8 @@ affile
 .B Lpf
 is a general printer filter. Usually it is used as filter in the
 printcap file and is called by lpd.
-The -Tcrlf option will suppress translation of LF to CR/LF pairs.
+By default,
+it will translate LF to CR/LF pairs.
 
 The following options passes lpd by default:
 .IP "\fB\-P\fIprinter\fR" 5
@@ -87,10 +88,10 @@ The name of the accounting file, from printcap information.
 Sets debug level. The level must be an integer, a nonzero value
 switches debugging on.
 .IP "\fB\-T\fIcrlf\fR" 5
-Turn LF to CR/LF translation off.
+Turns LF to CRLF translation off.
 .IP "\fB\-T\fINNN\fR" 5
 NNN is an integer in C format.
-The corresponding character is appended to the end of a line (LF, CR, or CR/LF).
+The corresponding character is appended to the end of a line.
 This can be done to force a different form of CR/LF translation.
 .SH FILES
 .PP
@@ -127,11 +128,16 @@ The debugging information will
 help you to pinpoint the exact cause of failure.
 .fi
 .SH "HISTORY"
+.LP
 LPRng is a enhanced printer spooler system
 with functionality similar to the Berkeley LPR software.
-The LPRng mailing list is lprng@lprng.com;
-subscribe by sending mail to lprng-request@lprng.com with
+The LPRng mailing list is plp@iona.ie;
+subscribe by sending mail to plp-request@iona.ie with
 the word subscribe in the body.
 The software is available from ftp://ftp.astart.com/pub/LPRng.
-.SH "AUTHOR"
+.LP
+LPRng is distributed under the GNU software license for non-commercial
+use,
+the Artistic License for limited commercial use. 
+Commerical support and licensing is available through
 Patrick Powell <papowell@astart.com>.

@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ubik/beacon.c,v 1.1.1.2 2004-02-13 17:57:40 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/ubik/beacon.c,v 1.3 2004-02-13 18:58:45 zacheiss Exp $");
 
 #include <sys/types.h>
 #ifdef AFS_NT40_ENV

@@ -1,0 +1,10 @@
+#!/bin/sh
+case $OS in
+irix)
+  options=--with-messages=/var/adm/SYSLOG
+  ;;
+*)
+  options=
+  ;;
+esac
+./configure $options

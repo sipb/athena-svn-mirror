@@ -1,7 +1,7 @@
 dnl
 dnl configure.in -- autoconf template for nmh
 dnl
-dnl $Id: configure.in,v 1.1.1.1 1999-02-07 18:14:05 danw Exp $
+dnl $Id: configure.in,v 1.4 2003-03-23 01:16:24 ghudson Exp $
 dnl
 
 AC_INIT(h/nmh.h)
@@ -228,7 +228,7 @@ AC_HEADER_STAT
 AC_CHECK_HEADERS(string.h memory.h stdlib.h unistd.h errno.h fcntl.h \
                  limits.h crypt.h termcap.h termio.h termios.h locale.h \
                  sys/param.h sys/time.h sys/utsname.h arpa/inet.h \
-                 arpa/ftp.h)
+                 arpa/ftp.h ndbm.h db.h)
 
 AC_CACHE_CHECK(POSIX termios, nmh_cv_sys_posix_termios,
 [AC_TRY_LINK([#include <sys/types.h>
@@ -297,7 +297,8 @@ dnl --------------
 dnl Checks for ndbm
 AC_CHECK_FUNC(dbm_open, ,
   AC_CHECK_LIB(ndbm, dbm_open, ,
-    AC_CHECK_LIB(dbm, dbm_open)))
+    AC_CHECK_LIB(dbm, dbm_open, ,
+      AC_CHECK_LIB(db, __db_ndbm_open))))
 
 dnl ----------------
 dnl CHECK FOR HESIOD
@@ -329,12 +330,12 @@ if test x$with_krb4 != x -a x$with_krb4 != xno; then
     KRB4_INCLUDES="-I/usr/include/kerberosIV"
   fi
   AC_CHECK_LIB(krb4, krb_rd_req,
-    [KRB4_LIBS="$KRB4_LIBS -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err"],
+    [KRB4_LIBS="$KRB4_LIBS -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"],
     [AC_CHECK_LIB(krb, krb_rd_req,
       [KRB4_LIBS="-lkrb -ldes"],
       [AC_MSG_ERROR(Kerberos 4 libraries not found)],
       $KRB4_LIBS -ldes)],
-    $KRB4_LIBS -ldes425 -lkrb5 -lcrypto -lcom_err)
+    $KRB4_LIBS -ldes425 -lkrb5 -lk5crypto -lcom_err)
 fi
 AC_SUBST(KRB4_INCLUDES)dnl
 AC_SUBST(KRB4_LIBS)dnl

@@ -18,7 +18,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_fs.c,v 1.1.1.2 2004-02-13 17:52:07 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/uss/uss_fs.c,v 1.2 2003-03-20 00:09:41 zacheiss Exp $");
 
 #include "uss_fs.h"		/*Interface to this module*/
 #include <sys/types.h>

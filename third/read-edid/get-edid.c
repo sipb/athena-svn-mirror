@@ -381,6 +381,7 @@ read_edid(  unsigned controller, FILE* output )
 	    contact_author();
 
 	  last_reported = blocks_left;
+	  return 1;
 	}
 
       if ( EDID_BLOCK_SIZE != fwrite( buffer, sizeof( byte ), EDID_BLOCK_SIZE, output ) )

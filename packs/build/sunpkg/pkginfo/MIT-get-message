@@ -1,0 +1,3 @@
+PKG=MIT-get-message
+NAME=A program to display the global Athena message of the day
+DESC=The get_message utility locates the Athena Global Message server, retrieves the current message of the day, and displays it if necessary.

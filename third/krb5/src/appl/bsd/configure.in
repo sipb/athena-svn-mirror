@@ -7,7 +7,7 @@ AC_ARG_WITH([afs],
 ,with_afs=no)dnl
 if test $with_afs != no; then
 	AC_DEFINE(SETPAG)
-	LOGINLIBS="$LOGINLIBS -L$with_afs/lib -L$with_afs/lib/afs -lauth -lsys -lrx -llwp"
+	LOGINLIBS="$LOGINLIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik $with_afs/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys"
 fi
 AC_PROG_INSTALL
 dnl dbm libs for use of an_to_ln
@@ -66,6 +66,9 @@ else
 	V4RCP=v4rcp
 	V4RCPO=v4rcp.o
 fi
+dnl
+AC_CHECK_FUNC(res_send,:,AC_CHECK_LIB(resolv,res_send,
+	      [LOGINLIBS="$LOGINLIBS -lresolv"]))
 dnl
 dnl
 AC_SUBST(KRSHDLIBS)

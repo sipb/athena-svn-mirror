@@ -17,6 +17,7 @@ xscreensaver - extensible screen saver framework, plus locking
 .SH SYNOPSIS
 .B xscreensaver
 [\-display \fIhost:display.screen\fP] \
+[\-start\-locked] \
 [\-verbose] \
 [\-no\-capture\-stderr] \
 [\-no\-splash]
@@ -50,7 +51,8 @@ daemon that runs in the background; it is controlled by the foreground
 .BR xscreensaver-demo (1)
 and
 .BR xscreensaver-command (1)
-programs.
+programs.  (However, the \fI\-start\-locked\fP command-line option or
+the \fI.startLocked\fP resource makes it behave like \fBxlock\fP.)
 .SH CONFIGURATION
 The easiest way to configure \fIxscreensaver\fP is to simply run the
 .BR xscreensaver-demo (1)
@@ -73,14 +75,14 @@ database.  If the \fI.xscreensaver\fP file exists, it overrides any settings
 in the resource database.  
 
 The syntax of the \fI.xscreensaver\fP file is similar to that of
-the \fI.Xdefaults\fP file; for example, to set the \fItimeout\fP paramter
+the \fI.Xresources\fP file; for example, to set the \fItimeout\fP paramter
 in the \fI.xscreensaver\fP file, you would write the following:
 .EX
 timeout: 5
 .EE
-whereas, in the \fI.Xdefaults\fP file, you would write
+whereas, in the \fI.Xresources\fP file, you would write
 .EX
-xscreensaver.timeout: 5
+XScreenSaver.timeout: 5
 .EE
 If you change a setting in the \fI.xscreensaver\fP file while xscreensaver
 is already running, it will notice this, and reload the file.  (The file will
@@ -89,10 +91,10 @@ blanking or unblanking the screen, or picking a new graphics mode.)
 
 If you change a setting in your X resource database, or if you want
 xscreensaver to notice your changes immediately instead of the next time
-it wakes up, then you will need to reload your \fI.Xdefaults\fP file,
+it wakes up, then you will need to reload your \fI.Xresources\fP file,
 and then tell the running xscreensaver process to restart itself, like so:
 .EX
-xrdb < ~/.Xdefaults
+xrdb < ~/.Xresources
 xscreensaver-command -restart
 .EE
 If you want to set the system-wide defaults, then make your edits to
@@ -104,7 +106,7 @@ systems might keep it in a different place (for example,
 
 When settings are changed in the Preferences dialog box (see above)
 the current settings will be written to the \fI.xscreensaver\fP file.
-(The \fI.Xdefaults\fP file and the app-defaults file will never be
+(The \fI.Xresources\fP file and the app-defaults file will never be
 written by xscreensaver itself.)
 .PP
 .TP 8
@@ -122,7 +124,7 @@ Default 10 minutes.
 .B lock\fP (class \fBBoolean\fP)
 Enable locking: before the screensaver will turn off, it will require you 
 to type the password of the logged-in user (really, the person who ran
-xscreensaver), or the root password.  (\fBNote:\fP this doesn't work if the
+xscreensaver).  (\fBNote:\fP this doesn't work if the
 screensaver is launched by
 .BR xdm (1)
 because it can't know the user-id of the logged-in user.  See 
@@ -139,12 +141,31 @@ activation) then a password would be required.  The default is 0, meaning
 that if locking is enabled, then a password will be required as soon as the 
 screen blanks.
 .TP 8
+.B startLocked\fP (class \fBBoolean\fP)
+Tells xscreensaver to start up locked and exit immediately after the screen is
+unlocked.
+.TP 8
+.B lockCommand\fP (class \fBLockCommand\fP)
+Specifies a command to run when the screen is locked. If the command
+is still running when the screen is unlocked, it will be killed (with
+a SIGTERM).
+.TP 8
+.B unlockCommand\fP (class \fBUnlockCommand\fP)
+Specifies a command to run when the screen is unlocked. (The unlock
+command is run after the lock command, if any, is killed.)
+.TP 8
 .B passwdTimeout\fP (class \fBTime\fP)
 If the screen is locked, then this is how many seconds the password dialog box
 should be left on the screen before giving up (default 30 seconds.)  This
 should not be too large: the X server is grabbed for the duration that the
 password dialog box is up (for security purposes) and leaving the server 
 grabbed for too long can cause problems.
+.TP 8
+.B maxIdleTime\fP (class \fBTime\fP)
+This is how many minutes the screensaver is allowed to run before the
+password dialog box displays a prompt allowing an arbitrary user to
+kill the running X session by typing Control-L.  The default is 20
+minutes.
 .TP 8
 .B dpmsEnabled\fP (class \fBBoolean\fP)
 Whether power management is enabled.
@@ -249,8 +270,9 @@ display the web page indicated here in your web browser.
 .TP 8
 .B loadURL\fP (class \fBLoadURL\fP)
 This is the shell command used to load a URL into your web browser.
-The default setting will load it into Mozilla/Netscape if it is already
-running, otherwise, will launch a new browser looking at the \fIhelpURL\fP.
+The default setting uses htmlview to load it into a new window of a running
+browser process, if any, or to launch a new browser process looking at the
+\fIhelpURL\fP.
 .TP 8
 .B demoCommand\fP (class \fBDemoCommand\fP)
 This is the shell command run when the \fIDemo\fP button on the splash window
@@ -356,6 +378,32 @@ index in the \fIprograms\fP list.  You're crazy if you count them and
 set this number by hand: let
 .BR xscreensaver\-demo (1)
 do it for you!
+.TP 8
+.B renew\fP (class \fBRenew\fP)
+Controls whether xscreensaver renews Kerberos credentials when the
+Kerberos password is used to unlock the screen.  Legal values are:
+.RS 8
+.TP 8
+.B invalid
+Only renew credentials when the existing credentials have expired, or
+have been destroyed.  This is the default.
+.TP 8
+.B older
+Renew credentials when the existing credentials will expire before the
+new credentials, or are not valid.
+.TP 8
+.B always
+Always renew credentials, regardless of whether the existing credentials
+are still valid.
+.TP 8
+.B never
+Never renew credentials, even if the existing credentials are no longer
+valid.
+
+.RE
+.TP 8
+.B renewCommand\fP (class \fBRenewCommand\fP)
+Specifies a shell command to run after renewing Kerberos credentials.
 .TP 8
 .B programs\fP (class \fBPrograms\fP)
 The graphics hacks which \fIxscreensaver\fP runs when the user is idle.
@@ -541,6 +589,21 @@ is true.  Default: Black.
 The pathname of the shell that \fIxscreensaver\fP uses to start subprocesses.
 This must be whatever your local variant of \fB/bin/sh\fP is: in particular,
 it must not be \fBcsh\fP.
+.TP 8
+.B passwd\fP (class \fBPasswd\fP)
+The
+.BR crypt (3)
+output of a password, which can be used to unlock the screen, instead
+of or in addition to your normal password.
+
+You can generate a password to use with this with the following perl
+command:
+
+perl -e 'print crypt(<>, "xx") . "\\n";'
+
+where \fIxx\fP can by any two-character alphanumeric string. Type the
+command and press return, then type a password and press return. It
+will output the crypted version.
 .SH COMMAND-LINE OPTIONS
 .I xscreensaver
 also accepts a few command-line options, mostly for use when debugging:
@@ -551,6 +614,9 @@ file.
 The X display to use.  For displays with multiple screens, XScreenSaver
 will manage all screens on the display simultaniously.
 .TP 8
+.B \-start\-locked
+Same as setting the \fIstartLocked\fP resource to \fItrue\fP.
+.TP 8
 .B \-verbose
 Same as setting the \fIverbose\fP resource to \fItrue\fP: print diagnostics
 on stderr and on the xscreensaver window.
@@ -560,6 +626,7 @@ Same as setting the \fIcaptureStderr\fP resource to \fIfalse\fP: do not
 redirect the stdout and stderr streams to the xscreensaver window itself.
 If xscreensaver is crashing, you might need to do this in order to see
 the error message.
+.TP 8
 .SH HOW IT WORKS
 When it is time to activate the screensaver, a full-screen black window is
 created on each screen of the display.  Each window is created in such a way

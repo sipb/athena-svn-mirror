@@ -1,0 +1,27 @@
+#!/bin/sh
+
+grep -s '^SSHD=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+SSHD=false;		export SSHD		#  Secure shell daemon
+EOF
+
+# Generate host keys.
+if [ ! -f $PKG_INSTALL_ROOT/etc/ssh_host_key ]; then
+  echo "Generating ssh v1 RSA host key."
+  chroot ${PKG_INSTALL_ROOT:-/} \
+    /usr/athena/bin/ssh-keygen -b 1024 -t rsa1 -f /etc/ssh_host_key -N ''
+fi
+
+if [ ! -f $PKG_INSTALL_ROOT/etc/ssh_host_rsa_key ]; then
+  echo "Generating ssh v2 RSA host key."
+  chroot ${PKG_INSTALL_ROOT:-/} \
+    /usr/athena/bin/ssh-keygen -b 1024 -t rsa -f /etc/ssh_host_rsa_key -N ''
+fi
+
+if [ ! -f $PKG_INSTALL_ROOT/etc/ssh_host_dsa_key ]; then
+  echo "Generating ssh v2 DSA host key."
+  chroot ${PKG_INSTALL_ROOT:-/} \
+    /usr/athena/bin/ssh-keygen -b 1024 -t dsa -f /etc/ssh_host_dsa_key -N ''
+fi
+
+exit 0

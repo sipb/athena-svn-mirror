@@ -316,12 +316,18 @@ enriched_to_html (CamelMimeFilter *filter, char *in, size_t inlen, size_t prespa
 			
 			break;
 		case '\n':
-			if (!(enriched->flags & IS_RICHTEXT) && enriched->nofill <= 0) {
+			if (!(enriched->flags & IS_RICHTEXT)) {
 				/* text/enriched */
-				while (inptr < inend && (outptr + 4) < outend && *inptr == '\n') {
-					memcpy (outptr, "<br>", 4);
-					outptr += 4;
-					inptr++;
+				if (enriched->nofill > 0) {
+					*outptr++ = '\n';
+				} else if (*inptr == '\n') {
+					while (inptr < inend && (outptr + 4) < outend && *inptr == '\n') {
+						memcpy (outptr, "<br>", 4);
+						outptr += 4;
+						inptr++;
+					}
+				} else {
+					*outptr++ = ' ';
 				}
 			} else {
 				/* text/richtext */

@@ -1,0 +1,3 @@
+PKG=MIT-gnome-icon-theme
+NAME=Base GNOME icons, for Athena
+DESC=Contains the base icons needed by the Gnome desktop environment.

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+grep -s '^AFSSRV=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+AFSSRV=false;		export AFSSRV;		#  AFS server
+EOF
+
+grep -s '^AFSCLIENT=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf 
+AFSCLIENT=true;		export AFSCLIENT;	#  AFS client
+EOF
+
+grep -s '^AFSADJUST=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+AFSADJUST=true; 	export AFSADJUST;	#  Adjust AFS cache-size?
+EOF
+
+[ -d $PKG_INSTALL_ROOT/afs ] || mkdir -p $PKG_INSTALL_ROOT/afs
+
+exit 0

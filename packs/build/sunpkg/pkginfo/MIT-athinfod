@@ -1,0 +1,3 @@
+PKG=MIT-athinfod
+NAME=An Athena server to respond to athinfo requests
+DESC=Respond to network queries for information about the workstation, such as its hardware type and configuration, its current software installation state, the number of users logged on, and various other informational state queries.

@@ -2,7 +2,7 @@
 /*
  * inc.c -- incorporate messages from a maildrop into a folder
  *
- * $Id: inc.c,v 1.1.1.1 1999-02-07 18:14:13 danw Exp $
+ * $Id: inc.c,v 1.5 2000-01-07 04:43:58 rbasch Exp $
  */
 
 #ifdef MAILGROUP
@@ -376,7 +376,7 @@ main (int argc, char **argv)
     /*
      * Where are we getting the new mail?
      */
-    if (from)
+    if (from || getenv("MAILDROP"))
 	inc_type = INC_FILE;
 #ifdef POP
     else if (host)
@@ -672,9 +672,13 @@ go_to_it:
 	if (pop_quit () == NOTOK)
 	    adios (NULL, "%s", response);
 	if (packfile) {
-	    mbx_close (packfile, pd);
+	    if (mbx_close (packfile, pd) == NOTOK)
+		adios (packfile, "error writing to file");
 	    pd = NOTOK;
 	}
+
+	if (p < 0)
+	    adios (NULL, "failed");
     }
 #endif /* POP */
 
@@ -752,29 +756,25 @@ go_to_it:
 	    }
 	    break;
 	}
-    }
 
-#ifdef POP
-    if (p < 0) {		/* error */
-#else
-    if (i < 0) {		/* error */
-#endif
-	if (locked) {
+	if (i < 0) {		/* error */
+	    if (locked) {
 #ifdef MAILGROUP
-	    /* Be sure we can unlock mail file */
-	    setgid(return_gid);
+		/* Be sure we can unlock mail file */
+		setgid(return_gid);
 #endif /* MAILGROUP */
 
-	    lkfclose (in, newmail);
+		lkfclose (in, newmail);
 
 #ifdef MAILGROUP
-	    /* And then return us to normal privileges */
-	    setgid(getgid());
+		/* And then return us to normal privileges */
+		setgid(getgid());
 #endif /* MAILGROUP */
-	} else {
-	    fclose (in);
+	    } else {
+		fclose (in);
+	    }
+	    adios (NULL, "failed");
 	}
-	adios (NULL, "failed");
     }
 
     if (aud)

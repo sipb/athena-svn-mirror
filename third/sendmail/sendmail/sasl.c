@@ -9,7 +9,7 @@
  */
 
 #include <sm/gen.h>
-SM_RCSID("@(#)$Id: sasl.c,v 1.1.1.1 2003-04-08 15:08:15 zacheiss Exp $")
+SM_RCSID("@(#)$Id: sasl.c,v 1.2 2004-05-06 16:38:35 zacheiss Exp $")
 
 #if SASL
 # include <stdlib.h>
@@ -254,7 +254,7 @@ iptostring(addr, addrlen, out, outlen)
 #  if NETINET6
 	if (getnameinfo((struct sockaddr *) addr, addrlen,
 			hbuf, sizeof hbuf, pbuf, sizeof pbuf,
-			NI_NUMERICHOST | NI_WITHSCOPEID | NI_NUMERICSERV) != 0)
+			NI_NUMERICHOST | NI_NUMERICSERV) != 0)
 		return false;
 #  else /* NETINET6 */
 	if (addr->sa.sa_family != AF_INET)

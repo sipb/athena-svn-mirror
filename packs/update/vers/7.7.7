@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+	if [ -c /dev/audio ]; then
+	  chmod 0666 /dev/audio
+	fi
+	if [ -c /dev/audioctl ]; then
+	  chmod 0666 /dev/audioctl
+	fi
+	echo "/etc/rc2.d/S92volmgt"		>> "$DEADFILES"
+	echo "/etc/rc2.d/K92volmgt"		>> "$DEADFILES"
+	;;
+esac

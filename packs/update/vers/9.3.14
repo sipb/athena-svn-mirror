@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Install the Asian Language True Type font packages.
+echo "SUNW5ttf"					>> $PACKAGES
+echo "SUNWcttf"					>> $PACKAGES
+echo "SUNWgttf"					>> $PACKAGES
+echo "SUNWhkttf"				>> $PACKAGES
+echo "SUNWhttf"					>> $PACKAGES
+echo "SUNWinttf"				>> $PACKAGES
+echo "SUNWkttf"					>> $PACKAGES
+echo "SUNWjxmft"				>> $PACKAGES
+echo "SUNWjxcft"				>> $PACKAGES
+
+echo "OSCHANGES=true"				>> $CONFVARS

@@ -265,7 +265,7 @@ EXEEXT =
 # 	$(CC_LINK) -o $@ foo.o bar.o $(KRB5_BASE_LIBS)
 
 
-CC_LINK=@CC_LINK@
+CC_LINK=@CC_LINK@ $(LDFLAGS)
 
 # prefix (with no spaces after) for rpath flag to cc
 RPATH_FLAG=@RPATH_FLAG@
@@ -460,7 +460,7 @@ SHLIBEXT=@SHLIBEXT@
 PFLIBEXT=@PFLIBEXT@
 
 # "cc -G", "ld -Bshareable", etc.
-LDCOMBINE=@LDCOMBINE@
+LDCOMBINE=@LDCOMBINE@ $(LDFLAGS)
 
 # Misc args to tack on the tail of LDCOMBINE
 LDCOMBINE_TAIL=@LDCOMBINE_TAIL@
@@ -481,7 +481,7 @@ SHLIBOBJS=$(STLIBOBJS:.o=@SHOBJEXT@)
 PFLIBOBJS=$(STLIBOBJS:.o=@PFOBJEXT@)
 
 # "$(CC) -G", "$(LD) -Bshareable", etc.
-LDCOMBINE=@LDCOMBINE@
+LDCOMBINE=@LDCOMBINE@ $(LDFLAGS)
 
 # "-h $@", "-h lib$(LIBNAME).$(LIBMAJOR)", etc.
 SONAME=@SONAME@

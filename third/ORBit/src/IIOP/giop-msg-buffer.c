@@ -16,6 +16,9 @@
  * 
  */
 
+#ifdef linux
+#define _XOPEN_SOURCE	/* for IOV_MAX */
+#endif
 #include "config.h"
 #include "iiop-endianP.h"
 #include <string.h>
@@ -33,10 +36,6 @@
 #endif
 #include "IIOP.h"
 #include "IIOP-private.h"
-
-#ifdef HAVE_LIMITED_WRITEV
-#define writev g_writev
-#endif
 
 /* type defs */
 
@@ -173,19 +172,23 @@ gint
 giop_send_buffer_write(GIOPSendBuffer *send_buffer)
 {
   gulong nvecs;
-  glong res, sum, t;
+  glong written, sum, maxiov;
   struct iovec *curvec;
   int fd;
   GIOPConnection *cnx;
   gint retval = -1;
+  gboolean blocking = FALSE;
 
   cnx = GIOP_MESSAGE_BUFFER(send_buffer)->connection;
   if(!cnx->is_valid)
     return -1;
 
+  /* Make a private copy of iovec array so we can munge it. */
   fd = GIOP_CONNECTION_GET_FD(cnx);
   nvecs = GIOP_MESSAGE_BUFFER(send_buffer)->iovecs->len;
-  curvec = (struct iovec *)GIOP_MESSAGE_BUFFER(send_buffer)->iovecs->data;
+  curvec = alloca(sizeof(struct iovec) * nvecs);
+  memcpy(curvec, GIOP_MESSAGE_BUFFER(send_buffer)->iovecs->data,
+	 sizeof(struct iovec) * nvecs);
 
 #if defined(ORBIT_DEBUG) && 0
   g_print("Message of length %d looks like:\n",
@@ -197,51 +200,52 @@ giop_send_buffer_write(GIOPSendBuffer *send_buffer)
 	    sum);
   }
 #endif
-  res = writev(fd, curvec, nvecs);
 
   sum = (GIOP_MESSAGE_BUFFER(send_buffer)->message_header.message_size + sizeof(GIOPMessageHeader));
-  if(res < sum) {
-    if(res < 0) {
-      if(errno != EAGAIN) {
-	giop_main_handle_connection_exception(cnx);
-	goto out;
-      }
 
-      res = 0;
-    }
+  while (nvecs > 0) {
+    /* Write out up to IOV_MAX of the remaining iovecs. */
+#if defined(IOV_MAX)
+    maxiov = IOV_MAX;
+#elif defined(_SC_IOV_MAX)
+    maxiov = sysconf(_SC_IOV_MAX);
+#else
+    maxiov = -1;
+#endif
+    written = writev(fd, curvec, (maxiov == -1) ? nvecs : MIN(nvecs, maxiov));
 
-    /* wrote 7, iovecs 3, 2, 2, 4:
-       0 + 3 !> 7
-       3 + 2 !> 7
-       5 + 2 !> 7
-     */
-
-    for(t = 0; ; t += curvec->iov_len, curvec++, nvecs--) {
-      if((t + curvec->iov_len) > res)
+    if (written < 0) {
+      if (!blocking && errno == EAGAIN) {
+	/* Switch to blocking mode and try again. */
+	fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) & ~O_NONBLOCK);
+	blocking = TRUE;
+	continue;
+      } else {
+	/* Any other error, just give up. */
+	g_warning("IIOP: writev(%d): %s", fd, strerror(errno));
 	break;
-    }
-    if((res - t) > 0) {
-      curvec->iov_len -= (res - t);
-      curvec->iov_base = (gpointer)((char *)curvec->iov_base + (res - t));
+      }
     }
 
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) & ~O_NONBLOCK);
-
-    t = writev(fd, curvec, nvecs);
-
-    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
-
-    if((t < 0) || ((res + t) < sum)) {
-	giop_main_handle_connection_exception(cnx);
-	goto out;
+    /* Find the next place to start sending at. */
+    while (nvecs > 0 && curvec->iov_len <= written) {
+      written -= curvec->iov_len;
+      curvec++;
+      nvecs--;
+    }
+    if (written > 0) {
+      g_assert(nvecs > 0);
+      curvec->iov_len -= written;
+      curvec->iov_base = (guchar *)curvec->iov_base + written;
     }
   }
 
-  retval = 0;
+  if (blocking)
+    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
 
- out:
-
-  return retval;
+  if (nvecs > 0)
+    giop_main_handle_connection_exception(cnx);
+  return (nvecs > 0) ? -1 : 0;
 }
 
 static GIOPSendBuffer *

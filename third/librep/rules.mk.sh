@@ -1,5 +1,5 @@
 # rules.mk.sh -- Build dynamically-loadable objects for librep
-# $Id: rules.mk.sh,v 1.1.1.3 2002-03-20 04:54:33 ghudson Exp $
+# $Id: rules.mk.sh,v 1.4 2002-03-20 04:59:51 ghudson Exp $
 
 repdir=$1
 repcommonexecdir=$2

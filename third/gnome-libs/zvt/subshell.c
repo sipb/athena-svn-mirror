@@ -84,7 +84,7 @@ sigchld_handler (int signo)
 		(*old_sigchld_handler.sa_handler)(signo);
 }
 
-#ifdef HAVE_SENDMSG
+#if defined(HAVE_SENDMSG) && !defined(__sgi)
 #include <sys/socket.h>
 #include <sys/uio.h>
 
@@ -135,7 +135,7 @@ s_pipe (int fd [2])
 	return socketpair (AF_UNIX, SOCK_STREAM, 0, fd);
 }
 
-#elif defined(__sgi) && !defined(HAVE_SENDMSG)
+#elif defined(__sgi)
 
 /* 
  * IRIX 6.2 is like 4.3BSD; it will not have HAVE_SENDMSG set, 

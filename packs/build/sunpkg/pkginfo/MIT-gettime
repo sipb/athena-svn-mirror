@@ -1,0 +1,3 @@
+PKG=MIT-gettime
+NAME=An Athena program to sychronize the clock with a remote host
+DESC=Contact a remote machine and synchronize the local clock with that machine's clock.

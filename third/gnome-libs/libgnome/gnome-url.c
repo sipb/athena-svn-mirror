@@ -41,12 +41,7 @@ gnome_url_default_handler (const char *protocol)
 		str = gnome_config_get_string_with_default ("/Gnome/URL Handlers/default-show",
 							    &def);
 		if (def) {
-			app = gnome_is_program_in_path ("nautilus");
-			if (app) {
-				g_free (app);
-				app = "nautilus \"%s\"";
-			} else
-				app = "gnome-help-browser \"%s\"";
+			app = "gnome-help-browser \"%s\"";
 
 			/* first time gnome_url_show is run -- set up some useful defaults */
 			default_handler = DEFAULT_HANDLER;
@@ -151,6 +146,13 @@ gnome_url_show(const gchar *url)
 			 * modified */
 			argv[i] = (char *)url;
 	}
+
+	/* Athena hack: we don't install gnome-help-browser any more;
+	   we install yelp, from GNOME 2.  And our nautilus never did
+	   like to render HTML. */
+	if (strcmp(argv[0], "gnome-help-browser") == 0
+	    || strcmp(argv[0], "nautilus") == 0)
+	  argv[0] = "yelp";
 
 	/* use execute async, and not the shell, shell is evil and a
 	 * security hole */

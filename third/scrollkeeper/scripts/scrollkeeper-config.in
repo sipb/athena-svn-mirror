@@ -53,27 +53,27 @@ while test $# -gt 0; do
 	;;
 
     --prefix)
-       	echo $prefix 
+       	echo $ATHTOOLROOT$prefix 
 	exit 0
        	;;
 
     --localstatedir)
-        echo $localstatedir
+        echo $ATHTOOLROOT$localstatedir
         exit 0
         ;;
 
     --pkglocalstatedir)
-        echo $pkglocalstatedir
+        echo $ATHTOOLROOT$pkglocalstatedir
         exit 0
         ;;
 
     --pkgdatadir)
-        echo $pkgdatadir
+        echo $ATHTOOLROOT$pkgdatadir
         exit 0
         ;;
 
     --omfdir)
-	echo $datadir/omf
+	echo $ATHTOOLROOT$datadir/omf
 	exit 0
 	;;
 

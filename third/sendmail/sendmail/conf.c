@@ -13,7 +13,7 @@
 
 #include <sendmail.h>
 
-SM_RCSID("@(#)$Id: conf.c,v 1.1.1.1 2003-04-08 15:09:20 zacheiss Exp $")
+SM_RCSID("@(#)$Id: conf.c,v 1.2 2004-04-13 19:07:04 zacheiss Exp $")
 
 #include <sendmail/pathnames.h>
 
@@ -33,6 +33,10 @@ static void	setupmailers __P((void));
 static void	setupqueues __P((void));
 static int	get_num_procs_online __P((void));
 
+
+#include <hesiod.h>
+struct passwd *sm_hes_getpwnam __P((char *));
+struct passwd *sm_hes_getpwuid __P((UID_T));
 
 /*
 **  CONF.C -- Sendmail Configuration Tables.
@@ -1151,7 +1155,7 @@ username()
 		myname = getlogin();
 		if (myname == NULL || myname[0] == '\0')
 		{
-			pw = sm_getpwuid(RealUid);
+			pw = sm_hes_getpwuid(RealUid);
 			if (pw != NULL)
 				myname = pw->pw_name;
 		}
@@ -1159,10 +1163,10 @@ username()
 		{
 			uid_t uid = RealUid;
 
-			if ((pw = sm_getpwnam(myname)) == NULL ||
+			if ((pw = sm_hes_getpwnam(myname)) == NULL ||
 			      (uid != 0 && uid != pw->pw_uid))
 			{
-				pw = sm_getpwuid(uid);
+				pw = sm_hes_getpwuid(uid);
 				if (pw != NULL)
 					myname = pw->pw_name;
 			}
@@ -6201,3 +6205,52 @@ char	*FFRCompileOptions[] =
 	NULL
 };
 
+struct passwd *
+sm_hes_getpwnam(user)
+     char *user;
+{
+  struct passwd *pw;
+  static struct passwd tmp;
+  void *hes_context;
+
+  pw = getpwnam(user);
+  if (!pw)
+    {
+      if (hesiod_init(&hes_context) != 0)
+	return pw;
+      pw = hesiod_getpwnam(hes_context, user);
+      if (pw)
+	{
+	  memcpy(&tmp, pw, sizeof(struct passwd));
+	  hesiod_free_passwd(hes_context, pw);
+	  pw = &tmp;
+	}
+      hesiod_end(hes_context);
+    }
+  return pw;
+}
+
+struct passwd *
+sm_hes_getpwuid(uid)
+     UID_T uid;
+{
+  struct passwd *pw;
+  static struct passwd tmp;
+  void *hes_context;
+
+  pw = getpwuid(uid);
+  if (!pw)
+    {
+      if (hesiod_init(&hes_context) != 0)
+	return pw;
+      pw = hesiod_getpwuid(hes_context, uid);
+      if (pw)
+	{
+	  memcpy(&tmp, pw, sizeof(struct passwd));
+	  hesiod_free_passwd(hes_context, pw);
+	  pw = &tmp;
+	}
+      hesiod_end(hes_context);
+    }
+  return pw;
+}

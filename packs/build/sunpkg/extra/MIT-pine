@@ -1,0 +1,10 @@
+#!/bin/sh
+
+athetcdir=/usr/athena/etc
+
+mkdir -p $2$athetcdir
+
+cp $1/packs/config/mailcap $2$athetcdir
+chmod 644 $2$athetcdir/mailcap
+cp $1/packs/config/mime.types $2$athetcdir
+chmod 644 $2$athetcdir/mime.types

@@ -1,5 +1,5 @@
 #
-# $Revision: 1.1.1.1 $
+# $Revision: 1.2 $
 #
 # Makefile for SysInfo include files
 #
@@ -26,10 +26,10 @@ mcdall:
 	done
 
 install: $(FILES)
-	@$(MKDIRHIER) $(INCDIR); \
+	@$(MKDIRHIER) $(DESTDIR)$(INCDIR); \
 	for f in $(FILES) ; do \
 		b=`echo $$f | sed -e 's;.*/;;'`; \
-		cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$f $(INCDIR)/$$b"; \
+		cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$f $(DESTDIR)$(INCDIR)/$$b"; \
 		echo $$cmd; \
 		$$cmd; \
 	done

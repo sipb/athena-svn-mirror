@@ -125,7 +125,7 @@ SOURCES = COPYING ChangeLog Makefile.in README emacs.csh \
 # HESIOD		Support Hesiod lookups of user mailboxes.
 # MAILHOST		A string, the host name of the default POP
 #			mail host for the site.
-MOVE_FLAGS=
+MOVE_FLAGS=-DKERBEROS -DHAVE_DES_H -DHAVE_KRB_H
 
 # ========================== start of cpp stuff =======================
 /* From here on, comments must be done in C syntax.  */
@@ -183,36 +183,6 @@ MOVE_FLAGS=
 #define BLESSMAIL
 #endif
 
-#ifdef KERBEROS
-# ifdef HAVE_LIBKRB
-    KRB4LIB = -lkrb
-# else
-#  ifdef HAVE_LIBKRB4
-     KRB4LIB = -lkrb4
-#  endif
-# endif
-# ifdef HAVE_LIBDES
-    DESLIB = -ldes
-# else
-#  ifdef HAVE_LIBDES425
-    DESLIB = -ldes425
-#  endif
-# endif
-# ifdef HAVE_LIBKRB5
-    KRB5LIB = -lkrb5
-# endif
-# ifdef HAVE_LIBK5CRYPTO
-    CRYPTOLIB = -lk5crypto
-# else
-#  ifdef HAVE_LIBCRYPTO
-    CRYPTOLIB = -lcrypto
-#  endif
-# endif
-# ifdef HAVE_LIBCOM_ERR
-    COM_ERRLIB = -lcom_err
-# endif
-#endif /* KERBEROS */
-
 /* If HESIOD is defined, set this to "-lhesiod". */
 #ifdef HAVE_LIBHESIOD
 # ifdef HAVE_LIBRESOLV
@@ -222,7 +192,7 @@ MOVE_FLAGS=
 # endif
 #endif
 
-LIBS_MOVE=$(KRB4LIB) $(DESLIB) $(KRB5LIB) $(CRYPTOLIB) $(COM_ERRLIB) $(HESIODLIB)
+LIBS_MOVE=-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err $(HESIODLIB)
 
 #ifdef HAVE_LIBMAIL
 LIBS_MAIL=-lmail
@@ -264,50 +234,49 @@ blessmail:
 maybe-blessmail: BLESSMAIL
 #ifdef MOVEMAIL_NEEDS_BLESSING
 /* Don't charge ahead and do it!  Let the installer decide.
-	  ./blessmail ${archlibdir}/movemail  */
+	  ./blessmail ${DESTDIR}${archlibdir}/movemail  */
 	@if [ `wc -l <blessmail` != 2 ] ; then \
 	  dir=`sed -n -e 's/echo mail directory = \(.*\)/\1/p' blessmail`; \
 	  echo Assuming $$dir is really the mail spool directory, you should; \
-	  echo run  lib-src/blessmail ${archlibdir}/movemail; \
+	  echo run  lib-src/blessmail ${DESTDIR}${archlibdir}/movemail; \
 	  echo as root, to give  movemail  appropriate permissions.; \
 	  echo Do that after running  make install.; \
 	fi
 #endif
 
-/* Install the internal utilities.  Until they are installed, we can
-   just run them directly from lib-src.  */
-${archlibdir}: all
+install:
 	@echo
 	@echo "Installing utilities run internally by Emacs."
-	$(top_srcdir)/mkinstalldirs ${archlibdir}
-	if [ `(cd ${archlibdir} && /bin/pwd)` != `/bin/pwd` ]; then \
+	$(top_srcdir)/mkinstalldirs ${DESTDIR}${archlibdir}
+	if [ `(cd ${DESTDIR}${archlibdir} && /bin/pwd)` != `/bin/pwd` ]; then \
 	  for file in ${UTILITIES}; do \
-	    $(INSTALL_PROGRAM) $(INSTALL_STRIP) $$file ${archlibdir}/$$file ; \
+	    $(INSTALL_PROGRAM) $$file ${DESTDIR}${archlibdir}/$$file ; \
+	    $(INSTALL_PROGRAM) $(INSTALL_STRIP) $$file ${DESTDIR}${archlibdir}/$$file ; \
 	  done ; \
         fi
-        if [ `(cd ${archlibdir} && /bin/pwd)` \
+        if [ `(cd ${DESTDIR}${archlibdir} && /bin/pwd)` \
              != `(cd ${srcdir} && /bin/pwd)` ]; then \
 	  for file in ${SCRIPTS}; do \
-	    $(INSTALL_PROGRAM) ${srcdir}/$$file ${archlibdir}/$$file; \
+	    $(INSTALL_PROGRAM) ${srcdir}/$$file \
+		${DESTDIR}${archlibdir}/$$file; \
 	  done ; \
 	fi
-
-install: ${archlibdir}
 	@echo
 	@echo "Installing utilities for users to run."
 	for file in ${INSTALLABLES} ; do \
-	  $(INSTALL_PROGRAM) $(INSTALL_STRIP) $${file} ${bindir}/$${file} ; \
-	  chmod a+rx ${bindir}/$${file}; \
+	  $(INSTALL_PROGRAM) $(INSTALL_STRIP) $${file} ${DESTDIR}${bindir}/$${file} ; \
+	  chmod a+rx ${DESTDIR}${bindir}/$${file}; \
 	done
 	for file in ${INSTALLABLE_SCRIPTS} ; do \
-	  $(INSTALL_PROGRAM) ${srcdir}/$${file} ${bindir}/$${file} ; \
-	  chmod a+rx ${bindir}/$${file}; \
+	  $(INSTALL_PROGRAM) ${srcdir}/$${file} \
+		${DESTDIR}${bindir}/$${file} ; \
+	  chmod a+rx ${DESTDIR}${bindir}/$${file}; \
 	done
 
 uninstall:
-	(cd ${bindir}; \
+	(cd ${DESTDIR}${bindir}; \
 	 rm -f ${INSTALLABLES} ${INSTALLABLE_SCRIPTS})
-	(cd ${archlibdir}; \
+	(cd ${DESTDIR}${archlibdir}; \
 	 rm -f ${UTILITIES} ${INSTALLABLES} ${SCRIPTS} ${INSTALLABLE_SCRIPTS})
 
 mostlyclean:

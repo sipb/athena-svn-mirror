@@ -1,0 +1,3 @@
+PKG=MIT-audiofile
+NAME=A library for accessing various audio file formats, for Athena
+DESC=The Audio File library is an implementation of SGI's Audio File Library, which provides an API for accessing audio file formats like AIFF/AIFF-C, WAVE, and NeXT/Sun .snd/.au files. This library is used by the EsounD daemon.

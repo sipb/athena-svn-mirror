@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Handle the removal of crontab files in this package.  pkgrm supplies
+# the path names on our standard input.  We remove the saved .athena
+# version of the file, and replace the file itself with the saved
+# original (.old).
+
+savedir=$PKG_INSTALL_ROOT/var/athena/update.save
+
+while read dest ; do
+  cronuser=`basename $dest`
+  oldfile=$savedir/crontab.$cronuser.old
+  rm -f $dest $savedir/crontab.$cronuser.athena
+  if [ -f $oldfile ]; then
+    echo "Replacing the $cronuser crontab with $oldfile"
+    cp -p $oldfile $dest
+  fi
+done
+
+exit 0

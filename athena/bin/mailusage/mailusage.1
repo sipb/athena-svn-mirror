@@ -1,0 +1,80 @@
+.\" 
+.\" $Id: mailusage.1,v 1.1 2003-11-26 00:26:32 rbasch Exp $
+.\"
+.TH MAILUSAGE 1 
+.SH NAME
+mailusage \- display size of mail folders on a post office server
+.SH SYNOPSIS
+.B mailusage
+[
+.B \-h " host"
+] [
+.B \-m " mailbox"
+] [
+.B \-n
+] [ 
+.B \-r
+] [ 
+.B \-s
+] [ 
+.B \-d
+] [ user ]
+.SH DESCRIPTION
+The 
+.I mailusage
+program displays the total size of, and number of messages in, the
+user's mail folders on a post office server.  Size is displayed in
+kilobytes.  With no options specified, all of the user's mailboxes on
+the server will be listed.
+
+.I mailusage
+understands the following options:
+.TP
+.B \-h \fIhost\fR
+specifies that
+.I host
+should be consulted instead of the user's default post office server.
+.TP
+.B \-m \fImailbox\fR
+specifies that only the usage for
+.I mailbox
+should be displayed.  If this option is not specified,
+.I mailusage
+displays usage for all of the user's mailboxes on the server.  Use the
+.B \-r
+option in conjunction with
+.B \-m
+to display the usage for a mailbox and all of its descendents.
+.TP
+.B \-n
+specifies that
+.I mailusage
+should not output a header line.  This is useful if the output will be
+parsed by another program.
+.TP
+.B \-r
+specifies that
+.I mailusage
+should display usage recursively for a given mailbox, i.e. by listing
+all of the mailbox's descendents.  This option is only useful in
+conjunction with the
+.B \-m \fImailbox\fR
+option.
+.TP
+.B \-s
+specifies that
+.I mailusage
+should only display usage for mailboxes to which the user has subscribed.
+.TP
+.B \-d
+specifies that 
+.I mailusage
+should run in debug mode.
+.TP
+.B \fIuser\fR
+specifies that the mail usage for 
+.I user
+should be checked, rather than the current user.
+.SH "SEE ALSO"
+mailquota(1), imtest(1),
+RFC\-2060 (Internet Message Access Protocol - Version 4rev1)

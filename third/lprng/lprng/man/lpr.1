@@ -1,4 +1,4 @@
-.ds VE LPRng-3.6.13
+.ds VE LPRng-3.6.1
 .TH LPR 1 \*(VE "LPRng"
 .ig
 Thu Jul 20 07:19:29 PDT 1995 Patrick Powell
@@ -8,7 +8,7 @@ lpr \- off line print
 .SH SYNOPSIS
 .B lpr
 [
-.B \-A
+.BI \-A " authtype"
 ]
 [
 .B \-b,l
@@ -44,6 +44,9 @@ lpr \- off line print
 .BI \-m " mailTo"
 ]
 [
+.B \-N
+]
+[
 .BI \-P " printer"
 ]
 [
@@ -73,6 +76,9 @@ lpr \- off line print
 .BI \-w " width"
 ]
 [
+.BI \-z
+]
+[
 .BI \-Z " zoptions"
 ]
 [
@@ -87,9 +93,13 @@ lpr \- off line print
 uses a spooling daemon to print the named files when facilities
 become available.  If no names appear, the standard input is assumed.
 .SH OPTIONS
+Options are read first from the
+.B LPROPT
+environment variable, and then from the command line.
 .TP 5
-.B \-A
-Use the authenticated transfer facilities if they are available.
+.BI \-A " name"
+Use the named authentication type (which can be "none") rather than
+the default type for the printer.
 .TP 5
 .BI \-C " class"
 Specify the job classification for use on the burst page and to
@@ -168,14 +178,6 @@ for the filters used by the printer spooler).
 output from (device independent)
 .BR troff .
 .TP 5
-.B \-p
-First use
-.BR pr (1)
-to format the files,
-then print using 
-.I f
-format.
-.TP 5
 .B \-r
 The DREADED
 .B "REMOVE AFTER PRINTING"
@@ -243,6 +245,9 @@ configuration file,
 and finally the hard coded (site dependent) default_printer
 value.
 .TP 5
+.B \-N
+Disable zephyr notifcation of success or failure of jobs.
+.TP 5
 .B \-Q
 Put the name of the spool queue into the job file.
 This information can then be used by the spooling software
@@ -274,12 +279,8 @@ The
 .B \-U
 option is used to specify a user name
 for the job.
-This is available only to ROOT or users listed in the
-.I allow_user_setting
-configuration option.
 This is obviously a security loophole,
-but it is present to allow systems such as SAMBA
-to submit jobs on behalf of users.
+but it is present for compatibility reasons.
 See
 .B "Authenticated Transfers"
 below.
@@ -290,6 +291,9 @@ Use debug flags for extreme verbosity.
 .TP 5
 .BI \-w " width"
 Specify the page width for printing the job.
+.TP 5
+.BI \-z
+Send a zephyr to the user upon completion or failure of the job.
 .TP 5
 .BI -Z " zoptions"
 This option is used to pass options to the print spooler,
@@ -361,11 +365,16 @@ The debugging information will
 help you to pinpoint the exact cause of failure.
 .fi
 .SH "HISTORY"
+.LP
 LPRng is a enhanced printer spooler system
 with functionality similar to the Berkeley LPR software.
-The LPRng mailing list is lprng@lprng.com;
-subscribe by sending mail to lprng-request@lprng.com with
+The LPRng mailing list is plp@iona.ie;
+subscribe by sending mail to plp-request@iona.ie with
 the word subscribe in the body.
 The software is available from ftp://ftp.astart.com/pub/LPRng.
-.SH "AUTHOR"
+.LP
+LPRng is distributed under the GNU software license for non-commercial
+use,
+the Artistic License for limited commercial use. 
+Commerical support and licensing is available through
 Patrick Powell <papowell@astart.com>.

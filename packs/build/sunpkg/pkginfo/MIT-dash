@@ -1,0 +1,3 @@
+PKG=MIT-dash
+NAME=The Athena dashboard; a pull-down menu implementation
+DESC=The dash utility places a menu bar at the top of the screen which provides access to useful Athena information, utilities, courseware, and documentation.  It should normally be installed on all Athena workstations. 

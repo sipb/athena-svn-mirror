@@ -1,0 +1,3 @@
+PKG=MIT-mwm
+NAME=The mwm window manager, for Athena
+DESC=mwm is the Motif Window Manager, which was the default window manager on Athena until version 9.0 and is still supported for those who prefer the old desktop interface.

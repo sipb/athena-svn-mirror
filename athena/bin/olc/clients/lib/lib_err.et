@@ -1,0 +1,21 @@
+error_table	olcl
+
+ec	OLCL_NO_SUCH_Q,
+	"No such question"
+
+ec	OLCL_SERV_ERR,
+	"Error on the server"
+
+ec	OLCL_NO_ACL,
+	"Sorry, charlie, but you're not on the acl"
+
+ec	OLCL_OTHER_SHOW,
+	"You can't delete someone else's new messages"
+
+ec	OLCL_NOT_HERE,
+	"Unknown Request"
+
+ec	OLCL_MEM_ERR,
+	"Malloc failed"
+
+end

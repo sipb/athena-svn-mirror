@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.1.1.2 2003-02-05 19:04:31 zacheiss Exp $
+# $Id: configure.ac,v 1.7 2004-02-29 06:38:24 zacheiss Exp $
 
 AC_INIT
 AC_CONFIG_SRCDIR([ssh.c])
@@ -695,6 +695,7 @@ AC_ARG_WITH(pam,
 			AC_CHECK_LIB(dl, dlopen, , )
 			AC_CHECK_LIB(pam, pam_set_item, , AC_MSG_ERROR([*** libpam missing]))
 			AC_CHECK_FUNCS(pam_getenvlist)
+			AC_CHECK_FUNCS(pam_putenv)
 
 			disable_shadow=yes
 			PAM_MSG="yes"
@@ -705,6 +706,7 @@ AC_ARG_WITH(pam,
 			else
 				LIBPAM="-lpam"
 			fi
+
 			AC_SUBST(LIBPAM)
 		fi
 	]
@@ -734,6 +736,47 @@ fi
 if test "x$check_for_libcrypt_before" = "x1"; then
 	AC_CHECK_LIB(crypt, crypt)
 fi
+
+# Start of GSI/Globus 2.0 mods
+# Check whether the user wants GSI (Globus 2.0) support
+# if we are using GSI, we will also use the 
+# OPenSSL that is built by Globus. This is called
+# -lcrypto_FLAVOR
+# and it will be in the GSI path. 
+# The includes will be in the include/FLAVOR/openssl
+# therfore we will not process the -with-ssl parameter.
+
+gsi_path="no"
+AC_ARG_WITH(gsi,
+    [  --with-gsi=PATH         Enable GSI/Globus GSSAPI support],
+    [
+        gsi_path="$withval"
+    ]
+)
+
+gsi_flavor=gcc32dbg
+AC_ARG_WITH(gsi-flavor,
+      [  --with-gsi-flavor=FLAVOR Globus build flavor ],
+      [
+              gsi_flavor="$withval"
+      ]
+)
+
+if test "x$gsi_path" != "xno" ; then
+    # Globus GSSAPI configuration
+    AC_DEFINE(GSSAPI)
+    AC_DEFINE(GSI)
+      AC_DEFINE(HAVE_OPENSSL)
+      LDFLAGS="$LDFLAGS -L${gsi_path}/lib"
+    if test ! -z "$need_dash_r" ; then
+        LDFLAGS="$LDFLAGS -R${gsi_path}/lib"
+    fi
+    if test ! -z "$blibpath" ; then
+        blibpath="$blibpath:${gsi_path}/lib"
+    fi
+      LIBS="$LIBS -lcrypto_${gsi_flavor} -lglobus_gss_assist_${gsi_flavor} -lglobus_gssapi_gsi_${gsi_flavor}"
+      CPPFLAGS="$CPPFLAGS -I${gsi_path}/include -I${gsi_path}/include/${gsi_flavor}"
+else
 
 # Search for OpenSSL
 saved_CPPFLAGS="$CPPFLAGS"
@@ -845,6 +888,9 @@ int main(void) {
 		AC_MSG_ERROR(OpenSSL library not found.)
 	]
 )
+
+fi
+#end of GSI/Globus 2.0 mods
 
 # Sanity check OpenSSL headers
 AC_MSG_CHECKING([whether OpenSSL's headers match the library])
@@ -1776,7 +1822,7 @@ AC_ARG_WITH(kerberos5,
                                          K5LIBS="-lkrb5 -ldes -lcom_err -lasn1 -lroken"
                                        ],
                                        [ AC_MSG_RESULT(no)
-                                         K5LIBS="-lkrb5 -lk5crypto -lcom_err"
+                                         K5LIBS="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
                                        ]
                         )
                         if test ! -z "$need_dash_r" ; then
@@ -1786,6 +1832,31 @@ AC_ARG_WITH(kerberos5,
                                 blibpath="$blibpath:${KRB5ROOT}/lib"
                         fi
                         AC_CHECK_LIB(resolv, dn_expand, , )
+
+                        AC_CHECK_LIB(gssapi,gss_init_sec_context,
+			        [ AC_DEFINE(GSSAPI)
+                                  K5LIBS="-lgssapi $K5LIBS" ],
+                                [ AC_CHECK_LIB(gssapi_krb5,gss_init_sec_context,
+                                        [ AC_DEFINE(GSSAPI)
+                                          K5LIBS="-lgssapi_krb5 $K5LIBS" ],
+                                        AC_MSG_WARN([Cannot find any suitable gss-api library - build may fail]),
+                                        $K5LIBS)
+                                ],
+                                $K5LIBS)
+                        
+                        AC_CHECK_HEADER(gssapi.h, ,
+                                [ unset ac_cv_header_gssapi_h
+                                  CPPFLAGS="$CPPFLAGS -I${KRB5ROOT}/include/gssapi" 
+                                  AC_CHECK_HEADERS(gssapi.h, ,
+                                        AC_MSG_WARN([Cannot find any suitable gss-api header - build may fail])
+                                  ) 
+                                ]
+                        )
+
+                        oldCPP="$CPPFLAGS"
+                        CPPFLAGS="$CPPFLAGS -I${KRB5ROOT}/include/gssapi"
+                        AC_CHECK_HEADER(gssapi_krb5.h, ,
+                                        [ CPPFLAGS="$oldCPP" ])
 
                         KRB5=yes
                 fi
@@ -1855,18 +1926,17 @@ AC_ARG_WITH(afs,
 
 			if test "x$withval" != "xyes" ; then
 				CPPFLAGS="$CPPFLAGS -I${withval}/include"
-				LDFLAGS="$LDFLAGS -L${withval}/lib"
+				LDFLAGS="$LDFLAGS -L${withval}/lib -L${withval}/lib/afs"
 			fi
 
 			if test -z "$KRB4" ; then
 				AC_MSG_WARN([AFS requires Kerberos IV support, build may fail])
 			fi
 
-			LIBS="-lkafs $LIBS"
+			LIBS="-lprot -lauth -lrxkad -lubik ${withval}/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys $LIBS"
 			if test ! -z "$AFS_LIBS" ; then
 				LIBS="$LIBS $AFS_LIBS"
 			fi
-			AC_DEFINE(AFS)
 			AFS_MSG="yes" 
 		fi
 	]

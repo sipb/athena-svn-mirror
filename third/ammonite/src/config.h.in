@@ -56,6 +56,9 @@
 /* Define if you have the vsyslog function.  */
 #undef HAVE_VSYSLOG
 
+/* Define if you have the <alloca.h> header file.  */
+#undef HAVE_ALLOCA_H
+
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 

@@ -186,6 +186,7 @@ PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RESOLV_LIBS = @RESOLV_LIBS@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
@@ -449,7 +450,7 @@ libcamel_la_LDFLAGS = -version-info 0:0:0
 
 libcamel_la_LIBADD = \
 	$(top_builddir)/e-util/libeutil.la 	\
-	$(CAMEL_LIBS)
+	$(CAMEL_LIBS) -lhesiod -lares $(RESOLV_LIBS)
 
 
 libcamel_static_la_SOURCES = $(libcamel_la_SOURCES)

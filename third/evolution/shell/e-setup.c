@@ -170,6 +170,15 @@ copy_default_stuff (const char *evolution_directory)
 		return FALSE;
 	}
 
+	if (strncmp (evolution_directory, "/afs/", strlen ("/afs/")) == 0
+	    || strncmp (evolution_directory, "/mit/", strlen("/mit/")) == 0) {
+		command = g_strdup_printf ("fs sa %s system:anyuser none"
+					   " system:authuser none",
+					   evolution_directory);
+		system (command);
+		g_free (command);
+	}
+
 	command = g_strconcat ("cp -r " DEFAULT_USER_PATH "/* ", evolution_directory, NULL);
 
 	if (system (command) != 0) {
@@ -276,6 +285,22 @@ set_default_folder_physical_uri_from_path (GConfClient *client,
 	gconf_path = g_strconcat ("/apps/evolution/shell/default_folders/", path_key_name, NULL);
 	path_value = gconf_client_get_string (client, gconf_path, NULL);
 	g_free (gconf_path);
+
+	/* Athena hack to make default mail shortcut point to MIT mail
+	   inbox.  We also have to modify the schemas file to make the
+	   path point to evolution:/MIT mail/INBOX instead of the
+	   local inbox. */
+	if (path_value != NULL
+	    && strcmp (path_value, "evolution:/MIT mail/INBOX") == 0) {
+		const char *uri;
+
+		gconf_path = "/apps/evolution/shell/default_folders/mail_uri";
+		uri = g_strdup_printf ("imap://%s;auth=KERBEROS_V4@"
+				       "_hesiod/;use_lsub;check_all",
+				       g_get_user_name ());
+		gconf_client_set_string (client, gconf_path, uri, NULL);
+		g_free(uri);
+	}
 
 	if (path_value != NULL
 	    && strncmp (path_value, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0

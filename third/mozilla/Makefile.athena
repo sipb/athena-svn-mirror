@@ -1,0 +1,48 @@
+# $Id: Makefile.athena,v 1.4 2004-07-14 22:54:02 rbasch Exp $
+
+SHELL=/bin/sh
+common_options=--enable-crypto --disable-debug --disable-tests --enable-xft \
+	       --with-gssapi=/usr/athena
+forte_bindir=/afs/athena.mit.edu/software/sunsoft_v7/SUNWspro/bin
+
+dist:
+	cp "$$CONFIG_SITE" config.site.athena
+
+prepare:
+	rm -f config.cache
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	    CONFIG_SITE=`pwd`/config.site.athena \
+	    CPPFLAGS=-D_REENTRANT \
+	    ./configure --enable-optimize=-O2 ${common_options} \
+	    ;; \
+	sun4) \
+	    CONFIG_SITE=`pwd`/config.site.athena \
+	    PATH=${forte_bindir}:${PATH} \
+	    CC=cc \
+	    CXX=CC \
+	    CFLAGS="-xlibmil" \
+	    CXXFLAGS="-xlibmil -xlibmopt" \
+	    CPPFLAGS=-D_REENTRANT \
+	    LDFLAGS= \
+	    ./configure --with-gtk-prefix=/usr/sfw \
+	      --with-glib-prefix=/usr/sfw \
+	      --enable-optimize=-xO2 ${common_options} \
+	    ;; \
+	esac
+
+clean:
+	${MAKE} clean
+
+all:
+	case $$ATHENA_HOSTTYPE in \
+	linux) \
+	    ${MAKE} \
+	    ;; \
+	sun4) \
+	    ${MAKE} PATH=${forte_bindir}:${PATH} \
+	    ;; \
+	esac
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"

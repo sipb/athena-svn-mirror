@@ -1,0 +1,3 @@
+PKG=MIT-libal
+NAME=The Athena login library
+DESC=A library of functions used to implement login functionality on Athena workstations. 

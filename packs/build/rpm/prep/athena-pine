@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cp $1/packs/config/mime.types $2
+cp $1/packs/config/mailcap $2

@@ -22,6 +22,8 @@ struct screenhack {
 
 typedef enum { RANDOM_HACKS, ONE_HACK, BLANK_ONLY, DONT_BLANK } saver_mode;
 
+typedef enum { INVALID, OLDER, ALWAYS, NEVER } renew_mode;
+
 typedef struct saver_preferences saver_preferences;
 
 
@@ -48,6 +50,10 @@ struct saver_preferences {
 
   Bool lock_p;			/* whether to lock as well as save */
   Bool lock_vt_p;		/* whether to lock VTs too, if possible */
+  Bool start_locked_p;		/* whether to start locked, and exit
+				   on unlock */
+  char *lock_command;		/* command to run when locking screen */
+  char *unlock_command;		/* command to run when unlocking screen */
 
   Bool fade_p;			/* whether to fade to black, if possible */
   Bool unfade_p;		/* whether to fade from black, if possible */
@@ -73,6 +79,7 @@ struct saver_preferences {
   Time splash_duration;		/* how long the splash screen stays up */
   Time timeout;			/* how much idle time before activation */
   Time lock_timeout;		/* how long after activation locking starts */
+  Time max_idle_time;           /* how long to run before allowing logout */
   Time cycle;			/* how long each hack should run */
   Time passwd_timeout;		/* how much time before pw dialog goes down */
   Time pointer_timeout;		/* how often to check mouse position */
@@ -94,12 +101,15 @@ struct saver_preferences {
   Bool use_sgi_saver_extension;
   Bool use_proc_interrupts;
 
+  char *passwd;			/* Explicitly-specified (encrypted) password */
   char *shell;			/* where to find /bin/sh */
 
   char *demo_command;		/* How to enter demo mode. */
   char *prefs_command;		/* How to edit preferences. */
   char *help_url;		/* Where the help document resides. */
   char *load_url_command;	/* How one loads URLs. */
+  renew_mode renew;		/* When to renew Kerberos credentials. */
+  char *renew_command;		/* Command to run when renewing credentials. */
 };
 
 

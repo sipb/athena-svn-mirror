@@ -28,7 +28,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.3 2004-02-13 17:53:01 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.7 2004-03-18 12:03:07 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -148,6 +148,8 @@ pthread_mutex_t fileproc_glock_mutex;
 
 #define	NOTACTIVECALL	0
 #define	ACTIVECALL	1
+
+#define CREATE_SGUID_ADMIN_ONLY 1
 
 extern struct afsconf_dir *confDir;
 extern afs_int32 dataVersionHigh;
@@ -316,11 +318,12 @@ retry:
       ViceLog(3,("Discarded a packet for deleted host %08x\n",thost->host));
       code = VBUSY; /* raced, so retry */
     }
-    else if (thost->hostFlags & VENUSDOWN) {
+    else if ((thost->hostFlags & VENUSDOWN) || (thost->hostFlags & HFE_LATER)){
       if (BreakDelayedCallBacks_r(thost)) {
-	ViceLog(0,("BreakDelayedCallbacks FAILED for host %08x which IS UP.  Possible network or routing failure.\n",thost->host));
+	ViceLog(0,("BreakDelayedCallbacks FAILED for host %s which IS UP.  Possible network or routing failure.\n",
+		   afs_inet_ntoa_r(thost->host, hoststr)));
 	if ( MultiProbeAlternateAddress_r (thost) ) {
-	    ViceLog(0, ("MultiProbe failed to find new address for host %x.%d\n",
+	    ViceLog(0, ("MultiProbe failed to find new address for host %s:%d\n",
 			afs_inet_ntoa_r(thost->host, hoststr), 
 			ntohs(thost->port)));
             code = -1;
@@ -329,7 +332,8 @@ retry:
                        afs_inet_ntoa_r(thost->host, hoststr), 
                        ntohs(thost->port)));
 	    if (BreakDelayedCallBacks_r(thost)) {
-		ViceLog(0,("BreakDelayedCallbacks FAILED AGAIN for host %08x which IS UP.  Possible network or routing failure.\n",thost->host));
+		ViceLog(0,("BreakDelayedCallbacks FAILED AGAIN for host %s which IS UP.  Possible network or routing failure.\n",
+			   afs_inet_ntoa_r(thost->host, hoststr)));
 		code = -1;
 	    }
 	}
@@ -4270,6 +4274,7 @@ SRXAFS_FlushCPS(tcon, vids, addrs, spare1, spare2, spare3)
       if ((client->ViceId != ANONYMOUSID) && client->CPS.prlist_val) {
 	free(client->CPS.prlist_val);
 	client->CPS.prlist_val = (afs_int32 *)0;
+	client->CPS.prlist_len = 0;
       }
       ReleaseWriteLock(&client->lock);
     }
@@ -5468,8 +5473,6 @@ Check_PermissionRights(targetptr, client, rights, CallingRoutine, InStatus)
 		    /* grant admins fetch on all directories */
 		    && VanillaUser(client)
 #endif /* ADMIN_IMPLICIT_LOOKUP */
-		    && !OWNSp(client, targetptr)
-		    && !acl_IsAMember(targetptr->disk.owner, &client->CPS)
 		    && !VolumeOwner(client, targetptr))
 		    return(EACCES);
 	    } else {    /* file */
@@ -5527,8 +5530,6 @@ Check_PermissionRights(targetptr, client, rights, CallingRoutine, InStatus)
 	  else {
 	    if (CallingRoutine == CHK_STOREACL) {
 	      if (!(rights & PRSFS_ADMINISTER) &&
-		  !OWNSp(client, targetptr) && 
-		  !acl_IsAMember(targetptr->disk.owner, &client->CPS) &&
 		  !VolumeOwner(client, targetptr)) return(EACCES);
 	    }
 	    else {	/* store data or status */
@@ -5993,7 +5994,12 @@ Update_TargetVnodeStatus(targetptr, Caller, client, InStatus, parentptr, volptr,
     if (Caller & TVS_SDATA) {
       targetptr->disk.dataVersion++;
       if (VanillaUser(client))
+	{
 	  targetptr->disk.modeBits &= ~04000; /* turn off suid for file. */
+#ifdef CREATE_SGUID_ADMIN_ONLY
+	  targetptr->disk.modeBits &= ~02000; /* turn off sgid for file. */
+#endif
+	}
     }
     if (Caller & TVS_SSTATUS) {	/* update time on non-status change */
 	/* store status, must explicitly request to change the date */
@@ -6006,7 +6012,12 @@ Update_TargetVnodeStatus(targetptr, Caller, client, InStatus, parentptr, volptr,
     if (InStatus->Mask & AFS_SETOWNER) {
 	/* admin is allowed to do chmod, chown as well as chown, chmod. */
 	if (VanillaUser(client))
+	  {
 	    targetptr->disk.modeBits &= ~04000; /* turn off suid for file. */
+#ifdef CREATE_SGUID_ADMIN_ONLY
+	    targetptr->disk.modeBits &= ~02000; /* turn off sgid for file. */
+	  }
+#endif
 	targetptr->disk.owner = InStatus->Owner;
 	if (VolumeRootVnode (targetptr)) {
 	    Error errorCode = 0;	/* what should be done with this? */

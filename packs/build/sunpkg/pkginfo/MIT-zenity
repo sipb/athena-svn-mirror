@@ -1,0 +1,3 @@
+PKG=MIT-zenity
+NAME=A GNOME dialog utility, for Athena
+DESC=Zenity is a dialog utility using GNOME.  It allows a script to display calendar, text entry, error, informational, file selection, list, progress, question, text information, or warning dialogs.

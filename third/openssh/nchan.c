@@ -116,7 +116,8 @@ chan_rcvd_oclose1(Channel *c)
 		break;
 	case CHAN_INPUT_WAIT_DRAIN:
 		/* both local read_failed and remote write_failed  */
-		chan_send_ieof1(c);
+		  if (!datafellows)
+		    chan_send_ieof1(c);
 		chan_set_istate(c, CHAN_INPUT_CLOSED);
 		break;
 	default:

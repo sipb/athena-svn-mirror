@@ -122,7 +122,7 @@ struct _XMLSource {
   Cache* cache;
   gchar* root_dir;
   guint timeout_id;
-  GConfLock* lock;
+  int lock_fd;
   guint dir_mode;
   guint file_mode;
 };
@@ -130,7 +130,7 @@ struct _XMLSource {
 static XMLSource* xs_new       (const gchar* root_dir,
                                 guint dir_mode,
                                 guint file_mode,
-                                GConfLock* lock);
+                                int lock_fd);
 static void       xs_destroy   (XMLSource* source);
 
 /*
@@ -237,16 +237,64 @@ static void
 lock (GConfSource* source,
       GError** err)
 {
-  
+  XMLSource *xs;
+  int timeout = 5, status, i;
+  struct flock fl;
 
+  xs = (XMLSource *) source;
+
+  if (xs->lock_fd == -1)
+    return;
+
+  gconf_log(GCL_DEBUG, _("Locking XML backend"));
+
+  /* Athena local mod: acquire a write lock.  Note that we use
+   * a retry/sleep loop, rather than waiting for the lock with
+   * a timeout, due to problems using F_SETLKW with alarm() on
+   * a file in AFS.
+   */
+  for (i = 0; ; i++)
+    {
+      fl.l_type = F_WRLCK;
+      fl.l_whence = SEEK_SET;
+      fl.l_start = 0;
+      fl.l_len = 0;
+      status = fcntl(xs->lock_fd, F_SETLK, &fl);
+      if (status != -1 || i >= timeout)
+	break;
+      sleep(1);
+    }
+  if (status == -1)
+    gconf_set_error(err, GCONF_ERROR_FAILED,
+		    _("Cannot lock the XML backend: %s"),
+		    strerror(errno));
+  return;
 }
 
 static void
 unlock (GConfSource* source,
         GError** err)
 {
+  XMLSource *xs;
+  struct flock fl;
 
+  xs = (XMLSource *) source;
 
+  if (xs->lock_fd == -1)
+    return;
+  
+  gconf_log(GCL_DEBUG, _("Unlocking XML backend"));
+
+  /* Athena local mod: release our acquired lock. */
+  fl.l_type = F_UNLCK;
+  fl.l_whence = SEEK_SET;
+  fl.l_start = 0;
+  fl.l_len = 0;
+  if (fcntl(xs->lock_fd, F_SETLK, &fl) == -1)
+    gconf_log(GCL_WARNING, _("Cannot unlock XML backend: %s"),
+	      strerror(errno));
+
+  return;
 }
 
 static gboolean
@@ -275,7 +323,7 @@ resolve_address (const gchar* address, GError** err)
   GConfSource* source;
   guint len;
   gint flags = 0;
-  GConfLock* lock = NULL;
+  int lock_fd = -1;
   guint dir_mode = 0700;
   guint file_mode = 0600;
   gchar** address_flags;
@@ -296,7 +344,7 @@ resolve_address (const gchar* address, GError** err)
   if (root_dir[len-1] == '/')
     root_dir[len-1] = '\0';
 
-  if (mkdir(root_dir, dir_mode) < 0)
+  if (gconf_mkdir_private(root_dir) < 0)
     {
       if (errno != EEXIST)
         {
@@ -373,21 +421,37 @@ resolve_address (const gchar* address, GError** err)
     if (writable)
       {
         gchar* lockdir;
+        gchar* lockfile;
 
         lockdir = gconf_concat_dir_and_key(root_dir, "%gconf-xml-backend.lock");
-        
-        lock = gconf_get_lock(lockdir, err);
-
-        if (lock != NULL)
-          gconf_log(GCL_DEBUG, "Acquired lock directory `%s'", lockdir);
-        
+	/* Athena local mod: open a file we'll lock when syncing the
+	 * database, but leave the backend unlocked so that multiple
+	 * gconfd instances can access it.
+	 */
+	if (gconf_mkdir_private(lockdir) < 0)
+	  {
+	    if (errno != EEXIST)
+	      {
+		gconf_set_error(err, GCONF_ERROR_FAILED,
+				_("Could not make directory `%s': %s"),
+				lockdir, strerror(errno));
+		g_free(root_dir);
+		return NULL;
+	      }
+	  }
+        lockfile = g_strconcat(lockdir, "/lockfile", NULL);
         g_free(lockdir);
-        
-        if (lock == NULL)
-          {
-            g_free(root_dir);
-            return NULL;
-          }
+        lock_fd = open(lockfile, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+	if (lock_fd == -1)
+	  {
+	    gconf_set_error(err, GCONF_ERROR_FAILED,
+			    _("Could not open lock file `%s': %s"),
+			    lockfile, strerror(errno));
+	    g_free(root_dir);
+	    g_free(lockfile);
+	    return NULL;
+	  }
+	g_free(lockfile);
       }
   }
 
@@ -418,7 +482,7 @@ resolve_address (const gchar* address, GError** err)
   
   /* Create the new source */
 
-  xsource = xs_new(root_dir, dir_mode, file_mode, lock);
+  xsource = xs_new(root_dir, dir_mode, file_mode, lock_fd);
 
   gconf_log(GCL_DEBUG,
             _("Directory/file permissions for XML source at root %s are: %o/%o"),
@@ -752,7 +816,7 @@ cleanup_timeout(gpointer data)
 }
 
 static XMLSource*
-xs_new       (const gchar* root_dir, guint dir_mode, guint file_mode, GConfLock* lock)
+xs_new       (const gchar* root_dir, guint dir_mode, guint file_mode, int lock_fd)
 {
   XMLSource* xs;
 
@@ -768,7 +832,7 @@ xs_new       (const gchar* root_dir, guint dir_mode, guint file_mode, GConfLock*
                                  cleanup_timeout,
                                  xs);
 
-  xs->lock = lock;
+  xs->lock_fd = lock_fd;
 
   xs->dir_mode = dir_mode;
   xs->file_mode = file_mode;
@@ -779,20 +843,13 @@ xs_new       (const gchar* root_dir, guint dir_mode, guint file_mode, GConfLock*
 static void
 xs_destroy   (XMLSource* xs)
 {
-  GError* error = NULL;
-  
   g_return_if_fail(xs != NULL);
 
   /* do this first in case we're in a "fast cleanup just before exit"
      situation */
-  if (xs->lock != NULL && !gconf_release_lock(xs->lock, &error))
-    {
-      gconf_log(GCL_ERR, _("Failed to give up lock on XML dir \"%s\": %s"),
-                xs->root_dir, error->message);
-      g_error_free(error);
-      error = NULL;
-    }
-  
+  if (xs->lock_fd != -1)
+    close(xs->lock_fd);
+
   if (!g_source_remove(xs->timeout_id))
     {
       /* should not happen, don't translate */

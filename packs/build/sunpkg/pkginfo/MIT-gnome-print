@@ -1,0 +1,3 @@
+PKG=MIT-gnome-print
+NAME=GNOME printing libraries, for Athena
+DESC=The gnome-print package contains libraries and fonts that are needed by GNOME applications wanting to print.

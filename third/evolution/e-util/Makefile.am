@@ -128,7 +128,9 @@ pilot_sources = \
 if ENABLE_PILOT_CONDUITS
 pilot_compile = $(pilot_sources)
 else
-pilot_compile = 
+pilot_compile = empty.c
+empty.c:
+	cp /dev/null $@
 endif
 
 libeconduit_la_SOURCES = $(pilot_compile)

@@ -164,7 +164,7 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-INCLUDES =  	-I$(top_srcdir) -I$(top_srcdir)/bonobo 			-I$(top_builddir) 					-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-DDATADIR=\""$(datadir)"\"			        -I$(includedir)						$(BONOBOX_TEST_CFLAGS)
+INCLUDES =  	-I$(top_srcdir) -I$(top_srcdir)/bonobo 			-I$(top_builddir) 					-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-DDATADIR=\""$(datadir)"\"			        $(BONOBOX_TEST_CFLAGS)
 
 
 bin_PROGRAMS = gshell

@@ -1,0 +1,9 @@
+Name: athena-zenity
+Summary: A GNOME dialog utility, for Athena
+License: LGPL
+Group: Applications/System
+
+%description
+Zenity is a dialog utility using GNOME.  It allows a script to display
+calendar, text entry, error, informational, file selection, list,
+progress, question, text information, or warning dialogs.

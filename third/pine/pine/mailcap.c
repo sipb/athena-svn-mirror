@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcap.c,v 1.1.1.3 2004-03-01 21:16:32 ghudson Exp $";
+static char rcsid[] = "$Id: mailcap.c,v 1.4 2004-03-01 21:39:08 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -96,11 +96,11 @@ static char rcsid[] = "$Id: mailcap.c,v 1.1.1.3 2004-03-01 21:16:32 ghudson Exp 
 #define MC_PATH_SEPARATOR ':'
 #define	MC_USER_FILE	  NULL
 #define MC_STDPATH         \
-		".mailcap:/etc/mailcap:/usr/etc/mailcap:/usr/local/etc/mailcap"
+		".mailcap:/usr/athena/etc/mailcap"
 #define MT_PATH_SEPARATOR ':'
 #define	MT_USER_FILE	  NULL
 #define MT_STDPATH         \
-		".mime.types:/etc/mime.types:/usr/local/lib/mime.types"
+		".mime.types:/usr/athena/etc/mime.types"
 #endif /* !DOS */
 
 #ifdef	_WINDOWS

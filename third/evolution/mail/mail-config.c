@@ -512,6 +512,78 @@ gconf_mime_types_changed (GConfClient *client, guint cnxn_id,
 	config_cache_mime_types ();
 }
 
+static EAccount *make_mit_account (const char *name, const char *url)
+{
+	EAccount *account;
+
+	account = e_account_new ();
+	account->name = g_strdup (name);
+	account->enabled = TRUE;
+	account->id->name = g_strdup (g_get_real_name ());
+	account->id->address = g_strdup_printf ("%s@mit.edu",
+						g_get_user_name ());
+	account->id->reply_to = g_strdup ("");
+	account->id->organization = g_strdup ("");
+	account->id->def_signature = -1;
+	account->source->url = g_strdup (url);
+	account->transport->url = g_strdup ("sendmail:");
+	account->drafts_folder_uri =
+		g_strdup_printf ("file://%s/evolution/local/Drafts",
+				 g_get_home_dir ());
+	account->sent_folder_uri =
+		g_strdup_printf ("file://%s/evolution/local/Sent",
+				 g_get_home_dir ());
+	e_account_list_add (config->accounts, account);
+	return account;
+}
+
+static void setup_mit_config (void)
+{
+	char *url, *path, buf[1024];
+	FILE *fp;
+	const char *p;
+	struct stat st;
+	EAccount *account;
+
+	/* Make the IMAP account and set it as the default. */
+	url = g_strdup_printf ("imap://%s;auth=KERBEROS_V4@_hesiod/"
+			       ";use_lsub;check_all", g_get_user_name ());
+	account = make_mit_account ("MIT mail", url);
+	g_free (url);
+	mail_config_set_default_account (account);
+
+	/* Make the MH account, if the user has an MH directory. */
+	path = g_strdup_printf ("%s/.mh_profile", g_get_home_dir ());
+	fp = fopen (path, "r");
+	g_free (path);
+	if (!fp)
+		return;
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		if (strncmp (buf, "Path:", strlen ("Path:")) == 0) {
+			if (buf[strlen (buf) - 1] == '\n')
+				buf[strlen (buf) - 1] = 0;
+			p = buf + strlen ("Path:");
+			while (isspace (*p))
+				p++;
+
+			path = (*p == '/') ? g_strdup (p) :
+				g_strdup_printf ("%s/%s",
+						 g_get_home_dir (), p);
+			if (stat (path, &st) == 0 && S_ISDIR (st.st_mode)) {
+				url = g_strdup_printf ("mh:%s", path);
+				make_mit_account ("Old MH mail", url);
+				g_free (url);
+			}
+			g_free (path);
+			break;
+		}
+	}
+	fclose (fp);
+
+	/* Save the accounts we generated. */
+	mail_config_write();
+}
+
 /* Config struct routines */
 void
 mail_config_init (void)
@@ -560,6 +632,10 @@ mail_config_init (void)
 	config_cache_mime_types ();
 	
 	config->accounts = e_account_list_new (config->gconf);
+
+	/* Athena local hack: set up default mail configuration. */
+	if (!mail_config_is_configured ())
+		setup_mit_config ();
 }
 
 void

@@ -1,0 +1,31 @@
+# $Id: Makefile.athena,v 1.12 2002-07-19 23:42:56 zacheiss Exp $
+
+SHELL=/bin/sh
+
+dist:
+
+prepare:
+	rm -f .defaults
+	cp "defaults.$$ATHENA_HOSTTYPE" .defaults
+	module=`sed -n "s/^set module = '\(.*\)'$$/\1/p" .defaults`; \
+	./Configure "$$module"
+
+clean:
+	${MAKE} clean
+
+all:
+	case $$ATHENA_HOSTTYPE in \
+	sun4) \
+	    ${MAKE} all CDEFS="-xarch=v9 -O" \
+	    ;; \
+	*) \
+	    ${MAKE} all \
+	    ;; \
+	esac
+
+check:
+
+install: always
+	${MAKE} install "DESTDIR=$$SRVD"; \
+
+always:

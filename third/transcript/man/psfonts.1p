@@ -1,11 +1,11 @@
 .TH PSFONTS 1 "18 August 92" "Adobe Systems"
 \" Copyright (c) 1987,1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psfonts.1p,v 1.1.1.1 1996-10-07 20:25:39 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psfonts.1p,v 1.2 1996-10-14 05:09:47 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
 .SH NAME
-PSFONTS\(em\*(PS language font information for \*(TS programs
+PSFONTS \- PostScript language font information for TranScript programs
 .SH DESCRIPTION
 The following information lists the fonts which are supported in the
 standard \*(TS release.  Additional fonts can be added to this list; see

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cp $1/packs/maint/os/$OS/apmcontinue.sh $2
+cp $1/packs/maint/os/$OS/ifup-local.sh $2
+cp $1/packs/maint/os/$OS/ifdown-pre-local.sh $2
+cp $1/packs/maint/os/$OS/net-event.sh $2
+cp $1/packs/maint/os/$OS/athstatusd.rc $2
+cp $1/packs/config/os/$OS/net-event.conf $2

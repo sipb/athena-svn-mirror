@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -177,37 +177,23 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = \
-	-I$(includedir)		\
-	-I$(top_srcdir)/intl	\
-	-I$(top_builddir)/intl	\
-	$(GNOME_INCLUDEDIR)	\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale\""
+INCLUDES =  	-I$(top_srcdir)/intl		-I$(top_builddir)/intl		$(GNOME_INCLUDEDIR)		-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 
-LDADD = \
-	$(GNOME_LIBDIR)					\
-	$(GNOMEUI_LIBS)					\
-	$(GNOME_XML_LIB)				\
-	$(INTLLIBS)
+LDADD =  	$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(GNOME_XML_LIB)					$(INTLLIBS)
 
 
 bin_PROGRAMS = gnome-hint gnome-hint-properties-capplet
 
-gnome_hint_SOURCES = \
-	gnome-hint.c
+gnome_hint_SOURCES =  	gnome-hint.c
 
 
 gnome_hint_properties_capplet_SOURCES = gnome-hint-properties.c
 
-man_MANS = gnome-hint-properties-capplet.1	\
-	gnome-hint.1
+man_MANS = gnome-hint-properties-capplet.1		gnome-hint.1
 
 
-gnome_hint_properties_capplet_LDADD = \
-	$(GNOME_LIBDIR)		\
-	$(GNOME_CAPPLET_LIBS)	\
-	$(INTLLIBS)
+gnome_hint_properties_capplet_LDADD =  	$(GNOME_LIBDIR)			$(GNOME_CAPPLET_LIBS)		$(INTLLIBS)
 
 
 utildir = $(datadir)/gnome/apps/Utilities
@@ -216,18 +202,11 @@ util_DATA = $(util_in_files:.desktop.in=.desktop)
 
 sysdir = $(datadir)/control-center/Session/
 sys_in_files = gnome-hint-properties.desktop.in
-sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 
 pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA = gnome-hint.png
 
-EXTRA_DIST = \
-	$(util_in_files)	\
-	$(util_DATA)		\
-	$(sys_in_files)		\
-	$(sys_DATA)		\
-	gnome-hint.png		\
-	$(man_MANS)
+EXTRA_DIST =  	$(util_in_files)		$(util_DATA)			$(sys_in_files)			gnome-hint.png			$(man_MANS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -254,7 +233,7 @@ man1dir = $(mandir)/man1
 MANS = $(man_MANS)
 
 NROFF = nroff
-DATA =  $(pixmaps_DATA) $(sys_DATA) $(util_DATA)
+DATA =  $(pixmaps_DATA) $(util_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -412,25 +391,6 @@ uninstall-pixmapsDATA:
 	  rm -f $(DESTDIR)$(pixmapsdir)/$$p; \
 	done
 
-install-sysDATA: $(sys_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(sysdir)
-	@list='$(sys_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(sysdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(sysdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-sysDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(sys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(sysdir)/$$p; \
-	done
-
 install-utilDATA: $(util_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(utildir)
@@ -494,9 +454,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gnome-hint-properties.o: gnome-hint-properties.c ../config.h
-gnome-hint.o: gnome-hint.c ../config.h
-
 info-am:
 info: info-am
 dvi-am:
@@ -508,15 +465,15 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-man install-pixmapsDATA install-sysDATA \
-		install-utilDATA install-data-local
+install-data-am: install-man install-pixmapsDATA install-utilDATA \
+		install-data-local
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
 uninstall-am: uninstall-binPROGRAMS uninstall-man uninstall-pixmapsDATA \
-		uninstall-sysDATA uninstall-utilDATA
+		uninstall-utilDATA
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(MANS) $(DATA)
 all-redirect: all-am
@@ -524,8 +481,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1 \
-		$(DESTDIR)$(pixmapsdir) $(DESTDIR)$(sysdir) \
-		$(DESTDIR)$(utildir)
+		$(DESTDIR)$(pixmapsdir) $(DESTDIR)$(utildir)
 
 
 mostlyclean-generic:
@@ -569,15 +525,15 @@ mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool install-man1 uninstall-man1 \
 install-man uninstall-man uninstall-pixmapsDATA install-pixmapsDATA \
-uninstall-sysDATA install-sysDATA uninstall-utilDATA install-utilDATA \
-tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir info-am info dvi-am dvi check check-am installcheck-am \
-installcheck install-exec-am install-exec install-data-local \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+uninstall-utilDATA install-utilDATA tags mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-local install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
+mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+#sys_DATA = $(sys_in_files:.desktop.in=.desktop)
 @XML_I18N_MERGE_DESKTOP_RULE@
 
 install-data-local:

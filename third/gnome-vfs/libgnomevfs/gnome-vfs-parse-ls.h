@@ -29,8 +29,8 @@
 #define GNOME_VFS_PARSE_LS_H
 
 #include <glib.h>
-
-struct stat;
+#include <sys/types.h>
+#include <sys/stat.h>
 
 gint gnome_vfs_parse_ls_lga (const gchar *p, struct stat *s,
 			     gchar **filename, gchar **linkname);

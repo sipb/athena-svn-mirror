@@ -1,0 +1,18 @@
+#!/bin/sh
+
+grep -s '^TIMESRV=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+TIMESRV=false;		export TIMESRV		#  Time server?
+EOF
+
+grep -s '^TIMECLIENT=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+TIMECLIENT=true;	export TIMECLIENT	#  Timed client?
+EOF
+
+grep -s '^TIMEHUB=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+TIMEHUB=time.MIT.EDU;	export TIMEHUB		#  Authoritative time source
+EOF
+
+exit 0

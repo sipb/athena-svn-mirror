@@ -64,7 +64,7 @@ get_path (gboolean make)
 {
 	GString *path;
 	
-	path = g_string_new ("/tmp/evolution-");
+	path = g_string_new ("/var/tmp/evolution-");
 	g_string_append_printf (path, "%d-%d", (int) getuid (), (int) getpid ());
 	
 	if (make) {

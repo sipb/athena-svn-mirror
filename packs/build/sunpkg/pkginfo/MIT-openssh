@@ -1,0 +1,3 @@
+PKG=MIT-openssh
+NAME=The Secure remote Shell program
+DESC=The openssh secure shell system, as configured for Athena. 

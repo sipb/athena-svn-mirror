@@ -239,14 +239,22 @@ insert_setup (CamelImapMessageCache *cache, const char *uid, const char *part_sp
 {
 	CamelStream *stream;
 	int fd;
+
+	if (strncmp (cache->path, "/afs/", 5) == 0) {
+		*path = g_strdup ("/tmp/tmp.XXXXXX");
+		fd = mkstemp (*path);
+		if (fd != -1)
+			unlink (*path);
+		*key = NULL;
+	} else {
+		*path = g_strdup_printf ("%s/%s.%s", cache->path, uid, part_spec);
+		*key = strrchr (*path, '/') + 1;
+		stream = g_hash_table_lookup (cache->parts, *key);
+		if (stream)
+			camel_object_unref (CAMEL_OBJECT (stream));
+		fd = open (*path, O_RDWR | O_CREAT | O_TRUNC, 0600);
+	}
 	
-	*path = g_strdup_printf ("%s/%s.%s", cache->path, uid, part_spec);
-	*key = strrchr (*path, '/') + 1;
-	stream = g_hash_table_lookup (cache->parts, *key);
-	if (stream)
-		camel_object_unref (CAMEL_OBJECT (stream));
-	
-	fd = open (*path, O_RDWR | O_CREAT | O_TRUNC, 0600);
 	if (fd == -1) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Failed to cache message %s: %s"),
@@ -273,7 +281,8 @@ insert_finish (CamelImapMessageCache *cache, const char *uid, char *path,
 {
 	camel_stream_flush (stream);
 	camel_stream_reset (stream);
-	cache_put (cache, uid, key, stream);
+	if (key)
+		cache_put (cache, uid, key, stream);
 	g_free (path);
 
 	return stream;

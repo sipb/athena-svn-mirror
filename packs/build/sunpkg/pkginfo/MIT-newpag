@@ -1,0 +1,3 @@
+PKG=MIT-newpag
+NAME=A simple Athena utility to create a new AFS Process Authentication Group
+DESC=A simple Athena utility to create a new AFS Process Authentication Group.

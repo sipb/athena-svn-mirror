@@ -564,6 +564,12 @@ typedef struct net_mailbox {
   unsigned int readonlyflag : 1;/* want readonly */
   unsigned int norsh : 1;	/* don't use rsh/ssh */
   unsigned int loser : 1;	/* server is a loser */
+#ifdef HESIOD
+  unsigned int hesflag : 1;    /* Hesiod flag */
+#endif
+#ifdef KERBEROS
+  unsigned int krbflag : 1;    /* Kerberos flag */
+#endif
 } NETMBX;
 
 /* Item in an address list */

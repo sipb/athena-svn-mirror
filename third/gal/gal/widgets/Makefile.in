@@ -181,19 +181,32 @@ noinst_PROGRAMS = test-color test-e-font test-font-loading
 test_color_SOURCES =  	test-color.c
 
 
-test_color_LDADD =  	$(EXTRA_GNOME_LIBS) 	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/util/libutil.la
+test_color_LDADD = \
+	$(top_builddir)/gal/widgets/libwidgets.la \
+	$(top_builddir)/gal/util/libutil.la \
+	$(EXTRA_GNOME_LIBS)
 
 
 test_e_font_SOURCES =  	test-e-font.c test-e-font.h
 
 
-test_e_font_LDADD =  	$(EXTRA_GNOME_LIBS) 	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la 	$(ICONV_LIBS)
+test_e_font_LDADD = \
+	$(top_builddir)/gal/widgets/libwidgets.la \
+	$(top_builddir)/gal/unicode/libunicode.la \
+	$(top_builddir)/gal/util/libutil.la \
+	$(ICONV_LIBS) \
+	$(EXTRA_GNOME_LIBS)
 
 
 test_font_loading_SOURCES =  	test-font-loading.c
 
 
-test_font_loading_LDADD =  	$(EXTRA_GNOME_LIBS) 	$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(top_builddir)/gal/util/libutil.la 	$(ICONV_LIBS)
+test_font_loading_LDADD = \
+	$(top_builddir)/gal/widgets/libwidgets.la \
+	$(top_builddir)/gal/unicode/libunicode.la \
+	$(top_builddir)/gal/util/libutil.la \
+	$(ICONV_LIBS) \
+	$(EXTRA_GNOME_LIBS)
 
 
 EXTRA_DIST =  	$(glade_DATA)
@@ -424,7 +437,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-
 info-am:
 info: info-am
 dvi-am:

@@ -209,7 +209,14 @@ noinst_PROGRAMS =  	e-completion-test
 e_completion_test_SOURCES =  	e-completion-test.c
 
 
-e_completion_test_LDADD =  	libetext.la 			$(top_builddir)/gal/e-table/libetable.la 	$(EXTRA_GNOME_LIBS)		$(top_builddir)/gal/widgets/libwidgets.la 	$(top_builddir)/gal/util/libutil.la 	$(top_builddir)/gal/unicode/libunicode.la 	$(ICONV_LIBS)
+e_completion_test_LDADD = \
+	libetext.la 		\
+	$(top_builddir)/gal/e-table/libetable.la \
+	$(top_builddir)/gal/widgets/libwidgets.la \
+	$(top_builddir)/gal/util/libutil.la \
+	$(top_builddir)/gal/unicode/libunicode.la \
+	$(ICONV_LIBS)		\
+	$(EXTRA_GNOME_LIBS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -389,7 +396,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-
 info-am:
 info: info-am
 dvi-am:

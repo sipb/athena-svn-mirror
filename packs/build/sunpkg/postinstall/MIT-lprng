@@ -1,0 +1,8 @@
+#!/bin/sh
+
+grep -s '^LPD=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+LPD=false;		export LPD		#  Run line printer daemon?
+EOF
+
+exit 0

@@ -1,0 +1,46 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:48:15 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+RANLIB=@RANLIB@
+
+SRCS=string_utils.c c_io.c perror.c c_status.c common_et.c my_vsnprintf.c \
+  kaboom.c env.c
+OBJS=string_utils.o c_io.o perror.o c_status.o common_et.o my_vsnprintf.o \
+  kaboom.o env.o
+
+all: libcommon.a
+
+libcommon.a: $(OBJS)
+	rm -f $@
+	ar cq $@ $(OBJS)
+	${RANLIB} $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+common_et.c common_et.h: common_et.et
+	rm -f common_et.c common_et.h
+	compile_et common_et.et
+
+# we don't install this library anywhere, it's here only for our
+# private use in building the binaries.
+install:
+
+clean:
+	rm -f $(OBJS) libcommon.a common_et.c common_et.h
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in common_et.c common_et.h
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

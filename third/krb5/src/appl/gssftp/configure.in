@@ -52,6 +52,19 @@ AC_MSG_RESULT($krb5_cv_shadow_pwd)
 if test $krb5_cv_shadow_pwd = yes; then
 AC_DEFINE(HAVE_SHADOW)
 fi
+EXTRALIBS=
+AC_CHECK_FUNC(res_send,:,AC_CHECK_LIB(resolv,res_send,
+	      [EXTRALIBS=-lresolv]))
+AC_SUBST(EXTRALIBS)
+dnl
+AC_ARG_WITH([afs],
+[  --without-afs        don't have afs libraries to build against (default)
+  --with-afs=AFSDIR    use preinstalled AFS library tree],
+,with_afs=no)dnl
+if test $with_afs != no; then
+	AC_DEFINE(SETPAG)
+	EXTRALIBS="$EXTRALIBS -L$with_afs/lib -L$with_afs/lib/afs -lprot -lauth -lrxkad -lubik $with_afs/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys"
+fi
 case $krb5_cv_host in
 alpha*-dec-osf*)
 	AC_CHECK_LIB(security,setluid,

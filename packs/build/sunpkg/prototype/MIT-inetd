@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Change /etc/athena/inetd.conf to class config.
+sed -e 's|^f none \(etc/athena/inetd\.conf\) |e config \1 |'

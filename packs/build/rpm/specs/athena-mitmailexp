@@ -1,0 +1,10 @@
+Name: athena-mitmailexp
+Summary: Expunge an IMAP folder
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mitmailexp program expunges deleted messages from a folder on an
+IMAP server.

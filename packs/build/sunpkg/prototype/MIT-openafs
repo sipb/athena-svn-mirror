@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Remove the usr/vice directory entry, so we do not clobber the
+# symlink to /var/usr/vice on machines installed before 9.3.
+sed -e '\|^d none usr/vice |d'

@@ -1,0 +1,3 @@
+PKG=MIT-xpm
+NAME=The X Pixmap Library, for Athena
+DESC=The X Pixmap Library allows programs to load and save X pixmaps in XPM format.

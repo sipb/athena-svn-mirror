@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vsutils.c,v 1.1.1.1 2002-01-31 21:32:10 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/volser/vsutils.c,v 1.2 2002-02-05 17:50:52 zacheiss Exp $");
 
 #include <afs/stds.h>
 #ifdef AFS_NT40_ENV
@@ -409,7 +409,7 @@ afs_int32 vsu_ClientInit(noAuthFlag, confDir, cellName, sauth, uclientp, secproc
         fprintf(STDERR,"vsu_ClientInit: could not initialize rx.\n");
         return code;
     }
-    rx_SetRxDeadTime(90);
+    rx_SetRxDeadTime(210);
 
     if (sauth) {  /* -localauth */
         tdir = afsconf_Open(AFSDIR_SERVER_ETC_DIRPATH);

@@ -16,8 +16,10 @@ clean-unix::
 	$(RM) krb_err.h kadm_err.h
 
 install-headers-unix install:: krb_err.h kadm_err.h
+	rm -rf $(DESTDIR)$(KRB5_INCDIR)/kerberosIV
+	ln -s . $(DESTDIR)$(KRB5_INCDIR)/kerberosIV
 	@set -x; for f in $(KRB4_HEADERS) ; \
-	do $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(KRB5_INCDIR)/kerberosIV/$$f ; \
+	do $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(KRB5_INCDIR)/$$f ; \
 	done
-	$(INSTALL_DATA) krb_err.h $(DESTDIR)$(KRB5_INCDIR)$(S)kerberosIV$(S)krb_err.h
-	$(INSTALL_DATA) kadm_err.h $(DESTDIR)$(KRB5_INCDIR)$(S)kerberosIV$(S)kadm_err.h
+	$(INSTALL_DATA) krb_err.h $(DESTDIR)$(KRB5_INCDIR)$(S)krb_err.h
+	$(INSTALL_DATA) kadm_err.h $(DESTDIR)$(KRB5_INCDIR)$(S)kadm_err.h

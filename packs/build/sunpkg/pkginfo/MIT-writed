@@ -1,0 +1,3 @@
+PKG=MIT-writed
+NAME=The server for the Athena remote `write' functionality.
+DESC=The server for the Athena remote `write' functionality.

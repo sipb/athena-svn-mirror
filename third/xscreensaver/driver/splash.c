@@ -170,6 +170,8 @@ make_splash_dialog (saver_info *si)
   if (!si->prefs.splash_p ||
       si->prefs.splash_duration <= 0)
     return;
+  if (si->prefs.start_locked_p)
+    return;
 
   ssi = &si->screens[mouse_screen (si)];
   cmap = DefaultColormapOfScreen (ssi->screen);

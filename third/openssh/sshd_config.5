@@ -253,6 +253,26 @@ keys are used for version 1 and
 or
 .Dq rsa
 are used for version 2 of the SSH protocol.
+.It Cm GssapiAuthentication
+Specifies whether authentication based on GSSAPI may be used, either using
+the result of a successful key exchange, or using GSSAPI user
+authentication.
+The default is 
+.Dq yes .
+Note that this option applies to protocol version 2 only.
+.It Cm GssapiKeyExchange
+Specifies whether key exchange based on GSSAPI may be used. When using
+GSSAPI key exchange the server need not have a host key.
+The default is
+.Dq yes .
+Note that this option applies to protocol version 2 only.
+.It Cm GssapiUseSessionCredCache
+Specifies whether a unique credentials cache name should be generated per
+session for storing delegated credentials.
+The default is
+.Dq yes .
+Note that this option applies to protocol version 2 only.
+
 .It Cm IgnoreRhosts
 Specifies that
 .Pa .rhosts
@@ -302,6 +322,12 @@ This avoids infinitely hanging sessions.
 .Pp
 To disable keepalives, the value should be set to
 .Dq no .
+.It Cm Kerberos524
+Specifies whether Kerberos 4 tickets should be obtained
+from Kerberos 5 tickets, similar to
+.Xr krb524init 1 .  
+Default is
+.Dq yes .
 .It Cm KerberosAuthentication
 Specifies whether Kerberos authentication is allowed.
 This can be in the form of a Kerberos ticket, or if

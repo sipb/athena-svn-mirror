@@ -355,7 +355,7 @@ _XftSmoothGlyphMono (XImage		*image,
 	bits = *src++;
 	
 	xspan = x;
-	while (w)
+	while (w--)
 	{
 	    if (bits & bitsMask)
 		XPutPixel (image, xspan, y, pixel);
@@ -1088,7 +1088,6 @@ XftGlyphSpecCore (XftDraw		*draw,
     /*
      * Load missing glyphs
      */
-    nmissing = 0;
     glyphs_loaded = FcFalse;
     x1 = y1 = x2 = y2 = 0;
     for (i = 0; i < nglyphs; i++)
@@ -1096,8 +1095,12 @@ XftGlyphSpecCore (XftDraw		*draw,
 	XGlyphInfo	gi;
 	int		g_x1, g_x2, g_y1, g_y2;
 	
+	nmissing = 0;
 	if (XftFontCheckGlyph (dpy, public, FcTrue, glyphs[i].glyph, missing, &nmissing))
 	    glyphs_loaded = FcTrue;
+	if (nmissing)
+	    XftFontLoadGlyphs (dpy, public, FcTrue, missing, nmissing);
+
 	XftGlyphExtents (dpy, public, &glyphs[i].glyph, 1, &gi);
 	g_x1 = glyphs[i].x - gi.x;
 	g_y1 = glyphs[i].y - gi.y;
@@ -1122,8 +1125,6 @@ XftGlyphSpecCore (XftDraw		*draw,
 	    y2 = g_y2;
 	}
     }
-    if (nmissing)
-	XftFontLoadGlyphs (dpy, public, FcTrue, missing, nmissing);
     
     if (x1 == x2 || y1 == y2)
 	goto bail1;
@@ -1273,6 +1274,9 @@ XftGlyphFontSpecCore (XftDraw			*draw,
 	}
     }
     
+    if (x1 == x2 || y1 == y2)
+	goto bail1;
+
     for (i = 0; i < nglyphs; i++)
 	if (((XftFontInt *) glyphs[i].font)->info.antialias)
 	    break;

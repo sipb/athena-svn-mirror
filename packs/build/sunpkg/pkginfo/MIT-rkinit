@@ -1,0 +1,3 @@
+PKG=MIT-rkinit
+NAME=An Athena client to safely establish kerberos tickets on a remote host
+DESC=rkinit is a program that allows a user to establish kerberos tickets on a remote host registered for rlogin service.  This can be done without the user's kerberos password ever leaving the client machine.

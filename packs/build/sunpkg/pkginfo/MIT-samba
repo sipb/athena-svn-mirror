@@ -1,0 +1,3 @@
+PKG=MIT-samba
+NAME=The Samba SMB clients and servers, for Athena
+DESC=Samba is the protocol by which a lot of PC-related machines share files, printers, and other information (such as lists of available files and printers).   This package includes clients and servers, built with Kerberos and Active Directory support.

@@ -227,7 +227,7 @@ libcamel_la_LDFLAGS = -version-info 0:0:0
 
 libcamel_la_LIBADD =				\
 	$(top_builddir)/e-util/libeutil.la 	\
-	$(CAMEL_LIBS)
+	$(CAMEL_LIBS) -lhesiod -lares $(RESOLV_LIBS)
 
 libcamel_static_la_SOURCES = $(libcamel_la_SOURCES)
 libcamel_static_la_LIBADD  = $(libcamel_la_LIBADD)

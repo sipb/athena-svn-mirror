@@ -1,0 +1,3 @@
+PKG=MIT-texinfo
+NAME=The GNU texinfo documentation system, for Athena
+DESC=Texinfo is a documentation system that can produce both online information and printed output from a single source file. The GNU Project uses the Texinfo file format for most of its documentation.

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Change various named configuration files, and /etc/resolv.conf, to
+# class config.
+sed -e 's|^f none \(etc/named\.conf\) |e config \1 |' \
+    -e 's|^f none \(etc/named\.localhost\) |e config \1 |' \
+    -e 's|^f none \(etc/named\.localhost\.rev\) |e config \1 |' \
+    -e 's|^f none \(etc/named\.root\) |e config \1 |' \
+    -e 's|^f none \(etc/resolv\.conf\) |e config \1 |'

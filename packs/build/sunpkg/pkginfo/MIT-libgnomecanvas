@@ -1,0 +1,3 @@
+PKG=MIT-libgnomecanvas
+NAME=GNOME Canvas widget, for Athena
+DESC=The GNOME canvas widget allows you to create custom displays using stock items such as circles, lines, text, and so on.

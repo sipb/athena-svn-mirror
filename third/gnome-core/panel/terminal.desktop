@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Prompt
+Comment=Command line prompt
+Exec=/usr/athena/share/gnome/athena/terminal-script
+Icon=/usr/athena/share/gnome/athena/terminal-icon
+Type=Application

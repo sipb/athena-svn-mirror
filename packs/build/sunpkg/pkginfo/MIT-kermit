@@ -1,0 +1,3 @@
+PKG=MIT-kermit
+NAME=The ubiquitous Kermit file transfer implementation
+DESC=Kermit is a ubiquitous and convenient interface for simple file transfer and communications.

@@ -1,0 +1,3 @@
+PKG=MIT-ares
+NAME=An asynchronous resolver library 
+DESC=A library to do DNS lookups asynchronously.

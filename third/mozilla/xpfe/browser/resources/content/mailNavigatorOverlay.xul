@@ -16,6 +16,14 @@
     //             2 - image
     function openComposeWindow(url, title, attachment, charset)
     {
+      if (attachment == 0) {
+        var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+                      .getService(Components.interfaces.nsIPrefBranch);
+        if (prefs.getBoolPref("network.protocol-handler.external.mailto")) {
+          openExternalMailer(url, title);
+          return;
+        }
+      }
       if (gHasIntegratedMailClient) {                                                                      
         var params = Components.classes["@mozilla.org/messengercompose/composeparams;1"]
                                .createInstance(Components.interfaces.nsIMsgComposeParams);

@@ -5,12 +5,17 @@ XCOMM
 XCOMM 
 XCOMM Motif Release 1.2.1
 XCOMM 
-XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:32 $
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.4 $ $Date: 1999-12-16 01:59:36 $
 
+#ifdef MWM_ONLY
+INCLUDES = $(SITEINCLUDES)
+EXTRA_LIBRARIES = -lXm -lXt -lX11 -lXext
+#else
 DEFINES = AutoDefines MwmDefines
 INCLUDES = -I. -I$(INCLUDESRC) -I$(MINCLUDESRC) AutoIncludes
 DEPLIBS1 = XmClientDepLibs
 LOCAL_LIBRARIES = $(AUTOUTILLIB) XmClientLibs 
+#endif
 
 OBJS1=	WmCDecor.o\
 	WmColormap.o\
@@ -80,12 +85,13 @@ PROGRAMS=mwm
 
 NormalLibraryObjectRule()
 
+#ifdef MWM_ONLY
+ComplexProgramTarget_1(mwm,$(LOCAL_LIBRARIES),NullParameter)
+#else
 MComplexProgramTarget_1(mwm,$(LOCAL_LIBRARIES),NullParameter)
+#endif
 SpecialObjectRule(WmResParse.o,$(ICONFIGFILES),-DLIBDIR=\"$(LIBDIR)\")
 SpecialObjectRule(WmResource.o,$(ICONFIGFILES),-DBITMAPDIR=\"$(INCDIR)/bitmaps/\")
-
-InstallNonExecFile(system.mwmrc,$(LIBDIR))
-InstallAppDefaults(Mwm)
 
 #ifdef UseVista
 VistaMapRule(mwm.M,$(PROGRAMS))

@@ -95,6 +95,7 @@
 #include "jsapi.h"
 #include "nsIJSContextStack.h"
 
+#include <stdlib.h>
 
 #if defined(XP_MAC) || defined(XP_MACOSX)
 #define OLD_REGISTRY_FILE_NAME "Netscape Registry"
@@ -1480,6 +1481,19 @@ nsProfile::AddLevelOfIndirection(nsIFile *aDir)
   if (!exists) {
     rv = aDir->Create(nsIFile::DIRECTORY_TYPE, 0700);
     NS_ENSURE_SUCCESS(rv,rv);
+
+    // Athena mod: run fs to fix the ACL, as the directory most likely
+    // resides in AFS.
+    nsCAutoString path;
+    nsCAutoString command;
+    rv = aDir->GetNativePath(path);
+    if (NS_SUCCEEDED(rv)) {
+      command.Assign(NS_LITERAL_CSTRING("fs setacl ") + path
+                     + NS_LITERAL_CSTRING(" system:anyuser none")
+                     + NS_LITERAL_CSTRING(" system:authuser none")
+                     + NS_LITERAL_CSTRING(" > /dev/null 2>&1"));
+      system(command.get());
+    }
   }
 	
   return NS_OK;

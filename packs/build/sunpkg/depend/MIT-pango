@@ -1,0 +1,6 @@
+P MIT-Xft          X Font Rendering library, for Athena
+P MIT-Xrender      Xrender extension client library, for Athena
+P MIT-fontconfig   Font configuration and customization library, for Athena
+P MIT-gettext      GNU library for producing multi-lingual messages, for Athena
+P MIT-glib2        The glib utility library (version 2), for Athena
+P MIT-libiconv     GNU libiconv character set conversion library, for Athena

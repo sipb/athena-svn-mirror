@@ -1,0 +1,3 @@
+PKG=MIT-linc
+NAME=Library for writing network programs, for Athena
+DESC=linc is a library that eases the task of writing networked servers and clients.  It takes care of connection initiation and maintainance, and the details of various transports.

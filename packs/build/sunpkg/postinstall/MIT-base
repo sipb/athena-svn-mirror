@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Inaugurate /etc/athena/version, if necessary.
+if [ ! -s $PKG_INSTALL_ROOT/etc/athena/version ]; then
+  mkdir -p $PKG_INSTALL_ROOT/etc/athena
+  echo Athena Workstation '(sun4)' Version Layered `date` \
+    > $PKG_INSTALL_ROOT/etc/athena/version
+fi
+
+exit 0

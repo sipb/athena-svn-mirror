@@ -146,9 +146,6 @@ bashref.ps: bashref.dvi
 	$(RM) $@
 	$(DVIPS) bashref.dvi
 
-bashref.info: $(srcdir)/bashref.texi $(HSUSER) $(RLUSER)
-	$(MAKEINFO) --no-split -I$(TEXINPUTDIR) $(srcdir)/bashref.texi
-
 bashref.html: bashref.texi $(HSUSER) $(RLUSER)
 	$(TEXI2HTML) -menu -monolithic -I $(TEXINPUTDIR) $(srcdir)/bashref.texi
 
@@ -158,9 +155,6 @@ new-bashref.dvi: $(srcdir)/new-bashref.texi $(HSUSER) $(RLUSER)
 new-bashref.ps: new-bashref.dvi
 	$(RM) $@
 	$(DVIPS) new-bashref.dvi
-
-new-bashref.info: $(srcdir)/new-bashref.texi $(HSUSER) $(RLUSER)
-	$(MAKEINFO) --no-split -I$(TEXINPUTDIR) $(srcdir)/new-bashref.texi
 
 #bash.dvi: bash.texinfo $(HSUSER) $(RLUSER)
 #	TEXINPUTS=.:$(TEXINPUTDIR):$$TEXINPUTS $(TEXI2DVI) bash.texinfo
@@ -219,7 +213,6 @@ installdirs:
 	
 install: info installdirs
 	-$(INSTALL_DATA) $(srcdir)/bash.1 $(DESTDIR)$(man1dir)/bash${man1ext}
-	-$(INSTALL_DATA) $(srcdir)/bashbug.1 $(DESTDIR)$(man1dir)/bashbug${man1ext}
 # uncomment the next line to install the builtins man page
 #	-$(INSTALL_DATA) $(srcdir)/builtins.1 $(DESTDIR)$(man1dir)/bash_builtins${man1ext}
 	-$(INSTALL_DATA) $(srcdir)/bashref.info $(DESTDIR)$(infodir)/bash.info

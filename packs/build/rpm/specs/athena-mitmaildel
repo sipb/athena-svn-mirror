@@ -1,0 +1,10 @@
+Name: athena-mitmaildel
+Summary: Delete messages in an IMAP folder
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mitmaildel program marks messages in a folder on an IMAP server for
+deletion.

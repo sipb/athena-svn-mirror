@@ -1,0 +1,3 @@
+PKG=MIT-sendbug
+NAME=An Athena program to report bugs in a standardized format.
+DESC=The sendbug program reports bugs to the Athena developers in a standardized format, and should be used whenever bugs are reported in Athena software.

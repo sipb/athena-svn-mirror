@@ -174,7 +174,7 @@ typedef struct ktext KTEXT_ST;
 /* Maximum allowable clock skew in seconds */
 #define 	CLOCK_SKEW	5*60
 /* Filename for readservkey */
-#define		KEYFILE		((char*)krb__get_srvtabname("/etc/srvtab"))
+#define		KEYFILE	     ((char*)krb__get_srvtabname("/etc/athena/srvtab"))
 
 /* Structure definition for rd_ap_req */
 
@@ -679,6 +679,13 @@ int KRB5_CALLCONV krb_save_credentials
 	(char *service, char *instance, char *realm,
 		   C_Block session, int lifetime, int kvno,
 		   KTEXT ticket, long issue_date);
+/* sendauth.c */
+int KRB5_CALLCONV krb_sendauth
+	(long options, int fd, KTEXT ticket, char *service,
+		   char *inst, char *realm, unsigned KRB4_32 checksum,
+		   MSG_DAT *msg_data, CREDENTIALS *cred,
+		   Key_schedule schedule, struct sockaddr_in *laddr,
+		   struct sockaddr_in *faddr, char *version);
 /* send_to_kdc.c */
 /* XXX PRIVATE? KfM doesn't export. */
 int send_to_kdc

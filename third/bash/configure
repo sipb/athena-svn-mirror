@@ -7343,7 +7343,7 @@ EOF
 fi
 done
 
-if test "$ac_cv_func_bindtextdomain" = "no"; then
+if :; then
 
 echo "$as_me:7348: checking for bindtextdomain in -lintl" >&5
 echo $ECHO_N "checking for bindtextdomain in -lintl... $ECHO_C" >&6

@@ -83,7 +83,7 @@ realclean: realclean-recursive realclean-local
 
 mostlyclean-recursive clean-recursive distclean-recursive realclean-recursive:
 	for subdir in $(SUBDIRS); do \
- 	  target=`echo $@ | sed 's/-recursive//'`; \
+	  target=`echo $@ | sed 's/-recursive//'`; \
 	  echo making $$target in $$subdir; \
 	  (cd $$subdir && $(MAKE) $$target) || exit 1; \
 	done
@@ -122,16 +122,10 @@ Makefile: Makefile.in config.status
 	CONFIG_FILES=$@ CONFIG_HEADERS= ./config.status
 config.status: configure
 	./config.status --recheck
-configure: configure.in aclocal.m4
-	cd $(srcdir) && autoconf
 
 config.h: stamp-h
 stamp-h: config.h.in config.status
 	CONFIG_FILES= CONFIG_HEADERS=config.h ./config.status
-config.h.in: stamp-h.in
-stamp-h.in: configure.in aclocal.m4 acconfig.h
-	cd $(srcdir) && autoheader
-	date > $(srcdir)/stamp-h.in
 
 # Tell versions [3.59,3.63) of GNU make not to export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

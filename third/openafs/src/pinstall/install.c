@@ -49,7 +49,7 @@ Generic install command.  Options are:
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pinstall/install.c,v 1.1.1.3 2004-02-13 17:57:08 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pinstall/install.c,v 1.3 2004-02-13 18:58:42 zacheiss Exp $");
 
 #include <stdio.h>
 #include <pwd.h>

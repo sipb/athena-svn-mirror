@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: ifplugd.init.in,v 1.1.1.1 2004-04-09 20:09:04 amb Exp $
+# $Id: ifplugd.init.in,v 1.2 2004-04-12 20:01:20 amb Exp $
 
 # This file is part of ifplugd.
 #
@@ -27,7 +27,7 @@
 # config: @sysconfdir@/ifplugd/ifplugd.conf
 
 ### BEGIN INIT INFO
-# Provides:          ifplugd
+# Provides:          athena-ifplugd
 # Required-Start:    $network
 # X-UnitedLinux-Should-Start:
 # Required-Stop:     $network
@@ -37,6 +37,14 @@
 # Short-Description: ifplugd daemon
 # Description:       Start ifplugd
 ### END INIT INFO
+
+#
+# Source the Athena configuration.
+#
+if [ -f /etc/athena/rc.conf ]; then
+  . /etc/athena/rc.conf
+  [ true = "$DISCONNECTABLE" ] || exit 0
+fi
 
 CFG=@sysconfdir@/ifplugd/ifplugd.conf
 

@@ -81,6 +81,4 @@ BitStmRec, * BitStm;
 
 extern int FGetBitStm ARGDECL2(int, len, BitStm, bs);
 
-extern procedure FPutBitStm ARGDECL3(unsigned int, v, int, len, BitStm, bs);
-
 #endif /* BITSTM_H */

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo "112963-09"					>> $PATCHES
+echo "OSCHANGES=true"					>> $CONFVARS
+echo "/var/athena/infoagents"				>> $DEADFILES
+echo "/var/athena/rconf.infoagents"			>> $DEADFILES

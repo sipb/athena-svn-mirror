@@ -1,0 +1,3 @@
+PKG=MIT-gst-plugins
+NAME=GStreamer streaming-media framework plugins, for athena
+DESC=Contains a set of plugins for GStreamer.

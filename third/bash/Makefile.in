@@ -610,10 +610,6 @@ stamp-h:	config.status $(srcdir)/config.h.in $(srcdir)/config-top.h $(srcdir)/co
 config.status:	$(srcdir)/configure
 	$(SHELL) ./config.status --recheck
 
-# comment out for distribution
-$(srcdir)/configure:	$(srcdir)/configure.in $(srcdir)/aclocal.m4 $(srcdir)/config.h.in
-	cd $(srcdir) && autoconf
-
 # for chet
 reconfig: force
 	sh $(srcdir)/configure
@@ -641,13 +637,13 @@ TAGS:	$(SOURCES) $(BUILTIN_C_SRC) $(LIBRARY_SOURCE)
 # Targets that actually do things not part of the build
 
 installdirs:
+
 	@${SHELL} $(SUPPORT_SRC)mkdirs $(DESTDIR)$(bindir)
 	@${SHELL} $(SUPPORT_SRC)mkdirs $(DESTDIR)$(man1dir)
 	@${SHELL} $(SUPPORT_SRC)mkdirs $(DESTDIR)$(infodir)
 
 install:	.made installdirs
-	$(INSTALL_PROGRAM) $(INSTALLMODE) $(Program) $(DESTDIR)$(bindir)/$(Program)
-	$(INSTALL_SCRIPT) $(INSTALLMODE2) bashbug $(DESTDIR)$(bindir)/bashbug
+	$(INSTALL_PROGRAM) $(INSTALLMODE) $(Program) ${DESTDIR}$(bindir)/$(Program)
 	-( cd $(DOCDIR) ; $(MAKE) $(MFLAGS) \
 		man1dir=$(man1dir) man1ext=$(man1ext) \
 		man3dir=$(man3dir) man3ext=$(man3ext) \

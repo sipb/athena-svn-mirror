@@ -52,7 +52,7 @@
  *     Delete all timed out call back entries
  *     Must be called periodically by file server.
  * 
- * BreakDelayedCallBacks(host)
+ * BreakDelayedCallBacks_r(host)
  *     Break all delayed call backs for host.
  *     Returns 1: one or more failed, 0: success.
  * 
@@ -64,15 +64,15 @@
  *     This is separately interpretable by the program pcb.
  *
  * Notes:  In general, if a call back to a host doesn't get through,
- * then HostDown, supplied elsewhere, is called.  BreakDelayedCallBacks,
+ * then HostDown, supplied elsewhere, is called.  BreakDelayedCallBacks_r,
  * however, does not call HostDown, but instead returns an indication of
  * success if all delayed call backs were finally broken.
  *
- * BreakDelayedCallBacks MUST be called at the first sign of activity
+ * BreakDelayedCallBacks_r MUST be called at the first sign of activity
  * from the host after HostDown has been called (or a previous
- * BreakDelayedCallBacks failed). The BreakDelayedCallBacks must be
+ * BreakDelayedCallBacks_r failed). The BreakDelayedCallBacks_r must be
  * allowed to complete before any requests from that host are handled.
- * If BreakDelayedCallBacks fails, then the host should remain
+ * If BreakDelayedCallBacks_r fails, then the host should remain
  * down (and the request should be failed).
 
  * CleanupCallBacks MUST be called periodically by the file server for
@@ -82,7 +82,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.1.1.3 2004-02-13 17:53:21 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callback.c,v 1.8 2004-03-18 12:03:14 zacheiss Exp $");
 
 #include <stdio.h> 
 #include <stdlib.h>      /* for malloc() */
@@ -113,6 +113,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/callb
 #include "host.h"
 
 
+extern afsUUID FS_HostUUID;
 extern int hostCount;
 int ShowProblems = 1;
 
@@ -144,12 +145,13 @@ struct FileEntry {
     u_short	    fnext;
     u_short	    ncbs;
     u_short	    firstcb;
-    u_short	    spare;
+    u_short	    status;
 #if defined(AFS_ALPHA_ENV) || defined(AFS_ALPHA_LINUX20_ENV)
     u_short	    spare1;
     u_short	    spare2;
 #endif
 } *FE;	/* Don't use FE[0] */
+#define FE_LATER 0x1
 
 struct CallBack {
     u_short	    cnext;		/* Next call back entry */
@@ -427,9 +429,9 @@ static HDel(cb)
 /* N.B.  This one also deletes the CB, and also possibly parent FE, so
  * make sure that it is not on any other list before calling this
  * routine */
-static CDel(cb)
+static CDel(cb, deletefe)
     struct CallBack *cb;
-
+    int deletefe;
 {
     int cbi = cbtoi(cb);
     struct FileEntry *fe = itofe(cb->fhead);
@@ -445,7 +447,7 @@ static CDel(cb)
 	ShutDownAndCore(PANIC);
       }
     }
-    CDelPtr(fe, cbp);
+    CDelPtr(fe, cbp, deletefe);
 
 } /*CDel*/
 
@@ -457,10 +459,10 @@ static CDel(cb)
  * routine */
 int Ccdelpt=0, CcdelB=0;
 
-static CDelPtr(fe, cbp)
+static CDelPtr(fe, cbp, deletefe)
     register struct FileEntry *fe;
     register u_short *cbp;
-
+    int deletefe;
 {
     register struct CallBack *cb;
 
@@ -472,7 +474,7 @@ static CDelPtr(fe, cbp)
 	CcdelB++;
     *cbp = cb->cnext;
     FreeCB(cb);
-    if (--fe->ncbs == 0)
+    if (deletefe && (--fe->ncbs == 0))
 	FDel(fe);
 
 } /*CDelPtr*/
@@ -528,9 +530,8 @@ InitCallBack(nblks)
 
     H_LOCK
     tfirst = CBtime(FT_ApproxTime());
-    /* N.B. FE's, CB's share same free list.  If the sizes of either change,
-      FE and CB will have to be separated.  The "-1", below, is because
-      FE[0] and CB[0] are not used--and not allocated */
+    /* The "-1"s below are because FE[0] and CB[0] are not used--and not 
+       allocated */
     FE = ((struct FileEntry *)(malloc(sizeof(struct FileEntry)*nblks)))-1;
     cbstuff.nFEs = nblks;
     while (cbstuff.nFEs)
@@ -913,7 +914,7 @@ BreakCallBack(xhost, fid, flag)
 	    ncbas++;
 	    TDel(cb);
 	    HDel(cb);
-	    CDel(cb); /* Usually first; so this delete */
+	    CDel(cb, 1); /* Usually first; so this delete */
 		      /* is reasonably inexpensive */
 	  }
 	}
@@ -971,7 +972,7 @@ DeleteCallBack(host, fid)
     }
     HDel(itocb(*pcb));
     TDel(itocb(*pcb));
-    CDelPtr(fe, pcb);
+    CDelPtr(fe, pcb, 1);
     h_Unlock_r(host);
     H_UNLOCK
 
@@ -1016,18 +1017,9 @@ DeleteFileCallBacks(fid)
 
 /* Delete (do not break) all call backs for host.  The host should be
  * locked. */
-DeleteAllCallBacks(host)
+DeleteAllCallBacks_r(host, deletefe)
     struct host *host;
-{
-    int retVal;
-    H_LOCK
-    retVal = DeleteAllCallBacks_r(host);
-    H_UNLOCK
-    return retVal;
-}
-
-DeleteAllCallBacks_r(host)
-    struct host *host;
+    int deletefe;
 {
     register struct CallBack *cb;
     register int cbi, first;
@@ -1042,7 +1034,7 @@ DeleteAllCallBacks_r(host)
 	cb = itocb(cbi);
 	cbi = cb->hnext;
 	TDel(cb);
-	CDel(cb);
+	CDel(cb, deletefe);
     } while (cbi != first);
     host->cblist = 0;
 
@@ -1054,17 +1046,6 @@ DeleteAllCallBacks_r(host)
  * successfully broken; 0 otherwise.  Assumes host is h_Held and h_Locked.
  * Must be called with VenusDown set for this host
  */
-int BreakDelayedCallBacks(host)
-    struct host *host;
-{
-    int retVal;
-    H_LOCK
-    retVal = BreakDelayedCallBacks_r(host);
-    H_UNLOCK
-    return retVal;
-}
-
-extern afsUUID FS_HostUUID;
 
 int BreakDelayedCallBacks_r(host)
     struct host *host;
@@ -1075,6 +1056,7 @@ int BreakDelayedCallBacks_r(host)
     struct CallBack *cb;
     struct interfaceAddr interf;
     int code;
+    char hoststr[16];
 
     cbstuff.nbreakers++;
     if (!(host->hostFlags & RESETDONE) && !(host->hostFlags & HOSTDELETED)) {
@@ -1093,13 +1075,14 @@ int BreakDelayedCallBacks_r(host)
 	if (code) {
 	    if (ShowProblems) {
 		ViceLog(0,
-	   ("CB: Call back connect back failed (in break delayed) for %x.%d\n",
-			host->host, ntohs(host->port)));
+	   ("CB: Call back connect back failed (in break delayed) for %s:%d\n",
+			afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port)));
 	      }
 	    host->hostFlags |= VENUSDOWN;
 	}
 	else {
-	    ViceLog(25,("InitCallBackState success on %x\n",host->host));
+	    ViceLog(25,("InitCallBackState success on %s\n",
+			afs_inet_ntoa_r(host->host, hoststr)));
 	    /* reset was done successfully */
 	    host->hostFlags |= RESETDONE;
 	    host->hostFlags &= ~VENUSDOWN;
@@ -1124,7 +1107,7 @@ int BreakDelayedCallBacks_r(host)
 		nfids++;
 		HDel(cb);
 		TDel(cb);
-		CDel(cb);
+		CDel(cb, 1);
 	    }
 	} while (cbi && cbi != first && nfids < AFSCBMAX);
 
@@ -1138,14 +1121,14 @@ int BreakDelayedCallBacks_r(host)
 	    int i;
 	    if (ShowProblems) {
 		ViceLog(0,
-	     ("CB: XCallBackBulk failed, host=%x.%d; callback list follows:\n",
-		    host->host, ntohs(host->port)));
+	     ("CB: XCallBackBulk failed, host=%s:%d; callback list follows:\n",
+		    afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port)));
 	    }
 	    for (i = 0; i<nfids; i++) {
 		if (ShowProblems) {
 		    ViceLog(0,
-		    ("CB: Host %x.%d, file %u.%u.%u (part of bulk callback)\n",
-		               host->host, ntohs(host->port), 
+		    ("CB: Host %s:%d, file %u.%u.%u (part of bulk callback)\n",
+		               afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port), 
 		               fids[i].Volume, fids[i].Vnode, fids[i].Unique));
 		}
 		/* used to do this:
@@ -1163,6 +1146,11 @@ int BreakDelayedCallBacks_r(host)
     }
 
     cbstuff.nbreakers--;
+
+    /* If we succeeded it's always ok to unset HFE_LATER */
+    if (!host->hostFlags & VENUSDOWN)
+	host->hostFlags &= ~HFE_LATER;
+
     return (host->hostFlags & VENUSDOWN);
 
 } /*BreakDelayedCallBacks*/
@@ -1179,11 +1167,14 @@ struct VCBParams {
 ** isheld is 0 if the host is held in h_Enumerate
 ** isheld is 1 if the host is held in BreakVolumeCallBacks
 */
-static int MultiBreakVolumeCallBack_r (host, isheld, parms)
+static int MultiBreakVolumeCallBack_r (host, isheld, parms, deletefe)
   struct host *host;
   int isheld;
   struct VCBParams *parms;
+  int deletefe;
 {
+    char hoststr[16];
+
     if ( !isheld )
 	return isheld; /* host is held only by h_Enumerate, do nothing */
     if ( host->hostFlags & HOSTDELETED )
@@ -1195,15 +1186,17 @@ static int MultiBreakVolumeCallBack_r (host, isheld, parms)
 	    h_Unlock_r(host);
 	    return 0;      /* Release hold */
 	}
-	ViceLog(8,("BVCB: volume call back for host %x.%d failed\n",
-		 host->host,ntohs(host->port)));
+	ViceLog(8,("BVCB: volume call back for host %s:%d failed\n",
+		 afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port)));
 	if (ShowProblems) {
-	    ViceLog(0, ("CB: volume callback for host %x.%d failed\n",
-		    host->host, ntohs(host->port)));
+	    ViceLog(0, ("CB: volume callback for host %s:%d failed\n",
+		    afs_inet_ntoa_r(host->host, hoststr), ntohs(host->port)));
 	}
-	DeleteAllCallBacks_r(host); /* Delete all callback state rather than
-				     attempting to selectively remember to
-				     delete the volume callbacks later */
+	DeleteAllCallBacks_r(host, deletefe); /* Delete all callback state 
+						 rather than attempting to 
+						 selectively remember to
+						 delete the volume callbacks 
+						 later */
 	host->hostFlags &= ~RESETDONE; /* Do InitCallBackState when host returns */
 	h_Unlock_r(host);
 	return 0; /* release hold */
@@ -1240,7 +1233,19 @@ static int MultiBreakVolumeCallBack (host, isheld, parms)
 {
     int retval;
     H_LOCK
-    retval = MultiBreakVolumeCallBack_r(host, isheld, parms);
+    retval = MultiBreakVolumeCallBack_r(host, isheld, parms, 1);
+    H_UNLOCK
+    return retval;
+}
+
+static int MultiBreakVolumeLaterCallBack (host, isheld, parms)
+  struct host *host;
+  int isheld;
+  struct VCBParams *parms;
+{
+    int retval;
+    H_LOCK
+    retval = MultiBreakVolumeCallBack_r(host, isheld, parms, 0);
     H_UNLOCK
     return retval;
 }
@@ -1324,6 +1329,146 @@ BreakVolumeCallBacks(volume)
 return 0;
 } /*BreakVolumeCallBacks*/
 
+#ifdef AFS_PTHREAD_ENV
+extern pthread_cond_t fsync_cond;
+#else
+extern char fsync_wait[];
+#endif
+
+BreakVolumeCallBacksLater(volume)
+    afs_uint32 volume;
+{
+    int hash;
+    u_short *feip;
+    struct FileEntry *fe;
+    struct CallBack *cb;
+    struct host *host;
+    int found = 0;
+
+    ViceLog(25, ("Setting later on volume %d\n", volume));
+    H_LOCK
+    for (hash=0; hash<VHASH; hash++) {
+	for (feip = &HashTable[hash]; fe = itofe(*feip); ) {
+	    if (fe->volid == volume) {
+		register struct CallBack *cbnext;
+                for (cb = itocb(fe->firstcb); cb; cb = cbnext) {
+		    host = h_itoh(cb->hhead);
+		    host->hostFlags |= HFE_LATER;
+		    cb->status = CB_DELAYED;
+                    cbnext = itocb(cb->cnext);
+                }
+		FSYNC_LOCK
+		fe->status |= FE_LATER;
+		FSYNC_UNLOCK
+		found++;
+	    }
+	    feip = &fe->fnext;
+	}
+    }
+    H_UNLOCK
+
+    if (!found) {
+      /* didn't find any callbacks, so return right away. */
+      return 0;
+    }
+
+    ViceLog(25, ("Fsync thread wakeup\n"));
+#ifdef AFS_PTHREAD_ENV
+    assert(pthread_cond_broadcast(&fsync_cond) == 0);
+#else
+    LWP_NoYieldSignal(&fsync_wait);
+#endif
+    return 0;
+} /*BreakVolumeCallBacksLater*/
+
+BreakLaterCallBacks()
+{
+    struct AFSFid fid;
+    int hash;
+    u_short *feip;
+    struct CallBack *cb;
+    struct FileEntry *fe = NULL;
+    struct FileEntry *myfe = NULL;
+    struct host *host;
+    struct VCBParams henumParms;
+    unsigned short tthead = 0;  /* zero is illegal value */
+
+    /* Unchain first */
+    ViceLog(25, ("Looking for FileEntries to unchain\n"));
+    H_LOCK;
+    FSYNC_LOCK;
+    /* Pick the first volume we see to clean up */
+    fid.Volume = fid.Vnode = fid.Unique = 0;
+
+    for (hash = 0; hash < VHASH; hash++) {
+        for (feip = &HashTable[hash]; fe = itofe(*feip);) {
+	    if (fe && (fe->status & FE_LATER)
+		&& (fid.Volume == 0 || fid.Volume == fe->volid)) {
+	        /* Ugly, but used to avoid left side casting */
+	        struct object *tmpfe;
+		ViceLog(125, ("Unchaining for %d:%d:%d\n", fe->vnode, 
+			      fe->unique, fe->volid));
+		fid.Volume = fe->volid;
+		*feip = fe->fnext;
+		/* Works since volid is deeper than the largest pointer */
+		tmpfe = (struct object *)fe;
+		tmpfe->next = (struct object *)myfe;
+		myfe = fe;
+	    } else
+	        feip = &fe->fnext;
+	}
+    }
+    FSYNC_UNLOCK;
+
+    if (!myfe) {
+	H_UNLOCK
+	return 0;
+    }
+
+    /* loop over FEs from myfe and free/break */
+    tthead = 0;
+    for (fe = myfe; fe;) {
+       register struct CallBack *cbnext;
+       for (cb = itocb(fe->firstcb); cb; cb = cbnext) {
+	   host = h_itoh(cb->hhead);
+	   h_Hold_r(host);
+	   cbnext = itocb(cb->cnext);
+	   if (!tthead || (TNorm(tthead) < TNorm(cb->thead))) {
+	       tthead = cb->thead;
+	   }
+	   TDel(cb);
+	   HDel(cb);
+	   CDel(cb, 0); /* Don't let CDel clean up the fe */
+	   /* leave hold for MultiBreakVolumeCallBack to clear */
+       }
+       myfe = fe;
+       fe = (struct FileEntry *)((struct object *)fe)->next;
+       FreeFE(myfe);
+    }
+
+    if (tthead) {
+       ViceLog(125, ("Breaking volume %d\n", fid.Volume));
+       henumParms.ncbas = 0;
+       henumParms.fid = &fid;
+       henumParms.thead = tthead;
+       H_UNLOCK;
+       h_Enumerate(MultiBreakVolumeLaterCallBack, (char *)&henumParms);
+       H_LOCK;
+	
+       if (henumParms.ncbas) { /* do left-overs */
+	   struct AFSCBFids tf;
+	   tf.AFSCBFids_len = 1;
+	   tf.AFSCBFids_val = &fid;
+		
+	   MultiBreakCallBack_r(henumParms.cba, henumParms.ncbas, &tf, 0 );
+	   henumParms.ncbas = 0;
+       }
+    }  
+    H_UNLOCK;
+
+    /* Arrange to be called again */
+    return 1;
+}
 
 /*
  * Delete all timed-out call back entries (to be called periodically by file
@@ -1356,7 +1501,7 @@ CleanupTimedOutCallBacks_r()
 			itofe(cb->fhead)->volid, itofe(cb->fhead)->vnode,
 			itofe(cb->fhead)->unique));
 		HDel(cb);
-		CDel(cb);
+		CDel(cb, 1);
 		ntimedout++;
 		if (ntimedout > cbstuff.nblks) {
 		  ViceLog(0,("CCB: Internal Error -- shutting down...\n"));
@@ -1376,16 +1521,22 @@ CleanupTimedOutCallBacks_r()
 
 
 static struct host *lih_host;
+static int lih_host_held = 0;
 
 static int lih_r(host, held, hostp)
     register struct host *host, *hostp;
     register int held;
 
 {
+    lih_host_held = 0;
     if (host->cblist
 	   && ((hostp && host != hostp) || (!held && !h_OtherHolds_r(host)))
            && (!lih_host || host->ActiveCall < lih_host->ActiveCall) ) {
 	lih_host = host;
+    }
+    if (!held) { 
+	held = 1; 
+	lih_host_held = 1; 
     }
     return held;
 
@@ -1415,8 +1566,11 @@ static int GetSomeSpace_r(hostp, locked)
 	hp = lih_host;
 	if (hp) {
 	    cbstuff.GSS4++;
-	    if ( ! ClearHostCallbacks_r(hp, 0 /* not locked or held */) )
+	    if ( ! ClearHostCallbacks_r(hp, 0 /* not locked or held */) ) {
+		if (lih_host_held) h_Release_r(hp);
 		return;
+	    }
+	    if (lih_host_held) h_Release_r(hp);
 	    hp2 = hp->next;
 	} else {
 	    hp2 = hostList;
@@ -1494,7 +1648,7 @@ int ClearHostCallbacks_r(hp, locked)
          */
 	cbstuff.GSS5++;
     }
-    DeleteAllCallBacks_r(hp);
+    DeleteAllCallBacks_r(hp, 1);
     if (hp->hostFlags & VENUSDOWN) {
 	hp->hostFlags &= ~RESETDONE;	/* remember that we must do a reset */
     } else {
@@ -1759,8 +1913,8 @@ PrintCB(cb, now)
     struct FileEntry *fe = itofe(cb->fhead);
     time_t expires = TIndexToTime(cb->thead);
 
-    printf("vol=%u vn=%u cbs=%d hi=%d st=%d, exp in %d secs at %s", 
-	   fe->volid, fe->vnode, fe->ncbs, cb->hhead, cb->status,
+    printf("vol=%u vn=%u cbs=%d hi=%d st=%d, fest=%d, exp in %d secs at %s", 
+	   fe->volid, fe->vnode, fe->ncbs, cb->hhead, cb->status, fe->status,
 	   expires - now, ctime(&expires));
 
 } /*PrintCB*/
@@ -1883,6 +2037,7 @@ struct host*		host;
 	struct rx_connection*   connSuccess = 0;
 	afs_int32		*addr;
 	static struct rx_securityClass *sc = 0;
+	char hoststr[16];
 
 	/* nothing more can be done */
 	if ( !host->interface ) return 1; 	/* failure */
@@ -1919,8 +2074,8 @@ struct host*		host;
 	}
 
 	assert(j);  /* at least one alternate address */
-	ViceLog(125,("Starting multiprobe on all addr for host:%x\n",
-			host->host));
+	ViceLog(125,("Starting multiprobe on all addr for host %s\n",
+			afs_inet_ntoa_r(host->host, hoststr)));
 	H_UNLOCK
 	multi_Rx(conns, j)
 	{
@@ -1936,8 +2091,8 @@ struct host*		host;
 			connSuccess	     = conns[multi_i];
 			rx_SetConnDeadTime(host->callback_rxcon, 50);
 			rx_SetConnHardDeadTime(host->callback_rxcon, AFS_HARDDEADTIME);
-			ViceLog(125,("multiprobe success with addr:%x\n",
-					addr[multi_i]));
+			ViceLog(125,("multiprobe success with addr %s\n",
+					afs_inet_ntoa_r(addr[multi_i], hoststr)));
 			H_UNLOCK
 			multi_Abort; 
 		}

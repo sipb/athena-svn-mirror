@@ -1,0 +1,3 @@
+PKG=MIT-aspell-dict
+NAME=Dictionaries for aspell, for Athena
+DESC=This package contains dictionaries for use with aspell, a spelling checker.

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Handle the removal of confignoreplace files in a package.
+# pkgrm supplies the path names on our standard input.  For each
+# confignoreplace file foo, we remove foo and foo.athena.
+while read dest ; do
+  rm -f $dest $dest.athena
+done
+
+exit 0

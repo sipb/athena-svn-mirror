@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosserver.c,v 1.1.1.2 2002-12-13 20:40:41 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosserver.c,v 1.3 2002-12-13 22:06:48 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -62,7 +62,7 @@ const char *bozo_fileName;
 FILE *bozo_logFile;
 extern int rx_stackSize;    /* for rx_SetStackSize macro */
 
-int DoLogging = 0;
+int DoLogging = 1;
 int DoSyslog = 0;
 #ifndef AFS_NT40_ENV
 int DoSyslogFacility = LOG_DAEMON;

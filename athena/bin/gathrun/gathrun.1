@@ -1,0 +1,35 @@
+.\" $Id: gathrun.1,v 1.2 2004-01-22 17:53:16 ghudson Exp $
+.\"
+.\" Copyright 2000 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.TH GATHRUN 1 "5 May 2001"
+.SH NAME
+gathrun \- Run a program from an Athena locker
+.SH SYNOPSIS
+.B gathrun \fIlockername\fP [\fIprogname\fP [\fIargs\fP...]]
+.SH DESCRIPTION
+.B gathrun
+runs a program from a specific Athena locker.  If
+.I progname
+is not specified, it is assumed to be the same as the locker name.  If
+the program does not exist in the specified locker, a dialog box is
+displayed saying so; this makes
+.B gathrun
+useful for running GUI programs from a menu system.
+.SH "SEE ALSO"
+.BR attachandrun (1)
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 2001 by the Massachusetts Institute of Technology.

@@ -1,0 +1,3 @@
+PKG=MIT-attachandrun
+NAME=An Athena utility for scripts to run a program from a locker
+DESC=The attachandrun utility allows a script to robustly run a program from a specified locker.

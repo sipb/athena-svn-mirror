@@ -22,6 +22,7 @@
 #include <locale.h>
 #include <glib.h>
 #include <gnome.h>
+#include <locale.h>
 #include <gconf/gconf-client.h>
 #include <glade/glade.h>
 #include <libgnomevfs/gnome-vfs.h>

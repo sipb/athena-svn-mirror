@@ -1,0 +1,3 @@
+PKG=MIT-gtk-thinice-engine
+NAME=A simple gtk theme engine, for Athena
+DESC=gtk-thinice is a theme engine for GTK+ designed to be fast and clean.

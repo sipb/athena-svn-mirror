@@ -1,0 +1,3 @@
+PKG=MIT-xlogin
+NAME=The Athena graphical login interface
+DESC=xlogin displays a login window and performs an Athena login session. It is normally run by dm from the athena-dm package.

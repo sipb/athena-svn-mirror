@@ -1,4 +1,4 @@
-# @(#) $Header: /afs/dev.mit.edu/source/repository/third/flex/Makefile.in,v 1.1.1.1 2001-04-10 17:05:08 ghudson Exp $ (LBL)
+# @(#) $Header: /afs/dev.mit.edu/source/repository/third/flex/Makefile.in,v 1.2 2001-04-30 22:31:03 ghudson Exp $ (LBL)
 
 @SET_MAKE@
 
@@ -166,26 +166,26 @@ $(FLEX).man: flex.1
 	cd $(srcdir) && nroff -man flex.1 >$(FLEX).man
 
 install: $(FLEX) $(FLEXLIB) installdirs install.$(INSTALLMAN)
-	$(INSTALL_PROGRAM) $(FLEX) $(bindir)/$(FLEX)
-	@rm -f $(bindir)/$(FLEX)++
-	cd $(bindir) && $(LN_S) $(FLEX) $(FLEX)++
-	$(INSTALL_DATA) $(FLEXLIB) $(libdir)/$(FLEXLIB)
-	-cd $(libdir) && $(RANLIB) $(FLEXLIB)
-	$(INSTALL_DATA) $(srcdir)/FlexLexer.h $(includedir)/FlexLexer.h
+	$(INSTALL_PROGRAM) $(FLEX) $(DESTDIR)$(bindir)/$(FLEX)
+	@rm -f $(DESTDIR)$(bindir)/$(FLEX)++
+	cd $(DESTDIR)$(bindir) && $(LN_S) $(FLEX) $(FLEX)++
+	$(INSTALL_DATA) $(FLEXLIB) $(DESTDIR)$(libdir)/$(FLEXLIB)
+	-cd $(DESTDIR)$(libdir) && $(RANLIB) $(FLEXLIB)
+	$(INSTALL_DATA) $(srcdir)/FlexLexer.h $(DESTDIR)$(includedir)/FlexLexer.h
 
 # Note, the following rules delete any vestigial flexdoc installed
 # for a prior flex release.
 install.man: flex.1
-	rm -f $(mandir)/$(FLEX)doc.$(manext)
-	$(INSTALL_DATA) $(srcdir)/flex.1 $(mandir)/$(FLEX).$(manext)
+	rm -f $(DESTDIR)$(mandir)/$(FLEX)doc.$(manext)
+	$(INSTALL_DATA) $(srcdir)/flex.1 $(DESTDIR)$(mandir)/$(FLEX).$(manext)
 
 install.cat: $(FLEX).man
-	rm -f $(mandir)/$(FLEX)doc.$(manext)
-	$(INSTALL_DATA) $(srcdir)/$(FLEX).man $(mandir)/$(FLEX).$(manext)
+	rm -f $(DESTDIR)$(mandir)/$(FLEX)doc.$(manext)
+	$(INSTALL_DATA) $(srcdir)/$(FLEX).man $(DESTDIR)$(mandir)/$(FLEX).$(manext)
 
 installdirs:
 	$(SHELL) $(srcdir)/mkinstalldirs \
-	  $(bindir) $(libdir) $(includedir) $(mandir)
+	  $(DESTDIR)$(bindir) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir) $(DESTDIR)$(mandir)
 
 uninstall:
 	rm -f $(bindir)/$(FLEX) $(bindir)/$(FLEX)++

@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  */
-/* $Id: cyrperl.h,v 1.1.1.2 2004-02-23 22:53:32 rbasch Exp $ */
+/* $Id: cyrperl.h,v 1.3 2004-02-23 23:56:43 rbasch Exp $ */
 /*
  * Internal callback rock, used to invoke arbitrary Perl code via a CODE
  * reference ( \&sub ).  Allocate with Perl's New(), free with Safefree().
@@ -75,7 +75,7 @@ struct xscb {
   struct xscb *next;
 };
 
-#define NUM_SUPPORTED_CALLBACKS 4
+#define NUM_SUPPORTED_CALLBACKS 5
 
 struct xscyrus {
   struct imclient *imclient;

@@ -311,6 +311,11 @@ xpm_to_ximage_1 (Display *dpy, Visual *visual, Colormap cmap,
 
 #else  /* !HAVE_XPM && !HAVE_GDK_PIXBUF */
 
+#include <stdio.h>
+#include <X11/Intrinsic.h>
+
+extern char *progname;
+
 static XImage *
 xpm_to_ximage_1 (Display *dpy, Visual *visual, Colormap cmap,
                  const char *filename, char **xpm_data)

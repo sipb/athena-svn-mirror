@@ -1,0 +1,3 @@
+PKG=MIT-jot
+NAME=jot is a simple tool that prints random or sequential data
+DESC=Jot prints numbers, in arithmetic sequence or according to some simple random generators.

@@ -478,6 +478,23 @@ long pop3_auth (MAILSTREAM *stream,NETMBX *mb,char *pwd,char *usr)
   NETDRIVER *ssld = (NETDRIVER *) mail_parameters (NIL,GET_SSLDRIVER,NIL);
   sslstart_t stls = (sslstart_t) mail_parameters (NIL,GET_SSLSTART,NIL);
 				/* server has TLS? */
+
+#ifdef KERBEROS
+  if (mb->krbflag) {
+    /* We already took care of sending the ticket in tcp_unix.c, since
+     * that has to happen before the read of the server greeting.  So
+     * we just need to send the username here. */
+    if (mb->user && *mb->user)
+      strcpy (usr,mb->user);
+    else
+      strcpy (usr,myusername());
+    /* Send same PASS as USER. */
+    if (pop3_send (stream,"USER",usr) && pop3_send (stream,"PASS",usr))
+      return LONGT;		/* success */
+    else
+      return NIL;
+  }
+#endif
   if (stls && LOCAL->cap.stls && !mb->sslflag && !mb->notlsflag &&
       pop3_send (stream,"STLS",NIL)) {
     mb->tlsflag = T;		/* TLS OK, get into TLS at this end */

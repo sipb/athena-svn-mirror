@@ -200,8 +200,6 @@ SKIP: {
     ok(-l $tmpfile_link,    '-l');
 }
 
-ok(-o $tmpfile,     '-o');
-
 ok(-e $tmpfile,     '-e');
 
 unlink($tmpfile_link);

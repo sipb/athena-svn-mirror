@@ -1,0 +1,67 @@
+# Disk geometry: <ST315320A cyl 29649 alt 2 hd 16 sec 63>
+#
+#Part      Tag    Flag     Cylinders         Size            Blocks
+#  0       root    wm       0 - 28086       13.50GB    (28087/0/0) 28311696
+#  1       swap    wu   28087 - 29127      512.37MB    (1041/0/0)   1049328
+#  2     backup    wm       0 - 29648       14.25GB    (29649/0/0) 29886192
+#  3 unassigned    wm   29128 - 29648      256.43MB    (521/0/0)     525168
+#  4 unassigned    wm       0                0         (0/0/0)            0
+#  5 unassigned    wm       0                0         (0/0/0)            0
+#  6 unassigned    wm       0                0         (0/0/0)            0
+#  7 unassigned    wm       0                0         (0/0/0)            0
+
+partition
+
+0
+root
+wm
+0
+28087c
+
+1
+swap
+wu
+28087
+1041c
+
+2
+backup
+wm
+0
+29649c
+
+3
+unassigned
+wm
+29128
+521c
+
+4
+unassigned
+wm
+0
+0c
+
+5
+unassigned
+wm
+0
+0c
+
+6
+unassigned
+wm
+0
+0c
+
+7
+unassigned
+wm
+0
+0c
+
+label
+y
+print
+q
+q

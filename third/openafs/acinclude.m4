@@ -194,6 +194,12 @@ case $system in
                          if test "x$linux_syscall_method" = "xnone"; then
                         AC_MSG_ERROR([no available sys_call_table access method])
                          fi
+			 if test "x$ac_cv_linux_exports_sys_chdir" = "xyes" ; then
+			  AC_DEFINE(EXPORTED_SYS_CHDIR, 1, [define if your linux kernel exports sys_chdir])
+			 fi
+			 if test "x$ac_cv_linux_exports_sys_close" = "xyes" ; then
+			  AC_DEFINE(EXPORTED_SYS_CLOSE, 1, [define if your linux kernel exports sys_close])
+			 fi
                    fi
                  fi
 		 if test "x$ac_cv_linux_exports_sys_chdir" = "xyes" ; then
@@ -271,6 +277,9 @@ case $system in
 		 if test "x$ac_cv_linux_sched_struct_task_struct_has_sig" = "xyes"; then 
 		  AC_DEFINE(STRUCT_TASK_STRUCT_HAS_SIG, 1, [define if your struct task_struct has sig])
 		 fi
+		 if test "x$ac_cv_linux_sched_struct_task_struct_has_sighand" = "xyes"; then
+		  AC_DEFINE(STRUCT_TASK_STRUCT_HAS_SIGHAND, 1, [define if your struct task_struct has sighand])
+		 fi	 
                 :
 		fi
                 ;;
@@ -505,13 +514,13 @@ else
         AC_MSG_RESULT($AFS_SYSNAME)
 fi
 
-# KDUMP64 defaults to KDUMP for systems without a separate kdump64
-KDUMP64='${KDUMP}'
+# KDUMP64 is only defined for systems with a separate kdump64.
+KDUMP64=
 KDUMP=kdump
 case $AFS_SYSNAME in
 	sgi_6?)
 		KDUMP=kdump.IP20;;
-	sun4x_5[789] | hp_ux11*)
+	sun4x_5[[789]] | hp_ux11*)
 		KDUMP=kdump32
 		KDUMP64=kdump64;;
 	*linux*)

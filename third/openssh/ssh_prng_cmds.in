@@ -5,7 +5,7 @@
 # The "rate" represents the number of bits of usuable entropy per 
 # byte of command output. Be conservative.
 #
-# $Id: ssh_prng_cmds.in,v 1.1.1.2 2003-02-05 19:03:35 zacheiss Exp $
+# $Id: ssh_prng_cmds.in,v 1.3 2003-02-06 03:45:49 zacheiss Exp $
 
 "ls -alni /var/log"			@PROG_LS@	0.02
 "ls -alni /var/adm"			@PROG_LS@	0.02
@@ -53,9 +53,6 @@
 "last"					@PROG_LAST@	0.01
 
 "lastlog"				@PROG_LASTLOG@	0.01
-
-"df"					@PROG_DF@	0.01
-"df -i"					@PROG_DF@	0.01
 
 "sar -d"				@PROG_SAR@	0.04
 

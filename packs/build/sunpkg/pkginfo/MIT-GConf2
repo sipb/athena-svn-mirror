@@ -1,0 +1,3 @@
+PKG=MIT-GConf2
+NAME=The GNOME configuration database system, for Athena
+DESC=GConf is the GNOME Configuration database system.

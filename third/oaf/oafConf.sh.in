@@ -17,7 +17,7 @@ for i in $orbit_libs_output; do
 done
 
 OAF_LIBDIR="-L@libdir@ $orbit_libdirs"
-OAF_LIBS="-loaf $orbit_libs"
+OAF_LIBS="-loaf $orbit_libs @INTLLIBS@"
 OAF_INCLUDEDIR="-I@includedir@ $orbit_includes"
 MODULE_VERSION="oaf-@VERSION@"
 

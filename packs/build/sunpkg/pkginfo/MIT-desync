@@ -1,0 +1,3 @@
+PKG=MIT-desync
+NAME=Desynchronize timed jobs on networks
+DESC=The desync tool sleeps a random amount of time in order to skew jobs that would otherwise run simultaneously on a large number of networked computers, imposing unusual network load spikes.

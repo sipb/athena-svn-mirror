@@ -55,6 +55,7 @@ struct Session {
 	int	is_subsystem;
 };
 
+int      do_auth1_kerberos_tgt_pass(Authctxt *, int);
 void	 do_authenticated(Authctxt *);
 
 int	 session_open(Authctxt *, int);
@@ -68,4 +69,7 @@ Session	*session_new(void);
 Session	*session_by_tty(char *);
 void	 session_close(Session *);
 void	 do_setusercontext(struct passwd *);
+
+void	 child_set_env(char ***envp, u_int *envsizep, const char *name,
+		       const char *value);
 #endif

@@ -372,7 +372,7 @@ e_destination_is_valid (const EDestination *dest)
            check to make sure that the address was valid according to
            rfc822's addr-spec grammar. */
 	
-	return email && *email && strchr (email, '@');
+	return email && *email;
 }
 
 gboolean

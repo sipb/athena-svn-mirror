@@ -1,0 +1,3 @@
+PKG=MIT-tcsh
+NAME=The T C shell, as modified for use on Athena.
+DESC=The standard user shell on Athena

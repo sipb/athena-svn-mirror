@@ -26,6 +26,9 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#endif
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <errno.h>

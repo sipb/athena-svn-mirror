@@ -777,6 +777,14 @@ e_shell_startup_wizard_create (void)
 		return TRUE;
 	}
 
+	/* Local Athena hack: we don't want to inflict the startup
+           wizard on new users.  Set up the time zone here and handle
+           mail accounts in evolution-mail. */
+	gconf_client_set_string (client,
+				 "/apps/evolution/calendar/display/timezone",
+				 "America/New_York", NULL);
+	return TRUE;
+
 	data = g_new0 (SWData, 1);
 
 	data->wizard = glade_xml_new (EVOLUTION_GLADEDIR "/evolution-startup-wizard.glade", NULL, NULL);

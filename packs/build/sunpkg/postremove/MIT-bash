@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -s $PKG_INSTALL_ROOT/etc/shells ]; then
+  grep -v '^/bin/athena/bash$' < $PKG_INSTALL_ROOT/etc/shells \
+    > $PKG_INSTALL_ROOT/etc/shells.$PKGINST.rm
+  mv $PKG_INSTALL_ROOT/etc/shells.$PKGINST.rm $PKG_INSTALL_ROOT/etc/shells
+fi
+
+exit 0

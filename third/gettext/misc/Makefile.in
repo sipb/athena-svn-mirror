@@ -148,9 +148,10 @@ with_gnu_ld = @with_gnu_ld@
 
 AUTOMAKE_OPTIONS = 1.2 gnits
 
-EXTRA_DIST = gettext.perl gettext-sh tcl_gettext.c README-Tcl add-to-archive cvsuser.c archive.tar.gz $(lisp_LISP)
+EXTRA_DIST = gettext.perl gettext-sh tcl_gettext.c README-Tcl add-to-archive cvsuser.c archive.tar.gz $(hack_DATA)
 DISTCLEANFILES = gettextize autopoint
-lisp_LISP = po-mode.el po-compat.el
+hackdir = $(datadir)/emacs/site-lisp
+hack_DATA = po-mode.el po-compat.el
 
 bin_SCRIPTS = gettextize autopoint
 
@@ -163,17 +164,13 @@ CONFIG_CLEAN_FILES = gettextize autopoint
 SCRIPTS = $(bin_SCRIPTS)
 
 DIST_SOURCES =
-LISP = $(lisp_LISP)
-
-ELCFILES = po-compat.elc po-mode.elc
-DATA = $(gettextsrc_DATA)
+DATA = $(gettextsrc_DATA) $(hack_DATA)
 
 DIST_COMMON = ChangeLog Makefile.am Makefile.in autopoint.in elisp-comp \
 	gettextize.in
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .el .elc
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -216,43 +213,6 @@ uninstall-binSCRIPTS:
 	  rm -f $(DESTDIR)$(bindir)/$$f; \
 	done
 uninstall-info-am:
-
-EMACS = @EMACS@
-lispdir = @lispdir@
-
-.el.elc:
-	@echo 'WARNING: Warnings can be ignored. :-)'
-	if test $(EMACS) != no; then \
-	  EMACS=$(EMACS) $(SHELL) $(srcdir)/elisp-comp $<; \
-	else : ; fi
-install-lispLISP: $(lisp_LISP) $(ELCFILES)
-	@$(NORMAL_INSTALL)
-	@if test -n "$(lispdir)"; then \
-	  $(mkinstalldirs) $(DESTDIR)$(lispdir); \
-	  list='$(lisp_LISP)'; for p in $$list; do \
-	    if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$f"; \
-	    $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$f; \
-	    if test -f $${p}c; then \
-	      echo " $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${f}c"; \
-	      $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${f}c; \
-	    else : ; fi; \
-	  done; \
-	else : ; fi
-
-uninstall-lispLISP:
-	@$(NORMAL_UNINSTALL)
-	@if test -n "$(lispdir)"; then \
-	  list='$(lisp_LISP)'; for p in $$list; do \
-	    f="`echo $$p | sed -e 's|^.*/||'`"; \
-	    echo " rm -f $(DESTDIR)$(lispdir)/$$f $(DESTDIR)$(lispdir)/$${f}c"; \
-	    rm -f $(DESTDIR)$(lispdir)/$$f $(DESTDIR)$(lispdir)/$${f}c; \
-	  done; \
-	else : ; fi
-
-clean-lisp:
-	-test -z "$(ELCFILES)" || rm -f $(ELCFILES)
 install-gettextsrcDATA: $(gettextsrc_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(gettextsrcdir)
@@ -269,6 +229,23 @@ uninstall-gettextsrcDATA:
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
 	  echo " rm -f $(DESTDIR)$(gettextsrcdir)/$$f"; \
 	  rm -f $(DESTDIR)$(gettextsrcdir)/$$f; \
+	done
+install-hackDATA: $(hack_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(hackdir)
+	@list='$(hack_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(hackdir)/$$f"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(hackdir)/$$f; \
+	done
+
+uninstall-hackDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(hack_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(hackdir)/$$f"; \
+	  rm -f $(DESTDIR)$(hackdir)/$$f; \
 	done
 tags: TAGS
 TAGS:
@@ -297,10 +274,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(SCRIPTS) $(LISP) $(ELCFILES) $(DATA)
+all-am: Makefile $(SCRIPTS) $(DATA)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(bindir) $(DESTDIR)$(lispdir) $(DESTDIR)$(gettextsrcdir)
+	$(mkinstalldirs) $(DESTDIR)$(bindir) $(DESTDIR)$(gettextsrcdir) $(DESTDIR)$(hackdir)
 
 install: install-am
 install-exec: install-exec-am
@@ -328,7 +305,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-lisp mostlyclean-am
+clean-am: clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 
@@ -342,7 +319,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-gettextsrcDATA install-lispLISP
+install-data-am: install-gettextsrcDATA install-hackDATA
 
 install-exec-am: install-binSCRIPTS
 
@@ -361,18 +338,18 @@ mostlyclean: mostlyclean-am
 mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
 uninstall-am: uninstall-binSCRIPTS uninstall-gettextsrcDATA \
-	uninstall-info-am uninstall-lispLISP
+	uninstall-hackDATA uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	clean-lisp distclean distclean-generic distclean-libtool \
-	distdir dvi dvi-am info info-am install install-am \
-	install-binSCRIPTS install-data install-data-am install-exec \
-	install-exec-am install-gettextsrcDATA install-info \
-	install-info-am install-lispLISP install-man install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	distclean distclean-generic distclean-libtool distdir dvi \
+	dvi-am info info-am install install-am install-binSCRIPTS \
+	install-data install-data-am install-exec install-exec-am \
+	install-gettextsrcDATA install-hackDATA install-info \
+	install-info-am install-man install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool uninstall uninstall-am uninstall-binSCRIPTS \
-	uninstall-gettextsrcDATA uninstall-info-am uninstall-lispLISP
+	uninstall-gettextsrcDATA uninstall-hackDATA uninstall-info-am
 
 
 archive.tar.gz:

@@ -1,0 +1,3 @@
+PKG=MIT-db
+NAME=The Berkeley DB database library for C
+DESC=The Berkeley Database (Berkeley DB) is a programmatic toolkit that provides embedded database support for both traditional and client/server applications.

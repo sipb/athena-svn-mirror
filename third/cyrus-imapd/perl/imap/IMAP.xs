@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: IMAP.xs,v 1.1.1.3 2004-02-23 22:55:30 rbasch Exp $ */
+/* $Id: IMAP.xs,v 1.5 2004-02-23 23:56:43 rbasch Exp $ */
 
 /*
  * Perl interface to the Cyrus imclient routines.  This enables the
@@ -142,6 +142,7 @@ void imclient_xs_cb(struct imclient *client, struct xsccb *rock,
   PUTBACK;
   /* invoke Perl */
   perl_call_sv(rock->pcb, G_VOID|G_DISCARD);
+  SPAGAIN;
   FREETMPS;
   SPAGAIN;
   LEAVE;
@@ -209,11 +210,19 @@ static int get_password(sasl_conn_t *conn, void *context, int id,
   return SASL_OK;  
 }
 
+/* log callback */
+static int log_message(void *context, int level, char *message)
+{
+  fprintf(stderr, "%s\n", message);
+  return SASL_OK;
+}
+
 /* callbacks we support */
 static const sasl_callback_t sample_callbacks[NUM_SUPPORTED_CALLBACKS] = {
   { SASL_CB_USER, get_username, NULL }, 
   { SASL_CB_AUTHNAME, get_username, NULL }, 
   { SASL_CB_PASS, get_password, NULL },
+  { SASL_CB_LOG, log_message, NULL },
   { SASL_CB_LIST_END, NULL, NULL }
 };
 
@@ -378,9 +387,9 @@ imclient__authenticate(client, mechlist, service, user, auth, password, minssf, 
 	Cyrus_IMAP client
 	char* mechlist
 	char* service
-	char* user
+	char* user = (SvOK(ST(3)) ? SvPV(ST(3), na) : NULL);
 	char* auth
-	char* password
+	char* password = (SvOK(ST(5)) ? SvPV(ST(5), na) : NULL);
 	int minssf
 	int maxssf
 PREINIT:
@@ -392,10 +401,6 @@ CODE:
 	  ST(0) = &sv_no;
 	  return;
 	}
-
-	/* If the user parameter is undef, set user to be NULL */
-	if(!SvOK(ST(3))) user = NULL;
-	if(!SvOK(ST(5))) password = NULL;
 
 	client->username = user; /* AuthZid */
 	client->authname = auth; /* Authid */

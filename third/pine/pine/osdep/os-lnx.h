@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-lnx.h,v 1.1.1.4 2004-03-01 21:15:51 ghudson Exp $
+  $Id: os-lnx.h,v 1.5 2004-03-01 21:39:11 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -163,10 +163,10 @@
 
 /*----- System-wide config file ----------------------------------------*/
 #ifndef SYSTEM_PINERC
-#define SYSTEM_PINERC             "/usr/local/lib/pine.conf"
+#define SYSTEM_PINERC             "/usr/athena/etc/pine.conf"
 #endif
 #ifndef SYSTEM_PINERC_FIXED
-#define SYSTEM_PINERC_FIXED       "/usr/local/lib/pine.conf.fixed"
+#define SYSTEM_PINERC_FIXED       "/usr/athena/etc/pine.conf.fixed"
 #endif
 
 
@@ -234,7 +234,7 @@
 
 /*--------- Program employed by users to change their password ---------*/
 #ifndef	PASSWD_PROG
-#define	PASSWD_PROG	"/bin/passwd"
+#define	PASSWD_PROG	"/usr/athena/bin/passwd"
 #endif
 
 
@@ -280,7 +280,7 @@
        8
        9 logs gross details of command execution
  ----*/
-#define DEFAULT_DEBUG 2
+#define DEFAULT_DEBUG 0
 
 
 

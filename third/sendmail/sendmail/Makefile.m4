@@ -1,4 +1,4 @@
-dnl $Id: Makefile.m4,v 1.1.1.1 2003-04-08 15:08:07 zacheiss Exp $
+dnl $Id: Makefile.m4,v 1.4 2003-07-25 05:12:24 zacheiss Exp $
 include(confBUILDTOOLSDIR`/M4/switch.m4')
 
 define(`confREQUIRE_LIBSM', `true')
@@ -10,9 +10,9 @@ PREPENDDEF(`confENVDEF', `confMAPDEF')
 bldPUSH_SMLIB(`sm')
 bldPUSH_SMLIB(`smutil')
 
+APPENDDEF(`confLIBS', `-lwrap')
+
 dnl hack: /etc/mail is not defined as "location of .cf" in the build system
-define(`bldTARGET_INST_DEP', ifdef(`confINST_DEP', `confINST_DEP',
-`${DESTDIR}/etc/mail/submit.cf ${DESTDIR}${MSPQ}'))dnl
 define(`bldTARGET_LINKS', ifdef(`confLINKS', `confLINKS',
 `${DESTDIR}${UBINDIR}/newaliases ${DESTDIR}${UBINDIR}/mailq ${DESTDIR}${UBINDIR}/hoststat ${DESTDIR}${UBINDIR}/purgestat')
 )dnl
@@ -66,10 +66,12 @@ ifdef(`confNO_STATISTICS_INSTALL',, `bldPUSH_INSTALL_TARGET(`install-st')')
 divert(bldTARGETS_SECTION)
 
 install-set-user-id: bldCURRENT_PRODUCT ifdef(`confNO_HELPFILE_INSTALL',, `install-hf') ifdef(`confNO_STATISTICS_INSTALL',, `install-st') ifdef(`confNO_MAN_BUILD',, `install-docs')
-	${INSTALL} -c -o ${S`'BINOWN} -g ${S`'BINGRP} -m ${S`'BINMODE} bldCURRENT_PRODUCT ${DESTDIR}${M`'BINDIR}
+	mkdir -p ${DESTDIR}${M`'BINDIR}
+	mkdir -p ${DESTDIR}${U`'BINDIR}
+	${INSTALL} -c -o ${S`'BINOWN} -g ${S`'BINGRP} -m ${S`'BINMODE} bldCURRENT_PRODUCT ${DESTDIR}${M`'BINDIR}/sendmail.real
 	for i in ${sendmailTARGET_LINKS}; do \
 		rm -f $$i; \
-		${LN} ${LNOPTS} ${M`'BINDIR}/sendmail $$i; \
+		${LN} ${LNOPTS} ${M`'BINDIR}/sendmail.real $$i; \
 	done
 
 define(`confMTA_LINKS', `${DESTDIR}${UBINDIR}/newaliases ${DESTDIR}${UBINDIR}/mailq ${DESTDIR}${UBINDIR}/hoststat ${DESTDIR}${UBINDIR}/purgestat')

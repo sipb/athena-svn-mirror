@@ -74,6 +74,7 @@
 #include "nsIPrefService.h"
 #include "nsISignatureVerifier.h"
 #include "nsISSLSocketControl.h"
+#include "nsIUserInfo.h"
 #include "nsPrintfCString.h"
 
 #ifndef XP_UNIX
@@ -965,6 +966,20 @@ PRInt32 nsSmtpProtocol::AuthLoginStep1()
   if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
   
   rv = smtpServer->GetUsername(getter_Copies(username));
+
+  // Athena mod: If the username preference for the server has not
+  // been set yet, set it now to the current user name.  Otherwise,
+  // we will call GetUsernamePassword() below, which actually only
+  // prompts for a password, leaving the username empty, and thus
+  // causing a failure.
+  if (username.IsEmpty()) {
+      nsCOMPtr<nsIUserInfo> userInfo = do_GetService(NS_USERINFO_CONTRACTID,
+                                                     &rv);
+      if (NS_SUCCEEDED(rv)) {
+          userInfo->GetUsername(getter_Copies(username));
+          smtpServer->SetUsername(username.get());
+      }
+  }
   
   if (username.IsEmpty()) {
     rv = GetUsernamePassword(getter_Copies(username), getter_Copies(origPassword));

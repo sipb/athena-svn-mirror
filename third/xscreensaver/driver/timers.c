@@ -279,6 +279,7 @@ activate_lock_timer (XtPointer closure, XtIntervalId *id)
   if (p->verbose_p)
     fprintf (stderr, "%s: timed out; activating lock.\n", blurb());
   set_locked_p (si, True);
+  si->locked_due_to_idle_p = True;
 }
 
 
@@ -786,6 +787,19 @@ sleep_until_idle (saver_info *si, Bool until_idle_p)
 	else
 	  reset_timers (si);
 
+	break;
+
+      case ConfigureNotify:
+      case VisibilityNotify:
+        if (!until_idle_p)
+	{
+	  int i;
+
+	  /* Something happened, and we're no longer the topmost window.
+	   * Forcibly raise ourselves to solve this problem. */
+	  for (i = 0; i < si->nscreens; i++)
+	    XRaiseWindow(si->dpy, si->screens[i].screensaver_window);
+	}
 	break;
 
       default:

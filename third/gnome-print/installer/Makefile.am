@@ -40,4 +40,4 @@ readmedir = $(datadir)/fonts
 readme_DATA = README.installer README.binaries
 
 install-data-local: gnome-font-install
-	$(PERL) $(top_srcdir)/run-gnome-font-install ./gnome-font-install $(datadir) $(top_srcdir) $(sysconfdir)
+	$(PERL) $(top_srcdir)/run-gnome-font-install ./gnome-font-install $(datadir) $(top_srcdir) $(DESTDIR)$(datadir)

@@ -1,14 +1,14 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
  *
  ***************************************************************************/
 
  static char *const _id =
-"$Id: krb5_auth.c,v 1.1.1.5 2000-03-31 15:47:53 mwhitson Exp $";
+"$Id: krb5_auth.c,v 1.13 2004-03-12 20:33:02 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -17,10 +17,29 @@
 #include "getqueue.h"
 #include "krb5_auth.h"
 
-#if defined(HAVE_KRB5_H)
+#if !defined(HAVE_KRB5_H)
 
+int server_krb5_auth( char *keytabfile, char *service, int sock,
+	char **auth, char *err, int errlen, char *file )
+{
+	plp_snprintf( err, errlen,
+	"kerberos authentication facilities not compiled" );
+	return(1);
+}
+int server_krb5_status( int sock, char *err, int errlen, char *file )
+{
+	return(1);
+}
+
+#else
+
+#define KRB5_DEPRECATED 1
 #include <krb5.h>
 #include <com_err.h>
+
+#if !defined(KRB5_PROTOTYPE)
+#define KRB5_PROTOTYPE(X) X
+#endif
 
  extern krb5_error_code krb5_read_message 
 	KRB5_PROTOTYPE((krb5_context,
@@ -65,17 +84,6 @@
 
 	DEBUG1("server_krb5_auth: keytab '%s', service '%s', sock %d, file '%s'",
 		keytabfile, service, sock, file );
-	if( !keytabfile ){
-		plp_snprintf( err, errlen, "no server keytab file" );
-		goto done;
-	}
-	if( (fd = Checkread(keytabfile,&statb)) == -1 ){
-		plp_snprintf( err, errlen,
-			"cannot open server keytab file '%s' - %s", keytab,
-			Errormsg(errno) );
-		goto done;
-	}
-	close(fd);
 	err[0] = 0;
 	if ((retval = krb5_init_context(&context))){
 		plp_snprintf( err, errlen, "%s '%s'",
@@ -176,8 +184,8 @@
 			retval = 1;
 			goto done;
 		}
-		krb5_xfree(inbuf.data); inbuf.data = 0;
-		krb5_xfree(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &inbuf); inbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 		inbuf.length = 0;
 		outbuf.length = 0;
 	}
@@ -197,7 +205,7 @@
 		if( context )	krb5_free_context(context);
 		context = 0;
 	}
-	DEBUG1( "server_krb5_auth: retval %d, error: '%s'", retval, err );
+	DEBUG1( "server_krb5: retval %d, error: '%s'", retval, err );
 	return(retval);
 }
 
@@ -221,7 +229,6 @@ int server_krb5_status( int sock, char *err, int errlen, char *file )
 		retval = 1;
 		goto done;
 	}
-	DEBUG1( "server_krb5_status: sock '%d', file size %0.0f", sock, (double)(statb.st_size));
 
 	while( (retval = read( fd,buffer,sizeof(buffer)-1)) > 0 ){
 		inbuf.length = retval;
@@ -242,7 +249,7 @@ int server_krb5_status( int sock, char *err, int errlen, char *file )
 			retval = 1;
 			goto done;
 		}
-		krb5_xfree(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	DEBUG1("server_krb5_status: done" );
 
@@ -309,11 +316,10 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 	struct stat statb;
 
 	err[0] = 0;
-	DEBUG1( "client_krb5_auth: euid/egid %d/%d, ruid/rguid %d/%d, keytab '%s',"
+	DEBUG1( "client_krb5_auth: keytab '%s',"
 		" service '%s', host '%s', sock %d, file '%s'",
-		geteuid(),getegid(), getuid(),getgid(),
 		keytabfile, service, host, sock, file );
-	if( !safestrcasecmp(host,LOCALHOST) ){
+	if( !strcasecmp(host,LOCALHOST) ){
 		host = FQDNHost_FQDN;
 		DEBUG1( "client_krb5_auth: using host='%s'", host );
 	}
@@ -327,14 +333,6 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			"krb5_init_context failed - '%s' ", error_message(retval) );
 		goto done;
 	}
-	if (!valid_cksumtype(CKSUMTYPE_CRC32)) {
-		plp_snprintf( err, errlen,
-			"valid_cksumtype CKSUMTYPE_CRC32 - %s",
-			error_message(KRB5_PROG_SUMTYPE_NOSUPP) );
-		retval = 1;
-		goto done;
-	}
-
 	if(server_principal){
 		if ((retval = krb5_parse_name(context,server_principal, &server))){
 			plp_snprintf( err, errlen, "client_krb5_auth failed - "
@@ -473,26 +471,18 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			goto done;
 		}
 	} else {
-		/* we set RUID to user */
-		if( Is_server ){
-			To_ruid( DaemonUID );
-		} else {
-			To_ruid( OriginalRUID );
-		}
 		if((retval = krb5_cc_default(context, &ccdef))){
 			plp_snprintf( err, errlen, "krb5_cc_default failed - %s",
 				error_message( retval ) );
 			goto done;
 		}
 		if((retval = krb5_cc_get_principal(context, ccdef, &client))){
-			plp_snprintf( err, errlen, "krb5_cc_get_principal failed - %s",
-				error_message( retval ) );
+			if( retval == KRB5_FCC_NOFILE )
+				plp_snprintf( err, errlen, "No tickets - try the \"-A none\" option");
+			else
+				plp_snprintf( err, errlen, "krb5_cc_get_principal failed - %s",
+					error_message( retval ) );
 			goto done;
-		}
-		if( Is_server ){
-			To_daemon();
-		} else {
-			To_user();
 		}
 		if(cname)free(cname); cname = 0;
 		if((retval = krb5_unparse_name(context, client, &cname))){
@@ -573,7 +563,7 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 		retval = 1;
 		goto done;
 	}
-	DEBUG1( "client_krb5_auth: opened for read %s, fd %d, size %0.0f", file, fd, (double)statb.st_size );
+	DEBUG1( "client_krb5_auth: opened for read %s, fd %d, size %d", file, fd, (int)statb.st_size );
 	while( (len = read( fd, buffer, sizeof(buffer)-1 )) > 0 ){
 		/* status = Write_fd_len( sock, buffer, len ); */
 		inbuf.data = buffer;
@@ -592,7 +582,7 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			goto done;
 		}
 		DEBUG4( "client_krb5_auth: freeing data");
-		krb5_xfree(outbuf.data); outbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	if( len < 0 ){
 		plp_snprintf( err, errlen,
@@ -623,21 +613,15 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 			&outbuf, NULL))){
 			plp_snprintf( err, errlen, "krb5_rd_priv failed - %s",
 				Errormsg(errno) );
-			retval = 1;
-			goto done;
+			Write_fd_str( 2, err );
+			cleanup(0);
 		}
-		if(Write_fd_len(fd,outbuf.data,outbuf.length) < 0){
-			plp_snprintf( err, errlen, "write to '%s' failed - %s",
-				file, Errormsg(errno) );
-			retval = 1;
-			goto done;
-		}
-		krb5_xfree(inbuf.data); inbuf.data = 0;
-		krb5_xfree(outbuf.data); outbuf.data = 0;
+		if(Write_fd_len(fd,outbuf.data,outbuf.length) < 0) cleanup(0);
+		krb5_free_data_contents(context, &inbuf); inbuf.data = 0;
+		krb5_free_data_contents(context, &outbuf); outbuf.data = 0;
 	}
 	close(fd); fd = -1;
 	fd = Checkread( file, &statb );
-	err[0] = 0;
 	if( fd < 0 ){
 		plp_snprintf( err, errlen,
 			"client_krb5_auth: could not open for reading '%s' - '%s'", file,
@@ -645,16 +629,16 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 		retval = 1;
 		goto done;
 	}
-	DEBUG1( "client_krb5_auth: reopened for read %s, fd %d, size %0.0f", file, fd, (double)statb.st_size );
+	DEBUG1( "client_krb5_auth: reopened for read %s, fd %d, size %d", file, fd, (int)statb.st_size );
 	if( dup2(fd,sock) == -1){
 		plp_snprintf( err, errlen,
 			"client_krb5_auth: dup2(%d,%d) failed - '%s'",
 			fd, sock, Errormsg(errno) );
+		retval = 1;
 	}
 	retval = 0;
-
  done:
-	if( fd >= 0 && fd != sock ) close(fd);
+	if( fd >= 0 ) close(fd);
 	DEBUG4( "client_krb5_auth: freeing my_creds");
 	krb5_free_cred_contents( context, &my_creds );
 	DEBUG4( "client_krb5_auth: freeing rep_ret");

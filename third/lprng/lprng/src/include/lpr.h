@@ -1,10 +1,10 @@
 /***************************************************************************
  * LPRng - An Extended Print Spooler System
  *
- * Copyright 1988-2000, Patrick Powell, San Diego, CA
+ * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpr.h,v 1.1.1.3 2000-03-31 15:48:05 mwhitson Exp $
+ * $Id: lpr.h,v 1.6 2001-03-07 01:20:16 ghudson Exp $
  ***************************************************************************/
 
 
@@ -13,6 +13,7 @@
 #define _LPR_1_
 
 EXTERN char *Accntname_JOB; /* Accounting name: PLP 'R' control file option */
+EXTERN char *Auth_JOB; /* Auth type to use, overriding printcap */
 EXTERN int Binary;      /* Binary format: 'l' Format */
 EXTERN char *Bnrname_JOB;   /* Banner name: RFC 'L' option */
 EXTERN char *Classname_JOB; /* Class name:  RFC 'C' option */
@@ -33,6 +34,7 @@ EXTERN int Removefiles;	    /* Remove files */
 EXTERN char *Username_JOB;	/* Specified with the -U option */
 EXTERN int Secure;		/* Secure filter option */
 EXTERN int Setup_mailaddress;   /* Set up mail address */
+EXTERN int Zephyr;		/* Zephyr user on job completion */
 EXTERN char *Zopts_JOB;     /* Z options */
 
 EXTERN int DevNullFD;	/* DevNull File descriptor */
@@ -41,7 +43,6 @@ EXTERN int LP_mode;		/* look like LP */
 
 
 EXTERN int Silent;			/* lp -s option */
-EXTERN int Mail_fd;
 
 /* PROTOTYPES */
 int main(int argc, char *argv[], char *envp[]);
@@ -49,8 +50,8 @@ void Get_parms(int argc, char *argv[] );
 void usage(void);
 int Make_job( struct job *job );
 void get_job_number( struct job *job );
-double Copy_stdin( struct job *job );
-double Check_files( struct job *job );
+off_t Copy_stdin( struct job *job );
+off_t Check_files( struct job *job );
 int Check_lpr_printable(char *file, int fd, struct stat *statb, int format );
 int is_exec( char *buf, int n);
 int is_arch(char *buf, int n);

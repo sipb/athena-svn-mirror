@@ -1,0 +1,58 @@
+.\" 
+.\" $Id: mitmailappend.1,v 1.1 2004-09-03 20:44:43 rbasch Exp $
+.\"
+.TH MITMAILAPPEND 1 
+.SH NAME
+mitmailappend \- append a message to an IMAP folder
+.SH SYNOPSIS
+.B mitmailappend
+[
+.B \--debug
+] [
+.B \--file
+.I path
+] [
+.B \--help
+] [
+.B \--host
+.I name
+] [
+.B \--mailbox
+.I name
+] [
+.B \--no-create
+]
+.SH DESCRIPTION
+The 
+.I mitmailappend
+program appends one message to a folder on an IMAP server.  The message
+text is read from standard input, or, if the 
+.B \--file
+option is specified, from the given path value.
+.SH OPTIONS
+.I mitmailappend
+understands the following options:
+.TP
+.B \--debug
+turn on debugging.
+.TP
+.B \--file \fIpath\fR
+read the message text from the file \fIpath\fR, instead of from
+standard input.
+.TP
+.B \--help
+display usage information and exit.
+.TP
+.B \--host \fIname\fR
+query the given host, instead of the default post office server.
+.TP
+.B \--mailbox \fIname\fR
+append the message to the IMAP folder \fIname\fR.  If this option is
+not specified, the message is appended to the INBOX folder.
+.TP
+.B \--no-create
+do not create the target mailbox automatically.  By default, the target
+mailbox will be created automatically if necessary.
+.SH "SEE ALSO"
+mitmailscan(1), mitmailshow(1), mitmaildel(1), mitmailcreate(1)
+imtest(1), RFC\-2060 (Internet Message Access Protocol - Version 4rev1)
