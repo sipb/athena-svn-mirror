@@ -1,4 +1,4 @@
-# $Id: packages,v 1.189 2003-01-05 02:28:51 ghudson Exp $
+# $Id: packages,v 1.190 2003-01-18 19:04:22 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -183,7 +183,7 @@ third/gtkhtml			requires gnome-print,gdk-pixbuf,gal,bonobo,GConf,control-center
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
-third/intltool			except linux requires perl
+third/intltool			requires perl
 third/ispell
 third/jot
 third/jpeg			except linux,irix
