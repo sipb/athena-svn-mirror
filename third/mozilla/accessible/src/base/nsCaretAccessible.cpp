@@ -38,7 +38,7 @@
 // NOTE: alphabetically ordered
 #include "nsAccessibilityService.h"
 #include "nsCaretAccessible.h"
-#include "nsIAccessibleEventReceiver.h"
+#include "nsIAccessibleEvent.h"
 #include "nsICaret.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMHTMLBodyElement.h"
@@ -60,7 +60,7 @@
 
 NS_IMPL_ISUPPORTS_INHERITED2(nsCaretAccessible, nsLeafAccessible, nsIAccessibleCaret, nsISelectionListener)
 
-nsCaretAccessible::nsCaretAccessible(nsIDOMNode* aDocumentNode, nsIWeakReference* aShell, nsIAccessible *aRootAccessible):
+nsCaretAccessible::nsCaretAccessible(nsIDOMNode* aDocumentNode, nsIWeakReference* aShell, nsRootAccessible *aRootAccessible):
 nsLeafAccessible(aDocumentNode, aShell), mVisible(PR_TRUE), mCurrentDOMNode(nsnull), mRootAccessible(aRootAccessible)
 {
 }
@@ -157,8 +157,8 @@ NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, ns
     caret->GetCaretVisible(&visible);
   if (visible != mVisible) {
     mVisible = visible;
-    mRootAccessible->FireToolkitEvent(mVisible? nsIAccessibleEventReceiver::EVENT_SHOW: 
-                                      nsIAccessibleEventReceiver::EVENT_HIDE, this, nsnull);
+    mRootAccessible->FireToolkitEvent(mVisible? nsIAccessibleEvent::EVENT_SHOW: 
+                                      nsIAccessibleEvent::EVENT_HIDE, this, nsnull);
   }
 
   nsCOMPtr<nsIPresContext> presContext;
@@ -191,7 +191,7 @@ NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, ns
 
 #ifndef MOZ_ACCESSIBILITY_ATK
   if (visible) {
-    mRootAccessible->FireToolkitEvent(nsIAccessibleEventReceiver::EVENT_LOCATION_CHANGE, this, nsnull);
+    mRootAccessible->FireToolkitEvent(nsIAccessibleEvent::EVENT_LOCATION_CHANGE, this, nsnull);
   }
 #else
   nsCOMPtr<nsIDOMNode> focusNode;
@@ -230,11 +230,11 @@ NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, ns
     if (isCollapsed) {
       PRInt32 caretOffset;
       domSel->GetFocusOffset(&caretOffset);
-      mRootAccessible->FireToolkitEvent(nsIAccessibleEventReceiver::EVENT_ATK_TEXT_CARET_MOVE, accessible, &caretOffset);
+      mRootAccessible->FireToolkitEvent(nsIAccessibleEvent::EVENT_ATK_TEXT_CARET_MOVE, accessible, &caretOffset);
     }
     else {
       //Current text interface doesn't support this event yet
-      //mListener->FireToolkitEvent(nsIAccessibleEventReceiver::EVENT_ATK_TEXT_SELECTION_CHANGE, accessible, nsnull);
+      //mListener->FireToolkitEvent(nsIAccessibleEvent::EVENT_ATK_TEXT_SELECTION_CHANGE, accessible, nsnull);
     }
   }
 #endif
@@ -243,7 +243,7 @@ NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, ns
 }
 
 /** Return the caret's bounds */
-NS_IMETHODIMP nsCaretAccessible::AccGetBounds(PRInt32 *x, PRInt32 *y, PRInt32 *width, PRInt32 *height)
+NS_IMETHODIMP nsCaretAccessible::GetBounds(PRInt32 *x, PRInt32 *y, PRInt32 *width, PRInt32 *height)
 {
   if (!mVisible)
     return NS_ERROR_FAILURE;  // When root accessible hasn't yet called SetCaretBounds()
@@ -254,30 +254,30 @@ NS_IMETHODIMP nsCaretAccessible::AccGetBounds(PRInt32 *x, PRInt32 *y, PRInt32 *w
   return NS_OK;
 }
 
-NS_IMETHODIMP nsCaretAccessible::GetAccRole(PRUint32 *_retval)
+NS_IMETHODIMP nsCaretAccessible::GetRole(PRUint32 *_retval)
 {
   *_retval = ROLE_CARET;
   return NS_OK;
 }
 
-NS_IMETHODIMP nsCaretAccessible::GetAccState(PRUint32 *_retval)
+NS_IMETHODIMP nsCaretAccessible::GetState(PRUint32 *_retval)
 {
   *_retval = mVisible? 0: STATE_INVISIBLE;
   return NS_OK;
 }
 
-NS_IMETHODIMP nsCaretAccessible::GetAccParent(nsIAccessible **_retval)
+NS_IMETHODIMP nsCaretAccessible::GetParent(nsIAccessible **_retval)
 {   
   *_retval = nsnull;
   return NS_OK;
 }
-NS_IMETHODIMP nsCaretAccessible::GetAccPreviousSibling(nsIAccessible **_retval)
+NS_IMETHODIMP nsCaretAccessible::GetPreviousSibling(nsIAccessible **_retval)
 { 
   *_retval = nsnull;
   return NS_OK;
 }
 
-NS_IMETHODIMP nsCaretAccessible::GetAccNextSibling(nsIAccessible **_retval)
+NS_IMETHODIMP nsCaretAccessible::GetNextSibling(nsIAccessible **_retval)
 {
   *_retval = nsnull;
   return NS_OK;

@@ -51,11 +51,11 @@ extern PRInt32 _PyXPCOM_GetInterfaceCount(void);
 
 extern void AddDefaultGateway(PyObject *instance, nsISupports *gateway);
 
-#ifdef XP_WIN
-// Can only assume dynamic loading on Windows.
 #define LOADER_LINKS_WITH_PYTHON
 
-#endif // XP_WIN
+#ifndef PYXPCOM_USE_PYGILSTATE
+extern void PyXPCOM_InterpreterState_Ensure();
+#endif
 
 PyXPCOM_INTERFACE_DEFINE(Py_nsIComponentManager, nsIComponentManagerObsolete, PyMethods_IComponentManager)
 PyXPCOM_INTERFACE_DEFINE(Py_nsIInterfaceInfoManager, nsIInterfaceInfoManager, PyMethods_IInterfaceInfoManager)
@@ -374,6 +374,19 @@ PyXPCOMMethod_GetProxyForObject(PyObject *self, PyObject *args)
 	return result;
 }
 
+PyObject *PyGetSpecialDirectory(PyObject *self, PyObject *args)
+{
+	char *dirname;
+	if (!PyArg_ParseTuple(args, "s:GetSpecialDirectory", &dirname))
+		return NULL;
+	nsIFile *file = NULL;
+	nsresult r = NS_GetSpecialDirectory(dirname, &file);
+	if ( NS_FAILED(r) )
+		return PyXPCOM_BuildPyException(r);
+	// returned object swallows our reference.
+	return Py_nsISupports::PyObjectFromInterface(file, NS_GET_IID(nsIFile), PR_FALSE);
+}
+
 PyObject *AllocateBuffer(PyObject *self, PyObject *args)
 {
 	int bufSize;
@@ -419,6 +432,7 @@ static struct PyMethodDef xpcom_methods[]=
 	{"_GetGatewayCount", PyXPCOMMethod_GetGatewayCount, 1},
 	{"getProxyForObject", PyXPCOMMethod_GetProxyForObject, 1},
 	{"GetProxyForObject", PyXPCOMMethod_GetProxyForObject, 1},
+	{"GetSpecialDirectory", PyGetSpecialDirectory, 1},
 	{"AllocateBuffer", AllocateBuffer, 1},
 	{"LogWarning", LogWarning, 1},
 	{"LogError", LogError, 1},
@@ -428,10 +442,6 @@ static struct PyMethodDef xpcom_methods[]=
 ////////////////////////////////////////////////////////////
 // Other helpers/global functions.
 //
-#ifndef PYXPCOM_USE_PYGILSTATE
-extern void PyXPCOM_InterpreterState_Ensure();
-#endif
-
 PRBool PyXPCOM_Globals_Ensure()
 {
 	PRBool rc = PR_TRUE;

@@ -114,8 +114,9 @@ nsImageLoadingContent::Shutdown()
 // removing themselves.
 #define LOOP_OVER_OBSERVERS(func_)                                       \
   PR_BEGIN_MACRO                                                         \
-    for (ImageObserver* observer = &mObserverList; observer;             \
-         observer = observer->mNext) {                                   \
+    for (ImageObserver* observer = &mObserverList, *next; observer;      \
+         observer = next) {                                              \
+      next = observer->mNext;                                            \
       if (observer->mObserver) {                                         \
         observer->mObserver->func_;                                      \
       }                                                                  \
@@ -236,7 +237,7 @@ nsImageLoadingContent::GetImageBlocked(PRBool* aBlocked)
   *aBlocked = mImageIsBlocked;
   return NS_OK;
 }
-                                      
+
 NS_IMETHODIMP
 nsImageLoadingContent::AddObserver(imgIDecoderObserver* aObserver)
 {
@@ -354,10 +355,12 @@ nsImageLoadingContent::LoadImageWithChannel(nsIChannel* aChannel,
   // XXX what should we do with content policies here, if anything?
   // Shouldn't that be done before the start of the load?
   
-  nsCOMPtr<nsIDocument> doc;
-  nsresult rv = GetOurDocument(getter_AddRefs(doc));
-  NS_ENSURE_TRUE(doc, rv);
-
+  nsCOMPtr<nsIDocument> doc = GetOurDocument();
+  if (!doc) {
+    // Don't bother
+    return NS_OK;
+  }
+  
   CancelImageRequests(NS_ERROR_IMAGE_SRC_CHANGED);
 
   nsCOMPtr<imgIRequest> & req = mCurrentRequest ? mPendingRequest : mCurrentRequest;
@@ -381,22 +384,14 @@ nsImageLoadingContent::ImageURIChanged(const nsACString& aNewURI)
     return NS_OK;
   }
 
-  if (aNewURI.IsEmpty()) {
-    // Do not take down the already loaded image... (for compat with
-    // the old code that loaded images from frames)    
-    // XXXbz is this what we really want?
+  // First, get a document (needed for security checks and the like)
+  nsCOMPtr<nsIDocument> doc = GetOurDocument();
+  if (!doc) {
+    // No reason to bother, I think...
     return NS_OK;
   }
 
   nsresult rv;   // XXXbz Should failures in this method fire onerror?
-
-  // First, get a document (needed for security checks, base URI and the like)
-  nsCOMPtr<nsIDocument> doc;
-  rv = GetOurDocument(getter_AddRefs(doc));
-  if (!doc) {
-    // No reason to bother, I think...
-    return rv;
-  }
 
   nsCOMPtr<nsIURI> imageURI;
   rv = StringToURI(aNewURI, doc, getter_AddRefs(imageURI));
@@ -466,15 +461,7 @@ nsImageLoadingContent::ImageURIChanged(const nsACString& aNewURI)
   nsCOMPtr<nsIContent> thisContent = do_QueryInterface(this, &rv);
   NS_ENSURE_TRUE(thisContent, rv);
 
-  nsCOMPtr<nsIDocument> tempDoc;
-  thisContent->GetDocument(*getter_AddRefs(tempDoc));
-  if (!doc) {
-    return NS_OK;
-  }
-
-  nsCOMPtr<nsIContent> parent;
-  thisContent->GetParent(*getter_AddRefs(parent));
-  if (!parent) {
+  if (!thisContent->GetDocument() || !thisContent->GetParent()) {
     return NS_OK;
   }
 
@@ -559,26 +546,24 @@ nsImageLoadingContent::CanLoadImage(nsIURI* aURI, nsIDocument* aDocument)
 }
 
 
-nsresult
-nsImageLoadingContent::GetOurDocument(nsIDocument** aDocument)
+nsIDocument*
+nsImageLoadingContent::GetOurDocument()
 {
-  NS_PRECONDITION(aDocument, "Null out param");
+  nsCOMPtr<nsIContent> thisContent = do_QueryInterface(this);
+  NS_ENSURE_TRUE(thisContent, nsnull);
 
-  nsresult rv;
-
-  nsCOMPtr<nsIContent> thisContent = do_QueryInterface(this, &rv);
-  NS_ENSURE_TRUE(thisContent, rv);
-
-  rv = thisContent->GetDocument(*aDocument);
-  if (!*aDocument) {  // nodeinfo time
+  nsIDocument* doc = thisContent->GetDocument();
+  
+  if (!doc) {  // nodeinfo time
+    // XXXbz GetOwnerDocument
     nsCOMPtr<nsINodeInfo> nodeInfo;
-    rv = thisContent->GetNodeInfo(*getter_AddRefs(nodeInfo));
+    thisContent->GetNodeInfo(getter_AddRefs(nodeInfo));
     if (nodeInfo) {
-      rv = nodeInfo->GetDocument(*aDocument);
+      doc = nodeInfo->GetDocument();
     }
   }
 
-  return rv;
+  return doc;
 }
 
 nsresult
@@ -593,25 +578,19 @@ nsImageLoadingContent::StringToURI(const nsACString& aSpec,
   
   // (1) Get the base URI
   nsCOMPtr<nsIURI> baseURL;
-  nsCOMPtr<nsIHTMLContent> thisContent = do_QueryInterface(this);
-  if (thisContent) {
-    rv = thisContent->GetBaseURL(*getter_AddRefs(baseURL));
-  } else {
-    rv = aDocument->GetBaseURL(*getter_AddRefs(baseURL));
-    if (!baseURL) {
-      rv = aDocument->GetDocumentURL(getter_AddRefs(baseURL));
-    }
-  }
+  nsCOMPtr<nsIContent> thisContent = do_QueryInterface(this);
+  NS_ASSERTION(thisContent, "An image loading content must be an nsIContent");
+  rv = thisContent->GetBaseURL(getter_AddRefs(baseURL));
   NS_ENSURE_SUCCESS(rv, rv);
 
   // (2) Get the charset
-  nsAutoString charset;
+  nsCAutoString charset;
   aDocument->GetDocumentCharacterSet(charset);
 
   // (3) Construct the silly thing
   return NS_NewURI(aURI,
                    aSpec,
-                   charset.IsEmpty() ? nsnull : NS_ConvertUCS2toUTF8(charset).get(),
+                   charset.IsEmpty() ? nsnull : charset.get(),
                    baseURL,
                    sIOService);
 }
@@ -622,16 +601,17 @@ nsImageLoadingContent::StringToURI(const nsACString& aSpec,
  */
 MOZ_DECL_CTOR_COUNTER(ImageEvent)
 
-struct ImageEvent : PLEvent
+class ImageEvent : public PLEvent,
+                   public nsDummyLayoutRequest
 {
+public:
   ImageEvent(nsIPresContext* aPresContext, nsIContent* aContent,
-             const nsAString& aMessage, nsILoadGroup *aLoadGroup,
-             nsIRequest *aRequest)
-    : mPresContext(aPresContext),
+             const nsAString& aMessage, nsILoadGroup *aLoadGroup)
+    : nsDummyLayoutRequest(nsnull),
+      mPresContext(aPresContext),
       mContent(aContent),
       mMessage(aMessage),
-      mLoadGroup(aLoadGroup),
-      mDummyRequest(aRequest)
+      mLoadGroup(aLoadGroup)
   {
     MOZ_COUNT_CTOR(ImageEvent);
   }
@@ -644,7 +624,6 @@ struct ImageEvent : PLEvent
   nsCOMPtr<nsIContent> mContent;
   nsString mMessage;
   nsCOMPtr<nsILoadGroup> mLoadGroup;
-  nsCOMPtr<nsIRequest> mDummyRequest;
 };
 
 PR_STATIC_CALLBACK(void*)
@@ -664,8 +643,8 @@ HandleImagePLEvent(PLEvent* aEvent)
   evt->mContent->HandleDOMEvent(evt->mPresContext, &event, nsnull,
                                 NS_EVENT_FLAG_INIT, &estatus);
 
-  evt->mLoadGroup->RemoveRequest(evt->mDummyRequest, nsnull, NS_OK);
-  
+  evt->mLoadGroup->RemoveRequest(evt, nsnull, NS_OK);
+
   return nsnull;
 }
 
@@ -673,7 +652,12 @@ PR_STATIC_CALLBACK(void)
 DestroyImagePLEvent(PLEvent* aEvent)
 {
   ImageEvent* evt = NS_STATIC_CAST(ImageEvent*, aEvent);
-  delete evt;
+
+  // We're reference counted, and we hold a strong reference to
+  // ourselves while we're a 'live' PLEvent. Now that the PLEvent is
+  // destroyed, release ourselves.
+
+  NS_RELEASE(evt);
 }
 
 nsresult
@@ -683,12 +667,12 @@ nsImageLoadingContent::FireEvent(const nsAString& aEventType)
   // loops in cases when onLoad handlers reset the src and the new src is in
   // cache.
 
-  nsCOMPtr<nsIDocument> document;
-  nsresult rv = GetOurDocument(getter_AddRefs(document));
+  nsCOMPtr<nsIDocument> document = GetOurDocument();
   if (!document) {
     // no use to fire events if there is no document....
-    return rv;
+    return NS_OK;
   }                                                                             
+  nsresult rv;
   nsCOMPtr<nsIEventQueueService> eventQService =
     do_GetService("@mozilla.org/event-queue-service;1", &rv);
   NS_ENSURE_TRUE(eventQService, rv);
@@ -703,10 +687,6 @@ nsImageLoadingContent::FireEvent(const nsAString& aEventType)
   nsCOMPtr<nsILoadGroup> loadGroup;
   document->GetDocumentLoadGroup(getter_AddRefs(loadGroup));
 
-  nsCOMPtr<nsIRequest> dummyRequest;
-  rv = nsDummyLayoutRequest::Create(getter_AddRefs(dummyRequest), nsnull);
-  NS_ENSURE_SUCCESS(rv, rv);
-
   nsCOMPtr<nsIPresShell> shell;
   document->GetShellAt(0, getter_AddRefs(shell));
   NS_ENSURE_TRUE(shell, NS_ERROR_FAILURE);
@@ -718,18 +698,23 @@ nsImageLoadingContent::FireEvent(const nsAString& aEventType)
   nsCOMPtr<nsIContent> ourContent = do_QueryInterface(this);
   
   ImageEvent* evt = new ImageEvent(presContext, ourContent, aEventType,
-                                   loadGroup, dummyRequest);
+                                   loadGroup);
 
   NS_ENSURE_TRUE(evt, NS_ERROR_OUT_OF_MEMORY);
 
   PL_InitEvent(evt, this, ::HandleImagePLEvent, ::DestroyImagePLEvent);
 
+  // The event will own itself while it's in the event queue, once
+  // removed, it will release itself, and if there are no other
+  // references, it will be deleted.
+  NS_ADDREF(evt);
+
   rv = eventQ->PostEvent(evt);
 
   if (rv == PR_SUCCESS) {
-    // Add the dummy request to the load group only after all the early
-    // returns here!
-    loadGroup->AddRequest(dummyRequest, nsnull);
+    // Add the dummy request (the ImageEvent) to the load group only
+    // after all the early returns here!
+    loadGroup->AddRequest(evt, nsnull);
   } else {
     PL_DestroyEvent(evt);
   }

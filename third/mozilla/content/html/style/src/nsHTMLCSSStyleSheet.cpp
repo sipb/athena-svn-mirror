@@ -38,7 +38,6 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsIHTMLCSSStyleSheet.h"
-#include "nsIArena.h"
 #include "nsCRT.h"
 #include "nsIAtom.h"
 #include "nsIURL.h"
@@ -171,10 +170,10 @@ CSSDisablePropsRule::CommonMapRuleInfoInto(nsRuleData* aData)
     aData->mDisplayData->mAppearance = none;
 
     nsCSSValue autovalue(eCSSUnit_Auto);
-    aData->mDisplayData->mClip->mTop = autovalue;
-    aData->mDisplayData->mClip->mRight = autovalue;
-    aData->mDisplayData->mClip->mBottom = autovalue;
-    aData->mDisplayData->mClip->mLeft = autovalue;
+    aData->mDisplayData->mClip.mTop = autovalue;
+    aData->mDisplayData->mClip.mRight = autovalue;
+    aData->mDisplayData->mClip.mBottom = autovalue;
+    aData->mDisplayData->mClip.mLeft = autovalue;
 
     nsCSSValue inlinevalue(NS_STYLE_DISPLAY_INLINE, eCSSUnit_Enumerated);
     aData->mDisplayData->mDisplay = inlinevalue;
@@ -200,10 +199,10 @@ CSSDisablePropsRule::CommonMapRuleInfoInto(nsRuleData* aData)
     nsCSSValue autovalue(eCSSUnit_Auto);
     nsCSSValue none(eCSSUnit_None);
     nsCSSValue zero(0.0f, eCSSUnit_Point);
-    aData->mPositionData->mOffset->mTop = autovalue;
-    aData->mPositionData->mOffset->mRight = autovalue;
-    aData->mPositionData->mOffset->mBottom = autovalue;
-    aData->mPositionData->mOffset->mLeft = autovalue;
+    aData->mPositionData->mOffset.mTop = autovalue;
+    aData->mPositionData->mOffset.mRight = autovalue;
+    aData->mPositionData->mOffset.mBottom = autovalue;
+    aData->mPositionData->mOffset.mLeft = autovalue;
     aData->mPositionData->mWidth = autovalue;
     aData->mPositionData->mMinWidth = zero;
     aData->mPositionData->mMaxWidth = none;
@@ -235,9 +234,9 @@ CSSDisablePropsRule::CommonMapRuleInfoInto(nsRuleData* aData)
   // Disable everything in the UserInterface struct.
   if (aData->mSID == eStyleStruct_UserInterface) {
     nsCSSValue inherit(eCSSUnit_Inherit);
-    aData->mUIData->mUserInput = inherit;
-    aData->mUIData->mUserModify = inherit;
-    aData->mUIData->mUserFocus = inherit;
+    aData->mUserInterfaceData->mUserInput = inherit;
+    aData->mUserInterfaceData->mUserModify = inherit;
+    aData->mUserInterfaceData->mUserFocus = inherit;
     // XXX |mCursor| is a pain, because we have to have our own cursor
     // structure allocated.
   }
@@ -245,7 +244,7 @@ CSSDisablePropsRule::CommonMapRuleInfoInto(nsRuleData* aData)
   if (aData->mSID == eStyleStruct_UIReset) {
     nsCSSValue autovalue(eCSSUnit_Auto);
     nsCSSValue none(eCSSUnit_None);
-    aData->mUIData->mResizer = autovalue;
+    aData->mUserInterfaceData->mResizer = autovalue;
     // XXX |mKeyEquivalent| is a pain, because we have to have our own cursor
     // structure allocated.
     // Don't bother with '-moz-force-broken-image-icon' since it's only
@@ -285,26 +284,26 @@ CSSFirstLineRule::MapRuleInfoInto(nsRuleData* aData)
   // properties.
   if (aData->mSID == eStyleStruct_Border) {
     nsCSSValue none(NS_STYLE_BORDER_STYLE_NONE, eCSSUnit_Enumerated);
-    aData->mMarginData->mBorderStyle->mTop = none;
-    aData->mMarginData->mBorderStyle->mRight = none;
-    aData->mMarginData->mBorderStyle->mBottom = none;
-    aData->mMarginData->mBorderStyle->mLeft = none;
+    aData->mMarginData->mBorderStyle.mTop = none;
+    aData->mMarginData->mBorderStyle.mRight = none;
+    aData->mMarginData->mBorderStyle.mBottom = none;
+    aData->mMarginData->mBorderStyle.mLeft = none;
   }
 
   if (aData->mSID == eStyleStruct_Margin) {
     nsCSSValue zero(0.0f, eCSSUnit_Point);
-    aData->mMarginData->mMargin->mTop = zero;
-    aData->mMarginData->mMargin->mRight = zero;
-    aData->mMarginData->mMargin->mBottom = zero;
-    aData->mMarginData->mMargin->mLeft = zero;
+    aData->mMarginData->mMargin.mTop = zero;
+    aData->mMarginData->mMargin.mRight = zero;
+    aData->mMarginData->mMargin.mBottom = zero;
+    aData->mMarginData->mMargin.mLeft = zero;
   }
 
   if (aData->mSID == eStyleStruct_Padding) {
     nsCSSValue zero(0.0f, eCSSUnit_Point);
-    aData->mMarginData->mPadding->mTop = zero;
-    aData->mMarginData->mPadding->mRight = zero;
-    aData->mMarginData->mPadding->mBottom = zero;
-    aData->mMarginData->mPadding->mLeft = zero;
+    aData->mMarginData->mPadding.mTop = zero;
+    aData->mMarginData->mPadding.mRight = zero;
+    aData->mMarginData->mPadding.mBottom = zero;
+    aData->mMarginData->mPadding.mLeft = zero;
   }
 
   return NS_OK;
@@ -355,6 +354,7 @@ public:
   NS_IMETHOD GetMediumCount(PRInt32& aCount) const;
   NS_IMETHOD GetMediumAt(PRInt32 aIndex, nsIAtom*& aMedium) const;
   NS_IMETHOD_(PRBool) UseForMedium(nsIAtom* aMedium) const;
+  NS_IMETHOD_(PRBool) HasRules() const;
 
   NS_IMETHOD GetApplicable(PRBool& aApplicable) const;
   
@@ -589,6 +589,13 @@ NS_IMETHODIMP_(PRBool)
 HTMLCSSStyleSheetImpl::UseForMedium(nsIAtom* aMedium) const
 {
   return PR_TRUE; // works for all media
+}
+
+NS_IMETHODIMP_(PRBool)
+HTMLCSSStyleSheetImpl::HasRules() const
+{
+  return PR_TRUE;  // We always have rules, since mFirstLineRule and
+                   // mFirstLetterRule are created on request.
 }
 
 NS_IMETHODIMP

@@ -42,11 +42,12 @@
 #include "TxLog.h"
 #include "txStylesheetCompileHandlers.h"
 #include "txExecutionState.h"
+#include "ExprResult.h"
 #ifdef TX_EXE
 #include "txHTMLOutput.h"
 #endif
 
-TX_LG_IMPL;
+TX_LG_IMPL
 
 /* static */
 MBool
@@ -93,8 +94,6 @@ txXSLTProcessor::shutdown()
     txXSLTAtoms::shutdown();
 
     txHandlerTable::shutdown();
-
-    TX_LG_DELETE;
 }
 
 

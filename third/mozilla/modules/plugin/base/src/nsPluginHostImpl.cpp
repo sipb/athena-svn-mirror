@@ -201,19 +201,15 @@ static NS_DEFINE_IID(kIPluginTagInfo2IID, NS_IPLUGINTAGINFO2_IID);
 static NS_DEFINE_CID(kProtocolProxyServiceCID, NS_PROTOCOLPROXYSERVICE_CID);
 static NS_DEFINE_CID(kCookieServiceCID, NS_COOKIESERVICE_CID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kIRequestObserverIID, NS_IREQUESTOBSERVER_IID);
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 static NS_DEFINE_CID(kHttpHandlerCID, NS_HTTPPROTOCOLHANDLER_CID);
-static NS_DEFINE_CID(kIHttpHeaderVisitorIID, NS_IHTTPHEADERVISITOR_IID);
 static NS_DEFINE_CID(kStreamConverterServiceCID, NS_STREAMCONVERTERSERVICE_CID);
-static NS_DEFINE_IID(kIFileUtilitiesIID, NS_IFILEUTILITIES_IID);
-static NS_DEFINE_IID(kIOutputStreamIID, NS_IOUTPUTSTREAM_IID);
 static const char kDirectoryServiceContractID[] = "@mozilla.org/file/directory_service;1";
 // for the dialog
 static NS_DEFINE_IID(kStringBundleServiceCID, NS_STRINGBUNDLESERVICE_CID);
 static NS_DEFINE_CID(kComponentManagerCID, NS_COMPONENTMANAGER_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
-static NS_DEFINE_IID(kCPluginManagerCID, NS_PLUGINMANAGER_CID);
+static NS_DEFINE_CID(kCPluginManagerCID, NS_PLUGINMANAGER_CID); // needed for NS_TRY_SAFE_CALL
 
 ////////////////////////////////////////////////////////////////////////
 // Registry keys for caching plugin info
@@ -1439,7 +1435,7 @@ nsPluginStreamInfo::RequestRead(nsByteRange* rangeList)
     return NS_ERROR_FAILURE;
   
   nsCOMPtr<nsIWeakReference> pWeakRefPluginStreamListenerPeer = 
-    getter_AddRefs(NS_GetWeakReference(suppWeakRef));
+           do_GetWeakReference(suppWeakRef);
   if (!pWeakRefPluginStreamListenerPeer)
     return NS_ERROR_FAILURE;
 
@@ -2010,12 +2006,12 @@ nsPluginStreamListenerPeer::OnStartRequest(nsIRequest *request, nsISupports* aCo
     nsCOMPtr<nsIInterfaceRequestor> callbacks;
     channel->GetNotificationCallbacks(getter_AddRefs(callbacks));
     if (callbacks)
-      mWeakPtrChannelCallbacks = getter_AddRefs(NS_GetWeakReference(callbacks));
+      mWeakPtrChannelCallbacks = do_GetWeakReference(callbacks);
 
     nsCOMPtr<nsILoadGroup> loadGroup;
     channel->GetLoadGroup(getter_AddRefs(loadGroup));
     if (loadGroup)
-      mWeakPtrChannelLoadGroup = getter_AddRefs(NS_GetWeakReference(loadGroup));
+      mWeakPtrChannelLoadGroup = do_GetWeakReference(loadGroup);
   }
 
   PRInt32 length;
@@ -2601,7 +2597,7 @@ NS_IMPL_ISUPPORTS7(nsPluginHostImpl,
                    nsIFileUtilities,
                    nsICookieStorage,
                    nsIObserver,
-                   nsPIPluginHost);
+                   nsPIPluginHost)
 ////////////////////////////////////////////////////////////////////////
 NS_METHOD
 nsPluginHostImpl::Create(nsISupports* aOuter, REFNSIID aIID, void** aResult)
@@ -3717,7 +3713,7 @@ NS_IMETHODIMP nsPluginHostImpl::SetUpPluginInstance(const char *aMimeType,
     if (document == currentdocument)
       return rv;
 
-    mCurrentDocument = getter_AddRefs(NS_GetWeakReference(document));
+    mCurrentDocument = do_GetWeakReference(document);
 
     // ReloadPlugins will do the job smartly: nothing will be done 
     // if no changes detected, in such a case just return
@@ -4121,7 +4117,7 @@ static nsresult CreateUnicodeDecoder(nsIUnicodeDecoder **aUnicodeDecoder)
 {
   nsresult rv;
   // get the charset
-  nsAutoString platformCharset;
+  nsCAutoString platformCharset;
   nsCOMPtr <nsIPlatformCharset> platformCharsetService = do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   rv = platformCharsetService->GetCharset(kPlatformCharsetSel_FileName, platformCharset);
@@ -4130,7 +4126,8 @@ static nsresult CreateUnicodeDecoder(nsIUnicodeDecoder **aUnicodeDecoder)
   // get the decoder
   nsCOMPtr<nsICharsetConverterManager> ccm = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
-  rv = ccm->GetUnicodeDecoder(&platformCharset, aUnicodeDecoder);
+  rv = ccm->GetUnicodeDecoderRaw(platformCharset.get(),
+                                 aUnicodeDecoder);
 
   return rv;
 }
@@ -5613,7 +5610,7 @@ NS_IMETHODIMP nsPluginHostImpl::NewPluginURLStream(const nsString& aURL,
       if (NS_SUCCEEDED(rv) && doc)
       {
         nsCOMPtr<nsIURI> docURL;
-        doc->GetBaseURL(*getter_AddRefs(docURL));
+        doc->GetBaseURL(getter_AddRefs(docURL));
  
         // Create an absolute URL
         rv = NS_MakeAbsoluteURI(absUrl, aURL, docURL);
@@ -5747,7 +5744,7 @@ nsPluginHostImpl::DoURLLoadSecurityCheck(nsIPluginInstance *aInstance,
 
   // Create an absolute URL for the target in case the target is relative
   nsCOMPtr<nsIURI> docBaseURL;
-  doc->GetBaseURL(*getter_AddRefs(docBaseURL));
+  doc->GetBaseURL(getter_AddRefs(docBaseURL));
 
   nsCOMPtr<nsIURI> targetURL;
   rv = NS_NewURI(getter_AddRefs(targetURL), aURL, docBaseURL);
@@ -5919,7 +5916,7 @@ nsresult nsPluginHostImpl::NewEmbededPluginStream(nsIURI* aURL,
       nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(channel));
       if (httpChannel && doc) {
         nsCOMPtr<nsIURI> referrerURL;
-        if (NS_SUCCEEDED(doc->GetBaseURL(*getter_AddRefs(referrerURL))))
+        if (NS_SUCCEEDED(doc->GetBaseURL(getter_AddRefs(referrerURL))))
           httpChannel->SetReferrer(referrerURL);
       }
 

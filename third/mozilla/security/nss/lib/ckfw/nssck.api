@@ -33,7 +33,7 @@
  */
 
 #ifdef DEBUG
-static const char NSSCKAPI_CVS_ID[] = "@(#) $RCSfile: nssck.api,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 18:05:11 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: nssck.api,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 18:05:11 $ $Name: not supported by cvs2svn $";
+static const char NSSCKAPI_CVS_ID[] = "@(#) $RCSfile: nssck.api,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 15:23:01 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: nssck.api,v $ $Revision: 1.1.1.3 $ $Date: 2003-12-24 15:23:01 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*

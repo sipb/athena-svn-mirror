@@ -60,8 +60,8 @@
 #include "nsIPrompt.h"
 #include "nsIWindowWatcher.h"
 #include "nsMsgSimulateError.h"
-#include "nsICharsetConverterManager.h"
-#include "nsICharsetConverterManager2.h"
+#include "nsIUTF8ConverterService.h"
+#include "nsUConvCID.h"
 
 #define SERVER_DELIMITER ","
 #define APPEND_SERVERS_VERSION_PREF_NAME "append_preconfig_smtpservers.version"
@@ -82,65 +82,6 @@ typedef struct _findServerByHostnameEntry {
 
 static NS_DEFINE_CID(kCSmtpUrlCID, NS_SMTPURL_CID);
 static NS_DEFINE_CID(kCMailtoUrlCID, NS_MAILTOURL_CID);
-static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID); 
-
-
-// function to ensure the spec is encoded in UTF-8
-// if not then use Unicode converter and apply conversions
-// output string is empty if no conversion is necessary
-static nsresult 
-EnsureUTF8Spec(const nsACString &aSpec, const char *aCharset, 
-               nsACString &aUTF8Spec)
-{
-  aUTF8Spec.Truncate(0);
-
-  // assume UTF-8 if the spec contains unescaped non ASCII
-  if (!nsCRT::IsAscii(PromiseFlatCString(aSpec).get())) 
-    return NS_OK;
-
-  nsCAutoString unescapedSpec; 
-  NS_UnescapeURL(PromiseFlatCString(aSpec).get(), aSpec.Length(), 
-                 esc_OnlyNonASCII, unescapedSpec);
-
-  // return if ASCII only or escaped UTF-8
-  if (IsASCII(unescapedSpec) ||
-      unescapedSpec.Equals(NS_ConvertUCS2toUTF8(NS_ConvertUTF8toUCS2(unescapedSpec))))
-    return NS_OK;
-
-
-  nsresult rv;
-  nsCOMPtr<nsICharsetConverterManager2> charsetConverterManager;
-
-  charsetConverterManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  nsCOMPtr<nsIAtom> charsetAtom;
-  rv = charsetConverterManager->GetCharsetAtom2(aCharset, getter_AddRefs(charsetAtom));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  nsCOMPtr<nsIUnicodeDecoder> unicodeDecoder;
-  rv = charsetConverterManager->GetUnicodeDecoder(charsetAtom, 
-                                                  getter_AddRefs(unicodeDecoder));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  PRInt32 srcLen = unescapedSpec.Length();
-  PRInt32 dstLen;
-  rv = unicodeDecoder->GetMaxLength(unescapedSpec.get(), srcLen, &dstLen);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  PRUnichar *ustr = (PRUnichar *) nsMemory::Alloc(dstLen * sizeof(PRUnichar));
-  NS_ENSURE_TRUE(ustr, NS_ERROR_OUT_OF_MEMORY);
-
-  rv = unicodeDecoder->Convert(unescapedSpec.get(), &srcLen, ustr, &dstLen);
-  if (NS_SUCCEEDED(rv))
-  {
-    NS_ConvertUCS2toUTF8 rawUTF8Spec(ustr, dstLen);
-    NS_EscapeURL(rawUTF8Spec, esc_AlwaysCopy | esc_OnlyNonASCII, aUTF8Spec);
-  }
-  nsMemory::Free(ustr);
-
-  return rv;
-}
 
 // foward declarations...
 nsresult
@@ -169,7 +110,7 @@ nsSmtpService::~nsSmtpService()
 
 }
 
-NS_IMPL_ISUPPORTS2(nsSmtpService, nsISmtpService, nsIProtocolHandler);
+NS_IMPL_ISUPPORTS2(nsSmtpService, nsISmtpService, nsIProtocolHandler)
 
 
 nsresult nsSmtpService::SendMailMessage(nsIFileSpec * aFilePath,
@@ -367,22 +308,29 @@ NS_IMETHODIMP nsSmtpService::NewURI(const nsACString &aSpec,
   // get a new smtp url 
 
   nsresult rv = NS_OK;
-	nsCOMPtr <nsIURI> mailtoUrl;
+  nsCOMPtr <nsIURI> mailtoUrl;
 
-	rv = nsComponentManager::CreateInstance(kCMailtoUrlCID, NULL, NS_GET_IID(nsIURI), getter_AddRefs(mailtoUrl));
+  rv = nsComponentManager::CreateInstance(kCMailtoUrlCID, NULL, NS_GET_IID(nsIURI), getter_AddRefs(mailtoUrl));
 
-	if (NS_SUCCEEDED(rv))
-	{
+  if (NS_SUCCEEDED(rv))
+  {
     nsCAutoString utf8Spec;
     if (aOriginCharset)
-      rv = EnsureUTF8Spec(aSpec, aOriginCharset, utf8Spec);
+    {
+       nsCOMPtr<nsIUTF8ConverterService> 
+           utf8Converter(do_GetService(NS_UTF8CONVERTERSERVICE_CONTRACTID, &rv));
+       if (NS_SUCCEEDED(rv))
+          rv = utf8Converter->ConvertURISpecToUTF8(aSpec, aOriginCharset, utf8Spec);
+    }
 
-    if (NS_SUCCEEDED(rv) && !utf8Spec.IsEmpty())
+    // utf8Spec is filled up only when aOriginCharset is specified and 
+    // the conversion is successful. Otherwise, fall back to aSpec.
+    if (aOriginCharset && NS_SUCCEEDED(rv))
       mailtoUrl->SetSpec(utf8Spec);
     else
       mailtoUrl->SetSpec(aSpec);
     rv = mailtoUrl->QueryInterface(NS_GET_IID(nsIURI), (void **) _retval);
-	}
+  }
   return rv;
 }
 
@@ -473,7 +421,7 @@ nsSmtpService::loadSmtpServers()
     // Get the list of smtp servers (either from regular pref i.e, mail.smtpservers or
     // from preconfigured pref mail.smtpservers.appendsmtpservers) and create a keyed 
     // server list.
-    if ((serverList.Length() > 0) || (appendServerList.Length() > 0)) {
+    if (!serverList.IsEmpty() || !appendServerList.IsEmpty()) {
       /** 
        * Check to see if we need to add pre-configured smtp servers.
        * Following prefs are important to note in understanding the procedure here.
@@ -508,8 +456,8 @@ nsSmtpService::loadSmtpServers()
       // Update the smtp server list if needed
       if ((appendSmtpServersCurrentVersion <= appendSmtpServersDefaultVersion)) {
         // If there are pre-configured servers, add them to the existing server list
-        if (appendServerList.Length() > 0) {
-          if (serverList.Length() > 0) {
+        if (!appendServerList.IsEmpty()) {
+          if (!serverList.IsEmpty()) {
             nsCStringArray existingSmtpServersArray;
             existingSmtpServersArray.ParseString(serverList.get(), SERVER_DELIMITER);
 

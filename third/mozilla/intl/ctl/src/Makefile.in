@@ -35,7 +35,7 @@ EXPORT_LIBRARY	= 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsCtlLEModule
 
-REQUIRES	= xpcom_obsolete \
+REQUIRES	= \
 		  xpcom \
 		  string \
 		  uconv \
@@ -56,6 +56,8 @@ include $(topsrcdir)/config/rules.mk
 
 LOCAL_INCLUDES += -I$(srcdir)/pangoLite
 
+EXTRA_DSO_LDOPTS = $(LIBS_DIR)
+
 ifdef MOZ_ENABLE_GTK2
   CXXFLAGS        += $(MOZ_GTK2_CFLAGS)
   EXTRA_DSO_LDOPTS += $(MOZ_GTK2_LIBS)
@@ -66,7 +68,5 @@ endif
 
 EXTRA_DSO_LDOPTS += \
 	$(MOZ_COMPONENT_LIBS) \
-	$(MOZ_XPCOM_OBSOLETE_LIBS) \
-	-L$(DIST)/lib \
 	$(EXTRA_DSO_LIBS) \
 	$(NULL)

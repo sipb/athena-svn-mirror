@@ -115,8 +115,7 @@ public:
                               nsIContent*     aChild,
                               PRInt32         aNameSpaceID,
                               nsIAtom*        aAttribute,
-                              PRInt32         aModType, 
-                              PRInt32         aHint);
+                              PRInt32         aModType);
 
   void           SetFocus(PRBool aOn, PRBool aRepaint);
   void           ScrollIntoView(nsIPresContext* aPresContext);
@@ -149,7 +148,7 @@ private:
   NS_IMETHOD GetInputValue(nsIPresContext* aPresContext, nsString& oString);
   NS_IMETHOD SetInputValue(nsIPresContext* aPresContext, const nsString aString);
 
-  void GetSubmitCharset(nsString& oCharset);
+  void GetSubmitCharset(nsCString& oCharset);
   NS_IMETHOD GetEncoder(nsIUnicodeEncoder** encoder);
   char* UnicodeToNewBytes(const PRUnichar* aSrc, PRUint32 aLen, nsIUnicodeEncoder* encoder);
   void URLEncode(const nsString& aString, nsIUnicodeEncoder* encoder, nsString& oString);

@@ -43,7 +43,6 @@
 #include "nsCOMPtr.h"
 #include "nsXPIDLString.h"
 #include "nsIURI.h"
-#include "nsNetCID.h"
 #include "nsIServiceManager.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDOMWindow.h"
@@ -52,8 +51,6 @@
 #include "nsIPrefBranchInternal.h"
 #include "nsIObserverService.h"
 #include "nsString.h"
-
-static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
 // Possible behavior pref values
 #define IMAGE_ACCEPT 0
@@ -78,7 +75,7 @@ NS_IMPL_ISUPPORTS4(nsImgManager,
                    nsIImgManager, 
                    nsIContentPolicy,
                    nsIObserver,
-                   nsSupportsWeakReference);
+                   nsSupportsWeakReference)
 
 nsImgManager::nsImgManager()
 {
@@ -158,16 +155,18 @@ NS_IMETHODIMP nsImgManager::ShouldLoad(PRInt32 aContentType,
     nsCOMPtr<nsIContent> content = do_QueryInterface(aContext);
     NS_ASSERTION(content, "no content available");
     if (content) {
-      rv = content->GetDocument(*getter_AddRefs(doc));
-      if (NS_FAILED(rv) || !doc) {
-        rv = content->GetNodeInfo(*getter_AddRefs(nodeinfo));
+      // XXXbz GetOwnerDocument
+      doc = content->GetDocument();
+      if (!doc) {
+        rv = content->GetNodeInfo(getter_AddRefs(nodeinfo));
         if (NS_FAILED(rv) || !nodeinfo) return rv;
 
-        rv = nodeinfo->GetDocument(*getter_AddRefs(doc));
-        if (NS_FAILED(rv) || !doc) return rv;
+        doc = nodeinfo->GetDocument();
+        // XXX what should this code do if there is really no document?
+        if (!doc) return NS_OK;
       }
 
-      rv = doc->GetBaseURL(*getter_AddRefs(baseURI));
+      rv = doc->GetBaseURL(getter_AddRefs(baseURI));
       if (NS_FAILED(rv) || !baseURI) return rv;
 
       nsCOMPtr<nsIDocShell> docshell;
@@ -217,6 +216,19 @@ nsImgManager::TestPermission(nsIURI *aCurrentURI,
     return NS_OK;
   }
 
+  // check the permission list first; if we find an entry, it overrides
+  // default prefs. this is new behavior, see bug 184059.
+  if (mPermissionManager) {
+    PRUint32 temp;
+    mPermissionManager->TestPermission(aCurrentURI, "image", &temp);
+
+    // if we found an entry, use it
+    if (temp != nsIPermissionManager::UNKNOWN_ACTION) {
+      *aPermission = (temp != nsIPermissionManager::DENY_ACTION);
+      return NS_OK;
+    }
+  }
+
   if (mBehaviorPref == IMAGE_DENY) {
     *aPermission = PR_FALSE;
     return NS_OK;
@@ -248,28 +260,25 @@ nsImgManager::TestPermission(nsIURI *aCurrentURI,
     nsCAutoString firstHost;
     rv = aFirstURI->GetAsciiHost(firstHost);
     if (NS_FAILED(rv)) return rv;
-    
-    // Get the last part of the firstUri with the same length as |tail|
-    const nsACString &firstTail = Substring(firstHost, dot, firstHost.Length() - dot);
 
-    // Check that both tails are the same, and that just before the tail in
-    // |firstUri| there is a dot. That means both url are in the same domain
-    if ((dot > 0 && firstHost.CharAt(dot-1) != '.') || !tail.Equals(firstTail)) {
+    // If the tail is longer then the whole firstHost, it will never match
+    if (firstHost.Length() < tail.Length()) {
       *aPermission = PR_FALSE;
       return NS_OK;
     }
+    
+    // Get the last part of the firstUri with the same length as |tail|
+    const nsACString &firstTail = Substring(firstHost, firstHost.Length() - tail.Length(), tail.Length());
+
+    // Check that both tails are the same, and that just before the tail in
+    // |firstUri| there is a dot. That means both url are in the same domain
+    if ((firstHost.Length() > tail.Length() && 
+         firstHost.CharAt(firstHost.Length() - tail.Length() - 1) != '.') || 
+        !tail.Equals(firstTail)) {
+      *aPermission = PR_FALSE;
+    }
   }
   
-  if (mPermissionManager) {
-    PRUint32 temp;
-    mPermissionManager->TestPermission(aCurrentURI, nsIPermissionManager::IMAGE_TYPE, &temp);
-    // Blacklist for now
-    *aPermission = (temp != nsIPermissionManager::DENY_ACTION);
-  } else {
-    // no premission manager, return ok
-    *aPermission = PR_TRUE;
-  }
-
   return NS_OK;
 }
 
@@ -288,7 +297,7 @@ nsImgManager::Observe(nsISupports *aSubject,
   
   if (!nsCRT::strcmp(NS_PREFBRANCH_PREFCHANGE_TOPIC_ID, aTopic)) {
     // which pref changed?
-    NS_ConvertUCS2toUTF8 pref(aData);
+    NS_LossyConvertUCS2toASCII pref(aData);
 
     if (pref.Equals(kImageBehaviorPrefName)) {
       rv = mPrefBranch->GetIntPref(kImageBehaviorPrefName, &mBehaviorPref);

@@ -46,6 +46,7 @@
 // Local Includes
 // Helper Classes
 #include "nsCOMPtr.h"
+#include "nsAutoPtr.h"
 #include "nsWeakReference.h"
 #include "nsHashtable.h"
 
@@ -72,6 +73,7 @@
 #include "nsITimer.h"
 #include "nsIWebBrowserChrome.h"
 #include "nsPIDOMWindow.h"
+#include "nsIScriptSecurityManager.h"
 #include "nsIEventListenerManager.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMCrypto.h"
@@ -243,6 +245,9 @@ protected:
                          float* aT2P);
   nsresult SecurityCheckURL(const char *aURL);
   PRBool   CheckForAbusePoint();
+  PRBool   CheckOpenAllow(const nsAString &aName);
+  void     FireAbuseEvents(PRBool aBlocked, PRBool aWindow,
+                           const nsAString &aPopupURL);
 
   void FlushPendingNotifications(PRBool aFlushReflows);
   void EnsureReflowFlushAndPaint();
@@ -280,17 +285,17 @@ protected:
   nsCOMPtr<nsIEventListenerManager> mListenerManager;
   nsCOMPtr<nsISidebar>          mSidebar;
   JSObject*                     mJSObject;
-  NavigatorImpl*                mNavigator;
-  ScreenImpl*                   mScreen;
-  HistoryImpl*                  mHistory;
-  nsDOMWindowList*              mFrames;
-  LocationImpl*                 mLocation;
-  BarPropImpl*                  mMenubar;
-  BarPropImpl*                  mToolbar;
-  BarPropImpl*                  mLocationbar;
-  BarPropImpl*                  mPersonalbar;
-  BarPropImpl*                  mStatusbar;
-  BarPropImpl*                  mScrollbars;
+  nsRefPtr<NavigatorImpl>       mNavigator;
+  nsRefPtr<ScreenImpl>          mScreen;
+  nsRefPtr<HistoryImpl>         mHistory;
+  nsRefPtr<nsDOMWindowList>     mFrames;
+  nsRefPtr<LocationImpl>        mLocation;
+  nsRefPtr<BarPropImpl>         mMenubar;
+  nsRefPtr<BarPropImpl>         mToolbar;
+  nsRefPtr<BarPropImpl>         mLocationbar;
+  nsRefPtr<BarPropImpl>         mPersonalbar;
+  nsRefPtr<BarPropImpl>         mStatusbar;
+  nsRefPtr<BarPropImpl>         mScrollbars;
   nsTimeoutImpl*                mTimeouts;
   nsTimeoutImpl**               mTimeoutInsertionPoint;
   nsTimeoutImpl*                mRunningTimeout;
@@ -301,6 +306,7 @@ protected:
   PRPackedBool                  mIsDocumentLoaded; // true between onload and onunload events
   PRPackedBool                  mFullScreen;
   PRPackedBool                  mIsClosed;
+  PRPackedBool                  mOpenerWasCleared;
   PRTime                        mLastMouseButtonAction;
   nsString                      mStatus;
   nsString                      mDefaultStatus;
@@ -313,6 +319,15 @@ protected:
   nsCOMPtr<nsIDOMPkcs11>        mPkcs11;
   nsCOMPtr<nsIPrincipal>        mDocumentPrincipal;
   nsCOMPtr<nsIURI>              mOpenerScriptURL; // Used to determine whether to clear scope
+
+  // XXX We need mNavigatorHolder because we make two SetNewDocument()
+  // calls when transitioning from page to page. This keeps a reference
+  // to the JSObject holder for the navigator object in between
+  // SetNewDocument() calls so that the JSObject doesn't get garbage
+  // collected in between these calls.
+  // See bug 163645 for more on why we need this and bug 209607 for info
+  // on how we can remove the need for this.
+  nsCOMPtr<nsIXPConnectJSObjectHolder> mNavigatorHolder;
 
   nsIDOMElement*                mFrameElement; // WEAK
 
@@ -396,8 +411,8 @@ struct nsTimeoutImpl
   // True if the timeout was cleared
   PRPackedBool mCleared;
 
-  // Alignment padding, unused
-  PRPackedBool mSpareAndUnused;
+  // True if this is one of the timeouts that are currently running
+  PRPackedBool mRunning;
 
   // Returned as value of setTimeout()
   PRUint32 mPublicId;
@@ -445,11 +460,12 @@ public:
   NS_DECL_NSIDOMJSNAVIGATOR
   
   void SetDocShell(nsIDocShell *aDocShell);
+  void LoadingNewDocument();
   nsresult RefreshMIMEArray();
 
 protected:
-  MimeTypeArrayImpl* mMimeTypes;
-  PluginArrayImpl* mPlugins;
+  nsRefPtr<MimeTypeArrayImpl> mMimeTypes;
+  nsRefPtr<PluginArrayImpl> mPlugins;
   nsIDocShell* mDocShell; // weak reference
 
   static jsval       sPrefInternal_id;

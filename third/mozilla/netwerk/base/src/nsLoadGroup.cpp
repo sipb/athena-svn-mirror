@@ -109,7 +109,7 @@ RequestHashClearEntry(PLDHashTable *table, PLDHashEntryHdr *entry)
     e->~RequestMapEntry();
 }
 
-PR_STATIC_CALLBACK(void)
+PR_STATIC_CALLBACK(PRBool)
 RequestHashInitEntry(PLDHashTable *table, PLDHashEntryHdr *entry,
                      const void *key)
 {
@@ -118,6 +118,7 @@ RequestHashInitEntry(PLDHashTable *table, PLDHashEntryHdr *entry,
 
     // Initialize the entry with placement new
     new (entry) RequestMapEntry(request);
+    return PR_TRUE;
 }
 
 
@@ -213,7 +214,7 @@ nsLoadGroup::Create(nsISupports *aOuter, REFNSIID aIID, void **aResult)
 ////////////////////////////////////////////////////////////////////////////////
 // nsISupports methods:
 
-NS_IMPL_AGGREGATED(nsLoadGroup);
+NS_IMPL_AGGREGATED(nsLoadGroup)
 
 NS_IMETHODIMP
 nsLoadGroup::AggregatedQueryInterface(const nsIID& aIID, void** aInstancePtr)
@@ -349,7 +350,7 @@ nsLoadGroup::Cancel(nsresult status)
                            PL_DHashTableOperate(&mRequests, request,
                                                 PL_DHASH_LOOKUP));
 
-        if (!PL_DHASH_ENTRY_IS_LIVE(entry)) {
+        if (PL_DHASH_ENTRY_IS_FREE(entry)) {
             // |request| was removed already
 
             NS_RELEASE(request);
@@ -668,7 +669,7 @@ nsLoadGroup::RemoveRequest(nsIRequest *request, nsISupports* ctxt,
                        PL_DHashTableOperate(&mRequests, request,
                                         PL_DHASH_LOOKUP));
 
-    if (!PL_DHASH_ENTRY_IS_LIVE(entry)) {
+    if (PL_DHASH_ENTRY_IS_FREE(entry)) {
         LOG(("LOADGROUP [%x]: Unable to remove request %x. Not in group!\n",
             this, request));
 
@@ -746,7 +747,7 @@ nsLoadGroup::GetRequests(nsISimpleEnumerator * *aRequests)
 NS_IMETHODIMP
 nsLoadGroup::SetGroupObserver(nsIRequestObserver* aObserver)
 {
-    mObserver = getter_AddRefs(NS_GetWeakReference(aObserver));
+    mObserver = do_GetWeakReference(aObserver);
     return NS_OK;
 }
 

@@ -86,14 +86,11 @@ public:
   // are commented out below
   
   // begin NS_DECL_NSIMSGFOLDER
-  NS_IMETHOD AddUnique(nsISupports *element);
-  NS_IMETHOD ReplaceElement(nsISupports *element, nsISupports *newElement);
   NS_IMETHOD GetMessages(nsIMsgWindow *aMsgWindow, nsISimpleEnumerator **_retval);
   NS_IMETHOD StartFolderLoading(void);
   NS_IMETHOD EndFolderLoading(void);
   NS_IMETHOD UpdateFolder(nsIMsgWindow *window);
   NS_IMETHOD GetFirstNewMessage(nsIMsgDBHdr **firstNewMessage);
-  NS_IMETHOD GetVisibleSubFolders(nsIEnumerator **_retval);
   NS_IMETHOD GetPrettiestName(PRUnichar * *aPrettiestName);
   NS_IMETHOD GetFolderURL(char * *aFolderURL);
   NS_IMETHOD GetShowDeletedMessages(PRBool *aShowDeletedMessages);
@@ -143,9 +140,6 @@ public:
   NS_IMETHOD GetRelativePathName(char * *aRelativePathName);
   NS_IMETHOD GetSizeOnDisk(PRUint32 *aSizeOnDisk);
   NS_IMETHOD SetSizeOnDisk(PRUint32 aSizeOnDisk);
-  NS_IMETHOD RememberPassword(const char *password);
-  NS_IMETHOD GetRememberedPassword(char * *aRememberedPassword);
-  NS_IMETHOD UserNeedsToAuthenticateForFolder(PRBool displayOnly, PRBool *_retval);
   NS_IMETHOD GetUsername(char * *aUsername);
   NS_IMETHOD GetHostname(char * *aHostname);
   NS_IMETHOD SetFlag(PRUint32 flag);
@@ -223,24 +217,6 @@ public:
 	
   void			ChangeNumPendingUnread(PRInt32 delta);
   void			ChangeNumPendingTotalMessages(PRInt32 delta);
-
-
-#ifdef HAVE_ADMINURL
-  NS_IMETHOD GetAdminUrl(MWContext *context, MSG_AdminURLType type);
-  NS_IMETHOD HaveAdminUrl(MSG_AdminURLType type, PRBool *hadAdminUrl);
-#endif
-
-
-#ifdef HAVE_NET
-  NS_IMETHOD EscapeMessageId(const char *messageId, const char **escapeMessageID);
-  NS_IMETHOD ShouldPerformOperationOffline(PRBool *performOffline);
-#endif
-
-#ifdef DOES_FOLDEROPERATIONS
-	int DownloadToTempFileAndUpload(MessageCopyInfo *copyInfo, nsMsgKeyArray &keysToSave, MSG_FolderInfo *dstFolder, nsMsgDatabase *sourceDB);
-	void UpdateMoveCopyStatus(MWContext *context, PRBool isMove, int32 curMsgCount, int32 totMessages);
-#endif
-
 
 	NS_IMETHOD MatchName(nsString *name, PRBool *matches);
 

@@ -42,19 +42,10 @@
 
   // Wrapping includes can speed up compiles (see "Large Scale C++ Software Design")
 #ifndef nsCOMPtr_h___
-  // For |already_AddRefed|, |nsDerivedSafe|, |NSCAP_Zero|.
+  // For |already_AddRefed|, |nsDerivedSafe|, |NSCAP_Zero|,
+  // |NSCAP_DONT_PROVIDE_NONCONST_OPEQ|,
+  // |NSCAP_FEATURE_INLINE_STARTASSIGNMENT|
 #include "nsCOMPtr.h"
-#endif
-
-
-#ifdef _MSC_VER
-  #define NSCAP_FEATURE_INLINE_STARTASSIGNMENT
-    // under VC++, we win by inlining StartAssignment
-
-    // Also under VC++, at the highest warning level, we are overwhelmed  with warnings
-    //  about (unused) inline functions being removed.  This is to be expected with
-    //  templates, so we disable the warning.
-  #pragma warning( disable: 4514 )
 #endif
 
 /*****************************************************************************/
@@ -64,19 +55,6 @@
 template <class T>
 class nsAutoPtr
   {
-    enum { _force_even_compliant_compilers_to_fail_ = sizeof(T) };
-      /*
-        The declaration above exists specifically to make |nsAutoPtr<T>|
-        _not_ compile with only a forward declaration of |T|.  This
-        should prevent Windows and Mac engineers from breaking Solaris
-        and other compilers that naturally have this behavior.  Thank
-        <law@netscape.com> for inventing this specific trick.
-
-        Of course, if you're using |nsAutoPtr| outside the scope of
-        wanting to compile on Solaris and old GCC, you probably want to
-        remove the enum so you can exploit forward declarations.
-      */
-
     private:
       void**
       begin_assignment()
@@ -390,13 +368,6 @@ operator!=( const U* lhs, const nsAutoPtr<T>& rhs )
   // |operator==| without the |const| on the raw pointer.
   // See bug 65664 for details.
 
-// This is defined by an autoconf test, but VC++ also has a bug that
-// prevents us from using these.  (It also, fortunately, has the bug
-// that we don't need them either.)
-#ifdef _MSC_VER
-#define NSCAP_DONT_PROVIDE_NONCONST_OPEQ
-#endif
-
 #ifndef NSCAP_DONT_PROVIDE_NONCONST_OPEQ
 template <class T, class U>
 inline
@@ -504,19 +475,6 @@ operator==( int lhs, const nsAutoPtr<T>& rhs )
 template <class T>
 class nsAutoArrayPtr
   {
-    enum { _force_even_compliant_compilers_to_fail_ = sizeof(T) };
-      /*
-        The declaration above exists specifically to make |nsAutoArrayPtr<T>|
-        _not_ compile with only a forward declaration of |T|.  This
-        should prevent Windows and Mac engineers from breaking Solaris
-        and other compilers that naturally have this behavior.  Thank
-        <law@netscape.com> for inventing this specific trick.
-
-        Of course, if you're using |nsAutoArrayPtr| outside the scope of
-        wanting to compile on Solaris and old GCC, you probably want to
-        remove the enum so you can exploit forward declarations.
-      */
-
     private:
       void**
       begin_assignment()
@@ -830,13 +788,6 @@ operator!=( const U* lhs, const nsAutoArrayPtr<T>& rhs )
   // |operator==| without the |const| on the raw pointer.
   // See bug 65664 for details.
 
-// This is defined by an autoconf test, but VC++ also has a bug that
-// prevents us from using these.  (It also, fortunately, has the bug
-// that we don't need them either.)
-#ifdef _MSC_VER
-#define NSCAP_DONT_PROVIDE_NONCONST_OPEQ
-#endif
-
 #ifndef NSCAP_DONT_PROVIDE_NONCONST_OPEQ
 template <class T, class U>
 inline
@@ -945,19 +896,6 @@ operator==( int lhs, const nsAutoArrayPtr<T>& rhs )
 template <class T>
 class nsRefPtr
   {
-    enum { _force_even_compliant_compilers_to_fail_ = sizeof(T) };
-      /*
-        The declaration above exists specifically to make |nsRefPtr<T>|
-        _not_ compile with only a forward declaration of |T|.  This
-        should prevent Windows and Mac engineers from breaking Solaris
-        and other compilers that naturally have this behavior.  Thank
-        <law@netscape.com> for inventing this specific trick.
-
-        Of course, if you're using |nsRefPtr| outside the scope of
-        wanting to compile on Solaris and old GCC, you probably want to
-        remove the enum so you can exploit forward declarations.
-      */
-
     private:
 
       void
@@ -1053,6 +991,24 @@ class nsRefPtr
         }
 
         // Other pointer operators
+
+      void
+      swap( nsRefPtr<T>& rhs )
+          // ...exchange ownership with |rhs|; can save a pair of refcount operations
+        {
+          T* temp = rhs.mRawPtr;
+          rhs.mRawPtr = mRawPtr;
+          mRawPtr = temp;
+        }
+
+      void
+      swap( T*& rhs )
+          // ...exchange ownership with |rhs|; can save a pair of refcount operations
+        {
+          T* temp = rhs;
+          rhs = mRawPtr;
+          mRawPtr = temp;
+        }
 
       nsDerivedSafe<T>*
       get() const
@@ -1291,13 +1247,6 @@ operator!=( const U* lhs, const nsRefPtr<T>& rhs )
   // better conversion for the other argument, define additional
   // |operator==| without the |const| on the raw pointer.
   // See bug 65664 for details.
-
-// This is defined by an autoconf test, but VC++ also has a bug that
-// prevents us from using these.  (It also, fortunately, has the bug
-// that we don't need them either.)
-#ifdef _MSC_VER
-#define NSCAP_DONT_PROVIDE_NONCONST_OPEQ
-#endif
 
 #ifndef NSCAP_DONT_PROVIDE_NONCONST_OPEQ
 template <class T, class U>

@@ -45,15 +45,10 @@
 #include "nsWeakReference.h"
 #endif
 
-#include "nsIEditor.h"
 #include "nsITimer.h"
 
-#ifndef __gen_nsIControllers_h__
-#include "nsIControllers.h"
-#endif
-
-#ifndef __gen_nsIDocShell_h__
-#include "nsIDocShell.h"
+#ifndef __gen_nsIURIContentListener_h__
+#include "nsIURIContentListener.h"
 #endif
 
 #ifndef __gen_nsIWebProgressListener_h__
@@ -71,13 +66,17 @@
 
 
 class nsIWebProgress;
+class nsIDocShell;
 class nsIEditorDocShell;
 class nsIChannel;
+class nsIEditor;
+class nsIControllers;
 
 class nsComposerCommandsUpdater;
 
 class nsEditingSession : public nsIEditingSession,
                          public nsIWebProgressListener,
+                         public nsIURIContentListener,
                          public nsSupportsWeakReference
 {
 public:
@@ -87,6 +86,9 @@ public:
 
   // nsISupports
   NS_DECL_ISUPPORTS
+
+  // nsIURIContentListener
+  NS_DECL_NSIURICONTENTLISTENER
 
   // nsIWebProgressListener
   NS_DECL_NSIWEBPROGRESSLISTENER

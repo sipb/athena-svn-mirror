@@ -68,7 +68,7 @@ public:
   virtual ~nsCSSFrameConstructor(void);
 
   // Maintain global objects - gXBLService
-  static nsresult InitGlobals() { return CallGetService("@mozilla.org/xbl;1", &gXBLService); }
+  static nsIXBLService * GetXBLService();
   static void ReleaseGlobals() { NS_IF_RELEASE(gXBLService); }
 
   // get the alternate text for a content node
@@ -138,22 +138,7 @@ public:
                               nsIContent*     aContent,
                               PRInt32         aNameSpaceID,
                               nsIAtom*        aAttribute,
-                              PRInt32         aModType, 
-                              nsChangeHint    aHint);
-
-  // Style change notifications
-  NS_IMETHOD StyleRuleChanged(nsIPresContext* aPresContext,
-                              nsIStyleSheet*  aStyleSheet,
-                              nsIStyleRule*   aStyleRule,
-                              nsChangeHint    aHint);
-
-  NS_IMETHOD StyleRuleAdded(nsIPresContext* aPresContext,
-                            nsIStyleSheet*  aStyleSheet,
-                            nsIStyleRule*   aStyleRule);
-
-  NS_IMETHOD StyleRuleRemoved(nsIPresContext* aPresContext,
-                              nsIStyleSheet*  aStyleSheet,
-                              nsIStyleRule*   aStyleRule);
+                              PRInt32         aModType);
 
   NS_IMETHOD ProcessRestyledFrames(nsStyleChangeList& aRestyleArray, 
                                    nsIPresContext*    aPresContext);
@@ -755,6 +740,9 @@ protected:
   // cache the "nglayout.debug.enable_xbl_forms" pref
   PRBool UseXBLForms();
 
+  nsresult MaybeRecreateFramesForContent(nsIPresContext*  aPresContext,
+                                         nsIContent*      aContent);
+
   nsresult RecreateFramesForContent(nsIPresContext*  aPresContext,
                                     nsIContent*      aContent);
 
@@ -810,24 +798,18 @@ protected:
                                       nsIContent*     aContent,
                                       nsIFrame*       aFrame);
 
+  // |aContentParentFrame| should be null if it's really the same as
+  // |aParentFrame|.
   nsresult ConstructBlock(nsIPresShell*            aPresShell, 
                           nsIPresContext*          aPresContext,
                           nsFrameConstructorState& aState,
                           const nsStyleDisplay*    aDisplay,
                           nsIContent*              aContent,
                           nsIFrame*                aParentFrame,
+                          nsIFrame*                aContentParentFrame,
                           nsStyleContext*          aStyleContext,
                           nsIFrame*                aNewFrame,
                           PRBool                   aRelPos);
-
-  nsresult ProcessBlockChildren(nsIPresShell*            aPresShell, 
-                                nsIPresContext*          aPresContext,
-                                nsFrameConstructorState& aState,
-                                nsIContent*              aContent,
-                                nsIFrame*                aFrame,
-                                PRBool                   aCanHaveGeneratedContent,
-                                nsFrameItems&            aFrameItems,
-                                PRBool                   aParentIsBlock);
 
   nsresult ConstructInline(nsIPresShell*            aPresShell, 
                            nsIPresContext*          aPresContext,

@@ -123,8 +123,6 @@ static PRBool gRaiseWindows         = PR_TRUE;
 /* cursors cache */
 GdkCursor *nsWindow::gsGtkCursorCache[eCursorCount];
 
-#define ARRAY_LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 /* window icon cache */
 struct IconEntry : public PLDHashEntryHdr {
   const char* string;
@@ -139,7 +137,7 @@ static PLDHashTableOps iconHashOps = {
   PL_DHashFreeTable,
   PL_DHashGetKeyStub,
   PL_DHashStringKey,
-  nsWindow::IconEntryMatches,
+  PL_DHashMatchStringKey,
   PL_DHashMoveEntryStub,
   nsWindow::ClearIconEntry,
   PL_DHashFinalizeStub,
@@ -184,8 +182,7 @@ PRBool gJustGotActivate   = PR_FALSE;
 
 #ifdef USE_XIM
 
-struct nsXICLookupEntry {
-  PLDHashEntryHdr mKeyHash;
+struct nsXICLookupEntry : public PLDHashEntryHdr {
   nsWindow*   mShellWindow;
   nsIMEGtkIC* mXIC;
 };
@@ -387,7 +384,7 @@ nsWindow::ReleaseGlobals()
     gdk_font_unref(gStatusFontset);
     gStatusFontset = nsnull;
   }
-  for (int i = 0; i < ARRAY_LENGTH(gsGtkCursorCache); ++i) {
+  for (int i = 0, n = NS_ARRAY_LENGTH(gsGtkCursorCache); i < n; ++i) {
     if (gsGtkCursorCache[i]) {
       gdk_cursor_destroy(gsGtkCursorCache[i]);
       gsGtkCursorCache[i] = nsnull;
@@ -936,7 +933,7 @@ NS_IMETHODIMP nsWindow::CaptureRollupEvents(nsIRollupListener * aListener,
     }
 
     gRollupListener = aListener;
-    gRollupWidget = getter_AddRefs(NS_GetWeakReference(NS_STATIC_CAST(nsIWidget*,this)));
+    gRollupWidget = do_GetWeakReference(NS_STATIC_CAST(nsIWidget*,this));
   } else {
     // make sure that the grab window is marked as released
     if (sGrabWindow == this) {
@@ -1966,6 +1963,7 @@ NS_METHOD nsWindow::CreateNative(GtkObject *parentWidget)
     break;
 
   case eWindowType_toplevel:
+  case eWindowType_invisible:
     mIsToplevel = PR_TRUE;
     mShell = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     //    gtk_widget_set_app_paintable(mShell, PR_TRUE);
@@ -2337,19 +2335,22 @@ NS_IMETHODIMP nsWindow::SetTitle(const nsString& aTitle)
 
   nsCOMPtr<nsIUnicodeEncoder> encoder;
   // get the charset
-  nsAutoString platformCharset;
+  nsCAutoString platformCharset;
   nsCOMPtr <nsIPlatformCharset> platformCharsetService = do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &rv);
   if (NS_SUCCEEDED(rv))
     rv = platformCharsetService->GetCharset(kPlatformCharsetSel_Menu, platformCharset);
 
   // This is broken, it's just a random guess
   if (NS_FAILED(rv))
-    platformCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+    platformCharset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
 
   // get the encoder
   nsCOMPtr<nsICharsetConverterManager> ccm = 
            do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);  
-  rv = ccm->GetUnicodeEncoder(&platformCharset, getter_AddRefs(encoder));
+  rv = ccm->GetUnicodeEncoderRaw(platformCharset.get(), getter_AddRefs(encoder));
+  NS_ASSERTION(NS_SUCCEEDED(rv), "GetUnicodeEncoderRaw failed.");
+  if (NS_FAILED(rv))
+    return NS_ERROR_FAILURE;
 
   // Estimate out length and allocate the buffer based on a worst-case estimate, then do
   // the conversion.
@@ -2385,12 +2386,20 @@ nsWindow::SetIcon(const nsAString& aIcon)
   // Note that icon specs must be UTF8.
   NS_ConvertUCS2toUTF8 iconKey(aIcon);
   IconEntry* entry = NS_STATIC_CAST(IconEntry*,
-                                    PL_DHashTableOperate(sIconCache, iconKey.get(), PL_DHASH_LOOKUP));
-  if (!entry || PL_DHASH_ENTRY_IS_FREE(entry)) {
+                                    PL_DHashTableOperate(sIconCache,
+                                                         iconKey.get(),
+                                                         PL_DHASH_ADD));
+  if (!entry)
+      return NS_ERROR_OUT_OF_MEMORY;
+
+  if (!entry->string) {
     // We'll need to create the pixmaps.
+#ifdef NS_DEBUG
+    PRUint32 generation = sIconCache->generation;
+#endif
 
     // Have necko resolve this to a file for us.
-    nsCOMPtr<nsIIOService> ioService = do_GetService(NS_IOSERVICE_CONTRACTID);
+    nsCOMPtr<nsIIOService> ioService = do_GetIOService();
     nsCOMPtr<nsIURI> iconURI;
     NS_NewURI(getter_AddRefs(iconURI), aIcon);
     nsCAutoString scheme;
@@ -2456,11 +2465,7 @@ nsWindow::SetIcon(const nsAString& aIcon)
 #endif
     }
 
-    entry = NS_STATIC_CAST(IconEntry*, PL_DHashTableOperate(sIconCache, iconKey.get(),
-                                                            PL_DHASH_ADD));
-    if (!entry)
-      return NS_ERROR_OUT_OF_MEMORY;
-
+    NS_ASSERTION(sIconCache->generation == generation, "sIconCache changed!");
     entry->string = strdup(iconKey.get());
     entry->w_pixmap = w_pixmap;
     entry->w_mask = w_mask;
@@ -3946,52 +3951,54 @@ nsWindow::IMEGetShellWindow(void)
 nsIMEGtkIC*
 nsWindow::IMEGetInputContext(PRBool aCreate)
 {
-  PLDHashEntryHdr* hash_entry;
-  nsXICLookupEntry* entry;
-
   if (!mIMEShellWindow) {
     return nsnull;
   }
 
-  hash_entry = PL_DHashTableOperate(&gXICLookupTable, mIMEShellWindow, PL_DHASH_LOOKUP);
+  nsXICLookupEntry* entry =
+    NS_STATIC_CAST(nsXICLookupEntry *,
+                   PL_DHashTableOperate(&gXICLookupTable, mIMEShellWindow,
+                                        aCreate ? PL_DHASH_ADD
+                                                : PL_DHASH_LOOKUP));
 
-  if (hash_entry) {
-    entry = NS_REINTERPRET_CAST(nsXICLookupEntry *, hash_entry);
-    if (entry->mXIC) {
-      return entry->mXIC;
-    }
+  if (!entry) {
+    return nsnull;
+  }
+  if (PL_DHASH_ENTRY_IS_BUSY(entry) && entry->mXIC) {
+    return entry->mXIC;
   }
 
   // create new XIC
   if (aCreate) {
     // create XLFD, needs 3 arguments of height, see XIC_FONTSET definition
-    char *xlfdbase = PR_smprintf(XIC_FONTSET, mXICFontSize, mXICFontSize, mXICFontSize);
-    if (gPreeditFontset == nsnull) {
-      gPreeditFontset = gdk_fontset_load(xlfdbase);
-    }
-    if (gStatusFontset == nsnull) {
-      gStatusFontset = gdk_fontset_load(xlfdbase);
-    }
-    PR_smprintf_free(xlfdbase);
-    if (!gPreeditFontset || !gStatusFontset) {
-      return nsnull;
-    }
-    nsIMEGtkIC *xic = nsIMEGtkIC::GetXIC(mIMEShellWindow, gPreeditFontset,
-                                                           gStatusFontset);
-    if (xic) {
-      xic->SetPreeditSpotLocation(0, 14);
-      hash_entry = PL_DHashTableOperate(&gXICLookupTable,
-                                                      mIMEShellWindow,
-                                                      PL_DHASH_ADD);
-      if (hash_entry) {
-        entry = NS_REINTERPRET_CAST(nsXICLookupEntry *, hash_entry);
-        entry->mShellWindow = mIMEShellWindow;
-        entry->mXIC = xic;
+    char *xlfdbase = PR_smprintf(XIC_FONTSET, mXICFontSize, mXICFontSize,
+                                 mXICFontSize);
+    if (xlfdbase) {
+      if (gPreeditFontset == nsnull) {
+        gPreeditFontset = gdk_fontset_load(xlfdbase);
       }
-      mIMEShellWindow->mIMEShellWindow = mIMEShellWindow;
-      return xic;
+      if (gStatusFontset == nsnull) {
+        gStatusFontset = gdk_fontset_load(xlfdbase);
+      }
+      PR_smprintf_free(xlfdbase);
+      nsIMEGtkIC *xic = nsnull;
+      if (gPreeditFontset && gStatusFontset) {
+        xic = nsIMEGtkIC::GetXIC(mIMEShellWindow, gPreeditFontset,
+                                 gStatusFontset);
+        if (xic) {
+          xic->SetPreeditSpotLocation(0, 14);
+          entry->mShellWindow = mIMEShellWindow;
+          entry->mXIC = xic;
+          mIMEShellWindow->mIMEShellWindow = mIMEShellWindow;
+          return xic;
+        }
+      }
     }
+
+    // ran out of memory somewhere in this block...
+    PL_DHashTableRawRemove(&gXICLookupTable, entry);
   }
+
   return nsnull;
 }
 
@@ -4275,6 +4282,7 @@ gdk_wmspec_change_state (gboolean   add,
 }
 
 #ifndef MOZ_XUL
+void nsWindow::ApplyTransparencyBitmap() {}
 void nsWindow::ResizeTransparencyBitmap(PRInt32 aNewWidth, PRInt32 aNewHeight) {
 }
 #else
@@ -4490,17 +4498,6 @@ nsWindow::MakeFullScreen(PRBool aFullScreen)
   return NS_OK;
 }
 #endif
-
-PRBool PR_CALLBACK
-nsWindow::IconEntryMatches(PLDHashTable* aTable,
-                           const PLDHashEntryHdr* aHdr,
-                           const void* aKey)
-{
-  const IconEntry* entry = NS_STATIC_CAST(const IconEntry*, aHdr);
-  const char* string = NS_REINTERPRET_CAST(const char*, aKey);
-
-  return strcmp(entry->string, string) == 0;
-}
 
 void PR_CALLBACK
 nsWindow::ClearIconEntry(PLDHashTable* aTable, PLDHashEntryHdr* aHdr)

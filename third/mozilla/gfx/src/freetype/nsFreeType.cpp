@@ -75,7 +75,7 @@ PRInt32      nsFreeType2::gEmbeddedBitmapMaximumHeight = 1000000;
 nsHashtable* nsFreeType2::sFontFamilies = nsnull;
 nsHashtable* nsFreeType2::sRange1CharSetNames = nsnull;
 nsHashtable* nsFreeType2::sRange2CharSetNames = nsnull;
-nsICharsetConverterManager2* nsFreeType2::sCharSetManager = nsnull;
+nsICharsetConverterManager* nsFreeType2::sCharSetManager = nsnull;
 PRBool       nsFreeType2::gHasExtFunc = PR_TRUE;
 
 extern nsulCodePageRangeCharSetName ulCodePageRange1CharSetNames[];
@@ -164,7 +164,7 @@ nsTTFontEncoderInfo FEI_windows_1252 = {
 //
 ///////////////////////////////////////////////////////////////////////
 
-NS_IMPL_ISUPPORTS1(nsFreeType2, nsIFreeType2);
+NS_IMPL_ISUPPORTS1(nsFreeType2, nsIFreeType2)
 
 //
 // Since the Freetype2 library may not be available on the user's
@@ -720,22 +720,19 @@ nsFreeType2::GetCustomEncoderInfo(const char * aFamilyName)
     //
     // build the converter
     //
-    nsICharsetConverterManager2* charSetManager = GetCharSetManager();
+    nsICharsetConverterManager* charSetManager = GetCharSetManager();
     if (!charSetManager)
       return nsnull;
-    nsCOMPtr<nsIAtom> charset(dont_AddRef(NS_NewAtom(fei->mConverterName)));
-    if (charset) {
-      nsresult res;
-      res = charSetManager->GetUnicodeEncoder(charset, &fei->mConverter);
-      if (NS_FAILED(res)) {
-        return nsnull;
-      }
+    nsresult res;
+    res = charSetManager->GetUnicodeEncoderRaw(fei->mConverterName, &fei->mConverter);
+    if (NS_FAILED(res)) {
+      return nsnull;
     }
   }
   return ffei;
 }
 
-nsICharsetConverterManager2*
+nsICharsetConverterManager*
 nsFreeType2::GetCharSetManager()
 {
   if (!sCharSetManager) {
@@ -743,7 +740,7 @@ nsFreeType2::GetCharSetManager()
     // get the sCharSetManager
     //
     nsServiceManager::GetService(kCharSetManagerCID,
-                                 NS_GET_IID(nsICharsetConverterManager2),
+                                 NS_GET_IID(nsICharsetConverterManager),
                                  (nsISupports**) &sCharSetManager);
     NS_ASSERTION(sCharSetManager,"failed to create the charset manager");
   }
@@ -947,7 +944,7 @@ PRBool
 nsFreeTypeFace::FreeFace(nsHashKey* aKey, void* aData, void* aClosure)
 {
   nsFreeTypeFace *face = (nsFreeTypeFace*) aData;
-  delete face;
+  NS_RELEASE(face);
 
   return PR_TRUE;
 }
@@ -1040,9 +1037,12 @@ nsFreeTypeGetFaceID(nsFontCatalogEntry *aFce)
     NS_ASSERTION(face, "memory error while creating nsFreeTypeFace");
     if (!face)
       return nsnull;
+    NS_ADDREF(face);
     nsresult rv = face->Init(aFce);
-    if (NS_FAILED(rv))
+    if (NS_FAILED(rv)) {
+      NS_RELEASE(face);
       return nsnull;
+    }
     gFreeTypeFaces->Put(&key, face);
   }
   return face;

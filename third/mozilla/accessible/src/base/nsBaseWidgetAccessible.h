@@ -59,24 +59,7 @@ class nsBlockAccessible : public nsAccessibleWrap
 public:
   nsBlockAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
   NS_DECL_ISUPPORTS_INHERITED
-  NS_IMETHOD AccGetAt(PRInt32 x, PRInt32 y, nsIAccessible **_retval);
-};
-
-/**
-  * Special Accessible that just contains other accessible objects
-  *   no actions, no name, no state, no value
-  */
-class nsContainerAccessible : public nsAccessibleWrap
-{
-public:
-  nsContainerAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
-  NS_DECL_ISUPPORTS_INHERITED
-  NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
-  NS_IMETHOD GetAccActionName(PRUint8 index, nsAString& _retval);
-  NS_IMETHOD AccDoAction(PRUint8 index);
-  NS_IMETHOD GetAccState(PRUint32 *_retval);
-  NS_IMETHOD GetAccValue(nsAString& _retval);
-  NS_IMETHOD GetAccName(nsAString& _retval); 
+  NS_IMETHOD GetChildAtPoint(PRInt32 x, PRInt32 y, nsIAccessible **_retval);
 };
 
 /** 
@@ -87,9 +70,9 @@ class nsLeafAccessible : public nsAccessibleWrap
 public:
   nsLeafAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
   NS_DECL_ISUPPORTS_INHERITED
-  NS_IMETHOD GetAccFirstChild(nsIAccessible **_retval);
-  NS_IMETHOD GetAccLastChild(nsIAccessible **_retval);
-  NS_IMETHOD GetAccChildCount(PRInt32 *_retval);
+  NS_IMETHOD GetFirstChild(nsIAccessible **_retval);
+  NS_IMETHOD GetLastChild(nsIAccessible **_retval);
+  NS_IMETHOD GetChildCount(PRInt32 *_retval);
 };
 
 /**
@@ -102,13 +85,13 @@ class nsLinkableAccessible : public nsAccessibleWrap
 public:
   nsLinkableAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
   NS_DECL_ISUPPORTS_INHERITED
-  NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
-  NS_IMETHOD GetAccActionName(PRUint8 index, nsAString& _retval);
-  NS_IMETHOD AccDoAction(PRUint8 index);
-  NS_IMETHOD GetAccState(PRUint32 *_retval);
-  NS_IMETHOD GetAccValue(nsAString& _retval);
-  NS_IMETHOD AccTakeFocus();
-  NS_IMETHOD GetAccKeyboardShortcut(nsAString& _retval);
+  NS_IMETHOD GetNumActions(PRUint8 *_retval);
+  NS_IMETHOD GetActionName(PRUint8 index, nsAString& _retval);
+  NS_IMETHOD DoAction(PRUint8 index);
+  NS_IMETHOD GetState(PRUint32 *_retval);
+  NS_IMETHOD GetValue(nsAString& _retval);
+  NS_IMETHOD TakeFocus();
+  NS_IMETHOD GetKeyboardShortcut(nsAString& _retval);
   NS_IMETHOD Shutdown();
 
 protected:

@@ -109,7 +109,6 @@
 
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kCMailDB, NS_MAILDB_CID);
-static NS_DEFINE_CID(kImapProtocolCID, NS_IMAPPROTOCOL_CID);
 static NS_DEFINE_CID(kCImapDB, NS_IMAPDB_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_CID(kParseMailMsgStateCID, NS_PARSEMAILMSGSTATE_CID);
@@ -156,29 +155,29 @@ nsresult RecursiveCopy(nsIFile* srcDir, nsIFile* destDir)
     rv = dirIterator->GetNext((nsISupports**)getter_AddRefs(dirEntry));
     if (NS_SUCCEEDED(rv))
     {
-		    rv = dirEntry->IsDirectory(&isDir);
-                    if (NS_SUCCEEDED(rv))
-                    {
-                      if (isDir)
-                      {
-                        nsCOMPtr<nsIFile> destClone;
-                        rv = destDir->Clone(getter_AddRefs(destClone));
-                        if (NS_SUCCEEDED(rv))
-                        {
-                          nsCOMPtr<nsILocalFile> newChild(do_QueryInterface(destClone));
-                          nsAutoString leafName;
-                          dirEntry->GetLeafName(leafName);
-                          newChild->AppendRelativePath(leafName);
-                          rv = newChild->Exists(&exists);
-                          if (NS_SUCCEEDED(rv) && !exists)
-                            rv = newChild->Create(nsIFile::DIRECTORY_TYPE, 0775);
-                          rv = RecursiveCopy(dirEntry, newChild);
-                        }
-                      }
-                      else
-                        rv = dirEntry->CopyTo(destDir, nsString());
-                    }
-                    
+      rv = dirEntry->IsDirectory(&isDir);
+      if (NS_SUCCEEDED(rv))
+      {
+        if (isDir)
+        {
+          nsCOMPtr<nsIFile> destClone;
+          rv = destDir->Clone(getter_AddRefs(destClone));
+          if (NS_SUCCEEDED(rv))
+          {
+            nsCOMPtr<nsILocalFile> newChild(do_QueryInterface(destClone));
+            nsAutoString leafName;
+            dirEntry->GetLeafName(leafName);
+            newChild->AppendRelativePath(leafName);
+            rv = newChild->Exists(&exists);
+            if (NS_SUCCEEDED(rv) && !exists)
+              rv = newChild->Create(nsIFile::DIRECTORY_TYPE, 0775);
+            rv = RecursiveCopy(dirEntry, newChild);
+          }
+        }
+        else
+          rv = dirEntry->CopyTo(destDir, nsString());
+      }
+      
     }
     rv = dirIterator->HasMoreElements(&hasMore);
     if (NS_FAILED(rv)) return rv;
@@ -194,6 +193,7 @@ nsImapMailFolder::nsImapMailFolder() :
     m_urlRunning(PR_FALSE),
   m_verifiedAsOnlineFolder(PR_FALSE),
   m_explicitlyVerify(PR_FALSE),
+  m_folderIsNamespace(PR_FALSE),
     m_folderNeedsSubscribing(PR_FALSE),
     m_folderNeedsAdded(PR_FALSE),
     m_folderNeedsACLListed(PR_TRUE),
@@ -226,6 +226,8 @@ nsImapMailFolder::nsImapMailFolder() :
   m_hierarchyDelimiter = kOnlineHierarchySeparatorUnknown;
   m_pathName = nsnull;
   m_folderACL = nsnull;
+  m_aclFlags = 0;
+  m_supportedUserFlags = 0;
   m_namespace = nsnull;
   m_numFilterClassifyRequests = 0; 
 }
@@ -293,7 +295,7 @@ nsresult nsImapMailFolder::AddDirectorySeparator(nsFileSpec &path)
       // unfortunately we can't just say:
       //          path += sep;
       // here because of the way nsFileSpec concatenates
-      nsAutoString str; str.AssignWithConversion(NS_STATIC_CAST(nsFilePath, path));
+      nsAutoString str; str.AssignWithConversion(nsFilePath(path));
       str += sep;
       path = nsFilePath(str);
     }
@@ -387,15 +389,13 @@ NS_IMETHODIMP nsImapMailFolder::AddSubfolderWithPath(nsAutoString *name, nsIFile
         flags |= MSG_FOLDER_FLAG_TRASH;
     }
 #if 0
-		// the logic for this has been moved into 
-		// SetFlagsOnDefaultMailboxes()
-    else if(name->EqualsIgnoreCase(NS_LITERAL_STRING("Sent")))
+    else if(name->Equals(NS_LITERAL_STRING("Sent"), nsCaseInsensitiveStringComparator()))
       folder->SetFlag(MSG_FOLDER_FLAG_SENTMAIL);
-    else if(name->EqualsIgnoreCase(NS_LITERAL_STRING("Drafts")))
+    else if(name->Equals(NS_LITERAL_STRING("Drafts"), nsCaseInsensitiveStringComparator()))
       folder->SetFlag(MSG_FOLDER_FLAG_DRAFTS);
-    else if (name->EqualsIgnoreCase(NS_LITERAL_STRING("Templates")));
+    else if (name->Equals(NS_LITERAL_STRING("Templates"), nsCaseInsensitiveStringComparator()))
       folder->SetFlag(MSG_FOLDER_FLAG_TEMPLATES);
-#endif 
+#endif
   }
 
     folder->SetFlags(flags);
@@ -527,7 +527,7 @@ nsresult nsImapMailFolder::CreateSubFolders(nsFileSpec &path)
     {
       // use the unicode name as the "pretty" name. Set it so it won't be
       // automatically computed from the URI, which is in utf7 form.
-      if (currentFolderNameStr.Length() > 0)
+      if (!currentFolderNameStr.IsEmpty())
         child->SetPrettyName(currentFolderNameStr.get());
 
     }
@@ -590,19 +590,6 @@ NS_IMETHODIMP nsImapMailFolder::GetSubFolders(nsIEnumerator* *result)
   return rv;
 }
 
-NS_IMETHODIMP nsImapMailFolder::AddUnique(nsISupports* element)
-{
-    nsresult rv = NS_ERROR_FAILURE;
-    return rv;
-}
-
-NS_IMETHODIMP nsImapMailFolder::ReplaceElement(nsISupports* element,
-                                               nsISupports* newElement)
-{
-    nsresult rv = NS_ERROR_FAILURE;
-    return rv;
-}
-
 //Makes sure the database is open and exists.  If the database is valid then
 //returns NS_OK.  Otherwise returns a failure error value.
 nsresult nsImapMailFolder::GetDatabase(nsIMsgWindow *aMsgWindow)
@@ -636,107 +623,130 @@ nsresult nsImapMailFolder::GetDatabase(nsIMsgWindow *aMsgWindow)
 NS_IMETHODIMP
 nsImapMailFolder::UpdateFolder(nsIMsgWindow *msgWindow)
 {
-    nsresult rv = NS_ERROR_NULL_POINTER;
-    PRBool selectFolder = PR_FALSE;
-
-    if (mFlags & MSG_FOLDER_FLAG_INBOX) {
-        if (!m_filterList) {
-            rv = GetFilterList(msgWindow, getter_AddRefs(m_filterList));
-            // XXX rv ignored
-        }
-    }
-
-    if (m_filterList) {
-        nsCOMPtr<nsIMsgIncomingServer> server;
-        rv = GetServer(getter_AddRefs(server));
-        NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get server");
-
-        PRBool canFileMessagesOnServer = PR_TRUE;
-        if (server) {
-            rv = server->GetCanFileMessagesOnServer(
-                &canFileMessagesOnServer);
-            NS_ASSERTION(NS_SUCCEEDED(rv), "failed to determine if we could file messages on this server");
-        }
-
-        // the mdn filter is for filing return receipts into the sent folder
-        // some servers (like AOL mail servers)
-        // can't file to the sent folder, so we don't add the filter for those servers
-        if (canFileMessagesOnServer) {
-            rv = server->ConfigureTemporaryReturnReceiptsFilter(
-                m_filterList);
-            NS_ASSERTION(NS_SUCCEEDED(rv), "failed to add MDN filter");
-        }
-    }
-
-    nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv); 
-    if (NS_FAILED(rv)) return rv;
-
-    selectFolder = PR_TRUE;
-
-    PRBool isServer;
-    rv = GetIsServer(&isServer);
-    if (NS_SUCCEEDED(rv) && isServer)
-        {
-            if (!m_haveDiscoveredAllFolders)
-                {
-                    PRBool hasSubFolders = PR_FALSE;
-                    GetHasSubFolders(&hasSubFolders);
-                    if (!hasSubFolders)
-                        {
-                            rv = CreateClientSubfolderInfo("Inbox", kOnlineHierarchySeparatorUnknown,0, PR_FALSE);
-                            if (NS_FAILED(rv)) 
-                                return rv;
-                        }
-                    m_haveDiscoveredAllFolders = PR_TRUE;
-                }
-            selectFolder = PR_FALSE;
-        }
-    rv = GetDatabase(msgWindow);
-
-    PRBool canOpenThisFolder = PR_TRUE;
-    GetCanIOpenThisFolder(&canOpenThisFolder);
+  nsresult rv = NS_ERROR_NULL_POINTER;
+  PRBool selectFolder = PR_FALSE;
   
-    PRBool hasOfflineEvents = PR_FALSE;
-    GetFlag(MSG_FOLDER_FLAG_OFFLINEEVENTS, &hasOfflineEvents);
+  if (mFlags & MSG_FOLDER_FLAG_INBOX && !m_filterList) 
+      rv = GetFilterList(msgWindow, getter_AddRefs(m_filterList));
+  
+  if (m_filterList) 
+  {
+    nsCOMPtr<nsIMsgIncomingServer> server;
+    rv = GetServer(getter_AddRefs(server));
+    NS_ASSERTION(NS_SUCCEEDED(rv), "failed to get server");
     
-    if (hasOfflineEvents && !WeAreOffline())
+    PRBool canFileMessagesOnServer = PR_TRUE;
+    if (server) 
+    {
+      rv = server->GetCanFileMessagesOnServer(&canFileMessagesOnServer);
+      NS_ASSERTION(NS_SUCCEEDED(rv), "failed to determine if we could file messages on this server");
+    }
+    
+    // the mdn filter is for filing return receipts into the sent folder
+    // some servers (like AOL mail servers)
+    // can't file to the sent folder, so we don't add the filter for those servers
+    if (canFileMessagesOnServer) 
+    {
+      rv = server->ConfigureTemporaryReturnReceiptsFilter(m_filterList);
+      NS_ASSERTION(NS_SUCCEEDED(rv), "failed to add MDN filter");
+    }
+  }
+  
+  nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv); 
+  if (NS_FAILED(rv)) return rv;
+  
+  selectFolder = PR_TRUE;
+  
+  PRBool isServer;
+  rv = GetIsServer(&isServer);
+  if (NS_SUCCEEDED(rv) && isServer)
+  {
+    if (!m_haveDiscoveredAllFolders)
+    {
+      PRBool hasSubFolders = PR_FALSE;
+      GetHasSubFolders(&hasSubFolders);
+      if (!hasSubFolders)
+      {
+        rv = CreateClientSubfolderInfo("Inbox", kOnlineHierarchySeparatorUnknown,0, PR_FALSE);
+        if (NS_FAILED(rv)) 
+          return rv;
+      }
+      m_haveDiscoveredAllFolders = PR_TRUE;
+    }
+    selectFolder = PR_FALSE;
+  }
+  rv = GetDatabase(msgWindow);
+  
+  PRBool canOpenThisFolder = PR_TRUE;
+  GetCanIOpenThisFolder(&canOpenThisFolder);
+  
+  PRBool hasOfflineEvents = PR_FALSE;
+  GetFlag(MSG_FOLDER_FLAG_OFFLINEEVENTS, &hasOfflineEvents);
+  
+  if (!WeAreOffline())
+  {
+    if (hasOfflineEvents)
     {
       nsImapOfflineSync *goOnline = new nsImapOfflineSync(msgWindow, this, this);
       if (goOnline)
-      {
         return goOnline->ProcessNextOperation();
+    }
+  }
+  else // we're offline - check if we're password protecting the offline store
+  {
+    nsCOMPtr<nsIMsgAccountManager> accountManager = 
+             do_GetService(NS_MSGACCOUNTMANAGER_CONTRACTID, &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+    PRBool userNeedsToAuthenticate = PR_FALSE;
+    // if we're PasswordProtectLocalCache, then we need to find out if the server is authenticated.
+    (void) accountManager->GetUserNeedsToAuthenticate(&userNeedsToAuthenticate);
+    if (userNeedsToAuthenticate)
+    {
+      nsCOMPtr<nsIMsgIncomingServer> server;
+      rv = GetServer(getter_AddRefs(server));
+      if (NS_SUCCEEDED(rv))
+      {
+        PRBool passwordMatches = PR_FALSE;
+        rv = PromptForCachePassword(server, msgWindow, passwordMatches);
+        if (!passwordMatches)
+          return NS_ERROR_FAILURE;
       }
     }
-    if (!canOpenThisFolder) 
-        selectFolder = PR_FALSE;
-    // don't run select if we're already running a url/select...
-    if (NS_SUCCEEDED(rv) && !m_urlRunning && selectFolder)
-        {
-            nsCOMPtr <nsIEventQueue> eventQ;
-            nsCOMPtr<nsIEventQueueService> pEventQService = 
-                do_GetService(kEventQueueServiceCID, &rv); 
-            if (NS_SUCCEEDED(rv) && pEventQService)
-                pEventQService->GetThreadEventQueue(NS_CURRENT_THREAD,
-                                                    getter_AddRefs(eventQ));
-            rv = imapService->SelectFolder(eventQ, this, this, msgWindow,
-                                           nsnull);
-            if ((rv == NS_MSG_ERROR_OFFLINE) ||
-                     (rv == NS_BINDING_ABORTED))
-                {
-                    rv = NS_OK;
-                    NotifyFolderEvent(mFolderLoadedAtom);
-                }
-        }
-    else if (NS_SUCCEEDED(rv))  // tell the front end that the folder is loaded if we're not going to 
-        {                           // actually run a url.
-            if (!m_urlRunning)        // if we're already running a url, we'll let that one send the folder loaded
-                NotifyFolderEvent(mFolderLoadedAtom);
-            if (msgWindow) // don't do this w/o a msgWindow, since it asserts annoyingly
-                rv = AutoCompact(msgWindow);  
-            NS_ENSURE_SUCCESS(rv,rv);
-        }
-
-    return rv;
+  }
+  if (!canOpenThisFolder) 
+    selectFolder = PR_FALSE;
+  // don't run select if we're already running a url/select...
+  if (NS_SUCCEEDED(rv) && !m_urlRunning && selectFolder)
+  {
+    nsCOMPtr <nsIEventQueue> eventQ;
+    nsCOMPtr<nsIEventQueueService> pEventQService = 
+      do_GetService(kEventQueueServiceCID, &rv); 
+    if (NS_SUCCEEDED(rv) && pEventQService)
+      pEventQService->GetThreadEventQueue(NS_CURRENT_THREAD,
+      getter_AddRefs(eventQ));
+    rv = imapService->SelectFolder(eventQ, this, this, msgWindow, nsnull);
+    switch (rv)
+    {
+      case NS_MSG_ERROR_OFFLINE:
+        if (msgWindow)
+          AutoCompact(msgWindow);  
+        // note fall through to next case.
+      case NS_BINDING_ABORTED:
+        rv = NS_OK;
+        NotifyFolderEvent(mFolderLoadedAtom);
+        break;
+      default:
+        break;
+    }
+  }
+  else if (NS_SUCCEEDED(rv))  // tell the front end that the folder is loaded if we're not going to 
+  {                           // actually run a url.
+    if (!m_urlRunning)        // if we're already running a url, we'll let that one send the folder loaded
+      NotifyFolderEvent(mFolderLoadedAtom);
+    NS_ENSURE_SUCCESS(rv,rv);
+  }
+  
+  return rv;
 }
 
 
@@ -876,7 +886,7 @@ NS_IMETHODIMP nsImapMailFolder::CreateClientSubfolderInfo(const char *folderName
       if (imapFolder)
       {
         nsCAutoString onlineName(m_onlineFolderName); 
-        if (onlineName.Length() > 0)
+        if (!onlineName.IsEmpty())
           onlineName.Append(char(hierarchyDelimiter));
         onlineName.AppendWithConversion(folderNameStr);
         imapFolder->SetVerifiedAsOnlineFolder(PR_TRUE);
@@ -900,10 +910,10 @@ NS_IMETHODIMP nsImapMailFolder::CreateClientSubfolderInfo(const char *folderName
         }
       }
 
-            unusedDB->SetSummaryValid(PR_TRUE);
+      unusedDB->SetSummaryValid(PR_TRUE);
       unusedDB->Commit(nsMsgDBCommitType::kLargeCommit);
-            unusedDB->Close(PR_TRUE);
-        }
+      unusedDB->Close(PR_TRUE);
+    }
   }
   if (!suppressNotification)
   {
@@ -916,13 +926,13 @@ NS_IMETHODIMP nsImapMailFolder::CreateClientSubfolderInfo(const char *folderName
       if(childSupports && NS_SUCCEEDED(rv))
       {
         NotifyItemAdded(folderSupports, childSupports, "folderView");
-        folderCreateAtom = getter_AddRefs(NS_NewAtom("FolderCreateCompleted"));
+        folderCreateAtom = do_GetAtom("FolderCreateCompleted");
         child->NotifyFolderEvent(folderCreateAtom);
       }
     }
     else
     {
-      folderCreateAtom = getter_AddRefs(NS_NewAtom("FolderCreateFailed"));
+      folderCreateAtom = do_GetAtom("FolderCreateFailed");
       NotifyFolderEvent(folderCreateAtom);
     }
   }
@@ -1376,7 +1386,6 @@ NS_IMETHODIMP nsImapMailFolder::RenameLocal(const char *newName, nsIMsgFolder *p
         leafname.Cut(0, leafpos+1);
     m_msgParser = nsnull;
     PrepareToRename();
-    NotifyStoreClosedAllHeaders();
     ForceDBClosed();
 
     nsresult rv = NS_OK;
@@ -1571,27 +1580,6 @@ nsresult nsImapMailFolder::GetImapIncomingServer(nsIImapIncomingServer **aImapIn
   return NS_ERROR_NULL_POINTER;
 }
 
-NS_IMETHODIMP nsImapMailFolder::UserNeedsToAuthenticateForFolder(PRBool
-                                                                 displayOnly,
-                                                                 PRBool
-                                                                 *authenticate)
-{
-    nsresult rv = NS_ERROR_FAILURE;
-    return rv;
-}
-
-NS_IMETHODIMP nsImapMailFolder::RememberPassword(const char *password)
-{
-    nsresult rv = NS_ERROR_FAILURE;
-    return rv;
-}
-
-NS_IMETHODIMP nsImapMailFolder::GetRememberedPassword(char ** password)
-{
-    nsresult rv = NS_ERROR_FAILURE;
-    return rv;
-}
-
 NS_IMETHODIMP
 nsImapMailFolder::AddMessageDispositionState(nsIMsgDBHdr *aMessage, nsMsgDispositionState aDispositionFlag)
 {
@@ -1616,10 +1604,8 @@ nsImapMailFolder::AddMessageDispositionState(nsIMsgDBHdr *aMessage, nsMsgDisposi
 NS_IMETHODIMP
 nsImapMailFolder::MarkMessagesRead(nsISupportsArray *messages, PRBool markRead)
 {
-  nsresult rv;
-
   // tell the folder to do it, which will mark them read in the db.
-  rv = nsMsgFolder::MarkMessagesRead(messages, markRead);
+  nsresult rv = nsMsgFolder::MarkMessagesRead(messages, markRead);
   if (NS_SUCCEEDED(rv))
   {
     nsCAutoString messageIds;
@@ -1669,8 +1655,8 @@ nsImapMailFolder::MarkAllMessagesRead(void)
 NS_IMETHODIMP nsImapMailFolder::MarkThreadRead(nsIMsgThread *thread)
 {
 
-	nsresult rv = GetDatabase(nsnull);
-	if(NS_SUCCEEDED(rv))
+  nsresult rv = GetDatabase(nsnull);
+  if(NS_SUCCEEDED(rv))
   {
     nsMsgKeyArray thoseMarked;
 		rv = mDatabase->MarkThreadRead(thread, nsnull, &thoseMarked);
@@ -1680,7 +1666,7 @@ NS_IMETHODIMP nsImapMailFolder::MarkThreadRead(nsIMsgThread *thread)
       mDatabase->Commit(nsMsgDBCommitType::kLargeCommit);
     }
   }
-	return rv;
+  return rv;
 }
 
 
@@ -1691,11 +1677,15 @@ NS_IMETHODIMP nsImapMailFolder::ReadFromFolderCacheElem(nsIMsgFolderCacheElement
   nsXPIDLCString onlineName;
 
   element->GetInt32Property("boxFlags", &m_boxFlags);
-  if (NS_SUCCEEDED(element->GetInt32Property("hierDelim", &hierarchyDelimiter)))
+  if (NS_SUCCEEDED(element->GetInt32Property("hierDelim", &hierarchyDelimiter)) 
+      && hierarchyDelimiter != kOnlineHierarchySeparatorUnknown)
     m_hierarchyDelimiter = (PRUnichar) hierarchyDelimiter;
   rv = element->GetStringProperty("onlineName", getter_Copies(onlineName));
   if (NS_SUCCEEDED(rv) && (const char *) onlineName && strlen((const char *) onlineName))
     m_onlineFolderName.Assign(onlineName);
+
+  m_aclFlags = -1; // init to invalid value.
+  element->GetInt32Property("aclFlags", (PRInt32 *) &m_aclFlags);
 #ifdef DEBUG_bienvenu
   if (!nsCRT::strcasecmp((const char *) onlineName, "Sent"))
     printf("loading folder cache elem for %s flags = %lx", (const char *) onlineName, mFlags);
@@ -1711,6 +1701,7 @@ NS_IMETHODIMP nsImapMailFolder::WriteToFolderCacheElem(nsIMsgFolderCacheElement 
   element->SetInt32Property("boxFlags", m_boxFlags);
   element->SetInt32Property("hierDelim", (PRInt32) m_hierarchyDelimiter);
   element->SetStringProperty("onlineName", m_onlineFolderName.get());
+  element->SetInt32Property("aclFlags", (PRInt32) m_aclFlags);
   return rv;
 }
 
@@ -1798,7 +1789,7 @@ nsImapMailFolder::GetDBFolderInfoAndDB(nsIDBFolderInfo **folderInfo, nsIMsgDatab
           nsAutoString autoOnlineName; 
           // autoOnlineName.AssignWithConversion(name);
           (*folderInfo)->GetMailboxName(&autoOnlineName);
-          if (autoOnlineName.Length() == 0)
+          if (autoOnlineName.IsEmpty())
           {
             nsXPIDLCString uri;
             rv = GetURI(getter_Copies(uri));
@@ -1859,9 +1850,9 @@ static int PR_CALLBACK CompareKey (const void *v1, const void *v2, void *)
 }
 
 /* static */nsresult
-nsImapMailFolder::AllocateUidStringFromKeys(nsMsgKey *keys, PRInt32 numKeys, nsCString &msgIds)
+nsImapMailFolder::AllocateUidStringFromKeys(nsMsgKey *keys, PRUint32 numKeys, nsCString &msgIds)
 {
-  if (numKeys <= 0)
+  if (!numKeys)
     return NS_ERROR_INVALID_ARG;
   nsresult rv = NS_OK;
   PRUint32 startSequence;
@@ -2207,7 +2198,6 @@ NS_IMETHODIMP nsImapMailFolder::GetNewMessages(nsIMsgWindow *aWindow, nsIUrlList
 
     if (imapServer)
     {
-      imapServer->GetDownloadBodiesOnGetNewMail(&m_downloadingFolderForOfflineUse);
       nsCOMPtr<nsIMsgIncomingServer> incomingServer = do_QueryInterface(imapServer, &rv);
       if (incomingServer)
         incomingServer->GetPerformingBiff(&performingBiff);
@@ -2334,6 +2324,7 @@ NS_IMETHODIMP nsImapMailFolder::UpdateImapMailboxInfo(
 
     aSpec->GetFlagState(getter_AddRefs(flagState));
 
+    m_uidValidity = folderValidity;
     if ((imapUIDValidity != folderValidity) /* && // if UIDVALIDITY Changed 
       !NET_IsOffline() */)
     {
@@ -2359,7 +2350,6 @@ NS_IMETHODIMP nsImapMailFolder::UpdateImapMailboxInfo(
       if (mDatabase)
       {
         dbFolderInfo = nsnull;
-        NotifyStoreClosedAllHeaders();
         mDatabase->ForceClosed();
       }
       mDatabase = nsnull;
@@ -2491,7 +2481,7 @@ NS_IMETHODIMP nsImapMailFolder::UpdateImapMailboxStatus(
 
 NS_IMETHODIMP nsImapMailFolder::ParseMsgHdrs(nsIImapProtocol *aProtocol, nsIImapHeaderXferInfo *aHdrXferInfo)
 {
-  PRUint32 numHdrs;
+  PRInt32 numHdrs;
   nsCOMPtr <nsIImapHeaderInfo> headerInfo;
 
   nsresult rv = aHdrXferInfo->GetNumHeaders(&numHdrs);
@@ -3014,7 +3004,7 @@ NS_IMETHODIMP nsImapMailFolder::PlaybackOfflineFolderCreate(const PRUnichar *aFo
                                        aFolderName, this, url);
 }
 
-NS_IMETHODIMP nsImapMailFolder::ReplayOfflineMoveCopy(nsMsgKey *msgKeys, PRInt32 numKeys, PRBool isMove, nsIMsgFolder *aDstFolder,
+NS_IMETHODIMP nsImapMailFolder::ReplayOfflineMoveCopy(nsMsgKey *msgKeys, PRUint32 numKeys, PRBool isMove, nsIMsgFolder *aDstFolder,
                          nsIUrlListener *aUrlListener, nsIMsgWindow *aWindow)
 {
   nsresult rv;
@@ -3046,7 +3036,7 @@ NS_IMETHODIMP nsImapMailFolder::ReplayOfflineMoveCopy(nsMsgKey *msgKeys, PRInt32
   return rv;
 }
 
-NS_IMETHODIMP nsImapMailFolder::StoreImapFlags(PRInt32 flags, PRBool addFlags, nsMsgKey *keys, PRInt32 numKeys)
+NS_IMETHODIMP nsImapMailFolder::StoreImapFlags(PRInt32 flags, PRBool addFlags, nsMsgKey *keys, PRUint32 numKeys)
 {
   nsresult rv = NS_OK;
   if (!WeAreOffline())
@@ -3127,13 +3117,13 @@ nsresult nsImapMailFolder::GetFolderOwnerUserName(char **userName)
   if (!(mFlags & MSG_FOLDER_FLAG_IMAP_OTHER_USER))
     return NS_OK;
   
-  if (!m_ownerUserName.Length())
+  if (m_ownerUserName.IsEmpty())
   {
     nsXPIDLCString onlineName;
     GetOnlineName(getter_Copies(onlineName));
     m_ownerUserName = nsIMAPNamespaceList::GetFolderOwnerNameFromPath(GetNamespaceForFolder(), onlineName.get());
   }
-  *userName = (m_ownerUserName.Length()) ? ToNewCString(m_ownerUserName) : nsnull;
+  *userName = !m_ownerUserName.IsEmpty() ? ToNewCString(m_ownerUserName) : nsnull;
   return NS_OK;
 }
 
@@ -3148,7 +3138,7 @@ nsresult nsImapMailFolder::GetOwnersOnlineFolderName(char **retName)
   {
     nsXPIDLCString user;
     GetFolderOwnerUserName(getter_Copies(user));
-    if (onlineName.Length() && user.Length())
+    if (!onlineName.IsEmpty() && !user.IsEmpty())
     {
       const char *where = PL_strstr(onlineName.get(), user.get());
       NS_ASSERTION(where, "user name not in online name");
@@ -3249,8 +3239,6 @@ NS_IMETHODIMP nsImapMailFolder::FolderPrivileges(nsIMsgWindow *window)
     nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv,rv);
 
-    // selecting the folder with m_downloadingFolderForOfflineUse true will cause
-    // us to fetch any message bodies we don't have.
     rv = imapService->GetFolderAdminUrl(m_eventQueue, this, window, this, nsnull);
     if (NS_SUCCEEDED(rv))
       m_urlRunning = PR_TRUE;
@@ -3264,7 +3252,7 @@ NS_IMETHODIMP nsImapMailFolder::GetHasAdminUrl(PRBool *aBool)
   NS_ENSURE_ARG_POINTER(aBool);
   nsXPIDLCString manageMailAccountUrl;
   nsresult rv = GetServerAdminUrl(getter_Copies(manageMailAccountUrl));
-  *aBool = (NS_SUCCEEDED(rv) && manageMailAccountUrl.Length());
+  *aBool = (NS_SUCCEEDED(rv) && !manageMailAccountUrl.IsEmpty());
   return rv;
 }
 
@@ -3296,8 +3284,6 @@ NS_IMETHODIMP nsImapMailFolder::IssueCommandOnMsgs(const char *command, const ch
   nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  // selecting the folder with m_downloadingFolderForOfflineUse true will cause
-  // us to fetch any message bodies we don't have.
   return imapService->IssueCommandOnMsgs(m_eventQueue, this, aWindow, command, uids, url);
 }
 
@@ -3307,8 +3293,6 @@ NS_IMETHODIMP nsImapMailFolder::FetchCustomMsgAttribute(const char *attribute, c
   nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  // selecting the folder with m_downloadingFolderForOfflineUse true will cause
-  // us to fetch any message bodies we don't have.
   return imapService->FetchCustomMsgAttribute(m_eventQueue, this, aWindow, attribute, uids, url);
 }
 
@@ -3471,53 +3455,27 @@ void nsImapMailFolder::FindKeysToAdd(const nsMsgKeyArray &existingKeys, nsMsgKey
 void nsImapMailFolder::PrepareToAddHeadersToMailDB(nsIImapProtocol* aProtocol, const nsMsgKeyArray &keysToFetch,
                                                 nsIMailboxSpec *boxSpec)
 {
-    PRUint32 *theKeys = (PRUint32 *) PR_Malloc( keysToFetch.GetSize() * sizeof(PRUint32) );
-    if (theKeys)
-    {
+  PRUint32 *theKeys = (PRUint32 *) PR_Malloc( keysToFetch.GetSize() * sizeof(PRUint32) );
+  if (theKeys)
+  {
     PRUint32 total = keysToFetch.GetSize();
-
-        for (PRUint32 keyIndex=0; keyIndex < total; keyIndex++)
-          theKeys[keyIndex] = keysToFetch[keyIndex];
-        
-//        m_DownLoadState = kDownLoadingAllMessageHeaders;
-
-        nsresult res = NS_OK; /*ImapMailDB::Open(m_pathName,
-                                         PR_TRUE, // create if necessary
-                                         &mailDB,
-                                         m_master,
-                                         &dbWasCreated); */
-
-    // don't want to download headers in a composition pane
-        if (NS_SUCCEEDED(res))
-        {
-#if 0
-      SetParseMailboxState(new ParseIMAPMailboxState(m_master, m_host, this,
-                               urlQueue,
-                               boxSpec->flagState));
-          boxSpec->flagState = nsnull;    // adopted by ParseIMAPMailboxState
-      GetParseMailboxState()->SetPane(url_pane);
-
-            GetParseMailboxState()->SetDB(mailDB);
-            GetParseMailboxState()->SetIncrementalUpdate(PR_TRUE);
-          GetParseMailboxState()->SetMaster(m_master);
-          GetParseMailboxState()->SetContext(url_pane->GetContext());
-          GetParseMailboxState()->SetFolder(this);
-          
-          GetParseMailboxState()->BeginParsingFolder(0);
-#endif // 0 hook up parsing later.
-          // the imap libnet module will start downloading message headers imap.h
-      if (aProtocol)
-        aProtocol->NotifyHdrsToDownload(theKeys, total /*keysToFetch.GetSize() */);
+    
+    for (PRUint32 keyIndex=0; keyIndex < total; keyIndex++)
+      theKeys[keyIndex] = keysToFetch[keyIndex];
+    
+    // tell the imap thread which hdrs to download
+    if (aProtocol)
+    {
+      aProtocol->NotifyHdrsToDownload(theKeys, total /*keysToFetch.GetSize() */);
       // now, tell it we don't need any bodies.
-      if (aProtocol)
-        aProtocol->NotifyBodysToDownload(nsnull, 0);
-        }
-        else
-        {
-      if (aProtocol)
-        aProtocol->NotifyHdrsToDownload(nsnull, 0);
-        }
+      aProtocol->NotifyBodysToDownload(nsnull, 0);
     }
+  }
+  else
+  {
+    if (aProtocol)
+      aProtocol->NotifyHdrsToDownload(nsnull, 0);
+  }
 }
 
 
@@ -3640,17 +3598,21 @@ NS_IMETHODIMP nsImapMailFolder::DownloadMessagesForOffline(nsISupportsArray *mes
 {
   nsCAutoString messageIds;
   nsMsgKeyArray srcKeyArray;
-#ifdef DEBUG_bienvenu
-//  return DownloadAllForOffline(nsnull, window);
-#endif
   nsresult rv = BuildIdsAndKeyArray(messages, messageIds, srcKeyArray);
-  if (NS_FAILED(rv) || messageIds.Length() == 0) return rv;
+  if (NS_FAILED(rv) || messageIds.IsEmpty()) return rv;
 
   nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  SetNotifyDownloadedLines(PR_TRUE); // ### TODO need to clear this when we've finished
-  return imapService->DownloadMessagesForOffline(messageIds.get(), this, nsnull, window);
+  SetNotifyDownloadedLines(PR_TRUE); 
+  rv = AcquireSemaphore(NS_STATIC_CAST(nsIMsgImapMailFolder*, this));
+  if (NS_FAILED(rv))
+  {
+    ThrowAlertMsg("operationFailedFolderBusy", window);
+    return rv;
+  }
+
+  return imapService->DownloadMessagesForOffline(messageIds.get(), this, this, window);
 }
 
 NS_IMETHODIMP nsImapMailFolder::DownloadAllForOffline(nsIUrlListener *listener, nsIMsgWindow *msgWindow)
@@ -3668,6 +3630,12 @@ NS_IMETHODIMP nsImapMailFolder::DownloadAllForOffline(nsIUrlListener *listener, 
     GetDatabase(msgWindow);
     m_downloadingFolderForOfflineUse = PR_TRUE;
 
+    rv = AcquireSemaphore(NS_STATIC_CAST(nsIMsgImapMailFolder*, this));
+    if (NS_FAILED(rv))
+    {
+      ThrowAlertMsg("operationFailedFolderBusy", msgWindow);
+      return rv;
+    }
     SetNotifyDownloadedLines(PR_TRUE); 
     nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv,rv);
@@ -3705,7 +3673,7 @@ nsImapMailFolder::ParseAdoptedMsgLine(const char *adoptedMessageLine, nsMsgKey u
   nsresult rv = NS_OK;
   // remember the uid of the message we're downloading.
   m_curMsgUid = uidOfMessage;
-  if (m_downloadMessageForOfflineUse && !m_tempMessageStream)
+  if (m_downloadMessageForOfflineUse && !m_offlineHeader)
   {
     GetMessageHeader(uidOfMessage, getter_AddRefs(m_offlineHeader));
     rv = StartNewOfflineMessage();
@@ -3734,6 +3702,17 @@ nsImapMailFolder::ParseAdoptedMsgLine(const char *adoptedMessageLine, nsMsgKey u
   return rv;
 }
 
+void nsImapMailFolder::EndOfflineDownload()
+{
+  if (m_tempMessageStream)
+  {
+    m_tempMessageStream->Close();
+    m_tempMessageStream = nsnull;
+    if (mDatabase)
+      mDatabase->Commit(nsMsgDBCommitType::kLargeCommit);
+  }
+}
+
 NS_IMETHODIMP
 nsImapMailFolder::NormalEndMsgWriteStream(nsMsgKey uidOfMessage, 
                                           PRBool markRead,
@@ -3741,32 +3720,24 @@ nsImapMailFolder::NormalEndMsgWriteStream(nsMsgKey uidOfMessage,
 {
   nsresult res = NS_OK;
   PRBool commit = PR_FALSE;
-  PRBool needMsgID = PR_FALSE;
   if (m_offlineHeader)
-  {
     EndNewOfflineMessage();
-    commit = PR_TRUE;
-  }
-  if (m_tempMessageStream)
-  {
-    m_tempMessageStream->Close();
-    m_tempMessageStream = nsnull;
-  }
+
   nsCOMPtr<nsIMsgDBHdr> msgHdr;
   m_curMsgUid = uidOfMessage;
   res = GetMessageHeader(m_curMsgUid, getter_AddRefs(msgHdr));
 
   if (msgHdr && markRead)
-      {
-        PRBool isRead;
-        msgHdr->GetIsRead(&isRead);
-              if (!isRead)
-              {
-            msgHdr->MarkRead(PR_TRUE);
-            commit = PR_TRUE;
-          }
-        }
-
+  {
+    PRBool isRead;
+    msgHdr->GetIsRead(&isRead);
+    if (!isRead)
+    {
+      msgHdr->MarkRead(PR_TRUE);
+      commit = PR_TRUE;
+    }
+  }
+  
   if (commit && mDatabase)
     mDatabase->Commit(nsMsgDBCommitType::kLargeCommit);
 
@@ -4017,44 +3988,14 @@ nsImapMailFolder::NotifyMessageDeleted(const char *onlineFolderName,PRBool delet
 {
   const char *doomedKeyString = msgIdString;
 
-  PRBool showDeletedMessages = ShowDeletedMessages();
-
   if (deleteAllMsgs)
-  {
-#ifdef HAVE_PORT    
-    TNeoFolderInfoTransfer *originalInfo = nsnull;
-    nsIMsgDatabase *folderDB;
-    if (ImapMailDB::Open(GetPathname(), PR_FALSE, &folderDB, GetMaster(), &wasCreated) == eSUCCESS)
-    {
-      originalInfo = new TNeoFolderInfoTransfer(*folderDB->m_neoFolderInfo);
-      folderDB->ForceClosed();
-    }
-      
-    // Remove summary file.
-    XP_FileRemove(GetPathname(), xpMailFolderSummary);
-    
-    // Create a new summary file, update the folder message counts, and
-    // Close the summary file db.
-    if (ImapMailDB::Open(GetPathname(), PR_TRUE, &folderDB, GetMaster(), &wasCreated) == eSUCCESS)
-    {
-      if (originalInfo)
-      {
-        originalInfo->TransferFolderInfo(*folderDB->m_neoFolderInfo);
-        delete originalInfo;
-      }
-      SummaryChanged();
-      folderDB->Close();
-    }
-#endif
-    // ### DMB - how to do this? Reload any thread pane because it's invalid now.
     return NS_OK;
-  }
 
   char *keyTokenString = PL_strdup(doomedKeyString);
   nsMsgKeyArray affectedMessages;
   ParseUidString(keyTokenString, affectedMessages);
 
-  if (doomedKeyString && !showDeletedMessages)
+  if (doomedKeyString && !ShowDeletedMessages())
   {
     if (affectedMessages.GetSize() > 0) // perhaps Search deleted these messages
     {
@@ -4070,7 +4011,7 @@ nsImapMailFolder::NotifyMessageDeleted(const char *onlineFolderName,PRBool delet
     if (mDatabase)
       SetIMAPDeletedFlag(mDatabase, affectedMessages, nsnull);
   }
-  PR_FREEIF(keyTokenString);
+  PR_Free(keyTokenString);
   return NS_OK;
 }
 
@@ -4108,8 +4049,7 @@ PRBool nsImapMailFolder::ShowDeletedMessages()
         {
           nsXPIDLString folderName;
           GetName(getter_Copies(folderName));
-          if (Substring(folderName,0,convertedName.Length()).Equals(convertedName,
-                                                                    nsCaseInsensitiveStringComparator()))
+          if (StringBeginsWith(folderName, convertedName, nsCaseInsensitiveStringComparator()))
             showDeleted = PR_TRUE;
         }
       }
@@ -4122,16 +4062,15 @@ PRBool nsImapMailFolder::ShowDeletedMessages()
 PRBool nsImapMailFolder::DeleteIsMoveToTrash()
 {
   nsresult err;
-    nsCOMPtr<nsIImapHostSessionList> hostSession = 
+  nsCOMPtr<nsIImapHostSessionList> hostSession = 
              do_GetService(kCImapHostSessionList, &err);
   PRBool rv = PR_TRUE;
 
     if (NS_SUCCEEDED(err) && hostSession)
   {
-        char *serverKey = nsnull;
-        GetServerKey(&serverKey);
-        err = hostSession->GetDeleteIsMoveToTrashForHost(serverKey, rv);
-        PR_FREEIF(serverKey);
+    nsXPIDLCString serverKey;
+    GetServerKey(getter_Copies(serverKey));
+    err = hostSession->GetDeleteIsMoveToTrashForHost(serverKey.get(), rv);
   }
   return rv;
 }
@@ -4211,7 +4150,7 @@ nsImapMailFolder::GetMessageSizeFromDB(const char *id, PRBool idIsUid, PRUint32 
     if (NS_SUCCEEDED(rv) && mailHdr)
       rv = mailHdr->GetMessageSize(size);
   }
-    return rv;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -4261,7 +4200,7 @@ NS_IMETHODIMP nsImapMailFolder::OnStopRequest(nsIRequest *request, nsISupports *
 NS_IMETHODIMP
 nsImapMailFolder::OnStartRunningUrl(nsIURI *aUrl)
 {
-  NS_PRECONDITION(aUrl, "just a sanity check since this is a test program");
+  NS_PRECONDITION(aUrl, "sanity check - need to be be running non-null url");
   m_urlRunning = PR_TRUE;
   return NS_OK;
 }
@@ -4269,11 +4208,16 @@ nsImapMailFolder::OnStartRunningUrl(nsIURI *aUrl)
 NS_IMETHODIMP
 nsImapMailFolder::OnStopRunningUrl(nsIURI *aUrl, nsresult aExitCode)
 {
-  NS_PRECONDITION(aUrl, "just a sanity check since this is a test program");
   nsresult rv = NS_OK;
-
+  PRBool endedOfflineDownload = PR_FALSE;
   m_urlRunning = PR_FALSE;
-  m_downloadingFolderForOfflineUse = PR_FALSE;
+  if (m_downloadingFolderForOfflineUse)
+  {
+    ReleaseSemaphore(NS_STATIC_CAST(nsIMsgImapMailFolder*, this));
+    m_downloadingFolderForOfflineUse = PR_FALSE;
+    endedOfflineDownload = PR_TRUE;
+    EndOfflineDownload();
+  }
   nsCOMPtr<nsIMsgMailSession> session = 
            do_GetService(NS_MSGMAILSESSION_CONTRACTID, &rv);
   if (aUrl)
@@ -4297,7 +4241,12 @@ nsImapMailFolder::OnStopRunningUrl(nsIURI *aUrl, nsresult aExitCode)
         nsImapAction imapAction = nsIImapUrl::nsImapTest;
         imapUrl->GetImapAction(&imapAction);
         if (imapAction == nsIImapUrl::nsImapMsgFetch || imapAction == nsIImapUrl::nsImapMsgDownloadForOffline)
+        {
+          ReleaseSemaphore(NS_STATIC_CAST(nsIMsgImapMailFolder*, this));
           SetNotifyDownloadedLines(PR_FALSE);
+          if (!endedOfflineDownload)
+            EndOfflineDownload();
+        }
 
         switch(imapAction)
         {
@@ -4439,14 +4388,13 @@ nsImapMailFolder::OnStopRunningUrl(nsIURI *aUrl, nsresult aExitCode)
             {
               if (NS_SUCCEEDED(aExitCode))
               {
-                if (folderOpen)
-                  UpdateFolder(msgWindow);
-                else
-                  UpdatePendingCounts(PR_TRUE, PR_FALSE);
+                UpdatePendingCounts(PR_TRUE, PR_FALSE);
 
                 m_copyState->m_curIndex++;
                 if (m_copyState->m_curIndex >= m_copyState->m_totalCount)
                 {
+                  if (folderOpen)
+                    UpdateFolder(msgWindow);
                   if (m_copyState->m_msgWindow && m_copyState->m_undoMsgTxn)
                   {
                     nsCOMPtr<nsITransactionManager> txnMgr;
@@ -4466,7 +4414,7 @@ nsImapMailFolder::OnStopRunningUrl(nsIURI *aUrl, nsresult aExitCode)
           if (NS_FAILED(aExitCode))
           {
             nsCOMPtr <nsIAtom> folderRenameAtom;
-            folderRenameAtom = getter_AddRefs(NS_NewAtom("RenameCompleted"));
+            folderRenameAtom = do_GetAtom("RenameCompleted");
             NotifyFolderEvent(folderRenameAtom);
           }
           break;
@@ -4492,7 +4440,7 @@ nsImapMailFolder::OnStopRunningUrl(nsIURI *aUrl, nsresult aExitCode)
           if (NS_FAILED(aExitCode))  //if success notification already done
           {
             nsCOMPtr <nsIAtom> folderCreateAtom;
-            folderCreateAtom = getter_AddRefs(NS_NewAtom("FolderCreateFailed"));
+            folderCreateAtom = do_GetAtom("FolderCreateFailed");
             NotifyFolderEvent(folderCreateAtom);
           }
           break;
@@ -4636,13 +4584,9 @@ NS_IMETHODIMP
 nsImapMailFolder::RefreshFolderRights()
 {
   if (GetFolderACL()->GetIsFolderShared())
-  {
     SetFlag(MSG_FOLDER_FLAG_PERSONAL_SHARED);
-  }
   else
-  {
     ClearFlag(MSG_FOLDER_FLAG_PERSONAL_SHARED);
-  }
   return NS_OK;
 }
 
@@ -4729,37 +4673,33 @@ nsImapMailFolder::NotifySearchHit(nsIMsgMailNewsUrl * aUrl,
         currentPosition += strlen("SEARCH");
         char *newStr;
           
-          PRBool shownUpdateAlert = PR_FALSE;
-          char *hitUidToken = nsCRT::strtok(currentPosition, WHITESPACE, &newStr);
-          while (hitUidToken)
+        PRBool shownUpdateAlert = PR_FALSE;
+        char *hitUidToken = nsCRT::strtok(currentPosition, WHITESPACE, &newStr);
+        while (hitUidToken)
+        {
+          long naturalLong; // %l is 64 bits on OSF1
+          sscanf(hitUidToken, "%ld", &naturalLong);
+          nsMsgKey hitUid = (nsMsgKey) naturalLong;
+      
+          nsCOMPtr <nsIMsgDBHdr> hitHeader;
+          rv = mDatabase->GetMsgHdrForKey(hitUid, getter_AddRefs(hitHeader));
+          if (NS_SUCCEEDED(rv) && hitHeader)
           {
-            long naturalLong; // %l is 64 bits on OSF1
-            sscanf(hitUidToken, "%ld", &naturalLong);
-            nsMsgKey hitUid = (nsMsgKey) naturalLong;
+            nsCOMPtr <nsIMsgSearchSession> searchSession;
+            nsCOMPtr <nsIMsgSearchAdapter> searchAdapter;
+            aUrl->GetSearchSession(getter_AddRefs(searchSession));
+            if (searchSession)
+            {
+              searchSession->GetRunningAdapter(getter_AddRefs(searchAdapter));
+              if (searchAdapter)
+                searchAdapter->AddResultElement(hitHeader);
+            }
+          }
+          else if (!shownUpdateAlert)
+          {
+          }
         
-            nsCOMPtr <nsIMsgDBHdr> hitHeader;
-            rv = mDatabase->GetMsgHdrForKey(hitUid, getter_AddRefs(hitHeader));
-            if (NS_SUCCEEDED(rv) && hitHeader)
-            {
-              nsCOMPtr <nsIMsgSearchSession> searchSession;
-              nsCOMPtr <nsIMsgSearchAdapter> searchAdapter;
-              aUrl->GetSearchSession(getter_AddRefs(searchSession));
-              if (searchSession)
-              {
-                searchSession->GetRunningAdapter(getter_AddRefs(searchAdapter));
-                if (searchAdapter)
-                  searchAdapter->AddResultElement(hitHeader);
-              }
-            }
-            else if (!shownUpdateAlert)
-            {
-#if 0 // can't do this yet
-            FE_Alert(context, XP_GetString(MK_MSG_SEARCH_HITS_NOT_IN_DB));
-            shownUpdateAlert = PR_TRUE;
-#endif
-            }
-          
-            hitUidToken = nsCRT::strtok(newStr, WHITESPACE, &newStr);
+          hitUidToken = nsCRT::strtok(newStr, WHITESPACE, &newStr);
         }
     }
 
@@ -4789,8 +4729,6 @@ nsImapMailFolder::SetAppendMsgUid(nsIImapProtocol* aProtocol,
 
     if (mailCopyState->m_undoMsgTxn) // CopyMessages()
     {
-        //            nsImapMailCopyState* mailCopyState = 
-        //                (nsImapMailCopyState*) copyState;
         nsCOMPtr<nsImapMoveCopyMsgTxn> msgTxn;
         msgTxn = do_QueryInterface(mailCopyState->m_undoMsgTxn, &rv);
         if (NS_SUCCEEDED(rv))
@@ -4868,7 +4806,11 @@ nsImapMailFolder::HeaderFetchCompleted(nsIImapProtocol* aProtocol)
       // for new messages, if the above filter playback actually moves the filtered
       // messages before we get to this code.
       if (autoDownloadNewHeaders)
-        m_downloadingFolderForOfflineUse = PR_TRUE;
+      {
+          // acquire semaphore for offline store. If it fails, we won't download for offline use.
+        if (NS_SUCCEEDED(AcquireSemaphore(NS_STATIC_CAST(nsIMsgImapMailFolder*, this))))
+          m_downloadingFolderForOfflineUse = PR_TRUE;
+      }
     }
 
     if (m_downloadingFolderForOfflineUse)
@@ -4902,31 +4844,23 @@ nsImapMailFolder::HeaderFetchCompleted(nsIImapProtocol* aProtocol)
 }
 
 NS_IMETHODIMP
-nsImapMailFolder::UpdateSecurityStatus(nsIImapProtocol* aProtocol)
-{
-    return NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP
 nsImapMailFolder::SetBiffStateAndUpdate(nsIImapProtocol* aProtocol,
                                         nsMsgBiffState biffState)
 {
   SetBiffState(biffState);
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImapMailFolder::GetStoredUIDValidity(nsIImapProtocol* aProtocol,
-                                       uid_validity_info* aInfo)
-{
-  NS_ENSURE_ARG(aInfo);
-  aInfo->returnValidity = m_uidValidity;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsImapMailFolder::LiteSelectUIDValidity(nsIImapProtocol* aProtocol,
-                                        PRUint32 uidValidity)
+nsImapMailFolder::GetUidValidity(PRInt32 *uidValidity)
+{
+  NS_ENSURE_ARG(uidValidity);
+  *uidValidity = m_uidValidity;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsImapMailFolder::SetUidValidity(PRInt32 uidValidity)
 {
   m_uidValidity = uidValidity;
   return NS_OK;
@@ -5030,7 +4964,7 @@ nsImapMailFolder::FillInFolderProps(nsIMsgImapFolderProps *aFolderProps)
     nsXPIDLCString owner;
     nsXPIDLString uniOwner;
     GetFolderOwnerUserName(getter_Copies(owner));
-    if (!owner.Length())
+    if (owner.IsEmpty())
     {
       rv = IMAPGetStringByID(folderTypeStringID, getter_Copies(uniOwner));
       // Another user's folder, for which we couldn't find an owner name
@@ -5060,9 +4994,9 @@ nsImapMailFolder::FillInFolderProps(nsIMsgImapFolderProps *aFolderProps)
   if (NS_SUCCEEDED(rv))
     aFolderProps->SetFolderType(folderType);
 
-  if (!folderTypeDesc.Length() && folderTypeDescStringID != 0)
+  if (folderTypeDesc.IsEmpty() && folderTypeDescStringID != 0)
     rv = IMAPGetStringByID(folderTypeDescStringID, getter_Copies(folderTypeDesc));
-  if (folderTypeDesc.Length())
+  if (!folderTypeDesc.IsEmpty())
     aFolderProps->SetFolderTypeDescription(folderTypeDesc.get());
 
   nsXPIDLString rightsString;
@@ -5078,6 +5012,7 @@ NS_IMETHODIMP nsImapMailFolder::SetAclFlags(PRUint32 aclFlags)
   nsCOMPtr<nsIDBFolderInfo> dbFolderInfo;
   nsresult rv = GetDatabase(nsnull);
 
+  m_aclFlags = aclFlags;
   if (mDatabase)
   {
     rv = mDatabase->GetDBFolderInfo(getter_AddRefs(dbFolderInfo));
@@ -5093,16 +5028,71 @@ NS_IMETHODIMP nsImapMailFolder::GetAclFlags(PRUint32 *aclFlags)
 {
   NS_ENSURE_ARG_POINTER(aclFlags);
 
+  nsresult rv = NS_OK;
+
+  ReadDBFolderInfo(PR_FALSE); // update cache first.
+  if (m_aclFlags == -1) // -1 means invalid value, so get it from db.
+  {
+    nsCOMPtr<nsIDBFolderInfo> dbFolderInfo;
+    rv = GetDatabase(nsnull);
+
+    if (mDatabase)
+    {
+      rv = mDatabase->GetDBFolderInfo(getter_AddRefs(dbFolderInfo));
+      if (NS_SUCCEEDED(rv) && dbFolderInfo)
+      {
+        rv = dbFolderInfo->GetUint32Property("aclFlags", aclFlags, 0);
+        m_aclFlags = *aclFlags;
+      }
+    }
+  }
+  else
+    *aclFlags = m_aclFlags;
+  return rv;
+}
+
+
+nsresult nsImapMailFolder::SetSupportedUserFlags(PRUint32 userFlags)
+{
   nsCOMPtr<nsIDBFolderInfo> dbFolderInfo;
   nsresult rv = GetDatabase(nsnull);
 
+  m_supportedUserFlags = userFlags;
   if (mDatabase)
   {
     rv = mDatabase->GetDBFolderInfo(getter_AddRefs(dbFolderInfo));
     if (NS_SUCCEEDED(rv) && dbFolderInfo)
-      rv = dbFolderInfo->GetUint32Property("aclFlags", aclFlags, 0);
+      dbFolderInfo->SetUint32Property("imapFlags", userFlags);
   }
 
+
+  return rv;
+}
+
+nsresult nsImapMailFolder::GetSupportedUserFlags(PRUint32 *userFlags)
+{
+  NS_ENSURE_ARG_POINTER(userFlags);
+
+  nsresult rv = NS_OK;
+
+  ReadDBFolderInfo(PR_FALSE); // update cache first.
+  if (m_supportedUserFlags == 0) // 0 means invalid value, so get it from db.
+  {
+    nsCOMPtr<nsIDBFolderInfo> dbFolderInfo;
+    rv = GetDatabase(nsnull);
+
+    if (mDatabase)
+    {
+      rv = mDatabase->GetDBFolderInfo(getter_AddRefs(dbFolderInfo));
+      if (NS_SUCCEEDED(rv) && dbFolderInfo)
+      {
+        rv = dbFolderInfo->GetUint32Property("imapFlags", userFlags, 0);
+        m_supportedUserFlags = *userFlags;
+      }
+    }
+  }
+  else
+    *userFlags = m_supportedUserFlags;
   return rv;
 }
 
@@ -5167,7 +5157,7 @@ void nsMsgIMAPFolderACL::BuildInitialACLFromCache()
   if (startingFlags & IMAP_ACL_ADMINISTER_FLAG)
     myrights += "a";
   
-  if (myrights.Length())
+  if (!myrights.IsEmpty())
     SetFolderRightsForUser(nsnull, myrights.get());
 }
 
@@ -5221,9 +5211,18 @@ void nsMsgIMAPFolderACL::UpdateACLCache()
 
 PRBool nsMsgIMAPFolderACL::SetFolderRightsForUser(const char *userName, const char *rights)
 {
-  PRBool rv = PR_FALSE;
+  PRBool ret = PR_FALSE;
   nsXPIDLCString myUserName;
-  m_folder->GetUsername(getter_Copies(myUserName));
+  nsCOMPtr <nsIMsgIncomingServer> server;
+
+  nsresult rv = m_folder->GetServer(getter_AddRefs(server));
+  NS_ASSERTION(NS_SUCCEEDED(rv), "error getting server");
+  if (NS_FAILED(rv)) 
+    return PR_FALSE;
+  // we need the real user name to match with what the imap server returns
+  // in the acl response.
+  server->GetRealUsername(getter_Copies(myUserName));
+
   char *ourUserName = nsnull;
   
   if (!userName)
@@ -5244,7 +5243,7 @@ PRBool nsMsgIMAPFolderACL::SetFolderRightsForUser(const char *userName, const ch
       NS_ASSERTION(m_aclCount >= 0, "acl count can't go negative");
     }
     m_aclCount++;
-    rv = (m_rightsHash->Put(&hashKey, rightsWeOwn) == 0);
+    ret = (m_rightsHash->Put(&hashKey, rightsWeOwn) == 0);
   }
   
   if (ourUserName && 
@@ -5254,14 +5253,14 @@ PRBool nsMsgIMAPFolderACL::SetFolderRightsForUser(const char *userName, const ch
     UpdateACLCache();
   }
   
-  return rv;
+  return ret;
 }
 
 const char *nsMsgIMAPFolderACL::GetRightsStringForUser(const char *inUserName)
 {
   nsXPIDLCString userName;
   userName.Assign(inUserName);
-  if (!userName.Length())
+  if (userName.IsEmpty())
   {
     nsCOMPtr <nsIMsgIncomingServer> server;
 
@@ -5437,49 +5436,49 @@ nsresult nsMsgIMAPFolderACL::CreateACLRightsString(PRUnichar **rightsString)
     }
     if (GetCanIWriteFolder())
     {
-      if (rights.Length()) rights += NS_LITERAL_STRING(", ");
+      if (!rights.IsEmpty()) rights += NS_LITERAL_STRING(", ");
       bundle->GetStringFromID(IMAP_ACL_WRITE_RIGHT, getter_Copies(curRight));
       rights.Append(curRight);
     }
     if (GetCanIInsertInFolder())
     {
-      if (rights.Length()) rights += NS_LITERAL_STRING(", ");
+      if (!rights.IsEmpty()) rights += NS_LITERAL_STRING(", ");
       bundle->GetStringFromID(IMAP_ACL_INSERT_RIGHT, getter_Copies(curRight));
       rights.Append(curRight);
     }
     if (GetCanILookupFolder())
     {
-      if (rights.Length()) rights += NS_LITERAL_STRING(", ");
+      if (!rights.IsEmpty()) rights += NS_LITERAL_STRING(", ");
       bundle->GetStringFromID(IMAP_ACL_LOOKUP_RIGHT, getter_Copies(curRight));
       rights.Append(curRight);
     }
     if (GetCanIStoreSeenInFolder())
     {
-      if (rights.Length()) rights += NS_LITERAL_STRING(", ");
+      if (!rights.IsEmpty()) rights += NS_LITERAL_STRING(", ");
       bundle->GetStringFromID(IMAP_ACL_SEEN_RIGHT, getter_Copies(curRight));
       rights.Append(curRight);
     }
     if (GetCanIDeleteInFolder())
     {
-      if (rights.Length()) rights += NS_LITERAL_STRING(", ");
+      if (!rights.IsEmpty()) rights += NS_LITERAL_STRING(", ");
       bundle->GetStringFromID(IMAP_ACL_DELETE_RIGHT, getter_Copies(curRight));
       rights.Append(curRight);
     }
     if (GetCanICreateSubfolder())
     {
-      if (rights.Length()) rights += NS_LITERAL_STRING(", ");
+      if (!rights.IsEmpty()) rights += NS_LITERAL_STRING(", ");
       bundle->GetStringFromID(IMAP_ACL_CREATE_RIGHT, getter_Copies(curRight));
       rights.Append(curRight);
     }
     if (GetCanIPostToFolder())
     {
-      if (rights.Length()) rights += NS_LITERAL_STRING(", ");
+      if (!rights.IsEmpty()) rights += NS_LITERAL_STRING(", ");
       bundle->GetStringFromID(IMAP_ACL_POST_RIGHT, getter_Copies(curRight));
       rights.Append(curRight);
     }
     if (GetCanIAdministerFolder())
     {
-      if (rights.Length()) rights += NS_LITERAL_STRING(", ");
+      if (!rights.IsEmpty()) rights += NS_LITERAL_STRING(", ");
       bundle->GetStringFromID(IMAP_ACL_ADMINISTER_RIGHT, getter_Copies(curRight));
       rights.Append(curRight);
     }
@@ -5668,7 +5667,12 @@ nsImapMailFolder::SetUrlState(nsIImapProtocol* aProtocol,
   {
     ProgressStatus(aProtocol, IMAP_DONE, nsnull);
     m_urlRunning = PR_FALSE;
-    m_downloadingFolderForOfflineUse = PR_FALSE;
+    EndOfflineDownload();
+    if (m_downloadingFolderForOfflineUse)
+    {
+      ReleaseSemaphore(NS_STATIC_CAST(nsIMsgImapMailFolder*, this));
+      m_downloadingFolderForOfflineUse = PR_FALSE;
+    }
   }
 
     if (aUrl)
@@ -6631,10 +6635,10 @@ nsresult nsImapMailFolder::CreateACLRightsStringForFolder(PRUnichar **rightsStri
 NS_IMETHODIMP nsImapMailFolder::GetFolderNeedsACLListed(PRBool *bVal)
 {
   NS_ENSURE_ARG_POINTER(bVal);
-  PRBool dontNeedACLListed = PR_TRUE;
-  // if we haven't acl listed, and it's not a no select folder, then we'll
-  // list the acl if it's not a namespace.
-  if (m_folderNeedsACLListed && !(mFlags & MSG_FOLDER_FLAG_IMAP_NOSELECT))
+  PRBool dontNeedACLListed = !m_folderNeedsACLListed;
+  // if we haven't acl listed, and it's not a no select folder or the inbox,
+  //  then we'll list the acl if it's not a namespace.
+  if (m_folderNeedsACLListed && !(mFlags & MSG_FOLDER_FLAG_IMAP_NOSELECT | MSG_FOLDER_FLAG_INBOX))
     GetIsNamespace(&dontNeedACLListed);
 
   *bVal = !dontNeedACLListed;
@@ -6713,7 +6717,7 @@ NS_IMETHODIMP nsImapMailFolder::ResetNamespaceReferences()
   PRUnichar hierarchyDelimiter;
   GetHierarchyDelimiter(&hierarchyDelimiter);
   m_namespace = nsIMAPNamespaceList::GetNamespaceForFolder(serverKey.get(), onlineName.get(), (char) hierarchyDelimiter);
-  NS_ASSERTION(m_namespace, "resetting null namespace");
+//  NS_ASSERTION(m_namespace, "resetting null namespace");
   if (m_namespace)
     m_folderIsNamespace = nsIMAPNamespaceList::GetFolderIsNamespace(serverKey.get(), onlineName.get(), (char) hierarchyDelimiter, m_namespace);
   else
@@ -6955,7 +6959,7 @@ NS_IMETHODIMP nsImapMailFolder::RenameClient(nsIMsgWindow *msgWindow, nsIMsgFold
         if (imapFolder)
         {
           nsCAutoString onlineName(m_onlineFolderName); 
-          if (onlineName.Length() > 0)
+          if (!onlineName.IsEmpty())
           onlineName.Append(char(hierarchyDelimiter));
           onlineName.AppendWithConversion(folderNameStr);
           imapFolder->SetVerifiedAsOnlineFolder(PR_TRUE);
@@ -7204,7 +7208,7 @@ nsImapMailFolder::SpamFilterClassifyMessages(const char **aURIArray, PRUint32 aU
 
 NS_IMETHODIMP
 nsImapMailFolder::StoreCustomKeywords(nsIMsgWindow *aMsgWindow, const char *aFlagsToAdd, 
-                                      const char *aFlagsToSubtract, nsMsgKey *aKeysToStore, PRInt32 aNumKeys, nsIURI **_retval)
+                                      const char *aFlagsToSubtract, nsMsgKey *aKeysToStore, PRUint32 aNumKeys, nsIURI **_retval)
 {
   nsresult rv;
   nsCOMPtr<nsIImapService> imapService(do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv)); 
@@ -7306,6 +7310,8 @@ nsImapMailFolder::OnMessageClassified(const char *aMsgURI, nsMsgJunkStatus aClas
     if (nonJunkKeysToClassify && nonJunkKeysToClassify->GetSize() > 0)
       StoreCustomKeywords(m_moveCoalescer->GetMsgWindow(), "NonJunk", "", nonJunkKeysToClassify->GetArray(), nonJunkKeysToClassify->GetSize(), nsnull);
     m_moveCoalescer->PlaybackMoves();
+    junkKeysToClassify->RemoveAll();
+    nonJunkKeysToClassify->RemoveAll();
   }
   return NS_OK;
 }

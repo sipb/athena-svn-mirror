@@ -129,6 +129,7 @@
           while (child) {
             if (child.localName != "splitter") {
               var obj = {
+                id: child.getAttribute("id"),
                 label: child.getAttribute("label"),
                 accesskey: child.getAttribute("accesskey"),
                 hidden: child.getAttribute("hidden")
@@ -144,10 +145,10 @@
       </property>
       
       <method name="toggleColumnVisibility">
-        <parameter name="aColumnResource"/>
+        <parameter name="aColumnId"/>
         <body>
         <![CDATA[
-          var elt = document.getAnonymousElementByAttribute(this, "sort", aColumnResource);
+          var elt = document.getAnonymousElementByAttribute(this, "id", aColumnId);
           if (elt)
             elt.setAttribute("hidden", elt.getAttribute("hidden") != "true");
         ]]>
@@ -275,12 +276,12 @@
         <parameter name="aParent"/>
         <parameter name="aOrientation"/>
         <body><![CDATA[
-          if (aItem === undefined)
-            return BookmarksUtils.getTargetFromFolder(this.getRootResource());
 
-          if (aOrientation == BookmarksUtils.DROP_ON) {
+          if (!aParent || aParent.Value == "NC:BookmarksTopRoot")
+            return BookmarksUtils.getTargetFromFolder(RDF.GetResource("NC:BookmarksRoot"))
+
+          if (aOrientation == BookmarksUtils.DROP_ON)
             return BookmarksUtils.getTargetFromFolder(aItem);
-          }
 
           RDFC.Init(this.db, aParent);
           var index = RDFC.IndexOf(aItem);
@@ -447,7 +448,7 @@
       <parameter name="aReverse"/>
         <body><![CDATA[
           var confirmed;
-          if (PREF.getBoolPref("browser.bookmarks.confirm_sorting")) {
+          if (PREF && PREF.getBoolPref("browser.bookmarks.confirm_sorting")) {
             var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
                                 .getService(Components.interfaces.nsIPromptService);
             var title = BookmarksUtils.getLocaleString("confirm_sorting_title");
@@ -483,7 +484,7 @@
           var selection = this.mOuter._selection;
           aXferData.data = BookmarksUtils.getXferDataFromSelection(selection);
           const kDSIID = Components.interfaces.nsIDragService;
-          if (aEvent.ctrlKey || !selection.containsMutable)
+          if (aEvent.ctrlKey)
             aDragAction.action = kDSIID.DRAGDROP_ACTION_COPY;
         }
       })
@@ -572,7 +573,7 @@
         mOuter: this,
         canDropOn: function(index)
         {
-          var dragSession = DS.getCurrentSession();
+          var dragSession = DS && DS.getCurrentSession();
           if (!dragSession)
             return false;
           var selection = BookmarksUtils.getSelectionFromXferData(dragSession);
@@ -580,7 +581,7 @@
         },
         canDropBeforeAfter: function(index, before)
         {
-          var dragSession = DS.getCurrentSession();
+          var dragSession = DS && DS.getCurrentSession();
           if (!dragSession)
             return false;
           var selection = BookmarksUtils.getSelectionFromXferData(dragSession);
@@ -595,7 +596,7 @@
         },
         onDrop: function(row, orientation)
         {  
-          var dragSession = DS.getCurrentSession();
+          var dragSession = DS && DS.getCurrentSession();
           if (!dragSession)
             return;
           var selection = BookmarksUtils.getSelectionFromXferData(dragSession);

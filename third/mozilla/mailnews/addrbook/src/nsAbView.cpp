@@ -73,11 +73,11 @@
 
 static NS_DEFINE_CID(kCollationFactoryCID, NS_COLLATIONFACTORY_CID);
 
-NS_IMPL_ISUPPORTS4(nsAbView, nsIAbView, nsITreeView, nsIAbListener, nsIObserver);
+NS_IMPL_ISUPPORTS4(nsAbView, nsIAbView, nsITreeView, nsIAbListener, nsIObserver)
 
 nsAbView::nsAbView()
 {
-  mMailListAtom = getter_AddRefs(NS_NewAtom("MailList"));
+  mMailListAtom = do_GetAtom("MailList");
   mSuppressSelectionChange = PR_FALSE;
   mSuppressCountChange = PR_FALSE;
   mGeneratedNameFormat = 0;
@@ -127,11 +127,16 @@ nsresult nsAbView::RemoveCardAt(PRInt32 row)
   AbCard *abcard = (AbCard*) (mCards.ElementAt(row));
   NS_IF_RELEASE(abcard->card);
   mCards.RemoveElementAt(row);
-  if (abcard->primaryCollationKey)
-    nsMemory::Free(abcard->primaryCollationKey);
-  if (abcard->secondaryCollationKey)
-    nsMemory::Free(abcard->secondaryCollationKey);
+  PR_FREEIF(abcard->primaryCollationKey);
+  PR_FREEIF(abcard->secondaryCollationKey);
   PR_FREEIF(abcard);
+
+  
+  // this needs to happen after we remove the card, as RowCountChanged() will call GetRowCount()
+  if (mTree) {
+    rv = mTree->RowCountChanged(row, -1);
+    NS_ENSURE_SUCCESS(rv,rv);
+  }
 
   if (mAbViewListener && !mSuppressCountChange) {
     rv = mAbViewListener->OnCountChanged(mCards.Count());
@@ -757,46 +762,6 @@ nsresult nsAbView::GenerateCollationKeysForCard(const PRUnichar *colID, AbCard *
   nsresult rv;
   nsXPIDLString value;
 
-  rv = GetCardValue(abcard->card, colID, getter_Copies(value));
-  NS_ENSURE_SUCCESS(rv,rv);
-  
-  // XXX todo
-  // be smarter about the allocation, use an arena?
-  if (abcard->primaryCollationKey)
-    nsMemory::Free(abcard->primaryCollationKey);
-  rv = CreateCollationKey(value, &(abcard->primaryCollationKey), &(abcard->primaryCollationKeyLen));
-  NS_ENSURE_SUCCESS(rv,rv);
-  
-  // XXX todo
-  // fix me, do this with a const getter, to avoid the strcpy
-
-  // hardcode email to be our secondary key
-  rv = GetCardValue(abcard->card, NS_LITERAL_STRING(kPriEmailColumn).get(), getter_Copies(value));
-  NS_ENSURE_SUCCESS(rv,rv);
-  
-  // XXX todo
-  // be smarter about the allocation, use an arena?
-  if (abcard->secondaryCollationKey)
-    nsMemory::Free(abcard->secondaryCollationKey);
-  rv = CreateCollationKey(value, &(abcard->secondaryCollationKey), &(abcard->secondaryCollationKeyLen));
-  NS_ENSURE_SUCCESS(rv,rv);
-  return rv;
-}
-
-nsresult nsAbView::CreateCollationKey(const PRUnichar *aSource, PRUint8 **aKey, PRUint32 *aKeyLen)
-{
-  NS_ENSURE_ARG_POINTER(aKey);
-  NS_ENSURE_ARG_POINTER(aKeyLen);
-
-  if (!*aSource)
-  {
-    // no string, so no key.
-    *aKey = nsnull;
-    *aKeyLen = 0;
-    return NS_OK;
-  }
-
-  nsresult rv;
   if (!mCollationKeyGenerator)
   {
     nsCOMPtr<nsILocaleService> localeSvc = do_GetService(NS_LOCALESERVICE_CONTRACTID,&rv); 
@@ -813,18 +778,26 @@ nsresult nsAbView::CreateCollationKey(const PRUnichar *aSource, PRUint8 **aKey, 
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
-  // XXX can we avoid this copy?
-  nsAutoString sourceString(aSource);
-  rv = mCollationKeyGenerator->GetSortKeyLen(kCollationCaseInSensitive, sourceString, aKeyLen);
-  NS_ENSURE_SUCCESS(rv, rv);
+  rv = GetCardValue(abcard->card, colID, getter_Copies(value));
+  NS_ENSURE_SUCCESS(rv,rv);
+  
+  PR_FREEIF(abcard->primaryCollationKey);
+  rv = mCollationKeyGenerator->AllocateRawSortKey(kCollationCaseInSensitive,
+    value, &(abcard->primaryCollationKey), &(abcard->primaryCollationKeyLen));
+  NS_ENSURE_SUCCESS(rv,rv);
+  
+  // XXX todo
+  // fix me, do this with a const getter, to avoid the strcpy
 
-  *aKey = (PRUint8*) nsMemory::Alloc(*aKeyLen);
-  if (!aKey)
-    return NS_ERROR_OUT_OF_MEMORY;
-
-  rv = mCollationKeyGenerator->CreateRawSortKey(kCollationCaseInSensitive, sourceString, *aKey, aKeyLen);
-  NS_ASSERTION(NS_SUCCEEDED(rv), "failed to generate a raw sort key, see bug #121868");
-  return NS_OK;
+  // hardcode email to be our secondary key
+  rv = GetCardValue(abcard->card, NS_LITERAL_STRING(kPriEmailColumn).get(), getter_Copies(value));
+  NS_ENSURE_SUCCESS(rv,rv);
+  
+  PR_FREEIF(abcard->secondaryCollationKey);
+  rv = mCollationKeyGenerator->AllocateRawSortKey(kCollationCaseInSensitive,
+    value, &(abcard->secondaryCollationKey), &(abcard->secondaryCollationKeyLen));
+  NS_ENSURE_SUCCESS(rv,rv);
+  return rv;
 }
 
 NS_IMETHODIMP nsAbView::OnItemAdded(nsISupports *parentDir, nsISupports *item)
@@ -954,12 +927,6 @@ nsresult nsAbView::RemoveCardAndSelectNextCard(nsISupports *item)
 
       rv = RemoveCardAt(index);
       NS_ENSURE_SUCCESS(rv,rv);
-
-      // this needs to happen after we remove the card, as RowCountChanged() will call GetRowCount()
-      if (mTree) {
-        rv = mTree->RowCountChanged(index, -1);
-      NS_ENSURE_SUCCESS(rv,rv);
-      }
 
       if (selectNextCard) {
       PRInt32 count = mCards.Count();

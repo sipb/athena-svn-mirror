@@ -162,18 +162,18 @@ nsXULContentUtils::FindChildByTag(nsIContent* aElement,
 
     for (PRInt32 i = 0; i < count; ++i) {
         nsCOMPtr<nsIContent> kid;
-        if (NS_FAILED(rv = aElement->ChildAt(i, *getter_AddRefs(kid))))
+        if (NS_FAILED(rv = aElement->ChildAt(i, getter_AddRefs(kid))))
             return rv; // XXX fatal
 
         PRInt32 nameSpaceID;
-        if (NS_FAILED(rv = kid->GetNameSpaceID(nameSpaceID)))
+        if (NS_FAILED(rv = kid->GetNameSpaceID(&nameSpaceID)))
             return rv; // XXX fatal
 
         if (nameSpaceID != aNameSpaceID)
             continue; // wrong namespace
 
         nsCOMPtr<nsIAtom> kidTag;
-        if (NS_FAILED(rv = kid->GetTag(*getter_AddRefs(kidTag))))
+        if (NS_FAILED(rv = kid->GetTag(getter_AddRefs(kidTag))))
             return rv; // XXX fatal
 
         if (kidTag.get() != aTag)
@@ -208,11 +208,8 @@ nsXULContentUtils::GetElementResource(nsIContent* aElement, nsIRDFResource** aRe
 
     // Since the element will store its ID attribute as a document-relative value,
     // we may need to qualify it first...
-    nsCOMPtr<nsIDocument> doc;
-    rv = aElement->GetDocument(*getter_AddRefs(doc));
-    if (NS_FAILED(rv)) return rv;
-
-    NS_ASSERTION(doc != nsnull, "element is not in any document");
+    nsCOMPtr<nsIDocument> doc = aElement->GetDocument();
+    NS_ASSERTION(doc, "element is not in any document");
     if (! doc)
         return NS_ERROR_FAILURE;
 
@@ -240,9 +237,7 @@ nsXULContentUtils::GetElementRefResource(nsIContent* aElement, nsIRDFResource** 
 
     if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
         // We'll use rdf_MakeAbsolute() to translate this to a URL.
-        nsCOMPtr<nsIDocument> doc;
-        rv = aElement->GetDocument(*getter_AddRefs(doc));
-        if (NS_FAILED(rv)) return rv;
+        nsCOMPtr<nsIDocument> doc = aElement->GetDocument();
 
         nsCOMPtr<nsIURI> url;
         doc->GetDocumentURL(getter_AddRefs(url));
@@ -344,13 +339,13 @@ nsXULContentUtils::MakeElementURI(nsIDocument* aDocument, const nsAString& aElem
 
     if (aElementID.FindChar(':') > 0) {
         // Assume it's absolute already. Use as is.
-        aURI.Assign(NS_ConvertUCS2toUTF8(aElementID));
+        CopyUTF16toUTF8(aElementID, aURI);
     }
     else {
         nsresult rv;
 
         nsCOMPtr<nsIURI> docURL;
-        rv = aDocument->GetBaseURL(*getter_AddRefs(docURL));
+        rv = aDocument->GetBaseURL(getter_AddRefs(docURL));
         if (NS_FAILED(rv)) return rv;
 
         // XXX Urgh. This is so broken; I'd really just like to use
@@ -364,7 +359,7 @@ nsXULContentUtils::MakeElementURI(nsIDocument* aDocument, const nsAString& aElem
         if (aElementID.First() != '#') {
             aURI.Append('#');
         }
-        aURI.Append(NS_ConvertUCS2toUTF8(aElementID));
+        AppendUTF16toUTF8(aElementID, aURI);
 #else
         nsXPIDLCString spec;
         rv = NS_MakeAbsoluteURI(nsCAutoString(aElementID), docURL, getter_Copies(spec));
@@ -409,7 +404,7 @@ nsXULContentUtils::MakeElementID(nsIDocument* aDocument, const nsAString& aURI, 
     nsresult rv;
 
     nsCOMPtr<nsIURI> docURL;
-    rv = aDocument->GetBaseURL(*getter_AddRefs(docURL));
+    rv = aDocument->GetBaseURL(getter_AddRefs(docURL));
     if (NS_FAILED(rv)) return rv;
 
     nsCAutoString spec;

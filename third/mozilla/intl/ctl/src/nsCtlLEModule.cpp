@@ -31,15 +31,14 @@
 #include "nsIGenericFactory.h"
 #include "nsIModule.h"
 #include "nsULE.h"
-#include "nsICharsetConverterManager.h"
+#include "nsICategoryManager.h"
+#include "nsEncoderDecoderUtils.h"
 #include "nsUnicodeToTIS620.h"
 #include "nsUnicodeToSunIndic.h"
 #include "nsUnicodeToThaiTTF.h"
 
 //----------------------------------------------------------------------------
 // Global functions and data [declaration]
-
-static NS_DEFINE_CID(kComponentManagerCID, NS_COMPONENTMANAGER_CID);
 
 #define ENCODER_NAME_BASE "Unicode Encoder-"
 
@@ -57,9 +56,9 @@ NS_CONVERTER_REGISTRY_END
 
 NS_IMPL_NSUCONVERTERREGSELF
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTIS620);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToThaiTTF);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToSunIndic);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTIS620)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToThaiTTF)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToSunIndic)
 
 static const nsModuleComponentInfo components[] =
 {

@@ -54,6 +54,7 @@ class nsIDOMNodeList;
 class nsIFrame;
 class nsIDOMText;
 class nsINodeInfo;
+class nsURI;
 
 #define PARENT_BIT_RANGELISTS       ((PtrBits)0x1 << 0)
 #define PARENT_BIT_LISTENERMANAGER  ((PtrBits)0x1 << 1)
@@ -150,8 +151,8 @@ public:
                        const nsAString& aVersion,
                        PRBool* aReturn);
   nsresult GetBaseURI(nsAString& aURI);
-  nsresult LookupNamespacePrefix(const nsAString& aNamespaceURI,
-                                 nsAString& aPrefix);
+  nsresult LookupPrefix(const nsAString& aNamespaceURI,
+                        nsAString& aPrefix);
   nsresult LookupNamespaceURI(const nsAString& aNamespacePrefix,
                               nsAString& aNamespaceURI);
 
@@ -168,16 +169,16 @@ public:
                        const nsAString& aArg);
 
   // Implementation for nsIContent
-  NS_IMETHOD GetDocument(nsIDocument*& aResult) const;
+  NS_IMETHOD_(nsIDocument*) GetDocument() const;
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
                          PRBool aCompileEventHandlers);
-  NS_IMETHOD GetParent(nsIContent*& aResult) const;
+  NS_IMETHOD_(nsIContent*) GetParent() const;
   NS_IMETHOD SetParent(nsIContent* aParent);
   NS_IMETHOD_(PRBool) IsNativeAnonymous() const;
   NS_IMETHOD_(void) SetNativeAnonymous(PRBool aAnonymous);
-  NS_IMETHOD GetNameSpaceID(PRInt32& aID) const;
+  NS_IMETHOD GetNameSpaceID(PRInt32* aID) const;
   NS_IMETHOD NormalizeAttrString(const nsAString& aStr,
-                                 nsINodeInfo*& aNodeInfo);
+                                 nsINodeInfo** aNodeInfo);
   NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                      const nsAString& aValue, PRBool aNotify);
   NS_IMETHOD SetAttr(nsINodeInfo *aNodeInfo,
@@ -187,10 +188,10 @@ public:
   NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute,
                      nsAString& aResult) const;
   NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute,
-                     nsIAtom*& aPrefix, nsAString& aResult) const;
+                     nsIAtom** aPrefix, nsAString& aResult) const;
   NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute) const;
-  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32& aNameSpaceID, 
-                           nsIAtom*& aName, nsIAtom*& aPrefix) const;
+  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32* aNameSpaceID,
+                           nsIAtom** aName, nsIAtom** aPrefix) const;
   NS_IMETHOD GetAttrCount(PRInt32& aResult) const;
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
@@ -203,21 +204,22 @@ public:
   NS_IMETHOD SetContentID(PRUint32 aID);
   NS_IMETHOD RangeAdd(nsIDOMRange* aRange);
   NS_IMETHOD RangeRemove(nsIDOMRange* aRange);
-  NS_IMETHOD GetRangeList(nsVoidArray*& aResult) const;
+  NS_IMETHOD GetRangeList(nsVoidArray** aResult) const;
   NS_IMETHOD SetFocus(nsIPresContext *aPresContext);
   NS_IMETHOD RemoveFocus(nsIPresContext *aPresContext);
 
-  NS_IMETHOD GetBindingParent(nsIContent** aContent);
+  NS_IMETHOD_(nsIContent*) GetBindingParent() const;
   NS_IMETHOD SetBindingParent(nsIContent* aParent);
   NS_IMETHOD_(PRBool) IsContentOfType(PRUint32 aFlags);
 
   NS_IMETHOD GetListenerManager(nsIEventListenerManager** aInstancePtrResult);
+  NS_IMETHOD GetBaseURL(nsIURI** aURI) const;
   NS_IMETHOD DoneCreatingElement();
 
-  NS_IMETHOD GetNodeInfo(nsINodeInfo*& aResult) const;
+  NS_IMETHOD GetNodeInfo(nsINodeInfo** aResult) const;
   NS_IMETHOD CanContainChildren(PRBool& aResult) const;
   NS_IMETHOD ChildCount(PRInt32& aResult) const;
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent*& aResult) const;
+  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const;
   NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const;
   NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
                            PRBool aDeepSetDocument);
@@ -239,6 +241,7 @@ public:
   NS_IMETHOD SetText(const char* aBuffer, PRInt32 aLength, PRBool aNotify);
   NS_IMETHOD IsOnlyWhitespace(PRBool* aResult);
   NS_IMETHOD CloneContent(PRBool aCloneText, nsITextContent** aClone);
+  NS_IMETHOD AppendTextTo(nsAString& aResult);
 
   //----------------------------------------
 
@@ -392,10 +395,10 @@ private:
   NS_IMETHOD GetBaseURI(nsAString& aURI) {                                  \
     return nsGenericDOMDataNode::GetBaseURI(aURI);                          \
   }                                                                         \
-  NS_IMETHOD LookupNamespacePrefix(const nsAString& aNamespaceURI,          \
-                                   nsAString& aPrefix) {                    \
-    return nsGenericDOMDataNode::LookupNamespacePrefix(aNamespaceURI,       \
-                                                       aPrefix);            \
+  NS_IMETHOD LookupPrefix(const nsAString& aNamespaceURI,                   \
+                          nsAString& aPrefix) {                             \
+    return nsGenericDOMDataNode::LookupPrefix(aNamespaceURI,                \
+                                              aPrefix);                     \
   }                                                                         \
   NS_IMETHOD LookupNamespaceURI(const nsAString& aNamespacePrefix,          \
                                 nsAString& aNamespaceURI) {                 \

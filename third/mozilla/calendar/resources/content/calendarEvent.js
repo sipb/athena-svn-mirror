@@ -87,6 +87,7 @@
                         onModifyItem : function( calendarEvent, originalEvent ) {},
                         onDeleteItem : function( calendarEvent ) {},
                         onAlarm      : function( calendarEvent ) {},
+                        onError      : function() {},
                      };
                      
                      These methods are now called synchronously, if you add an event the onAddItem
@@ -100,26 +101,18 @@
 function CalendarEventDataSource( )
 {
    try {
-       var iCalLibComponent = Components.classes["@mozilla.org/ical-container;1"].createInstance();
+        var iCalLibComponent = Components.classes["@mozilla.org/ical-container;1"].getService();
    } catch ( e ) {
-       alert( "The ICAL Component is not registered properly. Please follow the instructions below:\n"+
-          "Windows Users:\n"+
-          "-Please quit Mozilla, run regxpcom and run Mozilla again.\n\n"+
-          "Linux users:\n"+
-          "1)Make sure you have write access to the component.reg file.\n"+
-          "2)Make sure libical is installed properly. (See http://www.mozilla.org/projects/calendar/ for detailed instructions)\n"+
-          "3)Quit Mozilla, cd to your mozilla/bin directory. Run ./regxpcom and run Mozilla again.\n"+
-          "Note: If you get this error:\n"+
-          "'./regxpcom: error while loading shared libraries: libxpcom.so: cannot open\n"+
-          "shared object file: No such file or directory',\n"+
-          "set LD_LIBRARY_PATH and MOZILLA_FIVE_HOME to your mozilla/bin directory first.\n"+
-              "Example: export LD_LIBRARY_PATH=/home/user/mozilla/dist/bin\n"+
-          "Example: export MOZILLA_FIVE_HOME=/home/user/mozilla/dist/bin\n\n"+
+       alert( 
+           "The calendar cannot run due to the following error:\n"+
+           "The ICAL Component is not registered properly. Please follow the instructions given at:\n"+
+          "http://bugzilla.mozilla.org/attachment.cgi?id=122860&action=view\n"+
           "If these instructions don't solve the problem, please add yourself to the cc list of\n"+
           "bug 134432 at http://bugzilla.mozilla.org/show_bug.cgi?id=134432.\n"+
           "and give more feedback on your platform, Mozilla version, calendar install type:\n"+
           "(build or xpi), any errors you see on the console that you think is related and any\n"+
           " other problems you come across when following the above insructions.\n\n"+e );
+          window.close();
    }
          
    this.gICalLib = iCalLibComponent.QueryInterface(Components.interfaces.oeIICalContainer);
@@ -432,7 +425,7 @@ CalendarEventDataSource.prototype.getAllEvents = function calEvent_getAllEvents(
 
 CalendarEventDataSource.prototype.getEventsForRange = function calEvent_getEventsForRange( StartDate, EndDate )
 {
-   dump( "\n->get events from "+StartDate+"\n"+EndDate );
+  //dump( "\n->get events from "+StartDate+"\n"+EndDate );
    var eventList = this.gICalLib.getFirstEventsForRange( StartDate, EndDate );
    
    this.currentEvents = new Array();
@@ -649,8 +642,6 @@ CalendarEventDataSource.prototype.prepareAlarms = function calEvent_prepareAlarm
     this.alarmObserver =  new CalendarAlarmObserver( this );
     
     this.gICalLib.addObserver( this.alarmObserver );
-    
-    this.alarmObserver.firePendingAlarms( this.alarmObserver );
 }
 
 function CalendarAlarmObserver( calendarService )
@@ -669,8 +660,6 @@ CalendarAlarmObserver.prototype.firePendingAlarms = function calAlarm_firePendin
       for( var i in this.pendingAlarmList )
       {
          this.fireAlarm( this.pendingAlarmList[ i ] );
-
-         observer.onAlarm( this.pendingAlarmList[ i ] ); 
       }
     }
    this.pendingAlarmList = null;
@@ -684,14 +673,15 @@ CalendarAlarmObserver.prototype.onLoad = function( calendarEvent ){}
 CalendarAlarmObserver.prototype.onAddItem = function( calendarEvent ){}
 CalendarAlarmObserver.prototype.onModifyItem = function( calendarEvent, originalEvent ){}
 CalendarAlarmObserver.prototype.onDeleteItem = function( calendarEvent ){}
+CalendarAlarmObserver.prototype.onError = function(){}
 
 CalendarAlarmObserver.prototype.onAlarm = function calAlarm_onAlarm( calendarEvent )
 {
-    dump( "caEvent.alarmWentOff is "+ calendarEvent );
+    dump( "caEvent.alarmWentOff is "+ calendarEvent + "\n" );
     
     if( this.addToPending )
     {
-        dump( "defering alarm "+ calendarEvent );
+        dump( "defering alarm "+ calendarEvent + "\n" );
         this.pendingAlarmList.push( calendarEvent );
     }
     else
@@ -702,16 +692,17 @@ CalendarAlarmObserver.prototype.onAlarm = function calAlarm_onAlarm( calendarEve
 
 CalendarAlarmObserver.prototype.fireAlarm = function calAlarm_fireAlarm( calendarEvent )
 {
-   dump( "Fire alarm "+ calendarEvent );
+   dump( "Fire alarm "+ calendarEvent + "\n" );
    
    if( typeof( gCalendarWindow ) == "undefined" )
    {
       return;
    }
       
-   var categoriesStringBundle = srGetStrBundle("chrome://calendar/locale/calendar.properties");
-   
-   if( getBoolPref(gCalendarWindow.calendarPreferences.calendarPref, "alarms.playsound", categoriesStringBundle.GetStringFromName("playAlarmSound" ) ) )
+   if( getBoolPref(gCalendarWindow.calendarPreferences.calendarPref, 
+		   "alarms.playsound", 
+		   gCalendarBundle.getString("playAlarmSound") ) 
+       )
    {
       playSound();
    }
@@ -720,11 +711,10 @@ CalendarAlarmObserver.prototype.fireAlarm = function calAlarm_fireAlarm( calenda
    
    if ( calendarEvent.alarmEmailAddress )
    {
-      var EmailBody = "Calendar Event Alarm Went Off!\n----------------------------\n";
-      EmailBody += "Title: "+calendarEvent.title + " at " + calendarEvent.start.toString() +  "\n";
-      EmailBody += "This message sent to you from the Mozilla Calendar.\nhttp://www.mozilla.org/projects/calendar/";
+     var EmailBody = gCalendarEmailBundle.getFormattedString("AlarmEmailBody", [calendarEvent.title, calendarEvent.start.toString()]);
+     var EmailSubject = gCalendarEmailBundle.getFormattedString("AlarmEmailSubject", [calendarEvent.title]);
          
       //send an email for the event
-      sendEmail( "Mozilla Calendar Alarm: "+calendarEvent.title, EmailBody, calendarEvent.alarmEmailAddress, null, null, null, null );
+      sendEmail( EmailSubject, EmailBody, calendarEvent.alarmEmailAddress, null, null, null, null );
    }
 }

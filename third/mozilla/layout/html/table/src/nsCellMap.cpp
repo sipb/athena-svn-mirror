@@ -567,10 +567,9 @@ nsTableCellMap::AppendCell(nsTableCellFrame& aCellFrame,
                            nsRect&           aDamageArea)
 {
   NS_ASSERTION(&aCellFrame == aCellFrame.GetFirstInFlow(), "invalid call on continuing frame");
-  nsIFrame* rgFrame = nsnull;
-  aCellFrame.GetParent(&rgFrame); // get the row
+  nsIFrame* rgFrame = aCellFrame.GetParent(); // get the row
   if (!rgFrame) return 0;
-  rgFrame->GetParent(&rgFrame);   // get the row group
+  rgFrame = rgFrame->GetParent();   // get the row group
   if (!rgFrame) return 0;
 
   CellData* result = nsnull;
@@ -1357,7 +1356,7 @@ PRBool nsCellMap::CellsSpanOut(nsIPresContext* aPresContext,
         }
       }
       NS_IF_RELEASE(frameType);
-      cellFrame->GetNextSibling(&cellFrame);
+      cellFrame = cellFrame->GetNextSibling();
     }
   }
   return PR_FALSE;
@@ -1497,7 +1496,7 @@ nsCellMap::ExpandWithRows(nsIPresContext* aPresContext,
         AppendCell(aMap, (nsTableCellFrame *)cFrame, rowX, PR_FALSE, aDamageArea, &colIndex);
       }
       NS_IF_RELEASE(cFrameType);
-      cFrame->GetNextSibling(&cFrame);
+      cFrame = cFrame->GetNextSibling();
     }
     newRowIndex++;
   }
@@ -1908,7 +1907,7 @@ nsCellMap::RebuildConsideringRows(nsIPresContext* aPresContext,
           AppendCell(aMap, (nsTableCellFrame *)cFrame, rowX, PR_FALSE, aDamageArea);
         }
         NS_IF_RELEASE(cFrameType);
-        cFrame->GetNextSibling(&cFrame);
+        cFrame = cFrame->GetNextSibling();
       }
       rowX++;
     }
@@ -2421,9 +2420,9 @@ PRBool nsCellMap::ColHasSpanningCells(nsTableCellMap& aMap,
   for (PRInt32 rowIndex = 0; rowIndex < mRowCount; rowIndex++) {
     CellData* cd = GetDataAt(aMap, rowIndex, aColIndex, PR_TRUE);
     if (cd && (cd->IsOrig())) { // cell originates 
-      CellData* cd2 = GetDataAt(aMap, rowIndex + 1, aColIndex, PR_TRUE);
+      CellData* cd2 = GetDataAt(aMap, rowIndex, aColIndex +1, PR_TRUE);
       if (cd2 && cd2->IsColSpan()) { // cd2 is spanned by a col
-        if (cd->GetCellFrame() == GetCellFrame(rowIndex + 1, aColIndex, *cd2, PR_FALSE)) {
+        if (cd->GetCellFrame() == GetCellFrame(rowIndex , aColIndex + 1, *cd2, PR_FALSE)) {
           return PR_TRUE;
         }
       }

@@ -41,6 +41,7 @@
 #include "nsAccessibilityService.h"
 #include "nsAccessibleHyperText.h"
 #include "nsHTMLLinkAccessibleWrap.h"
+#include "nsPIAccessNode.h"
 #include "nsIFrame.h"
 #include "nsILink.h"
 #include "nsIServiceManager.h"
@@ -58,8 +59,7 @@ nsAccessibleHyperText::nsAccessibleHyperText(nsIDOMNode* aDomNode, nsIWeakRefere
   mIndex = -1;
   nsCOMPtr<nsIContent> content(do_QueryInterface(aDomNode));
   if (content) {
-    nsCOMPtr<nsIContent> parentContent;
-    content->GetParent(*getter_AddRefs(parentContent));
+    nsCOMPtr<nsIContent> parentContent = content->GetParent();
     if (parentContent)
       parentContent->IndexOf(content, mIndex);
   }
@@ -412,15 +412,18 @@ NS_IMETHODIMP nsAccessibleHyperText::GetLink(PRInt32 aIndex, nsIAccessibleHyperL
         if (cachedAcc) {
           // Retrieved from cache
           nsCOMPtr<nsIAccessibleHyperLink> cachedLink(do_QueryInterface(cachedAcc));
-          if (cachedLink)
+          if (cachedLink) {
             *aLink = cachedLink;
+            NS_IF_ADDREF(*aLink);
+          }
         }
         if (!(*aLink)) {
           *aLink = new nsHTMLLinkAccessibleWrap(parentNode, weakShell);
-          nsCOMPtr<nsIAccessNode> accessNode(do_QueryInterface(*aLink));
+          NS_ENSURE_TRUE(*aLink, NS_ERROR_OUT_OF_MEMORY);
+          NS_ADDREF(*aLink);
+          nsCOMPtr<nsPIAccessNode> accessNode(do_QueryInterface(*aLink));
           accessNode->Init();
         }
-        NS_IF_ADDREF(*aLink);
         break;
       }
     }
@@ -440,11 +443,17 @@ NS_IMETHODIMP nsAccessibleHyperText::GetSelectedLinkIndex(PRInt32 *aSelectedLink
 {
   *aSelectedLinkIndex = -1;
 
-  nsCOMPtr<nsIDOMNode> focusedNode;
-  NS_REINTERPRET_CAST(nsAccessible*, this)->GetFocusedNode(getter_AddRefs(focusedNode));
-
-  PRUint32 index, count, linkCount = 0;
+  PRUint32 count;
   mTextChildren->Count(&count);
+  if (count <= 0)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIDOMNode> curNode(do_QueryInterface(mTextChildren->ElementAt(0)));
+
+  nsCOMPtr<nsIDOMNode> focusedNode;
+  nsAccessible::GetFocusedNode(curNode, getter_AddRefs(focusedNode));
+
+  PRUint32 index, linkCount = 0;
   for (index = 0; index < count; index++) {
     nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(mTextChildren->ElementAt(index)));
     nsCOMPtr<nsIDOMNode> parentNode;

@@ -290,7 +290,14 @@ js_SetProtoOrParent(JSContext *cx, JSObject *obj, uint32 slot, JSObject *pobj)
         if (obj2 == obj) {
             SET_SLOT_DONE(rt);
             JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
-                                 JSMSG_CYCLIC_VALUE, object_props[slot].name);
+                                 JSMSG_CYCLIC_VALUE,
+#if JS_HAS_OBJ_PROTO_PROP
+                                 object_props[slot].name
+#else
+                                 (slot == JSSLOT_PROTO) ? js_proto_str
+                                                        : js_parent_str
+#endif
+                                 );
             return JS_FALSE;
         }
         obj2 = JSVAL_TO_OBJECT(OBJ_GET_SLOT(cx, obj2, slot));
@@ -1018,7 +1025,7 @@ obj_eval(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     str = JSVAL_TO_STRING(argv[0]);
     if (caller->script) {
         file = caller->script->filename;
-        line = js_PCToLineNumber(caller->script, caller->pc);
+        line = js_PCToLineNumber(cx, caller->script, caller->pc);
         principals = caller->script->principals;
     } else {
         file = NULL;
@@ -1059,20 +1066,145 @@ out:
     return ok;
 }
 
+JS_STATIC_DLL_CALLBACK(const void *)
+resolving_GetKey(JSDHashTable *table, JSDHashEntryHdr *hdr)
+{
+    JSResolvingEntry *entry = (JSResolvingEntry *)hdr;
+
+    return &entry->key;
+}
+
+JS_STATIC_DLL_CALLBACK(JSDHashNumber)
+resolving_HashKey(JSDHashTable *table, const void *ptr)
+{
+    const JSResolvingKey *key = (const JSResolvingKey *)ptr;
+
+    return ((JSDHashNumber)key->obj >> JSVAL_TAGBITS) ^ key->id;
+}
+
+JS_PUBLIC_API(JSBool)
+resolving_MatchEntry(JSDHashTable *table,
+                     const JSDHashEntryHdr *hdr,
+                     const void *ptr)
+{
+    const JSResolvingEntry *entry = (const JSResolvingEntry *)hdr;
+    const JSResolvingKey *key = (const JSResolvingKey *)ptr;
+
+    return entry->key.obj == key->obj && entry->key.id == key->id;
+}
+
+static const JSDHashTableOps resolving_dhash_ops = {
+    JS_DHashAllocTable,
+    JS_DHashFreeTable,
+    resolving_GetKey,
+    resolving_HashKey,
+    resolving_MatchEntry,
+    JS_DHashMoveEntryStub,
+    JS_DHashClearEntryStub,
+    JS_DHashFinalizeStub,
+    NULL
+};
+
+static JSBool
+StartResolving(JSContext *cx, JSResolvingKey *key, uint32 flag,
+               JSResolvingEntry **entryp)
+{
+    JSDHashTable *table;
+    JSResolvingEntry *entry;
+
+    table = cx->resolvingTable;
+    if (!table) {
+        table = JS_NewDHashTable(&resolving_dhash_ops, NULL,
+                                 sizeof(JSResolvingEntry),
+                                 JS_DHASH_MIN_SIZE);
+        if (!table)
+            goto outofmem;
+        cx->resolvingTable = table;
+    }
+
+    entry = (JSResolvingEntry *)
+            JS_DHashTableOperate(table, key, JS_DHASH_ADD);
+    if (!entry)
+        goto outofmem;
+
+    if (entry->flags & flag) {
+        /* An entry for (key, flag) exists already -- dampen recursion. */
+        entry = NULL;
+    } else {
+        /* Fill in key if we were the first to add entry, then set flag. */
+        if (!entry->key.obj)
+            entry->key = *key;
+        entry->flags |= flag;
+    }
+    *entryp = entry;
+    return JS_TRUE;
+
+outofmem:
+    JS_ReportOutOfMemory(cx);
+    return JS_FALSE;
+}
+
+static void
+StopResolving(JSContext *cx, JSResolvingKey *key, uint32 flag,
+              JSResolvingEntry *entry, uint32 generation)
+{
+    JSDHashTable *table;
+
+    /*
+     * Clear flag from entry->flags and return early if other flags remain.
+     * We must take care to re-lookup entry if the table has changed since
+     * it was found by StartResolving.
+     */
+    table = cx->resolvingTable;
+    if (table->generation != generation) {
+        entry = (JSResolvingEntry *)
+                JS_DHashTableOperate(table, key, JS_DHASH_LOOKUP);
+    }
+    entry->flags &= ~flag;
+    if (entry->flags)
+        return;
+
+    /*
+     * Do a raw remove only if fewer entries were removed than would cause
+     * alpha to be less than .5 (alpha is at most .75).  Otherwise, we just
+     * call JS_DHashTableOperate to re-lookup the key and remove its entry,
+     * compressing or shrinking the table as needed.
+     */
+    if (table->removedCount < JS_DHASH_TABLE_SIZE(table) >> 2)
+        JS_DHashTableRawRemove(table, &entry->hdr);
+    else
+        JS_DHashTableOperate(table, key, JS_DHASH_REMOVE);
+}
+
 #if JS_HAS_OBJ_WATCHPOINT
 
 static JSBool
 obj_watch_handler(JSContext *cx, JSObject *obj, jsval id, jsval old, jsval *nvp,
                   void *closure)
 {
+    JSResolvingKey key;
+    JSResolvingEntry *entry;
+    uint32 generation;
     JSObject *funobj;
     jsval argv[3];
+    JSBool ok;
+
+    /* Avoid recursion on (obj, id) already being watched on cx. */
+    key.obj = obj;
+    key.id = id;
+    if (!StartResolving(cx, &key, JSRESFLAG_WATCH, &entry))
+        return JS_FALSE;
+    if (!entry)
+        return JS_TRUE;
+    generation = cx->resolvingTable->generation;
 
     funobj = (JSObject *) closure;
     argv[0] = id;
     argv[1] = old;
     argv[2] = *nvp;
-    return js_InternalCall(cx, obj, OBJECT_TO_JSVAL(funobj), 3, argv, nvp);
+    ok = js_InternalCall(cx, obj, OBJECT_TO_JSVAL(funobj), 3, argv, nvp);
+    StopResolving(cx, &key, JSRESFLAG_WATCH, entry, generation);
+    return ok;
 }
 
 static JSBool
@@ -1387,10 +1519,41 @@ with_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
 #endif
                     )
 {
-    JSObject *proto = OBJ_GET_PROTO(cx, obj);
+    JSObject *proto;
+    JSScopeProperty *sprop;
+    JSStackFrame *fp;
+
+    proto = OBJ_GET_PROTO(cx, obj);
     if (!proto)
         return js_LookupProperty(cx, obj, id, objp, propp);
-    return OBJ_LOOKUP_PROPERTY(cx, proto, id, objp, propp);
+    if (!OBJ_LOOKUP_PROPERTY(cx, proto, id, objp, propp))
+        return JS_FALSE;
+
+    /*
+     * Check whether id names an argument or local variable in an active
+     * function.  If so, pretend we didn't find it, so that the real arg or
+     * var property can be found in the function's call object, later on in
+     * the scope chain.  But skip unshared arg and var properties -- those
+     * result when a script explicitly sets a function "static" property of
+     * the same name.  See jsinterp.c:SetFunctionSlot.
+     *
+     * XXX blame pre-ECMA reflection of function args and vars as properties
+     */
+    if ((sprop = (JSScopeProperty *) *propp) &&
+        (proto = *objp, OBJ_IS_NATIVE(proto)) &&
+        (sprop->getter == js_GetArgument ||
+         sprop->getter == js_GetLocalVariable) &&
+        (sprop->attrs & JSPROP_SHARED)) {
+        JS_ASSERT(OBJ_GET_CLASS(cx, proto) == &js_FunctionClass);
+        for (fp = cx->fp; fp && (!fp->fun || fp->fun->native); fp = fp->down)
+            continue;
+        if (fp && fp->fun == (JSFunction *) JS_GetPrivate(cx, proto)) {
+            OBJ_DROP_PROPERTY(cx, proto, *propp);
+            *objp = NULL;
+            *propp = NULL;
+        }
+    }
+    return JS_TRUE;
 }
 
 static JSBool
@@ -1939,31 +2102,39 @@ js_FreeSlot(JSContext *cx, JSObject *obj, uint32 slot)
             JSBool negative_ = (*cp_ == '-');                                 \
             if (negative_) cp_++;                                             \
             if (JS7_ISDEC(*cp_) &&                                            \
-                str_->length - negative_ <= sizeof(JSVAL_INT_MAX_STRING) - 1) \
-            {                                                                 \
-                jsuint index_ = JS7_UNDEC(*cp_++);                            \
-                jsuint oldIndex_ = 0;                                         \
-                jsuint c_ = 0;                                                \
-                if (index_ != 0) {                                            \
-                    while (JS7_ISDEC(*cp_)) {                                 \
-                        oldIndex_ = index_;                                   \
-                        c_ = JS7_UNDEC(*cp_);                                 \
-                        index_ = 10 * index_ + c_;                            \
-                        cp_++;                                                \
-                    }                                                         \
-                }                                                             \
-                if (*cp_ == 0 &&                                              \
-                    (oldIndex_ < (JSVAL_INT_MAX / 10) ||                      \
-                     (oldIndex_ == (JSVAL_INT_MAX / 10) &&                    \
-                      c_ <= (JSVAL_INT_MAX % 10)))) {                         \
-                    if (negative_) index_ = 0 - index_;                       \
-                    id = INT_TO_JSVAL((jsint)index_);                         \
-                }                                                             \
+                str_->length - negative_ <= sizeof(JSVAL_INT_MAX_STRING)-1) { \
+                id = CheckForFunnyIndex(id, cp_, negative_);                  \
             } else {                                                          \
                 CHECK_FOR_EMPTY_INDEX(id);                                    \
             }                                                                 \
         }                                                                     \
     JS_END_MACRO
+
+static jsid
+CheckForFunnyIndex(jsid id, const jschar *cp, JSBool negative)
+{
+    jsuint index = JS7_UNDEC(*cp++);
+    jsuint oldIndex = 0;
+    jsuint c = 0;
+
+    if (index != 0) {
+        while (JS7_ISDEC(*cp)) {
+            oldIndex = index;
+            c = JS7_UNDEC(*cp);
+            index = 10 * index + c;
+            cp++;
+        }
+    }
+    if (*cp == 0 &&
+        (oldIndex < (JSVAL_INT_MAX / 10) ||
+         (oldIndex == (JSVAL_INT_MAX / 10) &&
+          c <= (JSVAL_INT_MAX % 10)))) {
+        if (negative)
+            index = 0 - index;
+        id = INT_TO_JSVAL((jsint)index);
+    }
+    return id;
+}
 
 JSScopeProperty *
 js_AddNativeProperty(JSContext *cx, JSObject *obj, jsid id,
@@ -2068,8 +2239,6 @@ js_DefineNativeProperty(JSContext *cx, JSObject *obj, jsid id, jsval value,
                                                 ? setter
                                                 : sprop->setter);
 
-            PROPERTY_CACHE_FILL(&cx->runtime->propertyCache, obj, id, sprop);
-
             /* NB: obj == pobj, so we can share unlock code at the bottom. */
             if (!sprop)
                 goto bad;
@@ -2113,11 +2282,13 @@ js_DefineNativeProperty(JSContext *cx, JSObject *obj, jsid id, jsval value,
         goto bad;
     }
 
-    PROPERTY_CACHE_FILL(&cx->runtime->propertyCache, obj, id, sprop);
     if (SPROP_HAS_VALID_SLOT(sprop, scope))
         LOCKED_OBJ_SET_SLOT(obj, sprop->slot, value);
 
+#if JS_HAS_GETTER_SETTER
 out:
+#endif
+    PROPERTY_CACHE_FILL(&cx->runtime->propertyCache, obj, id, sprop);
     if (propp)
         *propp = (JSProperty *) sprop;
     else
@@ -2128,45 +2299,6 @@ bad:
     JS_UNLOCK_OBJ(cx, obj);
     return JS_FALSE;
 }
-
-JS_STATIC_DLL_CALLBACK(const void *)
-resolving_GetKey(JSDHashTable *table, JSDHashEntryHdr *hdr)
-{
-    JSResolvingEntry *entry = (JSResolvingEntry *)hdr;
-
-    return &entry->key;
-}
-
-JS_STATIC_DLL_CALLBACK(JSDHashNumber)
-resolving_HashKey(JSDHashTable *table, const void *ptr)
-{
-    const JSResolvingKey *key = (const JSResolvingKey *)ptr;
-
-    return ((JSDHashNumber)key->obj >> JSVAL_TAGBITS) ^ key->id;
-}
-
-JS_PUBLIC_API(JSBool)
-resolving_MatchEntry(JSDHashTable *table,
-                     const JSDHashEntryHdr *hdr,
-                     const void *ptr)
-{
-    const JSResolvingEntry *entry = (const JSResolvingEntry *)hdr;
-    const JSResolvingKey *key = (const JSResolvingKey *)ptr;
-
-    return entry->key.obj == key->obj && entry->key.id == key->id;
-}
-
-static const JSDHashTableOps resolving_dhash_ops = {
-    JS_DHashAllocTable,
-    JS_DHashFreeTable,
-    resolving_GetKey,
-    resolving_HashKey,
-    resolving_MatchEntry,
-    JS_DHashMoveEntryStub,
-    JS_DHashClearEntryStub,
-    JS_DHashFinalizeStub,
-    NULL
-};
 
 #if defined JS_THREADSAFE && defined DEBUG
 JS_FRIEND_API(JSBool)
@@ -2184,8 +2316,7 @@ js_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
     JSClass *clasp;
     JSResolveOp resolve;
     JSResolvingKey key;
-    JSDHashTable *table;
-    JSDHashEntryHdr *entry;
+    JSResolvingEntry *entry;
     uint32 generation;
     JSNewResolveOp newresolve;
     uintN flags;
@@ -2219,41 +2350,23 @@ js_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
                 /* Avoid recursion on (obj, id) already being resolved on cx. */
                 key.obj = obj;
                 key.id = id;
-                if (cx->resolving != 0) {
-                    table = cx->resolvingTable;
-                    entry = JS_DHashTableOperate(table, &key, JS_DHASH_LOOKUP);
-                    if (JS_DHASH_ENTRY_IS_BUSY(entry)) {
-                        JS_UNLOCK_OBJ(cx, obj);
-                        goto out;
-                    }
-                } else if (!(table = cx->resolvingTable)) {
-                    table = JS_NewDHashTable(&resolving_dhash_ops,
-                                             NULL,
-                                             sizeof(JSResolvingEntry),
-                                             JS_DHASH_MIN_SIZE);
-                    if (!table)
-                        goto outofmem;
-                    cx->resolvingTable = table;
-                } else {
-                    /* cx->resolving is 0, so the table had better be empty! */
-                    JS_ASSERT(table->entryCount == 0);
-                }
 
                 /*
-                 * Once we have successfully added an entry for key and bumped
-                 * cx->resolving, control flow must go through cleanup: before
-                 * returning.
+                 * Once we have successfully added an entry for (obj, key) to
+                 * cx->resolvingTable, control must go through cleanup: before
+                 * returning.  But note that JS_DHASH_ADD may find an existing
+                 * entry, in which case we bail to suppress runaway recursion.
                  */
-                entry = JS_DHashTableOperate(table, &key, JS_DHASH_ADD);
-                if (!entry) {
-            outofmem:
+                if (!StartResolving(cx, &key, JSRESFLAG_LOOKUP, &entry)) {
                     JS_UNLOCK_OBJ(cx, obj);
-                    JS_ReportOutOfMemory(cx);
                     return JS_FALSE;
                 }
-                ((JSResolvingEntry *)entry)->key = key;
-                generation = table->generation;
-                cx->resolving++;
+                if (!entry) {
+                    /* Already resolving id in obj -- dampen recursion. */
+                    JS_UNLOCK_OBJ(cx, obj);
+                    goto out;
+                }
+                generation = cx->resolvingTable->generation;
 
                 /* Null *propp here so we can test it at cleanup: safely. */
                 *propp = NULL;
@@ -2274,9 +2387,14 @@ js_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
                            ? start
                            : NULL;
                     JS_UNLOCK_OBJ(cx, obj);
+
+                    /* Protect id and all atoms from a GC nested in resolve. */
+                    JS_KEEP_ATOMS(cx->runtime);
                     ok = newresolve(cx, obj, ID_TO_VALUE(id), flags, &obj2);
+                    JS_UNKEEP_ATOMS(cx->runtime);
                     if (!ok)
                         goto cleanup;
+
                     JS_LOCK_OBJ(cx, obj);
                     SET_OBJ_INFO(obj, file, line);
                     if (obj2) {
@@ -2329,20 +2447,7 @@ js_LookupProperty(JSContext *cx, JSObject *obj, jsid id, JSObject **objp,
                 }
 
             cleanup:
-                /*
-                 * Do a raw remove only if the table hasn't changed since entry
-                 * was added, and only if fewer entries were removed than would
-                 * cause alpha to be  < .5 (alpha is at most .75).  Otherwise,
-                 * use JS_DHashTableOperate to re-lookup the key and remove its
-                 * entry, compressing or shrinking the table as needed.
-                 */
-                if (table->generation == generation &&
-                    table->removedCount < JS_DHASH_TABLE_SIZE(table) >> 2) {
-                    JS_DHashTableRawRemove(table, entry);
-                } else {
-                    JS_DHashTableOperate(table, &key, JS_DHASH_REMOVE);
-                }
-                cx->resolving--;
+                StopResolving(cx, &key, JSRESFLAG_LOOKUP, entry, generation);
                 if (!ok || *propp)
                     return ok;
             }
@@ -2539,9 +2644,17 @@ js_GetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
     /* Unlock obj2 before calling getter, relock after to avoid deadlock. */
     scope = OBJ_SCOPE(obj2);
     slot = sprop->slot;
-    *vp = (slot != SPROP_INVALID_SLOT)
-          ? LOCKED_OBJ_GET_SLOT(obj2, slot)
-          : JSVAL_VOID;
+    if (slot != SPROP_INVALID_SLOT) {
+        JS_ASSERT(slot < obj2->map->freeslot);
+        *vp = LOCKED_OBJ_GET_SLOT(obj2, slot);
+
+        /* If sprop has a stub getter, we're done. */
+        if (!sprop->getter)
+            goto out;
+    } else {
+        *vp = JSVAL_VOID;
+    }
+
     JS_UNLOCK_SCOPE(cx, scope);
     if (!SPROP_GET(cx, sprop, obj, obj2, vp))
         return JS_FALSE;
@@ -2551,6 +2664,8 @@ js_GetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
         LOCKED_OBJ_SET_SLOT(obj2, slot, *vp);
         PROPERTY_CACHE_FILL(&cx->runtime->propertyCache, obj2, id, sprop);
     }
+
+out:
     JS_UNLOCK_SCOPE(cx, scope);
     return JS_TRUE;
 }
@@ -2696,13 +2811,8 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
         pval = LOCKED_OBJ_GET_SLOT(obj, slot);
 
         /* If sprop has a stub setter, keep scope locked and just store *vp. */
-        if (!sprop->setter) {
-            GC_POKE(cx, pval);
-            LOCKED_OBJ_SET_SLOT(obj, slot, *vp);
-
-            JS_UNLOCK_SCOPE(cx, scope);
-            return JS_TRUE;
-        }
+        if (!sprop->setter)
+            goto set_slot;
     }
 
     /* Avoid deadlock by unlocking obj's scope while calling sprop's setter. */
@@ -2721,6 +2831,7 @@ js_SetProperty(JSContext *cx, JSObject *obj, jsid id, jsval *vp)
      * someone who cleared scope).
      */
     if (SPROP_HAS_VALID_SLOT(sprop, scope)) {
+  set_slot:
         GC_POKE(cx, pval);
         LOCKED_OBJ_SET_SLOT(obj, slot, *vp);
     }

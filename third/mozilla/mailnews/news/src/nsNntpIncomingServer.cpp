@@ -114,8 +114,8 @@ nsNntpIncomingServer::nsNntpIncomingServer() : nsMsgLineBuffer(nsnull, PR_FALSE)
   mLastUpdatedTime = 0;
 
   // these atoms are used for subscribe search
-  mSubscribedAtom = getter_AddRefs(NS_NewAtom("subscribed"));
-  mNntpAtom = getter_AddRefs(NS_NewAtom("nntp"));
+  mSubscribedAtom = do_GetAtom("subscribed");
+  mNntpAtom = do_GetAtom("nntp");
 
   // our filters are on the server, they are on a per newsgroup basis
   // but this will make the filter UI enable for news accounts
@@ -152,11 +152,11 @@ nsNntpIncomingServer::~nsNntpIncomingServer()
     NS_ASSERTION(NS_SUCCEEDED(rv), "CloseCachedConnections failed");
 }
 
-NS_IMPL_SERVERPREF_BOOL(nsNntpIncomingServer, NotifyOn, "notify.on");
-NS_IMPL_SERVERPREF_BOOL(nsNntpIncomingServer, MarkOldRead, "mark_old_read");
-NS_IMPL_SERVERPREF_BOOL(nsNntpIncomingServer, Abbreviate, "abbreviate");
-NS_IMPL_SERVERPREF_BOOL(nsNntpIncomingServer, PushAuth, "always_authenticate");
-NS_IMPL_SERVERPREF_INT(nsNntpIncomingServer, MaxArticles, "max_articles");
+NS_IMPL_SERVERPREF_BOOL(nsNntpIncomingServer, NotifyOn, "notify.on")
+NS_IMPL_SERVERPREF_BOOL(nsNntpIncomingServer, MarkOldRead, "mark_old_read")
+NS_IMPL_SERVERPREF_BOOL(nsNntpIncomingServer, Abbreviate, "abbreviate")
+NS_IMPL_SERVERPREF_BOOL(nsNntpIncomingServer, PushAuth, "always_authenticate")
+NS_IMPL_SERVERPREF_INT(nsNntpIncomingServer, MaxArticles, "max_articles")
 
 NS_IMETHODIMP
 nsNntpIncomingServer::GetNewsrcFilePath(nsIFileSpec **aNewsrcFilePath)
@@ -463,7 +463,7 @@ nsNntpIncomingServer::CloseCachedConnections()
 }
 
 NS_IMPL_SERVERPREF_INT(nsNntpIncomingServer, MaximumConnectionsNumber,
-                       "max_cached_connections");
+                       "max_cached_connections")
 
 PRBool
 nsNntpIncomingServer::ConnectionTimeOut(nsINNTPProtocol* aConnection)
@@ -1708,17 +1708,17 @@ nsNntpIncomingServer::SetSearchValue(const char *searchValue)
     // so that we can do case insensitive searching
     ToLowerCase(mSearchValue);
 
-    PRInt32 oldCount = mSubscribeSearchResult.Count();
+    if (mTree) {
+        mTree->BeginUpdateBatch();
+        mTree->RowCountChanged(0, -mSubscribeSearchResult.Count());
+    }
 
     mSubscribeSearchResult.Clear();
     mGroupsOnServer.EnumerateForwards((nsCStringArrayEnumFunc)buildSubscribeSearchResult, (void *)this);
 
-    PRInt32 newCount = mSubscribeSearchResult.Count();
-
     if (mTree) {
-     mTree->RowCountChanged(0, oldCount - newCount);
-     mTree->Invalidate();
-     mTree->InvalidateScrollbar();
+        mTree->RowCountChanged(0, mSubscribeSearchResult.Count());
+        mTree->EndUpdateBatch();
     }
     return NS_OK;
 }

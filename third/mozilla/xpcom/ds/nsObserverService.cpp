@@ -49,7 +49,6 @@
 
 #define NS_WEAK_OBSERVERS
 
-static NS_DEFINE_CID(kObserverServiceCID, NS_OBSERVERSERVICE_CID);
 
 
 #if defined(PR_LOGGING)
@@ -74,7 +73,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsObserverService, nsIObserverService)
 nsObserverService::nsObserverService()
     : mObserverTopicTable(nsnull)
 {
-    mObserverTopicTable = nsnull;
 }
 
 nsObserverService::~nsObserverService(void)

@@ -42,7 +42,8 @@
 #include "nsITXTToHTMLConv.h"
 #include "nsIEventQueue.h"
 #include "nsEventQueueUtils.h"
-#include "nsIPref.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
 
 static NS_DEFINE_CID(kSocketTransportServiceCID, NS_SOCKETTRANSPORTSERVICE_CID);
 static NS_DEFINE_CID(kStreamConverterServiceCID, NS_STREAMCONVERTERSERVICE_CID);
@@ -79,7 +80,7 @@ NS_IMPL_THREADSAFE_ISUPPORTS6(nsGopherChannel,
                               nsIStreamListener,
                               nsIRequestObserver,
                               nsIDirectoryListing,
-                              nsITransportEventSink);
+                              nsITransportEventSink)
 
 nsresult
 nsGopherChannel::Init(nsIURI* uri, nsIProxyInfo* proxyInfo)
@@ -389,8 +390,13 @@ nsGopherChannel::GetContentType(nsACString &aContentType)
         aContentType = NS_LITERAL_CSTRING(TEXT_PLAIN);
         break;
     default:
-        NS_WARNING("Unknown gopher type");
-        aContentType = NS_LITERAL_CSTRING(UNKNOWN_CONTENT_TYPE);
+        if (!mContentTypeHint.IsEmpty()) {
+            aContentType = mContentTypeHint;
+        } else {
+            NS_WARNING("Unknown gopher type");
+            aContentType = NS_LITERAL_CSTRING(UNKNOWN_CONTENT_TYPE);
+        }
+        break;
     }
 
     PR_LOG(gGopherLog,PR_LOG_DEBUG,
@@ -403,8 +409,17 @@ nsGopherChannel::GetContentType(nsACString &aContentType)
 NS_IMETHODIMP
 nsGopherChannel::SetContentType(const nsACString &aContentType)
 {
-    // only changes mContentCharset if a charset is parsed
-    NS_ParseContentType(aContentType, mContentType, mContentCharset);
+    if (mIsPending) {
+        // only changes mContentCharset if a charset is parsed
+        NS_ParseContentType(aContentType, mContentType, mContentCharset);
+    } else {
+        // We are being given a content-type hint.  Since we have no ways of
+        // determining a charset on our own, just set mContentCharset from the
+        // charset part of this.        
+        nsCAutoString charsetBuf;
+        NS_ParseContentType(aContentType, mContentTypeHint, mContentCharset);
+    }
+    
     return NS_OK;
 }
 
@@ -418,6 +433,8 @@ nsGopherChannel::GetContentCharset(nsACString &aContentCharset)
 NS_IMETHODIMP
 nsGopherChannel::SetContentCharset(const nsACString &aContentCharset)
 {
+    // If someone gives us a charset hint we should just use that charset.
+    // So we don't care when this is being called.
     mContentCharset = aContentCharset;
     return NS_OK;
 }
@@ -742,31 +759,22 @@ nsGopherChannel::PushStreamConverters(nsIStreamListener *listener, nsIStreamList
 NS_IMETHODIMP
 nsGopherChannel::SetListFormat(PRUint32 format)
 {
-    if (format != FORMAT_PREF &&
-        format != FORMAT_RAW &&
-        format != FORMAT_HTML &&
-        format != FORMAT_HTTP_INDEX) {
-        return NS_ERROR_FAILURE;
-    }
-
     // Convert the pref value
     if (format == FORMAT_PREF) {
-        nsresult rv;
-        nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
-        if (NS_FAILED(rv)) return rv;
-        PRInt32 sFormat;
-        rv = prefs->GetIntPref("network.dir.format", &sFormat);
-        if (NS_FAILED(rv))
-            format = FORMAT_HTML; // default
-        else
-            format = sFormat;
-
-        if (format == FORMAT_PREF) {
-            NS_WARNING("Who set the directory format pref to 'read from prefs'??");
-            return NS_ERROR_FAILURE;
+        format = FORMAT_HTML; // default
+        nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
+        if (prefs) {
+            PRInt32 sFormat;
+            if (NS_SUCCEEDED(prefs->GetIntPref("network.dir.format", &sFormat)))
+                format = sFormat;
         }
     }
-    
+    if (format != FORMAT_RAW &&
+        format != FORMAT_HTML &&
+        format != FORMAT_HTTP_INDEX) {
+        NS_WARNING("invalid directory format");
+        return NS_ERROR_FAILURE;
+    }
     mListFormat = format;
     return NS_OK;
 }

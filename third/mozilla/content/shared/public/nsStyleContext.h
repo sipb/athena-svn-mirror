@@ -88,7 +88,7 @@ public:
 
   void SetStyle(nsStyleStructID aSID, nsStyleStruct* aStruct);
 
-  void GetRuleNode(nsRuleNode** aResult) { *aResult = mRuleNode; }
+  nsRuleNode* GetRuleNode() { return mRuleNode; }
   void AddStyleBit(const PRUint32& aBit) { mBits |= aBit; }
   void GetStyleBits(PRUint32* aBits) { *aBits = mBits; }
 
@@ -139,7 +139,7 @@ public:
 
   nsStyleStruct* GetUniqueStyleData(nsIPresContext* aPresContext, const nsStyleStructID& aSID);
 
-  void ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule);
+  void ClearStyleData(nsIPresContext* aPresContext);
 
   nsChangeHint CalcStyleDifference(nsStyleContext* aOther);
 
@@ -150,10 +150,6 @@ public:
 #endif
 
 protected:
-  // A default ctor is needed to use nsRefPtr (nsDerivedSafe) with this class.
-  // It should never be called.
-  nsStyleContext() { NS_NOTREACHED("nsStyleContext default ctor"); }
-
   void AppendChild(nsStyleContext* aChild);
   void RemoveChild(nsStyleContext* aChild);
 

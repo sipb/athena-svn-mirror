@@ -55,7 +55,8 @@ class nsINameSpaceManager;
 class nsIScriptSecurityManager;
 class nsIThreadJSContextStack;
 class nsIParserService;
-
+class nsIIOService;
+class nsIURI;
 
 class nsContentUtils
 {
@@ -241,13 +242,39 @@ public:
   
   static nsINameSpaceManager* GetNSManagerWeakRef()
   {
-      return sNameSpaceManager;
+    return sNameSpaceManager;
   };
 
+  static nsIIOService* GetIOServiceWeakRef()
+  {
+    return sIOService;
+  };
+  
   static nsresult GenerateStateKey(nsIContent* aContent,
                                    nsIStatefulFrame::SpecialStateID aID,
                                    nsACString& aKey);
 
+  /**
+   * Create a new nsIURI from aSpec, using aBaseURI as the base.  The
+   * origin charset of the new nsIURI will be the document charset of
+   * aDocument.
+   */
+  static nsresult NewURIWithDocumentCharset(nsIURI** aResult,
+                                            const nsAString& aSpec,
+                                            nsIDocument* aDocument,
+                                            nsIURI* aBaseURI);
+
+  /**
+   * Determine whether aContent is in some way associated with aForm.  If the
+   * form is a container the only elements that are considered to be associated
+   * with a form are the elements that are contained within the form. If the
+   * form is a leaf element then all elements will be accepted into this list,
+   * since this can happen due to content fixup when a form spans table rows or
+   * table cells.
+   */
+  static PRBool BelongsInForm(nsIDOMHTMLFormElement *aForm,
+                              nsIContent *aContent);
+  
 private:
   static nsresult GetDocumentAndPrincipal(nsIDOMNode* aNode,
                                           nsIDocument** aDocument,
@@ -271,6 +298,8 @@ private:
   static nsIParserService *sParserService;
 
   static nsINameSpaceManager *sNameSpaceManager;
+
+  static nsIIOService *sIOService;
 };
 
 

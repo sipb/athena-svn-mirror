@@ -285,14 +285,18 @@ CHelperAppLauncherDialog::~CHelperAppLauncherDialog()
 
 NS_IMPL_ISUPPORTS1(CHelperAppLauncherDialog, nsIHelperAppLauncherDialog)
 
-/* void show (in nsIHelperAppLauncher aLauncher, in nsISupports aContext); */
-NS_IMETHODIMP CHelperAppLauncherDialog::Show(nsIHelperAppLauncher *aLauncher, nsISupports *aContext)
+/* void show (in nsIHelperAppLauncher aLauncher, in nsISupports aContext, in boolean aForced); */
+NS_IMETHODIMP CHelperAppLauncherDialog::Show(nsIHelperAppLauncher *aLauncher, nsISupports *aContext, PRBool aForced)
 {
     return aLauncher->SaveToDisk(nsnull, PR_FALSE);
 }
 
-/* nsILocalFile promptForSaveToFile (in nsISupports aWindowContext, in wstring aDefaultFile, in wstring aSuggestedFileExtension); */
-NS_IMETHODIMP CHelperAppLauncherDialog::PromptForSaveToFile(nsISupports *aWindowContext, const PRUnichar *aDefaultFile, const PRUnichar *aSuggestedFileExtension, nsILocalFile **_retval)
+/* nsILocalFile promptForSaveToFile (in nsIHelperAppLauncher aLauncher, in nsISupports aWindowContext, in wstring aDefaultFile, in wstring aSuggestedFileExtension); */
+NS_IMETHODIMP CHelperAppLauncherDialog::PromptForSaveToFile(nsIHelperAppLauncher* aLauncher, 
+                                                            nsISupports *aWindowContext, 
+                                                            const PRUnichar *aDefaultFile, 
+                                                            const PRUnichar *aSuggestedFileExtension, 
+                                                            nsILocalFile **_retval)
 {
     NS_ENSURE_ARG_POINTER(_retval);
     *_retval = nsnull;
@@ -346,8 +350,3 @@ NS_IMETHODIMP CHelperAppLauncherDialog::PromptForSaveToFile(nsISupports *aWindow
         return NS_ERROR_ABORT;
 }
 
-/* void showProgressDialog (in nsIHelperAppLauncher aLauncher, in nsISupports aContext); */
-NS_IMETHODIMP CHelperAppLauncherDialog::ShowProgressDialog(nsIHelperAppLauncher *aLauncher, nsISupports *aContext)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}

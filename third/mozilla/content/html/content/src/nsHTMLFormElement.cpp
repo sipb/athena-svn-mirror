@@ -614,13 +614,13 @@ nsHTMLFormElement::Reset()
   return rv;
 }
 
-static nsHTMLValue::EnumTable kFormMethodTable[] = {
+static const nsHTMLValue::EnumTable kFormMethodTable[] = {
   { "get", NS_FORM_METHOD_GET },
   { "post", NS_FORM_METHOD_POST },
   { 0 }
 };
 
-static nsHTMLValue::EnumTable kFormEnctypeTable[] = {
+static const nsHTMLValue::EnumTable kFormEnctypeTable[] = {
   { "multipart/form-data", NS_FORM_ENCTYPE_MULTIPART },
   { "application/x-www-form-urlencoded", NS_FORM_ENCTYPE_URLENCODED },
   { "text/plain", NS_FORM_ENCTYPE_TEXTPLAIN },
@@ -788,10 +788,8 @@ nsHTMLFormElement::DoSubmitOrReset(nsIPresContext* aPresContext,
   NS_ENSURE_ARG_POINTER(aPresContext);
 
   // Make sure the presentation is up-to-date
-  nsCOMPtr<nsIDocument> doc;
-  GetDocument(*getter_AddRefs(doc));
-  if (doc) {
-    doc->FlushPendingNotifications();
+  if (mDocument) {
+    mDocument->FlushPendingNotifications();
   }
 
   // JBK Don't get form frames anymore - bug 34297
@@ -1306,7 +1304,7 @@ nsHTMLFormElement::GetActionURL(nsIURI** aActionURL)
     NS_ENSURE_SUCCESS(rv, rv);
   } else {
     nsCOMPtr<nsIURI> baseURL;
-    GetBaseURL(*getter_AddRefs(baseURL));
+    GetBaseURL(getter_AddRefs(baseURL));
     NS_ASSERTION(baseURL, "No Base URL found in Form Submit!\n");
     if (!baseURL) {
       return NS_OK; // No base URL -> exit early, see Bug 30721
@@ -1851,7 +1849,7 @@ nsFormControlList::RemoveElementFromTable(nsIFormControl* aChild,
 }
 
 // nsFormControlEnumerator
-NS_IMPL_ISUPPORTS1(nsFormControlEnumerator, nsISimpleEnumerator);
+NS_IMPL_ISUPPORTS1(nsFormControlEnumerator, nsISimpleEnumerator)
 
 nsFormControlEnumerator::nsFormControlEnumerator(nsHTMLFormElement* aForm)
   : mForm(aForm), mElementsIndex(0), mNotInElementsIndex(0)

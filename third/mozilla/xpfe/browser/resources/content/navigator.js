@@ -39,6 +39,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 const XREMOTESERVICE_CONTRACTID = "@mozilla.org/browser/xremoteservice;1";
+const XUL_NAMESPACE = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 var gURLBar = null;
 var gProxyButton = null;
 var gProxyFavIcon = null;
@@ -148,7 +149,7 @@ const gPopupPermListener = {
   }
 };
 
-const POPUP_TYPE = 2;
+const POPUP_TYPE = "popup";
 const gPopupPrefListener =
 {
   domain: "dom.disable_open_during_load",
@@ -277,7 +278,6 @@ function contentAreaFrameFocus()
 
 function updateHomeButtonTooltip()
 {
-  const XUL_NAMESPACE = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
   var homePage = getHomePage();
   var tooltip = document.getElementById("home-button-tooltip-inner");
 
@@ -373,7 +373,7 @@ function UpdateBackForwardButtons()
 {
   var backBroadcaster = document.getElementById("canGoBack");
   var forwardBroadcaster = document.getElementById("canGoForward");
-  var webNavigation = getWebNavigation();
+  var browser = getBrowser();
 
   // Avoid setting attributes on broadcasters if the value hasn't changed!
   // Remember, guys, setting attributes on elements is expensive!  They
@@ -382,13 +382,13 @@ function UpdateBackForwardButtons()
 
   var backDisabled = backBroadcaster.hasAttribute("disabled");
   var forwardDisabled = forwardBroadcaster.hasAttribute("disabled");
-  if (backDisabled == webNavigation.canGoBack) {
+  if (backDisabled == browser.canGoBack) {
     if (backDisabled)
       backBroadcaster.removeAttribute("disabled");
     else
       backBroadcaster.setAttribute("disabled", true);
   }
-  if (forwardDisabled == webNavigation.canGoForward) {
+  if (forwardDisabled == browser.canGoForward) {
     if (forwardDisabled)
       forwardBroadcaster.removeAttribute("disabled");
     else
@@ -456,6 +456,8 @@ function Startup()
     var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                                 .getService(Components.interfaces.nsIPrefService);
     pref = prefService.getBranch(null);
+
+    window.tryToClose = WindowIsClosing;
 
     webNavigation = getWebNavigation();
     if (!webNavigation)
@@ -675,10 +677,14 @@ function WindowFocusTimerCallback(element)
   } else {
     // set the element in command dispatcher so focus will restore properly
     // when the window does become active
-    if (element instanceof Components.interfaces.nsIDOMElement)
-      document.commandDispatcher.focusedElement = element;
-    else if (element instanceof Components.interfaces.nsIDOMWindow)
+
+    if (element instanceof Components.interfaces.nsIDOMWindow) {
       document.commandDispatcher.focusedWindow = element;
+      document.commandDispatcher.focusedElement = null;
+    } else if (element instanceof Components.interfaces.nsIDOMElement) {
+      document.commandDispatcher.focusedWindow = element.ownerDocument.defaultView;
+      document.commandDispatcher.focusedElement = element;
+    }
   }
 }
 
@@ -751,11 +757,18 @@ function gotoHistoryIndex(aEvent)
   var index = aEvent.target.getAttribute("index");
   if (!index)
     return false;
-  try {
-    getWebNavigation().gotoIndex(index);
-  }
-  catch(ex) {
-    return false;
+
+  if (index == "back")
+    gBrowser.goBackGroup();
+  else if (index ==  "forward")
+    gBrowser.goForwardGroup();
+  else {
+    try {
+      getWebNavigation().gotoIndex(index);
+    }
+    catch(ex) {
+      return false;
+    }
   }
   return true;
 
@@ -764,7 +777,7 @@ function gotoHistoryIndex(aEvent)
 function BrowserBack()
 {
   try {
-    getWebNavigation().goBack();
+    getBrowser().goBack();
   }
   catch(ex) {
   }
@@ -794,19 +807,41 @@ function BrowserHandleBackspace()
 function BrowserForward()
 {
   try {
-    getWebNavigation().goForward();
+    getBrowser().goForward();
   }
   catch(ex) {
   }
 }
 
+function SetGroupHistory(popupMenu, direction)
+{
+  while (popupMenu.firstChild)
+    popupMenu.removeChild(popupMenu.firstChild);
+
+  var menuItem = document.createElementNS(XUL_NAMESPACE, "menuitem");
+  var label = gNavigatorBundle.getString("tabs.historyItem");
+  menuItem.setAttribute("label", label);
+  menuItem.setAttribute("index", direction);
+  popupMenu.appendChild(menuItem);
+}
+
 function BrowserBackMenu(event)
 {
+  if (gBrowser.backBrowserGroup.length != 0) {
+    SetGroupHistory(event.target, "back");
+    return true;
+  }
+
   return FillHistoryMenu(event.target, "back");
 }
 
 function BrowserForwardMenu(event)
 {
+  if (gBrowser.forwardBrowserGroup.length != 0) {
+    SetGroupHistory(event.target, "forward");
+    return true;
+  }
+
   return FillHistoryMenu(event.target, "forward");
 }
 
@@ -839,8 +874,13 @@ function BrowserHome()
   if (homePage.length == 1) {
     loadURI(homePage[0]);
   } else {
+    var URIs = [];
     for (var i in homePage)
-      gBrowser.addTab(homePage[i]);
+      URIs.push({URI: homePage[i]});
+
+    var tab = gBrowser.loadGroup(URIs);
+    if (!pref.getBoolPref("browser.tabs.loadInBackground"))
+      gBrowser.selectedTab = tab;
   }
 }
 
@@ -1143,40 +1183,15 @@ function BrowserOpenFileWindow()
   }
 }
 
-// Set up a lame hack to avoid opening two bookmarks.
-// Could otherwise happen with two Ctrl-B's in a row.
-var gDisableBookmarks = false;
-function enableBookmarks()
-{
-  gDisableBookmarks = false;
-}
-
 function BrowserEditBookmarks()
 {
-  // Use a single sidebar bookmarks dialog
-  var windowManager = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-                                .getService(Components.interfaces.nsIWindowMediator);
-
-  var bookmarksWindow = windowManager.getMostRecentWindow("bookmarks:manager");
-
-  if (bookmarksWindow) {
-    bookmarksWindow.focus();
-  } else {
-    // while disabled, don't open new bookmarks window
-    if (!gDisableBookmarks) {
-      gDisableBookmarks = true;
-
-      open("chrome://communicator/content/bookmarks/bookmarksManager.xul", "_blank",
-        "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
-      setTimeout(enableBookmarks, 2000);
-    }
-  }
+  toOpenWindowByType("bookmarks:manager", "chrome://communicator/content/bookmarks/bookmarksManager.xul");
 }
 
 function updateCloseItems()
 {
   var browser = getBrowser();
-  if (browser && browser.localName == 'tabbrowser' && browser.getStripVisibility()) {
+  if (browser.getStripVisibility()) {
     document.getElementById('menu_close').setAttribute('label', gNavigatorBundle.getString('tabs.closeTab'));
     document.getElementById('menu_closeWindow').hidden = false;
     document.getElementById('menu_closeOtherTabs').hidden = false;
@@ -1200,13 +1215,20 @@ function BrowserCloseOtherTabs()
 function BrowserCloseTabOrWindow()
 {
   var browser = getBrowser();
-  if (browser && browser.localName == 'tabbrowser' && browser.mTabContainer.childNodes.length > 1) {
+  if (browser.mTabContainer.childNodes.length > 1) {
     // Just close up a tab.
     browser.removeCurrentTab();
     return;
   }
 
   BrowserCloseWindow();
+}
+
+function BrowserTryToCloseWindow()
+{
+  //give tryToClose a chance to veto if it is defined
+  if (typeof(window.tryToClose) != "function" || window.tryToClose())
+    BrowserCloseWindow();
 }
 
 function BrowserCloseWindow() 
@@ -1270,6 +1292,7 @@ function BrowserLoadURL(aTriggeringEvent)
       shiftPressed = aTriggeringEvent.shiftKey;
     }
 
+    var browser = getBrowser();
     url = getShortcutOrURI(url);
     // Accept both Control and Meta (=Command) as New-Window-Modifiers
     if (aTriggeringEvent &&
@@ -1282,29 +1305,27 @@ function BrowserLoadURL(aTriggeringEvent)
       }
       catch (ex) {}
 
-      if (openTab && getBrowser().localName == "tabbrowser") {
+      if (openTab) {
         // Open link in new tab
-        var t = getBrowser().addTab(url);
+        var t = browser.addTab(url);
 
         // Focus new tab unless shift is pressed
         if (!shiftPressed) {
-          gBrowser.userTypedValue = null;
-          getBrowser().selectedTab = t;
+          browser.userTypedValue = null;
+          browser.selectedTab = t;
         }
-      }
-      else {
+      } else {
         // Open a new window with the URL
         var newWin = openDialog(getBrowserURL(), "_blank", "all,dialog=no", url);
         // Reset url in the urlbar, copied from handleURLBarRevert()
-        var oldURL = getWebNavigation().currentURI.spec;
+        var oldURL = browser.currentURI.spec;
         if (oldURL != "about:blank") {
           gURLBar.value = oldURL;
           SetPageProxyState("valid", null);
-        }
-        else
+        } else
           gURLBar.value = "";
 
-        gBrowser.userTypedValue = null;
+        browser.userTypedValue = null;
 
         // Focus old window if shift was pressed, as there's no
         // way to open a new window in the background
@@ -1314,8 +1335,7 @@ function BrowserLoadURL(aTriggeringEvent)
           content.focus();
         }
       }
-    }
-    else if (saveModifier) {
+    } else if (saveModifier) {
       try {
         // Firstly, fixup the url so that (e.g.) "www.foo.com" works
         const nsIURIFixup = Components.interfaces.nsIURIFixup;
@@ -1330,8 +1350,7 @@ function BrowserLoadURL(aTriggeringEvent)
         // XXX Do nothing for now.
         // Do we want to put up an alert in the future?  Mmm, l10n...
       }
-    }
-    else {
+    } else {
       // No modifier was pressed, load the URL normally and
       // focus the content area
       loadURI(url);
@@ -1468,7 +1487,7 @@ function BrowserViewSourceOfURL(url, charset, pageCookie)
   // try to open a view-source window while inheriting the charset (if any)
   openDialog("chrome://navigator/content/viewSource.xul",
              "_blank",
-             "scrollbars,resizable,chrome,dialog=no",
+             "all,dialog=no",
              url, charset, pageCookie);
 }
 
@@ -1895,13 +1914,14 @@ function handleURLBarRevert()
   // don't revert to last valid url unless page is NOT loading
   // and user is NOT key-scrolling through autocomplete list
   if (!throbberElement.hasAttribute("busy") && !isScrolling) {
-    if (url != "about:blank") { 
+    if (url != "about:blank") {
       gURLBar.value = url;
       gURLBar.select();
       SetPageProxyState("valid", null); // XXX Build a URI and pass it in here.
     } else { //if about:blank, urlbar becomes ""
       gURLBar.value = "";
     }
+
     gBrowser.userTypedValue = null;
   }
 
@@ -2151,40 +2171,9 @@ function StatusbarViewPopupManager() {
                       "chrome,resizable=yes", hostPort, false);
 }
 
-// Set up a lame hack to avoid opening two bookmarks.
-// Could otherwise happen with two Ctrl-B's in a row.
-var gDisableHistory = false;
-function enableHistory() {
-  gDisableHistory = false;
-}
-
 function toHistory()
 {
-  // Use a single sidebar history dialog
-
-  var cwindowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
-  var iwindowManager = Components.interfaces.nsIWindowMediator;
-  var windowManager  = cwindowManager.QueryInterface(iwindowManager);
-
-  var historyWindow = windowManager.getMostRecentWindow('history:manager');
-
-  if (historyWindow) {
-    //debug("Reuse existing history window");
-    historyWindow.focus();
-  } else {
-    //debug("Open a new history dialog");
-
-    if (true == gDisableHistory) {
-      //debug("Recently opened one. Wait a little bit.");
-      return;
-    }
-    gDisableHistory = true;
-
-    window.open( "chrome://communicator/content/history/history.xul", "_blank",
-        "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar" );
-    setTimeout(enableHistory, 2000);
-  }
-
+  toOpenWindowByType("history:manager", "chrome://communicator/content/history/history.xul");
 }
 
 function checkTheme()
@@ -2236,4 +2225,38 @@ function maybeInitPopupContext()
   } catch(e) {
   }
   return null;
+}
+
+function WindowIsClosing()
+{
+  var browser = getBrowser();
+  var numtabs = browser.mTabContainer.childNodes.length;
+  var reallyClose = true;
+
+  if (numtabs > 1) {
+    var shouldPrompt = pref.getBoolPref("browser.tabs.warnOnClose");
+    if (shouldPrompt) {
+      var promptService =
+        Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                  .getService(Components.interfaces.nsIPromptService);
+      //default to true: if it were false, we wouldn't get this far
+      var warnOnClose = {value:true};
+
+       var buttonPressed = promptService.confirmEx(window, 
+         gNavigatorBundle.getString('tabs.closeWarningTitle'), 
+         gNavigatorBundle.getFormattedString("tabs.closeWarning", [numtabs]),
+         (promptService.BUTTON_TITLE_IS_STRING * promptService.BUTTON_POS_0)
+          + (promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
+            gNavigatorBundle.getString('tabs.closeButton'),
+            null, null,
+            gNavigatorBundle.getString('tabs.closeWarningPromptMe'),
+            warnOnClose);
+      reallyClose = (buttonPressed == 0);
+      //don't set the pref unless they press OK and it's false
+      if (reallyClose && !warnOnClose.value) {
+        pref.setBoolPref("browser.tabs.warnOnClose", false);
+      }
+    } //if the warn-me pref was true
+  } //if multiple tabs are open
+  return reallyClose;
 }

@@ -222,12 +222,12 @@ nsFocusController::MoveFocus(PRBool aForward, nsIDOMElement* aElt)
   nsCOMPtr<nsIContent> content;
   if (aElt) {
     content = do_QueryInterface(aElt);
-    content->GetDocument(*getter_AddRefs(doc));
+    doc = content->GetDocument();
   }
   else {
     if (mCurrentElement) {
       content = do_QueryInterface(mCurrentElement);
-      content->GetDocument(*getter_AddRefs(doc));
+      doc = content->GetDocument();
       content = nsnull;
     }
     else if (mCurrentWindow) {
@@ -502,6 +502,13 @@ nsFocusController::SetActive(PRBool aActive)
       mUpdateWindowWatcher = PR_TRUE;
   }
 
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsFocusController::ResetElementFocus()
+{
+  mCurrentElement = mPreviousElement = nsnull;
   return NS_OK;
 }
 

@@ -71,7 +71,6 @@ static PRLogModuleInfo *gTestFileTransportLog = nsnull;
 
 static NS_DEFINE_CID(kFileTransportServiceCID, NS_FILETRANSPORTSERVICE_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
-static NS_DEFINE_CID(kEventQueueCID, NS_EVENTQUEUE_CID);
 
 PRBool gDone = PR_FALSE;
 nsIEventQueue* gEventQ = nsnull;
@@ -183,7 +182,7 @@ protected:
     PRUint32 mStopCount;
 };
 
-NS_IMPL_THREADSAFE_ISUPPORTS2(MyListener, nsIStreamListener, nsIRequestObserver);
+NS_IMPL_THREADSAFE_ISUPPORTS2(MyListener, nsIStreamListener, nsIRequestObserver)
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -333,7 +332,7 @@ public:
     virtual ~MyOpenObserver() {}
 };
 
-NS_IMPL_ISUPPORTS1(MyOpenObserver, nsIRequestObserver);
+NS_IMPL_ISUPPORTS1(MyOpenObserver, nsIRequestObserver)
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -47,7 +47,6 @@
 #include "nsIMIMEInfo.h"
 #include "nsIFile.h"
 
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 
 MimeTypeArrayImpl::MimeTypeArrayImpl(nsIDOMNavigator* navigator)
 {
@@ -136,24 +135,24 @@ MimeTypeArrayImpl::NamedItem(const nsAString& aName,
   nsCOMPtr<nsIMIMEService> mimeSrv = do_GetService("@mozilla.org/mime;1");
   if (mimeSrv) {
     nsCOMPtr<nsIMIMEInfo> mimeInfo;
-    mimeSrv->GetFromMIMEType(NS_ConvertUCS2toUTF8(aName).get(),
-                             getter_AddRefs(mimeInfo));
+    mimeSrv->GetFromTypeAndExtension(NS_ConvertUCS2toUTF8(aName).get(), nsnull,
+                                     getter_AddRefs(mimeInfo));
     if (mimeInfo) {
       // Now we check whether we can really claim to support this type
       nsMIMEInfoHandleAction action = nsIMIMEInfo::saveToDisk;
       mimeInfo->GetPreferredAction(&action);
       if (action != nsIMIMEInfo::handleInternally) {
-        nsCOMPtr<nsIFile> helper;
-        mimeInfo->GetDefaultApplicationHandler(getter_AddRefs(helper));
-        if (!helper) {
+        PRBool hasHelper = PR_FALSE;
+        mimeInfo->GetHasDefaultHandler(&hasHelper);
+        if (!hasHelper) {
+          nsCOMPtr<nsIFile> helper;
           mimeInfo->GetPreferredApplicationHandler(getter_AddRefs(helper));
           if (!helper) {
-            // mime info from the OS may not have a PreferredApplicaitonHandler
+            // mime info from the OS may not have a PreferredApplicationHandler
             // so just check for an empty default description
             nsXPIDLString defaultDescription;
             mimeInfo->GetDefaultDescription(getter_Copies(defaultDescription));
             if (defaultDescription.IsEmpty()) {
-
               // no support; just leave
               return NS_OK;
             }
@@ -294,7 +293,7 @@ MimeTypeElementImpl::GetType(nsAString& aType)
 }
 
 // QueryInterface implementation for HelperMimeTypeImpl
-NS_IMPL_ISUPPORTS1(HelperMimeTypeImpl, nsIDOMMimeType);
+NS_IMPL_ISUPPORTS1(HelperMimeTypeImpl, nsIDOMMimeType)
 
 NS_IMETHODIMP
 HelperMimeTypeImpl::GetDescription(nsAString& aDescription)

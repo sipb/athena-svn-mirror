@@ -130,6 +130,7 @@ public:
 #include "XPCBrowser.h"
 #include "LegacyPlugin.h"
 
+#include "IEHtmlElementCollection.h"
 #include "IHTMLLocationImpl.h"
 
 /*
@@ -159,7 +160,7 @@ END_COM_MAP()
 
     HRESULT Init(PluginInstanceData *pData)
     {
-	    NS_PRECONDITION(pData != nsnull, "null ptr");
+        NS_PRECONDITION(pData != nsnull, "null ptr");
 
         mData = pData;
 
@@ -1083,7 +1084,28 @@ END_COM_MAP()
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_all( 
         /* [out][retval] */ IHTMLElementCollection **p)
     {
-        return E_NOTIMPL;
+        // Validate parameters
+        if (p == NULL)
+        {
+            return E_INVALIDARG;
+        }
+
+        *p = NULL;
+
+        // Create a collection object
+        CIEHtmlElementCollectionInstance *pCollection = NULL;
+        CIEHtmlElementCollectionInstance::CreateInstance(&pCollection);
+        if (pCollection == NULL)
+        {
+            return E_OUTOFMEMORY;
+        }
+
+        // Initialise and populate the collection
+        nsCOMPtr<nsIDOMNode> docNode = do_QueryInterface(mDOMDocument);
+        pCollection->PopulateFromDOMNode(docNode, PR_TRUE);
+        pCollection->QueryInterface(IID_IHTMLElementCollection, (void **) p);
+
+        return *p ? S_OK : E_UNEXPECTED;
     }
     
     virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_body( 
@@ -1868,10 +1890,10 @@ END_COM_MAP()
         /* [out] */ IMoniker **ppmk,
         /* [in] */ DWORD dwReserved)
     {
-    	if (!szName || !ppmk) return E_POINTER;
-		if (!*szName) return E_INVALIDARG;
+        if (!szName || !ppmk) return E_POINTER;
+        if (!*szName) return E_INVALIDARG;
 
-		*ppmk = NULL;
+        *ppmk = NULL;
 
         // Get the BASE url
         CComPtr<IMoniker> baseURLMoniker;
@@ -1879,7 +1901,7 @@ END_COM_MAP()
         if (doc)
         {
             nsCOMPtr<nsIURI> baseURI;
-            doc->GetBaseURL(*getter_AddRefs(baseURI));
+            doc->GetBaseURL(getter_AddRefs(baseURI));
             nsCAutoString spec;
             if (baseURI &&
                 NS_SUCCEEDED(baseURI->GetSpec(spec)))
@@ -1891,10 +1913,10 @@ END_COM_MAP()
         }
 
         // Make the moniker
-		HRESULT hr = CreateURLMoniker(baseURLMoniker, szName, ppmk);
-		if (SUCCEEDED(hr) && !*ppmk)
-			hr = E_FAIL;
-		return hr;
+        HRESULT hr = CreateURLMoniker(baseURLMoniker, szName, ppmk);
+        if (SUCCEEDED(hr) && !*ppmk)
+            hr = E_FAIL;
+        return hr;
     }
     
     virtual /* [local] */ HRESULT STDMETHODCALLTYPE MonikerBindToStorage( 
@@ -1904,33 +1926,33 @@ END_COM_MAP()
         /* [in] */ REFIID riid,
         /* [out] */ void **ppvObj)
     {
-		if (!pMk || !ppvObj) return E_POINTER;
+        if (!pMk || !ppvObj) return E_POINTER;
 
-		*ppvObj = NULL;
-		HRESULT hr = S_OK;
+        *ppvObj = NULL;
+        HRESULT hr = S_OK;
         CComPtr<IBindCtx> spBindCtx;
-		if (pBC)
-		{
-			spBindCtx = pBC;
-			if (pBSC)
-			{
-				hr = RegisterBindStatusCallback(spBindCtx, pBSC, NULL, 0);
-				if (FAILED(hr))
-					return hr;
-			}
-		}
-		else
-		{
-			if (pBSC)
-				hr = CreateAsyncBindCtx(0, pBSC, NULL, &spBindCtx);
-			else
-				hr = CreateBindCtx(0, &spBindCtx);
-			if (SUCCEEDED(hr) && !spBindCtx)
-				hr = E_FAIL;
-			if (FAILED(hr))
-				return hr;
-		}
-		return pMk->BindToStorage(spBindCtx, NULL, riid, ppvObj);
+        if (pBC)
+        {
+            spBindCtx = pBC;
+            if (pBSC)
+            {
+                hr = RegisterBindStatusCallback(spBindCtx, pBSC, NULL, 0);
+                if (FAILED(hr))
+                    return hr;
+            }
+        }
+        else
+        {
+            if (pBSC)
+                hr = CreateAsyncBindCtx(0, pBSC, NULL, &spBindCtx);
+            else
+                hr = CreateBindCtx(0, &spBindCtx);
+            if (SUCCEEDED(hr) && !spBindCtx)
+                hr = E_FAIL;
+            if (FAILED(hr))
+                return hr;
+        }
+        return pMk->BindToStorage(spBindCtx, NULL, riid, ppvObj);
     }
     
     virtual /* [local] */ HRESULT STDMETHODCALLTYPE MonikerBindToObject( 

@@ -49,7 +49,7 @@
 #include "nsIUnicodeDecoder.h"
 #include "nsIUnicodeEncoder.h"
 #include "nsICharsetConverterManager.h"
-#include "nsICharsetConverterManager2.h"
+#include "nsEncoderDecoderUtils.h"
 #if HAVE_GNU_LIBC_VERSION_H
 #include <gnu/libc-version.h>
 #endif
@@ -63,7 +63,7 @@
 #include "nsAutoLock.h"
 #include "prinit.h"
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsPlatformCharset, nsIPlatformCharset);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsPlatformCharset, nsIPlatformCharset)
 
 static nsURLProperties *gNLInfo = nsnull;
 static nsURLProperties *gInfo_deprecated = nsnull;
@@ -123,7 +123,8 @@ nsPlatformCharset::ConvertLocaleToCharsetUsingDeprecatedConfig(nsAutoString& loc
     }
    }
    NS_ASSERTION(0, "unable to convert locale to charset using deprecated config");
-   mCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+   mCharset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
+   oResult.Assign(NS_LITERAL_STRING("ISO-8859-1"));
    return NS_SUCCESS_USING_FALLBACK_LOCALE;
 }
 
@@ -145,14 +146,14 @@ nsPlatformCharset::~nsPlatformCharset()
 }
 
 NS_IMETHODIMP 
-nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector, nsAString& oResult)
+nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector, nsACString& oResult)
 {
   oResult = mCharset; 
   return NS_OK;
 }
 
 NS_IMETHODIMP 
-nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, PRUnichar** _retValue)
+nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, nsACString &oResult)
 {
   nsAutoString localeNameAsString(localeName);
 
@@ -163,7 +164,7 @@ nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, PRUni
   if (mLocale.Equals(localeNameAsString) ||
     // support the 4.x behavior
     (mLocale.EqualsIgnoreCase("en_US") && localeNameAsString.EqualsIgnoreCase("C"))) {
-    *_retValue = ToNewUnicode(mCharset);
+    oResult = mCharset;
     return NS_OK;
   }
 
@@ -176,8 +177,12 @@ nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, PRUni
   //     http://oss.software.ibm.com/icu/
   // 
   NS_ASSERTION(0, "GetDefaultCharsetForLocale: need to add multi locale support");
+#ifdef DEBUG_jungshik
+  printf("localeName=%s mCharset=%s\n", NS_ConvertUCS2toUTF8(localeName).get(),
+         mCharset.get());
+#endif
   // until we add multi locale support: use the the charset of the user's locale
-  *_retValue = ToNewUnicode(mCharset);
+  oResult = mCharset;
   return NS_SUCCESS_USING_FALLBACK_LOCALE;
 #endif
 
@@ -186,24 +191,23 @@ nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, PRUni
   // using the deprecated locale to charset mapping 
   //
   nsAutoString localeStr(localeName);
-  nsString charset;
+  nsAutoString charset;
   nsresult res = ConvertLocaleToCharsetUsingDeprecatedConfig(localeStr, charset);
   if (NS_SUCCEEDED(res)) {
-    *_retValue = ToNewUnicode(charset);
+    LossyCopyUTF16toASCII(charset, oResult); // charset name is always ASCII.
     return res; // succeeded
   }
 
   NS_ASSERTION(0, "unable to convert locale to charset using deprecated config");
-  charset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
-  *_retValue = ToNewUnicode(charset);
+  oResult.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
   return NS_SUCCESS_USING_FALLBACK_LOCALE;
 }
 
 nsresult
-nsPlatformCharset::InitGetCharset(nsAString &oString)
+nsPlatformCharset::InitGetCharset(nsACString &oString)
 {
   char* nl_langinfo_codeset = nsnull;
-  nsString aCharset;
+  nsCString aCharset;
   nsresult res;
 
 #if HAVE_NL_LANGINFO && defined(CODESET)
@@ -214,7 +218,7 @@ nsPlatformCharset::InitGetCharset(nsAString &oString)
   // see if we can use nl_langinfo(CODESET) directly
   //
   if (nl_langinfo_codeset) {
-    aCharset.AssignWithConversion(nl_langinfo_codeset);
+    aCharset.Assign(nl_langinfo_codeset);
     res = VerifyCharset(aCharset);
     if (NS_SUCCEEDED(res)) {
       oString = aCharset;
@@ -263,8 +267,10 @@ nsPlatformCharset::InitGetCharset(nsAString &oString)
       localeKey.AppendWithConversion(glibc_version);
       localeKey.Append(NS_LITERAL_STRING("."));
       localeKey.AppendWithConversion(nl_langinfo_codeset);
-      res = gNLInfo->Get(localeKey, aCharset);
+      nsAutoString uCharset;
+      res = gNLInfo->Get(localeKey, uCharset);
       if (NS_SUCCEEDED(res)) {
+        aCharset.AssignWithConversion(uCharset);
         res = VerifyCharset(aCharset);
         if (NS_SUCCEEDED(res)) {
           oString = aCharset;
@@ -279,8 +285,10 @@ nsPlatformCharset::InitGetCharset(nsAString &oString)
     //
     localeKey.Assign(NS_LITERAL_STRING("nllic."));
     localeKey.AppendWithConversion(nl_langinfo_codeset);
-    res = gNLInfo->Get(localeKey, aCharset);
+    nsAutoString uCharset;
+    res = gNLInfo->Get(localeKey, uCharset);
     if (NS_SUCCEEDED(res)) {
+      aCharset.AssignWithConversion(uCharset);
       res = VerifyCharset(aCharset);
       if (NS_SUCCEEDED(res)) {
         oString = aCharset;
@@ -298,9 +306,10 @@ nsPlatformCharset::InitGetCharset(nsAString &oString)
   char* locale = setlocale(LC_CTYPE, nsnull);
   nsAutoString localeStr;
   localeStr.AssignWithConversion(locale);
-  res = ConvertLocaleToCharsetUsingDeprecatedConfig(localeStr, aCharset);
+  nsAutoString uCharset;
+  res = ConvertLocaleToCharsetUsingDeprecatedConfig(localeStr, uCharset);
   if (NS_SUCCEEDED(res)) {
-    oString = aCharset;
+    CopyUCS2toASCII(uCharset, oString);
     return res; // succeeded
   }
 
@@ -310,7 +319,7 @@ nsPlatformCharset::InitGetCharset(nsAString &oString)
 NS_IMETHODIMP 
 nsPlatformCharset::Init()
 {
-  nsString charset;
+  nsCAutoString charset;
   nsresult res;
 
   //
@@ -333,37 +342,27 @@ nsPlatformCharset::Init()
 
   // last resort fallback
   NS_ASSERTION(0, "unable to convert locale to charset using deprecated config");
-  mCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
+  mCharset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));
   return NS_SUCCESS_USING_FALLBACK_LOCALE;
 }
 
 nsresult
-nsPlatformCharset::VerifyCharset(nsString &aCharset)
+nsPlatformCharset::VerifyCharset(nsCString &aCharset)
 {
   nsresult res;
   //
   // get the convert manager
   //
-  nsCOMPtr <nsICharsetConverterManager2>  charsetConverterManager;
+  nsCOMPtr <nsICharsetConverterManager>  charsetConverterManager;
   charsetConverterManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &res);
   if (NS_FAILED(res))
     return res;
 
   //
-  // check if we recognize the charset string
-  //
-  nsCOMPtr <nsIAtom> charsetAtom;
-  res = charsetConverterManager->GetCharsetAtom(aCharset.get(), 
-                                                  getter_AddRefs(charsetAtom));
-  if (NS_FAILED(res)) {
-    return res;
-  }
-
-  //
   // check if we can get an input converter
   //
   nsCOMPtr <nsIUnicodeEncoder> enc;
-  res = charsetConverterManager->GetUnicodeEncoder(charsetAtom, getter_AddRefs(enc));
+  res = charsetConverterManager->GetUnicodeEncoder(aCharset.get(), getter_AddRefs(enc));
   if (NS_FAILED(res)) {
     NS_ASSERTION(0, "failed to create encoder");
     return res;
@@ -373,32 +372,28 @@ nsPlatformCharset::VerifyCharset(nsString &aCharset)
   // check if we can get an output converter
   //
   nsCOMPtr <nsIUnicodeDecoder> dec;
-  res = charsetConverterManager->GetUnicodeDecoder(charsetAtom, getter_AddRefs(dec));
+  res = charsetConverterManager->GetUnicodeDecoder(aCharset.get(), getter_AddRefs(dec));
   if (NS_FAILED(res)) {
     NS_ASSERTION(0, "failed to create decoder");
     return res;
   }
 
   //
+  // check if we recognize the charset string
+  //
+
+  nsCAutoString result;
+  res = charsetConverterManager->GetCharsetAlias(aCharset.get(), result);
+  if (NS_FAILED(res)) {
+    return res;
+  }
+
+  //
   // return the preferred string
   //
-  const char *prefName;
-  res = charsetAtom->GetUTF8String(&prefName);
-  if (NS_SUCCEEDED(res))
-    aCharset.AssignWithConversion(prefName);
+
+  aCharset.Assign(result);
   NS_ASSERTION(NS_SUCCEEDED(res), "failed to get preferred charset name, using non-preferred");
-  return NS_OK;
-}
-
-nsresult 
-nsPlatformCharset::MapToCharset(short script, short region, nsAString& outCharset)
-{
-  return NS_OK;
-}
-
-nsresult 
-nsPlatformCharset::MapToCharset(nsAString& inANSICodePage, nsAString& outCharset)
-{
   return NS_OK;
 }
 

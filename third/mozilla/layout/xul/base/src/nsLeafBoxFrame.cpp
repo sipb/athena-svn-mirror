@@ -114,18 +114,12 @@ nsLeafBoxFrame::Init(nsIPresContext*  aPresContext,
     PRBool needsWidget = PR_FALSE;
     parent->ChildrenMustHaveWidgets(needsWidget);
     if (needsWidget) {
-        nsIView* view = nsnull;
-        GetView(aPresContext, &view);
-
-        if (!view) {
+        if (!HasView()) {
            nsHTMLContainerFrame::CreateViewForFrame(aPresContext,this,mStyleContext,nsnull,PR_TRUE); 
-           GetView(aPresContext, &view);
         }
+        nsIView* view = GetView();
 
-        nsCOMPtr<nsIWidget> widget;
-        view->GetWidget(*getter_AddRefs(widget));
-
-        if (!widget)
+        if (!view->HasWidget())
            view->CreateWidget(kWidgetCID);   
     }
   }
@@ -139,17 +133,17 @@ nsLeafBoxFrame::Init(nsIPresContext*  aPresContext,
 
 NS_IMETHODIMP
 nsLeafBoxFrame::AttributeChanged(nsIPresContext* aPresContext,
-                               nsIContent* aChild,
-                               PRInt32 aNameSpaceID,
-                               nsIAtom* aAttribute,
-                               PRInt32 aModType, 
-                               PRInt32 aHint)
+                                 nsIContent* aChild,
+                                 PRInt32 aNameSpaceID,
+                                 nsIAtom* aAttribute,
+                                 PRInt32 aModType)
 {
-    nsresult rv = nsLeafFrame::AttributeChanged(aPresContext, aChild,
-                                              aNameSpaceID, aAttribute, aModType, aHint);
+  nsresult rv = nsLeafFrame::AttributeChanged(aPresContext, aChild,
+                                              aNameSpaceID, aAttribute,
+                                              aModType);
 
-    if (aAttribute == nsXULAtoms::mousethrough) 
-       UpdateMouseThrough();
+  if (aAttribute == nsXULAtoms::mousethrough) 
+    UpdateMouseThrough();
 
   return rv;
 }

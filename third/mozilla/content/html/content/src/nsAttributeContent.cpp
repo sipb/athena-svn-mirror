@@ -64,7 +64,7 @@
 #include "nsVoidArray.h"
 #include "nsINameSpaceManager.h"
 #include "nsITextContent.h"
-
+#include "nsIURI.h"
 // XXX share all id's in this dir
 
 
@@ -83,40 +83,44 @@ public:
   NS_DECL_ISUPPORTS
 
   // Implementation for nsIContent
-  NS_IMETHOD GetDocument(nsIDocument*& aResult) const;
+  NS_IMETHOD_(nsIDocument*) GetDocument() const;
   NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep, PRBool aCompileEventHandlers);
-  NS_IMETHOD GetParent(nsIContent*& aResult) const;
+  NS_IMETHOD_(nsIContent*) GetParent() const;
   NS_IMETHOD SetParent(nsIContent* aParent);
   NS_IMETHOD_(PRBool) IsNativeAnonymous() const { return PR_TRUE; }
   NS_IMETHOD_(void) SetNativeAnonymous(PRBool aAnonymous) { }
 
-  NS_IMETHOD GetNameSpaceID(PRInt32& aID) const {
-    aID = kNameSpaceID_None;
+  NS_IMETHOD GetNameSpaceID(PRInt32* aID) const
+  {
+    *aID = kNameSpaceID_None;
     return NS_OK;
   }
 
-  NS_IMETHOD GetTag(nsIAtom*& aResult) const {
-    aResult = nsnull;
+  NS_IMETHOD GetTag(nsIAtom** aResult) const
+  {
+    *aResult = nsnull;
     return NS_OK;
   }
 
-  NS_IMETHOD GetNodeInfo(nsINodeInfo*& aResult) const {
-    aResult = nsnull;
+  NS_IMETHOD GetNodeInfo(nsINodeInfo** aResult) const
+  {
+    *aResult = nsnull;
     return NS_OK;
   }
 
 
   NS_IMETHOD NormalizeAttrString(const nsAString& aStr, 
-                                 nsINodeInfo*& aNodeInfo) { 
-    aNodeInfo = nsnull;
+                                 nsINodeInfo** aNodeInfo)
+  {
+    *aNodeInfo = nsnull;
     return NS_OK; 
   }
 
   NS_IMETHOD SetFocus(nsIPresContext* aPresContext) { return NS_OK; }
   NS_IMETHOD RemoveFocus(nsIPresContext* aPresContext) { return NS_OK; }
 
-  NS_IMETHOD GetBindingParent(nsIContent** aContent) {
-    return NS_OK;
+  NS_IMETHOD_(nsIContent*) GetBindingParent() const {
+    return nsnull;
   }
 
   NS_IMETHOD SetBindingParent(nsIContent* aParent) {
@@ -131,6 +135,8 @@ public:
     return NS_ERROR_NOT_IMPLEMENTED;
   }
 
+  NS_IMETHOD GetBaseURL(nsIURI** aURI) const;
+  
   NS_IMETHOD DoneCreatingElement() {
     return NS_OK;
   }
@@ -141,11 +147,11 @@ public:
                      PRBool aNotify) {  return NS_OK; }
   NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute, PRBool aNotify) { return NS_OK; }
   NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute, nsAString& aResult) const {return NS_CONTENT_ATTR_NOT_THERE; }
-  NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute, nsIAtom*& aPrefix, nsAString& aResult) const {return NS_CONTENT_ATTR_NOT_THERE; }
+  NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute, nsIAtom** aPrefix, nsAString& aResult) const {return NS_CONTENT_ATTR_NOT_THERE; }
   NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute) const {
     return PR_FALSE;
   }
-  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32& aNameSpaceID, nsIAtom*& aName, nsIAtom*& aPrefix) const {
+  NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32* aNameSpaceID, nsIAtom** aName, nsIAtom** aPrefix) const {
     aName = nsnull;
     aPrefix = nsnull;
     return NS_ERROR_ILLEGAL_VALUE;
@@ -174,13 +180,13 @@ public:
 
   NS_IMETHOD RangeAdd(nsIDOMRange* aRange);
   NS_IMETHOD RangeRemove(nsIDOMRange* aRange);
-  NS_IMETHOD GetRangeList(nsVoidArray*& aResult) const;
+  NS_IMETHOD GetRangeList(nsVoidArray** aResult) const;
 
   // Implementation for nsIContent
   NS_IMETHOD CanContainChildren(PRBool& aResult) const { aResult = PR_FALSE; return NS_OK; }
 
   NS_IMETHOD ChildCount(PRInt32& aResult) const { aResult = 0; return NS_OK;  }
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent*& aResult) const { aResult = nsnull; return NS_OK;  }
+  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const { aResult = nsnull; return NS_OK;  }
   NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aResult) const { aResult = -1; return NS_OK;  }
   NS_IMETHOD InsertChildAt(nsIContent* aKid, PRInt32 aIndex, PRBool aNotify,
                            PRBool aDeepSetDocument) { return NS_OK;  }
@@ -205,7 +211,8 @@ public:
                    PRInt32 aLength,
                    PRBool aNotify);
   NS_IMETHOD IsOnlyWhitespace(PRBool* aResult);
-  NS_IMETHOD CloneContent(PRBool aCloneText, nsITextContent** aClone); 
+  NS_IMETHOD CloneContent(PRBool aCloneText, nsITextContent** aClone);
+  NS_IMETHOD AppendTextTo(nsAString& aResult);
 
   //----------------------------------------
 
@@ -305,12 +312,10 @@ nsAttributeContent::ToCString(nsAString& aBuf, PRInt32 aOffset,
 {
 }
 
-nsresult
-nsAttributeContent::GetDocument(nsIDocument*& aResult) const
+NS_IMETHODIMP_(nsIDocument*)
+nsAttributeContent::GetDocument() const
 {
-  aResult = mDocument;
-  NS_IF_ADDREF(mDocument);
-  return NS_OK;
+  return mDocument;
 }
 
 
@@ -322,12 +327,10 @@ nsAttributeContent::SetDocument(nsIDocument* aDocument, PRBool aDeep, PRBool aCo
   return NS_OK;
 }
 
-nsresult
-nsAttributeContent::GetParent(nsIContent*& aResult) const
+NS_IMETHODIMP_(nsIContent*)
+nsAttributeContent::GetParent() const
 {
-  NS_IF_ADDREF(mParent);
-  aResult = mParent;
-  return NS_OK;;
+  return mParent;
 }
 
 nsresult
@@ -364,11 +367,25 @@ nsAttributeContent::RangeRemove(nsIDOMRange* aRange)
 
 
 nsresult 
-nsAttributeContent::GetRangeList(nsVoidArray*& aResult) const
+nsAttributeContent::GetRangeList(nsVoidArray** aResult) const
 {
   return NS_ERROR_FAILURE;
 }
 
+NS_IMETHODIMP
+nsAttributeContent::GetBaseURL(nsIURI** aURI) const
+{
+  if (mParent) {
+    return mParent->GetBaseURL(aURI);
+  }
+
+  if (mDocument) {
+    return mDocument->GetBaseURL(aURI);
+  }
+
+  *aURI = nsnull;
+  return NS_OK;
+}
 
 
 
@@ -423,7 +440,8 @@ nsAttributeContent::CopyText(nsAString& aResult)
     aResult.Assign(mText.Get2b(), mText.GetLength());
   }
   else {
-    aResult.Assign(NS_ConvertASCIItoUCS2(mText.Get1b(), mText.GetLength()).get(), mText.GetLength());
+    const char *data = mText.Get1b();
+    CopyASCIItoUCS2(Substring(data, data + mText.GetLength()), aResult);
   }
   return NS_OK;
 }
@@ -538,4 +556,21 @@ nsAttributeContent::CloneContent(PRBool aCloneText, nsITextContent** aReturn)
   }
   it->mText = mText;
   return result;
+}
+
+NS_IMETHODIMP
+nsAttributeContent::AppendTextTo(nsAString& aResult)
+{
+  ValidateTextFragment();
+  if (mText.Is2b()) {
+    aResult.Append(mText.Get2b(), mText.GetLength());
+  }
+  else {
+    // XXX we would like to have a AppendASCIItoUCS2 here
+    aResult.Append(NS_ConvertASCIItoUCS2(mText.Get1b(),
+                                         mText.GetLength()).get(),
+                   mText.GetLength());
+  }
+
+  return NS_OK;
 }

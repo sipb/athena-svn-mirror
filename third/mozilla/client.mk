@@ -52,14 +52,17 @@
 #
 # For branches, uncomment the MOZ_CO_TAG line with the proper tag,
 # and commit this file on that tag.
-MOZ_CO_TAG = MOZILLA_1_4_RELEASE
-NSPR_CO_TAG = MOZILLA_1_4_RELEASE
-PSM_CO_TAG = MOZILLA_1_4_RELEASE
-NSS_CO_TAG = MOZILLA_1_4_RELEASE
-LDAPCSDK_CO_TAG = MOZILLA_1_4_RELEASE
-ACCESSIBLE_CO_TAG = MOZILLA_1_4_RELEASE
-IMGLIB2_CO_TAG = MOZILLA_1_4_RELEASE
-IPC_CO_TAG = MOZILLA_1_4_RELEASE
+MOZ_CO_TAG = MOZILLA_1_5_RELEASE
+NSPR_CO_TAG = MOZILLA_1_5_RELEASE
+PSM_CO_TAG = MOZILLA_1_5_RELEASE
+NSS_CO_TAG = MOZILLA_1_5_RELEASE
+LDAPCSDK_CO_TAG = MOZILLA_1_5_RELEASE
+ACCESSIBLE_CO_TAG = MOZILLA_1_5_RELEASE
+IMGLIB2_CO_TAG = MOZILLA_1_5_RELEASE
+IPC_CO_TAG = MOZILLA_1_5_RELEASE
+TOOLKIT_CO_TAG = MOZILLA_1_5_RELEASE
+BROWSER_CO_TAG = MOZILLA_1_5_RELEASE
+MAIL_CO_TAG = MOZILLA_1_5_RELEASE
 BUILD_MODULES = all
 
 #######################################################################
@@ -368,7 +371,15 @@ endif
 ####################################
 # CVS defines for Phoenix (pulled and built if MOZ_PHOENIX is set)
 #
-CVSCO_PHOENIX := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/browser
+BROWSER_CO_FLAGS := -P
+ifdef MOZ_CO_FLAGS
+  BROWSER_CO_FLAGS := $(MOZ_CO_FLAGS)
+endif
+ifdef BROWSER_CO_TAG
+  BROWSER_CO_FLAGS := $(BROWSER_CO_FLAGS) -r $(BROWSER_CO_TAG)
+endif
+
+CVSCO_PHOENIX := $(CVS) $(CVS_FLAGS) co $(BROWSER_CO_FLAGS) $(CVS_CO_DATE_FLAGS) mozilla/browser
 
 ifdef MOZ_PHOENIX
 FASTUPDATE_PHOENIX := fast_update $(CVSCO_PHOENIX)
@@ -383,7 +394,15 @@ endif
 # CVS defines for Thunderbird (pulled and built if MOZ_THUNDERBIRD is set)
 #
 
-CVSCO_THUNDERBIRD := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/mail
+MAIL_CO_FLAGS := -P
+ifdef MOZ_CO_FLAGS
+  MAIL_CO_FLAGS := $(MOZ_CO_FLAGS)
+endif
+ifdef MAIL_CO_TAG
+  MAIL_CO_FLAGS := $(MAIL_CO_FLAGS) -r $(MAIL_CO_TAG)
+endif
+
+CVSCO_THUNDERBIRD := $(CVS) $(CVS_FLAGS) co $(MAIL_CO_FLAGS) $(CVS_CO_DATE_FLAGS) mozilla/mail
 ifdef MOZ_THUNDERBIRD
 FASTUPDATE_THUNDERBIRD := fast_update $(CVSCO_THUNDERBIRD)
 CHECKOUT_THUNDERBIRD := cvs_co $(CVSCO_THUNDERBIRD)
@@ -397,7 +416,15 @@ endif
 # CVS defines for mozilla/toolkit (pulled and built if MOZ_XUL_APP is set)
 #
 
-CVSCO_MOZTOOLKIT := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/toolkit
+TOOLKIT_CO_FLAGS := -P
+ifdef MOZ_CO_FLAGS
+  TOOLKIT_CO_FLAGS := $(MOZ_CO_FLAGS)
+endif
+ifdef TOOLKIT_CO_TAG
+  TOOLKIT_CO_FLAGS := $(TOOLKIT_CO_FLAGS) -r $(TOOLKIT_CO_TAG)
+endif
+
+CVSCO_MOZTOOLKIT := $(CVS) $(CVS_FLAGS) co $(TOOLKIT_CO_FLAGS) $(CVS_CO_DATE_FLAGS)  mozilla/toolkit mozilla/chrome
 ifdef MOZ_XUL_APP
 FASTUPDATE_MOZTOOLKIT := fast_update $(CVSCO_MOZTOOLKIT)
 CHECKOUT_MOZTOOLKIT := cvs_co $(CVSCO_MOZTOOLKIT)
@@ -551,6 +578,7 @@ real_fast-update:
 	fast_update $(CVSCO_LDAPCSDK) && \
 	fast_update $(CVSCO_ACCESSIBLE) && \
 	fast_update $(CVSCO_IMGLIB2) && \
+	fast_update $(CVSCO_IPC) && \
 	fast_update $(CVSCO_CALENDAR) && \
 	$(FASTUPDATE_LIBART) && \
 	$(FASTUPDATE_MOZTOOLKIT) && \
@@ -707,5 +735,8 @@ cleansrcdir:
 
 # (! IS_FIRST_CHECKOUT)
 endif
+
+echo_objdir:
+	@echo $(OBJDIR)
 
 .PHONY: checkout real_checkout depend build export libs alldep install clean realclean distclean cleansrcdir pull_all build_all clobber clobber_all pull_and_build_all everything

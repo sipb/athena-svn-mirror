@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -60,7 +60,7 @@ nsPlatformCharset::nsPlatformCharset()
 
   UINT acp = ::GetACP();
   PRInt32 acpint = (PRInt32)(acp & 0x00FFFF);
-  nsAutoString acpKey; acpKey.Assign(NS_LITERAL_STRING("acp."));
+  nsAutoString acpKey(NS_LITERAL_STRING("acp."));
   acpKey.AppendInt(acpint, 10);
   nsresult res = MapToCharset(acpKey, mCharset);
 
@@ -92,70 +92,72 @@ nsPlatformCharset::InitInfo()
 }
 
 nsresult
-nsPlatformCharset::MapToCharset(nsAString& inANSICodePage, nsAString& outCharset)
+nsPlatformCharset::MapToCharset(nsAString& inANSICodePage, nsACString& outCharset)
 {
   //delay loading wincharset.properties bundle if possible
   if (inANSICodePage.Equals(NS_LITERAL_STRING("acp.1252"))) {
-    outCharset = NS_LITERAL_STRING("windows-1252");
+    outCharset = NS_LITERAL_CSTRING("windows-1252");
     return NS_OK;
   } 
 
   if (inANSICodePage.Equals(NS_LITERAL_STRING("acp.932"))) {
-    outCharset = NS_LITERAL_STRING("Shift_JIS");
+    outCharset = NS_LITERAL_CSTRING("Shift_JIS");
     return NS_OK;
   } 
 
   // ensure the .property file is loaded
   nsresult rv = InitInfo();
   if (NS_FAILED(rv)) {
-    outCharset.Assign(NS_LITERAL_STRING("windows-1252"));
+    outCharset.Assign(NS_LITERAL_CSTRING("windows-1252"));
     return rv;
   }
 
-  rv = gInfo->Get(inANSICodePage, outCharset);
+  nsAutoString charset;
+  rv = gInfo->Get(inANSICodePage, charset);
   if (NS_FAILED(rv)) {
-    outCharset.Assign(NS_LITERAL_STRING("windows-1252"));
+    outCharset.Assign(NS_LITERAL_CSTRING("windows-1252"));
     return rv;
   }
+
+  CopyUCS2toASCII(charset, outCharset);
   return NS_OK;
 }
 
 NS_IMETHODIMP 
-nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector, nsAString& oResult)
+nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector,
+                              nsACString& oResult)
 {
   oResult = mCharset;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, PRUnichar** _retValue)
+nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, nsACString& oResult)
 {
   nsCOMPtr<nsIWin32Locale>	winLocale;
   LCID						localeAsLCID;
   char						acp_name[6];
-  nsAutoString    charset;
   nsAutoString    localeAsNSString(localeName);
 
   //
   // convert locale name to a code page (through the LCID)
   //
-  nsresult result;
-  winLocale = do_CreateInstance(NS_WIN32LOCALE_CONTRACTID, &result);
-  result = winLocale->GetPlatformLocale(&localeAsNSString,&localeAsLCID);
+  nsresult rv;
+  oResult.Truncate();
 
-  if (NS_FAILED(result)) { *_retValue = ToNewUnicode(charset); return result; }
+  winLocale = do_CreateInstance(NS_WIN32LOCALE_CONTRACTID, &rv);
+  if (NS_FAILED(rv)) { return rv; }
 
-  if (GetLocaleInfo(localeAsLCID,LOCALE_IDEFAULTANSICODEPAGE,acp_name,sizeof(acp_name))==0) { 
-    *_retValue = ToNewUnicode(charset); 
+  rv = winLocale->GetPlatformLocale(&localeAsNSString, &localeAsLCID);
+  if (NS_FAILED(rv)) { return rv; }
+
+  if (GetLocaleInfo(localeAsLCID, LOCALE_IDEFAULTANSICODEPAGE, acp_name, sizeof(acp_name))==0) { 
     return NS_ERROR_FAILURE; 
   }
   nsAutoString acp_key; acp_key.Assign(NS_LITERAL_STRING("acp."));
   acp_key.AppendWithConversion(acp_name);
 
-  result = MapToCharset(acp_key,charset);
-
-  *_retValue = ToNewUnicode(charset);
-  return result;
+  return MapToCharset(acp_key, oResult);
 }
 
 NS_IMETHODIMP 
@@ -165,13 +167,13 @@ nsPlatformCharset::Init()
 }
 
 nsresult 
-nsPlatformCharset::MapToCharset(short script, short region, nsAString& outCharset)
+nsPlatformCharset::MapToCharset(short script, short region, nsACString& outCharset)
 {
   return NS_OK;
 }
 
 nsresult
-nsPlatformCharset::InitGetCharset(nsAString &oString)
+nsPlatformCharset::InitGetCharset(nsACString &oString)
 {
   return NS_OK;
 }
@@ -183,7 +185,7 @@ nsPlatformCharset::ConvertLocaleToCharsetUsingDeprecatedConfig(nsAutoString& loc
 }
 
 nsresult
-nsPlatformCharset::VerifyCharset(nsString &aCharset)
+nsPlatformCharset::VerifyCharset(nsCString &aCharset)
 {
   return NS_OK;
 }

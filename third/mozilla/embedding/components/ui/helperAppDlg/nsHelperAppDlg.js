@@ -93,9 +93,10 @@ nsHelperAppDialog.prototype = {
     // show: Open XUL dialog using window watcher.  Since the dialog is not
     //       modal, it needs to be a top level window and the way to open
     //       one of those is via that route).
-    show: function(aLauncher, aContext)  {
+    show: function(aLauncher, aContext, aForced)  {
          this.mLauncher = aLauncher;
          this.mContext  = aContext;
+         this.mForced   = aForced;
          // Display the dialog using the Window Watcher interface.
          var ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
                     .getService( Components.interfaces.nsIWindowWatcher );
@@ -113,7 +114,7 @@ nsHelperAppDialog.prototype = {
     },
 
     // promptForSaveToFile:  Display file picker dialog and return selected file.
-    promptForSaveToFile: function(aContext, aDefaultFile, aSuggestedFileExtension) {
+    promptForSaveToFile: function(aLauncher, aContext, aDefaultFile, aSuggestedFileExtension) {
         var result = "";
 
         // Use file picker to show dialog.
@@ -178,20 +179,6 @@ nsHelperAppDialog.prototype = {
                                   Components.interfaces.nsILocalFile, newDir);
         }
         return result;
-    },
-    
-    // showProgressDialog:  For now, use old dialog.  At some point, the caller should be
-    //                      converted to use the new generic progress dialog (when it's
-    //                      finished).
-    showProgressDialog: function(aLauncher, aContext) {
-         // Display the dialog using the Window Watcher interface.
-         var ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
-                    .getService( Components.interfaces.nsIWindowWatcher );
-         ww.openWindow( null, // no parent
-                        "chrome://global/content/nsProgressDlg.xul",
-                        null,
-                        "chrome,titlebar,minimizable,dialog=yes",
-                        aLauncher );
     },
     
     // ---------- implementation methods ----------
@@ -283,13 +270,15 @@ nsHelperAppDialog.prototype = {
 
          // Initialize "always ask me" box. This should always be disabled
          // and set to true for the ambiguous type application/octet-stream.
-         var alwaysAskCheckbox = this.dialogElement( "alwaysAskMe" );
-         if (this.mLauncher.MIMEInfo.MIMEType == "application/octet-stream") {
-            alwaysAskCheckbox.checked = true;
-            alwaysAskCheckbox.disabled = true;
+         // Same if this dialog was forced
+         var alwaysHandleCheckbox = this.dialogElement( "alwaysHandle" );
+         if (this.mForced ||
+             this.mLauncher.MIMEInfo.MIMEType == "application/octet-stream"){
+            alwaysHandleCheckbox.checked = false;
+            alwaysHandleCheckbox.disabled = true;
          }
          else {
-            alwaysAskCheckbox.checked = this.mLauncher.MIMEInfo.alwaysAskBeforeHandling;
+            alwaysHandleCheckbox.checked = !this.mLauncher.MIMEInfo.alwaysAskBeforeHandling;
          }
 
          // Position it.
@@ -309,7 +298,15 @@ nsHelperAppDialog.prototype = {
         var intro = this.dialogElement( "intro" );
         var desc = this.mLauncher.MIMEInfo.Description;
         var modified;
-        if ( desc ) 
+        if ( this.mForced && desc )
+        {
+          modified = this.replaceInsert( this.getString( "intro.attachment.label" ), 1, desc );
+        }
+        else if ( this.mForced && !desc )
+        {
+          modified = this.getString( "intro.attachment.noDesc.label" );
+        }
+        else if ( desc )
         {
           // Use intro with descriptive text.
           modified = this.replaceInsert( this.getString( "intro.withDesc" ), 1, desc );
@@ -377,7 +374,7 @@ nsHelperAppDialog.prototype = {
             // On other platforms, default is Ok if there is a default app.
             // Note that nsIMIMEInfo providers need to ensure that this holds true
             // on each platform.
-            result = this.mLauncher.MIMEInfo.defaultApplicationHandler;
+            result = this.mLauncher.MIMEInfo.hasDefaultHandler;
         }
         return result;
     },
@@ -534,19 +531,23 @@ nsHelperAppDialog.prototype = {
                 this.mLauncher.MIMEInfo.applicationDescription = "";
             }
         }
-        // We will also need to update if the "always ask" flag has changed.
-        needUpdate = needUpdate || this.mLauncher.MIMEInfo.alwaysAskBeforeHandling != this.dialogElement( "alwaysAskMe" ).checked;
+        // Only care about the state of "always ask" if this dialog wasn't forced
+        if ( !this.mForced )
+        {
+          // We will also need to update if the "always ask" flag has changed.
+          needUpdate = needUpdate || this.mLauncher.MIMEInfo.alwaysAskBeforeHandling == this.dialogElement( "alwaysHandle" ).checked;
         
-        // One last special case: If the input "always ask" flag was false, then we always
-        // update.  In that case we are displaying the helper app dialog for the first
-        // time for this mime type and we need to store the user's action in the mimeTypes.rdf
-        // data source (whether that action has changed or not; if it didn't change, then we need
-        // to store the "always ask" flag so the helper app dialog will or won't display
-        // next time, per the user's selection).
-        needUpdate = needUpdate || !this.mLauncher.MIMEInfo.alwaysAskBeforeHandling;
+          // One last special case: If the input "always ask" flag was false, then we always
+          // update.  In that case we are displaying the helper app dialog for the first
+          // time for this mime type and we need to store the user's action in the mimeTypes.rdf
+          // data source (whether that action has changed or not; if it didn't change, then we need
+          // to store the "always ask" flag so the helper app dialog will or won't display
+          // next time, per the user's selection).
+          needUpdate = needUpdate || !this.mLauncher.MIMEInfo.alwaysAskBeforeHandling;
         
-        // Make sure mime info has updated setting for the "always ask" flag.
-        this.mLauncher.MIMEInfo.alwaysAskBeforeHandling = this.dialogElement( "alwaysAskMe" ).checked;
+          // Make sure mime info has updated setting for the "always ask" flag.
+          this.mLauncher.MIMEInfo.alwaysAskBeforeHandling = !this.dialogElement( "alwaysHandle" ).checked;
+        }
 
         return needUpdate;        
     },
@@ -608,7 +609,8 @@ nsHelperAppDialog.prototype = {
             // store anything in the mime type preferences for the ambiguous
             // type application/octet-stream.
             if ( needUpdate &&
-                 this.mLauncher.MIMEInfo.MIMEType != "application/octet-stream" ) {
+                 this.mLauncher.MIMEInfo.MIMEType != "application/octet-stream" )
+            {
                 this.updateHelperAppPref();
             }
  

@@ -41,7 +41,6 @@
 #include "nsISupports.h"
 #include "nsReflowType.h"
 class nsHTMLReflowCommand;
-class nsIArena;
 class nsIAtom;
 class nsINodeInfo;
 class nsIContent;
@@ -154,8 +153,6 @@ NS_NewBRFrame(nsIPresShell* aPresShell, nsIFrame** aNewFrame);
 
 nsresult
 NS_NewCommentFrame(nsIPresShell* aPresShell, nsIFrame** aFrameResult);
-nsresult
-NS_NewHRFrame(nsIPresShell* aPresShell, nsIFrame** aNewFrame);
 
 // <frame> and <iframe> 
 nsresult

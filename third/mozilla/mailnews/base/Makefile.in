@@ -26,7 +26,8 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		= public src util search
+MODULE		= msgbase
+DIRS		= public src util search ispdata
 
 ifndef MOZ_STATIC_MAIL_BUILD
 DIRS += build

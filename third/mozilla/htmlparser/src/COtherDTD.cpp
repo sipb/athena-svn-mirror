@@ -55,7 +55,6 @@
 #include "nsDTDUtils.h"
 #include "nsHTMLTokenizer.h"
 #include "nsTime.h"
-#include "nsViewSourceHTML.h" 
 #include "nsParserNode.h"
 #include "nsHTMLEntities.h"
 #include "nsLinebreakConverter.h"
@@ -63,12 +62,10 @@
 
 #include "prmem.h" 
 
-
 static NS_DEFINE_IID(kIHTMLContentSinkIID, NS_IHTML_CONTENT_SINK_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);                 
 static NS_DEFINE_IID(kIDTDIID,      NS_IDTD_IID);
 static NS_DEFINE_IID(kClassIID,     NS_IOTHERHTML_DTD_IID); 
-  static NS_DEFINE_IID(kParserServiceCID, NS_PARSERSERVICE_CID);
 static const char kVerificationDir[] = "c:/temp";
  
 
@@ -300,7 +297,7 @@ COtherDTD::CanParse(CParserContext& aParserContext, const nsString& aBuffer,
         }
       }
     } 
-  } 
+  }
   return result; 
 }
 
@@ -472,7 +469,7 @@ nsresult COtherDTD::DidBuildModel(nsresult anErrorCode,PRBool aNotifySink,nsIPar
     } //if aparser  
 
       //No matter what, you need to call did build model.
-    result = aSink->DidBuildModel(0); 
+    result = aSink->DidBuildModel(); 
 
   } //if asink
   return result; 

@@ -326,18 +326,6 @@ struct nsDocumentMapReadEntry : public nsDocumentMapEntry {
                                         // mux schedule
 };
 
-PR_STATIC_CALLBACK(PRBool)
-strmap_MatchEntry(PLDHashTable *aTable,
-                  const PLDHashEntryHdr *aHdr,
-                  const void *aKey)
-{
-    const nsStringMapEntry* entry =
-        NS_STATIC_CAST(const nsStringMapEntry*, aHdr);
-    const char* string = NS_REINTERPRET_CAST(const char*, aKey);
-
-    return strcmp(entry->mString, string) == 0;
-}
-
 PR_STATIC_CALLBACK(void)
 strmap_ClearEntry(PLDHashTable *aTable, PLDHashEntryHdr *aHdr)
 {
@@ -354,7 +342,7 @@ static const PLDHashTableOps strmap_DHashTableOps = {
     PL_DHashFreeTable,
     PL_DHashGetKeyStub,
     PL_DHashStringKey,
-    strmap_MatchEntry,
+    PL_DHashMatchStringKey,
     PL_DHashMoveEntryStub,
     strmap_ClearEntry,
     PL_DHashFinalizeStub,
@@ -1052,12 +1040,9 @@ nsFastLoadFileReader::ReadObject(PRBool aIsStrongRef, nsISupports* *aObject)
         return rv;
     oid ^= MFL_OID_XOR_KEY;
 
-    nsObjectMapEntry* entry = (oid != MFL_DULL_OBJECT_OID)
-                              ? &mFooter.GetSharpObjectEntry(oid)
-                              : nsnull;
     nsCOMPtr<nsISupports> object;
 
-    if (!entry) {
+    if (oid == MFL_DULL_OBJECT_OID) {
         // A very dull object, defined at point of single (strong) reference.
         NS_ASSERTION(aIsStrongRef, "dull object read via weak ref!");
 
@@ -1068,6 +1053,8 @@ nsFastLoadFileReader::ReadObject(PRBool aIsStrongRef, nsISupports* *aObject)
         NS_ASSERTION((oid & MFL_WEAK_REF_TAG) ==
                      (aIsStrongRef ? 0 : MFL_WEAK_REF_TAG),
                      "strong vs. weak ref deserialization mismatch!");
+
+        nsObjectMapEntry* entry = &mFooter.GetSharpObjectEntry(oid);
 
         // Check whether we've already deserialized the object for this OID.
         object = entry->mReadObject;

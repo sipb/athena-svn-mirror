@@ -81,7 +81,7 @@ NS_IMPL_THREADSAFE_ISUPPORTS4(mozXMLTerminal,
                               mozIXMLTerminal,
                               nsIWebProgressListener,
                               nsIObserver,
-                              nsISupportsWeakReference);
+                              nsISupportsWeakReference)
 
 mozXMLTerminal::mozXMLTerminal() :
   mInitialized(PR_FALSE),
@@ -205,7 +205,7 @@ NS_IMETHODIMP mozXMLTerminal::Init(nsIDocShell* aDocShell,
   mInitialized = PR_TRUE;
 
   // Containing docshell
-  mDocShell = getter_AddRefs(NS_GetWeakReference(aDocShell)); // weak ref
+  mDocShell = do_GetWeakReference(aDocShell); // weak ref
 
   mXMLTermShell = aXMLTermShell;  // containing xmlterm shell; no addref
 
@@ -423,8 +423,8 @@ NS_IMETHODIMP mozXMLTerminal::Activate(void)
     return NS_ERROR_FAILURE;
 
   // Save weak references to presentation shell and DOMDocument
-  mPresShell   = getter_AddRefs(NS_GetWeakReference(presShell)); // weak ref
-  mDOMDocument = getter_AddRefs(NS_GetWeakReference(domDoc));    // weak ref
+  mPresShell   = do_GetWeakReference(presShell); // weak ref
+  mDOMDocument = do_GetWeakReference(domDoc);    // weak ref
 
   // Show caret
   ShowCaret();

@@ -60,7 +60,6 @@
 #include "nsIWidget.h"
 #include "nsIWindowMediator.h"
 
-static NS_DEFINE_CID(kCmdLineServiceCID,    NS_COMMANDLINE_SERVICE_CID);
 static NS_DEFINE_CID(kAppShellServiceCID,   NS_APPSHELL_SERVICE_CID);
 
 #define rSplashDialog 512
@@ -122,7 +121,7 @@ nsNativeAppSupportMac::~nsNativeAppSupportMac()
   HideSplashScreen();
 }
 
-NS_IMPL_ISUPPORTS2(nsNativeAppSupportMac, nsINativeAppSupport, nsIObserver);
+NS_IMPL_ISUPPORTS2(nsNativeAppSupportMac, nsINativeAppSupport, nsIObserver)
 
 /* boolean start (); */
 NS_IMETHODIMP nsNativeAppSupportMac::Start(PRBool *_retval)

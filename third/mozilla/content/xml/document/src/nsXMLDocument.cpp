@@ -260,6 +260,8 @@ nsXMLDocument::Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup)
 
   mBaseTarget.Truncate();
 
+  mScriptContext = nsnull;
+
   return result;
 }
 
@@ -419,56 +421,91 @@ nsXMLDocument::Load(const nsAString& aUrl, PRBool *aReturn)
   nsCOMPtr<nsIURI> uri;
   nsresult rv;
   
-  // Create a new URI
-  rv = NS_NewURI(getter_AddRefs(uri), aUrl, nsnull, mDocumentURL);
-  if (NS_FAILED(rv)) return rv;
-
-  // Get security manager, check to see if we're allowed to load this URI
-  nsCOMPtr<nsIScriptSecurityManager> secMan = 
-           do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-  if (NS_FAILED(rv)) return rv;
-  rv = secMan->CheckConnect(nsnull, uri, "XMLDocument", "load");
-  if (NS_FAILED(rv)) {
-    // We need to return success here so that JS will get a proper exception
-    // thrown later. Native calls should always result in CheckConnect() succeeding,
-    // but in case JS calls C++ which calls this code the exception might be lost.
-    return NS_OK;
-  }
-
   // Partial Reset, need to restore principal for security reasons and
-  // event listener manager so that load listeners etc. will remain.
+  // event listener manager so that load listeners etc. will
+  // remain. This should be done before the security check is done to
+  // ensure that the document is reset even if the new document can't
+  // be loaded.
 
   nsCOMPtr<nsIPrincipal> principal(mPrincipal);
   nsCOMPtr<nsIEventListenerManager> elm(mListenerManager);
 
   Reset(nsnull, nsnull);
-  
+
   mPrincipal = principal;
   mListenerManager = elm;
-  
-  SetDocumentURL(uri);
-  SetBaseURL(uri);
 
-  // Store script context, if any, in case we encounter redirect
-  // (because we need it there)
+  nsCOMPtr<nsIScriptContext> callingContext;
+
   nsCOMPtr<nsIJSContextStack> stack =
     do_GetService("@mozilla.org/js/xpc/ContextStack;1");
   if (stack) {
     JSContext *cx;
     if (NS_SUCCEEDED(stack->Peek(&cx)) && cx) {
-      nsISupports *priv = (nsISupports *)::JS_GetContextPrivate(cx);
-      if (priv) {
-        mScriptContext = do_QueryInterface(priv);
+      nsContentUtils::GetDynamicScriptContext(cx,
+                                              getter_AddRefs(callingContext));
+    }
+  }
+
+  nsCOMPtr<nsIURI> baseURI(mDocumentURL);
+  nsCAutoString charset;
+
+  if (callingContext) {
+    nsCOMPtr<nsIScriptGlobalObject> sgo;
+    callingContext->GetGlobalObject(getter_AddRefs(sgo));
+
+    nsCOMPtr<nsIDOMWindow> window(do_QueryInterface(sgo));
+
+    if (window) {
+      nsCOMPtr<nsIDOMDocument> dom_doc;
+      window->GetDocument(getter_AddRefs(dom_doc));
+      nsCOMPtr<nsIDocument> doc(do_QueryInterface(dom_doc));
+
+      if (doc) {
+        doc->GetBaseURL(getter_AddRefs(baseURI));
+        doc->GetDocumentCharacterSet(charset);
       }
     }
   }
+
+  // Create a new URI
+  rv = NS_NewURI(getter_AddRefs(uri), aUrl, charset.get(), baseURI);
+  if (NS_FAILED(rv)) {
+    return rv;
+  }
+
+  // Get security manager, check to see if we're allowed to load this URI
+  nsCOMPtr<nsIScriptSecurityManager> secMan = 
+           do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
+  if (NS_FAILED(rv)) {
+    return rv;
+  }
+
+  rv = secMan->CheckConnect(nsnull, uri, "XMLDocument", "load");
+  if (NS_FAILED(rv)) {
+    // We need to return success here so that JS will get a proper
+    // exception thrown later. Native calls should always result in
+    // CheckConnect() succeeding, but in case JS calls C++ which calls
+    // this code the exception might be lost.
+    return NS_OK;
+  }
+
+  SetDocumentURL(uri);
+  SetBaseURL(uri);
+
+  // Store script context, if any, in case we encounter redirect
+  // (because we need it there)
+
+  mScriptContext = callingContext;
 
   // Find out if UniversalBrowserRead privileges are enabled - we will
   // need this in case of a redirect
   PRBool crossSiteAccessEnabled;
   rv = secMan->IsCapabilityEnabled("UniversalBrowserRead",
                                    &crossSiteAccessEnabled);
-  if (NS_FAILED(rv)) return rv;
+  if (NS_FAILED(rv)) {
+    return rv;
+  }
 
   mCrossSiteAccessEnabled = crossSiteAccessEnabled;
 
@@ -483,7 +520,9 @@ nsXMLDocument::Load(const nsAString& aUrl, PRBool *aReturn)
   // which in turn keeps STOP button from becoming active  
   rv = NS_NewChannel(getter_AddRefs(channel), uri, nsnull, loadGroup, this, 
                      nsIRequest::LOAD_BACKGROUND);
-  if (NS_FAILED(rv)) return rv;
+  if (NS_FAILED(rv)) {
+    return rv;
+  }
 
   // Set a principal for this document
   nsCOMPtr<nsISupports> channelOwner;
@@ -606,7 +645,7 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
                                               aDocListener, aReset, aSink);
   if (NS_FAILED(rv)) return rv;
 
-  nsAutoString charset(NS_LITERAL_STRING("UTF-8"));
+  nsCAutoString charset(NS_LITERAL_CSTRING("UTF-8"));
   PRInt32 charsetSource = kCharsetFromDocTypeDefault;
 
   nsCOMPtr<nsIURI> aUrl;
@@ -620,10 +659,9 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
       nsCOMPtr<nsICharsetAlias> calias(do_GetService(kCharsetAliasCID,&rv));
 
       if(NS_SUCCEEDED(rv) && (nsnull != calias) ) {
-        nsAutoString preferred;
-        rv = calias->GetPreferred(NS_ConvertASCIItoUCS2(charsetVal), preferred);
+        nsCAutoString preferred;
+        rv = calias->GetPreferred(charsetVal, charset);
         if(NS_SUCCEEDED(rv)){            
-          charset = preferred;
           charsetSource = kCharsetFromChannel;
         }
       }
@@ -878,7 +916,7 @@ nsXMLDocument::CreateElement(const nsAString& aTagName,
   nsresult rv;
 
   rv = mNodeInfoManager->GetNodeInfo(aTagName, nsnull, kNameSpaceID_None,
-                                     *getter_AddRefs(nodeInfo));
+                                     getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   return CreateElement(nodeInfo, aReturn);
@@ -971,7 +1009,7 @@ nsXMLDocument::CreateAttributeNS(const nsAString& aNamespaceURI,
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
   nsresult rv = mNodeInfoManager->GetNodeInfo(aQualifiedName, aNamespaceURI,
-                                              *getter_AddRefs(nodeInfo));
+                                              getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsAutoString value;
@@ -993,7 +1031,7 @@ nsXMLDocument::CreateElementNS(const nsAString& aNamespaceURI,
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
   rv = mNodeInfoManager->GetNodeInfo(aQualifiedName, aNamespaceURI,
-                                     *getter_AddRefs(nodeInfo));
+                                     getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   return CreateElement(nodeInfo, aReturn);
@@ -1002,7 +1040,7 @@ nsXMLDocument::CreateElementNS(const nsAString& aNamespaceURI,
 // Id attribute matching function used by nsXMLDocument and
 // nsHTMLDocument.
 nsIContent *
-MatchElementId(nsIContent *aContent, const nsAString& aId)
+MatchElementId(nsIContent *aContent, const nsACString& aUTF8Id, const nsAString& aId)
 {
   if (aContent->IsContentOfType(nsIContent::eHTML)) {
     if (aContent->HasAttr(kNameSpaceID_None, nsHTMLAtoms::id)) {
@@ -1019,8 +1057,8 @@ MatchElementId(nsIContent *aContent, const nsAString& aId)
 
     if (xmlContent) {
       nsCOMPtr<nsIAtom> value;
-      if (NS_SUCCEEDED(xmlContent->GetID(*getter_AddRefs(value))) &&
-          value && value->Equals(aId)) {
+      if (NS_SUCCEEDED(xmlContent->GetID(getter_AddRefs(value))) &&
+          value && value->EqualsUTF8(aUTF8Id)) {
         return aContent;
       }
     }
@@ -1030,11 +1068,10 @@ MatchElementId(nsIContent *aContent, const nsAString& aId)
   PRInt32 i, count;
 
   aContent->ChildCount(count);
+  nsCOMPtr<nsIContent> child;
   for (i = 0; i < count && result == nsnull; i++) {
-    nsIContent *child;
-    aContent->ChildAt(i, child);
-    result = MatchElementId(child, aId);
-    NS_RELEASE(child);
+    aContent->ChildAt(i, getter_AddRefs(child));
+    result = MatchElementId(child, aUTF8Id, aId);
   }  
 
   return result;
@@ -1060,7 +1097,9 @@ nsXMLDocument::GetElementById(const nsAString& aElementId,
   // XXX For now, we do a brute force search of the content tree.
   // We should come up with a more efficient solution.
   // Note that content is *not* refcounted here, so do *not* release it!
-  nsIContent *content = MatchElementId(mRootContent, aElementId);
+  nsIContent *content = MatchElementId(mRootContent,
+                                       NS_ConvertUCS2toUTF8(aElementId),
+                                       aElementId);
 
   if (!content) {
     return NS_OK;
@@ -1132,8 +1171,7 @@ nsXMLDocument::CreateElement(nsINodeInfo *aNodeInfo, nsIDOMElement** aResult)
   
   nsCOMPtr<nsIContent> content;
 
-  PRInt32 namespaceID;
-  aNodeInfo->GetNamespaceID(namespaceID);
+  PRInt32 namespaceID = aNodeInfo->GetNamespaceID();
 
   nsCOMPtr<nsIElementFactory> elementFactory;
   nsContentUtils::GetNSManagerWeakRef()->GetElementFactory(namespaceID,

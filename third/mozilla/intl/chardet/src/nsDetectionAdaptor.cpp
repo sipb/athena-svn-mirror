@@ -46,7 +46,6 @@
 #include "nsDetectionAdaptor.h"
 #include "nsIContentSink.h"
 
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 
 //--------------------------------------------------------------
 NS_IMETHODIMP nsMyObserver::Notify(
@@ -55,7 +54,7 @@ NS_IMETHODIMP nsMyObserver::Notify(
     nsresult rv = NS_OK;
 
     if(mWeakRefParser) {
-      nsAutoString existingCharset;
+      nsCAutoString existingCharset;
       PRInt32 existingSource;
       mWeakRefParser->GetDocumentCharset(existingCharset, existingSource);  
       if (existingSource >= kCharsetFromAutoDetection) 
@@ -68,7 +67,7 @@ NS_IMETHODIMP nsMyObserver::Notify(
         rv = mWebShellSvc->StopDocumentLoad();
         rv = mWebShellSvc->ReloadDocument(aCharset, kCharsetFromAutoDetection);
       } else {
-        nsAutoString newcharset; newcharset.AssignWithConversion(aCharset);
+        nsDependentCString newcharset(aCharset);
         if (mWeakRefParser) {
           mWeakRefParser->SetDocumentCharset(newcharset, kCharsetFromAutoDetection);
           nsCOMPtr<nsIContentSink> contentSink = mWeakRefParser->GetContentSink();
@@ -85,7 +84,7 @@ NS_IMETHODIMP nsMyObserver::Notify(
 NS_IMETHODIMP nsMyObserver::Init( nsIWebShellServices* aWebShellSvc, 
                    nsIDocument* aDocument,
                    nsIParser* aParser,
-                   const PRUnichar* aCharset,
+                   const char* aCharset,
                    const char* aCommand)
 {
     if(aCommand) {
@@ -108,7 +107,7 @@ NS_IMETHODIMP nsMyObserver::Init( nsIWebShellServices* aWebShellSvc,
     return NS_ERROR_ILLEGAL_VALUE;
 }
 //--------------------------------------------------------------
-NS_IMPL_ISUPPORTS1 ( nsMyObserver ,nsICharsetDetectionObserver);
+NS_IMPL_ISUPPORTS1 ( nsMyObserver ,nsICharsetDetectionObserver)
 
 //--------------------------------------------------------------
 nsDetectionAdaptor::nsDetectionAdaptor( void ) 
@@ -121,12 +120,12 @@ nsDetectionAdaptor::~nsDetectionAdaptor()
 }
 
 //--------------------------------------------------------------
-NS_IMPL_ISUPPORTS2 (nsDetectionAdaptor, nsIParserFilter, nsICharsetDetectionAdaptor);
+NS_IMPL_ISUPPORTS2 (nsDetectionAdaptor, nsIParserFilter, nsICharsetDetectionAdaptor)
 
 //--------------------------------------------------------------
 NS_IMETHODIMP nsDetectionAdaptor::Init(
     nsIWebShellServices* aWebShellSvc, nsICharsetDetector *aDetector,
-    nsIDocument* aDocument, nsIParser* aParser, const PRUnichar* aCharset,
+    nsIDocument* aDocument, nsIParser* aParser, const char* aCharset,
     const char* aCommand)
 {
   if((nsnull != aWebShellSvc) && (nsnull != aDetector) && (nsnull != aCharset))

@@ -112,6 +112,10 @@ interface nsIMsgAccountManager : nsISupports {
   /* are we shutting down */
   readonly attribute boolean shutdownInProgress;
 
+  /**
+   * for preventing unauthenticated users from seeing header information 
+   */
+  attribute boolean userNeedsToAuthenticate;
   /*
    * search for the server with the given username, hostname, and type
    * the type is the same as is specified in the preferences,
@@ -192,6 +196,8 @@ interface nsIMsgAccountManager : nsISupports {
 
   // force account info out to prefs file
   void saveAccountInfo();
+
+  string getChromePackageName(in string aExtensionName);
 };
 
 
@@ -203,7 +209,8 @@ interface nsIMsgAccountManager : nsISupports {
 [scriptable, uuid(9ce9fc76-1dd1-11b2-8da2-bf6b98b4c537)]
 interface nsIMsgAccountManagerExtension : nsISupports
 {
-    readonly attribute string name;
+    readonly attribute string name;   // examples:  mdn
 	boolean showPanel(in nsIMsgIncomingServer server);
+	readonly attribute string chromePackageName;  // example:  messenger, chrome://messenger/content/am-mdn.xul and chrome://messenger/locale/am-mdn.properties
 };
 

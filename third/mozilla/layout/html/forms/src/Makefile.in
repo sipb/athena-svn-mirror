@@ -36,11 +36,8 @@ REQUIRES	= xpcom \
 		  widget \
 		  view \
 		  dom \
-		  js \
-		  htmlparser \
 		  necko \
 		  webshell \
-		  caps \
 		  editor \
 		  intl \
 		  uconv \
@@ -48,7 +45,6 @@ REQUIRES	= xpcom \
 		  xuldoc \
 		  imglib2 \
 		  accessibility \
-		  xpconnect \
 		  unicharutil \
 		  commandhandler \
 		  $(NULL)
@@ -84,13 +80,3 @@ LOCAL_INCLUDES	= \
 		$(NULL)
 
 DEFINES += -D_IMPL_NS_LAYOUT
-
-# OS/2 Optimization bug
-# This suppresses optimization for this single compilation unit.
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-nsListControlFrame.obj: nsListControlFrame.cpp
-	$(REPORT_BUILD)
-	@$(MAKE_DEPS_AUTO)
-	$(ELOG) $(CCC) $(OUTOPTION)$@ -c $(filter-out /O+, $(COMPILE_CXXFLAGS)) $(_VPATH_SRCS)
-endif
-

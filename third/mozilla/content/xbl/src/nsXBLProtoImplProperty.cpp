@@ -97,19 +97,19 @@ RemoveJSGCRoot(void* aScriptObjectRef)
   return NS_OK;
 }
 
-MOZ_DECL_CTOR_COUNTER(nsXBLProtoImplProperty);
+MOZ_DECL_CTOR_COUNTER(nsXBLProtoImplProperty)
 
 nsXBLProtoImplProperty::nsXBLProtoImplProperty(const PRUnichar* aName,
                                                const PRUnichar* aGetter, 
                                                const PRUnichar* aSetter,
-                                               const PRUnichar* aReadOnly)
-:nsXBLProtoImplMember(aName), 
- mGetterText(nsnull),
- mSetterText(nsnull)
+                                               const PRUnichar* aReadOnly) :
+  nsXBLProtoImplMember(aName), 
+  mGetterText(nsnull),
+  mSetterText(nsnull),
+  mJSAttributes(JSPROP_ENUMERATE)
 {
   MOZ_COUNT_CTOR(nsXBLProtoImplProperty);
 
-  mJSAttributes = JSPROP_ENUMERATE;
   if (aReadOnly) {
     nsAutoString readOnly; readOnly.Assign(*aReadOnly);
     if (readOnly.EqualsIgnoreCase("true"))
@@ -138,8 +138,8 @@ nsXBLProtoImplProperty::Destroy(PRBool aIsCompiled)
     mJSGetterObject = mJSSetterObject = nsnull;
   }
   else {
-    nsMemory::Free(mGetterText);
-    nsMemory::Free(mSetterText);
+    delete mGetterText;
+    delete mSetterText;
     mGetterText = mSetterText = nsnull;
   }
 }
@@ -147,32 +147,57 @@ nsXBLProtoImplProperty::Destroy(PRBool aIsCompiled)
 void 
 nsXBLProtoImplProperty::AppendGetterText(const nsAString& aText)
 {
-  if (mGetterText) {
-    PRUnichar* temp = mGetterText;
-    mGetterText = ToNewUnicode(nsDependentString(temp) + aText);
-    nsMemory::Free(temp);
+  if (!mGetterText) {
+    mGetterText = new nsXBLTextWithLineNumber();
+    if (!mGetterText)
+      return;
   }
-  else
-    mGetterText = ToNewUnicode(aText);
+
+  mGetterText->AppendText(aText);
 }
 
 void 
 nsXBLProtoImplProperty::AppendSetterText(const nsAString& aText)
 {
-  if (mSetterText) {
-    PRUnichar* temp = mSetterText;
-    mSetterText = ToNewUnicode(nsDependentString(temp) + aText);
-    nsMemory::Free(temp);
+  if (!mSetterText) {
+    mSetterText = new nsXBLTextWithLineNumber();
+    if (!mSetterText)
+      return;
   }
-  else
-    mSetterText = ToNewUnicode(aText);
+
+  mSetterText->AppendText(aText);
+}
+
+void
+nsXBLProtoImplProperty::SetGetterLineNumber(PRUint32 aLineNumber) {
+  if (!mGetterText) {
+    mGetterText = new nsXBLTextWithLineNumber();
+    if (!mGetterText)
+      return;
+  }
+
+  mGetterText->SetLineNumber(aLineNumber);
+}
+
+void
+nsXBLProtoImplProperty::SetSetterLineNumber(PRUint32 aLineNumber) {
+  if (!mSetterText) {
+    mSetterText = new nsXBLTextWithLineNumber();
+    if (!mSetterText)
+      return;
+  }
+
+  mSetterText->SetLineNumber(aLineNumber);
 }
 
 const char* gPropertyArgs[] = { "val" };
 
 nsresult
-nsXBLProtoImplProperty::InstallMember(nsIScriptContext* aContext, nsIContent* aBoundElement, 
-                                      void* aScriptObject, void* aTargetClassObject)
+nsXBLProtoImplProperty::InstallMember(nsIScriptContext* aContext,
+                                      nsIContent* aBoundElement, 
+                                      void* aScriptObject,
+                                      void* aTargetClassObject,
+                                      const nsCString& aClassStr)
 {
   JSContext* cx = (JSContext*) aContext->GetNativeContext();
   JSObject * scriptObject = (JSObject *) aScriptObject;
@@ -215,22 +240,29 @@ nsXBLProtoImplProperty::CompileMember(nsIScriptContext* aContext, const nsCStrin
   nsresult rv = NS_OK;
 
   // Do we have a getter?
-  nsAutoString getter(mGetterText);
-  nsMemory::Free(mGetterText);
+  nsAutoString getter(mGetterText ? mGetterText->GetText() : nsnull);
+  PRUint32 lineNo = mGetterText ? mGetterText->GetLineNumber() : 0;
+
+  // Make sure we free mGetterText here before calling
+  // CompileFunction() since that'll overwrite mGetterText
+  delete mGetterText;
   mGetterText = nsnull;
+
   nsCAutoString functionUri;
   if (!getter.IsEmpty() && aClassObject) {
     functionUri = aClassStr;
-    functionUri += NS_LITERAL_CSTRING(".");
-    functionUri += NS_ConvertUCS2toUTF8(mName);
-    functionUri += NS_LITERAL_CSTRING(" (getter)");
+    PRInt32 hash = functionUri.RFindChar('#');
+    if (hash != kNotFound) {
+      functionUri.Truncate(hash);
+    }
     rv = aContext->CompileFunction(aClassObject,
-                                   nsCAutoString("onget"),
+                                   NS_LITERAL_CSTRING("get_") +
+                                     NS_ConvertUCS2toUTF8(mName),
                                    0,
                                    nsnull,
                                    getter, 
                                    functionUri.get(),
-                                   0,
+                                   lineNo,
                                    PR_FALSE,
                                    (void **) &mJSGetterObject);
     if (mJSGetterObject && NS_SUCCEEDED(rv)) {
@@ -251,21 +283,28 @@ nsXBLProtoImplProperty::CompileMember(nsIScriptContext* aContext, const nsCStrin
   nsresult rvG=rv;
 
   // Do we have a setter?
-  nsAutoString setter(mSetterText);
-  nsMemory::Free(mSetterText);
+  nsAutoString setter(mSetterText ? mSetterText->GetText() : nsnull);
+  lineNo = mSetterText ? mSetterText->GetLineNumber() : 0;
+
+  // Make sure we free mSetterText here before calling
+  // CompileFunction() since that'll overwrite mSetterText
+  delete mSetterText;
   mSetterText = nsnull;
+
   if (!setter.IsEmpty() && aClassObject) {
     functionUri = aClassStr;
-    functionUri += NS_LITERAL_CSTRING(".");
-    functionUri += NS_ConvertUCS2toUTF8(mName);
-    functionUri += NS_LITERAL_CSTRING(" (setter)");
+    PRInt32 hash = functionUri.RFindChar('#');
+    if (hash != kNotFound) {
+      functionUri.Truncate(hash);
+    }
     rv = aContext->CompileFunction(aClassObject,
-                                   nsCAutoString("onset"),
+                                   NS_LITERAL_CSTRING("set_") +
+                                     NS_ConvertUCS2toUTF8(mName),
                                    1,
                                    gPropertyArgs,
                                    setter, 
                                    functionUri.get(),
-                                   0,
+                                   lineNo,
                                    PR_FALSE,
                                    (void **) &mJSSetterObject);
     if (mJSSetterObject && NS_SUCCEEDED(rv)) {

@@ -40,6 +40,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include <glib.h>
+#include <glib-object.h>
 
 #include "plstr.h"
 #include "nsCOMPtr.h"
@@ -441,11 +442,11 @@ NS_IMETHODIMP nsSystemPrefService::RemoveObserver(const char *aDomain, nsIObserv
     NS_ENSURE_SUCCESS(rv, rv);
 
     // need to find the index of observer, so we can remove it
-    PRInt32 count = mObservers->Count();
+    PRIntn count = mObservers->Count();
     if (count <= 0)
         return NS_OK;
 
-    PRInt32 i;
+    PRIntn i;
     SysPrefCallbackData *pCallbackData;
     for (i = 0; i < count; ++i) {
         pCallbackData = (SysPrefCallbackData *)mObservers->ElementAt(i);
@@ -588,16 +589,12 @@ GConfProxy::GConfProxy(nsSystemPrefService *aSysPrefService):
 
 GConfProxy::~GConfProxy()
 {
-    mInitialized = PR_FALSE;
+    if (mGConfClient)
+        g_object_unref(G_OBJECT(mGConfClient));
 
-    if (mGConfLib) {
-        PR_UnloadLibrary(mGConfLib);
-        mGConfLib = nsnull;
-    }
     if (mObservers) {
         (void)mObservers->EnumerateForwards(gconfDeleteObserver, nsnull);
         delete mObservers;
-        mObservers = nsnull;
     }
 }
 
@@ -644,7 +641,7 @@ GConfProxy::Init()
         func = PR_FindFunctionSymbol(mGConfLib, funcList->FuncName);
         if (!func) {
             SYSPREF_LOG(("Check GConf Func Error: %s", funcList->FuncName));
-            goto init_failed;
+            goto init_failed_unload;
         }
         funcList->FuncPtr = func;
     }
@@ -652,6 +649,10 @@ GConfProxy::Init()
     InitFuncPtrs();
 
     mGConfClient = GConfClientGetDefault();
+
+    // Don't unload past this point, since GConf's initialization of ORBit
+    // causes atexit handlers to be registered.
+
     if (!mGConfClient) {
         SYSPREF_LOG(("Fail to Get default gconf client\n"));
         goto init_failed;
@@ -659,8 +660,9 @@ GConfProxy::Init()
     mInitialized = PR_TRUE;
     return PR_TRUE;
 
- init_failed:
+ init_failed_unload:
     PR_UnloadLibrary(mGConfLib);
+ init_failed:
     mGConfLib = nsnull;
     return PR_FALSE;
 }
@@ -734,11 +736,11 @@ GConfProxy::NotifyRemove (PRUint32 aAtom, const void *aUserData)
 {
     NS_ENSURE_TRUE(mInitialized, NS_ERROR_FAILURE);
 
-    PRInt32 count = mObservers->Count();
+    PRIntn count = mObservers->Count();
     if (count <= 0)
         return NS_OK;
 
-    PRInt32 i;
+    PRIntn i;
     GConfCallbackData *pData;
     for (i = 0; i < count; ++i) {
         pData = (GConfCallbackData *)mObservers->ElementAt(i);

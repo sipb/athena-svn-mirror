@@ -71,7 +71,7 @@ nsPopupWindowManager::~nsPopupWindowManager(void)
 NS_IMPL_ISUPPORTS3(nsPopupWindowManager, 
                    nsIPopupWindowManager,
                    nsIObserver,
-                   nsSupportsWeakReference);
+                   nsSupportsWeakReference)
 
 nsresult
 nsPopupWindowManager::Init()
@@ -127,9 +127,7 @@ nsPopupWindowManager::TestPermission(nsIURI *aURI, PRUint32 *aPermission)
   PRUint32 permit;
 
   if (mPermissionManager) {
-    rv = mPermissionManager->TestPermission(aURI,
-                                            nsIPermissionManager::POPUP_TYPE,
-                                            &permit);
+    rv = mPermissionManager->TestPermission(aURI, "popup", &permit);
 
     // Share some constants between interfaces?
     if (permit == nsIPermissionManager::ALLOW_ACTION) {
@@ -153,7 +151,7 @@ nsPopupWindowManager::Observe(nsISupports *aSubject,
                               const char *aTopic,
                               const PRUnichar *aData)
 {
-  NS_ConvertUCS2toUTF8 pref(aData);
+  NS_LossyConvertUCS2toASCII pref(aData);
   if (pref.Equals(kPopupDisablePref)) {
     // refresh our local copy of the "disable popups" pref
     PRBool permission = PR_FALSE;

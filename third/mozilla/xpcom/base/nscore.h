@@ -40,10 +40,9 @@
 /**
  * Make sure that we have the proper platform specific 
  * c++ definitions needed by nscore.h
- * Add ifdef to speed up compliation but mozilla-config.h is still required
  */
-#ifndef _MOZILLA_CONFIG_H_
-#include "mozilla-config.h"
+#ifndef _XPCOM_CONFIG_H_
+#include "xpcom-config.h"
 #endif
 
 /**
@@ -70,10 +69,10 @@
 
 #ifdef NS_WIN32
 
-#define NS_IMPORT _declspec(dllimport)
-#define NS_IMPORT_(type) type _declspec(dllimport) __stdcall
-#define NS_EXPORT _declspec(dllexport)
-#define NS_EXPORT_(type) type _declspec(dllexport) __stdcall
+#define NS_IMPORT __declspec(dllimport)
+#define NS_IMPORT_(type) type __declspec(dllimport) __stdcall
+#define NS_EXPORT __declspec(dllexport)
+#define NS_EXPORT_(type) type __declspec(dllexport) __stdcall
 #define NS_IMETHOD_(type) virtual type __stdcall
 #define NS_IMETHODIMP_(type) type __stdcall
 #define NS_METHOD_(type) type __stdcall
@@ -208,7 +207,6 @@ typedef PRUint32 nsresult;
 #if defined(_MSC_VER) && (_MSC_VER>=1100)
   /* VC++ 5.0 and greater implement template specialization, 4.2 is unknown */
   #define HAVE_CPP_MODERN_SPECIALIZE_TEMPLATE_SYNTAX
-  #define HAVE_CPP_EXTERN_INSTANTIATION
 
   #define HAVE_CPP_EXPLICIT
   #define HAVE_CPP_TYPENAME

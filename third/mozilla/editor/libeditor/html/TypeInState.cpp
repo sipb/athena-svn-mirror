@@ -45,27 +45,7 @@
  *                     XPCOM cruft 
  *******************************************************************/
 
-NS_IMPL_ADDREF(TypeInState)
-NS_IMPL_RELEASE(TypeInState)
-
-NS_IMETHODIMP
-TypeInState::QueryInterface(REFNSIID aIID, void** aInstancePtr)
-{
-  if (nsnull == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  if (aIID.Equals(NS_GET_IID(nsISupports))) {
-    *aInstancePtr = (void*)(nsISupports*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(NS_GET_IID(nsISelectionListener))) {
-    *aInstancePtr = (void*)(nsISelectionListener*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  return NS_NOINTERFACE;
-}
+NS_IMPL_ISUPPORTS1(TypeInState, nsISelectionListener)
 
 /********************************************************************
  *                   public methods
@@ -200,11 +180,10 @@ nsresult TypeInState::SetProp(nsIAtom *aProp, const nsString &aAttr, const nsStr
     mRelativeFontSize--;
     return NS_OK;
   }
-  
-  nsAutoString value;
+
   PRInt32 index;
-  PropItem *item = nsnull;
-  
+  PropItem *item;
+
   if (IsPropSet(aProp,aAttr,nsnull,index))
   {
     // if it's already set, update the value
@@ -259,7 +238,7 @@ nsresult TypeInState::ClearProp(nsIAtom *aProp, const nsString &aAttr)
 
 
 /***************************************************************************
- *    TakeClearProperty: hands back next poroperty item on the clear list.
+ *    TakeClearProperty: hands back next property item on the clear list.
  *                       caller assumes ownership of PropItem and must delete it.
  */  
 nsresult TypeInState::TakeClearProperty(PropItem **outPropItem)

@@ -55,9 +55,6 @@
 //
 #define TEST_URL "resource:/res/strres.properties"
 
-static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
-static NS_DEFINE_CID(kStringBundleServiceCID, NS_STRINGBUNDLESERVICE_CID);
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // let add some locale stuff
@@ -124,7 +121,7 @@ main(int argc, char *argv[])
   registrar->AutoRegister(nsnull);
   
   nsCOMPtr<nsIStringBundleService> service =
-      do_GetService(kStringBundleServiceCID);
+      do_GetService(NS_STRINGBUNDLE_CONTRACTID);
   if (!service) {
     printf("cannot create service\n");
     return 1;

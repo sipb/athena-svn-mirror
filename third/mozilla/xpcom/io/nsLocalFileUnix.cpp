@@ -56,10 +56,9 @@
 #include "nsCOMPtr.h"
 #include "nsMemory.h"
 #include "nsIFile.h"
-#include "nsILocalFile.h"
 #include "nsString.h"
 #include "nsReadableUtils.h"
-#include "nsLocalFileUnix.h"
+#include "nsLocalFile.h"
 #include "nsIComponentManager.h"
 #include "nsXPIDLString.h"
 #include "prproces.h"
@@ -202,6 +201,13 @@ nsLocalFile::nsLocalFile() :
 {
 }
 
+nsLocalFile::nsLocalFile(const nsLocalFile& other)
+  : mCachedStat(other.mCachedStat)
+  , mPath(other.mPath)
+  , mHaveCachedStat(other.mHaveCachedStat)
+{
+}
+
 nsLocalFile::~nsLocalFile()
 {
 }
@@ -241,18 +247,13 @@ nsLocalFile::FillStatCache() {
 NS_IMETHODIMP
 nsLocalFile::Clone(nsIFile **file)
 {
-    NS_ENSURE_ARG(file);
+    // Just copy-construct ourselves
+    *file = new nsLocalFile(*this);
+    if (!*file)
+      return NS_ERROR_OUT_OF_MEMORY;
 
-    nsLocalFile* localFile = new nsLocalFile();
-    if (!localFile)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    nsresult rv = localFile->InitWithNativePath(mPath);
-    if (NS_FAILED(rv))
-        return rv;
-
-    *file = NS_STATIC_CAST(nsIFile *, localFile);
     NS_ADDREF(*file);
+    
     return NS_OK;
 }
 
@@ -1416,7 +1417,7 @@ nsLocalFile::GetNativeTarget(nsACString &_retval)
 
     nsresult rv;
     PRBool isSymlink;
-    nsCOMPtr<nsIFile> self(dont_QueryInterface(this));
+    nsCOMPtr<nsIFile> self(this);
     nsCOMPtr<nsIFile> parent;
     while (NS_SUCCEEDED(rv = self->GetParent(getter_AddRefs(parent)))) {
         NS_ASSERTION(parent != nsnull, "no parent?!");

@@ -131,21 +131,37 @@ GetCurrentContext(nsIScriptContext **aScriptContext)
     return;
   }
 
-  if (!cx) {
-    return;
+  if (cx) {
+    GetScriptContextFromJSContext(cx, aScriptContext);
   }
-
-  nsISupports *priv = (nsISupports *)::JS_GetContextPrivate(cx);
-
-  if (!priv) {
-    return;
-  }
-
-  CallQueryInterface(priv, aScriptContext);
 
   return;
 }
 
+/**
+ * Gets the nsIDocument given the script context. Will return nsnull on failure.
+ *
+ * @param aScriptContext the script context to get the document for; can be null
+ *
+ * @return the document associated with the script context
+ */
+static already_AddRefed<nsIDocument>
+GetDocumentFromScriptContext(nsIScriptContext *aScriptContext)
+{
+  if (!aScriptContext)
+    return nsnull;
+
+  nsCOMPtr<nsIScriptGlobalObject> global;
+  aScriptContext->GetGlobalObject(getter_AddRefs(global));
+  nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(global);
+  nsIDocument *doc = nsnull;
+  if (window) {
+    nsCOMPtr<nsIDOMDocument> domdoc;
+    window->GetDocument(getter_AddRefs(domdoc));
+    (void) CallQueryInterface(domdoc, &doc);
+  }
+  return doc;
+}
 
 /////////////////////////////////////////////
 //
@@ -352,7 +368,7 @@ NS_IMETHODIMP nsXMLHttpRequest::GetResponseXML(nsIDOMDocument **aResponseXML)
  * from HTTP headers.
  */
 nsresult
-nsXMLHttpRequest::DetectCharset(nsAString& aCharset)
+nsXMLHttpRequest::DetectCharset(nsACString& aCharset)
 {
   aCharset.Truncate();
   nsresult rv;
@@ -361,11 +377,7 @@ nsXMLHttpRequest::DetectCharset(nsAString& aCharset)
   if (NS_SUCCEEDED(rv)) {
     nsCOMPtr<nsICharsetAlias> calias(do_GetService(kCharsetAliasCID,&rv));
     if(NS_SUCCEEDED(rv) && calias) {
-      nsAutoString preferred;
-      rv = calias->GetPreferred(NS_ConvertASCIItoUCS2(charsetVal), preferred);
-      if(NS_SUCCEEDED(rv)) {
-        aCharset.Assign(preferred);        
-      }
+      rv = calias->GetPreferred(charsetVal, aCharset);
     }
   }
   return rv;
@@ -387,7 +399,7 @@ nsXMLHttpRequest::ConvertBodyToText(PRUnichar **aOutBuffer)
 
   nsresult rv = NS_OK;
 
-  nsAutoString dataCharset;
+  nsCAutoString dataCharset;
   nsCOMPtr<nsIDocument> document(do_QueryInterface(mDocument));
   if (document) {
     rv = document->GetDocumentCharacterSet(dataCharset);
@@ -396,11 +408,11 @@ nsXMLHttpRequest::ConvertBodyToText(PRUnichar **aOutBuffer)
   } else {
     if (NS_FAILED(DetectCharset(dataCharset)) || dataCharset.IsEmpty()) {
       // MS documentation states UTF-8 is default for responseText
-      dataCharset.Assign(NS_LITERAL_STRING("UTF-8"));
+      dataCharset.Assign(NS_LITERAL_CSTRING("UTF-8"));
     }
   }
 
-  if (dataCharset.Equals(NS_LITERAL_STRING("ASCII"))) {
+  if (dataCharset.Equals(NS_LITERAL_CSTRING("ASCII"))) {
     *aOutBuffer = ToNewUnicode(nsDependentCString(mResponseBody.get(),dataLen));
     if (!*aOutBuffer)
       return NS_ERROR_OUT_OF_MEMORY;
@@ -412,7 +424,8 @@ nsXMLHttpRequest::ConvertBodyToText(PRUnichar **aOutBuffer)
     return rv;
 
   nsCOMPtr<nsIUnicodeDecoder> decoder;
-  rv = ccm->GetUnicodeDecoder(&dataCharset,getter_AddRefs(decoder));
+  rv = ccm->GetUnicodeDecoderRaw(dataCharset.get(),
+                                 getter_AddRefs(decoder));
   if (NS_FAILED(rv))
     return rv;
 
@@ -594,18 +607,9 @@ nsXMLHttpRequest::GetLoadGroup(nsILoadGroup **aLoadGroup)
     GetCurrentContext(getter_AddRefs(mScriptContext));
   }
 
-  if (mScriptContext) {
-    nsCOMPtr<nsIScriptGlobalObject> global;
-    mScriptContext->GetGlobalObject(getter_AddRefs(global));
-    nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(global);
-    if (window) {
-      nsCOMPtr<nsIDOMDocument> domdoc;
-      window->GetDocument(getter_AddRefs(domdoc));
-      nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
-      if (doc) {
-        doc->GetDocumentLoadGroup(aLoadGroup);
-      }
-    }
+  nsCOMPtr<nsIDocument> doc = GetDocumentFromScriptContext(mScriptContext);
+  if (doc) {
+    doc->GetDocumentLoadGroup(aLoadGroup);
   }
 
   return NS_OK;
@@ -624,16 +628,9 @@ nsXMLHttpRequest::GetBaseURI(nsIURI **aBaseURI)
     }
   }
 
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  mScriptContext->GetGlobalObject(getter_AddRefs(global));
-  nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(global);
-  if (window) {
-    nsCOMPtr<nsIDOMDocument> domdoc;
-    window->GetDocument(getter_AddRefs(domdoc));
-    nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
-    if (doc) {
-      doc->GetBaseURL(*aBaseURI);
-    }
+  nsCOMPtr<nsIDocument> doc = GetDocumentFromScriptContext(mScriptContext);
+  if (doc) {
+    doc->GetBaseURL(aBaseURI);
   }
 
   return NS_OK;
@@ -819,7 +816,6 @@ nsXMLHttpRequest::GetStreamForWString(const PRUnichar* aStr,
 {
   nsresult rv;
   nsCOMPtr<nsIUnicodeEncoder> encoder;
-  nsAutoString charsetStr;
   char* postData;
 
   // We want to encode the string as utf-8, so get the right encoder
@@ -827,9 +823,8 @@ nsXMLHttpRequest::GetStreamForWString(const PRUnichar* aStr,
            do_GetService(kCharsetConverterManagerCID, &rv);
   NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
   
-  charsetStr.Assign(NS_LITERAL_STRING("UTF-8"));
-  rv = charsetConv->GetUnicodeEncoder(&charsetStr,
-                                      getter_AddRefs(encoder));
+  rv = charsetConv->GetUnicodeEncoderRaw("UTF-8",
+                                         getter_AddRefs(encoder));
   NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
   
   // Convert to utf-8
@@ -920,17 +915,12 @@ nsXMLHttpRequest::StreamReaderFunc(nsIInputStream* in,
     // We need to wrap the data in a new lightweight stream and pass that
     // to the parser, because calling ReadSegments() recursively on the same
     // stream is not supported.
-    nsCOMPtr<nsISupports> supportsStream;
-    rv = NS_NewByteInputStream(getter_AddRefs(supportsStream),fromRawSegment,count);
+    nsCOMPtr<nsIInputStream> copyStream;
+    rv = NS_NewByteInputStream(getter_AddRefs(copyStream), fromRawSegment, count);
 
     if (NS_SUCCEEDED(rv)) {
-      nsCOMPtr<nsIInputStream> copyStream(do_QueryInterface(supportsStream));
-      if (copyStream) {
-        rv = xmlHttpRequest->mXMLParserStreamListener->OnDataAvailable(xmlHttpRequest->mReadRequest,xmlHttpRequest->mContext,copyStream,toOffset,count);
-      } else {
-        NS_ERROR("NS_NewByteInputStream did not give out nsIInputStream!");
-        rv = NS_ERROR_UNEXPECTED;
-      }
+      NS_ASSERTION(copyStream, "NS_NewByteInputStream lied");
+      rv = xmlHttpRequest->mXMLParserStreamListener->OnDataAvailable(xmlHttpRequest->mReadRequest,xmlHttpRequest->mContext,copyStream,toOffset,count);
     }
   }
 
@@ -1270,7 +1260,7 @@ nsXMLHttpRequest::Send(nsIVariant *aBody)
   // Register as a load listener on the document
   nsCOMPtr<nsIDOMEventReceiver> target(do_QueryInterface(mDocument));
   if (target) {
-    nsWeakPtr requestWeak(getter_AddRefs(NS_GetWeakReference(NS_STATIC_CAST(nsIXMLHttpRequest*, this))));
+    nsWeakPtr requestWeak(do_GetWeakReference(NS_STATIC_CAST(nsIXMLHttpRequest*, this)));
     nsLoadListenerProxy* proxy = new nsLoadListenerProxy(requestWeak);
     if (!proxy) return NS_ERROR_OUT_OF_MEMORY;
 

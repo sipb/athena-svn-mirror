@@ -161,7 +161,7 @@ nsMathMLmfracFrame::CalcLineThickness(nsIPresContext*  aPresContext,
   nscoord lineThickness = aDefaultRuleThickness;
   nscoord minimumThickness = onePixel;
 
-  if (0 < aThicknessAttribute.Length()) {
+  if (!aThicknessAttribute.IsEmpty()) {
     if (aThicknessAttribute.Equals(NS_LITERAL_STRING("thin"))) {
       lineThickness = NSToCoordFloor(defaultThickness * THIN_FRACTION_LINE);
       minimumThickness = onePixel * THIN_FRACTION_LINE_MINIMUM_PIXELS;
@@ -264,8 +264,8 @@ nsMathMLmfracFrame::Place(nsIPresContext*      aPresContext,
   nsIFrame* frameDen = nsnull;
   nsIFrame* frameNum = mFrames.FirstChild();
   if (frameNum) 
-    frameNum->GetNextSibling(&frameDen);
-  if (!frameNum || !frameDen || HasNextSibling(frameDen)) {
+    frameDen = frameNum->GetNextSibling();
+  if (!frameNum || !frameDen || frameDen->GetNextSibling()) {
     // report an error, encourage people to get their markups in order
     NS_WARNING("invalid markup");
     return ReflowError(aPresContext, aRenderingContext, aDesiredSize);
@@ -442,8 +442,7 @@ nsMathMLmfracFrame::AttributeChanged(nsIPresContext* aPresContext,
                                      nsIContent*     aContent,
                                      PRInt32         aNameSpaceID,
                                      nsIAtom*        aAttribute,
-                                     PRInt32         aModType, 
-                                     PRInt32         aHint)
+                                     PRInt32         aModType)
 {
   if (nsMathMLAtoms::bevelled_ == aAttribute) {
     if (!IsBevelled()) {
@@ -467,7 +466,7 @@ nsMathMLmfracFrame::AttributeChanged(nsIPresContext* aPresContext,
   }
   return nsMathMLContainerFrame::
          AttributeChanged(aPresContext, aContent,aNameSpaceID,
-                          aAttribute, aModType, aHint);
+                          aAttribute, aModType);
 }
 
 NS_IMETHODIMP

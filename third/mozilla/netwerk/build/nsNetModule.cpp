@@ -51,7 +51,6 @@
 #include "nsLoadGroup.h"
 #include "nsStreamLoader.h"
 #include "nsUnicharStreamLoader.h"
-#include "nsDownloader.h"
 #include "nsAsyncStreamListener.h"
 #include "nsFileStreams.h"
 #include "nsBufferedStreams.h"
@@ -95,6 +94,9 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsInputStreamPump)
 #include "nsInputStreamChannel.h"
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsInputStreamChannel)
 
+#include "nsDownloader.h"
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsDownloader)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "nsStreamConverterService.h"
@@ -110,6 +112,11 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsAppleFileDecoder)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMIMEInfoImpl)
 
+///////////////////////////////////////////////////////////////////////////////
+
+#include "nsMIMEHeaderParamImpl.h"
+
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsMIMEHeaderParamImpl)
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "nsRequestObserverProxy.h"
@@ -153,7 +160,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsFileProtocolHandler, Init)
 #ifdef NECKO_PROTOCOL_ftp
 // ftp
 #include "nsFtpProtocolHandler.h"
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsFtpProtocolHandler, Init);
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsFtpProtocolHandler, Init)
 #endif
 
 #ifdef NECKO_PROTOCOL_http
@@ -214,8 +221,16 @@ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsIDNService, Init)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef NECKO_PROTOCOL_ftp
 #include "nsFTPDirListingConv.h"
+nsresult NS_NewFTPDirListingConv(nsFTPDirListingConv** result);
+#endif
+
+#ifdef NECKO_PROTOCOL_gopher
 #include "nsGopherDirListingConv.h"
+nsresult NS_NewGopherDirListingConv(nsGopherDirListingConv** result);
+#endif
+
 #include "nsMultiMixedConv.h"
 #include "nsHTTPCompressConv.h"
 #include "mozTXTToHTMLConv.h"
@@ -226,8 +241,6 @@ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsIDNService, Init)
 #include "nsBinHexDecoder.h"
 #endif
 
-nsresult NS_NewFTPDirListingConv(nsFTPDirListingConv** result);
-nsresult NS_NewGopherDirListingConv(nsGopherDirListingConv** result);
 nsresult NS_NewMultiMixedConv (nsMultiMixedConv** result);
 nsresult MOZ_NewTXTToHTMLConv (mozTXTToHTMLConv** result);
 nsresult NS_NewHTTPCompressConv  (nsHTTPCompressConv ** result);
@@ -324,7 +337,7 @@ UnregisterStreamConverters(nsIComponentManager *aCompMgr, nsIFile *aPath,
 }
 
 #ifdef BUILD_BINHEX_DECODER
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsBinHexDecoder);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsBinHexDecoder)
 #endif
 
 static NS_IMETHODIMP                 
@@ -351,6 +364,7 @@ CreateNewStreamConvServiceFactory(nsISupports* aOuter, REFNSIID aIID, void **aRe
     return rv;              
 }
 
+#ifdef NECKO_PROTOCOL_ftp
 static NS_IMETHODIMP                 
 CreateNewFTPDirListingConv(nsISupports* aOuter, REFNSIID aIID, void **aResult) 
 {
@@ -374,7 +388,9 @@ CreateNewFTPDirListingConv(nsISupports* aOuter, REFNSIID aIID, void **aResult)
     NS_RELEASE(inst);             /* get rid of extra refcnt */      
     return rv;              
 }
+#endif
 
+#ifdef NECKO_PROTOCOL_gopher
 static NS_IMETHODIMP                 
 CreateNewGopherDirListingConv(nsISupports* aOuter, REFNSIID aIID, void **aResult) 
 {
@@ -398,6 +414,7 @@ CreateNewGopherDirListingConv(nsISupports* aOuter, REFNSIID aIID, void **aResult
     NS_RELEASE(inst);             /* get rid of extra refcnt */
     return rv;
 }
+#endif
 
 static NS_IMETHODIMP                 
 CreateNewMultiMixedConvFactory(nsISupports* aOuter, REFNSIID aIID, void **aResult) 
@@ -601,7 +618,7 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
     { NS_DOWNLOADER_CLASSNAME,
       NS_DOWNLOADER_CID,
       NS_DOWNLOADER_CONTRACTID,
-      nsDownloader::Create },
+      nsDownloaderConstructor },
     { NS_REQUESTOBSERVERPROXY_CLASSNAME,
       NS_REQUESTOBSERVERPROXY_CID,
       NS_REQUESTOBSERVERPROXY_CONTRACTID,
@@ -704,18 +721,22 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
     },
 #endif
 
+#ifdef NECKO_PROTOCOL_ftp
     // from netwerk/streamconv/converters:
     { "FTPDirListingConverter", 
       NS_FTPDIRLISTINGCONVERTER_CID, 
       NS_ISTREAMCONVERTER_KEY FTP_TO_INDEX, 
       CreateNewFTPDirListingConv
     },
+#endif
 
+#ifdef NECKO_PROTOCOL_gopher
     { "GopherDirListingConverter",
       NS_GOPHERDIRLISTINGCONVERTER_CID,
       NS_ISTREAMCONVERTER_KEY GOPHER_TO_INDEX,
       CreateNewGopherDirListingConv
-    },    
+    },
+#endif
 
     { "Indexed to HTML Converter", 
       NS_NSINDEXEDTOHTMLCONVERTER_CID,
@@ -790,12 +811,12 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       nsBinHexDecoderConstructor
     },
 #endif
-	// This is not a real stream converter, it's just
-	// registering it's cid factory here.
-	{ "HACK-TXTToHTMLConverter", 
-  	  MOZITXTTOHTMLCONV_CID,
-	  MOZ_TXTTOHTMLCONV_CONTRACTID, 
-	  CreateNewTXTToHTMLConvFactory
+    // This is not a real stream converter, it's just
+    // registering its cid factory here.
+    { "HACK-TXTToHTMLConverter", 
+      MOZITXTTOHTMLCONV_CID,
+      MOZ_TXTTOHTMLCONV_CONTRACTID, 
+      CreateNewTXTToHTMLConvFactory
     },
 
     { "Directory Index",
@@ -809,6 +830,12 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       NS_MIMEINFO_CID,
       NS_MIMEINFO_CONTRACTID,
       nsMIMEInfoImplConstructor
+    },
+
+    { "mime header param", 
+      NS_MIMEHEADERPARAM_CID,
+      NS_MIMEHEADERPARAM_CONTRACTID,
+      nsMIMEHeaderParamImplConstructor
     },
 
 #ifdef NECKO_PROTOCOL_file

@@ -40,7 +40,6 @@
 
 #include "nsEditorSpellCheck.h"
 
-#include "nsTextServicesCID.h"
 #include "nsITextServicesDocument.h"
 #include "nsISpellChecker.h"
 #include "nsISelection.h"
@@ -56,11 +55,9 @@
 #include "nsIChromeRegistry.h"
 #include "nsString.h"
 #include "nsReadableUtils.h"
-#include "nsComposeTxtSrvFilter.h"
+#include "nsITextServicesFilter.h"
 
-static NS_DEFINE_CID(kCTextServicesDocumentCID, NS_TEXTSERVICESDOCUMENT_CID);
-
-NS_IMPL_ISUPPORTS1(nsEditorSpellCheck, nsIEditorSpellCheck);
+NS_IMPL_ISUPPORTS1(nsEditorSpellCheck, nsIEditorSpellCheck)
 
 nsEditorSpellCheck::nsEditorSpellCheck()
   : mSuggestedWordIndex(0)
@@ -81,11 +78,8 @@ nsEditorSpellCheck::InitSpellChecker(nsIEditor* aEditor, PRBool aEnableSelection
   nsresult rv;
 
   // We can spell check with any editor type
-  nsCOMPtr<nsITextServicesDocument>tsDoc;
-  rv = nsComponentManager::CreateInstance(kCTextServicesDocumentCID,
-                                          nsnull,
-                                          NS_GET_IID(nsITextServicesDocument),
-                                          (void **)getter_AddRefs(tsDoc));
+  nsCOMPtr<nsITextServicesDocument>tsDoc =
+     do_CreateInstance("@mozilla.org/textservices/textservicesdocument;1", &rv);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (!tsDoc)
@@ -229,7 +223,7 @@ nsEditorSpellCheck::GetSuggestedWord(PRUnichar **aSuggestedWord)
     mSuggestedWordIndex++;
   } else {
     // A blank string signals that there are no more strings
-    word.SetLength(0);
+    word.Truncate();
   }
 
   *aSuggestedWord = ToNewUnicode(word);
@@ -294,7 +288,7 @@ nsEditorSpellCheck::GetPersonalDictionaryWord(PRUnichar **aDictionaryWord)
     mDictionaryIndex++;
   } else {
     // A blank string signals that there are no more strings
-    word.SetLength(0);
+    word.Truncate();
   }
 
   *aDictionaryWord = ToNewUnicode(word);

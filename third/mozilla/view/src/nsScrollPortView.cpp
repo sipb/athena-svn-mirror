@@ -58,7 +58,6 @@
 #include <math.h>
 
 static NS_DEFINE_IID(kWidgetCID, NS_CHILD_CID);
-static NS_DEFINE_IID(kLookAndFeelCID, NS_LOOKANDFEEL_CID);
 
 #define SMOOTH_SCROLL_MSECS_PER_FRAME 10
 #define SMOOTH_SCROLL_FRAMES    10
@@ -205,21 +204,6 @@ NS_IMETHODIMP nsScrollPortView::GetContainerSize(nscoord *aWidth, nscoord *aHeig
   scrolledView->GetDimensions(sz);
   *aWidth = sz.width;
   *aHeight = sz.height;
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsScrollPortView::ShowQuality(PRBool aShow)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsScrollPortView::GetShowQuality(PRBool &aShow) const
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsScrollPortView::SetQuality(nsContentQuality aQuality)
-{
   return NS_OK;
 }
 
@@ -395,8 +379,6 @@ NS_IMETHODIMP nsScrollPortView::GetScrollbarVisibility(PRBool *aVerticalVisible,
 
 void nsScrollPortView::AdjustChildWidgets(nsScrollPortView *aScrolling, nsView *aView, nscoord aDx, nscoord aDy, float scale)
 {
-  nscoord offx, offy;
-
   if (aScrolling == aView)
   {
     nsIWidget *widget;
@@ -404,57 +386,44 @@ void nsScrollPortView::AdjustChildWidgets(nsScrollPortView *aScrolling, nsView *
     NS_IF_RELEASE(widget);
   }
 
-  aView->GetPosition(&offx, &offy);
+  nsPoint pt = aView->GetPosition();
 
-  aDx += offx;
-  aDy += offy;
+  aDx += pt.x;
+  aDy += pt.y;
 
-  nsView *kid;
-  for (kid = aView->GetFirstChild(); kid != nsnull; kid = kid->GetNextSibling())
+  for (nsView* kid = aView->GetFirstChild(); kid; kid = kid->GetNextSibling())
   {
-    nsIWidget *win;
-    kid->GetWidget(win);
-
-    if (nsnull != win)
+    nsIWidget *win = kid->GetWidget();
+    if (win)
     {
-      nsRect  bounds;
-
 #if 0
       win->BeginResizingChildren();
 #endif
-      kid->GetBounds(bounds);
+      nsRect  bounds = kid->GetBounds();
 
       win->Move(NSTwipsToIntPixels((bounds.x + aDx), scale), NSTwipsToIntPixels((bounds.y + aDy), scale));
     }
 
     // Don't recurse if the view has a widget, because we adjusted the view's
     // widget position, and its child widgets are relative to its positon
-    if (nsnull == win)
+    if (!win)
       AdjustChildWidgets(aScrolling, kid, aDx, aDy, scale);
-
-    if (nsnull != win)
-    {
-      NS_RELEASE(win);
-    }
   }
 }
 
 
 NS_IMETHODIMP nsScrollPortView::SetScrolledView(nsIView *aScrolledView)
 {
-  PRInt32 count = GetChildCount();
-
-  NS_ASSERTION(count <= 1,"Error scroll port has too many children");
+  NS_ASSERTION(GetFirstChild() == nsnull || GetFirstChild()->GetNextSibling() == nsnull,
+               "Error scroll port has too many children");
 
   // if there is already a child so remove it
-  if (count == 1)
+  if (GetFirstChild() != nsnull)
   {
-    nsView* child = GetFirstChild();
-    mViewManager->RemoveChild(child);
+    mViewManager->RemoveChild(GetFirstChild());
   }
 
   return mViewManager->InsertChild(this, aScrolledView, 0);
-
 }
 
 NS_IMETHODIMP nsScrollPortView::GetScrolledView(nsIView *&aScrolledView) const
@@ -556,15 +525,12 @@ void nsScrollPortView::Scroll(nsView *aScrolledView, PRInt32 aDx, PRInt32 aDy, f
     GetDirtyRegion(*getter_AddRefs(dirtyRegion));
     dirtyRegion->Offset(aDx, aDy);
 
-    nsIWidget *scrollWidget = nsnull;
+    nsIWidget *scrollWidget = GetWidget();
 
-    GetWidget(scrollWidget);
-    
-    if (nsnull == scrollWidget)
+    if (!scrollWidget)
     {
       // if we don't have a scroll widget then we must just update.
       mViewManager->UpdateView(this, 0);
-
     } else if (CannotBitBlt(aScrolledView)) {
       // we can't blit for some reason just update the view and adjust any heavy weight widgets
       mViewManager->UpdateView(this, 0);
@@ -575,8 +541,6 @@ void nsScrollPortView::Scroll(nsView *aScrolledView, PRInt32 aDx, PRInt32 aDy, f
       scrollWidget->Scroll(aDx, aDy, nsnull);
       mViewManager->UpdateViewAfterScroll(this, aDx, aDy);
     }
-    
-    NS_IF_RELEASE(scrollWidget);
   }
 }
 

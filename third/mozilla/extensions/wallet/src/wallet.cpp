@@ -85,7 +85,6 @@
 #define morseAssert(x,y) 0
 #endif 
 
-static NS_DEFINE_IID(kIDOMHTMLOptionElementIID, NS_IDOMHTMLOPTIONELEMENT_IID);
 
 #include "prlong.h"
 #include "prinrval.h"
@@ -769,6 +768,15 @@ PRIVATE nsresult DecryptString (const char * crypt, char *& text) {
 
 PUBLIC void
 WLLT_ExpirePassword(PRBool* status) {
+  nsresult rv = wallet_CryptSetup();
+  if (NS_SUCCEEDED(rv)) {
+    rv = gSecretDecoderRing->LogoutAndTeardown();
+  }
+  *status = NS_SUCCEEDED(rv);
+}
+
+PUBLIC void
+WLLT_ExpirePasswordOnly(PRBool* status) {
   nsresult rv = wallet_CryptSetup();
   if (NS_SUCCEEDED(rv)) {
     rv = gSecretDecoderRing->Logout();
@@ -2330,14 +2338,14 @@ wallet_GetSchemaFromDisplayableText
     text = temp;
 
     /* done if we've obtained enough text from which to determine the schema */
-    if (text.Length()) {
+    if (!text.IsEmpty()) {
       someTextFound = PR_TRUE;
 
       TextToSchema(text, schema);
       if (!schema.IsEmpty()) {
 
         /* schema found, process positional schema if any */
-        if (!schema.IsEmpty() && schema.First() == '%') {
+        if (schema.First() == '%') {
           wallet_ResolvePositionalSchema(elementNode, schema);
         }
 
@@ -2892,7 +2900,7 @@ PRIVATE PRBool
 wallet_Capture(nsIDocument* doc, const nsString& field, const nsString& value, nsACString& schema)
 {
   /* do nothing if there is no value */
-  if (!value.Length()) {
+  if (value.IsEmpty()) {
     return PR_FALSE;
   }
 
@@ -3673,7 +3681,7 @@ wallet_CaptureInputElement(nsIDOMNode* elementNode, nsIDocument* doc) {
           }
           if (schema.IsEmpty()) {
             /* get schema from displayable text if possible */
-            wallet_GetSchemaFromDisplayableText(inputElement, schema, (value.Length()==0));
+            wallet_GetSchemaFromDisplayableText(inputElement, schema, value.IsEmpty());
           }
           if (wallet_Capture(doc, field, value, schema)) {
             captured = PR_TRUE;
@@ -3899,8 +3907,7 @@ WLLT_OnSubmit(nsIContent* currentForm, nsIDOMWindowInternal* window) {
 
   /* get url name as ascii string */
   nsAutoString strippedURLNameUCS2;
-  nsCOMPtr<nsIDocument> doc;
-  currentForm->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIDocument> doc = currentForm->GetDocument();
   if (!doc) {
     return;
   }
@@ -4034,7 +4041,7 @@ WLLT_OnSubmit(nsIContent* currentForm, nsIDOMWindowInternal* window) {
                       if (NS_SUCCEEDED(rv)) {
                         data = new si_SignonDataStruct;
                         data->value = value;
-                        if (field.Length() && field.CharAt(0) == '\\') {
+                        if (!field.IsEmpty() && field.CharAt(0) == '\\') {
                           /*
                            * Note that data saved for browser-generated logins (e.g. http
                            * authentication) use artificial field names starting with
@@ -4084,7 +4091,7 @@ WLLT_OnSubmit(nsIContent* currentForm, nsIDOMWindowInternal* window) {
                             for (PRInt32 i=0; i<count; i++) {
                               mapElementPtr = NS_STATIC_CAST
                                 (wallet_MapElement*, wallet_DistinguishedSchema_list->ElementAt(i));
-                                  if (schema.Equals(mapElementPtr->item1, nsCaseInsensitiveCStringComparator()) && value.Length() > 0) {
+                                  if (schema.Equals(mapElementPtr->item1, nsCaseInsensitiveCStringComparator()) && !value.IsEmpty()) {
                                 hits++;
                                 if (hits > 1 && newValueFound) {
                                   OKToPrompt = PR_TRUE;

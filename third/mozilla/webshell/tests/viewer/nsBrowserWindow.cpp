@@ -173,23 +173,14 @@ static NS_DEFINE_CID(kWalletServiceCID, NS_WALLETSERVICE_CID);
 static NS_DEFINE_CID(kLookAndFeelCID, NS_LOOKANDFEEL_CID);
 static NS_DEFINE_CID(kButtonCID, NS_BUTTON_CID);
 static NS_DEFINE_CID(kTextFieldCID, NS_TEXTFIELD_CID);
-static NS_DEFINE_CID(kWebShellCID, NS_WEB_SHELL_CID);
 static NS_DEFINE_CID(kWindowCID, NS_WINDOW_CID);
-static NS_DEFINE_CID(kDialogCID, NS_DIALOG_CID);
-static NS_DEFINE_CID(kCheckButtonCID, NS_CHECKBUTTON_CID);
-static NS_DEFINE_CID(kLabelCID, NS_LABEL_CID);
 
 static NS_DEFINE_IID(kIXPBaseWindowIID, NS_IXPBASE_WINDOW_IID);
 static NS_DEFINE_IID(kILookAndFeelIID, NS_ILOOKANDFEEL_IID);
 static NS_DEFINE_IID(kIButtonIID, NS_IBUTTON_IID);
 static NS_DEFINE_IID(kIDOMDocumentIID, NS_IDOMDOCUMENT_IID);
-static NS_DEFINE_IID(kIFactoryIID, NS_IFACTORY_IID);
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 static NS_DEFINE_IID(kITextWidgetIID, NS_ITEXTWIDGET_IID);
-static NS_DEFINE_IID(kIWebShellContainerIID, NS_IWEB_SHELL_CONTAINER_IID);
 static NS_DEFINE_IID(kIWidgetIID, NS_IWIDGET_IID);
-static NS_DEFINE_IID(kICheckButtonIID, NS_ICHECKBUTTON_IID);
-static NS_DEFINE_IID(kILabelIID, NS_ILABEL_IID);
 static NS_DEFINE_IID(kIDocumentViewerIID, NS_IDOCUMENT_VIEWER_IID);
 static NS_DEFINE_CID(kXPBaseWindowCID, NS_XPBASE_WINDOW_CID);
 static NS_DEFINE_IID(kIStringBundleServiceIID, NS_ISTRINGBUNDLESERVICE_IID);
@@ -479,11 +470,10 @@ GetPresShellFor(nsIDocShell* aDocShell)
       nsIDocumentViewer* docv = nsnull;
       cv->QueryInterface(kIDocumentViewerIID, (void**) &docv);
       if (nsnull != docv) {
-        nsIPresContext* cx;
-        docv->GetPresContext(cx);
+        nsCOMPtr<nsIPresContext> cx;
+        docv->GetPresContext(getter_AddRefs(cx));
         if (nsnull != cx) {
           cx->GetShell(&shell);
-          NS_RELEASE(cx);
         }
         NS_RELEASE(docv);
       }
@@ -1367,7 +1357,7 @@ nsBrowserWindow::~nsBrowserWindow()
   }
 }
 
-NS_IMPL_ISUPPORTS4(nsBrowserWindow, nsIBaseWindow, nsIInterfaceRequestor, nsIProgressEventSink, nsIWebShellContainer);
+NS_IMPL_ISUPPORTS4(nsBrowserWindow, nsIBaseWindow, nsIInterfaceRequestor, nsIProgressEventSink, nsIWebShellContainer)
 
 nsresult
 nsBrowserWindow::GetInterface(const nsIID& aIID,
@@ -1427,7 +1417,7 @@ nsBrowserWindow::Init(nsIAppShell* aAppShell,
   NS_ENSURE_SUCCESS(EnsureWebBrowserChrome(), NS_ERROR_FAILURE);
   mWebBrowser->SetContainerWindow(mWebBrowserChrome);
   nsWeakPtr weakling(
-      dont_AddRef(NS_GetWeakReference((nsIWebProgressListener*)mWebBrowserChrome)));
+      do_GetWeakReference((nsIWebProgressListener*)mWebBrowserChrome));
   mWebBrowser->AddWebBrowserListener(weakling, NS_GET_IID(nsIWebProgressListener));
 
   webBrowserWin->Create();
@@ -1552,15 +1542,14 @@ nsnull, r.x, r.y, r.width, r.height);
 
 
   // Create a document viewer and bind it to the webshell
-  nsIDocumentViewer* docv;
-  aDocumentViewer->CreateDocumentViewerUsing(aPresContext, docv);
+  nsCOMPtr<nsIDocumentViewer> docv;
+  aDocumentViewer->CreateDocumentViewerUsing(aPresContext,
+                                             getter_AddRefs(docv));
   docv->SetContainer(mWebBrowser);
   nsCOMPtr<nsIContentViewerContainer> cvContainer = do_QueryInterface(mDocShell);
   cvContainer->Embed(docv, "duh", nsnull);
 
-
   webBrowserWin->SetVisibility(PR_TRUE);
-  NS_RELEASE(docv);
 
   return NS_OK;
 }
@@ -2241,12 +2230,10 @@ nsIDOMDocument* nsBrowserWindow::GetDOMDocument(nsIDocShell *aDocShell)
     if (nsnull != mCViewer) {
       nsIDocumentViewer* mDViewer;
       if (NS_OK == mCViewer->QueryInterface(kIDocumentViewerIID, (void**) &mDViewer)) {
-        nsIDocument* mDoc;
-        mDViewer->GetDocument(mDoc);
+        nsCOMPtr<nsIDocument> mDoc;
+        mDViewer->GetDocument(getter_AddRefs(mDoc));
         if (nsnull != mDoc) {
-          if (NS_OK == mDoc->QueryInterface(kIDOMDocumentIID, (void**) &domDoc)) {
-          }
-          NS_RELEASE(mDoc);
+          mDoc->QueryInterface(kIDOMDocumentIID, (void**) &domDoc);
         }
         NS_RELEASE(mDViewer);
       }
@@ -2347,8 +2334,8 @@ nsBrowserWindow::DoEditorMode(nsIDocShell *aDocShell)
       nsIDocumentViewer* mDViewer;
       if (NS_OK == mCViewer->QueryInterface(kIDocumentViewerIID, (void**) &mDViewer)) 
       {
-        nsIDocument* mDoc;
-        mDViewer->GetDocument(mDoc);
+        nsCOMPtr<nsIDocument> mDoc;
+        mDViewer->GetDocument(getter_AddRefs(mDoc));
         if (nsnull != mDoc) {
           nsIDOMDocument* mDOMDoc;
           if (NS_OK == mDoc->QueryInterface(kIDOMDocumentIID, (void**) &mDOMDoc)) 
@@ -2358,7 +2345,6 @@ nsBrowserWindow::DoEditorMode(nsIDocShell *aDocShell)
             NS_RELEASE(mDOMDoc);
             NS_IF_RELEASE(shell);
           }
-          NS_RELEASE(mDoc);
         }
         NS_RELEASE(mDViewer);
       }
@@ -2387,8 +2373,8 @@ nsBrowserWindow::DoEditorTest(nsIDocShell *aDocShell, PRInt32 aCommandID)
       nsIDocumentViewer* mDViewer;
       if (NS_OK == mCViewer->QueryInterface(kIDocumentViewerIID, (void**) &mDViewer)) 
       {
-        nsIDocument* mDoc;
-        mDViewer->GetDocument(mDoc);
+        nsCOMPtr<nsIDocument> mDoc;
+        mDViewer->GetDocument(getter_AddRefs(mDoc));
         if (nsnull != mDoc) {
           nsIDOMDocument* mDOMDoc;
           if (NS_OK == mDoc->QueryInterface(kIDOMDocumentIID, (void**) &mDOMDoc)) 
@@ -2396,7 +2382,6 @@ nsBrowserWindow::DoEditorTest(nsIDocShell *aDocShell, PRInt32 aCommandID)
             NS_DoEditorTest(aCommandID);
             NS_RELEASE(mDOMDoc);
           }
-          NS_RELEASE(mDoc);
         }
         NS_RELEASE(mDViewer);
       }
@@ -2906,29 +2891,6 @@ nsBrowserWindow::DispatchDebugMenu(PRInt32 aID)
 
     case VIEWER_DSP_REFLOW_CNTS_OFF:
       DisplayReflowStats(PR_FALSE);
-      result = nsEventStatus_eConsumeNoDefault;
-      break;
-
-    case VIEWER_SHOW_CONTENT_QUALITY:
-      if (nsnull != mDocShell) {
-        nsIPresShell   *ps = GetPresShellFor(mDocShell);
-        nsIViewManager *vm = nsnull;
-        PRBool         qual;
-
-        if (ps) {
-          ps->GetViewManager(&vm);
-
-          if (vm) {
-            vm->GetShowQuality(qual);
-            vm->ShowQuality(!qual);
-
-            NS_RELEASE(vm);
-          }
-
-          NS_RELEASE(ps);
-        }
-      }
-
       result = nsEventStatus_eConsumeNoDefault;
       break;
 

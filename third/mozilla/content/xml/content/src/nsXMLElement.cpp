@@ -42,6 +42,7 @@
 #include "nsLayoutAtoms.h"
 #include "nsIDocument.h"
 #include "nsIAtom.h"
+#include "nsNetUtil.h"
 #include "nsIEventListenerManager.h"
 #include "nsIDocShell.h"
 #include "nsIEventStateManager.h"
@@ -143,139 +144,6 @@ NS_IMPL_ADDREF_INHERITED(nsXMLElement, nsGenericElement)
 NS_IMPL_RELEASE_INHERITED(nsXMLElement, nsGenericElement)
 
 
-static inline nsresult MakeURI(const nsACString &aSpec, nsIURI *aBase, nsIURI **aURI)
-{
-  nsresult rv;
-  static NS_DEFINE_CID(ioServCID,NS_IOSERVICE_CID);
-  nsCOMPtr<nsIIOService> service(do_GetService(ioServCID, &rv));
-  if (NS_FAILED(rv))
-    return rv;
-
-  return service->NewURI(aSpec,nsnull,aBase,aURI);
-}
-
-NS_IMETHODIMP
-nsXMLElement::GetXMLBaseURI(nsIURI **aURI)
-{
-  NS_ENSURE_ARG_POINTER(aURI);
-  *aURI = nsnull;
-  
-  nsresult rv;
-
-  nsAutoString base;
-  nsCOMPtr<nsIContent> content(do_QueryInterface(NS_STATIC_CAST(nsIXMLContent*,this),&rv));
-  while (NS_SUCCEEDED(rv) && content) {
-    nsAutoString value;
-    rv = content->GetAttr(kNameSpaceID_XML,nsHTMLAtoms::base,value);
-    PRInt32 value_len;
-    if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
-      PRInt32 colon = value.FindChar(':');
-      PRInt32 slash = value.FindChar('/');
-      if (colon > 0 && !( slash >= 0 && slash < colon)) {
-        // Yay, we have absolute path!
-        // The complex looking if above is to make sure that we do not erroneously
-        // think a value of "./this:that" would have a scheme of "./that"
-
-        NS_ConvertUCS2toUTF8 str(value);
-      
-        rv = MakeURI(str,nsnull,aURI);
-        if (NS_FAILED(rv))
-          break;
-
-        if (!base.IsEmpty()) { // XXXdarin base is always empty
-          str = NS_ConvertUCS2toUTF8(base);
-          nsCAutoString resolvedStr;
-          rv = (*aURI)->Resolve(str, resolvedStr);
-          if (NS_FAILED(rv)) break;
-          rv = (*aURI)->SetSpec(resolvedStr);
-        }
-        break;
-
-      } else if ((value_len = value.Length()) > 0) {        
-        if (!base.IsEmpty()) {
-          if (base[0] == '/') {
-            // Do nothing, we are waiting for a scheme starting value
-          } else {
-            // We do not want to add double / delimiters (although the user is free to do so)
-            if (value[value_len - 1] != '/')
-              value.Append(PRUnichar('/'));
-            base.Insert(value, 0);
-          }
-        } else {
-          if (value[value_len - 1] != '/')
-            value.Append(PRUnichar('/')); // Add delimiter/make sure we treat this as dir
-          base = value;
-        }
-      }
-    } // if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
-    nsCOMPtr<nsIContent> parent;
-    rv = content->GetParent(*getter_AddRefs(parent));
-    content = parent;
-  } // while
-
-  if (NS_SUCCEEDED(rv)) {
-    if (!*aURI && mDocument) {
-      nsCOMPtr<nsIURI> docBase;
-      mDocument->GetBaseURL(*getter_AddRefs(docBase));
-      if (!docBase) {
-        mDocument->GetDocumentURL(getter_AddRefs(docBase));
-      }
-      if (base.IsEmpty()) {
-        *aURI = docBase.get();    
-        NS_IF_ADDREF(*aURI);  // nsCOMPtr releases this once
-      } else {
-        NS_ConvertUCS2toUTF8 str(base);
-        rv = MakeURI(str,docBase,aURI);
-      }
-    }
-
-    // Finally do a security check, almost the same as nsDocument::SetBaseURL()
-    if (*aURI) {
-      nsCOMPtr<nsIScriptSecurityManager> securityManager = 
-        do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-      if (NS_SUCCEEDED(rv)) {
-        nsCOMPtr<nsIURI> docURI;
-        mDocument->GetDocumentURL(getter_AddRefs(docURI));
-        rv = securityManager->CheckLoadURI(docURI, *aURI, nsIScriptSecurityManager::STANDARD);
-        if (NS_FAILED(rv)) {
-          // Now we need to get the "closest" allowed base URI
-          NS_RELEASE(*aURI);
-
-          if (content) { // content is the last content we tried above
-            nsCOMPtr<nsIContent> parent;
-            content->GetParent(*getter_AddRefs(parent));
-            content = parent;
-            while (content) {
-              nsCOMPtr<nsIXMLContent> xml(do_QueryInterface(content));
-              if (xml) {
-                return xml->GetXMLBaseURI(aURI);
-              }
-              content->GetParent(*getter_AddRefs(parent));
-              content = parent;
-            }
-          }
-          
-          nsCOMPtr<nsIURI> docBase;
-          mDocument->GetBaseURL(*getter_AddRefs(docBase));
-          if (!docBase) {
-            mDocument->GetDocumentURL(getter_AddRefs(docBase));
-          }
-
-          *aURI = docBase.get();
-          NS_IF_ADDREF(*aURI);
-          rv = NS_OK;
-        }
-      }
-    }
-  }
-
-  if (NS_FAILED(rv)) {
-    NS_IF_RELEASE(*aURI);
-  }
-
-  return rv;
-}
-
 NS_IMETHODIMP
 nsXMLElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                       const nsAString& aValue,
@@ -319,22 +187,19 @@ static nsresult DocShellToPresContext(nsIDocShell *aShell,
   return ds->GetPresContext(aPresContext);
 }
 
-
-static nsresult CheckLoadURI(nsIURI *aBaseURI, const nsAString& aURI,
-                             nsIURI **aAbsURI)
+static nsresult CheckLoadURI(const nsString& aSpec, nsIURI *aBaseURI,
+                             nsIDocument* aDocument, nsIURI **aAbsURI)
 {
-  NS_ConvertUCS2toUTF8 str(aURI);
-
   *aAbsURI = nsnull;
 
   nsresult rv;
-  rv = MakeURI(str,aBaseURI,aAbsURI);
+  rv = nsContentUtils::NewURIWithDocumentCharset(aAbsURI, aSpec, aDocument,
+                                                 aBaseURI);
   if (NS_SUCCEEDED(rv)) {
     nsCOMPtr<nsIScriptSecurityManager> securityManager = 
              do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
     if (NS_SUCCEEDED(rv)) {
-      rv= securityManager->CheckLoadURI(aBaseURI,
-                                         *aAbsURI,
+      rv = securityManager->CheckLoadURI(aBaseURI, *aAbsURI,
                                          nsIScriptSecurityManager::DISALLOW_FROM_MAIL);
     }
   }
@@ -441,7 +306,7 @@ nsXMLElement::MaybeTriggerAutoLink(nsIDocShell *aShell)
 
         // base
         nsCOMPtr<nsIURI> base;
-        rv = GetXMLBaseURI(getter_AddRefs(base));
+        rv = GetBaseURL(getter_AddRefs(base));
         if (NS_FAILED(rv))
           break;
 
@@ -451,12 +316,12 @@ nsXMLElement::MaybeTriggerAutoLink(nsIDocShell *aShell)
                                                 value);
         if (rv == NS_CONTENT_ATTR_HAS_VALUE && !value.IsEmpty()) {
           nsCOMPtr<nsIURI> uri;
-          rv = CheckLoadURI(base,value,getter_AddRefs(uri));
+          rv = CheckLoadURI(value, base, mDocument, getter_AddRefs(uri));
           if (NS_SUCCEEDED(rv)) {
             nsCOMPtr<nsIPresContext> pc;
-            rv = DocShellToPresContext(aShell,getter_AddRefs(pc));
+            rv = DocShellToPresContext(aShell, getter_AddRefs(pc));
             if (NS_SUCCEEDED(rv)) {
-              rv = TriggerLink(pc, verb, base, value,
+              rv = TriggerLink(pc, verb, base, uri,
                                NS_LITERAL_STRING(""), PR_TRUE);
 
               return SpecialAutoLoadReturn(rv,verb);
@@ -508,7 +373,6 @@ nsXMLElement::HandleDOMEvent(nsIPresContext* aPresContext,
             break;  // let the click go through so we can handle it in JS/XUL
           }
           nsAutoString show, href, target;
-          nsIURI* baseURL = nsnull;
           nsLinkVerb verb = eLinkVerb_Undefined; // basically means same as replace
           nsGenericContainerElement::GetAttr(kNameSpaceID_XLink,
                                              nsHTMLAtoms::href,
@@ -541,12 +405,18 @@ nsXMLElement::HandleDOMEvent(nsIPresContext* aPresContext,
             verb = eLinkVerb_Embed;
           }
 
-          GetXMLBaseURI(&baseURL);
+          nsCOMPtr<nsIURI> baseURL;
+          GetBaseURL(getter_AddRefs(baseURL));
+          nsCOMPtr<nsIURI> uri;
+          ret = nsContentUtils::NewURIWithDocumentCharset(getter_AddRefs(uri),
+                                                          href,
+                                                          mDocument,
+                                                          baseURL);
+          if (NS_SUCCEEDED(ret)) {
+            ret = TriggerLink(aPresContext, verb, baseURL, uri, target,
+                              PR_TRUE);
+          }
 
-          ret = TriggerLink(aPresContext, verb, baseURL, href, target,
-                            PR_TRUE);
-
-          NS_IF_RELEASE(baseURL);
           *aEventStatus = nsEventStatus_eConsumeDoDefault; 
         }
       }
@@ -588,7 +458,6 @@ nsXMLElement::HandleDOMEvent(nsIPresContext* aPresContext,
     case NS_MOUSE_ENTER_SYNTH:
       {
         nsAutoString href, target;
-        nsIURI* baseURL = nsnull;
         nsGenericContainerElement::GetAttr(kNameSpaceID_XLink,
                                            nsHTMLAtoms::href,
                                            href);
@@ -597,12 +466,19 @@ nsXMLElement::HandleDOMEvent(nsIPresContext* aPresContext,
           break;
         }
 
-        GetXMLBaseURI(&baseURL);
+        nsCOMPtr<nsIURI> baseURL;
+        GetBaseURL(getter_AddRefs(baseURL));
 
-        ret = TriggerLink(aPresContext, eLinkVerb_Replace, baseURL, href,
-                          target, PR_FALSE);
+        nsCOMPtr<nsIURI> uri;
+        ret = nsContentUtils::NewURIWithDocumentCharset(getter_AddRefs(uri),
+                                                        href,
+                                                        mDocument,
+                                                        baseURL);
+        if (NS_SUCCEEDED(ret)) {
+          ret = TriggerLink(aPresContext, eLinkVerb_Replace, baseURL, uri,
+                            target, PR_FALSE);
+        }
         
-        NS_IF_RELEASE(baseURL);
         *aEventStatus = nsEventStatus_eConsumeDoDefault; 
       }
       break;
@@ -742,19 +618,19 @@ nsXMLElement::GetScriptObject(nsIScriptContext* aContext, void** aScriptObject)
 // nsIStyledContent implementation
 
 NS_IMETHODIMP
-nsXMLElement::GetID(nsIAtom*& aResult) const
+nsXMLElement::GetID(nsIAtom** aResult) const
 {
-  nsresult rv;  
   nsCOMPtr<nsIAtom> atom;
-  rv = mNodeInfo->GetIDAttributeAtom(getter_AddRefs(atom));
-  
-  aResult = nsnull;
+  nsresult rv = mNodeInfo->GetIDAttributeAtom(getter_AddRefs(atom));
+
+  *aResult = nsnull;
   if (NS_SUCCEEDED(rv) && atom) {
     nsAutoString value;
     rv = nsGenericContainerElement::GetAttr(kNameSpaceID_Unknown, atom,
                                             value);
-    if (NS_SUCCEEDED(rv))
-      aResult = NS_NewAtom(value);
+    if (NS_SUCCEEDED(rv)) {
+      *aResult = NS_NewAtom(value);
+    }
   }
 
   return rv;

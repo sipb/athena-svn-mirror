@@ -129,8 +129,10 @@ public:
                                const nsAString& aValue,
                                nsHTMLValue& aResult);
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                      nsChangeHint& aHint) const;
+  NS_IMETHOD GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                    PRInt32 aModType,
+                                    nsChangeHint& aHint) const;
+  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
   NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
                             nsIDOMEvent** aDOMEvent, PRUint32 aFlags,
                             nsEventStatus* aEventStatus);
@@ -322,14 +324,11 @@ nsHTMLTextAreaElement::RemoveFocus(nsIPresContext* aPresContext)
   aPresContext->GetEventStateManager(getter_AddRefs(esm));
 
   if (esm) {
-    nsCOMPtr<nsIDocument> doc;
-
-    GetDocument(*getter_AddRefs(doc));
-    if (!doc)
+    if (!mDocument)
       return NS_ERROR_NULL_POINTER;
 
     nsCOMPtr<nsIContent> rootContent;
-    doc->GetRootContent(getter_AddRefs(rootContent));
+    mDocument->GetRootContent(getter_AddRefs(rootContent));
 
     rv = esm->SetContentState(rootContent, NS_EVENT_STATE_FOCUS);
   }
@@ -452,7 +451,7 @@ nsHTMLTextAreaElement::GetValueInternal(nsAString& aValue, PRBool aIgnoreWrap)
     if (!mValueChanged || !mValue) {
       GetDefaultValue(aValue);
     } else {
-      aValue = NS_ConvertUTF8toUCS2(mValue);
+      CopyUTF8toUTF16(mValue, aValue);
     }
   }
 }
@@ -631,27 +630,33 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
 }
 
 NS_IMETHODIMP
-nsHTMLTextAreaElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
-                                                nsChangeHint& aHint) const
+nsHTMLTextAreaElement::GetAttributeChangeHint(const nsIAtom* aAttribute,
+                                              PRInt32 aModType,
+                                              nsChangeHint& aHint) const
 {
   // XXX Bug 50280 - It is unclear why we need to do this here for 
   // rows and cols and why the AttributeChanged method in
   // nsTextControlFrame does take care of the entire problem, but
   // it doesn't and this makes things better
-  static const AttributeImpactEntry attributes[] = {
-    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::rows, NS_STYLE_HINT_REFLOW },
-    { &nsHTMLAtoms::cols, NS_STYLE_HINT_REFLOW },
-    { nsnull, NS_STYLE_HINT_NONE }
-  };
+  nsresult rv =
+    nsGenericHTMLContainerFormElement::GetAttributeChangeHint(aAttribute,
+                                                              aModType, aHint);
+  if (aAttribute == nsHTMLAtoms::rows ||
+      aAttribute == nsHTMLAtoms::cols) {
+    NS_UpdateHint(aHint, NS_STYLE_HINT_REFLOW);
+  }
+  return rv;
+}
 
-  static const AttributeImpactEntry* const map[] = {
-    attributes,
+NS_IMETHODIMP_(PRBool)
+nsHTMLTextAreaElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+{
+  static const AttributeDependenceEntry* const map[] = {
+    sDivAlignAttributeMap,
     sCommonAttributeMap,
   };
 
-  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
-  return NS_OK;
+  return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
 }
 
 NS_IMETHODIMP

@@ -68,7 +68,6 @@ static nsresult NS_FileSpecToILocalFileMac(nsFileSpec *aSpec, nsILocalFileMac **
 #endif
 
 static NS_DEFINE_IID(kISupportsIID,			NS_ISUPPORTS_IID);
-static NS_DEFINE_CID(kComponentManagerCID, 	NS_COMPONENTMANAGER_CID);
 
 static const char *	kWhitespace = "\b\t\r\n ";
 
@@ -322,7 +321,7 @@ nsresult nsEudoraMac::IterateMailDir( nsIFileSpec *pFolder, nsISupportsArray *pA
     }
   }
 #else
-						spec.GetFileTypeAndCreator( &type, &creator);
+    spec.GetFileTypeAndCreator( &type, &creator);
 #endif
 						if ((type == 'TEXT') && IsValidMailboxName( fName) && IsValidMailboxFile( entry)) {
 							rv = FoundMailbox( entry, fName.get(), pArray, pImport);
@@ -582,7 +581,7 @@ PRBool nsEudoraMac::GetSettingsFromResource( nsIFileSpec *pSettings, short resId
 	nsresult rv = pSettings->GetFileSpec( &spec);
 	if (NS_FAILED( rv))
 		return( PR_FALSE);
-		
+
         short resFile = -1;
 #ifdef XP_MACOSX
         {
@@ -621,7 +620,7 @@ PRBool nsEudoraMac::GetSettingsFromResource( nsIFileSpec *pSettings, short resId
 		GetIndString( pStr[2], resId, kReturnAddressID); 
 		GetIndString( pStr[3], resId, kFullNameID);
 		GetIndString( pStr[4], resId, kLeaveMailOnServerID);
-		CloseResFile( resFile);
+		CloseResFile( resFile); 
 		
 		theStr = pStr[0];
 		if (*theStr) {
@@ -675,7 +674,7 @@ PRBool nsEudoraMac::GetSettingsFromResource( nsIFileSpec *pSettings, short resId
 		return( PR_TRUE);
 	}
 	else {
-		CloseResFile( resFile);
+		CloseResFile( resFile); 
 		return( PR_FALSE);
 	}
 }
@@ -1028,7 +1027,7 @@ nsresult nsEudoraMac::GetAttachmentInfo( const char *pFileName, nsIFileSpec *pSp
             IMPORT_LOG0("\tfailed to get local mac file\n");
             return rv;
           }
-	
+          
           rv = macFile->GetFSSpec(&spec);
           if (NS_FAILED(rv)) {
             IMPORT_LOG0("\tfailed to get FSSpec\n");
@@ -1092,17 +1091,17 @@ nsresult nsEudoraMac::GetAttachmentInfo( const char *pFileName, nsIFileSpec *pSp
 #ifdef XP_MACOSX
 	if (HasResourceFork(&spec)) 
 #else
-	// Need to find the mime type for the attachment?
-	long	dataSize = 0;
-	long	rsrcSize = 0;
-	
-	err = FSpGetFileSize( &spec, &dataSize, &rsrcSize);
-	
-	// TLR: FIXME: Need to get the mime type from the Mac file type.
-	// Currently we just applsingle if there is a resource fork, otherwise,
-	// just default to something.
-	
-	if (rsrcSize)
+        // Need to find the mime type for the attachment?
+        long    dataSize = 0;
+        long    rsrcSize = 0;
+ 
+        err = FSpGetFileSize( &spec, &dataSize, &rsrcSize);
+ 
+        // TLR: FIXME: Need to get the mime type from the Mac file type.
+        // Currently we just applsingle if there is a resource fork, otherwise,
+        // just default to something.
+ 
+        if (rsrcSize)
 #endif
 		mimeType = "application/applefile";
 	else
@@ -1112,7 +1111,7 @@ nsresult nsEudoraMac::GetAttachmentInfo( const char *pFileName, nsIFileSpec *pSp
 	
 	return( NS_OK);
 }
-
+		
 PRBool nsEudoraMac::HasResourceFork(FSSpec *fsSpec)
 {
   FSRef fsRef;

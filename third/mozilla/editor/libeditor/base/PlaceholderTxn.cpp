@@ -38,17 +38,8 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "PlaceholderTxn.h"
-#include "nsVoidArray.h"
 #include "nsEditor.h"
-#include "nsIPresShell.h"
 #include "IMETextTxn.h"
-
-#if defined(NS_DEBUG) && defined(DEBUG_buster)
-static PRBool gNoisy = PR_TRUE;
-#else
-static const PRBool gNoisy = PR_FALSE;
-#endif
-
 
 PlaceholderTxn::PlaceholderTxn() :  EditAggregateTxn(), 
                                     mAbsorb(PR_TRUE), 
@@ -100,7 +91,6 @@ NS_IMETHODIMP PlaceholderTxn::Init(nsIAtom *aName, nsSelectionState *aSelState, 
 
 NS_IMETHODIMP PlaceholderTxn::DoTransaction(void)
 {
-  if (gNoisy) { printf("PlaceholderTxn Do\n"); }
   return NS_OK;
 }
 
@@ -110,14 +100,14 @@ NS_IMETHODIMP PlaceholderTxn::UndoTransaction(void)
   nsresult res = EditAggregateTxn::UndoTransaction();
   if (NS_FAILED(res)) return res;
   
+  if (!mStartSel) return NS_ERROR_NULL_POINTER;
+
   // now restore selection
   nsCOMPtr<nsISelection> selection;
   res = mEditor->GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res)) return res;
   if (!selection) return NS_ERROR_NULL_POINTER;
-  if (!mStartSel) return NS_ERROR_NULL_POINTER;
-  res = mStartSel->RestoreSelection(selection);
-  return res;
+  return mStartSel->RestoreSelection(selection);
 }
 
 
@@ -132,8 +122,7 @@ NS_IMETHODIMP PlaceholderTxn::RedoTransaction(void)
   res = mEditor->GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res)) return res;
   if (!selection) return NS_ERROR_NULL_POINTER;
-  res = mEndSel.RestoreSelection(selection);
-  return res;
+  return mEndSel.RestoreSelection(selection);
 }
 
 
@@ -143,8 +132,6 @@ NS_IMETHODIMP PlaceholderTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMe
 
   // set out param default value
   *aDidMerge=PR_FALSE;
-    
-  nsresult res = NS_OK;
     
   if (mForwarding) 
   {
@@ -205,7 +192,6 @@ NS_IMETHODIMP PlaceholderTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMe
 //  efficiency hack: no need to remember selection here, as we haven't yet 
 //  finished the inital batch and we know we will be told when the batch ends.
 //  we can remeber the selection then.
-    if (gNoisy) { printf("Placeholder txn assimilated %p\n", (void*)aTransaction); }
   }
   else
   { // merge typing or IME or deletion transactions if the selection matches
@@ -218,7 +204,7 @@ NS_IMETHODIMP PlaceholderTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMe
       if (mStartSel->IsCollapsed())
       {
         nsCOMPtr<nsIAbsorbingTransaction> plcTxn;// = do_QueryInterface(editTxn);
-        // cant do_QueryInterface() above due to our broken transaction interfaces.
+        // can't do_QueryInterface() above due to our broken transaction interfaces.
         // instead have to brute it below. ugh. 
         editTxn->QueryInterface(NS_GET_IID(nsIAbsorbingTransaction), getter_AddRefs(plcTxn));
         if (plcTxn)
@@ -248,7 +234,7 @@ NS_IMETHODIMP PlaceholderTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMe
       }
     }
   }
-  return res;
+  return NS_OK;
 }
 
 NS_IMETHODIMP PlaceholderTxn::GetTxnDescription(nsAString& aString)
@@ -296,11 +282,11 @@ NS_IMETHODIMP PlaceholderTxn::EndPlaceHolderBatch()
   
   // remember our selection state.
   return RememberEndingSelection();
-};
+}
 
 NS_IMETHODIMP PlaceholderTxn::ForwardEndBatchTo(nsIAbsorbingTransaction *aForwardingAddress)
 {   
-  mForwarding = getter_AddRefs( NS_GetWeakReference(aForwardingAddress) );
+  mForwarding = do_GetWeakReference(aForwardingAddress);
   return NS_OK;
 }
 
@@ -316,9 +302,6 @@ NS_IMETHODIMP PlaceholderTxn::RememberEndingSelection()
   nsresult res = mEditor->GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res)) return res;
   if (!selection) return NS_ERROR_NULL_POINTER;
-  res = mEndSel.SaveSelection(selection);
-  
-  return res;
+  return mEndSel.SaveSelection(selection);
 }
-
 

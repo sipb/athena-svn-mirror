@@ -160,10 +160,8 @@ nsPopupSetFrame::Init(nsIPresContext*  aPresContext,
   mPresContext = aPresContext; // Don't addref it.  Our lifetime is shorter.
   nsresult  rv = nsBoxFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
 
-  nsIFrame *grandParent;
-  aParent->GetParent(&grandParent);
   nsIRootBox *rootBox;
-  nsresult res = CallQueryInterface(grandParent, &rootBox);
+  nsresult res = CallQueryInterface(aParent->GetParent(), &rootBox);
   NS_ASSERTION(NS_SUCCEEDED(res), "grandparent should be root box");
   if (NS_SUCCEEDED(res)) {
     rootBox->SetPopupSetFrame(this);
@@ -188,10 +186,8 @@ nsPopupSetFrame::Destroy(nsIPresContext* aPresContext)
     }
   }
 
-  nsIFrame *grandParent;
-  mParent->GetParent(&grandParent);
   nsIRootBox *rootBox;
-  nsresult res = CallQueryInterface(grandParent, &rootBox);
+  nsresult res = CallQueryInterface(mParent->GetParent(), &rootBox);
   NS_ASSERTION(NS_SUCCEEDED(res), "grandparent should be root box");
   if (NS_SUCCEEDED(res)) {
     rootBox->SetPopupSetFrame(nsnull);
@@ -271,10 +267,8 @@ nsPopupSetFrame::DoLayout(nsBoxLayoutState& aState)
 
       // only size popup if open
       if (currEntry->mCreateHandlerSucceeded) {
-        nsIView* view = nsnull;
-        popupChild->GetView(aState.GetPresContext(), &view);
-        nsCOMPtr<nsIViewManager> viewManager;
-        view->GetViewManager(*getter_AddRefs(viewManager));
+        nsIView* view = popupChild->GetView();
+        nsIViewManager* viewManager = view->GetViewManager();
         nsRect r(0, 0, bounds.width, bounds.height);
         viewManager->ResizeView(view, r);
         viewManager->SetViewVisibility(view, nsViewVisibility_kShow);
@@ -318,7 +312,7 @@ nsPopupSetFrame::SetDebug(nsBoxLayoutState& aState, nsIFrame* aList, PRBool aDeb
               ibox->SetDebug(aState, aDebug);
           }
 
-          aList->GetNextSibling(&aList);
+          aList = aList->GetNextSibling();
       }
 
       return NS_OK;
@@ -416,7 +410,7 @@ nsPopupSetFrame::HidePopup(nsIFrame* aPopup)
     // If we are a context menu, and if we are attached to a menupopup, then hiding us
     // should also hide the parent menu popup.
     nsCOMPtr<nsIAtom> tag;
-    entry->mElementContent->GetTag(*getter_AddRefs(tag));
+    entry->mElementContent->GetTag(getter_AddRefs(tag));
     if (tag && tag.get() == nsXULAtoms::menupopup) {
       nsIFrame* popupFrame = nsnull;
       nsCOMPtr<nsIPresShell> presShell;
@@ -449,7 +443,7 @@ nsPopupSetFrame::DestroyPopup(nsIFrame* aPopup, PRBool aDestroyEntireChain)
       // If we are a context menu, and if we are attached to a menupopup, then destroying us
       // should also dismiss the parent menu popup.
       nsCOMPtr<nsIAtom> tag;
-      entry->mElementContent->GetTag(*getter_AddRefs(tag));
+      entry->mElementContent->GetTag(getter_AddRefs(tag));
       if (tag && tag.get() == nsXULAtoms::menupopup) {
         nsIFrame* popupFrame = nsnull;
         nsCOMPtr<nsIPresShell> presShell;
@@ -559,8 +553,7 @@ nsPopupSetFrame::ActivatePopup(nsPopupFrameList* aEntry, PRBool aActivateFlag)
       // can get into trouble if a dialog with a modal event loop comes along and
       // processes the reflows before we get to call DestroyChain(). Processing the
       // reflow will cause the popup to show itself again. (bug 71219)
-      nsCOMPtr<nsIDocument> doc;
-      aEntry->mPopupContent->GetDocument(*getter_AddRefs(doc));
+      nsIDocument* doc = aEntry->mPopupContent->GetDocument();
       if (doc)
         doc->FlushPendingNotifications();
          
@@ -568,13 +561,11 @@ nsPopupSetFrame::ActivatePopup(nsPopupFrameList* aEntry, PRBool aActivateFlag)
       // since we could be cleaning up after someone that didn't correctly 
       // destroy the popup.
       nsIFrame* activeChild = aEntry->mPopupFrame;
-      nsIView* view = nsnull;
       if (activeChild) {
-        activeChild->GetView(mPresContext, &view);
+        nsIView* view = activeChild->GetView();
         NS_ASSERTION(view, "View is gone, looks like someone forgot to roll up the popup!");
         if (view) {
-          nsCOMPtr<nsIViewManager> viewManager;
-          view->GetViewManager(*getter_AddRefs(viewManager));
+          nsIViewManager* viewManager = view->GetViewManager();
           viewManager->SetViewVisibility(view, nsViewVisibility_kHide);
           nsRect r(0, 0, 0, 0);
           viewManager->ResizeView(view, r);
@@ -615,17 +606,15 @@ nsPopupSetFrame::OnCreate(PRInt32 aX, PRInt32 aY, nsIContent* aPopupContent)
     // of them has a command attribute.  If so, then several attributes must
     // potentially be updated.
  
-    nsCOMPtr<nsIDocument> doc;
-    aPopupContent->GetDocument(*getter_AddRefs(doc));
-    nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(doc));
+    nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(aPopupContent->GetDocument()));
 
     PRInt32 count;
     aPopupContent->ChildCount(count);
     for (PRInt32 i = 0; i < count; i++) {
       nsCOMPtr<nsIContent> grandChild;
-      aPopupContent->ChildAt(i, *getter_AddRefs(grandChild));
+      aPopupContent->ChildAt(i, getter_AddRefs(grandChild));
       nsCOMPtr<nsIAtom> tag;
-      grandChild->GetTag(*getter_AddRefs(tag));
+      grandChild->GetTag(getter_AddRefs(tag));
       if (tag.get() == nsXULAtoms::menuitem) {
         // See if we have a command attribute.
         nsAutoString command;
@@ -811,8 +800,7 @@ nsPopupSetFrame::AddPopupFrame(nsIFrame* aPopup)
   // popup visible straightaway, e.g., the autocomplete widget).
 
   // First look for an entry by content.
-  nsCOMPtr<nsIContent> content;
-  aPopup->GetContent(getter_AddRefs(content));
+  nsIContent* content = aPopup->GetContent();
   nsPopupFrameList* entry = nsnull;
   if (mPopupList)
     entry = mPopupList->GetEntry(content);

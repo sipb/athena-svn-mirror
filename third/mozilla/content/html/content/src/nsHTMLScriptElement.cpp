@@ -545,7 +545,7 @@ nsHTMLScriptElement::SetText(const nsAString& aValue)
 
 NS_IMPL_STRING_ATTR(nsHTMLScriptElement, Charset, charset)
 NS_IMPL_BOOL_ATTR(nsHTMLScriptElement, Defer, defer)
-NS_IMPL_STRING_ATTR(nsHTMLScriptElement, Src, src)
+NS_IMPL_URI_ATTR(nsHTMLScriptElement, Src, src)
 NS_IMPL_STRING_ATTR(nsHTMLScriptElement, Type, type)
 NS_IMPL_STRING_ATTR(nsHTMLScriptElement, HtmlFor, _for)
 NS_IMPL_STRING_ATTR(nsHTMLScriptElement, Event, _event)
@@ -591,11 +591,10 @@ nsHTMLScriptElement::ScriptAvailable(nsresult aResult,
     aURI->GetSpec(spec);
 
     NS_ConvertUTF8toUCS2 fileName(spec);
-
     event.fileName = fileName.get();
 
     HandleDOMEvent(presContext, &event, nsnull, NS_EVENT_FLAG_INIT,
-                        &status);
+                   &status);
   }
 
   return NS_OK;

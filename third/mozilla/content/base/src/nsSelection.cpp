@@ -373,8 +373,8 @@ public:
                                nsDirection aDirection,
                                PRUint8 aBidiLevel,
                                nsIFrame **aFrameOut);
-
-  /*END nsIFrameSelection interfacse*/
+  NS_IMETHOD MaintainSelection();
+  /*END nsIFrameSelection interfaces */
 
 
 
@@ -421,6 +421,8 @@ private:
                          PRInt32 aCurrentOffset,
                          nsPeekOffsetStruct aPos);
 #endif // VISUALSELECTION
+
+  PRBool AdjustForMaintainedSelection(nsIContent *aContent, PRInt32 aOffset);
 
 // post and pop reasons for notifications. we may stack these later
   void    PostReason(PRInt16 aReason) { mSelectionChangeReason = aReason; }
@@ -485,6 +487,9 @@ private:
   nsCOMPtr<nsIContent> mUnselectCellOnMouseUp;
   PRInt32  mSelectingTableCellMode;
   PRInt32  mSelectedCellIndex;
+
+  // maintain selection
+  nsCOMPtr<nsIDOMRange> mMaintainRange;
 
   //batching
   PRInt32 mBatching;
@@ -608,9 +613,7 @@ public:
   {
     if (mSelection && mPresContext && mView)
     {
-      void *clientData = 0;
-      mView->GetClientData(clientData);
-      nsIFrame *frame = (nsIFrame *)clientData;
+      nsIFrame *frame = NS_STATIC_CAST(nsIFrame*, mView->GetClientData());
 
       if (!frame)
         return NS_OK;
@@ -763,11 +766,7 @@ IsValidSelectionPoint(nsSelection *aFrameSel, nsIContent *aContent)
       return PR_FALSE;
     if (tLimiter && tLimiter != aContent)
     {
-      nsCOMPtr<nsIContent> parent;
-      result = aContent->GetParent(*getter_AddRefs(parent));
-      if (NS_FAILED(result))
-        return PR_FALSE;
-      if (tLimiter != parent) //if newfocus == the limiter. thats ok. but if not there and not parent bad
+      if (tLimiter != aContent->GetParent()) //if newfocus == the limiter. thats ok. but if not there and not parent bad
         return PR_FALSE; //not in the right content. tLimiter said so
     }
   }
@@ -1110,15 +1109,11 @@ nsSelection::GetRootForContentSubtree(nsIContent *aContent, nsIContent **aParent
 
   *aParent = 0;
 
-  nsCOMPtr<nsIContent> parent = do_QueryInterface(aContent);
-  nsCOMPtr<nsIContent> child = parent;
+  nsIContent* child = aContent;
 
   while (child)
   {
-    result = child->GetParent(*getter_AddRefs(parent));
-
-    if (NS_FAILED(result))
-      return result;
+    nsIContent* parent = child->GetParent();
 
     if (!parent)
       break;
@@ -1145,9 +1140,7 @@ nsSelection::GetRootForContentSubtree(nsIContent *aContent, nsIContent **aParent
     child = parent;
   }
 
-  *aParent = child;
-
-  NS_IF_ADDREF(*aParent);
+  NS_IF_ADDREF(*aParent = child);
 
   return result;
 }
@@ -1173,39 +1166,21 @@ nsSelection::GetGlobalViewOffsetsFromFrame(nsIPresContext *aPresContext, nsIFram
 
   *offsetX = *offsetY = 0;
 
-  nsresult result;
   nsIFrame *frame = aFrame;
-  nsIView  *view;
-
   while (frame)
   {
-    result = frame->GetParentWithView(aPresContext, &frame);
-
-    if (NS_FAILED(result))
-      return result;
+    frame = frame->GetAncestorWithView();
 
     if (frame) {
-      view   = 0;
-
-      result = frame->GetView(aPresContext, &view);
-
-      if (NS_FAILED(result))
-        return result;
+      nsIView *view = frame->GetView();
 
       if (view)
       {
-        nscoord vX = 0, vY = 0;
-
-        result = view->GetPosition(&vX, &vY);
-
-        if (NS_FAILED(result))
-          return result;
-
-        *offsetX += vX;
-        *offsetY += vY;
+        nsPoint pt = view->GetPosition();
+        *offsetX += pt.x;
+        *offsetY += pt.y;
       }
     }
-
   }
 
   return NS_OK;
@@ -1281,12 +1256,7 @@ nsSelection::ConstrainFrameAndPointToAnchorSubtree(nsIPresContext *aPresContext,
   // Now find the root of the subtree containing aFrame's content.
   //
 
-  nsCOMPtr<nsIContent> content;
-
-  result = aFrame->GetContent(getter_AddRefs(content));
-
-  if (NS_FAILED(result))
-    return result;
+  nsIContent* content = aFrame->GetContent();
 
   if (content)
   {
@@ -1383,7 +1353,7 @@ nsCOMPtr<nsIAtom> GetTag(nsIDOMNode *aNode)
   
   nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
   if (content)
-    content->GetTag(*getter_AddRefs(atom));
+    content->GetTag(getter_AddRefs(atom));
 
   return atom;
 }
@@ -1397,9 +1367,8 @@ ParentOffset(nsIDOMNode *aNode, nsIDOMNode **aParent, PRInt32 *aChildOffset)
   nsCOMPtr<nsIContent> content = do_QueryInterface(aNode, &result);
   if (NS_SUCCEEDED(result) && content)
   {
-    nsCOMPtr<nsIContent> parent;
-    result = content->GetParent(*getter_AddRefs(parent));
-    if (NS_SUCCEEDED(result) && parent)
+    nsIContent* parent = content->GetParent();
+    if (parent)
     {
       result = parent->IndexOf(content, *aChildOffset);
       if (NS_SUCCEEDED(result)) {
@@ -1560,9 +1529,7 @@ nsSelection::MoveCaret(PRUint32 aKeycode, PRBool aContinue, nsSelectionAmount aA
 
   if (NS_FAILED(result) || !frame)
     return result?result:NS_ERROR_FAILURE;
-  nsCOMPtr<nsIContent> content;
-  result = frame->GetContent(getter_AddRefs(content));
-  nsCOMPtr<nsIDOMNode> node = do_QueryInterface(content);
+  nsCOMPtr<nsIDOMNode> node = do_QueryInterface(frame->GetContent());
   nsCOMPtr<nsIDOMNode> parentNode;
   nsPeekOffsetStruct pos;
 
@@ -1824,12 +1791,9 @@ nsresult FindLineContaining(nsIFrame* aFrame, nsIFrame** aBlock, PRInt32* aLine)
   while (NS_FAILED(result) && blockFrame)
   {
     thisBlock = blockFrame;
-    result = blockFrame->GetParent(&blockFrame);
-    if (NS_SUCCEEDED(result) && blockFrame) {
+    blockFrame = blockFrame->GetParent();
+    if (blockFrame) {
       it = do_QueryInterface(blockFrame, &result);
-    }
-    else {
-      blockFrame = nsnull;
     }
   }
   if (!blockFrame || !it)
@@ -2278,12 +2242,9 @@ nsSelection::GetPrevNextBidiLevels(nsIPresContext *aPresContext,
   while (NS_FAILED(result) && blockFrame)
   {
     thisBlock = blockFrame;
-    result = blockFrame->GetParent(&blockFrame);
-    if (NS_SUCCEEDED(result) && blockFrame) {
+    blockFrame = blockFrame->GetParent();
+    if (blockFrame) {
       it = do_QueryInterface(blockFrame, &result);
-    }
-    else {
-      blockFrame = nsnull;
     }
   }
   if (!blockFrame || !it)
@@ -2309,12 +2270,7 @@ nsSelection::GetPrevNextBidiLevels(nsIPresContext *aPresContext,
   lastFrame = firstFrame;
 
   for (;lineFrameCount > 1;lineFrameCount --) {
-    result = lastFrame->GetNextSibling(&lastFrame);
-
-    if (NS_FAILED(result)){
-      NS_ASSERTION(0,"should not be reached nsFrame\n");
-      return NS_ERROR_FAILURE;
-    }
+    lastFrame = lastFrame->GetNextSibling();
   }
 
   // GetFirstLeaf
@@ -2333,7 +2289,7 @@ nsSelection::GetPrevNextBidiLevels(nsIPresContext *aPresContext,
     if (NS_FAILED(result) || !lookahead)
       break; //nothing to do
     lastFrame = lookahead;
-    while (NS_SUCCEEDED(lastFrame->GetNextSibling(&lookahead)) && lookahead)
+    while ((lookahead = lastFrame->GetNextSibling()) != nsnull)
       lastFrame = lookahead;
   }
   //END LINE DATA CODE
@@ -2457,6 +2413,37 @@ NS_IMETHODIMP nsSelection::GetFrameFromLevel(nsIPresContext *aPresContext,
   return NS_OK;
 }
 
+
+NS_IMETHODIMP 
+nsSelection::MaintainSelection()
+{
+  PRInt8 index = GetIndexFromSelectionType(nsISelectionController::SELECTION_NORMAL);
+  nsCOMPtr<nsIDOMRange> range;
+  nsresult rv = mDomSelections[index]->GetRangeAt(0, getter_AddRefs(range));
+  if (NS_FAILED(rv))
+    return rv;
+  if (!range)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIDOMNode> startNode;
+  nsCOMPtr<nsIDOMNode> endNode;
+  PRInt32 startOffset;
+  PRInt32 endOffset;
+  range->GetStartContainer(getter_AddRefs(startNode));
+  range->GetEndContainer(getter_AddRefs(endNode));
+  range->GetStartOffset(&startOffset);
+  range->GetEndOffset(&endOffset);
+
+  mMaintainRange = nsnull;
+  NS_NewRange(getter_AddRefs(mMaintainRange));
+  if (!mMaintainRange)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  mMaintainRange->SetStart(startNode, startOffset);
+  return mMaintainRange->SetEnd(endNode, endOffset);
+}
+
+
 /** After moving the caret, its Bidi level is set according to the following rules:
  *
  *  After moving over a character with left/right arrow, set to the Bidi level of the last moved over character.
@@ -2544,6 +2531,62 @@ void nsSelection::BidiLevelFromClick(nsIContent *aNode, PRUint32 aContentOffset)
   shell->SetCaretBidiLevel(frameLevel);
 }
 
+
+PRBool
+nsSelection::AdjustForMaintainedSelection(nsIContent *aContent, PRInt32 aOffset)
+{
+  // Is the desired content and offset currently in selection?
+  // If the double click flag is set then don't continue selection if the 
+  // desired content and offset are currently inside a selection.
+  // This will stop double click then mouse-drag from undoing the desired
+  // selecting of a word.
+  if (!mMaintainRange)
+    return PR_FALSE;
+
+  nsCOMPtr<nsIDOMNode> rangenode;
+  PRInt32 rangeOffset;
+  mMaintainRange->GetStartContainer(getter_AddRefs(rangenode));
+  mMaintainRange->GetStartOffset(&rangeOffset);
+
+  nsCOMPtr<nsIDOMNode> domNode = do_QueryInterface(aContent);
+  if (domNode)
+  {
+    PRInt8 index = GetIndexFromSelectionType(nsISelectionController::SELECTION_NORMAL);
+    nsCOMPtr<nsIDOMNSRange> nsrange = do_QueryInterface(mMaintainRange);
+    if (nsrange)
+    {
+      PRBool insideSelection = PR_FALSE;
+      nsrange->IsPointInRange(domNode, aOffset, &insideSelection);
+
+      // Done when we find a range that we are in
+      if (insideSelection)
+      {
+        mDomSelections[index]->Collapse(rangenode, rangeOffset);
+        mMaintainRange->GetEndContainer(getter_AddRefs(rangenode));
+        mMaintainRange->GetEndOffset(&rangeOffset);
+        mDomSelections[index]->Extend(rangenode,rangeOffset);
+        return PR_TRUE; // dragging in selection aborted
+      }
+    }
+
+    PRInt32 relativePosition = ComparePoints(rangenode, rangeOffset, domNode, aOffset);
+    // if == 0 or -1 do nothing if < 0 then we need to swap direction
+    if (relativePosition > 0
+        && (mDomSelections[index]->GetDirection() == eDirNext))
+    {
+      mMaintainRange->GetEndContainer(getter_AddRefs(rangenode));
+      mMaintainRange->GetEndOffset(&rangeOffset);
+      mDomSelections[index]->Collapse(rangenode, rangeOffset);
+    }
+    else if (relativePosition < 0
+             && (mDomSelections[index]->GetDirection() == eDirPrevious))
+      mDomSelections[index]->Collapse(rangenode, rangeOffset);
+  }
+
+  return PR_FALSE;
+}
+
+
 NS_IMETHODIMP
 nsSelection::HandleClick(nsIContent *aNewFocus, PRUint32 aContentOffset, 
                        PRUint32 aContentEndOffset, PRBool aContinueSelection, 
@@ -2551,14 +2594,22 @@ nsSelection::HandleClick(nsIContent *aNewFocus, PRUint32 aContentOffset,
 {
   if (!aNewFocus)
     return NS_ERROR_INVALID_ARG;
+
   InvalidateDesiredX();
-  
+
+  if (!aContinueSelection)
+    mMaintainRange = nsnull;
+
   mHint = HINT(aHint);
   // Don't take focus when dragging off of a table
   if (!mDragSelectingCells)
   {
     BidiLevelFromClick(aNewFocus, aContentOffset);
     PostReason(nsISelectionListener::MOUSEDOWN_REASON + nsISelectionListener::DRAG_REASON);
+    if (aContinueSelection &&
+        AdjustForMaintainedSelection(aNewFocus, aContentOffset))
+      return NS_OK; //shift clicked to maintained selection. rejected.
+
     return TakeFocus(aNewFocus, aContentOffset, aContentEndOffset, aContinueSelection, aMultipleSelection);
   }
   
@@ -2575,21 +2626,11 @@ nsSelection::HandleDrag(nsIPresContext *aPresContext, nsIFrame *aFrame, nsPoint&
   nsIFrame *newFrame = 0;
   nsPoint   newPoint;
 
-
   result = ConstrainFrameAndPointToAnchorSubtree(aPresContext, aFrame, aPoint, &newFrame, newPoint);
-
   if (NS_FAILED(result))
     return result;
-
   if (!newFrame)
     return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIPresShell> presShell;
-
-  result = aPresContext->GetShell(getter_AddRefs(presShell));
-
-  if (NS_FAILED(result))
-    return result;
 
   PRInt32 startPos = 0;
   PRInt32 contentOffsetEnd = 0;
@@ -2600,57 +2641,9 @@ nsSelection::HandleDrag(nsIPresContext *aPresContext, nsIFrame *aFrame, nsPoint&
                                                    getter_AddRefs(newContent), 
                                                    startPos, contentOffsetEnd, beginOfContent);
 
-  //Is the desired content and offset currently in selection?
-  //if the double click flag is set then dont continue selection if the desired content and offset 
-  //are currently inside a selection.
-  //this will stop double click then mouse-drag from undo-ing the desired selecting of a word.
-  if (mMouseDoubleDownState)
-  {
-    nsFrameState  frameState;
-    newFrame->GetFrameState(&frameState);
-    PRBool insideSelection(PR_FALSE);
-    if ((frameState & NS_FRAME_SELECTED_CONTENT))
-    {
-      PRBool isCollapsed;
-      PRInt8 index = GetIndexFromSelectionType(nsISelectionController::SELECTION_NORMAL);
-      mDomSelections[index]->GetIsCollapsed(&isCollapsed);
-      if (!isCollapsed)
-      {
-        PRInt32 rangeCount;
-        result = mDomSelections[index]->GetRangeCount(&rangeCount);
-        if (NS_FAILED(result)) return result;
-
-        nsCOMPtr<nsIDOMNode> domNode;
-        domNode = do_QueryInterface(newContent);
-        if (domNode)
-        {
-          for (PRInt32 i = 0; i < rangeCount; i++)
-          {
-            nsCOMPtr<nsIDOMRange> range;
-
-            result = mDomSelections[index]->GetRangeAt(i, getter_AddRefs(range));
-            if (NS_FAILED(result) || !range) 
-              continue;//dont bail yet, iterate through them all
-
-            nsCOMPtr<nsIDOMNSRange> nsrange(do_QueryInterface(range));
-            if (NS_FAILED(result) || !nsrange) 
-              continue;//dont bail yet, iterate through them all
-
-            nsrange->IsPointInRange(domNode, startPos, &insideSelection);
-
-            // Done when we find a range that we are in
-            if (insideSelection)
-              break;
-          }
-        }
-      }
-    }
-
-    if (!insideSelection)
-      mMouseDoubleDownState = PR_FALSE;
-    else
-      return NS_OK; //dragging in selection aborted
-  }
+  if ((newFrame->GetStateBits() & NS_FRAME_SELECTED_CONTENT) &&
+       AdjustForMaintainedSelection(newContent, startPos))
+    return NS_OK;
 
   // do we have CSS that changes selection behaviour?
   {
@@ -2739,16 +2732,12 @@ nsSelection::TakeFocus(nsIContent *aNewFocus, PRUint32 aContentOffset,
   mAppendStartSelectedCell = nsnull;
 
   //HACKHACKHACK
-  nsCOMPtr<nsIContent> content;
-  nsCOMPtr<nsIDOMNode> domNode;
-  nsCOMPtr<nsIContent> parent;
-  nsCOMPtr<nsIContent> parent2;
-  if (NS_FAILED(aNewFocus->GetParent(*getter_AddRefs(parent))) || !parent)
+  if (!aNewFocus->GetParent())
     return NS_ERROR_FAILURE;
   //END HACKHACKHACK /checking for root frames/content
 
   PRInt8 index = GetIndexFromSelectionType(nsISelectionController::SELECTION_NORMAL);
-  domNode = do_QueryInterface(aNewFocus);
+  nsCOMPtr<nsIDOMNode> domNode = do_QueryInterface(aNewFocus);
   //traverse through document and unselect crap here
   if (!aContinueSelection){ //single click? setting cursor down
     PRUint32 batching = mBatching;//hack to use the collapse code.
@@ -3006,7 +2995,7 @@ nsSelection::GetFrameForNodeOffset(nsIContent *aNode, PRInt32 aOffset, HINT aHin
     
     nsCOMPtr<nsIContent> childNode;
 
-    result = theNode->ChildAt(childIndex, *getter_AddRefs(childNode));
+    result = theNode->ChildAt(childIndex, getter_AddRefs(childNode));
 
     if (NS_FAILED(result))
       return result;
@@ -3096,7 +3085,6 @@ nsSelection::CommonPageMove(PRBool aForward,
 
   nsresult result;
   const nsIView* clipView;
-  nsRect viewRect;
   //get the frame from the scrollable view
 
   void*    clientData;
@@ -3109,8 +3097,8 @@ nsSelection::CommonPageMove(PRBool aForward,
   if (NS_FAILED(result))
     return result;
 
-  if (scrolledView && NS_SUCCEEDED(scrolledView->GetClientData(clientData)))
-    mainframe = (nsIFrame*)clientData;
+  if (scrolledView)
+    mainframe = NS_STATIC_CAST(nsIFrame*, scrolledView->GetClientData());
 
   if (!mainframe)
     return NS_ERROR_FAILURE;
@@ -3118,8 +3106,7 @@ nsSelection::CommonPageMove(PRBool aForward,
   // find out where we are; determine amount to page up/down
   if (NS_FAILED(result = aScrollableView->GetClipView(&clipView))) 
     return result;
-  if (NS_FAILED(result = clipView->GetBounds(viewRect))) 
-    return result;
+  nsRect viewRect = clipView->GetBounds();
 
   nsCOMPtr<nsIPresContext> context;
   result = mTracker->GetPresContext(getter_AddRefs(context));
@@ -3175,10 +3162,8 @@ nsSelection::CommonPageMove(PRBool aForward,
     nscoord x,y;
     while (caretView != scrolledView)
     {
-      caretView->GetPosition(&x, &y);
-      caretPos.x += x;
-      caretPos.y += y;
-      caretView->GetParent(caretView);
+      caretPos += caretView->GetPosition();
+      caretView = caretView->GetParent();
       if (!caretView) //how did we miss the scrolled view. something is very wrong
         return NS_ERROR_FAILURE;
     }
@@ -3325,7 +3310,7 @@ nsSelection::FrameOrParentHasSpecialSelectionStyle(nsIFrame* aFrame, PRUint8 aSe
       return NS_OK;
     }
   
-    thisFrame->GetParent(&thisFrame);
+    thisFrame = thisFrame->GetParent();
   }
   
   *foundFrame = nsnull;
@@ -3338,7 +3323,7 @@ nsSelection::FrameOrParentHasSpecialSelectionStyle(nsIFrame* aFrame, PRUint8 aSe
 static PRBool IsCell(nsIContent *aContent)
 {
   nsCOMPtr<nsIAtom> tag;
-  aContent->GetTag(*getter_AddRefs(tag));
+  aContent->GetTag(getter_AddRefs(tag));
   return (tag == nsHTMLAtoms::td);
 }
 
@@ -3398,7 +3383,10 @@ nsSelection::HandleTableSelection(nsIContent *aParentContent, PRInt32 aContentOf
   if (!parentNode)  return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsIContent> childContent;
-  nsresult result = aParentContent->ChildAt(aContentOffset, *getter_AddRefs(childContent));
+  nsresult result =
+      aParentContent->ChildAt(aContentOffset,
+                              getter_AddRefs(childContent));
+
   if (NS_FAILED(result)) return result;
   if (!childContent)  return NS_ERROR_FAILURE;
 
@@ -3663,7 +3651,7 @@ printf("HandleTableSelection: Unselecting mUnselectCellOnMouseUp; rangeCount=%d\
           // Be sure previous selection is a table cell
           nsCOMPtr<nsIContent> parentContent = do_QueryInterface(parent);
           nsCOMPtr<nsIContent> child;
-          result = parentContent->ChildAt(offset, *getter_AddRefs(child));
+          result = parentContent->ChildAt(offset, getter_AddRefs(child));
           if (NS_FAILED(result)) return result;
           if (child && IsCell(child))
             previousCellParent = parent;
@@ -3904,9 +3892,12 @@ nsSelection::SelectRowOrColumn(nsIContent *aCellContent, PRUint32 aTarget)
 //  but doesn't allow dragging OFF of an existing selection to unselect!
   do {
     // Loop through all cells in column or row
-    result = tableLayout->GetCellDataAt(rowIndex, colIndex, *getter_AddRefs(cellElement),
-                                        curRowIndex, curColIndex, rowSpan, colSpan, 
-                                        actualRowSpan, actualColSpan, isSelected);
+    result = tableLayout->GetCellDataAt(rowIndex, colIndex,
+                                        getter_AddRefs(cellElement),
+                                        curRowIndex, curColIndex,
+                                        rowSpan, colSpan,
+                                        actualRowSpan, actualColSpan,
+                                        isSelected);
     if (NS_FAILED(result)) return result;
     // We're done when cell is not found
     if (!cellElement) break;
@@ -3952,7 +3943,7 @@ nsSelection::GetFirstCellNodeInRange(nsIDOMRange *aRange, nsIDOMNode **aCellNode
 
   nsCOMPtr<nsIContent> parentContent = do_QueryInterface(startParent);
   nsCOMPtr<nsIContent> childContent;
-  result = parentContent->ChildAt(offset, *getter_AddRefs(childContent));
+  result = parentContent->ChildAt(offset, getter_AddRefs(childContent));
   if (NS_FAILED(result)) return result;
   if (!childContent) return NS_ERROR_NULL_POINTER;
   // Don't return node if not a cell
@@ -4097,27 +4088,23 @@ nsSelection::IsInSameTable(nsIContent *aContent1, nsIContent *aContent2, nsICont
 nsresult
 nsSelection::GetParentTable(nsIContent *aCell, nsIContent **aTable)
 {
-  if (!aCell || !aTable)
+  if (!aCell || !aTable) {
     return NS_ERROR_NULL_POINTER;
+  }
 
-  nsCOMPtr<nsIContent> parent;
-  nsresult result = aCell->GetParent(*getter_AddRefs(parent));
-
-  while (NS_SUCCEEDED(result) && parent)
-  {  
-    nsIAtom *tag;
-    parent->GetTag(tag);
-    if (tag == nsHTMLAtoms::table)
-    {
+  nsCOMPtr<nsIAtom> tag;
+  for (nsIContent* parent = aCell->GetParent(); parent;
+       parent = parent->GetParent()) {
+    parent->GetTag(getter_AddRefs(tag));
+    if (tag == nsHTMLAtoms::table) {
       *aTable = parent;
       NS_ADDREF(*aTable);
+
       return NS_OK;
     }
-    nsCOMPtr<nsIContent> temp;
-    result = parent->GetParent(*getter_AddRefs(temp));
-    parent = temp;
   }
-  return result;
+
+  return NS_OK;
 }
 
 nsresult
@@ -4174,7 +4161,7 @@ nsTypedSelection::getTableCellLocationFromRange(nsIDOMRange *aRange, PRInt32 *aS
   if (NS_FAILED(result)) return result;
 
   nsCOMPtr<nsIContent> child;
-  result = content->ChildAt(startOffset, *getter_AddRefs(child));
+  result = content->ChildAt(startOffset, getter_AddRefs(child));
   if (NS_FAILED(result)) return result;
   if (!child) return NS_ERROR_FAILURE;
 
@@ -4305,7 +4292,7 @@ nsTypedSelection::GetTableSelectionType(nsIDOMRange* aRange, PRInt32* aTableSele
     return NS_OK;
 
   nsCOMPtr<nsIAtom> atom;
-  content->GetTag(*getter_AddRefs(atom));
+  content->GetTag(getter_AddRefs(atom));
   if (!atom) return NS_ERROR_FAILURE;
 
   if (atom == nsHTMLAtoms::tr)
@@ -4315,11 +4302,11 @@ nsTypedSelection::GetTableSelectionType(nsIDOMRange* aRange, PRInt32* aTableSele
   else //check to see if we are selecting a table or row (column and all cells not done yet)
   {
     nsCOMPtr<nsIContent> child;
-    result = content->ChildAt(startOffset, *getter_AddRefs(child));
+    result = content->ChildAt(startOffset, getter_AddRefs(child));
     if (NS_FAILED(result)) return result;
     if (!child) return NS_ERROR_FAILURE;
 
-    child->GetTag(*getter_AddRefs(atom));
+    child->GetTag(getter_AddRefs(atom));
     if (!atom) return NS_ERROR_FAILURE;
 
     if (atom == nsHTMLAtoms::table)
@@ -4366,12 +4353,10 @@ nsSelection::AdjustOffsetsFromStyle(nsIFrame *aFrame, PRBool *changeSelection,
   if (!selectAllFrame)
     return NS_OK;
   
-  nsCOMPtr<nsIContent> selectAllContent;
-  selectAllFrame->GetContent(getter_AddRefs(selectAllContent));
+  nsIContent* selectAllContent = selectAllFrame->GetContent();
   if (selectAllContent)
   {
-    nsCOMPtr<nsIContent>  parentContent;
-    rv = selectAllContent->GetParent(*getter_AddRefs(parentContent));
+    nsCOMPtr<nsIContent> parentContent = selectAllContent->GetParent();
     if (parentContent)
     {
       PRInt32 startOffset;
@@ -4381,8 +4366,7 @@ nsSelection::AdjustOffsetsFromStyle(nsIFrame *aFrame, PRBool *changeSelection,
       {
         // hrmm, this is probably anonymous content. Let's go up another level
         // do we need to do this if we get the right frameSelection to start with?
-        nsCOMPtr<nsIContent> superParent;
-        parentContent->GetParent(*getter_AddRefs(superParent));
+        nsCOMPtr<nsIContent> superParent = parentContent->GetParent();
         if (superParent)
         {
           PRInt32 superStartOffset;
@@ -4659,7 +4643,7 @@ NS_IMPL_RELEASE(nsTypedSelection)
 NS_IMETHODIMP
 nsTypedSelection::SetPresShell(nsIPresShell *aPresShell)
 {
-  mPresShellWeak = getter_AddRefs(NS_GetWeakReference(aPresShell));
+  mPresShellWeak = do_GetWeakReference(aPresShell);
   return NS_OK;
 }
 
@@ -4927,7 +4911,7 @@ nsTypedSelection::GetPrimaryFrameForRangeEndpoint(nsIDOMNode *aNode, PRInt32 aOf
   
   nsresult  result = NS_OK;
   
-  nsCOMPtr<nsIDOMNode> node = dont_QueryInterface(aNode);
+  nsCOMPtr<nsIDOMNode> node = aNode;
 
   if (!node)
     return NS_ERROR_NULL_POINTER;
@@ -4952,7 +4936,7 @@ nsTypedSelection::GetPrimaryFrameForRangeEndpoint(nsIDOMNode *aNode, PRInt32 aOf
     if (aOffset >= 0)
     {
       nsCOMPtr<nsIContent> child;
-      result = content->ChildAt(aOffset, *getter_AddRefs(child));
+      result = content->ChildAt(aOffset, getter_AddRefs(child));
       if (NS_FAILED(result))
         return result;
       if (!child) //out of bounds?
@@ -5056,7 +5040,6 @@ nsTypedSelection::selectFrames(nsIPresContext* aPresContext,
     }
     // Now iterated through the child frames and set them
     nsCOMPtr<nsIContent> innercontent;
-    nsRect frameRect; 
     while (NS_ENUMERATOR_FALSE == aInnerIter->IsDone())
     {
       result = aInnerIter->CurrentNode(getter_AddRefs(innercontent));
@@ -5067,7 +5050,7 @@ nsTypedSelection::selectFrames(nsIPresContext* aPresContext,
         {
           //NOTE: eSpreadDown is now IGNORED. Selected state is set only for given frame
           frame->SetSelected(aPresContext, nsnull,aFlags,eSpreadDown);//spread from here to hit all frames in flow
-          frame->GetRect(frameRect);
+          nsRect frameRect = frame->GetRect();
           
           //if a rect is 0 height/width then try to notify next available in flow of selection status.
           while (!frameRect.width || !frameRect.height)
@@ -5075,7 +5058,7 @@ nsTypedSelection::selectFrames(nsIPresContext* aPresContext,
             //try to notify next in flow that its content is selected.
             if (NS_SUCCEEDED(frame->GetNextInFlow(&frame)) && frame)
             {
-              frame->GetRect(frameRect);
+              frameRect = frame->GetRect();
               frame->SetSelected(aPresContext, nsnull,aFlags,eSpreadDown);
             }
             else
@@ -5366,6 +5349,12 @@ nsTypedSelection::SetCanCacheFrameOffset(PRBool aCanCacheFrameOffset)
 
   mCachedOffsetForFrame->mCanCacheFrameOffset = aCanCacheFrameOffset;
 
+  // clean up cached frame when turn off cache
+  // fix bug 207936
+  if (!aCanCacheFrameOffset) {
+    mCachedOffsetForFrame->mLastCaretFrame = nsnull;
+  }
+
   return NS_OK;
 }
 
@@ -5376,7 +5365,8 @@ nsTypedSelection::GetCachedFrameOffset(nsIFrame *aFrame, PRInt32 inOffset, nsPoi
     mCachedOffsetForFrame = new CachedOffsetForFrame;
   }
 
-  if (mCachedOffsetForFrame->mCanCacheFrameOffset && 
+  if (mCachedOffsetForFrame->mCanCacheFrameOffset &&
+      mCachedOffsetForFrame->mLastCaretFrame &&
       (aFrame == mCachedOffsetForFrame->mLastCaretFrame) &&
       (inOffset == mCachedOffsetForFrame->mLastContentOffset))
   {
@@ -5449,23 +5439,12 @@ nsTypedSelection::GetViewAncestorOffset(nsIView *aView, nsIView *aAncestorView, 
   *aXOffset = 0;
   *aYOffset = 0;
 
-  nsIView *view = aView;
-
-  while (view && view != aAncestorView)
+  for (nsIView* view = aView; view && view != aAncestorView;
+       view = view->GetParent())
   {
-    nscoord x = 0, y = 0;
-    nsresult result = view->GetPosition(&x, &y);
-
-    if (NS_FAILED(result))
-      return result;
-
-    *aXOffset += x;
-    *aYOffset += y;
-
-    result = view->GetParent(view);
-
-    if (NS_FAILED(result))
-      return result;
+    nsPoint pt = view->GetPosition();
+    *aXOffset += pt.x;
+    *aYOffset += pt.y;
   }
 
   return NS_OK;
@@ -5484,10 +5463,7 @@ nsTypedSelection::GetClosestScrollableView(nsIView *aView, nsIScrollableView **a
     CallQueryInterface(aView, aScrollableView);
     if (!*aScrollableView)
     {
-      nsresult result = aView->GetParent(aView);
-
-      if (NS_FAILED(result))
-        return result;
+      aView = aView->GetParent();
     }
   }
 
@@ -5556,12 +5532,7 @@ nsTypedSelection::ScrollPointIntoClipView(nsIPresContext *aPresContext, nsIView 
   // If it is, scroll the view till it is inside the visible area!
   //
 
-  nsRect bounds;
-
-  result = cView->GetBounds(bounds);
-
-  if (NS_FAILED(result))
-    return result;
+  nsRect bounds = cView->GetBounds();
 
   result = scrollableView->GetScrollPosition(bounds.x,bounds.y);
 
@@ -5637,19 +5608,8 @@ nsTypedSelection::ScrollPointIntoClipView(nsIPresContext *aPresContext, nsIView 
 
     if (dx != 0 || dy != 0)
     {
-      // Get the PresShell
-      nsCOMPtr<nsIPresShell> presShell;
-      result = aPresContext->GetShell(getter_AddRefs(presShell));
-      NS_ENSURE_TRUE(presShell,result);
-
-      // Get the ViewManager
-      nsCOMPtr<nsIViewManager> viewManager;
-      result = presShell->GetViewManager(getter_AddRefs(viewManager));
-      NS_ENSURE_TRUE(viewManager,result);
-
       // Make sure latest bits are available before we scroll them.
-      
-      viewManager->Composite();
+      aPresContext->GetViewManager()->Composite();
 
       // Now scroll the view!
 
@@ -5744,10 +5704,7 @@ nsTypedSelection::ScrollPointIntoView(nsIPresContext *aPresContext, nsIView *aVi
         // closest scrollable view.
         //
 
-        result = view->GetParent(view);
-
-        if (NS_FAILED(result))
-          return result;
+        view = view->GetParent();
 
         while (view)
         {
@@ -5799,7 +5756,7 @@ nsTypedSelection::ScrollPointIntoView(nsIPresContext *aPresContext, nsIView *aVi
           if (!view)
             return result;
 
-          view->GetParent(view);
+          view = view->GetParent();
         }
       }
     }
@@ -5875,53 +5832,14 @@ nsTypedSelection::DoAutoScrollView(nsIPresContext *aPresContext, nsIView *aView,
 nsresult
 nsTypedSelection::DoAutoScroll(nsIPresContext *aPresContext, nsIFrame *aFrame, nsPoint& aPoint)
 {
-  nsresult result;
-
   if (!aPresContext || !aFrame)
     return NS_ERROR_NULL_POINTER;
 
-  //
   // Find the closest view to the frame!
-  //
 
-  nsIView *closestView = 0;
-
-  result = aFrame->GetView(aPresContext, &closestView);
-
-  if (NS_FAILED(result))
-    return result;
-
+  nsIView *closestView = aFrame->GetClosestView();
   if (!closestView)
-  {
-    //
-    // aFrame doesn't contain a view, so walk aFrame's parent hierarchy
-    // till you find a parent with a view.
-    //
-
-    nsIFrame *parentFrame = aFrame;
-
-    result = aFrame->GetParent(&parentFrame);
-
-    if (NS_FAILED(result))
-      return result;
-
-    if (!parentFrame)
-      return NS_ERROR_FAILURE;
-
-    while (!closestView && parentFrame)
-    {
-      result = parentFrame->GetView(aPresContext, &closestView);
-
-      if (NS_FAILED(result))
-        return result;
-
-      if (!closestView)
-        result = parentFrame->GetParent(&parentFrame);
-    }
-
-    if (!closestView)
-      return NS_ERROR_FAILURE;
-  }
+    return NS_ERROR_FAILURE;
 
   return DoAutoScrollView(aPresContext, closestView, aPoint, PR_TRUE);
 }
@@ -6073,7 +5991,7 @@ nsTypedSelection::Collapse(nsIDOMNode* aParentNode, PRInt32 aOffset)
     if (!content)
       return NS_ERROR_FAILURE;
     nsCOMPtr<nsIAtom> tag;
-    content->GetTag(*getter_AddRefs(tag));
+    content->GetTag(getter_AddRefs(tag));
     if (tag)
     {
       nsAutoString tagString;
@@ -6863,7 +6781,7 @@ nsTypedSelection::Extend(nsIDOMNode* aParentNode, PRInt32 aOffset)
     nsCOMPtr<nsIContent>content;
     content = do_QueryInterface(aParentNode);
     nsCOMPtr<nsIAtom> tag;
-    content->GetTag(*getter_AddRefs(tag));
+    content->GetTag(getter_AddRefs(tag));
     if (tag)
     {
       nsAutoString tagString;
@@ -7023,7 +6941,7 @@ nsTypedSelection::GetPresShell(nsIPresShell **aPresShell)
   
   nsCOMPtr<nsIPresShell> shell;
   rv = presContext->GetShell(getter_AddRefs(shell));
-  mPresShellWeak = getter_AddRefs(NS_GetWeakReference(shell));    // the presshell owns us, so no addref
+  mPresShellWeak = do_GetWeakReference(shell);    // the presshell owns us, so no addref
   if (mPresShellWeak)
     NS_ADDREF(*aPresShell = shell);
   return rv;
@@ -7059,12 +6977,7 @@ nsTypedSelection::GetRootScrollableView(nsIScrollableView **aScrollableView)
     if (!presShell)
       return NS_ERROR_NULL_POINTER;
 
-    nsCOMPtr<nsIViewManager> viewManager;
-
-    rv = presShell->GetViewManager(getter_AddRefs(viewManager));
-
-    if (NS_FAILED(rv))
-      return rv;
+    nsIViewManager* viewManager = presShell->GetViewManager();
 
     if (!viewManager)
       return NS_ERROR_NULL_POINTER;
@@ -7116,14 +7029,11 @@ nsTypedSelection::GetFrameToScrolledViewOffsets(nsIScrollableView *aScrollableVi
   // XXX Deal with the case where there is a scrolled element, e.g., a
   // DIV in the middle...
   while (closestView && closestView != scrolledView) {
-    nscoord dx, dy;
-
     // Update the offset
-    closestView->GetPosition(&dx, &dy);
-    offset.MoveBy(dx, dy);
+    offset += closestView->GetPosition();
 
     // Get its parent view
-    closestView->GetParent(closestView);
+    closestView = closestView->GetParent();
   }
 
   *aX = offset.x;
@@ -7179,25 +7089,19 @@ nsTypedSelection::GetPointFromOffset(nsIFrame *aFrame, PRInt32 aContentOffset, n
   // a rendering context.
   //
 
-  nsCOMPtr<nsIWidget> widget;
-  nsIView *closestView = 0;
+  nsIWidget* widget = nsnull;
+  nsIView *closestView = nsnull;
   nsPoint offset(0, 0);
 
   rv = aFrame->GetOffsetFromView(presContext, offset, &closestView);
 
   while (!widget && closestView)
   {
-    rv = closestView->GetWidget(*getter_AddRefs(widget));
-
-    if (NS_FAILED(rv))
-      return rv;
+    widget = closestView->GetWidget();
 
     if (!widget)
     {
-      rv = closestView->GetParent(closestView);
-
-      if (NS_FAILED(rv))
-        return rv;
+      closestView = closestView->GetParent();
     }
   }
 
@@ -7305,24 +7209,12 @@ nsTypedSelection::GetSelectionRegionRectAndScrollableView(SelectionRegion aRegio
     return NS_ERROR_FAILURE;
 
 
-  nsIView *view = 0;
-  nsIFrame *parentWithView = 0;
-
-  result = frame->GetParentWithView(presContext, &parentWithView);
-
-  if (NS_FAILED(result))
-    return result;
+  nsIFrame *parentWithView = frame->GetAncestorWithView();
 
   if (!parentWithView)
     return NS_ERROR_FAILURE;
 
-  result = parentWithView->GetView(presContext, &view);
-
-  if (NS_FAILED(result))
-    return result;
-
-  if (!view)
-    return NS_ERROR_FAILURE;
+  nsIView* view = parentWithView->GetView();
 
   result = GetClosestScrollableView(view, aScrollableView);
 
@@ -7374,10 +7266,7 @@ nsTypedSelection::GetSelectionRegionRectAndScrollableView(SelectionRegion aRegio
     //
     // Get the frame's rect.
     //
-    result = frame->GetRect(*aRect);
-
-    if (NS_FAILED(result))
-      return result;
+    *aRect = frame->GetRect();
 
     //
     // Translate the frame's rect into root view coordinates.
@@ -7404,12 +7293,7 @@ nsTypedSelection::GetSelectionRegionRectAndScrollableView(SelectionRegion aRegio
     if (NS_FAILED(result))
       return result;
 
-    nsRect clipRect;
-
-    result = clipView->GetBounds(clipRect);
-
-    if (NS_FAILED(result))
-      return result;
+    nsRect clipRect = clipView->GetBounds();
 
     result = (*aScrollableView)->GetScrollPosition(clipRect.x, clipRect.y);
 
@@ -7458,12 +7342,7 @@ nsTypedSelection::GetSelectionRegionRectAndScrollableView(SelectionRegion aRegio
     if (NS_FAILED(result))
       return result;
 
-    nsRect svRect;
-
-    result = scrolledView->GetBounds(svRect);
-
-    if (NS_FAILED(result))
-      return result;
+    nsRect svRect = scrolledView->GetBounds();
 
     if (aRect->x < 0)
       aRect->x = 0;
@@ -7479,10 +7358,7 @@ nsTypedSelection::GetSelectionRegionRectAndScrollableView(SelectionRegion aRegio
     // Must be a non-text frame, just scroll the frame
     // into view.
     //
-    result = frame->GetRect(*aRect);
-
-    if (NS_FAILED(result))
-      return result;
+    *aRect = frame->GetRect();
 
     result = GetFrameToScrolledViewOffsets(*aScrollableView, frame, &aRect->x, &aRect->y);
   }
@@ -7507,10 +7383,9 @@ nsTypedSelection::ScrollRectIntoView(nsIScrollableView *aScrollableView,
   // Determine the visible rect in the scrolled view's coordinate space.
   // The size of the visible area is the clip view size
   const nsIView*  clipView;
-  nsRect          visibleRect;
 
   aScrollableView->GetClipView(&clipView);
-  clipView->GetBounds(visibleRect);
+  nsRect visibleRect = clipView->GetBounds();
   aScrollableView->GetScrollPosition(visibleRect.x, visibleRect.y);
 
   // The actual scroll offsets
@@ -7587,10 +7462,7 @@ nsTypedSelection::ScrollRectIntoView(nsIScrollableView *aScrollableView,
     if (!view)
       return rv;
 
-    rv = view->GetParent(view);
-
-    if (NS_FAILED(rv))
-      return rv;
+    view = view->GetParent();
 
     if (view)
     {

@@ -176,7 +176,7 @@ NS_NewRelatedLinksStreamListener(nsIRDFDataSource* aDataSource,
 
 
 RelatedLinksStreamListener::RelatedLinksStreamListener(nsIRDFDataSource *aDataSource)
-	 : mDataSource(dont_QueryInterface(aDataSource))
+	 : mDataSource(aDataSource)
 {
 }
 
@@ -222,9 +222,8 @@ RelatedLinksStreamListener::Init()
 				(nsISupports**)&charsetConv);
 		if (NS_SUCCEEDED(rv) && (charsetConv))
 		{
-			nsString	utf8(NS_LITERAL_STRING("UTF-8"));
-			rv = charsetConv->GetUnicodeDecoder(&utf8,
-				getter_AddRefs(mUnicodeDecoder));
+			rv = charsetConv->GetUnicodeDecoderRaw("UTF-8",
+												getter_AddRefs(mUnicodeDecoder));
 			NS_RELEASE(charsetConv);
 		}
 
@@ -385,7 +384,7 @@ RelatedLinksStreamListener::OnDataAvailable(nsIRequest *request, nsISupports *ct
 			mBuffer.Left(oneLiner, eol);
 			mBuffer.Cut(0, eol+1);
 		}
-		if (oneLiner.Length() < 1)	break;
+		if (oneLiner.IsEmpty())	break;
 
 #if 0
 		printf("RL: '%s'\n", NS_LossyConvertUCS2toASCII(oneLiner).get());
@@ -458,7 +457,7 @@ RelatedLinksStreamListener::OnDataAvailable(nsIRequest *request, nsISupports *ct
 				if (NS_SUCCEEDED(rv = gRDFService->GetAnonymousResource(getter_AddRefs(newTopic))))
 				{
 					mDataSource->Assert(newTopic, kRDF_type, kNC_RelatedLinksTopic, PR_TRUE);
-					if (title.Length() > 0)
+					if (!title.IsEmpty())
 					{
                         Unescape(title);
 
@@ -497,7 +496,7 @@ RelatedLinksStreamListener::OnDataAvailable(nsIRequest *request, nsISupports *ct
 			}
 		}
 
-		if (child.Length() > 0)
+		if (!child.IsEmpty())
 		{
 
 #if 0
@@ -511,7 +510,7 @@ RelatedLinksStreamListener::OnDataAvailable(nsIRequest *request, nsISupports *ct
 				if (NS_SUCCEEDED(rv))
 				{
 					title.Trim(" ");
-					if (title.Length() > 0)
+					if (!title.IsEmpty())
 					{
                         Unescape(title);
 

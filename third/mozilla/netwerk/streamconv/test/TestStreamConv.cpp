@@ -76,7 +76,6 @@ static nsIEventQueue* gEventQ = nsnull;
 // CID setup
 static NS_DEFINE_CID(kEventQueueServiceCID,      NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_CID(kStreamConverterServiceCID, NS_STREAMCONVERTERSERVICE_CID);
-static NS_DEFINE_CID(kComponentManagerCID,       NS_COMPONENTMANAGER_CID);
 
 ////////////////////////////////////////////////////////////////////////
 // EndListener - This listener is the final one in the chain. It
@@ -119,7 +118,7 @@ public:
                              nsresult aStatus) { return NS_OK; }
 };
 
-NS_IMPL_ISUPPORTS1(EndListener, nsIStreamListener);
+NS_IMPL_ISUPPORTS1(EndListener, nsIStreamListener)
 ////////////////////////////////////////////////////////////////////////
 // EndListener END
 ////////////////////////////////////////////////////////////////////////

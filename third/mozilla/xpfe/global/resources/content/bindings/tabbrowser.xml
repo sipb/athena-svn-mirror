@@ -43,7 +43,7 @@
           xmlns="http://www.mozilla.org/xbl"
           xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
           xmlns:xbl="http://www.mozilla.org/xbl">
- 
+
   <binding id="tabbrowser">
     <resources>
       <stylesheet src="chrome://global/skin/browser.css"/>
@@ -51,7 +51,7 @@
 
     <content>
       <xul:stringbundle src="chrome://global/locale/tabbrowser.properties"/>
-      <xul:tabbox flex="1" eventnode="document">
+      <xul:tabbox flex="1" eventnode="document" xbl:inherits="handleCtrlPageUpDown">
         <xul:hbox class="tabbrowser-strip chromeclass-toolbar" collapsed="true" tooltip="_child" context="_child">
           <xul:tooltip onpopupshowing="event.preventBubble(); if (document.tooltipNode.hasAttribute('label')) { this.setAttribute('label', document.tooltipNode.getAttribute('label')); return true; } return false;"/>
           <xul:menupopup onpopupshowing="this.parentNode.parentNode.parentNode.updatePopupMenu(this);">
@@ -93,7 +93,7 @@
                                 while (node.localName != 'tabbrowser')
                                   node = node.parentNode;
                                 node.removeCurrentTab();">
-            <xul:tab validate="never" 
+            <xul:tab validate="never"
                      onerror="this.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('image'));
                               this.removeAttribute('image');"
                      maxwidth="250" width="0" minwidth="30" flex="100"
@@ -159,7 +159,7 @@
         null
       </field>
 
-      <!-- A web progress listener object definition for a given tab. --> 
+      <!-- A web progress listener object definition for a given tab. -->
       <method name="mTabProgressListener">
         <parameter name="aTab"/>
         <parameter name="aBrowser"/>
@@ -171,11 +171,12 @@
             mTab: aTab,
             mBrowser: aBrowser,
             mBlank: aStartsBlank,
-            mIcon: "", 
+            mIcon: "",
 
             onProgressChange : function (aWebProgress, aRequest,
                                          aCurSelfProgress, aMaxSelfProgress,
-                                         aCurTotalProgress, aMaxTotalProgress) {
+                                         aCurTotalProgress, aMaxTotalProgress)
+            {
               if (!this.mBlank && this.mTabBrowser.mCurrentTab == this.mTab) {
                 for (var i = 0; i < this.mTabBrowser.mProgressListeners.length; i++) {
                   var p = this.mTabBrowser.mProgressListeners[i];
@@ -186,36 +187,36 @@
                 }
               }
             },
-            
+
             onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
             {
               if (!aRequest)
                 return;
-      
+
               var oldBlank = this.mBlank;
 
               const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
               const nsIChannel = Components.interfaces.nsIChannel;
 
-              // It's okay to clear what the user typed when we start
-              // loading a document. If the user types, this flag gets
-              // set to false, if the document load ends without an
-              // onLocationChange, this flag also gets set to false
-              // (so we keep it while switching tabs after failed load
-              if (aStateFlags & nsIWebProgressListener.STATE_START && 
-                  aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK &&
-                  aWebProgress.DOMWindow == this.mBrowser.contentWindow)
-                this.mBrowser.userTypedClear = true;
-
-              if (!this.mBlank && aStateFlags & nsIWebProgressListener.STATE_START && 
+              if (aStateFlags & nsIWebProgressListener.STATE_START &&
                   aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
-                this.mTab.setAttribute("busy", "true"); 
-                this.mTab.label = this.mTabBrowser.mStringBundle.getString("tabs.loading");
-                this.mTab.removeAttribute("image");
-                this.mIcon = "";
+                // It's okay to clear what the user typed when we start
+                // loading a document. If the user types, this flag gets
+                // set to false, if the document load ends without an
+                // onLocationChange, this flag also gets set to false
+                // (so we keep it while switching tabs after failed load
+                if (aWebProgress.DOMWindow == this.mBrowser.contentWindow)
+                  this.mBrowser.userTypedClear = true;
 
-                if (this.mTabBrowser.mCurrentTab == this.mTab)
-                  this.mTabBrowser.mIsBusy = true;
+                if (!this.mBlank) {
+                  this.mTab.setAttribute("busy", "true");
+                  this.mTab.label = this.mTabBrowser.mStringBundle.getString("tabs.loading");
+                  this.mTab.removeAttribute("image");
+                  this.mIcon = "";
+
+                  if (this.mTabBrowser.mCurrentTab == this.mTab)
+                    this.mTabBrowser.mIsBusy = true;
+                }
               }
               else if (aStateFlags & nsIWebProgressListener.STATE_STOP &&
                        aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
@@ -226,16 +227,16 @@
 
                 if (this.mBlank)
                   this.mBlank = false;
-                
+
                 this.mTab.removeAttribute("busy");
-                  
+
                 var location = aRequest.QueryInterface(nsIChannel).URI;
                 if (this.mIcon) {
                   this.mTab.setAttribute("image", this.mIcon);
                   mIcon = "";
                 }
                 else if (this.mTabBrowser.shouldLoadFavIcon(location))
-                  this.mTabBrowser.loadFavIcon(location, "image", this.mTab); 
+                  this.mTabBrowser.loadFavIcon(location, "image", this.mTab);
 
                 if (this.mTab.label == this.mTabBrowser.mStringBundle.getString("tabs.loading"))
                   this.mTabBrowser.setTabTitle(this.mTab);
@@ -251,10 +252,23 @@
                     p.onStateChange(aWebProgress, aRequest, aStateFlags, aStatus);
                 }
               }
-            }
-            ,
+            },
 
-            onLocationChange : function(aWebProgress, aRequest, aLocation) {
+            // The first location change is gotoIndex called from mInstallSH,
+            // the second one is considered a user action.
+            mLocationChangeCount : 0,
+
+            onLocationChange : function(aWebProgress, aRequest, aLocation)
+            {
+              if (this.mLocationChangeCount > 0 ||
+                  aLocation.spec != "about:blank")
+                ++this.mLocationChangeCount;
+
+              if (this.mLocationChangeCount == 2) {
+                this.mTabBrowser.backBrowserGroup = [];
+                this.mTabBrowser.forwardBrowserGroup = [];
+              }
+
               // The document loaded correctly, clear the value if we should
               if (this.mBrowser.userTypedClear)
                 this.mBrowser.userTypedValue = null;
@@ -268,10 +282,11 @@
               }
             },
 
-            onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage) {
+            onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
+            {
               if (this.mBlank)
                 return;
-              
+
               if (this.mTabBrowser.mCurrentTab == this.mTab) {
                 for (var i = 0; i < this.mTabBrowser.mProgressListeners.length; i++) {
                   var p = this.mTabBrowser.mProgressListeners[i];
@@ -281,7 +296,8 @@
               }
             },
 
-            onSecurityChange : function(aWebProgress, aRequest, aState) { 
+            onSecurityChange : function(aWebProgress, aRequest, aState)
+            {
               if (this.mTabBrowser.mCurrentTab == this.mTab) {
                 for (var i = 0; i < this.mTabBrowser.mProgressListeners.length; i++) {
                   var p = this.mTabBrowser.mProgressListeners[i];
@@ -299,8 +315,63 @@
                 return this;
               throw Components.results.NS_NOINTERFACE;
             }
-                  
-            });
+          });
+        ]]>
+        </body>
+      </method>
+
+      <method name="mInstallSH">
+        <parameter name="aBrowser"/>
+        <parameter name="aSH"/>
+        <body>
+        <![CDATA[
+          return ({
+            mBrowser: aBrowser,
+            mSH: aSH,
+
+            onProgressChange : function (aWebProgress, aRequest,
+                                         aCurSelfProgress, aMaxSelfProgress,
+                                         aCurTotalProgress, aMaxTotalProgress)
+            {
+            },
+
+            onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
+            {
+              const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
+              if ((aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) &&
+                  (aStateFlags & nsIWebProgressListener.STATE_STOP)) {
+                function refresh(closure) {
+                  closure.mBrowser.webNavigation.sessionHistory = closure.mSH;
+                  closure.mBrowser.webProgress.removeProgressListener(closure);
+                  delete closure.mBrowser._SHListener;
+                  closure.mSH.QueryInterface(Components.interfaces.nsIWebNavigation)
+                         .gotoIndex(closure.mSH.index);
+                }
+                setTimeout(refresh, 0, this);
+              }
+            },
+
+            onLocationChange : function(aWebProgress, aRequest, aLocation)
+            {
+            },
+
+            onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
+            {
+            },
+
+            onSecurityChange : function(aWebProgress, aRequest, aState)
+            {
+            },
+
+            QueryInterface : function(aIID)
+            {
+              if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+                  aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+                  aIID.equals(Components.interfaces.nsISupports))
+                return this;
+              throw Components.results.NS_NOINTERFACE;
+            }
+          });
         ]]>
         </body>
       </method>
@@ -320,7 +391,7 @@
         <body>
           <![CDATA[
             return (aURI && this.mPrefs.getBoolPref("browser.chrome.site_icons") &&
-                    this.mPrefs.getBoolPref("browser.chrome.favicons") && 
+                    this.mPrefs.getBoolPref("browser.chrome.favicons") &&
                     ("schemeIs" in aURI) && (aURI.schemeIs("http") || aURI.schemeIs("https")));
           ]]>
         </body>
@@ -333,17 +404,7 @@
         <body>
           <![CDATA[
             var iconURL = this.buildFavIconString(aURI);
-            if (!this.mMissedIconCache) {
-              var cacheService = Components.classes['@mozilla.org/network/cache-service;1'].getService(Components.interfaces.nsICacheService);
-              this.mMissedIconCache = cacheService.createSession("MissedIconCache", Components.interfaces.nsICache.STORE_ANYWHERE, true);
-              if (!this.mMissedIconCache)
-                return;
-            }
-        
-            try {
-              var entry = this.mMissedIconCache.openCacheEntry(iconURL, Components.interfaces.nsICache.ACCESS_READ, true);
-            }
-            catch (exc) {}
+            var entry = this.openCacheEntry(iconURL, Components.interfaces.nsICache.ACCESS_READ);
             if (!entry)
               aElt.setAttribute(aAttr, iconURL);
             else {
@@ -358,12 +419,36 @@
         <parameter name="aURI"/>
         <body>
           <![CDATA[
-            var entry = this.mMissedIconCache.openCacheEntry(aURI, Components.interfaces.nsICache.ACCESS_READ_WRITE, true);
+            var entry = this.openCacheEntry(aURI, Components.interfaces.nsICache.ACCESS_READ_WRITE);
+            if (!entry)
+              return;
+
             if (entry.accessGranted == Components.interfaces.nsICache.ACCESS_WRITE)
               // It's a new entry.  Just write a bit of metadata in to the entry.
               entry.setMetaDataElement("Icon", "Missed");
             entry.markValid();
             entry.close();
+          ]]>
+        </body>
+      </method>
+
+      <method name="openCacheEntry">
+        <parameter name="key"/>
+        <parameter name="access"/>
+        <body>
+          <![CDATA[
+            try {
+              if (!this.mMissedIconCache) {
+                var cacheService = Components.classes['@mozilla.org/network/cache-service;1'].getService(Components.interfaces.nsICacheService);
+                this.mMissedIconCache = cacheService.createSession("MissedIconCache", Components.interfaces.nsICache.STORE_ANYWHERE, true);
+                if (!this.mMissedIconCache)
+                  return null;
+              }
+              return this.mMissedIconCache.openCacheEntry(key, access, true);
+            }
+            catch (e) {
+              return null;
+            }
           ]]>
         </body>
       </method>
@@ -375,7 +460,7 @@
             var docTitle;
             if (this.docShell.contentViewer)
               docTitle = this.contentTitle;
-            
+
             if (docTitle) {
               newTitle += this.ownerDocument.documentElement.getAttribute("titlepreface");
               newTitle += docTitle;
@@ -387,17 +472,17 @@
         </body>
       </method>
 
-     <method name="updateContextTab">
-       <parameter name="aEvent"/>
-       <body>
-         <![CDATA[
+      <method name="updateContextTab">
+        <parameter name="aEvent"/>
+        <body>
+          <![CDATA[
             if (aEvent.originalTarget.localName == "tab")
               this.mContextTab = aEvent.originalTarget;
             else
-              this.mContextTab = document.popupNode;         
-         ]]>
-       </body>
-     </method>
+              this.mContextTab = document.popupNode;
+          ]]>
+        </body>
+      </method>
 
       <method name="updatePopupMenu">
         <parameter name="aPopupMenu"/>
@@ -417,7 +502,7 @@
             var newBrowser = this.mPanelContainer.childNodes[this.mPanelContainer.selectedIndex];
             if (this.mCurrentBrowser)
               this.mCurrentBrowser.setAttribute("type", "content");
-            
+
             newBrowser.setAttribute("type", "content-primary");
             this.mCurrentBrowser = newBrowser;
             this.mCurrentTab = this.selectedTab;
@@ -447,7 +532,7 @@
 
             // Update the window title.
             this.updateTitlebar();
-            
+
             // If the new tab is busy, and our current state is not busy, then
             // we need to fire a start to all progress listeners.
             const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
@@ -485,7 +570,7 @@
           <![CDATA[
             if (event.button != 1 || event.target.localName != 'tab' ||
                 this.mPrefs.getBoolPref("middlemouse.contentLoadURL"))
-              return; 
+              return;
 
             this.removeTab(event.target);
             event.stopPropagation();
@@ -508,20 +593,20 @@
             var href = event.target.href;
             if (!href)
               return;
-            
+
             // Verify that the load of this icon is legal.  We use the same
             // content policy that is used for a Web page loading images.
             var contentPolicy = Components.classes['@mozilla.org/layout/content-policy;1'].getService(Components.interfaces.nsIContentPolicy);
             if (!contentPolicy)
               return; // Refuse to load if we can't do a security check.
-            
+
             // Make a URI out of our href.
             var uri = Components.classes['@mozilla.org/network/standard-url;1'].createInstance();
             uri = uri.QueryInterface(Components.interfaces.nsIURI);
-  
+
             var notifyListeners = true;
             var i;
-            
+
             if (tabBrowser.mTabbedMode) {
               // We need to update a tab.
               for (i = 0; i < this.childNodes.length; i++) {
@@ -529,7 +614,7 @@
                   if (!contentPolicy.shouldLoad(Components.interfaces.nsIContentPolicy.IMAGE,
                                                 uri, event.target, this.childNodes[i].contentWindow))
                     return;
-                                                 
+
                   var listener = tabBrowser.mTabListeners[i];
                   listener.mIcon = href;
                   break;
@@ -573,7 +658,7 @@
 
             if (tab == tabBrowser.mCurrentTab)
               tabBrowser.updateTitlebar();
-          ]]> 
+          ]]>
         </body>
       </method>
 
@@ -689,23 +774,22 @@
       <method name="addTab">
         <parameter name="aURI"/>
         <parameter name="aReferrerURI"/>
+        <parameter name="aCharset"/>
         <body>
           <![CDATA[
-            var blank = (aURI == "about:blank");
-
             if (!this.mTabbedMode)
               this.enterTabbedMode();
 
-            var b = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
-                                             "browser"); 
             var t = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
                                              "tab");
+
+            var blank = (aURI == "about:blank");
 
             if (blank)
               t.setAttribute("label", this.mStringBundle.getString("tabs.untitled"));
             else
               t.setAttribute("label", aURI);
-            
+
             t.setAttribute("crop", "end");
             t.maxWidth = 250;
             t.minWidth = 30;
@@ -715,19 +799,21 @@
             t.setAttribute("onerror", "this.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('image')); this.removeAttribute('image');");
             this.mTabContainer.appendChild(t);
 
+            var b = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
+                                             "browser");
             b.setAttribute("type", "content");
             b.setAttribute("contextmenu", this.getAttribute("contentcontextmenu"));
             b.setAttribute("tooltip", this.getAttribute("contenttooltip"));
-            
+
             this.mPanelContainer.appendChild(b);
 
             b.addEventListener("DOMTitleChanged", this.onTitleChanged, false);
-            
+
             if (this.mStrip.collapsed)
               this.setStripVisibilityTo(true);
 
             this.mPrefs.setBoolPref("browser.tabs.forceHide", false);
-            
+
             // wire up a progress listener for the new browser object.
             var position = this.mTabContainer.childNodes.length-1;
             var tabListener = this.mTabProgressListener(t, b, blank);
@@ -743,7 +829,7 @@
               // the document successfully loads
               b.userTypedValue = aURI;
 
-              b.loadURI(aURI, aReferrerURI);
+              b.loadURI(aURI, aReferrerURI, aCharset);
             }
 
             return t;
@@ -776,7 +862,7 @@
           ]]>
         </body>
       </method>
-         
+
       <method name="removeTab">
         <parameter name="aTab"/>
         <body>
@@ -818,13 +904,13 @@
 
             // Remove our title change listener
             oldBrowser.removeEventListener("DOMTitleChanged", this.onTitleChanged, false);
-            
+
             // We are no longer the primary content area.
             oldBrowser.setAttribute("type", "content");
 
             // Now select the new tab before nuking the old one.
             var currentIndex = this.mPanelContainer.selectedIndex;
-            
+
             var newIndex = -1;
             if (currentIndex > index)
               newIndex = currentIndex-1;
@@ -836,7 +922,7 @@
               newIndex = index;
 
             var oldTab = aTab;
-            
+
             // clean up the before/afterselected attributes before removing the tab
             oldTab.selected = false;
 
@@ -858,8 +944,13 @@
         <body>
           <![CDATA[
             var l = this.mPanelContainer.childNodes.length;
-            for (var i = 0; i < l; i++)
-              this.mPanelContainer.childNodes[i].webNavigation.reload(true);
+            for (var i = 0; i < l; i++) {
+              try {
+                this.mPanelContainer.childNodes[i].reload();
+              } catch (e) {
+                // ignore failure to reload so others will be reloaded
+              }
+            }
           ]]>
         </body>
       </method>
@@ -868,10 +959,10 @@
         <parameter name="aTab"/>
         <body>
           <![CDATA[
-            var l = this.mPanelContainer.childNodes.length;
-            for (var i = 0; i < l; i++)
-              if (this.mTabContainer.childNodes[i] == aTab)
-                this.mPanelContainer.childNodes[i].webNavigation.reload(true);
+            if (aTab.localName != "tab")
+              aTab = this.mCurrentTab;
+
+            this.getBrowserForTab(aTab).reload();
           ]]>
         </body>
       </method>
@@ -995,9 +1086,9 @@
             var url = transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType);
 
             // valid urls don't contain spaces ' '; if we have a space it isn't a valid url so bail out
-            if (!url || !url.length || url.indexOf(" ", 0) != -1) 
+            if (!url || !url.length || url.indexOf(" ", 0) != -1)
               return;
-            
+
             var bgLoad = this.mPrefs.getBoolPref("browser.tabs.loadInBackground");
 
             var tab = null;
@@ -1010,7 +1101,7 @@
               tab = aEvent.originalTarget;
               this.getBrowserForTab(tab).loadURI(getShortcutOrURI(url));
             }
-            if (this.mCurrentTab != tab  && !bgLoad)
+            if (this.mCurrentTab != tab && !bgLoad)
               this.selectedTab = tab;
           ]]>
         </body>
@@ -1027,20 +1118,121 @@
         ]]>
         </body>
       </method>
-                                                               
+
+      <field name="backBrowserGroup">
+        []
+      </field>
+
+      <field name="forwardBrowserGroup">
+        []
+      </field>
+
+      <method name="replaceGroup">
+        <parameter name="aGroup"/>
+        <body>
+        <![CDATA[
+          var oldBrowserGroup = [];
+          var oldCount = this.mPanelContainer.childNodes.length;
+          var newCount = aGroup.length;
+          var n = Math.max(oldCount, newCount);
+          for (var i = 0; i < n; ++i) {
+            if (i < newCount) {
+              var data = aGroup[i];
+              if ("sessionHistory" in data) {
+                this.addTab("about:blank", null);
+                var browser = this.mPanelContainer.lastChild;
+                // need to hold on to the listener so it won't go away
+                // addProgressListener only has a weak pointer to it
+                browser._SHListener =
+                    this.mInstallSH(browser, aGroup[i].sessionHistory);
+                browser.webProgress.addProgressListener(browser._SHListener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+              } else {
+                var referrerURI = "referrerURI" in data ? data.referrerURI : null;
+                this.addTab(data.URI, referrerURI);
+              }
+            }
+            if (i < oldCount) {
+              var browserData = {
+                sessionHistory : this.mPanelContainer.firstChild.sessionHistory
+              }
+              oldBrowserGroup.push(browserData);
+              this.removeTab(this.mTabContainer.firstChild);
+            }
+          }
+          return oldBrowserGroup;
+        ]]>
+        </body>
+      </method>
+
+      <method name="appendGroup">
+        <parameter name="aGroup"/>
+        <body>
+        <![CDATA[
+          for (var i in aGroup) {
+            var page = aGroup[i];
+            var referrerURI = "referrerURI" in page ? page.referrerURI : null;
+            this.addTab(page.URI, referrerURI);
+          }
+        ]]>
+        </body>
+      </method>
+
+      <method name="loadGroup">
+        <parameter name="aGroup"/>
+        <body>
+        <![CDATA[
+          if (aGroup.length == 0)
+            return null;
+
+          var tab;
+          if (this.mPrefs.getIntPref("browser.tabs.loadGroup") == 0) {
+            var oldCount = this.mTabContainer.childNodes.length;
+            this.appendGroup(aGroup);
+            tab = this.mTabContainer.childNodes[oldCount];
+          } else {
+            this.backBrowserGroup = this.replaceGroup(aGroup);
+            this.forwardBrowserGroup = [];
+            tab = tabs.firstChild;
+          }
+          return tab;
+        ]]>
+        </body>
+      </method>
+
+      <method name="goBackGroup">
+        <body>
+        <![CDATA[
+          this.forwardBrowserGroup = this.replaceGroup(this.backBrowserGroup);
+          this.backBrowserGroup = [];
+        ]]>
+        </body>
+      </method>
+
+      <method name="goForwardGroup">
+        <body>
+        <![CDATA[
+          this.backBrowserGroup = this.replaceGroup(this.forwardBrowserGroup);
+          this.forwardBrowserGroup = [];
+        ]]>
+        </body>
+      </method>
+
       <!-- BEGIN FORWARDED BROWSER PROPERTIES.  IF YOU ADD A PROPERTY TO THE BROWSER ELEMENT
            MAKE SURE TO ADD IT HERE AS WELL. -->
       <property name="canGoBack"
-                onget="return this.mCurrentBrowser.canGoBack;"
+                onget="return this.backBrowserGroup.length != 0 || this.mCurrentBrowser.canGoBack;"
                 readonly="true"/>
 
       <property name="canGoForward"
-                onget="return this.mCurrentBrowser.canGoForward;"
+                onget="return this.forwardBrowserGroup.length != 0 || this.mCurrentBrowser.canGoForward;"
                 readonly="true"/>
 
       <method name="goBack">
         <body>
           <![CDATA[
+            if (this.backBrowserGroup.length != 0)
+              return this.goBackGroup();
+
             return this.mCurrentBrowser.goBack();
           ]]>
         </body>
@@ -1049,6 +1241,9 @@
       <method name="goForward">
         <body>
           <![CDATA[
+            if (this.forwardBrowserGroup.length != 0)
+              return this.goForwardGroup();
+
             return this.mCurrentBrowser.goForward();
           ]]>
         </body>
@@ -1083,9 +1278,10 @@
       <method name="loadURI">
         <parameter name="aURI"/>
         <parameter name="aReferrerURI"/>
+        <parameter name="aCharset"/>
         <body>
           <![CDATA[
-            return this.mCurrentBrowser.loadURI(aURI, aReferrerURI);
+            return this.mCurrentBrowser.loadURI(aURI, aReferrerURI, aCharset);
           ]]>
         </body>
       </method>
@@ -1095,9 +1291,10 @@
         <parameter name="aURI"/>
         <parameter name="aFlags"/>
         <parameter name="aReferrerURI"/>
+        <parameter name="aCharset"/>
         <body>
           <![CDATA[
-            return this.mCurrentBrowser.loadURIWithFlags(aURI, aFlags, aReferrerURI);
+            return this.mCurrentBrowser.loadURIWithFlags(aURI, aFlags, aReferrerURI, aCharset);
           ]]>
         </body>
       </method>
@@ -1199,9 +1396,9 @@
 
       <constructor>
         <![CDATA[
-        this.mCurrentBrowser = this.mPanelContainer.firstChild;
-        this.mCurrentTab = this.mTabContainer.firstChild;
-        this.mTabBox.handleCtrlTab = !/Mac/.test(navigator.platform);
+          this.mCurrentBrowser = this.mPanelContainer.firstChild;
+          this.mCurrentTab = this.mTabContainer.firstChild;
+          this.mTabBox.handleCtrlTab = !/Mac/.test(navigator.platform);
         ]]>
       </constructor>
 
@@ -1222,7 +1419,12 @@
     <handlers>
       <handler event="select" action="if (event.originalTarget == this.mPanelContainer) this.updateCurrentBrowser();"/>
 
-      <handler event="keypress" modifiers="control" keycode="vk_f4" action="this.removeCurrentTab();"/>
+      <handler event="keypress" modifiers="control" keycode="VK_F4">
+        <![CDATA[
+          if (this.mTabBox.handleCtrlPageUpDown)
+            this.removeCurrentTab();
+        ]]>
+      </handler>
 
       <handler event="DOMWindowClose">
         <![CDATA[

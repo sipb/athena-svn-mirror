@@ -150,10 +150,6 @@ js_CompareAndSwap(jsword *w, jsword ov, jsword nv)
     return !_check_lock((atomic_p)w, ov, nv);
 }
 
-#elif defined(XP_OS2_VACPP)
-
-/* js_CompareAndSwap implemented in jslocko.asm */
-
 #else
 
 #error "Define NSPR_LOCK if your platform lacks a compare-and-swap instruction."
@@ -852,7 +848,6 @@ js_CleanupLocks()
         fl_list_table_len = 0;
     }
 #endif /* !NSPR_LOCK */
-    js_FinishDtoa();
 }
 
 void

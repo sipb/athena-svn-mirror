@@ -37,13 +37,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifdef XP_OS2_VACPP
-// XXX every other file that pulls in _os2.h has no problem with HTMX there;
-// this one does; the problem may lie with the order of the headers below,
-// which is why this fix is here instead of in _os2.h
-typedef unsigned long HMTX;
-#endif
-
 #include "nsDocShell.h"
 #include "nsIWebShell.h"
 #include "nsWebShell.h"
@@ -73,8 +66,6 @@ typedef unsigned long HMTX;
 #include "nsVoidArray.h"
 #include "nsString.h"
 #include "nsReadableUtils.h"
-#include "nsWidgetsCID.h"
-#include "nsGfxCIID.h"
 #include "plevent.h"
 #include "prprf.h"
 #include "nsIPluginHost.h"
@@ -91,7 +82,6 @@ typedef unsigned long HMTX;
 #include "prthread.h"
 #include "nsXPIDLString.h"
 #include "nsDOMError.h"
-#include "nsLayoutCID.h"
 #include "nsIDOMRange.h"
 #include "nsIURIContentListener.h"
 #include "nsIDOMDocument.h"
@@ -155,14 +145,6 @@ static PRLogModuleInfo* gLogModule = PR_NewLogModule("webshell");
 #else
 #define WEB_TRACE(_bit,_args)
 #endif
-
-//----------------------------------------------------------------------
-
-//----------------------------------------------------------------------
-
-// Class IID's
-static NS_DEFINE_IID(kEventQueueServiceCID,   NS_EVENTQUEUESERVICE_CID);
-static NS_DEFINE_CID(kCDOMRangeCID,           NS_RANGE_CID);
 
 //----------------------------------------------------------------------
 
@@ -389,7 +371,7 @@ nsWebShell::LoadDocument(const char* aURL,
       muDV->GetHintCharacterSetSource(&hint);
       if( aSource > hint ) 
       {
-        muDV->SetHintCharacterSet(NS_ConvertASCIItoUCS2(aCharset).get());
+        muDV->SetHintCharacterSet(nsDependentCString(aCharset));
         muDV->SetHintCharacterSetSource(aSource);
         if(eCharsetReloadRequested != mCharsetReloadState) 
         {
@@ -425,7 +407,7 @@ nsWebShell::ReloadDocument(const char* aCharset,
       muDV->GetHintCharacterSetSource(&hint);
       if( aSource > hint ) 
       {
-         muDV->SetHintCharacterSet(NS_ConvertASCIItoUCS2(aCharset).get());
+         muDV->SetHintCharacterSet(nsDependentCString(aCharset));
          muDV->SetHintCharacterSetSource(aSource);
          if(eCharsetReloadRequested != mCharsetReloadState) 
          {
@@ -562,7 +544,7 @@ nsWebShell::GetEventQueue(nsIEventQueue **aQueue)
   NS_ENSURE_ARG_POINTER(aQueue);
   *aQueue = 0;
 
-  nsCOMPtr<nsIEventQueueService> eventService(do_GetService(kEventQueueServiceCID));
+  nsCOMPtr<nsIEventQueueService> eventService(do_GetService(NS_EVENTQUEUESERVICE_CONTRACTID));
   if (eventService)
     eventService->GetThreadEventQueue(mThread, aQueue);
   return *aQueue ? NS_OK : NS_ERROR_FAILURE;
@@ -583,12 +565,16 @@ nsWebShell::OnLinkClickSync(nsIContent *aContent,
   // I promise this will be removed once we figure out a better way. 
   nsCAutoString scheme;
   aURI->GetScheme(scheme);
+
+  nsCAutoString spec;
+  aURI->GetSpec(spec);
                                           
   static const char kMailToURI[] = "mailto";                                    
   static const char kNewsURI[] = "news";                                        
   static const char kSnewsURI[] = "snews";                                      
   static const char kNntpURI[] = "nntp";                                        
   static const char kImapURI[] = "imap"; 
+
   if (scheme.EqualsIgnoreCase(kMailToURI)) 
   {
     // the scheme is mailto, we can handle it
@@ -599,24 +585,21 @@ nsWebShell::OnLinkClickSync(nsIContent *aContent,
   } 
   else if (scheme.EqualsIgnoreCase(kSnewsURI)) 
   {
-     // the scheme is snews, we can handle it
+    // the scheme is snews, we can handle it
   } 
   else if (scheme.EqualsIgnoreCase(kNntpURI)) 
   {
      // the scheme is nntp, we can handle it 
   } else if (scheme.EqualsIgnoreCase(kImapURI)) 
   {
-      // the scheme is imap, we can handle it
-  }
-  else 
+    // the scheme is imap, we can handle it
+  } else 
   {
-      // we don't handle this type, the the registered handler take it 
-      nsresult rv = NS_OK;
-      nsCOMPtr<nsIExternalProtocolService> extProtService = do_GetService(NS_EXTERNALPROTOCOLSERVICE_CONTRACTID, &rv);
-      NS_ENSURE_SUCCESS(rv,rv);
-      rv = extProtService->LoadUrl(aURI);
-      NS_ENSURE_SUCCESS(rv,rv);
-      return rv;                                                                  
+    // we don't handle this type, the the registered handler take it 
+    nsresult rv = NS_OK;
+    nsCOMPtr<nsIExternalProtocolService> extProtService = do_GetService(NS_EXTERNALPROTOCOLSERVICE_CONTRACTID, &rv);
+    NS_ENSURE_SUCCESS(rv,rv);
+    return extProtService->LoadUrl(aURI);                                                                 
   }                                                                               
 #endif
 
@@ -630,8 +613,7 @@ nsWebShell::OnLinkClickSync(nsIContent *aContent,
   aURI->SchemeIs("data", &isData);
 
   if (isJS || isData) {
-    nsCOMPtr<nsIDocument> sourceDoc;
-    aContent->GetDocument(*getter_AddRefs(sourceDoc));
+    nsCOMPtr<nsIDocument> sourceDoc = aContent->GetDocument();
 
     if (!sourceDoc) {
       // The source is in a 'zombie' document, or not part of a
@@ -757,86 +739,26 @@ nsWebShell::OnLeaveLink()
   return rv;
 }
 
-nsresult
-nsWebShell::NormalizeURI(nsACString& aURLSpec)
-{
-  nsIURI *uri = nsnull;
-  nsCAutoString scheme;
-  nsresult rv = mIOService->ExtractScheme(aURLSpec, scheme);
-  if (NS_FAILED(rv)) return rv;
-
-  // keep tempUri up here to keep it in scope
-  nsCOMPtr<nsIURI> tempUri;
-
-  // used to avoid extra work later
-  PRBool clearUri(PR_TRUE);
-  
-  if (scheme.Equals(NS_LITERAL_CSTRING("http"))) {
-    if (mCachedHttpUrl)
-      rv = mCachedHttpUrl->SetSpec(aURLSpec);
-    else
-      rv = NS_NewURI(getter_AddRefs(mCachedHttpUrl), aURLSpec);
-    
-    uri = mCachedHttpUrl;
-  }
-
-  else if (scheme.Equals(NS_LITERAL_CSTRING("https"))) {
-    if (mCachedHttpsUrl)
-      rv = mCachedHttpsUrl->SetSpec(aURLSpec);
-    else
-      rv = NS_NewURI(getter_AddRefs(mCachedHttpsUrl), aURLSpec);
-
-    uri = mCachedHttpsUrl;
-  }
-
-  else if (scheme.Equals(NS_LITERAL_CSTRING("ftp"))) {
-    if (mCachedFtpUrl)
-      rv = mCachedFtpUrl->SetSpec(aURLSpec);
-    else      
-      rv = NS_NewURI(getter_AddRefs(mCachedFtpUrl), aURLSpec);
-    
-    uri = mCachedFtpUrl;
-  } else {
-    rv = NS_NewURI(getter_AddRefs(tempUri), aURLSpec);
-    uri = tempUri;
-    clearUri = PR_FALSE;
-  }
-
-  // covers all above failures
-  if (NS_FAILED(rv)) return rv;
-  
-  rv = uri->GetSpec(aURLSpec);
-
-  // clear out the old spec, for security reasons - old data should
-  // not be floating around in cached URIs!
-  // (but avoid doing extra work if we're just destroying the uri)
-  if (clearUri)
-    uri->SetSpec(NS_LITERAL_CSTRING(""));
-
-  return rv;
-}
-
 NS_IMETHODIMP
-nsWebShell::GetLinkState(const nsACString& aLinkURI, nsLinkState& aState)
+nsWebShell::GetLinkState(nsIURI* aLinkURI, nsLinkState& aState)
 {
+  if (!aLinkURI) {
+    // No uri means not a link
+    aState = eLinkState_NotLink;
+    return NS_OK;
+  }
+    
   aState = eLinkState_Unvisited;
 
   // no history, leave state unchanged
   if (!mGlobalHistory)
     return NS_OK;
-  
-  // default to the given URI
-  nsCAutoString resolvedPath(aLinkURI);
-  nsresult rv;
 
-  // get the cached IO service
-  if (!mIOService)
-    mIOService = do_GetService(NS_IOSERVICE_CONTRACTID, &rv);
-        
-  NormalizeURI(resolvedPath);
+  nsCAutoString spec;
+  aLinkURI->GetSpec(spec);
 
   PRBool isVisited;
-  NS_ENSURE_SUCCESS(mGlobalHistory->IsVisited(resolvedPath.get(), &isVisited),
+  NS_ENSURE_SUCCESS(mGlobalHistory->IsVisited(spec.get(), &isVisited),
                     NS_ERROR_FAILURE);
   if (isVisited)
     aState = eLinkState_Visited;
@@ -992,7 +914,7 @@ nsresult nsWebShell::EndPageLoad(nsIWebProgress *aProgress,
         if (doCreateAlternate)
         {
           newURI = nsnull;
-          mURIFixup->CreateFixupURI(NS_ConvertUTF8toUCS2(oldSpec),
+          mURIFixup->CreateFixupURI(oldSpec,
               nsIURIFixup::FIXUP_FLAGS_MAKE_ALTERNATE_URI, getter_AddRefs(newURI));
         }
       }

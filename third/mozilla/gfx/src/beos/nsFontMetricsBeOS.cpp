@@ -44,7 +44,6 @@
 #include "nsFontMetricsBeOS.h" 
 #include "nsIServiceManager.h" 
 #include "nsICharsetConverterManager.h" 
-#include "nsICharsetConverterManager2.h" 
 #include "nsISaveAsCharset.h" 
 #include "nsIPref.h" 
 #include "nsCOMPtr.h" 
@@ -523,7 +522,7 @@ FontMatchesGenericType(font_family family, uint32 flags, const char* aGeneric,
 
   if (strstr(aGeneric, "fantasy") 
   // Let's use all possible fonts as decorative
-#ifdef 0
+#if 0
     && (strstr(family, "Baskerville") || 
         strstr(family, "Chicago") ||
         strstr(family, "Copprpl") ||

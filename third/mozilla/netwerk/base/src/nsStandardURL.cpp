@@ -38,7 +38,6 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsStandardURL.h"
-#include "nsURLHelper.h"
 #include "nsDependentSubstring.h"
 #include "nsReadableUtils.h"
 #include "nsCRT.h"
@@ -46,7 +45,7 @@
 #include "nsILocalFile.h"
 #include "nsIObjectInputStream.h"
 #include "nsIObjectOutputStream.h"
-#include "nsICharsetConverterManager2.h"
+#include "nsICharsetConverterManager.h"
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
 #include "nsIPrefBranchInternal.h"
@@ -58,7 +57,7 @@ static NS_DEFINE_CID(kThisImplCID, NS_THIS_STANDARDURL_IMPL_CID);
 static NS_DEFINE_CID(kStandardURLCID, NS_STANDARDURL_CID);
 
 nsIIDNService *nsStandardURL::gIDNService = nsnull;
-nsICharsetConverterManager2 *nsStandardURL::gCharsetMgr = nsnull;
+nsICharsetConverterManager *nsStandardURL::gCharsetMgr = nsnull;
 PRBool nsStandardURL::gInitialized = PR_FALSE;
 PRBool nsStandardURL::gEscapeUTF8 = PR_TRUE;
 
@@ -126,43 +125,6 @@ end:
     return rv;
 }
 
-// filter out \t\r\n
-static const char *
-FilterString(const char *str, nsCString &result)
-{
-    PRBool writing = PR_FALSE;
-    result.Truncate();
-    const char *p = str;
-
-    // Remove leading spaces, tabs, CR, LF if any.
-    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') {
-        writing = PR_TRUE;
-        str = p + 1;
-        p++;
-    }
-
-    for (; *p; ++p) {
-        if (*p == '\t' || *p == '\r' || *p == '\n') {
-            writing = PR_TRUE;
-            // append chars up to but not including *p
-            if (p > str)
-                result.Append(str, p - str);
-            str = p + 1;
-        }
-    }
-
-    // Remove trailing spaces if any
-    while (((p-1) >= str) && (*(p-1) == ' ')) {
-        writing = PR_TRUE;
-        p--;
-    }
-
-    if (writing && p > str)
-        result.Append(str, p - str);
-
-    return writing ? result.get() : str;
-}
-
 //----------------------------------------------------------------------------
 // nsStandardURL::nsPrefObserver
 //----------------------------------------------------------------------------
@@ -207,34 +169,8 @@ nsPrefObserver::Observe(nsISupports *subject,
 
 nsStandardURL::
 nsSegmentEncoder::nsSegmentEncoder(const char *charset)
+    : mCharset(charset)
 {
-    if (!charset || !*charset)
-        return;
-
-    // get unicode encoder (XXX cache this someplace)
-    nsresult rv;
-    if (!gCharsetMgr) {
-        nsCOMPtr<nsICharsetConverterManager2> convMgr(
-                do_GetService("@mozilla.org/charset-converter-manager;1", &rv));
-        if (NS_FAILED(rv)) {
-            NS_ERROR("failed to get charset-converter-manager");
-            return;
-        }
-        NS_ADDREF(gCharsetMgr = convMgr);
-    }
-
-    nsCOMPtr<nsIAtom> charsetAtom;
-    rv = gCharsetMgr->GetCharsetAtom2(charset, getter_AddRefs(charsetAtom));
-    if (NS_FAILED(rv)) {
-        NS_ERROR("failed to get charset atom");
-        return;
-    }
-
-    rv = gCharsetMgr->GetUnicodeEncoder(charsetAtom, getter_AddRefs(mEncoder));
-    if (NS_FAILED(rv)) {
-        NS_ERROR("failed to get unicode encoder");
-        mEncoder = 0; // just in case
-    }
 }
 
 PRInt32 nsStandardURL::
@@ -251,16 +187,21 @@ nsSegmentEncoder::EncodeSegmentCount(const char *str,
         len = seg.mLen;
 
         // first honor the origin charset if appropriate. as an optimization,
-        // only do this if |str| is non-ASCII.
+        // only do this if the segment is non-ASCII.  Further, if mCharset is
+        // null or the empty string then the origin charset is UTF-8 and there
+        // is nothing to do.
         nsCAutoString encBuf;
-        if (mEncoder && !nsCRT::IsAscii(str)) {
-            NS_ConvertUTF8toUCS2 ucsBuf(Substring(str + pos, str + pos + len));
-            if (NS_SUCCEEDED(EncodeString(mEncoder, ucsBuf, encBuf))) {
-                str = encBuf.get();
-                pos = 0;
-                len = encBuf.Length();
+        if (!nsCRT::IsAscii(str + pos, len) && mCharset && *mCharset) {
+            // we have to encode this segment
+            if (mEncoder || InitUnicodeEncoder()) {
+                NS_ConvertUTF8toUCS2 ucsBuf(Substring(str + pos, str + pos + len));
+                if (NS_SUCCEEDED(EncodeString(mEncoder, ucsBuf, encBuf))) {
+                    str = encBuf.get();
+                    pos = 0;
+                    len = encBuf.Length();
+                }
+                // else some failure occured... assume UTF-8 is ok.
             }
-            // else some failure occured... assume UTF-8 is ok.
         }
 
         // escape per RFC2396 unless UTF-8 and allowed by preferences
@@ -292,6 +233,30 @@ nsSegmentEncoder::EncodeSegment(const nsASingleFragmentCString &str,
         return result;
     else
         return str;
+}
+
+PRBool nsStandardURL::
+nsSegmentEncoder::InitUnicodeEncoder()
+{
+    NS_ASSERTION(!mEncoder, "Don't call this if we have an encoder already!");
+    nsresult rv;
+    if (!gCharsetMgr) {
+        rv = CallGetService("@mozilla.org/charset-converter-manager;1",
+                            &gCharsetMgr);
+        if (NS_FAILED(rv)) {
+            NS_ERROR("failed to get charset-converter-manager");
+            return PR_FALSE;
+        }
+    }
+
+    rv = gCharsetMgr->GetUnicodeEncoder(mCharset, getter_AddRefs(mEncoder));
+    if (NS_FAILED(rv)) {
+        NS_ERROR("failed to get unicode encoder");
+        mEncoder = 0; // just in case
+        return PR_FALSE;
+    }
+
+    return PR_TRUE;
 }
 
 #define GET_SEGMENT_ENCODER(name) \
@@ -416,9 +381,9 @@ nsStandardURL::EncodeHost(const char *host, nsCString &result)
 }
 
 void
-nsStandardURL::CoalescePath(char *path)
+nsStandardURL::CoalescePath(netCoalesceFlags coalesceFlag, char *path)
 {
-    net_CoalesceDirsAbs(path);
+    net_CoalesceDirs(coalesceFlag, path);
     PRInt32 newLen = strlen(path);
     if (newLen < mPath.mLen) {
         PRInt32 diff = newLen - mPath.mLen;
@@ -609,9 +574,15 @@ nsStandardURL::BuildNormalizedSpec(const char *spec)
 
     buf[i] = '\0';
 
-    if (mDirectory.mLen > 1)
-        CoalescePath(buf + mDirectory.mPos);
-
+    if (mDirectory.mLen > 1) {
+        netCoalesceFlags coalesceFlag = NET_COALESCE_NORMAL;
+        if (SegmentIs(buf,mScheme,"ftp")) {
+            coalesceFlag = (netCoalesceFlags) (coalesceFlag 
+                                        | NET_COALESCE_ALLOW_RELATIVE_ROOT
+                                        | NET_COALESCE_DOUBLE_SLASH_IS_ROOT);
+        }
+        CoalescePath(coalesceFlag, buf + mDirectory.mPos);
+    }
     mSpec.Adopt(buf);
     return NS_OK;
 }
@@ -642,6 +613,20 @@ nsStandardURL::SegmentIs(const URLSegment &seg, const char *val)
     // if the first |seg.mLen| chars of |val| match, then |val| must
     // also be null terminated at |seg.mLen|.
     return !nsCRT::strncasecmp(mSpec.get() + seg.mPos, val, seg.mLen)
+        && (val[seg.mLen] == '\0');
+}
+
+PRBool
+nsStandardURL::SegmentIs(const char* spec, const URLSegment &seg, const char *val)
+{
+    // one or both may be null
+    if (!val || !spec)
+        return (!val && (!spec || seg.mLen < 0));
+    if (seg.mLen < 0)
+        return PR_FALSE;
+    // if the first |seg.mLen| chars of |val| match, then |val| must
+    // also be null terminated at |seg.mLen|.
+    return !nsCRT::strncasecmp(spec + seg.mPos, val, seg.mLen)
         && (val[seg.mLen] == '\0');
 }
 
@@ -1002,7 +987,8 @@ nsStandardURL::SetSpec(const nsACString &input)
 
     // filter out unexpected chars "\r\n\t" if necessary
     nsCAutoString buf1;
-    spec = FilterString(spec, buf1);
+    if (net_FilterURIString(spec, buf1))
+        spec = buf1.get();
 
     // parse the given URL...
     nsresult rv = ParseURL(spec);
@@ -1503,10 +1489,13 @@ nsStandardURL::Resolve(const nsACString &in, nsACString &out)
 
     // filter out unexpected chars "\r\n\t" if necessary
     nsCAutoString buf;
-    relpath = FilterString(relpath, buf);
-    // Calculate the new relpath length if FilterString modified it
-    const PRInt32 relpathLen = buf.Length() != 0 ? 
-                               buf.Length() : flat.Length();
+    PRInt32 relpathLen;
+    if (net_FilterURIString(relpath, buf)) {
+        relpath = buf.get();
+        relpathLen = buf.Length();
+    } else
+        relpathLen = flat.Length();
+    
     // XXX hack hack hack
     char *p = nsnull;
     char **result = &p;
@@ -1530,6 +1519,7 @@ nsStandardURL::Resolve(const nsACString &in, nsACString &out)
     char *resultPath = nsnull;
     PRBool relative = PR_FALSE;
     PRUint32 offset = 0;
+    netCoalesceFlags coalesceFlag = NET_COALESCE_NORMAL;
 
     // relative urls should never contain a host, so we always want to use
     // the noauth url parser.
@@ -1545,6 +1535,14 @@ nsStandardURL::Resolve(const nsACString &in, nsACString &out)
     if (NS_FAILED(rv)) scheme.Reset(); 
 
     if (scheme.mLen >= 0) {
+        // add some flags to coalesceFlag if it is an ftp-url
+        // need this later on when coalescing the resulting URL
+        if (SegmentIs(relpath, scheme, "ftp")) {
+            coalesceFlag = (netCoalesceFlags) (coalesceFlag 
+                                        | NET_COALESCE_ALLOW_RELATIVE_ROOT
+                                        | NET_COALESCE_DOUBLE_SLASH_IS_ROOT);
+
+        }
         // this URL appears to be absolute
         // but try to find out more
         if (SegmentIs(mScheme,relpath,scheme)) {
@@ -1567,12 +1565,21 @@ nsStandardURL::Resolve(const nsACString &in, nsACString &out)
             // because we have to assume this is absolute 
             *result = nsCRT::strdup(relpath);
         }  
-    } else if (relpath[0] == '/' && relpath[1] == '/') {
-        // this URL //host/path is almost absolute
-        *result = AppendToSubstring(mScheme.mPos, mScheme.mLen + 1, relpath);
     } else {
-        // then it must be relative 
-        relative = PR_TRUE;
+        // add some flags to coalesceFlag if it is an ftp-url
+        // need this later on when coalescing the resulting URL
+        if (SegmentIs(mScheme,"ftp")) {
+            coalesceFlag = (netCoalesceFlags) (coalesceFlag 
+                                        | NET_COALESCE_ALLOW_RELATIVE_ROOT
+                                        | NET_COALESCE_DOUBLE_SLASH_IS_ROOT);
+        }
+        if (relpath[0] == '/' && relpath[1] == '/') {
+            // this URL //host/path is almost absolute
+            *result = AppendToSubstring(mScheme.mPos, mScheme.mLen + 1, relpath);
+        } else {
+            // then it must be relative 
+            relative = PR_TRUE;
+        }
     }
     if (relative) {
         PRUint32 len = 0;
@@ -1600,8 +1607,21 @@ nsStandardURL::Resolve(const nsACString &in, nsACString &out)
                 len = mRef.mPos - 1;
             break;
         default:
-            // overwrite everything after the directory 
-            len = mDirectory.mPos + mDirectory.mLen;
+            if (coalesceFlag & NET_COALESCE_DOUBLE_SLASH_IS_ROOT) {
+                if (Filename().Equals(NS_LITERAL_CSTRING("%2F"),
+                                      nsCaseInsensitiveCStringComparator())) {
+                    // if ftp URL ends with %2F then simply
+                    // append relative part because %2F also
+                    // marks the root directory with ftp-urls
+                    len = mFilepath.mPos + mFilepath.mLen;
+                } else {
+                    // overwrite everything after the directory 
+                    len = mDirectory.mPos + mDirectory.mLen;
+                }
+            } else { 
+                // overwrite everything after the directory 
+                len = mDirectory.mPos + mDirectory.mLen;
+            }
         }
         *result = AppendToSubstring(0, len, realrelpath);
         // locate result path
@@ -1611,14 +1631,14 @@ nsStandardURL::Resolve(const nsACString &in, nsACString &out)
         return NS_ERROR_OUT_OF_MEMORY;
 
     if (resultPath)
-        net_CoalesceDirsRel(resultPath);
+        net_CoalesceDirs(coalesceFlag, resultPath);
     else {
         // locate result path
         resultPath = PL_strstr(*result, "://");
         if (resultPath) {
             resultPath = PL_strchr(resultPath + 3, '/');
             if (resultPath)
-                net_CoalesceDirsRel(resultPath);
+                net_CoalesceDirs(coalesceFlag,resultPath);
         }
     }
     // XXX avoid extra copy
@@ -2079,62 +2099,63 @@ nsStandardURL::SetFileName(const nsACString &input)
         }
     }
     else {
-	    nsresult rv;
-	    URLSegment basename, extension;
+        nsresult rv;
+        URLSegment basename, extension;
 
-	    // let the parser locate the basename and extension
-	    rv = mParser->ParseFileName(filename, -1,
-	                                &basename.mPos, &basename.mLen,
-	                                &extension.mPos, &extension.mLen);
-	    if (NS_FAILED(rv)) return rv;
+        // let the parser locate the basename and extension
+        rv = mParser->ParseFileName(filename, -1,
+                                    &basename.mPos, &basename.mLen,
+                                    &extension.mPos, &extension.mLen);
+        if (NS_FAILED(rv)) return rv;
 
-	    if (basename.mLen < 0) {
-	        // remove existing filename
-	        if (mBasename.mLen >= 0) {
-	            PRUint32 len = mBasename.mLen;
-	            if (mExtension.mLen >= 0)
-	                len += (mExtension.mLen + 1);
-	            mSpec.Cut(mBasename.mPos, len);
-	            shift = -PRInt32(len);
-	            mBasename.mLen = 0;
-	            mExtension.mLen = -1;
-	        }
-	    }
-	    else {
-	        nsCAutoString newFilename;
+        if (basename.mLen < 0) {
+            // remove existing filename
+            if (mBasename.mLen >= 0) {
+                PRUint32 len = mBasename.mLen;
+                if (mExtension.mLen >= 0)
+                    len += (mExtension.mLen + 1);
+                mSpec.Cut(mBasename.mPos, len);
+                shift = -PRInt32(len);
+                mBasename.mLen = 0;
+                mExtension.mLen = -1;
+            }
+        }
+        else {
+            nsCAutoString newFilename;
             GET_SEGMENT_ENCODER(encoder);
             basename.mLen = encoder.EncodeSegmentCount(filename, basename,
                                                        esc_FileBaseName |
                                                        esc_AlwaysCopy,
                                                        newFilename);
-	        if (extension.mLen >= 0) {
-	            newFilename.Append('.');
+            if (extension.mLen >= 0) {
+                newFilename.Append('.');
                 extension.mLen = encoder.EncodeSegmentCount(filename, extension,
-                                                            esc_FileExtension|esc_AlwaysCopy,
+                                                            esc_FileExtension |
+                                                            esc_AlwaysCopy,
                                                             newFilename);
-	        }
+            }
 
-	        if (mBasename.mLen < 0) {
-	            // insert new filename
-	            mBasename.mPos = mDirectory.mPos + mDirectory.mLen;
-	            mSpec.Insert(newFilename, mBasename.mPos);
-	            shift = newFilename.Length();
-	        }
-	        else {
-	            // replace existing filename
-	            PRUint32 oldLen = PRUint32(mBasename.mLen);
-	            if (mExtension.mLen >= 0)
-	                oldLen += (mExtension.mLen + 1);
-	            mSpec.Replace(mBasename.mPos, oldLen, newFilename);
-	            shift = newFilename.Length() - oldLen;
-	        }
-	        
-	        mBasename.mLen = basename.mLen;
-	        mExtension.mLen = extension.mLen;
-	        if (mExtension.mLen >= 0)
-	            mExtension.mPos = mBasename.mPos + mBasename.mLen + 1;
-	    }
-	}
+            if (mBasename.mLen < 0) {
+                // insert new filename
+                mBasename.mPos = mDirectory.mPos + mDirectory.mLen;
+                mSpec.Insert(newFilename, mBasename.mPos);
+                shift = newFilename.Length();
+            }
+            else {
+                // replace existing filename
+                PRUint32 oldLen = PRUint32(mBasename.mLen);
+                if (mExtension.mLen >= 0)
+                    oldLen += (mExtension.mLen + 1);
+                mSpec.Replace(mBasename.mPos, oldLen, newFilename);
+                shift = newFilename.Length() - oldLen;
+            }
+            
+            mBasename.mLen = basename.mLen;
+            mExtension.mLen = extension.mLen;
+            if (mExtension.mLen >= 0)
+                mExtension.mPos = mBasename.mPos + mBasename.mLen + 1;
+        }
+    }
     if (shift) {
         ShiftFromParam(shift);
         mFilepath.mLen += shift;
@@ -2164,43 +2185,38 @@ nsStandardURL::SetFileExtension(const nsACString &input)
 NS_IMETHODIMP
 nsStandardURL::GetFile(nsIFile **result)
 {
-    // use cached result if present
-    if (mFile) {
-        NS_ADDREF(*result = mFile);
-        return NS_OK;
+    // reparse the spec if we don't have a cached result
+    if (!mFile) {
+        if (mSpec.IsEmpty()) {
+            NS_ERROR("url not initialized");
+            return NS_ERROR_NOT_INITIALIZED;
+        }
+
+        if (!SegmentIs(mScheme, "file")) {
+            NS_ERROR("not a file URL");
+            return NS_ERROR_FAILURE;
+        }
+
+        nsresult rv = net_GetFileFromURLSpec(mSpec, getter_AddRefs(mFile));
+        if (NS_FAILED(rv)) return rv;
     }
 
-    if (mSpec.IsEmpty()) {
-        NS_ERROR("url not initialized");
-        return NS_ERROR_NOT_INITIALIZED;
-    }
-
-    if (!SegmentIs(mScheme, "file")) {
-        NS_ERROR("not a file URL");
-        return NS_ERROR_FAILURE;
-    }
-
-    nsresult rv = net_GetFileFromURLSpec(mSpec, result);
-    
-    // XXX ultimately, we should probably cache this result to speed
-    //     up subsequent calls, but past attempts to do so have been
-    //     met with nasty smoketest blockers (e.g., see bug 161921).
-    //     it seems that some folks like to modify the returned nsIFile,
-    //     so we'd have to clone the result before handing it out.
-    //     unfortunately, there are bugs in the implementation(s) of
-    //     nsIFile::clone that prevent us from using this as a solution
-    //     right now (see bug 122892).
-    
 #if defined(PR_LOGGING)
-    if (NS_SUCCEEDED(rv) && LOG_ENABLED()) {
+    if (LOG_ENABLED()) {
         nsCAutoString path;
-        (*result)->GetNativePath(path);
+        mFile->GetNativePath(path);
         LOG(("nsStandardURL::GetFile [this=%p spec=%s resulting_path=%s]\n",
             this, mSpec.get(), path.get()));
     }
 #endif
 
-    return rv;
+    // clone the file, so the caller can modify it.
+    // XXX nsIFileURL.idl specifies that the consumer must _not_ modify the
+    // nsIFile returned from this method; but it seems that some folks do
+    // (see bug 161921). until we can be sure that all the consumers are
+    // behaving themselves, we'll stay on the safe side and clone the file.
+    // see bug 212724 about fixing the consumers.
+    return mFile->Clone(result);
 }
 
 NS_IMETHODIMP
@@ -2271,8 +2287,14 @@ nsStandardURL::Init(PRUint32 urlType,
     else
         mOriginCharset = charset;
 
-    // an empty charset implies UTF-8
-    if (mOriginCharset.EqualsIgnoreCase("UTF-8"))
+    // URI can't be encoded in UTF-16, UTF-16BE, UTF-16LE, UTF-32, UTF-32-LE,
+    // UTF-32LE, UTF-32BE (yet?). Truncate mOriginCharset if it starts with
+    // "utf" (since an empty mOriginCharset implies UTF-8, this is safe even if
+    // mOriginCharset is UTF-8).
+    if (mOriginCharset.Length() >= 3 &&
+        (mOriginCharset[0] == 'U' || mOriginCharset[0] == 'u') &&
+        (mOriginCharset[1] == 'T' || mOriginCharset[1] == 't') &&
+        (mOriginCharset[2] == 'F' || mOriginCharset[2] == 'f'))
         mOriginCharset.Truncate();
 
     if (baseURI) {

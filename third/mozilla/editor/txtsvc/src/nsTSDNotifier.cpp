@@ -40,8 +40,6 @@
 #include "nsTSDNotifier.h"
 #include "nsTextServicesDocument.h"
 
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kIEditActionListenerIID, NS_IEDITACTIONLISTENER_IID);
 
 nsTSDNotifier::nsTSDNotifier(nsTextServicesDocument *aDoc) : mDoc(aDoc)
 {
@@ -78,25 +76,7 @@ NS_IMPL_RELEASE(nsTSDNotifier)
 
 #endif
 
-NS_IMETHODIMP
-nsTSDNotifier::QueryInterface(REFNSIID aIID, void** aInstancePtr)
-{
-  if (nsnull == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  if (aIID.Equals(kISupportsIID)) {
-    *aInstancePtr = (void*)(nsISupports*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(kIEditActionListenerIID)) {
-    *aInstancePtr = (void*)(nsIEditActionListener*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  *aInstancePtr = 0;
-  return NS_NOINTERFACE;
-}
+NS_IMPL_QUERY_INTERFACE1(nsTSDNotifier, nsIEditActionListener)
 
 NS_IMETHODIMP
 nsTSDNotifier::WillInsertNode(nsIDOMNode *aNode,

@@ -39,6 +39,7 @@
 #include "nsIWidget.h"
 #include "nsGUIEvent.h"
 #include "nsWidgetAtoms.h"
+#include "nsWidgetSupport.h"
 
 #include <Gestalt.h>
 #include <Appearance.h>
@@ -53,7 +54,6 @@
 
 
 // Class IDs...
-static NS_DEFINE_CID(kEventQueueCID,  NS_EVENTQUEUE_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID,  NS_EVENTQUEUESERVICE_CID);
 
 static nsMacNSPREventQueueHandler*  gEventQueueHandler = nsnull;
@@ -187,7 +187,7 @@ void nsMacNSPREventQueueHandler::ProcessPLEventQueue()
 
 #pragma mark -
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsToolkit, nsIToolkit);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsToolkit, nsIToolkit)
 
 
 // assume we begin as the fg app
@@ -390,7 +390,9 @@ void
 nsToolkit::GetTopWidget ( WindowPtr aWindow, nsIWidget** outWidget )
 {
   nsIWidget* topLevelWidget = nsnull;
-	::GetWindowProperty ( aWindow, 'MOSS', 'GEKO', sizeof(nsIWidget*), nsnull, (void*)&topLevelWidget);
+  ::GetWindowProperty ( aWindow,
+      kTopLevelWidgetPropertyCreator, kTopLevelWidgetRefPropertyTag,
+      sizeof(nsIWidget*), nsnull, (void*)&topLevelWidget);
   if ( topLevelWidget ) {
     *outWidget = topLevelWidget;
     NS_ADDREF(*outWidget);

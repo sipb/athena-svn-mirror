@@ -45,7 +45,7 @@
 #include "nsWeakReference.h"
 #include "nsIUnicharInputStream.h"
 #include "nsIStreamLoader.h"
-#include "nsISupportsArray.h"
+#include "nsCOMArray.h"
 #include "nsINodeInfo.h"
 #include "nsIDOMHTMLTextAreaElement.h"
 #include "nsICSSLoaderObserver.h"
@@ -56,6 +56,7 @@
 #include "nsSupportsArray.h"
 #include "nsIExpatSink.h"
 #include "nsIDocumentTransformer.h"
+#include "nsCOMPtr.h"
 #include "nsIDocShell.h"
 
 class nsICSSStyleSheet;
@@ -100,12 +101,12 @@ public:
 
   // nsIContentSink
   NS_IMETHOD WillBuildModel(void);
-  NS_IMETHOD DidBuildModel(PRInt32 aQualityLevel);
+  NS_IMETHOD DidBuildModel(void);
   NS_IMETHOD WillInterrupt(void);
   NS_IMETHOD WillResume(void);
   NS_IMETHOD SetParser(nsIParser* aParser);  
   NS_IMETHOD FlushPendingNotifications() { return NS_OK; }
-  NS_IMETHOD SetDocumentCharset(nsAString& aCharset);
+  NS_IMETHOD SetDocumentCharset(nsACString& aCharset);
 
   // nsICSSLoaderObserver
   NS_IMETHOD StyleSheetLoaded(nsICSSStyleSheet*aSheet, PRBool aNotify);
@@ -125,7 +126,8 @@ protected:
   virtual PRBool OnOpenContainer(const PRUnichar **aAtts, 
                                  PRUint32 aAttsCount, 
                                  PRInt32 aNameSpaceID, 
-                                 nsIAtom* aTagName) { return PR_TRUE; }
+                                 nsIAtom* aTagName,
+                                 PRUint32 aLineNumber) { return PR_TRUE; }
   virtual nsresult CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
                                  nsINodeInfo* aNodeInfo, PRUint32 aLineNumber,
                                  nsIContent** aResult, PRBool* aAppendContent);
@@ -140,11 +142,11 @@ protected:
   static void SplitXMLName(const nsAString& aString, nsIAtom **aPrefix,
                            nsIAtom **aTagName);
   PRInt32 GetNameSpaceId(nsIAtom* aPrefix);
-  nsINameSpace*    PopNameSpaces();
+  already_AddRefed<nsINameSpace> PopNameSpaces();
 
   nsIContent* GetCurrentContent();
   PRInt32 PushContent(nsIContent *aContent);
-  nsIContent* PopContent();
+  already_AddRefed<nsIContent> PopContent();
 
 
   nsresult ProcessBASETag(nsIContent* aContent);
@@ -178,14 +180,13 @@ protected:
   nsCOMPtr<nsIDocShell> mDocShell;
   nsIParser*       mParser;
   nsIContent*      mDocElement;
-  nsAutoVoidArray* mNameSpaceStack;
   PRUnichar*       mText;
   nsICSSLoader*    mCSSLoader;  
 
-  nsSupportsArray mScriptElements;
+  nsCOMArray<nsIDOMHTMLScriptElement> mScriptElements;
   XMLContentSinkState mState;
 
-  nsString mRef; // ScrollTo #ref
+  nsCString mRef; // ScrollTo #ref
   nsString mTitleText; 
   
   PRInt32 mTextLength;
@@ -200,9 +201,10 @@ protected:
   PRPackedBool mPrettyPrintHasFactoredElements;
   PRPackedBool mHasProcessedBase;
 
-  nsCOMPtr<nsISupportsArray>          mContentStack;
-  nsCOMPtr<nsINodeInfoManager>        mNodeInfoManager;
-  nsCOMPtr<nsIDocumentTransformer>    mXSLTProcessor;
+  nsCOMArray<nsIContent>           mContentStack;
+  nsCOMArray<nsINameSpace>         mNameSpaceStack;
+  nsCOMPtr<nsINodeInfoManager>     mNodeInfoManager;
+  nsCOMPtr<nsIDocumentTransformer> mXSLTProcessor;
 };
 
 #endif // nsXMLContentSink_h__

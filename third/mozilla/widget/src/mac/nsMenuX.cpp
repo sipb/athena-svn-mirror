@@ -156,7 +156,7 @@ NS_METHOD
 nsMenuX::Create(nsISupports * aParent, const nsAString &aLabel, const nsAString &aAccessKey, 
                 nsIChangeManager* aManager, nsIWebShell* aShell, nsIContent* aNode )
 {
-  mWebShellWeakRef = getter_AddRefs(NS_GetWeakReference(aShell));
+  mWebShellWeakRef = do_GetWeakReference(aShell);
   mMenuContent = aNode;
 
   // register this menu to be notified when changes are made to our content object
@@ -585,11 +585,11 @@ nsEventStatus nsMenuX::MenuConstruct(
   menuPopup->ChildCount(count);
   for ( PRInt32 i = 0; i < count; ++i ) {
     nsCOMPtr<nsIContent> child;
-    menuPopup->ChildAt(i, *getter_AddRefs(child));
+    menuPopup->ChildAt(i, getter_AddRefs(child));
     if ( child ) {
       // depending on the type, create a menu item, separator, or submenu
       nsCOMPtr<nsIAtom> tag;
-      child->GetTag ( *getter_AddRefs(tag) );
+      child->GetTag ( getter_AddRefs(tag) );
       if ( tag == nsWidgetAtoms::menuitem )
         LoadMenuItem(this, child);
       else if ( tag == nsWidgetAtoms::menuseparator )
@@ -631,11 +631,11 @@ nsEventStatus nsMenuX::HelpMenuConstruct(
   menuPopup->ChildCount(count);
   for ( PRInt32 i = 0; i < count; ++i ) {
     nsCOMPtr<nsIContent> child;
-    menuPopup->ChildAt(i, *getter_AddRefs(child));
+    menuPopup->ChildAt(i, getter_AddRefs(child));
     if ( child ) {      
       // depending on the type, create a menu item, separator, or submenu
       nsCOMPtr<nsIAtom> tag;
-      child->GetTag ( *getter_AddRefs(tag) );
+      child->GetTag ( getter_AddRefs(tag) );
       if ( tag == nsWidgetAtoms::menuitem )
         LoadMenuItem(this, child);
       else if ( tag == nsWidgetAtoms::menuseparator )
@@ -877,11 +877,8 @@ void nsMenuX::LoadMenuItem( nsIMenu* inParentMenu, nsIContent* inMenuItemContent
     inMenuItemContent->GetAttr(kNameSpaceID_None, nsWidgetAtoms::key, keyValue);
 
     // Try to find the key node. Get the document so we can do |GetElementByID|
-    nsCOMPtr<nsIDocument> document;
-    inMenuItemContent->GetDocument(*getter_AddRefs(document));
-    if ( !document ) 
-      return;
-    nsCOMPtr<nsIDOMDocument> domDocument = do_QueryInterface(document);
+    nsCOMPtr<nsIDOMDocument> domDocument =
+      do_QueryInterface(inMenuItemContent->GetDocument());
     if ( !domDocument )
       return;
 
@@ -1026,17 +1023,15 @@ nsMenuX::OnCreate()
   // a command attribute. If so, several apptributes must potentially
   // be updated.
   if (popupContent) {
-    nsCOMPtr<nsIDocument> doc;
-    popupContent->GetDocument(*getter_AddRefs(doc));
-    nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(doc));
+    nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(popupContent->GetDocument()));
 
     PRInt32 count;
     popupContent->ChildCount(count);
     for (PRInt32 i = 0; i < count; i++) {
       nsCOMPtr<nsIContent> grandChild;
-      popupContent->ChildAt(i, *getter_AddRefs(grandChild));
+      popupContent->ChildAt(i, getter_AddRefs(grandChild));
       nsCOMPtr<nsIAtom> tag;
-      grandChild->GetTag(*getter_AddRefs(tag));
+      grandChild->GetTag(getter_AddRefs(tag));
       if (tag.get() == nsWidgetAtoms::menuitem) {
         // See if we have a command attribute.
         nsAutoString command;
@@ -1230,7 +1225,7 @@ nsMenuX::GetMenuPopupContent(nsIContent** aResult)
   for (PRInt32 i = 0; i < count; i++) {
     PRInt32 dummy;
     nsCOMPtr<nsIContent> child;
-    mMenuContent->ChildAt(i, *getter_AddRefs(child));
+    mMenuContent->ChildAt(i, getter_AddRefs(child));
     nsCOMPtr<nsIAtom> tag;
     xblService->ResolveTag(child, &dummy, getter_AddRefs(tag));
     if (tag && tag.get() == nsWidgetAtoms::menupopup) {
@@ -1303,8 +1298,7 @@ nsMenuX :: CountVisibleBefore ( PRUint32* outVisibleBefore )
 
 
 NS_IMETHODIMP
-nsMenuX::AttributeChanged(nsIDocument *aDocument, PRInt32 aNameSpaceID, nsIAtom *aAttribute,
-                               PRInt32 aHint)
+nsMenuX::AttributeChanged(nsIDocument *aDocument, PRInt32 aNameSpaceID, nsIAtom *aAttribute)
 {
   if (gConstructingMenu)
     return NS_OK;

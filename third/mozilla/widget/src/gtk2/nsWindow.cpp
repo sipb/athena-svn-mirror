@@ -59,12 +59,14 @@
 #include "nsIServiceManager.h"
 
 #ifdef ACCESSIBILITY
+#include "nsPIAccessNode.h"
 #include "prenv.h"
 #include "stdlib.h"
 static PRBool sAccessibilityChecked = PR_FALSE;
 static PRBool sAccessibilityEnabled = PR_FALSE;
-static const char sGconfAccKey [] = "/desktop/gnome/interface/accessibility";
+static const char sSysPrefService [] = "@mozilla.org/system-preference-service;1";
 static const char sAccEnv [] = "GNOME_ACCESSIBILITY";
+static const char sAccessibilityKey [] = "config.use_system_prefs.accessibility";
 #endif
 
 /* For SetIcon */
@@ -216,6 +218,8 @@ static GtkIMContext *IM_get_input_context(MozDrawingarea *aArea);
 // cursor cache
 GdkCursor *gCursorCache[eCursorCount];
 
+#define ARRAY_LENGTH(a) (sizeof(a)/sizeof(a[0]))
+
 nsWindow::nsWindow()
 {
     mContainer           = nsnull;
@@ -269,6 +273,17 @@ nsWindow::~nsWindow()
         mLastDragMotionWindow = NULL;
     }
     Destroy();
+}
+
+/* static */ void
+nsWindow::ReleaseGlobals()
+{
+  for (PRUint32 i = 0; i < ARRAY_LENGTH(gCursorCache); ++i) {
+    if (gCursorCache[i]) {
+      gdk_cursor_unref(gCursorCache[i]);
+      gCursorCache[i] = nsnull;
+    }
+  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsWindow, nsCommonWidget,
@@ -380,9 +395,6 @@ nsWindow::Destroy(void)
 
 #ifdef ACCESSIBILITY
     if (mRootAccessible) {
-        nsCOMPtr<nsIAccessNode> accNode(do_QueryInterface(mRootAccessible));
-        if (accNode)
-            accNode->Shutdown();
         mRootAccessible = nsnull;
     }
 #endif
@@ -1067,9 +1079,8 @@ nsWindow::CaptureRollupEvents(nsIRollupListener *aListener,
 
     if (aDoCapture) {
         gRollupListener = aListener;
-        gRollupWindow =
-            getter_AddRefs(NS_GetWeakReference(NS_STATIC_CAST(nsIWidget*,
-                                                              this)));
+        gRollupWindow = do_GetWeakReference(NS_STATIC_CAST(nsIWidget*,
+                                                           this));
         gtk_grab_add(widget);
         GrabPointer();
         GrabKeyboard();
@@ -1767,10 +1778,10 @@ nsWindow::OnDragLeaveEvent(GtkWidget *aWidget,
     // signal
     mDragLeaveTimer = do_CreateInstance("@mozilla.org/timer;1");
     NS_ASSERTION(mDragLeaveTimer, "Failed to create drag leave timer!");
-    // fire this baby asafp
+    // fire this baby asafp, but not too quickly... see bug 216800 ;-)
     mDragLeaveTimer->InitWithFuncCallback(DragLeaveTimerCallback,
                                           (void *)this,
-                                          0, nsITimer::TYPE_ONE_SHOT);
+                                          20, nsITimer::TYPE_ONE_SHOT);
 }
 
 gboolean
@@ -1965,7 +1976,8 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
     // toplevel
     nsIWidget *baseParent = aInitData &&
         (aInitData->mWindowType == eWindowType_dialog ||
-         aInitData->mWindowType == eWindowType_toplevel) ?
+         aInitData->mWindowType == eWindowType_toplevel ||
+         aInitData->mWindowType == eWindowType_invisible) ?
         nsnull : aParent;
 
     // initialize all the common bits of this class
@@ -2032,7 +2044,8 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
     switch (mWindowType) {
     case eWindowType_dialog:
     case eWindowType_popup:
-    case eWindowType_toplevel: {
+    case eWindowType_toplevel:
+    case eWindowType_invisible: {
         mIsTopLevel = PR_TRUE;
         if (mWindowType == eWindowType_dialog) {
             mShell = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -2240,12 +2253,12 @@ nsWindow::NativeCreate(nsIWidget        *aParent,
         //check gconf-2 setting
         else {
             nsCOMPtr<nsIPrefBranch> sysPrefService =
-                do_GetService(sGconfAccKey, &rv);
+                do_GetService(sSysPrefService, &rv);
             if (NS_SUCCEEDED(rv) && sysPrefService) {
 
                 // do the work to get gconf setting.
                 // will be done soon later.
-                sysPrefService->GetBoolPref("accessibility.enabled",
+                sysPrefService->GetBoolPref(sAccessibilityKey,
                                             &sAccessibilityEnabled);
             }
 

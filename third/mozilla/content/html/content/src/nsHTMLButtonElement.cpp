@@ -163,8 +163,8 @@ nsHTMLButtonElement::~nsHTMLButtonElement()
 
 // nsISupports
 
-NS_IMPL_ADDREF_INHERITED(nsHTMLButtonElement, nsGenericElement);
-NS_IMPL_RELEASE_INHERITED(nsHTMLButtonElement, nsGenericElement);
+NS_IMPL_ADDREF_INHERITED(nsHTMLButtonElement, nsGenericElement)
+NS_IMPL_RELEASE_INHERITED(nsHTMLButtonElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLButtonElement
@@ -284,10 +284,11 @@ nsHTMLButtonElement::Click()
     return NS_OK;
 
   mHandlingClick = PR_TRUE;
-  nsCOMPtr<nsIDocument> doc; 
-  GetDocument(*getter_AddRefs(doc));
+  // Hold on to the document in case one of the events makes it die or
+  // something...
+  nsCOMPtr<nsIDocument> doc = mDocument; 
 
-  if (doc) {
+  if (mDocument) {
     PRInt32 numShells = doc->GetNumberOfShells();
     nsCOMPtr<nsIPresContext> context;
     for (PRInt32 count=0; count < numShells; count++) {
@@ -360,20 +361,18 @@ nsHTMLButtonElement::RemoveFocus(nsIPresContext* aPresContext)
   nsCOMPtr<nsIEventStateManager> esm;
   if (NS_OK == aPresContext->GetEventStateManager(getter_AddRefs(esm))) {
 
-    nsCOMPtr<nsIDocument> doc;
-    GetDocument(*getter_AddRefs(doc));
-    if (!doc)
+    if (!mDocument)
       return NS_ERROR_NULL_POINTER;
 
     nsCOMPtr<nsIContent> rootContent;
-    doc->GetRootContent(getter_AddRefs(rootContent));
+    mDocument->GetRootContent(getter_AddRefs(rootContent));
     rv = esm->SetContentState(rootContent, NS_EVENT_STATE_FOCUS);
   }
 
   return rv;
 }
 
-static nsHTMLValue::EnumTable kButtonTypeTable[] = {
+static const nsHTMLValue::EnumTable kButtonTypeTable[] = {
   { "button", NS_FORM_BUTTON_BUTTON },
   { "reset", NS_FORM_BUTTON_RESET },
   { "submit", NS_FORM_BUTTON_SUBMIT },
@@ -391,7 +390,7 @@ nsHTMLButtonElement::StringToAttribute(nsIAtom* aAttribute,
     }
   }
   else if (aAttribute == nsHTMLAtoms::type) {
-    nsHTMLValue::EnumTable *table = kButtonTypeTable;
+    const nsHTMLValue::EnumTable *table = kButtonTypeTable;
     nsAutoString val(aValue);
     while (nsnull != table->tag) { 
       if (val.EqualsIgnoreCase(table->tag)) {
@@ -478,7 +477,8 @@ nsHTMLButtonElement::HandleDOMEvent(nsIPresContext* aPresContext,
                                                           aFlags,
                                                           aEventStatus);
 
-  if (bInSubmitClick) {
+  // mForm is null if the event handler removed us from the document (bug 194582).
+  if (bInSubmitClick && mForm) {
     // tell the form that we are about to exit a click handler
     // so the form knows not to defer subsequent submissions
     // the pending ones that were created during the handler

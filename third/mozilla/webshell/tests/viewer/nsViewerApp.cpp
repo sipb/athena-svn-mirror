@@ -116,19 +116,14 @@
 
 extern nsresult NS_NewXPBaseWindowFactory(nsIFactory** aFactory);
 
-static NS_DEFINE_IID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_IID(kAppShellCID, NS_APPSHELL_CID);
 static NS_DEFINE_IID(kXPBaseWindowCID, NS_XPBASE_WINDOW_CID);
 static NS_DEFINE_IID(kCookieServiceCID, NS_COOKIESERVICE_CID);
 
-static NS_DEFINE_IID(kIEventQueueServiceIID, NS_IEVENTQUEUESERVICE_IID);
 static NS_DEFINE_IID(kIAppShellIID, NS_IAPPSHELL_IID);
-static NS_DEFINE_IID(kIPrefIID, NS_IPREF_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kIXPBaseWindowIID, NS_IXPBASE_WINDOW_IID);
 
 static NS_DEFINE_CID(kFormProcessorCID,   NS_FORMPROCESSOR_CID);
-static NS_DEFINE_IID(kIDOMHTMLSelectElementIID, NS_IDOMHTMLSELECTELEMENT_IID);
 
 #define DEFAULT_WIDTH 620
 #define DEFAULT_HEIGHT 400
@@ -224,7 +219,7 @@ public:
 
 
 
-NS_IMPL_ISUPPORTS1(nsTestFormProcessor, nsIFormProcessor);
+NS_IMPL_ISUPPORTS1(nsTestFormProcessor, nsIFormProcessor)
 
 nsTestFormProcessor::nsTestFormProcessor()
 {
@@ -340,7 +335,7 @@ nsViewerApp::InitializeWindowCreator()
   // create an nsWindowCreator and give it to the WindowWatcher service
   nsWindowCreator *creatorCallback = new nsWindowCreator(this);
   if (creatorCallback) {
-    nsCOMPtr<nsIWindowCreator> windowCreator(dont_QueryInterface(NS_STATIC_CAST(nsIWindowCreator *, creatorCallback)));
+    nsCOMPtr<nsIWindowCreator> windowCreator(NS_STATIC_CAST(nsIWindowCreator *, creatorCallback));
     if (windowCreator) {
       nsCOMPtr<nsIWindowWatcher> wwatch(do_GetService(NS_WINDOWWATCHER_CONTRACTID));
       if (wwatch) {

@@ -109,7 +109,7 @@ nsPresContext::PrefChangedCallback(const char* aPrefName, void* instance_data)
 
 #ifdef IBMBIDI
 PRBool
-IsVisualCharset(const nsAutoString& aCharset)
+IsVisualCharset(const nsCAutoString& aCharset)
 {
   if (aCharset.EqualsIgnoreCase("ibm864")             // Arabic//ahmed
       || aCharset.EqualsIgnoreCase("ibm862")          // Hebrew
@@ -211,8 +211,10 @@ nsPresContext::~nsPresContext()
   NS_PRECONDITION(!mShell, "Presshell forgot to clear our mShell pointer");
   SetShell(nsnull);
 
-  if (mEventManager)
+  if (mEventManager) {
     mEventManager->SetPresContext(nsnull);   // unclear if this is needed, but can't hurt
+    NS_RELEASE(mEventManager);
+  }
 
   // Unregister preference callbacks
   if (mPrefs) {
@@ -232,6 +234,8 @@ nsPresContext::~nsPresContext()
     delete mBidiUtils;
   }
 #endif // IBMBIDI
+
+  NS_IF_RELEASE(mDeviceContext);
 }
 
 NS_IMPL_ISUPPORTS2(nsPresContext, nsIPresContext, nsIObserver)
@@ -305,7 +309,10 @@ nsPresContext::GetFontPreferences()
 
   // get font.minimum-size.[langGroup]
   PRInt32 size;
-  pref.Assign("font.minimum-size."); pref.Append(NS_ConvertUCS2toUTF8(langGroup));
+
+  pref.Assign("font.minimum-size.");
+  AppendUTF16toUTF8(langGroup, pref);
+
   rv = mPrefs->GetIntPref(pref.get(), &size);
   if (NS_SUCCEEDED(rv)) {
     if (unit == eUnit_px) {
@@ -320,7 +327,7 @@ nsPresContext::GetFontPreferences()
   nsCAutoString generic_dot_langGroup;
   for (PRInt32 eType = eDefaultFont_Variable; eType < eDefaultFont_COUNT; ++eType) {
     generic_dot_langGroup.Assign(kGenericFont[eType]);
-    generic_dot_langGroup.Append(NS_ConvertUCS2toUTF8(langGroup));
+    AppendUTF16toUTF8(langGroup, generic_dot_langGroup);
 
     nsFont* font;
     switch (eType) {
@@ -391,9 +398,10 @@ nsPresContext::GetFontPreferences()
     }
 
 #ifdef DEBUG_rbs
-    nsCAutoString family(NS_ConvertUCS2toUTF8(font->name));
     printf("%s Family-list:%s size:%d sizeAdjust:%.2f\n",
-            generic_dot_langGroup.get(), family.get(), font->size, font->sizeAdjust);
+            generic_dot_langGroup.get(),
+           NS_ConvertUCS2toUTF8(font->name).get(), font->size,
+           font->sizeAdjust);
 #endif
   }
 }
@@ -576,7 +584,7 @@ nsPresContext::ClearStyleDataAndReflow()
     // Clear out all our style data.
     nsCOMPtr<nsIStyleSet> set;
     mShell->GetStyleSet(getter_AddRefs(set));
-    set->ClearStyleData(this, nsnull);
+    set->ClearStyleData(this);
 
     // Force a reflow of the root frame
     // XXX We really should only do a reflow if a preference that affects
@@ -618,7 +626,8 @@ nsPresContext::Init(nsIDeviceContext* aDeviceContext)
 {
   NS_ASSERTION(!(mInitialized == PR_TRUE), "attempt to reinit pres context");
 
-  mDeviceContext = dont_QueryInterface(aDeviceContext);
+  mDeviceContext = aDeviceContext;
+  NS_IF_ADDREF(mDeviceContext);
 
   mLangService = do_GetService(NS_LANGUAGEATOMSERVICE_CONTRACTID);
   mPrefs = do_GetService(NS_PREF_CONTRACTID);
@@ -668,7 +677,7 @@ nsPresContext::SetShell(nsIPresShell* aShell)
     if (NS_SUCCEEDED(mShell->GetDocument(getter_AddRefs(doc)))) {
       NS_ASSERTION(doc, "expect document here");
       if (doc) {
-        doc->GetBaseURL(*getter_AddRefs(mBaseURL));
+        doc->GetBaseURL(getter_AddRefs(mBaseURL));
 
         if (mBaseURL) {
             PRBool isChrome = PR_FALSE;
@@ -683,7 +692,7 @@ nsPresContext::SetShell(nsIPresShell* aShell)
         }
 
         if (mLangService) {
-          nsAutoString charset;
+          nsCAutoString charset;
           doc->AddCharSetObserver(this);
           doc->GetDocumentCharacterSet(charset);
           UpdateCharSet(charset.get());
@@ -704,10 +713,11 @@ nsPresContext::GetShell(nsIPresShell** aResult)
 }
 
 void
-nsPresContext::UpdateCharSet(const PRUnichar* aCharSet)
+nsPresContext::UpdateCharSet(const char* aCharSet)
 {
   if (mLangService) {
-    mLangService->LookupCharSet(aCharSet, getter_AddRefs(mLanguage));
+    mLangService->LookupCharSet(aCharSet,
+                                getter_AddRefs(mLanguage));
     GetFontPreferences();
     if (mLanguage) {
       nsCOMPtr<nsIAtom> langGroupAtom;
@@ -741,7 +751,7 @@ nsPresContext::Observe(nsISupports* aSubject,
                        const PRUnichar* aData)
 {
   if (!nsCRT::strcmp(aTopic, "charset")) {
-    UpdateCharSet(aData);
+    UpdateCharSet(NS_LossyConvertUCS2toASCII(aData).get());
     if (mDeviceContext) {
       mDeviceContext->FlushFontCache();
       ClearStyleDataAndReflow();
@@ -828,7 +838,7 @@ void nsPresContext::SetImgAnimations(nsCOMPtr<nsIContent>& aParent, PRUint16 aMo
   aParent->ChildCount(count);
   for (PRInt32 i=0;i<count;i++) {
     nsCOMPtr<nsIContent> child;
-    aParent->ChildAt(i, *getter_AddRefs(child));
+    aParent->ChildAt(i, getter_AddRefs(child));
     if (child) {
       SetImgAnimations(child, aMode);
     }
@@ -1002,7 +1012,7 @@ nsPresContext::ReParentStyleContext(nsIFrame* aFrame,
   nsCOMPtr<nsIFrameManager> manager;
   nsresult rv = mShell->GetFrameManager(getter_AddRefs(manager));
   if (NS_SUCCEEDED(rv) && manager) {
-    rv = manager->ReParentStyleContext(this, aFrame, aNewParentContext);
+    rv = manager->ReParentStyleContext(aFrame, aNewParentContext);
   }
   return rv;
 }
@@ -1368,22 +1378,22 @@ nsPresContext::LoadImage(const nsString& aURL,
   if (NS_FAILED(rv)) return rv;
 
   nsCOMPtr<nsIURI> baseURI;
-  doc->GetBaseURL(*getter_AddRefs(baseURI));
+  doc->GetBaseURL(getter_AddRefs(baseURI));
 
   nsCOMPtr<nsIURI> uri;
-  NS_NewURI(getter_AddRefs(uri), aURL, nsnull, baseURI);
+  nsCOMPtr<nsIIOService> ioService;
+  GetIOService(getter_AddRefs(ioService));
+  NS_NewURI(getter_AddRefs(uri), aURL, nsnull, baseURI, ioService);
 
   if (!loader) {
-    nsCOMPtr<nsIContent> content;
-    aTargetFrame->GetContent(getter_AddRefs(content));
+    nsIContent* content = aTargetFrame->GetContent();
 
     // Check with the content-policy things to make sure this load is permitted.
     nsresult rv;
     nsCOMPtr<nsIDOMElement> element(do_QueryInterface(content));
 
     if (content && element) {
-      nsCOMPtr<nsIDocument> document;
-      rv = content->GetDocument(*getter_AddRefs(document));
+      nsCOMPtr<nsIDocument> document = content->GetDocument();
 
       // If there is no document, skip the policy check
       // XXXldb This really means the document is being destroyed, so
@@ -1423,10 +1433,7 @@ nsPresContext::LoadImage(const nsString& aURL,
   // Allow for a null target frame argument (for precached images)
   if (aTargetFrame) {
     // Mark frame as having loaded an image
-    nsFrameState state;
-    aTargetFrame->GetFrameState(&state);
-    state |= NS_FRAME_HAS_LOADED_IMAGES;
-    aTargetFrame->SetFrameState(state);
+    aTargetFrame->AddStateBits(NS_FRAME_HAS_LOADED_IMAGES);
   }
 
   loader->Load(uri);
@@ -1494,24 +1501,30 @@ nsPresContext::GetContainer(nsISupports** aResult)
   return CallQueryReferent(mContainer.get(), aResult);
 }
 
-NS_IMETHODIMP
-nsPresContext::GetEventStateManager(nsIEventStateManager** aManager)
+nsIEventStateManager*
+nsIPresContext::GetEventStateManager()
 {
-  NS_PRECONDITION(aManager, "null ptr");
-
   if (!mEventManager) {
-    nsresult rv;
-    mEventManager = do_CreateInstance(kEventStateManagerCID,&rv);
+    nsresult rv = CallCreateInstance(kEventStateManagerCID, &mEventManager);
     if (NS_FAILED(rv)) {
-      return rv;
+      return nsnull;
     }
 
     //Not refcnted, set null in destructor
     mEventManager->SetPresContext(this);
   }
+  return mEventManager;
+}
 
-  *aManager = mEventManager;
-  NS_IF_ADDREF(*aManager);
+NS_IMETHODIMP
+nsPresContext::GetEventStateManager(nsIEventStateManager** aManager)
+{
+  NS_PRECONDITION(aManager, "null ptr");
+
+  *aManager = GetEventStateManager();
+  if (!*aManager)
+    return NS_ERROR_OUT_OF_MEMORY;
+  NS_ADDREF(*aManager);
   return NS_OK;
 }
 
@@ -1638,7 +1651,7 @@ nsPresContext::GetIsBidiSystem(PRBool& aResult) const
 }
 
 NS_IMETHODIMP
-nsPresContext::GetBidiCharset(nsAString &aCharSet) const
+nsPresContext::GetBidiCharset(nsACString &aCharSet) const
 {
   aCharSet = mCharset;
   return NS_OK;
@@ -1706,7 +1719,7 @@ nsPresContext::ThemeChanged()
   if (!mShell)
     return NS_OK;
 
-  return mShell->ReconstructStyleData(PR_FALSE);
+  return mShell->ReconstructStyleData();
 }
 
 NS_IMETHODIMP

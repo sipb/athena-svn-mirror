@@ -42,6 +42,7 @@
 #include "nsGUIEvent.h"
 #include "nsSwitchToUIThread.h"
 #include "plevent.h"
+#include "prprf.h"
 
 // 
 // Static thread local storage index of the Toolkit 
@@ -109,8 +110,10 @@ void nsToolkit::RunPump(void* arg)
   delete info;
 
   // system wide unique names
-  sprintf(portname, "event%lx", PR_GetCurrentThread());
-  sprintf(semname, "sync%lx", PR_GetCurrentThread());
+  PR_snprintf(portname, sizeof(portname), "event%lx", 
+              (long unsigned) PR_GetCurrentThread());
+  PR_snprintf(semname, sizeof(semname), "sync%lx", 
+              (long unsigned) PR_GetCurrentThread());
 
   port_id	event = create_port(100, portname);
   sem_id	sync = create_sem(0, semname);
@@ -258,8 +261,10 @@ void nsToolkit::GetInterface()
     char portname[64];
     char semname[64];
 
-    sprintf(portname, "event%lx", mGuiThread);
-    sprintf(semname, "sync%lx", mGuiThread);
+    PR_snprintf(portname, sizeof(portname), "event%lx", 
+                (long unsigned) mGuiThread);
+    PR_snprintf(semname, sizeof(semname), "sync%lx", 
+                (long unsigned) mGuiThread);
 
     eventport = find_port(portname);
     syncsem = my_find_sem(semname);

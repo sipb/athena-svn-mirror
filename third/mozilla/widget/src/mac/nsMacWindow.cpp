@@ -50,9 +50,9 @@
 #include "nsGfxUtils.h"
 #include "DefProcFakery.h"
 #include "nsMacResources.h"
-#include "nsRegionMac.h"
 #include "nsIRollupListener.h"
 #include "nsCRT.h"
+#include "nsWidgetSupport.h"
 
 #if TARGET_CARBON
 #include <CFString.h>
@@ -175,7 +175,7 @@ nsMacWindow :: DragReceiveHandler (WindowPtr theWindow, void *handlerRefCon,
 
 
 NS_IMPL_ISUPPORTS_INHERITED4(nsMacWindow, Inherited, nsIEventSink, nsPIWidgetMac, nsPIEventSinkStandalone, 
-                                          nsIMacTextInputEventSink);
+                                          nsIMacTextInputEventSink)
 
 
 //-------------------------------------------------------------------------
@@ -253,7 +253,10 @@ nsMacWindow::~nsMacWindow()
     if (mustResetPort)
       nsGraphicsUtils::SetPortToKnownGoodPort();
   }
-  
+  else if ( mWindowPtr && !mWindowMadeHere ) {
+    (void)::RemoveWindowProperty(mWindowPtr, kTopLevelWidgetPropertyCreator,
+        kTopLevelWidgetRefPropertyTag);
+  }
 }
 
 
@@ -478,6 +481,7 @@ nsresult nsMacWindow::StandardCreate(nsIWidget *aParent,
   {
     mWindowPtr = (WindowPtr)aNativeParent;
     mWindowMadeHere = PR_FALSE;
+    mVisible = PR_TRUE;
   }
 
   if (mWindowPtr == nsnull)
@@ -488,7 +492,9 @@ nsresult nsMacWindow::StandardCreate(nsIWidget *aParent,
   // event handlers to get our widget or event sink when all they have
   // is a native WindowPtr.
   nsIWidget* temp = NS_STATIC_CAST(nsIWidget*, this);
-  OSStatus swpStatus = ::SetWindowProperty ( mWindowPtr, 'MOSS', 'GEKO', sizeof(nsIWidget*), &temp );
+  OSStatus swpStatus = ::SetWindowProperty ( mWindowPtr,
+                          kTopLevelWidgetPropertyCreator, kTopLevelWidgetRefPropertyTag,
+                          sizeof(nsIWidget*), &temp );
   NS_ASSERTION ( swpStatus == noErr, "couldn't set a property on the window, event handling will fail" );
   if ( swpStatus != noErr )
     return NS_ERROR_FAILURE;

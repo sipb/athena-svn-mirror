@@ -174,6 +174,20 @@ function view_init()
       }
   }
 
+  // Disable some menus if account manager is showing
+  var sort_menuitem = document.getElementById('viewSortMenu');
+  if (sort_menuitem) {
+    sort_menuitem.setAttribute("disabled", gAccountCentralLoaded);
+  }
+  var view_menuitem = document.getElementById('viewMessageViewMenu');
+  if (view_menuitem) {
+    view_menuitem.setAttribute("disabled", gAccountCentralLoaded);
+  }
+  var threads_menuitem = document.getElementById('viewMessagesMenu');
+  if (threads_menuitem) {
+    threads_menuitem.setAttribute("disabled", gAccountCentralLoaded);
+  }
+
   // Initialize the View Attachment Inline menu
   var viewAttachmentInline = pref.getBoolPref("mail.inline_attachments");
   document.getElementById("viewAttachmentsInlineMenuitem").setAttribute("checked", viewAttachmentInline ? "true" : "false");
@@ -256,6 +270,13 @@ function InitViewMessagesMenu()
 
 function InitViewMessageViewMenu()
 {
+  var viewFlags = gDBView.viewFlags;
+  var viewType = gDBView.viewType;
+
+	var threadedMenuItem = document.getElementById("viewThreaded");
+	if (threadedMenuItem)
+		threadedMenuItem.setAttribute("checked", (viewFlags & nsMsgViewFlagsType.kThreadedDisplay) != 0);
+
   var currentViewValue = document.getElementById("viewPicker").value;
 
   var allMenuItem = document.getElementById("viewAll");
@@ -1296,6 +1317,13 @@ function MsgMarkAsFlagged(markFlagged)
     MarkSelectedMessagesFlagged(markFlagged);
 }
 
+function MsgMarkReadByDate()
+{
+    window.openDialog( "chrome://messenger/content/markByDate.xul","",
+                       "chrome,modal,titlebar,centerscreen",
+                       GetLoadedMsgFolder() );
+}
+
 function MsgMarkAllRead()
 {
     var compositeDataSource = GetCompositeDataSource("MarkAllMessagesRead");
@@ -1709,7 +1737,6 @@ function MsgSynchronizeOffline()
 }
 
 
-function MsgMarkByDate() {}
 function MsgOpenAttachment() {}
 function MsgUpdateMsgCount() {}
 function MsgImport() {}
@@ -2101,6 +2128,9 @@ function HandleMDNResponse(aUrl)
   var msgURI = GetLoadedMessage();
   if (!msgFolder || !msgURI)
     return;
+
+	if (IsNewsMessage(msgURI))
+		return;
 
   var msgHdr = messenger.messageServiceFromURI(msgURI).messageURIToMsgHdr(msgURI);
   var mimeHdr = aUrl.mimeHeaders;

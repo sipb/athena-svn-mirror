@@ -68,8 +68,7 @@ nsMathMLmunderoverFrame::AttributeChanged(nsIPresContext* aPresContext,
                                           nsIContent*     aContent,
                                           PRInt32         aNameSpaceID,
                                           nsIAtom*        aAttribute,
-                                          PRInt32         aModType, 
-                                          PRInt32         aHint)
+                                          PRInt32         aModType)
 {
   if (nsMathMLAtoms::accent_ == aAttribute ||
       nsMathMLAtoms::accentunder_ == aAttribute) {
@@ -80,7 +79,7 @@ nsMathMLmunderoverFrame::AttributeChanged(nsIPresContext* aPresContext,
 
   return nsMathMLContainerFrame::
          AttributeChanged(aPresContext, aContent, aNameSpaceID,
-                          aAttribute, aModType, aHint);
+                          aAttribute, aModType);
 }
 
 NS_IMETHODIMP
@@ -139,7 +138,7 @@ nsMathMLmunderoverFrame::UpdatePresentationDataFromChildAt(nsIPresContext* aPres
         aScriptLevelIncrement, aFlagsValues, aFlagsToUpdate);
     }
     index++;
-    childFrame->GetNextSibling(&childFrame);
+    childFrame = childFrame->GetNextSibling();
   }
   return NS_OK;
 
@@ -181,9 +180,9 @@ nsMathMLmunderoverFrame::TransmitAutomaticData(nsIPresContext* aPresContext)
   nsIFrame* underscriptFrame = nsnull;
   nsIFrame* baseFrame = mFrames.FirstChild();
   if (baseFrame)
-    baseFrame->GetNextSibling(&underscriptFrame);
+    underscriptFrame = baseFrame->GetNextSibling();
   if (underscriptFrame)
-    underscriptFrame->GetNextSibling(&overscriptFrame);
+    overscriptFrame = underscriptFrame->GetNextSibling();
   if (!baseFrame || !underscriptFrame || !overscriptFrame)
     return NS_OK; // a visual error indicator will be reported later during layout
 
@@ -319,10 +318,10 @@ nsMathMLmunderoverFrame::Place(nsIPresContext*      aPresContext,
   nsIFrame* underFrame = nsnull;
   nsIFrame* baseFrame = mFrames.FirstChild();
   if (baseFrame)
-    baseFrame->GetNextSibling(&underFrame);
+    underFrame = baseFrame->GetNextSibling();
   if (underFrame)
-    underFrame->GetNextSibling(&overFrame);
-  if (!baseFrame || !underFrame || !overFrame || HasNextSibling(overFrame)) {
+    overFrame = underFrame->GetNextSibling();
+  if (!baseFrame || !underFrame || !overFrame || overFrame->GetNextSibling()) {
     // report an error, encourage people to get their markups in order
     NS_WARNING("invalid markup");
     return ReflowError(aPresContext, aRenderingContext, aDesiredSize);

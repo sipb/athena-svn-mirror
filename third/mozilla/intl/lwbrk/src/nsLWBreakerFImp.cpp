@@ -52,13 +52,11 @@ nsLWBreakerFImp::~nsLWBreakerFImp()
 
 NS_DEFINE_IID(kILineBreakerFactoryIID, NS_ILINEBREAKERFACTORY_IID);
 NS_DEFINE_IID(kIWordBreakerFactoryIID, NS_IWORDBREAKERFACTORY_IID);
-NS_DEFINE_IID(kILineBreakerIID, NS_ILINEBREAKER_IID);
-NS_DEFINE_IID(kIWordBreakerIID, NS_IWORDBREAKER_IID);
 NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 
 
-NS_IMPL_ADDREF  (  nsLWBreakerFImp );
-NS_IMPL_RELEASE (  nsLWBreakerFImp );
+NS_IMPL_ADDREF  (  nsLWBreakerFImp )
+NS_IMPL_RELEASE (  nsLWBreakerFImp )
 
 nsresult
 nsLWBreakerFImp::QueryInterface(REFNSIID aIID, void** aInstancePtr)

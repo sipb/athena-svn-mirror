@@ -228,10 +228,11 @@ ClearObjectEntry(PLDHashTable* table, PLDHashEntryHdr *entry)
   objEntry->~ObjectEntry();
 }
 
-PR_STATIC_CALLBACK(void)
+PR_STATIC_CALLBACK(PRBool)
 InitObjectEntry(PLDHashTable* table, PLDHashEntryHdr* entry, const void* key)
 {
   new (entry) ObjectEntry;
+  return PR_TRUE;
 }
   
 
@@ -297,14 +298,16 @@ RemoveObjectEntry(PLDHashTable& table, nsISupports* aKey)
 static nsresult
 SetOrRemoveObject(PLDHashTable& table, nsISupports* aKey, nsISupports* aValue)
 {
-  // lazily create the table, but don't create it just to remove a
-  // non-existent element!
-  if (!table.ops && aValue)
-    PL_DHashTableInit(&table, &ObjectTableOps, nsnull,
-                      sizeof(ObjectEntry), 16);
-
-  if (aValue)
+  if (aValue) {
+    // lazily create the table, but only when adding elements
+    if (!table.ops &&
+        !PL_DHashTableInit(&table, &ObjectTableOps, nsnull,
+                           sizeof(ObjectEntry), 16)) {
+      table.ops = nsnull;
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
     return AddObjectEntry(table, aKey, aValue);
+  }
 
   // no value, so remove the key from the table
   if (table.ops)
@@ -392,8 +395,10 @@ protected:
                                      nsIDOMNodeList** aResult,
                                      PRBool* aIsAnonymousContentList);
 
-  void GetEnclosingScope(nsIContent* aContent, nsIContent** aParent);
-  void GetOutermostStyleScope(nsIContent* aContent, nsIContent** aParent);
+  nsIContent* GetEnclosingScope(nsIContent* aContent) {
+    return aContent->GetBindingParent();
+  }
+  nsIContent* GetOutermostStyleScope(nsIContent* aContent);
 
   void WalkRules(nsISupportsArrayEnumFunc aFunc, RuleProcessorData* aData,
                  nsIContent* aParent, nsIContent* aCurrContent);
@@ -448,6 +453,7 @@ protected:
   // A queue of binding attached event handlers that are awaiting
   // execution.
   nsCOMPtr<nsISupportsArray> mAttachedQueue;
+  PRBool mProcessingAttachedQueue;
 };
 
 // Implementation /////////////////////////////////////////////////////////////////
@@ -459,15 +465,13 @@ NS_IMPL_ISUPPORTS3(nsBindingManager, nsIBindingManager, nsIStyleRuleSupplier, ns
 
 // Constructors/Destructors
 nsBindingManager::nsBindingManager(void)
+: mProcessingAttachedQueue(PR_FALSE)
 {
-
   mBindingTable.ops = nsnull;
   mContentListTable.ops = nsnull;
   mAnonymousNodesTable.ops = nsnull;
   mInsertionParentTable.ops = nsnull;
   mWrapperTable.ops = nsnull;
-
-  mAttachedQueue = nsnull;
 }
 
 nsBindingManager::~nsBindingManager(void)
@@ -628,8 +632,8 @@ nsBindingManager::ResolveTag(nsIContent* aContent, PRInt32* aNameSpaceID, nsIAto
     }
   }
 
-  aContent->GetNameSpaceID(*aNameSpaceID);
-  return aContent->GetTag(*aResult);
+  aContent->GetNameSpaceID(aNameSpaceID);
+  return aContent->GetTag(aResult);
 }
 
 NS_IMETHODIMP
@@ -939,12 +943,13 @@ nsBindingManager::ClearAttachedQueue()
 NS_IMETHODIMP
 nsBindingManager::ProcessAttachedQueue()
 {
-  if (!mAttachedQueue)
+  if (!mAttachedQueue || mProcessingAttachedQueue)
     return NS_OK;
 
+  mProcessingAttachedQueue = PR_TRUE;
+
   PRUint32 count;
-  mAttachedQueue->Count(&count);
-  for (PRUint32 i = 0; i < count; i++) {
+  while (NS_SUCCEEDED(mAttachedQueue->Count(&count)) && count) {
     nsCOMPtr<nsISupports> supp;
     mAttachedQueue->GetElementAt(0, getter_AddRefs(supp));
     mAttachedQueue->RemoveElementAt(0);
@@ -954,6 +959,7 @@ nsBindingManager::ProcessAttachedQueue()
       binding->ExecuteAttachedHandler();
   }
 
+  mProcessingAttachedQueue = PR_FALSE;
   ClearAttachedQueue();
   return NS_OK;
 }
@@ -1175,8 +1181,7 @@ nsBindingManager::GetBindingImplementation(nsIContent* aContent, REFNSIID aIID,
       // We have never made a wrapper for this implementation.
       // Create an XPC wrapper for the script object and hand it back.
 
-      nsCOMPtr<nsIDocument> doc;
-      aContent->GetDocument(*getter_AddRefs(doc));
+      nsIDocument* doc = aContent->GetDocument();
       if (!doc)
         return NS_NOINTERFACE;
 
@@ -1237,13 +1242,10 @@ nsBindingManager::InheritsStyle(nsIContent* aContent, PRBool* aResult)
 {
   // Get our enclosing parent.
   *aResult = PR_TRUE;
-  nsCOMPtr<nsIContent> parent;
-  GetEnclosingScope(aContent, getter_AddRefs(parent));
+  nsCOMPtr<nsIContent> parent = GetEnclosingScope(aContent);
   if (parent) {
     // See if the parent is our parent.
-    nsCOMPtr<nsIContent> ourParent;
-    aContent->GetParent(*getter_AddRefs(ourParent));
-    if (ourParent == parent) {
+    if (aContent->GetParent() == parent) {
       // Yes. Check the binding and see if it wants to allow us
       // to inherit styles.
       nsCOMPtr<nsIXBLBinding> binding;
@@ -1261,26 +1263,14 @@ nsBindingManager::UseDocumentRules(nsIContent* aContent, PRBool* aResult)
   if (!aContent)
     return NS_OK;
 
-  nsCOMPtr<nsIContent> parent;
-  GetOutermostStyleScope(aContent, getter_AddRefs(parent));
-  *aResult = !parent;
+  *aResult = !GetOutermostStyleScope(aContent);
   return NS_OK;
 }
 
-void
-nsBindingManager::GetEnclosingScope(nsIContent* aContent,
-                                    nsIContent** aParent)
+nsIContent*
+nsBindingManager::GetOutermostStyleScope(nsIContent* aContent)
 {
-  // Look up the enclosing parent.
-  aContent->GetBindingParent(aParent);
-}
-
-void
-nsBindingManager::GetOutermostStyleScope(nsIContent* aContent,
-                                         nsIContent** aParent)
-{
-  nsCOMPtr<nsIContent> parent;
-  GetEnclosingScope(aContent, getter_AddRefs(parent));
+  nsIContent* parent = GetEnclosingScope(aContent);
   while (parent) {
     PRBool inheritsStyle = PR_TRUE;
     nsCOMPtr<nsIXBLBinding> binding;
@@ -1290,14 +1280,13 @@ nsBindingManager::GetOutermostStyleScope(nsIContent* aContent,
     }
     if (!inheritsStyle)
       break;
-    nsCOMPtr<nsIContent> child = parent;
-    GetEnclosingScope(child, getter_AddRefs(parent));
+    nsIContent* child = parent;
+    parent = GetEnclosingScope(child);
     if (parent == child)
       break; // The scrollbar case only is deliberately hacked to return itself
              // (see GetBindingParent in nsXULElement.cpp).
   }
-  *aParent = parent;
-  NS_IF_ADDREF(*aParent);
+  return parent;
 }
 
 void
@@ -1312,8 +1301,7 @@ nsBindingManager::WalkRules(nsISupportsArrayEnumFunc aFunc,
     binding->WalkRules(aFunc, aData);
   }
   if (aParent != aCurrContent) {
-    nsCOMPtr<nsIContent> par;
-    GetEnclosingScope(aCurrContent, getter_AddRefs(par));
+    nsCOMPtr<nsIContent> par = GetEnclosingScope(aCurrContent);
     if (par)
       WalkRules(aFunc, aData, aParent, par);
   }
@@ -1328,8 +1316,7 @@ nsBindingManager::WalkRules(nsIStyleSet* aStyleSet,
   if (!content)
     return NS_OK;
 
-  nsCOMPtr<nsIContent> parent;
-  GetOutermostStyleScope(content, getter_AddRefs(parent));
+  nsCOMPtr<nsIContent> parent = GetOutermostStyleScope(content);
 
   WalkRules(aFunc, aData, parent, content);
 
@@ -1339,9 +1326,8 @@ nsBindingManager::WalkRules(nsIStyleSet* aStyleSet,
   if (parent) {
     // We cut ourselves off, but we still need to walk the document's attribute sheet
     // so that inline style continues to work on anonymous content.
-    nsCOMPtr<nsIDocument> document;
-    content->GetDocument(*getter_AddRefs(document));
-    nsCOMPtr<nsIHTMLContentContainer> container(do_QueryInterface(document));
+    nsCOMPtr<nsIHTMLContentContainer> container(
+          do_QueryInterface(content->GetDocument()));
     if (container) {
       nsCOMPtr<nsIHTMLCSSStyleSheet> inlineSheet;
       container->GetInlineStyleSheet(getter_AddRefs(inlineSheet));  
@@ -1374,9 +1360,7 @@ nsBindingManager::GetNestedInsertionPoint(nsIContent* aParent, nsIContent* aChil
   *aResult = nsnull;
 
   // Check to see if the content is anonymous.
-  nsCOMPtr<nsIContent> bindingParent;
-  aChild->GetBindingParent(getter_AddRefs(bindingParent));
-  if (bindingParent == aParent)
+  if (aChild->GetBindingParent() == aParent)
     return NS_OK; // It is anonymous. Don't use the insertion point, since that's only
                   // for the explicit kids.
 
@@ -1415,8 +1399,7 @@ nsBindingManager::AttributeChanged(nsIDocument* aDocument,
                               nsIContent*  aContent,
                               PRInt32      aNameSpaceID,
                               nsIAtom*     aAttribute,
-                              PRInt32      aModType, 
-                              nsChangeHint aHint)
+                              PRInt32      aModType)
 {
   return NS_OK;
 }
@@ -1434,7 +1417,7 @@ nsBindingManager::ContentAppended(nsIDocument* aDocument,
   PRInt32 childCount;
   nsCOMPtr<nsIContent> child;
   aContainer->ChildCount(childCount);
-  aContainer->ChildAt(aNewIndexInContainer, *getter_AddRefs(child));
+  aContainer->ChildAt(aNewIndexInContainer, getter_AddRefs(child));
   
   nsCOMPtr<nsIContent> ins;
   GetNestedInsertionPoint(aContainer, child, getter_AddRefs(ins));
@@ -1458,7 +1441,7 @@ nsBindingManager::ContentAppended(nsIDocument* aDocument,
           // We're real. Jam all the kids in.
           // XXX Check the filters to find the correct points.
           for (PRInt32 j = aNewIndexInContainer; j < childCount; j++) {
-            aContainer->ChildAt(j, *getter_AddRefs(child));
+            aContainer->ChildAt(j, getter_AddRefs(child));
             point->AddChild(child);
             SetInsertionParent(child, ins);
           }

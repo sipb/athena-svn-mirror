@@ -71,9 +71,7 @@
 
 // CIDs
 #include "nsWidgetsCID.h"
-static NS_DEFINE_CID(kMenuBarCID, NS_MENUBAR_CID);
 static NS_DEFINE_CID(kMenuCID, NS_MENU_CID);
-static NS_DEFINE_CID(kMenuItemCID, NS_MENUITEM_CID);
 
 NS_IMPL_ISUPPORTS6(nsMenuBarX, nsIMenuBar, nsIMenuListener, nsIDocumentObserver, 
                     nsIChangeManager, nsIMenuCommandDispatcher, nsISupportsWeakReference)
@@ -213,7 +211,7 @@ nsMenuBarX :: GetDocument ( nsIWebShell* inWebShell, nsIDocument** outDocument )
       nsCOMPtr<nsIDocumentViewer> docv(do_QueryInterface(cv));
       if (!docv)
         return;
-      docv->GetDocument(*outDocument);    // addrefs
+      docv->GetDocument(outDocument);    // addrefs
     }
   }
 }
@@ -251,9 +249,7 @@ nsMenuBarX :: RegisterAsDocumentObserver ( nsIWebShell* inWebShell )
 void
 nsMenuBarX :: AquifyMenuBar ( )
 {
-  nsCOMPtr<nsIDocument> containingDoc;
-  mMenuBarContent->GetDocument ( *getter_AddRefs(containingDoc) );
-  nsCOMPtr<nsIDOMDocument> domDoc ( do_QueryInterface(containingDoc) );
+  nsCOMPtr<nsIDOMDocument> domDoc ( do_QueryInterface(mMenuBarContent->GetDocument()) );
   if ( domDoc ) {
     // remove quit item and its separator
     HideItem ( domDoc, NS_LITERAL_STRING("menu_FileQuitSeparator"), nsnull );
@@ -442,7 +438,7 @@ nsEventStatus
 nsMenuBarX::MenuConstruct( const nsMenuEvent & aMenuEvent, nsIWidget* aParentWindow, 
                             void * menubarNode, void * aWebShell )
 {
-  mWebShellWeakRef = getter_AddRefs(NS_GetWeakReference(NS_STATIC_CAST(nsIWebShell*, aWebShell)));
+  mWebShellWeakRef = do_GetWeakReference(NS_STATIC_CAST(nsIWebShell*, aWebShell));
   nsIDOMNode* aDOMNode  = NS_STATIC_CAST(nsIDOMNode*, menubarNode);
   mMenuBarContent = do_QueryInterface(aDOMNode);           // strong ref
   NS_ASSERTION ( mMenuBarContent, "No content specified for this menubar" );
@@ -471,10 +467,10 @@ nsMenuBarX::MenuConstruct( const nsMenuEvent & aMenuEvent, nsIWidget* aParentWin
   mMenuBarContent->ChildCount(count);
   for ( int i = 0; i < count; ++i ) { 
     nsCOMPtr<nsIContent> menu;
-    mMenuBarContent->ChildAt ( i, *getter_AddRefs(menu) );
+    mMenuBarContent->ChildAt ( i, getter_AddRefs(menu) );
     if ( menu ) {
       nsCOMPtr<nsIAtom> tag;
-      menu->GetTag ( *getter_AddRefs(tag) );
+      menu->GetTag ( getter_AddRefs(tag) );
       if (tag == nsWidgetAtoms::menu) {
         nsAutoString menuName;
         nsAutoString menuAccessKey(NS_LITERAL_STRING(" "));
@@ -620,8 +616,7 @@ nsMenuBarX :: CreateAppleMenu ( nsIMenu* inMenu )
     nsCOMPtr<nsIContent> menu;
     inMenu->GetMenuContent(getter_AddRefs(menu));
     if (menu) {
-      nsCOMPtr<nsIDocument> doc;
-      menu->GetDocument(*getter_AddRefs(doc));
+      nsCOMPtr<nsIDocument> doc = menu->GetDocument();
       if (doc) {
         nsCOMPtr<nsIDOMDocument> domdoc ( do_QueryInterface(doc) );
         if ( domdoc ) {
@@ -761,8 +756,7 @@ nsMenuBarX::ContentAppended( nsIDocument * aDocument, nsIContent  * aContainer,
     if ( obs )
       obs->ContentInserted ( aDocument, aContainer, aNewIndexInContainer );
     else {
-      nsCOMPtr<nsIContent> parent;
-      aContainer->GetParent(*getter_AddRefs(parent));
+      nsCOMPtr<nsIContent> parent = aContainer->GetParent();
       if(parent) {
         Lookup ( parent, getter_AddRefs(obs) );
         if ( obs )
@@ -790,13 +784,13 @@ nsMenuBarX::DocumentWillBeDestroyed( nsIDocument * aDocument )
 
 NS_IMETHODIMP
 nsMenuBarX::AttributeChanged( nsIDocument * aDocument, nsIContent * aContent, PRInt32 aNameSpaceID,
-                              nsIAtom * aAttribute, PRInt32 aModType, nsChangeHint aHint)
+                              nsIAtom * aAttribute, PRInt32 aModType)
 {
   // lookup and dispatch to registered thang.
   nsCOMPtr<nsIChangeObserver> obs;
   Lookup ( aContent, getter_AddRefs(obs) );
   if ( obs )
-    obs->AttributeChanged ( aDocument, aNameSpaceID, aAttribute, (PRInt32)aHint );
+    obs->AttributeChanged ( aDocument, aNameSpaceID, aAttribute );
 
   return NS_OK;
 }
@@ -815,8 +809,7 @@ nsMenuBarX::ContentRemoved( nsIDocument * aDocument, nsIContent * aContainer,
     if ( obs )
       obs->ContentRemoved ( aDocument, aChild, aIndexInContainer );
     else {
-      nsCOMPtr<nsIContent> parent;
-      aContainer->GetParent(*getter_AddRefs(parent));
+      nsCOMPtr<nsIContent> parent = aContainer->GetParent();
       if(parent) {
         Lookup ( parent, getter_AddRefs(obs) );
         if ( obs )
@@ -841,8 +834,7 @@ nsMenuBarX::ContentInserted( nsIDocument * aDocument, nsIContent * aContainer,
     if ( obs )
       obs->ContentInserted ( aDocument, aChild, aIndexInContainer );
     else {
-      nsCOMPtr<nsIContent> parent;
-      aContainer->GetParent(*getter_AddRefs(parent));
+      nsCOMPtr<nsIContent> parent = aContainer->GetParent();
       if(parent) {
         Lookup ( parent, getter_AddRefs(obs) );
         if ( obs )
@@ -972,7 +964,7 @@ MenuHelpersX::WebShellToPresContext (nsIWebShell* inWebShell, nsIPresContext** o
   if ( contentViewer ) {
     nsCOMPtr<nsIDocumentViewer> docViewer ( do_QueryInterface(contentViewer) );
     if ( docViewer )
-      docViewer->GetPresContext(*outContext);     // AddRefs for us
+      docViewer->GetPresContext(outContext);     // AddRefs for us
     else
       retval = NS_ERROR_FAILURE;
   }

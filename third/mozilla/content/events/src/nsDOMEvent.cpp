@@ -206,9 +206,7 @@ nsDOMEvent::nsDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
       if (content->IsNativeAnonymous()) {
         mExplicitOriginalTarget = nsnull;
       }
-      nsCOMPtr<nsIContent> bindingParent;
-      content->GetBindingParent(getter_AddRefs(bindingParent));
-      if (bindingParent) {
+      if (content->GetBindingParent()) {
         mExplicitOriginalTarget = nsnull;
       }
     }
@@ -734,8 +732,8 @@ NS_METHOD nsDOMEvent::GetClientX(PRInt32* aClientX)
   nsCOMPtr<nsIPresShell> presShell;
   nsIWidget* rootWidget = nsnull;
   if (NS_SUCCEEDED(mPresContext->GetShell(getter_AddRefs(presShell))) && presShell) {
-    nsCOMPtr<nsIViewManager> vm;
-		if (NS_SUCCEEDED(presShell->GetViewManager(getter_AddRefs(vm))) && vm) {
+    nsIViewManager* vm = presShell->GetViewManager();
+    if (vm) {
       vm->GetWidget(&rootWidget);
     }
   }
@@ -788,8 +786,8 @@ NS_METHOD nsDOMEvent::GetClientY(PRInt32* aClientY)
   nsCOMPtr<nsIPresShell> presShell;
   nsIWidget* rootWidget = nsnull;
   if (NS_SUCCEEDED(mPresContext->GetShell(getter_AddRefs(presShell))) && presShell) {
-    nsCOMPtr<nsIViewManager> vm;
-		if (NS_SUCCEEDED(presShell->GetViewManager(getter_AddRefs(vm))) && vm) {
+    nsIViewManager* vm = presShell->GetViewManager();
+		if (vm) {
       vm->GetWidget(&rootWidget);
     }
   }
@@ -1005,11 +1003,10 @@ nsresult nsDOMEvent::GetScrollInfo(nsIScrollableView** aScrollableView,
 
   nsCOMPtr<nsIPresShell> presShell;
   if (NS_SUCCEEDED(mPresContext->GetShell(getter_AddRefs(presShell))) && presShell) {
-     nsCOMPtr<nsIViewManager> vm;
-     presShell->GetViewManager(getter_AddRefs(vm));
-     if(vm) {
-        return vm->GetRootScrollableView(aScrollableView);
-     }
+    nsIViewManager* vm = presShell->GetViewManager();
+    if(vm) {
+      return vm->GetRootScrollableView(aScrollableView);
+    }
   }
   return NS_OK;
 }

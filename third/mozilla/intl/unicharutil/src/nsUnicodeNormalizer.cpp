@@ -93,7 +93,7 @@
 #include "nsString.h"
 #include "nsReadableUtils.h"
 
-NS_IMPL_ISUPPORTS1(nsUnicodeNormalizer, nsIUnicodeNormalizer);
+NS_IMPL_ISUPPORTS1(nsUnicodeNormalizer, nsIUnicodeNormalizer)
 
 
 nsUnicodeNormalizer::nsUnicodeNormalizer()
@@ -354,8 +354,6 @@ typedef struct {
 	PRInt32 class_buf[WORKBUF_SIZE];		/* ditto */
 } workbuf_t;
 
-static nsresult	normalize(PRInt32 do_composition, PRInt32 compat,
-				  const char *from, char *to, size_t tolen);
 static nsresult	decompose(workbuf_t *wb, PRUint32 c, PRInt32 compat);
 static void		get_class(workbuf_t *wb);
 static void		reorder(workbuf_t *wb);

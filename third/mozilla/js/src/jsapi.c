@@ -631,12 +631,20 @@ JS_NewRuntime(uint32 maxbytes)
     JS_END_MACRO;
 #endif /* DEBUG */
 
+    if (!js_InitScriptGlobals())
+        return NULL;
     if (!js_InitStringGlobals())
         return NULL;
     rt = (JSRuntime *) malloc(sizeof(JSRuntime));
     if (!rt)
         return NULL;
+    
+    /* Initialize infallibly first, so we can goto bad and JS_DestroyRuntime. */
     memset(rt, 0, sizeof(JSRuntime));
+    JS_INIT_CLIST(&rt->contextList);
+    JS_INIT_CLIST(&rt->trapList);
+    JS_INIT_CLIST(&rt->watchPointList);
+
     if (!js_InitGC(rt, maxbytes))
         goto bad;
 #ifdef JS_THREADSAFE
@@ -670,9 +678,6 @@ JS_NewRuntime(uint32 maxbytes)
     rt->propertyCache.empty = JS_TRUE;
     if (!js_InitPropertyTree(rt))
         goto bad;
-    JS_INIT_CLIST(&rt->contextList);
-    JS_INIT_CLIST(&rt->trapList);
-    JS_INIT_CLIST(&rt->watchPointList);
     return rt;
 
 bad:
@@ -724,11 +729,11 @@ JS_PUBLIC_API(void)
 JS_ShutDown(void)
 {
     JS_ArenaShutDown();
+    js_FinishDtoa();
+    js_FreeScriptGlobals();
     js_FreeStringGlobals();
 #ifdef JS_THREADSAFE
     js_CleanupLocks();
-#else
-    js_FinishDtoa();
 #endif
 }
 
@@ -970,6 +975,7 @@ static struct v2smap {
     {JSVERSION_1_2,     "1.2"},
     {JSVERSION_1_3,     "1.3"},
     {JSVERSION_1_4,     "1.4"},
+    {JSVERSION_ECMA_3,  "ECMAv3"},
     {JSVERSION_1_5,     "1.5"},
     {JSVERSION_DEFAULT, "default"},
     {JSVERSION_UNKNOWN, NULL},          /* must be last, NULL is sentinel */
@@ -1022,7 +1028,7 @@ JS_ToggleOptions(JSContext *cx, uint32 options)
 JS_PUBLIC_API(const char *)
 JS_GetImplementationVersion(void)
 {
-    return "JavaScript-C 1.5 pre-release 5 2003-01-10";
+    return "JavaScript-C 1.5 pre-release 5a 2003-05-29";
 }
 
 
@@ -1041,11 +1047,11 @@ JS_SetGlobalObject(JSContext *cx, JSObject *obj)
 static JSObject *
 InitFunctionAndObjectClasses(JSContext *cx, JSObject *obj)
 {
-    JSBool resolving;
     JSDHashTable *table;
+    JSBool resolving;
     JSRuntime *rt;
     JSResolvingKey key;
-    JSDHashEntryHdr *entry;
+    JSResolvingEntry *entry;
     JSObject *fun_proto, *obj_proto;
 
     /* If cx has no global object, use obj so prototypes can be found. */
@@ -1053,40 +1059,48 @@ InitFunctionAndObjectClasses(JSContext *cx, JSObject *obj)
         cx->globalObject = obj;
 
     /* Record Function and Object in cx->resolvingTable, if we are resolving. */
-    resolving = (cx->resolving != 0);
-    table = NULL;       /* quell GCC overwarning */
+    table = cx->resolvingTable;
+    resolving = (table && table->entryCount);
     if (resolving) {
-        table = cx->resolvingTable;
         rt = cx->runtime;
         key.obj = obj;
         key.id = (jsid) rt->atomState.FunctionAtom;
-        entry = JS_DHashTableOperate(table, &key, JS_DHASH_LOOKUP);
-        if (JS_DHASH_ENTRY_IS_BUSY(entry))
+        entry = (JSResolvingEntry *)
+                JS_DHashTableOperate(table, &key, JS_DHASH_ADD);
+        if (entry && entry->key.obj && (entry->flags & JSRESFLAG_LOOKUP)) {
+            /* Already resolving Function, record Object too. */
+            JS_ASSERT(entry->key.obj == obj);
             key.id = (jsid) rt->atomState.ObjectAtom;
-
-        entry = JS_DHashTableOperate(table, &key, JS_DHASH_ADD);
+            entry = (JSResolvingEntry *)
+                    JS_DHashTableOperate(table, &key, JS_DHASH_ADD);
+        }
         if (!entry) {
             JS_ReportOutOfMemory(cx);
             return NULL;
         }
-        ((JSResolvingEntry *)entry)->key = key;
+        JS_ASSERT(!entry->key.obj && entry->flags == 0);
+        entry->key = key;
+        entry->flags = JSRESFLAG_LOOKUP;
     }
 
     /* Initialize the function class first so constructors can be made. */
     fun_proto = js_InitFunctionClass(cx, obj);
     if (!fun_proto)
-        return NULL;
+        goto out;
 
     /* Initialize the object class next so Object.prototype works. */
     obj_proto = js_InitObjectClass(cx, obj);
-    if (!obj_proto)
-        return NULL;
+    if (!obj_proto) {
+        fun_proto = NULL;
+        goto out;
+    }
 
     /* Function.prototype and the global object delegate to Object.prototype. */
     OBJ_SET_PROTO(cx, fun_proto, obj_proto);
     if (!OBJ_GET_PROTO(cx, obj))
         OBJ_SET_PROTO(cx, obj, obj_proto);
 
+out:
     /* If resolving, remove the other entry (Object or Function) from table. */
     if (resolving)
         JS_DHashTableOperate(table, &key, JS_DHASH_REMOVE);
@@ -1651,13 +1665,13 @@ JS_MarkGCThing(JSContext *cx, void *thing, const char *name, void *arg)
 JS_PUBLIC_API(void)
 JS_GC(JSContext *cx)
 {
-    if (cx->runtime->gcDisabled)
-        return;
-
+    /* Don't nuke active arenas if executing or compiling. */
     if (cx->stackPool.current == &cx->stackPool.first)
         JS_FinishArenaPool(&cx->stackPool);
-    JS_FinishArenaPool(&cx->codePool);
-    JS_FinishArenaPool(&cx->tempPool);
+    if (cx->codePool.current == &cx->codePool.first)
+        JS_FinishArenaPool(&cx->codePool);
+    if (cx->tempPool.current == &cx->tempPool.first)
+        JS_FinishArenaPool(&cx->tempPool);
     js_ForceGC(cx, 0);
 }
 
@@ -2744,7 +2758,7 @@ JS_Enumerate(JSContext *cx, JSObject *obj)
 
     i = 0;
     vector = &ida->vector[0];
-    while (1) {
+    for (;;) {
         if (i == ida->length) {
             /* Grow length by factor of 1.5 instead of doubling. */
             jsint newlen = ida->length + (((jsuint)ida->length + 1) >> 1);
@@ -2940,15 +2954,12 @@ CompileTokenStream(JSContext *cx, JSObject *obj, JSTokenStream *ts,
     if (!js_InitCodeGenerator(cx, &cg, ts->filename, ts->lineno,
                               ts->principals)) {
         script = NULL;
-        goto out;
-    }
-    if (!js_CompileTokenStream(cx, obj, ts, &cg)) {
+    } else if (!js_CompileTokenStream(cx, obj, ts, &cg)) {
         script = NULL;
         eof = (ts->flags & TSF_EOF) != 0;
-        goto out;
+    } else {
+        script = js_NewScriptFromCG(cx, &cg, NULL);
     }
-    script = js_NewScriptFromCG(cx, &cg, NULL);
-out:
     if (eofp)
         *eofp = eof;
     if (!js_CloseTokenStream(cx, ts)) {
@@ -3699,7 +3710,6 @@ JS_GetStringBytes(JSString *str)
 {
     char *bytes;
 
-    CHECK_REQUEST(cx);
     bytes = js_GetStringBytes(str);
     return bytes ? bytes : "";
 }
@@ -3721,7 +3731,6 @@ JS_GetStringChars(JSString *str)
      */
     jschar *chars;
 
-    CHECK_REQUEST(cx);
     chars = js_GetStringChars(str);
     return chars ? chars : JSSTRING_CHARS(str);
 }
@@ -3729,14 +3738,12 @@ JS_GetStringChars(JSString *str)
 JS_PUBLIC_API(size_t)
 JS_GetStringLength(JSString *str)
 {
-    CHECK_REQUEST(cx);
     return JSSTRING_LENGTH(str);
 }
 
 JS_PUBLIC_API(intN)
 JS_CompareStrings(JSString *str1, JSString *str2)
 {
-    CHECK_REQUEST(cx);
     return js_CompareStrings(str1, str2);
 }
 

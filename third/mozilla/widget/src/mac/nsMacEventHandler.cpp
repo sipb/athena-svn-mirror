@@ -1179,7 +1179,7 @@ PRBool nsMacEventHandler::HandleKeyEvent(EventRecord& aOSEvent)
 		case keyUp:
       {
         nsKeyEvent keyUpEvent;
-        InitializeKeyEvent(keyUpEvent,aOSEvent,focusedWidget,NS_KEY_UP);
+        InitializeKeyEvent(keyUpEvent, aOSEvent, focusedWidget, NS_KEY_UP);
         result = focusedWidget->DispatchWindowEvent(keyUpEvent);
         break;
       }
@@ -1187,7 +1187,7 @@ PRBool nsMacEventHandler::HandleKeyEvent(EventRecord& aOSEvent)
     case keyDown:	
       {
         nsKeyEvent keyDownEvent, keyPressEvent;
-        InitializeKeyEvent(keyDownEvent,aOSEvent,focusedWidget,NS_KEY_DOWN);
+        InitializeKeyEvent(keyDownEvent, aOSEvent, focusedWidget, NS_KEY_DOWN);
         result = focusedWidget->DispatchWindowEvent(keyDownEvent);
 
         // get the focused widget again in case something happened to it on the previous event
@@ -1199,7 +1199,7 @@ PRBool nsMacEventHandler::HandleKeyEvent(EventRecord& aOSEvent)
         if (checkFocusedWidget != focusedWidget)
           return result;
 
-        InitializeKeyEvent(keyPressEvent,aOSEvent,focusedWidget,NS_KEY_PRESS);
+        InitializeKeyEvent(keyPressEvent, aOSEvent, focusedWidget, NS_KEY_PRESS);
 
         // before we dispatch this key, check if it's the contextmenu key.
         // If so, send a context menu event instead.
@@ -1219,7 +1219,7 @@ PRBool nsMacEventHandler::HandleKeyEvent(EventRecord& aOSEvent)
     case autoKey:
       {
         nsKeyEvent keyPressEvent;
-        InitializeKeyEvent(keyPressEvent,aOSEvent,focusedWidget,NS_KEY_PRESS);
+        InitializeKeyEvent(keyPressEvent, aOSEvent, focusedWidget, NS_KEY_PRESS);
         result = focusedWidget->DispatchWindowEvent(keyPressEvent);
         break;
       }
@@ -1317,7 +1317,7 @@ PRBool nsMacEventHandler::HandleUKeyEvent(PRUnichar* text, long charCount, Event
       // PR_FALSE so no character translation occurs.
       // I'm guessing we don't want to do the translation there because
       // translation already occurred for the string passed to this method.
-      if (keyPressEvent.isControl && keyPressEvent.charCode <= 26)
+      if (keyPressEvent.isControl && keyPressEvent.charCode <= 26)       
       {
         if (keyPressEvent.isShift)
           keyPressEvent.charCode += 'A' - 1;

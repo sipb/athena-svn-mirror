@@ -37,15 +37,12 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsIServiceManager.h"
+#include "nsIServiceManagerUtils.h"
 #include "nsIParserService.h"
-#include "nsParserCIID.h"
 #include "nsEditorParserObserver.h"
 
-static NS_DEFINE_IID(kParserServiceCID, NS_PARSERSERVICE_CID);
-
-NS_IMPL_ADDREF(nsEditorParserObserver);
-NS_IMPL_RELEASE(nsEditorParserObserver);
+NS_IMPL_ADDREF(nsEditorParserObserver)
+NS_IMPL_RELEASE(nsEditorParserObserver)
 
 NS_INTERFACE_MAP_BEGIN(nsEditorParserObserver)
       NS_INTERFACE_MAP_ENTRY(nsIElementObserver)
@@ -115,7 +112,7 @@ NS_IMETHODIMP nsEditorParserObserver::Start(eHTMLTags* aWatchTags)
 {
   nsresult res = NS_OK;
   
-  nsCOMPtr<nsIParserService> parserService(do_GetService(kParserServiceCID));
+  nsCOMPtr<nsIParserService> parserService(do_GetService("@mozilla.org/parser/parser-service;1"));
     
   if (!parserService) {
     return NS_ERROR_OUT_OF_MEMORY;
@@ -130,7 +127,7 @@ NS_IMETHODIMP nsEditorParserObserver::Start(eHTMLTags* aWatchTags)
 NS_IMETHODIMP nsEditorParserObserver::End() 
 {
   nsresult res = NS_OK;
-  nsCOMPtr<nsIParserService> parserService(do_GetService(kParserServiceCID));
+  nsCOMPtr<nsIParserService> parserService(do_GetService("@mozilla.org/parser/parser-service;1"));
 
   if (!parserService) {
     return NS_ERROR_OUT_OF_MEMORY;

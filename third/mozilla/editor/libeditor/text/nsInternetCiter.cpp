@@ -50,16 +50,15 @@
 #include "nsILineBreakerFactory.h"
 #include "nsLWBrkCIID.h"
 
-static PRUnichar gt ('>');
-static PRUnichar space (' ');
-static PRUnichar nbsp (0xa0);
-static PRUnichar nl ('\n');
-static PRUnichar cr('\r');
+const PRUnichar gt ('>');
+const PRUnichar space (' ');
+const PRUnichar nbsp (0xa0);
+const PRUnichar nl ('\n');
+const PRUnichar cr('\r');
 
 /** Mail citations using the Internet style: > This is a citation
   */
 
-static NS_DEFINE_CID(kLWBrkCID, NS_LWBRK_CID);
 
 nsInternetCiter::nsInternetCiter()
 {
@@ -69,34 +68,12 @@ nsInternetCiter::~nsInternetCiter()
 {
 }
 
-NS_IMPL_ADDREF(nsInternetCiter)
-
-NS_IMPL_RELEASE(nsInternetCiter)
-
-NS_IMETHODIMP
-nsInternetCiter::QueryInterface(REFNSIID aIID, void** aInstancePtr)
-{
-  if (nsnull == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  if (aIID.Equals(NS_GET_IID(nsISupports)))
-  {
-    *aInstancePtr = (void*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(NS_GET_IID(nsICiter))) {
-    *aInstancePtr = (void*)(nsICiter*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  return NS_NOINTERFACE;
-}
+NS_IMPL_ISUPPORTS1(nsInternetCiter, nsICiter)
 
 NS_IMETHODIMP
 nsInternetCiter::GetCiteString(const nsAString& aInString, nsAString& aOutString)
 {
-  aOutString.SetLength(0);
+  aOutString.Truncate();
   PRUnichar uch = nl;
 
   // Strip trailing new lines which will otherwise turn up
@@ -144,7 +121,7 @@ nsInternetCiter::StripCitesAndLinebreaks(const nsAString& aInString,
   if (aCiteLevel)
     *aCiteLevel = 0;
 
-  aOutString.SetLength(0);
+  aOutString.Truncate();
   nsReadingIterator <PRUnichar> beginIter,endIter;
   aInString.BeginReading(beginIter);
   aInString.EndReading(endIter);
@@ -188,9 +165,9 @@ nsInternetCiter::StripCites(const nsAString& aInString, nsAString& aOutString)
 static void AddCite(nsAString& aOutString, PRInt32 citeLevel)
 {
   for (PRInt32 i = 0; i < citeLevel; ++i)
-    aOutString.Append(PRUnichar(gt));
+    aOutString.Append(gt);
   if (citeLevel > 0)
-    aOutString.Append(PRUnichar(space));
+    aOutString.Append(space);
 }
 
 static inline void
@@ -203,7 +180,8 @@ BreakLine(nsAString& aOutString, PRUint32& outStringCol,
     AddCite(aOutString, citeLevel);
     outStringCol = citeLevel + 1;
   }
-  else outStringCol = 0;
+  else
+    outStringCol = 0;
 }
 
 static inline PRBool IsSpace(PRUnichar c)
@@ -224,20 +202,20 @@ nsInternetCiter::Rewrap(const nsAString& aInString,
   NS_ASSERTION((cr < 0), "Rewrap: CR in string gotten from DOM!\n");
 #endif /* DEBUG */
 
+  aOutString.Truncate();
+
   nsCOMPtr<nsILineBreaker> lineBreaker;
   nsILineBreakerFactory *lf;
-  nsresult rv = NS_OK;
-  rv = nsServiceManager::GetService(kLWBrkCID,
+  nsresult rv;
+  rv = nsServiceManager::GetService(NS_LWBRK_CONTRACTID,
                                     NS_GET_IID(nsILineBreakerFactory),
                                     (nsISupports **)&lf);
   if (NS_SUCCEEDED(rv))
   {
     nsAutoString lbarg;
     rv = lf->GetBreaker(lbarg, getter_AddRefs(lineBreaker));
-    nsServiceManager::ReleaseService(kLWBrkCID, lf);
+    nsServiceManager::ReleaseService(NS_LWBRK_CONTRACTID, lf);
   }
-
-  aOutString.SetLength(0);
 
   // Loop over lines in the input string, rewrapping each one.
   PRUint32 length = aInString.Length();
@@ -273,7 +251,7 @@ nsInternetCiter::Rewrap(const nsAString& aInString,
 
     // Special case: if this is a blank line, maintain a blank line
     // (retain the original paragraph breaks)
-    if (tString[posInString] == nl && aOutString.Length() > 0)
+    if (tString[posInString] == nl && !aOutString.IsEmpty())
     {
       if (aOutString.Last() != nl)
         aOutString.Append(nl);
@@ -386,10 +364,10 @@ nsInternetCiter::Rewrap(const nsAString& aInString,
       }
 
       PRUint32 breakPt;
-      PRBool needMore;
       rv = NS_ERROR_BASE;
       if (lineBreaker)
       {
+        PRBool needMore;
         rv = lineBreaker->Prev(tString.get() + posInString,
                                length - posInString,
                                eol + 1 - posInString, &breakPt, &needMore);

@@ -175,6 +175,7 @@ protected:
   {
     return (id == sInnerHeight_id  ||
             id == sInnerWidth_id   ||
+            id == sOpener_id       ||
             id == sOuterHeight_id  ||
             id == sOuterWidth_id   ||
             id == sScreenX_id      ||
@@ -260,6 +261,7 @@ protected:
   static jsval sWindow_id;
   static jsval sFrames_id;
   static jsval sSelf_id;
+  static jsval sOpener_id;
 
   static const JSClass *sObjectClass;
 
@@ -273,14 +275,14 @@ typedef nsDOMClassInfo nsDOMGenericSH;
 // all objects that should support things like
 // obj.onclick=function{...}
 
-class nsEventRecieverSH : public nsDOMGenericSH
+class nsEventReceiverSH : public nsDOMGenericSH
 {
 protected:
-  nsEventRecieverSH(nsDOMClassInfoData* aData) : nsDOMGenericSH(aData)
+  nsEventReceiverSH(nsDOMClassInfoData* aData) : nsDOMGenericSH(aData)
   {
   }
 
-  virtual ~nsEventRecieverSH()
+  virtual ~nsEventReceiverSH()
   {
   }
 
@@ -315,10 +317,10 @@ public:
 
 // Window scriptable helper
 
-class nsWindowSH : public nsEventRecieverSH
+class nsWindowSH : public nsEventReceiverSH
 {
 protected:
-  nsWindowSH(nsDOMClassInfoData* aData) : nsEventRecieverSH(aData)
+  nsWindowSH(nsDOMClassInfoData* aData) : nsEventReceiverSH(aData)
   {
   }
 
@@ -385,10 +387,10 @@ public:
 // DOM Node helper, this class deals with setting the parent for the
 // wrappers
 
-class nsNodeSH : public nsEventRecieverSH
+class nsNodeSH : public nsEventReceiverSH
 {
 protected:
-  nsNodeSH(nsDOMClassInfoData* aData) : nsEventRecieverSH(aData)
+  nsNodeSH(nsDOMClassInfoData* aData) : nsEventReceiverSH(aData)
   {
   }
 

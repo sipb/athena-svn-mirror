@@ -208,7 +208,9 @@ NS_IMETHODIMP nsDocShellTreeOwner::FindItemWithName(const PRUnichar* aName,
     return NS_OK;
   if(name.EqualsIgnoreCase("_blank"))
     return NS_OK;
-  if(name.EqualsIgnoreCase("_content")) {
+  // _main is an IE target which should be case-insensitive but isn't
+  // see bug 217886 for details
+  if(name.EqualsIgnoreCase("_content") || name.Equals(NS_LITERAL_STRING("_main"))) {
     *aFoundItem = mWebBrowser->mDocShellAsItem;
     NS_IF_ADDREF(*aFoundItem);
     return NS_OK;
@@ -897,9 +899,9 @@ DefaultTooltipTextProvider::DefaultTooltipTextProvider()
 {
     // There are certain element types which we don't want to use
     // as tool tip text. 
-    mTag_dialog       = getter_AddRefs(NS_NewAtom("dialog"));
-    mTag_dialogheader = getter_AddRefs(NS_NewAtom("dialogheader"));
-    mTag_window       = getter_AddRefs(NS_NewAtom("window"));   
+    mTag_dialog       = do_GetAtom("dialog");
+    mTag_dialogheader = do_GetAtom("dialogheader");
+    mTag_window       = do_GetAtom("window");   
 }
 
 /* void getNodeText (in nsIDOMNode aNode, out wstring aText); */
@@ -918,7 +920,7 @@ NS_IMETHODIMP DefaultTooltipTextProvider::GetNodeText(nsIDOMNode *aNode, PRUnich
       nsCOMPtr<nsIContent> content(do_QueryInterface(currElement));
       if (content) {
         nsCOMPtr<nsIAtom> tagAtom;
-        content->GetTag(*getter_AddRefs(tagAtom));
+        content->GetTag(getter_AddRefs(tagAtom));
         if (tagAtom != mTag_dialog &&
             tagAtom != mTag_dialogheader &&
             tagAtom != mTag_window) {

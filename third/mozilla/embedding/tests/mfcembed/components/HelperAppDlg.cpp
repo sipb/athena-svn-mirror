@@ -65,8 +65,8 @@
 //         clicking on the "Choose..." button), the specified app
 //         is run after the content is downloaded
 //
-//      3. In either case, CHelperAppLauncherDialog::ShowProgressDialog()
-//         will be called which is used to display a download progress
+//      3. In either case, an instance of nsIProgressDialog will be created
+//         which is used to display a download progress
 //         dialog box. This dialog box registers itself as a
 //         WebProgressListener so that it can receive the progress change
 //         messages, using which it can update the progress bar
@@ -209,7 +209,8 @@ CWnd* CHelperAppLauncherDialog::GetParentFromContext(nsISupports *aWindowContext
 // when Gecko encounters a mime type it cannot handle
 //
 NS_IMETHODIMP CHelperAppLauncherDialog::Show(nsIHelperAppLauncher *aLauncher, 
-                                             nsISupports *aContext)
+                                             nsISupports *aContext,
+                                             PRBool aForced)
 {
     ResourceState setState;
 
@@ -255,7 +256,8 @@ NS_IMETHODIMP CHelperAppLauncherDialog::Show(nsIHelperAppLauncher *aLauncher,
 // We prompt the user for the filename to which the content
 // will be saved into
 //
-NS_IMETHODIMP CHelperAppLauncherDialog::PromptForSaveToFile(nsISupports *aWindowContext, 
+NS_IMETHODIMP CHelperAppLauncherDialog::PromptForSaveToFile(nsIHelperAppLauncher* aLauncher,
+                                                             nsISupports *aWindowContext, 
                                                              const PRUnichar *aDefaultFile, 
                                                              const PRUnichar *aSuggestedFileExtension, 
                                                              nsILocalFile **_retval)
@@ -277,28 +279,6 @@ NS_IMETHODIMP CHelperAppLauncherDialog::PromptForSaveToFile(nsISupports *aWindow
     }
     else
         return NS_ERROR_FAILURE;
-}
-
-// Displays a download progress dialog whether the user chose a
-// "Save To Disk" or an "Open Using An App" option earlier
-//
-NS_IMETHODIMP CHelperAppLauncherDialog::ShowProgressDialog(nsIHelperAppLauncher *aLauncher, 
-                                                           nsISupports *aContext)
-{
-    ResourceState setState;
-
-    NS_ENSURE_ARG_POINTER(aLauncher);
-
-    CProgressDlg *pProgressDlg = new CProgressDlg(aLauncher, m_HandleContentOp, m_FileName);
-    if(!pProgressDlg)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    nsCOMPtr<nsIWebProgressListener> listener = NS_STATIC_CAST(nsIWebProgressListener*, pProgressDlg);
-    aLauncher->SetWebProgressListener(listener);
-
-    pProgressDlg->Create(IDD_PROGRESS_DIALOG);
-
-    return NS_OK;
 }
 
 //*****************************************************************************

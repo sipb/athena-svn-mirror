@@ -22,7 +22,7 @@
    - Contributor(s): Garth Smedley <garths@oeone.com> 
    -                 Mike Potter <mikep@oeone.com>
    -                 Colin Phillips <colinp@oeone.com>
-   -                 Chris Charabaruk <coldacid@meldstar.com>
+   -                 Chris Charabaruk <coldacid@djfly.org>
    -                 Karl Guertin <grayrest@grayrest.com> 
    -                 Dan Parent <danp@oeone.com> 
    -                 ArentJan Banck <ajbanck@planet.nl> 
@@ -115,7 +115,7 @@
    <command id="month_view_command" oncommand="gCalendarWindow.switchToMonthView()" disabled="true"/>
    <command id="multiweek_view_command" oncommand="gCalendarWindow.switchToMultiweekView()" disabled="false"/>
    
-   <command id="import_command" oncommand="loadEventsFromFile()"/>
+   <command id="import_command" oncommand="startImport()"/>
    <command id="export_command" oncommand="saveEventsToFile()" disabled="true" disabledwhennoeventsselected="true"/>
    
    <command id="refresh_remote_calendars" oncommand="gCalendarWindow.calendarManager.refreshAllRemoteCalendars()"/>
@@ -163,11 +163,20 @@
 <script type="application/x-javascript">
   var confirmDeleteEvent = "&calendar.confirm.deleteevent;";
   var confirmDeleteUntitledEvent = "&calendar.confirm.deleteuntitledevent;";
+  var defaultCalendarFileName = "&calendar.file.default.name;";
 </script>
 
-<!-- Javascript includes -->
+<!-- STRING BUNDLE for calendar properties -->
+<stringbundleset id="stringbundleset">
+  <stringbundle id="bundle_calendar" src="chrome://calendar/locale/calendar.properties"/>
+  <stringbundle id="bundle_calendar_email" src="chrome://calendar/locale/email.properties"/>
+</stringbundleset>
+<script type="application/x-javascript">
+   var gCalendarBundle = document.getElementById("bundle_calendar");
+   var gCalendarEmailBundle = document.getElementById("bundle_calendar_email");
+</script>  
 
-<script type="application/x-javascript" src="chrome://global/content/strres.js"/>
+<!-- Javascript includes -->
 
 <script type="application/x-javascript" src="chrome://calendar/content/jslib/jslib.js"/>
 
@@ -355,6 +364,7 @@
                               <listcell class="calendar-list-item-class"
                                  label="rdf:http://home.netscape.com/NC-rdf#name"
                                  flex="1"
+                                 style="background-color: rdf:http://home.netscape.com/NC-rdf#color"
                                  type="checkbox"
                                  checked="rdf:http://home.netscape.com/NC-rdf#active"
                                  />
@@ -371,7 +381,7 @@
             </tabpanel>
             </tabpanels>
          </tabbox>
-         <splitter id="calendar-todo-splitter" collapse="after" persist="state"
+         <splitter id="calendar-todo-splitter" collapse="before" persist="state"
             class="chromeclass-extrachrome" orient="vertical">
             <grippy/>
          </splitter>
@@ -385,43 +395,43 @@
             <tree id="unifinder-todo-tree" flex="1" enableColumnDrag="false" ondblclick="modifyToDoCommand( event )">
                <treecols id="unifinder-todo-tree-cols">
                   <treecol id="unifinder-todo-tree-col-completed"
-                     persist="hidden ordinal width" width="18" cycler="true"
+                     persist="hidden ordinal width sortDirection sortActive" width="18" cycler="true"
                      label="&calendar.unifinder.tree.done.label;">
                      <image id="checkboximg" contextmenu="taskitem-context-menu"/>
                   </treecol>
                   <splitter class="tree-splitter"/>
                    <treecol id="unifinder-todo-tree-col-priority" 
-                      persist="hidden ordinal width" width="18" 
+                      persist="hidden ordinal width sortDirection sortActive" width="18" 
                       label="&calendar.unifinder.tree.priority.label;">
                            <image id="priorityimg" contextmenu="taskitem-context-menu"/>
                       </treecol>
                    <splitter class="tree-splitter"/>
                    <treecol id="unifinder-todo-tree-col-title"
-                      persist="hidden ordinal width" flex="1" 
+                      persist="hidden ordinal width sortDirection sortActive" flex="1" 
                       label="&calendar.unifinder.tree.title.label;" />
                    <splitter class="tree-splitter"/>
                    <treecol id="unifinder-todo-tree-col-startdate"
-                      persist="hidden ordinal width" 
+                      persist="hidden ordinal width sortDirection sortActive" 
                       hidden="true"
                       flex="1" label="&calendar.unifinder.tree.startdate.label;"/>
                    <splitter class="tree-splitter"/>
                    <treecol id="unifinder-todo-tree-col-duedate"
-                      persist="hidden ordinal width" 
+                      persist="hidden ordinal width sortDirection sortActive" 
                       hidden="true"
                       flex="1" label="&calendar.unifinder.tree.duedate.label;"/>
                    <splitter class="tree-splitter"/>
                    <treecol id="unifinder-todo-tree-col-completeddate"
-                      persist="hidden ordinal width" 
+                      persist="hidden ordinal width sortDirection sortActive" 
                       hidden="true"
                       flex="1" label="&calendar.unifinder.tree.completeddate.label;"/>
                    <splitter class="tree-splitter"/>
                    <treecol id="unifinder-todo-tree-col-percentcomplete"
-                      persist="hidden ordinal width" 
+                      persist="hidden ordinal width sortDirection sortActive" 
                       hidden="true"
                       flex="1" label="&calendar.unifinder.tree.percentcomplete.label;"/>
                    <splitter class="tree-splitter"/>
                    <treecol id="unifinder-todo-tree-col-categories"
-                      persist="hidden ordinal width" 
+                      persist="hidden ordinal width sortDirection sortActive" 
                       hidden="true"
                       flex="1" label="&calendar.unifinder.tree.categories.label;"/>
                   </treecols>
@@ -496,6 +506,11 @@
                       flex="1"
                       hidden="true"
                       label="&calendar.unifinder.tree.status.label;"/>
+                   <treecol id="unifinder-search-results-tree-col-filename"
+                      persist="hidden ordinal width sortDirection sortActive" 
+                      flex="1"
+                      hidden="true"
+                      label="&calendar.unifinder.tree.filename.label;"/>
                   </treecols>
        
                   <!-- on mousedown here happens before onclick above -->

@@ -163,10 +163,7 @@ PR_STATIC_CALLBACK(const void *)
 PrimaryFrameMapGetKey(PLDHashTable *table, PLDHashEntryHdr *hdr)
 {
   PrimaryFrameMapEntry *entry = NS_STATIC_CAST(PrimaryFrameMapEntry*, hdr);
-  nsCOMPtr<nsIContent> content;
-  entry->frame->GetContent(getter_AddRefs(content));
-  return content;
-  // and then release it, but we know the frame still owns it :-)
+  return entry->frame->GetContent();
 }
 
 PR_STATIC_CALLBACK(PRBool)
@@ -175,9 +172,7 @@ PrimaryFrameMapMatchEntry(PLDHashTable *table, const PLDHashEntryHdr *hdr,
 {
   const PrimaryFrameMapEntry *entry =
     NS_STATIC_CAST(const PrimaryFrameMapEntry*, hdr);
-  nsCOMPtr<nsIContent> content;
-  entry->frame->GetContent(getter_AddRefs(content));
-  return content == key;
+  return entry->frame->GetContent() == key;
 }
 
 static PLDHashTableOps PrimaryFrameMapOps = {
@@ -286,10 +281,11 @@ public:
   NS_IMETHOD SetRootFrame(nsIFrame* aRootFrame);
   
   // Get the canvas frame: searches from the Root frame down, may be null
-  NS_IMETHOD GetCanvasFrame(nsIPresContext* aPresContext, nsIFrame** aCanvasFrame) const;
+  NS_IMETHOD GetCanvasFrame(nsIFrame** aCanvasFrame) const;
 
   // Primary frame functions
-  NS_IMETHOD GetPrimaryFrameFor(nsIContent* aContent, nsIFrame** aPrimaryFrame);
+  NS_IMETHOD GetPrimaryFrameFor(nsIContent* aContent,
+                                nsIFrame** aPrimaryFrame);
   NS_IMETHOD SetPrimaryFrameFor(nsIContent* aContent,
                                 nsIFrame*   aPrimaryFrame);
   NS_IMETHOD ClearPrimaryFrameMap();
@@ -303,72 +299,60 @@ public:
 
   // Undisplayed content functions
   virtual nsStyleContext* GetUndisplayedContent(nsIContent* aContent);
-  virtual void SetUndisplayedContent(nsIContent* aContent, nsStyleContext* aStyleContext);
-  NS_IMETHOD ClearUndisplayedContentIn(nsIContent* aContent, nsIContent* aParentContent);
+  virtual void SetUndisplayedContent(nsIContent* aContent,
+                                     nsStyleContext* aStyleContext);
+  virtual void ChangeUndisplayedContent(nsIContent* aContent,
+                                        nsStyleContext* aStyleContext);
+  NS_IMETHOD ClearUndisplayedContentIn(nsIContent* aContent,
+                                       nsIContent* aParentContent);
   NS_IMETHOD ClearAllUndisplayedContentIn(nsIContent* aParentContent);
   NS_IMETHOD ClearUndisplayedContentMap();
 
   // Functions for manipulating the frame model
-  NS_IMETHOD AppendFrames(nsIPresContext* aPresContext,
-                          nsIPresShell&   aPresShell,
-                          nsIFrame*       aParentFrame,
+  NS_IMETHOD AppendFrames(nsIFrame*       aParentFrame,
                           nsIAtom*        aListName,
                           nsIFrame*       aFrameList);
-  NS_IMETHOD InsertFrames(nsIPresContext* aPresContext,
-                          nsIPresShell&   aPresShell,
-                          nsIFrame*       aParentFrame,
+  NS_IMETHOD InsertFrames(nsIFrame*       aParentFrame,
                           nsIAtom*        aListName,
                           nsIFrame*       aPrevFrame,
                           nsIFrame*       aFrameList);
-  NS_IMETHOD RemoveFrame(nsIPresContext* aPresContext,
-                         nsIPresShell&   aPresShell,
-                         nsIFrame*       aParentFrame,
+  NS_IMETHOD RemoveFrame(nsIFrame*       aParentFrame,
                          nsIAtom*        aListName,
                          nsIFrame*       aOldFrame);
-  NS_IMETHOD ReplaceFrame(nsIPresContext* aPresContext,
-                          nsIPresShell&   aPresShell,
-                          nsIFrame*       aParentFrame,
+  NS_IMETHOD ReplaceFrame(nsIFrame*       aParentFrame,
                           nsIAtom*        aListName,
                           nsIFrame*       aOldFrame,
                           nsIFrame*       aNewFrame);
   
-  NS_IMETHOD CantRenderReplacedElement(nsIPresContext* aPresContext,
-                                       nsIFrame*       aFrame);
+  NS_IMETHOD CantRenderReplacedElement(nsIFrame* aFrame);
 
   NS_IMETHOD NotifyDestroyingFrame(nsIFrame* aFrame);
 
-  NS_IMETHOD ReParentStyleContext(nsIPresContext* aPresContext,
-                                  nsIFrame* aFrame, 
+  NS_IMETHOD ReParentStyleContext(nsIFrame* aFrame, 
                                   nsStyleContext* aNewParentContext);
-  NS_IMETHOD ComputeStyleChangeFor(nsIPresContext* aPresContext,
-                                   nsIFrame* aFrame, 
+  NS_IMETHOD ComputeStyleChangeFor(nsIFrame* aFrame, 
                                    PRInt32 aAttrNameSpaceID,
                                    nsIAtom* aAttribute,
                                    nsStyleChangeList& aChangeList,
                                    nsChangeHint aMinChange,
                                    nsChangeHint& aTopLevelChange);
-  NS_IMETHOD HasAttributeDependentStyle(nsIPresContext *aPresContext,
-                                        nsIContent *aContent,
+  NS_IMETHOD HasAttributeDependentStyle(nsIContent *aContent,
                                         nsIAtom *aAttribute,
                                         PRInt32 aModType,
                                         PRBool *aResult);
 
   // Capture state from the entire frame heirarchy and store in aState
-  NS_IMETHOD CaptureFrameState(nsIPresContext*        aPresContext,
-                               nsIFrame*              aFrame,
+  NS_IMETHOD CaptureFrameState(nsIFrame*              aFrame,
                                nsILayoutHistoryState* aState);
-  NS_IMETHOD RestoreFrameState(nsIPresContext*        aPresContext,
-                               nsIFrame*              aFrame,
+  NS_IMETHOD RestoreFrameState(nsIFrame*              aFrame,
                                nsILayoutHistoryState* aState);
   // Add/restore state for one frame (special, global type, like scroll position)
-  NS_IMETHOD CaptureFrameStateFor(nsIPresContext*     aPresContext,
-                               nsIFrame*              aFrame,
-                               nsILayoutHistoryState* aState,
-                               nsIStatefulFrame::SpecialStateID aID = nsIStatefulFrame::eNoID);
-  NS_IMETHOD RestoreFrameStateFor(nsIPresContext*     aPresContext,
-                               nsIFrame*              aFrame,
-                               nsILayoutHistoryState* aState,
-                               nsIStatefulFrame::SpecialStateID aID = nsIStatefulFrame::eNoID);
+  NS_IMETHOD CaptureFrameStateFor(nsIFrame*              aFrame,
+                                  nsILayoutHistoryState* aState,
+                                  nsIStatefulFrame::SpecialStateID aID = nsIStatefulFrame::eNoID);
+  NS_IMETHOD RestoreFrameStateFor(nsIFrame*              aFrame,
+                                  nsILayoutHistoryState* aState,
+                                  nsIStatefulFrame::SpecialStateID aID = nsIStatefulFrame::eNoID);
   // Gets and sets properties on a given frame
   NS_IMETHOD GetFrameProperty(nsIFrame* aFrame,
                               nsIAtom*  aPropertyName,
@@ -382,7 +366,7 @@ public:
                                  nsIAtom*  aPropertyName);
 
 #ifdef NS_DEBUG
-  NS_IMETHOD DebugVerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFrame);
+  NS_IMETHOD DebugVerifyStyleTree(nsIFrame* aFrame);
 #endif
 
   struct PropertyList {
@@ -403,6 +387,12 @@ public:
     void Destroy(nsIPresContext* aPresContext);
   };
 private:
+
+  nsIPresShell* GetPresShell() const { return mPresShell; }
+  nsIPresContext* GetPresContext() const {
+    return mPresShell->GetPresContext();
+  }
+  nsIStyleSet* GetStyleSet() const { return mStyleSet; }
 
   nsIPresShell*                   mPresShell;    // weak link, because the pres shell owns us
   nsIStyleSet*                    mStyleSet;     // weak link. pres shell holds a reference
@@ -542,11 +532,11 @@ FrameManager::SetRootFrame(nsIFrame* aRootFrame)
 }
 
 NS_IMETHODIMP
-FrameManager::GetCanvasFrame(nsIPresContext* aPresContext, nsIFrame** aCanvasFrame) const
+FrameManager::GetCanvasFrame(nsIFrame** aCanvasFrame) const
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
   NS_PRECONDITION(aCanvasFrame, "aCanvasFrame argument cannot be null");
-  NS_PRECONDITION(aPresContext, "aPresContext argument cannot be null");
+  nsIPresContext *presContext = GetPresContext();
 
   *aCanvasFrame = nsnull;
   if (mRootFrame) {
@@ -564,11 +554,11 @@ FrameManager::GetCanvasFrame(nsIPresContext* aPresContext, nsIFrame** aCanvasFra
           *aCanvasFrame = siblingFrame;
           break;
         } else {
-          siblingFrame->GetNextSibling(&siblingFrame);
+          siblingFrame = siblingFrame->GetNextSibling();
         }
       }
       // move on to the child's child
-      childFrame->FirstChild(aPresContext, nsnull, &childFrame);
+      childFrame->FirstChild(presContext, nsnull, &childFrame);
     }
   }
   return NS_OK;
@@ -627,18 +617,18 @@ FrameManager::GetPrimaryFrameFor(nsIContent* aContent, nsIFrame** aResult)
       // if any methods in here fail, don't report that failure
       // we're just trying to enhance performance here, not test for correctness
       nsFindFrameHint hint;
-      nsCOMPtr<nsIContent> prevSibling, parent;
-      rv = aContent->GetParent(*getter_AddRefs(parent));
-      if (NS_SUCCEEDED(rv) && parent)
+      nsIContent* parent = aContent->GetParent();
+      if (parent)
       {
         PRInt32 index;
         rv = parent->IndexOf(aContent, index);
-        if (NS_SUCCEEDED(rv) && index>0)  // no use looking if it's the first child
+        if (NS_SUCCEEDED(rv) && index > 0)  // no use looking if it's the first child
         {
+          nsCOMPtr<nsIContent> prevSibling;
           nsCOMPtr<nsIAtom> tag;
           do {
-            parent->ChildAt(--index, *getter_AddRefs(prevSibling));
-            prevSibling->GetTag(*getter_AddRefs(tag));
+            parent->ChildAt(--index, getter_AddRefs(prevSibling));
+            prevSibling->GetTag(getter_AddRefs(tag));
           } while (index &&
                    (tag == nsLayoutAtoms::textTagName ||
                     tag == nsLayoutAtoms::commentTagName ||
@@ -680,10 +670,7 @@ FrameManager::SetPrimaryFrameFor(nsIContent* aContent,
   // This code should be used if/when we switch back to a 2-word entry
   // in the primary frame map.
 #if 0
-//#ifdef DEBUG
-    nsCOMPtr<nsIContent> content;
-    aPrimaryFrame->GetContent(getter_AddRefs(content));
-    NS_PRECONDITION(content == aContent, "wrong content");
+    NS_PRECONDITION(aPrimaryFrame->GetContent() == aContent, "wrong content");
 #endif
 
     // Create a new hashtable if necessary
@@ -822,8 +809,7 @@ FrameManager::GetUndisplayedContent(nsIContent* aContent)
   if (!aContent || !mUndisplayedMap)
     return nsnull;
 
-  nsCOMPtr<nsIContent> parent;
-  aContent->GetParent(*getter_AddRefs(parent));
+  nsIContent* parent = aContent->GetParent();
   if (!parent)
     return nsnull;
 
@@ -852,14 +838,36 @@ FrameManager::SetUndisplayedContent(nsIContent* aContent,
     mUndisplayedMap = new UndisplayedMap;
   }
   if (mUndisplayedMap) {
-    nsIContent* parent = nsnull;
-    aContent->GetParent(parent);
+    nsIContent* parent = aContent->GetParent();
     NS_ASSERTION(parent, "undisplayed content must have a parent");
     if (parent) {
       mUndisplayedMap->AddNodeFor(parent, aContent, aStyleContext);
-      NS_RELEASE(parent);
     }
   }
+}
+
+void
+FrameManager::ChangeUndisplayedContent(nsIContent* aContent, 
+                                       nsStyleContext* aStyleContext)
+{
+  if (!mPresShell)
+    return;
+  NS_ASSERTION(mUndisplayedMap, "no existing undisplayed content");
+  
+#ifdef DEBUG_UNDISPLAYED_MAP
+   static int i = 0;
+   printf("ChangeUndisplayedContent(%d): p=%p \n", i++, (void *)aContent);
+#endif
+
+  for (UndisplayedNode* node = mUndisplayedMap->GetFirstNode(aContent->GetParent());
+         node; node = node->mNext) {
+    if (node->mContent == aContent) {
+      node->mStyle = aStyleContext;
+      return;
+    }
+  }
+
+  NS_NOTREACHED("no existing undisplayed content");
 }
 
 NS_IMETHODIMP
@@ -929,21 +937,17 @@ FrameManager::ClearUndisplayedContentMap()
 //----------------------------------------------------------------------
 
 NS_IMETHODIMP
-FrameManager::AppendFrames(nsIPresContext* aPresContext,
-                           nsIPresShell&   aPresShell,
-                           nsIFrame*       aParentFrame,
+FrameManager::AppendFrames(nsIFrame*       aParentFrame,
                            nsIAtom*        aListName,
                            nsIFrame*       aFrameList)
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
-  return aParentFrame->AppendFrames(aPresContext, aPresShell, aListName,
-                                    aFrameList);
+  return aParentFrame->AppendFrames(GetPresContext(), *GetPresShell(),
+                                    aListName, aFrameList);
 }
 
 NS_IMETHODIMP
-FrameManager::InsertFrames(nsIPresContext* aPresContext,
-                           nsIPresShell&   aPresShell,
-                           nsIFrame*       aParentFrame,
+FrameManager::InsertFrames(nsIFrame*       aParentFrame,
                            nsIAtom*        aListName,
                            nsIFrame*       aPrevFrame,
                            nsIFrame*       aFrameList)
@@ -963,14 +967,12 @@ FrameManager::InsertFrames(nsIPresContext* aPresContext,
   }
 #endif // IBMBIDI
 
-  return aParentFrame->InsertFrames(aPresContext, aPresShell, aListName,
-                                    aPrevFrame, aFrameList);
+  return aParentFrame->InsertFrames(GetPresContext(), *GetPresShell(),
+                                    aListName, aPrevFrame, aFrameList);
 }
 
 NS_IMETHODIMP
-FrameManager::RemoveFrame(nsIPresContext* aPresContext,
-                          nsIPresShell&   aPresShell,
-                          nsIFrame*       aParentFrame,
+FrameManager::RemoveFrame(nsIFrame*       aParentFrame,
                           nsIAtom*        aListName,
                           nsIFrame*       aOldFrame)
 {
@@ -981,25 +983,23 @@ FrameManager::RemoveFrame(nsIPresContext* aPresContext,
   nsIFrame* nextBidi;
   GetFrameProperty(aOldFrame, nsLayoutAtoms::nextBidi, 0, (void**) &nextBidi);
   if (nextBidi) {
-    RemoveFrame(aPresContext, aPresShell, aParentFrame, aListName, nextBidi);
+    RemoveFrame(aParentFrame, aListName, nextBidi);
   }
 #endif // IBMBIDI
 
-  return aParentFrame->RemoveFrame(aPresContext, aPresShell, aListName,
-                                   aOldFrame);
+  return aParentFrame->RemoveFrame(GetPresContext(), *GetPresShell(),
+                                   aListName, aOldFrame);
 }
 
 NS_IMETHODIMP
-FrameManager::ReplaceFrame(nsIPresContext* aPresContext,
-                           nsIPresShell&   aPresShell,
-                           nsIFrame*       aParentFrame,
+FrameManager::ReplaceFrame(nsIFrame*       aParentFrame,
                            nsIAtom*        aListName,
                            nsIFrame*       aOldFrame,
                            nsIFrame*       aNewFrame)
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
-  return aParentFrame->ReplaceFrame(aPresContext, aPresShell, aListName,
-                                    aOldFrame, aNewFrame);
+  return aParentFrame->ReplaceFrame(GetPresContext(), *GetPresShell(),
+                                    aListName, aOldFrame, aNewFrame);
 }
 
 //----------------------------------------------------------------------
@@ -1019,10 +1019,8 @@ FrameManager::NotifyDestroyingFrame(nsIFrame* aFrame)
 
 #ifdef DEBUG
   if (mPrimaryFrameMap.ops) {
-    nsCOMPtr<nsIContent> content;
-    aFrame->GetContent(getter_AddRefs(content));
     PrimaryFrameMapEntry *entry = NS_STATIC_CAST(PrimaryFrameMapEntry*,
-        PL_DHashTableOperate(&mPrimaryFrameMap, content, PL_DHASH_LOOKUP));
+        PL_DHashTableOperate(&mPrimaryFrameMap, aFrame->GetContent(), PL_DHASH_LOOKUP));
     NS_ASSERTION(!PL_DHASH_ENTRY_IS_BUSY(entry) || entry->frame != aFrame,
                  "frame was not removed from primary frame map before "
                  "destruction or was readded to map after being removed");
@@ -1207,7 +1205,7 @@ nsresult CantRenderReplacedElementEvent::AddLoadGroupRequest(nsIPresShell* aPres
   rv = mDummyLayoutRequest->SetLoadGroup(loadGroup);
   if (NS_FAILED(rv)) return rv;
   
-  mPresShell = getter_AddRefs(NS_GetWeakReference(aPresShell));
+  mPresShell = do_GetWeakReference(aPresShell);
 
   return loadGroup->AddRequest(mDummyLayoutRequest, nsnull);
 }
@@ -1238,8 +1236,7 @@ nsresult CantRenderReplacedElementEvent::RemoveLoadGroupRequest()
 }
 
 NS_IMETHODIMP
-FrameManager::CantRenderReplacedElement(nsIPresContext* aPresContext,
-                                        nsIFrame*       aFrame)
+FrameManager::CantRenderReplacedElement(nsIFrame*       aFrame)
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
 #ifdef NOISY_EVENTS
@@ -1418,9 +1415,7 @@ VerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFrame, nsStyleContext* 
     child = nsnull;
     nsresult result = aFrame->FirstChild(aPresContext, childList, &child);
     while ((NS_SUCCEEDED(result)) && child) {
-      nsFrameState  state;
-      child->GetFrameState(&state);
-      if (NS_FRAME_OUT_OF_FLOW != (state & NS_FRAME_OUT_OF_FLOW)) {
+      if (NS_FRAME_OUT_OF_FLOW != (child->GetStateBits() & NS_FRAME_OUT_OF_FLOW)) {
         // only do frames that are in flow
         child->GetFrameType(&frameType);
         if (nsLayoutAtoms::placeholderFrame == frameType) { 
@@ -1441,7 +1436,7 @@ VerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFrame, nsStyleContext* 
         }
         NS_IF_RELEASE(frameType);
       }
-      child->GetNextSibling(&child);
+      child = child->GetNextSibling();
     }
 
     NS_IF_RELEASE(childList);
@@ -1462,13 +1457,13 @@ VerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFrame, nsStyleContext* 
 }
 
 NS_IMETHODIMP
-FrameManager::DebugVerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFrame)
+FrameManager::DebugVerifyStyleTree(nsIFrame* aFrame)
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
   if (aFrame) {
     nsStyleContext* context = aFrame->GetStyleContext();
     nsStyleContext* parentContext = context->GetParent();
-    VerifyStyleTree(aPresContext, aFrame, parentContext);
+    VerifyStyleTree(GetPresContext(), aFrame, parentContext);
   }
   return NS_OK;
 }
@@ -1476,22 +1471,22 @@ FrameManager::DebugVerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFram
 #endif // DEBUG
 
 NS_IMETHODIMP
-FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
-                                   nsIFrame* aFrame, 
+FrameManager::ReParentStyleContext(nsIFrame* aFrame, 
                                    nsStyleContext* aNewParentContext)
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
   nsresult result = NS_ERROR_NULL_POINTER;
   if (aFrame) {
 #ifdef NS_DEBUG
-    DebugVerifyStyleTree(aPresContext, aFrame);
+    DebugVerifyStyleTree(aFrame);
 #endif
 
     nsStyleContext* oldContext = aFrame->GetStyleContext();
     if (oldContext) {
+      nsIPresContext *presContext = GetPresContext();
       nsRefPtr<nsStyleContext> newContext;
       result = NS_OK;
-      newContext = mStyleSet->ReParentStyleContext(aPresContext, oldContext,
+      newContext = mStyleSet->ReParentStyleContext(presContext, oldContext,
                                                    aNewParentContext);
       if (newContext) {
         if (newContext != oldContext) {
@@ -1502,11 +1497,9 @@ FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
 
           do {
             child = nsnull;
-            result = aFrame->FirstChild(aPresContext, childList, &child);
+            result = aFrame->FirstChild(presContext, childList, &child);
             while ((NS_SUCCEEDED(result)) && child) {
-              nsFrameState  state;
-              child->GetFrameState(&state);
-              if (NS_FRAME_OUT_OF_FLOW != (state & NS_FRAME_OUT_OF_FLOW)) {
+              if (NS_FRAME_OUT_OF_FLOW != (child->GetStateBits() & NS_FRAME_OUT_OF_FLOW)) {
                 // only do frames that are in flow
                 child->GetFrameType(&frameType);
                 if (nsLayoutAtoms::placeholderFrame == frameType) { // placeholder
@@ -1514,26 +1507,26 @@ FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
                   nsIFrame* outOfFlowFrame = ((nsPlaceholderFrame*)child)->GetOutOfFlowFrame();
                   NS_ASSERTION(outOfFlowFrame, "no out-of-flow frame");
 
-                  result = ReParentStyleContext(aPresContext, outOfFlowFrame, newContext);
+                  result = ReParentStyleContext(outOfFlowFrame, newContext);
 
                   // reparent placeholder's context under out of flow frame
                   nsStyleContext* outOfFlowContext = outOfFlowFrame->GetStyleContext();
-                  ReParentStyleContext(aPresContext, child, outOfFlowContext);
+                  ReParentStyleContext(child, outOfFlowContext);
                 }
                 else { // regular frame
-                  result = ReParentStyleContext(aPresContext, child, newContext);
+                  result = ReParentStyleContext(child, newContext);
                 }
                 NS_IF_RELEASE(frameType);
               }
 
-              child->GetNextSibling(&child);
+              child = child->GetNextSibling();
             }
 
             NS_IF_RELEASE(childList);
             aFrame->GetAdditionalChildListName(listIndex++, &childList);
           } while (childList);
           
-          aFrame->SetStyleContext(aPresContext, newContext);
+          aFrame->SetStyleContext(presContext, newContext);
 
           // do additional contexts 
           PRInt32 contextIndex = -1;
@@ -1541,7 +1534,7 @@ FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
             nsStyleContext* oldExtraContext = aFrame->GetAdditionalStyleContext(++contextIndex);
             if (oldExtraContext) {
               nsRefPtr<nsStyleContext> newExtraContext;
-              newExtraContext = mStyleSet->ReParentStyleContext(aPresContext,
+              newExtraContext = mStyleSet->ReParentStyleContext(presContext,
                                                                 oldExtraContext,
                                                                 newContext);
               if (newExtraContext) {
@@ -1554,7 +1547,7 @@ FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
             }
           }
 #ifdef NS_DEBUG
-          VerifyStyleTree(aPresContext, aFrame, aNewParentContext);
+          VerifyStyleTree(GetPresContext(), aFrame, aNewParentContext);
 #endif
         }
       }
@@ -1586,7 +1579,7 @@ HasAttributeContent(nsStyleContext* aStyleContext,
           PRInt32 error;
           attrNameSpace = nameSpaceVal.ToInteger(&error, 10);
           contentString.Cut(0, barIndex + 1);
-          if (contentString.Length()) {
+          if (!contentString.IsEmpty()) {
             attrName = NS_NewAtom(contentString);
           }
         }
@@ -1642,19 +1635,11 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
   if (oldContext) {
     oldContext->AddRef();
     nsCOMPtr<nsIAtom> pseudoTag = oldContext->GetPseudoType();
-    nsIContent* localContent = nsnull;
-    nsIContent* content = nsnull;
-    result = aFrame->GetContent(&localContent);
-    if (NS_SUCCEEDED(result) && localContent) {
-      content = localContent;
-    }
-    else {
-      content = aParentContent;
-    }
+    nsIContent* localContent = aFrame->GetContent();
+    nsIContent* content = localContent ? localContent : aParentContent;
+
     if (aParentContent && aAttribute) { // attribute came from parent, we don't care about it here when recursing
-      nsFrameState  frameState;
-      aFrame->GetFrameState(&frameState);
-      if (0 == (frameState & NS_FRAME_GENERATED_CONTENT)) { // keep it for generated content
+      if (!(aFrame->GetStateBits() & NS_FRAME_GENERATED_CONTENT)) { // keep it for generated content
         aAttribute = nsnull;
       }
     }
@@ -1725,10 +1710,7 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
     NS_ASSERTION(newContext, "failed to get new style context");
     if (newContext) {
       if (!parentContext) {
-        nsRuleNode *oldNode, *newNode;
-        oldContext->GetRuleNode(&oldNode);
-        newContext->GetRuleNode(&newNode);
-        if (oldNode == newNode) {
+        if (oldContext->GetRuleNode() == newContext->GetRuleNode()) {
           // We're the root of the style context tree and the new style
           // context returned has the same rule node.  This means that
           // we can use FindChildWithRules to keep a lot of the old
@@ -1751,7 +1733,7 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
         const nsStyleBackground* oldColor = oldContext->GetStyleBackground();
         const nsStyleBackground* newColor = newContext->GetStyleBackground();
 
-        if (oldColor->mBackgroundImage.Length() > 0 &&
+        if (!oldColor->mBackgroundImage.IsEmpty() &&
             oldColor->mBackgroundImage != newColor->mBackgroundImage) {
           // stop the image loading for the frame, the image has changed
           aPresContext->StopImagesFor(aFrame);
@@ -1926,9 +1908,7 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
         nsIFrame* child = nsnull;
         result = aFrame->FirstChild(aPresContext, childList, &child);
         while (NS_SUCCEEDED(result) && child) {
-          nsFrameState  state;
-          child->GetFrameState(&state);
-          if (!(state & NS_FRAME_OUT_OF_FLOW)) {
+          if (!(child->GetStateBits() & NS_FRAME_OUT_OF_FLOW)) {
             // only do frames that are in flow
             nsCOMPtr<nsIAtom> frameType;
             child->GetFrameType(getter_AddRefs(frameType));
@@ -1962,7 +1942,7 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
               }
             }
           }
-          child->GetNextSibling(&child);
+          child = child->GetNextSibling();
         }
 
         NS_IF_RELEASE(childList);
@@ -1972,13 +1952,11 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
     }
 
     newContext->Release();
-    NS_IF_RELEASE(localContent);
   }
 }
 
 NS_IMETHODIMP
-FrameManager::ComputeStyleChangeFor(nsIPresContext* aPresContext,
-                                    nsIFrame* aFrame, 
+FrameManager::ComputeStyleChangeFor(nsIFrame* aFrame, 
                                     PRInt32 aAttrNameSpaceID,
                                     nsIAtom* aAttribute,
                                     nsStyleChangeList& aChangeList,
@@ -2007,7 +1985,7 @@ FrameManager::ComputeStyleChangeFor(nsIPresContext* aPresContext,
     do {
       // Inner loop over next-in-flows of the current frame
       nsChangeHint frameChange;
-      ReResolveStyleContext(aPresContext, frame, nsnull,
+      ReResolveStyleContext(GetPresContext(), frame, nsnull,
                             aAttrNameSpaceID, aAttribute,
                             aChangeList, aTopLevelChange, frameChange);
       NS_UpdateHint(aTopLevelChange, frameChange);
@@ -2028,9 +2006,7 @@ FrameManager::ComputeStyleChangeFor(nsIPresContext* aPresContext,
     } while (frame);
 
     // Might we have special siblings?
-    nsFrameState frame2state;
-    frame2->GetFrameState(&frame2state);
-    if (! (frame2state & NS_FRAME_IS_SPECIAL)) {
+    if (!(frame2->GetStateBits() & NS_FRAME_IS_SPECIAL)) {
       // nothing more to do here
       return NS_OK;
     }
@@ -2043,8 +2019,7 @@ FrameManager::ComputeStyleChangeFor(nsIPresContext* aPresContext,
 
 
 NS_IMETHODIMP
-FrameManager::HasAttributeDependentStyle(nsIPresContext *aPresContext,
-                                         nsIContent *aContent,
+FrameManager::HasAttributeDependentStyle(nsIContent *aContent,
                                          nsIAtom *aAttribute,
                                          PRInt32 aModType,
                                          PRBool *aResult)
@@ -2059,7 +2034,7 @@ FrameManager::HasAttributeDependentStyle(nsIPresContext *aPresContext,
     return NS_OK;
   }
 
-  return mStyleSet->HasAttributeDependentStyle(aPresContext, aContent,
+  return mStyleSet->HasAttributeDependentStyle(GetPresContext(), aContent,
                                                aAttribute, aModType,
                                                aResult);
 }
@@ -2067,8 +2042,7 @@ FrameManager::HasAttributeDependentStyle(nsIPresContext *aPresContext,
 // Capture state for a given frame.
 // Accept a content id here, in some cases we may not have content (scroll position)
 NS_IMETHODIMP
-FrameManager::CaptureFrameStateFor(nsIPresContext* aPresContext,
-                                   nsIFrame* aFrame,
+FrameManager::CaptureFrameStateFor(nsIFrame* aFrame,
                                    nsILayoutHistoryState* aState,
                                    nsIStatefulFrame::SpecialStateID aID)
 {
@@ -2084,18 +2058,15 @@ FrameManager::CaptureFrameStateFor(nsIPresContext* aPresContext,
   // Capture the state, exit early if we get null (nothing to save)
   nsCOMPtr<nsIPresState> frameState;
   nsresult rv = NS_OK;
-  rv = statefulFrame->SaveState(aPresContext, getter_AddRefs(frameState));
+  rv = statefulFrame->SaveState(GetPresContext(), getter_AddRefs(frameState));
   if (!frameState) {
     return NS_OK;
   }
 
   // Generate the hash key to store the state under
   // Exit early if we get empty key
-  nsCOMPtr<nsIContent> content;
-  rv = aFrame->GetContent(getter_AddRefs(content));
-
   nsCAutoString stateKey;
-  rv = nsContentUtils::GenerateStateKey(content, aID, stateKey);
+  rv = nsContentUtils::GenerateStateKey(aFrame->GetContent(), aID, stateKey);
   if(NS_FAILED(rv) || stateKey.IsEmpty()) {
     return rv;
   }
@@ -2105,26 +2076,25 @@ FrameManager::CaptureFrameStateFor(nsIPresContext* aPresContext,
 }
 
 NS_IMETHODIMP
-FrameManager::CaptureFrameState(nsIPresContext* aPresContext,
-                                nsIFrame* aFrame,
+FrameManager::CaptureFrameState(nsIFrame* aFrame,
                                 nsILayoutHistoryState* aState)
 {
   nsresult rv = NS_OK;
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
   NS_PRECONDITION(nsnull != aFrame && nsnull != aState, "null parameters passed in");
 
-  rv = CaptureFrameStateFor(aPresContext, aFrame, aState);
+  rv = CaptureFrameStateFor(aFrame, aState);
 
   // Now capture state recursively for the frame hierarchy rooted at aFrame
   nsIAtom*  childListName = nsnull;
   PRInt32   childListIndex = 0;
   do {    
     nsIFrame* childFrame;
-    aFrame->FirstChild(aPresContext, childListName, &childFrame);
+    aFrame->FirstChild(GetPresContext(), childListName, &childFrame);
     while (childFrame) {             
-      rv = CaptureFrameState(aPresContext, childFrame, aState);
+      rv = CaptureFrameState(childFrame, aState);
       // Get the next sibling child frame
-      childFrame->GetNextSibling(&childFrame);
+      childFrame = childFrame->GetNextSibling();
     }
     NS_IF_RELEASE(childListName);
     aFrame->GetAdditionalChildListName(childListIndex++, &childListName);
@@ -2136,7 +2106,9 @@ FrameManager::CaptureFrameState(nsIPresContext* aPresContext,
 // Restore state for a given frame.
 // Accept a content id here, in some cases we may not have content (scroll position)
 NS_IMETHODIMP
-FrameManager::RestoreFrameStateFor(nsIPresContext* aPresContext, nsIFrame* aFrame, nsILayoutHistoryState* aState, nsIStatefulFrame::SpecialStateID aID)
+FrameManager::RestoreFrameStateFor(nsIFrame* aFrame,
+                                   nsILayoutHistoryState* aState,
+                                   nsIStatefulFrame::SpecialStateID aID)
 {
   NS_ENSURE_TRUE(mPresShell && aFrame && aState, NS_ERROR_FAILURE);
 
@@ -2149,17 +2121,15 @@ FrameManager::RestoreFrameStateFor(nsIPresContext* aPresContext, nsIFrame* aFram
 
   // Generate the hash key the state was stored under
   // Exit early if we get empty key
-  nsresult rv = NS_OK;
-  nsCOMPtr<nsIContent> content;
-  rv = aFrame->GetContent(getter_AddRefs(content));
+  nsIContent* content = aFrame->GetContent();
   // If we don't have content, we can't generate a hash
   // key and there's probably no state information for us.
   if (!content) {
-    return rv;
+    return NS_OK;
   }
 
   nsCAutoString stateKey;
-  rv = nsContentUtils::GenerateStateKey(content, aID, stateKey);
+  nsresult rv = nsContentUtils::GenerateStateKey(content, aID, stateKey);
   if (NS_FAILED(rv) || stateKey.IsEmpty()) {
     return rv;
   }
@@ -2172,7 +2142,7 @@ FrameManager::RestoreFrameStateFor(nsIPresContext* aPresContext, nsIFrame* aFram
   }
 
   // Restore it
-  rv = statefulFrame->RestoreState(aPresContext, frameState);
+  rv = statefulFrame->RestoreState(GetPresContext(), frameState);
   NS_ENSURE_SUCCESS(rv, rv);
 
   // If we restore ok, remove the state from the state table
@@ -2180,24 +2150,24 @@ FrameManager::RestoreFrameStateFor(nsIPresContext* aPresContext, nsIFrame* aFram
 }
 
 NS_IMETHODIMP
-FrameManager::RestoreFrameState(nsIPresContext* aPresContext, nsIFrame* aFrame, nsILayoutHistoryState* aState)
+FrameManager::RestoreFrameState(nsIFrame* aFrame, nsILayoutHistoryState* aState)
 {
   nsresult rv = NS_OK;
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
   NS_PRECONDITION(nsnull != aFrame && nsnull != aState, "null parameters passed in");
   
-  rv = RestoreFrameStateFor(aPresContext, aFrame, aState);
+  rv = RestoreFrameStateFor(aFrame, aState);
 
   // Now restore state recursively for the frame hierarchy rooted at aFrame
   nsIAtom*  childListName = nsnull;
   PRInt32   childListIndex = 0;
   do {    
     nsIFrame* childFrame;
-    aFrame->FirstChild(aPresContext, childListName, &childFrame);
+    aFrame->FirstChild(GetPresContext(), childListName, &childFrame);
     while (childFrame) {
-      rv = RestoreFrameState(aPresContext, childFrame, aState);
+      rv = RestoreFrameState(childFrame, aState);
       // Get the next sibling child frame
-      childFrame->GetNextSibling(&childFrame);
+      childFrame = childFrame->GetNextSibling();
     }
     NS_IF_RELEASE(childListName);
     aFrame->GetAdditionalChildListName(childListIndex++, &childListName);
@@ -2320,6 +2290,8 @@ FrameManager::SetFrameProperty(nsIFrame*               aFrame,
   nsresult result = NS_OK;
   PropertyListMapEntry *entry = NS_STATIC_CAST(PropertyListMapEntry*,
     PL_DHashTableOperate(&propertyList->mFrameValueMap, aFrame, PL_DHASH_ADD));
+  if (!entry)
+    return NS_ERROR_OUT_OF_MEMORY;
   // A NULL entry->key is the sign that the entry has just been allocated
   // for us.  If it's non-NULL then we have an existing entry.
   if (entry->key && propertyList->mDtorFunc) {

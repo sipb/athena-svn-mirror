@@ -23,6 +23,7 @@
  *                 Chris Charabaruk <coldacid@meldstar.com>
  *						 Colin Phillips <colinp@oeone.com>
  *                 ArentJan Banck <ajbanck@planet.nl>
+ *                 Eric Belhaire <eric.belhaire@ief.u-psud.fr>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -181,6 +182,9 @@ var unifinderEventDataSourceObserver =
    onAlarm : function( calendarEvent )
    {
       
+   },
+   onError : function()
+   {
    }
 };
 
@@ -521,7 +525,6 @@ var treeView =
    getCellText : function(row,column)
    {
       calendarEvent = gEventArray[row];
-      var calendarStringBundle = srGetStrBundle("chrome://calendar/locale/calendar.properties");
       switch( column )
       {
          case "unifinder-search-results-tree-col-title":
@@ -533,13 +536,12 @@ var treeView =
             var startDate = formatUnifinderEventDate( eventStartDate );
             if( calendarEvent.allDay )
             {
-               startText = "All day " + startDate;
+	      return(gCalendarBundle.getFormattedString("unifinderAlldayEventDate", [startDate]));
             }
             else
             {
-               startText = startDate + " " + startTime;
+	      return(gCalendarBundle.getFormattedString("unifinderNormalEventDate", [startDate, startTime]));
             }
-            return( startText );
          
          case "unifinder-search-results-tree-col-enddate":
             var eventEndDate = getNextOrPreviousRecurrence( calendarEvent );
@@ -550,13 +552,12 @@ var treeView =
             var endDate = formatUnifinderEventDate( eventEndDate );
             if( calendarEvent.allDay )
             {
-               endText = "All day " + endDate;
+	      return(gCalendarBundle.getFormattedString("unifinderAlldayEventDate", [endDate]));
             }
             else
             {
-               endText = endDate + " " + endTime;
+	      return(gCalendarBundle.getFormattedString("unifinderNormalEventDate", [endDate, endTime]));
             }
-            return( endText );
          
          case "unifinder-search-results-tree-col-categories":
             return( calendarEvent.categories );
@@ -568,15 +569,22 @@ var treeView =
             switch( calendarEvent.status )
             {
                case calendarEvent.ICAL_STATUS_TENTATIVE:
-                  return( calendarStringBundle.GetStringFromName( "Tentative" ) );
+                  return( gCalendarBundle.getString( "Tentative" ) );
                case calendarEvent.ICAL_STATUS_CONFIRMED:
-                  return( calendarStringBundle.GetStringFromName( "Confirmed" ) );
+                  return( gCalendarBundle.getString( "Confirmed" ) );
                case calendarEvent.ICAL_STATUS_CANCELLED:
-                  return( calendarStringBundle.GetStringFromName( "Cancelled" ) );
+                  return( gCalendarBundle.getString( "Cancelled" ) );
                default: 
                   return false;
             }
             return false;
+
+        case "unifinder-search-results-tree-col-filename":
+            var thisCalendar = gCalendarWindow.calendarManager.getCalendarByName( calendarEvent.parent.server );
+            if( thisCalendar )
+                return( thisCalendar.getAttribute( "http://home.netscape.com/NC-rdf#name" ) );
+            else
+                return( "" );
 
          default: 
             return false;
@@ -751,33 +759,84 @@ function changeToolTipTextForEvent( event )
 function getPreviewText( calendarEvent )
 {
 	var HolderBox = document.createElement( "vbox" );
-
+  var textString ;
    if (calendarEvent.title)
    {
       var TitleHtml = document.createElement( "description" );
-      var TitleText = document.createTextNode( "Title: "+calendarEvent.title );
+      textString = gCalendarBundle.getFormattedString("tooltipTitleElement", [calendarEvent.title]);
+      var TitleText = document.createTextNode( textString );
       TitleHtml.appendChild( TitleText );
       HolderBox.appendChild( TitleHtml );
    }
 
-   var DateHtml = document.createElement( "description" );
    var startDate = new Date( calendarEvent.start.getTime() );
-   var DateText = document.createTextNode( "Start: "+gCalendarWindow.dateFormater.getFormatedDate( startDate )+" "+gCalendarWindow.dateFormater.getFormatedTime( startDate ) );
+   var endDate = new Date( calendarEvent.end.getTime() );
+   var diff = DateUtils.getDifferenceInDays(startDate, endDate) ;
+
+   var DateHtml = document.createElement( "description" );
+   if (calendarEvent.allDay) {
+     if ( diff > 1 )  {
+       textString = gCalendarBundle.getFormattedString("tooltipEventStart", 
+						   [gCalendarWindow.dateFormater.getFormatedDate( startDate ),
+						    ""]);
+       var DateText = document.createTextNode( textString );
+   DateHtml.appendChild( DateText );
+   HolderBox.appendChild( DateHtml );
+       DateHtml = document.createElement( "description" );
+
+       textString = gCalendarBundle.getFormattedString("tooltipEventEnd", 
+						   [gCalendarWindow.dateFormater.getFormatedDate( endDate ),
+						    ""]);
+     }
+     else {
+       textString = gCalendarBundle.getFormattedString("tooltipAlldayEventDate", 
+						   [gCalendarWindow.dateFormater.getFormatedDate( startDate ),
+						    ""]);
+     }
+   }
+   else {
+     textString = gCalendarBundle.getFormattedString("tooltipEventStart", 
+						  [gCalendarWindow.dateFormater.getFormatedDate( startDate ),
+					           gCalendarWindow.dateFormater.getFormatedTime( startDate )]);
+     var DateText = document.createTextNode( textString );
+     DateHtml.appendChild( DateText );
+     HolderBox.appendChild( DateHtml );
+   DateHtml = document.createElement( "description" );
+
+     textString = gCalendarBundle.getFormattedString("tooltipEventEnd", 
+						  [gCalendarWindow.dateFormater.getFormatedDate( endDate ),
+						   gCalendarWindow.dateFormater.getFormatedTime( endDate )]);
+   }
+   DateText = document.createTextNode( textString );
    DateHtml.appendChild( DateText );
    HolderBox.appendChild( DateHtml );
 
-   DateHtml = document.createElement( "description" );
-   var endDate = new Date( calendarEvent.end.getTime() );
-   DateText = document.createTextNode( "End: "+gCalendarWindow.dateFormater.getFormatedDate( endDate )+" "+gCalendarWindow.dateFormater.getFormatedTime( endDate ) );
-   DateHtml.appendChild( DateText );
-   HolderBox.appendChild( DateHtml );
+   if (calendarEvent.location)
+   {
+      var LocationHtml = document.createElement( "description" );
+      textString = gCalendarBundle.getFormattedString("tooltipEventLocation", [calendarEvent.location]);
+      var LocationText = document.createTextNode( textString );
+      LocationHtml.appendChild( LocationText );
+      HolderBox.appendChild( LocationHtml );
+   }
 
    if (calendarEvent.description)
    {
+      textString = gCalendarBundle.getFormattedString("tooltipEventDescription", [calendarEvent.description]);
+      var lines = textString.split("\n");
+      var nbmaxlines = 5 ;
+      var nblines = lines.length ;
+      if( nblines > nbmaxlines ) {
+	  var nblines = nbmaxlines ;
+	  lines[ nblines - 1 ] = "..." ;
+      }
+	
+      for (var i = 0; i < nblines; i++) {
       var DescriptionHtml = document.createElement( "description" );
-      var DescriptionText = document.createTextNode( "Description: "+calendarEvent.description );
-      DescriptionHtml.appendChild( DescriptionText );
-      HolderBox.appendChild( DescriptionHtml );
+	var DescriptionText = document.createTextNode(lines[i]);
+	DescriptionHtml.appendChild(DescriptionText);
+	HolderBox.appendChild(DescriptionHtml);
+	}
    }
 
    return ( HolderBox );

@@ -317,7 +317,18 @@ MultiweekView.prototype.refreshEvents = function multiweekView_refreshEvents( )
          eventBox.setAttribute( "id", "multiweek-view-event-box-"+calendarEventDisplay.event.id );
          eventBox.setAttribute( "name", "multiweek-view-event-box-"+calendarEventDisplay.event.id );
          eventBox.setAttribute( "event"+calendarEventDisplay.event.id, true );
-         eventBox.setAttribute( "class", "multiweek-day-event-box-class" );
+         //eventBox.setAttribute( "class", "multiweek-day-event-box-class" );
+	 //eventBox.setAttribute( "class", "month-day-event-box-class" );
+          
+               // start calendar color change by CofC
+        var containerName = gCalendarWindow.calendarManager.getCalendarByName(
+                                               calendarEventDisplay.event.parent.server ).subject.split(":")[2];
+
+        // set the event box to be of class week-view-event-class and the appropriate calendar-color class
+        eventBox.setAttribute("class", "multiweek-day-event-box-class " + containerName );
+
+               // end calendar color change by CofC
+                    
          if( calendarEventDisplay.event.categories && calendarEventDisplay.event.categories != "" )
          {
             eventBox.setAttribute( calendarEventDisplay.event.categories, "true" );
@@ -361,7 +372,6 @@ MultiweekView.prototype.refreshEvents = function multiweekView_refreshEvents( )
 
          //you need this flex in order for text to crop
          eventBoxText.setAttribute( "flex", "1" );
-         eventBoxText.setAttribute( "ondraggesture", "nsDragAndDrop.startDrag(event,monthViewEventDragAndDropObserver);" );
 
          // add the text to the event box and the event box to the day box
          
@@ -446,8 +456,7 @@ MultiweekView.prototype.getToDoBox = function multiweekView_getToDoBox( calendar
   eventBox.setAttribute( "ondblclick", "multiweekToDoBoxDoubleClickEvent( this, event )" );
   eventBox.setAttribute( "onmouseover", "gCalendarWindow.changeMouseOverInfo( calendarToDo, event )" );
   eventBox.setAttribute( "tooltip", "eventTooltip" );
-  eventBox.setAttribute( "ondraggesture", 
-		"nsDragAndDrop.startDrag(event,monthViewEventDragAndDropObserver);" );
+  //eventBox.setAttribute( "ondraggesture", "nsDragAndDrop.startDrag(event,monthViewEventDragAndDropObserver);" );
   // add a property to the event box that holds the calendarEvent that the
   // box represents
   
@@ -474,8 +483,7 @@ MultiweekView.prototype.getToDoBox = function multiweekView_getToDoBox( calendar
      newImage.setAttribute( "lowpriority", "true" );
   eventBox.appendChild( newImage );
   eventBoxText.setAttribute( "flex", "1" );
-  eventBoxText.setAttribute( "ondraggesture", 
-		  "nsDragAndDrop.startDrag(event,monthViewEventDragAndDropObserver);" );
+
   // add the text to the event box and the event box to the day box
   eventBox.appendChild( eventBoxText );        
   return (eventBox) ; 
@@ -495,6 +503,7 @@ MultiweekView.prototype.switchFrom = function multiweekView_switchFrom( )
    document.getElementById( "only-workday-checkbox-1" ).setAttribute( "disabled", "true" );
    document.getElementById( "only-workday-checkbox-2" ).setAttribute( "disabled", "true"  );
    document.getElementById( "display-todo-inview-checkbox-1" ).setAttribute( "disabled", "true"  );
+   document.getElementById( "display-todo-inview-checkbox-2" ).setAttribute( "disabled", "true"  );   
    document.getElementById( "menu-numberofweeks-inview" ).setAttribute( "disabled", "true"  );
 }
 
@@ -695,11 +704,14 @@ MultiweekView.prototype.refreshDisplay = function multiweekView_refreshDisplay( 
 	  else
 	    { dayBoxItem.removeAttribute( "weekend" ); }
 	}
-      if(dayIndex < 7) 
-	{dayBoxItem.selectable=true;}
-      else
-	{dayBoxItem.selectable=false;}
+  
+   if( dayIndex - 7 * this.PreviousWeeksInView < 7 & dayIndex - 7 * this.PreviousWeeksInView >=0 ) 
+     {
+       dayBoxItem.selectable=true;}
+   else
+     {dayBoxItem.selectable=false;}
    }
+
    //Modification for the first day of view
    thisDate = new Date( newYear, newMonth, newDay );
    var titleMonth = this.calendarWindow.dateFormater.getShortMonthName(thisDate.getMonth());
@@ -878,7 +890,7 @@ MultiweekView.prototype.clickDay = function multiweekView_clickDay( event )
   
    var dayBoxItem = event.currentTarget;
    
-   if( dayBoxItem.selectable == true && event.detail == 1 )
+   if(   dayBoxItem.selectable == true && event.detail == 1 )
    {
       // change the selected date and redraw it
       var newDate = dayBoxItem.date;
@@ -916,13 +928,11 @@ MultiweekView.prototype.doubleClickDay = function multiweekView_doubleClickDay( 
    if ( event.currentTarget.selectable == true )
    {
       // change the selected date and redraw it
-
       newEvent( this.getNewEventDate(), false );
-
    }
    else
    {
-      newEvent( this.getNewEventDate(event.currentTarget.date), false );
+     newEvent( this.getNewEventDate(event.currentTarget.date), false );
    }
 }
 
@@ -1025,7 +1035,7 @@ MultiweekView.prototype.setNumberOfEventsToShow = function multiweekView_setNumb
   var Element = document.getElementById( "multiweek-view-event-box-fictitious-dot") ;
   Element.parentNode.removeChild(Element);
   eventBox.parentNode.removeChild( eventBox );
-  dotBox.parentNode.removeChild( eventBox );
+  dotBox.parentNode.removeChild( dotBox );
 }
 
 /* Change the number of weeks in the view */

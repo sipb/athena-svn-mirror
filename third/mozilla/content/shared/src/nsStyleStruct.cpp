@@ -69,6 +69,7 @@ inline nscoord CalcSideFor(const nsIFrame* aFrame, const nsStyleCoord& aCoord,
                            const nscoord* aEnumTable, PRInt32 aNumEnums)
 {
   nscoord result = 0;
+  nsIFrame* parentFrame = aFrame->GetParent();
 
   switch (aCoord.GetUnit()) {
     case eStyleUnit_Auto:
@@ -76,9 +77,8 @@ inline nscoord CalcSideFor(const nsIFrame* aFrame, const nsStyleCoord& aCoord,
       break;
 
     case eStyleUnit_Inherit:
-      nsIFrame* parentFrame;
-      aFrame->GetParent(&parentFrame);  // XXX may not be direct parent...
-      if (nsnull != parentFrame) {
+      // XXX may not be direct parent...
+      if (parentFrame) {
         nsStyleContext* parentContext = parentFrame->GetStyleContext();
         if (nsnull != parentContext) {
           nsMargin  parentSpacing;
@@ -119,14 +119,11 @@ inline nscoord CalcSideFor(const nsIFrame* aFrame, const nsStyleCoord& aCoord,
       {
         nscoord baseWidth = 0;
         PRBool  isBase = PR_FALSE;
-        nsIFrame* frame;
-        aFrame->GetParent(&frame);
-        while (nsnull != frame) {
+        nsIFrame* frame = aFrame->GetParent();
+        while (frame) {
           frame->IsPercentageBase(isBase);
           if (isBase) {
-            nsSize  size;
-            frame->GetSize(size);
-            baseWidth = size.width;
+            baseWidth = frame->GetSize().width;
             // subtract border of containing block
             nsMargin border;
             frame->GetStyleBorder()->CalcBorderFor(frame, border);
@@ -142,7 +139,7 @@ inline nscoord CalcSideFor(const nsIFrame* aFrame, const nsStyleCoord& aCoord,
             }
             break;
           }
-          frame->GetParent(&frame);
+          frame = frame->GetParent();
         }
         result = (nscoord)((float)baseWidth * aCoord.GetPercentValue());
       }
@@ -1083,7 +1080,7 @@ nsStyleDisplay::nsStyleDisplay(const nsStyleDisplay& aSource)
 
 nsChangeHint nsStyleDisplay::CalcDifference(const nsStyleDisplay& aOther) const
 {
-  nsChangeHint hint = nsChangeHint_None;
+  nsChangeHint hint = nsChangeHint(0);
 
   if (mBinding != aOther.mBinding
       || mPosition != aOther.mPosition
@@ -1395,10 +1392,8 @@ nsChangeHint nsStyleUserInterface::CalcDifference(const nsStyleUserInterface& aO
 
   if (mUserInput == aOther.mUserInput) {
     if (mUserModify == aOther.mUserModify) {
-      if (mUserFocus == aOther.mUserFocus) {
-        return NS_STYLE_HINT_NONE;
-      }
-      return NS_STYLE_HINT_CONTENT;
+      // ignore mUserFocus
+      return NS_STYLE_HINT_NONE;
     }
     return NS_STYLE_HINT_VISUAL;
   }
@@ -1441,10 +1436,8 @@ nsChangeHint nsStyleUIReset::CalcDifference(const nsStyleUIReset& aOther) const
   if (mForceBrokenImageIcon == aOther.mForceBrokenImageIcon) {
     if (mResizer == aOther.mResizer &&
         mUserSelect == aOther.mUserSelect) {
-      if (mKeyEquivalent == aOther.mKeyEquivalent) {
-        return NS_STYLE_HINT_NONE;
-      }
-      return NS_STYLE_HINT_CONTENT;
+      // ignore mKeyEquivalent
+      return NS_STYLE_HINT_NONE;
     }
     return NS_STYLE_HINT_VISUAL;
   }

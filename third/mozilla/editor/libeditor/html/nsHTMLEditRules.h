@@ -91,6 +91,7 @@ public:
   NS_IMETHOD GetIndentState(PRBool *aCanIndent, PRBool *aCanOutdent);
   NS_IMETHOD GetAlignment(PRBool *aMixed, nsIHTMLEditor::EAlignment *aAlign);
   NS_IMETHOD GetParagraphState(PRBool *aMixed, nsAString &outFormat);
+  NS_IMETHOD MakeSureElemStartsOrEndsOnCR(nsIDOMNode *aNode);
 
   // nsIEditActionListener methods
   
@@ -164,12 +165,15 @@ protected:
   nsresult WillHTMLIndent(nsISelection *aSelection, PRBool *aCancel, PRBool *aHandled);
   nsresult WillOutdent(nsISelection *aSelection, PRBool *aCancel, PRBool *aHandled);
   nsresult WillAlign(nsISelection *aSelection, const nsAString *alignType, PRBool *aCancel, PRBool *aHandled);
+  nsresult WillAbsolutePosition(nsISelection *aSelection, PRBool *aCancel, PRBool * aHandled);
+  nsresult WillRemoveAbsolutePosition(nsISelection *aSelection, PRBool *aCancel, PRBool * aHandled);
+  nsresult WillRelativeChangeZIndex(nsISelection *aSelection, PRInt32 aChange, PRBool *aCancel, PRBool * aHandled);
   nsresult WillMakeDefListItem(nsISelection *aSelection, const nsAString *aBlockType, PRBool aEntireList, PRBool *aCancel, PRBool *aHandled);
   nsresult WillMakeBasicBlock(nsISelection *aSelection, const nsAString *aBlockType, PRBool *aCancel, PRBool *aHandled);
   nsresult DidMakeBasicBlock(nsISelection *aSelection, nsRulesInfo *aInfo, nsresult aResult);
+  nsresult DidAbsolutePosition();
   nsresult AlignInnerBlocks(nsIDOMNode *aNode, const nsAString *alignType);
   nsresult AlignBlockContents(nsIDOMNode *aNode, const nsAString *alignType);
-  PRBool   IsFormatNode(nsIDOMNode *aNode);
   nsresult AppendInnerFormatNodes(nsCOMArray<nsIDOMNode>& aArray,
                                   nsIDOMNode *aNode);
   nsresult GetFormatString(nsIDOMNode *aNode, nsAString &outFormat);
@@ -189,6 +193,18 @@ protected:
                              nsIDOMNode *aEndChild,
                              nsCOMPtr<nsIDOMNode> *aLeftNode = 0,
                              nsCOMPtr<nsIDOMNode> *aRightNode = 0);
+  nsresult SplitBlock(nsIDOMNode *aBlock, 
+                      nsIDOMNode *aStartChild, 
+                      nsIDOMNode *aEndChild,
+                      nsCOMPtr<nsIDOMNode> *aLeftNode = 0,
+                      nsCOMPtr<nsIDOMNode> *aRightNode = 0,
+                      nsCOMPtr<nsIDOMNode> *aMiddleNode = 0);
+  nsresult OutdentPartOfBlock(nsIDOMNode *aBlock, 
+                              nsIDOMNode *aStartChild, 
+                              nsIDOMNode *aEndChild,
+                              PRBool aIsBlockIndentedWithCSS,
+                              nsCOMPtr<nsIDOMNode> *aLeftNode = 0,
+                              nsCOMPtr<nsIDOMNode> *aRightNode = 0);
   nsresult ConvertListType(nsIDOMNode *aList, nsCOMPtr<nsIDOMNode> *outList, const nsAString& aListType, const nsAString& aItemType);
   nsresult CreateStyleForInsertText(nsISelection *aSelection, nsIDOMDocument *aDoc);
   nsresult IsEmptyBlock(nsIDOMNode *aNode, 
@@ -273,9 +289,8 @@ protected:
   PRBool   ListIsEmptyLine(nsCOMArray<nsIDOMNode> &arrayOfNodes);
   nsresult RemoveAlignment(nsIDOMNode * aNode, const nsAString & aAlignType, PRBool aChildrenOnly);
   nsresult MakeSureElemStartsOrEndsOnCR(nsIDOMNode *aNode, PRBool aStarts);
-  nsresult MakeSureElemStartsOrEndsOnCR(nsIDOMNode *aNode);
   nsresult AlignBlock(nsIDOMElement * aElement, const nsAString * aAlignType, PRBool aContentsOnly);
-  nsresult RelativeChangeIndentation(nsIDOMNode *aNode, PRInt8 aRelativeChange);
+  nsresult RelativeChangeIndentationOfElementNode(nsIDOMNode *aNode, PRInt8 aRelativeChange);
 
 // data members
 protected:

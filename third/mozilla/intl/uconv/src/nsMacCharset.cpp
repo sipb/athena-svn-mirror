@@ -48,11 +48,12 @@
 #include "nsLocaleCID.h"
 #include "nsReadableUtils.h"
 #include "nsPlatformCharset.h"
+#include "nsEncoderDecoderUtils.h"
 
 static nsURLProperties *gInfo = nsnull;
 static PRInt32 gCnt = 0;
 
-NS_IMPL_ISUPPORTS1(nsPlatformCharset, nsIPlatformCharset);
+NS_IMPL_ISUPPORTS1(nsPlatformCharset, nsIPlatformCharset)
 
 nsPlatformCharset::nsPlatformCharset()
 {
@@ -80,16 +81,16 @@ nsresult nsPlatformCharset::InitInfo()
   return NS_OK;
 }
 
-nsresult nsPlatformCharset::MapToCharset(short script, short region, nsAString& outCharset)
+nsresult nsPlatformCharset::MapToCharset(short script, short region, nsACString& outCharset)
 {
   switch (region) {
     case verUS:
     case verFrance:
     case verGermany:
-      outCharset.Assign(NS_LITERAL_STRING("x-mac-roman"));
+      outCharset.Assign(NS_LITERAL_CSTRING("x-mac-roman"));
       return NS_OK;
     case verJapan:
-      outCharset.Assign(NS_LITERAL_STRING("Shift_JIS"));
+      outCharset.Assign(NS_LITERAL_CSTRING("Shift_JIS"));
       return NS_OK;
   }
 
@@ -101,14 +102,19 @@ nsresult nsPlatformCharset::MapToCharset(short script, short region, nsAString& 
   nsAutoString key(NS_LITERAL_STRING("region."));
   key.AppendInt(region, 10);
 
-  rv = gInfo->Get(key, outCharset);
-  if (NS_FAILED(rv)) {
+  nsAutoString uCharset;
+  rv = gInfo->Get(key, uCharset);
+  if (NS_SUCCEEDED(rv))
+    CopyUCS2toASCII(uCharset, outCharset);
+  else {
     key.Assign(NS_LITERAL_STRING("script."));
     key.AppendInt(script, 10);
-    rv = gInfo->Get(key, outCharset);
+    rv = gInfo->Get(key, uCharset);
     // not found in the .property file, assign x-mac-roman
-    if (NS_FAILED(rv)) { 
-      outCharset.Assign(NS_LITERAL_STRING("x-mac-roman"));
+    if (NS_SUCCEEDED(rv))
+      CopyUCS2toASCII(uCharset, outCharset);
+    else {
+      outCharset.Assign(NS_LITERAL_CSTRING("x-mac-roman"));
     }
   }
   
@@ -116,7 +122,7 @@ nsresult nsPlatformCharset::MapToCharset(short script, short region, nsAString& 
 }
 
 NS_IMETHODIMP 
-nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector, nsAString& oResult)
+nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector, nsACString& oResult)
 {
   nsresult rv;
   if (mCharset.IsEmpty()) {
@@ -130,7 +136,7 @@ nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector, nsAString& oResult)
   switch (selector) {
 #ifdef XP_MACOSX  
     case kPlatformCharsetSel_FileName:
-      oResult.Assign(NS_LITERAL_STRING("UTF-8"));
+      oResult.Assign(NS_LITERAL_CSTRING("UTF-8"));
       break;
 #endif
     case  kPlatformCharsetSel_KeyboardInput:
@@ -148,24 +154,25 @@ nsPlatformCharset::GetCharset(nsPlatformCharsetSel selector, nsAString& oResult)
 }
 
 NS_IMETHODIMP 
-nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, PRUnichar** _retValue)
+nsPlatformCharset::GetDefaultCharsetForLocale(const PRUnichar* localeName, nsACString &oResult)
 {
-  nsCOMPtr<nsIMacLocale>	pMacLocale;
-  nsAutoString localeAsString(localeName), charset(NS_LITERAL_STRING("x-mac-roman"));
-  short script, language, region;
-	
   nsresult rv;
+  nsCOMPtr<nsIMacLocale> pMacLocale;
   pMacLocale = do_CreateInstance(NS_MACLOCALE_CONTRACTID, &rv);
   if (NS_SUCCEEDED(rv)) {
+    nsAutoString localeAsString(localeName);
+    short script, language, region;
     rv = pMacLocale->GetPlatformLocale(&localeAsString, &script, &language, &region);
     if (NS_SUCCEEDED(rv)) {
-      rv = MapToCharset(script, region, charset);
+      if (NS_SUCCEEDED(MapToCharset(script, region, oResult))) {
+        return NS_OK;
+      }
     }
   }
-  *_retValue = ToNewUnicode(charset);
-  NS_ENSURE_TRUE(*_retValue, NS_ERROR_OUT_OF_MEMORY);
-  
-  return rv;
+
+  // fallback 
+  oResult.Assign(NS_LITERAL_CSTRING("x-mac-roman"));
+  return NS_SUCCESS_USING_FALLBACK_LOCALE;
 }
 
 NS_IMETHODIMP 
@@ -175,13 +182,13 @@ nsPlatformCharset::Init()
 }
 
 nsresult 
-nsPlatformCharset::MapToCharset(nsAString& inANSICodePage, nsAString& outCharset)
+nsPlatformCharset::MapToCharset(nsAString& inANSICodePage, nsACString& outCharset)
 {
   return NS_OK;
 }
 
 nsresult
-nsPlatformCharset::InitGetCharset(nsAString &oString)
+nsPlatformCharset::InitGetCharset(nsACString &oString)
 {
   return NS_OK;
 }
@@ -193,7 +200,7 @@ nsPlatformCharset::ConvertLocaleToCharsetUsingDeprecatedConfig(nsAutoString& loc
 }
 
 nsresult
-nsPlatformCharset::VerifyCharset(nsString &aCharset)
+nsPlatformCharset::VerifyCharset(nsCString &aCharset)
 {
   return NS_OK;
 }

@@ -166,14 +166,25 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
     // would muck up the XUL display
     // - bbaetz
 
-    // ftp urls don't always end in a /
     PRBool isScheme = PR_FALSE;
     if (NS_SUCCEEDED(uri->SchemeIs("ftp", &isScheme)) && isScheme) {
+
+        // ftp urls don't always end in a /
+        // make sure they do
+        // but look out for /%2F as path
+        nsCAutoString path;
+        rv = uri->GetPath(path);
+        if (NS_FAILED(rv)) return rv;
+        if (baseUri.Last() != '/' && !path.EqualsIgnoreCase("/%2F")) {
+            baseUri.Append('/');
+            path.Append('/');
+            uri->SetPath(path);
+        }
+
         // strip out the password here, so it doesn't show in the page title
         // This is done by the 300: line generation in ftp, but we don't use
         // that - see above
         
-        // if there was a password, strip it out
         nsCAutoString pw;
         rv = uri->GetPassword(pw);
         if (NS_FAILED(rv)) return rv;
@@ -185,27 +196,14 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
              if (NS_FAILED(rv)) return rv;
              rv = newUri->GetAsciiSpec(titleUri);
              if (NS_FAILED(rv)) return rv;
-             if (titleUri.Last() != '/')
+             if (titleUri.Last() != '/' && !path.EqualsIgnoreCase("/%2F"))
                  titleUri.Append('/');
         }
 
-        if (baseUri.Last() != '/')
-            baseUri.Append('/');
-
-        nsCString::const_iterator start, finish;
-        baseUri.BeginReading(start);
-        baseUri.EndReading(finish);
-        finish.advance(-2); // don't count the last /
-        
-        // No RFindChar
-        while(finish != start && *finish != '/')
-            --finish;
-
-        if (Distance(start, finish) > (sizeof("ftp://") - 1)) {
-            ++finish; // include the end '/'
-            parentStr = Substring(start, finish);
+        if (!path.Equals("//") && !path.EqualsIgnoreCase("/%2F")) {
+            rv = uri->Resolve(NS_LITERAL_CSTRING(".."),parentStr);
+            if (NS_FAILED(rv)) return rv;
         }
-
     } else if (NS_SUCCEEDED(uri->SchemeIs("file", &isScheme)) && isScheme) {
         nsCOMPtr<nsIFileURL> fileUrl = do_QueryInterface(uri);
         nsCOMPtr<nsIFile> file;
@@ -232,10 +230,10 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
         // reset parser's charset to platform's default if this is file url
         nsCOMPtr<nsIPlatformCharset> platformCharset(do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &rv));
         NS_ENSURE_SUCCESS(rv, rv);
-        nsAutoString charset;
+        nsCAutoString charset;
         rv = platformCharset->GetCharset(kPlatformCharsetSel_FileName, charset);
         NS_ENSURE_SUCCESS(rv, rv);
-        rv = mParser->SetEncoding(NS_LossyConvertUCS2toASCII(charset).get());
+        rv = mParser->SetEncoding(charset.get());
         NS_ENSURE_SUCCESS(rv, rv);
 
     } else if (NS_SUCCEEDED(uri->SchemeIs("gopher", &isScheme)) && isScheme) {
@@ -383,17 +381,13 @@ nsIndexedToHTML::FormatInputStream(nsIRequest* aRequest, nsISupports *aContext, 
       nsXPIDLCString encoding;
       rv = mParser->GetEncoding(getter_Copies(encoding));
       if (NS_SUCCEEDED(rv)) {
-        nsCOMPtr<nsICharsetConverterManager2> charsetConverterManager;
+        nsCOMPtr<nsICharsetConverterManager> charsetConverterManager;
         charsetConverterManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
-        nsCOMPtr<nsIAtom> charsetAtom;
-        rv = charsetConverterManager->GetCharsetAtom2(encoding.get(), getter_AddRefs(charsetAtom));
-        if (NS_SUCCEEDED(rv)) {
-          rv = charsetConverterManager->GetUnicodeEncoder(charsetAtom, 
+        rv = charsetConverterManager->GetUnicodeEncoder(encoding.get(), 
                                                           getter_AddRefs(mUnicodeEncoder));
-          if (NS_SUCCEEDED(rv))
+        if (NS_SUCCEEDED(rv))
             rv = mUnicodeEncoder->SetOutputErrorBehavior(nsIUnicodeEncoder::kOnError_Replace, 
                                                        nsnull, (PRUnichar)'?');
-        }
       }
     }
 

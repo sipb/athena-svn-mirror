@@ -42,7 +42,7 @@
 #include "nsLayoutAtoms.h"
 #include "nsCOMPtr.h"
 #include "nsContentUtils.h"
-
+#include "nsIDOM3Node.h"
 
 nsresult
 NS_NewDOMDocumentType(nsIDOMDocumentType** aDocType,
@@ -165,9 +165,9 @@ nsDOMDocumentType::GetInternalSubset(nsAString& aInternalSubset)
 }
 
 NS_IMETHODIMP 
-nsDOMDocumentType::GetTag(nsIAtom*& aResult) const
+nsDOMDocumentType::GetTag(nsIAtom** aResult) const
 {
-  aResult = NS_NewAtom(mName.get());
+  *aResult = NS_NewAtom(mName);
 
   return NS_OK;
 }

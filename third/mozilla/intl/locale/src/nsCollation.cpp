@@ -50,7 +50,7 @@
 
 NS_DEFINE_CID(kCollationCID, NS_COLLATION_CID);
 
-NS_IMPL_ISUPPORTS1(nsCollationFactory, nsICollationFactory);
+NS_IMPL_ISUPPORTS1(nsCollationFactory, nsICollationFactory)
 
 nsresult nsCollationFactory::CreateCollation(nsILocale* locale, nsICollation** instancePtr)
 {
@@ -85,106 +85,6 @@ nsCollation::~nsCollation()
   MOZ_COUNT_DTOR(nsCollation);
 }
 
-nsresult nsCollation::CompareString(nsICollation *inst, const nsCollationStrength strength, 
-                                    const nsAString& string1, const nsAString& string2, PRInt32* result)
-{
-  PRUint32 aLength1, aLength2;
-  PRUint8 *aKey1, *aKey2;
-  nsresult res;
-
-  res = inst->GetSortKeyLen(strength, string1, &aLength1);
-  if (NS_FAILED(res))
-    return res;
-  res = inst->GetSortKeyLen(strength, string2, &aLength2);
-  if (NS_FAILED(res)) {
-    return res;
-  }
-
-  // if input string is small then use local buffer for keys
-  if (aLength1 <= 128 && aLength2 <= 128) {
-    PRUint8 aKeyBuf1[128], aKeyBuf2[128];
-    res = inst->CreateRawSortKey(strength, string1, aKeyBuf1, &aLength1);
-    if (NS_SUCCEEDED(res)) {
-      res = inst->CreateRawSortKey(strength, string2, aKeyBuf2, &aLength2);
-      if (NS_SUCCEEDED(res)) {
-        *result = CompareRawSortKey(aKeyBuf1, aLength1, aKeyBuf2, aLength2);
-      }
-    }
-    return res;
-  }
-
-  // Create a key for string1
-  aKey1 = new PRUint8[aLength1];
-  if (NULL == aKey1)
-    return NS_ERROR_OUT_OF_MEMORY;
-  res = inst->CreateRawSortKey(strength, string1, aKey1, &aLength1);
-  if (NS_FAILED(res)) {
-    delete [] aKey1;
-    return res;
-  }
-
-  // Create a key for string2
-  aKey2 = new PRUint8[aLength2];
-  if (NULL == aKey2) {
-    delete [] aKey1;
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  res = inst->CreateRawSortKey(strength, string2, aKey2, &aLength2);
-  if (NS_FAILED(res)) {
-    delete [] aKey1;
-    delete [] aKey2;
-    return res;
-  }
-
-  // Compare keys
-  *result = CompareRawSortKey(aKey1, aLength1, aKey2, aLength2);
-
-  // delete keys
-  delete [] aKey1;
-  delete [] aKey2;
-
-  return res;
-}
-
-PRInt32 nsCollation::CompareRawSortKey(const PRUint8* key1, const PRUint32 len1, 
-                                       const PRUint8* key2, const PRUint32 len2)
-{
-  PRUint32 len = (len1 < len2) ? len1 : len2;
-  PRInt32 result;
-
-  result = (PRUint32) memcmp(key1, key2, len);
-  if (result == 0 && len1 != len2) {
-    result = (len1 < len2) ? -1 : 1;
-  }
-
-  return result;
-}
-
-nsresult nsCollation::CreateASCIISortKey(nsICollation *inst, const nsCollationStrength strength, 
-                                         const PRUnichar* stringIn, char* key, PRUint32 *outLen)
-{
-  NS_ENSURE_ARG_POINTER(stringIn);
-  NS_ENSURE_ARG_POINTER(key);
-
-  // ASCII key is twice as large as the original raw key.
-  // In order to avoid overrun the raw data while encoding,
-  // place the raw key at higher address in the buffer
-  // then place encoded data from begining of the buffer.
-  NS_ASSERTION(!(*outLen % 2), "the key length should be even");
-  PRUint8 *rawKey = (PRUint8 *)key + (*outLen / 2);
-  nsresult rv = inst->CreateRawSortKey(strength, nsDependentString(stringIn), rawKey, outLen);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  const char* hexChars = "0123456789ABCDEF";
-  for (PRUint32 i = 0; i < *outLen; i++) {
-    *key++ = hexChars[*rawKey >> 4];
-    *key++ = hexChars[*rawKey & 0x0f];
-    rawKey++;
-  }
-
-  return rv;
-}
-
 nsresult nsCollation::NormalizeString(const nsAString& stringIn, nsAString& stringOut)
 {
   if (!mCaseConversion) {
@@ -212,17 +112,15 @@ nsresult nsCollation::NormalizeString(const nsAString& stringIn, nsAString& stri
   return NS_OK;
 }
 
-nsresult nsCollation::SetCharset(const PRUnichar* aCharset)
+nsresult nsCollation::SetCharset(const char* aCharset)
 {
   NS_ENSURE_ARG_POINTER(aCharset);
 
   nsresult rv;
-  nsCOMPtr <nsICharsetConverterManager2> charsetConverterManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
+  nsCOMPtr <nsICharsetConverterManager> charsetConverterManager = do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
   if (NS_SUCCEEDED(rv)) {
-    nsCOMPtr <nsIAtom> charsetAtom;
-    rv = charsetConverterManager->GetCharsetAtom(aCharset, getter_AddRefs(charsetAtom));
-    if (NS_SUCCEEDED(rv))
-      rv = charsetConverterManager->GetUnicodeEncoder(charsetAtom, getter_AddRefs(mEncoder));
+    rv = charsetConverterManager->GetUnicodeEncoder(aCharset,
+                                                    getter_AddRefs(mEncoder));
   }
   return rv;
 }
@@ -233,7 +131,7 @@ nsresult nsCollation::UnicodeToChar(const nsAString& aSrc, char** dst)
 
   nsresult res = NS_OK;
   if (!mEncoder)
-    res = SetCharset(NS_LITERAL_STRING("ISO-8859-1").get());
+    res = SetCharset("ISO-8859-1");
 
   if (NS_SUCCEEDED(res)) {
     const nsPromiseFlatString& src = PromiseFlatString(aSrc);

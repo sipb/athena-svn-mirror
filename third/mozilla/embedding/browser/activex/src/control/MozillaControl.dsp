@@ -102,10 +102,6 @@ SOURCE=.\DropTarget.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\guids.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\HelperAppDlg.cpp
 # End Source File
 # Begin Source File
@@ -207,10 +203,6 @@ SOURCE=.\DHTMLCmdIds.h
 # Begin Source File
 
 SOURCE=.\DropTarget.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\guids.h
 # End Source File
 # Begin Source File
 

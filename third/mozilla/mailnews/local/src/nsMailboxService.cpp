@@ -62,7 +62,6 @@
 #include "nsIMsgHdr.h"
 
 static NS_DEFINE_CID(kCMailboxUrl, NS_MAILBOXURL_CID);
-static NS_DEFINE_CID(kCMailDB, NS_MAILDB_CID);
 static NS_DEFINE_CID(kCPop3ServiceCID, NS_POP3SERVICE_CID);
 
 nsMailboxService::nsMailboxService()
@@ -73,7 +72,7 @@ nsMailboxService::nsMailboxService()
 nsMailboxService::~nsMailboxService()
 {}
 
-NS_IMPL_ISUPPORTS4(nsMailboxService, nsIMailboxService, nsIMsgMessageService, nsIProtocolHandler, nsIMsgMessageFetchPartService);
+NS_IMPL_ISUPPORTS4(nsMailboxService, nsIMailboxService, nsIMsgMessageService, nsIProtocolHandler, nsIMsgMessageFetchPartService)
 
 nsresult nsMailboxService::ParseMailbox(nsIMsgWindow *aMsgWindow, nsFileSpec& aMailboxPath, nsIStreamListener *aMailboxParser, 
 										nsIUrlListener * aUrlListener, nsIURI ** aURL)
@@ -176,7 +175,7 @@ nsresult nsMailboxService::FetchMessage(const char* aMessageURI,
 										                    nsIUrlListener * aUrlListener,
                                         const char * aFileName, /* only used by open attachment... */
                                         nsMailboxAction mailboxAction,
-                                        const PRUnichar * aCharsetOverride,
+                                        const char * aCharsetOverride,
                                         nsIURI ** aURL)
 {
   nsresult rv = NS_OK;
@@ -239,7 +238,7 @@ NS_IMETHODIMP nsMailboxService::DisplayMessage(const char* aMessageURI,
                                           nsISupports * aDisplayConsumer,
                                           nsIMsgWindow * aMsgWindow,
 										                      nsIUrlListener * aUrlListener,
-                                          const PRUnichar * aCharsetOveride,
+                                          const char * aCharsetOveride,
                                           nsIURI ** aURL)
 {
   return FetchMessage(aMessageURI, aDisplayConsumer,

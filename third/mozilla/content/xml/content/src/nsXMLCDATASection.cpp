@@ -66,7 +66,8 @@ public:
   // Empty interface
 
   // nsIContent
-  NS_IMETHOD GetTag(nsIAtom*& aResult) const;
+  NS_IMETHOD GetTag(nsIAtom** aResult) const;
+  NS_IMETHOD_(PRBool) IsContentOfType(PRUint32 aFlags);
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const;
@@ -113,11 +114,17 @@ NS_IMPL_RELEASE_INHERITED(nsXMLCDATASection, nsGenericDOMDataNode)
 
 
 NS_IMETHODIMP 
-nsXMLCDATASection::GetTag(nsIAtom*& aResult) const
+nsXMLCDATASection::GetTag(nsIAtom** aResult) const
 {
-  aResult = nsLayoutAtoms::textTagName;
-  NS_ADDREF(aResult);
+  *aResult = nsLayoutAtoms::textTagName;
+  NS_ADDREF(*aResult);
   return NS_OK;
+}
+
+NS_IMETHODIMP_(PRBool)
+nsXMLCDATASection::IsContentOfType(PRUint32 aFlags)
+{
+  return !(aFlags & ~eTEXT);
 }
 
 NS_IMETHODIMP

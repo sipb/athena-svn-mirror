@@ -41,7 +41,6 @@
 #include "prlink.h"
 #include "nsCOMPtr.h"
 #include "nsObserverList.h"
-#include "nsObserver.h"
 #include "nsObserverService.h"
 #include "nsProperties.h"
 #include "nsIProperties.h"
@@ -50,8 +49,9 @@
 #include "nsBinaryStream.h"
 
 #include "nsMemoryImpl.h"
+#include "nsDebugImpl.h"
+#include "nsTraceRefcntImpl.h"
 #include "nsErrorService.h"
-#include "nsArena.h"
 #include "nsByteBuffer.h"
 
 #include "nsSupportsArray.h"
@@ -126,7 +126,8 @@ static NS_DEFINE_CID(kComponentManagerCID, NS_COMPONENTMANAGER_CID);
 static NS_DEFINE_CID(kMemoryCID, NS_MEMORY_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsProcess);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsProcess)
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsEventQueueServiceImpl, Init)
 
 #include "nsXPCOM.h"
 // ds/nsISupportsPrimitives
@@ -166,21 +167,21 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsSupportsDoubleImpl)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSupportsVoidImpl)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSupportsInterfacePointerImpl)
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsArray);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsConsoleService);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsAtomService);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsExceptionService);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimerImpl);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimerManager);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsArray)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsConsoleService)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsAtomService)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsExceptionService)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimerImpl)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimerManager)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBinaryOutputStream)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBinaryInputStream)
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsVariant);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsVariant)
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsRecyclingAllocatorImpl);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsRecyclingAllocatorImpl)
 
 #ifdef MOZ_TIMELINE
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimelineService);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimelineService)
 #endif
 
 static NS_METHOD
@@ -277,14 +278,11 @@ static PRBool gXPCOMHasGlobalsBeenInitalized = PR_TRUE;
    &NS_CLASSINFO_NAME(Class) }
 
 static const nsModuleComponentInfo components[] = {
-// ugh
-#define NS_MEMORY_CONTRACTID "@mozilla.org/xpcom/memory-service;1"
-#define NS_MEMORY_CLASSNAME  "Global Memory Service"
     COMPONENT(MEMORY, nsMemoryImpl::Create),
+    COMPONENT(DEBUG,  nsDebugImpl::Create),
 #define NS_ERRORSERVICE_CLASSNAME NS_ERRORSERVICE_NAME
     COMPONENT(ERRORSERVICE, nsErrorService::Create),
 
-    COMPONENT(ARENA, ArenaImpl::Create),
     COMPONENT(BYTEBUFFER, ByteBufferImpl::Create),
     COMPONENT(SCRIPTABLEINPUTSTREAM, nsScriptableInputStream::Create),
     COMPONENT(BINARYINPUTSTREAM, nsBinaryInputStreamConstructor),
@@ -304,10 +302,9 @@ static const nsModuleComponentInfo components[] = {
 #ifdef MOZ_TIMELINE
     COMPONENT(TIMELINESERVICE, nsTimelineServiceConstructor),
 #endif
-    COMPONENT(OBSERVER, nsObserver::Create),
     COMPONENT(OBSERVERSERVICE, nsObserverService::Create),
     COMPONENT(GENERICFACTORY, nsGenericFactory::Create),
-    COMPONENT(EVENTQUEUESERVICE, nsEventQueueServiceImpl::Create),
+    COMPONENT(EVENTQUEUESERVICE, nsEventQueueServiceImplConstructor),
     COMPONENT(EVENTQUEUE, nsEventQueueImpl::Create),
     COMPONENT(THREAD, nsThread::Create),
     COMPONENT(THREADPOOL, nsThreadPool::Create),
@@ -375,6 +372,43 @@ nsresult NS_COM NS_GetMemoryManager(nsIMemory* *result)
     return rv;
 }
 
+// gDebug will be freed during shutdown.
+static nsIDebug* gDebug = nsnull;
+nsresult NS_COM NS_GetDebug(nsIDebug** result)
+{
+    nsresult rv = NS_OK;
+    if (!gDebug)
+    {
+        rv = nsDebugImpl::Create(nsnull, 
+                                 NS_GET_IID(nsIDebug), 
+                                 (void**)&gDebug);
+    }
+    NS_IF_ADDREF(*result = gDebug);
+    return rv;
+}
+
+#ifdef NS_BUILD_REFCNT_LOGGING
+// gTraceRefcnt will be freed during shutdown.
+static nsITraceRefcnt* gTraceRefcnt = nsnull;
+#endif
+
+nsresult NS_COM NS_GetTraceRefcnt(nsITraceRefcnt** result)
+{
+#ifdef NS_BUILD_REFCNT_LOGGING
+    nsresult rv = NS_OK;
+    if (!gTraceRefcnt)
+    {
+        rv = nsTraceRefcntImpl::Create(nsnull, 
+                                       NS_GET_IID(nsITraceRefcnt), 
+                                       (void**)&gTraceRefcnt);
+    }
+    NS_IF_ADDREF(*result = gTraceRefcnt);
+    return rv;
+#else
+    return NS_ERROR_NOT_INITIALIZED;
+#endif
+}
+
 nsresult NS_COM NS_InitXPCOM(nsIServiceManager* *result,
                              nsIFile* binDirectory)
 {
@@ -395,7 +429,7 @@ nsresult NS_COM NS_InitXPCOM2(nsIServiceManager* *result,
     gXPCOMShuttingDown = PR_FALSE;
 
 #ifdef NS_BUILD_REFCNT_LOGGING
-    nsTraceRefcnt::Startup();
+    nsTraceRefcntImpl::Startup();
 #endif
 
     // Establish the main thread here.
@@ -578,18 +612,12 @@ nsresult NS_COM NS_InitXPCOM2(nsIServiceManager* *result,
     nsIInterfaceInfoManager* iim = XPTI_GetInterfaceInfoManager();
     NS_IF_RELEASE(iim);
 
-    nsCOMPtr<nsIEventQueueService> eventQService(do_GetService(NS_EVENTQUEUESERVICE_CONTRACTID, &rv));
-    if ( NS_FAILED(rv) ) return rv;
-
-    rv = eventQService->CreateThreadEventQueue();
-    if ( NS_FAILED(rv) ) return rv;
-
     // Notify observers of xpcom autoregistration start
     NS_CreateServicesFromCategory(NS_XPCOM_STARTUP_OBSERVER_ID, 
                                   nsnull,
                                   NS_XPCOM_STARTUP_OBSERVER_ID);
     
-    return rv;
+    return NS_OK;
 }
 
 
@@ -763,10 +791,12 @@ nsresult NS_COM NS_ShutdownXPCOM(nsIServiceManager* servMgr)
     nsThread::Shutdown();
     NS_PurgeAtomTable();
 
+    NS_IF_RELEASE(gDebug);
+
 #ifdef NS_BUILD_REFCNT_LOGGING
-    nsTraceRefcnt::DumpStatistics();
-    nsTraceRefcnt::ResetStatistics();
-    nsTraceRefcnt::Shutdown();
+    nsTraceRefcntImpl::DumpStatistics();
+    nsTraceRefcntImpl::ResetStatistics();
+    nsTraceRefcntImpl::Shutdown();
 #endif
 
 #ifdef GC_LEAK_DETECTOR
@@ -839,6 +869,18 @@ NS_GetFrozenFunctions(XPCOMFunctions *functions, const char* libraryPath)
     }
     functions->unregisterExitRoutine = (UnregisterXPCOMExitRoutineFunc) PR_FindSymbol(xpcomLib, "NS_UnregisterXPCOMExitRoutine");
     if (! functions->unregisterExitRoutine) {
+        PR_UnloadLibrary(xpcomLib);
+        return NS_ERROR_FAILURE;
+    }
+
+    functions->getDebug = (GetDebugFunc) PR_FindSymbol(xpcomLib, "NS_GetDebug");
+    if (! functions->getDebug) {
+        PR_UnloadLibrary(xpcomLib);
+        return NS_ERROR_FAILURE;
+    }
+
+    functions->getTraceRefcnt = (GetTraceRefcntFunc) PR_FindSymbol(xpcomLib, "NS_GetTraceRefcnt");
+    if (! functions->getTraceRefcnt) {
         PR_UnloadLibrary(xpcomLib);
         return NS_ERROR_FAILURE;
     }

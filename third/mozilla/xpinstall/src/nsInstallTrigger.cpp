@@ -60,12 +60,7 @@
 #include "nsIChannel.h"
 #include "nsIURI.h"
 
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kIFactoryIID, NS_IFACTORY_IID);
-static NS_DEFINE_IID(kIScriptObjectOwnerIID, NS_ISCRIPTOBJECTOWNER_IID);
 
-static NS_DEFINE_IID(kIInstallTrigger_IID, NS_IDOMINSTALLTRIGGERGLOBAL_IID);
-static NS_DEFINE_IID(kIInstallTrigger_CID, NS_SoftwareUpdateInstallTrigger_CID);
 
 nsInstallTrigger::nsInstallTrigger()
 {
@@ -83,7 +78,7 @@ nsInstallTrigger::~nsInstallTrigger()
 NS_IMPL_THREADSAFE_ISUPPORTS3 (nsInstallTrigger,
                               nsIScriptObjectOwner,
                               nsIDOMInstallTriggerGlobal,
-                              nsIContentHandler);
+                              nsIContentHandler)
 
 
 NS_IMETHODIMP

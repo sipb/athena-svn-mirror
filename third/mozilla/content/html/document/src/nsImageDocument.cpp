@@ -145,7 +145,7 @@ ImageListener::ImageListener(nsImageDocument* aDocument)
 
 ImageListener::~ImageListener()
 {
-};
+}
 
 NS_IMETHODIMP
 ImageListener::OnStartRequest(nsIRequest* request, nsISupports *ctxt)
@@ -485,7 +485,7 @@ nsImageDocument::CreateSyntheticDocument()
   nsCOMPtr<nsINodeInfo> nodeInfo;
   rv = mNodeInfoManager->GetNodeInfo(nsHTMLAtoms::img, nsnull,
                                      kNameSpaceID_None,
-                                     *getter_AddRefs(nodeInfo));
+                                     getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIHTMLContent> image;
@@ -505,7 +505,6 @@ nsImageDocument::CreateSyntheticDocument()
   // Make sure not to start the image load from here...
   imageLoader->SetLoadingEnabled(PR_FALSE);
   image->SetAttr(kNameSpaceID_None, nsHTMLAtoms::src, srcString, PR_FALSE);
-  imageLoader->SetLoadingEnabled(PR_TRUE);
 
   if (mStringBundle) {
     const PRUnichar* formatString[1] = { srcString.get() };
@@ -518,6 +517,7 @@ nsImageDocument::CreateSyntheticDocument()
   }
 
   body->AppendChildTo(image, PR_FALSE, PR_FALSE);
+  imageLoader->SetLoadingEnabled(PR_TRUE);
 
   return NS_OK;
 }

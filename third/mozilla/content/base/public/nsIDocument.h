@@ -45,7 +45,6 @@
 #include "nsCOMArray.h"
 
 class nsIAtom;
-class nsIArena;
 class nsIContent;
 class nsIDocumentObserver;
 class nsIPresContext;
@@ -103,11 +102,6 @@ class nsIDocument : public nsISupports {
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_IDOCUMENT_IID)
 
-  // All documents have a memory arena associated with them which is
-  // used for memory allocation during document creation. This call
-  // returns the arena associated with this document.
-  NS_IMETHOD GetArena(nsIArena** aArena) = 0;
-
   NS_IMETHOD StartDocumentLoad(const char* aCommand,
                                nsIChannel* aChannel,
                                nsILoadGroup* aLoadGroup,
@@ -146,10 +140,11 @@ public:
   NS_IMETHOD GetDocumentLoadGroup(nsILoadGroup** aGroup) const = 0;
 
   /**
-   * Return the base URL for relative URLs in the document. May return
-   * null (or the document URL).
+   * Return the base URL for relative URLs in the document (the document url
+   * unless it's overridden by SetBaseURL, HTML <base> tags, etc.).  The
+   * returned URL could be null if there is no document URL.
    */
-  NS_IMETHOD GetBaseURL(nsIURI*& aURL) const = 0;
+  NS_IMETHOD GetBaseURL(nsIURI** aURL) const = 0;
   NS_IMETHOD SetBaseURL(nsIURI* aURL) = 0;
 
   /**
@@ -163,8 +158,8 @@ public:
    * will trigger a startDocumentLoad if necessary to answer the
    * question.
    */
-  NS_IMETHOD GetDocumentCharacterSet(nsAString& oCharSetID) = 0;
-  NS_IMETHOD SetDocumentCharacterSet(const nsAString& aCharSetID) = 0;
+  NS_IMETHOD GetDocumentCharacterSet(nsACString& oCharSetID) = 0;
+  NS_IMETHOD SetDocumentCharacterSet(const nsACString& aCharSetID) = 0;
 
   NS_IMETHOD GetDocumentCharacterSetSource(PRInt32* aCharsetSource) = 0;
   NS_IMETHOD SetDocumentCharacterSetSource(PRInt32 aCharsetSource) = 0;
@@ -277,7 +272,7 @@ public:
    * Get the direct children of the document - content in
    * the prolog, the root content and content in the epilog.
    */
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent*& aResult) const = 0;
+  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const = 0;
   NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aIndex) const = 0;
   NS_IMETHOD GetChildCount(PRInt32& aCount) = 0;
 
@@ -405,8 +400,7 @@ public:
   NS_IMETHOD AttributeChanged(nsIContent* aChild,
                               PRInt32 aNameSpaceID,
                               nsIAtom* aAttribute,
-                              PRInt32 aModType,
-                              nsChangeHint aHint) = 0;
+                              PRInt32 aModType) = 0;
   NS_IMETHOD ContentAppended(nsIContent* aContainer,
                              PRInt32 aNewIndexInContainer) = 0;
   NS_IMETHOD ContentInserted(nsIContent* aContainer,
@@ -423,8 +417,8 @@ public:
   // Observation hooks for style data to propagate notifications
   // to document observers
   NS_IMETHOD StyleRuleChanged(nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule,
-                              nsChangeHint aHint) = 0;
+                              nsIStyleRule* aOldStyleRule,
+                              nsIStyleRule* aNewStyleRule) = 0;
   NS_IMETHOD StyleRuleAdded(nsIStyleSheet* aStyleSheet,
                             nsIStyleRule* aStyleRule) = 0;
   NS_IMETHOD StyleRuleRemoved(nsIStyleSheet* aStyleSheet,
@@ -443,7 +437,7 @@ public:
 
   NS_IMETHOD GetBindingManager(nsIBindingManager** aResult) = 0;
 
-  NS_IMETHOD GetNodeInfoManager(nsINodeInfoManager*& aNodeInfoManager) = 0;
+  NS_IMETHOD GetNodeInfoManager(nsINodeInfoManager** aNodeInfoManager) = 0;
 
   NS_IMETHOD Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup) = 0;
   NS_IMETHOD ResetToURI(nsIURI *aURI, nsILoadGroup* aLoadGroup) = 0;
@@ -475,6 +469,8 @@ public:
                                nsAString& Standalone) = 0;
 
   NS_IMETHOD_(PRBool) IsCaseSensitive() = 0;
+
+  NS_IMETHOD_(PRBool) IsScriptEnabled() = 0;
 };
 
 

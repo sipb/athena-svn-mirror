@@ -23,26 +23,17 @@
  */
 
 #include "nsISupports.idl"
-#include "domstubs.idl"
-#include "nsIAtom.idl"
-#include "domstubs.idl"
-#include "nsIAccessible.idl"
-#include "nsIAccessibleCaret.idl"
+#include "nsIAccessibleRetrieval.idl"
 
-interface nsIWeakReference;
 interface nsIAccessibleEventListener;
 interface nsIDocument;
-interface nsIPresShell;
-interface nsIDOMWindow;
-interface nsIAccessNode;
 interface nsObjectFrame;
 
 [scriptable, uuid(68D9720A-0984-42b6-A3F5-8237ED925727)]
-interface nsIAccessibilityService : nsISupports
+interface nsIAccessibilityService : nsIAccessibleRetrieval
 {
   nsIAccessible createOuterDocAccessible(in nsIDOMNode aNode);
   nsIAccessible createRootAccessible(in nsIPresShell aShell, in nsIDocument aDocument);
-  nsIAccessibleCaret createCaretAccessible(in nsIDOMNode aNode, in nsIAccessible aRootAccessible);
 
   nsIAccessible createHTML4ButtonAccessible(in nsISupports aFrame);
   nsIAccessible createHTMLAreaAccessible(in nsIWeakReference aPresShell, in nsIDOMNode aDOMNode, in nsIAccessible aAccParent);
@@ -93,19 +84,13 @@ interface nsIAccessibilityService : nsISupports
   nsIAccessible createXULTabPanelsAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULTabsAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULTextAccessible(in nsIDOMNode aNode);
+  nsIAccessible createXULTextBoxAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULTreeAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULTreeColumnsAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULTreeColumnitemAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULToolbarAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULToolbarSeparatorAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULTooltipAccessible(in nsIDOMNode aNode);
-
-  nsIAccessible getAccessibleFor(in nsIDOMNode aNode);
-  nsIAccessible getAccessibleInWindow(in nsIDOMNode aNode, in nsIDOMWindow aDOMWin);
-  nsIAccessible getAccessibleInWeakShell(in nsIDOMNode aNode, in nsIWeakReference aPresShell);
-  nsIAccessible getAccessibleInShell(in nsIDOMNode aNode, in nsIPresShell aPresShell);
-  [noscript] nsIAccessNode getCachedAccessNode(in nsIDOMNode aNode, in nsIWeakReference aShell);
-  [noscript] nsIAccessible getCachedAccessible(in nsIDOMNode aNode, in nsIWeakReference aShell);
 };
 
 
@@ -117,6 +102,6 @@ interface nsIAccessibilityService : nsISupports
 { 0xde401c37, 0x9a7f, 0x4278, { 0xa6, 0xf8, 0x3d, 0xe2, 0x83, 0x39, 0x89, 0xef } }
 
 extern nsresult
-NS_NewAccessibilityService(nsIAccessibilityService** aResult);
+NS_GetAccessibilityService(nsIAccessibilityService** aResult);
 
 %}

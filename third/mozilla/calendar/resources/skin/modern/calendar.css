@@ -23,8 +23,8 @@
  *                 Karl Guertin <grayrest@grayrest.com> 
  *                 Colin Phillips <colinp@oeone.com> 
  *                 ArentJan Banck <ajbanck@planet.nl>
- *		   			 Mark Swaffer <swaff@fudo.org>
- *						 Eric Belhaire <belhaire@ief.u-psud.fr>
+ *                 Mark Swaffer <swaff@fudo.org>
+ *                 Eric Belhaire <belhaire@ief.u-psud.fr>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -47,9 +47,9 @@
     overflow:auto;
 }
 
-#calendar-bar > .toolbar-holder > .toolbar-primary-icon {
-  background-image: url("chrome://calendar/skin/calendar_topbar.gif");
-}
+#calendar-bar > .toolbar-holder > .toolbar-primary-icon {                       
+  background-image: url("chrome://calendar/skin/calendar_topbar.gif");          
+}                                                                               
 
 /*--------------------------------------------------------------------
  *   Top bar, with name, image and buttons
@@ -68,7 +68,7 @@
  *-------------------------------------------------------------------*/
 
 .toolbarbutton-1 {
-  list-style-image: url("chrome://calendar/skin/btn1.gif");
+  list-style-image: url("chrome://calendar/skin/btn1.png");
 }
 
 
@@ -295,7 +295,22 @@
 *****************************
 */
 #multiweek-grid{
-   border-right: 1px solid #3f7d91;
+   border: 1px solid #3f7d91;
+}
+
+#multiweek-grid-box{
+    border: 1px solid #3f7d91;
+    padding: 2px;
+    margin: 10px 2px 15px 10px;
+    background-color: #E7EEEC;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+
+/*Right column*/
+.multiweek-rightcol-class{ 
+    margin: 10px 2px 15px 2px;
 }
 
 #multiweek-view-box{
@@ -314,17 +329,31 @@
     padding:0px;
 }
 
+.multiweek-header-class{
+    border-left: 1px solid #3f7d91;
+    -moz-box-align: center;
+    font-size: 1.3em;
+    font-family: Arial, Helvetica;
+    color: #3f7d91;
+    background-color: #FFFFFF;
+    font-weight:bold;
+}
+.multiweek-header-left-class{
+     -moz-box-align: center;
+    font-size: 1.3em;
+    font-family: Arial, Helvetica;
+    color: #3f7d91;
+    font-weight:bold;
+}
+
 .multiweek-leftcol-box-class{ 
    display            : -moz-stack;
    background-color   : #E7EEEC;
 }
-/*Right column*/
-.multiweek-rightcol-class{ 
-   background-color   : #E7EEEC;
-}
+
 /*Previous/Next Buttons*/
 .updownbuttons{
-    list-style-image: url("chrome://calendar/skin/pageupdown.gif");
+    list-style-image: url("chrome://calendar/skin/pageupdown.png");
 }
 #multiweek-next-button{
     -moz-box-align:end;
@@ -657,19 +686,19 @@
 .all-day-event-class,
 .month-allday-busy-ind-class[busy="true"]
 {
-   list-style-image     :url("chrome://calendar/skin/all_day_event.gif");
+   list-style-image     :url("chrome://calendar/skin/all_day_event.png");
 }  
 
 .all-day-event-class:hover,
 .month-allday-busy-ind-class[busy="true"]:hover
 {
-   list-style-image     :url("chrome://calendar/skin/all_day_event_hover.gif");
+   list-style-image     :url("chrome://calendar/skin/all_day_event_hover.png");
 }  
 
 .all-day-event-class:hover:active,
 .month-allday-busy-ind-class[busy="true"]:hover:active
 {
-   list-style-image     :url("chrome://calendar/skin/all_day_event_down.gif");
+   list-style-image     :url("chrome://calendar/skin/all_day_event_down.png");
 }  
 
 .month-view-event-dot-class
@@ -932,11 +961,6 @@
 	margin						: 0px 15px;
 }
 
-#week-view-day-gradient
-{
-   list-style-image              : url( "chrome://calendar/skin/day_left_gradient.png"  );
-}	
-
 /* Week View: Controls */
 
 #week-controls-box
@@ -1010,7 +1034,8 @@
 
 /* Week View: Day name header */
 #weekview-daynumber-spacer{
-   width: 125px;
+   width: 80px;
+   border-bottom         : 1px solid #2085c4;
 }
 #weekview-header-spacer-left
 {
@@ -1028,29 +1053,21 @@
    width                   : 43px;
 }
 
-#week-view-header-days
-{
-   -moz-border-top-colors:  #3f7d91 #E7EEEC  #E7EEEC;
-   -moz-border-right-colors:  #3f7d91 #E7EEEC  #E7EEEC;
-   border-top: 3px solid;
-   border-right: 3px solid;
-}
-
 .weekview-daynumber-class
 {
    -moz-box-align       : center;
    display              : -moz-stack;
-}
-
-#week-view-header
-{
    color                   : #3f7d91;
    font-size               : 11pt;
    font-family             : Arial, Helvetica;
    text-align              : center; 
    font-weight             : bold;
    background-color 	      : #ffffff;
+   -moz-border-top-colors:  #3f7d91 #E7EEEC  #E7EEEC;
+   border-top            : 3px solid;
+   border-bottom         : 1px solid #2085c4;
 }
+
 
 .week-header-date{
    font-size               : 33px;
@@ -1069,27 +1086,23 @@
 
 /* Week View: Calendar Tree */
 
-#week-view-content-outer-box
-{
-   border-left          : 1px solid #2085c4;
-   border-bottom        : 1px solid #2085c4;
-   border-right         : 1px solid #2085c4;
-	padding					: 2px;
-   background-color     : #E7EEEC;
-}
-
+/*
+overflow can be set to scroll instead of auto
+because fewer errors in the event position are
+then observed (ERic 20/06/03)
+*/
 #week-view-content-box
 {
    overflow             : auto;
-   border               : 1px solid #2085c4;
    background-color     :#ffffff;
    -moz-user-focus      : normal;
+  padding		: 2px;
 }
-
 
 #week-view-content-holder{
     margin-right: 3px;
     background-color: #ffffff;
+   border-right        : 1px solid #2085c4;
 }
 
 .week-view-event-class
@@ -1124,17 +1137,16 @@
 .week-time-class-text
 {
    margin               : 5px; 	
-   margin-top           : 10px;
+   margin-top           : 2px;
    font-size            : 10pt;
    font-family          : Arial, Helvetica;
    color                : #1d7ab5;
-   width                : 80px;
+   width                : 50px;
 }
 
-.week-time-class
-{
-   -moz-box-pack        : end;
-   -moz-box-align       : center;
+.week-row-class{  
+   height               : 40px;
+   min-height:            30px;
 }
 
 .week-view-hour-box-class
@@ -1142,7 +1154,6 @@
    border-bottom        : 1px solid #2085c4;
 	border-left          : 1px solid #2085c4;
    width                : 78px;
-   height               : 50px;
    background-color     : white;
    -moz-user-focus      : normal;
 }
@@ -1181,39 +1192,37 @@
 .week-view-hours-only-box-class
 {
    border-bottom        : 1px solid #2085c4;
+   border-left        : 1px solid #2085c4;
    width                : 82px;
-   height               : 50px;
    background-color     : white;
+   -moz-box-pack        : start;
+   -moz-box-align       : start;
 }
-
-#week-view-all-day-content-box
-{
-	padding					: 2px;
-   background-color     : white;
-   border-top           : 1px solid #2085c4;
-   border-left          : 1px solid #2085c4;
-   border-right         : 1px solid #2085c4;
-   min-height       		: 25px;
-} 
 
 #weekview-daynumber-spacer-left
 {
-   width                : 122px;
+   width                : 82px;
+   border-bottom           : 1px solid #2085c4;
+   border-left           : 1px solid #2085c4;
 }
 
 .all-day-content-box-text-title
 {
-   font-size            : 10pt;
+   font-size            : 7pt;
    font-family          : Arial, Helvetica;
    color                : #1d7ab5;
    -moz-box-pack       : center;
-   text-align           : center;
+   text-align           : left;
 } 
 
 .all-day-content-box-week
 {
   	width				: 78px;
    -moz-box-align : start;
+	padding					: 2px;
+   background-color     : white;
+   border-bottom           : 1px solid #2085c4;
+   min-height       		: 25px;
 }
 
 #all-day-content-spacer
@@ -1237,43 +1246,43 @@
 
 /* TO DO ITEMS */
 
-treechildren:-moz-tree-cell-text(inprogress)
+treechildren::-moz-tree-cell-text(inprogress)
 {
    color                 : green;
 }
-treechildren:-moz-tree-row(inprogress,selected)
+treechildren::-moz-tree-row(inprogress,selected)
 {
    background-color                 : green;
 }
 
-treechildren:-moz-tree-cell-text(overdue)
+treechildren::-moz-tree-cell-text(overdue)
 {
    color                  : red;
 }
-treechildren:-moz-tree-row(overdue,selected)
+treechildren::-moz-tree-row(overdue,selected)
 {
    background-color                  : red;
 }
 
-treechildren:-moz-tree-cell-text(duetoday)
+treechildren::-moz-tree-cell-text(duetoday)
 {
    color                  : blue;
 }
-treechildren:-moz-tree-row(duetoday,selected)
+treechildren::-moz-tree-row(duetoday,selected)
 {
    background-color                  : blue;
 }
 
-treechildren:-moz-tree-cell-text(future)
+treechildren::-moz-tree-cell-text(future)
 {
    color                  : gray;
 }
-treechildren:-moz-tree-row(future,selected)
+treechildren::-moz-tree-row(future,selected)
 {
    background-color                  : gray;
 }
 
-treechildren:-moz-tree-cell-text(completed)
+treechildren::-moz-tree-cell-text(completed)
 {
    text-decoration        : line-through;
    color                  : black;
@@ -1287,25 +1296,25 @@ treechildren:-moz-tree-cell-text(completed)
    list-style-image      : url("chrome://global/skin/checkbox/cbox-check.gif");
 }
 
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, future),
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, inprogress),
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, overdue),
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, duetoday) {
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, future),
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, inprogress),
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, overdue),
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, duetoday) {
    list-style-image      : url("chrome://global/skin/checkbox/cbox.gif");
 }
 
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, future, current),
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, inprogress, current),
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, overdue, current),
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, duetoday, current) {
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, future, current),
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, inprogress, current),
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, overdue, current),
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, duetoday, current) {
    list-style-image      : url("chrome://global/skin/checkbox/cbox-act.gif");
 }
 
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, completed) {
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, completed) {
    list-style-image      : url("chrome://global/skin/checkbox/cbox-check.gif");
 }
 
-treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, completed, current) {
+treechildren::-moz-tree-image(unifinder-todo-tree-col-completed, completed, current) {
    list-style-image      : url("chrome://global/skin/checkbox/cbox-act-check.gif");
 }
 
@@ -1314,22 +1323,28 @@ treechildren:-moz-tree-image(unifinder-todo-tree-col-completed, completed, curre
    list-style-image      : url( "chrome://calendar/skin/unifinder/priority_header.png" )
 }
 
-treechildren:-moz-tree-image(unifinder-todo-tree-col-priority, highpriority) {
+treechildren::-moz-tree-image(unifinder-todo-tree-col-priority, highpriority) {
    list-style-image      : url( "chrome://calendar/skin/unifinder/priority_high.png" )
 }
 
-treechildren:-moz-tree-image(unifinder-todo-tree-col-priority, lowpriority) {
+treechildren::-moz-tree-image(unifinder-todo-tree-col-priority, lowpriority) {
    list-style-image      : url( "chrome://calendar/skin/unifinder/priority_low.png" )
 }
 
 
-treechildren:-moz-tree-cell-text(selected) {
+treechildren::-moz-tree-cell-text(selected) {
    color                  : white;
 }
 
 .calendar-list-item-class[synching="true"]
 {
    list-style-image     : url( "chrome://calendar/skin/synch_animated.gif" );
+}
+
+listitem[selected="true"] > .calendar-list-item-class
+{
+  background-color     : White;
+  color                : Black;
 }
 
 .todo-due-image-class
@@ -1346,3 +1361,11 @@ treechildren:-moz-tree-cell-text(selected) {
 {
    list-style-image      : url( "chrome://calendar/skin/unifinder/priority_low.png" )
 }  
+/*--------------------------------------------------------------------
+ * Unifinder 
+ *-------------------------------------------------------------------*/
+/* workaround to avoid Window Flick */
+#unifinder-search-results-listbox
+{
+   min-height : 40px ;
+}

@@ -45,7 +45,8 @@
 #include "nsMimeTypes.h"
 #include "netCore.h"
 #include "nsXPIDLString.h"
-#include "nsIPref.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
 #include "imgILoader.h"
 
 #include "nsCRT.h"
@@ -58,8 +59,6 @@
 
 #define MAX_BUFFER_SIZE 1024
 
-static NS_DEFINE_IID(kPrefServiceCID, NS_PREF_CID);
-
 #if defined WORDS_BIGENDIAN || defined IS_BIG_ENDIAN
 #define LITTLE_TO_NATIVE16(x) ((((x) & 0xFF) << 8) | ((x) >> 8))
 #else
@@ -67,18 +66,16 @@ static NS_DEFINE_IID(kPrefServiceCID, NS_PREF_CID);
 #endif
 
 nsUnknownDecoder::nsUnknownDecoder()
+  : mBuffer(nsnull)
+  , mBufferLen(0)
+  , mRequireHTMLsuffix(PR_FALSE)
 {
-  mBuffer = nsnull;
-  mBufferLen = 0;
-  mRequireHTMLsuffix = PR_FALSE;
-
-  nsresult rv;
-  nsCOMPtr<nsIPref> pPrefService = do_GetService(kPrefServiceCID, &rv);
-  if (NS_SUCCEEDED(rv)) {
-    rv = pPrefService->GetBoolPref("security.requireHTMLsuffix", &mRequireHTMLsuffix);
+  nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  if (prefs) {
+    PRBool val;
+    if (NS_SUCCEEDED(prefs->GetBoolPref("security.requireHTMLsuffix", &val)))
+      mRequireHTMLsuffix = val;
   }
-
-
 }
 
 nsUnknownDecoder::~nsUnknownDecoder()
@@ -95,8 +92,8 @@ nsUnknownDecoder::~nsUnknownDecoder()
 //
 // ----
 
-NS_IMPL_ADDREF(nsUnknownDecoder);
-NS_IMPL_RELEASE(nsUnknownDecoder);
+NS_IMPL_ADDREF(nsUnknownDecoder)
+NS_IMPL_RELEASE(nsUnknownDecoder)
 
 NS_INTERFACE_MAP_BEGIN(nsUnknownDecoder)
    NS_INTERFACE_MAP_ENTRY(nsIStreamConverter)
@@ -419,22 +416,41 @@ PRBool nsUnknownDecoder::SniffForHTML(nsIRequest* aRequest)
     return PR_TRUE;
   }
 
-  nsCaseInsensitiveCStringComparator comparator;
-
-#define MATCHES_TAG(_tagstr) \
-  Substring(str, pos, sizeof(_tagstr) - 1).Equals(_tagstr, comparator)
-  
+  const char* strPtr = str.get() + pos;
+  // We use sizeof(_tagstr) below because that's the length of _tagstr
+  // with the one char " " or ">" appended.
+#define MATCHES_TAG(_tagstr)                                              \
+  (PL_strncasecmp(strPtr, _tagstr " ", sizeof(_tagstr)) == 0 ||  \
+   PL_strncasecmp(strPtr, _tagstr ">", sizeof(_tagstr)) == 0)
+    
   if (MATCHES_TAG("html")     ||
       MATCHES_TAG("frameset") ||
       MATCHES_TAG("body")     ||
+      MATCHES_TAG("head")     ||
       MATCHES_TAG("script")   ||
-      MATCHES_TAG("a href")   ||
+      MATCHES_TAG("a")        ||
       MATCHES_TAG("img")      ||
       MATCHES_TAG("table")    ||
       MATCHES_TAG("title")    ||
+      MATCHES_TAG("link")     ||
+      MATCHES_TAG("base")     ||
+      MATCHES_TAG("style")    ||
       MATCHES_TAG("div")      ||
+      MATCHES_TAG("p")        ||
+      MATCHES_TAG("font")     ||
       MATCHES_TAG("applet")   ||
-      MATCHES_TAG("meta")) {
+      MATCHES_TAG("meta")     ||
+      MATCHES_TAG("center")   ||
+      MATCHES_TAG("form")     ||
+      MATCHES_TAG("isindex")  ||
+      MATCHES_TAG("h1")       ||
+      MATCHES_TAG("h2")       ||
+      MATCHES_TAG("h3")       ||
+      MATCHES_TAG("h4")       ||
+      MATCHES_TAG("h5")       ||
+      MATCHES_TAG("h6")       ||
+      MATCHES_TAG("b")        ||
+      MATCHES_TAG("pre")) {
   
     mContentType = TEXT_HTML;
     return PR_TRUE;

@@ -51,11 +51,12 @@
 #include "nsIObserver.h"
 #include "nsIIOService.h"
 #include "nsCOMPtr.h"
+#include "nsURLHelper.h"
 
 class nsIBinaryInputStream;
 class nsIBinaryOutputStream;
 class nsIIDNService;
-class nsICharsetConverterManager2;
+class nsICharsetConverterManager;
 
 //-----------------------------------------------------------------------------
 // standard URL implementation
@@ -131,6 +132,10 @@ public: /* internal -- HPUX compiler can't handle this being private */
                                         PRInt16 mask,
                                         nsAFlatCString &buf);
     private:
+        PRBool InitUnicodeEncoder();
+        
+        const char* mCharset;  // Caller should keep this alive for
+                               // the life of the segment encoder
         nsCOMPtr<nsIUnicodeEncoder> mEncoder;
     };
     friend class nsSegmentEncoder;
@@ -142,7 +147,7 @@ private:
     void     InvalidateCache(PRBool invalidateCachedFile = PR_TRUE);
 
     PRBool   EncodeHost(const char *host, nsCString &result);
-    void     CoalescePath(char *path);
+    void     CoalescePath(netCoalesceFlags coalesceFlag, char *path);
 
     PRUint32 AppendSegmentToBuf(char *, PRUint32, const char *, URLSegment &, const nsCString *esc=nsnull);
     PRUint32 AppendToBuf(char *, PRUint32, const char *, PRUint32);
@@ -152,6 +157,7 @@ private:
     PRBool   HostsAreEquivalent(nsStandardURL *other);
 
     PRBool   SegmentIs(const URLSegment &s1, const char *val);
+    PRBool   SegmentIs(const char* spec, const URLSegment &s1, const char *val);
     PRBool   SegmentIs(const URLSegment &s1, const char *val, const URLSegment &s2);
 
     PRInt32  ReplaceSegment(PRUint32 pos, PRUint32 len, const char *val, PRUint32 valLen);
@@ -242,7 +248,7 @@ private:
     // global objects.  don't use COMPtr as its destructor will cause a
     // coredump if we leak it.
     static nsIIDNService               *gIDNService;
-    static nsICharsetConverterManager2 *gCharsetMgr;
+    static nsICharsetConverterManager *gCharsetMgr;
     static PRBool                       gInitialized;
     static PRBool                       gEscapeUTF8;
 };

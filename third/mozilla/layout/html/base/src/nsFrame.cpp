@@ -42,7 +42,6 @@
 #include "nsLineLayout.h"
 #include "nsIContent.h"
 #include "nsIAtom.h"
-#include "nsIArena.h"
 #include "nsString.h"
 #include "nsStyleContext.h"
 #include "nsIView.h"
@@ -74,6 +73,8 @@
 #include "nsIFrameSelection.h"
 #include "nsHTMLParts.h"
 #include "nsLayoutAtoms.h"
+#include "nsCSSAnonBoxes.h"
+#include "nsCSSPseudoElements.h"
 #include "nsHTMLAtoms.h"
 #include "nsIHTMLContentSink.h" 
 
@@ -527,8 +528,7 @@ nsFrame::Init(nsIPresContext*  aPresContext,
 
   if (aPrevInFlow) {
     // Make sure the general flags bits are the same
-    nsFrameState state;
-    aPrevInFlow->GetFrameState(&state);
+    nsFrameState state = aPrevInFlow->GetStateBits();
 
     // Make bits that are currently on (see constructor) the same:
     mState &= state | ~(NS_FRAME_SYNC_FRAME_AND_VIEW);
@@ -540,8 +540,7 @@ nsFrame::Init(nsIPresContext*  aPresContext,
                        NS_FRAME_IS_SPECIAL);
   }
   if (mParent) {
-    nsFrameState state;
-    mParent->GetFrameState(&state);
+    nsFrameState state = mParent->GetStateBits();
 
     // Make bits that are currently off (see constructor) the same:
     mState |= state & (NS_FRAME_INDEPENDENT_SELECTION |
@@ -616,8 +615,7 @@ nsFrame::Destroy(nsIPresContext* aPresContext)
 
   // Get the view pointer now before the frame properties disappear
   // when we call NotifyDestroyingFrame()
-  nsIView*  view;
-  GetView(aPresContext, &view);
+  nsIView* view = GetView();
   
   // XXX Rather than always doing this it would be better if it was part of
   // a frame observer mechanism and the pres shell could register as an
@@ -646,7 +644,7 @@ nsFrame::Destroy(nsIPresContext* aPresContext)
   }
 
   // Deleting the frame doesn't really free the memory, since we're using an
-  // nsIArena for allocation, but we will get our destructors called.
+  // arena for allocation, but we will get our destructors called.
   delete this;
 
   // Now that we're totally cleaned out, we need to add ourselves to the presshell's
@@ -774,17 +772,14 @@ nsFrame::SetOverflowClipRect(nsIRenderingContext& aRenderingContext)
 *********************************************************/
 static void RefreshAllContentFrames(nsIPresContext* aPresContext, nsIFrame * aFrame, nsIContent * aContent)
 {
-  nsIContent* frameContent;
-  aFrame->GetContent(&frameContent);
-  if (frameContent == aContent) {
+  if (aFrame->GetContent() == aContent) {
     ForceDrawFrame(aPresContext, (nsFrame *)aFrame);
   }
-  NS_IF_RELEASE(frameContent);
 
   aFrame->FirstChild(aPresContext, nsnull, &aFrame);
   while (aFrame) {
     RefreshAllContentFrames(aPresContext, aFrame, aContent);
-    aFrame->GetNextSibling(&aFrame);
+    aFrame = aFrame->GetNextSibling();
   }
 }
 
@@ -797,26 +792,22 @@ static void RefreshAllContentFrames(nsIPresContext* aPresContext, nsIFrame * aFr
  */
 void ForceDrawFrame(nsIPresContext* aPresContext, nsFrame * aFrame)//, PRBool)
 {
-  if (aFrame == nsnull) {
+  if (!aFrame) {
     return;
   }
-  nsRect    rect;
   nsIView * view;
   nsPoint   pnt;
   aFrame->GetOffsetFromView(aPresContext, pnt, &view);
-  aFrame->GetRect(rect);
+  nsRect rect = aFrame->GetRect();
   rect.x = pnt.x;
   rect.y = pnt.y;
-  if (view != nsnull) {
-    nsIViewManager * viewMgr;
-    view->GetViewManager(viewMgr);
-    if (viewMgr != nsnull) {
+  if (view) {
+    nsIViewManager* viewMgr = view->GetViewManager();
+    if (viewMgr) {
       viewMgr->UpdateView(view, rect, 0);
-      NS_RELEASE(viewMgr);
     }
     //viewMgr->UpdateView(view, rect, NS_VMREFRESH_DOUBLE_BUFFER | NS_VMREFRESH_IMMEDIATE);
   }
-
 }
 
 
@@ -850,9 +841,7 @@ nsFrame::Paint(nsIPresContext*      aPresContext,
 
 //check frame selection state
   PRBool isSelected;
-  nsFrameState  frameState;
-  GetFrameState(&frameState);
-  isSelected = (frameState & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT;
+  isSelected = (GetStateBits() & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT;
 //if not selected then return 
   if (!isSelected)
     return NS_OK; //nothing to do
@@ -868,12 +857,12 @@ nsFrame::Paint(nsIPresContext*      aPresContext,
     return NS_OK; //if frame does not allow selection. do nothing
 
 
-  nsCOMPtr<nsIContent> newContent;
-  result = mContent->GetParent(*getter_AddRefs(newContent));
+  nsCOMPtr<nsIContent> newContent = mContent->GetParent();
 
-//check to see if we are anonymouse content
+  //check to see if we are anonymous content
   PRInt32 offset;
-  if (NS_SUCCEEDED(result) && newContent){
+  if (newContent) {
+    // XXXbz there has GOT to be a better way of determining this!
     result = newContent->IndexOf(mContent, offset);
     if (NS_FAILED(result)) 
       return result;
@@ -897,8 +886,7 @@ nsFrame::Paint(nsIPresContext*      aPresContext,
   
   if (details)
   {
-    nsRect rect;
-    GetRect(rect);
+    nsRect rect = GetRect();
     rect.width-=2;
     rect.height-=2;
     rect.x=1; //we are in the coordinate system of the frame now with regards to the rendering context.
@@ -974,7 +962,9 @@ nsFrame::GetContentForEvent(nsIPresContext* aPresContext,
                             nsEvent* aEvent,
                             nsIContent** aContent)
 {
-  return GetContent(aContent);
+  *aContent = GetContent();
+  NS_IF_ADDREF(*aContent);
+  return NS_OK;
 }
 
 /**
@@ -1094,29 +1084,21 @@ nsFrame::GetDataForTableSelection(nsIFrameSelection *aFrameSelection,
         //  or select column when along top edge?
         break;
       } else {
-        result = frame->GetParent(&frame);
+        frame = frame->GetParent();
+        result = NS_OK;
         // Stop if we have hit the selection's limiting content node
-        if (frame)
-        {
-          nsIContent* frameContent;
-          frame->GetContent(&frameContent);
-          if (frameContent == limiter.get())
-            break;
-        }
+        if (frame && frame->GetContent() == limiter.get())
+          break;
       }
     }
   }
   // We aren't in a cell or table
   if (!foundCell && !foundTable) return NS_OK;
 
-  nsCOMPtr<nsIContent> tableOrCellContent;
-  result = frame->GetContent(getter_AddRefs(tableOrCellContent));
-  if (NS_FAILED(result)) return result;
+  nsIContent* tableOrCellContent = frame->GetContent();
   if (!tableOrCellContent) return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIContent> parentContent;
-  result = tableOrCellContent->GetParent(*getter_AddRefs(parentContent));
-  if (NS_FAILED(result)) return result;
+  nsCOMPtr<nsIContent> parentContent = tableOrCellContent->GetParent();
   if (!parentContent) return NS_ERROR_FAILURE;
 
   PRInt32 offset;
@@ -1160,7 +1142,7 @@ nsFrame::FrameOrParentHasSpecialSelectionStyle(PRUint8 aSelectionStyle, nsIFrame
       return NS_OK;
     }
   
-    thisFrame->GetParent(&thisFrame);
+    thisFrame = thisFrame->GetParent();
   }
   
   *foundFrame = nsnull;
@@ -1191,11 +1173,10 @@ nsFrame::IsSelectable(PRBool* aSelectable, PRUint8* aSelectStyle) const
   //    _MOZ_ALL -> TEXT     -> AUTO -> AUTO,     the returned value is _MOZ_ALL
   //    AUTO     -> CELL     -> TEXT -> AUTO,     the returned value is TEXT
   //
-  nsresult result      = NS_OK;
   PRUint8 selectStyle  = NS_STYLE_USER_SELECT_AUTO;
   nsIFrame* frame      = (nsIFrame*)this;
 
-  while (frame && NS_SUCCEEDED(result)) {
+  while (frame) {
     const nsStyleUIReset* userinterface = frame->GetStyleUIReset();
     switch (userinterface->mUserSelect) {
       case NS_STYLE_USER_SELECT_ALL:
@@ -1211,7 +1192,7 @@ nsFrame::IsSelectable(PRBool* aSelectable, PRUint8* aSelectStyle) const
         }
         break;
     }
-    result = frame->GetParent(&frame);
+    frame = frame->GetParent();
   }
 
   // convert internal values to standard values
@@ -1250,7 +1231,6 @@ ContentContainsPoint(nsIPresContext *aPresContext,
   if (NS_FAILED(rv) || !frame) return PR_FALSE;
 
   nsIView *frameView = nsnull;
-  nsRect frameRect;
   nsPoint offsetPoint;
 
   // Get the view that contains the content's frame.
@@ -1270,16 +1250,9 @@ ContentContainsPoint(nsIPresContext *aPresContext,
     // of aRelativeView and walk up the view hierarchy calculating what
     // the actual point is, relative to frameView.
 
-    nsPoint viewOffset(0, 0);
-
     while (aRelativeView && aRelativeView != frameView) {
-      aRelativeView->GetPosition(&viewOffset.x, &viewOffset.y);
-
-      point.x += viewOffset.x;
-      point.y += viewOffset.y;
-
-      rv = aRelativeView->GetParent(aRelativeView);
-      if (NS_FAILED(rv)) return PR_FALSE;
+      point += aRelativeView->GetPosition();
+      aRelativeView = aRelativeView->GetParent();
     }
 
     // At this point the point should be in the correct
@@ -1295,7 +1268,7 @@ ContentContainsPoint(nsIPresContext *aPresContext,
     // Get the frame's rect and make it relative to the
     // upper left corner of it's parent view.
 
-    frame->GetRect(frameRect);
+    nsRect frameRect = frame->GetRect();
     frameRect.x = offsetPoint.x;
     frameRect.y = offsetPoint.y;
 
@@ -1356,11 +1329,10 @@ nsFrame::HandlePress(nsIPresContext* aPresContext,
 
   nsKeyEvent* keyEvent = (nsKeyEvent*)aEvent;
   if (!isEditor && !keyEvent->isAlt) {
-    nsCOMPtr<nsIContent> content;
-    GetContent (getter_AddRefs(content));
     static NS_NAMED_LITERAL_STRING(simple, "simple");
     
-    while (content) {
+    for (nsIContent* content = mContent; content;
+         content = content->GetParent()) {
        // are we a link with an href? If so, bail out now!
        nsAutoString href;
        // a?
@@ -1404,12 +1376,6 @@ nsFrame::HandlePress(nsIPresContext* aPresContext,
              frameRect.y <= aEvent->point.y && (frameRect.y + frameRect.height >= aEvent->point.y))
            return NS_OK;
        }
-  
-       // now try the parent
-       nsIContent* parent;
-       content->GetParent(parent);
-       content = dont_AddRef(parent);
-  
     } // if browser, not editor
   }
 
@@ -1444,8 +1410,7 @@ nsFrame::HandlePress(nsIPresContext* aPresContext,
 
   //get the frame selection from sel controller
 
-  // nsFrameState  state;
-  // GetFrameState(&state);
+  // nsFrameState  state = GetStateBits();
   // if (state & NS_FRAME_INDEPENDENT_SELECTION) 
   nsCOMPtr<nsIFrameSelection> frameselection;
 
@@ -1521,9 +1486,7 @@ nsFrame::HandlePress(nsIPresContext* aPresContext,
     // drag the selected region to some other app.
 
     SelectionDetails *details = 0;
-    nsFrameState  frameState;
-    GetFrameState(&frameState);
-    PRBool isSelected = ((frameState & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT);
+    PRBool isSelected = ((GetStateBits() & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT);
 
     if (isSelected)
     {
@@ -1577,6 +1540,9 @@ nsFrame::HandlePress(nsIPresContext* aPresContext,
   if (NS_FAILED(rv))
     return rv;
 
+  if (startOffset != endOffset)
+    frameselection->MaintainSelection();
+
   if (isEditor && !me->isShift && (endOffset - startOffset) == 1)
   {
     // A single node is selected and we aren't extending an existing
@@ -1628,8 +1594,7 @@ nsFrame::HandlePress(nsIPresContext* aPresContext,
     {
       // Check if click was in an image.
 
-      nsCOMPtr<nsIContent> frameContent;
-      GetContent(getter_AddRefs(frameContent));
+      nsIContent* frameContent = GetContent();
       nsCOMPtr<nsIDOMHTMLImageElement> img(do_QueryInterface(frameContent));
 
       disableDragSelect = img != nsnull;
@@ -1791,7 +1756,17 @@ nsFrame::PeekBackwardAndForward(nsSelectionAmount aAmountBack,
       return rv;
   }
   //no release 
-  return NS_OK;
+
+  // maintain selection
+  nsCOMPtr<nsIFrameSelection> frameselection = do_QueryInterface(selcon); //this MAY implement
+  if (!frameselection)
+  {
+    rv = aPresContext->GetPresShell()->GetFrameSelection(getter_AddRefs(frameselection));
+    if (NS_FAILED(rv) || !frameselection)
+      return NS_OK;   // return NS_OK; we don't care if this fails
+  }
+
+  return frameselection->MaintainSelection();
 }
 
 NS_IMETHODIMP nsFrame::HandleDrag(nsIPresContext* aPresContext, 
@@ -1997,14 +1972,10 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
   // Traverse through children and look for the best one to give this
   // to if it fails the getposition call, make it yourself also only
   // look at primary list
-  nsIView  *view         = nsnull;
   nsIFrame *kid          = nsnull;
   nsIFrame *closestFrame = nsnull;
 
-  result = GetClosestViewForFrame(aCX, this, &view);
-
-  if (NS_FAILED(result))
-    return result;
+  nsIView *view = GetClosestView();
 
   result = FirstChild(aCX, nsnull, &kid);
 
@@ -2019,32 +1990,17 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
       // Skip over generated content kid frames, or frames
       // that don't have a proper parent-child relationship!
 
-      PRBool skipThisKid = PR_FALSE;
-      nsFrameState frameState;
-      result = kid->GetFrameState(&frameState);
-
-      if (NS_FAILED(result))
-        return result;
-
-      if (frameState & NS_FRAME_GENERATED_CONTENT) {
-        // It's generated content, so skip it!
-        skipThisKid = PR_TRUE;
-      }
+      PRBool skipThisKid = (GetStateBits() & NS_FRAME_GENERATED_CONTENT) != 0;
 #if 0
       else {
         // The frame's content is not generated. Now check
         // if it is anonymous content!
 
-        nsCOMPtr<nsIContent> kidContent;
+        nsIContent* kidContent = GetContent();
+        if (kidContent) {
+          nsCOMPtr<nsIContent> content = kidContent->GetParent();
 
-        result = kid->GetContent(getter_AddRefs(kidContent));
-
-        if (NS_SUCCEEDED(result) && kidContent) {
-          nsCOMPtr<nsIContent> content;
-
-          result = kidContent->GetParent(*getter_AddRefs(content));
-
-          if (NS_SUCCEEDED(result) && content) {
+          if (content) {
             PRInt32 kidCount = 0;
 
             result = content->ChildCount(kidCount);
@@ -2067,7 +2023,7 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
 #endif //XXX we USED to skip anonymous content i dont think we should anymore leaving this here as a flah
 
       if (skipThisKid) {
-        kid->GetNextSibling(&kid);
+        kid = kid->GetNextSibling();
         continue;
       }
 
@@ -2075,13 +2031,11 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
       // relationship. Now see if the aPoint inside it's bounding
       // rect or close by.
 
-      nsRect rect;
       nsPoint offsetPoint(0,0);
       nsIView * kidView = nsnull;
-
-      kid->GetRect(rect);
       kid->GetOffsetFromView(aCX, offsetPoint, &kidView);
 
+      nsRect rect = kid->GetRect();
       rect.x = offsetPoint.x;
       rect.y = offsetPoint.y;
 
@@ -2124,7 +2078,7 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
         //   break;//done
       }
     
-      kid->GetNextSibling(&kid);
+      kid = kid->GetNextSibling();
     }
     if (closestFrame) {
 
@@ -2133,23 +2087,10 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
       // them to be relative to the closest view.
 
       nsPoint newPoint     = aPoint;
-      nsIView *closestView = nsnull;
-
-      result = GetClosestViewForFrame(aCX, closestFrame, &closestView);
-
-      if (NS_FAILED(result))
-        return result;
+      nsIView *closestView = closestFrame->GetClosestView();
 
       if (closestView && view != closestView)
-      {
-        nscoord vX = 0, vY = 0;
-        result = closestView->GetPosition(&vX, &vY);
-        if (NS_SUCCEEDED(result))
-        {
-          newPoint.x -= vX;
-          newPoint.y -= vY;
-        }
-      }
+        newPoint -= closestView->GetPosition();
 
       // printf("      0x%.8x   0x%.8x  %4d  %4d\n",
       //        closestFrame, closestView, closestXDistance, closestYDistance);
@@ -2162,16 +2103,13 @@ nsresult nsFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aCX,
   if (!mContent)
     return NS_ERROR_NULL_POINTER;
 
-  nsRect thisRect;
-  result = GetRect(thisRect);
-  if (NS_FAILED(result))
-    return result;
   nsPoint offsetPoint;
   GetOffsetFromView(aCX, offsetPoint, &view);
+  nsRect thisRect = GetRect();
   thisRect.x = offsetPoint.x;
   thisRect.y = offsetPoint.y;
 
-  result = mContent->GetParent(*aNewContent);
+  NS_IF_ADDREF(*aNewContent = mContent->GetParent());
   if (*aNewContent){
     
     PRInt32 contentOffset(aContentOffset); //temp to hold old value in case of failure
@@ -2349,16 +2287,7 @@ nsFrame::AttributeChanged(nsIPresContext* aPresContext,
                           nsIContent*     aChild,
                           PRInt32         aNameSpaceID,
                           nsIAtom*        aAttribute,
-                          PRInt32         aModType, 
-                          PRInt32         aHint)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsFrame::ContentStateChanged(nsIPresContext* aPresContext,
-                             nsIContent*     aChild,
-                             PRInt32         aHint)
+                          PRInt32         aModType)
 {
   return NS_OK;
 }
@@ -2401,100 +2330,67 @@ NS_IMETHODIMP nsFrame::SetNextInFlow(nsIFrame*)
 }
 
 // Associated view object
-NS_IMETHODIMP nsFrame::GetView(nsIPresContext* aPresContext, nsIView** aView) const
+nsIView*
+nsIFrame::GetView() const
 {
-  NS_ENSURE_ARG_POINTER(aView);
-
-  // Initialize OUT parameter
-  *aView = nsnull;
-
   // Check the frame state bit and see if the frame has a view
-  if (mState & NS_FRAME_HAS_VIEW) {
-    // Check for a property on the frame
-    nsCOMPtr<nsIPresShell>     presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
-  
-    if (presShell) {
-      nsCOMPtr<nsIFrameManager>  frameManager;
-      presShell->GetFrameManager(getter_AddRefs(frameManager));
-    
-      if (frameManager) {
-        void* value;
-        if (NS_SUCCEEDED(frameManager->GetFrameProperty((nsIFrame*)this, nsLayoutAtoms::viewProperty, 0, &value))) {
-          *aView = (nsIView*)value;
-          NS_ASSERTION(value != 0, "frame state bit was set but frame has no view");
-        }
-      }
-    }
-  }
+  if (!(GetStateBits() & NS_FRAME_HAS_VIEW))
+    return nsnull;
 
-  return NS_OK;
+  // Check for a property on the frame
+  void* value;
+  nsresult rv = GetPresContext()->GetFrameManager()->
+    GetFrameProperty(NS_CONST_CAST(nsIFrame*, this),
+                     nsLayoutAtoms::viewProperty, 0, &value);
+  NS_ENSURE_SUCCESS(rv, nsnull);
+  NS_ASSERTION(value, "frame state bit was set but frame has no view");
+  return NS_STATIC_CAST(nsIView*, value);
 }
 
-NS_IMETHODIMP nsFrame::SetView(nsIPresContext* aPresContext, nsIView* aView)
+/* virtual */ nsIView*
+nsIFrame::GetViewExternal() const
+{
+  return GetView();
+}
+
+nsresult
+nsIFrame::SetView(nsIView* aView)
 {
   if (aView) {
     aView->SetClientData(this);
 
     // Set a property on the frame
-    nsCOMPtr<nsIPresShell>  presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
-    
-    if (presShell) {
-      nsCOMPtr<nsIFrameManager>  frameManager;
-      presShell->GetFrameManager(getter_AddRefs(frameManager));
-    
-      if (frameManager) {
-        frameManager->SetFrameProperty(this, nsLayoutAtoms::viewProperty,
-                                       aView, nsnull);
-      }
-    }
+    nsresult rv = GetPresContext()->GetFrameManager()->
+      SetFrameProperty(this, nsLayoutAtoms::viewProperty, aView, nsnull);
+    NS_ENSURE_SUCCESS(rv, rv);
 
     // Set the frame state bit that says the frame has a view
-    mState |= NS_FRAME_HAS_VIEW;
+    AddStateBits(NS_FRAME_HAS_VIEW);
 
-     
-    // Let all of the containing frames know they have a child 
-    // with a view until a frame is hit that has the 
-    // NS_FRAME_HAS_CHILD_WITH_VIEW bit set already or a we
-    // reached the top of the frame tree.
-    nsIFrame* parent = nsnull;
-    GetParent(&parent);
-    
-    while (parent) {
-      nsFrameState frameState;
-      parent->GetFrameState(&frameState);
-
-      if (frameState & NS_FRAME_HAS_CHILD_WITH_VIEW)
-        break;
-
-      frameState |= NS_FRAME_HAS_CHILD_WITH_VIEW;
-      parent->SetFrameState(frameState);
-      parent->GetParent(&parent);
-    }
+    // Let all of the ancestors know they have a descendant with a view.
+    for (nsIFrame* f = GetParent();
+         f && !(f->GetStateBits() & NS_FRAME_HAS_CHILD_WITH_VIEW);
+         f = f->GetParent())
+      f->AddStateBits(NS_FRAME_HAS_CHILD_WITH_VIEW);
   }
 
   return NS_OK;
 }
 
-// Find the first geometric parent that has a view
-NS_IMETHODIMP nsFrame::GetParentWithView(nsIPresContext* aPresContext,
-                                         nsIFrame**      aParent) const
+nsIFrame* nsIFrame::GetAncestorWithViewExternal() const
 {
-  NS_PRECONDITION(nsnull != aParent, "null OUT parameter pointer");
+  return GetAncestorWithView();
+}
 
-  nsIFrame* parent;
-  for (parent = mParent; nsnull != parent; parent->GetParent(&parent)) {
-    nsIView* parView;
-     
-    parent->GetView(aPresContext, &parView);
-    if (nsnull != parView) {
-      break;
+// Find the first geometric parent that has a view
+nsIFrame* nsIFrame::GetAncestorWithView() const
+{
+  for (nsIFrame* f = mParent; nsnull != f; f = f->GetParent()) {
+    if (f->HasView()) {
+      return f;
     }
   }
-
-  *aParent = parent;
-  return NS_OK;
+  return nsnull;
 }
 
 // Returns the offset from this frame to the closest geometric parent that
@@ -2509,15 +2405,11 @@ NS_IMETHODIMP nsFrame::GetOffsetFromView(nsIPresContext* aPresContext,
   *aView = nsnull;
   aOffset.MoveTo(0, 0);
   do {
-    nsPoint origin;
-
-    frame->GetOrigin(origin);
-    aOffset += origin;
-    frame->GetParent(&frame);
-    if (nsnull != frame) {
-      frame->GetView(aPresContext, aView);
-    }
-  } while ((nsnull != frame) && (nsnull == *aView));
+    aOffset += frame->GetPosition();
+    frame = frame->GetParent();
+  } while (frame && !frame->HasView());
+  if (frame)
+    *aView = frame->GetView();
   return NS_OK;
 }
 
@@ -2547,16 +2439,15 @@ NS_IMETHODIMP nsFrame::GetOriginToViewOffset(nsIPresContext* aPresContext,
                                              nsIView**       aView) const
 {
   NS_ENSURE_ARG_POINTER(aPresContext);
+  nsresult rv = NS_OK;
 
   aOffset.MoveTo(0,0);
 
   if (aView)
     *aView = nsnull;
 
-  nsIView *view = nsnull;
-  nsresult rv = GetView(aPresContext, &view);
-
-  if (NS_SUCCEEDED(rv) && view) {
+  if (HasView()) {
+    nsIView *view = GetView();
     nsIView *parentView = nsnull;
     nsPoint offsetToParentView;
     rv = GetOffsetFromView(aPresContext, offsetToParentView, &parentView);
@@ -2565,42 +2456,16 @@ NS_IMETHODIMP nsFrame::GetOriginToViewOffset(nsIPresContext* aPresContext,
       nsPoint viewOffsetFromParent(0,0);
       nsIView *pview = view;
 
-      nsCOMPtr<nsIViewManager> vVM;
-
-      rv = view->GetViewManager(*getter_AddRefs(vVM));
-
-      if (NS_FAILED(rv))
-        return rv;
+      nsIViewManager* vVM = view->GetViewManager();
 
       while (pview && pview != parentView) {
-        nsPoint viewPos;
+        viewOffsetFromParent += pview->GetPosition();
 
-        rv = pview->GetPosition(&viewPos.x, &viewPos.y);
-
-        if (NS_FAILED(rv))
-          return rv;
-
-        viewOffsetFromParent += viewPos;
-
-        nsIView *tmpView = nsnull;
-        rv = pview->GetParent(tmpView);
-
-        if (NS_FAILED(rv))
-          return rv;
-
-        if (tmpView) {
-          nsCOMPtr<nsIViewManager> tmpVM;
-          rv = tmpView->GetViewManager(*getter_AddRefs(tmpVM));
-
-          if (NS_FAILED(rv))
-            return rv;
-
-          if (vVM != tmpVM) {
-            // Don't cross ViewManager boundaries!
-            break;
-          }
+        nsIView *tmpView = pview->GetParent();
+        if (tmpView && vVM != tmpView->GetViewManager()) {
+          // Don't cross ViewManager boundaries!
+          break;
         }
-
         pview = tmpView;
       }
 
@@ -2631,49 +2496,41 @@ NS_IMETHODIMP nsFrame::GetOriginToViewOffset(nsIPresContext* aPresContext,
   return rv;
 }
 
-
-NS_IMETHODIMP nsFrame::GetWindow(nsIPresContext* aPresContext,
-                                 nsIWidget**     aWindow) const
+/* virtual */ PRBool
+nsIFrame::AreAncestorViewsVisible() const
 {
-  NS_PRECONDITION(nsnull != aWindow, "null OUT parameter pointer");
-  
-  nsIFrame*  frame;
-  nsIWidget* window = nsnull;
-  for (frame = (nsIFrame*)this; nsnull != frame; frame->GetParentWithView(aPresContext, &frame)) {
-    nsIView* view;
-     
-    frame->GetView(aPresContext, &view);
-    if (nsnull != view) {
-      view->GetWidget(window);
-      if (nsnull != window) {
-        break;
+  for (nsIView* view = GetClosestView(); view; view = view->GetParent()) {
+    if (view->GetVisibility() == nsViewVisibility_kHide) {
+      return PR_FALSE;
+    }
+  }
+  return PR_TRUE;
+}
+
+nsIWidget* nsIFrame::GetWindow() const
+{
+  const nsIFrame* frame;
+  for (frame = this; frame; frame = frame->GetAncestorWithView()) {
+    if (frame->HasView()) {
+      nsIWidget* window = frame->GetView()->GetWidget();
+      if (window) {
+        return window;
       }
     }
   }
 
-  if (nsnull == window) {
-    // Ask the view manager for the widget
-
-    // First we have to get to a frame with a view
-    nsIView* view;
-    GetView(aPresContext, &view);
-    if (nsnull == view) {
-      GetParentWithView(aPresContext, &frame);
-      if (nsnull != frame) {
-        GetView(aPresContext, &view);
-      }
-    }
-     // From the view get the view manager
-    if (nsnull != view) {
-      nsCOMPtr<nsIViewManager> vm;
-      view->GetViewManager(*getter_AddRefs(vm));
-      vm->GetWidget(&window);
-    }    
+  // Ask the view manager for the widget
+  NS_NOTREACHED("this shouldn't happen, should it?");
+  nsIWidget* window;
+  GetPresContext()->GetViewManager()->GetWidget(&window);
+  // drop refcount that the view manager added, since we are not supposed
+  // to be adding a refcount
+  if (window) {
+    window->Release();
   }
 
-  NS_POSTCONDITION(nsnull != window, "no window in frame tree");
-  *aWindow = window;
-  return NS_OK;
+  NS_POSTCONDITION(window, "no window in frame tree");
+  return window;
 }
 
 NS_IMETHODIMP
@@ -2709,7 +2566,6 @@ nsFrame::Invalidate(nsIPresContext* aPresContext,
     }
   }
 
-  nsIViewManager* viewManager = nsnull;
   nsRect damageRect(aDamageRect);
 
 #if 0
@@ -2729,25 +2585,19 @@ nsFrame::Invalidate(nsIPresContext* aPresContext,
 #endif
 
   PRUint32 flags = aImmediate ? NS_VMREFRESH_IMMEDIATE : NS_VMREFRESH_NO_SYNC;
-  nsIView* view;
-
-  GetView(aPresContext, &view);
-  if (view) {
-    view->GetViewManager(viewManager);
-    viewManager->UpdateView(view, damageRect, flags);
-    
+  if (HasView()) {
+    nsIView* view = GetView();
+    view->GetViewManager()->UpdateView(view, damageRect, flags);
   } else {
     nsRect    rect(damageRect);
     nsPoint   offset;
   
+    nsIView *view;
     GetOffsetFromView(aPresContext, offset, &view);
-    NS_ASSERTION(nsnull != view, "no view");
+    NS_ASSERTION(view, "no view");
     rect += offset;
-    view->GetViewManager(viewManager);
-    viewManager->UpdateView(view, rect, flags);
+    view->GetViewManager()->UpdateView(view, rect, flags);
   }
-
-  NS_IF_RELEASE(viewManager);
 }
 
 // Define the MAX_FRAME_DEPTH to be the ContentSink's MAX_REFLOW_DEPTH plus
@@ -2793,26 +2643,16 @@ NS_IMETHODIMP nsFrame::IsPercentageBase(PRBool& aBase) const
   return NS_OK;
 }
 
-NS_IMETHODIMP nsFrame::Scrolled(nsIView *aView)
-{
-  return NS_OK;
-}
-
 PRInt32 nsFrame::ContentIndexInContainer(const nsIFrame* aFrame)
 {
-  nsIContent* content;
   PRInt32     result = -1;
 
-  aFrame->GetContent(&content);
-  if (nsnull != content) {
-    nsIContent* parentContent;
-
-    content->GetParent(parentContent);
-    if (nsnull != parentContent) {
+  nsIContent* content = aFrame->GetContent();
+  if (content) {
+    nsIContent* parentContent = content->GetParent();
+    if (parentContent) {
       parentContent->IndexOf(content, result);
-      NS_RELEASE(parentContent);
     }
-    NS_RELEASE(content);
   }
 
   return result;
@@ -2856,10 +2696,8 @@ nsFrame::List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const
 #ifdef DEBUG_waterson
   fprintf(out, " [parent=%p]", NS_STATIC_CAST(void*, mParent));
 #endif
-  nsIView*  view;
-  GetView(aPresContext, &view);
-  if (view) {
-    fprintf(out, " [view=%p]", NS_STATIC_CAST(void*, view));
+  if (HasView()) {
+    fprintf(out, " [view=%p]", NS_STATIC_CAST(void*, GetView()));
   }
   fprintf(out, " {%d,%d,%d,%d}", mRect.x, mRect.y, mRect.width, mRect.height);
   if (0 != mState) {
@@ -2881,13 +2719,12 @@ nsFrame::MakeFrameName(const nsAString& aType, nsAString& aResult) const
 {
   aResult = aType;
   if (nsnull != mContent) {
-    nsIAtom* tag;
-    mContent->GetTag(tag);
-    if ((tag != nsnull) && (tag != nsLayoutAtoms::textTagName)) {
+    nsCOMPtr<nsIAtom> tag;
+    mContent->GetTag(getter_AddRefs(tag));
+    if (tag && tag != nsLayoutAtoms::textTagName) {
       nsAutoString buf;
       tag->ToString(buf);
       aResult.Append(NS_LITERAL_STRING("(") + buf + NS_LITERAL_STRING(")"));
-      NS_RELEASE(tag);
     }
   }
   char buf[40];
@@ -2932,8 +2769,7 @@ nsFrame::ParentDisablesSelection() const
 {
 /*
   // should never be called now
-  nsIFrame* parent;
-  GetParent(&parent);
+  nsIFrame* parent = GetParent();
   if (parent) {
 	  PRBool selectable;
 	  parent->IsSelectable(selectable);
@@ -2948,8 +2784,7 @@ nsFrame::ParentDisablesSelection() const
   if (selected)
     return PR_FALSE; //if this frame is selected and no one has overridden the selection from "higher up"
                      //then no one below us will be disabled by this frame.
-  nsIFrame* target;
-  GetParent(&target);
+  nsIFrame* target = GetParent();
   if (target)
     return ((nsFrame *)target)->ParentDisablesSelection();
   return PR_FALSE; //default this does not happen
@@ -3036,9 +2871,7 @@ nsFrame::GetSelectionController(nsIPresContext *aPresContext, nsISelectionContro
 {
   if (!aPresContext || !aSelCon)
     return NS_ERROR_INVALID_ARG;
-  nsFrameState  state;
-  GetFrameState(&state);
-  if (state & NS_FRAME_INDEPENDENT_SELECTION) 
+  if (GetStateBits() & NS_FRAME_INDEPENDENT_SELECTION) 
   {
     nsIFrame *tmp = this;
     while (tmp)
@@ -3048,8 +2881,7 @@ nsFrame::GetSelectionController(nsIPresContext *aPresContext, nsISelectionContro
       {
         return tcf->GetSelectionContr(aSelCon);
       }
-      if (NS_FAILED(tmp->GetParent(&tmp)))
-        break;
+      tmp = tmp->GetParent();
     }
   }
   nsCOMPtr<nsIPresShell> shell;
@@ -3095,11 +2927,9 @@ nsFrame::DumpBaseRegressionData(nsIPresContext* aPresContext, FILE* out, PRInt32
     fprintf(out, "<next-sibling va=\"%ld\"/>\n", PRUptrdiff(mNextSibling));
   }
 
-  nsIView*  view;
-  GetView(aPresContext, &view);
-  if (view) {
+  if (HasView()) {
     IndentBy(out, aIndent);
-    fprintf(out, "<view va=\"%ld\">\n", PRUptrdiff(view));
+    fprintf(out, "<view va=\"%ld\">\n", PRUptrdiff(GetView()));
     aIndent++;
     // XXX add in code to dump out view state too...
     aIndent--;
@@ -3144,13 +2974,13 @@ nsFrame::DumpBaseRegressionData(nsIPresContext* aPresContext, FILE* out, PRInt32
         fprintf(out, "<child-list>\n");
       }
       aIndent++;
-      while (nsnull != kid) {
+      while (kid) {
         nsIFrameDebug*  frameDebug;
 
         if (NS_SUCCEEDED(kid->QueryInterface(NS_GET_IID(nsIFrameDebug), (void**)&frameDebug))) {
           frameDebug->DumpRegressionData(aPresContext, out, aIndent, aIncludeStyleData);
         }
-        kid->GetNextSibling(&kid);
+        kid = kid->GetNextSibling();
       }
       aIndent--;
       IndentBy(out, aIndent);
@@ -3193,28 +3023,24 @@ nsFrame::SetSelected(nsIPresContext* aPresContext, nsIDOMRange *aRange, PRBool a
     if (NS_SUCCEEDED(rv)) {
       while (nsnull != kid) {
         kid->SetSelected(nsnull,aSelected,aSpread);
-        kid->GetNextSibling(&kid);
+        kid = kid->GetNextSibling();
       }
     }
   }
 */
-  nsFrameState  frameState;
-  GetFrameState(&frameState);
   if ( aSelected ){
-    frameState |=  NS_FRAME_SELECTED_CONTENT;
+    AddStateBits(NS_FRAME_SELECTED_CONTENT);
   }
   else
-    frameState &= ~NS_FRAME_SELECTED_CONTENT;
-  SetFrameState(frameState);
-  nsRect frameRect;
-  GetRect(frameRect);
+    RemoveStateBits(NS_FRAME_SELECTED_CONTENT);
+  nsRect frameRect = GetRect();
   nsRect rect(0, 0, frameRect.width, frameRect.height);
   if (!rect.IsEmpty()) {
     Invalidate(aPresContext, rect, PR_FALSE);
   }
-  if (frameState & NS_FRAME_OUTSIDE_CHILDREN)
+  if (GetStateBits() & NS_FRAME_OUTSIDE_CHILDREN)
   {
-    RefreshAllContentFrames(aPresContext,this,mContent);
+    RefreshAllContentFrames(aPresContext, this, mContent);
   }
 #if 0
   if (aRange) {
@@ -3223,8 +3049,7 @@ nsFrame::SetSelected(nsIPresContext* aPresContext, nsIDOMRange *aRange, PRBool a
     nsCOMPtr<nsIDOMNode> startNode;
     aRange->GetEndParent(getter_AddRefs(endNode));
     aRange->GetStartParent(getter_AddRefs(startNode));
-    nsCOMPtr<nsIContent> content;
-    rv = GetContent(getter_AddRefs(content));
+    nsIContent* content = GetContent();
     nsCOMPtr<nsIDOMNode> thisNode;
     thisNode = do_QueryInterface(content);
 
@@ -3232,23 +3057,19 @@ nsFrame::SetSelected(nsIPresContext* aPresContext, nsIDOMRange *aRange, PRBool a
 //since the getprimaryframe call is done with this content node.
     if (thisNode != startNode && thisNode != endNode)
     { //whole node selected
-      nsIFrame *frame;
-      rv = GetNextSibling(&frame);
-      while (NS_SUCCEEDED(rv) && frame)
+      nsIFrame *frame = GetNextSibling();
+      while (frame)
       {
         frame->SetSelected(aRange,aSelected,eSpreadDown);
-        rv = frame->GetNextSibling(&frame);
-        if (NS_FAILED(rv))
-          break;
+        frame = frame->GetNextSibling();
       }
     }
   }
 #endif
 #ifdef IBMBIDI
   PRInt32 start, end;
-  nsIFrame* frame;
-  GetNextSibling(&frame);
-  if (frame){
+  nsIFrame* frame = GetNextSibling();
+  if (frame) {
     GetFirstLeaf(aPresContext, &frame);
     GetOffsets(start, end);
     if (start && end) {
@@ -3275,23 +3096,16 @@ nsFrame::GetPointFromOffset(nsIPresContext* inPresContext, nsIRenderingContext* 
   nsPoint bottomLeft(0, 0);
   if (mContent)
   {
-    nsCOMPtr<nsIContent> newContent;
-    PRInt32 newOffset;
-    nsresult result = mContent->GetParent(*getter_AddRefs(newContent));
+    nsIContent* newContent = mContent->GetParent();
     if (newContent){
-      result = newContent->IndexOf(mContent, newOffset);
+      PRInt32 newOffset;
+      nsresult result = newContent->IndexOf(mContent, newOffset);
       if (NS_FAILED(result)) 
       {
         return result;
       }
-      nsRect rect;
-      result = GetRect(rect);
-      if (NS_FAILED(result))
-      {
-        return result;
-      }
       if (inOffset > newOffset)
-        bottomLeft.x = rect.width;
+        bottomLeft.x = GetRect().width;
     }
   }
   *outPoint = bottomLeft;
@@ -3305,8 +3119,7 @@ nsFrame::GetChildFrameContainingOffset(PRInt32 inContentOffset, PRBool inHint, P
   *outFrameContentOffset = (PRInt32)inHint;
   //the best frame to reflect any given offset would be a visible frame if possible
   //i.e. we are looking for a valid frame to place the blinking caret 
-  nsRect rect;
-  GetRect(rect);
+  nsRect rect = GetRect();
   if (!rect.width || !rect.height)
   {
     nsIFrame *nextFlow = nsnull;
@@ -3449,12 +3262,10 @@ nsFrame::GetNextPrevLineFromeBlockFrame(nsIPresContext* aPresContext,
         nsPoint point;
         point.x = aPos->mDesiredX;
 
-        nsRect tempRect;
-        nsRect& tempRectRef = tempRect;
-        resultFrame->GetRect(tempRectRef);
+        nsRect tempRect = resultFrame->GetRect();
         nsPoint offset;
         nsIView * view; //used for call of get offset from view
-        result = resultFrame->GetOffsetFromView(aPresContext, offset,&view);
+        result = resultFrame->GetOffsetFromView(aPresContext, offset, &view);
         if (NS_FAILED(result))
           return result;
         point.y = tempRect.height + offset.y;
@@ -3477,12 +3288,10 @@ nsFrame::GetNextPrevLineFromeBlockFrame(nsIPresContext* aPresContext,
             {
               if (((point.x - offset.x + tempRect.x)<0) ||  ((point.x - offset.x+ tempRect.x)>tempRect.width))//off left/right side
               {
-                nsCOMPtr<nsIContent> content;
-                resultFrame->GetContent(getter_AddRefs(content));
-                nsCOMPtr<nsIContent> parent;
+                nsIContent* content = resultFrame->GetContent();
                 if (content)
                 {
-                  content->GetParent(*getter_AddRefs(parent));
+                  nsIContent* parent = content->GetParent();
                   if (parent)
                   {
                     aPos->mResultContent = parent;
@@ -3495,7 +3304,7 @@ nsFrame::GetNextPrevLineFromeBlockFrame(nsIPresContext* aPresContext,
                     }
                     aPos->mContentOffsetEnd = aPos->mContentOffset;
                     //result frame is the result frames parent.
-                    resultFrame->GetParent(&aPos->mResultFrame);
+                    aPos->mResultFrame = resultFrame->GetParent();
                     return NS_POSITION_BEFORE_TABLE;
                   }
                 }
@@ -3504,9 +3313,9 @@ nsFrame::GetNextPrevLineFromeBlockFrame(nsIPresContext* aPresContext,
           }
         }
 
-        if (NS_FAILED(resultFrame->GetView(aPresContext, &view)) || !view)
+        if (!resultFrame->HasView())
         {
-          resultFrame->GetRect(rect);
+          rect = resultFrame->GetRect();
           if (!rect.width || !rect.height)
             result = NS_ERROR_FAILURE;
           else
@@ -3607,10 +3416,10 @@ GetBlockFrameAndLineIter(nsIFrame* aFrame, nsIFrame** aBlockFrame)
   nsIFrame *blockFrame = aFrame;
   nsIFrame *thisBlock = aFrame;
 
-  nsresult result = blockFrame->GetParent(&blockFrame);
-  if (NS_FAILED(result) || !blockFrame) //if at line 0 then nothing to do
+  blockFrame = blockFrame->GetParent();
+  if (!blockFrame) //if at line 0 then nothing to do
     return 0;
-  result = blockFrame->QueryInterface(NS_GET_IID(nsILineIterator), (void**)&it);
+  nsresult result = blockFrame->QueryInterface(NS_GET_IID(nsILineIterator), (void**)&it);
   if (NS_SUCCEEDED(result) && it)
   {
     if (aBlockFrame)
@@ -3621,8 +3430,8 @@ GetBlockFrameAndLineIter(nsIFrame* aFrame, nsIFrame** aBlockFrame)
   while (blockFrame)
   {
     thisBlock = blockFrame;
-    result = blockFrame->GetParent(&blockFrame);
-    if (NS_SUCCEEDED(result) && blockFrame){
+    blockFrame = blockFrame->GetParent();
+    if (blockFrame) {
       result = blockFrame->QueryInterface(NS_GET_IID(nsILineIterator),
                                           (void**)&it);
       if (NS_SUCCEEDED(result) && it)
@@ -3770,7 +3579,6 @@ DrillDownToEndOfLine(nsIFrame* aFrame, PRInt32 aLineNo, PRInt32 aLineFrameCount,
   nsresult rv = NS_ERROR_FAILURE;
   PRBool found = PR_FALSE;
   nsCOMPtr<nsIAtom> frameType;
-  nsRect rect;
   while (!found)  // this loop searches for a valid point to leave the peek offset struct.
   {
     nsIFrame *nextFrame = aFrame;
@@ -3782,15 +3590,14 @@ DrillDownToEndOfLine(nsIFrame* aFrame, PRInt32 aLineNo, PRInt32 aLineFrameCount,
       // If we do GetNextSibling, we don't go far enough
       // (is aLineFrameCount too small?)
       // If we do GetNextInFlow, we hit a null.
-      currentFrame->GetNextSibling(&nextFrame);
+      nextFrame = currentFrame->GetNextSibling();
     }
     if (!nextFrame) //premature leaving of loop.
     {
       nextFrame = currentFrame; //back it up. lets show a warning
       NS_WARNING("lineFrame Count lied to us from nsILineIterator!\n");
     }
-    nextFrame->GetRect(rect);
-    if (!rect.width) //this can happen with BR frames and or empty placeholder frames.
+    if (!nextFrame->GetRect().width) //this can happen with BR frames and or empty placeholder frames.
     {
       //if we do hit an empty frame then back up the current frame to the frame before it if there is one.
       nextFrame = currentFrame; 
@@ -3843,10 +3650,9 @@ nsFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
     {
       if (mContent)
       {
-        nsCOMPtr<nsIContent> newContent;
-        PRInt32 newOffset;
-        result = mContent->GetParent(*getter_AddRefs(newContent));
+        nsIContent* newContent = mContent->GetParent();
         if (newContent){
+          PRInt32 newOffset;
           aPos->mResultContent = newContent;
           result = newContent->IndexOf(mContent, newOffset);
           if (aPos->mStartOffset < 0)//start at "end"
@@ -3902,15 +3708,16 @@ nsFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
 
       while (NS_FAILED(result)){
         thisBlock = blockFrame;
-        result = blockFrame->GetParent(&blockFrame);
-        if (NS_FAILED(result) || !blockFrame) //if at line 0 then nothing to do
-          return result;
+        blockFrame = blockFrame->GetParent();
+        if (!blockFrame) //if at line 0 then nothing to do
+          return NS_OK;
         result = blockFrame->QueryInterface(NS_GET_IID(nsILineIteratorNavigator),getter_AddRefs(iter));
         while (NS_FAILED(result) && blockFrame)
         {
           thisBlock = blockFrame;
-          result = blockFrame->GetParent(&blockFrame);
-          if (NS_SUCCEEDED(result) && blockFrame){
+          blockFrame = blockFrame->GetParent();
+          result = NS_OK;
+          if (blockFrame) {
             result = blockFrame->QueryInterface(NS_GET_IID(nsILineIteratorNavigator),getter_AddRefs(iter));
           }
         }
@@ -3920,10 +3727,7 @@ nsFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
           return ((result) ? result : NS_ERROR_FAILURE);
         }
 
-        nsFrameState state;
-        thisBlock->GetFrameState(&state);
-        
-        if (state & NS_FRAME_OUT_OF_FLOW)
+        if (thisBlock->GetStateBits() & NS_FRAME_OUT_OF_FLOW)
         {
           //if we are searching for a frame that is not in flow we will not find it. 
           //we must instead look for its placeholder
@@ -4045,17 +3849,17 @@ nsFrame::PeekOffset(nsIPresContext* aPresContext, nsPeekOffsetStruct *aPos)
     case eSelectEndLine:
     {
       nsCOMPtr<nsILineIteratorNavigator> it; 
-      nsIFrame *blockFrame = this;
-      nsIFrame *thisBlock = this;
-      result = blockFrame->GetParent(&blockFrame);
-      if (NS_FAILED(result) || !blockFrame) //if at line 0 then nothing to do
-        return result;
+      nsIFrame* thisBlock = this;
+      nsIFrame* blockFrame = GetParent();
+      if (!blockFrame) //if at line 0 then nothing to do
+        return NS_OK;
       result = blockFrame->QueryInterface(NS_GET_IID(nsILineIteratorNavigator),getter_AddRefs(it));
       while (NS_FAILED(result) && blockFrame)
       {
         thisBlock = blockFrame;
-        result = blockFrame->GetParent(&blockFrame);
-        if (NS_SUCCEEDED(result) && blockFrame){
+        blockFrame = blockFrame->GetParent();
+        result = NS_OK;
+        if (blockFrame) {
           result = blockFrame->QueryInterface(NS_GET_IID(nsILineIteratorNavigator),getter_AddRefs(it));
         }
       }
@@ -4142,12 +3946,11 @@ nsFrame::GetLineNumber(nsIFrame *aFrame)
   while (NS_FAILED(result) && blockFrame)
   {
     thisBlock = blockFrame;
-    result = blockFrame->GetParent(&blockFrame);
-    if (NS_SUCCEEDED(result) && blockFrame){
+    blockFrame = blockFrame->GetParent();
+    result = NS_OK;
+    if (blockFrame) {
       result = blockFrame->QueryInterface(NS_GET_IID(nsILineIteratorNavigator),getter_AddRefs(it));
     }
-    else
-      blockFrame = nsnull;
   }
   if (!blockFrame || !it)
     return NS_ERROR_FAILURE;
@@ -4172,12 +3975,11 @@ nsFrame::GetFrameFromDirection(nsIPresContext* aPresContext, nsPeekOffsetStruct 
   while (NS_FAILED(result) && blockFrame)
   {
     thisBlock = blockFrame;
-    result = blockFrame->GetParent(&blockFrame);
-    if (NS_SUCCEEDED(result) && blockFrame){
+    blockFrame = blockFrame->GetParent();
+    result = NS_OK;
+    if (blockFrame) {
       result = blockFrame->QueryInterface(NS_GET_IID(nsILineIteratorNavigator),getter_AddRefs(it));
     }
-    else
-      blockFrame = nsnull;
   }
   if (!blockFrame || !it)
     return NS_ERROR_FAILURE;
@@ -4303,12 +4105,12 @@ nsFrame::GetFrameFromDirection(nsIPresContext* aPresContext, nsPeekOffsetStruct 
   if (NS_FAILED(result))
     return result;
   nsISupports *isupports = nsnull;
-  nsRect testRect;
 #ifdef IBMBIDI
   nsIFrame *newFrame;
+  PRBool isBidiGhostFrame = PR_FALSE;
   PRBool selectable =  PR_TRUE; //usually fine
 
-  while (testRect.IsEmpty() || !selectable) {
+  do {
     if (lineIsRTL && lineJump) 
       if (aPos->mDirection == eDirPrevious)
         result = frameTraversal->Next();
@@ -4335,8 +4137,7 @@ nsFrame::GetFrameFromDirection(nsIPresContext* aPresContext, nsPeekOffsetStruct 
 #else
   
   newFrame = (nsIFrame *)isupports;
-  nsIContent *content = nsnull;
-  newFrame->GetContent(&content); 
+  nsIContent *content = newFrame->GetContent();
   if (!lineJump && (content == mContent))
   {
     //we will continue if this is NOT a text node. 
@@ -4348,8 +4149,12 @@ nsFrame::GetFrameFromDirection(nsIPresContext* aPresContext, nsPeekOffsetStruct 
     if (nsLayoutAtoms::textFrame != frameType.get() )
       continue;  //we should NOT be getting stuck on the same piece of content on the same line. skip to next line.
   }
-  newFrame->GetRect(testRect);
-  if (testRect.IsEmpty()) { // this must be a non-renderable frame creatd at the end of the line by Bidi reordering
+  isBidiGhostFrame = (newFrame->GetRect().IsEmpty() &&
+                      (newFrame->GetStateBits() & NS_FRAME_IS_BIDI));
+  if (isBidiGhostFrame)
+  {
+    // If the rectangle is empty and the NS_FRAME_IS_BIDI flag is set, this is most likely 
+    // a non-renderable frame created at the end of the line by Bidi reordering.
     lineJump = PR_TRUE;
     aPos->mAmount = eSelectNoAmount;
   }
@@ -4360,12 +4165,11 @@ nsFrame::GetFrameFromDirection(nsIPresContext* aPresContext, nsPeekOffsetStruct 
     while (NS_FAILED(result) && blockFrame)
     {
       thisBlock = blockFrame;
-      result = blockFrame->GetParent(&blockFrame);
-      if (NS_SUCCEEDED(result) && blockFrame){
+      blockFrame = blockFrame->GetParent();
+      result = NS_OK;
+      if (blockFrame) {
         result = blockFrame->QueryInterface(NS_GET_IID(nsILineIteratorNavigator), getter_AddRefs(it));
       }
-      else
-        blockFrame = nsnull;
     }
     if (!blockFrame || !it)
       return NS_ERROR_FAILURE;
@@ -4421,7 +4225,7 @@ nsFrame::GetFrameFromDirection(nsIPresContext* aPresContext, nsPeekOffsetStruct 
     newFrame->IsSelectable(&selectable, nsnull);
     if (!selectable)
       lineJump = PR_FALSE;
-  }
+  } while (isBidiGhostFrame || !selectable);
 #endif // IBMBIDI
   if (aPos->mDirection == eDirNext)
     aPos->mStartOffset = 0;
@@ -4443,36 +4247,13 @@ nsFrame::GetFrameFromDirection(nsIPresContext* aPresContext, nsPeekOffsetStruct 
   return NS_OK;
 }
 
-nsresult nsFrame::GetClosestViewForFrame(nsIPresContext* aPresContext,
-                                         nsIFrame *aFrame,
-                                         nsIView **aView)
+nsIView* nsIFrame::GetClosestView() const
 {
-  if (!aView)
-    return NS_ERROR_NULL_POINTER;
+  for (const nsIFrame *f = this; f; f = f->GetParent())
+    if (f->HasView())
+      return f->GetView();
 
-  nsresult result = NS_OK;
-
-  *aView = 0;
-
-  nsIFrame *parent = aFrame;
-
-  while (parent && !*aView)
-  {
-    result = parent->GetView(aPresContext, aView);
-
-    if (NS_FAILED(result))
-      return result;
-
-    if (!*aView)
-    {
-      result = parent->GetParent(&parent);
-
-      if (NS_FAILED(result))
-        return result;
-    }
-  }
-
-  return result;
+  return nsnull;
 }
 
 
@@ -4492,63 +4273,6 @@ nsFrame::GetAccessible(nsIAccessible** aAccessible)
 }
 #endif
 
-NS_IMETHODIMP 
-nsFrame::GetParentStyleContextFrame(nsIPresContext* aPresContext,
-                                    nsIFrame**      aProviderFrame,
-                                    PRBool*         aIsChild)
-{
-  return DoGetParentStyleContextFrame(aPresContext, aProviderFrame, aIsChild);
-}
-
-
-/**
- * This function takes a "special" frame and _if_ that frame is the
- * anonymous block crated by an ib split it returns the split inline
- * as aSpecialSibling.  This is needed because the split inline's
- * style context is the parent of the anonymous block's style context.
- *
- * If aFrame is not the anonymous block, aSpecialSibling is not
- * touched.
- */
-static nsresult
-GetIBSpecialSibling(nsIPresContext* aPresContext,
-                    nsIFrame* aFrame,
-                    nsIFrame** aSpecialSibling)
-{
-  NS_PRECONDITION(aFrame, "Must have a non-null frame!");
-#ifdef DEBUG
-  nsFrameState frameState;
-  aFrame->GetFrameState(&frameState);
-  NS_ASSERTION(frameState & NS_FRAME_IS_SPECIAL,
-               "GetIBSpecialSibling should not be called on a non-special frame");
-#endif // DEBUG
-  
-  // Find the first-in-flow of the frame.  (Ugh.  This ends up
-  // being O(N^2) when it is called O(N) times.)
-  aFrame = aFrame->GetFirstInFlow();
-
-  /*
-   * Now look up the nsLayoutAtoms::IBSplitSpecialPrevSibling
-   * property, which is only set on the anonymous block frames we're
-   * interested in.
-   */
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  nsCOMPtr<nsIFrameManager> frameManager;
-  presShell->GetFrameManager(getter_AddRefs(frameManager));
-  nsIFrame *specialSibling;
-  nsresult rv =
-    frameManager->GetFrameProperty(aFrame,
-                                   nsLayoutAtoms::IBSplitSpecialPrevSibling,
-                                   0, (void**)&specialSibling);
-  if (NS_OK == rv) {
-    NS_ASSERTION(specialSibling, "null special sibling");
-    *aSpecialSibling = specialSibling;
-  }
-
-  return NS_OK;
-}
-
 // Destructor function for the overflow area property
 static void
 DestroyRectFunc(nsIPresContext* aPresContext,
@@ -4563,9 +4287,7 @@ nsRect*
 nsFrame::GetOverflowAreaProperty(nsIPresContext* aPresContext,
                                  PRBool          aCreateIfNecessary) 
 {
-  nsFrameState  frameState;
-  GetFrameState(&frameState);
-  if (!((frameState & NS_FRAME_OUTSIDE_CHILDREN) || aCreateIfNecessary)) {
+  if (!((GetStateBits() & NS_FRAME_OUTSIDE_CHILDREN) || aCreateIfNecessary)) {
     return nsnull;
   }
   nsCOMPtr<nsIPresShell>     presShell;
@@ -4630,6 +4352,126 @@ nsFrame::StoreOverflow(nsIPresContext*      aPresContext,
   }   
 }
 
+NS_IMETHODIMP 
+nsFrame::GetParentStyleContextFrame(nsIPresContext* aPresContext,
+                                    nsIFrame**      aProviderFrame,
+                                    PRBool*         aIsChild)
+{
+  return DoGetParentStyleContextFrame(aPresContext, aProviderFrame, aIsChild);
+}
+
+
+/**
+ * This function takes a "special" frame and _if_ that frame is the
+ * anonymous block crated by an ib split it returns the split inline
+ * as aSpecialSibling.  This is needed because the split inline's
+ * style context is the parent of the anonymous block's srtyle context.
+ *
+ * If aFrame is not the anonymous block, aSpecialSibling is not
+ * touched.
+ */
+static nsresult
+GetIBSpecialSibling(nsIPresContext* aPresContext,
+                    nsIFrame* aFrame,
+                    nsIFrame** aSpecialSibling)
+{
+  NS_PRECONDITION(aFrame, "Must have a non-null frame!");
+  NS_ASSERTION(aFrame->GetStateBits() & NS_FRAME_IS_SPECIAL,
+               "GetIBSpecialSibling should not be called on a non-special frame");
+  
+  // Find the first-in-flow of the frame.  (Ugh.  This ends up
+  // being O(N^2) when it is called O(N) times.)
+  aFrame = aFrame->GetFirstInFlow();
+
+  /*
+   * Now look up the nsLayoutAtoms::IBSplitSpecialPrevSibling
+   * property, which is only set on the anonymous block frames we're
+   * interested in.
+   */
+  nsCOMPtr<nsIPresShell> presShell;
+  aPresContext->GetShell(getter_AddRefs(presShell));
+  nsCOMPtr<nsIFrameManager> frameManager;
+  presShell->GetFrameManager(getter_AddRefs(frameManager));
+  nsIFrame *specialSibling;
+  nsresult rv =
+    frameManager->GetFrameProperty(aFrame,
+                                   nsLayoutAtoms::IBSplitSpecialPrevSibling,
+                                   0, (void**)&specialSibling);
+  if (NS_OK == rv) {
+    NS_ASSERTION(specialSibling, "null special sibling");
+    *aSpecialSibling = specialSibling;
+  }
+
+  return NS_OK;
+}
+
+/*
+ * Get the last-in-flow's next sibling, or, if there is none, get the
+ * parent's next in flow's first child.
+ */
+static nsIFrame*
+GetNextSiblingAcrossLines(nsIPresContext *aPresContext, nsIFrame *aFrame)
+{
+  aFrame = aFrame->GetLastInFlow();
+
+  nsIFrame *result = aFrame->GetNextSibling();
+  if (result)
+    return result;
+
+  nsIFrame *parent;
+  aFrame->GetParent()->GetNextInFlow(&parent);
+  if (!parent)
+    return nsnull;
+  parent->FirstChild(aPresContext, nsnull, &result);
+  return result;
+}
+
+/**
+ * Get the parent, corrected for the mangled frame tree resulting from
+ * having a block within an inline.  The result only differs from the
+ * result of |GetParent| when |GetParent| returns an anonymous block
+ * that was created for an element that was 'display: inline' because
+ * that element contained a block.
+ *
+ * Also correct for the frame tree mangling that happens when we create
+ * wrappers for :before/:after.
+ */
+static nsresult
+GetCorrectedParent(nsIPresContext* aPresContext, nsIFrame* aFrame,
+                   nsIFrame** aSpecialParent)
+{
+  nsIFrame *parent = aFrame->GetParent();
+  *aSpecialParent = parent;
+  if (parent) {
+    nsCOMPtr<nsIAtom> parentPseudo = parent->GetStyleContext()->GetPseudoType();
+    if (parentPseudo == nsCSSAnonBoxes::mozGCWrapperBlock ||
+        parentPseudo == nsCSSAnonBoxes::mozGCWrapperInline) {
+      nsCOMPtr<nsIAtom> pseudo = aFrame->GetStyleContext()->GetPseudoType();
+      if (pseudo == nsCSSPseudoElements::before) {
+        // Use the wrapped frame, which is after the |:before|.
+        parent = GetNextSiblingAcrossLines(aPresContext, aFrame);
+      } else if (pseudo == nsCSSPseudoElements::after) {
+        parent->GetFirstInFlow()->FirstChild(aPresContext, nsnull, &parent);
+        // Now we have either the wrapped frame or the :before, but we
+        // want the wrapped frame.
+        if (nsCOMPtr<nsIAtom>(parent->GetStyleContext()->GetPseudoType()) ==
+            nsCSSPseudoElements::before)
+          parent = GetNextSiblingAcrossLines(aPresContext, parent);
+      } else {
+        parent = parent->GetParent();
+      }
+    }
+
+    if (parent->GetStateBits() & NS_FRAME_IS_SPECIAL) {
+      GetIBSpecialSibling(aPresContext, parent, aSpecialParent);
+    } else {
+      *aSpecialParent = parent;
+    }
+  }
+
+  return NS_OK;
+}
+
 nsresult
 nsFrame::DoGetParentStyleContextFrame(nsIPresContext* aPresContext,
                                       nsIFrame**      aProviderFrame,
@@ -4653,7 +4495,7 @@ nsFrame::DoGetParentStyleContextFrame(nsIPresContext* aPresContext,
     // If this frame is one of the blocks that split an inline, we must
     // return the "special" inline parent, i.e., the parent that this
     // frame would have if we didn't mangle the frame structure.
-    return GetIBSpecialParent(aPresContext, aProviderFrame);
+    return GetCorrectedParent(aPresContext, this, aProviderFrame);
   }
 
   // For out-of-flow frames, we must resolve underneath the
@@ -4666,33 +4508,11 @@ nsFrame::DoGetParentStyleContextFrame(nsIPresContext* aPresContext,
   frameManager->GetPlaceholderFrameFor(this, &placeholder);
   if (!placeholder) {
     NS_NOTREACHED("no placeholder frame for out-of-flow frame");
-    GetIBSpecialParent(aPresContext, aProviderFrame);
+    GetCorrectedParent(aPresContext, this, aProviderFrame);
     return NS_ERROR_FAILURE;
   }
-  return NS_STATIC_CAST(nsFrame*, placeholder)->GetParent(aProviderFrame);
-}
-
-/**
- * Get the parent, corrected for the mangled frame tree resulting from
- * having a block within an inline.  The result only differs from the
- * result of |GetParent| when |GetParent| returns an anonymous block
- * that was created for an element that was 'display: inline' because
- * that element contained a block.
- */
-nsresult
-nsFrame::GetIBSpecialParent(nsIPresContext* aPresContext,
-                            nsIFrame** aSpecialParent)
-{
-  *aSpecialParent = mParent;
-  if (mParent) {
-    nsFrameState parentState;
-    mParent->GetFrameState(&parentState);
-    if (parentState & NS_FRAME_IS_SPECIAL) {
-      GetIBSpecialSibling(aPresContext, mParent, aSpecialParent);
-    }
-  }
-
-  return NS_OK;
+  return NS_STATIC_CAST(nsFrame*, placeholder)->
+    GetParentStyleContextFrame(aPresContext, aProviderFrame, aIsChild);
 }
 
 //-----------------------------------------------------------------------------------
@@ -4714,8 +4534,8 @@ nsFrame::GetLastLeaf(nsIPresContext* aPresContext, nsIFrame **aFrame)
     if (NS_FAILED(result) || !lookahead)
       return;//nothing to do
     child = lookahead;
-    while (NS_SUCCEEDED(child->GetNextSibling(&lookahead)) && lookahead)
-      child = lookahead;
+    while (child->GetNextSibling())
+      child = child->GetNextSibling();
     *aFrame = child;
   }
   *aFrame = child;
@@ -4771,24 +4591,12 @@ NS_IMETHODIMP
 nsFrame::CaptureMouse(nsIPresContext* aPresContext, PRBool aGrabMouseEvents)
 {
     // get its view
-  nsIView* view = nsnull;
-  nsIFrame *parent;//might be THIS frame thats ok
-  GetView(aPresContext, & view);
-  if (!view)
-  {
-    nsresult rv = GetParentWithView(aPresContext, &parent);
-    if (NS_FAILED(rv))
-      return rv;
-    if (!parent)
-      return NS_ERROR_FAILURE;
-    parent->GetView(aPresContext, &view);
-  }
+  nsIView* view = GetClosestView();
 
-  nsCOMPtr<nsIViewManager> viewMan;
   PRBool result;
 
   if (view) {
-    view->GetViewManager(*getter_AddRefs(viewMan));
+    nsIViewManager* viewMan = view->GetViewManager();
     if (viewMan) {
       if (aGrabMouseEvents) {
         viewMan->GrabMouseEvents(view, result);
@@ -4805,23 +4613,10 @@ PRBool
 nsFrame::IsMouseCaptured(nsIPresContext* aPresContext)
 {
     // get its view
-  nsIView* view = nsnull;
-  GetView(aPresContext, &view);
-  if (!view)
-  {
-    nsIFrame *parent;//might be THIS frame thats ok
-    nsresult rv = GetParentWithView(aPresContext, &parent);
-    if (NS_FAILED(rv))
-      return rv;
-    if (!parent)
-      return NS_ERROR_FAILURE;
-
-    parent->GetView(aPresContext, &view);
-  }
-  nsCOMPtr<nsIViewManager> viewMan;
+  nsIView* view = GetClosestView();
   
   if (view) {
-    view->GetViewManager(*getter_AddRefs(viewMan));
+    nsIViewManager* viewMan = view->GetViewManager();
 
     if (viewMan) {
         nsIView* grabbingView;
@@ -4958,14 +4753,13 @@ GetTagName(nsFrame* aFrame, nsIContent* aContent, PRIntn aResultSize,
 {
   char namebuf[40];
   namebuf[0] = 0;
-  if (nsnull != aContent) {
-    nsIAtom* tag;
-    aContent->GetTag(tag);
-    if (nsnull != tag) {
+  if (aContent) {
+    nsCOMPtr<nsIAtom> tag;
+    aContent->GetTag(getter_AddRefs(tag));
+    if (tag) {
       nsAutoString tmp;
       tag->ToString(tmp);
       tmp.ToCString(namebuf, sizeof(namebuf));
-      NS_RELEASE(tag);
     }
   }
   PR_snprintf(aResult, aResultSize, "%s@%p", namebuf, aFrame);
@@ -5014,10 +4808,8 @@ nsFrame::TraceMsg(const char* aFormatString, ...)
 void
 nsFrame::VerifyDirtyBitSet(nsIFrame* aFrameList)
 {
-  for (nsIFrame*f = aFrameList; f; f->GetNextSibling(&f)) {
-    nsFrameState  frameState;
-    f->GetFrameState(&frameState);
-    NS_ASSERTION(frameState & NS_FRAME_IS_DIRTY, "dirty bit not set");
+  for (nsIFrame*f = aFrameList; f; f = f->GetNextSibling()) {
+    NS_ASSERTION(f->GetStateBits() & NS_FRAME_IS_DIRTY, "dirty bit not set");
   }
 }
 
@@ -5421,7 +5213,6 @@ void DR_State::InitFrameTypeTable()
   AddFrameTypeInfo(nsLayoutAtoms::brFrame,               "br",        "br");
   AddFrameTypeInfo(nsLayoutAtoms::bulletFrame,           "bullet",    "bullet");
   AddFrameTypeInfo(nsLayoutAtoms::gfxButtonControlFrame, "button",    "gfxButtonControl");
-  AddFrameTypeInfo(nsLayoutAtoms::hrFrame,               "hr",        "hr");
   AddFrameTypeInfo(nsLayoutAtoms::htmlFrameInnerFrame,   "frameI",    "htmlFrameInner");
   AddFrameTypeInfo(nsLayoutAtoms::htmlFrameOuterFrame,   "frameO",    "htmlFrameOuter");
   AddFrameTypeInfo(nsLayoutAtoms::imageFrame,            "img",       "image");
@@ -5707,9 +5498,7 @@ void nsFrame::DisplayReflowExit(nsIPresContext*      aPresContext,
     if (NS_FRAME_IS_NOT_COMPLETE(aStatus)) {
       printf("status=0x%x", aStatus);
     }
-    nsFrameState  frameState;
-    aFrame->GetFrameState(&frameState);
-    if (frameState & NS_FRAME_OUTSIDE_CHILDREN) {
+    if (aFrame->GetStateBits() & NS_FRAME_OUTSIDE_CHILDREN) {
        DR_state->PrettyUC(aMetrics.mOverflowArea.x, x);
        DR_state->PrettyUC(aMetrics.mOverflowArea.y, y);
        DR_state->PrettyUC(aMetrics.mOverflowArea.width, width);

@@ -167,9 +167,6 @@ void nsDeviceContextWin :: CommonInit(HDC aDC)
 {
   int   rasterCaps = ::GetDeviceCaps(aDC, RASTERCAPS);
 
-  mPixelsToTwips = NSToIntRound((float)NSIntPointsToTwips(72) / ((float)::GetDeviceCaps(aDC, LOGPIXELSY)));
-  mTwipsToPixels = 1.0 / mPixelsToTwips;
-
   mDepth = (PRUint32)::GetDeviceCaps(aDC, BITSPIXEL);
   mPaletteInfo.isPaletteDevice = RC_PALETTE == (rasterCaps & RC_PALETTE);
   mPaletteInfo.sizePalette = (PRUint16)::GetDeviceCaps(aDC, SIZEPALETTE);
@@ -178,8 +175,12 @@ void nsDeviceContextWin :: CommonInit(HDC aDC)
   mWidth = ::GetDeviceCaps(aDC, HORZRES);
   mHeight = ::GetDeviceCaps(aDC, VERTRES);
 
+  mPixelsToTwips = (float)NSIntPointsToTwips(72) / ((float)::GetDeviceCaps(aDC, LOGPIXELSY));
   if (::GetDeviceCaps(aDC, TECHNOLOGY) == DT_RASDISPLAY)
   {
+    // Ensure that, for screens, pixels-to-twips is an integer
+    mPixelsToTwips = NSToIntRound(mPixelsToTwips);
+
     // init the screen manager and compute our client rect based on the
     // screen objects. We'll save the result 
     nsresult ignore;
@@ -187,6 +188,7 @@ void nsDeviceContextWin :: CommonInit(HDC aDC)
     if ( !sNumberOfScreens )
       mScreenManager->GetNumberOfScreens(&sNumberOfScreens);
   } // if this dc is not a print device
+  mTwipsToPixels = 1.0 / mPixelsToTwips;
 
   DeviceContextImpl::CommonInit();
 }
@@ -594,20 +596,17 @@ NS_IMETHODIMP nsDeviceContextWin :: CheckFontExistence(const nsString& aFontName
   HDC     hdc = ::GetDC(hwnd);
   PRBool  isthere = PR_FALSE;
 
-  char    fontName[LF_FACESIZE];
-
-  const PRUnichar* unicodefontname = aFontName.get();
-
-  int outlen = ::WideCharToMultiByte(CP_ACP, 0, aFontName.get(), aFontName.Length(), 
-                                   fontName, LF_FACESIZE, NULL, NULL);
-  if(outlen > 0)
-    fontName[outlen] = '\0'; // null terminate
+  LOGFONT logFont;
+  logFont.lfCharSet = DEFAULT_CHARSET;
+  logFont.lfPitchAndFamily = 0;
+  int outlen = WideCharToMultiByte(CP_ACP, 0, aFontName.get(), aFontName.Length() + 1,
+                                   logFont.lfFaceName, sizeof(logFont.lfFaceName), nsnull, nsnull);
 
   // somehow the WideCharToMultiByte failed, let's try the old code
-  if(0 == outlen) 
-    aFontName.ToCString(fontName, LF_FACESIZE);
+  if(0 == outlen)
+    aFontName.ToCString(logFont.lfFaceName, LF_FACESIZE);
 
-  ::EnumFontFamilies(hdc, fontName, (FONTENUMPROC)fontcallback, (LPARAM)&isthere);
+  ::EnumFontFamiliesEx(hdc, &logFont, (FONTENUMPROC)fontcallback, (LPARAM)&isthere, 0);
 
   ::ReleaseDC(hwnd, hdc);
 
@@ -788,7 +787,7 @@ NS_IMETHODIMP nsDeviceContextWin :: BeginDocument(PRUnichar * aTitle, PRUnichar*
 
     char* docName = nsnull;
     nsAutoString str(aPrintToFileName);
-    if (str.Length() > 0) {
+    if (!str.IsEmpty()) {
       docName = ToNewCString(str);
     }
     docinfo.cbSize = sizeof(docinfo);

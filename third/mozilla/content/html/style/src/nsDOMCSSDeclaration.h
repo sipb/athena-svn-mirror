@@ -38,16 +38,28 @@
 #ifndef nsDOMCSSDeclaration_h___
 #define nsDOMCSSSDeclaration_h___
 
-#include "nsISupports.h"
 #include "nsIDOMCSSStyleDeclaration.h"
 #include "nsIDOMCSS2Properties.h"
 
-#include "nsAgg.h"
-#include "nsCOMPtr.h"
-
 class nsCSSDeclaration;
 class nsICSSParser;
+class nsICSSLoader;
 class nsIURI;
+
+class CSS2PropertiesTearoff : public nsIDOMNSCSS2Properties
+{
+public:
+  NS_DECL_ISUPPORTS_INHERITED
+
+  NS_DECL_NSIDOMCSS2PROPERTIES
+  NS_DECL_NSIDOMNSCSS2PROPERTIES
+
+  CSS2PropertiesTearoff(nsIDOMCSSStyleDeclaration *aOuter);
+  virtual ~CSS2PropertiesTearoff();
+
+private:
+  nsIDOMCSSStyleDeclaration* mOuter;
+};
 
 class nsDOMCSSDeclaration : public nsIDOMCSSStyleDeclaration
 {
@@ -56,54 +68,49 @@ public:
 
   NS_DECL_ISUPPORTS
 
-  // NS_DECL_IDOMCSSSTYLEDECLARATION
-  NS_IMETHOD    GetCssText(nsAString& aCssText);
-  NS_IMETHOD    SetCssText(const nsAString& aCssText);
-  NS_IMETHOD    GetLength(PRUint32* aLength);
-  NS_IMETHOD    GetParentRule(nsIDOMCSSRule** aParentRule);
-  NS_IMETHOD    GetPropertyValue(const nsAString& aPropertyName,
-                                 nsAString& aReturn);
-  NS_IMETHOD    GetPropertyCSSValue(const nsAString& aPropertyName,
-                                    nsIDOMCSSValue** aReturn);
-  NS_IMETHOD    RemoveProperty(const nsAString& aPropertyName,
-                               nsAString& aReturn) = 0;
-  NS_IMETHOD    GetPropertyPriority(const nsAString& aPropertyName,
-                                    nsAString& aReturn);
-  NS_IMETHOD    SetProperty(const nsAString& aPropertyName,
-                            const nsAString& aValue,
-                            const nsAString& aPriority);
-  NS_IMETHOD    Item(PRUint32 aIndex, nsAString& aReturn);
-
+  // Require subclasses to implement |GetParentRule|.
+  //NS_DECL_NSIDOMCSSSTYLEDECLARATION
+  NS_IMETHOD GetCssText(nsAString & aCssText);
+  NS_IMETHOD SetCssText(const nsAString & aCssText);
+  NS_IMETHOD GetPropertyValue(const nsAString & propertyName,
+                              nsAString & _retval);
+  NS_IMETHOD GetPropertyCSSValue(const nsAString & propertyName,
+                                 nsIDOMCSSValue **_retval);
+  NS_IMETHOD RemoveProperty(const nsAString & propertyName,
+                            nsAString & _retval);
+  NS_IMETHOD GetPropertyPriority(const nsAString & propertyName,
+                                 nsAString & _retval);
+  NS_IMETHOD SetProperty(const nsAString & propertyName,
+                         const nsAString & value, const nsAString & priority);
+  NS_IMETHOD GetLength(PRUint32 *aLength);
+  NS_IMETHOD Item(PRUint32 index, nsAString & _retval);
+  NS_IMETHOD GetParentRule(nsIDOMCSSRule * *aParentRule) = 0; 
 
   virtual void DropReference() = 0;
+protected:
+  // Always fills in the out parameter, even on failure, and if the out
+  // parameter is null the nsresult will be the correct thing to
+  // propagate.
   virtual nsresult GetCSSDeclaration(nsCSSDeclaration **aDecl,
                                      PRBool aAllocate) = 0;
-  virtual nsresult ParsePropertyValue(const nsAString& aPropName,
-                                      const nsAString& aPropValue) = 0;
-  virtual nsresult ParseDeclaration(const nsAString& aDecl,
-                                    PRBool aParseOnlyOneDecl,
-                                    PRBool aClearOldDecl) = 0;
-  virtual nsresult GetParent(nsISupports **aParent) = 0;
+  virtual nsresult DeclarationChanged() = 0;
+  
+  // This will only fail if it can't get a parser.  This means it can
+  // return NS_OK without aURI or aCSSLoader being initialized.
+  virtual nsresult GetCSSParsingEnvironment(nsIURI** aBaseURI,
+                                            nsICSSLoader** aCSSLoader,
+                                            nsICSSParser** aCSSParser) = 0;
+
+  nsresult ParsePropertyValue(const nsAString& aPropName,
+                              const nsAString& aPropValue);
+  nsresult ParseDeclaration(const nsAString& aDecl,
+                            PRBool aParseOnlyOneDecl, PRBool aClearOldDecl);
   
 protected:
   virtual ~nsDOMCSSDeclaration();
 
 private:
-  nsCOMPtr<nsISupports> mInner; // CSS2Properties
+  CSS2PropertiesTearoff mInner;
 };
-
-
-class CSS2PropertiesTearoff : public nsIDOMNSCSS2Properties
-{
-public:
-  NS_DECL_AGGREGATED
-
-  NS_DECL_NSIDOMCSS2PROPERTIES
-  NS_DECL_NSIDOMNSCSS2PROPERTIES
-
-  CSS2PropertiesTearoff(nsISupports *aOuter);
-  virtual ~CSS2PropertiesTearoff();
-};
-
 
 #endif // nsDOMCSSDeclaration_h___

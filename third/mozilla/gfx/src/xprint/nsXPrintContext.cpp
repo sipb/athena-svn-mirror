@@ -21,7 +21,7 @@
  *
  * Contributor(s):
  *   Roland Mainz <roland.mainz@informatik.med.uni-giessen.de>
- *
+ *   Leon Sha <leon.sha@sun.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -47,8 +47,9 @@
 #include <errno.h>
 #include <string.h> /* for strerror & memset */
 
-#define FORCE_PR_LOG /* Allow logging in the release build */
-#define PR_LOGGING 1
+#ifdef MOZ_LOGGING
+#define FORCE_PR_LOG 1 /* Allow logging in the release build */
+#endif /* MOZ_LOGGING */
 #include "prlog.h"
 
 #include "imgScaler.h"
@@ -492,6 +493,65 @@ nsresult nsXPrintContext::SetOrientation(int landscape)
   return NS_OK;
 }
 
+nsresult nsXPrintContext::SetPlexMode(const char *plexname)
+{
+  XpuPlexList  list;
+  int          list_count;
+  XpuPlexRec  *match;
+
+  /* Print the used plex name to the log... */
+  PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, ("plexname=%s\n", plexname));    
+
+  /* Get list of supported plex modes */
+  list = XpuGetPlexList(mPDisplay, mPContext, &list_count);
+  if( !list )
+  {
+    PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, ("XpuGetPlexList() failure.\n"));  
+    return NS_ERROR_GFX_PRINTER_PLEX_NOT_SUPPORTED;
+  }
+
+#ifdef PR_LOGGING 
+  int i;
+  /* Print plex modes for the log... */
+  for( i = 0 ; i < list_count ; i++ )
+  {
+    XpuPlexRec *curr = &list[i];
+    PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, ("got plex='%s'\n", curr->plex));
+  }
+#endif /* PR_LOGGING */
+
+  /* Find requested plex mode */
+  match = XpuFindPlexByName(list, list_count, plexname);
+  if (!match)
+  {
+    PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, ("XpuFindPlexByName() failure.\n"));  
+    XpuFreePlexList(list);
+    return NS_ERROR_GFX_PRINTER_PLEX_NOT_SUPPORTED;
+  }
+
+  /* Set plex */
+  if (XpuSetDocPlex(mPDisplay, mPContext, match) != 1)
+  {
+    PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, ("XpuSetDocPlex() failure.\n"));  
+    
+    /* We have a "match" in the list of supported plex modes but we are not
+     * allowed to set it... Well - if this happens and we only have ONE entry
+     * in this list then we can safely assume that this is the only choice...
+     * (please correct me if I am wrong) 
+     */
+    if (list_count != 1)
+    {
+      /* ... otherwise we have a problem... */
+      XpuFreePlexList(list);
+      return NS_ERROR_GFX_PRINTER_PLEX_NOT_SUPPORTED;
+    }
+  }
+  
+  XpuFreePlexList(list);
+
+  return NS_OK;
+}
+
 
 nsresult
 nsXPrintContext::SetupPrintContext(nsIDeviceContextSpecXp *aSpec)
@@ -566,8 +626,10 @@ nsXPrintContext::SetupPrintContext(nsIDeviceContextSpecXp *aSpec)
   dumpXpAttributes(mPDisplay, mPContext);
 #endif /* XPRINT_DEBUG_SOMETIMES_USEFULL */
   
-  const char *paper_name = nsnull;
+  const char *paper_name = nsnull,
+             *plex_name  = nsnull;
   aSpec->GetPaperName(&paper_name);
+  aSpec->GetPlexName(&plex_name);
   
   if (NS_FAILED(XPU_TRACE(rv = SetMediumSize(paper_name))))
     return rv;
@@ -575,6 +637,9 @@ nsXPrintContext::SetupPrintContext(nsIDeviceContextSpecXp *aSpec)
   if (NS_FAILED(XPU_TRACE(rv = SetOrientation(landscape))))
     return rv;
 
+  if (NS_FAILED(XPU_TRACE(rv = SetPlexMode(plex_name))))
+    return rv;
+    
   if (NS_FAILED(XPU_TRACE(rv = SetResolution())))
     return rv;
    
@@ -1060,6 +1125,13 @@ nsXPrintContext::DrawImageBitsScaled(xGC *xgc, nsIImage *aImage,
   PRInt32  aSrcHeight    = aImage->GetHeight();
   PRUint8 *composed_bits = nsnull;
 
+ /* image data might not be available (ex: spacer image) */
+  if (!image_bits)
+  {
+    aImage->UnlockImagePixels(PR_FALSE);
+    return NS_OK;
+  }
+ 
   // Use client-side alpha image composing - plain X11 can only do 1bit alpha 
   // stuff - this method adds 8bit alpha support, too...
   if( alphaBits != nsnull )
@@ -1138,6 +1210,13 @@ nsXPrintContext::DrawImage(xGC *xgc, nsIImage *aImage,
   PRUint8 *image_bits    = aImage->GetBits();
   PRUint8 *composed_bits = nsnull;
   PRInt32  row_bytes     = aImage->GetLineStride();
+
+  /* image data might not be available (ex: spacer image) */
+  if (!image_bits)
+  {
+    aImage->UnlockImagePixels(PR_FALSE);
+    return NS_OK;
+  }
   
   // Use client-side alpha image composing - plain X11 can only do 1bit alpha
   // stuff - this method adds 8bit alpha support, too...
@@ -1297,4 +1376,54 @@ NS_IMETHODIMP nsXPrintContext::GetPrintResolution(int &aPrintResolution)
   aPrintResolution = 0;
   return NS_ERROR_FAILURE;    
 }
+
+NS_IMETHODIMP nsXPrintContext::RenderPostScriptDataFragment(const unsigned char *aData, unsigned long aDatalen)
+{
+  PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, 
+         ("nsXPrintContext::RenderPostScriptDataFragment(aData, aDatalen=%d)\n", aDatalen));
+  
+  const char *embedded_formats_supported = XpGetOneAttribute(mPDisplay, mPContext,XPPrinterAttr, "xp-embedded-formats-supported");
+
+  /* Check whether "PostScript Level 2" is supported as embedding format
+   * (The content of the "xp-embedded-formats-supported" attribute needs
+   * to be searched in a case-insensitive way since the model-configs
+   * may use the same word with multiple variants of case
+   * (e.g. "PostScript" vs. "Postscript" or "PCL" vs. "Pcl" etc.")
+   * To avoid problems we simply use |PL_strcasestr()| (case-insensitive
+   * strstr()) instead of |strstr()| here...)
+   */
+  if( embedded_formats_supported == NULL )
+  {
+    PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, ("nsXPrintContext::RenderPostScriptDataFragment(): Embedding data not supported for this DDX/Printer\n"));
+    return NS_ERROR_FAILURE;    
+  }
+
+  if( PL_strcasestr(embedded_formats_supported, "PostScript 2") == NULL )
+  {
+    PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, 
+           ("nsXPrintContext::RenderPostScriptDataFragment(): Embedding data not supported for this DDX/Printer "
+            "(supported embedding formats are '%s')\n", embedded_formats_supported));
+    XFree((void *)embedded_formats_supported);
+    return NS_ERROR_FAILURE;    
+  }
+  
+  /* Note that the embedded PostScript code uses the same resolution and
+   * coordinate space as currently be used by the DDX (if you do not
+   * want that simply reset it yourself :) */
+  const char *type     = "PostScript 2"; /* Format of embedded data 
+                                          * (older PS DDX may be picky, fixed via
+                                          * http://xprint.mozdev.org/bugs/show_bug.cgi?id=4023)
+                                          */
+  const char *option   = "";             /* PostScript DDX does not support any options yet
+                                          * (in general |BadValue| will be returned for not
+                                          * supported options/option values) */
+
+  /* XpPutDocumentData() takes |const| input for all string arguments, only the X11 prototypes do not allow |const| yet */
+  XpPutDocumentData(mPDisplay, mDrawable, (unsigned char *)aData, aDatalen, (char *)type, (char *)option);
+
+  XFree((void *)embedded_formats_supported);
+  
+  return NS_OK;
+}
+
 

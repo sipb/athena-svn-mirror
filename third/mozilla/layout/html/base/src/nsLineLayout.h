@@ -118,6 +118,11 @@ public:
                                PRBool aAllowJustify,
                                PRBool aShrinkWrapWidth);
 
+  /**
+   * Handle all the relative positioning in the line, compute the
+   * combined area (== overflow area) for the line, and handle view
+   * sizing/positioning and the setting of NS_FRAME_OUTSIDE_CHILDREN.
+   */
   void RelativePositionFrames(nsRect& aCombinedArea);
 
   //----------------------------------------
@@ -393,9 +398,6 @@ protected:
   PerFrameData* mFrameFreeList;
   PRInt32 mInitialFramesFreed;
 
-#if defined(AIX_XLC_364) || defined(XP_OS2_VACPP)
-public:
-#endif
   struct PerSpanData {
     union {
       PerSpanData* mParent;
@@ -431,9 +433,6 @@ public:
       mLastFrame = pfd;
     }
   };
-#if defined(AIX_XLC_364) || defined(XP_OS2_VACPP)
-protected:
-#endif
   PerSpanData mSpanDataBuf[NS_LINELAYOUT_NUM_SPANS];
   PerSpanData* mSpanFreeList;
   PRInt32 mInitialSpansFreed;

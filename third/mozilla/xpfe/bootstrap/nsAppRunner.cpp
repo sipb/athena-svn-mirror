@@ -120,7 +120,6 @@
 #define DEBUG_CMD_LINE
 #endif
 
-static NS_DEFINE_CID(kWindowMediatorCID, NS_WINDOWMEDIATOR_CID);
 static NS_DEFINE_CID(kIProcessCID, NS_PROCESS_CID);
 
 #define UILOCALE_CMD_LINE_ARG "-UILocale"
@@ -197,8 +196,31 @@ extern "C" {
 
 #ifdef _BUILD_STATIC_BIN
 #include "nsStaticComponent.h"
+
+#ifdef _MOZCOMPS_SHARED_LIBRARY
+extern "C" nsresult nsMetaModule_nsGetModule(nsIComponentManager *servMgr,
+                                             nsIFile *location,
+                                             nsIModule **result);
+
+static nsStaticModuleInfo staticInfo[] = {
+  {
+    "meta component",
+    nsMetaModule_nsGetModule
+  }
+};
+
+static nsresult PR_CALLBACK
+app_getModuleInfo(nsStaticModuleInfo **info, PRUint32 *count) {
+  *info = staticInfo;
+  *count = 1;
+  return NS_OK;
+}
+#else
+
 nsresult PR_CALLBACK
 app_getModuleInfo(nsStaticModuleInfo **info, PRUint32 *count);
+
+#endif
 #endif
 
 #if defined(XP_UNIX) || defined(XP_BEOS)

@@ -111,33 +111,14 @@ public:
   
   virtual nsresult GetRuleTree(nsRuleNode** aResult) = 0;
   
-  // The following two methods can be used to tear down and reconstruct a rule tree.  The idea
-  // is to first call BeginRuleTreeReconstruct, which will set aside the old rule
-  // tree.  The entire frame tree should then have ReResolveStyleContext
-  // called on it.  With the old rule tree hidden from view, the newly resolved style contexts will
-  // resolve to rule nodes in a fresh rule tree, and the re-resolve system will properly compute
-  // the visual impact of the changes.
-  //
-  // After re-resolution, call EndRuleTreeReconstruct() to finally discard the old rule tree.
-  // This trick can be used in lieu of a full frame reconstruction when drastic style changes
-  // happen (e.g., stylesheets being added/removed in the DOM, theme switching in the Mozilla app,
-  // etc.
-  virtual nsresult BeginRuleTreeReconstruct()=0;
-  virtual nsresult EndRuleTreeReconstruct()=0;
-
   // For getting the cached default data in case we hit out-of-memory.
   // To be used only by nsRuleNode.
   virtual nsCachedStyleData* GetDefaultStyleData() = 0;
 
   virtual nsresult GetStyleFrameConstruction(nsIStyleFrameConstruction** aResult) = 0;
 
-  // ClearCachedStyleData is used to invalidate portions of both the style context tree
-  // and rule tree without destroying the actual nodes in the two trees.  |aRule| provides
-  // a hint as to which rule has changed, and all subtree data pruning will occur rooted
-  // only on style contexts and rule nodes that use that rule.  If the rule is null, then
-  // it is assumed that both trees are to be entirely wiped.
-  //
-  virtual nsresult ClearStyleData(nsIPresContext* aPresContext, nsIStyleRule* aRule) = 0;
+  // Clear all style data cached in the style context tree and rule tree.
+  virtual nsresult ClearStyleData(nsIPresContext* aPresContext) = 0;
 
   // enable / disable the Quirk style sheet: 
   // returns NS_FAILURE if none is found, otherwise NS_OK
@@ -250,20 +231,7 @@ public:
                               nsIContent* aChild,
                               PRInt32 aNameSpaceID,
                               nsIAtom* aAttribute,
-                              PRInt32 aModType, 
-                              nsChangeHint aHint) = 0;
-
-  // Style change notifications
-  NS_IMETHOD StyleRuleChanged(nsIPresContext* aPresContext,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule,
-                              nsChangeHint aHint) = 0;
-  NS_IMETHOD StyleRuleAdded(nsIPresContext* aPresContext,
-                            nsIStyleSheet* aStyleSheet,
-                            nsIStyleRule* aStyleRule) = 0;
-  NS_IMETHOD StyleRuleRemoved(nsIPresContext* aPresContext,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule) = 0;
+                              PRInt32 aModType) = 0;
 
   // Notification that we were unable to render a replaced element.
   // Called when the replaced element can not be rendered, and we should

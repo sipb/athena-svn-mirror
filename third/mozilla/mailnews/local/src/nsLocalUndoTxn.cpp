@@ -47,7 +47,6 @@
 #include "nsIEventQueueService.h"
 #include "nsIMsgMailSession.h"
 
-static NS_DEFINE_CID(kMailboxServiceCID, NS_IMAILBOXSERVICE_IID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 
 nsLocalMoveCopyMsgTxn::nsLocalMoveCopyMsgTxn() :
@@ -125,7 +124,7 @@ nsLocalMoveCopyMsgTxn::SetSrcFolder(nsIMsgFolder* srcFolder)
 {
 	nsresult rv = NS_ERROR_NULL_POINTER;
 	if (srcFolder)
-          m_srcFolder = getter_AddRefs(NS_GetWeakReference(srcFolder, &rv));
+          m_srcFolder = do_GetWeakReference(srcFolder, &rv);
 	return rv;
 }
 
@@ -134,7 +133,7 @@ nsLocalMoveCopyMsgTxn::SetDstFolder(nsIMsgFolder* dstFolder)
 {
 	nsresult rv = NS_ERROR_NULL_POINTER;
 	if (dstFolder)
-          m_dstFolder = getter_AddRefs(NS_GetWeakReference(dstFolder, &rv));
+          m_dstFolder = do_GetWeakReference(dstFolder, &rv);
 	return rv;
 }
 
@@ -187,7 +186,7 @@ nsLocalMoveCopyMsgTxn::UndoImapDeleteFlag(nsIMsgFolder* folder,
 
             for (i=0; i < count; i++)
             {
-                if (msgIds.Length() > 0)
+                if (!msgIds.IsEmpty())
                     msgIds.Append(',');
                 msgIds.AppendInt((PRInt32) keyArray.GetAt(i));
             }

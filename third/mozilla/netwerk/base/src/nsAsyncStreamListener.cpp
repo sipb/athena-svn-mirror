@@ -151,8 +151,8 @@ nsStreamListenerEvent::Fire(nsIEventQueue* aEventQueue)
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsAsyncStreamObserver,
                               nsIRequestObserver)
 
-NS_IMPL_ADDREF_INHERITED(nsAsyncStreamListener, nsAsyncStreamObserver);
-NS_IMPL_RELEASE_INHERITED(nsAsyncStreamListener, nsAsyncStreamObserver);
+NS_IMPL_ADDREF_INHERITED(nsAsyncStreamListener, nsAsyncStreamObserver)
+NS_IMPL_RELEASE_INHERITED(nsAsyncStreamListener, nsAsyncStreamObserver)
 
 NS_IMETHODIMP 
 nsAsyncStreamListener::QueryInterface(REFNSIID aIID, void** aInstancePtr)
@@ -426,7 +426,7 @@ nsOnDataAvailableEvent::HandleEvent()
                                    mIStream, mSourceOffset, mLength);
   }
   else {
-	  NS_WARNING("not calling OnDataAvailable");
+    NS_WARNING("not calling OnDataAvailable");
   }
   return rv;
 }

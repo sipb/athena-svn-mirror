@@ -306,7 +306,7 @@ IsLoadableDTD(const nsCatalogData* aCatalogData, nsCOMPtr<nsIURI>* aDTD)
 
 NS_IMPL_ISUPPORTS2(nsExpatDriver,
                    nsITokenizer,
-                   nsIDTD);
+                   nsIDTD)
 
 nsresult 
 NS_NewExpatDriver(nsIDTD** aResult) { 
@@ -961,7 +961,7 @@ nsExpatDriver::CanParse(CParserContext& aParserContext,
       result=ePrimaryDetect;
     }
     else {
-      if (0 == aParserContext.mMimeType.Length() &&
+      if (aParserContext.mMimeType.IsEmpty() &&
           kNotFound != aBuffer.Find("<?xml ")) {
         aParserContext.SetMimeType(NS_LITERAL_CSTRING(kXMLTextContentType));
         result=eValidDetect;
@@ -1029,8 +1029,11 @@ nsExpatDriver::DidBuildModel(nsresult anErrorCode,
 {
   // Check for mSink is intentional. This would make sure
   // that DidBuildModel() is called only once on the sink.
-  nsresult result = (mSink)? aSink->DidBuildModel(0) : NS_OK;
-  NS_IF_RELEASE(mSink);
+  nsresult result = NS_OK;
+  if (mSink) {
+    result = aSink->DidBuildModel();
+    NS_RELEASE(mSink); // assigns null
+  }
   return result;
 }
 
@@ -1132,6 +1135,12 @@ NS_IMETHODIMP_(void)
 nsExpatDriver::PrependTokens(nsDeque& aDeque)
 {
 
+}
+
+NS_IMETHODIMP
+nsExpatDriver::CopyState(nsITokenizer* aTokenizer)
+{
+  return NS_OK;
 }
 
 NS_IMETHODIMP 

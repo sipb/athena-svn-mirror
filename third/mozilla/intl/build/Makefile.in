@@ -36,7 +36,6 @@ REQUIRES	= xpcom \
 		  chardet \
 		  uconv \
 		  lwbrk \
-		  unicharutil \
 		  intl \
 		  locale \
 		  htmlparser \
@@ -88,10 +87,6 @@ ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 EXTRA_DSO_LDOPTS += \
         $(TK_LIBS) \
         $(NULL)
-endif
-
-ifeq ($(MOZ_OS2_TOOLS),VACPP)
-OS_LIBS += libuls.lib
 endif
 
 include $(topsrcdir)/config/rules.mk

@@ -76,7 +76,12 @@
        <data id="data-event-title-edit"            value="&calendar.server.dialog.title.edit;" />
    </dataset>
 
-   <keyset id="dialogKeys"/>
+   <!-- STRING BUNDLE for calendar properties -->
+    <stringbundleset id="stringbundleset">
+      <stringbundle id="bundle_calendar" src="chrome://calendar/locale/calendar.properties"/>
+    </stringbundleset>
+ 
+    <keyset id="dialogKeys"/>
 
    <!-- The dialog -->
     
@@ -105,6 +110,20 @@
                         <textbox flex="1" id="server-name-textbox"/>
                     </row>
                     
+                     <!-- Color -->  
+                    //added by Dallas
+                    <row align="center">
+                        <hbox class="field-label-box-class" pack="end">
+                            <description>&calendar.server.dialog.color.label;</description>
+                        </hbox>
+						<hbox align="center">
+                           <colorpicker id="calendar-color"
+                              class="small-margin"
+                              type="button"
+                              palettename="standard"/>
+						</hbox>
+                    </row>
+
                     <!-- File Picker Button -->    
                     <row align="center">
                         <hbox class="field-label-box-class" pack="end"/>

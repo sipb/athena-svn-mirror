@@ -494,7 +494,7 @@ nsImageFrame::HandleLoadError(nsresult aStatus, nsIPresShell* aPresShell)
       // We are in quirks mode, so we can just check the tag name; no need to
       // check the namespace.
       nsCOMPtr<nsINodeInfo> nodeInfo;
-      mContent->GetNodeInfo(*getter_AddRefs(nodeInfo));
+      mContent->GetNodeInfo(getter_AddRefs(nodeInfo));
       
       if (!mContent->HasAttr(kNameSpaceID_None, nsHTMLAtoms::alt) &&
           nodeInfo &&
@@ -519,8 +519,7 @@ nsImageFrame::HandleLoadError(nsresult aStatus, nsIPresShell* aPresShell)
     // ObjectFrame, not us (we're an anonymous frame then)....
     nsIFrame* primaryFrame = nsnull;
     aPresShell->GetPrimaryFrameFor(mContent, &primaryFrame);
-    aPresShell->CantRenderReplacedElement(mPresContext,
-                                          primaryFrame ? primaryFrame : this);
+    aPresShell->CantRenderReplacedElement(primaryFrame ? primaryFrame : this);
     return NS_ERROR_FRAME_REPLACED;
   }
 
@@ -659,12 +658,16 @@ nsImageFrame::OnStopDecode(imgIRequest *aRequest,
 
   if (loadType == nsIImageLoadingContent::PENDING_REQUEST) {
     // May have to switch sizes here!
-    PRBool intrinsicSizeChanged = PR_FALSE;
+    PRBool intrinsicSizeChanged = PR_TRUE;
     if (NS_SUCCEEDED(aStatus)) {
       nsCOMPtr<imgIContainer> imageContainer;
       aRequest->GetImage(getter_AddRefs(imageContainer));
       NS_ASSERTION(imageContainer, "Successful load with no container?");
       intrinsicSizeChanged = RecalculateTransform(imageContainer);
+    }
+    else {
+      // Have to size to 0,0 so that GetDesiredSize recalculates the size
+      mIntrinsicSize.SizeTo(0, 0);
     }
 
     if (mState & IMAGE_GOTINITIALREFLOW) { // do nothing if we havn't gotten the inital reflow yet
@@ -675,8 +678,7 @@ nsImageFrame::OnStopDecode(imgIRequest *aRequest,
           mParent->ReflowDirtyChild(presShell, NS_STATIC_CAST(nsIFrame*, this));
         }
       } else {
-        nsSize s;
-        GetSize(s);
+        nsSize s = GetSize();
         nsRect r(0, 0, s.width, s.height);
         if (!r.IsEmpty()) {
           Invalidate(mPresContext, r, PR_FALSE);
@@ -861,8 +863,7 @@ nsImageFrame::GetContinuationOffset(nscoord* aWidth) const
 
   if (mPrevInFlow) {
     for (nsIFrame* prevInFlow = mPrevInFlow ; prevInFlow; prevInFlow->GetPrevInFlow(&prevInFlow)) {
-      nsRect rect;
-      prevInFlow->GetRect(rect);
+      nsRect rect = prevInFlow->GetRect();
       if (aWidth) {
         *aWidth = rect.width;
       }
@@ -1208,14 +1209,12 @@ nsImageFrame::DisplayAltFeedback(nsIPresContext*      aPresContext,
 
   // If there's still room, display the alt-text
   if (!inner.IsEmpty()) {
-    nsCOMPtr<nsIContent> content;
-    nsCOMPtr<nsIAtom>    tag;
-    nsAutoString         altText;
-
-    GetContent(getter_AddRefs(content));
+    nsIContent* content = GetContent();
     if (content) {
-      content->GetTag(*getter_AddRefs(tag));
+      nsCOMPtr<nsIAtom> tag;
+      content->GetTag(getter_AddRefs(tag));
       if (tag) {
+        nsAutoString altText;
         nsCSSFrameConstructor::GetAlternateTextFor(content, tag, altText);
         DisplayAltText(aPresContext, aRenderingContext, altText, inner);
       }
@@ -1429,8 +1428,7 @@ nsImageFrame::Paint(nsIPresContext*      aPresContext,
         selection->GetRangeCount(&rangeCount);
         if (rangeCount == 1) //if not one then let code drop to nsFrame::Paint
         {
-          nsCOMPtr<nsIContent> parentContent;
-          mContent->GetParent(*getter_AddRefs(parentContent));
+          nsCOMPtr<nsIContent> parentContent = mContent->GetParent();
           if (parentContent)
           {
             PRInt32 thisOffset;
@@ -1474,8 +1472,7 @@ nsImageMap*
 nsImageFrame::GetImageMap(nsIPresContext* aPresContext)
 {
   if (!mImageMap) {
-    nsCOMPtr<nsIDocument> doc;
-    mContent->GetDocument(*getter_AddRefs(doc));
+    nsIDocument* doc = mContent->GetDocument();
     if (!doc) {
       return nsnull;
     }
@@ -1567,10 +1564,9 @@ nsImageFrame::TranslateEventCoords(nsIPresContext* aPresContext,
   // If we have a view then the event coordinates are already relative
   // to this frame; otherwise we have to adjust the coordinates
   // appropriately.
-  nsIView* view;
-  GetView(aPresContext, &view);
-  if (nsnull == view) {
+  if (!HasView()) {
     nsPoint offset;
+    nsIView *view;
     GetOffsetFromView(aPresContext, offset, &view);
     if (nsnull != view) {
       x -= offset.x;
@@ -1600,21 +1596,17 @@ nsImageFrame::GetAnchorHREFAndTarget(nsString& aHref, nsString& aTarget)
   aTarget.Truncate();
 
   // Walk up the content tree, looking for an nsIDOMAnchorElement
-  nsCOMPtr<nsIContent> content;
-  mContent->GetParent(*getter_AddRefs(content));
-  while (content) {
+  for (nsIContent* content = mContent->GetParent();
+       content; content = content->GetParent()) {
     nsCOMPtr<nsIDOMHTMLAnchorElement> anchor(do_QueryInterface(content));
     if (anchor) {
       anchor->GetHref(aHref);
-      if (aHref.Length() > 0) {
+      if (!aHref.IsEmpty()) {
         status = PR_TRUE;
       }
       anchor->GetTarget(aTarget);
       break;
     }
-    nsCOMPtr<nsIContent> parent;
-    content->GetParent(*getter_AddRefs(parent));
-    content = parent;
   }
   return status;
 }
@@ -1657,7 +1649,9 @@ nsImageFrame::GetContentForEvent(nsIPresContext* aPresContext,
     }
   }
 
-  return GetContent(aContent);
+  *aContent = GetContent();
+  NS_IF_ADDREF(*aContent);
+  return NS_OK;
 }
 
 // XXX what should clicks on transparent pixels do?
@@ -1692,7 +1686,7 @@ nsImageFrame::HandleEvent(nsIPresContext* aPresContext,
 
         if (!inside && isServerMap) {
           nsCOMPtr<nsIURI> baseURL;
-          GetBaseURI(getter_AddRefs(baseURL));
+          mContent->GetBaseURL(getter_AddRefs(baseURL));
           
           if (baseURL) {
             // Server side image maps use the href in a containing anchor
@@ -1700,17 +1694,16 @@ nsImageFrame::HandleEvent(nsIPresContext* aPresContext,
             nsAutoString src;
             if (GetAnchorHREFAndTarget(src, target)) {
               nsCOMPtr<nsINodeInfo> nodeInfo;
-              mContent->GetNodeInfo(*getter_AddRefs(nodeInfo));
+              mContent->GetNodeInfo(getter_AddRefs(nodeInfo));
               NS_ASSERTION(nodeInfo, "Image content without a nodeinfo?");
-              nsCOMPtr<nsIDocument> doc;
-              nodeInfo->GetDocument(*getter_AddRefs(doc));
-              nsAutoString charset;
+              nsIDocument* doc = nodeInfo->GetDocument();
+              nsCAutoString charset;
               if (doc) {
                 doc->GetDocumentCharacterSet(charset);
               } 
               nsCOMPtr<nsIURI> uri;
               nsresult rv = NS_NewURI(getter_AddRefs(uri), src,
-                                      NS_LossyConvertUCS2toASCII(charset).get(),
+                                      charset.get(),
                                       baseURL);
               NS_ENSURE_SUCCESS(rv, rv);
             
@@ -1779,14 +1772,15 @@ nsImageFrame::AttributeChanged(nsIPresContext* aPresContext,
                                nsIContent* aChild,
                                PRInt32 aNameSpaceID,
                                nsIAtom* aAttribute,
-                               PRInt32 aModType, 
-                               PRInt32 aHint)
+                               PRInt32 aModType)
 {
   nsresult rv = nsSplittableFrame::AttributeChanged(aPresContext, aChild,
-                                                    aNameSpaceID, aAttribute, aModType, aHint);
+                                                    aNameSpaceID, aAttribute,
+                                                    aModType);
   if (NS_OK != rv) {
     return rv;
   }
+  // XXXldb Shouldn't width and height be handled by attribute mapping?
   if (nsHTMLAtoms::width == aAttribute || nsHTMLAtoms::height == aAttribute  || nsHTMLAtoms::alt == aAttribute)
   { // XXX: could check for new width == old width, and make that a no-op
     nsCOMPtr<nsIPresShell> presShell;
@@ -1816,10 +1810,8 @@ nsImageFrame::List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) con
 #ifdef DEBUG_waterson
   fprintf(out, " [parent=%p]", mParent);
 #endif
-  nsIView*  view;
-  GetView(aPresContext, &view);
-  if (view) {
-    fprintf(out, " [view=%p]", view);
+  if (HasView()) {
+    fprintf(out, " [view=%p]", GetView());
   }
   fprintf(out, " {%d,%d,%d,%d}", mRect.x, mRect.y, mRect.width, 
 mRect.height);
@@ -1891,15 +1883,12 @@ nsImageFrame::LoadIcon(const nsAString& aSpec,
 }
 
 void
-nsImageFrame::GetDocumentCharacterSet(nsAString& aCharset) const
+nsImageFrame::GetDocumentCharacterSet(nsACString& aCharset) const
 {
-  nsresult rv;
-  nsCOMPtr<nsIHTMLContent> htmlContent(do_QueryInterface(mContent, &rv));
-  if (NS_SUCCEEDED(rv)) {
-    nsCOMPtr<nsIDocument> doc;
-    rv = htmlContent->GetDocument(*getter_AddRefs(doc));
-    if (NS_SUCCEEDED(rv))
-      (void) doc->GetDocumentCharacterSet(aCharset);
+  if (mContent) {
+    NS_ASSERTION(mContent->GetDocument(),
+                 "Frame still alive after content removed from document!");
+    mContent->GetDocument()->GetDocumentCharacterSet(aCharset);
   }
 }
 
@@ -1908,36 +1897,14 @@ nsImageFrame::SpecToURI(const nsAString& aSpec, nsIIOService *aIOService,
                          nsIURI **aURI)
 {
   nsCOMPtr<nsIURI> baseURI;
-  GetBaseURI(getter_AddRefs(baseURI));
-  nsAutoString charset;
+  if (mContent) {
+    mContent->GetBaseURL(getter_AddRefs(baseURI));
+  }
+  nsCAutoString charset;
   GetDocumentCharacterSet(charset);
   NS_NewURI(aURI, aSpec, 
-            charset.IsEmpty() ? nsnull : NS_ConvertUCS2toUTF8(charset).get(), 
+            charset.IsEmpty() ? nsnull : charset.get(), 
             baseURI, aIOService);
-}
-
-void
-nsImageFrame::GetBaseURI(nsIURI **aURI)
-{
-  NS_PRECONDITION(nsnull != aURI, "null OUT parameter pointer");
-
-  nsresult rv;
-  nsCOMPtr<nsIURI> baseURI;
-  nsCOMPtr<nsIHTMLContent> htmlContent(do_QueryInterface(mContent, &rv));
-  if (NS_SUCCEEDED(rv)) {
-    htmlContent->GetBaseURL(*getter_AddRefs(baseURI));
-  }
-  else {
-    nsCOMPtr<nsIDocument> doc;
-    if (mContent) {
-      rv = mContent->GetDocument(*getter_AddRefs(doc));
-      if (doc) {
-        doc->GetBaseURL(*getter_AddRefs(baseURI));
-      }
-    }
-  }
-  *aURI = baseURI;
-  NS_IF_ADDREF(*aURI);
 }
 
 void

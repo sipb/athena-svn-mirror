@@ -41,11 +41,11 @@ nsCSSPseudoElements.h \
 nsCSSKeywordList.h \
 nsCSSKeywords.h \
 nsCSSPropList.h \
+nsCSSProperty.h \
 nsCSSProps.h \
 nsHTMLAtomList.h \
 nsHTMLAtoms.h \
 nsHTMLValue.h \
-nsHTMLUtils.h \
 nsImageMapUtils.h \
 nsLayoutAtomList.h \
 nsLayoutAtoms.h \

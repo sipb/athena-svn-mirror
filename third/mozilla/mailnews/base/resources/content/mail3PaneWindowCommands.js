@@ -193,6 +193,7 @@ var DefaultController =
 			case "cmd_markAsRead":
 			case "cmd_markAllRead":
 			case "cmd_markThreadAsRead":
+			case "cmd_markReadByDate":
 			case "cmd_markAsFlagged":
 			case "cmd_markAsJunk":
 			case "cmd_markAsNotJunk":
@@ -348,6 +349,7 @@ var DefaultController =
       case "cmd_previousUnreadMsg":
         return (MailAreaHasFocus() && IsViewNavigationItemEnabled());
       case "cmd_markAllRead":
+      case "cmd_markReadByDate":
         return (MailAreaHasFocus() && IsFolderSelected());
       case "cmd_find":
       case "cmd_findAgain":
@@ -365,7 +367,7 @@ var DefaultController =
       case "cmd_collapseAllThreads":
         if (!gDBView || !gDBView.supportsThreading) 
           return false;
-        return (gDBView.sortType == nsMsgViewSortType.byThread);
+        return (gDBView.viewFlags & nsMsgViewFlagsType.kThreadedDisplay);
         break;
       case "cmd_nextFlaggedMsg":
       case "cmd_previousFlaggedMsg":
@@ -463,7 +465,7 @@ var DefaultController =
 				break;
       case "cmd_createFilterFromMenu":
         MsgCreateFilter();
-        break;        
+        break;   
       case "cmd_createFilterFromPopup":
         break;// This does nothing because the createfilter is invoked from the popupnode oncommand.
 			case "button_delete":
@@ -584,6 +586,9 @@ var DefaultController =
 			case "cmd_markAllRead":
         gDBView.doCommand(nsMsgViewCommandType.markAllRead);
 				return;
+			case "cmd_markReadByDate":
+        MsgMarkReadByDate();
+        return;
       case "button_junk":
         MsgJunk();
         return;

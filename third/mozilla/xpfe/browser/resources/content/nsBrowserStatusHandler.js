@@ -141,11 +141,10 @@ nsBrowserStatusHandler.prototype =
            contentType == "mozilla.application/cached-xul";
   },
 
-  onLinkIconAvailable : function(aHref) {
-    if (gProxyFavIcon && pref.getBoolPref("browser.chrome.site_icons"))
-    {
+  onLinkIconAvailable : function(aHref)
+  {
+    if (gProxyFavIcon && pref.getBoolPref("browser.chrome.site_icons")) {
       var browser = getBrowser();
-
       if (browser.userTypedValue === null)
         gProxyFavIcon.setAttribute("src", aHref);
 
@@ -216,8 +215,8 @@ nsBrowserStatusHandler.prototype =
         if (channel) {
           var location = channel.URI.spec;
           if (location != "about:blank") {
-            const kErrorBindingAborted = 2152398850;
-            const kErrorNetTimeout = 2152398862;
+            const kErrorBindingAborted = 0x804B0002;
+            const kErrorNetTimeout = 0x804B000E;
             switch (aStatus) {
               case kErrorBindingAborted:
                 msg = gNavigatorBundle.getString("nv_stopped");
@@ -277,7 +276,6 @@ nsBrowserStatusHandler.prototype =
         // pages.
         locationURI = gURIFixup.createExposableURI(aLocation);
         location = locationURI.spec;
-        
       }
       catch(ex) {
         location = aLocation.spec;
@@ -298,7 +296,7 @@ nsBrowserStatusHandler.prototype =
     // Update urlbar only if a new page was loaded on the primary content area
     // Do not update urlbar if there was a subframe navigation
 
-    var browser = getBrowser().mCurrentBrowser;
+    var browser = getBrowser().selectedBrowser;
     if (aWebProgress.DOMWindow == content) {
       // The document loaded correctly, clear the value if we should
       if (browser.userTypedClear)
@@ -308,8 +306,9 @@ nsBrowserStatusHandler.prototype =
       if (userTypedValue === null) {
         this.urlBar.value = location;
         SetPageProxyState("valid", aLocation);
-        // Setting the urlBar value in some cases causes userTypedValue
-        // to become set because of oninput, reset it to null
+
+        // Setting the urlBar value in some cases causes userTypedValue to
+        // become set because of oninput, so reset it to null
         browser.userTypedValue = null;
       } else {
         this.urlBar.value = userTypedValue;

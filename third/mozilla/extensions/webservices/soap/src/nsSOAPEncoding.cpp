@@ -67,7 +67,7 @@ DeleteEncodingEntry(nsHashKey *aKey, void *aData, void *aClosure)
 //    but is never seen by xpconnect.
 //
 
-NS_IMPL_ISUPPORTS1(nsSOAPEncodingRegistry, nsISOAPEncodingRegistry);
+NS_IMPL_ISUPPORTS1(nsSOAPEncodingRegistry, nsISOAPEncodingRegistry)
 
 nsSOAPEncodingRegistry::nsSOAPEncodingRegistry(nsISOAPEncoding *aEncoding)
 : mEncodings(nsnull, nsnull, DeleteEncodingEntry, nsnull, 4)
@@ -147,9 +147,8 @@ nsresult
 //
 //  Second, the encodings themselves.
 //
-
-NS_IMPL_QUERY_INTERFACE1(nsSOAPEncoding, nsISOAPEncoding)
 NS_IMPL_CI_INTERFACE_GETTER1(nsSOAPEncoding, nsISOAPEncoding)
+NS_IMPL_QUERY_INTERFACE1_CI(nsSOAPEncoding, nsISOAPEncoding)
 
 // Due to circular referencing with the registry we abdicate all ref counting
 //   to the registry itself. When the registry reaches zero it destroys all

@@ -32,7 +32,6 @@ DIRS	= \
 			filepicker \
 			find \
 			search \
-			sidebar \
 			related \
 			prefwindow \
 			shistory \
@@ -52,6 +51,7 @@ DIRS += \
 		download-manager \
 		history \
 		urlbarhistory \
+		sidebar \
 		$(NULL)
 endif
 
@@ -64,6 +64,7 @@ else
 DIRS    = \
           intl \
 	  find \
+	  filepicker \
           download-manager \
           autocomplete \
           windowds \

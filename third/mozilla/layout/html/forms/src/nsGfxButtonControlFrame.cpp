@@ -110,13 +110,12 @@ nsGfxButtonControlFrame::IsFileBrowseButton(PRInt32 type)
   
     // Check to see if parent is a file input
     nsresult result;
-    nsCOMPtr<nsIContent> parentContent;
-    result = mContent->GetParent(*getter_AddRefs(parentContent));
-    if (NS_SUCCEEDED(result) && parentContent) {
+    nsCOMPtr<nsIContent> parentContent = mContent->GetParent();
+    if (parentContent) {
       nsCOMPtr<nsIAtom> atom;
-      result = parentContent->GetTag(*getter_AddRefs(atom));
+      result = parentContent->GetTag(getter_AddRefs(atom));
       if (NS_SUCCEEDED(result) && atom) {
-        if (atom.get() == nsHTMLAtoms::input) {
+        if (atom == nsHTMLAtoms::input) {
 
           // It's an input, is it a file input?
           nsAutoString value;
@@ -337,8 +336,7 @@ nsGfxButtonControlFrame::AttributeChanged(nsIPresContext* aPresContext,
                                        nsIContent*     aChild,
                                        PRInt32         aNameSpaceID,
                                        nsIAtom*        aAttribute,
-                                       PRInt32         aModType, 
-                                       PRInt32         aHint)
+                                       PRInt32         aModType)
 {
   nsresult rv = NS_OK;
 
@@ -356,7 +354,7 @@ nsGfxButtonControlFrame::AttributeChanged(nsIPresContext* aPresContext,
 
   // defer to HTMLButtonControlFrame
   } else {
-    rv = nsHTMLButtonControlFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType, aHint);
+    rv = nsHTMLButtonControlFrame::AttributeChanged(aPresContext, aChild, aNameSpaceID, aAttribute, aModType);
   }
   return rv;
 }

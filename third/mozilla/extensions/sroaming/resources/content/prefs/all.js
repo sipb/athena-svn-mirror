@@ -1,24 +1,40 @@
-/* 
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
- *  
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
- *  
- * The Original Code is Mozilla Session Roaming code.
- * 
- * The Initial Developer of the Original Code is
+/*-*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-*/
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is Mozilla Roaming code.
+ *
+ * The Initial Developer of the Original Code is 
  * Ben Bucksch <http://www.bucksch.org> of
  * Beonex <http://www.beonex.com>
- * Portions created by Ben Bucksch are Copyright (C) 2002 Ben Bucksch.
- * All Rights Reserved.
- * 
- * Contributor(s): 
- */
+ * Portions created by the Initial Developer are Copyright (C) 2002-2003
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /* The backend needs the settings in the Mozilla app registry
    (via nsIRegistry), not in the prefs system (nsIPref;
@@ -34,15 +50,6 @@
    To unify matters, I share a data structure between top.xul and files.js.
 */
 
-var gData; // for structure, see RegistryToData()
-           /* While each prefs pane (top and files) has its own |gData| var,
-              they all point to the same object, gotten from data manager.
-              I.e. top.js and files.js practically share the same
-              object. This is important so that files selection can be
-              disabled, if roaming is disabled, and be enabled as soon
-              as the user enabled roaming (but didn't save yet). */
-
-
 // for pane switches
 function Unload()
 {
@@ -57,27 +64,24 @@ function Unload()
 function RoamingPrefs()
 {
   // init
-    this.loaded = false; // already read from registry
-    this.changed = false; // any of the values changed, so save all
-    // user data
-    this.Enabled = false;
-    this.Method = 0; // int, reall enum: 0=stream, 1=copy
-    this.Files = new Array(); // of strings, will get another default below
-    this.Stream = new Object();
-    this.Stream.BaseURL = "";
-    this.Stream.Username = "";
-    this.Stream.SavePW = false;
-    this.Stream.Password = "";
-    this.Copy = new Object();
-    this.Copy.RemoteDir = "";
-    // caching(have to add that here or it will disappear during pane switches)
-    this.regkeyProf = undefined;
-    this.registry = undefined;
+  this.loaded = false; // already read from registry
+  this.changed = false; // any of the values changed, so save all
+  // user data
+  this.Enabled = false;
+  this.Method = 0; // int, reall enum: 0=stream, 1=copy
+  this.Files = new Array(); // of strings, will get another default below
+  this.Stream = new Object();
+  this.Stream.BaseURL = "";
+  this.Stream.Username = "";
+  this.Stream.SavePW = false;
+  this.Stream.Password = "";
+  this.Copy = new Object();
+  this.Copy.RemoteDir = "";
+  // caching(have to add that here or it will disappear during pane switches)
+  this.regkeyProf = undefined;
+  this.registry = undefined;
 
   this.registryToData();
-
-  var me = this;
-  parent.hPrefWindow.registerOKCallbackFunc(function() { me.okClicked(); });
 }
 RoamingPrefs.prototype =
 {
@@ -108,7 +112,7 @@ RoamingPrefs.prototype =
   //       | + BaseURL (string)
   //       | + Username (string)
   //       | + SavePW (int, really bool)
-  //       | + Password (string, encrypted)
+  //       | + Password (string, encrypted?)
   //       + Copy (tree)
   //         + RemoteDir (string)
 
@@ -158,7 +162,7 @@ RoamingPrefs.prototype =
       registry.openWellKnownRegistry(registry.ApplicationRegistry);
       this.registry = registry;
       var profMan = Components.classes["@mozilla.org/profile/manager;1"]
-		                          .getService(Components.interfaces.nsIProfile);
+		              .getService(Components.interfaces.nsIProfile);
       var regkey = registry.getKey(registry.Common, this.kRegTreeProfile);
       regkey = registry.getKey(regkey, profMan.currentProfile);
       this.regkeyProf = regkey;
@@ -228,7 +232,8 @@ RoamingPrefs.prototype =
     if (!registry || !this.regkeyProf)
       // arg, we had a fatal error during read, so bail out
       return;
-    try {
+    try
+    {
       var regkey = this.saveRegBranch(this.regkeyProf, this.kRegTreeRoaming);
 
       // enabled
@@ -274,7 +279,9 @@ RoamingPrefs.prototype =
       registry.setString(regkey, this.kRegKeyCopyDir, this.Copy.RemoteDir);
 
       this.changed = false;
-    } catch (e) {
+    }
+    catch (e)
+    {
       this.showError("ErrorRegWrite", undefined, e.message);
       return;
     }
@@ -284,10 +291,13 @@ RoamingPrefs.prototype =
   // getKey/addKey returns either the regkey for branch or nothing, if failed
   saveRegBranch : function(baseregkey, branchname)
   {
-    try {
+    try
+    {
       return this.registry.getKey(baseregkey, branchname);
-    } catch (e) { // XXX catch selectively
-      dump("got (expected?) exception " + e + "\n");
+    }
+    catch (e) // XXX catch selectively
+    {
+      dumpError("got (expected?) exception " + e + "\n");
       return this.registry.addKey(baseregkey, branchname);
       // if that fails with an exception, throw it to caller
     }
@@ -385,9 +395,6 @@ RoamingPrefs.prototype =
   {
     try
     {
-      var promptService = Components
-                          .classes["@mozilla.org/embedcomp/prompt-service;1"]
-                          .getService(Components.interfaces.nsIPromptService);
       var bundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
                   .getService()
                   .QueryInterface(Components.interfaces.nsIStringBundleService)
@@ -400,10 +407,12 @@ RoamingPrefs.prototype =
         text += bundle.GetStringFromName(prop);
       if (tech) // should we show exceptions to user?
         text += "\n" + tech;
-      promptService.alert(window, dialogTitle, text);
-    } catch(e) {
-      dump("Error while trying to display an error: " + e
-           + " (original error: " + prop + " " + tech + ")\n");
+      GetPromptService().alert(window, dialogTitle, text);
+    }
+    catch(e)
+    {
+      dumpError("Error while trying to display an error: " + e
+                + " (original error: " + prop + " " + tech + ")\n");
     }
   }
 }

@@ -49,7 +49,6 @@
 #include "nsStyleLinkElement.h"
 #include "nsNetUtil.h"
 #include "nsIDocument.h"
-#include "nsHTMLUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsParserUtils.h"
 
@@ -167,9 +166,8 @@ public:
   nsresult SetInnerHTML(const nsAString& aInnerHTML);
 
 protected:
-  nsresult GetHrefCString(char* &aBuf);
   void GetStyleSheetURL(PRBool* aIsInline,
-                        nsAString& aUrl);
+                        nsIURI** aURI);
   void GetStyleSheetInfo(nsAString& aTitle,
                          nsAString& aType,
                          nsAString& aMedia,
@@ -205,12 +203,10 @@ NS_NewHTMLStyleElement(nsIHTMLContent** aInstancePtrResult,
 
 nsHTMLStyleElement::nsHTMLStyleElement()
 {
-  nsHTMLUtils::AddRef(); // for GetHrefCString
 }
 
 nsHTMLStyleElement::~nsHTMLStyleElement()
 {
-  nsHTMLUtils::Release(); // for GetHrefCString
 }
 
 
@@ -313,48 +309,11 @@ nsHTMLStyleElement::SetInnerHTML(const nsAString& aInnerHTML)
   return rv;
 }
 
-nsresult
-nsHTMLStyleElement::GetHrefCString(char* &aBuf)
-{
-  // Get src= attribute (relative URL).
-  nsAutoString relURLSpec;
-
-  if (NS_CONTENT_ATTR_HAS_VALUE ==
-      nsGenericHTMLContainerElement::GetAttr(kNameSpaceID_None,
-                                             nsHTMLAtoms::src, relURLSpec)) {
-    // Clean up any leading or trailing whitespace
-    relURLSpec.Trim(" \t\n\r");
-
-    // Get base URL.
-    nsCOMPtr<nsIURI> baseURL;
-    GetBaseURL(*getter_AddRefs(baseURL));
-
-    if (baseURL) {
-      // Get absolute URL.
-      nsCAutoString buf;
-      NS_MakeAbsoluteURIWithCharset(buf, relURLSpec, mDocument, baseURL,
-                                    nsHTMLUtils::IOService,
-                                    nsHTMLUtils::CharsetMgr);
-      aBuf = ToNewCString(buf);
-    }
-    else {
-      // Absolute URL is same as relative URL.
-      aBuf = ToNewUTF8String(relURLSpec);
-    }
-  }
-  else {
-    // Absolute URL is empty because we have no HREF.
-    aBuf = nsnull;
-  }
-
-  return NS_OK;
-}
-
 void
 nsHTMLStyleElement::GetStyleSheetURL(PRBool* aIsInline,
-                                     nsAString& aUrl)
+                                     nsIURI** aURI)
 {
-  aUrl.Truncate();
+  *aURI = nsnull;
   *aIsInline = !HasAttr(kNameSpaceID_None, nsHTMLAtoms::src);
   if (*aIsInline) {
     return;
@@ -366,12 +325,7 @@ nsHTMLStyleElement::GetStyleSheetURL(PRBool* aIsInline,
     return;
   }
 
-  char *buf;
-  GetHrefCString(buf);
-  if (buf) {
-    aUrl.Assign(NS_ConvertASCIItoUCS2(buf));
-    nsCRT::free(buf);
-  }
+  GetHrefURIForAnchors(aURI);
   return;
 }
 

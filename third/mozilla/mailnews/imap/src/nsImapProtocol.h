@@ -88,7 +88,7 @@
 class nsIMAPMessagePartIDArray;
 class nsIMsgIncomingServer;
 
-#define kDownLoadCacheSize 1536
+#define kDownLoadCacheSize 16000 // was 1536 - try making it bigger
 
 
 typedef struct _msg_line_info {
@@ -535,8 +535,6 @@ private:
 	// based on the imap action passed into the url. The following functions are imap protocol handlers for
 	// each action. They are called by ProcessAuthenticatedStateUrl.
 	void OnLSubFolders();
-	void OnGetMailAccount();
-	void OnOfflineToOnlineMove();
 	void OnAppendMsgFromFile();
 	char * OnCreateServerSourceFolderPathString();
   char * OnCreateServerDestinationFolderPathString();
@@ -612,7 +610,7 @@ private:
   PRInt32		m_chunkStartSize;
   PRInt32		m_maxChunkSize;
   PRBool		m_fetchByChunks;
-  PRBool                m_ignoreExpunges;
+  PRBool    m_ignoreExpunges;
   PRBool    m_useSecAuth;
   PRInt32		m_chunkSize;
   PRInt32		m_chunkThreshold;

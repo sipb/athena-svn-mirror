@@ -110,6 +110,7 @@ private:
     nsresult Connect(PRBool firstTime = PR_TRUE);
     nsresult AsyncAbort(nsresult status);
     nsresult SetupTransaction();
+    void     AddCookiesToRequest();
     void     ApplyContentConversions();
     nsresult CallOnStartRequest();
     nsresult ProcessResponse();
@@ -117,7 +118,7 @@ private:
     nsresult ProcessNotModified();
     nsresult ProcessRedirection(PRUint32 httpStatus);
     nsresult ProcessAuthentication(PRUint32 httpStatus);
-    nsresult GetCallback(const nsIID &aIID, void **aResult);
+    void     GetCallback(const nsIID &aIID, void **aResult);
     PRBool   ResponseWouldVary();
 
     // redirection specific methods
@@ -190,6 +191,9 @@ private:
     PRUint32                          mLogicalOffset;
     PRUint8                           mCaps;
 
+    nsCString                         mContentTypeHint;
+    nsCString                         mContentCharsetHint;
+    
     // cache specific data
     nsCOMPtr<nsICacheEntryDescriptor> mCacheEntry;
     nsCOMPtr<nsIInputStreamPump>      mCachePump;

@@ -79,6 +79,8 @@
 #include "nsIImapIncomingServer.h" 
 #include "nsIImapUrl.h"
 #include "nsIMessengerOSIntegration.h"
+#include "nsICategoryManager.h"
+#include "nsISupportsPrimitives.h"
 
 #define PREF_MAIL_ACCOUNTMANAGER_ACCOUNTS "mail.accountmanager.accounts"
 #define PREF_MAIL_ACCOUNTMANAGER_DEFAULTACCOUNT "mail.accountmanager.defaultaccount"
@@ -95,7 +97,6 @@
 
 static NS_DEFINE_CID(kMsgAccountCID, NS_MSGACCOUNT_CID);
 static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
-static NS_DEFINE_CID(kMsgBiffManagerCID, NS_MSGBIFFMANAGER_CID);
 static NS_DEFINE_CID(kMsgFolderCacheCID, NS_MSGFOLDERCACHE_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 
@@ -145,6 +146,7 @@ nsMsgAccountManager::nsMsgAccountManager() :
   m_cleanupInboxInProgress(PR_FALSE),
   m_haveShutdown(PR_FALSE),
   m_shutdownInProgress(PR_FALSE),
+  m_userAuthenticated(PR_FALSE),
   m_prefs(0)
 {
 }
@@ -234,6 +236,23 @@ nsMsgAccountManager::GetShutdownInProgress(PRBool *_retval)
 {
     NS_ENSURE_ARG_POINTER(_retval);
     *_retval = m_shutdownInProgress;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsMsgAccountManager::GetUserNeedsToAuthenticate(PRBool *aRetval)
+{
+  NS_ENSURE_ARG_POINTER(aRetval);
+  if (!m_userAuthenticated)
+    return m_prefs->GetBoolPref("mail.password_protect_local_cache", aRetval);
+  *aRetval = !m_userAuthenticated;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsMsgAccountManager::SetUserNeedsToAuthenticate(PRBool aUserNeedsToAuthenticate)
+{
+    m_userAuthenticated = !aUserNeedsToAuthenticate;
     return NS_OK;
 }
 
@@ -1370,8 +1389,8 @@ nsMsgAccountManager::LoadAccounts()
                                           getter_Copies(appendAccountList));
 
       // If there are pre-configured accounts, we need to add them to the existing list.
-      if (appendAccountList.Length() > 0) {
-        if (accountList.Length() > 0) {
+      if (!appendAccountList.IsEmpty()) {
+        if (!accountList.IsEmpty()) {
           nsCStringArray existingAccountsArray;
           existingAccountsArray.ParseString(accountList.get(), ACCOUNT_DELIMITER);
 
@@ -1409,9 +1428,8 @@ nsMsgAccountManager::LoadAccounts()
   m_accountsLoaded = PR_TRUE;  //It is ok to return null accounts like when we create new profile
   m_haveShutdown = PR_FALSE;
   
-  if (!accountList || !accountList[0]) {
+  if (!accountList || !accountList[0])
     return NS_OK;
-  }
   
     /* parse accountList and run loadAccount on each string, comma-separated */   
     nsCOMPtr<nsIMsgAccount> account;
@@ -1424,9 +1442,8 @@ nsMsgAccountManager::LoadAccounts()
       str = token;
       str.StripWhitespace();
       
-      if (!str.IsEmpty()) {
+      if (!str.IsEmpty()) 
           rv = GetAccount(str.get(), getter_AddRefs(account));
-      }
 
       // force load of accounts (need to find a better way to do this
       nsCOMPtr<nsISupportsArray> identities;
@@ -2341,4 +2358,50 @@ nsMsgAccountManager::SaveAccountInfo()
   NS_ENSURE_SUCCESS(rv,rv);
   return m_prefs->SavePrefFile(nsnull);
 }
+
+NS_IMETHODIMP
+nsMsgAccountManager::GetChromePackageName(const char *aExtensionName, char **aChromePackageName)
+{
+  NS_ENSURE_ARG_POINTER(aExtensionName);
+  NS_ENSURE_ARG_POINTER(aChromePackageName);
+ 
+  nsresult rv;
+  nsCOMPtr<nsICategoryManager> catman = do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  nsCOMPtr<nsISimpleEnumerator> e;
+  rv = catman->EnumerateCategory(MAILNEWS_ACCOUNTMANAGER_EXTENSIONS, getter_AddRefs(e));
+  if(NS_SUCCEEDED(rv) && e) {
+    while (PR_TRUE) {
+      nsCOMPtr<nsISupportsCString> catEntry;
+      rv = e->GetNext(getter_AddRefs(catEntry));
+      if (NS_FAILED(rv) || !catEntry) 
+        break;
+
+      nsCAutoString entryString;
+      rv = catEntry->GetData(entryString);
+      if (NS_FAILED(rv))
+         break;
+
+      nsXPIDLCString contractidString;
+      rv = catman->GetCategoryEntry(MAILNEWS_ACCOUNTMANAGER_EXTENSIONS, entryString.get(), getter_Copies(contractidString));
+      if (NS_FAILED(rv)) 
+        break;
+
+      nsCOMPtr <nsIMsgAccountManagerExtension> extension = do_GetService(contractidString.get(), &rv);
+      if (NS_FAILED(rv) || !extension)
+        break;
+      
+      nsXPIDLCString name;
+      rv = extension->GetName(getter_Copies(name));
+      if (NS_FAILED(rv))
+        break;
+      
+      if (!strcmp(name.get(), aExtensionName))
+        return extension->GetChromePackageName(aChromePackageName);
+    }
+  }
+  return NS_ERROR_UNEXPECTED;
+}
+
 

@@ -44,9 +44,9 @@
 #include "nsIDocument.h"
 #include "nsWeakReference.h"
 #include "nsWeakPtr.h"
-#include "nsIArena.h"
 #include "nsVoidArray.h"
 #include "nsIDOMXMLDocument.h"
+#include "nsIDOM3Document.h"
 #include "nsIDOMDocumentView.h"
 #include "nsIDOMDocumentXBL.h"
 #include "nsIDOMNSDocument.h"
@@ -62,6 +62,7 @@
 #include "nsIContent.h"
 #include "nsIEventListenerManager.h"
 #include "nsGenericDOMNodeList.h"
+#include "nsIDOM3Node.h"
 #include "nsIPrincipal.h"
 #include "nsIBindingManager.h"
 #include "nsINodeInfo.h"
@@ -167,8 +168,7 @@ public:
                               nsIContent*  aContent,
                               PRInt32      aNameSpaceID,
                               nsIAtom*     aAttribute,
-                              PRInt32      aModType,
-                              nsChangeHint aHint) { return NS_OK; }
+                              PRInt32      aModType) { return NS_OK; }
   NS_IMETHOD ContentAppended(nsIDocument *aDocument,
                              nsIContent* aContainer,
                              PRInt32     aNewIndexInContainer)
@@ -195,8 +195,8 @@ public:
                                               PRBool aApplicable) { return NS_OK; }
   NS_IMETHOD StyleRuleChanged(nsIDocument *aDocument,
                               nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule,
-                              nsChangeHint aHint) { return NS_OK; }
+                              nsIStyleRule* aOldStyleRule,
+                              nsIStyleRule* aNewStyleRule) { return NS_OK; }
   NS_IMETHOD StyleRuleAdded(nsIDocument *aDocument,
                             nsIStyleSheet* aStyleSheet,
                             nsIStyleRule* aStyleRule) { return NS_OK; }
@@ -231,7 +231,7 @@ class nsDocument : public nsIDocument,
                    public nsIDOMDocumentRange,
                    public nsIDOMDocumentTraversal,
                    public nsIDOMDocumentXBL,
-                   public nsIDOM3Node,
+                   public nsIDOM3Document,
                    public nsSupportsWeakReference,
                    public nsIDOMEventReceiver,
                    public nsIDOM3EventTarget,
@@ -242,8 +242,6 @@ public:
   NS_DECL_ISUPPORTS
 
   NS_DECL_AND_IMPL_ZEROING_OPERATOR_NEW
-
-  NS_IMETHOD GetArena(nsIArena** aArena);
 
   NS_IMETHOD Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup);
   NS_IMETHOD ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup);
@@ -303,7 +301,7 @@ public:
   /**
    * Return the base URL for relative URLs in the document. May return null (or the document URL).
    */
-  NS_IMETHOD GetBaseURL(nsIURI*& aURL) const;
+  NS_IMETHOD GetBaseURL(nsIURI** aURL) const;
   NS_IMETHOD SetBaseURL(nsIURI* aURL);
 
   /**
@@ -316,8 +314,8 @@ public:
    * Return a standard name for the document's character set. This will
    * trigger a startDocumentLoad if necessary to answer the question.
    */
-  NS_IMETHOD GetDocumentCharacterSet(nsAString& oCharsetID);
-  NS_IMETHOD SetDocumentCharacterSet(const nsAString& aCharSetID);
+  NS_IMETHOD GetDocumentCharacterSet(nsACString& oCharsetID);
+  NS_IMETHOD SetDocumentCharacterSet(const nsACString& aCharSetID);
 
   NS_IMETHOD GetDocumentCharacterSetSource(PRInt32* aCharsetSource);
   NS_IMETHOD SetDocumentCharacterSetSource(PRInt32 aCharsetSource);
@@ -394,7 +392,7 @@ public:
    * Get the direct children of the document - content in
    * the prolog, the root content and content in the epilog.
    */
-  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent*& aResult) const;
+  NS_IMETHOD ChildAt(PRInt32 aIndex, nsIContent** aResult) const;
   NS_IMETHOD IndexOf(nsIContent* aPossibleChild, PRInt32& aIndex) const;
   NS_IMETHOD GetChildCount(PRInt32& aCount);
 
@@ -463,8 +461,7 @@ public:
   NS_IMETHOD AttributeChanged(nsIContent* aChild,
                               PRInt32 aNameSpaceID,
                               nsIAtom* aAttribute,
-                              PRInt32 aModType,
-                              nsChangeHint aHint);
+                              PRInt32 aModType);
   NS_IMETHOD ContentAppended(nsIContent* aContainer,
                              PRInt32 aNewIndexInContainer);
   NS_IMETHOD ContentInserted(nsIContent* aContainer,
@@ -479,8 +476,8 @@ public:
                             PRInt32 aIndexInContainer);
 
   NS_IMETHOD StyleRuleChanged(nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule,
-                              nsChangeHint aHint); // See nsStyleConsts fot hint values
+                              nsIStyleRule* aOldStyleRule,
+                              nsIStyleRule* aNewStyleRule);
   NS_IMETHOD StyleRuleAdded(nsIStyleSheet* aStyleSheet,
                             nsIStyleRule* aStyleRule);
   NS_IMETHOD StyleRuleRemoved(nsIStyleSheet* aStyleSheet,
@@ -490,7 +487,7 @@ public:
                                        PRBool aUpdateViews = PR_FALSE);
   NS_IMETHOD GetAndIncrementContentID(PRInt32* aID);
   NS_IMETHOD GetBindingManager(nsIBindingManager** aResult);
-  NS_IMETHOD GetNodeInfoManager(nsINodeInfoManager*& aNodeInfoManager);
+  NS_IMETHOD GetNodeInfoManager(nsINodeInfoManager** aNodeInfoManager);
   NS_IMETHOD AddReference(void *aKey, nsISupports *aReference);
   NS_IMETHOD RemoveReference(void *aKey, nsISupports **aOldReference);
   NS_IMETHOD SetContainer(nsISupports *aContainer);
@@ -503,6 +500,7 @@ public:
                                nsAString& aEncoding,
                                nsAString& Standalone);
   NS_IMETHOD_(PRBool) IsCaseSensitive();
+  NS_IMETHOD_(PRBool) IsScriptEnabled();
 
   // nsIRadioGroupContainer
   NS_IMETHOD WalkRadioGroup(const nsAString& aName,
@@ -528,6 +526,9 @@ public:
 
   // nsIDOMDocument
   NS_DECL_NSIDOMDOCUMENT
+
+  // nsIDOM3Document
+  NS_DECL_NSIDOM3DOCUMENT
 
   // nsIDOMXMLDocument
   NS_DECL_NSIDOMXMLDOCUMENT
@@ -598,7 +599,6 @@ protected:
   nsDocument();
   virtual ~nsDocument();
 
-  nsCOMPtr<nsIArena> mArena;
   nsString mDocumentTitle;
   nsCString mLastModified;
   nsCOMPtr<nsIURI> mDocumentURL;
@@ -609,7 +609,7 @@ protected:
 
   nsWeakPtr mDocumentContainer;
 
-  nsString mCharacterSet;
+  nsCString mCharacterSet;
   PRInt32 mCharacterSetSource;
 
   nsVoidArray mCharSetObservers;

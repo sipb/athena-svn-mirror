@@ -125,8 +125,7 @@ nsTextBoxFrame::AttributeChanged(nsIPresContext* aPresContext,
                                  nsIContent*     aChild,
                                  PRInt32         aNameSpaceID,
                                  nsIAtom*        aAttribute,
-                                 PRInt32         aModType, 
-                                 PRInt32         aHint)
+                                 PRInt32         aModType)
 {
     mState |= NS_STATE_NEED_LAYOUT;
     PRBool aResize;
@@ -207,7 +206,7 @@ nsTextBoxFrame::AlwaysAppendAccessKey()
     if (prefBranch) 
     {
       nsCOMPtr<nsIPrefLocalizedString> prefValue;
-      prefBranch->GetComplexValue("intl.menuitems.alwaysappendacceskeys",
+      prefBranch->GetComplexValue("intl.menuitems.alwaysappendaccesskeys",
                                   NS_GET_IID(nsIPrefLocalizedString),
                                   getter_AddRefs(prefValue));
       if (prefValue)
@@ -317,7 +316,7 @@ nsTextBoxFrame::PaintTitle(nsIPresContext*      aPresContext,
                            const nsRect&        aDirtyRect,
                            const nsRect&        aRect)
 {
-    if (mTitle.Length() == 0)
+    if (mTitle.IsEmpty())
         return NS_OK;
 
     // determine (cropped) title and underline position
@@ -509,7 +508,7 @@ nsTextBoxFrame::CalculateTitleForWidth(nsIPresContext*      aPresContext,
                                        nsIRenderingContext& aRenderingContext,
                                        nscoord              aWidth)
 {
-    if (mTitle.Length() == 0)
+    if (mTitle.IsEmpty())
         return;
 
     nsCOMPtr<nsIDeviceContext> deviceContext;

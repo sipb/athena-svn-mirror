@@ -107,12 +107,13 @@ struct nsRequestInfo : public PLDHashEntryHdr
 };
 
 
-PR_STATIC_CALLBACK(void)
+PR_STATIC_CALLBACK(PRBool)
 RequestInfoHashInitEntry(PLDHashTable *table, PLDHashEntryHdr *entry,
                          const void *key)
 {
   // Initialize the entry with placement new
   new (entry) nsRequestInfo(key);
+  return PR_TRUE;
 }
 
 
@@ -526,7 +527,7 @@ nsDocLoaderImpl::OnStartRequest(nsIRequest *request, nsISupports *aCtxt)
 
     if (loadFlags & nsIChannel::LOAD_DOCUMENT_URI) {
       //
-      // Make sure that hte document channel is null at this point...
+      // Make sure that the document channel is null at this point...
       // (unless its been redirected)
       //
       NS_ASSERTION((loadFlags & nsIChannel::LOAD_REPLACE) ||
@@ -889,7 +890,7 @@ nsDocLoaderImpl::AddProgressListener(nsIWebProgressListener *aListener,
                                      PRUint32 aNotifyMask)
 {
   nsresult rv;
-  nsWeakPtr listener = getter_AddRefs(NS_GetWeakReference(aListener));
+  nsWeakPtr listener = do_GetWeakReference(aListener);
   if (!listener) {
     return NS_ERROR_INVALID_ARG;
   }
@@ -913,7 +914,7 @@ NS_IMETHODIMP
 nsDocLoaderImpl::RemoveProgressListener(nsIWebProgressListener *aListener)
 {
   nsresult rv;
-  nsWeakPtr listener = getter_AddRefs(NS_GetWeakReference(aListener));
+  nsWeakPtr listener = do_GetWeakReference(aListener);
   if (!listener) {
     return NS_ERROR_INVALID_ARG;
   }

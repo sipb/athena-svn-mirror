@@ -137,10 +137,11 @@ function openNewTabWith(url, sendReferrer, reverseBackgroundPref)
 
     var browserWin = windowMediator.getMostRecentWindow("navigator:browser");
 
-    // if there's no existing browser window, open this url in one, and
-    // return
+    // if there's no existing browser window, then, as long as
+    // we are allowed to, open this url in one and return
     //
     if (!browserWin) {
+      urlSecurityCheck(url, document);
       window.openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no", 
                         url, null, referrer);
       return;
@@ -160,7 +161,16 @@ function openNewTabWith(url, sendReferrer, reverseBackgroundPref)
 
   var referrer = sendReferrer ? getReferrer(browserDocument) : null;
 
-  var tab = browser.addTab(url, referrer); // open link in new tab
+  // As in openNewWindowWith(), we want to pass the charset of the
+  // current document over to a new tab. 
+  var wintype = browserDocument.firstChild.getAttribute('windowtype');
+  var originCharset;
+  if (wintype == "navigator:browser") {
+    originCharset = window._content.document.characterSet;
+  }
+
+  // open link in new tab
+  var tab = browser.addTab(url, referrer, originCharset); 
   if (pref) {
     var loadInBackground = pref.getBoolPref("browser.tabs.loadInBackground");
     if (reverseBackgroundPref)
@@ -372,8 +382,7 @@ function foundHeaderInfo(aSniffer, aData)
       filesFolder = Components .classes[lfContractID].createInstance(lfIID);
       filesFolder.initWithPath(persistArgs.target.path);
       
-      var nameWithoutExtension = filesFolder.leafName;
-      nameWithoutExtension = nameWithoutExtension.substring(0, nameWithoutExtension.lastIndexOf("."));
+      var nameWithoutExtension = filesFolder.leafName.replace(/\.[^.]*$/, "");
       var filesFolderLeafName = getStringBundle().formatStringFromName("filesFolder",
                                                                        [nameWithoutExtension],
                                                                        1);
@@ -552,27 +561,30 @@ nsHeaderSniffer.prototype = {
 
   get suggestedFileName()
   {
-    var filename = "";
-    var name = this.mContentDisposition;
-    if (name) {
-      const filenamePrefix = "filename=";
-      var ix = name.indexOf(filenamePrefix);
-      if (ix >= 0) {
-        // Adjust ix to point to start of actual name
-        ix += filenamePrefix.length;
-        filename = name.substr(ix, name.length);
-        if (filename != "") {
-          ix = filename.lastIndexOf(";");
-          if (ix > 0)
-            filename = filename.substr(0, ix);
-          
-          filename = filename.replace(/^"|"$/g, "");
+    var fileName = "";
+
+    if (this.mContentDisposition) {
+      const mhpContractID = "@mozilla.org/network/mime-hdrparam;1"
+      const mhpIID = Components.interfaces.nsIMIMEHeaderParam;
+      const mhp = Components.classes[mhpContractID].getService(mhpIID);
+      var dummy = { value: null }; // To make JS engine happy.
+      var charset = getCharsetforSave(null);
+
+      try {
+        fileName = mhp.getParameter(this.mContentDisposition, "filename", charset, true, dummy);
+      } 
+      catch (e) {
+        try {
+          fileName = mhp.getParameter(this.mContentDisposition, "name", charset, true, dummy);
+        }
+        catch (e) {
         }
       }
     }
-    return filename;
-  }  
 
+    fileName = fileName.replace(/^"|"$/g, "");
+    return fileName;
+  }
 };
 
 // We have no DOM, and can only save the URL as is.
@@ -620,18 +632,19 @@ function appendFiltersForContentType(aFilePicker, aContentType, aSaveMode)
 
     var mimeInfo = getMIMEInfoForType(aContentType);
     if (mimeInfo) {
-      var extCount = { };
-      var extList = { };
-      mimeInfo.GetFileExtensions(extCount, extList);
+      
+      var extEnumerator = mimeInfo.getFileExtensions();
 
       var extString = "";
-      for (var i = 0; i < extCount.value; ++i) {
-        if (i > 0) 
-          extString += "; "; // If adding more than one extension, separate by semi-colon
-        extString += "*." + extList.value[i];
+      while (extEnumerator.hasMore()) {
+        var extension = extEnumerator.getNext();
+        if (extString)
+          extString += "; ";    // If adding more than one extension,
+                                // separate by semi-colon
+        extString += "*." + extension;
       }
-      
-      if (extCount.value > 0) {
+        
+      if (extString) {
         aFilePicker.appendFilter(mimeInfo.Description, extString);
       }
     }
@@ -733,7 +746,7 @@ function getMIMEService()
 function getMIMEInfoForExtension(aExtension)
 {
   try {  
-    return getMIMEService().GetFromExtension(aExtension);
+    return getMIMEService().GetFromTypeAndExtension(null, aExtension);
   }
   catch (e) {
   }
@@ -743,7 +756,7 @@ function getMIMEInfoForExtension(aExtension)
 function getMIMEInfoForType(aMIMEType)
 {
   try {  
-    return getMIMEService().GetFromMIMEType(aMIMEType);
+    return getMIMEService().GetFromTypeAndExtension(aMIMEType, null);
   }
   catch (e) {
   }
@@ -760,7 +773,7 @@ function getDefaultFileName(aDefaultFileName, aNameFromHeaders, aDocumentURI, aD
     var url = aDocumentURI.QueryInterface(Components.interfaces.nsIURL);
     if (url.fileName != "") {
       // 2) Use the actual file name, if present
-      return unescape(url.fileName);
+      return validateFileName(unescape(url.fileName));
     }
   } catch (e) {
     try {
@@ -768,13 +781,7 @@ function getDefaultFileName(aDefaultFileName, aNameFromHeaders, aDocumentURI, aD
       // try unescape again with a characterSet
       var textToSubURI = Components.classes["@mozilla.org/intl/texttosuburi;1"]
                                    .getService(Components.interfaces.nsITextToSubURI);
-      var charset;
-      if (aDocument)
-        charset = aDocument.characterSet;
-      else if (document.commandDispatcher.focusedWindow)
-        charset = document.commandDispatcher.focusedWindow.document.characterSet;
-      else
-        charset = window._content.document.characterSet;
+      var charset = getCharsetforSave(aDocument);
       return textToSubURI.unEscapeURIForUI(charset, url.fileName);
     } catch (e) {
       // This is something like a wyciwyg:, data:, and so forth
@@ -795,20 +802,26 @@ function getDefaultFileName(aDefaultFileName, aNameFromHeaders, aDocumentURI, aD
     // 4) Use the caller-provided name, if any
     return validateFileName(aDefaultFileName);
 
+  // 5) If this is a directory, use the last directory name
+  var path = aDocumentURI.path.match(/\/([^\/]+)\/$/);
+  if (path && path.length > 1) {
+      return validateFileName(path[1]);
+  }
+
   try {
     if (aDocumentURI.host)
-      // 5) Use the host.
+      // 6) Use the host.
       return aDocumentURI.host;
   } catch (e) {
     // Some files have no information at all, like Javascript generated pages
   }
   try {
-    // 6) Use the default file name
+    // 7) Use the default file name
     return getStringBundle().GetStringFromName("DefaultSaveFileName");
   } catch (e) {
     //in case localized string cannot be found
   }
-  // 7) If all else fails, use "index"
+  // 8) If all else fails, use "index"
   return "index";
 }
 
@@ -906,4 +919,15 @@ function GetSaveModeForContentType(aContentType)
   }
 
   return saveMode;
+}
+
+function getCharsetforSave(aDocument)
+{
+  if (aDocument)
+    return aDocument.characterSet;
+
+  if (document.commandDispatcher.focusedWindow)
+    return document.commandDispatcher.focusedWindow.document.characterSet;
+
+  return  window._content.document.characterSet;
 }

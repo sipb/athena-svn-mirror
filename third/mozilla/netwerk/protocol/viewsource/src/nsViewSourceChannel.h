@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -65,7 +65,7 @@ public:
     NS_DECL_NSIVIEWSOURCECHANNEL
     NS_DECL_NSISTREAMLISTENER
     NS_DECL_NSIREQUESTOBSERVER
-    NS_FORWARD_SAFE_NSIHTTPCHANNEL(mHttpChannel)
+    NS_DECL_NSIHTTPCHANNEL
     NS_FORWARD_SAFE_NSICACHINGCHANNEL(mCachingChannel)
     NS_FORWARD_SAFE_NSIUPLOADCHANNEL(mUploadChannel)
 
@@ -88,6 +88,7 @@ protected:
     nsCOMPtr<nsIURI>            mOriginalURI;
     nsCString                   mContentType;
     PRBool                      mIsDocument; // keeps track of the LOAD_DOCUMENT_URI flag
+    PRBool                      mOpened;
 };
 
 #endif /* nsViewSourceChannel_h___ */
