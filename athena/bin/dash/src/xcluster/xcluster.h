@@ -13,6 +13,7 @@
 #include <strings.h>		/* strcpy, strcat, etc... */
 #include <X11/Xlib.h>		/* basic X includes */
 #include <X11/Xutil.h>		/* basic X includes */
+#include "Button.h"
 
 #define BUF_SIZE	1024
 
