@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.52 2002-09-10 16:09:17 ghudson Exp $
+# $Id: Makefile,v 1.53 2002-10-08 23:28:06 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -6,15 +6,13 @@ ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
-ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint gs help \
-	lastlog listmaint mailmaint moira mrcheck namespace olh olh_ascii \
-	olh_motif stanley stella usermaint xinfo \
+ATTACHRUN=addusr blanche chfn chpobox chsh dcmmaint gs lastlog listmaint \
+	mailmaint moira mrcheck namespace stanley stella usermaint xinfo \
 	show-application show-audio show-binhex show-excel show-image \
 	show-msword show-pdf show-postscript show-text show-video \
 	store-binhex afmdit pscat pscatmap psdit psdraft pslpr psnup psplot \
 	psrev psroff
 MOIRA=/afs/athena.mit.edu/system/moira
-HELP=/afs/athena.mit.edu/system/help
 MKSERV=/afs/athena.mit.edu/system/mkserv
 TELLME=/afs/athena.mit.edu/system/config/tellme
 PSUTILS=/afs/athena.mit.edu/astaff/project/psutils
@@ -33,8 +31,6 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 		${MOIRA}/man/cat1/chsh.1	${ATHMANDIR}/cat1/chsh.1 \
 		${MOIRA}/man/man1/dcmmaint.1	${ATHMANDIR}/man1/dcmmaint.1 \
 		${MOIRA}/man/cat1/dcmmaint.1	${ATHMANDIR}/cat1/dcmmaint.1 \
-		${HELP}/man/man1/help.1		${ATHMANDIR}/man1/help.1 \
-		${HELP}/man/cat1/help.1		${ATHMANDIR}/cat1/help.1 \
 		${MOIRA}/man/man1/listmaint.1	${ATHMANDIR}/man1/listmaint.1 \
 		${MOIRA}/man/cat1/listmaint.1	${ATHMANDIR}/cat1/listmaint.1 \
 		${MOIRA}/man/man1/mailmaint.1	${ATHMANDIR}/man1/mailmaint.1 \
@@ -43,8 +39,6 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 		${MOIRA}/man/cat1/moira.1	${ATHMANDIR}/cat1/moira.1 \
 		${MOIRA}/man/man1/mrcheck.1	${ATHMANDIR}/man1/mrcheck.1 \
 		${MOIRA}/man/cat1/mrcheck.1	${ATHMANDIR}/cat1/mrcheck.1 \
-		${HELP}/man/man1/olh.1		${ATHMANDIR}/man1/olh.1 \
-		${HELP}/man/cat1/olh.1		${ATHMANDIR}/cat1/olh.1 \
 		${MOIRA}/man/man1/stanley.1	${ATHMANDIR}/man1/stanley.1 \
 		${MOIRA}/man/cat1/stanley.1	${ATHMANDIR}/cat1/stanley.1 \
 		${MOIRA}/man/man1/stella.1	${ATHMANDIR}/man1/stella.1 \
@@ -123,7 +117,7 @@ install:
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 gs ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 help ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 help.sh ${DESTDIR}${ATHBINDIR}/help
 	install -c -m 555 htmlview.sh ${DESTDIR}${ATHBINDIR}/htmlview
 	install -c -m 555 mkserv.sh ${DESTDIR}${ATHBINDIR}/mkserv
 	install -c -m 555 lastlog ${DESTDIR}${ATHBINDIR}
@@ -136,9 +130,6 @@ install:
 	install -c -m 555 namespace ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 netscape.sh ${DESTDIR}${ATHBINDIR}/netscape
 	install -c -m 555 olc_answers.sh ${DESTDIR}${ATHBINDIR}/olc_answers
-	install -c -m 555 olh ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 olh_ascii ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 olh_motif ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 psgrind.sh ${DESTDIR}${ATHBINDIR}/psgrind
 	install -c -m 555 sis.sh ${DESTDIR}${ATHBINDIR}/sis
 	install -c -m 555 stanley ${DESTDIR}${ATHBINDIR}

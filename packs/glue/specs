@@ -5,16 +5,12 @@ chpobox		moira
 chsh		moira
 dcmmaint	moira
 gs		ghostscript
-help		help
 lastlog		consult
 listmaint	moira
 mailmaint	moira
 moira		moira
 mrcheck		moira
 namespace	moira
-olh		help
-olh_ascii	help
-olh_motif	help
 stanley   	moira
 stella		moira
 usermaint	moira
