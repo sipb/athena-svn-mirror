@@ -1,9 +1,9 @@
 /**********************************************************************
  * File Exchange collect client
  *
- * $Author: epeisach $
+ * $Author: vrt $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.3 1992-04-27 12:44:18 epeisach Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.4 1993-04-27 17:25:00 vrt Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -14,7 +14,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.3 1992-04-27 12:44:18 epeisach Exp $";
+static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/clients/dump.c,v 1.4 1993-04-27 17:25:00 vrt Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -26,6 +26,9 @@ static char rcsid_collect_c[] = "$Header: /afs/dev.mit.edu/source/repository/ath
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/file.h>
+#ifdef POSIX 
+#include <unistd.h>
+#endif /* POSIX */
 #include "fxmain.h"
 
 /*** Global variables ***/
