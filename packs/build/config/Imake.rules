@@ -66,7 +66,7 @@ obj: depends								@@\
 install::								@@\
 	base=`expr name \: '\(.*\)\.'`; \				@@\
 	ext=`expr name \: '.*\.\(.*\)'`; \				@@\
-	sdir=$(DESTDIR)/usr/man/man`expr name \: '.*\.\(.\)'`; \	@@\
+	sdir=$(DESTDIR)AManDir/man`expr name \: '.*\.\(.\)'`; \		@@\
 	$(INSTALL) -m 0444 src $${sdir}/`basename name`
 
 #define install_man_links(name,links)					@@\
@@ -78,7 +78,7 @@ clean::									@@\
 	$(RM) name.so							@@\
 install:: name.so							@@\
 	for i in links; do \						@@\
-		sdir=$(DESTDIR)/usr/man/man`expr $$i \: '.*\.\(.\)'`;\	@@\
+		sdir=$(DESTDIR)AManDir/man`expr $$i \: '.*\.\(.\)'`;\	@@\
 		$(INSTALL) -m 0444 name.so $${sdir}/$$i;\		@@\
 	done
 
@@ -88,11 +88,18 @@ install:: name.so							@@\
 	$(CC) ProfCcFlags -c $(CFLAGS) $*.c				@@\
 	mv $*.o profiled/$*.o						@@\
 	$(CC) -c $(CFLAGS) $*.c						@@\
-all:: profiled all_profiled						@@\
-install:: install_profiled						@@\
+all:: profiled all-prof							@@\
+install:: inst-prof							@@\
 profiled:								@@\
-	@if [ ! -d profiled ]; then mkdir profiled; else exit 0; fi	@@\
-all_profiled install_profiled::
+	-mkdir $@							@@\
+all-prof inst-prof::
+
+#define SharedObjectRule()						@@\
+all:: shared all-shared							@@\
+install:: inst-shared							@@\
+shared:									@@\
+	-mkdir $@							@@\
+all-prof inst-prof::
 
 #define AnsiCC()							@@\
 CC=AnsiCcCmd								@@\
@@ -121,10 +128,13 @@ all::	lib/**/base.a							@@\
 lib/**/base.a::	objs							@@\
 	ar cru lib/**/base.a objs					@@\
 	$(RANLIB) lib/**/base.a						@@\
-all_profiled::	lib/**/base/**/_p.a					@@\
+all-prof::	lib/**/base/**/_p.a					@@\
 lib/**/base/**/_p.a:	objs						@@\
 	cd profiled; ar cru ../lib/**/base/**/_p.a objs			@@\
-	$(RANLIB) lib/**/base/**/_p.a
+	$(RANLIB) lib/**/base/**/_p.a					@@\
+all-shared::	lib/**/base/**/_s.a					@@\
+lib/**/base/**/_s.a:	objs						@@\
+	$(MKSHLIB) $@ objs
 
 #define SimpleLibrary(base,objs,dir)					@@\
 build_library(base,objs)						@@\
@@ -132,11 +142,18 @@ install::								@@\
 	$(RM) $(DESTDIR)dir/lib/**/base.a				@@\
 	$(INSTALL) -m 0644 lib/**/base.a $(DESTDIR)dir			@@\
 	$(RANLIB) $(DESTDIR)dir/lib/**/base.a				@@\
-install_profiled::							@@\
+inst-prof::								@@\
 	$(RM) $(DESTDIR)dir/lib/**/base/**/_p.a				@@\
 	$(INSTALL) -m 0644 lib/**/base/**/_p.a $(DESTDIR)dir		@@\
-	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/_p.a
+	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/_p.a			@@\
+inst-shared::								@@\
+	$(RM) $(DESTDIR)dir/lib/**/base/**/$(SHLIB_EXT).a		@@\
+	$(INSTALL) -m 0644 lib/**/base/**/_s.a $(DESTDIR)dir/$(SHLIB_DIR)lib/**/base/**/$(SHLIB_EXT).a @@\
+	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/$(SHLIB_EXT).a
 
+#ifdef NOLINT
+#define SimpleLint(base,srcs)
+#else
 #define SimpleLint(base,srcs)						@@\
 all::	llib-l/**/base.ln						@@\
 llib-l/**/base.ln:: srcs						@@\
@@ -145,6 +162,7 @@ install::								@@\
 	$(INSTALL) llib-l/**/base.ln $(DESTDIR)/usr/lib/lint/		@@\
 clean::									@@\
 	$(RM) llib-l/**/base.ln
+#endif
 
 #define makefile_target()						@@\
 Makefile:: $(ICONFIGFILE)						@@\

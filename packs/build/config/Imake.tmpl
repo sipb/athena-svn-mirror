@@ -35,10 +35,19 @@
 #define ALibDir /usr/athena/lib
 #endif
 #ifndef ABinDir
-#define ABinDir /usr/athena
+#define ABinDir /usr/athena/bin
 #endif
 #ifndef AIncDir
-#define AIncDir /usr/include
+#define AIncDir /usr/athena/include
+#endif
+#ifndef AManDir
+#define AManDir /usr/athena/man
+#endif
+#ifndef AEtcDir
+#define AEtcDir /usr/athena/etc
+#endif
+#ifndef AConfDir
+#define AConfDir /etc/athena
 #endif
 #ifndef LintCFlag
 #define LintCFlag -o
@@ -61,9 +70,15 @@
 #ifndef RanLibCmd
 #define RanLibCmd ranlib
 #endif
+
 #ifndef InstallCmd
+#ifdef UseInstalled
 #define InstallCmd install -c
+#else
+#define InstallCmd $(UTILDIR)install -c
 #endif
+#endif
+
 #ifndef InstPgmFlags
 #define InstPgmFlags -s
 #endif
@@ -94,6 +109,12 @@
 #ifndef LintFlags
 #define LintFlags $(DEFINES) -I$(ATHINCDIR)
 #endif
+#ifndef ShlibExt
+#define ShlibExt _s
+#endif
+#ifndef ShlibDir
+#define ShlibDir
+#endif
 
 SHELL=/bin/sh
 MAKESHELL=/bin/sh
@@ -108,7 +129,8 @@ IRULESRC = $(CONFIGSRC)
 IMAKE= imake
 IFLAGS= -I$(IRULESRC) -DTOPDIR=TOPDIR
 #else
-IMAKE= $(TOP)/util/imake/imake
+UTILDIR=$(TOP)/util/bin/
+IMAKE= $(UTILDIR)imake
 IFLAGS= -I$(IRULESRC)
 #endif
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
@@ -117,6 +139,8 @@ MKDIRHIER= sh $(IRULESRC)/mkdirhier.sh
 ATHLIBDIR=ALibDir
 ATHBINDIR=ABinDir
 ATHINCDIR=AIncDir
+ATHETCDIR=AEtcDir
+ATHCONFDIR=AConfDir
 LINTCFLAG=LintCFlag
 LINTFLAGS=
 INSTALL=InstallCmd
@@ -129,6 +153,8 @@ CDEBUG=CDebugFlags
 CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I$(ATHINCDIR)
 LDFLAGS=LdFlags $(CFLAGS) -L$(ATHLIBDIR)
 LDLIBS=LdLibs
+SHLIB_EXT=ShlibExt
+SHLIB_DIR=ShlibDir
 
 #include "Imake.rules"
 
