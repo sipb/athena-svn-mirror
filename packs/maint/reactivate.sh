@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.42.2.1 1999-10-12 19:57:11 ghudson Exp $
+# $Id: reactivate.sh,v 1.42.2.1.2.1 2000-02-05 07:17:45 tb Exp $
 
 trap "" 1 15
 
@@ -23,6 +23,8 @@ nuke()
 
 umask 22
 . /etc/athena/rc.conf
+[ -r /etc/sysconfig/zhm ] || . /etc/sysconfig/zhm
+[ -r /etc/sysconfig/athena-inetd ] || . /etc/sysconfig/athena-inetd
 
 # Set various flags (based on environment and command-line)
 if [ "$1" = -detach ]; then
