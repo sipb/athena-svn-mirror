@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements AFS lockers. */
 
-static const char rcsid[] = "$Id: afs.c,v 1.6 1999-06-04 20:53:34 danw Exp $";
+static const char rcsid[] = "$Id: afs.c,v 1.7 1999-07-14 17:37:19 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -478,9 +478,7 @@ static int afs_maybe_auth_to_cell(locker_context context, char *name,
       if (!status)
 	{
 	  /* Don't get tokens as another user. */
-	  if (strcmp(xclient.name, client.name) ||
-	      strcmp(xclient.instance, client.instance) ||
-	      strcmp(xclient.cell, client.cell))
+	  if (strcmp(xclient.name, client.name))
 	    return LOCKER_SUCCESS;
 
 	  /* Don't get tokens that won't last longer than existing tokens. */
