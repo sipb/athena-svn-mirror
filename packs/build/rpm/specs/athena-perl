@@ -2,7 +2,11 @@ Name: athena-perl
 Summary: The Perl programming language, as configured for Athena
 Copyright: GPL
 Group: Development/Languages
-Provides: /usr/athena/bin/perl
 
 %description
 The Perl programming language, as configured for Athena
+
+%files
+/usr/athena/bin
+/usr/athena/man
+/usr/athena/lib/perl5
