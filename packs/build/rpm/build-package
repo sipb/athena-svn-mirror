@@ -104,13 +104,13 @@ fi
 sed -e 's%$source/packs/build/version%version%' < $sourcedir/packs/build/do.sh > $source_name/do.sh
 cp $sourcedir/packs/build/version $source_name
 
-# Do the `do.sh prepare' step
+# Do the `do.sh dist' step
 (cd $source_name; \
  $sourcedir/packs/build/do.sh  \
         -s $sourcedir \
 	-d $destdir/INSTALL \
 	-t $destdir/athtools \
-	prepare )
+	dist )
 if [ $? -ne 0 ]; then
     exit 1
 fi
@@ -193,6 +193,7 @@ Use the --buildroot option to RPM or the buildroot rpmrc entry.
 MESSAGE
 exit 1
 fi
+./do.sh -p -s /xxx -d \$RPM_BUILD_ROOT prepare
 ./do.sh -p -s /xxx -d \$RPM_BUILD_ROOT all
 
 EOF
