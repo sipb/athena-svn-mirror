@@ -1,0 +1,5 @@
+# $Id: gucharmap-marshal.list,v 1.1.1.1 2004-10-06 18:46:06 ghudson Exp $
+VOID:UINT
+VOID:VOID
+VOID:STRING
+VOID:UINT,UINT
