@@ -289,7 +289,11 @@ following guidelines should help the release go smoothly:
 	  Before the transition from crash and burn to alpha, the
 	  release engineer should do a sanity check on the new packs
 	  by comparing a file listing of the new packs to a file
-	  listing of the previous release's packs.
+	  listing of the previous release's packs.  The release
+	  engineer should also check the list of configuration files
+	  for each platform (in packs/update/platform/*/configfiles)
+	  and make sure that any configuration files which have
+	  changed are listed as changed in the version script.
 
 	* Alpha
 
