@@ -70,7 +70,7 @@ typedef struct tABBREV {
 
 /* Where things are. */
 
-#define	CREF_ROOT	"/mit/c/r/cref/Ref"
+#define	CREF_ROOT	"/mit/cref/Ref"
 #define	CONTENTS	".index"
 #define GLOBAL_ABBREV	"cref_abbrevs"
 #define USER_ABBREV	".crefrc"
