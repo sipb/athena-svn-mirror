@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_rpc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.2 1990-04-19 12:12:37 jfc Exp $";
+static char rcsid_rpc_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.3 1990-04-19 13:11:54 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -240,10 +240,10 @@ spoofunix_create_default(spoofname, uid)
  */
 
 int nfsid(host, addr, op, errorout, errname, inattach, uid)
-    char *host;
+    const char *host;
     struct in_addr addr;
     int op, errorout;
-    char *errname;
+    const char *errname;
     int inattach, uid;
 {
     CLIENT *client;

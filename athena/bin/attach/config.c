@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v $
  *	$Author: jfc $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.2 1990-04-19 12:01:15 jfc Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.3 1990-04-19 13:14:33 jfc Exp $
  */
 
 #ifndef lint
-static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.2 1990-04-19 12:01:15 jfc Exp $";
+static char *rcsid_config_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.c,v 1.3 1990-04-19 13:14:33 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -89,7 +89,7 @@ static void config_abort()
 }
 
 read_config_file(config_file_name)
-	char	*config_file_name;
+	const char *config_file_name;
 {
 	register FILE	*f;
 	static char	buff[256];
