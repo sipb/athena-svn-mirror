@@ -627,7 +627,7 @@ ALL = $(WERMIT)
 
 all: $(ALL)
 
-install: $(ALL)
+install:
 	mkdir -p $(DESTDIR)$(BINDIR)
 	mkdir -p $(DESTDIR)$(MANDIR)
 	cp wermit $(DESTDIR)$(BINDIR)/kermit
