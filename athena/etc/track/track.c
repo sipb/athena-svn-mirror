@@ -1,8 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.4 1987-12-03 20:41:52 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.5 1987-12-07 17:16:18 shanzer Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.4  87/12/03  20:41:52  don
+ * replaced twdir & fwdir crap. these were fromroot/toroot-qualified
+ * pathnames to the parent dir of slists/ & stats/. they don't both
+ * need to be present, because one or the other is used, mutually
+ * exclusively, according to whether -w option (writeflag) is present.
+ * now, there's a single working-dir, which defaults appropriately
+ * to either twdir's or fwdir's old default value, but if it is
+ * specified with the -d option, it is NOT qualified with eiher
+ * fromroot or toroot. got that?
+ * 
  * Revision 2.3  87/12/03  17:30:35  don
  * fixed lint messages.
  * 
@@ -48,7 +58,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.4 1987-12-03 20:41:52 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 2.5 1987-12-07 17:16:18 shanzer Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -364,7 +374,11 @@ readstat() {
 				  cmpstatp, cmplink,   to[ ROOT]))
 			continue;
 
+		/* do_cmds needs to be rewritten;
+		   so does command-handling part of the grammar.
+		   so does the sigchild-catchiong.
 		do_cmds( entries[entnum].cmdbuf, to[ ROOT]);
+		 */
 	}
 }
 
