@@ -1,0 +1,98 @@
+AC_INIT(libwnck/window.h)
+
+AM_CONFIG_HEADER(config.h)
+
+AM_INIT_AUTOMAKE(libwnck, 0.18)
+AM_MAINTAINER_MODE
+
+dnl libtool versioning for libwnck
+
+dnl increment if the interface has additions, changes, removals.
+LIBWNCK_CURRENT=4
+
+dnl increment any time the source changes; set to 
+dnl  0 if you increment CURRENT
+LIBWNCK_REVISION=0
+
+dnl increment if any interfaces have been added; set to 0
+dnl  if any interfaces have been removed. removal has 
+dnl  precedence over adding, so set to 0 if both happened.
+LIBWNCK_AGE=0
+
+AC_SUBST(LIBWNCK_CURRENT)
+AC_SUBST(LIBWNCK_REVISION)
+AC_SUBST(LIBWNCK_AGE)
+
+AC_PROG_CC
+AC_ISC_POSIX
+AC_HEADER_STDC
+AC_ARG_PROGRAM
+AM_PROG_LIBTOOL
+
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall" ;;
+  esac
+
+  if test "x$enable_ansi" = "xyes"; then
+    case " $CFLAGS " in
+    *[\ \	]-ansi[\ \	]*) ;;
+    *) CFLAGS="$CFLAGS -ansi" ;;
+    esac
+
+    case " $CFLAGS " in
+    *[\ \	]-pedantic[\ \	]*) ;;
+    *) CFLAGS="$CFLAGS -pedantic" ;;
+    esac
+  fi
+fi
+changequote([,])dnl
+
+
+GETTEXT_PACKAGE=libwnck
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
+
+ALL_LINGUAS="ar az bg ca da de el es et fi fr gl he hu ja ko it lv ms nl nn no pl pt pt_BR ru sk sl sv tr uk vi wa zh_CN zh_TW"
+AM_GLIB_GNU_GETTEXT
+
+# AM_GLIB_GNU_GETTEXT above substs $DATADIRNAME
+# this is the directory where the *.{mo,gmo} files are installed
+wncklocaledir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(wncklocaledir)
+
+
+PKG_CHECK_MODULES(LIBWNCK, gtk+-2.0 >= 2.0.0)
+AC_SUBST(LIBWNCK_LIBS)
+AC_SUBST(LIBWNCK_CFLAGS)
+
+GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`  
+AC_SUBST(GLIB_GENMARSHAL)
+
+AC_PATH_PROG(GDK_PIXBUF_CSOURCE, gdk-pixbuf-csource, no)
+
+if test x"$GDK_PIXBUF_CSOURCE" = xno; then
+  AC_MSG_ERROR([gdk-pixbuf-csource executable not found in your path - should be installed with GTK])
+fi
+
+AC_SUBST(GDK_PIXBUF_CSOURCE)
+
+## hack to work with old GTK versions for now 
+save_LDFLAGS=$LDFLAGS
+LDFLAGS="$LIBWNCK_LIBS $LDFLAGS"
+AC_CHECK_FUNCS(gdk_pixbuf_new_from_stream)
+LDFLAGS=$save_LDFLAGS
+
+dnl Honor ACLOCAL_FLAGS for --enable-maintainer-mode
+ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
+
+AC_OUTPUT([
+Makefile
+po/Makefile.in
+libwnck/Makefile
+libwnck-1.0.pc
+])
+
+
