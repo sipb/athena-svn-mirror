@@ -43,3 +43,7 @@ if [ ! -f /etc/ssh_host_key ]; then
 fi
 chkconfig --add athena-sshd
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athena-sshd
+fi

@@ -50,3 +50,8 @@ MRUPDATE=false;		export MRUPDATE		# Moira update daemon
 EOF
 
 chkconfig --add athena-update_server
+
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athena-update_server
+fi

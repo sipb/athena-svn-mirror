@@ -64,3 +64,7 @@ cp /etc/inetd.conf.minimal /etc/inetd.conf
 ) >> /etc/services
 
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athena-inetd
+fi

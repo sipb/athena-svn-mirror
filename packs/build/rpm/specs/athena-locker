@@ -47,3 +47,7 @@ mkdir -p -m 755 /mit
 chkconfig --add attach
 
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del attach
+fi

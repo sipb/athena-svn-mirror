@@ -191,6 +191,13 @@ done
 grep "^/usr/athena/lib$" /etc/ld.so.conf >/dev/null 2>&1
 [ $? -ne 0 ] && echo "/usr/athena/lib" >> /etc/ld.so.conf || true
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athena-ws
+  chkconfig --del athena-verify
+  chkconfig --del syncconf
+fi
+
 %postun
 [ $1 = 0 ] || exit 0
 for s in %{extrashells}; do

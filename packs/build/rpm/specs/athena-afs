@@ -50,3 +50,7 @@ EOF
 chkconfig --add afs
 [ -d /afs ] || mkdir -p /afs
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del afs
+fi

@@ -48,3 +48,8 @@ EOF
 chkconfig --add zhm
 chkconfig --add zephyrd
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del zhm
+  chkconfig --del zephyrd
+fi

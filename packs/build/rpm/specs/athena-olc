@@ -37,3 +37,7 @@ chkconfig --add olc
 The Online Consultant system enables a variety of styles of
 interaction with the Athena Online Consultants.
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del olc
+fi

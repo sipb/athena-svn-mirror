@@ -50,3 +50,7 @@ chkconfig --add athena-sendmail
 cp /dev/null /etc/sendmail.st && chmod 644 /etc/sendmail.st
 /usr/sbin/sendmail -bi
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athena-sendmail
+fi

@@ -44,3 +44,8 @@ LPD=false;		export LPD		#  Run line printer daemon?
 EOF
 
 chkconfig --add athena-lpd
+
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athena-lpd
+fi

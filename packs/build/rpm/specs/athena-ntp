@@ -50,3 +50,7 @@ EOF
 
 chkconfig --add athena-ntp
 
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del athena-ntp
+fi
