@@ -1,12 +1,12 @@
 #!/bin/sh
-# $Id: gathrun.sh,v 1.2 2001-05-21 16:02:25 ghudson Exp $
+# $Id: gathrun.sh,v 1.3 2004-03-06 17:18:57 ghudson Exp $
 
 # gathrun - Run a program, or put up an error dialog saying that it
 # doesn't exist.
 
 case $# in
 0)
-  echo "Usage: gathrun locker [program] [args ...]" >&2
+  echo "Usage: gathrun locker [program [args ...]]" >&2
   exit 1
   ;;
 1)
@@ -25,5 +25,5 @@ if attachandrun --check "$locker" "$program" "$@"; then
   exec /bin/athena/attachandrun "$locker" "$program" "$program" "$@"
 else
   gdialog --msgbox \
-    "$program is not available in the $locker locker on this platform." 0 100
+    "$program is not available in the $locker locker on this platform." 1 100
 fi
