@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.6 1990-12-02 23:07:39 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.7 1990-12-11 09:14:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -39,7 +39,10 @@ handle_request(fd, from)
     instance_buffer[0] = '*';
 
   if ((len = sread(fd,&version,sizeof(version))) != sizeof(version)) {
-    syslog(LOG_WARNING,"Not enough bytes for version (%d received)",len);
+    if (len == -1)
+      syslog(LOG_ERR,"reading version: %m");
+    else
+      syslog(LOG_WARNING,"Not enough bytes for version (%d received)",len);
     punt_connection(fd,from);
     return;
   }
@@ -53,13 +56,19 @@ handle_request(fd, from)
   }
 
   if ((len = sread(fd,username,9)) != 9) {
-    syslog(LOG_WARNING,"Wanted nine bytes of username, only got %d\n",len);
+    if (len == -1)
+      syslog(LOG_ERR,"reading username: %m");
+    else
+      syslog(LOG_WARNING,"Wanted nine bytes of username, only got %d\n",len);
     punt_connection(fd,from);
     return;
   }
 
   if ((len = sread(fd,&instance,sizeof(instance))) != sizeof(instance)) {
-    syslog(LOG_WARNING,"Not enough bytes for instance (%d)\n",len);
+    if (len == -1)
+      syslog(LOG_ERR,"reading instance: %m");
+    else
+      syslog(LOG_WARNING,"Not enough bytes for instance (%d)\n",len);
     punt_connection(fd,from);
     return;
   }
@@ -70,7 +79,10 @@ handle_request(fd, from)
 
   if ((len = sread(fd,&their_auth.length, sizeof(their_auth.length))) !=
       sizeof(their_auth.length)) {
-    syslog(LOG_WARNING,"Not enought bytes for ticket (%d)\n",len);
+    if (len == -1)
+      syslog(LOG_ERR,"reading kticket length: %m");
+    else
+      syslog(LOG_WARNING,"Not enought bytes for ticket (%d)\n",len);
     punt_connection(fd,from);
     return;
   }
@@ -80,7 +92,10 @@ handle_request(fd, from)
   ltr =MIN(sizeof(unsigned char)*their_auth.length,
 	   sizeof(their_auth.dat));
   if ((len = sread(fd,their_auth.dat,ltr)) != ltr) {
-    syslog(LOG_WARNING,"Error reading kerberos ticket (%d)\n",len);
+    if (len == -1)
+      syslog(LOG_ERR,"reading kticket: %m");
+    else
+      syslog(LOG_WARNING,"Error reading kerberos ticket (%d)\n",len);
     punt_connection(fd,from);
     return;
   }
