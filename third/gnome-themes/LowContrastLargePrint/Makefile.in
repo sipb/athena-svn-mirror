@@ -357,7 +357,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 @INTLTOOL_THEME_RULE@
 
 @CORE_THEMES_ONLY_TRUE@install: install-recursive
-@CORE_THEMES_ONLY_TRUE@	mv (DESTDIR)$(datadir)/themes/LowContrastLargePrint/index.theme $(DESTDIR)$(datadir)/themes/LowContrastLargePrint/index.theme~
+@CORE_THEMES_ONLY_TRUE@	mv $(DESTDIR)$(datadir)/themes/LowContrastLargePrint/index.theme $(DESTDIR)$(datadir)/themes/LowContrastLargePrint/index.theme~
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
