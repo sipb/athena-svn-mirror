@@ -22,6 +22,7 @@
 
 #include <bonobo/bonobo-widget.h>
 #include <bonobo/bonobo-ui-xml.h>
+#include <bonobo/bonobo-i18n.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-ui-private.h>
@@ -31,6 +32,9 @@
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-ui-marshal.h>
 #include <bonobo/bonobo-ui-preferences.h>
+
+/* only for embedded widgets */
+#include <bonobo/bonobo-ui-toolbar-item.h>
 
 #include <bonobo/bonobo-ui-node-private.h>
 
@@ -68,6 +72,26 @@ enum {
 };
 
 static guint signals [LAST_SIGNAL] = { 0 };
+
+static void
+add_debug_menu (BonoboUIEngine *engine)
+{
+	char *xml;
+	BonoboUINode *node;
+
+	xml = g_strdup_printf (
+		"<menu>"
+		"  <submenu name=\"BonoboDebug\" label=\"%s\">"
+		"      <menuitem name=\"BonoboUIDump\" verb=\"\""
+		"       label=\"%s\" tip=\"%s\"/>"
+		"  </submenu>"
+		"</menu>", _("Debug"), _("_Dump XML"),
+		_("Dump the entire UI's XML description to the console"));
+
+	node = bonobo_ui_node_from_string (xml);
+	bonobo_ui_engine_xml_merge_tree (engine, "/", node, "BuiltIn");
+	g_free (xml);
+}
 
 /*
  *  Mapping from nodes to their synchronization
@@ -1164,6 +1188,42 @@ bonobo_ui_engine_object_set (BonoboUIEngine   *engine,
 	return BONOBO_UI_ERROR_OK;
 }
 
+void
+bonobo_ui_engine_widget_set (BonoboUIEngine    *engine,
+			     const char        *path,
+			     GtkWidget         *widget)
+{
+	NodeInfo *info;
+	GtkWidget *custom_widget;
+	BonoboUINode *node;
+	BonoboUISync *sync;
+
+	g_return_if_fail (widget != NULL);
+
+	bonobo_ui_engine_freeze (engine);
+
+	bonobo_ui_engine_object_set (
+		engine, path, CORBA_OBJECT_NIL, NULL);
+
+	node = bonobo_ui_engine_get_path (engine, path);
+	g_return_if_fail (node != NULL);
+	g_return_if_fail (!strcmp (bonobo_ui_node_get_name (node), "control"));
+
+	sync = find_sync_for_node (engine, node);
+
+	custom_widget = bonobo_ui_sync_wrap_widget (sync, widget);
+
+	if (custom_widget) {
+		info = bonobo_ui_xml_get_data (engine->priv->tree, node);
+		info->widget = gtk_widget_ref (custom_widget);
+		gtk_object_sink (GTK_OBJECT (custom_widget));
+
+		bonobo_ui_engine_stamp_custom (engine, node);
+	}
+		
+	bonobo_ui_engine_thaw (engine);
+}
+
 /**
  * bonobo_ui_engine_object_get:
  * @engine: the engine
@@ -1982,6 +2042,9 @@ bonobo_ui_engine_construct (BonoboUIEngine *engine,
 	priv->config = bonobo_ui_engine_config_new (engine, opt_parent);
 
 	build_skeleton (priv->tree);
+
+	if (g_getenv ("BONOBO_DEBUG"))
+		add_debug_menu (engine);
 
 	g_signal_connect (priv->tree, "override",
 			  (GtkSignalFunc) override_fn, engine);

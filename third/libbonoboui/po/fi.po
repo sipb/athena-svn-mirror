@@ -5,11 +5,15 @@
 # Sami Gerdt <sgerdt@cs.joensuu.fi>, 2000.
 # Pauli Virtanen <pauli.virtanen@hut.fi>, 2000-2002.
 #
+#
+# embeddable = upote
+# control = säädin
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui 1.109.2\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-05-31 18:10+0200\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2002-11-02 22:42+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,17 +49,17 @@ msgid "Shadow type"
 msgstr "Varjotyyppi"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "Suunta"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "Haluttu leveys"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "Haluttu korkeus"
 
@@ -152,6 +156,18 @@ msgstr "Pelkkä teksti"
 #: bonobo/bonobo-ui-config-widget.c:340
 msgid "_Priority text only"
 msgstr "_Vain tärkeä teksti"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr "Vianetsintä"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr "_XML-vedos"
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr "Tulosta koko käyttöliittymän XML-kuvaus päätteeseen"
 
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
@@ -278,19 +294,19 @@ msgstr "Muka_uta"
 msgid "Customize the toolbar"
 msgstr "Mukauta työkalupalkki"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "kelluu"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "kelluuko työkalupalkki"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "_Sisältö"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr "Näytä tämän ohjelman ohje"
 
@@ -391,6 +407,6 @@ msgstr "Tervehdys!"
 msgid "Cannot init libbonoboui code"
 msgstr "Ei voi alustaa libbonoboui'n koodia"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "Ei voinut alustaa Bonobo-UI:ta"

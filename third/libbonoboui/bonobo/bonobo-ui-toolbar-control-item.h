@@ -42,7 +42,9 @@ typedef struct {
 
 GtkType       bonobo_ui_toolbar_control_item_get_type    (void) G_GNUC_CONST;
 GtkWidget    *bonobo_ui_toolbar_control_item_new         (Bonobo_Control control_ref);
+GtkWidget    *bonobo_ui_toolbar_control_item_new_widget  (GtkWidget *custom_in_proc_widget);
 GtkWidget    *bonobo_ui_toolbar_control_item_construct   (BonoboUIToolbarControlItem *control_item,
+							  GtkWidget                  *widget,
 							  Bonobo_Control              control_ref);
 void          bonobo_ui_toolbar_control_item_set_display (BonoboUIToolbarControlItem    *item,
 							  BonoboUIToolbarControlDisplay  hdisplay,

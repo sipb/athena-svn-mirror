@@ -1,4 +1,4 @@
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Aktualną wersję tego pliku możesz odnaleźć w repozytorium cvs.gnome.pl
 # (:pserver:anonymous@cvs.gnome.pl:/home/cvs, puste hasło)
@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-05-25 18:19+0200\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2003-01-02 01:59+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -46,17 +46,17 @@ msgid "Shadow type"
 msgstr "Typ cienia"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "Ułożenie"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "Preferowana szerokość"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "Preferowana szerokość"
 
@@ -153,6 +153,18 @@ msgstr "Tylko napisy"
 #: bonobo/bonobo-ui-config-widget.c:340
 msgid "_Priority text only"
 msgstr "_Tylko ważne napisy"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr "Debugowanie"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr "_Wypisz XML"
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr "Wypisuje opis całego UI w XML-u na wyjście programu"
 
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
@@ -279,19 +291,19 @@ msgstr "_Dopasuj"
 msgid "Customize the toolbar"
 msgstr "Dopasuj pasek narzędziowy"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "Oderwany"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "Określa, czy pasek narzędziowy jest oderwany"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "_Zawartość"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr "Wyświetla pomoc na temat tej aplikacji"
 
@@ -393,6 +405,6 @@ msgstr "Witaj świecie!"
 msgid "Cannot init libbonoboui code"
 msgstr "Nie można zainicjować kodu libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "Nie można zainicjować Bonobo UI"

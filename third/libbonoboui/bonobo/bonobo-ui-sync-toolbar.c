@@ -823,6 +823,16 @@ impl_bonobo_ui_sync_toolbar_can_handle (BonoboUISync *sync,
 		node->name_id == toolitem_id);
 }
 
+GtkWidget *
+impl_bonobo_ui_sync_toolbar_wrap_widget (BonoboUISync *sync,
+					 GtkWidget    *custom_widget)
+{
+	if (!BONOBO_IS_UI_TOOLBAR_ITEM (custom_widget))
+		return bonobo_ui_toolbar_control_item_new_widget (custom_widget);
+	else
+		return custom_widget;
+}
+
 static void
 class_init (BonoboUISyncClass *sync_class)
 {
@@ -844,6 +854,8 @@ class_init (BonoboUISyncClass *sync_class)
 
 	sync_class->state_update  = impl_bonobo_ui_sync_toolbar_state_update;
 	sync_class->can_handle    = impl_bonobo_ui_sync_toolbar_can_handle;
+
+	sync_class->wrap_widget   = impl_bonobo_ui_sync_toolbar_wrap_widget;
 }
 
 GType

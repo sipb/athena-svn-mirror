@@ -101,6 +101,8 @@ bonobo_entry_control_new (void)
 
 	g_free (pspecs);
 
+	bonobo_control_life_instrument (control);
+
 	return BONOBO_OBJECT (control);
 }
 

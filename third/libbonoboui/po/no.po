@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.37\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-05-23 15:46+0200\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2002-11-25 21:14+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -42,17 +42,17 @@ msgid "Shadow type"
 msgstr "Type skygge"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "Orientering"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "Foretrukket bredde"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "Foretrukket høyde"
 
@@ -149,6 +149,18 @@ msgstr "Kun tekst"
 #: bonobo/bonobo-ui-config-widget.c:340
 msgid "_Priority text only"
 msgstr "Kun _prioritetstekst"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr "Feilsøk"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr "_Dump XML"
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr "Dump hele XML-beskrivelsen for brukergrensesnittet til konsollet"
 
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
@@ -275,19 +287,19 @@ msgstr "Tilpas_s"
 msgid "Customize the toolbar"
 msgstr "Tilpass verktøylinjen"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "er flytende"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "om verktøylinjen er flytende"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "_Innhold"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr "Vis hjelp for denne applikasjonen"
 
@@ -388,6 +400,6 @@ msgstr "Hallo verden!"
 msgid "Cannot init libbonoboui code"
 msgstr "Kan ikke initiere libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "Kunne ikke initiere Bonobo-UI"

@@ -457,3 +457,15 @@ bonobo_ui_sync_do_show_hide (BonoboUISync *sync,
 
 	return changed;
 }
+
+GtkWidget *
+bonobo_ui_sync_wrap_widget (BonoboUISync *sync,
+			    GtkWidget    *custom_widget)
+{
+	g_return_val_if_fail (BONOBO_IS_UI_SYNC (sync), NULL);
+
+	if (CLASS (sync)->wrap_widget)
+		return CLASS (sync)->wrap_widget (sync, custom_widget);
+	else
+		return custom_widget;
+}

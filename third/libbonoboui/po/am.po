@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-11-06 09:27+EDT\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2003-01-07 10:33+EDT\n"
 "Last-Translator: Ge'ez Frontier Foundation <locales@geez.org>\n"
 "Language-Team: Amharic <locales@geez.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: bonobo/bonobo-canvas-item.c:647
 msgid "corba factory"
-msgstr ""
+msgstr "የcorba ፋብሪካ"
 
 #: bonobo/bonobo-canvas-item.c:648
 msgid "The factory pointer"
@@ -44,17 +44,17 @@ msgid "Shadow type"
 msgstr ""
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "አቀማመጥ"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr ""
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr ""
 
@@ -149,9 +149,21 @@ msgstr "ጽሑፉን ብቻ"
 msgid "_Priority text only"
 msgstr ""
 
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr "አስተካክል"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr "_XML አስወጣ"
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr ""
+
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
-msgstr ""
+msgstr "UIን ለወጡ"
 
 #: bonobo/bonobo-ui-init-gtk.c:113
 msgid "Gdk debugging flags to set"
@@ -208,15 +220,15 @@ msgstr ""
 
 #: bonobo/bonobo-ui-init-gtk.c:146
 msgid "HOST"
-msgstr ""
+msgstr "እንግዳ ተቀባይ"
 
 #: bonobo/bonobo-ui-init-gtk.c:150
 msgid "PORT"
-msgstr ""
+msgstr "ፖርት"
 
 #: bonobo/bonobo-ui-init-gtk.c:155 bonobo/bonobo-ui-init-gtk.c:158
 msgid "STYLE"
-msgstr "ዘዴ"
+msgstr "ዘይቤ"
 
 #: bonobo/bonobo-ui-init-gtk.c:162
 msgid "Gtk+ debugging flags to set"
@@ -256,7 +268,7 @@ msgstr "ጽሑፍ (_e)"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "Hide t_ips"
-msgstr "ደብቅ አሳይ (_i)"
+msgstr "ፍንጮችን ደብቅ (_i)"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:553
 msgid "Show t_ips"
@@ -264,7 +276,7 @@ msgstr "ፍንጮች አሳይ (_i)"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "_Hide toolbar"
-msgstr " ቱልባሩን ደብቅ (_H)"
+msgstr "ቱልባሩን ደብቅ (_H)"
 
 #: bonobo/bonobo-ui-sync-toolbar.c:554
 msgid "Customi_ze"
@@ -274,19 +286,19 @@ msgstr "አስተካክል (_z)"
 msgid "Customize the toolbar"
 msgstr ""
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr ""
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr ""
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "ይዞታዎች (_C)"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr "ለእዚህ መጠቀሚያ ፕሮግራም መረጃ አሳይ"
 
@@ -296,7 +308,7 @@ msgstr ""
 
 #: bonobo/bonobo-zoomable.c:326
 msgid "Zoom level"
-msgstr ""
+msgstr "የቅርበትና ርቀት ደረጃ"
 
 #: bonobo/bonobo-zoomable.c:327
 msgid "The degree of enlargment"
@@ -304,7 +316,7 @@ msgstr ""
 
 #: bonobo/bonobo-zoomable.c:335
 msgid "Minimum Zoom level"
-msgstr ""
+msgstr "በተቻለ መጠን የቅርበትና ርቀት ደረጃ"
 
 #: bonobo/bonobo-zoomable.c:336
 msgid "The minimum degree of enlargment"
@@ -312,7 +324,7 @@ msgstr ""
 
 #: bonobo/bonobo-zoomable.c:344
 msgid "Maximum Zoom level"
-msgstr ""
+msgstr "ከፍተኛ መጠን የቅርበትና ርቀት ደረጃ"
 
 #: bonobo/bonobo-zoomable.c:345
 msgid "The maximum degree of enlargment"
@@ -348,7 +360,7 @@ msgstr "ስለዚህ ፕሮግራም"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:2
 msgid "Select"
-msgstr "ምርጫ"
+msgstr "ምረጥ"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:3
 msgid "_About..."
@@ -364,7 +376,7 @@ msgstr "_ፋይል (_F)"
 
 #: samples/bonoboui/Bonobo_Sample_Hello.xml.h:6
 msgid "_Select"
-msgstr "ምርጫ (_S)"
+msgstr "ምረጥ (_S)"
 
 #: samples/bonoboui/hello.c:63
 msgid "This does nothing; it is only a demonstration."
@@ -387,6 +399,6 @@ msgstr "ሠላም ዓለም!"
 msgid "Cannot init libbonoboui code"
 msgstr ""
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr ""

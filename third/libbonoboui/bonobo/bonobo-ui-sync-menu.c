@@ -617,13 +617,13 @@ impl_bonobo_ui_sync_menu_build (BonoboUISync     *sync,
 		
 		shell = GTK_MENU_SHELL (parent);
 		g_signal_connect (GTK_OBJECT (shell), "key_press_event",
-				    (GtkSignalFunc) sucking_gtk_keybindings_cb, NULL);
+				  (GtkSignalFunc) sucking_gtk_keybindings_cb, NULL);
 
 
 		/* Create the menu shell. */
 		menu = GTK_MENU (gtk_menu_new ());
 		g_signal_connect (GTK_OBJECT (menu), "key_press_event",
-				    (GtkSignalFunc) sucking_gtk_keybindings_cb, NULL);
+				  (GtkSignalFunc) sucking_gtk_keybindings_cb, NULL);
 
 		gtk_menu_set_accel_group (menu, menu_sync->accel_group);
 
@@ -650,7 +650,7 @@ impl_bonobo_ui_sync_menu_build (BonoboUISync     *sync,
 				    (GtkSignalFunc) exec_verb_cb, engine);
 
 	g_signal_connect (GTK_OBJECT (menu_widget), "key_press_event",
-			    (GtkSignalFunc) sucking_gtk_keybindings_cb, NULL);
+			  (GtkSignalFunc) sucking_gtk_keybindings_cb, NULL);
 
 	gtk_widget_show (menu_widget);
 			    
@@ -832,6 +832,21 @@ impl_bonobo_ui_sync_menu_get_attached (BonoboUISync *sync,
 	return get_item_widget (widget);
 }
 
+GtkWidget *
+impl_bonobo_ui_sync_menu_wrap_widget (BonoboUISync *sync,
+				      GtkWidget    *custom_widget)
+{
+	if (!GTK_IS_MENU_ITEM (custom_widget)) {
+		GtkWidget *widget;
+
+		widget = gtk_menu_item_new ();
+		gtk_container_add (GTK_CONTAINER (widget),
+				   custom_widget);
+		return widget;
+	} else 
+		return custom_widget;
+}
+
 static void
 class_init (BonoboUISyncClass *sync_class)
 {
@@ -855,6 +870,7 @@ class_init (BonoboUISyncClass *sync_class)
 	sync_class->can_handle    = impl_bonobo_ui_sync_menu_can_handle;
 
 	sync_class->get_attached  = impl_bonobo_ui_sync_menu_get_attached;
+	sync_class->wrap_widget   = impl_bonobo_ui_sync_menu_wrap_widget;
 }
 
 static void

@@ -1,6 +1,74 @@
-2002-12-02  Michael Meeks  <michael@ximian.com>
+2003-01-21  Michael Meeks  <michael@ximian.com>
 
-	* Version 2.0.3.3
+	* Version 2.2.0
+
+	* bonobo/bonobo-ui-toolbar.c
+	(accumulate_item_size): split from
+	(update_sizes): here and account for the
+	popup's item's size itself if items moved there.
+
+2003-01-21  Kang Jeong-Hee  <keizi@mail.co.kr>
+	
+	* bonobo/bonobo-ui-toolbar.c
+	(show_popup_window): fix #76310, popup going off
+	the side of the screen unhelpfully.
+
+2003-01-16  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added Amharic (am) and Dutch (nl) to ALL_LINGUAS
+
+2003-01-15  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: add a check for people with stale /
+	non-parallel installable gdk-pixbuf's - it seems there
+	are a number of such people.
+
+2003-01-06  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.1.2
+
+2002-12-17  Kjartan Maraas <kmaraas@online.no>
+
+	* Fix Makefile.am's for libtool's non-understanding
+	of -pthread.
+
+2002-12-13  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-util.c (bonobo_help_display_cb):
+	re-hash so we can still allow components to register
+	their own custom prefix intead of using the main
+	program's always.
+
+2002-12-02  Marcus  <marcus@freebsd.org>
+
+	* bonobo/bonobo-ui-util.c (bonobo_help_display_cb):
+	fix search datadir to use existing GnomeProgram if
+	available.
+
+2002-12-02  Gustavo Carneiro <gjc@inescporto.pt>
+
+	* bonobo/bonobo-ui-engine.c
+	(add_debug_menu): fix leak.
+
+2002-11-25  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.1.1
+
+2002-11-22  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-sync-menu.c (class_init): upd.
+	(impl_bonobo_ui_sync_menu_wrap_widget): impl.
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_widget_set): use the synchronizer.
+
+	* bonobo/bonobo-ui-sync-toolbar.c (class_init): upd.
+	(impl_bonobo_ui_sync_toolbar_wrap_widget): impl.
+
+	* bonobo/bonobo-ui-sync.c
+	(bonobo_ui_sync_wrap_widget): impl.
+
+	* tests/test-ui.c (main): insert a menu widget.
 
 2002-11-20  Michael Meeks  <michael@ximian.com>
 
@@ -26,6 +94,10 @@
 	segv later if we have a NULL / bogus xml
 	string coming in.
 
+2002-11-10  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in: Added da to ALL_LINGUAS.
+
 2002-11-09  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
@@ -40,6 +112,58 @@
 
 	* bonobo/bonobo-ui-init-gtk.c: Change POPT_ARG_STRING to
 	POPT_ARG_INT for the screen argument
+
+2002-11-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* bonobo/bonobo-ui-util.c:
+	(bonobo_ui_util_xml_get_icon_size): impl reading a named
+	icon size from a node's "icon_size" attribute.
+	(bonobo_ui_util_xml_set_image): use this icon size.
+
+2002-11-04  Michael Meeks  <michael@ximian.com>
+
+	* samples/controls/bonobo-sample-controls.c
+	(bonobo_entry_control_new): do life instrumentation
+	on the entry.
+
+	* bonobo/bonobo-control.c:
+	(bonobo_control_class_init): added disconnected signal.
+	(bonobo_control_life_set_purge): impl.
+	(bonobo_control_disconnected): impl.
+	(control_frame_connection_died_cb): upd.
+	(bonobo_control_unset_control_frame): kill timeout on frame.
+	(bonobo_control_construct): setup timeout on construct'n.
+	(control_life_idle_cb, control_life_disconnected): impl.
+	(bonobo_control_life_instrument): impl.
+	(bonobo_control_life_get_count): impl.
+
+2002-11-01  Gustavo Carneiro <gjc@inescporto.pt>
+
+	* bonobo/bonobo-ui-engine.c
+	(add_debug_menu): impl.
+	(bonobo_ui_engine_construct): do it if
+	BONOBO_DEBUG is defined.
+
+2002-11-01  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.1.0
+
+2002-11-01  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-ui-toolbar-control-item.c
+	(bonobo_ui_toolbar_control_item_construct): upd.
+	(bonobo_ui_toolbar_control_item_new_widget): impl.
+	clean to allow non-control items.
+
+	* tests/test-ui.c (main): test it.
+
+	* bonobo/bonobo-ui-engine.c
+	(bonobo_ui_engine_widget_set): impl helper.
+
+	* bonobo/bonobo-ui-component.c
+	(bonobo_ui_component_widget_set): impl. so
+	we can do in-proc shortcuts to make theming
+	nicer in nautilus / galeon.
 
 2002-10-31  Mark McLoughlin  <mark@skynet.ie>
 

@@ -27,6 +27,7 @@
 #include <bonobo/bonobo-property-bag-client.h>
 
 enum {
+	DISCONNECTED,
 	SET_FRAME,
 	ACTIVATE,
 	LAST_SIGNAL
@@ -49,9 +50,24 @@ struct _BonoboControlPrivate {
 	GtkWidget           *plug;
 	GtkWidget           *widget;
 
+	guint                no_frame_timeout_id;
+
 	guint                active : 1;
 	guint                automerge : 1;
+	guint                sent_disconnect : 1;
 };
+
+static void
+bonobo_control_disconnected (BonoboControl *control)
+{
+	g_return_if_fail (control != NULL);
+	g_return_if_fail (control->priv != NULL);
+
+	if (!control->priv->sent_disconnect) {
+		control->priv->sent_disconnect = TRUE;
+		g_signal_emit (control, control_signals [DISCONNECTED], 0);
+	}
+}
 
 static void
 control_frame_connection_died_cb (gpointer connection,
@@ -60,6 +76,8 @@ control_frame_connection_died_cb (gpointer connection,
 	BonoboControl *control = BONOBO_CONTROL (user_data);
 
 	g_return_if_fail (control != NULL);
+
+	bonobo_control_disconnected (control);
 
 	dprintf ("The remote control frame died unexpectedly");
 	bonobo_object_unref (BONOBO_OBJECT (control));
@@ -226,6 +244,11 @@ bonobo_control_unset_control_frame (BonoboControl     *control,
 		ev = &tmp_ev;
 	} else
 		ev = opt_ev;
+
+	if (control->priv->no_frame_timeout_id != 0) {
+		g_source_remove (control->priv->no_frame_timeout_id);
+		control->priv->no_frame_timeout_id = 0;
+	}
 
 	if (control->priv->frame != CORBA_OBJECT_NIL) {
 		Bonobo_ControlFrame frame = control->priv->frame;
@@ -554,6 +577,34 @@ impl_Bonobo_Control_focus (PortableServer_Servant servant,
 	return gtk_widget_child_focus (GTK_WIDGET (priv->plug), direction);
 }
 
+#define DEFAULT_CONTROL_PURGE_DELAY_MS 60 * 1000 /* 60 seconds */
+
+static int control_purge_delay = DEFAULT_CONTROL_PURGE_DELAY_MS;
+
+/**
+ * bonobo_control_life_set_purge:
+ * @ms: time to wait in milliseconds.
+ * 
+ *   Set time we're prepared to wait without a ControlFrame
+ * before terminating the Control. This can happen if the
+ * panel activates us but crashes before the set_frame.
+ **/
+void
+bonobo_control_life_set_purge (long ms)
+{
+	control_purge_delay = ms;
+}
+
+static gboolean
+never_got_frame_timeout (gpointer user_data)
+{
+	g_warning ("Never got frame, control died - abnormal exit condition");
+
+	bonobo_control_disconnected (user_data);
+	
+	return FALSE;
+}
+
 BonoboControl *
 bonobo_control_construct (BonoboControl  *control,
 			  GtkWidget      *widget)
@@ -567,6 +618,15 @@ bonobo_control_construct (BonoboControl  *control,
 	 * windows of the container and our container without telling us).
 	 */
 	bonobo_setup_x_error_handler ();
+
+	/*
+	 *   Start the clock ticking until we emit 'disconnected'
+	 * since, we never got a valid frame.
+	 */
+	control->priv->no_frame_timeout_id = g_timeout_add (
+		control_purge_delay,
+		(GSourceFunc) never_got_frame_timeout,
+		control);
 
 	control->priv->widget = g_object_ref (widget);
 	gtk_object_sink (GTK_OBJECT (widget));
@@ -669,6 +729,7 @@ bonobo_control_destroy (BonoboObject *object)
 	bonobo_control_unset_control_frame (control, NULL);
 	bonobo_control_set_properties      (control, CORBA_OBJECT_NIL, NULL);
 	bonobo_control_set_ui_component    (control, NULL);
+	bonobo_control_disconnected (control);
 
 	if (control->priv->widget) {
 		gtk_widget_destroy (GTK_WIDGET (control->priv->widget));
@@ -938,6 +999,15 @@ bonobo_control_class_init (BonoboControlClass *klass)
 	POA_Bonobo_Control__epv *epv;
 
 	bonobo_control_parent_class = g_type_class_peek_parent (klass);
+
+	control_signals [DISCONNECTED] =
+                g_signal_new ("disconnected",
+			      G_TYPE_FROM_CLASS (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (BonoboControlClass, disconnected),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	control_signals [SET_FRAME] =
                 g_signal_new ("set_frame",
@@ -1404,4 +1474,74 @@ bonobo_control_do_popup (BonoboControl       *control,
 	return bonobo_control_do_popup_full (
 		control, NULL, NULL, NULL, NULL,
 		button, activate_time);
+}
+
+/* Track the living controls */
+static GSList *live_controls = NULL;
+static BonoboControlLifeCallback life_callback =
+	(BonoboControlLifeCallback) bonobo_main_quit;
+
+/**
+ * bonobo_control_life_set_callback:
+ * @all_dead_callback: method to call at idle when no controls remain
+ * 
+ * See #bonobo_control_life_instrument
+ **/
+void
+bonobo_control_life_set_callback (BonoboControlLifeCallback all_dead_callback)
+{
+	life_callback = all_dead_callback;
+}
+
+static gboolean
+control_life_idle_cb (gpointer data)
+{
+	if (!live_controls && life_callback)
+		life_callback ();
+
+	return FALSE;
+}
+
+static void
+control_life_disconnected (BonoboControl *control)
+{
+	live_controls = g_slist_remove (live_controls, control);
+
+	if (!live_controls)
+		g_idle_add (control_life_idle_cb, NULL);
+}
+
+/**
+ * bonobo_control_life_instrument:
+ * @control: control to manage.
+ * 
+ * Request that @control is lifecycle managed by this code;
+ * when it (and all other registerees are dead, the
+ * all_dead_callback set by #bonobo_control_life_set_callback
+ * will be called at idle.
+ **/
+void
+bonobo_control_life_instrument (BonoboControl *control)
+{
+	g_return_if_fail (BONOBO_IS_CONTROL (control));
+
+	g_signal_connect (control, "disconnected",
+			  G_CALLBACK (control_life_disconnected),
+			  NULL);
+
+	live_controls = g_slist_prepend (live_controls, control);
+}
+
+/**
+ * bonobo_control_life_get_count:
+ * @void: 
+ * 
+ * calculates the number of live controls under management.
+ * 
+ * Return value: the number of live controls.
+ **/
+int
+bonobo_control_life_get_count (void)
+{
+	return g_slist_length (live_controls);
 }

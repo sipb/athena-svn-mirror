@@ -10,7 +10,7 @@ INCLUDES =	\
 	$(WARN_CFLAGS)					\
 	$(BONOBOUI_CFLAGS)
 
-LDADD =	$(top_builddir)/bonobo/libbonoboui-2.la
+LDADD =	$(top_builddir)/bonobo/libbonoboui-2.la $(BONOBOUI_LIBS)
 
 test_control_SOURCES = test-control.c
 

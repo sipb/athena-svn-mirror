@@ -79,9 +79,7 @@ GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -113,6 +111,8 @@ PATH_TO_XRDB = @PATH_TO_XRDB@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
@@ -596,7 +596,8 @@ bonobo-socket.lo bonobo-socket.o : bonobo-socket.c bonobo-socket.h \
 bonobo-ui-component.lo bonobo-ui-component.o : bonobo-ui-component.c \
 	../config.h bonobo-ui-xml.h bonobo-ui-node.h bonobo-ui-engine.h \
 	bonobo-ui-container.h bonobo-ui-sync.h bonobo-ui-util.h \
-	bonobo-ui-component.h bonobo-ui-marshal.h
+	bonobo-ui-component.h bonobo-ui-marshal.h bonobo-control.h \
+	bonobo-plug.h
 bonobo-ui-config-widget.lo bonobo-ui-config-widget.o : \
 	bonobo-ui-config-widget.c bonobo-ui-util.h \
 	bonobo-ui-component.h bonobo-ui-node.h bonobo-ui-private.h \

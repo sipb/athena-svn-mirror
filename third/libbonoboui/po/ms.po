@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui HEAD\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-03-28 14:13+0800\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2003-01-01 21:23+0800\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Bahasa Melayu <gabai-penyumbang@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -42,17 +42,17 @@ msgid "Shadow type"
 msgstr "Jenis bayang"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "Orientasi"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "Lebar yang dikehendaki"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "Tinggi yang dikehendaki"
 
@@ -149,6 +149,18 @@ msgstr "Teks sahaja"
 #: bonobo/bonobo-ui-config-widget.c:340
 msgid "_Priority text only"
 msgstr "Teks yang _penting sahaja"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr "Nyahpepijat"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr "_Longgok XML"
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr "Longgok seluruh keterangan XML bagi UI ke konsol"
 
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
@@ -275,19 +287,19 @@ msgstr "Personali_sasi"
 msgid "Customize the toolbar"
 msgstr "Personalisasikan toolbar"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "adalah terapung"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "Samada toolbar adalah terapung"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "_Kandungan"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr "Lihat bantuan bagi aplikasi ini"
 
@@ -388,6 +400,6 @@ msgstr "Hello, Dunia!"
 msgid "Cannot init libbonoboui code"
 msgstr "Gagal menginitialisasikan kod libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "Tak dapat menginitialisasi UI Bonobo"

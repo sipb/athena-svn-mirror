@@ -1,16 +1,17 @@
 # Greek translation of libbonoboui.
-# Copyright (C) 2002 Simos Xenitellis.
-# Simos Xenitellis <simos74@gmx.net>, 2002.
+# Copyright (C) 2003 Simos Xenitellis.
+# Simos Xenitellis <simos74@gmx.net>, 2002,2003.
 #
 # simos: 71 messages, 16Aug2002, initial translation.
 # simos: 92 messages, 05Nov2002, completed translation..
+# kostas : 05Jan2003 updated translation for Gnome 2.1x
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui 2.0.1\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-11-05 15:14+0000\n"
-"Last-Translator: Simos Xenitellis <simos74@gmx.net>\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2003-01-05 12:34+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,7 +33,7 @@ msgstr "δοχείο γραφικής διασύνδεσης (UI) CORBA"
 
 #: bonobo/bonobo-canvas-item.c:658
 msgid "The User interface container"
-msgstr "Το δοχείο Γραφικής διασύνδεσης"
+msgstr "Το δοχείο γραφικής διασύνδεσης"
 
 #: bonobo/bonobo-dock-item-grip.c:236
 msgid "Dock the toolbar"
@@ -47,17 +48,17 @@ msgid "Shadow type"
 msgstr "Τύπος σκιάς"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "Προσανατολισμός"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "Επιθυμητό πλάτος"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "Επιθυμητό ύψος"
 
@@ -171,6 +172,18 @@ msgstr "Μόνο κείμενο"
 #: bonobo/bonobo-ui-config-widget.c:340
 msgid "_Priority text only"
 msgstr "Μόνο κείμενο _προτεραιότητας"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr "Αποσφαλμάτωση"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr "_Απόρριψη XML"
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr "Απόρριψη ολόκληρης της περιγραφής UI's XML στην κονσόλα"
 
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
@@ -316,21 +329,21 @@ msgstr "Παραμετρο_ποίηση"
 msgid "Customize the toolbar"
 msgstr "Παραμετροποίηση γραμμής εντολών"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "αιωρείται"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "αν η εργαλειοθήκη αιωρήται"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "Περιε_χόμενα"
 
 # #-#-#-#-#  gnome-libs.gnome-libs-1-0.el.po (gnome-libs 1.2.12)  #-#-#-#-#
 #
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
 msgstr "Εμφάνιση βοήθειας για την εφαρμογή"
 
@@ -454,6 +467,6 @@ msgstr "Καλημέρα, Κόσμε!"
 msgid "Cannot init libbonoboui code"
 msgstr "Αποτυχία αρχικοποίησης κώδικα libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "Αδύνατη η αρχικοποίηση της γραφικής διασύνδεσης του Bonobo "

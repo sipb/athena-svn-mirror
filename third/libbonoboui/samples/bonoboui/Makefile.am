@@ -10,7 +10,7 @@ INCLUDES =	\
 	$(BONOBOUI_CFLAGS)				\
 	-DHELLO_SRCDIR=\""$(srcdir)"/\"
 
-LDADD =	$(top_builddir)/bonobo/libbonoboui-2.la
+LDADD =	$(top_builddir)/bonobo/libbonoboui-2.la $(BONOBOUI_LIBS)
 
 bonobo_hello_SOURCES =	\
 	hello.c

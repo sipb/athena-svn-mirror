@@ -1,3 +1,10 @@
+libbonoboui 2.0.1
+
+	* Featurelets
+		+ new widget stuffing API (Michael)
+		+ libxml2 added to deps (Mark)
+		+ updated FAQ (Gustavo Carneiro)
+
 libbonoboui 2.0.3.2
 
 	* Bugs fixed

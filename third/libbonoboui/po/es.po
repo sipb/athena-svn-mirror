@@ -1,18 +1,18 @@
 # Translation into spanish of libbonoboui.
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Héctor García Álvarez <hector@scouts-es.org>, 2001.
-#
+# Juan Manuel García Molina <juanma_gm@wanadoo.es>, 2002.
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonoboui 1.97.0\n"
-"POT-Creation-Date: 2002-12-02 09:37+0000\n"
-"PO-Revision-Date: 2002-06-02 18:22+0100\n"
-"Last-Translator: Juan Manuel García Molina <juanma_gm@wanadoo.es>\n"
-"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"POT-Creation-Date: 2003-01-21 14:27+0000\n"
+"PO-Revision-Date: 2002-12-17 22:01GMT\n"
+"Last-Translator: Germán Poo-Caamaño <gpoo@ubiobio.cl>\n"
+"Language-Team:  <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 0.9.5\n"
 
 #: bonobo/bonobo-canvas-item.c:647
 msgid "corba factory"
@@ -43,17 +43,17 @@ msgid "Shadow type"
 msgstr "Tipo oculto"
 
 #: bonobo/bonobo-dock-item.c:302 bonobo/bonobo-dock-item.c:303
-#: bonobo/bonobo-ui-toolbar.c:1086 bonobo/bonobo-ui-toolbar.c:1087
+#: bonobo/bonobo-ui-toolbar.c:1103 bonobo/bonobo-ui-toolbar.c:1104
 msgid "Orientation"
 msgstr "Orientación"
 
 #: bonobo/bonobo-dock-item.c:313 bonobo/bonobo-dock-item.c:314
-#: bonobo/bonobo-ui-toolbar.c:1105 bonobo/bonobo-ui-toolbar.c:1106
+#: bonobo/bonobo-ui-toolbar.c:1122 bonobo/bonobo-ui-toolbar.c:1123
 msgid "Preferred width"
 msgstr "Ancho preferido"
 
 #: bonobo/bonobo-dock-item.c:322 bonobo/bonobo-dock-item.c:323
-#: bonobo/bonobo-ui-toolbar.c:1114 bonobo/bonobo-ui-toolbar.c:1115
+#: bonobo/bonobo-ui-toolbar.c:1131 bonobo/bonobo-ui-toolbar.c:1132
 msgid "Preferred height"
 msgstr "Altura preferida"
 
@@ -151,22 +151,34 @@ msgstr "Sólo texto"
 msgid "_Priority text only"
 msgstr "Solo texto _prioritario"
 
+#: bonobo/bonobo-ui-engine.c:88
+msgid "Debug"
+msgstr "Depurar"
+
+#: bonobo/bonobo-ui-engine.c:88
+msgid "_Dump XML"
+msgstr "_Vaciar XML"
+
+#: bonobo/bonobo-ui-engine.c:89
+msgid "Dump the entire UI's XML description to the console"
+msgstr "Vaciar la descripción completa del XML de la UI a la consola"
+
 #: bonobo/bonobo-ui-engine-config.c:521
 msgid "Configure UI"
 msgstr "Configurar UI"
 
 #: bonobo/bonobo-ui-init-gtk.c:113
 msgid "Gdk debugging flags to set"
-msgstr "Flags de depuración de Gdk a fijar"
+msgstr "Banderas de depuración de GDK a fijar"
 
 #: bonobo/bonobo-ui-init-gtk.c:113 bonobo/bonobo-ui-init-gtk.c:116
 #: bonobo/bonobo-ui-init-gtk.c:162 bonobo/bonobo-ui-init-gtk.c:165
 msgid "FLAGS"
-msgstr "FLAGS"
+msgstr "BANDERAS"
 
 #: bonobo/bonobo-ui-init-gtk.c:116
 msgid "Gdk debugging flags to unset"
-msgstr "Banderas de depuración de Gdk a desactivar"
+msgstr "Banderas de depuración de GDK a desactivar"
 
 #: bonobo/bonobo-ui-init-gtk.c:120
 msgid "X display to use"
@@ -222,23 +234,23 @@ msgstr "ESTILO"
 
 #: bonobo/bonobo-ui-init-gtk.c:162
 msgid "Gtk+ debugging flags to set"
-msgstr "Banderas de depuración de Gtk+ a fijar"
+msgstr "Banderas de depuración de GTK+ a fijar"
 
 #: bonobo/bonobo-ui-init-gtk.c:165
 msgid "Gtk+ debugging flags to unset"
-msgstr "Flags de depuración de Gtk+ a desactivar"
+msgstr "Banderas de depuración de GTK+ a desactivar"
 
 #: bonobo/bonobo-ui-init-gtk.c:168
 msgid "Make all warnings fatal"
-msgstr "Hacer todos los avisos actúen como errores"
+msgstr "Hacer que todos los avisos actúen como errores"
 
 #: bonobo/bonobo-ui-init-gtk.c:171
 msgid "Load an additional Gtk module"
-msgstr "Cargar un módulo Gtk adicional"
+msgstr "Cargar un módulo GTK adicional"
 
 #: bonobo/bonobo-ui-init-gtk.c:171
 msgid "MODULE"
-msgstr "MÓDULO"
+msgstr "MODULO"
 
 #: bonobo/bonobo-ui-init-gtk.c:180
 msgid "GTK+"
@@ -276,21 +288,21 @@ msgstr "Personali_zar"
 msgid "Customize the toolbar"
 msgstr "Personalizar la barra de herramientas"
 
-#: bonobo/bonobo-ui-toolbar.c:1096
+#: bonobo/bonobo-ui-toolbar.c:1113
 msgid "is floating"
 msgstr "flotante"
 
-#: bonobo/bonobo-ui-toolbar.c:1097
+#: bonobo/bonobo-ui-toolbar.c:1114
 msgid "whether the toolbar is floating"
 msgstr "si la barra de herramientas es flotante"
 
-#: bonobo/bonobo-ui-util.c:598
+#: bonobo/bonobo-ui-util.c:616
 msgid "_Contents"
 msgstr "_Contenidos"
 
-#: bonobo/bonobo-ui-util.c:599
+#: bonobo/bonobo-ui-util.c:617
 msgid "View help for this application"
-msgstr "Ver ayuda para esta aplicación"
+msgstr "Ver la ayuda para esta aplicación"
 
 #: bonobo/bonobo-window.c:416
 msgid "Name of the window - used for configuration serialization."
@@ -338,7 +350,7 @@ msgstr "Si tiene un nivel máximo de zoom"
 
 #: bonobo/bonobo-zoomable.c:369
 msgid "Is continuous"
-msgstr "Es continuo"
+msgstr "Contínuo"
 
 #: bonobo/bonobo-zoomable.c:370
 msgid "Whether we zoom continuously (as opposed to jumps)"
@@ -389,6 +401,6 @@ msgstr "¡Hola mundo!"
 msgid "Cannot init libbonoboui code"
 msgstr "No se puede inicializar el código de libbonoboui"
 
-#: samples/controls/bonobo-sample-controls.c:131
+#: samples/controls/bonobo-sample-controls.c:133
 msgid "Could not initialize Bonobo UI"
 msgstr "No se pudo iniciar la interfaz de Bonobo"

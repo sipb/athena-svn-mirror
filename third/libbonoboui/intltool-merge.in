@@ -3,7 +3,7 @@
 #
 #  The Intltool Message Merger
 #
-#  Copyright (C) 2000, 2002 Free Software Foundation.
+#  Copyright (C) 2000, 2003 Free Software Foundation.
 #  Copyright (C) 2000, 2001 Eazel, Inc
 #
 #  Intltool is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@
 ## Release information
 my $PROGRAM = "intltool-merge";
 my $PACKAGE = "intltool";
-my $VERSION = "0.23";
+my $VERSION = "0.25";
 
 ## Loaded modules
 use strict; 
@@ -364,6 +364,8 @@ sub create_translation_database
             } 
             else 
             {
+		print "WARNING: $po_file is not in UTF-8 but $encoding, converting...\n";
+
                 my $iconv = $ENV{"INTLTOOL_ICONV"} || "iconv";
                 open PO_FILE, "$iconv -f $encoding -t UTF-8 $po_file|";	
             }
@@ -456,6 +458,11 @@ sub entity_decode
 
     return $_;
 }
+ 
+# entity_encode: (string)
+#
+# Encode the given string to XML format (encode '<' etc). It also 
+# encodes high bit if not in UTF-8 mode.
 
 sub entity_encode
 {
@@ -469,6 +476,7 @@ sub entity_encode
     } 
     else 
     {
+	# with UTF-8 we only encode minimalistic
         return join ('', map (&entity_encode_int_minimalist, @list_of_chars));
     }
 }

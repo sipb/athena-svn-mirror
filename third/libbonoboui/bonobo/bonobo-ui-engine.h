@@ -163,6 +163,9 @@ void          bonobo_ui_engine_node_set_dirty  (BonoboUIEngine   *engine,
 						gboolean          dirty);
 void          bonobo_ui_engine_stamp_custom    (BonoboUIEngine *engine,
 						BonoboUINode   *node);
+void          bonobo_ui_engine_widget_set      (BonoboUIEngine    *engine,
+						const char        *path,
+						GtkWidget         *widget);
 void          bonobo_ui_engine_stamp_root      (BonoboUIEngine *engine,
 						BonoboUINode   *node,
 						GtkWidget      *widget);
