@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libwnck-WnckScreen">
+<refmeta>
+<refentrytitle>WnckScreen</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBWNCK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>WnckScreen</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="WnckApplication">WnckApplication</link>;
+struct      <link linkend="WnckClassGroup">WnckClassGroup</link>;
+struct      <link linkend="WnckWindow">WnckWindow</link>;
+struct      <link linkend="WnckWorkspace">WnckWorkspace</link>;
+struct      <link linkend="WnckScreenPrivate">WnckScreenPrivate</link>;
+<link linkend="WnckScreen">WnckScreen</link>* <link linkend="wnck-screen-get-default">wnck_screen_get_default</link>         (void);
+<link linkend="WnckScreen">WnckScreen</link>* <link linkend="wnck-screen-get">wnck_screen_get</link>                 (<link linkend="int">int</link> index);
+<link linkend="WnckScreen">WnckScreen</link>* <link linkend="wnck-screen-get-for-root">wnck_screen_get_for_root</link>        (<link linkend="gulong">gulong</link> root_window_id);
+<link linkend="WnckWorkspace">WnckWorkspace</link>* <link linkend="wnck-screen-get-workspace">wnck_screen_get_workspace</link>    (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> workspace);
+<link linkend="WnckWorkspace">WnckWorkspace</link>* <link linkend="wnck-screen-get-active-workspace">wnck_screen_get_active_workspace</link>
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="WnckWindow">WnckWindow</link>* <link linkend="wnck-screen-get-active-window">wnck_screen_get_active_window</link>   (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="WnckWindow">WnckWindow</link>* <link linkend="wnck-screen-get-previously-active-window">wnck_screen_get_previously_active_window</link>
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="GList">GList</link>*      <link linkend="wnck-screen-get-windows">wnck_screen_get_windows</link>         (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="GList">GList</link>*      <link linkend="wnck-screen-get-windows-stacked">wnck_screen_get_windows_stacked</link> (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="void">void</link>        <link linkend="wnck-screen-force-update">wnck_screen_force_update</link>        (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="int">int</link>         <link linkend="wnck-screen-get-workspace-count">wnck_screen_get_workspace_count</link> (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="void">void</link>        <link linkend="wnck-screen-change-workspace-count">wnck_screen_change_workspace_count</link>
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> count);
+<link linkend="gboolean">gboolean</link>    <link linkend="wnck-screen-net-wm-supports">wnck_screen_net_wm_supports</link>     (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             const <link linkend="char">char</link> *atom);
+<link linkend="gulong">gulong</link>      <link linkend="wnck-screen-get-background-pixmap">wnck_screen_get_background_pixmap</link>
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="int">int</link>         <link linkend="wnck-screen-get-width">wnck_screen_get_width</link>           (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="int">int</link>         <link linkend="wnck-screen-get-height">wnck_screen_get_height</link>          (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="gboolean">gboolean</link>    <link linkend="wnck-screen-get-showing-desktop">wnck_screen_get_showing_desktop</link> (<link linkend="WnckScreen">WnckScreen</link> *screen);
+<link linkend="void">void</link>        <link linkend="wnck-screen-toggle-showing-desktop">wnck_screen_toggle_showing_desktop</link>
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="gboolean">gboolean</link> show);
+<link linkend="void">void</link>        <link linkend="wnck-screen-move-viewport">wnck_screen_move_viewport</link>       (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);
+<link linkend="int">int</link>         <link linkend="wnck-screen-try-set-workspace-layout">wnck_screen_try_set_workspace_layout</link>
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> current_token,
+                                             <link linkend="int">int</link> rows,
+                                             <link linkend="int">int</link> columns);
+<link linkend="void">void</link>        <link linkend="wnck-screen-release-workspace-layout">wnck_screen_release_workspace_layout</link>
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> current_token);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="WnckApplication"/>struct WnckApplication</title>
+<indexterm><primary>WnckApplication</primary></indexterm><programlisting>struct WnckApplication {
+
+  GObject parent_instance;
+
+  WnckApplicationPrivate *priv;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WnckClassGroup"/>struct WnckClassGroup</title>
+<indexterm><primary>WnckClassGroup</primary></indexterm><programlisting>struct WnckClassGroup {
+
+  GObject parent_instance;
+
+  WnckClassGroupPrivate *priv;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WnckWindow"/>struct WnckWindow</title>
+<indexterm><primary>WnckWindow</primary></indexterm><programlisting>struct WnckWindow {
+
+  GObject parent_instance;
+
+  WnckWindowPrivate *priv;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WnckWorkspace"/>struct WnckWorkspace</title>
+<indexterm><primary>WnckWorkspace</primary></indexterm><programlisting>struct WnckWorkspace {
+
+  GObject parent_instance;
+
+  WnckWorkspacePrivate *priv;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WnckScreenPrivate"/>struct WnckScreenPrivate</title>
+<indexterm><primary>WnckScreenPrivate</primary></indexterm><programlisting>struct WnckScreenPrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-default"/>wnck_screen_get_default ()</title>
+<indexterm><primary>wnck_screen_get_default</primary></indexterm><programlisting><link linkend="WnckScreen">WnckScreen</link>* wnck_screen_get_default         (void);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get"/>wnck_screen_get ()</title>
+<indexterm><primary>wnck_screen_get</primary></indexterm><programlisting><link linkend="WnckScreen">WnckScreen</link>* wnck_screen_get                 (<link linkend="int">int</link> index);</programlisting>
+<para>
+Gets the <link linkend="WnckScreen"><type>WnckScreen</type></link> for a given screen on the default display.
+Creates the <link linkend="WnckScreen"><type>WnckScreen</type></link> if necessary.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>index</parameter>&nbsp;:</term>
+<listitem><simpara> screen number, starting from 0, as for Xlib
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the <link linkend="WnckScreen"><type>WnckScreen</type></link> for screen <parameter>index</parameter>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-for-root"/>wnck_screen_get_for_root ()</title>
+<indexterm><primary>wnck_screen_get_for_root</primary></indexterm><programlisting><link linkend="WnckScreen">WnckScreen</link>* wnck_screen_get_for_root        (<link linkend="gulong">gulong</link> root_window_id);</programlisting>
+<para>
+Gets the <link linkend="WnckScreen"><type>WnckScreen</type></link> for the root window at <parameter>root_window_id</parameter>, or
+returns <literal>NULL</literal> if no <link linkend="WnckScreen"><type>WnckScreen</type></link> exists for this root window. Never
+creates a new <link linkend="WnckScreen"><type>WnckScreen</type></link>, unlike <link linkend="wnck-screen-get"><function>wnck_screen_get()</function></link>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>root_window_id</parameter>&nbsp;:</term>
+<listitem><simpara> an Xlib window ID
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="WnckScreen"><type>WnckScreen</type></link> or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-workspace"/>wnck_screen_get_workspace ()</title>
+<indexterm><primary>wnck_screen_get_workspace</primary></indexterm><programlisting><link linkend="WnckWorkspace">WnckWorkspace</link>* wnck_screen_get_workspace    (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> workspace);</programlisting>
+<para>
+Gets the workspace numbered <parameter>number</parameter> for screen <parameter>screen</parameter>, or returns <literal>NULL</literal> if
+no such workspace exists.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>workspace</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the workspace, or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-active-workspace"/>wnck_screen_get_active_workspace ()</title>
+<indexterm><primary>wnck_screen_get_active_workspace</primary></indexterm><programlisting><link linkend="WnckWorkspace">WnckWorkspace</link>* wnck_screen_get_active_workspace
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+Gets the active workspace. May return <literal>NULL</literal> sometimes,
+if we are in a weird state due to the asynchronous
+nature of our interaction with the window manager.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link> 
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> active workspace or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-active-window"/>wnck_screen_get_active_window ()</title>
+<indexterm><primary>wnck_screen_get_active_window</primary></indexterm><programlisting><link linkend="WnckWindow">WnckWindow</link>* wnck_screen_get_active_window   (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+Gets the active window. May return <literal>NULL</literal> sometimes,
+since not all window managers guarantee that a window
+is always active.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> active window or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-previously-active-window"/>wnck_screen_get_previously_active_window ()</title>
+<indexterm><primary>wnck_screen_get_previously_active_window</primary></indexterm><programlisting><link linkend="WnckWindow">WnckWindow</link>* wnck_screen_get_previously_active_window
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+Gets the previously active window. May return <literal>NULL</literal>
+sometimes, since not all window managers guarantee
+that a window is always active.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> previously active window or <literal>NULL</literal>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-windows"/>wnck_screen_get_windows ()</title>
+<indexterm><primary>wnck_screen_get_windows</primary></indexterm><programlisting><link linkend="GList">GList</link>*      wnck_screen_get_windows         (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+Gets the screen's list of windows. The list is not copied
+and should not be freed. The list is not in a defined order,
+but should be "stable" (windows shouldn't reorder themselves in
+it). (However, the stability of the list is established by
+the window manager, so don't blame libwnck if it breaks down.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> reference to list of windows
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-windows-stacked"/>wnck_screen_get_windows_stacked ()</title>
+<indexterm><primary>wnck_screen_get_windows_stacked</primary></indexterm><programlisting><link linkend="GList">GList</link>*      wnck_screen_get_windows_stacked (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+Gets the screen's list of windows in bottom-to-top order.
+The list is not copied and should not be freed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> reference to list of windows in stacking order
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-force-update"/>wnck_screen_force_update ()</title>
+<indexterm><primary>wnck_screen_force_update</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_screen_force_update        (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+Synchronously and immediately update the window list.  This is
+usually a bad idea for both performance and correctness reasons (to
+get things right, you need to write model-view code that tracks
+changes, not get a static list of open windows).</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-workspace-count"/>wnck_screen_get_workspace_count ()</title>
+<indexterm><primary>wnck_screen_get_workspace_count</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_screen_get_workspace_count (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+Gets the number of workspaces.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> number of workspaces
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-change-workspace-count"/>wnck_screen_change_workspace_count ()</title>
+<indexterm><primary>wnck_screen_change_workspace_count</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_screen_change_workspace_count
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> count);</programlisting>
+<para>
+Asks the window manager to change the number of workspaces.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>count</parameter>&nbsp;:</term>
+<listitem><simpara> requested count
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-net-wm-supports"/>wnck_screen_net_wm_supports ()</title>
+<indexterm><primary>wnck_screen_net_wm_supports</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    wnck_screen_net_wm_supports     (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             const <link linkend="char">char</link> *atom);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>atom</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-background-pixmap"/>wnck_screen_get_background_pixmap ()</title>
+<indexterm><primary>wnck_screen_get_background_pixmap</primary></indexterm><programlisting><link linkend="gulong">gulong</link>      wnck_screen_get_background_pixmap
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-width"/>wnck_screen_get_width ()</title>
+<indexterm><primary>wnck_screen_get_width</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_screen_get_width           (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-height"/>wnck_screen_get_height ()</title>
+<indexterm><primary>wnck_screen_get_height</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_screen_get_height          (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-get-showing-desktop"/>wnck_screen_get_showing_desktop ()</title>
+<indexterm><primary>wnck_screen_get_showing_desktop</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    wnck_screen_get_showing_desktop (<link linkend="WnckScreen">WnckScreen</link> *screen);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-toggle-showing-desktop"/>wnck_screen_toggle_showing_desktop ()</title>
+<indexterm><primary>wnck_screen_toggle_showing_desktop</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_screen_toggle_showing_desktop
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="gboolean">gboolean</link> show);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>show</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-move-viewport"/>wnck_screen_move_viewport ()</title>
+<indexterm><primary>wnck_screen_move_viewport</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_screen_move_viewport       (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> x,
+                                             <link linkend="int">int</link> y);</programlisting>
+<para>
+Ask window manager to move the viewport of the current workspace.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckScreen"><type>WnckScreen</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara> X offset of viewport
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><simpara> Y offset of viewport
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-try-set-workspace-layout"/>wnck_screen_try_set_workspace_layout ()</title>
+<indexterm><primary>wnck_screen_try_set_workspace_layout</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_screen_try_set_workspace_layout
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> current_token,
+                                             <link linkend="int">int</link> rows,
+                                             <link linkend="int">int</link> columns);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>current_token</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>rows</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>columns</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-screen-release-workspace-layout"/>wnck_screen_release_workspace_layout ()</title>
+<indexterm><primary>wnck_screen_release_workspace_layout</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_screen_release_workspace_layout
+                                            (<link linkend="WnckScreen">WnckScreen</link> *screen,
+                                             <link linkend="int">int</link> current_token);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>current_token</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

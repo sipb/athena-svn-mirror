@@ -2,6 +2,8 @@
 
 /*
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2003 Kim Woelders
+ * Copyright (C) 2003 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,6 +25,7 @@
 #include "window.h"
 #include "workspace.h"
 #include "application.h"
+#include "class-group.h"
 #include "xutils.h"
 #include "private.h"
 #include <gdk/gdk.h>
@@ -37,16 +40,19 @@ struct _WnckScreenPrivate
   int number;
   Window xroot;
   Screen *xscreen;
-  int width;
-  int height;
+  
   /* in map order */
   GList *mapped_windows;
   /* in stacking order */
   GList *stacked_windows;
   /* in 0-to-N order */
   GList *workspaces;
-  
+
+  /* previously_active_window is used in tandem with active_window to
+   * determine return status of meta_window_is_most_recently_actived().
+   */
   WnckWindow *active_window;
+  WnckWindow *previously_active_window;
   WnckWorkspace *active_workspace;
 
   Pixmap bg_pixmap;
@@ -64,6 +70,7 @@ struct _WnckScreenPrivate
    */
   guint need_update_stack_list : 1;
   guint need_update_workspace_list : 1;
+  guint need_update_viewport_settings : 1;
   guint need_update_active_workspace : 1;
   guint need_update_active_window : 1;
   guint need_update_workspace_names : 1;
@@ -81,8 +88,11 @@ enum {
   WORKSPACE_DESTROYED,
   APPLICATION_OPENED,
   APPLICATION_CLOSED,
+  CLASS_GROUP_OPENED,
+  CLASS_GROUP_CLOSED,
   BACKGROUND_CHANGED,
   SHOWING_DESKTOP_CHANGED,
+  VIEWPORTS_CHANGED,
   LAST_SIGNAL
 };
 
@@ -90,12 +100,13 @@ static void wnck_screen_init        (WnckScreen      *screen);
 static void wnck_screen_class_init  (WnckScreenClass *klass);
 static void wnck_screen_finalize    (GObject         *object);
 
-static void update_client_list      (WnckScreen      *screen);
-static void update_workspace_list   (WnckScreen      *screen);
-static void update_active_workspace (WnckScreen      *screen);
-static void update_active_window    (WnckScreen      *screen);
-static void update_workspace_names  (WnckScreen      *screen);
-static void update_showing_desktop  (WnckScreen      *screen);
+static void update_client_list        (WnckScreen      *screen);
+static void update_workspace_list     (WnckScreen      *screen);
+static void update_viewport_settings  (WnckScreen      *screen);
+static void update_active_workspace   (WnckScreen      *screen);
+static void update_active_window      (WnckScreen      *screen);
+static void update_workspace_names    (WnckScreen      *screen);
+static void update_showing_desktop    (WnckScreen      *screen);
 
 static void queue_update            (WnckScreen      *screen);
 static void unqueue_update          (WnckScreen      *screen);              
@@ -116,8 +127,13 @@ static void emit_application_opened       (WnckScreen      *screen,
                                            WnckApplication *app);
 static void emit_application_closed       (WnckScreen      *screen,
                                            WnckApplication *app);
+static void emit_class_group_opened       (WnckScreen      *screen,
+                                           WnckClassGroup  *class_group);
+static void emit_class_group_closed       (WnckScreen      *screen,
+                                           WnckClassGroup  *class_group);
 static void emit_background_changed       (WnckScreen      *screen);
 static void emit_showing_desktop_changed  (WnckScreen      *screen);
+static void emit_viewports_changed        (WnckScreen      *screen);
 
 static gpointer parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -251,6 +267,34 @@ wnck_screen_class_init (WnckScreenClass *klass)
                   g_cclosure_marshal_VOID__OBJECT,
                   G_TYPE_NONE, 1, WNCK_TYPE_APPLICATION);
 
+  signals[CLASS_GROUP_OPENED] =
+    g_signal_new ("class_group_opened",
+                  G_OBJECT_CLASS_TYPE (object_class),
+                  G_SIGNAL_RUN_LAST,
+#if 0
+                  /* FIXME when we can break ABI add this */
+                  G_STRUCT_OFFSET (WnckScreenClass, class_group_opened),
+#else
+		  0,
+#endif
+                  NULL, NULL,
+                  g_cclosure_marshal_VOID__OBJECT,
+                  G_TYPE_NONE, 1, WNCK_TYPE_CLASS_GROUP);
+
+  signals[CLASS_GROUP_CLOSED] =
+    g_signal_new ("class_group_closed",
+                  G_OBJECT_CLASS_TYPE (object_class),
+                  G_SIGNAL_RUN_LAST,
+#if 0
+                  /* FIXME when we can break ABI add this */
+                  G_STRUCT_OFFSET (WnckScreenClass, class_group_closed),
+#else
+		  0,
+#endif
+                  NULL, NULL,
+                  g_cclosure_marshal_VOID__OBJECT,
+                  G_TYPE_NONE, 1, WNCK_TYPE_CLASS_GROUP);
+
   signals[BACKGROUND_CHANGED] =
     g_signal_new ("background_changed",
                   G_OBJECT_CLASS_TYPE (object_class),
@@ -266,6 +310,20 @@ wnck_screen_class_init (WnckScreenClass *klass)
 #if 0
                   /* FIXME when we can break ABI add this */
                   G_STRUCT_OFFSET (WnckScreenClass, showing_desktop_changed),
+#else
+                  0,
+#endif
+                  NULL, NULL,
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
+
+    signals[VIEWPORTS_CHANGED] =
+    g_signal_new ("viewports_changed",
+                  G_OBJECT_CLASS_TYPE (object_class),
+                  G_SIGNAL_RUN_LAST,
+#if 0
+                  /* FIXME when we can break ABI add this */
+                  G_STRUCT_OFFSET (WnckScreenClass, viewports_changed),
 #else
                   0,
 #endif
@@ -338,11 +396,9 @@ wnck_screen_construct (WnckScreen *screen,
   _wnck_select_input (screen->priv->xroot,
                       PropertyChangeMask);
 
-  screen->priv->width = WidthOfScreen (screen->priv->xscreen);
-  screen->priv->height = HeightOfScreen (screen->priv->xscreen);
-
   screen->priv->need_update_workspace_list = TRUE;
   screen->priv->need_update_stack_list = TRUE;
+  screen->priv->need_update_viewport_settings = TRUE;
   screen->priv->need_update_active_workspace = TRUE;
   screen->priv->need_update_active_window = TRUE;
   screen->priv->need_update_workspace_names = TRUE;
@@ -499,6 +555,24 @@ wnck_screen_get_active_window (WnckScreen *screen)
 }
 
 /**
+ * wnck_screen_get_previously_active_window:
+ * @screen: a #WnckScreen
+ * 
+ * Gets the previously active window. May return %NULL
+ * sometimes, since not all window managers guarantee
+ * that a window is always active.
+ * 
+ * Return value: previously active window or %NULL
+ **/
+WnckWindow*
+wnck_screen_get_previously_active_window (WnckScreen *screen)
+{
+  g_return_val_if_fail (WNCK_IS_SCREEN (screen), NULL);
+
+  return screen->priv->previously_active_window;
+}
+
+/**
  * wnck_screen_get_windows:
  * @screen: a #WnckScreen
  * 
@@ -645,6 +719,18 @@ _wnck_screen_process_property_notify (WnckScreen *screen,
       queue_update (screen);
     }
   else if (xevent->xproperty.atom ==
+           _wnck_atom_get ("_NET_DESKTOP_VIEWPORT"))
+    {
+      screen->priv->need_update_viewport_settings = TRUE;
+      queue_update (screen);
+    }
+  else if (xevent->xproperty.atom ==
+           _wnck_atom_get ("_NET_DESKTOP_GEOMETRY"))
+    {
+      screen->priv->need_update_viewport_settings = TRUE;
+      queue_update (screen);
+    }
+  else if (xevent->xproperty.atom ==
            _wnck_atom_get ("_NET_NUMBER_OF_DESKTOPS"))
     {
       screen->priv->need_update_workspace_list = TRUE;
@@ -757,8 +843,8 @@ update_client_list (WnckScreen *screen)
   GList *new_list;
   GList *created;
   GList *closed;
-  GList *created_apps;
-  GList *closed_apps;
+  GList *created_apps, *closed_apps;
+  GList *created_class_groups, *closed_class_groups;
   GList *tmp;
   int i;
   GHashTable *new_hash;
@@ -800,6 +886,8 @@ update_client_list (WnckScreen *screen)
   closed = NULL;
   created_apps = NULL;
   closed_apps = NULL;
+  created_class_groups = NULL;
+  closed_class_groups = NULL;
 
   new_hash = g_hash_table_new (NULL, NULL);
   
@@ -815,9 +903,13 @@ update_client_list (WnckScreen *screen)
         {
           Window leader;
           WnckApplication *app;
+	  const char *res_class;
+	  WnckClassGroup *class_group;
           
           window = _wnck_window_create (stack[i], screen);
           created = g_list_prepend (created, window);
+
+	  /* Application */
 
           leader = wnck_window_get_group_leader (window);
           
@@ -829,6 +921,19 @@ update_client_list (WnckScreen *screen)
             }
           
           _wnck_application_add_window (app, window);
+
+	  /* Class group */
+
+	  res_class = _wnck_window_get_resource_class (window);
+
+	  class_group = wnck_class_group_get (res_class);
+	  if (class_group == NULL)
+	    {
+	      class_group = _wnck_class_group_create (res_class);
+	      created_class_groups = g_list_prepend (created_class_groups, class_group);
+	    }
+
+	  _wnck_class_group_add_window (class_group, window);
         }
 
       new_stack_list = g_list_prepend (new_stack_list, window);
@@ -852,15 +957,25 @@ update_client_list (WnckScreen *screen)
       if (g_hash_table_lookup (new_hash, window) == NULL)
         {
           WnckApplication *app;
+	  WnckClassGroup *class_group;
           
           closed = g_list_prepend (closed, window);
 
-          app = wnck_window_get_application (window);
+	  /* Remove from the app */
 
+          app = wnck_window_get_application (window);
           _wnck_application_remove_window (app, window);
 
           if (wnck_application_get_windows (app) == NULL)
             closed_apps = g_list_prepend (closed_apps, app);
+
+	  /* Remove from the class group */
+
+          class_group = wnck_window_get_class_group (window);
+          _wnck_class_group_remove_window (class_group, window);
+
+          if (wnck_class_group_get_windows (class_group) == NULL)
+            closed_class_groups = g_list_prepend (closed_class_groups, class_group);
         }
       
       tmp = tmp->next;
@@ -904,6 +1019,8 @@ update_client_list (WnckScreen *screen)
       g_assert (closed == NULL);
       g_assert (created_apps == NULL);
       g_assert (closed_apps == NULL);
+      g_assert (created_class_groups == NULL);
+      g_assert (closed_class_groups == NULL);
       g_list_free (new_stack_list);
       g_list_free (new_list);      
       --reentrancy_guard;
@@ -911,7 +1028,7 @@ update_client_list (WnckScreen *screen)
     }
 
   g_list_free (screen->priv->mapped_windows);
-  g_list_free (screen->priv->stacked_windows);  
+  g_list_free (screen->priv->stacked_windows);
   screen->priv->mapped_windows = new_list;
   screen->priv->stacked_windows = new_stack_list;
 
@@ -920,31 +1037,22 @@ update_client_list (WnckScreen *screen)
    * don't handle it, but we do warn about it using reentrancy_guard
    */
 
-  /* Sequence is: application_opened, window_opened, window_closed,
-   * application_closed. We have to do all window list changes
-   * BEFORE doing any other signals, so that any observers
-   * have valid state for the window structure before they take
-   * further action
+  /* Sequence is: class_group_opened, application_opened, window_opened,
+   * window_closed, application_closed, class_group_closed. We have to do all
+   * window list changes BEFORE doing any other signals, so that any observers
+   * have valid state for the window structure before they take further action
    */
-  tmp = created_apps;
-  while (tmp != NULL)
-    {
-      emit_application_opened (screen, WNCK_APPLICATION (tmp->data));
-      
-      tmp = tmp->next;
-    }
-  
-  tmp = created;
-  while (tmp != NULL)
-    {
-      emit_window_opened (screen, WNCK_WINDOW (tmp->data));
-      
-      tmp = tmp->next;
-    }
+  for (tmp = created_class_groups; tmp; tmp = tmp->next)
+    emit_class_group_opened (screen, WNCK_CLASS_GROUP (tmp->data));
+
+  for (tmp = created_apps; tmp; tmp = tmp->next)
+    emit_application_opened (screen, WNCK_APPLICATION (tmp->data));
+
+  for (tmp = created; tmp; tmp = tmp->next)
+    emit_window_opened (screen, WNCK_WINDOW (tmp->data));
 
   active_changed = FALSE;
-  tmp = closed;
-  while (tmp != NULL)
+  for (tmp = closed; tmp; tmp = tmp->next)
     {
       WnckWindow *window;
 
@@ -952,26 +1060,24 @@ update_client_list (WnckScreen *screen)
 
       if (window == screen->priv->active_window)
         {
+          screen->priv->previously_active_window = screen->priv->active_window;
           screen->priv->active_window = NULL;
           active_changed = TRUE;
         }
+
+      if (window == screen->priv->previously_active_window)
+        {
+          screen->priv->previously_active_window = NULL;
+        }
       
       emit_window_closed (screen, window);
-      
-      tmp = tmp->next;
     }
 
-  tmp = closed_apps;
-  while (tmp != NULL)
-    {
-      WnckApplication *app;
+  for (tmp = closed_apps; tmp; tmp = tmp->next)
+    emit_application_closed (screen, WNCK_APPLICATION (tmp->data));
 
-      app = WNCK_APPLICATION (tmp->data);
-
-      emit_application_closed (screen, app);
-      
-      tmp = tmp->next;
-    }
+  for (tmp = closed_class_groups; tmp; tmp = tmp->next)
+    emit_class_group_closed (screen, WNCK_CLASS_GROUP (tmp->data));
 
   if (stack_changed)
     emit_window_stacking_changed (screen);
@@ -980,29 +1086,17 @@ update_client_list (WnckScreen *screen)
     emit_active_window_changed (screen);
   
   /* Now free the closed windows */
-  tmp = closed;
-  while (tmp != NULL)
-    {
-      WnckWindow *window = tmp->data;
-
-      _wnck_window_destroy (window);
-      
-      tmp = tmp->next;
-    }
+  for (tmp = closed; tmp; tmp = tmp->next)
+    _wnck_window_destroy (WNCK_WINDOW (tmp->data));
 
   /* Free the closed apps */
-  tmp = closed_apps;
-  while (tmp != NULL)
-    {
-      WnckApplication *app;
+  for (tmp = closed_apps; tmp; tmp = tmp->next)
+    _wnck_application_destroy (WNCK_APPLICATION (tmp->data));
 
-      app = WNCK_APPLICATION (tmp->data);
+  /* Free the closed class groups */
+  for (tmp = closed_class_groups; tmp; tmp = tmp->next)
+    _wnck_class_group_destroy (WNCK_CLASS_GROUP (tmp->data));
 
-      _wnck_application_destroy (app);
-      
-      tmp = tmp->next;
-    }
-  
   g_list_free (closed);
   g_list_free (created);
   g_list_free (closed_apps);
@@ -1138,6 +1232,118 @@ update_workspace_list (WnckScreen *screen)
 }
 
 static void
+update_viewport_settings (WnckScreen *screen)
+{
+  int i, n_spaces;
+  WnckWorkspace *space;
+  gulong *p_coord;
+  int n_coord;
+  gboolean do_update;
+  int space_width, space_height;
+  gboolean got_viewport_prop;
+  
+  if (!screen->priv->need_update_viewport_settings)
+    return;
+
+  screen->priv->need_update_viewport_settings = FALSE;
+
+  do_update = FALSE;
+
+  n_spaces = wnck_screen_get_workspace_count (screen);
+
+  /* If no property, use the screen's size */
+  space_width = wnck_screen_get_width (screen);
+  space_height = wnck_screen_get_height (screen);
+  
+  if (_wnck_get_cardinal_list (screen->priv->xroot,
+			       _wnck_atom_get ("_NET_DESKTOP_GEOMETRY"),
+                               &p_coord, &n_coord) &&
+      p_coord != NULL)
+    {
+      if (n_coord == 2)
+	{
+          space_width = p_coord[0];
+          space_height = p_coord[1];
+          
+          if (space_width < wnck_screen_get_width (screen))
+            space_width = wnck_screen_get_width (screen);
+
+          if (space_height < wnck_screen_get_height (screen))
+            space_height = wnck_screen_get_height (screen);
+	}
+      
+      g_free (p_coord);
+    }
+          
+  for (i = 0; i < n_spaces; i++)
+    {
+      space = wnck_screen_get_workspace (screen, i);
+      g_assert (space != NULL);
+      
+      if (_wnck_workspace_set_geometry (space, space_width, space_height))
+        do_update = TRUE;
+    }
+
+  got_viewport_prop = FALSE;
+  
+  if (_wnck_get_cardinal_list (screen->priv->xroot,
+                               _wnck_atom_get ("_NET_DESKTOP_VIEWPORT"),
+                               &p_coord, &n_coord) &&
+      p_coord != NULL)
+    {
+      if (n_coord == 2 * n_spaces)
+        {
+          int screen_width, screen_height;
+
+          got_viewport_prop = TRUE;
+          
+          screen_width = wnck_screen_get_width (screen);
+          screen_height = wnck_screen_get_height (screen);
+          
+	  for (i = 0; i < n_spaces; i++)
+	    {
+              int x = 2 * i;
+              int y = 2 * i + 1;
+
+              space = wnck_screen_get_workspace (screen, i);
+              g_assert (space != NULL);
+              
+              if (p_coord[x] < 0)
+                p_coord[x] = 0;
+              else if (p_coord[x] > space_width - screen_width)
+                p_coord[x] = space_width - screen_width;
+
+              if (p_coord[y] < 0)
+                p_coord[y] = 0;
+              else if (p_coord[y] > space_height - screen_height)
+                p_coord[y] = space_height - screen_height;
+
+	      if (_wnck_workspace_set_viewport (space,
+                                                p_coord[x], p_coord[y]))
+                do_update = TRUE;
+	    }
+	}
+      
+      g_free (p_coord);
+    }
+
+  if (!got_viewport_prop)
+    {
+      for (i = 0; i < n_spaces; i++)
+        {
+          space = wnck_screen_get_workspace (screen, i);
+          g_assert (space != NULL);
+          
+          if (_wnck_workspace_set_viewport (space, 0, 0))
+            do_update = TRUE;
+        }
+    }
+  
+  if (do_update)
+    emit_viewports_changed (screen);
+}
+
+static void
 update_active_workspace (WnckScreen *screen)
 {
   int number;
@@ -1185,6 +1391,7 @@ update_active_window (WnckScreen *screen)
   if (window == screen->priv->active_window)
     return;
 
+  screen->priv->previously_active_window = screen->priv->active_window;
   screen->priv->active_window = window;
 
   emit_active_window_changed (screen);
@@ -1278,12 +1485,24 @@ do_update_now (WnckScreen *screen)
       screen->priv->update_handler = 0;
     }
 
+  /* if number of workspaces changes, we have to
+   * update the per-workspace information as well
+   * in case the WM changed the per-workspace info
+   * first and number of spaces second.
+   */
+  if (screen->priv->need_update_workspace_list)
+    {
+      screen->priv->need_update_viewport_settings = TRUE;
+      screen->priv->need_update_workspace_names = TRUE;
+    }
+      
   /* First get our big-picture state in order */
   update_workspace_list (screen);
   update_client_list (screen);
 
   /* Then note any smaller-scale changes */
   update_active_workspace (screen);
+  update_viewport_settings (screen);
   update_active_window (screen);
   update_workspace_names (screen);
   update_showing_desktop (screen);
@@ -1403,6 +1622,24 @@ emit_application_closed (WnckScreen      *screen,
 }
 
 static void
+emit_class_group_opened (WnckScreen     *screen,
+                         WnckClassGroup *class_group)
+{
+  g_signal_emit (G_OBJECT (screen),
+                 signals[CLASS_GROUP_OPENED],
+                 0, class_group);
+}
+
+static void
+emit_class_group_closed (WnckScreen     *screen,
+                         WnckClassGroup *class_group)
+{
+  g_signal_emit (G_OBJECT (screen),
+                 signals[CLASS_GROUP_CLOSED],
+                 0, class_group);
+}
+
+static void
 emit_background_changed (WnckScreen *screen)
 {
   g_signal_emit (G_OBJECT (screen),
@@ -1415,6 +1652,14 @@ emit_showing_desktop_changed (WnckScreen *screen)
 {
   g_signal_emit (G_OBJECT (screen),
                  signals[SHOWING_DESKTOP_CHANGED],
+                 0);
+}
+
+static void
+emit_viewports_changed (WnckScreen *screen)
+{
+  g_signal_emit (G_OBJECT (screen),
+                 signals[VIEWPORTS_CHANGED],
                  0);
 }
 
@@ -1438,7 +1683,7 @@ wnck_screen_get_width (WnckScreen *screen)
 {
   g_return_val_if_fail (WNCK_IS_SCREEN (screen), 0);
 
-  return gdk_screen_width ();
+  return WidthOfScreen (screen->priv->xscreen);
 }
 
 int
@@ -1446,7 +1691,7 @@ wnck_screen_get_height (WnckScreen *screen)
 {
   g_return_val_if_fail (WNCK_IS_SCREEN (screen), 0);
 
-  return gdk_screen_height ();
+  return HeightOfScreen (screen->priv->xscreen);
 }
 
 Screen *
@@ -1507,6 +1752,27 @@ wnck_screen_toggle_showing_desktop (WnckScreen *screen,
 
   _wnck_toggle_showing_desktop (screen->priv->xscreen,
                                 show);
+}
+
+
+/**
+ * wnck_screen_move_viewport:
+ * @screen: a #WnckScreen
+ * @x: X offset of viewport
+ * @y: Y offset of viewport
+ *
+ * Ask window manager to move the viewport of the current workspace.
+ */
+void
+wnck_screen_move_viewport (WnckScreen *screen,
+                           int         x,
+                           int         y)
+{
+  g_return_if_fail (WNCK_IS_SCREEN (screen));
+  g_return_if_fail (x >= 0);
+  g_return_if_fail (y >= 0);
+  
+  _wnck_change_viewport (WNCK_SCREEN_XSCREEN (screen), x, y);
 }
 
 #ifdef HAVE_STARTUP_NOTIFICATION

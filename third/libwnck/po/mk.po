@@ -1,92 +1,119 @@
+# translation of libwnck.HEAD.mk.po to
+# translation of libwnck.HEAD.mk.po to Macedonian
 # translation of libwnck.HEAD.po to Macedonian
-# This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# Ivan Stojmirov <stojmir@linux.net.mk>, 2002
+# This file is distributed under the same license as the libwnck.HEAD.mk package.
+# Copyright (C) 2004 THE libwnck.HEAD.mk'S COPYRIGHT HOLDER
+# Ivan Stojmirov <stojmir@linux.net.mk>, 2002.
+# Vladislav Bidikov <bidikovi@mail.com.mk>, 2003.
+# Arangel Angov <ufo@linux.net.mk>, 2003, 2004.
+#  <tome@users.ossm.org.mk>, 2004.
+#
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libwnck.HEAD\n"
-"POT-Creation-Date: 2003-02-05 23:57-0500\n"
-"PO-Revision-Date: 2002-12-15 22:51+0100\n"
-"Last-Translator: Ivan Stojmirov <stojmir@linux.net.mk>\n"
-"Language-Team: Macedonian <mk@li.org>\n"
+"Project-Id-Version: libwnck.HEAD.mk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:27+0100\n"
+"PO-Revision-Date: 2004-09-10 16:25+0200\n"
+"Last-Translator: Arangel Angov <ufo@linux.net.mk>\n"
+"Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta2\n"
+"X-Generator: KBabel 1.3.1\n"
 
-#: libwnck/application.c:25
+#: libwnck/application.c:26
 msgid "untitled application"
-msgstr "Апликација без наслов"
+msgstr "Aпликација без наслов"
 
 #: libwnck/pager-accessible.c:317
 msgid "Workspace Switcher"
-msgstr "Менувач на Работно Место"
+msgstr "Менувач на работно место"
 
 #: libwnck/pager-accessible.c:328
 msgid "Tool to switch between workspaces"
-msgstr "Алатка за менување на работно место"
+msgstr "Алатка за менување на работното место"
 
 #: libwnck/pager-accessible.c:432
 #, c-format
 msgid "Click this to switch to workspace %s"
 msgstr "Кликни го ова за да го смениш работното место %s"
 
-#: libwnck/window-action-menu.c:191
-msgid "Un_minimize"
-msgstr "Врати_минимизирано"
+#: libwnck/window-action-menu.c:209
+msgid "Unmi_nimize"
+msgstr "_Врати минимизирано"
 
-#: libwnck/window-action-menu.c:198
-msgid "_Minimize"
+#: libwnck/window-action-menu.c:216
+msgid "Mi_nimize"
 msgstr "_Минимизирај"
 
-#: libwnck/window-action-menu.c:206
-msgid "_Unmaximize"
-msgstr "_Врати Максимизирано"
+#: libwnck/window-action-menu.c:224
+msgid "Unma_ximize"
+msgstr "_Врати максимизирано"
 
-#: libwnck/window-action-menu.c:213
+#: libwnck/window-action-menu.c:231
 msgid "Ma_ximize"
 msgstr "Ма_ксимизирај"
 
-#: libwnck/window-action-menu.c:221
+#: libwnck/window-action-menu.c:239
 msgid "_Unroll"
 msgstr "_Одвиткај"
 
-#: libwnck/window-action-menu.c:228
+#: libwnck/window-action-menu.c:246
 msgid "Roll _Up"
 msgstr "_Завиткај"
 
-#: libwnck/window-action-menu.c:236
+#: libwnck/window-action-menu.c:254
 msgid "Only on _This Workspace"
-msgstr "Само на _Овој Работен простор"
+msgstr "Само на _овој работен простор"
 
-#: libwnck/window-action-menu.c:243
+#: libwnck/window-action-menu.c:261
 msgid "Put on _All Workspaces"
-msgstr "Стави на _Сите Работни простори"
+msgstr "Стави на _сите работни простори"
 
-#: libwnck/window-action-menu.c:372
-msgid "Mo_ve"
+#: libwnck/window-action-menu.c:376 libwnck/workspace.c:232
+#, c-format
+msgid "Workspace %d"
+msgstr "Работно место %d"
+
+#: libwnck/window-action-menu.c:384
+msgid "Workspace 1_0"
+msgstr "Работно место 1_0"
+
+#: libwnck/window-action-menu.c:386
+#, c-format
+msgid "Workspace %s%d"
+msgstr "Работно место %s%d"
+
+#: libwnck/window-action-menu.c:483
+msgid "_Move"
 msgstr "По_мести"
 
-#: libwnck/window-action-menu.c:379
+#: libwnck/window-action-menu.c:490
 msgid "_Resize"
-msgstr "_Промени Големина"
+msgstr "_Промени големина"
 
-#: libwnck/window-action-menu.c:392
+#: libwnck/window-action-menu.c:503
 msgid "_Close"
 msgstr "_Затвори"
 
-#: libwnck/window.c:29
-msgid "untitled window"
-msgstr "прозорец без наслов"
+#: libwnck/window-action-menu.c:516
+msgid "Move to Another _Workspace"
+msgstr "Премести на друго _работно место"
 
-#: libwnck/workspace.c:222
+#: libwnck/window-action-menu.c:540
 #, c-format
-msgid "Workspace %d"
-msgstr "Работно Место %d"
+msgid "%s"
+msgstr "%s"
 
-#~ msgid "U_nshade"
-#~ msgstr "В_рати Подигнување или Спуштање"
+#: libwnck/window.c:32
+msgid "untitled window"
+msgstr "Прозорец без наслов"
 
-#~ msgid "_Shade"
-#~ msgstr "_Подигнување и Спуштање"
+#: libwnck/tasklist.c:507
+msgid "Window List"
+msgstr "Листа на прозорци"
+
+#: libwnck/tasklist.c:508
+msgid "Tool to switch between visible windows"
+msgstr "Алатка за менување помеѓу прозорците"

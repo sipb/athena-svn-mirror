@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libwnck-util">
+<refmeta>
+<refentrytitle>util</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBWNCK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>util</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+<link linkend="void">void</link>        <link linkend="wnck-gtk-window-set-dock-type">wnck_gtk_window_set_dock_type</link>   (<link linkend="GtkWindow">GtkWindow</link> *window);
+<link linkend="void">void</link>        <link linkend="wnck-xid-read-resource-usage">wnck_xid_read_resource_usage</link>    (<link linkend="GdkDisplay">GdkDisplay</link> *gdk_display,
+                                             unsigned <link linkend="long------xid">long      xid</link>,
+                                             <link linkend="WnckResourceUsage">WnckResourceUsage</link> *usage);
+<link linkend="void">void</link>        <link linkend="wnck-pid-read-resource-usage">wnck_pid_read_resource_usage</link>    (<link linkend="GdkDisplay">GdkDisplay</link> *gdk_display,
+                                             unsigned <link linkend="long------pid">long      pid</link>,
+                                             <link linkend="WnckResourceUsage">WnckResourceUsage</link> *usage);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="wnck-gtk-window-set-dock-type"/>wnck_gtk_window_set_dock_type ()</title>
+<indexterm><primary>wnck_gtk_window_set_dock_type</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_gtk_window_set_dock_type   (<link linkend="GtkWindow">GtkWindow</link> *window);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>window</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-xid-read-resource-usage"/>wnck_xid_read_resource_usage ()</title>
+<indexterm><primary>wnck_xid_read_resource_usage</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_xid_read_resource_usage    (<link linkend="GdkDisplay">GdkDisplay</link> *gdk_display,
+                                             unsigned <link linkend="long------xid">long      xid</link>,
+                                             <link linkend="WnckResourceUsage">WnckResourceUsage</link> *usage);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gdk_display</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>usage</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-pid-read-resource-usage"/>wnck_pid_read_resource_usage ()</title>
+<indexterm><primary>wnck_pid_read_resource_usage</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_pid_read_resource_usage    (<link linkend="GdkDisplay">GdkDisplay</link> *gdk_display,
+                                             unsigned <link linkend="long------pid">long      pid</link>,
+                                             <link linkend="WnckResourceUsage">WnckResourceUsage</link> *usage);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>gdk_display</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>Param2</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>usage</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

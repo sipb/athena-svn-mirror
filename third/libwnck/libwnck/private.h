@@ -62,6 +62,10 @@ void           _wnck_workspace_destroy (WnckWorkspace *space);
 
 void _wnck_window_set_application    (WnckWindow      *window,
                                       WnckApplication *app);
+
+void _wnck_window_set_class_group (WnckWindow     *window,
+				   WnckClassGroup *class_group);
+
 void _wnck_application_add_window    (WnckApplication *app,
                                       WnckWindow      *window);
 void _wnck_application_remove_window (WnckApplication *app,
@@ -76,6 +80,9 @@ void _wnck_workspace_update_name (WnckWorkspace *workspace,
 void _wnck_screen_change_workspace_name (WnckScreen *screen,
                                          int         number,
                                          const char *name);
+
+gboolean _wnck_workspace_set_geometry (WnckWorkspace *space, int w, int h);
+gboolean _wnck_workspace_set_viewport (WnckWorkspace *space, int x, int y);
 
 void _wnck_init (void);
 

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libwnck-private">
+<refmeta>
+<refentrytitle>private</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBWNCK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>private</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="gettext-macro">_</link>                               (x)
+#define     <link linkend="DEFAULT-ICON-WIDTH-CAPS">DEFAULT_ICON_WIDTH</link>
+#define     <link linkend="DEFAULT-ICON-HEIGHT-CAPS">DEFAULT_ICON_HEIGHT</link>
+#define     <link linkend="DEFAULT-MINI-ICON-WIDTH-CAPS">DEFAULT_MINI_ICON_WIDTH</link>
+#define     <link linkend="DEFAULT-MINI-ICON-HEIGHT-CAPS">DEFAULT_MINI_ICON_HEIGHT</link>
+#define     <link linkend="WNCK-SCREEN-XSCREEN-CAPS">WNCK_SCREEN_XSCREEN</link>             (screen)
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gettext-macro"/>_()</title>
+<indexterm><primary>_</primary></indexterm><programlisting>#define _(x) dgettext (GETTEXT_PACKAGE, x)
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="DEFAULT-ICON-WIDTH-CAPS"/>DEFAULT_ICON_WIDTH</title>
+<indexterm><primary>DEFAULT_ICON_WIDTH</primary></indexterm><programlisting>#define DEFAULT_ICON_WIDTH 32
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="DEFAULT-ICON-HEIGHT-CAPS"/>DEFAULT_ICON_HEIGHT</title>
+<indexterm><primary>DEFAULT_ICON_HEIGHT</primary></indexterm><programlisting>#define DEFAULT_ICON_HEIGHT 32
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="DEFAULT-MINI-ICON-WIDTH-CAPS"/>DEFAULT_MINI_ICON_WIDTH</title>
+<indexterm><primary>DEFAULT_MINI_ICON_WIDTH</primary></indexterm><programlisting>#define DEFAULT_MINI_ICON_WIDTH 16
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="DEFAULT-MINI-ICON-HEIGHT-CAPS"/>DEFAULT_MINI_ICON_HEIGHT</title>
+<indexterm><primary>DEFAULT_MINI_ICON_HEIGHT</primary></indexterm><programlisting>#define DEFAULT_MINI_ICON_HEIGHT 16
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WNCK-SCREEN-XSCREEN-CAPS"/>WNCK_SCREEN_XSCREEN()</title>
+<indexterm><primary>WNCK_SCREEN_XSCREEN</primary></indexterm><programlisting>#define WNCK_SCREEN_XSCREEN(screen) (_wnck_screen_get_xscreen (screen))
+</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>screen</parameter>&nbsp;:</term>
+<listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

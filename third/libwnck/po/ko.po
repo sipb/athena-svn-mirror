@@ -1,26 +1,27 @@
 # libwnck 
-# Copyright (C) 2002 Free Software Foundation, Inc.
 # Young-Ho, Cha <ganadist@chollian.net>, 2002.
-# Changwoo Ryu <cwryu@debian.org>, 2002.
+# Changwoo Ryu <cwryu@debian.org>, 2002-2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libwnck 2.1.90\n"
-"POT-Creation-Date: 2003-02-05 23:57-0500\n"
-"PO-Revision-Date: 2003-01-15 20:22+0900\n"
-"Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
-"Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
+"Project-Id-Version: libwnck 2.5.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-30 14:27+0100\n"
+"PO-Revision-Date: 2004-02-08 01:08+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: libwnck/application.c:25
+#: libwnck/application.c:26
 msgid "untitled application"
 msgstr "제목 없는 프로그램"
 
 #: libwnck/pager-accessible.c:317
 msgid "Workspace Switcher"
-msgstr "작업 공간 바꾸기"
+msgstr "작업 공간 바꾸기 프로그램"
 
 #: libwnck/pager-accessible.c:328
 msgid "Tool to switch between workspaces"
@@ -31,55 +32,81 @@ msgstr "작업 공간을 바꾸는 도구"
 msgid "Click this to switch to workspace %s"
 msgstr "작업 공간 %s(으)로 바꾸려면 누르십시오"
 
-#: libwnck/window-action-menu.c:191
-msgid "Un_minimize"
-msgstr "최소화 취소(_M)"
+#: libwnck/window-action-menu.c:209
+msgid "Unmi_nimize"
+msgstr "최소화 취소(_N)"
 
-#: libwnck/window-action-menu.c:198
-msgid "_Minimize"
-msgstr "최소화(_M)"
+#: libwnck/window-action-menu.c:216
+msgid "Mi_nimize"
+msgstr "최소화(_N)"
 
-#: libwnck/window-action-menu.c:206
-msgid "_Unmaximize"
-msgstr "최대화 취소(_U)"
+#: libwnck/window-action-menu.c:224
+msgid "Unma_ximize"
+msgstr "최대화 취소(_X)"
 
-#: libwnck/window-action-menu.c:213
+#: libwnck/window-action-menu.c:231
 msgid "Ma_ximize"
 msgstr "최대화(_X)"
 
-#: libwnck/window-action-menu.c:221
+#: libwnck/window-action-menu.c:239
 msgid "_Unroll"
 msgstr "펼치기(_U)"
 
-#: libwnck/window-action-menu.c:228
+#: libwnck/window-action-menu.c:246
 msgid "Roll _Up"
 msgstr "말아올리기(_U)"
 
-#: libwnck/window-action-menu.c:236
+#: libwnck/window-action-menu.c:254
 msgid "Only on _This Workspace"
-msgstr "이 작업공간에만 두기(_T)"
+msgstr "이 작업 공간에만 놓기(_T)"
 
-#: libwnck/window-action-menu.c:243
+#: libwnck/window-action-menu.c:261
 msgid "Put on _All Workspaces"
-msgstr "모든 작업공간에 두기(_A)"
+msgstr "모든 작업 공간에 놓기(_A)"
 
-#: libwnck/window-action-menu.c:372
-msgid "Mo_ve"
-msgstr "옮기기(_V)"
-
-#: libwnck/window-action-menu.c:379
-msgid "_Resize"
-msgstr "크기 조정(_R)"
-
-#: libwnck/window-action-menu.c:392
-msgid "_Close"
-msgstr "닫기(_C)"
-
-#: libwnck/window.c:29
-msgid "untitled window"
-msgstr "제목없는 창"
-
-#: libwnck/workspace.c:222
+#: libwnck/window-action-menu.c:376 libwnck/workspace.c:232
 #, c-format
 msgid "Workspace %d"
 msgstr "작업 공간 %d"
+
+#: libwnck/window-action-menu.c:384
+msgid "Workspace 1_0"
+msgstr "작업 공간 1_0"
+
+#: libwnck/window-action-menu.c:386
+#, c-format
+msgid "Workspace %s%d"
+msgstr "작업 공간 %s%d"
+
+#: libwnck/window-action-menu.c:483
+msgid "_Move"
+msgstr "옮기기(_M)"
+
+#: libwnck/window-action-menu.c:490
+msgid "_Resize"
+msgstr "크기 조정(_R)"
+
+#: libwnck/window-action-menu.c:503
+msgid "_Close"
+msgstr "닫기(_C)"
+
+#: libwnck/window-action-menu.c:516
+msgid "Move to Another _Workspace"
+msgstr "다른 작업 공간으로 옮기기(_W)"
+
+#: libwnck/window-action-menu.c:540
+#, c-format
+msgid "%s"
+msgstr "%s"
+
+#: libwnck/window.c:32
+msgid "untitled window"
+msgstr "제목없는 창"
+
+#: libwnck/tasklist.c:507
+msgid "Window List"
+msgstr "창 목록"
+
+#: libwnck/tasklist.c:508
+msgid "Tool to switch between visible windows"
+msgstr "창 사이로 옮겨 다니는 도구"

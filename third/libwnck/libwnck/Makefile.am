@@ -10,6 +10,7 @@ wnck_headers=			\
 	libwnck.h		\
 	pager.h			\
 	application.h		\
+	class-group.h		\
 	screen.h		\
 	tasklist.h		\
 	util.h			\
@@ -39,6 +40,7 @@ wnck_accessibility_files =			\
 
 libwnck_1_la_SOURCES= 		\
 	application.c		\
+	class-group.c		\
 	inlinepixbufs.h		\
 	pager.c			\
 	private.h		\
@@ -73,10 +75,11 @@ noinst_PROGRAMS=		\
 
 libwnck_1_la_LDFLAGS=								    \
 	-version-info $(LIBWNCK_CURRENT):$(LIBWNCK_REVISION):$(LIBWNCK_AGE) \
+	-no-undefined \
         -export-symbols-regex "^[^_].*"
 
 libwnck_1_la_LIBADD=   \
-	@LIBWNCK_LIBS@
+	@LIBWNCK_LIBS@ @X_LIBS@
 
 test_wnck_LDADD=@LIBWNCK_LIBS@ libwnck-1.la
 test_tasklist_LDADD=@LIBWNCK_LIBS@ libwnck-1.la
@@ -103,7 +106,7 @@ VARIABLES=default_icon_data $(srcdir)/default_icon.png 		\
 	stock_minimize_data $(srcdir)/stock_minimize.png
 
 noinst_DATA = inlinepixbufs.h
-CLEANFILES += $(noinst_DATA)
+CLEANFILES = $(noinst_DATA)
 
 inlinepixbufs.h: $(IMAGES)
 	$(GDK_PIXBUF_CSOURCE) --raw --build-list $(VARIABLES) >$(srcdir)/inlinepixbufs.h

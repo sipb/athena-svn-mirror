@@ -41,7 +41,9 @@ typedef enum
   WNCK_WINDOW_STATE_SKIP_PAGER             = 1 << 4,
   WNCK_WINDOW_STATE_SKIP_TASKLIST          = 1 << 5,
   WNCK_WINDOW_STATE_STICKY                 = 1 << 6,
-  WNCK_WINDOW_STATE_HIDDEN                 = 1 << 7
+  WNCK_WINDOW_STATE_HIDDEN                 = 1 << 7,
+  WNCK_WINDOW_STATE_FULLSCREEN             = 1 << 8,
+  WNCK_WINDOW_STATE_DEMANDS_ATTENTION      = 1 << 9
 } WnckWindowState;
 
 typedef enum
@@ -136,6 +138,8 @@ WnckApplication* wnck_window_get_application  (WnckWindow *window);
 gulong           wnck_window_get_group_leader (WnckWindow *window);
 gulong           wnck_window_get_xid          (WnckWindow *window);
 
+WnckClassGroup *wnck_window_get_class_group (WnckWindow *window);
+
 const char* wnck_window_get_session_id        (WnckWindow *window);
 const char* wnck_window_get_session_id_utf8   (WnckWindow *window);
 int         wnck_window_get_pid               (WnckWindow *window);
@@ -150,13 +154,15 @@ gboolean wnck_window_is_shaded                 (WnckWindow *window);
 gboolean wnck_window_is_skip_pager             (WnckWindow *window);
 gboolean wnck_window_is_skip_tasklist          (WnckWindow *window);
 gboolean wnck_window_is_sticky                 (WnckWindow *window);
+gboolean wnck_window_demands_attention         (WnckWindow *window);
 
 void wnck_window_set_skip_pager    (WnckWindow *window,
                                     gboolean skip);
 void wnck_window_set_skip_tasklist (WnckWindow *window,
                                     gboolean skip);
 
-void wnck_window_close                   (WnckWindow *window);
+void wnck_window_close                   (WnckWindow *window,
+					  guint32     timestamp);
 void wnck_window_minimize                (WnckWindow *window);
 void wnck_window_unminimize              (WnckWindow *window);
 void wnck_window_maximize                (WnckWindow *window);
@@ -183,6 +189,7 @@ void     wnck_window_unpin     (WnckWindow *window);
 
 void     wnck_window_activate  (WnckWindow *window);
 gboolean wnck_window_is_active (WnckWindow *window);
+gboolean wnck_window_is_most_recently_activated (WnckWindow *window);
 void     wnck_window_activate_transient (WnckWindow *window);
 
 
@@ -209,6 +216,8 @@ void wnck_window_get_geometry (WnckWindow *window,
 gboolean wnck_window_is_visible_on_workspace (WnckWindow    *window,
                                               WnckWorkspace *workspace);
 gboolean wnck_window_is_on_workspace         (WnckWindow    *window,
+                                              WnckWorkspace *workspace);
+gboolean wnck_window_is_in_viewport          (WnckWindow    *window,
                                               WnckWorkspace *workspace);
 
 G_END_DECLS

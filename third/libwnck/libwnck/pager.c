@@ -2,6 +2,8 @@
 
 /*
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2003 Kim Woelders
+ * Copyright (C) 2003 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,7 +30,7 @@
 #include "workspace-accessible-factory.h"
 
 
-#define N_SCREEN_CONNECTIONS 10
+#define N_SCREEN_CONNECTIONS 11
 
 struct _WnckPagerPrivate
 {
@@ -158,6 +160,8 @@ wnck_pager_init (WnckPager *pager)
   pager->priv->workspace_size = 48;
   pager->priv->bg_cache = NULL;
   pager->priv->layout_manager_token = WNCK_NO_MANAGER_TOKEN;
+
+  GTK_WIDGET_SET_FLAGS (GTK_WIDGET (pager), GTK_CAN_FOCUS);
 }
 
 static void
@@ -260,9 +264,9 @@ wnck_pager_size_request  (GtkWidget      *widget,
   int spaces_per_row;
   double screen_aspect;
   int other_dimension_size;
-  int u_width, u_height;
   int size;
   int n_rows;
+  int focus_width;
   
   pager = WNCK_PAGER (widget);
   
@@ -270,9 +274,7 @@ wnck_pager_size_request  (GtkWidget      *widget,
 
   g_assert (pager->priv->n_rows > 0);
   spaces_per_row = (n_spaces + pager->priv->n_rows - 1) / pager->priv->n_rows;
-  
-  gtk_widget_get_size_request (widget, &u_width, &u_height);
-  
+ 
   if (pager->priv->orientation == GTK_ORIENTATION_VERTICAL)
     {
       screen_aspect = (double) gdk_screen_height () / (double) gdk_screen_width ();
@@ -282,17 +284,11 @@ wnck_pager_size_request  (GtkWidget      *widget,
       if (pager->priv->show_all_workspaces)
 	{
 	  size = pager->priv->workspace_size;
-	  if (u_width != -1)
-	    size = (u_width - (pager->priv->n_rows - 1))  / pager->priv->n_rows;
- 
 	  n_rows = pager->priv->n_rows;
 	}
       else
 	{
 	  size = pager->priv->workspace_size;
-	  if (u_width != -1)
-	    size = u_width;
-
 	  n_rows = 1;
 	  spaces_per_row = 1;
 	}
@@ -304,22 +300,18 @@ wnck_pager_size_request  (GtkWidget      *widget,
     }
   else
     {
-      screen_aspect = (double) gdk_screen_width () / (double) gdk_screen_height ();
+      screen_aspect =
+        (double) wnck_screen_get_width (pager->priv->screen) /
+        (double) wnck_screen_get_height (pager->priv->screen);
       
       if (pager->priv->show_all_workspaces)
 	{
 	  size = pager->priv->workspace_size;
-	  if (u_height != -1)
-	    size = (u_height - (pager->priv->n_rows - 1))/ pager->priv->n_rows;
- 
 	  n_rows = pager->priv->n_rows;
 	}
       else
 	{
 	  size = pager->priv->workspace_size;
-	  if (u_height != -1)
-	    size = u_height;
-
 	  n_rows = 1;
 	  spaces_per_row = 1;
 	}
@@ -362,6 +354,13 @@ wnck_pager_size_request  (GtkWidget      *widget,
       requisition->width += 2 * widget->style->xthickness;
       requisition->height += 2 * widget->style->ythickness;
     }
+
+  gtk_widget_style_get (widget,
+			"focus-line-width", &focus_width,
+			NULL);
+                                                                                                             
+  requisition->width  += 2 * focus_width;
+  requisition->height += 2 * focus_width;
 }
 
 static void
@@ -369,8 +368,49 @@ wnck_pager_size_allocate (GtkWidget      *widget,
                           GtkAllocation  *allocation)
 {
   WnckPager *pager;
+  int workspace_size;
+  int focus_width;
+  int width;
+  int height;
 
   pager = WNCK_PAGER (widget);
+
+  gtk_widget_style_get (GTK_WIDGET (pager),
+			"focus-line-width", &focus_width,
+			NULL);
+
+  width  = allocation->width  - 2 * focus_width;
+  height = allocation->height - 2* focus_width;
+
+  if (pager->priv->shadow_type != GTK_SHADOW_NONE)
+    {
+      width  -= 2 * widget->style->xthickness;
+      height -= 2 * widget->style->ythickness;
+    }
+
+  g_assert (pager->priv->n_rows > 0);
+
+  if (pager->priv->orientation == GTK_ORIENTATION_VERTICAL)
+    {
+      if (pager->priv->show_all_workspaces)
+	workspace_size = (width - (pager->priv->n_rows - 1))  / pager->priv->n_rows;
+      else
+	workspace_size = width;
+    }
+  else
+    {
+      if (pager->priv->show_all_workspaces)
+	workspace_size = (height - (pager->priv->n_rows - 1))/ pager->priv->n_rows;
+      else
+	workspace_size = height;
+    }
+
+  if (workspace_size != pager->priv->workspace_size)
+    {
+      pager->priv->workspace_size = workspace_size;
+      gtk_widget_queue_resize (GTK_WIDGET (widget));
+      return;
+    }
 
   GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
 }
@@ -385,7 +425,12 @@ get_workspace_rect (WnckPager    *pager,
   int spaces_per_row;
   GtkWidget *widget;
   int col, row;
-  
+  int focus_width;
+
+  gtk_widget_style_get (GTK_WIDGET (pager),
+			"focus-line-width", &focus_width,
+			NULL);
+
   widget = GTK_WIDGET (pager);
 
   if (!pager->priv->show_all_workspaces)
@@ -394,12 +439,12 @@ get_workspace_rect (WnckPager    *pager,
   
       active_space = wnck_screen_get_active_workspace (pager->priv->screen);
 
-      rect->x = 0;
-      rect->y = 0;
       if (active_space && space == wnck_workspace_get_number (active_space))
 	{
-	  rect->width = widget->allocation.width;
-	  rect->height = widget->allocation.height;
+	  rect->x = focus_width;
+	  rect->y = focus_width;
+	  rect->width = widget->allocation.width - 2 * focus_width;
+	  rect->height = widget->allocation.height - 2 * focus_width;
 
 	  if (pager->priv->shadow_type != GTK_SHADOW_NONE)
 	    {
@@ -411,6 +456,8 @@ get_workspace_rect (WnckPager    *pager,
 	}
       else
 	{
+	  rect->x = 0;
+	  rect->y = 0;
 	  rect->width = 0;
 	  rect->height = 0;
 	}
@@ -418,8 +465,8 @@ get_workspace_rect (WnckPager    *pager,
       return;
     }
 
-  hsize = widget->allocation.width;
-  vsize = widget->allocation.height;
+  hsize = widget->allocation.width - 2 * focus_width;
+  vsize = widget->allocation.height - 2 * focus_width;
 
   if (pager->priv->shadow_type != GTK_SHADOW_NONE)
     {
@@ -465,6 +512,9 @@ get_workspace_rect (WnckPager    *pager,
 	rect->height = vsize - rect->y;
     }
 
+  rect->x += focus_width;
+  rect->y += focus_width;
+
   if (pager->priv->shadow_type != GTK_SHADOW_NONE)
     {
       rect->x += widget->style->xthickness;
@@ -479,20 +529,24 @@ get_windows_for_workspace_in_bottom_to_top (WnckScreen    *screen,
   GList *result;
   GList *windows;
   GList *tmp;
+  gboolean is_active;
   
   result = NULL;
+  is_active = workspace == wnck_screen_get_active_workspace (screen);
 
   windows = wnck_screen_get_windows_stacked (screen);
-  tmp = windows;
-  while (tmp != NULL)
+  for (tmp = windows; tmp != NULL; tmp = tmp->next)
     {
       WnckWindow *win = WNCK_WINDOW (tmp->data);
 
-      if (wnck_window_is_visible_on_workspace (win, workspace) &&
-          (wnck_window_get_state (win) & WNCK_WINDOW_STATE_SKIP_PAGER) == 0)
-        result = g_list_prepend (result, win);
-      
-      tmp = tmp->next;
+      if (!wnck_window_is_visible_on_workspace (win, workspace))
+        continue;
+      if (wnck_window_get_state (win) & WNCK_WINDOW_STATE_SKIP_PAGER)
+        continue;
+      if (!is_active && wnck_window_is_sticky (win))
+        continue;
+
+      result = g_list_prepend (result, win);
     }
 
   result = g_list_reverse (result);
@@ -507,12 +561,21 @@ get_window_rect (WnckWindow         *window,
 {
   double width_ratio, height_ratio;
   int x, y, width, height;
+  WnckWorkspace *workspace;
+  GdkRectangle unclipped_win_rect;
   
-  width_ratio = (double) workspace_rect->width / (double) gdk_screen_width ();
-  height_ratio = (double) workspace_rect->height / (double) gdk_screen_height ();
+  workspace = wnck_window_get_workspace (window);
+  if (workspace == NULL)
+    workspace = wnck_screen_get_active_workspace (wnck_window_get_screen (window));
+
+  /* scale window down by same ratio we scaled workspace down */
+  width_ratio = (double) workspace_rect->width / (double) wnck_workspace_get_width (workspace);
+  height_ratio = (double) workspace_rect->height / (double) wnck_workspace_get_height (workspace);
   
   wnck_window_get_geometry (window, &x, &y, &width, &height);
   
+  x += wnck_workspace_get_viewport_x (workspace);
+  y += wnck_workspace_get_viewport_y (workspace);
   x *= width_ratio;
   y *= height_ratio;
   width *= width_ratio;
@@ -526,10 +589,12 @@ get_window_rect (WnckWindow         *window,
   if (height < 3)
     height = 3;
 
-  rect->x = x;
-  rect->y = y;
-  rect->width = width;
-  rect->height = height;
+  unclipped_win_rect.x = x;
+  unclipped_win_rect.y = y;
+  unclipped_win_rect.width = width;
+  unclipped_win_rect.height = height;
+
+  gdk_rectangle_intersect (workspace_rect, &unclipped_win_rect, rect);
 }
 
 static void
@@ -629,10 +694,25 @@ draw_window (GdkDrawable        *drawable,
 static int
 workspace_at_point (WnckPager *pager,
                     int        x,
-                    int        y)
+                    int        y,
+                    int       *viewport_x,
+                    int       *viewport_y)
 {
+  GtkWidget *widget;
   int i;
   int n_spaces;
+  int focus_width;
+  int xthickness;
+  int ythickness;
+
+  widget = GTK_WIDGET (pager);
+
+  gtk_widget_style_get (GTK_WIDGET (pager),
+			"focus-line-width", &focus_width,
+			NULL);
+
+  xthickness = focus_width + widget->style->xthickness;
+  ythickness = focus_width + widget->style->ythickness;
 
   n_spaces = wnck_screen_get_workspace_count (pager->priv->screen);
   
@@ -651,30 +731,46 @@ workspace_at_point (WnckPager *pager,
 
 	  GtkWidget *widget = GTK_WIDGET (pager);
 
-	  if (rect.x == widget->style->xthickness)
+	  if (rect.x == xthickness)
 	    {
 	      rect.x = 0;
-	      rect.width += widget->style->xthickness;
+	      rect.width += xthickness;
 	    }
-	  if (rect.y == widget->style->ythickness)
+	  if (rect.y == ythickness)
 	    {
 	      rect.y = 0;
-	      rect.height += widget->style->ythickness;
+	      rect.height += ythickness;
 	    }
-	  if (rect.y + rect.height ==
-	      widget->allocation.height - widget->style->ythickness)
+	  if (rect.y + rect.height == widget->allocation.height - ythickness)
 	    {
-	      rect.height += widget->style->ythickness;
+	      rect.height += ythickness;
 	    }
-	  if (rect.x + rect.width ==
-	      widget->allocation.width - widget->style->xthickness)
+	  if (rect.x + rect.width == widget->allocation.width - xthickness)
 	    {
-	      rect.width += widget->style->xthickness;
+	      rect.width += xthickness;
 	    }
 	}
 
       if (POINT_IN_RECT (x, y, rect))
-        return i;
+        {
+	  double width_ratio, height_ratio;
+	  WnckWorkspace *space;
+
+	  space = wnck_screen_get_workspace (pager->priv->screen, i);
+          g_assert (space != NULL);
+
+          /* Scale x, y mouse coords to corresponding screenwide viewport coords */
+          
+          width_ratio = (double) wnck_workspace_get_width (space) / (double) rect.width;
+          height_ratio = (double) wnck_workspace_get_height (space) / (double) rect.height;
+
+          if (viewport_x)
+            *viewport_x = width_ratio * (x - rect.x);
+          if (viewport_y)
+            *viewport_y = height_ratio * (y - rect.y);
+
+	  return i;
+	}
 
       ++i;
     }
@@ -704,12 +800,23 @@ wnck_pager_draw_workspace (WnckPager    *pager,
    */
   
   if (is_current)
-    gdk_draw_rectangle (GTK_WIDGET (pager)->window,
-                        prelight ? 
-                        GTK_WIDGET (pager)->style->mid_gc[GTK_STATE_SELECTED] :
-                        GTK_WIDGET (pager)->style->dark_gc[GTK_STATE_SELECTED],
-                        TRUE,
-                        rect->x, rect->y, rect->width, rect->height);
+    {
+      int vx, vy, vw, vh; /* viewport */
+      double width_ratio, height_ratio;
+      
+      width_ratio = rect->width / (double) wnck_workspace_get_width (active_space);
+      height_ratio = rect->height / (double) wnck_workspace_get_height (active_space);
+      vx = rect->x + width_ratio * wnck_workspace_get_viewport_x (active_space);
+      vy = rect->y + height_ratio * wnck_workspace_get_viewport_y (active_space);
+      vw = width_ratio * wnck_screen_get_width (pager->priv->screen);
+      vh = height_ratio * wnck_screen_get_height (pager->priv->screen);
+
+      gdk_draw_rectangle (GTK_WIDGET (pager)->window,
+                          prelight ? 
+                          GTK_WIDGET (pager)->style->mid_gc[GTK_STATE_SELECTED] :
+                          GTK_WIDGET (pager)->style->dark_gc[GTK_STATE_SELECTED],
+                          TRUE, vx, vy, vw, vh); 
+    }
   else if (prelight)
     gdk_draw_rectangle (GTK_WIDGET (pager)->window,
                         GTK_WIDGET (pager)->style->dark_gc[GTK_STATE_PRELIGHT],
@@ -770,8 +877,6 @@ wnck_pager_draw_workspace (WnckPager    *pager,
       PangoLayout *layout;
       int w, h;
 
-      
-
       workspace_name = wnck_workspace_get_name (wnck_screen_get_workspace (pager->priv->screen,
 									   workspace));
       layout = gtk_widget_create_pango_layout  (GTK_WIDGET (pager),
@@ -802,6 +907,7 @@ wnck_pager_expose_event  (GtkWidget      *widget,
   GdkPixbuf *bg_pixbuf;
   gboolean first;
   int drag_space;
+  int focus_width;
   
   pager = WNCK_PAGER (widget);
 
@@ -809,6 +915,21 @@ wnck_pager_expose_event  (GtkWidget      *widget,
   active_space = wnck_screen_get_active_workspace (pager->priv->screen);
   bg_pixbuf = NULL;
   first = TRUE;
+
+  gtk_widget_style_get (widget,
+			"focus-line-width", &focus_width,
+			NULL);
+
+  if (GTK_WIDGET_HAS_FOCUS (widget))
+    gtk_paint_focus (widget->style,
+		     widget->window,
+		     GTK_WIDGET_STATE (widget),
+		     NULL,
+		     widget,
+		     "pager",
+		     0, 0,
+		     widget->allocation.width,
+		     widget->allocation.height);
 
   if (pager->priv->shadow_type != GTK_SHADOW_NONE)
     {
@@ -819,15 +940,17 @@ wnck_pager_expose_event  (GtkWidget      *widget,
 			NULL,
 			widget,
 			"pager",
-			0, 0,
-			widget->allocation.width,
-			widget->allocation.height);
+			focus_width,
+			focus_width,
+			widget->allocation.width - 2 * focus_width,
+			widget->allocation.height - 2 * focus_width);
     }
   
   if (pager->priv->dragging)
     drag_space = workspace_at_point (pager,
                                      pager->priv->drag_window_x,
-                                     pager->priv->drag_window_y);
+                                     pager->priv->drag_window_y,
+                                     NULL, NULL);
   else
     drag_space = -1;
   
@@ -900,7 +1023,7 @@ wnck_pager_button_press (GtkWidget      *widget,
 						    
   pager = WNCK_PAGER (widget);
 
-  space_number = workspace_at_point (pager, event->x, event->y);
+  space_number = workspace_at_point (pager, event->x, event->y, NULL, NULL);
 
   if (space_number != -1)
     {
@@ -911,7 +1034,7 @@ wnck_pager_button_press (GtkWidget      *widget,
       space = wnck_screen_get_workspace (pager->priv->screen, space_number);
     }
 
-  if (space)
+  if (space && (pager->priv->display_mode != WNCK_PAGER_DISPLAY_NAME))
     {
       GList *windows;
       GList *tmp;
@@ -935,7 +1058,7 @@ wnck_pager_button_press (GtkWidget      *widget,
 	    {
 	      if (event->button == 1)
 		{
-		  // wnck_window_activate (win);
+		  /* wnck_window_activate (win); */
 		  pager->priv->drag_window = win;
 		  pager->priv->drag_start_x = event->x;
 		  pager->priv->drag_start_y = event->y;
@@ -994,15 +1117,14 @@ wnck_pager_button_release (GtkWidget        *widget,
   WnckPager *pager;
   int i;
   gboolean handled = FALSE;
-
+  int viewport_x;
+  int viewport_y;
+  
   pager = WNCK_PAGER (widget);
 
   if (event->button == 1 && pager->priv->dragging)
     {
-      
-      i = workspace_at_point (pager,
-                              event->x,
-                              event->y);
+      i = workspace_at_point (pager, event->x, event->y, NULL, NULL);
 
       if (i >= 0)
 	{
@@ -1022,22 +1144,42 @@ wnck_pager_button_release (GtkWidget        *widget,
     }
   else if (event->button == 1)
     {
-      i = workspace_at_point (pager,
-                              event->x,
-                              event->y);
+      i = workspace_at_point (pager, event->x, event->y, &viewport_x, &viewport_y);
 
-      if (i >= 0)
-	{
-	  space = wnck_screen_get_workspace (pager->priv->screen, i);
+      if (i >= 0 && (space = wnck_screen_get_workspace (pager->priv->screen, i)))
+	  {
+	    int screen_width, screen_height;
 
-	  if (space)
-            {
-              if (space != wnck_screen_get_active_workspace (pager->priv->screen))
-                wnck_workspace_activate (space);
-              else if (pager->priv->drag_window)
-                wnck_window_activate (pager->priv->drag_window);
-            }
-	}
+	    /* Don't switch the desktop if we're already there */
+	    if (space != wnck_screen_get_active_workspace (pager->priv->screen))
+	      wnck_workspace_activate (space);
+
+	    /* EWMH only lets us move the viewport for the active workspace,
+	     * but we just go ahead and hackily assume that the activate
+	     * just above takes effect prior to moving the viewport
+	     */
+
+	    /* Transform the pointer location to viewport origin, assuming
+	     * that we want the nearest "regular" viewport containing the
+	     * pointer.
+	     */
+	    screen_width  = wnck_screen_get_width  (pager->priv->screen);
+	    screen_height = wnck_screen_get_height (pager->priv->screen);
+	    viewport_x = (viewport_x / screen_width)  * screen_width;
+	    viewport_y = (viewport_y / screen_height) * screen_height;
+              
+	    if (wnck_workspace_get_viewport_x (space) != viewport_x ||
+		wnck_workspace_get_viewport_y (space) != viewport_y)
+	      wnck_screen_move_viewport (pager->priv->screen, viewport_x, viewport_y);
+            /* Activate the window clicked on *only* if it is in the
+             * current workspace.  Otherwise, the default window
+             * should be activated (but that's a job for the WM, not
+             * for the pager, as it is focus mode dependent).
+             */
+	    if ((space == wnck_screen_get_active_workspace (pager->priv->screen))
+                && (pager->priv->drag_window))
+	      wnck_window_activate (pager->priv->drag_window);
+	  }
       
       if (pager->priv->drag_window)
         wnck_pager_clear_drag (pager);
@@ -1338,6 +1480,13 @@ workspace_name_changed_callback (WnckWorkspace *space,
 }
 
 static void
+viewports_changed_callback (WnckWorkspace *space,
+                            gpointer       data)
+{
+  gtk_widget_queue_resize (GTK_WIDGET (data));
+}
+
+static void
 wnck_pager_connect_screen (WnckPager  *pager,
                            WnckScreen *screen)
 {
@@ -1406,6 +1555,11 @@ wnck_pager_connect_screen (WnckPager  *pager,
 
   c[i] = g_signal_connect (G_OBJECT (screen), "background_changed",
                            G_CALLBACK (background_changed_callback),
+                           pager);
+  ++i;
+
+  c[i] = g_signal_connect (G_OBJECT (screen), "viewports_changed",
+                           G_CALLBACK (viewports_changed_callback),
                            pager);
   ++i;
   
@@ -1625,7 +1779,7 @@ _wnck_pager_get_workspace (WnckPager *pager,
 void 
 _wnck_pager_activate_workspace (WnckWorkspace *wspace)
 {
-  wnck_workspace_activate (wspace); 
+  wnck_workspace_activate (wspace);
 }
 
 void

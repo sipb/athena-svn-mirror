@@ -1,8 +1,626 @@
-2003-02-05  Havoc Pennington  <hp@pobox.com>
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
-	* NEWS: update
+	* configure.in: Version 2.8.0.
 
-	* configure.in: 2.2.1
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.93.
+
+==================== 2.7.92 ====================
+
+2004-08-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.92.
+
+2004-08-26  J.H.M. Dassen (Ray) <jdassen@debian.org>
+
+	http://bugzilla.gnome.org/show_bug.cgi?id=150699:
+	Implemented API documentation generation using gtk-doc (adapted from
+	libgsf's setup).
+
+	* gtk-doc.make: Added; copied from gtk-doc-tools.
+	* doc/Makefile.am, doc/libwnck-docs.sgml, doc/libwnck-overrides.txt:
+	Added; adapted from libgsf.
+	* Makefile.am: Added `doc' subdir; include `gtk-doc.make' in release
+	tarballs.
+	* configure.in: Check for gtk-doc-tools.
+	* autogen.sh: Shorter replacement version (using gnome-common); bumped
+	minimal automake version to 1.6 (as the documentation generation
+	doesn't work with automake 1.4).
+	* README: Updated the note on documentation.
+
+2004-08-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add nb to ALL_LINGUAS.
+
+2004-08-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.92.
+
+==================== 2.7.91 ====================
+
+2004-08-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.91.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+2004-08-16  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* libwnck/workspace-accessible.c: 
+	(wnck_workspace_accessible_get_extents): Get the AtkComponent 
+	co-ordinates right.  Fixes #136447
+
+2004-08-15  Elijah Newren  <newren@math.utah.edu>
+
+	Fix window activation vs. minimization for mouse focus. (fixes
+	#136581)
+
+	* libwnck/screen.c (struct _WnckScreenPrivate): add a
+	previously_active_window field,
+	(wnck_screen_get_previously_active_window): new function,
+	(update_client_list): update the previously_active_window as well,
+	(update_active_window): also updates the previously_active_window
+	now.
+
+	* libwnck/screen.h Added wnck_screen_get_previously_active_window
+
+	* libwnck/tasklist.c (wnck_task_button_press_event): minimize when
+	the tasklist button is pressed if the window is the most recently
+	activated (instead of if the window is currently active).
+
+	* libwnck/window.[ch] (wnck_window_is_most_recently_activated):
+	new function
+
+2004-08-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* libwnck/wnck-enum-types.[ch],
+	  libwnck/wnck-marshal.[ch]: run "make regenerate-built-sources".
+	(Torsten Schoenfeld <kaffeetisch@gmx.de>, bug #125227)
+
+2004-08-07  Elijah Newren  <newren@math.utah.edu>
+
+	* libwnck/window.c (wnck_window_unminimize): call
+	wnck_window_activate_transient instead of _wnck_deiconify, because
+	unminimizing needs to send a timestamp to the window manager so
+	that the window's _NET_WM_USER_TIME can be updated.  This makes
+	left clicking on the tasklist do the same thing as right-clicking
+	on the tasklist and selecting unminimize.  (fixes issue 2 in
+	comment 97 of bug 118372)
+
+	* libwnck/xutils.c (_wnck_activate): send a timestamp with the
+	_NET_ACTIVE_WINODW message.  Not as thorough as the patch in bug
+	135024 (see comments 102-108 of bug 118372)
+
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.91.
+
+==================== 2.7.90 ====================
+
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.90.
+
+2004-07-25  Rob Adams  <readams@gnome.org>
+
+	Add support for _NET_WM_STATE_DEMANDS_ATTENTION hint.  This makes
+	labels in the tasklist bold for windows with the hint set, and
+	adds API for reading the hint.
+	
+	* libwnck/window.c (COMPRESS_STATE): add demands attention hint
+	(wnck_window_demands_attention): new function, returns the state
+	of the demands attention flag
+	(update_state): include demands attention in the list of updated
+	state
+
+	* libwnck/window.h (WnckWindowState): Add
+	WNCK_WINDOW_STATE_DEMANDS_ATTENTION
+	(wnck_window_demands_attention): add prototype for new API
+	function
+
+	* libwnck/wnck-enum-types.c: add demands attention hint
+
+	* libwnck/tasklist.c (eel_gtk_label_make_bold): new function,
+	copy/paste from eel.
+	(wnck_gtk_label_make_normal): inverse of make_bold
+	(wnck_task_update_visible_state): If demands attention is set,
+	make bold, otherwise make normal.
+	(wnck_task_state_changed): demands attention changes require
+	updating the visible state
+	(wnck_task_create_widgets): If demands attention is set, make
+	bold.
+	
+2004-07-22  James M. Cape  <jcape@ignore-your.tv>
+
+	* libwnck/tasklist.c: (wnck_task_get_text):
+	Display shaded windows as "= <name> =" instead of "[ <name> ]".
+
+2004-07-20  Arvind Samptur  <arvind.samptur@wipro.com>
+
+	* window-action-menu.c: (wnck_create_window_action_menu):
+	When the window is on all workspaces, sensitize all
+	workspaces in  Move to Another Workspace menu.
+	Fixes bug #147572
+
+2004-07-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.3.
+
+==================== 2.6.2.1 ====================
+
+2004-07-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.2.1.
+
+2004-06-25  Elijah Newren  <newren@math.utah.edu>
+
+	* libwnck/pager.c: Activate the window clicked in the pager only
+	if it is in the current workspace.  Fixes # 124981.
+
+2004-06-21  Anders Carlsson  <andersca@gnome.org>
+
+	* libwnck/window-action-menu.c: (item_activated_callback):
+	* libwnck/window.c: (wnck_window_close):
+	* libwnck/window.h:
+	* libwnck/xutils.c: (_wnck_close):
+	* libwnck/xutils.h:
+	Add timestamp argument to wnck_window_close.
+	
+2004-06-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.3
+
+==================== 2.6.2 ====================
+
+2004-06-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.2.
+
+2004-04-20  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch from Johan Persson <johpe916@student.liu.se>
+	in bug #138355.
+
+	* libwnck/window-action-menu.c:
+	(update_menu_state): don't show multi-workspace
+	related menu items if we've only one workspace.
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.2
+
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.1.
+	
+2004-04-19  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Neil Muller <neil@dip.sun.ac.za> in bug #133979
+
+	* libwnck/xutils.c: (find_largest_sizes), (find_best_size):
+	Don't down-size nitems from a gulong to an int. Fixes a
+	crash with enlightenment, apparently.
+
+2004-04-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libwnck/pager.c: (wnck_pager_button_press): AIX portability
+	fixes fro TheWrittenWord <bugzilla-gnome@thewrittenword.com>
+	* libwnck/tasklist.h: Same. Closes bug #125227.
+
+2004-04-16  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-04-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Kim Woelders in bug #122086.
+
+	* libwnck/pager.c: (wnck_pager_button_release): only switch
+	workspaces if actually clicking on a different workspace
+	and move to viewport co-ordinates (0, 0) rather then where
+	the mouse actually clicks.
+
+2004-04-10  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.6.1
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.0.1
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: doh, STARTUP_NOTIFICATION_PACKAGE is
+	still needed.
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in,
+	  libwnck-1.0-uninstalled.pc.in,
+	  libwnck-1.0.pc.in: remove explicit dependancy on
+	startup-notification since startup-notification headers
+	aren't actually required for building against libwnck.
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.6.0.
+
+2004-03-21  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-16  Alexander Winston  <alexander.winston@comcast.net>
+
+	* configure.in (GETTEXT_PACKAGE): Added "en_CA" (Canadian English)
+	ALL_LINGUAS.
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-02-24  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.90.
+
+2004-02-18  Laszlo Peter  <laca@sun.com>
+
+	* libwnck-1.0-uninstalled.pc.in: new
+	* Makefile.am: add the new .pc file to EXTRA_DIST
+	* configure.in: add the new .pc file to AC_OUTPUT
+
+2004-01-06  Leena Gunda  <leena.gunda@wipro.com>
+
+	* libwnck/window-action-menu.c:
+	(wnck_create_window_action_menu): Add the "Move to Workspace"
+	submenu to the actions menu.
+	(get_workspace_name_with_accel): Add mnemonics even to renamed
+	workspaces. Taken from metacity sources.
+	(item_activated_callback): Implement code to move the window to
+	specified workspace for MOVE_TO_WORKSPACE window action.
+	Fixes bug #96087.
+
+2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" in ALL_LINGUAS.
+
+2004-01-02  Padraig O'Briain  <padraigobriain@sun.com>
+
+	* libwnck/window.c (update_actions): Add check that atom name is 
+	not NULL. Fixes bug #127189.
+
+2003-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.1.
+
+2003-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes bug #124148 - minimize animation goes to wrong place
+	with grouped windows.
+
+	* libwnck/tasklist.c:
+	(wnck_tasklist_size_allocate): pass in visible_windows to
+	update_icon_geometries.
+	(wnck_tasklist_update_icon_geometries): iterate over the
+	visible tasks updating the associated window's icon
+	geometries from there.
+
+2003-11-22  Federico Mena Quintero  <federico@ximian.com>
+
+	* libwnck/tasklist.c (WnckTaskType): Added a WNCK_TASK_CLASS_GROUP
+	type.
+	(struct _WnckTask): Added a class_group field, analogous to the
+	application and window fields.
+	(struct _WnckTasklistPrivate): Added class_groups and
+	class_group_hash fields.  Replaced the active_app field with an
+	active_class_group field.
+	(wnck_task_new_from_window): Set the class_group of the task from
+	the window.
+	(wnck_tasklist_update_lists): Create a WnckClassGroup if
+	necessary; do not use widgets for applications.
+	(wnck_task_new_from_class_group): New function.
+	(wnck_task_new_from_application): Set the class_group of the task
+	to NULL.
+	(wnck_task_new_from_startup_sequence): Likewise.
+	(wnck_task_compare): Sort groups before everything else.
+	(wnck_task_state_changed): Use the class_group rather than the
+	application.
+	(wnck_task_get_text): Handle class groups.
+	(wnck_task_button_toggled): Likewise.
+	(wnck_task_popup_menu): Handle class groups as well as
+	applications.
+	(wnck_tasklist_free_tasks): s/active_app/active_class_group.
+	(wnck_tasklist_change_active_task): Likewise.
+	(wnck_task_finalize): Unref the class_group.
+	(wnck_tasklist_init): Create the class_group_hash.
+	(wnck_tasklist_finalize): Free the class_group_hash.
+	(wnck_tasklist_size_request): Use the class groups rather than
+	applications.
+	(wnck_tasklist_size_allocate): Likewise.
+	(wnck_tasklist_forall): Likewise.
+	(wnck_tasklist_remove): Likewise.
+	(wnck_task_get_highest_scored): Likewise.
+	(wnck_tasklist_score_groups): Likewise.
+	(wnck_task_new_from_application): Do not create widgets.
+	(wnck_task_button_toggled): We don't need the window state here,
+	so don't fetch it.
+	(wnck_task_get_text): Use a window's name rather than its icon
+	name.  They seem to be the same for most windows, and Emacs screws
+	up the icon name, setting it to "emacs" only --- it's useless.
+	(WnckTaskType): Removed WNCK_TASK_APPLICATION.
+	(struct _WnckTask): Removed the application-related fields.
+	(struct _WnckTasklistPrivate): Likewise.
+	(wnck_task_finalize): Likewise.
+	(wnck_tasklist_finalize): Likewise.
+	(wnck_tasklist_free_tasks): Likewise.
+	(wnck_tasklist_update_lists): Likewise.
+	(wnck_task_popup_menu): Likewise.
+	(wnck_task_button_toggled): Likewise.
+	(wnck_task_get_text): Likewise.
+	(wnck_task_get_icon): Likewise.
+	(wnck_task_button_press_event): Likewise.
+	(wnck_task_create_widgets): Likewise.
+	(wnck_task_compare): Likewise.
+	(wnck_task_new_from_window): Likewise.
+	(wnck_task_new_from_startup_sequence): Likewise.
+	(wnck_task_app_name_changed): Removed.
+	(wnck_task_new_from_application): Removed.
+	(wnck_task_class_group_expose): Renamed from wnck_task_app_expose().
+
+	* libwnck/screen.h (struct _WnckScreenClass): Added
+	::class_group_opened() and ::class_group_closed() signals.
+
+	* libwnck/screen.c (update_client_list): Handle class groups by
+	creating new ones as needed and getting rid of empty ones.
+	(emit_class_group_opened): New function.
+	(emit_application_closed): New function.
+	(wnck_screen_class_init): Create the new signals.
+
+	* libwnck/window.c (struct _WnckWindowPrivate): Added a
+	class_group field.
+	(wnck_window_get_class_group): New function.
+	(_wnck_window_set_class_group): New function.
+
+	* libwnck/class-group.[ch]: New files that implement a simple
+	set of windows grouped by their resource class names.
+
+	* libwnck/Makefile.am: Added class-group.[ch].
+
+	* libwnck/test-tasklist.c (main): Set a default size so I don't
+	have to resize the test window every time.
+
+	* configure.in: Increment LIBWNCK_CURRENT and LIBWNCK_AGE.
+
+2003-11-17  Padraig O'Briain  <padraigobriain@sun.com>
+
+	* libwnck/tasklist.c (wnck_tasklist_init): Set translatable accessible 
+	name and description. Completes fix for bug #123953.
+
+2003-11-16  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 2.5.0
+
+	* libwnck/util.c (wnck_xid_read_resource_usage): new function
+	(wnck_pid_read_resource_usage): new
+
+2003-10-27  Michael Meeks  <michael@ximian.com>
+
+	* libwnck/window.c (find_last_transient_for): when
+	activating, prefer the main window over a utility
+	transient.
+
+2003-10-28  Padraig O'Briain  <padraigobriain@sun.com>
+
+	* libwnck/tasklist.c (wnck_tasklist_init): Set accessible name and 
+	description. Fixes bug #123953.
+
+2003-10-22  Vincent Untz  <vincent@vuntz.net>
+
+	* libwnck/tasklist.c: (wnck_task_create_widgets) left align the button
+	label and add some padding.
+	Fix bug #120363 and bug #99760.
+
+2003-10-22  Vincent Untz  <vincent@vuntz.net>
+
+	* libwnck/pager.c: (wnck_pager_button_press) don't begin a drag if the
+	pager is in NAME mode because we can't see the window.
+	Fix bug #119031.
+
+2003-10-22  Vincent Untz  <vincent@vuntz.net>
+
+	* libwnck/pager.c: (get_window_rect): clip the window rectangle so it
+	doesn't get out of the workspace rectangle.
+	Fix bug #104700.
+
+2003-10-21  Padraig O'Briain  <padraigobriain@sun.com>
+
+	* libwnck/window.c (force_update_now): Call emit_name_changed only
+	once when name is changed.
+
+2003-10-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mr" to ALL_LINGUAS.
+
+2003-10-06  Leena Gunda  <leena.gunda@wipro.com>
+
+       * libwnck/window-action-menu.c (wnck_create_window_action_menu):
+       sink the floating menu.
+       * libwnck/tasklist.c (wnck_task_finalize):
+       unref the action's menu.
+       Fixes bug #114834
+
+Wed Sep 10 14:52:10 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* configure.in: Rerelease 2.4.0.1 to fix glib-gettext problem.
+
+2003-09-08  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 2.4.0
+	
+2003-09-02  Gediminas Paulauskas  <menesis@delfi.lt>
+
+	* configure.in: Added lt to ALL_LINGUAS.
+
+2003-07-29  Arvind Samptur <arvind.samptur@wipro.com>
+
+	* libwnck/xutils.c (_wnck_get_utf8_list): Number of
+	strings we are processing is one more than required.
+	Fixes workspace switcher having workspaces names blank
+	when adding new workspaces. Random problem.
+
+	Also get the string count right even without a null byte at the end
+	Pointed out by Havoc.
+
+2003-07-20  Mariano Suárez-Alvarez <msuarezalvarez@arnet.com.ar>
+
+	* libwnck/window.c(force_update_now): slightly reorder the updating of
+	window names and icon names, avoiding bogus update when changing the
+	window name if the icon name is set. bug #17994.
+
+2003-07-11  Havoc Pennington  <hp@redhat.com>
+
+	* libwnck/tasklist.c, libwnck/window.c: patch from Kim Woelders to
+	update tasklist as windows move between viewports, and include
+	windows even if they are offscreen if the workspace is not virtual
+	(viewport is same size as screen).
+	bug #114620
+
+2003-06-15  JoÃ«l Brich <joel.brich@laposte.net>
+
+	* configure.in: Added "eo" to ALL_LINGUAS.
+
+2003-06-07  SamÃºel JÃ³n Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in:  Added "is" into ALL_LINGUAS
+
+2003-06-05 Kenneth Rohde Christiansen <kenneth@gnu.org>
+
+	* configure.in: Added li to ALL_LINGUAS.
+
+2003-05-20  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: increment to 2.3.1, and bump libtool stuff to 
+	indicate that interfaces were added.
+
+2003-05-13  Hidetoshi Tajima  <hidetoshi.tajima@sun.com>
+
+	* configure.in:
+	* libwnck/Makefile.am (libwnck_1_la_LIBADD): 
+	add -lX11 to LDFLAGS, fixing #112530.
+
+2003-05-06  Ross Burton  <ross@burtonini.com>
+
+	* libwnck/window.[ch]:
+	Add wnck_window_is_fullscreen() and wnck_window_set_fullscreen().
+
+2003-05-06  Danilo Å egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-03  Havoc Pennington  <hp@pobox.com>
+
+	Fix #77941
+	
+	* libwnck/xutils.c (_wnck_icon_cache_set_want_fallback): make it
+	actually do something
+
+	* libwnck/application.c (wnck_application_get_icon)
+	(wnck_application_get_mini_icon): fall back to icon from one of
+	the windows if no icon found for the entire application
+
+2003-05-01  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added "cy" (Welsh) to ALL_LIHGUAS
+
+        * po/cy.po: Added
+
+2003-04-19  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL.
+
+	* libwnck/Makefile.am (libwnck_1_la_LDFLAGS): add -no-undefined.
+
+2003-04-04  Havoc Pennington  <hp@pobox.com>
+
+	* libwnck/*: Throughout, add support for viewports in
+	tasklist/pager. #109654 patch from Kim Woelders
+	
+2003-04-04  Havoc Pennington  <hp@pobox.com>
+
+	* libwnck/xutils.c (get_cmap): fix to use correct system colormap
+	for the screen, #109480 from Arvind Samptur
+
+2003-04-03  Matt Wilson  <msw@redhat.com>
+
+	* libwnck/xutils.c (_wnck_set_desktop_layout): make sure that
+	_NET_DECKTOP_LAYOUT is only 4 elements.  Using "sizeof (data) / 4"
+	results in 8 elements being set on 64 bit platforms.  Just use "4"
+	instead.
+
+2003-03-28  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added "ta" (Tamil) to the languages' list ALL_LINGUAS.
+
+2003-03-26  Havoc Pennington  <hp@pobox.com>
+
+	* NEWS: update for 2.3.0 release
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-13  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: bump to 2.3.0.
+
+2003-03-13  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix bug #98357 - make the workspace switcher follow fitt's
+        law by being flush up against the screen edge. We do this
+	by drawing our own focus so libpanel-applet doesn't draw
+	it. Also, add a hack so the applet doesn't have to know
+	the panel's size in advance of allocation.
+
+	* libwnck/pager.c:
+	(wnck_pager_init): set CAN_FOCUS.
+	(wnck_pager_size_request): remove the width-for-height
+	requisition calculation from here. Also, account for
+	the focus line width.
+	(wnck_pager_size_allocate): calculate the workspace
+	size here and if it differs queue another resize so
+	we can get the width right. Hacky and slighlty 
+	dangerous but is safe with the panel. Also, account for
+	the focus line width.
+	(get_workspace_rect), (workspace_at_point): account for
+	the focus line.
+	(wnck_pager_expose_event): draw focus.
+
+2003-02-25  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-02-23  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ga" to ALL_LINGUAS.
+
+2003-02-20  Paisa Seeluangsawat  <paisa@colorado.edu>
+
+        * th.po: Added Thai translation.
+	* configure.in (ALL_LINGUAS): Added "th".
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "id" to ALL_LINGUAS.
 
 2003-01-26  Mark McLoughlin  <mark@skynet.ie>
 
@@ -10,10 +628,13 @@
 	Actually end the sequnce if we match the wmclass against
 	a window.
 
+2003-01-24  Gregory Merchan  <merchan@phys.lsu.edu>
+	
+	* libwnck/window-action-menu.c: Change mnemonics to match
+	metacity's. (Bug #104254)
+	
 2003-01-22  Havoc Pennington  <hp@pobox.com>
 
-        (not for 2.2.0)
-	
 	* libwnck/tasklist.c: time out startup sequences if we don't see
 	them end, and end them if a window is mapped with StartupWMClass.
 
@@ -28,12 +649,6 @@
 2003-01-22  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "mn" to ALL_LINGUAS.
-
-2003-01-20  Havoc Pennington  <hp@pobox.com>
-
-	* NEWS: update
-
-	* configure.in: 2.2.0
 
 2003-01-14  Pablo Saratxaga  <pablo@mandrakesoft.com>
 

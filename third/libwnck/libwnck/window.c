@@ -2,6 +2,8 @@
 
 /*
  * Copyright (C) 2001 Havoc Pennington
+ * Copyright (C) 2003 Kim Woelders
+ * Copyright (C) 2003 Red Hat, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -21,6 +23,7 @@
 
 #include <string.h>
 #include "window.h"
+#include "class-group.h"
 #include "xutils.h"
 #include "private.h"
 #include "wnck-enum-types.h"
@@ -42,13 +45,16 @@ static GHashTable *window_hash = NULL;
     ((window)->priv->skip_pager          << 4) |        \
     ((window)->priv->skip_taskbar        << 5) |        \
     ((window)->priv->is_sticky           << 6) |        \
-    ((window)->priv->is_hidden           << 7) )
+    ((window)->priv->is_hidden           << 7) |        \
+    ((window)->priv->is_fullscreen       << 8) |        \
+    ((window)->priv->demands_attention   << 9) )
 
 struct _WnckWindowPrivate
 {
   Window xwindow;
   WnckScreen *screen;
   WnckApplication *app;
+  WnckClassGroup *class_group;
   Window group_leader;
   Window transient_for;
   char *name;
@@ -91,6 +97,8 @@ struct _WnckWindowPrivate
   guint skip_taskbar : 1;
   guint is_sticky : 1;
   guint is_hidden : 1;
+  guint is_fullscreen : 1;
+  guint demands_attention : 1;
 
   /* _NET_WM_STATE_HIDDEN doesn't map directly into an
    * externally-visible state (it determines the WM_STATE
@@ -475,6 +483,14 @@ wnck_window_get_xid (WnckWindow *window)
   return window->priv->xwindow;
 }
 
+WnckClassGroup *
+wnck_window_get_class_group (WnckWindow *window)
+{
+  g_return_val_if_fail (WNCK_IS_WINDOW (window), NULL);
+
+  return window->priv->class_group;
+}
+
 /**
  * wnck_window_get_session_id:
  * @window: a #WnckWindow
@@ -568,6 +584,25 @@ wnck_window_is_minimized (WnckWindow *window)
 
   return window->priv->is_minimized;
 }
+
+/**
+ * wnck_window_demands_attention:
+ * @window: a #WnckWindow
+ *
+ * If the window is has the demands attention state set returns
+ * %TRUE. This state may change anytime a state_changed signal gets
+ * emitted.
+ *
+ * Return value: %TRUE if window is minimized
+ **/
+gboolean
+wnck_window_demands_attention (WnckWindow *window)
+{
+  g_return_val_if_fail (WNCK_IS_WINDOW (window), FALSE);
+
+  return window->priv->demands_attention;
+}
+
 
 gboolean
 wnck_window_is_maximized_horizontally (WnckWindow *window)
@@ -679,6 +714,14 @@ wnck_window_is_skip_tasklist          (WnckWindow *window)
   return window->priv->skip_taskbar;
 }
 
+gboolean
+wnck_window_is_fullscreen                 (WnckWindow *window)
+{
+  g_return_val_if_fail (WNCK_IS_WINDOW (window), FALSE);
+
+  return window->priv->is_fullscreen;
+}
+
 void
 wnck_window_set_skip_tasklist (WnckWindow *window,
                                gboolean skip)
@@ -688,6 +731,18 @@ wnck_window_set_skip_tasklist (WnckWindow *window,
 		      window->priv->xwindow,
                       skip,
                       _wnck_atom_get ("_NET_WM_STATE_SKIP_TASKBAR"),
+                      0);
+}
+
+void
+wnck_window_set_fullscreen (WnckWindow *window,
+                               gboolean fullscreen)
+{
+  g_return_if_fail (WNCK_IS_WINDOW (window));
+  _wnck_change_state (WNCK_SCREEN_XSCREEN (window->priv->screen),
+		      window->priv->xwindow,
+                      fullscreen,
+                      _wnck_atom_get ("_NET_WM_STATE_FULLSCREEN"),
                       0);
 }
 
@@ -712,12 +767,13 @@ wnck_window_is_sticky                 (WnckWindow *window)
 }
 
 void
-wnck_window_close (WnckWindow *window)
+wnck_window_close (WnckWindow *window,
+		   guint32     timestamp)
 {
   g_return_if_fail (WNCK_IS_WINDOW (window));
 
   _wnck_close (WNCK_SCREEN_XSCREEN (window->priv->screen),
-	       window->priv->xwindow);
+	       window->priv->xwindow, timestamp);
 }
 
 void
@@ -733,7 +789,7 @@ wnck_window_unminimize              (WnckWindow *window)
 {
   g_return_if_fail (WNCK_IS_WINDOW (window));
 
-  _wnck_deiconify (window->priv->xwindow);
+  wnck_window_activate_transient (window);
 }
 
 void
@@ -993,6 +1049,38 @@ wnck_window_is_active (WnckWindow *window)
   return window == wnck_screen_get_active_window (window->priv->screen);
 }
 
+/**
+ * wnck_window_is_most_recently_activated:
+ * @window: a #WnckWindow
+ *
+ * Determines whether @window is the most recently activated window.
+ * The most recently activated window is identical to the active
+ * window for click and sloppy focus methods (since a window is always
+ * active in those cases) but differs slightly for mouse focus since
+ * we often have no window active.
+ *
+ * Return value: %TRUE if window was the most recently activated window
+ **/
+gboolean
+wnck_window_is_most_recently_activated (WnckWindow *window)
+{
+  WnckWindow * current;
+  WnckWindow * previous;
+  WnckWindow * most_recently_activated_window;
+
+  g_return_val_if_fail (WNCK_IS_WINDOW (window), FALSE);
+
+  current  = wnck_screen_get_active_window (window->priv->screen);
+  previous = wnck_screen_get_previously_active_window (window->priv->screen);
+
+  if (current)
+    most_recently_activated_window = current;
+  else
+    most_recently_activated_window = previous;
+
+  return (window == most_recently_activated_window);
+}
+
 
 static WnckWindow*
 find_last_transient_for (GList *windows,
@@ -1010,7 +1098,8 @@ find_last_transient_for (GList *windows,
     {
       WnckWindow *w = tmp->data;
 
-      if (w->priv->transient_for == xwindow)
+      if (w->priv->transient_for == xwindow &&
+	  w->priv->wintype != WNCK_WINDOW_UTILITY)
         retval = w;
       
       tmp = tmp->next;
@@ -1284,6 +1373,45 @@ wnck_window_is_on_workspace (WnckWindow    *window,
     wnck_window_get_workspace (window) == workspace;
 }
 
+/**
+ * wnck_window_is_in_viewport:
+ * @window: a #WnckWindow
+ * @workspace: a #WnckWorkspace
+ * 
+ * Returns #TRUE if the window is inside the current viewport
+ * of the given workspace.
+ * 
+ * Return value: %TRUE if @window appears in current viewport
+ **/
+gboolean
+wnck_window_is_in_viewport (WnckWindow    *window,
+                            WnckWorkspace *workspace)
+{
+  GdkRectangle window_rect;
+  GdkRectangle viewport_rect;
+  
+  g_return_val_if_fail (WNCK_IS_WINDOW (window), FALSE);
+  g_return_val_if_fail (WNCK_IS_WORKSPACE (workspace), FALSE);
+
+  if (wnck_window_is_pinned (window) )
+    return TRUE;
+
+  if (wnck_window_get_workspace (window) != workspace)
+    return FALSE;
+
+  viewport_rect.x = wnck_workspace_get_viewport_x (workspace);
+  viewport_rect.y = wnck_workspace_get_viewport_y (workspace);
+  viewport_rect.width = wnck_screen_get_width (window->priv->screen);
+  viewport_rect.height = wnck_screen_get_height (window->priv->screen);
+
+  window_rect.x = window->priv->x + viewport_rect.x;
+  window_rect.y = window->priv->y + viewport_rect.y;
+  window_rect.width = window->priv->width;
+  window_rect.height = window->priv->height;
+
+  return gdk_rectangle_intersect (&viewport_rect, &window_rect, &window_rect);
+}
+
 void
 _wnck_window_set_application (WnckWindow      *window,
                               WnckApplication *app)
@@ -1296,6 +1424,20 @@ _wnck_window_set_application (WnckWindow      *window,
   if (window->priv->app)
     g_object_unref (G_OBJECT (window->priv->app));
   window->priv->app = app;
+}
+
+void
+_wnck_window_set_class_group (WnckWindow     *window,
+			      WnckClassGroup *class_group)
+{
+  g_return_if_fail (WNCK_IS_WINDOW (window));
+  g_return_if_fail (class_group == NULL || WNCK_IS_CLASS_GROUP (class_group));
+
+  if (class_group)
+    g_object_ref (G_OBJECT (class_group));
+  if (window->priv->class_group)
+    g_object_unref (G_OBJECT (window->priv->class_group));
+  window->priv->class_group = class_group;
 }
 
 void
@@ -1452,6 +1594,7 @@ update_state (WnckWindow *window)
       window->priv->skip_taskbar = FALSE;
       window->priv->skip_pager = FALSE;
       window->priv->net_wm_state_hidden = FALSE;
+      window->priv->demands_attention = FALSE;
       
       atoms = NULL;
       n_atoms = 0;
@@ -1472,10 +1615,14 @@ update_state (WnckWindow *window)
             window->priv->is_sticky = TRUE;
           else if (atoms[i] == _wnck_atom_get ("_NET_WM_STATE_SHADED"))
             window->priv->is_shaded = TRUE;
+          else if (atoms[i] == _wnck_atom_get ("_NET_WM_STATE_FULLSCREEN"))
+            window->priv->is_fullscreen = TRUE;
           else if (atoms[i] == _wnck_atom_get ("_NET_WM_STATE_SKIP_TASKBAR"))
             window->priv->skip_taskbar = TRUE;
           else if (atoms[i] == _wnck_atom_get ("_NET_WM_STATE_SKIP_PAGER"))
             window->priv->skip_pager = TRUE;
+          else if (atoms[i] == _wnck_atom_get ("_NET_WM_STATE_DEMANDS_ATTENTION"))
+            window->priv->demands_attention = TRUE;
 
           ++i;
         }
@@ -1683,7 +1830,10 @@ update_actions (WnckWindow *window)
       else if (atoms[i] == _wnck_atom_get ("_NET_WM_ACTION_CLOSE"))
         window->priv->actions |= WNCK_WINDOW_ACTION_CLOSE;
       else
-        g_warning ("Unhandled action type %s", _wnck_atom_name (atoms [i]));
+        {
+          const char *name = _wnck_atom_name (atoms [i]);
+          g_warning ("Unhandled action type %s", name ? name: "(nil)");
+        }
 
       i++;
     }
@@ -1841,6 +1991,7 @@ force_update_now (WnckWindow *window)
   WnckWindowActions old_actions;
   char *old_name;
   char *old_icon_name;
+  gboolean do_emit_name_changed = FALSE;
   
   unqueue_update (window);
 
@@ -1851,21 +2002,23 @@ force_update_now (WnckWindow *window)
    */
 
   old_name = window->priv->name;
-  old_icon_name = window->priv->icon_name;
   window->priv->name = NULL;
-  window->priv->icon_name = NULL;
 
   update_name (window);
-  update_icon_name (window);
 
   if (window->priv->name == NULL)
     window->priv->name = old_name;
   else
     {
       if (strcmp (window->priv->name, old_name) != 0)
-        emit_name_changed (window);
+        do_emit_name_changed = TRUE;
       g_free (old_name);
     }
+
+  old_icon_name = window->priv->icon_name;
+  window->priv->icon_name = NULL;
+
+  update_icon_name (window);
 
   if (window->priv->icon_name == NULL)
     window->priv->icon_name = old_icon_name;
@@ -1873,9 +2026,12 @@ force_update_now (WnckWindow *window)
     {
       if (old_icon_name == NULL ||
           strcmp (window->priv->icon_name, old_icon_name) != 0)
-        emit_name_changed (window);
+        do_emit_name_changed = TRUE;
       g_free (old_icon_name);
     }
+
+  if (do_emit_name_changed)
+    emit_name_changed (window);
 
   old_state = COMPRESS_STATE (window);
   old_actions = window->priv->actions;

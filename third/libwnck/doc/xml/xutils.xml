@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libwnck-xutils">
+<refmeta>
+<refentrytitle>xutils</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBWNCK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>xutils</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="WNCK-STOCK-DELETE-CAPS">WNCK_STOCK_DELETE</link>
+#define     <link linkend="WNCK-STOCK-MAXIMIZE-CAPS">WNCK_STOCK_MAXIMIZE</link>
+#define     <link linkend="WNCK-STOCK-MINIMIZE-CAPS">WNCK_STOCK_MINIMIZE</link>
+#define     <link linkend="WNCK-APP-WINDOW-EVENT-MASK-CAPS">WNCK_APP_WINDOW_EVENT_MASK</link>
+struct      <link linkend="WnckIconCache">WnckIconCache</link>;
+#define     <link linkend="WNCK-NO-MANAGER-TOKEN-CAPS">WNCK_NO_MANAGER_TOKEN</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="WNCK-STOCK-DELETE-CAPS"/>WNCK_STOCK_DELETE</title>
+<indexterm><primary>WNCK_STOCK_DELETE</primary></indexterm><programlisting>#define WNCK_STOCK_DELETE "wnck-stock-delete"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WNCK-STOCK-MAXIMIZE-CAPS"/>WNCK_STOCK_MAXIMIZE</title>
+<indexterm><primary>WNCK_STOCK_MAXIMIZE</primary></indexterm><programlisting>#define WNCK_STOCK_MAXIMIZE "wnck-stock-maximize"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WNCK-STOCK-MINIMIZE-CAPS"/>WNCK_STOCK_MINIMIZE</title>
+<indexterm><primary>WNCK_STOCK_MINIMIZE</primary></indexterm><programlisting>#define WNCK_STOCK_MINIMIZE "wnck-stock-minimize"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WNCK-APP-WINDOW-EVENT-MASK-CAPS"/>WNCK_APP_WINDOW_EVENT_MASK</title>
+<indexterm><primary>WNCK_APP_WINDOW_EVENT_MASK</primary></indexterm><programlisting>#define WNCK_APP_WINDOW_EVENT_MASK (PropertyChangeMask | StructureNotifyMask)
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WnckIconCache"/>struct WnckIconCache</title>
+<indexterm><primary>WnckIconCache</primary></indexterm><programlisting>struct WnckIconCache;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WNCK-NO-MANAGER-TOKEN-CAPS"/>WNCK_NO_MANAGER_TOKEN</title>
+<indexterm><primary>WNCK_NO_MANAGER_TOKEN</primary></indexterm><programlisting>#define WNCK_NO_MANAGER_TOKEN 0
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="libwnck-WnckWorkspace">
+<refmeta>
+<refentrytitle>WnckWorkspace</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBWNCK Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>WnckWorkspace</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="WnckWorkspacePrivate">WnckWorkspacePrivate</link>;
+<link linkend="int">int</link>         <link linkend="wnck-workspace-get-number">wnck_workspace_get_number</link>       (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);
+const <link linkend="char">char</link>* <link linkend="wnck-workspace-get-name">wnck_workspace_get_name</link>         (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);
+<link linkend="void">void</link>        <link linkend="wnck-workspace-change-name">wnck_workspace_change_name</link>      (<link linkend="WnckWorkspace">WnckWorkspace</link> *space,
+                                             const <link linkend="char">char</link> *name);
+<link linkend="void">void</link>        <link linkend="wnck-workspace-activate">wnck_workspace_activate</link>         (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);
+<link linkend="int">int</link>         <link linkend="wnck-workspace-get-width">wnck_workspace_get_width</link>        (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);
+<link linkend="int">int</link>         <link linkend="wnck-workspace-get-height">wnck_workspace_get_height</link>       (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);
+<link linkend="int">int</link>         <link linkend="wnck-workspace-get-viewport-x">wnck_workspace_get_viewport_x</link>   (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);
+<link linkend="int">int</link>         <link linkend="wnck-workspace-get-viewport-y">wnck_workspace_get_viewport_y</link>   (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);
+<link linkend="gboolean">gboolean</link>    <link linkend="wnck-workspace-is-virtual">wnck_workspace_is_virtual</link>       (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="WnckWorkspacePrivate"/>struct WnckWorkspacePrivate</title>
+<indexterm><primary>WnckWorkspacePrivate</primary></indexterm><programlisting>struct WnckWorkspacePrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-get-number"/>wnck_workspace_get_number ()</title>
+<indexterm><primary>wnck_workspace_get_number</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_workspace_get_number       (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);</programlisting>
+<para>
+</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckWorkspace"><type>WnckWorkspace</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> get the index of the workspace
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-get-name"/>wnck_workspace_get_name ()</title>
+<indexterm><primary>wnck_workspace_get_name</primary></indexterm><programlisting>const <link linkend="char">char</link>* wnck_workspace_get_name         (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);</programlisting>
+<para>
+Gets the name that should be used to refer to the workspace
+in the user interface. If the user hasn't set a special name,
+will be something like "Workspace 3" - otherwise whatever name
+the user set.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckWorkspace"><type>WnckWorkspace</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> workspace name, never <literal>NULL</literal> 
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-change-name"/>wnck_workspace_change_name ()</title>
+<indexterm><primary>wnck_workspace_change_name</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_workspace_change_name      (<link linkend="WnckWorkspace">WnckWorkspace</link> *space,
+                                             const <link linkend="char">char</link> *name);</programlisting>
+<para>
+Try changing the name of the workspace.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckWorkspace"><type>WnckWorkspace</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
+<listitem><simpara> new workspace name
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-activate"/>wnck_workspace_activate ()</title>
+<indexterm><primary>wnck_workspace_activate</primary></indexterm><programlisting><link linkend="void">void</link>        wnck_workspace_activate         (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);</programlisting>
+<para>
+Ask window manager to make <parameter>space</parameter> the active workspace.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="WnckWorkspace"><type>WnckWorkspace</type></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-get-width"/>wnck_workspace_get_width ()</title>
+<indexterm><primary>wnck_workspace_get_width</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_workspace_get_width        (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-get-height"/>wnck_workspace_get_height ()</title>
+<indexterm><primary>wnck_workspace_get_height</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_workspace_get_height       (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-get-viewport-x"/>wnck_workspace_get_viewport_x ()</title>
+<indexterm><primary>wnck_workspace_get_viewport_x</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_workspace_get_viewport_x   (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-get-viewport-y"/>wnck_workspace_get_viewport_y ()</title>
+<indexterm><primary>wnck_workspace_get_viewport_y</primary></indexterm><programlisting><link linkend="int">int</link>         wnck_workspace_get_viewport_y   (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="wnck-workspace-is-virtual"/>wnck_workspace_is_virtual ()</title>
+<indexterm><primary>wnck_workspace_is_virtual</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    wnck_workspace_is_virtual       (<link linkend="WnckWorkspace">WnckWorkspace</link> *space);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

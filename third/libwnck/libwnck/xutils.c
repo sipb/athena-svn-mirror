@@ -557,13 +557,16 @@ _wnck_get_utf8_list (Window   xwindow,
    * property is nul-separated
    */
   i = 0;
-  n_strings = 1;
+  n_strings = 0;
   while (i < nitems)
     {
       if (val[i] == '\0')
         ++n_strings;
       ++i;
     }
+
+  if (val[nitems - 1] != '\0')
+    ++n_strings;
 
   /* we're guaranteed that val has a nul on the end
    * by XGetWindowProperty
@@ -826,7 +829,8 @@ _wnck_deiconify (Window xwindow)
 
 void
 _wnck_close (Screen *screen,
-	     Window  xwindow)
+	     Window  xwindow,
+	     Time    timestamp)
 {
   XEvent xev;
   
@@ -837,7 +841,7 @@ _wnck_close (Screen *screen,
   xev.xclient.window = xwindow;
   xev.xclient.message_type = _wnck_atom_get ("_NET_CLOSE_WINDOW");
   xev.xclient.format = 32;
-  xev.xclient.data.l[0] = 0;
+  xev.xclient.data.l[0] = timestamp;
   xev.xclient.data.l[1] = 0;
   xev.xclient.data.l[2] = 0;
 
@@ -971,6 +975,13 @@ _wnck_activate (Screen *screen,
 		Window  xwindow)
 {
   XEvent xev;
+
+  Time timestamp;
+
+  timestamp = gtk_get_current_event_time();
+  if (timestamp == 0)
+    g_warning ("Received a timestamp of 0; window activation may not "
+               "function properly.\n");
   
   xev.xclient.type = ClientMessage;
   xev.xclient.serial = 0;
@@ -979,8 +990,8 @@ _wnck_activate (Screen *screen,
   xev.xclient.window = xwindow;
   xev.xclient.message_type = _wnck_atom_get ("_NET_ACTIVE_WINDOW");
   xev.xclient.format = 32;
-  xev.xclient.data.l[0] = 0;
-  xev.xclient.data.l[1] = 0;
+  xev.xclient.data.l[0] = 2;
+  xev.xclient.data.l[1] = timestamp;
   xev.xclient.data.l[2] = 0;
 
   XSendEvent (gdk_display,
@@ -1005,6 +1016,31 @@ _wnck_activate_workspace (Screen *screen,
   xev.xclient.format = 32;
   xev.xclient.data.l[0] = new_active_space;
   xev.xclient.data.l[1] = 0;
+  xev.xclient.data.l[2] = 0;
+
+  XSendEvent (gdk_display,
+	      RootWindowOfScreen (screen),
+              False,
+	      SubstructureRedirectMask | SubstructureNotifyMask,
+	      &xev);
+}
+
+void
+_wnck_change_viewport (Screen *screen,
+		       int     x,
+		       int     y)
+{
+  XEvent xev;
+  
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.display = gdk_display;
+  xev.xclient.window = RootWindowOfScreen (screen);
+  xev.xclient.message_type = _wnck_atom_get ("_NET_DESKTOP_VIEWPORT");
+  xev.xclient.format = 32;
+  xev.xclient.data.l[0] = x;
+  xev.xclient.data.l[1] = y;
   xev.xclient.data.l[2] = 0;
 
   XSendEvent (gdk_display,
@@ -1210,7 +1246,7 @@ _wnck_select_input (Window xwindow,
  */
 static gboolean
 find_largest_sizes (gulong *data,
-                    int     nitems,
+                    gulong  nitems,
                     int    *width,
                     int    *height)
 {
@@ -1245,7 +1281,7 @@ find_largest_sizes (gulong *data,
 
 static gboolean
 find_best_size (gulong  *data,
-                int      nitems,
+                gulong   nitems,
                 int      ideal_width,
                 int      ideal_height,
                 int     *width,
@@ -1552,7 +1588,8 @@ get_cmap (GdkPixmap *pixmap)
       else
         {
           /* Try system cmap */
-          cmap = gdk_colormap_get_system ();
+          GdkScreen *screen = gdk_drawable_get_screen (GDK_DRAWABLE (pixmap));
+          cmap = gdk_screen_get_system_colormap (screen);
           g_object_ref (G_OBJECT (cmap));
         }
     }
@@ -1854,7 +1891,7 @@ void
 _wnck_icon_cache_set_want_fallback (WnckIconCache *icon_cache,
                                     gboolean       setting)
 {
-  icon_cache->want_fallback = TRUE;
+  icon_cache->want_fallback = setting;
 }
 
 gboolean
@@ -2311,7 +2348,7 @@ _wnck_set_desktop_layout (Screen *xscreen,
                    RootWindowOfScreen (xscreen),
 		   _wnck_atom_get ("_NET_DESKTOP_LAYOUT"),
 		   XA_CARDINAL, 32, PropModeReplace,
-		   (guchar *)&data, sizeof (data) / 4);
+		   (guchar *)&data, 4);
 
   _wnck_error_trap_pop ();
 }

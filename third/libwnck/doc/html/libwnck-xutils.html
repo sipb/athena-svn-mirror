@@ -1,0 +1,30 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>xutils</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Libwnck Reference Manual"><link rel="up" href="ch01.html" title="API reference"><link rel="previous" href="libwnck-private.html" title="private"><link rel="next" href="libwnck-window-action-menu.html" title="window-action-menu"><link rel="part" href="intro.html" title="Part I. Libwnck Overview"><link rel="chapter" href="ch01.html" title="API reference"><link rel="refentry" href="libwnck-WnckApplication.html" title="WnckApplication"><link rel="refentry" href="libwnck-WnckWorkspace.html" title="WnckWorkspace"><link rel="refentry" href="libwnck-WnckPagerAccessibleFactory.html" title="WnckPagerAccessibleFactory"><link rel="refentry" href="libwnck-WnckPagerAccessible.html" title="WnckPagerAccessible"><link rel="refentry" href="libwnck-WnckWorkspaceAccessibleFactory.html" title="WnckWorkspaceAccessibleFactory"><link rel="refentry" href="libwnck-WnckScreen.html" title="WnckScreen"><link rel="refentry" href="libwnck-WnckWorkspaceAccessible.html" title="WnckWorkspaceAccessible"><link rel="refentry" href="libwnck-WnckClassGroup.html" title="WnckClassGroup"><link rel="refentry" href="libwnck-WnckTasklist.html" title="WnckTasklist"><link rel="refentry" href="libwnck-WnckWindow.html" title="WnckWindow"><link rel="refentry" href="libwnck-WnckPager.html" title="WnckPager"><link rel="refentry" href="libwnck-private.html" title="private"><link rel="refentry" href="libwnck-xutils.html" title="xutils"><link rel="refentry" href="libwnck-window-action-menu.html" title="window-action-menu"><link rel="refentry" href="libwnck-wnck-enum-types.html" title="wnck-enum-types"><link rel="refentry" href="libwnck-window-menu.html" title="window-menu"><link rel="refentry" href="libwnck-util.html" title="util"><link rel="section" href="libwnck-xutils.html#id2566222" title="Description"><link rel="section" href="libwnck-xutils.html#id2543281" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libwnck-private.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">Libwnck Reference Manual</th><td><a accesskey="n" href="libwnck-window-action-menu.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libwnck-xutils"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">xutils</span></h2><p>xutils &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libwnck-xutils.html#WNCK-STOCK-DELETE-CAPS">WNCK_STOCK_DELETE</a>
+#define     <a href="libwnck-xutils.html#WNCK-STOCK-MAXIMIZE-CAPS">WNCK_STOCK_MAXIMIZE</a>
+#define     <a href="libwnck-xutils.html#WNCK-STOCK-MINIMIZE-CAPS">WNCK_STOCK_MINIMIZE</a>
+#define     <a href="libwnck-xutils.html#WNCK-APP-WINDOW-EVENT-MASK-CAPS">WNCK_APP_WINDOW_EVENT_MASK</a>
+struct      <a href="libwnck-xutils.html#WnckIconCache">WnckIconCache</a>;
+#define     <a href="libwnck-xutils.html#WNCK-NO-MANAGER-TOKEN-CAPS">WNCK_NO_MANAGER_TOKEN</a>
+</pre></div><div class="refsect1" lang="en"><a name="id2566222"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2543281"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2587970"></a><h3><a name="WNCK-STOCK-DELETE-CAPS"></a>WNCK_STOCK_DELETE</h3><a class="indexterm" name="id2587977"></a><pre class="programlisting">#define WNCK_STOCK_DELETE "wnck-stock-delete"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2587988"></a><h3><a name="WNCK-STOCK-MAXIMIZE-CAPS"></a>WNCK_STOCK_MAXIMIZE</h3><a class="indexterm" name="id2587996"></a><pre class="programlisting">#define WNCK_STOCK_MAXIMIZE "wnck-stock-maximize"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2588007"></a><h3><a name="WNCK-STOCK-MINIMIZE-CAPS"></a>WNCK_STOCK_MINIMIZE</h3><a class="indexterm" name="id2588015"></a><pre class="programlisting">#define WNCK_STOCK_MINIMIZE "wnck-stock-minimize"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2588026"></a><h3><a name="WNCK-APP-WINDOW-EVENT-MASK-CAPS"></a>WNCK_APP_WINDOW_EVENT_MASK</h3><a class="indexterm" name="id2588035"></a><pre class="programlisting">#define WNCK_APP_WINDOW_EVENT_MASK (PropertyChangeMask | StructureNotifyMask)
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2588046"></a><h3><a name="WnckIconCache"></a>struct WnckIconCache</h3><a class="indexterm" name="id2588054"></a><pre class="programlisting">struct WnckIconCache;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2588064"></a><h3><a name="WNCK-NO-MANAGER-TOKEN-CAPS"></a>WNCK_NO_MANAGER_TOKEN</h3><a class="indexterm" name="id2591467"></a><pre class="programlisting">#define WNCK_NO_MANAGER_TOKEN 0
+</pre><p>
+
+</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libwnck-private.html"><b>&lt;&lt; private</b></a></td><td align="right"><a accesskey="n" href="libwnck-window-action-menu.html"><b>window-action-menu &gt;&gt;</b></a></td></tr></table></body></html>
