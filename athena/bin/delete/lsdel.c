@@ -11,12 +11,17 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.18 1991-06-04 19:05:47 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.19 1991-06-04 22:08:30 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
+#ifdef POSIX
+#include <dirent.h>
+#define direct dirent
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/param.h>
 #ifdef SYSV
 #include <string.h>
@@ -376,7 +381,12 @@ int *number;
      *number -= offset;
      files = (char **) realloc((char *) files,
 			       (unsigned) (sizeof(char *) * *number));
-     if ((*number != 0) && (! files)) {
+#ifdef MALLOC_0_RETURNS_NULL
+     if ((! files) && *number)
+#else
+     if (! files)
+#endif
+     {
 	  set_error(errno);
 	  error("realloc");
 	  return errno;

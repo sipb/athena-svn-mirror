@@ -11,12 +11,17 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.23 1991-02-28 18:44:00 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.24 1991-06-04 22:07:21 jik Exp $";
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
+#ifdef POSIX
+#include <dirent.h>
+#define direct dirent
+#else
 #include <sys/dir.h>
+#endif
 #include <sys/param.h>
 #ifdef SYSV
 #include <string.h>
@@ -267,7 +272,12 @@ int num;
      int retval;
      
      filelist = (listrec *) Malloc((unsigned) (sizeof(listrec) * num));
-     if (! filelist) {
+#ifdef MALLOC_0_RETURNS_NULL
+     if ((! filelist) && num)
+#else
+     if (! filelist)
+#endif
+     {
 	  set_error(errno);
 	  error("process_files");
 	  return error_code;
@@ -486,7 +496,12 @@ int *number;
      *number -= offset;
      files = (listrec *) realloc((char *) files,
 				 (unsigned) (sizeof(listrec) * *number));
-     if (! files) {
+#ifdef MALLOC_0_RETURNS_NULL
+     if ((! files) && *number)
+#else
+     if (! files)
+#endif
+     {
 	  set_error(errno);
 	  error("realloc");
 	  return errno;
