@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v 1.4 1989-03-24 10:05:27 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v 1.5 1989-04-11 13:46:29 jtkohl Exp $
 /**/#
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${KRB_LIB} ${DES_LIB}
 LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB}
@@ -14,6 +14,9 @@ OBJS = zstat.o
 
 SRCDIR= ${SRCTOP}/clients/zstat
 CODE= ${SRCS} Imakefile
+
+/* dummy rule so 'make' means 'make all' */
+all::
 
 depend::
 	(cd ../../server; make src)
