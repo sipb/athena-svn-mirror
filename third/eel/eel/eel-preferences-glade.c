@@ -112,6 +112,24 @@ eel_preferences_glade_connect_bool (GladeXML *dialog,
 	eel_preferences_glade_bool_update (toggle_button);
 }
 
+void
+eel_preferences_glade_connect_bool_slave (GladeXML *dialog,
+					  const char *component,
+					  const char *key)
+{
+	GtkToggleButton *toggle_button;
+
+	g_return_if_fail (dialog != NULL);
+	g_return_if_fail (component != NULL);
+	g_return_if_fail (key != NULL);
+
+	toggle_button = GTK_TOGGLE_BUTTON (glade_xml_get_widget (dialog, component));
+	
+	g_signal_connect_data (G_OBJECT (toggle_button), "toggled",
+			       G_CALLBACK (eel_preferences_glade_bool_toggled),
+			       g_strdup (key), (GClosureNotify) g_free, 0);
+}
+
 /* string enum (OptionMenu) preference */
 
 static void
@@ -189,6 +207,26 @@ eel_preferences_glade_connect_string_enum_option_menu (GladeXML *dialog,
 			  g_object_get_data (G_OBJECT (option_menu), EEL_PREFERENCES_GLADE_DATA_KEY));
 
 	eel_preferences_glade_string_enum_option_menu_update (GTK_OPTION_MENU (option_menu));
+}
+
+void
+eel_preferences_glade_connect_string_enum_option_menu_slave (GladeXML *dialog,
+							     const char *component,
+							     const char *key)
+{
+	GtkWidget *option_menu;
+
+	g_return_if_fail (dialog != NULL);
+	g_return_if_fail (component != NULL);
+	g_return_if_fail (key != NULL);
+	
+	option_menu = glade_xml_get_widget (dialog, component);
+
+	g_assert (g_object_get_data (G_OBJECT (option_menu), EEL_PREFERENCES_GLADE_DATA_MAP) != NULL);
+
+	g_signal_connect_data (G_OBJECT (option_menu), "changed",
+			       G_CALLBACK (eel_preferences_glade_string_enum_option_menu_changed),
+			       g_strdup (key), (GClosureNotify) g_free, 0);
 }
 
 /* int enum preference */

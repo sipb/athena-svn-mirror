@@ -1,7 +1,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Name:             eel2
 Summary:          Eazel Extensions Library.
-Version:          2.2.2
+Version:          2.2.4
 Release:          1
 License:          GPL
 Group:            System Environment/Libraries

@@ -1,19 +1,14 @@
 # traditional Chinese Translation of eel.
-# Copyright (C) 2000-2003 Free Software Foundation, Inc.
-#
-# GNOME 1.x:
+# Copyright (C) 2000, 01, 02, 03 Free Software Foundation, Inc.
 # Gong Yi LIAO <granziliao@sinamail.com>, 2000.
-# Joe Man <trmetal@yahoo.com.hk>, 2001.
-#
-# GNOME 2.x:
 # Joe Man <trmetal@yahoo.com.hk>, 2001.
 # Abel Cheung <maddog@linux.org.hk>, 2002-2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eel 2.2.0\n"
-"POT-Creation-Date: 2003-03-10 18:08+0100\n"
-"PO-Revision-Date: 2003-01-21 20:04+0800\n"
+"Project-Id-Version: eel 2.2.3\n"
+"POT-Creation-Date: 2003-05-07 13:26-0400\n"
+"PO-Revision-Date: 2003-05-01 07:24+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +50,7 @@ msgstr "自動換行"
 
 #: eel/eel-editable-label.c:377
 msgid "If set, wrap lines if the text becomes too wide."
-msgstr "如選用此選項，當字句太寬時會自動換行。"
+msgstr "如選用本選項，當字句太寬時會自動換行。"
 
 #: eel/eel-editable-label.c:384
 msgid "Cursor Position"
@@ -100,7 +95,7 @@ msgid ""
 msgstr ""
 "GConf 錯誤：\n"
 "  %s\n"
-"所有以後的錯誤訊息只會顯示在終端機內"
+"以後所有的錯誤訊息只會在指令列中顯示"
 
 #: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
@@ -144,29 +139,29 @@ msgstr "密碼(_P)："
 msgid "Remember this password"
 msgstr "紀錄這個密碼供日後使用"
 
-#: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
+#: eel/eel-stock-dialogs.c:468 eel/eel-stock-dialogs.c:501
 msgid "Info"
 msgstr "資訊"
 
-#: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
+#: eel/eel-stock-dialogs.c:503 eel/eel-stock-dialogs.c:561
 msgid "Details"
 msgstr "詳細資料"
 
-#: eel/eel-stock-dialogs.c:515
+#: eel/eel-stock-dialogs.c:526
 msgid "Warning"
 msgstr "警告"
 
-#: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
+#: eel/eel-stock-dialogs.c:537 eel/eel-stock-dialogs.c:559
 msgid "Error"
 msgstr "錯誤"
 
-#: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
+#: eel/eel-stock-dialogs.c:595 eel/eel-stock-dialogs.c:628
 msgid "Question"
 msgstr "問題"
 
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
-msgstr " (無效的 Unicode)"
+msgstr " (出現無效的統一碼)"
 
 #~ msgid "Bold"
 #~ msgstr "粗體"
@@ -197,6 +192,3 @@ msgstr " (無效的 Unicode)"
 
 #~ msgid "Semicondensed"
 #~ msgstr "半收窄字距"
-
-#~ msgid "More..."
-#~ msgstr "更多..."

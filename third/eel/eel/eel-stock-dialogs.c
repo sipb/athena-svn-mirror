@@ -201,6 +201,14 @@ timed_wait_dialog_destroy_callback (GtkObject *object, gpointer callback_data)
 	}
 }
 
+static void
+trash_dialog_response_callback (GtkDialog *dialog,
+				int response_id,
+				TimedWait *wait)
+{
+	gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
 static gboolean
 timed_wait_callback (gpointer callback_data)
 {
@@ -241,6 +249,9 @@ timed_wait_callback (gpointer callback_data)
 	 */
 	g_signal_connect (dialog, "destroy",
 			  G_CALLBACK (timed_wait_dialog_destroy_callback),
+			  wait);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (trash_dialog_response_callback),
 			  wait);
 
 	wait->timeout_handler_id = 0;

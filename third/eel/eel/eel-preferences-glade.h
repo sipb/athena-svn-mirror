@@ -29,25 +29,31 @@
 
 G_BEGIN_DECLS
 
-void eel_preferences_glade_connect_bool				(GladeXML    *dialog,
-								 const char  *component,
-								 const char  *key);
-void eel_preferences_glade_connect_string_enum_option_menu	(GladeXML    *dialog,
-								 const char  *component,
-								 const char  *key,
-								 const char **values);
-void eel_preferences_glade_connect_int_enum			(GladeXML    *dialog,
-								 const char  *component,
-								 const char  *key,
-								 const int   *values);
-void eel_preferences_glade_connect_string_enum_radio_button	(GladeXML    *dialog,
-								 const char **components,
-								 const char  *key,
-								 const char **values);
-void eel_preferences_glade_connect_list_enum			(GladeXML    *dialog,
-						   		 const char **components,
-								 const char  *key,
-								 const char **values);
+void eel_preferences_glade_connect_bool				 (GladeXML    *dialog,
+								  const char  *component,
+								  const char  *key);
+void eel_preferences_glade_connect_bool_slave			 (GladeXML    *dialog,
+								  const char  *component,
+								  const char  *key);
+void eel_preferences_glade_connect_string_enum_option_menu	 (GladeXML    *dialog,
+								  const char  *component,
+								  const char  *key,
+								  const char **values);
+void eel_preferences_glade_connect_string_enum_option_menu_slave (GladeXML    *dialog,
+								  const char  *component,
+								  const char  *key);
+void eel_preferences_glade_connect_int_enum			 (GladeXML    *dialog,
+								  const char  *component,
+								  const char  *key,
+								  const int   *values);
+void eel_preferences_glade_connect_string_enum_radio_button	 (GladeXML    *dialog,
+								  const char **components,
+								  const char  *key,
+								  const char **values);
+void eel_preferences_glade_connect_list_enum			 (GladeXML    *dialog,
+						   		  const char **components,
+								  const char  *key,
+								  const char **values);
 
 G_END_DECLS
 
