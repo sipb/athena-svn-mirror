@@ -4,8 +4,8 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v $
- *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.1 1988-07-19 10:26:52 jtkohl Exp $
+ *	$Author: raeburn $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zsrv_conf.h,v 1.2 1990-12-12 01:19:26 raeburn Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -43,10 +43,10 @@
 
 /* server-server defines */
 #define	TIMO_UP		((long) 60)	/* timeout between up and tardy */
-#define	TIMO_TARDY	((long) 60)	/* timeout btw tardy hellos */
+#define	TIMO_TARDY	((long) 120)	/* timeout btw tardy hellos */
 #define	TIMO_DEAD	((long)(15*60))	/* timeout between hello's for dead */
 
-#define	H_NUM_TARDY	3		/* num hello's before going dead
+#define	H_NUM_TARDY	5		/* num hello's before going dead
 					   when tardy */
 #define	H_NUM_STARTING	2		/* num hello's before going dead
 					   when starting */
