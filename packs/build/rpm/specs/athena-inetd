@@ -48,7 +48,7 @@ cp /etc/inetd.conf.minimal /etc/inetd.conf
 	|| echo "gshell		3715/tcp	# gsh service"
 ) >> /etc/services
 
-[ grep -q ACCESSON /etc/athena/rc.conf ] || cat << EOF >> /etc/athena/rc.conf
+grep -q ACCESSON /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ACCESSON=false;		export ACCESSON		#  Access on by default
 EOF
 
