@@ -1,5 +1,5 @@
 # hints/sunos_4_1.sh
-# Last modified:  Thu Feb  8 11:46:05 EST 1996
+# Last modified:  Wed May 27 11:00:02 EDT 1998
 # Andy Dougherty  <doughera@lafcol.lafayette.edu>
 
 case "$cc" in
@@ -25,10 +25,20 @@ d_tzname='undef'
 # The gcc fix-includes script exposes those incorrect prototypes.
 # There may be other examples as well.  Volunteers are welcome to
 # track them all down :-).  In the meantime, we'll just skip unistd.h
-# for SunOS in most of the code. The POSIX extension is built with
-# unistd.h because, even though unistd.h has problems, if used with
-# care, it helps create a better POSIX extension.
+# for SunOS in most of the code.   
+# However, see ext/POSIX/hints/sunos_4.pl for one exception.
 i_unistd='undef'
+# See util.c for another:  We need _SC_OPEN_MAX, which is in
+# <unistd.h>.
+
+# fflush(NULL) will core dump on SunOS 4.1.3.  In util.c we'll
+# try explicitly fflushing all open files.  Unfortunately,
+# on my SunOS 4.1.3 system, sysconf(_SC_OPEN_MAX) returns
+# 64, but only 32 of those file pointers can be accessed 
+# directly by _iob[i].  The remainder are off in dynamically
+# allocated memory somewhere and I don't know to automatically
+# fflush() them.  -- Andy Dougherty  Wed May 26 15:25:22 EDT 1999
+util_cflags='ccflags="$ccflags -DPERL_FFLUSH_ALL_FOPEN_MAX=32"'
 
 cat << 'EOM' >&4
 
@@ -36,10 +46,6 @@ You will probably see  *** WHOA THERE!!! ***  messages from Configure for
 d_tzname and i_unistd.  Keep the recommended values.  See
 hints/sunos_4_1.sh for more information.
 EOM
-
-# SunOS 4.1.3 has two extra fields in struct tm.  This works around
-# the problem.  Other BSD platforms may have similar problems.
-POSIX_cflags='ccflags="$ccflags -DSTRUCT_TM_HASZONE"'
 
 # The correct setting of groupstype depends on which version of the C
 # library is used.  If you are in the 'System V environment'

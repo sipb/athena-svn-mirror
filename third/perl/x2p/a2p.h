@@ -1,4 +1,4 @@
-/* $RCSfile: a2p.h,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:05 $
+/* $RCSfile: a2p.h,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:47:56 $
  *
  *    Copyright (c) 1991-1997, Larry Wall
  *
@@ -9,6 +9,11 @@
  */
 
 #define VOIDUSED 1
+
+#ifdef WIN32
+#define _INC_WIN32_PERL5	/* kludge around win32 stdio layer */
+#endif
+
 #ifdef VMS
 #  include "config.h"
 #else
@@ -17,6 +22,26 @@
 
 #if defined(__STDC__) || defined(vax11c) || defined(_AIX) || defined(__stdc__) || defined(__cplusplus)
 # define STANDARD_C 1
+#endif
+
+#ifdef WIN32
+#undef USE_STDIO_PTR		/* XXX fast gets won't work, must investigate */
+#  ifndef STANDARD_C
+#    define STANDARD_C
+#  endif
+#  if defined(__BORLANDC__)
+#    pragma warn -ccc
+#    pragma warn -rch
+#    pragma warn -sig
+#    pragma warn -pia
+#    pragma warn -par
+#    pragma warn -aus
+#    pragma warn -use
+#    pragma warn -csu
+#    pragma warn -pro
+#  elif defined(_MSC_VER)
+#  elif defined(__MINGW32__)
+#  endif
 #endif
 
 /* Use all the "standard" definitions? */
@@ -48,13 +73,11 @@
 
 #define MEM_SIZE Size_t
 
-#ifdef STANDARD_C
-#   include <stdlib.h>
-#else
-    Malloc_t malloc _((MEM_SIZE nbytes));
-    Malloc_t calloc _((MEM_SIZE elements, MEM_SIZE size));
-    Malloc_t realloc _((Malloc_t where, MEM_SIZE nbytes));
-    Free_t   free _((Malloc_t where));
+#ifndef STANDARD_C
+    Malloc_t malloc (MEM_SIZE nbytes);
+    Malloc_t calloc (MEM_SIZE elements, MEM_SIZE size);
+    Malloc_t realloc (Malloc_t where, MEM_SIZE nbytes);
+    Free_t   free (Malloc_t where);
 #endif
 
 #if defined(I_STRING) || defined(__cplusplus)
@@ -63,10 +86,10 @@
 #   include <strings.h>
 #endif
 
-#ifndef HAS_BCOPY
+#if !defined(HAS_BCOPY) || defined(__cplusplus)
 #   define bcopy(s1,s2,l) memcpy(s2,s1,l)
 #endif
-#ifndef HAS_BZERO
+#if !defined(HAS_BZERO) || defined(__cplusplus)
 #   define bzero(s,l) memset(s,0,l)
 #endif
 
@@ -113,8 +136,13 @@
 /* All of these are in stdlib.h or time.h for ANSI C */
 Time_t time();
 struct tm *gmtime(), *localtime();
+#if defined(OEMVS) || defined(__OPEN_VM)
+char *(strchr)(), *(strrchr)();
+char *(strcpy)(), *(strcat)();
+#else
 char *strchr(), *strrchr();
 char *strcpy(), *strcat();
+#endif
 #endif /* ! STANDARD_C */
 
 #ifdef VMS
@@ -349,27 +377,27 @@ EXT STR *Str;
 #define GROWSTR(pp,lp,len) if (*(lp) < (len)) growstr(pp,lp,len)
 
 /* Prototypes for things in a2p.c */
-int aryrefarg _(( int arg ));
-int bl _(( int arg, int maybe ));
-void dump _(( int branch ));
-int fixfargs _(( int name, int arg, int prevargs ));
-int fixrargs _(( char *name, int arg, int prevargs ));
-void fixup _(( STR *str ));
-int numary _(( int arg ));
-int oper0 _(( int type ));
-int oper1 _(( int type, int arg1 ));
-int oper2 _(( int type, int arg1, int arg2 ));
-int oper3 _(( int type, int arg1, int arg2, int arg3 ));
-int oper4 _(( int type, int arg1, int arg2, int arg3, int arg4 ));
-int oper5 _(( int type, int arg1, int arg2, int arg3, int arg4, int arg5 ));
-void putlines _(( STR *str ));
-void putone _(( void ));
-int rememberargs _(( int arg ));
-char * scannum _(( char *s ));
-char * scanpat _(( char *s ));
-int string _(( char *ptr, int len ));
-void yyerror _(( char *s ));
-int yylex _(( void ));
+int aryrefarg ( int arg );
+int bl ( int arg, int maybe );
+void dump ( int branch );
+int fixfargs ( int name, int arg, int prevargs );
+int fixrargs ( char *name, int arg, int prevargs );
+void fixup ( STR *str );
+int numary ( int arg );
+int oper0 ( int type );
+int oper1 ( int type, int arg1 );
+int oper2 ( int type, int arg1, int arg2 );
+int oper3 ( int type, int arg1, int arg2, int arg3 );
+int oper4 ( int type, int arg1, int arg2, int arg3, int arg4 );
+int oper5 ( int type, int arg1, int arg2, int arg3, int arg4, int arg5 );
+void putlines ( STR *str );
+void putone ( void );
+int rememberargs ( int arg );
+char * scannum ( char *s );
+char * scanpat ( char *s );
+int string ( char *ptr, int len );
+void yyerror ( char *s );
+int yylex ( void );
 
 EXT int line INIT(0);
 
@@ -387,6 +415,10 @@ EXT int debug INIT(0);
 EXT int dlevel INIT(0);
 #define YYDEBUG 1
 extern int yydebug;
+#else
+# ifndef YYDEBUG
+#  define YYDEBUG 0
+# endif
 #endif
 
 EXT STR *freestrroot INIT(Nullstr);

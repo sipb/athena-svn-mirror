@@ -1,8 +1,6 @@
 #!./perl
 
-# $RCSfile: list.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:17 $
-
-print "1..27\n";
+print "1..28\n";
 
 @foo = (1, 2, 3, 4);
 if ($foo[0] == 1 && $foo[3] == 4) {print "ok 1\n";} else {print "not ok 1\n";}
@@ -81,3 +79,11 @@ for ($x = 0; $x < 3; $x++) {
     print $a,$b,$c;
 }
 
+# slices
+{
+    my @a = (0, undef, undef, 3);
+    my @b = @a[1,2];
+    my @c = (0, undef, undef, 3)[1, 2];
+    print "not " unless @b == @c and @c == 2;
+    print "ok 28\n";
+}

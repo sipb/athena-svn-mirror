@@ -1,7 +1,7 @@
 $!  Test.Com - DCL driver for perl5 regression tests
 $!
 $!  Version 1.1   4-Dec-1995
-$!  Charles Bailey  bailey@genetics.upenn.edu
+$!  Charles Bailey  bailey@newman.upenn.edu
 $
 $!  A little basic setup
 $   On Error Then Goto wrapup
@@ -21,14 +21,31 @@ $       EndIf
 $   EndIf
 $   Set Message /Facility/Severity/Identification/Text
 $
-$  exe = ".Exe"
-$  If p1.nes."" Then exe = p1
+$   exe = ".Exe"
+$   If p1.nes."" Then exe = p1
+$   If F$Extract(0,1,exe) .nes. "."
+$   Then
+$     Write Sys$Error ""
+$     Write Sys$Error "The first parameter passed to Test.Com must be the file type used for the"
+$     Write Sys$Error "images produced when you built Perl (i.e. "".Exe"", unless you edited"
+$     Write Sys$Error "Descrip.MMS or used the AXE=1 macro in the MM[SK] command line."
+$     Write Sys$Error ""
+$     Exit 44
+$   EndIf
+$!
+$!  "debug" perl if second parameter is nonblank
+$!
+$   dbg = ""
+$   ndbg = ""
+$   if p2.nes."" then dbg  = "dbg"
+$   if p2.nes."" then ndbg = "ndbg"
+$!
 $!  Pick up a copy of perl to use for the tests
 $   Delete/Log/NoConfirm Perl.;*
-$   Copy/Log/NoConfirm [-]Perl'exe' []Perl.
+$   Copy/Log/NoConfirm [-]'ndbg'Perl'exe' []Perl.
 $
 $!  Make the environment look a little friendlier to tests which assume Unix
-$   cat = "Type"
+$   cat == "Type"
 $   Macro/NoDebug/NoList/Object=Echo.Obj Sys$Input
 		.title echo
 		.psect data,wrt,noexe
@@ -71,15 +88,16 @@ $   Macro/NoDebug/NoList/Object=Echo.Obj Sys$Input
 		.end echo
 $   Link/NoMap/NoTrace/Exe=Echo.Exe Echo.Obj;
 $   Delete/Log/NoConfirm Echo.Obj;*
-$   echo = "$" + F$Parse("Echo.Exe")
+$   echo == "$" + F$Parse("Echo.Exe")
 $
 $!  And do it
+$   Show Process/Accounting
 $   testdir = "Directory/NoHead/NoTrail/Column=1"
-$   Define/User Perlshr Sys$Disk:[-]PerlShr'exe'
-$   MCR Sys$Disk:[]Perl. "-I[-.lib]" - "''p2'" "''p3'" "''p4'" "''p5'" "''p6'"
+$   Define/User 'dbg'Perlshr Sys$Disk:[-]'dbg'PerlShr'exe'
+$   MCR Sys$Disk:[]Perl. "-I[-.lib]" - "''p3'" "''p4'" "''p5'" "''p6'"
 $   Deck/Dollar=$$END-OF-TEST$$
-# $RCSfile: test.com,v $$Revision: 1.1.1.1 $$Date: 1997-11-13 01:50:00 $
-# Modified for VMS 30-Sep-1994  Charles Bailey  bailey@genetics.upenn.edu
+# $RCSfile: test.com,v $$Revision: 1.1.1.2 $$Date: 2000-04-07 20:47:14 $
+# Modified for VMS 30-Sep-1994  Charles Bailey  bailey@newman.upenn.edu
 #
 # This is written in a peculiar style, since we're trying to avoid
 # most of the constructs we'll be testing for.
@@ -90,11 +108,11 @@ $   Deck/Dollar=$$END-OF-TEST$$
 use Config;
 
 @compexcl=('cpp.t');
-@ioexcl=('argv.t','dup.t','fs.t','inplace.t','pipe.t');
-@libexcl=('anydbm.t','db-btree.t','db-hash.t','db-recno.t',
-          'gdbm.t','io_dup.t', 'io_pipe.t', 'io_sel.t', 'io_sock.t',
-          'ndbm.t','odbm.t','open2.t','open3.t','posix.t',
-          'sdbm.t');
+@ioexcl=('argv.t','dup.t','fs.t','pipe.t','openpid.t');
+@libexcl=('db-btree.t','db-hash.t','db-recno.t',
+          'gdbm.t','io_dup.t', 'io_pipe.t', 'io_poll.t', 'io_sel.t',
+          'io_sock.t', 'io_unix.t',
+          'ndbm.t','odbm.t','open2.t','open3.t', 'ph.t', 'posix.t', 'dprof.t');
 
 # Note: POSIX is not part of basic build, but can be built
 # separately if you're using DECC
@@ -103,7 +121,7 @@ use Config;
 # insists on stat()ing a file descriptor before it'll use it.
 push(@libexcl,'io_xs.t') if $Config{'vms_cc_type'} ne 'decc';
 
-@opexcl=('exec.t','fork.t','glob.t','groups.t','magic.t','misc.t','stat.t');
+@opexcl=('die_exit.t','exec.t','fork.t','glob.t','groups.t','magic.t','misc.t','stat.t');
 @exclist=(@compexcl,@ioexcl,@libexcl,@opexcl);
 foreach $file (@exclist) { $skip{$file}++; }
 
@@ -111,7 +129,7 @@ $| = 1;
 
 @ARGV = grep($_,@ARGV);  # remove empty elements due to "''p1'" syntax
 
-if ($ARGV[0] eq '-v') {
+if (lc($ARGV[0]) eq '-v') {
     $verbose = 1;
     shift;
 }
@@ -153,9 +171,10 @@ while ($test = shift) {
 	} else {
 	    $switch = '';
 	}
-	open(results,"\$ MCR Sys\$Disk:[]Perl. $switch $test |") || (print "can't run.\n");
+	open(results,"\$ MCR Sys\$Disk:[]Perl. \"-I[-.lib]\" $switch $test |") || (print "can't run.\n");
     $ok = 0;
     $next = 0;
+    $pending_not = 0;
     while (<results>) {
 	if ($verbose) {
 	    print "$te$_";
@@ -172,7 +191,10 @@ while ($test = shift) {
 		$next = $1, $ok = 0, last if /^not ok ([0-9]*)/;
 		next if /^\s*$/; # our 'echo' substitute produces one more \n than Unix'
 		if (/^ok (.*)/ && $1 == $next) {
+		    $next = $1, $ok=0, last if $pending_not;
 		    $next = $next + 1;
+		} elsif (/^not/) {
+		    $pending_not = 1;
 		} else {
 		    $ok = 0;
 		}
@@ -218,6 +240,7 @@ print sprintf("u=%g  s=%g  cu=%g  cs=%g  files=%d  tests=%d\n",
     $user,$sys,$cuser,$csys,$files,$totmax);
 $$END-OF-TEST$$
 $ wrapup:
+$   Show Process/Accounting
 $   If F$Search("Echo.Exe").nes."" Then Delete/Log/NoConfirm Echo.Exe;*
 $   Set Default &olddef
 $   Set Message 'oldmsg'

@@ -35,7 +35,7 @@ and a carp as a cluck across I<all> modules. In other words, force a
 detailed stack trace to be given.  This can be very helpful when trying
 to understand why, or from where, a warning or error is being generated.
 
-This feature is enabled by 'importing' the non-existant symbol
+This feature is enabled by 'importing' the non-existent symbol
 'verbose'. You would typically enable it by saying
 
     perl -MCarp=verbose script.pl
@@ -43,14 +43,30 @@ This feature is enabled by 'importing' the non-existant symbol
 or by including the string C<MCarp=verbose> in the L<PERL5OPT>
 environment variable.
 
+=head1 BUGS
+
+The Carp routines don't handle exception objects currently.
+If called with a first argument that is a reference, they simply
+call die() or warn(), as appropriate.
+
 =cut
 
 # This package is heavily used. Be small. Be fast. Be good.
+
+# Comments added by Andy Wardley <abw@kfs.org> 09-Apr-98, based on an
+# _almost_ complete understanding of the package.  Corrections and
+# comments are welcome.
+
+# The $CarpLevel variable can be set to "strip off" extra caller levels for
+# those times when Carp calls are buried inside other functions.  The
+# $Max(EvalLen|(Arg(Len|Nums)) variables are used to specify how the eval
+# text and function arguments should be formatted when printed.
 
 $CarpLevel = 0;		# How many extra package levels to skip on carp.
 $MaxEvalLen = 0;	# How much eval '...text...' to show. 0 = all.
 $MaxArgLen = 64;        # How much of each argument to print. 0 = all.
 $MaxArgNums = 8;        # How many arguments to print. 0 = all.
+$Verbose = 0;		# If true then make shortmess call longmess instead
 
 require Exporter;
 @ISA = ('Exporter');
@@ -58,119 +74,51 @@ require Exporter;
 @EXPORT_OK = qw(cluck verbose);
 @EXPORT_FAIL = qw(verbose);	# hook to enable verbose mode
 
+
+# if the caller specifies verbose usage ("perl -MCarp=verbose script.pl")
+# then the following method will be called by the Exporter which knows
+# to do this thanks to @EXPORT_FAIL, above.  $_[1] will contain the word
+# 'verbose'.
+
 sub export_fail {
     shift;
-    if ($_[0] eq 'verbose') {
-	local $^W = 0;
-	*shortmess = \&longmess;
-	shift;
-    }
+    $Verbose = shift if $_[0] eq 'verbose';
     return @_;
 }
 
 
+# longmess() crawls all the way up the stack reporting on all the function
+# calls made.  The error string, $error, is originally constructed from the
+# arguments passed into longmess() via confess(), cluck() or shortmess().
+# This gets appended with the stack trace messages which are generated for
+# each function call on the stack.
+
 sub longmess {
-    my $error = join '', @_;
-    my $mess = "";
-    my $i = 1 + $CarpLevel;
-    my ($pack,$file,$line,$sub,$hargs,$eval,$require);
-    my (@a);
-    while (do { { package DB; @a = caller($i++) } } ) {
-      ($pack,$file,$line,$sub,$hargs,undef,$eval,$require) = @a;
-	if ($error =~ m/\n$/) {
-	    $mess .= $error;
-	} else {
-	    if (defined $eval) {
-	        if ($require) {
-		    $sub = "require $eval";
-		} else {
-		    $eval =~ s/([\\\'])/\\$1/g;
-		    if ($MaxEvalLen && length($eval) > $MaxEvalLen) {
-			substr($eval,$MaxEvalLen) = '...';
-		    }
-		    $sub = "eval '$eval'";
-		}
-	    } elsif ($sub eq '(eval)') {
-		$sub = 'eval {...}';
-	    }
-	    if ($hargs) {
-	      @a = @DB::args;	# must get local copy of args
-	      if ($MaxArgNums and @a > $MaxArgNums) {
-		$#a = $MaxArgNums;
-		$a[$#a] = "...";
-	      }
-	      for (@a) {
-		$_ = "undef", next unless defined $_;
-		if (ref $_) {
-		  $_ .= '';
-		  s/'/\\'/g;
-		}
-		else {
-		  s/'/\\'/g;
-		  substr($_,$MaxArgLen) = '...'
-		    if $MaxArgLen and $MaxArgLen < length;
-		}
-		$_ = "'$_'" unless /^-?[\d.]+$/;
-		s/([\200-\377])/sprintf("M-%c",ord($1)&0177)/eg;
-		s/([\0-\37\177])/sprintf("^%c",ord($1)^64)/eg;
-	      }
-	      $sub .= '(' . join(', ', @a) . ')';
-	    }
-	    $mess .= "\t$sub " if $error eq "called";
-	    $mess .= "$error at $file line $line\n";
-	}
-	$error = "called";
-    }
-    # this kludge circumvents die's incorrect handling of NUL
-    my $msg = \($mess || $error);
-    $$msg =~ tr/\0//d;
-    $$msg;
+    { local $@; require Carp::Heavy; }	# XXX fix require to not clear $@?
+    goto &longmess_heavy;
 }
+
+
+# shortmess() is called by carp() and croak() to skip all the way up to
+# the top-level caller's package and report the error from there.  confess()
+# and cluck() generate a full stack trace so they call longmess() to
+# generate that.  In verbose mode shortmess() calls longmess() so
+# you always get a stack trace
 
 sub shortmess {	# Short-circuit &longmess if called via multiple packages
-    my $error = join '', @_;
-    my ($prevpack) = caller(1);
-    my $extra = $CarpLevel;
-    my $i = 2;
-    my ($pack,$file,$line);
-    my %isa = ($prevpack,1);
-
-    @isa{@{"${prevpack}::ISA"}} = ()
-	if(defined @{"${prevpack}::ISA"});
-
-    while (($pack,$file,$line) = caller($i++)) {
-	if(defined @{$pack . "::ISA"}) {
-	    my @i = @{$pack . "::ISA"};
-	    my %i;
-	    @i{@i} = ();
-	    @isa{@i,$pack} = ()
-		if(exists $i{$prevpack} || exists $isa{$pack});
-	}
-
-	next
-	    if(exists $isa{$pack});
-
-	if ($extra-- > 0) {
-	    %isa = ($pack,1);
-	    @isa{@{$pack . "::ISA"}} = ()
-		if(defined @{$pack . "::ISA"});
-	}
-	else {
-	    # this kludge circumvents die's incorrect handling of NUL
-	    (my $msg = "$error at $file line $line\n") =~ tr/\0//d;
-	    return $msg;
-	}
-    }
-    continue {
-	$prevpack = $pack;
-    }
-
-    goto &longmess;
+    { local $@; require Carp::Heavy; }	# XXX fix require to not clear $@?
+    goto &shortmess_heavy;
 }
 
-sub confess { die longmess @_; }
-sub croak { die shortmess @_; }
-sub carp { warn shortmess @_; }
-sub cluck { warn longmess @_; }
+
+# the following four functions call longmess() or shortmess() depending on
+# whether they should generate a full stack trace (confess() and cluck())
+# or simply report the caller's package (croak() and carp()), respectively.
+# confess() and croak() die, carp() and cluck() warn.
+
+sub croak   { die  shortmess @_ }
+sub confess { die  longmess  @_ }
+sub carp    { warn shortmess @_ }
+sub cluck   { warn longmess  @_ }
 
 1;

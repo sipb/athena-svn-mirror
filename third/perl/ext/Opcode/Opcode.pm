@@ -1,17 +1,17 @@
 package Opcode;
 
-require 5.002;
+require 5.005_64;
 
-use vars qw($VERSION $XS_VERSION @ISA @EXPORT_OK);
+our($VERSION, $XS_VERSION, @ISA, @EXPORT_OK);
 
 $VERSION = "1.04";
-$XS_VERSION = "1.02";
+$XS_VERSION = "1.03";
 
 use strict;
 use Carp;
 use Exporter ();
-use DynaLoader ();
-@ISA = qw(Exporter DynaLoader);
+use XSLoader ();
+@ISA = qw(Exporter);
 
 BEGIN {
     @EXPORT_OK = qw(
@@ -28,7 +28,7 @@ sub opset_to_hex ($);
 sub opdump (;$);
 use subs @EXPORT_OK;
 
-bootstrap Opcode $XS_VERSION;
+XSLoader::load 'Opcode', $XS_VERSION;
 
 _init_optags();
 
@@ -130,7 +130,7 @@ Your mileage will vary. If in any doubt B<do not use it>.
 =head1 Operator Names and Operator Lists
 
 The canonical list of operator names is the contents of the array
-op_name defined and initialised in file F<opcode.h> of the Perl
+PL_op_name defined and initialised in file F<opcode.h> of the Perl
 source distribution (and installed into the perl library).
 
 Each operator has both a terse name (its opname) and a more verbose or
@@ -152,7 +152,7 @@ like gv2cv, i_ncmp and ftsvtx.
 =item an operator tag name (optag)
 
 Operator tags can be used to refer to groups (or sets) of operators.
-Tag names always being with a colon. The Opcode module defines several
+Tag names always begin with a colon. The Opcode module defines several
 optags and the user can define others using the define_optag function.
 
 =item a negated opname or optag
@@ -326,17 +326,17 @@ invert_opset function.
 
     ucfirst lcfirst uc lc quotemeta trans chop schop chomp schomp
 
-    match split
+    match split qr
 
     list lslice splice push pop shift unshift reverse
 
     cond_expr flip flop andassign orassign and or xor
 
-    warn die lineseq nextstate unstack scope enter leave
+    warn die lineseq nextstate scope enter leave setstate
 
     rv2cv anoncode prototype
 
-    entersub leavesub return method -- XXX loops via recursion?
+    entersub leavesub leavesublv return method method_named -- XXX loops via recursion?
 
     leaveeval -- needed for Safe to operate, is safe without entereval
 
@@ -365,7 +365,7 @@ used to implement a resource attack (e.g., consume all available CPU time).
     grepstart grepwhile
     mapstart mapwhile
     enteriter iter
-    enterloop leaveloop
+    enterloop leaveloop unstack
     last next redo
     goto
 
@@ -398,7 +398,7 @@ These are a hotchpotch of opcodes still waiting to be considered
 
     bless -- could be used to change ownership of objects (reblessing)
 
-    pushre regcmaybe regcomp subst substcont
+    pushre regcmaybe regcreset regcomp subst substcont
 
     sprintf prtf -- can core dump
 
@@ -427,12 +427,18 @@ beyond the scope of the compartment.
 
     rand srand
 
+=item :base_thread
+
+These ops are related to multi-threading.
+
+    lock threadsv
+
 =item :default
 
 A handy tag name for a I<reasonable> default set of ops.  (The current ops
 allowed are unstable while development continues. It will change.)
 
-    :base_core :base_mem :base_loop :base_io :base_orig
+    :base_core :base_mem :base_loop :base_io :base_orig :base_thread
 
 If safety matters to you (and why else would you be using the Opcode module?)
 then you should not rely on the definition of this, or indeed any other, optag!
@@ -563,7 +569,7 @@ Originally designed and implemented by Malcolm Beattie,
 mbeattie@sable.ox.ac.uk as part of Safe version 1.
 
 Split out from Safe module version 1, named opcode tags and other
-changes added by Tim Bunce E<lt>F<Tim.Bunce@ig.co.uk>E<gt>.
+changes added by Tim Bunce.
 
 =cut
 

@@ -1,11 +1,20 @@
 #-*-perl-*-
+#
+# This library is no longer being maintained, and is included for backward
+# compatibility with Perl 4 programs which may require it.
+#
+# In particular, this should not be used as an example of modern Perl
+# programming techniques.
+#
+# Suggested alternative: Net::FTP
+#
 # This is a wrapper to the chat2.pl routines that make life easier
 # to do ftp type work.
 # Mostly by Lee McLoughlin <lmjm@doc.ic.ac.uk>
 # based on original version by Alan R. Martello <al@ee.pitt.edu>
 # And by A.Macpherson@bnr.co.uk for multi-homed hosts
 #
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/ftp.pl,v 1.1.1.1 1997-11-13 01:48:10 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/ftp.pl,v 1.1.1.2 2000-04-07 20:41:15 ghudson Exp $
 # $Log: not supported by cvs2svn $
 # Revision 1.17  1993/04/21  10:06:54  lmjm
 # Send all status reports to STDERR not to STDOUT (to allow use by ftpcat).

@@ -44,8 +44,9 @@ static ULONG PERLCALL(PSZ name, ULONG argc, PRXSTRING argv, PSZ queue, PRXSTRING
 static long incompartment;
 
 static SV*
-exec_in_REXX(char *cmd, char * handlerName, RexxFunctionHandler *handler)
+exec_in_REXX(pTHX_ char *cmd, char * handlerName, RexxFunctionHandler *handler)
 {
+    dTHR;
     HMODULE hRexx, hRexxAPI;
     BYTE    buf[200];
     LONG    APIENTRY (*pRexxStart) (LONG, PRXSTRING, PSZ, PRXSTRING, 
@@ -60,7 +61,8 @@ exec_in_REXX(char *cmd, char * handlerName, RexxFunctionHandler *handler)
     LONG rc;
     SV *res;
 
-    if (incompartment) die ("Attempt to reenter into REXX compartment");
+    if (incompartment)
+	Perl_die(aTHX_ "Attempt to reenter into REXX compartment");
     incompartment = 1;
 
     if (DosLoadModule(buf, sizeof buf, "REXX", &hRexx)
@@ -70,7 +72,7 @@ exec_in_REXX(char *cmd, char * handlerName, RexxFunctionHandler *handler)
 			    (PFN *)&pRexxRegisterFunctionExe)
 	|| DosQueryProcAddr(hRexxAPI, 0, "RexxDeregisterFunction",
 			    (PFN *)&pRexxDeregisterFunction)) {
-	die("REXX not available\n");
+	Perl_die(aTHX_ "REXX not available\n");
     }
 
     if (handlerName)
@@ -93,11 +95,12 @@ exec_in_REXX(char *cmd, char * handlerName, RexxFunctionHandler *handler)
     } else {
 	res = NEWSV(729,0);
     }
-    if (rc || SvTRUE(GvSV(errgv))) {
-	if (SvTRUE(GvSV(errgv))) {
-	    die ("Error inside perl function called from REXX compartment.\n%s", SvPV(GvSV(errgv), na)) ;
+    if (rc || SvTRUE(GvSV(PL_errgv))) {
+	if (SvTRUE(GvSV(PL_errgv))) {
+	    STRLEN n_a;
+	    Perl_die(aTHX_ "Error inside perl function called from REXX compartment.\n%s", SvPV(GvSV(PL_errgv), n_a)) ;
 	}
-	die ("REXX compartment returned non-zero status %li", rc);
+	Perl_die(aTHX_ "REXX compartment returned non-zero status %li", rc);
     }
 
     return res;
@@ -111,16 +114,17 @@ PERLSTART(PSZ name, ULONG argc, PRXSTRING argv, PSZ queue, PRXSTRING ret)
     return PERLCALL(NULL, argc, argv, queue, ret);
 }
 
-#define in_rexx_compartment() exec_in_REXX("return StartPerl()\r\n", \
+#define in_rexx_compartment() exec_in_REXX(aTHX_ "return StartPerl()\r\n", \
 					   "StartPerl", PERLSTART)
 #define REXX_call(cv) ( exec_cv = (cv), in_rexx_compartment())
 #define REXX_eval_with(cmd,name,cv) ( exec_cv = (cv),		\
-				      exec_in_REXX(cmd,name,PERLSTART))
+				      exec_in_REXX(aTHX_ cmd,name,PERLSTART))
 #define REXX_eval(cmd) REXX_eval_with(cmd,NULL,NULL)
 
 static ULONG
 PERLCALL(PSZ name, ULONG argc, PRXSTRING argv, PSZ queue, PRXSTRING ret)
 {
+    dTHX;
     EXCEPTIONREGISTRATIONRECORD xreg = { NULL, _emx_exception };
     int i, rc;
     unsigned long len;
@@ -132,7 +136,7 @@ PERLCALL(PSZ name, ULONG argc, PRXSTRING argv, PSZ queue, PRXSTRING ret)
 
     ENTER;
     SAVETMPS;
-    PUSHMARK(sp);
+    PUSHMARK(SP);
 
 #if 0
     if (!my_perl) {
@@ -215,17 +219,7 @@ initialize(void)
 }
 
 static int
-not_here(s)
-char *s;
-{
-    croak("%s not implemented on this architecture", s);
-    return -1;
-}
-
-static int
-constant(name, arg)
-char *name;
-int arg;
+constant(char *name, int arg)
 {
     errno = EINVAL;
     return 0;
@@ -241,49 +235,6 @@ int
 constant(name,arg)
 	char *		name
 	int		arg
-
-SV *
-_call(name, address, queue="SESSION", ...)
-	char *		name
-	void *		address
-	char *		queue
- CODE:
-   {
-       ULONG	rc;
-       int	argc, i;
-       RXSTRING	result;
-       UCHAR	resbuf[256];
-       RexxFunctionHandler *fcn = address;
-       argc = items-3;
-       needstrs(argc);
-       if (trace)
-	   fprintf(stderr, "REXXCALL::_call name: '%s' args:", name);
-       for (i = 0; i < argc; ++i) {
-	   STRLEN len;
-	   char *ptr = SvPV(ST(3+i), len);
-	   MAKERXSTRING(strs[i], ptr, len);
-	   if (trace)
-	       fprintf(stderr, " '%.*s'", len, ptr);
-       }
-       if (!*queue)
-	   queue = "SESSION";
-       if (trace)
-	   fprintf(stderr, "\n");
-       MAKERXSTRING(result, resbuf, sizeof resbuf);
-       rc = fcn(name, argc, strs, queue, &result);
-       if (trace)
-	   fprintf(stderr, "  rc=%X, result='%.*s'\n", rc,
-		   result.strlength, result.strptr);
-       ST(0) = sv_newmortal();
-       if (rc == 0) {
-	   if (result.strptr)
-	       sv_setpvn(ST(0), result.strptr, result.strlength);
-	   else
-	       sv_setpvn(ST(0), "", 0);
-       }
-       if (result.strptr && result.strptr != resbuf)
-	   DosFreeMem(result.strptr);
-   }
 
 int
 _set(name,value,...)
@@ -338,7 +289,7 @@ _fetch(name, ...)
    {
        int   i;
        ULONG rc;
-       EXTEND(sp, items);
+       EXTEND(SP, items);
        needvars(items);
        if (trace)
 	   fprintf(stderr, "REXXCALL::_fetch");
@@ -373,7 +324,7 @@ _fetch(name, ...)
 			   var->shvname.strlength, var->shvname.strptr,
 			   namelen, var->shvvalue.strptr);
 	       if (var->shvret & RXSHV_NEWV || !var->shvvalue.strptr)
-		   PUSHs(&sv_undef);
+		   PUSHs(&PL_sv_undef);
 	       else
 		   PUSHs(sv_2mortal(newSVpv(var->shvvalue.strptr,
 					    namelen)));
@@ -409,7 +360,7 @@ _next(stem)
 	   rc = RexxVariablePool(&sv);
        } while (!rc && memcmp(stem, sv.shvname.strptr, len) != 0);
        if (!rc) {
-	   EXTEND(sp, 2);
+	   EXTEND(SP, 2);
 	   /* returned lengths appear to be swapped */
 	   /* but beware of "future bug fixes" */
 	   namelen = sv.shvname.strlength; /* should be */
@@ -427,7 +378,7 @@ _next(stem)
 	       PUSHs(sv_2mortal(newSVpv(sv.shvvalue.strptr, valuelen)));
 				DosFreeMem(sv.shvvalue.strptr);
 	   } else	
-	       PUSHs(&sv_undef);
+	       PUSHs(&PL_sv_undef);
        } else if (rc != RXSHV_LVAR) {
 	   die("Error %i when in _next", rc);
        } else {

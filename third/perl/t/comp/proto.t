@@ -11,12 +11,12 @@
 
 BEGIN {
     chdir 't' if -d 't';
-    @INC = '../lib';
+    unshift @INC, '../lib';
 }
 
 use strict;
 
-print "1..76\n";
+print "1..107\n";
 
 my $i = 1;
 
@@ -362,19 +362,34 @@ printf "ok %d\n",$i++;
 ##
 ##
 
-testing \&an_array_ref, '\@';
+testing \&array_ref_plus, '\@@';
 
-sub an_array_ref (\@) {
+sub array_ref_plus (\@@) {
     print "# \@_ = (",join(",",@_),")\n";
-    print "not " unless ref($_[0]) && 1 == @{$_[0]};
+    print "not " unless @_ == 2 && ref($_[0]) && 1 == @{$_[0]} && $_[1] eq 'x';
     printf "ok %d\n",$i++;
     @{$_[0]} = (qw(ok)," ",$i++,"\n");
 }
 
 @array = ('a');
-an_array_ref @array;
+{ my @more = ('x');
+  array_ref_plus @array, @more; }
 print "not " unless @array == 4;
 print @array;
+
+my $p;
+print "not " if defined prototype('CORE::print');
+print "ok ", $i++, "\n";
+
+print "not " if defined prototype('CORE::system');
+print "ok ", $i++, "\n";
+
+print "# CORE::open => ($p)\nnot " if ($p = prototype('CORE::open')) ne '*;$@';
+print "ok ", $i++, "\n";
+
+print "# CORE:Foo => ($p), \$@ => `$@'\nnot " 
+    if defined ($p = eval { prototype('CORE::Foo') or 1 }) or $@ !~ /^Can't find an opnumber/;
+print "ok ", $i++, "\n";
 
 # correctly note too-short parameter lists that don't end with '$',
 #  a possible regression.
@@ -388,3 +403,66 @@ sub foo2 ($\%);
 eval q{ foo2 "s" };
 print "not " unless $@ =~ /^Not enough/;
 print "ok ", $i++, "\n";
+
+sub X::foo3;
+*X::foo3 = sub {'ok'};
+print "# $@not " unless eval {X->foo3} eq 'ok';
+print "ok ", $i++, "\n";
+
+sub X::foo4 ($);
+*X::foo4 = sub ($) {'ok'};
+print "not " unless X->foo4 eq 'ok';
+print "ok ", $i++, "\n";
+
+# test if the (*) prototype allows barewords, constants, scalar expressions,
+# globs and globrefs (just as CORE::open() does), all under stricture
+sub star (*&) { &{$_[1]} }
+sub star2 (**&) { &{$_[2]} }
+sub BAR { "quux" }
+sub Bar::BAZ { "quuz" }
+my $star = 'FOO';
+star FOO, sub { print "ok $i\n" if $_[0] eq 'FOO' }; $i++;
+star(FOO, sub { print "ok $i\n" if $_[0] eq 'FOO' }); $i++;
+star "FOO", sub { print "ok $i\n" if $_[0] eq 'FOO' }; $i++;
+star("FOO", sub { print "ok $i\n" if $_[0] eq 'FOO' }); $i++;
+star $star, sub { print "ok $i\n" if $_[0] eq 'FOO' }; $i++;
+star($star, sub { print "ok $i\n" if $_[0] eq 'FOO' }); $i++;
+star *FOO, sub { print "ok $i\n" if $_[0] eq \*FOO }; $i++;
+star(*FOO, sub { print "ok $i\n" if $_[0] eq \*FOO }); $i++;
+star \*FOO, sub { print "ok $i\n" if $_[0] eq \*FOO }; $i++;
+star(\*FOO, sub { print "ok $i\n" if $_[0] eq \*FOO }); $i++;
+star2 FOO, BAR, sub { print "ok $i\n"
+			if $_[0] eq 'FOO' and $_[1] eq 'BAR' }; $i++;
+star2(Bar::BAZ, FOO, sub { print "ok $i\n"
+			if $_[0] eq 'Bar::BAZ' and $_[1] eq 'FOO' }); $i++;
+star2 BAR(), FOO, sub { print "ok $i\n"
+			if $_[0] eq 'quux' and $_[1] eq 'FOO' }; $i++;
+star2(FOO, BAR(), sub { print "ok $i\n"
+			if $_[0] eq 'FOO' and $_[1] eq 'quux' }); $i++;
+star2 "FOO", "BAR", sub { print "ok $i\n"
+			if $_[0] eq 'FOO' and $_[1] eq 'BAR' }; $i++;
+star2("FOO", "BAR", sub { print "ok $i\n"
+			if $_[0] eq 'FOO' and $_[1] eq 'BAR' }); $i++;
+star2 $star, $star, sub { print "ok $i\n"
+			if $_[0] eq 'FOO' and $_[1] eq 'FOO' }; $i++;
+star2($star, $star, sub { print "ok $i\n"
+			if $_[0] eq 'FOO' and $_[1] eq 'FOO' }); $i++;
+star2 *FOO, *BAR, sub { print "ok $i\n"
+			if $_[0] eq \*FOO and $_[1] eq \*BAR }; $i++;
+star2(*FOO, *BAR, sub { print "ok $i\n"
+			if $_[0] eq \*FOO and $_[1] eq \*BAR }); $i++;
+star2 \*FOO, \*BAR, sub { no strict 'refs'; print "ok $i\n"
+			if $_[0] eq \*{'FOO'} and $_[1] eq \*{'BAR'} }; $i++;
+star2(\*FOO, \*BAR, sub { no strict 'refs'; print "ok $i\n"
+			if $_[0] eq \*{'FOO'} and $_[1] eq \*{'BAR'} }); $i++;
+
+# test scalarref prototype
+sub sreftest (\$$) {
+    print "ok $_[1]\n" if ref $_[0];
+}
+{
+    no strict 'vars';
+    sreftest my $sref, $i++;
+    sreftest($helem{$i}, $i++);
+    sreftest $aelem[0], $i++;
+}

@@ -21,15 +21,34 @@ tmp=/tmp/f$$
 
 if grep 'yaccpar 1.8 (Berkeley)' $input >/dev/null 2>&1; then
     cp $input $output
-    if test -f perly.c.diff; then
-	patch -F3 $output <perly.c.diff
+    # Don't expect the diff to do everything -- do some by hand
+    if test -f perly_c.diff; then
+	patch -F3 $output <perly_c.diff
+	sed -e '/^[ 	]*printf("yydebug:/s/printf(/PerlIO_printf(Perl_debug_log, /' \
+	    -e '/^#line /s/"y[.]tab[.]c"/"perly.c"/' \
+	    -e '/\[\] *= *[{]/s/^/static /' \
+	    -e '/^static static/s/^static //' \
+	    -e '/^#define.WORD/,/^#define.ARROW/d' \
+	    -e '/^int.yydebug/,/^#define.yystacksize/d' \
+	    < $output > $tmp && mv -f $tmp $output || exit 1
 	rm -rf $input
+	echo "If you need to debug perly.c, you need to fix up the #line"
+	echo "directives yourself."
     fi
     exit
 elif grep 'yaccpar	1.9 (Berkeley)' $input >/dev/null 2>&1; then
     if test -f perly.c.dif9; then
 	patch -F3 $output <perly.c.dif9
+	sed -e '/^[ 	]*printf("yydebug:/s/printf(/PerlIO_printf(Perl_debug_log, /' \
+	    -e '/^#line /s/"y[.]tab[.]c"/"perly.c"/' \
+	    -e '/\[\] *= *[{]/s/^/static /' \
+	    -e '/^static static/s/^static //' \
+	    -e '/^#define.WORD/,/^#define.ARROW/d' \
+	    -e '/^int.yydebug/,/^#define.yystacksize/d' \
+	    < $output > $tmp && mv -f $tmp $output || exit 1
 	rm -rf $input
+	echo "If you need to debug perly.c, you need to fix up the #line"
+	echo "directives yourself."
 	exit 0
     else
 	echo "Diffs from byacc-1.9 are not available."
@@ -50,7 +69,7 @@ echo "Warning: the yacc you have used is not directly supported by perl."
 echo "The perly.fixer script will attempt to make some changes to the generated"
 echo "file. The changes may be incomplete and that might lead to problems later"
 echo "(especially with complex scripts). You may need to apply the changes"
-echo "embedded in perl.fixer (and/or perly.c.dif*) by hand."
+echo "embedded in perl.fixer (and/or perly_c.dif*) by hand."
 echo ""
 
 # Below, we check for various characteristic yaccpar outputs.
@@ -90,7 +109,7 @@ case "$plan" in
     # Also added are out of memory checks (makes porting the generated
     # code easier) For most systems, it can't hurt. -- TD
     "bsd43")
-	echo "Attempting to path perly.c to allow dynamic yacc stack allocation"
+	echo "Attempting to patch perly.c to allow dynamic yacc stack allocation"
 	echo "Assuming bsd4.3 yaccpar"
 	cat >$tmp <<'END'
 /YYSTYPE[ 	]*yyv\[ *YYMAXDEPTH *\];/c\
@@ -105,8 +124,8 @@ short *maxyyps;
 
 /yypv *= *&yyv\[ *-1 *\];/c\
 \	if (!yyv) {\
-\	    yyv = (YYSTYPE*) safemalloc(yymaxdepth * sizeof(YYSTYPE));\
-\	    yys = (short*) safemalloc(yymaxdepth * sizeof(short));\
+\	    New(73, yyv, yymaxdepth, YYSTYPE);\
+\	    New(73, yys, yymaxdepth, short);\
 \	    if ( !yyv || !yys ) {\
 \		yyerror( "out of memory" );\
 \		return(1);\
@@ -123,10 +142,8 @@ short *maxyyps;
 \		    int ts = yyps - yys;\
 \
 \		    yymaxdepth *= 2;\
-\		    yyv = (YYSTYPE*)realloc((char*)yyv,\
-\		      yymaxdepth*sizeof(YYSTYPE));\
-\		    yys = (short*)realloc((char*)yys,\
-\		      yymaxdepth*sizeof(short));\
+\		    Renew(yyv, yymaxdepth, YYSTYPE);\
+\		    Renew(yys, yymaxdepth, short);\
 \		    if ( !yyv || !yys ) {\
 \			yyerror( "yacc stack overflow" );\
 \			return(1);\
@@ -147,7 +164,7 @@ END
 
     #######################################################
     "isc") # Interactive Systems 2.2  version
-	echo "Attempting to path perly.c to allow dynamic yacc stack allocation"
+	echo "Attempting to patch perly.c to allow dynamic yacc stack allocation"
 	echo "Assuming Interactive SysVr3 2.2 yaccpar"
 	# Easier to simply put whole script here than to modify the
 	# bsd script with sed.
@@ -170,8 +187,8 @@ int *maxyyps;
 
 /yypv *= *&yyv\[ *-1 *\];/c\
 \	if (!yyv) {\
-\	    yyv = (YYSTYPE*) safemalloc(yymaxdepth * sizeof(YYSTYPE));\
-\	    yys = (int*) safemalloc(yymaxdepth * sizeof(int));\
+\	    New(73, yyv, yymaxdepth, YYSTYPE);\
+\	    New(73, yys, yymaxdepth, int);\
 \	    maxyyps = &yys[yymaxdepth];\
 \	}\
 \	yyps = &yys[-1];\
@@ -183,10 +200,8 @@ int *maxyyps;
 \		    int ts = yy_ps - yys;\
 \
 \		    yymaxdepth *= 2;\
-\		    yyv = (YYSTYPE*)realloc((char*)yyv,\
-\		      yymaxdepth*sizeof(YYSTYPE));\
-\		    yys = (int*)realloc((char*)yys,\
-\		      yymaxdepth*sizeof(int));\
+\		    Renew(yyv, yymaxdepth, YYSTYPE);\
+\		    Renew(yys, yymaxdepth, int);\
 \		    yy_ps = yyps = yys + ts;\
 \		    yy_pv = yypv = yyv + tv;\
 \		    maxyyps = &yys[yymaxdepth];\

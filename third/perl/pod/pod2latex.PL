@@ -2,6 +2,7 @@
 
 use Config;
 use File::Basename qw(&basename &dirname);
+use Cwd;
 
 # List explicitly here the variables you want Configure to
 # generate.  Metaconfig only looks for shell variables, so you
@@ -12,6 +13,7 @@ use File::Basename qw(&basename &dirname);
 
 # This forces PL files to create target in same directory as PL file.
 # This is so that make depend always knows where to find PL derivatives.
+$origdir = cwd;
 chdir dirname($0);
 $file = basename($0, '.PL');
 $file .= '.com' if $^O eq 'VMS';
@@ -99,7 +101,6 @@ print OUT <<'!NO!SUBS!';
 # Translation of HTML escapes of various European accents might be wrong.
 
 
-$/ = "";			# record separator is blank lines
 # TeX special characters.
 ##$tt_ables = "!@*()-=+|;:'\"`,./?<>";
 $backslash_escapables = "#\$%&{}_";
@@ -117,13 +118,16 @@ $indent = 0;
 
 # parse the pods, produce LaTeX.
 
-open(POD,"<$ARGV[0]") || die "cant open $ARGV[0]";
+use Pod::Plainer;
+open(POD,"-|") or Pod::Plainer -> new() -> parse_from_file($ARGV[0]), exit;
+
 ($pod=$ARGV[0]) =~ s/\.pod$//;
 open(LATEX,">$pod.tex");
 &do_hdr();
 
 $cutting = 1;
 $begun = "";
+$/ = "";			# record separator is blank lines
 while (<POD>) {
     if ($cutting) {
 	next unless /^=/;
@@ -312,6 +316,8 @@ while (<POD>) {
 	    } 
 	}gex;
 
+	s/X<([^<>]*)>/\\index{$1}/g;
+
 	s/Z<>/\\&/g;		# the "don't format me" thing
 
 	# comes last because not subject to reprocessing
@@ -414,7 +420,7 @@ while (<POD>) {
 		}
 		print LATEX  "\n\\begin{$listingcmd}\n";
 		push(@listingcmd,$listingcmd);
-	    } elsif ($lastcmd ne 'item') {
+	    } elsif ( !@listingcmd ) { 
 		warn "Illegal '=item' command without preceding 'over':";
 		warn "=item $bareitem";
 	    }
@@ -472,6 +478,12 @@ while (<POD>) {
 	  noindex:
 	    ;
 	}
+	elsif ($cmd eq 'pod') {
+	    ;	# recognise the pod directive, as no op (hs)
+	}
+ 	elsif ($cmd eq 'pod') {
+ 	    ;    # recognise the pod directive, as no op (hs)
+ 	}
 	else {
 	    warn "Unrecognized directive: $cmd\n";
 	}
@@ -676,7 +688,7 @@ BEGIN {
     "otilde"	=>	"\\~{o}",	#   small o, tilde
     "Ouml"	=>	'\\"{O}',	#   capital O, dieresis or umlaut mark
     "ouml"	=>	'\\"{o}',	#   small o, dieresis or umlaut mark
-    "szlig"	=>	'\\ss',		#   small sharp s, German (sz ligature)
+    "szlig"	=>	'\\ss{}',	#   small sharp s, German (sz ligature)
     "THORN"	=>	'\\L',		#   capital THORN, Icelandic
     "thorn"	=>	'\\l',,		#   small thorn, Icelandic
     "Uacute"	=>	"\\'{U}",	#   capital U, acute accent
@@ -697,3 +709,4 @@ BEGIN {
 close OUT or die "Can't close $file: $!";
 chmod 0755, $file or die "Can't reset permissions for $file: $!\n";
 exec("$Config{'eunicefix'} $file") if $Config{'eunicefix'} ne ':';
+chdir $origdir;

@@ -1,4 +1,13 @@
-;# $RCSfile: termcap.pl,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:48:13 $
+;# $RCSfile: termcap.pl,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:41:31 $
+#
+# This library is no longer being maintained, and is included for backward
+# compatibility with Perl 4 programs which may require it.
+#
+# In particular, this should not be used as an example of modern Perl
+# programming techniques.
+#
+# Suggested alternative: Term::Cap
+#
 ;#
 ;# Usage:
 ;#	require 'ioctl.pl';

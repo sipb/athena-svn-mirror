@@ -1,8 +1,6 @@
 #!./perl
 
-# $RCSfile: write.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:17 $
-
-print "1..5\n";
+print "1..8\n";
 
 my $CAT = ($^O eq 'MSWin32') ? 'type' : 'cat';
 
@@ -167,3 +165,39 @@ for (0..10) {
 print $was1 eq $mustbe ? "ok 4\n" : "not ok 4\n";
 print $was2 eq $mustbe ? "ok 5\n" : "not ok 5\n";
 
+$^A = '';
+
+# more test
+
+format OUT3 =
+^<<<<<<...
+$foo
+.
+
+open(OUT3, '>Op_write.tmp') || die "Can't create Op_write.tmp";
+
+$foo = 'fit          ';
+write(OUT3);
+close OUT3;
+
+$right =
+"fit\n";
+
+if (`$CAT Op_write.tmp` eq $right)
+    { print "ok 6\n"; unlink 'Op_write.tmp'; }
+else
+    { print "not ok 6\n"; }
+
+# test lexicals and globals
+{
+    my $this = "ok";
+    our $that = 7;
+    format LEX =
+@<<@|
+$this,$that
+.
+    open(LEX, ">&STDOUT") or die;
+    write LEX;
+    $that = 8;
+    write LEX;
+}

@@ -1,4 +1,4 @@
-# $Id: dgux.sh,v 1.1.1.2 1997-11-13 01:50:34 ghudson Exp $
+# $Id: dgux.sh,v 1.1.1.3 2000-04-07 20:39:45 ghudson Exp $
 
 # This is a hints file for DGUX, which is Data General's Unix.  It was
 # originally developed with version 5.4.3.10 of the OS, and then was
@@ -14,12 +14,7 @@
 # as it would suck to try to get support if the vendor learned that you
 # were physically replacing the system binaries.
 #
-# Be aware that if you opt to use dynamic loading you'll need to set
-# your $LD_LIBRARY_PATH to include the source directory when you build,
-# test and install the software.
-#
 # -Roderick Schertler <roderick@argon.org>
-
 
 # Here are the things from some old DGUX hints files which are different
 # from what's in here now.  I don't know the exact reasons that most of

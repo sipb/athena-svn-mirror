@@ -1,6 +1,6 @@
 #!./perl
 
-# $RCSfile: do.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:46:59 $
+# $RCSfile: do.t,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:46:22 $
 
 sub foo1
 {
@@ -10,7 +10,7 @@ sub foo1
 
 sub foo2
 {
-    shift(_);
+    shift;
     print $_[0];
     $x = 'value';
     $x;

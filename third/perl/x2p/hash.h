@@ -1,4 +1,4 @@
-/* $RCSfile: hash.h,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:50:08 $
+/* $RCSfile: hash.h,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:47:59 $
  *
  *    Copyright (c) 1991-1997, Larry Wall
  *
@@ -41,12 +41,12 @@ struct htbl {
     HENT	*tbl_eiter;	/* current entry of iterator */
 };
 
-bool hdelete _((HASH *tb, char *key));
-STR * hfetch _(( HASH *tb, char *key ));
-int hiterinit _(( HASH *tb ));
-char * hiterkey _(( HENT *entry ));
-HENT * hiternext _(( HASH *tb ));
-STR * hiterval _(( HENT *entry ));
-HASH * hnew _(( void ));
-void hsplit _(( HASH *tb ));
-bool hstore _(( HASH *tb, char *key, STR *val ));
+bool hdelete (HASH *tb, char *key);
+STR * hfetch ( HASH *tb, char *key );
+int hiterinit ( HASH *tb );
+char * hiterkey ( HENT *entry );
+HENT * hiternext ( HASH *tb );
+STR * hiterval ( HENT *entry );
+HASH * hnew ( void );
+void hsplit ( HASH *tb );
+bool hstore ( HASH *tb, char *key, STR *val );

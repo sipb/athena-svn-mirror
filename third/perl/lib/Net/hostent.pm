@@ -1,9 +1,10 @@
 package Net::hostent;
 use strict;
 
+use 5.005_64;
+our(@EXPORT, @EXPORT_OK, %EXPORT_TAGS);
 BEGIN { 
     use Exporter   ();
-    use vars       qw(@EXPORT @EXPORT_OK %EXPORT_TAGS);
     @EXPORT      = qw(gethostbyname gethostbyaddr gethost);
     @EXPORT_OK   = qw(
 			$h_name	    	@h_aliases
@@ -89,7 +90,7 @@ $h_name if you import the fields.  Array references are available as
 regular array variables, so for example C<@{ $host_obj-E<gt>aliases()
 }> would be simply @h_aliases.
 
-The gethost() funtion is a simple front-end that forwards a numeric
+The gethost() function is a simple front-end that forwards a numeric
 argument to gethostbyaddr() by way of Socket::inet_aton, and the rest
 to gethostbyname().
 

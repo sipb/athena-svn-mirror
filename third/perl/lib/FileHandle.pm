@@ -1,8 +1,8 @@
 package FileHandle;
 
-use 5.003_11;
+use 5.005_64;
 use strict;
-use vars qw($VERSION @ISA @EXPORT @EXPORT_OK);
+our($VERSION, @ISA, @EXPORT, @EXPORT_OK);
 
 $VERSION = "2.00";
 
@@ -112,7 +112,7 @@ FileHandle - supply object methods for filehandles
     use FileHandle;
 
     $fh = new FileHandle;
-    if ($fh->open "< file") {
+    if ($fh->open("< file")) {
         print <$fh>;
         $fh->close;
     }
@@ -248,6 +248,10 @@ read all the remaining lines in a file, except that it's more readable.
 It will also croak() if accidentally called in a scalar context.
 
 =back
+
+There are many other functions available since FileHandle is descended
+from IO::File, IO::Seekable, and IO::Handle.  Please see those
+respective pages for documentation on more functions.
 
 =head1 SEE ALSO
 

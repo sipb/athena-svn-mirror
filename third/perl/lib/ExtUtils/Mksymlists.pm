@@ -1,13 +1,15 @@
 package ExtUtils::Mksymlists;
+
+use 5.005_64;
 use strict qw[ subs refs ];
 # no strict 'vars';  # until filehandles are exempted
 
 use Carp;
 use Exporter;
-use vars qw( @ISA @EXPORT $VERSION );
+our(@ISA, @EXPORT, $VERSION);
 @ISA = 'Exporter';
 @EXPORT = '&Mksymlists';
-$VERSION = substr q$Revision: 1.1.1.1 $, 10;
+$VERSION = substr q$Revision: 1.1.1.2 $, 10;
 
 sub Mksymlists {
     my(%spec) = @_;
@@ -19,10 +21,10 @@ sub Mksymlists {
 
     $spec{DL_VARS} = [] unless $spec{DL_VARS};
     ($spec{FILE} = $spec{NAME}) =~ s/.*::// unless $spec{FILE};
+    $spec{FUNCLIST} = [] unless $spec{FUNCLIST};
     $spec{DL_FUNCS} = { $spec{NAME} => [] }
         unless ( ($spec{DL_FUNCS} and keys %{$spec{DL_FUNCS}}) or
-                 $spec{FUNCLIST});
-    $spec{FUNCLIST} = [] unless $spec{FUNCLIST};
+                 @{$spec{FUNCLIST}});
     if (defined $spec{DL_FUNCS}) {
         my($package);
         foreach $package (keys %{$spec{DL_FUNCS}}) {
@@ -69,16 +71,26 @@ sub _write_aix {
 
 sub _write_os2 {
     my($data) = @_;
+    require Config;
+    my $threaded = ($Config::Config{archname} =~ /-thread/ ? " threaded" : "");
 
     if (not $data->{DLBASE}) {
         ($data->{DLBASE} = $data->{NAME}) =~ s/.*:://;
         $data->{DLBASE} = substr($data->{DLBASE},0,7) . '_';
+    }
+    my $distname = $data->{DISTNAME} || $data->{NAME};
+    $distname = "Distribution $distname";
+    my $comment = "Perl (v$Config::Config{version}$threaded) module $data->{NAME}";
+    if ($data->{INSTALLDIRS} and $data->{INSTALLDIRS} eq 'perl') {
+	$distname = 'perl5-porters@perl.org';
+	$comment = "Core $comment";
     }
     rename "$data->{FILE}.def", "$data->{FILE}_def.old";
 
     open(DEF,">$data->{FILE}.def")
         or croak("Can't create $data->{FILE}.def: $!\n");
     print DEF "LIBRARY '$data->{DLBASE}' INITINSTANCE TERMINSTANCE\n";
+    print DEF "DESCRIPTION '\@#$distname:$data->{VERSION}#\@ $comment'\n";
     print DEF "CODE LOADONCALL\n";
     print DEF "DATA LOADONCALL NONSHARED MULTIPLE\n";
     print DEF "EXPORTS\n  ";
@@ -86,10 +98,10 @@ sub _write_os2 {
     print DEF join("\n  ",@{$data->{FUNCLIST}}, "\n") if @{$data->{FUNCLIST}};
     if (%{$data->{IMPORTS}}) {
         print DEF "IMPORTS\n";
-my ($name, $exp);
-while (($name, $exp)= each %{$data->{IMPORTS}}) {
-  print DEF "  $name=$exp\n";
-}
+	my ($name, $exp);
+	while (($name, $exp)= each %{$data->{IMPORTS}}) {
+	    print DEF "  $name=$exp\n";
+	}
     }
     close DEF;
 }
@@ -107,9 +119,9 @@ sub _write_win32 {
     open(DEF,">$data->{FILE}.def")
         or croak("Can't create $data->{FILE}.def: $!\n");
     # put library name in quotes (it could be a keyword, like 'Alias')
-    print DEF "LIBRARY \"$data->{DLBASE}\"\n";
-    print DEF "CODE LOADONCALL\n";
-    print DEF "DATA LOADONCALL NONSHARED MULTIPLE\n";
+    if ($Config::Config{'cc'} !~ /^gcc/i) {
+      print DEF "LIBRARY \"$data->{DLBASE}\"\n";
+    }
     print DEF "EXPORTS\n  ";
     my @syms;
     # Export public symbols both with and without underscores to
@@ -145,7 +157,7 @@ sub _write_vms {
     require Config; # a reminder for once we do $^O
     require ExtUtils::XSSymSet;
 
-    my($isvax) = $Config::Config{'arch'} =~ /VAX/i;
+    my($isvax) = $Config::Config{'archname'} =~ /VAX/i;
     my($set) = new ExtUtils::XSSymSet;
     my($sym);
 
@@ -161,6 +173,8 @@ sub _write_vms {
     # We don't do anything to preserve order, so we won't relax
     # the GSMATCH criteria for a dynamic extension
 
+    print OPT "case_sensitive=yes\n"
+        if $Config::Config{d_vms_case_sensitive_symbols};
     foreach $sym (@{$data->{FUNCLIST}}) {
         my $safe = $set->addsym($sym);
         if ($isvax) { print OPT "UNIVERSAL=$safe\n" }
@@ -174,13 +188,6 @@ sub _write_vms {
     }
     close OPT;
 
-    # Options file specifying RTLs to which this extension must be linked.
-    # Eventually, the list of libraries will be supplied by a working
-    # extliblist routine.
-    open OPT,'>rtls.opt';
-    print OPT "PerlShr/Share\n";
-    foreach $rtl (split(/\s+/,$Config::Config{'libs'})) { print OPT "$rtl\n"; }
-    close OPT;
 }
 
 1;
@@ -211,10 +218,13 @@ keys are recognized:
 
 =over
 
-=item NAME
+=item DLBASE
 
-This gives the name of the extension (I<e.g.> Tk::Canvas) for which
-the linker option file will be produced.
+This item specifies the name by which the linker knows the
+extension, which may be different from the name of the
+extension itself (for instance, some linkers add an '_' to the
+name of the extension).  If it is not specified, it is derived
+from the NAME attribute.  It is presently used only by OS2 and Win32.
 
 =item DL_FUNCS
 
@@ -223,7 +233,7 @@ from which it is usually taken.  Its value is a reference to an
 associative array, in which each key is the name of a package, and
 each value is an a reference to an array of function names which
 should be exported by the extension.  For instance, one might say
-C<DL_FUNCS =E<gt> { Homer::Iliad   =E<gt> [ qw(trojans greeks) ],
+C<DL_FUNCS =E<gt> { Homer::Iliad =E<gt> [ qw(trojans greeks) ],
 Homer::Odyssey =E<gt> [ qw(travellers family suitors) ] }>.  The
 function names should be identical to those in the XSUB code;
 C<Mksymlists> will alter the names written to the linker option
@@ -247,7 +257,7 @@ be exported by the extension.
 This key can be used to specify the name of the linker option file
 (minus the OS-specific extension), if for some reason you do not
 want to use the default value, which is the last word of the NAME
-attribute (I<e.g.> for Tk::Canvas, FILE defaults to 'Canvas').
+attribute (I<e.g.> for C<Tk::Canvas>, FILE defaults to C<Canvas>).
 
 =item FUNCLIST
 
@@ -255,14 +265,25 @@ This provides an alternate means to specify function names to be
 exported from the extension.  Its value is a reference to an
 array of function names to be exported by the extension.  These
 names are passed through unaltered to the linker options file.
+Specifying a value for the FUNCLIST attribute suppresses automatic
+generation of the bootstrap function for the package. To still create
+the bootstrap name you have to specify the package name in the
+DL_FUNCS hash:
 
-=item DLBASE
+    Mksymlists({ NAME     => $name ,
+		 FUNCLIST => [ $func1, $func2 ],
+                 DL_FUNCS => { $pkg => [] } });
 
-This item specifies the name by which the linker knows the
-extension, which may be different from the name of the
-extension itself (for instance, some linkers add an '_' to the
-name of the extension).  If it is not specified, it is derived
-from the NAME attribute.  It is presently used only by OS2.
+
+=item IMPORTS
+
+This attribute is used to specify names to be imported into the
+extension. It is currently only used by OS/2 and Win32.
+
+=item NAME
+
+This gives the name of the extension (I<e.g.> C<Tk::Canvas>) for which
+the linker option file will be produced.
 
 =back
 
@@ -273,7 +294,7 @@ can be used to provide additional information to the linker.
 
 =head1 AUTHOR
 
-Charles Bailey I<E<lt>bailey@genetics.upenn.eduE<gt>>
+Charles Bailey I<E<lt>bailey@newman.upenn.eduE<gt>>
 
 =head1 REVISION
 

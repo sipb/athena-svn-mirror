@@ -7,9 +7,19 @@
 #ifdef DJGPP
 #  define BIT_BUCKET "nul"
 #  define OP_BINARY O_BINARY
-void Perl_DJGPP_init();
-#  define PERL_SYS_INIT(argcp, argvp) STMT_START {        \
-    Perl_DJGPP_init();    } STMT_END
+#  define PERL_SYS_INIT(c,v) Perl_DJGPP_init(c,v)
+#  define init_os_extras Perl_init_os_extras
+#  include <signal.h>
+#  define HAS_UTIME
+#  define HAS_KILL
+   char *djgpp_pathexp (const char*);
+#  if (DJGPP==2 && DJGPP_MINOR < 2)
+#    define NO_LOCALECONV_MON_THOUSANDS_SEP
+#  endif
+#  ifdef USE_THREADS
+#    define OLD_PTHREADS_API
+#  endif
+#  define PERL_FS_VER_FMT	"%d_%d_%d"
 #else	/* DJGPP */
 #  ifdef WIN32
 #    define PERL_SYS_INIT(c,v)	Perl_win32_init(c,v)
@@ -20,14 +30,8 @@ void Perl_DJGPP_init();
 #  endif
 #endif	/* DJGPP */
 
-#define PERL_SYS_TERM()
+#define PERL_SYS_TERM() OP_REFCNT_TERM; MALLOC_TERM
 #define dXSUB_SYS
-#define TMPPATH "plXXXXXX"
-
-#ifdef WIN32
-#define HAS_UTIME
-#define HAS_KILL
-#endif
 
 /*
  * 5.003_07 and earlier keyed on #ifdef MSDOS for determining if we were 
@@ -48,11 +52,19 @@ void Perl_DJGPP_init();
 
 /* USEMYBINMODE
  *	This symbol, if defined, indicates that the program should
- *	use the routine my_binmode(FILE *fp, char iotype) to insure
+ *	use the routine my_binmode(FILE *fp, char iotype, int mode) to insure
  *	that a file is in "binary" mode -- that is, that no translation
  *	of bytes occurs on read or write operations.
  */
 #undef USEMYBINMODE
+
+/* Stat_t:
+ *	This symbol holds the type used to declare buffers for information
+ *	returned by stat().  It's usually just struct stat.  It may be necessary
+ *	to include <sys/stat.h> and <sys/types.h> to get any typedef'ed
+ *	information.
+ */
+#define Stat_t struct stat
 
 /* USE_STAT_RDEV:
  *	This symbol is defined if this system has a stat structure declaring
@@ -94,12 +106,9 @@ void Perl_DJGPP_init();
 #ifndef WIN32
 #  define Stat(fname,bufptr) stat((fname),(bufptr))
 #else
-#  define Stat(fname,bufptr) win32_stat((fname),(bufptr))
-#  define my_getenv(var)  getenv(var)
-/*
- * the following are standard library calls (stdio in particular)
- * that is being redirected to the perl DLL. This is needed for 
- * Dynaloading any modules that called stdio functions
- */
-#  include <win32iop.h>
+#  define HAS_IOCTL
+#  define HAS_UTIME
+#  define HAS_KILL
+#  define HAS_WAIT
+#  define HAS_CHOWN
 #endif	/* WIN32 */

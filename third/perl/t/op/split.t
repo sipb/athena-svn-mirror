@@ -1,8 +1,8 @@
 #!./perl
 
-# $RCSfile: split.t,v $$Revision: 1.1.1.2 $$Date: 1997-11-13 01:47:18 $
+# $RCSfile: split.t,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:46:40 $
 
-print "1..20\n";
+print "1..25\n";
 
 $FS = ':';
 
@@ -48,11 +48,9 @@ print $_ eq '1:2:3:4:5:6:::' ? "ok 10\n" : "not ok 10 $_\n";
 
 # Does assignment to a list imply split to one more field than that?
 if ($^O eq 'MSWin32') { $foo = `.\\perl -D1024 -e "(\$a,\$b) = split;" 2>&1` }
+elsif ($^O eq 'VMS')  { $foo = `./perl "-D1024" -e "(\$a,\$b) = split;" 2>&1` }
 else                  { $foo = `./perl -D1024 -e '(\$a,\$b) = split;' 2>&1` }
-if ($foo =~ /DCL-W-NOCOMD/) {
-  $foo = `\$ mcr sys\$disk:[]perl. "-D1024" -e "(\$a,\$b) = split;"`;
-}
-print $foo =~ /DEBUGGING/ || $foo =~ /SV = IV\(3\)/ ? "ok 11\n" : "not ok 11\n";
+print $foo =~ /DEBUGGING/ || $foo =~ /SV = (VOID|IV\(3\))/ ? "ok 11\n" : "not ok 11\n";
 
 # Can we say how many fields to split to when assigning to a list?
 ($a,$b) = split(' ','1 2 3 4 5 6', 2);
@@ -90,3 +88,24 @@ print $_ eq "Z" ? "ok 19\n" : "#$_\nnot ok 19\n";
 $_ = join('|', split(/.?/,  '',-1), 'Z');
 print $_ eq "Z" ? "ok 20\n" : "#$_\nnot ok 20\n";
 
+
+# Are /^/m patterns scanned?
+$_ = join '|', split(/^a/m, "a b a\na d a", 20);
+print $_ eq "| b a\n| d a" ? "ok 21\n" : "not ok 21\n# `$_'\n";
+
+# Are /$/m patterns scanned?
+$_ = join '|', split(/a$/m, "a b a\na d a", 20);
+print $_ eq "a b |\na d |" ? "ok 22\n" : "not ok 22\n# `$_'\n";
+
+# Are /^/m patterns scanned?
+$_ = join '|', split(/^aa/m, "aa b aa\naa d aa", 20);
+print $_ eq "| b aa\n| d aa" ? "ok 23\n" : "not ok 23\n# `$_'\n";
+
+# Are /$/m patterns scanned?
+$_ = join '|', split(/aa$/m, "aa b aa\naa d aa", 20);
+print $_ eq "aa b |\naa d |" ? "ok 24\n" : "not ok 24\n# `$_'\n";
+
+# Greedyness:
+$_ = "a : b :c: d";
+@ary = split(/\s*:\s*/);
+if (($res = join(".",@ary)) eq "a.b.c.d") {print "ok 25\n";} else {print "not ok 25\n# res=`$res' != `a.b.c.d'\n";}

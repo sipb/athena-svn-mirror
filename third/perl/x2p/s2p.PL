@@ -2,6 +2,7 @@
 
 use Config;
 use File::Basename qw(&basename &dirname);
+use Cwd;
 
 # List explicitly here the variables you want Configure to
 # generate.  Metaconfig only looks for shell variables, so you
@@ -12,6 +13,7 @@ use File::Basename qw(&basename &dirname);
 
 # This forces PL files to create target in same directory as PL file.
 # This is so that make depend always knows where to find PL derivatives.
+$origdir = cwd;
 chdir dirname($0);
 $file = basename($0, '.PL');
 $file .= '.com' if $^O eq 'VMS';
@@ -35,7 +37,7 @@ $Config{startperl}
 
 print OUT <<'!NO!SUBS!';
 
-# $RCSfile: s2p.PL,v $$Revision: 1.1.1.1 $$Date: 1997-11-13 01:50:09 $
+# $RCSfile: s2p.PL,v $$Revision: 1.1.1.2 $$Date: 2000-04-07 20:47:59 $
 #
 # $Log: not supported by cvs2svn $
 
@@ -49,7 +51,7 @@ B<s2p [options] filename>
 
 =head1 DESCRIPTION
 
-I<S2p> takes a sed script specified on the command line (or from
+I<s2p> takes a sed script specified on the command line (or from
 standard input) and produces a comparable I<perl> script on the
 standard output.
 
@@ -91,7 +93,7 @@ $\ and chop.
 
 =head1 ENVIRONMENT
 
-S2p uses no environment variables.
+s2p uses no environment variables.
 
 =head1 AUTHOR
 
@@ -102,7 +104,7 @@ Larry Wall E<lt>F<larry@wall.org>E<gt>
 =head1 SEE ALSO
 
  perl	The perl compiler/interpreter
- 
+
  a2p	awk to perl translator
 
 =head1 DIAGNOSTICS
@@ -135,7 +137,7 @@ while ($ARGV[0] =~ /^-/) {
 }
 
 unless ($debug) {
-    open(BODY,">/tmp/sperl$$") ||
+    open(BODY,"+>/tmp/sperl$$") ||
       &Die("Can't open temp file: $!\n");
 }
 
@@ -337,32 +339,13 @@ if ($appendseen || $tseen || !$assumen) {
 :	    if ($atext) { chop $atext; print $atext; $atext = ''; }
 :	#endif
 EOT
+}
 
 print BODY &q(<<'EOT');
 :	}
 EOT
-}
-
-close BODY;
 
 unless ($debug) {
-    open(HEAD,">/tmp/sperl2$$.c")
-      || &Die("Can't open temp file 2: $!\n");
-    print HEAD "#define PRINTIT\n"	if $printit;
-    print HEAD "#define APPENDSEEN\n"	if $appendseen;
-    print HEAD "#define TSEEN\n"	if $tseen;
-    print HEAD "#define DSEEN\n"	if $dseen;
-    print HEAD "#define ASSUMEN\n"	if $assumen;
-    print HEAD "#define ASSUMEP\n"	if $assumep;
-    print HEAD "#define TOPLABEL\n"	if $toplabel;
-    print HEAD "#define SAWNEXT\n"	if $sawnext;
-    if ($opens) {print HEAD "$opens\n";}
-    open(BODY,"/tmp/sperl$$")
-      || &Die("Can't reopen temp file: $!\n");
-    while (<BODY>) {
-	print HEAD $_;
-    }
-    close HEAD;
 
     print &q(<<"EOT");
 :	$startperl
@@ -370,11 +353,13 @@ unless ($debug) {
 :		if \$running_under_some_shell;
 :	
 EOT
-    open(BODY,"cc -E /tmp/sperl2$$.c |") ||
-	&Die("Can't reopen temp file: $!\n");
+    print"$opens\n" if $opens;
+    seek(BODY, 0, 0) || die "Can't rewind temp file: $!\n";
     while (<BODY>) {
-	/^# [0-9]/ && next;
 	/^[ \t]*$/ && next;
+	/^#ifdef (\w+)/ && ((${lc $1} || &skip), next);
+	/^#else/ && (&skip, next);
+	/^#endif/ && next;
 	s/^<><>//;
 	print;
     }
@@ -384,8 +369,7 @@ EOT
 exit;
 
 sub Cleanup {
-    chdir "/tmp";
-    unlink "sperl$$", "sperl2$$", "sperl2$$.c";
+    unlink "/tmp/sperl$$";
 }
 sub Die {
     &Cleanup;
@@ -568,6 +552,11 @@ EOT
 			substr($_,$i-1,1) = '$';
 		    }
 		}
+		elsif ($c eq '@') {
+		    substr($_, $i, 0) = '\\';
+		    $i++;
+		    $len++;
+		}
 		elsif ($c eq '&' && $repl) {
 		    substr($_, $i, 0) = '$';
 		    $i++;
@@ -603,7 +592,6 @@ EOT
 	    $repl = substr($_, $repl+1, $end-$repl-1);
 	    $end = substr($_, $end + 1, 1000);
 	    &simplify($pat);
-	    $dol = '$';
 	    $subst = "$pat$repl$delim";
 	    $cmd = '';
 	    while ($end) {
@@ -688,7 +676,7 @@ EOT
 	}
 
 	if (/^H/) {
-	    $_ = '$hold .= "\n"; $hold .= $_;';
+	    $_ = '$hold .= "\n", $hold .= $_;';
 	    next;
 	}
 
@@ -698,7 +686,7 @@ EOT
 	}
 
 	if (/^G/) {
-	    $_ = '$_ .= "\n"; $_ .= $hold;';
+	    $_ = '$_ .= "\n", $_ .= $hold;';
 	    next;
 	}
 
@@ -814,6 +802,7 @@ sub fetchpat {
 	}
     }
     $addr =~ s/\t/\\t/g;
+    $addr =~ s/\@/\\@/g;
     &simplify($addr);
     $addr;
 }
@@ -846,8 +835,20 @@ sub simplify {
     $_[0] =~ s/([\w\s!@#%^&-=,:;'"])\1\*/$1+/g;
 }
 
+sub skip {
+    local($level) = 0;
+
+    while(<BODY>) {
+	/^#ifdef/ && $level++;
+	/^#else/  && !$level && return;
+	/^#endif/ && !$level-- && return;
+    }
+
+    die "Unterminated `#ifdef' conditional\n";
+}
 !NO!SUBS!
 
 close OUT or die "Can't close $file: $!";
 chmod 0755, $file or die "Can't reset permissions for $file: $!\n";
 exec("$Config{'eunicefix'} $file") if $Config{'eunicefix'} ne ':';
+chdir $origdir;

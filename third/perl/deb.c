@@ -1,6 +1,6 @@
 /*    deb.c
  *
- *    Copyright (c) 1991-1997, Larry Wall
+ *    Copyright (c) 1991-2000, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -13,120 +13,114 @@
  */
 
 #include "EXTERN.h"
+#define PERL_IN_DEB_C
 #include "perl.h"
 
+#if defined(PERL_IMPLICIT_CONTEXT)
+void
+Perl_deb_nocontext(const char *pat, ...)
+{
 #ifdef DEBUGGING
-#if !defined(I_STDARG) && !defined(I_VARARGS)
-
-/*
- * Fallback on the old hackers way of doing varargs
- */
-
-/*VARARGS1*/
-void
-deb(pat,a1,a2,a3,a4,a5,a6,a7,a8)
-    char *pat;
-{
-    register I32 i;
-    GV* gv = curcop->cop_filegv;
-
-    PerlIO_printf(Perl_debug_log, "(%s:%ld)\t",
-	SvTYPE(gv) == SVt_PVGV ? SvPVX(GvSV(gv)) : "<free>",
-	(long)curcop->cop_line);
-    for (i=0; i<dlevel; i++)
-	PerlIO_printf(Perl_debug_log, "%c%c ",debname[i],debdelim[i]);
-    PerlIO_printf(Perl_debug_log, pat,a1,a2,a3,a4,a5,a6,a7,a8);
-}
-
-#else /* !defined(I_STDARG) && !defined(I_VARARGS) */
-
-#  ifdef I_STDARG
-void
-deb(const char *pat, ...)
-#  else
-/*VARARGS1*/
-void
-deb(pat, va_alist)
-    const char *pat;
-    va_dcl
-#  endif
-{
+    dTHX;
     va_list args;
-    register I32 i;
-    GV* gv = curcop->cop_filegv;
-
-    PerlIO_printf(Perl_debug_log, "(%s:%ld)\t",
-	SvTYPE(gv) == SVt_PVGV ? SvPVX(GvSV(gv)) : "<free>",
-	(long)curcop->cop_line);
-    for (i=0; i<dlevel; i++)
-	PerlIO_printf(Perl_debug_log, "%c%c ",debname[i],debdelim[i]);
-
-#  ifdef I_STDARG
     va_start(args, pat);
-#  else
-    va_start(args);
-#  endif
-    (void) PerlIO_vprintf(Perl_debug_log,pat,args);
-    va_end( args );
+    vdeb(pat, &args);
+    va_end(args);
+#endif /* DEBUGGING */
 }
-#endif /* !defined(I_STDARG) && !defined(I_VARARGS) */
+#endif
 
 void
-deb_growlevel()
+Perl_deb(pTHX_ const char *pat, ...)
 {
-    dlmax += 128;
-    Renew(debname, dlmax, char);
-    Renew(debdelim, dlmax, char);
+#ifdef DEBUGGING
+    va_list args;
+    va_start(args, pat);
+    vdeb(pat, &args);
+    va_end(args);
+#endif /* DEBUGGING */
+}
+
+void
+Perl_vdeb(pTHX_ const char *pat, va_list *args)
+{
+#ifdef DEBUGGING
+    dTHR;
+    char* file = CopFILE(PL_curcop);
+
+#ifdef USE_THREADS
+    PerlIO_printf(Perl_debug_log, "0x%"UVxf" (%s:%ld)\t",
+		  PTR2UV(thr),
+		  (file ? file : "<free>"),
+		  (long)CopLINE(PL_curcop));
+#else
+    PerlIO_printf(Perl_debug_log, "(%s:%ld)\t", (file ? file : "<free>"),
+		  (long)CopLINE(PL_curcop));
+#endif /* USE_THREADS */
+    (void) PerlIO_vprintf(Perl_debug_log, pat, *args);
+#endif /* DEBUGGING */
 }
 
 I32
-debstackptrs()
+Perl_debstackptrs(pTHX)
 {
-    PerlIO_printf(Perl_debug_log, "%8lx %8lx %8ld %8ld %8ld\n",
-	(unsigned long)curstack, (unsigned long)stack_base,
-	(long)*markstack_ptr, (long)(stack_sp-stack_base),
-	(long)(stack_max-stack_base));
-    PerlIO_printf(Perl_debug_log, "%8lx %8lx %8ld %8ld %8ld\n",
-	(unsigned long)mainstack, (unsigned long)AvARRAY(curstack),
-	(long)mainstack, (long)AvFILL(curstack), (long)AvMAX(curstack));
+#ifdef DEBUGGING
+    dTHR;
+    PerlIO_printf(Perl_debug_log,
+		  "%8"UVxf" %8"UVxf" %8"IVdf" %8"IVdf" %8"IVdf"\n",
+		  PTR2UV(PL_curstack), PTR2UV(PL_stack_base),
+		  (IV)*PL_markstack_ptr, (IV)(PL_stack_sp-PL_stack_base),
+		  (IV)(PL_stack_max-PL_stack_base));
+    PerlIO_printf(Perl_debug_log,
+		  "%8"UVxf" %8"UVxf" %8"UVuf" %8"UVuf" %8"UVuf"\n",
+		  PTR2UV(PL_mainstack), PTR2UV(AvARRAY(PL_curstack)),
+		  PTR2UV(PL_mainstack), PTR2UV(AvFILLp(PL_curstack)),
+		  PTR2UV(AvMAX(PL_curstack)));
+#endif /* DEBUGGING */
     return 0;
 }
 
 I32
-debstack()
+Perl_debstack(pTHX)
 {
-    I32 top = stack_sp - stack_base;
+#ifdef DEBUGGING
+    dTHR;
+    I32 top = PL_stack_sp - PL_stack_base;
     register I32 i = top - 30;
-    I32 *markscan = markstack;
+    I32 *markscan = PL_markstack + PL_curstackinfo->si_markoff;
 
     if (i < 0)
 	i = 0;
     
-    while (++markscan <= markstack_ptr)
+    while (++markscan <= PL_markstack_ptr)
 	if (*markscan >= i)
 	    break;
 
+#ifdef USE_THREADS
+    PerlIO_printf(Perl_debug_log,
+		  i ? "0x%"UVxf"    =>  ...  " : "0x%lx    =>  ",
+		  PTR2UV(thr));
+#else
     PerlIO_printf(Perl_debug_log, i ? "    =>  ...  " : "    =>  ");
-    if (stack_base[0] != &sv_undef || stack_sp < stack_base)
+#endif /* USE_THREADS */
+    if (PL_stack_base[0] != &PL_sv_undef || PL_stack_sp < PL_stack_base)
 	PerlIO_printf(Perl_debug_log, " [STACK UNDERFLOW!!!]\n");
     do {
 	++i;
-	if (markscan <= markstack_ptr && *markscan < i) {
+	if (markscan <= PL_markstack_ptr && *markscan < i) {
 	    do {
 		++markscan;
 		PerlIO_putc(Perl_debug_log, '*');
 	    }
-	    while (markscan <= markstack_ptr && *markscan < i);
+	    while (markscan <= PL_markstack_ptr && *markscan < i);
 	    PerlIO_printf(Perl_debug_log, "  ");
 	}
 	if (i > top)
 	    break;
-	PerlIO_printf(Perl_debug_log, "%-4s  ", SvPEEK(stack_base[i]));
+	PerlIO_printf(Perl_debug_log, "%-4s  ", SvPEEK(PL_stack_base[i]));
     }
     while (1);
     PerlIO_printf(Perl_debug_log, "\n");
+#endif /* DEBUGGING */
     return 0;
 }
-#else
-static int dummy; /* avoid totally empty deb.o file */
-#endif /* DEBUGGING */
