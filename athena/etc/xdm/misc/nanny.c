@@ -261,7 +261,7 @@ int main(int argc, char **argv)
   openlog(name, LOG_PID, LOG_USER);
 
   /* Initialize communications. */
-  ds.ps = pc_init();
+  pc_init(&ds.ps);
 
   /* Initialize message to send to nanny. We set source to NULL
      in case we wind up sending the message to ourselves. */
@@ -271,16 +271,15 @@ int main(int argc, char **argv)
   message->source = NULL;
 
   /* If there's a nanny already running, give it the command. */
-  outport = pc_openport(NANNYPORT);
-  if (outport)
+  
+  if (!(code = pc_openport(&outport, NANNYPORT)))
     {
       message->source = outport;
       pc_send(message);
       free(message);
 
       pc_addport(ds.ps, outport);
-      message = pc_wait(ds.ps);
-      if (message != NULL)
+      if (!pc_wait(&message, ds.ps))
 	{
 	  fprintf(stdout, "%s\n", message->data);
 	  pc_freemessage(message);
@@ -288,6 +287,12 @@ int main(int argc, char **argv)
       pc_removeport(ds.ps, outport);
       pc_close(outport);
       exit(0);
+    }
+  else
+    {
+      if (code == PCerrNotAllowed)
+	fprintf(stderr, "%s: Permission denied opening nanny socket\n", name);
+      exit(1);
     }
 
   /* There's not a nanny running, so we take over. */
@@ -314,8 +319,7 @@ int main(int argc, char **argv)
   if (code) ALERROR();
 
   /* Initialize our port for new connections. */
-  inport = pc_makeport(NANNYPORT, PC_GRAB|PC_CHMOD, 0, 0, 0700);
-  if (inport == NULL)
+  if (pc_makeport(&inport, NANNYPORT, PC_GRAB|PC_CHMOD, 0, 0, 0700))
     {
       fprintf(stderr, "couldn't make the port\n");
       syslog(LOG_ERR, "could not create socket, exiting");
@@ -375,7 +379,7 @@ int main(int argc, char **argv)
 
   while (!ret)
     {
-      message = pc_wait(ds.ps);
+      pc_wait(&message, ds.ps);
 
       switch(message->type)
 	{
