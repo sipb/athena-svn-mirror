@@ -1,3 +1,106 @@
+2001-10-25  Michael Pruett <mpruett@sgi.com>
+
+	* test/irixread.c: Improve error handling.  Use proper
+	conversion specifications in printf statements.
+
+	* Released version 0.2.3 of the Audio File Library.
+
+2001-10-10  Michael Pruett <mpruett@sgi.com>
+
+	* test/error.c: Expanded the error test to include several more
+	library functions.
+
+	* libaudiofile/format.c: Improve error checking and add comments.
+
+2001-09-20  Michael Pruett <mpruett@sgi.com>
+
+	* test/irixread.c, test/irixtestloop.c, test/linuxtest.c:
+	Always use virtual audio format in calculations regarding audio
+	data in memory.
+
+2001-09-18  Michael Pruett <mpruett@sgi.com>
+
+	* configure.in: Bump version to 0.2.3 in anticipation of the
+	upcoming release.
+
+2001-09-08  Michael Pruett <mpruett@sgi.com>
+
+	* test/sgi.c: Replace fixed-point shift with a call to the more
+	elegant alDoubleToFixed.
+
+2001-08-29  Michael Pruett <mpruett@sgi.com>
+
+	* test/pipe.{c,sh}: Added simple test of Audio File Library
+	operation on non-seekable file handles.
+
+2001-08-28  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/openclose.c: Applied Chris Wolf's patch invoking
+	the macro SETBINARYMODE on all file pointers before handing
+	them off to the AF VFS.  This macro does nothing on non-Windows
+	systems.
+
+2001-08-27  Michael Pruett <mpruett@sgi.com>
+
+	* win32/*: Added Chris Wolf's Windows port of the Audio File Library.
+
+2001-08-24  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/error.c: Include <config.h>.
+
+	* libaudiofile/modules.c: Replacing null macro arguments with
+	the token NULLMODULEPARAM so that the module macros will work
+	with bad preprocessors.
+
+2001-08-23  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/openclose.c: Include <unistd.h> only if the
+	system has this header file.
+
+	* libaudiofile/modules/rebuffer.c: Don't define min and max if
+	they've been defined already.
+
+2001-08-23  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/modules/Makefile.am, libaudiofile/units.[ch]:
+	Added IMA and MS ADPCM compression modules.
+
+	* libaudiofile/modules/msadpcm.[ch]: Checked in MS ADPCM
+	compression module.
+
+	* libaudiofile/modules/{ima,adpcm}.[ch]: Checked in IMA
+	compression module and Stichting Mathematisch Centrum's IMA
+	reference codec.
+
+	* libaudiofile/afinternal.h: Declared new internal tokens for
+	compression parameters in PV lists.
+
+	* libaudiofile/audiofile.h: Declared constants for DV and MS
+	ADPCM compression formats.
+
+	* libaudiofile/wave.[ch]: Handle IMA and MS ADPCM compression
+	in WAVE files.
+
+	* libaudiofile/openclose.c: If a track has compression
+	parameters, deallocate them before closing the file.
+
+	* sfcommands/printinfo.c: Added support for compressed audio
+	data to sound commands.
+
+2001-08-07  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/query.c: Added support for
+	AF_QUERYTYPE_COMPRESSION.
+
+2001-08-04  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/util.c, libaudiofile/util.h: Add utility
+	routines _af_pv_getlong, _af_pv_getdouble, and _af_pv_getptr.
+
+2001-07-19  Michael Pruett <mpruett@sgi.com>
+
+	* Released version 0.2.2 of the Audio File Library.
+
 2001-07-19  Michael Pruett <mpruett@sgi.com>
 
 	* libaudiofile/format.c: Add afSetChannelMatrix and

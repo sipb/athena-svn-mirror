@@ -18,9 +18,17 @@
 	Boston, MA  02111-1307  USA.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 #include <audiofile.h>
 
@@ -28,6 +36,10 @@
 #include "units.h"
 #include "util.h"
 #include "modules.h"
+
+#ifndef _MSC_VER
+#define SETBINARYMODE(x)
+#endif
 
 extern _Unit _af_units[];
 
@@ -83,6 +95,8 @@ int afIdentifyFD (int fd)
 		return AF_FILE_UNKNOWN;
 	}
 
+	SETBINARYMODE(fp);
+
 	vf = af_virtual_file_new_for_file(fp);
 	if (vf == NULL)
 	{
@@ -116,6 +130,8 @@ int afIdentifyNamedFD (int fd, const char *filename, int *implemented)
 		_af_error(AF_BAD_OPEN, "could not open file '%s'", filename);
 		return AF_FILE_UNKNOWN;
 	}
+
+	SETBINARYMODE(fp);
 
 	vf = af_virtual_file_new_for_file(fp);
 	if (vf == NULL)
@@ -160,6 +176,8 @@ AFfilehandle afOpenFD (int fd, const char *mode, AFfilesetup setup)
 		return AF_NULL_FILEHANDLE;
 	}
 
+	SETBINARYMODE(fp);
+
 	vf = af_virtual_file_new_for_file(fp);
 
 	if (_afOpenFile(access, vf, NULL, &filehandle, setup) != AF_SUCCEED)
@@ -198,6 +216,8 @@ AFfilehandle afOpenNamedFD (int fd, const char *mode, AFfilesetup setup,
 		return AF_NULL_FILEHANDLE;
 	}
 
+	SETBINARYMODE(fp);
+
 	vf = af_virtual_file_new_for_file(fp);
 
 	if (_afOpenFile(access, vf, filename, &filehandle, setup) != AF_SUCCEED)
@@ -234,6 +254,8 @@ AFfilehandle afOpenFile (const char *filename, const char *mode, AFfilesetup set
 		_af_error(AF_BAD_OPEN, "could not open file '%s'", filename);
 		return AF_NULL_FILEHANDLE;
 	}
+
+	SETBINARYMODE(fp);
 
 	vf = af_virtual_file_new_for_file(fp);
 
@@ -484,6 +506,21 @@ static void freeFileHandle (AFfilehandle filehandle)
 		int	i;
 		for (i=0; i<filehandle->trackCount; i++)
 		{
+			/* Free the compression parameters. */
+			if (filehandle->tracks[i].f.compressionParams)
+			{
+				AUpvfree(filehandle->tracks[i].f.compressionParams);
+				filehandle->tracks[i].f.compressionParams = AU_NULL_PVLIST;
+			}
+
+			if (filehandle->tracks[i].v.compressionParams)
+			{
+				AUpvfree(filehandle->tracks[i].v.compressionParams);
+				filehandle->tracks[i].v.compressionParams = AU_NULL_PVLIST;
+			}
+
+			/* Free the track's modules. */
+
 			_AFfreemodules(&filehandle->tracks[i]);
 
 			if (filehandle->tracks[i].channelMatrix)

@@ -29,7 +29,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <math.h>
 
 #include <assert.h>
@@ -53,6 +52,8 @@
 #define CHNK(X)
 #define DEBG(X)
 #endif
+
+#define NULLMODULEPARAM
 
 extern _PCMInfo _af_default_signed_integer_pcm_mappings[];
 extern _PCMInfo _af_default_unsigned_integer_pcm_mappings[];
@@ -236,12 +237,13 @@ _AFmodule name =\
 	_AFfreemodspec \
 };
 
-#define MODULE( name, desc, intype, outtype, action )\
-	_MODULE( name, desc, intype, outtype, inc->f.channelCount, , action, )
+#define MODULE(name, desc, intype, outtype, action)\
+	_MODULE(name, desc, intype, outtype, inc->f.channelCount, \
+	NULLMODULEPARAM, action, NULLMODULEPARAM)
 
-#define MODULEM( name, desc, intype, outtype, modspectype, action )\
-	_MODULE( name, desc, intype, outtype, inc->f.channelCount, \
-	modspectype *m = (modspectype *) modspec, action, )
+#define MODULEM(name, desc, intype, outtype, modspectype, action)\
+	_MODULE(name, desc, intype, outtype, inc->f.channelCount, \
+	modspectype *m = (modspectype *) modspec, action, NULLMODULEPARAM)
 
 /*
 	Byte-order-swapping modules.
@@ -436,8 +438,10 @@ MODULEM(name, \
 	action)
 
 
-MODULETRANS(floattransform, , float, float, op[i]=(m->b + m->m * ip[i]))
-MODULETRANS(doubletransform, , double, double, op[i]=(m->b + m->m * ip[i]))
+MODULETRANS(floattransform, NULLMODULEPARAM, float, float, \
+	op[i]=(m->b + m->m * ip[i]))
+MODULETRANS(doubletransform, NULLMODULEPARAM, double, double, \
+	op[i]=(m->b + m->m * ip[i]))
 
 /*
 	float2intN_clip - expects floats,
@@ -733,8 +737,10 @@ _AFmodule name =\
 	channelchangefree \
 };
 
-CHANNELMOD(channelchangefloat,  float,  *op = 0.0, *op += *ip++ * *m++, )
-CHANNELMOD(channelchangedouble, double, *op = 0.0, *op += *ip++ * *m++, )
+CHANNELMOD(channelchangefloat,  float,  *op = 0.0, *op += *ip++ * *m++, \
+	NULLMODULEPARAM)
+CHANNELMOD(channelchangedouble, double, *op = 0.0, *op += *ip++ * *m++, \
+	NULLMODULEPARAM)
 
 #define CHANNELINTMOD(name, type) \
 	CHANNELMOD(name, type, \
@@ -947,7 +953,10 @@ status initfilemods (_Track *track, AFfilehandle h)
 		sound data chunk of the file (such as aware).  This is NOT
 		the seek that sets the file at the beginning of the data.
 	*/
+	/* XXXmpruett -- we currently don't set seekok.
 	if (h->seekok && af_fseek(h->fh, track->fpos_first_frame, SEEK_SET) < 0)
+	*/
+	if (af_fseek(h->fh, track->fpos_first_frame, SEEK_SET) < 0)
 	{
 		_af_error(AF_BAD_LSEEK, "unable to position file handle at beginning of sound data");
 		return AF_FAIL;
