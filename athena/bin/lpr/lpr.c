@@ -17,13 +17,13 @@
 
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.13 1991-06-28 13:18:11 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.14 1992-11-09 00:48:42 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.13 1991-06-28 13:18:11 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.14 1992-11-09 00:48:42 probe Exp $";
 #endif lint
 
 /*
@@ -131,9 +131,6 @@ short	SC;			/* suppress multiple copies */
 
 #endif SERVER
 char	*getenv();
-#ifndef _AUX_SOURCE
-char	*rindex();
-#endif
 char	*linked();
 int	cleanup();
 extern char *malloc();
@@ -966,16 +963,3 @@ mktemp(id, num, len)
 #endif SERVER
 	return(s);
 }
-
-#ifdef SERVER
-/*VARARGS1*/
-fatal(msg, a1, a2, a3)
-	char *msg;
-{
-	printf("%s: ", name);
-	printf(msg, a1, a2, a3);
-	putchar('\n');
-	exit(1);
-}
-#endif SERVER
-
