@@ -37,26 +37,26 @@ mandir = $(prefix)/man/man$(manext)
 texmf_prefix = $(datadir)/texmf
 
 # TeX and MF source files.
-texinputdir = $(texmf_prefix)/tex
-mfinputdir = $(texmf_prefix)/mf
+texinputdir = $(datadir)/tex/macros
+mfinputdir = $(datadir)/mf/macros
 
 # The top-level font directory.
-fontdir = $(texmf_prefix)/fonts
+fontdir = $(datadir)/tex//fonts
 
 # Where memory dumps are installed.
-fmtdir = $(texmf_prefix)/ini
-basedir = $(fmtdir)
+fmtdir = $(datadir)/tex/formats
+basedir = $(datadir)/mf/bases
 
 # Pool files.
-texpooldir = $(texmf_prefix)/ini
-mfpooldir = $(texpooldir)
+texpooldir = $(datadir)/tex
+mfpooldir = $(datadir)/mf
 
 # The PostScript TFM and VF files get installed in subdirectories of
 # this directory, named for the typeface families of these directories.
 psfontdir = $(fontdir)/adobe
 
 # Where the configuration files get installed.
-dvips_prefix = $(texmf_prefix)/dvips
+dvips_prefix = $(datadir)/tex/dvips
 configdir = $(dvips_prefix)
 
 # Where the PostScript prologues go.
