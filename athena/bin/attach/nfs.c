@@ -5,40 +5,10 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.8 1996-09-19 22:13:15 ghudson Exp $";
+static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.8.2.1 1998-01-08 20:44:56 ghudson Exp $";
 
 #include "attach.h"
 #ifdef NFS
-
-/* If the timeout is not explicitly specified by the attach command,
- * it is set to 20 tenths of a second (i.e. 2 seconds).  This should
- * really be set in the kernel, but due to release shakedown timing,
- * it's kludged in here.
- * Similarly with retransmissions.
- * 
- * The kernel will double the timeout on each retry until it reaches a
- * max of 60 seconds, at which point it uses 60 seconds for the timeout.
- *
- * current kernel defaults: 4 retrans, 7 tenths sec timeout.
- * -JTK, 24 Oct 88
- *
- * The new values are: 6 retrans, 8 tenths sec timeout.
- * The total timeout period is approximately 100 seconds, thus
- * compensating for a gateway rebooting (~40 seconds).
- * -RPB, 9 Feb 88
- * 
- * Calculations:
- *    total time = timeout * (2^(retrans) - 1)
- *    [derived from sum of geometric series = a(r^n-1)/(r-1)]
- *       a = initial timeout
- *       r = 2
- *       n = retrans
- *
- *    This holds true while timeout * 2^retrans <= 60 seconds
- */
-
-#define	TIMEO_DEFAULT	8
-#define	RETRANS_DEFAULT	7
 
 nfs_attach(at, mopt, errorout)
 	struct _attachtab *at;
@@ -97,16 +67,6 @@ nfs_attach(at, mopt, errorout)
 				return (FAILURE);
 		}
 
-	if (!(mopt->tsa.nfs.flags & NFSMNT_RETRANS)) {
-		mopt->tsa.nfs.flags |= NFSMNT_RETRANS;
-		mopt->tsa.nfs.retrans = RETRANS_DEFAULT;
-	}
-	    
-	if (!(mopt->tsa.nfs.flags & NFSMNT_TIMEO)) {
-		mopt->tsa.nfs.flags |= NFSMNT_TIMEO;
-		mopt->tsa.nfs.timeo = TIMEO_DEFAULT;
-	}
-    
 	/* XXX This is kind of bogus, because if a filesystem has a number
 	 * of hesiod entries, and the mount point is busy, each one will
 	 * be tried until the last one fails, then an error printed.
