@@ -1,0 +1,81 @@
+.\" $Id: update_ws.8,v 1.1 2000-04-28 15:21:52 ghudson Exp $
+.\"
+.\" Copyright 2000 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.TH UPDATE_WS 8 "4 Mar 2000"
+.SH NAME
+update_ws \- Update workstation to a different Athena release
+.SH SYNOPSIS
+.B update_ws [-n] [-a \fIwhy\fP] [\fIversion\fP]
+.SH DESCRIPTION
+.B update_ws
+updates an Athena workstation from the current release to a different
+one.  It accepts the following options:
+.TP 8
+.B \-n
+Display what package updates would occur, but do not actually perform
+the update.
+.TP 8
+.B \-a \fIwhy\fP
+Indicates an automatic update.  The
+.I why
+argument indicates whether the automatic update is being run by the
+reactivate or rc script.  Do not specify this option by hand.
+.PP
+The
+.I version
+argument specifies what release to update to. It may be the number of
+a full release (like "8.3") or the number of a patch (like "8.3.25").
+If it is the number of a full release,
+.B update_ws
+will select the most recent patch version of that release.  If no
+version is specified,
+.B update_ws
+will select the most recent patch version of the currently installed
+full release.
+.PP
+For Red Hat Linux, an Athena release is a list of packages, and an
+update means synchronizing the workstation with the new list.  If the
+workstation is public (PUBLIC is "true" in /etc/athena/rc.conf), the
+installed package list will be completely synchronized to the release
+list; if the workstation is private, most local changes to the
+installed package state will be preserved.  Specifically:
+.IP *
+If a package not in the release list has been installed locally, it
+will stay installed.
+.IP *
+If a package in the release list has been erased locally, it will stay
+erased.
+.IP *
+If a package in the release list has been upgraded, it will stay
+upgraded until the release list is newer.
+.SH NOTES
+An Athena workstation must have cluster information to take updates.
+To get cluster information centrally assigned for your machine, call
+Athena Cluster Services at x3-1410.
+.PP
+The Athena Release Team does not do extensive testing of upgrades
+involving multiple full releases (e.g. 8.2 to 8.4) or of downgrades.
+We recommend that you only update one full release at a time, and that
+you avoid downgrades.
+.SH FILES
+.B /etc/athena/version
+.br
+.B /etc/athena/rc.conf
+.br
+.B /var/athena/release-rpms
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 2000 by the Massachusetts Institute of Technology.
