@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.1 1990-04-16 12:08:21 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.2 1990-04-16 12:08:32 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.1 1990-04-16 12:08:21 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.2 1990-04-16 12:08:32 epeisach Exp $";
 #endif lint
 
 /*
@@ -107,6 +107,16 @@ struct	stat statb;
 #ifdef HESIOD
 char	alibuf[BUFSIZ/2];	/* buffer for printer alias */
 #endif
+
+#ifdef KERBEROS
+int use_kerberos;
+int kerberos_override = -1;
+int account = 0;
+#endif KERBEROS
+
+#ifdef ZEPHYR
+int zephyrflag = 0;
+#endif ZEPHYR
 
 #ifdef SERVER
 int	MX;			/* maximum number of blocks to copy */
@@ -245,6 +255,12 @@ main(argc, argv)
 			mailflg++;
 			break;
 
+#ifdef ZEPHYR
+		case 'z':
+			zephyrflag++;
+			break;
+#endif ZEPHYR
+
 		case 'h':		/* toggle want of header page */
 			hdr = !hdr;
 			break;
@@ -282,7 +298,21 @@ main(argc, argv)
 				forms = *++argv;
 			}
 			break;
-
+#ifdef KERBEROS
+		case 'u':
+			kerberos_override = 0;
+			break;
+		case 'k':
+			kerberos_override = 1;
+			break;
+		case 'a':
+			if (isdigit(arg[2])) {
+				i = atoi(&arg[2]);
+				if (i > 0)
+					account = i;
+			}
+			break;
+#endif KERBEROS
 		}
 	}
 	if (printer == NULL && (printer = getenv("PRINTER")) == NULL)
@@ -340,8 +370,12 @@ main(argc, argv)
 #endif SERVER
 	card('H', host);
 	card('P', person);
- 	if (forms != NULL)
-		card('F', forms);
+#ifdef KERBEROS
+	if (account)
+		card('A', itoa(account));
+#endif KERBEROS
+	if (forms != NULL)
+	        card('F', forms);
 	if (hdr) {
 		if (jobname == NULL) {
 			if (argc == 1)
@@ -359,12 +393,18 @@ main(argc, argv)
 		card('I', itoa(indent));
 	if (mailflg)
 		card('M', person);
+
+#ifdef ZEPHYR
+	if (zephyrflag)
+		card('Z', person);
+#endif ZEPHYR
+
 	if (format == 't' || format == 'n' || format == 'd')
 		for (i = 0; i < 4; i++)
 			if (fonts[i] != NULL)
 				card('1'+i, fonts[i]);
 	if (width != NULL)
-		card('W', width);
+		card('W', width);	
 
 	/*
 	 * Read the files and spool them.
@@ -724,6 +764,10 @@ chkprinter()
 	char *bp = pbuf;
 	extern char *pgetstr();
 
+#if defined(KERBEROS) && !defined(SERVER)
+	short KA;
+#endif /* KERBEROS */
+
 #ifdef HESIOD
 	if ((status = pgetent(buf, printer)) <= 0) {
 		if (pralias(alibuf, printer))
@@ -760,6 +804,15 @@ chkprinter()
 	if ((RP = pgetstr("rp",&bp)) == NULL)
 		RP = printer;	/* Use same name if no remote printer */
 				/* name */
+#ifdef KERBEROS
+	KA = pgetnum("ka");
+	if (KA > 0)
+	    use_kerberos = 1;
+	else
+	    use_kerberos = 0;
+	if (kerberos_override > -1)
+	    use_kerberos = kerberos_override;
+#endif KERBEROS
 #endif SERVER
 }
 
@@ -772,7 +825,7 @@ mktemps()
 	register int len, fd, n;
  	register char *cp;
 #else SERVER
-	register int c, len, fd, n;
+	register int len, fd, n;
 	register char *cp;
 #endif SERVER
 	char buf[BUFSIZ];
