@@ -1,5 +1,5 @@
 #  
-#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Makefile,v 1.5 1990-07-17 12:57:13 qjb Exp $
+#  $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Makefile,v 1.6 1990-08-09 15:33:00 qjb Exp $
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/Makefile,v $
 #  $Author: qjb $
 #
@@ -29,7 +29,7 @@ HEADERS		= ../include/rkinit.h ../include/rkinit_private.h $(RKERR_H)
 all: rkinitd
 
 rkinitd: $(SOBJS) $(RKLIB)
-	cc -o rkinitd $(SOBJS) $(LIBS)
+	$(CC) -o rkinitd $(SOBJS) $(LIBS)
 
 $(SOBJS): $(HEADERS)
 
