@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.52 1992-07-07 17:27:42 lwvanels Exp $
+ * $Id: login.c,v 1.53 1992-07-20 10:38:36 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.52 1992-07-07 17:27:42 lwvanels Exp $";
+static char *rcsid = "$Id: login.c,v 1.53 1992-07-20 10:38:36 miki Exp $";
 #endif
 
 /*
@@ -402,6 +402,7 @@ main(argc, argv)
 #endif
 	envnew[j++] = environ[i];
     }
+    envnew[j++] = NULL;
     environ = envnew;
 
     t = 0;
@@ -1199,7 +1200,7 @@ done:
 }
 /* END TRASH */
 
-#if !defined(ultrix)
+#if !defined(ultrix) && !defined(sun)
 /*
  * Set the value of var to be arg in the Unix 4.2 BSD environment env.
  * Var should NOT end in '='; setenv inserts it. 
@@ -1338,7 +1339,9 @@ char *prompt;
 	register c;
 	FILE *fi;
 	static char pbuf[MAXPWSIZE+1];
+#if !defined(sun)
 	sigtype (*signal())();
+#endif
 	sigtype (*sig)();
 
 	if ((fi = fdopen(open("/dev/tty", 2), "r")) == NULL)
