@@ -22,7 +22,11 @@ MACHDEFS= -DUW
 MACHLIBS= -lrpcsvc
 #endif
 
-#if defined(_IBMR2) || defined(SOLARIS) || defined(sgi)
+#if defined(__NetBSD__)
+MACHLIBS= -lrpcsvc -lcompat
+#endif
+
+#if defined(_IBMR2) || defined(SOLARIS) || defined(sgi) || defined(linux) || defined(__NetBSD__)
 MACHOBJS=rcquotaxdr.o rquotaxdr.o mountxdr.o
 #endif
 
