@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcm/Imakefile,v $
- * $Id: Imakefile,v 1.1 1991-04-02 14:00:51 lwvanels Exp $
+ * $Id: Imakefile,v 1.2 1991-04-10 14:57:36 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -14,11 +14,11 @@ SRCS=	olcm.c
 OBJS=	olcm.o
 
 #ifdef Profiling
-DEFINES=-DLOG -DSYSLOG -DPROFILE
+DEFINES=-DPROFILE
 .c.o:
 	$(CC) -pg -c $(CFLAGS) $*.c
 #else
-DEFINES=-DLOG -DSYSLOG
+DEFINES=
 #endif /* Profiling */
 
 SYS_LIBRARIES=  $(KerberosLib)
