@@ -25,7 +25,7 @@ SM_UNUSED(static char copyright[]) =
 	The Regents of the University of California.  All rights reserved.\n";
 #endif /* ! lint */
 
-SM_RCSID("@(#)$Id: main.c,v 1.2 2003-07-03 22:18:02 zacheiss Exp $")
+SM_RCSID("@(#)$Id: main.c,v 1.3 2003-07-25 05:13:41 zacheiss Exp $")
 
 
 #if NETINET || NETINET6
@@ -373,23 +373,23 @@ main(argc, argv, envp)
 
 #if _FFR_QUARANTINE
 # if defined(__osf__) || defined(_AIX3)
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:xQ:"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:xQ:U"
 # endif /* defined(__osf__) || defined(_AIX3) */
 # if defined(sony_news)
-#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:p:q:R:r:sTtV:vX:Q:"
+#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:p:q:R:r:sTtV:vX:Q:U"
 # endif /* defined(sony_news) */
 # ifndef OPTIONS
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:Q:"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:Q:U"
 # endif /* ! OPTIONS */
 #else /* _FFR_QUARANTINE */
 # if defined(__osf__) || defined(_AIX3)
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:x"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:xU"
 # endif /* defined(__osf__) || defined(_AIX3) */
 # if defined(sony_news)
-#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:p:q:R:r:sTtV:vX:"
+#  define OPTIONS	"A:B:b:C:cd:E:e:F:f:Gh:IiJ:L:M:mN:nO:o:p:q:R:r:sTtV:vX:U"
 # endif /* defined(sony_news) */
 # ifndef OPTIONS
-#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:"
+#  define OPTIONS	"A:B:b:C:cd:e:F:f:Gh:IiL:M:mN:nO:o:p:q:R:r:sTtV:vX:U"
 # endif /* ! OPTIONS */
 #endif /* _FFR_QUARANTINE */
 
@@ -632,6 +632,9 @@ main(argc, argv, envp)
 	 */
 	setuserenv("KRB5CCNAME", NULL);
 	setuserenv("KRBTKFILE", NULL);
+
+	/* Flag to determine if we should use a mailhub or not. */
+	setuserenv("DIRECT_DELIVERY", NULL);
 
 	/*
 	**  restore any original TZ setting until TimeZoneSpec has been
@@ -1120,6 +1123,10 @@ main(argc, argv, envp)
 			CHECK_AGAINST_OPMODE(j);
 			GrabTo = true;
 			break;
+
+		  case 'U':    /* Don't even bother trying authentication. */
+			conffile = newstr("/etc/mail/sendmail-noauth.cf");
+		        break;
 
 		  case 'V':	/* DSN ENVID: set "original" envelope id */
 			CHECK_AGAINST_OPMODE(j);
