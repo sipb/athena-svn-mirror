@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.43 1999-09-22 00:25:42 danw Exp $
+# $Id: do.sh,v 1.44 1999-09-28 21:56:13 danw Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -207,6 +207,7 @@ elif [ -f configure.in ]; then
 		$MAKE $n all
 		;;
 	check)
+		$MAKE -n check >/dev/null 2>&1 && $MAKE $n check || true
 		;;
 	install)
 		$MAKE $n install "DESTDIR=$srvd"
@@ -244,6 +245,7 @@ elif [ -r Makefile ]; then
 		$MAKE $n all CC="$CC" "ATHTOOLROOT=$athtoolroot"
 		;;
 	check)
+		$MAKE $n check
 		;;
 	install)
 		$MAKE $n install "DESTDIR=$srvd" "ATHTOOLROOT=$athtoolroot"
