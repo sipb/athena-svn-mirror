@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v $
- *	$Id: t_connect.c,v 1.14 1990-12-17 08:38:57 lwvanels Exp $
+ *	$Id: t_connect.c,v 1.15 1991-01-03 15:36:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.14 1990-12-17 08:38:57 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.15 1991-01-03 15:36:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -176,7 +176,8 @@ t_forward(Request)
       break;
     }
 
-  if(instance != Request->requester.instance)
+  if ((instance != Request->requester.instance) &&
+      (strcmp(Request->requester.username,Request->target.username) == 0))
     printf("%s [%d] has been deactivated.  You are now %s [%d], again!\n",
 	Request->requester.username,instance,
 	Request->requester.username, Request->requester.instance);
