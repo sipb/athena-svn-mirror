@@ -1,21 +1,20 @@
-
-SFTP(1)                     System Reference Manual                    SFTP(1)
+SFTP(1)                 System General Commands Manual                 SFTP(1)
 
 NAME
      sftp - Secure file transfer program
 
 SYNOPSIS
-     sftp [-1Cv] [-b batchfile] [-F ssh_config] [-o ssh_option] [-s subsystem
-          | sftp_server] [-S program] host
+     sftp [-1Cv] [-b batchfile] [-F ssh_config] [-o ssh_option]
+          [-s subsystem | sftp_server] [-S program] host
      sftp [[user@]host[:file [file]]]
      sftp [[user@]host[:dir[/]]]
 
 DESCRIPTION
-     sftp is an interactive file transfer program, similar to ftp(1),  which
+     sftp is an interactive file transfer program, similar to ftp(1), which
      performs all operations over an encrypted ssh(1) transport.  It may also
      use many features of ssh, such as public key authentication and compresM--
-     sion.  sftp connects and logs into the specified host, then enters an inM--
-     teractive command mode.
+     sion.  sftp connects and logs into the specified host, then enters an
+     interactive command mode.
 
      The second usage format will retrieve files automatically if a non-interM--
      active authentication method is used; otherwise it will do so after sucM--
@@ -29,11 +28,11 @@ DESCRIPTION
      -1      Specify the use of protocol version 1.
 
      -b batchfile
-             Batch mode reads a series of commands from an input batchfile inM--
-             stead of stdin. Since it lacks user interaction it should be used
-             in conjunction with non-interactive authentication.  sftp will
-             abort if any of the following commands fail: get, put, rename,
-             ln, rm and lmkdir.
+             Batch mode reads a series of commands from an input batchfile
+             instead of stdin.  Since it lacks user interaction it should be
+             used in conjunction with non-interactive authentication.  sftp
+             will abort if any of the following commands fail: get, put,
+             rename, ln, rm, mkdir, chdir, lchdir and lmkdir.
 
      -C      Enables compression (via ssh's -C flag).
 
@@ -61,9 +60,8 @@ DESCRIPTION
 
 INTERACTIVE COMMANDS
      Once in interactive mode, sftp understands a set of commands similar to
-     those of ftp(1).  Commands are case insensitive and pathnames may be enM--
-
-     closed in quotes if they contain spaces.
+     those of ftp(1).  Commands are case insensitive and pathnames may be
+     enclosed in quotes if they contain spaces.
 
      bye     Quit sftp.
 
@@ -74,13 +72,13 @@ INTERACTIVE COMMANDS
              Change local directory to path.
 
      chgrp grp path
-             Change group of file path to grp. grp must be a numeric GID.
+             Change group of file path to grp.  grp must be a numeric GID.
 
      chmod mode path
              Change permissions of file path to mode.
 
      chown own path
-             Change owner of file path to own. own must be a numeric UID.
+             Change owner of file path to own.  own must be a numeric UID.
 
      exit    Quit sftp.
 
@@ -115,9 +113,9 @@ INTERACTIVE COMMANDS
              Create remote directory specified by path.
 
      put [flags] local-path [local-path]
-             Upload local-path and store it on the remote machine. If the reM--
-             mote path name is not specified, it is given the same name it has
-             on the local machine. If the -P flag is specified, then the
+             Upload local-path and store it on the remote machine. If the
+             remote path name is not specified, it is given the same name it
+             has on the local machine. If the -P flag is specified, then the
              file's full permission and access time are copied too.
 
      pwd     Display remote working directory.
@@ -128,7 +126,6 @@ INTERACTIVE COMMANDS
              Rename remote file from oldpath to newpath.
 
      rmdir path
-
              Remove remote directory specified by path.
 
      rm path
@@ -148,9 +145,9 @@ AUTHORS
      Damien Miller <djm@mindrot.org>
 
 SEE ALSO
-     scp(1),  ssh(1),  ssh-add(1),  ssh-keygen(1),  sftp-server(8),  sshd(8)
+     scp(1), ssh(1), ssh-add(1), ssh-keygen(1), sftp-server(8), sshd(8)
 
-     T. Ylonen, and S. Lehtinen, SSH File Transfer Protocol, draft-ietf-secsh-
+     T. Ylonen and S. Lehtinen, SSH File Transfer Protocol, draft-ietf-secsh-
      filexfer-00.txt, January 2001, work in progress material.
 
-BSD Experimental               February 4, 2001                              3
+BSD                            February 4, 2001                            BSD

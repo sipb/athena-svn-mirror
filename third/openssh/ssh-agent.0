@@ -1,5 +1,4 @@
-
-SSH-AGENT(1)                System Reference Manual               SSH-AGENT(1)
+SSH-AGENT(1)            System General Commands Manual            SSH-AGENT(1)
 
 NAME
      ssh-agent - authentication agent
@@ -18,10 +17,10 @@ DESCRIPTION
 
      The options are as follows:
 
-     -c      Generate C-shell commands on stdout. This is the default if SHELL
-             looks like it's a csh style of shell.
+     -c      Generate C-shell commands on stdout.  This is the default if
+             SHELL looks like it's a csh style of shell.
 
-     -s      Generate Bourne shell commands on stdout. This is the default if
+     -s      Generate Bourne shell commands on stdout.  This is the default if
              SHELL does not look like it's a csh style of shell.
 
      -k      Kill the current agent (given by the SSH_AGENT_PID environment
@@ -63,15 +62,14 @@ DESCRIPTION
 
      The SSH_AGENT_PID environment variable holds the agent's PID.
 
-
      The agent exits automatically when the command given on the command line
      terminates.
 
 FILES
      $HOME/.ssh/identity
              Contains the protocol version 1 RSA authentication identity of
-             the user.  This file should not be readable by anyone but the usM--
-             er.  It is possible to specify a passphrase when generating the
+             the user.  This file should not be readable by anyone but the
+             user.  It is possible to specify a passphrase when generating the
              key; that passphrase will be used to encrypt the private part of
              this file.  This file is not used by ssh-agent but is normally
              added to the agent using ssh-add(1) at login time.
@@ -98,6 +96,6 @@ AUTHORS
      versions 1.5 and 2.0.
 
 SEE ALSO
-     ssh(1),  ssh-add(1),  ssh-keygen(1),  sshd(8)
+     ssh(1), ssh-add(1), ssh-keygen(1), sshd(8)
 
-BSD Experimental              September 25, 1999                             2
+BSD                           September 25, 1999                           BSD

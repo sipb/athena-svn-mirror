@@ -7,7 +7,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: ssh-keyscan.c,v 1.29 2001/08/30 22:22:32 markus Exp $");
+RCSID("$OpenBSD: ssh-keyscan.c,v 1.30 2001/10/08 19:05:05 markus Exp $");
 
 #if defined(HAVE_SYS_QUEUE_H) && !defined(HAVE_BOGUS_SYS_QUEUE_H)
 #include <sys/queue.h>
@@ -690,6 +690,8 @@ main(int argc, char **argv)
 	extern char *optarg;
 
 	__progname = get_progname(argv[0]);
+	init_rng();
+	seed_rng();
 	TAILQ_INIT(&tq);
 
 	if (argc <= 1)
