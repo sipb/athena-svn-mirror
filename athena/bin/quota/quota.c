@@ -1,7 +1,7 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.14 1991-07-09 10:58:09 epeisach Exp $
+ *   $Id: quota.c,v 1.15 1991-07-10 13:07:12 lwvanels Exp $
  *   
  *   Uses the rcquota rpc call for group and user quotas
  */
@@ -252,6 +252,7 @@ showquotas(id,name)
     int j;
     struct _attachtab *p;
     void *v;				/* Pointer to AFS VolumeStatus */
+    extern void *getafsquota();
 
     myuid = getuid();
 
@@ -325,6 +326,7 @@ showquotas(id,name)
 
     struct _attachtab *p;
     void *v;				/* Pointer to AFS VolumeStatus */
+    extern void *getafsquota();
     register struct mntent *mntp;
 #ifdef ultrix
 #define mnt_dir fd_path
