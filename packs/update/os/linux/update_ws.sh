@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.10 2000-03-25 19:03:34 ghudson Exp $
+# $Id: update_ws.sh,v 1.11 2000-04-16 17:43:03 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -88,7 +88,7 @@ esac
 # Define a function to set cluster variables for this host for a given
 # version.  The "AUTOUPDATE=false" is so getcluster will output the
 # current version's cluster variables and NEW_PRODUCTION_RELEASE for a
-# new version.	This is a hack; ideally getcluster would always behave
+# new version.  This is a hack; ideally getcluster would always behave
 # this way.
 getclust() {
 	unset NEW_TESTING_RELEASE NEW_PRODUCTION_RELEASE SYSPREFIX SYSCONTROL
@@ -145,7 +145,7 @@ new_testing_release_msg() {
 	echo "A new Athena release ($NEW_TESTING_RELEASE) is now in testing."
 	echo "You are theoretically interested in this phase of testing, but"
 	echo "because there may be bugs which would inconvenience your work,"
-	echo "you must update to this release manually.	 Please contact Athena"
+	echo "you must update to this release manually.  Please contact Athena"
 	echo "Cluster Services (x3-1410) if you have not received instructions"
 	echo "on how to update."
 }
@@ -162,7 +162,7 @@ if [ "x$newvers" = "x$oldvers" ]; then
 	elif [ -n "$NEW_PRODUCTION_RELEASE" -o \
 	       -n "$NEW_TESTING_RELEASE" ]; then
 		echo "Your workstation is already up to date for this full"
-		echo "release.	You must manually specify a newer full release"
+		echo "release.  You must manually specify a newer full release"
 		echo "to update beyond this point."
 	else
 		echo "No new version is available."
