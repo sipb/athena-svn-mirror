@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.4 1997-03-18 20:43:57 cfields Exp $
+# $Id: Imakefile,v 1.4.2.1 1997-11-04 18:33:06 ghudson Exp $
 #
 
 CONFDIR=	/etc/athena/login/xdm
@@ -14,4 +14,4 @@ install::
 	-for i in $(XCONFIGS); do \
 		$(INSTALL) -m 0755 $$i $(DESTDIR)$(CONFDIR)/; \
 		done
-	$(INSTALL) -m 0755 xdm $(DESTDIR)$(ATHRETCDIR)/axdm
+	$(INSTALL) -m 0755 xdm.${ATHENA_SYS} $(DESTDIR)$(ATHRETCDIR)/axdm
