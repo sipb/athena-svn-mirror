@@ -224,6 +224,7 @@ int	userauth_external(Authctxt *authctxt);
 int	userauth_gssapi(Authctxt *authctxt);
 void	input_gssapi_response(int type, u_int32_t plen, void *ctxt);
 void	input_gssapi_token(int type, u_int32_t plen, void *ctxt);
+void	input_gssapi_error(int type, u_int32_t plen, void *ctxt);
 void	input_gssapi_hash(int type, u_int32_t plen, void *ctxt);
 #endif
 
@@ -538,6 +539,7 @@ userauth_gssapi(Authctxt *authctxt)
 
         dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_RESPONSE,&input_gssapi_response);
         dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_TOKEN,&input_gssapi_token);
+        dispatch_set(SSH2_MSG_USERAUTH_GSSAPI_ERROR, &input_gssapi_error);
 	
         return 1;
 }
@@ -618,6 +620,25 @@ input_gssapi_token(int type, u_int32_t plen, void *ctxt)
 		packet_send();
 		packet_write_wait();
 	}
+}
+
+void
+input_gssapi_error(int type, u_int32_t plen, void *ctxt)
+{
+	OM_uint32 maj,min;
+  	char *msg;
+	char *lang;
+
+	maj=packet_get_int();
+	min=packet_get_int();
+	msg=packet_get_string(NULL);
+	lang=packet_get_string(NULL);
+
+	packet_check_eom();
+
+	verbose("Server GSSAPI Error: %s", msg);
+	xfree(msg);
+	xfree(lang);
 }
 
 int
