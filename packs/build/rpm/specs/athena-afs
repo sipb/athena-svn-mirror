@@ -2,7 +2,6 @@ Name: athena-afs
 Summary: AFS binaries for Athena workstations
 Copyright: Transarc
 Group: System Environment/Base
-Requires: athena-listsuidcells
 
 %description
 Binary support for AFS client implementation from Transarc, and
