@@ -1,21 +1,36 @@
+
+/*
+ *	Win Treese, Jeff Jimenez
+ *      Student Consulting Staff
+ *	MIT Project Athena
+ *
+ *	Copyright (c) 1985 by the Massachusetts Institute of Technology
+ *
+ *      Permission to use, copy, modify, and distribute this program
+ *      for any purpose and without fee is hereby granted, provided
+ *      that this copyright and permission notice appear on all copies
+ *      and supporting documentation, the name of M.I.T. not be used
+ *      in advertising or publicity pertaining to distribution of the
+ *      program without specific prior permission, and notice be given
+ *      in supporting documentation that copying and distribution is
+ *      by permission of M.I.T.  M.I.T. makes no representations about
+ *      the suitability of this software for any purpose.  It is pro-
+ *      vided "as is" without express or implied warranty.
+ */
+
+
 /* This file is part of the CREF finder.  It contains functions for
  * parsing and updating the current location in the directory tree.  It
  * contains several local state variables that are only accessible by
  * the functions in this file.
  *
- *	Win Treese
- *	MIT Project Athena
- *
- *	Copyright (c) 1985 by the Massachusetts Institute of Technology
- *
- *	Created:	8/10/85
- *
- *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
- *	$Author: treese $
+ *	$Source:
+ *	$Author:
+ *	$Header:
  */
 
 #ifndef lint
-static char *rcsid_update_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.5 1986-01-29 14:48:05 treese Exp $";
+static char *rcsid_update_c = "$Header: ";
 #endif	lint
 
 #include <stdio.h>			/* Standard I/O definitions. */
@@ -43,7 +58,6 @@ char *dir;
 
   strcpy(temp, dir);
   strcpy(Current_Dir, temp);
-  Current_Index = 0;
   parse_contents();
   return(SUCCESS);
 }
@@ -52,7 +66,6 @@ char *dir;
  *			directory into the entry table.
  * Arguments:	None.
  * Returns:	An error code.
- * Notes:
  */
 
 ERRCODE
@@ -66,10 +79,18 @@ parse_contents()
   char *title_ptr;			/* Ptr. to title string. */
   char *filename_ptr;			/* Ptr. to filename string. */
   char *format_ptr;			/* Ptr. to text formatter string. */
-  char *spare_ptr;			/* Ptr. to spare string. */
+  char *maintainer_ptr;			/* Ptr. to maintainer string. */
   char *delim_ptr;			/* Ptr. to place of delimiter*/
-  char error[ERRSIZE];			/* Error message. */
-  
+  char error[ERRSIZE];			/* Error messages. */
+  char line1[ERRSIZE];
+  char line2[ERRSIZE];
+  char *preserve_dir;                   /* Ptr. to Current_Dir string*/
+  char *reset_dir;                      /* Ptr. to Current_Dir string
+					      minus trailing directory*/
+  char old_dir[FILENAME_SIZE];          /* Current_Dir string minus
+					      trailing directory*/
+  reset_dir=old_dir;
+  preserve_dir = Current_Dir;
   strcpy(contents_name, Current_Dir);
   strcat(contents_name, "/");
   strcat(contents_name, CONTENTS);
@@ -79,15 +100,17 @@ parse_contents()
 	{
 	  if (errno == EACCES)
 	    {
-	      message(1, "You are not allowed to read this file.\n");
+	      messages("You are not allowed to read this file.",
+		       "Please select a different entry or entry point.");
 	      return(PERM_DENIED);
 	    }
 	  else
 	    {
-	    sprintf(error, "cref: parse_contents: Can't open file %s",
-		    contents_name);
-	    message(1, error);
-	    message(2, "No index for this directory.");
+	    sprintf(line1, "No index for entry: %s",
+		    Entry_Table[Current_Index-1].title);
+	    messages(line1,"Please select a different entry.");
+	    extract_parent_dir(preserve_dir,reset_dir);
+	    strcpy(Current_Dir,old_dir);
 	    return(ERROR);
 	  }
 	}
@@ -107,8 +130,10 @@ parse_contents()
 	continue;
       if ( (delim_ptr = index(ptr, CONTENTS_DELIM)) == NULL)
 	{
-	  fprintf(stderr, "cref: Invalid contents file %s.", contents_name);
-	  fprintf(stderr, "Unable to construct contents.");
+	  sprintf(line1, "Broken index file for entry: %s",Entry_Table[Current_Index-1].title);
+	  messages(line1, "Please select another entry.");
+	  extract_parent_dir(preserve_dir,reset_dir);
+	  strcpy(Current_Dir,old_dir);	  
 	  return(ERROR);
 	}
       *delim_ptr = (char) NULL;
@@ -119,8 +144,12 @@ parse_contents()
 	Entry_Table[i].type = CREF_DIR;
       if ( (delim_ptr = index(title_ptr, CONTENTS_DELIM)) == NULL)
 	{
-	  sprintf(error, "cref: Invalid title: file %s.", contents_name);
-	  message(1, error);
+	  sprintf(line1, "Broken index file: %s", contents_name);
+	  sprintf(line2, "Invalid title field (field 2) in line %d",i+1);
+	  messages(line1,line2);
+	  extract_parent_dir(preserve_dir,reset_dir);
+	  strcpy(Current_Dir,old_dir);	  
+	  set_current_dir(Current_Dir);
 	  return(ERROR);
 	}
       *delim_ptr = (char) NULL;
@@ -128,8 +157,12 @@ parse_contents()
       filename_ptr = delim_ptr + 1;
       if ( (delim_ptr = index(filename_ptr, CONTENTS_DELIM)) == NULL)
 	{
-	  sprintf(error, "cref: Invalid filename: file %s.", contents_name);
-	  message(1, error);
+	  sprintf(line1, "Broken index file: %s", contents_name);
+	  sprintf(line2, "Invalid filename field (field 3) in line %d",i+1);
+	  messages(line1, line2);
+	  extract_parent_dir(preserve_dir,reset_dir);
+	  strcpy(Current_Dir,old_dir);	  
+	  set_current_dir(Current_Dir);
 	  return(ERROR);
 	}
       *delim_ptr = (char) NULL;
@@ -139,14 +172,18 @@ parse_contents()
       format_ptr = delim_ptr + 1;
       if ( (delim_ptr = index(format_ptr, CONTENTS_DELIM)) == NULL)
 	{
-	  sprintf(error, "cref: Invalid formatter: file %s.\n", contents_name);
-	  message(1, error);
+	  sprintf(line1, "Broken index file: %s", contents_name);
+	  sprintf(line2, "Invalid formatter field (field 4) in line %d",i+1);
+	  messages(line1, line2);
+	  extract_parent_dir(preserve_dir,reset_dir);
+	  strcpy(Current_Dir,old_dir);	  
+	  set_current_dir(Current_Dir);
 	  return(ERROR);
 	}
       *delim_ptr = (char) NULL;
       strcpy(Entry_Table[i].formatter, format_ptr);
-      spare_ptr = delim_ptr + 1;
-      strcpy(Entry_Table[i].spare, spare_ptr);
+      maintainer_ptr = delim_ptr + 1;
+      strcpy(Entry_Table[i].maintainer, maintainer_ptr);
       i++;
     }
   Entry_Count = i;
@@ -235,4 +272,54 @@ read_abbrevs(fp)
       *name_ptr = (char) NULL;
       Abbrev_Count++;
     }
+}
+
+/*Function extract_parent_dir() extracts the parent directory from
+ * a directory pathname.  
+ * Arguments: directory path, empty string to contain name of parent
+ * directory.
+ * Returns: name of parent directory
+ * Notes: should only need to pass directory path as an argument. Fix
+ *    later.
+ */
+extract_parent_dir(dir_path,parent_dir)
+char *dir_path;
+char *parent_dir;
+
+{
+  register char *p;
+
+  p = rindex(dir_path,'/');
+  copyn(parent_dir, dir_path, (p--) - dir_path);
+    
+  return(*parent_dir);
+}    
+
+extract_tail(dir_path,tail)
+char *dir_path;
+char *tail;
+
+{
+  register char *p;
+
+  p = rindex(dir_path,'/');
+  copyn(tail, ++p, FILENAME_SIZE);
+    
+  return(*tail);
+}    
+
+
+/*Function copyn() - lifted verbatim from /src/bin/csh/sh.file.c
+ *Like strncpy but always leave room for trailing \0
+ *and always null terminate.
+ */
+copyn(des, src, count)
+        register char *des, *src;
+        register count;
+{
+
+        while (--count >= 0)
+                if ((*des++ = *src++) == 0)
+                        return;
+        *des = '\0';
 }
