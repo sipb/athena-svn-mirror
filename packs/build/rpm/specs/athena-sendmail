@@ -2,6 +2,7 @@ Name: athena-sendmail
 Summary: The Sendmail Mail Transport Agent, for Athena
 Copyright: BSD
 Group: System Environment/Daemons
+Provides: sendmail = 8.9.3
 
 Requires: athena-hesiod
 Provides: smtpdaemon
