@@ -1,2 +1,0 @@
-#define PATCHLEVEL 9
-#define CNS4_RELEASE "96q1"
