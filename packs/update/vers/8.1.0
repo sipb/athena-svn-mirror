@@ -49,6 +49,8 @@ sun4)
 	;;
 
 sgi)
+	echo "TRACKNEWOS=true"			>> "$CONFVARS"
+	echo "NEWOS=true"			>> "$CONFVARS"
 	echo "/etc/sendmail.cf"			>> "$CONFCHG"
 	echo "/etc/services"			>> "$CONFCHG"
 	echo "/etc/aliases"			>> "$CONFCHG"
