@@ -1,6 +1,6 @@
 #!/dev/null
 #
-# $Id: add.csh,v 1.23 1994-12-30 04:47:23 cfields Exp $
+# $Id: add.csh,v 1.24 1995-02-24 06:31:47 cfields Exp $
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -109,7 +109,7 @@ if ( $?add_oldverbose && ! $?add_new ) set add_debug
 #
 
 if ( ! $?ATHENA_SYS ) then
-  setenv ATHENA_SYS `/srvd/bin/athena/machtype -S`
+  setenv ATHENA_SYS `machtype -S`
   if ( $ATHENA_SYS == "" ) then
     setenv ATHENA_SYS `fs sysname | awk -F\' '{ print $2 }'`
   endif
@@ -257,6 +257,10 @@ foreach add_i ($add_dirs)
             if ( $?add_debug ) echo $add_man added to end of \$athena_manpath
             set athena_manpath = ${athena_manpath}:$add_man
           endif
+          if ( "$MANPATH" !~ *"$add_man"* ) then
+            if ( $?add_debug ) echo $add_man added to end of \$MANPATH
+            setenv MANPATH ${MANPATH}:$add_man
+          endif
         endif
         breaksw
 
@@ -272,6 +276,10 @@ foreach add_i ($add_dirs)
           if ( "$athena_manpath" !~ *"$add_man"* ) then
             if ( $?add_debug ) echo $add_man added to front of \$athena_manpath
             set athena_manpath = ${add_man}:$athena_manpath
+          endif
+          if ( "$MANPATH" !~ *"$add_man"* ) then
+            if ( $?add_debug ) echo $add_man added to front of \$MANPATH
+            setenv MANPATH ${add_man}:$MANPATH
           endif
         endif
         breaksw
