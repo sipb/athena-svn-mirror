@@ -3,6 +3,8 @@ Summary: Client software for the AFS filesystem.
 Copyright: IBM Public License
 Group: System Environment/Base
 
+Conflicts: athena-afs openafs openafs-client openafs-devel openafs-kernel
+
 %description
 Client programs, libaries, kernel modules, and configuration files for 
 the AFS filesystem.
@@ -35,19 +37,19 @@ find $RPM_BUILD_ROOT -type f -or -type l |
       -e "s|^/usr/vice/etc/cacheinfo$|%config \0|" \
       -e "s|^/etc/sysconfig/afs$|%config \0|" |
   sort > rpm.filelist
-echo "%dir /usr/vice/cache" >> rpm.filelist         
+echo "%dir /usr/vice/cache" >> rpm.filelist
 
 %post
 grep -q ^AFSSRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-AFSSRV=false;           export AFSSRV;          #  AFS server
+AFSSRV=false;		export AFSSRV;		#  AFS server
 EOF
 
 grep -q ^AFSCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf 
-AFSCLIENT=true;         export AFSCLIENT;       #  AFS client
+AFSCLIENT=true;		export AFSCLIENT;	#  AFS client
 EOF
 
 grep -q ^AFSADJUST /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-AFSADJUST=true;         export AFSADJUST;       #  Adjust AFS cache-size?
+AFSADJUST=true; 	export AFSADJUST;	#  Adjust AFS cache-size?
 EOF
 
 chkconfig --add afs
