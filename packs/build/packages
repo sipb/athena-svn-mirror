@@ -1,4 +1,4 @@
-# $Id: packages,v 1.109 2000-09-02 14:34:33 ghudson Exp $
+# $Id: packages,v 1.110 2000-12-04 20:13:49 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -121,19 +121,27 @@ athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 third/afsbin			package afs
 third/bash
 third/bind
+third/db			except linux
 third/emacs			requires hesiod,krb5
+third/gettext			except linux
 third/glib
+third/gmp			except linux
+third/gnome-libs		requires gtk,imlib,db,ORBit
 third/gtk			requires glib
+third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
 third/ispell			except linux
 third/jot
+third/jpeg			except linux
 third/kermit
 third/kpasswd			requires krb5
 third/krb5			requires et package krb5-prep
 third/krb5/src/appl		requires al,locker,zephyr,krb5,hesiod package krb5
 third/ksrvutil			requires krb5
 third/lam
+third/libpng			except linux requires zlib
+third/libungif			except linux
 third/look			on irix
 third/lprng/athena		package lprng-misc
 third/lprng/ifhp
@@ -143,6 +151,7 @@ third/motif			on linux
 third/motif/clients/mwm		on solaris
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
+third/ORBit			requires glib,gettext
 third/patch			on solaris
 third/perl
 third/rcs			on solaris
@@ -164,7 +173,9 @@ third/whois			on irix
 third/x3270
 third/xmh
 third/xntp
+third/xpm			on solaris
 third/xscreensaver		requires krb5
+third/zlib			except linux
 
 # Final packs stuff
 packs/config			late except linux
