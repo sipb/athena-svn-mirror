@@ -1,51 +1,68 @@
 .\" 
-.\" $Id: from.1,v 1.1 1991-05-29 10:04:29 akajerry Exp $
+.\" $Id: from.1,v 1.2 1991-06-30 22:42:09 akajerry Exp $
 .\" $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.1,v $
 .\" $Author: akajerry $
 .\"
-.TH PFROM 1 "March 10, 1991"
+.TH FROM 1 
+.DA June 30, 1991
 .UC 4
 .SH NAME
-pfrom \- who is my mail from?
+from \- who is my mail from?
 .SH SYNOPSIS
-.B pfrom
-[
-.B \-s
-sender
-] [
-.B \-h 
-host
-] [
-.B \-v
-] [
-.B \-d
-]
+.B from [-s sender] [-h host] [
+\fB\-v \fR|\fB -r] [-d] [-u \fR|\fB -p] [-?] [user]
 .SH DESCRIPTION
 The 
-.I pfrom 
+.I from 
 program prints out the mail header lines in your incoming mail
-to show you who your mail is from.  It does this without
-retrieving the mail from the post office.
-If the 
-.I \-s 
-option is given, then only headers for mail sent by
+to show you who your mail is from.  It does this by checking for mail
+on a POP server and then looking for mail in the local spool
+directory.  This command does not retrieve the mail from the post
+office or the spool directory.
+
+.I from 
+understands the following options:
+.TP12
+.B \-s \fIsender\fR
+specifies that only headers for mail from
 .I sender
 are printed.
-If the 
-.I \-h
-option is given, then 
+.TP
+.B \-h \fIhost\fR
+specifies that
 .I host
-is consulted instead of your default post office.  The
-.I \-v
-option puts
-.I pfrom
-into verbose mode, and the 
-.I \-d
-option puts 
-.I pfrom
-into debug mode.
-.SH "AUTHOR"
-Theodore Ts'o
+should be consulted instead of your default post office server.
+.TP
+.B \-v
+specifies that any To, Date, or Subject fields should be displayed
+also, as well as a banner line list the number of messages waiting.
+.TP
+.B \-r
+specifies that the From and Subject fields should be listed both on
+the same line.  If multiple subject fields occur in the message only
+the first one encounter will be listed.
+.TP
+.B \-d
+specifies that 
+.I from
+should run in debug mode.
+.TP
+.B \-u
+specifies that only the local mail drop should be checked.
+.TP
+.B \-p
+specifies that only the POP server should be checked.
+.TP
+.B \-?
+specifies that usage information should be printed, no mail check
+occurs.
+.TP
+.B \fIuser\fR
+specifies that mail for 
+.I user
+should be checked, rather than the current user.
+.SH "AUTHORS"
+Theodore Ts'o and Jerry Larivee
 .SH "SEE ALSO"
 \fIPost Office Protocol (revised)\fR (aka RFC\-819 with revisions)
 
