@@ -74,6 +74,7 @@ fit_line (HTMLObject *o,
 	  HTMLPainter *painter,
 	  gboolean start_of_line,
 	  gboolean first_run,
+	  gboolean next_to_floating,
 	  gint width_left)
 {
 	if (!start_of_line)
@@ -87,7 +88,7 @@ fit_line (HTMLObject *o,
 		}
 	}
 
-	return HTML_FIT_COMPLETE;
+	return (next_to_floating && width_left <= 0) ? HTML_FIT_NONE : HTML_FIT_COMPLETE;
 }
 
 static gboolean

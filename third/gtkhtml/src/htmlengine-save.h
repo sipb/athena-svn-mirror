@@ -32,9 +32,12 @@ struct _HTMLEngineSaveState {
 	HTMLEngine *engine;
 	HTMLEngineSaveReceiverFn receiver;
 	guint br_count;
+	const gchar *save_data_class_name;
+	HTMLObject *save_data_object;
+	GSList *data_to_remove;
 
 	guint error : 1;
-
+	guint inline_frames : 1;
 	guint last_level;
 
 	gpointer user_data;
@@ -51,23 +54,30 @@ gboolean             html_engine_save_encode_string        (HTMLEngineSaveState 
 
 /* Output function (no encoding).  This is used for tags and other things that
    must not be entity-encoded.  */
+gboolean             html_engine_save_output_stringv       (HTMLEngineSaveState       *state,
+							    const gchar               *format,
+							    va_list                    ap);
 gboolean             html_engine_save_output_string        (HTMLEngineSaveState       *state,
 							    const gchar               *format,
 							    ...);
 
 /* Saving a whole tree.  */
-gboolean             html_engine_save                      (HTMLEngine          *engine,
+gboolean             html_engine_save                      (HTMLEngine                *engine,
 							    HTMLEngineSaveReceiverFn   receiver,
 							    gpointer                   user_data);
-gboolean             html_engine_save_plain                (HTMLEngine          *engine,
+gboolean             html_engine_save_plain                (HTMLEngine                *engine,
 							    HTMLEngineSaveReceiverFn   receiver,
 							    gpointer                   user_data);
 void                 html_engine_save_buffer_free          (HTMLEngineSaveState       *state);
 guchar              *html_engine_save_buffer_peek_text     (HTMLEngineSaveState       *state);
-HTMLEngineSaveState *html_engine_save_buffer_new           (HTMLEngine                *engine);
+HTMLEngineSaveState *html_engine_save_buffer_new           (HTMLEngine                *engine,
+							    gboolean                   inline_frames);
 gchar               *html_engine_save_get_sample_body      (HTMLEngine                *e,
 							    HTMLObject                *o);
 const gchar         *html_engine_save_get_paragraph_align  (GtkHTMLParagraphAlignment  align);
 const gchar         *html_engine_save_get_paragraph_style  (GtkHTMLParagraphStyle      style);
+gchar               *html_encode_entities                  (const gchar               *input,
+							    guint                      len,
+							    guint                     *encoded_len_return);
 
 #endif

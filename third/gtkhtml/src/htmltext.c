@@ -62,68 +62,133 @@ debug_spell_errors (GList *se)
 		printf ("SE: %4d, %4d\n", ((SpellError *) se->data)->off, ((SpellError *) se->data)->len);
 } */
 
+#ifndef GAL_NOT_SLOW
+/* NOTE see htmltextslave.c for an explanation and the h_utf8 decls */
+gint h_utf8_pointer_to_offset (const gchar *str, const gchar *pos);
+gint h_utf8_strlen (const gchar *p, gint max);
+gchar *h_utf8_offset_to_pointer  (const gchar *str, gint         offset);
+
+#define g_utf8_strlen h_utf8_strlen
+#define g_utf8_offset_to_pointer h_utf8_offset_to_pointer
+#define g_utf8_pointer_to_offset h_utf8_pointer_to_offset
+#endif
+
+static inline gboolean
+is_in_the_save_cluev (HTMLObject *text, HTMLObject *o)
+{
+	return html_object_nth_parent (o, 2) == html_object_nth_parent (text, 2);
+}
+
 static void
 get_tags (const HTMLText *text,
 	  const HTMLEngineSaveState *state,
-	  gchar *opening_tags,
-	  gchar *ending_tags)
+	  gchar **opening_tags,
+	  gchar **closing_tags)
 {
 	GtkHTMLFontStyle font_style;
-	gchar *opening_p, *ending_p;
-	guint size;
+	GString *ot, *ct;
+	HTMLObject *prev, *next;
+	HTMLText *pt = NULL, *nt = NULL;
+	gboolean font_tag = FALSE;
+	gboolean std_color, std_size;
 
 	font_style = text->font_style;
 
-	/*
-	  FIXME: eek this is completely broken in that there is no
-	  possible way the tag order can come out right doing it this
-	  way */
+	ot = g_string_new (NULL);
+	ct = g_string_new (NULL);
 
-	opening_p = opening_tags;
-	ending_p = ending_tags;
+	prev = html_object_prev_cursor_leaf (HTML_OBJECT (text), state->engine);
+	while (prev && !html_object_is_text (prev))
+		prev = html_object_prev_cursor_leaf (prev, state->engine);
 
-	if (!html_color_equal (text->color, html_colorset_get_color (state->engine->settings->color_set, HTMLTextColor))
-	    && !html_color_equal (text->color, html_colorset_get_color (state->engine->settings->color_set, HTMLLinkColor))) {
-		opening_p += sprintf (opening_p, "<FONT COLOR=\"#%02x%02x%02x\">",
-				      text->color->color.red   >> 8,
-				      text->color->color.green >> 8,
-				      text->color->color.blue  >> 8);
-		ending_p += sprintf (ending_p, "</FONT>");
+	next = html_object_next_cursor_leaf (HTML_OBJECT (text), state->engine);
+	while (next && !html_object_is_text (next))
+		next = html_object_next_cursor_leaf (next, state->engine);
+
+	if (prev && is_in_the_save_cluev (HTML_OBJECT (text), prev) && html_object_is_text (prev))
+		pt = HTML_TEXT (prev);
+	if (next && is_in_the_save_cluev (HTML_OBJECT (text), next) && html_object_is_text (next))
+		nt = HTML_TEXT (next);
+
+	/* font tag */
+	std_color = html_color_equal (text->color, html_colorset_get_color (state->engine->settings->color_set,
+									     HTMLTextColor))
+		|| html_color_equal (text->color,
+				      html_colorset_get_color (state->engine->settings->color_set, HTMLLinkColor));
+	std_size = (font_style & GTK_HTML_FONT_STYLE_SIZE_MASK) == 0;
+
+
+	if ((!std_color || !std_size)
+	    && (!pt
+		|| !html_color_equal (text->color, pt->color)
+		|| (pt->font_style & GTK_HTML_FONT_STYLE_SIZE_MASK) != (font_style & GTK_HTML_FONT_STYLE_SIZE_MASK))) {
+		if (!std_color) {
+			g_string_sprintfa (ot, "<FONT COLOR=\"#%02x%02x%02x\"",
+					   text->color->color.red   >> 8,
+					   text->color->color.green >> 8,
+					   text->color->color.blue  >> 8);
+			font_tag = TRUE;
+		}
+		if (!std_size) {
+			if (!font_tag)
+				g_string_append (ot, "<FONT");
+			g_string_sprintfa (ot, " SIZE=\"%d\"", font_style & GTK_HTML_FONT_STYLE_SIZE_MASK);
+		}
+		g_string_append_c (ot, '>');
 	}
 
-	size = font_style & GTK_HTML_FONT_STYLE_SIZE_MASK;
-	if (size != 0) {
-		opening_p += sprintf (opening_p, "<FONT SIZE=\"%d\">", size);
-		ending_p += sprintf (ending_p, "</FONT>");
+	if ((!std_color || !std_size)
+	    && (!nt
+		|| !html_color_equal (text->color, nt->color)
+		|| (nt->font_style & GTK_HTML_FONT_STYLE_SIZE_MASK) != (font_style & GTK_HTML_FONT_STYLE_SIZE_MASK))) {
+		g_string_append (ct, "</FONT>");
 	}
 
+	/* bold tag */
 	if (font_style & GTK_HTML_FONT_STYLE_BOLD) {
-		opening_p += sprintf (opening_p, "<B>");
-		ending_p += sprintf (ending_p, "</B>");
+		if (!pt || !(pt->font_style & GTK_HTML_FONT_STYLE_BOLD))
+			g_string_append (ot, "<B>");
+		if (!nt || !(nt->font_style & GTK_HTML_FONT_STYLE_BOLD))
+			g_string_prepend (ct, "</B>");
 	}
 
+	/* italic tag */
 	if (font_style & GTK_HTML_FONT_STYLE_ITALIC) {
-		opening_p += sprintf (opening_p, "<I>");
-		ending_p += sprintf (ending_p, "</I>");
+		if (!pt || !(pt->font_style & GTK_HTML_FONT_STYLE_ITALIC))
+			g_string_append (ot, "<I>");
+		if (!nt || !(nt->font_style & GTK_HTML_FONT_STYLE_ITALIC))
+			g_string_prepend (ct, "</I>");
 	}
 
+	/* underline tag */
 	if (font_style & GTK_HTML_FONT_STYLE_UNDERLINE) {
-		opening_p += sprintf (opening_p, "<U>");
-		ending_p += sprintf (ending_p, "</U>");
+		if (!pt || !(pt->font_style & GTK_HTML_FONT_STYLE_UNDERLINE))
+			g_string_append (ot, "<U>");
+		if (!nt || !(nt->font_style & GTK_HTML_FONT_STYLE_UNDERLINE))
+			g_string_prepend (ct, "</U>");
 	}
 
+	/* strikeout tag */
 	if (font_style & GTK_HTML_FONT_STYLE_STRIKEOUT) {
-		opening_p += sprintf (opening_p, "<S>");
-		ending_p += sprintf (ending_p, "</S>");
+		if (!pt || !(pt->font_style & GTK_HTML_FONT_STYLE_STRIKEOUT))
+			g_string_append (ot, "<S>");
+		if (!nt || !(nt->font_style & GTK_HTML_FONT_STYLE_STRIKEOUT))
+			g_string_prepend (ct, "</S>");
 	}
 
+	/* fixed tag */
 	if (font_style & GTK_HTML_FONT_STYLE_FIXED) {
-		opening_p += sprintf (opening_p, "<TT>");
-		ending_p += sprintf (ending_p, "</TT>");
+		if (!pt || !(pt->font_style & GTK_HTML_FONT_STYLE_FIXED))
+			g_string_append (ot, "<TT>");
+		if (!nt || !(nt->font_style & GTK_HTML_FONT_STYLE_FIXED))
+			g_string_prepend (ct, "</TT>");
 	}
 
-	*opening_p = 0;
-	*ending_p = 0;
+	*opening_tags = ot->str;
+	*closing_tags = ct->str;
+
+	g_string_free (ot, FALSE);
+	g_string_free (ct, FALSE);
 }
 
 /* HTMLObject methods.  */
@@ -292,7 +357,7 @@ new_text (HTMLText *t, gint begin, gint end)
 }
 
 static HTMLObject *
-op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
+op_copy (HTMLObject *self, HTMLObject *parent, HTMLEngine *e, GList *from, GList *to, guint *len)
 {
 	return html_text_op_copy_helper (HTML_TEXT (self), from, to, len, new_text);
 }
@@ -354,7 +419,7 @@ object_split (HTMLObject *self, HTMLEngine *e, HTMLObject *child, gint offset, g
 
 	g_assert (self->parent);
 
-	html_clueflow_remove_text_slaves (HTML_CLUEFLOW (self->parent));
+	html_clue_remove_text_slaves (HTML_CLUE (self->parent));
 
 	t1              = HTML_TEXT (self);
 	dup             = html_object_dup (self);
@@ -459,11 +524,12 @@ get_line_length (HTMLObject *self, HTMLPainter *p, gint line_offset)
 		: HTML_TEXT (self)->text_len;
 }
 
-inline gint
+gint
 html_text_get_line_offset (HTMLText *text, HTMLPainter *painter)
 {
 	return html_clueflow_tabs (HTML_CLUEFLOW (HTML_OBJECT (text)->parent), painter)
-		? html_clueflow_get_line_offset (HTML_CLUEFLOW (HTML_OBJECT (text)->parent), painter, HTML_OBJECT (text))
+		? html_clueflow_get_line_offset (HTML_CLUEFLOW (HTML_OBJECT (text)->parent), 
+						 painter, HTML_OBJECT (text))
 		: -1;
 }
 
@@ -483,7 +549,8 @@ get_words (const gchar *s)
 static void
 calc_word_width (HTMLText *text, HTMLPainter *painter, gint line_offset)
 {
-	GtkHTMLFontStyle font_style;
+	GtkHTMLFontStyle style;
+	HTMLFont *font;
 	gchar *begin, *end;
 	gint i;
 
@@ -491,16 +558,16 @@ calc_word_width (HTMLText *text, HTMLPainter *painter, gint line_offset)
 	if (text->word_width)
 		g_free (text->word_width);
 	text->word_width = g_new (guint, text->words);
-	font_style       = html_text_get_font_style (text);
+	style = html_text_get_font_style (text);
+	font = html_painter_get_html_font (painter, text->face, style);
 
 	begin            = text->text;
 	for (i = 0; i < text->words; i++) {
 		end   = strchr (begin + (i ? 1 : 0), ' ');
 		text->word_width [i] = (i ? text->word_width [i - 1] : 0)
-			+ html_painter_calc_text_width (painter,
-							begin, end ? g_utf8_pointer_to_offset (begin, end)
-							: g_utf8_strlen (begin, -1),
-							&line_offset, font_style, text->face);
+			+ html_painter_calc_text_width_bytes (painter,
+							      begin, end ? end - begin : strlen (begin),
+							      &line_offset, font, style);
 		begin = end;
 	}
 
@@ -510,8 +577,12 @@ calc_word_width (HTMLText *text, HTMLPainter *painter, gint line_offset)
 void
 html_text_request_word_width (HTMLText *text, HTMLPainter *painter)
 {
-	if (!text->word_width || HTML_OBJECT (text)->change & HTML_CHANGE_WORD_WIDTH)
-		calc_word_width (text, painter, html_text_get_line_offset (text, painter));
+	if (!text->word_width || (HTML_OBJECT (text)->change & HTML_CHANGE_WORD_WIDTH)) {
+		gint offset;
+
+		offset = html_text_get_line_offset (text, painter);
+		calc_word_width (text, painter, offset);
+	}
 }
 
 static gint
@@ -544,11 +615,12 @@ remove_text_slaves (HTMLObject *self)
 }
 
 static HTMLFitType
-fit_line (HTMLObject *o,
-	  HTMLPainter *painter,
-	  gboolean startOfLine,
-	  gboolean firstRun,
-	  gint widthLeft) 
+ht_fit_line (HTMLObject *o,
+	     HTMLPainter *painter,
+	     gboolean startOfLine,
+	     gboolean firstRun,
+	     gboolean next_to_floating,
+	     gint widthLeft) 
 {
 	HTMLText *text; 
 	HTMLObject *text_slave;
@@ -609,7 +681,7 @@ get_next_nb_width (HTMLText *text, HTMLPainter *painter, gboolean begin)
 		return html_text_get_nb_width (HTML_TEXT (obj), painter, begin);
 }
 
-static inline guint
+static guint
 word_width (HTMLText *text, HTMLPainter *p, guint i)
 {
 	g_assert (i < text->words);
@@ -685,27 +757,32 @@ static gboolean
 save (HTMLObject *self,
       HTMLEngineSaveState *state)
 {
-	/* OK, doing these nasty things is not in my style, but in this case
-           it's so unlikely to break and it's so handy and fast that I think
-           it's almost acceptable.  */
-#define RIDICULOUS_BUFFER_SIZE 16384
-	gchar opening_tags[RIDICULOUS_BUFFER_SIZE];
-	gchar closing_tags[RIDICULOUS_BUFFER_SIZE];
-#undef RIDICULOUS_BUFFER_SIZE
+	gchar *opening_tags;
+	gchar *closing_tags;
 	HTMLText *text;
 
 	text = HTML_TEXT (self);
 
-	get_tags (text, state, opening_tags, closing_tags);
+	get_tags (text, state, &opening_tags, &closing_tags);
 
-	if (! html_engine_save_output_string (state, "%s", opening_tags))
+	if (! html_engine_save_output_string (state, "%s", opening_tags)) {
+		g_free (opening_tags);
+		g_free (closing_tags);
 		return FALSE;
+	}
+	g_free (opening_tags);
 
-	if (! html_engine_save_encode (state, text->text, text->text_len))
+	if (! html_engine_save_encode (state, text->text, text->text_len)) {
+		g_free (closing_tags);
 		return FALSE;
+	}
 
-	if (! html_engine_save_output_string (state, "%s", closing_tags))
+	if (! html_engine_save_output_string (state, "%s", closing_tags)) {
+		g_free (closing_tags);
 		return FALSE;
+	}
+
+	g_free (closing_tags);
 
 	return TRUE;
 }
@@ -733,7 +810,7 @@ get_length (HTMLObject *self)
 
 /* #define DEBUG_NBSP */
 
-static inline gboolean
+static gboolean
 check_last_white (gboolean rv, gint white_space, gunichar last_white, gint *delta_out)
 {
 	if (white_space > 0 && last_white == ENTITY_NBSP) {
@@ -744,7 +821,7 @@ check_last_white (gboolean rv, gint white_space, gunichar last_white, gint *delt
 	return rv;
 }
 
-static inline gboolean
+static gboolean
 check_prev_white (gboolean rv, gint white_space, gunichar last_white, gint *delta_out)
 {
 	if (white_space > 0 && last_white == ' ') {
@@ -783,7 +860,7 @@ is_convert_nbsp_needed (const gchar *s, gint *delta_out)
 	return rv;
 }
 
-static inline void
+static void
 write_prev_white_space (gint white_space, gchar **fill)
 {
 			if (white_space > 0) {
@@ -795,7 +872,7 @@ write_prev_white_space (gint white_space, gchar **fill)
 			}
 }
 
-static inline void
+static void
 write_last_white_space (gint white_space, gchar **fill)
 {
 	if (white_space > 0) {
@@ -876,7 +953,7 @@ move_spell_errors (GList *spell_errors, guint offset, gint delta)
   	} 
 } 
 
-inline static GList *
+static GList *
 remove_one (GList *list, GList *link)
 {
 	spell_error_destroy ((SpellError *) link->data);
@@ -1051,6 +1128,7 @@ select_range (HTMLObject *self,
 	else
 		changed = FALSE;
 
+	/* printf ("select range %d, %d\n", offset, length); */
 	if (queue_draw) {
 		for (p = self->next;
 		     p != NULL && HTML_OBJECT_TYPE (p) == HTML_TYPE_TEXTSLAVE;
@@ -1080,6 +1158,7 @@ select_range (HTMLObject *self,
 				diff1 = offset - slave->posStart;
 				diff2 = text->select_start - slave->posStart;
 
+				/* printf ("offsets diff 1: %d 2: %d\n", diff1, diff2); */
 				if (diff1 != diff2) {
 					html_engine_queue_draw (engine, p);
 				} else {
@@ -1087,6 +1166,7 @@ select_range (HTMLObject *self,
 					diff2 = (text->select_start + text->select_length
 						 - slave->posStart);
 
+					/* printf ("lens diff 1: %d 2: %d\n", diff1, diff2); */
 					if (diff1 != diff2)
 						html_engine_queue_draw (engine, p);
 				}
@@ -1131,7 +1211,12 @@ append_selection_string (HTMLObject *self,
            characters to append as an extra parameter.  */
 
 	p    = html_text_get_text (text, text->select_start);
-	last = html_text_get_text (text, text->select_start + text->select_length);
+	last = g_utf8_offset_to_pointer (p, text->select_length);
+	
+	/* OPTIMIZED
+	last = html_text_get_text (text,
+				   text->select_start + text->select_length);
+	*/
 	for (; p < last;) {
 		g_string_append_c (buffer, *p);
 		p++;
@@ -1149,7 +1234,7 @@ get_cursor (HTMLObject *self,
 	guint ascent, descent;
 
 	next = html_object_next_not_slave (self);
-	if (offset == HTML_TEXT (self)->text_len && next && html_object_is_text (next)) {
+	if (offset == HTML_TEXT (self)->text_len && next && html_object_is_text (next) && HTML_TEXT (next)->text [0] != ' ') {
 		html_object_get_cursor (next, painter, 0, x1, y1, x2, y2);
 		return;
 	}
@@ -1179,7 +1264,7 @@ get_cursor_base (HTMLObject *self,
 	HTMLObject *obj, *next;
 
 	next = html_object_next_not_slave (self);
-	if (offset == HTML_TEXT (self)->text_len && next && html_object_is_text (next)) {
+	if (offset == HTML_TEXT (self)->text_len && next && html_object_is_text (next) && HTML_TEXT (next)->text [0] != ' ') {
 		html_object_get_cursor_base (next, painter, 0, x, y);
 		return;
 	}
@@ -1196,7 +1281,7 @@ get_cursor_base (HTMLObject *self,
 		    || obj->next == NULL
 		    || HTML_OBJECT_TYPE (obj->next) != HTML_TYPE_TEXTSLAVE) {
 			html_object_calc_abs_position (obj, x, y);
-			if (offset != slave->posStart) {
+			if (offset > slave->posStart) {
 				HTMLText *text;
 				GtkHTMLFontStyle font_style;
 				gint line_offset;
@@ -1251,7 +1336,7 @@ html_text_class_init (HTMLTextClass *klass,
 	object_class->calc_size = calc_size;
 	object_class->calc_preferred_width = calc_preferred_width;
 	object_class->calc_min_width = calc_min_width;
-	object_class->fit_line = fit_line;
+	object_class->fit_line = ht_fit_line;
 	object_class->get_cursor = get_cursor;
 	object_class->get_cursor_base = get_cursor_base;
 	object_class->save = save;
@@ -1274,7 +1359,7 @@ html_text_class_init (HTMLTextClass *klass,
 	parent_class = &html_object_class;
 }
 
-inline static gint
+static gint
 text_len (const gchar *str, gint len)
 {
 	if (len == -1) {
@@ -1494,7 +1579,12 @@ html_text_get_bytes (HTMLText *text)
 gchar *
 html_text_get_text (HTMLText *text, guint offset)
 {
-	return g_utf8_offset_to_pointer (text->text, offset);
+	gchar *s = text->text;
+
+	while (offset--)
+		s = g_utf8_next_char (s);
+
+	return s;
 }
 
 guint
@@ -1525,9 +1615,9 @@ typedef struct _HTMLMagicInsertMatch HTMLMagicInsertMatch;
 
 static HTMLMagicInsertMatch mim [] = {
 	{ "(news|telnet|nttp|file|http|ftp|https)://([-a-z0-9]+(:[-a-z0-9]+)?@)?[-a-z0-9.]+[-a-z0-9](:[0-9]*)?(/[-a-z0-9_$.+!*(),;:@%&=?/~#]*[^]'.}>\\) ,?!;:\"]?)?", NULL, NULL },
-	{ "www[-a-z0-9.]+[-a-z0-9](:[0-9]*)?(/[-A-Za-z0-9_$.+!*(),;:@%&=?/~#]*[^]'.}>\\) ,?!;:\"]?)?", NULL, "http://" },
-	{ "ftp[-a-z0-9.]+[-a-z0-9](:[0-9]*)?(/[-A-Za-z0-9_$.+!*(),;:@%&=?/~#]*[^]'.}>\\) ,?!;:\"]?)?", NULL, "ftp://" },
-	{ "[-_a-z0-9.]+@[-_a-z0-9.]+", NULL, "mailto:" }
+	{ "www\\.[-a-z0-9.]+[-a-z0-9](:[0-9]*)?(/[-A-Za-z0-9_$.+!*(),;:@%&=?/~#]*[^]'.}>\\) ,?!;:\"]?)?", NULL, "http://" },
+	{ "ftp\\.[-a-z0-9.]+[-a-z0-9](:[0-9]*)?(/[-A-Za-z0-9_$.+!*(),;:@%&=?/~#]*[^]'.}>\\) ,?!;:\"]?)?", NULL, "ftp://" },
+	{ "[-_a-z0-9.\\+]+@[-_a-z0-9.]+", NULL, "mailto:" }
 };
 
 #define MIM_N (sizeof (mim) / sizeof (mim [0]))
@@ -1584,8 +1674,10 @@ html_text_magic_link (HTMLText *text, HTMLEngine *engine, guint offset)
 {
 	regmatch_t pmatch [2];
 	gint i;
-	gboolean rv = FALSE;
+	gboolean rv = FALSE, exec = TRUE;
 	gint saved_position;
+	gunichar uc;
+	char *str, *cur;
 
 	if (!offset)
 		return FALSE;
@@ -1596,23 +1688,45 @@ html_text_magic_link (HTMLText *text, HTMLEngine *engine, guint offset)
 	html_undo_level_begin (engine->undo, "Magic link", "Remove magic link");
 	saved_position = engine->cursor->position;
 
-	while (html_text_get_char (text, offset) != ' ' && html_text_get_char (text, offset) != ENTITY_NBSP && offset)
-		offset--;
-	if (html_text_get_char (text, offset) == ' ' || html_text_get_char (text, offset) == ENTITY_NBSP)
-		offset++;
+	cur = str = html_text_get_text (text, offset);
 
-	while (offset < text->text_len && !rv) {
-		for (i=0; i<MIM_N; i++) {
-			if (mim [i].preg && !regexec (mim [i].preg, html_text_get_text (text, offset), 2, pmatch, 0)) {
-				char *o = html_text_get_text (text, offset);
-				paste_link (engine, text,
-					    g_utf8_pointer_to_offset (text->text, o + pmatch [0].rm_so),
-					    g_utf8_pointer_to_offset (text->text, o + pmatch [0].rm_eo), mim [i].prefix);
-				rv = TRUE;
-				break;
-			}
-		}
+	/* check forward to ensure chars are < 0x80, could be removed once we have utf8 regex */
+	do {
+		cur = g_utf8_next_char (cur);
+		if (cur && *cur && g_utf8_get_char (cur) >= 0x80)
+			exec = FALSE;
+	} while (exec && cur && *cur && uc != ' ' && uc != ENTITY_NBSP);
+
+	uc = g_utf8_get_char (str);
+	if (uc >= 0x80)
+		exec = FALSE;
+	while (exec && uc != ' ' && uc != ENTITY_NBSP && offset) {
+		str = g_utf8_prev_char (str);
+		uc = g_utf8_get_char (str);
+		if (uc >= 0x80)
+			exec = FALSE;
+		offset--;
+	}
+
+	if (uc == ' ' || uc == ENTITY_NBSP) {
+		str = g_utf8_next_char (str);
 		offset++;
+	}
+
+	if (exec) {
+		while (offset < text->text_len && !rv) {
+			for (i=0; i<MIM_N; i++) {
+				if (mim [i].preg && !regexec (mim [i].preg, str, 2, pmatch, 0)) {
+					paste_link (engine, text,
+						    g_utf8_pointer_to_offset (text->text, str + pmatch [0].rm_so),
+						    g_utf8_pointer_to_offset (text->text, str + pmatch [0].rm_eo), mim [i].prefix);
+					rv = TRUE;
+					break;
+				}
+			}
+			str = g_utf8_next_char (str);
+			offset++;
+		}
 	}
 
 	html_undo_level_end (engine->undo);

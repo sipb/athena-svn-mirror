@@ -91,7 +91,6 @@ html_types_init (void)
 	html_image_type_init ();
 	html_imageinput_type_init ();
 	html_link_text_type_init ();
-	html_map_type_init ();
 	html_object_type_init ();
 	html_radio_type_init ();
 	html_rule_type_init ();
@@ -151,8 +150,6 @@ html_type_name (HTMLType type)
  		return "ImageInput";
 	case HTML_TYPE_LINKTEXT:
  		return "LinkText";
-	case HTML_TYPE_MAP:
- 		return "Map";
 	case HTML_TYPE_OBJECT:
  		return "Object";
 	case HTML_TYPE_RADIO:

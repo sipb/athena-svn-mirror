@@ -27,6 +27,8 @@
 #include "control-data.h"
 
 GtkWidget             * link_properties      (GtkHTMLControlData *cd, gpointer *set_data);
+GtkWidget             * link_insert          (GtkHTMLControlData *cd, gpointer *set_data);
+void                    link_insert_cb       (GtkHTMLControlData *cd, gpointer  get_data);
 void                    link_apply_cb        (GtkHTMLControlData *cd, gpointer  get_data);
 void                    link_close_cb        (GtkHTMLControlData *cd, gpointer  get_data);
 

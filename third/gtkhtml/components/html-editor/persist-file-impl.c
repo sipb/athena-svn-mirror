@@ -67,7 +67,7 @@ pf_impl_load (BonoboPersistFile *pf,
 	if (was_editable)
 		gtk_html_set_editable (html, FALSE);
 
-	stream = gtk_html_begin (html);
+	stream = gtk_html_begin_content (html, "text/html; charset=utf-8");
 	if (stream == NULL) {
 		close (fd);
 		if (was_editable)

@@ -38,6 +38,7 @@ struct _HTMLTable {
 	gint spacing;
 	gint padding;
 	gint border;
+	gint max_height;
 	HTMLClueV *caption;
 	HTMLVAlignType capAlign;
 	
@@ -78,6 +79,6 @@ void        html_table_add_cell     (HTMLTable      *table,
 				     HTMLTableCell  *cell);
 void        html_table_remove_cell  (HTMLTable      *table,
 				     HTMLTableCell  *cell);
-void        html_table_end_table    (HTMLTable      *table);
+gint        html_table_end_table    (HTMLTable      *table);
 
 #endif /* _HTMLTABLE_H_ */

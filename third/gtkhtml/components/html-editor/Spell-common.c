@@ -65,6 +65,90 @@ const struct CORBA_TypeCode_struct TC_GNOME_Spell_StringSeq_struct = {
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_GNOME_Spell_Language_0 == 'S') \
+&& (TC_IMPL_TC_GNOME_Spell_Language_1 == 'p') \
+&& (TC_IMPL_TC_GNOME_Spell_Language_2 == 'e') \
+&& (TC_IMPL_TC_GNOME_Spell_Language_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Spell_Language_4 == 'l') \
+) && !defined(TC_DEF_TC_GNOME_Spell_Language)
+#define TC_DEF_TC_GNOME_Spell_Language 1
+static const char *anon_subnames_array18[] = { "name", "abrev" };
+static const CORBA_TypeCode anon_subtypes_array19[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct,
+(CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_GNOME_Spell_Language_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_struct, "Language", "IDL:GNOME/Spell/Language:1.0",
+   0, 2,
+   (const char **) anon_subnames_array18,
+   (CORBA_TypeCode *) anon_subtypes_array19,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_0 == 'S') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_1 == 'p') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_2 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_4 == 'l') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Spell_Language)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Spell_Language 1
+static const CORBA_TypeCode anon_subtypes_array23[] =
+   { (CORBA_TypeCode) & TC_GNOME_Spell_Language_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Spell_Language_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array23,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_0 == 'S') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_1 == 'p') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_2 == 'e') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_3 == 'l') \
+&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_4 == 'l') \
+) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Spell_Language)
+#define TC_DEF_TC_CORBA_sequence_GNOME_Spell_Language 1
+static const CORBA_TypeCode anon_subtypes_array32[] =
+   { (CORBA_TypeCode) & TC_GNOME_Spell_Language_struct };
+const struct CORBA_TypeCode_struct
+   TC_CORBA_sequence_GNOME_Spell_Language_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_sequence, NULL, NULL,
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array32,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Spell_LanguageSeq_0 == 'S') \
+&& (TC_IMPL_TC_GNOME_Spell_LanguageSeq_1 == 'p') \
+&& (TC_IMPL_TC_GNOME_Spell_LanguageSeq_2 == 'e') \
+&& (TC_IMPL_TC_GNOME_Spell_LanguageSeq_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Spell_LanguageSeq_4 == 'l') \
+) && !defined(TC_DEF_TC_GNOME_Spell_LanguageSeq)
+#define TC_DEF_TC_GNOME_Spell_LanguageSeq 1
+static const CORBA_TypeCode anon_subtypes_array36[] =
+   { (CORBA_TypeCode) & TC_CORBA_sequence_GNOME_Spell_Language_struct };
+const struct CORBA_TypeCode_struct TC_GNOME_Spell_LanguageSeq_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_alias, "LanguageSeq", "IDL:GNOME/Spell/LanguageSeq:1.0",
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array36,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Spell_Dictionary_0 == 'S') \
 && (TC_IMPL_TC_GNOME_Spell_Dictionary_1 == 'p') \
 && (TC_IMPL_TC_GNOME_Spell_Dictionary_2 == 'e') \
@@ -90,138 +174,16 @@ const struct CORBA_TypeCode_struct TC_GNOME_Spell_Dictionary_struct = {
 && (TC_IMPL_TC_GNOME_Spell_Dictionary_Error_4 == 'l') \
 ) && !defined(TC_DEF_TC_GNOME_Spell_Dictionary_Error)
 #define TC_DEF_TC_GNOME_Spell_Dictionary_Error 1
-static const char *anon_subnames_array22[] = { "error" };
-static const CORBA_TypeCode anon_subtypes_array23[] =
+static const char *anon_subnames_array43[] = { "error" };
+static const CORBA_TypeCode anon_subtypes_array44[] =
    { (CORBA_TypeCode) & TC_CORBA_string_struct };
 const struct CORBA_TypeCode_struct TC_GNOME_Spell_Dictionary_Error_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
    CORBA_tk_except, "Error", "IDL:GNOME/Spell/Dictionary/Error:1.0",
    0, 1,
-   (const char **) anon_subnames_array22,
-   (CORBA_TypeCode *) anon_subtypes_array23,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_GNOME_Spell_Suggestion_0 == 'S') \
-&& (TC_IMPL_TC_GNOME_Spell_Suggestion_1 == 'p') \
-&& (TC_IMPL_TC_GNOME_Spell_Suggestion_2 == 'e') \
-&& (TC_IMPL_TC_GNOME_Spell_Suggestion_3 == 'l') \
-&& (TC_IMPL_TC_GNOME_Spell_Suggestion_4 == 'l') \
-) && !defined(TC_DEF_TC_GNOME_Spell_Suggestion)
-#define TC_DEF_TC_GNOME_Spell_Suggestion 1
-static const char *anon_subnames_array26[] = { "word", "dictionary" };
-static const CORBA_TypeCode anon_subtypes_array27[] =
-   { (CORBA_TypeCode) & TC_GNOME_Spell_StringSeq_struct,
-(CORBA_TypeCode) & TC_Object_struct };
-const struct CORBA_TypeCode_struct TC_GNOME_Spell_Suggestion_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_struct, "Suggestion", "IDL:GNOME/Spell/Suggestion:1.0",
-   0, 2,
-   (const char **) anon_subnames_array26,
-   (CORBA_TypeCode *) anon_subtypes_array27,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_GNOME_Spell_Checker_0 == 'S') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_1 == 'p') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_2 == 'e') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_3 == 'l') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_4 == 'l') \
-) && !defined(TC_DEF_TC_GNOME_Spell_Checker)
-#define TC_DEF_TC_GNOME_Spell_Checker 1
-const struct CORBA_TypeCode_struct TC_GNOME_Spell_Checker_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_objref, "Checker", "IDL:GNOME/Spell/Checker:1.0",
-   0, 0,
-   NULL,
-   NULL,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_0 == 'S') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_1 == 'p') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_2 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_3 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_4 == 'l') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Spell_Suggestion)
-#define TC_DEF_TC_CORBA_sequence_GNOME_Spell_Suggestion 1
-static const CORBA_TypeCode anon_subtypes_array35[] =
-   { (CORBA_TypeCode) & TC_GNOME_Spell_Suggestion_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_Spell_Suggestion_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array35,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_0 == 'S') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_1 == 'p') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_2 == 'e') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_3 == 'l') \
-&& (TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_4 == 'l') \
-) && !defined(TC_DEF_TC_CORBA_sequence_GNOME_Spell_Suggestion)
-#define TC_DEF_TC_CORBA_sequence_GNOME_Spell_Suggestion 1
-static const CORBA_TypeCode anon_subtypes_array44[] =
-   { (CORBA_TypeCode) & TC_GNOME_Spell_Suggestion_struct };
-const struct CORBA_TypeCode_struct
-   TC_CORBA_sequence_GNOME_Spell_Suggestion_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_sequence, NULL, NULL,
-   0, 1,
-   NULL,
+   (const char **) anon_subnames_array43,
    (CORBA_TypeCode *) anon_subtypes_array44,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_0 == 'S') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_1 == 'p') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_2 == 'e') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_3 == 'l') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_4 == 'l') \
-) && !defined(TC_DEF_TC_GNOME_Spell_Checker_SuggestionSeq)
-#define TC_DEF_TC_GNOME_Spell_Checker_SuggestionSeq 1
-static const CORBA_TypeCode anon_subtypes_array48[] =
-   { (CORBA_TypeCode) & TC_CORBA_sequence_GNOME_Spell_Suggestion_struct };
-const struct CORBA_TypeCode_struct TC_GNOME_Spell_Checker_SuggestionSeq_struct
-   = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_alias, "SuggestionSeq",
-      "IDL:GNOME/Spell/Checker/SuggestionSeq:1.0",
-   0, 1,
-   NULL,
-   (CORBA_TypeCode *) anon_subtypes_array48,
-   NULL,
-   CORBA_OBJECT_NIL, 0, -1, 0, 0
-};
-#endif
-#if ( (TC_IMPL_TC_GNOME_Spell_Checker_SpellError_0 == 'S') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_SpellError_1 == 'p') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_SpellError_2 == 'e') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_SpellError_3 == 'l') \
-&& (TC_IMPL_TC_GNOME_Spell_Checker_SpellError_4 == 'l') \
-) && !defined(TC_DEF_TC_GNOME_Spell_Checker_SpellError)
-#define TC_DEF_TC_GNOME_Spell_Checker_SpellError 1
-const struct CORBA_TypeCode_struct TC_GNOME_Spell_Checker_SpellError_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
-    ORBIT_PSEUDO_TYPECODE},
-   CORBA_tk_except, "SpellError", "IDL:GNOME/Spell/Checker/SpellError:1.0",
-   0, 0,
-   NULL,
-   NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -287,6 +249,96 @@ GNOME_Spell_StringSeq__alloc(void)
 }
 
 gpointer
+GNOME_Spell_Language__free(gpointer mem, gpointer dat,
+			   CORBA_boolean free_strings)
+{
+   GNOME_Spell_Language *var = mem;
+
+   if (free_strings) {
+      CORBA_string__free(&(var->name), NULL, free_strings);
+   }
+   if (free_strings) {
+      CORBA_string__free(&(var->abrev), NULL, free_strings);
+   }
+   return (gpointer) (var + 1);
+}
+
+GNOME_Spell_Language *
+GNOME_Spell_Language__alloc(void)
+{
+   GNOME_Spell_Language *retval;
+
+   retval =
+      ORBit_alloc(sizeof(GNOME_Spell_Language),
+		  (ORBit_free_childvals) GNOME_Spell_Language__free,
+		  GUINT_TO_POINTER(1));
+   memset(&(retval->name), '\0', sizeof(retval->name));
+   memset(&(retval->abrev), '\0', sizeof(retval->abrev));
+   return retval;
+}
+
+#if ( (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_0 == 'S') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_1 == 'p') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_2 == 'e') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_3 == 'l') \
+&& (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_4 == 'l') \
+) && !defined(ORBIT_DEF_CORBA_sequence_GNOME_Spell_Language)
+#define ORBIT_DEF_CORBA_sequence_GNOME_Spell_Language 1
+
+gpointer
+CORBA_sequence_GNOME_Spell_Language__free(gpointer mem, gpointer dat,
+					  CORBA_boolean free_strings)
+{
+   CORBA_sequence_GNOME_Spell_Language *val = mem;
+
+   if (val->_release)
+      ORBit_free(val->_buffer, free_strings);
+   return (gpointer) (val + 1);
+}
+
+CORBA_sequence_GNOME_Spell_Language *
+CORBA_sequence_GNOME_Spell_Language__alloc(void)
+{
+   CORBA_sequence_GNOME_Spell_Language *retval;
+
+   retval =
+      ORBit_alloc(sizeof(CORBA_sequence_GNOME_Spell_Language),
+		  (ORBit_free_childvals)
+		  CORBA_sequence_GNOME_Spell_Language__free,
+		  GUINT_TO_POINTER(1));
+   retval->_maximum = 0;
+   retval->_length = 0;
+   retval->_buffer = NULL;
+   retval->_release = CORBA_FALSE;
+   return retval;
+}
+
+GNOME_Spell_Language *
+CORBA_sequence_GNOME_Spell_Language_allocbuf(CORBA_unsigned_long len)
+{
+   GNOME_Spell_Language *retval =
+      ORBit_alloc(sizeof(GNOME_Spell_Language) * len,
+		  (ORBit_free_childvals) GNOME_Spell_Language__free,
+		  GUINT_TO_POINTER(len));
+   memset(retval, '\0', sizeof(GNOME_Spell_Language) * len);
+   return retval;
+}
+#endif
+
+gpointer
+GNOME_Spell_LanguageSeq__free(gpointer mem, gpointer dat,
+			      CORBA_boolean free_strings)
+{
+   return CORBA_sequence_GNOME_Spell_Language__free(mem, dat, free_strings);
+}
+
+GNOME_Spell_LanguageSeq *
+GNOME_Spell_LanguageSeq__alloc(void)
+{
+   return CORBA_sequence_GNOME_Spell_Language__alloc();
+}
+
+gpointer
 GNOME_Spell_Dictionary_Error__free(gpointer mem, gpointer dat,
 				   CORBA_boolean free_strings)
 {
@@ -312,151 +364,3 @@ GNOME_Spell_Dictionary_Error__alloc(void)
 }
 
 CORBA_unsigned_long GNOME_Spell_Dictionary__classid = 0;
-
-#if ( (ORBIT_IMPL_CORBA_sequence_CORBA_string_0 == 'S') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_1 == 'p') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_2 == 'e') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_3 == 'l') \
-&& (ORBIT_IMPL_CORBA_sequence_CORBA_string_4 == 'l') \
-) && !defined(ORBIT_DEF_CORBA_sequence_CORBA_string)
-#define ORBIT_DEF_CORBA_sequence_CORBA_string 1
-
-gpointer
-CORBA_sequence_CORBA_string__free(gpointer mem, gpointer dat,
-				  CORBA_boolean free_strings)
-{
-   CORBA_sequence_CORBA_string *val = mem;
-
-   if (val->_release)
-      ORBit_free(val->_buffer, free_strings);
-   return (gpointer) (val + 1);
-}
-
-CORBA_sequence_CORBA_string *
-CORBA_sequence_CORBA_string__alloc(void)
-{
-   CORBA_sequence_CORBA_string *retval;
-
-   retval =
-      ORBit_alloc(sizeof(CORBA_sequence_CORBA_string),
-		  (ORBit_free_childvals) CORBA_sequence_CORBA_string__free,
-		  GUINT_TO_POINTER(1));
-   retval->_maximum = 0;
-   retval->_length = 0;
-   retval->_buffer = NULL;
-   retval->_release = CORBA_FALSE;
-   return retval;
-}
-
-CORBA_char **
-CORBA_sequence_CORBA_string_allocbuf(CORBA_unsigned_long len)
-{
-   CORBA_char **retval =
-      ORBit_alloc(sizeof(CORBA_char *) * len,
-		  (ORBit_free_childvals) CORBA_string__free,
-		  GUINT_TO_POINTER(len));
-   memset(retval, '\0', sizeof(CORBA_char *) * len);
-   return retval;
-}
-#endif
-
-gpointer
-GNOME_Spell_Suggestion__free(gpointer mem, gpointer dat,
-			     CORBA_boolean free_strings)
-{
-   GNOME_Spell_Suggestion *var = mem;
-
-   {
-      GNOME_Spell_StringSeq__free(&(var->word), NULL, free_strings);
-   }
-   {
-      GNOME_Spell_Dictionary__free(&(var->dictionary), NULL, free_strings);
-   }
-   return (gpointer) (var + 1);
-}
-
-GNOME_Spell_Suggestion *
-GNOME_Spell_Suggestion__alloc(void)
-{
-   GNOME_Spell_Suggestion *retval;
-
-   retval =
-      ORBit_alloc(sizeof(GNOME_Spell_Suggestion),
-		  (ORBit_free_childvals) GNOME_Spell_Suggestion__free,
-		  GUINT_TO_POINTER(1));
-   memset(&(retval->word), '\0', sizeof(retval->word));
-   memset(&(retval->dictionary), '\0', sizeof(retval->dictionary));
-   return retval;
-}
-
-#if ( (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_0 == 'S') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_1 == 'p') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_2 == 'e') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_3 == 'l') \
-&& (ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_4 == 'l') \
-) && !defined(ORBIT_DEF_CORBA_sequence_GNOME_Spell_Suggestion)
-#define ORBIT_DEF_CORBA_sequence_GNOME_Spell_Suggestion 1
-
-gpointer
-CORBA_sequence_GNOME_Spell_Suggestion__free(gpointer mem, gpointer dat,
-					    CORBA_boolean free_strings)
-{
-   CORBA_sequence_GNOME_Spell_Suggestion *val = mem;
-
-   if (val->_release)
-      ORBit_free(val->_buffer, free_strings);
-   return (gpointer) (val + 1);
-}
-
-CORBA_sequence_GNOME_Spell_Suggestion *
-CORBA_sequence_GNOME_Spell_Suggestion__alloc(void)
-{
-   CORBA_sequence_GNOME_Spell_Suggestion *retval;
-
-   retval =
-      ORBit_alloc(sizeof(CORBA_sequence_GNOME_Spell_Suggestion),
-		  (ORBit_free_childvals)
-		  CORBA_sequence_GNOME_Spell_Suggestion__free,
-		  GUINT_TO_POINTER(1));
-   retval->_maximum = 0;
-   retval->_length = 0;
-   retval->_buffer = NULL;
-   retval->_release = CORBA_FALSE;
-   return retval;
-}
-
-GNOME_Spell_Suggestion *
-CORBA_sequence_GNOME_Spell_Suggestion_allocbuf(CORBA_unsigned_long len)
-{
-   GNOME_Spell_Suggestion *retval =
-      ORBit_alloc(sizeof(GNOME_Spell_Suggestion) * len,
-		  (ORBit_free_childvals) GNOME_Spell_Suggestion__free,
-		  GUINT_TO_POINTER(len));
-   memset(retval, '\0', sizeof(GNOME_Spell_Suggestion) * len);
-   return retval;
-}
-#endif
-
-gpointer
-GNOME_Spell_Checker_SuggestionSeq__free(gpointer mem, gpointer dat,
-					CORBA_boolean free_strings)
-{
-   return CORBA_sequence_GNOME_Spell_Suggestion__free(mem, dat, free_strings);
-}
-
-GNOME_Spell_Checker_SuggestionSeq *
-GNOME_Spell_Checker_SuggestionSeq__alloc(void)
-{
-   return CORBA_sequence_GNOME_Spell_Suggestion__alloc();
-}
-
-gpointer
-GNOME_Spell_Checker_SpellError__free(gpointer mem, gpointer dat,
-				     CORBA_boolean free_strings)
-{
-   GNOME_Spell_Checker_SpellError *var = mem;
-
-   return (gpointer) (var + 1);
-}
-
-CORBA_unsigned_long GNOME_Spell_Checker__classid = 0;

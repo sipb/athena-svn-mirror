@@ -24,18 +24,26 @@
 #include <config.h>
 #include <string.h> /* strcmp */
 #include <stdlib.h>
+#include "gtkhtml.h"
 #include "gtkhtml-compat.h"
+#include "gtkhtml-properties.h"
 
 #include <gal/unicode/gunicode.h>
 #include "htmlcolor.h"
 #include "htmlcolorset.h"
+#include "htmlengine.h"
 #include "htmlentity.h"
 #include "htmlpainter.h"
+#include "htmlgdkpainter.h"
+#include "htmlplainpainter.h"
+#include "htmlprinter.h"
 
 
 /* Convenience macro to extract the HTMLPainterClass from a GTK+ object.  */
 #define HP_CLASS(obj)					\
 	HTML_PAINTER_CLASS (GTK_OBJECT (obj)->klass)
+
+#define HTML_ALLOCA_MAX 2048
 
 /* Our parent class.  */
 static GtkObjectClass *parent_class = NULL;
@@ -52,8 +60,6 @@ finalize (GtkObject *object)
 	HTMLPainter *painter;
 
 	painter = HTML_PAINTER (object);
-	html_font_manager_finalize (&painter->font_manager);
-
 	html_colorset_destroy (painter->color_set);
 
 	/* FIXME ownership of the color set?  */
@@ -62,6 +68,17 @@ finalize (GtkObject *object)
 }
 
 
+#ifndef GAL_NOT_SLOW
+/* NOTE see htmltextslave.c for an explanation and the h_utf8 decls */
+gint h_utf8_pointer_to_offset (const gchar *str, const gchar *pos);
+gint h_utf8_strlen (const gchar *p, gint max);
+gchar *h_utf8_offset_to_pointer  (const gchar *str, gint         offset);
+
+#define g_utf8_strlen h_utf8_strlen
+#define g_utf8_offset_to_pointer h_utf8_offset_to_pointer
+#define g_utf8_pointer_to_offset h_utf8_pointer_to_offset
+#endif
+
 #define DEFINE_UNIMPLEMENTED(method)						\
 	static gint								\
 	method##_unimplemented (GtkObject *obj)					\
@@ -71,41 +88,44 @@ finalize (GtkObject *object)
 		return 0;							\
 	}
 
-DEFINE_UNIMPLEMENTED (begin);
-DEFINE_UNIMPLEMENTED (end);
+DEFINE_UNIMPLEMENTED (begin)
+DEFINE_UNIMPLEMENTED (end)
 
-DEFINE_UNIMPLEMENTED (alloc_font);
-DEFINE_UNIMPLEMENTED (  ref_font);
-DEFINE_UNIMPLEMENTED (unref_font);
+DEFINE_UNIMPLEMENTED (alloc_font)
+DEFINE_UNIMPLEMENTED (  ref_font)
+DEFINE_UNIMPLEMENTED (unref_font)
 
-DEFINE_UNIMPLEMENTED (alloc_color);
-DEFINE_UNIMPLEMENTED (free_color);
+DEFINE_UNIMPLEMENTED (alloc_color)
+DEFINE_UNIMPLEMENTED (free_color)
 
-DEFINE_UNIMPLEMENTED (calc_ascent);
-DEFINE_UNIMPLEMENTED (calc_descent);
-DEFINE_UNIMPLEMENTED (calc_text_width);
+DEFINE_UNIMPLEMENTED (calc_ascent)
+DEFINE_UNIMPLEMENTED (calc_descent)
+DEFINE_UNIMPLEMENTED (calc_text_width)
+DEFINE_UNIMPLEMENTED (calc_text_width_bytes)
 
-DEFINE_UNIMPLEMENTED (set_pen);
-DEFINE_UNIMPLEMENTED (get_black);
-DEFINE_UNIMPLEMENTED (draw_line);
-DEFINE_UNIMPLEMENTED (draw_rect);
-DEFINE_UNIMPLEMENTED (draw_text);
-DEFINE_UNIMPLEMENTED (draw_spell_error);
-DEFINE_UNIMPLEMENTED (fill_rect);
-DEFINE_UNIMPLEMENTED (draw_pixmap);
-DEFINE_UNIMPLEMENTED (draw_ellipse);
-DEFINE_UNIMPLEMENTED (clear);
-DEFINE_UNIMPLEMENTED (set_background_color);
-DEFINE_UNIMPLEMENTED (draw_shade_line);
-DEFINE_UNIMPLEMENTED (draw_panel);
+DEFINE_UNIMPLEMENTED (set_pen)
+DEFINE_UNIMPLEMENTED (get_black)
+DEFINE_UNIMPLEMENTED (draw_line)
+DEFINE_UNIMPLEMENTED (draw_rect)
+DEFINE_UNIMPLEMENTED (draw_text)
+DEFINE_UNIMPLEMENTED (draw_spell_error)
+DEFINE_UNIMPLEMENTED (fill_rect)
+DEFINE_UNIMPLEMENTED (draw_pixmap)
+DEFINE_UNIMPLEMENTED (draw_ellipse)
+DEFINE_UNIMPLEMENTED (clear)
+DEFINE_UNIMPLEMENTED (set_background_color)
+DEFINE_UNIMPLEMENTED (draw_shade_line)
+DEFINE_UNIMPLEMENTED (draw_panel)
 
-DEFINE_UNIMPLEMENTED (set_clip_rectangle);
-DEFINE_UNIMPLEMENTED (draw_background);
-DEFINE_UNIMPLEMENTED (draw_embedded);
+DEFINE_UNIMPLEMENTED (set_clip_rectangle)
+DEFINE_UNIMPLEMENTED (draw_background)
+DEFINE_UNIMPLEMENTED (draw_embedded)
 
-DEFINE_UNIMPLEMENTED (get_pixel_size);
-DEFINE_UNIMPLEMENTED (get_page_width);
-DEFINE_UNIMPLEMENTED (get_page_height);
+DEFINE_UNIMPLEMENTED (get_pixel_size)
+DEFINE_UNIMPLEMENTED (get_page_width)
+DEFINE_UNIMPLEMENTED (get_page_height)
+
+DEFINE_UNIMPLEMENTED (get_font_manager_id)
 
 
 static void
@@ -116,9 +136,11 @@ init (GtkObject *object, HTMLPainterClass *real_klass)
 	painter = HTML_PAINTER (object);
 	painter->color_set = html_colorset_new (NULL);
 
-	html_font_manager_init (&painter->font_manager, painter);
 	painter->font_style = GTK_HTML_FONT_STYLE_DEFAULT;
 	painter->font_face = NULL;
+
+	painter->magnification = 1.0;
+	painter->mag_fm = NULL;
 }
 
 static void
@@ -143,6 +165,7 @@ class_init (GtkObjectClass *object_class)
 	class->calc_ascent = (gpointer) calc_ascent_unimplemented;
 	class->calc_descent = (gpointer) calc_descent_unimplemented;
 	class->calc_text_width = (gpointer) calc_text_width_unimplemented;
+	class->calc_text_width_bytes = (gpointer) calc_text_width_bytes_unimplemented;
 
 	class->set_pen = (gpointer) set_pen_unimplemented;
 	class->get_black = (gpointer) get_black_unimplemented;
@@ -166,6 +189,8 @@ class_init (GtkObjectClass *object_class)
 
 	class->get_page_width  = (gpointer) get_page_width_unimplemented;
 	class->get_page_height = (gpointer) get_page_height_unimplemented;
+
+	class->get_font_manager_id = (gpointer) get_font_manager_id_unimplemented;
 
 	parent_class = gtk_type_class (gtk_object_get_type ());
 }
@@ -282,12 +307,28 @@ html_painter_set_font_face (HTMLPainter *painter,
 	}
 }
 
+static HTMLFont *
+get_html_font (HTMLPainter *painter, HTMLFontFace *face, GtkHTMLFontStyle style)
+{
+	HTMLEngineClass *ec = gtk_type_class (html_engine_get_type ());
+	HTMLFontManager *fm;
+
+	fm = painter->mag_fm ? painter->mag_fm : &ec->font_manager [html_painter_get_font_manager_id (painter)];
+
+	return html_font_manager_get_font (fm, face, style);
+}
+
+HTMLFont *
+html_painter_get_html_font (HTMLPainter *painter, HTMLFontFace *face, GtkHTMLFontStyle style)
+{
+	return get_html_font (painter, face, style);
+}
+
 gpointer
 html_painter_get_font (HTMLPainter *painter, HTMLFontFace *face, GtkHTMLFontStyle style)
 {
-	HTMLFont *font;
+	HTMLFont *font = get_html_font (painter, face, style);
 
-	font = html_font_manager_get_font (&painter->font_manager, face, style);
 	return font ? font->data : NULL;
 }
 
@@ -323,24 +364,105 @@ html_painter_calc_text_width (HTMLPainter *painter,
 			      HTMLFontFace *face)
 {
 	guint width;
+	gchar *tmp = NULL;
 	gchar *translated;
 	gint translated_len;
-
+	gint tmp_len;
+	
 	g_return_val_if_fail (painter != NULL, 0);
 	g_return_val_if_fail (HTML_IS_PAINTER (painter), 0);
 	g_return_val_if_fail (text != NULL, 0);
 	g_return_val_if_fail (font_style != GTK_HTML_FONT_STYLE_DEFAULT, 0);
 
-	translated = alloca (strlen (text) + calc_text_bytes_delta (text, len, *line_offset, &translated_len,
-								    *line_offset != -1) + 1);
+	tmp_len =  (g_utf8_offset_to_pointer (text,len) - text) + calc_text_bytes_delta (text, len, *line_offset, &translated_len,
+											 *line_offset != -1) + 1;
+
+	if (tmp_len > HTML_ALLOCA_MAX)
+		tmp = translated = g_malloc (tmp_len);
+	else 
+		translated = alloca (tmp_len);
+
 	*line_offset = translate_text_special_chars (text, translated, len, *line_offset, *line_offset != -1);
 
 	width = (* HP_CLASS (painter)->calc_text_width) (painter, translated, translated_len, font_style, face);
+	
+	g_free (tmp);
+	return width;
+}
+
+static gint
+correct_width (const gchar *text, guint bytes_len, gint *lo, HTMLFont *font)
+{
+	gint delta = 0;
+	gunichar uc;
+	const gchar *s, *end = text + bytes_len;
+	gint skip, line_offset = *lo;
+	gboolean tabs = *lo != -1;
+
+	if (!tabs) {
+		if (font->space_width == font->nbsp_width) {
+			if (font->space_width == font->tab_width) {
+				return 0;
+			} else {
+				while (text < end) {
+					if (*text == '\t')
+						delta += font->space_width - font->tab_width;
+					text ++;
+				}
+
+				return delta;
+			}
+		}
+	}
+
+	s = text;
+	while (s < end && (uc = g_utf8_get_char (s))) {
+		switch (uc) {
+		case ENTITY_NBSP:
+			line_offset ++;
+			delta += font->space_width - font->nbsp_width;
+			break;
+		case '\t':
+			if (tabs) {
+				skip = 8 - (line_offset % 8);
+				line_offset += skip;
+				delta += skip * font->space_width - font->tab_width;
+			} else {
+				delta += font->space_width - font->tab_width;
+				line_offset ++;
+			}
+			break;
+		default:
+			line_offset ++;
+		}
+		s = g_utf8_next_char (s);
+	}
+
+	if (tabs)
+		*lo = line_offset;
+
+	return delta;
+}
+
+guint
+html_painter_calc_text_width_bytes (HTMLPainter *painter,
+				    const gchar *text,
+				    guint bytes_len, gint *line_offset,
+				    HTMLFont *font, GtkHTMLFontStyle style)
+{
+	guint width;
+
+	g_return_val_if_fail (painter != NULL, 0);
+	g_return_val_if_fail (HTML_IS_PAINTER (painter), 0);
+	g_return_val_if_fail (text != NULL, 0);
+	g_return_val_if_fail (style != GTK_HTML_FONT_STYLE_DEFAULT, 0);
+
+	width = (* HP_CLASS (painter)->calc_text_width_bytes) (painter, text, bytes_len, font, style);
+	width += correct_width (text, bytes_len, line_offset, font);
 
 	return width;
 }
 
-
 /* The actual paint operations.  */
 
 void
@@ -475,16 +597,26 @@ html_painter_draw_text (HTMLPainter *painter,
 			const gchar *text, gint len, gint line_offset)
 {
 	gchar *translated;
+	gchar *tmp = NULL;
 	gint translated_len;
+	gint tmp_len;
 
 	g_return_val_if_fail (painter != NULL, line_offset);
 	g_return_val_if_fail (HTML_IS_PAINTER (painter), line_offset);
 
-	translated = alloca (strlen (text) + calc_text_bytes_delta (text, len, line_offset, &translated_len,
-								    line_offset != -1) + 1);
+	tmp_len = (g_utf8_offset_to_pointer (text, len) - text) + calc_text_bytes_delta (text, len, line_offset, &translated_len,
+					       line_offset != -1) + 1;
+	
+	if (tmp_len > HTML_ALLOCA_MAX)
+		tmp = translated = g_malloc (tmp_len);
+	else 
+		translated = alloca (tmp_len);
+
 	line_offset = translate_text_special_chars (text, translated, len, line_offset, line_offset != -1);
 
 	(* HP_CLASS (painter)->draw_text) (painter, x, y, translated, translated_len);
+
+	g_free (tmp);
 
 	return line_offset;
 }
@@ -626,27 +758,27 @@ html_painter_draw_spell_error (HTMLPainter *painter,
 }
 
 HTMLFont *
-html_painter_alloc_font (HTMLPainter *painter, gchar *face_name, gdouble size, gboolean points, GtkHTMLFontStyle style)
+html_painter_alloc_font (HTMLPainterClass *pc, gchar *face_name, gdouble size, gboolean points, GtkHTMLFontStyle style)
 {
-	return (* HP_CLASS (painter)->alloc_font) (painter, face_name, size, points, style);
+	return (* pc->alloc_font) (face_name, size, points, style);
 }
 
 void
-html_painter_ref_font (HTMLPainter *painter, HTMLFont *font)
+html_painter_ref_font (HTMLPainterClass *pc, HTMLFont *font)
 {
-	(* HP_CLASS (painter)->ref_font) (painter, font);
+	(* pc->ref_font) (font);
 }
 
 void
-html_painter_unref_font (HTMLPainter *painter, HTMLFont *font)
+html_painter_unref_font (HTMLPainterClass *pc, HTMLFont *font)
 {
-	(* HP_CLASS (painter)->unref_font) (painter, font);
+	(* pc->unref_font) (font);
 }
 
 guint
 html_painter_get_space_width (HTMLPainter *painter, GtkHTMLFontStyle style, HTMLFontFace *face)
 {
-	return html_font_manager_get_font (&painter->font_manager, face, style)->space_width;
+	return get_html_font (painter, face, style)->space_width;
 }
 
 guint
@@ -665,4 +797,51 @@ void
 html_painter_set_focus (HTMLPainter *p, gboolean focus)
 {
 	p->focus = focus;
+}
+
+HTMLPainterClass *
+html_painter_class_from_id (HTMLFontManagerId id)
+{
+	switch (id) {
+	case HTML_FONT_MANAGER_ID_GDK:
+		return gtk_type_class (html_gdk_painter_get_type ());
+	case HTML_FONT_MANAGER_ID_PLAIN:
+		return gtk_type_class (html_plain_painter_get_type ());
+	case HTML_FONT_MANAGER_ID_PRINTER:
+		return gtk_type_class (html_printer_get_type ());
+	default:
+		return NULL;
+	}
+}
+
+HTMLFontManagerId
+html_painter_get_font_manager_id (HTMLPainter *painter)
+{
+	return 	(* HP_CLASS (painter)->get_font_manager_id) ();
+}
+
+void
+html_painter_set_magnification (HTMLPainter *painter, GtkHTML *html, gdouble magnification)
+{
+	if (painter->magnification != magnification) {
+		if (magnification != 1.0) {
+			if (!painter->mag_fm) {
+				GtkHTMLClassProperties *prop;
+				painter->mag_fm = html_font_manager_new (gtk_type_class (GTK_OBJECT_TYPE (painter)));
+				prop = GTK_HTML_CLASS (GTK_OBJECT (html)->klass)->properties;
+
+				html_font_manager_set_default (painter->mag_fm,
+							       prop->font_var,      prop->font_fix,
+							       prop->font_var_size, prop->font_var_points,
+							       prop->font_fix_size, prop->font_fix_points);
+			}
+			html_font_manager_set_magnification (painter->mag_fm, magnification);
+		} else {
+			if (painter->mag_fm) {
+				html_font_manager_destroy (painter->mag_fm);
+				painter->mag_fm = NULL;
+			}
+		}
+		painter->magnification = magnification;
+	}
 }

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -69,6 +69,7 @@ CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EDITOR_API_VERSION = @EDITOR_API_VERSION@
 EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
@@ -77,8 +78,6 @@ GCONF_LIBS = @GCONF_LIBS@
 GENCAT = @GENCAT@
 GHTTP_CFLAGS = @GHTTP_CFLAGS@
 GHTTP_LIBS = @GHTTP_LIBS@
-GLIBWWW_CFLAGS = @GLIBWWW_CFLAGS@
-GLIBWWW_LIBS = @GLIBWWW_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -101,6 +100,8 @@ GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_INCLUDEDIR = @GTKHTML_INCLUDEDIR@
 GTKHTML_LIBDIR = @GTKHTML_LIBDIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
+GTKHTML_RELEASE = @GTKHTML_RELEASE@
+GTKHTML_RELEASE_STRING = @GTKHTML_RELEASE_STRING@
 GTKHTML_REVISION = @GTKHTML_REVISION@
 GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
 GT_NO = @GT_NO@
@@ -111,6 +112,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -127,42 +129,65 @@ PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+SOUP_CFLAGS = @SOUP_CFLAGS@
+SOUP_LIBS = @SOUP_LIBS@
 STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
-@BONOBO_TRUE@DIR_COMPONENTS = components
+@BONOBO_TRUE@DIR_COMPONENTS = @BONOBO_TRUE@components
 @BONOBO_FALSE@DIR_COMPONENTS = 
 
-confexecdir = $(libdir)
-confexec_DATA = gtkhtmlConf.sh
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = gtkhtml-@GTKHTML_RELEASE@.pc
 
-SUBDIRS =  	intl						macros						src						capplet						doc						art						$(DIR_COMPONENTS)				po
+SUBDIRS = \
+	intl					\
+	macros					\
+	src					\
+	capplet					\
+	doc					\
+	art					\
+	$(DIR_COMPONENTS)			\
+	po
 
 
-EXTRA_DIST =  	html-component.gnorba				gtkhtml.spec.in					gtkhtml.spec                            	COPYING.LIB					BUGS						gtkhtmlConf.sh.in				xml-i18n-extract.in				xml-i18n-update.in				xml-i18n-merge.in
+EXTRA_DIST = \
+	gtkhtml.spec.in				\
+	gtkhtml.spec                            \
+	COPYING.LIB				\
+	BUGS					\
+	xml-i18n-extract.in			\
+	xml-i18n-update.in			\
+	xml-i18n-merge.in
 
-
-@BONOBO_TRUE@gnorbadir = $(sysconfdir)/CORBA/servers
-@BONOBO_TRUE@gnorba_DATA = html-component.gnorba
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES =  gtkhtml.spec
-DATA =  $(confexec_DATA) $(gnorba_DATA)
+CONFIG_CLEAN_FILES =  gtkhtml.spec gtkhtml-1.1.pc
+DATA =  $(pkgconfig_DATA)
 
 DIST_COMMON =  README ./stamp-h.in ABOUT-NLS AUTHORS COPYING COPYING.LIB \
 ChangeLog INSTALL Makefile.am Makefile.in NEWS TODO acconfig.h \
 aclocal.m4 config.guess config.h.in config.sub configure configure.in \
-gtkhtml.spec.in install-sh ltconfig ltmain.sh missing mkinstalldirs
+gtkhtml-1.1.pc.in gtkhtml.spec.in install-sh ltmain.sh missing \
+mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -216,43 +241,26 @@ distclean-hdr:
 maintainer-clean-hdr:
 gtkhtml.spec: $(top_builddir)/config.status gtkhtml.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+gtkhtml-1.1.pc: $(top_builddir)/config.status gtkhtml-1.1.pc.in
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-install-confexecDATA: $(confexec_DATA)
+install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(confexecdir)
-	@list='$(confexec_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(pkgconfigdir)
+	@list='$(pkgconfig_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(confexecdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(confexecdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(pkgconfigdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(confexecdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(confexecdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(pkgconfigdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-confexecDATA:
+uninstall-pkgconfigDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(confexec_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(confexecdir)/$$p; \
-	done
-
-install-gnorbaDATA: $(gnorba_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(gnorbadir)
-	@list='$(gnorba_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gnorbadir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gnorbadir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gnorbadir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(gnorbadir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-gnorbaDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(gnorba_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(gnorbadir)/$$p; \
+	list='$(pkgconfig_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -413,16 +421,16 @@ installcheck: installcheck-recursive
 all-recursive-am: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
-install-exec-am: install-confexecDATA
+install-exec-am:
 install-exec: install-exec-recursive
 
-install-data-am: install-gnorbaDATA
+install-data-am: install-pkgconfigDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-confexecDATA uninstall-gnorbaDATA
+uninstall-am: uninstall-pkgconfigDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(DATA) config.h
 all-redirect: all-recursive-am
@@ -430,7 +438,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(confexecdir) $(DESTDIR)$(gnorbadir)
+	$(mkinstalldirs)  $(DESTDIR)$(pkgconfigdir)
 
 
 mostlyclean-generic:
@@ -465,12 +473,11 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f config.status
 
 .PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-uninstall-confexecDATA install-confexecDATA uninstall-gnorbaDATA \
-install-gnorbaDATA install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+uninstall-pkgconfigDATA install-pkgconfigDATA install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
@@ -479,15 +486,6 @@ install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-gtkhtmlConf.sh: gtkhtmlConf.sh.in Makefile
-	sed -e 's?\@GTKHTML_LIBDIR\@?$(GTKHTML_LIBDIR)?g' \
-	    -e 's?\@GTKHTML_INCLUDEDIR\@?$(GTKHTML_INCLUDEDIR)?g' \
-	    -e 's?\@GTKHTML_DATADIR\@?$(GTKHTML_DATADIR)?g' \
-	    -e 's?\@VERSION\@?$(VERSION)?g' \
-	    -e 's?\@GTKHTML_LIBS\@?$(GTKHTML_LIBS)?g' \
-	      < $(srcdir)/gtkhtmlConf.sh.in > gtkhtmlConf.tmp \
-	  && mv gtkhtmlConf.tmp gtkhtmlConf.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

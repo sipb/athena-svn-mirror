@@ -42,10 +42,12 @@ struct _HTMLClueClass {
 
 	gint (*get_left_clear) (HTMLClue *clue, gint y);
 	gint (*get_right_clear) (HTMLClue *clue, gint y);
-	void (*find_free_area) (HTMLClue *clue,
+	void (*find_free_area) (HTMLClue *clue, HTMLPainter *painter,
 				gint y, gint width, gint height, gint indent, gint *y_pos, gint *lmargin, gint *rmargin);
-	void (*append_right_aligned) (HTMLClue *clue, HTMLClue *aclue);
-	void (*append_left_aligned) (HTMLClue *clue, HTMLClue *aclue);
+	void (*append_right_aligned) (HTMLClue *clue, HTMLPainter *painter,
+				      HTMLClue *aclue, gint *lmargin, gint *rmargin, gint indent);
+	void (*append_left_aligned) (HTMLClue *clue, HTMLPainter *painter,
+				     HTMLClue *aclue, gint *lmargin, gint *rmargin, gint indent);
 	gboolean (*appended) (HTMLClue *clue, HTMLClue *aclue);
 };
 
@@ -64,6 +66,7 @@ gint      html_clue_get_left_clear        (HTMLClue      *clue,
 gint      html_clue_get_right_clear       (HTMLClue      *clue,
 					   gint           y);
 void      html_clue_find_free_area        (HTMLClue      *clue,
+					   HTMLPainter   *painter,
 					   gint           y,
 					   gint           width,
 					   gint           height,
@@ -72,9 +75,17 @@ void      html_clue_find_free_area        (HTMLClue      *clue,
 					   gint          *lmargin,
 					   gint          *rmargin);
 void      html_clue_append_right_aligned  (HTMLClue      *clue,
-					   HTMLClue      *aclue);
+					   HTMLPainter   *painter,
+					   HTMLClue      *aclue,
+					   gint          *lmargin,
+					   gint          *rmargin,
+					   gint           indent);
 void      html_clue_append_left_aligned   (HTMLClue      *clue,
-					   HTMLClue      *aclue);
+					   HTMLPainter   *painter,
+					   HTMLClue      *aclue,
+					   gint          *lmargin,
+					   gint          *rmargin,
+					   gint           indent);
 gboolean  html_clue_appended              (HTMLClue      *clue,
 					   HTMLClue      *aclue);
 void      html_clue_append_after          (HTMLClue      *clue,
@@ -86,5 +97,6 @@ void      html_clue_prepend               (HTMLClue      *clue,
 					   HTMLObject    *o);
 void      html_clue_remove                (HTMLClue      *clue,
 					   HTMLObject    *o);
+void      html_clue_remove_text_slaves    (HTMLClue      *clue);
 
 #endif /* HTMLCLUE_H */

@@ -109,7 +109,7 @@ op_helper (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *left,
 					      html_object_get_bound_list (o, from),
 					      html_object_get_bound_list (o, to),
 					      left ? left->next : NULL, right ? right->next : NULL, len)
-			: html_object_op_copy (o, e,
+			: html_object_op_copy (o, cc, e,
 					       html_object_get_bound_list (o, from),
 					       html_object_get_bound_list (o, to), len);
 		if (child)
@@ -124,7 +124,7 @@ op_helper (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, GList *left,
 }
 
 static HTMLObject *
-op_copy (HTMLObject *self, HTMLEngine *e, GList *from, GList *to, guint *len)
+op_copy (HTMLObject *self, HTMLObject *parent, HTMLEngine *e, GList *from, GList *to, guint *len)
 {
 	return op_helper (self, e, from, to, NULL, NULL, len, FALSE);
 }
@@ -229,47 +229,20 @@ draw (HTMLObject *o,
 }
 
 static void
-set_max_ascent (HTMLObject *o,
-		HTMLPainter *painter,				
-		gint a)
+set_max_height (HTMLObject *o, HTMLPainter *painter, gint height)
 {
 	HTMLClue *clue = HTML_CLUE (o);
 	HTMLObject *obj;
 
-	if (clue->valign == HTML_VALIGN_MIDDLE) {
-		for (obj = HTML_CLUE (o)->head; obj != 0; obj = obj->next) {
-			obj->y = obj->y + ((a - o->ascent) / 2);
-		}
+	for (obj = HTML_CLUE (o)->head; obj != 0; obj = obj->next) {
+		html_object_set_max_height (obj, painter, height);
+		if (clue->valign == HTML_VALIGN_MIDDLE)
+			obj->y = obj->y + ((height - o->ascent) / 2);
+		else if (clue->valign == HTML_VALIGN_BOTTOM)
+			obj->y = obj->y + height - o->ascent;
 	}
 
-	else if (clue->valign == HTML_VALIGN_BOTTOM) {
-		for (obj = HTML_CLUE (o)->head; obj != 0; obj = obj->next) {
-			obj->y = obj->y + a - o->ascent;
-		}
-	}
-
-	o->ascent = a;
-}
-
-static void
-set_max_descent (HTMLObject *o, HTMLPainter *painter, gint d)
-{
-	HTMLClue *clue = HTML_CLUE (o);
-	HTMLObject *obj;
-	
-	if (clue->valign == HTML_VALIGN_MIDDLE) {
-		for (obj = clue->head; obj != 0; obj = obj->next) {
-			obj->y = obj->y + ((d - o->descent) / 2);
-		}
-	}
-	else if (clue->valign == HTML_VALIGN_BOTTOM) {
-		for (obj = clue->head; obj != 0; obj = obj->next) {
-			obj->y = obj->y + d - o->descent;
-		}
-	}
-	
-	o->descent = d;
-
+	o->ascent = height;
 }
 
 static void
@@ -498,6 +471,7 @@ get_right_clear (HTMLClue *o, gint y)
 
 static void
 find_free_area (HTMLClue *clue,
+		HTMLPainter *painter,
 		gint y,
 		gint width, gint height,
 		gint indent, gint *y_pos,
@@ -509,7 +483,7 @@ find_free_area (HTMLClue *clue,
 }
 
 static void
-append_right_aligned (HTMLClue *clue, HTMLClue *aclue)
+append_right_aligned (HTMLClue *clue, HTMLPainter *painter, HTMLClue *aclue, gint *lmargin, gint *rmargin, gint indent)
 {
 	/* This needs to be implemented in the subclasses.  */
 	g_warning ("`%s' does not implement `append_right_aligned()'.",
@@ -607,8 +581,7 @@ html_clue_class_init (HTMLClueClass *klass,
 	object_class->remove_child = remove_child;
 	object_class->split = split;
 	object_class->draw = draw;
-	object_class->set_max_ascent = set_max_ascent;
-	object_class->set_max_descent = set_max_descent;
+	object_class->set_max_height = set_max_height;
 	object_class->reset = reset;
 	object_class->calc_size = calc_size;
 	object_class->calc_preferred_width = calc_preferred_width;
@@ -668,33 +641,36 @@ html_clue_get_right_clear (HTMLClue *clue, gint y)
 
 void
 html_clue_find_free_area (HTMLClue *clue,
+			  HTMLPainter *painter,
 			  gint y,
 			  gint width, gint height, gint indent, gint *y_pos,
 			  gint *lmargin, gint *rmargin)
 {
-	(* HC_CLASS (clue)->find_free_area) (clue, y, width, height, indent, y_pos, lmargin, rmargin);
+	(* HC_CLASS (clue)->find_free_area) (clue, painter, y, width, height, indent, y_pos, lmargin, rmargin);
 }
 
 void
-html_clue_append_right_aligned (HTMLClue *clue, HTMLClue *aclue)
+html_clue_append_right_aligned (HTMLClue *clue, HTMLPainter *painter,
+				HTMLClue *aclue, gint *lmargin, gint *rmargin, gint indent)
 {
 	g_assert (clue != NULL);
 	g_assert (aclue != NULL);
 
 	html_object_change_set (HTML_OBJECT (clue), HTML_OBJECT (aclue)->change);
 
-	(* HC_CLASS (clue)->append_right_aligned) (clue, aclue);
+	(* HC_CLASS (clue)->append_right_aligned) (clue, painter, aclue, lmargin, rmargin, indent);
 }
 
 void
-html_clue_append_left_aligned (HTMLClue *clue, HTMLClue *aclue)
+html_clue_append_left_aligned (HTMLClue *clue, HTMLPainter *painter,
+			       HTMLClue *aclue, gint *lmargin, gint *rmargin, gint indent)
 {
 	g_assert (clue != NULL);
 	g_assert (aclue != NULL);
 
 	html_object_change_set (HTML_OBJECT (clue), HTML_OBJECT (aclue)->change);
 
-	(* HC_CLASS (clue)->append_left_aligned) (clue, aclue);
+	(* HC_CLASS (clue)->append_left_aligned) (clue, painter, aclue, lmargin, rmargin, indent);
 }
 
 gboolean
@@ -872,4 +848,22 @@ html_clue_remove (HTMLClue *clue,
 	o->parent = NULL;
 	o->prev = NULL;
 	o->next = NULL;
+}
+
+void
+html_clue_remove_text_slaves (HTMLClue *clue)
+{
+	HTMLObject *p;
+	HTMLObject *pnext;
+
+	g_return_if_fail (clue != NULL);
+
+	for (p = clue->head; p != NULL; p = pnext) {
+		pnext = p->next;
+
+		if (HTML_OBJECT_TYPE (p) == HTML_TYPE_TEXTSLAVE) {
+			html_clue_remove (clue, p);
+			html_object_destroy (p);
+		}
+	}
 }

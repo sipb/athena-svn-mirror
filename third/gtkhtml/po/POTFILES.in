@@ -1,6 +1,8 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
 capplet/gnome-bindings-prop.c
-capplet/main.c
 capplet/gtkhtml-capplet.glade
+capplet/main.c
 components/ebrowser/GNOME_GtkHTML_EBrowser.oaf.in
 components/html-editor/GNOME_GtkHTML_Editor.oaf.in.in
 components/html-editor/GNOME_GtkHTML_Editor.xml.in
@@ -12,8 +14,8 @@ components/html-editor/image.c
 components/html-editor/link.c
 components/html-editor/menubar.c
 components/html-editor/paragraph.c
-components/html-editor/properties.c
 components/html-editor/popup.c
+components/html-editor/properties.c
 components/html-editor/replace.c
 components/html-editor/rule.c
 components/html-editor/search.c
@@ -25,5 +27,7 @@ components/html-editor/text.c
 components/html-editor/toolbar.c
 components/html-editor/utils.c
 src/gtkhtml.c
+src/htmlengine-print.c
 src/htmlgdkpainter.c
+src/htmlprinter.c
 src/testgtkhtml.c

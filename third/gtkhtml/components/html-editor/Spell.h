@@ -61,6 +61,75 @@ extern "C"
    extern GNOME_Spell_StringSeq *GNOME_Spell_StringSeq__alloc(void);
    extern gpointer GNOME_Spell_StringSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
+#if !defined(_GNOME_Spell_Language_defined)
+#define _GNOME_Spell_Language_defined 1
+   typedef struct
+   {
+      CORBA_char *name;
+      CORBA_char *abrev;
+   }
+   GNOME_Spell_Language;
+
+#if !defined(TC_IMPL_TC_GNOME_Spell_Language_0)
+#define TC_IMPL_TC_GNOME_Spell_Language_0 'S'
+#define TC_IMPL_TC_GNOME_Spell_Language_1 'p'
+#define TC_IMPL_TC_GNOME_Spell_Language_2 'e'
+#define TC_IMPL_TC_GNOME_Spell_Language_3 'l'
+#define TC_IMPL_TC_GNOME_Spell_Language_4 'l'
+   extern const struct CORBA_TypeCode_struct TC_GNOME_Spell_Language_struct;
+#define TC_GNOME_Spell_Language ((CORBA_TypeCode)&TC_GNOME_Spell_Language_struct)
+#endif
+   extern GNOME_Spell_Language *GNOME_Spell_Language__alloc(void);
+   extern gpointer GNOME_Spell_Language__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Spell_Language) && !defined(_CORBA_sequence_GNOME_Spell_Language_defined)
+#define ORBIT_DECL_CORBA_sequence_GNOME_Spell_Language 1
+#define _CORBA_sequence_GNOME_Spell_Language_defined 1
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_0 'S'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_1 'p'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_2 'e'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_3 'l'
+#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Language_4 'l'
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      GNOME_Spell_Language *_buffer;
+      CORBA_boolean _release;
+   }
+   CORBA_sequence_GNOME_Spell_Language;
+   GNOME_Spell_Language
+      *CORBA_sequence_GNOME_Spell_Language_allocbuf(CORBA_unsigned_long len);
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_0)
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_0 'S'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_1 'p'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_2 'e'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_3 'l'
+#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Language_4 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_GNOME_Spell_Language_struct;
+#define TC_CORBA_sequence_GNOME_Spell_Language ((CORBA_TypeCode)&TC_CORBA_sequence_GNOME_Spell_Language_struct)
+#endif
+   extern CORBA_sequence_GNOME_Spell_Language
+      *CORBA_sequence_GNOME_Spell_Language__alloc(void);
+   extern gpointer CORBA_sequence_GNOME_Spell_Language__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+#if !defined(_GNOME_Spell_LanguageSeq_defined)
+#define _GNOME_Spell_LanguageSeq_defined 1
+   typedef CORBA_sequence_GNOME_Spell_Language GNOME_Spell_LanguageSeq;
+#if !defined(TC_IMPL_TC_GNOME_Spell_LanguageSeq_0)
+#define TC_IMPL_TC_GNOME_Spell_LanguageSeq_0 'S'
+#define TC_IMPL_TC_GNOME_Spell_LanguageSeq_1 'p'
+#define TC_IMPL_TC_GNOME_Spell_LanguageSeq_2 'e'
+#define TC_IMPL_TC_GNOME_Spell_LanguageSeq_3 'l'
+#define TC_IMPL_TC_GNOME_Spell_LanguageSeq_4 'l'
+   extern const struct CORBA_TypeCode_struct
+      TC_GNOME_Spell_LanguageSeq_struct;
+#define TC_GNOME_Spell_LanguageSeq ((CORBA_TypeCode)&TC_GNOME_Spell_LanguageSeq_struct)
+#endif
+   extern GNOME_Spell_LanguageSeq *GNOME_Spell_LanguageSeq__alloc(void);
+   extern gpointer GNOME_Spell_LanguageSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
+#endif
 #if !defined(ORBIT_DECL_GNOME_Spell_Dictionary) && !defined(_GNOME_Spell_Dictionary_defined)
 #define ORBIT_DECL_GNOME_Spell_Dictionary 1
 #define _GNOME_Spell_Dictionary_defined 1
@@ -106,134 +175,17 @@ extern "C"
       *GNOME_Spell_Dictionary_Error__alloc(void);
    extern gpointer GNOME_Spell_Dictionary_Error__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
 #endif
-#if !defined(_GNOME_Spell_Suggestion_defined)
-#define _GNOME_Spell_Suggestion_defined 1
-   typedef struct
-   {
-      GNOME_Spell_StringSeq word;
-      GNOME_Spell_Dictionary dictionary;
-   }
-   GNOME_Spell_Suggestion;
-
-#if !defined(TC_IMPL_TC_GNOME_Spell_Suggestion_0)
-#define TC_IMPL_TC_GNOME_Spell_Suggestion_0 'S'
-#define TC_IMPL_TC_GNOME_Spell_Suggestion_1 'p'
-#define TC_IMPL_TC_GNOME_Spell_Suggestion_2 'e'
-#define TC_IMPL_TC_GNOME_Spell_Suggestion_3 'l'
-#define TC_IMPL_TC_GNOME_Spell_Suggestion_4 'l'
-   extern const struct CORBA_TypeCode_struct TC_GNOME_Spell_Suggestion_struct;
-#define TC_GNOME_Spell_Suggestion ((CORBA_TypeCode)&TC_GNOME_Spell_Suggestion_struct)
-#endif
-   extern GNOME_Spell_Suggestion *GNOME_Spell_Suggestion__alloc(void);
-   extern gpointer GNOME_Spell_Suggestion__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
-#endif
-#if !defined(ORBIT_DECL_GNOME_Spell_Checker) && !defined(_GNOME_Spell_Checker_defined)
-#define ORBIT_DECL_GNOME_Spell_Checker 1
-#define _GNOME_Spell_Checker_defined 1
-#define GNOME_Spell_Checker__free CORBA_Object__free
-   typedef CORBA_Object GNOME_Spell_Checker;
-   extern CORBA_unsigned_long GNOME_Spell_Checker__classid;
-#if !defined(TC_IMPL_TC_GNOME_Spell_Checker_0)
-#define TC_IMPL_TC_GNOME_Spell_Checker_0 'S'
-#define TC_IMPL_TC_GNOME_Spell_Checker_1 'p'
-#define TC_IMPL_TC_GNOME_Spell_Checker_2 'e'
-#define TC_IMPL_TC_GNOME_Spell_Checker_3 'l'
-#define TC_IMPL_TC_GNOME_Spell_Checker_4 'l'
-   extern const struct CORBA_TypeCode_struct TC_GNOME_Spell_Checker_struct;
-#define TC_GNOME_Spell_Checker ((CORBA_TypeCode)&TC_GNOME_Spell_Checker_struct)
-#endif
-#endif
-#if !defined(ORBIT_DECL_CORBA_sequence_GNOME_Spell_Suggestion) && !defined(_CORBA_sequence_GNOME_Spell_Suggestion_defined)
-#define ORBIT_DECL_CORBA_sequence_GNOME_Spell_Suggestion 1
-#define _CORBA_sequence_GNOME_Spell_Suggestion_defined 1
-#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_0 'S'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_1 'p'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_2 'e'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_3 'l'
-#define ORBIT_IMPL_CORBA_sequence_GNOME_Spell_Suggestion_4 'l'
-   typedef struct
-   {
-      CORBA_unsigned_long _maximum,
-       _length;
-      GNOME_Spell_Suggestion *_buffer;
-      CORBA_boolean _release;
-   }
-   CORBA_sequence_GNOME_Spell_Suggestion;
-   GNOME_Spell_Suggestion
-      *CORBA_sequence_GNOME_Spell_Suggestion_allocbuf(CORBA_unsigned_long
-						      len);
-#endif
-#if !defined(TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_0)
-#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_0 'S'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_1 'p'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_2 'e'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_3 'l'
-#define TC_IMPL_TC_CORBA_sequence_GNOME_Spell_Suggestion_4 'l'
-   extern const struct CORBA_TypeCode_struct
-      TC_CORBA_sequence_GNOME_Spell_Suggestion_struct;
-#define TC_CORBA_sequence_GNOME_Spell_Suggestion ((CORBA_TypeCode)&TC_CORBA_sequence_GNOME_Spell_Suggestion_struct)
-#endif
-   extern CORBA_sequence_GNOME_Spell_Suggestion
-      *CORBA_sequence_GNOME_Spell_Suggestion__alloc(void);
-   extern gpointer CORBA_sequence_GNOME_Spell_Suggestion__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
-#if !defined(_GNOME_Spell_Checker_SuggestionSeq_defined)
-#define _GNOME_Spell_Checker_SuggestionSeq_defined 1
-   typedef CORBA_sequence_GNOME_Spell_Suggestion
-      GNOME_Spell_Checker_SuggestionSeq;
-#if !defined(TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_0)
-#define TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_0 'S'
-#define TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_1 'p'
-#define TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_2 'e'
-#define TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_3 'l'
-#define TC_IMPL_TC_GNOME_Spell_Checker_SuggestionSeq_4 'l'
-   extern const struct CORBA_TypeCode_struct
-      TC_GNOME_Spell_Checker_SuggestionSeq_struct;
-#define TC_GNOME_Spell_Checker_SuggestionSeq ((CORBA_TypeCode)&TC_GNOME_Spell_Checker_SuggestionSeq_struct)
-#endif
-   extern GNOME_Spell_Checker_SuggestionSeq
-      *GNOME_Spell_Checker_SuggestionSeq__alloc(void);
-   extern gpointer GNOME_Spell_Checker_SuggestionSeq__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
-#endif
-#define ex_GNOME_Spell_Checker_SpellError "IDL:GNOME/Spell/Checker/SpellError:1.0"
-   void _ORBIT_GNOME_Spell_Checker_SpellError_demarshal(GIOPRecvBuffer *
-							_ORBIT_recv_buffer,
-							CORBA_Environment *
-							ev);
-   void _ORBIT_GNOME_Spell_Checker_SpellError_marshal(GIOPSendBuffer *
-						      _ORBIT_send_buffer,
-						      CORBA_Environment * ev);
-#if !defined(_GNOME_Spell_Checker_SpellError_defined)
-#define _GNOME_Spell_Checker_SpellError_defined 1
-   typedef struct
-   {
-      int dummy;
-   }
-   GNOME_Spell_Checker_SpellError;
-
-#if !defined(TC_IMPL_TC_GNOME_Spell_Checker_SpellError_0)
-#define TC_IMPL_TC_GNOME_Spell_Checker_SpellError_0 'S'
-#define TC_IMPL_TC_GNOME_Spell_Checker_SpellError_1 'p'
-#define TC_IMPL_TC_GNOME_Spell_Checker_SpellError_2 'e'
-#define TC_IMPL_TC_GNOME_Spell_Checker_SpellError_3 'l'
-#define TC_IMPL_TC_GNOME_Spell_Checker_SpellError_4 'l'
-   extern const struct CORBA_TypeCode_struct
-      TC_GNOME_Spell_Checker_SpellError_struct;
-#define TC_GNOME_Spell_Checker_SpellError ((CORBA_TypeCode)&TC_GNOME_Spell_Checker_SpellError_struct)
-#endif
-#define GNOME_Spell_Checker_SpellError__alloc() NULL
-   extern gpointer GNOME_Spell_Checker_SpellError__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
-#endif
 
 /** POA structures **/
    typedef struct
    {
       void *_private;
-       CORBA_boolean(*_get_active) (PortableServer_Servant _servant,
-				    CORBA_Environment * ev);
-      void (*_set_active) (PortableServer_Servant _servant,
-			   const CORBA_boolean value, CORBA_Environment * ev);
-      void (*setTag) (PortableServer_Servant _servant, const CORBA_char * key,
-		      const CORBA_char * value, CORBA_Environment * ev);
+      GNOME_Spell_LanguageSeq *(*getLanguages) (PortableServer_Servant
+						_servant,
+						CORBA_Environment * ev);
+      void (*setLanguage) (PortableServer_Servant _servant,
+			   const CORBA_char * language,
+			   CORBA_Environment * ev);
        CORBA_boolean(*checkWord) (PortableServer_Servant _servant,
 				  const CORBA_char * word,
 				  CORBA_Environment * ev);
@@ -272,55 +224,17 @@ extern "C"
    extern void POA_GNOME_Spell_Dictionary__fini(PortableServer_Servant
 						servant,
 						CORBA_Environment * ev);
-   typedef struct
-   {
-      void *_private;
-      void (*addDictionary) (PortableServer_Servant _servant,
-			     const GNOME_Spell_Dictionary dictionary,
-			     CORBA_Environment * ev);
-      void (*removeDictionary) (PortableServer_Servant _servant,
-				const GNOME_Spell_Dictionary dictionary,
-				CORBA_Environment * ev);
-       CORBA_boolean(*checkWord) (PortableServer_Servant _servant,
-				  const CORBA_char * word,
-				  CORBA_Environment * ev);
-      GNOME_Spell_Checker_SuggestionSeq
-	 *(*getSuggestions) (PortableServer_Servant _servant,
-			     const CORBA_char * word, CORBA_Environment * ev);
-   }
-   POA_GNOME_Spell_Checker__epv;
-   typedef struct
-   {
-      PortableServer_ServantBase__epv *_base_epv;
-      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
-      POA_GNOME_Spell_Checker__epv *GNOME_Spell_Checker_epv;
-   }
-   POA_GNOME_Spell_Checker__vepv;
-   typedef struct
-   {
-      void *_private;
-      POA_GNOME_Spell_Checker__vepv *vepv;
-   }
-   POA_GNOME_Spell_Checker;
-   extern void POA_GNOME_Spell_Checker__init(PortableServer_Servant servant,
-					     CORBA_Environment * ev);
-   extern void POA_GNOME_Spell_Checker__fini(PortableServer_Servant servant,
-					     CORBA_Environment * ev);
 
 /** prototypes **/
 #define GNOME_Spell_Dictionary_ref Bonobo_Unknown_ref
 #define GNOME_Spell_Dictionary_unref Bonobo_Unknown_unref
 #define GNOME_Spell_Dictionary_queryInterface Bonobo_Unknown_queryInterface
-   CORBA_boolean GNOME_Spell_Dictionary__get_active(GNOME_Spell_Dictionary
-						    _obj,
-						    CORBA_Environment * ev);
-   void GNOME_Spell_Dictionary__set_active(GNOME_Spell_Dictionary _obj,
-					   const CORBA_boolean value,
+   GNOME_Spell_LanguageSeq
+      *GNOME_Spell_Dictionary_getLanguages(GNOME_Spell_Dictionary _obj,
 					   CORBA_Environment * ev);
-   void GNOME_Spell_Dictionary_setTag(GNOME_Spell_Dictionary _obj,
-				      const CORBA_char * key,
-				      const CORBA_char * value,
-				      CORBA_Environment * ev);
+   void GNOME_Spell_Dictionary_setLanguage(GNOME_Spell_Dictionary _obj,
+					   const CORBA_char * language,
+					   CORBA_Environment * ev);
    CORBA_boolean GNOME_Spell_Dictionary_checkWord(GNOME_Spell_Dictionary _obj,
 						  const CORBA_char * word,
 						  CORBA_Environment * ev);
@@ -338,48 +252,21 @@ extern "C"
 					     const CORBA_char * word,
 					     const CORBA_char * replacement,
 					     CORBA_Environment * ev);
-#define GNOME_Spell_Checker_ref Bonobo_Unknown_ref
-#define GNOME_Spell_Checker_unref Bonobo_Unknown_unref
-#define GNOME_Spell_Checker_queryInterface Bonobo_Unknown_queryInterface
-   void GNOME_Spell_Checker_addDictionary(GNOME_Spell_Checker _obj,
-					  const GNOME_Spell_Dictionary
-					  dictionary, CORBA_Environment * ev);
-   void GNOME_Spell_Checker_removeDictionary(GNOME_Spell_Checker _obj,
-					     const GNOME_Spell_Dictionary
-					     dictionary,
-					     CORBA_Environment * ev);
-   CORBA_boolean GNOME_Spell_Checker_checkWord(GNOME_Spell_Checker _obj,
-					       const CORBA_char * word,
-					       CORBA_Environment * ev);
-   GNOME_Spell_Checker_SuggestionSeq
-      *GNOME_Spell_Checker_getSuggestions(GNOME_Spell_Checker _obj,
-					  const CORBA_char * word,
-					  CORBA_Environment * ev);
 
    void
-      _ORBIT_skel_GNOME_Spell_Dictionary__get_active
+      _ORBIT_skel_GNOME_Spell_Dictionary_getLanguages
       (POA_GNOME_Spell_Dictionary * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       CORBA_boolean(*_impl__get_active) (PortableServer_Servant _servant,
-					  CORBA_Environment * ev));
+       GNOME_Spell_LanguageSeq *
+       (*_impl_getLanguages) (PortableServer_Servant _servant,
+			      CORBA_Environment * ev));
    void
-      _ORBIT_skel_GNOME_Spell_Dictionary__set_active
+      _ORBIT_skel_GNOME_Spell_Dictionary_setLanguage
       (POA_GNOME_Spell_Dictionary * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       void (*_impl__set_active) (PortableServer_Servant _servant,
-				  const CORBA_boolean value,
+       void (*_impl_setLanguage) (PortableServer_Servant _servant,
+				  const CORBA_char * language,
 				  CORBA_Environment * ev));
-   void _ORBIT_skel_GNOME_Spell_Dictionary_setTag(POA_GNOME_Spell_Dictionary *
-						  _ORBIT_servant,
-						  GIOPRecvBuffer *
-						  _ORBIT_recv_buffer,
-						  CORBA_Environment * ev,
-						  void (*_impl_setTag)
-						  (PortableServer_Servant
-						   _servant,
-						   const CORBA_char * key,
-						   const CORBA_char * value,
-						   CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_Spell_Dictionary_checkWord(POA_GNOME_Spell_Dictionary
 						   * _ORBIT_servant,
@@ -422,60 +309,6 @@ extern "C"
 				    const CORBA_char * word,
 				    const CORBA_char * replacement,
 				    CORBA_Environment * ev));
-   void _ORBIT_skel_GNOME_Spell_Checker_addDictionary(POA_GNOME_Spell_Checker
-						      * _ORBIT_servant,
-						      GIOPRecvBuffer *
-						      _ORBIT_recv_buffer,
-						      CORBA_Environment * ev,
-						      void
-						      (*_impl_addDictionary)
-						      (PortableServer_Servant
-						       _servant,
-						       const
-						       GNOME_Spell_Dictionary
-						       dictionary,
-						       CORBA_Environment *
-						       ev));
-   void
-      _ORBIT_skel_GNOME_Spell_Checker_removeDictionary(POA_GNOME_Spell_Checker
-						       * _ORBIT_servant,
-						       GIOPRecvBuffer *
-						       _ORBIT_recv_buffer,
-						       CORBA_Environment * ev,
-						       void
-						       (*_impl_removeDictionary)
-						       (PortableServer_Servant
-							_servant,
-							const
-							GNOME_Spell_Dictionary
-							dictionary,
-							CORBA_Environment *
-							ev));
-   void _ORBIT_skel_GNOME_Spell_Checker_checkWord(POA_GNOME_Spell_Checker *
-						  _ORBIT_servant,
-						  GIOPRecvBuffer *
-						  _ORBIT_recv_buffer,
-						  CORBA_Environment * ev,
-						  CORBA_boolean
-						  (*_impl_checkWord)
-						  (PortableServer_Servant
-						   _servant,
-						   const CORBA_char * word,
-						   CORBA_Environment * ev));
-   void _ORBIT_skel_GNOME_Spell_Checker_getSuggestions(POA_GNOME_Spell_Checker
-						       * _ORBIT_servant,
-						       GIOPRecvBuffer *
-						       _ORBIT_recv_buffer,
-						       CORBA_Environment * ev,
-						       GNOME_Spell_Checker_SuggestionSeq
-						       *
-						       (*_impl_getSuggestions)
-						       (PortableServer_Servant
-							_servant,
-							const CORBA_char *
-							word,
-							CORBA_Environment *
-							ev));
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

@@ -22,6 +22,7 @@
 
 #include <string.h>
 #include <glade/glade.h>
+#include <gal/util/e-unicode-i18n.h>
 
 #include "gtkhtml.h"
 #include "htmlcursor.h"
@@ -73,6 +74,7 @@ typedef struct {
 	HTMLHAlignType default_halign;
 
 	gchar *template;
+	gchar *translated_msg;
 } TemplateInsertTemplate;
 
 
@@ -80,24 +82,26 @@ static TemplateInsertTemplate template_templates [TEMPLATES] = {
 	{
 		N_("Note"), 4,
 		TRUE, TRUE, 80, TRUE, HTML_HALIGN_CENTER,
-		N_("<table cellspacing=0 cellpadding=1 bgcolor=\"#ccccc0\"@width@@align@><tr><td>"
-		   "<table bgcolor=\"#fffff0\" cellpadding=3 cellspacing=0 width=\"100%\">"
-		   "<tr><td valign=top><img src=\"file://" ICONDIR "/bulb.png\" hspace=10></td>"
-		   "<td width=\"100%\">"
-		   "Place your text here"
-		   "</td></tr></table></td></tr></table>")
+		"<table cellspacing=0 cellpadding=1 bgcolor=\"#ccccc0\"@width@@align@><tr><td>"
+		"<table bgcolor=\"#fffff0\" cellpadding=3 cellspacing=0 width=\"100%\">"
+		"<tr><td valign=top><img src=\"file://" ICONDIR "/bulb.png\" hspace=10></td>"
+		"<td width=\"100%\">"
+		"@message@"
+		"</td></tr></table></td></tr></table>",
+		N_("Place your text here")
 	},
 	{
 		N_("Image frame"), 4,
 		TRUE, TRUE, 200, FALSE, HTML_HALIGN_CENTER,
-		N_("<table bgcolor=\"#c0c0c0\" cellspacing=\"0\" @width@@align@>"
-		   "<tr><td>"
-		   "<table bgcolor=\"#f2f2f2\" cellspacing=\"0\" cellpadding=\"8\" width=\"100%\">"
-		   "<tr><td align=\"center\">"
-		   "<img src=\"file://" ICONDIR "/empty_image.png\" align=\"top\" border=\"0\">"
-		   "</td></tr>"
-		   "<tr><td><font size=\"-1\">Image 1: <b>description</b></font></td>"
-		   "</tr></table></td></tr></table>")
+		"<table bgcolor=\"#c0c0c0\" cellspacing=\"0\" @width@@align@>"
+		"<tr><td>"
+		"<table bgcolor=\"#f2f2f2\" cellspacing=\"0\" cellpadding=\"8\" width=\"100%\">"
+		"<tr><td align=\"center\">"
+		"<img src=\"file://" ICONDIR "/empty_image.png\" align=\"top\" border=\"0\">"
+		"</td></tr>"
+		"<tr><td><font size=\"-1\">@message@</font></td>"
+		"</tr></table></td></tr></table>",
+		N_("Image 1: <b>description</b>")
 	},
 };
 
@@ -132,9 +136,10 @@ get_sample_html (GtkHTMLEditTemplateProperties *d)
 				   ? "left" : (d->halign == HTML_HALIGN_RIGHT ? "right" : "center"))
 		: g_strdup ("");
 
-	template   = g_strdup (_(template_templates [d->template].template));
+	template   = g_strdup (template_templates [d->template].template);
 	template   = substitute_string (template, "@width@", width);
 	template   = substitute_string (template, "@align@", align);
+	template   = substitute_string (template, "@message@", U_(template_templates [d->template].translated_msg));
 
 	body   = html_engine_save_get_sample_body (d->cd->html->engine, NULL);
 	html   = g_strconcat (body, template, NULL);

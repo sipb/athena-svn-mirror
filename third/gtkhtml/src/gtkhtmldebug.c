@@ -144,7 +144,7 @@ gtk_html_debug_dump_object (HTMLObject *obj,
 
 	if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_CLUEFLOW)
 		g_print (" [%s, %d]",
-			 clueflow_style_to_string (HTML_CLUEFLOW (obj)->style), HTML_CLUEFLOW (obj)->level);
+			 clueflow_style_to_string (HTML_CLUEFLOW (obj)->style), HTML_CLUEFLOW (obj)->levels->len);
 	else if (HTML_OBJECT_TYPE (obj) == HTML_TYPE_TEXTSLAVE) {
 		gchar *sl_text = g_strndup (html_text_get_text (HTML_TEXT (HTML_TEXT_SLAVE (obj)->owner),
 								HTML_TEXT_SLAVE (obj)->posStart),
@@ -191,6 +191,10 @@ gtk_html_debug_dump_object (HTMLObject *obj,
 		break;
 	case HTML_TYPE_FRAME:
 		gtk_html_debug_dump_tree (GTK_HTML (HTML_FRAME (obj)->html)->engine->clue, level + 1);
+		break;
+	case HTML_TYPE_IMAGE:
+		for (i = 0; i < level; i++) g_print (" ");
+		g_print ("Location: %s\n", HTML_IMAGE (obj)->image_ptr->url);
 		break;
 	case HTML_TYPE_FRAMESET: {
 		gint i;

@@ -32,6 +32,7 @@
 #include "htmlundo.h"
 
 #include "engine.h"
+#include "spell.h"
 
 static BonoboObjectClass *engine_parent_class;
 static POA_GNOME_GtkHTML_Editor_Engine__vepv engine_vepv;
@@ -48,9 +49,9 @@ impl_get_paragraph_data (PortableServer_Servant servant, const CORBA_char * key,
 	EditorEngine *e = html_editor_engine_from_servant (servant);
 	CORBA_char * value = CORBA_OBJECT_NIL;
 
-	if (e->html->engine->cursor->object && e->html->engine->cursor->object->parent
-	    && HTML_IS_CLUEFLOW (e->html->engine->cursor->object->parent))
-		value = html_object_get_data (e->html->engine->cursor->object->parent, key);
+	if (e->cd->html->engine->cursor->object && e->cd->html->engine->cursor->object->parent
+	    && HTML_IS_CLUEFLOW (e->cd->html->engine->cursor->object->parent))
+		value = html_object_get_data (e->cd->html->engine->cursor->object->parent, key);
 
 	/* printf ("get paragraph data\n"); */
 
@@ -64,9 +65,9 @@ impl_set_paragraph_data (PortableServer_Servant servant,
 {
 	EditorEngine *e = html_editor_engine_from_servant (servant);
 
-	if (e->html->engine->cursor->object && e->html->engine->cursor->object->parent
-	    && HTML_OBJECT_TYPE (e->html->engine->cursor->object->parent) == HTML_TYPE_CLUEFLOW)
-		html_object_set_data (HTML_OBJECT (e->html->engine->cursor->object->parent), key, value);
+	if (e->cd->html->engine->cursor->object && e->cd->html->engine->cursor->object->parent
+	    && HTML_OBJECT_TYPE (e->cd->html->engine->cursor->object->parent) == HTML_TYPE_CLUEFLOW)
+		html_object_set_data (HTML_OBJECT (e->cd->html->engine->cursor->object->parent), key, value);
 }
 
 static void
@@ -79,7 +80,7 @@ impl_set_object_data_by_type (PortableServer_Servant servant,
 	/* printf ("set data by type\n"); */
 
 	/* FIXME should use bonobo_arg_to_gtk, but this seems to be broken */
-	html_engine_set_data_by_type (e->html->engine, html_type_from_name (type_name), key, value);
+	html_engine_set_data_by_type (e->cd->html->engine, html_type_from_name (type_name), key, value);
 }
 
 static void
@@ -97,7 +98,7 @@ impl_set_listener (PortableServer_Servant servant, const GNOME_GtkHTML_Editor_Li
 	/* printf ("set listener\n"); */
 
 	unref_listener (e);
-	e->listener_client = bonobo_object_client_from_corba (value);
+	e->listener_client = bonobo_object_client_from_corba (CORBA_Object_duplicate (value, ev));
 	e->listener        = bonobo_object_client_query_interface (e->listener_client,
 								   "IDL:GNOME/GtkHTML/Editor/Listener:1.0", ev);
 }
@@ -115,7 +116,7 @@ impl_run_command (PortableServer_Servant servant, const CORBA_char * command, CO
 
 	/* printf ("command: %s\n", command); */
 
-	return gtk_html_command (e->html, command);
+	return gtk_html_command (e->cd->html, command);
 }
 
 static CORBA_boolean
@@ -123,10 +124,10 @@ impl_is_paragraph_empty (PortableServer_Servant servant, CORBA_Environment * ev)
 {
 	EditorEngine *e = html_editor_engine_from_servant (servant);
 
-	if (e->html->engine->cursor->object
-	    && e->html->engine->cursor->object->parent
-	    && HTML_OBJECT_TYPE (e->html->engine->cursor->object->parent) == HTML_TYPE_CLUEFLOW) {
-		return html_clueflow_is_empty (HTML_CLUEFLOW (e->html->engine->cursor->object->parent));
+	if (e->cd->html->engine->cursor->object
+	    && e->cd->html->engine->cursor->object->parent
+	    && HTML_OBJECT_TYPE (e->cd->html->engine->cursor->object->parent) == HTML_TYPE_CLUEFLOW) {
+		return html_clueflow_is_empty (HTML_CLUEFLOW (e->cd->html->engine->cursor->object->parent));
 	}
 	return CORBA_FALSE;
 }
@@ -136,11 +137,11 @@ impl_is_previous_paragraph_empty (PortableServer_Servant servant, CORBA_Environm
 {
 	EditorEngine *e = html_editor_engine_from_servant (servant);
 
-	if (e->html->engine->cursor->object
-	    && e->html->engine->cursor->object->parent
-	    && e->html->engine->cursor->object->parent->prev
-	    && HTML_IS_CLUEFLOW (e->html->engine->cursor->object->parent->prev))
-		return html_clueflow_is_empty (HTML_CLUEFLOW (e->html->engine->cursor->object->parent->prev));
+	if (e->cd->html->engine->cursor->object
+	    && e->cd->html->engine->cursor->object->parent
+	    && e->cd->html->engine->cursor->object->parent->prev
+	    && HTML_IS_CLUEFLOW (e->cd->html->engine->cursor->object->parent->prev))
+		return html_clueflow_is_empty (HTML_CLUEFLOW (e->cd->html->engine->cursor->object->parent->prev));
 
 	return CORBA_FALSE;
 }
@@ -149,7 +150,7 @@ static void
 impl_insert_html (PortableServer_Servant servant, const CORBA_char * html, CORBA_Environment * ev)
 {
 	/* printf ("impl_insert_html\n"); */
-	gtk_html_insert_html (html_editor_engine_from_servant (servant)->html, html);
+	gtk_html_insert_html (html_editor_engine_from_servant (servant)->cd->html, html);
 }
 
 static CORBA_boolean
@@ -161,42 +162,72 @@ impl_search_by_data (PortableServer_Servant servant, const CORBA_long level, con
 	gchar *o_value;
 
 	do {
-		if (e->html->engine->cursor->object != lco) {
-			o = html_object_nth_parent (e->html->engine->cursor->object, level);
+		if (e->cd->html->engine->cursor->object != lco) {
+			o = html_object_nth_parent (e->cd->html->engine->cursor->object, level);
 			if (o) {
 				o_value = html_object_get_data (o, key);
 				if (o_value && !strcmp (o_value, value))
 					return TRUE;
 			}
 		}
-		lco = e->html->engine->cursor->object;
-	} while (html_cursor_forward (e->html->engine->cursor, e->html->engine));
+		lco = e->cd->html->engine->cursor->object;
+	} while (html_cursor_forward (e->cd->html->engine->cursor, e->cd->html->engine));
 	return FALSE;
 }
 
 static void
 impl_freeze (PortableServer_Servant servant, CORBA_Environment * ev)
 {
-	html_engine_freeze (html_editor_engine_from_servant (servant)->html->engine);
+	html_engine_freeze (html_editor_engine_from_servant (servant)->cd->html->engine);
 }
 
 static void
 impl_thaw (PortableServer_Servant servant, CORBA_Environment * ev)
 {
-	html_engine_thaw (html_editor_engine_from_servant (servant)->html->engine);
+	html_engine_thaw (html_editor_engine_from_servant (servant)->cd->html->engine);
 }
 
 static void
 impl_undo_begin (PortableServer_Servant servant, const CORBA_char * undo_name, const CORBA_char * redo_name,
 		 CORBA_Environment * ev)
 {
-	html_undo_level_begin (html_editor_engine_from_servant (servant)->html->engine->undo, undo_name, redo_name);
+	html_undo_level_begin (html_editor_engine_from_servant (servant)->cd->html->engine->undo, undo_name, redo_name);
 }
 
 static void
 impl_undo_end (PortableServer_Servant servant, CORBA_Environment * ev)
 {
-	html_undo_level_end (html_editor_engine_from_servant (servant)->html->engine->undo);
+	html_undo_level_end (html_editor_engine_from_servant (servant)->cd->html->engine->undo);
+}
+
+static void
+impl_ignore_word (PortableServer_Servant servant, const CORBA_char * word, CORBA_Environment * ev)
+{
+	EditorEngine *e = html_editor_engine_from_servant (servant);
+
+	/* printf ("ignoreWord: %s\n", word); */
+
+	spell_add_to_session (e->cd->html, word, e->cd);
+}
+
+static CORBA_boolean
+impl_has_undo (PortableServer_Servant servant, CORBA_Environment * ev)
+{
+	EditorEngine *e = html_editor_engine_from_servant (servant);
+
+	/* printf ("hasUndo\n"); */
+
+	return gtk_html_has_undo (e->cd->html);
+}
+
+static void
+impl_drop_undo (PortableServer_Servant servant, CORBA_Environment * ev)
+{
+	EditorEngine *e = html_editor_engine_from_servant (servant);
+
+	/* printf ("dropUndo\n"); */
+
+	gtk_html_drop_undo (e->cd->html);
 }
 
 POA_GNOME_GtkHTML_Editor_Engine__epv *
@@ -218,8 +249,11 @@ editor_engine_get_epv (void)
 	epv->insertHTML               = impl_insert_html;
 	epv->freeze                   = impl_freeze;
 	epv->thaw                     = impl_thaw;
-	epv->undo_begin               = impl_undo_begin;
-	epv->undo_end                 = impl_undo_end;
+	epv->undoBegin                = impl_undo_begin;
+	epv->undoEnd                  = impl_undo_end;
+	epv->ignoreWord               = impl_ignore_word;
+	epv->hasUndo                  = impl_has_undo;
+	epv->dropUndo                 = impl_drop_undo;
 
 	return epv;
 }
@@ -323,13 +357,13 @@ create_engine (BonoboObject *engine)
 }
 
 EditorEngine *
-editor_engine_new (GtkHTML *html)
+editor_engine_new (GtkHTMLControlData *cd)
 {
 	EditorEngine *engine;
 	GNOME_GtkHTML_Editor_Engine corba_engine;
 
 	engine = gtk_type_new (EDITOR_ENGINE_TYPE);
-	engine->html = html;
+	engine->cd = cd;
 
 	corba_engine = create_engine (BONOBO_OBJECT (engine));
 

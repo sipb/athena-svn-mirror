@@ -53,14 +53,6 @@ copy (HTMLObject *self,
 	HTML_ANCHOR (dest)->name = g_string_new (HTML_ANCHOR (self)->name->str);
 }
 
-static void
-set_max_ascent (HTMLObject *object,
-		HTMLPainter *painter,
-		gint a)
-{
-	/*  object->y -= a; */
-}
-
 static HTMLAnchor *
 find_anchor (HTMLObject *o, const char *name, gint *x, gint *y)
 {
@@ -94,7 +86,6 @@ html_anchor_class_init (HTMLAnchorClass *klass,
 	object_class->destroy = destroy;
 	object_class->copy = copy;
 	object_class->find_anchor = find_anchor;
-	object_class->set_max_ascent = set_max_ascent;
 
 	parent_class = &html_object_class;
 }

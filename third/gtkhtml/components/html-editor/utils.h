@@ -30,6 +30,9 @@
 GtkWidget *color_table_new                         (GtkSignalFunc      f,
 						    gpointer           data);
 GtkWidget *sample_frame                            (GtkHTML          **html);
+void       url_requested                           (GtkHTML           *html,
+						    const gchar       *url,
+						    GtkHTMLStream     *handle);
 void       our_gnome_pixmap_entry_set_last_pixmap  (GnomePixmapEntry  *entry);
 void       our_gnome_pixmap_entry_set_last_dir     (GnomePixmapEntry  *entry);
 

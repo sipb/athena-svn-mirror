@@ -23,15 +23,23 @@
 
 #include <config.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#include <glib.h>
 #include <gnome.h>
 #include <bonobo.h>
 
 #include <Editor.h>
-#include <resolver.h>
+
+#include "gtkhtml.h"
+#include "gtkhtml-properties.h"
+#include "htmlsourceview.h"
 
 
 #ifdef USING_OAF
-#define HTML_EDITOR_CONTROL_ID "OAFIID:GNOME_GtkHTML_Editor"
+#define HTML_EDITOR_CONTROL_ID "OAFIID:GNOME_GtkHTML_Editor:" EDITOR_API_VERSION
 #else
 #define HTML_EDITOR_CONTROL_ID "control:html-editor"
 #endif
@@ -83,8 +91,8 @@ save_through_persist_stream (const gchar *filename,
 
 	stream = bonobo_stream_open (BONOBO_IO_DRIVER_FS, filename,
 				     Bonobo_Storage_WRITE |
-				     Bonobo_Storage_CREATE |
-				     Bonobo_Storage_FAILIFEXIST, 0);
+				     Bonobo_Storage_CREATE,
+				     S_IRUSR | S_IWUSR);
 
 	if (stream == NULL) {
 		g_warning ("Couldn't create `%s'\n", filename);
@@ -94,6 +102,7 @@ save_through_persist_stream (const gchar *filename,
 
 		stream_object = BONOBO_OBJECT (stream);
 		corba_stream = bonobo_object_corba_objref (stream_object);
+		Bonobo_Stream_truncate (corba_stream, 0, &ev);
 		Bonobo_PersistStream_save (pstream, corba_stream,
 					   "text/html", &ev);
 	}
@@ -114,9 +123,9 @@ save_through_plain_persist_stream (const gchar *filename,
 	CORBA_exception_init (&ev);
 
 	stream = bonobo_stream_open (BONOBO_IO_DRIVER_FS, filename,
+				     Bonobo_Storage_READ | 
 				     Bonobo_Storage_WRITE |
-				     Bonobo_Storage_CREATE |
-				     Bonobo_Storage_FAILIFEXIST, 0);
+				     Bonobo_Storage_CREATE, S_IRUSR | S_IWUSR);
 
 	if (stream == NULL) {
 		g_warning ("Couldn't create `%s'\n", filename);
@@ -126,6 +135,7 @@ save_through_plain_persist_stream (const gchar *filename,
 
 		stream_object = BONOBO_OBJECT (stream);
 		corba_stream = bonobo_object_corba_objref (stream_object);
+		Bonobo_Stream_truncate (corba_stream, 0, &ev);
 		Bonobo_PersistStream_save (pstream, corba_stream,
 					   "text/plain", &ev);
 	}
@@ -204,6 +214,49 @@ file_selection_destroy_cb (GtkWidget *widget,
 			   gpointer data)
 {
 	file_selection_info.widget = NULL;
+}
+
+static void
+view_source_dialog (BonoboWindow *app, char *type, gboolean as_html)
+{
+	BonoboWidget *control;
+	GtkWidget *window;
+	GtkWidget *view;
+
+	control = BONOBO_WIDGET (bonobo_window_get_contents (app));
+
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	view = html_source_view_new ();
+
+	gtk_container_add (GTK_CONTAINER (window), view);
+	html_source_view_set_source (HTML_SOURCE_VIEW (view), control, type);
+	html_source_view_set_mode (HTML_SOURCE_VIEW (view), as_html);
+	gtk_widget_show_all (window);
+
+	gtk_signal_connect_object (GTK_OBJECT (control),
+				   "destroy", GTK_SIGNAL_FUNC (gtk_object_destroy),
+				   GTK_OBJECT (window));
+}    
+
+static void
+view_html_source_cb (GtkWidget *widget,
+		     gpointer data)
+{
+	view_source_dialog (data, "text/html", FALSE);
+}
+
+static void
+view_plain_source_cb (GtkWidget *widget,
+		      gpointer data)
+{
+	view_source_dialog (data, "text/plain", FALSE);
+}
+
+static void
+view_html_source_html_cb (GtkWidget *widget,
+			  gpointer data)
+{
+	view_source_dialog (data, "text/html", TRUE);
 }
 
 static void
@@ -355,7 +408,9 @@ static BonoboUIVerb verbs [] = {
 	BONOBO_UI_UNSAFE_VERB ("OpenStream", open_through_persist_stream_cb),
 	BONOBO_UI_UNSAFE_VERB ("SaveStream", save_through_persist_stream_cb),
 	BONOBO_UI_UNSAFE_VERB ("SavePlainStream", save_through_plain_persist_stream_cb),
-
+	BONOBO_UI_UNSAFE_VERB ("ViewHTMLSource", view_html_source_cb),
+	BONOBO_UI_UNSAFE_VERB ("ViewHTMLSourceHTML", view_html_source_html_cb),
+	BONOBO_UI_UNSAFE_VERB ("ViewPlainSource", view_plain_source_cb),
 	BONOBO_UI_UNSAFE_VERB ("FileExit", exit_cb),
 
 	BONOBO_UI_VERB_END
@@ -373,6 +428,7 @@ menu_format_html_cb (BonoboUIComponent           *component,
 		return;
 	formatHTML = *state == '0' ? 0 : 1;
 	bonobo_widget_set_property (BONOBO_WIDGET (user_data), "FormatHTML", formatHTML, NULL);
+	bonobo_widget_set_property (BONOBO_WIDGET (user_data), "HTMLTitle", "testing", NULL);
 }
 
 /* A dirty, non-translatable hack */
@@ -396,6 +452,10 @@ static char ui [] =
 "			pixtype=\"stock\" pixname=\"Save\"/>"
 "			<menuitem name=\"SavePlainStream\" verb=\"\" _label=\"Save _plain(PersistStream)\" _tip=\"Save using the PersistStream interface\""
 "			pixtype=\"stock\" pixname=\"Save\"/>"
+"			<separator/>"
+"                       <menuitem name=\"ViewHTMLSource\" verb=\"\" _label=\"View HTML Source\" _tip=\"View the html source of the current document\"/>"
+"                       <menuitem name=\"ViewHTMLSourceHTML\" verb=\"\" _label=\"View HTML Output\" _tip=\"View the html source of the current document as html\"/>"
+"                       <menuitem name=\"ViewPlainSource\" verb=\"\" _label=\"View PLAIN Source\" _tip=\"View the plain text source of the current document\"/>"
 "			<separator/>"
 "			<menuitem name=\"FileExit\" verb=\"\" _label=\"E_xit\"/>"
 "		</submenu>"
@@ -434,8 +494,6 @@ container_create (void)
 	GtkWindow *window;
 	BonoboUIComponent *component;
 	BonoboUIContainer *container;
-	BonoboControlFrame *frame;
-	HTMLEditorResolver *resolver;
 	CORBA_Environment ev;
 	GNOME_GtkHTML_Editor_Engine engine;
 
@@ -452,7 +510,7 @@ container_create (void)
 	gtk_signal_connect (GTK_OBJECT (window), "destroy",
 			    GTK_SIGNAL_FUNC (app_destroy_cb), container);
 
-	gtk_window_set_default_size (window, 500, 440);
+	gtk_window_set_default_size (window, 600, 440);
 	gtk_window_set_policy (window, TRUE, TRUE, FALSE);
 
 	component = bonobo_ui_component_new ("test-editor");
@@ -475,10 +533,6 @@ container_create (void)
 	bonobo_widget_set_property (BONOBO_WIDGET (control), "FormatHTML", formatHTML, NULL);
 	bonobo_ui_component_set_prop (component, "/commands/FormatHTML", "state", formatHTML ? "1" : "0", NULL);
 	bonobo_ui_component_add_listener (component, "FormatHTML", menu_format_html_cb, control);
-
-	resolver = htmleditor_resolver_new ();
-	frame = bonobo_widget_get_control_frame (BONOBO_WIDGET (control));
-	bonobo_object_add_interface (BONOBO_OBJECT (frame), BONOBO_OBJECT (resolver));
 
 	bonobo_window_set_contents (BONOBO_WINDOW (win), control);
 
@@ -518,7 +572,7 @@ init_corba (int *argc, char **argv)
 
 	CORBA_exception_init (&ev);
 
-	gnome_CORBA_init ("test-gnome-gtkhtml-editor", "1.0", argc, argv, 0, &ev);
+	gnome_CORBA_init ("test-gnome-gtkhtml-editor", EDITOR_API_VERSION, argc, argv, 0, &ev);
 
 	CORBA_exception_free (&ev);
 
@@ -543,11 +597,23 @@ load_file (const gchar *fname)
 int
 main (int argc, char **argv)
 {
-	bindtextdomain(PACKAGE, GNOMELOCALEDIR);
-	textdomain(PACKAGE);
-	
+#ifdef GTKHTML_HAVE_GCONF
+	GError  *gconf_error  = NULL;
+#endif
+
+	bindtextdomain(GTKHTML_RELEASE_STRING, GNOMELOCALEDIR);
+	textdomain(GTKHTML_RELEASE_STRING);
+
 	if (bonobo_init (init_corba (&argc, argv), CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE)
 		g_error ("Could not initialize Bonobo\n");
+
+#ifdef GTKHTML_HAVE_GCONF
+	if (!gconf_init (argc, argv, &gconf_error)) {
+		g_assert (gconf_error != NULL);
+		g_error ("GConf init failed:\n  %s", gconf_error->message);
+		return 1;
+	}
+#endif
 
 	/* We can't make any CORBA calls unless we're in the main loop.  So we
 	   delay creating the container here. */

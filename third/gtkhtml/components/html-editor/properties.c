@@ -22,6 +22,8 @@
 
 
 #include <config.h>
+#include "dialog.h"
+#include <libgnomeui/gnome-window-icon.h>
 #include "properties.h"
 
 #define GTK_HTML_EDIT_IMAGE_BWIDTH      0
@@ -106,9 +108,10 @@ destroy_dialog (GtkWidget *w, gpointer data)
 }
 
 GtkHTMLEditPropertiesDialog *
-gtk_html_edit_properties_dialog_new (GtkHTMLControlData *cd, gboolean insert, gchar *title)
+gtk_html_edit_properties_dialog_new (GtkHTMLControlData *cd, gboolean insert, gchar *title, gchar *icon_path)
 {
 	GtkHTMLEditPropertiesDialog *d = g_new (GtkHTMLEditPropertiesDialog, 1);
+	GtkWindow *parent;
 
 	d->page_data      = NULL;
 	d->title          = g_strdup (title);
@@ -121,6 +124,10 @@ gtk_html_edit_properties_dialog_new (GtkHTMLControlData *cd, gboolean insert, gc
 				     GNOME_STOCK_BUTTON_OK,
 				     GNOME_STOCK_BUTTON_APPLY,
 				     GNOME_STOCK_BUTTON_CLOSE, NULL);
+	parent = get_parent_window (GTK_WIDGET (cd->html));
+	if (parent) {
+		gnome_dialog_set_parent (GNOME_DIALOG (d->dialog), parent);
+	}
 	d->notebook = gtk_notebook_new ();
 	gtk_signal_connect (GTK_OBJECT (d->dialog), "destroy", destroy_dialog, d);
 	gtk_signal_connect (GTK_OBJECT (d->notebook), "switch_page", switch_page, d);
@@ -133,6 +140,8 @@ gtk_html_edit_properties_dialog_new (GtkHTMLControlData *cd, gboolean insert, gc
 	gnome_dialog_button_connect (GNOME_DIALOG (d->dialog), insert ? 1 : 2, prop_close, d);
 	gnome_dialog_set_default (GNOME_DIALOG (d->dialog), 0);
 
+	
+	gnome_window_icon_set_from_file (GTK_WINDOW (d->dialog), icon_path);
 	gnome_dialog_set_sensitive (GNOME_DIALOG (d->dialog), 0, FALSE);
 	if (!insert)
 		gnome_dialog_set_sensitive (GNOME_DIALOG (d->dialog), 1, FALSE);

@@ -26,26 +26,27 @@
 #include <gtkhtml.h>
 #include "control-data.h"
 
-BonoboObjectClient *spell_new_dictionary      (void);
-gboolean            spell_check_word          (GtkHTML            *html,
-					       const gchar        *word,
-					       gpointer            data);
-void                spell_suggestion_request  (GtkHTML            *html,
-					       const gchar        *word,
-					       gpointer            data);
-void                spell_add_to_session      (GtkHTML            *html,
-					       const gchar        *word,
-					       gpointer            data);
-void                spell_add_to_personal     (GtkHTML            *html,
-					       const gchar        *word,
-					       gpointer            data);
-void                spell_set_language        (GtkHTML            *html,
-					       const gchar        *language,
-					       gpointer            data);
-void                spell_check_dialog        (GtkHTMLControlData *cd,
-					       gboolean            whole_document);
-gboolean            spell_has_control         (void);
-void                spell_init                (GtkHTML            *html,
-					       GtkHTMLControlData *cd);
+BonoboObjectClient *spell_new_dictionary        (void);
+gboolean            spell_check_word            (GtkHTML            *html,
+						 const gchar        *word,
+						 gpointer            data);
+void                spell_suggestion_request    (GtkHTML            *html,
+						 const gchar        *word,
+						 gpointer            data);
+void                spell_add_to_session        (GtkHTML            *html,
+						 const gchar        *word,
+						 gpointer            data);
+void                spell_add_to_personal       (GtkHTML            *html,
+						 const gchar        *word,
+						 gpointer            data);
+void                spell_set_language          (GtkHTML            *html,
+						 const gchar        *language,
+						 gpointer            data);
+void                spell_check_dialog          (GtkHTMLControlData *cd,
+						 gboolean            whole_document);
+gboolean            spell_has_control           (void);
+void                spell_init                  (GtkHTML            *html,
+						 GtkHTMLControlData *cd);
+void                spell_create_language_menu  (GtkHTMLControlData *cd);
 
 #endif

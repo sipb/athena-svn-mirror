@@ -47,6 +47,9 @@ struct _HTMLCursorRectagle {
 
 /* Lifecycle.  */
 HTMLCursor *html_cursor_new      (void);
+void        html_cursor_init     (HTMLCursor       *cursor,
+				  HTMLObject       *o,
+				  guint             offset);
 void        html_cursor_destroy  (HTMLCursor       *cursor);
 HTMLCursor *html_cursor_dup      (const HTMLCursor *cursor);
 void        html_cursor_copy     (HTMLCursor       *dest,

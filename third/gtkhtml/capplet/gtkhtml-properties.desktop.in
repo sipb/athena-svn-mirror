@@ -1,5 +1,6 @@
 [Desktop Entry]
-Name=HTML Viewer
+Name=HTML Viewer & Editor
+Name[cs]=HTML prohlí¾eè a editor
 Name[es]=Visor de HTML
 Name[fi]=HTML-katselin
 Name[fr]=Visualiseur HTML
@@ -13,7 +14,8 @@ Name[pl]=Przegl±darka HTML-a
 Name[sk]=Prehliadaè HTML
 Name[sl]=Pregledovalnik HTML
 Name[uk]=ðÅÒÅÇÌÑÄ HTML
-Comment=HTML Viewer properties
+Comment=HTML Viewer and Editor properties
+Comment[cs]=Nastavení vlastností prohlí¾ení a editování HTML
 Comment[es]=Propriedades del visor de HTML
 Comment[fi]=HTML-katselimen asetukset
 Comment[fr]=Propriétés du visualiseur HTML

@@ -1,4 +1,4 @@
-iconsdir = $(datadir)/gtkhtml/icons
+iconsdir = $(GTKHTML_DATADIR)/icons
 icons_DATA = \
 	16_cut.png			\
 	24_cut.png			\
@@ -33,9 +33,22 @@ icons_DATA = \
 	search-24.png			\
 	search-and-replace-16.png	\
 	search-and-replace-24.png	\
+	smiley-1.png			\
+	smiley-2.png			\
+	smiley-3.png			\
+	smiley-4.png			\
+	smiley-5.png			\
+	smiley-6.png			\
+	smiley-8.png			\
+	smiley-9.png			\
+	smiley-10.png			\
+	smiley-11.png			\
 	transparent.png			\
 	undo-16.png			\
-	undo-24.png
+	undo-24.png			\
+	paper.png			\
+	rect.png			\
+	texture.png
 
 EXTRA_DIST = \
 	$(icons_DATA)

@@ -1,3 +1,23 @@
+2002-08-26  Radek Doulik  <rodo@ximian.com>
+
+	* Makefile.am (deskdir): don't install two .desktop files for
+	control center
+
+2002-05-23  Radek Doulik  <rodo@ximian.com>
+
+	* main.c: let capplet know about smileys
+
+2002-03-27  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am (gladedir): add the version to the glade path.
+
+	* Makefile.am: use GTKHTML_DATADIR.
+
+2002-01-08  Radek Doulik  <rodo@ximian.com>
+
+	* main.c: remove spell checking options and add button to call
+	gnome spell control applet
+
 2001-10-15  Radek Doulik  <rodo@ximian.com>
 
 	* main.c (APPLY): handle points attribute

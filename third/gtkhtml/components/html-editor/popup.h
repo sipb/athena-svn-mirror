@@ -27,6 +27,7 @@
 
 gint  popup_show            (GtkHTMLControlData *cd,
 			     GdkEventButton     *event);
+gint  popup_show_at_cursor  (GtkHTMLControlData *cd);
 void  property_dialog_show  (GtkHTMLControlData *cd);
 
 #endif

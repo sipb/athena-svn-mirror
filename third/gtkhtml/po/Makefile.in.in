@@ -110,12 +110,12 @@ install-data-yes: all
 	  dir=$(localedir)/$$lang/LC_MESSAGES; \
 	  $(mkinstalldirs) $(DESTDIR)$$dir; \
 	  if test -r $$cat; then \
-	    $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/$(PACKAGE).mo; \
-	    echo "installing $$cat as $(DESTDIR)$$dir/$(PACKAGE).mo"; \
+	    $(INSTALL_DATA) $$cat $(DESTDIR)$$dir/$(PACKAGE)-@GTKHTML_RELEASE@.mo; \
+	    echo "installing $$cat as $(DESTDIR)$$dir/$(PACKAGE)-@GTKHTML_RELEASE@.mo"; \
 	  else \
-	    $(INSTALL_DATA) $(srcdir)/$$cat $(DESTDIR)$$dir/$(PACKAGE).mo; \
+	    $(INSTALL_DATA) $(srcdir)/$$cat $(DESTDIR)$$dir/$(PACKAGE)-@GTKHTML_RELEASE@.mo; \
 	    echo "installing $(srcdir)/$$cat as" \
-		 "$(DESTDIR)$$dir/$(PACKAGE).mo"; \
+		 "$(DESTDIR)$$dir/$(PACKAGE)-@GTKHTML_RELEASE@.mo"; \
 	  fi; \
 	done
 
@@ -127,7 +127,7 @@ uninstall:
 	for cat in $$catalogs; do \
 	  cat=`basename $$cat`; \
 	  lang=`echo $$cat | sed 's/\.gmo$$//'`; \
-	  rm -f $(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/$(PACKAGE).mo; \
+	  rm -f $(DESTDIR)$(localedir)/$$lang/LC_MESSAGES/$(PACKAGE)-@GTKHTML_RELEASE@.mo; \
 	done
 	if test "$(PACKAGE)" = "gettext"; then \
 	  rm -f $(DESTDIR)$(gettextsrcdir)/Makefile.in.in; \

@@ -6,86 +6,6 @@
 #include "Editor.h"
 
 void
-_ORBIT_GNOME_GtkHTML_Editor_Resolver_NotFound_marshal(GIOPSendBuffer *
-						      _ORBIT_send_buffer,
-						      CORBA_Environment * ev)
-{
-}
-
-void
-_ORBIT_skel_GNOME_GtkHTML_Editor_Resolver_loadURL
-   (POA_GNOME_GtkHTML_Editor_Resolver * _ORBIT_servant,
-    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-    void (*_impl_loadURL) (PortableServer_Servant _servant,
-			   const Bonobo_ProgressiveDataSink sink,
-			   const CORBA_char * url, CORBA_Environment * ev))
-{
-   Bonobo_ProgressiveDataSink sink;
-   CORBA_char *url;
-
-   {				/* demarshalling */
-      guchar *_ORBIT_curptr;
-      register CORBA_unsigned_long _ORBIT_tmpvar_2;
-      CORBA_unsigned_long _ORBIT_tmpvar_3;
-
-      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 sink =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey *) _ORBIT_servant->
-				     _private)->object->orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
-	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
-	 _ORBIT_curptr += 4;
-	 url = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(url[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      } else {
-	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
-	 sink =
-	    ORBit_demarshal_object(_ORBIT_recv_buffer,
-				   (((ORBit_ObjectKey *) _ORBIT_servant->
-				     _private)->object->orb));
-	 _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
-	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
-	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
-	 _ORBIT_curptr += 4;
-	 url = (void *) _ORBIT_curptr;
-	 _ORBIT_curptr += sizeof(url[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
-      }
-   }
-   _impl_loadURL(_ORBIT_servant, sink, url, ev);
-   {				/* marshalling */
-      register GIOPSendBuffer *_ORBIT_send_buffer;
-
-      _ORBIT_send_buffer =
-	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
-				    connection, NULL,
-				    _ORBIT_recv_buffer->message.u.request.
-				    request_id, ev->_major);
-      if (_ORBIT_send_buffer) {
-	 if (ev->_major == CORBA_NO_EXCEPTION) {
-	 } else if (ev->_major == CORBA_USER_EXCEPTION) {
-	    static const ORBit_exception_marshal_info _ORBIT_user_exceptions[]
-	       =
-	       { {(const CORBA_TypeCode)
-		  &TC_GNOME_GtkHTML_Editor_Resolver_NotFound_struct,
-		  (gpointer)
-		  _ORBIT_GNOME_GtkHTML_Editor_Resolver_NotFound_marshal},
-	       {CORBA_OBJECT_NIL, NULL} };
-	    ORBit_send_user_exception(_ORBIT_send_buffer, ev,
-				      _ORBIT_user_exceptions);
-	 } else
-	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
-	 giop_send_buffer_write(_ORBIT_send_buffer);
-	 giop_send_buffer_unuse(_ORBIT_send_buffer);
-      }
-      CORBA_Object_release((CORBA_Object) sink, ev);
-   }
-}
-void
 _ORBIT_skel_GNOME_GtkHTML_Editor_Listener_event
    (POA_GNOME_GtkHTML_Editor_Listener * _ORBIT_servant,
     GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
@@ -789,13 +709,13 @@ _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_thaw(POA_GNOME_GtkHTML_Editor_Engine *
    }
 }
 void
-_ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_begin
+_ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undoBegin
    (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
     GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-    void (*_impl_undo_begin) (PortableServer_Servant _servant,
-			      const CORBA_char * undo_name,
-			      const CORBA_char * redo_name,
-			      CORBA_Environment * ev))
+    void (*_impl_undoBegin) (PortableServer_Servant _servant,
+			     const CORBA_char * undo_name,
+			     const CORBA_char * redo_name,
+			     CORBA_Environment * ev))
 {
    CORBA_char *undo_name;
    CORBA_char *redo_name;
@@ -838,7 +758,7 @@ _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_begin
 	    sizeof(redo_name[_ORBIT_tmpvar_6]) * _ORBIT_tmpvar_7;
       }
    }
-   _impl_undo_begin(_ORBIT_servant, undo_name, redo_name, ev);
+   _impl_undoBegin(_ORBIT_servant, undo_name, redo_name, ev);
    {				/* marshalling */
       register GIOPSendBuffer *_ORBIT_send_buffer;
 
@@ -857,13 +777,13 @@ _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_begin
    }
 }
 void
-_ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_end
+_ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undoEnd
    (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
     GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-    void (*_impl_undo_end) (PortableServer_Servant _servant,
-			    CORBA_Environment * ev))
+    void (*_impl_undoEnd) (PortableServer_Servant _servant,
+			   CORBA_Environment * ev))
 {
-   _impl_undo_end(_ORBIT_servant, ev);
+   _impl_undoEnd(_ORBIT_servant, ev);
    {				/* marshalling */
       register GIOPSendBuffer *_ORBIT_send_buffer;
 
@@ -881,84 +801,117 @@ _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_end
       }
    }
 }
-static ORBitSkeleton
-get_skel_GNOME_GtkHTML_Editor_Resolver(POA_GNOME_GtkHTML_Editor_Resolver *
-				       servant,
-				       GIOPRecvBuffer * _ORBIT_recv_buffer,
-				       gpointer * impl)
+void
+_ORBIT_skel_GNOME_GtkHTML_Editor_Engine_ignoreWord
+   (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    void (*_impl_ignoreWord) (PortableServer_Servant _servant,
+			      const CORBA_char * word,
+			      CORBA_Environment * ev))
 {
-   gchar *opname = _ORBIT_recv_buffer->message.u.request.operation;
+   CORBA_char *word;
 
-   switch (opname[0]) {
-     case 'l':
-	if (strcmp((opname + 1), "oadURL"))
-	   break;
-	*impl =
-	   (gpointer) servant->vepv->GNOME_GtkHTML_Editor_Resolver_epv->
-	   loadURL;
-	return (ORBitSkeleton)
-	   _ORBIT_skel_GNOME_GtkHTML_Editor_Resolver_loadURL;
-	break;
-     case 'q':
-	if (strcmp((opname + 1), "ueryInterface"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->queryInterface;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_queryInterface;
-	break;
-     case 'r':
-	if (strcmp((opname + 1), "ef"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->ref;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_ref;
-	break;
-     case 'u':
-	if (strcmp((opname + 1), "nref"))
-	   break;
-	*impl = (gpointer) servant->vepv->Bonobo_Unknown_epv->unref;
-	return (ORBitSkeleton) _ORBIT_skel_Bonobo_Unknown_unref;
-	break;
-     default:
-	break;
+   {				/* demarshalling */
+      guchar *_ORBIT_curptr;
+      register CORBA_unsigned_long _ORBIT_tmpvar_2;
+      CORBA_unsigned_long _ORBIT_tmpvar_3;
+
+      _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
+      if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 (*((guint32 *) & (_ORBIT_tmpvar_3))) =
+	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
+	 _ORBIT_curptr += 4;
+	 word = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(word[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      } else {
+	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
+	 _ORBIT_tmpvar_3 = *((CORBA_unsigned_long *) _ORBIT_curptr);
+	 _ORBIT_curptr += 4;
+	 word = (void *) _ORBIT_curptr;
+	 _ORBIT_curptr += sizeof(word[_ORBIT_tmpvar_2]) * _ORBIT_tmpvar_3;
+      }
    }
-   return NULL;
-}
+   _impl_ignoreWord(_ORBIT_servant, word, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
 
-static void
-init_local_objref_GNOME_GtkHTML_Editor_Resolver(CORBA_Object obj,
-						POA_GNOME_GtkHTML_Editor_Resolver
-						* servant)
-{
-   obj->vepv[Bonobo_Unknown__classid] = servant->vepv->Bonobo_Unknown_epv;
-   obj->vepv[GNOME_GtkHTML_Editor_Resolver__classid] =
-      servant->vepv->GNOME_GtkHTML_Editor_Resolver_epv;
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
 }
-
 void
-POA_GNOME_GtkHTML_Editor_Resolver__init(PortableServer_Servant servant,
-					CORBA_Environment * env)
+_ORBIT_skel_GNOME_GtkHTML_Editor_Engine_dropUndo
+   (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    void (*_impl_dropUndo) (PortableServer_Servant _servant,
+			    CORBA_Environment * ev))
 {
-   static const PortableServer_ClassInfo class_info =
-      { (ORBit_impl_finder) & get_skel_GNOME_GtkHTML_Editor_Resolver,
-"IDL:GNOME/GtkHTML/Editor/Resolver:1.0",
-(ORBit_local_objref_init) & init_local_objref_GNOME_GtkHTML_Editor_Resolver };
-   PortableServer_ServantBase__init(((PortableServer_ServantBase *) servant),
-				    env);
-   POA_Bonobo_Unknown__init(servant, env);
-   ORBIT_OBJECT_KEY(((PortableServer_ServantBase *) servant)->_private)->
-      class_info = (PortableServer_ClassInfo *) & class_info;
-   if (!GNOME_GtkHTML_Editor_Resolver__classid)
-      GNOME_GtkHTML_Editor_Resolver__classid =
-	 ORBit_register_class(&class_info);
-}
+   _impl_dropUndo(_ORBIT_servant, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
 
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
 void
-POA_GNOME_GtkHTML_Editor_Resolver__fini(PortableServer_Servant servant,
-					CORBA_Environment * env)
+_ORBIT_skel_GNOME_GtkHTML_Editor_Engine_hasUndo
+   (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
+    GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+    CORBA_boolean(*_impl_hasUndo) (PortableServer_Servant _servant,
+				   CORBA_Environment * ev))
 {
-   POA_Bonobo_Unknown__fini(servant, env);
-   PortableServer_ServantBase__fini(servant, env);
-}
+   CORBA_boolean _ORBIT_retval;
 
+   _ORBIT_retval = _impl_hasUndo(_ORBIT_servant, ev);
+   {				/* marshalling */
+      register GIOPSendBuffer *_ORBIT_send_buffer;
+
+      _ORBIT_send_buffer =
+	 giop_send_reply_buffer_use(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer)->
+				    connection, NULL,
+				    _ORBIT_recv_buffer->message.u.request.
+				    request_id, ev->_major);
+      if (_ORBIT_send_buffer) {
+	 if (ev->_major == CORBA_NO_EXCEPTION) {
+	    {
+	       guchar *_ORBIT_t;
+
+	       _ORBIT_t = alloca(sizeof(_ORBIT_retval));
+	       memcpy(_ORBIT_t, &(_ORBIT_retval), sizeof(_ORBIT_retval));
+	       giop_message_buffer_append_mem(GIOP_MESSAGE_BUFFER
+					      (_ORBIT_send_buffer),
+					      (_ORBIT_t),
+					      sizeof(_ORBIT_retval));
+	    }
+	 } else
+	    ORBit_send_system_exception(_ORBIT_send_buffer, ev);
+	 giop_send_buffer_write(_ORBIT_send_buffer);
+	 giop_send_buffer_unuse(_ORBIT_send_buffer);
+      }
+   }
+}
 static ORBitSkeleton
 get_skel_GNOME_GtkHTML_Editor_Listener(POA_GNOME_GtkHTML_Editor_Listener *
 				       servant,
@@ -1069,6 +1022,15 @@ get_skel_GNOME_GtkHTML_Editor_Engine(POA_GNOME_GtkHTML_Editor_Engine *
 	     break;
 	}
 	break;
+     case 'd':
+	if (strcmp((opname + 1), "ropUndo"))
+	   break;
+	*impl =
+	   (gpointer) servant->vepv->GNOME_GtkHTML_Editor_Engine_epv->
+	   dropUndo;
+	return (ORBitSkeleton)
+	   _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_dropUndo;
+	break;
      case 'f':
 	if (strcmp((opname + 1), "reeze"))
 	   break;
@@ -1085,8 +1047,25 @@ get_skel_GNOME_GtkHTML_Editor_Engine(POA_GNOME_GtkHTML_Editor_Engine *
 	return (ORBitSkeleton)
 	   _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_getParagraphData;
 	break;
+     case 'h':
+	if (strcmp((opname + 1), "asUndo"))
+	   break;
+	*impl =
+	   (gpointer) servant->vepv->GNOME_GtkHTML_Editor_Engine_epv->hasUndo;
+	return (ORBitSkeleton)
+	   _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_hasUndo;
+	break;
      case 'i':
 	switch (opname[1]) {
+	  case 'g':
+	     if (strcmp((opname + 2), "noreWord"))
+		break;
+	     *impl =
+		(gpointer) servant->vepv->GNOME_GtkHTML_Editor_Engine_epv->
+		ignoreWord;
+	     return (ORBitSkeleton)
+		_ORBIT_skel_GNOME_GtkHTML_Editor_Engine_ignoreWord;
+	     break;
 	  case 'n':
 	     if (strcmp((opname + 2), "sertHTML"))
 		break;
@@ -1219,30 +1198,23 @@ get_skel_GNOME_GtkHTML_Editor_Engine(POA_GNOME_GtkHTML_Editor_Engine *
 		  switch (opname[3]) {
 		    case 'o':
 		       switch (opname[4]) {
-			 case '_':
-			    switch (opname[5]) {
-			      case 'b':
-				 if (strcmp((opname + 6), "egin"))
-				    break;
-				 *impl =
-				    (gpointer) servant->vepv->
-				    GNOME_GtkHTML_Editor_Engine_epv->
-				    undo_begin;
-				 return (ORBitSkeleton)
-				    _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_begin;
-				 break;
-			      case 'e':
-				 if (strcmp((opname + 6), "nd"))
-				    break;
-				 *impl =
-				    (gpointer) servant->vepv->
-				    GNOME_GtkHTML_Editor_Engine_epv->undo_end;
-				 return (ORBitSkeleton)
-				    _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_end;
-				 break;
-			      default:
-				 break;
-			    }
+			 case 'B':
+			    if (strcmp((opname + 5), "egin"))
+			       break;
+			    *impl =
+			       (gpointer) servant->vepv->
+			       GNOME_GtkHTML_Editor_Engine_epv->undoBegin;
+			    return (ORBitSkeleton)
+			       _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undoBegin;
+			    break;
+			 case 'E':
+			    if (strcmp((opname + 5), "nd"))
+			       break;
+			    *impl =
+			       (gpointer) servant->vepv->
+			       GNOME_GtkHTML_Editor_Engine_epv->undoEnd;
+			    return (ORBitSkeleton)
+			       _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undoEnd;
 			    break;
 			 default:
 			    break;

@@ -1,4 +1,1274 @@
+2002-11-06  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (selection_received): add a <br> to cited pasted to
+	work around over-agressive merging.
+
+2002-10-30  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (draw_quotes): fix quote drawing for printing.
+
+2002-10-28  Larry Ewing  <lewing@ximian.com>
+
+	* htmlselect.c (html_select_set_text): only measure the string if
+	there is one.
+
+	* htmliframe.c (check_page_split): Initialize the engine from the
+	the proper pointer.
+
+	* htmlfontmanager.c (html_font_manager_set_default): add header to
+	silence warning.
+
+	* htmlgdkpainter.c (find_font_with_similar_size): silence
+	warnings.
+	
+	* htmlclueflow.c (update_line_positions): silence warning.
+
+2002-10-27  Larry Ewing  <lewing@ximian.com>
+
+	* htmlgdkpainter.c (e_font_from_face): use helper function to
+	lookup fonts in the fontset and build a new fontset.
+	(e_font_lookup_face): helper function that handles the font
+	lookup.
+
+	* htmltable.c (check_point): return with warning if we haven't had
+	calc_size called yet.
+
+2002-10-25  Larry Ewing  <lewing@ximian.com>
+
+	* keybindingsrc.ms: remove C-s binding for strikethrough.
+
+	* htmlclueflow.c (draw_quotes): use draw_gt_line to fill draw >s
+	along the edge of the flow.  Fixes #29570.
+	(draw_gt_line): helper function.
+
+2002-10-23  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (need_blockquote_padding): add new helper
+	function to sort out the level padding issue.
+
+2002-10-25  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (button_release_event): don't clear in_selection until
+	we are done with it.
+
+2002-10-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (parse_p): <p>, </p> create new flows here to have
+	right flow attributes
+	(html_engine_init): init avoid_para to FALSE so <p>abc is rendered
+	right
+	(html_engine_parse): ditto
+
+2002-10-10  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (check_flows): set style just
+	when needed (beginning flow will end empty so it should get style
+	from last one)
+
+	* htmlclueflow.c (op_cut): update item numbers only on cut
+	boundaries
+	(merge): removed style copying as it is no more needed
+
+	* htmlengine-edit-clueflowstyle.c (undo_or_redo): set style before
+	item_type so item_numbers will be updated right
+
+2002-10-22  Larry Ewing  <lewing@localhost.localdomain>
+
+	* gtkhtml.c (mouse_change_pos): Fix double and triple click so 
+	that they at least keep the selection after a release.  Rename 
+	button1_clicked so that it makes some sense
+	(button_release_event): make sure we only update the selection
+	and move the cursor if we are in a drag.
+
+	* gtkhtml.h: rename button1_clicked.
+
+2002-10-19  Larry Ewing  <lewing@ximian.com>
+
+	* htmliframe.c (save): if inline_frames is set copy save the
+	iframe contents.
+	(save_plain): the same.
+
+	* gtkhtml.c (selection_get): add inline_frame argument.
+
+2002-10-18  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (selection_received): use the new primary for
+	internal pastes that are not quoted..
+	(selection_get): use the primary object rather than copying from
+	the selection.
+
+	* htmlengine.h: move primary holder to the engine.
+	
+	* gtkhtml-private.h: remove unused primary holders.
+
+	* htmlselection.c (html_engine_activate_selection): copy the
+	current slection into primary.
+
+2002-10-24  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine-edit-fontstyle.c (get_color_from_selection): change
+	assertion to warning.  (these cases are bad but shouldn't be fatal).
+	(get_font_style_from_selection): same.
+	(get_url_or_target_from_selection): same.
+
+	* htmlembedded.c (html_embedded_class_init): make embedded objects
+	accept the cursor.
+
+2002-10-22  Larry Ewing  <lewing@localhost.localdomain>
+
+	* htmlengine.c (check_prev): use strcasecmp rather than strcmp
+	and test for inequality, not equality.
+
+	* gtkhtml.c (mouse_change_pos): Fix double and triple click so 
+	that they at least keep the selection after a release.  Rename 
+	button1_clicked so that it makes some sense
+	(button_release_event): make sure we only update the selection
+	and move the cursor if we are in a drag.
+
+2002-10-18  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (get_pre_padding): fix the padding calc for items
+	that are split.
+
+2002-10-17  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c: set pending_para to FALSE
+	call close_flow as well
+	(parse_o): use finish_flow in <ol>
+	(parse_u): use finish_flow in <ul>
+
+2002-10-16  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (parse_b): use finish_flow instead of close_flow to
+	avoid unwanted empty flows
+
+2002-10-11  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (fix_last_clueflow): renamed from
+	ensure_last_clueflow, discard last flow if empty
+	(parse_u): close flow and add new empty one on </ul>
+	(parse_o): as above for </ol>
+	(parse_body): discard last flow if empty
+
+2002-10-16  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c parse_table: make the parser create a new row if
+	it sees </tr> without a subsequent <tr>.
+	
+2002-10-17  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (button_release_event): make scrolling via the scroll
+	wheel work again.
+
+	* htmlclueflow.c (append_selection_string): indent and quote
+	selected strings. (fixes #24529)
+
+	* htmlengine.c (parse_table): save and restore pAlign and
+	divAlign, and initialize them to NONE.
+
+2002-10-16  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (parse_c): make center tags use the same logic as
+	div tags (that is what they are after all).
+	(parse_d): use update_flow_align.
+	(update_flow_align): helper function for center and div.
+
+2002-10-17  Larry Ewing  <lewing@ximian.com>
+
+	* htmliframe.c: add get/set margin width functions.
+
+	* htmliframe.h: add prototypes for margin functions.
+
+	* htmlengine.c (parse_iframe): call the new iframe functions.
+
+2002-10-16  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c: (parse_body): save & restore e->pending_para and
+	e->avoid_para
+	(parse_c): close flow only if non empty, otherwise just set its
+	halign
+	(parse_f): don't set pending para on <form>, just close flow if
+	non empty
+	(parse_table): don't add pending paragraph on end of cells
+	(form_begin): new extracted function
+	(form_end): ditto
+	(parse_i): if form is NULL create new default form around to at
+	least render it (as mozilla does)
+
+
+2002-10-16  Larry Ewing  <lewing@ximian.com>
+
+ 	* gtkhtml.c (selection_get): Get the actual length of the ucs2
+ 	string rather than basing is on the utf8 length, and start the
+ 	selection buffer with a byte order marker (mozilla started doing
+ 	this in 1.2.x)
+ 	(selection_received): use any byte order maker present to
+ 	determine the byte order of the selection and then discard it when
+ 	before converting the selection.  (Fixes the underscore problem in
+ 	#30573)
+ 	
+	* htmlengine.c (check_prev): don't start a new text if both faces
+	are NULL.
+
+2002-10-11  Larry Ewing  <lewing@ximian.com>
+
+	* htmldrawqueue.c (html_draw_queue_flush): check to make sure we
+	still have a visual before trying to draw.
+
+	* htmlgdkpainter.c (begin): add precondition to make sure we have
+	a window and a visual before we try to draw on it.
+	
+ 	* gtkhtml.c (gtk_html_insert_html_generic): fix the form copying
+ 	problem correctly.
+
+2002-10-12  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (realize): disable gtkhtml as a drop site.
+	
+ 	* gtkhtml.c (button_release_event): update the selection and
+	cursor position for the coords of the release point and queue a
+	drawing event for good measure.
+ 	(idle_handler): don't scroll to the cursor if we are already
+ 	scrolling in the scroll timeout.  They end up fighting and cause
+ 	the jittering that danw dislikes so much.
+
+	* htmltokenizer.c (in_entity): make sure we don't write entity
+	that is our escape sequence to the stream. (fixes #26055)
+
+2002-10-09  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (copy): copy the item_color.
+
+2002-10-08  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am (libgtkhtml_HEADERS): remove the .c file that was
+	incorrectly included here.
+
+>>>>>>> 1.1549
+2002-10-08  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (parse_l): set flow item color
+
+	* htmlclueflow.c (destroy): unref color
+	(html_clueflow_init): set item_color to NULL
+	(html_clueflow_set_item_color): new method for setting item_color
+	(draw_item): use item color
+	(html_clueflow_style_equals): new method compares two flows,
+	returns TRUE if they have the same style
+
+	* htmlclueflow.h: added item_color
+
+	* htmlgdkpainter.c (font_name_substitute_attr): removed asserts,
+	could return NULL, name could be NULL as well
+	(e_font_from_face): handle NULL from substitute
+
+	* htmlengine-edit.c (html_engine_indent_paragraph): renamed, allow
+	indentation of non PRE paragraphs as well
+	(go_to_begin_of_para): take care of table boundaries
+	(html_engine_indent_paragraph): ditto
+
+2002-10-07  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (check_point): add cast to silence warning.
+
+2002-10-03  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (check_point): fix selection to take
+	indentation into acount.
+
+2002-10-04  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_get_paragraph_indentation): new method,
+	exports engine functionality
+
+2002-10-04  Radek Doulik  <rodo@ximian.com>
+
+	* htmlcluev.c (draw): fixed calculation of x,y for aligned objects
+	drawing
+
+2002-10-03  Radek Doulik  <rodo@ximian.com>
+
+	* testgtkhtml.c (goto_url): set base before loading
+
+2002-10-07  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (get_offset_for_pointer): fix for utf8, start on
+	right beginning of slave (Larry)
+
+	* htmltext.c (get_cursor_base): check for offset > slave->posStart
+	(get_cursor_base): move to next text only if it doesn't start with
+	' '
+	(get_cursor): ditto
+
+	* htmltable.c (html_table_end_table): return number of cells in
+	table
+
+	* htmlengine.c (parse_table): check if table has any cell after
+	html_table_end_table
+
+2002-10-06  Larry Ewing  <lewing@ximian.com>
+
+	* testgtkhtml.c (url_requested): don't pass NULLs to strcmp, this
+	is in the test code so it isn't going through the patch list.
+
+2002-10-02  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (gtk_html_set_paragraph_alignment): make sure we
+	update the aligment tracking variable when we update the
+	alignment.  Fixes http://bugzilla.ximian.com/show_bug.cgi?id=9171
+
+2002-10-02  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (key_press_event): return TRUE only when key_press
+	used, didn't happen before for bindigs like Shift-TAB
+
+	* htmlfontmanager.c (html_font_manager_set_default): release plain
+	font manager fonts when changing fixed font
+
+	* htmlengine.c (html_engine_class_plain_font_manager): new method
+	for access to plain fontmanager
+	(html_engine_plain_font_manager): ditto
+
+2002-10-01  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (get_offset_for_pointer): fixed offset
+	computation, use utf8 functions instead of using byte positions
+
+2002-10-01  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (new_obj_from_uri): fix the uri strcmp to actually
+	compare the transport, go ahead and paste unknown file types as
+	urls (some feedback is better than none).
+
+2002-09-30  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (draw_text): removed unused local variable
+
+	* htmlengine.c (update_embedded): removed unused local variable
+
+	* gtkhtml.c (gtk_html_insert_html_generic): check tmp formlist
+	instead of html one
+
+2002-09-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmlfontmanager.c (get_real_font_size): minimal font size 4
+
+2002-09-24  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (move_object_cursor): continue move to next in case
+	we can't find any leaf accepting cursor. this fixes cursor
+	navigation in documents containing empty iframes
+
+	* htmltextslave.c (get_offset_for_pointer): check for space to be
+	!= NULL
+
+	* htmlclueflow.c (layout_line): do not wrap in PRE paragraphs
+
+	* gtkhtml.c (load_keybindings): removed Esc bindinding
+
+2002-09-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmltablecell.c (save): check for self->parent
+
+2002-09-20  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (get_post_padding): headers of the same kind and
+	level shouldn't have padding between them.
+
+2002-09-19  Larry Ewing  <lewing@ximian.com>
+
+	* testgtkhtml.c (on_set_base): call gtk_html_set_base here so that
+	base_url stuff gets resolved better (testgtkhtml is still broken
+	of course).
+
+2002-09-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (get_pre_padding): don't add pre padding for
+	non-items flows following items with the same level
+	(write_flow_tag): add <BR> for non-item flows following items with
+	the same level
+
+2002-09-19  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (update_embedded): use
+	html_object_engine_translation here since it exists.
+
+	* htmlframe.c (html_frame_init): add message for frame depth error.
+
+	* htmliframe.c (html_iframe_init): same.
+
+2002-09-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_engine_draw_real): crop iframes to avoid
+	whole iframes drawing
+	(update_embedded): crop iframe size here as well
+
+2002-09-19  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (gtk_html_set_iframe_parent): return the depth of the
+	frame stack.
+
+	* gtkhtml.h: fixup prototype.
+
+	* htmlframe.c (html_frame_init): limit max frame depth to 10.
+
+	* htmliframe.c (html_iframe_init): limit max frame depth to 10.
+
+2002-09-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (calc_size): split just long words
+
+2002-09-18  Larry Ewing  <lewing@ximian.com>
+
+	* htmlpainter.c (html_painter_calc_text_width): limit alloca len
+	and don't use strlen to fing the end of the string.
+	(html_painter_draw_text): same.
+
+2002-09-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (draw_text): use gnome_print_show_sized
+
+	* htmltext.c (get_tags): write opening tags for next text to
+	closing tags of this one
+	(get_tags): simplified and corrected <font> tag saving, it's not
+	optimal in space, but at least correct
+
+2002-09-17  Radek Doulik  <rodo@ximian.com>
+
+	* htmliframe.c (html_iframe_init): crop iframe height to 32767
+	because X limitations, we have to fix it though
+
+2002-09-16  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (parse_body): push/pop block here to fix
+	<table><tr><td><font color=white>aaa</tr></td></table>
+	(html_engine_selection_contains_link): new method
+	(html_engine_selection_contains_object_type): new method
+
+	* htmlengine-edit-cut-and-paste.c (append_flow): don't move whole
+	flows, just object in them to preserve flow attributes
+
+2002-09-13  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c: reimplemented font style parsing to allow non
+	nested font style tags
+
+2002-09-12  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (get_tags): don't get next/prev text objects across
+	cluev boundaries
+	(get_tags): fix </FONT> duplication and restoring right attributes
+
+	* htmlengine.c (parse_a): don't push color for links
+	(close_anchor): don't pop color
+	(insert_text): use right default color for links
+
+2002-09-09  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (key_press_event): parse the keys value even when the
+	length is 0, this was causing us to drop valid characters.
+	See bug http://bugs.ximian.com/show_bug.cgi?id=30042.
+
+2002-09-05  Radek Doulik  <rodo@ximian.com>
+
+	* htmliframe.c (op_copy): set iframe's clue parent
+
+	* htmlobject.c (html_object_op_copy): added parent parameter
+
+	* htmliframe.c (copy): copy html and clue as well, initialize
+	_painter
+	(destroy): unref painter just when non-NULL
+	(op_copy): implemented
+	(copy): don't copy content here, but in op_copy
+
+2002-09-04  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (set_focus_child): call parent's set_focus_child
+	method
+	(gtk_html_insert_html_generic): delete selection first
+
+2002-08-30  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (insert_tab_or_next_cell): paste text instead of
+	inserting it
+
+2002-08-28  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (client_notify_widget): spell check or clear spell
+	checking errors on live_spell_check flag change
+	(command): added scroll-bod, scroll-eod commands
+	(command): allow copy in non editing mode and bind it to C-c
+
+2002-08-27  Larry Ewing  <lewing@ximian.com>
+
+	* htmlgdkpainter.c (draw_pixmap): work around gdk-pixbuf bug when
+	doinging bilinear interpolation to 1x1, now use nearest in that
+	case.  Fixes crash in ximian bug #12968.
+
+2002-08-27  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c: fix scroll behavior, work around layout
+	page_increment = height / 2
+
+2002-08-26  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (move_object_cursor): don't allow objects not
+	capable of accepting cursor to accept it
+
+2002-08-23  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (validate_tables): new function,
+	inserts new line in case we end with invalid flow layout after
+	delete
+
+2002-08-22  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c: allow + in user name in mail addres and don't allow
+	wwwblabla, ftpbla, ...
+
+	* gtkhtml.c (drag_begin): select dragged object
+	(dnd_link_set): no dnd in edit mode
+	(dnd_link_unset): ditto
+
+	* htmlengine.c (html_engine_stream_write): in case size == -1
+	calculate length of buffer
+
+2002-08-21  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (set_focus_child): test if object is not an frame
+	before setting it as focus_object
+
+2002-08-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (alloc_font): scale width using new macro
+
+	* htmlprinter.h (SCALE_GNOME_PRINT_FONT_TO_ENGINE): new macro for
+	scaling font width
+
+2002-08-19  Radek Doulik  <rodo@ximian.com>
+
+	* htmlcluev.c (draw): fixed width and height of aligned objects
+	drawing
+
+2002-08-12  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (gtk_html_private_calc_scrollbars): bail if the widget
+	isn't realized.
+
+2002-08-09  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (html_engine_set_painter): recalculate the
+	scrollbar extents now that we have changed the painter.  Fixes bug
+	#28160
+
+2002-08-07  Larry Ewing  <lewing@ximian.com>
+
+	* keybindingsrc.emacs: bind C-/ to undo.
+
+	* keybindingsrc.xemacs: bind C-/ to undo.
+
+2002-08-06  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-properties.h: make the colors strings.
+
+	* gtkhtml-properties.c (gtk_html_class_properties_load): load the
+	link_color keys.
+	(gtk_html_class_properties_save): save the link_color keys.
+	(gtk_html_class_properties_copy): copy the strings.
+	(gtk_html_class_properties_new): string color properties.
+	(gtk_html_class_properties_load): load the link_color props.
+	(gtk_html_class_properties_update): test the color props for
+	changes.
+
+	* gtkhtml.c (init_properties_widget): use the new string color
+	settings.
+	(client_notify_widget): listen to the new keys.
+	(client_notify_spell_widget): remove the old code.
+
+	* gtkhtml-properties.h: add link color members.
+
+	* gtkhtml.c (client_notify_spell_widget): listen to link_color
+	changes.
+	(init_properties_widget): initialize link colors.
+
+	* gtkhtml-properties.c: add color properties for link colors.
+
+2002-07-30  Larry Ewing  <lewing@ximian.com>
+
+	* htmlembedded.c (reparent): protect against NULL widgets in the
+	embedded element.
+
+	* htmlframe.c (html_frame_class_init): overide reparent.
+	(reparent): set the html on reparent.
+
+	* htmlform.c (html_form_set_engine): new function to allow
+	changing the engine of an existing form.
+
+	* htmlform.h (html_form_set_engine): new prototype
+	html_form_set_engine.
+
+	* gtkhtml.c (gtk_html_insert_html_generic): make sure forms are
+	moved over upon insertion.
+
+2002-07-28  Larry Ewing  <lewing@ximian.com>
+
+	* htmlembedded.c (reparent): set iframe parent in reparent.
+	(html_embedded_class_init): override reparent.
+
+	* htmlembedded.h: make prototype match the code.
+
+2002-07-30  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (use_pictograms): don't put
+	pictograms in the middle of words
+
+2002-07-29  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_engine_focus): make sure embedded object
+	widget is non NULL
+
+2002-07-26  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (handle_object_data): don't clear class data here
+	as it could break hash foreach loop
+	(clear_data): clear them later here
+
+2002-07-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmlobject.c (next_prev_cursor_object): use html_cursor_init
+	(copy_data): duplicate the key
+	(html_object_set_data): use _full version with g_free
+	(copy_data): use _full version with g_free
+
+	* htmlcursor.c (html_cursor_init): new function to initialize all
+	cursor fields
+
+	* htmlclueflow.c (layout_line): update height just when really needed
+
+2002-07-24  Radek Doulik  <rodo@ximian.com>
+
+	* htmlgdkpainter.c: applied patch from Owen. It fixes bug in
+	get_size where points and pixels were switched and provides better
+	fallback font
+
+	* gtkhtml.c (insert_tab_or_next_cell): insert 4 &nbsp;'s when no
+	TAB available
+
+2002-07-18  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (gtk_html_insert_html_generic): pass the engine.
+	(update_embedded_object_parent): remove the condition.
+
+	* htmlembedded.c (html_embedded_class_init): actually attach the
+	reparent method.
+
+	* htmlembedded.h: add new reparent method.
+
+	* htmlembedded.c (html_embedded_reparent): add new reparent function.
+
+	* gtkhtml.c (gtk_html_insert_html_generic): reparent the embedded
+	objects (this is not yet a complete fix).
+	(gtk_html_modify_indent_by_delta): make this static.
+
+2002-07-15  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine-edit-clueflowstyle.c (set_props): fix a size problem.
+
+2002-07-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit.c (html_engine_set_title): emit TITLE_CHANGED
+	signal
+
+2002-07-17  Radek Doulik  <rodo@ximian.com>
+
+	* htmltext.c (get_tags): optimized output
+
+2002-07-15  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (layout_line): fix new line condition
+
+2002-07-12  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (html_engine_set_class_data): return if class_name
+	is NULL
+	(get_class_table): ditto
+	(parse_d): be more careful when class_name is NULL
+
+2002-07-09  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (html_clueflow_modify_indentation_by_delta): fix
+	totally broken logic that was here before.  I must be insane.
+
+2002-07-09  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (divide_upto_preferred_width): fixed part
+	calculation
+
+	* htmltextslave.c (get_offset_for_pointer): fixed offset
+	calculation
+
+2002-07-08  Larry Ewing  <lewing@ximian.com>
+
+	* htmlsearch.c (html_search_new): stop trying to substitute &nbsp;
+	and spaces, see bug #24446.
+
+2002-07-08  Radek Doulik  <rodo@ximian.com>
+
+	* htmlclueflow.c (draw_item): use first slave for postion
+	calculation instead of text object, this fixes item drawing with
+	new layouting
+
+2002-07-05  Radek Doulik  <rodo@ximian.com>
+
+	* htmlselect.c (html_select_set_text): use e_utf8_to_gtk_string
+	and not e_utf8_from_gtk_string
+
+	* keybindingsrc.ms: added C-backspace and C-delete for delete
+	{forward,backward} word
+
+	* htmlengine-edit-fontstyle.c (get_url_or_target_from_selection):
+	removed obsolete assert
+
+	* htmlclueflow.c (update_top_height): fixed align=top
+	(end_of_word): fix citations and spell checking 'spell check' is
+	no more marked as mispelled
+
+2002-07-03  Larry Ewing  <lewing@ximian.com>
+
+	* keybindingsrc.*: add mappings for Sun redo, undo, cut, copy, paste
+	keys.
+
+2002-07-03  Radek Doulik  <rodo@ximian.com>
+
+	* htmlimage.c (html_image_get_actual_width): use max_width instead
+	of engine view width
+
+2002-07-02  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (focus): disabled link navigation in editing mode
+
+2002-06-27  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-properties.c (get_default_fonts): fix leaks of font
+	names.
+
+2002-06-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (hts_fit_line): take care about line breaking
+	here as well as we don't usually calculate min width anymore.
+
+2002-06-24  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-keybinding.c (handle_none): call with cite == FALSE.
+
+	* gtkhtml.c (gtk_html_paste): add as_cite parameter.  Fixup calls.
+
+	* gtkhtml.h: add parameter to prototype.
+
+2002-06-21  Radek Doulik  <rodo@ximian.com>
+
+	* htmlgdkpainter.c: updated font loading code to use less
+	resources
+
+2002-06-20  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c:  update focus_object to work properly with frames
+	(focus): try to be clever about borders
+
+	* htmlengine.c: update focus_object to work properly with frames
+
+	* htmlgdkpainter.c (alloc_e_font_try): use gdk_fontset_load only
+	when necessary, otherwise use gdk_font_load
+
+	* htmlobject.c (html_object_engine): new function, returns engine
+	which contains clue which object directly (no frames on way from
+	clue to object)
+	(html_object_calc_abs_position): correct calculation, take care of
+	frames and thus border size
+
+2002-06-19  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (selection_received): add some logic to be able to
+	receive text/html selections from Star/Open Office.  For some
+	unfathomable reason they decided to make html selections use utf8
+	instead of ucs2 (what netscape/mozilla sort of set in stone when
+	they first implemented text/html).  So to deal with this we try to
+	validate the selection as utf8 and if we fail use ucs2 instead,
+	this should be relatively safe and correct.
+
+2002-06-18  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (focus): fixed horizontal offset calculation
+
+2002-06-14  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (selection_received): make paste as quotation work for
+	string selections.  If we are doing a citation paste, don't use
+	the widget->window == event->window shortcut.
+
+2002-06-12  Larry Ewing  <lewing@ximian.com>
+
+	* htmlimage.c: render images with no alt text as [image] in the
+	plain painter.
+	
+	* gtkhtml.c: make the functions that deal with changing the indent
+	level use an array of HTML_LIST_TYPE values for the changes, add
+	gtk_html_indent_push/pop_level.
+
+	* gtkhtml.h: update the prototypes.
+
+	* htmlengine-edit-cut-and-paste.c (check_flows): the flow is the
+	parent not the object. This was causing nasty crashes that ate a
+	lot of memory.  Fixes Ximian bug #26150
+
+	* htmlengine-edit-clueflowstyle.c: make all the style operations
+	take and array of HTML_LIST_TYPE values for indentation changes.
+
+	* htmlengine-edit-clueflowstyle.h: update the prototypes to match.
+
+	* htmlclueflow.h: update the prototypes.
+
+	* htmlclueflow.c: change html_clueflow_set/modify indentxahtion to
+	take an array of HTML_LIST_TYPE values for the settings.
+
+2002-06-06  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_insert_html_generic): added tmp parameter,
+	which when non-null is used as source of insertion, it's destroyed
+	afterwards
+	(gtk_html_insert_gtk_html): new method, takes to_be_destroyed
+	gtkhtml widget and inserts its content into html gthtml
+
+2002-06-05  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_load_from_string): use "text/html;
+	charset=utf-8" content type
+
+	* htmlpainter.h: make font_manager pointer
+
+	* htmliframe.c (html_iframe_init): use parent's font manager
+	(destroy): reset filemanager and unref painters
+
+2002-06-03  Larry Ewing  <lewing@ximian.com>
+
+	* htmltablecell.c (draw_background_helper): only draw the
+	background if we are not a plain painter.  This needs to be
+	virtualized better into the painter class, but that can wait for now.
+
+	* htmlclueflow.c (save_plain):  make sure we don't try to rewrap
+	tables once they have already been formatted.  It doesn't help
+	anyone.
+
+2002-06-02  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-private.h: add as_citation member and change
+	last_selection_type name;
+
+	* gtkhtml.h: add as_cite boolean to request_paste prototype.
+
+	* gtkhtml.c (selection_get): check for a selection object before
+	pasting.
+	(selection_get): remove a accidental paste.
+
+	* ChangeLog: Merge multicite branch.
+
+2002-05-22  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c: merge undo changes. Cleanup skip_host.
+
+	* htmlengine-edit-cut-and-paste.c: merge undo changes and compare
+	levels in check_flows () to make sure when push when we need to.
+
+	* htmlengine-edit-clueflowstyle.c: merge undo changes from radek's
+	paragraph fix.
+
+	* htmlengine-edit-clueflowstyle.h: merge more undo changes.
+
+2002-05-22  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (save_plain): make len a gint, the unsignedness
+	was causing a nasty loop in the padding calculation.
+	(html_clueflow_set_item_type): preserve the toplevel type if it is
+	a blockquote.
+
+2002-05-21  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (draw_item): draw the item number offset by the
+	indent amount not the first->x offset this fixes the difference
+	between out rendering and the rendering of mozilla of aligned
+	paragraphs.
+	(save_plain): align the paragraph in plain mode.  Yes NotZed this
+	is fun.
+
+2002-05-20  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (write_flow_tag): Fix handling for empty
+	paragraphs that where the type changes but there is no end tag.
+	(get_level_indent): make the indent match the
+	plain indent so that the wrap length is exact.
+	(plain_padding): rewrite this to be a little more sane and use the
+	new write_item_marker function.
+	(write_item_marker): overwrite any available spaces with the item
+	number string when saving plain text.  This means double indents
+	get more space for the item marker.  If the marker string is too
+	long, we don't really care, we just write out the full string and
+	let the indent get slightly messed up for the first line.  Doing
+	it this way means the line breaks will match the display breaks
+	and we don't have to calculate the longest value possible.
+	(html_clueflow_dup_levels): new function to handle duplicating the
+	levels array.
+	(html_clueflow_set_levels): copy the provided levels array into
+	the current flow.
+
+	* htmlengine-edit-clueflowstyle.c: store the entire indent array
+	for each op.
+	(free_prop): free the array.
+	(get_props): dup the levels.
+	(undo_or_redo): set the levels.
+
+2002-05-17  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine-edit-clueflowstyle.c: refactor in preparation for
+	indentation undo changes.  
+	(set_props): refactor, no longer return props, let that happen one
+	level up, clears up FIXME about getting then freeing props.
+	(free_prop): centralize prop destruction.
+
+	* gtkhtml.c (get_class_properties): move the gconf initialization
+	into the instance initialization to make michael happy.
+	(init_properties_widget): call get_class_properties to ensure the
+	props are set.
+	(set_editor_keybindings): use get_class_properties.
+
+2002-05-15  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (html_clueflow_set_indentation): if indentation
+	is less than zero set it to zero.
+
+	* htmlengine-edit-clueflowstyle.c (get_props_and_set): move the
+	indentation changes before the style changes and explicitly set
+	indentation for items.  As long as indentation is changed before
+	the item type we can correctly set the toplevel value of the
+	indentation array.
+
+	* htmlclueflow.h: change set_indentation prototype.
+
+	* gtkhtml.c (paragraph_style_to_clueflow_style): make the default
+	style be blockquote, and make item dotted be unordered.
+
+2002-05-14  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (write_flow_tag): fix prev calc, rework <br>
+	output.
+	(save2): fix prev calc.
+	(html_clueflow_set_item_type): set the toplevel type to match the
+	new setting.
+	(html_clueflow_modify_indentation_by_delta): always update the
+	indentation.
+
+2002-05-10  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (get_tag): remove unused function.
+
+	* gtkhtml-propmanager.c (gtk_html_propmanager_class_init): small
+	cleanups.
+
+	* htmlengine-save.h: add prototype for html_engine_save_output_stringv.
+
+	* htmlengine-save.c (html_engine_save_output_stringv): add a
+	varargs version of save output string.  This stuff should really
+	be combinded with the htmlengine streams.
+
+	* htmlclueflow.c: rewrite the save logic to use the levels array.
+
+2002-05-09  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (is_levels_equal): return true if both levels are 0.
+
+	* htmlengine-edit-table.c (html_engine_new_cell): initialize level
+	with a new byte array.
+
+	* htmlclueflow.c (get_level_indent): fix the indent calculation.
+	(get_level_indent): fix typo.
+
+2002-05-07  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c (plain_padding): more tweaks to make save_plain
+	mostly work.  More to come.
+
+2002-05-06  Larry Ewing  <lewing@ximian.com>
+
+	* htmlclueflow.c: chain to the parent class destroy method.
+	(get_level_indent): tweak indent settings.
+
+2002-05-03  Larry Ewing  <lewing@ximian.com>
+
+	* htmlenums.h: add some clueflow styles (this should probably be
+	renamed).
+
+	* htmlengine-edit-clueflowstyle.c (get_props): use indentation
+	(this still needs fixing later).
+	(get_props_and_set): update to use index->levels (FIXME too)
+
+	* htmlengine-edit.c (html_engine_get_indent): use get_indentation.
+
+	* htmlengine.c: lots of changes for the new indent logic.  Parse
+	type argument in clueflow.
+
+	* htmlclueflow.h: make the level value an array.
+
+	* htmlclueflow.c: lots of changes for making different levels of
+	citing.
+
+	* gtkhtmldebug.c (gtk_html_debug_dump_object): fix for levels.
+
+2002-05-30  Radek Doulik  <rodo@ximian.com>
+
+	* htmltable.c (draw): call get_body with table coordinates
+
+	* htmlengine.c (html_engine_draw_real): substract borders from
+	engine height before comparing with engine clue height
+
+2002-05-23  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (client_notify_class): watch for smileys
+
+	* gtkhtml-propmanager.c: added magic_smileys_check widget
+
+	* gtkhtml-properties.c: added magic_smileys property
+
+	* gtkhtml.c: moved properties initialization to instance init,
+	suggested by Michael Meeks
+
+2002-05-24  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (selection_get): handle pasting text/html.
+	(init): add text/html target.
+
+22002-05-23  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (selection_received): allow text/html selections.
+	(gtk_html_request_paste): request text/html selections.
+
+002-05-22  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_set_paragraph_style): fix the styles equal
+	condition
+
+2002-05-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-clueflowstyle.c
+	(html_engine_set_clueflow_style): added dir parameter, fixed undo
+
+	* htmlengine-edit-cut-and-paste.c (check_flows): new helper
+	functions, takes care about clueflow's style changes
+
+2002-05-17  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (skip_host): fix this for base_urls with hosts but
+	without trailing /s.
+	(skip_host): clean up the logic slightly.
+	
+2002-05-13  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml-properties.c (gtk_html_class_properties_update): suggest
+	gconf sync
+
+2002-05-09  Radek Doulik  <rodo@ximian.com>
+
+	* testgtkhtml.c (entry_goto_url): set base before goto_url call
+	which calls parse_href, which expects baseURL to be set
+
+2002-05-09  Dan Winship  <danw@ximian.com>
+
+	* testgtkhtml.c: Port to use soup instead of glibwww for
+	http/https. (And do file: URLs by hand.)
+
+	* Makefile.am (noinst_PROGRAMS): Redo this a bit so gtest is
+	always built, and testgtkhtml is built if you have soup.
+	(INCLUDES): s/GLIBWWW_CFLAGS/SOUP_CFLAGS/
+	(testgtkhtml_LDADD): s/GLIBWWW_LIBS/SOUP_LIBS/
+
+2002-05-07  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (client_notify_widget): use /keybindings_theme in
+	widget and not class notify
+
+2002-05-02  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (load_bindings_from_file): use GTKHTML_RELASE when
+	loading keybindings
+
+2002-04-30  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-propmanager.h: include gconf-client.h
+
+2002-04-29  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-propmanager.c (gtk_html_propmanager_real_changed): add cast.
+
+2002-04-28  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-propmanager.c (gtk_html_propmanager_real_changed): stop
+	referencing the removed widget.
+
+2002-04-27  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am: add gtkhtml-propmanager.[ch] to the build.
+
+	* gtkhtml-propmanager.c: misc cleanups and sensitivity changes.
+
+2002-04-26  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-propmanager.c: fix up refcounting and add recursion trap
+	to the notification callback. Only ref the GladeXML for the
+	while we get widgets to avoid staying alive too long.
+
+2002-04-24  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-propmanager.c:  Refactor the api to make a little more
+	sense.  Fix some notification issues.
+	
+	* gtkhtml-propmanager.h:  Match api changes.
+
+2002-04-24  Radek Doulik  <rodo@ximian.com>
+
+	* htmlgdkpainter.c (calc_text_width_bytes): don't assume fixed
+	style characters are monospaced - this is not true with fontsets,
+	fixes Ximian #23829
+	(calc_text_width): likewise
+
+2002-04-23  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-propmanager.c: and keymap option menu logic.
+
+2002-04-22  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-propmanager.c: add font picker logic.
+
+	* gtkhtml-properties.c (gtk_html_class_properties_copy): make sure
+	we copy the animations setting too.
+
+2002-04-21  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml-propmanager.h: new object for config handling.
+
+	* gtkhtml-propmanager.c: see above.
+
+2002-04-18  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (insure_paper): use default paper name in case of
+	wrong translation
+
+2002-04-18  Larry Ewing  <lewing@ximian.com>
+
+        * htmlclueflow.c (draw_quotes): Alway draw the quote character at
+	the begining of the flow don't indent it with the text.
+	(plain_padding): add the quote character in the plain text output.
+	(plain_padding): add #ifdef DRAW_QUOTES
+	(draw_quotes): make the bars 2 pixels wide instead (should
+	probably base it on font size in the future).  Remove some unused
+	variables.
+	
+	* htmlclueflow.c (get_indent): Add #ifdef DRAW_QUOTES here for
+	now.
+
+	* htmlclueflow.c (draw_quotes): add more drawing logic.
+	(is_cite): helper function to handle the cite test so that we can
+	change it from the current hack when we want to.
+	(get_indent): modify the indent level in cites.
+
+	* htmlimage.c (draw): stub out some cite drawing routines.
+
+2002-04-16  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (drag_data_received): allow drop just links of known
+	protocols
+
+2002-03-29  Larry Ewing  <lewing@ximian.com>
+
+	* htmlengine.c (html_engine_timer_event): don't stop parsing on
+	/body, no other renderers do. Fixes #21968 
+
+	* htmlgdkpainter.c (draw_background): fix mask comparison.
+
+	* htmlgdkpainter.c (draw_background): move color calculation and
+	allocation into the case where it is actually used.
+
+2002-03-28  Larry Ewing  <lewing@ximian.com>
+
+	* htmlgdkpainter.c (draw_background): optimize away the single
+	pixel transarent gif case, it is simply too expensive over the
+	wire.
+
+2002-03-27  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am (libgtkhtmldir): add trailing gtkhtml to not break
+	includes. and use $(GKTHTML_RELEASE_STRING) rather than
+	gtkhtml-$(GTKHTML_RELASE) since it is already defined.
+
+	* Makefile.am: use GTKHTML_DATADIR where it makes sense.
+
+2002-03-26  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am (keybindingsdir): fix this dir from $release/gtkhtml
+	to gtkhtml-release.
+
+	* Makefile.am (libgtkhtmldir): add version to directory.
+
+2002-03-20  Larry Ewing  <lewing@ximian.com>
+
+	* htmlimage.c (html_image_factory_area_prepared): silently pass
+	through if ip->pixbuf is NULL.  gdk-pixbuf has a very screwy api.
+
+2002-03-11  Radek Doulik  <rodo@ximian.com>
+
+	* htmlprinter.c (calc_text_width): use correct len (in bytes) for
+	gnome print function
+
+	* htmlpainter.c (html_painter_calc_text_width_bytes): new method
+	(correct_width): new optimized helper function, replaces old
+	rewritting functions used in non-bytes version
+
+	* htmltext.c (calc_word_width): use bytes version
+
+	* htmlprinter.c (calc_text_width_bytes): new implementation
+
+	* htmlgdkpainter.c (calc_text_width_bytes): new implementation
+
+	* htmlpainter.c (html_painter_calc_text_width_bytes): new function
+	which uses byte len instead of uc-char len (index)
+
+	* htmlfontmanager.c (html_font_new): added nbsp and space width to
+	the font structure
+
+2002-03-07  Larry Ewing  <lewing@ximian.com>
+
+	* htmltextslave.c (html_text_slave_get_text): cache this result.
+	(split): pass an optional charStart setting to allow filling the
+	above cache without recomputing the pointer from the offset.
+	(hts_fit_line): update the start position cache as we walk
+	forward.  And pass the start pointer to the split call.
+	(draw_highlighted): opitmize the pointer offset calculations.
+	(html_text_slave_init): initialize that cache value to NULL.
+
+	* htmltextslave.h: add charStart cache entry.
+
+2002-03-06  Larry Ewing  <lewing@ximian.com>
+
+	* htmltextslave.c: undo the s/g_utf8/h_utf8/ use a #define instead.
+	Add comment explaining this choice.
+
+	* htmltext.c: same as above.
+	
+	* htmltextslave.c: optimize, I'll be more specific when I'm done.
+
+	* htmltext.c: see above.
+
 2002-03-05  Larry Ewing  <lewing@ximian.com>
+
+	* htmlbutton.c (html_button_init): mark strings for translation.
+	Add missing includes for _() definition.
 
 	* htmlselect.c: convert from utf8 properly and use needs_update
 	boolean to postpone setting the popdown strings until they are
@@ -15,6 +1285,91 @@
 	* htmlbutton.c (html_button_init): convert to gtk string before
 	creating label.
 
+2002-02-26  Larry Ewing  <lewing@ximian.com>
+
+        * gtkhtml.c: rename to gtk_html_get_url_blah, still bad but a
+	little better.
+
+	* gtkhtml.h: ditto.
+
+	* htmliframe.c: fix for renaming.
+
+	* htmlframe.c: same as above.
+	
+2002-02-26  Larry Ewing  <lewing@ximian.com>
+
+	* htmliframe.c: remove the unused on_url and link_clicked handlers
+	and add note that these signals do not cascade.  Use
+	gtk_html_get_base_relative in set_base now.
+
+	* htmlframe.c: same as above.
+
+	* gtkhtml.c: make link_clicked and on_url resolve urls relative to
+	the frame they are in.  moved the relative url code in here.
+	gtk_html_get_base_relative and gtk_html_get_object_relative
+	function for the relative url parsing.  These should probably get
+	better names.
+
+	* gtkhtml.h: add the new function prototypes.
+
+2002-02-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (use_pictograms): set ALT text
+	to picto image
+	(html_engine_insert_text): don't use smiley's in plain text mode
+
+	* htmlimage.c (calc_size): draw ALT text with PLAIN painter
+	(calc_size): update for ALT text and PLAIN painter
+
+	* htmlengine-edit-cursor.c (html_engine_draw_image_cursor): fixed
+	rectangle calculation
+
+2002-02-24  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.c (html_engine_url_requested_cb): expand urls relative
+	to the document url.
+
+	* htmlframe.c (html_frame_init): request the initial url on the
+	parent.
+	(html_frame_url_requested): let the widget expand the relative
+	urls.
+
+	* htmliframe.c (html_frame_init): request the initial url on the
+	parent.
+	(html_iframe_url_requested): let the widget expand the relative
+	urls.
+
+2002-02-23  Larry Ewing  <lewing@ximian.com>
+
+	* htmlframe.c: change relative url lookup.
+
+	* htmliframe.c: change relative url handling.  Fix check_url logic
+	for scrolled case.
+
+	* gtkhtml.c (gtk_html_set_base): remove the old parsing logic.
+
+2002-02-22  Radek Doulik  <rodo@ximian.com>
+
+	* htmlimage.c (update_or_redraw): don't draw or schedule engine
+	update in blocking mode
+
+2002-02-15  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (new_obj_from_uri): don't remove http:// from link text
+	(new_obj_from_uri): don't be too smart about URL's, people don't
+	like ;-)
+	(idle_handler): don't just check for thaw idle handler scheduled,
+	but also if html engine isn't actually frozen
+	(button_press_event): unset button1_pressed flag for 2x and 3x
+	click, it fixes word and line selection in iframes
+
+	* htmlinterval.c (html_point_max): handle case, when one point's
+	object is container of another (as could happen with tables)
+
+2002-02-14  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (command): set return value for cursor-{forward,backward}
+
 2002-02-12  Radek Doulik  <rodo@ximian.com>
 
 	* htmlclueflow.c (write_list_finish_tags): new helper method,
@@ -27,20 +1382,174 @@
 	* htmlimage.c (html_image_animation_timeout): test if delay is >
 	0 (before we have been testing for != 0)
 
+	* gtkhtml.c (gtk_html_has_undo): renamed from gtk_html_is_dirty
+
+	* htmlundo.c (html_undo_has_undo_steps): renamed from
+	html_undo_is_dirty
+
+2002-02-11  Radek Doulik  <rodo@ximian.com>
+
+	* htmlselection.c (html_engine_select_interval): don't activate
+	PRIMARY selection
+	(html_engine_update_selection_active_state): new helper function
+
+	* gtkhtml.c (key_press_event): set event_time
+	(button_press_event): if we are provider of PRIMARY, copy
+	selection to primary object
+	(button_release_event): don't copy to primary, just in case we are
+	provider of PRIMARY
+	(button_release_event): update selection active state, don't copy
+	to primary object
+	(selection_get): if primary is non-NULL, use it, otherwise get
+	selection from engine
+	(selection_received): don't copy primary, just use it directly and
+	reset it to NULL
+	(cursor_move): update selection active state
+	(move_selection): ditto
+	(gtk_html_select_word): ditto
+	(gtk_html_select_line): ditto
+	(gtk_html_select_paragraph): ditto
+	(gtk_html_select_paragraph_extended): ditto
+	(gtk_html_select_all): ditto, don't copy to primary
+
+	* gtkhtml-private.h: added event_time
+
 2002-02-11  Larry Ewing  <lewing@ximian.com>
 
 	* htmltokenizer.c (in_script_or_style): fix obvious error in
 	growing the scriptCode buffer, use g_realloc instead.
 
+2002-02-06  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (drag_data_received): remove \n\r in the end of url's
+	(drag_data_received): allow dropping of uri lists instead of just
+	one uri, implemented image dropping
+
+2002-02-05  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (realize): changed defaults to all
+	(drag_data_received): when dropped on selection, it pastes over it
+	fix cursor position
+
+2002-01-31  Radek Doulik  <rodo@ximian.com>
+
+	* keybindingsrc.*: removed paragraph formatting bindings, so now
+	it works thru menu bindings
+
+2002-01-29  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c: added close_flow to few places to avoid empty
+	clueflows in tree
+
+	* htmlselection.c (html_engine_select_all): as below
+
+	* htmlengine-edit-cut-and-paste.c (html_engine_copy_object): check
+	if e->clue is not empty
+
+2002-01-28  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-print.c (print_page): fix header printing
+
+2002-01-27  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.h: add set_title prototype.
+
+	* gtkhtml.c: add gtk_html_set_title to match gtk_html_get_title.
+
+2002-01-25  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit.c (html_engine_set_title): new method for title setting
+
+2002-01-24  Larry Ewing  <lewing@ximian.com>
+
+	* htmlpainter.c: remove uneeded semicolons after
+	DEFINE_UNIMPLEMENTED definitions.  They are spurious and cause
+	some compilers to complain.  Thanks to Tim Mooney
+	<mooney@dogbert.cc.ndsu.nodak.edu> for the patch.  Fixes
+	http://bugzilla.ximian.com/show_bug.cgi?id=19189
+	
 2002-01-14  Larry Ewing  <lewing@ximian.com>
 
 	* htmlengine-edit-cursor.c (html_engine_draw_cursor_in_area): wrap
 	im call in #ifdef GTK_HTML_USE_XIM
 
+2002-01-14  Radek Doulik  <rodo@ximian.com>
+
+	* keybindingsrc.*: bind style-itemalpha command
+
+	* gtkhtml.c (command): implement style-itemalpha command
+
+2002-01-11  Radek Doulik  <rodo@ximian.com>
+
+	* htmltextslave.c (get_offset_for_pointer): optimized to use word
+	width cache
+
+2002-01-10  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit.c (html_engine_new_text): could return link
+	object again
+
+	* htmlengine-edit-fontstyle.c (html_engine_text_style_object): new
+	helper function
+	(html_engine_get_document_url): use html_engine_text_style_object
+	to change link editing behaviour
+	(html_engine_get_document_font_style): ditto
+	(html_engine_get_document_color): ditto
+
+	* htmlengine-save.c (html_encode_entities): renamed from
+	encode_entities, exported, allow encoded_len_return to be NULL
+
+2002-01-08  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (html_engine_edit_set_link):
+	renamed from html_engine_set_link
+
+	* htmlengine-edit-clueflowstyle.c (get_props_and_set): set changes
+	to recalculate word widths and layout properly
+
+	* gtkhtml-properties.c: don't save spell properties, load spell
+	properties
+
+2002-01-04  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml-private.h: add notify_spell_id
+
+	* gtkhtml.c (client_notify_spell_widget): new function
+	(init_properties_widget): watch gnome spell configuration, use
+	client_notify_spell_widget
+
+2001-12-21  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am (libgtkhtml_la_LDFLAGS): add GTKHTML_RELEASE to the
+	flags and install headers into proper place.
+
+2001-12-20  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_images_ref): new method
+	(gtk_html_images_unref): ditto
+	(gtk_html_image_ref): ditto
+	(gtk_html_image_unref): ditto
+	(gtk_html_image_preload): ditto
+
+	* htmlengine.c (html_engine_begin): don't use factory cleanup, we
+	don't need it anymore and we want preloaded images to be kept
+
 2001-12-18  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (class_init): added call to gdk_rgb_init
 
 	* htmlengine-edit-clueflowstyle.c (set_clueflow_style_in_region):
 	avoid skipping end and continuing to the end of document
+
+2001-12-17  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_api_set_language): use engine language prior
+	to class one
+
+	* htmlengine.c (html_engine_set_language): new method, set
+	language for spell checking
+
+	* htmlengine.h: added language item
 
 2001-12-14  Larry Ewing  <lewing@ximian.com>
 
@@ -59,13 +1568,16 @@
 	of the XIM preedit block (This XIM patch is based on the patch by
 	ynakai@redhat.com and fixes
 	http://bugzilla.ximian.com/show_bug.cgi?id=9526)
-	
+
+2001-12-12  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (command): implemented kill-word and
+	backward-kill-word commands
+
 2001-12-11  Radek Doulik  <rodo@ximian.com>
 
 	* htmlengine-print.c (html_engine_print_with_header_footer):
 	minimal scale 0.5, so we stop on scale, which is still readable
-
-2001-12-11  Radek Doulik  <rodo@ximian.com>
 
 	* htmlselect.c (html_select_set_text): make it safe when
 	select->strings == NULL
@@ -95,6 +1607,40 @@
 
 	* gtkhtml-properties.c: change default size for printing fonts to
 	9
+
+2001-12-09  Radek Doulik  <rodo@ximian.com>
+
+	* gtkhtml.c (gtk_html_insert_html_generic): freeze/thaw
+
+	* htmlimage.c (save): save links
+	(html_image_get_actual_width): exported, updated to allow painter
+	== NULL
+	(html_image_get_actual_height): likewise
+	(set_link): use color
+
+2001-12-03  Radek Doulik  <rodo@ximian.com>
+
+	* htmlimage.c (draw): use new colors
+
+	* htmltextslave.c (draw_highlighted): use new colors
+
+	* htmlpainter.c: remove html_painter_get_highlight_color, it's now
+	obsolete
+
+	* htmlcolorset.c: added entries for highlight colors in non-focus
+	state
+
+	* htmlframe.c (html_frame_init): as below, BTW, iframe and frame
+	has so much shared code, that I believe they should be inherit
+	from generic frame parent which should hold shared code
+
+	* htmliframe.c (html_iframe_init): set focus by parent
+
+2001-11-29  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine.c (set_focus): new helper function
+	(html_engine_set_focus): foreach frame/iframe set painter focus,
+	uses set_focus helper
 
 2001-11-27  Radek Doulik  <rodo@ximian.com>
 
@@ -129,12 +1675,41 @@
 
 2001-11-21  Radek Doulik  <rodo@ximian.com>
 
+	* gtkhtml.c (selection_clear_event): unselect only when widget is
+	non editable, otherwise keep selection valid
+
+	* htmlimage.c (draw): use html_painter_set_focus
+
+	* htmltextslave.c (draw_highlighted): use html_painter_set_focus
+
+	* gtkhtml.c (focus_in_event): set painter focus, redraw selection
+	(focus_out_event): ditto
+
+	* htmlpainter.c (html_painter_set_focus): remember focus in
+	painter
+	(html_painter_get_highlight_color): get highlight color depending
+	on focus
+
+	* htmlengine.c (html_engine_redraw_selection): new helper function
+
 	* htmlclueflow.c (calc_size): place check for changed size before
 	html_object_calc_size
 	(merge): set change size to head of self and tail of with
 	(split): set change size aroud and child object 
 
 2001-11-20  Radek Doulik  <rodo@ximian.com>
+
+	* htmlengine-edit-cut-and-paste.c (insert_empty_paragraph): check
+	if original paragraph is empty link and in such case replace link
+	with empty text
+
+	* htmllinktext.c (html_link_text_to_text): changed return value,
+	now this method return newly created object with the same text as
+	link and same text attributes as font style/face and with default
+	text color
+
+	* htmlengine-edit.c (html_engine_new_text): don't ever create
+	links here
 
 	* htmlengine-search.c (display_search_results): use move_to_found
 	only for non editable widget
@@ -161,67 +1736,10 @@
 	* htmlengine.c (replace): don't replace with empty text's, just
 	delete selection in such case
 
-2001-12-03  Radek Doulik  <rodo@ximian.com>
-
-	* htmlimage.c (draw): use new colors
-
-	* htmltextslave.c (draw_highlighted): use new colors
-
-	* htmlpainter.c: remove html_painter_get_highlight_color, it's now
-	obsolete
-
-	* htmlcolorset.c: added entries for highlight colors in non-focus
-	state
-
-	* htmlframe.c (html_frame_init): as below, BTW, iframe and frame
-	has so much shared code, that I believe they should be inherit
-	from generic frame parent which should hold shared code
-
-	* htmliframe.c (html_iframe_init): set focus by parent
-
-2001-11-29  Radek Doulik  <rodo@ximian.com>
-
-	* htmlengine.c (set_focus): new helper function
-	(html_engine_set_focus): foreach frame/iframe set painter focus,
-	uses set_focus helper
-
-2001-11-21  Radek Doulik  <rodo@ximian.com>
-
-	* gtkhtml.c (selection_clear_event): unselect only when widget is
-	non editable, otherwise keep selection valid
-
-	* htmlimage.c (draw): use html_painter_set_focus
-
-	* htmltextslave.c (draw_highlighted): use html_painter_set_focus
-
-	* gtkhtml.c (focus_in_event): set painter focus, redraw selection
-	(focus_out_event): ditto
-
-	* htmlpainter.c (html_painter_set_focus): remember focus in
-	painter
-	(html_painter_get_highlight_color): get highlight color depending
-	on focus
-
-	* htmlengine.c (html_engine_redraw_selection): new helper function
-
-2001-11-20  Radek Doulik  <rodo@ximian.com>
-
-	* htmlengine-edit-cut-and-paste.c (insert_empty_paragraph): check
-	if original paragraph is empty link and in such case replace link
-	with empty text
-
-	* htmllinktext.c (html_link_text_to_text): changed return value,
-	now this method return newly created object with the same text as
-	link and same text attributes as font style/face and with default
-	text color
-
-	* htmlengine-edit.c (html_engine_new_text): don't ever create
-	links here
-
 2001-11-15  Radek Doulik  <rodo@ximian.com>
- 
- 	* htmlcluev.c (do_layout): test if it's new flow by old_y and not
- 	old_y_off
+
+	* htmlcluev.c (do_layout): test if it's new flow by old_y and not
+	old_y_off
 
 2001-11-15  Larry Ewing  <lewing@ximian.com>
 

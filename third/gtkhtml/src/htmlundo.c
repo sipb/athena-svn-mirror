@@ -41,6 +41,7 @@ struct _HTMLUndo {
 	GSList   *redo_levels;
 	guint     level;
 	guint     in_redo;
+	gint      step_counter;
 };
 
 #ifdef UNDO_DEBUG
@@ -92,6 +93,7 @@ html_undo_destroy  (HTMLUndo *undo)
 	g_return_if_fail (undo != NULL);
 
 	destroy_action_list (undo->undo.stack);
+	destroy_action_list (undo->undo_used.stack);
 	destroy_action_list (undo->redo.stack);
 
 	g_free (undo);
@@ -135,8 +137,10 @@ action_do_and_destroy_undo (HTMLEngine *engine, HTMLUndo *undo, HTMLUndoDirectio
 	html_cursor_jump_to_position (engine->cursor, engine, action->position_after);
 
 	undo->undo.stack = g_list_remove (first, first->data);
-	if (undo->level == 0)
+	if (undo->level == 0) {
 		undo->undo_used.stack = g_list_prepend (undo->undo_used.stack, action);
+		undo->step_counter --;
+	}
 }
 
 void
@@ -217,22 +221,26 @@ html_undo_add_undo_action  (HTMLUndo *undo, HTMLUndoAction *action)
 	g_return_if_fail (undo != NULL);
 	g_return_if_fail (action != NULL);
 
-	if (undo->level == 0 && undo->in_redo == 0 && undo->redo.size > 0)
-		add_used_and_redo_to_undo (undo);
+	if (undo->level == 0) {
+		if (undo->in_redo == 0 && undo->redo.size > 0)
+			add_used_and_redo_to_undo (undo);
 
-	if (!undo->level && undo->undo.size >= HTML_UNDO_LIMIT) {
-		HTMLUndoAction *last_action;
-		GList *last;
+		if (undo->undo.size >= HTML_UNDO_LIMIT) {
+			HTMLUndoAction *last_action;
+			GList *last;
 
-		last = g_list_last (undo->undo.stack);
-		last_action = (HTMLUndoAction *) last->data;
+			last = g_list_last (undo->undo.stack);
+			last_action = (HTMLUndoAction *) last->data;
 
-		undo->undo.stack = g_list_remove_link (undo->undo.stack, last);
-		g_list_free (last);
+			undo->undo.stack = g_list_remove_link (undo->undo.stack, last);
+			g_list_free (last);
 
-		html_undo_action_destroy (last_action);
+			html_undo_action_destroy (last_action);
 
-		undo->undo.size--;
+			undo->undo.size--;
+		}
+
+		undo->step_counter ++;
 	}
 
 	undo->undo.stack = g_list_prepend (undo->undo.stack, action);
@@ -254,7 +262,7 @@ html_undo_add_redo_action  (HTMLUndo *undo,
 	g_return_if_fail (action != NULL);
 
 	undo->redo.stack = g_list_prepend (undo->redo.stack, action);
-	undo->redo.size++;
+	undo->redo.size ++;
 }
 
 void
@@ -580,3 +588,37 @@ html_undo_debug (HTMLUndo *undo)
 }
 
 #endif
+
+void
+html_undo_reset (HTMLUndo *undo)
+{
+	g_return_if_fail (undo != NULL);
+	g_return_if_fail (undo->level == 0);
+
+	destroy_action_list (undo->undo.stack);
+	destroy_action_list (undo->undo_used.stack);
+	destroy_action_list (undo->redo.stack);
+
+	undo->undo.stack = NULL;
+	undo->undo.size  = 0;
+	undo->undo_used.stack = NULL;
+	undo->undo_used.size  = 0;
+	undo->redo.stack = NULL;
+	undo->redo.size  = 0;
+
+	undo->step_counter = 0;
+}
+
+gboolean
+html_undo_has_undo_steps (HTMLUndo *undo)
+{
+	g_assert (undo->step_counter >= 0);
+
+	return undo->step_counter > 0;
+}
+
+gint
+html_undo_get_step_count (HTMLUndo *undo)
+{
+	return undo->step_counter;
+}

@@ -32,15 +32,14 @@
 #include "htmltypes.h"
 #include "htmlenums.h"
 #include "htmlcursor.h"
+#include "htmlfontmanager.h"
 
-
 #define HTML_TYPE_ENGINE                 (html_engine_get_type ())
 #define HTML_ENGINE(obj)                 (GTK_CHECK_CAST ((obj), HTML_TYPE_ENGINE, HTMLEngine))
 #define HTML_ENGINE_CLASS(klass)         (GTK_CHECK_CLASS_CAST ((klass), HTML_TYPE_ENGINE, HTMLEngineClass))
 #define HTML_IS_ENGINE(obj)              (GTK_CHECK_TYPE ((obj), HTML_TYPE_ENGINE))
 #define HTML_IS_ENGINE_CLASS(klass)      (GTK_CHECK_CLASS_TYPE ((klass), HTML_TYPE_ENGINE))
 
-
 /* FIXME extreme hideous ugliness in the following lines.  */
 
 #define LEFT_BORDER 10
@@ -69,6 +68,9 @@ struct _HTMLEngine {
 	HTMLObject *clipboard;
 	guint       clipboard_len;
 	GList      *clipboard_stack;
+
+	HTMLObject *primary;
+	guint       primary_len;
 
 	/* Freeze counter.  When greater than zero, we never trigger relayouts
            nor repaints.  When going from nonzero to zero, we relayout and
@@ -115,12 +117,16 @@ struct _HTMLEngine {
 	gboolean eat_space;
 	gboolean allow_frameset;
 	gboolean newPage;
+	gboolean begin;
  
-	HTMLStack *font_style_stack; /* Font style stack, elements are GtkHTMLFontStyles.  */
+	GtkHTMLFontStyle font_style;
+	gint font_style_attrs [GTK_HTML_FONT_STYLE_SHIFT_LAST - GTK_HTML_FONT_STYLE_SHIFT_FIRST + 1];
+	HTMLStack *font_size_stack;
 	HTMLStack *font_face_stack;
 	HTMLStack *color_stack;	/* Color stack, elements are GdkColors.  */
 	HTMLStack *clueflow_style_stack; /* Clueflow style stack, elements are HTMLClueFlowStyles.  */
 	HTMLStack *frame_stack;
+	HTMLStack *body_stack;
 
 	gchar *url;
 	gchar *target;
@@ -241,10 +247,14 @@ struct _HTMLEngine {
 	/* table contains data, which are set to objects by type during parse time */
 	GHashTable *class_data;
 
+	/* table of maps */
+	GHashTable *map_table;
+
 	gdouble min_split_index;
 
 	gboolean need_spell_check;
 	gint block_events;
+	gchar *language;
 
 	GSList *cursor_position_stack;
 	gboolean selection_mode;
@@ -255,6 +265,14 @@ struct _HTMLEngine {
 	HTMLCursorRectangle cursor_image;
 
 	GList *cut_and_paste_stack;
+
+	gboolean block;
+	gint opened_streams;
+
+	HTMLObject *focus_object;
+
+	gboolean save_data;
+	gint saved_step_count;
 };
 
 /* must be forward referenced *sigh* */
@@ -262,7 +280,9 @@ struct _HTMLEmbedded;
 
 struct _HTMLEngineClass {
 	GtkObjectClass parent_class;
-	
+
+	HTMLFontManager font_manager [HTML_FONT_MANAGER_ID_N];
+
 	void (* title_changed) (HTMLEngine *engine);
 	void (* set_base) (HTMLEngine *engine, const gchar *base);
 	void (* set_base_target) (HTMLEngine *engine, const gchar *base_target);
@@ -309,6 +329,7 @@ gboolean  html_engine_calc_size        (HTMLEngine *e,
 gint  html_engine_get_doc_height       (HTMLEngine *p);
 gint  html_engine_get_doc_width        (HTMLEngine *e);
 gint  html_engine_get_max_width        (HTMLEngine *e);
+gint  html_engine_get_max_height       (HTMLEngine *e);
 void  html_engine_draw                 (HTMLEngine *e,
 					gint        x,
 					gint        y,
@@ -395,10 +416,13 @@ void      html_engine_init_magic_links          (void);
 
 /* spell checking */
 void      html_engine_spell_check              (HTMLEngine  *e);
+void      html_engine_clear_spell_check        (HTMLEngine  *e);
 gchar    *html_engine_get_spell_word           (HTMLEngine  *e);
 gboolean  html_engine_spell_word_is_valid      (HTMLEngine  *e);
 void      html_engine_replace_spell_word_with  (HTMLEngine  *e,
 						const gchar *word);
+void      html_engine_set_language             (HTMLEngine  *e,
+						const gchar *language);
 
 /* view size - for image size specified in percent */
 gint  html_engine_get_view_width   (HTMLEngine *e);
@@ -414,9 +438,20 @@ HTMLObject *html_engine_get_object_by_id    (HTMLEngine  *e,
 HTMLEngine *html_engine_get_top_html_engine (HTMLEngine *e);
 void        html_engine_thaw_idle_reset     (HTMLEngine *e);
 
-const gchar *html_engine_get_class_data  (HTMLEngine  *e,
-					  const gchar *class_name,
-					  const gchar *key);
+/* class data */
+const gchar *html_engine_get_class_data        (HTMLEngine  *e,
+						const gchar *class_name,
+						const gchar *key);
+GHashTable  *html_engine_get_class_table       (HTMLEngine  *e,
+						const gchar *class_name);
+void         html_engine_set_class_data        (HTMLEngine  *e,
+						const gchar *class_name,
+						const gchar *key,
+						const gchar *value);
+void         html_engine_clear_class_data      (HTMLEngine  *e,
+						const gchar *class_name,
+						const gchar *key);
+void         html_engine_clear_all_class_data  (HTMLEngine  *e);
 gboolean  html_engine_intersection  (HTMLEngine *e,
 				     gint       *x1,
 				     gint       *y1,
@@ -428,4 +463,30 @@ void  html_engine_add_expose  (HTMLEngine *e,
 			       gint        width,
 			       gint        height);
 void html_engine_redraw_selection (HTMLEngine *e);
+
+gboolean    html_engine_focus              (HTMLEngine       *e,
+					    GtkDirectionType  dir);
+HTMLObject *html_engine_get_focus_object   (HTMLEngine       *e);
+void        html_engine_set_focus_object   (HTMLEngine       *e,
+					    HTMLObject       *o);
+void        html_engine_draw_focus_object  (HTMLEngine       *e);
+
+void      html_engine_saved     (HTMLEngine *e);
+gboolean  html_engine_is_saved  (HTMLEngine *e);
+
+HTMLMap *html_engine_get_map  (HTMLEngine  *e,
+			       const gchar *name);
+
+HTMLFontManager *html_engine_gdk_font_manager           (HTMLEngine  *e);
+HTMLFontManager *html_engine_plain_font_manager         (HTMLEngine  *e);
+HTMLFontManager *html_engine_font_manager               (HTMLEngine  *e);
+HTMLFontManager *html_engine_font_manager_with_painter  (HTMLEngine  *e,
+							 HTMLPainter *p);
+HTMLFontManager *html_engine_class_gdk_font_manager     (void);
+HTMLFontManager *html_engine_class_plain_font_manager   (void);
+
+gboolean html_engine_selection_contains_object_type (HTMLEngine *e,
+						     HTMLType obj_type);
+gboolean html_engine_selection_contains_link        (HTMLEngine *e);
+
 #endif /* _HTMLENGINE_H_ */

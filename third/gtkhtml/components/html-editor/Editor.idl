@@ -15,12 +15,6 @@
 module GNOME {
 module GtkHTML {
 module Editor {
-	interface Resolver : Bonobo::Unknown {
-		exception NotFound {};
-		
-		void loadURL (in Bonobo::ProgressiveDataSink sink, in string url) raises (NotFound);
-	};
-
 	interface Listener : Bonobo::Unknown {
 		any event (in string name, in any arg);
 	};
@@ -82,8 +76,20 @@ module Editor {
 		void freeze ();
 		void thaw ();
 
-		void undo_begin (in string undo_name, in string redo_name);
-		void undo_end ();
+		void undoBegin (in string undo_name, in string redo_name);
+		void undoEnd ();
+
+		void ignoreWord (in string word);
+
+		/*
+		 * drop undo drops all undo/redo queues
+		 */
+		void dropUndo ();
+
+		/*
+		 * is there any undo event in undo queue?
+		 */
+		boolean hasUndo ();
 	};
 	
 	struct URLRequestEvent {
@@ -93,3 +99,7 @@ module Editor {
 };
 };
 };
+
+
+
+

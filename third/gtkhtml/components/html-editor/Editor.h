@@ -15,56 +15,6 @@ extern "C"
 
 /** typedefs **/
 #include <bonobo/Bonobo.h>
-#if !defined(ORBIT_DECL_GNOME_GtkHTML_Editor_Resolver) && !defined(_GNOME_GtkHTML_Editor_Resolver_defined)
-#define ORBIT_DECL_GNOME_GtkHTML_Editor_Resolver 1
-#define _GNOME_GtkHTML_Editor_Resolver_defined 1
-#define GNOME_GtkHTML_Editor_Resolver__free CORBA_Object__free
-   typedef CORBA_Object GNOME_GtkHTML_Editor_Resolver;
-   extern CORBA_unsigned_long GNOME_GtkHTML_Editor_Resolver__classid;
-#if !defined(TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_0)
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_0 'E'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_1 'd'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_2 'i'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_3 't'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_4 'o'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_5 'r'
-   extern const struct CORBA_TypeCode_struct
-      TC_GNOME_GtkHTML_Editor_Resolver_struct;
-#define TC_GNOME_GtkHTML_Editor_Resolver ((CORBA_TypeCode)&TC_GNOME_GtkHTML_Editor_Resolver_struct)
-#endif
-#endif
-#define ex_GNOME_GtkHTML_Editor_Resolver_NotFound "IDL:GNOME/GtkHTML/Editor/Resolver/NotFound:1.0"
-   void _ORBIT_GNOME_GtkHTML_Editor_Resolver_NotFound_demarshal(GIOPRecvBuffer
-								*
-								_ORBIT_recv_buffer,
-								CORBA_Environment
-								* ev);
-   void _ORBIT_GNOME_GtkHTML_Editor_Resolver_NotFound_marshal(GIOPSendBuffer *
-							      _ORBIT_send_buffer,
-							      CORBA_Environment
-							      * ev);
-#if !defined(_GNOME_GtkHTML_Editor_Resolver_NotFound_defined)
-#define _GNOME_GtkHTML_Editor_Resolver_NotFound_defined 1
-   typedef struct
-   {
-      int dummy;
-   }
-   GNOME_GtkHTML_Editor_Resolver_NotFound;
-
-#if !defined(TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_0)
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_0 'E'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_1 'd'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_2 'i'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_3 't'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_4 'o'
-#define TC_IMPL_TC_GNOME_GtkHTML_Editor_Resolver_NotFound_5 'r'
-   extern const struct CORBA_TypeCode_struct
-      TC_GNOME_GtkHTML_Editor_Resolver_NotFound_struct;
-#define TC_GNOME_GtkHTML_Editor_Resolver_NotFound ((CORBA_TypeCode)&TC_GNOME_GtkHTML_Editor_Resolver_NotFound_struct)
-#endif
-#define GNOME_GtkHTML_Editor_Resolver_NotFound__alloc() NULL
-   extern gpointer GNOME_GtkHTML_Editor_Resolver_NotFound__free(gpointer mem, gpointer dat, CORBA_boolean free_strings);	/* ORBit internal use */
-#endif
 #if !defined(ORBIT_DECL_GNOME_GtkHTML_Editor_Listener) && !defined(_GNOME_GtkHTML_Editor_Listener_defined)
 #define ORBIT_DECL_GNOME_GtkHTML_Editor_Listener 1
 #define _GNOME_GtkHTML_Editor_Listener_defined 1
@@ -127,36 +77,6 @@ extern "C"
 #endif
 
 /** POA structures **/
-   typedef struct
-   {
-      void *_private;
-      void (*loadURL) (PortableServer_Servant _servant,
-		       const Bonobo_ProgressiveDataSink sink,
-		       const CORBA_char * url, CORBA_Environment * ev);
-   }
-   POA_GNOME_GtkHTML_Editor_Resolver__epv;
-   typedef struct
-   {
-      PortableServer_ServantBase__epv *_base_epv;
-      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
-      POA_GNOME_GtkHTML_Editor_Resolver__epv
-	 *GNOME_GtkHTML_Editor_Resolver_epv;
-   }
-   POA_GNOME_GtkHTML_Editor_Resolver__vepv;
-   typedef struct
-   {
-      void *_private;
-      POA_GNOME_GtkHTML_Editor_Resolver__vepv *vepv;
-   }
-   POA_GNOME_GtkHTML_Editor_Resolver;
-   extern void POA_GNOME_GtkHTML_Editor_Resolver__init(PortableServer_Servant
-						       servant,
-						       CORBA_Environment *
-						       ev);
-   extern void POA_GNOME_GtkHTML_Editor_Resolver__fini(PortableServer_Servant
-						       servant,
-						       CORBA_Environment *
-						       ev);
    typedef struct
    {
       void *_private;
@@ -227,12 +147,18 @@ extern "C"
       void (*freeze) (PortableServer_Servant _servant,
 		      CORBA_Environment * ev);
       void (*thaw) (PortableServer_Servant _servant, CORBA_Environment * ev);
-      void (*undo_begin) (PortableServer_Servant _servant,
-			  const CORBA_char * undo_name,
-			  const CORBA_char * redo_name,
-			  CORBA_Environment * ev);
-      void (*undo_end) (PortableServer_Servant _servant,
+      void (*undoBegin) (PortableServer_Servant _servant,
+			 const CORBA_char * undo_name,
+			 const CORBA_char * redo_name,
+			 CORBA_Environment * ev);
+      void (*undoEnd) (PortableServer_Servant _servant,
+		       CORBA_Environment * ev);
+      void (*ignoreWord) (PortableServer_Servant _servant,
+			  const CORBA_char * word, CORBA_Environment * ev);
+      void (*dropUndo) (PortableServer_Servant _servant,
 			CORBA_Environment * ev);
+       CORBA_boolean(*hasUndo) (PortableServer_Servant _servant,
+				CORBA_Environment * ev);
    }
    POA_GNOME_GtkHTML_Editor_Engine__epv;
    typedef struct
@@ -256,14 +182,6 @@ extern "C"
 						     CORBA_Environment * ev);
 
 /** prototypes **/
-#define GNOME_GtkHTML_Editor_Resolver_ref Bonobo_Unknown_ref
-#define GNOME_GtkHTML_Editor_Resolver_unref Bonobo_Unknown_unref
-#define GNOME_GtkHTML_Editor_Resolver_queryInterface Bonobo_Unknown_queryInterface
-   void GNOME_GtkHTML_Editor_Resolver_loadURL(GNOME_GtkHTML_Editor_Resolver
-					      _obj,
-					      const Bonobo_ProgressiveDataSink
-					      sink, const CORBA_char * url,
-					      CORBA_Environment * ev);
 #define GNOME_GtkHTML_Editor_Listener_ref Bonobo_Unknown_ref
 #define GNOME_GtkHTML_Editor_Listener_unref Bonobo_Unknown_unref
 #define GNOME_GtkHTML_Editor_Listener_queryInterface Bonobo_Unknown_queryInterface
@@ -324,22 +242,22 @@ extern "C"
 					   CORBA_Environment * ev);
    void GNOME_GtkHTML_Editor_Engine_thaw(GNOME_GtkHTML_Editor_Engine _obj,
 					 CORBA_Environment * ev);
-   void GNOME_GtkHTML_Editor_Engine_undo_begin(GNOME_GtkHTML_Editor_Engine
-					       _obj,
-					       const CORBA_char * undo_name,
-					       const CORBA_char * redo_name,
+   void GNOME_GtkHTML_Editor_Engine_undoBegin(GNOME_GtkHTML_Editor_Engine
+					      _obj,
+					      const CORBA_char * undo_name,
+					      const CORBA_char * redo_name,
+					      CORBA_Environment * ev);
+   void GNOME_GtkHTML_Editor_Engine_undoEnd(GNOME_GtkHTML_Editor_Engine _obj,
+					    CORBA_Environment * ev);
+   void GNOME_GtkHTML_Editor_Engine_ignoreWord(GNOME_GtkHTML_Editor_Engine
+					       _obj, const CORBA_char * word,
 					       CORBA_Environment * ev);
-   void GNOME_GtkHTML_Editor_Engine_undo_end(GNOME_GtkHTML_Editor_Engine _obj,
+   void GNOME_GtkHTML_Editor_Engine_dropUndo(GNOME_GtkHTML_Editor_Engine _obj,
 					     CORBA_Environment * ev);
+   CORBA_boolean
+      GNOME_GtkHTML_Editor_Engine_hasUndo(GNOME_GtkHTML_Editor_Engine _obj,
+					  CORBA_Environment * ev);
 
-   void
-      _ORBIT_skel_GNOME_GtkHTML_Editor_Resolver_loadURL
-      (POA_GNOME_GtkHTML_Editor_Resolver * _ORBIT_servant,
-       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       void (*_impl_loadURL) (PortableServer_Servant _servant,
-			      const Bonobo_ProgressiveDataSink sink,
-			      const CORBA_char * url,
-			      CORBA_Environment * ev));
    void
       _ORBIT_skel_GNOME_GtkHTML_Editor_Listener_event
       (POA_GNOME_GtkHTML_Editor_Listener * _ORBIT_servant,
@@ -438,19 +356,38 @@ extern "C"
        void (*_impl_thaw) (PortableServer_Servant _servant,
 			   CORBA_Environment * ev));
    void
-      _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_begin
+      _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undoBegin
       (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       void (*_impl_undo_begin) (PortableServer_Servant _servant,
-				 const CORBA_char * undo_name,
-				 const CORBA_char * redo_name,
+       void (*_impl_undoBegin) (PortableServer_Servant _servant,
+				const CORBA_char * undo_name,
+				const CORBA_char * redo_name,
+				CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undoEnd
+      (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_undoEnd) (PortableServer_Servant _servant,
+			      CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_ignoreWord
+      (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       void (*_impl_ignoreWord) (PortableServer_Servant _servant,
+				 const CORBA_char * word,
 				 CORBA_Environment * ev));
    void
-      _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_undo_end
+      _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_dropUndo
       (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
        GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
-       void (*_impl_undo_end) (PortableServer_Servant _servant,
+       void (*_impl_dropUndo) (PortableServer_Servant _servant,
 			       CORBA_Environment * ev));
+   void
+      _ORBIT_skel_GNOME_GtkHTML_Editor_Engine_hasUndo
+      (POA_GNOME_GtkHTML_Editor_Engine * _ORBIT_servant,
+       GIOPRecvBuffer * _ORBIT_recv_buffer, CORBA_Environment * ev,
+       CORBA_boolean(*_impl_hasUndo) (PortableServer_Servant _servant,
+				      CORBA_Environment * ev));
 #ifdef __cplusplus
 }
 #endif				/* __cplusplus */

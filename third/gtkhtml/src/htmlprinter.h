@@ -22,18 +22,24 @@
 #ifndef _HTMLPRINTER_H
 #define _HTMLPRINTER_H
 
+#include <libgnome/gnome-paper.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-master.h>
 #include "htmlpainter.h"
 
-
 #define HTML_TYPE_PRINTER                 (html_printer_get_type ())
 #define HTML_PRINTER(obj)                 (GTK_CHECK_CAST ((obj), HTML_TYPE_PRINTER, HTMLPrinter))
 #define HTML_PRINTER_CLASS(klass)         (GTK_CHECK_CLASS_CAST ((klass), HTML_TYPE_PRINTER, HTMLPrinterClass))
 #define HTML_IS_PRINTER(obj)              (GTK_CHECK_TYPE ((obj), HTML_TYPE_PRINTER))
 #define HTML_IS_PRINTER_CLASS(klass)      (GTK_CHECK_CLASS_TYPE ((klass), HTML_TYPE_PRINTER))
 
-
+/* The following macros are used to convert between the HTMLEngine coordinate
+   system (which uses integers) to the GnomePrint one (which uses doubles). */
+
+#define SCALE_ENGINE_TO_GNOME_PRINT(x) ((printer->scale * (x)) / 1024.0)
+#define SCALE_GNOME_PRINT_TO_ENGINE(x) ((gint) (((x) * 1024.0 / printer->scale) + 0.5))
+#define SCALE_GNOME_PRINT_FONT_TO_ENGINE(x) ((gint) (((x) * 1024.0) + 0.5))
+
 struct _HTMLPrinter {
 	HTMLPainter base;
 

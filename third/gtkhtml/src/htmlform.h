@@ -50,6 +50,7 @@ void html_form_submit (HTMLForm *form);
 void html_form_reset (HTMLForm *form);
 void html_form_destroy (HTMLForm *form);
 void html_form_add_radio (HTMLForm *form, char *name, GtkRadioButton *button);
+void html_form_set_engine (HTMLForm *form, HTMLEngine *engine);
 
 #endif /* _HTMLFORM_H_ */
 

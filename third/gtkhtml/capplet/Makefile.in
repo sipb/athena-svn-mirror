@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -68,6 +68,7 @@ CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EDITOR_API_VERSION = @EDITOR_API_VERSION@
 EXEEXT = @EXEEXT@
 EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
 EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
@@ -76,8 +77,6 @@ GCONF_LIBS = @GCONF_LIBS@
 GENCAT = @GENCAT@
 GHTTP_CFLAGS = @GHTTP_CFLAGS@
 GHTTP_LIBS = @GHTTP_LIBS@
-GLIBWWW_CFLAGS = @GLIBWWW_CFLAGS@
-GLIBWWW_LIBS = @GLIBWWW_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -100,6 +99,8 @@ GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_INCLUDEDIR = @GTKHTML_INCLUDEDIR@
 GTKHTML_LIBDIR = @GTKHTML_LIBDIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
+GTKHTML_RELEASE = @GTKHTML_RELEASE@
+GTKHTML_RELEASE_STRING = @GTKHTML_RELEASE_STRING@
 GTKHTML_REVISION = @GTKHTML_REVISION@
 GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
 GT_NO = @GT_NO@
@@ -110,6 +111,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 LDFLAGS = @LDFLAGS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -126,44 +128,68 @@ PACKAGE = @PACKAGE@
 POFILES = @POFILES@
 POSUB = @POSUB@
 RANLIB = @RANLIB@
+SOUP_CFLAGS = @SOUP_CFLAGS@
+SOUP_LIBS = @SOUP_LIBS@
 STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-gladedir = $(datadir)/gtkhtml
+gladedir = $(GTKHTML_DATADIR)
 glade_DATA = gtkhtml-capplet.glade
 
-INCLUDES =  	-I$(top_srcdir)/src				-I$(includedir)					$(GNOME_CAPPLET_CFLAGS) 			$(GNOME_INCLUDEDIR)				$(EXTRA_GNOME_CFLAGS)				-DGNOMELOCALEDIR=\"$(datadir)/locale\"		-DGLADE_DATADIR=\"$(gladedir)\"
+INCLUDES = \
+	-I$(top_srcdir)/src			\
+	-I$(includedir)				\
+	$(GNOME_CAPPLET_CFLAGS) 		\
+	$(GNOME_INCLUDEDIR)			\
+	$(EXTRA_GNOME_CFLAGS)			\
+	-DGNOMELOCALEDIR=\"$(datadir)/locale\"	\
+	-DGLADE_DATADIR=\"$(gladedir)\"
 
 
 CFLAGS = @CFLAGS@ $(GCONF_CFLAGS)
 
 bin_PROGRAMS = gtkhtml-properties-capplet
-gtkhtml_properties_capplet_SOURCES =  	gnome-bindings-prop.h 				gnome-bindings-prop.c				main.c
+gtkhtml_properties_capplet_SOURCES = \
+	gnome-bindings-prop.h 			\
+	gnome-bindings-prop.c			\
+	main.c
 
 
-LDADD =  	$(GNOME_LIBDIR) 			$(EXTRA_GNOME_LIBS)			$(GNOME_CAPPLET_LIBS) 			$(GCONF_LIBS) 				$(top_builddir)/src/libgtkhtml.la
+LDADD = \
+	$(GNOME_LIBDIR) 		\
+	$(EXTRA_GNOME_LIBS)		\
+	$(GNOME_CAPPLET_LIBS) 		\
+	$(GCONF_LIBS) 			\
+	$(top_builddir)/src/libgtkhtml-@GTKHTML_RELEASE@.la
 
 
 sysdir = $(datadir)/control-center/Documents/
 sys_DATA = gtkhtml-properties.desktop
 
-newsysdir = $(datadir)/control-center/capplets/
-newsys_DATA = gtkhtml-properties.desktop
-
 deskdir = $(datadir)/gnome/apps/Settings/Documents/
 desk_DATA = gtkhtml-properties.desktop
 
-EXTRA_DIST =  	$(desk_DATA).in		gtkhtml-capplet.glade
+EXTRA_DIST = \
+	$(desk_DATA).in	\
+	gtkhtml-capplet.glade
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -178,13 +204,13 @@ gtkhtml_properties_capplet_OBJECTS =  gnome-bindings-prop.$(OBJEXT) \
 main.$(OBJEXT)
 gtkhtml_properties_capplet_LDADD = $(LDADD)
 gtkhtml_properties_capplet_DEPENDENCIES =  \
-$(top_builddir)/src/libgtkhtml.la
+$(top_builddir)/src/libgtkhtml-@GTKHTML_RELEASE@.la
 gtkhtml_properties_capplet_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(desk_DATA) $(glade_DATA) $(newsys_DATA) $(sys_DATA)
+DATA =  $(desk_DATA) $(glade_DATA) $(sys_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -318,25 +344,6 @@ uninstall-gladeDATA:
 	  rm -f $(DESTDIR)$(gladedir)/$$p; \
 	done
 
-install-newsysDATA: $(newsys_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(newsysdir)
-	@list='$(newsys_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(newsysdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(newsysdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(newsysdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(newsysdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-newsysDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(newsys_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(newsysdir)/$$p; \
-	done
-
 install-sysDATA: $(sys_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(sysdir)
@@ -400,6 +407,11 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gnome-bindings-prop.o: gnome-bindings-prop.c ../config.h \
+	gnome-bindings-prop.h
+main.o: main.c ../config.h ../src/gtkhtml-properties.h \
+	../src/gtkhtml-types.h ../src/gtkhtml-enums.h ../src/gtkhtml.h \
+	../src/htmltypes.h ../src/htmlenums.h gnome-bindings-prop.h
 
 info-am:
 info: info-am
@@ -412,16 +424,14 @@ installcheck: installcheck-am
 install-exec-am: install-binPROGRAMS
 install-exec: install-exec-am
 
-install-data-am: install-deskDATA install-gladeDATA install-newsysDATA \
-		install-sysDATA
+install-data-am: install-deskDATA install-gladeDATA install-sysDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
 uninstall-am: uninstall-binPROGRAMS uninstall-deskDATA \
-		uninstall-gladeDATA uninstall-newsysDATA \
-		uninstall-sysDATA
+		uninstall-gladeDATA uninstall-sysDATA
 uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(DATA)
 all-redirect: all-am
@@ -429,8 +439,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(deskdir) \
-		$(DESTDIR)$(gladedir) $(DESTDIR)$(newsysdir) \
-		$(DESTDIR)$(sysdir)
+		$(DESTDIR)$(gladedir) $(DESTDIR)$(sysdir)
 
 
 mostlyclean-generic:
@@ -474,10 +483,9 @@ mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool uninstall-deskDATA \
 install-deskDATA uninstall-gladeDATA install-gladeDATA \
-uninstall-newsysDATA install-newsysDATA uninstall-sysDATA \
-install-sysDATA tags mostlyclean-tags distclean-tags clean-tags \
-maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
-installcheck-am installcheck install-exec-am install-exec \
+uninstall-sysDATA install-sysDATA tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \
 distclean-generic clean-generic maintainer-clean-generic clean \
@@ -485,7 +493,7 @@ mostlyclean distclean maintainer-clean
 
 
 $(desk_DATA): $(desk_DATA).in Makefile
-	sed -e 's?\@ICONSDIR\@?$(GTKHTML_DATADIR)/gtkhtml/icons?g' \
+	sed -e 's?\@ICONSDIR\@?$(GTKHTML_DATADIR)/icons?g' \
 	      < $(srcdir)/$(desk_DATA).in > $(desk_DATA).tmp \
 	  && mv $(desk_DATA).tmp $(desk_DATA)
 

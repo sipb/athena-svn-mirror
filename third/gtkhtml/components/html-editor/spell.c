@@ -21,6 +21,9 @@
 */
 
 #include <config.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <gal/widgets/e-scroll-frame.h>
 
 #include "gtkhtml.h"
@@ -36,10 +39,11 @@
 #include "htmlobject.h"
 #include "htmlselection.h"
 
+#include "menubar.h"
 #include "spell.h"
 
-#define DICTIONARY_IID "OAFIID:GNOME_Spell_Dictionary:0.1"
-#define CONTROL_IID "OAFIID:GNOME_Spell_Control:0.1"
+#define DICTIONARY_IID "OAFIID:GNOME_Spell_Dictionary:0.2"
+#define CONTROL_IID "OAFIID:GNOME_Spell_Control:0.2"
 
 struct _SpellPopup {
 	GtkHTMLControlData *cd;
@@ -120,7 +124,7 @@ fill_suggestion_clist (GtkWidget *clist, const gchar *word, GtkHTMLControlData *
 	CORBA_exception_init (&ev);
 	seq = GNOME_Spell_Dictionary_getSuggestions (cd->dict, word, &ev );
 
-	if (ev._major == CORBA_NO_EXCEPTION) {
+	if (ev._major != CORBA_SYSTEM_EXCEPTION) {
 		for (i=0; i < seq->_length; i++) {
 			suggested_word [0] = seq->_buffer [i];
 			gtk_clist_append (GTK_CLIST (clist), (gchar **) suggested_word);
@@ -209,7 +213,7 @@ spell_check_word (GtkHTML *html, const gchar *word, gpointer data)
 	/* printf ("check word: %s\n", word); */
 	CORBA_exception_init (&ev);
 	rv = GNOME_Spell_Dictionary_checkWord (cd->dict, word, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION)
+	if (ev._major == CORBA_SYSTEM_EXCEPTION)
 		rv = TRUE;
 	CORBA_exception_free (&ev);
 
@@ -257,23 +261,18 @@ spell_set_language (GtkHTML *html, const gchar *language, gpointer data)
 	if (!cd->dict)
 		return;
 
+	/* printf ("spell_set_language %s\n", language); */
+
 	CORBA_exception_init (&ev);
-	GNOME_Spell_Dictionary_setTag (cd->dict, "language-tag", language, &ev);
+	GNOME_Spell_Dictionary_setLanguage (cd->dict, language, &ev);
 	CORBA_exception_free (&ev);
+
+	menubar_set_languages (cd, language);
 }
 
 void
 spell_init (GtkHTML *html, GtkHTMLControlData *cd)
 {
-	CORBA_Environment   ev;
-
-	if (!cd->dict)
-		return;
-
-	CORBA_exception_init (&ev);
-	/* GNOME_Spell_Dictionary_setTag (cd->dict, "sug-mode", "fast", &ev); */
-	GNOME_Spell_Dictionary_setTag (cd->dict, "encoding", "utf-8", &ev);
-	CORBA_exception_free (&ev);
 }
 
 static void
@@ -441,4 +440,79 @@ spell_check_dialog (GtkHTMLControlData *cd, gboolean whole_document)
 	gtk_widget_show (control);
 	gtk_container_add (GTK_CONTAINER (GNOME_DIALOG (dialog)->vbox), control);
 	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+}
+
+static void
+language_cb (BonoboUIComponent *uic, const char *path, Bonobo_UIComponent_EventType type,
+	     const char *state, gpointer user_data)
+{
+	GtkHTMLControlData *cd = (GtkHTMLControlData *) user_data;
+	GString *str, *lang;
+	gchar *val;
+	gint i;
+
+	if (cd->block_language_changes || !cd->languages)
+		return;
+
+	/* printf ("language callback %s\n", path); */
+
+	str = g_string_new (NULL);
+	lang = g_string_new (NULL);
+	for (i = 0; i < cd->languages->_length; i ++) {
+		g_string_sprintf (lang, "/commands/SpellLanguage%d", i + 1);
+		val = bonobo_ui_component_get_prop (cd->uic, lang->str, "state", NULL);
+		if (val && *val == '1') {
+			g_string_append (str, cd->languages->_buffer [i].abrev);
+			g_string_append_c (str, ' ');
+		}
+	}
+	html_engine_set_language (cd->html->engine, str->str);
+	g_string_free (str, TRUE);
+	g_string_free (lang, TRUE);
+}
+
+void
+spell_create_language_menu (GtkHTMLControlData *cd)
+{
+	CORBA_sequence_GNOME_Spell_Language *seq;
+	CORBA_Environment ev;
+
+	if (cd->dict == CORBA_OBJECT_NIL)
+		return;
+
+	CORBA_exception_init (&ev);
+	cd->languages = seq = GNOME_Spell_Dictionary_getLanguages (cd->dict, &ev);
+
+	if (ev._major == CORBA_NO_EXCEPTION) {
+		if (seq && seq->_length > 0) {
+			GString *str;
+			gchar *line;
+			gint i;
+
+			str = g_string_new ("<submenu name=\"EditSpellLanguagesSubmenu\" _label=\"");
+			g_string_append (str, _("Spell Checking _Languages"));
+			g_string_append (str, "\">\n");
+			for (i = 0; i < seq->_length; i ++) {
+				line = g_strdup_printf ("<menuitem name=\"SpellLanguage%d\" _label=\"%s\""
+							" verb=\"SpellLanguage%d\" type=\"toggle\"/>\n",
+							i + 1, seq->_buffer [i].name, i + 1);
+				g_string_append (str, line);
+				g_free (line);
+			}
+			g_string_append (str, "</submenu>\n");
+
+			bonobo_ui_component_set_translate (cd->uic, "/menu/Edit/EditMisc/EditSpellLanguages/",
+							   str->str, NULL);
+
+			for (i = 0; i < seq->_length; i ++) {
+				g_string_sprintf (str, "SpellLanguage%d", i + 1);
+				bonobo_ui_component_add_listener (cd->uic, str->str, language_cb, cd);
+			}
+			g_string_free (str, TRUE);
+		}
+	} else {
+		g_warning ("CORBA exception: %s\n", bonobo_exception_get_text (&ev));
+		cd->languages = NULL;
+	}
+	CORBA_exception_free (&ev);
 }

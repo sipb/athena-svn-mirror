@@ -33,24 +33,27 @@ struct _HTMLUndoData {
 	gint ref_count;
 };
 
-HTMLUndo          *html_undo_new                (void);
-void               html_undo_destroy            (HTMLUndo          *undo);
-void               html_undo_do_undo            (HTMLUndo          *undo,
-						 HTMLEngine        *engine);
-void               html_undo_do_redo            (HTMLUndo          *undo,
-						 HTMLEngine        *engine);
-void               html_undo_discard_redo       (HTMLUndo          *undo);
-void               html_undo_add_undo_action    (HTMLUndo          *undo,
-						 HTMLUndoAction    *action);
-void               html_undo_add_redo_action    (HTMLUndo          *undo,
-						 HTMLUndoAction    *action);
-void               html_undo_add_action         (HTMLUndo          *undo,
-						 HTMLUndoAction    *action,
-						 HTMLUndoDirection  dir);
-void               html_undo_level_begin        (HTMLUndo          *undo,
-						 const gchar       *undo_description,
-						 const gchar       *redo_description);
-void               html_undo_level_end          (HTMLUndo          *undo);
+HTMLUndo *html_undo_new              (void);
+void      html_undo_destroy          (HTMLUndo          *undo);
+void      html_undo_do_undo          (HTMLUndo          *undo,
+				      HTMLEngine        *engine);
+void      html_undo_do_redo          (HTMLUndo          *undo,
+				      HTMLEngine        *engine);
+void      html_undo_discard_redo     (HTMLUndo          *undo);
+void      html_undo_add_undo_action  (HTMLUndo          *undo,
+				      HTMLUndoAction    *action);
+void      html_undo_add_redo_action  (HTMLUndo          *undo,
+				      HTMLUndoAction    *action);
+void      html_undo_add_action       (HTMLUndo          *undo,
+				      HTMLUndoAction    *action,
+				      HTMLUndoDirection  dir);
+gboolean  html_undo_has_undo_steps   (HTMLUndo          *undo);
+void      html_undo_reset            (HTMLUndo          *undo);
+void      html_undo_level_begin      (HTMLUndo          *undo,
+				      const gchar       *undo_description,
+				      const gchar       *redo_description);
+void      html_undo_level_end        (HTMLUndo          *undo);
+gint      html_undo_get_step_count   (HTMLUndo          *undo);
 /*
  *  Undo Data
  */

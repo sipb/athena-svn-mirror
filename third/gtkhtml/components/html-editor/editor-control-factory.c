@@ -63,16 +63,14 @@
 #include "properties.h"
 #include "text.h"
 #include "paragraph.h"
-#include "link.h"
 #include "body.h"
 #include "spell.h"
-#include "resolver-progressive-impl.h"
 #include "html-stream-mem.h"
 
 #include "gtkhtmldebug.h"
 
 #ifdef USING_OAF
-#define CONTROL_FACTORY_ID "OAFIID:GNOME_GtkHTML_Editor_Factory"
+#define CONTROL_FACTORY_ID "OAFIID:GNOME_GtkHTML_Editor_Factory:" EDITOR_API_VERSION
 #else
 #define CONTROL_FACTORY_ID "control-factory:html-editor"
 #endif
@@ -123,7 +121,7 @@ set_frame_cb (BonoboControl *control,
 		return;
 
 	remote_ui_container = bonobo_control_get_remote_ui_container (control);
-	ui_component = bonobo_control_get_ui_component (control);
+	control_data->uic = ui_component = bonobo_control_get_ui_component (control);
 	bonobo_ui_component_set_container (ui_component, remote_ui_container);
 
 	/* Setup the tool bar.  */
@@ -152,6 +150,8 @@ set_frame_cb (BonoboControl *control,
 		bonobo_ui_component_set_prop (ui_component, "/commands/EditSpellCheck", "sensitive", "0", NULL);
 	} else
 		control_data->has_spell_control = TRUE;
+
+	gtk_html_set_editor_api (GTK_HTML (control_data->html), editor_api, control_data);
 }
 
 static gint
@@ -173,7 +173,8 @@ release (GtkWidget *widget, GdkEventButton *event, GtkHTMLControlData *cd)
 			;
 		}
 		if (run_dialog) {
-			cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, FALSE, _("Properties"));
+			cd->properties_dialog = gtk_html_edit_properties_dialog_new (cd, FALSE, _("Properties"), 
+										     ICONDIR "/properties-16.png");
 			html_cursor_jump_to (e->cursor, e, cd->obj, 0);
 			html_engine_disable_selection (e);
 			html_engine_set_mark (e);
@@ -217,11 +218,6 @@ release (GtkWidget *widget, GdkEventButton *event, GtkHTMLControlData *cd)
 								   paragraph_properties,
 								   paragraph_apply_cb,
 								   paragraph_close_cb);
-			gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
-								   GTK_HTML_EDIT_PROPERTY_LINK, _("Link"),
-								   link_properties,
-								   link_apply_cb,
-								   link_close_cb);
 			gtk_html_edit_properties_dialog_add_entry (cd->properties_dialog,
 								   GTK_HTML_EDIT_PROPERTY_BODY, _("Page"),
 								   body_properties,
@@ -271,49 +267,6 @@ load_from_file (GtkHTML *html,
 	close (fd);
 	return TRUE;
 }
-
-#if 0
-static int
-load_from_corba (BonoboControl *control,
-		 GtkHTML *html,
-		 const char *url, 
-		 GtkHTMLStream *handle)
-{
-	GNOME_GtkHTML_Editor_Resolver resolver;
-	Bonobo_ControlFrame Frame;
-	CORBA_Environment ev;	
-	int ret_val = FALSE;
-
-	CORBA_exception_init (&ev);
-
-	Frame = bonobo_control_get_control_frame (control);
-	if (Frame != CORBA_OBJECT_NIL) {
-		resolver = Bonobo_Unknown_queryInterface (Frame,
-							   "IDL:GNOME/HTMLEditor/Resolver:1.0",
-							   &ev);
-		
-		if (resolver != CORBA_OBJECT_NIL) {
-			Bonobo_ProgressiveDataSink sink;
-			BonoboObject *object;
-
-			object = BONOBO_OBJECT (resolver_sink (html, url, handle));
-
-			sink = bonobo_object_corba_objref (object);
-			
-			GNOME_GtkHTML_Editor_Resolver_loadURL (resolver, sink, url, &ev);
-			if (ev._major != CORBA_NO_EXCEPTION){
-				g_warning ("Corba load exception");
-			} else {
-				/* g_print ("Corba Load successfull"); */
-				ret_val = TRUE;
-			}
-		} 
-	}
-	CORBA_exception_free (&ev);
-
-	return ret_val;
-}
-#endif
 
 static void
 url_requested_cb (GtkHTML *html, const char *url, GtkHTMLStream *handle, gpointer data)
@@ -414,7 +367,8 @@ editor_init_painters (GtkHTMLControlData *cd)
 	
 	if (!cd->plain_painter) {
 		cd->plain_painter = HTML_GDK_PAINTER (html_plain_painter_new (TRUE));
-		html_font_manager_set_default (&HTML_PAINTER (cd->plain_painter)->font_manager,
+		html_font_manager_set_default (html_engine_font_manager_with_painter (html->engine,
+										      HTML_PAINTER (cd->plain_painter)),
 					       prop->font_var,      prop->font_fix,
 					       prop->font_var_size, prop->font_var_points,
 					       prop->font_fix_size, prop->font_fix_points);
@@ -426,7 +380,7 @@ editor_init_painters (GtkHTMLControlData *cd)
 
 		/* the plain painter starts with a ref */
 		gtk_object_ref (GTK_OBJECT (cd->gdk_painter));
-	}	
+	}
 }
 
 static void
@@ -465,7 +419,8 @@ editor_set_format (GtkHTMLControlData *cd, gboolean format_html)
 }
 
 enum {
-	PROP_EDIT_HTML
+	PROP_EDIT_HTML,
+	PROP_HTML_TITLE
 } EditorControlProps;
 
 static void
@@ -481,7 +436,10 @@ editor_get_prop (BonoboPropertyBag *bag,
 	case PROP_EDIT_HTML:
 		BONOBO_ARG_SET_BOOLEAN (arg, cd->format_html);
 		break;
-	default:
+	case PROP_HTML_TITLE:
+		BONOBO_ARG_SET_STRING (arg, gtk_html_get_title (cd->html));
+		break;
+       	default:
 		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
 		break;
 	}
@@ -500,6 +458,9 @@ editor_set_prop (BonoboPropertyBag *bag,
 	switch (arg_id) {
 	case PROP_EDIT_HTML:
 		editor_set_format (cd, BONOBO_ARG_GET_BOOLEAN (arg));
+		break;
+	case PROP_HTML_TITLE:
+		gtk_html_set_title (cd->html, BONOBO_ARG_GET_STRING (arg));
 		break;
 	default:
 		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
@@ -524,10 +485,9 @@ editor_control_construct (BonoboControl *control, GtkWidget *vbox)
 	gtk_html_set_editable (GTK_HTML (html_widget), TRUE);
 
 	cd = gtk_html_control_data_new (GTK_HTML (html_widget), vbox);
-	gtk_html_set_editor_api (GTK_HTML (html_widget), editor_api, cd);
 
 	/* HTMLEditor::Engine */
-	cd->editor_bonobo_engine = editor_engine_new (GTK_HTML (html_widget));
+	cd->editor_bonobo_engine = editor_engine_new (cd);
 	bonobo_object_add_interface (BONOBO_OBJECT (control), 
 				     BONOBO_OBJECT (cd->editor_bonobo_engine));
 
@@ -551,6 +511,15 @@ editor_control_construct (BonoboControl *control, GtkWidget *vbox)
 				 "Whether or not to edit in HTML mode", 
 				 0);
 
+	CORBA_free (def);
+
+	def = bonobo_arg_new (BONOBO_ARG_STRING);
+	BONOBO_ARG_SET_STRING (def, "");
+
+	bonobo_property_bag_add (pb, "HTMLTitle", PROP_HTML_TITLE,
+				 BONOBO_ARG_STRING, def,
+				 "The title of the html document", 
+				 0);
 	CORBA_free (def);
 	/*
 	def = bonobo_arg_new (BONOBO_ARG_STRING);
@@ -591,10 +560,13 @@ editor_api_command (GtkHTML *html, GtkHTMLCommandType com_type, gpointer data)
 
 	switch (com_type) {
 	case GTK_HTML_COMMAND_POPUP_MENU:
-		popup_show (cd, NULL);
+		popup_show_at_cursor (cd);
 		break;
 	case GTK_HTML_COMMAND_PROPERTIES_DIALOG:
 		property_dialog_show (cd);
+		break;
+	case GTK_HTML_COMMAND_TEXT_COLOR_APPLY:
+		toolbar_apply_color (cd);
 		break;
 	default:
 		rv = FALSE;
@@ -806,7 +778,7 @@ editor_control_factory (BonoboGenericFactory *factory, gpointer closure)
 
 #ifdef GNOME_GTKHTML_EDITOR_SHLIB
 
-BONOBO_OAF_SHLIB_FACTORY ("OAFIID:GNOME_GtkHTML_Editor_Factory", "GNOME HTML Editor factory", editor_control_factory, NULL);
+BONOBO_OAF_SHLIB_FACTORY (CONTROL_FACTORY_ID, "GNOME HTML Editor factory", editor_control_factory, NULL);
 
 #else
 
@@ -834,7 +806,7 @@ init_corba (int *argc, char **argv)
 
 	CORBA_exception_init (&ev);
 
-	gnome_CORBA_init_with_popt_table ("html-editor-factory", "0.0",
+	gnome_CORBA_init_with_popt_table ("html-editor-factory", EDITOR_API_VERSION,
 					  argc, argv,
 					  NULL, 0, NULL,
 					  GNORBA_INIT_SERVER_FUNC,
@@ -864,8 +836,8 @@ main (int argc, char **argv)
 #endif
 
 	/* Initialize the i18n support */
-	bindtextdomain(PACKAGE, GNOMELOCALEDIR);
-	textdomain(PACKAGE);
+	bindtextdomain(GTKHTML_RELEASE_STRING, GNOMELOCALEDIR);
+	textdomain(GTKHTML_RELEASE_STRING);
 
 	init_bonobo (&argc, argv);
 #ifdef GTKHTML_HAVE_GCONF

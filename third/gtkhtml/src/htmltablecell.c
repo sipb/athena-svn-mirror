@@ -29,6 +29,7 @@
 #include "htmlengine-edit.h"
 #include "htmlengine-save.h"
 #include "htmlpainter.h"
+#include "htmlplainpainter.h"
 #include "htmltable.h"
 #include "htmltablepriv.h"
 #include "htmltablecell.h"
@@ -72,16 +73,18 @@ draw_background_helper (HTMLTableCell *cell,
 		}
 	} else if (t && t->bgPixmap)
 		pixbuf = t->bgPixmap->pixbuf;
-
-	html_painter_draw_background (p,
-				      color,
-				      pixbuf,
-				      tx + paint->x0,
-				      ty + paint->y0,
-				      paint->x1 - paint->x0,
-				      paint->y1 - paint->y0,
-				      paint->x0 - o->x,
-				      paint->y0 - (o->y - o->ascent));
+	
+	/* FIXME this should be moved into the painter interface */
+	if (!HTML_IS_PLAIN_PAINTER (p))
+		html_painter_draw_background (p,
+					      color,
+					      pixbuf,
+					      tx + paint->x0,
+					      ty + paint->y0,
+					      paint->x1 - paint->x0,
+					      paint->y1 - paint->y0,
+					      paint->x0 - o->x,
+					      paint->y0 - (o->y - o->ascent));
 }
 
 
@@ -285,7 +288,8 @@ save (HTMLObject *self,
 
 	SB cell->heading ? "<TH" : "<TD" SE;
 	if (cell->have_bg
-	    && (!HTML_TABLE (self->parent)->bgColor || !gdk_color_equal (&cell->bg, HTML_TABLE (self->parent)->bgColor)))
+	    && (!self->parent || !HTML_TABLE (self->parent)->bgColor
+		|| !gdk_color_equal (&cell->bg, HTML_TABLE (self->parent)->bgColor)))
 		SB " BGCOLOR=\"#%02x%02x%02x\"",
 			cell->bg.red >> 8,
 			cell->bg.green >> 8,

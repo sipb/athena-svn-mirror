@@ -46,6 +46,8 @@ struct _GtkHTMLControlData {
 	GtkWidget  *combo;
 	GtkWidget  *paragraph_option;
 
+	BonoboUIComponent *uic;
+
 	GtkHTMLEditPropertiesDialog   *properties_dialog;
 	GList                         *properties_types;
 
@@ -85,6 +87,8 @@ struct _GtkHTMLControlData {
 	guint font_style_changed_connection_id;
 	gboolean block_font_style_change;
 
+	CORBA_sequence_GNOME_Spell_Language *languages;
+	gboolean                block_language_changes;
 	GNOME_Spell_Dictionary  dict;
 	BonoboObjectClient     *dict_client;
 	EditorEngine           *editor_bonobo_engine;
@@ -96,6 +100,9 @@ struct _GtkHTMLControlData {
 	Bonobo_PropertyBag spell_control_pb;
 	gboolean has_spell_control;
 	gboolean spell_check_next;
+
+	GtkWidget *file_dialog;
+	gboolean file_html;
 };
 
 GtkHTMLControlData * gtk_html_control_data_new       (GtkHTML *html, GtkWidget *vbox);

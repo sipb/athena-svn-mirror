@@ -34,7 +34,7 @@
 #define MS_KEYMAP_NAME "MS like"
 
 static GtkWidget *capplet, *variable, *variable_print, *fixed, *fixed_print, *anim_check;
-static GtkWidget *bi, *live_spell_check, *language, *live_spell_color, *live_spell_frame, *magic_check;
+static GtkWidget *bi, *live_spell_check, *live_spell_frame, *magic_links_check, *magic_smileys_check, *button_cfg_spell;
 
 static gboolean active = FALSE;
 #ifdef GTKHTML_HAVE_GCONF
@@ -68,7 +68,8 @@ set_ui ()
 	SET_FONT (font_fix_print, fixed_print);
 
 	/* set to current state */
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (magic_check), actual_prop->magic_links);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (magic_links_check), actual_prop->magic_links);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (magic_smileys_check), actual_prop->magic_smileys);
 
 	if (!strcmp (actual_prop->keybindings_theme, "emacs")) {
 		keymap_name = EMACS_KEYMAP_NAME;
@@ -81,12 +82,7 @@ set_ui ()
 		/* keymap_name = CUSTOM_KEYMAP_NAME; */
 	gnome_bindings_properties_select_keymap (GNOME_BINDINGS_PROPERTIES (bi), keymap_name);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (live_spell_check), actual_prop->live_spell_check);
-	gtk_widget_set_sensitive (live_spell_color, actual_prop->live_spell_check);
-	gnome_color_picker_set_i16 (GNOME_COLOR_PICKER (live_spell_color),
-							actual_prop->spell_error_color.red,
-							actual_prop->spell_error_color.green,
-							actual_prop->spell_error_color.blue, 0);
-	gtk_entry_set_text (GTK_ENTRY (language), actual_prop->language);	
+	gtk_widget_set_sensitive (button_cfg_spell, actual_prop->live_spell_check);
 
 	active = TRUE;
 }
@@ -149,7 +145,8 @@ apply_editable (void)
 											      CUSTOM_KEYMAP_NAME));
 	*/
 	/* properties */
-	actual_prop->magic_links = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (magic_check));
+	actual_prop->magic_links = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (magic_links_check));
+	actual_prop->magic_smileys = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (magic_smileys_check));
 	keymap_name = gnome_bindings_properties_get_keymap_name (GNOME_BINDINGS_PROPERTIES (bi));
 	if (!keymap_name) {
 		keymap_id = "ms";
@@ -167,12 +164,6 @@ apply_editable (void)
 	actual_prop->keybindings_theme = g_strdup (keymap_id);
 
 	actual_prop->live_spell_check = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (live_spell_check));
-	gnome_color_picker_get_i16 (GNOME_COLOR_PICKER (live_spell_color),
-				    &actual_prop->spell_error_color.red,
-				    &actual_prop->spell_error_color.green,
-				    &actual_prop->spell_error_color.blue, NULL);
-	g_free (actual_prop->language);
-	actual_prop->language = g_strdup (gtk_entry_get_text (GTK_ENTRY (language)));
 }
 
 static void
@@ -218,7 +209,7 @@ changed (GtkWidget *widget, gpointer null)
 static void
 live_changed (GtkWidget *widget, gpointer null)
 {
-	gtk_widget_set_sensitive (live_spell_frame,
+	gtk_widget_set_sensitive (button_cfg_spell,
 				  GTK_TOGGLE_BUTTON (live_spell_check)->active);
 
 	changed (widget, null);
@@ -236,6 +227,16 @@ picker_clicked (GtkWidget *w, gpointer data)
 						      GTK_FONT_FILTER_BASE, GTK_FONT_ALL,
 						      NULL, NULL, NULL, NULL,
 						      mono_spaced, NULL);
+}
+
+static void
+cfg_spell (GtkWidget *w, gpointer data)
+{
+	gchar *argv[2] = {"gnome-spell-properties-capplet", NULL};
+
+	if (gnome_execute_async (NULL, 1, argv) < 0)
+		gnome_error_dialog (_("Cannot execute GNOME Spell control applet\n"
+				      "Try to install GNOME Spell if you don't have it installed."));
 }
 
 static void
@@ -268,11 +269,13 @@ setup (void)
 	gtk_signal_connect (GTK_OBJECT (fixed_print),     "clicked", picker_clicked, GINT_TO_POINTER (FALSE));
 
 	anim_check       = glade_xml_get_widget (xml, "anim_check");
-	magic_check      = glade_xml_get_widget (xml, "magic_check");
+	magic_links_check = glade_xml_get_widget (xml, "magic_links_check");
+	magic_smileys_check = glade_xml_get_widget (xml, "magic_smileys_check");
 	live_spell_check = glade_xml_get_widget (xml, "live_spell_check");
-	live_spell_color = glade_xml_get_widget (xml, "live_spell_color");
-	language         = glade_xml_get_widget (xml, "live_spell_entry");
 	live_spell_frame = glade_xml_get_widget (xml, "live_spell_frame");
+	button_cfg_spell = glade_xml_get_widget (xml, "button_configure_spell_checking");
+
+	gtk_signal_connect (GTK_OBJECT (button_cfg_spell), "clicked", cfg_spell, NULL);
 
 #define LOAD(x) \
 	base = g_strconcat ("gtkhtml/keybindingsrc.", x, NULL); \
