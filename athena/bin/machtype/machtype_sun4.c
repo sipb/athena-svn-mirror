@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.16 1996-08-20 19:27:01 cfields Exp $
+ *    $Id: machtype_sun4.c,v 1.17 1996-12-11 21:24:45 ghudson Exp $
  *    $Locker:  $
  */
 
@@ -20,6 +20,9 @@
 #include <ctype.h>
 /* OpenPROM stuff */
 #include <sys/promif.h>
+#include <sys/ddi.h>
+#include <sys/sunddi.h>
+#include <sys/ddi_impldefs.h>
 
 int verbose =0;
 char mydisk[128];
