@@ -1,5 +1,0 @@
-#!/bin/sh
-
-exec echo "mkdep is not supported for A/UX"
-
-exit 0
