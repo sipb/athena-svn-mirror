@@ -74,16 +74,16 @@
 <Btn3Motion>:	Stub() \n\
 Shift<Key>N:	BotFakeKeyPress(2) \n\
 Shift<Key>P:	BotFakeKeyPress(3) \n\
+Shift<Key>Q:	QuitCB() \n\
 !<Key>n:	BotFakeKeyPress(0) \n\
 !<Key>p:	BotFakeKeyPress(1) \n\
-!<Key>r:		BotFakeKeyPress(4) \n\
-<Key>c:		BotFakeKeyPress(5) \n\
-<Key>w:		BotFakeKeyPress(6) \n\
-<Key>f:		BotFakeKeyPress(7) \n\
-<Key>l:		BotFakeKeyPress(8) \n\
-<Key>h:		HelpCB() \n\
-<Key>q:		QuitCB() \n\
-<Key>g:		PopDownCB() \n\
+~Ctrl<Key>r:	BotFakeKeyPress(4) \n\
+~Ctrl<Key>c:	BotFakeKeyPress(5) \n\
+~Ctrl<Key>w:	BotFakeKeyPress(6) \n\
+~Ctrl<Key>f:	BotFakeKeyPress(7) \n\
+~Ctrl<Key>l:	BotFakeKeyPress(8) \n\
+~Ctrl<Key>h:	HelpCB() \n\
+~Ctrl<Key>g:	PopDownCB() \n\
 <Key>space:	DoTheRightThing() \n\
 <Key>Delete:	DoTheRightThingInReverse() \n\
-!<Key>:		Stub()
+<Key>:		Stub()
