@@ -89,12 +89,13 @@ GTKDOC = @GTKDOC@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
+LIBGNOMECANVAS_AGE = @LIBGNOMECANVAS_AGE@
 LIBGNOMECANVAS_CFLAGS = @LIBGNOMECANVAS_CFLAGS@
+LIBGNOMECANVAS_CURRENT = @LIBGNOMECANVAS_CURRENT@
 LIBGNOMECANVAS_LIBS = @LIBGNOMECANVAS_LIBS@
+LIBGNOMECANVAS_REVISION = @LIBGNOMECANVAS_REVISION@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
@@ -108,6 +109,8 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
 STRIP = @STRIP@
@@ -171,13 +174,24 @@ DOC_OVERRIDES =
 
 TARGET_DIR = $(HTML_DIR)/$(DOC_MODULE)
 
-EXTRA_DIST =  	$(content_files)			$(extra_files)				$(HTML_IMAGES)				$(DOC_MAIN_SGML_FILE)			$(DOC_MODULE).types			$(DOC_MODULE)-sections.txt		$(DOC_OVERRIDES)
+EXTRA_DIST = \
+	$(content_files)		\
+	$(extra_files)			\
+	$(HTML_IMAGES)			\
+	$(DOC_MAIN_SGML_FILE)		\
+	$(DOC_MODULE).types		\
+	$(DOC_MODULE)-sections.txt	\
+	$(DOC_OVERRIDES)
 
 
-DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp 	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
+DOC_STAMPS = scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp \
+	   $(srcdir)/tmpl.stamp $(srcdir)/sgml.stamp $(srcdir)/html.stamp
 
 
-SCANOBJ_FILES =  	$(DOC_MODULE).args 		$(DOC_MODULE).hierarchy 	$(DOC_MODULE).signals
+SCANOBJ_FILES = \
+	$(DOC_MODULE).args 	\
+	$(DOC_MODULE).hierarchy \
+	$(DOC_MODULE).signals
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -187,7 +201,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:

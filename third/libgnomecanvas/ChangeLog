@@ -1,18 +1,87 @@
-2002-11-20  Glynn Foster  <glynn.foster@sun.com>
+2003-01-23  Alexander Larsson  <alexl@redhat.com>
 
-	* configure.in: Release 2.0.5
+	* libgnomecanvas/Makefile.am (libgnomecanvas_2_la_LDFLAGS):
+	Correct version number error.
+
+	* configure.in:
+	Add EXTRAVERSION and set to .1
+	Added missing languages to ALL_LINGUAS.
+
+2003-01-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomecanvas/gnome-canvas.c (gnome_canvas_request_redraw_uta):
+	Comment out assert that caused lots of crashes.
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mn" to ALL_LINGUAS.
+
+2003-01-19  Marius Andreiana <marius galuna.ro>
+
+	* configure.in: added 'ro' to ALL_LINGUAS
+
+2003-01-16  Sebastian Rittau  <srittau@jroger.in-berlin.de>
+
+	* libgnomecanvas/gnome-canvas-shape.c (gnome_canvas_shape_init):
+	Initialize shape->priv->scale to 1.0.
+
+2003-01-09  Tor Lillqvist  <tml@iki.fi>
+
+	* configure.in: Similar setup for Win32 build as DLL as in glib
+	etc: Call AC_LIBTOOL_WIN32_DLL. Check for native Win32 or Win32
+	platform in general (including Cygwin). Set automake conditionals
+	OS_WIN32 and PLATFORM_WIN32. Use gcc -mms-bitfields for binary
+	compatibility with GTK+ DLLs.
+	
+	* libgnomecanvas/Makefile.am: [Win32] Use -no-undefined. Install
+	import libraries.
+
+	* glade/Makefile.am: [Win32] Use -no-undefined.
+		
+	* libgnomecanvas/gnome-canvas-util.c
+	(gnome_canvas_get_miter_points): Use G_PI and G_PI_2 instead of
+	M_PI and M_PI_2.
+
+2003-01-08  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Release 2.1.90
+
+2002-12-16  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Release 2.1.5
+
+2002-12-10  Chema Celorio  <chema@celorio.com>
+
+	* configure.in (GETTEXT_PACKAGE): remove autoheader warning
+
+2002-12-09  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Release 2.1.4
+
+2002-12-09  Artis Trops  <hornet@navigator.lv>
+
+	* configure.in: Added Latvian (lv) to ALL_LINGUAS.
+
+2002-11-27  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in: Release 2.1.1
+
+2002-11-10  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in: Added da to ALL_LINGUAS.
 
 2002-11-09  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-09-26  Stanislav Brabec  <sbrabec@suse.cz>
+2002-09-27  Anders Carlsson  <andersca@gnu.org>
 
-	* configure.in: Added cs to ALL_LINGUAS.
+	* configure.in: Release 2.1.0
 
-2002-09-17  Sebastian Rittau  <srittau@jroger.in-berlin.de>
+2202-08-24  Sebastian Rittau  <srittau@jroger.in-berlin.de>
 
-	Backport from HEAD:
+	The following patch needs to go into 2.0.x as well if it doesn't
+	break anything.
 
 	* libgnomecanvas/gnome-canvas-shape.c:
 	(gnome_canvas_shape_update):
@@ -20,13 +89,18 @@
 	calling gnome_canvas_path_def_any(). Original patch by Andreas
 	Holzmann <Andreas.Holzmann@epost.de>. Bugzilla #74127.
 
-2002-09-04  Anders Carlsson  <andersca@gnu.org>
+2002-08-23  Federico Mena Quintero  <federico@ximian.com>
 
-	* configure.in: Release 2.0.4
-
-2002-09-03  Peteris Krisjanis <peteris.krisjanis@os.lv>
-
-	* configure.in: Added lv (Latvian) to ALL_LINGUAS.
+	* libgnomecanvas/gnome-canvas.c (gnome_canvas_expose): Decompose
+	the event's region into rectangles and paint all of them, rather
+	than using the much bigger and wasteful event->area.
+	(gnome_canvas_request_update_real): Assert for correctness of the
+	idle handler versus the update flag.
+	(add_idle): Add our idle handler at a priority higher than
+	GDK_PRIORITY_REDRAW -- we must compute updates before drawing.
+	(gnome_canvas_request_redraw_uta): Assert for correctness of the
+	idle handler versus the redraw flag.
+	(paint): Don't re-run the update cycle here!
 
 2002-08-19  Gustavo Noronha Silva  <kov@debian.org>
 
@@ -201,7 +275,7 @@
 
 	* configure.in: Release 1.112.1
 
-2002-03-03  Tıivo Leedj‰rv  <leedjarv@interest.ee>
+2002-03-03  T√µivo Leedj√§rv  <leedjarv@interest.ee>
 
 	* configure.in (ALL_LINGUAS): Added et (Estonian).
 
@@ -1271,7 +1345,7 @@ Tue Jun 26 11:29:54 2001  Tim Janik  <timj@gtk.org>
 	This is a good test case for fixing the breakage since it is only
 	caused in gdk mode rather then aa canvas.
 
-2001-06-19  HÈctor GarcÌa ¡lvarez <hector@scouts-es.org>
+2001-06-19  H√©ctor Garc√≠a √Ålvarez <hector@scouts-es.org>
 
 	* configure.in: added "es" for Spanish to $ALL_LINGUAS
 	

@@ -1,0 +1,115 @@
+<refentry id="libgnomecanvas-gnome-canvas-utilsgml">
+<refmeta>
+<refentrytitle>gnome-canvas-util.sgml</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-canvas-util.sgml</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;libgnomecanvas/libgnomecanvas.h&gt;
+
+
+#define     <link linkend="gettext-macro">_</link>                               (String)
+#define     <link linkend="N--CAPS">N_</link>                              (String)
+#define     <link linkend="gettext">gettext</link>                         (String)
+#define     <link linkend="dgettext">dgettext</link>                        (Domain,Message)
+#define     <link linkend="dcgettext">dcgettext</link>                       (Domain,Message,Type)
+#define     <link linkend="textdomain">textdomain</link>                      (String)
+#define     <link linkend="bindtextdomain">bindtextdomain</link>                  (Domain,Directory)
+void        <link linkend="gnome-canvas-marshal-BOOLEAN--BOXED">gnome_canvas_marshal_BOOLEAN__BOXED</link>
+                                            (<link linkend="GClosure">GClosure</link> *closure,
+                                             <link linkend="GValue">GValue</link> *return_value,
+                                             <link linkend="guint">guint</link> n_param_values,
+                                             const <link linkend="GValue">GValue</link> *param_values,
+                                             <link linkend="gpointer">gpointer</link> invocation_hint,
+                                             <link linkend="gpointer">gpointer</link> marshal_data);
+void        <link linkend="gnome-canvas-marshal-VOID--OBJECT-INT-INT-INT-INT">gnome_canvas_marshal_VOID__OBJECT_INT_INT_INT_INT</link>
+                                            (<link linkend="GClosure">GClosure</link> *closure,
+                                             <link linkend="GValue">GValue</link> *return_value,
+                                             <link linkend="guint">guint</link> n_param_values,
+                                             const <link linkend="GValue">GValue</link> *param_values,
+                                             <link linkend="gpointer">gpointer</link> invocation_hint,
+                                             <link linkend="gpointer">gpointer</link> marshal_data);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+A longer description goes here.
+</para>
+
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gettext-macro">_()</title>
+<programlisting>#define     _(String)</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="N--CAPS">N_()</title>
+<programlisting>#define     N_(String)</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="gettext">gettext()</title>
+<programlisting>#    define gettext(String) (String)
+</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="dgettext">dgettext()</title>
+<programlisting>#    define dgettext(Domain,Message) (Message)
+</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="dcgettext">dcgettext()</title>
+<programlisting>#    define dcgettext(Domain,Message,Type) (Message)
+</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="textdomain">textdomain()</title>
+<programlisting>#    define textdomain(String) (String)
+</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="bindtextdomain">bindtextdomain()</title>
+<programlisting>#    define bindtextdomain(Domain,Directory) (Domain)
+</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-marshal-BOOLEAN--BOXED">gnome_canvas_marshal_BOOLEAN__BOXED ()</title>
+<programlisting>void        gnome_canvas_marshal_BOOLEAN__BOXED
+                                            (<link linkend="GClosure">GClosure</link> *closure,
+                                             <link linkend="GValue">GValue</link> *return_value,
+                                             <link linkend="guint">guint</link> n_param_values,
+                                             const <link linkend="GValue">GValue</link> *param_values,
+                                             <link linkend="gpointer">gpointer</link> invocation_hint,
+                                             <link linkend="gpointer">gpointer</link> marshal_data);</programlisting>
+</refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-marshal-VOID--OBJECT-INT-INT-INT-INT">gnome_canvas_marshal_VOID__OBJECT_INT_INT_INT_INT ()</title>
+<programlisting>void        gnome_canvas_marshal_VOID__OBJECT_INT_INT_INT_INT
+                                            (<link linkend="GClosure">GClosure</link> *closure,
+                                             <link linkend="GValue">GValue</link> *return_value,
+                                             <link linkend="guint">guint</link> n_param_values,
+                                             const <link linkend="GValue">GValue</link> *param_values,
+                                             <link linkend="gpointer">gpointer</link> invocation_hint,
+                                             <link linkend="gpointer">gpointer</link> marshal_data);</programlisting>
+</refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,127 @@
+<refentry id="libgnomecanvas-gnome-canvas-marshal">
+<refmeta>
+<refentrytitle>gnome-canvas-marshal</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-canvas-marshal</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+void        <link linkend="gnome-canvas-marshal-VOID--OBJECT-INT-INT-INT-INT">gnome_canvas_marshal_VOID__OBJECT_INT_INT_INT_INT</link>
+                                            (<link linkend="GClosure">GClosure</link> *closure,
+                                             <link linkend="GValue">GValue</link> *return_value,
+                                             <link linkend="guint">guint</link> n_param_values,
+                                             const <link linkend="GValue">GValue</link> *param_values,
+                                             <link linkend="gpointer">gpointer</link> invocation_hint,
+                                             <link linkend="gpointer">gpointer</link> marshal_data);
+void        <link linkend="gnome-canvas-marshal-BOOLEAN--BOXED">gnome_canvas_marshal_BOOLEAN__BOXED</link>
+                                            (<link linkend="GClosure">GClosure</link> *closure,
+                                             <link linkend="GValue">GValue</link> *return_value,
+                                             <link linkend="guint">guint</link> n_param_values,
+                                             const <link linkend="GValue">GValue</link> *param_values,
+                                             <link linkend="gpointer">gpointer</link> invocation_hint,
+                                             <link linkend="gpointer">gpointer</link> marshal_data);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gnome-canvas-marshal-VOID--OBJECT-INT-INT-INT-INT">gnome_canvas_marshal_VOID__OBJECT_INT_INT_INT_INT ()</title>
+<programlisting>void        gnome_canvas_marshal_VOID__OBJECT_INT_INT_INT_INT
+                                            (<link linkend="GClosure">GClosure</link> *closure,
+                                             <link linkend="GValue">GValue</link> *return_value,
+                                             <link linkend="guint">guint</link> n_param_values,
+                                             const <link linkend="GValue">GValue</link> *param_values,
+                                             <link linkend="gpointer">gpointer</link> invocation_hint,
+                                             <link linkend="gpointer">gpointer</link> marshal_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>return_value</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>n_param_values</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>param_values</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>invocation_hint</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>marshal_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gnome-canvas-marshal-BOOLEAN--BOXED">gnome_canvas_marshal_BOOLEAN__BOXED ()</title>
+<programlisting>void        gnome_canvas_marshal_BOOLEAN__BOXED
+                                            (<link linkend="GClosure">GClosure</link> *closure,
+                                             <link linkend="GValue">GValue</link> *return_value,
+                                             <link linkend="guint">guint</link> n_param_values,
+                                             const <link linkend="GValue">GValue</link> *param_values,
+                                             <link linkend="gpointer">gpointer</link> invocation_hint,
+                                             <link linkend="gpointer">gpointer</link> marshal_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>closure</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>return_value</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>n_param_values</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>param_values</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>invocation_hint</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>marshal_data</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

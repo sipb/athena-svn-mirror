@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
@@ -19,6 +20,8 @@ struct      <link linkend="GnomeCanvasLine">GnomeCanvasLine</link>;
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -36,6 +39,7 @@ struct      <link linkend="GnomeCanvasLine">GnomeCanvasLine</link>;
 <refsect2>
 <title><anchor id="GnomeCanvasLine">struct GnomeCanvasLine</title>
 <programlisting>struct GnomeCanvasLine {
+
 	GnomeCanvasItem item;
 
 	double *coords;		/* Array of coordinates for the line's points.  X coords are in the

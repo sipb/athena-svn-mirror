@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
@@ -20,6 +21,8 @@ struct      <link linkend="GnomeCanvasTextPrivate">GnomeCanvasTextPrivate</link>
 
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
@@ -37,6 +40,7 @@ struct      <link linkend="GnomeCanvasTextPrivate">GnomeCanvasTextPrivate</link>
 <refsect2>
 <title><anchor id="GnomeCanvasText">struct GnomeCanvasText</title>
 <programlisting>struct GnomeCanvasText {
+
 	GnomeCanvasItem item;
 
 	PangoFontDescription *font_desc; /* Font description for text */

@@ -1,0 +1,63 @@
+<refentry id="libgnomecanvas-libgnomecanvas">
+<refmeta>
+<refentrytitle>libgnomecanvas</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBGNOMECANVAS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>libgnomecanvas</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+<link linkend="GType">GType</link>       <link linkend="gnome-canvas-points-get-type">gnome_canvas_points_get_type</link>    (void);
+#define     <link linkend="GNOME-TYPE-CANVAS-POINTS-CAPS">GNOME_TYPE_CANVAS_POINTS</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gnome-canvas-points-get-type">gnome_canvas_points_get_type ()</title>
+<programlisting><link linkend="GType">GType</link>       gnome_canvas_points_get_type    (void);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="GNOME-TYPE-CANVAS-POINTS-CAPS">GNOME_TYPE_CANVAS_POINTS</title>
+<programlisting>#define GNOME_TYPE_CANVAS_POINTS gnome_canvas_points_get_type()
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

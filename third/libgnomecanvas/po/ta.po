@@ -5,44 +5,44 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tamil Libgnomecanvas 1.7\n"
-"POT-Creation-Date: 2002-11-20 16:01+0000\n"
+"POT-Creation-Date: 2003-01-23 16:16+0100\n"
 "PO-Revision-Date: 2001-10-09 11:09-0500\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil <tamilinux@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 # libgnomecanvas/gnome-canvas.c:1519 libgnomecanvas/gnome-canvas.c:1520
+#: libgnomecanvas/gnome-canvas.c:1400 libgnomecanvas/gnome-canvas.c:1401
 #: libgnomecanvas/gnome-canvas-rich-text.c:217
-#: libgnomecanvas/gnome-canvas.c:1396 libgnomecanvas/gnome-canvas.c:1397
 msgid "X"
-msgstr "Å¡¢¨º(X)"
+msgstr "Ã…Â¡Â¢Â¨Âº(X)"
 
 # libgnomecanvas/gnome-canvas.c:1526 libgnomecanvas/gnome-canvas.c:1527
+#: libgnomecanvas/gnome-canvas.c:1407 libgnomecanvas/gnome-canvas.c:1408
 #: libgnomecanvas/gnome-canvas-rich-text.c:225
-#: libgnomecanvas/gnome-canvas.c:1403 libgnomecanvas/gnome-canvas.c:1404
 msgid "Y"
-msgstr "¦¿ÎÅ¡¢¨º(Y)"
+msgstr "Â¦Â¿ÃÃ…Â¡Â¢Â¨Âº(Y)"
 
-#: libgnomecanvas/gnome-canvas.c:2048
+#: libgnomecanvas/gnome-canvas.c:2052
 msgid "Antialiased"
 msgstr ""
 
-#: libgnomecanvas/gnome-canvas.c:2049
+#: libgnomecanvas/gnome-canvas.c:2053
 msgid "The antialiasing mode of the canvas."
 msgstr ""
 
 # libgnomecanvas/gnome-canvas-text.c:203
-#: libgnomecanvas/gnome-canvas-rich-text.c:209
 #: libgnomecanvas/gnome-canvas-text.c:206
+#: libgnomecanvas/gnome-canvas-rich-text.c:209
 msgid "Text"
-msgstr "¯¨Ã"
+msgstr "Â¯Â¨Ãƒ"
 
 # libgnomecanvas/gnome-canvas-text.c:204
 #: libgnomecanvas/gnome-canvas-text.c:207
 msgid "Text to render"
-msgstr "Å¨ÃÂù§ÅñÊÂ ¯¨Ã"
+msgstr "Ã…Â¨ÃƒÃ‚Ã¹Â§Ã…Ã±ÃŠÃ‚ Â¯Â¨Ãƒ"
 
 # libgnomecanvas/gnome-canvas-text.c:212
 #: libgnomecanvas/gnome-canvas-text.c:215
@@ -57,39 +57,39 @@ msgstr ""
 # libgnomecanvas/gnome-canvas-text.c:238
 #: libgnomecanvas/gnome-canvas-text.c:241
 msgid "Font"
-msgstr "±ØòĞ Å¨¸"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸"
 
 # libgnomecanvas/gnome-canvas-text.c:239
 #: libgnomecanvas/gnome-canvas-text.c:242
 msgid "Font description as a string"
-msgstr "±ØòĞ Å¨¸Â¢ı Å¢ÅÃ½õ µ÷ ºÃÁ¡¸"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸Ã‚Â¢Ã½ Ã…Â¢Ã…ÃƒÂ½Ãµ ÂµÃ· ÂºÃƒÃÂ¡Â¸"
 
 # libgnomecanvas/gnome-canvas-text.c:247
 #: libgnomecanvas/gnome-canvas-text.c:250
 msgid "Font description"
-msgstr "±ØòĞ Å¨¸ Å¢ÅÃ½õ"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸ Ã…Â¢Ã…ÃƒÂ½Ãµ"
 
 # libgnomecanvas/gnome-canvas-text.c:248
 #: libgnomecanvas/gnome-canvas-text.c:251
 msgid "Font description as a PangoFontDescription struct"
-msgstr "±ØòĞ Å¨¸Â¢ı Å¢ÅÃ½õ PangoFontDescription struct ¬¸"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸Ã‚Â¢Ã½ Ã…Â¢Ã…ÃƒÂ½Ãµ PangoFontDescription struct Â¬Â¸"
 
 # libgnomecanvas/gnome-canvas-text.c:256
 #: libgnomecanvas/gnome-canvas-text.c:259
 msgid "Font family"
-msgstr "±ØòĞ Å¨¸ ÌÎõÀõ"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸ ÃŒÃÃµÃ€Ãµ"
 
 # libgnomecanvas/gnome-canvas-text.c:257
 #: libgnomecanvas/gnome-canvas-text.c:260
 msgid "Name of the font family, e.g. Sans, Helvetica, Times, Monospace"
-msgstr "±ØòĞ Å¨¸ì ÌÎõÀò¾¢ı ¦ÀÂ÷, ¯.¾¡. Sans, Helvetica, Times, Monospace"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸Ã¬ ÃŒÃÃµÃ€Ã²Â¾Â¢Ã½ Â¦Ã€Ã‚Ã·, Â¯.Â¾Â¡. Sans, Helvetica, Times, Monospace"
 
 # libgnomecanvas/gnome-canvas-text.c:273
 # libgnomecanvas/gnome-canvas-text.c:274
 #: libgnomecanvas/gnome-canvas-text.c:276
 #: libgnomecanvas/gnome-canvas-text.c:277
 msgid "Font style"
-msgstr "±ØòĞ Å¨¸ô À¡½¢"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸Ã´ Ã€Â¡Â½Â¢"
 
 # libgnomecanvas/gnome-canvas-text.c:283
 # libgnomecanvas/gnome-canvas-text.c:284
@@ -103,43 +103,43 @@ msgstr ""
 #: libgnomecanvas/gnome-canvas-text.c:296
 #: libgnomecanvas/gnome-canvas-text.c:297
 msgid "Font weight"
-msgstr "±ØòĞ Å¨¸ ¸Éõ"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸ Â¸Ã‰Ãµ"
 
 # libgnomecanvas/gnome-canvas-text.c:305
 # libgnomecanvas/gnome-canvas-text.c:306
 #: libgnomecanvas/gnome-canvas-text.c:308
 #: libgnomecanvas/gnome-canvas-text.c:309
 msgid "Font stretch"
-msgstr "±ØòĞ Å¨¸ ­ØôÒ"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸ Â­Ã˜Ã´Ã’"
 
 # libgnomecanvas/gnome-canvas-text.c:315
 # libgnomecanvas/gnome-canvas-text.c:316
 #: libgnomecanvas/gnome-canvas-text.c:318
 #: libgnomecanvas/gnome-canvas-text.c:319
 msgid "Font size"
-msgstr "±ØòĞ Å¨¸ «Ç×"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸ Â«Ã‡Ã—"
 
 # libgnomecanvas/gnome-canvas-text.c:326
 #: libgnomecanvas/gnome-canvas-text.c:329
 msgid "Font points"
-msgstr "±ØòĞ Å¨¸ô ÒûÇ¢¸û"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸Ã´ Ã’Ã»Ã‡Â¢Â¸Ã»"
 
 # libgnomecanvas/gnome-canvas-text.c:327
 #: libgnomecanvas/gnome-canvas-text.c:330
 msgid "Font size in points"
-msgstr "ÒûÇ¢¸Ç¢ø ±ØòĞ Å¨¸ «Ç×"
+msgstr "Ã’Ã»Ã‡Â¢Â¸Ã‡Â¢Ã¸ Â±Ã˜Ã²Ã Ã…Â¨Â¸ Â«Ã‡Ã—"
 
 # libgnomecanvas/gnome-canvas-text.c:337
 #: libgnomecanvas/gnome-canvas-text.c:340
 msgid "Rise"
-msgstr "±Æ¢ó¾¢Õ"
+msgstr "Â±Ã†Â¢Ã³Â¾Â¢Ã•"
 
 # libgnomecanvas/gnome-canvas-text.c:338
 #: libgnomecanvas/gnome-canvas-text.c:341
 msgid ""
 "Offset of text above the baseline (below the baseline if rise is negative)"
 msgstr ""
-"¸£ú§¸¡ğÎìÌ §Áø ­Õì¸§ÅñÊÂ ¯¨ÃÂ¢ı ­¨¼¦ÅÇ¢ ´Ğì¸õ (below the baseline if rise is "
+"Â¸Â£ÃºÂ§Â¸Â¡Ã°ÃÃ¬ÃŒ Â§ÃÃ¸ Â­Ã•Ã¬Â¸Â§Ã…Ã±ÃŠÃ‚ Â¯Â¨ÃƒÃ‚Â¢Ã½ Â­Â¨Â¼Â¦Ã…Ã‡Â¢ Â´ÃÃ¬Â¸Ãµ (below the baseline if rise is "
 "negative)"
 
 # libgnomecanvas/gnome-canvas-text.c:348
@@ -155,22 +155,22 @@ msgstr ""
 # libgnomecanvas/gnome-canvas-text.c:357
 #: libgnomecanvas/gnome-canvas-text.c:360
 msgid "Underline"
-msgstr "¸£ú§¸¡ÊÎ"
+msgstr "Â¸Â£ÃºÂ§Â¸Â¡ÃŠÃ"
 
 # libgnomecanvas/gnome-canvas-text.c:358
 #: libgnomecanvas/gnome-canvas-text.c:361
 msgid "Style of underline for this text"
-msgstr "­ó¾ ¯¨Ãì¸¡É ¸£ú§¸¡Êı Å¨¸"
+msgstr "Â­Ã³Â¾ Â¯Â¨ÃƒÃ¬Â¸Â¡Ã‰ Â¸Â£ÃºÂ§Â¸Â¡ÃŠÃ½ Ã…Â¨Â¸"
 
 # libgnomecanvas/gnome-canvas-text.c:367
 #: libgnomecanvas/gnome-canvas-text.c:370
 msgid "Scale"
-msgstr "«Ç×§¸¡ø"
+msgstr "Â«Ã‡Ã—Â§Â¸Â¡Ã¸"
 
 # libgnomecanvas/gnome-canvas-text.c:368
 #: libgnomecanvas/gnome-canvas-text.c:371
 msgid "Size of font, relative to default size"
-msgstr "¦¸¡¼¡¿¢¨ÄÂ¢ı «Ç¨Åô ¦À¡ÕòĞ, ±ØòĞ Å¨¸Â¢ı «Ç×"
+msgstr "Â¦Â¸Â¡Â¼Â¡Â¿Â¢Â¨Ã„Ã‚Â¢Ã½ Â«Ã‡Â¨Ã…Ã´ Â¦Ã€Â¡Ã•Ã²Ã, Â±Ã˜Ã²Ã Ã…Â¨Â¸Ã‚Â¢Ã½ Â«Ã‡Ã—"
 
 # libgnomecanvas/gnome-canvas-text.c:422
 # libgnomecanvas/gnome-canvas-text.c:430
@@ -179,62 +179,62 @@ msgstr "¦¸¡¼¡¿¢¨ÄÂ¢ı «Ç¨Åô ¦À¡ÕòĞ, ±ØòĞ Å¨¸Â¢ı «Ç×"
 #: libgnomecanvas/gnome-canvas-text.c:433
 #: libgnomecanvas/gnome-canvas-text.c:441
 msgid "Color"
-msgstr "Åñ½õ"
+msgstr "Ã…Ã±Â½Ãµ"
 
 # libgnomecanvas/gnome-canvas-text.c:423
 #: libgnomecanvas/gnome-canvas-text.c:426
 msgid "Text color, as string"
-msgstr "¯¨Ã Åñ½õ, µ÷ ºÃÁ¡¸"
+msgstr "Â¯Â¨Ãƒ Ã…Ã±Â½Ãµ, ÂµÃ· ÂºÃƒÃÂ¡Â¸"
 
 # libgnomecanvas/gnome-canvas-text.c:431
 #: libgnomecanvas/gnome-canvas-text.c:434
 msgid "Text color, as a GdkColor"
-msgstr "¯¨Ã Åñ½õ, µ÷ GdkColor Åñ½Á¡¸"
+msgstr "Â¯Â¨Ãƒ Ã…Ã±Â½Ãµ, ÂµÃ· GdkColor Ã…Ã±Â½ÃÂ¡Â¸"
 
 # libgnomecanvas/gnome-canvas-text.c:439
 #: libgnomecanvas/gnome-canvas-text.c:442
 msgid "Text color, as an R/G/B/A combined integer"
-msgstr "¯¨Ã Åñ½õ, µ÷ R/G/B/A ¦¾¡Ìó¾ ÓØ±ñÉ¡¸"
+msgstr "Â¯Â¨Ãƒ Ã…Ã±Â½Ãµ, ÂµÃ· R/G/B/A Â¦Â¾Â¡ÃŒÃ³Â¾ Ã“Ã˜Â±Ã±Ã‰Â¡Â¸"
 
 # libgnomecanvas/gnome-canvas-text.c:452
 #: libgnomecanvas/gnome-canvas-text.c:455
 msgid "Text width"
-msgstr "¯¨Ã «¸Äõ"
+msgstr "Â¯Â¨Ãƒ Â«Â¸Ã„Ãµ"
 
 # libgnomecanvas/gnome-canvas-text.c:453
 #: libgnomecanvas/gnome-canvas-text.c:456
 msgid "Width of the rendered text"
-msgstr "Å¨ÃÂôÀğ¼ ¯¨ÃÂ¢ı «¸Äõ"
+msgstr "Ã…Â¨ÃƒÃ‚Ã´Ã€Ã°Â¼ Â¯Â¨ÃƒÃ‚Â¢Ã½ Â«Â¸Ã„Ãµ"
 
 # libgnomecanvas/gnome-canvas-text.c:460
 #: libgnomecanvas/gnome-canvas-text.c:463
 msgid "Text height"
-msgstr "¯¨Ã ¯ÂÃõ"
+msgstr "Â¯Â¨Ãƒ Â¯Ã‚ÃƒÃµ"
 
 # libgnomecanvas/gnome-canvas-text.c:461
 #: libgnomecanvas/gnome-canvas-text.c:464
 msgid "Height of the rendered text"
-msgstr "Å¨ÃÂôÀğ¼ ¯¨ÃÂ¢ı ¯ÂÃõ"
+msgstr "Ã…Â¨ÃƒÃ‚Ã´Ã€Ã°Â¼ Â¯Â¨ÃƒÃ‚Â¢Ã½ Â¯Ã‚ÃƒÃµ"
 
 # libgnomecanvas/gnome-canvas-text.c:469
 #: libgnomecanvas/gnome-canvas-text.c:472
 msgid "Font family set"
-msgstr "±ØòĞÅ¨¸ ÌÎõÀõ «¨Áì¸ôÀğÎûÇĞ"
+msgstr "Â±Ã˜Ã²ÃÃ…Â¨Â¸ ÃŒÃÃµÃ€Ãµ Â«Â¨ÃÃ¬Â¸Ã´Ã€Ã°ÃÃ»Ã‡Ã"
 
 # libgnomecanvas/gnome-canvas-text.c:470
 #: libgnomecanvas/gnome-canvas-text.c:473
 msgid "Whether this tag affects the font family"
-msgstr "­ó¾ «¨¼Â¡Ç ´ğÎ ±ØòĞÅ¨¸ ÌÎõÀò¨¾ À¡¾¢ìÌÁ¡"
+msgstr "Â­Ã³Â¾ Â«Â¨Â¼Ã‚Â¡Ã‡ Â´Ã°Ã Â±Ã˜Ã²ÃÃ…Â¨Â¸ ÃŒÃÃµÃ€Ã²Â¨Â¾ Ã€Â¡Â¾Â¢Ã¬ÃŒÃÂ¡"
 
 # libgnomecanvas/gnome-canvas-text.c:473
 #: libgnomecanvas/gnome-canvas-text.c:476
 msgid "Font style set"
-msgstr "±ØòĞÅ¨¸ À¡½¢ «¨Áì¸ôÀğÎûÇĞ"
+msgstr "Â±Ã˜Ã²ÃÃ…Â¨Â¸ Ã€Â¡Â½Â¢ Â«Â¨ÃÃ¬Â¸Ã´Ã€Ã°ÃÃ»Ã‡Ã"
 
 # libgnomecanvas/gnome-canvas-text.c:474
 #: libgnomecanvas/gnome-canvas-text.c:477
 msgid "Whether this tag affects the font style"
-msgstr "­ó¾ «¨¼Â¡Ç ´ğÎ ±ØòĞÅ¨¸ À¡½¢¨Âô À¡¾¢ìÌÁ¡"
+msgstr "Â­Ã³Â¾ Â«Â¨Â¼Ã‚Â¡Ã‡ Â´Ã°Ã Â±Ã˜Ã²ÃÃ…Â¨Â¸ Ã€Â¡Â½Â¢Â¨Ã‚Ã´ Ã€Â¡Â¾Â¢Ã¬ÃŒÃÂ¡"
 
 # libgnomecanvas/gnome-canvas-text.c:477
 #: libgnomecanvas/gnome-canvas-text.c:480
@@ -249,32 +249,32 @@ msgstr ""
 # libgnomecanvas/gnome-canvas-text.c:481
 #: libgnomecanvas/gnome-canvas-text.c:484
 msgid "Font weight set"
-msgstr "±ØòĞÅ¨¸ ¸Éõ «¨Áì¸ôÀğÎûÇĞ"
+msgstr "Â±Ã˜Ã²ÃÃ…Â¨Â¸ Â¸Ã‰Ãµ Â«Â¨ÃÃ¬Â¸Ã´Ã€Ã°ÃÃ»Ã‡Ã"
 
 # libgnomecanvas/gnome-canvas-text.c:482
 #: libgnomecanvas/gnome-canvas-text.c:485
 msgid "Whether this tag affects the font weight"
-msgstr "­ó¾ «¨¼Â¡Ç ´ğÎ ±ØòĞÅ¨¸ ¸Éò¨¾ À¡¾¢ìÌÁ¡"
+msgstr "Â­Ã³Â¾ Â«Â¨Â¼Ã‚Â¡Ã‡ Â´Ã°Ã Â±Ã˜Ã²ÃÃ…Â¨Â¸ Â¸Ã‰Ã²Â¨Â¾ Ã€Â¡Â¾Â¢Ã¬ÃŒÃÂ¡"
 
 # libgnomecanvas/gnome-canvas-text.c:485
 #: libgnomecanvas/gnome-canvas-text.c:488
 msgid "Font stretch set"
-msgstr "±ØòĞÅ¨¸ ¿£ğÒ «¨Áì¸ôÀğÎûÇĞ"
+msgstr "Â±Ã˜Ã²ÃÃ…Â¨Â¸ Â¿Â£Ã°Ã’ Â«Â¨ÃÃ¬Â¸Ã´Ã€Ã°ÃÃ»Ã‡Ã"
 
 # libgnomecanvas/gnome-canvas-text.c:486
 #: libgnomecanvas/gnome-canvas-text.c:489
 msgid "Whether this tag affects the font stretch"
-msgstr "­ó¾ «¨¼Â¡Ç ´ğÎ ±ØòĞÅ¨¸ ¿£ğ¨À À¡¾¢ìÌÁ¡"
+msgstr "Â­Ã³Â¾ Â«Â¨Â¼Ã‚Â¡Ã‡ Â´Ã°Ã Â±Ã˜Ã²ÃÃ…Â¨Â¸ Â¿Â£Ã°Â¨Ã€ Ã€Â¡Â¾Â¢Ã¬ÃŒÃÂ¡"
 
 # libgnomecanvas/gnome-canvas-text.c:489
 #: libgnomecanvas/gnome-canvas-text.c:492
 msgid "Font size set"
-msgstr "±ØòĞÅ¨¸ «Ç× «¨Áì¸ôÀğÎûÇĞ"
+msgstr "Â±Ã˜Ã²ÃÃ…Â¨Â¸ Â«Ã‡Ã— Â«Â¨ÃÃ¬Â¸Ã´Ã€Ã°ÃÃ»Ã‡Ã"
 
 # libgnomecanvas/gnome-canvas-text.c:490
 #: libgnomecanvas/gnome-canvas-text.c:493
 msgid "Whether this tag affects the font size"
-msgstr "­ó¾ «¨¼Â¡Ç ´ğÎ ±ØòĞÅ¨¸ «Ç¨Åô À¡¾¢ìÌÁ¡"
+msgstr "Â­Ã³Â¾ Â«Â¨Â¼Ã‚Â¡Ã‡ Â´Ã°Ã Â±Ã˜Ã²ÃÃ…Â¨Â¸ Â«Ã‡Â¨Ã…Ã´ Ã€Â¡Â¾Â¢Ã¬ÃŒÃÂ¡"
 
 # libgnomecanvas/gnome-canvas-text.c:493
 #: libgnomecanvas/gnome-canvas-text.c:496
@@ -299,28 +299,28 @@ msgstr ""
 # libgnomecanvas/gnome-canvas-text.c:501
 #: libgnomecanvas/gnome-canvas-text.c:504
 msgid "Underline set"
-msgstr "¸£ú§¸¡Î «¨Áì¸ôÀğÎûÇĞ"
+msgstr "Â¸Â£ÃºÂ§Â¸Â¡Ã Â«Â¨ÃÃ¬Â¸Ã´Ã€Ã°ÃÃ»Ã‡Ã"
 
 # libgnomecanvas/gnome-canvas-text.c:502
 #: libgnomecanvas/gnome-canvas-text.c:505
 msgid "Whether this tag affects underlining"
-msgstr "­ó¾ «¨¼Â¡Ç ´ğÎ ¸£ú§¸¡ÊÎ¾¨Çô À¡¾¢ìÌÁ¡"
+msgstr "Â­Ã³Â¾ Â«Â¨Â¼Ã‚Â¡Ã‡ Â´Ã°Ã Â¸Â£ÃºÂ§Â¸Â¡ÃŠÃÂ¾Â¨Ã‡Ã´ Ã€Â¡Â¾Â¢Ã¬ÃŒÃÂ¡"
 
 # libgnomecanvas/gnome-canvas-text.c:505
 #: libgnomecanvas/gnome-canvas-text.c:508
 msgid "Scale set"
-msgstr "«Ç×§¸¡ø «¨Áì¸ôÀğÎûÇĞ"
+msgstr "Â«Ã‡Ã—Â§Â¸Â¡Ã¸ Â«Â¨ÃÃ¬Â¸Ã´Ã€Ã°ÃÃ»Ã‡Ã"
 
 # libgnomecanvas/gnome-canvas-text.c:506
 #: libgnomecanvas/gnome-canvas-text.c:509
 msgid "Whether this tag affects font scaling"
-msgstr "­ó¾ «¨¼Â¡Ç ´ğÎ ±ØòĞÅ¨¸ «Ç×Á¡üÈ¨Äô À¡¾¢ìÌÁ¡"
+msgstr "Â­Ã³Â¾ Â«Â¨Â¼Ã‚Â¡Ã‡ Â´Ã°Ã Â±Ã˜Ã²ÃÃ…Â¨Â¸ Â«Ã‡Ã—ÃÂ¡Ã¼ÃˆÂ¨Ã„Ã´ Ã€Â¡Â¾Â¢Ã¬ÃŒÃÂ¡"
 
 # libgnomecanvas/gnome-canvas-text.c:204
 #: libgnomecanvas/gnome-canvas-rich-text.c:210
 #, fuzzy
 msgid "Text to display"
-msgstr "Å¨ÃÂù§ÅñÊÂ ¯¨Ã"
+msgstr "Ã…Â¨ÃƒÃ‚Ã¹Â§Ã…Ã±ÃŠÃ‚ Â¯Â¨Ãƒ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:218
 msgid "X position"
@@ -346,7 +346,7 @@ msgstr ""
 #: libgnomecanvas/gnome-canvas-rich-text.c:242
 #, fuzzy
 msgid "Height for text box"
-msgstr "Å¨ÃÂôÀğ¼ ¯¨ÃÂ¢ı ¯ÂÃõ"
+msgstr "Ã…Â¨ÃƒÃ‚Ã´Ã€Ã°Â¼ Â¯Â¨ÃƒÃ‚Â¢Ã½ Â¯Ã‚ÃƒÃµ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:249
 msgid "Editable"
@@ -385,7 +385,7 @@ msgstr ""
 #: libgnomecanvas/gnome-canvas-rich-text.c:281
 #, fuzzy
 msgid "Grow Height"
-msgstr "±ØòĞ Å¨¸ ¸Éõ"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸ Â¸Ã‰Ãµ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:282
 msgid "Should the text box height grow if the text does not fit?"
@@ -415,7 +415,7 @@ msgstr ""
 #: libgnomecanvas/gnome-canvas-rich-text.c:308
 #, fuzzy
 msgid "Text direction"
-msgstr "±ØòĞ Å¨¸ Å¢ÅÃ½õ"
+msgstr "Â±Ã˜Ã²Ã Ã…Â¨Â¸ Ã…Â¢Ã…ÃƒÂ½Ãµ"
 
 #: libgnomecanvas/gnome-canvas-rich-text.c:316
 msgid "Anchor"

@@ -10,6 +10,7 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
+
 <synopsis>
 
 #include &lt;libgnomecanvas/libgnomecanvas.h&gt;
@@ -38,6 +39,8 @@ void        <link linkend="gnome-canvas-marshal-VOID--OBJECT-INT-INT-INT-INT">gn
                                              <link linkend="gpointer">gpointer</link> marshal_data);
 </synopsis>
 </refsynopsisdiv>
+
+
 
 
 
