@@ -7,17 +7,3 @@ Requires: athena-hesiod athena-krb5
 
 %description
 The Emacs text editor, as configured for Athena workstations.
-
-# Emacs embeds way too much info about the build directory in the configure
-# results, so we need to re-run configure here.
-%build
-
-# Make sure config.site is visible
-if [ ! -r ./config.site ]; then
-  echo "config.site is missing from this package!"
-  exit 1
-fi
-
-HOSTTYPE=linux CONFIG_SITE=./config.site ./configure.athena
-make all
-

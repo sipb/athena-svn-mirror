@@ -5,22 +5,3 @@ Group: Development/Libraries
 
 %description
 The GNU readline library, as configured for Athena.
-
-# Annoyingly, the readline source embeds info about where it was
-# configured in the makefile, so this will override it.
-
-%build
-make all BUILD_DIR=`pwd`
-
-%install
-if [ X$RPM_BUILD_ROOT = X ]; then
-  cat 1>&2 << MESSAGE
-You must specify a build root in order to build this package.
-Use the --buildroot option to RPM or the buildroot rpmrc entry.
-MESSAGE
-  exit 1
-fi
-
-rm -rf $RPM_BUILD_ROOT
-mkdir $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT BUILD_DIR=`pwd`
