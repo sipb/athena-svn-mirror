@@ -105,7 +105,7 @@ int nanny_exchangeVars(varlist *vin, varlist **vout)
     return 1;
 }
 
-int nanny_setupUser(char *name, int add, char **env, char **args)
+int nanny_setupUser(char *name, char **env, char **args)
 {
   varlist *vsend = NULL, *vget = NULL;
   buffer *buf = NULL;
@@ -118,8 +118,6 @@ int nanny_setupUser(char *name, int add, char **env, char **args)
     return 1;
 
   C(var_setString(vsend, N_USER, name));
-
-  C(var_setString(vsend, N_RMUSER, add ? "1" : "0"));
 
   C(cvt_strings2buf(&buf, env));
   C(var_setValue(vsend, N_ENV, buf->buf, buf->len));
@@ -254,6 +252,38 @@ int nanny_getTty(char *tty, int ttylen)
   C(var_getString(vget, N_TTY, &value));
 
   strncpy(tty, value, ttylen);
+  var_destroy(vget);
+
+  return 0;
+
+ cleanup:
+  if (vsend)
+    var_destroy(vsend);
+  if (vget)
+    var_destroy(vget);
+
+  return 1;
+}
+
+int nanny_getNannyPid(int *pid)
+{
+  varlist *vsend = NULL, *vget = NULL;
+  char *value;
+
+  if (pid == NULL)
+    return 1;
+
+  if (var_init(&vsend))
+    return 1;
+
+  C(var_setString(vsend, N_PID, cvt_query));
+
+  C(nanny_exchangeVars(vsend, &vget));
+  var_destroy(vsend);  vsend = NULL;
+
+  C(var_getString(vget, N_PID, &value));
+
+  *pid = atoi(value);
   var_destroy(vget);
 
   return 0;
