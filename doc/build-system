@@ -33,15 +33,16 @@ After attaching the correct locker, you can build a package by doing:
 	sh $src/packs/build/do.sh prepare
 	sh $src/packs/build/do.sh all
 
-"do" accepts the following options:
+"do" accepts the following options (-c and -t are mutually exclusive):
 
 	-s SRCDIR	Specifies the source hierarchy, if not default
 	-d DESTDIR	Specifies the install hierarchy, if not
 			/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
-	-c		Use libraries, includes, and tools from
-			install hierarchy
+	-t TOOLDIR	Specifies the tool hierarchy
+	-c		Sets the tool hierarchy to the install
+			hierarchy
 	-n		Show what build steps would be done, but don't
-			do them.
+			do them
 
 The default location for SRCDIR is the source locker you attached
 (/mit/source, /mit/source-8.1, etc.).  "do" supports the following
@@ -120,9 +121,6 @@ for the first time, you have to do a little work beforehand:
 		synctree -s $src/third/krb5 -d . -a $src/.rconf
 		make -f Makefile.athena prepare
 		make -f Makefile.athena all
-
-	  The build will eventually bomb out because parts of it
-	  depend on Hesiod and libal.  This is okay.
 
 		cp src/clients/kinit/kinit /var/tmp/bin
 		cp $src/packs/config/krb5.conf /etc
