@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.20 1991-02-18 19:50:58 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.21 1991-02-20 17:28:11 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -20,7 +20,6 @@
 #ifdef SYSV /* SYSV doesn't define uid_t */
 typedef unsigned short uid_t;
 #endif
-#include <sys/stat.h>
 #include <sys/dir.h>
 #ifdef SYSV
 #include <string.h>
@@ -38,8 +37,8 @@ typedef unsigned short uid_t;
 #include <afs/venus.h>
 #endif
 #include "delete_errs.h"
-#include "directories.h"
 #include "util.h"
+#include "directories.h"
 #include "mit-copyright.h"
 #include "errors.h"
 
@@ -267,6 +266,7 @@ is_link(name, oldbuf)
 char *name;
 struct stat *oldbuf;
 {
+#ifdef S_IFLNK
      struct stat statbuf;
 
      if (oldbuf)
@@ -280,6 +280,7 @@ struct stat *oldbuf;
      if ((statbuf.st_mode & S_IFMT) == S_IFLNK)
 	  return 1;
      else
+#endif
 	  return 0;
 }
 
