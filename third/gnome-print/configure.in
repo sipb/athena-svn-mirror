@@ -1,6 +1,6 @@
 AC_INIT(installer/gnome-font-install.c)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-print,0.31)
+AM_INIT_AUTOMAKE(gnome-print,0.35)
 AM_ACLOCAL_INCLUDE(macros)
 
 dnl ==========================================
@@ -12,7 +12,7 @@ GNOMEPRINT_CURRENT=16
 
 dnl increment any time the source changes; set to 
 dnl  0 if you increment CURRENT
-GNOMEPRINT_REVISION=10
+GNOMEPRINT_REVISION=11
 
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has 
@@ -56,7 +56,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AM_PROG_LIBTOOL
 AM_PATH_GLIB(1.2.8)
-ALL_LINGUAS="az ca da de el es et fi fr gl hr hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv tr uk zh_CN.GB2312 zh_TW"
+ALL_LINGUAS="az bg ca da de el es eu et fi fr gl hr hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv tr uk wa zh_CN.GB2312 zh_TW"
 
 GNOME_INIT
 
@@ -133,7 +133,7 @@ admin=
 try_admin=false
 have_admin=false
 AC_ARG_WITH(admin,
-	   [--{with,without}-admin    Compile with gnome-print-admin support or without it],
+	   [--{with,without}-admin    Compile with gnome-print-admin support (UNSTABLE, EXPERIMENTAL)],
 	   if test x$withval = xno; then
 		 try_admin=false;
 	   else
@@ -205,68 +205,44 @@ dnl =================================
 dnl END: Check for gnome-print-admin 
 dnl =================================
 
-
 dnl =================================
-dnl Checking for gnome-font
-dnl =================================
-dnl
-dnl try_gnome_font=false
-dnl have_gnome_font=false
-dnl AC_ARG_WITH(gnome-font,
-dnl	[  --{with,without}-gnome-font Use gnome-font library for font support],
-dnl	if test x$withval = xyes; then
-dnl		try_gnome_font=true
-dnl	fi
-dnl)
-dnl
-dnl if $try_gnome_font; then
-dnl	AC_MSG_CHECKING(for gnome-font >= 0.2)
-dnl	vers=`gnome-config --modversion font | sed -e "s/gnome-font//" | \
-dnl	awk 'BEGIN { FS = "."; } { printf "%d", $1 * 1000 + $2;}'`
-dnl	if test "$vers" -ge 2; then
-dnl		AC_MSG_RESULT(found)
-dnl		have_gnome_font=true
-dnl	else
-dnl		AC_MSG_ERROR(not found)
-dnl	fi
-dnl fi
-dnl
-dnl if $have_gnome_font; then
-dnl	GNOME_FONT_CFLAGS=`gnome-config --cflags font`
-dnl	GNOME_FONT_LIBS=`gnome-config --libs font`
-dnl	AC_SUBST(GNOME_FONT_CFLAGS)
-dnl	AC_SUBST(GNOME_FONT_LIBS)
-dnl	AC_DEFINE(USE_GNOME_FONT)
-dnl fi
-dnl
-dnl AM_CONDITIONAL(USE_GNOME_FONT, $have_gnome_font)
-dnl
-dnl =================================
-dnl END: Checking for gnome-font
+dnl Checking for freetype2
 dnl =================================
 
-GNOMEPRINT_LIBS=`$GNOME_CONFIG --libs gnomeui gdk_pixbuf`
-GNOMEPRINT_LIBS="$GNOMEPRINT_LIBS `xml-config --libs`"
-dnl GNOMEPRINT_LIBS="$GNOMEPRINT_LIBS $LIBGPA_LIBS"
+FREETYPE_LIBS=
+FREETYPE_CFLAGS=
+AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
+if test "x$FREETYPE_CONFIG" = "xno" ; then
+	AC_MSG_ERROR(You need FreeType2 for that version of gnome-print)
+else
+	FREETYPE_CFLAGS=`$FREETYPE_CONFIG --cflags`
+	FREETYPE_LIBS=`$FREETYPE_CONFIG --libs`
+fi
 
-AC_SUBST(GNOMEPRINT_LIBS)
+dnl =================================
+dnl END: Checking for freetype2
+dnl =================================
+
+
+LIBGNOMEPRINT_CFLAGS="$FREETYPE_CFLAGS `$GNOME_CONFIG --cflags gnome gnomeui gdk_pixbuf libart xml`"
+LIBGNOMEPRINT_LIBS="`$GNOME_CONFIG --libs gnome gnomeui gdk_pixbuf libart xml` $FREETYPE_LIBS"
+
+AC_SUBST(LIBGNOMEPRINT_CFLAGS)
+AC_SUBST(LIBGNOMEPRINT_LIBS)
 
 
 dnl =================================
 dnl Variables for printConf.sh
 dnl =================================
+
 PRINT_LIBDIR='-L${libdir}'
-
-PRINT_LIBS="$PRINT_LIBS -lgnomeprint $GNOMEPRINT_LIBS"
-
-PRINT_INCLUDEDIR='-I${includedir}/gnome-1.0'
-PRINT_INCLUDEDIR="$PRINT_INCLUDEDIR `gnome-config --cflags gnomeui gdk_pixbuf`"
-PRINT_INCLUDEDIR="$PRINT_INCLUDEDIR `xml-config --cflags`"
-PRINT_INCLUDEDIR="$PRINT_INCLUDEDIR $LIBGPA_INCLUDEDIR"
+PRINT_LIBS="-lgnomeprint $LIBGNOMEPRINT_LIBS"
+PRINT_INCLUDEDIR="-I${includedir}/gnome-1.0 $LIBGNOMEPRINT_CFLAGS"
 
 AC_SUBST(PRINT_LIBDIR)
 AC_SUBST(PRINT_LIBS)
 AC_SUBST(PRINT_INCLUDEDIR)
+
 dnl =================================
 dnl END: Variables for creating printConf.sh
 dnl =================================
@@ -291,15 +267,16 @@ dnl esac
 dnl =====================================
 dnl For building tests within gnome-print
 dnl =====================================
-PRINT_TEST_CFLAGS=`$GNOME_CONFIG --cflags gnomeui gdk_pixbuf`
-PRINT_TEST_CFLAGS="$PRINT_TEST_CFLAGS `xml-config --cflags`"
-PRINT_TEST_CFLAGS="$PRINT_TEST_CFLAGS $LIBGPA_CFLAGS"
 
-PRINT_TEST_LIBS=`$GNOME_CONFIG --libs gnomeui gdk_pixbuf`
-PRINT_TEST_LIBS="$PRINT_TEST_LIBS `xml-config --libs`"
+PRINT_TEST_CFLAGS="$LIBGNOMEPRINT_CFLAGS"
+PRINT_TEST_LIBS="$LIBGNOMEPRINT_LIBS"
 
 AC_SUBST(PRINT_TEST_CFLAGS)
 AC_SUBST(PRINT_TEST_LIBS)
+
+dnl =====================================
+dnl END: For building tests within gnome-print
+dnl =====================================
 
 
 AC_PATH_PROGS(PERL, perl5 perl)
