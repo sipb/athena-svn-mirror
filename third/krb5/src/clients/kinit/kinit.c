@@ -27,6 +27,10 @@
 #include "k5-int.h"
 #include "com_err.h"
 #include "adm_proto.h"
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+#include <kerberosIV/krb4-proto.h>
+#endif
 
 #include <stdio.h>
 #ifdef HAVE_PWD_H
@@ -50,6 +54,8 @@ krb5_data tgtname = {
  */
 krb5_preauthtype * preauth = NULL;
 krb5_preauthtype preauth_list[2] = { 0, -1 };
+
+char *progname;
 
 void
 main(argc, argv)
@@ -93,6 +99,7 @@ main(argc, argv)
 
     if (strrchr(argv[0], '/'))
 	argv[0] = strrchr(argv[0], '/')+1;
+    progname = argv[0];
 
     while ((option = getopt(argc, argv, "r:Rfpl:s:c:kt:vS:")) != EOF) {
 	switch (option) {
@@ -365,6 +372,10 @@ main(argc, argv)
 	exit(1);
     }
 
+#ifdef KRB5_KRB4_COMPAT
+    try_convert524(kcontext, ccache, me);
+#endif
+
     /* my_creds is pointing at server */
     krb5_free_principal(kcontext, server);
 
@@ -439,3 +450,78 @@ cleanup:
 
     return retval;
 }
+
+
+#ifdef KRB5_KRB4_COMPAT
+/* Convert krb5 tickets to krb4. */
+int try_convert524(kcontext, ccache, me)
+     krb5_context kcontext;
+     krb5_ccache ccache;
+     krb5_principal me;
+{
+    krb5_principal kpcserver;
+    krb5_error_code kpccode;
+    int kpcval;
+    krb5_creds increds, *v5creds;
+    CREDENTIALS v4creds;
+
+    /* or do this directly with krb524_convert_creds_kdc */
+    krb524_init_ets(kcontext);
+    /* cc->ccache, already set up */
+    /* client->me, already set up */
+    if ((kpccode = krb5_build_principal(kcontext,
+				        &kpcserver, 
+				        krb5_princ_realm(kcontext, me)->length,
+				        krb5_princ_realm(kcontext, me)->data,
+				        "krbtgt",
+				        krb5_princ_realm(kcontext, me)->data,
+					NULL))) {
+      com_err(progname, kpccode,
+	      "while creating service principal name");
+      return 0;
+    }
+
+    memset((char *) &increds, 0, sizeof(increds));
+    increds.client = me;
+    increds.server = kpcserver;
+    increds.times.endtime = 0;
+    increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+    if ((kpccode = krb5_get_credentials(kcontext, 0, 
+					ccache,
+					&increds, 
+					&v5creds))) {
+	com_err(progname, kpccode,
+		"getting V5 credentials");
+	return 0;
+    }
+    if ((kpccode = krb524_convert_creds_kdc(kcontext, 
+					    v5creds,
+					    &v4creds))) {
+	com_err(progname, kpccode, 
+		"converting to V4 credentials");
+	return 0;
+    }
+    /* this is stolen from the v4 kinit */
+    /* initialize ticket cache */
+    if ((kpcval = in_tkt(v4creds.pname,v4creds.pinst)
+	 != KSUCCESS)) {
+	com_err(progname, kpcval,
+		"trying to create the V4 ticket file");
+	return 0;
+    }
+    /* stash ticket, session key, etc. for future use */
+    if ((kpcval = krb_save_credentials(v4creds.service,
+				       v4creds.instance,
+				       v4creds.realm, 
+				       v4creds.session,
+				       v4creds.lifetime,
+				       v4creds.kvno,
+				       &(v4creds.ticket_st), 
+				       v4creds.issue_date))) {
+	com_err(progname, kpcval,
+		"trying to save the V4 ticket");
+	return 0;
+    }
+    return 1;
+}
+#endif /* KRB5_KRB4_COMPAT */
