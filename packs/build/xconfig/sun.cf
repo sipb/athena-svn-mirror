@@ -1,4 +1,4 @@
-XCOMM platform:  $XConsortium: sun.cf,v 1.69 91/09/09 18:23:59 rws Exp $
+XCOMM platform:  $XConsortium: sun.cf,v 1.71 91/12/20 11:18:34 rws Exp $
 
 #define OSName            SunOS 4.1.1
 XCOMM operating system:  OSName
@@ -11,6 +11,11 @@ XCOMM operating system:  OSName
 #define StandardDefines   -DNOSTDHDRS
 #endif
 
+/* You ALSO need this if you have Sun ld patch 100170-06 to 4.1.1 */
+#if OSMajorVersion == 4 && OSMinorVersion > 1
+#define SunPost411FCSLd	  YES
+#endif
+
 #define HasSaberC	  YES
 #define HasNdbm		  YES
 #define HasShm		  YES
@@ -20,6 +25,7 @@ XCOMM operating system:  OSName
 #define XsunServer	  YES		/* has color and mono support */
 #define XsunMonoServer	  YES		/* monochrome only */
 #define BuildPexExt	  XsunServer
+#define InstKmemFlags	  -g kmem -m 2755
 
 #ifdef sparc
 #undef sparc

@@ -1,4 +1,4 @@
-XCOMM $XConsortium: sunLib.tmpl,v 1.11 91/07/31 11:32:08 rws Exp $
+XCOMM $XConsortium: sunLib.tmpl,v 1.14 91/12/20 11:19:05 rws Exp $
 
 /*
  * SunOS shared library template
@@ -25,6 +25,9 @@ XCOMM $XConsortium: sunLib.tmpl,v 1.11 91/07/31 11:32:08 rws Exp $
 #ifndef SharedXinputRev
 #define SharedXinputRev 4.10
 #endif
+#ifndef SharedXTrapRev
+#define SharedXTrapRev 1.0
+#endif
 
 SHLIBLDFLAGS = SharedLibraryLoadFlags
 PICFLAGS = PositionIndependentCFlags
@@ -42,8 +45,13 @@ PICFLAGS = PositionIndependentCFlags
              XLIB = $(EXTENSIONLIB) _Use(-lX11,-L$(XLIBSRC) -lX11)
 #endif
 #if SharedLibXmu
+/* Sun shared libraries are deficient in link semantics */
         DEPXMULIB = _UseCat($(USRLIBDIR),$(XMUSRC),/libXmu.sa.$(SOXMUREV))
-           XMULIB = _Use(-lXmu,-L$(XMUSRC) -lXmu)
+       XMULIBONLY = _Use(-lXmu,-L$(XMUSRC) -lXmu)
+           XMULIB = _Use(-lXmu,-L$(XMUSRC) -lXmu -L$(TOOLKITSRC))
+#if !defined(UseInstalled) && !defined(XawClientLibs)
+#define XawClientLibs $(XAWLIB) $(XMULIBONLY) $(XTOOLLIB) $(XLIB)
+#endif
 #endif
 #if SharedOldLibX
        DEPOLDXLIB = /* _UseCat($(USRLIBDIR),$(OLDXLIBSRC),/liboldX.sa.$(SOOLDXREV)) */

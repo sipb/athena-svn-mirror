@@ -1,4 +1,4 @@
-XCOMM $XConsortium: sunLib.rules,v 1.6 91/03/24 17:55:58 rws Exp $
+XCOMM $XConsortium: sunLib.rules,v 1.7 91/12/20 11:19:47 rws Exp $
 
 /*
  * SunOS shared library rules
@@ -60,7 +60,7 @@ AllTarget(Concat(lib,libname.so.rev))					@@\
 									@@\
 Concat(lib,libname.so.rev):  solist					@@\
 	$(RM) $@~							@@\
-	(cd down; $(LD) -o up/$@~ $(SHLIBLDFLAGS) solist)		@@\
+	(cd down; $(LD) -o up/$@~ $(SHLIBLDFLAGS) solist $(REQUIREDLIBS)) @@\
 	$(RM) $@ 							@@\
 	$(MV) $@~ $@							@@\
 									@@\
