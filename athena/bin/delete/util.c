@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.14 1989-12-15 04:33:19 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.15 1990-01-11 03:47:11 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -371,7 +371,7 @@ struct stat *oldbuf;
      return 0;
 }
 
-#ifdef DEBUG
+#ifdef MALLOC_DEBUG
 char *Malloc(size)
 unsigned size;
 {
