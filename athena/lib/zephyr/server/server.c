@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.2 1987-07-01 04:26:12 jtkohl Exp $";
+static char rcsid_server_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.3 1987-07-01 18:10:42 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -140,11 +140,13 @@ ZClient_t *client;
 	zdbug1("server recover");
 	/* XXX */
 	if ((host = hostm_find_host(&client->zct_sin.sin_addr)) != NULLZHLT)
-		client_deregister(client, host);
+		/* send a ping, set up a timeout, and return */
+		hostm_losing(client, host);
 	else
 		syslog(LOG_ERR, "srv_recover: no host for client");
 	return;
 }
+
 /* flush all data associated with the server which */
 static void
 server_flush(which)
