@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_instance.c,v $
- *	$Id: p_instance.c,v 1.8 1990-07-16 08:20:50 lwvanels Exp $
+ *	$Id: p_instance.c,v 1.9 1990-08-25 23:28:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_instance.c,v 1.8 1990-07-16 08:20:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_instance.c,v 1.9 1990-08-25 23:28:21 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -43,6 +43,7 @@ do_olc_instance(arguments)
   while (*arguments != (char *) NULL)
     {
       arguments++;
+      if (!*arguments) break;
 
       if(string_equiv(*arguments,"-instance", max(strlen(*arguments),2)) ||
 	 string_equiv(*arguments,"-change", max(strlen(*arguments),2)))
