@@ -20,7 +20,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_zstat_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v 1.3 1987-08-06 22:54:31 rfrench Exp $";
+static char rcsid_zstat_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v 1.4 1987-11-03 13:19:34 rfrench Exp $";
 #endif SABER
 #endif lint
 		     
@@ -212,6 +212,8 @@ hm_stat(host,server)
 
 	strcpy(server,line[0]);
 
+	printf("HostManager protocol version = %s\n",notice.z_version);
+
 	for (i=0;i<nf;i++) {
 		if (!strncmp("Time",head[i],4)) {
 			runtime = atol(line[i]);
@@ -303,6 +305,8 @@ srv_stat(host)
 		mp += strlen(mp)+1;
 	}
 
+	printf("Server protocol version = %s\n",notice.z_version);
+	
 	for (i=0; i<nf; i++) {
 		if (i < 2)
 			printf("%s %s\n",srv_head[i],line[i]);
