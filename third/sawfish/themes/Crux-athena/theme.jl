@@ -16,7 +16,7 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-   $Id: theme.jl,v 1.1 2001-03-30 20:53:31 ghudson Exp $
+   $Id: theme.jl,v 1.2 2001-03-30 20:56:24 ghudson Exp $
 
    Authors: John Harper <jsh@eazel.com>
 |#
@@ -212,7 +212,7 @@
     (initialize-gtkrc)
     (if (colorp (nth 3 gtkrc-background))
 	(nth 3 gtkrc-background)
-      (get-color "steelblue"))))
+      (get-color "#00197f"))))
 
 ;; Recolor all images that need recolouring. Precalculates the lookup
 ;; tables first.
@@ -277,7 +277,7 @@
      (width . ,(lambda (w) (+ (title-left-width w) 2 -48)))
      (top-edge . -19)
      (text . ,window-name)
-     (foreground . ("grey95" "white"))
+     (foreground . ("darkblue" "white"))
      (x-justify . ,horizontal-justification)
      (y-justify . ,vertical-justification)
      (class . title))
