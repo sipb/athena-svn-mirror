@@ -1,17 +1,17 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v 1.1 1993-10-12 05:47:21 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v 1.2 1994-04-01 16:53:06 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_access_off_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v 1.1 1993-10-12 05:47:21 probe Exp $";
+static char *rcsid_access_off_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/access/access_off.c,v 1.2 1994-04-01 16:53:06 miki Exp $";
 #endif lint
 
 #include <stdio.h>
 #include <signal.h>
 #include <errno.h>
 
-char *rindex();
+
 
 main(argc,argv)
 int argc;
@@ -31,7 +31,7 @@ char **argv;
 	exit(1);
     }
     fclose(pidfile);
-    if ((pindex = rindex(argv[0], '/')) == (char *) NULL)
+    if ((pindex = strrchr(argv[0], '/')) == (char *) NULL)
       pindex = argv[0];
     else pindex++;
 
