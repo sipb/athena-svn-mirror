@@ -1,5 +1,5 @@
 /* 
- * $Id: rkinitd.c,v 1.4 1996-09-20 03:16:55 ghudson Exp $
+ * $Id: rkinitd.c,v 1.5 1997-12-03 22:04:54 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/rkinitd.c,v $
  * $Author: ghudson $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinitd.c,v 1.4 1996-09-20 03:16:55 ghudson Exp $";
+static char *rcsid = "$Id: rkinitd.c,v 1.5 1997-12-03 22:04:54 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -31,9 +31,6 @@ static char *rcsid = "$Id: rkinitd.c,v 1.4 1996-09-20 03:16:55 ghudson Exp $";
 #include <rkinit_private.h>
 
 #include "rkinitd.h"
-
-extern int errno;
-extern char *sys_errlist[];
 
 static int inetd = TRUE;	/* True if we were started by inetd */
 
