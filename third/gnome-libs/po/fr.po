@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.11\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2001-02-09 13:32+0100\n"
+"Project-Id-Version: gnome-libs 1.2.12\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-03-13 17:40+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: Gnome French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -47,22 +47,21 @@ msgstr ""
 
 #: libgnome/gnomelib-init.c:136
 msgid "Disable sound server usage"
-msgstr "Désactiver l'utilisation du son"
+msgstr "Désactive l'utilisation du son"
 
 #: libgnome/gnomelib-init.c:138
 msgid "Enable sound server usage"
-msgstr "Activer l'utilisation du son"
+msgstr "Active l'utilisation du son"
 
 #: libgnome/gnomelib-init.c:140
 msgid "Host:port on which the sound server to use is running"
-msgstr "Machine:port sur lequel le serveur de son est accessible"
+msgstr "Hôte:port sur lequel le serveur de son est accessible"
 
 #: libgnome/gnomelib-init.c:141
 msgid "HOSTNAME:PORT"
-msgstr "MACHINE:PORT"
+msgstr "HÔTE:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "Options GNOME"
 
@@ -500,7 +499,7 @@ msgstr "Termine la partie en cours"
 
 #: libgnomeui/gnome-app-util.c:93
 msgid " (press return)"
-msgstr " (tapez entrée)"
+msgstr " (pressez entrée)"
 
 #: libgnomeui/gnome-app-util.c:136
 msgid "ERROR: "
@@ -709,7 +708,7 @@ msgstr "INV"
 
 #: libgnomeui/gnome-client.c:835
 msgid "Specify session management ID"
-msgstr "Spécifiez l'ID de gestion de session"
+msgstr "Spécifie l'ID de gestion de session"
 
 #: libgnomeui/gnome-client.c:835 libgnorba/goad-browser.c:27
 msgid "ID"
@@ -717,11 +716,11 @@ msgstr "ID"
 
 #: libgnomeui/gnome-client.c:837
 msgid "Specify prefix of saved configuration"
-msgstr "Spécifiez le préfixe de la configuration sauvegardée"
+msgstr "Spécifie le préfixe de la configuration sauvegardée"
 
 #: libgnomeui/gnome-client.c:837
 msgid "PREFIX"
-msgstr "PREFIX"
+msgstr "PRÉFIXE"
 
 #: libgnomeui/gnome-client.c:839
 msgid "Disable connection to session manager"
@@ -730,7 +729,7 @@ msgstr "Désactive la connexion avec le gestionnaire de session"
 #. Register commandline options.
 #: libgnomeui/gnome-client.c:968
 msgid "Session management options"
-msgstr "Options de la gestion de session"
+msgstr "Options du gestionnaire de session"
 
 #: libgnomeui/gnome-client.c:2348
 msgid "Cancel Logout"
@@ -763,7 +762,7 @@ msgstr "Type :"
 
 #: libgnomeui/gnome-dentry-edit.c:230
 msgid "Icon:"
-msgstr "Icone :"
+msgstr "Icône :"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
@@ -783,7 +782,7 @@ msgstr "Documentation :"
 
 #: libgnomeui/gnome-dentry-edit.c:384
 msgid "Name/Comment translations:"
-msgstr "Traduction Nom/Commentaire :"
+msgstr "Traductions nom/commentaire :"
 
 #: libgnomeui/gnome-dentry-edit.c:387
 msgid "Language"
@@ -799,7 +798,7 @@ msgstr "Commentaire"
 
 #: libgnomeui/gnome-dentry-edit.c:417
 msgid "Add/Set"
-msgstr "Ajouter/Changer"
+msgstr "Ajouter/Modifier"
 
 #: libgnomeui/gnome-dentry-edit.c:422 libgnomeui/gnome-stock.c:828
 msgid "Remove"
@@ -853,7 +852,7 @@ msgstr "hbox non trouvée, utilisation d'une sélection de fichier normale"
 msgid "Preview"
 msgstr "Prévisualisation"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Chargement des icônes..."
 
@@ -872,19 +871,19 @@ msgstr "Options de débogage de Gdk à désactiver"
 
 #: libgnomeui/gnome-init.c:165
 msgid "X display to use"
-msgstr "Écran X à utiliser"
+msgstr "Visuel X à utiliser"
 
 #: libgnomeui/gnome-init.c:165
 msgid "DISPLAY"
-msgstr "AFFICHAGE"
+msgstr "VISUEL"
 
 #: libgnomeui/gnome-init.c:167
 msgid "Make X calls synchronous"
-msgstr "Utiliser des appels X synchrones"
+msgstr "Utilise des appels X synchrones"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
-msgstr "Ne pas utiliser l'extension mémoire partagée de X11"
+msgstr "N'utilise pas l'extension mémoire partagée de X11"
 
 #: libgnomeui/gnome-init.c:171
 msgid "Program name as used by the window manager"
@@ -945,7 +944,7 @@ msgstr "Options IUG GNOME"
 #: libgnomeui/gnome-init.c:452
 #, c-format
 msgid "%s options"
-msgstr "%s options"
+msgstr "Options %s"
 
 #. dialog display isn't working out
 #: libgnomeui/gnome-init.c:642

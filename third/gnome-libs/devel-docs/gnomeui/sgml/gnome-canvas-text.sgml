@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvasText" revision="21 Jan 2001">
+<refentry id="GnomeCanvasText" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>GnomeCanvasText</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -33,31 +33,6 @@ struct      <link linkend="GnomeCanvasTextSuckFont">GnomeCanvasTextSuckFont</lin
 
 </refsect1>
 
-<refsect1>
-<title>Args</title>
-<synopsis>
-
-  &quot;<link linkend="GnomeCanvasText--text">text</link>&quot;                 <link linkend="gchar">gchar</link>*               : Read / Write
-  &quot;<link linkend="GnomeCanvasText--x">x</link>&quot;                    <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasText--y">y</link>&quot;                    <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasText--font">font</link>&quot;                 <link linkend="gchar">gchar</link>*               : Write
-  &quot;<link linkend="GnomeCanvasText--fontset">fontset</link>&quot;              <link linkend="gchar">gchar</link>*               : Write
-  &quot;<link linkend="GnomeCanvasText--font-gdk">font_gdk</link>&quot;             <link linkend="GdkFont">GdkFont</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasText--anchor">anchor</link>&quot;               <link linkend="GtkAnchorType">GtkAnchorType</link>        : Read / Write
-  &quot;<link linkend="GnomeCanvasText--justification">justification</link>&quot;        <link linkend="GtkJustification">GtkJustification</link>     : Read / Write
-  &quot;<link linkend="GnomeCanvasText--clip-width">clip_width</link>&quot;           <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasText--clip-height">clip_height</link>&quot;          <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasText--clip">clip</link>&quot;                 <link linkend="gboolean">gboolean</link>             : Read / Write
-  &quot;<link linkend="GnomeCanvasText--x-offset">x_offset</link>&quot;             <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasText--y-offset">y_offset</link>&quot;             <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasText--fill-color">fill_color</link>&quot;           <link linkend="gchar">gchar</link>*               : Write
-  &quot;<link linkend="GnomeCanvasText--fill-color-gdk">fill_color_gdk</link>&quot;       <link linkend="GdkColor">GdkColor</link>             : Read / Write
-  &quot;<link linkend="GnomeCanvasText--fill-color-rgba">fill_color_rgba</link>&quot;      <link linkend="guint">guint</link>                : Read / Write
-  &quot;<link linkend="GnomeCanvasText--fill-stipple">fill_stipple</link>&quot;         <link linkend="GdkWindow">GdkWindow</link>            : Read / Write
-  &quot;<link linkend="GnomeCanvasText--text-width">text_width</link>&quot;           <link linkend="gdouble">gdouble</link>              : Read
-  &quot;<link linkend="GnomeCanvasText--text-height">text_height</link>&quot;          <link linkend="gdouble">gdouble</link>              : Read
-</synopsis>
-</refsect1>
 
 
 
@@ -104,107 +79,6 @@ struct      <link linkend="GnomeCanvasTextSuckFont">GnomeCanvasTextSuckFont</lin
 
 </para></refsect2>
 
-</refsect1>
-<refsect1>
-<title>Args</title>
-<variablelist>
-<varlistentry><term><anchor id="GnomeCanvasText--text">&quot;<literal>text</literal>&quot; (<link linkend="gchar">gchar</link>* : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--x">&quot;<literal>x</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--y">&quot;<literal>y</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--font">&quot;<literal>font</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--fontset">&quot;<literal>fontset</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--font-gdk">&quot;<literal>font_gdk</literal>&quot; (<link linkend="GdkFont">GdkFont</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--anchor">&quot;<literal>anchor</literal>&quot; (<link linkend="GtkAnchorType">GtkAnchorType</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--justification">&quot;<literal>justification</literal>&quot; (<link linkend="GtkJustification">GtkJustification</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--clip-width">&quot;<literal>clip_width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--clip-height">&quot;<literal>clip_height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--clip">&quot;<literal>clip</literal>&quot; (<link linkend="gboolean">gboolean</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--x-offset">&quot;<literal>x_offset</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--y-offset">&quot;<literal>y_offset</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--fill-color">&quot;<literal>fill_color</literal>&quot; (<link linkend="gchar">gchar</link>* : Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--fill-color-gdk">&quot;<literal>fill_color_gdk</literal>&quot; (<link linkend="GdkColor">GdkColor</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--fill-color-rgba">&quot;<literal>fill_color_rgba</literal>&quot; (<link linkend="guint">guint</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--fill-stipple">&quot;<literal>fill_stipple</literal>&quot; (<link linkend="GdkWindow">GdkWindow</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--text-width">&quot;<literal>text_width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasText--text-height">&quot;<literal>text_height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 

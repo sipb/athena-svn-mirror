@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-defs" revision="16 Oct 1999">
+<refentry id="gnome-gnome-defs" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>gnome-defs</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -15,8 +15,8 @@
 #include &lt;gnome.h&gt;
 
 
-#define     <link linkend="BEGIN-GNOME-DECLS">BEGIN_GNOME_DECLS</link>
-#define     <link linkend="END-GNOME-DECLS">END_GNOME_DECLS</link>
+#define     <link linkend="BEGIN-GNOME-DECLS-CAPS">BEGIN_GNOME_DECLS</link>
+#define     <link linkend="END-GNOME-DECLS-CAPS">END_GNOME_DECLS</link>
 </synopsis>
 </refsynopsisdiv>
 
@@ -37,13 +37,13 @@ header files.  They are empty macros for C compilation and they map to
 <refsect1>
 <title>Details</title>
 <refsect2>
-<title><anchor id="BEGIN-GNOME-DECLS">BEGIN_GNOME_DECLS</title>
+<title><anchor id="BEGIN-GNOME-DECLS-CAPS">BEGIN_GNOME_DECLS</title>
 <programlisting>#define     BEGIN_GNOME_DECLS</programlisting>
 <para>
 Use this macro at the beginning of your public function declarations.
 </para></refsect2>
 <refsect2>
-<title><anchor id="END-GNOME-DECLS">END_GNOME_DECLS</title>
+<title><anchor id="END-GNOME-DECLS-CAPS">END_GNOME_DECLS</title>
 <programlisting>#define     END_GNOME_DECLS</programlisting>
 <para>
 Use this macro at the end of your public function declarations.

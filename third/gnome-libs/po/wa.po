@@ -12,7 +12,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.61\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 1999-03-18 23:11+0100\n"
 "Last-Translator: Lorint Hendschel <LorintHendschel@skynet.be>\n"
 "Language-Team: walon <linux-wa@chanae.alphanet.ch>\n"
@@ -66,7 +66,6 @@ msgid "HOSTNAME:PORT"
 msgstr "LODJEU:PÔRT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "Tchûzes di GNOME"
 
@@ -855,7 +854,7 @@ msgstr "Dji n' trove nou hbox; dji prind ene tchûze di fitchîs normåle"
 msgid "Preview"
 msgstr "Vey divant"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Dji tchedje les imådjetes..."
 
@@ -937,19 +936,17 @@ msgid "MODULE"
 msgstr "MODULE"
 
 #: libgnomeui/gnome-init.c:297
-#, fuzzy
 msgid "GTK options"
-msgstr "Tchûzes di GNOME"
+msgstr "Tchûzes di GTK"
 
 #: libgnomeui/gnome-init.c:298
-#, fuzzy
 msgid "GNOME GUI options"
-msgstr "Tchûzes di GNOME"
+msgstr "Tchûzes di l' eterface di GNOME"
 
 #: libgnomeui/gnome-init.c:452
-#, fuzzy, c-format
+#, c-format
 msgid "%s options"
-msgstr "Tchûzes di GNOME"
+msgstr "Tchûzes di %s"
 
 #. dialog display isn't working out
 #: libgnomeui/gnome-init.c:642
@@ -1534,7 +1531,7 @@ msgstr "(Divintrinmint seulmint) descripteu di fitchî GOAD"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr ""
+msgstr "Repertwere d' activåcion d' objets Gnome (=GOAD)"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

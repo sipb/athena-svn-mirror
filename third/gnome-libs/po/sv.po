@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.17\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 2000-09-18 10:37+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -60,7 +60,6 @@ msgid "HOSTNAME:PORT"
 msgstr "VÄRDNAMN:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "GNOME-alternativ"
 
@@ -839,7 +838,7 @@ msgstr "Typsnitt"
 
 #: libgnomeui/gnome-icon-entry.c:111 libgnomeui/gnome-icon-entry.c:556
 msgid "No Icon"
-msgstr "Ingen ikon"
+msgstr "Ingen"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
@@ -849,7 +848,7 @@ msgstr "Kan inte hitta en hbox, använder normal filväljare"
 msgid "Preview"
 msgstr "Förhandsgranskning"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Laddar ikoner..."
 

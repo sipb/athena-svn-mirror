@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.x\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 2000-10-21 11:00 CST\n"
 "Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
 "Language-Team: Tamil\n"
@@ -847,7 +847,7 @@ msgstr "hbox ¸¡½Å¢ø¨Ä, º¡¾¡Ã½Á¡É §¸¡ôÒ §¾÷¾¨Ä ÀÂıÀÎòĞ"
 msgid "Preview"
 msgstr "ÓıÀ¡÷¨Å"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "ÌÚõÀ¼í¸¨Ç ²üÚ¸¢ÈĞ"
 

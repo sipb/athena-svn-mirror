@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.61\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 1999-02-08 17:37+0100\n"
-"Last-Translator: Pablo Saratxaga <srtxg@chanae.alphanet.ch>\n"
+"Last-Translator: Lucas 'Basuero' Vieites <basurero@jazzfree.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -59,7 +59,6 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTAL:PUERTO"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "Opciones de GNOME"
 
@@ -234,7 +233,7 @@ msgstr "Guardar c_omo..."
 
 #: libgnomeui/gnome-app-helper.c:133
 msgid "Save the current file with a different name"
-msgstr "Guardar el archivo actual bajo otro nombre"
+msgstr "Guardar el archivo actual con otro nombre"
 
 #. Revert
 #: libgnomeui/gnome-app-helper.c:138
@@ -243,7 +242,7 @@ msgstr "_Revertir"
 
 #: libgnomeui/gnome-app-helper.c:139
 msgid "Revert to a saved version of the file"
-msgstr "Revertir a una versión anteriormente guardada del archivo"
+msgstr "Revertir a una versión guardada del archivo"
 
 #. Print
 #: libgnomeui/gnome-app-helper.c:144
@@ -261,7 +260,7 @@ msgstr "Con_figuración Impresión..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
-msgstr "Definir la configuración de la impresión"
+msgstr "Definir la configuración para su impresora actual"
 
 #. Close
 #: libgnomeui/gnome-app-helper.c:155
@@ -440,7 +439,7 @@ msgstr "Iniciar un nuevo juego"
 
 #: libgnomeui/gnome-app-helper.c:266
 msgid "_Pause game"
-msgstr "_Pausa"
+msgstr "_Pausar juego"
 
 #: libgnomeui/gnome-app-helper.c:267
 msgid "Pause the game"
@@ -456,7 +455,7 @@ msgstr "Reiniciar el juego"
 
 #: libgnomeui/gnome-app-helper.c:276
 msgid "_Undo move"
-msgstr "_Anular"
+msgstr "_Anular movimiento"
 
 #: libgnomeui/gnome-app-helper.c:277
 msgid "Undo the last move"
@@ -764,7 +763,7 @@ msgstr "Icono:"
 
 #: libgnomeui/gnome-dentry-edit.c:240
 msgid "Choose an icon"
-msgstr "Elegir un icono"
+msgstr "Elija un icono"
 
 #: libgnomeui/gnome-dentry-edit.c:253
 msgid "Run in Terminal"
@@ -838,7 +837,7 @@ msgstr "Fuente"
 
 #: libgnomeui/gnome-icon-entry.c:111 libgnomeui/gnome-icon-entry.c:556
 msgid "No Icon"
-msgstr "sin icono"
+msgstr "Sin Icono"
 
 #: libgnomeui/gnome-icon-entry.c:274 libgnomeui/gnome-pixmap-entry.c:272
 msgid "Can't find an hbox, using a normal file selection"
@@ -846,11 +845,11 @@ msgstr "Imposible encontrar una hbox, usando una selección de archivos normal"
 
 #: libgnomeui/gnome-icon-entry.c:280 libgnomeui/gnome-pixmap-entry.c:278
 msgid "Preview"
-msgstr "Previsualización"
+msgstr "Previsualizar"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
-msgstr "Cargando iconos..."
+msgstr "Cargando Iconos..."
 
 #: libgnomeui/gnome-init.c:161
 msgid "Gdk debugging flags to set"
@@ -875,7 +874,7 @@ msgstr "DISPLAY"
 
 #: libgnomeui/gnome-init.c:167
 msgid "Make X calls synchronous"
-msgstr "Hacer llamadas X sincronas"
+msgstr "Hacer llamadas X síncronas"
 
 #: libgnomeui/gnome-init.c:169
 msgid "Don't use X shared memory extension"
@@ -930,25 +929,23 @@ msgid "MODULE"
 msgstr "MÓDULO"
 
 #: libgnomeui/gnome-init.c:297
-#, fuzzy
 msgid "GTK options"
-msgstr "Opciones de GNOME"
+msgstr "Opciones de GTK"
 
 #: libgnomeui/gnome-init.c:298
-#, fuzzy
 msgid "GNOME GUI options"
-msgstr "Opciones de GNOME"
+msgstr "Opciones del GUI GNOME"
 
 #: libgnomeui/gnome-init.c:452
-#, fuzzy, c-format
+#, c-format
 msgid "%s options"
-msgstr "Opciones de GNOME"
+msgstr "Opciones %s"
 
 #. dialog display isn't working out
 #: libgnomeui/gnome-init.c:642
 msgid "Multiple segmentation faults occurred; can't display error dialog\n"
 msgstr ""
-"Ocurrieron variso errores de segmentación; no puedo mostrar la ventana de "
+"Ocurrieron varios errores de segmentación; no puedo mostrar la ventana de "
 "error\n"
 
 #: libgnomeui/gnome-messagebox.c:111 libgnomeui/gnome-messagebox.c:244
@@ -1234,7 +1231,7 @@ msgstr "Abajo"
 
 #: libgnomeui/gnome-stock.c:1894
 msgid "Menu Accelerator Keys"
-msgstr "Aceleradores de menú"
+msgstr "Aceleradores de Menú"
 
 #: libgnomeui/gnome-stock.c:1896
 msgid "Global"
@@ -1242,7 +1239,7 @@ msgstr "Global"
 
 #: libgnomeui/gnome-stock.c:1898
 msgid "Menu Item"
-msgstr "Entrada de menú"
+msgstr "Entrada de Menú"
 
 #: libgnomeui/gnome-stock.c:1899
 msgid "Accelerator"
@@ -1276,11 +1273,11 @@ msgstr ""
 
 #: libgnomeui/gnome_segv.c:80
 msgid "Usage: gnome_segv appname signum\n"
-msgstr "Uso: gnome_segv nombre-applicación señal\n"
+msgstr "Uso: gnome_segv nombre-aplicación señal\n"
 
 #: libgnomeui/gnome_segv.c:94
 msgid "Submit a bug report"
-msgstr "Enviar un reporte de error"
+msgstr "Enviar un informe de error"
 
 #: libgnomeui/gnome_segv.c:104
 msgid "Debug"
@@ -1294,7 +1291,7 @@ msgstr "http://www.gnome.org/application_crashed.shtml"
 msgid "Please visit the GNOME Application Crash page for more information"
 msgstr ""
 "Por favor, visite la página de GNOME sobre problemas con las aplicaciones "
-"para mayores informes"
+"para más información"
 
 #: libgnomeui/stock_demo.c:112
 msgid "New..."
@@ -1318,7 +1315,7 @@ msgstr "Imprimir..."
 
 #: libgnomeui/stock_demo.c:164
 msgid "Setup Page..."
-msgstr "Configurar página..."
+msgstr "Configurar Página..."
 
 #: libgnomeui/stock_demo.c:173
 msgid "Quit"
@@ -1466,7 +1463,7 @@ msgstr "Ignorar barra de tareas / lista de ventanas"
 
 #: libgnomeui/winhints_demo.c:231
 msgid "Set Skip"
-msgstr "Aplicar"
+msgstr "Definir Salto"
 
 #: libgnomeui/winhints_demo.c:410
 msgid "WIN_HINTS Test"
@@ -1527,7 +1524,7 @@ msgstr "Descriptor de archivo GOAD (Uso Interno)"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr ""
+msgstr "Gnome Object Activation Directory"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

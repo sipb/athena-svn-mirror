@@ -7,9 +7,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.11cvs\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2001-02-10 17:31+01:00\n"
+"Project-Id-Version: gnome-libs 1.2.12cvs\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-03-02 06:29+01:00\n"
 "Last-Translator: Karl Eichwalder <ke@suse.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -63,7 +63,6 @@ msgid "HOSTNAME:PORT"
 msgstr "RECHNERNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "GNOME-Optionen"
 
@@ -261,7 +260,7 @@ msgstr "Die aktuelle Datei drucken"
 #. Print Setup
 #: libgnomeui/gnome-app-helper.c:149
 msgid "Print S_etup..."
-msgstr "Drucker_einstellung..."
+msgstr "Druck_ereinstellung..."
 
 #: libgnomeui/gnome-app-helper.c:150
 msgid "Setup the page settings for your current printer"
@@ -364,7 +363,7 @@ msgstr "Noch einmal nach derselben Zeichenkette suchen"
 #. Replace
 #: libgnomeui/gnome-app-helper.c:210
 msgid "_Replace..."
-msgstr "E_rsetzen..."
+msgstr "Erset_zen..."
 
 #: libgnomeui/gnome-app-helper.c:210
 msgid "Replace a string"
@@ -418,7 +417,7 @@ msgstr "Alles auswählen"
 #.
 #: libgnomeui/gnome-app-helper.c:247
 msgid "Create New _Window"
-msgstr "Neues _Fenster"
+msgstr "Neues Fenste_r"
 
 #: libgnomeui/gnome-app-helper.c:248
 msgid "Create a new window"
@@ -453,7 +452,7 @@ msgstr "Pausiert das Spiel"
 
 #: libgnomeui/gnome-app-helper.c:271
 msgid "_Restart game"
-msgstr "Spiel _neu starten"
+msgstr "Spiel neu sta_rten"
 
 #: libgnomeui/gnome-app-helper.c:272
 msgid "Restart the game"
@@ -494,7 +493,7 @@ msgstr "Die Rangliste einsehen"
 
 #: libgnomeui/gnome-app-helper.c:297
 msgid "_End game"
-msgstr "Spiel _beenden"
+msgstr "Spi_el beenden"
 
 #: libgnomeui/gnome-app-helper.c:298
 msgid "End the current game"
@@ -822,7 +821,7 @@ msgstr "Zurück"
 
 #: libgnomeui/gnome-druid.c:136
 msgid "Finish"
-msgstr "Beenden"
+msgstr "Abschließen"
 
 #: libgnomeui/gnome-file-entry.c:152
 msgid "Select file"
@@ -832,7 +831,7 @@ msgstr "Dateiauswahl"
 #: libgnomeui/gnome-file-entry.c:282 libgnomeui/gnome-spell.c:619
 #: libgnomeui/gnome-spell.c:636 libgnomeui/gnome-spell.c:653
 msgid "Browse..."
-msgstr "Durchsuchen..."
+msgstr "Auswählen..."
 
 #: libgnomeui/gnome-font-picker.c:161
 msgid "Pick a Font"
@@ -854,7 +853,7 @@ msgstr "Keine hbox zu finden, normaler Dateiselektor wird benutzt."
 msgid "Preview"
 msgstr "Vorschau"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Icons werden geladen..."
 
@@ -925,7 +924,7 @@ msgstr "Abzuschaltende Gtk+-Fehlerdiagnoseflags"
 
 #: libgnomeui/gnome-init.c:187
 msgid "Make all warnings fatal"
-msgstr "Alle Warnungen als »fatale« Fehler interpretieren"
+msgstr "Alle Warnungen als schwerwiegende Fehler interpretieren"
 
 #: libgnomeui/gnome-init.c:189
 msgid "Load an additional Gtk module"
@@ -1028,7 +1027,7 @@ msgstr "%a, %d. %b %Y, %H.%M"
 
 #: libgnomeui/gnome-spell.c:197
 msgid "Select dictionary"
-msgstr "Wörterbuch wählen"
+msgstr "Wörterbuch auswählen"
 
 #: libgnomeui/gnome-spell.c:245
 #, c-format
@@ -1696,4 +1695,4 @@ msgstr "Der Anwender wählte Nein/Abbrechen mit den Daten:\n"
 
 #: test-gnome/testgnome.c:1087
 msgid "Weird number in reply callback"
-msgstr "Merkwürdige Nummer in Antwort"
+msgstr "Merkwürdige Nummer in der Antwort"

@@ -1,4 +1,4 @@
-<refentry id="GnomeCanvasImage" revision="21 Jan 2001">
+<refentry id="GnomeCanvasImage" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>GnomeCanvasImage</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -31,17 +31,6 @@ struct      <link linkend="GnomeCanvasImage-struct">GnomeCanvasImage</link>;
 
 </refsect1>
 
-<refsect1>
-<title>Args</title>
-<synopsis>
-
-  &quot;<link linkend="GnomeCanvasImage--x">x</link>&quot;                    <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasImage--y">y</link>&quot;                    <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasImage--width">width</link>&quot;                <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasImage--height">height</link>&quot;               <link linkend="gdouble">gdouble</link>              : Read / Write
-  &quot;<link linkend="GnomeCanvasImage--anchor">anchor</link>&quot;               <link linkend="GtkAnchorType">GtkAnchorType</link>        : Read / Write
-</synopsis>
-</refsect1>
 
 
 
@@ -61,37 +50,6 @@ struct      <link linkend="GnomeCanvasImage-struct">GnomeCanvasImage</link>;
 
 </para></refsect2>
 
-</refsect1>
-<refsect1>
-<title>Args</title>
-<variablelist>
-<varlistentry><term><anchor id="GnomeCanvasImage--x">&quot;<literal>x</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasImage--y">&quot;<literal>y</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasImage--width">&quot;<literal>width</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasImage--height">&quot;<literal>height</literal>&quot; (<link linkend="gdouble">gdouble</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeCanvasImage--anchor">&quot;<literal>anchor</literal>&quot; (<link linkend="GtkAnchorType">GtkAnchorType</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 

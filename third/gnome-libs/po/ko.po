@@ -4,9 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-libs 1.2.11\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2001-02-08 18:04+0900\n"
+"Project-Id-Version: gnome-libs 1.2.12\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-03-08 01:45+0900\n"
 "Last-Translator: Sung-Hyun Nam <namsh@kldp.org>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -59,7 +59,6 @@ msgid "HOSTNAME:PORT"
 msgstr "호스트이름:포트"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "그놈 옵션"
 
@@ -848,7 +847,7 @@ msgstr "hbox를 찾을 수 없음, 보통 파일 선택을 사용함"
 msgid "Preview"
 msgstr "미리 보기"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "아이콘 읽어오기..."
 

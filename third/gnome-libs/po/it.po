@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.12\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 2001-02-15 06:03+01:00\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@pluto.linux.it>\n"
 "Language-Team: Italiano <it@li.org>\n"
@@ -871,7 +871,7 @@ msgstr "Impossibile trovare una hbox. Selezione file normale"
 msgid "Preview"
 msgstr "Anteprima"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Caricamento icone in corso..."
 

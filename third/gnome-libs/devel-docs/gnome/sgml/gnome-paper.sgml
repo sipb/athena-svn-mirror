@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-paper" revision="16 Oct 1999">
+<refentry id="gnome-gnome-paper" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>gnome-paper</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -16,7 +16,7 @@
 
 
 typedef     <link linkend="Paper">Paper</link>;
-typedef     <link linkend="UNIT-CAP">Unit</link>;
+typedef     <link linkend="Unit">Unit</link>;
 <link linkend="GList">GList</link>*      <link linkend="gnome-paper-name-list">gnome_paper_name_list</link>           (void);
 const <link linkend="GnomePaper">GnomePaper</link>* <link linkend="gnome-paper-with-name">gnome_paper_with_name</link>     (const <link linkend="gchar">gchar</link> *papername);
 const <link linkend="GnomePaper">GnomePaper</link>* <link linkend="gnome-paper-with-size">gnome_paper_with_size</link>     (<link linkend="double">double</link> pswidth,
@@ -64,7 +64,7 @@ also supported.</para>
 
 </para></refsect2>
 <refsect2>
-<title><anchor id="UNIT-CAP">Unit</title>
+<title><anchor id="Unit">Unit</title>
 <programlisting>typedef GnomeUnit Unit;
 </programlisting>
 <para>

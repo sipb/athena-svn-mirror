@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.12\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2000-07-11 20:56+00:00\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-03-14 16:58+03:00\n"
 "Last-Translator: Sergey Panov <sipan@mit.edu>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -59,7 +59,6 @@ msgid "HOSTNAME:PORT"
 msgstr "HOSTNAME:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "Параметры GNOME"
 
@@ -848,7 +847,7 @@ msgstr "hbox не найден, будет использован обычный выбор файлов"
 msgid "Preview"
 msgstr "Просмотр"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Загружаются пиктограммы..."
 
@@ -930,19 +929,17 @@ msgid "MODULE"
 msgstr "MODULE"
 
 #: libgnomeui/gnome-init.c:297
-#, fuzzy
 msgid "GTK options"
-msgstr "Параметры GNOME"
+msgstr "Параметры GTK"
 
 #: libgnomeui/gnome-init.c:298
-#, fuzzy
 msgid "GNOME GUI options"
-msgstr "Параметры GNOME"
+msgstr "Параметры графического интерфейса GNOME"
 
 #: libgnomeui/gnome-init.c:452
-#, fuzzy, c-format
+#, c-format
 msgid "%s options"
-msgstr "Параметры GNOME"
+msgstr "Параметры %s"
 
 #. dialog display isn't working out
 #: libgnomeui/gnome-init.c:642
@@ -1526,7 +1523,7 @@ msgstr "(Для внутреннего пользования) дескриптор файла GOAD"
 
 #: libgnorba/goad.c:1367
 msgid "Gnome Object Activation Directory"
-msgstr ""
+msgstr "Каталог активации объектов GNOME"
 
 #: libgnorba/loadshlib.c:11
 msgid "ID under which GOAD knows this server"

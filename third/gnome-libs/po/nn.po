@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.7\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2001-01-24 21:57+01:00\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-02-16 12:09+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -60,9 +60,8 @@ msgid "HOSTNAME:PORT"
 msgstr "VERTSNAVN:PORT"
 
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
-msgstr "GNOME Alternativer"
+msgstr "GNOME alternativer"
 
 #: libgnomeui/gnome-about.c:187
 msgid "Author:"
@@ -849,7 +848,7 @@ msgstr "Kan ikkje finne en hboks, bruker vanlig filvalg"
 msgid "Preview"
 msgstr "Forhåndsvisning"
 
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Laster ikoner..."
 
@@ -1192,11 +1191,11 @@ msgstr "Nummerert liste"
 
 #: libgnomeui/gnome-stock.c:833
 msgid "Indent"
-msgstr "Indentér"
+msgstr "Rykk inn"
 
 #: libgnomeui/gnome-stock.c:834
 msgid "Un-Indent"
-msgstr "Av-indentér"
+msgstr "Fjern innrykk"
 
 #: libgnomeui/gnome-stock.c:838
 msgid "Apply"

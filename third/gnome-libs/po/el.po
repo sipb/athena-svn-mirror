@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.2.12\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
-"PO-Revision-Date: 2001-02-14 01:28:08+0900\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
+"PO-Revision-Date: 2001-02-16 17:03:07+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Ανάγνωση παραμέτρου"
 #
 #: libgnome/gconfigger.c:32 libgnome/gconfigger.c:33
 msgid "CONFIG-PATH"
-msgstr "CONFIG-PATH"
+msgstr "ΔΙΑΔΡΟΜΉ-ΡΥΘΜΊΣΕΩΝ"
 
 #
 #: libgnome/gconfigger.c:33
@@ -73,7 +73,6 @@ msgstr "ΣΥΣΤΗΜΑ:ΘΥΡΑ"
 
 #
 #: libgnome/gnomelib-init.c:150
-#, fuzzy
 msgid "GNOME options"
 msgstr "Επιλογές GNOME"
 
@@ -1048,7 +1047,7 @@ msgid "Preview"
 msgstr "Προεπισκόπηση"
 
 #
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Ανάγνωση Εικονιδίων..."
 

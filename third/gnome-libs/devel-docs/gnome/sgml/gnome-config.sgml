@@ -1,4 +1,4 @@
-<refentry id="gnome-gnome-config" revision="16 Oct 1999">
+<refentry id="gnome-gnome-config" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>gnome-config</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -831,9 +831,11 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-translated-string">gnome_config_private_set_translated_string()</title>
@@ -846,9 +848,11 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-int">gnome_config_private_set_int()</title>
@@ -861,9 +865,11 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-float">gnome_config_private_set_float()</title>
@@ -876,9 +882,11 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-bool">gnome_config_private_set_bool()</title>
@@ -891,9 +899,11 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>new_value</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-config-private-set-vector">gnome_config_private_set_vector()</title>
@@ -906,11 +916,14 @@ Stores vector <parameter>argv</parameter> in the file/section/key defined by
 <colspec colwidth="8*">
 <tbody>
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>argc</parameter>&nbsp;:</entry>
-<entry></entry></row>
+<entry>
+</entry></row>
 <row><entry align="right"><parameter>argv</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
@@ -1279,6 +1292,7 @@ Changes will take place after <link linkend="gnome-config-sync">gnome_config_syn
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
 <entry>
 
+
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 <refsect2>
@@ -1293,6 +1307,7 @@ Changes will take place after <link linkend="gnome-config-sync">gnome_config_syn
 <tbody>
 <row><entry align="right"><parameter>path</parameter>&nbsp;:</entry>
 <entry>
+
 
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-libs 1.0.53\n"
-"POT-Creation-Date: 2001-02-15 23:50-0500\n"
+"POT-Creation-Date: 2001-02-23 13:45-0500\n"
 "PO-Revision-Date: 1999-04-01 17:11+0200\n"
 "Last-Translator: Joseba Bidaurrazaga van Dierdonck <gcpbivaj@lg.ehu.es>\n"
 "Language-Team: euskara <linux-eu@chanae.alphanet.ch>\n"
@@ -1060,7 +1060,7 @@ msgid "Preview"
 msgstr "Aurreikuspegia"
 
 # libgnomeui/gnome-icon-sel.c:348
-#: libgnomeui/gnome-icon-sel.c:348
+#: libgnomeui/gnome-icon-sel.c:368
 msgid "Loading Icons..."
 msgstr "Ikonoak kargatzen..."
 

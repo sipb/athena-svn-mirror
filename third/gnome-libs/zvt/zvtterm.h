@@ -122,9 +122,10 @@ struct _ZvtTerm
   unsigned int in_expose:1;	      /* updating from within expose events */
   unsigned int scroll_on_keystroke:1;
   unsigned int scroll_on_output:1;
-  unsigned int transparent:1;	      /*transparent background*/
-  unsigned int shaded:1;	      /*transparent background with shade*/
+  unsigned int transparent:1;	      /* transparent background */
+  unsigned int shaded:1;	      /* transparent background with shade */
   unsigned int swap_del_key:1;        /* swap the del and backspace keys */
+  unsigned int del_is_del:1;          /* Delete generates DEL/BS instead of Esc[3~ */
 };
 
 struct _ZvtTermClass
@@ -218,6 +219,7 @@ void         zvt_term_set_color_scheme         (ZvtTerm *term,
 						gushort *blu);
 void         zvt_term_set_default_color_scheme (ZvtTerm *term);
 void         zvt_term_set_del_key_swap         (ZvtTerm *term, int state);
+void         zvt_term_set_del_is_del           (ZvtTerm *term, int state);
 void	     zvt_term_set_wordclass	       (ZvtTerm *term, unsigned char *klass);
 
 /* regular expression matching - automagically! */

@@ -1,4 +1,4 @@
-<refentry id="GnomeDockItem" revision="21 Jan 2001">
+<refentry id="GnomeDockItem" revision="16 Mar 2001">
 <refmeta>
 <refentrytitle>GnomeDockItem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -68,14 +68,6 @@ void        <link linkend="gnome-dock-item-get-floating-position">gnome_dock_ite
 
 </refsect1>
 
-<refsect1>
-<title>Args</title>
-<synopsis>
-
-  &quot;<link linkend="GnomeDockItem--shadow">shadow</link>&quot;               <link linkend="GtkShadowType">GtkShadowType</link>        : Read / Write
-  &quot;<link linkend="GnomeDockItem--orientation">orientation</link>&quot;          <link linkend="GtkOrientation">GtkOrientation</link>       : Read / Write
-</synopsis>
-</refsect1>
 
 
 
@@ -452,22 +444,6 @@ Retrieve the behavior of <parameter>dock_item</parameter>.</para>
 </entry></row>
 </tbody></tgroup></informaltable></refsect2>
 
-</refsect1>
-<refsect1>
-<title>Args</title>
-<variablelist>
-<varlistentry><term><anchor id="GnomeDockItem--shadow">&quot;<literal>shadow</literal>&quot; (<link linkend="GtkShadowType">GtkShadowType</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-<varlistentry><term><anchor id="GnomeDockItem--orientation">&quot;<literal>orientation</literal>&quot; (<link linkend="GtkOrientation">GtkOrientation</link> : Read / Write)</term>
-<listitem>
-<para>
-
-</para></listitem></varlistentry>
-
-</variablelist>
 </refsect1>
 
 
