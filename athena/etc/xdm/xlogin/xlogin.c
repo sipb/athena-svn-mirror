@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.45 1996-01-12 19:31:56 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.46 1996-03-08 21:52:22 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -258,6 +258,10 @@ char login[128], passwd[128];
 sigset_t sig_zero;
 #endif
 
+#ifdef SOLARIS_MAE
+int netspy = FALSE;
+#endif
+
 /*
  * Local Globals
  */
@@ -371,6 +375,18 @@ main(argc, argv)
     kill(getppid(), SIGUSR1);
 #endif
 #endif /* not sgi */
+
+#ifdef SOLARIS_MAE
+  /* Make sure the network device has the proper owner and protections.
+     But don't muck with it unless the file NETSPY exists. */
+
+  netspy = file_exists(NETSPY);
+  if (netspy)
+    {
+      chown(NETDEV, ROOT, SYS);
+      chmod(NETDEV, 0600);
+    }
+#endif
 
   /* Call reactivate with the -prelogin option. This restores /etc/passwd,
      blows away stray processes, runs access_off, and a couple of other
