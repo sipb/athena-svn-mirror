@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.76 $
+# $Revision: 1.77 $
 
 umask 2
 
@@ -732,7 +732,6 @@ endif # installonly
 	breaksw
 
 	case third/unsupported/x3270
-	if ($machine == "sun4") then
 		(echo In $package >>& $outfile)
 if ( $installonly == "0" ) then
 		((cd $BUILD/$package; /usr/athena/bin/xmkmf >>& $outfile ) && \
@@ -749,7 +748,6 @@ endif # installonly
 			echo "We bombed in $package"  >>& $outfile
 			exit -1
 		endif
-	endif
 	breaksw
 
 	default:
