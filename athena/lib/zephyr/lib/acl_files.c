@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.6 1991-12-04 13:51:12 lwvanels Exp $";
+static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.7 1992-08-10 13:48:01 lwvanels Exp $";
 #endif
 
 /*** Routines for manipulating access control list files ***/
@@ -54,7 +54,6 @@ static char rcsid_acl_files_c[] = "$Id: acl_files.c,v 1.6 1991-12-04 13:51:12 lw
 
 extern int errno;
 
-extern char *malloc(), *calloc();
 extern time_t time();
 
 /* Canonicalize a principal name */
@@ -341,7 +340,7 @@ char *el;
 
     hv = hashval(el) % h->size;
     while(h->tbl[hv] != NULL && strcmp(h->tbl[hv], el)) hv = (hv+1) % h->size;
-    s = malloc(strlen(el)+1);
+    s = (char *) malloc(strlen(el)+1);
     strcpy(s, el);
     h->tbl[hv] = s;
     h->entries++;
