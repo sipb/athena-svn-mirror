@@ -127,6 +127,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -173,11 +174,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -185,10 +195,8 @@ localedir = @localedir@
 
 libcamellocalincludedir = $(includedir)/camel
 
-providerdir = $(pkglibdir)/camel-providers/$(VERSION)
-
-provider_LTLIBRARIES = libcamellocal.la
-provider_DATA = libcamellocal.urls
+camel_provider_LTLIBRARIES = libcamellocal.la
+camel_provider_DATA = libcamellocal.urls
 
 INCLUDES = -I.. 	-I$(srcdir)/..					-I$(top_srcdir)/camel				-I$(top_srcdir)/intl				-I$(top_srcdir)/libibex				-I$(top_srcdir)/e-util				-I$(top_srcdir)					-I$(includedir)					$(CAMEL_CFLAGS)					$(GNOME_INCLUDEDIR)				$(GTK_INCLUDEDIR)				-DG_LOG_DOMAIN=\"camel-local-provider\"	
 
@@ -210,7 +218,7 @@ EXTRA_DIST = libcamellocal.urls
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(provider_LTLIBRARIES)
+LTLIBRARIES =  $(camel_provider_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../../..
@@ -230,7 +238,7 @@ COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CF
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(provider_DATA)
+DATA =  $(camel_provider_DATA)
 
 HEADERS =  $(libcamellocalinclude_HEADERS) $(noinst_HEADERS)
 
@@ -255,29 +263,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-providerLTLIBRARIES:
+mostlyclean-camel_providerLTLIBRARIES:
 
-clean-providerLTLIBRARIES:
-	-test -z "$(provider_LTLIBRARIES)" || rm -f $(provider_LTLIBRARIES)
+clean-camel_providerLTLIBRARIES:
+	-test -z "$(camel_provider_LTLIBRARIES)" || rm -f $(camel_provider_LTLIBRARIES)
 
-distclean-providerLTLIBRARIES:
+distclean-camel_providerLTLIBRARIES:
 
-maintainer-clean-providerLTLIBRARIES:
+maintainer-clean-camel_providerLTLIBRARIES:
 
-install-providerLTLIBRARIES: $(provider_LTLIBRARIES)
+install-camel_providerLTLIBRARIES: $(camel_provider_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(providerdir)
-	@list='$(provider_LTLIBRARIES)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(camel_providerdir)
+	@list='$(camel_provider_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(providerdir)/$$p"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(providerdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(camel_providerdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(camel_providerdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-providerLTLIBRARIES:
+uninstall-camel_providerLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(provider_LTLIBRARIES)'; for p in $$list; do \
-	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(providerdir)/$$p; \
+	list='$(camel_provider_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(camel_providerdir)/$$p; \
 	done
 
 .c.o:
@@ -325,25 +333,25 @@ distclean-libtool:
 maintainer-clean-libtool:
 
 libcamellocal.la: $(libcamellocal_la_OBJECTS) $(libcamellocal_la_DEPENDENCIES)
-	$(LINK) -rpath $(providerdir) $(libcamellocal_la_LDFLAGS) $(libcamellocal_la_OBJECTS) $(libcamellocal_la_LIBADD) $(LIBS)
+	$(LINK) -rpath $(camel_providerdir) $(libcamellocal_la_LDFLAGS) $(libcamellocal_la_OBJECTS) $(libcamellocal_la_LIBADD) $(LIBS)
 
-install-providerDATA: $(provider_DATA)
+install-camel_providerDATA: $(camel_provider_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(providerdir)
-	@list='$(provider_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(camel_providerdir)
+	@list='$(camel_provider_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(providerdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(providerdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(camel_providerdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(camel_providerdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(providerdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(providerdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(camel_providerdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(camel_providerdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-providerDATA:
+uninstall-camel_providerDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(provider_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(providerdir)/$$p; \
+	list='$(camel_provider_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(camel_providerdir)/$$p; \
 	done
 
 install-libcamellocalincludeHEADERS: $(libcamellocalinclude_HEADERS)
@@ -405,6 +413,325 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+camel-local-folder.lo camel-local-folder.o : camel-local-folder.c \
+	../../../config.h camel-local-folder.h \
+	../../../camel/camel-folder.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-local-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h camel-local-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h ../../../camel/string-utils.h \
+	../../../camel/camel-stream-fs.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-mime-filter-from.h camel-local-private.h
+camel-local-provider.lo camel-local-provider.o : camel-local-provider.c \
+	../../../config.h ../../../camel/camel-provider.h \
+	../../../camel/camel-types.h ../../../camel/camel-object.h \
+	../../../camel/camel-session.h ../../../e-util/e-msgport.h \
+	../../../camel/camel-url.h camel-mh-store.h camel-local-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-service.h \
+	../../../camel/camel-operation.h camel-mbox-store.h \
+	camel-maildir-store.h camel-spool-store.h
+camel-local-store.lo camel-local-store.o : camel-local-store.c \
+	../../../config.h ../../../camel/camel-private.h \
+	../../../e-util/e-msgport.h camel-local-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def camel-local-folder.h \
+	../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-local-summary.h ../../../camel/camel-lock.h
+camel-local-summary.lo camel-local-summary.o : camel-local-summary.c \
+	../../../config.h camel-local-summary.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-object.h ../../../camel/camel-types.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-stream-null.h
+camel-maildir-folder.lo camel-maildir-folder.o : camel-maildir-folder.c \
+	../../../config.h camel-maildir-folder.h camel-local-folder.h \
+	../../../camel/camel-folder.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-local-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h camel-maildir-store.h \
+	camel-local-store.h ../../../camel/camel-store.h \
+	../../../camel/camel-service.h ../../../camel/camel-url.h \
+	../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h ../../../camel/string-utils.h \
+	../../../camel/camel-stream-fs.h \
+	../../../camel/camel-seekable-stream.h camel-maildir-summary.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h
+camel-maildir-store.lo camel-maildir-store.o : camel-maildir-store.c \
+	../../../config.h camel-maildir-store.h camel-local-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h camel-maildir-folder.h \
+	camel-local-folder.h ../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-local-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h ../../../camel/camel-private.h \
+	../../../e-util/e-msgport.h
+camel-maildir-summary.lo camel-maildir-summary.o : \
+	camel-maildir-summary.c ../../../config.h \
+	camel-maildir-summary.h camel-local-summary.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-object.h ../../../camel/camel-types.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-private.h ../../../e-util/e-msgport.h \
+	../../../e-util/e-memory.h
+camel-mbox-folder.lo camel-mbox-folder.o : camel-mbox-folder.c \
+	../../../config.h camel-mbox-folder.h camel-local-folder.h \
+	../../../camel/camel-folder.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-local-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h camel-mbox-summary.h \
+	camel-mbox-store.h camel-local-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h ../../../camel/string-utils.h \
+	../../../camel/camel-stream-fs.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-mime-filter-from.h
+camel-mbox-store.lo camel-mbox-store.o : camel-mbox-store.c \
+	../../../config.h camel-mbox-store.h camel-local-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h camel-mbox-folder.h \
+	camel-local-folder.h ../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-local-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h camel-mbox-summary.h
+camel-mbox-summary.lo camel-mbox-summary.o : camel-mbox-summary.c \
+	../../../config.h camel-mbox-summary.h camel-local-summary.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-object.h ../../../camel/camel-types.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-operation.h \
+	../../../camel/camel-file-utils.h
+camel-mh-folder.lo camel-mh-folder.o : camel-mh-folder.c \
+	../../../config.h camel-mh-folder.h camel-local-folder.h \
+	../../../camel/camel-folder.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-local-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h camel-mh-store.h \
+	camel-local-store.h ../../../camel/camel-store.h \
+	../../../camel/camel-service.h ../../../camel/camel-url.h \
+	../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h ../../../camel/string-utils.h \
+	../../../camel/camel-stream-fs.h \
+	../../../camel/camel-seekable-stream.h camel-mh-summary.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h
+camel-mh-store.lo camel-mh-store.o : camel-mh-store.c ../../../config.h \
+	camel-mh-store.h camel-local-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h camel-mh-folder.h \
+	camel-local-folder.h ../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-local-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h
+camel-mh-summary.lo camel-mh-summary.o : camel-mh-summary.c \
+	../../../config.h camel-mh-summary.h camel-local-summary.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-object.h ../../../camel/camel-types.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h
+camel-spool-folder.lo camel-spool-folder.o : camel-spool-folder.c \
+	../../../config.h camel-spool-folder.h \
+	../../../camel/camel-folder.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-spool-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h camel-spool-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h ../../../camel/string-utils.h \
+	../../../camel/camel-stream-fs.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-mime-filter-from.h \
+	../../../camel/camel-lock-client.h camel-local-private.h
+camel-spool-store.lo camel-spool-store.o : camel-spool-store.c \
+	../../../config.h camel-spool-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h camel-spool-folder.h \
+	../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder-search.h ../../../e-util/e-sexp.h \
+	camel-spool-summary.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-lock.h ../../../camel/camel-private.h \
+	../../../e-util/e-msgport.h
+camel-spool-summary.lo camel-spool-summary.o : camel-spool-summary.c \
+	../../../config.h camel-spool-summary.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-object.h ../../../camel/camel-types.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../libibex/ibex.h \
+	../../../camel/camel-folder.h ../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-file-utils.h \
+	../../../camel/camel-operation.h
 
 info-am:
 info: info-am
@@ -417,14 +744,16 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-providerLTLIBRARIES install-providerDATA \
+install-data-am: install-camel_providerLTLIBRARIES \
+		install-camel_providerDATA \
 		install-libcamellocalincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-providerLTLIBRARIES uninstall-providerDATA \
+uninstall-am: uninstall-camel_providerLTLIBRARIES \
+		uninstall-camel_providerDATA \
 		uninstall-libcamellocalincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
@@ -432,7 +761,8 @@ all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(providerdir) $(DESTDIR)$(providerdir) \
+	$(mkinstalldirs)  $(DESTDIR)$(camel_providerdir) \
+		$(DESTDIR)$(camel_providerdir) \
 		$(DESTDIR)$(libcamellocalincludedir)
 
 
@@ -445,25 +775,25 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-providerLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
-		mostlyclean-generic
+mostlyclean-am:  mostlyclean-camel_providerLTLIBRARIES \
+		mostlyclean-compile mostlyclean-libtool \
+		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-providerLTLIBRARIES clean-compile clean-libtool \
+clean-am:  clean-camel_providerLTLIBRARIES clean-compile clean-libtool \
 		clean-tags clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-providerLTLIBRARIES distclean-compile \
+distclean-am:  distclean-camel_providerLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
 		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-providerLTLIBRARIES \
+maintainer-clean-am:  maintainer-clean-camel_providerLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-tags maintainer-clean-generic \
 		distclean-am
@@ -472,13 +802,14 @@ maintainer-clean-am:  maintainer-clean-providerLTLIBRARIES \
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-providerLTLIBRARIES distclean-providerLTLIBRARIES \
-clean-providerLTLIBRARIES maintainer-clean-providerLTLIBRARIES \
-uninstall-providerLTLIBRARIES install-providerLTLIBRARIES \
+.PHONY: mostlyclean-camel_providerLTLIBRARIES \
+distclean-camel_providerLTLIBRARIES clean-camel_providerLTLIBRARIES \
+maintainer-clean-camel_providerLTLIBRARIES \
+uninstall-camel_providerLTLIBRARIES install-camel_providerLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-providerDATA \
-install-providerDATA uninstall-libcamellocalincludeHEADERS \
+clean-libtool maintainer-clean-libtool uninstall-camel_providerDATA \
+install-camel_providerDATA uninstall-libcamellocalincludeHEADERS \
 install-libcamellocalincludeHEADERS tags mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \

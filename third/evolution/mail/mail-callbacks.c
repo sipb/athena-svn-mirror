@@ -235,7 +235,7 @@ send_receive_mail (GtkWidget *widget, gpointer user_data)
 		return;
 	}
 	
-	mail_send_receive ();
+	mail_send_receive (fb->folder);
 }
 
 static void
@@ -424,7 +424,7 @@ composer_sent_cb (char *uri, CamelMimeMessage *message, gboolean sent, void *dat
 		}
 		gtk_widget_destroy (GTK_WIDGET (send->composer));
 	} else {
-		e_msg_composer_set_enable_autosave(send->composer, TRUE);
+		e_msg_composer_set_enable_autosave (send->composer, TRUE);
 		gtk_widget_show (GTK_WIDGET (send->composer));
 		gtk_object_unref (GTK_OBJECT (send->composer));
 	}
@@ -618,7 +618,7 @@ composer_send_cb (EMsgComposer *composer, gpointer data)
 	send->composer = composer;
 	gtk_object_ref (GTK_OBJECT (composer));
 	gtk_widget_hide (GTK_WIDGET (composer));
-	e_msg_composer_set_enable_autosave(composer, FALSE);
+	e_msg_composer_set_enable_autosave (composer, FALSE);
 	mail_send_mail (transport->url, message, composer_sent_cb, send);
 }
 
@@ -1399,16 +1399,16 @@ addrbook_sender (GtkWidget *widget, gpointer user_data)
 		return;
 	
 	addr_str = camel_address_format (CAMEL_ADDRESS (addr));
-
+	
 	win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (win), _("Sender"));
-
+	
 	control = bonobo_widget_new_control ("OAFIID:GNOME_Evolution_Addressbook_AddressPopup",
 					     CORBA_OBJECT_NIL);
 	bonobo_widget_set_property (BONOBO_WIDGET (control),
 				    "email", addr_str,
 				    NULL);
-
+	
 	bonobo_event_source_client_add_listener (bonobo_widget_get_objref (BONOBO_WIDGET (control)),
 						 popup_listener_cb, NULL, NULL, win);
 	
@@ -1417,9 +1417,15 @@ addrbook_sender (GtkWidget *widget, gpointer user_data)
 				   "destroy",
 				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
 				   GTK_OBJECT (win));
-
+	
 	gtk_container_add (GTK_CONTAINER (win), control);
 	gtk_widget_show_all (win);
+}
+
+void
+add_sender_to_addrbook (BonoboUIComponent *uih, void *user_data, const char *path)
+{
+	addrbook_sender (NULL, user_data);
 }
 
 void
@@ -1882,9 +1888,14 @@ save_msg_ok (GtkWidget *widget, gpointer user_data)
 	GPtrArray *uids;
 	const char *path;
 	int fd, ret = 0;
+	struct stat st;
 	
 	path = gtk_file_selection_get_filename (GTK_FILE_SELECTION (user_data));
 	if (path[0] == '\0')
+		return;
+	
+	/* make sure we can actually save to it... */
+	if (stat (path, &st) != -1 && !S_ISREG (st.st_mode))
 		return;
 	
 	fd = open (path, O_RDONLY);
@@ -2025,8 +2036,7 @@ next_unread_msg (GtkWidget *button, gpointer user_data)
 		return;
 	
 	row = e_tree_row_of_node (fb->message_list->tree, e_tree_get_cursor (fb->message_list->tree));
-	message_list_select (fb->message_list, row,
-			     MESSAGE_LIST_SELECT_NEXT,
+	message_list_select (fb->message_list, row, MESSAGE_LIST_SELECT_NEXT,
 			     0, CAMEL_MESSAGE_SEEN, TRUE);
 }
 
@@ -2040,8 +2050,7 @@ next_flagged_msg (GtkWidget *button, gpointer user_data)
 		return;
 	
 	row = e_tree_row_of_node (fb->message_list->tree, e_tree_get_cursor (fb->message_list->tree));
-	message_list_select (fb->message_list, row,
-			     MESSAGE_LIST_SELECT_NEXT,
+	message_list_select (fb->message_list, row, MESSAGE_LIST_SELECT_NEXT,
 			     CAMEL_MESSAGE_FLAGGED, CAMEL_MESSAGE_FLAGGED, FALSE);
 }
 
@@ -2055,8 +2064,7 @@ previous_msg (GtkWidget *button, gpointer user_data)
 		return;
 	
 	row = e_tree_row_of_node (fb->message_list->tree, e_tree_get_cursor (fb->message_list->tree));
-	message_list_select (fb->message_list, row,
-			     MESSAGE_LIST_SELECT_PREVIOUS,
+	message_list_select (fb->message_list, row, MESSAGE_LIST_SELECT_PREVIOUS,
 			     0, 0, FALSE);
 }
 
@@ -2070,9 +2078,8 @@ previous_unread_msg (GtkWidget *button, gpointer user_data)
 		return;
 	
 	row = e_tree_row_of_node (fb->message_list->tree, e_tree_get_cursor (fb->message_list->tree));
-	message_list_select (fb->message_list, row,
-			     MESSAGE_LIST_SELECT_PREVIOUS,
-			     0, CAMEL_MESSAGE_SEEN, FALSE);
+	message_list_select (fb->message_list, row, MESSAGE_LIST_SELECT_PREVIOUS,
+			     0, CAMEL_MESSAGE_SEEN, TRUE);
 }
 
 void
@@ -2085,8 +2092,7 @@ previous_flagged_msg (GtkWidget *button, gpointer user_data)
 		return;
 	
 	row = e_tree_row_of_node (fb->message_list->tree, e_tree_get_cursor (fb->message_list->tree));
-	message_list_select (fb->message_list, row,
-			     MESSAGE_LIST_SELECT_PREVIOUS,
+	message_list_select (fb->message_list, row, MESSAGE_LIST_SELECT_PREVIOUS,
 			     CAMEL_MESSAGE_FLAGGED, CAMEL_MESSAGE_FLAGGED, TRUE);
 }
 
@@ -2341,12 +2347,12 @@ do_mail_print (FolderBrowser *fb, gboolean preview)
 	
 	print_master = gnome_print_master_new ();
 	
-/*	FIXME: set paper size gnome_print_master_set_paper (print_master,  */
-	
 	if (printer)
 		gnome_print_master_set_printer (print_master, printer);
+	gnome_print_master_set_paper (print_master, gnome_paper_with_name (_("US-Letter")));
 	gnome_print_master_set_copies (print_master, copies, collate);
 	print_context = gnome_print_master_get_context (print_master);
+	gtk_html_print_set_master (fb->mail_display->html, print_master);
 	gtk_html_print (fb->mail_display->html, print_context);
 	gnome_print_master_close (print_master);
 	

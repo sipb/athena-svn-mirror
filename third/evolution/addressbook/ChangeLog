@@ -1,3 +1,213 @@
+2002-01-22  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes bug # 16864 ]
+	* backend/ebook/evolution-ldif-importer.c (getValue): create and
+	return a GString here, instead of writing to a fixed size buffer.
+	(parseLine): use a GString here instead of a fixed size buffer.
+
+2001-12-20  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* evolution/addressbook/printing/e-contact-print.c (complete_sequence):
+	Do not assume that the first byte of file_as is the first letter, use
+	utf8 functions instead.
+
+2001-12-18  JP Rosevear  <jpr@ximian.com>
+
+	* conduit/address-conduit.c (check_for_slow_setting): go slow and
+	clear the map if the last uri and the current uri do not match
+	(post_sync): save the last uri
+
+	* conduits/address-conduit-config.h: handle a last uri config
+	option
+
+2001-12-18  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/addressbook.c (addressbook_default_book_open):
+	change this to match its e-book counterpart, and only failover to
+	the local addressbook if the protocol wasn't supported.  that way
+	errors like "failure to connect" are still reported to the user.
+
+	* backend/ebook/e-book-util.h: add prototypes for
+	e_book_load_default_book and e_book_get_config_database.
+
+	* backend/ebook/e-book-util.c (e_book_default_book_open): new
+	function, basically cut and paste addressbook_default_book_open
+	from addressbook.c here.
+	(e_book_load_default_book): cut and past
+	addressbook_load_default_book here, pretty much, except leave off
+	the auth stuff.
+	(e_book_get_config_database): new function, returns the
+	Bonobo_ConfigDatabase for e_book_load_default_book to use.
+
+	* conduit/address-conduit.c (start_addressbook_server): use
+	e_book_load_default_book here.
+
+2001-12-17  Chris Toshok  <toshok@ximian.com>
+
+	[ fixes bug 17355 ]
+	* gui/component/select-names/e-select-names.c (new_folder): if
+	we're dealing with an LDAP folder, prepend [LDAP] to it.  Now that
+	we have 3 different places where folders are coming from, it helps
+	to be able to differentiate "Contacts" in ~/evolution and a
+	"Contacts" ldap server and a "Contacts" exchange folder.
+	(add_additional_select_names_uris): loop through the bonobo conf
+	settings for additional folders, adding them to the option menu.
+	(e_select_names_hookup_shell_listeners): call
+	add_additional_select_names_uris.
+
+2001-11-28  Christopher James Lahey  <clahey@ximian.com>
+ 
+ 	* gui/widgets/e-minicard-view-widget.c
+	(e_minicard_view_widget_realize): Use an #ECanvasBackground here
+	instead of a #GnomeCanvasRect.
+ 
+2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fixes #17377, Evolution doesn't work on multi-depth displays.]
+
+	* gui/component/addressbook-factory.c (main): Push GdkRGB visual
+	and colormap.
+
+2001-12-16  Jon Trowbridge  <trow@ximian.com>
+
+	* gui/component/select-names/e-select-names-completion.c: Added
+	'cache_complete' flag to ESelectNamesCompletionPrivate.
+	(e_select_names_completion_seq_complete_cb): Set cache_complete
+	to TRUE if our query wasn't interrupted.
+	(e_select_names_completion_start_query): Set cache_complete to
+	FALSE at the beginning of a potentially-cached query.
+	(e_select_names_completion_do_query): Only reuse cached cards
+	if cache_complete is TRUE.  (Fixes bug #10241)
+
+	* gui/component/select-names/e-select-names-bonobo.c
+	(impl_destroy): Disconnect from manager's 'changed' and 'ok'
+	signals.
+	(init): Store the handles when we connect to the 'changed' and
+	'ok' signals.  (Fixed bug #16852)
+
+2001-12-15  JP Rosevear  <jpr@ximian.com>
+ 
+ 	* conduit/address-conduit.c (e_addr_context_destroy): don't free
+ 	the hash table keys, we didn't allocate them and free the change
+ 	objects and unref the associated cards
+ 	(local_record_from_uid): unref the temp card we create
+ 	(replace_record): ref the new card associated with the card change
+ 	and unref the old one
+
+2001-12-13  JP Rosevear  <jpr@ximian.com>
+ 
+ 	* conduit/address-conduit.c (local_record_from_ecard): Make sure
+ 	to copy the custom fields so they are not overwritten
+
+2001-12-13  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/ebook/e-book-util.c (simple_query_new): Used
+	g_strdup_printf to dup a string.  Doh!  Changed to g_strdup.
+	(Bug #17126)
+
+2001-12-05  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-ldap.c
+	(search_for_dn_with_objectclasses): move search_for_dn's contents
+	here, and add an "existing_objectclasses" parameter that we pass
+	on to build_card_from_entry.
+	(search_for_dn): call search_for_dn_with_objectclasses with NULL
+	for existing_objectclasses.
+	(build_card_from_entry): if existing_objectclasses is non-NULL,
+	fill it in with the list of existing objectclass values for this
+	entry.
+	(add_objectclass_mod): if existing_objectclasses is non-NULL,
+	meaning we're modifying an entry, search in the existing
+	objectclasses for the ones we want to be there, and only add
+	what's missing.  If none are missing, don't add objectclass_mod to
+	the list of mods.
+	(create_card_handler): track change to add_objectclass_mod (pass
+	NULL).
+	(modify_card_handler): use search_for_dn_with_objectclasses
+	instead of search_for_dn, and pass the existing objectclasses to
+	add_objectclass_mod.  also, free the list when we're done.
+	(poll_ldap): track change to build_card_from_entry (pass NULL).
+
+2001-12-05  Chris Toshok  <toshok@ximian.com>
+
+	* gui/contact-editor/e-contact-editor.c (enable_writable_fields):
+	we need to be able to disable non-labels here as well.  since
+	we're using enable_widget and not gtk_widget_set_sensitive, it's
+	okay to handle entries/text's, etc, here.
+	(widget_field_mappings): add label-caluri and label-fburl here.
+
+	* gui/contact-editor/contact-editor.glade: change the label names
+	for the freebusy/calendar urls to have more descriptive names,
+	since we use them in e-contact-editor.c now.
+
+	* backend/pas/pas-backend-ldap.c: add support for
+	caluri/calendarURI, fburl/freeBusyURI.
+
+	* backend/pas/evolutionperson.schema: add calendarURI and
+	freeBusyURI.
+
+2001-12-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/contact-editor/contact-editor.glade: Fixed up the
+	accelerators and such here.
+
+	* gui/contact-editor/e-contact-editor.c (file_save_as_cb):
+	Translate this string.
+	(pixmaps): Added a pixmap for the ContactEditorSaveClose command.
+	(setup_tab_order): Fixed up the tab order here.
+
+	* gui/contact-editor/fulladdr.glade: Made the country combo
+	focusable here.
+
+2001-12-03  Jon Trowbridge  <trow@ximian.com>
+
+	* backend/ebook/e-destination.c (e_destination_equal): Make address
+	comparisons case-insensitive. (Fixes 11776)
+
+	* backend/ebook/e-card.c (e_card_email_match_single_string): Make address
+	host comparisons case-insensitive. (Fixes 11776)
+
+	* gui/component/select-names/e-select-names-manager.c (focus_out_cb): Clean
+	ESelectNamesModel on focus-out. (Half of a fix for 15656)
+
+	* backend/ebook/e-destination.c (nonempty): Fix this function
+	and make it utf8-safe. (The other half of the fix for 15656)
+
+2001-11-28  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/contact-list-editor/e-contact-list-editor.c: Consistency
+	fixes with standard contact editor.  Added Save As, Send As, and
+	Send To.  Replaced Save toolbar with Save and Close and added Save
+	and Close menu item.  Added a trash icon.
+
+2001-11-28  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/contact-editor/e-contact-editor-address.c (setup_tab_order):
+	Setup the tab order here.  Fixes Ximian bug #13751.
+
+2001-11-28  Christopher James Lahey  <clahey@ximian.com>
+
+	* gui/component/addressbook.c (connect_master_list_changed,
+	make_suboptions): Changed how this list of categories gets
+	computed.  Fixes Ximian bugs #7707 and #7708.
+
+2001-11-15  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* printing/e-contact-print-envelope.c (ecpe_linelist_dimensions),
+	printing/e-contact-print.c (e_contact_divide_text, e_contact_output,
+	e_contact_rectangle, e_contact_print_letter_tab,
+	e_contact_print_letter_heading, e_contact_get_card_size,
+	e_contact_print_card, e_contact_print_phone_list):
+	s/gnome_font_get_width_string/gnome_font_get_width_utf8/
+	s/gnome_font_get_width_string_n/gnome_font_get_width_utf8_sized/
+
+2001-11-14  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-ldap.c (search_for_dn): check against
+	LDAP_SUCCESS as the return value, not -1.
+	(pas_backend_ldap_build_all_cards_list): same.
+	(pas_backend_ldap_process_authenticate_user): same.
+
 2001-11-12  Chris Toshok  <toshok@ximian.com>
 
 	[ Fixes Ximian bug #14843 ]

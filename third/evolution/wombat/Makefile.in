@@ -127,6 +127,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -173,11 +174,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -395,6 +405,28 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+wombat-moniker.o: wombat-moniker.c ../config.h wombat-moniker.h
+wombat-private-moniker.o: wombat-private-moniker.c ../config.h \
+	wombat-private-moniker.h
+wombat.o: wombat.c ../config.h \
+	../addressbook/backend/pas/pas-book-factory.h \
+	../addressbook/backend/pas/pas-backend.h \
+	../addressbook/backend/pas/addressbook.h \
+	../addressbook/backend/pas/pas-book.h \
+	../addressbook/backend/pas/pas-book-view.h ../e-util/e-list.h \
+	../e-util/e-list-iterator.h ../e-util/e-iterator.h \
+	../addressbook/backend/pas/pas-card-cursor.h \
+	../addressbook/backend/pas/pas-backend-file.h \
+	../calendar/pcs/cal-factory.h \
+	../calendar/pcs/evolution-calendar.h \
+	../calendar/pcs/cal-backend-file.h \
+	../calendar/pcs/cal-backend.h ../calendar/cal-util/cal-util.h \
+	../libical/src/libical/ical.h \
+	../calendar/cal-util/cal-component.h \
+	../calendar/cal-util/cal-recur.h ../calendar/pcs/cal-common.h \
+	../calendar/pcs/cal.h \
+	../addressbook/backend/pas/pas-backend-ldap.h wombat-moniker.h \
+	wombat-private-moniker.h
 
 info-am:
 info: info-am

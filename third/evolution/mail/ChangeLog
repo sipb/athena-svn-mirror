@@ -1,3 +1,172 @@
+2002-01-23  Dan Winship  <danw@ximian.com>
+
+	* mail-folder-cache.c (mail_note_store): Allow this to be called
+	with both storage and corba_storage NULL.
+
+	* mail-send-recv.c (receive_update_got_store): Remove the
+	2001-12-07 hack since it's no longer needed.
+
+2002-01-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (message_list_select): When performing a
+	wraparound, check to see if the first message fits the selection
+	criteria before telling etable to find the next node.
+
+2002-01-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_new): When connecting to
+	the transport username changed event, pass the gui->transport not
+	the gui->source.
+
+2001-12-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	The idea here is that if we consistantly name the movemail file
+	between Send&Receive sessions that if the user cancells the
+	"download" of a mbox spool that the next Send&Receive will not
+	"lose" mail that didn't finish the previous session. Fixes bug
+	#17759. Well, mostly. If you have 200 messages and cancel after
+	the first 100, say, then the next time you hit Send&Receive, it
+	will start over from 1 so you'll end up duplicating the first 100
+	messages, but at least you won't "lose" mail.
+
+	* mail-tools.c (mail_tool_get_local_movemail_path): Now a static
+	internal function, takes a char *uri argument and no longer
+	generates movemail.%d filenames... they are now based on the uri
+	provided.
+	(mail_tool_do_movemail): Pass along the source_uri.
+
+2001-12-21  Jon Trowbridge  <trow@ximian.com>
+
+	* message-list.c (on_click): Makes the auto-undelete behavior when
+	changing message flags a bit more sane. (Fixes #17634)
+
+2001-12-17  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (INCLUDES): Define CAMEL_PROVIDERDIR to be the
+	configure.in-defined camel_providerdir.
+
+2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fixes #17377, Evolution doesn't work on multi-depth displays.]
+
+	* main.c (main): Push GdkRGB visual and colormap.
+
+2001-12-12  Jeffrey Stedfast  <fejJ@ximian.com>
+
+	* mail-config.c (mail_config_check_service): Connect to the
+	destroy signal on the popup dialog.
+
+2001-12-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_text_plain): Make sure i != num_specials
+	after we check for any special text markers. Fixes bug #12265.
+
+2001-12-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-autofilter.c (rule_from_message): Make sure that the
+	message subject is non-NULL beforetrying to base a vfolder rule
+	off it. Fixes bug #16284.
+
+2001-12-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c (construct): Connect to the dialog's "destroy"
+	event and close any druids/editors that may be open when that
+	signal is caught. Fixes bug #16501.
+
+	* mail-vfolder.c (vfolder_edit): Set the window title to "Virtual
+	Folders". Fixes bug #16695.
+
+2001-12-05  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c (do_mail_print): set paper size to
+	_("US-Letter"), use gtk_html_print_set_master
+
+2001-12-08  Dan Winship  <danw@ximian.com>
+
+	* mail-display.c (on_object_requested): Don't just assume all of
+	the GtkHTMLEmbedded's fields are filled in, since HTML messages
+	may have <object>s in them that we're not expecting.
+
+2001-12-07  Dan Winship  <danw@ximian.com>
+
+	* mail-send-recv.c (mail_send_receive): Add a "current_folder"
+	arg.
+	(build_dialogue): Remember the current_folder
+	(free_send_data): If current_folder is set, refresh it so it's
+	guaranteed to be synced with the folder tree. Fixes #14770.
+
+	* mail-callbacks.c (send_receive_mail): Pass current_folder to
+	mail_send_receive().
+
+2001-12-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (stream_write_or_redisplay_when_loaded): Check
+	that the mail-display hasn't been destroyed.
+	(mail_display_redisplay): Same here.
+
+2001-12-07  Dan Winship  <danw@ximian.com>
+
+	* mail-send-recv.c (receive_update_got_store): If updating a store
+	that we don't have an associated storage for, just request a
+	folder tree and then free it. (For the Connector)
+
+	* mail-callbacks.h: Add missing part of Jeff's 12-03 patch so this
+	actually compiles.
+
+2001-12-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (mail_send_message): s/PREVIEW_RELEASE/VERSION_COMMENT
+
+2001-12-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (mail_send_message): Don't append "(Preview Version)"
+	at the end of the version string. Use the PREVIEW_RELEASE #define
+	instead.
+
+2001-12-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-ui.c: Setup the UI for the AddSenderToAddressbook
+	ui verb thingy.
+
+	* mail-callbacks.c (add_sender_to_addrbook): New bonobo-ui
+	callback that adds a sender to the addressbook.
+
+2001-12-04  Jon Trowbridge  <trow@ximian.com>
+
+	* folder-browser-ui.c (folder_browser_ui_set_selection_state):
+	Allow 'n' and 'p' to work when multiple messages are selected.
+	Fixes #12062.
+
+2001-11-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (save_msg_ok): If the path exists, make sure
+	it's a regular file (or we can't possibly save to it). Fix for
+	#14127.
+
+2001-11-28  Jeffrey Stedfast  <fejj@ximian.com>
+	
+	* message-list.c (message_list_select): Cleaned up the code.
+
+	* mail-callbacks.c (previous_unread_msg): Pass wraparound as TRUE.
+
+2001-11-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config.c (pgpopen): Fix the boolean check to be && and not
+	||.
+
+2001-11-20  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser-ui.c: Disable search if no message
+	loaded/viewed.  Also for #14348.
+
+	* folder-browser.c: Disable "Add sender to addressbook" if we dont
+	have a message loaded (it wont work).  For #14348.
+
+2001-11-20  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (load_content_loaded): Make sure the mail-display
+	object is still "alive" before accessing any of it's data.
+
 2001-11-14  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* mail-autofilter.c (rule_match_recipients, rule_from_message,

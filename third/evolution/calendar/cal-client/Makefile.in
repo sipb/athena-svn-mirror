@@ -131,6 +131,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -177,11 +178,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -198,7 +208,7 @@ idls =  	$(srcdir)/../idl/evolution-calendar.idl
 
 idl_flags = `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(localedir)"\"			-DG_LOG_DOMAIN=\"cal-client\"				-I$(top_srcdir)/calendar				-I$(srcdir) -I$(top_srcdir) 				-I. 							-I.. 							-I$(top_builddir)					-I$(top_builddir)/libical/src/libical			-I$(top_srcdir)/libical/src/libical			-I$(top_builddir)/libwombat				-I$(top_srcdir)/libwombat				$(BONOBO_GNOME_CFLAGS)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(localedir)"\"			-DG_LOG_DOMAIN=\"cal-client\"				-I$(top_srcdir)/calendar				-I$(srcdir) -I$(top_srcdir) 				-I. 							-I.. 							-I$(top_builddir)					-I$(top_builddir)/libical/src/libical			-I$(top_srcdir)/libical/src/libical			-I$(top_builddir)/libwombat				-I$(top_srcdir)/libwombat				$(BONOBO_GNOME_CFLAGS)					$(BONOBO_CONF_CFLAGS)
 
 
 lib_LTLIBRARIES = libcal-client.la
@@ -230,7 +240,7 @@ client_test_SOURCES =  	client-test.c
 client_test_INCLUDES =  	$(INCLUDES)				-DG_LOG_DOMAIN=\"client-test\"
 
 
-client_test_LDADD =  	$(BONOBO_VFS_GNOME_LIBS)					$(EXTRA_GNOME_LIBS)						$(top_builddir)/calendar/cal-util/libcal-util.la		$(top_builddir)/libversit/libversit.la				$(top_builddir)/libical/src/libical/libical-evolution.la		$(top_builddir)/libwombat/libwombat.la				libcal-client.la
+client_test_LDADD =  	$(BONOBO_VFS_GNOME_LIBS)					$(EXTRA_GNOME_LIBS)						$(BONOBO_CONF_LIBS)						$(top_builddir)/calendar/cal-util/libcal-util.la		$(top_builddir)/libversit/libversit.la				$(top_builddir)/libical/src/libical/libical-evolution.la		$(top_builddir)/libwombat/libwombat.la				libcal-client.la
 
 
 BUILT_SOURCES = $(CORBA_GENERATED)
@@ -451,6 +461,42 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+cal-client-multi.lo cal-client-multi.o : cal-client-multi.c \
+	../../config.h cal-client-multi.h cal-client.h \
+	../../calendar/cal-util/cal-recur.h \
+	../../calendar/cal-util/cal-component.h \
+	../../libical/src/libical/ical.h \
+	../../calendar/cal-util/cal-util.h cal-query.h \
+	evolution-calendar.h
+cal-client-types.lo cal-client-types.o : cal-client-types.c \
+	../../config.h cal-client-types.h \
+	../../calendar/cal-util/cal-component.h \
+	../../libical/src/libical/ical.h
+cal-client.lo cal-client.o : cal-client.c ../../config.h \
+	cal-client-types.h ../../calendar/cal-util/cal-component.h \
+	../../libical/src/libical/ical.h cal-client.h \
+	../../calendar/cal-util/cal-recur.h \
+	../../calendar/cal-util/cal-util.h cal-query.h \
+	evolution-calendar.h cal-listener.h evolution-calendar.h \
+	../../libwombat/wombat-client.h ../../libwombat/wombat.h
+cal-listener.lo cal-listener.o : cal-listener.c ../../config.h \
+	cal-listener.h evolution-calendar.h
+cal-query.lo cal-query.o : cal-query.c ../../config.h cal-query.h \
+	evolution-calendar.h query-listener.h
+client-test.o: client-test.c ../../config.h cal-client.h \
+	../../calendar/cal-util/cal-recur.h \
+	../../calendar/cal-util/cal-component.h \
+	../../libical/src/libical/ical.h \
+	../../calendar/cal-util/cal-util.h cal-query.h \
+	evolution-calendar.h
+evolution-calendar-common.lo evolution-calendar-common.o : \
+	evolution-calendar-common.c evolution-calendar.h
+evolution-calendar-skels.lo evolution-calendar-skels.o : \
+	evolution-calendar-skels.c evolution-calendar.h
+evolution-calendar-stubs.lo evolution-calendar-stubs.o : \
+	evolution-calendar-stubs.c evolution-calendar.h
+query-listener.lo query-listener.o : query-listener.c ../../config.h \
+	query-listener.h evolution-calendar.h
 
 info-am:
 info: info-am

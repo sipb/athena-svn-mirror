@@ -127,6 +127,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -173,11 +174,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -388,6 +398,73 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+filter-code.lo filter-code.o : filter-code.c ../config.h filter-code.h \
+	filter-input.h filter-element.h
+filter-colour.lo filter-colour.o : filter-colour.c ../config.h \
+	../e-util/e-sexp.h filter-colour.h filter-element.h
+filter-context.lo filter-context.o : filter-context.c ../config.h \
+	filter-context.h rule-context.h filter-part.h filter-input.h \
+	filter-element.h filter-rule.h filter-filter.h filter-folder.h
+filter-datespec.lo filter-datespec.o : filter-datespec.c ../config.h \
+	filter-datespec.h filter-element.h ../e-util/e-sexp.h
+filter-editor.lo filter-editor.o : filter-editor.c ../config.h \
+	filter-editor.h rule-editor.h filter-context.h rule-context.h \
+	filter-part.h filter-input.h filter-element.h filter-rule.h \
+	filter-filter.h
+filter-element.lo filter-element.o : filter-element.c ../config.h \
+	filter-element.h filter-input.h filter-option.h filter-code.h \
+	filter-colour.h filter-datespec.h filter-score.h filter-int.h \
+	filter-folder.h filter-source.h
+filter-filter.lo filter-filter.o : filter-filter.c ../config.h \
+	filter-filter.h filter-rule.h filter-part.h filter-input.h \
+	filter-element.h filter-context.h rule-context.h
+filter-folder.lo filter-folder.o : filter-folder.c ../config.h \
+	filter-folder.h filter-element.h \
+	../shell/evolution-shell-client.h ../shell/Evolution.h \
+	../e-util/e-sexp.h
+filter-input.lo filter-input.o : filter-input.c ../config.h \
+	filter-input.h filter-element.h ../e-util/e-sexp.h
+filter-int.lo filter-int.o : filter-int.c ../config.h ../e-util/e-sexp.h \
+	filter-int.h filter-element.h
+filter-option.lo filter-option.o : filter-option.c ../config.h \
+	filter-option.h filter-element.h filter-part.h filter-input.h \
+	../e-util/e-sexp.h
+filter-part.lo filter-part.o : filter-part.c ../config.h filter-part.h \
+	filter-input.h filter-element.h
+filter-rule.lo filter-rule.o : filter-rule.c ../config.h filter-rule.h \
+	filter-part.h filter-input.h filter-element.h filter-context.h \
+	rule-context.h
+filter-score.lo filter-score.o : filter-score.c ../config.h \
+	../e-util/e-sexp.h filter-score.h filter-element.h
+filter-source.lo filter-source.o : filter-source.c ../config.h \
+	filter-source.h filter-element.h ../e-util/e-url.h \
+	../e-util/e-sexp.h
+rule-context.lo rule-context.o : rule-context.c ../config.h \
+	rule-context.h filter-part.h filter-input.h filter-element.h \
+	filter-rule.h
+rule-editor.lo rule-editor.o : rule-editor.c ../config.h rule-editor.h \
+	rule-context.h filter-part.h filter-input.h filter-element.h \
+	filter-rule.h
+score-context.lo score-context.o : score-context.c ../config.h \
+	score-context.h rule-context.h filter-part.h filter-input.h \
+	filter-element.h filter-rule.h score-rule.h
+score-editor.lo score-editor.o : score-editor.c ../config.h \
+	score-editor.h rule-editor.h score-context.h rule-context.h \
+	filter-part.h filter-input.h filter-element.h filter-rule.h \
+	score-rule.h
+score-rule.lo score-rule.o : score-rule.c ../config.h score-rule.h \
+	filter-rule.h filter-part.h filter-input.h filter-element.h
+vfolder-context.lo vfolder-context.o : vfolder-context.c ../config.h \
+	vfolder-context.h rule-context.h filter-part.h filter-input.h \
+	filter-element.h filter-rule.h vfolder-rule.h
+vfolder-editor.lo vfolder-editor.o : vfolder-editor.c ../config.h \
+	vfolder-editor.h rule-editor.h vfolder-context.h rule-context.h \
+	filter-part.h filter-input.h filter-element.h filter-rule.h \
+	vfolder-rule.h
+vfolder-rule.lo vfolder-rule.o : vfolder-rule.c ../config.h \
+	vfolder-context.h rule-context.h filter-part.h filter-input.h \
+	filter-element.h filter-rule.h vfolder-rule.h \
+	../shell/evolution-shell-client.h ../shell/Evolution.h
 
 info-am:
 info: info-am

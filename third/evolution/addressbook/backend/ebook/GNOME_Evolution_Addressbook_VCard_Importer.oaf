@@ -10,10 +10,16 @@
 
 	<oaf_attribute name="description" type="string"
 		       value="Factory to import VCard files into Evolution."/>
+	<oaf_attribute name="description-az" type="string"
+		       value="&#39;GnomeCard&#39; fayllar&#196;&#177;n&#196;&#177; &#39;Evolution&#39; i&#195;&#167;in&#201;&#153; g&#201;&#153;tir&#201;&#153;n e&#39;malatxana."/>
+	<oaf_attribute name="description-bg" type="string"
+		       value="&#212;&#224;&#225;&#240;&#232;&#234;&#224;, &#238;&#242; &#234;&#238;&#255;&#242;&#238; &#228;&#224; &#241;&#229; &#226;&#237;&#229;&#241;&#224;&#242; VCard &#244;&#224;&#233;&#235;&#238;&#226;&#229; &#226; &#197;&#226;&#238;&#235;&#254;&#248;&#250;&#237;."/>
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik til import af VCard-filer i Evolution."/>
 	<oaf_attribute name="description-de" type="string"
-		       value="Factory, um VCard-Dateien in Evolution zu importieren."/>
+		       value="Fabrik, um VCard-Dateien in Evolution zu importieren."/>
+	<oaf_attribute name="description-el" type="string"
+		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#229;&#233;&#243;&#225;&#227;&#249;&#227;&#222; &#225;&#241;&#247;&#229;&#223;&#249;&#237; VCard &#243;&#244;&#239; Evolution"/>
 	<oaf_attribute name="description-es" type="string"
 		       value="Factor&#237;a para importar archivos VCard a Evolution."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -26,10 +32,16 @@
 		       value="Fabbrica per importare i file VCard in Evolution."/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="Evolution &#164;&#216; VCard &#165;&#213;&#165;&#161;&#165;&#164;&#165;&#235;&#164;&#242;&#165;&#164;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#200;&#164;&#185;&#164;&#235;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-ko" type="string"
+		       value="GnomeCard &#198;&#196;&#192;&#207;&#192;&#187; Evolution&#192;&#184;&#183;&#206; &#176;&#161;&#193;&#174;&#191;&#201;&#180;&#207;&#180;&#217;"/>
 	<oaf_attribute name="description-lt" type="string"
 		       value="Gamykla importuoti VCard byloms &#225; Evolution."/>
+	<oaf_attribute name="description-lv" type="string"
+		       value="Ra&#254;otne, lai import&#231;tu VKartes failus Evolution."/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Fabriek om GnomeCard bestanden importeren in Evolution."/>
+	<oaf_attribute name="description-nn" type="string"
+		       value="Fabrikk for &#229; importere VCard-filer inn i Evolution."/>
 	<oaf_attribute name="description-no" type="string"
 		       value="Factory for import av VCard-filer til Evolution."/>
 	<oaf_attribute name="description-pl" type="string"
@@ -68,10 +80,16 @@
 		       value="VCard (.vcf, .gcrd)"/>
 	<oaf_attribute name="description" type="string"
 		       value="Imports VCard files into Evolution."/>
+	<oaf_attribute name="description-az" type="string"
+		       value="&#39;GnomeCard&#39; fayllar&#196;&#177;n&#196;&#177; &#39;Evolution&#39; i&#195;&#167;in&#201;&#153; g&#201;&#153;tirir."/>
+	<oaf_attribute name="description-bg" type="string"
+		       value="&#194;&#237;&#224;&#241;&#255; VCard &#244;&#224;&#233;&#235;&#238;&#226;&#229; &#226; &#197;&#226;&#238;&#235;&#254;&#248;&#250;&#237;."/>
 	<oaf_attribute name="description-da" type="string"
 		       value="Importerer VCard-filer i Evolution."/>
 	<oaf_attribute name="description-de" type="string"
 		       value="Importiert VCard-Dateien in Evolution."/>
+	<oaf_attribute name="description-el" type="string"
+		       value="&#197;&#233;&#243;&#225;&#227;&#249;&#227;&#222; &#225;&#241;&#247;&#229;&#223;&#249;&#237; VCard &#243;&#244;&#239; Evolution."/>
 	<oaf_attribute name="description-es" type="string"
 		       value="Importa archivos VCard a Evolution."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -84,10 +102,16 @@
 		       value="Importa i file VCard in Evolution."/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="Evolution &#164;&#216; VCard &#165;&#213;&#165;&#161;&#165;&#164;&#165;&#235;&#164;&#242;&#165;&#164;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#200;"/>
+	<oaf_attribute name="description-ko" type="string"
+		       value="GnomeCard &#198;&#196;&#192;&#207;&#192;&#187; Evolution&#192;&#184;&#183;&#206; &#176;&#161;&#193;&#174;&#191;&#201;&#180;&#207;&#180;&#217;"/>
 	<oaf_attribute name="description-lt" type="string"
 		       value="Importuoja VCard bylas &#225; Evolution."/>
+	<oaf_attribute name="description-lv" type="string"
+		       value="Import&#231; VKartes failus Evolution."/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Importeert GnomeCard bestanden in Evolution."/>
+	<oaf_attribute name="description-nn" type="string"
+		       value="Importerar VCard-filer inn i Evolution."/>
 	<oaf_attribute name="description-no" type="string"
 		       value="Importerer VCard-filer til Evolution."/>
 	<oaf_attribute name="description-pl" type="string"

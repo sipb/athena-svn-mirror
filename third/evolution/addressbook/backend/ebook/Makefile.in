@@ -127,6 +127,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -173,11 +174,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -607,6 +617,116 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+addressbook-common.lo addressbook-common.o : addressbook-common.c \
+	addressbook.h
+addressbook-skels.lo addressbook-skels.o : addressbook-skels.c \
+	addressbook.h
+addressbook-stubs.lo addressbook-stubs.o : addressbook-stubs.c \
+	addressbook.h
+e-book-listener.lo e-book-listener.o : e-book-listener.c \
+	../../../config.h e-book-listener.h addressbook.h \
+	e-book-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h
+e-book-util.lo e-book-util.o : e-book-util.c ../../../config.h \
+	e-book-util.h e-book.h e-card.h e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h e-card-cursor.h addressbook.h \
+	e-book-view.h e-book-view-listener.h e-book-types.h \
+	e-card-compare.h e-card.h
+e-book-view-listener.lo e-book-view-listener.o : e-book-view-listener.c \
+	../../../config.h e-book-view-listener.h addressbook.h \
+	e-book-view.h e-card.h e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	e-book-view-listener.h e-card.h
+e-book-view.lo e-book-view.o : e-book-view.c ../../../config.h \
+	addressbook.h e-card-cursor.h addressbook.h e-card.h \
+	e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	e-book-view-listener.h e-book-view.h e-book-view-listener.h \
+	e-book.h e-card-cursor.h e-book-view.h e-book-types.h
+e-book.lo e-book.o : e-book.c ../../../config.h addressbook.h \
+	e-card-cursor.h addressbook.h e-card.h e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h e-book-listener.h e-book-types.h \
+	e-book.h e-card-cursor.h e-book-view.h e-book-view-listener.h
+e-card-compare.lo e-card-compare.o : e-card-compare.c ../../../config.h \
+	e-book-util.h e-book.h e-card.h e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h e-card-cursor.h addressbook.h \
+	e-book-view.h e-book-view-listener.h e-book-types.h \
+	e-card-compare.h e-card.h
+e-card-cursor.lo e-card-cursor.o : e-card-cursor.c ../../../config.h \
+	addressbook.h e-card-cursor.h addressbook.h e-card.h \
+	e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h
+e-card-simple.lo e-card-simple.o : e-card-simple.c ../../../config.h \
+	../../../libversit/vcc.h ../../../libversit/vobject.h \
+	../../../libversit/port.h e-card-simple.h e-card.h \
+	e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h
+e-card.lo e-card.o : e-card.c ../../../config.h e-card.h e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h ../../../libversit/vcc.h \
+	../../../libversit/vobject.h ../../../libversit/port.h \
+	../../../e-util/ename/e-name-western.h \
+	../../../e-util/ename/e-address-western.h e-book.h e-card.h \
+	e-card-cursor.h addressbook.h e-book-view.h \
+	e-book-view-listener.h e-book-types.h e-destination.h e-book.h \
+	Evolution-Composer.h
+e-destination.lo e-destination.o : e-destination.c ../../../config.h \
+	e-destination.h e-card.h e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h e-book.h e-card-cursor.h \
+	addressbook.h e-book-view.h e-book-view-listener.h \
+	e-book-types.h e-book.h e-book-util.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h ../../../camel/camel-object.h \
+	../../../camel/camel-types.h
+Evolution-Composer-common.lo Evolution-Composer-common.o : \
+	Evolution-Composer-common.c Evolution-Composer.h
+Evolution-Composer-skels.lo Evolution-Composer-skels.o : \
+	Evolution-Composer-skels.c Evolution-Composer.h
+Evolution-Composer-stubs.lo Evolution-Composer-stubs.o : \
+	Evolution-Composer-stubs.c Evolution-Composer.h
+evolution-ldif-importer.o: evolution-ldif-importer.c ../../../config.h \
+	e-book.h e-card.h e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	e-card-cursor.h addressbook.h e-book-view.h \
+	e-book-view-listener.h e-book-types.h e-card-simple.h \
+	e-destination.h e-book.h \
+	../../../shell/importer/evolution-importer.h \
+	../../../shell/importer/GNOME_Evolution_Importer.h
+evolution-vcard-importer.o: evolution-vcard-importer.c ../../../config.h \
+	e-book.h e-card.h e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	e-card-cursor.h addressbook.h e-book-view.h \
+	e-book-view-listener.h e-book-types.h \
+	../../../shell/importer/evolution-importer.h \
+	../../../shell/importer/GNOME_Evolution_Importer.h \
+	../../../e-util/e-path.h
+load-gnomecard-addressbook.o: load-gnomecard-addressbook.c \
+	../../../config.h e-book.h e-card.h e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h e-card-cursor.h addressbook.h \
+	e-book-view.h e-book-view-listener.h e-book-types.h
+load-pine-addressbook.o: load-pine-addressbook.c ../../../config.h \
+	e-book.h e-card.h e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	e-card-cursor.h addressbook.h e-book-view.h \
+	e-book-view-listener.h e-book-types.h
+test-card.o: test-card.c e-card.h e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h
+test-client-list.o: test-client-list.c ../../../config.h e-book.h \
+	e-card.h e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	e-card-cursor.h addressbook.h e-book-view.h \
+	e-book-view-listener.h e-book-types.h
+test-client.o: test-client.c ../../../config.h e-book.h e-card.h \
+	e-card-types.h ../../../e-util/e-list.h \
+	../../../e-util/e-list-iterator.h ../../../e-util/e-iterator.h \
+	e-card-cursor.h addressbook.h e-book-view.h \
+	e-book-view-listener.h e-book-types.h
 
 info-am:
 info: info-am

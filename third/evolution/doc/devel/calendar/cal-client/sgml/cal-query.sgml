@@ -1,0 +1,96 @@
+<refentry id="evolution-cal-client-CalQuery">
+<refmeta>
+<refentrytitle>CalQuery</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>EVOLUTION-CAL-CLIENT Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>CalQuery</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;cal-client/cal-client.h&gt;
+
+
+#define     <link linkend="CAL-QUERY-CAPS">CAL_QUERY</link>                       (obj)
+enum        <link linkend="CalQueryDoneStatus">CalQueryDoneStatus</link>;
+<link linkend="CalQuery">CalQuery</link>*   <link linkend="cal-query-new">cal_query_new</link>                   (<link linkend="GNOME-Evolution-Calendar-Cal">GNOME_Evolution_Calendar_Cal</link> cal,
+                                             const char *sexp);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="CAL-QUERY-CAPS">CAL_QUERY()</title>
+<programlisting>#define CAL_QUERY(obj)            (GTK_CHECK_CAST ((obj), CAL_QUERY_TYPE, CalQuery))
+</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="CalQueryDoneStatus">enum CalQueryDoneStatus</title>
+<programlisting>typedef enum {
+	CAL_QUERY_DONE_SUCCESS,
+	CAL_QUERY_DONE_PARSE_ERROR
+} CalQueryDoneStatus;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="cal-query-new">cal_query_new ()</title>
+<programlisting><link linkend="CalQuery">CalQuery</link>*   cal_query_new                   (<link linkend="GNOME-Evolution-Calendar-Cal">GNOME_Evolution_Calendar_Cal</link> cal,
+                                             const char *sexp);</programlisting>
+<para>
+Creates a new query object by issuing the query creation request to the
+calendar server.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>cal</parameter>&nbsp;:</entry>
+<entry> Handle to an open calendar.
+</entry></row>
+<row><entry align="right"><parameter>sexp</parameter>&nbsp;:</entry>
+<entry> S-expression that defines the query.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly-created query object, or NULL if the request failed.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

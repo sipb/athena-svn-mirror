@@ -129,6 +129,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -175,11 +176,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -415,6 +425,189 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+e-select-names-bonobo.lo e-select-names-bonobo.o : \
+	e-select-names-bonobo.c ../../../../config.h \
+	e-select-names-bonobo.h Evolution-Addressbook-SelectNames.h \
+	e-select-names-manager.h ../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h e-select-names.h \
+	../../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../../addressbook/backend/ebook/e-book.h \
+	../../../../addressbook/backend/ebook/e-card.h \
+	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../../addressbook/backend/ebook/addressbook.h \
+	../../../../addressbook/backend/ebook/e-book-view.h \
+	../../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../../addressbook/backend/ebook/e-book-types.h \
+	../../../../addressbook/backend/ebook/e-card-simple.h \
+	e-select-names-model.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
+	../../../../shell/evolution-storage-listener.h \
+	../../../../shell/Evolution.h e-select-names-text-model.h \
+	e-select-names-completion.h
+e-select-names-completion.lo e-select-names-completion.o : \
+	e-select-names-completion.c ../../../../config.h \
+	e-select-names-completion.h \
+	../../../../addressbook/backend/ebook/e-book.h \
+	../../../../addressbook/backend/ebook/e-card.h \
+	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h \
+	../../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../../addressbook/backend/ebook/addressbook.h \
+	../../../../addressbook/backend/ebook/e-book-view.h \
+	../../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../../addressbook/backend/ebook/e-book-types.h \
+	e-select-names-model.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
+	../../../../addressbook/backend/ebook/e-book-util.h \
+	../../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../../addressbook/backend/ebook/e-card-compare.h
+e-select-names-factory.lo e-select-names-factory.o : \
+	e-select-names-factory.c ../../../../config.h \
+	e-select-names-bonobo.h Evolution-Addressbook-SelectNames.h \
+	e-select-names-factory.h
+e-select-names-manager.lo e-select-names-manager.o : \
+	e-select-names-manager.c ../../../../config.h \
+	e-select-names-manager.h ../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h e-select-names.h \
+	../../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../../addressbook/backend/ebook/e-book.h \
+	../../../../addressbook/backend/ebook/e-card.h \
+	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../../addressbook/backend/ebook/addressbook.h \
+	../../../../addressbook/backend/ebook/e-book-view.h \
+	../../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../../addressbook/backend/ebook/e-book-types.h \
+	../../../../addressbook/backend/ebook/e-card-simple.h \
+	e-select-names-model.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
+	../../../../shell/evolution-storage-listener.h \
+	../../../../shell/Evolution.h e-select-names-text-model.h \
+	e-select-names-completion.h e-select-names-popup.h \
+	../../../../addressbook/gui/component/addressbook.h
+e-select-names-model.lo e-select-names-model.o : e-select-names-model.c \
+	../../../../config.h e-select-names-model.h \
+	../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h \
+	../../../../addressbook/backend/ebook/e-card.h \
+	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
+	../../../../addressbook/backend/ebook/e-book.h \
+	../../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../../addressbook/backend/ebook/addressbook.h \
+	../../../../addressbook/backend/ebook/e-book-view.h \
+	../../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../../addressbook/backend/ebook/e-book-types.h \
+	../../../../addressbook/backend/ebook/e-card-simple.h
+e-select-names-popup.lo e-select-names-popup.o : e-select-names-popup.c \
+	../../../../config.h \
+	../../../../addressbook/backend/ebook/e-book-util.h \
+	../../../../addressbook/backend/ebook/e-book.h \
+	../../../../addressbook/backend/ebook/e-card.h \
+	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h \
+	../../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../../addressbook/backend/ebook/addressbook.h \
+	../../../../addressbook/backend/ebook/e-book-view.h \
+	../../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../../addressbook/backend/ebook/e-book-types.h \
+	../../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	e-select-names-manager.h e-select-names.h \
+	../../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../../addressbook/backend/ebook/e-card-simple.h \
+	e-select-names-model.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
+	../../../../shell/evolution-storage-listener.h \
+	../../../../shell/Evolution.h \
+	../../../../addressbook/gui/contact-editor/e-contact-quick-add.h \
+	../../../../addressbook/gui/widgets/e-addressbook-util.h \
+	../../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
+	e-select-names-popup.h e-select-names-model.h
+e-select-names-table-model.lo e-select-names-table-model.o : \
+	e-select-names-table-model.c ../../../../config.h \
+	e-select-names-table-model.h e-select-names-model.h \
+	../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h \
+	../../../../addressbook/backend/ebook/e-card.h \
+	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
+	../../../../addressbook/backend/ebook/e-book.h \
+	../../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../../addressbook/backend/ebook/addressbook.h \
+	../../../../addressbook/backend/ebook/e-book-view.h \
+	../../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../../addressbook/backend/ebook/e-book-types.h \
+	../../../../addressbook/backend/ebook/e-card-simple.h
+e-select-names-text-model.lo e-select-names-text-model.o : \
+	e-select-names-text-model.c ../../../../config.h \
+	../../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	e-select-names-manager.h ../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h e-select-names.h \
+	../../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../../addressbook/backend/ebook/e-book.h \
+	../../../../addressbook/backend/ebook/e-card.h \
+	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../../addressbook/backend/ebook/addressbook.h \
+	../../../../addressbook/backend/ebook/e-book-view.h \
+	../../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../../addressbook/backend/ebook/e-book-types.h \
+	../../../../addressbook/backend/ebook/e-card-simple.h \
+	e-select-names-model.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
+	../../../../shell/evolution-storage-listener.h \
+	../../../../shell/Evolution.h e-select-names-text-model.h \
+	e-select-names-model.h \
+	../../../../addressbook/gui/widgets/e-addressbook-util.h \
+	../../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h
+e-select-names.lo e-select-names.o : e-select-names.c \
+	../../../../config.h \
+	../../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../../addressbook/backend/ebook/e-book.h \
+	../../../../addressbook/backend/ebook/e-card.h \
+	../../../../addressbook/backend/ebook/e-card-types.h \
+	../../../../e-util/e-list.h \
+	../../../../e-util/e-list-iterator.h \
+	../../../../e-util/e-iterator.h \
+	../../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../../addressbook/backend/ebook/addressbook.h \
+	../../../../addressbook/backend/ebook/e-book-view.h \
+	../../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../../addressbook/backend/ebook/e-book-types.h \
+	../../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../../addressbook/gui/widgets/e-addressbook-table-adapter.h \
+	../../../../addressbook/gui/component/e-cardlist-model.h \
+	../../../../addressbook/gui/component/addressbook-component.h \
+	../../../../shell/evolution-shell-component.h \
+	../../../../shell/Evolution.h \
+	../../../../shell/evolution-shell-client.h \
+	../../../../shell/evolution-storage.h \
+	../../../../addressbook/gui/component/addressbook-storage.h \
+	../../../../addressbook/gui/component/addressbook.h \
+	e-select-names.h e-select-names-model.h \
+	../../../../addressbook/backend/ebook/e-destination.h \
+	../../../../shell/evolution-storage-listener.h \
+	e-select-names-table-model.h \
+	../../../../e-util/e-categories-master-list-wombat.h
+Evolution-Addressbook-SelectNames-common.lo Evolution-Addressbook-SelectNames-common.o : \
+	Evolution-Addressbook-SelectNames-common.c \
+	Evolution-Addressbook-SelectNames.h
+Evolution-Addressbook-SelectNames-skels.lo Evolution-Addressbook-SelectNames-skels.o : \
+	Evolution-Addressbook-SelectNames-skels.c \
+	Evolution-Addressbook-SelectNames.h
+Evolution-Addressbook-SelectNames-stubs.lo Evolution-Addressbook-SelectNames-stubs.o : \
+	Evolution-Addressbook-SelectNames-stubs.c \
+	Evolution-Addressbook-SelectNames.h
 
 info-am:
 info: info-am

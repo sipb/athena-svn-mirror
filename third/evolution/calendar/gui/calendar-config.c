@@ -421,7 +421,16 @@ calendar_config_write_on_exit		(void)
 gchar *
 calendar_config_get_default_uri (void)
 {
-	return config->default_uri;
+	static gchar *default_uri = NULL;
+
+	if (config->default_uri)
+		return config->default_uri;
+
+	if (!default_uri)
+		default_uri = g_strdup_printf ("%s/evolution/local/Calendar/calendar.ics",
+					       g_get_home_dir ());
+
+	return default_uri;
 }
 
 /* Sets the default calendar URI */
@@ -439,7 +448,16 @@ calendar_config_set_default_uri (gchar *default_uri)
 gchar *
 calendar_config_get_default_tasks_uri (void)
 {
-	return config->default_tasks_uri;
+	static gchar *default_tasks_uri = NULL;
+
+	if (config->default_tasks_uri)
+		return config->default_tasks_uri;
+
+	if (!default_tasks_uri)
+		default_tasks_uri = g_strdup_printf ("%s/evolution/local/Tasks/tasks.ics",
+						     g_get_home_dir ());
+
+	return default_tasks_uri;
 }
 
 void
@@ -908,11 +926,6 @@ calendar_config_configure_e_calendar_table	(ECalendarTable	*cal_table)
 	/* Reload the event/tasks, since the 'Hide Completed Tasks' option
 	   may have been changed, so the query needs to be updated. */
 	calendar_model_refresh (model);
-
-	/* This is for changing the colors of the text; they will be re-fetched
-	 * by ECellText when the table is redrawn.
-	 */
-	e_table_model_changed (E_TABLE_MODEL (model));
 }
 
 
@@ -954,11 +967,15 @@ on_timezone_set			(GnomeDialog	*dialog,
 				 ETimezoneDialog *etd)
 {
 	char *display_name;
+	icaltimezone *zone;
 
 	e_timezone_dialog_get_timezone (etd, &display_name);
 
-	if (display_name && display_name[0]) {
-		calendar_config_set_timezone (display_name);
+	/* We know it can only be a builtin timezone, since there is no way
+	   to set it to anything else. */
+	zone = e_timezone_dialog_get_builtin_timezone (display_name);
+	if (zone) {
+		calendar_config_set_timezone (icaltimezone_get_location (zone));
 
 		calendar_config_write ();
 		update_all_config_settings ();

@@ -275,7 +275,8 @@ static void
 free_icalcomponent (CalComponent *comp, gboolean free)
 {
 	CalComponentPrivate *priv;
-
+	GSList *l;
+	
 	priv = comp->priv;
 
 	if (!priv->icalcomp)
@@ -294,6 +295,11 @@ free_icalcomponent (CalComponent *comp, gboolean free)
 
 	priv->status = NULL;
 
+	for (l = priv->attendee_list; l != NULL; l = l->next)
+		g_free (l->data);
+	g_slist_free (priv->attendee_list);
+	priv->attendee_list = NULL;
+	
 	priv->categories = NULL;
 
 	priv->classification = NULL;
@@ -1078,9 +1084,8 @@ cal_component_rescan (CalComponent *comp)
 
 	/* Clear everything out */
 	free_icalcomponent (comp, FALSE);
-	g_hash_table_destroy (priv->alarm_uid_hash);
-	priv->alarm_uid_hash = NULL;
 
+	/* Rescan */
 	scan_icalcomponent (comp);
 	ensure_mandatory_properties (comp);
 }
@@ -4462,19 +4467,6 @@ make_alarm (icalcomponent *subcomp)
 	return alarm;
 }
 
-/* Used from g_hash_table_foreach(); adds an alarm UID to a list */
-static void
-add_alarm_uid (gpointer key, gpointer value, gpointer data)
-{
-	const char *auid;
-	GList **l;
-
-	auid = key;
-	l = data;
-
-	*l = g_list_prepend (*l, g_strdup (auid));
-}
-
 /**
  * cal_component_get_alarm_uids:
  * @comp: A calendar component.
@@ -4489,6 +4481,7 @@ GList *
 cal_component_get_alarm_uids (CalComponent *comp)
 {
 	CalComponentPrivate *priv;
+	icalcompiter iter;
 	GList *l;
 
 	g_return_val_if_fail (comp != NULL, NULL);
@@ -4498,7 +4491,29 @@ cal_component_get_alarm_uids (CalComponent *comp)
 	g_return_val_if_fail (priv->icalcomp != NULL, NULL);
 
 	l = NULL;
-	g_hash_table_foreach (priv->alarm_uid_hash, add_alarm_uid, &l);
+	for (iter = icalcomponent_begin_component (priv->icalcomp, ICAL_VALARM_COMPONENT);
+	     icalcompiter_deref (&iter) != NULL;
+	     icalcompiter_next (&iter)) {
+		icalcomponent *subcomp;
+		icalproperty *prop;
+		
+		subcomp = icalcompiter_deref (&iter);
+		for (prop = icalcomponent_get_first_property (subcomp, ICAL_X_PROPERTY);
+		     prop;
+		     prop = icalcomponent_get_next_property (subcomp, ICAL_X_PROPERTY)) {
+			const char *xname;
+			
+			xname = icalproperty_get_x_name (prop);
+			g_assert (xname != NULL);
+			
+			if (strcmp (xname, EVOLUTION_ALARM_UID_PROPERTY) == 0) {
+				const char *auid;
+				
+				auid = alarm_uid_from_prop (prop);
+				l = g_list_append (l, g_strdup (auid));
+			}
+		}
+	}
 
 	return l;
 }

@@ -240,7 +240,7 @@ comp_to_list (CalComponentItipMethod method, CalComponent *comp)
 		len = g_slist_length (attendees);
 		if (len <= 0) {
 			e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-				  _("Atleast one attendee is necessary"));
+				  _("At least one attendee is necessary"));
 			cal_component_free_attendee_list (attendees);
 			return NULL;
 		}
@@ -310,15 +310,15 @@ comp_subject (CalComponent *comp)
 
 	switch (cal_component_get_vtype (comp)) {
 	case CAL_COMPONENT_EVENT:
-		return CORBA_string_dup ("Event information");
+		return CORBA_string_dup (U_("Event information"));
 	case CAL_COMPONENT_TODO:
-		return CORBA_string_dup ("Task information");
+		return CORBA_string_dup (U_("Task information"));
 	case CAL_COMPONENT_JOURNAL:
-		return CORBA_string_dup ("Journal information");
+		return CORBA_string_dup (U_("Journal information"));
 	case CAL_COMPONENT_FREEBUSY:
-		return CORBA_string_dup ("Free/Busy information");
+		return CORBA_string_dup (U_("Free/Busy information"));
 	default:
-		return CORBA_string_dup ("Calendar information");
+		return CORBA_string_dup (U_("Calendar information"));
 	}		
 }
 
@@ -352,11 +352,11 @@ comp_description (CalComponent *comp)
 
 	switch (cal_component_get_vtype (comp)) {
 	case CAL_COMPONENT_EVENT:
-		return CORBA_string_dup ("Event information");
+		return CORBA_string_dup (U_("Event information"));
 	case CAL_COMPONENT_TODO:
-		return CORBA_string_dup ("Task information");
+		return CORBA_string_dup (U_("Task information"));
 	case CAL_COMPONENT_JOURNAL:
-		return CORBA_string_dup ("Journal information");
+		return CORBA_string_dup (U_("Journal information"));
 	case CAL_COMPONENT_FREEBUSY:
 		cal_component_get_dtstart (comp, &dt);
 		if (dt.value) {
@@ -366,17 +366,20 @@ comp_description (CalComponent *comp)
 				end = get_label (dt.value);
 		}
 		if (start != NULL && end != NULL) {
-			char *tmp = g_strdup_printf ("Free/Busy information (%s to %s)", start, end);
-			description = CORBA_string_dup (tmp);
-			g_free (tmp);			
+			char *tmp, *tmp_utf;
+			tmp = g_strdup_printf (_("Free/Busy information (%s to %s)"), start, end);
+			tmp_utf = e_utf8_from_locale_string (tmp);
+			description = CORBA_string_dup (tmp_utf);
+			g_free (tmp_utf);
+			g_free (tmp);
 		} else {
-			description = CORBA_string_dup ("Free/Busy information");
+			description = CORBA_string_dup (U_("Free/Busy information"));
 		}
 		g_free (start);
 		g_free (end);
 		return description;		
 	default:
-		return CORBA_string_dup ("iCalendar information");
+		return CORBA_string_dup (U_("iCalendar information"));
 	}
 }
 
@@ -447,7 +450,8 @@ comp_limit_attendees (CalComponent *comp)
 	GList *addresses;
 	icalproperty *prop;
 	gboolean found = FALSE, match = FALSE;
-	
+	GSList *l, *list = NULL;
+
 	icomp = cal_component_get_icalcomponent (comp);
 	addresses = itip_addresses_get ();	
 
@@ -461,8 +465,7 @@ comp_limit_attendees (CalComponent *comp)
 
 		/* If we've already found something, just erase the rest */
 		if (found) {
-			icalcomponent_remove_property (icomp, prop);
-			icalproperty_free (prop);
+			list = g_slist_prepend (list, prop);
 			continue;
 		}
 		
@@ -479,12 +482,20 @@ comp_limit_attendees (CalComponent *comp)
 			if (strstr (text, a->address))
 				found = match = TRUE;
 		}
-		if (!match) {
-			icalcomponent_remove_property (icomp, prop);
-			icalproperty_free (prop);
-		}
+
+		if (!match)
+			list = g_slist_prepend (list, prop);
 		match = FALSE;
 	}
+
+	for (l = list; l != NULL; l = l->next) {
+		prop = l->data;
+
+		icalcomponent_remove_property (icomp, prop);
+		icalproperty_free (prop);
+	}
+	g_slist_free (list);
+
 	itip_addresses_free (addresses);
 
 	return found;
@@ -548,7 +559,7 @@ static CalComponent *
 comp_minimal (CalComponent *comp, gboolean attendee)
 {
 	CalComponent *clone;
-	icalcomponent *icomp;
+	icalcomponent *icomp, *icomp_clone;
 	icalproperty *prop;
 	CalComponentOrganizer organizer;
 	const char *uid;
@@ -597,9 +608,11 @@ comp_minimal (CalComponent *comp, gboolean attendee)
 	cal_component_free_text_list (comments);
 	
 	cal_component_get_recurid (comp, &recur_id);
-	cal_component_set_recurid (clone, recur_id);
+	if (recur_id->datetime->value != NULL)
+		cal_component_set_recurid (clone, recur_id);
 	
 	icomp = cal_component_get_icalcomponent (comp);
+	icomp_clone = cal_component_get_icalcomponent (clone);
 	for (prop = icalcomponent_get_first_property (icomp, ICAL_X_PROPERTY);
 	     prop != NULL;
 	     prop = icalcomponent_get_next_property (icomp, ICAL_X_PROPERTY))
@@ -607,7 +620,7 @@ comp_minimal (CalComponent *comp, gboolean attendee)
 		icalproperty *p;
 		
 		p = icalproperty_new_clone (prop);
-		icalcomponent_add_property (icomp, p);
+		icalcomponent_add_property (icomp_clone, p);
 	}
 
 	cal_component_rescan (clone);
@@ -656,6 +669,7 @@ comp_compliant (CalComponentItipMethod method, CalComponent *comp)
 	case CAL_COMPONENT_METHOD_DECLINECOUNTER:
 		/* Need to remove almost everything */
 		temp_clone = comp_minimal (clone, FALSE);
+		gtk_object_unref (GTK_OBJECT (clone));
 		clone = temp_clone;
 		break;
 	default:
@@ -687,7 +701,8 @@ itip_send_comp (CalComponentItipMethod method, CalComponent *send_comp)
 	g_return_if_fail (bonobo_server != NULL);
 	composer_server = BONOBO_OBJREF (bonobo_server);
 
-	GNOME_Evolution_Composer_setMultipartType (composer_server, GNOME_Evolution_Composer_MIXED, &ev);
+	if (!getenv ("EVOLUTION_SEND_IMIP_AS_ATTACHMENT"))
+		GNOME_Evolution_Composer_setMultipartType (composer_server, GNOME_Evolution_Composer_ALTERNATIVE, &ev);
 	if (BONOBO_EX (&ev)) {		
 		g_warning ("Unable to set multipart type while sending iTip message");
 		goto cleanup;

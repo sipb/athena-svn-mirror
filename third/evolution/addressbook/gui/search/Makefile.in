@@ -127,6 +127,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -173,11 +174,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -358,6 +368,25 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+e-addressbook-search-dialog.o: e-addressbook-search-dialog.c \
+	../../../config.h e-addressbook-search-dialog.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/gui/widgets/e-addressbook-view.h \
+	../../../addressbook/gui/widgets/e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../widgets/menus/gal-view-menus.h \
+	../../../filter/rule-context.h ../../../filter/filter-part.h \
+	../../../filter/filter-input.h ../../../filter/filter-element.h \
+	../../../filter/filter-rule.h
 
 info-am:
 info: info-am

@@ -15,7 +15,9 @@
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til alarm-tjenesten"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Factory f&#252;r den Alarm-Benachrichtigungsdienst."/>
+                       value="Fabrik f&#252;r den Alarm-Benachrichtigungsdienst."/>
+	<oaf_attribute name="description-el" type="string"
+                       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#245;&#240;&#231;&#241;&#229;&#243;&#223;&#225; &#245;&#240;&#229;&#237;&#232;&#253;&#236;&#233;&#243;&#231;&#242; &#229;&#233;&#228;&#239;&#240;&#239;&#223;&#231;&#243;&#231;&#242;"/>
 	<oaf_attribute name="description-es" type="string"
                        value="Factor&#237;a para la alarma del servicio de notificaci&#243;n"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -69,6 +71,8 @@
                        value="Alarm-tjeneste"/>
 	<oaf_attribute name="description-de" type="string"
                        value="Alarm-Benachrichtigungsdienst"/>
+	<oaf_attribute name="description-el" type="string"
+                       value="&#213;&#240;&#231;&#241;&#229;&#243;&#223;&#225; &#245;&#240;&#229;&#237;&#232;&#253;&#236;&#233;&#243;&#231;&#242; &#229;&#233;&#228;&#239;&#240;&#239;&#223;&#231;&#243;&#231;&#242;"/>
 	<oaf_attribute name="description-es" type="string"
                        value="Servicio de notificaci&#243;n de alarmas"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -85,6 +89,8 @@
                        value="&#190;&#203;&#182;&#247; &#177;&#226;&#180;&#201;"/>
 	<oaf_attribute name="description-lt" type="string"
                        value="Aliarmo prane&#240;imo tarnyba"/>
+	<oaf_attribute name="description-lv" type="string"
+                       value="Br&#238;din&#226;juma notifik&#226;cijas serviss"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="Alarmnotificatie-dienst"/>
 	<oaf_attribute name="description-no" type="string"

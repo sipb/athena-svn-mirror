@@ -127,6 +127,7 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
+INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
@@ -173,11 +174,20 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
+XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
+XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
+XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
+XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
+XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
+XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
+XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
+XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
 XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
+camel_providerdir = @camel_providerdir@
 cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
@@ -210,7 +220,7 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 gladedir = $(datadir)/evolution/glade
 glade_DATA = my-evolution.glade
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(Location_DATA) $(glade_DATA)
+EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(Location_DATA) $(glade_DATA) Locations.h Location-translation-script
 
 @ENABLE_PURIFY_TRUE@PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -445,6 +455,82 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+component-factory.o: component-factory.c ../config.h \
+	../shell/evolution-shell-component.h ../shell/Evolution.h \
+	../shell/evolution-shell-client.h e-summary-factory.h \
+	e-summary-offline-handler.h e-summary.h e-summary-type.h \
+	e-summary-mail.h e-summary-calendar.h e-summary-rdf.h \
+	e-summary-weather.h e-summary-tasks.h \
+	../libical/src/libical/ical.h component-factory.h
+e-summary-calendar.o: e-summary-calendar.c ../config.h \
+	e-summary-calendar.h e-summary-type.h e-summary.h \
+	e-summary-mail.h ../shell/Evolution.h e-summary-rdf.h \
+	e-summary-weather.h e-summary-tasks.h \
+	../libical/src/libical/ical.h \
+	../calendar/cal-client/cal-client.h \
+	../calendar/cal-util/cal-recur.h \
+	../calendar/cal-util/cal-component.h \
+	../calendar/cal-util/cal-util.h \
+	../calendar/cal-client/cal-query.h \
+	../calendar/cal-client/evolution-calendar.h \
+	../calendar/cal-util/timeutil.h
+e-summary-factory.o: e-summary-factory.c ../config.h \
+	../e-util/e-gui-utils.h e-summary.h e-summary-type.h \
+	e-summary-mail.h ../shell/Evolution.h e-summary-calendar.h \
+	e-summary-rdf.h e-summary-weather.h e-summary-tasks.h \
+	../libical/src/libical/ical.h e-summary-factory.h \
+	e-summary-offline-handler.h e-summary-preferences.h \
+	../shell/evolution-shell-component-utils.h
+e-summary-mail.o: e-summary-mail.c ../config.h Mail.h e-summary.h \
+	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
+	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
+	e-summary-tasks.h ../libical/src/libical/ical.h \
+	../e-util/e-path.h ../shell/evolution-storage-listener.h
+e-summary-offline-handler.o: e-summary-offline-handler.c ../config.h \
+	e-summary-offline-handler.h e-summary.h e-summary-type.h \
+	e-summary-mail.h ../shell/Evolution.h e-summary-calendar.h \
+	e-summary-rdf.h e-summary-weather.h e-summary-tasks.h \
+	../libical/src/libical/ical.h
+e-summary-preferences.o: e-summary-preferences.c ../config.h e-summary.h \
+	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
+	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
+	e-summary-tasks.h ../libical/src/libical/ical.h \
+	e-summary-preferences.h
+e-summary-rdf.o: e-summary-rdf.c ../config.h e-summary.h \
+	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
+	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
+	e-summary-tasks.h ../libical/src/libical/ical.h
+e-summary-tasks.o: e-summary-tasks.c ../config.h e-summary-tasks.h \
+	e-summary-type.h e-summary.h e-summary-mail.h \
+	../shell/Evolution.h e-summary-calendar.h e-summary-rdf.h \
+	e-summary-weather.h ../libical/src/libical/ical.h \
+	../calendar/cal-client/cal-client.h \
+	../calendar/cal-util/cal-recur.h \
+	../calendar/cal-util/cal-component.h \
+	../calendar/cal-util/cal-util.h \
+	../calendar/cal-client/cal-query.h \
+	../calendar/cal-client/evolution-calendar.h \
+	../calendar/cal-util/timeutil.h
+e-summary-weather.o: e-summary-weather.c ../config.h e-summary.h \
+	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
+	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
+	e-summary-tasks.h ../libical/src/libical/ical.h weather.h \
+	metar.h
+e-summary.o: e-summary.c ../config.h \
+	../calendar/gui/alarm-notify/alarm.h \
+	../calendar/cal-util/timeutil.h ../libical/src/libical/ical.h \
+	e-summary.h e-summary-type.h e-summary-mail.h \
+	../shell/Evolution.h e-summary-calendar.h e-summary-rdf.h \
+	e-summary-weather.h e-summary-tasks.h e-summary-preferences.h \
+	my-evolution-html.h Mail.h
+Mail-common.o: Mail-common.c Mail.h
+Mail-skels.o: Mail-skels.c Mail.h
+Mail-stubs.o: Mail-stubs.c Mail.h
+main.o: main.c ../config.h component-factory.h
+metar.o: metar.c ../config.h e-summary.h e-summary-type.h \
+	e-summary-mail.h ../shell/Evolution.h e-summary-calendar.h \
+	e-summary-rdf.h e-summary-weather.h e-summary-tasks.h \
+	../libical/src/libical/ical.h weather.h metar.h
 
 info-am:
 info: info-am

@@ -12,12 +12,16 @@
                        value="Factory for the Addressbook Minicard control"/>
 	<oaf_attribute name="description-az" type="string"
                        value="&#39;Evolution&#39;un &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri Ki&#195;&#167;ik Kart e&#39;malatxanas&#196;&#177;"/>
+	<oaf_attribute name="description-ca" type="string"
+                       value="Utilitat de configuraci&#243; per al conducte de l&#39;agenda de l&#39;Evolution.\n"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til styring af minikort for adressebogen"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Factory f&#252;r die Adressbuch-Minikarten-Control"/>
+                       value="Fabrik f&#252;r die Adressbuch-Minikarten-Control"/>
 	<oaf_attribute name="description-el" type="string"
-                       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#204;&#223;&#237;&#233;-&#234;&#220;&#241;&#244;&#225;&#242; &#196;&#233;&#229;&#245;&#232;&#245;&#237;&#243;&#233;&#239;&#235;&#239;&#227;&#223;&#239;&#245;"/>
+                       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#239; &#243;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#244;&#231;&#242; &#204;&#223;&#237;&#233;-&#234;&#220;&#241;&#244;&#225;&#242; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
+	<oaf_attribute name="description-en_GB" type="string"
+                       value="Cannot initialise Evolution&#39;s mail component."/>
 	<oaf_attribute name="description-es" type="string"
                        value="Factor&#237;a para el control de Minitarjetas de Direcciones"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -30,12 +34,18 @@
                        value="Fabbrica per il controllo delle Minicard per la rubrica"/>
 	<oaf_attribute name="description-ja" type="string"
                        value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#165;&#223;&#165;&#203;&#165;&#171;&#161;&#188;&#165;&#201;&#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-lv" type="string"
+                       value="Ra&#254;otne Adre&#240;u Gr&#226;matas Minikar&#240;u kontrolei"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="Fabriek voor het Adresboek Minikaart control"/>
+	<oaf_attribute name="description-nn" type="string"
+                       value="&#216;ydelagd oppsettfil."/>
 	<oaf_attribute name="description-no" type="string"
                        value="Factory for minikort kontroll for adressebok"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Generator komponent&#243;w miniatorowych kart ksi&#177;&#191;ki adresowej"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="N&#227;o consigo inicializar o componente de mail do Evolution."/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="F&#225;brica para o controle Mini-cart&#227;o do Cat&#225;logo de Endere&#231;os"/>
 	<oaf_attribute name="description-ro" type="string"
@@ -48,6 +58,8 @@
                        value="Fabrik f&#246;r kontrollen f&#246;r adressboksvisitkort"/>
 	<oaf_attribute name="description-tr" type="string"
                        value="Adres defteri mini kart mimarisi"/>
+	<oaf_attribute name="description-uk" type="string"
+                       value="&#238;&#197; &#215;&#196;&#193;&#204;&#207;&#211;&#209; &#166;&#206;&#166;&#195;&#166;&#193;&#204;&#166;&#218;&#213;&#215;&#193;&#212;&#201; &#208;&#207;&#219;&#212;&#207;&#215;&#201;&#202; &#203;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Evolutuion."/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#176;&#143;&#229;&#141;&#161;&#231;&#137;&#135;&#230;&#142;&#167;&#229;&#136;&#182;&#232;&#189;&#166;&#233;&#151;&#180;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
@@ -73,12 +85,14 @@
 		       value="Evolution Addressbook minicard viewer"/>
 	<oaf_attribute name="name-az" type="string"
 		       value="Evolution &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri ki&#195;&#167;ik kart n&#195;&#188;maiyi&#197;&#159;i"/>
+	<oaf_attribute name="name-ca" type="string"
+		       value="Conducte de la llibreta d&#39;adreces de l&#39;Evolution"/>
 	<oaf_attribute name="name-da" type="string"
 		       value="Minikort visning i Evolution adressebog"/>
 	<oaf_attribute name="name-de" type="string"
 		       value="Evolution-Adressbuch-Minikarten-Betrachter"/>
 	<oaf_attribute name="name-el" type="string"
-		       value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#236;&#223;&#237;&#233;-&#234;&#220;&#241;&#244;&#225;&#242; &#196;&#233;&#229;&#245;&#232;&#245;&#237;&#243;&#233;&#239;&#235;&#239;&#227;&#223;&#239;&#245; Evolution"/>
+		       value="&#208;&#241;&#239;&#226;&#239;&#235;&#222; &#236;&#233;&#237;&#233;-&#234;&#220;&#241;&#244;&#225;&#242; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237; &#244;&#239;&#245; Evolution"/>
 	<oaf_attribute name="name-es" type="string"
 		       value="Visor de Minitarjetas de Direcciones de Evolution"/>
 	<oaf_attribute name="name-fr" type="string"
@@ -95,12 +109,18 @@
 		       value="Evolution &#193;&#214;&#188;&#210;&#183;&#207; minicard &#186;&#184;&#177;&#226;"/>
 	<oaf_attribute name="name-lt" type="string"
 		       value="Evolution adres&#248; knygel&#235;s ma&#254;&#248; korteli&#248; vaizduokl&#235;"/>
+	<oaf_attribute name="name-lv" type="string"
+		       value="Evolution Adre&#240;u Gr&#226;matas minikar&#240;u skat&#238;t&#226;js"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution Adresboek minikaartbekijker"/>
+	<oaf_attribute name="name-nn" type="string"
+		       value="Evolutions addressebok minikortlesar"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Evolution adressebok minikort visning"/>
 	<oaf_attribute name="name-pl" type="string"
 		       value="Przegl&#177;darka miniaturowych kart ksi&#177;&#191;ki adresowej Evolution"/>
+	<oaf_attribute name="name-pt" type="string"
+		       value="Atalho para _barra do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
 		       value="Visualizador de mini-cart&#227;o do cat&#225;logo de endere&#231;os do Evolution"/>
 	<oaf_attribute name="name-ro" type="string"
@@ -115,6 +135,8 @@
 		       value="Visare f&#246;r Evolution-adressboksvisitkort"/>
 	<oaf_attribute name="name-tr" type="string"
 		       value="Evolution Adres Defteri mini kart g&#246;r&#252;nt&#252;leyici"/>
+	<oaf_attribute name="name-uk" type="string"
+		       value="&#235;&#193;&#206;&#193;&#204; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#167; &#203;&#206;&#201;&#199;&#201; Evolution"/>
 	<oaf_attribute name="name-zh_CN" type="string"
 		       value="Evolution &#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#176;&#143;&#229;&#141;&#161;&#231;&#137;&#135;&#230;&#152;&#190;&#231;&#164;&#186;&#229;&#153;&#168;"/>
 	<oaf_attribute name="name-zh_TW" type="string"
@@ -123,10 +145,14 @@
 	               value="Control that displays an Evolution addressbook minicard."/>
 	<oaf_attribute name="description-az" type="string"
 	               value="Evolution &#195;&#188;nvan d&#201;&#153;ft&#201;&#153;ri ki&#195;&#167;ik kartlar&#196;&#177;n&#196;&#177; g&#195;&#182;st&#201;&#153;r&#201;&#153;n idar&#201;&#153;."/>
+	<oaf_attribute name="description-ca" type="string"
+	               value="Utilitat de configuraci&#243; per al conducte de la llibreta d&#39;adreces de l&#39;Evolution\n"/>
 	<oaf_attribute name="description-da" type="string"
 	               value="Kontrol som viser et minikort i Evolutions adressebog."/>
 	<oaf_attribute name="description-de" type="string"
 	               value="Control, die eine Evolution-Adressbuch-Minikarte anzeigt."/>
+	<oaf_attribute name="description-el" type="string"
+	               value="&#211;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#227;&#233;&#225; &#244;&#231;&#237; &#240;&#241;&#239;&#226;&#239;&#235;&#222; &#236;&#233;&#237;&#233;-&#234;&#220;&#241;&#244;&#225;&#242; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237; &#244;&#239;&#245; Evolution."/>
 	<oaf_attribute name="description-es" type="string"
 	               value="Control que muestra minitarjetas de direcciones en Evolution."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -139,10 +165,20 @@
 	               value="Controllo che visualizza una minicard per la rubrica di Evolution."/>
 	<oaf_attribute name="description-ja" type="string"
 	               value="Evolution &#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#165;&#223;&#165;&#203;&#165;&#171;&#161;&#188;&#165;&#201;&#164;&#242;&#201;&#189;&#188;&#168;&#164;&#185;&#164;&#235;&#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;"/>
+	<oaf_attribute name="description-lt" type="string"
+	               value="Evolution adres&#248; knygel&#235;s konduito konfig&#251;ravimo &#225;rankis\n"/>
+	<oaf_attribute name="description-lv" type="string"
+	               value="Kontrole, kas att&#231;lo Evolution adre&#240;u gr&#226;matas minikarti."/>
 	<oaf_attribute name="description-nl" type="string"
 	               value="Control dat een Evolution minikaart adresboek weergeeft."/>
+	<oaf_attribute name="description-nn" type="string"
+	               value="Kontroll som viser eit Evolution addressebok minikort."/>
 	<oaf_attribute name="description-no" type="string"
 	               value="Kontroll som viser et minikort for Evolutions adressebok."/>
+	<oaf_attribute name="description-pl" type="string"
+	               value="Komponent Bonobo wy&#182;wietlaj&#177;cy miniaturow&#177; kart&#234; ksi&#177;&#191;ki adresowej Evolution."/>
+	<oaf_attribute name="description-pt_BR" type="string"
+	               value="Controle que exibe um mini-cart&#227;o do cat&#225;logo de endere&#231;os do Evolution."/>
 	<oaf_attribute name="description-ro" type="string"
 	               value="Control care afi&#186;eaz&#227; o agend&#227; minicard pentru Evolution"/>
 	<oaf_attribute name="description-ru" type="string"
@@ -174,12 +210,14 @@
                        value="Factory for the sample Addressbook control"/>
 	<oaf_attribute name="description-az" type="string"
                        value="N&#195;&#188;mun&#201;&#153;vi &#195;&#188;nvan d&#201;&#153;ft&#201;&#153;ri idar&#201;&#153;si e&#39;malatxanas&#196;&#177;"/>
+	<oaf_attribute name="description-ca" type="string"
+                       value="Feu clic aqu&#237; per a la llibreta d&#39;adreces"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til styring af eksempel-adressebogen"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Factory f&#252;r die beispielhafte Adressbuch-Kontrolle"/>
+                       value="Fabrik f&#252;r die beispielhafte Adressbuch-Kontrolle"/>
 	<oaf_attribute name="description-el" type="string"
-                       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#239; &#243;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#228;&#229;&#223;&#227;&#236;&#225;&#244;&#239;&#242; &#196;&#233;&#229;&#245;&#232;&#245;&#237;&#243;&#233;&#239;&#235;&#239;&#227;&#223;&#239;&#245;"/>
+                       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#239; &#228;&#229;&#223;&#227;&#236;&#225; &#243;&#244;&#239;&#233;&#247;&#229;&#223;&#239;&#245; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
                        value="Factor&#237;a para el control de ejemplo de la Agenda"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -194,12 +232,18 @@
                        value="&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-ko" type="string"
                        value="&#193;&#214;&#188;&#210;&#183;&#207;"/>
+	<oaf_attribute name="description-lv" type="string"
+                       value="Ra&#254;otne vienk&#226;r&#240;ai Adre&#240;u gr&#226;matas kontrolei"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="Fabriek voor het voorbeeld Adresboekcontrol"/>
+	<oaf_attribute name="description-nn" type="string"
+                       value="Legg adresse til adresseboka"/>
 	<oaf_attribute name="description-no" type="string"
                        value="Factory for eksempelkontroll for adressebok"/>
 	<oaf_attribute name="description-pl" type="string"
                        value="Generator przyk&#179;adowych komponent&#243;w ksi&#177;&#191;ki adresowej"/>
+	<oaf_attribute name="description-pt" type="string"
+                       value="Pressione aqui para o livro de endere&#231;os"/>
 	<oaf_attribute name="description-pt_BR" type="string"
                        value="F&#225;brica para o controle do Cat&#225;logo de Endere&#231;os exemplo"/>
 	<oaf_attribute name="description-ro" type="string"
@@ -212,6 +256,8 @@
                        value="Fabrik f&#246;r adressbokstestkontrollen"/>
 	<oaf_attribute name="description-tr" type="string"
                        value="&#214;rnek adres defteri kontrol mimarisi"/>
+	<oaf_attribute name="description-uk" type="string"
+                       value="&#235;&#204;&#193;&#195;&#206;&#166;&#212;&#216; &#212;&#213;&#212; &#221;&#207;&#194; &#215;&#201;&#203;&#204;&#201;&#203;&#193;&#212;&#201; &#193;&#196;&#210;&#197;&#211;&#206;&#213; &#203;&#206;&#201;&#199;&#213;"/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#231;&#164;&#186;&#228;&#190;&#139;&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#230;&#142;&#167;&#229;&#136;&#182;&#232;&#189;&#166;&#233;&#151;&#180;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
@@ -236,6 +282,8 @@
                        value="Eksempel p&#229; Bonobo-kontrol som viser en adressebog."/>
 	<oaf_attribute name="description-de" type="string"
                        value="Eine beispielhafte Bonobo-Komponente, die ein Adressbuch anzeigt."/>
+	<oaf_attribute name="description-el" type="string"
+                       value="&#196;&#229;&#223;&#227;&#236;&#225; &#229;&#235;&#221;&#227;&#247;&#239;&#245; Bonobo &#227;&#233;&#225; &#244;&#231;&#237; &#240;&#241;&#239;&#226;&#239;&#235;&#222; &#229;&#237;&#252;&#242; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
                        value="Un control Bonobo de ejemplo que muestra una agenda."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -248,6 +296,8 @@
                        value="Un semplice controllo di Bonobo che visualizza una rubrica."/>
 	<oaf_attribute name="description-ja" type="string"
                        value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#164;&#242;&#201;&#189;&#188;&#168;&#164;&#185;&#164;&#235; Bonobo &#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;&#164;&#206;&#165;&#181;&#165;&#243;&#165;&#215;&#165;&#235;&#164;&#199;&#164;&#185;"/>
+	<oaf_attribute name="description-lv" type="string"
+                       value="Vienk&#226;r&#240;a Bonobo kontrole, kas att&#231;lo adre&#240;u gr&#226;matu"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="Een voorbeeld Bonobo control dat een adresboek weergeeft."/>
 	<oaf_attribute name="description-no" type="string"
@@ -290,7 +340,7 @@
 	<oaf_attribute name="description-de" type="string"
 	               value="Evolution-Komponente f&#252;r Kontaktverwaltung."/>
 	<oaf_attribute name="description-el" type="string"
-	               value="&#211;&#245;&#243;&#244;&#225;&#244;&#233;&#234;&#252; &#244;&#239;&#245; Evolution &#227;&#233;&#225; &#244;&#231; &#228;&#233;&#225;&#247;&#229;&#223;&#241;&#233;&#243;&#231; &#227;&#237;&#249;&#241;&#233;&#236;&#233;&#254;&#237;."/>
+	               value="&#211;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#244;&#239;&#245; Evolution &#227;&#233;&#225; &#244;&#231; &#228;&#233;&#225;&#247;&#229;&#223;&#241;&#233;&#243;&#231; &#244;&#249;&#237; &#229;&#240;&#225;&#246;&#254;&#237;."/>
 	<oaf_attribute name="description-es" type="string"
 	               value="Componente de Evolution para manejar contactos."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -307,12 +357,16 @@
 	               value="&#191;&#172;&#182;&#244;&#195;&#179;&#184;&#166; &#195;&#179;&#184;&#174;&#199;&#207;&#180;&#194; Evolution &#196;&#196;&#198;&#247;&#179;&#205;&#198;&#174;"/>
 	<oaf_attribute name="description-lt" type="string"
 	               value="Evolution kontakt&#248; tvarkymo komponentas."/>
+	<oaf_attribute name="description-lv" type="string"
+	               value="Evolution komponente kontaktu vad&#238;&#240;anai."/>
 	<oaf_attribute name="description-nl" type="string"
 	               value="Een component voor het afhandelen van contacten."/>
 	<oaf_attribute name="description-no" type="string"
 	               value="Evolution komponent for h&#229;ndtering av kontakter."/>
 	<oaf_attribute name="description-pl" type="string"
 	               value="Komponent Evolution obs&#179;uguj&#177;cy kontakty."/>
+	<oaf_attribute name="description-pt" type="string"
+	               value="Uma pasta contendo contactos"/>
 	<oaf_attribute name="description-pt_BR" type="string"
 	               value="Componente do Evolution para manipular contatos."/>
 	<oaf_attribute name="description-ro" type="string"
@@ -354,7 +408,9 @@
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik til adressebogens adressevisning"/>
 	<oaf_attribute name="description-de" type="string"
-		       value="Factory f&#252;r den Adressanzeiger des Adressbuchs"/>
+		       value="Fabrik f&#252;r den Adressanzeiger des Adressbuchs"/>
+	<oaf_attribute name="description-el" type="string"
+		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#240;&#241;&#239;&#226;&#239;&#235;&#222; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
 		       value="Factor&#237;a para el visualizador de direcciones de la Agenda"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -369,6 +425,8 @@
 		       value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#164;&#206;&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#201;&#189;&#188;&#168;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-lt" type="string"
 		       value="Adres&#248; knygel&#235;s adreso vaizduokl&#235;s gamykla"/>
+	<oaf_attribute name="description-lv" type="string"
+		       value="Ra&#254;otne Adre&#240;u Gr&#226;matas adre&#240;u r&#226;d&#238;t&#226;jam "/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Fabriek voor de naam selectie interface van het Adresboek"/>
 	<oaf_attribute name="description-no" type="string"
@@ -413,6 +471,8 @@
 		       value="En Bonobo-kontrol for visning af en adresse."/>
 	<oaf_attribute name="description-de" type="string"
 		       value="Eine Bonobo-Control, um eine Adresse anzuzeigen."/>
+	<oaf_attribute name="description-el" type="string"
+		       value="&#211;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#244;&#239;&#245; Bonobo &#227;&#233;&#225; &#244;&#231;&#237; &#240;&#241;&#239;&#226;&#239;&#235;&#222; &#236;&#233;&#225;&#242; &#228;&#233;&#229;&#253;&#232;&#245;&#237;&#243;&#231;&#242;."/>
 	<oaf_attribute name="description-es" type="string"
 		       value="Un control Bonobo para mostrar una direcci&#243;n."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -425,6 +485,8 @@
 		       value="Un controllo di Bonobo che visualizza un indirizzo."/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#164;&#242;&#201;&#189;&#188;&#168;&#164;&#185;&#164;&#235;&#164;&#191;&#164;&#225;&#164;&#206; Bonobo &#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;"/>
+	<oaf_attribute name="description-lv" type="string"
+		       value="A Bonobo control adre&#240;u par&#226;d&#238;&#240;anai."/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Een Bonobo control dat een adresboek weergeeft."/>
 	<oaf_attribute name="description-no" type="string"
@@ -462,10 +524,14 @@
 		       value="Factory for the Addressbook's address popup"/>
 	<oaf_attribute name="description-az" type="string"
 		       value="&#195;&#156;nvan D&#201;&#153;ft&#201;&#153;rind&#201;&#153; &#195;&#188;nvan g&#195;&#182;st&#201;&#153;rici e&#39;malatxanas&#196;&#177;"/>
+	<oaf_attribute name="description-ca" type="string"
+		       value="Utilitat de configuraci&#243; per al conducte de l&#39;agenda de l&#39;Evolution.\n"/>
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik for adressebogens adresse-pop-op"/>
 	<oaf_attribute name="description-de" type="string"
-		       value="Factory f&#252;r das Adress-Popup des Adressbuchs"/>
+		       value="Fabrik f&#252;r das Adress-Popup des Adressbuchs"/>
+	<oaf_attribute name="description-el" type="string"
+		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#225;&#237;&#225;&#228;&#245;&#252;&#236;&#229;&#237;&#231; &#228;&#233;&#229;&#253;&#232;&#245;&#237;&#243;&#231; &#225;&#240;&#252; &#244;&#239; &#194;&#233;&#226;&#235;&#223;&#239; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
 		       value="Factor&#237;a para la ventana de direcciones de la Agenda"/>
 	<oaf_attribute name="description-fr" type="string"
@@ -478,10 +544,20 @@
 		       value="Fabbrica per il popup di indirizzi della Rubrica"/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#196;&#162;&#164;&#206;&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#164;&#242;&#165;&#221;&#165;&#195;&#165;&#215;&#165;&#162;&#165;&#195;&#165;&#215;&#164;&#185;&#164;&#235;&#164;&#191;&#164;&#225;&#164;&#206;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-ko" type="string"
+		       value="&#193;&#214;&#188;&#210;&#183;&#207;"/>
+	<oaf_attribute name="description-lt" type="string"
+		       value="Adres&#248; knygel&#235;s adreso ???? gamykla"/>
+	<oaf_attribute name="description-lv" type="string"
+		       value="Ra&#254;otne Adre&#240;u Gr&#226;matas adre&#240;u izlec&#231;jam"/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Fabriek voor de naam selectie interface van het Adresboek"/>
+	<oaf_attribute name="description-nn" type="string"
+		       value="&#216;ydelagd oppsettfil."/>
 	<oaf_attribute name="description-no" type="string"
 		       value="Factory for adressebokens adressevisning"/>
+	<oaf_attribute name="description-pl" type="string"
+		       value="Generator komponent&#243;w wy&#182;wietlaj&#177;cych wyskakuj&#177;ce okno z adresem z ksi&#177;&#191;ki adresowej"/>
 	<oaf_attribute name="description-pt_BR" type="string"
 		       value="F&#225;brica para o popup de endere&#231;os do Cat&#225;logo de Endere&#231;os"/>
 	<oaf_attribute name="description-ro" type="string"
@@ -520,6 +596,8 @@
 		       value="En Bonobo-kontrol for visning af en adresse."/>
 	<oaf_attribute name="description-de" type="string"
 		       value="Eine Bonobo-Control f&#252;r ein Adress-Popup."/>
+	<oaf_attribute name="description-el" type="string"
+		       value="&#211;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#229;&#235;&#221;&#227;&#247;&#239;&#245; &#244;&#239;&#245; Bonobo &#227;&#233;&#225; &#244;&#231;&#237; &#225;&#237;&#220;&#228;&#245;&#243;&#231; &#236;&#233;&#225;&#242; &#228;&#233;&#229;&#253;&#232;&#245;&#237;&#243;&#231;&#242;."/>
 	<oaf_attribute name="description-es" type="string"
 		       value="Un control Bonobo para una ventada de direcci&#243;n."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -532,8 +610,12 @@
 		       value="Un controllo di Bonobo per il popup di un indirizzo."/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="&#165;&#162;&#165;&#201;&#165;&#236;&#165;&#185;&#164;&#242;&#165;&#221;&#165;&#195;&#165;&#215;&#165;&#162;&#165;&#195;&#165;&#215;&#164;&#185;&#164;&#235;&#164;&#191;&#164;&#225;&#164;&#206; Bonobo &#165;&#179;&#165;&#243;&#165;&#200;&#165;&#237;&#161;&#188;&#165;&#235;"/>
+	<oaf_attribute name="description-lv" type="string"
+		       value="Bonobo kontrole adre&#240;u uznir&#240;anai."/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Een Bonobo control dat een adresboek weergeeft."/>
+	<oaf_attribute name="description-nn" type="string"
+		       value="Ein Bonobo-kontroll for ein addresse sprett-opp."/>
 	<oaf_attribute name="description-no" type="string"
 		       value="En Bonobo-kontroll for visning av en adresse."/>
 	<oaf_attribute name="description-pl" type="string"

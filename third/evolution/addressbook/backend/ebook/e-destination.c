@@ -319,21 +319,24 @@ e_destination_clear (EDestination *dest)
 static gboolean
 nonempty (const gchar *s)
 {
-	while (s) {
-		if (! isspace ((gint) *s))
+	gunichar c;
+	while (*s) {
+		c = g_utf8_get_char (s);
+		if (! g_unichar_isspace (c))
 			return TRUE;
-		++s;
+		s = g_utf8_next_char (s);
 	}
 	return FALSE;
 }
 
 gboolean
 e_destination_is_empty (const EDestination *dest)
+
 {
 	struct _EDestinationPrivate *p;
 	g_return_val_if_fail (E_IS_DESTINATION (dest), TRUE);
 	p = dest->priv;
-
+	
 	return !(p->card != NULL
 		 || (p->book_uri && *p->book_uri)
 		 || (p->card_uid && *p->card_uid)
@@ -387,10 +390,10 @@ e_destination_equal (const EDestination *a, const EDestination *b)
 	/* Just in case name returns NULL */
 	na = e_destination_get_name (a);
 	nb = e_destination_get_name (b);
-	if ((na || nb) && !(na && nb && !strcmp (na, nb)))
+	if ((na || nb) && !(na && nb && ! g_utf8_strcasecmp (na, nb)))
 		return FALSE;
 	
-	if (!strcmp (e_destination_get_email (a), e_destination_get_email (b)))
+	if (!g_strcasecmp (e_destination_get_email (a), e_destination_get_email (b)))
 		return TRUE;
 	
 	return FALSE;

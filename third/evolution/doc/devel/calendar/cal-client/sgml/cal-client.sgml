@@ -1,0 +1,799 @@
+<refentry id="CalClient">
+<refmeta>
+<refentrytitle>CalClient</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>EVOLUTION-CAL-CLIENT Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>CalClient</refname><refpurpose>GTK+ object for communication with personal calendar server.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;cal-client/cal-client.h&gt;
+
+
+#define     <link linkend="CAL-CLIENT-CAPS">CAL_CLIENT</link>                      (obj)
+enum        <link linkend="CalClientOpenStatus">CalClientOpenStatus</link>;
+enum        <link linkend="CalClientGetStatus">CalClientGetStatus</link>;
+enum        <link linkend="CalClientLoadState">CalClientLoadState</link>;
+enum        <link linkend="CalClientChangeType">CalClientChangeType</link>;
+<link linkend="CalClient">CalClient</link>*  <link linkend="cal-client-new">cal_client_new</link>                  (void);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-client-open-calendar">cal_client_open_calendar</link>        (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *str_uri,
+                                             <link linkend="gboolean">gboolean</link> only_if_exists);
+<link linkend="CalClientLoadState">CalClientLoadState</link> <link linkend="cal-client-get-load-state">cal_client_get_load_state</link>
+                                            (<link linkend="CalClient">CalClient</link> *client);
+const char* <link linkend="cal-client-get-uri">cal_client_get_uri</link>              (<link linkend="CalClient">CalClient</link> *client);
+int         <link linkend="cal-client-get-n-objects">cal_client_get_n_objects</link>        (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type);
+<link linkend="GList">GList</link>*      <link linkend="cal-client-get-uids">cal_client_get_uids</link>             (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type);
+<link linkend="CalClientGetStatus">CalClientGetStatus</link> <link linkend="cal-client-get-object">cal_client_get_object</link>    (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *uid,
+                                             <link linkend="CalComponent">CalComponent</link> **comp);
+<link linkend="GList">GList</link>*      <link linkend="cal-client-get-changes">cal_client_get_changes</link>          (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type,
+                                             const char *change_id);
+void        <link linkend="cal-client-change-list-free">cal_client_change_list_free</link>     (<link linkend="GList">GList</link> *list);
+<link linkend="GList">GList</link>*      <link linkend="cal-client-get-objects-in-range">cal_client_get_objects_in_range</link> (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end);
+void        <link linkend="cal-client-generate-instances">cal_client_generate_instances</link>   (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end,
+                                             <link linkend="CalRecurInstanceFn">CalRecurInstanceFn</link> cb,
+                                             <link linkend="gpointer">gpointer</link> cb_data);
+<link linkend="GSList">GSList</link>*     <link linkend="cal-client-get-alarms-in-range">cal_client_get_alarms_in_range</link>  (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end);
+void        <link linkend="cal-client-free-alarms">cal_client_free_alarms</link>          (<link linkend="GSList">GSList</link> *comp_alarms);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-client-get-alarms-for-object">cal_client_get_alarms_for_object</link>
+                                            (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *uid,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end,
+                                             <link linkend="CalComponentAlarms">CalComponentAlarms</link> **alarms);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-client-update-object">cal_client_update_object</link>        (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalComponent">CalComponent</link> *comp);
+<link linkend="gboolean">gboolean</link>    <link linkend="cal-client-remove-object">cal_client_remove_object</link>        (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *uid);
+<link linkend="CalQuery">CalQuery</link>*   <link linkend="cal-client-get-query">cal_client_get_query</link>            (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *sexp);
+
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GtkObject">GtkObject</link>
+   +----CalClient
+</synopsis>
+
+</refsect1>
+
+
+<refsect1>
+<title>Signal Prototypes</title>
+<synopsis>
+
+&quot;<link linkend="CalClient-cal-opened">cal-opened</link>&quot;
+            void        user_function      (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gint">gint</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="CalClient-cal-set-mode">cal-set-mode</link>&quot;
+            void        user_function      (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gint">gint</link> arg1,
+                                            <link linkend="gint">gint</link> arg2,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="CalClient-obj-updated">obj-updated</link>&quot;
+            void        user_function      (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="CalClient-obj-removed">obj-removed</link>&quot;
+            void        user_function      (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="CalClient-categories-changed">categories-changed</link>&quot;
+            void        user_function      (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+&quot;<link linkend="CalClient-forget-password">forget-password</link>&quot;
+            void        user_function      (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);
+</synopsis>
+</refsect1>
+
+
+<refsect1>
+<title>Description</title>
+  <para>
+    The <link linkend="CalClient">CalClient</link> object provides a nice GTK+ wrapper for the CORBA
+    interfaces that are used to communicate between calendar clients
+    and the personal calendar server in the user's Wombat daemon.  The
+    CORBA interfaces transfer calendar components in RFC 2445 text
+    format; the <link linkend="CalClient">CalClient</link> object automatically converts these into
+    <link linkend="CalComponent">CalComponent</link> structures that are easier to handle.
+  </para>
+
+  <para>
+    After a <link linkend="CalClient">CalClient</link> object is created with <link linkend="cal-client-new">cal_client_new</link>(), it
+    should be asked to send a request to the personal calendar server
+    to load or create a calendar based on its URI.  The server will
+    asynchronously notify the client about completion of the request,
+    and will return an appropriate result code; this should be noted
+    by the client with the <link
+    linkend="CalClient--cal-loaded">cal_loaded</link> signal.
+  </para>
+
+  <para>
+    When a client asks the server to update or delete a calendar
+    component from the storage, the server will do so and then notify
+    all the clients about the update or removal.  This is the core of
+    the model/view split between calendar clients and the storage in
+    the personal calendar server.  Clients should watch the <link
+    linkend="calclient-obj-updated">obj_updated</link> and <link
+    linkend="calclient-obj-removed">obj_removed</link> signals on the
+    CalClient objects they create so that they can be notified about
+    changes in the storage.
+  </para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="CAL-CLIENT-CAPS">CAL_CLIENT()</title>
+<programlisting>#define CAL_CLIENT(obj)            (GTK_CHECK_CAST ((obj), CAL_CLIENT_TYPE, CalClient))
+</programlisting>
+  <para>
+    Casts a <link linkend="GtkObject">GtkObject</link> to a <link linkend="CalClient">CalClient</link>.
+  </para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>obj</parameter>&nbsp;:</entry>
+<entry>A GTK+ object.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="CalClientOpenStatus">enum CalClientOpenStatus</title>
+<programlisting>typedef enum {
+	CAL_CLIENT_OPEN_SUCCESS,
+	CAL_CLIENT_OPEN_ERROR,
+	CAL_CLIENT_OPEN_NOT_FOUND,
+	CAL_CLIENT_OPEN_METHOD_NOT_SUPPORTED
+} CalClientOpenStatus;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="CalClientGetStatus">enum CalClientGetStatus</title>
+<programlisting>typedef enum {
+	CAL_CLIENT_GET_SUCCESS,
+	CAL_CLIENT_GET_NOT_FOUND,
+	CAL_CLIENT_GET_SYNTAX_ERROR
+} CalClientGetStatus;
+</programlisting>
+  <para>
+    These values describe the result of the <link linkend="cal-client-get-object">cal_client_get_object</link>()
+    function.
+  </para></refsect2>
+<refsect2>
+<title><anchor id="CalClientLoadState">enum CalClientLoadState</title>
+<programlisting>typedef enum {
+	CAL_CLIENT_LOAD_NOT_LOADED,
+	CAL_CLIENT_LOAD_LOADING,
+	CAL_CLIENT_LOAD_LOADED
+} CalClientLoadState;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="CalClientChangeType">enum CalClientChangeType</title>
+<programlisting>typedef enum {
+	CAL_CLIENT_CHANGE_ADDED = 1 &lt;&lt; 0,
+	CAL_CLIENT_CHANGE_MODIFIED = 1 &lt;&lt; 1,
+	CAL_CLIENT_CHANGE_DELETED = 1 &lt;&lt; 2
+} CalClientChangeType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="cal-client-new">cal_client_new ()</title>
+<programlisting><link linkend="CalClient">CalClient</link>*  cal_client_new                  (void);</programlisting>
+<para>
+Creates a new calendar client.  It should be initialized by calling
+<link linkend="cal-client-open-calendar">cal_client_open_calendar</link>().</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A newly-created calendar client, or NULL if the client could
+not be constructed because it could not contact the calendar server.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-open-calendar">cal_client_open_calendar ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_client_open_calendar        (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *str_uri,
+                                             <link linkend="gboolean">gboolean</link> only_if_exists);</programlisting>
+<para>
+Makes a calendar client initiate a request to open a calendar.  The calendar
+client will emit the "cal_opened" signal when the response from the server is
+received.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>str_uri</parameter>&nbsp;:</entry>
+<entry> URI of calendar to open.
+</entry></row>
+<row><entry align="right"><parameter>only_if_exists</parameter>&nbsp;:</entry>
+<entry> FALSE if the calendar should be opened even if there
+was no storage for it, i.e. to create a new calendar or load an existing
+one if it already exists.  TRUE if it should only try to load calendars
+that already exist.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE on failure to issue the open request.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-load-state">cal_client_get_load_state ()</title>
+<programlisting><link linkend="CalClientLoadState">CalClientLoadState</link> cal_client_get_load_state
+                                            (<link linkend="CalClient">CalClient</link> *client);</programlisting>
+<para>
+Queries the state of loading of a calendar client.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A <link linkend="CalClientLoadState">CalClientLoadState</link> value indicating whether the client has
+not been loaded with <link linkend="cal-client-open-calendar">cal_client_open_calendar</link>() yet, whether it is being
+loaded, or whether it is already loaded.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-uri">cal_client_get_uri ()</title>
+<programlisting>const char* cal_client_get_uri              (<link linkend="CalClient">CalClient</link> *client);</programlisting>
+<para>
+Queries the URI that is open in a calendar client.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The URI of the calendar that is already loaded or is being
+loaded, or NULL if the client has not started a load request yet.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-n-objects">cal_client_get_n_objects ()</title>
+<programlisting>int         cal_client_get_n_objects        (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type);</programlisting>
+<para>
+Counts the number of calendar components of the specified <parameter>type</parameter>.  This can be
+used to count how many events, to-dos, or journals there are, for example.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry> Type of objects that will be counted.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Number of components.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-uids">cal_client_get_uids ()</title>
+<programlisting><link linkend="GList">GList</link>*      cal_client_get_uids             (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type);</programlisting>
+<para>
+Queries a calendar for a list of unique identifiers corresponding to calendar
+objects whose type matches one of the types specified in the <parameter>type</parameter> flags.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry> Bitmask with types of objects to return.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A list of strings that are the sought UIDs.  This should be
+freed using the <link linkend="cal-obj-uid-list-free">cal_obj_uid_list_free</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-object">cal_client_get_object ()</title>
+<programlisting><link linkend="CalClientGetStatus">CalClientGetStatus</link> cal_client_get_object    (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *uid,
+                                             <link linkend="CalComponent">CalComponent</link> **comp);</programlisting>
+<para>
+Queries a calendar for a calendar component object based on its unique
+identifier.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>uid</parameter>&nbsp;:</entry>
+<entry> Unique identifier for a calendar component.
+</entry></row>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> Return value for the calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Result code based on the status of the operation.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-changes">cal_client_get_changes ()</title>
+<programlisting><link linkend="GList">GList</link>*      cal_client_get_changes          (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type,
+                                             const char *change_id);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>change_id</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-change-list-free">cal_client_change_list_free ()</title>
+<programlisting>void        cal_client_change_list_free     (<link linkend="GList">GList</link> *list);</programlisting>
+<para>
+Frees a list of <link linkend="CalClientChange">CalClientChange</link> structures.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>list</parameter>&nbsp;:</entry>
+<entry> List of <link linkend="CalClientChange">CalClientChange</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-objects-in-range">cal_client_get_objects_in_range ()</title>
+<programlisting><link linkend="GList">GList</link>*      cal_client_get_objects_in_range (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end);</programlisting>
+<para>
+Queries a calendar for the objects that occur or recur in the specified range
+of time.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry> Bitmask with types of objects to return.
+</entry></row>
+<row><entry align="right"><parameter>start</parameter>&nbsp;:</entry>
+<entry> Start time for query.
+</entry></row>
+<row><entry align="right"><parameter>end</parameter>&nbsp;:</entry>
+<entry> End time for query.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A list of UID strings.  This should be freed using the
+<link linkend="cal-obj-uid-list-free">cal_obj_uid_list_free</link>() function.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-generate-instances">cal_client_generate_instances ()</title>
+<programlisting>void        cal_client_generate_instances   (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalObjType">CalObjType</link> type,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end,
+                                             <link linkend="CalRecurInstanceFn">CalRecurInstanceFn</link> cb,
+                                             <link linkend="gpointer">gpointer</link> cb_data);</programlisting>
+<para>
+Does a combination of <link linkend="cal-client-get-objects-in-range">cal_client_get_objects_in_range</link>() and
+<link linkend="cal-recur-generate-instances">cal_recur_generate_instances</link>().  It fetches the list of objects in an atomic
+way so that the generated instances are actually in the server at the time
+the initial <link linkend="cal-client-get-objects-in-range">cal_client_get_objects_in_range</link>() query ends.
+</para>
+<para>
+The callback function should do a <link linkend="gtk-object-ref">gtk_object_ref</link>() of the calendar component
+it gets passed if it intends to keep it around.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry> Bitmask with types of objects to return.
+</entry></row>
+<row><entry align="right"><parameter>start</parameter>&nbsp;:</entry>
+<entry> Start time for query.
+</entry></row>
+<row><entry align="right"><parameter>end</parameter>&nbsp;:</entry>
+<entry> End time for query.
+</entry></row>
+<row><entry align="right"><parameter>cb</parameter>&nbsp;:</entry>
+<entry> Callback for each generated instance.
+</entry></row>
+<row><entry align="right"><parameter>cb_data</parameter>&nbsp;:</entry>
+<entry> Closure data for the callback.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-alarms-in-range">cal_client_get_alarms_in_range ()</title>
+<programlisting><link linkend="GSList">GSList</link>*     cal_client_get_alarms_in_range  (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end);</programlisting>
+<para>
+Queries a calendar for the alarms that trigger in the specified range of
+time.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>start</parameter>&nbsp;:</entry>
+<entry> Start time for query.
+</entry></row>
+<row><entry align="right"><parameter>end</parameter>&nbsp;:</entry>
+<entry> End time for query.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A list of <link linkend="CalComponentAlarms">CalComponentAlarms</link> structures.  This should be freed
+using the <link linkend="cal-client-free-alarms">cal_client_free_alarms</link>() function, or by freeing each element
+separately with <link linkend="cal-component-alarms-free">cal_component_alarms_free</link>() and then freeing the list with
+<link linkend="g-slist-free">g_slist_free</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-free-alarms">cal_client_free_alarms ()</title>
+<programlisting>void        cal_client_free_alarms          (<link linkend="GSList">GSList</link> *comp_alarms);</programlisting>
+<para>
+Frees a list of <link linkend="CalComponentAlarms">CalComponentAlarms</link> structures as returned by
+<link linkend="cal-client-get-alarms-in-range">cal_client_get_alarms_in_range</link>().</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>comp_alarms</parameter>&nbsp;:</entry>
+<entry> A list of <link linkend="CalComponentAlarms">CalComponentAlarms</link> structures.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-alarms-for-object">cal_client_get_alarms_for_object ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_client_get_alarms_for_object
+                                            (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *uid,
+                                             <link linkend="time-t">time_t</link> start,
+                                             <link linkend="time-t">time_t</link> end,
+                                             <link linkend="CalComponentAlarms">CalComponentAlarms</link> **alarms);</programlisting>
+<para>
+Queries a calendar for the alarms of a particular object that trigger in the
+specified range of time.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>uid</parameter>&nbsp;:</entry>
+<entry> Unique identifier for a calendar component.
+</entry></row>
+<row><entry align="right"><parameter>start</parameter>&nbsp;:</entry>
+<entry> Start time for query.
+</entry></row>
+<row><entry align="right"><parameter>end</parameter>&nbsp;:</entry>
+<entry> End time for query.
+</entry></row>
+<row><entry align="right"><parameter>alarms</parameter>&nbsp;:</entry>
+<entry> Return value for the component's alarm instances.  Will return NULL
+if no instances occur within the specified time range.  This should be freed
+using the <link linkend="cal-component-alarms-free">cal_component_alarms_free</link>() function.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE if the object was not found.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-update-object">cal_client_update_object ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_client_update_object        (<link linkend="CalClient">CalClient</link> *client,
+                                             <link linkend="CalComponent">CalComponent</link> *comp);</programlisting>
+<para>
+Asks a calendar to update a component.  Any existing component with the
+specified component's UID will be replaced.  The client program should not
+assume that the object is actually in the server's storage until it has
+received the "obj_updated" notification signal.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>comp</parameter>&nbsp;:</entry>
+<entry> A calendar component object.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE on specifying an invalid component.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-remove-object">cal_client_remove_object ()</title>
+<programlisting><link linkend="gboolean">gboolean</link>    cal_client_remove_object        (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *uid);</programlisting>
+<para>
+Asks a calendar to remove a component.  If the server is able to remove the
+component, all clients will be notified and they will emit the "obj_removed"
+signal.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>uid</parameter>&nbsp;:</entry>
+<entry> Unique identifier of the calendar component to remove.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE on specifying a UID for a component that
+is not in the server.  Returning FALSE is normal; the object may have
+disappeared from the server before the client has had a chance to receive the
+corresponding notification.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="cal-client-get-query">cal_client_get_query ()</title>
+<programlisting><link linkend="CalQuery">CalQuery</link>*   cal_client_get_query            (<link linkend="CalClient">CalClient</link> *client,
+                                             const char *sexp);</programlisting>
+<para>
+Creates a live query object from a loaded calendar.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>client</parameter>&nbsp;:</entry>
+<entry> A calendar client.
+</entry></row>
+<row><entry align="right"><parameter>sexp</parameter>&nbsp;:</entry>
+<entry> S-expression representing the query.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A query object that will emit notification signals as calendar
+components are added and removed from the query in the server.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+<refsect1>
+<title>Signals</title>
+<refsect2><title><anchor id="CalClient-cal-opened">The &quot;cal-opened&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gint">gint</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>calclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="CalClient-cal-set-mode">The &quot;cal-set-mode&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gint">gint</link> arg1,
+                                            <link linkend="gint">gint</link> arg2,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>calclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>arg2</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="CalClient-obj-updated">The &quot;obj-updated&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+  <para>
+    This signal is emitted when the calendar clients receives
+    notification of a calendar component's data being changed in the
+    personal calendar server.  Graphical clients may want to get the
+    new version of the object and update their display, for example.
+  </para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>calclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="CalClient-obj-removed">The &quot;obj-removed&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+  <para>
+    This signal is emitted when the calendar client receives
+    notification for a calendar component being removed from the
+    storage in the personal calendar server.  Graphical clients may
+    want to delete the corresponding object from their display, for
+    example.
+  </para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>calclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="CalClient-categories-changed">The &quot;categories-changed&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gpointer">gpointer</link> arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>calclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2><refsect2><title><anchor id="CalClient-forget-password">The &quot;forget-password&quot; signal</title>
+<programlisting>void        user_function                  (<link linkend="CalClient">CalClient</link> *calclient,
+                                            <link linkend="gchar">gchar</link> *arg1,
+                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>calclient</parameter>&nbsp;:</entry>
+<entry>the object which received the signal.
+</entry></row>
+<row><entry align="right"><parameter>arg1</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>user data set when the signal handler was connected.</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+</refsect1>
+
+
+<refsect1>
+<title>See Also</title>
+  <para>
+    <link linkend="CalComponent">CalComponent</link>
+  </para>
+</refsect1>
+
+</refentry>

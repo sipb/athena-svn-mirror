@@ -43,6 +43,7 @@ static BonoboUIVerb message_verbs [] = {
 	BONOBO_UI_UNSAFE_VERB ("MailPrevious", previous_msg),
 	BONOBO_UI_UNSAFE_VERB ("MailPreviousFlagged", previous_flagged_msg),
 	BONOBO_UI_UNSAFE_VERB ("MailPreviousUnread", previous_unread_msg),
+	BONOBO_UI_UNSAFE_VERB ("AddSenderToAddressbook", add_sender_to_addrbook),
 	BONOBO_UI_UNSAFE_VERB ("MessageApplyFilters", apply_filters),
 	BONOBO_UI_UNSAFE_VERB ("MessageCopy", copy_msg),
 	BONOBO_UI_UNSAFE_VERB ("MessageDelete", delete_msg),
@@ -521,6 +522,7 @@ static const char *message_pane_enables[] = {
 	 * selected. */
 	"PrintMessage", "PrintPreviewMessage",
 	"ViewFullHeaders", "ViewLoadImages", "ViewNormal", "ViewSource",
+	"MessageSearch", "AddSenderToAddressbook",
 	NULL
 };
 
@@ -551,6 +553,9 @@ folder_browser_ui_set_selection_state (FolderBrowser *fb, FolderBrowserSelection
 
 		"EditCut", "EditCopy", "EditPaste", "ViewHideSelected",
 
+		"MailNext", "MailNextFlagged", "MailNextUnread", "MailNextThread",
+		"MailPrevious", "MailPreviousFlagged", "MailPreviousUnread",
+
 		NULL
 	};
 
@@ -562,12 +567,6 @@ folder_browser_ui_set_selection_state (FolderBrowser *fb, FolderBrowserSelection
 		"ToolsFilterMailingList", "ToolsFilterRecipient", "ToolsFilterSender",
 		"ToolsFilterSubject", "ToolsVFolderMailingList", "ToolsVFolderRecipient", 
 		"ToolsVFolderSender", "ToolsVFolderSubject",
-
-		/* moving around -- if we have more than one message selected, it
-		 * doesn't behave very. If people complain, it isn't a problem
-		 * to put these commands in none_disables tho. */
-		"MailNext", "MailNextFlagged", "MailNextUnread", "MailNextThread",
-		"MailPrevious", "MailPreviousFlagged", "MailPreviousUnread",
 
 		NULL
 	};

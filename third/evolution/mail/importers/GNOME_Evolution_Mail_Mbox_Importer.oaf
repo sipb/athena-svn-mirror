@@ -12,10 +12,16 @@
 		       value="Factory to import mbox into Evolution"/>
 	<oaf_attribute name="description-az" type="string"
 		       value="&#39;Mbox&#39;u &#39;Evolution&#39; i&#195;&#167;in&#201;&#153; g&#201;&#153;tir&#201;&#153;n e&#39;malatxana"/>
+	<oaf_attribute name="description-ca" type="string"
+		       value="Utilitat de configuraci&#243; per al conducte de l&#39;agenda de l&#39;Evolution.\n"/>
 	<oaf_attribute name="description-da" type="string"
 		       value="Fabrik for at importere mbox til Evolution"/>
 	<oaf_attribute name="description-de" type="string"
-		       value="Factory, um mbox in Evolution zu importieren."/>
+		       value="Fabrik, um mbox in Evolution zu importieren."/>
+	<oaf_attribute name="description-el" type="string"
+		       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231;&#237; &#229;&#233;&#243;&#225;&#227;&#249;&#227;&#222; &#225;&#241;&#247;&#229;&#223;&#249;&#237; mbox &#243;&#244;&#239; Evolution"/>
+	<oaf_attribute name="description-en_GB" type="string"
+		       value="Cannot initialise Evolution&#39;s mail component."/>
 	<oaf_attribute name="description-es" type="string"
 		       value="Factor&#237;a para importar archivos de mbox a Evolution."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -28,10 +34,14 @@
 		       value="Fabbrica per importare mbox in Evolution"/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="Evolution &#164;&#216; mbox &#164;&#242;&#165;&#164;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#200;&#164;&#185;&#164;&#235;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
+	<oaf_attribute name="description-ko" type="string"
+		       value="Evolution&#192;&#184;&#183;&#206; &#198;&#196;&#192;&#207;&#192;&#187; &#176;&#161;&#193;&#174;&#191;&#192;&#189;&#199;&#183;&#193;&#184;&#233; &#34;&#176;&#161;&#193;&#174;&#191;&#192;&#177;&#226;&#34;&#184;&#166; &#180;&#169;&#184;&#163;&#188;&#188;&#191;&#228;."/>
 	<oaf_attribute name="description-lt" type="string"
 		       value="Gamykla importuoti mbox byloms &#225; Evolution"/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Fabriek voor het importeren van mbox bestanden naar Evolution"/>
+	<oaf_attribute name="description-nn" type="string"
+		       value="&#216;ydelagd oppsettfil."/>
 	<oaf_attribute name="description-no" type="string"
 		       value="Factory for &#229; importere mbox til Evolution"/>
 	<oaf_attribute name="description-pl" type="string"
@@ -76,6 +86,8 @@
 		       value="Importerer mbox-filer til Evolution"/>
 	<oaf_attribute name="description-de" type="string"
 		       value="Importiert mbox-Dateien in Evolution."/>
+	<oaf_attribute name="description-el" type="string"
+		       value="&#197;&#233;&#243;&#220;&#227;&#229;&#233; &#225;&#241;&#247;&#229;&#223;&#225; mbox &#243;&#244;&#239; Evolution"/>
 	<oaf_attribute name="description-es" type="string"
 		       value="Importa archivos de mbox a Evolution."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -88,8 +100,12 @@
 		       value="Importa i file mbox in Evolution"/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="Evolution &#164;&#216; mbox &#165;&#213;&#165;&#161;&#165;&#164;&#165;&#235;&#164;&#242;&#165;&#164;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#200;"/>
+	<oaf_attribute name="description-ko" type="string"
+		       value="GnomeCard &#198;&#196;&#192;&#207;&#192;&#187; Evolution&#192;&#184;&#183;&#206; &#176;&#161;&#193;&#174;&#191;&#201;&#180;&#207;&#180;&#217;"/>
 	<oaf_attribute name="description-lt" type="string"
 		       value="Importuoja mbox bylas &#225; Evolution"/>
+	<oaf_attribute name="description-lv" type="string"
+		       value="Import&#231; mbox failus Evolution"/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Importeert mbox bestanden naar Evolution"/>
 	<oaf_attribute name="description-no" type="string"

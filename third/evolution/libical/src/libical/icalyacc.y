@@ -6,7 +6,7 @@
   
   DESCRIPTION:
   
-  $Id: icalyacc.y,v 1.1.1.1 2001-11-02 18:38:59 ghudson Exp $
+  $Id: icalyacc.y,v 1.1.1.2 2002-02-15 17:34:25 ghudson Exp $
   $Locker:  $
 
   (C) COPYRIGHT 1999 Eric Busboom 
@@ -353,10 +353,6 @@ period_value:  DIGITS TIME_CHAR DIGITS utc_char '/'  DIGITS TIME_CHAR DIGITS utc
 	    icalparser_yy_value = icalvalue_new_period(p);
 
 	}
-
-
-trigger: 
-	
 
 
 /* UTC Offset */

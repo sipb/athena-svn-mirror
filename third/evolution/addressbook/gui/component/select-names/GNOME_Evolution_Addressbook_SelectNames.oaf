@@ -12,12 +12,20 @@
                        value="Factory for the Addressbook's name selection interface"/>
 	<oaf_attribute name="description-az" type="string"
                        value="Evolution &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri ad se&#195;&#167;m&#201;&#153; ara &#195;&#188;z&#195;&#188; e&#39;malatxanas&#196;&#177;"/>
+	<oaf_attribute name="description-bg" type="string"
+                       value="&#212;&#224;&#225;&#240;&#232;&#234;&#224; &#231;&#224; &#242;&#250;&#240;&#241;&#229;&#237;&#229;&#242;&#238; &#239;&#238; &#232;&#236;&#229;&#237;&#224; &#226; &#224;&#228;&#240;&#229;&#241;&#237;&#224;&#242;&#224; &#234;&#237;&#232;&#227;&#224; &#237;&#224; &#197;&#226;&#238;&#235;&#254;&#248;&#250;&#237;"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Fabrik til adressebogens gr&#230;nseflade for navnevalg"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Factory f&#252;r die Namenauswahl-Schnittstelle des Adressbuchs"/>
+                       value="Fabrik f&#252;r die Namenauswahl-Schnittstelle des Adressbuchs"/>
+	<oaf_attribute name="description-el" type="string"
+                       value="&#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#227;&#233;&#225; &#244;&#231; &#228;&#233;&#225;&#243;&#253;&#237;&#228;&#229;&#243;&#231; &#229;&#240;&#233;&#235;&#239;&#227;&#222;&#242; &#239;&#237;&#239;&#236;&#220;&#244;&#249;&#237; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
                        value="Factor&#237;a para la interfaz de selecci&#243;n de nombre de la Agenda"/>
+	<oaf_attribute name="description-fr" type="string"
+                       value="Usine &#224; composants pour l&#39;interface de s&#233;lection de noms du carnet d&#39;adresses d&#39;Evolution"/>
+	<oaf_attribute name="description-gl" type="string"
+                       value="F&#225;brica para a interface de selecci&#243;n de nome do Libro de Enderezos de Evolution"/>
 	<oaf_attribute name="description-hu" type="string"
                        value="Factory a c&#237;mjegyz&#233;k n&#233;vkiv&#225;laszt&#243; fel&#252;let&#233;hez"/>
 	<oaf_attribute name="description-it" type="string"
@@ -28,6 +36,8 @@
                        value="&#193;&#214;&#188;&#210;&#183;&#207; &#192;&#204;&#184;&#167; &#188;&#177;&#197;&#195; &#192;&#206;&#197;&#205;&#198;&#228;&#192;&#204;&#189;&#186;&#184;&#166; &#192;&#167;&#199;&#209; &#198;&#209;&#197;&#228;&#184;&#174;"/>
 	<oaf_attribute name="description-lt" type="string"
                        value="Adres&#248; knygel&#235;s vard&#248; pasirinkimo s&#224;sajos gamykla"/>
+	<oaf_attribute name="description-lv" type="string"
+                       value="Ra&#254;otne Adre&#240;u gr&#226;matas v&#226;rda izv&#231;les interfeisam"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="Factory voor de naamselectie-interface van het Adresboek"/>
 	<oaf_attribute name="description-no" type="string"
@@ -65,10 +75,16 @@
                        value="Evolution's addressbook name selection interface."/>
 	<oaf_attribute name="description-az" type="string"
                        value="Evolution &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri ad se&#195;&#167;m&#201;&#153; ara &#195;&#188;z&#195;&#188;."/>
+	<oaf_attribute name="description-bg" type="string"
+                       value="&#200;&#237;&#242;&#229;&#240;&#244;&#229;&#233;&#241; &#231;&#224; &#242;&#250;&#240;&#241;&#229;&#237;&#229;&#242;&#238; &#239;&#238; &#232;&#236;&#229;&#237;&#224; &#226; &#224;&#228;&#240;&#229;&#241;&#237;&#224;&#242;&#224; &#234;&#237;&#232;&#227;&#224; &#237;&#224; &#197;&#226;&#238;&#235;&#254;&#248;&#250;&#237;"/>
+	<oaf_attribute name="description-ca" type="string"
+                       value="Conducte de la llibreta d&#39;adreces de l&#39;Evolution"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Evolution adressebog-komponent"/>
 	<oaf_attribute name="description-de" type="string"
                        value="Evolution Namenauswahlschnittstelle f&#252;r das Adressbuch."/>
+	<oaf_attribute name="description-el" type="string"
+                       value="&#196;&#233;&#225;&#243;&#253;&#237;&#228;&#229;&#243;&#231; &#229;&#240;&#233;&#235;&#239;&#227;&#222;&#242; &#239;&#237;&#239;&#236;&#220;&#244;&#249;&#237; &#244;&#239;&#245; &#194;&#233;&#226;&#235;&#223;&#239;&#245; &#196;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237; &#244;&#239;&#245; Evolution."/>
 	<oaf_attribute name="description-es" type="string"
                        value="Interfaz de Evolution de selecci&#243;n de nombre de la agenda."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -85,8 +101,12 @@
                        value="Evolution &#193;&#214;&#188;&#210;&#183;&#207; &#192;&#204;&#184;&#167; &#188;&#177;&#197;&#195; &#192;&#206;&#197;&#205;&#198;&#228;&#192;&#204;&#189;&#186;"/>
 	<oaf_attribute name="description-lt" type="string"
                        value="Evolution adres&#248; knygel&#235;s vard&#248; pasirinkimo s&#224;saja."/>
+	<oaf_attribute name="description-lv" type="string"
+                       value="Evolution adre&#240;u gr&#226;matas v&#226;rda izv&#231;les interfeiss."/>
 	<oaf_attribute name="description-nl" type="string"
                        value="De adresboeknaam-selectie-interface van Evolution."/>
+	<oaf_attribute name="description-nn" type="string"
+                       value="Gpilotd adressekomponent"/>
 	<oaf_attribute name="description-no" type="string"
                        value="Evolution adressebok-komponent"/>
 	<oaf_attribute name="description-pl" type="string"
@@ -105,6 +125,8 @@
                        value="Evolutions adressboks namnvalsgr&#228;nssnitt."/>
 	<oaf_attribute name="description-tr" type="string"
                        value="Evolution adres defteri isim se&#231;me aray&#252;z&#252;."/>
+	<oaf_attribute name="description-uk" type="string"
+                       value="&#235;&#193;&#206;&#193;&#204; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#167; &#203;&#206;&#201;&#199;&#201; Evolution"/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="Evolution &#231;&#154;&#132;&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#229;&#144;&#141;&#231;&#167;&#176;&#233;&#128;&#137;&#230;&#139;&#169;&#231;&#149;&#140;&#233;&#157;&#162;&#227;&#128;&#130;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
