@@ -1,12 +1,12 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.2 1999-06-18 21:09:56 ghudson Exp $
+# $Id: bash_login,v 1.3 1999-08-10 16:07:11 ghudson Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
 . ~/.bashrc
 
 # SGI xwsh runs shells as login shells. We don't want this.
-if [ "${XSESSION+set}" == set ]; then
+if [ "${XSESSION+set}" = set ]; then
 	exit 0
 fi
 
@@ -29,7 +29,7 @@ fi
 
 # Check that user home directory is available
 
-if [ "${TMPHOME+set}" == set ]; then
+if [ "${TMPHOME+set}" = set ]; then
 	echo "WARNING:"
 	echo ""
 	echo "Your home directory is currently unavailable."
@@ -72,7 +72,7 @@ switch|network|dialup|unknown)
 	# (one that the system will recognize).
 	export DEF_TERM
 	if [ "${DEF_TERM+set}" != set ]; then DEF_TERM=vt100; fi
-	set noglob; eval `tset -s -I -Q "?${DEF_TERM}"` || unset noglob
+	set -f; eval `tset -s -I -Q "?${DEF_TERM}"`; set +f
 	;;
 esac
 
@@ -115,14 +115,14 @@ if [ "${ZEPHYR_CLIENT+set}" != set ]; then
 fi
 
 if [ "${skip_tty_startup+set}" != set ]; then
-	if [ "${verbose_login+set}" == set ]; then
+	if [ "${verbose_login+set}" = set ]; then
 		 echo "Running standard startup activities ..."
 	fi
 	set IGNOREEOF			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
 	get_message -login		# Display current motd
 	from -t -n			# Check for mail
-	(olc who &) 2>&1 > /dev/null	# Ping the OLC server
+	(olc who &) > /dev/null 2>&1	# Ping the OLC server
 fi
 
 
@@ -130,7 +130,7 @@ fi
 
 if [ -r ~/.startup.tty ]; then
 	# Don't echo if noninteractive
-	if [ "${verbose_login+set}" == set ]; then
+	if [ "${verbose_login+set}" = set ]; then
 		echo "Running custom startup activities listed in ~/.startup.tty ..."
 	fi
 	. ~/.startup.tty
