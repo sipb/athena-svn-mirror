@@ -15,7 +15,7 @@ without express or implied warranty.
 */
 
 #define		MAX_BUTTONS		8
-#define		MAX_MENU_LEN		4
+#define		MAX_MENU_LEN		6
 #define		BUFSIZE			512
 #define		HELL_FROZEN_OVER	0
 #define		LONGNAMELEN		100
@@ -33,6 +33,8 @@ without express or implied warranty.
 #define		CURRENT			-10
 #define		HIGHESTSEEN		-11
 #define		INITIALIZE		-12
+#define		LREF			-13
+#define		FREF			-14
 
 #define		BUTTONS_UPDATE		1
 #define		BUTTONS_OFF		2
