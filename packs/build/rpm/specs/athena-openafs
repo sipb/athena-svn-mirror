@@ -1,0 +1,63 @@
+Name: athena-openafs
+Summary: Client software for the AFS filesystem.
+Copyright: IBM Public License
+Group: System Environment/Base
+
+%description
+Client programs, libaries, kernel modules, and configuration files for 
+the AFS filesystem.
+
+%install
+if [ X$RPM_BUILD_ROOT = X ]; then
+  cat 1>&2 << MESSAGE
+You must specify a build root in order to build this package.
+Use the --buildroot option to RPM or the buildroot rpmrc entry.
+MESSAGE
+  exit 1
+fi
+
+rm -rf $RPM_BUILD_ROOT
+mkdir $RPM_BUILD_ROOT
+./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
+
+# Extra files
+mkdir -p $RPM_BUILD_ROOT/etc/athena
+cp config_afs.sh $RPM_BUILD_ROOT/etc/athena/config_afs
+chmod +x $RPM_BUILD_ROOT/etc/athena/config_afs
+cp CellServDB $RPM_BUILD_ROOT/usr/vice/etc/CellServDB
+cp ThisCell $RPM_BUILD_ROOT/usr/vice/etc/ThisCell
+cp cacheinfo $RPM_BUILD_ROOT/usr/vice/etc/cacheinfo
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/usr/vice/etc/CellServDB$|%config \0|" \
+      -e "s|^/usr/vice/etc/ThisCell$|%config \0|" \
+      -e "s|^/usr/vice/etc/cacheinfo$|%config \0|" \
+      -e "s|^/etc/sysconfig/afs$|%config \0|" |
+  sort > rpm.filelist
+echo "%dir /usr/vice/cache" >> rpm.filelist         
+
+%post
+grep -q ^AFSSRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+AFSSRV=false;           export AFSSRV;          #  AFS server
+EOF
+
+grep -q ^AFSCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf 
+AFSCLIENT=true;         export AFSCLIENT;       #  AFS client
+EOF
+
+grep -q ^AFSADJUST /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+AFSADJUST=true;         export AFSADJUST;       #  Adjust AFS cache-size?
+EOF
+
+chkconfig --add afs
+# Force a reset to what's specified in the rc file; we changed it to
+# run after afs in 9.0.
+chkconfig --level 345 afs reset
+
+[ -d /afs ] || mkdir -p /afs
+
+%preun
+if [ $1 = 0 ]; then
+  chkconfig --del afs
+fi
