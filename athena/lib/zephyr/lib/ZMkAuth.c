@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: ZMkAuth.c,v 1.19 1999-01-22 23:19:16 ghudson Exp $
+ *	$Id: ZMkAuth.c,v 1.20 2002-11-11 18:28:06 ghudson Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -13,19 +13,14 @@
 #include <internal.h>
 
 #ifndef lint
-static const char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.19 1999-01-22 23:19:16 ghudson Exp $";
+static const char rcsid_ZMakeAuthentication_c[] = "$Id: ZMkAuth.c,v 1.20 2002-11-11 18:28:06 ghudson Exp $";
 #endif
 
 #ifdef HAVE_KRB4
 #include <krb_err.h>
-static long last_authent_time = 0L;
-static KTEXT_ST last_authent;
 #endif
 
 Code_t ZResetAuthentication () {
-#ifdef HAVE_KRB4
-    last_authent_time = 0L;
-#endif
     return ZERR_NONE;
 }
 
@@ -44,20 +39,15 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
     CREDENTIALS cred;
     extern unsigned long des_quad_cksum();
 
-    now = time(0);
-    if (last_authent_time == 0 || (now - last_authent_time > 120)) {
-	result = krb_mk_req(&authent, SERVER_SERVICE, 
-			    SERVER_INSTANCE, __Zephyr_realm, 0);
-	if (result != MK_AP_OK) {
-	    last_authent_time = 0;
-	    return (result+krb_err_base);
-        }
-	last_authent_time = now;
-	last_authent = authent;
-    }
-    else {
-	authent = last_authent;
-    }
+    result = krb_mk_req(&authent, SERVER_SERVICE, 
+			SERVER_INSTANCE, __Zephyr_realm, 0);
+    if (result != MK_AP_OK)
+	return (result+krb_err_base);
+    result = krb_get_cred(SERVER_SERVICE, SERVER_INSTANCE,
+			  __Zephyr_realm, &cred);
+    if (result != KSUCCESS)
+	return (result+krb_err_base);
+
     notice->z_auth = 1;
     notice->z_authent_len = authent.length;
     notice->z_ascii_authent = (char *)malloc((unsigned)authent.length*3);
@@ -79,9 +69,6 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
 	return(result);
 
     /* Compute a checksum over the header and message. */
-    if ((result = krb_get_cred(SERVER_SERVICE, SERVER_INSTANCE, 
-			      __Zephyr_realm, &cred)) != 0)
-	return result;
     checksum = des_quad_cksum(buffer, NULL, cstart - buffer, 0, cred.session);
     checksum ^= des_quad_cksum(cend, NULL, buffer + *len - cend, 0,
 			       cred.session);
