@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.func.c,v 1.2 2001-05-04 15:47:09 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/tcsh/tc.func.c,v 1.3 2001-11-18 05:06:27 ghudson Exp $ */
 /*
  * tc.func.c: New tcsh builtins.
  */
@@ -36,7 +36,7 @@
  */
 #include "sh.h"
 
-RCSID("$Id: tc.func.c,v 1.2 2001-05-04 15:47:09 ghudson Exp $")
+RCSID("$Id: tc.func.c,v 1.3 2001-11-18 05:06:27 ghudson Exp $")
 
 #include "ed.h"
 #include "ed.defns.h"		/* for the function names */
@@ -1476,19 +1476,37 @@ hes_gethomedir(us)
 {
     char **res, **res1, *cp;
     Char *rp;
+    int which;
 
     res = hes_resolve(short2str(us), "filsys");
     rp = 0;
     if (res != 0) {
 	extern char *strtok();
 	if ((*res) != 0) {
+	  int i, lowest, new;
+
+	  /* Use the first filesys if there's an ordered list */
+	  lowest = -1;
+	  which = 0;
+	  if (res[1]) {
+	    for (i = 0; res[i]; i++) {
+	      cp = strrchr(res[i], ' ');
+	      if (!cp)
+		return NULL;
+	      new = atoi(cp + 1);
+	      if (lowest == -1 || new < lowest) {
+		lowest = new;
+		which = i;
+	      }
+	    }
+	  }
 	    /*
 	     * Look at the first token to determine how to interpret
 	     * the rest of it.
 	     * Yes, strtok is evil (it's not thread-safe), but it's also
 	     * easy to use.
 	     */
-	    cp = strtok(*res, " ");
+	    cp = strtok(res[which], " ");
 	    if (strcmp(cp, "AFS") == 0) {
 		/* next token is AFS pathname.. */
 		cp = strtok(NULL, " ");
