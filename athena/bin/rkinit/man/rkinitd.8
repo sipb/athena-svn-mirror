@@ -1,5 +1,5 @@
 .\" 
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinitd.8,v 1.1 1989-01-22 16:47:11 qjb Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinitd.8,v 1.2 1989-09-29 16:21:28 qjb Exp $
 .\" $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinitd.8,v $
 .\" $Author: qjb $
 .\"
@@ -9,7 +9,7 @@
 .SH NAME
 rkinitd \- server for 
 .I rkinit,
-a remote ticket establishment utility
+a remote kerberos ticket establishment utility
 .SH SYNOPSIS
 .B rkinit [-notimeout]
 .SH DESCRIPTION
@@ -30,7 +30,8 @@ normally times out in 30 seconds.  Invoking
 .I rkinitd
 with the 
 .I -notimeout
-flag will override this behavior.
+flag will override this behavior.  The default is not to time
+out when rkinitd is started from the commandline.
 
 If you wish to run 
 .I rkinitd
@@ -38,11 +39,13 @@ from inetd, you should install the following line in inetd.conf:
 
 atest6	dgram	udp	wait	unswitched	root	
 .br
-/site/local/rtbin/rkinitd	rkinitd
+/usr/local/rkinitd	rkinitd
 
 .I rkinitd 
-must be running on a machine with a srvtab containing an rcmd.<host>
-key. 
+must be running on a machine that is registered for rlogin
+service; that is, the host must have a srvtab containing an rcmd.<host>
+key where <host> is the value returned by the krb_get_phost(3)
+kerberos library call.
 
 .SH BUGS
 Only one 
@@ -51,6 +54,18 @@ can be run to a given server at a time.  This is because
 .I rkinitd
 does not make any effort to keep track of where requests are coming
 from or what the nature of the requests are.
+
+Timeouts are handled poorly, and there is no support for packet
+retransmission.  This can cause the communication from 
+.I rkinit to
+.I rkinitd 
+to fail when the network is busy and result in incorrect error
+messages being sent to the client.
+
+The way that 
+.I rkinitd 
+determines whether or not it was started from the commandline is
+questionable.
 
 .SH FUTURE EXPANSION
 It might be good for the user running 
