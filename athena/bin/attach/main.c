@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.13 1990-11-13 18:40:19 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.14 1990-11-13 18:45:17 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -759,12 +759,7 @@ detachcmd(argc, argv)
 		}
 		break;
 	case 'C':
-		if (trusted_user(real_uid)) {
-			clean_detach++;
-		} else {
-			fprintf(stderr,
-		"%s: You are not authorized to use the -clean option\n", progname);
-		}
+		clean_detach = 1;
 		break;
 	case 'L':
 		lint_attachtab();
