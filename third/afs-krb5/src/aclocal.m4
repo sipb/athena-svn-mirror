@@ -1,5 +1,5 @@
 dnl
-dnl $Id: aclocal.m4,v 1.1.1.1 2003-02-13 00:14:48 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.2 2003-02-19 00:14:38 zacheiss Exp $
 dnl
 dnl Some local macros that we need for autoconf
 dnl
@@ -167,7 +167,6 @@ define(CUSTOM_CONFIG,[dnl
 WITH_CCOPTS dnl
 WITH_CC dnl
 WITH_LINKER dnl
-WITH_LDOPTS dnl
 WITH_CPPOPTS dnl
 ])dnl
 dnl
