@@ -38,7 +38,7 @@ extern int errno;
 
 #ifndef lint
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.16 1990-01-17 05:40:22 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.17 1990-01-29 11:09:26 vanharen Exp $";
 #endif
 
 #if __STDC__
@@ -217,7 +217,7 @@ log_message (owner, sender, message) KNUCKLE *owner, *sender; char *message;
   char header[DB_LINE];
   
   time_now(time);
-  (void) sprintf(header, "*** Reply from %s %s@%s (%d)\n    [%s]\n",
+  (void) sprintf(header, "*** Reply from %s %s@%s [%d].\n    [%s]\n",
 	  sender->title, sender->user->username, 
 	  sender->user->machine, sender->instance, time);
   (void) log_log(owner,message,header);
@@ -235,7 +235,7 @@ log_mail(owner,sender,message)KNUCKLE *owner,*sender;char *message;
   char header[DB_LINE];
   
   time_now(time);
-  (void) sprintf(header, "*** Mail from %s %s@%s (%d)\n    [%s]\n",
+  (void) sprintf(header, "*** Mail from %s %s@%s [%d].\n    [%s]\n",
 	  sender->title, sender->user->username, 
 	  sender->user->machine, sender->instance, time);
   (void) log_log(owner,message,header);
@@ -253,7 +253,7 @@ log_comment(owner,sender,message)KNUCKLE *owner,*sender;char *message;
   char header[DB_LINE];
 
   time_now(time);
-  (void) sprintf(header, "--- Comment by %s %s@%s (%d)\n    [%s]\n",
+  (void) sprintf(header, "--- Comment by %s %s@%s [%d].\n    [%s]\n",
 		 sender->title, sender->user->username,
 		 sender->user->machine, sender->instance, time);
 
@@ -271,10 +271,33 @@ log_description(owner,sender,message)KNUCKLE *owner,*sender;char *message;
 {
   char time[TIME_SIZE];
   char header[DB_LINE];
+  char msgbuf[NOTE_SIZE+1];
 
   time_now(time);
   (void) sprintf(header,
-		 "--- Description changed by %s %s@%s (%d)\n    [%s]\n",
+		 "--- Description changed by %s %s@%s [%d].\n    [%s]\n",
+		 sender->title, sender->user->username,
+		 sender->user->machine, sender->instance, time);
+
+  sprintf(msgbuf, "%s\n", message);
+  (void) log_log(owner,msgbuf,header);
+}
+
+
+void
+#if __STDC__
+log_long_description(const KNUCKLE *owner, const KNUCKLE *sender,
+		     const char *message)
+#else
+log_long_description(owner,sender,message)KNUCKLE *owner,*sender;char *message;
+#endif
+{
+  char time[TIME_SIZE];
+  char header[DB_LINE];
+
+  time_now(time);
+  (void) sprintf(header,
+		 "--- Long description changed by %s %s@%s [%d].\n    [%s]\n",
 		 sender->title, sender->user->username,
 		 sender->user->machine, sender->instance, time);
 
@@ -338,12 +361,12 @@ init_log(knuckle, question) KNUCKLE *knuckle; char *question;
     }
 
   time_now(current_time);
-  fprintf(logfile, "Log Initiated for %s %s [%d] (%s@%s)\n[%s]\n\n",
+  fprintf(logfile, "Log Initiated for %s %s (%s@%s [%d]).\n    [%s]\n\n",
 	  knuckle->title,
 	  knuckle->user->realname, 
-	  knuckle->instance,
 	  knuckle->user->username,
 	  knuckle->user->machine,
+	  knuckle->instance,
 	  current_time);
 
   fprintf(logfile, "Topic:\t\t%s\n\n", knuckle->question->topic);
