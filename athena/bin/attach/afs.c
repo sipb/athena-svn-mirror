@@ -1,10 +1,10 @@
 /*
- * $Id: afs.c,v 1.8 1992-04-21 08:20:42 probe Exp $
+ * $Id: afs.c,v 1.9 1994-03-25 15:59:44 miki Exp $
  *
  * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Id: afs.c,v 1.8 1992-04-21 08:20:42 probe Exp $";
+static char *rcsid = "$Id: afs.c,v 1.9 1994-03-25 15:59:44 miki Exp $";
 
 #include "attach.h"
 
@@ -59,7 +59,11 @@ afs_attach(at, mopt, errorout)
 	
 	if (debug_flag)
 		printf("lstating %s...\n", at->hostdir);
+#ifdef SOLARIS
+	setuid(owner_uid);
+#else
 	setreuid(effective_uid, owner_uid);
+#endif
 	if (stat(at->hostdir, &statbuf)) {
 		if (errno == ENOENT)
 			fprintf(stderr, "%s: %s does not exist\n",
@@ -67,13 +71,22 @@ afs_attach(at, mopt, errorout)
 		else
 			perror(at->hostdir);
 		error_status = ERR_ATTACHNOFILSYS;
+#ifdef SOLARIS
+		setuid(real_uid);
+#else
 		setreuid(real_uid, effective_uid);
+#endif
 		return(FAILURE);
 	}
 	if ((statbuf.st_mode & S_IFMT) != S_IFDIR) {
 		fprintf(stderr, "%s: %s is not a directory\n",
 			at->hesiodname, at->hostdir);
+#ifdef SOLARIS
+		setuid(real_uid);
+#else
 		setreuid(real_uid, effective_uid);
+#endif
+
 		error_status = ERR_ATTACHNOFILSYS;
 		return(FAILURE);
 	}
@@ -81,7 +94,11 @@ afs_attach(at, mopt, errorout)
 	if (debug_flag)
 		printf("lstating %s....\n", at->mntpt);
 	if (!lstat(at->mntpt, &statbuf)) {
+#ifdef SOLARIS
+		setuid(real_uid);
+#else
 		setreuid(real_uid, effective_uid);
+#endif
 		if ((statbuf.st_mode & S_IFMT) == S_IFLNK) {
 			len = readlink(at->mntpt, buf, sizeof(buf));
 			buf[len] = '\0';
@@ -140,7 +157,11 @@ afs_attach(at, mopt, errorout)
 			return(FAILURE);
 		}
 	}
+#ifdef SOLARIS
+	setuid(real_uid);
+#else
 	setreuid(real_uid, effective_uid);
+#endif
 	/*
 	 * Note: we do our own path canonicalization here, since
 	 * we have to check the sym link first.

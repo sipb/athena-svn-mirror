@@ -1,11 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Id: mount.c,v 1.8 1992-07-17 11:39:17 miki Exp $
+ *	$Id: mount.c,v 1.9 1994-03-25 15:57:35 miki Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.8 1992-07-17 11:39:17 miki Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.9 1994-03-25 15:57:35 miki Exp $";
 
 #include "attach.h"
 
@@ -26,7 +26,11 @@ mountfs(at, fsname, mopt, errorout)
 #ifdef _IBMR2
 	if (setuidx(ID_REAL|ID_EFFECTIVE, 0))
 #else
+#ifdef SOLARIS
+	if (setuid(0))
+#else
 	if (setreuid(0,0))
+#endif
 #endif
 	{
 		fprintf(stderr, "Unable to change the uid to 0\n");

@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.8 1993-05-05 17:05:21 vrt Exp $
+ * $Id: unmount.c,v 1.9 1994-03-25 15:58:42 miki Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.8 1993-05-05 17:05:21 vrt Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.9 1994-03-25 15:58:42 miki Exp $";
 
 #include "attach.h"
 
@@ -43,7 +43,11 @@ unmount_42(errname, mntpt, dev)
 #ifdef _IBMR2
 	if (setuidx(ID_REAL|ID_EFFECTIVE, 0))
 #else
+#ifdef SOLARIS
+        if (setuid(0))
+#else
 	if (setreuid(0,0))
+#endif
 #endif
 	{
 		fprintf(stderr,"%s: unable to change the uid to 0\n", errname);
