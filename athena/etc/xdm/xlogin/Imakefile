@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.24 1993-06-17 18:23:11 miki Exp $
+# $Id: Imakefile,v 1.25 1993-07-17 00:08:59 cfields Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -81,7 +81,6 @@ install_file(bitmaps/Shift-F5,/etc/athena/login/bitmaps/Shift-F5)
 install_file(bitmaps/Shift-F6,/etc/athena/login/bitmaps/Shift-F6)
 install_file(bitmaps/Shift-F7,/etc/athena/login/bitmaps/Shift-F7)
 install_file(bitmaps/Shift-F8,/etc/athena/login/bitmaps/Shift-F8)
-install_file(bitmaps/Shift-F9,/etc/athena/login/bitmaps/Shift-F9)
 install_file(Xlogin,/etc/athena/login/Xlogin)
 install_man(timeout.1,timeout.1)
 install_man(xlogin.8,xlogin.8)
