@@ -9,9 +9,7 @@ XSGI=/usr/bin/X11/Xsgi
 case "$1" in
   'start')
 	if $IS_ON windowsystem && test -x $XSGI || $IS_ON xdm; then
-		rm -rf /tmp/.nanny
-		mkdir /tmp/.nanny
-		chmod 755 /tmp/.nanny
+		rm -f /var/athena/nanny
 		/etc/athena/nanny DEBUG=5 MODE=X
 	fi
         ;;
