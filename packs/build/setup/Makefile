@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1997-03-26 21:01:19 ghudson Exp $
+# $Id: Makefile,v 1.4 1997-04-01 19:06:15 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -40,6 +40,14 @@ install:
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man6
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man7
 	-mkdir -p ${DESTDIR}${ATHMANDIR}/man8
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat2
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat3
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat4
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat5
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat6
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat7
+	-mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
 	rm -f ${DESTDIR}/usr/athena/emacs
 	ln -s bin/emacs ${DESTDIR}/usr/athena/emacs
 	rm -f ${DESTDIR}/usr/athena/zmailnotify
