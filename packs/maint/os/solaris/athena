@@ -1,4 +1,4 @@
-# $Id: athena,v 1.26 2001-08-16 14:44:43 ghudson Exp $
+# $Id: athena,v 1.27 2001-09-16 17:26:28 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -166,7 +166,7 @@ if [ "$PUBLIC" = true ]; then
 			echo "Running oscheck (this takes a few minutes)..."
 			oscheck
 			echo "Running track"
-			/usr/athena/lib/update/track-srvd
+			/srvd/usr/athena/lib/update/track-srvd
 			if [ -f /srvd/etc/athena/rc.conf ]; then
 				sed -e "s#^HOST=[^;]*#HOST=$HOST#" \
 				  -e "s#^ADDR=[^;]*#ADDR=$ADDR#" \
