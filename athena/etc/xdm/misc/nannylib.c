@@ -162,7 +162,8 @@ int nanny_loginUser(char ***env, char ***args, char **tty)
   C(!(*tty = malloc(strlen(value) + 1)));
   strcpy(*tty, value);
 
-  /* XXX Check "LOGGED_IN=OK" */
+  C(var_getString(vget, N_LOGGED_IN, &value));
+  C(strcmp(value, "logged in")); /* XXX should be some constant */
 
   var_destroy(vget);
   return 0;
@@ -272,5 +273,32 @@ int nanny_setConsoleMode()
     var_destroy(vget);
 
   return 1;
-  
+}
+
+int nanny_setXConsolePref(int on)
+{
+  varlist *vsend = NULL, *vget = NULL;
+  char *value;
+
+  if (var_init(&vsend))
+    return 1;
+
+  C(var_setString(vsend, N_CONSPREF, on ? N_ON : N_OFF));
+
+  C(nanny_exchangeVars(vsend, &vget));
+  var_destroy(vsend);  vsend = NULL;
+
+  C(var_getString(vget, N_CONSPREF, &value));
+
+  var_destroy(vget);
+
+  return 0;
+
+ cleanup:
+  if (vsend)
+    var_destroy(vsend);
+  if (vget)
+    var_destroy(vget);
+
+  return 1;
 }
