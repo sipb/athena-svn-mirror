@@ -140,12 +140,13 @@ messages(first_line,second_line)
 
 /* Function:	make_display() creates a menu display for the current
  *			directory.
- * Arguments:	None.
+ * Arguments:	start:     Index number to begin displaying from.
  * Returns:	Nothing.
  * Notes:
  */
 
-make_display()
+make_display(start)
+     int start;
 {
   ENTRY *curr_entry;			/* Current index entry. */
   char current_dir[FILENAME_SIZE];	/* Current directory. */
@@ -162,7 +163,8 @@ make_display()
   strcpy(current_dir, Current_Dir);
   center(0, CREF_HEADER);
   center(1, current_dir);
-  curr_index = Index_Start;
+/*  curr_index = Index_Start;*/
+  curr_index = start;
   curr_line = 4;
   
   for (index_line = 1; index_line < MAX_INDEX_LINES; index_line++)
@@ -205,7 +207,7 @@ display_entry(index)
       message(1, "Invalid entry number.");
       return;
     }
-  Current_Index = index;
+/*  Current_Index = index;*/
   if (entry->type == CREF_FILE)
     {
       clear();
@@ -217,15 +219,16 @@ display_entry(index)
       refresh();
       getch();
       clear();
-      make_display();
+      make_display(Current_Index);
     }
   else if (entry->type == CREF_DIR)
     {
       Previous_Index = Current_Index;
+      Prev_Index_Start = Index_Start;
       set_current_dir(entry->filename);
       Current_Index=1;
-      make_display();
-
+      Index_Start=1;
+      make_display(Index_Start);
     }
   else
     message(1, "Invalid CREF contents.");
