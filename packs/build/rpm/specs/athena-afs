@@ -31,7 +31,7 @@ find $RPM_BUILD_ROOT -type f -or -type l |
       -e "s|^/usr/vice/etc/CellServDB$|%config \0|" \
       -e "s|^/usr/vice/etc/ThisCell$|%config \0|" \
       -e "s|^/usr/vice/etc/cacheinfo$|%config \0|" \
-      -e "s|^/etc/sysconfig/afs$|%config \0" |
+      -e "s|^/etc/sysconfig/afs$|%config \0|" |
   sort > rpm.filelist
 echo "%dir /usr/vice/cache" >> rpm.filelist	    
 
