@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.1 1990-11-14 13:52:42 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.2 1990-11-16 15:47:52 mar Exp $ */
 
 #include <mit-copyright.h>
 #include <stdio.h>
@@ -26,7 +26,7 @@ char **argv;
     int maxidle;
     char *name;
     struct stat stbuf;
-    struct timeval now;
+    struct timeval now, start;
     void child(), wakeup();
 
     name = *argv++;
@@ -55,13 +55,16 @@ char **argv;
 	break;
     }
 
+    gettimeofday(&start, NULL);
     /* wait for application to die or idle-time to be reached */
     while (app_running) {
 	alarm(10);		/* sleep 10 seconds */
 	sigpause(0);
 	fstat(1, &stbuf);
 	gettimeofday(&now, NULL);
-	if (stbuf.st_atime + maxidle < now.tv_sec) {
+	/* only check idle time if we've been running at least that long */
+	if (start.tv_sec + maxidle <= now.tv_sec &&
+	    stbuf.st_atime + maxidle <= now.tv_sec) {
 	    fprintf(stderr, "\nMAX IDLE TIME REACHED.\n");
 	    kill(app_pid, SIGINT);
 	    exit(0);
