@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.17 1991-07-19 15:38:27 epeisach Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.18 1991-08-18 19:27:52 probe Exp $
  */
 
 #include <stdio.h>
@@ -289,7 +289,7 @@ char *display;
 		return(msg);
 	    }
 	    strcpy(glist[0], errbuf);
-	} else
+	} else if (!local_passwd)
 	  fprintf(stderr,
 		  "Warning: could not get any groups for you from Hesiod.\n");
     }
