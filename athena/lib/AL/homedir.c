@@ -7,6 +7,10 @@
  **********************************************************************/
 #include <mit-copyright.h>
 
+/* get POSIX-compliant WEXITSTATUS() macro, not old BSD-style */
+#if defined(_AIX) || defined(hpux)
+#undef _BSD
+#endif /* defined(_AIX) || defined(hpux) */
 #include <AL/AL.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -30,6 +34,14 @@
 #ifdef linux
 #include <sys/vfs.h>
 #include <linux/nfs_fs.h>
+#include <sys/sysmacros.h>
+#endif
+#ifdef __osf__
+#include <sys/mount.h>
+#endif
+#ifdef sgi
+#include <sys/statfs.h>
+#include <sys/sysmacros.h>
 #endif
 
 /* Function Name: ALisRemoteDir
@@ -62,17 +74,27 @@ char *dir;
     return((stbuf.st_flag & FS_REMOTE) ? 1 : 0);
 #endif
 
-#ifdef linux
+#if defined(__osf__)
 #define REMOTEDONE
     struct statfs sbuf;
-    struct stat stbuf;
 
-    if (statfs(dir, &sbuf) < 0 || sbuf.f_type == NFS_SUPER_MAGIC)
-      return(1);
-    if (stat(dir, &stbuf) < 0 || stbuf.st_dev == 0x0001)
-      return(1);
-    return(0);
-#endif
+    if (statfs(dir, &sbuf, sizeof(sbuf)) < 0)
+	  return(1);
+
+    switch (sbuf.f_type) {
+/*    case MOUNT_NONE: --- afs uses this */
+    case MOUNT_UFS:
+    case MOUNT_MFS:
+    case MOUNT_PC:
+    case MOUNT_S5FS:
+    case MOUNT_CDFS:
+    case MOUNT_PROCFS:
+    case MOUNT_MSFS:
+	return(0);
+    }
+
+    return(1);
+#endif /* osf */
 
 #ifdef ultrix
 #define REMOTEDONE
@@ -88,20 +110,25 @@ char *dir;
     }
     return(1);
 #endif
-    
-#if (defined(vax) || defined(ibm032) || defined(sun) \
-     || defined(hpux) || defined(sgi)) && !defined(REMOTEDONE)
+
+#if (defined(hpux) || defined(sun) || defined(sgi) || defined(__NetBSD__) || defined(linux)) && !defined(REMOTEDONE)
 #define REMOTEDONE
 #if defined(hpux)
 #undef major
 #define major(x) ((int)(((unsigned)(x)>>24)&0377))
-#endif
-#if defined(vax) || defined(ibm032) || defined(hpux)
 #define NFS_MAJOR 0xff
 #endif
 #if defined(sun) || defined(sgi)
 #define NFS_MAJOR 130
 #endif
+#ifdef linux
+#define NFS_MAJOR 0
+#define AFS_MAJOR 0x01ff
+#endif
+#ifndef AFS_MAJOR
+#define AFS_MAJOR 0x0001
+#endif
+
     struct stat stbuf;
   
     if (stat(dir, &stbuf))
@@ -109,7 +136,7 @@ char *dir;
 
     if (major(stbuf.st_dev) == NFS_MAJOR)
 	return(1);
-    if (stbuf.st_dev == 0x0001)			/* AFS */
+    if (stbuf.st_dev == AFS_MAJOR)			/* AFS */
 	return(1);
 
     return(0);
@@ -154,12 +181,14 @@ ALgetHomedir(ALsession session)
   struct stat stb;
   int i, attach_state= -1;
 
-  /* Delete empty directory if it exists.  We just try to rmdir the 
+  /* Delete empty directory if it exists.  We just try to rmdir the
    * directory, and if it's not empty that will fail.
    */
   rmdir(ALpw_dir(session));
 
-  /* If a good local homedir exists, use it */
+  /* If a good local homedir exists, use it. (Such a homedir need not
+   * necessarily be owned by the user logging in, as it may be some
+   * sort of a captive account or who knows what.) */
   if (ALfileExists(ALpw_dir(session)) && !ALisRemoteDir(ALpw_dir(session)) &&
       ALhomedirOK(ALpw_dir(session)))
     return 0L;
@@ -209,11 +238,14 @@ ALgetHomedir(ALsession session)
       (attach_state != 0 || !ALfileExists(ALpw_dir(session))))
     {
       /* do tempdir here */
-      char buf[BUFSIZ];
-      pid_t cp_pid;
-      int cp_state;
+      char *buf;
+      pid_t pid;
+      int state;
 
       /* make name of temporary directory */
+      buf = malloc(strlen(ALpw_name(session)) + sizeof("HOME=/tmp/") + 1);
+      if (buf == NULL)
+	return ALerrNoMem;
       sprintf(buf, "HOME=/tmp/%s", ALpw_name(session));
       strcpy(ALpw_dir(session), buf+5);
 
@@ -224,30 +256,52 @@ ALgetHomedir(ALsession session)
 	 to modify the passwd file.  As of 12/94, telnetd uses libAL
 	 but login.krb doesn't, so login.krb wouldn't get the right
 	 homedir and would log the user in with home="/" */
-      if (ALlockPasswdFile(session) != -1)
-	{
-	  ALmodifyLinesOfFile(session, PASSWD, ALlockPASSWD,
-			      ALmodifyRemoveUser,
-			      ALmodifyAppendPasswd);
-	  ALunlockPasswdFile(session);
-	}
+      ALmodifyLinesOfFile(session, "/etc/passwd", "/etc/ptmp",
+			  ALmodifyRemoveUser,
+			  ALmodifyAppendPasswd);
 
       i = lstat(ALpw_dir(session), &stb);
       if (i == 0)
 	{
+	  /* Existing temporary home directory is only acceptable if
+	     it's actually owned by the user and it's a directory.
+	     Otherwise, blow it away. */
 	  if ((stb.st_mode & S_IFMT) == S_IFDIR)
-	    ALreturnError(session, ALwarnTempDirExists, ALpw_dir(session))
-	  else unlink(ALpw_dir(session));
-      } else if (errno != ENOENT)
-	ALreturnError(session, (long) errno, ALpw_dir(session));
+	    {
+	      if (stb.st_uid == ALpw_uid(session))
+		ALreturnError(session, ALwarnTempDirExists, ALpw_dir(session));
+
+	      switch (pid = fork()) {
+	      case -1:
+		ALreturnError(session, (long) errno, "while forking");
+	      case 0:
+		execl("/bin/rm", "rm", "-rf", ALpw_dir(session), NULL);
+		fprintf(stderr, "Warning - could not remove old temporary directory.\n");
+		_exit(-1);
+	      default:
+		break;
+	      }
+
+	      /* wait for rm to finish */
+	      waitpid(pid, &state, 0);
+	      /* Failure can be caught at mkdir. */
+	    }
+	  else
+	    unlink(ALpw_dir(session));
+	}
+      else
+	if (errno != ENOENT)
+	  ALreturnError(session, (long) errno, ALpw_dir(session));
 
       if (seteuid(ALpw_uid(session)) != 0)
 	warning = ALwarnUidCopy;
 
+      /* We want to die even if the error is that the directory
+	 already exists - because it shouldn't. */
       if (mkdir(ALpw_dir(session), ALtempDirPerm))
 	ALreturnError(session, (long) errno, ALpw_dir(session));
 
-      switch (cp_pid = fork()) {
+      switch (pid = fork()) {
       case -1:
 	ALreturnError(session, (long) errno, "while forking");
       case 0:
@@ -259,7 +313,7 @@ ALgetHomedir(ALsession session)
       }
 
       /* wait for copy to finish */
-      waitpid(cp_pid, &cp_state, 0);
+      waitpid(pid, &state, 0);
 
       /* set effective uid back to root */
       seteuid(0);
