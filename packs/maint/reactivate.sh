@@ -1,11 +1,11 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.49 2000-06-22 13:37:43 ghudson Exp $
+# $Id: reactivate.sh,v 1.49.2.1 2000-08-23 19:53:03 ghudson Exp $
 
 trap "" 1 15
 
-PATH=/bin:/etc/athena:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb; export PATH
+PATH=/bin:/etc/athena:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb:/usr/bsd; export PATH
 HOSTTYPE=`/bin/athena/machtype`; export HOSTTYPE
 
 # Usage: nuke directoryname
