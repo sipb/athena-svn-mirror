@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.53 1994-05-04 23:09:14 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.54 1994-05-05 09:54:55 vrt Exp $
  */
 
 #include <stdio.h>
@@ -1218,41 +1218,57 @@ char *display;
 #ifdef SOLARIS
     struct utmpx utx_entry;
     struct utmpx utx_tmp;
-#endif
+#endif /* SOLARIS */
     int f;
 #if !defined(_AIX) && !defined(SOLARIS)
     int slot = myttyslot(tty);
-#endif
+#endif /* !AIX && !SOLARIS */
     memset(&ut_entry, 0, sizeof(ut_entry));
 #ifdef SOLARIS
     memset(&utx_entry, 0, sizeof(utx_entry));
-#endif
+#endif /* SOLARIS */
     strncpy(ut_entry.ut_line, tty, 8);
     strncpy(ut_entry.ut_name, user, 8);
 #ifdef SOLARIS
     strncpy(utx_entry.ut_line, tty, 8);
     strncpy(utx_entry.ut_name, user, 8);
-#endif
+#endif /* SOLARIS */
     /* leave space for \0 */
 #ifdef SOLARIS
     strncpy(utx_entry.ut_host, display, 15);
     utx_entry.ut_host[15] = 0;
-#else
+#else /* !SOLARIS */
     strncpy(ut_entry.ut_host, display, 15);
     ut_entry.ut_host[15] = 0;
-#endif
+#endif /* SOLARIS */
     time(&(ut_entry.ut_time));
 #ifdef SOLARIS
     gettimeofday(&utx_entry.ut_tv);
-#endif
+#endif /* SOLARIS */
 #if defined(_AIX) || defined(SOLARIS)
     ut_entry.ut_pid = getppid();
     ut_entry.ut_type = USER_PROCESS;
 #ifdef SOLARIS
     utx_entry.ut_pid = getppid();
     utx_entry.ut_type = USER_PROCESS;
-#endif
+    strncpy(utx_entry.ut_id,"XLOG",4);
+    strncpy(ut_entry.ut_id,"XLOG",4);
+#endif /* SOLARIS */
 #endif						/* _AIX */
+#ifdef SOLARIS
+setutent();
+pututline(ut_entry);
+setutxent();
+pututxline(utx_entry);
+    if ( (f = open( WTMP, O_WRONLY|O_APPEND)) >= 0) {
+        write(f, (char *) &ut_entry, sizeof(ut_entry));
+        close(f);
+    }
+    if ( (f = open( WTMPX, O_WRONLY|O_APPEND)) >= 0) {
+        write(f, (char *) &utx_entry, sizeof(utx_entry));
+        close(f);
+}
+#else /* !SOLARIS */
 
     if ((f = open(UTMP, O_RDWR )) >= 0) {
 #if !defined(_AIX) && !defined(SOLARIS)
@@ -1268,28 +1284,11 @@ char *display;
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
     }
-#ifdef SOLARIS
-    if ((f = open(UTMPX, O_RDWR )) >= 0) {
-	while (read(f, (char *) &ut_tmp, sizeof(ut_tmp)) == sizeof(ut_tmp))
-	    if (ut_tmp.ut_pid == utx_entry.ut_pid) {
-		strncpy(utx_entry.ut_id, ut_tmp.ut_id, sizeof(ut_tmp.ut_id));
-		lseek(f, -(long) sizeof(ut_tmp), 1);
-		break;
-	    }
-	write(f, (char *) &utx_entry, sizeof(utx_entry));
-	close(f);
-    }
-#endif
     if ( (f = open( WTMP, O_WRONLY|O_APPEND)) >= 0) {
 	write(f, (char *) &ut_entry, sizeof(ut_entry));
 	close(f);
     }
-#ifdef SOLARIS
-    if ( (f = open( WTMPX, O_WRONLY|O_APPEND)) >= 0) {
-	write(f, (char *) &utx_entry, sizeof(utx_entry));
-	close(f);
-    }
-#endif
+#endif /* SOLARIS */
 }
 
 #ifdef _IBMR2
