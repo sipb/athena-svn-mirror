@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.6 1990-06-07 13:26:52 jik Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.7 1990-06-07 22:34:48 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -36,7 +36,7 @@ int op, bytes;
 {
      static caddr_t stack = (caddr_t) NULL;
      static int size = 0, count = 0;
-
+     
      switch (op) {
      case EMPTY_STACK:
 	  if (size) {
@@ -44,10 +44,18 @@ int op, bytes;
 	       stack = (caddr_t) NULL;
 	       size = count = 0;
 	  }
+#ifdef STACK_DEBUG
+	  fprintf(stderr, "dostack: return 1 (EMPTY_STACK).\n");
+#endif
 	  return 0;
      case STACK_PUSH:
-	  if (bytes == 0)
+	  if (bytes == 0) {
+#ifdef STACK_DEBUG
+	       fprintf(stderr, "Pushing 0 bytes at %d offset.\n", count);
+	       fprintf(stderr, "dostack: return 2 (STACK_PUSH).\n");
+#endif
 	       return 0;
+	  }
 	  if (size - count < bytes) {
 	       do
 		    size += STACK_INC;
@@ -59,29 +67,50 @@ int op, bytes;
 		    size = count = 0;
 		    set_error(errno);
 		    error("Malloc");
+#ifdef STACK_DEBUG
+		    fprintf(stderr, "dostack: return 3 (STACK_PUSH).\n");
+#endif
 		    return error_code;
 	       }
 	  }
+#ifdef STACK_DEBUG
+	  fprintf(stderr, "Pushing %d bytes at %d offset.\n", bytes, count);
+#endif
 #if defined(SYSV) || (defined(__STDC__) && !defined(__HIGHC__))
 	  memcpy(stack + count, data, bytes);
 #else
 	  bcopy(data, stack + count, bytes);
 #endif
 	  count += bytes;
+#ifdef STACK_DEBUG
+	  fprintf(stderr, "dostack: return 4 (STACK_PUSH).\n");
+#endif
 	  return 0;
      case STACK_POP:
-	  if (bytes == 0)
+	  if (bytes == 0) {
+#ifdef STACK_DEBUG
+	       fprintf(stderr, "Popping 0 bytes at %d offset.\n", count);
+	       fprintf(stderr, "dostack: return 5 (STACK_POP).\n");
+#endif
 	       return 0;
+	  }
 	  if (count == 0) {
 	       set_status(STACK_EMPTY);
+#ifdef STACK_DEBUG
+	       fprintf(stderr, "dostack: return 6 (STACK_POP).\n");
+#endif
 	       return error_code;
 	  }
 	  else {
 	       int newblocks, newsize;
 
 	       count -= bytes;
+#ifdef STACK_DEBUG
+	       fprintf(stderr, "Popping %d bytes at %d offset.\n", bytes,
+		       count);
+#endif
 #if defined(SYSV) || (defined(__STDC__) && !defined(__HIGHC__))
-	       memcpy(stack + count, data, bytes);
+	       memcpy(data, stack + count, bytes);
 #else
 	       bcopy(stack + count, data, bytes);
 #endif
@@ -93,13 +122,22 @@ int op, bytes;
 		    if (! stack) {
 			 set_error(errno);
 			 error("realloc");
+#ifdef STACK_DEBUG
+			 fprintf(stderr, "dostack: return 7 (STACK_POP).\n");
+#endif
 			 return error_code;
 		    }
 	       }
+#ifdef STACK_DEBUG
+	       fprintf(stderr, "dostack: return 8 (STACK_POP).\n");
+#endif
 	       return 0;
 	  }
      default:
 	  set_error(STACK_BAD_OP);
+#ifdef STACK_DEBUG
+	  fprintf(stderr, "dostack: return 9.\n");
+#endif
 	  return error_code;
      }
 }
