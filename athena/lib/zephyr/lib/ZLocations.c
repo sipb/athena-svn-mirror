@@ -5,16 +5,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.15 1987-08-01 15:29:10 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.16 1987-09-24 10:59:49 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.15 1987-08-01 15:29:10 rfrench Exp $";
+static char rcsid_ZLocations_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocations.c,v 1.16 1987-09-24 10:59:49 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -50,6 +50,11 @@ Code_t ZUnsetLocation()
 {
 	return (Z_SendLocation(LOGIN_CLASS,LOGIN_USER_LOGOUT,ZNOAUTH,
 			       "$sender logged out of $1 on $3 at $2"));
+}
+
+Code_t ZFlushLocations()
+{
+	return (Z_SendLocation(LOGIN_CLASS,LOGIN_USER_FLUSH,ZAUTH,""));
 }
 
 Code_t ZHideLocation()
