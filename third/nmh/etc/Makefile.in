@@ -1,7 +1,7 @@
 #
 # Makefile for etc subdirectory
 #
-# $Id: Makefile.in,v 1.1.1.1 1999-02-07 18:14:19 danw Exp $
+# $Id: Makefile.in,v 1.2 1999-02-13 00:41:05 danw Exp $
 #
 
 SHELL = /bin/sh
@@ -71,36 +71,36 @@ mts.conf: $(srcdir)/mts.conf.in
 install: install-files install-scripts
 
 install-files:
-	$(top_srcdir)/mkinstalldirs $(etcdir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(etcdir)
 	for file in $(DIST_FILES); do \
-	  if [ -f $(etcdir)/$$file ]; then \
-	    mv $(etcdir)/$$file $(etcdir)/$$file.old; \
+	  if [ -f $(DESTDIR)$(etcdir)/$$file ]; then \
+	    mv $(DESTDIR)$(etcdir)/$$file $(DESTDIR)$(etcdir)/$$file.old; \
 	  fi; \
-	  $(INSTALL_DATA) $(srcdir)/$$file $(etcdir)/$$file; \
+	  $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(etcdir)/$$file; \
 	done
 	for file in $(GEN_FILES); do \
-	  if [ -f $(etcdir)/$$file ]; then \
-	    mv $(etcdir)/$$file $(etcdir)/$$file.old; \
+	  if [ -f $(DESTDIR)$(etcdir)/$$file ]; then \
+	    mv $(DESTDIR)$(etcdir)/$$file $(DESTDIR)$(etcdir)/$$file.old; \
 	  fi; \
-	  $(INSTALL_DATA) $$file $(etcdir)/$$file; \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(etcdir)/$$file; \
 	done
 
 install-scripts:
-	$(top_srcdir)/mkinstalldirs $(libdir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	for script in $(SCRIPTS); do \
-	  $(INSTALL_PROGRAM) $(srcdir)/$$script $(libdir)/$$script; \
+	  $(INSTALL_PROGRAM) $(srcdir)/$$script $(DESTDIR)$(libdir)/$$script; \
 	done
 
 uninstall: uninstall-files uninstall-scripts
 
 uninstall-files:
 	for file in $(FILES); do \
-	  rm -f $(etcdir)/$$file; \
+	  rm -f $(DESTDIR)$(etcdir)/$$file; \
 	done
 
 uninstall-scripts:
 	for script in $(SCRIPTS); do \
-	  rm -f $(libdir)/$$script; \
+	  rm -f $(DESTDIR)$(libdir)/$$script; \
 	done
 
 # ========== DEPENDENCIES FOR CLEANUP ==========

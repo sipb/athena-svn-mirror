@@ -1,7 +1,7 @@
 #
 # Makefile for top level of nmh distribution
 #
-# $Id: Makefile.in,v 1.2 1999-02-09 19:58:13 danw Exp $
+# $Id: Makefile.in,v 1.3 1999-02-13 00:41:01 danw Exp $
 #
 
 # nmh version
@@ -57,7 +57,7 @@ LIBS     = @LIBS@
 
 # flags passed to recursive makes in subdirectories
 MAKEDEFS = CC='$(CC)' CPPFLAGS='$(CPPFLAGS)' DEFS='$(DEFS)' \
-CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)' LIBS='$(LIBS)' \
+CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)' LIBS='$(LIBS)' DESTDIR='$(DESTDIR)' \
 prefix='$(prefix)' exec_prefix='$(exec_prefix)' bindir='$(bindir)' \
 etcdir='$(etcdir)' libdir='$(libdir)' mandir='$(mandir)' \
 mailspool='$(mailspool)' sendmailpath='$(sendmailpath)' \
