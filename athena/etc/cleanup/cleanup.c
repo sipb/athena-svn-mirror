@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.6 1993-04-29 17:25:58 vrt Exp $
+/* $Id: cleanup.c,v 2.7 1993-06-14 15:39:35 vrt Exp $
  *
  * Cleanup program for stray processes
  *
@@ -39,7 +39,7 @@
 #include <dirent.h>
 #endif
 
-char *version = "$Id: cleanup.c,v 2.6 1993-04-29 17:25:58 vrt Exp $";
+char *version = "$Id: cleanup.c,v 2.7 1993-06-14 15:39:35 vrt Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -457,7 +457,6 @@ struct cl_proc *get_processes()
       for (j=0;j<2;j++)
                       dp = readdir(dirp);
       for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
-              printf("got dname\n");
                       sscanf(dp->d_name,"%d",&pid);
               p = kvm_getproc(kv,pid);
               if ( p != NULL ) {
