@@ -1,3 +1,20 @@
+/*
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v $
+ *	$Author: jtkohl $
+ */
+
+#ifndef lint
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.2 1987-11-16 10:30:05 jtkohl Exp $";
+#endif lint
+
+/*
+
+Copyright 1987 by the Massachusetts Institute of Technology
+
+All Rights Reserved.
+
+*/
+
 /*** Routines for manipulating access control list files ***/
 
 #include <stdio.h>
@@ -35,6 +52,7 @@
 extern int errno;
 
 extern char *malloc(), *calloc();
+extern time_t time();
 
 /* Canonicalize a principal name */
 /* If instance is missing, it becomes "" */
