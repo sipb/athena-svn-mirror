@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.19 1990-11-09 14:42:42 raeburn Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.20 1990-11-09 18:45:54 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -46,7 +46,7 @@ static void setup_signals(), detach();
 int zwgc_debug = 0;
 #endif
 
-static char *zwgc_version_string = "0.4.2";
+static char *zwgc_version_string = "0.4.3";
 
 /*
  * description_filename_override - <<<>>>
