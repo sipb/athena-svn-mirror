@@ -52,9 +52,15 @@
  */
 
 /*
- * $Id: config.X,v 1.1.1.1 1997-09-03 21:08:11 ghudson Exp $
+ * $Id: config.X,v 1.1.1.1.12.1 2002-09-13 00:41:35 ghudson Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/09/13 00:40:26  ghudson
+ * Remove crufty stuff Linux doesn't like.
+ *
+ * Revision 1.1.1.1  1997/09/03 21:08:11  ghudson
+ * Import of ispell 3.1.20
+ *
  * Revision 1.71  1995/01/08  23:23:28  geoff
  * Add some more configuration variables: HAS_RENAME, MSDOS_BINARY_OPEN,
  * HOME, PDICTHOME, HASHSUFFIX, STATSUFFIX, and COUNTSUFFIX.  These are
@@ -335,14 +341,6 @@
 #ifndef HAS_RENAME
 #undef HAS_RENAME
 #endif /* HAS_RENAME */
-
-/* Aliases for some routines */
-#ifdef USG
-#define bcopy(s, d, n)	(void) memcpy (d, s, n)
-#define bzero(d, n)	(void) memset (d, 0, n)
-#define index strchr
-#define rindex strrchr
-#endif
 
 /* type given to signal() by signal.h */
 #ifndef SIGNAL_TYPE

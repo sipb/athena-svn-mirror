@@ -1,6 +1,6 @@
 #ifndef lint
 static char Rcs_Id[] =
-    "$Id: ijoin.c,v 1.1.1.1 1997-09-03 21:08:09 ghudson Exp $";
+    "$Id: ijoin.c,v 1.1.1.1.12.1 2002-09-13 00:41:32 ghudson Exp $";
 #endif
 
 /*
@@ -78,6 +78,12 @@ static char Rcs_Id[] =
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2002/09/13 00:40:29  ghudson
+ * Remove crufty stuff Linux doesn't like.
+ *
+ * Revision 1.1.1.1  1997/09/03 21:08:09  ghudson
+ * Import of ispell 3.1.20
+ *
  * Revision 1.6  1994/10/18  04:03:21  geoff
  * Fix a couple of bugs, one where the last field on a line could be
  * output incorrectly, and one where fields from the wrong file could be
@@ -132,8 +138,6 @@ static int		runs = FLD_RUNS; /* Set if runs of tabchar same as 1 */
 static char *		tabchar = " \t"; /* Field separator character(s) */
 static int		unpairable1 = 0; /* NZ if -a1 */
 static int		unpairable2 = 0; /* NZ if -a2 */
-
-extern int	strcmp ();
 
 int main (argc, argv)			/* Join files */
     int			argc;		/* Argument count */
