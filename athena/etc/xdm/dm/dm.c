@@ -1,6 +1,6 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.15 1991-03-07 12:28:19 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.16 1991-06-28 20:26:03 probe Exp $
  *
- * Copyright (c) 1990 by the Massachusetts Institute of Technology
+ * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
  * <mit-copyright.h>.
  *
@@ -19,10 +19,15 @@
 #include <utmp.h>
 #include <ctype.h>
 #include <strings.h>
+#ifdef _IBMR2
+#include <grp.h>
+#include <usersec.h>
+#include <sys/select.h>
+#endif /* _IBMR2 */
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.15 1991-03-07 12:28:19 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.16 1991-06-28 20:26:03 probe Exp $";
 #endif
 
 #ifndef NULL
@@ -39,8 +44,10 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #define STARTUP		2
 #define CONSOLELOGIN	3
 
+#ifndef FALSE
 #define FALSE		0
 #define TRUE		(!FALSE)
+#endif
 
 /* flags used by signal handlers */
 volatile int alarm_running = NONEXISTANT;
@@ -48,6 +55,9 @@ volatile int xpid, x_running = NONEXISTANT;
 volatile int consolepid, console_running = NONEXISTANT;
 volatile int console_tty = 0, console_failed = FALSE;
 volatile int loginpid, login_running = NONEXISTANT;
+#ifdef _IBMR2
+volatile int swconspid;
+#endif
 volatile int clflag;
 char *logintty;
 #ifdef ultrix
@@ -77,13 +87,20 @@ char *displaydev = "/dev/cons";
 char *ultrixcons = "/dev/xcons";
 #endif
 
+#ifdef _AIX
+#define DEFAULTPATH "/bin:/usr/bin:/etc:/usr/ucb:/usr/bin/X11"
+#endif
+
+
 /* the console process will run as daemon */
 #define DAEMON 1
 
 #define X_START_WAIT	30	/* wait up to 30 seconds for X to be ready */
 #define X_STOP_WAIT	3	/* (seconds / 2) wait for graceful shutdown */
 #define LOGIN_START_WAIT 60	/* wait up to 1 minute for Xlogin */
+#ifndef BUFSIZ
 #define BUFSIZ		1024
+#endif
 
 
 
@@ -94,7 +111,7 @@ int argc;
 char **argv;
 {
     void die(), child(), catchalarm(), xready(), setclflag(), shutdown();
-    void loginready();
+    void loginready(), clean_groups();
     char *consoletty, *conf, *p, *number(), *getconf();
     char **xargv, **consoleargv = NULL, **loginargv, **parseargs();
     char line[16], buf[256];
@@ -102,6 +119,12 @@ char **argv;
     int pgrp, file, tries, console = TRUE, mask;
 #ifdef ultrix
     int login_tty;
+#endif
+#ifdef _IBMR2
+    fd_set rdlist;
+    int pp[2], nfd, nfound;
+    struct timeval timeout;
+    char pathenv[1024];
 #endif
 
     if (argc != 4 &&
@@ -170,8 +193,26 @@ char **argv;
 	close(file);
     }
 
+#if defined(_AIX)
+    /* Setup a default path */
+    strcpy(pathenv, "PATH=");
+    strcat(pathenv, DEFAULTPATH);
+    putenv(pathenv);
+#endif
+
     /* Fire up X */
+    xpid = 0;
     for (tries = 0; tries < 3; tries++) {
+#ifdef _IBMR2
+	if (xpid != 0) {
+	    kill(xpid, SIGKILL);
+	    alarm(5);
+	    sigpause(0);
+	}
+	if (pipe(pp) < 0) {
+	    message("Could not establish a pipe");
+	}
+#endif /* _IBMR2 */
 #ifdef DEBUG
 	message("Starting X\n");
 #endif
@@ -179,6 +220,11 @@ char **argv;
 	xpid = fork();
 	switch (xpid) {
 	case 0:
+#ifdef _IBMR2
+	    close(1);
+	    close(pp[0]);
+	    dup2(pp[1],1);
+#endif
 	    if(fcntl(2, F_SETFD, 1) == -1)
 	      close(2);
 	    sigsetmask(0);
@@ -187,7 +233,7 @@ char **argv;
 	     */
 	    signal(SIGUSR1, SIG_IGN);
 	    p = *xargv;
-	    *xargv = "-";
+	    *xargv = "X";
 	    execv(p, xargv);
 	    message("dm: X server failed exec\n");
 	    _exit(1);
@@ -200,6 +246,7 @@ char **argv;
 		write(file, number(xpid), strlen(number(xpid)));
 		close(file);
 	    }
+#ifndef _IBMR2
 	    if (x_running == NONEXISTANT) break;
 	    alarm(X_START_WAIT);
 	    alarm_running = RUNNING;
@@ -214,6 +261,41 @@ char **argv;
 		  message("dm: X failed to become ready\n");
 	    }
 	    signal(SIGUSR1, SIG_IGN);
+#else /* _IBMR2 */
+     /* have to do it this way, since the Rios X server doesn't send signals */
+     /* back when it starts up.  It does, however, write the name of the */
+     /* display it started up on to stdout when it's ready */
+	  close(pp[1]);
+	  timeout.tv_sec = X_START_WAIT;
+	  timeout.tv_usec = 0;
+	  nfd = pp[0];
+	  FD_ZERO(&rdlist);
+	  FD_SET(pp[0],&rdlist);
+	  if ((nfound = select(nfd+1,&rdlist,NULL,NULL,&timeout)) < 0) {
+	      perror("select");
+	      exit(1);
+	  }
+	  if (nfound == 0) {
+	      message("dm: X failed to become ready\n");
+	  } else {
+	      char buf[BUFSIZ];
+#ifdef DEBUG
+	      message("dm: X started\n");
+#endif
+	      x_running = RUNNING;
+	      (void) read(pp[0], buf, BUFSIZ);	/* flush the pipe */
+	      /* Do not close the pipe otherwise the X server will not
+	       * allow remote connections.  Let the shutdown close the
+	       * pipe (an explicit close is not used as dm exits).
+	       */
+#ifdef DEBUG
+	      message("X server wrote to pipe: ");
+	      message(buf);
+	      message("\n");
+#endif
+	  }
+	  close(pp[0]);
+#endif /* _IBMR2 */
 	}
 	if (x_running == RUNNING) break;
     }
@@ -252,6 +334,9 @@ char **argv;
 	    strcpy(line, "/dev/");
 	    strcat(line, logintty);
 	    open("/dev/null", O_RDONLY, 0);
+#ifdef POSIX
+	    (void) setsid();
+#endif
 	    open(line, O_RDWR, 0);
 	    dup2(1, 2);
 	    /* make sure we own the tty */
@@ -467,6 +552,9 @@ char **argv;
 
     if (console_tty == 0) {
 	/* Open master side of pty */
+#if defined(_AIX) && defined(_IBMR2)
+	console_tty = open("/dev/ptc", O_RDONLY, 0);
+#else
 	line[5] = 'p';
 	console_tty = open(line, O_RDONLY, 0);
 	if (console_tty < 0) {
@@ -481,6 +569,7 @@ char **argv;
 		if (console_tty >= 0) break;
 	    }
 	}
+#endif /* RIOS */
 	/* out of ptys, use stdout (/dev/console) */
 	if (console_tty < 0) console_tty = 1;
 	/* Create console log file owned by daemon */
@@ -490,10 +579,27 @@ char **argv;
 	}
 	chown(consolelog, DAEMON, 0);
     }
+#ifdef _IBMR2
+    /* Work around, for now- should be fixed to use appropriate ioctl or */
+    /* whatever it takes */
+    strcpy(line,ttyname(console_tty));
+    switch (swconspid = fork()) {
+    case -1:
+	message("Unable to setup console for system messages.\n");
+	break;
+    case 0:
+	close(1);
+	open("/dev/null", O_RDWR);
+	execl("/etc/swcons", "swcons", line, NULL);
+	message("Unable to setup console for system messages.\n");
+	_exit(-1);
+    }
+#else /* _IBMR2 */
 #ifdef TIOCCONS
     ioctl (console_tty, TIOCCONS, 0);		/* Grab the console   */
 #endif /* TIOCCONS */
     line[5] = 't';
+#endif /* _IBMR2 */
 
     gettimeofday(&now, 0);
     if (now.tv_sec <= last_try.tv_sec + 3) {
@@ -503,12 +609,29 @@ char **argv;
 #endif
 #ifndef BROKEN_CONSOLE_DRIVER
 	/* Set the console characteristics so we don't lose later */
+#ifdef _IBMR2
+    /* Work around, for now- should be fixed to use appropriate ioctl or */
+    /* whatever it takes */
+    strcpy(line,ttyname(console_tty));
+    switch (swconspid = fork()) {
+    case -1:
+	message("Unable to setup console for system messages.\n");
+	break;
+    case 0:
+	close(1);
+	open("/dev/null", O_RDWR);
+	execl("/etc/swcons", "swcons", line, NULL);
+	message("Unable to setup console for system messages.\n");
+	_exit(-1);
+    }
+#else /* _IBMR2 */
 #ifdef TIOCCONS
 	ioctl (0, TIOCCONS, 0);		/* Grab the console   */
 #endif /* TIOCCONS */
 	setpgrp(0, pgrp=getpid());		/* Reset the tty pgrp */
 	ioctl (0, TIOCSPGRP, &pgrp);
-#endif
+#endif /* _IBMR2 */
+#endif /* BROKEN_CONSOLE_DRIVER */
 	console_failed = TRUE;
 	return;
     }
@@ -616,11 +739,18 @@ char *tty;
     found = 0;
     if ((file = open(utmpf, O_RDWR, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
-	    if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line))) {
+	    if (!strncmp(utmp.ut_line, tty, sizeof(utmp.ut_line))
+#ifdef _AIX
+		&& (utmp.ut_type == USER_PROCESS)
+#endif
+		) {
 		strncpy(login, utmp.ut_name, 8);
-		login[8] = 0;
-		if (utmp.ut_name[0]) {
+		login[8] = '\0';
+		if (utmp.ut_name[0] != '\0') {
 		    strncpy(utmp.ut_name, "", sizeof(utmp.ut_name));
+#ifdef _AIX
+		    utmp.ut_type = EMPTY;
+#endif
 		    lseek(file, (long) -sizeof(utmp), L_INCR);
 		    write(file, (char *) &utmp, sizeof(utmp));
 		    found = 1;
@@ -644,6 +774,9 @@ char *tty;
     if (clflag) {
 	/* Clean up password file */
 	removepwent(login);
+#ifdef _IBMR2
+	clean_groups(login);
+#endif
     }
 
     file = 0;
@@ -661,8 +794,9 @@ void child()
     union wait status;
     char *number();
 
+    signal(SIGCHLD, child);
     pid = wait3(&status, WNOHANG, 0);
-    if (pid == 0) return;
+    if (pid == 0 || pid == -1) return;
 
 #ifdef DEBUG
     message("Child exited "); message(number(pid));
@@ -697,6 +831,10 @@ void child()
 	  login_running = STARTUP;
 	else
 	  login_running = NONEXISTANT;
+#ifdef _IBMR2
+    } else if (pid == swconspid) {
+	swconspid = 0;
+#endif
     } else {
 	message("dm: Unexpected SIGCHLD from pid ");message(number(pid));
     }
@@ -751,6 +889,27 @@ void die()
 }
 
 
+#if defined(_AIX) && defined(_IBMR2)
+removepwent(login)
+char *login;
+{
+    if ((login != NULL) && (*login != '\0')) {
+	switch (swconspid = fork()) {
+	case -1:
+	    message("Unable to setup console for system messages.\n");
+	    break;
+	case 0:
+	    close(1);
+	    open("/dev/null", O_RDWR);
+	    execl("/bin/rmuser", "rmuser", "-p", login, NULL);
+	    message("Unable to setup console for system messages.\n");
+	    _exit(-1);
+	}
+    }
+}
+
+#else /* RIOS */
+
 /* Remove a password entry.  Scans the password file for the specified
  * entry, and if found removes it.
  */
@@ -798,6 +957,7 @@ char *login;
     close(oldfile);
     rename(passwdtf, passwdf);
 }
+#endif /* RIOS */
 
 
 /* Takes a command line, returns an argv-style  NULL terminated array 
@@ -920,6 +1080,84 @@ char *name;
     }
     return(NULL);
 }
+
+
+#ifdef _IBMR2
+void
+clean_groups(user)
+     char *user;
+{
+  int i,found,nempty;
+  char *empty_groups[NGROUPS]; /* Can't be more new empty groups created */
+			       /* than the user was in */
+  struct group *grp;
+  char *glist,*p;
+  char *glista[NGROUPS];
+  char *pgroup;
+  char *empty;
+  FILE *f;
+
+  found = 0;
+  for (i = 0; i < 10; i++)
+    if (setuserdb(S_WRITE) == -1) {
+      alarm(1);
+      sigpause(0);
+    } else {
+      found = 1;
+      break;
+    }
+
+  if (found == 0)
+    /* Couldn't get the lock- oh well, maybe next time */
+    return;
+
+  if (getuserattr(user,S_PGRP,(void *)&pgroup,SEC_CHAR) == -1)
+    pgroup = "mit";
+
+  if (getuserattr(user,S_GROUPS,&glist,SEC_LIST) == -1)
+    glist = "\0";
+
+  /* Convert list to array of char *'s */
+
+  i = 0;
+  p = glist;
+  while (*p != '\0') {
+    glista[i] = (char *)malloc(strlen(p) + 1);
+    strcpy(glista[i++],p);
+    p = index(p,'\0') +1;
+  }
+  glista[i] = NULL;
+  
+  empty = "\0";
+  putuserattr(user,S_GROUPS,&empty,SEC_LIST);
+  putuserattr(user,(char *)NULL,((void *) 0),SEC_COMMIT);
+  
+  nempty = 0;
+  while((grp = getgrent()) != NULL) {
+    if (grp->gr_mem[0] == NULL) { /* Group empty */
+      found = 0;
+      for(i=0;glista[i] != NULL;i++) {
+	if (strcmp(grp->gr_name,glista[i]) == 0) {
+	  found = 1;
+	  break;
+	}
+      }
+      if (!found)
+	continue;
+      empty_groups[nempty] = (char *)malloc(strlen(grp->gr_name)+1);
+      strcpy(empty_groups[nempty],grp->gr_name);
+      nempty++;
+    }
+  }
+  for (i=0;i<nempty;i++) {
+#ifdef DEBUG
+    printf("Removing %s\n",empty_groups[i]);
+#endif
+    rmufile(empty_groups[i],0,GROUP_TABLE);
+  }
+  enduserdb();
+}
+#endif
 
 
 #ifdef TRACE
