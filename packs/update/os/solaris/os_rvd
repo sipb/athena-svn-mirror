@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.pid :
-## $Id: os_rvd,v 1.7 1999-04-29 20:55:47 jweiss Exp $
+## $Id: os_rvd,v 1.8 1999-05-19 14:21:41 danw Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -25,6 +25,7 @@ GLOBAL : *.CKP *.pid :
 		:
 	/etc:::			# These are specific to each machine.
 		.UNCON*
+		.login
 		-> acct
 		-> asppp.cf
 		-> auto_*
@@ -53,6 +54,7 @@ GLOBAL : *.CKP *.pid :
 		-> opt
 		path_to_inst
 		passwd
+		profile
 		-> rpld*
 		-> remote
 		-> security
