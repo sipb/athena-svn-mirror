@@ -1,5 +1,5 @@
 /* 
- * $Id: Imakefile,v 1.7 1992-12-23 11:50:08 probe Exp $
+ * $Id: Imakefile,v 1.8 1993-10-09 21:16:51 probe Exp $
  *
  * Copyright (c) 1983 Regents of the University of California.
  * All rights reserved.  The Berkeley software License Agreement
@@ -38,14 +38,14 @@ SPGRP=printq
 SPGRP=daemon
 #endif
 
-#ifdef _IBMR2
-LIBDIR=$(ATHETCDIR)
-BINDIR=$(ATHBINDIR)
-USRETCDIR=$(ATHETCDIR)
-#else
-LIBDIR=/usr/lib
+#if defined(ibm032) || defined(vax) || defined(ultrix)
+LPDDIR=/usr/lib
 BINDIR=/usr/ucb
 USRETCDIR=/usr/etc
+#else
+LPDDIR=$(ATHETCDIR)
+BINDIR=$(ATHBINDIR)
+USRETCDIR=$(ATHETCDIR)
 #endif
 
 SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
@@ -58,7 +58,7 @@ SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 
 
 LPRGSimpleProgram(lpd,lpd.o lpdchar.o printjob.o recvjob.o tcp_conn.o \
-	displayq.o rmjob.o common.o printcap.o, $(LIBS),$(LIBDIR))
+	displayq.o rmjob.o common.o printcap.o, $(LIBS),$(LPDDIR))
 LPRGSimpleProgram(lpc,lpc.o cmds.o cmdtab.o printcap.o common.o startdaemon.o,\
 	$(LIBS),$(USRETCDIR))
 
