@@ -1,0 +1,63 @@
+#!/bin/sh 
+
+# Top level Xsession file for all users
+#
+# $Id: Xsession.rsaix,v 1.1 1992-04-30 10:34:05 lwvanels Exp $
+
+trap 'kdestroy; exit 0' 1 2 15
+
+initlib="/usr/athena/lib/init"
+defsession=$1
+defsessioncmd="$2"
+
+case $defsession in
+1|4)
+	if [ -f .xsession ]; then
+		session=".xsession"
+	else
+		session="$initlib/xsession"
+	fi
+	;;
+2)
+	NOCALLS=1; export NOCALLS
+	session="$initlib/xsession"
+	;;
+3)
+	session="xterm -ls -geometry 80x24+280+220 -display :0.0"
+	;;
+5)
+	session="$defsessioncmd"
+	;;
+esac
+
+if [ "${SHELL}" = "/bin/csh" ]; then
+	SHELL=/bin/athena/tcsh; export SHELL
+fi
+
+# Set the tty characteristics of the parent (console window)
+# Redirect stdin since some versions of stty use it instead of stdout.
+stty dec 0<&1 2>/dev/null
+$session
+
+status=$?
+if [ $status != 0 ]; then
+		echo ERROR:
+		echo "Xsession returned non-zero status."
+		echo ""
+		echo 'Select the login option to "Ignore your customizations"'
+		echo 'to login and repair your dot files.'
+		kdestroy			# destroy tickets.
+		sleep 10
+		exit $status
+fi
+
+
+# Cannot detach homedir here, since this script is executed in the users
+# homedir.
+
+kdestroy				# destroy tickets.
+cd /tmp
+detach $USER > /dev/null 2>&1
+unlog
+sleep 3					# let them see any messages (quickly)
+exit 0
