@@ -1,18 +1,53 @@
 /*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the disk usage portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/disk_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
  *
  */
 
 #include "include.h"
-#ifdef ATHENA
+#include <mit-copyright.h>
+
+#ifdef MIT
+
+/* 
+ * something else sets this as well... arggh
+ */
 
 #ifdef BSD
 #undef BSD
 #endif BSD
+
 #include <sys/param.h>
 #include <errno.h>
 #include <ufs/fs.h>
 #include <sys/vfs.h>
 #include <mntent.h>
+
+/*
+ * local utilities
+ */
+
+static int dfreedev();
+static int dfreemnt();
+static int bread();
+
+/*
+ * plastic shopping bags are 5 cents
+ */
 
 struct thing 
 {
@@ -30,6 +65,16 @@ union
 
 #define sbk sb.iu_fs
 
+
+
+/*
+ * Function:    lu_ndparts()
+ * Description: Top level callback. Retrieves the number of partitions 
+ *              currently mounted (INT).
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+int
 lu_ndparts(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -50,10 +95,13 @@ lu_ndparts(varnode, repl, instptr, reqflg)
    */
 
   bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
-  repl->name.ncmp++;                    /* include the "0" instance */
-
-  repl->val.type = INT;  /* True of all the replies */
+  repl->name.ncmp++;      
+  repl->val.type = INT;   
   
+  /*
+   * Open mtab and count 'em up. We only care about MNTTYPE_42 types.
+   */
+
   if((mtabp = setmntent(MOUNTED, "r")) == 0)
     {
       syslog(LOG_ERR, "lu_ndparts: could not open mtab");
@@ -75,20 +123,36 @@ lu_ndparts(varnode, repl, instptr, reqflg)
 
 
 
+/*
+ * Function:    lu_disk()
+ * Description: Top level callback. Suports the following:
+ *                 PTUSED:  (INT) used disk in bytes
+ *                 PTAVAIL: (INT) available disk in bytes
+ *                 PTFREE:  (INT) free disk in bytes
+ *                 PTTOTAL: (INT) total disk in bytes
+ *                 PIUSED:  (INT) used inodes
+ *                 PIFREE:  (INT) free inodes
+ *                 PITOTAL: (INT) total inodes
+ *              Each partition is an instance starting at 1, proceeding in the
+ *              order in which they were mounted.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ * Problems:    get-next feature doesn't work with the available instances
+ */
 
+int          
 lu_disk(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
      objident *instptr;
      int reqflg;
 {
-  FILE *mtabp;
-  struct mntent *mnt;
-  int cnt = 0;
-  int pnum = 0;
-  struct thing df;
-  struct thing di;
   struct stat statbuf;
+  struct mntent *mnt;
+  FILE *mtabp;
+  int pnum = 0; 
+  int cnt = 0;
+  struct thing df;     
+  struct thing di;
 
   if (varnode->flags & NOT_AVAIL ||
       varnode->offset <= 0 ||     /* not expecting offset here */
@@ -103,7 +167,10 @@ lu_disk(varnode, repl, instptr, reqflg)
   if((reqflg == NXT) && (instptr != (objident *) NULL) && (instptr->ncmp !=0))
      pnum++;
 
-  
+  /*
+   * open mtab and get the partition associated with given instance 
+   */
+
   if((mtabp = setmntent(MOUNTED, "r")) == 0)
     {
       syslog(LOG_ERR, "lu_ndparts: could not open mtab");
@@ -120,6 +187,11 @@ lu_disk(varnode, repl, instptr, reqflg)
     }
 
   endmntent(mtabp);
+
+  /*
+   * instance too high?
+   */
+
   if(cnt != pnum)
     return(BUILD_ERR);
 
@@ -130,8 +202,13 @@ lu_disk(varnode, repl, instptr, reqflg)
 
   bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
   repl->name.cmp[repl->name.ncmp] = pnum;
-  repl->name.ncmp++;                    /* include the "0" instance */
+  repl->name.ncmp++;                
   repl->val.type = INT; 
+
+
+  /*
+   * find out what device has been selected and call appropriate df function
+   */
 
   if((stat(mnt->mnt_fsname, &statbuf) >= 0) &&
      (((statbuf.st_mode & S_IFBLK) == S_IFBLK) ||
@@ -140,6 +217,10 @@ lu_disk(varnode, repl, instptr, reqflg)
   else
     dfreemnt(mnt->mnt_dir, &df, &di);
 	
+  /*
+   * return values
+   */
+
   switch(varnode->offset)
     {
     case N_PTUSED:
@@ -170,11 +251,17 @@ lu_disk(varnode, repl, instptr, reqflg)
       repl->val.value.intgr = di.total;
       return(BUILD_SUCCESS);
     }
-  return(BUILD_SUCCESS);
 }
 
 
 
+/*
+ * Function:    dfreedev()
+ * Description: read disk stats out of given file, return stuff in things.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+static int
 dfreedev(file, df, di)
      char *file;
      struct thing *df;
@@ -212,7 +299,15 @@ dfreedev(file, df, di)
   return(BUILD_SUCCESS);
 }
 
-      
+
+
+/*
+ * Function:    dfreemnt()
+ * Description: read disk stats out of given file, return stuff in things.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+static int      
 dfreemnt(file, df, di)
      char *file;
      struct thing *df;
@@ -240,6 +335,15 @@ dfreemnt(file, df, di)
 }
 
 
+
+/*
+ * Function:    bread()
+ * Description: seek & read
+ * Returns:     0 if error
+ *              1 if success
+ */
+
+static int
 bread(fi, bno, buf, cnt)
      int fi;
      daddr_t bno;
@@ -262,4 +366,4 @@ bread(fi, bno, buf, cnt)
 }
 
 
-#endif ATHENA
+#endif MIT
