@@ -115,7 +115,10 @@ main(argc, argv)
     }
 #ifdef KRB5_KRB4_COMPAT
     if (dest_tkt() != KSUCCESS) {
-	fprintf(stderr, "Kerberos 4 ticket file \007NOT\007 destroyed!\n");
+	if (quiet)
+	    fprintf(stderr, "Kerberos 4 ticket file NOT destroyed!\n");
+	else
+	    fprintf(stderr, "Kerberos 4 ticket file \007NOT\007 destroyed!\n");
 	errflg = 1;
     }
 #endif
