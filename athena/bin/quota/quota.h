@@ -1,4 +1,4 @@
-/* $Id: quota.h,v 1.1 1999-03-29 19:14:20 danw Exp $ */
+/* $Id: quota.h,v 1.2 1999-04-24 00:07:20 tb Exp $ */
 
 /* Copyright 1999 by the Massachusetts Institute of Technology.
  *
@@ -29,7 +29,13 @@
 #endif
 
 #ifdef LINUX
+#include <linux/types.h>
 #include <linux/quota.h>
+
+/* Linux defines these fields with different names */
+#define dqb_fsoftlimit dqb_isoftlimit
+#define dqb_fhardlimit dqb_ihardlimit
+#define dqb_curfiles dqb_curinodes
 #endif
 
 #ifdef NETBSD
