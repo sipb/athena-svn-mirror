@@ -1,0 +1,291 @@
+%% BEGIN pstricks.bug
+%%
+%% Last modified: March 15, 2000
+%%
+%% This file list some bugs and latebreaking news for PSTricks 97
+%%
+%% This file is edited by Denis Girou <Denis.Girou@idris.fr>
+%% and Sebastian Rahtz <sebastian.rahtz@computing-services.oxford.ac.uk>
+%%
+
+\def\fileversion{97 patch 5}
+\def\filedate{2000/03/15}
+
+\message{ v\fileversion, \filedate}
+
+% PROBLEMS:
+
+% 1. Inside the psmatrix environment, we can't use a parameter for the first
+%    column definition if it's not the first row.
+%    Reported by <Denis.Girou@idris.fr> in 1995.
+%
+%    It's a parsing problem, as the parser wait something like [3mm] after the
+%    \\ and not something like [name=B].
+%
+%    In fact, this is the "standard" way in which LaTeX work, and this is
+%    the same for the "tabular" environment, for instance.
+%
+%    Test file:
+%
+%    \documentclass{article}
+%
+%    \usepackage{pstricks}
+%
+%    \begin{document}
+%    \begin{psmatrix}
+%      [name=A] A \\
+%      [name=B] B
+%    \end{psmatrix}
+%    \end{document}
+%
+%    Workaround: add [0pt] after the \\ in these cases:
+%
+%      [name=A] A \\[0pt]
+%      [name=B] B
+
+% 2. With the `french' package, there is a problem with the special
+%    < and > characters used for diagram and tree annotations (they are
+%    not correctly typed nor positioned).
+%    N.B. This problem doesn't occur with the frenchb sub-option of the
+%    `babel' package.
+%    Reported by Philippe Esperet <pesperet@compuserve.com> in October 1996.
+%
+%    Test file:
+%
+%    \documentclass{article}
+%
+%    \usepackage{pstricks}
+%    \usepackage{pst-node}
+%    \usepackage{french}
+%
+%    \begin{document}
+%    \begin{psmatrix}
+%      E&F\\
+%      G&H
+%      \ncline{1,1}{1,2}^w
+%      \ncline{2,1}{2,2}_f
+%      \ncline{1,1}{2,1}<u
+%      \ncline{1,2}{2,2}>v
+%    \end{psmatrix}
+%    \end{document}
+%
+%    Workaround: put the `psmatrix' environment inside an `english' one
+
+% 3. When arrows are required, this change the way the curves are drawn.
+%    In fact, the modification is small, and we must be very careful
+%    to see that, but this effect can be clearly demonstrated if we
+%    surimpose a grid. And it can be specially ennoying for Bezier curves.
+%    Reported by Thomas Siegel <siegel@aix520.informatik.uni-leipzig.de>
+%    in September 1997.
+%
+%    When an arrow is defined, the point used to draw line or curve is
+%    the entry of the arrow, and no more the defined point itself.
+%    It is difficult to say if it is a "bug or a feature" (seems rather
+%    a bug for me - D.G.)
+%
+%    Test file:
+%
+%    \documentclass{article}
+%
+%    \usepackage{pstricks}
+%
+%    \pagestyle{empty}
+%
+%    \begin{document}
+%
+%    \begin{pspicture}(4,2)
+%      \psgrid
+%      \psdot*(1,1)
+%      \psdot*(3,1)
+%      \psset{arrowinset=0}
+%      \psbezier[showpoints=true]{->}(1,1)(0,2)(4,2)(3,1)
+%      \psbezier[showpoints=true]{<-}(1,1)(0,0)(4,0)(3,1)
+%    \end{pspicture}
+%
+%    \vspace{1cm}
+%    \begin{pspicture}(4,2)
+%      \psgrid
+%      \psdot*(1,1)
+%      \psdot*(3,1)
+%      \psbezier[showpoints=true](1,1)(0,2)(4,2)(3,1)
+%      \psbezier[showpoints=true](1,1)(0,0)(4,0)(3,1)
+%    \end{pspicture}
+%    \vspace{2cm}
+%
+%    \begin{pspicture}(0,-2)(4,3)
+%      \psbezier[arrowsize=2]{->}(1,1)(0,2)(4,2)(3,1)
+%      \psbezier[arrowsize=2]{<-}(1,1)(0,0)(4,0)(3,1)
+%    \end{pspicture}
+%
+%    \begin{pspicture}(0,-2)(4,3)
+%      \pscurve[arrowsize=2]{->}(1,1)(0,2)(4,2)(3,1)
+%      \pscurve[arrowsize=2]{<-}(1,1)(0,0)(4,0)(3,1)
+%    \end{pspicture}
+%
+%    \clearpage
+%
+%    \makeatletter
+%    % Version of the /Arrow macro which keep the coordinates of the point
+%    % and doesn't used the entry of the arrow head for that
+%    % (default was specially ennoying for \psbezier and when we use large
+%    % value of arrowsize or arrowscale parameter)
+%    % Work here on the current page
+%    \pst@Verb{%
+%    /Arrow { CLW mul add dup 2 div /w ED mul dup /h ED mul /a ED { 0 h T 1 -1
+%    scale } if w neg h moveto 0 0 L w h L w neg a neg rlineto 
+%    % DG modification begin - Sep. 25, 1997
+%    0 0 moveto
+%    % DG modification end
+%    gsave fill grestore } def}
+%    \makeatother
+%
+%    \begin{pspicture}(4,2)
+%      \psgrid
+%      \psdot*(1,1)
+%      \psdot*(3,1)
+%      \psset{arrowinset=0}
+%      \psbezier[showpoints=true]{->}(1,1)(0,2)(4,2)(3,1)
+%      \psbezier[showpoints=true]{<-}(1,1)(0,0)(4,0)(3,1)
+%    \end{pspicture}
+%
+%    \begin{pspicture}(0,-2)(4,5)
+%      \psbezier[arrowsize=2]{->}(1,1)(0,2)(4,2)(3,1)
+%      \psbezier[arrowsize=2]{<-}(1,1)(0,0)(4,0)(3,1)
+%    \end{pspicture}
+%
+%    \end{document}
+%
+%    Workaround: change the definition of the PostScript /Arrow macro,
+%    as described above
+
+% 4. The \savedata macro must not be used inside another macro.
+%    In such case, the drawing commands, like \dataplot, will show nothing.
+%    The problem is related to some catcode changes that can't be made,
+%    and in fact a delimiter is not introduced after each point defined,
+%    so the curve will have at the end only one point, the last one.
+%    It is the reason why nothing is shown later by a macro like \dataplot.
+%    Reported by Ivan Maio <maio@pol88a.polito.it> in October 1997.
+%
+%    Test file:
+%
+%    \documentclass{article}
+%
+%    \usepackage{pst-plot}
+%
+%    \pagestyle{empty}
+%
+%    \begin{document}
+%
+%    \begin{pspicture}(-2,-2)(2,2)
+%      \savedata{\test}[%
+%     -1.09 -0.55
+%     -0.4  -0.1
+%      0     1.02
+%      1.28  0.06
+%      1.51  1.21]
+%      \dataplot{\test}
+%      \psaxes{<->}(0,0)(-2,-2)(2,2)
+%    \end{pspicture}
+%
+%    \vspace{1cm}
+%    \psframebox{%
+%    \begin{pspicture}(-2,-2)(2,2)
+%      \savedata{\test}[%
+%     -1.09 -0.55
+%     -0.4  -0.1
+%      0     1.02
+%      1.28  0.06
+%      1.51  1.21]
+%      \dataplot{\test}
+%      \psaxes{<->}(0,0)(-2,-2)(2,2)
+%    \end{pspicture}}
+%
+%    \savedata{\test}[%
+%     -1.09 -0.55
+%     -0.4  -0.1
+%      0     1.02
+%      1.28  0.06
+%      1.51  1.21]
+%
+%    \vspace{1cm}
+%    \psframebox{%
+%    \begin{pspicture}(-2,-2)(2,2)
+%      \dataplot{\test}
+%      \psaxes{<->}(0,0)(-2,-2)(2,2)
+%    \end{pspicture}}
+%
+%    \end{document}
+%
+%    Workaround: do not use \savedata inside another macro, as shown in the
+%    previous example
+
+% 5. Moves (by \rput for instance) of objects defined using nodes have
+%    no effect. The position is not affected by the translation required.
+%    Reported by Thomas Siegel <siegel@aix520.informatik.uni-leipzig.de>
+%    in February 1998.
+%
+%    Test file:
+%
+%    \documentclass{article}
+%
+%    \usepackage{pst-node}
+%
+%    \pagestyle{empty}
+%
+%    \begin{document}
+%
+%    \SpecialCoor
+%
+%    \begin{pspicture}(5,5)
+%      \qdisk(5,0){2.5mm}
+%      \qdisk(0,5){2.5mm}
+%      \rput(1,1){\psline(5,0)(0,5)}
+%    \end{pspicture}
+%    \begin{pspicture}(5,5)
+%      \Cnode*(5,0){f1}
+%      \Cnode*(0,5){f2}
+%      \rput(1,1){\psline(f1)(f2)}
+%    \end{pspicture}
+%
+%    \end{document}
+%
+%    Workaround: none is known for the moment.
+
+% 6. When two labels are required for a node connection, the second one is
+%    incorrectly positioned when at least one of them use also node
+%    connections.
+%    Reported by Anthony Doggett <adoggett@uiuc.edu> in December 1999.
+%
+%    Test file:
+%
+%    \documentclass{article}
+%    
+%    \usepackage{pst-node}
+%    
+%    \SpecialCoor
+%    
+%    \pagestyle{empty}
+%    
+%    \begin{document}
+%    
+%    \newcommand{\Label}{%
+%    \pnode(0,0){A}
+%    \pnode(2,0){B}
+%    \psline(A)(B)}
+%    %
+%    \pcline(0,0)(3,-3)\naput{\Label}\nbput{Label} % Correct pos. for "Label"
+%    %
+%    \renewcommand{\Label}{%
+%    \pnode(0,0){A}
+%    \pnode(2,0){B}
+%    \ncline{A}{B}}
+%    %
+%    \hfill
+%    \pcline(0,0)(3,-3)\naput{\Label}\nbput{Label} % Uncorrect pos. for "Label"
+%    
+%    \end{document}
+%
+%    Workaround: none is known for the moment (without bad side effects)
+
+%%
+%% END pstricks.bug

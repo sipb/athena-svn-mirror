@@ -4,8 +4,8 @@
 %% See the PSTricks User's Guide for description.
 %% This uses the header file `pstricks.pro'.
 %%
-\def\fileversion{97 patch 10}
-\def\filedate{1999/03/24}
+\def\fileversion{97 patch 14}
+\def\filedate{1999/12/23}
 %%
 %% COPYRIGHT 1993, 1994, 1999 by Timothy Van Zandt, tvz@nwu.edu.
 %%
@@ -1078,7 +1078,10 @@ if }
 \begingroup
 \pst@getcoor{#2}\pst@tempa
 \pst@getcoor{#4}\pst@tempb
-\pst@getcoor{#6}\pst@tembc
+% DG/SR modification begin - Aug.  4, 1999 - Patch 11
+%\pst@getcoor{#6}\pst@tembc
+\pst@getcoor{#6}\pst@tempc
+% DG/SR modification end
 \addto@pscode{\pst@tempa \pst@tempb \pst@tempc #1}%
 \endgroup}
 \def\pst@rawfile#1{%
@@ -1217,11 +1220,8 @@ pop
 \else
 \let\psk@xdotscale\pst@tempg
 \let\psk@ydotscale\pst@temph
+\fi}
 % DG/SR modification begin - Oct. 17, 1997 - Patch 5
-%\fi}
-\fi
-\pst@getdotsize%
-\psset@dotsize{\pst@dimg\space\pst@@dimtonum\pst@dimh}}
 %\psset@dotscale{1}
 % DG/SR modification end
 \def\pst@Getangle#1#2{%
@@ -1319,16 +1319,24 @@ DS .93 mul dup 1.236 mul /r1 ED CLW sub 1.236 mul /r2 ED
 \def\newpsfontdot#1[#2]#3#4{%
 \@namedef{psds@#1}{%
 /#3 \psk@@dotangle [#2] \tx@FontDot
-/Dot { moveto #4 show } bind def }}
+% DG/SR modification begin - Dec. 12, 1999 - Patch 14
+%/Dot { moveto #4 show } bind def }}
+/Dot { moveto gsave \psk@dotscale #4 show grestore } bind def }}
+% DG/SR modification end
 \def\newpsfontdotH#1[#2]#3#4#5{%
 \@namedef{psds@#1}{%
 /#3 \psk@@dotangle [#2] \tx@FontDot
 /Dot {
 moveto
 \iftrue
-gsave \pst@usecolor\psfillcolor #5 show grestore
+% DG/SR modification begin - Dec. 23, 1999 - Patch 14
+%gsave \pst@usecolor\psfillcolor #5 show grestore
+%\fi
+%#4 show
+gsave \psk@dotscale \pst@usecolor\psfillcolor #5 show grestore
 \fi
-#4 show
+gsave \psk@dotscale #4 show grestore
+% DG/SR modification end
 } bind def }}
 \pstheader{pst-dots.pro}
 \newpsfontdot{*}%
@@ -1355,15 +1363,18 @@ gsave \pst@usecolor\psfillcolor #5 show grestore
 [1.0 0.0 0.0 1.0 0.0 0.0]{PSTricksDotFont}{(P)}{(q)}
 \newpsfontdot{pentagon*}%
 [1.0 0.0 0.0 1.0 0.0 0.0]{PSTricksDotFont}{(q)}
-% DG/SR modification begin - Mar. 18, 1997
+% DG/SR modification begin - Mar. 18, 1997 and Dec. 16, 1999 - Patch 14
 %\newpsfontdot{diamond*}%
 %[1.9 0.0 0.0 1.9 -0.4598 -0.70775]{Symbol}{<E0>}
 %\newpsfontdot{diamond}%
 %[2.3 0.0 0.0 2.3 -0.8533 -0.5336]{Symbol}{<A8>}
-\newpsfontdot{diamond}%
-[1.9 0.0 0.0 1.9 -0.4598 -0.70775]{Symbol}{<E0>}
+% D.G. modification begin - Jan. 17, 2000
+\newpsfontdotH{diamond}%
+[1.0 0.0 0.0 1.0 0.0 0.0]{PSTricksDotFont}{(d)}{(l)}
+\newpsfontdotH{Bdiamond}%
+[1.0 0.0 0.0 1.0 0.0 0.0]{PSTricksDotFont}{(D)}{(l)}
 \newpsfontdot{diamond*}%
-[2.3 0.0 0.0 2.3 -0.8533 -0.5336]{Symbol}{<A8>}
+[1.0 0.0 0.0 1.0 0.0 0.0]{PSTricksDotFont}{(l)}
 % DG/SR modification end
 \newpsfontdot{oplus}%
 [1.44928 0.0 0.0 1.44928 -0.562319 -0.478261]{Symbol}{<C5>}

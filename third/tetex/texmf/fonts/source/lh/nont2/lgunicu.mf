@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -40,7 +40,7 @@
 % ERY_uml       "f8     Ery with umlaut
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Uppercase Cyrillic letter GJE (G acute)";
 cyrchar_twice(GJE,if monospace: 9u# else: 11u# fi-width_adj#, %G_width
@@ -285,35 +285,37 @@ left_curve=right_curve+3stem_corr=cap_curve if not serifs: -1.5stem_corr fi;
 if right_curve<tiny.breadth: right_curve:=tiny.breadth; fi
 if left_curve<tiny.breadth: left_curve:=tiny.breadth; fi
 pickup tiny.nib;
-pos1(right_curve,0); pos2(vair',90); pos3(left_curve,180);
-y1=.48h; bot y2l=-o; y0l=top y1;
+pos1(right_curve,-180); pos2(vair',-90); pos3(left_curve,0);
+y1=.48h; bot y2r=-o; y0l=top y1;
 if serifs: x2-.25u=x4=.5w-.5u; else: x2=x4=.5w-.25u; fi
-lft x1l=hround max(.5u,u-.5right_curve);
-rt x3l=w-hround max(.75u,1.5u-.5left_curve); %lower_e+.25u
+lft x1r=hround max(.5u,u-.5right_curve);
+rt x3r=w-hround max(.75u,1.5u-.5left_curve); %lower_e+.25u
 {{interim superness:=more_super;
  filldraw stroke super_arc.e(1,2)}}; % right bowl
-y3=.5[y2,y4]; top y4l=h+o;
-if serifs: pos4(cap_band,270);
+y3=.5[y2,y4]; top y4r=h+o;
+if serifs:
+ pos4(cap_band,90);
  filldraw stroke pulled_arc.e(2,3) & pulled_arc.e(3,4); % left bowl, arc,
- pickup fine.nib; pos4'(cap_band,270); z4'=z4;
- lft x5l=max(hround u,lft x1l+.3u+eps);
- pos5(cap_hair,360); bot y5=min(vround .675h,bot y4r-eps);
+ pickup fine.nib; pos4'(cap_band,90); z4'=z4;
+ lft x5r=max(hround u,lft x1r+1/3u+eps);
+ pos5(cap_hair,180); bot y5=min(vround .675h,bot y4l-eps);
  filldraw stroke z4'e{left}...{x5-x4,10(y5-y4)}z5e; %  and terminal
- pos6(.3[fine.breadth,cap_hair],360); x6l=x5l; top y6=h+o;
- x5'-x5l=2cap_curve-fine; y5'=y5;
+ pos6(.3[fine.breadth,cap_hair],180); x6r=x5r; top y6=h+o;
+ x5'-x5r=2cap_curve-fine; y5'=y5;
  path upper_arc; upper_arc=z5{x4-x5,10(y4-y5)}..{right}z4;
- numeric t; t=xpart(upper_arc intersectiontimes (z6r--z5'));
- filldraw z5l--z6l--z6r--subpath(t,0) of upper_arc--cycle; % upper serif
-else: pos4(slab,270);
+ numeric t; t=xpart(upper_arc intersectiontimes (z6l--z5'));
+ filldraw z5r--z6r--z6l--subpath(t,0) of upper_arc--cycle; % upper serif
+else:
+ pos4(slab,90);
  {{interim superness:=min(1.03superness,more_super);
   filldraw stroke super_arc.e(2,3)}};
  filldraw stroke super_arc.e(3,4);  % left bowl and arc
- pickup fine.nib; pos4'(slab,270); z4=z4';
- pos5(1.2flare,280); lft x5l=lft x1l+u; top y5l=vround .95h+o;
+ pickup fine.nib; pos4'(slab,90); z4=z4';
+ pos5(1.2flare,100); lft x5r=lft x1r+u; top y5r=vround .95h+o;
  filldraw stroke rterm.e(4',5,left,.75,20); fi  % terminal
-path p; p=super_arc.l(2,3) & super_arc.l(3,4);
+path testpath; testpath=super_arc.r(2,3) & super_arc.r(3,4);
 y1'r=y0r=y0l-7/8[thin_join,vair']; y1'l=y0l; x1'l=x1'r=x1;
-forsuffixes $=l,r: x0$=xpart(((w,y0$)--(x1,y0$)) intersectionpoint p); endfor
+forsuffixes $=l,r: x0$=xpart(((w,y0$)--(x1,y0$)) intersectionpoint testpath); endfor
 fill stroke z0e--z1'e;  % crossbar
 %%%%%
 % the accent
@@ -446,12 +448,19 @@ top y1=top y3=h; bot y2=bot y4=0;
 filldraw stroke z1e--z2e; % left stem
 filldraw stroke z3e--z4e; % right stem
 numeric stem[],alpha[];
-if hefty: stem1=fudged.hair-stem_corr; penpos5(stem1,0); penpos6(stem1,0);
- if monospace:  y5l=vround(slab+eps); y6r=vround(h-slab-eps);
-  else: y5l=0; y6r=h; fi
- x5=x1r; x6=x3l;
- numeric upper_notch,lower_notch;
+if hefty: numeric upper_notch,lower_notch;
+ stem1=fudged.hair-stem_corr;
  upper_notch=y6-cap_notch_cut-eps; lower_notch=y5+cap_notch_cut+eps;
+ if monospace:
+  x5r =rt x1r; x6l =lft x3l; y5=vround(slab+eps); y6=vround(h-slab-eps);
+  alpha1=diag_ratio(1,stem1,y5-y6,x5r-x6l);
+  penpos5(min(2fudged.cap_stem,alpha1*stem1),0);
+  penpos6(min(2fudged.cap_stem,alpha1*stem1),0);
+  x5'=lft x1l; z5'=whatever[z5l,z6l]; x6'=rt x4r; z6'=whatever[z5r,z6r];
+  x5l:=x5'; x6r:=x6'; y5l:=y5'; y6r:=y6';
+ else:
+  y5l=0; y6r=h; x5=x1r; x6=x3l; penpos5(stem1,0); penpos6(stem1,0);
+ fi
  x2'=rt x1r; z2'=whatever[z5l,z6l]; x3'=lft x4l; z3'=whatever[z5r,z6r];
  fill z5l..
   if y2'>lower_notch: {right}(x2'+1,lower_notch){up}... fi
@@ -464,13 +473,14 @@ else: y5l=y2+bracket+eps; y6r=y3-bracket-eps;
  alpha1=diag_ratio(1,stem1,x6-x5,top y6r-bot y5l);
  penpos5(alpha1*stem1,90); penpos6(alpha1*stem1,90);
  fill stroke z5e--z6e; fi % diagonal
+%%%
 if serifs: numeric inner_jut;
  if rt x1r+cap_jut+.5u+1<=lft x3l-cap_jut: inner_jut=cap_jut;
   else: rt x1r+inner_jut+.5u+1=lft x3l-inner_jut; fi
  dish_serif(1,2,a,1/3,cap_jut,b,1/3,inner_jut);  % upper left serif
  dish_serif(2,1,c,1/3,cap_jut,d,1/3,inner_jut);  % lower left serif
- dish_serif(3,4,e,1/3,inner_jut,f,1/3,cap_jut);  % upper rt serif
- dish_serif(4,3,g,1/3,inner_jut,h,1/3,cap_jut); fi % lower rt serif
+ dish_serif(3,4,e,1/3,inner_jut,f,1/3,cap_jut);  % upper right serif
+ dish_serif(4,3,g,1/3,inner_jut,h,1/3,cap_jut); fi % lower right serif
 %%%%%
 % the accent
 h:=full_h;
@@ -498,12 +508,19 @@ top y1=top y3=h; bot y2=bot y4=0;
 filldraw stroke z1e--z2e; % left stem
 filldraw stroke z3e--z4e; % right stem
 numeric stem[],alpha[];
-if hefty: stem1=fudged.hair-stem_corr; penpos5(stem1,0); penpos6(stem1,0);
- if monospace:  y5l=vround(slab+eps); y6r=vround(h-slab-eps);
-  else: y5l=0; y6r=h; fi
- x5=x1r; x6=x3l;
- numeric upper_notch,lower_notch;
+if hefty: numeric upper_notch,lower_notch;
+ stem1=fudged.hair-stem_corr;
  upper_notch=y6-cap_notch_cut-eps; lower_notch=y5+cap_notch_cut+eps;
+ if monospace:
+  x5r =rt x1r; x6l =lft x3l; y5=vround(slab+eps); y6=vround(h-slab-eps);
+  alpha1=diag_ratio(1,stem1,y5-y6,x5r-x6l);
+  penpos5(min(2fudged.cap_stem,alpha1*stem1),0);
+  penpos6(min(2fudged.cap_stem,alpha1*stem1),0);
+  x5'=lft x1l; z5'=whatever[z5l,z6l]; x6'=rt x4r; z6'=whatever[z5r,z6r];
+  x5l:=x5'; x6r:=x6'; y5l:=y5'; y6r:=y6';
+ else:
+  y5l=0; y6r=h; x5=x1r; x6=x3l; penpos5(stem1,0); penpos6(stem1,0);
+ fi
  x2'=rt x1r; z2'=whatever[z5l,z6l]; x3'=lft x4l; z3'=whatever[z5r,z6r];
  fill z5l..
   if y2'>lower_notch: {right}(x2'+1,lower_notch){up}... fi
@@ -516,13 +533,14 @@ else: y5l=y2+bracket+eps; y6r=y3-bracket-eps;
  alpha1=diag_ratio(1,stem1,x6-x5,top y6r-bot y5l);
  penpos5(alpha1*stem1,90); penpos6(alpha1*stem1,90);
  fill stroke z5e--z6e; fi % diagonal
+%%%
 if serifs: numeric inner_jut;
  if rt x1r+cap_jut+.5u+1<=lft x3l-cap_jut: inner_jut=cap_jut;
   else: rt x1r+inner_jut+.5u+1=lft x3l-inner_jut; fi
  dish_serif(1,2,a,1/3,cap_jut,b,1/3,inner_jut);  % upper left serif
  dish_serif(2,1,c,1/3,cap_jut,d,1/3,inner_jut);  % lower left serif
- dish_serif(3,4,e,1/3,inner_jut,f,1/3,cap_jut);  % upper rt serif
- dish_serif(4,3,g,1/3,inner_jut,h,1/3,cap_jut); fi % lower rt serif
+ dish_serif(3,4,e,1/3,inner_jut,f,1/3,cap_jut);  % upper right serif
+ dish_serif(4,3,g,1/3,inner_jut,h,1/3,cap_jut); fi % lower right serif
 %%%%%
 % the accent
 h:=full_h; uppercase_umlaut(0,0, 7,8,9,10);
@@ -589,37 +607,40 @@ numeric left_stem,right_stem,bot_stem,bot_vair,outer_jut;
 left_stem=cap_stem-stem_corr;
 right_stem=min(cap_hair if hefty:-2stem_corr fi,left_stem);
 bot_stem=min(cap_hair if hefty:-2stem_corr fi,left_stem);
-bot_vair=Vround(if serifs:.5[vair',bot_stem] else:vair' fi);
+bot_vair=Vround(if serifs:.5[vair',bot_stem] else:slab fi);
 outer_jut=.7cap_jut; x1l=w-x4r=l+letter_fit+outer_jut+.25u; % W jut
 y1=y4r=h; x2l=x3l;
-if monospace: y2=y3=.3h; else: y2=y3=max(stem,1/6h); fi
+if monospace: y2=y3=.3h; else: y2=y3=max(if not serifs:1.095 fi stem,1/6h); fi
 numeric alpha; x9=.5w-1/2(.5[bot_stem,right_stem]); y9=-o;
 alpha=diag_ratio(2,bot_stem,y1-y3,x4r-x1l-2apex_corr);
 numeric u_ratio; u_ratio=(y3-y9)/(y1-y9);
-x2l-x1l=x4r-x3r+ if monospace: 2apex_corr
- else: if serifs: 2 fi (u_ratio*.5[x1l,x4r]) fi;
+x2l-x1l=x4r-x3r+
+   if monospace: 2apex_corr else: if serifs: 2 fi (u_ratio*.5[x1l,x4r]) fi;
 penpos3(alpha*bot_stem,0); penpos4(alpha*right_stem,0);
 numeric alpha[]; alpha3=(y1++(x2l-x1l))/y1;
 penpos1(alpha3*left_stem,0); penpos2(alpha3*left_stem,0);
 z0l=whatever[z1r,z2r]=z4l+whatever*(z3r-z4r); penpos0(alpha*bot_stem,0);
 z0'=whatever[rt z3r,rt z4r]; y0'=bot y6r=if serifs:-o else: 0 fi;
-penpos6(bot_vair,-90); x6r=.6[x3r,x1];
-numeric t;
-t=if monospace: 1.25right_stem else:(x3r-x0')++(y3r-y0')fi;
+penpos6(bot_vair,-90); x6r=if serifs:.6 else:.5 fi[x3r,x1];
+numeric t; t=if monospace: 1.25right_stem else: (x3r-x0')++(y3r-y0') fi;
 penpos5(bot_vair,.5[angle(z4r-z6r),angle(z4r-z3r)]-90);
 path p; numeric tau; p=z0r{z3r-z4r}....{left}z6r;
 z5r=p intersectionpoint ((0,y2l-.5bot_vair)--(w,y2l-.5bot_vair));
 tau=xpart(p intersectiontimes (z2l--z2r));
-if y0>notch_cut+y2: y0l:=notch_cut+y2; % +y2 added for sanserif face
+if y0>notch_cut+y2:
+ y0l:=notch_cut+y2; % +y2 added for sanserif face
  fill z0l+.5right{up}...{z4r-z3r}diag_end(0,4l,1,1,4r,3r)
   --subpath(0,tau) of p--z2l--diag_end(2l,1l,1,1,1r,2r){z2-z1}
   ...{down}z0l+.5left--cycle; % left and right diagonals
-else: fill z0l--diag_end(0,4l,1,1,4r,3r)--subpath(0,tau) of p
-  --z2l--diag_end(2l,1l,1,1,1r,0)--cycle; fi % left and right diagonals
-fill p--z6l{right}...if x5l>x2l: z2l else: z5l fi{-direction tau of p}
- ..{z4r-z3r}z0l--cycle;
+else:
+ fill z0l--diag_end(0,4l,1,1,4r,3r)--subpath(0,tau) of p
+  --z2l--diag_end(2l,1l,1,1,1r,0)--cycle; % left and right diagonals
+fi
+fill p--z6l{right}...{-direction tau of p}
+     if x5l>x2l: z2l else: z5l fi..{z4r-z3r}z0l--cycle;
 pickup fine.nib;
-if serifs: numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
+if serifs:
+ numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
  pos6'(bot_vair,-90); z6'=z6; pos7(hair,-180); pos8(bulb_diam,-180);
  y8=1/6h; z7r=z8r; lft x8r=x1;
  cyrbulb(6',7,8);  % arc and bulb
@@ -629,8 +650,9 @@ if serifs: numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
   else: rt x1'r+inner_jut+.5u+1=lft x4'l-inner_jut; fi
  dish_serif(1',2,a,1/3,outer_jut,b,1/2,inner_jut);  % left serif
  dish_serif(4',3,c,.6,inner_jut,d,1/2,outer_jut)(dark);  % right serif
-else: top z6'l=z6l; bot z6'r=z6r;
- pos7(vair',-90); lft x7l=max(3.25u,rt x6r-t); bot y7r=bot y6'r;
+else:
+ top z6'l=z6l; bot z6'r=z6r;
+ pos7(bot_vair,-90); lft x7l=max(3.5u,rt x6r-t); bot y7r=bot y6'r;
  filldraw stroke z6'e--z7e; fi % arc
 %%%%%
 % the accent
@@ -656,37 +678,40 @@ numeric left_stem,right_stem,bot_stem,bot_vair,outer_jut;
 left_stem=cap_stem-stem_corr;
 right_stem=min(cap_hair if hefty:-2stem_corr fi,left_stem);
 bot_stem=min(cap_hair if hefty:-2stem_corr fi,left_stem);
-bot_vair=Vround(if serifs:.5[vair',bot_stem] else:vair' fi);
+bot_vair=Vround(if serifs:.5[vair',bot_stem] else:slab fi);
 outer_jut=.7cap_jut; x1l=w-x4r=l+letter_fit+outer_jut+.25u; % W jut
 y1=y4r=h; x2l=x3l;
-if monospace: y2=y3=.3h; else: y2=y3=max(stem,1/6h); fi
+if monospace: y2=y3=.3h; else: y2=y3=max(if not serifs:1.095 fi stem,1/6h); fi
 numeric alpha; x9=.5w-1/2(.5[bot_stem,right_stem]); y9=-o;
 alpha=diag_ratio(2,bot_stem,y1-y3,x4r-x1l-2apex_corr);
 numeric u_ratio; u_ratio=(y3-y9)/(y1-y9);
-x2l-x1l=x4r-x3r+ if monospace: 2apex_corr
- else: if serifs: 2 fi (u_ratio*.5[x1l,x4r]) fi;
+x2l-x1l=x4r-x3r+
+   if monospace: 2apex_corr else: if serifs: 2 fi (u_ratio*.5[x1l,x4r]) fi;
 penpos3(alpha*bot_stem,0); penpos4(alpha*right_stem,0);
 numeric alpha[]; alpha3=(y1++(x2l-x1l))/y1;
 penpos1(alpha3*left_stem,0); penpos2(alpha3*left_stem,0);
 z0l=whatever[z1r,z2r]=z4l+whatever*(z3r-z4r); penpos0(alpha*bot_stem,0);
 z0'=whatever[rt z3r,rt z4r]; y0'=bot y6r=if serifs:-o else: 0 fi;
-penpos6(bot_vair,-90); x6r=.6[x3r,x1];
-numeric t;
-t=if monospace: 1.25right_stem else:(x3r-x0')++(y3r-y0')fi;
+penpos6(bot_vair,-90); x6r=if serifs:.6 else:.5 fi[x3r,x1];
+numeric t; t=if monospace: 1.25right_stem else: (x3r-x0')++(y3r-y0') fi;
 penpos5(bot_vair,.5[angle(z4r-z6r),angle(z4r-z3r)]-90);
 path p; numeric tau; p=z0r{z3r-z4r}....{left}z6r;
 z5r=p intersectionpoint ((0,y2l-.5bot_vair)--(w,y2l-.5bot_vair));
 tau=xpart(p intersectiontimes (z2l--z2r));
-if y0>notch_cut+y2: y0l:=notch_cut+y2; % +y2 added for sanserif face
+if y0>notch_cut+y2:
+ y0l:=notch_cut+y2; % +y2 added for sanserif face
  fill z0l+.5right{up}...{z4r-z3r}diag_end(0,4l,1,1,4r,3r)
   --subpath(0,tau) of p--z2l--diag_end(2l,1l,1,1,1r,2r){z2-z1}
   ...{down}z0l+.5left--cycle; % left and right diagonals
-else: fill z0l--diag_end(0,4l,1,1,4r,3r)--subpath(0,tau) of p
-  --z2l--diag_end(2l,1l,1,1,1r,0)--cycle; fi % left and right diagonals
-fill p--z6l{right}...if x5l>x2l: z2l else: z5l fi{-direction tau of p}
- ..{z4r-z3r}z0l--cycle;
+else:
+ fill z0l--diag_end(0,4l,1,1,4r,3r)--subpath(0,tau) of p
+  --z2l--diag_end(2l,1l,1,1,1r,0)--cycle; % left and right diagonals
+fi
+fill p--z6l{right}...{-direction tau of p}
+     if x5l>x2l: z2l else: z5l fi..{z4r-z3r}z0l--cycle;
 pickup fine.nib;
-if serifs: numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
+if serifs:
+ numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
  pos6'(bot_vair,-90); z6'=z6; pos7(hair,-180); pos8(bulb_diam,-180);
  y8=1/6h; z7r=z8r; lft x8r=x1;
  cyrbulb(6',7,8);  % arc and bulb
@@ -696,8 +721,9 @@ if serifs: numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
   else: rt x1'r+inner_jut+.5u+1=lft x4'l-inner_jut; fi
  dish_serif(1',2,a,1/3,outer_jut,b,1/2,inner_jut);  % left serif
  dish_serif(4',3,c,.6,inner_jut,d,1/2,outer_jut)(dark);  % right serif
-else: top z6'l=z6l; bot z6'r=z6r;
- pos7(vair',-90); lft x7l=max(3.25u,rt x6r-t); bot y7r=bot y6'r;
+else:
+ top z6'l=z6l; bot z6'r=z6r;
+ pos7(bot_vair,-90); lft x7l=max(3.5u,rt x6r-t); bot y7r=bot y6'r;
  filldraw stroke z6'e--z7e; fi % arc
 %%%%%
 % the accent
@@ -714,37 +740,40 @@ numeric left_stem,right_stem,bot_stem,bot_vair,outer_jut;
 left_stem=cap_stem-stem_corr;
 right_stem=min(cap_hair if hefty:-2stem_corr fi,left_stem);
 bot_stem=min(cap_hair if hefty:-2stem_corr fi,left_stem);
-bot_vair=Vround(if serifs:.5[vair',bot_stem] else:vair' fi);
+bot_vair=Vround(if serifs:.5[vair',bot_stem] else:slab fi);
 outer_jut=.7cap_jut; x1l=w-x4r=l+letter_fit+outer_jut+.25u; % W jut
 y1=y4r=h; x2l=x3l;
-if monospace: y2=y3=.3h; else: y2=y3=max(stem,1/6h); fi
+if monospace: y2=y3=.3h; else: y2=y3=max(if not serifs:1.095 fi stem,1/6h); fi
 numeric alpha; x9=.5w-1/2(.5[bot_stem,right_stem]); y9=-o;
 alpha=diag_ratio(2,bot_stem,y1-y3,x4r-x1l-2apex_corr);
 numeric u_ratio; u_ratio=(y3-y9)/(y1-y9);
-x2l-x1l=x4r-x3r+ if monospace: 2apex_corr
- else: if serifs: 2 fi (u_ratio*.5[x1l,x4r]) fi;
+x2l-x1l=x4r-x3r+
+   if monospace: 2apex_corr else: if serifs: 2 fi (u_ratio*.5[x1l,x4r]) fi;
 penpos3(alpha*bot_stem,0); penpos4(alpha*right_stem,0);
 numeric alpha[]; alpha3=(y1++(x2l-x1l))/y1;
 penpos1(alpha3*left_stem,0); penpos2(alpha3*left_stem,0);
 z0l=whatever[z1r,z2r]=z4l+whatever*(z3r-z4r); penpos0(alpha*bot_stem,0);
 z0'=whatever[rt z3r,rt z4r]; y0'=bot y6r=if serifs:-o else: 0 fi;
-penpos6(bot_vair,-90); x6r=.6[x3r,x1];
-numeric t;
-t=if monospace: 1.25right_stem else:(x3r-x0')++(y3r-y0')fi;
+penpos6(bot_vair,-90); x6r=if serifs:.6 else:.5 fi[x3r,x1];
+numeric t; t=if monospace: 1.25right_stem else: (x3r-x0')++(y3r-y0') fi;
 penpos5(bot_vair,.5[angle(z4r-z6r),angle(z4r-z3r)]-90);
 path p; numeric tau; p=z0r{z3r-z4r}....{left}z6r;
 z5r=p intersectionpoint ((0,y2l-.5bot_vair)--(w,y2l-.5bot_vair));
 tau=xpart(p intersectiontimes (z2l--z2r));
-if y0>notch_cut+y2: y0l:=notch_cut+y2; % +y2 added for sanserif face
+if y0>notch_cut+y2:
+ y0l:=notch_cut+y2; % +y2 added for sanserif face
  fill z0l+.5right{up}...{z4r-z3r}diag_end(0,4l,1,1,4r,3r)
   --subpath(0,tau) of p--z2l--diag_end(2l,1l,1,1,1r,2r){z2-z1}
   ...{down}z0l+.5left--cycle; % left and right diagonals
-else: fill z0l--diag_end(0,4l,1,1,4r,3r)--subpath(0,tau) of p
-  --z2l--diag_end(2l,1l,1,1,1r,0)--cycle; fi % left and right diagonals
-fill p--z6l{right}...if x5l>x2l: z2l else: z5l fi{-direction tau of p}
- ..{z4r-z3r}z0l--cycle;
+else:
+ fill z0l--diag_end(0,4l,1,1,4r,3r)--subpath(0,tau) of p
+  --z2l--diag_end(2l,1l,1,1,1r,0)--cycle; % left and right diagonals
+fi
+fill p--z6l{right}...{-direction tau of p}
+     if x5l>x2l: z2l else: z5l fi..{z4r-z3r}z0l--cycle;
 pickup fine.nib;
-if serifs: numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
+if serifs:
+ numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
  pos6'(bot_vair,-90); z6'=z6; pos7(hair,-180); pos8(bulb_diam,-180);
  y8=1/6h; z7r=z8r; lft x8r=x1;
  cyrbulb(6',7,8);  % arc and bulb
@@ -754,8 +783,9 @@ if serifs: numeric bulb_diam; bulb_diam=flare+(cap_stem-stem);
   else: rt x1'r+inner_jut+.5u+1=lft x4'l-inner_jut; fi
  dish_serif(1',2,a,1/3,outer_jut,b,1/2,inner_jut);  % left serif
  dish_serif(4',3,c,.6,inner_jut,d,1/2,outer_jut)(dark);  % right serif
-else: top z6'l=z6l; bot z6'r=z6r;
- pos7(vair',-90); lft x7l=max(3.25u,rt x6r-t); bot y7r=bot y6'r;
+else:
+ top z6'l=z6l; bot z6'r=z6r;
+ pos7(bot_vair,-90); lft x7l=max(3.5u,rt x6r-t); bot y7r=bot y6'r;
  filldraw stroke z6'e--z7e; fi % arc
 %%%%%
 % the accent
@@ -826,15 +856,15 @@ y[_three]=.5[y[_four],y[_two]];
 x[_one]=x[_zero]r; x[_three]r=hround(w-u);
 if (serifs=false) or (cap_bar#>.5cap_curve#) or (cap_bar<3):
  penpos[_two](cap_bar,90);
- x[_four]=.5[x[_zero],w-1.5u];
+ x[_four]=.5[x[_zero],w-if serifs:1.5u else:2.5u fi]+.5u;
  y[_one]=y[_two]=.52h; x[_two]=x[_four];
 else: penpos[_two](1/18[cap_bar,cap_curve],90);
- x[_four]=.5[x[_zero],w-2.5u];
+ x[_four]=.5[x[_zero],w-1.5u]+.5u;
  y[_one]l=y[_two]l-.35cap_bar=.52h-.5cap_bar;
  x[_two]=x[_four]-.35u; fi
-x[_two]l:=x[_four]l:=x[_two]-.25cap_curve;
-fill stroke z[_five]e..pulled_arc.e([_four],[_three])
- & pulled_arc.e([_three],[_two])..z[_one]e; % lobe
+x[_two]l:=x[_two]l-.5u; x[_four]l:=x[_four]l-.5u;
+fill stroke z[_five]e..super_arc.e([_four],[_three])
+ & super_arc.e([_three],[_two])..z[_one]e; % lobe
 %%%
 % I
 w:=w+4.5u; pickup tiny.nib; rt x8r=rt x9r=w-hround max(2u,3u-.5stem);
@@ -846,3 +876,6 @@ if serifs: dish_serif(8,9,e,1/3,cap_jut,f,1/3,cap_jut);
 % the accent
 h:=full_h; uppercase_umlaut(0,0, 10,11,12,13);
 penlabels(1,2,3,4,5,6,7,8,9, 10,11,12,13); endchar;
+
+endinput;
+%end of file

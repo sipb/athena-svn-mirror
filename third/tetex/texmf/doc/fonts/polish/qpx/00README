@@ -1,0 +1,107 @@
+%% iso8859-2
+%% 15.02.2002, wer. 0.8. Public domain.
+%% Jacek Mierczyñski <mier@bryza.ibwpan.gda.pl>
+%% Staszek Wawrykiewicz <staw@gust.org.pl>
+
+Pakiet qpx pozwala na sk³ad tekstów oraz wyra¿eñ matematycznych
+w MeX/LaTeX/AmSTeX przy u¿yciu polskich fontów QuasiPalatino (wer. 1.07)
+  ftp://ftp.gust.org.pl/TeX/GUST/contrib/fonts/qfonts/
+oraz fontów dostêpnych w pakiecie pxfonts 
+  ftp://ftp.dante.de/fonts/pxfonts/
+
+[Pakiet pxfonts do³±czany jest obecnie do standardowych
+dystrybucji fpTeX, MiKTeX, teTeX oraz TeX Live.]
+
+Pakiet qpx zawiera dodatkowo fonty i makra dla sk³adu kapitalikami.
+
+Pakiet qpx sk³ada siê z:
+1. plików metrycznych (.tfm), które powinny byæ zainstalowane w odpowiednich
+   katalogach (w strukturze zgodnej z TDS: texmf/fonts/tfm/public/qpx/);
+2. fontów wirtualnych (.vf), które powinny byæ zainstalowane w odpowiednich
+   katalogach (texmf/fonts/vf/public/qpx/);
+3. plików makr dla MeX/LaTeX/amstex(amsmex) (.tex, .def), które powinny byæ
+   zainstalowane w odpowiednich katalogach (texmf/tex/generic/qpx/ wybór
+   katalogu ,,generic'' jest celowy, gdy¿ makra powinny byæ znajdywane
+   przez ró¿ne formaty);
+4. dokumentacji i plików przyk³adowych (texmf/doc/fonts/qpx/);
+Po zainstalowaniu nale¿y zwykle od¶wie¿yæ bazê danych instalacji (polecenie
+`texhash' dla fpTeX/teTeX/TeX Live; `initexmf -u' dla MiKTeX).
+
+U¿ycie:
+1. format MeX -- wczytanie makr
+     \input qpxmath
+   powoduje zamianê domy¶lnych fontów zarówno tekstowych, jak
+   i matematycznych:
+   plr  -> qplr
+   plsy -> pxsy
+   plex -> pxex
+   plmi -> qpxmi
+   Dodatkowo zmienia definicje niektórych znaków, np. "+" i "=" (z rpxr),
+   które s± co prawda dostêpne w qplr, ale trochê nie pasuj± do fontów
+   pobranych z pakietu pxfonts. Zestaw znaków fontów matematycznych znanych
+   z Plain TeX wzbogacono o $\varg$.
+   Makra w pe³ni realizuj± (mamy przynajmniej tak± nadziejê) zamianê
+   standardowych fontów TeX-a CM/PL na fonty zbli¿one do Palatino.
+   Dodatkowo udostêpniono proste prze³±czanie stopnia pisma
+   (makra \tenpoint, \ninepoint, \eightpoint) oraz mo¿liwo¶æ definicji np.
+   \def\PT{dd} *przed* wczytaniem makr qpxmath.tex, czyli okre¶lenia 
+   u¿ytego stopnia pisma w punktach Didota (domy¶lnie stopnie pisma 
+   definiowane s± w pt). Ponadto udostêpniono polecenie \sc prze³±czaj±ce 
+   font na kapitaliki. Dziêki takim zabiegom mo¿liwe jest bardziej 
+   ,,przyjazne'' stosowanie fontów QuasiPalatino, nawet gdy nie s± u¿ywane
+   wyra¿enia matematyczne. 
+   Przyk³ad u¿ycia: 01tst.tex.
+   Wczytanie dodatkowych makr
+     \input amsqpx
+   umo¿liwia dostêp do poszerzonego zestawu symboli matematycznych, oraz
+   poleceñ $\frak A$ (litery fraktur±), $\Bbb A$ (,,blackboard''), nawet
+   bez u¿ycia makr AMSTeX. Zestawienie dodatkowych symboli: qpxsymb.tex.
+   [na razie nie rozwi±zano problemu u¿ycia plajnowego \mit ]
+2. AMSTeX/AMSMeX -- wczytanie makr
+     \input qpxmath
+     \input amsqpx
+   powoduje, jak powy¿ej, zamianê standardowych fontów CM/PL na zbli¿one
+   do Palatino. Po wczytaniu dodatkowych makr
+      \input amspbold.tex
+   i u¿yciu polecenia \loadbold, dostêpne s± makra AMSTeX:
+   $\boldsymbol\Delta$, $\boldkey A$ itp., pozwalaj±ce na uzyskanie
+   w sk³adzie pogrubionych symboli i innych znaków (przyk³ad: 02tst.tex).
+   [na razie nie rozwi±zano problemu u¿ycia \frac i \Bbb]
+3. LaTeX -- w preambule nale¿y zadeklarowaæ:
+   \usepackage{polski}
+   %%%
+   \usepackage{pxfonts}
+   \usepackage{qpalatin}
+   \usepackage{qpxmath}
+ a) pxfonts.sty ³aduje ca³y zestaw matematyczny (odpowiedniki standardu CM,
+    AMS i nawet wiêcej) i fonty tekstowe.
+ b) qpalatin.sty przestawia fonty tekstowe na QuasiPalatino.
+ c) qpxmath.sty zamienia cztery podstawowe fonty matematyczne:
+    operatory -- na qplr; litery -- font wirtualny zbudowany z qplri
+    i fontów PX; symbole i du¿e symbole -- odpowiedniki z PX.
+    Ponadto zmienia niektóre definicje, podobnie jak w MeX i pakiecie
+    polski.sty (\leq, \geq, \le, \ge).
+ £adowanie pakietu pxfonts.sty nie jest konieczne, je¿eli
+ zadowolimy siê standardowym zestawem symboli matematycznych.
+
+ U¿ycie polecenia
+ \input{qpxsc}
+ udostêpnia w LaTeXu fonty kapitalikowe odpowiednie dla fontów 
+ QuasiPalatino, czyli prawid³owe zadzia³anie poleceñ \textsc{} (b±d¼ \sc ).
+ Wymagane jest jedynie wczytanie pakietu qpalatin (patrz pkt. b) powy¿ej). 
+ Dla tekstów niematematycznych jest to wystarczaj±ce.
+
+Zestawienie plików przyk³adowych:
+ qpxsymb.tex - MeX/AMSMeX zestawienie symboli
+ qpxtest.tex - przyk³ad u¿ycia dla LaTeXa
+ 01tst.tex   - przyk³ad u¿ycia dla MeX (matematyka w zakresie Plain)
+ 02tst.tex   - test AMSTeX/AMSMeX + qpx
+
+Historia:
+wer. 0.5 12.04.2001 - pierwsza wersja udostêpniona publicznie
+wer. 0.6 13.04.2001 - niewielkie poprawki w dokumentacji i przyk³adach
+wer. 0.7 23.01.2002 - modyfikacja plików .tfm i .vf (dostosowanie do
+                      fontów QuasiPalatino wer. 1.07)
+wer. 0.8 15.02.2002 - usuniêto niepo¿±dane spacje w pliku qpxmath.tex
+
+Wszelkie uwagi s± mile widziane.

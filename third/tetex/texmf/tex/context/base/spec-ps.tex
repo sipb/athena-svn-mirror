@@ -8,7 +8,7 @@
 %D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
 %C
 %C This module is part of the \CONTEXT\ macro||package and is
-%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
 %C details. 
 
 %D \macros
@@ -20,7 +20,6 @@
 %D    dostartnegative,dostopnegative,
 %D    doselectfirstpaperbin,
 %D    doselectsecondpaperbin}
-%D   {}
 %D
 %D This implementation is straightforward and can be used as 
 %D a default with postscript||drivers. We use \type{ps:} as 
@@ -75,7 +74,7 @@
   {\special
      {\@@insertpostscriptliteral  
         gsave currentpoint currentpoint translate
-        #1 rotate neg exch neg exch translate}}
+        \number#1\space\space rotate neg exch neg exch translate}}
 
 \definespecial\dostoprotation%
   {\special
@@ -114,9 +113,14 @@
      {\@@insertpostscriptliteral  
         grestore}}
 
+\definespecial\dostartgraphicgroup
+  {\special{\@@insertpostscriptliteral gsave}}
+
+\definespecial\dostopgraphicgroup 
+  {\special{\@@insertpostscriptliteral grestore}}
+
 %D \macros
 %D   {doovalbox}
-%D   {}
 %D
 %D This implementation is a mixture of several possible 
 %D implementations. We use some constants that may not be 
@@ -144,14 +148,14 @@
 \def\@@insertpostscriptretain  {postscript } % unknown 
 
 \def\dosomeovalcalc#1#2#3%
-  {\dimen2=#1sp%
-   \advance\dimen2 by #2%   
-   \ScaledPointsToBigPoints{\number\dimen2}#3}
+  {\dimen2=#1%
+   \advance\dimen2 #2%   
+   \PointsToBigPoints{\dimen2}#3}
 
 \def\dosomeovalbox#1#2#3#4#5#6#7% 
   {\bgroup
-   \dimen0=#4sp\divide\dimen0 by 2
-   \dosomeovalcalc {0}{+\dimen0}\xmin
+   \dimen0=#4\divide\dimen0 2
+   \dosomeovalcalc{0pt}{+\dimen0}\xmin
    \dosomeovalcalc{#1}{-\dimen0}\xmax
    \dosomeovalcalc{#2}{-\dimen0}\ymax
    \dosomeovalcalc{-#3}{+\dimen0}\ymin
@@ -183,7 +187,7 @@
                  {fill} if
              grestore}%
       \fi}% 
-   \wd0=#1sp\ht0=#2sp\dp0=#3sp\box0
+   \wd0=#1\ht0=#2\dp0=#3\box0
    \egroup}
 
 %D The indirect call permits a (rather) dirty hack, needed 
@@ -191,6 +195,23 @@
 
 \definespecial\doovalbox% 
   {\dosomeovalbox}
+
+%D \macros 
+%D   {dostartclipping,dostopclipping}
+%D
+%D These two specials are not yet working as expected.  
+
+\definespecial\dostartclipping#1#2#3%
+  {\PointsToBigPoints{#2}\width
+   \PointsToBigPoints{#3}\height
+   \grabMPclippath{#1}{0}{\width}{\height}
+     {0 0 moveto \width 0 lineto \width \height lineto 0 \height\space lineto}%    
+   \special
+     {\@@insertpostscriptliteral\space  
+      save newpath \MPclippath\space closepath clip}}
+
+\definespecial\dostopclipping%
+  {\special{\@@insertpostscriptliteral\space restore}}
 
 \stopspecials
 

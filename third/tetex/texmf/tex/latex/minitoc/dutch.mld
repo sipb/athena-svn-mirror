@@ -1,3 +1,4 @@
+\ProvidesFile{dutch.mld}[1999/03/16]
 % Dutch titles for minitoc.sty
 \def\mtctitle{Inhoudsopgave}%
 \def\mlftitle{Lijst van figuren}%

@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-2">
+<TITLE>ConTeXt i język polski</TITLE>
+</HEAD>
+
+<BODY>
+
+
+Niniejsza notatka (napisana pospiesznie ;-) omawia kwestię polonizacji 
+i&nbsp;użycia formatu ConTeXt.
+
+<hr>
+<h3>I. Generowanie formatu</h3>
+
+<ol>
+<li>Bezpośrednio<br>
+  <code> pdfetex -ini -progname=context cont-en</code><br>
+Po wygenerowaniu formatu należy go ,,ręcznie'' skopiować do
+odpowiedniego katalogu np. <code>$TEXMF/webc/</code>
+<li> Z wykorzystaniem programu fmtutil:<br>
+  <code> fmtutil --byfmt cont-en</code><br>
+<li>Z wykorzystaniem programu texexec:<br>
+  <code> texexec --make en</code><br>
+</ol>
+
+<h3>II. Polonizacja ConTeXt-a</h3>
+
+Polonizacja polega na włączeniu polskich reguł dzielenia wyrazów, 
+uaktywnieniu generowania polskich wersji stałych napisów, oraz domyślnym 
+włączeniu polskich fontów. Niezbędne ustawienia można uaktywnić jedną 
+z&nbsp;trzech metod:<br>
+
+<ol>
+<li>
+Ustawienia systemowe<br>
+W pliku <code>$TEXMF/tex/context/config/cont-usr.tex</code> należy odnaleźć
+wiersze, w&nbsp;których znajdują się ustawienia dla języka polskiego 
+i&nbsp;usunąć komentarze z&nbsp;odpowiednich wierszy: 
+<pre>
+  \installlanguage [\s!pl] [\c!status=\v!start] % dodaje jęz. polski
+  \setupcurrentlanguage[\s!pl]          % włącza polski jako domyślny
+  \definefilesynonym [font-cmr] [font-plr] % włącza użycie fontów PL
+</pre>
+Wygenerować format dowolną z&nbsp;powyższych metod.
+<li>
+Wykorzystanie programu texexec<br>
+Wywołać program <code>texexec</code> podając dodatkowe opje:<br>
+  <code> texexec --make --bodyfont=plr --language=pl en</code>
+<li>
+Za pośrednictwem pliku <code>cont-fmt.tex</code><br>
+Przygotować plik o nazwie cont-fmt.tex o&nbsp;następującej zawartości:
+<pre>
+   \unprotect
+   \installlanguage[\s!pl][\c!status=\v!start]
+   \setupcurrentlanguage[\s!pl]
+   \definefilesynonym[font-cmr][font-plr]
+   \protect
+   \endinput
+</pre>
+Następnie wygenerować format metodą&nbsp;I.1.
+</ol>
+
+<hr>
+<h3>III. Używanie ConTeXt-a</h3>
+
+Najlepszym sposobem wywoływania ConTeXt-a jest użycie polecenia
+texexec. Program ten próbuje przetworzyć plik odpowiednią liczbę razy,
+żeby uaktualniły się odnośniki i&nbsp;spisy treści:<br>
+<code> texexec &lt;nazwa_pliku&gt; </code>
+
+<p>
+<b>Wybrane opcje programu texexec:</b>
+
+<table border>
+<tr>
+<th>Opcja               </th> <th>       Opis </th>
+</tr>
+<tr>
+<td>--output=[pdftex|dvips] </td><td> wybór generowanego pliku wyjściowego </td>
+</tr>
+<tr>
+<td>--pdf               </td> <td>     równoważne --output=pdftex </td>
+</tr>
+<tr>
+<td>--result=&lt;out&gt;      </td>  <td>    nazwa pliku wynikowego </td>
+</tr>
+<tr>
+<td>--pages=&lt;lista_stron&gt; </td> <td>   zapisanie do pliku wynikowego 
+                                             tylko wybranych stron </td>
+</tr>
+<tr>
+<td>--fast               </td>  <td>  przetworzenie szybkie (bez ilustracji
+                            itp.) </td>
+</tr>
+<tr>
+<td>--once               </td>  <td>    przetworzenie jednokrotne </td>
+</tr>
+<tr>
+<td>--make               </td>  <td>    wygenerowanie formatu </td>
+</tr>
+</table>
+
+<p>
+Można także wywoływać ConTeXt poleceniem <code>cont-en</code>:<br>
+ <code> cont-en &lt;plik_wejściowy&gt; </code><br>
+albo bezpośrednim wywołaniem programu pdfetex:<br>
+<code> pdfetex -efmt=cont-en -progname=context &lt;plik_wejściowy&gt;</code>
+
+<hr>
+<em>P.B. i S.W.</em> (Kwiecień 2000 r., modyfikacja 9.01.2001)
+
+</BODY>
+</HTML>

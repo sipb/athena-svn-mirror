@@ -1,3 +1,18 @@
+#D \module
+#D   [       file=cont\_mis.pm,
+#D        version=1999.05.05,
+#D          title=General modules, 
+#D       subtitle=all kind of subs, 
+#D         author=Hans Hagen,
+#D           date=\currentdate,
+#D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+#C
+#C This module is part of the \CONTEXT\ macro||package and is
+#C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+#C details. 
+
+#D Not yet documented, source will be cleaned up. 
+
 package cont_mis ; 
 
 use strict ; 
@@ -5,7 +20,7 @@ use strict ;
 my ($message, $separator, $content) ; 
 
 format = 
-@>>>>>>>>>>>>>>>>>>>>>> @ @<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+@>>>>>>>>>>>>>>>>>>>>> @ @<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 $message,$separator,$content
 .
 

@@ -1,0 +1,129 @@
+% ---------------------------------------------------------------------------
+%                 This file belongs to the TAP package
+% ---------------------------------------------------------------------------
+% This is a real-life example suggested by Maciek G\l{}owacki, demonstrating
+% a useful technique for constructing ``simple-but-complex'' tables;
+% actually, two aspects you may find interesting: (1) macros that facilites
+% shading selected rows; (2) composing a table out of predefined pieces.
+% In order to see the result, however, PostScript (DVIPS) is necessary.
+% ---------------------------------------------------------------------------
+
+\input tap
+\nopagenumbers
+\font\f=cmr6 \f
+% ---
+% SHADING MACROS
+% ---
+\newcount\graynum
+\newtoks\graytoxa
+\newtoks\graytoxb
+
+\gdef\fixgray{}
+
+\def\begingray{%
+  \noalign{\global\advance\graynum1}%
+  \uranchor 0 {g\the\graynum}
+  \noalign{
+    \edef\graytmp{\noexpand\rectfill {0 0 0 .15} {g\the\graynum}}%
+    \graytoxa\expandafter{\fixgray}%
+    \graytoxb\expandafter{\graytmp}%
+    \xdef\fixgray{\the\graytoxa\the\graytoxb}%
+%    \message{\meaning\fixgray}%
+  }%
+}
+
+\def\endgray{\llanchor 0 {g\the\graynum}}
+\def\fixgrays{\fixgray \noalign{\global\graynum0\gdef\fixgray{}}}
+
+% ---
+% BASIC TABLE PIECES
+% ---
+\deftable\whiterow##1\begintable
+  \B!0\V{f}#1| | | | | | | | | | | | | | | | | | | | | | | | | | | | \E!
+\endtable
+
+\deftable\grayrow##1\begintable
+  \begingray
+  \B!0\V{f}#1| | | | | | | | | | | | | | | | | | | | | | | | | | | | \E!
+  \endgray
+\endtable
+
+\deftable\partialrule\begintable \B!0 | @28 \- \E!\endtable
+
+% ---
+% THE TABLE
+% ---
+\thistable{\desiredwidth=5in}
+\beginanchtable
+\begintableformat \right " &\center \endtableformat
+\=
+\B!: @29 Begin of day ...................... \E!
+\=
+\B!+ | ~1 | ~2 | ~3 | ~4 | ~5 | ~6 | ~7 | ~8 | ~9 | 10 | 11 | 12 | 13 | 14 |
+       15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 \E!
+\=
+\grayrow{9}
+\partialrule
+\whiterow{8}
+\partialrule
+\grayrow{7}
+\partialrule
+\whiterow{6}
+\partialrule
+\grayrow{37.5}
+\partialrule
+\whiterow{4}
+\partialrule
+\grayrow{3}
+\partialrule
+\whiterow{2}
+\partialrule
+\grayrow{1}
+\partialrule
+\whiterow{0}
+\-
+\grayrow{9}
+\partialrule
+\whiterow{8}
+\partialrule
+\grayrow{7}
+\partialrule
+\whiterow{6}
+\partialrule
+\grayrow{36.5}
+\partialrule
+\whiterow{4}
+\partialrule
+\grayrow{3}
+\partialrule
+\whiterow{2}
+\partialrule
+\grayrow{1}
+\partialrule
+\whiterow{0}
+\-
+\grayrow{9}
+\partialrule
+\whiterow{8}
+\partialrule
+\grayrow{7}
+\partialrule
+\whiterow{6}
+\partialrule
+\grayrow{35.5}
+\partialrule
+\whiterow{4}
+\partialrule
+\grayrow{3}
+\partialrule
+\whiterow{2}
+\partialrule
+\grayrow{1}
+\partialrule
+\whiterow{0}
+\=
+\fixgrays
+\endanchtable
+
+\bye
+

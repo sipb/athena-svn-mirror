@@ -1,0 +1,51 @@
+%
+%  Sample file for geometry v3.0 or later
+%  sample.tex
+%
+%---------- Specify your paper size properly -------------------
+\documentclass{article}% uses letterpaper by default
+%\documentclass[a4paper]{article}% for A4 paper
+
+%---------- Uncomment one of them ------------------------------
+\usepackage{geometry}
+% \usepackage[centering]{geometry}
+% \usepackage[width=10cm,vscale=.7]{geometry}
+% \usepackage[margin=1cm]{geometry}
+% \usepackage[margin=1cm,includeheadfoot]{geometry}
+% \usepackage[margin=1cm,includemp]{geometry}
+% \usepackage[margin=1cm,bindingoffset=1cm,twoside]{geometry}
+% \usepackage[hmarginratio=2:1, vmargin=2cm]{geometry}
+% \usepackage[hscale=0.5,twoside]{geometry}
+% \usepackage[hscale=0.5,asymmetric]{geometry}
+% \usepackage[hscale=0.5,heightrounded]{geometry}
+% \usepackage[left=1cm,right=4cm,top=2cm,includefoot]{geometry}
+% \usepackage[lines=20,left=2cm,right=6cm,top=2cm,twoside]{geometry}
+% \usepackage[width=15cm, marginparwidth=3cm, includemp]{geometry}
+% \usepackage[hdivide={1cm,,2cm}, vdivide={3cm,8in,}, nohead]{geometry}
+% \usepackage[headsep=20pt, head=40pt,foot=20pt,includeheadfoot]{geometry}
+% \usepackage[text={6in,8in}, top=2cm, left=2cm]{geometry}
+% \usepackage[centering,includemp,twoside,landscape]{geometry}
+% \usepackage[margin=2cm,mag=1414]{geometry}
+% \usepackage[margin=2truecm,mag=1414,truedimen]{geometry}
+% \usepackage[compat2,marginpar=50pt,twosideshift=50pt]{geometry}
+
+% \usepackage[a5paper, landscape, twocolumn, twoside,
+%    left=2cm, hmarginratio=2:1, includemp, marginparwidth=43pt, 
+%    bottom=1cm, foot=.7cm, includefoot, textheight=11cm, heightrounded,
+%    columnsep=1cm, dvips,  verbose]{geometry}
+%---------------------------------------------------------------
+
+\geometry{verbose,showframe,dvips}% options appended.
+
+\newcommand\mynote{\marginpar%
+[\raggedright\rule{\marginparwidth}{.7pt}\\A left side note.]%
+{\raggedright\rule{\marginparwidth}{.7pt}\\A side note.}}%
+\def\fox{A quick brown fox jumps over the lazy dog. }
+\def\fivefoxes{\fox\fox\fox\fox\fox}
+\def\manyfoxes{\fivefoxes\mynote\fivefoxes\par\fivefoxes\fivefoxes\par}
+% \let\mynote\relax % removes marginal notes.
+\begin{document}
+\manyfoxes\manyfoxes\manyfoxes\manyfoxes
+\manyfoxes\manyfoxes\manyfoxes\manyfoxes
+\manyfoxes\manyfoxes\manyfoxes\manyfoxes
+\end{document}

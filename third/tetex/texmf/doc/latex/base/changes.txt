@@ -9,17 +9,467 @@ are not part of the distribution.
 =======================================================================
 
 
+2001-08-26 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltclass.dtx: readded lost catcode setting for space in 
+	ProvidesFile (pr/3353)
+
+2001-07-12 Chris Rowley <latex-bugs@latex-project.org>
+
+        * inputenc.dtx: 
+
+        Added latin9.def (from Karsten Tinnefeld
+
+2001-07-12 Chris Rowley <latex-bugs@latex-project.org>
+
+	* ltnews.cls:
+
+	Added eTeX logo
+
+2001-06-04 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltvers.dtx: check for old format disabled --- perhaps we have
+	reached the last release of 2e already?
+
+	* inputenc.dtx: Added \textkra, \texttstroke and 
+	\textTstroke to latin4 (pr/3336)
+
+	* ltpictur.dtx: Don't warn  if \line or \vector command
+	has zero length argument pr/3318
+
+	* fontdef.dtx (subsubsection{Arrows}): Guard against math active
+	= and math active | in \Relbar and \models (pr/3333)
+
+2001-06-03 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* format.ins: added default cfg files that are simple
+	wrappers for fonttext.ltx, fontmath.ltx, and preload.ltx (pr/3264)
+
+	* fontdef.dtx: added default cfg files that are simple
+	wrappers for fonttext.ltx, fontmath.ltx, and preload.ltx (pr/3264)
+
+2001-06-01 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltfssini.dtx: some docu changes
+
+2001-05-28 Chris Rowley <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx
+
+        Added \NeedsTeXFormat{LaTeX2e}[2000/06/01] to .def 
+        files, pr/3255
+
+        Made compatible T1 and OT1 accents (on i and \i), pr/3295
+
+2001-05-28 Chris Rowley <latex-bugs@latex-project.org>
+
+	* usrguide.tex
+
+        Described short-form for guillemets in T1 encoding, pr/3192
+
+2001-05-28 Chris Rowley <latex-bugs@latex-project.org>
+
+        * ltxguide.cls: 
+
+	Added some definitions
+
+2001-05-25 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* inputenc.dtx: extended NEXT encoding (pr/3281)
+	suppress all spaces for horizontal mode (pr/3273)
+
+	* minimal.cls: added \pagenumbering{arabic} to define \thepage
+	(pr/3275)
+
+	* ifthen.dtx: Added \AND, \OR and \NOT as boolean operators as
+	alternative to the lower case versions (pr/3297)
+
+	* ltdirchk.dtx:  Explicitly set \endlinechar to 10 (pr/3334)
+
+	* ltclass.dtx: Explicitly set \endlinechar to 10 (pr/3334)
+
+	* classes.dtx: Replaced all tilde chars used with \nobreakspace
+	(pr/3310)
+
+2001-05-18 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* doc.dtx: partly support docstrip's ``verbatim''
+	directive, at least ensure that it can be processed without and
+	error message (pr/3331)
+
+2001-04-23 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx: added missing \section to docu
+
+2001-04-21 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* classes.dtx (section*{\contentsname): initialize \@tempdima
+	within \l@part so that \numberline can be used pr/3327
+
+2001-04-16 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltnews14.tex: added
+
+2001-02-16 Johannes Braams <latex-bugs@latex-project.org>
+
+	* ltxref.dtx (subsection{Cross Referencing}): Added an extra level
+	of grouping to \@newl@bel as suggested in PR3250 by 
+	Harald Hanche-Olsen <hanche@math.ntnu.no>
+
+2001-01-07 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutput.dtx (subsection{Floats}): reset @newlist flag in output
+	routine (pr/3286). This was done before (pr3231) but the code
+	ended up in the wrong place by mistake.
+
+2001-01-06 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* classes.dtx: Moved \@mkboth out of heading args for
+	thebibliography and \listof... command as this can fail with the
+	slightly strange definition for \chapter in twocolumn mode (pr/3285)
+
+2000-09-24 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* fixltx2e.dtx: for some unknown reason the version of fix2col
+	integrated was not the latest one --- so a number of bugs already
+	corrected crept up again (1.1d fixes those)
+
+	Don't change \setlength if it isn't the kernel default any longer
+
+	\addpenalty fix proposed in 3073 was not sufficient if the command
+	was used when \prevdepth=-1000pt (ie after \nointerlineskip)
+	
+2000-09-01 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltfinal.dtx: finally moved emptying \errhelp to a place
+	after its last use (pr/449)
+
+2000-08-30 Chris Rowley <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx
+
+	Much editing but no code changes
+
+2000-08-24 Chris Rowley <latex-bugs@latex-project.org>
+
+	* ltfinal.dtx:
+
+	Fixed typo in warning message
+
+2000-07-31 Chris Rowley <latex-bugs@latex-project.org>
+
+        * ltoutput.dtx:
+
+        Changed handling of space above footnotes.
+
+2000-07-29 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* latexbug.tex: complain about old LaTeX only after 18 months
+
+	* ltvers.dtx: changed distribution check to yearly distribution
+
+2000-07-19 David Carlisle <latex-bugs@latex-project.org>
+
+	* ltoutput.dtx: locally reset \if@newlist so that
+	list structures in head/foot don't interfere with 
+	lists in the MVL. internal/3231
+
+2000-07-18 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltnews13.tex: update to ltnews13
+
+2000-07-12 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutput.dtx: Ensure that rule between column is in \normalcolor
+	(it did depend on the color in the text at the column break!)
+
+2000-07-11 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltmiscen.dtx: fix typo in warning message
+
+2000-07-04 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* doc.dtx: ... and another fix for (pr/3170), sigh
+
+2000-07-01 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* inputenc.dtx: incorporating latin4.def contributed by
+	Hana Skoumalov\'a
+
+	* inputenc.ins: incorporating latin4.def contributed by
+	Hana Skoumalov\'a
+
+2000-06-10 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* doc.dtx (subsection{Bells and whistles}): extending (or say
+	fixing?) change for (pr/3170)
+
+2000-06-01 Chris Rowley <latex-bugs@latex-project.org>
+
+        * ltpage.dtx:
+
+        Changed grouping method in \markboth and \markright
+        (see also pr/3203)
+
+        Less expansion by using token register in \markboth
+        and \markright
+
+2000-05-26 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx (subsubsection{Declaration commands}):
+	reimplemented \UseTextSymbol and \UseTextAccent to support
+	reference over more than one level (pr/3160)
+
+2000-05-22 Chris Rowley <latex-bugs@latex-project.org>
+
+        * doc.dtx:
+
+        Less obscure wording at start of index?  (pr/3202)
+
+        * inputenc.dtx: 
+
+        Added latin2 option for textdegree    (pr/3207)
+        Updated documantaion
+
+	* ltpage.dtx: reimplementation of \markboth and \markright to
+	avoid problem with expanion at wrong point in time in some cases
+	(pr/3203)
+	
+2000-05-21 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* doc.dtx (subsection{Bells and whistles}): new implementation
+	for \meta command (pr/3170)
+
+2000-05-19 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* classes.dtx (subsubsection{Parts}): Only add empty page after
+	part if twoside and openright (pr/3155)
+
+	* ltmiscen.dtx: Reset \AtEndDocument for latex/3060
+
+2000-04-30 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* manifest.txt: ltnews13.tex added
+
+2000-01-30 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx: added \hmode@bgroup as shorthand for
+	\leavevmode\bgroup use \hmode@bgroup...\egroup instead of
+	\leavevmode{...} where applicable in most cases \leavevmode was
+	missing before (pr/3160)
+
+	* ltfntcmd.dtx: use \hmode@bgroup...\egroup instead of \leavevmode{...}
+
+2000-01-27 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* inputenc.dtx: allow \inputencoding also in hoizontal mode (or rather
+	make it do something there --- it was allowed before (pr/2888))
+
+2000-01-24 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* inputenc.dtx: fix error message for undefined code points
+	(pr/3158)
+
+2000-01-07 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* ltmiscen.dtx: Disable hyphenation in verbatim even if the font
+ 	allows it.
+
+1999-12-19 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltnews12.tex: final adjustments
+
+1999-12-11 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltnews.cls: fixed a curious bug lurking in the class since its 
+	beginning: putting a list directly after a paragraph would make the
+	paragraph before(!) the list justified (while the rest of the document 
+	was set ragged right)
+
+	* ltnews12.tex: added fixltx2e section
+
+1999-12-08 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx (subsection{The fontenc package}): 
+	Changed \cs{CYRRHOOK} and  \cs{cyrrhook} to
+	\cs{CYRRHK} and  \cs{cyrrhk} as name changed in the cyrillic
+	bundle for naming consistency with other ``hook'' glyphs.
+
+1999-12-01 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltnews12.tex (section{Outcome of TUG '99 (Vancouver)}): 
+	added text on TUG 99 and other bits
+
+1999-11-08 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* ltx3info.tex: Typo corrected.
+
+	* emtex.txt: Correct name of file ltxcheck.tex.
+
+1999-11-06 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltx3info.tex:  fixed typo
+
+1999-10-28 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx (subsubsection{Declaration commands}): 
+        Give \accent@spacefactor a default definition to prevent horrible
+	death in case or incorrect input (pr/3084)
+
+1999-10-26 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* fixltx2e.dtx: added first version
+
+	* manifest.txt: added draft ltnews12.tex
+
+	* inputenc.dtx: removed left over beta test message
+
+1999-10-10 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* ltoutput.dtx: Reset definition of active math ' to
+	\active@math@prime within the output routine.
+
+	* ltmath.dtx: Introduce macro \active@math@prime for the active
+	prime character in math mode.
+
+1999-09-24 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* usrguide.tex (subsection{Definitions}): show syntax of all
+	declaration commands (pr/3102)
+
+1999-09-17 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* doc.dtx: removed extra change entry.
+
+	* classes.dtx: found two changes entries claiming to have been done
+	in 1955 (exactly 40 years too early :-)
+
+	* makeindx.dtx: fixed two changes entries (arg order wrong)
+
+	* syntonly.dtx: updated changes entry to have four digits years
+
+	* classes.dtx: update of label names in docu
+
+	* ifthen.dtx: make this a proper LaTeXable package
+
+	* pict2e.dtx: make this a proper LaTeXable package (even if not containing code)
+
+	* ltxdoc.dtx: also accept .fdd files in DocInclude (code by M Schroeder)
+
+1999-09-10 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* classes.dtx: renamed a few labels to support production of general docu
+
+	* ifthen.dtx: changed driver file
+
+1999-09-07 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* inputenc.dtx: did some spellchecking of docu after noticing
+	a few glaring typos
+
+1999-09-03 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* lppl-1-1.txt: added LPPL 1.1 under this name to the distribution.
+
+	* DEFAULT.pre: updated for LPPL 1.2
+
+	* DEFAULT.hea: updated for LPPL 1.2
+
+	* copyfd.pre:  updated for LPPL 1.2
+
+	* copycfg.pre: updated for LPPL 1.2
+
+	* copyins.hea: updated for LPPL 1.2
+
+1999-08-27 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* lppl.txt: fixed minor glitches found by Matt and Eberhard
+	This is probably going to be LPPL 1.2
+
+1999-07-10 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* lppl.txt: final changes to LPPL 1.1
+
+1999-07-09 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* updated headers to reflect LPPL 1.1
+	updated legal.txt to say that use of LaTeX is unrestricted
+
+1999-06-24 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltnews11.tex (section{Fontenc package peculiarities}): 
+	document the special behaviour of fontenc
+
+	* ltclass.dtx: document that fontenc pretends it wasn't loaded
+
+1999-06-12 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx (subsection{The fontenc package}): 
+	ensure that \@uclclist is extended only once (if at all)
+
+1999-06-10 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltoutenc.dtx: ensure that fontenc doesn't load encodings from
+	previous calls again (pr/2888)
+
+1999-05-28 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* bugs.txt: Added reference to webcomp.err.
+
+	* readme.txt: Added reference to webcomp.err.
+
+	* manifest.txt: Added reference to webcomp.err.
+
+1999-05-28 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* webcomp.err: file added
+
+1999-05-27 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ltnews11.tex: updates
+
+1999-05-25 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* cmfonts.ins: removed "fd" guard since never used these days
+
+1999-05-09 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* cmfonts.fdd: docstrip `nowarn' guard was the wrong way around 
+        for font OT1/cmr/bx/ui (pr/3036)
+
+1999-04-04 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* docstrip.dtx: fixed typo in documentation (pr2973)
+
+1999-04-02 Chris Rowley <latex-bugs@latex-project.org>
+
+        * inputenc.dtx
+
+        Corrected cp852 for pr/2992
+
+        * ltboxex.dtx
+ 
+        Made robust the flag in \@iiiparbox: pr/2975}
+
+        * ltdefns.dtx
+
+        Fixed new version of \@yargdef: pr/3013
+
+        * usrguide.tex 
+
+        Added to documentation of uc/lc list
+
 1999-03-22 Rainer Schoepf <latex-bugs@latex-project.org>
 
 	* doc.dtx: Correct last change.
 
 1999-03-12 Chris Rowley <latex-bugs@latex-project.org>
 
-	* clsguide.tex 
+        * clsguide.tex 
 
 	Added to documentation of options
 
-	* cyrguide.tex:
+        * cyrguide.tex:
 
 	Further editing 
 
@@ -41,11 +491,13 @@ are not part of the distribution.
 
 1999-03-03 Chris Rowley <latex-bugs@latex-project.org>
 
-	* ltxguide.cls: 
+        * ltxguide.cls: 
 
 	Added some definitions
 
 1999-03-01 David Carlisle <latex-bugs@latex-project.org>
+
+	* ltdefns.dtx: Remove change from 1999-01-08 internal/2967
 
 	* lppl.txt: minor rewordings after comments from
 	Arnoud Engelfriet and John Hasler.	

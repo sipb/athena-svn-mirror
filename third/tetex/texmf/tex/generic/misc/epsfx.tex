@@ -31,15 +31,20 @@
 %      * \special commands surrounding EPS box are to be nested in the \vbox
 % ver. 0.57  31 VIII 1996
 %      * odd characters in names enabled
-% ver. 0.58  21.III.1997
+% ver. 0.58  21 III 1997
 %      * setpageparams and setpage neutralized
-% ver. 0.585 25.III.1997
+% ver. 0.585 25 III 1997
 %      * comments touched
-% ver. 0.59 7 VI 1998
+% ver. 0.59  7 VI 1998
 %      * EPSF.TEX included
-% ver. 0.60 10 I 1999
+% ver. 0.60  10 I 1999
 %      * safe multiplication of eps dimensions by 10 (expected to be
 %        included in the newest version of Rokicki's package)
+% ver. 0.61  29 III 2000
+%      * \eps expands to \hbox
+% ver. 0.62  13 (Friday) VII 2001
+%      * setpagedevice neutralized (why only now?) along with a bundle of 
+%      	 commands specifying paper size (a0, a1, ... , b0, b1, ... , etc.)
 %--------------------------------------------------------------------------
 \edef\slashcatcode{\the\catcode`\/}
 \catcode`\/12
@@ -287,15 +292,24 @@
      \vskip-.4pt\hrule
    }}\fi}
 % ---
-\def\eps{\begingroup \escapechar-1 \catcode`\%12 \def~{\string~}\epscont}
+\def\eps{\hbox\bgroup
+  \begingroup \escapechar-1 \catcode`\%12 \def~{\string~}\epscont}
 \def\epscont#1{%
   \xdef\theepsname{\expandafter\string\csname#1\endcsname}\endgroup
   \vbox{\special{ps: /SItps save N /isls false N
     statusdict begin
       /setpageparams {pop pop pop pop} def /setpage {pop pop pop} def
     end
-    userdict begin /bop-hook {} def end }%
-  \epsraw\theepsname\special{ps: SItps restore }}}
+    userdict begin
+      /bop-hook {} def /setpagedevice {pop} def
+      /a0 {} def /a1 {} def /a2 {} def /a3 {} def /a4 {} def /a5 {} def
+      /a6 {} def /a7 {} def /a8 {} def /a9 {} def /a10 {} def
+      /b0 {} def /b1 {} def /b2 {} def /b3 {} def /b4 {} def /b5 {} def
+      /letter {} def /note {} def /legal {} def
+      /halfletter {} def /11x17 {} def /ledger {} def
+      /flsa {} def /flse {} def
+    end }%
+  \epsraw\theepsname\special{ps: SItps restore }}\egroup}
 % ---
 % Redefinition of epsf macros:
 %

@@ -1,0 +1,11 @@
+% This file is part of vntex. License: GPL.
+%
+ligtable "`": "`" =: oct"020";
+ligtable "'": "'" =: oct"021";
+ligtable "-": "-" =: oct"025", % number range dash equals "-"
+         oct"177" =: oct"177"; % <hyphen><hyphenchar> => <hyphenchar>
+ligtable "<": "<" =: oct"023"; % "<<"
+ligtable ">": ">" =: oct"024"; % ">>"
+ligtable ",": "," =: oct"022"; % ",,"
+
+endinput;

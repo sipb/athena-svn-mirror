@@ -1,0 +1,82 @@
+The European Concrete Fonts
+
+Copyright (c) 1998--1999 Walter Schmidt
+
+These fonts are free software; you can redistribute and/or
+modify them under the terms of the LaTeX Project Public License
+as described in lppl.txt in the base LaTeX distribution; either
+version 1 of the License, or (at your option) any later version.
+
+This applies to the following files:
+
+readme
+liesmich
+
+conc10pt.mf
+conc5pt.mf
+conc6pt.mf
+conc7pt.mf
+conc8pt.mf
+conc9pt.mf
+coni10pt.mf
+eocc10.mf
+eorm10.mf
+eorm5.mf
+eorm6.mf
+eorm7.mf
+eorm8.mf
+eorm9.mf
+eosl10.mf
+eosl5.mf
+eosl6.mf
+eosl7.mf
+eosl8.mf
+eosl9.mf
+eoti10.mf
+tcssdc10.mf
+torm10.mf
+torm5.mf
+torm6.mf
+torm7.mf
+torm8.mf
+torm9.mf
+tosl10.mf
+tosl5.mf
+tosl6.mf
+tosl7.mf
+tosl8.mf
+tosl9.mf
+toti10.mf
+
+eocc10.tfm
+eorm10.tfm
+eorm5.tfm
+eorm6.tfm
+eorm7.tfm
+eorm8.tfm
+eorm9.tfm
+eosl10.tfm
+eosl5.tfm
+eosl6.tfm
+eosl7.tfm
+eosl8.tfm
+eosl9.tfm
+eoti10.tfm
+tcssdc10.tfm
+torm10.tfm
+torm5.tfm
+torm6.tfm
+torm7.tfm
+torm8.tfm
+torm9.tfm
+tosl10.tfm
+tosl5.tfm
+tosl6.tfm
+tosl7.tfm
+tosl8.tfm
+tosl9.tfm
+toti10.tfm
+
+If you receive only some of these files from someone, complain!
+
+% finis

@@ -1,0 +1,23 @@
+%Filename: t1hlcf.fd
+%Created by: tex hlcf
+%Created using fontinst v1.914
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{t1hlcf.fd}
+   [2003/01/04 Fontinst v1.914 font definitions for T1/hlcf.]
+\@ifundefined{DeclareLucidaFontShape}{%
+\def\DeclareLucidaFontShape#1#2#3#4#5#6{%
+\DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}}{}
+
+\DeclareFontFamily{T1}{hlcf}{}
+
+\DeclareLucidaFontShape{T1}{hlcf}{m}{n}{
+hlcrf8t
+}{}
+
+\DeclareFontShape{T1}{hlcf}{m}{it}{<-> ssub * hlcf/m/n}{}
+\DeclareFontShape{T1}{hlcf}{b}{n}{<-> ssub * hlcf/m/n}{}
+\DeclareFontShape{T1}{hlcf}{b}{it}{<-> ssub * hlcf/m/n}{}
+
+\endinput

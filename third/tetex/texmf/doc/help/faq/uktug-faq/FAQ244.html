@@ -1,0 +1,16 @@
+<head>
+<title>UK TeX FAQ -- question 244</title>
+</head><body>
+<h3>Old LaTeX font references such as <code>\tenrm</code></h3>
+<p>LaTeX 2.09 defined a large set of commands for access to the fonts
+that it had built in to itself.  For example, various flavours of
+<code>cmr</code> could be found as <code>\fivrm</code>, <code>\sixrm</code>, <code>\sevrm</code>,
+<code>\egtrm</code>, <code>\ninrm</code>, <code>\tenrm</code>, <code>\elvrm</code>, <code>\twlrm</code>,
+<code>\frtnrm</code>, <code>\svtnrm</code>, <code>\twtyrm</code> and <code>\twfvrm</code>.
+These commands were never documented, but certain packages
+nevertheless used them to achieve effects they needed.
+<p>Since the commands weren't public, they weren't included in LaTeX2e;
+to use the unconverted LaTeX 2.09 packages under LaTeX2e, you need
+also to include the <i>rawfonts</i> package (which is part of the
+LaTeX2e distribution).
+<p></body>

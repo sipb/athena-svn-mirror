@@ -1,0 +1,15 @@
+	   -------------------------------------------------------
+	   | pst-key: package to interface PSTricks and `keyval' |
+	   |                                                     |
+           |             Version 1.11 (July 23, 1998)            |
+           |     David Carlisle <david@dcarlisle.demon.co.uk>    |
+	   -------------------------------------------------------
+
+
+
+  * Install pst-key.sty and pst-key.tex in one of your TeX input directories
+
+  * See for instance the `pst-poly' package for usage (in contrib/pst-poly)
+
+--
+Denis Girou (updated July 23, 1998)

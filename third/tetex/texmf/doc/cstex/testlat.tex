@@ -1,0 +1,28 @@
+\documentclass[12pt]{article}
+\usepackage{czech} % Zapne kodovani cestiny a deleni slov.
+\usepackage{times} % Misto CS-fontu budou pouzity PostScriptove fonty
+\parskip=\baselineskip % Mezi odstavci bude prázdný øádek
+\emergencystretch=4em  % abych dovolil vetsi mezery a nebyly Overfull
+
+\begin{document}
+Tady je text napsaný PostScriptovým fontem vèetnì zpracování akcentù v~èeském
+jazyce a správného dìlení slov.
+
+Matematika i pøi sazbì PostScriptovým fontem zùstává ve fontu CM.
+Proto je rozdíl mezi èíslovkou \uv{2} napsanou pøímo v textu a èíslovkou
+\uv{$2$} napsanou na vstupu mezi dolary.
+
+Kromì stylu {\tt times.sty} je mo¾no pou¾ít styly pro pøepínání do dal¹ích
+PostScriptových fontù: {\tt avant.sty}, {\tt bookman.sty}, 
+{\tt helvet.sty}, {\tt newcent.sty}, {\tt palatino.sty}
+(vyzkou¹ejte si).
+
+V plainu lze té¾ pou¾ít stejným zpùsobem PostScriptové fonty, ov¹em
+místo volání vý¹e uvedených stylù je nutno volat soubory 
+{\tt ctimes.tex}, {\tt cavantga.tex}, {\tt cbookman.tex}, 
+{\tt chelvet.tex}, {\tt cncent.tex}, {\tt cpalatin.tex}.  Napøíklad kdekoli
+v textu pí¹eme \verb|\input ctimes| a od této chvíle máme text sázený 
+fontem Times-Roman.
+
+\end{document}
+

@@ -1,0 +1,265 @@
+%&mex --translate-file=il2-pl
+%% StaW (09.03.2001)
+%% qpxsymb -- zestawienie symboli AMS w fontach PXFONTS
+\input qpxmath.tex
+\input amsqpx.tex % ³aduje amsqtx.def
+%%
+\input verbatim % ftp://ftp.gust.org.pl/TeX/GUST/contrib/GUSTLIB/verbatim.tex
+\input mimulcol % ftp://ftp.gust.org.pl/TeX/GUST/contrib/GUSTLIB/mimulcol.tex
+\catcode`\*=\active \gdef*{\verbatim*}
+
+\advance\vsize by1cm\vglue-.7cm
+\centerline{\bf DODATKOWE SYMBOLE ZDEFINIOWANE W AMSQPX}
+
+\bigskip
+\noindent Oprócz poni¿szych symboli dostêpne s± w~trybie matematycznym
+polecenia *$\frak a$* oraz *$\Bbb A$* itp., np.
+$\frak a\frak b \frak c \frak d \frak A \frak B\frak C\frak D$
+$\Bbb A \Bbb Z$
+
+\bigskip
+\beginmulticols 3
+%================================================
+\baselineskip16pt plus0.2pt minus0.2pt
+\halign{#\hfil\enspace&#\hfil\cr
+\multispan2\bf Symbole nie wymagaj±ce\hfil\cr
+\noalign{\vskip-4pt}
+\multispan2\bf trybu matematycznego\hfil\cr
+*\yen* &\yen\cr
+*\checkmark * &\checkmark \cr
+*\circledR* &\circledR\cr
+*\maltese* &\maltese\cr
+\multispan2\bf Separatory\hfil\cr
+*$\ulcorner$*&$\ulcorner$\cr
+*$\urcorner$* &$\urcorner$\cr
+*$\llcorner$* &$\llcorner$\cr
+*$\lrcorner$* &$\lrcorner$\cr
+\multispan2\bf Minusku³y greckie\hfil\cr
+*$\digamma$* &$\digamma$\cr
+*$\varkappa$* &$\varkappa$\cr
+*$\varg$* &$\varg$\cr
+\multispan2\bf  Litery hebrajskie\hfil\cr
+*$\beth$* &$\beth$\cr
+*$\gimel$* &$\gimel$\cr
+*$\daleth$* &$\daleth$\cr
+\multispan2\bf  Symbole ró¿ne\hfil\cr
+*$\Bbbk$* &$\Bbbk$\cr
+*$\hbar$* &$\hbar$\cr
+*$\hslash$* &$\hslash$\cr
+*$\backprime$* &$\backprime$\cr
+*$\varnothing$* &$\varnothing$\cr
+*$\vartriangle$* &$\vartriangle$\cr
+*$\blacktriangle$* &$\blacktriangle$\cr
+*$\triangledown$* &$\triangledown$\cr
+*$\blacktriangledown$* &$\blacktriangledown$\cr
+*$\square$* &$\square$\cr
+*$\blacksquare$* &$\blacksquare$\cr
+*$\lozenge$* &$\lozenge$\cr
+*$\blacklozenge$* &$\blacklozenge$\cr
+*$\circledS$* &$\circledS$\cr
+*$\bigstar$* &$\bigstar$\cr
+*$\angle$* &$\angle$\cr
+*$\measuredangle$* &$\measuredangle$\cr
+*$\sphericalangle$* &$\sphericalangle$\cr
+*$\nexists$* &$\nexists$\cr
+*$\complement$* &$\complement$\cr
+*$\mho$* &$\mho$\cr
+*$\eth$* &$\eth$\cr
+*$\Finv$* &$\Finv$\cr
+*$\Game$* &$\Game$\cr
+*$\diagup$* &$\diagup$\cr
+*$\diagdown$* &$\diagdown$\cr
+\multispan2\bf  Operatory\hfil\cr
+*$\dotplus$* &$\dotplus$\cr
+*$\smallsetminus$* &$\smallsetminus$\cr
+*$\Cup$* &$\Cup$\cr
+%\let\doublecup=\Cup
+*$\Cap$* &$\Cap$\cr
+%\let\doublecap=\Cap
+*$\barwedge$* &$\barwedge$\cr
+*$\veebar$* &$\veebar$\cr
+*$\doublebarwedge$* &$\doublebarwedge$\cr
+*$\boxminus$* &$\boxminus$\cr
+*$\boxplus$* &$\boxplus$\cr
+*$\boxdot$* &$\boxdot$\cr
+*$\boxtimes$* &$\boxtimes$\cr
+*$\divideontimes$* &$\divideontimes$\cr
+*$\centerdot$* &$\centerdot$\cr
+*$\ltimes$* &$\ltimes$\cr
+*$\rtimes$* &$\rtimes$\cr
+*$\leftthreetimes$* &$\leftthreetimes$\cr
+*$\rightthreetimes$* &$\rightthreetimes$\cr
+*$\curlywedge$* &$\curlywedge$\cr
+*$\curlyvee$* &$\curlyvee$\cr
+*$\circledcirc$* &$\circledcirc$\cr
+*$\circledast$* &$\circledast$\cr
+*$\circleddash$* &$\circleddash$\cr
+*$\intercal$* &$\intercal$\cr
+\multispan2\bf Relacje\hfil\cr
+*$\leqq$* &$\leqq$\cr
+*$\geqq$* &$\geqq$\cr
+*$\leqslant$* &$\leqslant$\cr
+*$\geqslant$* &$\geqslant$\cr
+*$\eqslantless$* &$\eqslantless$\cr
+*$\eqslantgtr$* &$\eqslantgtr$\cr
+*$\lesssim$* &$\lesssim$\cr
+*$\gtrsim$* &$\gtrsim$\cr
+*$\lessapprox$* &$\lessapprox$\cr
+*$\gtrapprox$* &$\gtrapprox$\cr
+*$\approxeq$* &$\approxeq$\cr
+*$\eqsim$* &$\eqsim$\cr
+*$\lessdot$* &$\lessdot$\cr
+*$\gtrdot$* &$\gtrdot$\cr
+*$\lll$* &$\lll$\cr
+%\let\llless=\lll
+*$\ggg$* &$\ggg$\cr
+%\let\gggtr=\ggg
+*$\lessgtr$* &$\lessgtr$\cr
+*$\gtrless$* &$\gtrless$\cr
+*$\lesseqgtr$* &$\lesseqgtr$\cr
+*$\gtreqless$* &$\gtreqless$\cr
+*$\lesseqqgtr$* &$\lesseqqgtr$\cr
+*$\gtreqqless$* &$\gtreqqless$\cr
+*$\doteqdot$* &$\doteqdot$\cr
+%\let\Doteq=\doteqdot
+*$\risingdotseq$* &$\risingdotseq$\cr
+*$\fallingdotseq$* &$\fallingdotseq$\cr
+*$\eqcirc$* &$\eqcirc$\cr
+*$\circeq$* &$\circeq$\cr
+*$\triangleq$* &$\triangleq$\cr
+*$\backsim$* &$\backsim$\cr
+*$\backsimeq$* &$\backsimeq$\cr
+*$\thicksim$* &$\thicksim$\cr
+*$\thickapprox$* &$\thickapprox$\cr
+*$\subseteqq$* &$\subseteqq$\cr
+*$\supseteqq$* &$\supseteqq$\cr
+*$\Subset$* &$\Subset$\cr
+*$\Supset$* &$\Supset$\cr
+*$\sqsubset$* &$\sqsubset$\cr
+*$\sqsupset$* &$\sqsupset$\cr
+*$\preccurlyeq$* &$\preccurlyeq$\cr
+*$\succcurlyeq$* &$\succcurlyeq$\cr
+*$\curlyeqprec$* &$\curlyeqprec$\cr
+*$\curlyeqsucc$* &$\curlyeqsucc$\cr
+*$\precsim$* &$\precsim$\cr
+*$\succsim$* &$\succsim$\cr
+*$\precapprox$* &$\precapprox$\cr
+*$\succapprox$* &$\succapprox$\cr
+*$\vartriangleleft$* &$\vartriangleleft$\cr
+*$\vartriangleright$* &$\vartriangleright$\cr
+*$\trianglelefteq$* &$\trianglelefteq$\cr
+*$\trianglerighteq$* &$\trianglerighteq$\cr
+*$\vDash$* &$\vDash$\cr
+*$\Vdash$* &$\Vdash$\cr
+*$\Vvdash$* &$\Vvdash$\cr
+*$\smallsmile$* &$\smallsmile$\cr
+*$\smallfrown$* &$\smallfrown$\cr
+*$\bumpeq$* &$\bumpeq$\cr
+*$\Bumpeq$* &$\Bumpeq$\cr
+*$\varpropto$* &$\varpropto$\cr
+*$\shortmid$* &$\shortmid$\cr
+*$\shortparallel$* &$\shortparallel$\cr
+*$\between$* &$\between$\cr
+*$\pitchfork$* &$\pitchfork$\cr
+*$\backepsilon$* &$\backepsilon$\cr
+*$\blacktriangleleft$* &$\blacktriangleleft$\cr
+*$\blacktriangleright$* &$\blacktriangleright$\cr
+*$\therefore$* &$\therefore$\cr
+*$\because$* &$\because$\cr
+\multispan2\bf Negacje relacji\hfil\cr
+*$\nless$* &$\nless$\cr
+*$\ngtr$* &$\ngtr$\cr
+*$\nleq$* &$\nleq$\cr
+*$\ngeq$* &$\ngeq$\cr
+*$\nleqslant$* &$\nleqslant$\cr
+*$\ngeqslant$* &$\ngeqslant$\cr
+*$\nleqq$* &$\nleqq$\cr
+*$\ngeqq$* &$\ngeqq$\cr
+*$\lneqq$* &$\lneqq$\cr
+*$\gneqq$* &$\gneqq$\cr
+*$\lneq$* &$\lneq$\cr
+*$\gneq$* &$\gneq$\cr
+*$\lvertneqq$* &$\lvertneqq$\cr
+*$\gvertneqq$* &$\gvertneqq$\cr
+*$\lnsim$* &$\lnsim$\cr
+*$\gnsim$* &$\gnsim$\cr
+*$\lnapprox$* &$\lnapprox$\cr
+*$\gnapprox$* &$\gnapprox$\cr
+*$\nprec$* &$\nprec$\cr
+*$\nsucc$* &$\nsucc$\cr
+*$\npreceq$* &$\npreceq$\cr
+*$\nsucceq$* &$\nsucceq$\cr
+*$\precneqq$* &$\precneqq$\cr
+*$\succneqq$* &$\succneqq$\cr
+*$\precnsim$* &$\precnsim$\cr
+*$\succnsim$* &$\succnsim$\cr
+*$\precnapprox$* &$\precnapprox$\cr
+*$\succnapprox$* &$\succnapprox$\cr
+*$\nsim$* &$\nsim$\cr
+*$\ncong$* &$\ncong$\cr
+*$\nshortmid$* &$\nshortmid$\cr
+*$\nshortparallel$* &$\nshortparallel$\cr
+*$\nmid$* &$\nmid$\cr
+*$\nparallel$* &$\nparallel$\cr
+*$\nvdash$* &$\nvdash$\cr
+*$\nvDash$* &$\nvDash$\cr
+*$\nVdash$* &$\nVdash$\cr
+*$\nVDash$* &$\nVDash$\cr
+*$\ntriangleleft$* &$\ntriangleleft$\cr
+*$\ntriangleright$* &$\ntriangleright$\cr
+*$\ntrianglelefteq$* &$\ntrianglelefteq$\cr
+*$\ntrianglerighteq$* &$\ntrianglerighteq$\cr
+*$\nsubseteqq$* &$\nsubseteqq$\cr
+*$\nsupseteqq$* &$\nsupseteqq$\cr
+*$\nsubseteq$* &$\nsubseteq$\cr
+*$\nsupseteq$* &$\nsupseteq$\cr
+*$\subsetneq$* &$\subsetneq$\cr
+*$\supsetneq$* &$\supsetneq$\cr
+*$\varsubsetneq$* &$\varsubsetneq$\cr
+*$\varsupsetneq$* &$\varsupsetneq$\cr
+*$\subsetneqq$* &$\subsetneqq$\cr
+*$\supsetneqq$* &$\supsetneqq$\cr
+*$\varsubsetneqq$* &$\varsubsetneqq$\cr
+*$\varsupsetneqq$* &$\varsupsetneqq$\cr
+\multispan2\bf Strza³ki\hfil\cr
+*$\leftleftarrows$* &$\leftleftarrows$\cr
+*$\rightrightarrows$* &$\rightrightarrows$\cr
+*$\leftrightarrows$* &$\leftrightarrows$\cr
+*$\rightleftarrows$* &$\rightleftarrows$\cr
+*$\Lleftarrow$* &$\Lleftarrow$\cr
+*$\Rrightarrow$* &$\Rrightarrow$\cr
+*$\twoheadleftarrow$* &$\twoheadleftarrow$\cr
+*$\twoheadrightarrow$* &$\twoheadrightarrow$\cr
+*$\leftarrowtail$* &$\leftarrowtail$\cr
+*$\rightarrowtail$* &$\rightarrowtail$\cr
+*$\looparrowleft$* &$\looparrowleft$\cr
+*$\looparrowright$* &$\looparrowright$\cr
+*$\leftrightharpoons$* &$\leftrightharpoons$\cr
+*$\rightleftharpoons$* &$\rightleftharpoons$\cr
+*$\curvearrowleft$* &$\curvearrowleft$\cr
+*$\curvearrowright$* &$\curvearrowright$\cr
+*$\circlearrowleft$* &$\circlearrowleft$\cr
+*$\circlearrowright$* &$\circlearrowright$\cr
+*$\Lsh$* &$\Lsh$\cr
+*$\Rsh$* &$\Rsh$\cr
+*$\upuparrows$* &$\upuparrows$\cr
+*$\downdownarrows$* &$\downdownarrows$\cr
+*$\upharpoonleft$* &$\upharpoonleft$\cr
+*$\upharpoonright$* &$\upharpoonright$\cr
+*$\downharpoonleft$* &$\downharpoonleft$\cr
+*$\downharpoonright$* &$\downharpoonright$\cr
+*$\multimap$* &$\multimap$\cr
+*$\rightsquigarrow$* &$\rightsquigarrow$\cr
+*$\leftrightsquigarrow$* &$\leftrightsquigarrow$\cr
+\multispan2\bf Negacje strza³ek\hfil\cr
+*$\nleftarrow$* &$\nleftarrow$\cr
+*$\nrightarrow$* &$\nrightarrow$\cr
+*$\nLeftarrow$* &$\nLeftarrow$\cr
+*$\nRightarrow$* &$\nRightarrow$\cr
+*$\nLeftrightarrow$* &$\nLeftrightarrow$\cr
+*$\nleftrightarrow$* &$\nleftrightarrow$\cr
+}
+
+\endmulticols
+
+\bye

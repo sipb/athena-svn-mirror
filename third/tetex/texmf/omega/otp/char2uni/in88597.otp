@@ -1,10 +1,15 @@
 % File in88597.otp
 % Conversion to Unicode from ISO-8859-7 (Latin/Greek)
 % Copyright (c) 1995 John Plaice and Yannis Haralambous
+% Copyright (c) 2002 Roozbeh Pournader
 % This file is part of the Omega project.
 %
 % This file was derived from data in the tcs program
 % (ftp://plan9.att.com/plan9/unixsrc/tcs.shar.Z, 16 November 1994)
+%
+% It was then modified based on information available from
+% Unicode's character mappings files
+% (http://www.unicode.org/Public/MAPPINGS/)
 %
 
 input:	1;
@@ -13,7 +18,7 @@ output:	2;
 tables:
 
 tab8859_7[@"60] = {
-@"00A0, @"0371, @"0372, @"00A3, @"FFFD, @"FFFD, @"00A6, @"00A7,
+@"00A0, @"2018, @"2019, @"00A3, @"FFFD, @"FFFD, @"00A6, @"00A7,
 @"00A8, @"00A9, @"FFFD, @"00AB, @"00AC, @"00AD, @"FFFD, @"2015,
 @"00B0, @"00B1, @"00B2, @"00B3, @"0384, @"0385, @"0386, @"00B7,
 @"0388, @"0389, @"038A, @"00BB, @"038C, @"00BD, @"038E, @"038F,

@@ -1,0 +1,204 @@
+			       ---------------
+			       | PSTricks 97 |
+			       ---------------
+
+
+
+-----------------------------------------------------------------------
+PSTricks is the work of  Timothy van Zandt <tvz@nwu.edu>
+
+PSTricks 97 is edited by Denis Girou <Denis.Girou@idris.fr>
+  and Sebastian Rahtz <sebastian.rahtz@computing-services.oxford.ac.uk>
+-----------------------------------------------------------------------
+
+
+
+1 - Copyright
+    ---------
+
+COPYRIGHT 1993, 1994, 1999 by Timothy Van Zandt, tvz@nwu.edu.
+
+This program can be redistributed and/or modified under the terms
+of the LaTeX Project Public License Distributed from CTAN
+archives in directory macros/latex/base/lppl.txt.
+
+2 - Introduction
+    ------------
+
+This package is a re-release of PSTricks, incorporating all of the
+beta releases and bug fixes made up to March 1997. It is *not*
+intended as a full new release of PSTricks, but as a consolidation and
+cleaned distribution. Because Timothy van Zandt does not currently have
+enough time to work on PSTricks, he gave permission for Denis Girou
+and Sebastian Rahtz to produce this interim solution.
+
+No new features have been added in PST97, except the release of the
+small pst-fill package for filling (tiling) arbitrary regions and the
+various evolving contributions, but we have merged in all the bug fixes
+and beta addons which Timothy produced.
+
+We have renamed some of the files that make up PSTricks, for consistency.
+
+
+3 - Installation
+    ------------
+
+3.1 - (La)TeX files
+
+      a - You have to move all the files from the "generic" subdirectory
+to a directory part of your TEXINPUTS environment variable, or to add it
+in your TEXINPUTS list of paths.
+
+      b - If you are a LaTeX user (and not only a plain TeX one), you have
+to do the same thing for the "latex" subdirectory, which define LaTeX
+wrappers for all the PSTricks files.
+
+3.2 - PostScript header files
+
+      a - If you use the "dvips" DVI to PostScript converter, you have
+to move all the files from the "dvips" subdirectory to a directory part
+of your DVIPSHEADERS environment variable, or to add it in your DVIPSHEADERS
+list of paths.
+
+      b - If you use the Y&Y's "dvipsone" DVI to PostScript converter,
+you have to rename generic/dvipsone.con to generic/pstricks.con and to move
+all the files of the "dvips" subdirectory to the TeX input folder.
+
+      c - If you use the MicroPress "VTeX" DVI to PostScript converter,
+you have to rename generic/vtex.con to generic/pstricks.con and to move
+all the files of the "dvips" subdirectory to the TeX input folder.
+
+      d - If you use the "textures" (version 1.7 or 1.8) DVI to PostScript
+converter (for Macintosh), you should proceed as follows:
+          * create a new folder PSTricks97 (for instance) as a subfolder in
+Textures' TeX inputs folder,
+          * copy the "generic", "dvips", "latex" and "contrib" subfolders
+from the "pst97" folder to the newly created "PSTricks97" folder,
+          * open the "generic" folder and remove the file pstricks.con,
+then rename the file textures.con to pstricks.con,
+          * open the "dvips" folder and change the following line in the file
+pstricks.pro (courtesy Michael J. Sharpe <msharpe@euclid.ucsd.edu>):
+/STV { SDict begin normalscale end STP  } def
+by
+/STV { Mag 72.27 72 div mul dup neg scale STP  } def
+          It was also reported that the `pst-text' package (to put text
+along paths) doesn't work with the "textures" driver.
+          Textures's users must also look at the page kindly maintained
+by Michael Sharpe: http://math.ucsd.edu/~msharpe/pst-textures.html
+
+      d - If you use another driver than these four ones, you have to adapt
+a pstricks.con file for it, if the one for "dvips" doesn't work for it.
+You can also look at the instructions of the old obsolete/src/pstricks.con
+file. And if nothing work, ask for help on the PSTricks mailing list,
+hopping that somebody on the list has the same configuration than you...
+
+3.3 - Test of the installation
+
+The file doc/test-pst.tex allow you to test all your installation and the
+various components of PSTricks. It is the concatenation of most of the
+examples of the PSTricks chapter of "The LaTeX Graphics Companion".
+You must take care (mainly if you are "normally" a user of plain TeX only,
+that it require LaTeX and some packages of it distribution (namely `calc',
+`ifthen' and `graphicx'). It also require the `random' and `subfigure'
+packages, which can be found on CTAN or the TeXLive cdrom - see the README
+file of the doc subdirectory).
+
+3.4 - Known pitfalls
+
+      a - To use the standard `color' package (which is available both
+for plain TeX and LaTeX) with PSTricks, you must load the `pstcol' extra
+package written by David Carlisle, which interface the two packages,
+loading them in the right order, and overriding some small parts of PSTricks
+to allow it to use the `color' package system for specifying color.
+We strongly recommend that you use the `color' package today.
+
+      b - Don't try to load the `color' package if you use `pst-all'
+(it is already loaded in the correct order).
+
+      c - If needed, preferably load the `graphics' / `graphicx' package
+after PSTricks, and in this case use the `graphics' syntax of \scalebox
+(not the one described in the PSTricks documentation).
+
+      d - If you load `graphics' / `graphicx' before PSTricks, you must use
+the PSTricks syntax of \scalebox in all cases (not the one described
+in the `grfguide' document).
+
+      e - We have rename some package files for consistency. But the reference
+documentation in obsolete/doc subdirectory still refer to the old names.
+So, take care that `pst2eps' is now `pst-eps', `charpath' is now `pst-char',
+`gradient' is now `pst-grad', `textpath' is now `pst-text' and `pstree' is
+now `pst-tree'.
+
+
+4 - Contents
+    --------
+
+4.1 - Subdirectories
+
+The distribution contain the following subdirectories:
+
+contrib : various contributions
+doc     : documentations (up to date ones - the obsolete/doc subdirectory
+          contain the reference documentation for the version 0.93a and
+          the additional old Beta material, which is still necessary to use...)
+dvips   : PostScript header files
+generic : TeX generic sources
+latex   : LaTeX wrappers
+obsolete: documentation and sources for the version 0.93a and the
+          additional old Beta material
+
+4.2 - PSTricks core files
+
+The generic subdirectory contain the core files of PSTricks (and the latex
+subdirectory contain the corresponding wrapper files). By alphabetic order:
+
+multido : loop facility for Generic TeX (in fact independant of PSTricks)
+pst-3d  : 3d projections
+pst-char: stroking and filling character paths
+pst-coil: coils and zigzags
+pst-eps : conversion of PSTricks graphics to EPS files
+pst-fill: fillings and tilings
+pst-grad: gradients
+pst-node: nodes and node connections
+pst-plot: plots
+pst-text: texts along a path
+pst-tree: trees
+
+In addition, there is a LaTeX package `pst-all' in the latex subdirectory,
+which loads all of the PSTricks components, plus `pstcol', in one go
+(`pstcol' require also a color.cfg file defined; make sure you do _not_ load
+the `color' package by itself). The only reason for _not_ using this is that
+it uses extra memory for facilities you might not need.
+
+
+5 - Documentation
+    -------------
+
+There is NOT a complete up to date _reference_ documentation for PSTricks 97.
+You must still refer to the reference documentation of the version 0.93a and
+the additional old Beta material, available in the obsolete/doc subdirectory
+(it was put in the "obsolete" subdirectory to clearly show that it is not up
+to date nor supported by actual mainteners). Take care to notice what has
+changed in additional old Beta documents (betadoc?.ps files) comparing to the
+ones for 0.93a version (pst-usr?.ps files).
+
+Denis Girou maintain a list of known errors in both version 0.93a and
+additional old Beta documentations, in obsolete/doc/pst-doc.err
+
+A large chapter of "The LaTeX Graphics Companion", by Goossens, Rahtz and
+Mittelbach, Addison Wesley 1997, is dedicated to PSTricks, and this
+currently forms the only systematic description of the integration of
+the basic PSTricks and the beta additions of 1993. The source of all examples
+from that book is also on CTAN/info/lgc and most of them in the doc/lgc
+subdirectory of the PST97 distribution.
+
+There is also a supporting set of Web pages, actually maintained
+by Denis Girou, on http://www.tug.org/applications/PSTricks with various
+pointers and examples classified by categories.
+
+And there is also a mailing list devoted to discussions on PSTricks usage.
+The informations to subscribe to this list and to consult the archives can
+be found on the Web page.
+
+--
+Denis Girou and Sebastian Rahtz (updated May 5, 1999)

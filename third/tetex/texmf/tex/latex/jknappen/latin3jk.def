@@ -1,11 +1,11 @@
 % latin3jk.def
 %
-% (c) Copyright 1995, 1996 J"org Knappen.
+% (c) Copyright 1995, 1996, 2000 J"org Knappen.
 % Licence GNU licence Version 2
 % see after \endinput for further information
 %
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesFile{latin3jk.def}[1996/02/11 latin-3 input encoding file 1.1 (jk)]
+\ProvidesFile{latin3jk.def}[2000/03/11 latin-3 input encoding file 1.2 (jk)]
 %%%\RequirePackage{textcomp}    % text companion symbols (tc fonts)
 %%%\RequirePackage[T4]{fontenc} % fc fonts needed for maltese
 \ProvideTextCommandDefault{\notdef}{\TextSymbolUnavailable\notdef}
@@ -139,12 +139,8 @@
 %
 % This file is supported by
 %
-% J"org Knappen
-% Professional (La)TeX consultant
-% Barbarossaring 43
-% D-55118 Mainz
-% Allemagne
-%
-% knappen@vkpmzd.kph.uni-mainz.de
+% J"org Knappen, Barbarossaring 43, D-55118 Mainz, Allemagne. 
+% Author of the Book: Schnell ans Ziel mit LaTeX2e, Oldenbourg-Verlag
+% M"unchen, 1997, ISBN 3-486-24199-0.
 %
 %% End of file latin3jk.def

@@ -9,6 +9,141 @@ are not part of the distribution.
 =======================================================================
 
 
+2001-09-04 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: correct typo in name \vref -> \vr@f
+
+2001-07-24 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* trace.dtx: use ltxdoc not ltugboat class for docu
+
+2001-04-16 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: changed my mind and also added \vpagerefrange*
+
+	* trace.dtx: added package to tools distribution
+
+2001-04-12 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx (subsection{Defining the main macros}): Added
+	\vref* and \vpageref* which do not add a space in front of the
+	generated text (ever) so that they can be used in situations like
+	(\vref{foo} ...) without added a space after the open parenthesis.
+
+2001-01-12 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: Updated nynorsk defaults
+
+2000-12-30 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: Updated Danish defaults
+
+2000-09-25 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx: Added the option italian as suggested by Claudio
+	Beccari, back in august 1998...
+
+2000-09-21 Johannes Braams <latex-bugs@latex-project.org>
+
+	* layout.dtx: Added the option german as proposed by Karsten
+	Tinnefeld <karsten@tinnefeld.com> in PR 3259
+
+2000-08-23 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: Updated defaults for catalan
+
+2000-07-10 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: fixed color problem with rules between columns
+	(their color did depend on the color of the text at the break)
+
+2000-07-09 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: Don't output space if optional argument
+        to \vpageref is empty (pr/3230)
+
+2000-06-11 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx (subsection{The output routines}]): when
+	doing boxed mode do not restrict height of columns to \@colroom
+	(pr/3212)
+
+2000-05-05 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx (subsection{Starting and ): Detect and fix 
+	problem if a multicols ends at the top of a page
+
+2000-04-16 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: added defaults for Czech
+
+2000-04-15 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* ftnright.dtx: Don't use math mode for footnote symbol
+                        (pr/3172)
+
+2000-01-11 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: added naustrian and ngerman options
+
+2000-01-07 Rainer Schoepf <latex-bugs@latex-project.org>
+
+	* verbatim.dtx: Disable hyphenation even if the font allows it.
+
+1999-12-14 Rainer Schoepf <latex-bugs@latex-project.org>
+
+1999-12-02 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: even more portugese defaults
+
+1999-11-25 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* varioref.dtx: added portuguese defaults
+
+1999-10-21 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: allow multi-paragraph footnotes again. This functionality
+	was lost when the footnotes got reimplemented some time ago. (Problem
+	reported by Niels Ferguson)
+
+1999-09-03 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* DEFAULT.hea: updated for LPPL 1.2
+
+	* DEFAULT.pre: updated for LPPL 1.2
+
+1999-07-19 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: 
+	Added some additional tracing code.
+	When balancing check that last column doesn't contain a forced
+        page break; if it does reject the solution.
+
+1999-07-09 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* updated headers to reflect LPPL 1.1
+
+1999-06-18 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: added documentation for \columnsep
+
+1999-06-12 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: minor documentation updates
+
+1999-05-27 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* tools.ins: added colbreak guard for multicol.sty
+
+1999-05-26 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx (subsection{Manual column breaking}): 
+	Added a \columnbreak command to allow manual column breaks.
+
+1999-05-01 Frank Mittelbach <latex-bugs@latex-project.org>
+
+	* multicol.dtx: reworded license text slightly
+
 1999-03-22 Frank Mittelbach <latex-bugs@latex-project.org>
 
 	* multicol.dtx: re-add \cs{mark} command which was commented out
@@ -18,6 +153,10 @@ are not part of the distribution.
 
 	* enumerate.dtx: extension hook tools/2916}
 
+	* verbatim.dtx: Add \begingroup/\endgroup to definition of
+	\verbatim(*)/\endverbatim(*) so that they can safely be
+	used without \begin/\end.  Suggested by Donald Arseneau.
+	
 1999-03-04 Rainer Schoepf <latex-bugs@latex-project.org>
 
 	* manifest.txt: Corrected typo.
@@ -46,9 +185,8 @@ are not part of the distribution.
 
 1998-12-03 Johannes Braams <latex-bugs@latex-project.org>
 
-	* ftnright.dtx (section{The Implementation}): Made \@makecol
-	colorsafe by adding \color@begingroup, \color@endgroup and
-	\normalcolor. 
+	* ftnright.dtx: Made \@makecol colorsafe by adding
+	\color@begingroup, \color@endgroup and \normalcolor. 
 
 1998-11-27 Frank Mittelbach <latex-bugs@latex-project.org>
 
@@ -464,7 +602,7 @@ Wed Jul 10 11:15:30 1996  David Carlisle  <carlisle@cs.man.ac.uk>
 
 1995-10-30 Johannes Braams <latex-bugs@latex-project.org>
 
-	* layout.dtx : Added command \layout* which recomputes the values
+	* layout.dtx : Added command \layout* wbhich recomputes the values
 	it needs before making the picture of the layout. (PR 1465)
 
 1995-10-30 David Carlisle <latex-bugs@latex-project.org>
@@ -684,7 +822,8 @@ Wed Jul 10 11:15:30 1996  David Carlisle  <carlisle@cs.man.ac.uk>
 1994-09-08 Johannes Braams <latex-bugs@latex-project.org>
 
 	* layout.dtx: Stored texts in control sequences to allow the use
-of other languages. Added the options english (default) and dutch.
+	of other languages. Added the options english (default) and
+	dutch. 
 
 	* tools.dst: Added the layout package
 

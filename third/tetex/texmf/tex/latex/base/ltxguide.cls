@@ -1,15 +1,23 @@
 % \iffalse meta-comment
 %
-% Copyright 1993 1994 1995 1996 1997 1998 1999
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001
 % The LaTeX3 Project and any individual authors listed elsewhere
 % in this file. 
 % 
-% This file is part of the LaTeX2e system.
-% ----------------------------------------
+% This file is part of the LaTeX base system.
+% -------------------------------------------
 % 
-% It may be distributed under the terms of the LaTeX Project Public
-% License, as described in lppl.txt in the base LaTeX distribution.
-% Either version 1.0 or, at your option, any later version.
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.2 or later is part of all distributions of LaTeX 
+% version 1999/12/01 or later.
+% 
+% The list of all files belonging to the LaTeX base distribution is
+% given in the file `manifest.txt'. See also `legal.txt' for additional
+% information.
 % 
 % \fi
 % Filename: ltxguide.cls
@@ -25,7 +33,7 @@
 % This is a LaTeX2e document class.
  
 \NeedsTeXFormat{LaTeX2e}[1994/12/01]
-\ProvidesClass{ltxguide}[1999/03/06 Standard LaTeX class]
+\ProvidesClass{ltxguide}[2001/05/28 Standard LaTeX class]
  
 % Input any local configuration file.
  
@@ -57,6 +65,8 @@
 \newcommand{\sourcecode}{\LaTeX: the program}
 \newcommand{\LaTeXbook}{\LaTeX: A Document Preparation System}
 \newcommand{\LaTeXcomp}{The \LaTeX{} Companion}
+\newcommand\LaTeXGcomp{The \LaTeX{} Graphics Companion}
+\newcommand\LaTeXWcomp{The \LaTeX{} Web Companion}
 
 \newcommand{\babel}{\textsf{babel}}
 \newcommand{\ctan}{\textsc{ctan}}
@@ -232,3 +242,5 @@
 % 28 Feb  1999, CAR: Added some shorthand commands.
 %
 % 06 Mar  1999, RmS: Added \URL.
+%
+% 28 May  2001, CAR: Added some more shorthand commands (for books).

@@ -1,0 +1,61 @@
+%%% File: LTXMPobj.tex
+%%% A part of mfpic 0.6b 2003/01/02
+%%%
+%  Testing mfpic objects in LaTeX using Metapost
+%
+\mag=1200
+
+\documentclass{article}
+
+%%!!!!!!!!!!!!!!!!!!!!!!!!!!!
+% adjust these to your liking:
+\setlength{\paperheight}{11truein}
+\setlength{\paperwidth}{8.5truein}
+
+% Default plainTeX margins
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-2truein}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-2.1truein}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{\oddsidemargin}
+\setlength{\footskip}{\baselineskip}%???
+%
+%\usepackage[dvipdfm]{graphics}
+\usepackage{graphicx}
+\usepackage[metapost,mplabels,truebbox]{mfpic}
+\usepackage{amsfonts}
+\mfpverbtex
+{\documentclass{article}
+\begin{document}}
+
+\opengraphsfile{objs}
+
+\mfpdefinecolor{DarkerGreen}{cmyk}{.85,0,.85,.15}
+\fillcolor{DarkerGreen}    % a not so bright green
+\drawcolor{rgb(0,0,1)}     % blue
+\hatchcolor[RGB]{0,255,255}% cyan
+\headcolor[cmyk]{0,.5,1,0} % orange
+\tlabelcolor[named]{Red}   % dvips name for red (= (1,0,0))
+
+% Make sure pdf knows the true papersize.
+\ifx\pdfoutput\UndEfInEd
+\else\ifx\pdfoutput\relax
+  \let\pdfoutput\UndEfInEd
+\else
+  \setlength{\pdfpageheight}{\paperheight}
+  \setlength{\pdfpagewidth}{\paperwidth}
+\fi\fi
+
+\begin{document}
+
+\centerline{\bfseries Pictures in \LaTeX\ with MetaPost}
+
+\input MPobjs
+
+\closegraphsfile
+
+\end{document}
+

@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -46,7 +46,7 @@
 % pound         ("bf)	Sterling sign
 %
 
-LHver_check(3,2);
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Cyrillic sign palochka (as latin I)";
 cyrchar(palochka,max(6u#,4u#+cap_stem#),cap_height#,0);
@@ -222,8 +222,8 @@ penlabels(1,2,3,4); endchar;
 lhchar "Cyrillic symbol No."; %common
 cyrchar(No,14.5u#+width_adj#,cap_height#,0);
 italcorr cap_height#*slant-cap_serif_fit#+cap_jut#-2.5u#+min(.5cap_stem#,u#);
-adjust_fit(cap_serif_fit#
-  if serifs: +.5(flare#+(cap_stem#-stem#))-.25u#,cap_serif_fit# else:,0 fi);
+adjust_fit(if monospace: 0,0 else: cap_serif_fit#
+  if serifs: +.5(flare#+(cap_stem#-stem#))-.25u#,cap_serif_fit# else:,0 fi fi);
 full_w:=w; w:=if serifs: 10u else: 11.5u fi;
 numeric thin_stem; thin_stem=hround(fudged.hair+stem_corr);
 pickup tiny.nib; pos1(thin_stem,0); pos2(thin_stem,0);
@@ -455,4 +455,4 @@ top y10r=top y11r=vround(.5h+.5bar); filldraw stroke z10e--z11e;  % bar
 penlabels(1,2,3,4,5,6,7,8,9,10,11); endchar;
 
 endinput;
-% end of file
+%end of file

@@ -1,0 +1,31 @@
+% E  Sample TeX file demonstrating how to separate using CMYK-HAX macros
+%    -- bitmap graphics
+% P  Przyk/ladowy plik TeX-owy demonstruj/acy separacj/e kolor/ow
+%    za pomoc/a makr pakietu CMYK-HAX -- grafika bitmapowa
+%
+\input epsf     % DVIPS standard distribution
+\input colordvi % DVIPS standard distribution
+\input cmyk-hax
+
+\nopagenumbers
+\hoffset-1in
+\voffset-1in
+\topskip 0pt
+\hsize 210mm
+\vsize 297mm
+
+\def\epsfi{\epsfxsize 90mm \epsffile{screen.eps}}
+\def\cbox#1{\vbox{\halign{\hss##\hss\cr#1\crcr}}}
+\def\separate#1{\PSbegingroup
+  \delblacktrue
+  \projectCMYK#1%
+  \cbox{\epsfi\cr\noalign{\vskip 2mm}\CMYKlabels\rm}
+  \PSendgroup}
+
+\vglue 0pt plus 1fil
+\centerline{\separate\cyan \hskip 5mm \separate\magenta }
+\vskip 5mm
+\centerline{\separate\yellow \hskip 5mm \separate\black }
+\vglue 0pt plus 1fil
+
+\eject\end

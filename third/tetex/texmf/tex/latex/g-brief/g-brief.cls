@@ -6,7 +6,7 @@
 %%
 %% g-brief.dtx  (with options: `class')
 %% 
-%% Copyright (C) 1991-1997 by Michael Lenzen. All rights reserved.
+%% Copyright (C) 1991-2002 by Michael Lenzen. All rights reserved.
 %% 
 %% 
 %% This file is part of the g-brief package
@@ -31,15 +31,15 @@
 %%                           Zur Belsmuehle 15
 %%                           53347 Alfter
 %%                           Germany
-%%                Internet:  <lenzen@vivienne.shw.com>
-%%                           <michael@theory.cs.uni-bonn.de>
+%%                Internet:  <lenzen@lenzen.com>
+%%                           <m.lenzen@t-online.de>
 %% 
-\def\filedate{1997/10/23}
-\def\fileversion{2.4}
-\def\filedate{1997/10/23}
-\def\fileversion{2.4}
+\def\filedate{2002/02/16}
+\def\fileversion{3.0}
+\def\filedate{2002/02/16}
+\def\fileversion{3.0}
 \def\filename{g-brief.cls}
-\NeedsTeXFormat{LaTeX2e}[1997/06/01]
+\NeedsTeXFormat{LaTeX2e}[2001/06/01]
 
 \ProvidesClass{g-brief}[\filedate\space v\fileversion\space g-brief class]
 
@@ -47,6 +47,25 @@
 \newdimen\VorschubV
 \VorschubH = 0.0mm
 \VorschubV = 0.0mm
+
+\def\sprache{ngerman}
+\def\telefontex{{\footnotesize Telefon\/:}}
+\def\telefaxtext{{\footnotesize Telefax\/:}}
+\def\telextext{{\footnotesize Telex\/:}}
+\def\emailtext{{\footnotesize e--Mail\/:}}
+\def\httptext{{\footnotesize HTTP\/:}}
+\def\banktext{{\footnotesize Bankverbindung\/:}}
+\def\blztext{{\footnotesize BLZ}}
+\def\kontotext{{\footnotesize Kto.}}
+\def\betrefftext{{\normalsize Betr.:}}
+\def\ihrzeichentext{\footnotesize\textsc{Ihr Zeichen}}
+\def\ihrschreibentext{\footnotesize\textsc{Ihr Schreiben vom}}
+\def\meinzeichentext{\footnotesize\textsc{Mein Zeichen}}
+\def\unserzeichentext{\footnotesize\textsc{Unser Zeichen}}
+\def\datumtext{\footnotesize\textsc{Datum}}
+\def\datum{\number\day.~\ifcase\month\or Januar\or Februar\or
+  M\"arz\or April\or Mai\or Juni\or Juli\or August\or September\or
+  Oktober\or November\or Dezember\fi \space\number\year}
 
 \DeclareOption{10pt}{\def\@schrift{0}}
 \DeclareOption{11pt}{\def\@schrift{1}}
@@ -56,7 +75,26 @@
   \def\telefontex{{\footnotesize Telefon\/:}}
   \def\telefaxtext{{\footnotesize Telefax\/:}}
   \def\telextext{{\footnotesize Telex\/:}}
-  \def\emailtext{{\footnotesize E--Mail\/:}}
+  \def\emailtext{{\footnotesize e--Mail\/:}}
+  \def\httptext{{\footnotesize HTTP\/:}}
+  \def\banktext{{\footnotesize Bankverbindung\/:}}
+  \def\blztext{{\footnotesize BLZ}}
+  \def\kontotext{{\footnotesize Kto.}}
+  \def\betrefftext{{\normalsize Betr.:}}
+  \def\ihrzeichentext{\footnotesize\textsc{Ihr Zeichen}}
+  \def\ihrschreibentext{\footnotesize\textsc{Ihr Schreiben vom}}
+  \def\meinzeichentext{\footnotesize\textsc{Mein Zeichen}}
+  \def\unserzeichentext{\footnotesize\textsc{Unser Zeichen}}
+  \def\datumtext{\footnotesize\textsc{Datum}}
+  \def\datum{\number\day.~\ifcase\month\or Januar\or Februar\or
+    M\"arz\or April\or Mai\or Juni\or Juli\or August\or September\or
+    Oktober\or November\or Dezember\fi \space\number\year}}
+\DeclareOption{ngerman}{
+  \def\sprache{ngerman}
+  \def\telefontex{{\footnotesize Telefon\/:}}
+  \def\telefaxtext{{\footnotesize Telefax\/:}}
+  \def\telextext{{\footnotesize Telex\/:}}
+  \def\emailtext{{\footnotesize e--Mail\/:}}
   \def\httptext{{\footnotesize HTTP\/:}}
   \def\banktext{{\footnotesize Bankverbindung\/:}}
   \def\blztext{{\footnotesize BLZ}}
@@ -75,7 +113,7 @@
   \def\telefontex{{\footnotesize Phone\/:}}
   \def\telefaxtext{{\footnotesize Fax\/:}}
   \def\telextext{{\footnotesize Telex\/:}}
-  \def\emailtext{{\footnotesize E--Mail\/:}}
+  \def\emailtext{{\footnotesize e--Mail\/:}}
   \def\httptext{{\footnotesize HTTP\/:}}
   \def\banktext{{\footnotesize Bank\/:}} \def\blztext{{\footnotesize
       code}} \def\kontotext{{\footnotesize acct}}
@@ -90,7 +128,7 @@
   \def\telefontex{{\footnotesize Phone\/:}}
   \def\telefaxtext{{\footnotesize Fax\/:}}
   \def\telextext{{\footnotesize Telex\/:}}
-  \def\emailtext{{\footnotesize E--Mail\/:}}
+  \def\emailtext{{\footnotesize e--Mail\/:}}
   \def\httptext{{\footnotesize HTTP\/:}}
   \def\banktext{{\footnotesize Bank\/:}} \def\blztext{{\footnotesize
       code}} \def\kontotext{{\footnotesize acct}}
@@ -103,7 +141,7 @@
 
 \ExecuteOptions{11pt,@sprache} \ProcessOptions
 
-\LoadClass[1\@schrift pt, a4paper, oneside, final]{letter}[1997/04/16]
+\LoadClass[1\@schrift pt, a4paper, oneside, final]{letter}[1999/04/29]
 
 \normalsize
 
@@ -282,7 +320,6 @@
     \end{picture}
     \hfill}
   \def\@oddfoot{\unitlength1mm
-    \def\istsprache{german}
     \begin{picture}(0,0)
       \put(-9,0){\parbox{180mm}{\footnotesize \iftrennlinien
           \rule{180mm}{0.5pt} \fi
@@ -312,22 +349,50 @@
   \def\@oddfoot{\empty} \def\@evenhead{\@oddhead}
   \def\@evenfoot{\@oddfoot}}
 
-\def\istsprache{german}
-\ifx \sprache\istsprache
+
 \IfFileExists{babel.sty}
-{\RequirePackage[\sprache]{babel}[1997/01/23] }
-{\IfFileExists{german.sty}
-  {\RequirePackage{german}[1997/05/01]}
-  {\ClassError{g-brief}
-    {Neither babel nor german.sty installed !!!}
-    {Get babel or german.sty !!!}}}
-\else
-\IfFileExists{babel.sty}
-  {\RequirePackage[\sprache]{babel}[1997/01/23]}
+  {\RequirePackage[\sprache]{babel}[2001/03/01]}
   {\ClassError{g-brief}
     {Babel not installed !!!}
     {Get babel package !!!}}
+
+\def\istsprache{german}
+\ifx \sprache\istsprache
+\IfFileExists{inputenc.sty}
+  {\RequirePackage[latin9]{inputenc}}
+  {\ClassError{g-brief}
+    {LaTeX2e not complete installed or out of date !!!}
+    {Get current LaTeX2e !!!}}
 \fi
+\def\istsprache{ngerman}
+\ifx \sprache\istsprache
+\IfFileExists{inputenc.sty}
+  {\RequirePackage[latin9]{inputenc}}
+  {\ClassError{g-brief}
+    {LaTeX2e not complete installed or out of date !!!}
+    {Get current LaTeX2e !!!}}
+\fi
+
+\ifx \eurofontname\eurofontnone
+\IfFileExists{marvosym.sty}
+  {\RequirePackage{marvosym}}
+  {\ClassError{g-brief}
+    {Can't load package marvosym.sty !!!}}
+  \def\Telefon#1{\def\telefon{#1}} \def\telefon{}
+\fi
+\ifx \eurofontname\eurofontnone
+\IfFileExists{europs.sty}
+  {\RequirePackage{europs}}
+  {\ClassError{g-brief}
+    {Can't load package europs.sty !!!}}
+\fi
+\ifx \eurofontname\eurofontnone
+\IfFileExists{eurosym.sty}
+  {\RequirePackage{eurosym}}
+  {\ClassError{g-brief}
+    {Can't load package eurosym.sty !!!}}
+\fi
+
 
 \endinput
 %%

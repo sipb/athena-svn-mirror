@@ -1,0 +1,40 @@
+QuasiSwiss, QuasiSwissCondensed (1.07)
+The fonts are copyrighted but free according to the conditions of the GNU
+General Public License, version 2 (http://www.gnu.org/licenses/gpl.txt).
+
+EN:
+  Two font families Nimbus Sans L and Nimbus Sans L Condensed (distributed
+  with Ghostscript under the GNU General Public Licence) augmented complying
+  with QX layout (see 00readme) and modified. The font is equivalent
+  to Helvetica, formerly Neue Haas Grotesk, designed by Alfred Hoffman
+  and Max Miedinger for the Haas typefoundry in 1957. Authors of the
+  modification: Bogus\l{}aw Jackowski, Janusz M. Nowacki and Piotr Strzelczyk.
+  The work was sponsored by the Polish TeX Users Group GUST and
+  the Polish State Committee for Scientific Research. The modified
+  fonts were renamed to QuasiSwiss and QuasiSwissCondensed. The name 
+  QuasiHelvetica (used in erlier versions) was abandoned due to
+  copyright issues.
+
+  Comments and remarks please send to:
+  Bogus\l{}aw Jackowski, Janusz M. Nowacki, Piotr Strzelczyk
+  <JNSteam@GUST.org.pl>
+
+PL (iso8859-2):
+  Uzupe³nione do uk³adu QX (p. 00readme) i nieco zmodyfikowane dwie
+  rodziny fontów: Nimbus Sans L i Nimbus Sans L Condensed (z dystrybucji
+  programu Ghostscript, rozpowszechniane na zasadach GNU General
+  Public Licence). Nimbus Sans to odpowiednik fontu Helvetica,
+  zaprojektowanego przez Alfreda Hoffmana i Maxa Miedingera
+  dla szwajcarskiej firmy Haas (1957). Pocz±tkowo pismo nosi³o
+  nazwê Neue Haas Grotesk. Autorami modyfikacji s±: Bogus³aw Jackowski,
+  Janusz M. Nowacki i Piotr Strzelczyk. Prace nad adaptacj± tych fontów
+  by³y czê¶ciowo sponsorowane przez Polsk± Grupê U¿ytkowników Systemu
+  TeX GUST i Komitet Badañ Naukowych. Zmodyfikowane fonty otrzyma³y
+  nazwy odpowiednio QuasiSwiss i QuasiSwissCondensed. Z nazwy
+  QuasiHelvetica (u¿ytej we wcze¶niejszych wersjach) trzeba by³o
+  zrezygnowaæ ze wzglêdu na zastrze¿enie nazwy.
+
+  Uwagi i komentarze prosimy kierowaæ pod adresem:
+  Bogus³aw Jackowski, Janusz M. Nowacki, Piotr Strzelczyk
+  <JNSteam@GUST.org.pl>
+

@@ -1,6 +1,6 @@
 @c @mapfile{
 @c   email = "tex-fonts@tug.org",
-@c   date = "30 May 1999",
+@c   date = "06 Nov 2002",
 @c   url = "http://tug.org/fontname/special.map",
 @c   supported = "yes",
 @c   docstring = "Abbreviations for nonstandard TeX font names."
@@ -590,6 +590,8 @@ csym            public          circ
 csyrest         public          circ
 csysym          public          circ
 csywidko        public          circ
+@c Vietnamese Computer Modern
+vn		public		vnr
 @c Czech/Slovak fonts by Petr Olsak:
 lcsss           public          cs              % ftp://math.feld.cvut.cz/pub/cstex/unix/csfonts.tar.gz
 ilcsss          public          cs

@@ -1,27 +1,20 @@
-amsfonts.faq, last updated 15-Jan-1997
+amsfonts.faq, last updated 2002/01/18
 
      Frequently Asked Questions about the AMSFonts Distribution
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-(1) I'm using LaTeX---How do I get bold greek, or bold italic letters
+(1) I'm using LaTeX -- How do I get bold greek, or bold italic letters
 a,A,b,B,... in math?
 
 Get the amsbsy.sty package in the amslatex distribution, which provides
 a \boldsymbol command that can be applied to Greek and Latin letters
-(e.g., \boldsymbol{\beta} or \boldsymbol{M}). (This package is not
-included in the AMSFonts distribution because the bold fonts that
-will most often be required---cmmib and cmbsy---have since 1994 been
-considered to be part of the standard LaTeX font set, so that they
-should be at your disposal whether or not you have the AMSFonts
-collection installed.)
+(e.g., \boldsymbol{\beta} or \boldsymbol{M}).
 
-If you have version 2.09 of LaTeX then you'll need to try using version
-1.1 of the amsbsy package, which requires a LaTeX extension called `new
-font selection scheme' (NFSS). Amsbsy version 1.1 and NFSS version 1 can
-be obtained by anonymous ftp at e-math.ams.org:/ams/amsltx11. But unless
-you already have NFSS version 1 installed on your system it will
-probably be to your advantage even in the short run to upgrade to
-current LaTeX instead of installing NFSS.
+This package is not included in the AMSFonts distribution because the
+bold fonts that will most often be required -- cmmib and cmbsy -- have
+since 1994 been considered to be part of the standard LaTeX font set,
+so they should be at your disposal whether or not you have the AMSFonts
+collection installed.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 (2) I use a 360dpi printer. Can I use one of the sets of .pk files which
@@ -45,28 +38,17 @@ very likely get along without them.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 (3) How can I get PostScript outlines of AMSFonts?
 
-Creating a PostScript outline of a font is an expensive programming
-task, and the AMS does not have the resources to invest in such a
-project. A commercial version was jointly developed by Y&Y Inc. and
-Blue Sky Research. Address information:
+PostScript Type 1 versions of the AMSFonts can be obtained from the AMS
+web server at  http://www.ams.org/tex/type1-fonts.html.  The collection
+is mirrored onto CTAN, in the area  fonts/amsfonts/ps-type1.
 
-Y&Y, Inc.
-45 Walden St., Suite 2F
-Concord, MA 01742 USA
-phone: (800)742-4059 and (508)371-3286
-fax: (508)371-2004
-email: sales-help@YandY.com
+Only sizes 5, 7, and 10-point are included in this collection.  When
+using these fonts, it is generally advisable to use the `psamsfonts'
+option to access them.  This option is supported for both (AMS-)LaTeX
+and AMS-TeX; see the AMSFonts User's Guide for details.
 
-Blue Sky Research
-317 Southwest Alder, #1200
-Portland, OR 97204 USA
-phone: (800)622-8398 and (503)222-9571
-fax: (503)222-1643
-email: sales@bluesky.com
-
-A freeware version, called BaKoMa, was created by Basil Malyshev; it
-is available from CTAN sites.  It does not include the cyrillic fonts
-that are part of the AMSFonts collection.
+Warning: If `psamsfonts' is added to an existing document, it may result
+in some differences in line and page breaks.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 (4) I use OzTeX. The Macintosh AMSFonts package is for use with Textures.
@@ -77,14 +59,14 @@ to implementations in DOS or Unix. The files for use with DOS and Unix can
 be used in OzTeX on the Macintosh. In the installation instructions,
 simply substitute "folder" for "directory" in all cases.
 
-The OzTeX distribution includes the current version of the AMSFonts as
+The current OzTeX distribution includes the version of the AMSFonts as
 of when the distribution was compiled. If your version of OzTeX is not
 the most recent, updating it may be the simplest way of installing the
 AMSFonts.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-(5) Why isn't there a 10-point font for cmcsc, cmmib, cmbsy, or cmex
-included in the AMSFonts package?
+(5) Why isn't a 10-point font for cmcsc, cmmib, cmbsy, or cmex included
+in the AMSFonts package?
 
 All of these fonts at 10-point are included in the standard set of fonts
 with any implementation of TeX. If you do not have them available on
@@ -118,6 +100,10 @@ convert the metrics file from the vendor into a .tfm file using one of
 the available programs for doing to (Tomas Rokicki's afm2tfm is in the
 public domain, and Y&Y's afmtotfm is a proprietary program).
 
+Another option that may prove satisfactory is to use the rsfs font --
+`Ralph Smith's Fancy Script'.  This can be found on CTAN in the area
+fonts/rsfs/ ; both Metafont and Type 1 versions are available.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 (8) I'm using Textures on a Macintosh, and I followed the instructions
 for installing msam* and msbm*, but some of the symbols won't print or
@@ -127,5 +113,19 @@ Although there are several possible causes, the easiest one to put right
 is a setting for the monitor that instructs it to use more than 256
 colors.  If this is reset to exactly 256, the symbols should appear as
 expected.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+(9) I'm using babel with the polish option as well as the amssymb package.
+There is an error: ! LaTeX Error: Command `\lll' already defined.  How
+can I avoid this error?
+
+In amssymb, there is a synonum for \lll, namely \llless, so anyone who
+needs to use babel with the polish option does not lose access to this
+symbol. In polish.ldf, \lll is used as an internal command. It has been
+suggested to replace this by a command using `@' to avoid conflicts of
+this sort; whether or not that is done, the error can be avoided by
+loading amssymb before babel:
+    \usepackage{amssymb}
+    \usepackage[polish]{babel}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

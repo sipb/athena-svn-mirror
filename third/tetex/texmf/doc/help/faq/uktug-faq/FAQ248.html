@@ -1,0 +1,16 @@
+<head>
+<title>UK TeX FAQ -- question 248</title>
+</head><body>
+<h3>LaTeX gets cross-references wrong</h3>
+<p>Sometimes, however many times you run LaTeX, the cross-references
+are just wrong. Remember that
+the <code>\label</code> command must come <em>after</em> the <code>\caption</code> command, or
+be part of it. For example,
+
+<pre>
+\begin{figure}          \begin{figure}
+\caption{A Figure}  or  \caption{A Figure%
+\label{fig}                   \label{fig}}
+\end{figure}            \end{figure}
+</pre>
+<p></body>

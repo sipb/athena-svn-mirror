@@ -22,7 +22,7 @@
 %% in the same archive or directory.)
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
 \ProvidesPackage{ccfonts}
-           [1999/02/22 v0.992 (WaS)]
+           [2000/06/30 v1.1 (WaS)]
 \renewcommand{\rmdefault}{ccr}
 \def\cc@baselineskip@table
    {<\@viiipt>10<\@ixpt>11.5<\@xpt>13<\@xipt>14.5<\@xiipt>16}
@@ -37,18 +37,11 @@
     \old@setfontsize{#1}{#2}\cc@baselineskip@value}
 \let\old@setfontsize=\@setfontsize
 \let\@setfontsize=\cc@setfontsize
-\def\oldstylenums#1{%
-   \begingroup
-    \spaceskip\fontdimen\tw@\font
-    \usefont{OML}{xcm}{\f@series}{it}%
-    \m2athgroup\symletters #1%
-   \endgroup
-}
 \DeclareOption{standard-baselineskips}{%
  \let\@setfontsize=\old@setfontsize}
 \DeclareOption{exscale}{
-\DeclareFontFamily{OMX}{xcex}{}
-\DeclareFontShape{OMX}{xcex}{m}{n}{%
+\DeclareFontFamily{OMX}{ccex}{}
+\DeclareFontShape{OMX}{ccex}{m}{n}{%
 <-8>sfixed*xccex7%
 <8>xccex8%
 <9>xccex9%
@@ -79,20 +72,25 @@
  \DeclareMathSymbol{\Psi}{\mathalpha}{letters}{9}
  \DeclareMathSymbol{\Omega}{\mathalpha}{letters}{10}
 }
+\DeclareOption{boldsans}{%
+  \renewcommand{\bfdefault}{sbc}}
 \ProcessOptions\relax
 \DeclareSymbolFont  {operators}   {OT1}{ccr} {m}{n}
-\DeclareSymbolFont  {letters}     {OML}{xcm} {m}{it}
-\DeclareSymbolFont  {symbols}     {OMS}{xcsy}{m}{n}
-\DeclareSymbolFont  {largesymbols}{OMX}{xcex}{m}{n}
+\DeclareSymbolFont  {letters}     {OML}{ccm} {m}{it}
+\DeclareSymbolFont  {symbols}     {OMS}{ccsy}{m}{n}
+\DeclareSymbolFont  {largesymbols}{OMX}{ccex}{m}{n}
+\DeclareMathAlphabet{\mathbf}     {OT1}{ccr}{bx}{n}
 \DeclareMathAlphabet{\mathit}     {OT1}{ccr} {m}{it}
-\DeclareFontFamily{U}{msa}{}
-\DeclareFontShape{U}{msa}{m}{n}{%
-<5><6><7><8><9><10>gen*xccam%
-<10.95><12><14.4><17.28><20.74><24.88>xccam10}{}
-\DeclareFontFamily{U}{msb}{}
-\DeclareFontShape{U}{msb}{m}{n}{%
-<5><6><7><8><9><10>gen*xccbm%
-<10.95><12><14.4><17.28><20.74><24.88>xccbm10}{}
+\AtBeginDocument{
+   \DeclareFontFamily{U}{msa}{}
+   \DeclareFontShape{U}{msa}{m}{n}{%
+   <5><6><7><8><9><10>gen*xccam%
+   <10.95><12><14.4><17.28><20.74><24.88>xccam10}{}
+   \DeclareFontFamily{U}{msb}{}
+   \DeclareFontShape{U}{msb}{m}{n}{%
+   <5><6><7><8><9><10>gen*xccbm%
+   <10.95><12><14.4><17.28><20.74><24.88>xccbm10}{}
+}
 \normalsize
 \endinput
 %%

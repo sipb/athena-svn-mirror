@@ -8,7 +8,7 @@
 %D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
 %C
 %C This module is part of the \CONTEXT\ macro||package and is
-%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
 %C details. 
 
 \writestatus{loading}{Context Core Macros / File Support}
@@ -32,6 +32,26 @@
 \startmessages  german  library: files
    title: files
        1: Dateisynonym -- wird bereits fuer -- benutzt
+\stopmessages
+
+\startmessages  czech  library: files
+   title: soubory
+       1: synonymum souboru -- je jiz pouzito pro --
+\stopmessages
+
+\startmessages  italian  library: files
+   title: file
+       1: sinonimo file -- già in uso per --
+\stopmessages
+
+\startmessages  norwegian  library: files
+   title: filer 
+       1: filesynonym -- er allerede brukt for --
+\stopmessages
+
+\startmessages  romanian  library: files
+   title: fisiere
+       1: sinonimul fisierelor -- este folosit deja pentru --
 \stopmessages
 
 %D \macros 
@@ -60,13 +80,13 @@
 %D \usemodules[pictex,chemie,eenheid]
 %D \stoptypen
 
-\def\definefilesynonym%
+\def\definefilesynonym
   {\dodoubleempty\dodefinefilesynonym}
 
 \def\dodefinefilesynonym[#1][#2]%
   {\doifdefined{\??fs#1}
      {\doifnotvalue{\??fs#1}{#2} 
-        {\showmessage{\m!files}{1}{#1 (#2),\getvalue{\??fs#1}}}}%
+        {\showmessage\m!files1{#1 (#2),\getvalue{\??fs#1}}}}%
    \doifelse{#1}{#2}
      {\letbeundefined{\??fs#1}{#2}}
      {\setevalue{\??fs#1}{#2}}}
@@ -109,36 +129,67 @@
 %D 
 %D Most of \CONTEXT is preloaded in the format file. Some very
 %D domain specific typesetting topics are however dealt with in
-%D separate modules, e.g. typesettingof chemical structure
+%D separate modules, e.g. typesetting of chemical structure
 %D formulas. These modules are loaded by: 
 %D 
 %D \showsetup{\y!usemodule}
 %D 
 %D More information on the specific modules can be found in
-%D their dedicated manuals. 
+%D their dedicated manuals. We use \type {\next} so that we 
+%D can \type {\end} in modules. 
 
-\def\dododousemodules#1#2%
-  {\makeshortfilename[#1\truefilename{#2}]%
-   \doifundefinedelse{\shortfilename\v!aan}
-     {\setgvalue{\shortfilename\v!aan}{}%
-      \startreadingfile
-      \readsysfile{\shortfilename}%
-        {\showmessage{\m!systems}{5}{#1#2}}%
-        {\showmessage{\m!systems}{6}{#1#2}}%
-      \stopreadingfile}
-     {\showmessage{\m!systems}{7}{#2}}}
+\newconditional\moduleisloaded
 
-\def\dodousemodules#1%
-  {\dododousemodules\f!moduleprefix {#1}%
-   \dododousemodules\f!styleprefix  {#1}%
-   \dododousemodules\f!privateprefix{#1}}
+\def\dododousemodules#1#2% no \unprotect/\protect when loading, 
+  {\relax                % since we need to use ? ! unprotected   
+   \ifconditional\moduleisloaded % sometimes (see xtag-map)
+     \let\next\relax
+   \else
+     \makeshortfilename[#1\truefilename{#2}]%
+     \doifelseflagged\shortfilename
+       {\showmessage\m!systems7{#2}%
+        \settrue\moduleisloaded
+        \let\next\relax}
+       {\doglobal\setflag\shortfilename
+        \def\next
+          {\startreadingfile
+             \readsysfile\shortfilename
+               {\showmessage\m!systems5{#2}\settrue\moduleisloaded}
+               \donothing
+           \stopreadingfile}}%
+   \fi
+   \next}
+ 
+\def\dodousemodules#1#2% 
+  {\setfalse\moduleisloaded 
+   \doifelsenothing{#1}
+     {\dododousemodules\f!moduleprefix {#2}% 
+      \dododousemodules\f!privateprefix{#2}%
+      \dododousemodules\f!styleprefix  {#2}%
+      \dododousemodules\f!xstyleprefix {#2}%
+      \dododousemodules\f!thirdprefix  {#2}%
+      \dododousemodules\empty          {#2}}% new, fall back on raw name  
+     {\dododousemodules{#1-}{#2}}%
+   \ifconditional\moduleisloaded\else
+     \showmessage\m!systems6{#2}%
+   \fi}
 
-\def\dousemodules[#1]%
-  {\doifsomething{#1}{\processcommalist[#1]\dodousemodules}%
-   }% \enablelanguagespecifics[\currentmainlanguage]}
+\def\dousemodules[#1][#2]%
+  {\ifsecondargument
+     \doifelsenothing{#2}
+       {\let\next\relax}
+       {\def\next{\processcommalist[#2]{\dodousemodules{#1}}}}%
+   \else
+     \def\next{\usemodules[][#1]}%
+   \fi
+   \next}
 
-\def\usemodules%
-  {\dosingleargument\dousemodules}
+\def\usemodules
+  {\dodoubleempty\dousemodules}
+
+\let\usemodule\usemodules
+
+% \usemodule[t][speech]
 
 %D We also support a singular call, which saves us for 
 %D frustrations when we do a typo.
@@ -148,6 +199,86 @@
 % %D The definition shows that the language specific settings 
 % %D are activated after loading all the modules specified. 
 
-\protect
+%D \macros
+%D   {ifprotectbuffers, bufferprefix,
+%D    TEXbufferfile, MPgraphicfile}
+%D
+%D The next switch enables protection of temporary filenames, 
+%D which is needed when we process more files on one path at
+%D the same time.  
 
-\endinput
+\newif\ifprotectbuffers
+
+\def\bufferprefix{\ifprotectbuffers\jobname-\fi}
+
+% The following filenames are defined here: 
+
+\def\TEXbufferfile   #1{\bufferprefix#1.\f!temporaryextension}
+\def\MPgraphicfile     {\bufferprefix mp\ifMPrun run\else graph\fi}
+\def\convertMPcolorfile{\bufferprefix metacmyk.tmp}
+
+%D The next few macros ar eused for some internal (rather 
+%D old already) extensions.
+
+\def\definieerfilegroep
+  {\dodoubleargument\dodefinieerfilegroep}
+
+\def\dodefinieerfilegroep[#1][#2]%
+  {\getparameters[\??fp#1][\c!file=#1,\c!voor=,\c!na=,#2]%
+   \setvalue{\e!start#1}{\dostartfilegroep[#1]}}
+
+\def\dostartfilegroep%
+  {\dodoubleargument\dodostartfilegroep}
+
+\def\dodostartfilegroep[#1][#2]%
+  {\getvalue{\??fp#1\c!voor}%
+   \setvalue{\e!stop#1}{\dostopfilegroep[#1][#2]}%
+   \expanded{\dolaadfilegroep[\getvalue{\??fp#1\c!file}-#2]}%
+   \getvalue{\e!start#1#2}}
+
+\def\dolaadfilegroep[#1-#2#3#4#5]%
+  {\readsysfile{#1-#2#3#4}\donothing\donothing}
+
+\def\dostopfilegroep[#1][#2]%
+  {\getvalue{\e!stop#1#2}%
+   \getvalue{\??fp#1\c!na}}
+
+%D To save memory, we implement some seldomly used commands 
+%D in a lazy way. Nota bene: such runtime definitions are 
+%D global. 
+%D
+%D \starttypen 
+%D \fetchruntimecommand\showaccents{\f!encodingprefix ...}
+%D \stoptypen 
+
+\def\fetchruntimecommand#1#2%
+  {\def#1{\dofetchruntimecommand#1{#2}}}
+
+\def\dofetchruntimecommand#1#2%
+  {\doifnotflagged{#2}
+     {\let#1\undefined
+      \startreadingfile
+      \startnointerference % \bgroup
+      \cleanupfeatures % better \setnormalcatcodes / test first 
+      \readfile{#2}\donothing\donothing
+      \stopnointerference  % \egroup
+      \stopreadingfile
+      \doglobal\setflag{#2}}% 
+   \ifx#1\undefined
+     \writestatus{\m!systems}{command \string#1 not found in file #2}%
+     \def#1{{\infofont[unknown command \string#1]}}%
+   \fi 
+   #1}
+
+%D To be documented and probably moved
+
+\def\stelexternebronnenin
+  {\dodoubleargument\getparameters[\??er]}
+
+\def\documentresources{\@@erurl}
+
+\stelexternebronnenin[url=]
+
+%D This module will be perfected / changed / weeded. 
+ 
+\protect \endinput

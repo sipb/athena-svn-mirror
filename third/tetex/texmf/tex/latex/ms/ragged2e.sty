@@ -6,45 +6,30 @@
 %%
 %% ragged2e.dtx  (with options: `package')
 %% 
+%% Copyright (C) [1996..2003] by Martin Schroeder. All rights reserved.
+%% 
 %% This file is part of the Ragged2e package
 %% -----------------------------------------
 %% 
-%% Copyright (C) [1996..1998] by Martin Schr"oder. All rights reserved.
+%% This program may be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License, either version 1.0 of this
+%% license, or (at your option) any later version.
+%% The latest version of this license is in
+%%    CTAN:macros/latex/base/lppl.txt.
 %% 
-%% IMPORTANT NOTICE:
+%% The Ragged2e package contains these files:
+%%   ragged2e.dtx
+%%   ragged2e.ins
 %% 
-%% You are *not* allowed to change this file.
-%% You may however copy this file to a file with a different name and
-%% then change the copy.
+%%                         Martin Schroeder
+%%                         Cruesemannallee 3
+%%                         28213 Bremen
+%%                         Germany
+%%                         martin@oneiros.de
 %% 
-%% You are *not* allowed to distribute this file alone.
-%% 
-%% You are *not* allowed to take money for the distribution or use of
-%% this file (or a changed version) except for a nominal charge for
-%% copying etc.
-%% 
-%% You *are* allowed to distribute this file under the condition that it
-%% is distributed together with all files mentioned below (these files
-%% need not necessarily be in the same archive or directory).
-%% 
-%%       ragged2e.asc
-%%       ragged2e.dtx
-%%       ragged2e.dvi
-%%       ragged2e.ins
-%%       ragged2e.bug
-%% 
-%% If you receive only some of these files from someone, complain!
-%% 
-%% Error Reports in case of UNCHANGED versions to
-%% 
-%%                         Martin Schr"oder
-%%                         Cr"usemannallee 3
-%%                         D-28213 Bremen
-%%                         Martin.Schroeder@ACM.org
-%% 
-\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\NeedsTeXFormat{LaTeX2e}[1996/10/24]
 \ProvidesPackage{ragged2e}
-         [1998/08/09 v1.01 Ragged2e Package (MS)]
+         [2003/01/26 v2.00 ragged2e Package (MS)]
 %% \CharacterTable
 %% {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%  Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -65,21 +50,21 @@
 %% ===================================================================
 %%  @LaTeX-style-file{
 %%     author          = {Martin Schr\"oder},
-%%     version         = "1.01",
-%%     date            = "9 August 1998",
+%%     version         = "2.00",
+%%     date            = "26 January 2003",
 %%     filename        = "ragged2e.sty",
 %%     address         = {Martin Schr\"oder
 %%                        Cr\"usemannallee 3
-%%                        D-28213 Bremen
+%%                        28213 Bremen
+%%                        Germany}
 %%     telephone       = "+49-421-2239425",
-%%     email           = "Martin.Schroeder@ACM.org",
-%%     pgp-Key         = "2048 bit / KeyID 292814E5",
-%%     pgp-fingerprint = "7E86 6EC8 97FA 2995 82C3  FEA5 2719 090E",
+%%     email           = "martin@oneiros.de",
 %%     docstring       = "LaTeX package which defines new commands
-%%                        \Centering, \RaggedLeft, and \RaggedRight
-%%                        and new environments Center, FlushLeft, and
-%%                        FlushRight, which set ragged text and are
-%%                        easily configurable to allow hyphenation.
+%%                        \Centering, \RaggedLeft, \RaggedRight and
+%%                        \justify and new environments Center,
+%%                        FlushLeft, FlushRight and justify, which
+%%                        set ragged text and are easily configurable
+%%                        to allow hyphenation.
 %%                        Uses the everysel package.
 %%                       "
 %%  }
@@ -87,13 +72,77 @@
 %% \fi
 \newif\if@raggedtwoe@originalcommands
 \newif\if@raggedtwoe@originalparameters
+\newif\if@raggedtwoe@footmisc
 \DeclareOption{OriginalCommands}{\@raggedtwoe@originalcommandstrue}
+\DeclareOption{originalcommands}{\@raggedtwoe@originalcommandstrue}
 \DeclareOption{NewCommands}{\@raggedtwoe@originalcommandsfalse}
+\DeclareOption{newcommands}{\@raggedtwoe@originalcommandsfalse}
 \DeclareOption{OriginalParameters}{\@raggedtwoe@originalparameterstrue}
+\DeclareOption{originalparameters}{\@raggedtwoe@originalparameterstrue}
 \DeclareOption{NewParameters}{\@raggedtwoe@originalparametersfalse}
-\ExecuteOptions{OriginalCommands,NewParameters}
+\DeclareOption{newparameters}{\@raggedtwoe@originalparametersfalse}
+\newcommand*{\@raggedtwoe@raggedrightboxes@opt}{
+  \CheckCommand*{\@arrayparboxrestore}{%
+    \let\if@nobreak\iffalse
+    \let\if@noskipsec\iffalse
+    \let\par\@@par
+    \let\-\@dischyph
+    \let\'\@acci\let\`\@accii\let\=\@acciii
+    \parindent\z@ \parskip\z@skip
+    \everypar{}%
+    \linewidth\hsize
+    \@totalleftmargin\z@
+    \leftskip\z@skip \rightskip\z@skip \@rightskip\z@skip
+    \parfillskip\@flushglue \lineskip\normallineskip
+    \baselineskip\normalbaselineskip
+    \sloppy}%
+  \renewcommand{\@arrayparboxrestore}{%
+    \let\if@nobreak\iffalse
+    \let\if@noskipsec\iffalse
+    \let\par\@@par
+    \let\-\@dischyph
+    \let\'\@acci\let\`\@accii\let\=\@acciii
+    \parindent\z@ \parskip\z@skip
+    \everypar{}%
+    \linewidth\hsize
+    \@totalleftmargin\z@
+    \RaggedRight
+    \lineskip\normallineskip
+    \baselineskip\normalbaselineskip
+    \sloppy}%
+  \let\@raggedtwoe@raggedrightboxes@opt\relax
+  }
+\DeclareOption{raggedrightboxes}{\@raggedtwoe@raggedrightboxes@opt}
+\DeclareOption{raggedrightboxes}{%
+  \if@raggedtwoe@footmisctrue
+  \PassOptionsToPackage{ragged}{footmisc}%
+  }
+\newcommand{\@raggedtwoe@abdhook}{%
+  \message{ABD: ragged2e executing \string\RaggedRight}%
+  \RaggedRight
+  \let\@raggedtwoe@abdhook\relax
+  }
+\newcommand{\@raggedtwoe@document@opt}{%
+  \AtBeginDocument{\@raggedtwoe@abdhook}%
+  \@raggedtwoe@raggedrightboxes@opt
+  \@raggedtwoe@footmisctrue
+  \let\@raggedtwoe@document@opt\relax
+  }
+\DeclareOption{document}{\@raggedtwoe@document@opt}
+\DeclareOption*{%
+  \if@raggedtwoe@footmisc
+    \PassOptionsToPackage{\CurrentOption}{footmisc}%
+  \else
+    \OptionNotUsed
+  \fi
+  }
+%% ^^A -----------------------------
+\ExecuteOptions{originalcommands,newparameters}
 \ProcessOptions\relax
 \RequirePackage{everysel}
+\if@raggedtwoe@footmisc
+  \AtEndOfPackage{\RequirePackage{footmisc}[2002/08/28]}
+\fi
 \newlength{\CenteringLeftskip}
 \newlength{\RaggedLeftLeftskip}
 \newlength{\RaggedRightLeftskip}
@@ -103,88 +152,112 @@
 \newlength{\CenteringParfillskip}
 \newlength{\RaggedLeftParfillskip}
 \newlength{\RaggedRightParfillskip}
+\newlength{\JustifyingParfillskip}
 \newlength{\CenteringParindent}
 \newlength{\RaggedLeftParindent}
 \newlength{\RaggedRightParindent}
-\newlength{\RaggedSpaceskip}
-\newlength{\RaggedXSpaceskip}
+\newlength{\JustifyingParindent}
 \if@raggedtwoe@originalparameters
-   \setlength{\CenteringLeftskip}      {\z@ plus \@ne fil}
-   \setlength{\RaggedLeftLeftskip}     {\z@ plus \@ne fil}
-   \setlength{\RaggedRightLeftskip}    {\z@skip}
-   \setlength{\CenteringRightskip}     {\z@ plus \@ne fil}
-   \setlength{\RaggedLeftRightskip}    {\z@skip}
-   \setlength{\RaggedRightRightskip}   {\z@ plus \@ne fil}
-   \setlength{\CenteringParfillskip}   {\z@skip}
-   \setlength{\RaggedLeftParfillskip}  {\z@skip}
-   \setlength{\RaggedRightParfillskip} {\z@ plus \@ne fil}
-   \setlength{\CenteringParindent}     {\z@}
-   \setlength{\RaggedLeftParindent}    {\z@}
-   \setlength{\RaggedRightParindent}   {\z@}
-   \setlength{\RaggedSpaceskip}        {\z@}
-   \setlength{\RaggedXSpaceskip}       {\z@}
+   \setlength\CenteringLeftskip{\z@\@plus\@ne fil}
+   \setlength\RaggedLeftLeftskip{\z@\@plus\@ne fil}
+   \setlength\RaggedRightLeftskip\z@skip
+   \setlength\CenteringRightskip{\z@\@plus\@ne fil}
+   \setlength\RaggedLeftRightskip\z@skip
+   \setlength\RaggedRightRightskip{\z@\@plus\@ne fil}
+   \setlength\CenteringParfillskip\z@skip
+   \setlength\RaggedLeftParfillskip\z@skip
+   \setlength\RaggedRightParfillskip{\z@\@plus\@ne fil}
+   \setlength\CenteringParindent\z@
+   \setlength\RaggedLeftParindent\z@
+   \setlength\RaggedRightParindent\z@
 \else
-   \setlength{\CenteringLeftskip}      {\z@ plus \tw@ em}
-   \setlength{\RaggedLeftLeftskip}     {\z@ plus \tw@ em}
-   \setlength{\RaggedRightLeftskip}    {\z@skip}
-   \setlength{\CenteringRightskip}     {\z@ plus \tw@ em}
-   \setlength{\RaggedLeftRightskip}    {\z@skip}
-   \setlength{\RaggedRightRightskip}   {\z@ plus \tw@ em}
-   \setlength{\CenteringParfillskip}   {\z@skip}
-   \setlength{\RaggedLeftParfillskip}  {\z@skip}
-   \setlength{\RaggedRightParfillskip} {\z@ plus \@ne fil}
-   \setlength{\CenteringParindent}     {\z@}
-   \setlength{\RaggedLeftParindent}    {\z@}
-   \setlength{\RaggedRightParindent}   {\z@}
-   \setlength{\RaggedSpaceskip}        {.3333em}
-   \setlength{\RaggedXSpaceskip}       {.5em}
+   \setlength\CenteringLeftskip{\z@\@plus\tw@ em}
+   \setlength\RaggedLeftLeftskip{\z@\@plus\tw@ em}
+   \setlength\RaggedRightLeftskip\z@skip
+   \setlength\CenteringRightskip{\z@\@plus\tw@ em}
+   \setlength\RaggedLeftRightskip\z@skip
+   \setlength\RaggedRightRightskip{\z@\@plus\tw@ em}
+   \setlength\CenteringParfillskip\z@skip
+   \setlength\RaggedLeftParfillskip\z@skip
+   \setlength\RaggedRightParfillskip{\z@\@plus\@ne fil}
+   \setlength\CenteringParindent\z@
+   \setlength\RaggedLeftParindent\z@
+   \setlength\RaggedRightParindent\z@
 \fi
+\setlength{\JustifyingParfillskip}{\z@\@plus\@ne fil}
+\setlength{\JustifyingParindent}{1em}
 \newif\if@raggedtwoe@spaceskip
 \newcommand{\@raggedtwoe@everyselectfont}{%
-   \if@raggedtwoe@spaceskip
-      \ifdim\fontdimen\thr@@\font=\z@\relax
-         \setlength{\spaceskip}  {\fontdimen\tw@\font}%
-         \setlength{\xspaceskip} {\z@}%
-      \else
-         \setlength{\spaceskip}  {\RaggedSpaceskip}%
-         \setlength{\xspaceskip} {\RaggedXSpaceskip}%
-      \fi
-   \fi
-   }
+  \if@raggedtwoe@spaceskip
+    \ifdim\fontdimen\thr@@\font=\z@\relax
+      \setlength\spaceskip\z@
+      \setlength\xspaceskip\z@
+    \else
+      \setlength\spaceskip{\fontdimen\tw@\font}%
+      \setlength\xspaceskip{\fontdimen7\font}%
+    \fi
+  \fi
+  }
 \EverySelectfont{\@raggedtwoe@everyselectfont}
 \let\@raggedtwoe@savedcr\\
+\let\@raggedtwoe@saved@gnewline\@gnewline
+\newcommand*{\@raggedtwoe@gnewline}[1]{%
+  \ifvmode
+    \@nolerr
+  \else
+    \unskip
+    \reserved@e {\reserved@f #1}{\parskip\z@\par}%
+  \fi
+  }
 \newcommand{\Centering}{%
    \ifx\\\@raggedtwoe@savedcr
       \let\\\@centercr
    \fi
-   \setlength{\leftskip}   {\CenteringLeftskip}%
-   \setlength{\@rightskip} {\CenteringRightskip}%
-   \setlength{\rightskip}  {\@rightskip}%
-   \setlength{\parfillskip}{\CenteringParfillskip}%
-   \setlength{\parindent}  {\CenteringParindent}%
+   \let\@gnewline\@raggedtwoe@gnewline
+   \setlength\leftskip\CenteringLeftskip
+   \setlength\@rightskip\CenteringRightskip
+   \setlength\rightskip\@rightskip
+   \setlength\parfillskip\CenteringParfillskip
+   \setlength\parindent\CenteringParindent
    \@raggedtwoe@spaceskiptrue
+   \@raggedtwoe@everyselectfont
    }
 \newcommand{\RaggedLeft}{%
    \ifx\\\@raggedtwoe@savedcr
       \let\\\@centercr
    \fi
-   \setlength{\leftskip}   {\RaggedLeftLeftskip}%
-   \setlength{\@rightskip} {\RaggedLeftRightskip}%
-   \setlength{\rightskip}  {\@rightskip}%
-   \setlength{\parfillskip}{\RaggedLeftParfillskip}%
-   \setlength{\parindent}  {\RaggedLeftParindent}%
+   \let\@gnewline\@raggedtwoe@gnewline
+   \setlength\leftskip\RaggedLeftLeftskip
+   \setlength\@rightskip\RaggedLeftRightskip
+   \setlength\rightskip\@rightskip
+   \setlength\parfillskip\RaggedLeftParfillskip
+   \setlength\parindent\RaggedLeftParindent
    \@raggedtwoe@spaceskiptrue
+   \@raggedtwoe@everyselectfont
    }
 \newcommand{\RaggedRight}{%
    \ifx\\\@raggedtwoe@savedcr
       \let\\\@centercr
    \fi
-   \setlength{\leftskip}   {\RaggedRightLeftskip}%
-   \setlength{\@rightskip} {\RaggedRightRightskip}%
-   \setlength{\rightskip}  {\@rightskip}%
-   \setlength{\parfillskip}{\RaggedRightParfillskip}%
-   \setlength{\parindent}  {\RaggedRightParindent}%
+   \let\@gnewline\@raggedtwoe@gnewline
+   \setlength\leftskip\RaggedRightLeftskip
+   \setlength\@rightskip\RaggedRightRightskip
+   \setlength\rightskip\@rightskip
+   \setlength\parfillskip\RaggedRightParfillskip
+   \setlength\parindent\RaggedRightParindent
    \@raggedtwoe@spaceskiptrue
+   \@raggedtwoe@everyselectfont
+   }
+\newcommand{\justifying}{%
+   \let\\\@raggedtwoe@savedcr
+   \let\@gnewline\@raggedtwoe@saved@gnewline
+   \setlength\leftskip\z@
+   \setlength\@rightskip\z@
+   \setlength\rightskip\@rightskip
+   \setlength\parfillskip\JustifyingParfillskip
+   \setlength\parindent\JustifyingParindent
+   \@raggedtwoe@spaceskipfalse
+   \@raggedtwoe@everyselectfont
    }
 \newenvironment{Center}{%
    \begin{trivlist}%
@@ -201,6 +274,12 @@
 \newenvironment{FlushRight}{%
    \begin{trivlist}%
       \RaggedLeft\item\relax
+      }{%
+      \end{trivlist}%
+      }
+\newenvironment{justify}{%
+   \begin{trivlist}%
+      \justifying\item\relax
       }{%
       \end{trivlist}%
       }

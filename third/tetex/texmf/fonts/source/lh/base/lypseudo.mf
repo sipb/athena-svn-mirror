@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -18,7 +18,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 % This file contains pseudoparameters which are not entered in the
 % parameter files, but are computed from the initial parameter set.
@@ -71,4 +71,6 @@ def pseudo_setup=
   define_pixels(accent_u);
   define_whole_vertical_pixels(cap_accent_height);
 enddef;
+
 endinput;
+%end of file

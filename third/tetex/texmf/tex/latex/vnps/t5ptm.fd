@@ -1,0 +1,35 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5ptm.fd}
+
+\DeclareFontFamily{T5}{ptm}{}
+
+\DeclareFontShape{T5}{ptm}{m}{n}{
+   <-> ptmr8v
+}{}
+
+\DeclareFontShape{T5}{ptm}{m}{sl}{
+   <-> ptmro8v
+}{}
+
+\DeclareFontShape{T5}{ptm}{m}{it}{
+   <-> ptmri8v
+}{}
+
+\DeclareFontShape{T5}{ptm}{b}{n}{
+   <-> ptmb8v
+}{}
+
+\DeclareFontShape{T5}{ptm}{b}{sl}{
+   <-> ptmbo8v
+}{}
+
+\DeclareFontShape{T5}{ptm}{b}{it}{
+   <-> ptmbi8v
+}{}
+
+\DeclareFontShape{T5}{ptm}{bx}{n}{<->ssub * ptm/b/n}{}
+\DeclareFontShape{T5}{ptm}{bx}{sl}{<->ssub * ptm/b/sl}{}
+\DeclareFontShape{T5}{ptm}{bx}{it}{<->ssub * ptm/b/it}{}
+
+\endinput

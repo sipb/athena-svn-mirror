@@ -1,0 +1,82 @@
+<head>
+<title>UK TeX FAQ -- question 213</title>
+</head><body>
+<h3>Typesetting the Euro sign</h3>
+<p>The European currency "Euro" is represented by a symbol of somewhat
+dubious design, but it's an important currency and (La)TeX users
+need to typeset it.
+<p>Note that the Commission of the European Community at first deemed
+that the Euro symbol should always be set in a sans-serif font;
+fortunately, this eccentric ruling has now been rescinded, and one may
+apply best typesetting efforts to making it appear at least slightly
+"respectable" (typographically).
+<p>The TS1-encoded fonts provided as part of the EC font
+distribution provide Euro glyphs.  The fonts are called Text Companion
+(TC) fonts, and offer the same range
+of faces as do the EC fonts themselves.  The
+<i>textcomp</i> package provides a <code>\texteuro</code> command for
+accessing the symbol, which selects a symbol to match the surrounding
+text.  The design of the symbol in the TC fonts is not
+universally loved...
+Nevertheless, use the TC font version of the symbol if you are
+producing documents using Knuth's Computer Modern Fonts.
+<p>The <i>latin9</i> input encoding defined by the <i>inputenc</i>
+package has a euro character defined (character position 164, occupied
+in other ISO Latin character sets by the "currency symbol").
+The encoding uses the command <code>\texteuro</code> for the character; at
+present that command is <em>only</em> available from the
+<i>textcomp</i> package.  There is a MicroSoft code page position,
+too, but standardisation of such things proceeds via rather different
+routes and the LaTeX project hasn't yet been given details of the
+change.
+<p>Outline fonts which contain nothing but Euro symbols are available
+(free) from
+<a href="ftp://ftp.adobe.com/pub/adobe/type/win/all/eurofont.exe">Adobe</a> -
+the file is packaged as a <i>Windows</i> self-extracting
+executable, but it may be decoded as a <code>.zip</code> format achive on other
+operating systems.
+The <i>euro</i> bundle contains metrics, <i>dvips</i> map
+files, and macros (for Plain TeX and LaTeX), for using these
+fonts in documents.  LaTeX users will find two packages in the
+bundle: <i>eurosans</i> only offers the sans-serif version (to
+conform with the obsolete ruling about sans-serif-only symbols; the
+package provides the
+command <code>\euro</code>), whereas <i>europs</i> matches the Euro symbol
+with the surrounding text (providing the command <code>\EUR</code>).  To use
+either package
+with the <i>latin9</i> encoding, you need to define <code>\texteuro</code>
+as an alias for the euro command the package defines.
+<p>The Adobe fonts are probably the best bet for use in non-Computer
+Modern environments.  They are apparently designed to fit with Adobe
+Times, Helvetica and Courier, but can probably fit with a wider range
+of modern fonts.
+<p>The <i>eurofont</i> package provides a compendious analysis of the
+"problem of the euro symbol" in its documentation, and offers macros
+for configuring the source of the glyphs to be used; however, it seems
+rather large for everyday use.
+<p>The <i>euro-ce</i> bundle is a rather pleasing Metafont-only design
+providing Euro symbols in a number of shapes.  The file
+<i>euro-ce.tex</i>, in the distribution, offers hints as to how a
+Plain TeX user might make use of the fonts.
+<p>Euro symbols are found in several other places, which we list here for
+completeness.
+<p>The <i>marvosym</i> fonts contain a Euro symbol among many other
+good things; the font on CTAN is not Adobe <i>ATM</i>
+compatible, but a compatible version is available free from
+<a href="http://www.YandY.com/download/marvosym.zip">Y&amp;Y</a>.  The font
+on CTAN comes with a set of macros to typeset all the symbols
+it contains.
+<p>Other Metafont-based bundles containing Euro symbols are to be found in
+<i>china2e</i> (whose primary aim is Chinese dates and suchlike
+matters) and the <i>eurosym</i> fonts.
+<dl>
+<dt><tt><i>china2e bundle</i></tt><dd><a href="ftp://macros/latex/contrib/supported/china2e.tar.gz">macros/latex/contrib/supported/china2e.tar.gz</a>
+<dt><tt><i>EC fonts</i></tt><dd><a href="ftp://fonts/ec.tar.gz">fonts/ec.tar.gz</a>
+<dt><tt><i>euro fonts</i></tt><dd><a href="ftp://fonts/euro.tar.gz">fonts/euro.tar.gz</a>
+<dt><tt><i>euro-ce fonts</i></tt><dd><a href="ftp://fonts/euro-ce.tar.gz">fonts/euro-ce.tar.gz</a>
+<dt><tt><i>eurofont.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/eurofont.tar.gz">macros/latex/contrib/supported/eurofont.tar.gz</a>
+<dt><tt><i>eurosym fonts</i></tt><dd><a href="ftp://fonts/eurosym.tar.gz">fonts/eurosym.tar.gz</a>
+<dt><tt><i>marvosym fonts</i></tt><dd><a href="ftp://fonts/psfonts/marvosym.tar.gz">fonts/psfonts/marvosym.tar.gz</a>
+<dt><tt><i>textcomp.sty</i></tt><dd>Part of the LaTeX distribution.
+</dl>
+<p></body>

@@ -1,6 +1,6 @@
-                           Babel Installation Guide
+                          Babel Installation Guide
  
-                               18 March 1999
+                               22 February 2001
 
 
         When you install the babel system you have first to decide
@@ -66,8 +66,7 @@ Please type another output file name:
           you can make a docstrip.cfg file at your site to tell 
           docstrip that you have operating system limits on the
           number of open files.
-          Make a file docstrip.cfg with the two lines (or add them to
-          an existing file):
+          Make a file docstrip.cfg with the two lines:
  
 \maxfiles{8}
 \maxoutfiles{8}
@@ -123,16 +122,12 @@ Please type another output file name:
             searching of the directory tree.
 
         5 Run iniTeX, telling it to load your favorite macro package
-          (ie bplain or latex).
+          (ie plain or latex).
           When you build a LaTeX format iniTeX will find the file
           hyphen.cfg (provided that you have stored it in the
           correct place).
-          When you build a plain TeX format iniTeX tries to find
-          hyphen.tex. If you have renamed or moved that file iniTeX
-          will tell you that the file can't be found and ask you for a
-          different name. Enter `hyphen.cfg' at this point.
-          If you haven't renamed or moved hyphen.tex the format will be
-          built *without* the babel code.
+          When you build a plain TeX format using the supplied file
+          bplain.tex iniTeX will also find hyphen.cfg. 
 
           *Beware*: some implementations of TeX only look in the
           current directory when the \openin primitive is used. If
@@ -152,12 +147,11 @@ Please type another output file name:
           - With emTeX you can influence the size of some of the
             memory arrays with command line switches (/mt:65000 for
             the trie_size).
-          - With Web2C TeX (version 7 and newer) you can change the
-            value of the trie_size in the file web2c/texmf.cnf.
           - With Unix TeX you have to change a file called tex.ch and
             rebuild TeX using the supplied Makefile. The change you
             need to make is to enlarge the trie_size and
             trie_op_size. 
+          - With Web2C TeX (version 7 and newer) you can change the
+            value of the trie_size in the file web2c/texmf.cnf.
 
---- Copyright 1999 Johannes Braams.  All rights reserved ---
-
+--- Copyright 2001 Johannes Braams.  All rights reserved ---

@@ -2,16 +2,12 @@
 % [= txsymbol.mf, changed by Walter Schmidt, see (CMBR)]
 %
 % (c) Copyright 1995, 1996, 1997 J"org Knappen
+% (c) Copyright 2000 J"org Knappen, Walter Schmidt
 %
-% This file is part of EC Bright fonts version 1.0a
+% This file is part of EC Bright fonts version 1.0f
 %
-% Please read the files 00readme.txt, 00inst.txt, 00error.txt, and
-% copyrite.txt for further information
-%
-% EC Bright Version 1.0e
-% 11-DEC-1998
-%
-% Miscellaneous symbols for the TS1 encoding
+% Miscellaneous symbols for the TS1 encoding,
+% to be used for making the CM Bright typefaces.
 %
 % Heavily borrowing from existent fonts, like Computer Modern, AMS symbols
 % and wasy symbols
@@ -2144,15 +2140,15 @@ draw z2--z8;
 penlabels(1,2,3,4,5,6,7,8); 
 endchar;   
  
-ecchar "Euro currency sign"; % improved (WaS)
+ecchar "Euro currency sign"; % improved (CMBR)
 % sans serif variant only!
 beginchar(oct"277",14u#,cap_height#,0);
  italcorr cap_height#*slant-.5u#;
  adjust_fit(0,0);
  pickup fine.nib; pos1(1.2flare,69); pos2(slab,90);
  pos3(cap_curve,180); pos4(slab,270); pos5(flare,270); % 281
- rt x1r=hround(w-1.1u); x2=x4=hround(x1-3u);
- lft x3r=hround (max(u,2u-.5cap_curve)+u); rt x5r=hround(w-.9u);
+ rt x1r=hround(w-u); x2=x4=hround(x1-3u);
+ lft x3r=hround (max(u,2u-.5cap_curve)+u); rt x5r=hround(w-1.4u);
  top y1r=vround .95h+o; top y2r=h+o; y3=.5h;
  bot y4r=-o; bot y5r=vround .08h-o; y5l:=good.y y5l; x5l:=good.x x5l;
  filldraw stroke rterm.e(2,1,right,.9,4) & super_arc.e(2,3)

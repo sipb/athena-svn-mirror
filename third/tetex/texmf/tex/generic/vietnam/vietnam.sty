@@ -1,0 +1,56 @@
+% This file is part of vntex. License: GPL.
+%
+% This is the file vietnam.sty which provides Vietnamese captions for the
+% standard classes.
+%
+% written by Werner Lemberg <wl@gnu.org> and
+%            Han The Thanh <thanh@fi.muni.cz>
+
+\ProvidesPackage{vietnam}[2000/01/27 v1.0 Vietnamese captions]
+
+\RequirePackage{t5}
+
+\DeclareOption{viscii}{\PassOptionsToPackage{viscii}{inputenc}}
+\DeclareOption{tcvn}{\PassOptionsToPackage{tcvn}{inputenc}}
+\DeclareOption{vps}{\PassOptionsToPackage{vps}{inputenc}}
+\ExecuteOptions{viscii}
+\ProcessOptions
+
+\RequirePackage{inputenc}
+
+\def\prefacename{L\`\horn oi n\'oi \dj\`\^au}
+\def\refname{T\`ai li\d\^eu}
+\def\abstractname{T\'om t\'\u at n\d\^oi dung}
+\def\bibname{T\`ai li\d\^eu tham kh\h{a}o}
+\def\chaptername{Ch\horn u\horn ong}
+\def\appendixname{Ph\d{u} l\d{u}c}
+\def\contentsname{M\d{u}c l\d{u}c}
+\def\listfigurename{Danh s\'ach h\`inh v\~e}
+\def\listtablename{Danh s\'ach b\h{a}ng}
+\def\indexname{Ch\h{i} s\'\^o}
+\def\figurename{H\`inh}
+\def\tablename{B\h{a}ng}
+\def\partname{Ph\`\^an}
+\def\pagename{Trang}
+\def\seename{Xem}
+\def\alsoname{Xem th\^em}
+
+\def\today{%
+  Ng\`ay \number\day\ th\'ang 
+  \ifcase\month
+   \or gi\^eng
+   \or hai
+   \or ba
+   \or t\horn u\
+   \or n\u am
+   \or s\'au
+   \or b\h{a}y
+   \or t\'am
+   \or ch\'in 
+   \or m\horn u\`\horn oi
+   \or m\horn u\`\horn oi m\d\^ot
+   \or m\horn u\`\horn oi hai
+  \fi
+  n\u am \number\year}
+
+% end of vietnam.sty

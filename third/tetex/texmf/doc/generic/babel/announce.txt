@@ -1,62 +1,68 @@
 	Hi,
 
 	I am releived to finally be able to tell you that I have
-	finalized Babel release 3.6.
+	finalized Babel release 3.7.
 
-	What's new in release 3.6?
-	In Babel version 3.6 a number of bugs that were found in
-	version~3.5 are fixed. Also a number of changes and additions
-	have occured: 
-	- A new environment `otherlanguage*' is introduced. it only
-	  switches the `specials', but leaves the `captions'
-	  untouched.
-	- The shorthands are no longer fully expandable. Some
-	  problems could only be solved by peeking at the token
-	  following an active character. The advantage is that '{}a
-	  works as expected for languages that have the ' active.
-	- Support for typesetting french texts is much enhanced; the
-	  file francais.ldf is now replaced by frenchb.ldf which is
-	  maintained by Daniel Flipo.  
-	- Support for typesetting the russian language is again
-	  available. The languange definition file was originally
-	  developped by Olga Lapko from cyrtug. The fonts needed to
-	  typeset the russian language are now part of the babel
-	  distribution. The support is not yet up to the level which is
-	  needed according to Olga, but this is a start. 
-	- Support for typesetting greek texts is now also
-	  available. What is offered in this release is a first attempt;
-	  it will be enhanced later on by Yannis Haralambous.
-	- Support for typesetting Welsh texts has been added.
-	- A new command \aliasshorthand is introduced. It seems that
-	  in Poland various conventions are used to type the necessary
-	  polish letters. It is now possible to use the character /
-	  as a shorthand character instead of the character~" by
-	  issuing the command \aliasshorthand{"}{/}. 
-	- The shorthand mechanism now deals correctly with characters
-	  that are already active.
-	- Shorthand characters are made active at \begin{document},
-	  not earlier. This is to prevent problems with other packages.
-	- A \emph{preambleonly} command |\substitutefontfamily| has
-	  been added to create \file{.fd} files on the fly when the
-	  font families of the latin text differ from the families
-	  used for the cyrillic or greek parts of the text.
+	What's new in release 3.7?
+	Actually babel 3.7 is very much like the later releases of
+	babel 3.6 (from 3.6k onwards). The concept of language
+	attributes is new in this release. And support for a number of
+	languages has been added. Here is a list of the changes since
+	babel 3.6j:
+	- Shorthands are expandable again. The disadvantage is that
+	  one has to type '{}a when the acute accent is used as a
+	  shorthand character. The advantage is that a number of other
+	  problems (such as the breaking of ligatures, etc.) have
+	  vanished.
+	- Two new commands, \shorthandon and \shorthandoff have
+	  been introduced to enable to temporarliy witch off one or more
+	  shorthands.
+	- Support for typesetting Sanskrit in transliteration will
+	  be made available in a later release of babel 3.7.
+	- Support for typesetting Kannada, Devnagari and Tamil will
+	  be made available in a later release of babel 3.7.
+	- Support for typesetting Greek has been enhaced. Code from
+	  the kdgreek package (suggested by the author) was added
+	  and \greeknumeral has been added.
+	- A language attribute has been added to the \mark...
+	  commands in order to make sure that a greek header line comes
+	  out right on the last page before a language switch.
+	- Support for typesetting Basque is now available thanks to
+	  Juan Aguirregabiria.
+	- Support for typesetting Serbian with latin script is now
+	  available thanks to Dejan Muhamedagi'c and Jankovic
+	  Slobodan.
+	- Support for typesetting Hebrew (and potential support for
+	  typesetting other rigth-to-left written languages) is now
+	  available thanks to Rama Porrat and Boris Lavva.
+	- Hyphenation pattern files are now read inside a
+	  group; therefore any changes a pattern file needs to make to
+	  lowercase codes, uppercase codes and category codes are kept
+	  local to that group. If they are needed for the language, these
+	  changes will need to repeated and stored in \extras...
+	- Support for typesetting Latin is now available, thanks to
+	  Krzysztof Konrad .Zelechowski.
+	- The concept of language attributes is introduced. It is
+	  intended to be used for giving the user some control over the
+	  use of the features a language definition file provides. It's
+	  first uses are for the Greek language, where the user can select
+	  to use the \pi o\lambda\upsilon\tau o\nu\kappa\acute{o}
+	  (``Polutoniko'' or multiaccented) Greek way of typesetting
+	  texts, and for the Latin language where both modern and
+	  medieval Latin are supported. 
+	  These attributes wil possibly find wider use in future
+	  releases.
 
-	The last remark: where can you get babel 3.6?
+	The last remark: where can you get babel 3.7?
 	It is available in the directory
 	/tex-archive/macros/latex/packags/babel on CTAN.
-	For those who want to test the new support for Russian: you'll
-	need the LH fonts, they can be found on CTAN in the directory
-        fonts/cyrillic/lh.
-        Also LaTeX release <1998/12/01> contains a file called
-        cyrguide.tex from which you can more information on how to
-        typeset cyrillic texts using LaTeX and babel.
 
 	Happy LaTeXing!
 
 	Johannes Braams
 
-TeXniek,                                Kooienswater 62,
-2715 AJ Zoetermeer                      The Netherlands.
+TeXniek,                                Kersengaarde 33,
+2723 BP Zoetermeer                      The Netherlands.
 Phone    : +31 79 352 28 19             E-mail : JLBraams@cistron.nl
-Fax      : +31 70 343 23 95
+Fax      : +31 70 343 41 85
 -------------------------------------------------------------------------------

@@ -1,0 +1,160 @@
+% This file is part of vntex. License: GPL.
+%
+% This is the file vps.def which provides VPS input encoding for
+% Vietnamese.
+%
+% written by Werner Lemberg <wl@gnu.org> and
+%            Han The Thanh <thanh@fi.muni.cz>
+
+\ProvidesFile{vps.def}[2000/01/27 v1.0 VPS Vietnamese input encoding]
+
+\makeatletter
+
+\DeclareInputText{2}{\d A}
+\DeclareInputText{3}{\d\^A}
+\DeclareInputText{4}{\d\u A}
+\DeclareInputText{5}{\d E}
+\DeclareInputText{6}{\d\^E}
+\DeclareInputText{16}{\d I}
+\DeclareInputText{17}{\d O}
+\DeclareInputText{18}{\d\^O}
+\DeclareInputText{19}{\d\horn O}
+\DeclareInputText{20}{\d U}
+\DeclareInputText{21}{\d\horn U}
+\DeclareInputText{25}{\d Y}
+\DeclareInputText{28}{\~\^A}
+\DeclareInputText{29}{\~\horn U}
+
+\DeclareInputText{128}{\@tabacckludge`A}
+\DeclareInputText{129}{\h A}
+\DeclareInputText{130}{\~A}
+\DeclareInputText{131}{\@tabacckludge'\^A}
+\DeclareInputText{132}{\@tabacckludge`\^A}
+\DeclareInputText{133}{\h\^A}
+\DeclareInputText{134}{\d o}
+\DeclareInputText{135}{\~\^o}
+\DeclareInputText{136}{\u A}
+\DeclareInputText{137}{\@tabacckludge'\^e}
+\DeclareInputText{138}{\@tabacckludge`\^e}
+\DeclareInputText{139}{\h\^e}
+\DeclareInputText{140}{\d\^e}
+\DeclareInputText{141}{\@tabacckludge'\u A}
+\DeclareInputText{142}{\@tabacckludge`\u A}
+\DeclareInputText{143}{\h\u A}
+
+\DeclareInputText{144}{\@tabacckludge'\^E}
+\DeclareInputText{147}{\@tabacckludge`\^E}
+\DeclareInputText{148}{\h\^E}
+\DeclareInputText{149}{\~\^E}
+\DeclareInputText{150}{\@tabacckludge'\^O}
+\DeclareInputText{151}{\@tabacckludge`\^O}
+\DeclareInputText{152}{\h\^O}
+\DeclareInputText{153}{\~\^O}
+\DeclareInputText{154}{\@tabacckludge'y}
+\DeclareInputText{155}{\h y}
+\DeclareInputText{156}{\d y}
+\DeclareInputText{157}{\@tabacckludge'\horn O}
+\DeclareInputText{158}{\@tabacckludge`\horn O}
+\DeclareInputText{159}{\h\horn O}
+
+\DeclareInputText{161}{\@tabacckludge'\u a}
+\DeclareInputText{162}{\@tabacckludge`\u a}
+\DeclareInputText{163}{\h\u a}
+\DeclareInputText{164}{\~\u a}
+\DeclareInputText{165}{\d\u a}
+\DeclareInputText{166}{\~\horn O}
+\DeclareInputText{167}{\@tabacckludge'\horn o}
+\DeclareInputText{168}{\@tabacckludge`U}
+\DeclareInputText{169}{\@tabacckludge`\horn o}
+\DeclareInputText{170}{\h\horn o}
+\DeclareInputText{171}{\~\horn o}
+\DeclareInputText{172}{\~U}
+\DeclareInputText{173}{\@tabacckludge'\horn U}
+\DeclareInputText{174}{\d\horn o}
+\DeclareInputText{175}{\@tabacckludge`\horn U}
+
+\DeclareInputText{176}{\h\^o}
+\DeclareInputText{177}{\h\horn U}
+\DeclareInputText{178}{\@tabacckludge`Y}
+\DeclareInputText{179}{\~Y}
+\DeclareInputText{180}{\@tabacckludge'I}
+\DeclareInputText{181}{\@tabacckludge`I}
+\DeclareInputText{182}{\d\^o}
+\DeclareInputText{183}{\h I}
+\DeclareInputText{184}{\~I}
+\DeclareInputText{185}{\@tabacckludge'O}
+\DeclareInputText{186}{\h\horn u}
+\DeclareInputText{187}{\~\horn u}
+\DeclareInputText{188}{\@tabacckludge`O}
+\DeclareInputText{189}{\h O}
+\DeclareInputText{190}{\~O}
+\DeclareInputText{191}{\d\horn u}
+
+\DeclareInputText{192}{\@tabacckludge`\^a}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{195}{\@tabacckludge'\^a}
+\DeclareInputText{196}{\h\^a}
+\DeclareInputText{197}{\~\^a}
+\DeclareInputText{198}{\d\^a}
+\DeclareInputText{199}{\dj}
+\DeclareInputText{200}{\h e}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{202}{\^E}
+\DeclareInputText{203}{\d e}
+\DeclareInputText{204}{\h i}
+\DeclareInputText{205}{\~\^e}
+\DeclareInputText{206}{\d i}
+\DeclareInputText{207}{\~y}
+
+\DeclareInputText{208}{\horn U}
+\DeclareInputText{209}{\h U}
+\DeclareInputText{210}{\@tabacckludge`\^o}
+\DeclareInputText{211}{\@tabacckludge'\^o}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{213}{\h o}
+\DeclareInputText{214}{\horn o}
+\DeclareInputText{215}{\@tabacckludge`E}
+\DeclareInputText{216}{\@tabacckludge`\horn u}
+\DeclareInputText{217}{\@tabacckludge'\horn u}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{219}{\~u}
+\DeclareInputText{220}{\horn u}
+\DeclareInputText{221}{\@tabacckludge'Y}
+\DeclareInputText{222}{\h E}
+
+\DeclareInputText{224}{\@tabacckludge`a}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{227}{\~a}
+\DeclareInputText{228}{\h a}
+\DeclareInputText{229}{\d a}
+\DeclareInputText{230}{\u a}
+\DeclareInputText{232}{\@tabacckludge`e}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{234}{\^e}
+\DeclareInputText{235}{\~e}
+\DeclareInputText{236}{\@tabacckludge`i}
+\DeclareInputText{237}{\@tabacckludge'i}
+\DeclareInputText{239}{\~i}
+
+\DeclareInputText{240}{\~\u A}
+\DeclareInputText{241}{\DJ}
+\DeclareInputText{242}{\@tabacckludge`o}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{245}{\~o}
+\DeclareInputText{247}{\horn O}
+\DeclareInputText{248}{\d u}
+\DeclareInputText{249}{\@tabacckludge`u}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{251}{\h u}
+\DeclareInputText{253}{\h Y}
+\DeclareInputText{254}{\~E}
+\DeclareInputText{255}{\@tabacckludge`y}
+
+\makeatother
+
+\endinput
+
+% end of vps.def

@@ -1,19 +1,26 @@
 % \iffalse meta-comment
 %
-% Copyright 1993 1994 1995 1996 1997 1998 1999
+% Copyright 1993 1994 1995 1996 1997 1998 1999 2000
 % The LaTeX3 Project and any individual authors listed elsewhere
 % in this file. 
 % 
 % This file is part of the Standard LaTeX `Tools Bundle'.
 % -------------------------------------------------------
 % 
-% This file may be distributed under the terms of the LaTeX Project
-% Public License, as described in lppl.txt in the base LaTeX distribution.
-% Either version 1.0 or, at your option, any later version.
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+% and version 1.2 or later is part of all distributions of LaTeX 
+% version 1999/12/01 or later.
+% 
+% The list of all files belonging to the LaTeX `Tools Bundle' is
+% given in the file `manifest.txt'.
 % 
 % \fi
 
-README for the `tools' bundle  (December 1998)
+README for the `tools' bundle  (December 1999)
 =============================
 
 This `bundle' consists of LaTeX2e packages written and supported by
@@ -56,14 +63,22 @@ of the package.
 
 Distribution Conditions
 =======================
-All the files in this bundle are distributed under the terms of
-the LaTeX Project Public License (LPPL) as found in the base
-LaTeX distribution,  CTAN:macros/latex/base/lppl.txt;
-either version 1 of the license, or (at your option) any later
-version.
+
+All the files in this bundle may be distributed under the conditions
+of the LaTeX Project Public License, either version 1.1 of this
+license or (at your option) any later version.  The latest version of
+this license is in
+   http://www.latex-project.org/lppl.txt
+and version 1.1 or later is part of all distributions of LaTeX 
+version 1999/06/01 or later.
+
+The list of all files belonging to the `Tools Bundle' is
+given in the file `manifest.txt'.
 
 Commercial users of the multicol package are asked to read the
 notice at the head of the file multicol.dtx.
+
+The use of these files is otherwise unrestricted.
 
 
 Reporting Bugs

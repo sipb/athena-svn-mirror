@@ -1,60 +1,42 @@
 ************************************************************
 *         LaTeX support for the Concrete fonts             *
 *                                                          *
-*  cc.fdd:      1997/10/24 v0.98                           *
-*  ccfonts.dtx: 1998/02/22 v0.992                          *
+*  cc.fdd:      1999/11/22 v1.0a                           *
+*  ccfonts.dtx: 2000/06/30 v1.1                            *
 *                                                          *
 ************************************************************
-Copyright (c) Walter Schmidt 1997--1999
+Copyright (c) Walter Schmidt 1997--2000
 
-This software product can redistributed and/or modified
-under the terms of the LaTeX Project Public License
-distributed from CTAN archives in directory
-macros/latex/base/lppl.txt; either version 1 of the License,
-or (at your option) any later version.
+This program may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either
+version 1.2 of this license or (at your option) any later
+version.  The latest version of this license is in
+http://www.latex-project.org/lppl.txt and version 1.2 or
+later is part of all distributions of LaTeX version
+1999/12/01 or later.
+
+This program consists of the files ccfonts.dtx, cc.fdd and
+ccfonts.ins.
 
 
 
 What's new?
 ===========
-
-Version 0.992 supports the [slantedGreek] option.
+2000/05/30: bug fix wrt/ amsfonts.sty
 
 
 
 Overview
 ========
 
-This distribution contains a LaTeX package and the necessary
-fd files to use the Concrete fonts with LaTeX.  The
-distributed files are:
+This distribution contains a LaTeX package and part of the
+the necessary fd files to use the Concrete fonts with LaTeX.
+The distributed files are:
 
 ccfonts.ins     installation script
-oinst.ins       ditto, for LaTeX < dec. 1996
 cc.fdd          documented source of the fd files
 ccfonts.dtx     documented source of the LaTeX package
 readme          the file you are reading now
-liesmich        the german version of this file 
-
-
-
-* WARNING *** WARNING *** WARNING *** WARNING *** WARNING **
-============================================================
-
-LaTeX2e (< 6/1997) came with an installation script named
-`cmextra.ins' which generated *obsolete* fd files for the
-Concrete fonts.  If you have run this script upon
-installation of your LaTeX system, and if you have requested
-support for the Concrete fonts, you MUST now remove the
-following files from your computer:
-
-OT1ccr.fd  resp.  ot1ccr.fd
-T1ccr.fd   resp.  t1ccr.fd
-
-Within a TDS-compliant file system these files should be
-found in the directory texmf\tex\latex\base.  They may also
-exist as a part of a pre-installed LaTeX anywhere in your
-TeX file system.
 
 
 
@@ -70,18 +52,15 @@ ccfonts.ins
 to a temporary directory or to a directory where you keep
 documented LaTeX source files.  
 
-In case your LaTeX is from Dec.  1996 or newer, run the
-installation script ccfonts.ins through LaTeX to generate
-the font definition files and the LaTeX package.  With an
-older LaTeX use oinst.ins instead.
+Run the installation script ccfonts.ins through LaTeX to
+generate the font definition files and the LaTeX package.
+This will create the following files:
 
-The following files are created:
+* ccfonts.sty: The LaTeX package for using the Concrete 
+fonts.
 
-ccfonts.sty: The LaTeX package for using the Concrete fonts.
-
-omlccr.fd, omlxcm.fd, omsccr.fd, omsxcsy.fd, omxxcex.fd,
-ot1ccr.fd, t1ccr.fd, ts1ccr.fd:  The font definition files 
-for the Concrete fomts.
+* t1ccr.fd, ts1ccr.fd:  The font definition files for the
+European Concrete text fonts.
 
 These files must be moved to a directory where LaTeX
 searches for style files.
@@ -93,61 +72,8 @@ tree before running ccfonts.ins.
 
 Finally, run the file ccfonts.dtx through LaTeX to generate
 the documentation of the LaTeX package ccfonts.sty.  You may
-also generate cc.dvi from cc.fdd; this is a description of 
-the low-level interface to the Concrete fonts.
-
-
-
-Which fonts do I need?
-======================
-
-To make use of the ccfonts successfully, you need
-
-1) the Concrete Fonts, from             fonts/concrete
-2) the Concrete Math Fonts, from        fonts/concmath
-3) the EC Concrete Fonts, from          fonts/ecc
-
-The directory names given above are for the CTAN.
-
-
-
-Which text font series/shapes are supported?
-============================================
-
-family  series  shape(s)        (see below)
-
-ccr     m       n, sl, it, sc 
-ccr     c       sl              (1)
-
-(1) This font shape is (at the moment) only available with
-OT1, i.e. the traditional font encoding.
-
-For each font given above (except ccr/c/sl), a corresponding
-text companion font is available and supported.
-
-There is no boldface font series in the Concrete fonts. 
-Two possible substitutions are provided in the fd files:
-
-requested font series   substitution      (see below)
-
-bx                      CM Roman bx           (1)
-sbc                     CM Sans Serif sbc     (2)
-
-(1) This is the *default* behaviour.
-
-(2) Say \renewcommand{\bfdefault}{sbc} to get this
-substitution with the usual commands \textbf and \bfseries.
-CM Sans sbc (e.g.  in headings) blends well with Concrete!
-This was the default behaviour with ccfonts.sty v0.9.
-
-
-
-Compatibility with concmath.sty
-===============================
-In case you install both the ccfonts package and U. Vieth's
-'concmath' collection (v2.0 or above),  the file ot1ccr.fd
-will exist twice on your system.   Both files contain the
-same information, so this should not cause any problems.
+also run cc.fdd through LaTeX, thus generating description
+of the low-level interface to the Concrete fonts.
 
 
 
@@ -159,32 +85,24 @@ his package beton.sty.
 
 
 
-Terms of distribution
-=====================
-
-Redistribution of this collection of files is allowed,
-provided that it is complete and unchanged.  You are,
-however, NOT ALLOWED to take money for the distribution or
-use of these files or the fonts generated from them, except
-for a nominal charge for copying etc.
-
-The distribution of changed versions of the files is allowed
-under the following restrictions:
-
-- You rename the file(s) before you make any changes.
-- You distribute the unchanged version with your file(s).
-- You acknowledge the origin of the unchanged version in the
-  file(s).
-- You make sure that the changed versions contain a notice
-  that prevents others to take money for distribution or use
-  of your file(s), i.e. they have to be distributed under
-  the above restrictions.
-
-
-
 History of changes
 ==================
-
+*** 2000-06-30 ***
+ -- ccfonts.dtx v1.0: bug fix wrt/ using amsfonts.sty;
+    documentation update
+ 
+*** 1999-11-22 ***
+ -- cc.fdd v1.0a: fixed ts1ccr.fd
+ 
+*** 1999-06-29 ***
+ -- cc,fdd v1.0:  dropped the fd files for the traditional
+    and mathematical Concrete fonts, which are to be taken
+    from Ulrik Vieth's concmath bundle now.
+ -- ccfonts.dtx v1.0:  new option [boldsans]    
+ 
+*** 1999-03-23 ***
+ -- cc.fdd 0.99:  fixed font def. for OT1/ccr/m/sl
+ 
 *** 1999-02-22 *** 
  -- ccfonts.dtx 0.992: new option [slantedGreek]
  
@@ -237,14 +155,7 @@ Comments, bug reports and suggestions
 
 ... are welcome and should be addressed to the author:
 
-Walter Schmidt
-Schornbaumstrasse 2
-91052 Erlangen
-Germany
-e-mail: wschmi@ibm.net
-
-Please obtain my (e-mail) address from the latest version of
-this file!
+Walter Schmidt <walter.schmidt@arcormail.de>
 
 %% end of file `readme'
 

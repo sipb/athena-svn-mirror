@@ -1,0 +1,12 @@
+\ProvidesFile{ly1hlcw.fd}[2003/01/04 v4.2k Lucida Handwriting (KB Names)]
+\providecommand\DeclareLucidaFontShape[6]{%
+   \DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}
+\DeclareFontFamily{LY1}{hlcw}{}
+\DeclareLucidaFontShape{LY1}{hlcw}{m}{it}{hlcriw8y}{}
+\DeclareFontShape{LY1}{hlcw}{m}{n}{<-> ssub * hlcw/m/it}{}
+\DeclareFontShape{LY1}{hlcw}{b}{n}{<-> ssub * hlcw/m/it}{}
+\DeclareFontShape{LY1}{hlcw}{b}{it}{<-> ssub * hlcw/m/it}{}
+
+\endinput
+%%
+%% End of file `ly1hlcw.fd'.

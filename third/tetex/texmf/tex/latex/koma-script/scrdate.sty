@@ -5,8 +5,10 @@
 %% The original source files were:
 %%
 %% scrtime.dtx  (with options: `scrdate')
+%% scrlogo.dtx 
 %% 
-%% Copyright 1994-1996 Markus Kohm.
+%% Copyright (C) 1994-2002 by Markus Kohm.
+%% 
 %% All rights reserved. For further copyright information see the file
 %% legal.txt, and any other copyright indicated in this file.
 %% 
@@ -34,18 +36,16 @@
 %% 
 %% You are allowed to distribute this file under the condition that
 %% it is distributed together with all files mentioned in readme.txt
-%% and liesmich.txt.
+%% and liesmich.txt. See LEGAL.TXT or LEGALDE.TXT for further
+%% information.
 %% 
 %% If you receive only some of these files from someone, complain!
 %% 
-%% You are NOT ALLOWED to distribute this file alone.  You are NOT
-%% ALLOWED to take money for the distribution or use of either this
-%% file or a changed version, except for a nominal charge for copying
-%% etc.
+%% You are NOT ALLOWED to distribute this file alone.
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesPackage{scrdate}
-                [1997/06/21 v1.1h LaTeX2e KOMA
+                [2002/02/02 v1.1m LaTeX2e KOMA
                  package]
 \newcommand\todaysname{%
   \begingroup%
@@ -80,6 +80,15 @@
     \@dayname{\@tempcntb}%
   \fi\endgroup}
 \newcommand\nameday[1]{\renewcommand\todaysname{#1}}
+\newcommand*\scrdate@languagenamewarning{
+  \PackageWarningNoLine{scrdate}
+    {\string\languagename\space not
+     defined, using \string\language.\MessageBreak
+     This may result in use of wrong language!\MessageBreak
+     You should use a compatible language
+     package\MessageBreak
+     (e.g. `Babel', `german', `french', ...)}
+  \let\scrdate@languagenamewarning\relax}
 \newcommand\newdaylanguage[8]{%
   \begingroup\expandafter\expandafter\expandafter\endgroup
   \expandafter\ifx\csname l@#1\endcsname\relax
@@ -105,14 +114,22 @@
         \@namedef{date#1}{%
           \expandafter\let\expandafter\@dayname\csname dayname@#1\endcsname
           \@nameuse{D@date#1}}%
-        \ifnum\language=\@nameuse{l@#1}
-          \@nameuse{date#1}
-        \fi
+        \@ifundefined{languagename}{
+          \scrdate@languagenamewarning
+          \ifnum\language=\@nameuse{l@#1}
+            \@nameuse{date#1}
+          \fi}{
+          \@ifundefined{date\languagename}
+            {}
+            {\@nameuse{date\languagename}}
+        }
       \fi
     }
   \fi
 }
 \newdaylanguage{german}{Montag}{Dienstag}{Mittwoch}
+               {Donnerstag}{Freitag}{Samstag}{Sonntag}
+\newdaylanguage{ngerman}{Montag}{Dienstag}{Mittwoch}
                {Donnerstag}{Freitag}{Samstag}{Sonntag}
 \newdaylanguage{english}{Monday}{Tuesday}{Wednesday}
                {Thursday}{Friday}{Saturday}{Sunday}
@@ -124,6 +141,10 @@
                {Gioved\`\i}{Venerd\`\i}{Sabato}{Domenica}
 \newdaylanguage{spanish}{Lunes}{Martes}{Mi\'ercoles}
                {Jueves}{Viernes}{S\'abado}{Domingo}
+\newdaylanguage{croatian}{Ponedjeljak}{Utorak}{Srijeda}
+               {\v{C}etvrtak}{Petak}{Subota}{Nedjelja}
+\newdaylanguage{dutch}{Maandag}{Dinsdag}{Woensdag}
+                {Donderdag}{Vrijdag}{Zaterdag}{Zondag}
 \def\@dayname#1{%
   \begingroup%
     \@tempcnta #1%
@@ -136,6 +157,9 @@
                      * Local config file scrdate.cfg used^^J%
                      *************************************}}
            {}
+\@ifundefined{KOMAScript}{%
+  \DeclareRobustCommand{\KOMAScript}{\textsf{K\kern.05em O\kern.05em%
+      M\kern.05em A\kern.1em-\kern.1em Script}}}{}
 \endinput
 %%
 %% End of file `scrdate.sty'.

@@ -1,0 +1,117 @@
+% ---------------------------------------------------------------------------
+%                 This file belongs to the TAP package
+% ---------------------------------------------------------------------------
+% This is an example of a table which is composed of several fragments
+% (e.g. can be continued on the next page)
+
+\input tap
+% ---
+%% define some templates for 2, 3, 4, etc. columns
+\deftable\QLii##1##2\begintable
+  \B"-%
+  \P{#1}"
+  \P{#2}
+  \E"
+\endtable
+
+\deftable\QLiii##1##2##3\begintable
+  \B"-%
+  \P{#1}"
+  \P{#2}"
+  \P{#3}
+  \E"
+\endtable
+
+\deftable\QLiv##1##2##3##4\begintable
+  \B"-%
+  \P{#1}"
+  \P{#2}"
+  \P{#3}"
+  \P{#4}
+  \E"
+\endtable
+
+\def\TAB
+  #1 % number
+  #2 % title
+  {%
+  \def\tnum{#1}%
+  \def\ttyt{#2}%
+  \line{\tnum\ \ttyt\hss}%
+  \TABcont
+}
+
+\let\orimidtable\midtable
+\def\midtable #1\BAT{\orimidtable #1\=\endtable \BATcont}
+
+%% the text below the table (if needed)
+\def\BATcont#1{%
+  \leftline{source: #1}%
+}
+
+%% the text above each subsequent part
+\def\TABCD {%
+  \line{table \tnum\ (cont.)\hss}%
+  \TABcont
+}
+
+\def\TABcont{%
+  \begintable
+  \QTMPL
+  \=
+  \QHEAD
+  \=
+}
+
+% ----------------------------------------------------------------------
+%% --- a simple example follows
+
+\deftable\QTMPL\begintable
+  \begintableformat & \center \endtableformat 
+\endtable
+
+%% now we define table heading
+\deftable\QHEAD\begintable
+\QLiv{Ala}{belicja}{00000000000}{xxxxxxxxxxxxxxx} % templates for column width
+\B!: Ala | Bela | Cela | Dela\E!
+\endtable
+
+\desiredwidth.5\hsize
+
+\TAB 1.0 {My Title}
+\B!: 11|20|30|40000\E!
+\-
+\B!: 11|20|30|40000\E!
+\-
+\B!: 11|20|30|40000\E!
+\BAT{2}\TABCD
+\B!: 12|20|30|40000\E!
+\-
+\B!: 12|20|30000000000|40000\E!
+\-
+\B!: 12|20|30|40000\E!
+\BAT{3}\TABCD
+\B!: 13|20|30|40000\E!
+\-
+\B!: 13|20|300|40000\E!
+\-
+\B!: 13|20|30|40000\E!
+\BAT{4}
+
+\TABCD
+\B!: 13|20|30|40000\E!
+\-
+\B!: 13|20|30000000000|40000\E!
+\-
+\B!: 13|20|30|40000\E!
+\BAT{5}
+
+\TABCD
+\B!: 14|20|30|40000\E!
+\-
+\B!: 14|20|30000000000|40000\E!
+\-
+\B!: 14|20|30|40000\E!
+\BAT{6}
+
+\end

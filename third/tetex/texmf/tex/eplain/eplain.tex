@@ -1,11 +1,11 @@
 %% @texfile{
 %%   author = "Karl Berry",
-%%   version = "2.7",
-%%   date = "Sat Jan 24 18:53:37 EST 1998",
+%%   version = "2.8.1",
+%%   date = "Sat Nov 11 18:19:02 EST 2000",
 %%   filename = "eplain.tex",
 %%   email = "karl@cs.umb.edu",
 %%   address = "135 Center Hill Rd. // Plymouth, MA 02360"
-%%   checksum = "2338    5773   78823",
+%%   checksum = "2391    5984   80984",
 %%   codetable = "ISO/ASCII",
 %%   supported = "yes",
 %%   docstring = "This file defines macros that extend and expand on
@@ -78,11 +78,11 @@
 \def\vpenalty{\ifhmode\par\fi \penalty}%
 \def\hpenalty{\ifvmode\leavevmode\fi \penalty}%
 \def\iterate{%
-  \let\next\relax
+  \let\loop@next\relax
   \body
-  \let\next\iterate
+  \let\loop@next\iterate
   \fi
-  \next
+  \loop@next
 }%
 \def\edefappend#1#2{%
   \toks@ = \expandafter{#1}%
@@ -1262,7 +1262,8 @@
    environment? I'm finishing off the current group,^^J%
    hoping that will fix it.}%
 \newtoks\previouseverydisplay
-\newdimen\leftdisplayindent
+\let\@leftleftfill\relax % as it was
+\newdimen\leftdisplayindent \leftdisplayindent=\parindent
 \newif\if@leftdisplays
 \def\leftdisplays{%
   \if@leftdisplays\else
@@ -1279,13 +1280,15 @@
       \hfill
       \hbox to0pt\bgroup
         \kern-\displaywidth
-        \kern-\displayindent
-        $\aftergroup\@leftleqnoend
+        \kern-\leftdisplayindent    % I'll use just \leftdisplayindent
+        $\aftergroup\@leftleqnoend  % inserted after ending $
     }%
     \@redefinealignmentdisplays
     \@leftdisplaystrue
   \fi
 }%
+\newbox\@lignbox
+\newdimen\disprevdepth
 \def\centereddisplays{%
   \if@leftdisplays
     \everydisplay = \previouseverydisplay
@@ -1298,44 +1301,63 @@
   \fi
 }%
 \def\leftdisplaysetup{%
-  \hbox to\displaywidth\bgroup
-    \strut
-    \dimen@ = \parindent
-      \advance\dimen@ by \leftdisplayindent 
-      \advance\dimen@ by \leftskip
-    \hskip\dimen@
-    \advance\displayindent by \dimen@
-    \advance\displaywidth by -\parindent
-      \advance\displaywidth by -\leftdisplayindent
-      \advance\displaywidth by -\leftskip
-    $%
-    \advance\hsize by -\displayindent
-    \aftergroup\@lefteqend
-    \displaystyle
-}%
-\def\@lefteqend{\hfil\egroup$}% gets inserted between the ending $$
-\def\@leftleqnoend{\hss \egroup$}%
+   \dimen@ = \leftdisplayindent
+   \advance\dimen@ by \leftskip
+   \advance\displayindent by \dimen@
+   \advance\displaywidth by -\dimen@
+   \halign\bgroup##\cr \noalign\bgroup
+      \disprevdepth = \prevdepth
+      \setbox\z@ = \hbox to\displaywidth\bgroup
+      $\displaystyle
+      \aftergroup\@lefteqend % inserted after ending $
+}
+\def\@lefteqend{% gets inserted between the ending $$
+   \hfil\egroup% end box 0
+   \@putdisplay}
+\def\@leftleqnoend{\hss \egroup $}% end the \hbox to 0pt for \leqno, restore $
+\def\@putdisplay{%
+   \ifvoid\@lignbox %  Ordinary display; use it.
+     \moveright\displayindent\box\z@ 
+   \else % alignment display; unwrap alignment
+     \prevdepth = \dp\@lignbox % affects the skip *below*
+     \unvbox\@lignbox
+   \fi
+   \egroup\egroup % end \noalign, end outer \halign
+   $% restore first $ of trailing $$
+}
 \def\@redefinealignmentdisplays{%
-  \def\displaylines##1{\displ@y
-    \vcenter{%
-      \halign{\hbox to\displaywidth{$\@lign\displaystyle####\hfil$\hfil}\crcr
+  \def\displaylines##1{
+    \global\setbox\@lignbox\vbox{%
+      \prevdepth = \disprevdepth
+      \displ@y
+      \tabskip\displayindent
+      \halign{\hbox to\displaywidth
+        {$\@lign\displaystyle####\hfil$\hfil}\crcr
               ##1\crcr}}}%
-  \def\eqalignno##1{\displ@y
-    \let\noalign = \@lefteqalignonoalign
-    \vcenter{%
+  \def\eqalignno##1{%
+    \def\eqno{&}%
+    \global\setbox\@lignbox\vbox{%
+      \prevdepth = \disprevdepth
+      \displ@y
+      \advance\displaywidth by \displayindent
+      \tabskip\displayindent
       \halign to\displaywidth{%
-         \hfil $\@lign\displaystyle{####}$\tabskip\z@skip
+         \hfil $\@lign\displaystyle{####}$\@leftleftfill\tabskip\z@skip
         &$\@lign\displaystyle{{}####}$\hfil\tabskip\centering
         &\llap{$\@lign####$}\tabskip\z@skip\crcr
         ##1\crcr}}}%
-  \def\leqalignno##1{\displ@y
-    \let\eqno = \relax
-    \vcenter{%
+  \def\leqalignno##1{%
+    \def\eqno{&}%
+    \global\setbox\@lignbox\vbox{%
+      \prevdepth = \disprevdepth
+      \displ@y
+      \advance\displaywidth by \displayindent
+      \tabskip\displayindent
       \halign to\displaywidth{%
-         \hfil$\@lign\displaystyle{####}$\tabskip\z@skip
+         \hfil $\@lign\displaystyle{####}$\@leftleftfill\tabskip\z@skip
         &$\@lign\displaystyle{{}####}$\hfil\tabskip\centering
-        &\kern-\displaywidth
-         \rlap{\kern-\displayindent $\@lign####$}%
+        &\kern-\displaywidth 
+         \rlap{\kern\displayindent \kern-\leftdisplayindent$\@lign####$}%
          \tabskip\displaywidth\crcr
         ##1\crcr}}}%
 }%
@@ -2213,7 +2235,7 @@
 \newbox\@partialpage
 \newdimen\@columnhsize
 \newdimen\@normalhsize
-\newdimen\@normalvsize
+\newdimen\@normalvsize  % The original (before multi-columns) \vsize.
 \newtoks\previousoutput
 \def\quadcolumns{\@columns4}%
 \def\triplecolumns{\@columns3}%
@@ -2273,6 +2295,10 @@
       \global\setbox7 = \vsplit255 to \dimen@ \global\wd7 = \hsize
     \fi
   \endgroup
+  \if@forceextraline                         % If this is the first time
+  \else                                      % through, save the single
+    \setbox\@forcelinebox=\copy\@partialpage % column material. 
+  \fi
   \setbox0 = \box255
   \global\setbox255 = \vbox{%
     \unvbox\@partialpage
@@ -2289,6 +2315,7 @@
 }%
 \def\@columnoutput{%
   \@columnsplit
+  \@recoverclubpenalty 
   \hsize = \@normalhsize % Local to \output's group.
   \vsize = \@normalvsize
   \the\previousoutput
@@ -2302,6 +2329,7 @@
   \vskip\belowcolumnskip
   \nointerlineskip
 }%
+\newbox\@forcelinebox 
 \def\@endcolumns{%
   \global\let\@ndcolumns = \relax
   \par % Shouldn't start in horizontal mode.
@@ -2315,8 +2343,9 @@
   \else % There is some left-over. 
     \setbox0=\box\@partialpage % Merely to void \@partialpage
     \global\setbox255 = \box2  % Retrieve what the fake \output set.
-    \@forceextralinetrue
-    \@columnsplit
+    \@forceextralinetrue       % Add \forcelinebox to \box255 to save single
+    \@columnsplit              % column material. 
+    \global\setbox255 = \vbox{\box\@forcelinebox\box255}%
   \fi
   \global\vsize = \@normalvsize
   \global\hsize = \@normalhsize
@@ -2324,15 +2353,39 @@
   \ifvoid\topins\else\topinsert\unvbox\topins\endinsert\fi
   \unvbox255
 }%
+\def\@saveclubpenalty{% save the current value of \clubpenalty
+  \edef\@recoverclubpenalty{%
+     \global\clubpenalty=\the\clubpenalty\relax%
+     \global\let\noexpand\@recoverclubpenalty\relax
+  }% the \noexpand handles infinite self-reference
+}%
+\let\@recoverclubpenalty\relax
+\newdimen\temp@dimen
 \def\columnfill{%
-  \dimen@ = \@normalvsize
-  \advance\dimen@ by -\pagetotal
-  \kern\dimen@
-}
+ \par
+ \dimen@=\pagetotal   % The height of the text set so far. 
+ \temp@dimen = \vsize % = \@numcolumns * columnheight
+ \divide\temp@dimen by \@numcolumns % find out column height
+ \loop
+   \ifdim \dimen@ > \temp@dimen
+     \advance \dimen@ by -\temp@dimen
+     \advance \dimen@ by \topskip % fudge factor
+ \repeat
+ \advance \temp@dimen by -\dimen@
+ \advance \temp@dimen by -\prevdepth
+ \@saveclubpenalty 
+ \clubpenalty=10000\relax
+ \hrule height\temp@dimen width0pt depth0pt\relax
+ \nointerlineskip
+ \par
+ \nointerlineskip
+ \penalty0\vfil % To allow a page break here.
+ \relax
+}%
 \let\wlog = \@plainwlog
 \catcode`@ = \@eplainoldatcode
 \def\fmtname{eplain}%
 \def\eplain{t}%
 {\edef\plainversion{\fmtversion}%
- \xdef\fmtversion{2.7: 24 January 1998 (and plain \plainversion)}%
+ \xdef\fmtversion{2.8.1: 11 November 2000 (and plain \plainversion)}%
 }%

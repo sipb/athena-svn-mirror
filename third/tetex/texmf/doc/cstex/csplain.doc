@@ -1,0 +1,197 @@
+          Balík souborù (texinput) na generování formátu csplain
+          ******************************************************
+          *  Petr Ol¹ák                      Verze: záøí 1996  *
+                                                    øíjen 1998
+
+Formát csplain je skoro shodný s klasickým formátem plain. Rozdíl je jedinì
+v tom, ¾e místo CM fontù se pracuje s CS-fonty, co¾ umo¾òuje zavést
+v tomto kódování fontù vzory dìlení pro èeský a slovenský jazyk.
+Pomocí formátu csplain je mo¾no nahradit originální formát plain,
+tj. pro anglické dokumenty se oba formáty chovají (skoro) stejnì.
+Nepatrné odli¹nosti, vyplývající z pou¾ití CS-fontù místo CM fontù,
+viz soubor cs-fonts.doc.
+
+
+Potøebné soubory
+****************
+
+Pro vygenerování formátu csplain je potøeba:
+ 1. v /tfm mít metriky CS-fontù (napø. csr10.tfm),
+ 2. v /texinput mít následující soubory:
+         csplain.ini  ... hlavní soubor pro vygenerování formátu
+         plain.tex    ... Knuthùv plain
+         csfonts.tex  ... makro pro zavedení CS-fontù
+         il2code.tex  ... makro pro práci s kódem CS-fontù (ISO-8859-2)
+         hyphen.lan   ... øídicí soubor k zavední vzorù dìlení rùzných jazykù
+         hyphen.tex   ... základní vzory dìlení pro US (souèástí plainu)
+         hyphen.ex    ... slovník výjimek pro US
+         czhyphen.tex ... vzory dìlení pro èe¹tinu
+         czhyphen.ex  ... slovník výjimek pro èe¹tinu
+         skhyphen.tex ... vzory dìlení pro sloven¹tinu
+         skhyphen.ex  ... slovník výjimek pro sloven¹tinu
+         plaina4.tex  ... makro upravující výhozí rozmìr zrcadla pro A4
+3. pokud pøedpokládáte vstupní soubory v jiném kódování, ne¾ ISO-8859-2,
+   potøebujete navíc a) pøi pou¾ití emTeXu -- pøíslu¹nou *.tcp tabulku
+                     b) pøi vyu¾ití encTeXu -- pøíslu¹ný soubor enc-?.tex
+
+
+Generování formátu
+******************
+
+Generování formátu csplain je závislé na implementaci TeXu.
+V UNIX like systémech (odvozených z implementace web2c) pou¾ijte pøíkaz:
+
+         initex csplain.ini
+
+nebo v novìj¹í verzi web2c:
+
+         tex -ini csplain.ini
+
+Vstupní kódování bude rovno vnitønímu kódování ISO-8859-2. Pøedpokláte-li
+kódování vstupních textù v jiném kódování, ne¾ ISO-8859-2 a navíc máte
+implementaci binárního programu TeX obsahující encTeX (to poznáte podle
+druhého øádku v soborech *.log), pak si vyberte jedno z písmen: w=CP1250,
+k=Kamenicti, p=PC Latin2 (CP852) a inicializujte formát takto:
+
+         tex -ini \let\enc=? \input csplain.ini
+
+kde ? je jedno z písmen w, k, nebo p charakterizující vstupní kódování. Na
+pøíkazovém øádku v UNIXu musíte ka¾dý znak "\" psát dvakrát, napøíklad:
+
+         tex -ini \\let\\enc=k \\input csplain.ini
+
+Potøebujete-li implementovat vstupní kódování, které zde není uvedeno,
+zvolte si pro nì nìjaké dal¹í písmeno a editujte pøíslu¹ný soubor enc-?.tex.
+
+V DOSu (emTeXu) mù¾ete volit vstupní kódování pomocí *TCP tabulek. Napø.
+pro kódování Kamenických napí¹ete:
+
+         tex[386] /i /8 -cKAMENIC.TCP csplain.ini
+
+Mù¾ete si ovìøit správnost instalace csplainu testem cstrip. Viz soubor
+cstripm.dvi nebo cstripm.ps
+
+
+Pou¾ití èe¹tiny a sloven¹tiny
+*****************************
+
+csplain je inicializován tak, aby se implicitnì choval jako plain.  To
+znamená, ¾e je nastaveno anglické dìlení slov a sekvence \v, \'
+expandují na primitiv \accent. Rovnì¾ je aktivní \nonfrenchspacing.
+Rozdíl je jen ve velikosti implicitního rozmìru zrcadla sazby, které je 
+v csplainu nastaveno pro palcové okraje pøi formátu A4, zatímco 
+v plainu je nastaveno pro palcové okraje formátu Letter.
+
+Pro sazbu v èeském nebo slovenském jazyce NEMUSÍTE volat styl
+czech.sty. Staèí pou¾ít na zaèátku dokumentu tyto sekvence:
+
+\chyph      % nebo \shyph : inicializuje èeské/slovenské dìlení slov 
+            % a \frenschpacing
+\csaccents  % zpùsobí jiné chování sekvencí \' \v a \r, které od této
+            % chvíle expandují na znaky podle CSfontù
+
+% návrat k pùvodnímu nastavení:
+\ehyph      % americké dìlení a \nonfrenchspacing
+\cmaccents  % \, \v expandují na primitiv \accent
+
+Od verze csplainu <Sep. 1996> je sekvence pro uvozovky \uv{cosi}
+zanesena do formátu.
+           
+
+Verze csplainu.
+***************
+
+csplain zavádí do \everyjob hlá¹ení o datu posledního zásahu do
+zdrojových textù csplainu (viz soubor csplain.ini). Pokud tam takové
+hlá¹ení není, máte verzi csplainu z r. 1994 nebo star¹í.
+
+Jednotlivé verze oznaèujeme datem zmìny zdrojového textu a nikoli
+èíslem. Odli¹nosti novìj¹ích verzí ne¾ <Apr. 1995> jsou uvedeny pøímo
+v souboru csplain.ini. Odli¹nosti verze z roku 1994 od <Apr. 1995>
+jsou uvedeny ní¾e.
+
+V èem se li¹í csplain z csTeXu94 od verze <Apr. 1995>
+*****************************************************
+
+1. plain.tex. Místo verze 3.0 je pou¾ita verze 3.14159.
+
+2. csfonts.tex. Navíc pøidána vlastnost \font\preloaded = nezavádìj ¾ádný font.
+   Dùsledek: Po naètení formátu plain.tex je zavedeno pouhých 16 základních
+   fontù proti døívìj¹ím 50.
+   Dùvod: Pøi dne¹ních rychlostech poèítaèù u¾ asi neoceníme, ¾e je nìjaký
+   font dopøedu zaveden ve formátu. Navíc máme více místa pro nové fonty.
+   Odchylka: Kromì nepatrného zdr¾ení pøi zavádìní (døíve \preloaded) fontù
+   není ¾ádný jiný rozdíl.
+
+3. il2code.tex (døíve extcode.tex). Kromì pùvodních definic \catcode,
+   \lccode a \uccode obsauje dal¹í makra závislá na kódování.
+   a) makro \csaccents pøedefinuje makra \v, \', ... tak, ¾e expandují
+      pøímo do znakù podle CS-fontù.
+      Výhody:
+      * Po \csaccents lze naèíst vzory dìlení ve tvaru nezávislém na
+        kódování.
+      * Po \csaccents budou správnì rozdìlena i slova zapsaná
+        t\'imto zp\r usobem. Také na nì bude správnì fungovat primitiv
+        \uppercase (výjimku tvoøí pøípad, kdy je \'i psáno "postaru", tj.
+        jako \'\i).
+      * \v d a \v t vede na ï a » (s apostrofy, nikoly s háèky).
+      Výchozí chování formátu csplain je z dùvodu nutné kompatibility
+      se standardním plainem nastaveno na pùvodní význam maker \v, \'.
+      Pøíkazem \csaccents se inicializuje nový význam a pøíkazem \cmaccents
+      se v¹e vrací do pùvodního stavu. Inicializace je navíc lokální vrámci
+      skupiny.
+      Pokud bude nìkdo èasto pøepínat \csaccents, \cmaccents, pak mù¾e
+      potlaèit hlá¹ky na terminálu a do .logu pøedefinováním pøíkazu
+      \csaccentsmessage, \cmaccentsmessage.
+   b) Jsou doplnìny definice sekvencí, které jsou závislé na kódování
+      CS-fontù. Tj. uvozovky \clqq, \crqq, \flqq, \frqq, \ogonek, \promile.
+      Dále je definován pøíkaz \extrahyphens, který inicializuje
+      \hyphenchar do alternativního znaku v CS-fontu pro základní
+      desetibodové textové fonty. Tím napø. "je-li" nebude rozdìleno.
+      Bohu¾el vzniká zobrazovací zádrhel: pøi hlá¹kách "Overfull" TeX
+      zobrazuje na terminál místo znaku - znak ^^9c. V emTeXu staèí mírnì
+      upravit tabulku tcp a smìrovat do ^^9c nìjaký náhradní a podobný
+      semigrafický symbol (viz pøilo¾ená tabulka kamenic.tcp).
+
+4. hyphen.lan.
+   * Na zaèátku má \csaccents, aby zavedl vzory dìlení napsané
+     pomocí sekvencí a na konci vrací \cmaccents.
+   * Místo hyphen.cz a hyphen.czx zavádí czhyphen.tex a czhyphen.ex (z dùvodu
+     kompatibility s makrem pro èe¹tinu v LaTeXu 2e). Podobnì pro dal¹í
+     jazyky.
+   * Místo pùvodních \righthyphenmin=2 je pro \chyph a \shyph zavedeno
+     \righthyphenmin=3 (co¾ je podle normy). Sází-li u¾ivatel do úzkých
+     sloupcù, mù¾e si to zmìnit napøíklad takto: \chyph \righthyphenmin=2
+   * Pøi volání czhyphen.tex, skhyphen.tex je \let\global=\relax, aby
+     nedo¹lo ke zmìnì \everyjob\message. Skuteènost, jaké dìlení slov je
+     zavedeno, lze zjistit z verze csplainu <Apr. 1995>, tj. není potøeba
+     jmenovat nìjaké konkrétní lidi v \everyjobu.
+
+5. czhyphen.tex je kompletnì jiné (zøejmì lep¹í), ne¾ v pùvodním csTeXu.
+   Je pou¾ito dìlení, které (po mírném pomr¹ení) dal k dispozici Pavel
+   ©eveèek TeXovské veøejnosti pro pou¾ití v nekomerèním svìtì zdarma.
+
+6. czhyphen.ex je zmen¹eno o vìci, které u¾ czhyphen.tex umí správnì a
+   zbytek je pøepsán do sekvencí nezávislých na kódování.
+
+7. skhyphen.tex je pravdìpodobnì stejné, jako bylo (nezkoumal jsem to).
+   Stejnì tak zùstává skhyphen.ex. Je pou¾ito dìlení ruènì vyrobené
+   Jankou Chlebíkovou.
+
+8. csplain.ini.
+   * Zmìnìno poøadí volání extcode.tex
+   * Zmìnìn text \everyjob\message.
+
+9. czech.sty
+   * Na zaèátku zaøazena vìtvièka
+     \if Formát=LaTeX2e \input lczech.sty \endinput \fi
+   * Zaøazen novì test na \ifx\chyph\undefined \message{Warning...}
+   * Zaøazen test na pou¾ití CS-fontù podle prvních dvou písmen v názvu
+     fontu \tenrm. Pokud CS-fonty jsou zavedeny a pøitom není definován
+     \clqq (pøípad starý csformát, nový czech.sty), pak se definují nìkteré
+     sekvence analogicky, jako v bodì 3b).
+   * Do pøíkazù \czechTeX, resp. \originalTeX je vlo¾eno \csaccents, resp.
+     \cmaccents, tj. styl czech aktivuje \csaccents.
+   * V¹e, co bylo øeèeno pro czech.sty platí analogicky pro slovak.sty
+
+

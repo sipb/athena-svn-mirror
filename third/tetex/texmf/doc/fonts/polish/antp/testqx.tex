@@ -1,0 +1,251 @@
+%& --translate-file=il2-pl
+%% plik ten prezentuje u¿ycie fontów Antykwa Pó³tawskiego
+%% w LaTeX2e. Dziêki makrom zdefiniowanym w pliku qxenc.def 
+%% (z pakietu ftp://ftp.gust.org.pl/language/polish/platex-1.2.1.zip)  
+%% mamy dostêp do wielu symboli -- patrz dalej przyk³ady w tym pliku.
+%% (Marcin Woliñski, kwiecieñ 2001)
+%% Uwaga: u/zycie kodowania QX wymaga zainstalowania font/ow Quasi Times
+
+\documentclass{article}
+\usepackage{antpolt}
+\usepackage[QX]{fontenc}
+\usepackage{polski}
+
+\begin{document}
+\parindent0pt
+\fontsize{12dd}{16dd}\selectfont
+\prefixing
+
+P/ojd/x ki/n/ze t/e chmurno/s/c w~g/l/ab flaszy.
+
+P/OJD/X KI/N/ZE T/E CHMURNO/S/C W~G/L/AB FLASZY.
+
+[(<<@>>,,0123456789''\&\#//=+*)] -- --- ,.;:!?<> fifka fi ff ffi fk
+
+\bigskip
+{\itshape
+P/ojd/x ki/n/ze t/e chmurno/s/c w~g/l/ab flaszy.
+
+P/OJD/X KI/N/ZE T/E CHMURNO/S/C W~G/L/AB FLASZY.
+
+[(<<@>>,,0123456789''\&\#//=+*)] -- --- ,.;:!?<> fifka fi ff ffi fk
+
+}
+\bigskip
+
+{\bfseries
+P/ojd/x ki/n/ze t/e chmurno/s/c w~g/l/ab flaszy.
+
+P/OJD/X KI/N/ZE T/E CHMURNO/S/C W~G/L/AB FLASZY.
+
+[(<<@>>,,0123456789''\&\#//=+*)] -- --- ,.;:!?<> fifka fi ff ffi fk
+
+\bigskip
+\itshape
+P/ojd/x ki/n/ze t/e chmurno/s/c w~g/l/ab flaszy.
+
+P/OJD/X KI/N/ZE T/E CHMURNO/S/C W~G/L/AB FLASZY.
+
+[(<<@>>,,0123456789''\&\#//=+*)] -- --- ,.;:!?<> fifka fi ff ffi fk
+
+}
+\bigskip
+
+\nonprefixing
+{\bf Pójd¼} {\it kiñ¿e} {\bf tê \em chmurno¶æ} \textbf{w~\emph{g³±b
+  \emph{flaszy}}}. 
+
+Pójd¼ kiñ¿e tê chmurno¶æ w~g³±b flaszy.
+
+PÓJD¬ KIÑ¯E TÊ CHMURNO¦Æ W~G£¡B FLASZY.
+
+\textit{Pójd¼ kiñ¿e tê chmurno¶æ w~g³±b flaszy.}
+
+\textit{PÓJD¬ KIÑ¯E TÊ CHMURNO¦Æ W~G£¡B FLASZY.}
+
+%%== Symbole zaprocentowane poni¿ej s± niedostêpne w Antykwie Pó³tawskiego
+%%== poniewa¿ zestaw znaków stanowi tylko podzbiór zestawu znaków QX
+ 
+%\textDelta
+%\textbeta
+%\textdelta
+%\textpi
+%\textPi
+%\textSigma
+%\textmu
+%\textOmega
+
+\i\
+\. i
+\j\
+\` x
+\' x
+\v x
+\u x
+\= x
+% \macron x
+\b x
+\r x
+\c x
+\^ x
+\. x
+\H x
+\~ x
+\" x
+\k x
+\d x
+
+\ss\
+\ae\
+\oe\
+\o\
+\AE\
+\OE\
+\O\
+\k A
+\' C
+\k E
+\k I
+\L\
+\' N
+\' S
+\v S
+\c S
+\c T
+\k U
+\" Y
+\' Z
+\v Z
+\. Z
+\k a
+\' c
+\k e
+\k i
+\l\
+\' n
+\' s
+\v s
+\c s
+\c t
+\k u
+\" y
+\' z
+\v z
+\. z
+\` A
+\' A
+\^ A
+\~ A
+\" A
+\AA\
+\c C
+\` E
+\' E
+\^ E
+\" E
+\` I
+\' I
+\^ I
+\" I
+\DH\
+\DJ\
+\~ N
+\` O
+\' O
+\^ O
+\~ O
+\" O
+\` U
+\' U
+\^ U
+\" U
+\' Y
+\TH\
+\` a
+\' a
+\^ a
+\~ a
+\" a
+\aa\
+\r a
+\c c
+\` e
+\' e
+\^ e
+\" e
+\` i
+\' i
+\^ i
+\" i
+\dh\
+\dj\
+\~ n
+\` o
+\' o
+\^ o
+\~ o
+\" o
+\` u
+\' u
+\^ u
+\" u
+\' y
+\th\
+
+\textellipsis
+\textquotedblright\
+\textdollar\
+\textquoteright\
+\textexclamdown\
+\textquestiondown\
+\textquotedblleft\
+\textquoteleft\
+\textendash\
+\textemdash\
+\textgreater\
+\textxgeq\
+%\textapprox\
+%\textapproxequal\
+\textless\
+\textxleq\
+\textasciitilde\
+\textasciicircum\
+%\textell\
+\dag\
+\textdagger\
+\ddag\
+\textdaggerdbl\
+\textdegree\
+\textbraceleft\
+\textbraceright\
+\textsection\
+\textregistered\
+\copyright\
+\textdiv\
+%\textdivide
+\textminus\
+\texttimes\
+%%\textmultiply\
+\textpm
+%%\textplusminus\
+%\textinfty\
+%%\textinfinity
+\guillemotleft\
+\guillemotright\
+\textparagraph\
+\textbullet\
+%\textcdot\
+\textperiodcentered\
+\textquotedbl\
+\textquotesingle\
+\textbackslash\
+\textcurrency\
+\textperthousand\
+\textbar\
+\textunderscore\
+\textanglearc\
+\textdiameter\
+\quotedblbase
+
+\end{document}
+

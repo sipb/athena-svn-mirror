@@ -119,7 +119,7 @@ enddef;
 
 extra_beginfig := extra_beginfig
   & "boxjoin();save pic_,sproc_,pproc_;def clearboxes=enddef;";
-extra_endfig := extra_endfig & "clearboxes;";
+extra_endfig := extra_endfig & "clearboxes";
 
 
 % Given a list of box names, give whatever default values are necessary

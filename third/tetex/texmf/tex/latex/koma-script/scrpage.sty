@@ -4,9 +4,11 @@
 %%
 %% The original source files were:
 %%
-%% scrpage.dtx  (with options: `scrpage')
+%% scrpage.dtx  (with options: `scrpage,v1')
+%% scrlogo.dtx 
 %% 
-%% Copyright 1994-1996 Markus Kohm.
+%% Copyright 1994-2002 Markus Kohm.
+%% 
 %% All rights reserved. For further copyright information see the file
 %% legal.txt, and any other copyright indicated in this file.
 %% 
@@ -34,25 +36,24 @@
 %% 
 %% You are allowed to distribute this file under the condition that
 %% it is distributed together with all files mentioned in readme.txt
-%% and liesmich.txt.
+%% and liesmich.txt. See LEGAL.TXT or LEGALDE.TXT for further
+%% information.
 %% 
 %% If you receive only some of these files from someone, complain!
 %% 
-%% You are NOT ALLOWED to distribute this file alone.  You are NOT
-%% ALLOWED to take money for the distribution or use of either this
-%% file or a changed version, except for a nominal charge for copying
-%% etc.
+%% You are NOT ALLOWED to distribute this file alone.
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
-\ProvidesPackage{scrpage}
-                [1996/12/07 v1.2a LaTeX2e KOMA
+\ProvidesPackage{scrpage}[2001/06/22 v1.3c KOMA
                  package]
 \DeclareOption{headinclude}{\PassOptionsToPackage{headinclude}{typearea}}
 \DeclareOption{headexclude}{\PassOptionsToPackage{headexclude}{typearea}}
 \DeclareOption{footinclude}{\PassOptionsToPackage{footinclude}{typearea}}
 \DeclareOption{footexclude}{\PassOptionsToPackage{footexclude}{typearea}}
-\ExecuteOptions{headinclude,footinclude}
-\ProcessOptions
+\ExecuteOptions{%
+headinclude,footinclude%
+}
+\ProcessOptions\relax
 \newif\if@chapter
 \ifx\chapter\undefined \@chapterfalse\else\@chaptertrue\fi
 \def\@tempa{\newif\if@mainmatter\@mainmattertrue}
@@ -137,58 +138,71 @@
 \fi
 \def\def@twosidehead(#1,#2)#3#4#5(#6,#7){
   \def\@evenhead{\let\headmark\leftmark%
-    \vbox{\hsize=\textwidth
-      \hf@rule{#1}{#2}\vskip#2
-      \vskip\baselineskip\hb@xt@\textwidth{{\headfont\strut #3}}
-      \hf@rule{#6}{#7}
-  }}
+    \hss\hskip\@evenheadshift\vbox{\hsize=\@headwidth\relax%
+      \hf@rule{#1}{#2}{\@headwidth}\vskip#2%
+      \vskip\baselineskip%
+      \hb@xt@\@headwidth{{%
+          \headfont\strut #3}}%
+      \hf@rule{#6}{#7}{\@headwidth}%
+  }\hskip\@oddheadshift\hss}
   \def\@oddhead{\let\headmark\rightmark%
-    \vbox{\hsize=\textwidth
-      \hf@rule{#1}{#2}\vskip#2
-      \vskip\baselineskip\hb@xt@\textwidth{{\headfont\strut #4}}
-      \hf@rule{#6}{#7}
-  }}
+    \hss\hskip\@oddheadshift\vbox{\hsize=\@headwidth\relax%
+      \hf@rule{#1}{#2}{\@headwidth}\vskip#2%
+      \vskip\baselineskip%
+      \hb@xt@\@headwidth{{%
+          \headfont\strut #4}}%
+      \hf@rule{#6}{#7}{\@headwidth}%
+  }\hskip\@evenheadshift\hss}
 }
 \def\def@onesidehead(#1,#2)#3#4#5(#6,#7){
   \def\@evenhead{}
   \def\@oddhead{\let\headmark\rightmark%
-    \vbox{\hsize=\textwidth
-      \hf@rule{#1}{#2}\vskip#2
-      \vskip\baselineskip\hb@xt@\textwidth{{\headfont\strut #5}}
-      \hf@rule{#6}{#7}
-  }}
+    \hss\hskip\@oddheadshift\vbox{\hsize=\@headwidth\relax%
+      \hf@rule{#1}{#2}{\@headwidth}\vskip#2%
+      \vskip\baselineskip%
+      \hb@xt@\@headwidth{{%
+          \headfont\strut #5}}
+      \hf@rule{#6}{#7}{\@headwidth}
+  }\hskip\@evenheadshift\hss}
 }
 \def\def@twosidefoot(#1,#2)#3#4#5(#6,#7){
   \def\@evenfoot{\let\headmark\leftmark%
-    \vbox{\hsize=\textwidth
-      \topfoot@rule{#1}{#2}\hb@xt@\textwidth{{\headfont\strut #3}}
-      \botfoot@rule{#6}{#7}}}
+    \hss\hskip\@evenfootshift\vbox{\hsize=\@footwidth\relax%
+      \topfoot@rule{#1}{#2}\hb@xt@\@footwidth{{%
+          \headfont\strut #3}}%
+      \botfoot@rule{#6}{#7}}\hskip\@oddfootshift\hss}
   \def\@oddfoot{\let\headmark\rightmark%
-    \vbox{\hsize=\textwidth
-      \topfoot@rule{#1}{#2}\hb@xt@\textwidth{{\headfont\strut #4}}
-      \botfoot@rule{#6}{#7}}}
+    \hss\hskip\@oddfootshift\vbox{\hsize=\@footwidth\relax%
+      \topfoot@rule{#1}{#2}\hb@xt@\@footwidth{{%
+          \headfont\strut #4}}%
+      \botfoot@rule{#6}{#7}}\hskip\@evenfootshift\hss}
 }
 \def\def@onesidefoot(#1,#2)#3#4#5(#6,#7){
   \def\@evenfoot{}
   \def\@oddfoot{\let\headmark\rightmark%
-    \vbox{\hsize=\textwidth
-      \topfoot@rule{#1}{#2}\hb@xt@\textwidth{{\headfont\strut #5}}
-      \botfoot@rule{#6}{#7}}}
+    \hss\hskip\@oddfootshift\vbox{\hsize=\@footwidth\relax%
+      \topfoot@rule{#1}{#2}\hb@xt@\@footwidth{{%
+          \headfont\strut #5}}
+      \botfoot@rule{#6}{#7}}\hskip\@evenfootshift\hss}
 }
 \newcommand\topfoot@rule[2]{%
   \@tempdima\baselineskip\advance\@tempdima by-.7\normalbaselineskip
   \advance\@tempdima by -#2
-  \vskip\@tempdima\hf@rule{#1}{#2}\vskip-\@tempdima}
+  \vskip\@tempdima\hf@rule{#1}{#2}{\@footwidth}\vskip-\@tempdima}
 \newcommand\botfoot@rule[2]{%
   \@tempdima-\baselineskip\advance\@tempdima by .3\normalbaselineskip
   \advance\@tempdima by #2
-  \vskip\@tempdima\hf@rule{#1}{#2}}
-\newcommand\hf@rule[2]{%
-  \@tempdimb#1
-  \hb@xt@\textwidth{\hfill%
-    \llap{\vrule\@depth#2\@height\z@\@width.5\@tempdimb}%
-    \rlap{\vrule\@depth#2\@height\z@\@width.5\@tempdimb}%
-    \hfill}}
+  \vskip\@tempdima\hf@rule{#1}{#2}{\@footwidth}}
+\newcommand\hf@rule[3]{%
+  \setlength{\@tempdimb}{#1}
+      \setlength{\@tempdimb}{.5\@tempdimb}
+    \hb@xt@#3{%
+        \hfill%
+        \llap{\vrule\@depth#2\@height\z@\@width\@tempdimb}%
+        \rlap{\vrule\@depth#2\@height\z@\@width\@tempdimb}%
+        \hfill%
+    }%
+}
 \def\newpagestyle{%
   \@ifstar
   {\@newpagestyle[-]}%
@@ -197,10 +211,12 @@
   \expandafter\ifx\csname ps@#2\endcsname\relax
     \@defpagestyle[#1]{#2}{#3}{#4}
   \else
-    \PackageError{scrpage}{Your command was ignored}%
+    \PackageError
+      {scrpage}
+      {Your command was ignored}%
       {There is already a pagestyle named ``#1''.\MessageBreak%
        Use \protect\defpagestyle\space, \protect\renewpagestyle or
-       \protect\provide\pagestyle.}
+       \protect\providepagestyle.}
   \fi
 }
 \def\renewpagestyle{%
@@ -210,7 +226,9 @@
 \def\@renewpagestyle[#1]#2#3#4{
   \begingroup\expandafter\expandafter\expandafter\endgroup
   \expandafter\ifx\csname ps@#2\endcsname\relax
-    \PackageError{scrpage}{Your command was ignored}%
+    \PackageError
+      {scrpage}
+      {Your command was ignored}%
       {There is no pagestyle named ``#1''.\MessageBreak%
        Use \protect\defpagestyle, \protect\newpagestyle or
        \protect\providepagestyle.}
@@ -226,8 +244,9 @@
   \expandafter\ifx\csname ps@#2\endcsname\relax
     \@defpagestyle[#1]{#2}{#3}{#4}
   \else
-    \PackageInfo{scrpage}{\protect\providepagestyle\protect{#1\protect}
-                          ignored.}
+    \PackageInfo
+      {scrpage}
+      {\protect\providepagestyle\protect{#1\protect} ignored.}
   \fi
 }
 \def\deftripstyle{%
@@ -247,44 +266,156 @@
   \def\@tempb{+}
   \ifx\@tempa\@tempb%
     \defpagestyle{#1}%
-      {(\textwidth,#2)%
+      {(\@headwidth,#2)%
        {\rlap{#6}\hfill{#5}\hfill\llap{#4}}%
        {\rlap{#4}\hfill{#5}\hfill\llap{#6}}%
        {\rlap{#4}\hfill{#5}\hfill\llap{#6}}%
-       (\textwidth,#3)}
-      {(\textwidth,#3)%
+       (\@headwidth,#3)}
+      {(\@footwidth,#3)%
        {\rlap{#9}\hfill{#8}\hfill\llap{#7}}%
        {\rlap{#7}\hfill{#8}\hfill\llap{#9}}%
        {\rlap{#7}\hfill{#8}\hfill\llap{#9}}%
-       (\textwidth,#2)}
+       (\@footwidth,#2)}
   \else
     \defpagestyle*{#1}%
-      {(\textwidth,#2)%
+      {(\@headwidth,#2)%
        {\rlap{#6}\hfill{#5}\hfill\llap{#4}}%
        {\rlap{#4}\hfill{#5}\hfill\llap{#6}}%
        {\rlap{#4}\hfill{#5}\hfill\llap{#6}}%
-       (\textwidth,#3)}
-      {(\textwidth,#3)%
+       (\@headwidth,#3)}
+      {(\@footwidth,#3)%
        {\rlap{#9}\hfill{#8}\hfill\llap{#7}}%
        {\rlap{#7}\hfill{#8}\hfill\llap{#9}}%
        {\rlap{#7}\hfill{#8}\hfill\llap{#9}}%
-       (\textwidth,#2)}
+       (\@footwidth,#2)}
   \fi
 }
+\newcommand*{\settowidthof}[2]{%
+  \edef\@tempa{#2}
+  \edef\@tempb{paper}\ifx\@tempa\@tempb
+    \setlength{#1}{\paperwidth}
+  \else\edef\@tempb{text}\ifx\@tempa\@tempb
+      \setlength{#1}{\textwidth}
+    \else\edef\@tempb{textwithmarginpar}\ifx\@tempa\@tempb
+        \setlength{#1}{\textwidth}
+        \addtolength{#1}{\marginparwidth}
+        \addtolength{#1}{\marginparsep}
+      \else\edef\@tempb{head}\ifx\@tempa\@tempb
+          \setlength{#1}{\@headwidth}
+        \else\edef\@tempb{foot}\ifx\@tempa\@tembb
+            \setlength{#1}{\@footwidth}
+          \else\edef\@tempb{headtopline}\ifx\@tempa\@tempb
+              \setlength{#1}{\scr@headabove@linelength}
+            \else\edef\@tempb{headsepline}\ifx\@tempa\@tempb
+                \setlength{#1}{\scr@headbelow@linelength}
+              \else\edef\@tempb{footsepline}\ifx\@tempa\@tempb
+                  \setlength{#1}{\scr@footabove@linelength}
+                \else\edef\@tempb{footbotline}\ifx\@tempa\@tempb
+                    \setlength{#1}{\scr@footbelow@linelength}
+                  \else\edef\@tempb{page}\ifx\@tempa\@tempb
+                      \setlength{#1}{\paperwidth}
+                      \ifx\ta@bcor\undefined\else
+                        \addtolength{#1}{-\ta@bcor}
+                      \fi
+                    \else
+                      \setlength{#1}{#2}
+                    \fi
+                  \fi
+                \fi
+              \fi
+            \fi
+          \fi
+        \fi
+      \fi
+    \fi
+  \fi
+}
+\newcommand*{\deftowidthof}[2]{%
+  \edef\@tempa{#2}\edef\@tempb{autohead}\ifx\@tempa\@tempb
+    \expandafter\def\csname #1\endcsname{\@headwidth}
+  \else\edef\@tempb{autofoot}\ifx\@tempa\@tempb
+      \expandafter\def\csname #1\endcsname{\@footwidth}
+    \else
+      \settowidthof{\@tempdima}{#2}
+      \expandafter\edef\csname #1\endcsname{\the\@tempdima}
+    \fi
+  \fi
+}
+\newcommand*{\setheadwidth}[2][\@empty]{%
+  \set@hf@width{head}{#1}{#2}
+}
+\newcommand*{\setfootwidth}[2][\@empty]{%
+  \set@hf@width{foot}{#1}{#2}
+}
+\newcommand*{\set@hf@width}[3]{%
+  \settowidthof{\@tempdima}{#3}
+  \ifdim\@tempdima>\paperwidth
+    \PackageWarning
+      {scrpage}
+      {You've set width of #1 to a value\MessageBreak
+        greater than width of page!\MessageBreak%
+        I`ll reduce width of #1 to width of page}
+    \setlength{\@tempdima}{\paperwidth}
+  \else
+    \ifdim\@tempdima<\z@
+       \PackageWarning
+         {scrpage}
+         {You've set width of #1 to negative value!\MessageBreak%
+           I'll set it to 0pt}
+       \setlength{\@tempdima}{\z@}
+     \fi
+  \fi
+  \expandafter\edef\csname @#1width\endcsname{\the\@tempdima}
+  \edef\@tempa{#2}
+  \setlength{\@tempdima}{\textwidth}
+  \addtolength{\@tempdima}{-\csname @#1width\endcsname}
+  \ifx\@tempa\@empty
+    \if@twoside
+      \setlength{\@tempdimb}{.3333333333\@tempdima}
+    \else
+      \setlength{\@tempdimb}{.5\@tempdima}
+    \fi
+  \else
+    \setlength{\@tempdimb}{#2}
+  \fi
+  \addtolength{\@tempdima}{-\@tempdimb}
+  \ifdim\@tempdimb<\z@
+    \setlength{\@tempdimb}{-\@tempdimb}
+    \expandafter\edef\csname @odd#1shift\endcsname{-\the\@tempdimb}
+  \else
+    \expandafter\edef\csname @odd#1shift\endcsname{\the\@tempdimb}
+  \fi
+  \ifdim\@tempdima<\z@
+    \setlength{\@tempdima}{-\@tempdima}
+    \expandafter\edef\csname @even#1shift\endcsname{-\the\@tempdima}
+  \else
+    \expandafter\edef\csname @even#1shift\endcsname{\the\@tempdima}
+  \fi
+}
+\newcommand*{\@headwidth}{\textwidth}
+\newcommand*{\@oddheadshift}{\z@}
+\newcommand*{\@evenheadshift}{\z@}
+\newcommand*{\@footwidth}{\textwidth}
+\newcommand*{\@oddfootshift}{\z@}
+\newcommand*{\@evenfootshift}{\z@}
 \providecommand\pnumfont{\normalfont}
-\providecommand\headfont{\normalfont}
+\providecommand\headfont{\normalfont%
+}
 \if@chapter
-  \providecommand\chaptermarkformat    {\thechapter\quad}
-  \providecommand\sectionmarkformat    {\thesection\quad}
+  \providecommand{\chaptermarkformat}    {\@chapapp\ \thechapter. \ }
+  \providecommand{\sectionmarkformat}    {\thesection. \ }
 \else
-  \providecommand\sectionmarkformat    {\thesection\quad}
-  \providecommand\subsectionmarkformat {\thesubsection\quad}
+  \providecommand{\sectionmarkformat}    {\thesection\quad}
+  \providecommand{\subsectionmarkformat} {\thesubsection\quad}
 \fi
 \InputIfFileExists{scrpage.cfg}
            {\typeout{*************************************^^J%
                      * Local config file scrpage.cfg used^^J%
                      *************************************}}
            {}
+\@ifundefined{KOMAScript}{%
+  \DeclareRobustCommand{\KOMAScript}{\textsf{K\kern.05em O\kern.05em%
+      M\kern.05em A\kern.1em-\kern.1em Script}}}{}
 \endinput
 %%
 %% End of file `scrpage.sty'.

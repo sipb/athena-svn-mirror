@@ -1,0 +1,46 @@
+<head>
+<title>UK TeX FAQ -- question 265</title>
+</head><body>
+<h3>No room for a new '<em>thing</em>'</h3>
+<p>The technology available to Knuth at the time TeX was written is
+said to have been particularly poor at managing dynamic storage; as a
+result much of the storage used within TeX is allocated as fixed
+arrays, in the reference implementations.  Many of these fixed arrays
+are expandable in modern TeX implementations, but size of the
+arrays of "registers" is written into the specification as being 256
+(usually); this number may not be changed if you still wish to call
+the result TeX
+
+(see <a href="FAQ5.html">testing TeX implementations</a>).
+<p>If you fill up one of these register arrays, you get a TeX error
+message saying
+<pre>
+  ! No room for a new \&lt;thing&gt;.
+</pre>
+The <code>\thing</code>s in question may be <code>\count</code> (the object underlying
+LaTeX's <code>\newcounter</code> command), <code>\skip</code> (the object underlying
+LaTeX's <code>\newlength</code> command), <code>\box</code> (the object underlying
+LaTeX's <code>\newsavebox</code> command), or <code>\dimen</code>, <code>\muskip</code>,
+<code>\toks</code>, <code>\read</code>, <code>\write</code> or <code>\language</code> (all types of object
+whose use is "hidden" in LaTeX; the limit on the number of
+<code>\read</code> or <code>\write</code> objects is just 16).
+<p>There is nothing that can directly be done about this error, as you can't
+extend the number of available registers without extending TeX
+itself.
+  (Of course, <a href="FAQ278.html">e-TeX</a> and <a href="FAQ277.html">Omega</a> both do
+  this, as does MicroPress Inc's VTeX - see
+  <a href="FAQ56.html">commercial implementations</a>.)
+
+<p>The commonest way to encounter one of these error messages is to have
+broken macros of some sort, or incorrect usage of macros (an example
+is discussed in <a href="FAQ266.html">epsf problems</a>).  However,
+sometimes one just <em>needs</em> more than TeX can offer, and when
+this happens, you've just got to work out a different way of doing
+things.
+
+  An example is the
+  
+  <a href="FAQ240.html">difficulty of loading PiCTeX with LaTeX</a>.
+
+
+<p></body>

@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -27,7 +27,7 @@
 % Vdzhe
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Italic Cyrillic letter Vg_hcrs - Variant ghe hcrossed"; % not italic shape
 cyrchar(Vg_hcrs,8u#-.5width_adj#,x_height#,0);
@@ -101,4 +101,4 @@ bulb(10,11,12);  % bulb
 penlabels(0,a,1,2,3,4,5,6,7,8,9); endchar;
 
 endinput;
-% end of file
+%end of file

@@ -5,29 +5,29 @@
 %% The original source files were:
 %%
 %% estonian.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{estonian}
-        [1999/04/11 v1.0g Estonian support from the babel system]
+        [2001/01/30 v1.0h Estonian support from the babel system]
 %% File `estonian.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Estonian language Definition File
-%% Copyright (C) 1991 - 1999
+%% Copyright (C) 1991 - 2001
 %%           by Enn Saar, Tartu Astrophysical Observatory
 %% Please report errors to: Enn Saar <saar@aai.ee>
-%%                          (or J.L. Braams <JLBraams@cistron.nl)
+%%                          (or J.L. Braams <babel@braams.cistron.nl)
 \LdfInit{estonian}\captionsestonian
 \ifx\l@estonian\@undefined
   \@nopatterns{Estonian}
@@ -52,6 +52,7 @@
   \def\seename{vt.}%
   \def\alsoname{vt. ka}%
   \def\proofname{Korrektuur}%
+  \def\glossaryname{Glossary}% <-- Needs translation
   }
 \begingroup \catcode`\"\active
 \def\x{\endgroup
@@ -76,7 +77,7 @@
 \addto\extrasestonian{\babel@save\"\umlautlow\babel@save\~\tildelow}
 \addto\extrasestonian{\bbl@frenchspacing}
 \addto\noextrasestonian{\bbl@nonfrenchspacing}
-\def\estonianhyphenmins{\tw@\tw@}
+\providehyphenmins{\CurrentOption}{\tw@\tw@}
 \def\tildelow{\def\~{\protect\gentilde}}
 \def\gentilde#1{\if#1o\newtilde{#1}\else\if#1O\newtilde{#1}%
     \else\newcheck{#1}%

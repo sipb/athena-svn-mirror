@@ -4,8 +4,8 @@
 %% See the betadoc documentation for usage. 
 %% This uses the header file `pst-node.pro'.
 %%
-\def\fileversion{97 patch 9}
-\def\filedate{1999/04/14}
+\def\fileversion{97 patch 11}
+\def\filedate{2000/11/09}
 %%
 %% COPYRIGHT 1993, 1994, 1999 by Timothy Van Zandt, tvz@nwu.edu.
 %%
@@ -38,6 +38,9 @@
 \fi}
 \def\tx@NewNode{NewNode }
 \def\pst@newnode#1#2#3#4{%
+% DG/SR modification begin - Nov.  9, 2000 - Patch 11
+\pst@killglue
+% DG/SR modification end
 \leavevmode
 \pst@getnode{#1}\pst@thenode
 \pst@Verb{%
@@ -1041,7 +1044,13 @@ end }}%
 \fi
 \psk@mcol
 \psk@@mnodesize}
-\def\psspan#1{\mscount#1\relax\loop\ifnum\mscount>\@ne \sp@n\repeat}
+% DG/SR modification begin - Sep. 3, 1999 - Patch 10 - From Michael Sharpe
+%\def\psspan#1{\mscount#1\relax\loop\ifnum\mscount>\@ne \sp@n\repeat}
+\def\psspan#1{\global\mscount#1\relax\pstloop\ifnum\mscount>\@ne\sp@n\repeat}
+\def\pstloop#1\repeat{\gdef\pstiterate{#1\relax\expandafter\pstiterate\fi}%
+\pstiterate
+\let\pstiterate\relax}
+% DG/SR modification end
 \def\psset@name#1{\pst@getnode{#1}\psk@name}
 \let\psk@name\relax
 \def\psset@mcol#1{%

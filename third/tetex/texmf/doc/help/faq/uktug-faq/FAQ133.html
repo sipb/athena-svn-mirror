@@ -1,0 +1,57 @@
+<head>
+<title>UK TeX FAQ -- question 133</title>
+</head><body>
+<h3>My section title is too wide for the page header</h3>
+<p>By default, LaTeX sectioning commands make the chapter or section
+title available for use by page headers and the like.  Page headers
+operate in a rather constrained area, and it's common for titles too
+be too big to fit: the LaTeX sectioning commands therefore take an
+optional argument:
+<pre>
+\section[short title]{full title}
+</pre>
+If the &lt;<em>short title</em>&gt; is present, it is used both for the table of
+contents and for the page heading: the usual answer to people who
+complain about the size of the title that's gone in to the running
+head, is to suggest that they the optional argument.
+<p>However, using the same text for the table of contents as for the
+running head may also be unsatisfactory: if your chapter titles are
+seriously long (like those of a Victorian novel), a valid and rational
+scheme is to have a shortened table of contents entry, and a really
+terse entry in the running head.
+<p>In fact, the sectioning commands use 'mark' commands to pass
+information to the page headers.  For example, <code>\chapter</code> uses
+<code>\chaptermark</code>, <code>\section</code> uses <code>\sectionmark</code>, and so on.  With
+this knowledge, one can achieve a three-layer structure for chapters:
+<pre>
+\chapter[middling version]{verbose version}
+\chaptermark{terse version}
+</pre>
+which should supply the needs of every taste.
+<p>Chapters, however, have it easy: hardly any book design puts a page
+header on a chapter start page.  In the case of sections, one has
+typically to take account of the nature of the <code>\*mark</code> commands:
+the thing that goes in the heading is the first mark on the page (or,
+failing any mark, the last mark on any previous page).  As a result
+the recipe for sections is more tiresome:
+<pre>
+\section[middling version]{verbose version%
+                \sectionmark{terse version}}
+\sectionmark{terse version}
+</pre>
+(the first <code>\sectionmark</code> deals with the header of the page the
+<code>\section</code> command falls on, and the second deal with subsequent
+pages; note that here, you need the optional argument to <code>\section</code>,
+even if "<em>middling version</em>" is in fact the same text as
+"<em>long version"</em>.)
+<p>A similar arrangement is necessary even for chapters if the class
+you're using is odd enough that it puts a page header on a chapter's
+opening page.
+<p>Note that the <i>titlesec</i> package manages the running heads in
+a completely different fashion; users of that package should refer to
+the documentation.
+<dl>
+<dt><tt><i>titlesec.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/titlesec.tar.gz">macros/latex/contrib/supported/titlesec.tar.gz</a>
+</dl>
+<p>
+</body>

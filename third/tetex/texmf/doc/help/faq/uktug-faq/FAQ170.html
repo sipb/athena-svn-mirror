@@ -1,0 +1,55 @@
+<head>
+<title>UK TeX FAQ -- question 170</title>
+</head><body>
+<h3>How to reduce list spacing</h3>
+<p>
+
+<a href="FAQ22.html">Lamport's book</a> lists various
+parameters for the layout of list (things like <code>\topsep</code>,
+<code>\itemsep</code> and <code>\parsep</code>), but fails to mention that they're set
+automatically within the list itself.  It works by each list executes a
+command <code>\@list</code><code>&lt;<em>depth</em>&gt;</code> (the depth appearing as a
+lower-case roman numeral); what's more, <code>\@listi</code> is usually reset
+when the font size is changed.  As a result, it's rather tricky for
+the user to control list spacing; of course, the real answer is to use
+a document class designed with more modest list spacing, but we all
+know such things are hard to come by.
+<p>There are packages that provide some control of list spacing, but
+they seldom address the separation from surrounding text (defined by
+<code>\topsep</code>).  The <i>expdlist</i> package, among its many controls
+of the appearance of <code>description</code> lists, offers a compaction
+parameter (see the documentation); the <i>mdwlist</i> package
+offers a <code>\makecompactlist</code> command for users' own list definitions,
+and uses it to define compact lists <code>itemize*</code>, <code>enumerate*</code> and
+<code>description*</code>.  In fact, you can write lists such as these commands
+define pretty straightforwardly - for example:
+<pre>
+\newenvironment{itemize*}%
+  {\begin{itemize}%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parsep}{0pt}}%
+  {\end{itemize}}
+</pre>
+However, both packages offer other facilities for list configuration:
+you should certainly not try the "do-it-yourself" approach if you
+need a package for some other list configuration purpose.
+<p>If you want to adjust <code>\topsep</code>, the most sensible approach (at
+present) is to define your list 'from first principles' using the
+<code>\list</code> command; its invocation is
+
+<code>\list{&lt;<em>item stuff</em>&gt;}{&lt;<em>list stuff</em>&gt;}</code>; the
+<code>&lt;<em>list stuff</em>&gt;</code> is executed <em>after</em> the
+<code>\@list</code><code>&lt;<em>depth</em>&gt;</code>, and can therefore be used to adjust
+all the parameters, including <code>\topsep</code>.
+<p>An alternative is to redefine <code>\@list</code><code>&lt;<em>depth</em>&gt;</code> (and the
+size-changing commands that alter <code>\@listi</code>), but this is not
+recommended unless you're building your own class or package, in which
+case one hopes you're capable of analysing the way in which the
+standard classes do things (as recommended in
+
+<a href="FAQ29.html">writing your own package</a>).
+<dl>
+<dt><tt><i>expdlist.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/expdlist.tar.gz">macros/latex/contrib/supported/expdlist.tar.gz</a>
+<dt><tt><i>mdwlist.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/mdwtools.tar.gz">macros/latex/contrib/supported/mdwtools.tar.gz</a>
+</dl>
+<p></body>

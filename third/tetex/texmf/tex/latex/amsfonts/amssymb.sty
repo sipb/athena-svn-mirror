@@ -7,55 +7,56 @@
 %% amssymb.dtx 
 %% 
 %%% ====================================================================
-%%%  @LaTeX-file{
-%%%     filename        = "amssymb.dtx",
-%%%     version         = "2.2c",
-%%%     date            = "1997/05/15",
-%%%     time            = "11:10:27",
-%%%     author          = "American Mathematical Society",
-%%%     copyright       = "Copyright (C) 1996 American Mathematical Society,
-%%%                        all rights reserved.  Copying of this file is
-%%%                        authorized only if either:
-%%%                        (1) you make absolutely no changes to your copy,
-%%%                        including name; OR
-%%%                        (2) if you do make changes, you first rename it
-%%%                        to some other name.",
-%%%     address         = "American Mathematical Society,
-%%%                        Technical Support,
-%%%                        Electronic Products and Services,
-%%%                        P. O. Box 6248,
-%%%                        Providence, RI 02940,
-%%%                        USA",
-%%%     telephone       = "401-455-4080 or (in the USA and Canada)
-%%%                        800-321-4AMS (321-4267)",
-%%%     FAX             = "401-331-3842",
-%%%     checksum        = "01698 351 1072 17688",
-%%%     email           = "tech-support@ams.org (Internet)",
-%%%     codetable       = "ISO/ASCII",
-%%%     keywords        = "latex, amslatex, ams-latex, math symbol,
-%%%                        amsfonts, msam, msbm",
-%%%     supported       = "yes",
-%%%     abstract        = "This is part of the AMSFonts distribution.
-%%%                        It is a \LaTeX{} option that defines symbol
-%%%                        names for all the math symbols in the fonts
-%%%                        MSAM and MSBM, of the AMSFonts (2.0+) package.",
-%%%     docstring       = "The checksum field above contains a CRC-16
-%%%                        checksum as the first value, followed by the
-%%%                        equivalent of the standard UNIX wc (word
-%%%                        count) utility output of lines, words, and
-%%%                        characters.  This is produced by Robert
-%%%                        Solovay's checksum utility.",
-%%%  }
+%%% @LaTeX-file{
+%%%   filename        = "amssymb.dtx",
+%%%   version         = "2.2d",
+%%%   date            = "2002/01/22",
+%%%   time            = "10:06:53 EST",
+%%%   checksum        = "51146 363 1168 18275",
+%%%   author          = "American Mathematical Society",
+%%%   copyright       = "Copyright 2001 American Mathematical Society,
+%%%                      all rights reserved.  Copying of this file is
+%%%                      authorized only if either:
+%%%                      (1) you make absolutely no changes to your copy,
+%%%                      including name; OR
+%%%                      (2) if you do make changes, you first rename it
+%%%                      to some other name.",
+%%%   address         = "American Mathematical Society,
+%%%                      Technical Support,
+%%%                      Publications Technical Group,
+%%%                      P. O. Box 6248,
+%%%                      Providence, RI 02940,
+%%%                      USA",
+%%%   telephone       = "401-455-4080 or (in the USA and Canada)
+%%%                      800-321-4AMS (321-4267)",
+%%%   FAX             = "401-331-3842",
+%%%   email           = "tech-support@ams.org (Internet)",
+%%%   codetable       = "ISO/ASCII",
+%%%   keywords        = "latex, amslatex, ams-latex, math symbol,
+%%%                      amsfonts, msam, msbm",
+%%%   supported       = "yes",
+%%%   abstract        = "This file is part of the AMSFonts distribution.
+%%%                      It is a \LaTeX{} package that defines symbol
+%%%                      names for all the math symbols in the fonts
+%%%                      MSAM and MSBM, of the AMSFonts (2.0+) collection.",
+%%%   docstring       = "The checksum field above contains a CRC-16
+%%%                      checksum as the first value, followed by the
+%%%                      equivalent of the standard UNIX wc (word
+%%%                      count) utility output of lines, words, and
+%%%                      characters.  This is produced by Robert
+%%%                      Solovay's checksum utility.",
+%%% }
 %%% ====================================================================
 \NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
 [1994/12/01]% LaTeX date must be December 1994 or later
-\ProvidesPackage{amssymb}[1996/11/03 v2.2b]
+\ProvidesPackage{amssymb}[2002/01/22 v2.2d]
 \DeclareOption{psamsfonts}{\PassOptionsToPackage{psamsfonts}{amsfonts}}
 \ProcessOptions\relax
 \RequirePackage{amsfonts}[1995/01/01]
 \let\square\relax \let\rightsquigarrow\square \let\lozenge\square
 \let\vartriangleright\square \let\vartriangleleft\square
 \let\trianglerighteq\square \let\trianglelefteq\square
+\begingroup \catcode`\"=12
 \DeclareMathSymbol{\boxdot}       {\mathbin}{AMSa}{"00}
 \DeclareMathSymbol{\boxplus}      {\mathbin}{AMSa}{"01}
 \DeclareMathSymbol{\boxtimes}     {\mathbin}{AMSa}{"02}
@@ -80,7 +81,7 @@
 \DeclareMathSymbol{\upuparrows}         {\mathrel}{AMSa}{"14}
 \DeclareMathSymbol{\downdownarrows} {\mathrel}{AMSa}{"15}
 \DeclareMathSymbol{\upharpoonright} {\mathrel}{AMSa}{"16}
- \let\restriction\upharpoonright
+ \global\let\restriction\upharpoonright
 \DeclareMathSymbol{\downharpoonright}   {\mathrel}{AMSa}{"17}
 \DeclareMathSymbol{\upharpoonleft}  {\mathrel}{AMSa}{"18}
 \DeclareMathSymbol{\downharpoonleft}{\mathrel}{AMSa}{"19}
@@ -102,7 +103,7 @@
 \DeclareMathSymbol{\therefore}    {\mathrel}{AMSa}{"29}
 \DeclareMathSymbol{\because}      {\mathrel}{AMSa}{"2A}
 \DeclareMathSymbol{\doteqdot}     {\mathrel}{AMSa}{"2B}
- \let\Doteq\doteqdot
+ \global\let\Doteq\doteqdot
 \DeclareMathSymbol{\triangleq}    {\mathrel}{AMSa}{"2C}
 \DeclareMathSymbol{\precsim}      {\mathrel}{AMSa}{"2D}
 \DeclareMathSymbol{\lesssim}      {\mathrel}{AMSa}{"2E}
@@ -157,9 +158,9 @@
 \DeclareMathSymbol{\Subset}       {\mathrel}{AMSa}{"62}
 \DeclareMathSymbol{\Supset}       {\mathrel}{AMSa}{"63}
 \DeclareMathSymbol{\Cup}          {\mathbin}{AMSa}{"64}
- \let\doublecup\Cup
+ \global\let\doublecup\Cup
 \DeclareMathSymbol{\Cap}          {\mathbin}{AMSa}{"65}
- \let\doublecap\Cap
+ \global\let\doublecap\Cap
 \DeclareMathSymbol{\curlywedge}   {\mathbin}{AMSa}{"66}
 \DeclareMathSymbol{\curlyvee}     {\mathbin}{AMSa}{"67}
 \DeclareMathSymbol{\leftthreetimes} {\mathbin}{AMSa}{"68}
@@ -169,9 +170,9 @@
 \DeclareMathSymbol{\bumpeq}       {\mathrel}{AMSa}{"6C}
 \DeclareMathSymbol{\Bumpeq}       {\mathrel}{AMSa}{"6D}
 \DeclareMathSymbol{\lll}          {\mathrel}{AMSa}{"6E}
- \let\llless\lll
+ \global\let\llless\lll
 \DeclareMathSymbol{\ggg}          {\mathrel}{AMSa}{"6F}
- \let\gggtr\ggg
+ \global\let\gggtr\ggg
 \DeclareMathSymbol{\circledS}     {\mathord}{AMSa}{"73}
 \DeclareMathSymbol{\pitchfork}    {\mathrel}{AMSa}{"74}
 \DeclareMathSymbol{\dotplus}      {\mathbin}{AMSa}{"75}
@@ -278,6 +279,7 @@
 %% In amsfonts.sty:
 %%\DeclareMathSymbol{\hbar}         {\mathord}{AMSb}{"7E}
 \DeclareMathSymbol{\backepsilon}    {\mathrel}{AMSb}{"7F}
+\endgroup
 \endinput
 %%
 %% End of file `amssymb.sty'.

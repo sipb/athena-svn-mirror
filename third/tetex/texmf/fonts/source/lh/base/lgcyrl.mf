@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -18,24 +18,31 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-LHver_check(3,2); % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
-input lgrusl;	  % Russian letters
-input lgt2upl;    % letters from Upper part (128-255) of T2
-                  % there is endinput for wncoding and LH font
-input lgt2lol;    % letters from Lower part (0-127) of T2
-                  % there is endinput for LH font
+input lgrusl;     % Russian letters
+input lgt2coml;   % Letters common for couple of encodings
+
+if not more_letters: endinput \\; fi
 
 if old_cyr:
-   input lgslavl; % Unicode Old Slav letters
-   input lgsladl; % additional Old slav letters
+   input lgt2slvl; % Unicode Old Slav letters
+   if not roman_ec:
+      input lgt2slxl; % additional Old slav letters
+   fi
+fi
+
+if not old_cyr or unic:
+   input lgt2upl; % letters from Upper part (128-255) of X2 container
+   input lgt2lol; % letters from Lower part (0-127) of X2 container
 fi
 
 if other_cyr:
    input lgunicl; % Unicode letters not included in T2
-
    input lgcmodl; % modified letters
    input lgcaccl; % accended letters
-
    input lgcvacl; % acuted vowels
 fi
+
+endinput;
+%end of file

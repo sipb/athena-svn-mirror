@@ -6,7 +6,7 @@
 %%
 %% lscape.dtx  (with options: `package')
 %% 
-%% lscape.dtx Copyright (C) 1994 1999 David Carlisle
+%% lscape.dtx Copyright (C) 1994 1999-2000 David Carlisle
 %%
 %% This file is part of the Standard LaTeX `Graphics Bundle'.
 %% It may be distributed under the terms of the LaTeX Project Public
@@ -15,7 +15,13 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{lscape}
-          [1999/02/16 v3.0a Landscape Pages (DPC)]
+          [2000/10/22 v3.01 Landscape Pages (DPC)]
+\newif\ifGin@pdftex
+\Gin@pdftexfalse
+\DeclareOption{pdftex}{%
+  \PassOptionsToPackage\CurrentOption{graphics}
+  \Gin@pdftextrue
+}
 \DeclareOption*{\PassOptionsToPackage\CurrentOption{graphics}}
 \ProcessOptions
 \RequirePackage{graphics}
@@ -36,6 +42,9 @@
   \def\@makecol{\LS@makecol\LS@rot}%
   \def\@makefcolumn##1{\LS@makefcolumn{##1}\LS@rot}}
 \def\endlandscape{%
+  \ifGin@pdftex
+    \pdfpageattr{/Rotate 90}
+  \fi
   \clearpage
   \endgroup
   \global\@colht=\textheight

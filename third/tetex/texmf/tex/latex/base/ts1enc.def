@@ -8,25 +8,40 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000 2001
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the LaTeX2e system.
-%% ----------------------------------------
+%% This file was generated from file(s) of the LaTeX base system.
+%% --------------------------------------------------------------
 %% 
-%% It may be distributed under the terms of the LaTeX Project Public
-%% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% base system. You may however distribute the LaTeX base system without
+%% such generated files.
+%% 
+%% The list of all files belonging to the LaTeX base distribution is
+%% given in the file `manifest.txt'. See also `legal.txt' for additional
+%% information.
+%% 
 %%% From File: ltoutenc.dtx
-\ProvidesFile{ts1enc.def}[1998/06/12 v3.0d (jk/car/fm)
+\ProvidesFile{ts1enc.def}[2001/06/05 v3.0e (jk/car/fm)
          Standard LaTeX file]
 \DeclareFontEncoding{TS1}{}{}
 \DeclareFontSubstitution{TS1}{cmr}{m}{n}
 \DeclareTextCommand{\capitalcedilla}{TS1}[1]
-   {{\ooalign{\null#1\crcr\hidewidth\char11\hidewidth}}}
+   {\hmode@bgroup
+    \ooalign{\null#1\crcr\hidewidth\char11\hidewidth}\egroup}
 \DeclareTextCommand{\capitalogonek}{TS1}[1]
-   {{\ooalign{\null#1\crcr\hidewidth\char12\hidewidth}}}
+   {\hmode@bgroup
+    \ooalign{\null#1\crcr\hidewidth\char12\hidewidth}\egroup}
 \DeclareTextAccent{\capitalgrave}{TS1}{0}
 \DeclareTextAccent{\capitalacute}{TS1}{1}
 \DeclareTextAccent{\capitalcircumflex}{TS1}{2}
@@ -71,12 +86,12 @@
 \DeclareTextSymbol{\textrangle}{TS1}{62}
 \DeclareTextSymbol{\textmho}{TS1}{77}
 \DeclareTextSymbol{\textbigcircle}{TS1}{79}
-\DeclareTextCommand{\textcircled}{TS1}[1]{{%
+\DeclareTextCommand{\textcircled}{TS1}[1]{\hmode@bgroup
    \ooalign{%
       \hfil \raise .07ex\hbox {\upshape#1}\hfil \crcr
       \char 79   % '117 = "4F
    }%
-}}
+ \egroup}
 \DeclareTextSymbol{\textohm}{TS1}{87}
 \DeclareTextSymbol{\textlbrackdbl}{TS1}{91}
 \DeclareTextSymbol{\textrbrackdbl}{TS1}{93}

@@ -1,11 +1,5 @@
-%Filename: ot1ptm.fd
-%Created by: tex Fam_904
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{ot1ptm.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for OT1/ptm.]
+   [2001/06/04 font definitions for OT1/ptm.]
 
 \DeclareFontFamily{OT1}{ptm}{}
 
@@ -48,4 +42,5 @@
 
 \DeclareFontShape{OT1}{ptm}{m}{ui}{<->ssub * ptm/m/it}{}
 \DeclareFontShape{OT1}{ptm}{b}{ui}{<->ssub * ptm/b/it}{}
+\DeclareFontShape{OT1}{ptm}{bx}{ui}{<->ssub * ptm/b/it}{}
 \endinput

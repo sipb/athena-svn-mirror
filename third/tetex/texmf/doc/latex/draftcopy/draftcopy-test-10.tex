@@ -1,0 +1,61 @@
+%%
+%% This is file `draftcopy-test-10.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% draftcopy.doc  (with options: `test10')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from draftcopy-test-10.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file draftcopy.doc.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+\iffalse
+\fi
+
+
+
+
+
+
+
+
+\documentclass[german]{article}
+\usepackage{babel}
+\usepackage[light,firsttwo,outline,bottomafter]{draftcopy}
+\newcommand{\xx}{
+Test10: This is a test page \thepage \\
+test~the~tilde~tilde~tilde (1 fixed space (\~{}) between the words)\\
+test~~the~~tilde~~tilde~~tilde (2 fixed spaces (\~{}) between the words)\\
+test~~~the~~~tilde~~~tilde~~~tilde (3 fixed spaces (\~{}) between the words)
+\vfill
+This is a testpage \thepage \newpage
+}
+\draftcopyName{\today}{130}
+\draftcopySetScale{80}
+\begin{document}
+Should print the current date \verb|\today| (in german) on the first two pages,
+light, outlined.\\
+Should print the current date \verb|\today| (in german) on bottom of the page
+after the second page.\\
+Check that the lines with \~{}) have correct spacing.\\
+\verb|\usepackage[light,firsttwo,outline,bottomafter]{draftcopy}|\\
+and \\
+\verb|\draftcopyName{\today}{130}|\\
+\verb|\draftcopySetScale{80}|\\
+in the preamble
+\xx\xx\xx\xx
+\end{document}
+\endinput
+%%
+%% End of file `draftcopy-test-10.tex'.

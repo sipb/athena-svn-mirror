@@ -3,7 +3,7 @@
 % extension of Computer Modern Symbol fonts) in text format.
 % The program is a modification of the MATHSY.MF file.
 % ---------------------------------------------------------------------------
-% PL VERSION 1.03,   18 Dec 1992
+% PL VERSION 1.09, April 13th, 2001 -- released for BachoTeX 2001
 % ---------------------------------------------------------------------------
 % AUTHORS OF MODIFICATION: {\bif{}Bogus\l{}aw Jackowski \& Marek Ry\'cko}
 % ---------------------------------------------------------------------------
@@ -11,17 +11,6 @@
 % those of D. E. Knuth specified for the Computer Modern family of fonts.
 % 
 % For details see either the file MEXINFO.POL or MEXINFO.ENG.
-% ---------------------------------------------------------------------------
-% HISTORY
-%  7 Feb 1992: version 1.00
-% 11 Feb 1992: version 1.01
-%    (no changes; the new version number due to changes in \MeX{} format)
-%  1 Jun 1992: version 1.02
-%    (no changes; the new version number due to changes in other files)
-% 18 Dec 1992: version 1.03
-%    (no changes; the new version number due to changes in FIK_MIK.MF
-%    and some cosmetic changes in CMBX11.MF, CMR11.MF, CMTI11.MF, CMSL11.MF,
-%    CMSSBI10.MF, and POLAN.MF)
 % ---------------------------------------------------------------------------
 
 

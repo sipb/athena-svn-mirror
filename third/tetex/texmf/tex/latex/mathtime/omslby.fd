@@ -11,7 +11,7 @@
 %% Development of this package was commissioned by Y&Y Inc.
 %% http://www.yandy.com
 \ProvidesFile{omslby.fd}
- [1997/03/14 v1.0c
+ [2001/05/30 v1.0c
  Lucida New Math Symbols
   (FMi)]
 \@ifundefined{LucidaScale}{\def\LucidaScale{0.9}}{}

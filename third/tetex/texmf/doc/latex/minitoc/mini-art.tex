@@ -1,9 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%% A example file (differs from previous versions)
 % mini-art.tex
-% This file contains a set of tests for the minitoc.sty version #27
+% This file contains a set of tests for the minitoc.sty version #34
 % style option file. You can alter most of parameters to test.
 % article (\section must be defined)
 \documentclass[12pt,a4paper]{article}
+%\usepackage{hyperref}  % If used, load it BEFORE minitoc
 \usepackage{minitoc}
 \setcounter{secnumdepth}{5}   % depth of numbering of sectionning commands
 \setcounter{tocdepth}{3}           % depth of table of contents
@@ -25,7 +26,7 @@
 \dosectlof[c]                   % center title of sectlof's
 \doparttoc                      % test of parttoc/partlof stuff
 \dopartlof                      % added in version #15
-\faketableofcontents            % or \tableofcontents
+\tableofcontents            % or \tableofcontents
 \fakelistoffigures              % to check compatibility
 \part{First Part}
 \parttoc
@@ -46,7 +47,7 @@ bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \subsection*{S4}
-\addcontentsline{toc}{starsubsection}{*S4*}
+\addcontentsline{toc}{subsection}{*S4*}
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \subsection{S5}
@@ -160,6 +161,7 @@ bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \section*{CCCCC}         % tests a pseudo-section. should have no secttoc
+\addstarredsection{CCCCC}
 bla bla bla bla bla bla bla bla bla bla bla
 bla bla bla bla bla bla bla bla bla bla bla
 \subsection{U1}

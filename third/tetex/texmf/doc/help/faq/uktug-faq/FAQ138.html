@@ -1,0 +1,26 @@
+<head>
+<title>UK TeX FAQ -- question 138</title>
+</head><body>
+<h3><code>\pagestyle{empty}</code> on first page in LaTeX</h3>
+<p>If you use <code>\pagestyle{empty}</code>, but the first page is numbered anyway,
+you are probably using the <code>\maketitle</code> command too. The behaviour
+is not a bug but a feature! The standard LaTeX styles are written so that
+initial pages (pages containing a <code>\maketitle</code>, <code>\part</code>, or
+<code>\chapter</code>) have a different page style from the rest of the document; 
+to achieve this, the commands internally issue
+<code>\thispagestyle{plain}</code>. This is usually not acceptable behaviour if
+the surrounding page style is 'empty'.
+<p>Possible workarounds include: 
+<ul>
+<li> Put <code>\thispagestyle{empty}</code> immediately after the <code>\maketitle</code>
+  command, with no blank line between them.
+<li> Use the <i>fancyhdr</i> package, which allows you to customise the
+  style for initial pages independently of that for body pages.
+<li> Use the <i>nopageno</i> package, which suppresses all page
+  numbers by affecting the behaviour of page style commands.
+</ul>
+<dl>
+<dt><tt><i>fancyhdr.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/fancyhdr.tar.gz">macros/latex/contrib/supported/fancyhdr.tar.gz</a>
+<dt><tt><i>nopageno.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/carlisle/nopageno.sty">macros/latex/contrib/supported/carlisle/nopageno.sty</a>
+</dl>
+<p></body>

@@ -1,5 +1,5 @@
-This is the README file for the nomencl package. Please read the file
-license.txt for some legal information.
+This is the README file for the nomencl package. Please read the
+license information at the end of this file.
 
 
 PURPOSE
@@ -17,10 +17,10 @@ To install the nomencl package you need:
                (I think you need at least version 2.4)
 
 Run LaTeX on the file nomencl.ins to strip the comments from nomencl.dtx and 
-produce the style file nomencl.sty and the index format file nomencl.ist. Put
-the file nomencl.sty somewhere LaTeX can find it and nomencl.ist somewhere
-MakeIndex can find. Read the documentation of your LaTeX system to find out
-where this might be. 
+produce the style file nomencl.sty, the index format file nomencl.ist and some
+sample configuration files. Put the file nomencl.sty somewhere LaTeX can find 
+it and nomencl.ist somewhere MakeIndex can find. Read the documentation of 
+your LaTeX system to find out where this might be. 
 
 
 DOCUMENTATION
@@ -55,17 +55,27 @@ commands:
 
 COPYING AND MODIFICATION
 
-Please don't make any changes to the files nomencl.ins and nomencl.dtx other
-than allowed by the LPPL (see the file license.txt). If you want to give the 
-nomencl package to anyone, please give them nomencl.dtx and nomencl.ins.
+Copyright 1996 Boris Veytsman
+Copyright 1999-2000 Bernd Schandl
+
+The nomencl package consists of the following files:
+
+  README       Instructions on installation and documentation.
+  nomencl.ins  The installation driver.
+  nomencl.dtx  The documentation and the documented source code.
+
+This package can be redistributed and/or modified under the terms
+of the LaTeX Project Public License distributed from CTAN
+archives in the directory macros/latex/base/lppl.txt; either
+version 1.2 of the license, or (at your option) any later version.
 
 You might like to keep nomencl.ins and nomencl.dtx somewhere safe as a 
-backup, or in case you want to pass the nomencl class on to someone 
+backup, or in case you want to pass the nomencl package on to someone 
 else.
 
 
 HELP
 
 Bernd Schandl
-email bschand@math.clemson.edu
-www   http://www.math.clemson.edu/~bschand/nomencl
+email schandl@gmx.net
+www   http://members.nbci.com/schandl/nomencl

@@ -1,3 +1,4 @@
+\ProvidesFile{usorbian.mld}[1999/03/16]
 % Upper sorbian titles for minitoc.sty
 \def\mtctitle{Wobsah}
 \def\mlftitle{Zapiswobrazow}

@@ -1,0 +1,1127 @@
+% This file is changed by Roozbeh Pournader to make it work
+% with Omega 1.23 and fixing obvious bugs
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath}
+\usepackage{omega}
+%\usepackage[dvips]{draftcopy}\draftcopyName{\today}{140}
+\def\shortarab#1{{\pushocplist\ArabicOCP\fontfamily{omarb}\selectfont#1\popocplist}}
+\def\shortberber#1{{\pushocplist\ArabicBerberOCP\fontfamily{omarb}\selectfont#1\popocplist}}
+\def\shortgreek#1{{\pushocplist\GreekOCP\fontfamily{omlgc}\selectfont#1\popocplist}}
+\def\shortlatberber#1{{\pushocplist\LatinBerberOCP\fontfamily{omlgc}\selectfont#1\popocplist}}
+\def\shorttifi#1{{\pushocplist\TifinaghOCP\fontfamily{omlgc}\selectfont#1\popocplist}}
+\def\shortpashto#1{{\pushocplist\AfghaPashtoOCP\fontfamily{omarb}\selectfont#1\popocplist}}
+\def\shortpashtop#1{{\pushocplist\PakiPashtoOCP\fontfamily{omarb}\selectfont#1\popocplist}}
+\def\shortsindhi#1{{\pushocplist\SindhiOCP\fontfamily{omarb}\selectfont#1\popocplist}}
+\def\tl#1#2#3#4#5#6{\hline\rule[-5pt]{0pt}{14pt}\texttt{#1}&\shortarab{#1}&\texttt{#2}&\shortarab{#2}&\texttt{#3}&\shortarab{#3}&
+\texttt{#4}&\shortarab{#4}&\texttt{#5}&\shortarab{#5}&\texttt{#6}&\shortarab{#6}\\}
+%
+\def\ttl#1#2#3{\hline\rule[-5pt]{0pt}{14pt}\texttt{#1}&\shortlatberber{#1}&\shortberber{#1}&\shorttifi{#1}&
+\texttt{#2}&\shortlatberber{#2}&\shortberber{#2}&\shorttifi{#2}&
+\texttt{#3}&\shortlatberber{#3}&\shortberber{#3}&\shorttifi{#3}\\}
+%
+\def\stl#1#2#3#4#5#6{\hline\rule[-5pt]{0pt}{14pt}\texttt{#1}&\shortsindhi{#1}&\texttt{#2}&\shortsindhi{#2}&\texttt{#3}&\shortsindhi{#3}&
+\texttt{#4}&\shortsindhi{#4}&\texttt{#5}&\shortsindhi{#5}&\texttt{#6}&\shortsindhi{#6}\\}
+\def\patl#1#2#3#4#5#6{\hline\rule[-5pt]{0pt}{14pt}\texttt{#1}&\shortpashto{#1}&\texttt{#2}&\shortpashto{#2}&\texttt{#3}&\shortpashto{#3}&
+\texttt{#4}&\shortpashto{#4}&\texttt{#5}&\shortpashto{#5}&\texttt{#6}&\shortpashto{#6}\\}
+\def\paptl#1#2#3#4#5#6{\hline\rule[-5pt]{0pt}{14pt}\texttt{#1}&\shortpashtop{#1}&\texttt{#2}&\shortpashtop{#2}&\texttt{#3}&\shortpashtop{#3}&
+\texttt{#4}&\shortpashtop{#4}&\texttt{#5}&\shortpashtop{#5}&\texttt{#6}&\shortpashtop{#6}\\}
+\begin{document}
+\setcounter{page}{63}
+\title{Multilingual Typesetting with \OMEGA, a Case Study: Arabic}
+\author{Yannis Haralambous\thanks{Atelier Fluxus Virus, 187, rue Nationale,
+59800 Lille, France, \texttt{yannis@fluxus-virus.com}}
+\and
+John Plaice\thanks{School of Computer Science and Engineering,
+The University of New South Wales, Sydney 2052 Australia,
+\texttt{plaice@cse.unsw.edu.au}}
+}
+\date{}
+\maketitle
+\begin{abstract}
+In this paper we describe the internal structure of the Arabic script
+package for the \OMEGA{} typesetting system, as well as the techniques
+and tools used for its development. This package allows typesetting
+using regular \LaTeX{} styles, in all Arabic alphabet languages:
+Arabic, Berber, Farsi, Urdu, Pashto, Sindhi, Uighur, etc.
+
+We also give a description of the character codes added to Unicode, to
+obtain the Unicode++ encoding, used by the \OMEGA{} system for
+typesetting purposes.
+\end{abstract}
+
+\section{Overview of the \OMEGA{} Arabic Script Package}
+
+Typesetting with \OMEGA{} is a process similar to typesetting with
+\TeX: the user prepares a ``source'' file, containing the text of
+\hisher{} document and a certain number of macro-commands for
+attribute changes of the text (font characteristics, language, case,
+etc.), references to figures (included in graphical format files on
+disk) and other material included in or accompanying the text.
+
+Once this source file prepared, \OMEGA{} is launched: it reads the
+file, expands the commands and typesets the text accordingly. To
+perform this task, \OMEGA{} loads and executes several \OTP{}s
+(\OMEGA{} Translation Processes), which take care of low level
+properties of the document (contextual analysis of the script, case
+switching according to script and language, etc.). It also uses
+different fonts, most of which are \emph{virtual}, in the sense that
+they themselves call other fonts. On a higher level, such a document
+uses \LaTeX{} packages, some of them modified to take advantage of the
+additional features of \OMEGA{} vs.\ \TeX.
+
+The leading idea of the \OMEGA{} Arabic Script Package (as of any
+\OMEGA{} language package) is that the low level properties of the
+script have to be separated from higher level typesetting
+commands. For example, contextual analysis of the Arabic script has to
+be completely independent of the \LaTeX{} command level, so that one
+can use Arabic text in any context (inside a table or a formula, or
+deeply nested inside several \LaTeX{} environments and commands, etc.)
+and under any circumstances, as in the following example, which has been
+typeset with ordinary \LaTeX{} environments and macros:
+ 
+{%\pardir TRT\textdir TRT
+\pushocplist\ArabicOCP\fontfamily{omarb}\selectfont
+\begin{center}\begin{tabular}{|c|c|}\hline
+{\textdir TRT HayA"t} & {\textdir TRT mayyit}\\\hline
+{\mathdir TLT$\displaystyle\int_{\text{\textdir TRT Sif<>r}}^{\hbox dir TRT{\textdir TRT ghyr maH<>duUd}}f(x)\,dx$} & {\textdir TRT 'aanA}\\\hline
+\end{tabular}\end{center}
+\popocplist}
+ 
+There are two key aspects to Arabic script typesetting,
+unfortunately of unequal complexity: the first one is contextual
+analysis, that is the fact that Arabic letters change shape according
+to their position in a word, or according to the fact that they are
+part of an abbreviation, etc. This aspect can be handled easily and
+efficiently by \OTP{}s.  The second aspect is more global: it is the
+fact that Arabic script is written from right to left.
+
+Two methods can be applied: the first one is to change the default
+direction of the whole document. This method is extremely efficient
+when the document is entirely in Arabic, or if left-to-right text
+excerpts are exceptional. Being global, this method applies also to
+page-level typesetting methods, such as the order of columns in a
+multicolumn environment, etc. Of course, mathematical formulas are not
+affected by this global direction change.
+
+The second method is to keep left-to-right as default direction and to
+temporarily switch to right-to-left for every Arabic script
+sentence. This can be practical for a document where Arabic excerpts
+are exceptional.
+
+\section{Parts of the \OMEGA{} Arabic Script Package}
+
+This package consists of the following elements:
+
+\begin{enumerate}
+\item{}\tolerance=3000 The \texttt{OmegaSerifArabic} PostScript fonts:
+files \texttt{omsea1.pfb}, \texttt{omsea2.pfb}, \texttt{omsea3.pfb}
+and the corresponding AFM files. A Sans-serif font
+(\texttt{Omega\-Sans\-Arabic}), as well as additional styles of the
+Serif font are under development.
+\item{}\tolerance=3000 The virtual font \texttt{omrl}: files
+\texttt{omrl.ovf}, \texttt{omrl.ofm}, \texttt{omsea1.tfm},
+\texttt{omsea2.tfm}, \texttt{omsea3.tfm}.
+\item{} The configuration file \texttt{omrl.cfg}, which is used by the
+PERL utility MakeOVP to create the virtual font out of the AFM files
+and other information.
+\item{} A certain number of \OTP{}s: 
+\begin{enumerate}
+\item{} \texttt{7arb2uni.otp}, 7-bit Arabic/Farsi transcription to Unicode;
+\item{} \texttt{7ber2uni.otp}, 7-bit Berber transcription to Unicode;
+\item{} \texttt{7urd2uni.otp}, 7-bit Urdu transcription to Unicode;
+\item{} \texttt{7pas2uni.otp}, 7-bit Afghanistani Pashto transcription to Unicode;
+\item{} \texttt{7pap2uni.otp}, 7-bit Pakistani Pashto transcription to Unicode;
+\item{} \texttt{7snd2uni.otp}, 7-bit Sindhi transcription to Unicode;
+\item{} \texttt{uni2cuni.otp}, contextual analysis, sending Unicode++ to cUnicode++
+(`c' for `contextual');
+\item{} \texttt{cuni2oar.otp}, cUnicode++ to \texttt{omrl} font.
+\end{enumerate}
+These \OTP{}s are available in human-readable and compiled binary
+format (OCP), the latter being loaded by \OMEGA{} on runtime.
+\item{} A \LaTeX{} style (\texttt{arabic.sty}) defining a command that
+will activate and deactivate the \OTP{}s.
+\item{} Documentation and test files (\texttt{testarab.tex},
+\texttt{testsind.tex}).
+\end{enumerate}
+
+\section{Installation of the \OMEGA{} Arabic Script Package}
+
+To use the \OMEGA{} Arabic Script Package you must have \OMEGA{}
+version 1.45 or higher installed on your machine. Place OFM, OVF, TFM
+and OCP files where the system expects to find them (if in doubt,
+consult the \texttt{texmf.conf} file). Keep the \texttt{arabic.sty}
+file somewhere where it can be found by \OMEGA{}. Finally add the
+following few lines to the \texttt{psfonts.map} configuration file of
+\texttt{odvips}:
+\begin{verbatim}
+omsea1 OmegaSerifArabicOne </foo/omsea1.pfb
+omsea2 OmegaSerifArabicTwo </foo/omsea2.pfb
+omsea3 OmegaSerifArabicThree </foo/omsea3.pfb
+\end{verbatim}
+where \texttt{/foo} stands for the absolute path of the directory
+containing the PFB files.
+
+This is all you need to do: you can start already by launching
+\OMEGA{} on files \texttt{testarab.tex} and \texttt{testsind.tex}.
+
+In the following sections we will describe the use of the package,
+from the end users' point of view.  We will assume that the user is
+familiar with the \TeX{} typesetting system and the \LaTeX{} macro
+package.
+
+\section{Basic Macros}
+
+Before starting a new document one has to choose if the ``background
+language'' is going to be an Arabic alphabet language, in other terms,
+if we expect pages and columns to be typeset from right to left, and
+the whole global page design to be right-to-left oriented.
+
+If this the case, then the macro
+\verb=\GlobalArabic[=\texttt{\textit{language}}\verb=]= has to be used
+in the document header, where the optional argument
+\texttt{\textit{language}} is one of the following: \texttt{arabic}
+(by default), \texttt{farsi}, \texttt{urdu}, \texttt{pashto},
+\texttt{sindhi}, \texttt{custom}.
+
+This macro will switch the global typesetting direction of the
+document to right-to-left and will launch the \OTP s necessary for the
+language chosen.
+
+Inside the document, independently of the choice of background
+language, one can use \LaTeX{} environments \texttt{arabic},
+\texttt{berber}, \texttt{farsi}, \texttt{urdu}, \texttt{pashto},
+\texttt{pashtop}, \texttt{sindhi} to switch to the corresponding
+language, and \texttt{latin} or \texttt{greek} to switch to a Latin
+alphabet language or some flavour of Greek. It should be noted that
+these macros are only temporary and will be adapted to a more global
+language-switching scheme, currently being elaborated by the \LaTeX3
+and \OMEGA{} working groups.
+
+\section{Input of Arabic Alphabet Text}
+
+\subsection{You Have an Arabic Keyboard}
+
+If you have an Arabic Keyboard, containing sufficiently many keys for
+the language you want to typeset (for example, with a standard Arabic
+keyboard one can perhaps typeset Farsi, possibly Urdu but not Pashto
+and certainly not Sindhi), you need to configure \OMEGA{} to your
+\emph{input encoding}, by providing the appropriate input \OTP{} by
+use of the \verb=\ArabicInputEncoding= macro, which you have to place
+in the header of your document. We have already written such \OTP{}s
+for three input encodings: Macintosh Arabic (\texttt{applemac},
+covering Arabic, Farsi, Urdu), Windows Arabic (\texttt{1256}, covering
+Arabic and Farsi), MS-DOS Arabic ASMO (\texttt{708}, covering Arabic
+only) and ISO~8859-6 (\texttt{iso8859-6}, covering only Arabic).  If
+your equipment is not in this list, go to section~\ref{writingOTPs} to
+see how to write your own \OTP{}s.
+
+\subsection{You Don't Have an Arabic Keyboard}
+
+In that case you can use a Latin transcription: we have prepared ASCII
+Latin transcriptions for each of the main Arabic-alphabet languages:
+Arabic, Berber, Farsi, Urdu, Pashto (Afghanistani and Pakistani),
+Sindhi. Here they are:
+
+\subsubsection{Arabic/Farsi Transcription}\label{arabtrans}
+
+\begin{center}
+\begin{tabular}{|c|c||c|c||c|c||c|c||c|c||c|c|}
+\tl{A}{p}{z}{`}{m}{I}
+\tl{'a}{j}{zh}{gh}{n}{y}
+\tl{'i}{H}{s}{f}{'n}{'y}
+\tl{'A}{kh}{sh}{q}{-h}{||}
+\tl{"A}{ch}{S}{v}{"h}{E}
+\tl{b}{d}{D}{k}{e}{}
+\tl{t}{dh}{T}{g}{U}{LLah}
+\tl{th}{r}{Z}{l}{'u}{SLh}
+\hline
+\end{tabular}
+\end{center}
+
+\noindent
+Remarks:
+
+\begin{enumerate}
+\item The \emph{tah marbutah} \shortarab{"h} can be written in two
+ways: \texttt{"h} or \texttt{"t}.
+\item The \emph{waw} \shortarab{w} can be written in two ways:
+\texttt{w} or \texttt{U}.
+\item The hyphen in front of the transcription of \shortarab{h} is
+only necessary to prevent confusion between cases such as \texttt{kh}
+(\shortarab{kh}) and \texttt{k-h} (\begin{arab}k-h\end{arab}).  We
+suggest you use it all the time.
+\item VERY IMPORTANT: the duplication of consonants (\emph{shaddah})
+is obtained by writing the consonants twice. So for example,
+\texttt{Dmm"h} will produce \begin{arab}Dmm"h\end{arab} and not
+\begin{arab}Dm-m"h\end{arab}; to obtain the latter, type \texttt{Dm-m"h},
+as for example in the word \begin{arab}t-tHrrk\end{arab}, which
+presents both cases, and which is typed \texttt{t-tHrrk}.
+\end{enumerate}
+
+Vowels and other diacritics are obtained in the following way: (they
+are typed after the consonant to which they belong)
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline fatha & \texttt{a}\\
+\hline kasra & \texttt{i}\\
+\hline damma & \texttt{u}\\
+\hline soukoun & \texttt{<>}\\
+\hline vertical fatha & \texttt{a|}\\
+\hline fathatan & \texttt{aN}\\
+\hline kasratan & \texttt{iN}\\
+\hline dammatan & \texttt{uN}\\\hline
+\end{tabular}\end{center}
+
+Example: it is a trivial task now to welcome you to this system of
+Arabic input, by saying
+
+\begin{verbatim}
+\begin{arab}
+\Huge
+'aahlAaN wa sahlAaN!
+\end{arab}
+\end{verbatim}
+
+{\pardir TRT\textdir TRT
+\begin{center}
+\begin{arab}
+\Huge
+'aahlAaN wa sahlAaN!
+\end{arab}
+\end{center}
+}
+
+\noindent
+Example of vowelized Arabic:\\[8pt]
+
+{\pardir TRT\textdir TRT
+\begin{quote}
+\pushocplist\ArabicOCP\fontfamily{omarb}\selectfont\LARGE li'aannahaA
+"Al<>'Ana laA tufakkiru fiI naf<>sihaA, walakinnahaA tufakkiru fiI
+'aakhaway<>haA wafiI "Al<>khaTari "AlladhiI laHiqahumaA.  \popocplist
+\end{quote}
+}
+
+\noindent transcribed: 
+
+\begin{quote}
+\texttt{li'aannahaA "Al<>'Ana laA tufakkiru fiI naf<>sihaA,\\
+walakinnahaA tufakkiru fiI 'aakhaway<>haA\\
+wafiI "Al<>khaTari "AlladhiI laHiqahumaA.}
+\end{quote}
+
+\subsubsection{Urdu Transcription}
+
+The Urdu transcription is similar to the Arabic/Farsi one described
+above, with a few additional characters, and one exception.
+
+The additional characters are \shortarab{'t}, \shortarab{'d} and
+\shortarab{'r}, transcribed by \texttt{'t}, \texttt{'d},
+\texttt{'r}. The exception concerns the two different uses of the
+\emph{hah} glyph \shortarab{h}. In Urdu it can be used as the second
+part of a digraph, such as for example
+\begin{smallurdu}jh\end{smallurdu}, in which case we transcribe it as
+\texttt{-h}; it can also be the standard consonant \emph{hah}, in
+which case we transcribe it by \texttt{x}.  Notice the four forms of
+the latter in Urdu: \begin{smallurdu}x-x-x x\end{smallurdu}, while in
+Arabic the same letter is written \begin{smallarab}h-h-h
+h\end{smallarab}.
+
+\noindent
+Example: 
+
+{\pardir TRT\textdir TRT
+\begin{quote}
+\pushocplist\UrduOCP\fontfamily{omarb}\selectfont xmArI Trf prAnE
+zmAnE my'n dstUr t-hA kx Agr ksI shkhS kU kAghdh pr kchh lk-hA xUA grA
+p'rA ml jAtA tU Uh As przE kU AHtyAT sE A't-hA kr kxy'n rk-h dytA yA
+pAnI mI'n bxA dytA tAkx lk-hE xU'yE HrUf kI bE HrmtI nx xU.
+\popocplist
+\end{quote}}
+
+\noindent
+transcribed: 
+
+\begin{quote}
+\texttt{xmArI Trf prAnE zmAnE my'n dstUr t-hA kx Agr ksI\\
+shkhS kU kAghdh pr kchh lk-hA xUA grA p'rA ml jAtA tU Uh\\
+As przE kU AHtyAT sE A't-hA kr kxy'n rk-h dytA yA pAnI mI'n\\
+bxA dytA tAkx lk-hE xU'yE HrUf kI bE HrmtI nx xU.}
+\end{quote}
+
+\subsubsection{Pashto Transcription}
+
+The Pashto transcription is similar to the Arabic/Farsi one described
+beyond, with a few additional characters and some exceptions. We are
+proposing two \OTP{}s, using the same transcription, for the two
+flavors of written Pashto: Afganistani and Pakistani.
+
+1. Afghanistani Pashto
+
+\begin{center}
+\begin{tabular}{|c|c||c|c||c|c||c|c||c|c||c|c|}
+\patl{A}{'z}{'r}{D}{g}{-y}
+\patl{b}{c}{z}{T}{l}{e}
+\patl{p}{H}{zh}{Z}{m}{ay}
+\patl{t}{kh}{'g}{`}{n}{ey}
+\patl{'t}{d}{s}{gh}{'n}{||}
+\patl{'s}{'d}{sh}{f}{w}{}
+\patl{j}{dh}{x}{q}{-h}{LLah}
+\patl{ch}{r}{S}{k}{L}{SLh}
+\hline
+\end{tabular}
+\end{center}
+
+2. Pakistani Pashto
+
+\begin{center}
+\begin{tabular}{|c|c||c|c||c|c||c|c||c|c||c|c|}
+\paptl{A}{'z}{'r}{D}{g}{-y}
+\paptl{b}{c}{z}{T}{l}{e}
+\paptl{p}{H}{zh}{Z}{m}{ay}
+\paptl{t}{kh}{'g}{`}{n}{ey}
+\paptl{'t}{d}{s}{gh}{'n}{||}
+\paptl{'s}{'d}{sh}{f}{w}{}
+\paptl{j}{dh}{x}{q}{-h}{LLah}
+\paptl{ch}{r}{S}{k}{L}{SLh}
+\hline
+\end{tabular}
+\end{center}
+
+Nevertheless, one should be aware that an automatic transcription from
+one glyph set to the other is not possible because, for example, a
+letter such as \begin{pashto}x\end{pashto} is not used in Pakistani
+Pashto and can be replaced by \begin{pashto}kh\end{pashto} or
+\begin{pashto}sh\end{pashto}, depending on its pronunciation in a given word.
+
+\noindent
+Example of Afghanistani Pashto: 
+
+{\pardir TRT\textdir TRT
+\begin{quote}
+\pushocplist\AfghaPashtoOCP\fontfamily{omarb}\selectfont k-h ghUA'ray
+chh d`ql yh zyAn AUDrrpUh shay dA U mnI || chh `ql hghh.  qUtUnh
+p-hs'rI kxI wzhnI zhh zhUnde wlA'rdI. zhUndUn p-h`ml AUArAd-h
+wlA'rdI. ghUxtnh lUArAd-h d-hre-yshr ft ASl AUAsAs dI. cUmrh chh `ql
+zyAtebz hghUmrh ArAd-h D`yf-h kebzI.  \popocplist
+\end{quote}}
+
+\noindent
+and the same in Pakistani Pashto: 
+
+{\pardir TRT\textdir TRT
+\begin{quote}
+\pushocplist\PakiPashtoOCP\fontfamily{omarb}\selectfont k-h ghUA'ray
+chh d`ql yh zyAn AUDrrpUh shay dA U mnI || chh `ql hghh.  qUtUnh
+p-hs'rI kxI wzhnI zhh zhUnde wlA'rdI. zhUndUn p-h`ml AUArAd-h
+wlA'rdI. ghUxtnh lUArAd-h d-hre-yshr ft ASl AUAsAs dI. cUmrh chh `ql
+zyAtebz hghUmrh ArAd-h D`yf-h kebzI.  \popocplist
+\end{quote}}
+
+\noindent
+transcribed:
+
+\begin{quote}
+\texttt{k-h ghUA'ray chh d`ql yh zyAn AUDrrpUh shay dA\\
+U mnI || chh `ql hghh. qUtUnh p-hs'rI kxI wzhnI zhh zhUnde\\
+wlA'rdI. zhUndUn p-h`ml AUArAd-h wlA'rdI. ghUxtnh lUArAd-h\\
+d-hreyshr ft ASl AUAsAs dI. cUmrh chh `ql zyAtebz hghUmrh\\
+ArAd-h D`yf-h kebzI.}
+\end{quote}
+
+A variant form \shortpashto{^^^^015d} of \shortpashto{'g} is provided
+in the font. The user can change the \OTP{}s (see~\ref{writingOTPs})
+so that the former is used instead of the latter.
+
+\subsubsection{Sindhi Transcription}
+
+Sindhi being a language with many more letters than Arabic, and using
+Arabic letters in a way quite different than Arabic, it is not
+surprising that the Sindhi transcription is fundamentally different
+from the Arabic, Farsi, Urdu and Pashto ones. As a matter of fact we
+have tried to use as few non-alphabetic characters as possible,
+following a more-or-less rational scheme loosely based on the
+correspondence between Sindhi written in Arabic and in Devanagari
+script and the standard transcription of the latter.  Since shadda is
+much more seldom in Sindhi than in Arabic, the ``double consonant $=$
+consonant $+$ shadda'' convention is not valid in this transcription;
+instead we propose a transcription of the shadda diacritic:
+\texttt{+}.
+
+\begin{center}
+\begin{tabular}{|c|c||c|c||c|c||c|c||c|c||c|c|}
+\stl{A}{p}{dh}{sh}{kh}{y}
+\stl{'A}{ph}{.=d}{.s}{.n}{'y}
+\stl{b}{j}{.d}{.z}{g}{meN}
+\stl{=b}{=j}{.dh}{..t}{=g}{||eN}
+\stl{bh}{=n}{=z}{..z}{l}{||}
+\stl{t}{c}{r}{`}{m}{}
+\stl{th}{ch}{.r}{gh}{n}{}
+\stl{.t}{.h}{z}{f}{'n}{}
+\stl{.th}{=kh}{zh}{q}{U}{LLah}
+\stl{=s}{d}{s}{k}{-h}{SLh}
+\hline
+\end{tabular}
+\end{center}
+
+\noindent
+Remarks:
+
+\begin{enumerate}
+\item The transcription \texttt{/} is used for constructions such as
+\begin{sindhi}b/\end{sindhi} (\texttt{b/}),
+\begin{sindhi}t/\end{sindhi} (\texttt{t/}), \begin{sindhi}kh/\end{sindhi}
+(\texttt{kh/}), etc.
+\item The \emph{waw} \shortarab{w} can be written in two ways:
+\texttt{w} or \texttt{U}.
+\end{enumerate}
+  
+\noindent
+Example:
+
+{\pardir TRT\textdir TRT
+\begin{quote}
+\pushocplist\SindhiOCP\fontfamily{omarb}\selectfont tn-hn kry AsAn khy
+pn-hnjy =z-hnn khy sjA=g rkh'nU pUndU ||eN pn-hnjy jdUj-hd meN .=dA-hp
+pydA kr'ny. AhU b/ m`lUm kr'nU pUndU t/ sndh meN hr 'A'yy wqt chA chA
+thy r-hyU 'Ahy ||eN dshmn AsAn jy ||eN AsAn jy jdUj-hd jy khlAf k-h.rA
+k-h.rA g-hA.t g-h.ry r-hyU 'Ahy.  \popocplist
+\end{quote}}
+
+\noindent
+transcribed:
+
+\begin{quote}
+\texttt{tn-hn kry AsAn khy pn-hnjy =z-hnn khy sjA=g rkh'nU\\
+pUndU ||eN pn-hnjy jdUj-hd meN .=dA-hp pydA kr'ny. AhU b/\\
+m`lUm kr'nU pUndU t/ sndh meN hr 'A'yy wqt chA chA thy r-hyU\\
+'Ahy ||eN dshmn AsAn jy ||eN AsAn jy jdUj-hd jy khlAf k-h.rA\\
+k-h.rA g-hA.t g-h.ry r-hyU 'Ahy.}
+\end{quote}
+
+\subsubsection{Berber Transcription}
+
+The Berber transcription is different from the previous ones because
+it is based on a tri-alphabetic system (Tifinagh, Latin and Arabic
+alphabets).\footnote{The reader can find more information in \emph{Un
+syst^^^^00e8me \TeX{} berb^^^^00e8re}, ^^^^00c9tudes et Documents
+Berb^^^^00e8res, 11 (1994), La bo^^^^00eete ^^^^00e0
+Documents/^^^^00c9disud, Paris (France).} The goal of this
+transcription is to enable output in the three alphabets, out of the
+same code. In particular, since Latin alphabet has upper and lower
+case, it should be possible to distinguish these (and of course ignore
+the distinction when typesetting in Arabic or Tifinagh). In the table
+below, all transcribed letters are in lowercase ASCII, but can very
+well be written also in uppercase, producing the same result:
+\texttt{Tifinagh}, \texttt{tifinagh} or \texttt{TIFINAGH} will all
+three produce \begin{arab}tyfynAgh\end{arab}.
+
+\begin{center}
+\begin{tabular}{|c|c|c|c||c|c|c|c||c|c|c|c|}\hline
+Tr. & Lat. & Ar. & Tif. & Tr. & Lat. & Ar. & Tif. & Tr. & Lat. & Ar. & Tif. \\\hline
+\ttl{a}{.h}{.s}
+\ttl{b}{i}{t}
+\ttl{c}{j}{.t}
+\ttl{gh}{k}{u}
+\ttl{d}{l}{x}
+\ttl{.d}{m}{z}
+\ttl{.e}{n}{.z}
+\ttl{f}{.n}{.i}
+\ttl{g}{q}{--}
+\ttl{.g}{r}{}
+\ttl{h}{s}{}
+\hline
+\end{tabular}
+\end{center}
+
+\noindent
+Remarks:
+
+\begin{enumerate}
+\item Letter \shortarab{U} can also be transcribed \texttt{w}.
+\item Letter \shortarab{I} can also be transcribed \texttt{y}.
+\item The stroke \shortberber{^^^^063f} is not to be confused with the
+graphical connecting stroke \emph{keshideh}.  It is placed between
+words and plays a grammatical role.
+\item Duplication of consonants (\emph{shaddah}) again is transcribed
+by writing the corresponding consonant twice.
+\end{enumerate}
+
+\noindent
+Example: 
+
+{\pardir TRT\textdir TRT
+\begin{quote}
+\pushocplist\ArabicBerberOCP\fontfamily{omarb}\selectfont Tifinagh,
+d--tira timezwura n .imazighen.  Llant di tmurt--nnegh dat tira n
+ta.erabt d--tla.tinit. Nnulfant--edd dat .imir n ugellid
+Masinisen. .Imazighen n .imir--en, ttarun--tent ghefi.zra, degg
+.ifran, ghef .igduren, maca tiggti ghef i.zekwan~: ttarun fell--asen
+.isem n umettin, d wi--t--ilan, d wayen yexdem di tudert--is akken ur
+t ttettun .ina.tfaren.  \popocplist
+\end{quote}}
+
+\noindent
+transcribed:
+
+\begin{quote}\small
+\texttt{Tifinagh, d--tira timezwura n .imazighen.\\ 
+Llant di tmurt--nnegh dat tira n ta.erabt d--tla.tinit.\\
+Nnulfant--edd dat .imir n ugellid Masinisen. .Imazighen n\\
+.imir--en, ttarun--tent ghefi.zra, degg .ifran, ghef .igduren,\\
+maca tiggti ghef i.zekwan~: ttarun fell--asen .isem n umettin,\\ 
+d wi--t--ilan, d wayen yexdem di tudert--is akken ur t ttettun\\
+.ina.tfaren.}
+\end{quote}
+
+\noindent
+The same code will produce the following output in the Tifinagh alphabet:
+
+\begin{quote}
+\begin{tifinagh}Tifinagh, d--tira timezwura n .imazighen. 
+Llant di tmurt--nnegh dat tira n ta.erabt d--tla.tinit.  Nnulfant--edd
+dat .imir n ugellid Masinisen. .Imazighen n .imir--en, ttarun--tent
+ghefi.zra, degg .ifran, ghef .igduren, maca tiggti ghef i.zekwan~:
+ttarun fell--asen .isem n umettin, d wi--t--ilan, d wayen yexdem di
+tudert--is akken ur t ttettun .ina.tfaren.\end{tifinagh}
+\end{quote}
+
+\noindent
+and the following one in the Latin alphabet:
+
+\begin{quote}
+\begin{latberber}Tifinagh, d--tira timezwura n .imazighen. 
+Llant di tmurt--nnegh dat tira n ta.erabt d--tla.tinit.  Nnulfant--edd
+dat .imir n ugellid Masinisen. .Imazighen n .imir--en, ttarun--tent
+ghefi.zra, degg .ifran, ghef .igduren, maca tiggti ghef i.zekwan~:
+ttarun fell--asen .isem n umettin, d wi--t--ilan, d wayen yexdem di
+tudert--is akken ur t ttettun .ina.tfaren.\end{latberber}
+\end{quote}
+
+\section{Writing Your Own Transcription}\label{writingOTPs}
+
+We have developed and presented in this paper a certain number of
+Arabic alphabet language transcriptions for two reasons: first, to
+show the possibilities and power of \OMEGA, and second, to give a
+starting point for the user to create \hisher{} own transcriptions.
+
+The process of creating a new transcription is twofold: the first
+part, which can be very difficult and painful, consists of finding the
+combination of letters, digits and ASCII symbols which will transcribe
+each character; the second one, which is straightforward (modulo some
+precautions) is to implement this in \OMEGA{} by writing the
+appropriate \OTP.
+
+\subsection{A Good Transcription: Is it Possible?}
+
+There are (at least) two goals for a good transcription:
+
+\begin{enumerate}
+\item \emph{It has to be readable and easily memorizable}. In other
+words, \texttt{AHmd} is better than \texttt{'.hmd}, for denoting
+\begin{smallarab}AHmd\end{smallarab} : although an apostrophe can be
+considered a logical choice for transcribing an alif and the period in
+front of the h may denote that it is an emphatic `h' sound, taking an
+A for alif and a capital H for the emphatic h is more readable; also
+using rules such as ``uppercase ASCII characters transcribe emphatic
+letters'' is an easy way to memorize the transcriptions of
+\shortarab{H}, \shortarab{T}, \shortarab{D}, \shortarab{S},
+\shortarab{Z}.
+\item \emph{It has to be complete and avoid ambiguities}. Of course
+all letters of the target language have to be covered, but having many
+letters to transcribe leads sometimes to ambiguities: for example
+taking \texttt{h} for \shortarab{h}, \texttt{k} for \shortarab{k} and
+\texttt{kh} for \shortarab{kh} are perfectly logical choices;
+nevertheless there is a hitch: when you need to transcribe
+\begin{smallarab}k-h\end{smallarab} you are tempted to write simply
+\texttt{kh} and this will of course produce \shortarab{kh}
+instead. The solution we have given to this problem is to type a
+hyphen between the letters which are not considered as a `digraph',
+but this is only a compromise solution: the user must constantly be
+aware of this problem, and this is hardly the case when you are
+concentrated in your text...
+\end{enumerate}
+
+It is clear that these two goals are contradictory: an accurate and
+unambiguous transcription has to be complicated and will be difficult
+to read and memorize; a friendly and easily readable transcription
+will be full of ambiguities.
+
+An additional problem when making a transcription is to choose between
+\emph{(etymo)logical}, \emph{phonetic} and \emph{graphical}
+representations of characters. A typical example is the standard
+\OMEGA{} transcription of Greek: \texttt{w} is chosen for letter
+\shortgreek{w}, this is a purely \emph{graphical} choice: the `w'
+looks like an omega, but has absolutely no other relation with,
+neither historical nor phonetic (the letter omega represents the sound
+`o' in modern Greek); \texttt{b} is chosen for letter \shortgreek{b},
+this is an \emph{etymological} choice: the Latin `B' derives from the
+ancient Greek `B', otherwise \shortgreek{b} looks quite different than
+`b' and is pronounced `v' in modern Greek; finally, \texttt{x} is a
+\emph{phonetic} transcription of letter \shortgreek{x}; clearly they
+do not bear any resemblance, and historically it is not clear (at
+least to the author) why `x' should be derived from \shortgreek{x}
+(their positions in the alphabet is quite different as well, and this
+is an argument speaking against an etymological relation between the
+letters).
+
+The reader may object that this distinction between etymological,
+phonetic and graphical representations is not relevant for Arabic
+alphabet transcriptions; actually this is only partly true: take for
+example \texttt{bh} for \shortsindhi{bh}, this is an
+\emph{etymological} transcription in the sense that it reflects the
+standard transcription of the Indic alphabet letter which corresponds
+to that Sindhi letter. Also \texttt{`} for ayn is in some sense a
+\emph{graphical} representation: it has been chosen because it
+resembles the IPA transcription of the ayn, which is ^^^^0295. For the
+same reason, \texttt{'} has been chosen for the hamza with carrier (in
+\shortarab{'a}, \shortarab{'u}, etc.): the hamza's IPA transcription
+is ^^^^0294.
+
+We hope to have convinced the reader that the making of a
+transcription is a difficult task, needing a lot of thought,
+compromises and tests. Once again, we would like to emphasize the fact
+that our transcriptions are only temptative proposals and should not
+be taken as standards of any kind; after all the power of \OMEGA\ is
+that it can work with any input transcription without affecting
+further processing, be it contextual analysis, diacritic placement or
+esthetical ligaturing.
+
+In the next section we will see how to implement a new transcription
+or change an existing one by writing/modifying an \OTP\ file. But
+first some generalities on the \OTP{}s used by the Arabic \OMEGA\
+system.
+
+\subsubsection{The \OTP{}s used by the Arabic \OMEGA{} system}
+
+When \OMEGA{} reads the text flow it places letters, digits and
+punctuation (whatever is not an escape or special character) into a
+buffer. When it encounters a special character it stops buffering and
+executes one after the other all currently active \OTP{}s on the
+buffer.  In theory, \OTP{}s could be used to arbitrarily send
+character combinations to other combinations: one could very well
+imagine an \OTP{} sending the string "Yannis" to "John" and "John" to
+"Yannis", or "Microsoft Word" to
+"^^^^02a7\kern-1pt^^^^04a9^^^^03be^^^^0468^^^^029a"; nevertheless,
+such an \OTP{} would not be of general use...
+
+Our development has mainly been focused in building \OTP{}s in
+accordance to the following scheme:
+$$
+\boxed{\text{Input text}} \xrightarrow{\text{\texttt{foo2uni}}} \boxed{\text{Unicode++}} 
+\xrightarrow{\text{\texttt{uni2foo}}} \boxed{\text{DVI output}} 
+$$
+where \texttt{foo2uni} sends text encoded in an arbitrary encoding
+into Unicode++ (Unicode++ is Unicode extended for the needs of
+\OMEGA{} and typography), and \texttt{uni2foo} converts
+Unicode++-encoded data into the encoding of the output font. By this
+method we are able to keep completely separate input encoding and font
+encoding.
+
+In the case of Arabic things are slightly more complicated since an
+additional step is needed: contextual analysis. This is where our
+scheme proves to be extremely efficient: by performing contextual
+analysis on the level of Unicode++, and hence obtaining the following
+new scheme:
+$$
+\boxed{\text{Input text}} \xrightarrow{\text{\texttt{foo2uni}}} \boxed{\text{Unicode++}} 
+\xrightarrow{\text{\texttt{uni2cuni}}} \boxed{\text{cUnicode++}} 
+\xrightarrow{\text{\texttt{cuni2oar}}} \boxed{\text{DVI output}}
+$$
+we still remain independent of both the input and the font
+encoding. This means that if we need to adapt \OMEGA{} to a new Arabic
+encoding we only need to indicate which code position corresponds to
+which Unicode character, and, on the other hand, if we want to adapt a
+new font to \OMEGA, we only need to indicate which font position
+corresponds to which contextual form of which character, in
+cUnicode++.
+
+In the next section we will partly describe the syntax of \OTP{} files
+by giving examples of \texttt{foo2uni} cases.
+
+\subsection{Implementing a Transcription}
+
+The \OTP{} files we will need for input encoding $\to$ Unicode++
+transformations use only part of the syntax of \OTP{}
+files.\footnote{The \texttt{uni2cuni} \OTP{} file already needs more
+complicated constructions.}  Such an \OTP{} file is of the following
+form:
+
+\begin{verbatim}
+input: 1;
+output: 2;
+expressions:
+...
+...
+\end{verbatim}
+
+\noindent where \texttt{input: 1; output: 2;} means that input is
+8-bit while output is 16-bit, and \texttt{...} are lines of the
+following form:
+
+\begin{verbatim}
+before => after ;
+\end{verbatim}
+
+\noindent where \texttt{before} is an expression before the
+transformation, and \texttt{after} after it.  For example,
+
+\begin{verbatim}
+`a' => "o" ;
+\end{verbatim}
+
+\noindent will transform all `a's in the file into `o's. 
+
+How do we describe characters and strings? On the left side of
+\texttt{=>} we can only put separate characters: they can be written
+either as ``grave accent+ASCII character+apostrophe'' or as
+\texttt{@"XYZT} where \texttt{XYZT} are hexadecimal digits: in this
+case we are not restricted to ASCII characters. The latter syntax can
+also be used on the right side. For example,
+
+\begin{verbatim}
+`i'`j' => @"0133 ;
+@"008E => @"00E9 ;
+\end{verbatim}
+
+\noindent will send the string `ij' to the Unicode++ character
+representing the Dutch ^^^^0133 ligature, and the 8-bit code 8E (a
+Macintosh `e' with acute accent) to the Unicode++ character 00E9
+(which is the Unicode `e' with acute accent).
+
+On the right side of \texttt{=>} we can also write complete strings,
+possibly containing \OMEGA{} commands, which will be forwarded to the
+next \OTP{} or to the typesetting engine of \OMEGA. For example,
+
+\begin{verbatim}
+`~' => "\penalty10000" ;
+\end{verbatim}
+
+\noindent sends the tilde character to the \TeX{} command of infinite
+penalty.\footnote{By this we obtain the same result as in \TeX{} but
+without turning tilde into an active character, a fact that \TeX{}
+users will surely appreciate.} We can also use ranges on the left
+side: for example, \texttt{`a'-`k'} means ``all characters between a
+and k''.
+
+By using parentheses and the vertical bar on the left side, we obtain
+the Boolean `or' operator:
+
+\begin{verbatim}
+(`E'|`e') => ;
+\end{verbatim}
+
+\noindent for example, will send both uppercase and lowercase letters
+`e' to nothing (a transformation which would leave Perec's book
+\emph{La disparition} unchanged\footnote{Although there are rumors
+that there is a single `e' in that book... The authors were not able
+to find it yet.}).
+
+This operator becomes even more useful by the fact that we can use on
+the right side the exact character matched on the left side: the
+commands \verb=\1=, \verb=\2=, ... , \verb=\9= used on the right side
+stand for the first, second, ..., ninth character matched on the left
+side. For example:
+
+\begin{verbatim}
+`c'(`a'|`e'|`i'|`o'|`u')`t' => "m" \1 "p" ;
+\end{verbatim}
+
+\noindent will send cat, cet, cit, cot, cut respectively to map, mep,
+mip, mop, mup.
+
+We can go even further: \OTP{} syntax allows us to add or substract a
+fixed offset to the characters matched on the left side. For example:
+
+\begin{verbatim}
+`a'-`z' => #(\1 - @"0020) ;
+\end{verbatim}
+
+\noindent will substract 20 from the code position of the character
+found on the left side. The characters on the left side being
+precisely lowercase letters, this offset will turn them into uppercase
+ones.
+
+\subsubsection{Examples}
+
+The beginning of the \OTP{} \texttt{7arb2uni}, used to send the ASCII
+transcription of Arabic to Unicode++, described in~\ref{arabtrans}, to
+Unicode++, looks like this:
+
+\begin{verbatim}
+input: 1;
+output: 2;
+
+expressions:
+
+`L'`L'`a'`h'      => @"FDF2 ;
+`S'`L'`h'         => @"FDFA ;
+
+`|'`|'`|'`|'      => @"0621 @"0651 ;
+`|'`|'            => @"0621 ;
+`z'`h'`z'`h'      => @"0698 @"0651 ;
+`z'`h'            => @"0698 ;
+`z'`z'            => @"0632 @"0651 ;
+`z'               => @"0632 ;
+`y'`y'            => @"064A @"0651 ;
+`y'               => @"064A ;
+`v'`v'            => @"06A4 @"0651 ;
+`v'               => @"06A4 ;
+`u'`N'            => @"064C ;
+`u'               => @"064F ;
+\end{verbatim}
+
+Let us take a closer look at these lines. The left sides
+\texttt{`L'`L'`a'`h'} and \texttt{`S'`L'`h'} correspond to the
+(religious) ligatures \shortarab{LLah} and \shortarab{SLh} which
+appear in the \emph{Arabic Presentation Forms} part of Unicode, that's
+why the code positions we send them to are so high. The line
+\texttt{`|'`|'`|'`|'} corresponds to a double hamza; according to our
+transcription rules, by writing a letter's transcription twice without
+intermediate hyphen, we get the letter followed by a \emph{shaddah}
+diacritic. On the right side of \texttt{`|'`|'`|'`|'} you see two
+codes: 0621 stands for the stand-alone hamza in Unicode++, and 0651
+for the \emph{shaddah}. The next line will send \texttt{||} to the
+stand-alone hamza.
+
+WARNING: the order of these lines is very important: transformations
+are matched in the order lines are read. By putting the double hamza
+before the single one, \OMEGA{} will first look for a double hamza and
+\emph{only if it does not find any} will then proceed to transforming
+a single one.
+
+For the same reason digraphs such as \texttt{zh} must appear before
+their first letter in the \OTP{} file (and trigraphs before the
+starting digraph, etc.). That's why the order of lines starting with a
+`z' is `zhzh', `zh', `zz', `z'.%
+\footnote{There is a simple way of avoiding ordering problems: after
+having written this part of the \OTP{} file, run a line sorting
+program on it so that lines are sorted in \emph{inverse}
+lexicographical order. This will automatically place trigraphs before
+digraphs before singletons, etc.}
+
+Our sample file ends like this:
+
+\begin{verbatim}
+`h'`h'    => #(@"0647) #(@"0651) ;
+`h'       => #(@"0647) ;
+`-'`-'`-' => @"2014;
+`-'       =>  ;
+.         => #(\1) ;
+\end{verbatim}
+
+This means that after having entered all digraphs using `h' as second
+character, we enter the stand-alone `h', first as a double letter, and
+secondly as a single letter. Finally we send the triple hyphen to an
+m-dash `---' and the single hyphen to nothing: its purpose is to
+prevent combinations of letters to be interpreted as digraphs: when
+reading \texttt{k-h}, \OMEGA{} will not match it with \texttt{kh}: it
+will first match \texttt{k} with letter kaf, then send the hyphen to
+the vacuum of non-existence and when arriving to the \texttt{h} the
+\texttt{k} will already be matched so that it is too late to construct
+a \texttt{kh} digraph.
+
+The period at the beginning of the last line is part of the \OTP{}
+syntax we have not seen yet: it means `any character'.  Since this is
+the last line of the file, we can interpret it rather like `any still
+not matched character'. This line simply sends any character not yet
+matched to itself.
+
+\subsection{Wrapping it up}
+
+Once the \OTP{} file has been written or modified, one only needs to
+compile it (by using the \texttt{otp2ocp} utility) and place it where
+\OMEGA{} expects to find it. On the \LaTeX{} command level, \OTP{}s
+are loaded via the \verb=\ocp= command, in a way similar to fonts: to
+load the file \texttt{foo2uni} one will write
+
+\begin{verbatim}
+\ocp\FooUni=foo2uni
+\end{verbatim}
+
+Of course this is preferably done inside a \LaTeX{} package or style
+file: the final user should not need to deal with or understand this
+kind of code. Once the \OTP{}s are loaded they are combined into
+\emph{lists}. In this way we can push or pop simultaneously \OTP{}s
+on/from a stack. This is useful because a language switch usually
+requires several \OTP{}s to be changed at once. To define \OTP{} lists
+we use the following syntax:
+
+\begin{verbatim}
+\ocplist\ArabicOCP=
+\addbeforeocplist 100 \ArabUni
+\addbeforeocplist 200 \UniCUni
+\addbeforeocplist 300 \CUniArab
+\nullocplist
+\end{verbatim}
+
+The numbers (100, 200, 300) allow us to introduce additional \OTP{}s,
+if necessary, between the already defined ones.  Finally, to
+activate/desactivate an \OTP{} list, we use the commands
+\verb=\pushocplist= (followed by the name of the \OTP{} list) and
+\verb=\popocplist=. To take a real life example,
+
+\begin{verbatim}
+\ocp\ArabUni=7arb2uni
+\ocp\UniCUni=uni2cuni
+\ocp\CUniArab=cuni2oar
+\ocplist\ArabicOCP=
+\addbeforeocplist 100 \ArabUni
+\addbeforeocplist 200 \UniCUni
+\addbeforeocplist 300 \CUniArab
+\nullocplist
+\pushocplist\ArabicOCP
+\end{verbatim}
+
+\noindent is sufficient to load all \OTP{}s necessary for typesetting
+in the Arabic language.
+
+\section{Availability and Further Information}
+
+The \OMEGA{} system is entirely in the public domain. It can be
+obtained from any CTAN server. The latest information on \OMEGA{} and
+its Arabic system can be found on the \OMEGA{} server:
+
+$$\text{\texttt{http://www.ens.fr/omega}}$$
+
+\noindent courtesy of the ^^^^00c9cole Normale Sup^^^^00e9rieure de
+Paris.
+
+\section{Samples}
+
+Starting from next page, a few samples (Arabic, Berber, Sindhi). For
+these examples we have switched the background language to Arabic, so
+that even page numbers are in Arabic.
+
+\newpage
+\makeatletter
+\def\@evenfoot{\reset@font\hfil{\textdir TLT\thepage}\hfil}
+\let\@oddfoot=\@evenfoot
+\makeatother
+\pagedir TRT
+\bodydir TRT
+\pardir TRT
+\textdir TRT
+\def\latinit#1{{\fontfamily{omlgc}\selectfont\pushocplist\BasicLatinOCP%
+\textdir TLT #1\popocplist}}
+\def\rmdefault{omarb}
+\fontfamily{omarb}\selectfont
+\pushocplist\ArabicOCP
+
+
+\subsection{'aTfAl AlghAb"t}
+
+kAn l'aHd AlmlUk AlqdmA|| 'akht t`ysh m`h fI qSrh, b`d 'an mAt-t
+zUjt-h, wtrkt lh mn Al'awlAd thlAth"t: 'amyryn w'amyr"t. wqd AzdAd Hbb
+Almlk l'awlAd-h, b`d wfA"t wAldt-hm Almlk"t, w'aHbbhm HbbA kthyrA;
+ly`wwDhm mA fqdUh mn `Tf 'ammhm wHbbhA lhm, wtfkyr hA fyhm; fkAn ys'al
+`nhm kllmA HDr, wyfkkr fyhm kllmA dkhl, wywSI bhm kllmA khrj, wyTlbhm
+kllmA jls ltnAwl T`Am Al'ifTAr 'aU AlghdA|| 'aU AlshshAI 'aU Al`shA||.
+
+mHHm"t 'akhyhA l'awlAd-h, wSmm-mt fymA bynhA wbyn nfs-hA 'an t`ml srrA
+kll wsyl"t m-mkn"t l'ib`Ad-hm `n 'abyhm wAlttkhllS mnhm.
+
+wfI yUm mn Al'ayyAm kAn Al'amyrAn yl`bAn m` 'akht-hmA Al'amyr"t fI
+HdA'yq AlqSr b`d khrUj Almlk, fshUUqt-hm `mmt-hm wHbb-bt 'ilyhm
+Aldhdh-hAb m`hA 'ilI AlghAb"t l-ll`Ab fyhA, w-w`dt-hm 'an tryhm
+'ashyA|| jmyl"t w'al`AbA ldhydh"t sArr"t tHt Al'ashjAr hnAk.
+
+fSddq Al'amyrAn wAl'amyr"t mA qAlt-h `mmt-hm, wlm y`rfUA mA tkhfyh
+`nhm mn Alshshrr, wdhhbUA m`hA l-ll`b wAlrryAD"t fI 'alghAb"t,
+wmshAhd"t Al'ashA|| Aljmyl"t fyhA, wr'uy"t Al'al`Ab Alghryb"t tHt
+'ashjArhA.
+
+wqd sh`r Al'aTfAl bsrUr kthyr `nd mAkhrjUA m` `mmt-hm lhdhh
+AlrrHl"t. w'akhdhUA ymshUn m`hA fI AlghAb"t HttI wSlUA 'ilI wsThA,
+f'aHssUA bAltt`b Alshshdyd, wThrt `lAmAt-h fI mshyt-hm, w`lI wjUh-hm
+b`d hdhh AlrrHl"t AlTTUyl"t Almt`b"t AlltI lm yjrrbUhA mn qbl.  UlmAA
+sh`rt Al`mm"t bshdd"t t`bhm, qAlt lhm: nAmUA hnA tHt hdhh Alshshjr"t
+HttI tHDr AlHUryyAt ltl`b 'amAmkm 'al`AbA lm trUhA, wstjdUn fI
+mshAhdt-hA kll ldhdh"t wsrUr.  \popocplist
+
+\pushocplist\ArabicBerberOCP
+
+\subsection{Allal i useqdc n y.drisn \OMEGA\ d-tamazight}
+
+%\noindent{\leaders\hrule height0.5pt\hfill}
+%\par
+
+A dd nessken s wayes yif useqdec n \OMEGA\ i tira s tutlayt tamazight,
+ama s tifinagh, ama s isekkilen ila.taniyen. Newwi-dd tamazight am,
+tutlayt yeddren (yettwarun s tifinagh tiynayin)~: izmer umdan ad
+iseddu yall tighura n usuddes n tira, i waraten ussnanen, itekniken
+negh i wid n tsikkla, am wid ssexdamen i usemsaru n tfransist.
+
+\OMEGA, d ameslay n usmihel i usuddes n tira. Am-wakken ne.zra, d ayen
+i dd yttakken i.zubba.z war taggara i useqdec d usihrew, maca issefk
+ad ilmed uqeddac kra tussniwin. Nunz-as, ta.z.zayt n ulmad-a, nezmer a
+tt nsifess s useqdec n inagrawen n urmas n tira, isegh.zanen n usmihcl
+n waraten, ittwassnen a.tas (wid ittnuzun, srayn ghef umdan, wid
+izemren ad ssxedmen tazmert tasemsirawt n kra inagrawen imehlanen am
+wid n \latinit{Macintosh, Windows, Unix}.
+
+Tan.da tamzwarut n \OMEGA{} --- ghas tin ay ittalasen ism n \OMEGA{}
+---, us tli ageruedm i uqeddac. Am gg imeslayen n usmihel akk, ad yaru
+wmdan ahil, deffir, a t issefsu akken a t yessughal s anqal n
+tmacint. Di \OMEGA{}, ahil d ara n u.dris (n.t.te.dn ghur-s kra n
+tsun.diwin i usbuni d tghessa tame.z.zult).  Asefsu, d aselkem n wahil
+\OMEGA~; angal n tmacint ara dd iffghen, d win, i d aglam n usebter ay
+ittusuddsen, Iqqim-dd imir-n usemsaru.
+
+Akala-ya, yezmer a t yaf yefregh win inumen iseqdac n i.drisen ghef
+\latinit{Macintosh, Windows}, d wiyi.d, i degg a.dris a dd iffegh di
+tsemsarut akken yella gg uqdil [Anagraw-a yettwassnen s yism-is
+imiwzil, s tglizit \latinit{<<~wysiwyg~>>}, ycsseghla.d kra~: a.dris
+ara dd yesuffegh uqeddac, ad yili ghas s tseddi umi yessawe.d ugdil~;
+asgmu.d ara dd tsuffegh tsemsarut, yesmer ad yili yuser kra.]
+
+Iwakken ad yeqqim useqdec sray f umdan, yezmer ad yessexdem asegh.zan
+ittwassnen d allaeln i urmas. Taghessa tame.z.zult n wara (ighfawen,
+tifula, tiseddarin, tizmilin tinaddayin, timitar tinmudag, asmel n
+tektabin), a tt yessyghal si tbunit n usegh.zan-nni gher tsun.diwin n
+\OMEGA. Imir, \OMEGA, ad issefsu angal-nni a dd yessuffegh a.dris
+yuq.zen taghessa tame.z.zult tamezwarut, maca tira-ines ad ilint
+ulaghent ugar.  \popocplist
+
+\pushocplist\SindhiOCP
+\subsection{ktyn kr mU.ryA j.=d-hn}
+
+%\noindent{\leaders\hrule height0.5pt\hfill}
+%\par
+
+tn-hn kry AsAn khy pn-hnjy =z-hnn khy sjA=g rkh'nU pUndU ||eN pn-hnjy
+jdUj-hd meN .=dA-hp pydA kr'ny. AhU b/ m`lUm kr'nU pUndU t/ sndh meN
+hr 'A'yy wqt chA chA thy r-hyU 'Ahy ||eN dshmn AsAn jy ||eN AsAn jy
+jdUj-hd jy khlAf k-h.rA k-h.rA g-hA.t g-h.ry r-hyU 'Ahy.
+
+
+AsAn khy AhA b/ =khbr hj'n g-hrjy t/ AsAn jy 'As pAs ||eN ysgrdA'yy
+meN chA chA thy r-hyU 'Ahy. hndstAn meN chA thy r-hyU 'Ahy, AfghAnstAn
+meN chA thy r-hyU 'Ahy. `rAq ||eN AyrAn meN chA thy r-hyU 'A-hy ||eN
+'AmrykA ||eN sUUyt yUnyn chA chA sUcy r-hyA 'Ahn. j.=d-hn AsAn s=jy
+dnyA jy syAst ty ||eN s=jy dnyA jy jdUj-hd ty ||eN s=jy dnyA jy
+tndylyn ty n..zr rkhndAsUn ||eN An-hn tbdylyn jy A=srn khy pn-hnjy
+mlk, qUm ||eN `rAm ty pUndy .=dsndAsUn t/ An-hn tbdylyn mAn k-h.rA
+mnfy ||eN k-h.rA m=sbt A=sr 'Ahn. t.=d-hn 'yy AsAn pn-hnjy jdUj-hd khy
+b-htr b/ kry sg-hndAsUn t/ chU.tkAry UArU .hl b/ =gUly UyndAsUn.
+
+
+r=gU =gAl-hyUn kndy ||eN n`rn h'nndy AsAn jy qUm chAlyh sAl py.rA'yUn
+||eN `=zAb bhU=gyA 'Ahn ||eN An-hn n`rn AsAn jy qUm lA||i Udhyk
+py.rA'yUn ||eN `=zAb nAzl kyA 'Ahn . jyk.=d-hn AsAn meN A=j qUm jy
+Amyd pydA thy 'Ahy t/ AhA AsAn jy `ml ||eN AsAn jy by lU=s jdUj-hd jy
+kry pydA thy 'Ahy ||eN mA'y-hU AsAn .=dAn-hn wAj-hA'yy rhyA 'Ahn. t/
+AsAn 'yy 'AhyUn jyky kj-h n/ kj-h kndAsUn. pr AsAn khy .=ds'nU 'Ahy t/
+dnyA jy Andr chA thy rhyU {}'Ahy ||eN AsAn jU dshmn ky'yn .hAltn khy
+pn-hnjn mfAdn meN ktb 'A'n'n jy kUshsh kry rhyU 'Ahy, An-hy||a jy
+lA||i .zrUry 'Ahy t/ AsAn pA'n meN .=dAhp pydA kryUn ||eN pA'n meN
+=jA'n jU hk Usy` =khzAnU pydA kryUn. ||eN AsAn mUjUd-h .sUrt .hAl khy
+smj-h'n lA||i rUzmrh jy my.dyA ||eN dnyA jy Andr thynd.r kArUA'yyn ty
+g-hry n..zr rkhUn t/ dshmn ||eN jAr.hyt psnd qUtUn ||eN AsAn ty qAb.z
+qUtUn dnyA jy Andr thynd.r tbdylyn khy sndn .hq meN ||eN sndn mfAdn jy
+.hq meN, sndh ty jAr.hyt qA'nm rkh'n jy .hq meN, sndh khy mstql qb.zy
+meN kr'n jy .hq meN ky'yn ktb 'A'ny r-hyUn 'Ahn.
+
+\popocplist
+\end{document} 

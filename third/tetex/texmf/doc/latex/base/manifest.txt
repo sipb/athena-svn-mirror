@@ -1,9 +1,9 @@
 %
-% The following files form the LaTeX2e distribution of 1999/03/22
+% The following files form the LaTeX2e distribution of 2001/09/24
 %
 %
-% CONTENTS OF THE LaTeX2e DISTRIBUTION
-% ====================================
+% CONTENTS OF THE LaTeX DISTRIBUTION
+% ==================================
 %
 % Documentation:
 % --------------
@@ -30,16 +30,19 @@
 % pctex.txt       --  How to install LaTeX with PC PCTeX.
 % textures.txt    --  How to install LaTeX with Mac Textures.
 % truetex.txt     --  How to install LaTeX with TrueTeX for Windows 95 and NT.
+% vtex.txt        --  How to install LaTeX with PC VTeX.
+% vtexfree.txt    --  How to install LaTeX with VTeX/Free (VTeX/Lnx, VTeX/2).
 % web2ctex.txt    --  How to install LaTeX with Unix web2c TeX.
 % yandytex.txt    --  How to install LaTeX with PC Y&Y TeX.
-% vtex.txt        --  How to install LaTeX with PC VTeX.
 % 
 % template.txt    --  A template for writing installation guides.
 % texpert.txt     --  Documentation for TeX experts.
 % patches.txt     --  Explains the patch mechanism.
 % 
 % legal.txt       --  Copyright notice; warranty; copying conditions.
-% lppl.txt        --  The LaTeX Project Public License.
+% lppl.txt        --  The LaTeX Project Public License (current version).
+% lppl-1-0.txt    --  The LaTeX Project Public License (version 1.0).
+% lppl-1-1.txt    --  The LaTeX Project Public License (version 1.1).
 % 
 % bugs.txt        --  How to submit a bug report for LaTeX.
 % latexbug.tex    --  File to generate a bug report.
@@ -67,7 +70,11 @@
 % ltnews07.tex    --  What was new in the release dated 1997/06.
 % ltnews08.tex    --  What was new in the release dated 1997/12.
 % ltnews09.tex    --  What was new in the release dated 1998/06.
-% ltnews10.tex    --  What is new in the latest release.
+% ltnews10.tex    --  What was new in the release dated 1998/12.
+% ltnews11.tex    --  What was new in the release dated 1999/06.
+% ltnews12.tex    --  What was new in the release dated 1999/12.
+% ltnews13.tex    --  What was new in the release dated 2000/06.
+% ltnews14.tex    --  What is new in the latest release.
 %
 % ltx3info.tex    --  Information about the LaTeX3 project.
 %
@@ -75,7 +82,9 @@
 % compan.err      --  Errata for the LaTeX Companion.
 % begleit.err     --  Errata for the LaTeX-Begleiter (German).
 % grphcomp.err    --  Errata for the LaTeX Graphics Companion.
-% handbuch.err    --  Errata for the german LaTeX Manual.
+% handbuch.err    --  Errata for the LaTeX Manual (German).
+% webcomp.err     --  Errata for the LaTeX Web Companion.
+% webcompg.err    --  Errata for the LaTeX Web Companion (German).
 %
 %
 % Kernel files:
@@ -145,6 +154,7 @@
 % ------------------
 %
 % alltt.dtx       --  Implements the alltt environment.
+% fixltx2e.dtx    --  Implements non-gratuitous fixes to LaTeX.
 % graphpap.dtx    --  Implements programming \graphpaper command..
 % inputenc.dtx    --  Implements eight-bit input.
 % ifthen.dtx      --  Implements programming control structures.
@@ -173,7 +183,7 @@
 % Installation scripts for the various parts:
 % -------------------------------------------
 %
-% unpack.ins      --  LaTeX2e main installation script (see below).
+% unpack.ins      --  LaTeX main installation script (see below).
 %
 %
 % Installation scripts used by unpack.ins:
@@ -185,6 +195,7 @@
 % newdc.ins       --  Installation script for T*  Computer Modern fonts.
 % docstrip.ins    --  Installation script for docstrip.
 % exscale.ins     --  Installation script for scaling the cmex font.
+% fixltx2e.ins    --  Installation script for the fixltx2e package.
 % format.ins      --  Installation script for latex.ltx.
 % graphpap.ins    --  Installation script for graphpap.dtx.
 % inputenc.ins    --  Installation script for inputenc.dtx.
@@ -259,6 +270,8 @@ emtex.txt
 emtextds.txt
 exscale.dtx
 exscale.ins
+fixltx2e.dtx
+fixltx2e.ins
 fntguide.tex
 fontdef.dtx
 format.ins
@@ -283,6 +296,8 @@ legal.txt
 letter.dtx
 letter.ins
 lindner.txt
+lppl-1-0.txt
+lppl-1-1.txt
 lppl.txt
 ltalloc.dtx
 ltbibl.dtx
@@ -320,6 +335,10 @@ ltnews07.tex
 ltnews08.tex
 ltnews09.tex
 ltnews10.tex
+ltnews11.tex
+ltnews12.tex
+ltnews13.tex
+ltnews14.tex
 ltoutenc.dtx
 ltoutenc.ins
 ltoutput.dtx
@@ -379,6 +398,9 @@ truetex.txt
 unpack.ins
 usrguide.tex
 vtex.txt
+vtexfree.txt
 web2ctex.txt
+webcomp.err
+webcompg.err
 yandytex.txt
 \endinput

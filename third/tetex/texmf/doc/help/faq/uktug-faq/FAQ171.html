@@ -1,0 +1,62 @@
+<head>
+<title>UK TeX FAQ -- question 171</title>
+</head><body>
+<h3>Interrupting enumerated lists</h3>
+<p>It's often convenient to have commentary text, 'outside' the list,
+between successive entries of a list.  In the case of
+<code>itemize</code> lists this is no problem, since there's never
+anything to distinguish successive items, while in the case of
+<code>description</code> lists, the item labels are under the user's
+control so there's no automatic issue of continuity.
+<p>For <code>enumerate</code> lists, the labels are generated
+automatically, and are context-sensitive, so the context (in this
+case, the state of the enumeration counter) needs to be preserved.
+<p>The belt-and-braces approach is to remember the state of the
+enumeration in your own counter variable, and then restore it when
+restarting enumerate:
+<pre>
+\newcounter{saveenum}
+ ...
+\begin{enumerate}
+ ...
+ \setcounter{saveenum}{\value{enumi}}
+\end{enumerate}
+&lt;Commentary text&gt;
+\begin{enumerate}
+ \setcounter{enumi}{\value{saveenum}}
+ ...
+\end{enumerate}
+</pre>
+<p>This is reasonable, in small doses... Problems (apart from sheer
+verbosity) are getting the level right ("should I use counter
+<code>enumi</code>, <code>enumii</code>, ...") and remembering not to
+nest the interruptions (i.e., not to have a separate list, that is
+itself interrupted) in the "commentary text").
+<p>The <i>mdwlist</i> package defines commands <code>\suspend</code> and
+<code>\resume</code> that simplify the process:
+<pre>
+\newcounter{saveenum}
+ ...
+\begin{enumerate}
+ ...
+\suspend{enumerate}
+&lt;Commentary text&gt;
+\resume{enumerate}
+ ...
+\end{enumerate}
+</pre>
+The package allows an optional name (as in
+<code>\suspend[id]{enumerate}</code>) to allow you to identify a
+particular suspension, and hence provide a handle for manipulating
+nested suspensions.
+<p>If you're suspending a 
+<a href="FAQ169.html">fancy-enumeration list</a>, you need to
+re-supply the optional "item label layout" parameters required by
+the <i>enumerate</i> package when resuming the list, whether by the
+belt-and-braces approach, or by the <code>\resume{enumerate}</code>
+technique.
+<dl>
+<dt><tt><i>enumerate.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/tools.tar.gz">macros/latex/required/tools.tar.gz</a>
+<dt><tt><i>mdwlist.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/mdwtools.tar.gz">macros/latex/contrib/supported/mdwtools.tar.gz</a>
+</dl>
+<p><p><p></body>

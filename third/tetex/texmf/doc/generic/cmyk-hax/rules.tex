@@ -1,0 +1,6 @@
+\def\RULES{\special{ps:
+  /v {/ruley exch def /rulex exch def V} def
+  /V {gsave newpath transform round exch round exch itransform
+     moveto rulex 0 rlineto 0 ruley neg rlineto rulex neg 0 rlineto
+     closepath fill grestore} def
+}}

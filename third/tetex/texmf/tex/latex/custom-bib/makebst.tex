@@ -21,7 +21,10 @@
 %% Max-Planck-Str. 2
 %% D-37191 Katlenburg-Lindau
 %% Germany
-%% E-mail: daly@linmp.mpg.de
+%% E-mail: daly@linmpi.mpg.de
+%%
+%% With additions by Arthur Ogawa
+%% E-mai: ogawa@teleport.com
 %%
 %% This program can be redistributed and/or modified under the terms
 %% of the LaTeX Project Public License Distributed from CTAN
@@ -33,7 +36,7 @@
 \def\ProvidesFile#1 [#2 #3 #4]{\def\filename{#1}%
   \def\fileversion{#3}\def\filedate{#2}}
  \ProvidesFile{makebst}
-    [1999/02/24 3.2 (PWD)]
+    [1999/08/26 4.0-beta1 (PWD, AO)]
  % This file is to be run under TeX (or even LaTeX)
  % It interactively asks questions about the bibliographic style file
  % that you want to produce. When it is finished, it writes a docstrip
@@ -47,6 +50,7 @@
 \newwrite\ttyout
 \def\mes{\immediate\write\ttyout}
 \def\wr#1{\immediate\write\outfile{#1}}
+\def\umes#1{\mes{^^J#1}\wr{\pc#1}}%
 \newlinechar=`\^^J
 \def\MBswitch{\catcode`\{=12 \catcode`\}=12
               \catcode`\(=1 \catcode`\)=2\relax}
@@ -99,42 +103,109 @@
 \def\today{\number\year/\ifnum\month<10 0\fi\number\month
    /\ifnum\day<10 0\fi\number\day}
 \def\Now{\today\space at \now}
-\def\optdef#1#2#3#4{\expandafter\def\csname opt@#1\endcsname{#2}%
+\def\optdef#1#2#3#4{%
+  \expandafter\def\csname opt@#1\endcsname{#2}%
   \expandafter\def\csname txt@#1\endcsname{#3}%
-  \edef\optlist{#1,\optlist}%
-  \mes{(#1) #3\space #4}}
-
-\def\optlist{?,}
-
+  \expandafter\def\csname cmt@#1\endcsname{#4}%
+  \edef\optlist{\optlist#1,}%
+  \def\OptAns{#1}%
+  \mes{(#1) #3\space #4}%
+}
+\def\optlist{}
 \def\nxtopt#1,#2@@{#1} \def\rstopt#1,#2@@{#2}
-
 \newif\ifsw
-\def\getans{\ask{\ans}{\spsp Select:}
-  \expandafter\ifx\csname opt@\ans\endcsname\relax \def\ans{*}\fi
+\def\getans{%
+ \edef\optlist{\optlist\pc,}%
+ \ask{\ans}{\spsp Select:}%
   \expandafter\ifx\csname opt@\ans\endcsname\relax
-     \edef\ans{\expandafter\nxtopt\optlist@@}\fi
+  \def\ans{*}%
+ \fi
+ \expandafter\ifx\csname opt@\ans\endcsname\relax
+  \let\ans\OptAns
+ \fi
+  \edef\ansx{\csname opt@\ans\endcsname}
   \swtrue \loop
     \edef\temp{\expandafter\nxtopt\optlist@@}%
     \edef\optlist{\expandafter\rstopt\optlist@@}%
-    \if\temp?\swfalse\else
-      \if\temp\ans\wropt\ans
-          \else\wrxopt\temp
+  \if\temp\pc\swfalse\else
+   \if\temp\ans
+    \wropt\ans
+   \else
+    \ifoptlist\wrxopt\temp\fi
       \fi
       \expandafter\let\csname opt@\temp\endcsname\relax
     \fi
   \ifsw \repeat
-  \def\optlist{?,}%
-  \wr{\pc--------------------}%
-  }
-\def\wropt#1{\edef\tempx{\csname opt@#1\endcsname}\if!\tempx!
-  \wr{\spsp\spsp\pc: (def) \csname txt@#1\endcsname}\else
-  \wr{\spsp\sep\csname opt@#1\endcsname\pc: \csname txt@#1\endcsname}
-    \def\sep{,}\fi
-  \mes{\spsp You have selected: \csname txt@#1\endcsname}}
-\def\wrxopt#1{\edef\tempx{\csname opt@#1\endcsname}\if!\tempx!
-  \wr{\pc\spsp\pc(def) \csname txt@#1\endcsname}\else
-  \wr{\pc\spsp\sep\csname opt@#1\endcsname\pc: \csname txt@#1\endcsname}
-    \def\sep{,}\fi}
+ \def\optlist{}%
+ \ifoptverbose
+  \wr{\pc------\string\ans=\ans (==\ansx)-------}%
+ \else
+   \ifoptlist
+     \wr{\pc--------------------}%
+   \fi
+ \fi
+}
+\def\wropt#1{%
+ \edef\tempx{\csname opt@#1\endcsname}%
+ \if!\tempx!
+  \wr{\spsp\spsp\pc: (def)
+   \csname txt@#1\endcsname
+   \ifoptverbose\space\csname cmt@#1\endcsname\fi
+  }%
+ \else
+  \wr{\spsp\sep\tempx\pc:
+   \csname txt@#1\endcsname
+   \ifoptverbose\space\csname cmt@#1\endcsname\fi
+  }%
+  \gdef\sep{,}%
+ \fi
+ \mes{\spsp You have selected: \csname txt@#1\endcsname}%
+}
+\def\wrxopt#1{%
+ \edef\tempx{\csname opt@#1\endcsname}%
+ \if!\tempx!
+  \wr{\pc\space\spsp\pc: (def)
+   \csname txt@#1\endcsname
+   \ifoptverbose\space\csname cmt@#1\endcsname\fi
+  }%
+ \else
+  \wr{\pc\space,\tempx\pc:
+   \csname txt@#1\endcsname
+   \ifoptverbose\space\csname cmt@#1\endcsname\fi
+  }%
+ \fi
+}
+\def\beginoptiongroup#1{\begingroup\activatestar\OGcontinue{#1}}%
+\def\OGcontinue#1#2{%
+ \endgroup
+ \begingroup
+  \let\OGswitch\secondoftwo\def\tempa{#2}%
+  \ifx\tempa\empty\expandafter\firstoftwo\else\expandafter\secondoftwo\fi
+  {%
+   \activestar
+  }{%
+   \tempa
+  }%
+  \OGswitch{}{%
+    \let\wropt\wrxopt
+    \let\ask\nilans
+    \def\mes##1{}%
+  }%
+  \def\OGmessage{#1}%
+  \umes{\ifoptverbose<<\fi\OGmessage}%
+}
+\def\endoptiongroup{%
+  \ifoptverbose\umes{>>\OGmessage}\fi
+  \aftergroup\let\aftergroup\ans\expandafter
+ \endgroup
+ \ans
+}
+\def\activestar{\let\OGswitch\firstoftwo}
+\def\activatestar{\catcode`\*13\relax}
+{\activatestar\gdef*{\activestar}}
+\def\firstoftwo#1#2{#1}
+\def\secondoftwo#1#2{#2}
+{\catcode`\$=12\gdef\nilans#1#2{\def\ans{$}}}
 \mes{***********************************^^J%
      * This is Make Bibliography Style *^^J%
      ***********************************^^J%
@@ -200,8 +271,21 @@
 \begingroup\MBswitch
 \wr(\string\def\string\MBopts{\string\from{\mroot.\mext}{\pc)
 \endgroup
-\def\sep{}
-
+\gdef\sep{ }
+\newif\ifoptlist
+\optlisttrue
+\ifoptlist\else
+ \ask\yn{Do you want the unused option lines^^J%
+         \spsp to appear as comments in the output? (NO)}
+ \if!\yn!\else\if\yn n\else\if\yn N\else\optlisttrue\fi\fi\fi
+\fi
+\newif\ifoptverbose
+\ifoptlist
+ \ifoptverbose\else
+  \ask\yn{Do you want verbose comments? (NO)}
+  \if!\yn!\else\if\yn n\else\if\yn N\else\optverbosetrue\fi\fi\fi
+ \fi
+\fi
 \edef\temp{\mroot.\mnext}
 \let\endoptions=\endinput
 \input\temp

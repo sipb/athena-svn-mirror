@@ -1,0 +1,31 @@
+% This file is part of vntex. License: GPL.
+%
+\DeclareFont{T5/cmdunh/m/n}	{vndunh(10)}
+\DeclareFont{T5/cmff/m/it}	{vnfi(10)}
+\DeclareFont{T5/cmff/m/n}	{vnff(10)}
+\DeclareFont{T5/cmfib/bx/n}	{vnfib(8)}
+\DeclareFont{T5/cminch/bx/n}	{vninch()}
+\DeclareFont{T5/cmr/b/n}	{vnb(10)}
+\DeclareFont{T5/cmr/bx/it}	{vnbxti(10)}
+\DeclareFont{T5/cmr/bx/n}	{vnbx(5,6,7,8,9,10,12)}
+\DeclareFont{T5/cmr/bx/sl}	{vnbxsl(10)}
+\DeclareFont{T5/cmr/m/it}	{vnti(7,8,9,10,12)}
+\DeclareFont{T5/cmr/m/n}	{vnr(5,6,7,8,9,10,12,17)}
+\DeclareFont{T5/cmr/m/sc}	{vncsc(10)}
+\DeclareFont{T5/cmr/m/sl}	{vnsl(8,9,10,12)}
+\DeclareFont{T5/cmr/m/u}	{vnu(10)}
+\DeclareFont{T5/cmss/bx/n}	{vnssbx(10)}
+\DeclareFont{T5/cmss/dc/n}	{vnssdc(10)}
+\DeclareFont{T5/cmss/m/it}	{vnssi(8,9,10,12,17)}
+\DeclareFont{T5/cmss/m/n}	{vnss(8,9,10,12,17)}
+\DeclareFont{T5/cmss/q/it}	{vnssqi(8)}
+\DeclareFont{T5/cmss/q/n}	{vnssq(8)}
+\DeclareFont{T5/cmtt/m/it}	{vnitt(10)}
+\DeclareFont{T5/cmtt/m/n}	{vntt(8,9,10,12)}
+\DeclareFont{T5/cmtt/m/sc}	{vntcsc(10)}
+\DeclareFont{T5/cmtt/m/sl}	{vnsltt(10)}
+\DeclareFont{T5/cmvtt/m/n}	{vnvtt(10)}
+
+\SubstFont{T5/cmr/b/it}        {T5/cmr/bx/it}
+\SubstFont{T5/cmr/b/sl}        {T5/cmr/bx/sl}
+\SubstFont{T5/cmss/b/n}        {T5/cmss/bx/n}

@@ -1,5 +1,8 @@
-% 3parttable.sty   (or threeparttable) (or 3parttab on DOS)
-% by Donald Arseneau   Updated on Dec 9, 1996.
+% threeparttable.sty   (or 3parttable) (or 3parttab on DOS)
+% by Donald Arseneau   Updated on May 22, 2001.
+% This file may be distributed, modified, and used in other works with just
+% one restriction: modified versions must clearly indicate the modification
+% (preferably by a name change).
 % 
 % This package facilitates tables with titles (captions) and notes. The
 % title and notes are given a width equal to the body of the table (a
@@ -43,32 +46,67 @@
 \newenvironment{threeparttable}{% 3 parts: title, tabular environment, notes
 \relax \ifx\\\@centercr \leavevmode \fi
 \vbox\bgroup\sloppy
-\def\@captype{table}%
+\@ifundefined{@captype}{\def\@captype{table}}{}%
 \topsep\z@
 \@enumdepth\z@
-\let\@caption\TPT@caption
-\let\TPT@LA@tabular\tabular \let\TPT@LA@tabular*\tabular*
-\def\tabular{\edef\TPT@evh{{\the\everyhbox}}\everyhbox{\aftergroup\TPT@endtab 
-  \let\TPTrlap\rlap \everyhbox\TPT@evh}\TPT@LA@tabular}%
-\def\tabular*{\edef\TPT@evh{{\the\everyhbox}}\everyhbox{\aftergroup\TPT@endtab 
-  \let\TPTrlap\rlap \everyhbox\TPT@evh}\TPT@LA@tabular*}%
+\global\let\TPT@hsize\@empty
+\let\TPT@LA@caption\@caption \let\@caption\TPT@caption
+\TPT@hookin\tabular\TPT@LA@tabular 
+\TPT@hookarg\tabular*\TPT@LA@tabular*
+\TPT@hookarg\tabularx\TPT@LA@tabularx
 \let\TPTrlap\relax}%
-{\egroup\global\@ignoretrue}
+{\egroup}
 
-\def\TPT@endtab{\everyhbox{}%
-\setbox\@tempboxb\lastbox   % grab tabular environment and measure it
-\xdef\TPT@hsize{\hsize\the\wd\@tempboxb\noexpand\@parboxrestore}\TPT@hsize
-\ifx\TPT@docapt\@undefined\else
-  \TPT@docapt \global\let\TPT@docapt\@undefined \vskip.2\baselineskip
-\fi \par \box\@tempboxb \parindent=1em\relax}
+% "hookin" hooks into tabular to set the alignment in a box,
+% measure the box.  It gets inserted after the \begingroup
+% and does the work after the \endgroup produced by \end.
+%
+% That's no good: I want \tabular...\endtabular to work.
+%
+% Try wrapping definitions around both \tabular and \endtabular?
+% That's not good because I want them unhooked for nesting,
+% which deactivates the \endtabular hook.  This can be handled
+% with complicated macros.
+%
+% What I had originally was a hook via \everyhbox.
+
+\def\TPT@hookin#1#2{\let#2= #1\relax
+ \TPT@unhook=\expandafter{\the\TPT@unhook \let#1=#2\relax}%
+ \def#1{\the\TPT@unhook
+  \setbox\@tempboxb\hbox\bgroup \begingroup \aftergroup\TPT@endtab
+  \let\TPTrlap\rlap #2}}%
+
+\def\TPT@endtab{\egroup
+ \xdef\TPT@hsize{\hsize\the\wd\@tempboxb \parindent 1em
+   \noexpand\@parboxrestore}\TPT@hsize
+ \ifx\TPT@docapt\@undefined\else
+  \TPT@docapt \vskip.2\baselineskip
+ \fi \par \box\@tempboxb 
+ \ifvmode \prevdepth\z@ \fi
+ \endgroup \TPT@hsize \@ignoretrue}
+
+\newtoks\TPT@unhook \TPT@unhook={}
+
+
+\def\TPT@hookarg#1#2{\let#2= #1%
+ \TPT@unhook=\expandafter{\the\TPT@unhook \let#1=#2}%
+ \def#1##1{\the\TPT@unhook
+   \gdef\TPT@hsize{\setlength\hsize{##1}\parindent 1em
+   \@parboxrestore}\TPT@hsize
+ \ifx\TPT@docapt\@undefined\else
+   \TPT@docapt \vskip.2\baselineskip
+ \fi \par \aftergroup\TPT@hsize
+ #2{##1}}}%
 
 \gdef\TPT@hsize{}
 
-\def\TPT@caption#1[#2]#3{\gdef\TPT@docapt{\par\prevdepth-\@m\p@
-   \TPT@LA@caption{#1}[#2]{#3}}\ignorespaces}
+\def\TPT@caption#1[#2]#3{\gdef\TPT@docapt
+ {\par\global\let\TPT@docapt\@undefined \TPT@LA@caption{#1}[{#2}]{#3}}%
+ \ifx\TPT@hsize\@empty\else \TPT@docapt \fi \ignorespaces}
 
-\def\tablenotes{\TPT@hsize \list{}{\topsep.3\baselineskip \partopsep\z@
-\itemsep.1\baselineskip \parsep\z@ \itemindent\z@ \leftmargin1.5em
+\def\tablenotes{\par \prevdepth\z@ \TPT@hsize 
+\list{}{\topsep\z@skip \partopsep\z@skip 
+\itemsep\z@ \parsep\z@ \itemindent\z@ \leftmargin1.5em
 %  for superscript enumeration, use:
 \def\makelabel##1{\tnote{##1}\hfil}\labelwidth .5em\labelsep .3em%
 %  for on-the-line enumeration use:
@@ -78,7 +116,6 @@
 \def\tnote#1{\protect\TPTrlap{$^{\fam\z@ #1}$}}% 
 \def\TPTrlap#1{} % notes in caption will disappear in list of tables!
 
-\let\TPT@LA@caption\@caption
 
 \endtablenotes % restore catcode of @ and * to starting value
 
@@ -110,3 +147,11 @@ float because it is not in a {table} or {table*} environment.
 \end{threeparttable}
 
 \end{center}
+
+Notes:  
+
+May 15, 2001: changed hook-in to use \setbox in a wrapper macro (or
+explicit width of tabular*).  I don't remember why I used \everyhbox
+and \lastbox before.  Something may break now.  At least it works with
+tabularx.
+

@@ -1,3 +1,4 @@
+\ProvidesFile{spanish.mld}[1999/03/16]
 % Spanish titles for minitoc.sty
 \def\mtctitle{\'Indice General}%
 \def\mlftitle{\'Indice de Figuras}%

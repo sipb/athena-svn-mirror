@@ -5,33 +5,33 @@
 %% The original source files were:
 %%
 %% russianb.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{russianb}
-        [1999/04/05 v1.1j Russian support from the babel system]
+        [2001/02/21 v1.1n Russian support from the babel system]
 %% File `russianb.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Russianb Language Definition File
-%% Copyright (C) 1995 - 1999
+%% Copyright (C) 1995 - 2001
 %%           by Olga Lapko <cyrtug@mir.msk.su>
 %%              Johannes Braams, TeXniek
 %% Adapted to the new T2 and X2 Cyrillic encodings
 %%           by Vladimir Volovich <TeX@vvv.vsu.ru>
 %%              Werner Lemberg <wl@gnu.org>
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit{russian}{captionsrussian}
 \ifx\l@russian\@undefined
   \@nopatterns{Russian}
@@ -107,44 +107,13 @@
   \DeclareTextCommand{\aa}{OT1}{\r a}
   \DeclareTextCommand{\AA}{OT1}{\r A}
 \fi
-\begingroup\catcode`\"=12
-\def\@tempa#1{\expandafter\@tempb\meaning#1\relax\relax\relax\relax
-  "0000\@nil#1}
-\def\@tempb#1"#2#3#4#5#6\@nil#7{%
-  \ifnum"#2=7 \count@"1#3#4#5\relax
-    \ifnum\count@<"1000 \else \global\mathchardef#7="0#3#4#5\relax \fi
-  \fi}
-\@tempa\Gamma\@tempa\Delta\@tempa\Theta\@tempa\Lambda\@tempa\Xi
-\@tempa\Pi\@tempa\Sigma\@tempa\Upsilon\@tempa\Phi\@tempa\Psi
-\@tempa\Omega
-\def\@tempa#1#2\@nil{\def\@tempc{#1}}\def\@tempb{\mathaccent}
-\expandafter\@tempa\hat\relax\relax\@nil
-\ifx\@tempb\@tempc
-  \def\@tempa#1\@nil{#1}%
-  \def\@tempb#1{\afterassignment\@tempa\mathchardef\@tempc=}%
-  \def\do#1"#2{}
-  \def\@tempd#1{\expandafter\@tempb#1\@nil
-    \ifnum\@tempc>"FFF
-      \xdef#1{\mathaccent"\expandafter\do\meaning\@tempc\space}%
-    \fi}
-  \@tempd\hat\@tempd\check\@tempd\tilde\@tempd\acute\@tempd\grave
-  \@tempd\dot\@tempd\ddot\@tempd\breve\@tempd\bar
-\fi
-\endgroup
 \@ifpackageloaded{inputenc}{}{%
   \def\reserved@a{LWN}%
   \ifx\reserved@a\cyrillicencoding\else
     \def\reserved@a{OT2}%
     \ifx\reserved@a\cyrillicencoding\else
-      \PackageError{babel}%
+      \PackageWarning{babel}%
         {No input encoding specified for Russian language}
-        {Please put a line like
-         \string\usepackage[...]{inputenc} before\MessageBreak
-         the line containing \string\usepackage{babel}.
-         Put the proper\MessageBreak
-         Cyrillic input encoding instead of `...', e.g.,
-         koi8-r for UNIX\MessageBreak
-         environment or cp866 for MS-DOS environment.}%
   \fi\fi}
 \DeclareRobustCommand{\latintext}{%
   \fontencoding{\latinencoding}\selectfont
@@ -196,7 +165,9 @@
   \def\seename{{\cyr\cyrs\cyrm.}}%
   \def\alsoname{{\cyr\cyrs\cyrm.\ \cyrt\cyra\cyrk\cyrzh\cyre}}%
   \def\proofname{{\cyr\CYRD\cyro\cyrk\cyra\cyrz\cyra\cyrt
-    \cyre\cyrl\cyrsftsn\cyrs\cyrt\cyrv\cyro}}}
+      \cyre\cyrl\cyrsftsn\cyrs\cyrt\cyrv\cyro}}%
+  \def\glossaryname{Glossary}% <-- Needs translation
+  }
 \def\daterussian{%
   \def\today{\number\day~\ifcase\month\or
     \cyrya\cyrn\cyrv\cyra\cyrr\cyrya\or
@@ -261,7 +232,7 @@
 \fi
 \def\mdqon{\bbl@activate{"}}
 \def\mdqoff{\bbl@deactivate{"}}
-\def\russianhyphenmins{\tw@\tw@}
+\providehyphenmins{\CurrentOption}{\tw@\tw@}
 \ifx\englishhyphenmins\undefined
   \def\englishhyphenmins{\tw@\thr@@}
 \fi

@@ -1,0 +1,16 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5cmfr.fd}
+  [2000/01/27 v1.0 Vietnamese LaTeX font definitions]
+
+\DeclareFontFamily{T5}{cmfr}{}
+
+\DeclareFontShape{T5}{cmfr}{m}{n}{
+  <10> vnff10
+}{}
+
+\DeclareFontShape{T5}{cmfr}{m}{it}{
+  <10> vnfi10
+}{}
+
+\endinput

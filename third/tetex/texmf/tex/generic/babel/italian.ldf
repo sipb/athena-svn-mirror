@@ -5,29 +5,29 @@
 %% The original source files were:
 %%
 %% italian.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{italian}
-        [1999/05/01 v1.2l Italian support from the babel system]
+        [2001/01/19 v1.2o Italian support from the babel system]
 %% File `italian.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
-%% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
-\LdfInit{italian}{captionsitalian}
+%% Please report errors to: J.L. Braams <babel@braams.cistron.nl>
+%%                          Claudio Beccari <beccari@polito.it>
+\LdfInit{italian}{captionsitalian}%
 \ifx\l@italian\@undefined
-    \@nopatterns{Italian}
+    \@nopatterns{Italian}%
     \adddialect\l@italian0\fi
 \addto\captionsitalian{%
   \def\prefacename{Prefazione}%
@@ -46,41 +46,143 @@
   \def\enclname{Allegati}%
   \def\ccname{e~p.~c.}%
   \def\headtoname{Per}%
-  \def\pagename{Pag.}%    % in Italian abbreviation is preferred
+  \def\pagename{Pag.}%    % in Italian the abbreviation is preferred
   \def\seename{vedi}%
   \def\alsoname{vedi anche}%
   \def\proofname{Dimostrazione}%
-  }
+  \def\glossaryname{Glossario}%
+  }%
 \def\dateitalian{%
   \def\today{\number\day~\ifcase\month\or
     gennaio\or febbraio\or marzo\or aprile\or maggio\or giugno\or
-    luglio\or agosto\or settembre\or ottobre\or novembre\or dicembre\fi
-    \space \number\year}}
-\def\italianhyphenmins{\tw@\tw@}
+    luglio\or agosto\or settembre\or ottobre\or novembre\or
+    dicembre\fi\space \number\year}}%
+\providehyphenmins{\CurrentOption}{\tw@\tw@}
 \addto\extrasitalian{%
   \babel@savevariable\clubpenalty
   \babel@savevariable\widowpenalty
-  \clubpenalty3000\widowpenalty3000}
+  \clubpenalty3000\widowpenalty3000}%
 \addto\extrasitalian{%
   \babel@savevariable\finalhyphendemerits
-  \finalhyphendemerits50000000}
+  \finalhyphendemerits50000000}%
 \addto\extrasitalian{%
-  \lccode`'=`'}
+  \lccode`'=`'}%
 \addto\noextrasitalian{%
-  \lccode`'=0}
+  \lccode`'=0}%
+\initiate@active@char{"}%
+\addto\extrasitalian{\bbl@activate{"}\languageshorthands{italian}}%
+\declare@shorthand{italian}{"}{%
+\ifmmode
+    \def\it@next{''}%
+\else
+    \def\it@next{\futurelet\it@temp\it@cwm}%
+\fi
+\it@next
+}%
+\def\it@@cwm{\nobreak\discretionary{-}{}{}\hskip\z@skip}%
+\DeclareRobustCommand*{\it@cwm}{\let\it@@next\relax
+\ifcat\noexpand\it@temp a%
+    \def\it@@next{\it@@cwm}%
+\else
+    \if\noexpand\it@temp \string|%
+        \def\it@@next{\it@@cwm\@gobble}%
+    \else
+        \if\noexpand\it@temp \string<%
+            \def\it@@next{\it@ocap\@gobble}%
+        \else
+            \if\noexpand\it@temp \string>%
+                \def\it@@next{\it@ccap\@gobble}%
+            \else
+                \if\noexpand\it@temp\string/%
+                    \def\it@next{\slash\@gobble}%
+                \else
+                    \ifx\it@temp"%
+                        \def\it@@next{``\@gobble}%%^^A''
+                    \fi
+                \fi
+            \fi
+        \fi
+    \fi
+\fi
+\it@@next}%
 \DeclareRobustCommand*{\bbl@unit}[1]{%
   \textormath{\,\mbox{#1}}{\,\mathrm{#1}}}%
 \DeclareRobustCommand*{\bbl@ap}[1]{%
   \textormath{\textsuperscript{#1}}{^{\mathrm{#1}}}}%
 \DeclareRobustCommand*{\bbl@ped}[1]{%
-  \textormath{$_{\mbox{\fontshape{n}\fontsize\sf@size\z@
-          \selectfont#1}}$}{_\mathrm{#1}}}%
+  \textormath{$_{\mbox{\fontsize\sf@size\z@
+        \selectfont#1}}$}{_\mathrm{#1}}}%
 \addto\extrasitalian{%
   \babel@save\unit\let\unit\bbl@unit
   \babel@save\ap\let\ap\bbl@ap
   \babel@save\ped\let\ped\bbl@ped
   }%
-\ldf@finish{italian}
+\renewcommand*{\add@accent}[2]{%
+  {\ifx#2i\let\bbl@tempa\i\else\let\bbl@tempa#2\fi
+    \setbox\@tempboxa\hbox{\bbl@tempa%
+      \global\mathchardef\accent@spacefactor\spacefactor}%
+    \accent#1\bbl@tempa}\spacefactor\accent@spacefactor}%
+\def\LtxSymbCaporali{%
+     \DeclareRobustCommand*{\it@ocap}{\mbox{%
+        \fontencoding{U}\fontfamily{lasy}\selectfont(\kern-0.20em(}%
+        \ignorespaces}%
+     \DeclareRobustCommand*{\it@ccap}{\ifdim\lastskip>\z@\unskip\fi
+     \mbox{%
+        \fontencoding{U}\fontfamily{lasy}\selectfont)\kern-0.20em)}}%
+}%
+\newif\if@CyrEncKnown
+\IfFileExists{ot2cmr.fd}%
+    {\@CyrEncKnowntrue\DeclareFontEncoding{OT2}{}{}}%
+    {\@CyrEncKnownfalse}%
+\DeclareRobustCommand*{\ItalianWarning}{%
+    \GenericWarning{(Italian Option)\space\space}%
+       {Italian Option Warning: No Cyrillic fonts available\MessageBreak
+       LaTeX Symbol approximation will be used for caporali}}%
+\DeclareRobustCommand*{\CapAperti}{%
+   \if@CyrEncKnown
+       {\fontencoding{OT2}\fontfamily{wncyr}\selectfont\char60}%
+   \else
+       \ItalianWarning
+       {\fontencoding{U}\fontfamily{lasy}\selectfont(\kern-0.20em(}%
+   \fi
+}%
+\DeclareRobustCommand*{\CapChiusi}{%
+   \if@CyrEncKnown
+       {\fontencoding{OT2}\fontfamily{wncyr}\selectfont\char62}%
+   \else
+       \ItalianWarning
+       {\fontencoding{U}\fontfamily{lasy}\selectfont)\kern-0.20em)}%
+   \fi
+}%
+\newif\ifT@one@noCap
+\def\get@ae#1#2#3!{\def\bbl@ae{#1#2}}%
+\def\set@T@one@noCap{\expandafter\get@ae\f@family!%
+\def\bbl@temp{ae}\ifx\bbl@ae\bbl@temp\T@one@noCaptrue\else
+    \T@one@noCapfalse\fi}%
+\DeclareRobustCommand*{\it@ocap}{%
+\leavevmode
+\ifx\cf@encoding\bbl@t@one
+    {\set@T@one@noCap
+    \ifT@one@noCap
+        \CapAperti
+    \else
+        <<%
+    \fi}%
+\else
+    \CapAperti
+\fi\ignorespaces}%
+\DeclareRobustCommand*{\it@ccap}{\ifdim\lastskip>\z@\unskip\fi%
+\ifx\cf@encoding\bbl@t@one
+    {\set@T@one@noCap
+    \ifT@one@noCap
+        \CapChiusi
+    \else
+        >>%
+    \fi}%
+\else
+    \CapChiusi
+\fi}%
+\ldf@finish{italian}%
 %%
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z

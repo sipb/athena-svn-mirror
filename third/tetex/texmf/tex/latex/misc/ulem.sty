@@ -1,5 +1,5 @@
 %
-%  U L E M . S T Y       [1997-04-21]
+%  U L E M . S T Y       [2000-05-26]
 %
 %  A style file to provide various types of underlining that can stretch
 %  between words and be broken across lines.  Use with LaTeX or plain TeX.
@@ -21,7 +21,7 @@
 %    \useunder{\uwave}{\bfseries}{\textbf}
 %                        use wavy underline in place of bold face
 %
-%  Copyright (c) 1989-1997 by Donald Arseneau
+%  Copyright (c) 1989-2000 by Donald Arseneau
 %
 %  These definitions may be freely transmitted, reproduced, or modified
 %  provided that this notice is left intact.
@@ -40,6 +40,7 @@
 \newbox\UL@box
 \newbox\UL@hyphenbox
 \newskip\UL@skip
+\newtoks\UL@hook
 
 \newcount\UL@pe
 \let\LA@space\ \let\LA@hskip\hskip
@@ -48,7 +49,8 @@
 
 %   For regular underlines, set the depth based on the font, or retain
 %   preset value.
-\def\ULset{\ifdim\ULdepth=\maxdimen\setbox\UL@box\hbox{(j}\ULdepth\dp\UL@box\fi
+\def\ULset{\ifdim\ULdepth=\maxdimen
+   \setbox\UL@box\hbox{(j}\ULdepth\dp\UL@box\advance\ULdepth.4\p@\fi
   \def\UL@leadtype{\leaders \hrule \@height\dimen@ \@depth\ULdepth}%
   \ifmmode \ULdepth-4\p@ \fi
   \dimen@-\ULdepth \advance\dimen@\ULthickness \ULon}
@@ -64,6 +66,7 @@
   \let\\\UL@cr \let\-\UL@dischyp \let\newline\UL@newline \let\ \UL@space
   \def\hfil{\hskip\z@ plus1fil\relax}\def\hfill{\hskip\z@ plus1fill\relax}%
   \def\hss{\hskip\z@ plus1filminus1fil\relax}\let\penalty\UL@penalty
+  \the\UL@hook
   \UL@word\@empty#1\xdef\UL@spfactor{\the\spacefactor} \UL@end * }
 
 %   This is what \ULon does when it appears nested in an inner place.
@@ -268,12 +271,17 @@
 % Process LaTeX \package options; plain TeX skips this section
 
 \expandafter\ifx\csname ProvidesPackage\endcsname \relax \else
-  \ProvidesPackage{ulem}[1997/04/21]
+  \ProvidesPackage{ulem}[2000/05/26]
   \DeclareOption{normalem}{\normalem}
   \DeclareOption{ULforem}{\ULforem}
   \DeclareOption{normalbf}{}
   \DeclareOption{UWforbf}{\useunder{\uwave}{\bf}{\textbf}}
   \ProcessOptions
+  \let\UL@marginpar\marginpar
+  \newcommand\UL@marpar[2][\gDefault@pt]{\gdef\gDefault@pt{#2}%
+   \ifx\ \LA@space \@latexerr{Marginpar lost}%
+   \else \UL@stop \UL@marginpar[#1]{#2}\UL@start \fi}
+  \addto@hook\UL@hook{\let\marginpar\UL@marpar}
 \fi
 
 \catcode`@=\ULthickness % Scratch meaning: restore catcode of @ 
@@ -315,7 +323,7 @@ the underlining:  \-, \ , ~, \\, \newline, \linebreak, \nolinebreak,
 \penalty, \hskip, \hspace, \hfil, \hfill, \hss.  Displayed math and \par
 are deliberately not supported to aid in the detection of runaway arguments
 (missing braces).  The special commands do have a problem: they end a
-group so any local assignments are lost.
+group so any local assignments are lost.  
 
 The underlines continue between words, and stretch just like ordinary
 spaces do.  Since spaces delimit words, there may be some difficulty
@@ -436,6 +444,14 @@ In plain TeX there is no \textbf so you should use \useunder{\UWave}{\bf}{}.
 You can even skip a step and define the underline or overprint with \useunder:
 \useunder{\bgroup\markoverwith{!}\ULon}{\sf}{}
 
+Some commands, such as \\ and \hskip are given special treatment, but 
+others (like \marginpar) are not.  Support for others can be added by 
+assigning special meanings in the token register \UL@hook.  (In LaTeX do 
+\addto@hook\UL@hook{\let\command\ULversion}.)  The UL versions of commands 
+should be modelled on \UL@hskip or \UL@cr, and should include the test 
+"\ifx\ \LA@space".  For example, support for "\marginpar" is added through
+the hook mechanism.
+
 All the underlining commands are robust in LaTeX.
 
 %  Previous bug-finders: Esther Hu (\hfill in plain); Lones Smith (\tt\-);
@@ -449,6 +465,7 @@ All the underlining commands are robust in LaTeX.
 %  well; crude math support; eliminate \@clb
 %  patch 1996: use "\csname ProvidesPackage\endcsname", tidying.
 %  1997: fix \\ when LaTeX changed; remove extra overlap in putbox.
+%  2000: hook (and marginpar)
 %
 %  Send problem reports to asnd@reg.triumf.ca
 %

@@ -1,0 +1,68 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -*- Mode: Latex -*- %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% t2-ghsb.tex --- Test of HSB mode gradients
+%% 
+%% Author          : Denis GIROU (CNRS/IDRIS - France) <Denis.Girou@idris.fr>
+%% Created the     : Mon May 12 18:03:18 1997
+%% Last mod. by    : Denis GIROU (CNRS/IDRIS - France) <Denis.Girou@idris.fr>
+%% Last mod. the   : Thu Jan 29 17:18:33 1998
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+\usepackage{pst-grad}
+\usepackage{pst-ghsb}
+
+\newcommand{\Fig}[1][]{%
+\begin{pspicture}(5.5,5.5)
+  \psframe[#1](5,5)
+\end{pspicture}}
+
+\newhsbcolor{ColorA}{0.7 0.1 0.8}
+\newhsbcolor{ColorB}{0.7 0.9 0.8}
+\newhsbcolor{ColorC}{0 0 0}
+\newhsbcolor{ColorD}{0 0 1}
+\newhsbcolor{ColorE}{0 0 0.5}
+\newhsbcolor{ColorF}{0 1 0.5}
+\newhsbcolor{ColorG}{0 0 0.5}
+\newhsbcolor{ColorH}{0.99999 0 0.5}   % As it's cycliç 1=0 !
+\newhsbcolor{ColorI}{1 1 1}
+\newhsbcolor{ColorJ}{1 0 0}
+\newhsbcolor{ColorK}{0.99999 1 1}     % As it's cyclic 1=0 !
+\newhsbcolor{ColorL}{0 1 0}
+\newhsbcolor{ColorM}{0.99999 1 1}     % As it's cyclic 1=0 !
+\newhsbcolor{ColorN}{0 0 1}
+\newhsbcolor{ColorO}{0 0.6 0.7}
+\newhsbcolor{ColorP}{0.99999 0.7 0.7} % As it's cyclic 1=0 !
+\newhsbcolor{ColorQ}{0.3 0 0.8}
+\newhsbcolor{ColorR}{0.3 1 0.8}
+\newhsbcolor{ColorS}{0.6 0.3 0}
+\newhsbcolor{ColorT}{0.6 0.3 1}
+
+\textheight=29cm
+\textwidth=20cm
+\oddsidemargin=0cm
+
+\pagestyle{empty}
+
+\begin{document}
+
+\psset{fillstyle=gradient,gradmidpoint=1}
+
+\Fig[gradbegin=yellow,gradend=green]
+\Fig[gradientHSB=true,gradbegin=ColorA,gradend=ColorB]
+\Fig[gradbegin=green,gradend=yellow]
+
+\psset{gradientHSB=true}
+\Fig[gradbegin=ColorC,gradend=ColorD]
+\Fig[gradbegin=ColorE,gradend=ColorF]
+\Fig[gradbegin=ColorG,gradend=ColorH]
+
+\Fig[gradbegin=ColorI,gradend=ColorJ]
+\Fig[gradbegin=ColorK,gradend=ColorL]
+\Fig[gradbegin=ColorM,gradend=ColorN]
+
+\Fig[gradbegin=ColorO,gradend=ColorP]
+\Fig[gradbegin=ColorQ,gradend=ColorR]
+\Fig[gradbegin=ColorS,gradend=ColorT]
+
+\end{document}

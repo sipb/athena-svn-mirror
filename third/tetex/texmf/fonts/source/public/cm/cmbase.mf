@@ -105,8 +105,12 @@ vardef arm(suffix $,$$,@)(expr darkness,jut) =  % arm from |z$| to |z$$|
  x@0=good.x(x$$r-jut); y@0=y$r;
  if serifs: y@1=y$l; z@1=z$$l+whatever*(z$$r-z@0);
   z@2=.5[z$l,z@1];
-  filldraw z$$l{z@1-z$$l}...darkness[z@1,.5[z@2,z$$l] ]...z@2
-   ---z$l--z$r--z@0--z$$r--cycle; % arm and beak
+  path p_; p_= z$$l{z@1-z$$l}...darkness[z@1,.5[z@2,z$$l] ]...z@2
+    ---z$l--z$r--z@0--z$$r--cycle;
+  if (y$$>y$) <> (ypart precontrol 1 of p_ > ypart postcontrol 1 of p_):
+    p_:=z$$l{z@1-z$$l}...darkness[z@1,.5[z@2,z$$l] ]
+     ---z$l--z$r--z@0--z$$r--cycle; fi
+  filldraw p_; % arm and beak
  else: filldraw z$l--z$r--z@0--z$$r--cycle; fi  % sans-serif arm
  penlabels(@0,@1,@2); enddef;
 

@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Comment.sty   version 3.4, April 1998
+% Comment.sty   version 3.6, October 1999
 %
 % Purpose:
 % selectively in/exclude pieces of text: the user can define new
@@ -15,7 +15,7 @@
 %    Knoxville TN 37996
 %    USA
 %
-%    eijkhout@cs.utk.edu
+%    victor@eijkhout.net
 %
 % This program is free software; you can redistribute it and/or
 % modify it under the terms of the GNU General Public License
@@ -27,8 +27,9 @@
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 % GNU General Public License for more details.
 %
-% For a copy of the GNU General Public License, write to the Free Software
-% Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA,
+% For a copy of the GNU General Public License, write to the 
+% Free Software Foundation, Inc.,
+% 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA,
 % or find it on the net, for instance at
 % http://www.gnu.org/copyleft/gpl.html
 %
@@ -59,7 +60,8 @@
 %
 % LaTeX users note: for an included comment, the
 % \begin and \end lines act as if they don't exist.
-% In particular, they don't imply grouping, so assignments &c are not local.
+% In particular, they don't imply grouping, so assignments 
+% &c are not local.
 %
 % Special comments are defined as
 % \specialcomment{name}{before commands}{after commands}
@@ -68,15 +70,24 @@
 % formatting commands.
 % To keep definitions &c local, you can include \begingroup
 % in the `before commands' and \endgroup in the `after commands'.
+% ex:
+% \specialcomment{smalltt}
+%     {\begingroup\ttfamily\footnotesize}{\endgroup}
+% You do *not* have to do an additional
+% \includecomment{smalltt}
+% To remove 'smalltt' blocks, give \excludecomment{smalltt}
+% after the definition.
 %
 % Processing comments can apply processing to each line.
-% \processcomment{name}{each-line commands}{before commands}{after commands}
+% \processcomment{name}{each-line commands}%
+%    {before commands}{after commands}
 % By defining a control sequence 
 % \def\Thiscomment##1{...} in the before commands the user can
 % specify what is to be done with each comment line.
+% BUG this does not work quite yet BUG
 %
-% Trick for short in/exclude macros (\maybe{this snippet}):
-%\includeversion{cond}
+% Trick for short in/exclude macros (such as \maybe{this snippet}):
+%\includecomment{cond}
 %\newcommand{\maybe}[1]{}
 %\begin{cond}
 %\renewcommand{\maybe}[1]{#1}
@@ -86,10 +97,12 @@
 % to comment something out, scoop up  every line in verbatim mode
 % as macro argument, then throw it away.
 % For inclusions, in LaTeX the block is written out to
-% a file \CommentCutFile (default "comment.cut"), which is then included.
+% a file \CommentCutFile (default "comment.cut"), which is
+% then included.
 % In plain TeX (and other formats) both the opening and
 % closing comands are defined as noop.
 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Changes in version 3.1
 % - updated author's address
 % - cleaned up some code
@@ -111,23 +124,41 @@
 % - added GNU public license
 % - added \processcomment, because Ivo's fix (above) brought an
 %   inconsistency to light.
+% Changes in 3.5
+% - corrected typo in header.
+% - changed author email
+% - corrected \specialcomment yet again.
+% - fixed excludecomment of an earlier defined environment.
+% Changes in 3.6
+% - The 'cut' file is now written more verbatim, using \meaning;
+%   some people reported having trouble with ISO latin 1, or umlaute.sty.
+% - removed some \newif statements.
+%   Has this suddenly become \outer again?
 %
+% Known bugs:
+% - excludecomment leads to one superfluous space
+% - processcomment leads to a superfluous line break
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \def\makeinnocent#1{\catcode`#1=12 }
 \def\csarg#1#2{\expandafter#1\csname#2\endcsname}
 \def\latexname{lplain}\def\latexename{LaTeX2e}
 \newwrite\CommentStream
 \def\CommentCutFile{comment.cut}
 
-\def\ProcessComment#1{\begingroup
+\def\ProcessComment#1% start it all of
+   {\begingroup
     \def\CurrentComment{#1}%
     \let\do\makeinnocent \dospecials 
     \makeinnocent\^^L% and whatever other special cases
     \endlinechar`\^^M \catcode`\^^M=12 \xComment}
-\def\ProcessCommentWithArg#1#2{\begingroup
-    \def\CurrentComment{#1}%
-    \let\do\makeinnocent \dospecials 
-    \makeinnocent\^^L% and whatever other special cases
-    \endlinechar`\^^M \catcode`\^^M=12 \xComment}
+%\def\ProcessCommentWithArg#1#2% to be used in \leveledcomment
+%   {\begingroup
+%    \def\CurrentComment{#1}%
+%    \let\do\makeinnocent \dospecials 
+%    \makeinnocent\^^L% and whatever other special cases
+%    \endlinechar`\^^M \catcode`\^^M=12 \xComment}
 {\catcode`\^^M=12 \endlinechar=-1 %
  \gdef\xComment#1^^M{%
     \expandafter\ProcessCommentLine}
@@ -137,6 +168,17 @@
       \else \ThisComment{#1}\let\next\ProcessCommentLine
       \fi \next}
 }
+
+\def\CSstringmeaning#1{\expandafter\CSgobblearrow\meaning#1}
+\def\CSstringcsnoescape#1{\expandafter\CSgobbleescape\string#1}
+{\escapechar-1
+\expandafter\expandafter\expandafter\gdef
+  \expandafter\expandafter\expandafter\CSgobblearrow
+    \expandafter\string\csname macro:->\endcsname{}
+}
+\def\CSgobbleescape#1{\ifnum`\\=`#1 \else #1\fi}
+\def\WriteCommentLine#1{\def\CStmp{#1}%
+    \immediate\write\CommentStream{\CSstringmeaning\CStmp}}
 
 % 3.1 change: in LaTeX and LaTeX2e prevent grouping
 \if 0%
@@ -150,61 +192,50 @@
 %%%%
 %%%% definitions for LaTeX
 %%%%
-\edef\restoreat{\catcode\noexpand`\noexpand\@=\the\catcode`\@\relax}
-\makeatletter
 \def\AfterIncludedComment
    {\immediate\closeout\CommentStream
     \input{\CommentCutFile}\relax
     }%
-\def\WriteCommentLine#1{\immediate\write\CommentStream{#1}}
-\def\BeforeIncludedComment{\immediate\openout\CommentStream=\CommentCutFile
+\def\TossComment{\immediate\closeout\CommentStream}
+\def\BeforeIncludedComment
+   {\immediate\openout\CommentStream=\CommentCutFile
     \let\ThisComment\WriteCommentLine}
 \def\includecomment
  #1{\message{Include comment '#1'}%
-    %\csarg\newif{if#1IsStreamingComment}
-    %\csarg\newif{if#1IsLeveledComment}
     \csarg\let{After#1Comment}\AfterIncludedComment
     \csarg\def{#1}{\BeforeIncludedComment
         \ProcessComment{#1}}%
     \CommentEndDef{#1}}
 \long\def\specialcomment
  #1#2#3{\message{Special comment '#1'}%
-    %\csarg\newif{if#1IsStreamingComment}
-    %\csarg\newif{if#1IsLeveledComment}
+    % note: \AfterIncludedComment does \input, so #2 goes here!
     \csarg\def{After#1Comment}{#2\AfterIncludedComment#3}%
-    \csarg\def{#1}{\BeforeIncludedComment#2\relax
+    \csarg\def{#1}{\BeforeIncludedComment\relax
           \ProcessComment{#1}}%
     \CommentEndDef{#1}}
 \long\def\processcomment
  #1#2#3#4{\message{Lines-Processing comment '#1'}%
-    %\csarg\newif{if#1IsStreamingComment}
-    %\csarg\newif{if#1IsLeveledComment}
     \csarg\def{After#1Comment}{#3\AfterIncludedComment#4}%
     \csarg\def{#1}{\BeforeIncludedComment#2\relax
           \ProcessComment{#1}}%
     \CommentEndDef{#1}}
 \def\leveledcomment
  #1#2{\message{Include comment '#1' up to level '#2'}%
-    %\csarg\newif{if#1IsStreamingComment}
-    %\csarg\newif{if#1IsLeveledComment}\csname #1IsLeveledCommenttrue\endcsname
+    %\csname #1IsLeveledCommenttrue\endcsname
     \csarg\let{After#1Comment}\AfterIncludedComment
     \csarg\def{#1}{\BeforeIncludedComment
         \ProcessCommentWithArg{#1}}%
     \CommentEndDef{#1}}
-\restoreat
 \else 
 %%%%
 %%%%plain TeX and other formats
 %%%%
 \def\includecomment
  #1{\message{Including comment '#1'}%
-    \csarg\newif{if#1IsStreamingComment}
-    \csarg\newif{if#1IsLeveledComment}
     \csarg\def{#1}{}%
     \csarg\def{end#1}{}}
 \long\def\specialcomment
  #1#2#3{\message{Special comment '#1'}%
-    \csarg\newif{if#1IsStreamingComment}
     \csarg\def{#1}{\def\ThisComment{}\def\AfterComment{#3}#2%
            \ProcessComment{#1}}%
     \CommentEndDef{#1}}
@@ -215,9 +246,9 @@
 %%%%
 \def\excludecomment
  #1{\message{Excluding comment '#1'}%
-    \csarg\newif{if#1IsStreamingComment}
     \csarg\def{#1}{\let\AfterComment\relax
            \def\ThisComment####1{}\ProcessComment{#1}}%
+    \csarg\let{After#1Comment}\TossComment
     \CommentEndDef{#1}}
 
 \if 0%
@@ -245,6 +276,3 @@
 \excludecomment{comment}
 
 \endinput
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% sample input file for LaTeX
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

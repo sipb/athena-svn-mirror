@@ -1,5 +1,5 @@
-% This is lccodes.mf in text format as of 1999/11/1
-% created by LHfonts (TeX4MF) version 3.2
+% This is lccodes.mf in text format as of 2000/12/9
+% created by LHfonts (TeX4MF) version 3.4
 %
 %
 
@@ -91,12 +91,12 @@ CYR_.TETSE := hex"81";
 CYR_.tetse := hex"a1";
 CYR_.DZHE := hex"96";
 CYR_.dzhe := hex"b6";
-CYR_.YAT := hex"93";
-CYR_.yat := hex"b3";
-CYR_.B_YUS := hex"9b";
-CYR_.b_yus := hex"bb";
-CYR_.IZH := hex"94";
-CYR_.izh := hex"b4";
+CYR_.SEMISN := hex"93";
+CYR_.semisn := hex"b3";
+CYR_.I_shdsc := hex"94";
+CYR_.i_shdsc := hex"b4";
+CYR_.R_tl := hex"9b";
+CYR_.r_tl := hex"bb";
 CYR_.N_ltl := hex"99";
 CYR_.n_ltl := hex"b9";
 CYR_.R_gcrs := hex"86";

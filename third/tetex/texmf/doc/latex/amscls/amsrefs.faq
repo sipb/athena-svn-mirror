@@ -1,0 +1,64 @@
+amsrefs.faq  [2000/03/24] American Mathematical Society
+
+Frequently asked questions about the amsrefs package and its companion
+packages.
+
+Suggestions? Please send mail to tech-support@ams.org.
+
+------------------------------------------------------------------------
+(1) Question: Where should I look for documentation?
+
+Answer: User documentation is found in the file amsrefs.dvi. (DON'T
+BLINDLY PRINT ALL OF IT: the first twenty pages or so are user
+documentation, but the rest is technical commentary which will be a
+waste of paper if you're not interested in it.)
+
+Some example files cite-xa.tex (cite-xb, cite-xc, cite-xd) are also
+provided.
+
+------------------------------------------------------------------------
+(2) How do I start using amsrefs?
+
+Answer: First, you will need (of course) to add "\usepackage{amsrefs}"
+at the top of your LaTeX file. Then probably two choices:
+
+a. Using amsrefs with BibTeX: Change the bibliography style to amsxport:
+
+  \bibliographystyle{amsxport}
+
+All else can remain the same (but see the documentation concerning
+some improvements for citation commands that you may wish to take
+advantage of).
+
+b. Using amsrefs without BibTeX: Convert .bib files to .ltb files and
+use \bibselect instead of \bibliography to create the .bbl file.
+
+------------------------------------------------------------------------
+(3) When I add the amsrefs package to my document, I get an error
+message:
+
+  ! LaTeX Error: Command \qq already defined.
+
+or others of these:
+
+  ... Command \mdash already defined.
+  ... Command \ndash already defined.
+  ... Command \qd already defined.
+  ... Command \xd already defined.
+  ... Command \lqq already defined.
+  ... Command \rqq already defined.
+  ... Command \lq already defined.
+  ... Command \rq already defined.
+  ... Command \bul already defined.
+  ... Command \vsp already defined.
+  ... Command \pdc already defined.
+  ... Command \vrt already defined.
+  ... Command \cir already defined.
+  ... Command \til already defined.
+  ... Command \bsl already defined.
+  ... Command \cwm already defined.
+
+Answer: Use the "lite" option of the amsrefs package to avoid loading
+the auxiliary package "textcmds". Or, if the error message occurs at one
+of your own definitions in the preamble, change \newcommand to
+\renewcommand.

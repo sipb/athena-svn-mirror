@@ -1,0 +1,24 @@
+%Filename: t1hlcw.fd
+%Created by: tex hlcw
+%Created using fontinst v1.914
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{t1hlcw.fd}
+   [2003/01/04 Fontinst v1.914 font definitions for T1/hlcw.]
+\@ifundefined{DeclareLucidaFontShape}{%
+\def\DeclareLucidaFontShape#1#2#3#4#5#6{%
+\DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}}{}
+
+\DeclareFontFamily{T1}{hlcw}{}
+
+\DeclareLucidaFontShape{T1}{hlcw}{m}{it}{
+hlcriw8t
+}{}
+
+\DeclareFontShape{T1}{hlcw}{m}{sl}{<->ssub * hlcw/m/it}{}
+\DeclareFontShape{T1}{hlcw}{m}{n}{<-> ssub * hlcw/m/it}{}
+\DeclareFontShape{T1}{hlcw}{b}{n}{<-> ssub * hlcw/m/it}{}
+\DeclareFontShape{T1}{hlcw}{b}{it}{<-> ssub * hlcw/m/it}{}
+
+\endinput

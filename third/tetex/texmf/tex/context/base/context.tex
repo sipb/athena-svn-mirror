@@ -8,12 +8,14 @@
 %D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
 %C
 %C This module is part of the \CONTEXT\ macro||package and is
-%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
 %C details. 
+
+% dec 07 2001 : cont-en.efmt : 4,035,912
 
 \catcode`\{=1 \catcode`\}=2 
 
-\def\contextversion{1999.5.11}
+\def\contextversion{2003.1.31}
 
 %D Welcome to the main module. When this module is ran through
 %D \type{initex} or \type{tex -i} or \type{whatevertex} using
@@ -27,14 +29,29 @@
 %D manipulation macros. The first one loads \PLAIN\ \TEX, as
 %D minimal as possible.
 
-\input syst-tex.tex  
+%input syst-tex.tex  
+
+\input syst-pln.tex % stripped plain 
+\input syst-prm.tex % saved primitives (will be extended)
+
+\input syst-etx.tex % etex 
+\input syst-omg.tex % omega 
 \input syst-gen.tex
 \input syst-ext.tex
 \input syst-new.tex
+\input syst-con.tex
+
+\input math-pln.tex % basic plain math 
 
 %D To enable selective loading, we say:
 
 \CONTEXTtrue
+
+%D In order to conveniently load files, we need a few 
+%D support modules.  
+
+\input supp-ini.tex
+\input supp-fil.tex
 
 %D After this we're ready for the multi||lingual interface
 %D modules.
@@ -52,8 +69,6 @@
 %D Now we're ready for some general support modules. These
 %D modules implement some basic typesetting functionality.
 
-\input supp-ini.tex
-\input supp-fil.tex
 \input supp-box.tex
 \input supp-mrk.tex
 \input supp-vis.tex
@@ -62,22 +77,35 @@
 \input supp-pdf.tex
 \input supp-spe.tex
 \input supp-mps.tex
+\input supp-mpe.tex
 \input supp-tpi.tex
 \input supp-mat.tex
 \input supp-ran.tex
+\input supp-ali.tex
 
-%D Verbatim typestting is implemented in a separate class of
+%D The next module deals with language specific typographic 
+%D extensions. 
+
+\input typo-ini.tex  
+
+%D Verbatim typesetting is implemented in a separate class of
 %D modules. The pretty typesetting modules are loaded at run
 %D time.
 
 \input verb-ini.tex  % replaces supp-ver
 
+%D The following modules are not sequentially dependent, 
+%D i.e. they have ugly dependencies, which will be cleaned 
+%D up by adding more overloading.  
+
 %D When loading the font, color and special modules, we need a
 %D bit more advanced file handling as well as some general
-%D variables, so next we load:
+%D variables, and features, so next we load:
 
 \input core-var.tex
+\input core-ins.tex
 \input core-fil.tex
+\input core-con.tex
 
 %D We already need some synonyms (patterns). At runtime this 
 %D file will be reloaded. 
@@ -100,17 +128,23 @@
 %D load additional definition modules when needed.
 
 \input enco-ini.tex 
-
+\input filt-ini.tex 
+\input hand-ini.tex 
+\input regi-ini.tex 
 \input lang-ini.tex
+\input unic-ini.tex 
 
 \input colo-ini.tex
+%input colo-sep.tex
 
 \input spec-mis.tex
 \input spec-ini.tex
+\input spec-def.tex
 
 %D For the moment we load a lot of languages. In the future
 %D we'll have to be more space conservative.
 
+\input lang-spe.tex
 \input lang-lab.tex
 
 \input lang-alt.tex
@@ -120,42 +154,103 @@
 \input lang-cel.tex
 \input lang-ger.tex
 \input lang-grk.tex
-\input lang-hnl.tex
 \input lang-ind.tex
 \input lang-ita.tex
 \input lang-sla.tex
 \input lang-ura.tex
 
-%D All kind of symbols are handles in:
+\input lang-vn.tex    % vietnamese, will be grouped 
+
+%D All kind of symbols are handled in:
 
 \input symb-ini.tex
 
 %D Next we load some core macro's. These implement the
-%D macros' that are seen by the users.
+%D macros' that are seen by the users. The order of loading 
+%D is important, due to dependancies. 
 
 \input core-gen.tex
+\input core-uti.tex
+\input core-mar.tex
 \input core-mak.tex
-\input core-mat.tex
+\input core-dat.tex
 \input core-grd.tex
 \input core-ver.tex
 \input core-vis.tex
-\input core-con.tex
+%input core-con.tex
 \input core-rul.tex
 \input core-new.tex
 \input core-tab.tex
 \input core-nav.tex
 \input core-ref.tex
-\input core-obj.tex
-\input core-01a.tex
-\input core-mul.tex
-\input core-pag.tex
-\input core-tbl.tex
-\input core-mis.tex
+\input core-obj.tex 
+\input core-buf.tex
+\input core-lst.tex 
+\input core-num.tex 
+\input core-itm.tex 
+\input core-des.tex 
+\input core-mat.tex
+\input core-syn.tex 
+%input core-mul.tex % moved 
+\input core-spa.tex 
+\input core-sys.tex 
 
-%D How about fill||in fields?
+% experimental otr 
+
+\input page-ini.tex 
+\input page-not.tex 
+\input page-one.tex 
+\input page-lay.tex 
+\input page-log.tex
+\input page-txt.tex
+\input page-sid.tex 
+\input page-flt.tex 
+\input page-mul.tex 
+\input page-set.tex 
+\input page-lyr.tex
+\input page-mak.tex
+\input page-num.tex
+\input page-lin.tex
+\input page-mar.tex
+\input page-bck.tex
+\input page-app.tex
+
+\input core-job.tex
+
+% so far 
+
+\input core-sec.tex 
+\input page-imp.tex
+\input core-tbl.tex
+\input core-int.tex
+\input core-ntb.tex
+\input core-ltb.tex 
+
+%D Like languages, fonts, encodings and symbols, \METAPOST\ 
+%D support is also organized in its own class of modules. 
+
+\input meta-ini.tex
+\input meta-pag.tex
+\input meta-fig.tex
+
+%D On which the next one depends:
+
+\input core-pos.tex 
+
+%D A few more languages, that have specifics using core 
+%D functionality: 
+
+\input lang-chi.tex
+
+%D How about fill||in fields and related stuff?
 
 \input java-ini.tex
 \input core-fld.tex
+\input core-hlp.tex
+
+%D Registers can depend on fields, so we load that now.
+
+\input core-reg.tex
 
 %D Of course we do need fonts. There are no \TFM\ files
 %D loaded yet, so the format file is independant of their
@@ -163,24 +258,44 @@
 %D instead of italian.
 
 \input font-ini.tex
+\input font-uni.tex
+
+\input type-ini.tex
+
+\input math-ini.tex % after enco-ini.tex 
 
 %D Now we're ready for more core modules.
 
 \input core-fnt.tex
 \input core-not.tex
 
-\input core-01b.tex
-\input core-01c.tex
+\input core-mis.tex
 
-\input core-fig.tex
+\input core-fig.tex % after page body 
+\input core-par.tex
 
-\input core-01d.tex
-\input core-01e.tex
+\input core-box.tex
 
-\input core-02a.tex
-%      core-02b.tex
-%      core-02c.tex
-\input core-02d.tex
+%D Language specific spacing. 
+
+\input lang-spa.tex
+
+%D Only the basic XML parser and remapper are part of the core. 
+%D These macrosa re loaded last since they overload and|/|or
+%D extend previously defined ones. 
+
+\input xtag-ini.tex
+\input xtag-ext.tex
+\input xtag-map.tex
+\input xtag-exp.tex
+\input xtag-pre.tex
+\input xtag-xsd.tex
+\input xtag-rng.tex
+%input xtag-ent.tex
+
+%D How about this: 
+
+\input meta-xml.tex
 
 %D The next two modules implement some additional
 %D functionality concenring classes of documents and output.
@@ -193,6 +308,11 @@
 %D Here they come:
 
 \input cont-log.tex
+
+%D Defaults go here (more will be moved to this module 
+%D later): 
+
+\input core-def.tex 
 
 %D At run time, a few more files are loaded, like:
 %D
@@ -243,27 +363,73 @@
 
 \stopinterface
 
-\edef\copyrightversion%
+\startinterface czech
+
+\writestring{Tento balik je zalozen na Plain TeXu. Pouziva prizpusobenou verzi}
+\writestring{rozsireneho znackovaciho mechanismu J. Foxe (1987) a nekolik casti}
+\writestring{sidefloat mechanismu D. Comenetze (1993). Vetsina prikazu Plain TeXu}
+\writestring{D. E. Knutha (\fmtversion) je dostupna a muze byt bez problemu pouzita.}
+\writestring{Tento balik pouziva balik TaBlE, ktery vytvoril M. J. Wichura (1988).}
+\writestring{Je generovano jen nekolik pomocnych souboru, z nichz nektere musi byt}
+\writestring{zpracovany programem TeXUtil (\utilityversion). Aktualni verze}
+\writestring{}
+\writestring{THE CZECH USER INTERFACE IS STILL UNDER DEVELOPMENT!}
+
+\stopinterface
+
+\startinterface italian
+
+\writestring{Questo pacchetto è basato sul Plain TeX. Usa una versione adattata del}
+\writestring{meccanismo di marcatura esteso di J. Fox (1987) ad alcune parti del}
+\writestring{meccanismo per gli oggetti mobili laterali di D. Comenetz (1993).}
+\writestring{La maggior parte del Plain TeX (\fmtversion) di D.E. Knuth è disponibile}
+\writestring{e può essere usata senza problemi. Questo pacchetto usa TaBlE,}
+\writestring{un pacchetto progettato da e con diritti di copia di M.J. Wichura (1988).}
+\writestring{Vengono generati pochi file ausiliari, alcuni dei quali devono essere}
+\writestring{elaborati da TeXUtil (\utilityversion). La versione attuale del blocco}
+\writestring{è \blockversion.}
+\writestring{}
+\writestring{L'INTERFACCIA UTENTE ITALIANA E' ANCORA IN VIA DI SVILUPPO!}
+\writestring{THE ITALIAN USER INTERFACE IS STILL UNDER DEVELOPMENT!}
+
+\stopinterface
+
+\startinterface romanian
+
+\writestring{Acest pachet este bazat pe Plain TeX. Foloseste o versiune adaptata a}
+\writestring{mecanismului extins de marcare a lui J. Fox (1987) si cateva parti a mecanismului }
+\writestring{blocurilor marginale a lui D. Comenetz (1993). Cea mai mare parte a Plain Tex}
+\writestring{(\fmtversion) a lui D.E. Knuth este disponibila si poate fi folosita fara probleme.}
+\writestring{Acest pachet foloseste TaBlE, un pachet proiectat si creat de M.J. Wichura (1988).}
+\writestring{Numai un numar de fisiere auxiliare sunt generate, din care unele trebuie procesate}
+\writestring{de catre TeXUtil (\utilityversion). Versiunea curenta de blocuri este \blockversion.}
+
+\stopinterface
+
+\edef\copyrightversion
   {Copyright 1990-\the\normalyear\normalspace / 
    PRAGMA ADE / J. Hagen - A.F. Otten}
 
 \writeline\writestring{\copyrightversion}\writeline
 
-%D Except from english, no hyphenation patterns are loaded
-%D yet. Users can specify their needs in the next module:
-
-\input cont-usr.tex
+% %D Except from english, no hyphenation patterns are loaded
+% %D yet. Users can specify their needs in the next module:
+%
+% \input cont-usr.tex
 
 %D Let's quit this file when doing a \type {cont-..} generation.
 
-\doifparentfileelse{context}
-  {\let\next\relax}
-  {\let\next\endinput}
-
-\next 
+\doifparentfileelse{context}{\donothing}{\endinput}
 
 %D Unless we're generating a \type {cont-..} format, we also 
-%D set:
+%D do the following. 
+
+%D Except from english, no hyphenation patterns are loaded
+%D yet. Users can specify their needs in the next module:
+
+\loaduserspecifications 
+
+%D Next we default to the same language as the interface. 
 
 \unprotect
 
@@ -296,12 +462,49 @@
 
 \stopinterface 
 
-\setupbodyfont [cmr,rm,12pt]
+\startinterface czech 
+
+  \installlanguage [\s!cz] [\c!status=\v!start]
+
+  \appendtoks \language     [\s!cz] \to \everyjob
+  \appendtoks \mainlanguage [\s!cz] \to \everyjob
+
+\stopinterface 
+
+\startinterface italian 
+
+  \installlanguage [\s!it] [\c!status=\v!start]
+
+  \appendtoks \language     [\s!it] \to \everyjob
+  \appendtoks \mainlanguage [\s!it] \to \everyjob
+
+\stopinterface 
+
+\startinterface romanian 
+
+  \installlanguage [\s!ro] [\c!status=\v!start]
+
+  \appendtoks \language     [\s!ro] \to \everyjob
+  \appendtoks \mainlanguage [\s!ro] \to \everyjob
+
+\stopinterface 
 
 \protect
 
+%D Finally we (pre)load some fonts. 
+
+\setupbodyfont [cmr,rm,12pt]
+
+%D The next hook can be used to generate a local (extended)
+%D format. This file is only searched for at the current 
+%D path. 
+
+% \readlocfile{cont-def.tex}
+%   {\writestatus{loading}{adding extensions from cont-def}}
+%   {}
+
 %D Now dumping the format is all that's left to be done.
 
-\dump
+\errorstopmode \dump
 
 \endinput

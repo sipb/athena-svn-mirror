@@ -1,0 +1,84 @@
+<head>
+<title>UK TeX FAQ -- question 50</title>
+</head><body>
+<h3>Finding files in the CTAN archives</h3>
+<p>To find software at a CTAN site, you can use anonymous <code>ftp</code> to
+the host with the command '<code>quote site index &lt;term&gt;</code>', or the
+searching script at <a href="http://www.dante.de/cgi-bin/ctan-index">http://www.dante.de/cgi-bin/ctan-index</a>
+<p>To get the best use out of the <code>ftp</code> facility you should remember that
+<code>&lt;term&gt;</code> is a <em>Regular Expression</em> and not a fixed string,
+and also that many files are distributed
+in source form with an extension different to the final file. (For
+example LaTeX packages are often distributed sources with extension
+<code>dtx</code> rather than as package files with extension <code>sty</code>.)
+<p>One should make the regular expresion general enough to find the file
+you are looking for, but not too general, as the <code>ftp</code> interface will
+only return the first 20 lines that match your request.
+<p>The following examples illustrate these points.
+To search for the LaTeX package '<code>caption</code>',
+you might use the command:
+<pre>
+  quote site index caption.sty
+</pre>
+but it will fail to find the desired package (which is
+distributed as <code>caption.dtx</code>) and does return unwanted 'hits' (such as 
+<code>hangcaption.sty</code>).  Also, although this example does not show it the
+'<code>.</code>' in '<code>caption.sty</code>' is used as the regular expression that
+matches <em>any</em> character.
+So
+<pre>
+  quote site index doc.sty
+</pre>
+matches such unwanted files as
+<i>language/swedish/slatex/doc2sty/makefile</i>
+<p>Of course if you <em>know</em> the package is stored as <code>.dtx</code> you can
+search for that name, but in general you may not know the extension
+used on the archive.
+The solution is to add '<code>/</code>' to the front of the package name and
+'<code><br>.</code> to the end. This will then search for a file name that consists
+solely of the package name between the directory separator and the
+extension. The two commands:
+<pre>
+  quote site index /caption\\.
+  quote site index /doc\\.
+</pre>
+do narrow the search down sufficiently. (In the case of doc, a few
+extra files are found, but the list returned is sufficiently small to
+be easily inspected.)
+<p>If the search string is too wide and too many files would match, the
+list will be truncated to the first 20 items found. Using some
+knowledge of the CTAN directory tree you can usually narrow the search
+sufficiently. As an example suppose you wanted to find a copy of the
+<code>dvips</code> driver for MSDOS. You might use the command:
+<pre>
+  quote site index dvips
+</pre>
+but the result would be a truncated list, not including the file you
+want. (If this list were not truncated 412 items would be returned!)
+However we can restrict the search to MSDOS related drivers as
+follows.
+<pre>
+  quote site index msdos.*dvips
+</pre>
+Which just returns relevant lines such as
+<i>systems/msdos/dviware/dvips/dvips5528.zip</i>
+<p>A basic introduction to searching with regular expressions is:
+<ul>
+
+<li> Most characters match themselves, so <code>"a"</code> matches <code>"a"</code> etc.;
+<li> <code>"."</code>  matches any character;
+<li> <code>"[abcD-F]"</code> matches any single character from the set 
+      <code>{"a"</code>,<code>"b"</code>,<code>"c"</code>,<code>"D"</code>,<code>"E"</code>,<code>"F"}</code>;
+<li> <code>"*"</code> placed after an expression matches zero or more occurrences
+          so <code>"a*"</code> matches <code>"a"</code> and <code>"aaaa"</code>, and <code>"[a-zA-Z]*"</code> matches a
+      'word';
+<li> <code>"\"</code> 'quotes' a special character such as <code>"."</code> so <code>"\."</code> just
+      matches <code>"."</code>;
+<li> <code>"^"</code> matches the beginning of a line;
+<li> <code>"$"</code> matches the end of a line.
+</ul>
+<p>For technical reasons in the quote site index command, you need to
+'double' any <code>\</code> hence the string <code>/caption</code><code>\</code><code>\.</code> in the above example.
+The quote site command ignores the case of letters.  Searching for
+<code>caption</code> or <code>CAPTION</code> would produce the same result.
+<p></body>

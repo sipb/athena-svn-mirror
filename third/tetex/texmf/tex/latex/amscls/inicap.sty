@@ -1,0 +1,196 @@
+%%
+%% This is file `inicap.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% inicap.dtx 
+%% 
+%%% ====================================================================
+%%% @LaTeX-doc-source-file{
+%%%   filename  = "inicap.dtx",
+%%%   version   = "1.04",
+%%%   date      = "2002/02/08",
+%%%   time      = "12:52:30 EST",
+%%%   author    = "Michael J Downes",
+%%%   address   = "American Mathematical Society,
+%%%                Publications Technical Group,
+%%%                PO Box 6248,
+%%%                Providence, RI 02940,
+%%%                USA",
+%%%   email     = "tech-support@ams.org",
+%%%   URL       = "http://www.ams.org/",
+%%%   keywords  = "capitalization, initial caps",
+%%%   abstract  = "LaTeX package for applying `initial caps'
+%%%                capitalization to English text.",
+%%%   checksum  = "61425 464 1936 15968",
+%%%   docstring = "The checksum field, produced by Robert Solovay's
+%%%                checksum utility, gives CRC-16 checksum, lines,
+%%%                words, and characters.",
+%%%  }
+%%% ====================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{inicap}[2002/02/08 v1.04]
+\let\@xp\expandafter \let\@nx\noexpand
+\def\inicap@setup{%
+  \let~=\ \let\\=\ \let\slash=/%
+  \let\linebreak=\ \let\-=X%
+}
+\newtoks\inicap@toks
+\newcommand{\inicap}[2][\the]{%
+  \begingroup \inicap@setup
+  \aftergroup\inicap@toks\aftergroup{%
+    \inicap@a#2\@@end
+    \endgroup
+  }%
+  #1\inicap@toks
+}
+%%\begingroup \def\c#1{\catcode`#1=\active}
+%%\def~{\let~\def \def\inicap@a}
+%%%\c a\c f
+%%%~{fnA}
+%%%~A{isnlcg
+%%\endgroup
+\def\inicap@a{\let\fsa@t\ic@one \futurelet\@let@token\fsa@t}
+
+\def\fsa@l{\futurelet\@let@token\fsa@t}
+\def\fsa@b{\afterassignment\fsa@l \let\@let@token= }
+\def\fsa@c#1{\aftergroup#1\futurelet\@let@token\fsa@t}
+\def\fsa@s{%
+  \lowercase{\aftergroup} \afterassignment\fsa@l \let\@let@token= }
+\let\fsa@n\@empty
+\let\fsa@t\@empty
+\let\fsa@x\@gobble
+
+\def\ic@one{%
+  \ifcat Q\@nx\@let@token \let\fsa@t\ic@two \let\fsa@n\ic@capit
+  \else \ic@onea \fi
+  \fsa@n
+}
+\def\ic@capit#1{\uppercase{\aftergroup#1}\futurelet\@let@token\fsa@t}
+\def\ic@onea{%
+  \ifx\@sptoken\@let@token \let\fsa@n\fsa@b
+  \else \let\fsa@t\ic@five \let\fsa@n\fsa@c
+    \ifx $\@let@token \let\endmath $%
+    \else\ifx\(\@let@token \let\endmath\)
+    \else\ifx\begin\@let@token \let\endmath\end
+    \else \ic@oneb \fi\fi\fi\fi
+}
+\def\ic@oneb{%
+  \let\fsa@t\ic@two
+  \ifx{\@let@token \aftergroup{\let\fsa@n\fsa@b
+  \else\ifx}\@let@token \aftergroup}\let\fsa@n\fsa@b
+  \else \let\fsa@n\fsa@c \fi\fi
+}
+
+\def\ic@two{%
+  \ifcat Q\@nx\@let@token \let\fsa@n\fsa@c
+  \else \let\fsa@t\ic@three
+    \ifx\@sptoken\@let@token \let\fsa@n\fsa@s
+    \else\ifcat -\@nx\@let@token \let\fsa@n\fsa@c
+    \else \ic@twoa \fi\fi\fi
+  \fsa@n
+}
+\def\ic@twoa{%
+  \ifx\@@end\@let@token \let\fsa@n\fsa@x
+  \else \let\fsa@t\ic@two
+    \ifx{\@let@token \aftergroup{\let\fsa@n\fsa@b
+    \else\ifx}\@let@token \aftergroup}\let\fsa@n\fsa@b
+    \else \ic@checkmath \fi\fi\fi
+}
+
+\def\ic@three{%
+  \ifcat Q\@nx\@let@token \let\fsa@n\ic@check@letter
+  \else \ic@threea \fi
+  \fsa@n
+}
+\def\ic@check@letter#1{%
+  \lowercase{\if#1}#1%
+    \begingroup
+    \aftergroup\ic@check@word \aftergroup#1%
+    \let\fsa@t\ic@four
+  \else
+    \aftergroup#1\let\fsa@t\ic@two
+  \fi
+  \futurelet\@let@token\fsa@t
+}
+\def\ic@threea{%
+  \ifx\@sptoken\@let@token \let\fsa@n\fsa@s
+  \else\ifx\ \@let@token \let\fsa@n\fsa@c
+  \else\ifcat-\@nx\@let@token \let\fsa@n\fsa@c
+  \else\ic@threeb\fi\fi\fi
+}
+\def\ic@threeb{%
+  \let\fsa@t\ic@two
+  \ifx{\@let@token \aftergroup{\let\fsa@n\fsa@b
+  \else\ifx}\@let@token \aftergroup}\let\fsa@n\fsa@b
+  \else\ifx\@@end\@let@token \let\fsa@n\fsa@x
+  \else \ic@checkmath \fi\fi\fi
+}
+\def\ic@checkmath{%
+  \let\fsa@n\fsa@c \let\fsa@t\ic@five
+  \ifx $\@let@token \let\endmath $%
+  \else\ifx\(\@let@token \let\endmath\)
+  \else\ifx\begin\@let@token \let\endmath\end
+  \else \let\fsa@t\ic@two \fi\fi\fi
+}
+\def\ic@four{%
+  \ifcat Q\@nx\@let@token \let\fsa@n\fsa@c
+  \else\ifx\@sptoken\@let@token \endgroup\@empty\uppercase
+      \let\fsa@t\ic@three \let\fsa@n\fsa@s
+  \else \ic@foura \fi\fi
+  \fsa@n
+}
+\def\ic@foura{%
+  \ifx\ \@let@token \endgroup\@empty\uppercase
+    \let\fsa@t\ic@three \let\fsa@n\fsa@c
+  \else\ifcat -\@nx\@let@token \endgroup\@empty\uppercase
+    \let\fsa@t\ic@three \let\fsa@n\fsa@c
+  \else\ifx\@@end\@let@token \endgroup\@empty\ic@cap@last@word
+    \let\fsa@n\fsa@x
+  \else \endgroup\@empty\aftergroup
+    \let\fsa@t\ic@two \ic@twoa
+  \fi\fi\fi
+}
+\def\ic@five{%
+  \ifx\endmath\@let@token \let\fsa@t\ic@two \let\fsa@n\fsa@c
+  \else\ifx\@sptoken\@let@token \let\fsa@n\fsa@s
+  \else\ifx{\@let@token \aftergroup{\let\fsa@n\fsa@b
+  \else\ifx}\@let@token \aftergroup}\let\fsa@n\fsa@b
+  \else\ifx\@@end\@let@token \let\fsa@n\ic@badmath
+  \else \let\fsa@n\fsa@c \fi\fi\fi\fi\fi
+  \fsa@n
+}
+\def\ic@badmath#1{%
+  \PackageError{inicap}{Math formula not closed properly}\@ehc
+  \endgroup
+}
+\newcommand{\pacwords}[1]{\xdef\pac@list{\pac@list,#1,}}
+\def\pac@list{%
+  ,about,above,across,after,against,along,among,around,at,%
+  before,behind,below,beneath,beside,between,beyond,by,%
+  despite,down,during,except,for,from,in,inside,into,like,near,%
+  nor,of,off,on,onto,or,out,outside,over,past,since,so,through,%
+  throughout,till,to,toward,under,underneath,until,up,upon,with,%
+  within,without,%
+  a,an,the,%
+  and,but,yet,%
+  da,de,di,du,del,den,der,i,l,la,le,van,von,y,%
+  d,ll,nd,rd,re,s,st,t,th,%
+}
+\def\ic@check@word#1#2\@empty#3{%
+  \ifx\uppercase#3%
+    \def\@tempd##1,#1#2,##2##3\@nil{%
+      \if .##2\uppercase{\aftergroup#1}\else\aftergroup#1\fi
+    }%
+    \@xp\@tempd\pac@list #1#2,.\@nil
+  \else
+    #3#1%
+  \fi
+  \copy@letter#2\@@end
+}
+\def\ic@cap@last@word#1{\uppercase{\aftergroup#1}}
+\def\copy@letter#1{\ifx\@@end#1\else\aftergroup#1\@xp\copy@letter\fi}
+\endinput
+%%
+%% End of file `inicap.sty'.

@@ -1,8 +1,7 @@
 @c @mapfile{
 @c   email = "tex-fonts@tug.org",
-@c   version = "2.2",
-@c   date = "1 July 1998",
-@c   url = "http://tug.org/fontname/adobe.map",
+@c   date = "27 June 2001",
+@c   url = "http://tug.org/fontname/variant.map",
 @c   supported = "yes",
 @c   docstring = "Variant abbreviations for TeX font names, unfortunately
 @c                including scripts and encodings."
@@ -21,7 +20,7 @@
 a Alt Arrows Alternative             @r{[was alternate encoding]}
 @r{obsolete [b bright; now typeface lh, Lucida Bright]}
 c SmallCaps
-d Display Titling Caption Headline TallCaps SwashCaps LombardicCaps
+d Display Titling Caption Headline TallCaps SwashCaps LombardicCaps Festive
 e Engraved Copperplate Elite
 f Fraktur Gothic OldEnglish Handtooled @r{(`gothic' can also be sans)}
 g SmallText      @r{designed for small sizes [was grooved, as in the IBM logo]}
@@ -55,11 +54,13 @@ z Cyrillic                           @r{font-dependent Cyrillic}
 6c @r{T2C}
 6d @r{Cyrillic CP866 encoding}
 6i @r{ISO 8859-5}
-6k @r{Cyrillic KOI-8 encoding}
+6k @r{Cyrillic KOI8-R encoding}
 6m @r{Cyrillic Macintosh encoding}
+6s @r{Storm extra encoding}
 6t @r{T2B}
 6w @r{Cyrillic CP1251 encoding}
 6x @r{X2}
+6y @r{LCY}
 6z user
 7a A                                 @r{alternate characters only}
 7c Dfr                               @r{Fraktur}

@@ -1,0 +1,40 @@
+<head>
+<title>UK TeX FAQ -- question 264</title>
+</head><body>
+<h3>Capacity exceeded [semantic nest...]</h3>
+<pre>
+! TeX capacity exceeded, sorry [semantic nest
+                                      size=100].
+...
+If you really absolutely need more capacity,
+you can ask a wizard to enlarge me.
+</pre>
+Even though TeX suggests (as always) that enlargement by a wizard
+may help, this message usually results from a broken macro or bad
+parameters to an otherwise working macro.
+<p>The "semantic nest" TeX talks about is the nesting
+of boxes within boxes.  A stupid macro can provoke the error pretty
+easily:
+<pre>
+\def\silly{\hbox{here's \silly being executed}}
+\silly
+</pre>
+The extended traceback
+
+(<a href="FAQ261.html">see <em>general advice</em> on errors</a>)
+<em>does</em> help, though it does rather run on.  In the case above,
+the traceback consists of
+<pre>
+\silly -&gt;\hbox {
+                here's \silly being executed}
+</pre>
+followed by 100 instances of
+<pre>
+\silly -&gt;\hbox {here's \silly 
+                              being executed}
+</pre>
+The repeated lines are broken at exactly the offending macro; of
+course the loop need not be as simple as this - if <code>\silly</code> calls
+<code>\dopy</code> which boxes <code>\silly</code>, the effect is just the same and
+alternate lines in the traceback are broken at alternate positions.
+<p></body>

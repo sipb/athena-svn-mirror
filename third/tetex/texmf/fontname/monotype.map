@@ -1,7 +1,6 @@
 @c @mapfile{
 @c   email = "tex-fonts@tug.org",
-@c   version = "2.7",
-@c   date = "18 March 1999",
+@c   date = "5 June 1999",
 @c   url = "http://tug.org/fontname/monotype.map",
 @c   supported = "yes",
 @c   docstring = "Monotype PostScript fonts."
@@ -399,6 +398,7 @@ murb8a    CentaurMT-Bold                    MT  1103    nrb_____
 murbi8a   CentaurMT-BoldItalic              MT  1103    nrbi____
 murri8a   CentaurMT-Italic                  MT  1103    nri_____
 murr8a    CentaurMT                         MT  1103    nrr_____
+murd8a    CentaurFestiveMT-Italic
 mc1r8a    CalistoMT                         MT  1104    cto_____
 mc1b8a    CalistoMT-Bold                    MT  1104    ctob____
 mc1bi8a   CalistoMT-BoldItalic              MT  1104    ctobi___
@@ -1001,8 +1001,8 @@ myhbj8a   StrayhornMT-BoldOsF               MT  1342    stbs____
 myhrij8a  StrayhornMT-ItalicOsF             MT  1342    stis____
 myhlij8a  StrayhornMT-LightItalicOsF        MT  1342    stlis___
 myhlc8a   StrayhornMT-LightSC               MT  1342    stls____
-myhrc8a   StrayhornMT-RegulaSC              MT  1342    sts_____
-myhxij8a  StrayhornMT-ExtraBoldItalicOsF    MT  1342    stxis___
+myhrc8a   StrayhornMT-RegularSC             MT  1342    sts_____
+myhxij8a  StrayhornMT-ExtraBoldItaOsF       MT  1342    stxis___
 myhxj8a   StrayhornMT-ExtraBoldOsF          MT  1342    stxs____
 mpi205    DiamondBodoni                     MT  1343    dibod___
 mpi206    DiamondPositive                   MT  1343    dipos___

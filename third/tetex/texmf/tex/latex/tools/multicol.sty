@@ -4,30 +4,34 @@
 %%
 %% The original source files were:
 %%
-%% multicol.dtx  (with options: `package,badness,check,marktrace,nobalance')
+%% multicol.dtx  (with options: `package,badness,check,marktrace,nobalance,colbreak')
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the Standard LaTeX `Tools Bundle'.
-%% -------------------------------------------------------
+%% This file was generated from file(s) of the Standard LaTeX `Tools Bundle'.
+%% --------------------------------------------------------------------------
 %% 
-%%  This file, and all the other files in this bundle as listed below,
-%%  may be distributed under the terms of the LaTeX Project Public
-%%  License, as described in lppl.txt in the base LaTeX distribution.
-%%  Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% `Tools Bundle'. You may however distribute the LaTeX `Tools Bundle'
+%% without such generated files.
+%% 
+%% The list of all files belonging to the LaTeX `Tools Bundle' is
+%% given in the file `manifest.txt'.
 %% 
 %% Package `multicol' to use with LaTeX2e
-%% Copyright 1989-1999 Frank Mittelbach
-%%
-%%  This program is free software; you can redistribute it and/or
-%%  modify it under the terms of the LaTeX Project Public License
-%%  Distributed from CTAN archives in directory latex/base/lppl.txt
-%%  either version 1.00 of the License,
-%%  or (at your option) any later version.
+%% Copyright 1989-2000 Frank Mittelbach
 %%
 %%  In addition to the terms of LPPL any distributed version
 %%  (unchanged or modified) of multicol has to keep the statement
@@ -39,42 +43,42 @@
 %%  Moral obligation for using multicol:
 %%  ------------------------------------
 %%
-%%  Users of multicol who wish to include multicol or a modified
+%%  Users of multicol who wish to include or use multicol or a modified
 %%  version in a proprietary and commercially market product are asked
 %%  under certain conditions (see below) for the payment of a license
 %%  fee.  The size of this fee is to be determined, in each instance,
 %%  by the commercial user, depending on his/her judgment of the value of
 %%  multicol for his/her product.
 %%
+%%
 %%  The conditions for this are as follows:
 %%
-%%   The producer of a proprietary and commercially market product that
-%%   involves typesetting using multicol is asked to determine the
-%%   value of a license fee if
+%%   The producer of a proprietary and commercially market product
+%%   that involves typesetting using multicol is asked to determine
+%%   the value of a license fee for using multicol if
 %%
-%%   - the producer has developed the document and decided to include
-%%     multicol
+%%   - the product is a document and the producer has decided to
+%%     include multicol to typeset (parts of) the document or has
+%%     directed the author of the document to include multicol (for
+%%     example, by providing a class file to be used by the author)
 %%
-%%    - the producer has not developed the document (ie has received it
-%%      from somebody else) but has directed the author to include multicol
-%%      (for example, by providing a class file to be used by the author)
+%%   - the product is a LaTeX class or package that includes multicol
 %%
 %%
 %%   There is no moral obligation in case
 %%
-%%   - the producer has not developed the document and not has directed
+%%   - the product is a document but producer has not directed
 %%     the author to include multicol (in that case the moral obligation
 %%     lies with the author of the document)
 %%
-%%   - the commercial product does not involve typesetting, e.g.,
-%%     consists, for example, of distributing multicol and its
-%%     documentation.
+%%   - the product does not involve typesetting, e.g., consists, for
+%%     example, of distributing multicol and its documentation.
+%%
+%%   - the product is not proprietary, i.e., is made available as free
+%%     software itself (which doesn't prohibit its commercial marketing)
 %%
 %%   - multicol is used for non-commercial purposes
 %%
-%%   - the developed document is not proprietary, i.e., is made
-%%     available as free software itself (which doesn't prohibit its
-%%     commercial marketing)
 %%
 %% Determinating a license fee might result in a license fee of zero
 %% (i.e., no payment) in case a producer has determined that the use
@@ -92,8 +96,8 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[1997/12/01]
 \ProvidesPackage{multicol}
-          [1999/03/22 v1.5t  multicolumn formatting (FMi)]
-%% \CheckSum{1328}
+          [2000/07/10 v1.5z  multicolumn formatting (FMi)]
+%% \CheckSum{1451}
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -141,7 +145,8 @@
        I therefore use 10 columns instead}%
      \col@number10 \fi
      \let\orig@footnotetext\@footnotetext
-     \def\@footnotetext##1{\begingroup\columnwidth\textwidth
+     \long\def\@footnotetext##1{\begingroup
+         \columnwidth\textwidth
          \orig@footnotetext{##1}\endgroup}%
   \@ifnextchar[\mult@cols{\mult@cols[]}}
 \def\mult@cols[#1]{\@ifnextchar[%
@@ -293,11 +298,15 @@
   \fi
   \@checkend{multicols}%
   \endgroup
+  \global\c@unbalance\z@
   \if@boxedmulticols\else
     \reinsert@footnotes
+    \ifdim \pagegoal=\maxdimen
+      \global\vsize\@colroom
+    \else
+      \enough@room\postmulticols
+    \fi
   \fi
-  \global\c@unbalance\z@
-  \enough@room\postmulticols
   \addvspace\multicolsep
   \mult@info\z@
      {Ending environment
@@ -349,16 +358,23 @@
    \moveright\multicol@leftmargin
     \hbox to\full@width{%
      \process@cols\mult@gfirstbox{\box\count@
-       \hss\vrule\@width\columnseprule\hss}%
+       \hss{\normalcolor\vrule\@width\columnseprule}\hss}%
      \box\mult@rightbox
       \rlap{\phantom p}%
-}%
+    }%
 }
 \def\reinsert@footnotes{\ifvoid\footins\else
          \insert\footins{}\fi}
 \def\multi@column@out{%
    \ifnum\outputpenalty <-\@M
    \speci@ls \else
+   \ifvoid\colbreak@box\else
+     \mult@info\@ne{Re-adding forced
+               break(s) for splitting}%
+     \setbox\@cclv\vbox{%
+        \unvbox\colbreak@box
+        \penalty-\@Mv\unvbox\@cclv}%
+   \fi
    \splittopskip\topskip
    \splitmaxdepth\maxdepth
    \dimen@\@colroom
@@ -449,18 +465,32 @@
 \def\speci@ls{%
  \ifnum\outputpenalty <-\@Mi
   \ifnum \outputpenalty<-\@MM
-   \PackageError{multicol}{Document end inside
-       multicols environment}\@ehd
+   \PackageError{multicol}{Document end
+           inside multicols environment}\@ehd
    \@specialoutput
   \else
-   \PackageWarning{multicol}%
+     \ifnum\outputpenalty = -\@Mv
+         \mult@info\@ne{Forced column
+                        break seen}%
+         \global\advance\vsize-\pagetotal
+         \global\setbox\colbreak@box
+                \vbox{\ifvoid\colbreak@box
+                      \else
+                        \unvbox\colbreak@box
+                        \penalty-\@Mv
+                      \fi
+                      \unvbox\@cclv}
+         \reinsert@footnotes
+     \else
+        \PackageWarning{multicol}%
            {Floats and marginpars not
             allowed inside `multicols'
             environment!
            \@gobble}%
-   \unvbox\@cclv\reinsert@footnotes
-   \xdef\@freelist{\@freelist\@currlist}%
-   \gdef\@currlist{}%
+        \unvbox\@cclv\reinsert@footnotes
+       \xdef\@freelist{\@freelist\@currlist}%
+       \gdef\@currlist{}%
+     \fi
   \fi
  \else \@doclearpage \fi
 }
@@ -480,7 +510,13 @@
 \def\flushcolumns{%
    \@bsphack\shr@nkingfalse\@esphack}
 \def\balance@columns@out{%
-   \setbox\mult@box\vbox{\unvbox\@cclv}%
+   \setbox\mult@box\vbox{%
+       \ifvoid\colbreak@box\else
+         \unvbox\colbreak@box\break
+         \mult@info\@ne{Re-adding
+           forced break(s) in balancing}%
+       \fi
+       \unvbox\@cclv}%
    \balance@columns
    \global\vsize\@colroom
    \global\advance\vsize\ht\partial@page
@@ -570,27 +606,46 @@
      \fi
     \ifdim\ht\mult@grightbox >\dimen@
       \too@badtrue
-    \else
-      \global\setbox\mult@grightbox
-         \vbox to\dimen@
-            {\unvbox\mult@grightbox}%
       \ifnum\c@tracingmulticols>\@ne
-        \message{Final badness:
-                 \the\badness}%
+         \typeout{Rejected: last
+                 column too large!}%
       \fi
-      \ifnum\badness>\c@finalcolumnbadness
+    \else
+      \setbox\@tempboxa
+           \copy\mult@grightbox
+      \setbox\z@\vsplit\@tempboxa to\maxdimen
+      \ifvoid\@tempboxa
         \global\setbox\mult@grightbox
-         \vbox to\dimen@
+           \vbox to\dimen@
+              {\unvbox\mult@grightbox}%
+        \ifnum\c@tracingmulticols>\@ne
+          \message{Final badness:
+                   \the\badness}%
+        \fi
+        \ifnum\badness>\c@finalcolumnbadness
+          \global\setbox\mult@grightbox
+           \vbox to\dimen@
               {\unvbox\mult@grightbox\vfill}%
-         \ifnum\c@tracingmulticols>\@ne
-           \message{ setting natural
+           \ifnum\c@tracingmulticols>\@ne
+             \message{ setting natural
               (> \the\c@finalcolumnbadness)}%
-         \fi
+           \fi
+        \fi
+      \else
+        \too@badtrue
+        \ifnum\c@tracingmulticols>\@ne
+          \typeout{Rejected: unprocessed
+            forced break(s) in last column!}%
+        \fi
       \fi
     \fi
     \ifdim\ht\mult@nat@firstbox<\dimen@
       \ifdim\ht\mult@nat@firstbox>\last@try
         \too@badtrue
+        \ifnum\c@tracingmulticols>\@ne
+           \typeout{Retry: using natural
+                    height of first column!}%
+        \fi
         \dimen@\ht\mult@nat@firstbox
         \last@try\dimen@
         \advance\dimen@-\p@
@@ -599,8 +654,10 @@
     \iftoo@bad
       \advance\dimen@\p@
     \repeat
-   \ifdim\dimen@>\@colroom
-      \dimen@\@colroom
+   \if@boxedmulticols\else
+     \ifdim\dimen@>\@colroom
+       \dimen@\@colroom
+     \fi
    \fi
    \process@cols\mult@rightbox
        {\@tempcnta\count@
@@ -733,6 +790,23 @@
 }
  \@namedef{endmulticols*}{\vfill
    \end{multicols}}
+\mathchardef\@Mv=10005
+\def\columnbreak{%
+ \ifnum\col@number<\tw@
+  \PackageError{multicol}%
+   {\noexpand\columnbreak outside multicols}%
+   {This command can only be used within
+    a multicols or multicols* environment.}%
+ \else
+  \ifvmode
+    \penalty -\@Mv\relax
+  \else
+    \@bsphack
+    \vadjust{\penalty -\@Mv\relax}%
+    \@esphack
+  \fi
+ \fi}
+\newbox\colbreak@box
 \endinput
 %%
 %% End of file `multicol.sty'.

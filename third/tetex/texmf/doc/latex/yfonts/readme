@@ -2,18 +2,19 @@
 
 ************************************************************
 *                                                          *
-*                     yfonts.sty v1.2                      *
+*                     yfonts.sty v1.3                      *
 *                                                          *
 *    A package for using old german fonts with LaTeX2e     *
 *                                                          *
 ************************************************************
                                               Walter Schmidt
-                               <walter.schmidt@arcormail.de>
-                                                  1999-05-12
+                                      <w-a-schmidt@arcor.de>
+                                                  2003-01-08
 
 The macro package "yfonts" provides a LaTeX interface to the
-old-german fonts designed by Yannis Haralambous:  Gotisch,
-Schwabacher, Fraktur and the baroque initials.
+blackletter (old german) fonts designed by Yannis
+Haralambous:  Gotisch, Schwabacher, Fraktur and the baroque
+initials.
 
 Despite their non-standard encoding, these fonts are fully
 integrated into LaTeX's font management (NFSS), and the
@@ -56,16 +57,27 @@ designed the old german fonts.
 
 Installing the LaTeX package
 ----------------------------
-Run LaTeX on yfonts.ins to generate yfonts.sty.  Move
-yfonts.sty to a directory where LaTeX will find it.
+Put the files yfonts.dtx and yfonts.ins into a common
+directory.  On a TDS-compliant TeX system, use:
+
+  texmf/source/latex/yfonts
+
+Run LaTeX on yfonts.ins to generate the macro package file
+yfonts.sty.  Move it to a directory where TeX searches for
+input files; in a TDS compliant system this should be:
+
+  texmf/tex/latex/yfonts
+
+If you have properly set up your docstrip program and the
+above directory exists already, this is done automagically!
 
 Run LaTeX on yfonts.dtx to typeset the documentation of the
 LaTeX package.  The documentation is written in german, so
 you will need german.sty and the german hyphenation
 patterns.
 
-Run LaTeX on the example frktest.tex; again, german.sty is
-required.
+Run LaTeX on the example frktest.tex to see an example using
+the blackletter fonts; again, german.sty is required.
 
 
 A short (and incomplete) english guide to yfonts.sty
@@ -127,6 +139,8 @@ it is available in the Fraktur font only.
 
 History
 -------
+v1.3 <2003-01-08> \AA and \aa fixed.
+
 v1.2 <1999-05-12> License agreement changed to LPPL.
 
 v1.2 <1998-09-10> New: \yinipar

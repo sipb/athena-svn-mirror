@@ -1,8 +1,12 @@
-% relsize.sty       2.0a      Jan 13, 1999
+% relsize.sty       2.0b      Nov  1, 1999
 
-% This version has no functional differences from:
-%   relsize.sty       2.0       Mar 15, 1995
-% Only Matt's email, these comments, and the version changed.
+% This file is in the public domain.
+
+% These three versions are functionally the same:
+%  2.0b      Nov  1, 1999  Changes: clarified public domain status;
+%                                   fixed dox typo, 2d instance of MS's email
+%  2.0a      Jan 13, 1999  Changes: Matt Swift's email
+%  2.0       Mar 15, 1995
 
 % New LaTex2e version by Donald Arseneau <asnd@reg.triumf.ca> and
 % Matt Swift <swift@alum.mit.edu>.
@@ -21,7 +25,7 @@
 
 % There are more instructions at the end of the file (after \endinput).
 
-\ProvidesPackage{relsize}[1999/01/13 ver 2.0a]
+\ProvidesPackage{relsize}[1999/11/01 ver 2.0b]
 
 \DeclareRobustCommand\relsize[1]{%
 \ifmmode \@nomath\relsize\else
@@ -67,11 +71,11 @@
 \endinput
 ==========================================================
 
-R E L S I Z E . S T Y           ver 2.0      Mar 15, 1995
+R E L S I Z E . S T Y           ver 2.0b      Nov 1, 1999
 
 by Donald Arseneau,  asnd@reg.triumf.ca,  based on smaller.sty by Bernie 
 Cosell, cosell@WILMA.BBN.COM, and combined with the version by Matt Swift, 
-swift@bu.edu.
+swift@alum.mit.edu.
 
 It is frequently the case that something should be typeset somewhat larger
 or smaller than the surrounding text, whatever that size happens to be.
@@ -116,7 +120,7 @@ provided, but these do not use the same sizes that the text versions use.
 Instead, they step between the usual math "styles" which you can explicitly
 set using the commands \displaystyle, \textstyle, \scriptstyle, and
 \scriptscriptstyle [see Lamport, LaTeX/Manual (1st ed, p.54); GMS The LaTeX
-Comapnion, p.255].  However, the \mathlarger command will also increase the
+Companion, p.255].  However, the \mathlarger command will also increase the
 size beyond regular \displaystyle by selecting a larger regular font size
 (using \larger).  (Yes, this is a kludge, but it is too useful to leave
 out.)  If you want to use this to create big integral signs, then you must

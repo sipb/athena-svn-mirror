@@ -1,13 +1,12 @@
-% This is rxliker.mf in text format as of 1999/11/1
-% created by LHfonts (TeX4MF) version 3.2
+% This is rxliker.mf in text format as of 2000/12/9
+% created by LHfonts (TeX4MF) version 3.4
 %
 %
 
 
 beginligtable
    labelchar (
-          CYR_.A
-         ,CYR_.HRDSN
+          CYR_.HRDSN
          ,CYR_.SFTSN
          ,CYR_.DJE
          ,CYR_.LJE
@@ -15,6 +14,16 @@ beginligtable
          ,CYR_.YAT
          ,CYR_.P_tl
          ,CYR_.SHHA
+    );
+            setkern [k#] (
+                   CYR_.ZH
+                  ,CYR_.ZH_dsc
+                  ,CYR_.H
+                  ,CYR_.H_dsc
+                  ,CYR_.H_tl
+             );
+   labelchar (
+          CYR_.A
       if serifs:
          ,CYR_.B_YUS
       fi
@@ -118,6 +127,41 @@ beginligtable
                   ,CYR_.ch_vcrs
              );
       else:
+            setkern [k#] (
+                   CYR_.hrdsn
+                  ,CYR_.k_beak
+                  ,CYR_.tetse
+                  ,CYR_.y
+                  ,CYR_.y_hcrs
+                  ,CYR_.izh
+                  ,CYR_.lat_w
+                  ,CYR_.k
+                  ,CYR_.k_dsc
+                  ,CYR_.k_vcrs
+                  ,CYR_.k_tl
+                  ,CYR_.n
+                  ,CYR_.nje
+                  ,CYR_.n_dsc
+                  ,CYR_.n_tl
+                  ,CYR_.ng
+                  ,CYR_.p
+                  ,CYR_.p_tl
+                  ,CYR_.t
+                  ,CYR_.t_dsc
+                  ,CYR_.yu
+                  ,CYR_.yat
+                  ,CYR_.ukr_i
+                  ,CYR_.lat_i
+                  ,CYR_.i
+                  ,CYR_.i_shrt
+                  ,CYR_.c
+                  ,CYR_.sh
+                  ,CYR_.shch
+                  ,CYR_.sftsn
+                  ,CYR_.ery
+                  ,CYR_.u
+                  ,CYR_.u_shrt
+             );
       fi
    fi
  endligtable;
@@ -223,6 +267,41 @@ if concrete:
                      ,CYR_.tetse
                 );
             else:
+               setkern [k#] (
+                      CYR_.hrdsn
+                     ,CYR_.k_beak
+                     ,CYR_.tetse
+                     ,CYR_.y
+                     ,CYR_.y_hcrs
+                     ,CYR_.izh
+                     ,CYR_.lat_w
+                     ,CYR_.k
+                     ,CYR_.k_dsc
+                     ,CYR_.k_vcrs
+                     ,CYR_.k_tl
+                     ,CYR_.n
+                     ,CYR_.nje
+                     ,CYR_.n_dsc
+                     ,CYR_.n_tl
+                     ,CYR_.ng
+                     ,CYR_.p
+                     ,CYR_.p_tl
+                     ,CYR_.t
+                     ,CYR_.t_dsc
+                     ,CYR_.yu
+                     ,CYR_.yat
+                     ,CYR_.ukr_i
+                     ,CYR_.lat_i
+                     ,CYR_.i
+                     ,CYR_.i_shrt
+                     ,CYR_.c
+                     ,CYR_.sh
+                     ,CYR_.shch
+                     ,CYR_.sftsn
+                     ,CYR_.ery
+                     ,CYR_.u
+                     ,CYR_.u_shrt
+                );
             fi
          fi
     endligtable;
@@ -327,6 +406,41 @@ if concrete:
                      ,CYR_.tetse
                 );
          else:
+               setkern [k#] (
+                      CYR_.hrdsn
+                     ,CYR_.k_beak
+                     ,CYR_.tetse
+                     ,CYR_.y
+                     ,CYR_.y_hcrs
+                     ,CYR_.izh
+                     ,CYR_.lat_w
+                     ,CYR_.k
+                     ,CYR_.k_dsc
+                     ,CYR_.k_vcrs
+                     ,CYR_.k_tl
+                     ,CYR_.n
+                     ,CYR_.nje
+                     ,CYR_.n_dsc
+                     ,CYR_.n_tl
+                     ,CYR_.ng
+                     ,CYR_.p
+                     ,CYR_.p_tl
+                     ,CYR_.t
+                     ,CYR_.t_dsc
+                     ,CYR_.yu
+                     ,CYR_.yat
+                     ,CYR_.ukr_i
+                     ,CYR_.lat_i
+                     ,CYR_.i
+                     ,CYR_.i_shrt
+                     ,CYR_.c
+                     ,CYR_.sh
+                     ,CYR_.shch
+                     ,CYR_.sftsn
+                     ,CYR_.ery
+                     ,CYR_.u
+                     ,CYR_.u_shrt
+                );
          fi
       fi
     endligtable;
@@ -499,6 +613,23 @@ beginligtable
                   ,CYR_.B_YUS
                fi
              );
+   if not concrete:
+      if serifs:
+            setkern [k#] (
+                   CYR_.L
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
+             );
+      else:
+            setkern [-u#] (
+                   CYR_.L
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
+             );
+      fi
+   fi
    if not TITLEfont:
       if SmallCapsfont:
             setkern [kk#] (
@@ -564,6 +695,31 @@ beginligtable
                   ,CYR_.ae
              );
          else:
+            setkern [kk#] (
+                   CYR_.i
+                  ,CYR_.i_shrt
+                  ,CYR_.c
+                  ,CYR_.sh
+                  ,CYR_.shch
+                  ,CYR_.sftsn
+                  ,CYR_.ery
+                  ,CYR_.u
+                  ,CYR_.u_shrt
+                  ,CYR_.y
+                  ,CYR_.y_hcrs
+                  ,CYR_.izh
+                  ,CYR_.lat_w
+                  ,CYR_.hrdsn
+                  ,CYR_.k_beak
+                  ,CYR_.tetse
+                  ,CYR_.l
+                  ,CYR_.m
+                  ,CYR_.lje
+                  ,CYR_.g_up
+                  ,CYR_.l_dsc
+                  ,CYR_.l_tl
+                  ,CYR_.m_dsc
+             );
          fi
       fi
       if altcoding:
@@ -606,6 +762,23 @@ beginligtable
                   ,CYR_.S_dsc
                   ,CYR_.UKR_E
              );
+   if not concrete:
+      if serifs:
+            setkern [k#] (
+                   CYR_.L
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
+             );
+      else:
+            setkern [-u#] (
+                   CYR_.L
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
+             );
+      fi
+   fi
    if not TITLEfont:
       if SmallCapsfont:
             setkern [kk#] (
@@ -671,6 +844,31 @@ beginligtable
                   ,CYR_.ae
              );
          else:
+            setkern [kkk#] (
+                   CYR_.i
+                  ,CYR_.i_shrt
+                  ,CYR_.c
+                  ,CYR_.sh
+                  ,CYR_.shch
+                  ,CYR_.sftsn
+                  ,CYR_.ery
+                  ,CYR_.u
+                  ,CYR_.u_shrt
+                  ,CYR_.y
+                  ,CYR_.y_hcrs
+                  ,CYR_.izh
+                  ,CYR_.lat_w
+                  ,CYR_.hrdsn
+                  ,CYR_.k_beak
+                  ,CYR_.tetse
+                  ,CYR_.l
+                  ,CYR_.m
+                  ,CYR_.lje
+                  ,CYR_.g_up
+                  ,CYR_.l_dsc
+                  ,CYR_.l_tl
+                  ,CYR_.m_dsc
+             );
          fi
       fi
       if altcoding:
@@ -704,6 +902,14 @@ beginligtable
                   ,CYR_.B_YUS
                fi
              );
+   if not concrete:
+            setkern [-u#] (
+                   CYR_.L
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
+             );
+   fi
    if not TITLEfont:
       if SmallCapsfont:
             setkern [kk#] (
@@ -780,6 +986,31 @@ beginligtable
              );
             fi
          else:
+            setkern [kkk#] (
+                   CYR_.i
+                  ,CYR_.i_shrt
+                  ,CYR_.c
+                  ,CYR_.sh
+                  ,CYR_.shch
+                  ,CYR_.sftsn
+                  ,CYR_.ery
+                  ,CYR_.u
+                  ,CYR_.u_shrt
+                  ,CYR_.y
+                  ,CYR_.y_hcrs
+                  ,CYR_.izh
+                  ,CYR_.lat_w
+                  ,CYR_.hrdsn
+                  ,CYR_.k_beak
+                  ,CYR_.tetse
+                  ,CYR_.l
+                  ,CYR_.m
+                  ,CYR_.lje
+                  ,CYR_.g_up
+                  ,CYR_.l_dsc
+                  ,CYR_.l_tl
+                  ,CYR_.m_dsc
+             );
          fi
       fi
       if altcoding:
@@ -807,23 +1038,20 @@ beginligtable
                   ,CYR_.D
                   ,CYR_.L
                fi
-               if serifs:
                   ,CYR_.YA
                   ,CYR_.B_YUS
-               fi
              );
    else:
             setkern [kk#] (
                    CYR_.A
                   ,CYR_.AE
-               if concrete:
-                  ,CYR_.D
+             );
+            setkern [-u#] (
+                   CYR_.D
                   ,CYR_.L
-               fi
-               if serifs:
-                  ,CYR_.YA
-                  ,CYR_.B_YUS
-               fi
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
              );
    fi
             setkern [k#] (
@@ -931,6 +1159,31 @@ beginligtable
              );
             fi
          else:
+            setkern [kkk#] (
+                   CYR_.i
+                  ,CYR_.i_shrt
+                  ,CYR_.c
+                  ,CYR_.sh
+                  ,CYR_.shch
+                  ,CYR_.sftsn
+                  ,CYR_.ery
+                  ,CYR_.u
+                  ,CYR_.u_shrt
+                  ,CYR_.y
+                  ,CYR_.y_hcrs
+                  ,CYR_.izh
+                  ,CYR_.lat_w
+                  ,CYR_.hrdsn
+                  ,CYR_.k_beak
+                  ,CYR_.tetse
+                  ,CYR_.l
+                  ,CYR_.m
+                  ,CYR_.lje
+                  ,CYR_.g_up
+                  ,CYR_.l_dsc
+                  ,CYR_.l_tl
+                  ,CYR_.m_dsc
+             );
          fi
       fi
       if altcoding:
@@ -958,23 +1211,29 @@ beginligtable
                   ,CYR_.D
                   ,CYR_.L
                fi
-               if serifs:
                   ,CYR_.YA
                   ,CYR_.B_YUS
-               fi
              );
+   if not concrete:
+            setkern [-u#] (
+                   CYR_.D
+                  ,CYR_.L
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
+             );
+   fi
    else:
             setkern [k#] (
                    CYR_.A
                   ,CYR_.AE
-               if concrete:
-                  ,CYR_.D
+             );
+            setkern [-u#] (
+                   CYR_.D
                   ,CYR_.L
-               fi
-               if serifs:
-                  ,CYR_.YA
-                  ,CYR_.B_YUS
-               fi
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
              );
    fi
             setkern [k#] (
@@ -1072,6 +1331,31 @@ beginligtable
                   ,CYR_.ae
              );
          else:
+            setkern [kkk#] (
+                   CYR_.i
+                  ,CYR_.i_shrt
+                  ,CYR_.c
+                  ,CYR_.sh
+                  ,CYR_.shch
+                  ,CYR_.sftsn
+                  ,CYR_.ery
+                  ,CYR_.u
+                  ,CYR_.u_shrt
+                  ,CYR_.y
+                  ,CYR_.y_hcrs
+                  ,CYR_.izh
+                  ,CYR_.lat_w
+                  ,CYR_.hrdsn
+                  ,CYR_.k_beak
+                  ,CYR_.tetse
+                  ,CYR_.l
+                  ,CYR_.m
+                  ,CYR_.lje
+                  ,CYR_.g_up
+                  ,CYR_.l_dsc
+                  ,CYR_.l_tl
+                  ,CYR_.m_dsc
+             );
          fi
       fi
       if altcoding:
@@ -1096,6 +1380,9 @@ beginligtable
                   ,CYR_.AE
                   ,CYR_.D
                   ,CYR_.L
+                  ,CYR_.LJE
+                  ,CYR_.L_tl
+                  ,CYR_.L_dsc
                if serifs:
                   ,CYR_.YA
                   ,CYR_.B_YUS
@@ -1347,6 +1634,7 @@ if SmallCapsfont:
             ,CYR_.abh_ha
             ,CYR_.f
             ,CYR_.lat_q
+            ,CYR_.b
             ,CYR_.yu
             ,CYR_.erev
             ,CYR_.schwa
@@ -1393,6 +1681,7 @@ if SmallCapsfont:
             ,CYR_.ng
             ,CYR_.g_dsc
             ,CYR_.r
+            ,CYR_.r_dsc
        );
                setkern [k#] (
                   if kapitel:
@@ -1618,7 +1907,7 @@ else:
             fi
           );
          if serifs:
-                  setkern [-u#] (
+                  setkern [k#] (
                          CYR_.a
                    );
          fi
@@ -1659,15 +1948,9 @@ else:
                ,CYR_.h_dsc
                ,CYR_.h_tl
           );
-         if serifs:
-                  setkern [-u#] (
-                         CYR_.a
-                   );
-         else:
                   setkern [k#] (
                          CYR_.a
                    );
-         fi
                   setkern [k#] (
                          CYR_.o
                         ,CYR_.otld
@@ -1705,6 +1988,52 @@ else:
                    );
        endligtable;
 
+
+      beginligtable
+         labelchar (
+                CYR_.u
+               ,CYR_.u_shrt
+               ,CYR_.y
+               ,CYR_.y_hcrs
+               ,CYR_.izh
+               ,CYR_.lat_w
+          );
+                  setkern [k#] (
+                         CYR_.a
+                        ,CYR_.o
+                        ,CYR_.otld
+                        ,CYR_.abh_ha
+                        ,CYR_.s
+                        ,CYR_.s_dsc
+                        ,CYR_.ukr_e
+                        ,CYR_.e
+                        ,CYR_.yo
+                        ,CYR_.abh_ch
+                        ,CYR_.abh_ch_dsc
+                        ,CYR_.ya
+                        ,CYR_.b_yus
+                   );
+                  setkern [kk#] (
+                     if kapitel:
+                         CYR_.a
+                     fi
+                        ,CYR_.ae
+                   );
+                  setkern [-u#] (
+                         CYR_.d
+                        ,CYR_.l
+                        ,CYR_.lje
+                        ,CYR_.l_tl
+                        ,CYR_.l_dsc
+                   );
+         if altcoding:
+                  setkern [kk#] (
+                         [ASCII "."]
+                        ,[ASCII ","]
+                   );
+         fi
+       endligtable;
+
    else:
 
 
@@ -1718,11 +2047,88 @@ else:
                         ,CYR_.lat_q
                         ,CYR_.a
                    );
+                  setkern [k#] (
+                         CYR_.l
+                        ,CYR_.m
+                        ,CYR_.lje
+                        ,CYR_.g_up
+                        ,CYR_.l_dsc
+                        ,CYR_.l_tl
+                        ,CYR_.m_dsc
+                   );
+       endligtable;
+
+
+      beginligtable
+         labelchar (
+                CYR_.g_up
+          );
+                  setkern [kkk#] (
+                         CYR_.l
+                        ,CYR_.m
+                        ,CYR_.lje
+                        ,CYR_.g_up
+                        ,CYR_.l_dsc
+                        ,CYR_.l_tl
+                        ,CYR_.m_dsc
+                   );
+       endligtable;
+
+
+      beginligtable
+         labelchar (
+                CYR_.y
+               ,CYR_.y_hcrs
+               ,CYR_.izh
+               ,CYR_.lat_w
+          );
+                  setkern [kk#] (
+                         CYR_.l
+                        ,CYR_.m
+                        ,CYR_.lje
+                        ,CYR_.g_up
+                        ,CYR_.l_dsc
+                        ,CYR_.l_tl
+                        ,CYR_.m_dsc
+                   );
+       endligtable;
+
+
+      beginligtable
+         labelchar (
+                CYR_.ukr_i
+          );
+                  setkern [-k#] (
+                         CYR_.dje
+                        ,CYR_.tshe
+                   );
+         labelchar (
+                CYR_.lat_i
+          );
+                  setkern [-k#] (
+                         CYR_.ukr_i
+                   );
        endligtable;
 
 
       beginligtable
          labelchar ( CYR_.l );
+                  setkern [k#] (
+                         CYR_.l
+                        ,CYR_.m
+                        ,CYR_.lje
+                        ,CYR_.g_up
+                        ,CYR_.l_dsc
+                        ,CYR_.l_tl
+                        ,CYR_.m_dsc
+                        ,CYR_.y
+                        ,CYR_.y_hcrs
+                        ,CYR_.izh
+                        ,CYR_.lat_w
+                        ,CYR_.hrdsn
+                        ,CYR_.k_beak
+                        ,CYR_.tetse
+                   );
                   setkern [kk#] (
                          CYR_.ch
                         ,CYR_.ch_ldsc
@@ -1757,7 +2163,7 @@ else:
          fi
        );
       if ROMANfont:
-               setkern [kk#] (
+               setkern [-u#] (
                       CYR_.u
                      ,CYR_.u_shrt
                      ,CYR_.y
@@ -1780,6 +2186,22 @@ else:
                 );
          fi
       else:
+               setkern [k#] (
+                      CYR_.l
+                     ,CYR_.m
+                     ,CYR_.lje
+                     ,CYR_.g_up
+                     ,CYR_.l_dsc
+                     ,CYR_.l_tl
+                     ,CYR_.m_dsc
+                     ,CYR_.y
+                     ,CYR_.y_hcrs
+                     ,CYR_.izh
+                     ,CYR_.lat_w
+                     ,CYR_.hrdsn
+                     ,CYR_.k_beak
+                     ,CYR_.tetse
+                );
       fi
                setkern [kk#] (
                       CYR_.ch
@@ -1789,63 +2211,25 @@ else:
                      ,CYR_.abh_ch
                      ,CYR_.abh_ch_dsc
                 );
-    endligtable;
-
-
-   beginligtable
-      labelchar (
-             CYR_.u
-            ,CYR_.u_shrt
-            ,CYR_.y
-            ,CYR_.y_hcrs
-            ,CYR_.izh
-            ,CYR_.lat_w
-       );
                setkern [k#] (
-                      CYR_.a
-                     ,CYR_.o
+                      CYR_.o
                      ,CYR_.otld
                      ,CYR_.abh_ha
-                     ,CYR_.s
+                     ,CYR_.f
+                     ,CYR_.lat_q
                      ,CYR_.s_dsc
                      ,CYR_.ukr_e
-                     ,CYR_.e
-                     ,CYR_.yo
-                     ,CYR_.abh_ch
-                     ,CYR_.abh_ch_dsc
-                     ,CYR_.ya
-                     ,CYR_.b_yus
                 );
-               setkern [kk#] (
-                  if kapitel:
-                      CYR_.a
-                  fi
-                     ,CYR_.ae
-                );
-               setkern [k#] (
-                      CYR_.d
-                     ,CYR_.l
-                     ,CYR_.lje
-                     ,CYR_.l_tl
-                     ,CYR_.l_dsc
-                );
-      if altcoding:
-               setkern [kk#] (
-                      [ASCII "."]
-                     ,[ASCII ","]
-                );
-      fi
     endligtable;
 
 
    beginligtable
       labelchar ( CYR_.s );
       labelchar (
-             CYR_.s_dsc
-            ,CYR_.ukr_e
-            ,CYR_.o
+             CYR_.o
             ,CYR_.otld
             ,CYR_.abh_ha
+            ,CYR_.b
             ,CYR_.yu
             ,CYR_.r
             ,CYR_.f
@@ -1855,10 +2239,6 @@ else:
       if ROMANfont:
                setkern [k#] (
                       CYR_.d
-                     ,CYR_.l
-                     ,CYR_.lje
-                     ,CYR_.l_tl
-                     ,CYR_.l_dsc
                      ,CYR_.zh
                      ,CYR_.zh_dsc
                      ,CYR_.h
@@ -1876,6 +2256,15 @@ else:
                       CYR_.f
                      ,CYR_.lat_q
                      ,CYR_.a
+                );
+               setkern [k#] (
+                      CYR_.l
+                     ,CYR_.m
+                     ,CYR_.lje
+                     ,CYR_.g_up
+                     ,CYR_.l_dsc
+                     ,CYR_.l_tl
+                     ,CYR_.m_dsc
                 );
       fi
     endligtable;

@@ -1,4 +1,6 @@
-% eepic Version 1.1c <  Nov 25, 1998>
+% eepic Version 1.1e < Dec 21, 1999 >
+% Updated by Piet van Oostrum <piet@cs.uu.nl>
+% eepic Version 1.1c < Nov 25, 1998 >
 % Updated by Piet van Oostrum <piet@cs.uu.nl>
 % eepic Version 1.1b < Febrary 7, 1988 >
 %       Written by Conrad Kwok
@@ -52,7 +54,7 @@
 %%      xxxxx - black, white, shade
 %%
 \typeout{%
-Extension to Epic and LaTeX. Version 1.1b - Released Febrary 7, 1988}
+Extension to Epic and LaTeX. Version 1.1e - Released Dec 21, 1999}
 %
 \newcount\@gphlinewidth
 \newcount\@eepictcnt
@@ -108,6 +110,7 @@ Extension to Epic and LaTeX. Version 1.1b - Released Febrary 7, 1988}
 \@ispdottedline{#1}(#4,#5)}
 %
 \def\@spdottedline#1(#2,#3)(#4,#5){%
+    \@killglue % This line added by Piet van Oostrum, Dec 21, 1999.
     \@tempcnta \@gphlinewidth\relax
     \advance\@tempcnta by 2     % solely for better output
     \special{pn \the\@tempcnta}%
@@ -228,6 +231,7 @@ Extension to Epic and LaTeX. Version 1.1b - Released Febrary 7, 1988}
    \ignorespaces
 }
 \def\@absspdrawline(#1,#2)(#3,#4){%
+    \@killglue % This line added by Piet van Oostrum, Dec 21, 1999.
     \special{pn \the\@gphlinewidth}%
     \@tempdimc=#1\relax
     \@tempcnta \@tempdimc\relax \advance\@tempcnta 2368 \divide\@tempcnta 4736
@@ -357,6 +361,7 @@ Extension to Epic and LaTeX. Version 1.1b - Released Febrary 7, 1988}
 }
 %%
 \def\spline(#1,#2){%
+    \@killglue % This line added by Piet van Oostrum, Dec 21, 1999.
     \special{pn \the\@gphlinewidth}%
     \@spline(#1,#2)%
 }
@@ -369,6 +374,7 @@ Extension to Epic and LaTeX. Version 1.1b - Released Febrary 7, 1988}
     \@ifnextchar ({\@spline}{\special{sp}}%
 }
 \def\path(#1,#2){%
+    \@killglue % This line added by Piet van Oostrum, Dec 20, 1999.
     \special{pn \the\@gphlinewidth}%
     \@path(#1,#2)%
 }

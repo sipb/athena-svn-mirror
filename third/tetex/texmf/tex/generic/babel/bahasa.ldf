@@ -5,31 +5,31 @@
 %% The original source files were:
 %%
 %% bahasa.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{bahasa}
-       [1999/04/23 v1.0g Bahasa support from the babel system]
+       [2001/01/30 v1.0h Bahasa support from the babel system]
 %% File `bahasa.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Bahasa Language Definition File
-%% Copyright (C) 1994 - 1999
+%% Copyright (C) 1994 - 2001
 %%           by J"org Knappen, (knappen@vkpmzd.kph.uni-mainz.de)
 %% Please report errors to: J"org Knappen
 %%                          knappen@vkpmzd.kph.uni-mainz.de
 %%                          J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \LdfInit{bahasa}\captionsbahasa
 \ifx\l@bahasa\@undefined
   \@nopatterns{Bahasa}
@@ -56,6 +56,7 @@
   \def\seename{lihat}%
   \def\alsoname{lihat juga}%
   \def\proofname{Bukti}%
+  \def\glossaryname{Glossary}% <-- Needs translation
   }
 \def\datebahasa{%
   \def\today{\number\day~\ifcase\month\or
@@ -64,7 +65,7 @@
     \space \number\year}}
 \addto\extrasbahasa{}
 \addto\noextrasbahasa{}
-\def\bahasahyphenmins{\tw@\tw@}
+\providehyphenmins{\CurrentOption}{\tw@\tw@}
 \ldf@finish{bahasa}
 %%
 %% \CharacterTable

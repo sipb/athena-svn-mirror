@@ -1,0 +1,59 @@
+<head>
+<title>UK TeX FAQ -- question 270</title>
+</head><body>
+<h3><code>\end</code> occurred inside a group</h3>
+<p>The actual error we observe is:
+<p>
+<code>(\end occurred inside a group at level &lt;</code><code><em>n</em></code><code>&gt;)</code>
+<p>
+and it tells us that something we started in the document never got
+finished before we ended the document itself.  The things involved
+('groups') are what TeX uses for restricting the scope of things:
+you see them, for example, in the "traditional" font selection
+commands: <code>{\it stuff\/}</code> - if the closing brace is left off such a
+construct, the effect of <code>\it</code> will last to the end of the document,
+and you'll get the diagnostic.
+<p>TeX itself doesn't tell you where your problem is, but you can
+often spot it by looking at the typeset output in a previewer.
+Otherwise, you can usually find mismatched braces using an intelligent
+editor (at least <code>emacs</code> and <i>winedt</i> offer this facility).
+However, groups are not <em>only</em> created by matching <code>{</code> with <code>}</code>:
+other grouping commands are discussed elsewhere in these FAQs,
+and are also a potential source of unclosed group.
+<p><code>\begin{&lt;<em>environment</em>&gt;}</code> encloses the environment's body
+in a group, and establishes its own diagnostic mechanism.  If you end
+the document before closing some other environment, you get the
+'usual' LaTeX diagnostic
+
+<pre>
+! LaTeX Error: \begin{blah} on input line 6 ended by \end{document}.
+</pre>
+which (though it doesn't tell you which <em>file</em> the
+<code>\begin{blah}</code> was in) is usually enough to locate the
+immediate problem.  If you press on past the LaTeX error, you get
+the "occurred inside a group" message before LaTeX finally exits.
+<p>In the absence of such information from LaTeX, you need to use
+"traditional" binary search to find the offending group.  Separate
+the preamble from the body of your file, and process each half on its
+own with the preamble; this tells you which half of the file is at
+fault.  Divide again and repeat.  The process needs to be conducted
+with care (it's obviously possible to split a correctly-written group
+by chopping in the wrong place), but it will usually find the problem
+fairly quickly.
+<p>e-TeX (and <i>elatex</i> - LaTeX run on e-TeX) gives you
+further diagnostics after the traditional infuriating TeX one - it
+actually keeps the information in a similar way to LaTeX:
+
+<pre>
+(\end occurred inside a group at level 3)
+
+### semi simple group (level 3) entered at line 6 (\begingroup)
+### simple group (level 2) entered at line 5 ({)
+### simple group (level 1) entered at line 4 ({)
+### bottom level
+</pre>
+The diagnostic not only tells us where the group started, but also the
+<em>way</em> it started: <code>\begingroup</code> or <code>{</code> (which is an alias of
+<code>\bgroup</code>, and the two are not  distinguishable at the TeX-engine
+level).
+<p></body>

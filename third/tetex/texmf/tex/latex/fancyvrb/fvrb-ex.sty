@@ -100,12 +100,12 @@
 \parindent=0pt
 \multiply\topsep by 2
 \VerbatimEnvironment
-\begin{VerbatimOut}[codes={\catcode`\£=12\catcode`\§=12\catcode`\µ=12%
-                           \catcode`\¶=12}]{\jobname.tmp}}
+\begin{VerbatimOut}[codes={\catcode`\^^a3=12\catcode`\^^a7=12\catcode`\^^b5=12%
+                           \catcode`\^^b6=12}]{\jobname.tmp}}
 \newcommand{\Below@Example}[1]{%
-\VerbatimInput[gobble=0,commentchar=£,commandchars=§µ¶,numbersep=3pt]%
+\VerbatimInput[gobble=0,commentchar=^^a3,commandchars=^^a7^^b5^^b6,numbersep=3pt]%
               {\jobname.tmp}
-\catcode`\£=9\relax%
+\catcode`\^^a3=9\relax%
 \NoHighlight@Attributes % To suppress possible highlighting
 \ifFvrbEx@Grid\vspace{5pt}\fi
 #1%
@@ -116,7 +116,7 @@
 \advance\@tempdimb -5mm
 \begin{minipage}[c]{\@tempdimb}
   \fvset{xrightmargin=0pt}
-  \catcode`\£=9\relax%
+  \catcode`\^^a3=9\relax%
   \NoHighlight@Attributes % To suppress possible highlighting
   #1
 \end{minipage}%
@@ -124,7 +124,7 @@
 \advance\@tempdimb -\FV@XRightMargin
 \advance\@tempdimb 5mm
 \begin{minipage}[c]{\@tempdimb}
-  \VerbatimInput[gobble=0,commentchar=£,commandchars=§µ¶,numbersep=3pt,
+  \VerbatimInput[gobble=0,commentchar=^^a3,commandchars=^^a7^^b5^^b6,numbersep=3pt,
                  xleftmargin=5mm,xrightmargin=0pt]{\jobname.tmp}
 \end{minipage}}
 \ifx\PSTricksLoaded\endinput

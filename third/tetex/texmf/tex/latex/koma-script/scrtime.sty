@@ -5,8 +5,10 @@
 %% The original source files were:
 %%
 %% scrtime.dtx  (with options: `scrtime')
+%% scrlogo.dtx 
 %% 
-%% Copyright 1994-1996 Markus Kohm.
+%% Copyright (C) 1994-2002 by Markus Kohm.
+%% 
 %% All rights reserved. For further copyright information see the file
 %% legal.txt, and any other copyright indicated in this file.
 %% 
@@ -34,18 +36,16 @@
 %% 
 %% You are allowed to distribute this file under the condition that
 %% it is distributed together with all files mentioned in readme.txt
-%% and liesmich.txt.
+%% and liesmich.txt. See LEGAL.TXT or LEGALDE.TXT for further
+%% information.
 %% 
 %% If you receive only some of these files from someone, complain!
 %% 
-%% You are NOT ALLOWED to distribute this file alone.  You are NOT
-%% ALLOWED to take money for the distribution or use of either this
-%% file or a changed version, except for a nominal charge for copying
-%% etc.
+%% You are NOT ALLOWED to distribute this file alone.
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesPackage{scrtime}
-                [1997/06/21 v1.1h LaTeX2e KOMA
+                [2002/02/02 v1.1m LaTeX2e KOMA
                  package]
 \newif\if@Hxii
 \DeclareOption{12h}{\@Hxiitrue}
@@ -65,6 +65,9 @@
     \the\@tempcnta{#1}\@tempif\ifnum\@tempcntb<10 0\fi\fi\the\@tempcntb%
   \endgroup}
 \newcommand*{\settime}[1]{\renewcommand*{\@thistime}[1][]{#1}}
+\@ifundefined{KOMAScript}{%
+  \DeclareRobustCommand{\KOMAScript}{\textsf{K\kern.05em O\kern.05em%
+      M\kern.05em A\kern.1em-\kern.1em Script}}}{}
 \endinput
 %%
 %% End of file `scrtime.sty'.

@@ -1,13 +1,7 @@
-%Filename: 8rpcr.fd
-%Created by: tex Fam_29717
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{8rpcr.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for 8r/pcr.]
+   [2001/06/04 font definitions for 8r/pcr.]
 
-\DeclareFontFamily{8r}{pcr}{}
+\DeclareFontFamily{8r}{pcr}{\hyphenchar \font\m@ne}
 
 \DeclareFontShape{8r}{pcr}{m}{n}{
    <-> pcrr8r

@@ -1,0 +1,18 @@
+            ------------------------------------------------------
+            |    pst-osci: PSTricks package for oscilloscopes    |
+            |                                                    |
+            |           Version 2.7 (November 17, 1999)          |
+            |          Manuel Luque <Mluque5130@aol.com>         |
+            | Christophe Jorssen <Christophe.Jorssen@wanadoo.fr> |
+            ------------------------------------------------------
+
+
+
+  * Copy pst-osci.tex and pst-osci.sty in one of your TeX input directories
+
+  * Run "latex" on pst-osci.doc to generate the documentation
+
+  * Web page is http://www.tug.org/applications/PSTricks/Physics/Oscilloscopes
+
+--
+Manuel Luque and Christophe Jorssen (updated November 22, 1999)

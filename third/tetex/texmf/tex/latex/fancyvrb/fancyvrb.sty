@@ -39,8 +39,8 @@
 %%   This is a companion to the `fancybox' package.
 %%
 \NeedsTeXFormat{LaTeX2e}
-\def\fileversion{2.6, with DG/SPQR fixes}
-\def\filedate{1998/07/17}
+\def\fileversion{2.7, with DG/SPQR fixes}
+\def\filedate{2000/03/21}
 \ProvidesPackage{fancyvrb}[\filedate]
 \message{Style option: `fancyvrb' v\fileversion \space  <\filedate> (tvz)}
 \csname fancyvrb@loaded\endcsname
@@ -1406,9 +1406,9 @@
         \ignorespaces}
   \def\endlrbox{\unskip\egroup}
 \fi
-%% DG/SR modification begin - Jan. 22, 1998
+%% DG/SR modification begin -  Mar 21 2000
 %%\@input{fancyvrb.rc}
-\@input{fancyvrb.cfg}
+\InputIfFileExists{fancyvrb.cfg}{}{}
 %% DG/SR modification end
 \endinput
 %%

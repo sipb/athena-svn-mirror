@@ -1,11 +1,5 @@
-%Filename: ot1put.fd
-%Created by: tex Fam_6100
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{ot1put.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for OT1/put.]
+   [2001/06/04 font definitions for OT1/put.]
 
 \DeclareFontFamily{OT1}{put}{}
 
@@ -48,4 +42,6 @@
 
 \DeclareFontShape{OT1}{put}{m}{ui}{<->ssub * put/m/it}{}
 \DeclareFontShape{OT1}{put}{b}{ui}{<->ssub * put/b/it}{}
+\DeclareFontShape{OT1}{put}{bx}{ui}{<->ssub * put/b/it}{}
+
 \endinput

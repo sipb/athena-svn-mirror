@@ -1,0 +1,38 @@
+\ProvidesFile{ot1qbk.fd}
+   [2001/02/06 v1.0 font definition file for OT1/QuasiBookman (MW)]
+
+\DeclareFontFamily{OT1}{qbk}{}
+
+\DeclareFontShape{OT1}{qbk}{m}{n}{
+   <-> qbkr
+}{}
+\DeclareFontShape{OT1}{qbk}{m}{sc}{
+   <-> sub * qbk/m/n
+}{}
+\DeclareFontShape{OT1}{qbk}{m}{sl}{
+   <-> sub * qbk/m/it
+}{}
+\DeclareFontShape{OT1}{qbk}{m}{it}{
+   <-> qbkri
+}{}
+\DeclareFontShape{OT1}{qbk}{b}{n}{
+   <-> qbkb
+}{}
+\DeclareFontShape{OT1}{qbk}{b}{sc}{
+   <-> sub * qbk/b/n
+}{}
+\DeclareFontShape{OT1}{qbk}{b}{sl}{
+   <-> sub * qbk/b/it
+}{}
+\DeclareFontShape{OT1}{qbk}{b}{it}{
+   <-> qbkbi
+}{}
+\DeclareFontShape{OT1}{qbk}{bx}{n}{ <-> ssub * qbk/b/n}{}
+\DeclareFontShape{OT1}{qbk}{bx}{sc}{ <-> ssub * qbk/b/sc}{}
+\DeclareFontShape{OT1}{qbk}{bx}{sl}{ <-> ssub * qbk/b/sl}{}
+\DeclareFontShape{OT1}{qbk}{bx}{it}{ <-> ssub * qbk/b/it}{}
+
+\endinput
+
+%%
+%% End of font definition file ot1qbk.fd.

@@ -1,0 +1,21 @@
+    The xtab package automatically breaks long tables so that they can
+span multiple pages. It is an extension of the supertabular package,
+providing additional functionality and reducing some of the weaknesses.
+
+    The distribution consists of the following files:
+README (this file)
+xtab.ins
+xtab.dtx
+
+    To install the package:
+o run: latex xtab.ins (which will generate xtab.sty)
+o run: latex xtab.dtx
+o run: makeindex -s gind.ist xtab
+o run: latex xtab.dtx
+o Print xtab.dvi for a hardcopy of the package manual 
+o Move xtab.sty to a location where LaTeX will find it.
+
+
+1998/10/14
+Peter Wilson
+peter.r.wilson@boeing.com

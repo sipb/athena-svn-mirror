@@ -1,0 +1,21 @@
+\ProvidesFile{ly1hlst.fd}[2003/01/04 v4.2k Lucida Bright Sans Typewriter (KB Names)]
+\providecommand\DeclareLucidaFontShape[6]{%
+   \DeclareFontShape{#1}{#2}{#3}{#4}{<->#5}{#6}}
+\DeclareFontFamily{LY1}{hlst}{\hyphenchar \font\m@ne}%
+\DeclareLucidaFontShape{LY1}{hlst}{m}{n}{hlsrt8y}{}
+\DeclareFontShape{LY1}{hlst}{m}{sc}{<->ssub * hlst/m/n}{}
+\DeclareLucidaFontShape{LY1}{hlst}{m}{it}{hlsrot8y}{}
+\DeclareFontShape{LY1}{hlst}{m}{sl}{<->ssub * hlst/m/it}{}
+\DeclareLucidaFontShape{LY1}{hlst}{b}{n}{hlsbt8y}{}
+\DeclareLucidaFontShape{LY1}{hlst}{b}{it}{hlsbot8y}{}
+\DeclareFontShape{LY1}{hlst}{b}{sc} {<->ssub * hlst/m/sc}{}
+\DeclareFontShape{LY1}{hlst}{b}{sl} {<->ssub * hlst/b/it}{}
+\DeclareFontShape{LY1}{hlst}{m}{sl} {<->ssub * hlst/m/it}{}
+\DeclareFontShape{LY1}{hlst}{bx}{n} {<->ssub * hlst/b/n}{}
+\DeclareFontShape{LY1}{hlst}{bx}{it}{<->ssub * hlst/b/it}{}
+\DeclareFontShape{LY1}{hlst}{bx}{sc}{<->ssub * hlst/b/sc}{}
+\DeclareFontShape{LY1}{hlst}{bx}{sl}{<->ssub * hlst/m/sl}{}
+
+\endinput
+%%
+%% End of file `ly1hlst.fd'.

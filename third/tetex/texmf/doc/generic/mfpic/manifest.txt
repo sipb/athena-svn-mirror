@@ -1,0 +1,62 @@
+%%% File: manifest.txt
+%%% A part of mfpic 0.6b 2003/01/02
+%%%
+
+The five files marked with * below are the only ones essential
+for using all the facilities of mfpic.
+
+TeX code:
+
+*tex/mfpic.tex       Main TeX/LaTeX code.
+*tex/mfpic.sty       For use in LaTeX's \usepackage, inputs mfpic.tex
+
+MetaPost code:
+
+*metapost/grafbase.mp     MetaPost macros
+*metapost/dvipsnam.mp     Defines color names for use by grafbase.mp
+
+Metafont code:
+
+*metafont/grafbase.mf     Metafont macros
+
+Documentation (all the .tex files are plain TeX and require the macro
+file header.tex) The main documentation is mfpicdoc.tex, with the index
+mfpicdoc.ind:
+
+ instruct.txt         Basic information on what to expect
+ manifest.txt         This file
+ readme.1st           What files should you read
+ whats.new            Changes since the last version
+
+ docs/changes.tex     Documentation of changes
+ docs/grafdoc.tex     Documentation of grafbase code
+ docs/header.tex      Macros for the documentation
+ docs/indexing.tex    Macros for the index of mfpicdoc
+ docs/mf-revu.tex     Review of some aspects of Metafont
+ docs/mfpicdoc.tex    Main documentation
+ docs/mfpicdoc.ind    The index for mfpicdoc
+ docs/mppicdoc.tex    More detail on new MetaPost features
+ docs/refcard.tex     Reference card (landscape on lettersize paper)
+ docs/todo.tex        Things still left to do
+ docs/unbound.tex     Updates info in the book "TeX Unbound"
+ docs/mfpic.ist       Makeindex style to get mfpicdoc.ind from
+                      mfpicdoc.idx (not needed by user).
+
+Test and example files:
+
+ examples/LTXMFobj.tex    Run latex, produce objs.mf file
+ examples/TeXMFobj.tex    Run tex, produce objs.mf file
+ examples/LTXMPobj.tex    Run latex or pdflatex, produce objs.mp file
+                          (set TEX=latex, then run mpost)
+ examples/TeXMPobj.tex    Run tex or pdftex, produce objs.mp file
+                          (unset TEX or set TEX=tex, then mpost)
+ examples/MFobjs.tex      Sample mfpic pictures, input by first 2 above
+ examples/MPobjs.tex      Sample mfpic pictures, input by next 2 above
+ examples/data.dat        | Sample data files, used by the
+ examples/curves1.dat     | commands \datafile and \plotdata
+ examples/curves2.dat     | in M?objs.tex
+
+ examples/pictures.tex    Run tex, produce pics.mf file (more samples)
+ examples/lapictures.tex  Run latex, produce pics.mf file (same)
+ examples/forfun.tex      Example of \mfsrc: Run tex, produce forfun.mp
+

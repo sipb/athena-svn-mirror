@@ -1,13 +1,7 @@
-%Filename: ot1pcr.fd
-%Created by: tex Fam_29717
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{ot1pcr.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for OT1/pcr.]
+   [2001/06/04 font definitions for OT1/pcr.]
 
-\DeclareFontFamily{OT1}{pcr}{}
+\DeclareFontFamily{OT1}{pcr}{\hyphenchar \font\m@ne}
 
 \DeclareFontShape{OT1}{pcr}{m}{n}{
    <-> pcrr7t
@@ -42,4 +36,5 @@
 
 \DeclareFontShape{OT1}{pcr}{m}{ui}{<->ssub * pcr/m/it}{}
 \DeclareFontShape{OT1}{pcr}{b}{ui}{<->ssub * pcr/b/it}{}
+\DeclareFontShape{OT1}{pcr}{bx}{ui}{<->ssub * pcr/b/it}{}
 \endinput

@@ -6,34 +6,25 @@
 %%
 %% everyshi.dtx  (with options: `package')
 %% 
-%% Copyright (C) [1994..1998] by Martin Schroeder. All rights reserved.
-%% 
+%% Copyright (C) [1994..1999] by Martin Schroeder. All rights reserved.
 %% 
 %% This file is part of the EveryShi package
 %% 
-%% IMPORTANT NOTICE:
+%% This program may be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License, either version 1.0 of this
+%% license, or (at your option) any later version.
+%% The latest version of this license is in
+%%    CTAN:macros/latex/base/lppl.txt.
 %% 
-%% You are *not* allowed to change this file.
-%% You may however copy this file to a file with a different name and
-%% then change the copy.
+%% Happy users are requested to send me a postcard. :-)
 %% 
-%% You are *not* allowed to distribute this file alone.
-%% 
-%% You are *not* allowed to take money for the distribution or use of
-%% this file (or a changed version) except for a nominal charge for
-%% copying etc.
-%% 
-%% You *are* allowed to distribute this file under the condition that it
-%% is distributed together with all files mentioned below (these files
-%% need not necessarily be in the same archive or directory).
+%% The EveryShi package contains these files:
 %% 
 %%       everyshi.asc
 %%       everyshi.dtx
 %%       everyshi.dvi
 %%       everyshi.ins
 %%       everyshi.bug
-%% 
-%% If you receive only some of these files from someone, complain!
 %% 
 %% Error Reports in case of UNCHANGED versions to
 %% 
@@ -42,10 +33,10 @@
 %%                         D-28213 Bremen
 %%                         Martin.Schroeder@ACM.org
 %% 
-%% File: everyshi.dtx Copyright (C) 1994 Martin Schr\"oder
+%% File: everyshi.dtx Copyright (C) 2001 Martin Schr\"oder
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{everyshi}
-         [1998/08/09 v2.02 EveryShipout Package (MS)]
+         [2001/05/15 v3.00 EveryShipout Package (MS)]
 %% \CharacterTable
 %% {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%  Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -66,24 +57,29 @@
 %% ===================================================================
 %%  @LaTeX-package-file{
 %%     author          = {Martin Schr\"oder},
-%%     version         = "2.02",
-%%     date            = "9 August 1998",
+%%     version         = "3.00",
+%%     date            = "15 May 2001",
 %%     filename        = "everyshi.sty",
 %%     address         = {Martin Schr\"oder
 %%                        Cr\"usemannallee 3
-%%                        D-28213 Bremen
+%%                        28213 Bremen
+%%                        Germany},
 %%     telephone       = "+49-421-2239425",
-%%     email           = "Martin.Schroeder@ACM.org",
+%%     email           = "martin@oneiros.de",
 %%     pgp-Key         = "2048 bit / KeyID 292814E5",
 %%     pgp-fingerprint = "7E86 6EC8 97FA 2995 82C3  FEA5 2719 090E",
-%%     docstring       = "LaTeX package which defines a new hook
-%%                        \EveryShipout.
+%%     docstring       = "LaTeX package which provides hooks into
+%%                        \cs{shipout}.
 %%  }
 %% ===================================================================
 %% \fi
 
-\let\@EveryShipout@Hook\@empty
-\newcommand{\EveryShipout}{\g@addto@macro\@EveryShipout@Hook}
+\newcommand{\@EveryShipout@Hook}{}
+\newcommand{\@EveryShipout@AtNextHook}{}
+\newcommand*{\EveryShipout}[1]
+   {\g@addto@macro\@EveryShipout@Hook{#1}}
+\newcommand*{\AtNextShipout}[1]
+   {\g@addto@macro\@EveryShipout@AtNextHook{#1}}
 \newcommand{\@EveryShipout@Shipout}{%
    \afterassignment\@EveryShipout@Test
    \global\setbox\@cclv= %
@@ -97,10 +93,13 @@
    }
 \newcommand{\@EveryShipout@Output}{%
    \@EveryShipout@Hook%
+   \@EveryShipout@AtNextHook%
+      \gdef\@EveryShipout@AtNextHook{}%
    \@EveryShipout@Org@Shipout\box\@cclv%
    }
 \newcommand{\@EveryShipout@Org@Shipout}{}
 \newcommand*{\@EveryShipout@Init}{%
+   \message{ABD: EveryShipout initializing macros}%
    \let\@EveryShipout@Org@Shipout\shipout
    \let\shipout\@EveryShipout@Shipout
    }

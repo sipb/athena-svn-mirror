@@ -4,12 +4,12 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
 % those of D. E. Knuth specified for the Computer Modern family of fonts.
-% In particular, only the author is entitled to modify this file
+% In particular, only the authors are entitled to modify this file
 % and to save it under the same name.
 %
 % Content:
@@ -39,7 +39,6 @@
 % ng            "ae  "ae  "ae   -    Ligature en-ghe
 % n_tl          "af   -   "af  "af   En with tail
 %
-% otld          "b0  "b0  "b0  "b0   O tilded & Old Cyrillic Fita (goes first for wncoding)
 % s_dsc         "b1  "b1   -    -    Es with descender (cedilla)
 % u_shrt        "b2  "b2  "b2   -    Short U (goes first for LH fonts)
 % y             "b3  "b3  "b3   -    Straingt u (as upper Y)
@@ -50,121 +49,9 @@
 % ch_rdsc       "b8  "b8  "b8  "b8   Che with right descender
 % ukr_e         "b9  "b9   -    -    Ukrainian e (goes first for wncoding and LH font)
 % schwa         "ba  "ba  "ba  "ba   Schwa
-% eps           "bb   -   "bb   -    Epsilon
 %
 
-LHver_check(3,2);  % like |version_check| in ec
-
-% Ukrainian i moved up for LH font
-lhchar "Italic Cyrillic letter ukr_i (i with umlaut)";
-cyrchar(ukr_i,5u#,lc_trema_height#,0);%
-italcorr max(1/3x_height#*slant+.5hair#+.5u#,h#*slant+.5flare#-2u#); %i
-adjust_fit(if monospace:u#,u# else: 0,0 fi); h:=x_height;
-pickup fine.nib; x0=0; x5=w; x2=.5w+.25u; x3=.5w-.25u;
-hook_in(0,1,2)(skewed); hook_out(3,4,5)(skewed);  % hooks
-filldraw stroke z2e--z3e;  % stem
-% the accent
-lowercase_umlaut(0,0, 6,7,8,9);
-penlabels(0,1,2,3,4,5,8,9); endchar;
-
-% O tilded/Fita moved up for wncoding
-lhchar "Italic Cyrillic letter otld - o tilded";
-cyrchar(otld,9u#,x_height#,0);
-italcorr .7x_height#*slant+.5curve#-u# if math_fitting:-.5u# fi;
-adjust_fit(0,0); pickup fine.nib;
-% ital_o;tld
-pos1(vair,90); pos2(curve,180); pos3(vair,270); pos4(curve,360);
-x1=x3=.5w; lft x2r=hround(1.5u-.5curve); x4=w-x2;
-top y1r=h+oo; y2=y4=.5[y1,y3]; bot y3r=-oo;
-filldraw stroke pulled_arc.e(1,2) & pulled_arc.e(2,3)
- & pulled_arc.e(3,4) & pulled_arc.e(4,1); % bowl
-%%%
-% oltilde;
-if (serifs=true) and (bar#<=.5curve#):
-   numeric bar[];
-   set_bar_axis;
-   x5r=x2l; x6r=x4l;
-   y5r=y6r=y2.bh; y5l=y6l=y1.bh; x5r=x5l; x6l=x6r;
-   bar2=2/3[bar,fudged.stem];
-   penpos7(bar2,45); z7=.5[z5l,z6l];
-   fill stroke z6e{-2,-1}..{-2,1}z7e..{-2,-1}z5e;
-else:
-   bar_stroke(x2l,x4l);
-fi
-%%%%%
-penlabels(1,2,3,4,5,6,7); endchar;
-
-% Short U moved up for LH fonts
-lhchar "Italic Cyrillic letter u_shrt - short u (as latin y)";
-cyrchar(u_shrt,if monospace:8.5u# else:9u#fi,
-   x_height#+acc_height#,desc_depth#);
-italcorr x_height#*slant+.5stem#-u#; %y
-adjust_fit(0,0); full_h:=h; h:=x_height;
-% ital_u;
-pickup fine.nib; interim superness:=more_super;
-x2=x3+.25u; pos3(stem,-180); lft x3r=hround(2.5u-.5stem);
-% left shstem;
-if monospace:
- pos0(vair,90); x0=good.x .5[0,x2]; top y0l=h; y2=2/3h; pos2(stem,0);
- filldraw stroke z2e{u,x_height}...{left}z0e; % terminal
-else:
- x0=0;  hook_in(0,1,2)(skewed); fi % opening hook
-pos2'(stem,-180); z2'=z2;
-pos4(vair,-90); pos5(hair,0); x4=.5[x3,x5];
-pos6(stem,0); rt x6r=hround(w-1.5u+.5stem);
-pos7(stem,0); pos8(vair,-90);
-y3=.7[y4,y5]; bot y4r=-oo; y5=.57h; y6+.5stem=h;
-y7=0; bot y8r=-d-oo; x5=x6=x7; x8=.5w;
-pos9(hair,-180); pos10(flare,-180); y9=-.5d;
-lft x9r=hround(2.75u-.5flare); bulb(8,9,10);  % bulb
-filldraw stroke z2'e{-u,-x_height}
- ...super_arc.e(3,4)...{up}z5e; % left stem and arc
-filldraw circ_stroke z6e---z7e...{left}z8e;  % right stem and link
-% the accent
-h:=full_h; cbreve(.5w,0, 11,12,13,14,15,16,17);
-penlabels(0,1,2,3,4,5,6,7,8,9,10, 11,12,13,14,15,16,17); endchar;
-
-% Ukrainian e moved up for wncoding and LH font
-lhchar "Italic Cyrillic letter ukr_e - Ukrainian e (c with mid-line)";
-cyrchar(ukr_e,8u#,x_height#,0);
-italcorr if math_fitting:1/3x_height#*slant else:x_height#*slant-.5u# fi; %c+.5u
-adjust_fit(if monospace:0 else:-.35u#fi,0); %c
-% ital_ukre;
-pickup fine.nib; pos0(flare,0); pos1(hair,0); pos2(vair,90);
-pos3(curve,180); pos4(vair,270); pos5(hair,320);
-x2=x4=.5(w+u); rt x1r=max(rt x2,hround(w-.5u))+eps;
-lft x3r=hround(1.5u-.5curve); x5r=good.x(w-eps); x6=x5;
-y1=.5[bar_height,h]; top y2r=h+oo; bulb(2,1,0);  % bulb
-bot y4r=-oo; y3=.5[y2,y4]; top y5l=vround .5bar_height; y6=bar_height;
-path p; p=z4{right}..z5..z6;
-filldraw stroke pulled_arc.e(2,3)
- & pulled_arc.e(3,4)...{direction 1 of p}z5e;  % arc
-pos7(vair,90); pos8(vair,90);
-y7=bar_height; rt x7=hround max(rt x2+1+eps,lft x0l-eps); x8=x3; y7=y8;
-filldraw stroke z7e--z8e;
-penlabels(1,2,3,4,5,6,7,8); endchar;
-
-lhchar "Italic Cyrillic letter g_up - ghe upturn";
-cyrchar(g_up,9u#-.5width_adj#,asc_height#,0);
-italcorr x_height#*slant+.5stem#-u#; %tau
-adjust_fit(.5u#+serif_fit#,0);
-pickup tiny.nib; pos1(stem,0); pos2(stem,0);
-lft x1l=lft x2l=hround(3.5u-.5stem); top y1=x_height;
-pos4(vair,-90); pos5(hair,-180); pos6(flare,-180);
-bot y2=2/3desc_depth; bot y4r=-oo; y6-.5flare=vround.1desc_depth;
-x4=4/3u; lft x5r=min(hround-.5u,lft x5r+x4-x5l-eps);
-filldraw stroke z1e---z2e...{left}z4e; % stem
-bulb(4,5,6);  % bulb
-% upper part
-pickup crisp.nib;
-pos7(vair,90); pos8(vair,90); pos9(flare,180); pos10(flare,180);
-x7=x1; top y7r=top y8r=x_height;
-rt x9l=rt x10l=w-.25u; x8+.25flare=lft x9r; y9=top y8r+.25flare;
-y10+.5flare=top y7r+beak; x8l:=rt x10l-(y9-top y8l);
-filldraw circ_stroke z10e{down}--z9e{down}...z8e{left}--z7e; % ital beak
-penlabels(0,1,2,3,4,5,6,7,8,9,7,8,9,10); endchar;
-
-if (more_letters=false) or (wncoding=true): endinput \\; fi
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Italic Cyrillic letter g_hcrs - ghe hcrossed"; % italic shape
 cyrchar(g_hcrs,6.25u#,x_height#,0);
@@ -313,17 +200,18 @@ italcorr if math_fitting:1/3x_height#*slant else:x_height#*slant-u# fi; %e
 adjust_fit(0,0);
 % ital_z;
 pickup fine.nib; pos0(flare,180); pos1(hair,180); pos2(vair,-90);
-pos7(curve,0); pos8(curve,180); pos4(vair,270); pos5(hair,340);
+pos7(curve,0); pos8(curve,0); pos4(vair,90); pos5(hair,160);
+pos3(vair,90); pos3'(vair,-90); pos9(vair,90); pos9'(vair,-90);
 x2=x4=.5(w-u); lft x1r=min(lft x2,hround(.25u))-eps;
-lft x5l=good.x x1r+eps; x6=x5;
+lft x5r=good.x x1r+.15u+eps; x6=x5;
 y1=.5bar_height; bot y2r=-oo; bulb(2,1,0);  % bulb
-rt x7r=w-hround(1.5u-.5curve); rt x8l=w-hround(2u-.5curve);
-top y4l=h+oo; y7=.5[y2,y3]; y5l=y8=.5[y3,y4]; y6=bar_height;
+rt x7r=w-hround(1.5u-.5curve); rt x8r=w-hround(2u-.5curve);
+top y4r=h+oo; y7=.5[y2,y3]; y5r=y8=.5[y3,y4]; y6=bar_height;
 x3=x2; lft x9=hround min(lft x2-1-eps,rt x0l+1+eps);
-y3=y9=bar_height; pos3(vair,90); pos9(vair,90);
+y3=y9=bar_height; z9'=z9; z3'=z3;
 path p; p=z4{left}..(x5,h-.52bar_height)..z6;
 filldraw stroke z9e{right}...pulled_arc.e(3,7) & pulled_arc.e(7,2); % lower arc
-filldraw stroke z9e{right}...pulled_arc.e(3,8) & pulled_arc.e(8,4)
+filldraw stroke z9'e{right}...pulled_arc.e(3',8) & pulled_arc.e(8,4)
   ...{direction 1 of p}z5e;  % upper arc
 %%%
 % italic cedilla/ogonek
@@ -544,41 +432,6 @@ else:
 fi
 penlabels(0,1,2,3,4,5,6,7,8,9,10,11, 12,13,14); endchar;
 
-lhchar "Italic Cyrillic letter ng - ligature enghe";
-cyrchar(ng,10u#,x_height#,0);
-italcorr x_height#*slant+.5stem#-u#; %tau
-adjust_fit(if monospace:-1.5u# else: 0 fi,max(2u#,u#+stem#));
-% ital_ng;
-pickup fine.nib; x2=x3; pos3(stem,0); lft x3l=hround(2.5u-.5stem);
-%ihalfstem;
-if monospace: pos2(stem,0); top y2=h;
-else: x0=0; hook_in(0,1,2); fi % opening hook
-y3-.5stem=-oo;
-filldraw circ_stroke z3e--z2e;
-x10=x3l; y10=y11=bar_height; pos10(vair,90); pos11(vair,90);
-pos6(stem,0); rt x7r=hround(w-2.5u+.5stem); top y6=h; x7=x6;
-% right_stem;
-_one:=7; _two:=8; _three:=9;
-if monospace:
- pos[_three](vair,90); pos[_one](stem,0);
- x[_three]=good.x .5[x[_one],w]; bot y[_three]l=0; y[_one]=1/3h;
- filldraw stroke z[_one]e{down}...{right}z[_three]e; % terminal
-else:
- x[_three]=w; hook_out([_one],[_two],[_three]); fi % opening hook
-z7'=z7; pos7'(stem,0);
-filldraw circ_stroke z7'e--z6e; x11=x6l;
-filldraw stroke z10e--z11e;
-% italic beak
-pickup fine.nib;
-pos12(stem,0); rt x12r=r-letter_fit if monospace:+.5stem else:-.25u fi;
-y12-.5stem=2/3x_height-.5fine;
-pos13(stem,0); pos14(vair,90); pos15(vair,90);
-x15=x6; top y15r=top y14r=x_height; x13=x12; y13=bot y14l-.25flare;
-x14+.25flare=lft x12l; x14r:=lft x12l-(top y14r-y13);
-filldraw circ_stroke z12e{up}--z13e{up}...z14e{left}--z15e; % ital_beak
-%%%
-penlabels(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15); endchar;
-
 lhchar "Italic Cyrillic letter n_tl - en tail";
 cyrchar(n_tl,9u#,x_height#,desc_depth#); %-u
 italcorr .7x_height#*slant+.5curve#-u# if math_fitting:-.5u# fi; %o
@@ -602,8 +455,6 @@ x9=x3r; y9=y10=bar_height; pos9(vair,90); pos10(vair,90);
 x10=x4l;
 filldraw stroke z9e--z10e; % bar
 penlabels(0,1,2,3,4,5,6,7,8,9,10); endchar;
-
-% O tilded/Fita moved up for wncoding
 
 lhchar "Italic Cyrillic letter s_dsc - es descender (cedilla)";
 cyrchar(s_dsc,8u#,x_height#,desc_depth#);
@@ -893,8 +744,6 @@ else:
 fi
 penlabels(0,1,2,3,4,5,6,7,8,9, 10,11,12); endchar;
 
-% Ukrainian e moved up for wncoding and LH font
-
 lhchar "Italic Cyrillic letter schwa";
 cyrchar(schwa,8u#,x_height#,0);
 italcorr max(1/3x_height#*slant,x_height#*slant+.5(.2[hair#,stem#])-u#);
@@ -912,27 +761,5 @@ filldraw stroke z0e{left}...z1e{down}...pulled_arc.e(2,3)
  & pulled_arc.e(3,4)...{direction 1 of p}z5e;  % arc
 penlabels(1,2,3,4,5); endchar;
 
-lhchar "Italic Cyrillic letter eps - epsilon";
-cyrchar(eps,if serifs:8u# else:7.5u# fi,x_height#,0);
-italcorr x_height#*slant-.2u#;
-adjust_fit(if monospace: .5u#,.5u# else: 0,0 fi);
-% ital_eps;
-pickup fine.nib; pos0(flare,0); pos1(hair,0); pos2(vair,90); pos7(curve,180);
-pos9(vair,270); pos3(vair,270);
-pos8(curve,0); pos4(vair,90); pos5(hair,140);
-x2=x4=.5(w+u); rt x1r=max(rt x2,hround(w-.25u))+eps;
-x5l=good.x w-eps; x6=x5;
-y1=.5[bar_height,h]; top y2r=h+oo; bulb(2,1,0);  % bulb
-lft x7r=hround(2u-.5curve); lft x8l=hround(1.5u-.5curve);
-bot y4l=-oo; y7=.5[y2,y3]; y5l=y8=.5[y3,y4]; y6=bar_height;
-x3=x2; rt x9=hround max(rt x2+1+eps,lft x0l-eps); y3=y9=bar_height;
-path p; p=z4{left}..(x5,15/16bar_height)..z6;
-%path p; p=z4{left}..tension.75..z5..tension atleast2..z6;
-filldraw stroke z9e{left}...super_arc.e(3,7) & super_arc.e(7,2); % lower arc
-filldraw stroke z9e{left}...pulled_arc.e(3,8) & pulled_arc.e(8,4)
-  ...{direction 1 of p}z5e;  % upper arc
-%%%
-penlabels(0,1,2,3,4,5,6,7,8,9); endchar;
-
 endinput;
-% end of file
+%end of file

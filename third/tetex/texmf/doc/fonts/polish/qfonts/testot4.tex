@@ -1,0 +1,53 @@
+%& --translate-file=il2-pl
+% Pl: Ten dokument prezentuje fonty z paczki ,,qfonts'' u¿yte w LaTeXu 2e.
+%     Stosowany jest uk³ad fontów OT4, w³±czany domy¶lnie przez pakiet
+%     `polski'.
+% En: This document demonstrates fonts from the `qfonts' package in LaTeX2e.
+%     We use here OT4 encoding, which is used as default by polski.sty
+%     package.
+% Marcin Woliñski <2002/01/23>. Public domain.
+
+\documentclass{article}
+\usepackage{polski}
+\usepackage{qtimes,qcourier}% globalne
+
+% dla uk³adu OT4 znak Euro wymaga zdefiniowania;
+% uk³ad QX (plik qxenc.def) zawiera stosown± definicjê
+\newcommand\texteuro{\char128 }
+
+\newcommand*{\tekst}{%
+  Pójd¼ kiñ¿e tê chmurno¶æ w~g³±b flaszy.\par
+  PÓJD¬ KIÑ¯E TÊ CHMURNO¦Æ W~G£¡B FLASZY.\par
+  [(<<@>>,,0123456789''\&\#/=+*\texteuro)] -- --- ,.;:!? <> fifka ff ffi\par
+  }
+
+\newcommand*{\testfam}[3][]{\bgroup
+  \normalfont
+  \centerline{\bf #3 (\texttt{#2})}\bigskip\bigskip
+  #1\fontfamily{#2}\selectfont
+  \mdseries\tekst\bigskip
+  {\itshape\tekst}\bigskip
+  {\bfseries\tekst\bigskip
+    {\itshape\tekst}}\bigskip
+  \egroup
+  \newpage}
+
+\begin{document}
+\parindent0pt
+\fontsize{12dd}{16dd}\selectfont
+
+\testfam{qtm}{QuasiTimes}
+\testfam{qpl}{QuasiPalatino}
+\testfam{qbk}{QuasiBookman}
+\testfam{qhv}{QuasiSwiss}
+\testfam{qcr}{QuasiCourier}
+\testfam[\def\mddefault{mc}\def\bfdefault{bc}]{qhv}{QuasiSwissCondensed}
+
+\centerline{\bf QuasiChancery (\texttt{qzc})}\bigskip\bigskip
+\bgroup
+\fontfamily{qzc}\itshape
+\tekst\bigskip
+\egroup
+\newpage
+
+\end{document}

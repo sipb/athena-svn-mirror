@@ -1,0 +1,56 @@
+% E  Sample TeX file demonstrating how to separate colors using CMYK-HAX
+%    macros -- outline graphics + text
+% P  Przyk/ladowy plik TeX-owy demonstruj/acy separacj/e kolor/ow za pomoc/a
+%    makr pakietu CMYK-HAX -- grafika obwiedniowa + tekst
+%
+\input epsf     % DVIPS standard distribution
+\input colordvi % DVIPS standard distribution
+\input cmyk-hax
+
+\newif\ifPolish
+%\Polishtrue     % true for Polish text,
+\Polishfalse  % else English text
+%%
+\ifx\unknown\separate\def\separate{\COLOR}\fi
+\ifx\unknown\separate\def\separate{\CYAN}\fi
+\ifx\unknown\separate\def\separate{\MAGENTA}\fi
+\ifx\unknown\separate\def\separate{\YELLOW}\fi
+\ifx\unknown\separate\def\separate{\BLACK}\fi
+
+\def\COLOR{}
+\def\CYAN{\projectCMYK\cyan}
+\def\MAGENTA{\projectCMYK\magenta}
+\def\YELLOW{\projectCMYK\yellow}
+\def\BLACK{\projectCMYK\black}
+
+\delblacktrue\separate
+
+\nopagenumbers
+\ifPolish
+\font\bf plssdc10 at 20pt \bf
+\font\rm plss8
+\prefixing
+\else
+\font\bf cmssdc10 at 20pt \bf
+\font\rm cmss8
+\fi
+
+\baselineskip 28pt
+\hsize 100mm
+
+\setbox1 \hbox{\epsfxsize\hsize \epsffile{fountain.eps}}
+
+\hbox{\rlap{\copy1}%
+\vbox to \ht1{\vss
+\textBlack
+\ifPolish
+\centerline{Pan Sobieski mia/l trzy pieski:}
+\centerline{\Red{czerwony}, \Green{zielony}, \Blue{niebieski}.}
+\else
+\centerline{All words tell the genuine true:}
+\centerline{\Red{red}, and \Green{green}, and even \Blue{blue}.}
+\fi\vss}}
+\nointerlineskip\vskip 5mm
+\centerline{\CMYKlabels\rm}
+
+\end

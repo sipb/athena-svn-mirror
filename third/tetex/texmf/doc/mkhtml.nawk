@@ -80,7 +80,7 @@ initializing { nf = split($1,nm," ");
 { print $0 }
 ' initializing=1 RS="" FS="\n" OFS="\n" helpfile initializing=0 RS="\n" FS=" " OFS=" " -
 
-test -w help/Catalogue/ctfull.html \
-  && (cd help/Catalogue; $MAKE) >&2
+# test -w help/Catalogue/ctfull.html \
+#   && (cd help/Catalogue; $MAKE) >&2
 
 exit 0

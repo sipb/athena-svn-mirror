@@ -4,78 +4,52 @@
 %%
 %% The original source files were:
 %%
-%% plfonts.fdd  (with options: `fd,ori,OT4,cmtt')
+%% plfonts.fdd  (with options: `OT4cmtt,any')
 %% 
-%% IMPORTANT NOTICE:
+%% This is a generated file.
 %% 
-%% For the copyright see the source file.
+%% Copyright (C) 2000,2002,2003 by Marcin Woli\'nski.
 %% 
-%% Any modified versions of this file must be renamed
-%% with new filenames distinct from ot4cmtt.fd.
+%% This file is part of the package `PLaTeX'
+%% -----------------------------------------
 %% 
-%% For distribution of the original source see the terms
-%% for copying and modification in the file plfonts.fdd.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
 %% 
-%% This generated file may be distributed as long as the
-%% original source files, as listed above, are part of the
-%% same distribution. (The sources need not necessarily be
-%% in the same archive or directory.)
+%% This file may only be distributed together with a copy of the PLaTeX
+%% package.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
 \ProvidesFile{ot4cmtt.fd}
-    [1997/11/07 v1.0 Font defs for `pl' fonts (MOl).]
-\DeclareFontFamily
-           {OT4}
-               {cmtt}
-                             {\hyphenchar \font\m@ne}
-\DeclareFontShape
-           {OT4}
-               {cmtt}
-                             {m}{n}
-
-     {
-      <-8>sub*cmr/m/n
-      <8> <9> gen * pltt
-      <10><10.95>pltt10
-      <12><14.4><17.28><20.74><24.88>pltt12
+        [2000/10/09 v1.2 Font defs for fonts PL (MW)]
+\DeclareFontFamily{OT4}{cmtt}{\hyphenchar \font\m@ne}
+\DeclareFontShape{OT4}{cmtt}{m}{n}
+     {<-8.5>   pltt8     <8.5-9.5> pltt9
+      <9.5-11>  pltt10    <11->   pltt12
       }{}
-%%% make sure subst shapes are available
-\DeclareFontShape
-           {OT4}
-               {cmtt}
-                             {m}{it}
-     {
-      <-10>sub*cmtt/m/n
-      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> plitt10
-      }{}
-\DeclareFontShape
-           {OT4}
-               {cmtt}
-                             {m}{sl}
-     {
-      <-10>sub*cmtt/m/n
-      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> plsltt10
-      }{}
-\DeclareFontShape
-           {OT4}
-               {cmtt}
-                             {m}{sc}
-     {
-      <-10>sub*cmtt/m/n
-      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> pltcsc10
-      }{}
-\DeclareFontShape
-           {OT4}
-               {cmtt}
-                             {bx}{n}
-  {
-  <->ssub * cmtt/m/n
-  }{}
-\DeclareFontShape
-           {OT4}
-               {cmtt}
-                             {bx}{it}
-  {
-  <->ssub * cmtt/m/it
-  }{}
+\DeclareFontShape{OT4}{cmtt}{m}{it}
+{<-> plitt10}{}
+\DeclareFontShape{OT4}{cmtt}{m}{sl}
+{<-> plsltt10}{}
+\DeclareFontShape{OT4}{cmtt}{m}{sc}
+{<-> pltcsc10}{}
+\DeclareFontShape{OT4}{cmtt}{m}{ui}
+     {<->sub*cmtt/m/it}{}
+\DeclareFontShape{OT4}{cmtt}{bx}{n}
+     {<->sub*cmtt/m/n}{}
+\DeclareFontShape{OT4}{cmtt}{bx}{it}
+     {<->sub*cmtt/m/it}{}
+\DeclareFontShape{OT4}{cmtt}{bx}{ui}
+     {<->sub*cmtt/m/it}{}
 \endinput
 %%
 %% End of file `ot4cmtt.fd'.

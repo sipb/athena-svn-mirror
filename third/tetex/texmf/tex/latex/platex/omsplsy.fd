@@ -4,32 +4,41 @@
 %%
 %% The original source files were:
 %%
-%% plfonts.fdd  (with options: `fd,ori,OMSplsy')
+%% plfonts.fdd  (with options: `OMSplsy,any')
 %% 
-%% IMPORTANT NOTICE:
+%% This is a generated file.
 %% 
-%% For the copyright see the source file.
+%% Copyright (C) 2000,2002,2003 by Marcin Woli\'nski.
 %% 
-%% Any modified versions of this file must be renamed
-%% with new filenames distinct from omsplsy.fd.
+%% This file is part of the package `PLaTeX'
+%% -----------------------------------------
 %% 
-%% For distribution of the original source see the terms
-%% for copying and modification in the file plfonts.fdd.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
 %% 
-%% This generated file may be distributed as long as the
-%% original source files, as listed above, are part of the
-%% same distribution. (The sources need not necessarily be
-%% in the same archive or directory.)
+%% This file may only be distributed together with a copy of the PLaTeX
+%% package.
+%% 
+%% In particular, permission is granted to customize the declarations in
+%% this file to serve the needs of your installation.
+%% However, NO PERMISSION is granted to distribute a modified version
+%% of this file under its original name.
+%% 
 \ProvidesFile{omsplsy.fd}
-    [1997/11/07 v1.0 Font defs for `pl' fonts (MOl).]
-\DeclareFontFamily{OMS}{plsy}{\skewchar\font'60}
-\DeclareFontShape{OMS}{plsy}{m}{n}{%
-      <5> <6> <7> <8> <9> <10> gen * plsy
-      <10.95> <12> <14.4> <17.28> <20.74> <24.88> plsy10
+        [2000/10/09 v1.2 Font defs for fonts PL (MW)]
+\DeclareFontFamily{OMS}{plsy}{\skewchar\font48 }
+\DeclareFontShape{OMS}{plsy}{m}{n}
+     {<-5.5>   plsy5      <5.5-6.5> plsy6
+      <6.5-7.5> plsy7      <7.5-8.5> plsy8
+      <8.5-9.5> plsy9      <9.5->  plsy10
       }{}
-\DeclareFontShape{OMS}{plsy}{b}{n}{%
-      <-10> sub * plsy/m/n
-      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88>plbsy10
+\DeclareFontShape{OMS}{plsy}{b}{n}
+     {<->   plbsy10
       }{}
 \endinput
 %%

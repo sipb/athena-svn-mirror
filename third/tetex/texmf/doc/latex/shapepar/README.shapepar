@@ -1,0 +1,18 @@
+shapepar.sty  by Donald Arseneau.
+
+\shapepar: a macro to typeset paragraphs in a specific shape. The
+size is adjusted automatically so that the entire shape is filled
+with text. There can be no displayed math, and no "\vadjust"
+material (no "\vspace").  These macros work for both LaTeX and plain
+TeX.  For LaTeX, specify \usepackage{shapepar}, or for Plain,
+\input shapepar.sty.
+
+Contents: 
+
+README.shapepar  this file
+shapepar.sty     macro definitions (for LaTeX or Plain TeX)
+shapepar.ltx     manual for shapepar (run latex shapepar.ltx)
+Canflagshape.def Canadian flag shape definition
+TeXshape.def     \TeX\ shape definition
+candleshape.def  burning candle shape definition (Timothy C. Burt)
+proshap.py       shape generator by Manuel Gutierrez Algaba

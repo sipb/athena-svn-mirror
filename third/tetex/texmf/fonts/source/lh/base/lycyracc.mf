@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -21,7 +21,7 @@
 % Accents for capital letters
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 % A dirty trick, better left unseen. |cap_height| and |cap_height#|
 % are restored at the end of this file.
@@ -35,14 +35,14 @@ cap_height:=hi.x_height;
 cyrcaph:=true;
 
 lhchar"Grave accent";
-beginchar_twice(oct"0",9u#,x_height#,0); % |put_gravis| changes the height
+cyrchar_twice(Agrave,9u#,x_height#,0); % |put_gravis| changes the height
 adjust_fit(0,0);
 put_gravis;
 repeat_once;
 endchar;
 
 lhchar"Acute accent"; % using acute from plfonts
-beginchar_twice(oct"1",9u#,x_height#,0); % |put_accent| changes the height
+cyrchar_twice(Aacute,9u#,x_height#,0); % |put_accent| changes the height
 italcorr h#*slant-if serifs: 1.5 fi u#;
 adjust_fit(0,0);
 put_accent;
@@ -50,7 +50,7 @@ repeat_once;
 endchar;
 
 lhchar"Circumflex (hat) accent";
-beginchar(oct"002",9u#,cap_accent_height#,0);
+cyrchar(Ahat,9u#,cap_accent_height#,0);
 if serifs: italcorr .5[x_height#,h#]*slant+.5hair#-1.75u#;
 else: italcorr 2/3[x_height#,h#]*slant-.5stem#+.5vair#-.75u#;
 fi
@@ -59,20 +59,20 @@ uppercase_hat(.5w,0,1,2,3,4,5);
 penlabels(1,2,3,4,5); endchar;
 
 lhchar"Tilde (squiggle) accent";
-beginchar(oct"003",9u#,cap_accent_height#,0);
+cyrchar(Atilde,9u#,cap_accent_height#,0);
 italcorr h#*slant-u#;
 adjust_fit(0,0);
 uppercase_tilde(0,0,1,2,3,4,5);
 penlabels(1,2,3,4,5); endchar;
 
 lhchar"Umlaut (double dot) accent";
-beginchar(oct"004",9u#,cap_accent_height#,0);
+cyrchar(Aumlaut,9u#,cap_accent_height#,0);
 adjust_fit(0,0);
 uppercase_umlaut(0,0,1,2,3,4);
 penlabels(1,2,3,4); endchar;
 
 lhchar"Double acute accent (Long Hungarian umlaut accent)";
-beginchar_twice(oct"005",9u#,min(asc_height#,2x_height#),0);
+cyrchar_twice(Aacute_dbl,9u#,min(asc_height#,2x_height#),0);
 italcorr h#*slant-u#;
 adjust_fit(0,0);
 if monospace: hpos_corr=-2u; put_accent; hpos_corr=2u; put_accent;
@@ -81,20 +81,20 @@ repeat_once;
 endchar;
 
 lhchar"Scandinavian circle accent";
-beginchar(oct"006",13u#+.5width_adj#,cap_accent_height#,0);
+cyrchar(Aring,13u#+.5width_adj#,cap_accent_height#,0);
 adjust_fit(cap_serif_fit#,cap_serif_fit#);
 y[-1]= cap_height+if hefty: .5 fi accent_gap;
 uppercase_circle(.5w,y[-1],1,2,3,4);
 penlabels(1,2,3,4); endchar;
 
 lhchar"Hachek (check) accent";
-beginchar(oct"007",9u#,cap_accent_height#,0);
+cyrchar(Ahachek,9u#,cap_accent_height#,0);
 adjust_fit(0,0);
 uc_hachek_accent(.5w);
 endchar;
 
 lhchar"Breve accent";
-beginchar(oct"10",9u#,cap_accent_height#,0);
+cyrchar(Abreve,9u#,cap_accent_height#,0);
 italcorr h#*slant+.5vair#-1.5u#;
 adjust_fit(0,0);
 uppercase_breve(.5w,0,1,2,3);
@@ -102,7 +102,7 @@ penlabels(1,2,3); endchar;
 
 lhchar"Macron (bar) accent";
 numeric macron_breadth#; macron_breadth#=.2[vair#,stem#];
-beginchar(oct"011",9u#,cap_accent_height#,0);
+cyrchar(Abar,9u#,cap_accent_height#,0);
 italcorr h#*slant-.75u#;
 adjust_fit(0,0);
 numeric macron_breadth; macron_breadth:=Vround .2[vair,stem];
@@ -113,26 +113,36 @@ filldraw stroke z1e--z2e;  % bar
 penlabels(1,2); endchar;
 
 lhchar"Dot accent";
-beginchar_twice(oct"012",5u#,x_height#,0);
+cyrchar_twice(Adot,5u#,x_height#,0);
 adjust_fit(0,0);
 put_dot(tiny,max(dot_size#,cap_curve#));
 repeat_once;
 endchar;
 
 lhchar"Cedilla accent";
-beginchar(oct"013",8u#,0,.875desc_depth#);
+cyrchar(Acedilla,8u#,0,.875desc_depth#);
 adjust_fit(0,0);
 uppercase_cedilla(.5w,0,1,2,3,4,5);
 penlabels(1,2,3,4,5); endchar;
 
 lhchar"Ogonek";
-beginchar(oct"014",5u#,0,desc_depth#);
+cyrchar(Aogonek,5u#,0,desc_depth#);
 italcorr 0;
 adjust_fit(0,0);
-the_ogonek(.5w,0,1,2,3);
+%the_ogonek(.5w,0,1,2,3);
+% polish-like "easy_ogonek" instead of Computer Modern "the_ogonek"
+def the_pen=if known ogonek_pen: ogonek_pen
+    elseif serifs: tiny elseif is_bold: fisp else: fine fi
+enddef;
+% |diag_end| refers to |tiny| pen, hence |tiny| in the following equation:
+ogonek_pos=(.5w if not serifs: +.5stem if is_bold: +.75tiny fi\\ fi,.5the_pen)
+   if serifs and not is_egyptian: +(.5xvair,0) fi;
+easy_ogonek(the_pen, 1,2,3); % ogonek
 penlabels(1,2,3); endchar;
 
+%
 % differs from lowercase form
+%
 lhchar "Cyrillic accent Ahcross - horisontal cross";
 cyrchar(Ahcross,7u#,cap_height#,desc_depth#);
 italcorr asc_height#*slant+.5dot_size#-2u#;
@@ -304,3 +314,4 @@ cap_height#:=saved_cap_height#; numeric saved_cap_height#;
 cyrcaph:=false; %turned back
 
 endinput;
+%end of file

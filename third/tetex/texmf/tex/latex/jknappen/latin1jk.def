@@ -1,11 +1,11 @@
 % latin1jk.def
 %
-% (c) Copyright 1995, 1996 J"org Knappen.
+% (c) Copyright 1995, 1996, 2000 J"org Knappen.
 % Licence GNU licence Version 2
 % see after \endinput for further information
 %
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesFile{latin1jk.def}[1996/02/11 latin-1 input encoding file 1.1 (jk)]
+\ProvidesFile{latin1jk.def}[2000/03/16 latin-1 input encoding file 1.2 (jk)]
 %%% \RequirePackage{textcomp}    % text companion symbols (tc fonts)
 \DeclareInputText{"0A0}{\nobreakspace}
 \DeclareInputText{"0B0}{\textdegree}
@@ -104,30 +104,29 @@
 \DeclareInputText{"0EF}{\"\i}
 \DeclareInputText{"0FF}{\"y}
 \endinput
-% Usage:
-% \documentclass{...}
-% \usepackage{textcomp} % this package is required!
-% \usepackage[latin1jk]{inputenc}
-% ...
-% \begin{document}
-%
-% I decided to make \emph{all} characters text, even times and divide, in
-% order to make it work in verbatim style environments. A number of control
-% sequences refers to the textcomp package of Sebastian Rahtz. The text
-% companion fonts are needed to display those characters.
-%
-% \textcurrency, \textdegree, \texttwosuperior, \textthreesuperior, 
-% \textmu, \textonehalf, \textmultiply, and \textdivide are defined in 
-% the textcomp package using the text companion font (TS1 coding).
-%
-% This file is supported by
-%
-% J"org Knappen
-% Professional (La)TeX consultant
-% Barbarossaring 43
-% D-55118 Mainz
-% Allemagne
-%
-% knappen@vkpmzd.kph.uni-mainz.de
-%
+
+Usage:
+
+\documentclass{...}
+\usepackage{textcomp} % this package is required!
+\usepackage[latin1jk]{inputenc}
+...
+\begin{document}
+
+I decided to make \emph{all} characters text, even times and divide, in
+order to make it work in verbatim style environments. A number of control
+sequences refers to the textcomp package of Sebastian Rahtz. The text
+companion fonts are needed to display those characters.
+
+ \textcurrency, \textdegree, \texttwosuperior, \textthreesuperior, 
+ \textmu, \textonehalf, \textmultiply, and \textdivide are defined in 
+ the textcomp package using the text companion font (TS1 coding).
+
+This file is supported by
+
+J"org Knappen, Barbarossaring 43, D-55118 Mainz, Allemagne. 
+Author of the Book: Schnell ans Ziel mit LaTeX2e, Oldenbourg-Verlag
+M"unchen, 1997, ISBN 3-486-24199-0.
+
+
 %% End of file `latin1jk.def'.

@@ -11,7 +11,7 @@
 %% Development of this package was commissioned by Y&Y Inc.
 %% http://www.yandy.com
 \ProvidesFile{umtms.fd}
- [1997/03/14 v1.0c
+ [2001/05/30 v1.0c
   Mathtime Plus Script (Unknown encoding)
   (FMi)]
 \DeclareFontFamily{U}{mtms}{\skewchar\font42}

@@ -1,5 +1,5 @@
-% This is rxcodes.mf in text format as of 1999/11/1
-% created by LHfonts (TeX4MF) version 3.2
+% This is rxcodes.mf in text format as of 2000/12/9
+% created by LHfonts (TeX4MF) version 3.4
 %
 %
 
@@ -201,11 +201,11 @@ CYR_.Afrown := hex"12";
 CYR_.Agrave_dbl := hex"13";
 CYR_.Acyrbreve := hex"14";
 CYR_.dash := hex"16";
-CYR_.Ahcross := hex"17";
+CYR_.wordmark := hex"17";
 CYR_.pmzero := hex"18";
 CYR_.Agrave_cross := hex"19";
 CYR_.Aacute_cross := hex"1a";
-CYR_.Acomma := hex"1b";
+CYR_.Ahcross := hex"1b";
 CYR_.dbl_quotes := hex"22";
 CYR_.No := hex"9d";
 CYR_.currency := hex"9e";

@@ -1,40 +1,41 @@
-%% 
+%%
 %% This is file `dinbrief.cls',
 %% generated with the docstrip utility.
-%% 
+%%
 %% The original source files were:
-%% 
+%%
 %% dinbrief.dtx  (with options: `class')
 %% 
-%% Copyright (C) 1993, 96 by Richard Gussmann, University of Karlsruhe. 
-%% For additional copyright information see further down in this file. 
+%% =======================================================================
 %% 
-%% This file is part of the dinbrief-class. 
-%% ---------------------------------------- 
+%% Copyright (C) 1993, 96, 97 by University of Karlsruhe (Computing Center).
+%% Copyright (C) 1998, 2000   by University of Karlsruhe (Computing Center)
+%%                            and Richard Gussmann.
+%% All rights reserved.
+%% For additional copyright information see further down in this file.
 %% 
-%% This system is distributed in the hope that it will be useful, 
-%% but WITHOUT ANY WARRANTY; without even the implied warranty of 
-%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% This file is part of the DINBRIEF package
+%% -----------------------------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License (LPPL), as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.1 or, at your option, any later version.
+%% 
+%% The latest version of this license is in
+%% 
+%%         http://www.latex-project.org/lppl.txt
+%% 
+%% LPPL Version 1.1 or later is part of all distributions of LaTeX
+%% version 1999/06/01 or later.
 %% 
 %% 
-%% IMPORTANT NOTICE: 
+%% For error reports in case of UNCHANGED versions see readme files.
 %% 
-%% For error reports in case of UNCHANGED versions see readme files. 
+%% Please do not request updates from us directly.  Distribution is
+%% done through Mail-Servers, TeX organizations and others.
 %% 
-%% Please do not request updates from us directly. Distribution is 
-%% done through Mail-Servers and TeX organizations. 
+%% If you receive only some of these files from someone, complain!
 %% 
-%% You are not allowed to change this file. 
-%% 
-%% You are allowed to distribute this file under the condition that 
-%% it is distributed together with all files mentioned in 00readme.. 
-%% 
-%% If you receive only some of these files from someone, complain! 
-%% 
-%% You are NOT ALLOWED to distribute this file alone. You are NOT 
-%% ALLOWED to take money for the distribution or use of either this 
-%% file or a changed version, except for a nominal charge for copying 
-%% etc. 
 %%
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -52,8 +53,8 @@
 %%   Grave accent  \`     Left brace    \{     Vertical bar  \|
 %%   Right brace   \}     Tilde         \~}
 %%
-\def\RCSdate{$Date: 2000-03-10 18:03:20 $}
-\def\RCSrevision{$Revision: 1.1.1.1 $}
+\def\RCSdate{$Date: 2003-02-26 03:06:32 $}
+\def\RCSrevision{$Revision: 1.1.1.2 $}
 {%
   \def\stripone $#1${\def\partone{#1}}
   \def\striptwo Date: #1\stop{\gdef\filedate{#1}\gdef\docdate{#1}}
@@ -84,7 +85,7 @@
   \fi
 \typeout{}
 \typeout{Document Class/Style 'dinbrief' - %
-         (Preliminary) Version \fileversion}
+         Version \fileversion}
 \typeout{University of Karlsruhe - \filedate}
 \typeout{}
 \ifka@db@ltxtwoe
@@ -103,10 +104,13 @@
     \fi
   \fi
 \ifka@db@ltxtwoe
-  \NeedsTeXFormat{LaTeX2e}[1994/12/01]
-  \ProvidesClass{dinbrief}[1995/07/01 LaTeX2e class]
+  \NeedsTeXFormat{LaTeX2e}[1996/12/01]
+  \ProvidesClass{dinbrief}[2000/03/02 LaTeX2e class]
+\else
+  \long\def\@firstofone#1{#1}
 \fi
 \newdimen\ka@db@tmpdima
+\newdimen\ka@db@tmpdimb
 \long\def\ka@db@assignvarglobal#1#2{%
   \protect\pka@db@assignvarglobal{#1}{#2}}%
 \long\def\pka@db@assignvarglobal#1#2{%
@@ -226,28 +230,32 @@
 \newif\if@restonecol
 \ifka@db@ltxtwoe
   \DeclareOption{a4paper}
-     {\setlength\paperheight {297mm}%
-      \setlength\paperwidth  {210mm}}
+     {\paperheight=297mm%
+      \paperwidth =210mm}
   \DeclareOption{a5paper}
-     {\setlength\paperheight {210mm}%
-      \setlength\paperwidth  {148mm}}
+     {\paperheight=210mm%
+      \paperwidth =148mm}
   \DeclareOption{b5paper}
-     {\setlength\paperheight {250mm}%
-      \setlength\paperwidth  {176mm}}
+     {\paperheight=250mm%
+      \paperwidth =176mm}
   \DeclareOption{letterpaper}
-     {\setlength\paperheight {11in}%
-      \setlength\paperwidth  {8.5in}}
+     {\paperheight=11in%
+      \paperwidth =8.5in}
   \DeclareOption{legalpaper}
-     {\setlength\paperheight {14in}%
-      \setlength\paperwidth  {8.5in}}
+     {\paperheight=14in%
+      \paperwidth =8.5in}
   \DeclareOption{executivepaper}
-     {\setlength\paperheight {10.5in}%
-      \setlength\paperwidth  {7.25in}}
+     {\paperheight=10.5in%
+      \paperwidth =7.25in}
 \fi
 \ifka@db@ltxtwoe
   \DeclareOption{twoside}{\@twosidetrue}
 \fi
 \@twosidefalse
+\ifka@db@ltxtwoe
+  \DeclareOption{addresshigh}{\AtEndOfClass{\addresshigh}}
+  \DeclareOption{addressstd}{\AtEndOfClass{\addressstd}}
+\fi
 \def\ds@draft{\overfullrule 5pt}
 \def\ds@final{\overfullrule 0pt}
 \ifka@db@ltxtwoe
@@ -477,54 +485,121 @@
       \normalsize
     \fi
   \fi
-\oddsidemargin 0in
-\evensidemargin 0in
-\marginparwidth .08in
-\marginparsep .01in
-\marginparpush 5pt
-\topmargin0pt
-\topmargin-5mm
+\oddsidemargin=0in
+\evensidemargin=0in
+\marginparwidth=.08in
+\marginparsep=.01in
+\marginparpush=5pt
+\topmargin=-5mm
 \newdimen\ltf@headheight
 \newdimen\lts@headheight
 \newdimen\ltf@headsep
 \newdimen\lts@headsep
 \newdimen\ltf@textheight
 \newdimen\lts@textheight
-\ltf@headheight 4.2truemm %
-\lts@headheight 0truemm %
-\ltf@headsep 8.8truemm %
-\lts@headsep 0truemm %
+\ltf@headheight=4.2truemm %
+\lts@headheight=0truemm %
+\ltf@headsep=8.8truemm %
+\lts@headsep=0truemm %
 \ifka@db@ltxtwoe
     \relax
   \else
-    \footheight 4.2truemm
+    \footheight=4.2truemm
   \fi
-\footskip 8.8truemm
-\textheight 260truemm
-\textheight 254truemm
-\textwidth 165truemm
-\columnsep 10pt
-\columnseprule 0pt
+\footskip=8.8truemm
+\textheight=254truemm
+\textwidth=165truemm
+\columnsep=10pt
+\columnseprule=0pt
 \raggedbottom
-\footnotesep 4.2truemm
+\footnotesep=4.2truemm
 \skip\footins 10pt plus 2pt minus 4pt
-\floatsep 12pt plus 2pt minus 2pt
-\textfloatsep 20pt plus 2pt minus 4pt
-\intextsep 12pt plus 2pt minus 2pt
-\dblfloatsep 12pt plus 2pt minus 2pt
-\dbltextfloatsep 20pt plus 2pt minus 4pt
+\floatsep=12pt plus 2pt minus 2pt
+\textfloatsep=20pt plus 2pt minus 4pt
+\intextsep=12pt plus 2pt minus 2pt
+\dblfloatsep=12pt plus 2pt minus 2pt
+\dbltextfloatsep=20pt plus 2pt minus 4pt
 \ifka@db@ltxtwoe
     \relax
   \else
-    \@maxsep 20pt
-    \@dblmaxsep 20pt
+    \@maxsep=20pt
+    \@dblmaxsep=20pt
   \fi
-\@fptop 0pt plus 1fil
-\@fpsep 8pt plus 2fil
-\@fpbot 0pt plus 1fil
-\@dblfptop 0pt plus 1fil
-\@dblfpsep 8pt plus 2fil
-\@dblfpbot 0pt plus 1fil
+\@fptop=0pt plus 1fil
+\@fpsep=8pt plus 2fil
+\@fpbot=0pt plus 1fil
+\@dblfptop=0pt plus 1fil
+\@dblfpsep=8pt plus 2fil
+\@dblfpbot=0pt plus 1fil
+\newdimen\ka@db@txtlmarg
+\ka@db@txtlmarg=24truemm
+\newdimen\addrhpos
+\newdimen\addrvpos
+\newdimen\addrwd
+\newdimen\addrht
+\newdimen\addroffset
+\newdimen\ka@db@addrhoffs
+\addrhpos=20truemm
+\addrvpos=90truemm
+\addrwd=85truemm
+\addrht=40truemm
+\addroffset=4truemm
+\ka@db@addrhoffs=-4truemm
+\def\setaddressllcorner#1#2{\global\addrhpos=#1\global\addrvpos=#2\relax}
+\def\setaddressllhpos#1{\global\addrhpos=#1\relax}
+\def\setaddressllvpos#1{\global\addrvpos=#1\relax}
+\def\setaddresswidth#1{\global\addrwd=#1\relax}
+\def\setaddressheight#1{\global\addrht=#1\relax}
+\def\setaddressoffset#1{\global\addroffset=#1\relax}
+\def\addresshigh{\addrvpos    =72truemm%
+                 \reflinevpos =80.5truemm%
+                 \ufldmarkvpos=87truemm%
+                 \lfldmarkvpos=192truemm}
+\def\addressstd{\addrvpos    =90truemm%
+                \reflinevpos =98.5truemm%
+                \ufldmarkvpos=105truemm%
+                \lfldmarkvpos=210truemm}
+\newdimen\backaddrht
+\newdimen\reflinevpos
+\backaddrht=5truemm
+\reflinevpos=98.5truemm
+\def\setbackaddressheight#1{\global\backaddrht=#1\relax}
+\def\setreflinetop#1{\global\reflinevpos=#1\relax}
+\newdimen\ufldmarkvpos
+\newdimen\lfldmarkvpos
+\newdimen\perfmarkvpos
+\newdimen\ka@db@foldmarkhoffs
+\newdimen\ka@db@perfmarkhoffs
+\newdimen\ka@db@foldmarklen
+\newdimen\ka@db@perfmarklen
+\ufldmarkvpos=105truemm
+\lfldmarkvpos=210truemm
+\ifka@db@ltxtwoe
+  \perfmarkvpos=.5\paperheight
+\else
+  \perfmarkvpos=148.5truemm
+\fi
+\ka@db@foldmarkhoffs=-24truemm
+\ka@db@perfmarkhoffs=-18truemm
+\ka@db@foldmarklen=7truemm
+\ka@db@perfmarklen=6truemm
+\def\setupperfoldmarkvpos#1{\global\ufldmarkvpos=#1\relax}
+\def\setlowerfoldmarkvpos#1{\global\lfldmarkvpos=#1\relax}
+\newdimen\bottomtextvpos
+\bottomtextvpos=281truemm
+\def\setbottomtexttop#1{\global\bottomtextvpos=#1\relax}
+\newdimen\ka@db@headup
+\ka@db@headup=-19.4truemm
+\newdimen\ka@db@vfuzz
+\ka@db@vfuzz=23.9truemm
+\newdimen\ka@db@stdskip
+\ka@db@stdskip=2.5truemm
+\newdimen\ka@db@fieldwd
+\newdimen\ka@db@fldskip
+\newdimen\ka@db@shfldwd
+\ka@db@fieldwd=50.8truemm
+\ka@db@fldskip=0truemm
+\ka@db@shfldwd=25.4truemm
 \newif\ifka@db@windowrules
 \def\windowrules{\global\ka@db@windowrulestrue}
 \def\nowindowrules{\global\ka@db@windowrulesfalse}
@@ -535,6 +610,10 @@
 \windowtics
 \def\backaddress#1{\gdef\@backaddress{#1}}
 \backaddress{}
+\newif\ifka@db@baddrrule
+\def\backaddressrule{\global\ka@db@baddrruletrue}
+\def\nobackaddressrule{\global\ka@db@baddrrulefalse}
+\backaddressrule
 \long\def\@splitoncr#1#2{%
   \begingroup
     % \tracingmacros=1
@@ -589,7 +668,6 @@
   \@ifnextchar!{\@withmarkcr}{\@withoutmarkcr}#1\stop
 }
 \long\def\@checkformark#1{%
-  %\@ifnextchar!{\@withmark}{\@withoutmark}#1\stop
   \@ifnextchar[{\@withlbracket}{\@withoutlbracket}#1\stop
 }
 \long\def\@splitaddress#1{%
@@ -608,43 +686,63 @@
   \ifx\@empty\@fromaddress
     \vbox to 0pt{\vss}\nointerlineskip
   \else
-    \vbox to 0pt{\vskip -19.4truemm\raggedright\@fromaddress\vss}%
+    \vbox to 0pt{\vskip \ka@db@headup\raggedright\@fromaddress\vss}%
     \nointerlineskip
   \fi
 }
 \def\ka@db@tswindowtics{%
   \ifka@db@windowtics
+    \ka@db@tmpdimb=\ufldmarkvpos
+    \advance\ka@db@tmpdimb by -\ka@db@vfuzz
     \vbox to 0pt{%
-     \rule{0pt}{81.1truemm}% 62.5truemm > 80.0truemm
-     \hbox to 0pt{\hspace*{-24truemm}\vbox{\hrule width 7truemm}\hss}%
-     \vss}\nointerlineskip
+      \rule{0pt}{\ka@db@tmpdimb}%
+      \hbox to 0pt{\hspace*{\ka@db@foldmarkhoffs}%
+      \vbox{\hrule width \ka@db@foldmarklen}\hss}%
+      \vss}\nointerlineskip
+    \ka@db@tmpdimb=\perfmarkvpos
+    \advance\ka@db@tmpdimb by -\ka@db@vfuzz
     \vbox to 0pt{%
-     \rule{0pt}{124.6truemm}% 106.0truemm > 123.5truemm
-     \hbox to 0pt{\hspace*{-18truemm}\vbox{\hrule width 6truemm}\hss}%
-     \vss}\nointerlineskip
+      \rule{0pt}{\ka@db@tmpdimb}%
+      \hbox to 0pt{\hspace*{\ka@db@perfmarkhoffs}%
+      \vbox{\hrule width \ka@db@perfmarklen}\hss}%
+      \vss}\nointerlineskip
+    \ka@db@tmpdimb=\lfldmarkvpos
+    \advance\ka@db@tmpdimb by -\ka@db@vfuzz
     \vbox to 0pt{%
-     \rule{0pt}{186.1truemm}% 167.5truemm > 185.0truemm
-     \hbox to 0pt{\hspace*{-24truemm}\vbox{\hrule width 7truemm}\hss}%
-     \vss}\nointerlineskip
+      \rule{0pt}{\ka@db@tmpdimb}%
+      \hbox to 0pt{\hspace*{\ka@db@foldmarkhoffs}%
+      \vbox{\hrule width \ka@db@foldmarklen}\hss}%
+      \vss}\nointerlineskip
   \else
-    \vbox to 0pt{\rule{0pt}{81.1truemm}%
-     \hbox to 0pt{\vbox{\hrule width 0pt}\hss}%
-     \vss}\nointerlineskip
-    \vbox to 0pt{\rule{0pt}{124.6truemm}%
-     \hbox to 0pt{\vbox{\hrule width 0pt}\hss}%
-     \vss}\nointerlineskip
-    \vbox to 0pt{\rule{0pt}{186.1truemm}%
-     \hbox to 0pt{\vbox{\hrule width 0pt}\hss}%
-     \vss}\nointerlineskip
+    \ka@db@tmpdimb=\ufldmarkvpos
+    \advance\ka@db@tmpdimb by -\ka@db@vfuzz
+    \vbox to 0pt{\rule{0pt}{\ka@db@tmpdimb}%
+      \hbox to 0pt{\vbox{\hrule width 0pt}\hss}%
+      \vss}\nointerlineskip
+    \ka@db@tmpdimb=\perfmarkvpos
+    \advance\ka@db@tmpdimb by -\ka@db@vfuzz
+    \vbox to 0pt{\rule{0pt}{\ka@db@tmpdimb}%
+      \hbox to 0pt{\vbox{\hrule width 0pt}\hss}%
+      \vss}\nointerlineskip
+    \ka@db@tmpdimb=\lfldmarkvpos
+    \advance\ka@db@tmpdimb by -\ka@db@vfuzz
+    \vbox to 0pt{\rule{0pt}{\ka@db@tmpdimb}%
+      \hbox to 0pt{\vbox{\hrule width 0pt}\hss}%
+      \vss}\nointerlineskip
   \fi
 }
-\newdimen\dbottomtext
-\dbottomtext=261.0truemm
 \def\ka@db@tsbottomtext{%
-  \ifdim\ht\@@bottomtext>0pt
+  \ifx\empty\ka@db@bottomtext
+    \relax
+  \else
+    \ka@db@tmpdimb=\bottomtextvpos
+    \advance\ka@db@tmpdimb by -\ka@db@vfuzz
     \vbox to 0pt{%
-      \rule{0pt}{\dbottomtext}% 243.5truemm
-      \unhcopy\@@bottomtext
+      \rule{0pt}{\ka@db@tmpdimb}%
+      \hbox to 0pt{\hskip0pt minus 4truemm%
+        \vbox to 0pt {\raggedright \ka@db@bottomtext
+                      \vss}%
+        \hss}
       \vss
     }\nointerlineskip%
   \fi
@@ -656,32 +754,40 @@
 \def\ka@db@tstoaddress{%
   \vbox to 0pt{\vss%
     \ifka@db@windowrules
-      \hbox to 0pt{\hspace*{-4truemm}\vbox{\hrule width 85truemm}\hss}%
+      \hbox to 0pt{\vbox{\hrule width \addrwd}\hss}%
     \else
       \hbox to 0pt{\hss}%
     \fi
     \vss
   }%
   \nointerlineskip
+  \ka@db@tmpdimb=\backaddrht
+  \advance\ka@db@tmpdimb by \ka@db@stdskip
   \ifx\@empty\@backaddress
-    \vbox to 7.5truemm{%
+    \vbox to \ka@db@tmpdimb{%
       \vfill
     }%
     \nointerlineskip
   \else
-    \vbox to 7.5truemm{%
-      \vskip 2.5truemm
+    \vbox to \ka@db@tmpdimb{%
+      \vskip \ka@db@stdskip
       \vss
-      \hbox to 0pt{\hspace*{-4truemm}%
+      \hbox to 0pt{%
         \vbox{%
-          \hbox to 85truemm{\hfill
-                            {\ka@db@bafntsel\@backaddress}\hfill}%
-          \hrule width 85truemm}\hss}%
-      % \vss % <- removed to get exact layout
+          \hbox to \addrwd{\hfil
+                            {\ka@db@bafntsel\@backaddress}\hfil}%
+          \ifka@db@baddrrule
+            \hrule width \addrwd%
+          \else
+            \hrule width 0pt%
+          \fi%
+          }\hss%
+        }%
     }%
     \nointerlineskip
   \fi
-  \vbox to 40truemm{%
+  \moveright\addroffset%
+  \vbox to \addrht{%
     \vss
     \hbox to 0pt{\hskip0pt minus 4truemm%
       \setbox\@tempboxa=\vbox{%
@@ -693,11 +799,11 @@
           \ka@db@ifemptyvarlocal{postremark}{}{%
             \ka@db@usevarlocal{postremark}\\[\medskipamount]
           }%
-          \raggedright \@addresslist %\toname \\ \toaddress%
+          \raggedright \@addresslist
           % \typeout{End dumping \string\@addresslist}%
         \fi
       }%
-      \ifdim\ht\@tempboxa>40mm
+      \ifdim\ht\@tempboxa>\the\addrht
         %\@warning{Receivers address is larger than letter window}%
         \ClassWarning{dinbrief}{%
           Receivers address is larger than letter window}%
@@ -708,11 +814,10 @@
               \else
                 \hbox to 0pt{\hskip4in\ka@db@usevarlocal{handling}\hss}%
               \fi
-            %\unvbox\@tempboxa
             \box\@tempboxa
           }%
           \if@toadrcenter\relax
-            \else\vskip 2.5truemm minus 2.5truemm
+            \else\vskip \the\ka@db@stdskip minus \the\ka@db@stdskip
           \fi
         }%
       \fi
@@ -723,10 +828,10 @@
       \vss
     \fi
   }\nointerlineskip
-  \vskip 2.5truemm
+  \vskip \ka@db@stdskip
   \vbox to 0pt{\vss%
     \ifka@db@windowrules
-      \hbox to 0pt{\hspace*{-4truemm}\vbox{\hrule width 85truemm}\hss}%
+      \hbox to 0pt{\vbox{\hrule width \addrwd}\hss}%
     \else
       \hbox to 0pt{\hss}%
     \fi
@@ -777,14 +882,23 @@
   \vbox to 0pt{\ka@db@tsbottomtext\vss}\nointerlineskip
 }%
 \def\ka@db@placetoaddress{%
-  \vskip 18.6truemm % old value 13.1truemm
-  %   \vbox to 50truemm{\vss\ka@db@tstoaddress\vss}\nointerlineskip
-  %   \vbox to 50truemm{\ka@db@tstoaddress}\nointerlineskip
-  % \vbox to 50truemm{\ka@db@tstoaddress\vss}\nointerlineskip
-  % ^- org. value
-  \moveright\ka@db@indadr\vbox to 50truemm{\ka@db@tstoaddress\vss}%
+  \ka@db@tmpdima=\addrvpos
+  \advance\ka@db@tmpdima by -\ka@db@vfuzz
+  \advance\ka@db@tmpdima by -\addrht
+  \advance\ka@db@tmpdima by -\backaddrht
+  \advance\ka@db@tmpdima by -\ka@db@stdskip
+  \vskip \ka@db@tmpdima
+  \ka@db@tmpdima=\addrht
+  \advance\ka@db@tmpdima by \backaddrht
+  \advance\ka@db@tmpdima by 2\ka@db@stdskip
+  \ka@db@tmpdimb=\addrhpos
+  \advance\ka@db@tmpdimb by -\ka@db@txtlmarg
+  \moveright\ka@db@tmpdimb\vbox to \ka@db@tmpdima{\ka@db@tstoaddress\vss}%
   \nointerlineskip
-  \vskip 6truemm
+  \ka@db@tmpdima=\reflinevpos
+  \advance\ka@db@tmpdima by -\addrvpos
+  \advance\ka@db@tmpdima by -\ka@db@stdskip
+  \vskip \ka@db@tmpdima
 }%
 \def\ka@db@placerefline{%
   \vbox{\ka@db@tsrefline}\nointerlineskip
@@ -800,7 +914,22 @@
   \setcounter{lt@state}{2}
   \thispagestyle{first@page}
   \ifka@db@ltxtwoe
-     \enlargethispage{-\ht\@@bottomtext}
+    \ifx\empty\ka@db@bottomtext
+      \relax
+    \else
+      \ka@db@tmpdima=\textheight
+      \advance\ka@db@tmpdima by \topmargin
+      \advance\ka@db@tmpdima by \ka@db@vfuzz
+      \ifdim\footskip>0pt
+        \advance\ka@db@tmpdima by \footskip
+      \else
+\advance\ka@db@tmpdima by 8.8truemm
+      \fi
+      \advance\ka@db@tmpdima by -\bottomtextvpos
+      \ifdim\ka@db@tmpdima>0pt
+        \enlargethispage{-\ka@db@tmpdima}
+      \fi
+    \fi
   \fi
   \ka@db@placefromaddress
   \ka@db@placewindowtics
@@ -812,6 +941,16 @@
 }
 \def\oldopening#1{\thispagestyle{first@page}
   \ifka@db@ltxtwoe
+     \expandafter\ifx\csname @@bottomtext\endcsname\relax
+        \newbox\@@bottomtext
+     \fi
+     \ifx\empty\ka@db@bottomtext
+        \setbox\@@bottomtext=\vbox to 0pt{}
+     \else
+\setbox\@@bottomtext=\hbox to 0pt{\hskip0pt minus 4truemm%
+           \vbox{\raggedright \ka@db@bottomtext}%
+           \hss}
+     \fi
      \enlargethispage{-\ht\@@bottomtext}
   \fi
  \ifx\@empty\@fromaddress
@@ -939,6 +1078,9 @@
 }
 \long\def\ka@db@closing[#1]#2{%
   \setcounter{lt@state}{3}
+  \setbox\@tempboxa=\hbox{#1}
+  \ka@db@tmpdimb=\ht\@tempboxa
+  \advance\ka@db@tmpdimb by \dp\@tempboxa
   \par\nobreak
   \vspace{\parskip}
   \stopbreaks
@@ -949,14 +1091,22 @@
         \ka@db@tmpdima=4in
         \parbox[t]{\ka@db@tmpdima}{%\parskip .7em%
           \raggedright
-          \ignorespaces #2\\[3\baselineskip]
-          \vbox to 0pt{%
-            \vskip -4\baselineskip\relax
-            \hbox to 0pt{\strut#1\hss}%
-          \vss}%
-          \ka@db@ifemptyvar{signature}{}{%
-            \ka@db@usevar{signature}%
-          }%
+          \ifdim\ka@db@tmpdimb>0pt
+            \ignorespaces #2\\[1\baselineskip]
+          \else
+            \ignorespaces #2\\[3\baselineskip]
+          \fi
+          \leavevmode
+          \ifdim\ka@db@tmpdimb>0pt
+            \rule{0pt}{2\baselineskip}\box\@tempboxa \newline
+            \ka@db@ifemptyvar{signature}{}{%
+              \ka@db@usevar{signature}%
+              }%
+          \else
+            \ka@db@ifemptyvar{signature}{}{%
+              \ka@db@usevar{signature}%
+              }%
+          \fi
           \strut
         }%
         \@tempdima=\textwidth
@@ -970,16 +1120,22 @@
       \egroup
     \else
       \raggedright
-      \ignorespaces #2\\[3\baselineskip]
-      \leavevmode
-      % here the signature <- not correct
-      \vbox to 0pt{%
-        \vskip -4\baselineskip\relax
-        \hbox to 0pt{\strut#1\hss}%
-      \vss}%
-      \ka@db@ifemptyvar{signature}{}{%
-        \ka@db@usevar{signature}%
-      }%
+      \ifdim\ka@db@tmpdimb>0pt
+        \ignorespaces #2\\[1\baselineskip]
+      \else
+        \ignorespaces #2\\[3\baselineskip]
+      \fi
+      \leavevmode%
+      \ifdim\ka@db@tmpdimb>0pt
+        \rule{0pt}{2\baselineskip}\box\@tempboxa \\
+        \ka@db@ifemptyvar{signature}{}{%
+          \ka@db@usevar{signature}%
+          }%
+      \else
+        \ka@db@ifemptyvar{signature}{}{%
+          \ka@db@usevar{signature}%
+          }%
+      \fi
       \strut
     \fi
   }%
@@ -1044,7 +1200,7 @@
     {\ka@db@genencl{encl}}{\ka@db@genencl{encl}[\enclname]}%
 }
 \ka@db@execatletter{\ka@db@assignvarlocal{encl}{}}%
-\def\ps#1{\par\noindent{\psname \\
+\def\ps#1{\par\noindent{\psname \newline
           \ignorespaces #1\strut}\par}
 \def\stopletter{}
 \newdimen\dlabelheight
@@ -1087,9 +1243,8 @@
 \labelstyle{plain}
 \newif\if@kadb@tracelabels
 \@kadb@tracelabelsfalse
-\long\def\label@plain#1#2{\setbox0\vbox{\hsize\dlabelwidth
+\long\def\label@plain#1#2{\setbox0\vbox{\hsize=\dlabelwidth
  \strut\ignorespaces #2}%{}%
- %\vbox to 50.8truemm{\vss \box0 \vss}%
  \vbox to\dlabelheight{%
    \if@kadb@tracelabels
      \hrule
@@ -1170,18 +1325,18 @@
 \expandafter\let\csname label@C6/C5\endcsname =\label@deskjet
 \long\def\mlabel#1#2{\@nameuse{label@\@labelstyle}{#1}{#2}}
 \def\lstyle@plain{
-  \topmargin-25.4truemm%
+  \topmargin=-25.4truemm%
   \advance\topmargin\dlabeltopmargin
   \headsep\z@
   \headheight\z@
   \topskip\z@
-  \oddsidemargin -12.9truemm
-  \evensidemargin -12.9truemm
+  \oddsidemargin=-12.9truemm
+  \evensidemargin=-12.9truemm
   \textheight=\clabelnumber\dlabelheight
   \advance\textheight by .0001truemm
-  \@colht\textheight \@colroom\textheight \vsize\textheight
-  \columnsep 25mm
-  \textwidth2\dlabelwidth
+  \@colht=\textheight \@colroom=\textheight \vsize=\textheight
+  \columnsep=25mm
+  \textwidth=2\dlabelwidth
   \advance\textwidth by\columnsep
   \ka@db@fontsize{12}{14.4pt}\ka@db@selectfont
   \boxmaxdepth\z@
@@ -1204,10 +1359,10 @@
   \fi
 }
 \def\lstyle@deskjet{
-  \textheight 25.4truecm
+  \textheight=25.4truecm
   \advance\textheight by .0001truemm
-  \textwidth 193.3truemm
-  \columnsep 25pt
+  \textwidth=193.3truemm
+  \columnsep=25pt
  \relax
 }
 \def\startlabels{%
@@ -1305,7 +1460,11 @@
 \def\@nobreakvspace{\@ifstar{\@nobreakvspacex}{\@nobreakvspacex}}
 \def\@nobreakvspacex#1{\ifvmode\nobreak\vskip #1\relax\else
  \@bsphack\vadjust{\nobreak\vskip #1}\@esphack\fi}
-\def\@nobreakcr{\vadjust{\penalty\@M}\@ifstar{\@xnewline}{\@xnewline}}
+\ifka@db@ltxtwoe
+  \def\@nobreakcr{\@ifstar{\@normalcr*}{\@normalcr*}}
+\else
+  \def\@nobreakcr{\vadjust{\penalty\@M}\@ifstar{\@xnewline}{\@xnewline}}
+\fi
 \def\startbreaks{\let\\=\@normalcr
  \interlinepenalty 200\def\par{\@@par\penalty 200}}
 \newcount\labelcount
@@ -1325,7 +1484,6 @@
   \ka@db@assignvar{signature}{#1}%
 }
 \ka@db@execatletter{\ka@db@assignvarlocal{signature}{}}%
-\def\@fromsig{}
 \long\def\address#1{\def\@fromaddress{#1}}
 \def\@fromaddress{}
 \long\def\footer#1{\def\@footer{#1}}
@@ -1361,17 +1519,7 @@
 \ka@db@assignvarglobal{writer}{}%
 \def\writermsg{,\ Bearbeiter}
 \def\@concern{}
-\newbox\@@bottomtext
-\setbox\@@bottomtext=\vbox to 0pt{}
-\def\ka@db@bottomtextmsg{}
-\long\def\ka@db@praebottomtext#1{%
-  \gdef\ka@db@bottomtextmsg{#1}%
-}
-\long\def\ka@db@mainbottomtext#1{%
-  \setbox\@@bottomtext=\hbox to 0pt{\hskip0pt minus 4truemm%
-       \vbox{\raggedright #1}%
-       \hss}%
-}
+\def\ka@db@bottomtext{}
 \long\def\bottomtext#1{%
   \ifka@db@ltxtwoe \relax \else
       \@@warning{\string\bottomtext \space is reserving space for
@@ -1379,13 +1527,12 @@
                  With other LaTeX formats you will have to place a
                  \string\clearpage-command at the appropriate position}%
   \fi
-  \ka@db@dobottomtext{#1}%
+  \long\gdef\ka@db@bottomtext{#1}%
   % \gdef\ka@db@bottomtextmsg{#1}%
   % \setbox\@@bottomtext=\hbox to 0pt{\hskip0pt minus 4truemm%
   %      \vbox{\raggedright #1}%
   %      \hss}%
   }
-\long\def\ka@db@dobottomtext#1{\ka@db@praebottomtext{#1}}
 
 \def\document{%
   \endgroup
@@ -1395,19 +1542,19 @@
               \@spaces[\@unusedoptionlist]}%
     \fi
   \fi
-  \@colht\textheight
-  \@colroom\textheight
-  \vsize\textheight
-  \columnwidth\textwidth
-  \@clubpenalty\clubpenalty
+  \@colht=\textheight
+  \@colroom=\textheight
+  \vsize=\textheight
+  \columnwidth=\textwidth
+  \@clubpenalty=\clubpenalty
   \if@twocolumn
     \advance\columnwidth -\columnsep
     \divide\columnwidth\tw@
-    \hsize\columnwidth
+    \hsize=\columnwidth
     \@firstcolumntrue
   \fi
-  \hsize\columnwidth
-  \linewidth\hsize
+  \hsize=\columnwidth
+  \linewidth=\hsize
   \begingroup
     \@floatplacement
     \@dblfloatplacement
@@ -1450,8 +1597,6 @@
   \def\do##1{\let ##1\@notprerr}%
   \@preamblecmds
   \global\let\do\noexpand
-  % \ka@db@assbottomtext{\ka@db@bottomtextmsg}%
-  \long\def\ka@db@dobottomtext##1{\ka@db@mainbottomtext{##1}}
 }
 \def\enddocument{%
   \@checkend{document}
@@ -1730,9 +1875,11 @@
   Juli\or August\or September\or Oktober\or November\or Dezember\fi
   \space\number\year}
 \newcount\yearcnt
-\yearcnt=\year
-\advance\yearcnt-\number1900
-\def\@znumber#1{\ifnum\number#1<10 0\number#1\else\number#1\fi}
+\yearcnt=\expandafter\@gobbletwo\the\year
+\def\@znumber#1{%
+  \ifnum\number#1<10 0\fi
+  \expandafter\@firstofone\expandafter{\number#1}%
+}
 \def\ntoday{\@znumber{\number\day}.%
             \@znumber{\number\month}.%
             \@znumber{\the\yearcnt}}
@@ -1745,63 +1892,61 @@
                 \hangafter=1
                 \unhbox\@betr #1\par}}
 \let\subject=\concern
-\newlength{\@fordate}
-\setlength{\@fordate}{\textwidth}
-\addtolength{\@fordate}{-131truemm}
 \def\@answertoold{%
-  \setlength{\@fordate}{\textwidth}
-  \addtolength{\@fordate}{-131truemm}
-  \parbox[b]{50.8truemm}{{\ka@db@fontsize{9}{11pt}\ka@db@selectfont
-                          \yourmailmsg{}}%
-                         \hfill\\ \@yourmail\hbox{}\hss}%
-  \parbox[b]{50.8truemm}{{\ka@db@fontsize{9}{11pt}\ka@db@selectfont
-                          \signmsg{}}%
-                         \hfill\\ \@mymail\hbox{}\hss}%
-  \parbox[b]{25.4truemm}{{\ka@db@fontsize{9}{11pt}\ka@db@selectfont
-                          \phonemsg{} \@prephone{}}%
-                         \hfill\\ \@phone\hbox{}\hss}%
-  \parbox[b]{\@fordate}{{\ka@db@fontsize{9}{11pt}\ka@db@selectfont
-    \ifx\@empty\@place
-       \vphantom{K}\rule{2pt}{0pt}
-     \else
-       \@place{}%
-     \fi
-    }\hfill\\ \@ntoday}
+  \parbox[b]{\ka@db@fieldwd}{{\ka@db@fontsize{9}{11pt}\ka@db@selectfont
+                              \yourmailmsg{}}%
+                             \hfil\newline \@yourmail\hbox{}\hss}%
+  \hskip\ka@db@fldskip%
+  \parbox[b]{\ka@db@fieldwd}{{\ka@db@fontsize{9}{11pt}\ka@db@selectfont
+                              \signmsg{}}%
+                             \hfil\newline \@mymail\hbox{}\hss}%
+  \hskip\ka@db@fldskip%
+  \parbox[b]{\ka@db@shfldwd}{{\ka@db@fontsize{9}{11pt}\ka@db@selectfont
+                              \phonemsg{} \@prephone{}}%
+                             \hfil\newline \@phone\hbox{}\hss}%
+  \hskip\ka@db@fldskip%
+  \parbox[b]{\ka@db@shfldwd}{{\ka@db@fontsize{9}{11pt}\ka@db@selectfont
+                             \ifx\@empty\@place
+                               \vphantom{K}\rule{2pt}{0pt}
+                             \else
+                               \@place{}%
+                             \fi
+                            }\hfil\newline \@ntoday}
   }
 \def\@answertonew{%
   \hbox to \textwidth{%
-    \setlength{\@fordate}{\textwidth}%
-    \addtolength{\@fordate}{-156.4truemm}%
-    \addtolength{\@fordate}{3cm}% This is a heavens value.
-    \parbox[b]{50.8truemm}{{\ka@db@fontsize{7}{9pt}\ka@db@selectfont
-                            \yourmailmsg{}}%
-                           \hfill\\ \@yourmail\hbox{}\hss}%
-    \parbox[b]{50.8truemm}{{\ka@db@fontsize{7}{9pt}\ka@db@selectfont
-                            \signmsg{}}%
-                           \hfill\\ \@mymail\hbox{}\hss}%
-    \parbox[b]{50.8truemm}{{\ka@db@fontsize{7}{9pt}\ka@db@selectfont
-                            \phonemsg{}%
-                            \writermsg{}%
-                            }%
-                           \hfill\\
-                           \ifx\@empty\@prephone\relax
-                           \else
-                             \@prephone{}
-                           \fi
-                           \@phone
-                           \ka@db@ifemptyvar{writer}%
-                             {}% true
-                             {% false
-                               \ifx\@empty\@phone\relax
+    \parbox[b]{\ka@db@fieldwd}{{\ka@db@fontsize{7}{9pt}\ka@db@selectfont
+                                \yourmailmsg{}}%
+                               \hfil\newline \@yourmail\hbox{}\hss}%
+    \hskip\ka@db@fldskip%
+    \parbox[b]{\ka@db@fieldwd}{{\ka@db@fontsize{7}{9pt}\ka@db@selectfont
+                                \signmsg{}}%
+                               \hfil\newline \@mymail\hbox{}\hss}%
+    \hskip\ka@db@fldskip%
+    \parbox[b]{\ka@db@fieldwd}{{\ka@db@fontsize{7}{9pt}\ka@db@selectfont
+                                \phonemsg{}%
+                                \writermsg{}%
+                               }%
+                               \hfil\newline
+                               \ifx\@empty\@prephone\relax
                                \else
-                                 ,\ % insert comma and blank only
-                               \fi%   if both are nonempty
-                               \ka@db@usevar{writer}%
-                             }%
-                           \hbox{}\hss}%
-    \parbox[b]{\@fordate}{{\ka@db@fontsize{7}{9pt}\ka@db@selectfont
-      \datemsg
-      }\hfill\\ \@ntoday}
+                                 \@prephone{}
+                               \fi
+                               \@phone
+                               \ka@db@ifemptyvar{writer}%
+                                 {}% true
+                                 {% false
+                                   \ifx\@empty\@phone\relax
+                                   \else
+                                     ,\ % insert comma and blank only
+                                   \fi%   if both are nonempty
+                                   \ka@db@usevar{writer}%
+                                 }%
+                               \hbox{}\hss}%
+    \hskip\ka@db@fldskip%
+    \parbox[b]{\ka@db@shfldwd}{{\ka@db@fontsize{7}{9pt}\ka@db@selectfont
+                               \datemsg
+                              }\hfil\newline \@ntoday}
     \hss}%
   }
 \def\enabledraftstandard{%
@@ -1929,6 +2074,13 @@
 \pagenumbering{arabic}
 \onecolumn
 \errorcontextlines=10
+\ifka@db@ltxtwoe
+  \IfFileExists{dinbrief.cfg}{%
+    \makeatother%
+    \input{dinbrief.cfg}%
+    \makeatletter%
+   }{\relax}
+\fi
 \endinput
-%% 
+%%
 %% End of file `dinbrief.cls'.

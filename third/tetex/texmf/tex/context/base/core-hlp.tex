@@ -1,0 +1,170 @@
+%D \module
+%D   [       file=core-hlp,
+%D        version=1998.10.10,
+%D          title=\CONTEXT\ Core Macros,
+%D       subtitle=Help (Experimental),
+%D         author={Hans Hagen \& Ton Otten},
+%D           date=\currentdate,
+%D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
+%C
+%C This module is part of the \CONTEXT\ macro||package and is
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
+%C details. 
+
+% todo : dedicated vide/hide voor helps 
+
+%D This is an experimental and private module, so the interface
+%D and functionality can change. Pieces of code will be moved
+%D to other modules. More features are possible but will be 
+%D interfaces later. See m-chart for an application as well 
+%D as the second tno-tpd manual (graphic in margin, click 
+%D on it, pop up big one, use menu with hides, as well as 
+%D background, etc. etc.
+
+\unprotect 
+
+\defineframedtext
+  [\e!helptext]
+
+\setupframedtexts
+  [\e!helptext]
+  [\c!breedte=.75\tekstbreedte,
+   \c!uitlijnen=\v!normaal,
+   \c!kader=\v!uit,
+   \c!achtergrond=\v!raster]
+
+\newcounter     \nofhelpdataentries
+\newconditional \somehelpdatadefined
+
+\appendtoks \getpagehelpdata         \to \beforeeverypage
+\appendtoks \synchronizepagehelpdata \to \aftereverypage
+
+% will be proper state variable 
+
+\let\pagehelpdata\empty
+
+\def\dontresetpagedata
+  {\let\synchronizepagehelpdata\relax}
+
+\def\resetpagehelpdata
+  {\iflocation  
+     \let\synchronizepagehelpdata\resetpagehelpdata
+     \global\let\pagehelpdata\empty
+     \resetreference[HideHelp]%
+   \fi}
+
+\let\synchronizepagehelpdata\resetpagehelpdata
+
+\resetreference[HideHelp]
+
+\def\getpagehelpdata
+  {\iflocation\ifcase\nofhelpdataentries\else
+     \let\pagehelpdata\empty
+     \ifconditional\somehelpdatadefined
+       \definetwopasslist{hlp:\realfolio}%
+       \doloop
+         {\gettwopassdata{hlp:\realfolio}%
+          \iftwopassdatafound
+            \addtocommalist\twopassdata\pagehelpdata
+          \else
+            \exitloop
+          \fi}%
+     \fi
+     \ifx\pagehelpdata\empty \else
+       \useJSscripts[fld]%
+       \definereference[HideHelp][JS(Hide_Fields)]% for the moment 
+     \fi
+   \fi\fi}
+
+\def\setpagehelpdata[#1]%
+  {\iflocation\expanded{\dosetpagehelpdata{#1}}\fi}
+
+\def\dosetpagehelpdata#1%
+  {\doglobal\increment\nofhelpdataentries
+   \writeutilitycommand
+     {\twopassentry%
+        {hlp:\realfolio}%
+        {\nofhelpdataentries}%
+        {#1}}}
+
+\setvalue{\e!start\e!helptext}[#1]%
+  {\iflocation
+     \global\settrue\somehelpdatadefined
+     \setvalue{\e!stop\e!helptext}%
+      %{\definesymbol[helpinfo:#1][\getvalue\e!helptext{\getbuffer[\e!helptext]}]%
+       {\definesymbol[helpinfo:#1][{\doframedtext[\e!helptext]{\getbuffer[\e!helptext]}}]%
+        \dopresetfieldsymbol{helpinfo:#1}}%
+   \else
+     \letvalue{\e!stop\e!helptext}\relax
+   \fi
+   \dostartbuffer[\e!helptext][\e!start\e!helptext][\e!stop\e!helptext]}
+
+\long\def\helptext[#1]#2% 
+  {\iflocation
+     \global\settrue\somehelpdatadefined
+    %\definesymbol[helpinfo:#1][\getvalue\e!helptext{#2}]%
+     \definesymbol[helpinfo:#1][{\doframedtext[\e!helptext]{#2}}]%
+     \dopresetfieldsymbol{helpinfo:#1}%
+   \fi}
+
+\let\definehelptext\helptext % for backward compabilities sake 
+
+\def\dohelpdata#1%
+  {\setbox0=\hbox
+     {\startoverlay
+        {\box0}
+        {\definemainfield[help:#1][check][helpsetup][helpinfo:#1][helpinfo:#1]%
+         \fitfield[help:#1]}
+      \stopoverlay}}
+
+\def\helpdata
+  {\iflocation
+     \bgroup
+    %\getpagehelpdata
+     \ifx\pagehelpdata\empty \else
+       \setupfields[\v!reset]%
+       \setupfield
+         [helpsetup]
+         [\c!breedte=\v!passend,
+          \c!hoogte=\v!passend,
+          \c!kader=\v!uit,
+          \c!klikin=JS(Hide_Fields),
+          \c!optie={\v!alleenleesbaar,\v!verborgen}]%
+       \setbox0=\box\voidb@x
+       \processcommacommand[\pagehelpdata]\dohelpdata
+       \box0
+     \fi
+     \egroup  
+   \fi}
+
+\def\helpbutton % also gobble spaces between [][]
+  {\dodoubleempty\dohelpbutton}
+
+\def\dohelpbutton
+  {\ifsecondargument
+     \expandafter\donohelpbutton
+   \else
+     \expandafter\dodohelpbutton
+   \fi}
+
+\def\dodohelpbutton[#1][#2]#3[#4]% #2 is space gobbling dummy 
+  {\iflocation 
+     \setpagehelpdata[#4]%
+     \useJSscripts[fld]%
+     \button[#1]{#3}[JS(Vide_Hide_Fields{help:#4})]%
+   \fi}
+
+\def\donohelpbutton[#1][#2]% 
+  {\dodohelpbutton[#1][]{}[#2]} 
+
+\def\doifhelpinfo#1#2%
+  {\iflocation
+     \doifsymboldefinedelse{helpinfo:#1}{#2}\donothing
+   \fi}
+
+\def\doifelsehelpinfo#1#2#3%
+  {\iflocation
+     \doifsymboldefinedelse{helpinfo:#1}{#2}{#3}%
+   \fi}
+
+\protect \endinput 

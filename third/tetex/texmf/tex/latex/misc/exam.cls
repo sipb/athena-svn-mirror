@@ -1,14 +1,43 @@
 % exam.cls
 %
 % A LaTeX2e document class for preparing exams.
-% 
-% Written by Philip Hirschhorn
- 
 
-\def\fileversion{2.0}
-\def\filedate{1997/04/06}
+%%% Copyright (c) 2000 Philip S. Hirschhorn
+%
+% This program may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.2 or later is part of all distributions of LaTeX 
+% version 1999/12/01 or later.
+%
+% This program consists of the files exam.cls and examdoc.tex
+
+% The user documentation for exam.cls is in the file examdoc.tex.
 
 
+%%% Philip Hirschhorn
+%%% Department of Mathematics
+%%% Wellesley College
+%%% Wellesley, MA 02481
+%%% psh@poincare.wellesley.edu
+%%% psh@math.mit.edu
+
+% The newest version of this documentclass should always be available
+% from my web page: http://www-math.mit.edu/~psh/
+
+
+\def\fileversion{2.01}
+\def\filedate{2000/10/10}
+
+%--------------------------------------------------------------------
+%--------------------------------------------------------------------
+%
+% The only change from version 2.0 to version 2.01 is that this
+% documentclass (and its accompanying documentation) is now
+% explicitly distributed under the LaTeX Project Public License.
+%
 %---------------------------------------------------------------------
 %---------------------------------------------------------------------
 % PLEASE DO NOT MAKE ANY CHANGES TO THIS FILE!
@@ -19,17 +48,8 @@
 % If there's some feature that you'd like that this file doesn't
 % provide, tell me about it.
 % 
-% Philip Hirschhorn
-% Department of Mathematics
-% Wellesley College
-% Wellesley, MA 02181
-% psh@math.mit.edu
-% phirschhorn@wellesley.edu
-% (617) 283-3116
-% 
 %
 %
-% The user documentation for exam.cls is in the file examdoc.tex.
 %
 %
 % Thanks to:

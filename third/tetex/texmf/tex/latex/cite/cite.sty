@@ -1,11 +1,11 @@
 %     C I T E . S T Y
 %
-%     version 3.8  (Apr 1999)
+%     version 3.9  (Nov 2001)
 %
 %     Compressed, sorted lists of numerical citations: [11-16]
 %     see also OVERCITE.STY and DRFTCITE.STY
 %
-%     Copyright (C) 1989-1999 by Donald Arseneau
+%     Copyright (C) 1989-2001 by Donald Arseneau
 %     These macros may be freely transmitted, reproduced, or modified
 %     provided that this notice is left intact.
 %
@@ -63,7 +63,7 @@
   \DeclareOption{sort}{\let\@cite@list\relax}% default!
   \DeclareOption{noadjust}{\let\cite@adjust\@empty}% Don't change spaces
   \DeclareOption{adjust}{\let\cite@adjust\relax}% adjust space before [ ]
-  \ProvidesPackage{cite}[1999/04/23 \space  v 3.8]
+  \ProvidesPackage{cite}[2001/10/14 \space  v 3.9]
   \ProcessOptions }
 
 %----------------------
@@ -192,14 +192,15 @@
     \oc@verbo \global\@namedef{b@\@citeb\@extra@b@citeb}{?}}{}}%
  \@esphack}
 
-\def\@nocite#1{\xdef\@no@sparg{\@ignsp#1 \! }% remove *ALL* spaces
+\def\@nocite#1{\begingroup\let\protect\string% normalize active chars
+      \xdef\@no@sparg{\expandafter\@ignsp#1 \: }\endgroup% and remove *ALL* spaces
  \if@filesw \immediate\write\@auxout {\string\citation {\@no@sparg}}\fi}
 
 % for ignoring *ALL* spaces in the input.  This presumes there are no
 % \outer tokens and no \if-\fi constructs in the parameter.  Spaces inside
 % braces are retained.
 %
-\def\@ignsp#1 {\ifx\!#1\@empty\else #1\expandafter\@ignsp\fi}
+\def\@ignsp#1 {\ifx\:#1\@empty\else #1\expandafter\@ignsp\fi}
 
 \let\nocitecount\relax  % in case \nocitecount was used for drftcite
 
@@ -207,6 +208,9 @@
 %  in case no fancy bib package (chapterbib) defines this
 
 \@ifundefined{G@refundefinedtrue}{\let\G@refundefinedtrue\relax}{}
+
+\@ifundefined{bbl@cite@choice}{}{\@ifundefined{org@@citex}{}%
+  {\let\org@@citex\@citex}}% Prevent stomping by babel
 
 \citenum % execute restore-catcodes
 
@@ -333,6 +337,7 @@ mode citations.
 % 3.7: catcode preservation and global \@no@sparg for french.sty; warnings
 %      in \nocite.
 % 3.8: \citedash hook, noadjust option, hack for babel
+% 3.9: More babel-compatibility hacks
 %
 % Send problem reports to asnd@triumf.ca
 

@@ -1,107 +1,176 @@
-% Copyright (C) 1997, 1999 Claudio Beccari v.1.1
+% Copyright (C) 1997, 1999, 2000 Claudio Beccari v.2.0a 2000/02/13
 % Ligature and kerning table for caps-and-small-caps Greek font
-% (CB 1997/05/26); accent-spirit ligatures added 1997/11/03 
-% No diacritics except for diaeresis
-diaer=oct"042";                         % double quote 
+% (CB 1997/05/26); accent-spirit ligatures added 1997/11/03
+% (CB 2000/01/29); accent-spirit ligatures completely modified
+% (CB 2000/02/13); added kerning specials between A,a and u,"u,U,"U
+% No diacritics except for diaeresis and iota adscript
+diaer=oct"042";                         % double quote
+idiaer=oct"360";                        % iota with diaeresis
+idiaerac=oct"362";                      % iota with diaeresis and acute
+udiaer=oct"364";                        % upsilon with diaeresis
+udiaerac=oct"366";                      % upsilon with diaeresis and acute
+Idiaer=oct"333";                        % Iota with diaeresis
+Udiaer=oct"337";                        % Upsilon with diaeresis
+AUkern#:=2.5u#;                         % check definition in cbupper.mf
+aukern#:=1.5u#;                         % check definition in cblower.mf
+%
 ligtable "-": "-" =: oct"000";          % en-dash
 ligtable oct"000": "-" =: oct"177";     % em-dash
 ligtable "(":  "(" =: oct"173";         % open quotes
 ligtable ")":  ")" =: oct"175";         % close quotes
 ligtable "<":
-        "~" =: oct"100", "'" =: oct"126", "`" =: oct"103",
-        "a" =: oct"201", "e" =: oct"341", "h" =: oct"231", "r" =: oct"373",
-        "o" =: oct"345", "w" =: oct"261", "i" =: oct"311", "u" =: oct"315",
+        "~" =: "<", "'" =: "<", "`" =: "<",
+        "a" =: "a", "e" =: "e", "h" =: "h", "r" =: "r",
+        "o" =: "o", "w" =: "w", "i" =: "i", "u" =: "u",
         "A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
 ligtable ">":
-        "~" =: oct"134", "'" =: oct"136", "`" =: oct"137",
-        "a" =: oct"202", "e" =: oct"342", "h" =: oct"232", "r" =: oct"374",
-        "o" =: oct"346", "w" =: oct"262", "i" =: oct"312", "u" =: oct"316",
-	"A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
-ligtable diaer: "~" =: oct"040", "'" =: oct"043", "`" =: oct"044",
+        "~" =: ">", "'" =: ">", "`" =: ">",
+        "a" =: "a", "e" =: "e", "h" =: "h", "r" =: "r",
+        "o" =: "o", "w" =: "w", "i" =: "i", "u" =: "u",
+	    "A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
+ligtable diaer: "~" =: diaer, "'" =: oct"043", "`" =: diaer,
         oct"375" =:| oct"035",  % diaeresis at end of word becomes apostrophe
-        "i" =: oct"360", "u" =: oct"364",
-        "I" =: oct"333", "U" =: oct"337";
+        "i" =: idiaer, "u" =: udiaer, "I" =:Idiaer, "U" =: Udiaer;
 ligtable oct"044":      % diaeresis and grave
-        "i" =: oct"361", "u" =: oct"365", "I" =:oct"333",  "U" =:oct"337";
+        "i" =: idiaer, "u" =: udiaer;
 ligtable oct"043":      % diaeresis and acute
-        "i" =: oct"362", "u" =: oct"366", "I" =:oct"333",  "U" =:oct"337"; 
+        "i" =: idiaerac, "u" =: udiaerac;
 ligtable oct"040":      % diaeresis and circumflex
-        "i" =: oct"363", "u" =: oct"367", "I" =:oct"333",  "U" =:oct"337"; 
-ligtable "`": 
-        diaer =: oct"044", "`" =: oct"034",  "<"=: oct"103", ">"=: oct"137",
-        "a" =: oct"200", "h" =: oct"230", "w" =: oct"260",
-        "e" =: oct"340", "o" =: oct"344", "i" =: oct"310", "u" =: oct"314",
-	"A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
-ligtable "'": diaer =: oct"043", "'" =: oct"035",  "<"=: oct"126", ">"=: oct"136",
-        "a" =: oct"210", "h" =: oct"240", "w" =: oct"270",
-        "e" =: oct"350", "o" =: oct"354", "i" =: oct"320", "u" =: oct"324",
-	"A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
+        "i" =: idiaer, "u" =: udiaer;
+ligtable "`":
+        diaer =: diaer, "`" =: oct"034",  "<"=: "<", ">"=: ">",
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "e" =: "e", "o" =: "o", "i" =: "i", "u" =: "u",
+	    "A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
+ligtable "'": diaer =: oct"043", "'" =: oct"035",  "<"=: "<", ">"=: ">",
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "e" =: "e", "o" =: "o", "i" =: "i", "u" =: "u",
+	    "A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
 ligtable oct"126":      % rough breathing and acute
-        "a" =: oct"211", "h" =: oct"241", "w" =: oct"271",
-        "e" =: oct"351", "o" =: oct"355", "i" =: oct"321", "u" =: oct"325",
-	"A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "e" =: "e", "o" =: "o", "i" =: "i", "u" =: "u",
+	    "A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
 ligtable oct"136":      % smooth breathing and acute
-        "a" =: oct"212", "h" =: oct"242", "w" =: oct"272",
-        "e" =: oct"352", "o" =: oct"356", "i" =: oct"322", "u" =: oct"326",
-	"A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "e" =: "e", "o" =: "o", "i" =: "i", "u" =: "u",
+	    "A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
 ligtable oct"137":      % smooth breathing and grave
-        "a" =: oct"213", "h" =: oct"253", "w" =: oct"273",
-        "e" =: oct"353", "o" =: oct"357", "i" =: oct"323", "u" =: oct"327",
-	"A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "e" =: "e", "o" =: "o", "i" =: "i", "u" =: "u",
+	    "A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
 ligtable oct"103":      % rough breathing and grave
-        "a" =: oct"203", "h" =: oct"243", "w" =: oct"263",
-        "e" =: oct"343", "o" =: oct"347", "i" =: oct"313", "u" =: oct"317",
-	"A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
-ligtable "~": diaer =: oct"040",  "<"=: oct"100", ">"=: oct"134",
-        "a" =: oct"220", "h" =: oct"250", "w" =: oct"300",
-        "i" =: oct"330", "u" =: oct"334",
-	"A" =:"A",  "H" =:"H", "I" =:"I",  "U" =:"U", "W" =:"W";
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "e" =: "e", "o" =: "o", "i" =: "i", "u" =: "u",
+	    "A" =:"A", "E" =:"E", "H" =:"H", "I" =:"I", "O" =:"O", "U" =:"U", "W" =:"W";
+ligtable "~": diaer =: diaer,  "<"=: "<", ">"=: ">",
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "i" =: "i", "u" =: "u",
+	    "A" =:"A",  "H" =:"H", "I" =:"I",  "U" =:"U", "W" =:"W";
 ligtable oct"100":      % rough breathing and circumflex
-        "a" =: oct"221", "h" =: oct"251", "w" =: oct"301",
-        "i" =: oct"331", "u" =: oct"335",
-	"A" =:"A",  "H" =:"H", "I" =:"I",  "U" =:"U", "W" =:"W";
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "i" =: "i", "u" =: "u",
+	    "A" =:"A",  "H" =:"H", "I" =:"I",  "U" =:"U", "W" =:"W";
 ligtable oct"134":      % smooth breathing and circumflex
-        "a" =: oct"222", "h" =: oct"252", "w" =: oct"302",
-        "i" =: oct"332", "u" =: oct"336",
-	"A" =:"A",  "H" =:"H", "I" =:"I",  "U" =:"U", "W" =:"W";
+        "a" =: "a", "h" =: "h", "w" =: "w",
+        "i" =: "i", "u" =: "u",
+	    "A" =:"A",  "H" =:"H", "I" =:"I",  "U" =:"U", "W" =:"W";
 
-% iota subscript
-ligtable "a": "|" =: "a";
-ligtable "h": "|" =: "h";
-ligtable "w": "|" =: "w";
-ligtable oct"200": "|" =: oct"200"; 
-ligtable oct"201": "|" =: oct"201";
-ligtable oct"202": "|" =: oct"202";
-ligtable oct"203": "|" =: oct"203";
-ligtable oct"210": "|" =: oct"210"; 
-ligtable oct"211": "|" =: oct"211";
-ligtable oct"212": "|" =: oct"212";
-ligtable oct"213": "|" =: oct"213";
-ligtable oct"220": "|" =: oct"220"; 
-ligtable oct"221": "|" =: oct"221";
-ligtable oct"222": "|" =: oct"222";
-ligtable oct"230": "|" =: oct"230"; 
-ligtable oct"231": "|" =: oct"231";
-ligtable oct"232": "|" =: oct"232";
-ligtable oct"240": "|" =: oct"240"; 
-ligtable oct"241": "|" =: oct"241";
-ligtable oct"242": "|" =: oct"242";
-ligtable oct"243": "|" =: oct"243";
-ligtable oct"250": "|" =: oct"250"; 
-ligtable oct"251": "|" =: oct"251";
-ligtable oct"252": "|" =: oct"252";
-ligtable oct"253": "|" =: oct"253";
-ligtable oct"260": "|" =: oct"260"; 
-ligtable oct"261": "|" =: oct"261";
-ligtable oct"262": "|" =: oct"262";
-ligtable oct"263": "|" =: oct"263";
-ligtable oct"270": "|" =: oct"270"; 
-ligtable oct"271": "|" =: oct"271";
-ligtable oct"272": "|" =: oct"272";
-ligtable oct"273": "|" =: oct"273";
-ligtable oct"300": "|" =: oct"300"; 
-ligtable oct"301": "|" =: oct"301";
-ligtable oct"302": "|" =: oct"302";
+% iota subscript and other ligatures and kernings
+% oct"016"=a" is identical to the glyph a, but is in a different position
+% a" is used for the different kern-ligarures with "i or "u
+
+ligtable oct"016": "'" =: oct"016",         % (a")+(') -> (a")
+    "`" =: oct"016",                        % (a")+(`) -> (a")
+    "~" =: oct"016",                        % (a")+(~) -> (a")
+    "u" |=: oct"017",                       % (a")+(u) -> (a")+(shifted udiaer)
+    "i" |=: idiaer;                         % (a")+(i) -> (a")+(idiaer)
+ligtable "a": "|" =: oct"370",
+    diaer =: oct"016",                              % (a)+(") -> (a")
+    "u" kern-1.5u#, udiaer kern-aukern#, udiaerac kern-aukern#, "j" kern-u#,
+    "o" kern-u#, "t" kern-u#, "f" kern-u#, "y" kern-1.5u#,
+    oct"035" kern-2u#, "'"=:"a", "`"=:"a", "<"=:"a", ">"=:"a", "~"=:"a";
+ligtable "h": "|" =: oct"371", "'"=:"h", "`"=:"h", "<"=:"h", ">"=:"h", "~"=:"h";
+ligtable "w": "|" =: oct"372", "'"=:"w", "`"=:"w", "<"=:"w", ">"=:"w", "~"=:"w";
+ligtable "e": "'"=:"e", "`"=:"e", "<"=:"e", ">"=:"e", "~"=:"e";
+ligtable "i": "'"=:"i", "`"=:"i", "<"=:"i", ">"=:"i", "~"=:"i";
+ligtable "o": "'"=:"o", "`"=:"o", "<"=:"o", ">"=:"o", "~"=:"o",
+        "a" kern-u#, "s" kern-.5u#, "c" kern-.5u#;
+ligtable "u": udiaer: udiaerac: oct"017": "a" kern-aukern#, "d" kern-1.5u#, "l" kern-1.5u#,
+        "'"=:"u", "`"=:"u", "<"=:"u", ">"=:"u", "~"=:"u";
+%ligtable udiaer: "a" kern-aukern#, "d" kern-1.5u#, "l" kern-1.5u#;
+%ligtable udiaerac: "a" kern-aukern#, "d" kern-1.5u#, "l" kern-1.5u#;
+ligtable "b": "'"=:"b", "`"=:"b", "<"=:"b", ">"=:"b", "~"=:"b";
+ligtable "g": "a" kern -2u#, "d" kern -1.5u#, "l" kern -1.8u#,
+        "'"=:"g", "`"=:"g", "<"=:"g", ">"=:"g", "~"=:"g";
+ligtable "d": "u" kern-1.5u#, "o" kern-.3u#,
+        oct"035" kern-2u#, "'"=:"d", "`"=:"d", "<"=:"d", ">"=:"d", "~"=:"d";
+ligtable "z": "'"=:"z", "`"=:"z", "<"=:"z", ">"=:"z", "~"=:"z";
+ligtable "j": "a" kern-u#, "'"=:"j", "`"=:"j", "<"=:"j", ">"=:"j", "~"=:"j";
+ligtable "k": "o" kern-u#, "'"=:"k", "`"=:"k", "<"=:"k", ">"=:"k", "~"=:"k";
+ligtable "l": "u" kern -1.5u#, "o" kern-.3u#,
+         oct"035" kern-2u#, "'"=:"l", "`"=:"l", "<"=:"l", ">"=:"l", "~"=:"l";
+ligtable "m":  "'"=:"m", "`"=:"m", "<"=:"m", ">"=:"m", "~"=:"m";
+ligtable "n": "a" kern-1.5u#, "'"=:"n", "`"=:"n", "<"=:"n", ">"=:"n", "~"=:"n";
+ligtable "x": "`"=:"x", "<"=:"x", ">"=:"x", "~"=:"x";
+ligtable "p": "'"=:"p", "`"=:"p", "<"=:"p", ">"=:"p", "~"=:"p";
+ligtable "r": "a" kern-2u#, "'"=:"r", "`"=:"r", "<"=:"r", ">"=:"r", "~"=:"r";
+ligtable "s": "a" kern-.35u#, "." =:| "c", "," =:| "c", ";" =:| "c", ":" =:| "c",
+        "?" =:| "c", "!" =:| "c", ")" =:| "c", "/" =:| "c", "]" =:| "c",
+        oct"375" =:| "c", "'"=:"s", "`"=:"s", "<"=:"s", ">"=:"s", "~"=:"s";
+ligtable "c": "a" kern-.35u#;
+ligtable "t": "a" kern-u#, "'"=:"t", "`"=:"t", "<"=:"t", ">"=:"t", "~"=:"t";
+ligtable "f": "a" kern-u#, "'"=:"f", "`"=:"f", "<"=:"f", ">"=:"f", "~"=:"f";
+ligtable "q": "'"=:"q", "`"=:"q", "<"=:"q", ">"=:"q", "~"=:"q";
+ligtable "y": "a" kern-1.5u#, "'"=:"y", "`"=:"y", "<"=:"y", ">"=:"y", "~"=:"y";
+
+%
+% oct"014"=A" is the same glyph as A, but is in a different position
+% oct"015" is a version of Udiaer preshifted by the amount AUkern to the left
+%
+ligtable oct"014": "U" |=: oct"015",                % (A")+(U)-> (A")+(shifted Udiaer)
+    "I" |=: Idiaer,                                 % (A")+(I)-> (A")+(Idiaer)
+    "'" =: oct"014",                                % (A")+(')-> (A")
+    "i" |=: idiaer,                                 % (A")+(i}-> (A")+(idiaer)
+    "u" |=: oct"017";                               % (A")+(u)-> (A")+(shifted udiaer)
+ligtable "A": "|"=: oct"011",
+    diaer =: oct"014",                              % (A)+(") -> (A")
+    "U" kern-AUkern#, Udiaer kern-AUkern#,
+    "u" kern-aukern#, udiaer kern-aukern#, udiaerac kern-aukern#, "J" kern-1.5u#, "j" kern -u#,
+    "O" kern-1.5u#, "o" kern -u#, "T" kern-1.5u#, "t" kern-1.1u#,
+    "F" kern-1.5u#, "f" kern-1.1u#, "Y" kern-2.2u#, "y" kern-1.5u#,
+    "'"=:"A", "`"=:"A", "<"=:"A", ">"=:"A", "~"=:"A";
+ligtable "H": "|"=: oct"012", "'"=:"H", "`"=:"H", "<"=:"H", ">"=:"H", "~"=:"H";
+ligtable "E": "'"=:"E", "`"=:"E", "<"=:"E", ">"=:"E", "~"=:"E";
+ligtable "I": "'"=:"I", "`"=:"I", "<"=:"I", ">"=:"I", "~"=:"I";
+ligtable "O": "'"=:"O", "`"=:"O", "<"=:"O", ">"=:"O", "~"=:"O",
+        "A" kern-1.5u#, "a" kern-u#, "S" kern-u#;
+ligtable "U": Udiaer: oct"015": "A" kern-AUkern#, "D" kern-2.5u#, "L" kern-2.5u#,
+                "a" kern-1.5u#, "d" kern-1.5u#, "l" kern-1.5u#,
+                "'"=:"U", "`"=:"U", "<"=:"U", ">"=:"U", "~"=:"U";
+%ligtable Udiaer: "A" kern-AUkern#, "D" kern-2.5u#, "L" kern-2.5u#;
+ligtable "W": "|"=: oct"013", "'"=:"W", "`"=:"W", "<"=:"W", ">"=:"W", "~"=:"W";
+
+ligtable "B": "'"=:"B", "`"=:"B", "<"=:"B", ">"=:"B", "~"=:"B";
+ligtable "G": "A" kern -2.4u#, "D" kern -2u#, "L" kern -2.2u#,
+        "a" kern -2.5u#, "d" kern -1.9u#, "l" kern -2.2u#,
+        "'"=:"G", "`"=:"G", "<"=:"G", ">"=:"G", "~"=:"G";
+ligtable "D": "U" kern-2.5u#, "u" kern-1.5u#, "O" kern-.6u#, "o" kern-.4u#,
+        "'"=:"D", "`"=:"D", "<"=:"D", ">"=:"D", "~"=:"D";
+ligtable "Z": "'"=:"Z", "`"=:"Z", "<"=:"Z", ">"=:"Z", "~"=:"Z";
+ligtable "J": "A" kern-1.5u#, "a" kern-u#, "'"=:"J", "`"=:"J", "<"=:"J", ">"=:"J", "~"=:"J";
+ligtable "K": "O" kern-1.5u#, "o" kern-.5u#, "'"=:"K", "`"=:"K", "<"=:"K", ">"=:"K", "~"=:"K";
+ligtable "L": "U" kern-1.8u#, "u" kern-1.5u#, "O" kern-.6u#, "o" kern-.4u#,
+        "'"=:"L", "`"=:"L", "<"=:"L", ">"=:"L", "~"=:"L";
+ligtable "M":  "'"=:"M", "`"=:"M", "<"=:"M", ">"=:"M", "~"=:"M";
+ligtable "N": "A" kern -1.5u#, "a" kern-.8u#, "'"=:"N", "`"=:"N", "<"=:"N", ">"=:"N", "~"=:"N";
+ligtable "X": "'"=:"X", "`"=:"X", "<"=:"X", ">"=:"X", "~"=:"X";
+ligtable "P":  "'"=:"P", "`"=:"P", "<"=:"P", ">"=:"P", "~"=:"P";
+ligtable "R": "A" kern-3u#, "a" kern-2.5u#, "'"=:"R", "`"=:"R", "<"=:"R", ">"=:"R", "~"=:"R";
+ligtable "S": "A" kern-.5u#, "a" kern-.35u#, "'"=:"S", "`"=:"S", "<"=:"S", ">"=:"S", "~"=:"S";
+ligtable "T": "A" kern-1.5u#, "a" kern-1.1u#, "'"=:"T", "`"=:"T", "<"=:"T", ">"=:"T", "~"=:"T";
+ligtable "F": "A" kern-1.5u#, "a" kern-1.1u#, "'"=:"F", "`"=:"F", "<"=:"F", ">"=:"F", "~"=:"F";
+ligtable "Q": "'"=:"Q", "`"=:"Q", "<"=:"Q", ">"=:"Q", "~"=:"Q";
+ligtable "Y": "A" kern-2.2u#, "a" kern-1.5u#, "'"=:"Y", "`"=:"Y", "<"=:"Y", ">"=:"Y", "~"=:"Y";
 
 endinput;
 

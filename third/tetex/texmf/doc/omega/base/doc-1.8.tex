@@ -1,0 +1,2323 @@
+\documentclass[fleqn]{article}
+\usepackage[T1]{fontenc}
+
+\newcommand{\OMEGA}{$\Omega$}
+\newcommand{\LAMBDA}{$\Lambda$}
+\newcommand{\OTP}{\OMEGA TP}
+\newcommand{\OCP}{\OMEGA CP}
+\newcommand{\mymathtt}[1]{\mbox{\texttt{#1}}}
+\newcommand{\mymathit}[1]{\mbox{\emph{#1}}}
+\newcommand{\myit}[1]{\mbox{\emph{#1}}}
+\newcommand{\OFM}{\OMEGA FM}
+\newcommand{\TFM}{TFM}
+\newcommand{\PL}{PL}
+\newcommand{\VF}{VF}
+\newcommand{\VP}{VP}
+\newcommand{\OPL}{\OMEGA PL}
+\newcommand{\OVF}{\OMEGA VF}
+\newcommand{\OVP}{\OMEGA VP}
+\newcommand{\bits}[1]{\langle\mbox{\emph{#1-bit number}}\rangle}
+\newcommand{\showfile}{\langle\mbox{\emph{file}}\rangle}
+\newcommand{\showmode}{\langle\mbox{\emph{mode}}\rangle}
+\newcommand{\showdir}{\langle\mbox{\emph{direction}}\rangle}
+\newcommand{\showcs}{\langle\mbox{\emph{control-sequence}}\rangle}
+\newcommand{\showtext}{\langle\mbox{\emph{typeset-material}}\rangle}
+\newcommand{\showpenalty}{\langle\mbox{\emph{penalty}}\rangle}
+\newcommand{\showtno}{\langle\mbox{\emph{table-no}}\rangle}
+\newcommand{\showeno}{\langle\mbox{\emph{entry-no}}\rangle}
+\newcommand{\showtable}{\langle\mbox{\emph{table-definition}}\rangle}
+\newcommand{\showrule}{\langle\mbox{\emph{rule-definition}}\rangle}
+\newcommand{\showglue}{\langle\mbox{\emph{glue-definition}}\rangle}
+\newcommand{\showivalue}{\langle\mbox{\emph{ivalue-definition}}\rangle}
+\newcommand{\showfvalue}{\langle\mbox{\emph{fvalue-definition}}\rangle}
+\newcommand{\showmvalue}{\langle\mbox{\emph{mvalue-definition}}\rangle}
+\newcommand{\showpenaltydef}{\langle\mbox{\emph{penalty-definition}}\rangle}
+\newcommand{\showinteger}{\langle\mbox{\emph{integer}}\rangle}
+\newcommand{\showfixword}{\langle\mbox{\emph{real}}\rangle}
+\newcommand{\showorder}{\langle\mbox{\emph{order}}\rangle}
+\newcommand{\showkind}{\langle\mbox{\emph{kind}}\rangle}
+\newcommand{\showchardefn}{\langle\mbox{\emph{character-definition}}\rangle}
+\newcommand{\showligocp}{\langle\mbox{\emph{ocp-file-name}}\rangle}
+
+\begin{document}
+\title{Draft documentation for the \OMEGA\ system}
+\author{John Plaice\thanks{School of Computer Science
+and Engineering, University of New South Wales,
+Sydney 2052, Australia.  \texttt{plaice@cse.unsw.edu.au}}
+\and Yannis  Haralambous\thanks{Atelier Fluxus Virus,
+187,~rue Nationale, F-59800 Lille, France.
+\texttt{yannis@fluxus-virus.com}}}
+\date{March 1999}
+\maketitle
+
+\section{Introduction}
+The \OMEGA\ (Omega) typesetting system, an extension of Donald Knuth's \TeX,
+is designed for the typesetting of all the world's languages.  It
+normally uses the Unicode character encoding standard
+as internal representation, although it can
+accept any other character set for input or output.  Since it allows
+one to dynamically define finite state automata to translate from
+one encoding to another, it is possible to define complex contextual
+analysis for ligature choice, character cluster building or diacritic
+placement, as required for scripts such as Arabic, Devanagari,
+Hebrew or Khmer.  It also allows any number of transliterations,
+allowing anyone to type texts for any script, using any other script.
+\OMEGA\ currently supports multidirectional writing, therefore
+allowing typesetting of Hebrew, Arabic, Chinese, Japanese, Mongolian
+and many other scripts.
+
+A Unicode-based font is also being designed for the alphabetic
+scripts.  This font is made up of four subfonts: (1)~Latin, Greek,
+Cyrillic, Armenian, Georgian, punctuation; (2)~Hebrew, Arabic, Syriac;
+(3)~Dingbats and non-letterlike symbols; (4)~Indic and South-East
+Asian scripts.  This font consists of all the glyphs required to
+properly typeset each of the scripts, which means much more than
+designing one glyph for each Unicode position.
+
+This document is the draft documentation for the \OMEGA\ typesetting
+system, designed and developed by the authors.  This draft document
+accompanies the 1.8~release of~\OMEGA, which is available~at:
+\begin{verbatim}
+     ftp://ftp.cse.unsw.edu.au/users/plaice/Omega
+\end{verbatim}
+or at any of the CTAN sites.
+
+This documentation should be considered cursory.
+In particular, it only describes the drivers that
+have been developed for typesetting and viewing,
+and only presents the tools that are
+based on \texttt{web2c}.
+
+For more information, see our Web page, currently~at:
+\begin{verbatim}
+     http://www.ens.fr/omega
+\end{verbatim}
+
+\section{Implementation}
+
+The canonical \OMEGA\ implementation is based on the standard
+\texttt{web2c} \TeX\ distribution.  Currently, \OMEGA\ is based
+on \texttt{web2c-7.3}.  This means that the following standard
+distributions automatically include~\OMEGA:
+\begin{itemize}
+\item
+Thomas Esser's Te\TeX\ (Unix).\\
+Look up \verb|http://www.tug.org/tetex/|\\
+or \verb|mailto:te@informatik.uni-hannover.de|~.
+\item
+Fabrice Popineau's \TeX Win32 (Windows95/NT).\\
+Look up \verb|ftp://ftp.ese-metz.fr/pub/TeX/win32|\\
+or \verb|mailto:popineau@esemetz.ese-metz.fr|~.
+\item
+Sebastian Rahtz's \TeX Live (CD-ROM).\\
+Look up \verb|http://www.tug.org/texlive.html|\\
+or \verb|mailto:s.rahtz@elsevier.co.uk|~.
+\end{itemize}
+
+In addition, there are currently two other prepackaged
+\TeX\ environments that support~\OMEGA:
+\begin{itemize}
+\item
+Tom Kiffe's CMac\OMEGA\ (MacIntosh).\\
+Look up \verb|http://www.kiffe.com/cmacomega.html|\\
+or \verb|mailto:tom@kiffe.com|~.
+\item
+Christian Schenk's MiK\TeX\ (Windows95/NT).\\
+Look up \verb|http://www.inx.de/~cschenk/miktex|\\
+or \verb|mailto:cschenk@snafu.de|~.
+\end{itemize}
+
+The three files distributed with the \OMEGA\ implementation are
+\begin{verbatim}
+     web2c-7.3-omega-1.8.tar.gz
+     omegalib-1.8.tar.gz
+     omegadoc-1.8.tar.gz
+\end{verbatim}
+To install \OMEGA, you will require the standard \TeX\ distribution
+as well.  These files include
+\begin{verbatim}
+     web-7.3.tar.gz
+     web2c-7.3.tar.gz
+\end{verbatim}
+as well as a standard \texttt{texmf} tree.
+In addition to these files, the following drivers are needed:
+\begin{verbatim}
+     dvipsk.tar.gz
+     odvipsk.tar.gz
+     gsftopk.tar.gz
+     xdvik.tar.gz
+     oxdvik.tar.gz
+     libwww.tar.gz
+\end{verbatim}
+These files are all made available in the above \texttt{ftp} sites.
+
+The installation procedure is described below.  Assume that
+\begin{itemize}
+\item \verb|/usr/local/ftp| contains your downloaded files;
+\item \verb|/usr/local/src| is where you place source files; and
+\item \verb|/usr/local/share| is where the \texttt{texmf} tree is
+to be placed;
+\end{itemize}
+\begin{verbatim}
+     FTP=/usr/local/ftp
+     SHARE=/usr/local/share
+     SRC=/usr/local/src
+     cd $SHARE
+     tar xzf $FTP/texmflib.tar.gz
+     tar xzf $FTP/omegalib-1.8.tar.gz
+     cd $SRC
+     tar xzf $FTP/web-7.3.tar.gz
+     tar xzf $FTP/web2c-7.3.tar.gz
+     tar xzf $FTP/web2c-7.3-omega-1.8.tar.gz
+     cd web2c-7.3
+     tar xzf $FTP/dvipsk.tar.gz
+     tar xzf $FTP/odvipsk.tar.gz
+     tar xzf $FTP/gsftopk.tar.gz
+     tar xzf $FTP/xdvik.tar.gz
+     tar xzf $FTP/oxdvik.tar.gz
+     tar xzf $FTP/libwww.tar.gz
+     configure
+     make
+\end{verbatim}
+You will have to choose whether your call to \texttt{configure}
+needs any arguments.  Note that the files may not look exactly
+like this, but you should be able to figure out what is happening.
+
+\section{What does \OMEGA\ offer?}
+
+The \OMEGA\ system is a derivative of Donald Knuth's \TeX.  As such,
+all of the \TeX\ file types can be used by \OMEGA\ as well.  In
+addition there are six new file types.  They are:
+\vspace*{.2cm}
+
+\begin{tabular}{lll}
+Suffix & Replaces & Description\\
+\hline
+\texttt{.opl} & \texttt{.pl} & Font property list (text)\\
+\texttt{.ofm} & \texttt{.tfm} & Font metric (binary)\\
+\texttt{.ovp} & \texttt{.vpl} & Virtual property list (text)\\
+\texttt{.ovf} & \texttt{.vf} & Virtual font (binary)\\
+\texttt{.otp} & ------ & \OMEGA\ Translation Process (text)\\
+\texttt{.ocp} & ------ & \OMEGA\ Compiled Process (binary)\\
+\end{tabular}
+\vspace*{.2cm}
+
+\noindent These different file types are described in future sections.
+
+\noindent
+The \OMEGA\ distribution contains several binaries, described below:
+\vspace*{.2cm}
+
+\begin{tabular}{lll}
+Binary & Replaces & Description\\
+\hline
+\texttt{omega} (\OMEGA) & \TeX & Typesetting engine
+    ($\texttt{.tex} \rightarrow \texttt{.dvi}$) \\
+\texttt{lambda} (\LAMBDA) & \LaTeX & For structured documents
+    ($\texttt{.tex} \rightarrow \texttt{.dvi}$) \\
+\texttt{odvips} & \texttt{dvips} & PostScript driver
+    ($\texttt{.dvi} \rightarrow \texttt{.ps}$) \\
+\texttt{oxdvi} & \texttt{xdvi} & Screen previewer for \texttt{.dvi}
+    ($\texttt{.dvi} \rightarrow \textrm{screen}$) \\
+\texttt{odvicopy} & \texttt{dvicopy} & De-virtualizes \texttt{.dvi}
+    ($\texttt{.dvi} \rightarrow \texttt{.dvi}$) \\
+\texttt{odvitype} & \texttt{dvitype} & Debugging for \texttt{.dvi}
+    ($\texttt{.dvi} \rightarrow \textrm{text}$) \\
+\texttt{opl2ofm} & \texttt{pltotf} & Build font metric
+    ($\texttt{.opl} \rightarrow \texttt{.ofm}$) \\
+\texttt{ofm2opl} & \texttt{tftopl} & Debugging for \texttt{.ofm}
+    ($\texttt{.ofm} \rightarrow \texttt{.opl}$) \\
+\texttt{ovp2ovf} & \texttt{vptovf} & Build virtual font
+    ($\texttt{.ovp} \rightarrow \texttt{.ofm}\times\texttt{.ovf}$) \\
+\texttt{ovf2ovp} & \texttt{vftovp} & Debugging for \texttt{.ovf}
+    ($\texttt{.ofm}\times\texttt{.ovf} \rightarrow \texttt{.ovp}$) \\
+\texttt{otp2ocp} & ------ & Compile \OTP{}
+    ($\texttt{.otp} \rightarrow \texttt{.ocp}$) \\
+\texttt{outocp} & ------ & Debugging for \texttt{.ocp}
+    ($\texttt{.ocp} \rightarrow \textrm{text}$)\\
+\texttt{mkofm} & \texttt{mktextfm} & Generate \texttt{.ofm} file if needed\\
+\texttt{mkocp} & ------ & Generate \texttt{.ocp} file if needed\\
+\end{tabular}
+
+\section{Sixteen-bit fonts, registers, etc.}
+
+One of the fundamental limitations of \TeX3 is that most quantities can
+only range between 0~and~255.  Fonts are limited to~256 characters each,
+only 256 fonts are allowed simultaneously, only 256 of any given kind of
+can be used simultaneously, etc.  \OMEGA\ loosens these restrictions,
+allowing 65~536 (0--65~535) of each of these entities.
+
+\subsection{Characters}
+
+Each font can allow up to 65~536 characters, ranging between
+0~and~65~535.  Unless other means are provided, using \OMEGA\
+Translation Processes (see section~\ref{lab:otps}), the input
+and output mechanisms for characters between 256 (hex~100)
+and 65~535 (hex~ffff) use four circumflexes.  For example,
+\verb|^^^^cab0| means hex value \verb|cab0| and \verb|^^^^0020|
+is the space character.
+
+\subsection{Fonts}
+
+Up to 65~536 fonts may be used.  This is handled automatically,
+and space is allocated as needed.
+
+\subsection{Registers}
+
+Up to 65~536 registers of each kind may be used.  The only case to
+be noted is that \verb|\box255| remains the box used by the output
+routine.
+
+\subsection{Math codes}
+
+\TeX\ allows the use of 16 ($2^4$) font families, each font
+of 256 ($2^8$) characters.
+To access the characters in the math fonts, and to define how
+they are to be used, there are several basic primitives:
+
+\begin{itemize}
+\item \verb|\mathcode| $\bits{8}=\bits{15}$:\\
+Defines 15-bit math code for character;
+\item \verb|\mathcode| $\bits{8}$:\\
+Outputs 15-bit math code associated with character;
+\item \verb|\mathchar| $\bits{15}$:\\
+Generates a math character with 15-bit math code;
+\item \verb|\mathaccent| $\bits{15}$:\\
+Generates a math accent with 15-bit math code;
+\item \verb|\mathchardef| $\showcs=\bits{15}$:\\
+Defines a control sequence with a 15-bit math code;
+\item \verb|\delcode| $\bits{8}=\bits{27}$:\\
+Defines 27-bit delimiter code for character;
+\item \verb|\delcode| $\bits{8}$:\\
+Outputs 27-bit delimiter code associated with character;
+\item \verb|\delimiter| $\bits{27}$:\\
+Generates a math delimiter with 27-bit delimiter code;
+\item \verb|\radical| $\bits{27}$:\\
+Generates a math radical with 27-bit delimiter code;
+\end{itemize}
+where
+\begin{itemize}
+\item $\bits{8}$ refers to an 8-bit character;
+\item $\bits{15}$ refers to value \texttt{0x8000} or a triple
+\begin{itemize}
+\item 3 bits for math category,
+\item 4 bits for font family,
+\item 8 bits for character in font,
+\end{itemize}
+called a \emph{math code};
+\item $\bits{27}$ refers to a negative number or a quintuple
+\begin{itemize}
+\item 3 bits for math category,
+\item 4 bits for first font family,
+\item 8 bits for first character in font,
+\item 4 bits for second font family,
+\item 8 bits for second character in font,
+\end{itemize}
+called a \emph{delimiter code}.
+\end{itemize}
+
+\OMEGA, on the other hand, allows 256 ($2^8$)
+font families, each font of 65~536 ($2^{16}$) characters.
+So, in addition to the \TeX\ math font primitives, which continue to work,
+there are 16-bit versions:
+
+\begin{itemize}
+\item \verb|\omathcode| $\bits{16}=\bits{27}$:\\
+Defines 27-bit math code for character;
+\item \verb|\omathcode| $\bits{16}$:\\
+Outputs 27-bit math code associated with character;
+\item \verb|\omathchar| $\bits{27}$:\\
+Generates a math character with 27-bit math code;
+\item \verb|\omathaccent| $\bits{27}$:\\
+Generates a math accent with 27-bit math code;
+\item \verb|\omathchardef| $\showcs=\bits{27}$:\\
+Defines a control sequence with a 27-bit math code;
+\item \verb|\odelcode| $\bits{16}=\bits{51}$:\\
+Defines 51-bit delimiter code for character;
+\item \verb|\odelcode| $\bits{16}$:\\
+Outputs 51-bit delimiter code associated with character;
+\item \verb|\odelimiter| $\bits{51}$:\\
+Generates a math delimiter with 51-bit delimiter code;
+\item \verb|\oradical| $\bits{51}$:\\
+Generates a math radical with 51-bit delimiter code;
+\end{itemize}
+where
+\begin{itemize}
+\item $\bits{16}$ refers to a 16-bit character;
+\item $\bits{27}$ refers to value \texttt{0x8000000} or a triple
+\begin{itemize}
+\item 3 bits for math category,
+\item 8 bits for font family,
+\item 16 bits for character in font,
+\end{itemize}
+called a \emph{math code};
+\item $\bits{51}$ refers to a pair of numbers, either both negative
+or arranged as $\bits{27}\;\bits{24}$, with the first number being:
+\begin{itemize}
+\item 3 bits for math category,
+\item 8 bits for first font family,
+\item 16 bits for first character in font,
+\end{itemize}
+and the second number being:
+\begin{itemize}
+\item 8 bits for second font family,
+\item 16 bits for second character in font,
+\end{itemize}
+called a \emph{delimiter code}.
+\end{itemize}
+
+Since \OMEGA\ is upwardly compatible with \TeX, the older primitives
+still continue to function as expected.  Internally, math codes are
+27-bit numbers and delimiter codes are 51-bit numbers.  However,
+if \verb|\mathcode|$\bits{15}$ appears in text mode, it
+continues to generate a 15-bit number, to remain upwardly compatible
+with \TeX: Donald Knuth defines several numerical constants through
+\verb|\mathcode|.
+
+\section{New typesetting routines}
+
+Most of the development in \OMEGA\ has dealt with different means
+for manipulating character streams.  Nevertheless, there are new
+typesetting routines.
+
+\subsection{New infinity level}
+
+A new infinity level \texttt{fi} has been added.  It is smaller than
+\texttt{fil} but bigger than any finite quantity.  Its original intention
+was for inter-letter stretching: either \emph{filling-in-the-black},
+as is done for calligraphic scripts such as Arabic; or for emphasis,
+as in Russian; all this without having to rewrite existing macro packages.
+There is therefore a new keyword, \texttt{fi}, and two new primitives,
+\verb|\hfi| and~\verb|\vfi|.
+
+\subsection{Local paragraph parametrization}
+
+The \OMEGA\ system allows the finetuning of layout, using
+\emph{local} paragraph primitives.  The first two,
+\verb|\localinterlinepenalty| and \verb|\localbrokenpenalty|, are
+generalizations of \verb|\interlinepenalty| and \verb|\brokenpenalty|.
+
+When, say,  \verb|\localinterlinepenalty=200| appears,  a \emph{whatsit} node
+is deposited into the token list for the current paragraph.  If the
+value is changed again, another whatsit node is deposited.  When
+\OMEGA\ cuts the paragraph into lines, it will add the current value
+of the local penalty to the penalty node that is placed after every line
+in the vertical list.  Similarly for \verb|\localbrokenpenalty| when a
+discretionary hyphen is placed at the end of a line.  With these primitives,
+it becomes possible to discourage or encourage page breaks at more
+specific parts of a paragraph.
+
+This same local approach is taken for a completely different task:  placing
+fixed-width typeset material at the beginning (or the end) of every
+line in a paragraph.
+
+{<<~\localleftbox{<<~}The original problem to be solved
+was for fine French typesetting, in which guillemets
+are placed running down the left side of a paragraph,
+as in this paragraph, so long as material is being
+quoted.~>>} Since \TeX\ breaks paragraphs in arbitrary
+places, it was impossible to develop a robust macro
+package that could, in a single pass, place the
+guillemets in the right positions.
+
+The original text for the previous paragraph was:
+\begin{verbatim}
+      {<<~\localleftbox{<<~}The original problem to be solved
+      was for fine French typesetting, in which guillemets
+      are placed running down the left side of a paragraph,
+      as in this paragraph, so long as material is being
+      quoted.~>>} Since \TeX\ breaks paragraphs in arbitrary
+      places, it was impossible to develop a robust macro
+      package that could, in a single pass, place the
+      guillemets in the right positions.
+\end{verbatim}
+There are currently four local primitives:
+\begin{itemize}
+\item \verb|\localleftbox{|$\showtext$\verb|}|:\\
+Until this primitive is redefined, then the typeset material
+will be placed at the beginning of every line that follows
+the occurrence of this primitive in the text.
+\item \verb|\localrightbox{|$\showtext$\verb|}|:\\
+Until this primitive is redefined, then the typeset material
+will be placed at the end of every line that follows
+the occurrence of this primitive in the text.
+\item \verb|\localinterlinepenalty|$\;=\showpenalty$:\\
+Until this primitive is redefined, then the given penalty
+value will be added to the penalty node placed between
+successive lines in a paragraph.
+\item \verb|\localbrokenpenalty|$\;=\showpenalty$:\\
+Until this primitive is redefined, then each time that a
+line ends with a discretionary node, then the given penalty
+value will be added to the penalty node following that line.
+\end{itemize}
+Grouping is respected by all of the local paragraph primitives.
+
+\section{Multiple directions}
+
+Below is what is available in the experimental versions of~\OMEGA.
+Unfortunately we did not consider it to be sufficiently stable
+for it to be released generally.  Therefore, \OMEGA\ continues
+to support the bidirectionality functions of \verb|TeX--XeT|.
+In addition, with the \verb|\pagedirHR| and \verb|\pagedirHL|,
+primitives, it is possible to transform the entire page into
+a right-to-left page or a left-to-right page.  Similarly,
+\verb|\pardirHR| and \verb|\pardirHL| allow the paragraph
+direction to change.  The page direction changes should occur
+in empty pages, and the paragraph direction changes should
+occur outside of horizontal mode.  To ensure that tables
+are used properly, there is a primitive \verb|nextfakemath|,
+which, put in front of math mode, ignores that the mathematics
+is supposed to be typeset from left-to-right.  This is used
+in~\LAMBDA, which goes into math mode to do \verb|tabular|
+environments.
+
+\bigskip
+
+{\em 
+Since \TeX\ was originally designed for English, it only supports
+left-to-right typesetting.  This situation was improved somewhat
+with Knuth and MacKay's \verb|TeX-XeT|, modified into Breitenlohner's
+\verb|TeX--XeT|.  However, these modifications to \TeX\ only
+allow the use of right-to-left typesetting, and even then, only
+within a particular paragraph.  In other words, these systems do
+not support the typesetting of a full text in the different writing
+directions.
+
+The \OMEGA\ system distinguishes sixteen different directions,
+which are designated by three parameters:
+\begin{enumerate}
+\item The \emph{beginning of the page} is one of \texttt{T}~(top),
+\texttt{L}~(left), \texttt{R}~(right) or~\texttt{B}~(bottom).
+For English and Arabic, the beginning of the page is~\texttt{T};
+for Japanese it is~\texttt{R}; for Mongolian it is~\texttt{L}.
+\item The \emph{beginning of the line} defines where each line begins.
+For English, it is~\texttt{L}; for Arabic, it is~\texttt{R}; for Japanese
+and Mongolian, it is~\texttt{T}.
+\item The \emph{top of the line} corresponds to the notion
+of `up' within a line.  Normally, this will be the same as for the
+beginning of the page, as in \texttt{TLT} for English, \texttt{TRT}
+for Arabic, \texttt{RTR} for Japanese, or \texttt{LTL} for Mongolian.
+However, for English included in Mongolian text, successive lines
+move `up' the page, which gives direction~\texttt{LTR}.
+\end{enumerate}
+
+The \OMEGA\ system distinguishes three levels of different writing
+direction: page (\verb|\pagedir|), text (\verb|\textdir|) and
+mathematics (\verb|\mathdir|).  Each of these primitives takes
+as primitive one of the above sixteen writing directions.
+\begin{itemize}
+\item \verb|\pagedir| $\showdir$:\quad
+The page direction can only be changed if the current vlist
+is empty.  This decision avoids ambiguous situations.
+\item \verb|\textdir| $\showdir$:\quad
+This primitive can appear anywhere in a text, and \OMEGA\ will
+allow for the moment only mixed horizontal combinations.
+Future versions will allow many different combinations, with
+parametrization.
+Grouping is respected, so it is possible to have inserts
+within a paragraph:  these are implemented using the local paragraph
+mechanism described in the previous section.
+\item \verb|\mathdir| $\showdir$:\quad
+Normally mathematics is done in the same direction as English,
+namely~\texttt{TLT}.  There have been situations where it has been
+written~\texttt{TRT}.  \OMEGA\ allows only eight directions for
+mathematics, namely those in which
+the first and third direction parameters are identical.
+\end{itemize}
+
+In addition, \OMEGA\ allows one to designate the direction of a box.
+For example \verb|\hbox dir TRT{...}| creates a horizontal box,
+and uses direction~\texttt{TRT} while building that box.
+
+Finally, fonts can be stored either naturally or not.  In the unnatural
+situation, called with primitive \verb|\unnaturaldir|, it is understood
+that glyphs in the current font will always appear to the right of the
+current point, above the baseline.  In the natural situation, called
+with \verb|\naturaldir|, glyphs appear in the `correct' direction.  So a
+natural Arabic font would have the glyphs appear to the left of the
+current point, and a natural Japanese font would make the glyphs appear
+below the current point.
+}
+
+\section{Fonts for \OMEGA}
+
+The \TeX\ system takes the following approach to fonts.  The \TeX\ driver
+reads \TeX\ documents and generates \texttt{.dvi} files.  The driver
+uses font metric files (suffix \texttt{.tfm}, text version \texttt{.pl})
+to determine how to lay out boxes on a pages.  The screen
+driver or printer driver transforms the \texttt{.dvi} file in the
+appropriate format, using bitmap fonts (\texttt{.pk}), scaled fonts
+(\texttt{.pfa} or \texttt{.pfb}), or virtual fonts (\texttt{.vf},
+text version \texttt{.vp}).
+
+In the \OMEGA\ system, we make no attempt, for the moment, to change the
+definition of bitmaps or scaled fonts.  We have focused on the font
+metrics (\texttt{.ofm}, text version \texttt{.opl}), and the 
+virtual fonts (\texttt{.ovf}, text version \texttt{.ovp}).
+
+Currently, these new font file formats come in two versions.  The first,
+called level~0, corresponds to the 16-bit version of \TFM\ files, with
+no new functionality.  Level~1 fonts are more ambitious, and provide
+for more powerful features, including compression methods and additional 
+parameters.
+
+\subsection{Level-0 \OFM\ files}
+
+The level-0 \OFM\ files are simply 16-bit versions of \TFM\ files, and have
+corresponding entries.
+Below is a description of the first 14 words of a level-0 \OFM\ file.
+Each entry is a 32-bit integer, non-negative and less than~$2^{31}$:
+\begin{eqnarray*}
+\myit{ofm-level} & = & 0; \\
+\myit{lf} & = & \mbox{length of the file, in words}; \\
+\myit{lh} & = & \mbox{length of the header data, in words}; \\
+\myit{bc} & = & \mbox{smallest character code in the font}; \\
+\myit{ec} & = & \mbox{largest character code in the font}; \\
+\myit{nw} & = & \mbox{number of entries in the width table}; \\
+\myit{nh} & = & \mbox{number of entries in the height table}; \\
+\myit{nd} & = & \mbox{number of entries in the depth table}; \\
+\myit{ni} & = & \mbox{number of entries in the italic correction table}; \\
+\myit{nl} & = & \mbox{number of entries in the lig-kern table}; \\
+\myit{nk} & = & \mbox{number of entries in the kern table}; \\
+\myit{ne} & = & \mbox{number of entries in the extensible character table}; \\
+\myit{np} & = & \mbox{number of font parameter words}; \\
+\myit{font-dir} & = & \mbox{direction of font}.
+\end{eqnarray*}
+We must have that $\myit{bc}-1\leq \myit{ec}\leq 65535$.
+Furthermore, the following identity must hold:
+\begin{eqnarray*}
+\myit{lf} & = &
+14 + \myit{lh} + 2*(\myit{ec}-\myit{bc}+1) +
+\myit{nw} + \myit{nh} + \myit{nd} + \myit{ni} +\\
+& & 2*\myit{nl} + \myit{nk} + 2*\myit{ne} + \myit{np}.
+\end{eqnarray*}
+Note that a font may contain as many as 65536 characters (if $\myit{bc}=0$
+and $\myit{ec}=65535$), and as few as 0~characters
+(if $\myit{bc}=\myit{ec}-1$).
+
+As with \TFM\ files, if two or more octexts are combined to form an integer
+of 16~or more bits, the most significant octets appear first in the file.
+This is called BigEndian order.
+
+Also as with \TFM\ files, the rest of the file is a sequence of ten data arrays having the informal specification
+\begin{eqnarray*}
+\myit{header} & : &
+     \mathbf{array}\;[0..\myit{lh}-1]\;\mathbf{of}\;\myit{stuff}\\
+\myit{char-info} & : &
+     \mathbf{array}\;[\myit{bc}..\myit{ec}]\;\mathbf{of}\;
+     \myit{char-info-word}\\
+\myit{width} & : &
+     \mathbf{array}\;[0..\myit{nw}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{height} & : &
+     \mathbf{array}\;[0..\myit{nh}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{depth} & : &
+     \mathbf{array}\;[0..\myit{nd}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{italic} & : &
+     \mathbf{array}\;[0..\myit{ni}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{lig-kern} & : &
+     \mathbf{array}\;[0..\myit{nl}-1]\;\mathbf{of}\;
+     \myit{lig-kern-command}\\
+\myit{kern} & : &
+     \mathbf{array}\;[0..\myit{nk}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{exten} & : &
+     \mathbf{array}\;[0..\myit{ne}-1]\;\mathbf{of}\;
+     \myit{extensible-recipe}\\
+\myit{param} & : &
+     \mathbf{array}\;[1..\myit{np}]\;\mathbf{of}\;\myit{fix-word}
+\end{eqnarray*}
+
+There is no need to describe the entire file, only those parts that differ
+from \TFM\ files:  $\myit{char-info-word}$,
+$\myit{lig-kern-command}$ and $\myit{extensible-recipe}$.
+Here is a summary of those differences.
+\begin{itemize}
+\item $\myit{char-info-word}$ (8 octets):
+
+\begin{tabular}{lr}
+$\myit{width}$ & 16 bits\\
+$\myit{height}$ & 8 bits\\
+$\myit{depth}$ & 8 bits\\
+$\myit{italic}$ & 8 bits\\
+$\myit{RFU}$ & 6 bits\\
+$\myit{tag}$ & 2 bits\\
+$\myit{remainder}$ & 16 bits\\
+\end{tabular}
+
+The meaning is as in \TFM\ files, so there are 65536 possible widths,
+256 possible widths, 256 possible heights and 256 possible italic corrections.
+
+\item $\myit{lig-kern-command}$ (8 octets):
+
+\begin{tabular}{lr}
+$\myit{skip-byte}$ & 16 bits\\
+$\myit{next-char}$ & 16 bits\\
+$\myit{op-byte}$ & 16 bits\\
+$\myit{remainder}$ & 16 bits\\
+\end{tabular}
+
+The meaning is as in \TFM\ files, with every entry doubling in size.
+
+\item $\myit{extensible-recipe}$ (8 octets):
+
+\begin{tabular}{lr}
+$\myit{ext-top}$ & 16 bits\\
+$\myit{ext-mid}$ & 16 bits\\
+$\myit{ext-bot}$ & 16 bits\\
+$\myit{ext-rep}$ & 16 bits\\
+\end{tabular}
+
+Once again, the meaning is as in \TFM\ files, but every entry has
+been doubled.
+\end{itemize}
+
+\subsection{Level-0 \OPL\ files}
+
+The level-0 \OPL\ files are the same as \PL\ files, with the exception
+that values restricted to 8~bits can now be 16~bits.
+
+\subsection{Level-0 \OVF\ files}
+
+The \OVF\ files are indistinguishable from \VF\ files,
+except for the file suffix.  They exist only because
+the vast majority of drivers balk when they see
+characters that are not 8~bits.
+
+\subsection{Level-0 \OVP\ files}
+
+The level-0 \OVP\ files are the same as \VP\ files, with the exception
+that values restricted to 8~bits can now be 16~bits.
+
+\subsection{Level-1 \OFM\ files}
+
+The level-1 fonts take a different approach to level-0 fonts.  They do
+not make the assumption that typesetting means simply placing
+placing glyphs on the baseline, one after another.  Example
+applications include the automatic placement of glue between characters
+in East Asian scripts, the building of consonental clusters for
+South-Asian and South-East-Asian scripts, as well as the placing of
+diacritics in Arabic and Hebrew.
+
+Level-1 fonts are different from level-0 fonts at three levels.  First, they
+allow the definition of six new kinds of table:
+\begin{itemize}
+\item \textsc{ivalue} tables contain integers.
+\item \textsc{fvalue} tables contain fixword values that do not grow with
+magnification.
+\item \textsc{mvalue} tables contain fixword values that do grow with
+magnification.
+\item \textsc{rule} tables contain \TeX\ rule definitions.
+\item \textsc{glue} tables contain \TeX\ glue definitions.
+\item \textsc{penalty} tables contain \TeX\ penalty definitions.
+\end{itemize}
+There can be several copies of each kind of table, but for the moment,
+there is a maximum of 32~new tables in all.
+
+These new tables can be used as global tables, or can be indexed
+on a character-by-character basis in the $\myit{char-info-word}$ entries,
+which define character parameters.  So, in addition to the standard
+parameters of width, height, depth and italic correction, additional
+parameters (of the six kinds outlined above) can be given for the
+characters.
+
+To allow these new tables to be used, changes have also been made
+to the lig-kern table.
+\begin{itemize}
+\item Characters can be put into equivalence classes, where all
+characters in the same class will act the same in the lig-kern table;
+\item Glue nodes, rule nodes and penalty nodes can be inserted
+automatically into the stream, exactly as for kern nodes in~\TeX.
+\item The lig-kern program can be completely replaced by an \OTP\ (see
+section~\ref{lab:otps}).
+\end{itemize}
+
+Now we begin with the first part of the header of a level-1 \OFM\ file.
+Here are the first 17~words of a level-1 \OFM\ file.
+Each entry below is a 32-bit integer, non-negative and less
+than~$2^{31}$.
+\begin{eqnarray*}
+\myit{ofm-level} & = & 1; \\
+\myit{lf} & = & \mbox{length of the file, in words}; \\
+\myit{lh} & = & \mbox{length of the header data, in words}; \\
+\myit{bc} & = & \mbox{smallest character code in the font}; \\
+\myit{ec} & = & \mbox{largest character code in the font}; \\
+\myit{nw} & = & \mbox{number of entries in the width table}; \\
+\myit{nh} & = & \mbox{number of entries in the height table}; \\
+\myit{nd} & = & \mbox{number of entries in the depth table}; \\
+\myit{ni} & = & \mbox{number of entries in the italic correction table}; \\
+\myit{nl} & = & \mbox{number of entries in the lig-kern table}; \\
+\myit{nk} & = & \mbox{number of entries in the kern table}; \\
+\myit{ne} & = & \mbox{number of entries in the extensible character table}; \\
+\myit{np} & = & \mbox{number of font parameter words}; \\
+\myit{font-dir} & = & \mbox{direction of font}; \\
+\myit{nco} & = & \mbox{offset of the character entries, in words}; \\
+\myit{ncw} & = & \mbox{number of character info words}; \\
+\myit{npc} & = & \mbox{number of parameters per character}.
+\end{eqnarray*}
+Most of the entries in the first part are as for level-0 fonts.  The new
+entries pertain to how the $\myit{char-info-word}$ entries are stored.
+\begin{itemize}
+\item $\myit{nco}$:\quad This value gives the offset into the file
+for the first word of the $\myit{char-info-word}$ table.  The
+$\myit{nco}$ value is required by output drivers, which need quick
+access to the characters, even if the total length
+of the tables preceding them is not easily computed,.
+\item $\myit{ncw}$:\quad Since many large fonts have large numbers
+of consecutive characters with identical metrics.  These are compressed
+in level-1 fonts, and so the number of $\myit{char-info-word}$
+entries is not simply $\myit{ec}-\myit{bc}+1$.  The $\myit{ncw}$
+value gives the number of words used for character information,
+not the number of entries.
+\item $\myit{npc}$:\quad This is the number of extra parameters per character.
+\item $\myit{real-lf}$:\quad This would be the length of
+the file, were there no compression.
+\end{itemize}
+
+The next twelve entries come in pairs.
+For each kind of parameter (\textsc{ivalue}, \textsc{fvalue},
+\textsc{mvalue}, \textsc{rule}, \textsc{glue}, \textsc{penalty}),
+the first entry states how many tables of that kind there are,
+and the second states how many words these tables require.
+\begin{eqnarray*}
+\myit{nki} & = & \mbox{number of \textsc{ivalue} tables}; \\
+\myit{nwi} & = & \mbox{number of words for \textsc{ivalue} tables}; \\
+\myit{nkf} & = & \mbox{number of \textsc{fvalue} tables}; \\
+\myit{nwf} & = & \mbox{number of words for \textsc{fvalue} tables}; \\
+\myit{nkm} & = & \mbox{number of \textsc{mvalue} tables}; \\
+\myit{nwm} & = & \mbox{number of words for \textsc{mvalue} tables}; \\
+\myit{nkr} & = & \mbox{number of \textsc{rule} tables}; \\
+\myit{nwr} & = & \mbox{number of words for \textsc{rule} tables}; \\
+\myit{nkg} & = & \mbox{number of \textsc{glue} tables}; \\
+\myit{nwg} & = & \mbox{number of words for \textsc{glue} tables}; \\
+\myit{nkp} & = & \mbox{number of \textsc{penalty} tables}; \\
+\myit{nwp} & = & \mbox{number of words for \textsc{penalty} tables}.
+\end{eqnarray*}
+
+We must have that $\myit{bc}-1\leq \myit{ec}\leq 65535$.
+Furthermore, the following identity must hold:
+\begin{eqnarray*}
+\myit{lf} & = &
+29 + \myit{lh} + \myit{ncw} +
+\myit{nw} + \myit{nh} + \myit{nd} + \myit{ni} +\\
+& & 2*\myit{nl} + \myit{nk} + 2*\myit{ne} + \myit{np} +\\
+& & \myit{nki} + \myit{nwi} +
+\myit{nkf} + \myit{nwf} +
+\myit{nkm} + \myit{nwm} +\\
+& & \myit{nkr} + \myit{nwr} +
+\myit{nkg} + \myit{nwg} +
+\myit{nkp} + \myit{nwp}.
+\end{eqnarray*}
+Finally, the sum
+$\myit{nki}+ \myit{nkf}+ \myit{nkm}+
+\myit{nkr}+ \myit{nkg}+ \myit{nkp}$
+must be less than 32.
+
+The rest of the file is composed of a number of arrays.  The new parameter
+tables are placed before the standard dimension tables, as it is difficult
+to estimate space requirements without having read the new tables.
+Furthermore, the character parameter indices in the $\myit{char-info-word}$
+entries are relative and must be translated into an absolute reference
+into the tables.
+
+\begin{eqnarray*}
+\myit{header} & : &
+     \mathbf{array}\;[0..\myit{lh}-1]\;\mathbf{of}\;\myit{stuff}\\
+\myit{ivalue-no} & : &
+     \mathbf{array}\;[0..\myit{nki}-1]\;\mathbf{of}\;\myit{integer}\\
+\myit{fvalue-no} & : &
+     \mathbf{array}\;[0..\myit{nkf}-1]\;\mathbf{of}\;\myit{integer}\\
+\myit{mvalue-no} & : &
+     \mathbf{array}\;[0..\myit{nkm}-1]\;\mathbf{of}\;\myit{integer}\\
+\myit{rule-no} & : &
+     \mathbf{array}\;[0..\myit{nkr}-1]\;\mathbf{of}\;\myit{integer}\\
+\myit{glue-no} & : &
+     \mathbf{array}\;[0..\myit{nkg}-1]\;\mathbf{of}\;\myit{integer}\\
+\myit{pen-no} & : &
+     \mathbf{array}\;[0..\myit{nkp}-1]\;\mathbf{of}\;\myit{integer}\\
+\myit{ivalue-table}[0] & : &
+     \mathbf{array}\;[0..\myit{ivalue-no}[0]-1]\;
+     \mathbf{of}\;\myit{integer}\\
+& \vdots\\
+\myit{ivalue-table}[\myit{nki}-1] & : &
+     \mathbf{array}\;[0..\myit{ivalue-no}[\myit{nki}-1]-1]\;
+     \mathbf{of}\;\myit{integer}\\
+\myit{fvalue-table}[0] & : &
+     \mathbf{array}\;[0..\myit{fvalue-no}[0]-1]\;
+     \mathbf{of}\;\myit{fix-word}\\
+& \vdots\\
+\myit{fvalue-table}[\textit{nkf}-1] & : &
+     \mathbf{array}\;[0..\myit{fvalue-no}[\textit{nkf}-1]-1]\;
+     \mathbf{of}\;\myit{fix-word}\\
+\myit{mvalue-table}[0] & : &
+     \mathbf{array}\;[0..\myit{mvalue-no}[0]-1]\;
+     \mathbf{of}\;\myit{fix-word}\\
+& \vdots\\
+\myit{mvalue-table}[\textit{nkm}-1] & : &
+     \mathbf{array}\;[0..\myit{mvalue-no}[\textit{nkm}-1]-1]\;
+     \mathbf{of}\;\myit{fix-word}\\
+\myit{rule-table}[0] & : &
+     \mathbf{array}\;[0..\myit{rule-no}[0]-1]\;
+     \mathbf{of}\;\myit{rule-entry}\\
+& \vdots\\
+\myit{rule-table}[\textit{nkr}-1] & : &
+     \mathbf{array}\;[0..\myit{rule-no}[\textit{nkr}-1]-1]\;
+     \mathbf{of}\;\myit{rule-entry}\\
+\myit{glue-table}[0] & : &
+     \mathbf{array}\;[0..\myit{glue-no}[0]-1]\;
+     \mathbf{of}\;\myit{glue-entry}\\
+& \vdots\\
+\myit{glue-table}[\textit{nkg}-1] & : &
+     \mathbf{array}\;[0..\myit{glue-no}[\textit{nkg}-1]-1]\;
+     \mathbf{of}\;\myit{glue-entry}\\
+\myit{pen-table}[0] & : &
+     \mathbf{array}\;[0..\myit{pen-no}[0]-1]\;
+     \mathbf{of}\;\myit{integer}\\
+& \vdots\\
+\myit{pen-table}[\textit{nkp}-1] & : &
+     \mathbf{array}\;[0..\myit{pen-no}[\textit{nkp}-1]-1]\;
+     \mathbf{of}\;\myit{integer}\\
+\myit{char-info} & : &
+     \mathbf{array}\;[0..\myit{ncw}-1]\;\mathbf{of}\;
+     \myit{char-info-word}\\
+\myit{width} & : &
+     \mathbf{array}\;[0..\myit{nw}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{height} & : &
+     \mathbf{array}\;[0..\myit{nh}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{depth} & : &
+     \mathbf{array}\;[0..\myit{nd}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{italic} & : &
+     \mathbf{array}\;[0..\myit{ni}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{lig-kern} & : &
+     \mathbf{array}\;[0..\myit{nl}-1]\;\mathbf{of}\;
+     \myit{lig-kern-command}\\
+\myit{kern} & : &
+     \mathbf{array}\;[0..\myit{nk}-1]\;\mathbf{of}\;\myit{fix-word}\\
+\myit{exten} & : &
+     \mathbf{array}\;[0..\myit{ne}-1]\;\mathbf{of}\;
+     \myit{extensible-recipe}\\
+\myit{param} & : &
+     \mathbf{array}\;[1..\myit{np}]\;\mathbf{of}\;\myit{fix-word}
+\end{eqnarray*}
+
+So, for parameter $x$, there is a table $\myit{x-no}$, of
+length~$\myit{nkx}$, giving the size of each table.
+In addition, there are $\myit{nkx}$ tables
+containing the actual entries, where the $i$-th table is of
+length~$\myit{x-no}[i]$.
+
+The only parameter entries with an unclear structure are
+$\myit{rule-entry}$ and $\myit{glue-entry}$.
+
+\begin{itemize}
+\item
+Each $\myit{rule-entry}$ uses three words (12~octets):
+\vspace*{.1cm}
+
+\begin{tabular}{llrl}
+1st word & $\myit{width}$ & 32 bits & fixword\\
+2nd word & $\myit{height}$ & 32 bits & fixword\\
+3rd word & $\myit{depth}$ & 32 bits & fixword\\
+\end{tabular}
+\vspace*{.1cm}
+
+The interpretation of the values should be clear.  If one of the 
+three values is~0, then it can stretch in the appropriate direction,
+as is standard in~\TeX.
+\item
+Each $\myit{glue-entry}$ uses four words (16~octets):
+\vspace*{.1cm}
+
+\begin{tabular}{llrl}
+1st word & $\myit{subtype}$ & 4 bits & (0--3)\\
+& $\myit{argument-kind}$ & 4 bits & (0--2)\\
+& $\myit{stretch-order}$ & 4 bits & (0--4)\\
+& $\myit{shrink-order}$ & 4 bits & (0--4)\\
+& $\myit{char-rule}$ & 16 bits\\
+2nd word & $\myit{width}$ & 32 bits &  fixword\\
+3rd word & $\myit{stretch}$ & 32 bits &  fixword\\
+4th word & $\myit{shrink}$ & 32 bits &  fixword\\
+\end{tabular}
+\vspace*{.1cm}
+
+\begin{itemize}
+\item$\myit{subtype}$ is one of
+\vspace*{.1cm}
+
+\begin{tabular}{ll}
+0 & $\myit{normal}$\\
+1 & $\myit{a-leaders}$\\
+2 & $\myit{c-leaders}$\\
+3 & $\myit{x-leaders}$\\
+\end{tabular}
+\vspace*{.1cm}
+
+\item $\myit{argument-kind}$ is one of
+\vspace*{.1cm}
+
+\begin{tabular}{ll}
+0 & $\myit{space}$\\
+1 & $\myit{rule}$ ($\myit{subtype}$ must be leader)\\
+2 & $\myit{character}$ ($\myit{subtype}$ must be leader)\\
+\end{tabular}
+\vspace*{.1cm}
+
+\item $\myit{stretch-order}$ and $\myit{shrink-order}$
+are one of
+\vspace*{.1cm}
+
+\begin{tabular}{ll}
+0 & $\myit{normal}$\\
+1 & $\myit{fi}$\\
+2 & $\myit{fil}$\\
+3 & $\myit{fill}$\\
+4 & $\myit{filll}$\\
+\end{tabular}
+\vspace*{.1cm}
+
+\item $n=\myit{char-rule}$ depends on the value of
+$\myit{argument-kind}$:
+\begin{enumerate}
+\item[0.] 0;
+\item[1.] $n$-th rule in rule table~0;
+\item[2.] $n$-character in font.
+\end{enumerate}
+\end{itemize}
+The explanation here only really makes sense if the reader has a clear
+understanding of how glue nodes are built in~\TeX.  More detailed
+documentation is forthcoming.
+\end{itemize}
+
+The new $\myit{char-info-word}$ array is of great interest.  Its length
+is not directly computable from the number of characters in the font.  Each
+$\myit{char-info-word}$ entry contains a minimum of 12 octets, and is in
+any case a multiple of four octets. Each entry is as follows:
+\vspace*{.1cm}
+
+\begin{tabular}{llrl}
+1st word & $\myit{width}$ & 16 bits\\
+& $\myit{height}$ & 8 bits\\
+& $\myit{depth}$ & 8 bits\\
+\hline
+2nd word & $\myit{italic}$ & 8 bits\\
+& $\myit{RFU}$ & 5 bits\\
+& $\myit{ext-tag}$ & 1 bit\\
+& $\myit{tag}$ & 2 bits\\
+& $\myit{remainder}$ & 16 bits\\
+\hline
+& $\myit{no-repeats}$ & 16 bits\\
+& $\myit{param}_0$ & 16 bits\\
+& \ldots\\
+& $\myit{param}_{\it npc-1}$ & 16 bits\\
+& $\myit{padding}$ & 16 bits & if necessary\\
+\end{tabular}
+\vspace*{.1cm}
+
+\noindent
+where $\myit{npc}$ is the number of characters per parameter.
+
+The $\myit{repeat}$ entry allows one to state that the following
+\texttt{no-repeats} characters have identical attributes, thereby
+allowing the \OFM\ file to be much smaller.  This attribute is essential
+for Chinese, Japanese and korean ideogram fonts.  In other words, this
+$\myit{char-info-word}$ entry is relevant to $(\myit{no-repeats}+1)$
+characters.
+
+If the $\myit{ext-tag}$ bit is on, then the lig-kern entry pointed to
+by $\myit{remainder}$ is shared with all the other characters in its
+\emph{equivalence class}, which corresponds to $\myit{param}_0$
+if there exists an \textsc{ivalue} table.
+
+We are now ready for the changed lig-kern table.  There are four
+new instructions, which can be distinguished by the fact that
+the 0-th 16-bit entry ($\myit{skip-byte}$) is exactly~256.
+In that case, then the 1st 16-bit entry ($\myit{next-char}$)
+defines an equivalence class.  If the next character is of that
+equivalence class, then the 2nd 16-bit entry
+(the $\myit{op-byte}$) is interpreted as follows:
+\begin{enumerate}
+\item[17.]  Add the glue node defined by entry $\myit{remainder}$
+in the 0-th glue table.
+\item[18.]  Add the penalty node defined by entry $\myit{remainder}$
+in the 0-th penalty table.
+\item[19.]  Add the penalty node defined by entry
+$\myit{remainder}/256$ in the 0-th penalty table, then
+add the glue node defined by entry
+$\myit{remainder}\;\textrm{mode}\;256$ in the 0-th glue table.
+\item[20.]  Add the kern node defined by entry $\myit{remainder}$
+in the 0-th mvalue table.
+\end{enumerate}
+
+\subsection{Level-1 \OPL\ files}
+
+The level-1 \OPL\ files are the text versions of level-1 \OFM\ files.
+Hence, level-1 \OPL\ files contain six kinds of new tables:
+integer (\textsc{ivalue}), fixed (\textsc{fvalue}),
+magnifiable fixed (\textsc{mvalue}), rule (\textsc{rule}),
+glue (\textsc{glue}) and \textsc{penalty}) tables.
+In addition, the character entries can include new parameters,
+which can then be used in the extended lig-kern table.
+
+We begin with the new tables.
+These extra tables are numbered within each class, from 0 to $n-1$,
+where $n$ is the number of tables in that class.  To define, say,
+the fifth \textsc{ivalue} table, one begins as follows:
+\[
+     \bigl(\texttt{FONTIVALUE H 5 } \showtable\bigr)
+\]
+The instructions for defining tables are
+\[
+\begin{array}{lll}
+     \bigl(\texttt{FONTIVALUE} & \showtno & \showtable\bigr)\\
+     \bigl(\texttt{FONTFVALUE} & \showtno & \showtable\bigr)\\
+     \bigl(\texttt{FONTMVALUE} & \showtno & \showtable\bigr)\\
+     \bigl(\texttt{FONTRULE}   & \showtno & \showtable\bigr)\\
+     \bigl(\texttt{FONTGLUE}   & \showtno & \showtable\bigr)\\
+     \bigl(\texttt{FONTPENALTY}& \showtno & \showtable\bigr)\\
+\end{array}
+\]
+
+The property lists for these tables contain as many entries as there are
+slots in the table.  So the fourth entry, starting from~0, in a glue
+table would begin as follows:
+\[
+     \bigl(\texttt{GLUE H 4 } \showglue\bigr)
+\]
+The instructions for defining entries are:
+\[
+\begin{array}{lll}
+     \bigl(\texttt{IVALUE} & \showeno & \showivalue\bigr)\\
+     \bigl(\texttt{FVALUE} & \showeno & \showfvalue\bigr)\\
+     \bigl(\texttt{MVALUE} & \showeno & \showmvalue\bigr)\\
+     \bigl(\texttt{RULE}   & \showeno & \showrule\bigr)\\
+     \bigl(\texttt{GLUE}   & \showeno & \showglue\bigr)\\
+     \bigl(\texttt{PENALTY}& \showeno & \showpenaltydef\bigr)\\
+\end{array}
+\]
+
+Now we come to the definitions of the individual entries.
+The four simple ones are for \textsc{ivalue}, \textsc{fvalue},
+\textsc{mvalue} and \textsc{penalty}, which are as follows:
+The instructions for defining entries are:
+\[
+\begin{array}{ll}
+     \bigl(\texttt{IVALUEVAL} & \showinteger\bigr)\\
+     \bigl(\texttt{FVALUEVAL} & \showfixword\bigr)\\
+     \bigl(\texttt{MVALUEVAL} & \showfixword\bigr)\\
+     \bigl(\texttt{PENALTYVAL}& \showinteger\bigr)\\
+\end{array}
+\]
+with some examples:
+\begin{verbatim}
+     (IVALUEVAL H 42)
+     (PENALTYVAL D 1000)
+     (FVALUEVAL R 42.0)
+     (MVALUEVAL R 42.0)
+\end{verbatim}
+which define an integer value of hex-42, a penalty value of 1000,
+a fix-word value of 42.0, and a magnifiable fix-word value of
+42.0.
+
+A $\showrule$ contains three components, each defaulting to~0:
+\[
+\begin{array}{ll}
+     \bigl(\texttt{RULEWD} & \showfixword\bigr)\\
+     \bigl(\texttt{RULEHT} & \showfixword\bigr)\\
+     \bigl(\texttt{RULEDP} & \showfixword\bigr)\\
+\end{array}
+\]
+
+The most complex entries are for glue, which can take several
+instructions.  The first few instructions should be clear:
+\[
+\begin{array}{ll}
+     \bigl(\texttt{GLUEWD}      & \showfixword\bigr)\\
+     \bigl(\texttt{GLUESTRETCH} & \showfixword\bigr)\\
+     \bigl(\texttt{GLUESHRINK}  & \showfixword\bigr)\\
+     \bigl(\texttt{GLUESTRETCHORDER} & \showorder\bigr)\\
+     \bigl(\texttt{GLUESHRINKORDER} & \showorder\bigr)\\
+\end{array}
+\]
+where $\showorder$ is one of \texttt{UNIT}, \texttt{FI}, \texttt{FIL},
+\texttt{FILL}, \texttt{FILLL}.
+
+
+Now, glue can either be blank, or consist of a leader:
+\[
+\begin{array}{ll}
+     \bigl(\texttt{GLUETYPE} & \showkind\bigr)\\
+\end{array}
+\]
+where $\showkind$ is one of \texttt{NORMAL}, \texttt{ALEADERS},
+\texttt{CLEADERS}, \texttt{XLEADERS}.  If a leader is chosen,
+then one of the following alternatives can be given:
+\[
+\begin{array}{ll}
+     \bigl(\texttt{GLUERULE} & \showinteger\bigr)\\
+     \bigl(\texttt{GLUECHAR} & \showinteger\bigr)\\
+\end{array}
+\]
+We give below the tables for an initial test with East Asian fonts:
+\begin{verbatim}
+     (FONTIVALUE H 0
+        (IVALUE H 0
+           (IVALUEVAL H 0)
+           )
+        (IVALUE H 1
+           (IVALUEVAL H 1)
+           )
+        (IVALUE H 2
+           (IVALUEVAL H 2)
+           )
+        (IVALUE H 3
+           (IVALUEVAL H 3)
+           )
+        )
+     (FONTGLUE H 0
+        (GLUE H 0
+           (GLUETYPE H 0)
+           (GLUESTRETCHORDER NORMAL)
+           (GLUESHRINKORDER NORMAL)
+           (GLUEWD R 0.0)
+           (GLUESTRETCH R 0.0)
+           (GLUESCHRINK R 0.0)
+        )
+        (GLUE H 1
+           (GLUETYPE H 0)
+           (GLUESTRETCHORDER NORMAL)
+           (GLUESHRINKORDER NORMAL)
+           (GLUEWD R 1.2333
+           (GLUESTRETCH R 4.5555)
+           (GLUESCHRINK R 2.3444)
+        )
+    (FONTPENALTY H 0
+       (PENALTY H 0
+           (PENALTYVAL H 0)
+           )
+       (PENALTY H 1
+           (PENALTYVAL H 122A)
+           )
+       )
+\end{verbatim}
+
+The extra tables can appear in any order, but they must all appear
+\emph{before} the first character entry has appeared, since the
+character parameters can refer to these tables.
+
+When defining the character entries, the standard entries (width,
+height, depth and italic correction) all exist.  One can also add
+parameters to the characters by referring to the above
+tables.  The syntax for an entry resembles
+\begin{verbatim}
+     (CHARIVALUE H 0 H 2)
+\end{verbatim}
+For this character, it is entry 2 in \textsc{ivalue} table 0 that is
+relevant.  All entries are similar:
+\[
+\begin{array}{lll}
+     \bigl(\texttt{CHARIVALUE}  & \showinteger & \showinteger\bigr)\\
+     \bigl(\texttt{CHARFVALUE}  & \showinteger & \showinteger\bigr)\\
+     \bigl(\texttt{CHARMVALUE}  & \showinteger & \showinteger\bigr)\\
+     \bigl(\texttt{CHARRULE}    & \showinteger & \showinteger\bigr)\\
+     \bigl(\texttt{CHARGLUE}    & \showinteger & \showinteger\bigr)\\
+     \bigl(\texttt{CHARPENALTY} & \showinteger & \showinteger\bigr)\\
+\end{array}
+\]
+There is a special use for the 0-th integer table, which defines
+the equivalence class of the character for the lig-kern table:
+\[
+\begin{array}{ll}
+     \bigl(\texttt{CHARIVALUE H 0} & \showinteger\bigr)
+\end{array}
+\]
+The idea is that characters that act similarly with respect to
+their neighboring characters should have the same lig-kern
+entry, allowing for the dramatic reduction in size of the
+lig-kern table.  More later.
+
+Also to save space, it is possible to state that several characters use the
+same information.  This is done with the \textsc{charrepeat}
+instruction:
+\[
+\begin{array}{ll}
+     \bigl(\texttt{CHARREPEAT H 34 H 42 } \showchardefn\bigr)
+\end{array}
+\]
+states that characters \texttt{0x34} through to \texttt{0x76}
+(\texttt{0x34}+\texttt{0x42}) all use the same information.
+This clustering is done automatically by the \texttt{ovp2ovf} program.
+
+The lig-kern table uses four new instructions for the automatic
+insertion of kern, glue and penalties between characters.  For example,
+\begin{verbatim}
+     (CKRN H 3 H 2)
+\end{verbatim}
+states that if we encounter this instruction, and the next character
+has 3~in its 0-th \textsc{ivalue} table, then the 2-nd entry in the 0-th
+\textsc{mvalue} table is inserted into the stream.
+Similarly,
+\begin{verbatim}
+     (CGLUE H 3 H 2)
+\end{verbatim}
+states that if we encounter this instruction, and the next character
+has 3~in its 0-th \textsc{ivalue} table, then the 2-nd entry in the 0-th
+\textsc{glue} table is inserted into the stream.
+Once again,
+\begin{verbatim}
+     (CPENALTY H 3 H 2)
+\end{verbatim}
+does the same thing, except that it inserts the 2-nd entry in the 0-th
+\textsc{penalty} table into the stream.  The other one is
+\begin{verbatim}
+     (CPENGLUE H 3 H 2 H 4)
+\end{verbatim}
+which inserts the 2-nd entry in the 0-th \textsc{penalty} table, then
+the 4-th entry in the 0-th \textsc{glue} table.
+
+The \textsc{label} instruction used in \PL\ files has a variant called
+\textsc{clabel}, which means that several characters are using the same
+lig-kern entry.  It is this technique that allows \texttt{ovp2ovf}
+to cluster the characters with similar properties, otherwise each would
+point to a different lig-kern entry.
+
+Our example shows how East Asian fonts might be coded.  The
+equivalence class of a character has three possible values: 1~for
+`left' characters (opening parenthesis, opening quote, etc.),
+2~for `middle' or ordinary characters,
+and 3~for `right' characters
+(closing parenthesis, closing quote, period, etc.).
+Here is the lig-kern table.
+\begin{verbatim}
+     (LIGTABLE
+        (CLABEL H 1)
+        (CPENGLUE H 1 H 0 H 0)
+        (CPENGLUE H 2 H 0 H 0)
+        (CPENGLUE H 3 H 0 H 0)
+        (STOP)
+        (CLABEL H 2)
+        (CGLUE H 1 H 0)
+        (CGLUE H 2 H 0)
+        (CPENGLUE H 3 H 0 H 0)
+        (STOP)
+        (CLABEL H 2)
+        (CGLUE H 1 H 0)
+        (CGLUE H 2 H 0)
+        (CPENGLUE H 3 H 0 H 0)
+        (STOP)
+\end{verbatim}
+Glue is inserted between all pairs of characters that are of category 1,
+2, or~3.  In addition, a penalty is added in front of characters of
+category 3 (`right' characters), preventing a linebreak just prior to
+such characters.  At the same time, a penalty is added after all
+occurrences of characters of category~1 (`left' characters).
+
+Another possibility is to completely replace the lig-kern table,
+with the instruction
+\[
+\begin{array}{ll}
+     \bigl(\texttt{LIGTABLEOCP} & \showligocp\bigr)\\
+\end{array}
+\]
+Here the \OCP\ $\showligocp$ will be used instead of the lig-kern
+table.
+
+\subsection{Level-1 \OVF\ files}
+
+The level-1 \OVF\ files are indistinguishable from level-0
+\OVF\ files.
+
+\subsection{Level-1 \OVP\ files}
+
+The level-1 \OVP\ files are similar to level-1 \OPL\ files for
+the description of the tables.  For the actual character layout
+stuff, there is no difference with level-0 \OVP\ files.
+
+\section{\OMEGA\ Translation Processes}
+\label{lab:otps}
+
+The changes described above are very useful, and allow the resolution
+of several problems.  However, they do not radically alter the
+structure of \TeX.  This is not the case for the \OMEGA\ Translation
+Processes, which allow text to be passed through any number of finite
+state automata, in order to impose the required effects.  
+
+These processes are necessary for translating one character set to
+another.  They are also used to choose the various forms of letters in
+Arabic, or to create consonental clusters in Khmer, or to rearrange
+letter order in Indic scripts.  They could also offer alternative
+means of changing texts to upper or lower case or to hyphenate texts.
+
+Each translation process is placed in a file with the suffix \verb|.otp|.
+Its syntax is similar but not identical to a \texttt{lex} or
+\texttt{flex} file on Unix.  Examples of translation processes can 
+be found in the \texttt{texmf/omega/otp} directory.
+
+An \verb|.otp| file defines a finite state automaton that transforms
+an input character stream into an output character stream.  
+It consists of six parts:
+
+\begin{tabular}{l}
+\emph{Input}\\
+\emph{Output}\\
+\emph{Tables}\\
+\emph{States}\\
+\emph{Aliases}\\
+\emph{Expressions}\\
+\end{tabular}
+
+\noindent
+where the \emph{Expressions} actually state what translations take
+place and in what situation.
+
+In what follows, $n$ refers to a positive integer between 0~and
+$2^{24}-1$. It can be given in decimal form, octal form (preceded by
+\texttt{@'}) or hexadecimal form (preceded by \texttt{@"}).
+Hexadecimal numbers can use both minuscule and majuscule letters
+to express the digits~\emph{a--f}.  Numbers can also be given in
+character form:  a printable \textsc{ascii} character, when placed
+inside a pair of quotes, generates the \textsc{ascii} code for that
+character. For example, \verb|`a'| is equivalent to~\verb|@"61|.
+
+The \emph{Input} part states how many octets are in each input character.
+If the section is empty, then the default value is~2, since we hope 
+that Unicode will become the standard means of communication in the future.
+If the section is not empty, it must be of the form
+\[ \mymathtt{input:}\;\mymathit{in}\mymathtt{;} \]
+where \emph{in} states how many octets are in each input character.
+
+The \emph{Output} part states how many octets are in each output character.
+If the section is empty, then the default value is~2, since we hope 
+that Unicode will become the standard means of communication in the future.
+If the section is not empty, it must be of the form
+\[ \mymathtt{output:}\;\mymathit{out}\mymathtt{;} \]
+where \emph{out} states how many octets are in each output character.
+
+The \emph{Tables} part is used for defining tables that will be
+referred to later in the expressions.  Often, translations from one
+character set to another are most efficiently presented through table
+lookup.  This section can be empty, in which case no tables have been
+defined.  If it is not empty, it is of the form 
+\[ \mymathtt{tables:}\; \mymathit{table}^+ \]
+where each \emph{table} is of the form
+\[ \mymathit{id}\mymathtt{[}n\mymathtt{]}\;\mymathtt{=}\;
+\mymathtt{\char'173}n^+\mymathtt{\char'175}\mymathtt{;} \]
+where the numbers in $n^+$ are comma-separated.
+
+The \emph{States} part is used to separate out the expressions.  Not
+all expressions will necessarily be applicable in all situations.
+To do this, the user can name states and identify expressions with
+state names, in order to express what expressions apply when.
+This section can be empty, in which case there is only one state.  If
+it is not empty, it is of the form
+\[ \mymathtt{states:}\; \mymathit{id}^+\mymathtt{;} \]
+where the identifiers in $\mymathit{id}^+$ are comma-separated.
+
+The \emph{Aliases} part is used to simplify the definition of the left
+hand sides of the expressions.  Each expression consists of a 
+left-hand side, in the form of a simplified regular expression, and of a
+right-hand side, which states what should be done with a recognized
+string.  To simplify the definitions of the left-hand sides,
+aliases can be used. This section can be empty, in which case there
+are no aliases.  If it is not empty, it is of the form
+\[ \mymathtt{aliases:}\; \mymathit{alias}^+ \]
+where each \emph{alias} is of the form
+\[ \mymathit{id}\;\mymathtt{=}\;\mymathit{left}\mymathtt{;}\]
+and \emph{left} is defined below.
+
+The \emph{Expressions} part is the very reason for an \verb|.otp|
+file.  It states what translations must take place, and when.  It
+cannot be empty, and its syntax is
+\[ \mymathtt{expressions:}\; \mymathit{expr}^+ \]
+Each \emph{expr} is of the form
+\[
+   \mymathit{leftState}\; \mymathit{totalLeft}\; 
+   \mymathit{right} \; \mymathit{pushBack} \; \mymathit{rightState} \mymathtt{;}
+\]
+where \emph{leftState} defines the state for which this expression is
+applicable, \emph{totalLeft} defines the left-hand-side regular
+expression, \emph{right} defines the characters to be output,
+\emph{pushBack} states what characters must be added to the input
+stream and \emph{rightState} gives the new state.
+
+Intuitively, if the automaton is in macro-state \emph{leftState} and
+the regular expression \emph{totalLeft} corresponds to a prefix of the current
+input stream, then (1)~the input stream is advanced to the end of the recognized
+prefix, (2)~the characters generated by the \emph{right}
+expression are put onto the output stream, (3)~the characters
+generated by the \emph{pushBack} stream are placed at the beginning
+of the input stream and (4)~the system changes to the macro-state
+defined by \emph{rightState}.
+
+The \emph{leftState} field can be empty.  If it is not, its syntax is
+\[ \mymathtt{<} \mymathit{id} \mymathtt{>} \]
+
+The syntax for \emph{totalLeft} is
+\[ \mymathtt{beg:}? \; \mymathit{left}^+ \; \mymathtt{end:}? \]
+The \texttt{beg:}, if present, will only match the string if it is
+at the beginning of the input.  The \texttt{end:}, if present, will
+only match the string if it is at the end of the input.
+
+The syntax for \emph{left} is given by
+\begin{eqnarray*}
+\mymathit{left} & ::= & n\\
+& \mid & n\mymathtt{-}n\\
+& \mid & \mymathtt{.}\\
+& \mid & \mymathtt{(}\mymathit{left}^+\mymathtt{)}\\
+& \mid & \mymathtt{\char94(}\mymathit{left}^+\mymathtt{)}\\
+& \mid & \{\mymathit{id}\}\\
+& \mid & \mymathit{left}\;\mymathtt{<}n\mymathtt{,}n?\mymathtt{>}\\
+\end{eqnarray*}
+where the $\mymathit{left}^+$ means a series of \emph{left} separated
+by vertical bars.  Therefore, $n$ means a single number, $n\mymathtt{-}n$ is a
+range, $\mymathtt{.}$~is a wildcard character, 
+$\mymathtt{(}\mymathit{left}^+\mymathtt{)}$ is a choice,
+$\mymathtt{\char94(}\mymathit{left}^+\mymathtt{)}$ is the negation of a choice,
+$\mymathtt{\char'173}\mymathit{id}\mymathtt{\char'175}$
+is the use of an alias and
+$\mymathit{left}\mymathtt{<}n\mymathtt{,}n?\mymathtt{>}$
+means between $n$~and $n'$~occurrences of \emph{left}.  Should there
+be no~$n'$, then the expression means at least $n$~occurrences.
+
+The syntax for \emph{right} is
+\[ \mymathtt{=>}\; \mymathit{stringExpr}^+ \]
+while that for \emph{pushBack}, if it is not empty, is
+\[ \mymathtt{<=}\; \mymathit{stringExpr}^+ \]
+The \emph{right} expression corresponds to the characters that are to
+be output.  The \emph{pushBack} expression corresponds to the
+characters that are put back onto the input stream.
+
+A \emph{stringExpr} defines a string of characters, using the
+characters in the recognized input stream as arguments.  It is of the form
+
+\begin{tabular}{ll}
+& $s$\\
+$\mid$ & $n$\\
+$\mid$ & \verb|\|$n$\\
+$\mid$ & \verb|\$|\\
+$\mid$ & \verb|\($-|$n$\verb|)|\\
+$\mid$ & \verb|\*|\\
+$\mid$ & \verb|\(*-|$n$\verb|)|\\
+$\mid$ & \verb|\(*+|$n$\verb|)|\\
+$\mid$ & \verb|\(*+|$n$\verb|-|$n'$\verb|)|\\
+$\mid$ & \verb|#|\emph{arithExpr}\\
+\end{tabular}
+
+\noindent
+where $s$~is an \textsc{ascii} character string enclosed in double
+quotation marks.
+The \verb|\|$n$ means the $n$-th character (starting from 1)
+in the recognized prefix; the \verb|\$| means the last character in the 
+prefix; \verb|\($-|$n$\verb|)| the $n$-th, counting from the end.
+The \verb|\*| means the entire recognized prefix;
+\verb|\(*-|$n$\verb|)| the prefix without the last $n$~characters;
+\verb|\(*+|$n$\verb|)| without the first $n$~characters;
+\verb|\(*+|$n$\verb|-|$n'$\verb|)| removes the first~$n$ and last~$n'$
+characters.
+
+For example, Indic scripts are encoded with vowels at the end of a
+syllable, but the vowel is actually printed first on the page.  Up
+to six consonants can precede a vowel, yielding the following
+transliteration:
+\begin{verbatim}
+     {consonant}<1,6> {vowel}  =>  \$ \(*-1);
+\end{verbatim}
+
+The \emph{arithExpr} entry allows for calculations to actually be
+effected on the characters in the prefix. Their syntax is as follows:
+
+\begin{tabular}{ll}
+ & $n$\\
+$\mid$ & \verb|\|$n$\\
+$\mid$ & \verb|\$|\\
+$\mid$ & \verb|\($-|$n$\verb|)|\\
+$\mid$ & \emph{arithExpr}\verb| + |\emph{arithExpr}\\
+$\mid$ & \emph{arithExpr}\verb| - |\emph{arithExpr}\\
+$\mid$ & \emph{arithExpr}\verb| * |\emph{arithExpr}\\
+$\mid$ & \emph{arithExpr}\verb| div: |\emph{arithExpr}\\
+$\mid$ & \emph{arithExpr}\verb| mod: |\emph{arithExpr}\\
+$\mid$ & \emph{id}\verb|[|\emph{arithExpr}\verb|]|\\
+$\mid$ & \verb|(|\emph{arithExpr}\verb|)|\\
+\end{tabular}
+
+\noindent
+where \emph{id}\verb|[|\emph{arithExpr}\verb|]| means a table lookup:
+the \emph{id} must be a table defined in the \emph{Tables} section.
+The other operations should be clear.
+
+The following example shows the use of tables.
+\label{gb:unicode}
+\begin{verbatim}
+% File inbig5.otp
+% Conversion to Unicode from Chinese Big 5 (HKU)
+% Copyright (c) 1995 John Plaice and Yannis Haralambous
+% This file is part of the Omega project.
+%
+% This file was derived from data in the tcs program
+% ftp://plan9.att.com/plan9/unixsrc/tcs.shar.Z, 16 November 1994
+%
+
+input:  1;
+output: 2;
+
+tables:
+
+in_big5_a1[@"9d] = {
+@"20,   @"2c,   @"2ce,  @"2e,   @"2219, @"2219, @"3b,   @"3a,
+...
+@"2199, @"2198, @"2225, @"2223, @"2215
+};
+
+in_big5[@"3695] = {
+@"3000, @"ff0c, @"3001, @"3002, @"ff0e, @"30fb, @"ff1b, @"ff1a,
+...
+@"fffd, @"fffd, @"fffd, @"fffd, @"fffd
+};
+
+expressions:
+
+@"1a                    => @"0a;
+@"00-@"a0               => \1;
+@"a1(@"40-@"7e)         => #(in_big5_a1[\2-@"40]);
+@"a1(@"a1-@"fe)         => #(in_big5_a1[\2-@"62]);
+(@"a2-@"fe)(@"40-@"7e)  => #(in_big5[(\1-@"a2)*@"9d + \2-@"40]);
+(@"a2-@"fe)(@"a1-@"fe)  => #(in_big5[(\1-@"a2)*@"9d + \2-@"62]);
+. .                     => @"fffd;
+\end{verbatim}
+
+In the future, more operations may well be added.  Research is still
+under way for such things as providing means for defining functions, 
+local variables, error handling and other functionality.
+
+The \emph{pushBack} part, which serves to put characters back onto the
+input stream, uses the same syntax as the \emph{right} part.  When
+characters are placed back onto the input stream, they will be looked
+at upon the next iteration of the automaton.
+
+Finally, the \emph{rightState} can be empty or one of the following
+three forms:
+
+\begin{tabular}{ll}
+& \verb|<|\emph{id}\verb|>|\\
+$\mid$ & \verb|<push: |\emph{id}\verb|>|\\
+$\mid$ & \verb|<pop:>|\\
+\end{tabular}
+
+\noindent
+If it is empty, the automaton stays in the same state.
+If it is of the form \verb|<|\emph{id}\verb|>|, then the automaton
+changes to state~\emph{id}. The \verb|<push: |\emph{id}\verb|>|
+means change to state~\emph{id}, but remembering the current state.
+The \verb|<pop:>| means return to the previously saved state.
+
+Several \texttt{.otp} files are in the
+\texttt{omega/texmf/otp} directory.
+The \texttt{char2uni} directory contains \OTP s that
+convert national character sets to Unicode, while the
+\texttt{omega} directory contains \OTP s designed to work
+with the \OMEGA\ fonts.
+
+\section{Compiled Translation Processes}
+
+\OMEGA\ does not know anything about \OMEGA\ Translation Processes.
+It actually reads a compiled form of these filters, known as
+Compiled Translation Processes (file suffix \texttt{.ocp}).
+Essentially, the \OCP s can be considered to be portable assembler
+programs, and \OMEGA\ includes an interpreter for the generated
+instructions.
+
+The command for reading in a \OCP\ file is similar to a font
+declaration.  The example
+\begin{verbatim}
+     \ocp\TexUni=TeXArabicToUnicode
+\end{verbatim}
+means that the file \verb|TeXArabicToUnicode.ocp| is read 
+in by~\OMEGA\ and that internally the translation process is
+referred to as \verb|\TeXUni|.
+
+The \OCP s consist of a sequence of 4-octet words.  The first seven
+words have the following form:
+
+\begin{tabular}{ll}
+\emph{lf}&length of the entire file, in words;\\
+\emph{in}&number of octets in an input character;\\
+\emph{ot}&number of octets in an output character;\\
+\emph{nt}&number of tables;\\
+\emph{lt}&number of words allocated for tables;\\
+\emph{ns}&number of states;\\
+\emph{ls}&number of words allocated for states;\\
+\end{tabular}
+
+\noindent
+The header words are followed by four arrays:
+\begin{eqnarray*}
+\mathit{table\_length} & : & 
+   \mathbf{array} \; [0..\mathit{nt}-1] \; \mathbf{of} \; \mathit{word}\\
+\mathit{tables} & : & 
+   \mathbf{array} \; [0..\mathit{lt}-1] \; \mathbf{of} \; \mathit{word}\\
+\mathit{state\_length} & : & 
+   \mathbf{array} \; [0..\mathit{ns}-1] \; \mathbf{of} \; \mathit{word}\\
+\mathit{tables} & : & 
+   \mathbf{array} \; [0..\mathit{ls}-1] \; \mathbf{of} \; \mathit{word}
+\end{eqnarray*}
+
+The \emph{table\_length} array states how many words are used for each
+of the tables in the~\OCP.  For the GB~$\rightarrow$~Unicode example on
+page~\pageref{gb:unicode}, the \emph{table\_length} would have two
+entries: hex values \texttt{9d} and~\texttt{3695}.
+
+The \emph{tables} array is simply the concatenation of the tables in
+the \OTP\ file.
+
+The \emph{state\_length} array states how many words are used for each
+of the states in the~\OCP.  For the GB~$\rightarrow$~Unicode example on
+page~\pageref{gb:unicode}, the \emph{state\_length} would have one
+entry.
+
+The \emph{states} array is simply the concatenation of the sequence of
+instructions for each state in the \OTP\ file.  Each instruction takes
+one or two 4-octet words.  Zero- and one-argument instructions use
+one word. If the instruction consists of one word,
+then the actual instruction is in the first two octets and the
+argument is in the last two octets.  If the instruction consists of
+two words, then the actual instruction is in the first two octets,
+the first argument is in the next two octets and the last argument is
+in the last two octets.  The instructions are as follows:
+
+\begin{tabbing}
+\makebox[1cm][r]{99} \= \quad \verb|OTP_GOTO_NO_ADVANCE| \= \quad 2 arguments\kill
+\makebox[1cm][r]{1} \> \quad \verb|OTP_RIGHT_OUTPUT| \> \quad 0 arguments\\
+\makebox[1cm][r]{2} \> \quad \verb|OTP_RIGHT_NUM| \> \quad 1 argument\\
+\makebox[1cm][r]{3} \> \quad \verb|OTP_RIGHT_CHAR| \> \quad 1 argument\\
+\makebox[1cm][r]{4} \> \quad \verb|OTP_RIGHT_LCHAR| \> \quad 1 argument\\
+\makebox[1cm][r]{5} \> \quad \verb|OTP_RIGHT_SOME| \> \quad 2 arguments\\
+\\
+\makebox[1cm][r]{6} \> \quad \verb|OTP_PBACK_OUTPUT| \> \quad 0 arguments\\
+\makebox[1cm][r]{7} \> \quad \verb|OTP_PBACK_NUM| \> \quad 1 argument\\
+\makebox[1cm][r]{8} \> \quad \verb|OTP_PBACK_CHAR| \> \quad 1 argument\\
+\makebox[1cm][r]{9} \> \quad \verb|OTP_PBACK_LCHAR| \> \quad 1 argument\\
+\makebox[1cm][r]{10} \> \quad \verb|OTP_PBACK_SOME| \> \quad 2 arguments\\
+\\
+\makebox[1cm][r]{11} \> \quad \verb|OTP_ADD| \> \quad 0 arguments\\
+\makebox[1cm][r]{12} \> \quad \verb|OTP_SUB| \> \quad 0 arguments\\
+\makebox[1cm][r]{13} \> \quad \verb|OTP_MULT| \> \quad 0 arguments\\
+\makebox[1cm][r]{14} \> \quad \verb|OTP_DIV| \> \quad 0 arguments\\
+\makebox[1cm][r]{15} \> \quad \verb|OTP_MOD| \> \quad 0 arguments\\
+\makebox[1cm][r]{16} \> \quad \verb|OTP_LOOKUP| \> \quad 0 arguments\\
+\makebox[1cm][r]{17} \> \quad \verb|OTP_PUSH_NUM| \> \quad 1 argument\\
+\makebox[1cm][r]{18} \> \quad \verb|OTP_PUSH_CHAR| \> \quad 1 argument\\
+\makebox[1cm][r]{19} \> \quad \verb|OTP_PUSH_LCHAR| \> \quad 1 argument\\
+\\
+\makebox[1cm][r]{20} \> \quad \verb|OTP_STATE_CHANGE| \> \quad 1 argument\\
+\makebox[1cm][r]{21} \> \quad \verb|OTP_STATE_PUSH| \> \quad 1 argument\\
+\makebox[1cm][r]{22} \> \quad \verb|OTP_STATE_POP| \> \quad 1 argument\\
+\\
+\makebox[1cm][r]{23} \> \quad \verb|OTP_LEFT_START| \> \quad 0 arguments\\
+\makebox[1cm][r]{24} \> \quad \verb|OTP_LEFT_RETURN| \> \quad 0 arguments\\
+\makebox[1cm][r]{25} \> \quad \verb|OTP_LEFT_BACKUP| \> \quad 0 arguments\\
+\\
+\makebox[1cm][r]{26} \> \quad \verb|OTP_GOTO| \> \quad 1 argument\\
+\makebox[1cm][r]{27} \> \quad \verb|OTP_GOTO_NE| \> \quad 2 arguments\\
+\makebox[1cm][r]{28} \> \quad \verb|OTP_GOTO_EQ| \> \quad 2 arguments\\
+\makebox[1cm][r]{29} \> \quad \verb|OTP_GOTO_LT| \> \quad 2 arguments\\
+\makebox[1cm][r]{30} \> \quad \verb|OTP_GOTO_LE| \> \quad 2 arguments\\
+\makebox[1cm][r]{31} \> \quad \verb|OTP_GOTO_GT| \> \quad 2 arguments\\
+\makebox[1cm][r]{32} \> \quad \verb|OTP_GOTO_GE| \> \quad 2 arguments\\
+\makebox[1cm][r]{33} \> \quad \verb|OTP_GOTO_NO_ADVANCE| \> \quad 1 argument\\
+\makebox[1cm][r]{34} \> \quad \verb|OTP_GOTO_BEG| \> \quad 1 argument\\
+\makebox[1cm][r]{35} \> \quad \verb|OTP_GOTO_END| \> \quad 1 argument\\
+\makebox[1cm][r]{36} \> \quad \verb|OTP_STOP| \> \quad 0 arguments\\
+\end{tabbing}
+
+The \verb|OTP_LEFT|, \verb|OTP_GOTO| and \verb|OTP_STOP| instructions
+are used for recognizing prefixes in an input stream.  The \verb|OTP_RIGHT|
+instructions place characters on the output stream, while the
+\verb|OTP_PBACK| instructions place characters back onto the input
+stream.  The instructions \verb|OTP_ADD| through to
+\verb|OTP_PUSH_LCHAR| are used for internal computations in preparation
+for \verb|OTP_RIGHT| or \verb|OTP_PBACK| instructions.  Finally, the
+\verb|OTP_STATE| instructions are for changing macro-states.
+
+The system that reads from the input stream uses two pointers, which
+we will call \emph{first} and \emph{last}. The \emph{first} value
+points to the beginning of the input prefix that is currently being
+identified.  The \emph{last} value points to the end of the input
+prefix that has been read.  When a prefix has been recognized, then
+\emph{first} points to~\verb|\1| and \emph{last} points to~\verb|\$|.
+
+The \verb|OTP_LEFT_START| instruction, called at the beginning of
+the parsing of a prefix, advances \emph{first} to $\emph{last}+1$;  
+\verb|OTP_LEFT_RETURN| resets the \emph{last} value to
+$\emph{first}-1$ (it is called when a particular \emph{left} pattern
+does not correspond to the prefix); \verb|OTP_LEFT_BACKUP| backs up
+the \emph{last} pointer by~1.
+
+Internally, a \OCP\ program uses a program counter (PC), which is simply an
+index into the appropriate state array.  Like for all assembler
+programs, this counter is normally incremented by 1 or~2, depending on
+the size of the instruction, but it can be abruptly changed through
+an \verb|OTP_GOTO| instruction.
+
+The argument in single-argument \verb|OTP_GOTO| instructions is the
+new~PC.  For the two-argument instructions, the first is the comparand
+and the second is the new~PC should the test succeed. The
+\verb|OTP_GOTO| instruction itself is an unconditional branch;
+\verb|OTP_GOTO_NO_ADVANCE| advances \emph{last} by~1, and branches if
+has reached the end of input; \verb|OTP_GOTO_BEG| branches at the
+beginning of input and \verb|OTP_GOTO_END| branches at the end of
+input.  As for \verb|OTP_GOTO_|\emph{cond}, it succeeds if the
+character pointed to by \emph{last} (we'll call it
+\verb|*|\emph{last}) satisfies the test
+\emph{cond}(\verb|*|\emph{last}, \emph{firstArg}).
+
+The \verb|OTP_STOP| instruction stops processing of the currently
+recognized prefix.  Normally the automaton will be restarted with an
+\verb|OTP_LEFT_START| instruction.
+
+When computations are undertaken for the \verb|OTP_RIGHT| and
+\verb|OTP_PBACK| instructions, a computation stack is used.
+This stack is accessed through instructions \verb|OTP_ADD| through
+to \verb|OTP_PUSH_LCHAR|, as well as through the instructions
+\verb|OTP_RIGHT_OUTPUT| and \verb|OTP_PBACK_OUTPUT|.
+
+Since the \verb|OTP_RIGHT| and \verb|OTP_PBACK| instructions are
+analogous, only the former are described.
+The \verb|OTP_RIGHT_OUTPUT| instruction pops a value of the top of the
+stack and outputs it; \verb|OTP_RIGHT_NUM|$(n$) simply places $n$
+on the output stream; \verb|OTP_RIGHT_CHAR|$(n)$ places the $n$-th input 
+character on the output stream; \verb|OTP_RIGHT_LCHAR| does the same,
+but from the back;  finally, \verb|OTP_RIGHT_SOME| places a substring
+onto the output stream.
+
+Three instructions are used for placing values on the stack:
+\verb|OTP_PUSH_NUM|$(n)$ pushes $n$ onto the stack,
+\verb|OTP_PUSH_CHAR|$(n)$ pushes the $n$-th character and
+\verb|OTP_PUSH_LCHAR|$(n)$ does the same from the end.
+
+The arithmetic operations of the form \verb|OTP_|\emph{op} apply the
+operation 
+\begin{eqnarray*}
+\mathit{stack}[\mathit{top}-1] & := & 
+\mathit{stack}[\mathit{top}-1] \; \mathit{op} \;
+\mathit{stack}[\mathit{top}]
+\end{eqnarray*}
+where \emph{top} is the stack pointer, and then decrement the stack
+pointer.  Finally, the \verb|OTP_LOOKUP| instruction applies the
+operation
+\begin{eqnarray*}
+\mathit{stack}[\mathit{top}-1] & := & 
+\mathit{stack}[\mathit{top}-1][\mathit{stack}[\mathit{top}]]
+\end{eqnarray*}
+and then decrements the pointer.
+
+Last, but not least, are the \verb|OTP_STATE| instructions, which
+manipulate a stack of macro-states.  The initial state is always~0.
+The \verb|OTP_STATE_CHANGE|$(n)$ changes the current state 
+state~$n$; \verb|OTP_STATE_PUSH|$(n)$ pushes the current state onto
+the state stack before changing the current state;
+\verb|OTP_STATE_POP| pops the state at the top of the state stack into
+the current state.
+
+\section{Translation process lists}
+
+Translation processes can be used for a number of different purposes.
+Since not all uses can be foreseen, we have decided to offer a means
+to dynamically reconfigure the set of translation processes that are
+passing over the input text.  This is done using stacks of translation
+process lists.
+
+For any single purpose, for example to process a given language,
+several \OCP s might be required.  If one makes a context switch,
+such as processing a different language, then one would to be able
+to quickly replace \emph{all} of the \OCP s that are currently being
+used.  This is done using \OCP\ lists.
+
+A \OCP\ list is actually a list of pairs.  Each pair consists of a
+positive scaled value and a doubly ended queue of \OCP s.  For
+example,
+\begin{verbatim}
+     \ocplist\ArabicOCP=[(1.0 : \TexUni,\UniUniTwo,\UniTwoFont)]
+\end{verbatim}
+the output from \OMEGA\ once the \OCP\ list \verb|\ArabicOCP| has
+been typed, shows that that list has one element, namely the pair
+with the scaled value~1.0 and the doubly ended queue with three
+\OCP s, \verb|\TexUni|, \verb|\UniUniTwo| and \verb|\UniTwoFont|.
+
+\OCP\ lists are built up using the five operators \verb|\nullctlist|,
+\verb|\addbefore|\-\verb|ocp|\-\verb|list|, \verb|\addafterocplist|,
+\verb|\removebeforeocplist| and \verb|\removeafter|\-\verb|ocp|\-\verb|list|.
+For example, the above output was generated by the following
+sequence of \OMEGA\ statements:
+\begin{verbatim}
+     \ocp\TexUni=TeXArabicToUnicode
+     \ocp\UniUniTwo=UnicodeToContUnicode
+     \ocp\UniTwoFont=ContUnicodeToTeXArabicOut
+
+     \ocplist\ArabicOCP=
+     \addbeforeocplist 1 \TexUni
+     \addbeforeocplist 1 \UniUniTwo
+     \addbeforeocplist 1 \UniTwoFont
+     \nullocplist
+\end{verbatim}
+
+The \verb|\ocplist| command is similar to the \verb|\ocp| command:\\
+\verb|\ocplist|~\emph{listName}~\verb|=|~\emph{ocpListExpr}.
+
+All \emph{ocpListExpr} are built up from either the empty \OCP\ list,
+\verb|\nullocplist|, or from an already existing \OCP\ list.  In the
+latter case, the list is completely copied, to ensure that the named
+list is not itself modified.  Given a list~$l$, the instruction
+\verb|\addbeforeocplist|~$n$~\emph{ocp}~$l$ states that the
+\OCP\ \emph{ocp} is added at the head of the doubly ended queue for
+value~$n$ in list~$l$.  If that queue does not exist, it is created
+and inserted in the list so that the scaled values are all in
+increasing order.  The instruction
+\verb|\addafterocplist|~$n$~\emph{ocp}~$l$ does the same, except the
+addition takes place at the tail of the doubly ended queue.  The
+instruction
+\verb|\removebeforeocplist|~$n$~$l$ removes the \OCP\ at the head of the
+doubly ended queue numbered~$n$.  The instruction
+\verb|\removeafterocplist|~$n$~$l$ does the same at the tail of the
+doubly ended queue.  See the next section for more examples.
+
+\section{Input Filters}
+
+Here we come to the crucial parts of \OMEGA.  What happens to the
+input stream as it passes through translation processes?  What is
+the interaction between \TeX's macro-expansion and \OMEGA's translation 
+processes?
+
+When \OMEGA\ is in horizontal mode and it encounters a
+token of the form
+\emph{letter}, \emph{other\_char}, \emph{char\_given} or
+\emph{char\_num}, that character and all the successive 
+characters in those categories are read into a buffer.
+The currently active \OCP\ is applied to the buffer, and 
+the result is placed back onto the input, to be reread
+by the standard \TeX\ input routines, including macro
+expansion.
+
+The currently active \OCP\ is designated by a pair $(v,i)$, 
+where $v$~is a scaled value and $i$~is an integer.  If all the
+enabled \OCP s are in a \OCP\ list, then the~$v$ designates the index into
+the \OCP\ list and the~$i$ designates which element in the $v$-queue is
+currently active.
+
+Once a \OCP\ has been used, the~$i$ is incremented; if it points to the
+end of the current queue, then $v$~is set to the next queue, and
+$i$~is reset to~1.
+
+When the last enabled \OCP\ has been used, then the standard techniques
+for treating letters and other characters are used, namely generating
+paragraphs, etc.
+
+What this means is that it is now possible to apply a filter on the 
+\emph{text} of a file without macro-expansion, generate a new text,
+possibly with macros to be expanded, macro-expand, re-apply filters,
+etc.  All this without active characters, and without breaking macro
+packages.
+
+How are \OCP\ lists enabled?  \OCP\ lists are placed on a stack, each
+numbered queue in a given list masking the queues with the same number
+for the lists below that one on the stack.
+
+There are three commands, which all respect the grouping mechanism.
+The \verb|\clearocplists| command disables all \OCP\ lists.
+The \verb|\pushocplist|~\emph{OCPlist} command pushes \emph{OCPlist}
+onto the stack. The \verb|\popocplist| command pops the last list 
+from the stack.
+
+For example, consider the following purely hypothetical situations:
+\begin{verbatim}
+     \ocplist\FrenchOCP = \addbeforeocplist 1 \ocpA
+                          \addbeforeocplist 2 \ocpB
+                          \addbeforeocplist 3 \ocpC
+                          \nullocplist
+\end{verbatim}
+
+\begin{verbatim}
+     \ocplist\GermanOCP = \addbeforeocplist 1 \ocpD
+                          \addbeforeocplist 2 \ocpE
+                          \addbeforeocplist 3 \ocpF
+                          \nullocplist
+\end{verbatim}
+
+\begin{verbatim}
+     \ocplist\ArabicOCP = \addbeforeocplist 1 \ocpG
+                          \addbeforeocplist 2 \ocpH
+                          \addbeforeocplist 2 \ocpI
+                          \addbeforeocplist 3 \ocpJ
+                          \nullocplist
+\end{verbatim}
+
+\begin{verbatim}
+     \ocplist\SpecialArabicOCP =
+                          \addafterocplist 3 \ocpK
+                          \ArabicOCP
+\end{verbatim}
+
+\begin{verbatim}
+     \ocplist\UpperCaseOCP =
+                          \addbeforeocplist 2.5 \ocpL
+                          \nullocplist
+\end{verbatim}
+There are now 5 \OCP\ lists \emph{defined}, but none of them are
+\emph{enabled}.  The defined lists are:
+\begin{verbatim}
+     \ocplist\FrenchOCP =
+         [(1.0:\ocpA), (2.0:\ocpB), (3.0:\ocpC)]
+     \ocplist\GermanOCP =
+         [(1.0:\ocpD), (2.0:\ocpE), (3.0:\ocpF)]
+     \ocplist\ArabicOCP =
+         [(1.0:\ocpG), (2.0:\ocpH,\ocpI), (3.0:\ocpJ)]
+     \ocplist\SpecialArabicOCP =
+         [(1.0:\ocpG), (2.0:\ocpH,\ocpI), (3.0:\ocpJ,\ocpK)]
+     \ocplist\UpperCaseOCP =
+         [(2.5:\ocpL)]
+\end{verbatim}
+Consider now the sequence of instructions
+\begin{verbatim}
+     \clearocplists
+     \pushocplist\FrenchOCP
+     \pushocplist\UpperCaseOCP
+     \pushocplist\GermanOCP
+     \popocplist
+     \popocplist
+     \pushocplist\ArabicOCP
+     \pushocplist\SpecialArabicOCP
+     \pushocplist\GermanOCP
+\end{verbatim}
+The effective enabled \OCP\ list is, in turn:
+\begin{verbatim}
+     []
+     [(1.0:\ocpA), (2.0:\ocpB), (3.0:\ocpC)]
+     [(1.0:\ocpA), (2.0:\ocpB), (2.5:\ocpL), (3.0:\ocpC)]
+     [(1.0:\ocpD), (2.0:\ocpE), (2.5:\ocpL), (3.0:\ocpF)]
+     [(1.0:\ocpA), (2.0:\ocpB), (2.5:\ocpL), (3.0:\ocpC)]
+     [(1.0:\ocpA), (2.0:\ocpB), (3.0:\ocpC)]
+     [(1.0:\ocpG), (2.0:\ocpH,\ocpI), (3.0:\ocpJ)]
+     [(1.0:\ocpG), (2.0:\ocpH,\ocpI), (3.0:\ocpJ,\ocpK)]
+     [(1.0:\ocpD), (2.0:\ocpE), (3.0:\ocpF)]
+\end{verbatim}
+     
+The first test of the \OCP\ lists was for Arabic.  The text was typed
+in \textsc{ascii}, using a Latin transliteration.  This text was first
+transformed into Unicode, the official 16-bit encoding for the 
+world's character sets.  These letters were then translated into
+their appropriate visual forms (isolated, initial, medial or final)
+and then the text was translated into the font encoding.  During the
+second translation, inter-letter black spacing is inserted, since Arabic
+typesetting calls for word expansion to fill out a line.  Here is the
+input:
+\begin{verbatim}
+     \font\ARfont=oar10 scaled 1728 offset 256 %% an X-font
+     \def\keshideh{%
+     \begingroup\penalty10000%
+     \clearocplists\xleaders\hbox{\char'767}\hskip0ptplus1fi%
+     \endgroup}
+     \ocp\TexUni=TeXArabicToUnicode
+     \ocp\UniUniTwo=UnicodeToContUnicode
+     \ocp\UniTwoFont=ContUnicodeToTeXArabicOut
+     \ocplist\ArabicOCP=%
+     \addbeforeocplist 1 \TexUni
+     \addbeforeocplist 1 \UniUniTwo
+     \addbeforeocplist 1 \UniTwoFont
+     \nullocplist
+     \def\AR#1{\begingroup\noindent\pushocplist \ArabicOCP%
+     \ARfont\language=255\textdir TRT #1\endgroup}
+\end{verbatim}
+Notice that the \verb|\keshideh|, which is dynamically inserted
+between letters by the \verb|\UniUniTwo| \OCP, uses the \verb|fi|
+infinity.  It also disables all of the \OCP s, within a group.
+
+\section{Input and output character sets}
+
+In a multilingual, heterogeneous environment, it it inevitable that
+different files will be written using different character sets.  It
+is even possible that the same file might have different parts that
+use different character sets.  How is it possible to tag
+these files internally so that \OMEGA\ can read and write differently
+encoded files in a meaningful manner.
+
+After looking at a lot of character sets, we have decided that the
+vast majority of the world's character sets --- unfortunately not
+all --- can be categorized into one of the following groups:
+\begin{itemize}
+\item \texttt{onebyte} includes all those character sets that include
+the basic Roman letters, backslash and percent in the same positions
+as does \textsc{ascii} (\textsc{iso-646}).  Hence all the \textsc{iso-8859}
+character sets, as well as many of the shifted East-Asian sets,
+such as Shift-\textsc{jis}, are included.
+\item \texttt{ebcdic} includes all those character sets that include
+the basic Roman letters, backslash and percent in the same positions
+as does \textsc{ebcdic-us}.  Once again there are shifted character
+sets that fall into this category.
+\item \texttt{twobyte} includes all those character sets that include
+the basic Roman letters, backslash and percent in the same positions
+as does \textsc{unicode} (\textsc{iso-10646}).
+\item \texttt{twobyteLE} is the same as \texttt{twobyte}, but in Little
+Endian order, for ``Microsoft \textsc{unicode}''.
+\end{itemize}
+These categories are called \emph{modes}.
+
+In \OMEGA, it is assumed that every textual input source and textual output
+sink has a mode, as well as two translations: one from the character set to
+the internal encoding, and one from the internal encoding to the character
+set in question.  Normally the internal encoding will be \textsc{unicode},
+which means that linguistic information such as hyphenation will only need
+to be defined once.  There are situations in which extra characters will
+be needed, if the characters or their scripts are not included in
+\textsc{unicode}, but this will not be the norm.
+
+\OMEGA\ has two basic style of input: the old \TeX\ style, or the
+automatic \OMEGA\ style.
+In the automatic style, upon opening a file, \OMEGA\ reads the first
+two octets, and draws the following conclusions:
+\begin{itemize}
+\item Hex \texttt{0025} (\textsc{unicode} \verb|%|)
+or \texttt{005c} (\textsc{unicode} \verb|\|): the mode is \texttt{twobyte}.
+\item Hex \texttt{2500} (\textsc{unicode} \verb|%|)
+or \texttt{5c00} (\textsc{unicode} \verb|\|): the mode is \texttt{twobyteLE}.
+\item Hex \texttt{25} (\textsc{ascii} \verb|%|)
+or \texttt{5c} (\textsc{ascii} \verb|\|): the mode is \texttt{onebyte}.
+\item Hex \texttt{6c} (\textsc{ebcdic-us} \verb|%|)
+or \texttt{e0} (\textsc{ebcdic-us} \verb|\|): the mode is \texttt{ebcdic}.
+\item If none of these four situations
+occurs, then the default input mode is assumed.
+\end{itemize}
+%
+Here are the primitives for manipulating modes:
+\begin{itemize}
+\item \verb|\DefaultInputMode| $\showmode$ :  The default input mode is set
+to $\showmode$.
+\item \verb|\noDefaultInputMode|  :  The standard \TeX\ style of
+input is restored.
+\item \verb|\DefaultOutputMode| $\showmode$ :  The default output mode
+is set to $\showmode$.
+\item \verb|\noDefaultOutputMode|  :  The standard \TeX\ style of
+output is restored.
+\item \verb|\InputMode| $\showfile$ $\showmode$ : The input mode for
+file $\showfile$ is changed to $\showmode$, where $\showfile$ can be
+\texttt{currentfile}, meaning the current file being \verb|\input|,
+or an integer~$n$, which corresponds to \verb|\openin|~$n$.
+\item \verb|\noInputMode| $\showfile$ :  The input mode for
+file $\showfile$ is restored to the standard \TeX\ style.
+\item \verb|\OutputMode| $\showfile$ $\showmode$  :  The output
+mode for file $\showfile$ is changed to $\showmode$, where
+$\showfile$ can be an integer~$n$, which corresponds to
+\verb|\openout|~$n$.
+\item \verb|\noOutputMode| $\showfile$ :  The output mode for
+file $\showfile$ is restored to the standard \TeX\ style.
+\end{itemize}
+%
+Here are the primitives for manipulating translations:
+\begin{itemize}
+\item \verb|\DefaultInputTranslation| $\showmode$ $\showligocp$ :
+The default input translation for mode $\showmode$ is $\showligocp$.
+\item \verb|\noDefaultInputTranslation| $\showmode$ :
+There is no longer a default input translation for mode $\showmode$.
+\item \verb|\DefaultOutputTranslation| $\showmode$ $\showligocp$ :
+The default output translation for mode $\showmode$ is $\showligocp$.
+\item \verb|\noDefaultOutputTranslation| $\showmode$ :
+There is no longer a default output translation for mode $\showmode$.
+\item \verb|\InputTranslation| $\showfile$ $\showligocp$ :
+The input translation for file $\showfile$ is $\showligocp$,
+where $\showfile$ is \verb|currentfile| or an integer~$n$.
+\item \verb|\noInputTranslation| $\showfile$ :
+There is no longer an input translation for file $\showfile$.
+\item \verb|\OutputTranslation| $\showfile$ $\showligocp$ :
+The output translation for file $\showfile$ is $\showligocp$,
+where $\showfile$ is an integer~$n$.
+\item \verb|\noOutputTranslation| $\showfile$ :
+There is no longer an output translation for file $\showfile$.
+\end{itemize}
+All of the above instructions apply only after the carriage return
+ending the current line.
+
+The default mode when the system begins is \OMEGA\ style,
+assuming \texttt{onebyte}.  This is sufficient for all the
+\texttt{iso-8859} character sets, for the \textsc{utf-8}
+encoding for \textsc{unicode}, many national character sets,
+and most mixed-length character sets used in East Asia.
+
+Once the basic family of character sets has been determined, 
+\OMEGA\ can read the files, and actually interpret control sequences.
+It is then possible to be more specific and to specify exactly what
+translation process must be applied to the entire file to convert
+the input to \textsc{unicode}.
+
+Input translations are simply single \OCP s, which
+differ from input filters in that they apply to \emph{all} characters
+in a file, not simply the letters and other characters in horizontal
+mode.  For each kind of mode, there can be a default input
+translation.  
+
+Upon startup, there is no default translation for the
+\texttt{onebyte}, \texttt{twobyte} or \texttt{twobyteLE} modes,
+but there is one for \texttt{ebcdic}, namely 
+\begin{verbatim}
+     \ocp\OCPebcdic=ebcdic
+     \DefaultInputTranslation ebcdic \OCPebcdic
+\end{verbatim}
+
+\section{Further work}
+
+The \OMEGA\ project is far from finished.  Currently much of the current
+work is geared towards font development.  Nevertheless, new
+functionality is to be added in the future.  In particular, more
+general methods for hyphenation, as well as for text output, using
+\OTP s, are envisaged.
+
+\end{document}
+
+
+
+The \verb|.tfm| files used by \TeX3 only allow 256~characters each.
+Like \TeX, \OMEGA\ uses \verb|.tfm| files, but it also uses
+\emph{extended font metric} (\verb|.ofm|) files, which are
+generalizations of \verb|.tfm| files for fonts of up to
+65~536~characters each.
+
+The description below focuses on the differences between \verb|.tfm|
+files and \verb|.ofm| files.  The standard definition of \verb|.tfm|
+files is in the second volume of Knuth's \emph{Computers and
+Typesetting} series.
+
+The first 52 bytes (13 words) of an \verb|.ofm| file contain thirteen
+32-bit integers that give the lengths of the various subsequent
+portions of the file.  These thirteen integers are, in order:
+
+\begin{tabular}{ll}
+$0$ &empty word to designate \verb|.ofm| file;\\
+\emph{lf}&length of the entire file, in words;\\
+\emph{lh}&length of the header data, in words;\\
+\emph{bc}&smallest character code in the font;\\
+\emph{ec}&largest character code in the font;\\
+\emph{nw}&number of words in the width table;\\
+\emph{nh}&number of words in the height table;\\
+\emph{nd}&number of words in the depth table;\\
+\emph{ni}&number of words in the italic correction table;\\
+\emph{nl}&number of words in the lig-kern table;\\
+\emph{nk}&number of words in the kern table;\\
+\emph{ne}&number of words in the extensible character table;\\
+\emph{np}&number of font parameter words.\\
+\end{tabular}
+
+The first word is~0 (future versions of
+\verb|.ofm| files could have different values;  what is important is that
+the first two bytes be~0 to differentiate \verb|.tfm| and \verb|.ofm| files).
+The next twelve integers are as above, all non-negative and less
+than~$2^{31}$.  The inequality $\mathit{bc}-1\leq\mathit{ec}\leq65535$
+must hold, as must the equality
+\[\mathit{lf}=13+
+\mathit{lh}+
+2(\mathit{ec}\!-\!\mathit{bc}\!+\!1)+
+\mathit{nw}+
+\mathit{nh}+
+\mathit{nd}+
+\mathit{ni}+
+\mathit{nl}+
+\mathit{nk}+
+\mathit{ne}+
+\mathit{np}.\]
+Note that an \verb|.ofm| font may contain as many as 65~536 characters 
+(if $\mathit{bc}=0$ and $\mathit{ec}=65535$), and as few as 0~characters 
+(if $\mathit{bc}=\mathit{ec}+1$).
+
+The rest of the \verb|.ofm| file is, like in \verb|.tfm| files, a
+sequence of ten data arrays.  Three of the arrays are different:
+\emph{char\_info}, \emph{lig\_kern} and \emph{exten}.
+
+The \emph{char\_info} array contains one \emph{char\_info\_word} entry
+per character.  Each \emph{char\_info\_word} in an \verb|.ofm| file
+takes 2~words (8~octets), packed as follows:
+
+\begin{description}
+\item[octets 0--1:] \emph{width\_index} (16~bits);
+\item[octet 2:]  \emph{height\_index} (8~bits);
+\item[octet 3:] \emph{depth\_index} (8~bits);
+\item[octets 4--5:]
+\emph{italic\_index} (14 bits) times 4, plus \emph{tag} (2~bits);
+\item[octets 6--7:] \emph{remainder} (16 bits).
+\end{description}
+
+Therefore the \verb|.ofm| format imposes a limit of 256~different heights,
+256~different depths, and 16~384~different italic corrections.
+
+The \emph{lig\_kern} array consists of a sequence of
+\emph{lig\_kern\_command} entries.  Each \emph{lig\_kern\_command}
+in an \verb|.ofm| file takes 2~words (8~octets), packed as follows:
+
+\begin{description}
+\item[octets 0--1:] \emph{skip\_byte}, indicates that this is the final
+program step if the byte is 128 or more, otherwise the next step is obtained
+by skipping this number of intervening steps.
+\item[octets 2--3:] \emph{next\_char}, ``if \emph{next\_char}
+follows the current character, then perform the operation and stop,
+otherwise continue.''
+\item[octets 4--5:] \emph{op\_byte}, indicates a ligature step if less
+than~128, a kern step otherwise.
+\item[octets 6--7:] \emph{remainder}.
+\end{description}
+
+For \verb|.tfm| files, if the very first instruction of a
+character's \emph{lig\_kern} program has $\mathit{skip\_byte}>128$, 
+the program actually begins in location
+$256*\mathit{op\_byte}+\mathit{remainder}$.
+This feature allows access to large \emph{lig\_kern} arrays,
+because the first instruction must otherwise appear in a location $\leq255$.
+For \verb|.ofm| files, the latter value is $\leq65535$.
+
+Extensible characters are specified by an \emph{extensible\_recipe},
+which consists of four 2-octet words called \emph{top}, \emph{mid},
+\emph{bot}, and \emph{rep} (in this order). These bytes are the
+character codes of individual pieces used to build up a large symbol.
+If \emph{top}, \emph{mid}, or \emph{bot} are zero, they are not
+present in the built-up result. For example, an extensible vertical
+line is like an extensible bracket, except that the top and bottom
+pieces are missing.
+
+\paragraph{Font offsets.}
+
+When switching from one alphabet to another in Unicode, one passes
+from one Unicode page to another.  However, the corresponding fonts will
+normally all be numbered from~0.  To deal with this situation, a 
+new keyword, \texttt{offset}, is introduced.  In the \verb|\font|
+command, $\mathtt{offset}\;n$ states that character~$c$ in the 
+font is referred to in \OMEGA\ by $n+c$.  For example, 
+\begin{verbatim}
+     \font\ARfont=oar10 scaled 1728 offset 256 %% an Omega font
+\end{verbatim}
+states that the font \texttt{oar10} is to be loaded, using a scaling
+factor of~1728, and that character~$c$ in the font will be referred to
+in \OMEGA\ as $c+256$ or, equivalently, that character~$C$ in 
+\OMEGA\ refers to character $C-256$ in the font.
+
+\paragraph{Extended virtual property files.}
+
+The \texttt{.ovp} files are the same as \texttt{.vpl} files, except that 
+characters are no longer limited to 8~bits, but to 16~bits.
+
+\paragraph{Extended virtual font files.}
+
+The \texttt{.vf} file format already supports fonts with large
+numbers of characters.  However, not all drivers that read
+\texttt{.vf} files properly support large fonts.  Therefore, the
+files generated from \texttt{.ovp} files are labeled \texttt{.ovf}
+rather than~\texttt{.vf}.
+
+\section{Character dimensions}
+
+To simplify the acrobatics necessary for diacritic placement for
+certain alphabets, four new primitives (\verb|\charwd|, \verb|\chardp|,
+\verb|\charht|, and \verb|\charit|) are provided.  When followed by
+a integer designating a character, they respectively provide the
+width, the depth, the height and the italic correction of the
+character.  For example,
+\begin{verbatim}
+     \charwd120
+\end{verbatim}
+can be considered to be an abbreviation of
+\begin{verbatim}
+     \setbox250=\hbox{P}\wd250
+\end{verbatim}
+but without the side effect of creating a box and putting something inside it.
+
+\end{document}

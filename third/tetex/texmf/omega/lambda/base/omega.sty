@@ -1,6 +1,14 @@
-\def\@tabular{\leavevmode \hbox \bgroup \nextmathfake$\let\@acol\@tabacol
+% This is 'omega.sty'.
+%
+% Copyright (C) John Plaice and Yannis Haralambous
+% Copyright (C) 2002 Roozbeh Pournader
+%
+% 
+
+\def\@tabular{\leavevmode \hbox \bgroup \nextfakemath$\let\@acol\@tabacol
    \let\@classz\@tabclassz
    \let\@classiv\@tabclassiv \let\\\@tabularcr\@tabarray}
+
 \def\textbullet{{\fontencoding{OMS}\selectfont\clearocplists\char"0F}}%
 \def\i{^^^^0131}%
 \def\ss{^^^^00df}%
@@ -89,26 +97,18 @@
 \newenvironment{greek}{\pushocplist\GreekOCP\fontfamily{omlgc}\selectfont%
 \language=3\lefthyphenmin=2\righthyphenmin=2}{%
 }
-\newenvironment{arab}{\pushocplist\ArabicOCP\fontfamily{omarb}\selectfont\beginR}{%
-\endR}
-\newenvironment{smallarab}{\pushocplist\ArabicNoKeshidehOCP\fontfamily{omarb}\selectfont\beginR}{%
-\endR}
+\newenvironment{arab}{\pushocplist\ArabicOCP\fontfamily{omarb}\selectfont\textdir TRT\pardir TRT}{}
+\newenvironment{smallarab}{\pushocplist\ArabicNoKeshidehOCP\fontfamily{omarb}\selectfont\textdir TRT\pardir TRT}{}
 \newenvironment{latberber}{\pushocplist\LatinBerberOCP\fontfamily{omlgc}\selectfont}{%
 }
 \newenvironment{tifinagh}{\pushocplist\TifinaghOCP\fontfamily{omlgc}\selectfont}{%
 }
-\newenvironment{berber}{\pushocplist\ArabicBerberOCP\fontfamily{omarb}\selectfont\beginR}{%
-\endR}
-\newenvironment{urdu}{\pushocplist\UrduOCP\fontfamily{omarb}\selectfont\beginR}{%
-\endR}
-\newenvironment{smallurdu}{\pushocplist\UrduNoKeshidehOCP\fontfamily{omarb}\selectfont\beginR}{%
-\endR}
-\newenvironment{pashto}{\pushocplist\AfghaPashtoOCP\fontfamily{omarb}\selectfont\beginR}{%
-\endR}
-\newenvironment{pashtop}{\pushocplist\PakiPashtoOCP\fontfamily{omarb}\selectfont\beginR}{%
-\endR}
-\newenvironment{sindhi}{\pushocplist\SindhiOCP\fontfamily{omarb}\selectfont\beginR}{%
-\endR}
+\newenvironment{berber}{\pushocplist\ArabicBerberOCP\fontfamily{omarb}\selectfont\textdir TRT\pardir TRT}{}
+\newenvironment{urdu}{\pushocplist\UrduOCP\fontfamily{omarb}\selectfont\textdir TRT\pardir TRT}{}
+\newenvironment{smallurdu}{\pushocplist\UrduNoKeshidehOCP\fontfamily{omarb}\selectfont\textdir TRT\pardir TRT}{}
+\newenvironment{pashto}{\pushocplist\AfghaPashtoOCP\fontfamily{omarb}\selectfont\textdir TRT\pardir TRT}{}
+\newenvironment{pashtop}{\pushocplist\PakiPashtoOCP\fontfamily{omarb}\selectfont\textdir TRT\pardir TRT}{}
+\newenvironment{sindhi}{\pushocplist\SindhiOCP\fontfamily{omarb}\selectfont\textdir TRT\pardir TRT}{}
 \def\rmdefault{omlgc}
 \def\ttdefault{uctt}
 \def\OMEGA{{\fontfamily{omlgc}\selectfont^^^^03a9}}
@@ -125,4 +125,9 @@
 \def\himher{\smash{\hbox to 0pt{\raise1ex\hbox{\footnotesize him}\hss}\lower.5ex\hbox{\footnotesize her}}}
 \def\hisher{\smash{\hbox to 0pt{\raise1ex\hbox{\footnotesize his}\hss}\lower.5ex\hbox{\footnotesize her}}}
 \tolerance=2000
+% defining TeX-XeT primitives as macros --RP
+\def\beginR{\bgroup\textdir TRT}
+\def\endR{\egroup}
+\def\beginL{\bgroup\textdir TLT}
+\def\endL{\egroup}
 \endinput

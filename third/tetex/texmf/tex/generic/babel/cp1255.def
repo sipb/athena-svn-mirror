@@ -1,0 +1,163 @@
+%%
+%% This is file `cp1255.def',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hebinp.dtx  (with options: `cp1255')
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1997-1998 Boris Lavva and any individual authors
+%% listed elsewhere in this file. All rights reserved.
+%% 
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
+%% listed elsewhere in this file.  All rights reserved.
+%% 
+%% This file is part of the Babel system release 3.7.
+%% --------------------------------------------------
+%% 
+%% It may be distributed under the terms of the LaTeX Project Public
+%% License, as described in lppl.txt in the base LaTeX distribution.
+%% Either version 1.2 or, at your option, any later version.
+ \ProvidesFile{cp1255.def}
+        [2000/09/26 v1.0a Input encoding file (test version)]
+\makeatletter
+\ProvideTextCommandDefault{\textdegree}{\ensuremath{{^\circ}}}
+\ProvideTextCommandDefault{\textonehalf}{\ensuremath{\frac12}}
+\ProvideTextCommandDefault{\textonequarter}{\ensuremath{\frac14}}
+\ProvideTextCommandDefault{\textthreequarters}{\ensuremath{\frac34}}
+\ProvideTextCommandDefault{\textflorin}{\textit{f}}
+\ProvideTextCommandDefault{\textcent}
+   {\TextSymbolUnavailable\textcent}
+\ProvideTextCommandDefault{\textyen}
+   {\TextSymbolUnavailable\textyen}
+\ProvideTextCommandDefault{\newsheqel}
+   {\TextSymbolUnavailable\newsheqel}
+\ProvideTextCommandDefault{\textbrokenbar}
+   {\TextSymbolUnavailable\textbrokenbar}
+\ProvideTextCommandDefault{\textperthousand}
+   {\TextSymbolUnavailable\textperthousand}
+\providecommand{\mathonesuperior}{{^1}}
+\providecommand{\maththreesuperior}{{^3}}
+\providecommand{\mathtwosuperior}{{^2}}
+\DeclareInputText{130}{\quotesinglbase}
+\DeclareInputText{131}{\textflorin}
+\DeclareInputText{132}{\quotedblbase}
+\DeclareInputText{133}{\dots}
+\DeclareInputText{134}{\dag}
+\DeclareInputText{135}{\ddag}
+\DeclareInputText{136}{\^{}}
+\DeclareInputText{137}{\textperthousand}
+\DeclareInputText{139}{\guilsinglleft}
+\DeclareInputText{145}{\textquoteleft}
+\DeclareInputText{146}{\textquoteright}
+\DeclareInputText{147}{\textquotedblleft}
+\DeclareInputText{148}{\textquotedblright}
+\DeclareInputText{149}{\textbullet}
+\DeclareInputText{150}{\textendash}
+\DeclareInputText{151}{\textemdash}
+\DeclareInputText{152}{\~{}}
+\DeclareInputText{153}{\texttrademark}
+\DeclareInputText{155}{\guilsinglright}
+\DeclareInputText{160}{\nobreakspace}
+\DeclareInputText{162}{\textcent}
+\DeclareInputText{163}{\pounds}
+\DeclareInputText{164}{\newsheqel}
+\DeclareInputText{165}{\textyen}
+\DeclareInputText{166}{\textbrokenbar}
+\DeclareInputText{167}{\S}
+\DeclareInputText{168}{\"{}}
+\DeclareInputText{169}{\textcopyright}
+\DeclareInputText{171}{\guillemotleft}
+\DeclareInputMath{172}{\lnot}
+\DeclareInputText{173}{\-}
+\DeclareInputText{174}{\textregistered}
+\DeclareInputText{175}{\@tabacckludge={}}
+\DeclareInputText{176}{\textdegree}
+\DeclareInputMath{177}{\pm}
+\DeclareInputMath{178}{\mathtwosuperior}
+\DeclareInputMath{179}{\maththreesuperior}
+\DeclareInputText{180}{\@tabacckludge'{}}
+\DeclareInputMath{181}{\mu}
+\DeclareInputText{182}{\P}
+\DeclareInputText{183}{\textperiodcentered}
+\DeclareInputMath{185}{\mathonesuperior}
+\DeclareInputText{187}{\guillemotright}
+\DeclareInputText{188}{\textonequarter}
+\DeclareInputText{189}{\textonehalf}
+\DeclareInputText{190}{\textthreequarters}
+\DeclareInputText{192}{\sheva}
+\DeclareInputText{193}{\hatafsegol}
+\DeclareInputText{194}{\hatafpatah}
+\DeclareInputText{195}{\hatafqamats}
+\DeclareInputText{196}{\hiriq}
+\DeclareInputText{197}{\tsere}
+\DeclareInputText{198}{\segol}
+\DeclareInputText{199}{\patah}
+\DeclareInputText{200}{\qamats}
+\DeclareInputText{201}{\holam}
+\DeclareInputText{203}{\qubuts}
+\DeclareInputText{204}{\dagesh}
+\DeclareInputText{205}{\meteg}
+\DeclareInputText{206}{\maqaf}
+\DeclareInputText{207}{\rafe}
+\DeclareInputText{208}{\paseq}
+\DeclareInputText{209}{\shindot}
+\DeclareInputText{210}{\sindot}
+\DeclareInputText{211}{\sofpasuq}
+\DeclareInputText{212}{\doublevav}
+\DeclareInputText{213}{\vavyod}
+\DeclareInputText{214}{\doubleyod}
+\DeclareInputText{224}{\alef}
+\DeclareInputText{225}{\bet}
+\DeclareInputText{226}{\gimel}
+\DeclareInputText{227}{\dalet}
+\DeclareInputText{228}{\he}
+\DeclareInputText{229}{\vav}
+\DeclareInputText{230}{\zayin}
+\DeclareInputText{231}{\het}
+\DeclareInputText{232}{\tet}
+\DeclareInputText{233}{\yod}
+\DeclareInputText{234}{\finalkaf}
+\DeclareInputText{235}{\kaf}
+\DeclareInputText{236}{\lamed}
+\DeclareInputText{237}{\finalmem}
+\DeclareInputText{238}{\mem}
+\DeclareInputText{239}{\finalnun}
+\DeclareInputText{240}{\nun}
+\DeclareInputText{241}{\samekh}
+\DeclareInputText{242}{\ayin}
+\DeclareInputText{243}{\finalpe}
+\DeclareInputText{244}{\pe}
+\DeclareInputText{245}{\finaltsadi}
+\DeclareInputText{246}{\tsadi}
+\DeclareInputText{247}{\qof}
+\DeclareInputText{248}{\resh}
+\DeclareInputText{249}{\shin}
+\DeclareInputText{250}{\tav}
+\DeclareInputText{253}{\lefttorightmark}
+\DeclareInputText{254}{\righttoleftmark}
+\makeatother
+%%
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+\endinput
+%%
+%% End of file `cp1255.def'.

@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -18,12 +18,12 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 def addto text t = enddef;     % Draw nothing
 def filldraw text t = enddef;
-vardef serif(suffix $,$$,@) % serif at |z$| for stroke from |z$$|
- (expr darkness,jut) suffix modifier = enddef;
+%vardef serif(suffix $,$$,@) % serif at |z$| for stroke from |z$$|
+% (expr darkness,jut) suffix modifier = enddef;
 def dish_serif text t = enddef;
 def nodish_serif text t = enddef;
 vardef sloped_serif.l(suffix $,$$,@)(expr darkness,jut,drop) = enddef;
@@ -72,3 +72,6 @@ vardef bar_stroke(expr left_jut,right_jut) = enddef;
 vardef cyr_serif(suffix $,$$,@)  % serif at |z$| for stroke from |z$$|
  (expr darkness,beak_darkness,jut,beak_jut) =
 enddef;
+
+endinput;
+%end of file

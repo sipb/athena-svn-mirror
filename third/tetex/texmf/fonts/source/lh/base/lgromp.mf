@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -25,7 +25,7 @@
 % * Spanish open question mark moved out
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 iff not wncoding:%
 lhchar "Ampersand";
@@ -94,3 +94,4 @@ else: pos1(Vround 5/7[vair,flare],110);
 penlabels(0,1,2,3,4,5,6,7,8); endchar;
 
 endinput;
+%end of file

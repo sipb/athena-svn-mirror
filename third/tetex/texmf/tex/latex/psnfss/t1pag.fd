@@ -1,11 +1,5 @@
-%Filename: t1pag.fd
-%Created by: tex Fam_29274
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{t1pag.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for T1/pag.]
+   [2001/06/04 font definitions for T1/pag.]
 
 \DeclareFontFamily{T1}{pag}{}
 

@@ -2,7 +2,7 @@
 % This is PL_DOD.MF ({\bif{}dodatkowy}, i.e., additional file for the Polish
 % extension of CM family) in text format.
 % ---------------------------------------------------------------------------
-% PL VERSION 1.03,   18 Dec 1992
+% PL VERSION 1.09, April 13th, 2001 -- released for BachoTeX 2001
 % ---------------------------------------------------------------------------
 % AUTHORS: {\bif{}Bogus\l{}aw Jackowski \& Marek Ry\'cko}
 % ---------------------------------------------------------------------------
@@ -79,23 +79,8 @@
 %\: a rule marking the height of accented letters.
 %%}
 % ---------------------------------------------------------------------------
-% HISTORY
-%  7 Feb 1992: version 1.00
-% 11 Feb 1992: version 1.01
-%    (no changes; the new version number due to changes in \MeX{} format)
-% 25 May 1992: version 1.02
-%    The following two erroneous assignments:
-%|  z_a:=(x_down+the_left_pos,.5penkind); %| starting point
-%|  z_d:=(xpart(z_a)-.5penkind,y_right+.5penkind)+the_tip_pos; %| ending point
-%    changed to the following ones:
-%|  z_a:=(x_down+the_left_pos,ypart(ogonek_pos)); %| starting point
-%|  z_d:=(xpart(z_a)-.5penkind,y_right+ypart(ogonek_pos))+|
-%|   the_tip_pos; %| ending point
-%    Some comments changed.
-% 18 Dec 1992: version 1.03
-%    (no changes; the new version number due to changes in FIK_MIK.MF
-%    and some cosmetic changes in CMBX11.MF, CMR11.MF, CMTI11.MF, CMSL11.MF,
-%    CMSSBI10.MF, and POLAN.MF)
+
+
 % ---------------------------------------------------------------------------
 %                          LAYOUT SETUP:
 %        (A MIXTURE OF EXTENDED CM, EXTENDED ASCII, AND ``LOCAL'')
@@ -148,12 +133,21 @@ if unknown improve_kerns: boolean improve_kerns; improve_kerns=false; fi;
 
 if unknown is_small_cap: boolean is_small_cap; is_small_cap=false; fi;
 
-% The variable |limit_dist| is set to |5/4u| in PL_DL.MF, PL_ML.MF and
-% PL_MLK.MF, and used in |put_accent| and |put_cross|. It was introduced
-% because of some funny (although troublesome) fonts. The value of |u| is
-% changed by |mono_adjust|, hence it is set outside |beginchar| ... |endchar|
-% rather than inside.
-numeric limit_dist;
+% The variable |limit_dist| is used in an argument to |put_cross| in
+% PL_DL.MF, PL_ML.MF, and PL_MLK.MF. It was introduced because of some
+% funny (although troublesome) fonts. The value of |u| is corrected by
+% |adjust_fit|, hence |limit_dist| is defined useng |vardef| and |u#|
+vardef limit_dist = 5/4u#*hppp enddef;
+
+% The proportion of |vair/stem| depends drastically on resolution;
+% e.g., for 300 dpi cmbx10 |vair=1| and |stem=5|, for 746 dpi cmbx10
+% (300 dpi, magstep 5) |vair=4| and |stem=12|, while, sharply speaking,
+% |stem#/vair#=3.15381|; hence a new variable |xvair| has been introduced
+% to be used in some crucial places instead of |vair|.
+vardef xvair = stem*vair#/stem# enddef;
+
+% In particular, |qvair| (``quote vair'') is defined using |xvair|.
+vardef qvair = max(round(xvair),fine+epsilon) enddef;
 % ---------------------------------------------------------------------------
 %                         GENERAL PURPOSE ACCESSORIES
 % ---------------------------------------------------------------------------
@@ -186,16 +180,18 @@ vardef fix_virgin z = % find a pair of virgin pairs
   jj:=incr jj else: jj=ii fi; exitif known ii;
  endfor;
  jj:=ii+1;
-% now |ii| and |jj| are such that |z[ii]| and |z[jj]| are ``untouched''
+% now |ii+1=jj| and |z[ii]| and |z[jj]| are ``untouched''
 enddef;
 
 %%% italcorr corrital
 % correction of italic correction (cf. D. E. Knuth, The \MF{}book, p. 105):
 vardef corrital z suffix $ =
 % |z$| is the rightmost position of a pen (in accent path)
- if not monospace:
-  save charic_; charic_=(rt(x$)-r)/hppp+slant*y$/vppp+.5u#;
-  if charic_>charic: charic:=charic_; fi
+ if known sharp_calc:
+  if not monospace:
+   save charic_; charic_=(rt(x$)-r)/hppp+slant*y$/vppp+.5u#;
+   if charic_>charic: charic:=charic_; fi
+  fi
 %| else: %| |charic=mono_charic#|, do nothing
  fi
 enddef;
@@ -216,13 +212,6 @@ def prepare_pen suffix $ =
   forsuffixes $$=lft,rt,top,bot: shiftdef($.$$,$$ 0); endfor
 %%% qq $ %%%% ordinary MFT convention
 enddef;
-
-% The proportion of |vair/stem| depends drastically on resolution;
-% e.g., for 300 dpi cmbx10 |vair=1| and |stem=5|, for 746 dpi cmbx10
-% (300 dpi, magstep 5) |vair=4| and |stem=12|, while, sharply speaking,
-% |stem#/vair#=3.15381|; hence a new variable |xvair| has been introduced
-% to be used in some crucial places instead of |vair|.
-vardef xvair = stem*vair#/stem# enddef;
 % ---------------------------------------------------------------------------
 %                          ACCENT ACCESSORIES
 % ---------------------------------------------------------------------------
@@ -256,11 +245,13 @@ vardef cap_A_wd@# = 13u@# enddef;
 
 def mark_height(expr sharp_h)=
 % |sharp_h| is the height of an accented minuscule
- if\\ (proofing>0) and is_cap:
+ if known sharp_calc:
+  charht:=if is_cap: h/vppp else: sharp_h fi;
+  if\\ (proofing>0) and is_cap:
 % BJ likes to have proofs vertically aligned (somehow):
-  proofoffset(0,h-charht*vppp-1mm);
+   proofoffset(0,h-charht*vppp-1mm);
+  fi
  fi
- charht:=if is_cap: h/vppp else: sharp_h fi;
 % say earlier, e.g., |is_smoke=1| if you're making `smoked' proofs
 % and you don't like to have a rule marking the height
  if unknown is_smoke:
@@ -319,7 +310,25 @@ def fix_acc_pairs =
  endgroup;
 enddef;
 
-def put_accent=
+def fix_acc_top =
+ save accent_hpos; accent_hpos=0; % the value does not matter here
+ fix_acc_pairs; % |fix_acc_pairs| uses private values of |w|, |h| \& |u|
+% |z[ii]$| and |z[jj]$| (|$= ,r,l|) are fixed temporarily, will be released
+% fix the y coordinate of the top point of accent:
+ if serifs:
+  pickup crisp.nib;
+  y.a_top:=ypart(directionpoint left of
+   (z[jj]r{z[jj]r-z[ii]r}..{z[ii]l-z[jj]l}z[jj]l)); y'a_top:=top y.a_top;
+ else:
+  pickup fine.nib; y.a_top:=ypart(z[jj]r); y'a_top:=top y.a_top;
+ fi
+% release |z[ii]$| and |z[jj]$| (|$= ,r,l|):
+ forsuffixes $= ,r,l:
+  x[ii]$:=whatever; y[ii]$:=whatever; x[jj]$:=whatever; y[jj]$:=whatever;
+ endfor
+enddef;
+
+def put_accent =
  numeric accent_hpos;
  accent_hpos=.5w - if is_cap: .75 else: .5 fi\\ u
   if known hpos_corr: +hpos_corr fi;
@@ -335,32 +344,56 @@ def put_accent=
   z.right=z.top=z[jj]r;
  fi
  corrital z.right; % correct italic correction
-% adjust and save height (it is used in the program for the dotted `Z'):
- h:=if is_cap: y.top else: a_ht fi; saved_height:=h; mark_height(a_ht#); 
+% adjust height (the same height is used in the program for the dotted `Z'):
+ h:=if is_cap: y.top else: a_ht fi;
+ mark_height(a_ht#); 
  penlabels([ii],[jj]);
 enddef;
 % ---------------------------------------------------------------------------
 %                           DOT ACCENT ACCESSORIES
 % ---------------------------------------------------------------------------
 %%% good penkind
-def put_dot (suffix penkind) (expr dd_) = % dot of the lowercase letter `i'
+def put_dot (suffix penkind) (expr sharp_d_d) = % the dot of the lc letter `i'
+% assumptions: for lowercase `z' the dot accent should be exactly the same
+% as the dot over `i'; a virtually contradictory demand is to be fullfiled
+% for capital `Z': the dot should have exactly the same shape as the dot
+% over dotted `z' (in any case, must not be smaller), not too close to
+% the top of `Z', and not protruding (too much) over the nominal height,
+% i.e., over the height of acute accent.
+ fix_acc_top;
+% now |y.a_top| and |y'a_top| are fixed; |y'a_top=top y.a_top| for a pen
+% appropriate for the acute accent
  fix_virgin z;
- numeric dd#; % sharp dot diameter
- dd#=dd_; define_whole_blacker_pixels(dd);
-% adjust height temporarily:
- h:=vround(if charcode=dotted_Z: (cap_height#+1.5u#+dd#)
+ save d_d_; % for sharp and discrete dot diameter
+ d_d_#=sharp_d_d; define_whole_blacker_pixels(d_d_);
+% compute the nominal height
+ h:=vround(
+  if charcode=dotted_Z: (cap_height#+i_ht#(d_d_)-hi.x_height#)
   elseif charcode=dotted_z: % branch not used when |is_small_cap=true|
-   i_ht#(dd) fi\\ *hppp);
- pickup penkind.nib; pos[jj](dd,90); pos[ii](dd,0);
+   i_ht#(d_d_) fi\\ *hppp);
+ pickup penkind.nib; pos[jj](d_d_,90); pos[ii](d_d_,0);
  x[jj]=x[ii]=good.x(.5w+if is_cap: .5 else: .25 fi\\ u);
- top y[jj]r=h+1; y[ii]=.5[y[jj]l,y[jj]r];
+ top y[jj]r=h+1;
+ top y.i_top=if charcode=dotted_Z: cap_height else: x_height fi
+  if serifs: +min(oo,serif_drop) fi;
+ save gap_; gap_=bot y[jj]l-top y.i_top; % nominal gap between the dot and `z'
+% raise the lower edge of the dot if needed (cf. the code for the letter `i'
+% in ROMANL.MF):
+ if gap_ < slab: y[jj]l:=min(y[jj]r-eps,y.i_top+tiny+slab); fi
+ save ove_; ove_=top y[jj]r-y'a_top; % a nominal overshoot of the dot
+% lower the dot if needed (for dotted `Z' only):
+ if (charcode=dotted_Z) and (ove_>0):
+  save low_; % |low_| is to be the maximal acceptable lowering of the dot
+  low_=max(0,min(ove_,gap_-penkind)); % somewhat arbitrary formula...
+  forsuffixes $= ,l,r: y[jj]$:=y[jj]$-low_; endfor
+ fi
+ y[ii]=.5[y[jj]l,y[jj]r];
 % draw the dot:
  dot([ii],[jj]);
-% dotted `Z' inherits the recently saved height (if known; usually the height
-% of the accented `Z') which allows to decrease by one the number of different
-% heights in a font; dotted `z' has the height of a lowercase `i' (exception:
-% caps and small caps)
- if known saved_height: h:=saved_height; fi\\ mark_height(i_ht#(dd));
+% dotted `Z' inherits the height of the accented `Z' which enables decreasing
+% by one the number of different heights in a font; dotted `z' has the height
+% of a lowercase `i' (exception: caps and small caps)
+ h:=y.a_top; mark_height(i_ht#(d_d_));
  penlabels([ii],[jj]);
 enddef;
 % ---------------------------------------------------------------------------
@@ -368,15 +401,17 @@ enddef;
 % ---------------------------------------------------------------------------
 def put_cross(expr l_jut,r_jut) =
  fix_virgin z;
- numeric dd; dd=if is_cap: cap_bar else: bar fi;
+ numeric c_ht_; % height of the center of the cross
+ c_ht_=if is_cap: cap_bar else: bar fi;
  numeric theta; theta=angle(11u#,.3[x_height#,cap_height#]);
- pickup crisp.nib; pos[ii](dd,theta+90); pos[jj](dd,theta+90);
+ pickup crisp.nib; pos[ii](c_ht_,theta+90); pos[jj](c_ht_,theta+90);
  lft x[ii]r = hround(x1-l_jut)-eps;
  rt x[jj]l = hround(x1+r_jut)+eps;
  z[ii]-z[jj]=whatever*dir theta;
 % |.52| is one of CM (Computer Magic) numbers appearing in many CM programs,
 % among others in the programs for B, F, and H:
  whatever[z[ii],z[jj]]=if not is_cap and hefty: top fi\\ (x1,.52cap_height);
+% |1/2[z[ii],z[jj]]| is now the center of the cross;
 % before drawing the stroke improve discretization:
  save eps_;
  eps_:=y[ii]l-good.y(y[ii]l);
@@ -690,9 +725,102 @@ def put_ogonek(suffix penkind) =
  endgroup
 enddef;
 % ---------------------------------------------------------------------------
-%              LAST MINUTE EXTRA FONT SETUP (repeated in POLKAP.MF)
+%                   MACROS FOR PROCESSING CHARS TWICE:
+%             PASS 1: COLLECTING TFM (SHARP) INFORMATION
+%             PASS 2: CREATING THE GLYPH
 % ---------------------------------------------------------------------------
 %%% define_pixels prepare_pen
+%%% beginchar beginchar_twice
+%%% endfor repeat_once
+
+let ori_draw:=draw;
+let ori_fill:=fill;
+let ori_filldraw:=filldraw;
+let ori_erase:=erase;
+let ori_special:=special;
+let ori_numspecial:=numspecial;
+
+mode_def canonical_sharp_mode = % nearly |proof| mode
+ proofing:=0;                   % no, we aren't making full proofs
+ fontmaking:=0;                 % no, we aren't making a font
+ tracingtitles:=0;              % don't show titles online
+ pixels_per_inch:=2601.72;      % that's 36 pixels per pt
+ blacker:=0;                    % no additional blackness
+ fillin:=0;                     % no compensation for fillin
+ o_correction:=1;               % no reduction in overshoot
+ blacker_min:=0;                % no write_white provision
+enddef;
+
+def beginchar_twice(expr c,w_sharp,h_sharp,d_sharp) =
+ begingroup
+  if string mode: string prev_mode; prev_mode:=mode;
+  else: numeric prev_mode; prev_mode:=mode;
+  fi
+  for sharp_calc_:=1, whatever:
+% |sharp_calc| is checked in |corrital|, |mark_height|, |put_accent|,
+% and |put_dot|
+   sharp_calc:=sharp_calc_;
+   if known sharp_calc: % carry out ``sharp'' calculations
+    begingroup save mode,mag; mode:=canonical_sharp_mode; mode_setup;
+    if known cmbase: font_setup;
+     if not serifs: fisp:=round(1/3[fine,crisp]); prepare_pen fisp; fi
+     if known ogonek_pen#:
+      define_whole_pixels(ogonek_pen); prepare_pen ogonek_pen;
+     fi
+% In POLKAP.MF the following setting is performed:
+%|    forsuffixes $=u,o,letter_fit,x_height,bar_height,body_height,stem:|
+%|     higher.$:=higher.$.# * hppp;|
+%|    endfor|
+     if is_small_cap: % a supplement to |font_setup|
+      define_pixels(higher.u,higher.bar_height);
+      define_corrected_pixels(higher.o);
+      define_whole_pixels(higher.letter_fit);
+      define_whole_vertical_pixels(higher.x_height,higher.body_height);
+      define_whole_blacker_pixels(higher.stem);
+     fi
+    fi
+    endgroup;
+    let draw:=killtext; % |killtext| was absent from earlier versions of plain
+    let fill:=killtext;
+    let filldraw:=killtext;
+    let erase:=killtext;
+    def special expr t = enddef;
+    def numspecial expr t = enddef;
+    charwd:=w_sharp; charht:=h_sharp; chardp:=d_sharp; charic:=0;
+   else: % carry out ``discrete'' calculations
+    save mode_guard_; % dedicated to those who use Karl Berry's modes.mf
+    mode:=prev_mode; mode_setup;
+    if known cmbase: font_setup;
+     if not serifs: fisp:=round(1/3[fine,crisp]); prepare_pen fisp; fi
+     if known ogonek_pen#:
+      define_whole_pixels(ogonek_pen); prepare_pen ogonek_pen;
+     fi
+     if is_small_cap: % a supplement to |font_setup| (see sharp calculations)
+      define_pixels(higher.u,higher.bar_height);
+      define_corrected_pixels(higher.o);
+      define_whole_pixels(higher.letter_fit);
+      define_whole_vertical_pixels(higher.x_height,higher.body_height);
+      define_whole_blacker_pixels(higher.stem);
+     fi
+    fi
+    let draw:=ori_draw;
+    let fill:=ori_fill;
+    let filldraw:=ori_filldraw;
+    let erase:=ori_erase;
+    let special:=ori_special;
+    let numspecial:=ori_numspecial;
+    charwd:=w_sharp;
+   fi
+   charcode:=if known c: byte c else: 0 fi;
+   w:=hround(w_sharp*hppp); h:=vround(h_sharp*hppp); d:=vround(d_sharp*hppp);
+   clearxy; clearit; clearpen; scantokens extra_beginchar;
+enddef;
+
+let repeat_once = endfor;
+
+% ---------------------------------------------------------------------------
+%              LAST MINUTE EXTRA FONT SETUP (repeated in POLKAP.MF)
+% ---------------------------------------------------------------------------
 if not serifs: fisp:=round(1/3[fine,crisp]); prepare_pen fisp; fi
 if known ogonek_pen#:
  define_whole_pixels(ogonek_pen); prepare_pen ogonek_pen;

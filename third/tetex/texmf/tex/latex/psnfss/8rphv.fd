@@ -1,44 +1,44 @@
-%Filename: 8rphv.fd
-%Created by: tex Fam_29901
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{8rphv.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for 8r/phv.]
+   [2001/06/04 font definitions for 8r/phv.]
+
+\expandafter\ifx\csname Hv@Scale\endcsname\relax
+ \let\Hv@@Scale\@empty
+\else
+ \edef\Hv@@Scale{s*[\csname Hv@Scale\endcsname]}%
+\fi
 
 \DeclareFontFamily{8r}{phv}{}
 
 \DeclareFontShape{8r}{phv}{m}{n}{
-   <-> phvr8r
+   <-> \Hv@@Scale phvr8r
 }{}
 
 \DeclareFontShape{8r}{phv}{m}{sl}{
-   <-> phvro8r
+   <-> \Hv@@Scale phvro8r
 }{}
 
 \DeclareFontShape{8r}{phv}{mc}{n}{
-   <-> phvr8rn
+   <-> \Hv@@Scale phvr8rn
 }{}
 
 \DeclareFontShape{8r}{phv}{mc}{sl}{
-   <-> phvro8rn
+   <-> \Hv@@Scale phvro8rn
 }{}
 
 \DeclareFontShape{8r}{phv}{b}{n}{
-   <-> phvb8r
+   <-> \Hv@@Scale phvb8r
 }{}
 
 \DeclareFontShape{8r}{phv}{b}{sl}{
-   <-> phvbo8r
+   <-> \Hv@@Scale phvbo8r
 }{}
 
 \DeclareFontShape{8r}{phv}{bc}{n}{
-   <-> phvb8rn
+   <-> \Hv@@Scale phvb8rn
 }{}
 
 \DeclareFontShape{8r}{phv}{bc}{sl}{
-   <-> phvbo8rn
+   <-> \Hv@@Scale phvbo8rn
 }{}
 
 \DeclareFontShape{8r}{phv}{m}{it}{<->ssub * phv/m/sl}{}

@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -23,7 +23,7 @@
 % a_ac
 % e_ac
 % yo_ac
-% UKRe_ac
+% ukr_e_ac
 % i_ac
 % lat_i_ac
 % ukr_i_ac
@@ -48,7 +48,7 @@
 % dje_ac
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Italic Cyrillic letter a_ac - a acute";
 cyrchar_twice(a_ac,9u#,x_height#,0);
@@ -106,8 +106,8 @@ lowercase_umlaut(0,0, 7,8,9,10);
 hpos_corr=-u; put_accent(cyrcaph); repeat_once;
 penlabels(0,1,2,3,4,5,6); endchar;
 
-lhchar "Italic Cyrillic letter UKRe_ac - Ukrainian e acute";
-cyrchar_twice(UKRe_ac,8u#,x_height#,0);
+lhchar "Italic Cyrillic letter ukr_e_ac - Ukrainian e acute";
+cyrchar_twice(ukr_e_ac,8u#,x_height#,0);
 italcorr if math_fitting:1/3x_height#*slant else:x_height#*slant-.5u# fi; %c+.5u
 adjust_fit(if monospace:0 else:-.35u# fi,0); %c
 % ital_ukre;
@@ -277,13 +277,13 @@ italcorr .7x_height#*slant+.5curve#-u# if math_fitting:-.5u# fi; %o
 adjust_fit(0,if monospace:0 else:-.35u# fi); %o
 % ital_erev;
 pickup fine.nib;
-pos0(flare,-180); pos1(hair,-180); pos2'(vair,-90); pos2(vair,90);
-pos3(curve,180); pos4(vair,270); pos5(hair,320);
+pos0(flare,180); pos1(hair,-180); pos2(vair,-90);
+pos3(curve,0); pos4(vair,90); pos5(hair,140);
 x2+.5u=x4=.5(w-u); lft x1r=min(lft x2,hround(.25u))-eps;
-rt x3l=w-hround(1.5u-.5curve); lft x5l=good.x (lft x1r-eps); x6=x5;
-y1-.5flare=.1h; bot y2l=-oo; z2'=z2; bulb(2',1,0);  % bulb
-top y4l=h+oo; y3=.5[y2,y4]; top y5l=vround .5[bar_height,h];
-y6=bar_height; path p; p=z4{left}..z5..z6;
+rt x3r=w-hround(1.5u-.5curve); lft x5r=good.x (lft x1r-eps); x6=x5;
+y1-.5flare=.1h; bot y2r=-oo; bulb(2,1,0);  % bulb
+top y4r=h+oo; y3=.5[y2,y4]; top y5r=vround .5[bar_height,h];
+y6=bar_height; path p; p=z4{left}....z5..z6;
 filldraw stroke pulled_arc.e(2,3)
  & pulled_arc.e(3,4)...{direction 1 of p}z5e;  % arc
 x7=x3; y7=bar_height; y8=y7; lft x8=hround min(lft x2-1-eps,rt x0l+eps);
@@ -856,3 +856,6 @@ x8=-u; x9=x4; y8=y9=.5x_height+.5h; pos8(bar,90); pos9(bar,90);
 filldraw stroke z8e--z9e;
 hpos_corr=-u; put_accent(cyrcaph); repeat_once;
 penlabels(1,2,3,4,5,6,7,8,9); endchar;
+
+endinput;
+%end of file

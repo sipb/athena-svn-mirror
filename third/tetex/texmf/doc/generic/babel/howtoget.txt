@@ -1,9 +1,9 @@
                        Babel Distribution Guide
 
-                            10 March 1999
+                            22 February 2001
 
 
-This files gives you some information as to where to get the latest
+This file gives you some information as to where to get the latest
 version of Babel and other related software.
 
 The main distribution of Babel is done through the Comprehensive TeX
@@ -27,12 +27,10 @@ It provides extensive support for typesetting french documents.
 When you provide Babel with the option `french' it will first look for
 `french.ldf' from the french packacge and then for `frencb.ldf' from
 the Babel package.
-You can find the french package in:
-               /tex-archive/language/french/
 
 For the german language Bernd Raichle maintains `German-Style'. It is
 located in:
                /tex-archive/language/german/
 
 In one of the directories below /tex-archive/language you can
-sometimes find support for languages not(yet) supported by Babel.
+sometimes find support for languages not (yet) supported by Babel.

@@ -1,4 +1,4 @@
-amsfonts.bug [1997/12/15]
+amsfonts.bug [2002/01/22]
 
 History of bug reports and fixes for the AMSFonts collection
 
@@ -31,14 +31,6 @@ terms of CM parameters.
 
 Hebrew letters beth, gimel, daleth also don't seem to be affected by
 parameter changes (unlike the aleph from cmsy10).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-File: cyracc.def
-Date reported: 1997/09/04 (Tomasz Michniewski)
-
-Add documentation to the header that says this file is for use only with
-plain TeX, not LaTeX.  Latexbug amslatex/2597 reported that this does not
-work with babel, but it was never designed to.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 File: cmbsy*.mf
@@ -97,6 +89,56 @@ Date reported: 1995/03/28 (Andreas Amann) latexbug amslatex/1524
 Braces (from cmex) in \small environment are larger than those in \normalsize.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+VERSION 2.2? RELEASED: 2002/01/22
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Note: This release does not affect any .mf sources or the fonts themselves;
+ it updates only the Plain TeX and LaTeX support.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: all .dtx./sty and .fdd/.fd files (LaTeX support)
+Date reported: 1998/03/06
+
+Reported versions and dates do not match header information.
+
+Corrected: 2001/10/18
+Version: various 2.2 sub-versions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amssymb.sty
+Date reported: 1997/09/06 (T. Michniewski) latexbug amslatex/2596
+
+Conflict: \lll defined in polish.ldf to be suppressed l.
+Add documentation suggesting reordering of packages to avoid error message.
+
+Addressed: 2001/10/01
+Added documentation to amsfonts.faq on how to avoid the error
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: amssymb.sty
+
+Double-quote character may be active (e.g., if german.sty is loaded first),
+in conflict with the hex value input to \DeclareMathSymbol.  Change it to
+\catcode=12 for the duration.
+
+Corrected: 2002/01/22
+Version: 2.2d
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: cmmib57.sty
+Date reported: 1999/01/04 (Walter Schmidt) latexbug amslatex/2935
+
+Changed font shape from bx to b for both cmmib and cmbsy.
+
+Corrected: 2001/10/01
+Version: 2.2g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+File: cyracc.def
+Date reported: 1997/09/04 (Tomasz Michniewski)
+
+Add documentation to the header that says this file is for use only with
+plain TeX, not LaTeX.  Latexbug amslatex/2597 reported that this does not
+work with babel, but it was never designed to.
+
+Corrected: 2001/10/01
+Version: 2.2b (no version change)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 VERSION 2.2c RELEASED: 1996/11/07
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 File: amsfonts.sty
@@ -113,7 +155,7 @@ File: amsfonts.sty
 Date reported: 1995/02/02 (Piet van Oostrum) latexbug amslatex/1415
                1995/04/07 (Klaus Barthel)
 
-symbols in lasy (latexsym.sty) not defined except in compatibility mode:
+Symbols in lasy (latexsym.sty) not defined except in compatibility mode:
 \leadsto, \Box, \Diamond, ...
 
 Corrected: 1996/11/03

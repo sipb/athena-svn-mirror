@@ -71,36 +71,36 @@ expressions:
 	=> \1
 	;
 <NUMERAL>{ARABIC_NUMBER} end:
-	=> #(\1) "\endL{}"
+	=> #(\1) "}"
 	<pop:>
 	;
 <NUMERAL>{ARABIC_NUMBER}
 	=> #(\1)
 	;
 <NUMERAL>(@"002B|@"002D|@"002E|@"066B|@"066C){ARABIC_NUMBER} end:
-	=> #(\1) #(\2) "\endL{}"
+	=> #(\1) #(\2) "}"
 	<pop:>
 	;
 <NUMERAL>(@"002B|@"002D|@"002E|@"066B|@"066C){ARABIC_NUMBER}
 	=> #(\1) #(\2)
 	;
 <NUMERAL>{NOT_ARABIC_NUMBER}
-	=> "\endL{}"
+	=> "}"
 	<= #(\1)
 	<pop:>
 	;
 (@"002B|@"002D|@"002E){ARABIC_NUMBER} end:
-	=> "\beginL{}" #(\1) #(\2) "\endL{}"
+	=> "{\textdir TLT{}" #(\1) #(\2) "}"
 	;
 (@"002B|@"002D|@"002E){ARABIC_NUMBER}
-	=> "\beginL{}" #(\1) #(\2)
+	=> "{\textdir TLT{}" #(\1) #(\2)
 	<push: NUMERAL>
 	;
 {ARABIC_NUMBER} end:
 	=> #(\1)
 	;
 {ARABIC_NUMBER}
-	=> "\beginL{}" #(\1)
+	=> "{\textdir TLT{}" #(\1)
 	<push: NUMERAL>
 	;
 {NOT_ARABIC_LETTER}

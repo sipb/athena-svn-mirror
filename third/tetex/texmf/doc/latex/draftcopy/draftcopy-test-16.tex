@@ -1,0 +1,53 @@
+%%
+%% This is file `draftcopy-test-16.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% draftcopy.doc  (with options: `test16')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from draftcopy-test-16.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file draftcopy.doc.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+\iffalse
+\fi
+
+
+
+
+
+
+
+
+\documentclass[a4paper,greek]{article}
+\usepackage[timestamp,bottom]{draftcopy}
+\newcommand{\xx}{
+Test 16\\This is a test page \thepage \vfill
+This is a testpage \thepage \newpage
+}
+\draftcopyPageX{300}
+\draftcopyPageY{100}
+\draftcopyBottomX{300}
+\draftcopyBottomY{100}
+\draftcopySetScaleFactor{0.5}
+\draftcopyVersion{Version 2.14: }
+\begin{document}
+Should print DRAFT (in greek translation and greek letters)
+on a moved position.\\
+\verb|\usepackage[timestamp,bottom,greek]{draftcopy}|\\
+\xx\xx\xx\xx
+\end{document}
+\endinput
+%%
+%% End of file `draftcopy-test-16.tex'.

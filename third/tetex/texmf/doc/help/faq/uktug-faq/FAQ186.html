@@ -1,0 +1,74 @@
+<head>
+<title>UK TeX FAQ -- question 186</title>
+</head><body>
+<h3>Footnotes whose texts are identical</h3>
+<p>If the <em>same</em> footnote turns up at several places within a
+document, it's often inappropriate to repeat the footnote in its
+entirety over and over again.  We can avoid repetition by
+semi-automatic means, or by simply labelling footnotes that we know
+we're going to repeat and then referencing the result.  There is no
+completely automatic solution (that detects and suppresses repeats)
+available.
+<p>If you know you only have one footnote, which you want to repeat, the
+solution is simple: merely use the optional argument of
+<code>\footnotemark</code> to signify the repeats:
+<pre>
+  ...\footnote{Repeating note}
+  ...
+  ...\footnotemark[1]
+</pre>
+... which is very easy, since we know there will only ever be a
+footnote number 1.  A similar technique can be used once the footnotes
+are stable, reusing the number that LaTeX has allocated.  This can
+be tiresome, though, as any change of typesetting could change the
+relationships of footnote and repeat: labelling is inevitably better.
+<p>Simple hand-labelling of footnotes is possible, using a counter dedicated
+to the job:
+<pre>
+  \newcounter{fnnumber}
+  ...
+  ...\footnote{Text to repeat}%
+  \setcounter{fnnumber}{\thefootnote}%
+  ...
+  ...\footnotemark[\thefnnumber]
+</pre>
+but this is somewhat tedious.  LaTeX's labelling mechanism can be
+summoned to our aid, but there are ugly error messages before the
+<code>\ref</code> is resolved on a second run through LaTeX:
+<pre>
+  ...\footnote{Text to repeat\label{fn:repeat}}
+  ...
+  ...\footnotemark[\ref{fn:repeat}]
+</pre>
+Alternatively, one may use the <code>\footref</code> command, which has the
+advantage of working even when the footnote mark isn't expressed as a
+number.  The command is defined in the <i>footmisc</i> package and
+in the <i>memoir</i> class (at least); <code>\footref</code> reduces the above
+example to:
+<pre>
+  ...\footnote{Text to repeat\label{fn:repeat}}
+  ...
+  ...\footref{fn:repeat}
+</pre>
+This is the cleanest simple way of doing the job.  Note that the
+<code>\label</code> command <em>must</em> be inside the argument of
+<code>\footnote</code>.
+<p>The <i>fixfoot</i> package takes away some of the pain of the
+matter: you declare footnotes you're going to reuse, typically in the
+preamble of your document, using a <code>\DeclareFixedFoot</code> command, and
+then use the command you've 'declared' in the body of the document:
+<pre>
+  \DeclareFixedFootnote{\rep}{Text to repeat}
+  ...
+  ...\rep{}
+  ...\rep{}
+</pre>
+The package ensures that the repeated text appears at most once per
+page: it will usually take more than one run of LaTeX to get rid of
+the repeats.
+<dl>
+<dt><tt><i>fixfoot.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/fixfoot.tar.gz">macros/latex/contrib/supported/fixfoot.tar.gz</a>
+<dt><tt><i>footmisc.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/footmisc.tar.gz">macros/latex/contrib/supported/footmisc.tar.gz</a>
+<dt><tt><i>memoir.cls</i></tt><dd><a href="ftp://macros/latex/contrib/supported/memoir.tar.gz">macros/latex/contrib/supported/memoir.tar.gz</a>
+</dl>
+<p></body>

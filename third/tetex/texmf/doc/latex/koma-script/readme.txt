@@ -1,118 +1,171 @@
 Sie finden eine deutsche Version dieses Textes in liesmich.txt!
 
-KOMA-Script-Bundle
+KOMA-Script bundle
 ==================
 
-This system is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Redistribution of this bundle is allowed provided that all files that
+make up the KOMA-Script bundle are contained.  The list of all files
+making up this bundle is given below.
 
-Permission is granted to distributed verbatim copies of all files
-together with all other files of the KOMA-script-bundle. You are
-allowed to modify one or all of the dtx-files, if and only if you
-change the name of the modified file. You are allowed to distribute
-the modfied files but only TOGETHER with the unmodified versions. You
-have to document all changes and the name of the author of the
-changes.
-
-No other permissions to copy or distribute this file in any form are
-granted.
-
-You are NOT ALLOWED to take money for the distribution or use of
-either this file or a changed version, except for a nominal charge for
-copying etc.
-
-To install and use this bundle, you need LaTeX2e.
+This bundle has been created for the use with LaTeX2e. Although a
+great effort has been made to eliminate all bugs, this bundle is
+provided `as is' without warranty of any kind, either expressed or
+implied, including, but not limited to, the implied warranties of
+merchantability and fitness for a particular purpose.  The entire risk
+as to the quality and performance of the program is with you.
 
 
 The files:
 ----------
-  knownbug.txt  - List of bug-reports and -solutions since 1996-11-26.
-  komascr.bug   - Sorry this bug-report-file is german only.
-  komascr.ins   - Installationdriver for the complete bundle, this 
-                  uses scrclass.ins, scrtime.ins and scrpage.ins.
-  scrclass.ins  - Installationdriver for scrclass.dtx, scrlettr.dtx 
-                  and script20.dtx.
-                  It's called by komascr.ins.
-  scrclass.dtx   - contains:
-    scrartcl.cls  - KOMA-Script-Class (substitute for article.cls)
-    scrreprt.cls  - KOMA-Script-Class (substitute for report.cls)
-    scrbook.cls   - KOMA-Script-Class (substitute for book.cls)
-    typearea.sty  - KOMA-Script-Package for calculation of type area
-  scrlettr.dtx   - contains:
-    scrlettr.cls  - KOMA-Script-Class (substitute for letter.cls)
-    phone.tex     - Interactive file to generate phone-list from 
-                    adr-files
-    dir.tex       - Interactive file to generate lists from adr-files
-    addrconv.bst  - BibTeX-Style to convert BibTeX address databases 
-                    into adr-files
-    addrconv.tex  - Interactive file to generate needed aux-files
-    birthday.bst  - BibTeX-Style to generate birthday adr-files from 
-                    BibTeX address databases
-    birthday.tex  - Interactive file to generate needed aux-files
-    email.bst     - BibTeX-Style to generate email adr-files from 
-                    BibTeX address databases
-    email.tex     - Interactive file to generate needed aux-files
-    example.bib   - BibTeX address database example
-  script20.dtx  - contains:
-    script.sty    - compatibility-style
-    script_s.sty  - compatibility-Style
-    script_l.sty  - compatibility-Style
-  scrtime.ins   - Installationdriver for scrtime.dtx.
-                  It's called by komascr.ins.
-  scrtime.dtx   - contains:
-    scrtime.sty   - time output
-    scrdate.sty   - week-day output
-  scrpage.ins   - Installationdriver for scrpage.dtx.
-                  It's called by komascr.ins
-  scrpage.dtx   - contains:
-    scrpage.sty   - Creation of pagehead and pagefoot.
-  scrguide.tex  - German Userdocumentation; this needs several parts
-                  of the KOMA-Script bundle.
-  scrguide.dvi  - Ready to use version of scrguide.
-  screnggu.tex  - English version of scrguide.tex; this needs 
-                  several parts of the KOMA-Script bundle. This
-                  documentation is shorter than scrguide. If there are
-                  differences to scrguide try scrguide.
-  screnggu.dvi  - Ready to use version of screnggu.
-  scrguide.ist  - MakeIndex-Style for scrguide and screnggu.
-  scr_new1.tex  - Information of first KOMA-Script-Version (german)
-  scr_new2.tex  - More information (german)
-  scr_new3.tex  - More information (german)
-  scr_new4.tex  - More information (german)
-  scr_new5.tex  - More information (german)
-  scr_new6.tex  - More information (german)
-  scr_new7.tex  - More information (german)
-  scr_new8.tex  - More information (german)
-  scr_new9.tex  - More information (german)
-  scrnew10.tex  - More information (german)
-  scrnew11.tex  - More information (german)
-  scrnew12.tex  - More information (german)
-  scrnew12.tex  - More information (german)
-  scrnew13.tex  - More information (german)
-  scrnew14.tex  - More information (german)
-  scrnew15.tex  - More information (german)
-  scrnew16.tex  - Actual information (german)
-  liesmich.txt  - If you prefer german.
-  readme.txt    - The file you are reading.
 
-  Contact me, if files are missing (and tell me the way you get it):
-          MausNet:    Markus Kohm @ HD   (mail-limit!)
-          snail-mail: Markus Kohm
-                      Fichtenstrasse 63
-                      68535 Edingen-Neckarhausen
-                      Germany
+All files marked with an exclamation mark (!) are REQUIRED as a part
+of the distribution. You are NOT ALLOWED to distribute them
+separately, any distribution MUST contain ALL of the required
+files. All unmarked files are OPTIONAL parts of the distribution. You
+may leave them out but you MUST NOT redistribute them without
+including the REQUIRED files.
 
-* ATTENTION: Don't send more than 48kbyte to a MausNet-user at one 
-*            day!
+   ChangeLog     - List of changes since January 1st, 2001.
+ ! komabug.tex   - LaTeX-file for creating a bug report.
+		   USE THIS FILE FOR REPORTING BUGS!
+ ! komascr.ins   - Install file for the KOMA-Script bundle. Calls
+                   (and requires!) scrclass.ins, scrtime.ins and 
+		   scrpage.ins.
+ ! scrclass.ins  - Install file for scrclass.dtx, scrlettr.dtx and
+                   script20.dtx. Required by komascr.ins.
+ ! scrclass.dtx  - contains:
+    scrartcl.cls  - KOMA-Script class as a replacement for article.cls,
+    scrreprt.cls  - KOMA-Script class as a replacement for report.cls,
+    scrbook.cls   - KOMA-Script class as a replacement for book.cls,
+    scrlttr2.cls  - KOMA-Script class as a replacement for letter.cls,
+    typearea.sty  - KOMA-Script package for the calculation of the type
+                    area,
+    scrlfile.sty  - KOMA-Script package with hooks for loading files, 
+                    packages or classes.
+ ! scrlettr.dtx  - contains:
+    scrlettr.cls  - obsolete KOMA-Script class.
+ ! script20.dtx  - contains:
+    script.sty    - style provided for compatibility,
+    script_s.sty  - style provided for compatibility,
+    script_l.sty  - style provided for compatibility.
+ ! scrtime.ins   - Install file for scrtime.dtx.
+                   Required by komascr.ins.
+ ! scrtime.dtx   - contains:
+    scrtime.sty   - KOMA-Script package for formatting a time,
+    scrdate.sty   - KOMA-Script package for formatting the day of the week.
+ ! scrpage.ins   - Install file for scrpage.dtx.
+                   Required by komascr.ins.
+ ! scrpage.dtx   - contains:
+    scrpage.sty   - obsolete KOMA-Script package,
+    scrpage2.sty  - KOMA-Script package for designing your own page
+                    headers and footers.
+   scrguide/     - Directory (folder) with the german manual,
+                   containing:
+ !  adressen.tex  - chapter of the manual,
+ !  adrkonv.tex   - chapter of the manual,
+ !  brief.tex     - chapter of the manual,
+ !  datladen.tex  - chapter of the manual,
+ !  datmzeit.tex  - chapter of the manual,
+ !  einleit.tex   - chapter of the manual,
+ !  hauptcls.tex  - chapter of the manual,
+ !  layout.tex    - chapter of the manual,
+ !  satzspgl.tex  - chapter of the manual,
+ !  scrguide.bib  - bibliography,
+ !  scrguide.bst  - style for BibTeX,
+ !  scrguide.dbj  - driver for custombib,
+ !  scrguide.ist  - style for MakeIndex,
+ !  scrguide.mbs  - modul for custombib,
+ !  scrguide2.tex - mainfile of the manual (you need KOMA-Script to
+                    run the manual through LaTeX).
+ !  english/      - Directory (folder) with the german manual, 
+                    containing:
+ !    addrconv.tex  - chapter of the english manual,
+ !    addressf.tex  - chapter of the english manual,
+ !    datetime.tex  - chapter of the english manual,
+ !    headfoot.tex  - chapter of the english manual,
+ !    introduc.tex  - chapter of the english manual,
+ !    letter.tex    - chapter of the english manual,
+ !    loadfile.tex  - chapter of the english manual,
+ !    main.tex      - language definitions for the english manual,
+ !    maincls.tex   - chapter of the english manual,
+ !    pglayout.tex  - chapter of the english manual,
+ !    scrguide-en.bst - style for BibTeX,
+ !    scrguide-en.dbj - driver for custombib,
+ ! scrguide.dvi  - A ready-to-use version of german manual (DVI).
+   scrguide.ps   - A ready-to-use version of german manual
+                   (PostScript). 
+   scrguide.pdf  - A ready-to-use version of german manual (Adobe's
+                   PDF). 
+ ! scrguien.dvi  - A ready-to-use version of english manual (DVI).
+   scrguien.ps   - A ready-to-use version of english manual
+                   (PostScript). 
+   scrguien.pdf  - A ready-to-use version of english manual (Adobe's
+                   PDF). 
+ ! genindex.pl   - Perl script which generates the spitted index of
+                   the manual.
+ ! koma-script.tex - Wrapper to scrguide and scrguien.
+ ! koma-script.pdf - Ready-to-use version of koma-script.tex.
+ ! komascript.pdf - Same like koma-script.pdf.
+ ! komascr.pdf   - Same like koma-script.pdf.
+ ! scr_new1.tex  - Information concerning the first version of
+                   KOMA-Script (German).
+ ! scr_new2.tex  - Additional information (German).
+ ! scr_new3.tex  - Additional information (German).
+ ! scr_new4.tex  - Additional information (German).
+ ! scr_new5.tex  - Additional information (German).
+ ! scr_new6.tex  - Additional information (German).
+ ! scr_new7.tex  - Additional information (German).
+ ! scr_new8.tex  - Additional information (German).
+ ! scr_new9.tex  - Additional information (German).
+ ! scrnew10.tex  - Additional information (German).
+ ! scrnew11.tex  - Additional information (German).
+ ! scrnew12.tex  - Additional information (German).
+ ! scrnew13.tex  - Additional information (German).
+ ! scrnew14.tex  - Additional information (German).
+ ! scrnew15.tex  - Additional information (German).
+ ! scrnew16.tex  - Additional information (German).
+ ! scrnew17.tex  - Additional information (German).
+ ! scrnew18.tex  - Additional information (German).
+ ! scrnew19.tex  - Additional information (German).
+ ! scrnew20.tex  - Additional information (German).
+ ! scrnew21.tex  - Most recent information (German and English).
+   scr_new1.dvi \
+   ...           > Ready-to-use versions of the above.
+   scrnew21.dvi /  
+ ! liesmich.txt  - Read this, if you prefer German.
+ ! readme.txt    - You are just reading it.
+ ! INSTALL.TXT	 - The installation manual (English)
+ ! INSTALLD.TXT	 - The installation manual (German).
+ ! LEGAL.TXT	 - The dry part: legal stuff, warranty, license (English)
+ ! LEGALDE.TXT	 - The dry part: legal stuff, warranty, license (German)
 
-  If you cannot reach me at one of the adresses above, ask at one of 
+ If one or more of the above files marked with an exclamation mark (!)
+ is missing, please inform the author about the missing files and
+ where you have gotten the bundle from.
+
+	  InterNet:  Markus.Kohm@gmx.de
+          Post:      Markus Kohm
+                     Fichtenstrasse 63
+                     68535 Edingen-Neckarhausen
+		     Germany
+
+  If you cannot reach me at one of the addresses above, ask at one of 
   the following groups:
     MausNet, Fido, Usenet: de.comp.text.tex
+  or try:
+    http://koma-script.net.tf
+
++ NOTE: The CVS of the "KOMA-Script documentation project" is not a
++       distribution. Only this CVS is allowed to dispense with the
++       generated files (this means scrguide.dvi).
 
 
 Installation:
 -------------
+
+The following describes the general procedure for installing this
+bundle. If you have a TeX system compatible to TDS (most of the newer
+TeX systems are), please read INSTALL.TXT.
 
 * ATTENTION: You need a complete LaTeX2e!
 
@@ -122,39 +175,29 @@ Installation:
   or
     latex komascr.ins
   You'll get a couple of new cls-, sty- and tex-files. Copy them to
-  the coresponding LaTeX-directory.
+  the corresponding LaTeX-directory. See INSTALL.TXT for further
+  information.
+  Do not forget to run the initialization procedures specific to your
+  TeX distribution, e.g. if you use teTeX, run 'texhash'
 
-* ATTENTION: To create the complete documentation (it's german!) you
-*            need german.sty! You don't need to generate the
-*            documentation, because there are ready dvi files. But the
-*            documentation not only documentation, it is an example of
-*            using KOMA-Script, too.
+* ATTENTION: You needn't and you shouldn't create the complete
+*            documentation (it's in German!) or the english short
+*            manual by your own, because there are ready-to-use dvi
+*            files available.
 
-  To get documentation run scrguide.tex through LaTeX, e.g. at UNIX
-  type:
-    tex "&latex" scrguide.tex
-  or:
-    latex scrguide.tex
-  You need three runs, to get table of contents and references right.
-  You'll get the user-documentation. If you want an index, you have to
-  use precompiled scrguide.ind or you have to create a new index
-  running scrguide.idx through makeindex resp. makeindx bevor last
-  (third) LaTeX run.
-  At UNIX e.g. type:
-    makeindex -g -r -s scrguide.ist scrguide.idx
-  resp.
-    makeindx -g -r -s scrguide.ist scrguide.idx
-
-  If you want the implementation-doxumentation, you have to run the
-  dtx-files through LaTeX, e.g. at UNIX type:
+  If you want the documentation specific to the implementation, you
+  have to run the dtx-files through LaTeX. Again, using a UNIX system
+  type: 
     tex "&latex" scrclass.dtx
-  oder
+  or
     latex scrclass.dtx
-  But I think, main-documentation is enough.
 
-+ IMPORTANT: You should run scrguide.tex and each dtx-file through
-+            LaTeX three times, because of referenzes and table of
-+            contents.
+  Most likely you won't need those as, the user manual should be
+  sufficient. 
+
++ IMPORTANT: Do not forget to run scrguide.tex and each dtx-file
++            through LaTeX three times, if you like to have correct
++            references and table of contents.
 
   Last but not least, you should run all scr_news-files through LaTeX
   and read all the documentation.
@@ -162,18 +205,18 @@ Installation:
 
 Bug-reports:
 ------------
-  You may use latexbugs.tex, but don't send the report to the
-  LaTeX-team, send it to one of the adresses in this file
-  above. Notice that there is a mail-limit at MausNet!
-  If you understand german, please read "Fehlermeldungen" at
-  liesmich.txt.
+  To report a bug, run 'komabug.tex' through LaTeX and fill in the
+  fields as concise as possible and send the form upon completion to
+  the author at one of the addresses above.
 
+* ATTENTION: IT IS HIGHLY RECOMMENDED TO USE KOMABUG.TEX FOR BUG
+*            REPORTS.
 
 Changes since first Version at 1994/07/07:
 ------------------------------------------
   You'll find all changes at the dtx-files and the glossaries.
 
 
-Filedate:
----------
-  1998/10/27
+ISO-Date of file:
+-----------------
+  2002-06-14

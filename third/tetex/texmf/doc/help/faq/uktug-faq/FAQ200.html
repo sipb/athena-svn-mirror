@@ -1,0 +1,25 @@
+<head>
+<title>UK TeX FAQ -- question 200</title>
+</head><body>
+<h3>Accented words aren't hyphenated</h3>
+<p>TeX's algorithm for hyphenation gives up when it encounters an
+<code>\accent</code> command; there are good reasons for this, but it means
+that quality typesetting in non-English languages can be difficult.
+<p>For TeX macro packages, you can avoiding the effect by using an
+appropriately encoded font (for example, a Cork-encoded font - see
+<a href="FAQ43.html">the EC fonts</a>) which contains accented
+letters as single glyphs.  LaTeX users can achieve this end simply
+by adding the command
+<pre>
+  \usepackage[T1]{fontenc}
+</pre>
+to the preamble of their document.  Other encodings (notably
+LY1, promoted by Y&amp;Y - see
+
+<a href="FAQ56.html">commercial implementations</a>) may be used
+in place of T1.  Indeed, most current 8-bit TeX font
+encodings will 'work' with the relevant sets of hyphenation patterns. 
+<p>In the future, perhaps,
+<a href="FAQ277.html">Omega</a>
+will provide a rather different solution.
+<p></body>

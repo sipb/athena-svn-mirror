@@ -1,4 +1,4 @@
-\newcommand\erratafiledate{1999/01/14}
+\newcommand\erratafiledate{2001/04/06}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % To produce a printed version of this errata file run this file through
@@ -619,11 +619,20 @@ to avoid an underfull hbox message.
   ``The width of the space between lines created by two successive
    \verb=|= characters in the environment preamble,...''.
 
+\erroronpage{ 111}{para 2}{EMS}{2000/05/30}{}
+  Why not to give a formula instead the description?
+
+\erroronpage{112 }{}{EMS}{2000/05/30}{}
+ ``LR-mode''  not defined before
+
 \erroronpage{113}{very end of paragraph 5.3.4}{UJa}{1997/06/01}{3}
    A closing curly brace is missing, i.e.,  ``|...\fill}}}|''.
 
 \erroronpage{115}{example}{FGo}{1997/06/01}{3}
    Replace ``superconciousness'' by ``superconsciousness''.
+
+\erroronpage{115}{l.4}{EMS}{2000/05/30}{}
+  Replace ``above''  by    ``below''
 
 \erroronpage{116}{l.3 bottom}{FMi}{1997/06/01}{3}
    Replace: ``\,`c' type columns'' by ``\,`c', `r', or `l' type columns''.
@@ -639,6 +648,10 @@ to avoid an underfull hbox message.
   
    MGo: We have renamed all example ``tables'', namely 5.2, 5.3, 5.4, 5.5,
    and 5.7 to become figures.
+
+\erroronpage{121}{Table 5.4}{EMS}{2000/05/30}{}
+   Right column of each page, the space between Nb and name of Surat must be
+   larger. 
 
 \erroronpage{122}{5.4.2, para2, l.4}{FMi}{1997/06/01}{3}
    It could be helpful to explicitly mention that one shouldn't use |\nofiles|
@@ -695,9 +708,20 @@ MGo: add a footnote at the end of the sentence ``...table in question'':
 indeed formatted to the same width as the table.
 
 
+\erroronpage{ 135}{para 1, l.-1}{EMS}{2000/05/30}{}
+   Remove the word ``fixup''
+
 \erroronpage{135}{para 1 of multirow section}{MGo}{1997/06/01}{3}
    The author of the multirow package is no longer unknown; it is
    Jerry Leichter.
+
+\erroronpage{136}{second example}{EMS}{2000/05/30}{}
+   Using this input, it gives an output without the white space on the top of
+   last row.
+
+   FMi: looks wrong to me what is shown in the book, but i can't check
+   the outcome right now.
+
 
 \erroronpage{137}{}{FMi}{1997/06/01}{3}
    |\firsthline| and |\lasthline| will be part of array.sty with the next
@@ -710,6 +734,13 @@ indeed formatted to the same width as the table.
 
 \erroronpage{143}{l7-8 from bottom}{MOh}{1997/06/01}{3}
    Replace ``you can prevents'' by ``you can prevent''.
+
+\erroronpage{143}{description of dbltextfloatsep}{EMS,FMi}{2000/05/30}{}
+   Replace the sentence in parentheses with:   
+   (The default is the same as |\textfloatsep|.)
+
+
+
 
 \erroronpage{144}{example}{UJa}{1997/06/01}{3}
    Better use |\renewcommand{\section}|, since |\newcommand{\section}|
@@ -741,6 +772,13 @@ indeed formatted to the same width as the table.
    The word ``wrapfigure'' in the caption should be set in |\normalfont|
    rather than |\ttfamily|.
 
+\erroronpage{153}{para 1, l.3}{DBo}{2001/04/06}{}
+   The space after the figure is now set by |\subfigbottomskip|.
+
+   As a general warning those skips are actually defined via
+  |\newcommand| so can't be modified with |\setlength| as one would
+  expect.
+
 \erroronpage{153}{para 2, l.3}{CKr}{1997/06/01}{3}
    Replace: ``(defined by default as |(\alph{subfigure})\space},|''
    by:      ``(defined by default as |(\alph{subfigure})\space}),|''.
@@ -755,6 +793,9 @@ indeed formatted to the same width as the table.
    ``|\ifthenelse{\lengthtest{\wd\tempbox > \linewidth}}%|''.
 
 \CHAPTER{Chapter 7}
+
+\erroronpage{ 163}{ Font size l.4}{EMS}{2000/05/30}{}
+   Replace ``less then''  by     ``less than''
 
 \erroronpage{164}{Figure 7.6}{TMa}{1997/06/01}{3}
    The 10pt font is actually Lucida Bright and the  magnified
@@ -915,6 +956,9 @@ Pandora Sans bold       is typeset in     Pandora Roman bold
 \erroronpage{211}{}{FMi}{1997/06/01}{}
    In explanation for ``Checking defaults for |<cdp>/<font shape>|''
    replace |\DeclareFontEncoding| by |\DeclareFontSubstitution|.
+
+\erroronpage{214}{4th error message}{LLa}{2000/07/01}{}
+   occured \> occur\u{r}ed
 
 \CHAPTER{Chapter 8 --- book version (online version below)}
 
@@ -1356,6 +1400,11 @@ FMi: looks like a font problem
 \erroronpage{313}{last bullet line}{OBa}{1997/06/01}{}
    Eliminate the space in front of the comma.
 
+\erroronpage{313}{11.1.2, l.4}{EMS}{2000/05/30}{}
+  Which appendix is in [2] and which one is in [87]?
+
+  FMi:  see appendices G and H in [2], or [87]
+
 \erroronpage{316}{table 11.1}{FMi}{1997/06/01}{3}
    Mention the dvips options:
    ``-pp\# (single page)'' and ``-pp\#$_1$:\#$_2$ (page range)''.
@@ -1653,6 +1702,10 @@ the X's in the fifth column''.
      ...
 \end{verbatim}
   they come out better (I think).
+
+\erroronpage{363}{l.7}{EMS}{2000/05/30}{}
+    Replace ``rRnaA''  by     ``rnaRA''
+
 \erroronpage{364}{}{RWo}{1997/06/01}{}
    Remind the reader how to use a file with an extension 
    different from |.idx| with Makeindex.
@@ -1664,6 +1717,7 @@ the X's in the fifth column''.
 \erroronpage{365}{}{WLe}{1997/06/01}{3}
     According to the text on page 365, the index in the example should
     have three columns instead of two.
+
 FMi: change this sentence to something like this:
     ``... we have used a redefined theindex environment similar to the one
     shown in section 12.5 but with two columns and without the |\newpage|.''.
@@ -1745,6 +1799,9 @@ FMi: change this sentence to something like this:
 \erroronpage{381}{}{FMi}{1997/06/01}{}
    Extend the source of example to include |abstract| and |keyword| 
    field which then can be shown in output of printbib on page 396.
+
+\erroronpage{381}{l.1 in Figure 13.4}{LFe}{2000/03/29}{}
+   ``\texttt{BiBTeX}'' should be ``\texttt{BibTeX}''.
 
 \erroronpage{385}{l.7}{PvO}{1997/06/01}{3}
   ``only works without modifications on UNIX'' is probably a bit too
@@ -1930,7 +1987,11 @@ bibextract "author|organization" "adobe" bibfile(s) > new-bibfile
 \CHAPTER{Appendix A}
 
 \erroronpage{440}{second example}{FMi}{1997/06/01}{3}
-   It should better be: ``|\newcommand{\PsI}{\Ps\index{\Ps}}|''.
+   It should better be: ``|\newcommand{\PsI}{\Ps\index{\Ps}}|''
+
+\erroronpage{440}{second example}{FMi}{1999/04/30}{}
+   second line of |\EPsI| has one closing brace too many, i.e., should be
+   |\index{\PS!Encapsulated}\index{EPS}}|
 
 \erroronpage{440}{}{FMi}{1997/06/01}{}
    As a general comment we should remark that when nesting command
@@ -2171,6 +2232,7 @@ FMi: or perhaps the other way around?
 \contributor{CMi}{Christel Mittelbach}
 \contributor{CRo}{Chris Rowley}
 \contributor{DAr}{Donald Arseneau}
+\contributor{DBo}{David Boersma}
 \contributor{DCa}{David Carlisle}
 \contributor{DEl}{Daniel Elvin}
 \contributor{DKa}{David Kastrup}
@@ -2182,6 +2244,7 @@ FMi: or perhaps the other way around?
 \contributor{DRo}{Denis Roegel}
 \contributor{EFe}{Eduardo Fern\'andez}
 \contributor{EPi}{Eric Picheral}
+\contributor{EMS}{SOUIDI EL Mamoun}
 \contributor{FGo}{Frans Goddijn}
 \contributor{FJe}{Frank Jensen}
 \contributor{FMi}{Frank Mittelbach}
@@ -2207,6 +2270,7 @@ FMi: or perhaps the other way around?
 \contributor{KRa}{Kalle Rato}
 \contributor{KSe}{Karl Seybold}
 \contributor{KSi}{Kimmo Sipila}
+\contributor{LFe}{Luca Ferrante}
 \contributor{LLa}{Leslie Lamport}
 \contributor{LWi}{Linda Wilson}
 \contributor{MCl}{Matthias Clasen}
@@ -2262,7 +2326,7 @@ Thanks to all of you!
 
 If you find further errors please report them to one of the authors
 \begin{quote}\ttfamily
-  frank.mittelbach@uni-mainz.de
+  frank.mittelbach@latex-project.org
   goossens@cern.ch \\
 \end{quote}
 preferable in a form usable for this file, i.e.,

@@ -1,0 +1,40 @@
+<head>
+<title>UK TeX FAQ -- question 182</title>
+</head><body>
+<h3>Vertical layout of float pages</h3>
+<p>By default, LaTeX vertically centres the floats on a float page;
+the present author is not alone in not liking this arrangement.
+Unfortunately, the control of the positioning is "buried" in
+LaTeX-internal commands, so some care is needed to change the
+layout.
+<p>Float pages use three LaTeX lengths (i.e., TeX skips) to define
+their layout:
+<dl>
+<dt>normalfont<code>\@fptop</code><dd> defines the distance from the top of
+  the page to the top of the first float,
+<dt>normalfont<code>\@fpsep</code><dd> defines the separation between floats,
+  and
+<dt>normalfont<code>\@fpbot</code><dd> defines the distance from the bottom
+  of the last float on the page to the bottom of the page.
+</dl>
+(In fact, the output routine places <code>\@fpsep</code> above each float, so
+<code>\@fptop</code> ordinarily contains a correction for that.)
+<p>The LaTeX defaults are:<br>
+<code>\@fptop</code> = (<code>0pt + 1fil</code>) - <code>\@fpsep</code><br>
+<code>\@fpsep</code> = <code>8pt + 2fil</code><br>
+<code>\@fpbot</code> = <code>0pt + 1fil</code><br>
+so that the gaps expand to fill the space not occupied by floats, but
+if there is more than one float on the page, the gap between them will
+expand to twice the space at top and bottom.
+<p>Those who understand this stuff will be able to play elaborate games,
+but the commonest requirement, that the floats start at the top of the
+page, is a simple thing to do:
+<pre>
+\makeatletter
+\setlength{\@fptop}{-\@fpsep}
+\makeatother
+</pre>
+Note that this is a "global" setting (best established in a class
+file, or at worst in the document preamble); making the change for a
+single float page is likely (at the least) to be rather tricky.
+<p><p><p></body>

@@ -1,0 +1,319 @@
+%% @texfile{
+%%   filename  = "joyerr2.tex",
+%%   version   = "1.01",
+%%   date      = "2001/08/05",
+%%   time      = "17:03:46 EDT",
+%%   checksum  = "04000 319 1132 9628",
+%%   author    = "American Mathematical Society",
+%%   filetype  = "AMS-TeX: user documentation",
+%%   copyright = "Copyright 2000 American Mathematical Society,
+%%                all rights reserved.  Copying of this file is
+%%                authorized only if either:
+%%                (1) you make absolutely no changes to your copy
+%%                    including name; OR
+%%                (2) if you do make changes, you first rename it to some
+%%                    other name.",
+%%   address   = "American Mathematical Society,
+%%                Technical Support,
+%%                Electronic Products and Services,
+%%                P. O. Box 6248,
+%%                Providence, RI 02940,
+%%                USA",
+%%   telephone = "401-455-4080 or (in the USA and Canada)
+%%                800-321-4AMS (321-4267)",
+%%   FAX       = "401-331-3842",
+%%   email     = "tech-support@ams.org (Internet)",
+%%   codetable = "ISO/ASCII",
+%%   keywords  = "amstex, ams-tex, tex",
+%%   abstract  = "This file contains errata to The Joy of TeX,
+%%                second edition, 1990. It must be run with AMSTEX
+%%                and AMSPPT 2.0+; it is incompatible with previous
+%%                versions. It also requires the file amssym.tex and
+%%                the fonts msam10 and msbm10.",
+%%   docstring = "The checksum field above contains a CRC-16 checksum
+%%                as the first value, followed by the equivalent of
+%%                the standard UNIX wc (word count) utility output of
+%%                lines, words, and characters.  This is produced by
+%%                Robert Solovay's checksum utility.",
+%% }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input amstex
+\documentstyle{amsppt}
+
+\define\lastupdate{5 August 2001}
+
+\pagewidth{29pc}
+\raggedbottom
+\tenpoint
+
+%  \ninepoint required for diversions; sidetrip symbol not available.
+%  Substitute 7pt for \scriptfont, usually 6pt; not really needed
+\catcode`\@=11
+\font@\ninerm=cmr10 at 9pt
+\font@\ninei=cmmi10 at 9pt
+\font@\ninesy=cmsy10 at 9pt
+\font@\nineit=cmti10 at 9pt
+\font@\ninesl=cmsl10 at 9pt
+\font@\ninebf=cmbx10 at 9pt
+\font@\ninett=cmtt10 at 9pt
+\def\ninepoint{\normalbaselineskip12pt
+ \def\rm{\fam0\ninerm}%
+ \def\it{\fam\itfam\nineit}%
+ \def\sl{\fam\slfam\ninesl}%
+ \def\bf{\fam\bffam\ninebf}%
+ \def\tt{\ninett}%
+ \def\smc{\tensmc}%
+ \textfont0=\ninerm   \scriptfont0=\sevenrm   \scriptscriptfont0=\fiverm
+ \textfont1=\ninei    \scriptfont1=\seveni    \scriptscriptfont1=\fivei
+ \textfont2=\ninesy   \scriptfont2=\sevensy   \scriptscriptfont2=\fivesy
+ \textfont3=\tenex   \scriptfont3=\tenex     \scriptscriptfont3=\tenex
+ \textfont\itfam=\nineit
+ \textfont\slfam=\ninesl
+ \textfont\bffam=\ninebf \scriptfont\bffam=\sevenbf
+   \scriptscriptfont\bffam=\fivebf
+ \tt\ttglue=.45em  minus .135em
+ \setbox\strutbox=\hbox{\vrule height8pt depth3pt width0pt}%
+ \normalbaselines\rm}
+
+\def\JoT{{\sl The Joy of \TeX}}
+
+%  Support verbatim listing of TeX source, as defined in TeXbook, p. 421;
+%  lifted from MANMAC.TEX, and modified slightly for narrower columns.
+\catcode`\@=11
+
+\chardef\other=12
+\def\ttverbatim{\begingroup \catcode`\\=\other
+  \catcode`\{=\other \catcode`\}=\other \catcode`\$=\other
+  \catcode`\&=\other \catcode`\#=\other \catcode`\%=\other
+  \catcode`\~=\other \catcode`\_=\other \catcode`\^=\other
+  \catcode`\"=\other
+  \obeyspaces \obeylines \hyphenpenalty=10000 \tt}
+
+\newskip\ttglue
+{\tenpoint\tt \global\ttglue=.5em plus .25em minus .15em}
+% this should be installed in each font
+
+%  From David Eppstein's ``Trees'' paper (TUGboat 6#1), preserve initial
+%  spaces.
+{\obeyspaces\gdef {\ifvmode\indent\fi\space}}
+
+%  Permissible overhang beyond right margin.
+\newdimen\ttrightskip
+\ttrightskip=5pc
+
+%  Although | is ordinarily an escape character within verbatim mode,
+%  provide a method for letting it instead be the character itself
+%  within a display verbatim listing, as needed; this is based on
+%  a technique developed by Michael Ferguson.  Note that within one
+%  \begintt...\endtt block, | can be only one of:
+%       the printing | character, or
+%       active (the escape character)
+%  It cannot perform both functions at the same time.
+\newif\ifttVertChar     \ttVertCharfalse
+{\catcode`\|=\active \gdef\VertChar{\def|{\char"7C }}}
+
+%  Other non-tt elements that may be embedded within \begintt...\endtt .
+\def\MTH{$}
+\def\sb{_}
+\def\sp{^}
+\def\SP{{\tt\char"20 }}         % "visible" space
+\chardef\bs=`\\
+\def\vrt{{\tt\char`\|}}
+
+\catcode`\|=\active
+{\obeylines \gdef\activatettbar{\global\catcode`\|=\active %
+  \gdef|{\ttverbatim \spaceskip\ttglue \xspaceskip\ttglue %
+         \let^^M=\  \let|=\endgroup}}}
+\activatettbar
+
+\catcode`\@=13
+
+\def\ttindent{\noindent\kern3\parindent\hangindent3\parindent}
+
+%  This definition is stolen from the file of TeXbook errata.
+\def\bugonpage#1(#2) \par{\bigbreak\tenpoint
+  \hrule width\hsize
+  \line{\lower3.5pt\vbox to13pt{}Page #1\hfil(#2)}\hrule width\hsize
+  \nobreak\medskip}
+
+%  Some definitions for setting particular Joy notation.
+\def\CR{$\langle$carriage-return$\rangle$}
+\def\tab{{\smc tab}}
+
+\NoBlackBoxes
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\topmatter
+\title Errata to \JoT, second edition,\linebreak
+  for \AmSTeX{} 2.0\endtitle
+\leftheadtext{Errata to \JoT, second edition, for \AmSTeX{} 2.0}
+\rightheadtext{Errata to \JoT, second edition, for \AmSTeX{} 2.0}
+\endtopmatter
+
+\document
+
+\noindent
+This list of corrections to \JoT, second edition, 1990, includes all known
+corrections to that edition.  Corrections for the previous edition, which
+preceded the release of \AmSTeX{} Version 2.0, can be found in the file
+|joterr.tex|.
+
+The printing date of each copy of \JoT\ is identified on the reverse
+of the title page.  No corrections have been made in any reprint of
+\JoT, second edition, since the initial printing in 1990.
+
+\smallskip
+(This errata list was last updated \lastupdate.)
+
+
+\bugonpage xviii, line 16 (1997/06/07)
+
+\noindent
+[{\sl change $d0$ at end of line to $d\theta$.}]
+
+\bugonpage xx, line 14 (1997/06/07)
+
+\noindent
+[{\sl change $d0$ at end of line to $d\theta$.}]
+
+\bugonpage 19, lines $-9$ to $-7$ (1997/06/07)
+
+\begingroup
+\hsize27.5pc
+\leftskip1.5pc
+\noindent
+sensation, particularly the material that he has expounded on pages\linebreak
+22--23. Including this material cost an extra \$1000, but it did make
+\P\P\linebreak
+1 and 2 quite popular
+\endgroup
+
+\bugonpage 23, lines 24--26 (1997/06/07)
+
+\begingroup
+\hsize=30.15pc
+\BlackBoxes
+\indent The head of the department, our university's own I. M. Stable,
+  attributes Treemu\-nch's recent aberrant behavior to the much-publicized
+  ``research'' for his paper; notwithstanding, others say that Treemunch's
+  name isn't on the computers' databases,
+\par
+\endgroup
+
+\bugonpage 24, line 17 (1997/06/07)
+
+\noindent\kern1.5pc
+\line{notwithstanding, others say that Treemunch's name isn't on
+  the computers'}
+
+\bugonpage 24, line $-13$ (1997/06/07)
+
+\ttindent
+|the computers'\linebreak databases ...|
+
+\bugonpage 33, line 9 (1997/06/07)
+
+\line{\indent Ties are often preferable to |\.|\ after abbreviations.
+For example, it is best}
+
+\bugonpage 97, lines 7--8 (1997/06/07)
+
+\noindent
+some other kind of tag. Some journals place these tags to the left of
+the formula:
+
+\bugonpage 129, line 13 (1997/06/07)
+
+\noindent\kern-1.5pc
+{\bf ACCENTS IN MATH MODE}
+
+\bugonpage 137, line 12 (1997/06/07)
+
+\noindent\kern-1.5pc
+{\bf ARROWS}
+
+\bugonpage 163, line 16 (1997/06/07)
+
+\noindent\kern-1.5pc
+{\bf GREEK LETTERS}
+
+\bugonpage 163, line 21 (1997/06/07)
+
+\noindent\kern-1.5pc
+{\bf HORIZONTAL BRACES}
+
+\bugonpage 175, line $-13$ (1997/06/07)
+
+\noindent
+|amsppt| style, you still must type |\loadmsam| and |\loadmsbm| but you can
+
+\bugonpage 182, line 20 (1997/06/07)
+
+\noindent\kern-1.5pc
+{\bf RUNNING HEADS}
+
+\bugonpage 183, lines $-3$ to $-2$ (1997/06/07)
+
+\noindent
+the |\bigl| and |\bigr| for the delimiters (see {\bf big and bigg})
+should be accompanied by a |\bigm|{\tt\char`\|} for the $\vert$:
+
+\bugonpage 194, lines $-4$ to $-3$ (1997/06/07)
+
+\begingroup
+\NoBlackBoxes
+\ninepoint
+\leftskip18pt
+\noindent
+\AmSTeX\ also takes care to disregard extraneous spaces in constructions
+like \hbox{|\author|} and |\title|.  Although we typed\par
+\endgroup
+
+\bugonpage 201, line $-11$ (1997/06/07)
+
+\noindent
+\line{tuation, the |amsppt| preprint style provides a command |\rom| to
+be applied}
+
+\bugonpage 244, lines $-3$ to $-1$ (1997/06/07)
+
+\noindent
+When you leave out the |&|, \TeX\ simply inserts a blank for the right
+hand part of the second formula, so the whole second formula was treated
+as the left hand part, with the right hand part being blank.
+
+\bugonpage 291, column 2 (1999/01/07)
+
+Add entry\newline
+empty delimiter (|\left.|, |\right.|), 85, 144
+
+\bugonpage 293, column 2, index entry ``formulas'' (1996/11/23)
+
+Add second level entry\newline
+\indent{\it see also\/} tags
+
+\bugonpage 298, column 1 (1997/06/07)
+
+\noindent
+margin gap in |\multline|, 175
+
+\bugonpage 298, column 1, index entry ``math formulas'' (1997/06/07)
+
+Add second level entry\newline
+\indent|\tag|, 97
+
+\bugonpage 293, column 2, index entry ``numbers'' (1996/11/23)
+
+Add second level entry\newline
+\indent{\it see also\/} tags
+
+\bugonpage 300, column 1, index entry ``operators'' (1997/06/07)
+
+\indent space around, 43--44, 164-165, 224
+
+\bugonpage 303, column 1, index entry ``relations'' (1997/06/07)
+
+\indent space around, 43--44, 137, 165
+
+\enddocument

@@ -1,0 +1,19 @@
+            -----------------------------------------------------
+            | pst-slpe: PSTricks package for improved gradients |
+            |                                                   |
+            |          Version 1.0 (September 15, 1998)         |
+            |          Martin Giese <giese@ira.uka.de>          |
+            -----------------------------------------------------
+
+
+
+  * Run "tex" on pst-slpe.ins and copy pst-slpe.tex and pst-slpe.sty
+in one of your TeX input directories
+
+  * Install pst-slpe.pro in one of your DVI to PostScript converter input
+directories
+
+  * Run "latex" on pst-slpe.dtx to generate the documentation
+
+--
+For Martin Giese (updated September 15, 1998)

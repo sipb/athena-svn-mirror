@@ -1,0 +1,236 @@
+amsclass.faq  [2000/05/17] American Mathematical Society
+
+Frequently asked questions about the AMS documentclasses amsart,
+amsbook, amsproc, and the amsthm package.
+
+Suggestions? Please send mail to tech-support@ams.org.
+
+------------------------------------------------------------------------
+(1) Question: Where should I look for documentation?
+
+Answer: The primary user documentation is found in the "Instructions for
+Authors". You should be able to find it on your system in the form
+instr-l.dvi (or .pdf or .ps). If you do not find it on your system, it
+can be downloaded from
+
+ http://www.ams.org/tex/author-info.html
+
+More detailed information on theorem and proof setup may be found in
+amsthdoc.tex and thmtest.tex.
+
+------------------------------------------------------------------------
+(2) Question: I want to make a custom document class based on amsart but
+with some minor style changes. What is the best way to do it?
+
+Answer: The first thing to mention is that \LoadClass is probably not
+what you want. That works best when the base class is frozen or when
+changes to the base class are under your control.
+
+Therefore the recommended procedure is to copy amsart.cls to myart.cls
+(or whatever name you choose) and make changes in myart.cls. Even if you
+wish to work from a .dtx file it is probably best to start with
+myart.cls and add a .dtx framework around it rather than start from
+amsclass.dtx, because the latter contains quite a bit of extra
+complexity in order to generate amsbook.cls, amsproc.cls, amsart.cls,
+and amsthm.sty from the same source.
+
+------------------------------------------------------------------------
+(3) Question: All the indents and left margins for numbered lists and
+other lists are suddenly different in my document that uses document
+class amsart (amsbook, amsproc). What happened?
+
+Answer: Most likely, you (or your system administrator) did a TeX or
+LaTeX upgrade and you now are getting version 2.0 of the AMS document
+classes instead of version 1.2. In version 2.0 the default list indents
+were changed. See also the next question.
+
+------------------------------------------------------------------------
+(4) Question: My document had numbers of the form "1." "2." etc for
+first-level enumerate lists, but after a recent upgrade I am getting
+"(1)" "(2)" etc. How do I get the old style back?
+
+Answer: The parenthesized style is AMS in-house style. That it was not
+being used before was an error in the AMS document classes. If you don't
+want AMS style it may be that you should use a different document class,
+or make your own document class as discussed above.
+
+The style of numbered lists can, however, be altered in individual
+documents using standard LaTeX methods:
+
+  \renewcommand{\labelenumi}{\theenumi.}
+
+See Section 6.3 and C.6.2 in "LaTeX: A Document Preparation System"
+(Lamport).
+
+There is also an "enumerate" package distributed with LaTeX that
+provides more extensive facilities for modifying list numbering on the
+fly. See Section 3.2 in "The LaTeX Companion" (Goossens, Mittelbach, and
+Samarin).
+
+------------------------------------------------------------------------
+(5) Question: I tried to put some figures side by side using minipage
+and they are positioned badly.
+
+Answer: You need to reset \captionindent to 0. (This is a parameter used
+only by AMS document classes.) For example:
+
+  \begin{figure}
+    \setlength{\captionindent}{0pt}
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering\includegraphics{left.eps}
+    \caption{This is a caption}
+    \end{minipage}%
+    \begin{minipage}[t]{0.5\textwidth}
+    \centering\includegraphics{right.eps}
+    \caption{This is the other caption}
+    \end{minipage}
+  \end{figure}
+
+
+------------------------------------------------------------------------
+(6) Question: How can I get the qed symbol in the right place when a
+proof ends with an equation that uses multline* ?
+
+Answer: There is a workaround using \tag* and \qedhere, as follows.
+
+\begin{proof}
+  With some preliminary text so that we can tell where the right margin
+  falls, which would otherwise be difficult.
+\begin{multline*}
+  a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p\\
+  +q+r+s+t+u+v+w+x+y=z
+  \tag*{\hspace{-1em}\qedhere}
+\end{multline*}
+\end{proof}
+
+------------------------------------------------------------------------
+(7) Question: The corners of the qed symbol look bad on screen. What can I
+do to get a better-looking version?
+
+Answer: The default qed symbol is drawn with four rules. If your screen
+is not sufficiently high in resolution then it will not be able to
+render the corners exactly because of pixel roundoff. There is an easy
+solution: Redefine \qedsymbol to be some suitable font symbol. Try using
+\textsquare:
+
+  \renewcommand{\qedsymbol}{\textsquare}
+
+------------------------------------------------------------------------
+(8) Question: When a theorem begins with a list how do I keep the first item
+from running together with the theorem head?
+
+Answer: \begin{thm}\indent\par \begin{enumerate} \item ...
+
+------------------------------------------------------------------------
+(9) Question: When I use the amsthm package with the slides
+documentclass, the space above and below theorems is too small.
+
+Answer: The spacing setup for slides.cls is a bit peculiar. \parskip
+instead of \topsep is used to control the spacing around
+theorems---something that seems questionable in general, as well as
+being different from the behavior of the generic article and book
+classes. The discrepancy becomes obvious with amsthm because amsthm goes
+to some trouble to prevent changes in parskip from affecting the space
+around theorems since book designers normally specify them
+independently.
+
+Workaround:
+
+  \documentclass{slides}
+  \setlength{\topsep}{\parskip}
+  \usepackage{amsthm}
+
+Further spacing adjustments may be needed for other elements.
+
+------------------------------------------------------------------------
+(10) Question: Why do I get the following error message that I wasn't
+getting before?
+
+  ! LaTeX Error: Command \for already defined.
+    ...
+  l.24 \newcommand{\for}{\quad\text{for}\ }
+
+(or possibly:
+
+  ! LaTeX Error: Command \except already defined.
+    ...
+  l.24 \newcommand{\except}{...}
+
+Answer: This is a side effect of upgrading from version 1.2 to version
+2.0 of the amsart documentclass (or one of the other AMS
+documentclasses). The easiest solution is to change your newcommand
+statement to use \renewcommand.
+
+------------------------------------------------------------------------
+(11) Question: When I use a Latin-1 character in an article title the
+uppercasing for the running heads does not work correctly.
+
+Answer: You have to load the textcase package in order for this to work.
+This is a widely available package but it is not part of the LaTeX base
+distribution so the AMS document classes do not assume that it is
+available. Try:
+
+  \documentclass{amsart}
+  \usepackage{textcase}
+  ...
+
+------------------------------------------------------------------------
+(12) Question: I discovered that the AMS documentclasses provide an \MR
+command for putting MR numbers into the bibliography---but when I try to
+use it I get an error message:
+
+  ! Undefined control sequence.
+  \MR ...pty ##1\else \textbf {##1:}##2\fi }\MRhref 
+
+Answer: This is a bug in version 1.2 of amsart and the other AMS
+documentclasses. It was fixed in version 2.0. As a workaround you can
+add the following definition in your document preamble:
+
+  \providecommand{\MRhref}[1]{}
+
+------------------------------------------------------------------------
+(13) Question: My title page (using amsbook) doesn't look anything like the
+published title pages in AMS books. Why not?
+
+Answer: The topmatter information provided by an author is processed
+into a dummy title page that will be used at AMS to prepare (by hand)
+the `real' title and copyright pages in the appropriate series style.
+
+If you want a more elaborate title page while working on your book, you
+should use the titlepage environment and omit \maketitle. (See the
+LaTeX documentation regarding use of the titlepage environment if you
+are not familiar with it.)
+
+------------------------------------------------------------------------
+(14) Question: I need to put some text between the heading "Index" and the
+index data in my book (using amsbook). How do i do that?
+
+Answer: If you have version 2.05 or later of the amsbook document class,
+there is a command \indexintro provided for this purpose. Its definition
+is normally empty, but it can be redefined with \renewcommand to supply
+the desired introductory text:
+
+  \renewcommand{\indexintro}{YOUR TEXT HERE}
+
+If you have version 2.04 or earlier of the amsbook document class, there
+is no easy solution; in most cases it will be best to make a custom
+document class based on amsbook.cls as described in Question 2 above.
+Then you can change the definition of \indexchap along the following
+lines to incorporate the desired text:
+
+  \def\indexchap#1{\global\topskip 7.5pc\relax
+    \twocolumn[{\fontsize{\@xivpt}{18}\bfseries\centering
+      \vskip\topskip\hbox{}\vskip-\baselineskip% adjust top space
+      #1\par
+       \begingroup \normalsize
+         \skip@\topskip \advance\skip@ -\baselineskip
+         \vskip\skip@
+         \parbox[t]{24pc}{\normalfont
+           YOUR TEXT HERE\par
+         }%
+       \endgroup
+       \global\topskip 24\p@\relax
+    }]%
+  }
+
+------------------------------------------------------------------------

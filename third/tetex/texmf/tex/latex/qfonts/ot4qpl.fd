@@ -1,0 +1,38 @@
+\ProvidesFile{ot4qpl.fd}
+   [2001/02/06 v1.0 font definition file for OT4/QuasiPalatino (MW)]
+
+\DeclareFontFamily{OT4}{qpl}{}
+
+\DeclareFontShape{OT4}{qpl}{m}{n}{
+   <-> qplr
+}{}
+\DeclareFontShape{OT4}{qpl}{m}{sc}{
+   <-> sub * qpl/m/n
+}{}
+\DeclareFontShape{OT4}{qpl}{m}{sl}{
+   <-> sub * qpl/m/it
+}{}
+\DeclareFontShape{OT4}{qpl}{m}{it}{
+   <-> qplri
+}{}
+\DeclareFontShape{OT4}{qpl}{b}{n}{
+   <-> qplb
+}{}
+\DeclareFontShape{OT4}{qpl}{b}{sc}{
+   <-> sub * qpl/b/n
+}{}
+\DeclareFontShape{OT4}{qpl}{b}{sl}{
+   <-> sub * qpl/b/it
+}{}
+\DeclareFontShape{OT4}{qpl}{b}{it}{
+   <-> qplbi
+}{}
+\DeclareFontShape{OT4}{qpl}{bx}{n}{ <-> ssub * qpl/b/n}{}
+\DeclareFontShape{OT4}{qpl}{bx}{sc}{ <-> ssub * qpl/b/sc}{}
+\DeclareFontShape{OT4}{qpl}{bx}{sl}{ <-> ssub * qpl/b/sl}{}
+\DeclareFontShape{OT4}{qpl}{bx}{it}{ <-> ssub * qpl/b/it}{}
+
+\endinput
+
+%%
+%% End of font definition file ot4qpl.fd.

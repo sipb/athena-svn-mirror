@@ -6,23 +6,30 @@
 %%
 %% polski.dtx  (with options: `style')
 %% 
-%% IMPORTANT NOTICE:
+%% This is a generated file.
 %% 
-%% For the copyright see the source file.
+%% Copyright (C) 1994 by Mariusz Olko.  All rights reserved.
+%% Copyright (C) 1997,1998 by Mariusz Olko and Marcin Woli\'nski.
+%% Copyright (C) 2000,2002,2003 by Marcin Woli\'nski.
 %% 
-%% Any modified versions of this file must be renamed
-%% with new filenames distinct from polski.sty.
 %% 
-%% For distribution of the original source see the terms
-%% for copying and modification in the file polski.dtx.
+%% This file is part of the package `PLaTeX'
+%% -----------------------------------------
 %% 
-%% This generated file may be distributed as long as the
-%% original source files, as listed above, are part of the
-%% same distribution. (The sources need not necessarily be
-%% in the same archive or directory.)
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the PLaTeX
+%% package.
+%% 
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]
-\ProvidesPackage{polski}[1998/04/20 v1.01 Polish language package]
-\typeout{Document Language Style `polski' v1.01 <1998/04/20> (MOl)}
+\ProvidesPackage{polski}[2003/01/30 v1.2.4 Polish language package]
+\typeout{Document Language Style `polski' v1.2.4 <2003/01/30>}
 \@ifpackageloaded{inputenc}{\typeout{\space\space\space
                       Inputenc package detected. Catcodes not changed.}}{%
 \catcode`\^^a1=11 %\lccode`\^^a1=`\^^a1 \uccode`\^^a1=`\^^81  % a ogonek
@@ -53,12 +60,14 @@
 \sfcode`\^^91=999    % S acute
 \sfcode`\^^9b=999    % Z dot
 \sfcode`\^^99=999    % Z acute
-\newlanguage\l@unhyphenable
+\ifx\l@nohyphenation\@undefined
+        \newlanguage\l@nohyphenation
+\fi
 \def\selecthyphenation#1{%
   \expandafter\ifx\csname l@#1\endcsname\relax
     \PackageError{polski}{No hyphenation patterns for language `#1'}
       {Hyphenation in this language will be disabled.}%
-    \selecthyphenation{unhyphenable}%
+    \selecthyphenation{nohyphenation}%
   \else
     \language\csname l@#1\endcsname
   \fi
@@ -72,7 +81,8 @@
 \righthyphenmin=2
 \def\Slash{/}
 \def\PLSlash#1{%
-  \ifx#1\PLSlash \expandafter\Slash
+  \ifx#1\PLSlash
+    \ifx\protect\@typeset@protect\else\protect\string\fi\Slash
   \else
     \expandafter \ifx \csname PLSlash@\string#1\endcsname \relax
       \PLSlash@error#1%
@@ -90,13 +100,20 @@ Only a character from the set [acelnosxzACELNOSXZ,'<>/-]
 Proceed, I will omit both \Slash\ and the character following it.\MessageBreak
 You can also correct your mistake NOW, typing I followed by\MessageBreak
 whatever should be in the place of the offending pair.}}
+\def\PlPrIeC{%
+  \ifx\protect\@typeset@protect
+    \expandafter\@firstofone
+  \else
+    \noexpand\PlPrIeC
+  \fi
+}
 \def\PLSlash@letter#1{\csname PLSlash@#1\endcsname}
 \def\PL@accent@def#1#2{%
   \expandafter\def \csname PLSlash@\string #1\endcsname{#2}}
 \PL@accent@def{a}{\k a}
 \PL@accent@def{c}{\@tabacckludge'c}
 \PL@accent@def{e}{\k e}
-\PL@accent@def{l}{\l}
+\PL@accent@def{l}{\PlPrIeC{\l}}
 \PL@accent@def{n}{\@tabacckludge'n}
 \PL@accent@def{o}{\@tabacckludge'o}
 \PL@accent@def{s}{\@tabacckludge's}
@@ -105,17 +122,17 @@ whatever should be in the place of the offending pair.}}
 \PL@accent@def{A}{\k A}
 \PL@accent@def{C}{\@tabacckludge'C}
 \PL@accent@def{E}{\k E}
-\PL@accent@def{L}{\L}
+\PL@accent@def{L}{\PlPrIeC{\L}}
 \PL@accent@def{N}{\@tabacckludge'N}
 \PL@accent@def{O}{\@tabacckludge'O}
 \PL@accent@def{S}{\@tabacckludge'S}
 \PL@accent@def{X}{\@tabacckludge'Z}
 \PL@accent@def{Z}{\.Z}
-\PL@accent@def{<}{\guillemotleft}
-\PL@accent@def{>}{\guillemotright}
-\PL@accent@def{,}{\quotedblbase}
-\PL@accent@def{'}{\textquotedblright}
-\PL@accent@def{-}{\dywiz}
+\PL@accent@def{<}{\PlPrIeC{\guillemotleft}}
+\PL@accent@def{>}{\PlPrIeC{\guillemotright}}
+\PL@accent@def{,}{\PlPrIeC{\quotedblbase}}
+\PL@accent@def{'}{\PlPrIeC{\textquotedblright}}
+\PL@accent@def{-}{\PlPrIeC{\dywiz}}
 \let \PL@accent@def \undefined
 \@ifpackageloaded{plprefix}{}{%
     \def\prefixing{\catcode`/=\active
@@ -140,10 +157,12 @@ whatever should be in the place of the offending pair.}}
   \def\arcctan{\arc\ctg}
   }
 \def\dywiz{\kern0sp\discretionary{-}{-}{-}\penalty10000\hskip0sp\relax}
+\newcommand*\pauza{\unskip\kern.2em\textemdash\hskip.2em\ignorespaces}
+\newcommand*\ppauza{\unskip\kern.2em\textendash\hskip.2em\ignorespaces}
 \def\prefacename{Przedmowa}
-\def\refname{Bibliografia}
+\def\refname{Literatura}
 \def\abstractname{Streszczenie}
-\def\bibname{Spis literatury}
+\def\bibname{Bibliografia}
 \def\chaptername{Rozdzia\PLSlash l} % uppercasing in running head must work
 \def\appendixname{Dodatek}
 \def\contentsname{Spis tre\'sci}
@@ -152,13 +171,13 @@ whatever should be in the place of the offending pair.}}
 \def\indexname{Skorowidz}
 \def\figurename{Rysunek}
 \def\tablename{Tabela}
-\def\partname{Cz\PLSlash e\'s\'c}
-\def\enclname{Za\l\PLSlash aczniki}
+\def\partname{Cz\k e\'s\'c}
+\def\enclname{Za\l\k aczniki}
 \def\ccname{Do wiadomo\'sci}
 \def\headtoname{Do}
 \def\pagename{Strona}
-\def\seename{Por\'ownaj}
-\def\alsoname{Por\'ownaj tak\.ze}
+\def\seename{zob.}
+\def\proofname{Dow\'od}
 \def\PLdateending{\space roku}
 \def\today{\number\day~\ifcase\month\or
   stycznia\or lutego\or marca\or kwietnia\or maja\or czerwca\or
@@ -200,8 +219,17 @@ whatever should be in the place of the offending pair.}}
     \def\PLn@m@thsn@mes{}
 }
 \DeclareOption{MeX}{%
-    \DeclareTextCommand{\=}{OT4}{\dywiz}
-    \DeclareTextAccent{\macron}{OT4}{22}
+  \AtBeginDocument{%
+    \@ifundefined{T@OT1}{}{%
+    \DeclareTextCommand{\=}{OT1}{\dywiz}%
+    \DeclareTextAccent{\macron}{OT1}{22}}%
+    \@ifundefined{T@T1}{}{%
+    \DeclareTextCommand{\=}{T1}{\dywiz}%
+    \DeclareTextAccent{\macron}{T1}{9}}%
+    \@ifundefined{T@OT4}{}{%
+    \DeclareTextCommand{\=}{OT4}{\dywiz}%
+    \DeclareTextAccent{\macron}{OT4}{22}}%
+    }%
     \let\xle\xleq
     \let\xge\xgeq
     \let\polish\l@polish

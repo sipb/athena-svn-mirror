@@ -1,0 +1,13 @@
+\ProvidesFile{afrikaan.mld}[1999/03/16]
+% Afrikaan(s) titles for minitoc.sty
+\def\mtctitle{Inhoudsopgawe}%
+\def\mlftitle{Lys van figure}%
+\def\mlttitle{Lys van tabelle}%
+
+\def\ptctitle{Inhoudsopgawe}%
+\def\plftitle{Lys van figure}%
+\def\plttitle{Lys van tabelle}%
+
+\def\stctitle{Inhoudsopgawe}%
+\def\slftitle{Lys van figure}%
+\def\slttitle{Lys van tabelle}%

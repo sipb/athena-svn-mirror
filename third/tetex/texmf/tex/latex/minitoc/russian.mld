@@ -1,3 +1,4 @@
+\ProvidesFile{russian.mld}[1999/03/16]
 % Russian titles for minitoc.sty
 \def\mtctitle{Oglavlenie}%
 \def\mlftitle{Pere{\cz}en{\mz} risunkov}%

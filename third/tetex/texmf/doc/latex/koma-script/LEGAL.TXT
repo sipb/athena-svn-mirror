@@ -1,0 +1,157 @@
+                              KOMA-Script
+     Terms And Conditions For Copying, Distribution And Modification
+             Like LaTeX Project Public License Version 1.0
+
+
+WARRANTY
+========
+
+There is no warranty for KOMA-Script, to the extent permitted by
+applicable law. Except when otherwise stated in writing, the
+Copyright holder provides KOMA-Script `as is' without warranty of any
+kind, either expressed or implied, including, but not limited to, the
+implied warranties of merchantability and fitness for a particular
+purpose. The entire risk as to the quality and performance of the
+program is with you. Should KOMA-Script prove defective, you assume
+the cost of all necessary servicing, repair or correction.
+
+In no event unless required by applicable law or agreed to in writing
+will the Copyright holder, or any of the individual authors named in
+the source for KOMA-Script, be liable to you for damages, including
+any general, special, incidental or consequential damages arising out
+of any use of KOMA-Script or out of inability to use KOMA-Script
+(including but not limited to loss of data or data being rendered
+inaccurate or losses sustained by you or by third parties as a result
+of a failure of The Program to operate with any other programs), even
+if such holder or other party has been advised of the possibility of
+such damages.
+
+
+DISTRIBUTION
+============
+
+Redistribution of unchanged files is allowed provided that all files
+that make up the distribution of KOMA-Script are distributed.
+In particular this means that KOMA-Script has to be distributed
+including its documentation if documentation was part of the original
+distribution. If you distribute KOMA-Script together with a
+installation programm or installation programms, you have to take
+care, that users cannot skip or delete parts of KOMA-Script without
+be well informed about this action.
+
+The distribution of KOMA-Script contain a listing of all the files
+covered by this license at readme.txt and liesmich.txt.
+
+If you receive only some of these files from someone, complain!
+
+The distribution of changed versions of certain files included in the
+KOMA-Script, and the reuse of code from KOMA-Script, are allowed
+under the following restrictions:
+
+ * It is allowed only if the legal notice in the file does not
+   expressly forbid it.
+   See note below, under "Conditions on individual files".
+ 
+ * You rename the file before you make any changes to it, unless the
+   file explicitly says that renaming is not required.  Any such changed
+   files must be distributed under a license that forbids distribution
+   of those files, and any files derived from them, under the names used
+   by the original files in the distribution of KOMA-Script.
+
+ * You change any `identification string' in KOMA-Script to clearly 
+   indicate that the file is not part of the standard system.
+
+ * You change the `error report address' in any modified versions of
+   KOMA-Script, so that reports for files not maintained by the
+   original program maintainers are directed to the maintainers of the
+   changed files. 
+
+ * You acknowledge the source and authorship of the original version
+   in the modified file.
+
+ * You also distribute the unmodified version of the file.
+
+ * Then files with the following file extensions which have special
+   meaning in LaTeX Software, have special modification rules under the
+   license:
+ 
+    - Files with extension `.ins' (installation files): these files may
+      not be modified at all because they contain the legal notices
+      that are placed in the generated files.
+ 
+    - Files with extension `.fd' (LaTeX font definitions files): these
+      files are allowed to be modified without changing the name, but
+      only to enable use of all available fonts and to prevent attempts
+      to access unavailable fonts. However, modified files are not
+      allowed to be distributed in place of original files.
+ 
+    - Files with extension `.cfg' (configuration files): these files
+      can be created or modified to enable easy configuration of the
+      system.  The documentation in cfgguide.tex in the base LaTeX
+      distribution describes when it makes sense to modify or generate
+      such files.
+ 
+
+The above restrictions are not intended to prohibit, and hence do
+not apply to, the updating, by any method, of a file so that it
+becomes identical to the latest version of that file in KOMA-Script.
+
+========================================================================
+
+NOTES
+=====
+
+We believe that these requirements give you the freedom you to make
+modifications that conform with whatever technical specifications you
+wish, whilst maintaining the availability, integrity and reliability of
+The Program.  If you do not see how to achieve your goal whilst
+adhering to these requirements then read the document cfgguide.tex
+in the base LaTeX distribution for suggestions. 
+
+Because of the portability and exchangeability aspects of systems
+like LaTeX, The LaTeX3 Project deprecates the distribution of
+non-standard versions of components of LaTeX or of generally available
+contributed code for them but such distributions are permitted under the
+above restrictions.
+
+The document modguide.tex in the base LaTeX distribution details
+the reasons for the legal requirements detailed above.
+Even if KOMA-Script would be unrelated to LaTeX, the argument in
+modguide.tex may still apply, and should be read before
+a modified version of KOMA-Script is distributed.
+
+
+Conditions on individual files
+==============================
+
+The individual files may bear additional conditions which supersede
+the general conditions on distribution and modification contained in
+this file.
+
+Typical examples of files with more restrictive modification
+conditions would be files that contain the text of copyright notices.
+
+ * The conditions on individual files differ only in the
+   extent of *modification* that is allowed.
+
+ * The conditions on *distribution* are the same for all the files.
+   Thus a (re)distributor of a complete, unchanged copy of The Program
+   need meet only the conditions in this file; it is not necessary to
+   check the header of every file in the distribution to check that a
+   distribution meets these requirements.
+
+Such files are:
+
+ * All files ending `.txt' or `.TXT':
+   You are not allowed to modify these files containing legal notices.
+
+ * All files starting `scr_new' or `scrnew':
+   You are not allowed to modify these files containing information
+   about the versions of KOMA-Script. You are not allowed to add other
+   files with such a name to the bundle.
+
+ * Alle anderen Dateien mit dem Anfang `scr':
+   These are original KOMA-Script files. You are not allowed to start
+   the name of a changed or new file with this letters and place it
+   nearby KOMA-Script, if it is not part of the original KOMA-Script
+   bundle.

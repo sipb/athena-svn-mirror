@@ -1,0 +1,881 @@
+%% ======================================================================
+%% komabug.tex 
+%% Copyright (C) 1995-2002 Markus Kohm
+%% Version 2002-06-04
+%%
+%% This file is part of the LaTeX2e KOMA-Script-Bundle
+%%
+%% This file can be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License Version 1.0 distributed 
+%% together with this file. See LEGAL.TXT or LEGALDE.TXT.
+%%
+%% This bundle is written specialy for use at german-language. So the
+%% main documentation is german. There is also a english documentation,
+%% but this is NOT up-to-date.
+%% ----------------------------------------------------------------------
+
+%%
+%% @ is a letter
+%%
+\catcode`\@=11
+
+%%
+%% Grab the initex file list
+%%
+%% If this file is called via
+%%     latex "\input{latexbug}" or some
+%% similar command sequence rather than
+%%     latex latexbug
+%% then the debugging info in \reserved@a will already have been lost.
+%% This might not matter, but if it does we may ask the user to resubmit
+%% the report.
+\ifx\reserved@b\@undefined
+  \ifx\reserved@a\@gobble
+    \def\@inputfiles{NONE}
+  \else
+    \let\@inputfiles\reserved@a
+  \fi
+\else
+  \def\@inputfiles{LOST}
+\fi
+
+%%
+%% Output stream to produce the bug report template.
+%%
+\newwrite\msg
+\immediate\openout\msg=\jobname.msg
+
+
+%%
+%% Check that LaTeX2e is being used.
+%%
+\ifx\undefined\newcommand
+ \newlinechar`\^^J%
+ \immediate\write17{^^J%
+    You must use LaTeX2e to generate the bug report!^^J^^J%
+    Sie muessen LaTeX2e verwenden, um die Fehlermeldung zu erzeugen!}%
+
+ \let\relax\end
+\else
+ \def\@tempa{LaTeX2e}\ifx\@tempa\fmtname\else
+  \immediate\write17{^^J%
+   You must use LaTeX2e to generate the bug report!^^J^^J%
+   Aeltere Versionen von LaTeX werden nicht unterstuetzt.^^J%
+   Sie muessen LaTeX2e verwenden, um die Fehlermeldung zu erzeugen!}%
+  \let\relax\@@end
+\fi\fi
+
+%%
+%% \wmsg writes to the terminal, and the .msg file
+%% \wmsg* just writes to the .msg file
+%% \typeout just writes to the terminal
+%%
+
+\def\wmsg{\bgroup\@ifstar{\interactivefalse\@wmsg}\@wmsg}
+
+
+\relax
+\endlinechar=-1
+
+\def\@wmsg#1{%
+  \ifinteractive\immediate\write17{#1}\fi
+  \immediate\write\msg{#1}%
+  \egroup}
+
+%%
+%% if \interactivefalse just make a blank template.
+%%
+\newif\ifinteractive
+\interactivetrue
+
+%%
+%% Prompt for an answer from the user, if the answer is not
+%% provided by the cfg file.
+%%
+
+\def\readifnotknown#1{%
+ \@ifundefined{#1}%
+    {{\message{#1> }%
+     \catcode`\^^I=12 \let\do\@makeother\dospecials
+     \global\read\m@ne t\expandafter o\csname#1\endcsname}}%
+    {\message{\csname#1\endcsname}}}
+
+%%
+%% Pause so messages do not scroll off screen.
+%%
+\def\pause{%
+  \ifinteractive
+    \ifenglish
+      \message{Press <return> to continue. }%
+    \else
+      \message{Mit der <Return>-Taste geht es weiter. }%
+    \fi
+      \message{^^J}
+   \read\m@ne to \@tempa
+  \fi}
+
+%%
+%% Try to get Version
+%%
+\def\GetVersion#1{
+ \def\ProvidesFile##1{\@ifnextchar [{\@P@F}{\@P@F[1996/10/31 ]}}
+ \def\@P@F[##1 ##2]{\xdef\komaversion{##1}\csname endinput\endcsname}
+ \InputIfFileExists{#1}
+  {}
+  {\ifenglish
+     \def\noscrclass{%
+       ! File ``#1'' not found!^^J%
+       ! The file must be at the same folder like ``komabug.tex''^^J%
+       ! to get the version information!}
+   \else
+     \def\noscrclass{%
+       ! Die Datei ``#1'' konnte nicht gefunden werden!^^J%
+       ! Zur Bestimmung der aktuellen Version ist es unbedingt^^J%
+       ! erforderlich, dass diese Datei sich im selben Verzeichnis^^J%
+       ! wie ``komabug.tex'' befindet!}
+   \fi
+   \errmessage{\noscrclass}
+   \ifenglish
+     \errhelp{Terminate TeX using `x' and restart komabug}
+   \else
+     \errhelp{Beenden Sie TeX mit `x' und starten Sie komabug neu}
+   \fi}}
+
+%%
+%% german or english report generator
+%%
+\newif\ifenglish
+
+%%
+%% Opening Banner.
+%%
+\typeout{^^J%
+  ============================================================^^J%
+  ^^J%
+  KOMA-Script Fehlermeldungsgenerator^^J%
+  ===================================^^J%
+  Die Bearbeitung dieser Datei mit LaTeX erzeugt das Formular \jobname.msg,^^J%
+  um Fehlermeldungen zum KOMA-Script-Paket zu melden.^^J^^J%
+  * Schreiben Sie Ihre Meldung nach Moeglichkeit in Deutsch.^^J \space
+    Notfalls ist auch Englisch moeglich.^^J%
+  * Bitte fassen Sie sich kurz.^^J%
+  * Bitte halten Sie keine Information zurueck, die moeglicherweise^^J \space
+  wichtig sein koennte.^^J}
+
+
+\InputIfFileExists{komabug.cfg}
+                  {\typeout{** komabug.cfg wird verwendet **}}
+                  {}
+
+\ifenglish
+  \typeout{^^J%
+    ============================================================^^J%
+    ^^J%
+    KOMA bug report generator^^J%
+    =========================^^J%
+    Running this file through LaTeX generates a formular ``\jobname.msg''^^J%
+    containing a bug report to KOMA-Script bundle.^^J^^J%
+    * Please use german, if possible.^^J \space
+      If you're not able to use german, write the report in english.^^J%
+    * Please write a short report not a large one.^^J%
+    * Please tell me everything, which may be important.^^J}
+\else
+\typeout{^^J%
+  If you prefere english, you may write a file ``komabug.cfg'' with\space 
+  contents:^^J\space
+  \string\englishtrue^^J%
+ at same folder as ``komabug.tex'' and restart ``komabug.tex''.^^J}
+  \englishtrue\pause\englishfalse
+\fi
+
+\count@=0
+
+\ifenglish
+  \typeout{%
+    There are several categories, related to several parts and files^^J%
+    of the KOMA-Script bundle:^^J^^J%
+    0) komascr:\space\@spaces
+    Installation of KOMA-Script.^^J
+    1) scrguide:\@spaces
+    The KOMA-Script manual.^^J
+    2) scrclass:\@spaces
+    The three main classes of KOMA-Script or the new letter class.^^J
+    3) scrlettr:\@spaces
+    The old KOMA-Script letter class and related packages and files.^^J
+    4) typearea:\@spaces
+    Calculation of type areas using typearea package.^^J
+    5) scrpage:\space\@spaces
+    Individual page heads and page foots with scrpage2 or scrpage.^^J
+    6) scrtime:\space\@spaces
+    The tiny packages for creating date or time information.^^J%
+    7) scrlfile:\@spaces
+    Pre- or postactions loading files, packages or classes with scrlfile.^^J%
+  }
+  \message{Select a number at the range 0--6:  }
+\else
+  \typeout{%
+    Verschiedene Bereiche werden von diesem Generator unterstuetzt, die^^J%
+    sich auf verschiedene Dateien im KOMA-Script-Paket beziehen:^^J^^J
+    0) komascr:\space\@spaces
+    Auspacken und Installieren von KOMA-Script.^^J
+    1) scrguide:\@spaces
+    Die KOMA-Script-Anleitung.^^J
+    2) scrclass:\@spaces
+    Die KOMA-Script-Haupt-Klassen oder die neue Briefklasse.^^J
+    3) scrlettr:\@spaces
+    Die alte KOMA-Script-Brief-Klasse und die zugehoerigen Pakete.^^J
+    4) typearea:\@spaces
+    Automatische und individuelle Satzspiegelberechnung.^^J
+    5) scrpage:\space\@spaces
+    Individuelle Kopf- und Fusszeilendefinition.^^J
+    6) scrtime:\space\@spaces
+    Kleine Zugaben fuer Datums- und Zeitinformationen.^^J%
+    7) scrlfile:\@spaces
+    Aktionen vor oder nach dem Laden von Dateien, Paketen, Klassen.^^J%
+  }
+  \message{Bitte waehlen Sie einen der Bereiche von 0--7 aus:  }
+\fi
+
+\read\m@ne to \answer
+\count@=\answer\relax
+
+\ifcase\count@
+  \def\category{komascr}\GetVersion{scrclass.dtx}
+  \let\categoryversion\komaversion
+\or
+  \def\category{scrguide}\GetVersion{scrguide2.tex}
+  \let\categoryversion\komaversion\GetVersion{scrclass.dtx}
+\or
+  \def\category{scrclass}\GetVersion{scrclass.dtx}
+  \let\categoryversion\komaversion
+\or
+  \def\category{scrlettr}\GetVersion{scrlettr.dtx}
+  \let\categoryversion\komaversion\GetVersion{scrclass.dtx}
+\or
+  \def\category{typearea}\GetVersion{scrclass.dtx}
+  \let\categoryversion\komaversion
+\or
+  \def\category{scrpage}\GetVersion{scrpage.dtx}
+  \let\categoryversion\komaversion\GetVersion{scrclass.dtx}
+\or
+  \def\category{scrtime}\GetVersion{scrtime.dtx}
+  \let\categoryversion\komaversion\GetVersion{scrclass.dtx}
+\or
+  \def\category{scrlfile}\GetVersion{scrlfile.dtx}
+  \let\categoryversion\komaversion\GetVersion{scrclass.dtx}
+\else
+  \ifenglish
+    \errhelp{Terminate TeX using `x' and restart komabug.}
+    \def\badcategory{Only categories 0,...,6 are known.}
+  \else
+    \errhelp{Beenden Sie TeX mit `x' und starten Sie komabug neu.}
+    \def\badcategory{Nur die Bereiche 0,...,6 werden derzeit unterstuetzt.}
+  \fi
+  \errmessage{\badcategory}
+\fi
+
+\ifenglish
+  \typeout{^^J%
+    ===========================================================^^J%
+    ^^J%
+    Please give a one line description (< 50 chars) of your problem.%
+    ^^J^^J%
+    If your using email for sending the report, please use this^^J%
+    description as subject, too:%
+    ^^J \@spaces\@spaces\space
+    |<------------------------------------------------>|}
+\else
+  \typeout{^^J%
+    ============================================================^^J%
+    ^^J%
+    Bitte eine einzeilige (< 50 Zeichen) Beschreibung des Problems.%
+    ^^J^^J%
+    Wenn Sie fuer die Meldung eMail verwenden, setzen Sie diese Beschreibung^^J
+    bitte auch als Betreff (`Subject') der eMail ein:%
+    ^^J \@spaces\@spaces\space
+    |<------------------------------------------------>|}
+\fi
+
+\loop
+\let\synopsis\relax
+\readifnotknown{synopsis}
+\ifx\synopsis\@empty
+\repeat
+
+\ifenglish
+  \typeout{%
+    ^^J%
+    There are two kinds of using this generator.^^J%
+    At the interactive mode, you have to answer questions. At the other^^J%
+    mode an empty formular will be generated, you have to fill using^^J%
+    an editor.^^J%
+  }
+  \message{Interactive session (y/n)? }
+\else
+  \typeout{%
+    ^^J%
+    Dieser Generator kann auf zwei Arten verwendet werden.^^J%
+    Im interaktiven Betrieb, werden Ihnen Fragen zur direkten Beantwortung^^J%
+    gestellt. Ansonsten wird ein leeres Formular erzeugt, das Sie dann mit^^J%
+    einem Editor ausfuellen muessen.^^J%
+  }
+  \message{Interaktive Sitzung (j/n)? }
+\fi
+
+\readifnotknown{interactive}
+
+\ifx\interactive\@empty
+   \def\interactive{n}
+\fi
+
+%%
+%% Allow anything begining with `j' or `J' for yes.
+%%
+\edef\interactive{\uccode`\expandafter\@car\interactive\@nil}
+\ifnum \interactive=`J \else\ifnum \interactive=`Y \else\interactivefalse\fi\fi
+
+%%
+%% Header in the msg file.
+%%
+\ifenglish
+  \wmsg*{^^J%
+    KOMA bug report.^^J%
+    \ifinteractive Interactive \else Formular \fi
+    generated using komabuf.tex at
+    \space\number\year-\two@digits\month-\two@digits\day.^^J%
+    ^^J
+    You may send this message to Markus.Kohm@gmx.de.^^J%
+    If you do so, please use subject:^^J%
+    \space KOMA-BUG:\space\synopsis^^J%
+    ============================================================^^J}
+\else
+  \wmsg*{^^J%
+    KOMA-Fehlermeldung.^^J%
+    \ifinteractive Interaktiv \else Formular \fi
+    erzeugt mit komabug.tex am
+    \space\number\year-\two@digits\month-\two@digits\day.^^J%
+    ^^J%
+    Die Meldung kann per E-Mail an Markus.Kohm@gmx.de^^J%
+    verschickt werden.^^J%
+    Bitte verwenden Sie dann als Betreff:^^J%
+    \space KOMA-BUG:\space\synopsis^^J%
+    ============================================================^^J}
+\fi
+
+%%
+%% Category of bug, obtained earlier but put out now, after the header.
+%%
+\wmsg{>Bereich: \category}
+\wmsg{>Version: \categoryversion}
+
+%%
+%% synopsis of bug, obtained earlier but put out now, after the header.
+%%
+\wmsg{>Betreff: \synopsis}
+
+\begingroup
+ \global\let\format\@empty
+ \gdef\hyphenation{standard}
+ \def\immediate#1#{\xdef\hyphenation}
+ \def\typeout#1{\xdef\format{\format#1}}
+ \the\everyjob
+\endgroup
+
+\wmsg{>Format: \format}
+
+\wmsg{>KOMA-Script: \komaversion}
+
+\ifinteractive
+%%
+%% if interactive, \wread reads a line (verbatim) and write it to the
+%% .msg file, until a blank line is entered.
+%%
+  \def\wread{{\catcode`\^^I=12
+  \let\do\@makeother\dospecials
+  \let\lastanswer\answer
+  \message{=> }\read\m@ne to \answer
+  \ifx\lastanswer\@empty
+    \let\lastanswer\answer
+  \fi
+  \ifx\lastanswer\@empty
+  \else
+    \immediate\write\msg{\answer}
+    \expandafter\wread
+  \fi}}
+\else
+%%
+%% If non-interactive, \wread just writes a blank line to the .msg file,
+%% and \wmsg does not write to the terminal.
+%%
+  \def\wread{\wmsg{}}
+\fi
+
+%%
+%% \copytomsg copies the contents of a file into the .msg file.
+%% (at least it does it as well as TeX can, so there may be
+%% transcription problems with 8-bit characters).
+%%
+%% It does a line count, and complains if the test file is
+%% too large.
+
+\chardef\inputfile=15
+
+\newcount\linecount
+
+\def\copytomsg#1{{%
+   \def\do##1{\catcode`##1=11}%
+   \dospecials
+   \global\linecount\z@
+   \openin\inputfile#1\relax
+   \def\thefile{#1}%
+   \@copytomsg
+   \closein\inputfile}}
+
+\def\@copytomsg{%
+   \ifeof\inputfile
+      \typeout{*** \thefile\space Zeilen = \the\linecount}
+   \else
+      \global\advance\linecount\@ne
+      \read\inputfile to \inputline
+      \ifx\inputline\@empty
+         \wmsg*{}
+      \else
+         \wmsg*{\inputline}
+      \fi
+      \expandafter\@copytomsg
+   \fi}
+
+
+%%
+%% Test the age of the current format.
+%%
+\def\getage#1/#2/#3\@nil{%
+  \count@\year
+  \advance\count@-#1\relax
+  \multiply\count@ by 12\relax
+  \advance\count@\month
+  \advance\count@-#2\relax}
+%
+\expandafter\getage\fmtversion\@nil
+%%
+%% \count@ should now be the age of the format in months.
+%%
+\ifnum\count@>24
+  \ifenglish
+    \def\oldformat{^^J%
+      ! Your LaTeX installation is older than two years.^^J%
+      ! Updating woul dbe a good idea before sending this report.^^J%
+      ! You should compare the date of the package with the date of^^J
+      ! the used LaTeX version. If LaTeX is more than two years older^^J
+      ! than KOMA-Script, this could be the reason of the problem.}
+    \errhelp{If you want to continue, press <return>.}
+  \else
+    \def\oldformat{^^J%
+      ! Ihre LaTeX-Installation ist ueber zwei Jahre alt.^^J%
+      ! Bitte denken Sie ueber ein Update nach, ehe Sie diese Meldung^^J%
+      ! abschicken.^^J%
+      ! Vergleichen Sie wenigstens das Datum des Paketes mit dem Datum^^J%
+      ! der LaTeX-Version. LaTeX sollte nicht mehr als zwei Jahre aelter^^J%
+      ! als KOMA-Script sein. Ansonsten koennte der Fehler in einer^^J%
+      ! Unvertraeglichkeit zwischen Format- und Paketversion liegen.}
+%%
+%% Put the message in a macro to improve the look of the error mesage.
+%%
+%
+    \errhelp{Wenn Sie dennoch fortfahren wollen, druecken Sie einfach <Return>.}
+  \fi
+  \errmessage{\oldformat}
+\fi
+%
+\expandafter\getage\komaversion\@nil
+\ifnum\count@>18
+  \ifenglish
+    \def\oldversion{^^J%
+      ! Your KOMA-Script installation is older than one year.^^J%
+      ! You should check for an update, bevor you're sending this message.^^J
+      ! You should compare the date of the package with the date of^^J
+      ! the used LaTeX version. If LaTeX is years younger than KOMA-Script,^^J
+      ! this could be the reason of the problem.}
+    \errhelp{If you want to continue, press <return>.}
+  \else
+    \def\oldversion{^^J%
+      ! Ihre KOMA-Script-Version ist ueber ein Jahr alt.^^J%
+      ! Bitte denken Sie ueber ein Update nach, ehe Sie diese Meldung^^J%
+      ! abschicken.^^J%
+      ! Vergleichen Sie wenigstens das Datum des Paketes mit dem Datum^^J%
+      ! der LaTeX-Version. LaTeX sollte nicht Jahre juenger als KOMA-Script sein.^^J%
+      ! Ansonsten koennte der Fehler in einer Unvertraeglichkeit zwischen^^J%
+      ! Format- und Paketversion liegen.}
+    \errhelp{Wenn Sie dennoch fortfahren wollen, druecken Sie einfach <Return>.}
+  \fi
+  \errmessage{\oldversion} 
+\fi
+
+
+%%
+%% Now use \wmsg and \wread for each of the multi-line fields
+%% in the form. Currently one-line fields use \read directly.
+%%
+\ifinteractive
+  \ifenglish
+    \typeout{^^JYour name:}
+  \else
+    \typeout{^^JIhr Name:}
+  \fi
+  \readifnotknown{name}
+\else
+  \ifx\name\undefined
+    \ifenglish
+      \def\name{ < REPLACE THIS BY YOUR NAME > }
+    \else
+      \def\name{ < GEBEN SIE IHREN NAMEN EIN > }
+    \fi
+  \fi
+\fi
+
+
+\ifinteractive
+  \ifenglish
+    \typeout{^^JYour address (email if possible):}
+  \else
+    \typeout{^^JIhre Adresse (eMail bevorzugt):}
+  \fi
+  \readifnotknown{address}
+\else
+  \ifx\address\undefined
+    \ifenglish
+      \def\address{ < PEPLACE THIS BE YOUR (EMAIL-)ADDRESS > }
+    \else
+      \def\address{ < GEBEN SIE IHRE (EMAIL-)ADRESSE EIN > }
+    \fi
+  \fi
+\fi
+
+
+\ifinteractive
+  \ifenglish
+    \typeout{^^JYour computer system (z. B. Atari, Linux, Mac, Win98SE):}
+  \else
+    \typeout{^^JDas verwendete Computersystem (z. B. Atari, Linux, Mac, Win98SE):}
+  \fi
+  \readifnotknown{computersystem}
+\else
+  \ifx\computersystem\undefined
+    \ifenglish
+      \def\computersystem{ < REPLACE THIS BY YOUR COMPUTERSYSTEM > }
+    \else
+      \def\computersystem{ < GEBEN SIE IHR VERWENDETES COMPUTERSYSTEM EIN > }
+    \fi
+  \fi
+\fi
+
+
+\wmsg*{>Adresse: \name\space<\address>}
+
+%%
+%% >Organisation: is really a GNATS multiline field
+%% but we treat it as a one-line field.
+%%
+\wmsg*{>Organisation: \ifx\organisation\undefined
+                        \ifx\organization\undefined\else
+                           \organization
+                        \fi
+                       \else
+                         \organisation
+                       \fi}
+
+
+%%
+%% Test which format is being used. These fields are completed
+%% automatically even if the blank template is being produced.
+%%
+
+\wmsg*{>Voraussetzungen:}
+\wmsg*{ \string\@TeXversion: \meaning\@TeXversion
+        \ifx\@TeXversion\@@undefined
+         \space (Standardeinstellung fuer TeX3.141 und spaeter)\fi}
+\wmsg*{ \string\@currdir: \meaning\@currdir}
+\wmsg*{ \string\input@path: \meaning\input@path
+        \ifx\input@path\@@undefined
+         \space (Standardeinstellung)\fi}
+\wmsg*{ System: \computersystem}
+
+\wmsg*{>Beschreibung:}
+\ifinteractive
+  \ifenglish
+    \typeout{%
+      Description of your problem:^^J^^J%
+      \@spaces You can use multiple lines (each is askes by the prompt^^J%
+      \@spaces ``=>'').^^J%
+      \@spaces Use two blank lines to finish your answer.}
+  \else
+    \typeout{%
+      Beschreibung des Problems:^^J^^J%
+      \@spaces Die Beantwortung dieser Frage kann mehrere Zeilen^^J%
+      \@spaces einnehmen (jede wird durch die Eingabeaufforderung^^J%
+      \@spaces ``=>'' eingeleitet).^^J%
+      \@spaces Durch zwei aufeinanderfolgende Leerzeilen wird die^^J%
+      \@spaces Antwort beenden.}
+  \fi
+\else
+  \ifenglish
+    \wmsg{ < REPLACE THIS BY YOUR DESCRIPTION OF THE PROBLEM > }
+  \else
+    \wmsg{ < GEBEN SIE HIER IHRE PROBLEMBESCHREIBUNG EIN >}
+  \fi
+\fi
+\wread
+
+
+%%
+%% insertion of the test file
+%%
+\ifinteractive
+  \ifenglish
+    \typeout{^^J%
+      Name of a short self describing file, which shows the problem^^J%
+      (file should be as short as possible, not more than 60 lines):^^J^^J%
+      If the file is not at current directory please enter the hole^^J%
+      name (directory inclusive), so LaTeX may load it.^^J^^J%
+      If no testfile exists, because your not reporting a bug at a class^^J%
+      or package, simply press <return>.}
+  \else
+    \typeout{^^J%
+      Name einer KURZEN, SELBSTERKLAERENDEN Datei, bei der das Problem^^J%
+      auftritt (die Datei sollte wirklich so kurz wie moeglich sein,^^J%
+      nicht mehr als 60 Zeilen):^^J^^J%
+      Damit LaTeX diese Datei einlesen kann, geben Sie bitte den kompletten^^J%
+      Namen einschliesslich des Verzeichnisses an, falls die Datei nicht im^^J%
+      aktuellen Verzeichnis zu finden ist.^^J^^J%
+      Falls Sie keinen Fehler in einer der Klassen oder Pakete melden und^^J%
+      daher keine Testdatei existiert, druecken Sie einfach <Return>.}
+  \fi
+  \message{filename> }\read\m@ne to \filename
+\else
+   \def\filename{}
+\fi
+
+%%
+%% Try to find the .tex file and .log file
+%%
+
+
+\ifx\filename\@empty
+ \ifinteractive
+   \ifenglish
+     \typeout{^^J^^JNo Testfile.^^J^^J%
+       Three kinds of reports are possible:^^J^^J%
+       0) SW bug:^^J\@spaces
+       Software bug, you have to add a test file!^^J
+       1) DOC bug:^^J\@spaces
+       Bug at manual or you do not understand the manual.^^J
+       2) Ask for change:^^J\@spaces
+       Not a bug, but you'd like a change or simply help.^^J}
+     \message{Please select one of 0--2:  }
+   \else
+     \typeout{^^J^^JKeine Testdatei.^^J^^J%
+       Drei Arten von Meldungen werden unterstuetzt:^^J^^J%
+       0) SW-Fehler:^^J\@spaces
+       Software-Fehler, unbedingt eine Testdatei beilegen!^^J
+       1) DOC-Fehler:^^J\@spaces
+       Fehler in oder unverstaendliche Anleitung.^^J
+       2) Aenderungswunsch:^^J\@spaces
+       Kein Fehler sondern eine Frage nach Aenderung oder Hilfe.^^J}
+     \message{Bitte waehlen Sie eine Art von 0--2:  }
+   \fi
+   \read\m@ne to \answer
+   \ifx\answer\@empty
+     \def\answer{-1}
+   \fi
+   \count@=\answer\relax
+ \else
+   \count@=\z@
+ \fi
+ \ifcase\count@
+  \ifinteractive\wmsg{>Unterbereich: SW-Fehler}\fi
+  \ifenglish
+    \typeout{^^J! Please add test file and log file at your report message!}
+  \else
+    \typeout{^^J! Bitte ergaenzen Sie Beispiel- und LOG-Datei in der Meldung!}
+  \fi
+  \pause
+  \wmsg*{%
+    Beispieldatei, die das Problem verdeutlicht:^^J%
+    ============================================^^J\space}
+  \ifenglish
+    \wmsg*{< REPLACE THIS BY YOUR TEST FILE >^^J}
+  \else
+    \wmsg*{< HIER TESTDATEI EINFUEGEN >^^J}
+  \fi
+  \wmsg*{^^J%
+   LOG-Datei vom LaTeX-Lauf der Beispieldatei:^^J%
+   ===========================================^^J\space}
+  \ifenglish
+    \wmsg*{< REPLACE THIS BY THE LOG OF YOUR TEST FILE >^^J}
+  \else
+    \wmsg*{< HIER LOG ZUR TESTDATEI EINFUEGEN >^^J}
+  \fi
+ \or
+  \wmsg{>Unterbereich: DOC-Fehler}
+ \or
+  \wmsg{>Unterbereich: Aenderungswunsch}
+ \else
+   \ifenglish
+     \errhelp{Terminate TeX using `x' and restart komabug.}
+     \def\badcategory{You have to select one of 0, 1, 2.}
+   \else
+     \errhelp{Beenden Sie TeX mit `x' und starten Sie komabug neu.}
+     \def\badcategory{Nur die Bereiche 0, 1, 2 werden derzeit unterstuetzt.}
+   \fi
+   \errmessage{\badcategory}
+ \fi
+
+\else
+
+\filename@parse\filename
+
+\IfFileExists{\filename}{\edef\samplefile{\filename}}{}
+
+\IfFileExists{\filename@area\filename@base.log}
+  {\edef\logfile{\filename@area\filename@base.log}}
+  {\IfFileExists{\filename@area\filename@base.lis}
+    {\edef\logfile{\filename@area\filename@base.lis}}
+    {}}
+
+
+%%
+%% The example file goes here:
+%%
+
+\wmsg*{^^J%
+Beispieldatei, die das Problem verdeutlicht:^^J%
+============================================}
+
+\ifx\samplefile\undefinedcommand
+   \ifenglish
+     \typeout{^^J%
+       Test file ``\filename'' not found.^^J%
+       Please add the test file at ``\jobname.msg''.}
+     \wmsg*{ < REPLACE THIS BY YOUR TEST FILE >}
+   \else
+     \typeout{^^J%
+       Beispieldatei ``\filename'' nicht gefunden.^^J%
+       Bitte ergaenzen Sie das Beispiel in ``\jobname.msg''.}
+     \wmsg*{ < HIER TESTDATEI EINFUEGEN >}
+   \fi
+   \pause
+\else
+   \copytomsg{\samplefile}
+   \ifnum\linecount>60
+     \ifenglish
+       \typeout{%
+         ^^J%
+         !!! Your test file has \the\linecount\space lines.^^J%
+         !!! Large test files make it difficult to find the cause of the problem:^^J%
+         !!! ^^J%
+         !!! Please decrease your test file as much as possible.^^J}
+     \else
+       \typeout{%
+         ^^J%
+         !!! Ihre Testdatei ist \the\linecount\space Zeilen lang.^^J%
+         !!! So grosse Testdateien erschweren die Ursachenfindung:^^J%
+         !!! ^^J%
+         !!! Bitte verkleinern Sie Ihre Testdatei, soweit das ueberhaupt^^J%
+         !!! moeglich ist, so dass das Problem gerade noch auftritt.^^J}
+     \fi
+   \pause
+   \fi
+\fi
+
+
+%%
+%% The log file goes here:
+%%
+\wmsg*{^^J%
+LOG-Datei vom LaTeX-Lauf der Beispieldatei:^^J%
+===========================================}
+
+\ifx\logfile\undefinedcommand
+   \ifenglish
+     \typeout{^^J%
+       LOG file ``\filename@area\filename@base.log'' of your test file not found.^^J%
+       Please add the log file of your test file at ``\jobname.msg''.}
+     \wmsg*{ < REPLACE THIS BY THE LOG OF YOUR TEST FILE >}
+   \else
+     \typeout{^^J%
+       LOG-Datei \filename@area\filename@base.log nicht gefunden.^^J%
+       Bitte ergaenzen Sie die LOG-Datei in \jobname.msg.}
+     \wmsg*{ < HIER LOG ZUR TESTDATEI EINFUEGEN >}
+   \fi
+   \pause
+\else
+   \copytomsg{\logfile}
+\fi
+
+\fi
+
+
+%%
+%% Closing Banner.
+%%
+\typeout{^^J%
+============================================================}
+
+\ifinteractive
+  \ifenglish
+    \typeout{^^J%
+      You may edit file ``\jobname.msg'' for additional changes.}
+  \else
+    \typeout{^^J%
+      Weiteren Aenderungen koennen sie direkt in der Datei^^J%
+      ``\jobname.msg'' mit Hilfe eines Editors vornehmen.}
+  \fi
+\else
+  \ifenglish
+    \typeout{^^J%
+      The formular of the report will be saved to ``\jobname.msg''.^^J%
+      Please use an editor to replace all information fields, before^^J%
+      sending it.}
+  \else
+    \typeout{^^J%
+      Das Formular fuer die Erstellung der Meldung wurde in die^^J%
+      Datei ``\jobname.msg'' geschrieben, die Sie bitte mit Hilfe^^J%
+      eines Editors ergaenzen, bevor Sie sie abschicken.}
+  \fi
+\fi
+
+\let\ifinteractivetrue\iftrue
+\ifenglish
+  \typeout{^^J%
+    Please send ``\jobname.msg'' to Markus.Kohm@gmx.de using subject:^^J%
+    \@spaces ``KOMA-BUG:\space\synopsis''^^J%
+    ^^J%
+    Thank you for spending time for a bug report.}
+\else
+  \typeout{^^J%
+    Wenn Sie ueber eMail verfuegen, so senden Sie ``\jobname.msg''^^J%
+    bitte an Markus.Kohm@gmx.de.^^J%
+    Verwenden Sie dabei bitte als Betreff (Subject):^^J%
+    \@spaces ``KOMA-BUG:\space\synopsis''^^J%
+    ^^J%
+    Danke, dass Sie sich die Zeit genommen haben.}
+\fi
+\wmsg*{^^J%
+  ============================================================^^J
+  Ende der KOMA-Fehlermeldung.^^J%
+  ============================================================}
+
+%%
+%% Close the .msg output stream.
+%%
+\immediate\closeout\msg
+
+%%
+%% This is the TeX primitive \end command.
+%%
+\@@end
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

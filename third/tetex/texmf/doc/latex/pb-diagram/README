@@ -1,0 +1,68 @@
+This package contains version 5.0 of the "pb-diagram.sty"
+LaTeX macro package by Paul Burchard, along with complete
+documentation and examples.  The "diagram" environment provided
+by this package allows the LaTeX user to easily create complex
+commutative diagrams, by placing formula nodes on a conceptual
+grid and attaching arrows to them.
+
+The grid used in these diagrams is not a fixed square grid.
+Instead, the environment automatically generates a correctly scaled
+and shaped rectangular grid which will compactly hold the formulas,
+while leaving room for the arrows between them.  Moreover, the
+arrows automatically adapt to the spaces between the formulas
+being connected.
+
+* Improvements from Previous Versions *
+
+version 5.0:
+ - XY-PIC arrow fonts can be used, for even nicer, PostScript-
+   compatible arrows, thanks to Bill Richter <richter@math.nwu.edu>
+ - now distributed under GNU General Public License
+
+version 4.1:
+ - LAMS arrow fonts now compile correctly, thanks to
+   fix from Ingo Hadan <hadan@mathematik.hu-berlin.de>
+ - \arrow command works better outside of diagrams
+
+version 4.0:
+ - makes pb-diagram more compatible with LaTeX2e and AMS-LaTeX
+ - fixes a grid geometry bug that doubled some diagrams
+ - corrects the direction of LAMS-TeX arrow embellishments
+ - adds a double-headed arrow option
+ - leaves many more TeX box nesting levels for arrow labels
+ - produces less verbose output during typesetting
+
+* Upgrading Papers *
+
+In versions 3.6 and earlier, certain uncommon types of diagrams
+came out twice too large; to produce exactly compatible behavior
+in versions 4.0 and later, use the following declaration:
+
+    \let\dggeometry=\dgoldgeometry
+
+In versions 3.4 and earlier, the names of the packages differed;
+here is a dictionary for translating the list of packages to load:
+
+    diagram  ->  pb-diagram
+    lamsarrow,diagram  ->  pb-diagram,lamsarrow,pb-lams	
+
+* Installation *
+
+    File Name               Where to Put It
+    -------------------     -------------------
+    pb-diagram.sty          TEXINPUTS
+    pb-xy.sty               TEXINPUTS
+    pb-lams.sty             TEXINPUTS
+    lamsarrow.sty           TEXINPUTS
+    pb-manual.tex           documentation area
+    pb-examples.tex         documentation area
+    mf/lams*.mf             MFINPUTS
+    tfm/lams*.tfm           TEXFONTS
+    README                  
+
+Please let me know if you have any problems with
+this package.
+
+Paul Burchard
+<burchard@pobox.com>
+

@@ -5,28 +5,28 @@
 %% The original source files were:
 %%
 %% turkish.dtx  (with options: `code')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
 \ProvidesLanguage{turkish}
-        [1999/05/17 v1.2l Turkish support from the babel system]
+        [2001/02/19 v1.2m Turkish support from the babel system]
 %% File `turkish.dtx'
 %% Babel package for LaTeX version 2e
-%% Copyright (C) 1989 - 1999
+%% Copyright (C) 1989 - 2001
 %%           by Johannes Braams, TeXniek
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 %% Turkish Language Definition File
-%% Copyright (C) 1994 - 1999
+%% Copyright (C) 1994 - 2001
 %%           by Mustafa Burc
 %%           rz6001@rziris01.rrz.uni-hamburg.de
 %%          (40) 2503476
@@ -56,6 +56,7 @@
   \def\seename{bkz.}%
   \def\alsoname{ayr\i ca bkz.}%
   \def\proofname{Kan\i t}%
+  \def\glossaryname{Glossary}% <-- Needs translation
 }%
 \def\dateturkish{%
   \def\today{\number\day~\ifcase\month\or
@@ -71,6 +72,8 @@
   \bbl@activate{:}\bbl@activate{!}\bbl@activate{=}}
 \addto\extrasturkish{\bbl@frenchspacing}
 \addto\noextrasturkish{\bbl@nonfrenchspacing}
+%%^^A JLB:: this code breaks during \begin{document}
+%%^^A JLB: Needs fixing!!
 \declare@shorthand{turkish}{:}{%
   \ifmmode
     \string:%

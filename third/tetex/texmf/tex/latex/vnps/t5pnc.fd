@@ -1,0 +1,35 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5pnc.fd}
+
+\DeclareFontFamily{T5}{pnc}{}
+
+\DeclareFontShape{T5}{pnc}{m}{n}{
+   <-> pncr8v
+}{}
+
+\DeclareFontShape{T5}{pnc}{m}{sl}{
+   <-> pncro8v
+}{}
+
+\DeclareFontShape{T5}{pnc}{m}{it}{
+   <-> pncri8v
+}{}
+
+\DeclareFontShape{T5}{pnc}{b}{n}{
+   <-> pncb8v
+}{}
+
+\DeclareFontShape{T5}{pnc}{b}{sl}{
+   <-> pncbo8v
+}{}
+
+\DeclareFontShape{T5}{pnc}{b}{it}{
+   <-> pncbi8v
+}{}
+
+\DeclareFontShape{T5}{pnc}{bx}{n}{<->ssub * pnc/b/n}{}
+\DeclareFontShape{T5}{pnc}{bx}{sl}{<->ssub * pnc/b/sl}{}
+\DeclareFontShape{T5}{pnc}{bx}{it}{<->ssub * pnc/b/it}{}
+
+\endinput

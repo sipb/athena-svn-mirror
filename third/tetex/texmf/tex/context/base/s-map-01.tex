@@ -1,15 +1,22 @@
+% This is an old version, I still have to patch the latest 
+% changes into this file. 
+
 %D \module
-%D   [      file=s-map-01,
+%D   [       file=s-map-01,
 %D        version=1998.05.05,
 %D          title=\CONTEXT\ Style File,
 %D       subtitle=\MAPS\ basis stijl,
-%D         author={Taco Hoekwater \& Hans Hagen},
+%D         author={Taco Hoekwater, Siep Kroonenberg \& Hans Hagen},
 %D           date=\currentdate,
 %D      copyright={NTG / MAPS}]
 %C
 %C This module is part of the \CONTEXT\ macro||package and is
-%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
 %C details. 
+
+%D The \MAPS\ layout is designed by Taco Hoekwater and Siep 
+%D Kroonenberg, who on behalf of the \MAPS/\NTG\ own the 
+%D copyright to the design. 
 
 %D In deze file wordt zowel de dubbelzijdig als de enkelzijdige
 %D layout van de \MAPS\ gedefinieerd. Naast deze file
@@ -56,8 +63,13 @@
 %D \type{groot} meegeven. Met \type{x} geven we de maat aan van
 %D de pseudo klein||kapitalen. De \MAPS\ wordt gezet in 9pt.
 
-\setupbodyfont
-  [map,mty,9pt]
+%\setupbodyfont[map,9pt]
+%
+%\startnotmode[localfonts]
+%
+%  \setupbodyfont[mty]
+%
+%\stopnotmode
 
 %D We gebruiken echte small caps: 
 
@@ -72,21 +84,22 @@
 %D minder hoog. We definieren daarom een wat afwijkend
 %D papierformaat en projecteren dat op A4.
 
-\definieerpapierformaat % \definepapersize
+\definepapersize
   [maps]
   [\c!breedte=21cm,
    \c!hoogte=26.4cm]
 
-\stelpapierformaatin % \setuppapersize
+\setuppapersize
   [maps]
-  [a4]
+  [A4]
 
 %D Artikelen in de \MAPS\ worden breed danwel in twee kolommen
 %D gezet. Vooralsnog beperken we de definitie van de layout tot
 %D de een||koloms opmaak.
 
-\stellayoutin
+\setuplayout
   [\c!breedte=28pc,
+   \c!hoogte=\v!midden,
    \c!marge=9pc,
    \c!margeafstand=1pc,
    \c!rugwit=1in,
@@ -98,7 +111,7 @@
 \stelkolommenin
   [\c!afstand=1pc]
 
-%D Later zullen we zonodig nog instelleb dat de \MAPS\ op een
+%D Later zullen we zonodig nog instellen dat de \MAPS\ op een
 %D grid wordt gezet. Het zetten op een grid is voor \TEX\ niet
 %D triviaal, en de ondersteuning in \CONTEXT\ is dan ook
 %D enigzins experimenteel. De \MAPS\ is in die zin een soort
@@ -108,7 +121,7 @@
 %D gaan het paginanummer expliciet plaatsen, vandaar dat we
 %D hier de plaats niet specificeren.
 
-\stelnummeringin
+\setuppagenumbering
   [\c!plaats=,
    \c!variant=\v!dubbelzijdig]
 
@@ -116,7 +129,7 @@
 %D Het instellen op layout niveau is efficienter dan op elk
 %D regel niveau.
 
-\stellayoutin
+\setuplayout
   [\c!letter=\ss]
 
 %D In principe hebben we 4 verschillende soorten witruimte,
@@ -349,13 +362,13 @@
 \unexpanded\def\AuteurNamen#1%
   {{\let\\=\AuteurScheider#1}}
 
-\stelhoofdtekstenin
+\setupheadertexts
   [\MapsTitel]
   [\LinkerKolomTekst{\MapsCategorie\ \MapsNummer}]
   [\RechterKolomTekst{\MapsCategorie\ \MapsNummer}]
   [\AuteurNamen{\MapsAuteur}]
 
-\stelvoettekstenin
+\setupfootertexts
   [\MapsPeriode\ \MapsJaar]
   [\LinkerKolomTekst{\pagenumber}]
   [\RechterKolomTekst{\pagenumber}]
@@ -404,9 +417,9 @@
    \ifMapsInKolommen
      \haalbuffer[s-maps-1] % see later on
    \fi
-   \stelhoofdin[\c!status=\v!leeg]
+   \setupheader[\c!status=\v!leeg]
    \stelpaginanummerin[\c!nummer=\MapsPagina]
-   \stellayoutin[\c!grid=\MapsGrid]
+   \setuplayout[\c!grid=\MapsGrid]
    \ifgridsnapping                           % nog controleren
      \stelblankoin[\v!regel]
      \definieerblanko[mapsvoor][\v!halveregel]
@@ -435,7 +448,11 @@
        \bgroup
          \forgetall
          \kern 7.5pt
-         \ifMapsInKolommen \steluitlijnenin[\v!links] \fi
+         \ifMapsInKolommen 
+           \steluitlijnenin[\v!links] 
+         \else
+           \steluitlijnenin[\v!rechts] 
+         \fi
          {\bf\MapsTitel\par}
          {\bfx\MapsSubtitel\par}
          \blanko[\v!regel]
@@ -467,7 +484,7 @@
      \setbox0=\hbox{X}%
      \advance\dimen0 by -\ht0
      \getpagestatus
-     \ifodd\MapsPagina \rightpagetrue \fi
+     \ifodd\MapsPagina\relax \rightpagetrue \fi
      \setbox0=\vtop
        {\hsize\margebreedte
         \forgetall
@@ -534,11 +551,12 @@
    \c!tussen=]
 
 %D Gezien het brede karakter van de \MAPS\ gebruiken we andere
-%D waarden voor links geraffeld uitlijnen.
+%D waarden voor links geraffeld uitlijnen. The low level macro 
+%D used here is subjected to changes!
 
 \def\raggedleft%
   {\setraggedness\leftraggedness
-   \setraggedskips{1fill}{0em}{.3333em}{.5em}{1fil}{\parindent}}
+   \setraggedskips{1}{1fill}{0em}{.3333em}{.5em}{1fil}{\parindent}}
 
 %D Standaard gebruikt \CONTEXT\ kleur bij pretty verbatim
 %D printing. In the \MAPS\ gebruiken we echter fonts:
@@ -568,16 +586,16 @@
 %D In kolom||mode gebruiken we geen marge en hebben dus wat
 %D meer breedte ter beschikking.
 
-\stellayoutin
+\setuplayout
   [\c!breedte=38pc]
 
-\stelhoofdtekstenin
+\setupheadertexts
   [\MapsTitel]
   [\MapsCategorie\ \MapsNummer]
   [\MapsCategorie\ \MapsNummer]
   [\AuteurNamen{\MapsAuteur}]
 
-\stelvoettekstenin
+\setupfootertexts
   [\MapsPeriode\ \MapsJaar]
   [\pagenumber]
   [\pagenumber]

@@ -1,11 +1,5 @@
-%Filename: 8rput.fd
-%Created by: tex Fam_6100
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{8rput.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for 8r/put.]
+   [2001/06/04 font definitions for 8r/put.]
 
 \DeclareFontFamily{8r}{put}{}
 

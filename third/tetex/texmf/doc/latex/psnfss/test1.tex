@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+
+\renewcommand{\rmdefault}{ptm}
+\renewcommand{\bfdefault}{b}
+\usepackage[scaled=0.92]{helvet}
+\usepackage{courier}
+\normalfont % in case the EC fonts aren't available
+\usepackage[T1]{fontenc}
+
+\begin{document}
+\frenchspacing
+\title{PSNFSS: \\ Times, Helvetica, Courier, Zapf Chancery}
+\author{Sebastian Rahtz \and Walter Schmidt}
+\date{2001-06-04}
+\maketitle
+\def\Try#1#2{%
+{\fontfamily{#1}\selectfont
+This is typeset in #2 (#1): 
+\begin{quote}
+\raggedright
+A regular f\'ee.
+\textit{An italic f\'ee.}
+\textsl{A slanted f\'ee.}\\
+\textsc{A SmallCaps f\'ee.}\\
+{\bfseries A bold f\'ee.
+ \textit{A bold italic f\'ee.}\\
+ \textsl{A bold slanted f\'ee.}\\
+ \textsc{A bold SmallCaps f\'ee.}\\
+}
+\end{quote}
+\par
+}}
+
+\Try{ptm}{Adobe Times Roman}
+\Try{phv}{Adobe Helvetica}
+\Try{pcr}{Adobe Courier}
+
+% Zapf Chancery is available as italic font shape only:
+This is typeset in Adobe ZapfChancery (pzc):
+\begin{quote}
+\fontfamily{pzc}\fontshape{it}\selectfont
+An italic f\'ee.
+\end{quote}
+
+In Helvetica we can try the narrow font series, too.\footnote{Thanks to Frank
+  Poppe for putting this in.}
+\begin{quote}
+\raggedright
+\fontfamily{phv}\fontseries{mc}\selectfont
+\upshape A narrow f\'ee.
+\slshape A narrow slanted f\'ee.\\
+{\fontseries{bc}\selectfont
+\upshape A bold narrow f\'ee.
+\slshape A bold narrow slanted f\'ee.
+}
+\end{quote}
+
+\end{document}

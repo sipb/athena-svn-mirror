@@ -10,24 +10,33 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1998 1999 2000 2001
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the Standard LaTeX `Cyrillic Bundle'.
-%% ----------------------------------------------------------
+%% This file was generated from file(s) of the Standard LaTeX `Cyrillic Bundle'.
+%% -----------------------------------------------------------------------------
 %% 
-%%  This file, and all the other files in this bundle as listed below,
-%%  may be distributed under the terms of the LaTeX Project Public
-%%  License, as described in lppl.txt in the base LaTeX distribution.
-%%  Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% `Cyrillic Bundle'. You may however distribute the LaTeX `Cyrillic
+%% Bundle' without such generated files.
+%% 
+%% The list of all files belonging to the `Cyrillic Bundle' is
+%% given in the file `manifest.txt'.
 %% 
 \NeedsTeXFormat{LaTeX2e}[1998/12/01]
 \ProvidesFile{t2cenc.def}
-  [1999/01/07 v1.0 Cyrillic encoding definition file]
+  [2001/08/11 v1.0f Cyrillic encoding definition file]
 \DeclareFontEncoding{T2C}{}{}
 \DeclareFontSubstitution{\LastDeclaredEncoding}{cmr}{m}{n}
-\DeclareErrorFont{\LastDeclaredEncoding}{cmr}{m}{n}{10}
 \DeclareTextAccent{\`}{\LastDeclaredEncoding}{0}
 \DeclareTextAccent{\'}{\LastDeclaredEncoding}{1}
 \DeclareTextAccent{\^}{\LastDeclaredEncoding}{2}
@@ -43,21 +52,26 @@
 \DeclareTextAccent{\C}{\LastDeclaredEncoding}{19}
 \DeclareTextAccent{\U}{\LastDeclaredEncoding}{20}
 \DeclareTextCommand{\b}{\LastDeclaredEncoding}[1]
-   {{\o@lign{\relax#1\crcr\hidewidth\sh@ft{29}%
-     \vbox to.2ex{\hbox{\char9}\vss}\hidewidth}}}
+   {\hmode@bgroup\o@lign{\relax#1\crcr\hidewidth\sh@ft{29}%
+     \vbox to.2ex{\hbox{\char9}\vss}\hidewidth}\egroup}
 \DeclareTextCommand{\c}{\LastDeclaredEncoding}[1]
    {\leavevmode\setbox\z@\hbox{#1}\ifdim\ht\z@=1ex\accent11 #1%
      \else{\ooalign{\hidewidth\char11\hidewidth
         \crcr\unhbox\z@}}\fi}
 \DeclareTextCommand{\d}{\LastDeclaredEncoding}[1]
-   {{\o@lign{\relax#1\crcr\hidewidth\sh@ft{10}.\hidewidth}}}
+   {\hmode@bgroup
+    \o@lign{\relax#1\crcr\hidewidth\sh@ft{10}.\hidewidth}\egroup}
 \DeclareTextCommand{\k}{\LastDeclaredEncoding}[1]
    {\oalign{\null#1\crcr\hidewidth\char12}}
 \DeclareTextCommand{\textperthousand}{\LastDeclaredEncoding}
    {\%\char 24 }
 \DeclareTextCommand{\textpertenthousand}{\LastDeclaredEncoding}
    {\%\char 24\char 24 }
+\DeclareTextCompositeCommand{\r}{\LastDeclaredEncoding}{A}
+   {\leavevmode\setbox\z@\hbox{h}\dimen@\ht\z@\advance\dimen@-1ex%
+    \rlap{\raise.67\dimen@\hbox{\char6}}A}
 \DeclareTextSymbol{\textendash}{\LastDeclaredEncoding}{21}
+\DeclareTextSymbol{\cyrdash}{\LastDeclaredEncoding}{22}
 \DeclareTextSymbol{\textemdash}{\LastDeclaredEncoding}{22}
 \DeclareTextSymbol{\textcompwordmark}{\LastDeclaredEncoding}{23}
 \DeclareTextSymbol{\textvisiblespace}{\LastDeclaredEncoding}{32}
@@ -206,8 +220,8 @@
 \DeclareTextSymbol{\cyrnlhk}{T2C}{185}
 \DeclareTextSymbol{\CYRSCHWA}{T2C}{154}
 \DeclareTextSymbol{\cyrschwa}{T2C}{186}
-\DeclareTextSymbol{\CYRRHOOK}{T2C}{155}
-\DeclareTextSymbol{\cyrrhook}{T2C}{187}
+\DeclareTextSymbol{\CYRRHK}{T2C}{155}
+\DeclareTextSymbol{\cyrrhk}{T2C}{187}
 \DeclareTextSymbol{\CYRYO}{\LastDeclaredEncoding}{156}
 \DeclareTextSymbol{\cyryo}{\LastDeclaredEncoding}{188}
 \DeclareTextSymbol{\CYRII}{\LastDeclaredEncoding}{73}
@@ -220,6 +234,12 @@
 \DeclareTextSymbol{\cyrdze}{\LastDeclaredEncoding}{115}
 \DeclareTextSymbol{\CYRW}{\LastDeclaredEncoding}{87}
 \DeclareTextSymbol{\cyrw}{\LastDeclaredEncoding}{119}
+\DeclareTextComposite{\"}{\LastDeclaredEncoding}{\CYRE}{156}
+\DeclareTextComposite{\"}{\LastDeclaredEncoding}{\cyre}{188}
+\DeclareTextComposite{\U}{\LastDeclaredEncoding}{\CYRI}{201}
+\DeclareTextComposite{\U}{\LastDeclaredEncoding}{\cyri}{233}
+\DeclareTextComposite{\k}{T2C}{\CYRABHCH}{146}
+\DeclareTextComposite{\k}{T2C}{\cyrabhch}{178}
 \endinput
 %%
 %% End of file `t2cenc.def'.

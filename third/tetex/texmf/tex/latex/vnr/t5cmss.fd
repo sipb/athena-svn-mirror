@@ -1,0 +1,56 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5cmss.fd}
+  [2000/01/27 v1.0 Vietnamese LaTeX font definitions]
+
+\DeclareFontFamily{T5}{cmss}{}
+
+\DeclareFontShape{T5}{cmss}{m}{n}{
+  <5><6><7><8> vnss8
+  <9> vnss9
+  <10><10.95> vnss10
+  <12><14.4> vnss12
+  <17.28><20.74><24.88> vnss17
+}{}
+
+% Font undefined, therefore substituted
+\DeclareFontShape{T5}{cmss}{m}{it}{
+  <-> sub * cmss/m/sl
+}{}
+
+\DeclareFontShape{T5}{cmss}{m}{sl}{
+  <5><6><7><8> vnssi8
+  <9> vnssi9
+  <10><10.95> vnssi10
+  <12><14.4> vnssi12
+  <17.28><20.74><24.88> vnssi17
+}{}
+
+% Font/shape undefined, therefore substituted
+\DeclareFontShape{T5}{cmss}{m}{sc}{
+  <-> sub * cmr/m/sc
+}{}
+
+% Font/shape undefined, therefore substituted
+\DeclareFontShape{T5}{cmss}{m}{ui}{
+  <-> sub * cmr/m/ui
+}{}
+
+% semibold condensed series
+\DeclareFontShape{T5}{cmss}{sbc}{n}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vnssdc10
+}{}
+
+% bold extended series
+\DeclareFontShape{T5}{cmss}{bx}{n}{
+  <5><6><7><8><9><10><10.95><12>
+  <14.4><17.28><20.74><24.88> vnssbx10
+}{}
+
+% Font/shape undefined, therefore substituted
+\DeclareFontShape{T5}{cmss}{bx}{ui}{
+  <-> sub * cmr/bx/ui
+}{}
+
+\endinput

@@ -1,11 +1,11 @@
 % latin2jk.def
 %
-% (c) Copyright 1997 J"org Knappen.
+% (c) Copyright 1997, 1999, 2000 J"org Knappen.
 % Licence GNU licence Version 2
 % see after \endinput for further information
 %
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesFile{latin1jk.def}[1997/04/14 latin-2 input encoding file 1.0 (jk)]
+\ProvidesFile{latin1jk.def}[2000/03/14 latin-2 input encoding file v1.2 (jk)]
 %%% \RequirePackage{textcomp}    % text companion symbols (tc fonts)
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \DeclareInputText{"0A0}{\nobreakspace}
@@ -41,7 +41,7 @@
 \DeclareInputText{"0AF}{\.Z}
 \DeclareInputText{"0BF}{\.z}
 \DeclareInputText{"0C0}{\@tabacckludge'R}
-\DeclareInputText{"0D0}{\DH}
+\DeclareInputText{"0D0}{\DJ}
 \DeclareInputText{"0C1}{\@tabacckludge'A}
 \DeclareInputText{"0D1}{\@tabacckludge'N}
 \DeclareInputText{"0C2}{\^A}
@@ -73,7 +73,7 @@
 \DeclareInputText{"0CF}{\v D}
 \DeclareInputText{"0DF}{\ss}
 \DeclareInputText{"0E0}{\@tabacckludge'r}
-\DeclareInputText{"0F0}{\dh}
+\DeclareInputText{"0F0}{\dj}
 \DeclareInputText{"0E1}{\@tabacckludge'a}
 \DeclareInputText{"0F1}{\@tabacckludge'n}
 \DeclareInputText{"0E2}{\^a}
@@ -120,14 +120,8 @@
 % \textcurrency, \textmultiply, and \textdivide are defined in 
 % the textcomp package using the text companion font (TS1 coding).
 %
-% This file is supported by
-%
-% J"org Knappen
-% Professional (La)TeX consultant
-% Barbarossaring 43
-% D-55118 Mainz
-% Allemagne
-%
-% joerg.knappen@uni-mainz.de
+% J"org Knappen, Barbarossaring 43, D-55118 Mainz, Allemagne. 
+% Author of the Book: Schnell ans Ziel mit LaTeX2e, Oldenbourg-Verlag
+% M"unchen, 1997, ISBN 3-486-24199-0.
 %
 %% End of file `latin2jk.def'.

@@ -16,7 +16,7 @@
 %%         now at: peter.r.wilson@boeing.com
 %% 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{stdclsdv}[1999/01/18 v1.0 Sectional divisions]
+\ProvidesPackage{stdclsdv}[2000/07/16 v1.1 Sectional divisions]
 \newif\ifSCDknownclass\SCDknownclassfalse
 \newif\ifSCDpart\SCDparttrue
 \newif\ifSCDchapter\SCDchapterfalse
@@ -31,6 +31,11 @@
                         \SCDnodivstrue\SCDpartfalse\SCDsectionfalse}{}
 \@ifclassloaded{letter}{\SCDknownclasstrue
                         \SCDnodivstrue\SCDpartfalse\SCDsectionfalse}{}
+\@ifclassloaded{scrbook}{\SCDknownclasstrue\SCDchaptertrue}{}
+\@ifclassloaded{scrreprt}{\SCDknownclasstrue\SCDchaptertrue}{}
+\@ifclassloaded{scrartcl}{\SCDknownclasstrue}{}
+\@ifclassloaded{scrlettr}{\SCDknownclasstrue
+                          \SCDnodivstrue\SCDpartfalse\SCDsectionfalse}{}
 \ifSCDknownclass\else
   \SCDnodivstrue
   \ifx\part\undefined

@@ -47,7 +47,7 @@ core LaTeX software, please report it in the following way:
    (often .log) since you will need to submit this file also.
  
  * Generate a bug report template by running the file
-   latexbug.tex through LaTeX2e.
+   latexbug.tex through LaTeX.
 
  * Fill in the spaces in the generated template file. Please note that
    the reporting language is *English* irregardless of the fact, that
@@ -119,7 +119,10 @@ If you find an error in one of the following books:
  The LaTeX Companion    Goossens, Mittelbach, Samarin  compan.err
  The LaTeX Graphics
      Companion          Goossens, Mittelbach, Rahtz    grphcomp.err
+ Das LaTeX Handbuch     Lamport                        handbuch.err
  Der LaTeX Begleiter    Goossens, Mittelbach, Samarin  begleit.err
+ The LaTeX Web          Goossens, Rahtz                webcomp.err
+     Companion
 
 then please check first whether it is already mentioned in the errata
 file for that book (these files are part of the LaTeX distribution).

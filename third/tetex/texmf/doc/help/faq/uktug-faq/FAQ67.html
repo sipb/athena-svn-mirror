@@ -1,0 +1,89 @@
+<head>
+<title>UK TeX FAQ -- question 67</title>
+</head><body>
+<h3>Conversion between (La)TeX and others</h3>
+<p><dl>
+<dt>troff<dd><i>troff-to-latex</i>, written by Kamal Al-Yahya at Stanford
+  University (California, USA), assists in the translation of a
+  <i>troff</i> document into LaTeX format.  It recognises most
+  <code>-ms</code> and <code>-man</code> macros, plus most <i>eqn</i> and some
+  <i>tbl</i> preprocessor commands.  Anything fancier needs to be
+  done by hand. Two style files are provided. There is also a man page
+  (which converts very well to LaTeX...).  The program is
+  copyrighted but free.
+  <i>tr2latex</i> is an enhanced version of this
+  <i>troff-to-latex</i>.
+<p>
+
+
+<p>
+
+
+
+
+<p><dt>WordPerfect<dd> <i>wp2latex</i>
+  has recently been much improved, and is now
+  available either for MSDOS or for Unix systems, thanks to its
+  current maintainer Jaroslav Fojtik.
+<dt>PC-Write<dd><i>pcwritex.arc</i> is a
+  print driver for PC-Write that "prints" a PC-Write
+  V2.71 document to a TeX-compatible disk file.  It was written by Peter
+  Flynn at University College, Cork, Republic of Ireland.
+<dt>runoff<dd> Peter Vanroose's <i>rnototex</i>
+  conversion program is written in VMS Pascal.
+  The sources are distributed with a VAX executable.
+<dt>refer/tib<dd> There are a few programs for converting bibliographic
+  data between BibTeX and <i>refer</i>/<i>tib</i> formats.
+  The collection includes a shell script converter from BibTeX to
+  <i>refer</i> format as well. The collection
+  is not maintained.
+<dt>RTF<dd> <i>Rtf2tex</i>, by Robert Lupton, is for
+  converting Microsoft's Rich Text Format to TeX.  There is also a
+  convertor to LaTeX by Erwin Wechtl, called <i>rtf2latex</i>.
+  The latest converter, by Ujwal Sathyam and Scott Prahl, is
+  <i>rtf2latex2e</i>; this system seems rather good already, and
+  is still being improved.
+<p>  Translation <em>to</em> RTF may be done (for a somewhat
+  constrained set of LaTeX documents) by TeX2RTF, which
+  can produce ordinary RTF, Windows Help RTF (as well as
+  HTML, <a href="FAQ70.html">conversion to HTML</a>).
+  TeX2RTF is supported on various Unix platforms and under
+  Windows 3.1
+<dt>Microsoft Word<dd> A rudimentary program for converting MS-Word to
+  LaTeX is <i>wd2latex</i>, for MSDOS; a better
+  idea, however, is to convert the document to RTF format and use one
+  of the RTF converters mentioned above.
+<dt>Excel<dd> <i>Excel2Latex</i> converts an <i>Excel</i> file
+  into a LaTeX <code>tabular</code> environment; it comes as a
+  <code>.xls</code> file which defines some <i>Excel</i> macros to produce
+  output in a new format.
+</dl>
+<p>A separate FAQ by Wilfried Hennings deals specifically with
+conversions between 
+TeX-based formats and word processor formats may be referred to for
+more detailed information.
+<p>A group at Ohio State University (USA) is working on
+a common document format based on SGML, with the ambition that any
+format could be
+translated to or from this one.  <i>FrameMaker</i> provides
+"import filters" to aid translation from alien formats
+(presumably including TeX) to <i>FrameMaker</i>'s own.
+<dl>
+<dt><tt><i>excel2latex</i></tt><dd><a href="ftp://support/excel2latex/xl2latex.zip">support/excel2latex/xl2latex.zip</a>
+<dt><tt><i>pcwritex.arc</i></tt><dd><a href="ftp://support/pcwritex.tar.gz">support/pcwritex.tar.gz</a>
+<dt><tt><i>refer and tib tools</i></tt><dd><a href="ftp://biblio/bibtex/utils/refer-tools.tar.gz">biblio/bibtex/utils/refer-tools.tar.gz</a>
+<dt><tt><i>rnototex</i></tt><dd><a href="ftp://support/rnototex.tar.gz">support/rnototex.tar.gz</a>
+<dt><tt><i>rtf2latex</i></tt><dd><a href="ftp://support/rtf2latex.tar.gz">support/rtf2latex.tar.gz</a>
+<dt><tt><i>rtf2latex2e</i></tt><dd><a href="ftp://support/rtf2latex2e.tar.gz">support/rtf2latex2e.tar.gz</a>
+<dt><tt><i>rtf2tex</i></tt><dd><a href="ftp://support/rtf2tex.tar.gz">support/rtf2tex.tar.gz</a>
+<dt><tt><i>tex2rtf</i></tt><dd><a href="ftp://support/tex2rtf.tar.gz">support/tex2rtf.tar.gz</a>
+<dt><tt><i>tr2latex</i></tt><dd><a href="ftp://support/tr2latex.tar.gz">support/tr2latex.tar.gz</a>
+<dt><tt><i>troff-to-latex</i></tt><dd><a href="ftp://support/troff-to-latex.tar.gz">support/troff-to-latex.tar.gz</a>
+<dt><tt><i>wd2latex</i></tt><dd><a href="ftp://dviware/wd2latex.tar.gz">dviware/wd2latex.tar.gz</a>
+<dt><tt><i>wp2latex</i></tt><dd><a href="ftp://support/wp2latex.tar.gz">support/wp2latex.tar.gz</a>
+<dt><tt><i>Word processor FAQ</i></tt><dd>
+  <a href="http://www.tug.org/utilities/texconv/index.html">http://www.tug.org/utilities/texconv/index.html</a>
+<dt><tt><i>Word processor FAQ (source)</i></tt><dd>
+  <a href="ftp://help/wp-conv/wp-conv.zip">help/wp-conv/wp-conv.zip</a>
+</dl>
+<p></body>

@@ -1,11 +1,5 @@
-%Filename: 8rptm.fd
-%Created by: tex Fam_904
-%Created using fontinst v1.800
-
-%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
-
 \ProvidesFile{8rptm.fd}
-   [1998/07/06 Fontinst v1.800 font definitions for 8r/ptm.]
+   [2001/06/04 font definitions for 8r/ptm.]
 
 \DeclareFontFamily{8r}{ptm}{}
 

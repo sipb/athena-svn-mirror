@@ -191,7 +191,9 @@ latexsym
 layout
   ==> macros/latex/packages/tools/
 letterspace
-  macros/latex209/contrib/misc/letterspace.sty
+  [use letterspacing instead]
+letterspacing
+  macros/generic/letterspacing.tex
 longtable
   ==> macros/latex/packages/tools
 lscape
@@ -306,7 +308,7 @@ varioref
 verbatim
   ==> macros/latex/packages/tools
 version
-  macros/latex209/contrib/misc/version.sty
+  macros/latex/contrib/other/misc/version.sty
 vpage  superseded by
   macros/latex/contrib/other/misc/vmargin.sty     1994/09/20
 wrapfig

@@ -1,7 +1,7 @@
 #D \module
-#D   [       file=cont_set.pm,
+#D   [       file=cont\_set.pm,
 #D        version=1999.04.01,
-#D          title=\TEXWORK\ modules, 
+#D          title=General modules, 
 #D       subtitle=showing \CONTEXT\ commands,
 #D         author=Hans Hagen,
 #D           date=\currentdate,
@@ -11,6 +11,8 @@
 #C This module is part of the \CONTEXT\ macro||package and is
 #C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
 #C details. 
+
+# todo: tacos speed patch 
 
 #D As always: thanks to Taco and Tobias for testing this 
 #D module and providing suggestions and code snippets as 
@@ -25,31 +27,31 @@ package cont_set ;
 #D This module introduces some subroutines: 
 #D 
 #D \starttabulatie[|Tl|p|]
-#D \NC \type {set_setup_interface}   \NC sets the primary interface 
-#D                                   to search in \NC \NR 
-#D \NC \type {set_setup_title}       \NC sets the title of the main 
-#D                                   window title \NC \NR 
-#D \NC \type {setups_found}          \NC locate the \type {tws} files 
-#D                                   using the \type {kpsewhich} 
-#D                                   program \NC \NR   
-#D \NC \type {show_setups}           \NC allocate the radio buttons 
-#D                                   that can be used to select a 
-#D                                   command set \NC \NR 
-#D \NC \type {load_setup(filename)}  \NC load the names \type {tws} 
-#D                                   file \NC \NR   
-#D \NC \type {load_setups}           \NC all found command files can 
-#D                                   be loaded at once \NC \NR   
-#D \NC \type {setup_found(filename)} \NC this routine returns~1 when    
-#D                                   the file is loaded \NC \NR 
-#D \NC \type {update_setup}          \NC when we browse the list with 
-#D                                   commands, this routine takes care 
-#D                                   of updating the text area \NC \NR 
-#D \NC \type {change_setup}          \NC we can manually set the 
-#D                                   command set we want to browse, 
-#D                                   and this routine takes care of 
-#D                                   this \NC \NR 
-#D \NC \type {show_setup(command)}   \NC context sensitive help can be 
-#D                                   provided by calling this sub \NC \NR
+#D \NC \type {set\_setup\_interface}   \NC sets the primary interface 
+#D                                     to search in \NC \NR 
+#D \NC \type {set\_setup\_title}       \NC sets the title of the main 
+#D                                     window title \NC \NR 
+#D \NC \type {setups\_found}           \NC locate the \type {tws} files 
+#D                                     using the \type {kpsewhich} 
+#D                                     program \NC \NR   
+#D \NC \type {show\_setups}            \NC allocate the radio buttons 
+#D                                     that can be used to select a 
+#D                                     command set \NC \NR 
+#D \NC \type {load\_setup(filename)}   \NC load the names \type {tws} 
+#D                                     file \NC \NR   
+#D \NC \type {load\_setups}            \NC all found command files can 
+#D                                     be loaded at once \NC \NR   
+#D \NC \type {setup\_found(filename)}  \NC this routine returns~1 when    
+#D                                     the file is loaded \NC \NR 
+#D \NC \type {update\_setup}           \NC when we browse the list with 
+#D                                     commands, this routine takes care 
+#D                                     of updating the text area \NC \NR 
+#D \NC \type {change\_setup}           \NC we can manually set the 
+#D                                     command set we want to browse, 
+#D                                     and this routine takes care of 
+#D                                     this \NC \NR 
+#D \NC \type {show\_setup(command)}    \NC context sensitive help can be 
+#D                                     provided by calling this sub \NC \NR
 #D \stoptabulatie
 #D 
 #D First we load some packages and set some constants. 
@@ -69,6 +71,11 @@ my $textfont     = "Courier   $default_size       " ;
 my $userfont     = "Courier   $default_size italic" ;
 my $buttonfont   = "Helvetica $default_size bold  " ;
 
+unless ($dosish) 
+  { $textfont   = "-adobe-courier-bold-r-normal--$default_size-120-75-75-m-70-iso8859-1" ;
+    $userfont   = "-adobe-courier-bold-o-normal--$default_size-120-75-75-m-70-iso8859-1" ;
+    $buttonfont = "-adobe-helvetica-bold-r-normal--$default_size-120-75-75-p-69-iso8859-1" }
+ 
 my $s_vertical   = 30 ; 
 my $s_horizontal = 72 ; 
 my $c_horizontal = 24 ; 
@@ -76,11 +83,34 @@ my $c_horizontal = 24 ;
 #D The main window is not resizable, but the text area and 
 #D command list will have scrollbars. 
 
+my %lw ; # stack of lists 
+
 my $mw = MainWindow -> new ( -title => 'ConTeXt commands' ) ;
 
-$mw -> resizable ('n', 'n') ; 
+$mw -> withdraw() ; $mw -> resizable ('y', 'y') ; 
 
-my $sw = $mw -> Scrolled (                'ROText'      ,
+sub SetupWindow { return $mw } ; 
+
+my $bw = $mw -> Frame () ; # buttons 
+my $tw = $mw -> Frame () ; # sw + fw 
+my $fw = $tw -> Frame () ; # string + list 
+
+my $request  = $fw -> Entry (       -font => $textfont , 
+                              -background => 'ivory1' ,
+                                   -width => $c_horizontal ) ; 
+
+my $cw       = $fw -> Scrolled (             'Listbox'     ,
+                              -scrollbars => 'e'           ,
+                                    -font => $textfont     ,
+                                   -width => $c_horizontal ,  
+                        -selectbackground => 'gray'        ,
+                              -background => 'ivory1'      ,
+                              -selectmode => 'browse'      ) ;
+
+$cw      -> pack ( -side => 'bottom' , -fill => 'both' , -expand => 1 ) ;
+$request -> pack ( -side => 'top'    , -fill => 'x' ) ; 
+
+my $sw = $tw -> Scrolled (                'ROText'      ,
                            -scrollbars => 'se'          ,
                                -height => $s_vertical   ,  
                                 -width => $s_horizontal ,  
@@ -88,36 +118,20 @@ my $sw = $mw -> Scrolled (                'ROText'      ,
                            -background => 'ivory1'      ,
                                  -font => $textfont     ) ;
 
-my $cw = $mw -> Scrolled (                'Listbox'     ,
-                           -scrollbars => 'e'           ,
-                                 -font => $textfont     ,
-                                -width => $c_horizontal ,  
-                     -selectbackground => 'gray'        ,
-                           -background => 'ivory1'      ,
-                           -selectmode => 'browse'      ) ;
-
-#D The (optional) file buttons are packed in a frame. 
-
-my $fw = $mw -> Frame () ; 
-
-my %lw ; 
-
-#D We can search for commands, using: 
-
-my $request  = $fw -> Entry (       -font => $textfont , 
-                              -background => 'ivory1' ,
-                                   -width => 20 ) ;
 
 #D And the whole bunch of widgets are packed in the main 
 #D window. 
 
-$fw -> pack (   -fill => 'x'    ,
-                -side => 'top'  ) ; 
-$sw -> pack (  #-fill => 'both' , 
-             #-expand => 1      ,
-                -side => 'left' ) ;
-$cw -> pack (   -fill => 'both' , 
-              -expand => 1      ) ;
+sub pack_them_all 
+  { $sw -> pack ( -side => 'left'  , -fill => 'both' , -expand => 1 ) ;
+    $fw -> pack ( -side => 'right' , -fill => 'y'    , -expand => 0 ) ; 
+    $bw -> pack ( -side => 'top'   , -fill => 'x'    , -anchor => 'w'  , -expand => 1 ) ;
+    $tw -> pack ( -side => 'bottom', -fill => 'both' , -expand => 1 ) }
+
+sub unpack_them_all 
+  { }
+
+pack_them_all ; 
 
 #D We scan for available setup files, with suffix \type {tws}.
 #D These should be somewhere on the system, grouped in one
@@ -137,7 +151,7 @@ sub set_setup_title
   { $mw -> configure ( -title => shift ) }
 
 sub setups_found  
-  { $tws_path = `kpsewhich --format='other text files' --progname=context cont-en.tws` ; 
+  { $tws_path = `kpsewhich --format="other text files" --progname=context cont-en.tws` ; 
     $tws_path =~ s/cont-en\.tws.*// ; 
     chop $tws_path ; 
     @setup_files = glob ("$tws_path*.tws") ; 
@@ -148,11 +162,25 @@ sub setups_found
     else 
       { return 0 } } 
 
+#D A hide button 
+
+sub show_hide_button
+  { my $hb = $bw -> Button (     -text => "hide" ,
+                                 -font => $buttonfont    , 
+                               command => \&hide_widget  ) ;
+    $hb -> pack ( -padx => '2p', 
+                  -pady => '2p', 
+                  -side => 'right' ) } 
+
+sub hide_widget 
+  { $mw -> withdraw() } 
+
 #D The setup files can be shown and chosen. 
 
 sub show_setups 
-  { foreach (@setup_files)
-      { $lw{$_} = $fw -> Radiobutton (     -text => lc $_          , 
+  { unpack_them_all ; 
+    foreach (@setup_files)
+      { $lw{$_} = $bw -> Radiobutton (     -text => lc $_          , 
                                           -value => $_             , 
                                            -font => $buttonfont    , 
                                     -selectcolor => 'ivory1'       ,
@@ -162,9 +190,7 @@ sub show_setups
         $lw{$_} -> pack ( -padx => '2p', 
                           -pady => '2p', 
                           -side => 'left' ) } 
-       $request -> pack ( -padx => '6p', 
-                          -pady => '2p', 
-                          -side => 'left' ) }
+    pack_them_all }
 
 $cw -> bind ('<B1-Motion>', \&update_setup ) ;
 $cw -> bind ('<1>'        , \&update_setup ) ;
@@ -201,9 +227,11 @@ my $current_setup  = '' ;
 #D simply saying something like: 
 #D 
 #D \starttypen
-#D texexec  --interface=en  setupb  
-#D texexec  --interface=de  setupb  
-#D texexec  --interface=nl  setupb  
+#D texexec  --interface=en  setupd  
+#D texexec  --interface=de  setupd  
+#D texexec  --interface=nl  setupd  
+#D texexec  --interface=cz  setupd  
+#D texexec  --interface=it  setupd  
 #D \stoptypen 
 #D 
 #D This results in files formatted as: 
@@ -255,7 +283,8 @@ sub load_setup
     update_setup } 
 
 sub load_setups 
-  { foreach my $setup (@setup_files) { load_setup ($setup) } } 
+  { foreach my $setup (@setup_files) { load_setup ($setup) } ;
+    $mw -> deiconify() }
 
 #D The core of this module deals with transforming the 
 #D definitions like shown earlier. Details on the format 

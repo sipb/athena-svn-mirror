@@ -21,7 +21,7 @@
 %% same distribution. (The sources need not necessarily be
 %% in the same archive or directory.)
  \ProvidesFile{ts1ccr.fd}
-        [1997/10/24 v0.98 (WaS)]
+        [1999/11/22 v1.0a (WaS)]
 \DeclareFontFamily{TS1}{ccr}{\hyphenchar\font\m@ne}
 \DeclareFontShape{TS1}{ccr}{m}{n}{%
 <5><6><7><8><9>gen*torm%
@@ -34,19 +34,10 @@
 \DeclareFontShape{TS1}{ccr}{m}{it}{%
 <5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>toti10%
 }{}
-\DeclareFontShape{TS1}{ccr}{b}{n}{%
-<5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>ssub*ccr/m/n%
-}{}
-\DeclareFontShape{TS1}{ccr}{b}{sl}{%
-<5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>ssub*ccr/m/sl%
-}{}
-\DeclareFontShape{TS1}{ccr}{b}{it}{%
-<5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>ssub*ccr/m/it%
-}{}
 \DeclareFontShape{TS1}{ccr}{bx}{n}{%
 <5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>ssub*cmr/bx/n%
 }{}
-\DeclareFontShape{TS1}{ccr}{bx}{m}{%
+\DeclareFontShape{TS1}{ccr}{bx}{it}{%
 <5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>ssub*cmr/bx/it%
 }{}
 \DeclareFontShape{TS1}{ccr}{bx}{sl}{%

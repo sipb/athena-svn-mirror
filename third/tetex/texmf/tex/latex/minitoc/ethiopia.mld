@@ -1,0 +1,23 @@
+\ProvidesFile{ethiopia.mld}[1999/03/16]
+% Ethiopian titles for minitoc.sty
+\def\mtctitle{yezate}%
+\def\mlftitle{%
+    ya\eth@doaltchar{85}`elo\eth@doaltchar{109}
+    mAwe\eth@doaltchar{187}}%
+\def\mlttitle{%
+    yasane\eth@doaltchar{176}ra\eth@doaltchar{149}
+    mAwe\eth@doaltchar{187}}%
+\def\ptctitle{yezate}%
+\def\plftitle{%
+    ya\eth@doaltchar{85}`elo\eth@doaltchar{109}
+    mAwe\eth@doaltchar{187}}%
+\def\plttitle{%
+    yasane\eth@doaltchar{176}ra\eth@doaltchar{149}
+    mAwe\eth@doaltchar{187}}%
+\def\stctitle{yezate}%
+\def\slftitle{%
+    ya\eth@doaltchar{85}`elo\eth@doaltchar{109}
+    mAwe\eth@doaltchar{187}}%
+\def\slttitle{%
+    yasane\eth@doaltchar{176}ra\eth@doaltchar{149}
+    mAwe\eth@doaltchar{187}}%

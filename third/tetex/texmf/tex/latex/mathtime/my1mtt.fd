@@ -11,7 +11,7 @@
 %% Development of this package was commissioned by Y&Y Inc.
 %% http://www.yandy.com
 \ProvidesFile{my1mtt.fd}
- [1997/03/14 v1.0c
+ [2001/05/30 v1.0c
  Mathtime Encoding 1
   (FMi)]
 \DeclareFontFamily{MY1}{mtt}{\skewchar\font45}

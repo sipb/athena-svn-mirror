@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -17,7 +17,21 @@
 % File with ligs for Washington encoding (for tt-fonts)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+
+LHver_check(3,4); % like |version_check| in ec
+
+% ligatures for cyrillic quotes
+beginligtable
+   labelchar ([ASCII"["]);
+      setlig ([ASCII"["],CYR_.flqq);  % "<<"
+endligtable;
+
+beginligtable
+   labelchar ([ASCII"]"]);
+      setlig ([ASCII"]"],CYR_.frqq);  % ">>"
+endligtable;
+% ligatures for cyrillic quotes
+
 beginligtable
    labelchar (CYR_.D); setlig([ASCII "1"],CYR_.DJE);
       setlig([ASCII "2"],CYR_.DZHE); setlig([ASCII "3"],CYR_.LAT_S);
@@ -171,3 +185,6 @@ beginligtable
    labelchar ([ASCII "y"]);
       setlig([ASCII "a"],CYR_.ya); setlig([ASCII "u"],CYR_.yu);
 endligtable;
+
+endinput;
+%end of file

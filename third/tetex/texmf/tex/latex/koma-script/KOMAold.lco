@@ -1,0 +1,155 @@
+%%
+%% This is file `KOMAold.lco',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% scrclass.dtx  (with options: `lco,KOMAold')
+%% 
+%% Copyright (C) 1994-2002 Markus Kohm.
+%% 
+%% All rights reserved. For further copyright information see the file
+%% LEGAL.TXT or LEGALDE.TXT.
+%% 
+%% This file is part of the LaTeX2e KOMA-Script bundle.
+%% ----------------------------------------------------
+%% 
+%% The KOMA-Script bundle bases on the Script-family created by
+%% Frank Neukam 1993 and the standard documents classes created
+%% by the LaTeX3-Team 1994-1996.
+%% ------------------------------------------------------------------------
+%% 
+%%  This system is distributed in the hope that it will be useful,
+%%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For error reports in case of UNCHANGED versions see documentation.
+%% 
+%% Please do not request updates from us directly. Distribution is
+%% done through Mail-Servers, Mailboxes and TeX organizations.
+%% 
+%% You are not allowed to change this file.
+%% 
+%% You are allowed to distribute this file under the condition that
+%% it is distributed together with all files mentioned in readme.txt
+%% and liesmich.txt. See LEGAL.TXT or LEGALDE.TXT for further
+%% information.
+%% 
+%% If you receive only some of these files from someone, complain!
+%% 
+%% You are NOT ALLOWED to distribute this file alone.
+%% 
+\ProvidesFile{%
+  KOMAold%
+  .lco}
+  [2003/01/31 v2.9n LaTeX2e KOMA
+    letter-class-option]
+\@ifundefined{scr@fromname@var}{%
+  \GenericWarning{(%
+  KOMAold%
+  .lco)\@spaces\@spaces\@spaces\@spaces\@spaces\@spaces}{%
+  Letter-class-option
+  KOMAold
+  Warning:\space
+  This letter class option file was made only\MessageBreak
+  to be used with KOMA-Script letter class\MessageBreak
+  `scrlttr2'. Use with other classes may result\MessageBreak
+  in a lot of errors\@gobble
+  }
+}{}
+\LetterOptionNeedsPapersize{%
+  KOMAold%
+  }
+  {a4}
+\@setplength{foldmarkhpos}{3.5mm}
+\@setplength{tfoldmarkvpos}{103.5mm}
+\@setplength{bfoldmarkvpos}{202.5mm}
+\@setplength{toaddrvpos}{49mm}
+\@setplength{refvpos}{89.5mm}
+\@setplength[2]{refaftervskip}{\baselineskip}
+\@setplength{toaddrhpos}{1in}
+\@addtoplength{toaddrhpos}{\oddsidemargin}
+\@setplength{toaddrwidth}{70mm}
+\@setplength{toaddrheight}{40mm}
+\@setplength{toaddrindent}{\z@}
+\@setplength{specialmailindent}{\fill}
+\@setplength{specialmailrightindent}{1em}
+\@setplength{locwidth}{\z@}
+\@setplength{backaddrheight}{5mm}
+\@setplength{firstheadvpos}{6mm}
+\@setplength{firstheadwidth}{\textwidth}
+\@setplength{firstfootwidth}{\useplength{firstheadwidth}}
+\@setplength{firstfootvpos}{\paperheight}
+\@addtoplength{firstfootvpos}{-2cm}
+\@setplength{refwidth}{0pt}
+\@setplength{sigindent}{0mm}
+\@setplength{sigbeforevskip}{2\baselineskip}
+\let\raggedsignature=\raggedright
+\def\yourref{\setkomavar{yourref}}
+\def\yourmail{\setkomavar{yourmail}}
+\def\myref{\setkomavar{myref}}
+\def\customer{\setkomavar{customer}}
+\def\invoice{\setkomavar{invoice}}
+\@ifundefined{scr@refitemi@var}{\newkomavar{refitemi}}{}
+\def\refitemi{\setkomavar{refitemi}}
+\def\refitemnamei{\setkomavar*{refitemi}}
+\@ifundefined{scr@refitemii@var}{\newkomavar{refitemii}}{}
+\def\refitemii{\setkomavar{refitemii}}
+\def\refitemnameii{\setkomavar*{refitemii}}
+\@ifundefined{scr@refitemiii@var}{\newkomavar{refitemiii}}{}
+\def\refitemiii{\setkomavar{refitemiii}}
+\def\refitemnameiii{\setkomavar*{refitemiii}}
+\l@addto@macro{\defaultreffields}{%
+  \addtoreffields{refitemi}%
+  \addtoreffields{refitemii}%
+  \addtoreffields{refitemiii}%
+  }
+\addtoreffields{refitemi}%
+\addtoreffields{refitemii}%
+\addtoreffields{refitemiii}%
+\def\toname{\usekomavar{toname}}
+\def\toaddress{\usekomavar{toaddress}}
+\@ifundefined{scr@branch@var}{\newkomavar{branch}}{}
+\def\branch{\setkomavar{branch}}
+\def\frombranch{\usekomavar{branch}}
+\def\signature{\setkomavar{signature}}
+\def\fromsig{\usekomavar{signature}}
+\def\name{\setkomavar{fromname}}
+\def\fromname{\usekomavar{fromname}}
+\def\address{\setkomavar{fromaddress}}
+\def\fromaddress{\usekomavar{fromaddress}}
+\def\location{\setkomavar{location}}
+\def\fromlocation{\usekomavar{location}}
+\def\backaddress{\setkomavar{backaddress}}
+\def\@tempa{%
+  \ifkomavarempty{fromname}{}{%
+    \strut\ignorespaces\usekomavar{fromname}%
+    \ifkomavarempty{fromaddress}{}{\\}}%
+  \ifkomavarempty{fromaddress}{}{%
+    \strut\ignorespaces\usekomavar{fromaddress}}%
+  }
+\ifx\@tempa\scr@backaddress@var%
+  \setkomavar{backaddress}{}
+\fi
+\def\frombackaddress{\usekomavar{backaddress}}
+\def\telephone{\setkomavar{fromphone}}
+\def\telephonenum{\usekomavar{fromphone}}
+\def\specialmail{\setkomavar{specialmail}}
+\def\@specialmail{\usekomavar{specialmail}}
+\def\title{\setkomavar{title}}
+\def\@title{\usekomavar{title}}
+\def\subject{\setkomavar{subject}}
+\def\@subject{\usekomavar{subject}}
+\def\place{\setkomavar{place}}
+\def\fromplace{\usekomavar{place}}
+\let\ccnameseparator=\scr@ccseparator@var
+\setkomavar{ccseparator}{\ccnameseparator}
+\let\enclnameseparator=\scr@enclseparator@var
+\setkomavar{enclseparator}{\enclnameseparator}
+\setkomafont{fromname}{\scshape}
+\endinput
+%%
+%% End of file `KOMAold.lco'.

@@ -28,7 +28,7 @@
 %%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{syntax}
-                [1996/05/17 1.9 Syntax typesetting (MDW)]
+                [1996/05/17 1.07 Syntax typesetting (MDW)]
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -188,7 +188,7 @@
     #1%
     \syn@assist%
       \syntleft%
-      {\act_{\@foundunderscore}}%
+      {\act_{\@uscore.}}%
       >%
       \syntright%
       {#2}%
@@ -249,10 +249,6 @@
   \item[\unhbox\z@]%
   \catcode`\<\active%
 }
-\let\gr@leftsq\[
-\let\gr@rightsq\]
-\def\[{\gr@leftsq}
-\def\]{\gr@rightsq}
 \newenvironment{grammar}{%
   \list{}{%
     \labelwidth\grammarindent%
@@ -279,6 +275,8 @@
   }%
   \gr@setpar%
   \par%
+  \let\gr@leftsq\[%
+  \let\gr@rightsq\]%
   \def\gr@endsyntdiag]{\end{syntdiag}\gr@setpar\par}%
   \def\[{\@ifnextchar[{\begin{syntdiag}\@gobble}\gr@leftsq}%
   \def\]{\@ifnextchar]\gr@endsyntdiag\gr@rightsq}%
@@ -456,12 +454,6 @@
   \hyphenpenalty0%
   \catcode`\ 9%
   \catcode`\^^M9%
-  \def\gr@leftsq{\begin{stack}\\}%
-  \def\gr@rightsq{\end{stack}}%
-  \def\({\begin{stack}}%
-  \def\){\end{stack}}%
-  \def\<{\begin{rep}}%
-  \def\>{\end{rep}}%
   \let\\\sd@newline%
   \ignorespaces%
 }

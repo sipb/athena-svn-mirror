@@ -1,0 +1,1359 @@
+%%% File: MFobjs.tex
+%%% A part of mfpic 0.6b 2003/01/02
+%%%
+%  Examples of \mfpic usage. For Metafont output.
+\def\mac#1{\hskip0pt plus1.5pt{\tt \char`\\#1}}
+
+\def\vs{\bigskip\filbreak}
+\newsavepic\foo
+
+\vs
+{\sl \tmtitle {Basic Figures.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Point:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\point
+{(0.5,0.5)}
+\endmfpic
+
+\savepic\foo
+\mfpic[15]{-1}{1}{-1}{1}
+\plotsymbol[3pt]{Plus}{dir 0}
+\plotsymbol[3pt]{SolidCircle}{(0.5*dir 0)}
+\plotsymbol[3pt]{SolidTriangle}{dir 60}
+\plotsymbol[3pt]{Square}{0.5*dir 60}
+\plotsymbol[3pt]{Star}{(0,0)}
+\plotsymbol[3pt]{SolidSquare}{dir 120}
+\plotsymbol[3pt]{Triangle}{0.5*dir 120}
+\plotsymbol[3pt]{Circle}{dir 180}
+\plotsymbol[3pt]{Cross}{0.5*dir 180}
+\plotsymbol[3pt]{Diamond}{dir 240}
+\plotsymbol[3pt]{SolidDiamond}{0.5*dir 240}
+\plotsymbol[3pt]{SolidStar}{dir 300}
+\plotsymbol[3pt]{Asterisk}{0.5*dir 300}
+\endmfpic
+
+\vs\noindent
+\tmtitle {Plotting points with symbols:}
+\nobreak\usepic\foo
+
+\vs\noindent
+\tmtitle {Plotting points with text:}
+\nobreak
+\mfpic[30]{0}{1}{0}{1}
+\plottext{$*$}{(0,0),{(.25,.0625)},({.5},{.25}),(.75,.5625),(1,1)}
+\plottext{g}{(0,1),(.25,.9375),(.5,.75),(.75,.4375),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Line segments (Polygonal curve):}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\lines{(0,0.25), (1,0.75), (1,0.25), (2,0.75)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Line segments with thicker pen:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\pen{1pt}
+\lines{(0,0.25), (1,0.75), (1,0.25), (2,0.75)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Rectangle:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\rect{(0,0),(0.8,1)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Circle:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\circle{(0.5,0.5),0.5}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Ellipse:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\ellipse{(1,0.5),1,0.5}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Rotated Ellipse:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\ellipse[15 deg]{(1,0.5),1,0.4}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Curve:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\curve{(0,0.25), (1,0.75), (1,0.25), (2,0.75)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Cyclic curve:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\cyclic{(0.5,0), (0,0.3), (0.5,0.8), (1.5,0.8), (2.0,0.3), (1.5,0),
+  (1.0,0.3)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Cyclic curve with tension = 2:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\cyclic[2]{(0.5,0), (0,0.3), (0.5,0.8), (1.5,0.8), (2.0,0.3), (1.5,0),
+  (1.0,0.3)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Cyclic curve with tension = 4:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\cyclic[4]{(0.5,0), (0,0.3), (0.5,0.8), (1.5,0.8), (2.0,0.3), (1.5,0),
+  (1.0,0.3)}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Dotted Figures.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Dotted Line segments:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\dotted\lines{(0,0.25), (1,0.75), (1,0.25), (2,0.75)}
+\endmfpic
+
+%%%%%%%
+\vs
+\noindent
+\tmtitle {Rectangle plotted with triangles:}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\plot{Triangle}\rect{(0,0),(0.8,1)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Ellipse plotted with stars, larger size and space:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\plot[3pt,6pt]{Star}\ellipse{(1,0.5),1,0.5}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Cyclic curve plotted with squares, larger size, smaller space:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\plot[3pt,3pt]{Square}\cyclic {
+   (0.5,0), (0,0.3),
+   (0.5,0.8), (1.5,0.8),
+   (2.0,0.3), (1.5,0),
+   (1.0,0.3)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Curve plotted with (still larger) open circles:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\plot[4pt,6pt]{Circle}\curve{(0,0), (0.25,0.75), (0.5,0.5), (2,1)}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Axes and Axis Marks.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Axes:}
+\nobreak
+\mfpic[15][20]{-2}{2}{-2}{2}
+\axes
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Axis marks:}
+\nobreak
+\mfpic[15][20]{-2}{2}{-2}{2}
+\axes
+\xmarks{-1,1}
+\ymarks{-1,1}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Circular Arcs.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Circular arc, point-sweep form:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\point{(0,0.8),(2,0.8)}
+\arc  {(0,0.8),(2,0.8),90}
+\endmfpic
+
+\vs
+\nobreak
+\noindent
+\tmtitle {Circular arc, three-point form:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\point {(0,0.8),(1,0.1),(2,0.8)}
+\arc[t]{(0,0.8),(1,0.1),(2,0.8)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Circular arc, polar form:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\point {(0,0)}
+\arc[p]{(0,0),0,75,1}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Circular arc, center-point form:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\point {(0,0),(1,0)}
+\arc[c]{(0,0),(1,0),75}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Polar Coordinates.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle{Polar point:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\point{\plr{(1,45)}}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polar lines:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\lines{\plr{(0.25,0), (1,30), (0.75,45), (1,60), (0.25,90)}}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polar curve:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\curve{\plr{(0.25,0), (1,30), (0.75,45), (1,60), (0.25,90)}}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polar Cyclic curve:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\cyclic{\plr{(0.25,0), (1,30), (0.75,45), (1,60), (0.25,90), (0.1,45)}}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Other Figures.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Line segments (polar ``turtle''):}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\turtle{\plr{(0,0), (0.8,0), (0.4,135), (0.4,-90), (0.4,-90), (0.4,45)}}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Sector:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\sector{(0,0),1,0,75}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Closed figures.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Polygon:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\lclosed\lines{(0,0), (0,0.5), (1,1), (1.5,0.5), (1,0.5)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Line closure of curve:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\lclosed\curve{(0.5,0), (0,0.3), (0.5,0.8), (1.5,0.8), (2.0,0.3),
+   (1.5,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Line closure of circular arc:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\lclosed\arc{(0,0.8),(2,0.8),90}
+\endmfpic
+
+% change point disk diameter.
+\pointsize=3pt
+
+\vs
+\noindent
+\tmtitle{\mac{rhatch}\mac{draw}\mac{lclosed}\mac{connect}\mac{curve}\mac{lines}.}
+\tmtitle{Points have been added to both ends of the two paths:}
+\nobreak
+\mfpic[10]{-1}{1}{-1}{1}
+\rhatch\draw\lclosed\connect\curve{(1,0), (0.5,0.25), (0.5,0.5), (0,0.75)}
+\lines{(-0.5,0.5), (-0.5,-0.5), (0.5,-0.75)}
+\point{(1,0),(0,0.75), (-0.5,0.5), (0.5,-0.75)}
+\endconnect
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Similar but Reversing the Polyline's endpoints:}
+\nobreak
+\mfpic[10]{-1}{1}{-1}{1}
+\rhatch\draw\lclosed\connect
+\curve{(1,0), (0.5,0.25), (0.5,0.5), (0,0.75)}
+\reverse\lines{(-0.5,0.5), (-0.5,-0.5), (0.5,-0.75)}
+\point{(1,0),(0,0.75), (-0.5,0.5), (0.5,-0.75)}
+\endconnect
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Closed connected figure (cross-hatched and outlined)
+consisting of
+1 curve,
+1 vertical line (with its ends shown by filled disks),
+and
+3 polar points (shown by open disks);
+this figure is followed by another vertical line
+which is off the right edge of the picture boundary:}
+
+\nobreak\smallskip
+\noindent
+\mfpic[10]{-1}{1}{-1}{1}
+\hatch\draw\lclosed\connect
+\curve{(1,0), (0.5,0.25), (0.5,0.5), (0,0.75)}
+\lines{(-0.8,-0.8), (-0.8,0.8)}
+\point{\plr{(0,0), (2,-90), (sqrt2,-45)}}
+\endconnect
+\point{(-0.8,-0.8), (-0.8,0.8)}
+{\pointfillfalse
+ \point{\plr{(0,0), (2,-90), (sqrt2,-45)}}}
+\lines{(2,-1), (2,1)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Constrained reverse video of the previous picture:}
+
+\nobreak\smallskip
+\noindent
+\mfsrc{picture lastpic; lastpic := currentpicture;}
+\mfpic[10]{-1}{1}{-1}{1}
+\mfsrc{currentpicture :=
+  picneg (lastpic)
+    (rect ((xneg,yneg),(xpos,ypos)) transformed ztr);}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Unconstrained reverse video of that picture:}
+
+\nobreak\smallskip
+\noindent
+\mfpic[10]{-1}{1}{-1}{1}
+\mfsrc{currentpicture :=
+  lastpic picxor
+    (interior rect ((xneg,yneg),(xpos,ypos)) transformed ztr);}
+\endmfpic
+
+% restore point disk diameter.
+\pointsize=2pt
+
+\bigskip\vs
+{\sl \tmtitle {Arrows.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Basic arrow:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\arrow\lines{(0,0.25), (1,0.75), (1,0.25), (2,0.75)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Dotted arrow:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\arrow\dotted\lines{(0,0.25), (1,1), (1,0), (2,0.75)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Circular arc arrow:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\arrow\arc{(0,0.8),(2,0.8),90}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Curved arrow:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\arrow\curve{(0,0.25), (1,0.75), (1,0.25), (2,0.75)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Bi-directional arrow:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\arrow\reverse\arrow\lines{(0,0.25), (1,0.75), (1,0.25), (2,0.75)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Double arrowhead:}
+\nobreak
+\mfpic[15]{0}{2}{0}{1}
+\arrow\arrow[b2pt]\lines{(0,0.25), (1,0.75), (1,0.25), (2,0.75)}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Shading and Filling.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Filled Rectangle:}
+\nobreak
+\mfpic[15]{0}{1}{0}{1}
+\gfill\rect{(0,0), (0.8,1)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polkadot Ellipse:}
+\nobreak
+\mfpic[15]{0}{3}{0}{2}
+\draw\polkadot\ellipse{(1.5,1),1.5,1}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Filled Cyclic curve:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\gfill\cyclic{(0.5,0), (0,0.3), (0.5,0.8), (1.5,0.8), (2.0,0.3),
+  (1.5,0), (1.0,0.3)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Left-hatched Cyclic curve:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\lhatch\cyclic{(0.5,0), (0,0.3), (0.5,0.8), (1.5,0.8), (2.0,0.3),
+  (1.5,0), (1.0,0.3)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Shaded Polygon, with Outline:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\shade\draw\lclosed\lines{(0,0), (0,0.5), (1,1), (1.5,0.5), (1,0.5)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {\mac{shade}\mac{lclosed}\mac{curve}:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\shade\lclosed\curve{(0.5,0), (0,0.3), (0.5,0.8), (1.5,0.8), (2.0,0.3),
+  (1.5,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{same, but with \mac{shadewd} increased 50\%:}
+
+\noindent
+\tmtitle {\mac{shade}\mac{lclosed}\mac{curve}:}
+\nobreak
+\mfpic[20]{0}{2}{0}{1}
+\shadewd{.75pt}
+\shade\lclosed\curve{(0.5,0), (0,0.3), (0.5,0.8), (1.5,0.8), (2.0,0.3),
+  (1.5,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Prefix example 1.}\par
+\tmtitle {\mac{draw}\mac{shade}\mac{lclosed}\mac{lines};
+Local coordinate change to shift and rotate second copy of polygon:}
+
+\nobreak\smallskip
+\noindent
+\mfpic[15]{0}{5}{0}{1}
+\draw\shade\lclosed
+  \lines{(0,0), (0.5,1), (1.5,1), (2,0)}
+\coords
+  \shift{(3,0)}
+  \rotatearound{(1,.5)}{90}
+  \draw\shade\lclosed
+    \lines{(0,0), (0.5,1), (1.5,1), (2,0)}
+\endcoords
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Prefix context example 2:}\par
+\tmtitle {The first polygon is the same as example~1, the second is
+\mac{shade}\mac{lclosed}\mac{draw}\mac{lines}. Moreover,
+\mac{shadespace} is 2pt, \mac{penwd} is 2pt, and a closed
+rectangle is on top.}
+
+\nobreak\smallskip
+\noindent
+\mfpic[15]{0}{5}{0}{1}
+\shadespace 2pt
+\pen{2pt}
+\draw\shade\lclosed
+  \lines{(0,0),(0.5,1),(1.5,1),(2,0)}
+\shade\lclosed\draw
+  \lines{(3,0),(3.5,1),(4.5,1),(5,0)}
+\lclosed
+  \lines{(0,0.25),(5,0.25),(5,0.75),(0,0.75)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Overlay example.}
+\tmtitle {Third Polyline now has `\mac{gclear}' before it:}
+
+\nobreak\smallskip
+\noindent
+\mfpic[15]{0}{5}{0}{1}
+\shadespace 2pt
+\pen{2pt}
+\draw\shade\lclosed
+  \lines{(0,0),(0.5,1),(1.5,1),(2,0)}
+\shade\lclosed\draw
+  \lines{(3,0),(3.5,1),(4.5,1),(5,0)}
+\gclear\lclosed
+  \lines{(0,0.25),(5,0.25),(5,0.75),(0,0.75)}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Functions.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Function plot:}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\function{0,1,0.125}{sind(180x)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polygonal function plot:}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\function[p]{0,1,0.125}{sind(180x)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Parametric function plot:}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\parafcn{0,1,0.125}{sind(180t) * dir(90t)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polygonal parametric function plot:}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\parafcn[p]{0,1,0.125}{sind(180t) * dir(90t)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polar function plot:}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\plrfcn{0,90,10}{sind(2t)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polygonal polar function plot:}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\plrfcn[p]{0,90,10}{sind(2t)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Between functions (shaded):}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\function{0,0.7,0.1}{x**2}
+\function{0,0.7,0.1}{sind(180x)}
+\shade\btwnfcn{0,0.7,0.1}{x**2}{sind(180x)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Polar region (shaded):}
+\nobreak
+\mfpic[20]{0}{1}{0}{1}
+\shade\draw\plrregion{0,90,10}{sind(2t)}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {Labels and Captions.}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Label:}
+\nobreak
+\mfpic[20]{-1}{1}{-1}{1}
+% head
+\circle{(0,0),1}
+% nose
+\point{(0,0)}
+% eyes
+{\pointfillfalse
+ \point{(0.333,0.333), (-0.333,0.333)}}
+% smile
+\arc{(-0.333,-0.333),(0.333,-0.333),60}
+% arrow from label to nose
+\arrow\lines{(1,0.5), (0.1,0.05)}
+\tlabel[Bl angle (.9,.45)](1,{0,5}){nose} % angle will be ignored
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Caption:}
+\nobreak
+\mfpic[20]{-1}{1}{-1}{1}
+\circle{(0,0),1}
+\point{(0,0)}
+{\pointfillfalse
+ \point{(0.333,0.333), (-0.333,0.333)}}
+\arc{(-0.333,-0.333),(0.333,-0.333),60}
+\tcaption{Smile!}
+\endmfpic
+
+\bigskip\vs
+{\sl \tmtitle {EXTRAS.}}
+
+\nobreak\bigskip
+{\sl \tmtitle {Tiling.}}
+
+\nobreak
+\mfpicunit=1pt
+\mfpic[20]{-3.5}{3.5}{-3.1}{3.5}
+\tile{fred, 1pt, 10, 10, false}
+\lines{(0,0), (5,5), (10,0)}
+\point{(2.5,7.5)}
+\endtile
+\draw\tess{fred}\rect{(-3,-3),(3,3)}
+\tcaption{Tesselation.}
+\endmfpic
+
+\def\mypoints{% abbreviation
+\tlabelsep{2pt}
+\point{(0,0),(0,1),(1,1),(1,0)}
+\tlabels{[tr](0,0){P1}
+         [br](0,1){P2}
+         [bl](1,1){P3}
+         [tl](1,0){P4}}}
+
+\bigskip\vs
+\noindent
+\tmtitle {Open Quadratic B-spline:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\qspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Open Quadratic B-spline closed by line segment:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\lclosed\qspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Closed Quadratic B-spline:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\closedqspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Open Quadratic B-spline closed by B\'ezier:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\bclosed\qspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Open Cubic B-spline:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\cspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Open Cubic B-spline closed by line segment:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\lclosed\cspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Closed Cubic B-spline:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\closedcspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Open Cubic B-spline closed by B\'ezier:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\bclosed\cspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Open Cubic B-spline closed by Smooth path:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\sclosed\cspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Open Cubic B-spline closed by Cubic B-spline:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\cbclosed\cspline{(0,0),(0,1),(1,1),(1,0)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Open Curve:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\curve{(0,0),(0,1),(1,1)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Curve closed by Smooth path:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\sclosed\curve{(0,0),(0,1),(1,1)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Curve closed smoothly, keeping original curve unchanged:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\uclosed\curve{(0,0),(0,1),(1,1)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Curve closed by Cubic B-spline:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\cbclosed\curve{(0,0),(0,1),(1,1)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Curve closed by B\'ezier:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1}{0}{1}
+\mypoints
+\bclosed\curve{(0,0),(0,1),(1,1)}
+\endmfpic
+
+\bigskip\vs
+\tmtitle{\sl Storing and reusing:\/ \mac{store} and \mac{mfobj}.}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Use of \mac{store} and \mac{mfobj} for a Dashed and Hatched Circle:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{2}{0}{1}
+\store{f}{\circle{(0.5,0.5),0.5}}
+\coords
+ \shift{(1,0)}
+ \hatch\mfobj{f}
+\endcoords
+\dashed\mfobj{f}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Example of \mac{store} and \mac{mfobj} for two dashed curves,}
+\tmtitle {--- one a shifted copy of the other ---}
+\tmtitle {and a shaded closed curve containing them both.}
+
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[20]{0}{5}{0}{2}
+\mfsrc{save f,g,h;}
+\store{f}{\curve{(1,0),(0,1),(1,2)}}
+\store{g}{\shiftpath{(3,0)}\reverse\mfobj{f}}
+\store{h}{\lclosed\connect\mfobj{f}\mfobj{g}\endconnect}
+ \lightershade
+\shade\mfobj{h}
+\dashed\mfobj{f}
+\dashed\mfobj{g}
+\endmfpic
+
+\hatchspace3.5pt
+\vs
+\noindent
+\tmtitle{Various transformation prefixes. \mac{rotatepath} and}
+\tmtitle{\mac{reflectpath} compensate for different scales, the rest do not.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[30][40]{-.2}{1.5}{-0.3}{1.3}
+ \store{xq}{\rect{(0,0),(1,1)}}
+\lightershade
+\lightershade
+ \shade\mfobj{xq}
+ \draw \lhatch\rotatepath{(.5,.5),30}\mfobj{xq}
+ \draw \rhatch\rotatepath{(.5,.5),60}\mfobj{xq}
+ \tcaption{Rotate}
+\endmfpic
+%
+\mfpic[30][40]{-.5}{1.5}{-0.3}{1.3}
+ \store{xq}{\rect{(0,0),(1,1)}}
+\lightershade
+\lightershade
+ \draw\lhatch\xslantpath{.5,1}\shade\mfobj{xq}
+ \draw\rhatch\yslantpath{0,.5}\mfobj{xq}
+ \tcaption{Slant}
+\endmfpic
+%
+\mfpic[30][40]{-.2}{1.5}{-0.3}{1.3}
+ \store{xq}{\rect{(0,0),(1,1)}}
+\lightershade
+\lightershade
+ \draw\lhatch\xscalepath{0.5,1.3}\yscalepath{0.5,.6}\shade\mfobj{xq}
+ \draw\rhatch\yscalepath{0,1.3}\xscalepath{0,.6}\mfobj{xq}
+ \tcaption{x/y Scale}
+\endmfpic
+%
+\mfpic[30][40]{-.2}{1.5}{-0.3}{1.3}
+ \store{xq}{\rect{(0,0),(1,1)}}
+\lightershade
+\lightershade
+ \draw\lhatch\scalepath{(.25,.25),1.2}\shade\mfobj{xq}
+ \draw\rhatch\scalepath{(.25,.25),1.44}\mfobj{xq}
+ \tcaption{Scale}
+\endmfpic
+%
+\mfpic[30][40]{-.2}{1.6}{-0.3}{1.3}
+ \store{xq}{\rect{(0,0),(1,1)}}
+\lightershade
+\lightershade
+ \draw\rhatch\reflectpath{(.25,1),(1,.25)}\shade\mfobj{xq}
+ \dashed\lines{(.25,1),(1,.25)}
+ \tcaption{Reflect}
+\endmfpic
+%
+\mfpic[30][40]{-.3}{1.5}{-0.3}{1.3}
+ \store{xq}{\ellipse{(.65,.55),.5,.7}}
+\lightershade
+\lightershade
+ \draw\lhatch\xyswappath\shade\mfobj{xq}
+ \dashed\lines{(0,0),(1.3,1.3)}
+ \tcaption{x/y Swap}
+\endmfpic
+\hss
+
+\hatchspace3pt
+
+\vs
+\mfpicdebugtrue
+\noindent\tmtitle {(Debugging turned on here.)}
+\bigskip\vs
+{\sl \tmtitle {Plotting data:}}
+
+\nobreak\medskip
+\noindent
+\tmtitle {Plotting polygonal path with points from a file:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[6]{-10}{10}{-2}{12}
+\makepercentother
+\using{#1% #2 #3}{(#1,#2)}
+\makepercentcomment
+\mfpdatacomment\#
+\dashed[2pt,3pt]\polyline\datafile{data.dat}
+\endmfpic
+
+\vs
+\mfpicdebugfalse
+\noindent\tmtitle {(Debugging turned off here.)}
+\bigskip\vs
+\noindent
+\tmtitle {Plotting smooth path with points from same file:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[6]{-10}{10}{-2}{12}
+\makepercentother
+\using{#1% #2 #3}{(#1,#2)}
+\makepercentcomment
+\mfpdatacomment\#
+\dashed[2pt,3pt]\curve[2]\datafile{data.dat}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Faking a function from points with increasing x-values}
+\tmtitle {AND plotting the nodes with open circles:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[6]{-10}{10}{0}{12}
+\draw\plotnodes {Circle}
+\fcncurve{(-10,11.68), (-9,9.62), (-8.5,8.445), (-8,8.28),
+(-7.5,5.865), (-7,5.5), (-5.5,3.445), (-5,1),
+(-4.5,1.965), (-4,2.14), (-3.5,2.985), (-2.5,-1.215),
+(-2,1.52), (-0.5,1.545), (0,0.42),
+(0.5,-0.435), (1,0.96), (2.5,-1.235), (3,0.94),
+(3.5,0.165), (4,0.28), (5,1.1), (5.5,3.145), (6,1.94),
+(6.5,5.505), (7,3.44),
+(9.5,8.925), (10,9.84)}
+\axes
+\endmfpic
+
+\vs
+\noindent
+\tmtitle {Same as above, but with clipping:}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[6]{-10}{10}{0}{12}
+\draw\plotnodes {Circle}
+\fcncurve[1.2]{(-10,11.68), (-9,9.62), (-8.5,8.445), (-8,8.28),
+(-7.5,5.865), (-7,5.5), (-5.5,3.445), (-5,1),
+(-4.5,1.965), (-4,2.14), (-3.5,2.985), (-2.5,-1.215),
+(-2,1.52), (-0.5,1.545), (0,0.42),
+(0.5,-0.435), (1,0.96), (2.5,-1.235), (3,0.94),
+(3.5,0.165), (4,0.28), (5,1.1), (5.5,3.145), (6,1.94),
+(6.5,5.505), (7,3.44),
+(9.5,8.925), (10,9.84)}
+\axes
+\tcaption{Moral: always leave room for your axes.}
+\clipmfpic
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Plot several curves from datafiles with different dashing
+patterns. Top 4 curves use parameter {\tt [s]}, bottom four use default
+{\tt [p]}.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpdatacomment\#
+\mfpic[20][20]{-1}{4}{-4.5}{4.5}
+\dashedlines
+\plotdata[s1.2]{curves1.dat}
+\plotdata[p]{curves2.dat}
+\tlabeljustify{cr}
+\tlabelsep{2pt}
+\tlabels{(0, 4) {style: 0}
+         (0, 3) {1}
+         {(0, 2)} {2}
+         ({0},{1}) {3}
+         (0,-1) {4}
+         (0,-2) {5}
+         (0,-3) {0}
+         (0,-4) {1}
+}
+\dotted\axis x
+\tcaption{Plot with dashes}
+\endmfpic
+\quad
+\mfpic[20][20]{-1}{4}{-4.5}{4.5}
+\pointedlines
+\plotdata[s]{curves1.dat}
+\datapointsonly
+\mfplinestyle{5}
+\plotdata{curves2.dat}
+\tlabeljustify{cr}
+\tlabelsep{2pt}
+\tlabels{(0, 4) {style: 0}
+         (0, 3) {1}
+         (0, 2) {2}
+         (0, 1) {3}
+         (0, 0) {Data only:}
+         (0,-1) {4}
+         (0,-2) {5}
+         (0,-3) {6}
+         (0,-4) {7}}
+\dashed\axis y
+\tcaption{Plot with points}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Side axes, ticks, multiple labels and their adjustments.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50][50]{-1.1}{1.1}{-1.1}{1.1}
+\sideheadlen5pt
+\setaxismargins {.3}{0}{0}{0}
+\doaxes{bl}
+\sideheadlen=0pt
+\axis r
+\setbordermarks{inside}{ontop}{onright}{inside}
+\lmarks{-.5,0,.5}
+\bmarks{-.5,0,.5}
+\rmarks{-.5,0,.5}
+\tlabelsep{5pt}
+\tlabels{
+[tl](-1,1){TL}  [bl](-1,-1){BL}
+[tr](1,1){TR} [br](1,-1){BR}}
+\point{(-1,1),(-1,-1),(1,1),(1,-1)}
+\tlabelsep{2pt}
+\axislabels l{{$-0.5$}-.5, {$0$}0, {$0.5$}.5}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Rectangle around given text, rounded corners. Use
+\mac{everytlabel} to turn off interlineskip.}
+
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[72]{0}{1}{0}{1}
+ \tlabelsep{2pt}
+\everytlabel{\offinterlineskip}
+\lightershade
+ \shade\rect{(0,0.25),(1,.75)}
+ \plot[3pt,6pt]{Star}
+   \gclear
+     \tlabelrect[4pt]{(.5,.5)}{Look\\here!} %
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Oval sized to given text. Testing global setting of
+\mac{everytlabel} by increasing baselines to 18pt.}
+\everytlabel{\baselineskip 18pt\relax}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[72]{0}{1}{0}{1}
+\penwd{1pt}
+ \tlabelsep{2pt}
+\lightershade
+ \shade\rect{(0,0.25),(1,.75)}
+ \draw
+   \gclear
+     \tlabeloval*(.5,.5){Sized to\\this text}
+\penwd{0.3pt}
+ \draw\tlabelrect*({.5},{0.5}){Sized to\\this text}
+ \draw\tlabelrect(1.5,.5){Sized to\\this text}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Text surrounded by ellipse with given ratio: w/h = $0.7$.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[72]{0}{1}{0}{1}
+\penwd{1pt}
+ \tlabelsep{4pt}
+\lightershade
+ \shade\rect{(0,0.25),(1,.75)}
+ \dashed
+   \gclear
+     \tlabelellipse[0.7](.5,.5){Unfilled\\ellipse}
+\endmfpic
+\everytlabel{}
+
+
+\vs
+\noindent
+\tmtitle{Point grid, and line grid.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[24]{-2}{2}{-2}{2}
+\grid[2pt]{1,1}
+\gridlines{1,1}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Polar grid.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[72]{-.5}{1}{-.5}{.5}
+\plrgrid{.25,10}
+\rect{(-.5,-.5),(1,.5)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Polar coordinate patch.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{1.5}{-1}{1}
+\plrpatch{.2,1.4,.3,-30,45,15}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Pie chart.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[50]{0}{3}{-1}{1}
+\tlabelsep{3pt}
+\tlabeljustify{cl}
+\piechart{(1,0),.8}{78, 66, 54.7, 32, 5}
+\draw\shade\piewedge1
+\draw\shade\rect{(2,.8),(2.2,1)}
+  \lightershade
+\draw\shade\piewedge2
+\draw\shade\rect{(2,.5),(2.2,.7)}
+
+\draw\lhatch\piewedge[x.2]3
+\draw\lhatch\rect{(2,.2),(2.2,.4)}
+
+\draw\rhatch\piewedge4
+\draw\rhatch\rect{(2,-.1),(2.2,.1)}
+
+\draw\piewedge5
+\draw\rect{(2,-.4),(2.2,-.2)}
+
+\tlabels{%
+(2.2,.9){78.0}
+(2.2,.6){66.0}
+(2.2,.3){54.7}
+(2.2,.0){32.0}
+(2.2,-.3){5.0}
+}
+\tcaption{Amounts (in billions)}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Bar chart.}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[20][1]{0}{6.5}{-5}{85}
+  \barchart[1,1,.3]{v}{-5.0,32.0,66.3,54.7,78.0,20.5}
+  \draw\shade\chartbar1  \lightershade
+  \draw\shade \chartbar2
+  \draw\lhatch\chartbar3
+  \draw\rhatch\chartbar4
+  \draw\xhatch\chartbar5
+  \draw\chartbar6
+%
+  \barchart[1,1,-.3]{v}{6.0,30.0,55.3,44.7,80.0,21.5}
+  \draw\lhatch\chartbar1
+  \draw\rhatch\chartbar2
+  \draw\shade\chartbar3  \darkershade
+  \draw\shade\chartbar4
+  \draw\chartbar5
+  \draw\xhatch\chartbar6
+%
+\axisheadlen0pt
+\axes
+\setymarks{inside}
+\ymarks[2.5pt]{20,40,60,80}
+%
+\tlabelsep{3pt}
+  \axislabels{y}{{20}20,{40}40,{60}60,{80}80}
+\tlabelsep{5pt}
+  \axislabels{x}{{A}1,{B}2,{C}3,{D}4,{E}5,{F}6}
+\endmfpic
+
+\vs
+\noindent
+\tmtitle{Almost the same, but bars clipped to an ellipse}
+
+\nobreak
+\bigskip
+\noindent
+\mfpic[20][1]{0}{6.5}{-5}{85}
+  \barchart[1,1,.3]{v}{-5.0,32.0,66.3,54.7,78.0,20.5}
+  \draw\shade\chartbar1  \lightershade
+  \draw\shade \chartbar2
+  \draw\lhatch\chartbar3
+  \draw\rhatch\chartbar4
+  \draw\xhatch\chartbar5
+  \draw\chartbar6
+%
+  \barchart[1,1,-.3]{v}{6.0,30.0,55.3,44.7,80.0,21.5}
+  \draw\lhatch\chartbar1
+  \draw\rhatch\chartbar2
+  \draw\shade\chartbar3  \darkershade
+  \draw\shade\chartbar4
+  \draw\chartbar5
+  \draw\xhatch\chartbar6
+\gclip\ellipse{(3,30),2,20}
+%
+\axisheadlen0pt
+\axes
+\setymarks{inside}
+\ymarks[2.5pt]{20,40,60,80}
+%
+\tlabelsep{3pt}
+  \axislabels{y}{{20}20,{40}40,{60}60,{80}80}
+%\tlabelsep{5pt}
+%  \axislabels{x}{{A}1,{B}2,{C}3,{D}4,{E}5,{F}6}
+\endmfpic
+
+\vfil
+

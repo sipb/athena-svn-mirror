@@ -34,7 +34,7 @@
   /ogonek /quotesinglbase /guilsinglleft /guilsinglright
 % 0x10
   /quotedblleft /quotedblright /quotedblbase /guillemotleft 
-  /guillemotright /endash /emdash /compworkmark
+  /guillemotright /endash /emdash /compwordmark
   /perthousandzero /dotlessi /dotlessj /ff /fi /fl /ffi /ffl
 % 0x20
   /visualspace /exclam /quotedbl /numbersign

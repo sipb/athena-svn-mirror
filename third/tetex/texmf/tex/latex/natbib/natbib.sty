@@ -19,7 +19,7 @@
 %% Full documentation can be obtained by LaTeXing that original file.
 %% Only a few abbreviated comments remain here to describe the usage.
 %% =============================================
-%% Copyright 1993-1999 Patrick W Daly
+%% Copyright 1993-2000 Patrick W Daly
 %% Max-Planck-Institut f\"ur Aeronomie
 %% Max-Planck-Str. 2
 %% D-37191 Katlenburg-Lindau
@@ -27,7 +27,7 @@
 %% E-mail: daly@linmpi.mpg.de
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
 \ProvidesPackage{natbib}
-        [1999/05/28 7.0 (PWD)]
+        [2000/07/24 7.0a (PWD)]
  % This package reimplements the LaTeX \cite command to be used for various
  % citation styles, both author-year and numerical. It accepts BibTeX
  % output intended for many other packages, and therefore acts as a
@@ -297,17 +297,17 @@
          \endgroup
          \ifnum\NAT@nm=\@tempcnta
            \ifx\NAT@last@yr\relax
-             \edef\NAT@last@yr{\@citea \mbox{\noexpand\citenumfont\NAT@num}}%
+             \edef\NAT@last@yr{\@citea \mbox{\noexpand\citenumfont{\NAT@num}}}%
            \else
-             \edef\NAT@last@yr{--\penalty\@m\mbox{\noexpand\citenumfont\NAT@num}}%
+             \edef\NAT@last@yr{--\penalty\@m\mbox{\noexpand\citenumfont{\NAT@num}}}%
            \fi
          \else
-           \NAT@last@yr \@citea \mbox{\citenumfont\NAT@num}%
+           \NAT@last@yr \@citea \mbox{\citenumfont{\NAT@num}}%
            \let\NAT@last@yr\relax
          \fi
        \else
          \@citea \mbox{\hyper@natlinkstart{\@citeb\@extra@b@citeb}%
-           {\citenumfont\NAT@num}\hyper@natlinkend}%
+           {\citenumfont{\NAT@num}}\hyper@natlinkend}%
        \fi
        \fi
        \def\@citea{\NAT@sep\penalty\@m\NAT@space}%
@@ -317,7 +317,7 @@
           \@citea \NAT@test{1}\ \NAT@@open
           \if*#1*\else#1\ \fi\fi \NAT@mbox{%
           \hyper@natlinkstart{\@citeb\@extra@b@citeb}%
-          {\citenumfont\NAT@num}\hyper@natlinkend}%
+          {\citenumfont{\NAT@num}}\hyper@natlinkend}%
           \def\@citea{\NAT@@close\NAT@sep\penalty\@m\ }%
         \or\@citea
           \hyper@natlinkstart{\@citeb\@extra@b@citeb}%
@@ -597,7 +597,7 @@
 \newcommand\NAT@index@alt{{\let\protect=\noexpand\let~\relax
   \xdef\NAT@temp{\NAT@idxtxt}}\expandafter\NAT@exp\NAT@temp\@nil}
 \newcommand\NAT@exp{}
-\def\NAT@exp#1\@nil{\index[\citeindextype]{#1}}
+\def\NAT@exp#1\@nil{\mbox{}\index[\citeindextype]{#1}}
 
 \AtBeginDocument{%
 \@ifpackageloaded{index}{\let\NAT@index=\NAT@index@alt}{}}

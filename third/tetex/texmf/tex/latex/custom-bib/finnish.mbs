@@ -6,27 +6,27 @@
 % D-37191 Katlenburg-Lindau
 % Germany
 % E-mail: daly@linmpi.mpg.de
-% 
+%
 % This program can be redistributed and/or modified under the terms
 % of the LaTeX Project Public License Distributed from CTAN
 % archives in directory macros/latex/base/lppl.txt; either
 % version 1 of the License, or any later version.
 %
-% It is part of the custom-bib collection, 
+% It is part of the custom-bib collection,
 %   a contribution to the LaTeX2e system.
-%==================================================================== 
+%====================================================================
 %       A Language Definition File:  FINNISH
 %     to be included with other master bibliography style files
 %--------------------------------------------------------------------
 %   (See version and date in the \ProvidesFile command below)
 %--------------------------------------------------------------------
 %    This file is self-documenting: simply LaTeX it!
-%==================================================================== 
+%====================================================================
 %
  %-------------------------------------------------------------------
  % Begin module:
 %\fi
- % \ProvidesFile{finnish.mbs}[1999/02/24 1.4 (PWD/NS)]
+ % \ProvidesFile{finnish.mbs}[2002/10/18 4.0a (PWD)]
 %\iffalse
 %<*a&!a>
 % The following ensures that the driver part is not seen by makebst
@@ -81,84 +81,88 @@
 % \changes{1.3}{1998 Aug 17}{Add \texttt{bbl.etal}}
 % \changes{1.4}{1999 Feb 1}{Add option \texttt{xedn}}
 % \changes{1.4}{1999 Feb 24}{Update copyright notice}
+% \changes{1.4a}{1999 Sep 14}{Fix typo in edition query}
+% \changes{4.0}{1999 Oct 11}{For merlin 4.0}
+% \changes{4.0a}{2002 Oct 18}{Fix bug in page number suppression}
 %
 % \pagestyle{myheadings}
 % \markboth{P. W. Daly}{Finnish Bibliographies}
 %
 % \title{{\bfseries Finnish Language Definition File}\\
 %      for master bibliographic style files}
-%    
+%
 % \author{Patrick W. Daly}
-%         
+%
 % \GetFileInfo{finnish.mbs}
 % \date{This paper describes file \texttt{\filename},\\
 %  version \fileversion{} from \filedate}
-% 
+%
 % \maketitle
 %
 % \MakeShortVerb{\|}
-% 
+%
 % \parskip=1ex \parindent=0pt
 %
 % \newcommand{\btx}{{\sc Bib}\TeX}
 % \newcommand{\dtx}{\textsf{docstrip}}
-% 
+%
 % \section{Introduction}
 % This file is to be used as a language definition file with master
 % bibliographic files. The language it defines is
 % \begin{quote}\bfseries Finnish\end{quote}
-% 
-% The translations for Finnish were supplied by 
+%
+% The translations for Finnish were supplied by
 % \begin{quote}\ttfamily "Niilo.Siljamo@Helsinki.FI"\end{quote}
 
 % This is not a self-sufficient \texttt{.mbs} file, but rather may
 % be used together with one that contains language support via
 % external definition files.
-% 
+%
 % Bernd Raichle points out that |\^^b| can be used in place of |\"|
 % within \btx{} code. One can thus replace |Nelj\^^b{a}s| with |Nelj\^^b{a}s|
 % and do away with the \texttt{umlaut} option.
 %
 % See the documentation for \texttt{makebst} for formatting details.
-% 
+%
 % \section{The Menu Information}
-% 
+%
 % All the menu information is nested between \dtx{} guard options
 % |%<*options>| \dots\ |%</options>|, and the last command is
 % |\endoptions|. The rest of the file is nested between |%<*!options&!driver>|
 % \dots\ |%</!options&!driver>| in order to exclude it if \dtx{} is used to
 % extract only the menu information or the documentation driver.
-% 
+%
 %    \begin{macrocode}
 %<*options>
 \mes{^^JOptions for FINNISH}
 \wr{\spsp\spsp\sep finnish\pc: Finnish language}
 
-\mes{^^JABBREVIATE WORD `SIVUT':} % `Pages'
+\beginoptiongroup{ABBREVIATE WORD `SIVUT':}{} % `Pages'
 \optdef{*}{}{`Sivu(t)'}{(no abbreviation)}
 \optdef{a}{pp}{`Sivu' abbreviated}{as s. or ss.}
+\optdef{x}{ppx}{`Sivu' omitted}{}
 \getans
-
-\mes{^^JABBREVIATE WORD `TOIMITTAJAT':} % `Editors'
+\endoptiongroup
+\beginoptiongroup{ABBREVIATE WORD `TOIMITTAJAT':}{} % `Editors'
 \optdef{*}{}{`Toimittaja(t)'}{(no abbreviation)}
 \optdef{a}{ed}{`Toimittaja' abbreviated}{as toim.}
 \getans
-
-\mes{^^JOTHER ABBREVIATIONS:}
+\endoptiongroup
+\beginoptiongroup{OTHER ABBREVIATIONS:}{}
 \optdef{*}{}{No abbreviations}{of other words}
 \optdef{a}{abr}{Abbreviations}{of such words}
 \getans
-
-\mes{^^JEDITION NUMBERS:}
+\endoptiongroup
+\beginoptiongroup{EDITION NUMBERS:}{}
 \optdef{*}{xedn}{Editions as in database}{saving much processing memory}
-\optdef{*w{}{Write out editions}{as emsimm\string\"ainen, toinen, etc}
+\optdef{w}{}{Write out editions}{as emsimm\string\"ainen, toinen, etc}
 \optdef{n}{ord}{Numerical editions}{as 1., 2., etc}
 \getans
-
+\endoptiongroup
 \endoptions
 %</options>
 %    \end{macrocode}
-% 
+%
 % \StopEventually{\PrintChanges}
 %
 % \section{The Coding}
@@ -204,13 +208,21 @@ FUNCTION {bbl.in}
 { "teoksessa" }
 
 FUNCTION {bbl.pages}
-%<!pp>{ "sivut" }
+%<!pp&!ppx>{ "sivut" }
 %<pp>{ "ss." }
+%<!pp&ppx>{ "" }
+
 
 FUNCTION {bbl.page}
-%<!pp>{ "sivu" }
+%<!pp&!ppx>{ "sivu" }
 %<pp>{ "s." }
+%<!pp&ppx>{ "" }
 
+%<*revdata>
+FUNCTION {bbl.eidpp}
+{ "sivut" }
+
+%</revdata>
 FUNCTION {bbl.chapter}
 { "luku" }
 

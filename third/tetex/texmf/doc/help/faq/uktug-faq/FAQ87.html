@@ -1,0 +1,22 @@
+<head>
+<title>UK TeX FAQ -- question 87</title>
+</head><body>
+<h3>Weird characters in <i>dvips</i> output</h3>
+<!-- fi ligature pound pounds sterling elephants -->
+<p>You've innocently generated output, using <i>dvips</i>, and there
+are weird transpositions in it: for example, the <code>fi</code> ligature has
+appeared as a &pound; symbol.  This is an unwanted side-effect of
+the precautions
+outlined in
+
+<a href="FAQ76.html">generating PostScript for PDF</a>.
+The <code>-G1</code> switch discussed in that question is appropriate for
+Knuth's text fonts, but doesn't work with text fonts that don't follow
+Knuth's patterns (such as fonts supplied by Adobe).
+<p>If the problem arises, suppress the <code>-G1</code> switch: if you were using it
+explicitly, <em>don't</em>; if you were using <code>-Ppdf</code>, add <code>-G0</code> to
+suppress the implicit switch in the pseudo-printer file.
+<p>The problem has been corrected in <i>dvips</i> v 5.90 (the
+version distributed with the TeX-Live 7 CDROM and in other
+TeX distributions from that date onwards).
+<p><p><p></body>

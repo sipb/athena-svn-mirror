@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // PatchLevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -20,14 +20,13 @@
 
 % Contents:
 %
-%  *) font booleans
+%  *) font booleans (mostly for ec); slitex used in SliTeX cm fonts
 %  *) macros for processing chars twice: for some accents
 %  *) routines to generate the parameter sets by extrapolation
 %  ** macros for accenting moved in file lcyrdefs.mf
 %
 
-
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 boolean slitex; slitex := false; % |true| simulates behaviour of |sroman|
 boolean one_serif; one_serif:=true; % |false| suppresses base serif on `1'
@@ -40,7 +39,6 @@ boolean knuthian_ae; knuthian_ae:=false; % |true| reproduces cm italic \ae
 boolean fancy_thorn; fancy_thorn:=false; % |true| produces \th with fancier bulb
 boolean is_small_cap; is_small_cap:=false;
 tracingstats:=1; % Print statistics at the end of run
-
 
 %
 %
@@ -179,4 +177,4 @@ def clear_extra_memory= % Release ressources hold by the extrapolation routine
 enddef;
 
 endinput;
-% end of file
+%end of file

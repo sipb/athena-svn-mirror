@@ -1,7 +1,6 @@
 @c @mapfile{
 @c   email = "tex-fonts@tug.org",
-@c   version = "2.6",
-@c   date = "3 January 1999",
+@c   date = "11 March 2002",
 @c   url = "http://tug.org/fontname/supplier.map",
 @c   supported = "yes",
 @c   docstring = "Typeface supplier (foundry) abbreviations and
@@ -9,6 +8,7 @@
 @c }
 @c
 0 fontfont      @r{FontFont}
+5 softmake      @r{Softmaker}
 9 unknown
 a autologi      @r{Autologic}
 b bitstrea      @r{Bitstream}
@@ -27,7 +27,7 @@ n ibm           @r{IBM}
 o corel         @r{Corel}
 p adobe         @r{Adobe (@samp{p} for PostScript)}
 r -             @r{raw (for [obsolete] use with virtual fonts)}
-s sun           @r{Sun}
+s sun           @r{Storm Type}
 t paragrap      @r{ParaGraph}
 u urw           @r{URW}
 w wolfram       @r{Wolfram}

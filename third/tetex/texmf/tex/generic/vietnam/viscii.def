@@ -1,0 +1,159 @@
+% This file is part of vntex. License: GPL.
+%
+% This is the file viscii.def which provides VISCII input encoding for
+% Vietnamese.
+%
+% written by Werner Lemberg <wl@gnu.org>
+
+\ProvidesFile{viscii.def}[2000/01/27 v1.0 VISCII Vietnamese input encoding]
+
+\makeatletter
+
+\DeclareInputText{2}{\h\u A}
+\DeclareInputText{5}{\~\u A}
+\DeclareInputText{6}{\~\^A}
+\DeclareInputText{20}{\h Y}
+\DeclareInputText{25}{\~Y}
+\DeclareInputText{30}{\d Y}
+
+\DeclareInputText{128}{\d A}
+\DeclareInputText{129}{\@tabacckludge'\u A}
+\DeclareInputText{130}{\@tabacckludge`\u A}
+\DeclareInputText{131}{\d\u A}
+\DeclareInputText{132}{\@tabacckludge'\^A}
+\DeclareInputText{133}{\@tabacckludge`\^A}
+\DeclareInputText{134}{\h\^A}
+\DeclareInputText{135}{\d\^A}
+\DeclareInputText{136}{\~E}
+\DeclareInputText{137}{\d E}
+\DeclareInputText{138}{\@tabacckludge'\^E}
+\DeclareInputText{139}{\@tabacckludge`\^E}
+\DeclareInputText{140}{\h\^E}
+\DeclareInputText{141}{\~\^E}
+\DeclareInputText{142}{\d\^E}
+\DeclareInputText{143}{\@tabacckludge'\^O}
+
+\DeclareInputText{144}{\@tabacckludge`\^O}
+\DeclareInputText{145}{\h\^O}
+\DeclareInputText{146}{\~\^O}
+\DeclareInputText{147}{\d\^O}
+\DeclareInputText{148}{\d\horn O}
+\DeclareInputText{149}{\@tabacckludge'\horn O}
+\DeclareInputText{150}{\@tabacckludge`\horn O}
+\DeclareInputText{151}{\h\horn O}
+\DeclareInputText{152}{\d I}
+\DeclareInputText{153}{\h O}
+\DeclareInputText{154}{\d O}
+\DeclareInputText{155}{\h I}
+\DeclareInputText{156}{\h U}
+\DeclareInputText{157}{\~U}
+\DeclareInputText{158}{\d U}
+\DeclareInputText{159}{\@tabacckludge`Y}
+
+\DeclareInputText{160}{\~O}
+\DeclareInputText{161}{\@tabacckludge'\u a}
+\DeclareInputText{162}{\@tabacckludge`\u a}
+\DeclareInputText{163}{\d\u a}
+\DeclareInputText{164}{\@tabacckludge'\^a}
+\DeclareInputText{165}{\@tabacckludge`\^a}
+\DeclareInputText{166}{\h\^a}
+\DeclareInputText{167}{\d\^a}
+\DeclareInputText{168}{\~e}
+\DeclareInputText{169}{\d e}
+\DeclareInputText{170}{\@tabacckludge'\^e}
+\DeclareInputText{171}{\@tabacckludge`\^e}
+\DeclareInputText{172}{\h\^e}
+\DeclareInputText{173}{\~\^e}
+\DeclareInputText{174}{\d\^e}
+\DeclareInputText{175}{\@tabacckludge'\^o}
+
+\DeclareInputText{176}{\@tabacckludge`\^o}
+\DeclareInputText{177}{\h\^o}
+\DeclareInputText{178}{\~\^o}
+\DeclareInputText{179}{\~\horn O}
+\DeclareInputText{180}{\horn O}
+\DeclareInputText{181}{\d\^o}
+\DeclareInputText{182}{\@tabacckludge`\horn o}
+\DeclareInputText{183}{\h\horn o}
+\DeclareInputText{184}{\d i}
+\DeclareInputText{185}{\d\horn U}
+\DeclareInputText{186}{\@tabacckludge'\horn U}
+\DeclareInputText{187}{\@tabacckludge`\horn U}
+\DeclareInputText{188}{\h\horn U}
+\DeclareInputText{189}{\horn o}
+\DeclareInputText{190}{\@tabacckludge'\horn o}
+\DeclareInputText{191}{\horn U}
+
+\DeclareInputText{192}{\@tabacckludge`A}
+\DeclareInputText{193}{\@tabacckludge'A}
+\DeclareInputText{194}{\^A}
+\DeclareInputText{195}{\~A}
+\DeclareInputText{196}{\h A}
+\DeclareInputText{197}{\u A}
+\DeclareInputText{198}{\h\u a}
+\DeclareInputText{199}{\~\u a}
+\DeclareInputText{200}{\@tabacckludge`E}
+\DeclareInputText{201}{\@tabacckludge'E}
+\DeclareInputText{202}{\^E}
+\DeclareInputText{203}{\h E}
+\DeclareInputText{204}{\@tabacckludge`I}
+\DeclareInputText{205}{\@tabacckludge'I}
+\DeclareInputText{206}{\~I}
+\DeclareInputText{207}{\@tabacckludge`y}
+
+\DeclareInputText{208}{\DJ}
+\DeclareInputText{209}{\@tabacckludge'\horn u}
+\DeclareInputText{210}{\@tabacckludge`O}
+\DeclareInputText{211}{\@tabacckludge'O}
+\DeclareInputText{212}{\^O}
+\DeclareInputText{213}{\d a}
+\DeclareInputText{214}{\h y}
+\DeclareInputText{215}{\@tabacckludge`\horn u}
+\DeclareInputText{216}{\h\horn u}
+\DeclareInputText{217}{\@tabacckludge`U}
+\DeclareInputText{218}{\@tabacckludge'U}
+\DeclareInputText{219}{\~y}
+\DeclareInputText{220}{\d y}
+\DeclareInputText{221}{\@tabacckludge'Y}
+\DeclareInputText{222}{\~\horn o}
+\DeclareInputText{223}{\horn u}
+
+\DeclareInputText{224}{\@tabacckludge`a}
+\DeclareInputText{225}{\@tabacckludge'a}
+\DeclareInputText{226}{\^a}
+\DeclareInputText{227}{\~a}
+\DeclareInputText{228}{\h a}
+\DeclareInputText{229}{\u a}
+\DeclareInputText{230}{\~\horn u}
+\DeclareInputText{231}{\~\^a}
+\DeclareInputText{232}{\@tabacckludge`e}
+\DeclareInputText{233}{\@tabacckludge'e}
+\DeclareInputText{234}{\^e}
+\DeclareInputText{235}{\h e}
+\DeclareInputText{236}{\@tabacckludge`i}
+\DeclareInputText{237}{\@tabacckludge'i}
+\DeclareInputText{238}{\~i}
+\DeclareInputText{239}{\h i}
+
+\DeclareInputText{240}{\dj}
+\DeclareInputText{241}{\d\horn u}
+\DeclareInputText{242}{\@tabacckludge`o}
+\DeclareInputText{243}{\@tabacckludge'o}
+\DeclareInputText{244}{\^o}
+\DeclareInputText{245}{\~o}
+\DeclareInputText{246}{\h o}
+\DeclareInputText{247}{\d o}
+\DeclareInputText{248}{\d u}
+\DeclareInputText{249}{\@tabacckludge`u}
+\DeclareInputText{250}{\@tabacckludge'u}
+\DeclareInputText{251}{\~u}
+\DeclareInputText{252}{\h u}
+\DeclareInputText{253}{\@tabacckludge'y}
+\DeclareInputText{254}{\d\horn o}
+\DeclareInputText{255}{\~\horn U}
+
+\makeatother
+
+\endinput
+
+% end of viscii.def

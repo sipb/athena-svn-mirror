@@ -1,0 +1,186 @@
+\documentclass{article}
+\usepackage{jeb-bibl}
+\begin{document}
+\section{Some citation tests}
+\begin{description}
+\global\tracingmacros2\global\tracingcommands2\global\tracingonline0
+\item[one author] \cite{M96}
+\item[two authors] \cite{fn95}
+\item[three authors] \cite{GMW81}
+\global\tracingmacros0\global\tracingcommands0\global\tracingonline0
+\end{description}
+
+\begin{bibsection}
+\begin{biblist}
+
+\bib*{niklas.k.j}{person}{name={Niklas, K. J.}}
+
+\bib*{fun.ecol}{periodical}{journal={Functional Ecology}}
+
+\bib*{u.chicago}{publisher}{
+  publisher={University of Chicago Press},
+  place={Illinois},
+}
+
+\bib*{HSW80}{collection}{
+  editor={Hecht, M.},
+  editor={Steere, W.},
+  editor={Wallace, B.},
+  date={1980},
+  title={Evolutionary biology},
+  publisher={Plenum Publishing},
+  place={New York},
+}
+
+\bib{fn95}{article}{
+  author={Farnsworth, K. D.},
+  author={Niklas, K. J.},
+  date={1995},
+  title={Theories of optimization, form and function in branching
+  architectures in plants},
+  journal={Functional Ecology},
+  volume={9},
+  pages={355\ndash 363},
+}
+
+\bib{GMW81}{book}{
+  author={Gill, P. E.},
+  author={Murray, W.},
+  author={Wright, M. H.},
+  date={1981},
+  title={Practical optimization},
+  publisher={Academic Press},
+  place={London},
+}
+
+\bib{GA84}{book}{
+  author={Gensel, P. G.},
+  author={Andrews, H. N.},
+  date={1984},
+  title={Plant life in the Devonian},
+  publisher={Praeger Press},
+  place={New York},
+}
+
+\bib{M96}{article}{
+  author={McShea, D. W.},
+  date={1996},
+  title={Metazoan complexity and evolution: is there a trend},
+  journal={Evolution},
+  volume={50},
+  pages={477\ndash 492},
+}
+
+\bib{MWWW73}{book}{
+  author={Meredith, D. D.},
+  author={Wong, K. W.},
+  author={Woodhead, R. W.},
+  author={Wortman, R. H.},
+  date={1973},
+  title={Design and planning of engineering systems},
+  publisher={Prentice-Hall},
+  place={Englewood Cliffs, New Jersey},
+}
+
+\bib{N92}{book}{
+  author={Niklas, K. J.},
+  date={1992},
+  title={Plant biomechanics: an engineering approach to plant form and
+  function},
+  publisher={University of Chicago Press},
+  place={Illinois},
+}
+
+\bib{N94-allometry}{book}{
+  author={Niklas, K. J.},
+  date={1994},
+  label={a},
+  title={Plant allometry: the scaling of form and process},
+  publisher={University of Chicago Press},
+  place={Illinois},
+}
+
+\bib{N94-simulation}{article}{
+  author={Niklas, K. J.},
+  % This is just to show what the warning looks like for an empty field:
+  author={},
+  date={1994},
+  label={b},
+  title={Simulation of organic shape: the roles of phenomenology and
+         mechanism},
+  journal={Journal of Morphology},
+  volume={219},
+  pages={243\ndash 246},
+}
+
+\bib{N97-adaptive-walks}{article}{
+  author={Niklas, K. J.},
+  date={1997},
+  label={a},
+  title={Adaptive walks through fitness landscapes for early vascular
+         land plants},
+  journal={American Journal of Botany},
+  volume={84},
+  pages={16\ndash 25},
+}
+
+\bib{N97-effects}{article}{
+  author={Niklas, K. J.},
+  date={1997},
+  label={b},
+  title={Effects of hypothetical developmental barriers and abrupt
+         environmental changes on adaptive walks in a computer-generated
+         domain for early vascular land plants},
+  journal={Paleobiology},
+  volume={23},
+  pages={63\ndash 76},
+}
+
+\bib{NK84}{article}{
+  author={Niklas, K. J.},
+  author={Kerchner, V.},
+  date={1984},
+  title={Mechanical and photosynthetic constraints on the evolution of
+  plant shape},
+  journal={Paleobiology},
+  volume={10},
+  pages={79\ndash 101},
+}
+
+\bib{NTK80}{article}{
+  author={Niklas, K. J.},
+  author={Tiffney, B. H.},
+  author={Knoll, A. H.},
+  date={1980},
+  title={Apparent changes in the diversity of fossil plants: a
+         preliminary assessment},
+  xref={HSW80},
+  volume={12},
+  pages={1\ndash 89},
+}
+
+\bib{NTK83}{article}{
+  author={Niklas, K. J.},
+  author={Tiffney, B. H.},
+  author={Knoll, A. H.},
+  date={1983},
+  title={Patterns in vascular land plant diversification},
+  journal={Nature},
+  volume={303},
+  pages={614\ndash 616},
+}
+
+\bib{TR93}{article}{
+  author={Thomas, R. D. K.},
+  author={Reif, W.-E.},
+  date={1993},
+  title={The skeleton space: a finite set of organic designs},
+  journal={Evolution},
+  volume={47},
+  pages={341\ndash 360},
+}
+
+\end{biblist}
+\end{bibsection}
+
+\end{document}

@@ -5,46 +5,52 @@
 %% The original source files were:
 %%
 %% babel.dtx  (with options: `package')
-%% Copyright 1998-1999 Johannes L. Braams and any individual authors
+%% 
+%% This is a generated file.
+%% 
+%% Copyright 1989-2001 Johannes L. Braams and any individual authors
 %% listed elsewhere in this file.  All rights reserved.
 %% 
-%% For further copyright information see any other copyright notices in
-%% this file.
-%% 
-%% This file is part of the Babel system release 3.6.
+%% This file is part of the Babel system release 3.7.
 %% --------------------------------------------------
 %% 
 %% It may be distributed under the terms of the LaTeX Project Public
 %% License, as described in lppl.txt in the base LaTeX distribution.
-%% Either version 1.0 or, at your option, any later version.
+%% Either version 1.2 or, at your option, any later version.
+%%
 \NeedsTeXFormat{LaTeX2e}[1998/06/01]
-%%\ProvidesFile{babel.dtx}[1999/05/05 v3.6x The Babel package]
-%% Babel package for LaTeX2e.
 %% File 'babel.dtx'
-%% Copyright (C) 1989 -- 1999 by Johannes Braams,
+%%\ProvidesFile{babel.dtx}[2001/03/01 v3.7h The Babel package]
+%% Babel package for LaTeX2e.
+%% Copyright (C) 1989 -- 2001 by Johannes Braams,
 %%                            TeXniek
 %%                            all rights reserved.
 %% Please report errors to: J.L. Braams
-%%                          JLBraams@cistron.nl
+%%                          babel@braams.cistron.nl
 \ProvidesPackage{babel}
-                [1999/05/05 v3.6x %
+                [2001/03/01 v3.7h %
      The Babel package]
 \ifx\LdfInit\@undefined\input babel.def\relax\fi
+\DeclareOption{acadian}{\input{frenchb.ldf}}
 \DeclareOption{afrikaans}{\input{dutch.ldf}}
 \DeclareOption{american}{\input{english.ldf}}
 \DeclareOption{austrian}{\input{germanb.ldf}}
 \DeclareOption{bahasa}{\input{bahasa.ldf}}
+\DeclareOption{basque}{\input{basque.ldf}}
 \DeclareOption{brazil}{\input{portuges.ldf}}
 \DeclareOption{brazilian}{\input{portuges.ldf}}
 \DeclareOption{breton}{\input{breton.ldf}}
 \DeclareOption{british}{\input{english.ldf}}
+\DeclareOption{bulgarian}{\input{bulgarian.ldf}}
+\DeclareOption{canadian}{\input{english.ldf}}
+\DeclareOption{canadien}{\input{frenchb.ldf}}
 \DeclareOption{catalan}{\input{catalan.ldf}}
 \DeclareOption{croatian}{\input{croatian.ldf}}
 \DeclareOption{czech}{\input{czech.ldf}}
 \DeclareOption{danish}{\input{danish.ldf}}
 \DeclareOption{dutch}{\input{dutch.ldf}}
 \DeclareOption{english}{\input{english.ldf}}
-\DeclareOption{esperanto}{\input{esperant.ldf}}
+\DeclareOption{esperanto}{\input{esperanto.ldf}}
 \DeclareOption{estonian}{\input{estonian.ldf}}
 \DeclareOption{finnish}{\input{finnish.ldf}}
 \DeclareOption{francais}{\input{frenchb.ldf}}
@@ -58,18 +64,23 @@
 \DeclareOption{german}{\input{germanb.ldf}}
 \DeclareOption{germanb}{\input{germanb.ldf}}
 \DeclareOption{greek}{\input{greek.ldf}}
-\DeclareOption{polutonikogreek}{\input{greek.ldf}}
+\DeclareOption{polutonikogreek}{%
+  \input{greek.ldf}%
+  \languageattribute{greek}{polutoniko}}
 \DeclareOption{hebrew}{%
   \input{rlbabel.def}%
   \input{hebrew.ldf}}
 \DeclareOption{hungarian}{\input{magyar.ldf}}
+\DeclareOption{icelandic}{\input{icelandic.ldf}}
 \DeclareOption{irish}{\input{irish.ldf}}
 \DeclareOption{italian}{\input{italian.ldf}}
+\DeclareOption{latin}{\input{latin.ldf}}
 \DeclareOption{lowersorbian}{\input{lsorbian.ldf}}
 \DeclareOption{magyar}{\input{magyar.ldf}}
 \DeclareOption{naustrian}{\input{ngermanb.ldf}}
 \DeclareOption{ngerman}{\input{ngermanb.ldf}}
 \DeclareOption{norsk}{\input{norsk.ldf}}
+\DeclareOption{samin}{\input{samin.ldf}}
 \DeclareOption{nynorsk}{\input{norsk.ldf}}
 \DeclareOption{polish}{\input{polish.ldf}}
 \DeclareOption{portuges}{\input{portuges.ldf}}
@@ -77,13 +88,14 @@
 \DeclareOption{romanian}{\input{romanian.ldf}}
 \DeclareOption{russian}{\input{russianb.ldf}}
 \DeclareOption{scottish}{\input{scottish.ldf}}
+\DeclareOption{serbian}{\input{serbian.ldf}}
 \DeclareOption{slovak}{\input{slovak.ldf}}
 \DeclareOption{slovene}{\input{slovene.ldf}}
 \DeclareOption{spanish}{\input{spanish.ldf}}
 \DeclareOption{swedish}{\input{swedish.ldf}}
 \DeclareOption{turkish}{\input{turkish.ldf}}
-\DeclareOption{uppersorbian}{\input{usorbian.ldf}}
 \DeclareOption{ukrainian}{\input{ukraineb.ldf}}
+\DeclareOption{uppersorbian}{\input{usorbian.ldf}}
 \DeclareOption{welsh}{\input{welsh.ldf}}
 \DeclareOption{UKenglish}{\input{english.ldf}}
 \DeclareOption{USenglish}{\input{english.ldf}}
@@ -138,9 +150,12 @@
       \let\pageref\org@pageref
       \@safe@activestrue
       \org@ifthenelse{#1}{%
-        \@safe@activesfalse#2}{%
-        \@safe@activesfalse#3}%
-      \let\pageref\bbl@tempa
+        \let\pageref\bbl@tempa
+        \@safe@activesfalse
+        #2}{%
+        \let\pageref\bbl@tempa
+        \@safe@activesfalse
+        #3}%
       }%
     }{}%
   }
@@ -153,13 +168,17 @@
     }{}%
   }
 \AtBeginDocument{%
-  \@ifpackageloaded{hhline}
+  \@ifpackageloaded{hhline}%
     {\expandafter\ifx\csname normal@char:\endcsname\relax
      \else
        \makeatletter
        \def\@currname{hhline}\input{hhline.sty}\makeatother
-     \fi}
+     \fi}%
     {}}
+\AtBeginDocument{%
+  \@ifpackageloaded{fancyhdr}{%
+    \DeclareRobustCommand{\FOREIGNLANGUAGE}[1]{%
+      \lowercase{\foreignlanguage{#1}}}}{}}
 %%
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z

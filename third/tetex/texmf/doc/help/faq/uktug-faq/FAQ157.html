@@ -1,0 +1,19 @@
+<head>
+<title>UK TeX FAQ -- question 157</title>
+</head><body>
+<h3>The comma as a decimal separator</h3>
+<p>If you use a comma in maths mode, you get a small space
+after it; this space is inappropriate if the comma is being used
+as a decimal separator.  An easy solution to this problem is to
+type (in maths mode) <code>3{,}14</code> instead of typing <code>3,14</code>.
+However, if your language's typographic rules require the comma as a
+decimal separator, such usage can rapidly become extremely tiresome.
+In such cases it is probably better to use the
+<i>icomma</i> package.  The packages ensures that there will be no
+extra space after a comma, unless you type a space after it (as in
+<code>f(x, y)</code>, for instance), in which case the usual small space after
+the comma appears.
+<dl>
+<dt><tt><i>icomma.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/contrib/supported/was.tar.gz">macros/latex/contrib/supported/was.tar.gz</a>
+</dl>
+<p></body>

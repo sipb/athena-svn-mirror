@@ -1,3 +1,4 @@
+\ProvidesFile{swedish.mld}[1999/03/16]
 % Swedish titles for minitoc.sty
 \def\mtctitle{Inneh\csname aa\endcsname ll}%
 \def\mlftitle{Figurer}%

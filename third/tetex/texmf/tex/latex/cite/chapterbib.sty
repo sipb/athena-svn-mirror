@@ -1,4 +1,4 @@
-% chapterbib.sty   Version 1.8 (29-APR-1999) Donald Arseneau
+% chapterbib.sty   Version 1.9 (19-SEP-2001) Donald Arseneau
 %
 % Allow multiple bibliographies in a LaTeX document, including items
 % \cite'd in more than one bibliography.
@@ -28,8 +28,14 @@
 \let\cbinput\cb@input
 
 \@ifundefined{@extra@binfo}{% if not defined by compatible package
-  \let\bibcite@iii\bibcite
-  \def\bibcite#1{\bibcite@iii{#1\@extra@binfo}}%
+%  \@ifundefined{@safe@activestrue}{}{% babel is loaded
+    \@ifundefined{org@bibcite}{%
+      \let\bibcite@iii\bibcite
+      \def\bibcite#1{\bibcite@iii{#1\@extra@binfo}}%
+    }{% and will clobber us
+      \let\bibcite@iii\org@bibcite
+      \def\org@bibcite#1{\bibcite@iii{#1\@extra@binfo}}%
+    }%}
  }{}%
 
 \@ifundefined{@extra@b@citeb}{% if not defined by compatible package
@@ -110,17 +116,20 @@
    \expandafter\expandafter\expandafter\cb@sectionbib\fi
    \cb@thebibliography}%
  \expandafter\def\expandafter\cb@sectionbib\@tempc##1{#1{\bibname}%
-  \ifx\@currentlabel\@empty \begingroup \c@secnumdepth-\tw@
+  \ifx\@currentlabel\@empty \begingroup \c@secnumdepth\z@
    \addcontentsline{toc}{#2}{\bibname}% local: * -> no num
-   \csname#2mark\endcsname{\bibname}\endgroup\fi }}
+   \csname#2mark\endcsname{\bibname}\endgroup\fi 
+  \@ifnextchar\@mkboth{\@gobblethree}{}}}
 
+\long\def\@gobblethree#1#2#3{}%
 \def\strip@prefix#1>{}
 \@ifundefined{bibname}{\def\bibname{Bibliography}}{}
+
 
 \@ifundefined{DeclareOption}{% LaTeX2.09
   \def\@CB@wtoc#1{}% disable; broken in 2.09
 }{% LaTeX2e option
-\ProvidesPackage{chapterbib}[1999/04/29 \space v 1.8 ]
+\ProvidesPackage{chapterbib}[2001/09/19 \space v 1.9]
 \DeclareOption{sectionbib}{\AtBeginDocument{\sectionbib{\section*}{section}}%
   \providecommand\StartFinalBibs{\chapter*{\bibname}\chaptermark\bibname
    \protected@edef\bibname{\chaptername\space\noexpand\thechapter}}}%
@@ -165,8 +174,9 @@
 %====================== BEGIN INSTRUCTIONS ===========================
 
 
-% chapterbib.sty   Version 1.8  (29-APR-1999) DA  (gather, duplicate, toc)
-% ~~~~~~~~~~~~~~           1.7  (21-JUL-1997) DA  (sectionbib, \nocite)
+% chapterbib.sty   Version 1.9  (19-SEP-2001) sectionbib change; babel
+% ~~~~~~~~~~~~~~           1.8  (29-APR-1999) DA  (gather, duplicate, toc)
+%                          1.7  (21-JUL-1997) DA  (sectionbib, \nocite)
 %                          1.6  (08-FEB-1997) Donald Arseneau (more sectionbib)
 %                          1.5  (09-OCT-1995) Donald Arseneau (rootbib)
 %                          1.4  (11-MAR-1995) Donald Arseneau (sectionbib)
@@ -218,18 +228,22 @@
 %
 % 5. Your preferred citation style (xxx.sty) may not work with chapterbib at
 %    first, but it is easy to make it compatible:  In `xxx.sty' change every
-%    "b@\@citeb" to "b@\@citeb\@extra@b@citeb", and insert the line
+%    "@\@citeb" to "@\@citeb\@extra@b@citeb", and insert the line
 %        \@ifundefined{@extra@b@citeb}{\def\@extra@b@citeb{}}{}
 %    somewhere (but not as a comment or as part of another definition!).
 %    If the package also redefines \bibcite then you should change that
 %    definition, replacing "b@#1" with "b@#1\@extra@binfo", and insert
 %        \gdef\@extra@binfo{}
 %    somewhere in the file.
-%    Even after putting the "\@extra@b@citeb" hook into \cite, there may be
-%    a problem with \nocite.  This package will try to detect the hook in
-%    \nocite, but this might fail.  If it does, then you may need to define
-%    \nocite (with any "b@\@citeb" changed to "b@\@citeb\@extra@b@citeb")
-%    in that sty file.
+%    Some citation packages deviate quite far from LaTeX's own method of
+%    organizing cite tags using "b@\@citeb".  The instructions above catch 
+%    such extensions as "Y@\@citeb", but not more radical differences.
+%    In such cases, try contacting the author of the citation package.
+%    If a citation style does not define "\nocite", then that command
+%    would not be converted when you make the patches to "@\@citeb".
+%    Chapterbib will try to detect the hook in "\nocite", but if this fails
+%    you may need to redefine "\nocite" (with any "@\@citeb" changed to 
+%    "@\@citeb\@extra@b@citeb") in that sty file.
 %
 % 6. The report and book document classes usually treat the bibliography as
 %    an unnumbered chapter (\chapter*), which is not so good for bibliographies
@@ -268,7 +282,8 @@
 %    commands, it should produce all the right bbl files.
 %
 % 9. To have a bibliography-by-chapter at the end instead of separate bibs
-%    in the chapters, use \usepackage[gather]{chapterbib} and run LaTeX as
+%    in the chapters, use \usepackage[gather]{chapterbib}, put \bibliography
+%    commands in each file, and at the end of the main file. Run LaTeX as
 %    in item 1. You can control the titling of the final bibliography by
 %    defining \StartFinalBibs.  The default definition is (like)
 %
@@ -378,8 +393,9 @@
 %---------------------------------------------------------------
 %
 % Authors  Niel Kempson        (original)
-% ~~~~~~~  Donald Arseneau  <asnd@reg.triumf.ca>   March 1993 - Apr 1999
+% ~~~~~~~  Donald Arseneau  <asnd@triumf.ca>   March 1993 - Sept 2001
 %
+% Changes with ver 1.9: sectionbib remove \@mkboth
 % Changes with ver 1.8: options gather and duplicate; babel workarounds; toc
 % Changes with ver 1.7: change the \sectionbib command re. headings.
 %                       update \nocite and alter \citeform

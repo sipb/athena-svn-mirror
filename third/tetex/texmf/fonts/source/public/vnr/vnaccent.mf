@@ -1,0 +1,515 @@
+% This file is part of vntex. License: GPL.
+%
+accent_gap# := .15x_height#;
+letter_height# := if case_ = small: x_height# else: cap_height# fi;
+max_ac_top# := 0;
+
+tt_corr# := if low_asterisk: crisp# else: 0 fi;
+define_pixels(tt_corr);
+
+if serifs:
+    acute_stem#   := .8stem#;
+    acute_hair#   := min(hair#, .4acute_stem#);
+else:
+    acute_stem#   := .7[vair#, stem#];
+    acute_hair#   := .9vair#;
+fi
+
+acute_side_thickness# := .6acute_stem#;
+acute_corner# := .5acute_hair#;
+tt_corner_corr# := .25tt_corr#;
+corner_corr# := acute_corner# + tt_corner_corr#;
+acute_width#  := 4u#;
+ds# := acute_corner# + acute_side_thickness#;
+acute_height# := max(.4x_height#, (acute_width# - ds#)*tand(30) + ds#);
+slant_width_corr# := slant*(acute_height# - ds#);
+slant_weight_corr := if slant > 0: 
+                         if crisp > 0: .2 else: .3 fi slant  
+                     else: 0 fi;
+define_blacker_pixels(acute_stem, acute_hair, acute_side_thickness);
+
+define_accent_dimens(
+    acute_,
+    acute_width# - slant_width_corr#,
+    acute_height#
+);
+
+begin_accent(acute_);
+    if serifs:
+        pickup crisp.nib;
+        x1 = w - acute_side_thickness;
+        y1 = h - acute_side_thickness;
+        x2 = hp(corner_corr#);
+        y2 = vp(corner_corr#);
+        acute_theta := angle(charwd - corner_corr# - acute_side_thickness#,
+                             charht - corner_corr# - acute_side_thickness#);
+        xpos1(acute_stem*(1 + slant_weight_corr), acute_theta + 90);
+        xpos2(acute_hair*(1 + slant_weight_corr), acute_theta + 90);
+        filldraw circ_stroke z1e -- z2e;  % diagonal
+        set_ac_join(acute_, .4w, .4w#, h# - acute_side_thickness#);
+    else:
+        pickup fine.nib;
+        % the following magic lines are to calculate the slope angle according
+        % to acute_stem and acute_hair by solving the equation 
+        %   tand(theta)*(w - .5(acute_stem + acute_hair)/sind(theta)) = h;
+        A := charwd/charht;
+        B := .5(acute_stem# + acute_hair#)/charht;
+        acute_theta := angle(A*sqrt(A*A + 1 - B*B) - B, A*A + 1);
+        xpos1(acute_stem/sind(acute_theta), 0);
+        xpos2(acute_hair/sind(acute_theta), 0);
+        rt x1r = w;
+        lft x2l = 0;
+        top y1 = h;
+        bot y2 = 0;
+        filldraw stroke z1e -- z2e;
+        set_ac_join(acute_, .3w, .3w#, h#);
+    fi  % diagonal
+    penlabels(1, 2);
+end_accent;
+
+define_accent_dimens(
+    grave_,
+    acute_width# + slant_width_corr#,
+    acute_height#
+);
+
+begin_accent(grave_);
+    if serifs:
+        pickup crisp.nib;
+        x1 = acute_side_thickness;
+        y1 = h - acute_side_thickness;
+        x2 = w - hp(corner_corr#);
+        y2 = vp(corner_corr#);
+        grave_theta := 180 - angle(z1 - z2);
+        xpos1(acute_stem*(1 - slant_weight_corr), 90 - grave_theta);
+        xpos2(acute_hair*(1 - slant_weight_corr), 90 - grave_theta);
+        filldraw circ_stroke z1e -- z2e;
+        set_ac_join(grave_, .7w, .7w#, corner_corr#);
+    else: 
+        pickup fine.nib;
+        xpos1(acute_stem/sind(acute_theta), 0);
+        xpos2(acute_hair/sind(acute_theta), 0);
+        lft x1l = 0;
+        rt x2r = w;
+        top y1 = h;
+        bot y2 = 0;
+        filldraw stroke z1e -- z2e;
+        set_ac_join(grave_, .7w, .7w#, 0);
+    fi  % diagonal
+    penlabels(1, 2);
+end_accent;
+
+if serifs:
+hook_width# := acute_width#;
+hook_height# := max(.45x_height#, .9hook_width#) + .5tt_corr#;
+else:
+hook_width# := 3u#;
+hook_height# := max(.45x_height#, hook_width#);
+hook_stem# := .9vair#;
+define_whole_blacker_pixels(hook_stem);
+fi
+
+define_accent_dimens(
+    hook_,
+    hook_width#,
+    hook_height#
+);
+
+begin_accent(hook_); % based on roman question mark
+    pickup fine.nib;
+    if serifs:
+        hook_stem := min(acute_stem, .3w);
+        hook_flare := .9hook_stem;
+        hook_vair := .4hook_stem;
+        bot_width := .6hook_stem;
+        xpos2(hook_vair, 90);
+        xpos3(hook_stem*(1 - .7slant_weight_corr), 0);
+        xpos4(hook_vair, if serifs: -90 else: -30 fi);
+        xpos5(bot_width, 0);
+        xpos6(bot_width, 0);
+        x2 = .4w;
+        x4 = x5 = x6 = .5w;
+        rt x3r = w;
+        top y2r = h;
+        bot y6 = 0;
+        y3 = .7[y6, y2];
+        y4 = .45[y6, y2] - .2hook_flare;
+        y5 = .07[y6, y2];
+        xpos1(hook_flare, 180);
+        xpos0(hook_flare, 180);
+        lft x1r = 0;
+        if slant = 0: 
+            y1 + .05h = y3;
+        else:
+            y1 = y3;
+        fi
+        {{interim superness := more_super;
+            filldraw stroke pulled_super_arc.e(2, 3)(superpull)
+            & subpath (0, 1) of super_arc.e(3, 4) .. z5e --- z6e  % arc and stem
+        }};
+        hook_bulb(2, 1, 0); % bulb
+    else:
+        bot_theta := 15;
+        xpos1(hook_stem, 130);
+        xpos2(hook_stem*(1 - 1.5slant_weight_corr), 90);
+%         xpos3(hook_stem*(1 - 1.5slant_weight_corr)/cosd(bot_theta), -bot_theta);
+        xpos3(hook_stem*(1 - 1.5slant_weight_corr), 0);
+        xpos4(hook_stem, -30);
+        xpos5(hook_stem, 0);
+        lft x1r = 0;
+        x2 + .3u = x4 - .5hair = x5 - .0hook_stem = hround .5w;
+        rt x3r = w;
+        top y2r = h;
+        bot y5 = 0;
+        y1l = .6[y5, y2];
+        y3 = .75[y5, y2];
+        y4 = .3[y5, y2];
+        filldraw stroke z1e .. z2e .. z3e{down} .. 
+%         {dir(-90 - bot_theta)}z5e;
+        {down}z5e;
+    fi
+    set_ac_join(hook_, .5w, .5w#, .75h#);
+    penlabels(0, 1, 2, 3, 4, 5);
+end_accent;
+
+circumflex_width# := 1.5acute_width#;
+if serifs:
+left_theta := .8acute_theta;
+right_theta := .8grave_theta;
+circumflex_height# := corner_corr# + .5acute_stem# +
+    (.5circumflex_width# - corner_corr#)*tand(left_theta);
+else:
+circumflex_height# := acute_height#;
+fi
+define_accent_dimens(
+    circumflex_,
+    circumflex_width#,
+    circumflex_height#
+);
+
+begin_accent(circumflex_);
+    if serifs:
+        pickup crisp.nib;
+        x1 = w - x3 = hp(corner_corr#);
+        if tt_corr = 0:
+            y1 = y3 + .3vp(slant_width_corr#)
+        else:
+            y1 = y3
+        fi  
+            = vp(corner_corr#);
+        xpos1(acute_hair*(1 + slant_weight_corr), left_theta + 90);
+        xpos3(acute_hair*(1 - slant_weight_corr), 90 - right_theta);
+        xpos2(.9acute_stem, 90);
+        x2 = .5w - .3hp(slant_width_corr#);
+        z1 - z2 = whatever * dir left_theta;
+        filldraw stroke z1e -- z2e -- z3e; % diagonals
+        penlabels(0, 1, 2, 3, 4);
+        set_ac_join(circumflex_, .5w, .5w#, 0);
+    else:
+        pickup fine.nib;
+        % similiarly to acute
+        A := .5(charwd + acute_stem#)/charht;
+        B := .5(acute_stem# + acute_hair#)/charht;
+        theta := angle(A*sqrt(A*A + 1 - B*B) - B, A*A + 1);
+        xpos1(acute_hair/sind(theta), 0);
+        xpos2(min(stem/sind(theta), .6h), 0);
+        xpos3(acute_hair/sind(theta), 0);
+        lft x1l = w - rt x3r = 0;
+        bot y1 = bot y3 = 0;
+        x2 = 1/2w;
+        top y2 = h;
+        z0 = whatever[z1r, z2r] = whatever[z2l, z3l];
+        y4l = y4r = y2;
+        x4l = good.x 1/5[x2l, x2];
+        x4r = w - x4l;
+        filldraw z4l -- z1l -- z1r -- z0 -- z3l -- z3r -- z4r -- cycle;
+        penlabels(0, 1, 2, 3, 4);
+        set_ac_join(circumflex_, .5w, .5w#, 0);
+    fi  % diagonals
+end_accent;
+
+breve_width# := .9circumflex_width#;
+breve_height# := min(if not serifs: .8 fi circumflex_height#, .5breve_width#);
+
+define_accent_dimens(
+    breve_,
+    breve_width#,
+    breve_height#
+);
+
+begin_accent(breve_);
+    pickup crisp.nib;
+    if serifs:
+        breve_stem := .8acute_stem;
+        breve_vair := acute_hair;
+    else:
+        breve_stem := .9vair;
+        breve_vair := .9vair;
+    fi
+    xpos1(breve_vair, -180);
+    xpos3(breve_vair, 0);
+    top y1 = top y3 = h;
+    lft x1r = w - rt x3r = 0;
+    xpos2(breve_stem, -90);
+    x2 = .5w;
+    bot y2r = 0;
+    filldraw stroke z1e{down} ... z2e{right} ... {up}z3e;
+    penlabels(1, 2, 3);
+    set_ac_join(breve_, .5w, .5w#, 0);
+end_accent;
+
+tilde_h# := min(asc_height# - x_height#, 3/7x_height# + .5dot_size#);           
+tilde_h := vp(tilde_h#);
+                                                                                
+define_accent_dimens(
+    tilde_,
+    if serifs: breve_width# else: circumflex_width# fi,
+    .4tilde_h# + .5tt_corr# + .2stem#                                           
+        if beak_jut < 0: + .4tilde_h# fi                                            
+        if not serifs: + .05x_height# fi
+);
+
+begin_accent(tilde_);
+    if serifs:
+        tilde_stem := min(.9acute_stem, .2w);
+        tilde_vair := max(.9vair, .5tilde_stem);
+        theta := angle(1/6(6u - tilde_vair), 1/4tilde_h);
+        pickup crisp.nib;
+        numeric mid_width;
+        mid_width = .4[tilde_vair, tilde_stem];
+        xpos1(tilde_vair, theta + 90);
+        xpos2(tilde_vair, theta + 90);
+        xpos3(tilde_vair, theta + 90);
+        xpos4(tilde_vair, theta + 90);
+        z2 - z1 = z4 - z3 = (mid_width - .8crisp - .2tt_corr)*dir theta;
+        lft x1r = w - rt x4l = 0;
+        bot y1l = 0;
+        top y4r = vround(top y4r + max(.3tilde_h, y2r + .25tilde_vair) - bot y4l);
+        pair delta;
+        ypart delta = 3(y3l - y1l);
+        delta = whatever*dir theta;
+        filldraw z1l .. controls(z1l + delta) and (z3l - delta) 
+            .. z3l .. z4l -- z4r .. controls(z4r - delta) and (z2r + delta) 
+            .. z2r .. z1r -- cycle; % stroke
+    else:
+        pickup fine.nib;
+        tilde_vair := .85vair;
+        xpos1(tilde_vair, 180);
+        xpos2(tilde_vair, 90);
+        xpos3(.5[vair, slab], 90);
+        xpos4(tilde_vair, 90);
+        xpos5(tilde_vair, 180);
+        lft x1r = w - rt x5l = 0;
+        x2 - x1 = x3 - x2 = x4 - x3 = x5 - x4;
+        bot y1 = bot y4l = 0;
+        top y2r = top y5 = vround(.75tilde_h - tilde_vair + .5crisp);
+        y3 = .5[y2, y4];
+        filldraw stroke z1e{up} ... z2e{right} .. z3e .. {right}z4e ... {up}z5e;
+    fi % stroke
+    set_ac_join(tilde_, .5w, .5w#, 0);
+    penlabels(1, 2, 3, 4, 5);
+end_accent;
+
+dot_diam# := max(.8max(dot_size#, cap_curve#), flare#);
+define_whole_blacker_pixels(dot_diam);
+vn_bot(dot_) := max(accent_gap#,  .7dot_diam#) + dot_diam#;
+
+define_accent_dimens(
+    dot_,
+    dot_diam#,
+    dot_diam#
+);
+
+begin_accent(dot_);
+    pickup tiny.nib;
+    xpos1(h, 0);
+    xpos2(h, 90);
+    lft x1l = 0;
+    x1 = x2;
+    top y2r = h;
+    y1 = 1/2[y2l, y2r];
+    dot(1, 2);                                                    % dot
+    set_ac_join(dot_, .5w, .5w#, .5h#);
+    penlabels(1, 2);
+end_accent;
+
+save_accent_gap# := accent_gap#;
+if not square_dots:
+    horn_dot_size# := 1.2stem# + .2tt_corr#;
+    horn_stem# := if tt_corr# = 0: 1.3 fi vair#;
+    horn_width# := 1.3horn_dot_size# + .3u# - .5slant_width_corr# + 
+                   if case_ <> small: .8 else: .5 fi tt_corr#;
+    horn_height# := horn_dot_size# + horn_stem# + .1x_height#;
+else:
+    horn_dot_size# := max(dot_size#, cap_curve#);
+    horn_width# := 1.5horn_dot_size# + .0u#;
+    horn_stem# := .6horn_dot_size#;
+    horn_height# := 1.5horn_dot_size# + .1x_height#;
+fi
+accent_gap# := horn_dot_size# - horn_height#;
+% define_blacker_pixels(horn_dot_size, horn_stem);
+
+define_accent_dimens(
+    ohorn_,
+    horn_width#,
+    horn_height#
+);
+
+if not square_dots:
+    horn_width# := horn_width# + .5vair# + .3u# - .5tt_corr#;
+    horn_height# := horn_height# + .5vair#;
+else:
+    horn_width# := horn_width# + .3horn_dot_size# + .3u#;
+    horn_height# := horn_height#  + .0horn_dot_size#;
+    horn_stem# := .7horn_dot_size#;
+fi
+accent_gap# := horn_dot_size# - horn_height#;
+
+define_accent_dimens(
+    uhorn_,
+    horn_width#,
+    horn_height#
+);
+
+begin_accent(ohorn_);
+    draw_horn(ohorn_, horn_dot_size#, horn_stem#, 45);
+end_accent;
+
+begin_accent(uhorn_);
+    draw_horn(uhorn_, horn_dot_size#, 
+        if case_ <> small: min(horn_stem#, hair#) else: horn_stem# fi, 0);
+end_accent;
+
+accent_gap# := save_accent_gap#;
+
+vn_ac_top := max_ac_top#;
+
+if serifs:
+    breve_acute_gap# := -.02x_height# + .3stem# + .1tt_corr#;
+else:
+    breve_acute_gap# := .15x_height# - .4stem#;
+    acute_botwidth# := acute_hair#/sind(acute_theta); % arcording to ss acute
+fi
+
+define_double_accent(
+    breve_, acute_,
+    if serifs:
+        .8left_side(breve_) + .2tt_corr#
+    else: 
+        left_side(breve_) - .5acute_botwidth# - .5u#
+    fi,
+    breve_acute_gap#
+);
+
+define_double_accent(
+    breve_, grave_,
+    align_right(breve_, grave_) 
+    if serifs:
+        - .7right_side(breve_) 
+        - sl_shift(breve_) 
+        - .2tt_corr#
+    else:
+        - right_side(breve_) 
+        + .7acute_botwidth#
+        - sl_shift(breve_)
+    fi,
+    breve_acute_gap#
+);
+
+define_double_accent(
+    breve_, hook_,
+    align_join(breve_, hook_),
+    breve_acute_gap#
+);
+
+breve_tilde_gap# := .04x_height# + .3stem# + .1tt_corr#;
+
+define_double_accent(
+    breve_, tilde_,
+    align_join(breve_, tilde_),
+    breve_tilde_gap#
+);
+
+if not serifs:
+acute_botshift# := .5acute_hair#/sind(acute_theta) + 
+                  .7acute_stem#/sind(acute_theta) + u#; % arcording to ss acute
+fi
+
+define_double_accent(
+    circumflex_, acute_,
+    if serifs:
+        .3left_side(circumflex_) 
+        + .2tt_corr#
+    else:
+        left_side(circumflex_) 
+        - acute_botshift#
+    fi,
+    breve_acute_gap#
+);
+
+define_double_accent(
+    circumflex_, grave_,
+    align_right(circumflex_, grave_) 
+    if serifs:
+         - .3right_side(circumflex_)
+         - sl_shift(circumflex_) 
+         - .2tt_corr#
+    else:
+         - right_side(circumflex_) 
+         + acute_botshift#
+         - sl_shift(circumflex_)
+    fi,
+    breve_acute_gap#
+);
+
+define_double_accent(
+    circumflex_, hook_,
+    align_join(circumflex_, hook_) 
+    if serifs:
+        + .3right_side(circumflex_)
+        - sl_shift(circumflex_) 
+        - .2tt_corr#
+    else:
+         + .7right_side(circumflex_)
+         - sl_shift(circumflex_)
+    fi,
+    breve_acute_gap#
+);
+
+define_double_accent(
+    circumflex_, tilde_,
+    align_join(circumflex_, tilde_),
+    breve_tilde_gap#
+);
+
+vn_double_ac_top := max_ac_top#;
+
+if case_ <> capital:
+    let next=\
+else:
+    let next=endinput
+fi
+next;
+
+cmchar "Vietnamese grave accent";
+define_vnaccent(oct"000", grave_);
+
+cmchar "Vietnamese acute accent";
+define_vnaccent(oct"001", acute_);
+
+cmchar "Vietnamese circumflex accent";
+define_vnaccent(oct"002", circumflex_);
+
+cmchar "Vietnamese tilde accent";
+define_vnaccent(oct"003", tilde_);
+
+cmchar "Vietnamese dot accent";
+define_vnaccent(oct"005", dot_);
+
+cmchar "Vietnamese breve accent";
+define_vnaccent(oct"010", breve_);
+
+cmchar "Vietnamese hook accent";
+define_vnaccent(oct"014", hook_);
+
+endinput;

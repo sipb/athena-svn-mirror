@@ -1,3 +1,4 @@
+\ProvidesFile{bahasa.mld}[1999/03/16]
 % Bahasa titles for minitoc.sty
 \def\mtctitle{Daftar Isi}%
 \def\mlftitle{Daftar Gambar}%

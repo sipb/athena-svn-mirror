@@ -1,3 +1,4 @@
+\ProvidesFile{estonian.mld}[1999/03/16]
 % Estonian titles for minitoc.sty
 \def\mtctitle{Sisukord}
 \def\mlftitle{Joonised}

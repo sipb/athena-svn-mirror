@@ -1,34 +1,43 @@
 %% @texfile{
-%%     filename="amsppt1.tex",
-%%     version="2.1b",
-%%     date="2-AUG-1991",
-%%     filetype="AMS-TeX: option",
-%%     copyright="Copyright (C) American Mathematical Society,
-%%            all rights reserved.  Copying of this file is
-%%            authorized only if either:
-%%            (1) you make absolutely no changes to your copy
-%%                including name; OR
-%%            (2) if you do make changes, you first rename it to some
-%%                other name.",
-%%     author="American Mathematical Society",
-%%     address="American Mathematical Society,
-%%            Technical Support Department,
-%%            P. O. Box 6248,
-%%            Providence, RI 02940,
-%%            USA",
-%%     telephone="401-455-4080 or (in the USA) 800-321-4AMS",
-%%     email="Internet: Tech-Support@Math.AMS.org",
-%%     codetable="ISO/ASCII",
-%%     checksumtype="line count",
-%%     checksum="129",
-%%     keywords="amstex, ams-tex, tex",
-%%     abstract="This is a a conversion file that makes documents
-%%            prepared for AMSPPT version 1 compatible with AMSPPT
-%%            version 2.0+.  The statement
-%%              \input amsppt1
-%%            needs to be added after the \documentstyle line in each
-%%            document to be converted."
-%%     }
+%%   filename  = "amsppt1.tex",
+%%   version   = "2.2",
+%%   date      = "2001/08/07",
+%%   time      = "13:17:37 EDT",
+%%   checksum  = "11263 141 693 5811",
+%%   filetype  = "AMS-TeX: option",
+%%   author    = "American Mathematical Society",
+%%   copyright = "Copyright 1991, 2001 American Mathematical Society,
+%%                all rights reserved.  Copying of this file is
+%%                authorized only if either:
+%%                (1) you make absolutely no changes to your copy
+%%                    including name; OR
+%%                (2) if you do make changes, you first rename it
+%%                    to some other name.",
+%%   address   = "American Mathematical Society,
+%%                Technical Support,
+%%                Publications Technical Group,
+%%                P. O. Box 6248,
+%%                Providence, RI 02940,
+%%                USA",
+%%   telephone = "401-455-4080 or (in the USA and Canada)
+%%                800-321-4AMS (321-4267)",
+%%   FAX       = "401-331-3842",
+%%   email     = "tech-support@ams.org (Internet)",
+%%   codetable = "ISO/ASCII",
+%%   keywords  = "amstex, ams-tex, tex",
+%%   abstract  = "This is a a conversion file that makes documents
+%%                prepared for AMSPPT version 1 compatible with AMSPPT
+%%                version 2.0+.  The statement
+%%                  \input amsppt1
+%%                needs to be added after the \documentstyle line in each
+%%                document to be converted.",
+%%   docstring = "The checksum field above contains a CRC-16 checksum
+%%                as the first value, followed by the equivalent of
+%%                the standard UNIX wc (word count) utility output of
+%%                lines, words, and characters.  This is produced by
+%%                Robert Solovay's checksum utility.",
+%% }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %      We start by testing the control sequence \amsppt1.tex so that we
 %      can prevent accidentally loading this file twice.
@@ -63,7 +72,7 @@
 %      In AMSPPT version 2.0+ \endRefs is expected at the end of the
 %      References section.  We install a test in \enddocument
 %      to let us know if \endRefs needs to be added.
-%      Just in case someone has amsppt1.tex but not amsppt.sty vers. 2.1
+%      Just in case someone has amsppt1.tex but not amsppt.sty vers. 2.2
 %      we first make the change in the older version of \enddocument
 %      and then use a test to prevent the newer version from being
 %      read.
@@ -93,9 +102,12 @@
  \vfill\supereject\end}
 
 %      If \add@missing is undefined, let's quit here.
-\expandafter\ifx\csname add@missing\endcsname\relax \endinput\fi
+\expandafter\ifx\csname add@missing\endcsname\relax
+%      Restore the old catcode of the @ character:
+  \csname amsppt1.tex\endcsname
+  \endinput\fi
 
-\outer\def\enddocument{\par% \par will do a runaway check for \endref
+\outer\def\enddocument{\par % \par will do a runaway check for \endref
   \expandafter\ifx\envir@end\endRefs
     \message{Note: For \styname\space version 2 compatibility, add
        \string\endRefs\space at end of
@@ -104,7 +116,7 @@
  \fi
 %      Repeat these in case an article (or book chapter!) doesn't
 %      have a references section:
-  \add@missing\endroster \add@missing\endproclaim \add@missing\enddefinition 
+  \add@missing\endroster \add@missing\endproclaim \add@missing\enddefinition
   \add@missing\enddemo \add@missing\endremark \add@missing\endexample
 %      In a monograph we expect the translator name and author addresses
 %      to be handled in the front matter rather than at the end of the

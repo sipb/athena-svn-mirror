@@ -1,3 +1,4 @@
+\ProvidesFile{slovene.mld}[1999/03/16]
 % Slovene titles for minitoc.sty
 \def\mtctitle{Kazalo}%
 \def\mlftitle{Slike}%

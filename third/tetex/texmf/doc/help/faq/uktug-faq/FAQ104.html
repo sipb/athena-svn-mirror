@@ -1,0 +1,20 @@
+<head>
+<title>UK TeX FAQ -- question 104</title>
+</head><body>
+<h3>Separate bibliographies per chapter?</h3>
+<p>A separate bibliography for each 'chapter' of a document can be provided
+with the package <i>chapterbib</i> (which comes with a bunch of
+other good bibliographic things).  The package allows you a
+different bibliography for each <code>\include</code>d file (i.e., despite the
+package's name, the availability of bibliographies is related to the
+component source files of the document rather than to the chapters that
+logically structure the document).
+<p>The package <i>bibunits</i> ties bibliographies to logical units
+within the document: the package will deal with chapters and sections
+(as defined by LaTeX itself) and also defines a <code>bibunit</code>
+environment so that users can select their own structuring.
+<dl>
+<dt><tt><i>chapterbib.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/cite.tar.gz">macros/latex/contrib/supported/cite.tar.gz</a>
+<dt><tt><i>bibunits.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/bibunits.tar.gz">macros/latex/contrib/supported/bibunits.tar.gz</a>
+</dl>
+<p></body>

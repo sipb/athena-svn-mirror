@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -27,7 +27,7 @@
 % VDZHE
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 lhchar "Uppercase Cyrillic letter VG_hcrs - Variant GHE hcrossed";
 cyrchar(VG_hcrs,if monospace: 9u# else: 11u# fi-width_adj#, %G_width
@@ -98,9 +98,9 @@ else:
 		       else: (r-rt x2r-.65u)
 		       fi fi;
    if not serifs:
-      numeric arm_thickness; arm_thickness=vround(slab+vair_corr);
-      save slab; slab:=arm_thickness; fi % bottom.slab
-   r_serif(2,1,x,1/3,cap_jut,y,1/3,beak_darkness,right_jut,beak_jut); % lower rt descender
+      numeric arm_thickness; arm_thickness=vround(slab-vair_corr);
+      save slab; slab:=arm_thickness; fi % bottom.desc.slab
+   r_serif(2,1,x,1/3,cap_jut,y,1/3,beak_darkness,right_jut,beak_jut); % lower right descender
 fi
 penlabels(1,2,3,4,5,6); endchar;
 
@@ -164,4 +164,4 @@ else:
 penlabels(1,2,3,4,5,6,7,8,9,10,11,12,13); endchar;
 
 endinput;
-% end of file
+%end of file

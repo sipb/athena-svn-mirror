@@ -1,0 +1,106 @@
+<head>
+<title>UK TeX FAQ -- question 136</title>
+</head><body>
+<h3>Changing the margins in LaTeX</h3>
+<p>Changing the size of the body of a LaTeX document's text is a
+surprisingly difficult task:
+the best advice to the beginner is "don't do it".  There are
+interactions between fundamental TeX constraints, constraints
+related to the design of LaTeX, and good typesetting and design
+practice, that mean that any change must be very carefully considered,
+both to ensure that it "works" and to ensure that the result is pleasing
+to the eye.
+<p>Lamport's warning in his section on 
+'Customizing the Style' needs to be taken seriously.  One-inch 
+margins on A4 paper are fine for 10- or 12-pitch typewriters, but not 
+for 10pt (or even 11pt or 12pt) type because readers find such wide,
+dense, lines
+difficult to read: there should ideally be
+no more than 75 characters per line (though the constraints change for
+two-column text).
+<p>LaTeX's controls allow you to change the distance from the edges
+of a page to the left and top edges of your typeset text, and the
+width and height of the text.
+Changing the last two requires 
+more skill than you might expect: the height should bear a certain 
+relationship to <code>\baselineskip</code>, and the width should be constrained
+as mentioned above.
+<p>The controls are expressed as a set of page parameters; they are
+somewhat complex, and it is easy to get their interrelationships wrong when
+redefining the page layout.  The <i>layout</i> package defines a
+<code>\layout</code> command which draws a diagram of your existing page
+layout, with the dimensions (but not their interrelationships) shown.
+This FAQ recommends that you use a package to establish
+consistent settings of the parameters: the
+interrelationships are taken care of in the established packages,
+without you needing to think about them.
+<p>The 'ultimate' tool for adjusting the dimensions and position of the
+printed material on the page is the <i>geometry</i> package; a very
+wide range of adjustments of the layout may be relatively straightforwardly
+programmed, and documentation in the 
+<a href="FAQ40.html"><code>.dtx</code> file</a>
+is good and comprehensive.
+<p>Somewhat simpler to use is the <i>vmargin</i> package, which has a
+canned set of paper sizes (a superset of that provided in LaTeX2e),
+provision for custom paper, margin adjustments and provision for
+two-sided printing.
+<p>If you're still eager to "do it yourself", start by familiarising
+yourself with  LaTeX's page layout
+parameters.  For example, see section C.5.3 of the
+LaTeX manual (pp. 181-182), or corresponding sections in many of
+the other good LaTeX manuals
+
+(see <a href="FAQ22.html">LaTeX books</a>).
+The parameters <code>\oddsidemargin</code>
+and <code>\evensidemargin</code> are so-called because it is conventionally
+taken that odd-numbered pages appear on the right-hand side of a
+two-page spread ('recto') and even-numbered pages on the left-hand
+side ('verso').  Both parameters refer to the <em>left-hand</em> margin;
+the right-hand margin is specified by implication, from the size of
+<code>\textwidth</code>.
+The origin in DVI coordinates is one inch
+from the top of the paper and one inch from the left side; positive
+horizontal measurements extend
+right across the page, and positive vertical measurements extend down
+the page. Thus, for margins closer to the left and top edges of the
+page than 1 inch, the corresponding parameters, <em>i.e</em>.,
+<code>\evensidemargin</code>, <code>\oddsidemargin</code>, <code>\topmargin</code>, can be set to
+negative values.
+<p>Another surprise is that
+you cannot change the width or height of the text within the
+document, simply by
+modifying the text size parameters. The simple rule is that the parameters
+should only be changed in the preamble of the document, <em>i.e</em>., before
+the <code>\begin{document}</code> statement.  To adjust text width within a
+document we define an environment:
+<pre>
+\newenvironment{changemargin}[2]{%
+ \begin{list}{}{%
+  \setlength{\topsep}{0pt}%
+  \setlength{\leftmargin}{#1}%
+  \setlength{\rightmargin}{#2}%
+  \setlength{\listparindent}{\parindent}%
+  \setlength{\itemindent}{\parindent}%
+  \setlength{\parsep}{\parskip}%
+ }%
+\item[]}{\end{list}}
+</pre>
+This environment takes two arguments, and will indent the left
+and right margins, respectively, by the parameters' values. Negative values
+will cause the margins to be narrowed, so
+<code>\begin{changemargin}{-1cm}{-1cm}</code> narrows the left and right margins
+by 1cm.
+<p>The <i>chngpage</i> package provides ready-built commands to do the
+above; it includes provision for changing the shifts applied to your
+text according to whether you're on an odd or an even page of a
+two-sided document.  The package's documentation (in the file
+itself) suggests a strategy for changing text dimensions
+between pages - as mentioned above, changing the text dimensions
+within the body of a page may lead to unpredictable results.
+<dl>
+<dt><tt><i>chngpage.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/misc/chngpage.sty">macros/latex/contrib/supported/misc/chngpage.sty</a>
+<dt><tt><i>geometry.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/geometry.tar.gz">macros/latex/contrib/supported/geometry.tar.gz</a>
+<dt><tt><i>layout.sty</i></tt><dd>Distributed as part of <a href="ftp://macros/latex/required/tools.tar.gz">macros/latex/required/tools.tar.gz</a>
+<dt><tt><i>vmargin.sty</i></tt><dd><a href="ftp://macros/latex/contrib/supported/vmargin.tar.gz">macros/latex/contrib/supported/vmargin.tar.gz</a>
+</dl>
+<p></body>

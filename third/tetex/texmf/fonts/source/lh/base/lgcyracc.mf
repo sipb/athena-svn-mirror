@@ -4,7 +4,7 @@
 %% Cyrillic font container with T2 encoding beta-support
 %
 % This file is future part of lxfonts package
-% Version 3.2 // Patchlevel=0
+% Version 3.4 // Patchlevel=0
 % (c) O.Lapko
 %
 % This package belongs to the public domain under conditions similar to
@@ -42,7 +42,6 @@
 % Ahcross             "17    accent hor cross
 % Agrave_cross        "19    accent grave_cross
 % Aacute_cross        "1a    accent acute_cross
-% Acomma	      "1b    comma above letter
 %
 % T2-outsiders
 %
@@ -54,9 +53,10 @@
 % Adesc_up            -      uppercase descender
 % Alcomma	      -	     comma below letter
 % Atie                -      tie accent (like Afrown)
+% Acomma	      -      comma above letter
 %
 
-LHver_check(3,2);  % like |version_check| in ec
+LHver_check(3,4); % like |version_check| in ec
 
 %accents
 %
@@ -243,7 +243,8 @@ rt x[_three]r=hround(x[_two]+2.5u
    if monospace: /expansion_factor fi +0.5vair);
 numeric mid_thickness; mid_thickness=max(crisp.breadth,vround 1/3[vair,stem]);%!!!
 bot y[_one]=bot y[_three]= %!!!
-   vround max(x_height+o+tiny,1/3[x_height,h]+o-.5mid_thickness);
+   if serifs: max(2/3[x_height+acc_height,x_height],x_height+o+hair)-.5crisp
+      else:   vround 2/3[x_height+acc_height,x_height] fi;
 if y[_two]r<(y[_one]+.5crisp+eps): %!!!
    y[_two]r:=y[_one]+.5crisp+eps; fi %!!!
 pos[_two](mid_thickness,90); %!!! moved here after if
@@ -334,7 +335,7 @@ cyr_serif(2,1,a,1/3,beak_darkness,left_jut,.6beak_jut); % right descender
 endchar;
 
 lhchar "Cyrillic accent Adesc_it - italic descender";
-cyrchar(Adesc_it,5u#,pdot_diam#,sbeak#);
+cyrchar(Adesc_it,5u#,pdot_diam#,desc_depth#);
 adjust_fit(0,.1u#);
 pickup fine.nib;
 pos1(vair,180); x1=.5w; y1=.4bar_height;
@@ -476,4 +477,4 @@ adjust_fit(0,0);
 endchar;
 
 endinput;
-% end of file
+%end of file

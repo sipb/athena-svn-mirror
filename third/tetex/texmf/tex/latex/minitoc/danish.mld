@@ -1,3 +1,4 @@
+\ProvidesFile{danish.mld}[1999/03/16]
 % Danish titles for minitoc.sty
 \def\mtctitle{Indholdsfortegnelse}%
 \def\mlftitle{Figurer}%

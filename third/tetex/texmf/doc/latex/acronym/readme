@@ -1,4 +1,4 @@
-I'd like to announce the availability of 
+I'd like to announce the availability of
 my LaTeX2e acronym Package from CTAN.
 
 When writing a paper on cellular mobile radio I started to used a lot
@@ -14,4 +14,30 @@ Version 1.2 (August 1996) features a new command: \acl to print the
 expanded acronym with out even mentioning that there is an acronym for
 this word.
 
-Tobias Oetiker <oetiker@dmu.ac.uk>
+Tobias Oetiker <oetiker@ee.ethz.ch>
+
+Version 1.4 (February 2000): A formatted acronym string, which is allowed
+to contain indices, for example, is now possible. For this purpose
+the syntax of \acro and \acrodef now permits an optional argument:
+  \acro{<acronym>}{<full name>}                 (without opt. arg.)
+  \acro{<acronym>}[<short name>]{<full name>}   (with opt. arg.)
+The user macros \ac, \acs, \acl, and \acf print now <short name>
+instead of <acronym>, if available.
+
+Heiko Oberdiek <oberdiek@ruf.uni-freiburg.de>
+
+Version 1.5 (May 2000): Added support for english plural forms and the
+footnote option.
+
+David Sterratt <David.C.Sterratt@ed.ac.uk>
+
+Version 1.6 (May 2000): Added the smaller option and the macros \acsfont, 
+\acffont, and \acfsfont used to control the appearance of  \acs and \acf.
+
+Ingo Lepper <lepper@math.uni-muenster.de>
+
+
+Files of the `acronym' package:
+  readme
+  acronym.dtx
+  acronym.ins

@@ -1,3 +1,4 @@
+\ProvidesFile{scottish.mld}[1999/03/16]
 % Scottish titles for minitoc.sty
 \def\mtctitle{Cl\`ar-obrach}
 \def\mlftitle{LiostaDhealbh}

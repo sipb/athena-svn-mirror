@@ -141,11 +141,11 @@
 \def\Gin@extensions{.eps,.ps,.eps.gz,.ps.gz,.eps.Z}
 \@namedef{Gin@rule@.ps}#1{{eps}{.ps}{#1}}
 \@namedef{Gin@rule@.eps}#1{{eps}{.eps}{#1}}
-\@namedef{Gin@rule@.pz}#1{{eps}{.bb}{`gunzip -c #1}}
-\@namedef{Gin@rule@.eps.Z}#1{{eps}{.eps.bb}{`gunzip -c #1}}
-\@namedef{Gin@rule@.ps.Z}#1{{eps}{.ps.bb}{`gunzip -c #1}}
-\@namedef{Gin@rule@.ps.gz}#1{{eps}{.ps.bb}{`gunzip -c #1}}
-\@namedef{Gin@rule@.eps.gz}#1{{eps}{.eps.bb}{`gunzip -c #1}}
+\@namedef{Gin@rule@.pz}#1{{eps}{.bb}{#1}}
+\@namedef{Gin@rule@.eps.Z}#1{{eps}{.eps.bb}{#1}}
+\@namedef{Gin@rule@.ps.Z}#1{{eps}{.ps.bb}{#1}}
+\@namedef{Gin@rule@.ps.gz}#1{{eps}{.ps.bb}{#1}}
+\@namedef{Gin@rule@.eps.gz}#1{{eps}{.eps.bb}{#1}}
 \@namedef{Gin@rule@*}#1{{eps}{\Gin@ext}{#1}}
 \@namedef{Gin@rule@.pcx}#1{{bmp}{}{#1}}
 \@namedef{Gin@rule@.bmp}#1{{bmp}{}{#1}}

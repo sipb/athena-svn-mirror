@@ -1,4 +1,15 @@
+% fontchart.tex
+%
 % make a (fairly large) font chart
+%
+%
+% 1990-01-06  ???
+%
+%   First version?
+%
+% 2001-07-18  Werner Lemberg  <wl@gnu.org>
+%
+%   Suppress boundary ligatures.
 
 \newlinechar=`@
 \message{@Name of the font to chart = }
@@ -12,8 +23,8 @@
 \fontdimen5\f=-10000pt % a new (rather small) xheight
 \textfont0=\f
 \newdimen\h \newdimen\d % will be set to the character's height, depth
-\def\htdp#1{\setbox0=\hbox{\char#1}\h=-\ht0
- \setbox0=\hbox{\accent#1\char#1}\advance\h\ht0 \advance\h-10000pt
+\def\htdp#1{\setbox0=\hbox{\noboundary\char#1\noboundary}\h=-\ht0
+ \setbox0=\hbox{\noboundary\accent#1\char#1\noboundary}\advance\h\ht0 \advance\h-10000pt
  \setbox0=\null \wd0=-10000pt % in case the character has a charlist!
  \setbox0=\hbox{$\mathaccent#1{\box0}$}%
  \d=\ht0 \advance\d-10000pt \advance\d-\h}
@@ -35,7 +46,15 @@
 \nopagenumbers
 
 \def\testrow#1#2{\setbox0=\hbox{\penalty1\def\\{\char'#1#2}%
- \\0\\1\\2\\3\\4\\5\\6\\7\global\chardef\p=\lastpenalty}} % p=1 if none there
+ \hbox{\noboundary\\0\noboundary}%
+ \hbox{\noboundary\\1\noboundary}%
+ \hbox{\noboundary\\2\noboundary}%
+ \hbox{\noboundary\\3\noboundary}%
+ \hbox{\noboundary\\4\noboundary}%
+ \hbox{\noboundary\\5\noboundary}%
+ \hbox{\noboundary\\6\noboundary}%
+ \hbox{\noboundary\\7\noboundary}%
+ \global\chardef\p=\lastpenalty}} % p=1 if none there
 
 \raggedbottom
 \baselineskip=1in
@@ -61,9 +80,9 @@
 
 \newdimen\pixel \pixel=.00333333in
 \def\mod#1#2#3{\chardef\c='#1#2#3 \htdp\c
- \setbox0=\hbox{\penalty1\c\global\chardef\p=\lastpenalty}%
+ \setbox0=\hbox{\penalty1\noboundary\c\noboundary\global\chardef\p=\lastpenalty}%
  \ifnum\p=1 \hbox to\w{}\else
- \setbox2=\hbox{\c\/}%
+ \setbox2=\hbox{\noboundary\c\noboundary\/}%
  \hbox to\w{\kern-\pixel \vrule width\pixel height\h depth\d
   \copy\leftbox\copy0\copy\rightbox
   \vrule width\pixel height\h depth\d \kern-\pixel \kern-\wd0

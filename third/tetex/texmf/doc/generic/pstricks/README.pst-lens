@@ -1,0 +1,16 @@
+                 ---------------------------------------
+                 | pst-lens: PSTricks package for lens |
+                 |                                     |
+                 |   Version 1.0 (February 19, 2001)   |
+                 |                                     |
+                 | Denis Girou <Denis.Girou@idris.fr>  |
+                 | Manuel Luque <Mluque5130@aol.com>   |
+                 ---------------------------------------
+
+  * Run "tex" on pst-lens.ins and copy pst-lens.tex and pst-lens.sty
+in one of your TeX input directories
+
+  * Run "latex" on pst-lens.dtx to generate the documentation
+
+--
+Denis Girou and Manuel Luque (updated February 19, 2001)

@@ -1,4 +1,4 @@
-% url.sty  ver 1.4    02-Mar-1999   Donald Arseneau   asnd@triumf.ca
+% url.sty  ver 1.5    28-Mar-1999   Donald Arseneau   asnd@triumf.ca
 % Copyright 1996-1999 Donald Arseneau,  Vancouver, Canada.
 % This program can be used, distributed, and modified under the terms
 % of the LaTeX Project Public License.
@@ -24,15 +24,15 @@
 %
 \def\Url@ttdo{% style assignments for tt fonts or T1 encoding
 \def\UrlBreaks{\do\.\do\@\do\\\do\/\do\!\do\_\do\|\do\%\do\;\do\>\do\]%
- \do\)\do\,\do\?\do\'\do\+\do\=}%
+ \do\)\do\,\do\?\do\'\do\+\do\=\do\#}%
 \def\UrlBigBreaks{\do\:\do@url@hyp}%
 \def\UrlNoBreaks{\do\(\do\[\do\{\do\<}% (unnecessary)
 \def\UrlSpecials{\do\ {\ }}%
 \def\UrlOrds{\do\*\do\-\do\~}% any ordinary characters that aren't usually
 }
 \def\Url@do{% style assignments for OT1 fonts except tt
-\def\UrlBreaks{\do\.\do\@\do\/\do\!\do\%\do\;\do\]\do\)\do\,\do\?\do\+\do\=}%
-\def\UrlBigBreaks{\do\:\do@url@hyp}%
+\def\UrlBreaks{\do\.\do\@\do\/\do\!\do\%\do\;\do\]\do\)\do\,\do\?\do\+%
+\do\=\do\#}\def\UrlBigBreaks{\do\:\do@url@hyp}%
 \def\UrlNoBreaks{\do\(\do\[\do\{}% prevents breaks after *next* character
 \def\UrlSpecials{\do\<{\langle}\do\>{\mathbin{\rangle}}\do\_{\_%
  \penalty\@m}\do\|{\mid}\do\{{\lbrace}\do\}{\mathbin{\rbrace}}\do
@@ -61,7 +61,8 @@
  \UrlFont $\fam\z@ \textfont\z@\font
  \let\do\@makeother \dospecials % verbatim catcodes
  \catcode`{\@ne \catcode`}\tw@ \catcode`\ 10 % except braces and spaces
- \medmuskip0mu \thickmuskip\medmuskip \thinmuskip\medmuskip
+ \medmuskip\Urlmuskip \thickmuskip\medmuskip \thinmuskip0mu%
+ \relpenalty\UrlBreakPenalty \binoppenalty\UrlBigBreakPenalty
  \@tempcnta\fam\multiply\@tempcnta\@cclvi
  \let\do\set@mathcode \UrlOrds % ordinary characters that were special
  \advance\@tempcnta 8192 \UrlBreaks % bin
@@ -101,6 +102,10 @@
 %
 \newcommand\url{\begingroup \Url}
 %
+\newmuskip\Urlmuskip \Urlmuskip=0mu
+\mathchardef\UrlBigBreakPenalty=\binoppenalty
+\mathchardef\UrlBreakPenalty=\relpenalty
+%
 % picTeX defines \path, so declare it optionally:
 \@ifundefined{path}{\newcommand\path{\begingroup \urlstyle{tt}\Url}}{}
 %
@@ -113,14 +118,13 @@
 \let\Url@sppen\@M
 \def\do@url@hyp{}% by default, no breaks after hyphens
 
-\@ifundefined{ProvidesPackage}{}{
-  \ProvidesPackage{url}[1999/03/02 \space ver 1.4 \space
-       Verb mode for urls, email addresses, and file names]
-  \DeclareOption{hyphens}{\def\do@url@hyp{\do\-}}% allow breaks after hyphens
-  \DeclareOption{obeyspaces}{\let\Url@Hook\relax}% a flag for later
-  \DeclareOption{spaces}{\let\Url@sppen\relpenalty}
-  \DeclareOption{T1}{\let\Url@do\Url@ttdo}
-  \ProcessOptions
+\@ifundefined{ProvidesPackage}{}{\ProvidesPackage 
+ {url}[1999/03/28 \space ver 1.5x \space Verb mode for urls, etc.]
+\DeclareOption{hyphens}{\def\do@url@hyp{\do\-}}% allow breaks after hyphens
+\DeclareOption{obeyspaces}{\let\Url@Hook\relax}% a flag for later
+\DeclareOption{spaces}{\let\Url@sppen\relpenalty}
+\DeclareOption{T1}{\let\Url@do\Url@ttdo}
+\ProcessOptions\relax
 \ifx\Url@Hook\relax % [obeyspaces] was declared
   \def\Url@Hook#1\UrlRight\m@th{\edef\@tempa{\noexpand\UrlLeft
     \Url@retain#1\Url@nosp\, }\@tempa\UrlRight\m@th}
@@ -136,7 +140,7 @@
 
 \endinput
 %
-% url.sty  ver 1.4   02-Mar-1999   Donald Arseneau   asnd@reg.triumf.ca
+% url.sty  ver 1.5x   28-Mar-1999   Donald Arseneau   asnd@reg.triumf.ca
 %
 % This package defines "\url", a form of "\verb" that allows linebreaks,
 % and can often be used in the argument to another command.  It can be
@@ -263,7 +267,7 @@
 % of "http://" it doesn't matter whether ":" is a `Break' or `BigBreak' --
 % the breaks are the same in either case; but for DECnet nodes with "::"
 % it is important to prevent breaks *between* the colons, and that is why
-% colons are `BigBreaks'.
+% colons are `BigBreaks'.  
 %
 % It is possible for characters to prevent breaks after the next following
 % character (I use this for parentheses).  Specify these in "\UrlNoBreaks".
@@ -278,11 +282,18 @@
 % special character "c" is: "\do\c{<definition>}", but you can include
 % other definitions too.
 %
-%
 % If all this sounds confusing ... well, it is!  But I hope you won't need
 % to redefine breakpoints -- the default assignments seem to work well for
 % a wide variety of applications.  If you do need to make changes, you can
 % test for breakpoints using regular math mode and the characters "+=(a".
+%
+% You can allow some spacing around the breakable characters by assigning
+%    \Urlmuskip = 0mu plus 1mu
+% You can change the penalties used for BigBreaks and Breaks by assigning
+%    \mathchardef\UrlBigBreakPenalty 100  \mathchardef\UrlBreakPenalty 150
+% The default penalties are "\binoppenalty" and "\relpenalty".  These have
+% such odd non-LaTeX syntax because I don't expect people to need to 
+% change them often.
 %
 % Yet more flexibility:
 % You can also customize the verbatim text by defining "\UrlRight" and/or
@@ -319,6 +330,8 @@
 % Prohibit spaces as delimiter characters; change ascii tilde in OT1.
 % ver 1.4 02-Mar-1999
 % LaTeX license; moving-argument-error
+% ver 1.5 28-Mar-1999
+% possibility of spacing around break characters; re-settable penalties
 % The End
 
 Test file integrity:  ASCII 32-57, 58-126:  !"#$%&'()*+,-./0123456789

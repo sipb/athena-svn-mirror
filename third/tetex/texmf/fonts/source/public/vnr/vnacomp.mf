@@ -1,0 +1,54 @@
+% This file is part of vntex. License: GPL.
+%
+cmchar casename "a with acute";
+define_vnchar(a, acute_);
+
+cmchar casename "a with grave";
+define_vnchar(a, grave_);
+
+cmchar casename "a with hook";
+define_vnchar(a, hook_);
+
+cmchar casename "a with tilde";
+define_vnchar(a, tilde_);
+
+cmchar casename "a with dot";
+define_vnchar_dot(a);
+
+cmchar casename "a with breve ";
+define_vnchar(a, breve_);
+
+cmchar casename "a with breve and acute";
+define_vnchar(a, breve_.acute_);
+
+cmchar casename "a with breve and grave";
+define_vnchar(a, breve_.grave_);
+
+cmchar casename "a with breve and hook";
+define_vnchar(a, breve_.hook_);
+
+cmchar casename "a with breve and tilde";
+define_vnchar(a, breve_.tilde_);
+
+cmchar casename "a with breve and dot";
+define_vnchar_dot_ac(a, breve_);
+
+cmchar casename "a with circumflex ";
+define_vnchar(a, circumflex_);
+
+cmchar casename "a with circumflex and acute";
+define_vnchar(a, circumflex_.acute_);
+
+cmchar casename "a with circumflex and grave";
+define_vnchar(a, circumflex_.grave_);
+
+cmchar casename "a with circumflex and hook";
+define_vnchar(a, circumflex_.hook_);
+
+cmchar casename "a with circumflex and tilde";
+define_vnchar(a, circumflex_.tilde_);
+
+cmchar casename "a with circumflex and dot";
+define_vnchar_dot_ac(a, circumflex_);
+
+endinput;

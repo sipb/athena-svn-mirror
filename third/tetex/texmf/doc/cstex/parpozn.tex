@@ -1,0 +1,625 @@
+
+% Pár poznámek k novému CSTeXu
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 5. 2. 1996                                        Petr Ol¹ák
+% Zpracovat formátem csplain, kódování ISO8859-2
+
+\magnification\magstep1
+
+%\input cncent 
+% Mù¾ete zru¹it komentáø, máte-li PostScriptový font NewCenturySchlbk
+
+\chyph
+\newcount\itemnum                 % Èíslované polo¾ky
+\raggedbottom                     % Vynechat dole na stránce pøíp. místo
+\emergencystretch=2em
+
+\font\mflogo=logo10               % METAFONT logo
+
+\def\,{\thinspace}
+\def\csori{$\cal C\kern-.1667em\lower.5ex\hbox{$\cal S$}\kern-.075em $}
+\def\cs#1{\csori\ifx-#1\hbox{-}\else#1\fi}
+\def\mf{{\mflogo META}\-{\mflogo FONT}}
+\def\twoe{$2_{\textstyle\varepsilon}$}
+\def\LaTeX{L\kern-.36em\raise.5ex\hbox{\sevenrm A}\kern-.12em\TeX}
+\def\ps{Post\-Script}
+\def\clqq{\char254 }
+\def\crqq{{\edef\iSF{\spacefactor\the\spacefactor}\char255 \iSF\relax}}
+\def\uv{\bgroup\aftergroup\closequotes\leavevmode\clqq\let\next=}
+\def\closequotes{\unskip\crqq\relax}
+\def\begitems{\medskip\bgroup\catcode`\*=13 \narrower}
+\def\enditems{\par\egroup\medskip}
+{\catcode`\*=13 \gdef*{\par\noindent\llap{$\bullet$\ }\ignorespaces}
+\gdef\numerate{%                         \numerate napsat tìsnì za \begitems
+  \def*{\par\advance\itemnum by1\noindent
+    \llap{\bf\the\itemnum. }\ignorespaces}}}
+
+\font\titlefont=\fontname\tenbf\space scaled\magstep2
+
+\def\title#1\par{\centerline{\titlefont #1}\bigskip}
+\def\sub#1\par{\vskip1.5\bigskipamount\goodbreak\noindent{\bf #1}\par
+  \nobreak\medskip}
+\def\Ad #1. {\medskip\noindent{\bf Ad #1. }}
+
+\title Pár poznámek k~novému CS\TeX{}u
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\noindent Petr Ol¹ák \hfill 5.~února 1996 \medskip
+
+\sub Trocha historie
+%%%%%%%%%%%%%%%%%%%%
+
+Pùvodní \cs\TeX{} vy¹el z~projektu Oldøicha Ulrycha se zámìrem nabídnout
+u¾ivatelùm, kteøí problematice (aspoò zpoèátku) nechtìjí rozumìt pøíli¹ do
+hloubky, snadnì obsluhovatelný instalaèní balík. ©lo o~to, abychom pro
+èlovìka, který jedním dechem polo¾í dvì otázky \uv{co je to \TeX{} a mohl
+bych jej vyzkou¹et na svém PC?}, mìli pøipravenou nìjakou odpovìï na otázku
+první a {\it snadnou\/} odpovìï na otázku druhou: \uv{tu má¹ diskety a
+vyzkou¹ej si to}.
+
+Hlavní pilíø práce spoèíval tedy v~sestavení funkèní instalace pro DOS
+z~veøejnì dostupných PD (in public domain) programù. Pùvodnì se
+jednalo o~programy z~Sb\TeX{}u a pozdìji o~programy
+z~em\TeX{}u. Samozøejmì tam byla zahrnuta té¾ práce programátorù
+z~na¹ich zemí. Bylo toti¾ potøeba doplnit pøevzaté programy o~dal¹í
+nástroje pro poøizování dokumentù v~èeském a slovenském jazyce. Také
+byla snaha pokud mo¾no co nejvíce ulehèit ¾ivot øadovému
+u¾ivateli. Znamená to, ¾e u¾ivatel by napøíklad nemìl být nucen pøi
+bì¾ných po¾adavcích èíst mnohdy velmi rozsáhlou, nepøehlednou a
+nesourodou dokumentaci jednotlivých balíkù PD programù, ze kterých
+cílový balík sestával.
+
+V~prehistorické dobì \cs\TeX{}u (1990--92) byla situace z~jedné strany
+obtí¾ná, proto¾e plno vìcí pro podporu èe¹tiny a sloven¹tiny bylo teprve ve
+vývoji. Z~druhé strany v¹ak byla situace jednodu¹¹í, proto¾e pod pojmem
+\uv{zkou¹et \TeX{} na PC} se jaksi samozøejmì oèekávalo prostøedí
+operaèního systému DOS.
+
+V~roce 1993 jsem se zapojil do vytvoøení nové verze \cs\TeX{}u,
+proto¾e jsem pova¾oval za vhodné zaøadit do nìj svùj program MNU, který
+umo¾nil vytváøet modifikovatelné a snadno ovladatelné nabídky pro spou¹tìní
+jednotlivých \TeX{}ovských úkolù. Program MNU spolupracuje s~pomìrnì
+rozsáhlými DOSovskými dávkami. Je tedy patrné, ¾e i tato verze instalace
+se opírala o~jednou¾ivatelský a jednoúlohový operaèní systém DOS.
+
+Jako autoøi instalaèního balíku jsme se tehdy domluvili na tom, ¾e
+budeme ka¾doroènì zaèleòovat zmìny a opravy. Proto jsme tehdej¹í verzi
+\cs\TeX{}u nazvali \cs\TeX{}93 a o~rok pozdìji s~nepatrnými úpravami byl
+dán k~dispozici \cs\TeX{}94. Oèekávalo se, ¾e se v~této øadì bude
+pokraèovat\dots
+
+Dnes máme pro PC rùzné operaèní systémy a ten pøevládající%
+\footnote{$^{\dag}$)}{MS Windows}
+není shodný s~tím, který mají pùvodní autoøi \cs\TeX{}u v~oblibì. Navíc
+nemáme jenom PC, ale existují i jiné von Neumannovy strojky, na nich znovu
+jiné operaèní systémy a v¹e se spojuje do heterogenních, mnohdy dosti
+specifických, sítí. Pro tyto podmínky zatím nebyl \cs\TeX{} stavìný.
+
+Mezi pùvodní cíle \cs\TeX{}u je tøeba zaøadit i snahu po unifikaci øe¹ení
+problematiky èeské a slovenské sazby. To má dvì výhody: Za prvé, ¹etøí se
+síly programátorù, kteøí podporu pro národní sazbu vytváøejí, proto¾e na
+øe¹ení stejného problému nepracují bez vzájemné informovanosti na více
+místech souèasnì. Za druhé, ¹etøí se nervy u¾ivatelù, kteøí si vzájemnì
+vymìòují \TeX{}ovské dokumenty a zku¹enosti s~\TeX{}em, proto¾e v¹ichni
+pracují se stejným produktem.
+
+Tohoto cíle se bohu¾el nepodaøilo dosáhnout.
+Dnes se dá tì¾ko posoudit, kolik procent instalací \TeX{}u, na nich¾
+se poøizuje sazba v~na¹ich národních jazycích, tvoøí
+\cs\TeX{}. Udìláme anketu aspoò mezi èleny \cs TUGu?
+Pravdìpodobnì je procento vysoké, ale existují i lokální
+instalace postavené na jiných principech øe¹ení národní problematiky.
+Nìkteré takové instalace dokonce pøesahují lokální charakter svého
+pùsobení. Uveïme napøíklad instalaci pana Kasprzaka, která je navíc ¹íøena
+prostøednictvím Internetu.
+
+
+\sub O~názvu
+%%%%%%%%%%%%
+
+Logo \cs\TeX{} je zkratkou \uv{èeský a slovenský \TeX}, co¾ asi ka¾dý ví.
+Èíslo verze za logem odpovídá roèníku, kdy byla verze pøipravena a ¹íøena.
+Oèekávalo se, ¾e bude existovat \cs\TeX{}95, proto¾e pøedcházely verze
+\cs\TeX{}93 a \cs\TeX{}94. Bohu¾el, pro názorový nesoulad mezi úèastníky
+diskusní skupiny \uv{tzv. tvùrcù \cs\TeX{}u} a pro následný absolutní
+nezájem tìchto úèastníkù pøilo¾it ruku k~dílu, kdy¾ u¾ byla stanovena
+koncepce a kdy¾ jsem zveøejnil uvnitø této skupiny alfa verzi, se pøíprava
+na verzi 95 protáhla a byla uvedena a¾ v~roce 1996. Dokumentace se na
+souèasnou verzi \cs\TeX{}u vìt¹inou odvolává pod èíslem 95, nìkde se pí¹e
+\cs\TeX{}95,6. U¾ivatele je tøeba upozornit, ¾e mezi \cs\TeX{}em 95 a
+pøedchozími verzemi je hodnì dosti zásadních rozdílù, viz ní¾e.
+
+Proto¾e od nynìj¹í verze platí úmluva, ¾e se jednotlivé moduly
+v~\cs\TeX{}u budou opravovat prùbì¾nì, nebudou vznikat dal¹í verze s~èísly
+podle roèníkù. Z~toho dùvodu bude asi jednodu¹¹í øíkat nejnovìj¹í verzi
+prostì \cs\TeX{}. Pøedchozí verze by se mìly pro odli¹ení dùslednì nazývat
+\cs\TeX{}94, \cs\TeX{}93 èi \cs\TeX{}92. Tuto fintu, a do jisté míry podraz
+vùèi u¾ivatelùm, u¾ známe z~produktu souèasného \LaTeX{} teamu. Produkt se
+pøekvapivì jmenuje \LaTeX, zatímco to, co jsme byli a¾ dosud zvyklí
+\LaTeX{}em nazývat, máme nyní pojmenovávat jako \LaTeX{}2.09. V~dal¹ím
+textu budeme tedy slovem \cs\TeX{} oznaèovat verzi \cs\TeX{}95,6.
+
+®ádná jiná varianta poèe¹tìní \TeX{}u by se nemìla nazývat stejným jménem.
+Pouze \cs TUGem oficiálnì podporovaná verze má toto jméno. Toté¾ platí
+o~formátech \TeX{}u, které jsou zahrnuty v~\cs\TeX{}u. V~souèasné dobì jde
+o~jména {\tt csplain}, {\tt csamstex}, {\tt cslamstex}, {\tt cslatex}, {\tt
+csamslat} a {\tt cslt209}. Pokud napøíklad najdeme na síti \TeX{}ovský
+dokument, který bude mít v~úvodním komentáøi napsáno \uv{zpracovat formátem
+csplain}, mìlo by tím být naprosto jednoznaènì øeèeno, o~co jde.
+
+
+\sub Vymezení pojmu a struktura \cs\TeX{}u
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Název bychom mìli, teï si je¹tì povíme, co to vlastnì ten \cs\TeX{} je.
+Døíve jsme mìli situaci jednodu¹¹í, proto¾e jsme vìt¹inou tento název
+ztoto¾òovali s~onìmi devatenácti disketami pro DOS. Ov¹em i pøi takovém
+pojetí jsme se dopou¹tìli nìkterých omylù a nepøesností. Tøeba tvrzení, ¾e
+\cs\TeX{} je em\TeX{} je omyl. Nebo jiné tvrzení, ¾e pod pojmem \cs\TeX{}
+si pøedstavím urèité seskupení nabídek realizovaných programem MNU, také
+není v~poøádku.
+
+V~souèasné dobì, kdy s~\cs\TeX{}em pracují u¾ivatelé rùzných operaèních
+systémù (OS), je tøeba vymezit tento pojem ponìkud opatrnìji.
+
+\cs\TeX{} pro daný OS se skládá z~tìchto komponent:
+
+\begitems  \numerate
+* Základ -- \TeX, makra, fonty, ovladaèe. Fungující pro anglický jazyk.
+* Prostøedky pro podporu è/s sazby závislé na OS.
+* \cs-fonty.
+* Makra pro sazbu v~národním prostøedí a dal¹í podpora nezávislá na OS.
+\enditems
+
+\Ad 1. Základ vìt¹inou vzniká kompilací Knuthova zdrojového textu {\tt
+tex.web} do spustitelného programu pro daný OS. Toté¾ platí pro \mf. Dále
+jsou souèástí základu Knuthovy fonty ve tvaru {\tt mf} a makra
+spoleènì s~makry dal¹ích autorù. Napøíklad makra \LaTeX{}u.
+V~neposlední øadì základ musí zahrnovat {\tt dvi} ovladaè pro zobrazovací
+jednotku v~daném OS, tzv. prohlí¾eè, a ovladaèe pro nejbì¾nìji pou¾ívaná
+výstupní zaøízení.
+
+Nebývá obvyklé, aby tento základ vznikl v~dílnách èeských autorù.
+Jako základ se pou¾ívají PD instalace \TeX{}u pro daný OS.
+Napøíklad pro DOS a OS/2 se pou¾ívá jako základ em\TeX, pro UNIX
+je pou¾ita \TeX{}ovská instalace Karla Berryho. Základ není vhodné oznaèovat
+jako souèást \cs\TeX{}u ve smyslu vykonané práce autorù \cs\TeX{}u,
+ov¹em z~pohledu skuteènosti, ¾e bez základu nám to nepojede, zøejmì se
+bez oznaèení \uv{souèást \cs\TeX{}u} mnohdy neobejdeme.
+
+Základ urèuje zpùsob balení dal¹ích komponent, tj. napø. strukturu
+pou¾itých adresáøù, zpùsob a typ pou¾itého programu pro vytváøení
+instalaèních modulù (napøíklad zip nebo tar), zpùsob prezentování
+dokumentace a pøípadnì dal¹í nále¾itosti.
+
+\Ad 2. Abychom mohli poøizovat èesky a slovensky psané dokumenty,
+potøebujeme nìkteré dal¹í prostøedky, které jsou závislé na pou¾itém OS.
+Napøíklad je potøeba zodpovìdìt otázku, jak a zda vùbec øe¹í OS poøizování
+zdrojových textù \TeX{}u s~národními abecedami. Jedná se tøeba o~volbu
+editoru a pomùcek k~poøizování textù vèetnì nabodeníèek. Také zde
+patøí rùzné konvertory, preprocesory (tøeba program vlnka), kontroly
+pøeklepù apod. V~ka¾dém OS bude asi tato podpora na jiné úrovni. V~nìkterém
+OS mù¾eme mít navíc rùzná \uv{vylep¹ení}, napøíklad program MNU.
+
+Aèkoli se nìkteré vìci z~této oblasti dají pøevzít z~nabídky PD programù,
+pøesto je potøeba udìlat v~daném OS kus samostatné programátorské
+práce. V¹e, co kdokoli pro svùj OS udìlá, je v~projektu \cs\TeX{} vítáno.
+Napøíklad pro UNIXy se v~souèasné dobì dají pou¾ít fonty v~\hbox{ISO8859-2}
+zavedené do X aplikace (napøíklad editoru). V~pøípadì Emacsu se dá vkládání
+nabodeníèek øe¹it na úrovni maker editoru. Jiná mo¾nost je vyu¾ít pøepínání
+tabulky Xmodmap na úrovni X serveru. Pokud napøíklad tyto softwarové
+pomùcky nabídnou autoøi do \cs\TeX{}u pro UNIXy, budeme potì¹eni.
+
+\Ad 3. V~ka¾dé instalaci \TeX{}u jsou za základní fonty pova¾ovány
+Knuthovy fonty Computer Modern. Nic na tom nemìní skuteènost, ¾e instalace
+vìt¹inou umí pracovat s~rozsáhlým mno¾stvím dal¹ích, obvykle \ps{}ových,
+fontù. Jako základní fonty pro èeskou a slovenskou sazbu jsou v~\cs\TeX{}u
+stanoveny \cs-fonty.
+
+\cs-fonty jsou k~dispozici ve stejném formátu, jako Computer Modern fonty a
+navazují na nì. Jedná se tedy o~formáty {\tt mf} a {\tt tfm}, které
+jsou pøenositelné na libovolný OS.
+
+\Ad 4. Makra \cs\TeX{}u navazují na makra základu a na \cs-fonty.
+Ve v¹ech pøípadech jde o~textové soubory pøenositelné na libovolný OS.
+Makra modifikují formáty, pøevzaté ze základu (napøíklad {\tt plain}, {\tt
+latex}) tak, aby se v~nich místo Computer Modern fontù pracovalo
+s~\cs-fonty. Dále jsou v~tìchto makrech zahrnuty èeské a slovenské vzory
+dìlení slov. Výsledné formáty mají pøed pùvodním názvem pøedponu {\tt cs},
+tj. tøeba {\tt csplain}, {\tt cslatex}. Toto jsou oficiální názvy
+formátù \cs\TeX{}u.
+
+Kromì maker existují dal¹í pomùcky pro èeskou a slovenskou sazbu,
+nezávislé na OS. Uveïme napøíklad virtuální fonty v kódování
+\cs-fontù, které umo¾òují sazbu \ps{}ovými fonty v národních jazycích.
+
+\medskip
+
+\uv{\cs\TeX{} pro jistý OS} pøedstavuje relativnì samostatný celek a je
+nabízen na ftp serverech v~samostatných adresáøích. Rozlièný mù¾e být
+i zpùsob distribuce a zpùsob instalace. Tyto vìci se vìt¹inou podøizují
+zpùsobùm, jaké jsou pou¾ity pøi instalaci základu.
+
+První dvì komponenty jsou závislé na operaèním systému, zatímco dal¹í dvì
+komponenty se v~rùzných OS neli¹í. Proto tøetí a ètvrtou komponentu
+nazýváme {\it jádrem\/} \cs\TeX{}u, které je ve v¹ech OS \uv{skoro} shodné.
+Slùvko \uv{skoro} v~sobì zahrnuje pouze nutné transformace textových
+souborù, struktury adresáøù a názvù souborù z~dùvodu specifik daného OS:
+máme rùzné konce øádkù pro MAC, DOS a UNIX a nìkteré ménìcenné OS
+nerozli¹ují velikosti písmen v~názvech souborù a mají velmi nepøíjemné
+omezení v~délce názvu.
+
+V~souèasné dobì nabízíme \cs\TeX{} pro DOS a OS/2. Základem tohoto \cs\TeX{}u
+je em\TeX{}, který je spoleèný pro oba OS. Nad touto instalací lze pou¾itím
+balíku {\tt texwin.zip} vytvoøit té¾ podporu pro MS Windows.
+Dále existuje \cs\TeX{} pro UNIXy, ov¹em zatím jen v~plenkách.
+Základem je instalace Karla Berryho. Nabízené TARy nyní obsahují jen
+pøevedené jádro \cs\TeX{}u zabalené do struktury adresáøù podle základu.
+Zatím pro UNIX chybí druhá komponenta. Po jednání s~autory softu
+spadajícího do druhé komponenty, se pokusím do \cs\TeX{}u pro UNIX zaøadit i
+jejich práci. Dále rád pøivítám jakoukoli spolupráci s~u¾ivateli Amigy,
+MACu, VAXu apod. Nabízím odbornou konzultaci k~problematice \TeX{}u a
+okolí, ov¹em o~operaèních systémech samotných vím velmi málo. Doèkáme se
+v~brzké dobì roz¹íøení \cs\TeX{}u pro dal¹í OS?
+
+
+\sub Výhody proti pøedchozí verzi \cs\TeX{}94
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+V~následujících dvou odstavcích si shrneme výhody a nevýhody nové verze
+vzhledem ke staré. Tím odpovíme na otázku, zda má pro u¾ivatele smysl
+pøecházet na novou verzi \cs\TeX{}u.
+Nejvýznamnìj¹í výhody se dají shrnout do následujících
+bodù. První dva body se týkají srovnání \cs\TeX{}u pro DOS, ostatní body
+mají obecnìj¹í platnost.
+
+\begitems \numerate
+* Lep¹í kompatibilita se souèasným em\TeX{}em.
+* Konèí (snad) problémy s~{\tt tex386} kontra rùzné DOSovské správy pamìti.
+* Je implicitnì zaøazeno automatické dogenerování fontù.
+* Je zaøazen {\tt cslatex} jako c/s varianta \LaTeX{}u \twoe.
+* Mo¾nost pou¾ít \ps{}ové fonty i v~národní sazbì.
+* Nové vzory dìlení slov pro èe¹tinu.
+* Existuje WWW stránka s~pøehledným rozdìlením \cs\TeX{}u do modulù.
+\enditems
+
+\Ad 1. V~pùvodním balíku byl základ em\TeX{} pøebrán jen èásteènì
+a byl kompletnì pøebalen s~ohledem na potøeby instalace \cs\TeX{}u. Èasem
+se objevily dvì nevýhody. Za prvé to odporovalo po¾adavku autora em\TeX{}u
+E. Mattese distribuovat em\TeX{} pouze jako celek. Za druhé, E. Mattes
+mezitím pøe¹el k~novìj¹ím verzím a dramaticky zmìnil adresáøovou strukturu
+i syntaxi konfiguraèních souborù%
+  \footnote{*)}{Takové zásadní zmìny se v~em\TeX{}u odehrávají zhruba
+  s~frekvencí dvou let. Není to poprvé, co se s~tím setkáváme, bohu¾el.}.
+Tím se distribuovaný \cs\TeX{} znaènì vzdálil od aktuální verze svého
+základu a nastaly problémy. Kdy¾ si nìkdo vzpomnìl, ¾e chce tisknout
+jazykem PCL na 600\,dpi tiskárnách, nefungovalo to. Kdy¾ si sehnal novìj¹í
+verzi ovladaèe, kde byla chyba odstranìna, byl zmaten novým jazykem
+konfiguraèního souboru a strukturou adresáøù. Teprve za cenu obrovského
+úsilí spojil starý \cs\TeX{} s~novým programem do fungujícího celku.
+Podobná vìc platila pro bublinkové tiskárny, nové verze grafických karet
+monitoru apod. Tyto vìci ve starém \cs\TeX{}u podporovány nebyly a
+kombinací nových ovladaèù em\TeX{}u se starým \cs\TeX{}em pøibývaly potí¾e.
+
+Proto¾e lze pøedpokládat, ¾e v~budoucnu dojde k~dal¹ím zmìnám v~em\TeX{}u,
+bude pro snadnìj¹í obnovování \cs\TeX{}u pro DOS jednodu¹¹í pøevzít základ
+beze zmìn s~originálnì balenými ZIPy.
+
+\Ad 2. Potì¹ím v¹echny zoufalce, kteøí chtìjí s~DOSem obslou¾it více
+ne¾ 640\,kb pamìti pomocí rùzných berlièek, jako je {\tt emm386} a jim
+podobné. To s~pùvodní verzí em\TeX{}u ne¹lo moc dohromady. Souèasná verze
+em\TeX{}u u¾ obsahuje pøíslu¹né {\tt exe} programy (napø. {\tt
+tex386.exe}) ve \uv{vykuchaném} tvaru. Znamená to, ¾e tyto programy
+nemají obsluhu roz¹íøené pamìti zahrnutu pøímo v~sobì. Místo toho uvedené
+programy spolupracují s~dvìma rùznými podpùrnými nástroji -- {\tt emx} nebo
+{\tt rsx}. Nástroj {\tt emx} obsahuje pùvodní Mattesovo pojetí práce
+s~roz¹íøenou pamìtí, zatímco {\tt rsx} doká¾e spolupracovat s~{\tt emm386}.
+Typ podpùrného nástroje si program vybere automaticky v~závislosti na
+pøítomném (nebo nepøítomném) emulátoru pamìti. Dùsledkem toho je, ¾e se to
+nepere s~Microsoftským pojetím obsluhy roz¹íøené pamìti.
+
+Nedá se pøedpokládat, ¾e problém pamìti v~DOSu je nav¾dy vyøe¹en. Rùzné
+novìj¹í verze zpìtnì nekompatibilních obsluhovaèù pamìti mohou znovu
+zpùsobit problémy. Budi¾ pouze útìchou, ¾e se nemusí kvùli tomu (snad)
+mìnit verze programù {\tt tex386.exe} a jim podobných, ale staèí vymìnit
+pøíslu¹ný {\tt rsx}. Problémy tohoto typu budou existovat tak dlouho, jak
+dlouho bude existovat DOS. Zvrácenost tohoto operaèního systému spoèívá v~tom,
+¾e nechává na aplikaci, aby se sama nìjak vypoøádala se vstupem do
+roz¹íøené pamìti. Pokud na stejném hardware spustíte nìjaký UNIX, bariéra
+640\,kb pøestává existovat a operaèní systém nabízí aplikaci tolik
+virtuální pamìti, kolik se konfiguruje.
+
+\Ad 3. V~\cs\TeX{}u 94 zabíraly pøevá¾né mno¾ství distribuèních disket
+bitové mapy \cs-fontù pro nejrùznìj¹í tiskárny a v~nejrùznìj¹ích
+velikostech. Automatické dogenerování bitmap \cs-fontù pak nebylo skoro
+potøeba provádìt a bylo implicitnì vypnuté. Dnes se pou¾ívá vìt¹í mno¾ství
+typù tiskáren a vìt¹í mno¾ství fontù. Automatické dogenerování bitmap je
+proto implicitnì zapnuté. To má pouze tu nevýhodu, ¾e administrátor sítì,
+který instaluje \cs\TeX{} do místa zabezpeèeného proti zápisu u¾ivatelem,
+musí pozmìnit obsah konfiguraèních souborù, aby se novì generované bitmapy
+vytváøely v~místì, kam u¾ivatel zapisovat mù¾e. Pokud se vychází z~malého
+mno¾ství hotových bitových map, existuje je¹tì druhá nevýhoda. Tou
+je skuteènost, ¾e se na fonty zpoèátku musí chvíli poèkat.
+
+Aby byla trochu kompenzována druhá nevýhoda, jsou v~\cs\TeX{}u zaøazeny
+knihovny bitových map pro pùvodní ètyøi typy podporovaných tiskáren, ov¹em
+tyto knihovny zahrnují jen nejpou¾ívanìj¹í minimum. Proto nejsou tak
+rozsáhlé. V¹e mimo tyto výchozí knihovny projde automatickým generováním.
+
+\Ad 4. V~nové verzi \cs\TeX{}u jsme se doèkali pøevedení \LaTeX{}u
+\twoe{} do národního prostøedí. Tento formát se nyní nazývá {\tt cslatex}.
+V~\cs\TeX{}u pro DOS lze navíc pou¾ít pùvodní formát \LaTeX{} 2.09 a lze si
+snadno z~nabídky vybrat, která verze \LaTeX{}u bude pou¾ita.
+
+Výhody nového \LaTeX{}u \twoe{} vám neøeknu, proto¾e \LaTeX{} nepou¾ívám.
+Kdo jej pou¾ívá, zøejmì by na¹el celou øádku argumentù, proè pøejít na
+\LaTeX{} \twoe.
+
+\Ad 5. V~novém \cs\TeX{}u máte mo¾nost pou¾ít základní skupinu
+\ps{}ových fontù. Jsou zaøazeny virtuální popisy tìchto fontù ve stejném
+kódování, jako \cs-fonty. Rovnì¾ jsou k~dispozici makra pro {\tt cslatex} i
+{\tt csplain}, která umo¾ní snadné pou¾ití tìchto fontù koncovému
+u¾ivateli.
+
+Základní skupina \ps{}ových fontù je instalována v~ka¾dém \ps{}o\-vém RIPu,
+tak¾e ji kupujete spoleènì s~RIPem v~tiskárnì. Do \cs\TeX{}u budou zahrnuty
+v~nejbli¾¹í dobì té¾ knihovny bitových map tìchto fontù pro nejbì¾nìj¹í
+tiskárny v~obvyklých rozli¹eních. Potom bude mo¾né si sazbu s~tìmito
+fonty prohlí¾et a tisknout na levných tiskárnách. V~èinnosti ale nebude
+automatické generování nestandardních velikostí, proto¾e popisy kreseb
+tìchto fontù jsou chránìny licencí a není mo¾né je ¹íøit zdarma.
+
+Pokud pou¾ijete rastrovací mechanismus tìchto fontù z~PD instalace
+Ghostscriptu, tj. místo originálních a licencí chránìných fontù ve formátu
+{\tt pfb} pou¾ijete volnì ¹íøené {\tt gsf}, velmi vás prosím, nevystavujte
+takové dokumenty na veøejnosti. Dìlali byste \TeX{}u jen ostudu.
+
+Je té¾ pøibalen nástroj pro vytvoøení dal¹ích virtuálních popisù
+libovolných \ps{}ových fontù. Je jím program {\tt a2ac}. Pokud si tedy
+koupíte \ps{}ový font ve Standard AdobeEncoding, pak máte mo¾nost jej
+pou¾ít v~èeské sazbì v~\TeX{}u. Doporuèuje se nekupovat poèe¹tìné varianty
+tìchto fontù, proto¾e velmi èasto platí, ¾e poèe¹tìný font znamená pomr¹ený
+font. Je daleko lep¹í vyu¾ít pro poèe¹tìní nástrojù z~\cs\TeX{}u.
+
+\Ad 6. V~novém \cs\TeX{}u jsou pou¾ity nové vzory dìlení èeských slov
+od Pavla ©eveèka a kol. Tyto vzory jsou podstatnì lep¹í, ne¾ vzory dìlení
+z~\cs\TeX{}u 94. Slovenské vzory dìlení zatím bohu¾el zùstaly beze
+zmìny. Vzory dìlení (èeské i slovenské) jsou navíc ulo¾eny v~souborech
+nezávislých na volbì kódování, tj. neovlivní pøípadnì jinou volbu vnitøního
+kódování \TeX{}u a jsou snadno pøenositelné do jiných OS.
+
+\Ad 7. Existuje WWW stránka, která informuje o~souèasném stavu
+\cs\TeX{}u a pøehlednì ukazuje rozdìlení jednotlivých instalací do modulù
+(napøíklad instalaèních ZIPù). Prostøednictvím WWW lze té¾ zkopírovat pøímo
+do va¹eho poèítaèe libovolný modul \cs\TeX{}u nebo kontaktovat autory
+modulù elektronickým dopisem.
+
+
+\sub Nevýhody proti pøedchozí verzi \cs\TeX{}94
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begitems \numerate
+* Neexistuje snadná obnova pøedchozí verze na novou.
+* Vìt¹í nároky na disk.
+* Ménì komfortní instalaèní procedura.
+* Ménì kladen dùraz na DOS.
+* Men¹í spolehlivost na rozhraních kompetencí.
+* Opravy se budou dìlat za chodu.
+\enditems
+
+\Ad 1. Pøedchozí verze \cs\TeX{}u (94 a 93) se od nové velmi výraznì
+li¹í v~adresáøové struktuøe. Proto pøi pøechodu na novou verzi je nutné
+zcela opustit verzi starou. Chcete-li mít obì verze vedle sebe, pøejmenujte
+starý adresáø na jiný název ne¾ {\tt emtex} a instalujte nový \cs\TeX{} vedle.
+Po pøejmenování staré verze bude je¹tì potøeba pozmìnit obsah i jména
+spou¹tìcích dávek staré verze a dále upravit set pro {\tt TEXDIR} v~{\tt
+cfg\char92texset.bat}.
+
+\Ad 2. Proto¾e jsme do \cs\TeX{}u zaøadili kompletní em\TeX{},
+nastávají problémy s~velikostí instalace na disku. Tvùrce em\TeX{}u
+Eberhard Mattes se tímto systémem intenzívnì zabývá, a tak mu asi je jedno,
+¾e jeho instalace zabírá 50\,MB. Ménì jedno to je náhodnému u¾ivateli,
+který na svém disku kromì \TeX{}u chce mít plno dal¹ích vìcí a \TeX{}
+pova¾uje jen jako nezávazný experiment.
+
+Mattes balí do svých ZIPù skupiny software, které se paralelnì doplòují.
+Napøíklad {\tt exe} programy pro DOS i OS/2 jsou ve spoleèném ZIPu. Nebo
+dokumentace je jednak anglická a jednak nìmecká. A¾ poté, co je ZIP
+rozbalen na disk se tedy mù¾e zaèít ¹etøit místem vymazáním zbyteèného
+softu. Napøíklad vymazání v¹eho, co se týká OS/2, proto¾e máme zatím jenom
+DOS, pøípadnì vymazání ve¹keré nìmecké dokumentace, proto¾e radìji èteme
+anglicky.
+
+Jako kompromis byly vytvoøeny tøi varianty, definující mno¾inu pou¾itých
+ZIPù pro instalaci. Nejmen¹í varianta \uv{{\tt small}} instaluje funkèní
+minimum. To vyjde na 17\,MB. Pak se dá napøíklad vymazat v¹e, co patøí OS/2
+a není pou¾itelné pro DOS a dále nìmecká dokumentace a v¹e se zredukuje na
+13\,MB. Pokud dále problematice velmi rozumíme a víme naprosto pøesnì, co
+budeme potøebovat a co ne, dají se ruènì dále vymazávat jednotlivosti, a¾
+dojdeme obvykle k~8\,MB. Pokud odma¾eme \LaTeX{} a necháme jen plain,
+dostaneme se na hranici 5\,MB. Men¹í to rozhodnì nikdy nebude. Proto¾e
+v~prùbìhu práce se budou generovat formáty a dále fonty, je rozumné pro
+minimální nároky poèítat obvykle s~20\,MB. Dal¹í varianty instalace \uv{{\tt
+all}} a \uv{{\tt big}} zaberou po øadì zhruba 38\,MB a 50\,MB.
+
+\Ad 3. Zpùsob balení Mattesových ZIPù tedy znemo¾nil elegantní
+instalaci jen tìch èástí \cs\TeX{}u, které skuteènì potøebujeme. Proto
+nemìlo smysl pro novou verzi \cs\TeX{}u pou¾ít analogii k~instalaènímu
+programu, který známe ze star¹ích verzí.
+
+\Ad 4. A¾ dosud byla práce autorù v~\cs\TeX{}u nejprve inspirována
+jejich vlastními potøebami. Souèasná verze \cs\TeX{}u pro DOS je asi prvním
+balíkem, kdy jsem jako autor balíku nevytvoøil toto dílo pro svou vlastní
+potøebu, ale pro druhé. Cítím toti¾ závazek vùèi u¾ivatelùm DOSu, kteøí
+novou verzi em\TeX{}u zapracovanou do \cs\TeX{}u potøebují. Skuteènì, na
+své domácí 286 zùstanu u~verze z~\cs\TeX{}u 94, která se mi podaøila
+vmìstnat vèetnì starého \LaTeX{}u do 5\,MB na disku. Ka¾dý, kdo má pouze
+40\,MB disk ví, co to znamená \uv{disková tíseò}. Tam se prostì nová
+verze nevejde a ani se nedá zkou¹et. V~zamìstnání bych asi také nebyl
+u¾ivateli pochválen, kdybych pøe¹el na novou verzi, na kterou nejsou
+zvyklí. A~já osobnì v~zamìstnání pou¾ívám \TeX{} skoro výhradnì na UNIXu.
+
+Dùsledkem tohoto odklonu autorových potøeb od odvedené práce mù¾e být, a
+pravdìpodobnì je, ménì propracovaný a urèitì ménì prozkou¹ený balík.
+
+\Ad 5. Jednotlivé èásti \cs\TeX{}u dìlají rùzní autoøi pod rùznými
+operaèními systémy. Výsledná práce pak pøi opomenutí nemusí zcela zapadat
+do koncepce \cs\TeX{}u a vznikají potí¾e na \uv{rozhraních kompetencí}.
+Pøíkladem je souèasný balík {\tt cslatex}, který vytvoøil Z.~Wagner a
+odzkou¹el pod svým operaèním systémem, kterým je OS/2. Pøitom zcela
+ignoroval skuteènost, ¾e v~balíku MNU pro DOS jsou pro {\tt cslatex}
+pøipraveny polo¾ky v~menu a dávky. Tyto dávky ov¹em s~dodaným balíkem
+neumìly pracovat. Vznikla otázka, zda zmìnit dávky nebo balík {\tt cslatex}.
+Ani já, ani on, jsme nemìli mo¾nost ani chu» vyzkou¹et, zda na¹e dílo na
+sebe navazuje, proto¾e nikdo z~nás pøíli¹ nepracuje s~DOSem. V~následující
+kapitole se proto pokusím vymezit po¾adavky na autora modulu, co musí
+udìlat, aby byl modul bezproblémovì zaøazen do \cs\TeX{}u.
+
+\Ad 6. Je mi jasné, ¾e pro u¾ivatele nebude pøíli¹ snadné sledovat
+postupný pohyb ve verzích jednotlivých modulù a jejich opravy, pøesto¾e ka¾dá
+významnìj¹í zmìna v~\cs\TeX{}u bude zveøejnìna na listu. 
+V~souboru {\tt zmeny.txt} pøístupném jednak pomocí ftp a jednak
+pomocí WWW bude pøibývat podrobný záznam o~jednotlivých zmìnách vèetnì data
+zanesení zmìny na serveru. Toto opatøení, na rozdíl od skokových zmìn
+jednou roènì, umo¾ní autorùm provádìt opravy modulù v~okam¾iku, kdy na to
+mají náladu a chu» a já je nebudu muset nutit ke splnìní èasových termínù,
+které podle mých zku¹eností stejnì neplnili. Pravda, je to ponìkud ménì
+u¾ivatelsky pøehledné, bohu¾el.
+
+
+\sub Jak zaøadit nový modul
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+I~vy se mù¾ete stát spoluautory \cs\TeX{}u. Kdy¾ vytvoøíte instalaèní modul
+(napøíklad ZIP), který je v~souladu se stávající strukturou \cs\TeX{}u pro
+daný OS a je jednodu¹e zaèlenitelný do stávajícího stavu, je to jedinì
+vítáno. Je ov¹em bezpodmíneènì potøeba, abyste si zkusmo instalovali
+souèasnou verzi \cs\TeX{}u pro daný OS a na nìm provedli experiment
+zaèlenìní va¹eho modulu. Pøi tomto zaèlenìní je potøeba zaznamenat úkony a
+zmìny, které je nutné udìlat v~souborech pocházejících z~rukou jiných
+autorù.  Tyto zmìny je pak potøeba podrobnì popsat a zaslat tìmto autorùm.
+A¾ je autoøi zaèlení do svých modulù, je teprve mo¾né nový modul zaèlenit do
+\cs\TeX{}u.
+
+Pøíklad. Budete chtít pøidat modul Ghostscriptu {\tt gs.zip} pro \cs\TeX{}
+pro DOS. Provedete následující:
+
+\begitems \numerate
+* Instalujete si {\it souèasnou\/} verzi \cs\TeX{}u pro DOS.
+* Instalujete svùj balík.
+* Provedete zásahy do stávajících souborù (tøeba pøidání polo¾ky v~MNU).
+* Odzkou¹íte funkènost instalace vèetnì va¹eho balíku.
+* Za¹lete autorovi zmìnìných souborù soupis zmìn (napøíklad mì za¹lete
+  instrukci o~zaèlenìní nové polo¾ky do {\tt cfg.mnu} a do instalaèních
+  dávek).
+* Já provedu potøebné zmìny a vystavím obnovený modul {\tt mnu.zip} a vá¹
+  modul {\tt gs.zip}. Také provedu zmìny v~instalaèních dávkách, pøípadnì
+  v~dokumentaci.  Nepoèítejte s~tím, ¾e to budu znovu zkou¹et!
+* Vy dáte annonci o~novém modulu na listu {\tt cstex} a budete na tomto listu
+  odpovídat na pøípadné problémy a dotazy u¾ivatelù.
+\enditems
+
+Samozøejmostí dobøe pøipraveného modulu je nejen správná struktura modulu
+ale také dobrý a instruktivní dokumentaèní soubor v~èe¹tinì nebo ve
+sloven¹tinì. Také je tøeba (napøíklad v~dokumentaci) rozli¹it va¹i práci od
+práce pøevzaté ve formì pøevzatých PD programù a modul by nemìl být
+v~rozporu s~po¾adavky autorù pøevzatých PD programù.
+
+Je to dost hodnì práce, ale kdy¾ u¾ takovou vìc jednou udìláte pro sebe,
+asi stojí za to ji zveøejnit pro druhé pod hlavièkou \cs\TeX{}u. U¹etøíte
+tím práci mnoha dal¹ím lidem, kteøí bohu¾el, jak plyne z~mých zku¹eností,
+vám za to ani nebudou pøíli¹ vdìèní.
+
+Zaøazení nìkterých nových modulù mù¾e být nejprve pøedmìtem diskuse
+s~autory konkurenèních produktù. Napøíklad zaøadit do \cs\TeX{}u pro DOS
+alternativní systém k~systému MNU mù¾e vy¾adovat del¹í diskusi. Netvrdím,
+¾e bych byl z~dùvodu své je¹itnosti zásadnì proti. Asi by zále¾elo na
+okolnostech a na projektu výsledného uspoøádání modulù.
+
+
+\sub Co s~pátou disketou
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+Kromì PD programù se v~nìkterých komponentách \cs\TeX{}u mohou
+vyskytovat i~programy vázané licencí. Takové programy pak \cs TUG
+roz¹iøuje podle podmínek stanovených smlouvou mezi autorem,
+resp. distributorem a \cs TUGem.
+
+V~roce 1992 \cs TUG koupil editor \cs Ed a korektor pøeklepù, obojí pro
+DOS. Od té doby k~¾ádným dal¹ím nákupùm ani pøechodùm na novìj¹í verze
+nedo¹lo. Souèasné vedení \cs TUGu neinklinuje k~pøíli¹ rozsáhlé podpoøe
+nákupu podpùrných programù pro \TeX, zvlá¹tì pokud se jedná o~software
+závislý na pou¾itém OS.
+
+Zmínìný editor \cs Ed a korektor pøeklepù je podle smluv s~autory mo¾né
+bezplatnì ¹íøit jen pro èleny \cs TUGu a není dovoleno jej distribuovat
+mimo øady èlenské základny. Tento software je zaøazen na páté disketì
+v~\cs\TeX{}u pro DOS. Zatímco celý \cs\TeX{} je k~dispozici na anonymních
+ftp serverech, obsah této páté diskety z~uvedených dùvodù pøístupný není.
+
+Kolektivní èlenové \cs TUGu dostali v~roce 1993 celý \cs\TeX{} 93 na
+disketách, vèetnì páté diskety. Individuální èlenové si pak mohli obsah
+páté diskety kopírovat od kolektivních èlenù. Dal¹í mo¾ností je distribuce
+obsahu páté diskety prostøednictvím Internetu za pou¾ití osobního
+identifikaèního èísla (PIN), které na po¾ádání pøidìlí èlenovi \cs TUGu
+Martin Bílý.
+
+V~novém \cs\TeX{}u je obsah páté diskety z~pohledu zastoupených souborù
+zcela stejný jako c \cs\TeX{}u94, 
+ov¹em ZIPy jsou zabalené s~nepatrnì odli¹nou strukturou.
+Uvnitø ZIPu je pøidán hlavní adresáø {\tt emtex}, aby struktura tìchto ZIPù
+souhlasila se strukturou ostatních ZIPù v~instalaci. Máte-li pátou disketu
+z~\cs\TeX{}u 94 nebo 93, pak staèí pøebalit ZIPy do nové struktury a mù¾ete
+disketu pou¾ívat i v~souèasném \cs\TeX{}u. Pro pøebalení je v~\cs\TeX{}u
+pøipravena dávka {\tt newcs5.bat}, kterou je mo¾no na \uv{obnovení}
+diskety pou¾ít. Upozornìní: Proveïte nejprve zálohu pùvodní diskety.
+
+
+\sub Kde najdeme novou instalaci?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Instalace \cs\TeX{}u je k~dispozici na ftp serveru s~anonymním pøístupem
+\medskip
+{\tt math.feld.cvut.cz}
+\medskip
+\noindent v~adresáøi {\tt /pub/cstex}. Tam jsou v~souèasné
+dobì adresáøe {\tt msdos}, {\tt os2} a {\tt unix}. Pøitom první dva
+adresáøe jsou zcela toto¾né (UNIXový link), proto¾e distribuce pro DOS a
+OS/2 vychází ze stejného základu em\TeX.
+
+Distribuce pro MS Windows je realizována jedním doplòkovým modulem {\tt
+texwin.zip}, který je souèástí \cs\TeX{}u pro DOS.
+
+Dále jsou k~dispozici soubory {\tt diskuse.txt} a {\tt zmeny.txt}. V~prvním
+je souhrn nejpodstatnìj¹ích diskusních pøíspìvkù, týkajících se \cs\TeX{}u
+na diskusní skupinì {\tt cstex}. V~druhém je podrobný seznam zmìn vèetnì
+data provedení zmìny v~jednotlivých modulech. Dùvody, proè byla zmìna
+provedena, je mnohdy mo¾né vyèíst ze souboru {\tt diskuse.txt}.
+
+Pøi zkopírování \cs\TeX{}u z~ftp serveru doporuèuji uchovat si soubor {\tt
+zmeny.txt}, nebo» tento soubor vlastnì charakterizuje verzi \cs\TeX{}u,
+kterou jste si zrovna zkopírovali. Proto¾e jsou zmìny provádìny \uv{za
+chodu}, mù¾ete v~budoucnu porovnat svùj soubor {\tt zmeny.txt}
+s~vystavovaným a máte pøehled o~rozdílech mezi va¹í verzí \cs\TeX{}u a
+vystavovanou.
+
+\cs\TeX{} je rovnì¾ pøístupný prostøednictvím WWW na
+
+\medskip {\tt http://math.feld.cvut.cz/olsak/cstex}.\medskip
+
+\noindent Server {\tt math.feld.cvut.cz} je primárním serverem \cs\TeX{}u. Ostatní
+ftp servery jej mohou zrcadlit.
+
+\cs\TeX{} pro daný OS má vìt¹inou specifický zpùsob instalace a mnohdy té¾
+distribuce. Napøíklad \cs\TeX{} pro DOS a OS/2 mù¾e být ¹íøen té¾ na
+disketách 1.44\,MB. Proto je zde pøipravena dávka {\tt makeinst.bat}, která
+z~adresáøe, v~nìm¾ jsou v¹echny moduly pohromadì, pøekopíruje instalaèní
+soubory na jednotlivé diskety s~oznaèením CS-1 a¾ CS-5, EM-1 a¾ EM-7 a PK-1
+a¾ PK-3. Tím vzniká instalaèní sada disket pou¾itelná na poèítaèích s~DOSem
+nebo OS/2.
+
+Pro UNIX zatím podobná vìc není udìlána, proto¾e disketové médium pro UNIX
+nebývá zcela obvyklé a instalaèní TARy základu daleko pøesahují kapacitu
+jedné diskety.
+
+\end

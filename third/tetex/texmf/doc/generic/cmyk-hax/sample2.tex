@@ -1,0 +1,74 @@
+% E  Sample TeX file demonstrating how to separate by changing colors using
+%    CMYK-HAX macros -- outline graphics
+% P  Przyk/ladowy plik TeX-owy demonstruj/acy separacj/e kolor/ow poprzez
+%    zamian/e kolor/ow za pomoc/a makr pakietu CMYK-HAX -- grafika obwiedniowa
+%
+\input epsf     % DVIPS standard distribution
+\input cmyk-hax
+\special{landscape}
+
+\nopagenumbers
+\voffset -0.25in
+\hoffset -0.5in
+\vsize 180mm
+\hsize 270mm
+
+\def\RED{%
+ \setCMYKchange
+   \forcolor{0 1 1 0}\changecolor{0 0 0 1}       % E change red to black
+                                                 % P zamie/n czerwony na czarny
+   \forcolor{0 0 1 0}\changecolor{0 0 0 0}       % E change yellow to white
+                                                 % P zamie/n /z/o/lty na bia/ly
+                     \addstroke{0 0 0 0}         % E add the white stroke to yellow
+                                                 % P /z/o/lty zyskuje bia/l/a obw/odk/e
+                     \strokehook{2 truemm setlinewidth % E of thickness 2 truemm
+                                                       % P grubo/sci 2 truemm
+                                 0 setlinejoin   % E with pointed joints
+                                                 % P spiczaste po/l/aczenia
+                                 2 setlinecap    % E with lenghtened tips
+                                                 % P wyd/lu/zone ko/nce
+                                 5 setmiterlimit % E with medium miter limits
+                                                 % P obcinane /srednio daleko
+                                }%
+ \useCMYKchange}
+
+\def\YELLOW{%
+ \setCMYKchange
+   \forcolor{0 0 1 0}\changecolor{0 0 0 1}  % E change yellow to black
+                                            % P zamie/n /z/o/lty na czarny
+   \forcolor{0 0 0 0}\delcolor              % E make white invisible
+                                            % P uczy/n bia/ly niewidzialnym
+   \forcolor{0 1 1 0}\delcolor              % E make red invisible
+                                            % P uczy/n czerwony niewidzialnym
+ \useCMYKchange}
+
+\def\SPEC{%
+ \setCMYKchange
+   \forcolor{0 0 1 0}\changecolor{0 0 0 0}  % E change yellow to white
+                                            % P zamie/n /z/o/lty na bia/ly
+   \forcolor{0 0 0 0}\changecolor{0 0 0 1}  % E change white to black
+                                            % P zamie/n bia/ly na czarny
+   \forcolor{0 1 1 0}\delcolor              % E make red invisible
+                                            % P uczy/n czerwony niewidzialnym
+                     \addstroke{0 0 0 1}    % E add the black stroke to red
+                                            % P czerwony zyskuje czarn/a obw/odk/e
+                     \strokehook{2 truemm setlinewidth  % E of thickness 2 truemm
+                                                        % P grubo/sci 2 truemm
+                                 0 setlinejoin    % E with pointed joints
+                                                  % P spiczaste po/l/aczenia
+                                 2 setlinecap     % E with lenghten tips
+                                                  % P wyd/lu/zone ko/nce
+                                 5 setmiterlimit  % E with medium miter limits
+                                                  % P obcinane /srednio daleko
+                                }%
+ \useCMYKchange}
+
+\setbox1\hbox{\epsfysize 15cm \epsffile{gdansk.eps}}
+
+\vbox{\centerline{%
+   \PSbegingroup\RED{\copy1}\PSendgroup \hskip3cm
+   \PSbegingroup\SPEC{\copy1}\PSendgroup}
+ \kern-20mm
+ \centerline{\vbox to0cm{\PSbegingroup\YELLOW{\copy1}\PSendgroup\vss}}}
+
+\end

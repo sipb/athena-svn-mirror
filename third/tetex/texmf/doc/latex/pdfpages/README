@@ -1,0 +1,25 @@
+
+The pdfpages Package
+--------------------
+
+This package makes it easy to include pages of external PDF
+documents. It is possible to arrange two or four logical
+pages on each physical sheet of paper. (Like `psnup'.)
+
+The package is based on pdfLaTeX and does not work with
+LaTeX.
+
+Run `latex pdfpages.ins' to produce pdfpages.sty.
+
+Run `latex pdfpages.dtx' to produce the documentation.
+
+Run `pdflatex pdf-ex.tex' to produce a demonstration of the package.
+
+
+This program may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.2
+of this license or (at your option) any later version.
+
+                                Andreas MATTHIAS
+                                amat@kabsi.at
+

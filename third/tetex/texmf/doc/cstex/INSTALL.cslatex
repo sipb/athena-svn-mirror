@@ -1,0 +1,35 @@
+CSLaTeX 2e
+----------
+
+Toto je LaTeX2e z øíjna 1997 upravený pro èeskou a slovenskou
+sazbu. Vznikl pøizpùsobením star¹ích verzí autorù Jiøího Zlatu¹ky a
+Zdeòka Wagnera.
+
+Poslední poèe¹tìní provedl pan Jaroslav Snajdr, viz 
+http://home.zcu.cz/~snajdr5/cslatex.
+
+Pøebalení do taru s ji¾ docstipovanými soubory pro UNIX provedl 
+Petr Ol¹ák.
+
+Tar cslatex-01-98.tar obsahuje jednak úplnou verzi LaTeXu 2e datovanou
+k prosinci 1997, dále balík tools a graphics. V¹e je ji¾ po
+"rozbalení" programem docstrip pøipraveno pøímo k provozu. Proto je
+instalace jednoduchá:
+
+INSTALACE
+---------
+
+0. Je potøeba mít instalován tex, csplain, ltfonts a csfonty.
+
+1. Rozbalte tar do adresáøe, ve kterém máte texmf (v teTeXu mezi prvním a
+   druhým texmf)
+ 
+2. cd texmf/web2c
+
+3. initex cslatex.ini
+
+Pøed i po bodu 3 je vhodné aktualizovat databázi ls-R, napøíklad
+pøíkazem MakeTeXls-R.
+
+
+

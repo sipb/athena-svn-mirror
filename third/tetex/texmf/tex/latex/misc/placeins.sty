@@ -1,59 +1,74 @@
-%  P L A C E I N S . S T Y          ver 1.0  Dec 1, 1995
-%  Donald Arseneau                  asnd@reg.triumf.ca
+%  P L A C E I N S . S T Y          ver 2.0  June 27, 2002
+%  Donald Arseneau                  asnd@triumf.ca
 %  Keep floats `in their place'; don't let them float into another section.
 %  Instructions are below.
+%
+%  placeins.sty is freely released to the public domain.
+
 
 \def\@fb@botlist{\@botlist}
+\def\@fb@topbarrier{\suppressfloats[t]}
+
+\catcode`\V=14 % `V' is a comment character unless [verbose]
+
 \@ifundefined{DeclareOption}{}%
 {\DeclareOption{below}{\def\@fb@botlist{}}
+ \DeclareOption{above}{\def\@fb@topbarrier{}}
  \DeclareOption{section}{\expandafter\renewcommand\expandafter\section
      \expandafter{\expandafter\FloatBarrier\section}}
- \ProvidesPackage{placeins}[1995/12/01 \space  v 1.0]
+ \DeclareOption{verbose}{\catcode`\V=9 }% Activate things after `V'
+ \ProvidesPackage{placeins}[2002/06/27 \space  v 2.0]
  \ProcessOptions }
 
 \def\FloatBarrier{\par\begingroup \let\@elt\relax
  \edef\@tempa{\@fb@botlist\@deferlist\@dbldeferlist}%
- \ifx\@tempa\@empty \else
+ \ifx\@tempa\@empty V\PackageInfo{placeins}{No floats held}%
+ \else
      \ifx\@fltovf\relax % my indicator of recursion
-         \if@firstcolumn %\message{Some floats are stuck.}%
+         \if@firstcolumn V\PackageWarning{placeins}{Some floats are stuck}%
             \clearpage 
-         \else %\message{Eject a column and check again:}%
+         \else V\PackageInfo{placeins}{Eject a column and check again:}%
             \null\newpage\FloatBarrier 
          \fi
-     \else %\message{Must dump some floats.}%
-         \newpage \let\@fltovf\relax %\message{Check again:}%
+     \else V\PackageInfo{placeins}{Must dump some floats}%
+         \newpage \let\@fltovf\relax V\PackageInfo{placeins}{Check again:}%
          \FloatBarrier % recurse once only
- \fi \fi \endgroup}
+ \fi \fi \endgroup
+ \@fb@topbarrier }
+
+\AtBeginDocument{\@fb@topbarrier}
+
+\catcode`\V=11
 \endinput
 
  ==============  I N S T R U C T I O N S ==============
 
 Placeins.sty keeps floats `in their place', preventing them from floating
 past a "\FloatBarrier" command into another section.  To use it, declare
-"\usepackage{placeins}" or "\documentstyle[placeins...", and insert
-"\FloatBarrier" at places that floats should not move past, perhaps before
-every "\section".
+"\usepackage{placeins}" and insert "\FloatBarrier" at places that floats 
+should not move past, perhaps before every "\section".
+
+[section]
 
 A more convenient way to use it is to change the definition of "\section"
-by placing "\FloatBarrier" before "\@startsection" or into the font 
-specification; for example:
+by placing "\FloatBarrier" before "\@startsection" (see The LaTeX 
+Companion, section 2.3).  If you specify "\usepackage[section]{placeins}", 
+then "\section" will be redefined with "\Floatbarrier" inserted at the 
+beginning.
 
-    % \makeatletter % Use \makeatletter if you put this in your main document
-    \renewcommand\section{\@startsection {section}{1}{\z@}%
-       {-3.5ex \@plus -1ex \@minus -.2ex}%
-       {2.3ex \@plus.2ex}%
-       {\FloatBarrier\normalfont\Large\bfseries}}
-    % \makeatother % Use \makeatother if you put this in your main document
+[above]  [below]
 
-(See The LaTeX Companion, section 2.3.)  If you specify 
-"\usepackage[section]{placeins}", then "\section" will be redefined 
-with \Floatbarrier" inserted at the beginning.
+Something you may not like is that, by default, "\FloatBarrier" is very 
+strict, and will prevent a float from appearing above the start of the 
+current section or below the start of the next section, even though 
+the float is still on the same page as its intended section.  Each 
+restriction can be relaxed separately by using the "[above]" and 
+"[below]" package options.  
 
-Something you may not like is that this style is very strict, and will 
-prevent a figure from an old section from appearing below the start of 
-a new section, even though some of the old section may be on the same
-page.  To let the new section start immediately, and the figure to go 
-below it, declare "\usepackage[below]{placeins}".
+NOTE!  The original version of placeins.sty acted like it always had
+the [above] option specified.
+
+
 
 Test file integrity:  ASCII 32-57, 58-126:  !"#$%&'()*+,-./0123456789
 :;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~

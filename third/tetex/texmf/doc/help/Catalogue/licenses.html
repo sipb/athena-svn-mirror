@@ -25,40 +25,55 @@ through input from authors, the sheer size of this task makes it
 difficult to maintain a watching brief on all licenses.</emp>
 
 <p>The license conditions are <B>not</B> designed to restrict what can
-be submitted to CTAN. They are used to determine where the software
-will be located on CTAN (under the normal hierarchy or in the nonfree
-hierarchy with links from the normal hierarchy). In this way,
-redistributors of TeX and family can be surer of the legal
-situation. The simple criteria is that any software not satisfying the
-<a href="http://www.debian.org/social_contract#guidelines">Debian Free
+be submitted to CTAN. Certainly, they are used to determine where the
+software will be located on CTAN (under the normal hierarchy or in the
+<I>nonfree</I> hierarchy with links from the normal hierarchy). In
+this way, redistributors of TeX and family can be surer (if not
+certain) of the legal situation. The simple criteria is that any
+software not satisfying the <a
+href="http://www.debian.org/social_contract#guidelines">Debian Free
 Software Guidelines</a> will be recognised as <i>nonfree</i> software.
 
 <p><b>Free software</b> satisfies the criteria contained in the <a
 href="http://www.debian.org/social_contract#guidelines">Debian Free
-Software Guidelines</a>.  This software can be freely used, modified
-(hence source must be available), and distributed (e.g. on
-distributions like TeXLive, teTeX, and MikTeX). It is generally
-copyrighted to legally protect it.  Users are generally given an
-explicit license to copy, distribute, and/or modify the
-software. Authors of free software may invite users to make monetary
-donations if they wish, but can not oblige them to do so, or else the
-software becomes nonfree. Free software may rely on nonfree software
-for extra functionality, but provides useful functionality without
-that nonfree software. Further information on free software is
-available from <a
+Software Guidelines</a> which provides the basis of the <A
+HREF="http://opensource.org/osd.html">Open Source Free Software
+Guidelines</A>.  This software can be freely used, modified (hence
+source must be available), and distributed (e.g. on distributions like
+TeXLive, teTeX, and MikTeX). It is generally copyrighted to legally
+protect it.  Users are generally given an explicit license to copy,
+distribute, and/or modify the software. Authors of free software may
+invite users to make monetary donations if they wish, but can not
+oblige them to do so, or else the software becomes nonfree. Free
+software may rely on nonfree software for extra functionality, but
+provides useful functionality without that nonfree software. Further
+information on free software is available from <a
 href="http://www.gnu.org/philosophy/free-sw.html">GNU</a>.
 
 <p>While one category would be sufficient (<b>dfsg</b>) we identify
-the common subcategories that satisfy the DFSG (BSD style licenses
-also satisfy the DFSG but are generally not encouraged):
+the common subcategories that satisfy the DFSG:
 
-<table width=60%>
+<table width=80%>
   <tr>
     <td width=10%>
     <td width=20%>
     <a href="licenses.dfsg.html">dfsg</a>
     <td width=70%>
     Debian Free Software Guidelines
+  </tr>
+  <tr>
+    <td width=10%>
+    <td width=20%>
+    <a href="licenses.artistic.html">artistic</a>
+    <td width=70%>
+    Perl Artistic License
+  </tr>
+  <tr>
+    <td width=10%>
+    <td width=20%>
+    <a href="licenses.bsd.html">bsd</a>
+    <td width=70%>
+    BSD Style License
   </tr>
   <tr>
     <td width=10%>
@@ -90,16 +105,18 @@ also satisfy the DFSG but are generally not encouraged):
   </tr>
 </table>
 
-<p><b>Nonfree software</b> has restrictions on it that prohibit its
-free distribution. <em>Software in this category can not be included
-in distributions except, in general, by special permission or by
-payment of a fee.</em> This software does <b>not</b> satisfy the <a
+<p><b>Nonfree software</b> has restrictions on it that in some way
+prohibit its free distribution. <em>Software in this category can not
+be included in distributions except, in general, with specific
+permission of the author or by payment of a fee.</em> Because this
+software does <b>not</b> satisfy the <a
 href="http://www.debian.org/social_contract#guidelines">Debian Free
-Software Guidelines</a> On CTAN this software is to be found in the
-nonfree hierarchy (except for nosource which remains in the primary
-hierarchy).
+Software Guidelines</a>, on CTAN it will be stored in the nonfree
+hierarchy (except for nosource which remains in the primary hierarchy)
+but will have links into the main hierarchy so that the casual user
+will still find it.
 
-<table width=60%>
+<table width=80%>
   <tr>
     <td width=10%>
     <td width=20%>
@@ -112,14 +129,14 @@ hierarchy).
     <td width=20%>
     <a href="licenses.nocommercial.html">nocommercial</a>
     <td width=70%>
-    Does not permit commercial use
+    Free private use but commercial use not permitted
   </tr>
   <tr>
     <td width=10%>
     <td width=20%>
     <a href="licenses.nosell.html">nosell</a>
     <td width=70%>
-    Does not permit distribution for profit
+    Free use but distribution for profit by arrangement
   </tr>
   <tr>
     <td width=10%>
@@ -140,14 +157,14 @@ hierarchy).
     <td width=20%>
     <a href="licenses.other.html">other</a>
     <td width="70%">    
-    Mostly commercial (please explain)
+    General category for other non DFSG licenses
   </tr>
 </table>
 
 <hr>
 <address></address>
 <!-- hhmts start -->
-<i>Last Modified 1999/05/31 11:32:11 Graham.Williams@cmis.csiro.au</i>
+<i>Last Modified 1999/07/03 08:12:53 Graham.Williams@cmis.csiro.au</i>
 <!-- hhmts end -->
 </body> </html>
 <!--  LocalWords:  lppl sty CTAN gpl pd nocommercial nosell shareware TeXLive

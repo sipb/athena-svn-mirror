@@ -1,0 +1,55 @@
+<head>
+<title>UK TeX FAQ -- question 280</title>
+</head><body>
+<h3>Future WEB technologies and (La)TeX</h3>
+<p>An earlier question
+
+(<a href="FAQ70.html">"converting to HTML"</a>) 
+
+
+addresses the issue of converting existing (La)TeX documents for
+viewing on the Web as HTML.  All the present techniques are
+somewhat flawed: the answer explains why.
+<p>However, things are changing, with
+better font availability, cunning HTML programming and the
+support for new Web standards.
+<dl>
+<dt>Font technologies<dd> Direct representation of mathematics in
+  browsers has been hampered up to now by the limited range of symbols
+  in the fonts one can rely on being available.  In the near future,
+  we can expect rather wide availability of Unicode fonts with better
+  coverage of symbols.
+<dt>XML<dd> The core of the range of new standards is
+  XML, which provides a framework for better structured markup;
+  limited support for for it has already appeared in some browswers.
+<p>  Conversion of (La)TeX source to XML is already available
+  (through TeX4ht at least), and work continues in that arena.  The
+  alternative, authoring in XML (thus producing documents that
+  are immediately Web-friendly, if not ready) and using (La)TeX to
+  typeset is also well advanced.  One useful technique is
+  <em>transforming</em> the XML to LaTeX, using XSLT,
+  and then simply using LaTeX; alternatively, one may
+  
+  
+  <a href="FAQ71.html">typeset direct from the XML source</a>.
+<p><dt>Direct represention of mathematics<dd> 
+  MathML is a standard for representing maths on the Web; its
+  original version is distinctly limited, but efforts to give it
+  greater richness (approaching that of TeX) are under way.
+  Browser support for MathML (e.g., in <i>amaya</i>, a
+  version of the Netscape 'Open Source' browser <i>mozilla</i> and
+  in specially extended versions of <i>Internet</i>
+  <i>Explorer</i>) is becoming available.  There's evidence that
+  (La)TeX users are starting to use such browsers.
+<p>  Work in both the TeX4ht and <i>TtH</i> projects, to produce
+  MathML is well advanced.
+<p><dt>Graphics<dd> 
+  SVG is a standard for graphics representation on the web.
+  While the natural use is for converting existing figures,
+  representations of formulas are also possible, in place of the separate
+  bitmaps that have been used in the past (and while we wait for the
+  wide deployment of MathML).
+<p>  Browser plug-ins, that deal with SVG are already available
+  (Adobe offer one, for example).
+</dl>
+<p></body>

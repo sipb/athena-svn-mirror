@@ -1,0 +1,38 @@
+\ProvidesFile{lqxantp.fd}
+   [2000/05/13 v0.5 font definition file for LQX/antp (MW)]
+
+\DeclareFontFamily{LQX}{antp}{}
+
+\DeclareFontShape{LQX}{antp}{m}{n}{
+   <-> antpr
+}{}
+\DeclareFontShape{LQX}{antp}{m}{sc}{
+   <-> sub * antp/m/n
+}{}
+\DeclareFontShape{LQX}{antp}{m}{sl}{
+   <-> sub * antp/m/it
+}{}
+\DeclareFontShape{LQX}{antp}{m}{it}{
+   <-> antpri
+}{}
+\DeclareFontShape{LQX}{antp}{b}{n}{
+   <-> antpb
+}{}
+\DeclareFontShape{LQX}{antp}{b}{sc}{
+   <-> sub * antp/b/n
+}{}
+\DeclareFontShape{LQX}{antp}{b}{sl}{
+   <-> sub * antp/b/it
+}{}
+\DeclareFontShape{LQX}{antp}{b}{it}{
+   <-> antpbi
+}{}
+\DeclareFontShape{LQX}{antp}{bx}{n}{ <-> ssub * antp/b/n}{}
+\DeclareFontShape{LQX}{antp}{bx}{sc}{ <-> ssub * antp/b/sc}{}
+\DeclareFontShape{LQX}{antp}{bx}{sl}{ <-> ssub * antp/b/sl}{}
+\DeclareFontShape{LQX}{antp}{bx}{it}{ <-> ssub * antp/b/it}{}
+
+\endinput
+
+%%
+%% End of font definition file lqxantp.fd.

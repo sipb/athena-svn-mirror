@@ -1,0 +1,80 @@
+
+              G E O M E T R Y
+
+        Geometry Package v3.2 (2002/07/08)
+        CTAN:macros/latex/contrib/supported/geometry
+        Copyright (C) 1996-2002 Hideo Umeki
+        Distributed under the terms of LPPL
+
+--------------
+ Abstract
+--------------
+
+This package provides a flexible and complete user interface to page
+dimensions. You can specify them by using intuitive parameters to get
+your desired page layout. For example, if you want to set margins
+(the left, right, top and bottom margins) to 2cm from each edge of
+the paper, what you need is just \usepackage[margin=2cm]{geometry}.
+
+--------------
+ Files
+--------------
+
+README            this file
+ChangeLog         history of changes and versions
+Makefile          makefile for unpacking and documentation
+geometry.ins      installation script
+geometry.dtx      documentation and code for geometry.{sty,cfg}
+manual.pdf        ready-to-print package manual (A4-paper PDF)
+sample.tex        sample file
+test/gcheck.sty   style file for tests
+test/gtest*.tex   test files
+test/Makefile     makefile for test
+
+--------------
+ Installation
+--------------
+
+1) latex geometry.ins  (or `make')
+     unpacks `geometry.sty' and `geometry.cfg' from geometry.dtx.
+
+2) Edit `geometry.cfg' 
+     if you need to set your default options.
+     Add \ExecuteOptions{a4paper} in geometry.cfg
+     if you are using A4 paper by default.
+
+3) Copy geometry.sty and geometry.cfg
+     into a directory searched by LaTeX.
+    
+4) To clean up files, type `make clean'.
+    
+--------------
+ Documentation
+--------------
+
+The package contains the manual `manual.pdf'. So you don't have to
+make the manual, but you can remake it. To create the same manual,
+type `make manual' then you have `manual.pdf' with PDF of A4-paper
+size. To create the full documentation with the code description,
+type `make doc' then you have `geometry.dvi' with DVI of us-letter
+size. You can edit manual.drv or geometry.drv and pdflatex or latex
+it.
+
+--------------
+ Test
+--------------
+
+Type `make test' and check the results. Or you can use `sample.tex'
+for test, but make sure to set a proper paper size in sample.tex.
+
+Before checking these results by printing with your printer,
+I would strongly recommend to `latex testpage' and print testpage.dvi
+with your printer to see if the printer margins are properly set.
+
+--------------
+ ChangeLog
+--------------
+
+See ChangeLog.
+
+EOF

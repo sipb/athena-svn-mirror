@@ -1,7 +1,7 @@
 Name: ChangeBar
-Problems-To: JLBraams@cistron.nl
+Problems-To: texniek@braams.cistron.nl
 Author: J.L. Braams
-Version: 1.0
+Version: 3.4
 
 Description:
 
@@ -15,6 +15,6 @@ See-Also:
 Address:
 TeXniek
 J.L. Braams
-Kooienswater 62
-2715 AJ Zoetermeer
+Kersengaarde 33
+2723 BP Zoetermeer
 The Netherlands

@@ -1,3 +1,4 @@
+\ProvidesFile{galician.mld}[1999/03/16]
 % Galician titles for minitoc.sty
 \def\mtctitle{\'Indice Xeral}%
 \def\mlftitle{\'Indice de Figuras}%

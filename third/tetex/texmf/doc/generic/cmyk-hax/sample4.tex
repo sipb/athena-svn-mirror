@@ -1,0 +1,48 @@
+% E  Sample TeX file demonstrating how to separate using CMYK-HAX macros
+%    -- bitmap graphics
+% P  Przyk/ladowy plik TeX-owy demonstruj/acy separacj/e kolor/ow
+%    za pomoc/a makr pakietu CMYK-HAX -- grafika bitmapowa
+%
+\input epsf     % DVIPS standard distribution
+\input colordvi % DVIPS standard distribution
+\input cmyk-hax
+
+\nopagenumbers
+\hoffset-1in
+\voffset-1in
+\topskip 0pt
+\hsize 210mm
+\vsize 297mm
+
+\def\epsfi{\epsfxsize 90mm \epsffile{screen.eps}}
+\def\cbox#1{\vbox{\halign{\hss##\hss\cr#1\crcr}}}
+\def\chbit{% E change some colors of bitmap
+           % P podmiana niekt/orych kolor/ow mapy bitowej
+    \forbitmap{23 19 1B 00}\changebitmap{00 00 00 60}
+    \forbitmap{DD BC C1 E4}\changebitmap{00 00 00 FF}
+    \forbitmap{2A 21 21 00}\changebitmap{00 00 00 E0}
+    \forbitmap{69 54 54 01}\changebitmap{00 00 00 90}}
+\def\separate#1{\PSbegingroup
+  \setCMYKchange
+    \forcolor\black\delcolor % E make black unvisible
+                             % P uczy/n czarny niewidzialnym
+    \chbit
+  \useCMYKchange
+  \projectCMYK#1%
+  \cbox{\epsfi\cr\noalign{\vskip 2mm}\CMYKlabels\rm}
+  \PSendgroup}
+\def\sepblack{\PSbegingroup
+  \setCMYKchange
+    \chbit
+  \useCMYKchange
+  \projectCMYK\black
+  \cbox{\epsfi\cr\noalign{\vskip 2mm}\CMYKlabels\rm}
+  \PSendgroup}
+
+\vglue 0pt plus 1fil
+\centerline{\separate\cyan \hskip 5mm \separate\magenta }
+\vskip 5mm
+\centerline{\separate\yellow \hskip 5mm \sepblack }
+\vglue 0pt plus 1fil
+
+\eject\end

@@ -1,6 +1,6 @@
                        LaTeX Distribution Guide
                       
-                            1998/12/01
+                            2001/06/01
 
 
 WELCOME TO LaTeX!
@@ -18,7 +18,7 @@ This system is maintained by The LaTeX3 Project Team.
       ********************************************************
 
       ********************************************************
-      * The files ltnews10.tex and ltnews10.ps both contain  *
+      * The files ltnews15.tex and ltnews15.ps both contain  *
       * the latest LaTeX newsletter.                         *
       *                                                      *
       * Please print it and distribute it to all users ...   *
@@ -102,6 +102,9 @@ The following files also contain useful information:
  * handbuch.err lists errata in:
    Das LaTeX-Handbuch; Leslie Lamport, Addison-Wesley
 
+ * webcomp.err lists errata in:
+   The LaTeX Web Companion; Goossens and Rahtz, Addison-Wesley
+
 You are not allowed to change the files in this distribution unless
 you rename them, *except* for certain files such as the configuration
 files, ending with .cfg.
@@ -111,4 +114,4 @@ Please do not request updates from us.  Distribution is done only
 through the CTAN archives.
 
 
---- Copyright 1998 the LaTeX3 project.  All rights reserved ---
+--- Copyright 2001 the LaTeX3 project.  All rights reserved ---

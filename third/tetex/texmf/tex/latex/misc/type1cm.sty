@@ -9,10 +9,13 @@
 %%
 %% type1cm package for LaTeX
 %%
-%% Copyright 1997 David Carlisle
+%% Copyright 1997 2002 David Carlisle
+%% This file may be distributed under the terms of the LPPL.
+%% See type1cm.txt for details.
 %%
 \ProvidesPackage{type1cm}
-        [1997/02/17 v0.03 BlueSky/Y&Y Type1 CM font definitions (DPC)]
+        [2002/09/05 v0.04 BlueSky/Y&Y Type1 CM font definitions (DPC,
+patched RF)]
 \begingroup
 \nfss@catcodes
 \DeclareFontFamily{OT1}{cmr}{\hyphenchar\font=45}
@@ -126,7 +129,7 @@
 \DeclareFontShape{OT1}{cmfr}{m}{it}{
         <->     cmfi10
     }{}
-\DeclareFontFamily{OT1}{cmdh}{\hypenchar\font=45}
+\DeclareFontFamily{OT1}{cmdh}{\hyphenchar\font=45}
 \DeclareFontShape{OT1}{cmdh}{m}{n}{
         <->     cmdunh10
     }{}

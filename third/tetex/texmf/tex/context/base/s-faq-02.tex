@@ -8,7 +8,7 @@
 %D      copyright={PRAGMA / Hans Hagen \& Ton Otten}]
 %C
 %C This module is part of the \CONTEXT\ macro||package and is
-%C therefore copyrighted by \PRAGMA. See licen-en.pdf for 
+%C therefore copyrighted by \PRAGMA. See mreadme.pdf for 
 %C details. 
 
 \usemodule[faq-00]
@@ -41,14 +41,23 @@
    \blank[3*big]
    \stopstandardmakeup}
 
-\def\FileWithFAQs%
-  {\page
-   \input \FileNameOfFAQ \relax
-   \page}
+\def\StartReadingFAQ
+  {\page}
 
-\def\IndexPage%
+\def\StopReadingFAQ
+  {\page}
+
+\def\FileWithFAQs
+  {\StartReadingFAQ
+   \input \FileNameOfFAQ \relax
+   \StopReadingFAQ}
+
+\def\IndexPage
   {\page
    \setupfootertexts[\labeltext{index}][]
    \placeregister[index]}
+
+\def\AllFAQs
+  {}
 
 \endinput

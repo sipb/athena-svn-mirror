@@ -14,25 +14,26 @@ var:linkerzitieren:*Befehl::
 var:rechterzitieren:*Befehl::
 var:linkerzitat:*Befehl::
 var:rechterzitat:*Befehl::
-var:norm:*Name::
+var:default:*Name::
 stopsetup
 
 startsetup
 com:stellespracheein:
 typ:val/vars/:
+val:nl,fr,en,uk,de,es,cz,..:nl:
 ivr:installieresprache::
 stopsetup
 
 startsetup
 com:sprache:
 typ:val/:
-val:nl,fr,en,uk,de,sp,cz,..:nl:
+val:nl,fr,en,uk,de,es,cz,..:nl:
 stopsetup
 
 startsetup
 com:hauptsprache:
 typ:val/:
-val:nl,fr,en,uk,de,sp,cz,..:nl:
+val:nl,fr,en,uk,de,es,cz,..:nl:
 stopsetup
 
 startsetup
@@ -138,6 +139,12 @@ val:*Datei::
 stopsetup
 
 startsetup
+com:setupstrut:
+typ:vals/:
+val:ja,nein,kap,*Text:ja:
+stopsetup
+
+startsetup
 com:stellefarbeein:
 typ:val/:
 val:*Name:rgb:
@@ -151,6 +158,11 @@ var:konversion:ja,nein,immer::
 var:reduktion:ja,nein::
 var:rgb:ja,nein::
 var:cmyk:ja,nein::
+var:mpcmyk:ja,nein::
+var:mpspot:ja,nein::
+var:textfarbe:*Name::
+var:split:c,m,y,k,p,s,nein,*Name::
+var:kriterium:alles,kein::
 stopsetup
 
 startsetup
@@ -207,10 +219,9 @@ stopsetup
 
 startsetup
 com:definierefarbengruppe:
-typ:val/val/vals/:
+typ:val/val/trips/:
 val:*Name::
 val:rgb,cmyk,grau,s:rgb:
-val:trips/::
 stopsetup
 
 startsetup
@@ -245,10 +256,19 @@ typ::
 stopsetup
 
 startsetup
+com:definetype:
+typ:val/vars/:
+val:*Name::
+ivr:stelletipein::
+stopsetup
+
+startsetup
 com:stelletipein:
-typ:var/:
+typ:vars/:
 var:spatium:an,aus::
 var:option:geneigt,normal,kein::
+var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
+var:farbe:*Name::
 stopsetup
 
 startsetup
@@ -289,15 +309,22 @@ val:datei,tippen,*Name::
 var:spatium:an,aus::
 var:seite:ja,nein::
 var:option:geneigt,normal,befehle,farbe,kein::
+var:text:ja,nein::
+var:ibefehl:*Befehl::
+var:vbefehl:*Befehl::
+var:cbefehl:*Befehl::
 var:vor:*Befehl::
 var:nach:*Befehl::
-var:marginalie:*Dimension,standard::
+var:marginalie:*Dimension,standard,ja,nein::
 var:geraderand:*Dimension::
 var:ungeraderand:*Dimension::
 var:blanko:*Dimension,klein,mittel,gross,standard,halbezeile,zeile::
-var:escape:*::
+var:escape:*\@@mssetupcharacter ::
 var:ziehefolgendeein:ja,nein::
+var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
+var:farbe:*Name::
 var:palette:*Name::
+var:zeilen:ja,nein,hyphenate::
 stopsetup
 
 startsetup
@@ -307,7 +334,8 @@ stopsetup
 
 startsetup
 com:tippedatei:
-typ:arg/:
+typ:val/arg/:
+val:*Name::
 val:*Datei::
 stopsetup
 
@@ -316,7 +344,7 @@ com:stellefussnotenein:
 typ:vars/:
 var:konversion:ziffern,buchstaben,Buchstaben,roemischezahlen,Roemischezahlen::
 var:art:protext,pro*Abschnitt::
-var:platz:seite,text,spalten::
+var:platz:seite,text,spalten,hoch,kein::
 var:linie:an,aus::
 var:vor:*Befehl::
 var:nach:*Befehl::
@@ -329,6 +357,7 @@ var:spaltenabstand:*Dimension::
 var:marginalabstand:*Dimension::
 var:n:*Nummer::
 var:nummerbefehl:*\Befehl#1::
+var:split:tolerant,streng,sehrstreng,*Nummer::
 ivr:umrahmt::
 stopsetup
 
@@ -340,6 +369,12 @@ stopsetup
 
 startsetup
 com:fussnote:
+typ:ref/arg/:
+val:*Text::
+stopsetup
+
+startsetup
+com:footnotetext:
 typ:ref/arg/:
 val:*Text::
 stopsetup
@@ -372,6 +407,9 @@ com:stelleunterstreichenein:
 typ:vars/:
 var:alternative:a,b,c::
 var:liniendicke:*Dimension::
+var:untenoffset:*Dimension::
+var:obenoffset:*Dimension::
+var:linienfarbe:*Name::
 stopsetup
 
 startsetup
@@ -483,7 +521,7 @@ val:*Nummer::
 stopsetup
 
 startsetup
-com:setupversalien:
+com:stelleversalienein:
 typ:vars/:
 var:titel:ja,nein::
 var:sc:ja,nein::
@@ -610,21 +648,21 @@ val:*Nummer::
 stopsetup
 
 startsetup
-com:stelleueberschriftein:
+com:stelleueberschrifttextein:
 typ:val/var/:
-val:nl,fr,en,uk,de,sp,cz,..:nl:
+val:nl,fr,en,uk,de,es,cz,..:nl:
 var:*Name:*Text::
 stopsetup
 
 startsetup
 com:stellelabeltextein:
 typ:val/var/:
-val:nl,fr,en,uk,de,sp,cz,..:nl:
+val:nl,fr,en,uk,de,es,cz,..:nl:
 var:*Name:*Text::
 stopsetup
 
 startsetup
-com:ueberschrift:
+com:ueberschrifttext:
 typ:arg/:
 val:*Text::
 stopsetup
@@ -664,15 +702,15 @@ startsetup
 com:stelleumrahmtein:
 typ:vars/:
 var:hoehe:passend,breit,*Dimension::
-var:breite:passend,breit,*Dimension::
-var:offset:kein,overlay,*Dimension::
-var:platz:tief,tiefe::
+var:breite:passend,breit,fest,*Dimension::
+var:offset:kein,overlay,default,*Dimension::
+var:platz:tief,tiefe,haengend::
 var:option:kein,leer::
 var:strut:ja,nein::
-var:ausrichtung:nein,links,rechts,mittig,normal::
+var:ausrichtung:nein,links,rechts,mittig,normal,hoch,tief,hoti::
 var:unten:*Befehl::
 var:oben:*Befehl::
-var:rahmen:an,aus::
+var:rahmen:an,aus,kein,overlay::
 var:obenrahmen:an,aus::
 var:untenrahmen:an,aus::
 var:linkerrahmen:an,aus::
@@ -682,16 +720,19 @@ var:rahmentiefe:*Dimension::
 var:rahmenwinkel:rund,rechteckig::
 var:rahmenradius:*Dimension::
 var:rahmenfarbe:*Name::
-var:hintergrund:raster,farbe,kein::
+var:hintergrund:raster,farbe,kein,vordergrund,*Name::
 var:hintergrundraster:*Nummer::
 var:hintergrundfarbe:*Name::
-var:hintergrundoffset:*Dimension::
+var:hintergrundoffset:rahmen,*Dimension::
 var:hintergrundtiefe:*Dimension::
 var:hintergrundwinkel:rund,rechteckig::
 var:hintergrundradius:*Dimension::
 var:tiefe:*Dimension::
 var:winkel:rund,rechteckig::
 var:radius:*Dimension::
+var:leer:ja,nein::
+var:foregroundcolor:*Name::
+var:foregroundstyle:*Name::
 val:*Text::
 stopsetup
 
@@ -718,12 +759,20 @@ stopsetup
 startsetup
 com:stelleduennerumrissein:
 typ:var/:
-var:abstand:klein,mittel,gross::
+var:zeilenabstande:klein,mittel,gross::
 var:n:*Nummer::
 var:vor:*Befehl::
+var:zwischen:*Befehl::
 var:nach:*Befehl::
-var:hoehe:*Dimension::
-var:tiefe:*Dimension::
+var:farbe:*Name::
+var:hintergrundfarbe:*Name::
+var:hoehe:*Dimension,max::
+var:tiefe:*Dimension,max::
+var:alternative:a,b,c,d::
+var:liniendicke:*Dimension::
+var:farbe:*Name::
+var:hintergrund:farbe::
+var:hintergrundfarbe:*Name::
 stopsetup
 
 startsetup
@@ -760,13 +809,17 @@ var:rechts:*Befehl::
 var:vor:*Befehl::
 var:nach:*Befehl::
 var:innen:*Befehl::
+var:zeilekorrektur:an,aus::
+var:tiefekorrektur:an,aus::
+var:marginalie:standard,ja,nein::
+var:platz:links,rechts,mittig,kein::
 ivr:stelleumrahmtein::
 stopsetup
 
 startsetup
 com:start<<umrahmtertext>>:
 typ:val/vars/stp/:
-val:links,rechts,mittig::
+val:links,rechts,mittig,kein::
 ivr:stelleumrahmtetexteein::
 stopsetup
 
@@ -793,6 +846,8 @@ var:linkeroffset:*Dimension::
 var:rechterabstand:*Dimension::
 var:obenoffset:*Dimension::
 var:untenoffset:*Dimension::
+var:vor:*Befehl::
+var:nach:*Befehl::
 var:status:start,stop::
 ivr:stelleumrahmtein::
 stopsetup
@@ -812,12 +867,13 @@ stopsetup
 startsetup
 com:stellegefuelltesrechteckein:
 typ:vars/:
-var:breite:passend,*Dimension::
+var:breite:passend,breit,*Dimension::
 var:abstand:*Dimension::
 var:vor:*Befehl::
 var:nach:*Befehl::
 var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
 var:n:*Nummer::
+var:zeilenabstande:klein,mittel,gross::
 var:seperator:*Text::
 stopsetup
 
@@ -922,10 +978,13 @@ startsetup
 com:stellesystemein:
 typ:vars/:
 var:aufloesung:*Nummer::
+var:datei:*Text::
+var:verzeichnis:*Text::
+var:zufaellig:normal,klein,mittel,gross,*Nummer::
 stopsetup
 
 startsetup
-com:usepath:
+com:benutzeverzeichnis:
 typ:vals/:
 val:*Name,zuruecksetzten:.:
 stopsetup
@@ -943,8 +1002,9 @@ val:*Text::
 stopsetup
 
 startsetup
-com:hoti:
-typ:arg/arg/:
+com:tiho:
+typ:val/arg/arg/:
+val:tief::
 val:*Text::
 val:*Text::
 stopsetup
@@ -953,11 +1013,6 @@ startsetup
 com:zeigerahmen:
 typ:val/:
 val:text,marginalie,kante::
-stopsetup
-
-startsetup
-com:zeigeaufbau:
-typ::
 stopsetup
 
 startsetup
@@ -1062,7 +1117,7 @@ stopsetup
 
 startsetup
 com:teil:
-typ:arg/:
+typ:refs/arg/:
 val:*Text::
 stopsetup
 
@@ -1133,7 +1188,7 @@ val:*Text::
 stopsetup
 
 startsetup
-com:euber:
+com:ueber:
 typ:arg/ref/:
 val:*Text::
 stopsetup
@@ -1145,7 +1200,7 @@ val:*Text::
 stopsetup
 
 startsetup
-com:atpage:
+com:aufseite:
 typ:ref/:
 stopsetup
 
@@ -1183,6 +1238,16 @@ startsetup
 com:definierereferenz:
 typ:val/refs/:
 val:*Name::
+stopsetup
+
+startsetup
+com:definierereferenzformat:
+typ:val/vars/:
+val:*Name::
+var:links:*Text::
+var:rechts:*Text::
+var:text:*Text::
+var:label:*Name::
 stopsetup
 
 startsetup
@@ -1226,6 +1291,12 @@ stopsetup
 startsetup
 com:festesspatium:
 typ::
+stopsetup
+
+startsetup
+com:emptylines:
+typ:val/:
+val:*Nummer::
 stopsetup
 
 startsetup
@@ -1276,12 +1347,14 @@ var:niveaus:*Nummer::
 var:konversion:ziffern,buchstaben,Buchstaben,roemischezahlen,Roemischezahlen::
 var:art:protext,pro*Abschnitt::
 var:blockauf:ja,nein::
-var:abschnittsnummer:ja,nein::
+var:abschnittsnummer:ja,nummer,nein::
 var:seperator:*Text::
 var:abschnitttrenner:*Text::
 var:verknuepfung:*Name::
-var:couplingway:global,lokal::
+var:verkopplungsart:global,lokal::
 var:nummer:nein,*Name::
+var:titelausrichten:nein,ja::
+var:start:*Nummer::
 stopsetup
 
 startsetup
@@ -1334,6 +1407,7 @@ var:text:*Text::
 var:muster:*Text::
 var:vor:*Befehl::
 var:nach:*Befehl::
+var:abstand:*Dimension::
 var:seperator:*Text::
 stopsetup
 
@@ -1366,21 +1440,23 @@ stopsetup
 
 startsetup
 com:<<beschriften>>:
-typ::
+typ:ref/:
 stopsetup
 
 startsetup
 com:stellespaltenein:
 typ:vars/:
 var:n:*Nummer::
+var:noben:*Nummer::
 var:linie:an,aus::
 var:hoehe:*Dimension::
-var:toleranz:sehrstreng,streng,tolerant,sehrtolerant::
+var:toleranz:sehrstreng,streng,tolerant,sehrtolerant,strecken::
 var:abstand:*Dimension::
 var:ausgleichen:ja,nein::
 var:ausrichtung:ja,nein,text::
 var:blanko:fest,halbezeile,zeile,flexibel,gross,mittel,klein::
 var:option:hintergrund::
+var:richtung:links,rechts::
 ivr:stelleumrahmtein::
 stopsetup
 
@@ -1539,7 +1615,7 @@ startsetup
 com:holebeschriftung:
 typ:val/val/:
 val:*Name::
-val:erste,letzte,vorig,beide,alles::
+val:erste,letzte,vorig,beide,alles,aktuell::
 stopsetup
 
 startsetup
@@ -1575,7 +1651,8 @@ var:rechterkantenabstand:*Dimension::
 var:rumpfabstand:*Dimension::
 var:kopfoffset:*Dimension::
 var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
-var:beschriftung:an,aus,farbe::
+var:farbe:*Name::
+var:beschriftung:an,aus,farbe,raster::
 var:platz:links,mittig,rechts,unten,oben, einzelseitig,doppelseitig::
 var:format:*Dimension::
 var:nx:*Nummer::
@@ -1583,7 +1660,15 @@ var:ny:*Nummer::
 var:dx:*Dimension::
 var:dy:*Dimension::
 var:zeilen:*Nummer::
+var:spalten:*Nummer::
+var:spaltenabstand:*Dimension::
 var:gritter:ja,nein::
+var:bottomspace:*Dimension::
+var:cutspace:*Dimension::
+var:textdistance:*Dimension::
+var:textbreite:*Nummer::
+var:textmargin:*Dimension::
+var:clipoffset:*Dimension::
 stopsetup
 
 startsetup
@@ -1607,8 +1692,8 @@ stopsetup
 
 startsetup
 com:amgitterneuausrichten:
-typ:val/:
-val:oben,beide,unten:beide:
+typ:vals/:
+val:oben,beide,unten,-oben,-beide,-unten, hoch,mittig,tief,seite,kein,standard, breit,passend,tiefe,zeile,*Dimension:standard:
 stopsetup
 
 startsetup
@@ -1666,7 +1751,9 @@ var:nummernseperator:*Text::
 var:textseparator:*Text::
 var:*Abschnittnummer:ja,nein::
 var:seperator:*Text::
+var:strut:ja,nein::
 var:status:start,stop::
+var:breite:*Dimension::
 var:befehl:*\Befehl#1::
 stopsetup
 
@@ -1692,6 +1779,7 @@ stopsetup
 startsetup
 com:definierestartstop:
 typ:val/vars/:
+val:*Name::
 var:vor:*Befehl::
 var:nach:*Befehl::
 var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
@@ -1701,9 +1789,13 @@ stopsetup
 startsetup
 com:stelleueberschriftenein:
 typ:vars/:
-var:abschnittsnummer:ja,nein::
-var:alternative:normal,imrand,mittig,text::
+var:abschnittsnummer:ja,nummer,nein::
+var:alternative:normal,marginalie,mittig,text,absatz::
 var:seperator:*Text::
+var:ausrichtung:links,rechts,normal,breit::
+var:titelausrichten:ja,nein::
+var:toleranz:sehrstreng,streng,tolerant,sehrtolerant,strecken::
+var:ziehefolgendeein:ja,nein::
 var:befehl:*\Befehl#1#2::
 stopsetup
 
@@ -1711,7 +1803,7 @@ startsetup
 com:stellebilderunterschriftein:
 typ:vars/:
 var:platz:oben,unten,kein,hoch,tief,mittig::
-var:breite:passend,max,*Dimension::
+var:breite:passend,breit,max,*Dimension::
 var:kopfstil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
 var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
 var:nummer:ja,nein::
@@ -1719,11 +1811,13 @@ var:zwischen:*Befehl::
 var:ausrichtung:links,mittig,rechts,nein::
 var:konversion:ziffern,buchstaben,Buchstaben,roemischezahlen,Roemischezahlen::
 var:art:protext,pro*Abschnitt::
+var:seperator:*Text::
 stopsetup
 
 startsetup
 com:stellebildunterschriftein:
 typ:val/vars/:
+val:*Name::
 ivr:stellebilderunterschriftein::
 stopsetup
 
@@ -1739,14 +1833,19 @@ var:vorspatium:repeat/klein,repeat/mittel,repeat/gross,kein::
 var:nachspatium:repeat/klein,repeat/mittel,repeat/gross,kein::
 var:nebenvorspatium:repeat/klein,repeat/mittel,repeat/gross,kein::
 var:nebennachspatium:repeat/klein,repeat/mittel,repeat/gross,kein::
+var:ziehefolgendeein:ja,nein::
 var:noben:*Nummer::
 var:nunten:*Nummer::
 var:zzeile:*Nummer::
+var:default:*Name::
+var:linkerrandabstand:*Dimension::
+var:rechterrandabstand:*Dimension::
+var:sidealign:normal,zeile::
 ivr:stelleumrahmtein::
 stopsetup
 
 startsetup
-com:stelleplatziegeteiltegleitobjekteein:
+com:stelleplatziegeteiltegleitobjekt:
 typ:vars/:
 var:konversion:ziffern,buchstaben,Buchstaben,roemischezahlen,Roemischezahlen::
 var:zeilen:*Nummer::
@@ -1755,7 +1854,7 @@ stopsetup
 startsetup
 com:teilegleitobjekt:
 typ:vars/arg/arg/:
-ivr:stelleplatziegeteiltegleitobjekteein::
+ivr:stelleplatziegeteiltegleitobjekt::
 stopsetup
 
 startsetup
@@ -1772,14 +1871,14 @@ stopsetup
 startsetup
 com:stellebindestrichein:
 typ:var/:
-var:zeichen:--,---,-,\normalpenalty 10000\ ,),(,=,/::
+var:zeichen:--,---,-,~,),(,=,/::
 stopsetup
 
 startsetup
 com:stellepositionierenein:
 typ:vars/:
 var:status:start,overlay::
-var:einheit:cm,pt,em,mm,ex,sp,in::
+var:einheit:cm,pt,em,mm,ex,es,in::
 var:faktor:*Nummer::
 var:format:*Nummer::
 var:offset:ja,nein::
@@ -1806,7 +1905,7 @@ var:yschritt:*Nummer::
 var:offset:ja,nein::
 var:faktor:*Nummer::
 var:format:*Nummer::
-var:einheit:cm,pt,em,mm,ex,sp,in::
+var:einheit:cm,pt,em,mm,ex,es,in::
 var:platz:links,mittig::
 stopsetup
 
@@ -1818,7 +1917,7 @@ stopsetup
 
 startsetup
 com:stellereferenzierenein:
-typ:var/:
+typ:vars/:
 var:status:start,stop::
 var:*Abschnittnummer:ja,nein::
 var:prefix:+,-,*Text::
@@ -1826,6 +1925,10 @@ var:interaktion:label,text,alles,symbol::
 var:breite:*Dimension::
 var:links:*Befehl::
 var:rechts:*Befehl::
+var:konvertieredatei:ja,nein,klein,gross::
+var:seperator:*Text::
+var:autofile:ja,nein,seite::
+var:global:ja,nein::
 stopsetup
 
 startsetup
@@ -1885,6 +1988,13 @@ val:*Text::
 stopsetup
 
 startsetup
+com:listsymbol:
+typ:val/arg/:
+val:*Name::
+val:*Text::
+stopsetup
+
+startsetup
 com:platziereliste:
 typ:vals/vars/:
 val:*Name::
@@ -1911,9 +2021,9 @@ com:stellelisteein:
 typ:vals/vars/:
 val:*Name::
 var:status:start,stop::
-var:alternative:a,b,c,d,kein,befehl::
+var:alternative:a,b,c,...,kein,befehl::
 var:verknuepfung:an,aus::
-var:kriterium:*Abschnitt,lokal,vorig,alles::
+var:kriterium:*Abschnitt,lokal,vorig,aktuell,alles::
 var:seitenbegrenzung:*Liste::
 var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
 var:nummernstil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
@@ -1927,23 +2037,25 @@ var:seitenbefehl:*\Befehl#1::
 var:interaktion:abschnittsnummer,text,seitennummer,alles::
 var:vor:*Befehl::
 var:nach:*Befehl::
+var:zwischen:*Befehl::
 var:links:*Text::
 var:rechts:*Text::
 var:label:ja,nein::
-var:prefix:ja,nein::
+var:prefix:ja,nein,kein::
 var:seitennummer:ja,nein::
 var:*Abschnittnummer:ja,nein::
 var:titelausrichten:ja,nein::
 var:marginalie:*Dimension::
-var:breite:*Dimension::
+var:breite:*Dimension,passend::
 var:hoehe:*Dimension,passend,breit::
 var:tiefe:*Dimension,passend,breit::
-var:offset:*Dimension::
 var:abstand:*Dimension::
 var:seperator:*Text::
+var:abschnitttrenner:*Text::
 var:symbol:kein,1,2,3,...::
 var:expansion:ja,nein,befehl::
 var:maxbreite:*Dimension::
+ivr:umrahmt::
 stopsetup
 
 startsetup
@@ -1989,6 +2101,17 @@ typ:vars/:
 var:platz:links,rechts::
 var:links:*Text::
 var:rechts:*Text::
+var:ausrichtung:links,mittig,rechts::
+var:strut:ja,nein::
+var:abstand:*Dimension::
+var:marginalie:*Dimension,standard,ja,nein::
+var:linkerrand:*Dimension::
+var:rechterrand:*Dimension::
+var:ziehefolgendeein:ja,nein::
+var:alternative:*Name::
+var:vorspatium:*Dimension::
+var:nach:*Dimension::
+var:seperator:*Text::
 stopsetup
 
 startsetup
@@ -2008,6 +2131,7 @@ com:stellezeilenein:
 typ:vars/:
 var:vor:*Befehl::
 var:nach:*Befehl::
+var:zwischen:*Befehl::
 var:einziehen:ja,nein,gerade,ungerade::
 stopsetup
 
@@ -2017,7 +2141,15 @@ typ:stp/:
 stopsetup
 
 startsetup
-com:stellezeilennummerierungein:
+com:stelleabsatznummerierungein:
+typ:vars/:
+var:status:start,stop,zuruecksetzten,zeile::
+var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
+var:abstand:*Dimension::
+stopsetup
+
+startsetup
+com:stellezeilennumerierungein:
 typ:vars/:
 var:konversion:ziffern,buchstaben,Buchstaben,roemischezahlen,Roemischezahlen, text::
 var:start:*Nummer::
@@ -2030,7 +2162,7 @@ var:referieren:an,aus::
 stopsetup
 
 startsetup
-com:startzeilennummerierung:
+com:startzeilennumerierung:
 typ:val/stp/:
 val:fortsetzten::
 stopsetup
@@ -2062,6 +2194,8 @@ var:ausrichtung:innen,aussen,links,rechts,mittig,normal,nein,ja::
 var:zeile:*Nummer::
 var:abstand:*Dimension::
 var:seperator:*Text::
+var:breite:*Dimension::
+var:abstand:*Dimension::
 ivr:stelleumrahmtein::
 stopsetup
 
@@ -2096,29 +2230,43 @@ startsetup
 com:definierepapierformat:
 typ:val/vars/:
 val:*Name::
-var:breite:*Nummer::
-var:hoehe:*Nummer::
-var:format:*Dimension::
+var:breite:*Dimension::
+var:hoehe:*Dimension::
+var:offset:*Dimension::
+var:format:*Nummer::
 stopsetup
 
 startsetup
-com:stellepapierformatin:
+com:setuppaper:
+typ:vars/:
+var:papier:*Name::
+var:seite:*Name::
+var:nx:*Nummer::
+var:ny:*Nummer::
+var:breite:*Dimension::
+var:hoehe:*Dimension::
+var:kopfspatium:*Dimension::
+var:rumpfspatium:*Dimension::
+stopsetup
+
+startsetup
+com:stellepapierformatein:
 typ:vals/vals/:
-val:A3,A4,A5,A6,CD,*Name, querformat,gespiegelt,gedreht,90,180,270:A4:
-val:A3,A4,A5,A6,*Name, querformat,gespiegelt,gedreht,negativ,90,180,270:A4:
+val:A3,A4,A5,A6,letter,...,CD,*Name, querformat,gespiegelt,gedreht,90,180,270:A4:
+val:A3,A4,A5,A6,letter,...,*Name, querformat,gespiegelt,gedreht,negativ,90,180,270:A4:
 stopsetup
 
 startsetup
 com:stelleanordnenein:
 typ:vals/:
-val:2*8,2*4,2*2,2UP,2DOWN, gespiegelt,gedreht,doppelseitig,negativ,90,180,270::
+val:sperren, 2*16,2*8,2*4,2*2,2**2,2*2*4,2*4*2,2UP,2DOWN,2SIDE,2TOP, gespiegelt,gedreht,doppelseitig,negativ,90,180,270::
 stopsetup
 
 startsetup
 com:zeigedruck:
 typ:vals/vals/vars/:
-ivr:stellepapierformatin::
-ivr:stellepapierformatin::
+ivr:stellepapierformatein::
+ivr:stellepapierformatein::
 ivr:stellelayoutein::
 stopsetup
 
@@ -2127,7 +2275,7 @@ com:definierelogo:
 typ:val/val/val/vars/:
 val:*Name::
 val:oben,kopfzeile,fusszeile,unten::
-val:kein, linkekante,linkerrand, links,mittig,rechts, rechterrand,rechterkante::
+val:kein,seite, linkekante,linkerrand, links,mittig,rechts, rechterrand,rechterkante::
 var:befehl:*Befehl,*Text::
 var:status:start,stop::
 stopsetup
@@ -2175,8 +2323,9 @@ stopsetup
 
 startsetup
 com:stelleabschnittein:
-typ:val/vars/:
+typ:val/val/vars/:
 val:*Name::
+val:*Name:einleitung,haupttext,anhang,epilog:
 var:konversion:ziffern,buchstaben,Buchstaben,roemischezahlen,Roemischezahlen::
 var:vorigenummer:ja,nein::
 stopsetup
@@ -2193,6 +2342,8 @@ var:eigenenummer:ja,nein::
 var:seite:links,rechts,ja::
 var:fortsetzen:ja,nein::
 var:kopfzeile:kein,leer,hoch,keinebeschriftung::
+var:text:kein,leer,hoch,keinebeschriftung::
+var:fusszeile:kein,leer,hoch,keinebeschriftung::
 var:vor:*Befehl::
 var:zwischen:*Befehl::
 var:nach:*Befehl::
@@ -2201,11 +2352,11 @@ var:befehl:*\Befehl#1#2::
 var:nummerbefehl:*\Befehl#1::
 var:textbefehl:*\Befehl#1::
 var:prefix:+,-,*Text::
-var:setzekopf:ja,nein::
-var:nummererhoehen:ja,nein,*Datei::
-var:ziehefolgendeein:ja,nein::
+var:setzekopf:ja,nein,leer::
+var:nummererhoehen:ja,nein,liste,*Datei::
 var:datei:*Name::
 var:expansion:ja,befehl,nein::
+ivr:stelleueberschriftenein::
 stopsetup
 
 startsetup
@@ -2248,15 +2399,18 @@ startsetup
 com:stelleaufzaehlungein:
 typ:val/vals/vars/:
 val:*Nummer,jede::
-val:standard,repeat/breit,repeat/kleinerabstand,gepackt, trenner,keinabstand,amrand,imrand,autointrolose:standard:
+val:standard,repeat/breit,repeat/kleinerabstand,gepackt, ungepackt,trenner,keinabstand,amrand,imrand, autointro,lose,absatz,imtext:standard:
 var:marginalie:nein,standard,*Dimension::
 var:breite:*Dimension::
 var:abstand:*Dimension::
 var:faktor:*Nummer::
 var:posten:*Nummer::
+var:start:*Nummer::
 var:vor:*Befehl::
 var:zwischen:*Befehl::
 var:nach:*Befehl::
+var:links:*Text::
+var:rechts:*Text::
 var:vorkopf:*Befehl::
 var:nachkopf:*Befehl::
 var:kopfstil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
@@ -2272,7 +2426,7 @@ stopsetup
 startsetup
 com:startaufzaehlung:
 typ:vals/vars/stp/:
-val:a,A,KA,n,N,m,r,R,KR,*Nummer,fortsetzten, standard,repeat/breit,repeat/kleinerabstand,gepackt, trenner,keinabstand,amrand,imrand,intro,spalten:standard:
+val:a,A,KA,n,N,m,r,R,KR,*Nummer,fortsetzten, standard,repeat/breit,repeat/kleinerabstand,gepackt, trenner,keinabstand,amrand,imrand,intro, spalten:standard:
 ivr:stelleaufzaehlungein::
 stopsetup
 
@@ -2303,7 +2457,7 @@ stopsetup
 
 startsetup
 com:mar:
-typ:refs/:
+typ:refs/arg/:
 stopsetup
 
 startsetup
@@ -2350,6 +2504,7 @@ var:expansion:ja,befehl,nein::
 var:referieren:an,aus::
 var:befehl:*\Befehl#1::
 var:platz:links,mittig,rechts::
+var:maxbreite:*Dimension::
 var:unbekantereferenz:leer,kein::
 stopsetup
 
@@ -2528,6 +2683,8 @@ var:fusszeilenstatus:normal,stop,start,leer,kein,keinebeschriftung::
 var:textstatus:normal,stop,start,leer,kein,keinebeschriftung::
 var:statusoben:stop,start::
 var:untenstatus:stop,start::
+var:pagestate:stop,start::
+var:farbe:*Name::
 stopsetup
 
 startsetup
@@ -2544,7 +2701,7 @@ stopsetup
 startsetup
 com:heutigesdatum:
 typ:vals/:
-val:tag,monat,MONAT,wochentag,WOCHENTAG,jahr, dd,mm,jj,yy,d,m,j,y,merkmal:tag,monat,jahr:
+ivl:datum::
 stopsetup
 
 startsetup
@@ -2553,7 +2710,7 @@ typ:vars/vals/:
 var:d:*Nummer::
 var:m:*Nummer::
 var:y:*Nummer::
-ivl:heutigesdatum::
+val:tag,tag+,monat,wochentag,jahr, dd,dd+,mm,jj,yy,d,d+,m,j,y,merkmal:tag,monat,jahr:
 stopsetup
 
 startsetup
@@ -2623,7 +2780,7 @@ stopsetup
 startsetup
 com:stelleausrichtungein:
 typ:val/:
-val:breite,links,rechts,mittig,innen,aussen, breit,hoehe,unten,zeile,zuruecksetzten::
+val:breite,links,rechts,mittig,innen,aussen, breit,breit,hoehe,unten,zeile,zuruecksetzten, haengend,nothanging,hyphenate,nothyphenated::
 stopsetup
 
 startsetup
@@ -2641,7 +2798,7 @@ stopsetup
 startsetup
 com:stelletoleranzein:
 typ:vals/:
-val:horizontal,vertikal, sehrstreng,streng,tolerant,sehrtolerant:sehrstreng:
+val:horizontal,vertikal, strecken,spatium,sehrstreng,streng,tolerant,sehrtolerant:sehrstreng:
 stopsetup
 
 startsetup
@@ -2686,10 +2843,9 @@ stopsetup
 startsetup
 com:stellehintergruendeein:
 typ:val/vals/vars/:
-val:oben,kopfzeile,text,fusszeile,unten, seite,linkerseite,rechterseite::
+val:oben,kopfzeile,text,fusszeile,unten, seite,papier,linkerseite,rechterseite::
 val:linkekante,linkerrand,text,rechterrand,rechterkante::
 var:status:start,stop,wiederholen::
-var:befehl:*Befehl::
 ivr:stelleumrahmtein::
 stopsetup
 
@@ -2721,6 +2877,7 @@ startsetup
 com:stellepufferein:
 typ:val/vars/:
 val:*Name::
+var:absatz:*Nummer::
 var:vor:*Befehl::
 var:nach:*Befehl::
 stopsetup
@@ -2810,15 +2967,15 @@ val:*Formel::
 stopsetup
 
 startsetup
-com:platziere<<block>>:
+com:platziere<<gleitobjekt>>:
 typ:val/refs/arg/arg/:
-val:links,rechts,hier,oben,unten, imlinken,imrechten,imrand,marginalie, seite,gegenueber,immer,zwinge,lang:hier:
+val:links,rechts,hier,oben,unten, imlinken,imrechten,imrand,marginalie, linkerrand,rechterrand,linkekante,rechterkante, innermargin,outermargin,inneredge,outeredge, innen,aussen,regel,hoch,tief,passend, seite,gegenueber,immer,zwinge,lang:hier:
 val:*Text::
 val:*Text::
 stopsetup
 
 startsetup
-com:reservieren<<block>>:
+com:reservieren<<gleitobjekt>>:
 typ:vars/val/refs/arg/:
 var:hoehe:*Dimension::
 var:breite:*Dimension::
@@ -2840,12 +2997,19 @@ typ:val/vars/:
 val:*Name::
 var:hoehe:*Dimension::
 var:breite:*Dimension::
+var:maxhoehe:*Dimension::
+var:maxbreite:*Dimension::
+var:minbreite:*Dimension::
+var:default:*Name::
 var:seitenbegrenzung:*Liste::
+var:linkerrandabstand:*Dimension::
+var:rechterrandabstand:*Dimension::
+var:platz:links,mittig,rechts::
 ivr:stelleumrahmtein::
 stopsetup
 
 startsetup
-com:start<<block>>text:
+com:start<<gleitobjekt>>text:
 typ:val/ref/arg/arg/stp/:
 val:links,rechts,hoch,mittig,tief,offset,lang::
 val:*Text::
@@ -2854,25 +3018,13 @@ val:*Text::
 stopsetup
 
 startsetup
-com:platziereauflistenvon<<bloecke>>:
+com:platziereauflistenvon<<gleitobjekte>>:
 typ::
 stopsetup
 
 startsetup
-com:vollendeauflistenvon<<bloecke>>:
+com:vollendeauflistenvon<<gleitobjekte>>:
 typ::
-stopsetup
-
-startsetup
-com:label:
-typ:val/arg/arg/arg/arg/arg/arg/:
-val:schmall,breit:breit:
-val:*Text::
-val:*Text::
-val:*Text::
-val:*Text::
-val:*Text::
-val:*Text::
 stopsetup
 
 startsetup
@@ -2968,6 +3120,8 @@ typ:vars/:
 var:vor:*Befehl::
 var:nach:*Befehl::
 var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
+var:farbe:*Name::
+var:platz:text,marginalie::
 stopsetup
 
 startsetup
@@ -2987,17 +3141,17 @@ var:vor:*Befehl::
 var:nach:*Befehl::
 var:innen:*Befehl::
 var:abstand:*Dimension::
-var:toleranz:sehrstreng,streng,tolerant,sehrtolerant::
+var:toleranz:sehrstreng,streng,tolerant,sehrtolerant,strecken::
 var:ausrichtung:links,rechts,mittig::
 stopsetup
 
 startsetup
-com:<<absaetze>>:
+com:<<absatz>>:
 typ::
 stopsetup
 
 startsetup
-com:start<<absaetze>>:
+com:start<<absatz>>:
 typ:stp/:
 stopsetup
 
@@ -3009,8 +3163,8 @@ val:*Nummer,jede::
 var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...,*Befehl::
 var:breite:*Dimension::
 var:hoehe:*Dimension::
-var:ausrichtung:links,rechts,mittig,breedte::
-var:toleranz:sehrstreng,streng,tolerant,sehrtolerant::
+var:ausrichtung:links,rechts,mittig,breite::
+var:toleranz:sehrstreng,streng,tolerant,sehrtolerant,strecken::
 var:abstand:*Dimension::
 var:vor:*Befehl::
 var:nach:*Befehl::
@@ -3108,6 +3262,12 @@ var:vor:*Befehl::
 var:nach:*Befehl::
 var:innen:*Befehl::
 var:EQ:*Text::
+var:linienfarbe:*Name::
+var:ausrichtung:links,mittig,rechts,normal::
+var:liniendicke:*Dimension::
+var:abstand:blanko,gritter,tiefe,*Dimension,klein,mittel,gross,kein::
+var:fliesstext:5pt,...,12pt,klein,gross::
+var:linie:normal,zeile::
 stopsetup
 
 startsetup
@@ -3117,10 +3277,17 @@ var:abstand:klein,mittel,gross::
 var:fliesstext:5pt,...,12pt,klein,gross::
 var:HL:*Nummer,klein,mittel,gross,kein::
 var:VL:*Nummer,klein,mittel,gross,kein::
+var:tiefe:*Nummer,strut::
+var:hoehe:*Nummer,strut::
+var:liniendicke:*Dimension::
+var:linienfarbe:*Name::
+var:ausrichtung:rechts,mittig,links,normal::
 var:befehle:*Befehl::
+var:ausrichtung:links,mittig,rechts,normal::
 var:hintergrund:raster,farbe,kein::
 var:hintergrundraster:*Nummer::
 var:hintergrundfarbe:*Name::
+var:fliesstext:5pt,...,12pt,klein,gross::
 stopsetup
 
 startsetup
@@ -3130,7 +3297,13 @@ val:*Text,*Name::
 stopsetup
 
 startsetup
-com:definetabletemplate:
+com:starttabellen:
+typ:val/stp/:
+val:*Text,*Name::
+stopsetup
+
+startsetup
+com:definieretabellenvorlage:
 typ:val/val/val/val/:
 val:*Name::
 val:*Text::
@@ -3168,7 +3341,9 @@ var:breite:*Dimension::
 var:hoehe:*Dimension::
 var:rahmen:an,aus::
 var:voreinstellung:ja,nein::
-var:preview:ja,nein::
+var:bildschirm:*Datei::
+var:vorschau:ja,nein::
+var:wiederholen:ja,nein::
 var:objekt:ja,nein::
 var:typ:eps,mps,pdf,tif,png,jpg,mov,tex::
 var:methode:eps,mps,pdf,tif,png,jpg,mov,tex::
@@ -3190,12 +3365,22 @@ var:umrahmen:an,aus::
 var:ymax:*Nummer::
 var:xmax:*Nummer::
 var:verzeichnis:*Text::
-var:platz:lokal,global::
+var:platz:lokal,global,default,kein::
+var:maxbreite:*Dimension::
+var:maxhoehe:*Dimension::
 stopsetup
 
 startsetup
 com:zeigeexterneabbildungen:
-typ::
+typ:vars/:
+var:alternative:a,b,c::
+stopsetup
+
+startsetup
+com:verwendeexternestonstueck:
+typ:val/val/:
+val:*Name::
+val:*Datei::
 stopsetup
 
 startsetup
@@ -3255,6 +3440,10 @@ var:nach:commando::
 var:abstand:*Dimension::
 var:hoehe:*Dimension,passend::
 var:breite:*Dimension,passend::
+var:platz:boven,midden,onder,links,rechts::
+var:ausrichtung:nein,links,rechts,mittig,normal::
+var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...*Befehl::
+var:farbe:*Name::
 stopsetup
 
 startsetup
@@ -3299,6 +3488,8 @@ var:rumpfspatium:*Dimension::
 var:kopfspatium:*Dimension::
 var:rumpfabstand:*Dimension::
 var:kopfoffset:*Dimension::
+var:option:max,passend,doppelseitig,bookmark::
+var:wartezeit:*Nummer,kein::
 stopsetup
 
 startsetup
@@ -3318,8 +3509,14 @@ typ:vars/:
 var:status:start,stop::
 var:menue:an,aus::
 var:seite:ja,nein::
+var:klick:ja,nein::
+var:split:ja,nein::
+var:bildschirm:neu::
 var:oeffenaktion:*Referenz::
 var:schliessenaktion:*Referenz::
+var:openpageaction:*Referenz::
+var:closepageaction:*Referenz::
+var:berechnen:*Name::
 var:strut:ja,nein::
 var:breite:*Dimension::
 var:hoehe:*Dimension::
@@ -3336,7 +3533,7 @@ stopsetup
 
 startsetup
 com:stelleinteraktionsmenueein:
-typ:vals/vars/dests/:
+typ:vals/vars/:
 val:links,rechts,oben,unten,*Name::
 var:vor:*Befehl::
 var:nach:*Befehl::
@@ -3344,7 +3541,7 @@ var:zwischen:*Befehl::
 var:links:*Befehl::
 var:rechts:*Befehl::
 var:mittig:*Befehl::
-var:status:start,stop,kein::
+var:status:start,stop,kein,lokal::
 var:stil:normal,fett,geneigt,fettgeneigt,tippen,kap,klein...*Befehl::
 var:farbe:*Name::
 var:abstand:overlay,*Dimension::
@@ -3354,6 +3551,7 @@ var:linkeroffset:*Dimension::
 var:rechterabstand:*Dimension::
 var:obenoffset:*Dimension::
 var:untenoffset:*Dimension::
+var:position:ja,nein::
 ivr:stelleumrahmtein::
 stopsetup
 
@@ -3605,9 +3803,7 @@ stopsetup
 
 startsetup
 com:bemerkung:
-typ:poss/poss/vars/arg/:
-val:*Nummer::
-val:*Nummer::
+typ:pos/pos/vars/arg/:
 val:*Nummer::
 val:*Nummer::
 ivr:stelleumrahmtein::
@@ -3650,9 +3846,14 @@ stopsetup
 startsetup
 com:stellekommentarein:
 typ:vars/:
+var:status:start,stop::
 var:breite:*Dimension::
 var:hoehe:*Dimension::
 var:farbe:*Name::
+var:titel:*Text::
+var:spatium:ja,nein::
+var:symbol:normal, Neu,Ballon,Zusatz,Hilfe,Absatz,Schluessel, *Name::
+var:option:max,puffer::
 stopsetup
 
 startsetup
@@ -3724,7 +3925,7 @@ stopsetup
 
 startsetup
 com:tooltip:
-typ:val/arg/:
+typ:val/arg/arg/:
 val:links,rechts,mittig::
 val:*Text::
 stopsetup
@@ -3745,7 +3946,6 @@ com:stellefeldein:
 typ:val/vals/vars/vars/vars/:
 val:*Name::
 val:label,horizontal,vertikal,rahmen::
-ivr:umrahmt::
 ivr:stellefelderin::
 stopsetup
 
@@ -3753,8 +3953,7 @@ startsetup
 com:stellefelderin:
 typ:vals/val/vars/vars/vars/:
 val:*Name::
-val:label,horizontal,vertikal,rahmen::
-ivr:umrahmt::
+val:zuruecksetzten,label,horizontal,vertikal,rahmen::
 var:n:*Nummer::
 var:abstand:*Dimension::
 var:vor:*Befehl::
@@ -3775,6 +3974,13 @@ var:berechnen:*Referenz::
 var:feldoffset:*Dimension::
 var:feldrahmenfarbe:*Name::
 var:feldhintergrundfarbe:*Name::
+ivr:umrahmt::
+stopsetup
+
+startsetup
+com:setupforms:
+typ:vars/:
+var:methode:HTML,FDF::
 stopsetup
 
 startsetup
@@ -3791,5 +3997,146 @@ typ:val/vals/vars/:
 val:*Name::
 val:*Name::
 ivr:stellefelderin::
+stopsetup
+
+startsetup
+com:ausschnitt:
+typ:vars/arg/:
+ivr:stelleausschnittein::
+stopsetup
+
+startsetup
+com:stelleausschnittein:
+typ:vars/:
+var:nx:*Nummer::
+var:ny:*Nummer::
+var:x:*Nummer::
+var:y:*Nummer::
+var:breite:*Dimension::
+var:hoehe:*Dimension::
+var:hoffset:*Dimension::
+var:voffset:*Dimension::
+var:mp:*Name::
+stopsetup
+
+startsetup
+com:platzierelegende:
+typ:arg/arg/:
+val:*Text::
+val:*Text::
+stopsetup
+
+startsetup
+com:stellelegendeein:
+typ:vars/:
+var:n:*Nummer::
+var:abstand:*Dimension::
+var:zwischen:*Befehl::
+var:breite:*Dimension::
+var:hoehe:*Dimension::
+var:platz:rechts,unten::
+var:fliesstext:5pt,...,12pt,klein,gross::
+stopsetup
+
+startsetup
+com:definerule:
+typ:val/vars/:
+val:*Name::
+ivr:setuprule::
+stopsetup
+
+startsetup
+com:placerule:
+typ:val/:
+val:*Name::
+stopsetup
+
+startsetup
+com:setuprule:
+typ:val/vars/:
+val:*Name::
+var:tiefe:*Dimension::
+var:hoehe:*Dimension::
+var:breite:*Dimension::
+var:vorspatium:*Dimension::
+var:nachspatium:*Dimension::
+var:farbe:*Name::
+stopsetup
+
+startsetup
+com:definetextvariable:
+typ:val/val/vars/:
+ivr:setuptextvariable::
+stopsetup
+
+startsetup
+com:setuptextvariable:
+typ:val/vars/:
+val:*Name::
+var:links:*Text::
+var:rechts:*Text::
+var:abstand:*Dimension::
+var:befehl:*\Befehl#1::
+var:strut:ja,nein,kap,*Text::
+stopsetup
+
+startsetup
+com:settextvariable:
+typ:val/val/:
+val:*Name::
+val:*Text::
+stopsetup
+
+startsetup
+com:placetextvariable:
+typ:val/:
+val:*Name::
+stopsetup
+
+startsetup
+com:textvariable:
+typ:val/:
+val:*Name::
+stopsetup
+
+startsetup
+com:definerawfont:
+typ:val/val/vars/:
+val:*Name::
+val:*Datei::
+ivr:stellezeilenabstandein::
+stopsetup
+
+startsetup
+com:switchtorawfont:
+typ:val/:
+val:*Name::
+stopsetup
+
+startsetup
+com:definetextposition:
+typ:val/vars/:
+val:*Name::
+ivr:stellepositionierenein::
+stopsetup
+
+startsetup
+com:setuptextposition:
+typ:val/vars/:
+val:*Name::
+ivr:stellepositionierenein::
+stopsetup
+
+startsetup
+com:positiontext:
+typ:val/arg/:
+val:*Name::
+val:*Text::
+stopsetup
+
+startsetup
+com:setupstrut:
+typ:val/:
+val:ja,nein,kap,*Text:ja:
 stopsetup
 

@@ -1,6 +1,6 @@
-\def\fileversion{v27}
-\def\filedate{1996/12/17}
-% mtcoff.sty % version #27
+\def\fileversion{v34}
+\def\filedate{2000/12/13}
+% mtcoff.sty % version #34
 % disables user commands of minitoc.sty
 \NeedsTeXFormat{LaTeX2e}%%%% This file will not work with latex2.09
 \ProvidesPackage{mtcoff}[\filedate\space\fileversion\space
@@ -26,6 +26,10 @@
 \let\c@mtc\count@
 \let\c@ptc\count@
 \let\c@stc\count@
+
+\let\adjustmtc\relax %32
+\let\adjustptc\relax %32
+\let\adjuststc\relax %32
 
 \def\dominitoc{\@ifnextchar[{\gobbleopt@}{\gobbleopt@[l]}}
 \def\dominilof{\@ifnextchar[{\gobbleopt@}{\gobbleopt@[l]}}
@@ -58,12 +62,19 @@
 \let\mtc@string\relax
 \let\appendixmtc\relax
 \let\l@xchapter\@gobbletwo
+\let\l@ychapter\@gobbletwo
 \let\xchapter\relax
+\let\ychapter\relax
 \let\pchapter\relax
+\let\psection\relax
 \let\l@xpart\@gobbletwo
+\let\l@ypart\@gobbletwo
 \let\xpart\relax
+\let\ypart\relax
 \let\l@xsect\@gobbletwo
+\let\l@ysect\@gobbletwo
 \let\xsect\relax
+\let\ysect\relax
 % disables font commands
 % with \empty and not \relax,
 % because some users have done \renewcommand\mtcfont...
@@ -135,8 +146,81 @@
 \let\pltpagenumbers\relax
 \let\nopltpagenumbers\relax
 
-\let\l@listof\chapter
+\let\beforeparttoc\relax       %v32
+\let\beforepartlof\relax       %v32
+\let\beforepartlot\relax       %v32
+\let\afterparttoc\relax        %v32
+\let\afterpartlof\relax        %v32
+\let\afterpartlot\relax        %v32
+\let\thispagetocstyle\relax    %v32
+\let\thispagelofstyle\relax    %v32
+\let\thispagelotstyle\relax    %v32
 
+\let\l@listof\chapter
+\newif\if@longextensions % v28
+\newif\iftightmtc \tightmtcfalse % v28
+\newif\ifundottedmtc \undottedmtcfalse % v29
+\newif\ifmtcoffwarn@ \mtcoffwarn@false   % v33
+\AtEndDocument{\ifmtcoffwarn@            % v33
+\PackageWarning{mtcoff}{%
+You should scan (backwards) your .log file to find
+\MessageBreak
+some commands needing to be replaced if you decide to
+\MessageBreak
+DEFINITELY stop using minitoc for this document.
+\MessageBreak
+It is more wise to keep the \string\usepackage\space lines for
+\MessageBreak
+minitoc and mtcoff and to comment out only one of them.
+\MessageBreak}
+\fi}
+
+\newcommand{\mtcaddchapter}[1][]{\mtcoffwarn@true%                %v33
+\PackageWarning{mtcoff}{\protect\mtcaddchapter{...} should be     %v33
+replaced\MessageBreak%                                            %v33
+by \protect\addcontentsline{toc}{chapter}{...}}                   %v33
+\def\mtc@ck{#1}                                                   %v33
+\ifx\mtc@ck\empty                                                 %v33
+\else                                                             %v33
+\addcontentsline{toc}{chapter}{#1}\fi}                            %v33
+\newcommand{\mtcaddsection}[1][]{\mtcoffwarn@true%                %v33
+\PackageWarning{mtcoff}{\protect\mtcaddsection{...} should be     %v33
+replaced\MessageBreak%                                            %v33
+by \protect\addcontentsline{toc}{section}{...}}                   %v33
+\def\mtc@ck{#1}                                                   %v33
+\ifx\mtc@ck\empty                                                 %v33
+\else                                                             %v33
+\addcontentsline{toc}{part}{#1}\fi}                               %v33
+\newcommand{\mtcaddpart}[1][]{\mtcoffwarn@true%                   %v33
+\PackageWarning{mtcoff}{\protect\mtcaddpart{...} should be        %v33
+replaced\MessageBreak%                                            %v33
+by \protect\addcontentsline{toc}{part}{...}}                      %v33
+\def\mtc@ck{#1}                                                   %v33
+\ifx\mtc@ck\empty                                                 %v33
+\else                                                             %v33
+\addcontentsline{toc}{part}{#1}\fi}                               %v33
+
+\let\coffeefont\relax
+\def\addcoffeeline#1#2#3{\relax}
+\let\coffeeline\@gobble
+\let\l@coffee\relax
+\def\@Undottedtocline#1#2#3#4#5{\relax}
+\def\@Undottedtoclinep#1#2#3#4#5{\relax}
+\def\addstarredpart#1{%
+\PackageWarning{mtcoff}{\protect\addstarredpart{...} should be
+replaced\MessageBreak%
+by \protect\addcontentsline{toc}{part}{...}}
+\addcontentsline{toc}{part}{#1}}
+\def\addstarredchapter#1{%
+\PackageWarning{mtcoff}{\protect\addstarredchapter{...} should be
+replaced\MessageBreak%
+by \protect\addcontentsline{toc}{chapter}{...}}
+\addcontentsline{toc}{chapter}{#1}}
+\def\addstarredsection#1{%
+\PackageWarning{mtcoff}{\protect\addstarredsection{...} should be
+replaced\MessageBreak%
+by \protect\addcontentsline{toc}{section}{...}}
+\addcontentsline{toc}{section}{#1}}
 %%
 %% \CharacterTable
 %%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z

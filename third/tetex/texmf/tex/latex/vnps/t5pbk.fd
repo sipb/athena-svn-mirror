@@ -1,0 +1,41 @@
+% This file is part of vntex. License: GPL.
+%
+\ProvidesFile{t5pbk.fd}
+
+\DeclareFontFamily{T5}{pbk}{}
+
+\DeclareFontShape{T5}{pbk}{db}{n}{
+   <-> pbkd8v
+}{}
+
+\DeclareFontShape{T5}{pbk}{db}{sl}{
+   <-> pbkdo8v
+}{}
+
+\DeclareFontShape{T5}{pbk}{db}{it}{
+   <-> pbkdi8v
+}{}
+
+\DeclareFontShape{T5}{pbk}{l}{n}{
+   <-> pbkl8v
+}{}
+
+\DeclareFontShape{T5}{pbk}{l}{sl}{
+   <-> pbklo8v
+}{}
+
+\DeclareFontShape{T5}{pbk}{l}{it}{
+   <-> pbkli8v
+}{}
+
+\DeclareFontShape{T5}{pbk}{b}{n}{<->ssub * pbk/db/n}{}
+\DeclareFontShape{T5}{pbk}{bx}{n}{<->ssub * pbk/b/n}{}
+\DeclareFontShape{T5}{pbk}{b}{sl}{<->ssub * pbk/db/sl}{}
+\DeclareFontShape{T5}{pbk}{bx}{sl}{<->ssub * pbk/b/sl}{}
+\DeclareFontShape{T5}{pbk}{b}{it}{<->ssub * pbk/db/it}{}
+\DeclareFontShape{T5}{pbk}{bx}{it}{<->ssub * pbk/b/it}{}
+\DeclareFontShape{T5}{pbk}{m}{n}{<->ssub * pbk/l/n}{}
+\DeclareFontShape{T5}{pbk}{m}{sl}{<->ssub * pbk/l/sl}{}
+\DeclareFontShape{T5}{pbk}{m}{it}{<->ssub * pbk/l/it}{}
+
+\endinput

@@ -4,7 +4,7 @@
 % and dotted Z) in text format.
 % The program is based on excerpts from the ROMANU.MF file.
 % ---------------------------------------------------------------------------
-% PL VERSION 1.03,   18 Dec 1992
+% PL VERSION 1.09, April 13th, 2001 -- released for BachoTeX 2001
 % ---------------------------------------------------------------------------
 % AUTHORS OF ADAPTATION: {\bif{}Bogus\l{}aw Jackowski \& Marek Ry\'cko}
 % ---------------------------------------------------------------------------
@@ -13,24 +13,14 @@
 % 
 % For details see either the file MEXINFO.POL or MEXINFO.ENG.
 % ---------------------------------------------------------------------------
-% HISTORY
-%  7 Feb 1992: version 1.00
-% 11 Feb 1992: version 1.01
-%    (no changes; the new version number due to changes in \MeX{} format)
-%  1 Jun 1992: version 1.02
-%    (no changes; the new version number due to changes in other files)
-% 18 Dec 1992: version 1.03
-%    (no changes; the new version number due to changes in FIK_MIK.MF
-%    and some cosmetic changes in CMBX11.MF, CMR11.MF, CMTI11.MF, CMSL11.MF,
-%    CMSSBI10.MF, and POLAN.MF)
-% ---------------------------------------------------------------------------
 
 
-% ---------------------------------------------------------------------------
-limit_dist:=5/4u; % it is used in |put_accent| and |put_cross|
-% (the value of |u| is changed by |mono_adjust|, hence the global setting)
 % ---------------------------------------------------------------------------
 %%% fine fisp
+%%% beginchar beginchar_twice
+%%% endfor repeat_once
+% ---------------------------------------------------------------------------
+
 cmchar "The letter A with ogonek";
 beginchar(ogonked_A,13u#,cap_height#,the_ogonek_depth);
  adjust_fit(cap_serif_fit#,cap_serif_fit#);
@@ -71,7 +61,7 @@ beginchar(ogonked_A,13u#,cap_height#,the_ogonek_depth);
 endchar; % A with ogonek
 
 cmchar "The letter accented C";
-if serifs: beginchar(accented_C,13u#,cap_height#,0);
+if serifs: beginchar_twice(accented_C,13u#,cap_height#,0);
  italcorr cap_height#*slant-.5u#;
  adjust_fit(0,0);
  pickup fine.nib; pos1(cap_hair,0); pos2(cap_band,90);
@@ -89,7 +79,10 @@ if serifs: beginchar(accented_C,13u#,cap_height#,0);
  path upper_arc; upper_arc=z1{x2-x1,10(y2-y1)}..z2{left};
  numeric t; t=xpart(upper_arc intersectiontimes (z6l--z1'));
  filldraw z1r--z6r--z6l--subpath(t,0) of upper_arc--cycle; % barb
-else: beginchar(accented_C,11.5u#,cap_height#,0);
+ penlabels(1,1',2,3,4,5,6);
+ put_accent;
+ repeat_once
+else: beginchar_twice(accented_C,11.5u#,cap_height#,0);
  italcorr cap_height#*slant-.5u#;
  adjust_fit(0,0);
  pickup fine.nib; pos1(1.2flare,80); pos2(slab,90);
@@ -99,9 +92,11 @@ else: beginchar(accented_C,11.5u#,cap_height#,0);
  top y1r=vround .95h+o; top y2r=h+o; y3=.5h;
  bot y4r=-o; bot y5r=vround .08h-o; y5l:=good.y y5l; x5l:=good.x x5l;
  filldraw stroke rterm.e(2,1,right,.9,4) & super_arc.e(2,3)
-  & super_arc.e(3,4) & term.e(4,5,right,.8,4); fi % arc and terminals
+  & super_arc.e(3,4) & term.e(4,5,right,.8,4);
  penlabels(1,1',2,3,4,5,6);
  put_accent;
+ repeat_once
+ fi % arc and terminals
 endchar; % accented C
 
 cmchar "The letter E with ogonek";
@@ -140,7 +135,7 @@ beginchar(ogonked_E,12u#-width_adj#,cap_height#,the_ogonek_depth);
 endchar; % E with ogonek
 
 cmchar "The letter crossed L";
-beginchar(crossed_L,11u#-width_adj#,cap_height#,0);
+beginchar_twice(crossed_L,11u#-width_adj#,cap_height#,0);
  adjust_fit(cap_serif_fit# if not serifs: +1.5u# fi,0);
  pickup tiny.nib; pos1(cap_stem,0); pos2(cap_stem,0);
  lft x1l=lft x2l=hround max(2u,3u-.5cap_stem); top y1=h; bot y2=0;
@@ -154,10 +149,11 @@ beginchar(crossed_L,11u#-width_adj#,cap_height#,0);
 % some funny fonts have an extremally small |cap_jut|:
  put_cross(.5cap_stem+if serifs: .9max(limit_dist,cap_jut) else: 1.8u fi,
   .5cap_stem+3u);
+ repeat_once
 endchar; % crossed L
 
 cmchar "The letter accented N";
-beginchar(accented_N,13u#+width_adj#,cap_height#,0);
+beginchar_twice(accented_N,13u#+width_adj#,cap_height#,0);
  italcorr cap_height#*slant-cap_serif_fit#+cap_jut#-2.5u#+min(.5cap_stem#,u#);
  adjust_fit(cap_serif_fit#,cap_serif_fit#);
  numeric thin_stem; thin_stem=hround(fudged.hair+stem_corr);
@@ -189,10 +185,11 @@ beginchar(accented_N,13u#+width_adj#,cap_height#,0);
   dish_serif(3,4,e,1/2,cap_jut,f,1/2,cap_jut)(dark); fi % upper right serif
  penlabels(1,1',2,3,4,4',5,6,7);
  hpos_corr=-.75u; put_accent;
+ repeat_once
 endchar; % accented N
 
 cmchar "The letter accented O";
-beginchar(accented_O,14u#-width_adj#,cap_height#,0);
+beginchar_twice(accented_O,14u#-width_adj#,cap_height#,0);
  italcorr .7cap_height#*slant-.5u#;
  adjust_fit(0,0);
  penpos1(vair',90); penpos3(vround(vair+1.5vair_corr),-90);
@@ -208,10 +205,11 @@ beginchar(accented_O,14u#-width_adj#,cap_height#,0);
   & pulled_super_arc.e(4,1)(.5superpull) & cycle; % bowl
  penlabels(1,2,3,4);
  hpos_corr=-.75u; put_accent;
+ repeat_once
 endchar; % accented O
 
 cmchar "The letter accented S";
-beginchar(accented_S,10u#,cap_height#,0);
+beginchar_twice(accented_S,10u#,cap_height#,0);
  italcorr cap_height#*slant-u#;
  adjust_fit(0,0);
  numeric theta; theta=90-angle(50u,h); slope:=-h/50u; % angle at middle
@@ -248,10 +246,11 @@ beginchar(accented_S,10u#,cap_height#,0);
   filldraw stroke term.e(7,8,left,1,4); fi % lower arc and terminal
  penlabels(0,1,1',2,3,4,5,6,7,8,8',9,10);
  hpos_corr=-u; put_accent;
+ repeat_once
 endchar; % accented S
 
 cmchar "The letter accented Z";
-beginchar(accented_Z,11u#,cap_height#,0);
+beginchar_twice(accented_Z,11u#,cap_height#,0);
  italcorr cap_height#*slant-.5u#;
  adjust_fit(0,0);
  numeric arm_thickness[\\],z_stem;
@@ -277,10 +276,11 @@ beginchar(accented_Z,11u#,cap_height#,0);
  arm(7,8,b,beak_darkness**.9,.6beak_jut); % lower arm and beak
  penlabels(1,2,3,4,5,6,7,8);
  hpos_corr=-.5u; put_accent;
+ repeat_once
 endchar; % accented Z
 
 cmchar "The letter dotted Z";
-beginchar(dotted_Z,11u#,cap_height#,0);
+beginchar_twice(dotted_Z,11u#,cap_height#,0);
  italcorr cap_height#*slant-.5u#;
  adjust_fit(0,0);
  numeric arm_thickness[\\],z_stem;
@@ -306,6 +306,7 @@ beginchar(dotted_Z,11u#,cap_height#,0);
  arm(7,8,b,beak_darkness**.9,.6beak_jut); % lower arm and beak
  penlabels(1,2,3,4,5,6,7,8);
  put_dot(tiny,max(dot_size#,cap_curve#));
+ repeat_once
 endchar; % dotted Z
 
 endinput;

@@ -1,0 +1,159 @@
+%    This is an example of a package that calls the amsrefs package
+%    and then changes various aspects of the bibliography style and
+%    citation style.
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\@ifundefined{NormalCatcodes}{%
+  \RequirePackage{pcatcode}\relax\PushCatcodes\NormalCatcodes
+}{}
+\ProvidesPackage{jeb-bibl}[2001/12/20 v1.12]
+\RequirePackage[author-year]{amsrefs}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    Citation style:
+
+\renewcommand{\etaltext}{\textit{et al.}}
+\renewcommand{\CiteNames}[1]{%
+  \PrintSeries{\name}%
+    {\lastName}%
+    {}{ \etaltext\@\discardName}%
+    {}{\discardName}%
+    {}{ \etaltext\@\discardName}%
+    {}%
+    {#1}%
+    {}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    Author name treatment in the bibliography:
+
+%    No punctuation or space for initials.
+\renewcommand{\InitialPunct}{}
+\renewcommand{\InitialSpace}{}
+
+\renewcommand{\PrintAuthors}[1]{%
+  \PrintNames{author}{\bfseries}{}{#1}%
+}
+
+\BibSpec{firstauthor}{
+ +{}{}{surname}
+ +{}{ }{jr}
+ +{}{ }{initials}
+}
+
+\BibSpec{coauthor}{
+ +{,}{ }{surname}
+ +{}{ }{jr}
+ +{}{ }{initials}
+}
+
+% For more than two authors, the treatment is still the same.
+\BibSpecAlias{middleauthor}{coauthor}
+\BibSpecAlias{lastauthor}{coauthor}
+
+% Editor names are handled similarly.
+\BibSpecAlias{firsteditor}{firstauthor}
+\BibSpecAlias{coeditor}{coauthor}
+\BibSpecAlias{middleeditor}{coeditor}
+\BibSpecAlias{lasteditor}{coeditor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    These specify the style for various entry types in the
+%    bibliography.
+
+\BibSpec{article}{%
+  +{}{\PrintAuthors}  {author}
+  +{.}{ }    {date}
+  +{}{\textit}{label}
+  +{.}{ }             {title}
+  +{.}{ \textit}      {journal}
+  +{} { \textbf}      {volume}
+  +{} { \parenthesize}{status}
+  +{,}{ }             {pages}
+  +{,}{ }             {note}
+  +{.}{}              {transition}
+}
+
+\BibSpec{book}{%
+  +{}{\PrintAuthors}  {author}
+  +{}{\PrintEditorsA}{editor}
+  +{.}{ } {date}
+  +{}{\textit}{label}
+  +{.}{ \textit}{title}
+  +{,}{ }{type}
+  +{,}{ \EnglishInitialCaps}{booktitle}
+  +{,}{ \PrintEdition}{edition}
+  +{,}{ }{series}
+  +{,}{ vol.~}{volume}
+  +{,}{ part~}{part}
+  +{.}{ }{place}
+  +{:}{ }{publisher}
+  +{,}{ }{organization}
+  +{,}{ ISBN }{isbn}
+  +{}{ \parenthesize}{status}
+  +{,}{ }{note}
+  +{.}{}{transition}
+}
+
+\BibSpec{collection.article}{%
+  +{}{\PrintAuthors}{author}
+  +{.}{ }{date}
+  +{}{\textit}{label}
+  +{.}{ }{title}
+  +{,}{ }{type}
+  +{,}{ \EnglishInitialCaps}{booktitle}
+  +{,}{ \PrintEdition}{edition}
+  +{}{ \PrintEditors}{editor}
+  +{,}{ Proc.\ }{conference}
+  +{,}{ }{series}
+  +{,}{ vol.~}{volume}
+  +{,}{ part~}{part}
+  +{,}{ }{publisher}
+  +{,}{ }{organization}
+  +{,}{ }{place}
+  +{,}{ \DashPages}{pages}
+  +{,}{ ISBN }{isbn}
+  +{}{ \parenthesize}{status}
+  +{,}{ }{note}
+  +{.}{}{transition}
+}
+
+\BibSpec{report}{%
+  +{}{\PrintAuthors}{author}
+  +{}{\PrintEditorsA}{editor}
+  +{.}{ }{date}
+  +{}{\textit}{label}
+  +{.}{ \textit}{title}
+  +{,}{ }{type}
+  +{,}{ \EnglishInitialCaps}{booktitle}
+  +{,}{ Technical Report }{number}
+  +{,}{ }{series}
+  +{,}{ vol.~}{volume}
+  +{,}{ part~}{part}
+  +{,}{ }{publisher}
+  +{,}{ }{organization}
+  +{,}{ }{institution}
+  +{,}{ }{place}
+  +{,}{ ISBN }{isbn}
+  +{,}{ \eprint}      {eprint}
+  +{}{ \parenthesize}{status}
+  +{,}{ }{note}
+  +{.}{}{transition}
+}
+
+\BibSpec{thesis}{%
+  +{}{\PrintAuthors}{author}
+  +{}{\PrintEditorsA}{editor}
+  +{.}{ }{date}
+  +{}{\textit}{label}
+  +{.}{ \textit}{title}
+  +{,}{ \PrintThesisType}{type}
+  +{,}{ part~}{part}
+  +{,}{ }{organization}
+  +{,}{ }{institution}
+  +{,}{ }{place}
+  +{}{ \parenthesize}{status}
+  +{,}{ }{note}
+  +{.}{}{transition}
+}
+
+\endinput

@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage{array,longtable,pslatex}
+\title{hyperrref package options}
+\author{Sebastian Rahtz}
+%\date{October 7th 1999}
+\date{October 29nd 2002}% HO
+\newcommand{\optempty}{{\rmfamily\textit{empty}}}
+\newcommand*{\for}[1]{{\rmfamily(#1)}}
+\begin{document}
+\maketitle
+\begin{longtable}{>{\ttfamily}lp{5cm}>{\ttfamily}l}
+\hline
+a4paper &use A4 paper\\
+a5paper &use A5 paper\\
+anchorcolor &set color of anchors&black\\
+b5paper &use B5 paper\\
+backref &do bibliographical back references&false\\
+baseurl &set base URL for document&\optempty\\
+bookmarks &make bookmarks&true\\
+bookmarksnumbered &put section numbers in bookmarks&false\\
+bookmarksopen &open up bookmark tree&false\\
+bookmarksopenlevel &level to which bookmarks are open&\string\maxdimen\\
+bookmarkstype &to specify which `toc' file to mimic&toc\\
+breaklinks &allow links to break over lines&false\\
+citebordercolor &color of border around cites& 0 1 0\\
+citecolor &color of citation links&green\\
+colorlinks &color links&false\\
+&&true \for{tex4ht, dviwindo}\\
+debug &provide details of anchors defined&false\\
+&same as verbose&\\
+draft &do not do any hyper linking&false\\
+dvipdf &use dvipdf backend\\
+dvipdfm &use dvipdfm backend\\
+dvips &use dvips backend\\
+dvipsone &use dvipsone backend\\
+dviwindo &use dviwindo backend\\
+executivepaper &use executivepaper\\
+extension &suffix of linked files&dvi\\
+filebordercolor &color of border around file links& 0 .5 .5\\
+filecolor &color of file links&cyan\\
+frenchlinks &use small caps instead of color for links&false\\
+hyperfigures &make figures hyper links&false\\
+hyperindex &set up hyperlinked indices&true\\
+hypertex &use HyperTeX backend\\
+hypertexnames &use guessable names for links&true\\
+implicit &redefine \LaTeX\ internals&true\\
+latex2html &use \LaTeX2HTML backend\\
+legalpaper &use legalpaper\\
+letterpaper &use letterpaper\\
+linkbordercolor &color of border around links& 1 0 0\\
+linkcolor &color of links&red\\
+linktocpage &make page number, not text, be link on TOC, LOF and LOT&false\\
+menubordercolor &color of border around menu links& 1 0 0\\
+menucolor &color for menu links&red\\
+naturalnames &use \LaTeX-computed names for links&false\\
+nesting &allow nesting of links&false\\
+pageanchor &put an anchor on every page&true\\
+pagebackref &backreference by page number&false\\
+pagebordercolor &color of border around page links& 1 1 0\\
+pagecolor &color of page links&red\\
+pdfauthor &text for PDF Author field&\optempty\\
+pdfborder &width of PDF link border&0 0 1\\
+&&0 0 0 \for{colorlinks}\\
+pdfcenterwindow &position the document window center of the screen&false\\
+pdfcreator &text for PDF Creator field&LaTeX with hyperref package\\
+pdffitwindow &resize document window to fit document size&false\\
+pdfhighlight &set highlighting of PDF links& /I\\
+pdfkeywords &text for PDF Keywords field&\optempty\\
+pdfmenubar &make PDF  viewer's menu bar visible&true\\
+pdfnewwindow &make links that open another PDF file start a new window&false\\
+pdfpagelayout &set layout of PDF pages&\optempty\\
+pdfpagemode &set default mode of PDF display&\optempty\\
+pdfpagelabels &set PDF page labels&false\\
+pdfpagescrop &set crop size of PDF document&\optempty\\
+pdfpagetransition &set PDF page transition style&\optempty\\
+pdfproducer &text for PDF Producer field&\optempty\\
+pdfstartpage &page at which PDF document opens&1\\
+pdfstartview &starting view of PDF document& /Fit\\
+pdfsubject &text for PDF Subject field&\optempty\\
+pdftex &use pdf\TeX\ backend\\
+pdftitle &text for PDF Title field&\optempty\\
+pdftoolbar &make PDF toolbar visible&true\\
+pdfview &PDF `view' when on link traversal&\optempty\\
+pdfwindowui &make PDF user interface  elements visible&true\\
+plainpages &do page number anchors as plain arabic&true\\
+ps2pdf &use ps2pdf backend\\
+raiselinks &raise up links (for HyperTeX backend)&false\\
+runbordercolor &color of border around `run' links& 0 .7 .7\\
+setpagesize &set page size by special driver commands&true\\
+tex4ht &use \TeX4ht backend\\
+textures &use Textures backend\\
+unicode &Unicode encoded pdf strings\\
+urlbordercolor &color of border around URL links& 0 1 1\\
+urlcolor &color of URL links&magenta\\
+verbose &be chatty&false\\
+vtex &use VTEX backend\\
+\hline
+\end{longtable}
+\end{document}

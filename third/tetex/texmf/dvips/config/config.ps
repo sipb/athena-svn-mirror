@@ -7,6 +7,10 @@
 % to determine this number. (It will be the only thing printed.)
 m 3500000
 
+% Execution of external programs is disabled by default. Set
+% to z0 if you want backticks in \special commands enabled.
+z1
+
 % How to print, maybe with lp instead lpr, etc. If commented-out, output
 % will go into a file by default.
 o |lpr
@@ -16,10 +20,10 @@ D 600
 X 600
 Y 600
 
-% Metafont mode.  (This is completely different from the -M command-line
-% option, which controls whether MakeTeXPK is invoked.)  Get
-% @url{ftp://ftp.tug.org/tex/modes.mf} for a list of mode names.  This mode
-% and the D number above must agree, or MakeTeXPK will get confused.
+% Metafont mode.  (This is completely different from the -M
+% command-line option, which controls whether mktexpk is invoked.)
+% See ../../metafont/misc/modes.mf for a list of mode names.  This mode
+% and the D number above must agree, or mktexpk will get confused.
 M ljfour
 
 % Also look for this list of resolutions.
@@ -37,9 +41,6 @@ Z
 % this is if you encounter bugs.  (Please report them to
 % @email{tex-k@@mail.tug.org} if you do.)
 j
-
-% Configuration of postscript type 1 fonts:
-p psfonts.map
 
 % This shows how to add your own map file.
 % Remove the comment and adjust the name:
@@ -73,6 +74,18 @@ p psfonts.map
 @+ 11x17
 @+ %%EndPaperSize
 
+@ a6 105mm 148mm
+@+ ! %%DocumentPaperSizes: a6
+@+ %%BeginPaperSize: a6
+@+ a6
+@+ %%EndPaperSize
+
+@ a5 148mm 210mm
+@+ ! %%DocumentPaperSizes: a5
+@+ %%BeginPaperSize: a5
+@+ a5
+@+ %%EndPaperSize
+
 @ a4 210mm 297mm
 @+ ! %%DocumentPaperSizes: a4
 @+ %%BeginPaperSize: a4
@@ -83,6 +96,30 @@ p psfonts.map
 @+ ! %%DocumentPaperSizes: a3
 @+ %%BeginPaperSize: a3
 @+ a3
+@+ %%EndPaperSize
+
+@ b6 128mm 182mm
+@+ ! %%DocumentPaperSizes: b6
+@+ %%BeginPaperSize: b6
+@+ b6
+@+ %%EndPaperSize
+
+@ b5 182mm 257mm
+@+ ! %%DocumentPaperSizes: b5
+@+ %%BeginPaperSize: b5
+@+ b5
+@+ %%EndPaperSize
+
+@ b4 257mm 364mm
+@+ ! %%DocumentPaperSizes: b4
+@+ %%BeginPaperSize: b4
+@+ b4
+@+ %%EndPaperSize
+
+@ b3 364mm 515mm
+@+ ! %%DocumentPaperSizes: b3
+@+ %%BeginPaperSize: b3
+@+ b3
 @+ %%EndPaperSize
 
 @ unknown 0in 0in

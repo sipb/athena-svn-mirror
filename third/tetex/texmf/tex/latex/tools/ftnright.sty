@@ -8,23 +8,33 @@
 %% 
 %% This is a generated file.
 %% 
-%% Copyright 1993 1994 1995 1996 1997 1998 1999
+%% Copyright 1993 1994 1995 1996 1997 1998 1999 2000
 %% The LaTeX3 Project and any individual authors listed elsewhere
 %% in this file.
 %% 
-%% This file is part of the Standard LaTeX `Tools Bundle'.
-%% -------------------------------------------------------
+%% This file was generated from file(s) of the Standard LaTeX `Tools Bundle'.
+%% --------------------------------------------------------------------------
 %% 
-%%  This file, and all the other files in this bundle as listed below,
-%%  may be distributed under the terms of the LaTeX Project Public
-%%  License, as described in lppl.txt in the base LaTeX distribution.
-%%  Either version 1.0 or, at your option, any later version.
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.2
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%% 
+%% This file may only be distributed together with a copy of the LaTeX
+%% `Tools Bundle'. You may however distribute the LaTeX `Tools Bundle'
+%% without such generated files.
+%% 
+%% The list of all files belonging to the LaTeX `Tools Bundle' is
+%% given in the file `manifest.txt'.
 %% 
 %% Package `ftnright' to use with LaTeX 2e
-%% Copyright (C) 1989-1996 Frank Mittelbach, all rights reserved.
+%% Copyright (C) 1989-2000 Frank Mittelbach, all rights reserved.
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
 \ProvidesPackage{ftnright}
-         [1996/01/01 v1.1d footnote layout package (FMi)]
+         [2000/04/14 v1.1e footnote layout package (FMi)]
 %%
 %% \CheckSum{426}
 %% \CharacterTable
@@ -116,7 +126,7 @@
     work with LaTeX's standard^^Jtwocolumn
     option. It does *not* work with the
     multicol package.^^JSo please specify
-    `twocolum' in the
+    `twocolumn' in the
     \noexpand\documentclass command.}%
       \shipout\box\footins \fi\fi
  \else
@@ -191,8 +201,8 @@
 \AtBeginDocument
   {\global\footnotesep\ht\strutbox}
 \long\def\@makefntext#1{\parindent 1em
-  \noindent\hbox to 2em{}%
-  \llap{$\@thefnmark.\;\;$}#1}
+   \noindent\hbox to 2em{}%
+   \llap{\@thefnmark.\,\,}#1}
 \setlength{\skip\footins}
           {10pt plus 5pt minus 3pt}
 \AtBeginDocument{\preparefootins}

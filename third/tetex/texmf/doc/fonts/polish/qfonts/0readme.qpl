@@ -1,0 +1,38 @@
+QuasiPalatino (1.07)
+The fonts are copyrighted but free according to the conditions of the GNU
+General Public License, version 2 (http://www.gnu.org/licenses/gpl.txt).
+
+EN:
+  The font family URW Palladio L (distributed with Ghostscript under
+  the GNU General Public Licence) augmented complying with QX layout
+  (see 00readme) and modified. The font is based on a widespread Palatino
+  (Giambattista Palatino, living in XVI century, was a master of script),
+  font designed by Hermann Zapf in the 'fourties of XX century.
+  Authors of the modification: Bogus\l{}aw Jackowski, Janusz M. Nowacki
+  and Piotr Strzelczyk. The work was sponsored by the Polish TeX Users
+  Group GUST. The modified font was renamed to QuasiPalatino. The previously
+  used names (Platan in olden days and later QuasiPalladio) should be
+  considered obsolete.
+
+  Comments and remarks please send to:
+  Bogus\l{}aw Jackowski, Janusz M. Nowacki, Piotr Strzelczyk
+  <JNSteam@GUST.org.pl>
+
+PL (iso8859-2):
+  Uzupe³niona do uk³adu QX (p. 00readme) i nieco zmodyfikowana
+  rodzina fontów URW Palladio L (z dystrybucji programu Ghostscript,
+  rozpowszechniana na zasadach GNU General Public Licence).
+  Jest to replika szeroko rozpowszechnionego kroju pisma Palatino
+  (Giambattista Palatino to XVI-wieczny mistrz pisma odrêcznego),
+  zaprojektowanego przez Hermanna Zapfa w latach czterdziestych XX wieku.
+  Autorami modyfikacji s±: Bogus³aw Jackowski, Janusz M. Nowacki
+  i Piotr Strzelczyk. Prace nad adaptacj± tego fontu by³y czê¶ciowo
+  sponsorowane przez Polsk± Grupê U¿ytkowników Systemu TeX GUST.
+  Zmodyfikowany font otrzyma³ nazwê QuasiPalatino. Poprzednio u¿ywane
+  nazwy (w zamierzch³ych czasach Platan i pó¼niej QuasiPalladio) nale¿y
+  uznaæ za nieaktualne.
+
+  Uwagi i komentarze prosimy kierowaæ pod adresem:
+  Bogus³aw Jackowski, Janusz M. Nowacki, Piotr Strzelczyk
+  <JNSteam@GUST.org.pl>
+

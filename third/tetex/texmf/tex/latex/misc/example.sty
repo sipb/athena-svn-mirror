@@ -1,30 +1,37 @@
-% Save file as: EXAMPLE.STY            Source: FILESERV@SHSU.BITNET  
-% example.sty                                   20 May 91
+% example.sty					27 Sep 01
 %------------------------------------------------------------
 % Copyright (c) 1988, 1991 by J.Schrod.
-%       Distributed under the terms of the GNU General Public License.
+%	Distributed under the terms of the GNU General Public License.
 
 %
-% LaTeX style option example
+% LaTeX 2.09 style option example
 % tested with style article, should also work with other styles
 % don't use it with twoside or twocolumn option
 %
 % [LaTeX in MAKEPROG]
 
 
+
+% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 %
-% Author
-%       js: Joachim Schrod      <xitijsch@ddathd21.bitnet>
-% Contributors
-%       (** enough place for your name **)
 %
+% THIS STYLE OPTION IS OBSOLETE!
+%
+% For LaTeX 2e, use package texxmpl.
+%
+% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
 
 %
-%       VERSION HISTORY  (MSCF -- most significant change first)
+%	VERSION HISTORY  (MSCF -- most significant change first)
 %
-% DATE     WHO  REMARKS
-% 91-05-20 js   documentation added for distribution
-% 88-06-29 js   created it for THD LaTeX tutorial
+% DATE	   WHO	REMARKS
+% 01-09-27 js	updated email address. added obsolete notice.
+% 96-10-28 js	may be used with umlauts
+% 91-05-20 js	documentation added for distribution
+% 88-06-29 js	created it for THD LaTeX tutorial
 
 
 
@@ -39,35 +46,34 @@
 %%%% every line which starts with four percents.  The following lex
 %%%% program will do this:
 %%%%
-%%%%    %%
+%%%%	%%
 %%%%
-%%%%    ^%%%\ ?   ;
-%%%%    ^%%%%.*\n ;
+%%%%	^%%%\ ?   ;
+%%%%	^%%%%.*\n ;
 %%%%
-%%%% MAKEPROG may be obtained over the net from the Bitnet-Listserver
-%%%% LISTSERV@DHDURZ1 (filelist WEBWARE), from tuglib@science.utah.edu,
-%%%% or via ftp from june.cs.washington.edu.
+%%%%	If you just want to print the documentation you may fetch
+%%%% the archive print-makeprog.tar.Z from ftp.th-darmstadt.de (directory
+%%%% pub/tex/latex). It contains *all* used styles -- but beware, they
+%%%% may not be in a documented form...
 %%%%
 %%%%
-%%% \documentstyle[progltx,example]{article}
+%%% \documentclass{progltx}
+
+%%% \usepackage{example}
 
 
-%%% \nofiles            % don't need an aux file
-%%% \hfuzz=18pt         % expected overfull hboxes in code
+%%% \nofiles		% don't need an aux file
+%%% \hfuzz=18pt		% expected overfull hboxes in code
 
 
 %%% \begin{document}
 
 
 %%% \title{The {\tt example\/} Style Option}
-%%% \author{%                   % LaTeX does not discard unnecessary glue...
-%%%    Joachim Schrod%
-%%%    \thanks{%
-%%%       TU~Darmstadt, Alexanderstr.~10, D-6100 Darmstadt, Germany.\hfil\break
-%%%       Email: {\tt xitijsch@ddathd21.bitnet}.%
-%%%       }%
+%%% \author{%			% LaTeX does not discard unnecessary glue...
+%%%    Joachim Schrod \texttt{<jschrod@acm.org>}
 %%%    }
-%%% \date{20 May 91}
+%%% \date{28 Oct 96}
 
 %%% \maketitle
 
@@ -83,8 +89,8 @@
 %%% consistent. The usage is simple: Type
 %%% %
 %%%  \begin{quote}
-%%%  |\begin{example}|
-%%%  |Some \TeX{} text.|
+%%%  |\begin{example}|\\
+%%%  |Some \TeX{} text.|\\
 %%%  |\end{example}|
 %%%  \end{quote}
 %%% %
@@ -191,9 +197,9 @@
 \chardef\close=2
 \chardef\letter=11
 \chardef\other=12
-%\chardef\active=13              % is defined in Plain already
+%\chardef\active=13		 % is defined in Plain already
 
-\chardef\uscode=\catcode`\_      % top level macro file!
+\chardef\uscode=\catcode`\_	 % top level macro file!
 
 \catcode`\_=\letter
 %%% \endprog
@@ -221,7 +227,7 @@
 
 %%% \beginprog
 \newwrite\example_file
-\def\example_name{\jobname.tmp }        % <-- space!
+\def\example_name{\jobname.tmp }	% <-- space!
 %%% \endprog
 
 
@@ -232,8 +238,8 @@
 %%% \beginprog
 \newdimen\ExampleWidth
       \ExampleWidth=\textwidth
-      \advance\ExampleWidth by \marginparwidth  % stick into margins
-      \advance\ExampleWidth by -\columnsep      % between columns
+      \advance\ExampleWidth by \marginparwidth	% stick into margins
+      \advance\ExampleWidth by -\columnsep	% between columns
       \divide\ExampleWidth by 2
 %%% \endprog
 
@@ -258,7 +264,9 @@
       \def\markboth##1##2{}%
       \def\markright##1{}%
       \def\addcontentsline##1##2##3{}%
+      \makeatletter
       \input \example_name
+      \makeatother
       \par
       \hrule height\z@
    \end{minipage}%
@@ -276,7 +284,7 @@
 \begingroup
    \catcode`\^^I=\active
    \gdef\@vobeytabs{\catcode`\^^I\active \let^^I\@xobeytab}
-   \global\let^^I=\@xobeytab%           % for \write's
+   \global\let^^I=\@xobeytab%		% for \write's
 \endgroup
 \def\@xobeytab{\space\space\space\space\space\space\space\space}
 %%% \endprog
@@ -289,13 +297,13 @@
    \begin{minipage}[t]{\ExampleWidth}%
       \hrule height\z@
       \begingroup
-         \small
-         \parindent\z@
-         \rightskip\@flushglue
-         \@makeother\"\@verbatim
-         \frenchspacing \@vobeyspaces \@vobeytabs
-         \input \example_name
-         \endverbatim
+	 \small
+	 \parindent\z@
+	 \rightskip\@flushglue
+	 \@makeother\"\@verbatim
+	 \frenchspacing \@vobeyspaces \@vobeytabs
+	 \input \example_name
+	 \endverbatim
       \endgroup
       \hrule height\z@
    \end{minipage}%
@@ -314,13 +322,14 @@
 
 %%% \beginprog
 \def\example{
-   \par
-   \immediate\openout\example_file\example_name
-   \begingroup
-      \@makeother\"\let\do\@makeother \dospecials
-      \obeylines \obeyspaces
-      \@ignoretrue \copy_line
-   }
+    \par
+    \immediate\openout\example_file\example_name
+    \begingroup
+	\@makeother\"\let\do\@makeother \dospecials
+	\obeylines \obeyspaces
+	\let\protect\noexpand
+	\@ignoretrue \copy_line
+    }
 %%% \endprog
 
 
@@ -330,10 +339,10 @@
 
 %%% \beginprog
 \begingroup
-   \catcode`\|=\escape  % | is temporary escape character
-   \catcode`\[=\open    % [ and ] are temporary grouping symbols
+   \catcode`\|=\escape	% | is temporary escape character
+   \catcode`\[=\open	% [ and ] are temporary grouping symbols
    \catcode`\]=\close
-   \catcode`\{=\other   % these are `other' in verbatim mode
+   \catcode`\{=\other	% these are `other' in verbatim mode
    \catcode`\}=\other
    \catcode`\\=|other
    |gdef|end_of_example[\end{example}]
@@ -358,22 +367,22 @@
 \endgroup
 
 \def\write_line#1{%
-   \def\Next{#1}%
-   \ifx \Next\end_of_example
-      \def\Next{\end{example}}% % finish example
+   \def\next{#1}%
+   \ifx \next\end_of_example
+      \def\next{\end{example}}%	% finish example
    \else
-      \ifx \Next\empty
-         \if@ignore             % ignore empty lines at the beginning
-         \else                  % but write them out later
-            \immediate\write\example_file{\Next}%
-         \fi
+      \ifx \next\empty
+	 \if@ignore		% ignore empty lines at the beginning
+	 \else			% but write them out later
+	    \immediate\write\example_file{\next}%
+	 \fi
       \else
-         \immediate\write\example_file{\Next}%
-         \@ignorefalse          % at least one non-empty line written
+         \immediate\write\example_file{\next}%
+	 \@ignorefalse		% at least one non-empty line written
       \fi
-      \let\Next\copy_line       % next line of example
+      \let\next\copy_line	% next line of example
    \fi
-   \Next
+   \next
    }
 %%% \endprog
 
@@ -412,3 +421,13 @@
 
 %%% \end{document}
 
+
+%%% 
+%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-brace-indent-level: 4
+%%% indent-tabs-mode: t
+%%% TeX-auto-untabify: nil
+%%% TeX-auto-regexp-list: LaTeX-auto-regexp-list
+%%% End:

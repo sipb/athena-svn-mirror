@@ -1,5 +1,5 @@
-\ProvidesFile{OMLbch.fd}
-\DeclareFontFamily{OML}{cmm}{\skewchar\font'177}
+\ProvidesFile{omlbch.fd}
+\DeclareFontFamily{OML}{bch}{\skewchar\font127}
 \DeclareFontShape{OML}{bch}{m}{n}
    {<-> ssub * cmm/m/it}{}
 \DeclareFontShape{OML}{bch}{m}{it}

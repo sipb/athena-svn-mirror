@@ -1,0 +1,33 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -*- Mode: Latex -*- %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% t-ghsb.tex --- Test of HSB mode gradients
+%% 
+%% Author          : Denis GIROU (CNRS/IDRIS - France) <Denis.Girou@idris.fr>
+%% Created the     : Wed May 14 18:51:17 1997
+%% Last mod. by    : Denis GIROU (CNRS/IDRIS - France) <Denis.Girou@idris.fr>
+%% Last mod. the   : Thu Jan 29 17:18:16 1998
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+\usepackage{pst-ghsb}
+
+\newcommand{\Fig}[1][]{%
+\begin{pspicture}(5.5,5.5)
+  \psframe[#1](5,5)
+\end{pspicture}}
+
+\newhsbcolor{ColorA}{0 0 0.7}
+\newhsbcolor{ColorB}{0 1 0.7}
+\newhsbcolor{ColorC}{.5 0.8 0}
+\newhsbcolor{ColorD}{.5 0.8 1}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\psset{fillstyle=gradient,gradientHSB=true}
+
+\Fig[gradmidpoint=1,gradbegin=ColorA,gradend=ColorB]
+\Fig[gradmidpoint=0.5,gradbegin=ColorC,gradend=ColorD]
+
+\end{document}

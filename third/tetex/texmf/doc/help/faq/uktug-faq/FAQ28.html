@@ -1,0 +1,65 @@
+<head>
+<title>UK TeX FAQ -- question 28</title>
+</head><body>
+<h3>Documentation of packages</h3>
+<p>These FAQs regularly suggest packages that will "solve"
+particular problems.  Mostly, however, the answer doesn't provide a
+detailed recipe for the job - how is the poor user to find out what
+(exactly) to do?
+<p>If you're lucky, the package you need is already in your installation.
+If you're particularly lucky, you're using a distribution that gives
+access to package documentation and the documentation is available in
+a form that can easily be shown.  For example, on a teTeX-based
+system, the <i>texdoc</i> command is usually useful, as in:
+<pre>
+  texdoc footmisc
+</pre>
+which opens an <i>xdvi</i> window showing documentation of the
+<i>footmisc</i> package.  According to the type of file
+<i>texdoc</i> finds, it will launch <i>xdvi</i>,
+<i>ghostscript</i> or a PDF reader.  If it can't find any
+documentation, it may launch a Web browser to look at its copy of the
+CTAN catalogue.
+<p>If your luck (as defined above) doesn't hold out, you've got to find
+documentation by other means.  This is where you need to exercise your
+intelligence: you have to find the documentation for yourself.  What
+follows offers a range of possible techniques.
+<p>The commonest form of documentation of LaTeX add-ons is within the
+<code>.dtx</code> file in which the code is distributed (see
+<a href="FAQ40.html">documented LaTeX sources</a>).  Such files
+are supposedly processable by LaTeX itself, but there are
+occasional hiccups on the way to readable documentation.  Common
+problems are that the package itself is needed to process its own
+documentation (so must be unpacked before processing), and that the
+<code>.dtx</code> file will <em>not</em> in fact process with LaTeX.  In the
+latter case, the <code>.ins</code> file will usually produce a <code>.drv</code> (or
+similarly-named) file, which you process with LaTeX instead.
+(Sometimes the package author even thinks to mention this wrinkle in
+a package <code>README</code> file.)
+<p>Another common form is the separate documentation file; particularly
+if a package is "conceptually large" (and therefore needs a lot of
+documentation), the documentation would prove a cumbersome extension
+to the <code>.dtx</code> file.  Examples of such cases are the <i>memoir</i>
+class (whose documentation, <i>memman</i>, is widely praised as an
+introduction to typesetting concepts), the <i>koma-script</i> bundle
+(whose developers take the trouble to produce documentation both in
+German and English), and the <i>fancyhdr</i> package (whose
+documentation derives from a definitive tutorial in a mathematical
+journal).  Even if the documentation is not separately identified in a
+<code>README</code> file, it should not be too difficult to recognise its
+existence.
+<p>Documentation within the package itself is the third common form.
+Such documentation ordinarily appears in comments at the head of the
+file, though at least one eminent author regularly places it after the
+<code>\endinput</code> command in the package.  (This is desirable, since
+<code>\endinput</code> is a 'logical' end-of-file, and (La)TeX doesn't read
+beyond it: thus such documentation 'cost' any package loading time.)
+<p>The above suggestions cover most possible ways of finding
+documentation.  If, despite your best efforts, you can't find
+it in any of the above places, there's the awful possibility that the
+author didn't bother to document his package (on the "if it was hard
+to write, it should be hard to use" philosophy).  Most ordinary
+mortals will seek support from some more experienced user at this
+stage; however, it is possible to proceed in the way that the original
+author apparently expected...by reading his code.
+<p></body>
