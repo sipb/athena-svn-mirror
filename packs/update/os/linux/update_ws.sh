@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.7 2000-02-29 19:42:55 ghudson Exp $
+# $Id: update_ws.sh,v 1.8 2000-03-04 17:39:36 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -129,12 +129,11 @@ fi
 # updates.
 if [ true = "$PUBLIC" ]; then
 	publicflag=-p
-	oldlist=/dev/null
 else
 	publicflag=
-	oldlist=/var/athena/release-rpms
 fi
 
+oldlist=/var/athena/release-rpms
 if [ ! -r "$oldlist" ]; then
 	errorout "Cannot read old release list $oldlist."
 fi
