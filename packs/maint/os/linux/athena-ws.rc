@@ -57,7 +57,7 @@ case "$1" in
 
 	echo -n "Removing stale locks and session records"
 	rm -rf /.deleted /etc/sm/* /etc/sm.bak/* /var/athena/sessions/* \
-		&& rm -f '/var/tmp/!!!SuperLock!!!' \
+		&& rm -rf '/var/tmp/!!!SuperLock!!!' /tmp/.esd \
 		&& rm -rf /var/athena/reactivate.pid \
 		&& rm -rf /var/athena/reactivate.count \
 		&& success "removing stale files" \

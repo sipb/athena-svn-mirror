@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.59 2001-06-05 19:08:47 ghudson Exp $
+# $Id: reactivate.sh,v 1.60 2001-06-20 17:34:30 ghudson Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -199,8 +199,8 @@ fi
 # will not follow symbolic links.
 (cd /tmp; saferm -z tkt* krb5cc*) > /dev/null 2>&1
 
-# For some reason, emacs leaves behind a lock file sometimes.  Nuke it.
-rm -f /var/tmp/!!!SuperLock!!!
+# Clean up occasional leavings of emacs and esd.
+rm -rf /var/tmp/!!!SuperLock!!! /tmp/.esd
 
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
