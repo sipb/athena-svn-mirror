@@ -14,23 +14,13 @@
 
 #define ATHENA_RULES
 
-/* 
- * WARNING - HACK HACK HACK
- * To allow xmkmf to work with our setup: set CONFDIR to be TOPDIR/config.
- *
- * NEWTOP is still set to . since this is being run from the top of the
- * developer's project tree.  However, TOPDIR is simply the top of the
- * Athena source tree, which contains the Imake configuration files.
- */
-#ifdef TOPDIR
-#define UseInstalled
-#define ConfDir /source/support/config/cf
-#endif
-
 #include <site.def>
 
+#ifndef TOPDIR
+#define TOPDIR .
+#endif
 #ifndef ConfDir
-#define ConfDir /source/support/config/cf
+#define ConfDir SRCDIR/packs/build/config
 #endif
 #ifndef NEWTOP
 #define NEWTOP .
@@ -69,7 +59,7 @@
 #define AthXAppDir /usr/athena/lib/X11/app-defaults
 #endif
 #ifndef AthXBitDir
-#define AthXBitDir /usr/athena/lib/X11/bitmaps
+#define AthXBitDir /usr/athena/include/X11/bitmaps
 #endif
 #ifndef AthXIncDir
 #define AthXIncDir /usr/athena/include
@@ -171,8 +161,8 @@ PTOP = $(TOP)/ProjectTop
 
 #ifdef UseInstalled
 IMAKE= imake
-IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DTOPDIR=TOPDIR
-XIFLAGS= -I$(ATHXLIBDIR)/X11/config -DUseInstalled
+IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DUseInstalled -DTOPDIR=TOPDIR -DSRCDIR=SRCDIR
+XIFLAGS= -I$(IRULESRC)/../xconfig -DUseInstalled -DTOPDIR=TOPDIR -DSRCDIR=SRCDIR
 #else
 UTILDIR=$(TOP)/util/bin/
 IMAKE= $(UTILDIR)imake
@@ -183,12 +173,9 @@ XIFLAGS= -I$(XTOP)/config -DTOPDIR=$(XTOP) -DCURDIR=$(CWD)
 
 ICONFIGFILE = ${IRULESRC}/Imake.tmpl ${IRULESRC}/Imake.rules \
 	${IRULESRC}/site.def Imakefile
-MKDIRHIER= /usr/athena/bin/mkdirhier
+MKDIRHIER= mkdirhier
 
-/* Reference this through the build tree instead of through ${IRULESRC}, to
- * allow patchlevel to be different on different platforms.  This can be
- * revisited when patchlevels are numbers and not letters. */
-ATHVERS = /build/support/config/cf/update.conf
+ATHVERS = SRCDIR/packs/build/version
 
 ATHBASEDIR=/usr/athena
 
