@@ -1,2 +1,5 @@
-cc		sunsoft		suncc
+cc		sunsoft
 f77		sunsoft
+f90		sunsoft
+pc		sunsoft
+CC		sunsoft
