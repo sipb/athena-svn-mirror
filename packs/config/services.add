@@ -1,3 +1,4 @@
+gopher		70/tcp				# gopher
 
 klogin		543/tcp				# Kerberos authenticated rlogin
 kshell		544/tcp				# and remote shell
@@ -39,12 +40,16 @@ lpallow		3701/udp			# LPR Query allowed to print
 lpquery		3702/udp			# LPR Quota report and queries
 lplog		3703/udp			# LPR Quota logger
 cview		3704/tcp			# Cluster monitoring
-					# 3705 reserved for SNMP/NOC
+						# 3705 reserved for SNMP/NOC
 afs-nfs		3706/tcp			# AFS-NFS translator
 athena-olh-ezviewer	3707/tcp
+afs-cmd		3708/tcp			# AFS intermediary cmd server
 calserver	3709/tcp			# Athena calendar server
 athena-timed	3710/udp			# Athena timed
 technotify	3713/udp			# TechNotify mail notification
+gophertech	3714/tcp			# Gopher gateway to TechInfo
+gshell		3715/tcp			# gsh service
+slw		3716/udp			# software license wrapper
 
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)
 galatea         4001/tcp        galatead   # Video disk control
