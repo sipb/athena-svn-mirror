@@ -1,6 +1,6 @@
 #| user.jl -- do user-local initialization
 
-   $Id: user.jl,v 1.3 2001-03-09 21:53:44 ghudson Exp $
+   $Id: user.jl,v 1.4 2001-04-26 16:44:10 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -71,7 +71,7 @@
     (progn
       (load-all "site-init" (lambda (f) (safe-load f nil t)))
       (safe-load "rep-defaults" t)
-      (unless (batch-mode)
+      (unless batch-mode
 	(load "sawfish/wm/defaults" t))))
 	
   ;; they're probably not going to leave us in an unusable state
