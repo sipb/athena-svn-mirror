@@ -17,7 +17,7 @@
  * appropriate scripts during the update process.
  */
 
-static char rcsid[] = "$Id: upvers.c,v 1.13 1996-12-27 22:10:55 ghudson Exp $";
+static char rcsid[] = "$Id: upvers.c,v 1.14 1998-02-24 22:32:17 cfields Exp $";
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
   DIR *dp;
   struct dirent *dirp;
   int n = 0, i, start, end;
-  char filename[1024];
+  char filename[1024], scratch;
 
   if (argc < 4)
     {
@@ -48,9 +48,10 @@ int main(int argc, char **argv)
     }
 
   /* Parse old-vers and new-vers. */
-  if (sscanf(argv[1], "%d.%d.%d", &oldv.major, &oldv.minor, &oldv.patch) != 3
-      || sscanf(argv[2], "%d.%d.%d", &newv.major, &newv.minor,
-		&newv.patch) != 3)
+  if (sscanf(argv[1], "%d.%d.%d%c", &oldv.major, &oldv.minor, &oldv.patch,
+	     &scratch) != 3
+      || sscanf(argv[2], "%d.%d.%d%c", &newv.major, &newv.minor,
+		&newv.patch, &scratch) != 3)
     {
       fprintf(stderr, "First two arguments must be dotted triplets.\n");
       return 1;
@@ -65,8 +66,8 @@ int main(int argc, char **argv)
     }
   while (dirp = readdir(dp))
     {
-      if (sscanf(dirp->d_name, "%d.%d.%d", &vf[n].major, &vf[n].minor,
-		 &vf[n].patch) == 3)
+      if (sscanf(dirp->d_name, "%d.%d.%d%c", &vf[n].major, &vf[n].minor,
+		 &vf[n].patch, &scratch) == 3)
 	n++;
     }
   closedir(dp);
