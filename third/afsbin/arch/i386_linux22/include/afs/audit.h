@@ -1,5 +1,5 @@
 /*  Copyright (C)  1998  Transarc Corporation.  All rights reserved.
- *  $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/audit.h,v 1.1.1.1 1999-12-22 20:45:06 ghudson Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/audit.h,v 1.1.1.2 2000-04-12 18:45:50 ghudson Exp $
  */
 
 #define AUD_END  0         /* End           of veriable list */
@@ -89,6 +89,7 @@
 #define BUDB_AddVolEvent   "AFS_BUDB_AddVol"
 #define BUDB_CrDmpEvent    "AFS_BUDB_CrDmp"
 #define BUDB_DelDmpEvent   "AFS_BUDB_DelDmp"
+#define BUDB_LstDmpEvent   "AFS_BUDB_LstDmp"
 #define BUDB_DelTpeEvent   "AFS_BUDB_DelTpe"
 #define BUDB_DelVDPEvent   "AFS_BUDB_DelVDP"
 #define BUDB_FndClnEvent   "AFS_BUDB_FndCln"
@@ -210,6 +211,6 @@
 
 
 /* prototypes for audit functions */
-int osi_audit (char *audEvent, int32 errCode, ...);
+int osi_audit (char *audEvent, afs_int32 errCode, ...);
 int osi_auditU (struct rx_call *call, char *audEvent, int errCode, ...);
 

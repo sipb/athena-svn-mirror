@@ -9,7 +9,7 @@
 #define __INCL_KTIME_ 1
 #undef min 	/* XXX */
 struct ktime_date {
-    int32 mask;		/* mask of valid fields */
+    afs_int32 mask;		/* mask of valid fields */
     short year;
     short month;
     short day;
@@ -52,7 +52,7 @@ struct ktime {
 #define	ktimeRelDate_ToLong	ktimeRelDate_ToInt32	/* XXX */
 #define	LongTo_ktimeRelDate     Int32To_ktimeRelDate	/* XXX */
 
-int32 ktime_InterpretDate(struct ktime_date *akdate);
+afs_int32 ktime_InterpretDate(struct ktime_date *akdate);
 
 
 #endif /* __INCL_KTIME_ */

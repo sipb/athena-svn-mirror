@@ -69,6 +69,7 @@
 #define AFS_RXGEN_EXPORT
 #endif /* AFS_NT40_ENV */
 
+#define TC_STATINDEX 4
 #define TC_MAXDUMPPATH 256
 #define TC_MAXNAMELEN 64
 #define TC_MAXARRAY 2000000000
@@ -77,13 +78,13 @@
 #define TC_MAXTAPELEN 32
 
 struct tc_dumpDesc {
-	int32 vid;
-	int32 vtype;
+	afs_int32 vid;
+	afs_int32 vtype;
 	char name[TC_MAXNAMELEN];
-	int32 partition;
-	int32 date;
-	int32 cloneDate;
-	u_int32 hostAddr;
+	afs_int32 partition;
+	afs_int32 date;
+	afs_int32 cloneDate;
+	afs_uint32 hostAddr;
 };
 typedef struct tc_dumpDesc tc_dumpDesc;
 bool_t xdr_tc_dumpDesc();
@@ -93,16 +94,16 @@ bool_t xdr_tc_dumpDesc();
 #define RDFLAG_FIRSTDUMP 0x4
 
 struct tc_restoreDesc {
-	int32 flags;
+	afs_int32 flags;
 	char tapeName[TC_MAXTAPELEN];
-	u_int32 dbDumpId;
-	u_int32 initialDumpId;
-	int32 position;
-	int32 origVid;
-	int32 vid;
-	int32 partition;
-	int32 dumpLevel;
-	u_int32 hostAddr;
+	afs_uint32 dbDumpId;
+	afs_uint32 initialDumpId;
+	afs_int32 position;
+	afs_int32 origVid;
+	afs_int32 vid;
+	afs_int32 partition;
+	afs_int32 dumpLevel;
+	afs_uint32 hostAddr;
 	char oldName[TC_MAXNAMELEN];
 	char newName[TC_MAXNAMELEN];
 };
@@ -111,51 +112,51 @@ bool_t xdr_tc_restoreDesc();
 
 
 struct tc_dumpStat {
-	int32 dumpID;
-	u_int32 KbytesDumped;
-	u_int32 bytesDumped;
-	int32 volumeBeingDumped;
-	int32 numVolErrs;
-	int32 flags;
+	afs_int32 dumpID;
+	afs_uint32 KbytesDumped;
+	afs_uint32 bytesDumped;
+	afs_int32 volumeBeingDumped;
+	afs_int32 numVolErrs;
+	afs_int32 flags;
 };
 typedef struct tc_dumpStat tc_dumpStat;
 bool_t xdr_tc_dumpStat();
 
 
 struct tc_tapeLabel {
-	int32 size;
+	afs_int32 size;
 	char afsname[TC_MAXTAPELEN];
 	char pname[TC_MAXTAPELEN];
-	u_int32 tapeId;
+	afs_uint32 tapeId;
 };
 typedef struct tc_tapeLabel tc_tapeLabel;
 bool_t xdr_tc_tapeLabel();
 
 
 struct tc_TMInfo {
-	int32 capacity;
-	int32 flags;
+	afs_int32 capacity;
+	afs_int32 flags;
 };
 typedef struct tc_TMInfo tc_TMInfo;
 bool_t xdr_tc_TMInfo();
 
 
 struct tc_tapeSet {
-	int32 id;
+	afs_int32 id;
 	char tapeServer[TC_MAXHOSTLEN];
 	char format[TC_MAXFORMATLEN];
 	int maxTapes;
-	int32 a;
-	int32 b;
-	int32 expDate;
-	int32 expType;
+	afs_int32 a;
+	afs_int32 b;
+	afs_int32 expDate;
+	afs_int32 expType;
 };
 typedef struct tc_tapeSet tc_tapeSet;
 bool_t xdr_tc_tapeSet();
 
 
 struct tc_tcInfo {
-	int32 tcVersion;
+	afs_int32 tcVersion;
 };
 typedef struct tc_tcInfo tc_tcInfo;
 bool_t xdr_tc_tcInfo();
@@ -168,6 +169,8 @@ bool_t xdr_tc_tcInfo();
 #define TSK_STAT_FIRST		0x1	/* get id of first task */
 #define TSK_STAT_END		0x2	/* no more tasks */
 #define TSK_STAT_NOTFOUND	0x4	/* couldn't find task id requested */
+#define TSK_STAT_XBSA	       0x10     /* An XBSA server */
+#define TSK_STAT_ADSM	       0x20	/* An ADSM XBSA server */
 
 typedef struct tc_dumpArray {
 	u_int tc_dumpArray_len;
@@ -188,8 +191,8 @@ struct tc_dumpInterface {
 	char volumeSetName[TC_MAXNAMELEN];
 	char dumpName[TC_MAXNAMELEN];
 	struct tc_tapeSet tapeSet;
-	int32 parentDumpId;
-	int32 dumpLevel;
+	afs_int32 parentDumpId;
+	afs_int32 dumpLevel;
 	int doAppend;
 };
 typedef struct tc_dumpInterface tc_dumpInterface;
@@ -198,13 +201,13 @@ bool_t xdr_tc_dumpInterface();
 
 struct tciStatusS {
 	char taskName[TC_MAXNAMELEN];
-	u_int32 taskId;
-	u_int32 flags;
-	u_int32 dbDumpId;
-	u_int32 nKBytes;
+	afs_uint32 taskId;
+	afs_uint32 flags;
+	afs_uint32 dbDumpId;
+	afs_uint32 nKBytes;
 	char volumeName[TC_MAXNAMELEN];
-	int32 volsFailed;
-	int32 lastPolled;
+	afs_int32 volsFailed;
+	afs_int32 lastPolled;
 };
 typedef struct tciStatusS tciStatusS;
 bool_t xdr_tciStatusS();
@@ -212,7 +215,7 @@ bool_t xdr_tciStatusS();
 
 /* Opcode-related useful stats for package: TC_ */
 #define TC_LOWEST_OPCODE   0
-#define TC_HIGHEST_OPCODE	11
-#define TC_NUMBER_OPCODES	12
+#define TC_HIGHEST_OPCODE	12
+#define TC_NUMBER_OPCODES	13
 
 #endif	/* _RXGEN_BUTC_ */

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_user.h,v 1.1.1.1 1999-12-22 20:45:40 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_user.h,v 1.1.1.2 2000-04-12 18:46:27 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/rx/rx_user.h,v $ */
 
 /*
@@ -59,7 +59,7 @@ extern void rxi_ReScheduleEvents();
 typedef void *osi_socket;
 #define	OSI_NULLSOCKET	((osi_socket) 0)
 #else /* UAFS_CLIENT */
-typedef int32 osi_socket;
+typedef afs_int32 osi_socket;
 #define	OSI_NULLSOCKET	((osi_socket) -1)
 #endif /* UAFS_CLIENT */
 

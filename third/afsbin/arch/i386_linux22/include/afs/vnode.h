@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vnode.h,v 1.1.1.1 1999-12-22 20:45:22 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vnode.h,v 1.1.1.2 2000-04-12 18:46:02 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vnode.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidvnode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vnode.h,v 1.1.1.1 1999-12-22 20:45:22 ghudson Exp $";
+static char *rcsidvnode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vnode.h,v 1.1.1.2 2000-04-12 18:46:02 ghudson Exp $";
 #endif
 
 /*
@@ -17,6 +17,8 @@ static char *rcsidvnode = "$Header: /afs/dev.mit.edu/source/repository/third/afs
 	Institution:	The Information Technology Center, Carnegie-Mellon University
 
  */
+
+#define Date afs_uint32
 
 typedef struct ViceLock
 {
@@ -87,7 +89,7 @@ typedef struct VnodeDiskObject {
 				   from nextVnodeUnique in the Volume
 				   structure) */
     FileVersion   dataVersion;	/* version number of the data */
-    int32	  vn_ino_lo;	/* inode number of the data attached to
+    afs_int32	  vn_ino_lo;	/* inode number of the data attached to
     				   this vnode - entire ino for standard*/
     Date	  unixModifyTime;/* set by user */
     UserId	  author;	/* Userid of the last user storing the file */
@@ -104,8 +106,8 @@ typedef struct VnodeDiskObject {
     ViceLock	  lock;		/* Advisory lock */
     Date	  serverModifyTime;	/* Used only by the server; for incremental
     				   backup purposes */
-    int32	  group;	    /* unix group */
-    int32	  vn_ino_hi;	/* high part of 64 bit inode. */
+    afs_int32	  group;	    /* unix group */
+    afs_int32	  vn_ino_hi;	/* high part of 64 bit inode. */
     bit32	  reserved6;
     /* Missing:
        archiving/migration

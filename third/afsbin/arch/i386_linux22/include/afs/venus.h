@@ -1,11 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/venus.h,v 1.1.1.1 1999-12-22 20:44:55 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/venus.h,v 1.1.1.2 2000-04-12 18:45:38 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/venus.h,v $ */
 
 #ifndef AFS_VENUS_H
 #define AFS_VENUS_H
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsiduvenus = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/venus.h,v 1.1.1.1 1999-12-22 20:44:55 ghudson Exp $";
+static char *rcsiduvenus = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/venus.h,v 1.1.1.2 2000-04-12 18:45:38 ghudson Exp $";
 #endif
 
 /*
@@ -63,7 +63,7 @@ struct setspref {
 /* struct for GAG pioctl
  */
 struct gaginfo {
-	u_int32 showflags, logflags, logwritethruflag, spare[3];
+	afs_uint32 showflags, logflags, logwritethruflag, spare[3];
 	unsigned char spare2[128];
 };
 #define GAGUSER    1
@@ -72,11 +72,11 @@ struct gaginfo {
 
 
 struct rxparams {
-	int32 rx_initReceiveWindow, rx_maxReceiveWindow,
+	afs_int32 rx_initReceiveWindow, rx_maxReceiveWindow,
 	      rx_initSendWindow, rx_maxSendWindow, rxi_nSendFrags,
 	      rxi_nRecvFrags, rxi_OrphanFragSize;
-	int32 rx_maxReceiveSize, rx_MyMaxSendSize;
-	u_int32 spare[21];
+	afs_int32 rx_maxReceiveSize, rx_MyMaxSendSize;
+	afs_uint32 spare[21];
       };
 
 /* struct for checkservers */
@@ -86,8 +86,8 @@ struct chservinfo
         int magic;
 	char tbuffer[128];
 	int tsize;
-	int32 tinterval;
-	int32 tflags;
+	afs_int32 tinterval;
+	afs_int32 tflags;
 };
 
 struct sbstruct {
@@ -173,6 +173,7 @@ struct cm_initparams {
 #define VIOC_GETCPREFS  	_VICEIOCTL(50)	/* Get client interface */
 #define VIOC_SETCPREFS  	_VICEIOCTL(51)	/* Set client interface */
 #define VIOC_AFS_FLUSHMOUNT	_VICEIOCTL(52)  /* Flush mount symlink data */
-
+#define VIOC_RXSTAT_PROC	_VICEIOCTL(53)	/* Control process RX stats */
+#define VIOC_RXSTAT_PEER	_VICEIOCTL(54)	/* Control peer RX stats */
 
 #endif /* AFS_VENUS_H */

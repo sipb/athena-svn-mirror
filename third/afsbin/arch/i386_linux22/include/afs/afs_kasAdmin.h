@@ -4,7 +4,7 @@
 /*
  * Copyright (C)  1998  Transarc Corporation.  All rights reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/afs_kasAdmin.h,v 1.1.1.1 1999-12-22 20:45:37 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/afs_kasAdmin.h,v 1.1.1.2 2000-04-12 18:46:23 ghudson Exp $
  */
 
 #include <afs/param.h>

@@ -1,9 +1,9 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v 1.1.1.1 1999-12-22 20:44:59 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v 1.1.1.2 2000-04-12 18:45:43 ghudson Exp $ */
 /* $ACIS:vice.h 9.0$ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE)  && defined(RCS_HDRS)
-static char *rcsidvice = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v 1.1.1.1 1999-12-22 20:44:59 ghudson Exp $";
+static char *rcsidvice = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/vice.h,v 1.1.1.2 2000-04-12 18:45:43 ghudson Exp $";
 #endif
 
 /*

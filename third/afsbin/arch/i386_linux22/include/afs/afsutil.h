@@ -47,7 +47,7 @@ extern char *vctime(const time_t *atime);
 
 
 /* Convert a 4 byte integer to a text string. */
-extern char*	afs_inet_ntoa(int32 addr);
+extern char*	afs_inet_ntoa(afs_int32 addr);
 
 
 /* copy strings, converting case along the way. */

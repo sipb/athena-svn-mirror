@@ -154,11 +154,11 @@
 
 /* The rx part of the header of a packet, in host form */
 struct rx_header {
-    u_int32 epoch;	/* Start time of client process */
-    u_int32 cid;		/* Connection id (defined by client) */
-    u_int32 callNumber;	/* Current call number */
-    u_int32 seq;		/* Sequence number of this packet, within this call */
-    u_int32 serial;	/* Serial number of this packet: a new serial
+    afs_uint32 epoch;	/* Start time of client process */
+    afs_uint32 cid;		/* Connection id (defined by client) */
+    afs_uint32 callNumber;	/* Current call number */
+    afs_uint32 seq;		/* Sequence number of this packet, within this call */
+    afs_uint32 serial;	/* Serial number of this packet: a new serial
                          * number is stamped on each packet sent out */
     u_char type;	/* RX packet type */
     u_char flags;	/* Flags, defined below */
@@ -227,7 +227,7 @@ struct rx_packet {
     struct rx_queue queueItemHeader;   /* Packets are chained using the queue.h package */
     struct clock retryTime;	    /* When this packet should NEXT be re-transmitted */
     struct clock timeSent;	    /* When this packet was transmitted last */
-    u_int32 firstSerial;	            /* Original serial number of this packet */
+    afs_uint32 firstSerial;	            /* Original serial number of this packet */
     struct clock firstSent;	    /* When this packet was transmitted first */
     struct rx_header header;	    /* The internal packet header */
     unsigned int niovecs;
@@ -242,9 +242,9 @@ struct rx_packet {
      * physically adjacent.
      * The Linux port uses this knowledge as well in osi_NetSend.
      */
-    u_int32 wirehead[RX_HEADER_SIZE/sizeof(int32)];
-    u_int32 localdata[RX_CBUFFERSIZE/sizeof(int32)]; 
-    u_int32 extradata[RX_EXTRABUFFERSIZE/sizeof(int32)];
+    afs_uint32 wirehead[RX_HEADER_SIZE/sizeof(afs_int32)];
+    afs_uint32 localdata[RX_CBUFFERSIZE/sizeof(afs_int32)]; 
+    afs_uint32 extradata[RX_EXTRABUFFERSIZE/sizeof(afs_int32)];
 };
 
 /* Macro to convert continuation buffer pointers to packet pointers */
@@ -276,17 +276,17 @@ struct rx_packet {
 #define rxi_OverQuota(packetclass) (rx_nFreePackets - 1 < rx_packetQuota[packetclass])
 #endif /* KERNEL */
 
-/* this returns a int32 from byte offset o in packet p.  offset must
- * always be aligned properly for a int32, I'm leaving this up to the
+/* this returns an afs_int32 from byte offset o in packet p.  offset must
+ * always be aligned properly for an afs_int32, I'm leaving this up to the
  * caller. */
 #define rx_GetInt32(p,off) (( (off) >= (p)->wirevec[1].iov_len) ? \
    rx_SlowGetInt32((p), (off)) :  \
-  *((int32 *)((char *)((p)->wirevec[1].iov_base) + (off))))
+  *((afs_int32 *)((char *)((p)->wirevec[1].iov_base) + (off))))
 
 #define rx_PutInt32(p,off,b) { \
        if ((off) >= (p)->wirevec[1].iov_len) \
 	  rx_SlowPutInt32((p), (off), (b));   \
-       else *((int32 *)((char *)((p)->wirevec[1].iov_base) + (off))) = b; }
+       else *((afs_int32 *)((char *)((p)->wirevec[1].iov_base) + (off))) = b; }
 
 #define rx_data(p, o, l) ((l=((struct rx_packet*)(p))->wirevec[(o+1)].iov_len),\
   (((struct rx_packet*)(p))->wirevec[(o+1)].iov_base))

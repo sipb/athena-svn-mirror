@@ -4,14 +4,14 @@
  */
 /* Including ubik.p.h at beginning of ubik.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/ubik.h,v 1.1.1.1 1999-12-22 20:44:50 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/ubik.h,v 1.1.1.2 2000-04-12 18:45:32 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/ubik.h,v $ */
 
 #ifndef UBIK_H
 #define UBIK_H
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/ubik.h,v 1.1.1.1 1999-12-22 20:44:50 ghudson Exp $";
+static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/ubik.h,v 1.1.1.2 2000-04-12 18:45:32 ghudson Exp $";
 #endif
 
 /*
@@ -88,7 +88,7 @@ struct ubik_client {
     short initializationState;		/* ubik client init state */
     short states[MAXSERVERS];		/* state bits */
     struct rx_connection *conns[MAXSERVERS];
-    int32  syncSite;
+    afs_int32  syncSite;
 #ifdef AFS_PTHREAD_ENV
     pthread_mutex_t cm;
 #endif
@@ -107,19 +107,19 @@ struct ubik_client {
 
 /* ubik transaction id representation */
 struct ubik_tid {
-    int32 epoch;	    /* time this server started */
-    int32 counter;   /* counter within epoch of transactions */
+    afs_int32 epoch;	    /* time this server started */
+    afs_int32 counter;   /* counter within epoch of transactions */
 };
 
 /* ubik version representation */
 struct ubik_version {
-    int32 epoch;	    /* time this server started */
-    int32 counter;   /* counter within epoch of transactions */
+    afs_int32 epoch;	    /* time this server started */
+    afs_int32 counter;   /* counter within epoch of transactions */
 };
 
 /* ubik header file structure */
 struct ubik_hdr {
-    int32 magic;		    /* magic number */
+    afs_int32 magic;		    /* magic number */
     short pad1;		    /* some 0-initd padding */
     short size;		    /* header allocation size */
     struct ubik_version	version;    /* the version for this file */
@@ -129,12 +129,12 @@ struct ubik_hdr {
 struct ubik_trans {
     struct ubik_dbase *dbase;	    /* corresponding database */
     struct ubik_trans *next;	    /* in the list */
-    int32 locktype;                 /* transaction lock */
+    afs_int32 locktype;                 /* transaction lock */
     struct ubik_trunc *activeTruncs;/* queued truncates */
     struct ubik_tid tid;	    /* transaction id of this trans (if write trans.) */
-    int32 minCommitTime;		    /* time before which this trans can't commit */
-    int32 seekFile;		    /* seek ptr: file number */
-    int32 seekPos;		    /* seek ptr: offset therein */
+    afs_int32 minCommitTime;		    /* time before which this trans can't commit */
+    afs_int32 seekFile;		    /* seek ptr: file number */
+    afs_int32 seekPos;		    /* seek ptr: offset therein */
     short flags;		    /* trans flag bits */
     char type;			    /* type of trans */
     iovec_wrt iovec_info;
@@ -144,13 +144,13 @@ struct ubik_trans {
 /* representation of a truncation operation */
 struct ubik_trunc {
     struct ubik_trunc *next;
-    int32 file;			    /* file to truncate */
-    int32 length;		    /* new size */
+    afs_int32 file;			    /* file to truncate */
+    afs_int32 length;		    /* new size */
 };
 
 struct ubik_stat {
-    int32 size;
-    int32 mtime;
+    afs_int32 size;
+    afs_int32 mtime;
 };
 
 #if defined(UKERNEL)
@@ -171,9 +171,9 @@ struct ubik_dbase {
 #else /* defined(UKERNEL) */
     struct Lock versionLock;	    /* lock on version number */
 #endif /* defined(UKERNEL) */
-    int32 tidCounter;                /* last RW or RO trans tid counter */
-    int32 writeTidCounter;           /* last write trans tid counter */
-    int32 flags;			    /* flags */
+    afs_int32 tidCounter;                /* last RW or RO trans tid counter */
+    afs_int32 writeTidCounter;           /* last write trans tid counter */
+    afs_int32 flags;			    /* flags */
     int	(*read)();		    /* physio procedures */
     int (*write)();
     int (*truncate)();
@@ -245,9 +245,9 @@ extern char *ubik_CheckRXSecurityRock;
 /* the per-server state, used by the sync site to keep track of its charges */
 struct ubik_server {
     struct ubik_server *next;		/* next ptr */
-    u_int32 addr[UBIK_MAX_INTERFACE_ADDR];/* network order, addr[0] is primary*/
-    int32 lastVoteTime;			/* last time yes vote received */
-    int32 lastBeaconSent;		/* last time beacon attempted */
+    afs_uint32 addr[UBIK_MAX_INTERFACE_ADDR];/* network order, addr[0] is primary*/
+    afs_int32 lastVoteTime;			/* last time yes vote received */
+    afs_int32 lastBeaconSent;		/* last time beacon attempted */
     struct ubik_version	version;	/* version, only used during recovery */
     struct rx_connection *vote_rxcid;	/* cid to use to contact dude for votes */
     struct rx_connection *disk_rxcid;	/* cid to use to contact dude for disk reqs */
@@ -278,18 +278,18 @@ extern short ubik_callPortal;
 #define	UBIK_RECSENTDB		0x10	/* sent best db to *everyone* */
 #define	UBIK_RECSBETTER		UBIK_RECLABELDB	/* last state */
 
-extern int32 ubik_quorum;			/* min hosts in quorum */
+extern afs_int32 ubik_quorum;			/* min hosts in quorum */
 extern struct ubik_dbase *ubik_dbase;		/* the database handled by this server */
-extern u_int32 ubik_host[UBIK_MAX_INTERFACE_ADDR];/* this host addr, in net order */
+extern afs_uint32 ubik_host[UBIK_MAX_INTERFACE_ADDR];/* this host addr, in net order */
 extern int ubik_amSyncSite;			/* sleep on this waiting to be sync site */
 extern struct ubik_stats {		    	/* random stats */
-    int32 escapes;
+    afs_int32 escapes;
 } ubik_stats;
-extern int32 ubik_epochTime;			/* time when this site started */
-extern int32 urecovery_state;			/* sync site recovery process state */
+extern afs_int32 ubik_epochTime;			/* time when this site started */
+extern afs_int32 urecovery_state;			/* sync site recovery process state */
 extern struct ubik_trans *ubik_currentTrans;	/* current trans */
 extern struct ubik_version ubik_dbVersion;	/* sync site's dbase version */
-extern int32 ubik_debugFlag;			/* ubik debug flag */
+extern afs_int32 ubik_debugFlag;			/* ubik debug flag */
 extern int ubikPrimaryAddrOnly;			/* use only primary address */
 
 /* this extern gives the sync site's db version, with epoch of 0 if none yet */
@@ -321,7 +321,7 @@ extern int DISK_Truncate();
 extern int DISK_SetVersion();
 #endif /* UBIK_INTERNALS */
 
-extern int32 ubik_nBuffers;
+extern afs_int32 ubik_nBuffers;
 
 /*
  * Public function prototypes
@@ -330,7 +330,7 @@ extern int32 ubik_nBuffers;
 extern int ubik_ParseClientList(
   int argc,
   char **argv,
-  int32 *aothers
+  afs_int32 *aothers
 );
 
 extern unsigned int afs_random(
@@ -342,7 +342,7 @@ extern int ubik_ClientInit(
   struct ubik_client **aclient
 );
 
-extern int32 ubik_ClientDestroy(
+extern afs_int32 ubik_ClientDestroy(
     struct ubik_client *aclient
 );
 

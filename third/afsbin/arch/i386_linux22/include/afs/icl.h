@@ -30,13 +30,13 @@ extern struct afs_icl_set *afs_icl_allSets;
 
 /* define an in-core logging package */
 struct afs_icl_set {
-    int32 refCount;		/* reference count */
-    int32 states;		/* state flags */
+    afs_int32 refCount;		/* reference count */
+    afs_int32 states;		/* state flags */
     osi_dlock_t lock;		/* lock */
     struct afs_icl_set *nextp;	/* next dude in all known tables */
     char *name;			/* name of set */
     struct afs_icl_log *logs[ICL_LOGSPERSET];	/* logs */
-    int32 nevents;		/* count of events */
+    afs_int32 nevents;		/* count of events */
     char *eventFlags;		/* pointer to event flags */
 };
 
@@ -123,14 +123,14 @@ struct afs_icl_log {
     osi_dlock_t lock;		/* lock */
     char *name;			/* log name */
     struct afs_icl_log *nextp;	/* next log in system */
-    int32 logSize;		/* allocated # of elements in log */
-    int32 logElements;		/* # of elements in log right now */
-    int32 *datap;		/* pointer to the data */
-    int32 firstUsed;		/* first element used */
-    int32 firstFree;		/* index of first free dude */
+    afs_int32 logSize;		/* allocated # of elements in log */
+    afs_int32 logElements;		/* # of elements in log right now */
+    afs_int32 *datap;		/* pointer to the data */
+    afs_int32 firstUsed;		/* first element used */
+    afs_int32 firstFree;		/* index of first free dude */
     long baseCookie;	/* cookie value of first entry */
-    int32 states;		/* state bits */
-    u_int32 lastTS;	/* last timestamp written to this log */
+    afs_int32 states;		/* state bits */
+    afs_uint32 lastTS;	/* last timestamp written to this log */
 };
 
 /* macro used to compute size of parameter when in log, used by
@@ -228,23 +228,23 @@ extern struct afs_icl_set *afs_iclLongTermSetp;
  
 typedef struct afs_icl_setinfo {
     u_char setName[32];
-    u_int32 states;
+    afs_uint32 states;
 } afs_icl_setinfo_t;
  
 typedef struct afs_icl_loginfo {
     u_char logName[32];
-    u_int32 logSize;
-    u_int32 logElements;
-    u_int32 states;
+    afs_uint32 logSize;
+    afs_uint32 logElements;
+    afs_uint32 states;
 } afs_icl_loginfo_t;
  
 typedef struct afs_icl_bulkSetinfo {
-    u_int32 count;
+    afs_uint32 count;
     afs_icl_setinfo_t setinfo[1];
 } afs_icl_bulkSetinfo_t;
  
 typedef struct afs_icl_bulkLoginfo {
-    u_int32 count;
+    afs_uint32 count;
     afs_icl_loginfo_t loginfo[1];
 } afs_icl_bulkLoginfo_t;
  

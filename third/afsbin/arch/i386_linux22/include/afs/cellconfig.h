@@ -87,11 +87,11 @@ struct afsconf_dir {
     char *cellName; /* cell name, if any, we're in */
     struct afsconf_entry *entries; /* list of cell entries */
     struct afsconf_keys	*keystr;    /* structure containing keys */
-    int32 timeRead;		    /* time stamp of file last read */
+    afs_int32 timeRead;		    /* time stamp of file last read */
 };
 
 extern struct afsconf_dir *afsconf_Open();
-extern int32 afsconf_Authenticate();
+extern afs_int32 afsconf_Authenticate();
 
 struct afsconf_servPair {
     char *name;

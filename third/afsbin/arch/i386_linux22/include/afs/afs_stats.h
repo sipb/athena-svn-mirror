@@ -65,8 +65,8 @@ typedef struct timeval osi_timeval_t;
 
 
 struct afs_MeanStats {
-    int32 average;
-    int32 elements;
+    afs_int32 average;
+    afs_int32 elements;
 };
 
 /*
@@ -75,555 +75,560 @@ struct afs_MeanStats {
  *	function call.
  */
 struct afs_CMCallStats {
-    int32 C_afs_init;	/* afs_aix_subr.c*/
-    int32 C_gop_rdwr;	/* afs_aix_subr.c*/
-    int32 C_aix_gnode_rele;	/* afs_aix_subr.c*/
-    int32 C_gettimeofday;	/* afs_aix_subr.c*/
-    int32 C_m_cpytoc;	/* afs_aix_subr.c*/
-    int32 C_aix_vattr_null;	/* afs_aix_subr.c*/
-    int32 C_afs_gn_ftrunc;	/* afs_aixops.c*/
-    int32 C_afs_gn_rdwr;	/* afs_aixops.c*/
-    int32 C_afs_gn_ioctl;	/* afs_aixops.c*/
-    int32 C_afs_gn_lockctl;	/* afs_aixops.c*/
-    int32 C_afs_gn_readlink;	/* afs_aixops.c*/
-    int32 C_afs_gn_readdir;	/* afs_aixops.c*/
-    int32 C_afs_gn_select;	/* afs_aixops.c*/
-    int32 C_afs_gn_strategy;	/* afs_aixops.c*/
-    int32 C_afs_gn_symlink;	/* afs_aixops.c*/
-    int32 C_afs_gn_revoke;	/* afs_aixops.c*/
-    int32 C_afs_gn_link;	/* afs_aixops.c*/
-    int32 C_afs_gn_mkdir;	/* afs_aixops.c*/
-    int32 C_afs_gn_mknod;	/* afs_aixops.c*/
-    int32 C_afs_gn_remove;	/* afs_aixops.c*/
-    int32 C_afs_gn_rename;	/* afs_aixops.c*/
-    int32 C_afs_gn_rmdir;	/* afs_aixops.c*/
-    int32 C_afs_gn_fid;	/* afs_aixops.c*/
-    int32 C_afs_gn_lookup;	/* afs_aixops.c*/
-    int32 C_afs_gn_open;	/* afs_aixops.c*/
-    int32 C_afs_gn_create;	/* afs_aixops.c*/
-    int32 C_afs_gn_hold;	/* afs_aixops.c*/
-    int32 C_afs_gn_close;	/* afs_aixops.c*/
-    int32 C_afs_gn_map;	/* afs_aixops.c*/
-    int32 C_afs_gn_rele;	/* afs_aixops.c*/
-    int32 C_afs_gn_unmap;	/* afs_aixops.c*/
-    int32 C_afs_gn_access;	/* afs_aixops.c*/
-    int32 C_afs_gn_getattr;	/* afs_aixops.c*/
-    int32 C_afs_gn_setattr;	/* afs_aixops.c*/
-    int32 C_afs_gn_fclear;	/* afs_aixops.c*/
-    int32 C_afs_gn_fsync;	/* afs_aixops.c*/
-    int32 C_pHash;	/* afs_buffer.c*/
-    int32 C_DInit;	/* afs_buffer.c*/
-    int32 C_DRead;	/* afs_buffer.c*/
-    int32 C_FixupBucket;	/* afs_buffer.c*/
-    int32 C_afs_newslot;	/* afs_buffer.c*/
-    int32 C_DRelease;	/* afs_buffer.c*/
-    int32 C_DFlush;	/* afs_buffer.c*/
-    int32 C_DFlushEntry;	/* afs_buffer.c*/
-    int32 C_DVOffset;	/* afs_buffer.c*/
-    int32 C_DZap;	/* afs_buffer.c*/
-    int32 C_DNew;	/* afs_buffer.c*/
-    int32 C_shutdown_bufferpackage;	/* afs_buffer.c*/
-    int32 C_afs_CheckKnownBad;	/* afs_cache.c*/
-    int32 C_afs_RemoveVCB;	/* afs_cache.c*/
-    int32 C_afs_NewVCache;	/* afs_cache.c*/
-    int32 C_afs_FlushActiveVcaches;	/* afs_cache.c*/
-    int32 C_afs_VerifyVCache;	/* afs_cache.c*/
-    int32 C_afs_WriteVCache;	/* afs_cache.c*/
-    int32 C_afs_GetVCache;	/* afs_cache.c*/
-    int32 C_afs_StuffVcache;	/* afs_cache.c*/
-    int32 C_afs_FindVCache;	/* afs_cache.c*/
-    int32 C_afs_PutDCache;	/* afs_cache.c*/
-    int32 C_afs_PutVCache;	/* afs_cache.c*/
-    int32 C_CacheStoreProc;	/* afs_cache.c*/
-    int32 C_afs_FindDCache;	/* afs_cache.c*/
-    int32 C_afs_TryToSmush;	/* afs_cache.c*/
-    int32 C_afs_AdjustSize;	/* afs_cache.c*/
-    int32 C_afs_CheckSize;	/* afs_cache.c*/
-    int32 C_afs_StoreWarn;	/* afs_cache.c*/
-    int32 C_CacheFetchProc;	/* afs_cache.c*/
-    int32 C_UFS_CacheStoreProc;	/* afs_cache.c*/
-    int32 C_UFS_CacheFetchProc;	/* afs_cache.c*/
-    int32 C_afs_GetDCache;	/* afs_cache.c*/
-    int32 C_afs_SimpleVStat;	/* afs_cache.c*/
-    int32 C_afs_ProcessFS;	/* afs_cache.c*/
-    int32 C_afs_InitCacheInfo;	/* afs_cache.c*/
-    int32 C_afs_InitVolumeInfo;	/* afs_cache.c*/
-    int32 C_afs_InitCacheFile;	/* afs_cache.c*/
-    int32 C_afs_CacheInit;	/* afs_cache.c*/
-    int32 C_afs_GetDSlot;	/* afs_cache.c*/
-    int32 C_afs_WriteThroughDSlots;	/* afs_cache.c*/
-    int32 C_afs_MemGetDSlot;	/* afs_cache.c*/
-    int32 C_afs_UFSGetDSlot;	/* afs_cache.c*/
-    int32 C_afs_StoreDCache;	/* afs_cache.c*/
-    int32 C_afs_StoreMini;	/* afs_cache.c*/
-    int32 C_shutdown_cache;	/* afs_cache.c*/
-    int32 C_afs_StoreAllSegments;	/* afs_cache.c*/
-    int32 C_afs_InvalidateAllSegments;	/* afs_cache.c*/
-    int32 C_afs_TruncateAllSegments;	/* afs_cache.c*/
-    int32 C_afs_CheckVolSync;	/* afs_cache.c*/
-    int32 C_afs_wakeup;	/* afs_cache.c*/
-    int32 C_afs_CFileOpen;	/* afs_cache.c*/
-    int32 C_afs_CFileTruncate;	/* afs_cache.c*/
-    int32 C_afs_GetDownD;	/* afs_cache.c*/
-    int32 C_afs_WriteDCache;	/* afs_cache.c*/
-    int32 C_afs_FlushDCache;	/* afs_cache.c*/
-    int32 C_afs_GetDownDSlot;	/* afs_cache.c*/
-    int32 C_afs_FlushVCache;	/* afs_cache.c*/
-    int32 C_afs_GetDownV;	/* afs_cache.c*/
-    int32 C_afs_QueueVCB;	/* afs_cache.c*/
-    int32 C_afs_call;      /* afs_call.c */
-    int32 C_afs_syscall_call;	/* afs_call.c*/
-    int32 C_syscall;	/* afs_call.c*/
-    int32 C_lpioctl;	/* afs_call.c*/
-    int32 C_lsetpag;	/* afs_call.c*/
-    int32 C_afs_syscall;	/* afs_call.c*/
-    int32 C_afs_CheckInit;	/* afs_call.c*/
-    int32 C_afs_shutdown;	/* afs_call.c*/
-    int32 C_shutdown_BKG;	/* afs_call.c*/
-    int32 C_shutdown_afstest;	/* afs_call.c*/
-    int32 C_SRXAFSCB_GetCE;	/* afs_callback.c*/
-    int32 C_ClearCallBack;	/* afs_callback.c*/
-    int32 C_SRXAFSCB_GetLock;	/* afs_callback.c*/
-    int32 C_SRXAFSCB_CallBack;	/* afs_callback.c*/
-    int32 C_SRXAFSCB_InitCallBackState;	/* afs_callback.c*/
-    int32 C_SRXAFSCB_Probe;	/* afs_callback.c*/
-    int32 C_afs_RXCallBackServer;	/* afs_callback.c*/
-    int32 C_shutdown_CB;	/* afs_callback.c*/
-    int32 C_afs_Chunk;	/* afs_chunk.c*/
-    int32 C_afs_ChunkBase;	/* afs_chunk.c*/
-    int32 C_afs_ChunkOffset;	/* afs_chunk.c*/
-    int32 C_afs_ChunkSize;	/* afs_chunk.c*/
-    int32 C_afs_ChunkToBase;	/* afs_chunk.c*/
-    int32 C_afs_ChunkToSize;	/* afs_chunk.c*/
-    int32 C_afs_SetChunkSize;	/* afs_chunk.c*/
+    afs_int32 C_afs_init;	/* afs_aix_subr.c*/
+    afs_int32 C_gop_rdwr;	/* afs_aix_subr.c*/
+    afs_int32 C_aix_gnode_rele;	/* afs_aix_subr.c*/
+    afs_int32 C_gettimeofday;	/* afs_aix_subr.c*/
+    afs_int32 C_m_cpytoc;	/* afs_aix_subr.c*/
+    afs_int32 C_aix_vattr_null;	/* afs_aix_subr.c*/
+    afs_int32 C_afs_gn_ftrunc;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_rdwr;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_ioctl;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_lockctl;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_readlink;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_readdir;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_select;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_strategy;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_symlink;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_revoke;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_link;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_mkdir;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_mknod;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_remove;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_rename;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_rmdir;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_fid;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_lookup;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_open;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_create;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_hold;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_close;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_map;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_rele;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_unmap;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_access;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_getattr;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_setattr;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_fclear;	/* afs_aixops.c*/
+    afs_int32 C_afs_gn_fsync;	/* afs_aixops.c*/
+    afs_int32 C_pHash;	/* afs_buffer.c*/
+    afs_int32 C_DInit;	/* afs_buffer.c*/
+    afs_int32 C_DRead;	/* afs_buffer.c*/
+    afs_int32 C_FixupBucket;	/* afs_buffer.c*/
+    afs_int32 C_afs_newslot;	/* afs_buffer.c*/
+    afs_int32 C_DRelease;	/* afs_buffer.c*/
+    afs_int32 C_DFlush;	/* afs_buffer.c*/
+    afs_int32 C_DFlushEntry;	/* afs_buffer.c*/
+    afs_int32 C_DVOffset;	/* afs_buffer.c*/
+    afs_int32 C_DZap;	/* afs_buffer.c*/
+    afs_int32 C_DNew;	/* afs_buffer.c*/
+    afs_int32 C_shutdown_bufferpackage;	/* afs_buffer.c*/
+    afs_int32 C_afs_CheckKnownBad;	/* afs_cache.c*/
+    afs_int32 C_afs_RemoveVCB;	/* afs_cache.c*/
+    afs_int32 C_afs_NewVCache;	/* afs_cache.c*/
+    afs_int32 C_afs_FlushActiveVcaches;	/* afs_cache.c*/
+    afs_int32 C_afs_VerifyVCache;	/* afs_cache.c*/
+    afs_int32 C_afs_WriteVCache;	/* afs_cache.c*/
+    afs_int32 C_afs_GetVCache;	/* afs_cache.c*/
+    afs_int32 C_afs_StuffVcache;	/* afs_cache.c*/
+    afs_int32 C_afs_FindVCache;	/* afs_cache.c*/
+    afs_int32 C_afs_PutDCache;	/* afs_cache.c*/
+    afs_int32 C_afs_PutVCache;	/* afs_cache.c*/
+    afs_int32 C_CacheStoreProc;	/* afs_cache.c*/
+    afs_int32 C_afs_FindDCache;	/* afs_cache.c*/
+    afs_int32 C_afs_TryToSmush;	/* afs_cache.c*/
+    afs_int32 C_afs_AdjustSize;	/* afs_cache.c*/
+    afs_int32 C_afs_CheckSize;	/* afs_cache.c*/
+    afs_int32 C_afs_StoreWarn;	/* afs_cache.c*/
+    afs_int32 C_CacheFetchProc;	/* afs_cache.c*/
+    afs_int32 C_UFS_CacheStoreProc;	/* afs_cache.c*/
+    afs_int32 C_UFS_CacheFetchProc;	/* afs_cache.c*/
+    afs_int32 C_afs_GetDCache;	/* afs_cache.c*/
+    afs_int32 C_afs_SimpleVStat;	/* afs_cache.c*/
+    afs_int32 C_afs_ProcessFS;	/* afs_cache.c*/
+    afs_int32 C_afs_InitCacheInfo;	/* afs_cache.c*/
+    afs_int32 C_afs_InitVolumeInfo;	/* afs_cache.c*/
+    afs_int32 C_afs_InitCacheFile;	/* afs_cache.c*/
+    afs_int32 C_afs_CacheInit;	/* afs_cache.c*/
+    afs_int32 C_afs_GetDSlot;	/* afs_cache.c*/
+    afs_int32 C_afs_WriteThroughDSlots;	/* afs_cache.c*/
+    afs_int32 C_afs_MemGetDSlot;	/* afs_cache.c*/
+    afs_int32 C_afs_UFSGetDSlot;	/* afs_cache.c*/
+    afs_int32 C_afs_StoreDCache;	/* afs_cache.c*/
+    afs_int32 C_afs_StoreMini;	/* afs_cache.c*/
+    afs_int32 C_shutdown_cache;	/* afs_cache.c*/
+    afs_int32 C_afs_StoreAllSegments;	/* afs_cache.c*/
+    afs_int32 C_afs_InvalidateAllSegments;	/* afs_cache.c*/
+    afs_int32 C_afs_TruncateAllSegments;	/* afs_cache.c*/
+    afs_int32 C_afs_CheckVolSync;	/* afs_cache.c*/
+    afs_int32 C_afs_wakeup;	/* afs_cache.c*/
+    afs_int32 C_afs_CFileOpen;	/* afs_cache.c*/
+    afs_int32 C_afs_CFileTruncate;	/* afs_cache.c*/
+    afs_int32 C_afs_GetDownD;	/* afs_cache.c*/
+    afs_int32 C_afs_WriteDCache;	/* afs_cache.c*/
+    afs_int32 C_afs_FlushDCache;	/* afs_cache.c*/
+    afs_int32 C_afs_GetDownDSlot;	/* afs_cache.c*/
+    afs_int32 C_afs_FlushVCache;	/* afs_cache.c*/
+    afs_int32 C_afs_GetDownV;	/* afs_cache.c*/
+    afs_int32 C_afs_QueueVCB;	/* afs_cache.c*/
+    afs_int32 C_afs_call;      /* afs_call.c */
+    afs_int32 C_afs_syscall_call;	/* afs_call.c*/
+    afs_int32 C_syscall;	/* afs_call.c*/
+    afs_int32 C_lpioctl;	/* afs_call.c*/
+    afs_int32 C_lsetpag;	/* afs_call.c*/
+    afs_int32 C_afs_syscall;	/* afs_call.c*/
+    afs_int32 C_afs_CheckInit;	/* afs_call.c*/
+    afs_int32 C_afs_shutdown;	/* afs_call.c*/
+    afs_int32 C_shutdown_BKG;	/* afs_call.c*/
+    afs_int32 C_shutdown_afstest;	/* afs_call.c*/
+    afs_int32 C_SRXAFSCB_GetCE;	/* afs_callback.c*/
+    afs_int32 C_ClearCallBack;	/* afs_callback.c*/
+    afs_int32 C_SRXAFSCB_GetLock;	/* afs_callback.c*/
+    afs_int32 C_SRXAFSCB_CallBack;	/* afs_callback.c*/
+    afs_int32 C_SRXAFSCB_InitCallBackState;	/* afs_callback.c*/
+    afs_int32 C_SRXAFSCB_Probe;	/* afs_callback.c*/
+    afs_int32 C_afs_RXCallBackServer;	/* afs_callback.c*/
+    afs_int32 C_shutdown_CB;	/* afs_callback.c*/
+    afs_int32 C_afs_Chunk;	/* afs_chunk.c*/
+    afs_int32 C_afs_ChunkBase;	/* afs_chunk.c*/
+    afs_int32 C_afs_ChunkOffset;	/* afs_chunk.c*/
+    afs_int32 C_afs_ChunkSize;	/* afs_chunk.c*/
+    afs_int32 C_afs_ChunkToBase;	/* afs_chunk.c*/
+    afs_int32 C_afs_ChunkToSize;	/* afs_chunk.c*/
+    afs_int32 C_afs_SetChunkSize;	/* afs_chunk.c*/
 
-    int32 C_afs_config;	/* afs_config.c*/
-    int32 C_mem_freebytes;	/* afs_config.c*/
-    int32 C_mem_getbytes;	/* afs_config.c*/
-    int32 C_fpalloc;	/* afs_config.c*/
-    int32 C_kluge_init;	/* afs_config.c*/
-    int32 C_ufdalloc;	/* afs_config.c*/
-    int32 C_ufdfree;	/* afs_config.c*/
-    int32 C_commit;	/* afs_config.c*/
-    int32 C_dev_ialloc;	/* afs_config.c*/
-    int32 C_ffree;	        /* afs_config.c*/
-    int32 C_iget;	        /* afs_config.c*/
-    int32 C_iptovp;	/* afs_config.c*/
-    int32 C_ilock;	/* afs_config.c*/
-    int32 C_irele;	/* afs_config.c*/
-    int32 C_iput;	/* afs_config.c*/
+    afs_int32 C_afs_config;	/* afs_config.c*/
+    afs_int32 C_mem_freebytes;	/* afs_config.c*/
+    afs_int32 C_mem_getbytes;	/* afs_config.c*/
+    afs_int32 C_fpalloc;	/* afs_config.c*/
+    afs_int32 C_kluge_init;	/* afs_config.c*/
+    afs_int32 C_ufdalloc;	/* afs_config.c*/
+    afs_int32 C_ufdfree;	/* afs_config.c*/
+    afs_int32 C_commit;	/* afs_config.c*/
+    afs_int32 C_dev_ialloc;	/* afs_config.c*/
+    afs_int32 C_ffree;	        /* afs_config.c*/
+    afs_int32 C_iget;	        /* afs_config.c*/
+    afs_int32 C_iptovp;	/* afs_config.c*/
+    afs_int32 C_ilock;	/* afs_config.c*/
+    afs_int32 C_irele;	/* afs_config.c*/
+    afs_int32 C_iput;	/* afs_config.c*/
 
-    int32 C_afs_Daemon;	/* afs_daemons.c*/
-    int32 C_afs_CheckRootVolume;	/* afs_daemons.c*/
-    int32 C_BPath;	        /* afs_daemons.c*/
-    int32 C_BPrefetch;	/* afs_daemons.c*/
-    int32 C_BStore;	/* afs_daemons.c*/
-    int32 C_afs_BBusy;	/* afs_daemons.c*/
-    int32 C_afs_BQueue;	/* afs_daemons.c*/
-    int32 C_afs_BRelease;	/* afs_daemons.c*/
-    int32 C_afs_BackgroundDaemon;	/* afs_daemons.c*/
-    int32 C_shutdown_daemons;	/* afs_daemons.c*/
-    int32 C_exporter_add;	/* afs_exporter.c*/
-    int32 C_exporter_find;	/* afs_exporter.c*/
-    int32 C_afs_gfs_kalloc;	/* afs_gfs_subr.c*/
-    int32 C_IsAfsVnode;	/* afs_gfs_subr.c*/
-    int32 C_SetAfsVnode;	/* afs_gfs_subr.c*/
-    int32 C_afs_gfs_kfree;	/* afs_gfs_subr.c*/
-    int32 C_gop_lookupname;	/* afs_gfs_subr.c*/
-    int32 C_gfsvop_getattr;	/* afs_gfs_subr.c*/
-    int32 C_gfsvop_rdwr;	/* afs_gfs_subr.c*/
-    int32 C_afs_uniqtime;	/* afs_gfs_subr.c*/
-    int32 C_gfs_vattr_null;	/* afs_gfs_subr.c*/
-    int32 C_afs_lock;	/* afs_gfsops.c*/
-    int32 C_afs_unlock;	/* afs_gfsops.c*/
-    int32 C_afs_update;	/* afs_gfsops.c*/
-    int32 C_afs_gclose;	/* afs_gfsops.c*/
-    int32 C_afs_gopen;	/* afs_gfsops.c*/
-    int32 C_afs_greadlink;	/* afs_gfsops.c*/
-    int32 C_afs_select;	/* afs_gfsops.c*/
-    int32 C_afs_gbmap;	/* afs_gfsops.c*/
-    int32 C_afs_getfsdata;	/* afs_gfsops.c*/
-    int32 C_afs_gsymlink;	/* afs_gfsops.c*/
-    int32 C_afs_namei;	/* afs_gfsops.c*/
-    int32 C_printgnode;	/* afs_gfsops.c*/
-    int32 C_HaveGFSLock;	/* afs_gfsops.c*/
-    int32 C_afs_gmount;	/* afs_gfsops.c*/
-    int32 C_AddGFSLock;	/* afs_gfsops.c*/
-    int32 C_RemoveGFSLock;	/* afs_gfsops.c*/
-    int32 C_afs_grlock;	/* afs_gfsops.c*/
-    int32 C_afs_gumount;	/* afs_gfsops.c*/
-    int32 C_afs_gget;	/* afs_gfsops.c*/
-    int32 C_afs_glink;	/* afs_gfsops.c*/
-    int32 C_afs_gmkdir;	/* afs_gfsops.c*/
-    int32 C_afs_sbupdate;	/* afs_gfsops.c*/
-    int32 C_afs_unlink;	/* afs_gfsops.c*/
-    int32 C_afs_grmdir;	/* afs_gfsops.c*/
-    int32 C_afs_makenode;	/* afs_gfsops.c*/
-    int32 C_afs_grename;	/* afs_gfsops.c*/
-    int32 C_afs_rele;	/* afs_gfsops.c*/
-    int32 C_afs_syncgp;	/* afs_gfsops.c*/
-    int32 C_afs_getval;	/* afs_gfsops.c*/
-    int32 C_afs_gfshack;	/* afs_gfsops.c*/
-    int32 C_afs_trunc;	/* afs_gfsops.c*/
-    int32 C_afs_rwgp;	/* afs_gfsops.c*/
-    int32 C_afs_stat;	/* afs_gfsops.c*/
-    int32 C_afsc_link;	/* afs_hp_subr.c*/
-    int32 C_hpsobind;	/* afs_hp_subr.c*/
-    int32 C_hpsoclose;	/* afs_hp_subr.c*/
-    int32 C_hpsocreate;	/* afs_hp_subr.c*/
-    int32 C_hpsoreserve;	/* afs_hp_subr.c*/
-    int32 C_afs_vfs_mount;	/* afs_hp_subr.c*/
-    int32 C_devtovfs;	/* afs_istuff.c*/
-    int32 C_igetinode;	/* afs_istuff.c*/
-    int32 C_afs_syscall_iopen;	/* afs_istuff.c*/
-    int32 C_iopen;	/* afs_istuff.c*/
-    int32 C_afs_syscall_iincdec;	/* afs_istuff.c*/
-    int32 C_afs_syscall_ireadwrite;	/* afs_istuff.c*/
-    int32 C_iincdec;	/* afs_istuff.c*/
-    int32 C_ireadwrite;	/* afs_istuff.c*/
-    int32 C_oiread;	/* afs_istuff.c*/
-    int32 C_AHash;	/* afs_istuff.c*/
-    int32 C_QTOA;	/* afs_istuff.c*/
-    int32 C_afs_FindPartByDev;	/* afs_istuff.c*/
-    int32 C_aux_init;	/* afs_istuff.c*/
-    int32 C_afs_GetNewPart;	/* afs_istuff.c*/
-    int32 C_afs_InitAuxVolFile;	/* afs_istuff.c*/
-    int32 C_afs_CreateAuxEntry;	/* afs_istuff.c*/
-    int32 C_afs_GetAuxSlot;	/* afs_istuff.c*/
-    int32 C_afs_GetDownAux;	/* afs_istuff.c*/
-    int32 C_afs_FlushAuxCache;	/* afs_istuff.c*/
-    int32 C_afs_GetAuxInode;	/* afs_istuff.c*/
-    int32 C_afs_PutAuxInode;	/* afs_istuff.c*/
-    int32 C_afs_ReadAuxInode;	/* afs_istuff.c*/
-    int32 C_afs_WriteAuxInode;	/* afs_istuff.c*/
-    int32 C_afs_auxcall;	/* afs_istuff.c*/
-    int32 C_tmpdbg_auxtbl;	/* afs_istuff.c*/
-    int32 C_tmpdbg_parttbl;	/* afs_istuff.c*/
-    int32 C_idec;	/* afs_istuff.c*/
-    int32 C_iinc;	/* afs_istuff.c*/
-    int32 C_iread;	/* afs_istuff.c*/
-    int32 C_iwrite;	/* afs_istuff.c*/
-    int32 C_getinode;	/* afs_istuff.c*/
-    int32 C_trygetfs;	/* afs_istuff.c*/
-    int32 C_iforget;	/* afs_istuff.c*/
-    int32 C_afs_syscall_icreate;	/* afs_istuff.c*/
-    int32 C_icreate;	/* afs_istuff.c*/
-    int32 C_Lock_Init;	/* afs_lock.c*/
-    int32 C_Lock_Obtain;	/* afs_lock.c*/
-    int32 C_Lock_ReleaseR;	/* afs_lock.c*/
-    int32 C_Lock_ReleaseW;	/* afs_lock.c*/
-    int32 C_afs_BozonLock;	/* afs_lock.c*/
-    int32 C_afs_BozonUnlock;	/* afs_lock.c*/
-    int32 C_osi_SleepR;	/* afs_lock.c*/
-    int32 C_osi_SleepS;	/* afs_lock.c*/
-    int32 C_osi_SleepW;	/* afs_lock.c*/
-    int32 C_osi_Sleep;		/* afs_lock */
-    int32 C_afs_BozonInit;	/* afs_lock.c*/
-    int32 C_afs_CheckBozonLock;	/* afs_lock.c*/
-    int32 C_afs_CheckBozonLockBlocking;	/* afs_lock.c*/
-    int32 C_xxxinit;	/* afs_main.c*/
-    int32 C_KernelEntry;	/* afs_main.c*/
-    int32 C_afs_InitMemCache;	/* afs_memcache.c*/
-    int32 C_afs_LookupMCE;	/* afs_memcache.c*/
-    int32 C_afs_MemReadBlk;	/* afs_memcache.c*/
-    int32 C_afs_MemReadUIO;	/* afs_memcache.c*/
-    int32 C_afs_MemWriteBlk;	/* afs_memcache.c*/
-    int32 C_afs_MemCacheStoreProc;	/* afs_memcache.c*/
-    int32 C_afs_MemCacheTruncate;	/* afs_memcache.c*/
-    int32 C_afs_MemWriteUIO;	/* afs_memcache.c*/
-    int32 C_afs_MemCacheFetchProc;	/* afs_memcache.c*/
-    int32 C_afs_vnode_pager_create;	/* afs_next_aux.c*/
-    int32 C_next_KernelEntry;	/* afs_next_subr.c*/
-    int32 C_afs_GetNfsClientPag;	/* afs_nfsclnt.c*/
-    int32 C_afs_FindNfsClientPag;	/* afs_nfsclnt.c*/
-    int32 C_afs_PutNfsClientPag;	/* afs_nfsclnt.c*/
-    int32 C_afs_nfsclient_reqhandler;	/* afs_nfsclnt.c*/
-    int32 C_afs_nfsclient_GC;	/* afs_nfsclnt.c*/
-    int32 C_afs_nfsclient_hold;	/* afs_nfsclnt.c*/
-    int32 C_afs_nfsclient_stats;	/* afs_nfsclnt.c*/
-    int32 C_afs_nfsclient_sysname;	/* afs_nfsclnt.c*/
-    int32 C_afs_nfsclient_shutdown;	/* afs_nfsclnt.c*/
-    int32 C_afs_rfs_readdir_fixup;	/* afs_nfssrv.c */
-    int32 C_afs_rfs_dispatch;	/* afs_nfssrv.c*/
-    int32 C_afs_xnfs_svc;	/* afs_nfssrv.c*/
-    int32 C_afs_xdr_putrddirres;	/* afs_nfssrv.c*/
-    int32 C_afs_rfs_readdir;	/* afs_nfssrv.c*/
-    int32 C_afs_rfs_rddirfree;	/* afs_nfssrv.c*/
-    int32 C_rfs_dupcreate;	/* afs_nfssrv.c*/
-    int32 C_rfs_dupsetattr;	/* afs_nfssrv.c*/
-    int32 C_Nfs2AfsCall;	/* afs_nfssrv.c*/
-    int32 C_afs_sun_xuntext;	/* afs_osi.c*/
-    int32 C_osi_Active;	/* afs_osi.c*/
-    int32 C_osi_FlushPages;	/* afs_osi.c*/
-    int32 C_osi_FlushText;	/* afs_osi.c*/
-    int32 C_osi_CallProc;	/* afs_osi.c*/
-    int32 C_osi_CancelProc;	/* afs_osi.c*/
-    int32 C_osi_Invisible;	/* afs_osi.c*/
-    int32 C_osi_Time;	/* afs_osi.c*/
-    int32 C_osi_Alloc;	/* afs_osi.c*/
-    int32 C_osi_SetTime;	/* afs_osi.c*/
-    int32 C_osi_Dump;	/* afs_osi.c*/
-    int32 C_osi_Free;	/* afs_osi.c*/
-    int32 C_shutdown_osi;	/* afs_osi.c*/
-    int32 C_osi_UFSOpen;	/* afs_osifile.c*/
-    int32 C_osi_Close;	/* afs_osifile.c*/
-    int32 C_osi_Stat;	/* afs_osifile.c*/
-    int32 C_osi_Truncate;	/* afs_osifile.c*/
-    int32 C_osi_Read;	/* afs_osifile.c*/
-    int32 C_osi_Write;	/* afs_osifile.c*/
-    int32 C_osi_MapStrategy;	/* afs_osifile.c*/
-    int32 C_shutdown_osifile;	/* afs_osifile.c*/
-    int32 C_osi_FreeLargeSpace;	/* afs_osinet.c*/
-    int32 C_osi_FreeSmallSpace;	/* afs_osinet.c*/
-    int32 C_pkt_iodone;	/* afs_osinet.c*/
-    int32 C_shutdown_osinet;	/* afs_osinet.c*/
-    int32 C_afs_cs;	/* afs_osinet.c*/
-    int32 C_osi_AllocLargeSpace;	/* afs_osinet.c*/
-    int32 C_osi_AllocSmallSpace;	/* afs_osinet.c*/
-    int32 C_osi_CloseToTheEdge;	/* afs_osinet.c*/
-    int32 C_osi_xgreedy;	/* afs_osinet.c*/
-    int32 C_osi_FreeSocket;	/* afs_osinet.c*/
-    int32 C_osi_NewSocket;	/* afs_osinet.c*/
-    int32 C_trysblock;	/* afs_osinet.c*/
-    int32 C_osi_NetSend;	/* afs_osinet.c*/
-    int32 C_WaitHack;	/* afs_osinet.c*/
-    int32 C_osi_CancelWait;	/* afs_osinet.c*/
-    int32 C_osi_InitWaitHandle;	/* afs_osinet.c*/
-    int32 C_osi_Wakeup;		/* afs_osinet.c*/
-    int32 C_osi_Wait;	/* afs_osinet.c*/
-    int32 C_dirp_Read;	/* afs_physio.c*/
-    int32 C_dirp_SetCacheDev;	/* afs_physio.c*/
-    int32 C_Die;	/* afs_physio.c*/
-    int32 C_dirp_Cpy;	/* afs_physio.c*/
-    int32 C_dirp_Eq;	/* afs_physio.c*/
-    int32 C_dirp_Write;	/* afs_physio.c*/
-    int32 C_dirp_Zap;	/* afs_physio.c*/
-    int32 C_PSetVolumeStatus;	/* afs_pioctl.c*/
-    int32 C_PFlush;	/* afs_pioctl.c*/
-    int32 C_PNewStatMount;	/* afs_pioctl.c*/
-    int32 C_PGetTokens;	/* afs_pioctl.c*/
-    int32 C_PUnlog;	/* afs_pioctl.c*/
-    int32 C_PCheckServers;	/* afs_pioctl.c*/
-    int32 C_PMariner;	/* afs_pioctl.c*/
-    int32 C_PCheckAuth;	/* afs_pioctl.c*/
-    int32 C_PCheckVolNames;	/* afs_pioctl.c*/
-    int32 C_PFindVolume;	/* afs_pioctl.c*/
-    int32 C_Prefetch;	/* afs_pioctl.c*/
-    int32 C_PGetCacheSize;	/* afs_pioctl.c*/
-    int32 C_PRemoveCallBack;	/* afs_pioctl.c*/
-    int32 C_PSetCacheSize;	/* afs_pioctl.c*/
-    int32 C_PViceAccess;	/* afs_pioctl.c*/
-    int32 C_PListCells;	/* afs_pioctl.c*/
-    int32 C_PNewCell;	/* afs_pioctl.c*/
-    int32 C_PRemoveMount;	/* afs_pioctl.c*/
-    int32 C_HandleIoctl;	/* afs_pioctl.c*/
-    int32 C__AFSIOCTL;	/* afs_pioctl.c*/
-    int32 C__VALIDAFSIOCTL;	/* afs_pioctl.c*/
-    int32 C_PGetCellStatus;	/* afs_pioctl.c*/
-    int32 C_PSetCellStatus;	/* afs_pioctl.c*/
-    int32 C_PVenusLogging;	/* afs_pioctl.c*/
-    int32 C_PFlushVolumeData;	/* afs_pioctl.c*/
-    int32 C_PSetSysName;	/* afs_pioctl.c*/
-    int32 C_PExportAfs;	/* afs_pioctl.c*/
-    int32 C_HandleClientContext;	/* afs_pioctl.c*/
-    int32 C_afs_ioctl;	/* afs_pioctl.c*/
-    int32 C_afs_xioctl;	/* afs_pioctl.c*/
-    int32 C_afs_pioctl;	/* afs_pioctl.c*/
-    int32 C_afs_syscall_pioctl;	/* afs_pioctl.c*/
-    int32 C_HandlePioctl;	/* afs_pioctl.c*/
-    int32 C_PGetAcl;	/* afs_pioctl.c*/
-    int32 C_PGetFID;	/* afs_pioctl.c*/
-    int32 C_PSetAcl;	/* afs_pioctl.c*/
-    int32 C_PBogus;	/* afs_pioctl.c*/
-    int32 C_PGetFileCell;	/* afs_pioctl.c*/
-    int32 C_PGetWSCell;	/* afs_pioctl.c*/
-    int32 C_PNoop;	/* afs_pioctl.c*/
-    int32 C_PGetUserCell;	/* afs_pioctl.c*/
-    int32 C_PSetTokens;	/* afs_pioctl.c*/
-    int32 C_PGetVolumeStatus;	/* afs_pioctl.c*/
-    int32 C_afs_ResetAccessCache;	/* afs_resource.c*/
-    int32 C_afs_FindUser;	/* afs_resource.c*/
-    int32 C_afs_ResetUserConns;	/* afs_resource.c*/
-    int32 C_afs_ResourceInit;	/* afs_resource.c*/
-    int32 C_afs_GetCell;	/* afs_resource.c*/
-    int32 C_afs_GetCellByIndex;	/* afs_resource.c*/
-    int32 C_afs_GetCellByName;	/* afs_resource.c*/
-    int32 C_afs_NewCell;	/* afs_resource.c*/
-    int32 C_afs_GetUser;	/* afs_resource.c*/
-    int32 C_afs_PutUser;	/* afs_resource.c*/
-    int32 C_afs_SetPrimary;	/* afs_resource.c*/
-    int32 C_CheckVLDB;	/* afs_resource.c*/
-    int32 C_afs_GetVolume;	/* afs_resource.c*/
-    int32 C_afs_GetVolumeByName;	/* afs_resource.c*/
-    int32 C_InstallVolumeEntry;	/* afs_resource.c*/
-    int32 C_InstallVolumeInfo;	/* afs_resource.c*/
-    int32 C_afs_FindServer;	/* afs_resource.c*/
-    int32 C_afs_PutVolume;	/* afs_resource.c*/
-    int32 C_afs_random;	/* afs_resource.c*/
-    int32 C_ranstage;	/* afs_resource.c*/
-    int32 C_RemoveUserConns;	/* afs_resource.c*/
-    int32 C_afs_MarinerLog;	/* afs_resource.c*/
-    int32 C_afs_vtoi;	/* afs_resource.c*/
-    int32 C_afs_GetServer;	/* afs_resource.c*/
-    int32 C_afs_SortServers;	/* afs_resource.c*/
-    int32 C_afs_Conn;	/* afs_resource.c*/
-    int32 C_afs_ConnByHost;	/* afs_resource.c*/
-    int32 C_afs_ConnByMHosts;	/* afs_resource.c*/
-    int32 C_afs_Analyze;	/* afs_resource.c*/
-    int32 C_afs_PutConn;	/* afs_resource.c*/
-    int32 C_afs_ResetVolumeInfo;	/* afs_resource.c*/
-    int32 C_StartLogFile;	/* afs_resource.c*/
-    int32 C_afs_SetLogFile;	/* afs_resource.c*/
-    int32 C_EndLogFile;	/* afs_resource.c*/
-    int32 C_afs_dp;	/* afs_resource.c*/
-    int32 C_fprf;	/* afs_resource.c*/
-    int32 C_fprint;	/* afs_resource.c*/
-    int32 C_fprintn;	/* afs_resource.c*/
-    int32 C_afs_CheckLocks;	/* afs_resource.c*/
-    int32 C_puttofile;	/* afs_resource.c*/
-    int32 C_shutdown_AFS;	/* afs_resource.c*/
-    int32 C_afs_CheckCacheResets;	/* afs_resource.c*/
-    int32 C_afs_GCUserData;	/* afs_resource.c*/
-    int32 C_VSleep;	/* afs_resource.c*/
-    int32 C_afs_CheckCode;	/* afs_resource.c*/
-    int32 C_afs_CopyError;	/* afs_resource.c*/
-    int32 C_afs_FinalizeReq;	/* afs_resource.c*/
-    int32 C_afs_cv2string;	/* afs_resource.c*/
-    int32 C_afs_FindVolCache;	/* afs_resource.c*/
-    int32 C_afs_GetVolCache;	/* afs_resource.c*/
-    int32 C_afs_GetVolSlot;	/* afs_resource.c*/
-    int32 C_afs_WriteVolCache;	/* afs_resource.c*/
-    int32 C_afs_UFSGetVolSlot;	/* afs_resource.c*/
-    int32 C_afs_CheckVolumeNames;	/* afs_resource.c*/
-    int32 C_afs_MemGetVolSlot;	/* afs_resource.c*/
-    int32 C_print_internet_address;	/* afs_resource.c*/
-    int32 C_CheckVLServer;	/* afs_resource.c*/
-    int32 C_HaveCallBacksFrom;	/* afs_resource.c*/
-    int32 C_ServerDown;	/* afs_resource.c*/
-    int32 C_afs_CheckServers;	/* afs_resource.c*/
-    int32 C_afs_AddToMean;	/* afs_stat.c*/
-    int32 C_afs_GetCMStat;	/* afs_stat.c*/
-    int32 C_afs_getpage;	/* afs_sun_subr.c*/
-    int32 C_afs_putpage;	/* afs_sun_subr.c*/
-    int32 C_afs_nfsrdwr;	/* afs_sun_subr.c*/
-    int32 C_afs_map;	/* afs_sun_subr.c*/
-    int32 C_afs_cmp;	/* afs_sun_subr.c*/
-    int32 C_afs_cntl;	/* afs_sun_subr.c*/
-    int32 C_afs_dump;	/* afs_sun_subr.c*/
-    int32 C_afs_realvp;	/* afs_sun_subr.c*/
-    int32 C_afs_PageLeft;	/* afs_sun_subr.c*/
-    int32 C_afsinit;	/* afs_vfsops.c*/
-    int32 C_afs_mount;	/* afs_vfsops.c*/
-    int32 C_afs_unmount;	/* afs_vfsops.c*/
-    int32 C_afs_root;	/* afs_vfsops.c*/
-    int32 C_afs_statfs;	/* afs_vfsops.c*/
-    int32 C_afs_sync;	/* afs_vfsops.c*/
-    int32 C_afs_vget;	/* afs_vfsops.c*/
-    int32 C_afs_mountroot;	/* afs_vfsops.c*/
-    int32 C_afs_swapvp;	/* afs_vfsops.c*/
-    int32 C_afs_AddMarinerName;	/* afs_vnodeops.c*/
-    int32 C_afs_setpag;	/* afs_vnodeops.c*/
-    int32 C_genpag;	/* afs_vnodeops.c*/
-    int32 C_getpag;	/* afs_vnodeops.c*/
-    int32 C_afs_GetMariner;	/* afs_vnodeops.c*/
-    int32 C_afs_badop;	/* afs_vnodeops.c*/
-    int32 C_afs_index;	/* afs_vnodeops.c*/
-    int32 C_afs_noop;	/* afs_vnodeops.c*/
-    int32 C_afs_open;	/* afs_vnodeops.c*/
-    int32 C_afs_closex;	/* afs_vnodeops.c*/
-    int32 C_afs_close;	/* afs_vnodeops.c*/
-    int32 C_afs_MemWrite;	/* afs_vnodeops.c*/
-    int32 C_afs_write;	/* afs_vnodeops.c*/
-    int32 C_afs_UFSWrite;	/* afs_vnodeops.c*/
-    int32 C_afs_rdwr;	/* afs_vnodeops.c*/
-    int32 C_afs_MemRead;	/* afs_vnodeops.c*/
-    int32 C_afs_read;	/* afs_vnodeops.c*/
-    int32 C_FIXUPSTUPIDINODE;	/* afs_vnodeops.c*/
-    int32 C_afs_UFSRead;	/* afs_vnodeops.c*/
-    int32 C_afs_CopyOutAttrs;	/* afs_vnodeops.c*/
-    int32 C_afs_getattr;	/* afs_vnodeops.c*/
-    int32 C_afs_VAttrToAS;	/* afs_vnodeops.c*/
-    int32 C_afs_setattr;	/* afs_vnodeops.c*/
-    int32 C_EvalMountPoint;	/* afs_vnodeops.c*/
-    int32 C_afs_access;	/* afs_vnodeops.c*/
-    int32 C_ENameOK;	/* afs_vnodeops.c*/
-    int32 C_HandleAtName;	/* afs_vnodeops.c*/
-    int32 C_getsysname;	/* afs_vnodeops.c*/
-    int32 C_strcat;	/* afs_vnodeops.c*/
-    int32 C_afs_lookup;	/* afs_vnodeops.c*/
-    int32 C_afs_create;	/* afs_vnodeops.c*/
-    int32 C_afs_LocalHero;	/* afs_vnodeops.c*/
-    int32 C_FetchWholeEnchilada;	/* afs_vnodeops.c*/
-    int32 C_afs_remove;	/* afs_vnodeops.c*/
-    int32 C_afs_link;	/* afs_vnodeops.c*/
-    int32 C_afs_rename;	/* afs_vnodeops.c*/
-    int32 C_afs_InitReq;	/* afs_vnodeops.c*/
-    int32 C_afs_mkdir;	/* afs_vnodeops.c*/
-    int32 C_BlobScan;	/* afs_vnodeops.c*/
-    int32 C_afs_rmdir;	/* afs_vnodeops.c*/
-    int32 C_RecLen;	/* afs_vnodeops.c*/
-    int32 C_RoundToInt;	/* afs_vnodeops.c*/
-    int32 C_afs_readdir_with_offlist;	/* afs_vnodeops.c*/
-    int32 C_DIRSIZ_LEN;	/* afs_vnodeops.c*/
-    int32 C_afs_readdir_move;	/* afs_vnodeops.c*/
-    int32 C_afs_readdir_iter;	/* afs_vnodeops.c*/
-    int32 C_HandleFlock;	/* afs_vnodeops.c*/
-    int32 C_afs_readdir;	/* afs_vnodeops.c*/
-    int32 C_afs_symlink;	/* afs_vnodeops.c*/
-    int32 C_afs_HandleLink;	/* afs_vnodeops.c*/
-    int32 C_afs_MemHandleLink;	/* afs_vnodeops.c*/
-    int32 C_afs_UFSHandleLink;	/* afs_vnodeops.c*/
-    int32 C_afs_readlink;	/* afs_vnodeops.c*/
-    int32 C_afs_fsync;	/* afs_vnodeops.c*/
-    int32 C_afs_inactive;	/* afs_vnodeops.c*/
-    int32 C_afs_ustrategy;	/* afs_vnodeops.c*/
-    int32 C_afs_bread;	/* afs_vnodeops.c*/
-    int32 C_afs_brelse;	/* afs_vnodeops.c*/
-    int32 C_afs_bmap;	/* afs_vnodeops.c*/
-    int32 C_afs_fid;	/* afs_vnodeops.c*/
-    int32 C_afs_strategy;	/* afs_vnodeops.c*/
-    int32 C_afs_FakeClose;	/* afs_vnodeops.c*/
-    int32 C_afs_FakeOpen;	/* afs_vnodeops.c*/
-    int32 C_afs_StoreOnLastReference;	/* afs_vnodeops.c*/
-    int32 C_afs_GetAccessBits;	/* afs_vnodeops.c*/
-    int32 C_afs_AccessOK;	/* afs_vnodeops.c*/
-    int32 C_shutdown_vnodeops;	/* afs_vnodeops.c*/
-    int32 C_afsio_copy;	/* afs_vnodeops.c*/
-    int32 C_afsio_trim;	/* afs_vnodeops.c*/
-    int32 C_afs_page_read;	/* afs_vnodeops.c*/
-    int32 C_afs_page_write;	/* afs_vnodeops.c*/
-    int32 C_afsio_skip;	/* afs_vnodeops.c*/
-    int32 C_afs_read1dir;	/* afs_vnodeops.c*/
-    int32 C_afs_get_groups_from_pag;	/* afs_vnodeops.c*/
-    int32 C_afs_get_pag_from_groups;	/* afs_vnodeops.c*/
-    int32 C_PagInCred;	/* afs_vnodeops.c*/
-    int32 C_afs_getgroups;	/* afs_vnodeops.c*/
-    int32 C_setpag;	/* afs_vnodeops.c*/
-    int32 C_afs_setgroups;	/* afs_vnodeops.c*/
-    int32 C_afs_page_in;	/* afs_vnodeops.c*/
-    int32 C_afs_page_out;	/* afs_vnodeops.c*/
-    int32 C_AddPag;	/* afs_vnodeops.c*/
-    int32 C_afs_AdvanceFD;	/* afs_vnodeops.c*/
-    int32 C_afs_lockf;	/* afs_vnodeops.c*/
-    int32 C_afs_xsetgroups;	/* afs_vnodeops.c*/
-    int32 C_afs_nlinks;	/* afs_vnodeops.c*/
-    int32 C_DoLockWarning;	/* afs_vnodeops.c*/
-    int32 C_afs_lockctl;	/* afs_vnodeops.c*/
-    int32 C_afs_xflock;	/* afs_vnodeops.c*/
-    int32 C_PSetSPrefs;	/* afs_pioctl.c*/
-    int32 C_PGetSPrefs;	/* afs_pioctl.c*/
-    int32 C_afs_warn;     /* afs_resource.c */
-    int32 C_afs_warnuser; /* afs_resource.c */
-    int32 C_afs_pagein;	/* afs_hp_subr.c*/
-    int32 C_afs_pageout;	/* afs_hp_subr.c*/
-    int32 C_afs_hp_strategy;	/* afs_hp_subr.c*/
-    int32 C_PGetCPrefs;         /* afs_pioctl.c */
-    int32 C_PSetCPrefs;		/* afs_pioctl.c */
-    int32 C_SRXAFSCB_WhoAreYou;	/* afs_callback.c*/
-    int32 C_afs_DiscardDCache;	/* afs_dcache.c*/
-    int32 C_afs_FreeDiscardedDCache;	/* afs_dcache.c*/
-    int32 C_afs_MaybeFreeDiscardedDCache; /* afs_dcache.c*/
-    int32 C_PFlushMount;	/* afs_pioctl.c */
+    afs_int32 C_afs_Daemon;	/* afs_daemons.c*/
+    afs_int32 C_afs_CheckRootVolume;	/* afs_daemons.c*/
+    afs_int32 C_BPath;	        /* afs_daemons.c*/
+    afs_int32 C_BPrefetch;	/* afs_daemons.c*/
+    afs_int32 C_BStore;	/* afs_daemons.c*/
+    afs_int32 C_afs_BBusy;	/* afs_daemons.c*/
+    afs_int32 C_afs_BQueue;	/* afs_daemons.c*/
+    afs_int32 C_afs_BRelease;	/* afs_daemons.c*/
+    afs_int32 C_afs_BackgroundDaemon;	/* afs_daemons.c*/
+    afs_int32 C_shutdown_daemons;	/* afs_daemons.c*/
+    afs_int32 C_exporter_add;	/* afs_exporter.c*/
+    afs_int32 C_exporter_find;	/* afs_exporter.c*/
+    afs_int32 C_afs_gfs_kalloc;	/* afs_gfs_subr.c*/
+    afs_int32 C_IsAfsVnode;	/* afs_gfs_subr.c*/
+    afs_int32 C_SetAfsVnode;	/* afs_gfs_subr.c*/
+    afs_int32 C_afs_gfs_kfree;	/* afs_gfs_subr.c*/
+    afs_int32 C_gop_lookupname;	/* afs_gfs_subr.c*/
+    afs_int32 C_gfsvop_getattr;	/* afs_gfs_subr.c*/
+    afs_int32 C_gfsvop_rdwr;	/* afs_gfs_subr.c*/
+    afs_int32 C_afs_uniqtime;	/* afs_gfs_subr.c*/
+    afs_int32 C_gfs_vattr_null;	/* afs_gfs_subr.c*/
+    afs_int32 C_afs_lock;	/* afs_gfsops.c*/
+    afs_int32 C_afs_unlock;	/* afs_gfsops.c*/
+    afs_int32 C_afs_update;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gclose;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gopen;	/* afs_gfsops.c*/
+    afs_int32 C_afs_greadlink;	/* afs_gfsops.c*/
+    afs_int32 C_afs_select;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gbmap;	/* afs_gfsops.c*/
+    afs_int32 C_afs_getfsdata;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gsymlink;	/* afs_gfsops.c*/
+    afs_int32 C_afs_namei;	/* afs_gfsops.c*/
+    afs_int32 C_printgnode;	/* afs_gfsops.c*/
+    afs_int32 C_HaveGFSLock;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gmount;	/* afs_gfsops.c*/
+    afs_int32 C_AddGFSLock;	/* afs_gfsops.c*/
+    afs_int32 C_RemoveGFSLock;	/* afs_gfsops.c*/
+    afs_int32 C_afs_grlock;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gumount;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gget;	/* afs_gfsops.c*/
+    afs_int32 C_afs_glink;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gmkdir;	/* afs_gfsops.c*/
+    afs_int32 C_afs_sbupdate;	/* afs_gfsops.c*/
+    afs_int32 C_afs_unlink;	/* afs_gfsops.c*/
+    afs_int32 C_afs_grmdir;	/* afs_gfsops.c*/
+    afs_int32 C_afs_makenode;	/* afs_gfsops.c*/
+    afs_int32 C_afs_grename;	/* afs_gfsops.c*/
+    afs_int32 C_afs_rele;	/* afs_gfsops.c*/
+    afs_int32 C_afs_syncgp;	/* afs_gfsops.c*/
+    afs_int32 C_afs_getval;	/* afs_gfsops.c*/
+    afs_int32 C_afs_gfshack;	/* afs_gfsops.c*/
+    afs_int32 C_afs_trunc;	/* afs_gfsops.c*/
+    afs_int32 C_afs_rwgp;	/* afs_gfsops.c*/
+    afs_int32 C_afs_stat;	/* afs_gfsops.c*/
+    afs_int32 C_afsc_link;	/* afs_hp_subr.c*/
+    afs_int32 C_hpsobind;	/* afs_hp_subr.c*/
+    afs_int32 C_hpsoclose;	/* afs_hp_subr.c*/
+    afs_int32 C_hpsocreate;	/* afs_hp_subr.c*/
+    afs_int32 C_hpsoreserve;	/* afs_hp_subr.c*/
+    afs_int32 C_afs_vfs_mount;	/* afs_hp_subr.c*/
+    afs_int32 C_devtovfs;	/* afs_istuff.c*/
+    afs_int32 C_igetinode;	/* afs_istuff.c*/
+    afs_int32 C_afs_syscall_iopen;	/* afs_istuff.c*/
+    afs_int32 C_iopen;	/* afs_istuff.c*/
+    afs_int32 C_afs_syscall_iincdec;	/* afs_istuff.c*/
+    afs_int32 C_afs_syscall_ireadwrite;	/* afs_istuff.c*/
+    afs_int32 C_iincdec;	/* afs_istuff.c*/
+    afs_int32 C_ireadwrite;	/* afs_istuff.c*/
+    afs_int32 C_oiread;	/* afs_istuff.c*/
+    afs_int32 C_AHash;	/* afs_istuff.c*/
+    afs_int32 C_QTOA;	/* afs_istuff.c*/
+    afs_int32 C_afs_FindPartByDev;	/* afs_istuff.c*/
+    afs_int32 C_aux_init;	/* afs_istuff.c*/
+    afs_int32 C_afs_GetNewPart;	/* afs_istuff.c*/
+    afs_int32 C_afs_InitAuxVolFile;	/* afs_istuff.c*/
+    afs_int32 C_afs_CreateAuxEntry;	/* afs_istuff.c*/
+    afs_int32 C_afs_GetAuxSlot;	/* afs_istuff.c*/
+    afs_int32 C_afs_GetDownAux;	/* afs_istuff.c*/
+    afs_int32 C_afs_FlushAuxCache;	/* afs_istuff.c*/
+    afs_int32 C_afs_GetAuxInode;	/* afs_istuff.c*/
+    afs_int32 C_afs_PutAuxInode;	/* afs_istuff.c*/
+    afs_int32 C_afs_ReadAuxInode;	/* afs_istuff.c*/
+    afs_int32 C_afs_WriteAuxInode;	/* afs_istuff.c*/
+    afs_int32 C_afs_auxcall;	/* afs_istuff.c*/
+    afs_int32 C_tmpdbg_auxtbl;	/* afs_istuff.c*/
+    afs_int32 C_tmpdbg_parttbl;	/* afs_istuff.c*/
+    afs_int32 C_idec;	/* afs_istuff.c*/
+    afs_int32 C_iinc;	/* afs_istuff.c*/
+    afs_int32 C_iread;	/* afs_istuff.c*/
+    afs_int32 C_iwrite;	/* afs_istuff.c*/
+    afs_int32 C_getinode;	/* afs_istuff.c*/
+    afs_int32 C_trygetfs;	/* afs_istuff.c*/
+    afs_int32 C_iforget;	/* afs_istuff.c*/
+    afs_int32 C_afs_syscall_icreate;	/* afs_istuff.c*/
+    afs_int32 C_icreate;	/* afs_istuff.c*/
+    afs_int32 C_Lock_Init;	/* afs_lock.c*/
+    afs_int32 C_Lock_Obtain;	/* afs_lock.c*/
+    afs_int32 C_Lock_ReleaseR;	/* afs_lock.c*/
+    afs_int32 C_Lock_ReleaseW;	/* afs_lock.c*/
+    afs_int32 C_afs_BozonLock;	/* afs_lock.c*/
+    afs_int32 C_afs_BozonUnlock;	/* afs_lock.c*/
+    afs_int32 C_osi_SleepR;	/* afs_lock.c*/
+    afs_int32 C_osi_SleepS;	/* afs_lock.c*/
+    afs_int32 C_osi_SleepW;	/* afs_lock.c*/
+    afs_int32 C_osi_Sleep;		/* afs_lock */
+    afs_int32 C_afs_BozonInit;	/* afs_lock.c*/
+    afs_int32 C_afs_CheckBozonLock;	/* afs_lock.c*/
+    afs_int32 C_afs_CheckBozonLockBlocking;	/* afs_lock.c*/
+    afs_int32 C_xxxinit;	/* afs_main.c*/
+    afs_int32 C_KernelEntry;	/* afs_main.c*/
+    afs_int32 C_afs_InitMemCache;	/* afs_memcache.c*/
+    afs_int32 C_afs_LookupMCE;	/* afs_memcache.c*/
+    afs_int32 C_afs_MemReadBlk;	/* afs_memcache.c*/
+    afs_int32 C_afs_MemReadUIO;	/* afs_memcache.c*/
+    afs_int32 C_afs_MemWriteBlk;	/* afs_memcache.c*/
+    afs_int32 C_afs_MemCacheStoreProc;	/* afs_memcache.c*/
+    afs_int32 C_afs_MemCacheTruncate;	/* afs_memcache.c*/
+    afs_int32 C_afs_MemWriteUIO;	/* afs_memcache.c*/
+    afs_int32 C_afs_MemCacheFetchProc;	/* afs_memcache.c*/
+    afs_int32 C_afs_vnode_pager_create;	/* afs_next_aux.c*/
+    afs_int32 C_next_KernelEntry;	/* afs_next_subr.c*/
+    afs_int32 C_afs_GetNfsClientPag;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_FindNfsClientPag;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_PutNfsClientPag;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_nfsclient_reqhandler;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_nfsclient_GC;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_nfsclient_hold;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_nfsclient_stats;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_nfsclient_sysname;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_nfsclient_shutdown;	/* afs_nfsclnt.c*/
+    afs_int32 C_afs_rfs_readdir_fixup;	/* afs_nfssrv.c */
+    afs_int32 C_afs_rfs_dispatch;	/* afs_nfssrv.c*/
+    afs_int32 C_afs_xnfs_svc;	/* afs_nfssrv.c*/
+    afs_int32 C_afs_xdr_putrddirres;	/* afs_nfssrv.c*/
+    afs_int32 C_afs_rfs_readdir;	/* afs_nfssrv.c*/
+    afs_int32 C_afs_rfs_rddirfree;	/* afs_nfssrv.c*/
+    afs_int32 C_rfs_dupcreate;	/* afs_nfssrv.c*/
+    afs_int32 C_rfs_dupsetattr;	/* afs_nfssrv.c*/
+    afs_int32 C_Nfs2AfsCall;	/* afs_nfssrv.c*/
+    afs_int32 C_afs_sun_xuntext;	/* afs_osi.c*/
+    afs_int32 C_osi_Active;	/* afs_osi.c*/
+    afs_int32 C_osi_FlushPages;	/* afs_osi.c*/
+    afs_int32 C_osi_FlushText;	/* afs_osi.c*/
+    afs_int32 C_osi_CallProc;	/* afs_osi.c*/
+    afs_int32 C_osi_CancelProc;	/* afs_osi.c*/
+    afs_int32 C_osi_Invisible;	/* afs_osi.c*/
+    afs_int32 C_osi_Time;	/* afs_osi.c*/
+    afs_int32 C_osi_Alloc;	/* afs_osi.c*/
+    afs_int32 C_osi_SetTime;	/* afs_osi.c*/
+    afs_int32 C_osi_Dump;	/* afs_osi.c*/
+    afs_int32 C_osi_Free;	/* afs_osi.c*/
+    afs_int32 C_shutdown_osi;	/* afs_osi.c*/
+    afs_int32 C_osi_UFSOpen;	/* afs_osifile.c*/
+    afs_int32 C_osi_Close;	/* afs_osifile.c*/
+    afs_int32 C_osi_Stat;	/* afs_osifile.c*/
+    afs_int32 C_osi_Truncate;	/* afs_osifile.c*/
+    afs_int32 C_osi_Read;	/* afs_osifile.c*/
+    afs_int32 C_osi_Write;	/* afs_osifile.c*/
+    afs_int32 C_osi_MapStrategy;	/* afs_osifile.c*/
+    afs_int32 C_shutdown_osifile;	/* afs_osifile.c*/
+    afs_int32 C_osi_FreeLargeSpace;	/* afs_osinet.c*/
+    afs_int32 C_osi_FreeSmallSpace;	/* afs_osinet.c*/
+    afs_int32 C_pkt_iodone;	/* afs_osinet.c*/
+    afs_int32 C_shutdown_osinet;	/* afs_osinet.c*/
+    afs_int32 C_afs_cs;	/* afs_osinet.c*/
+    afs_int32 C_osi_AllocLargeSpace;	/* afs_osinet.c*/
+    afs_int32 C_osi_AllocSmallSpace;	/* afs_osinet.c*/
+    afs_int32 C_osi_CloseToTheEdge;	/* afs_osinet.c*/
+    afs_int32 C_osi_xgreedy;	/* afs_osinet.c*/
+    afs_int32 C_osi_FreeSocket;	/* afs_osinet.c*/
+    afs_int32 C_osi_NewSocket;	/* afs_osinet.c*/
+    afs_int32 C_trysblock;	/* afs_osinet.c*/
+    afs_int32 C_osi_NetSend;	/* afs_osinet.c*/
+    afs_int32 C_WaitHack;	/* afs_osinet.c*/
+    afs_int32 C_osi_CancelWait;	/* afs_osinet.c*/
+    afs_int32 C_osi_InitWaitHandle;	/* afs_osinet.c*/
+    afs_int32 C_osi_Wakeup;		/* afs_osinet.c*/
+    afs_int32 C_osi_Wait;	/* afs_osinet.c*/
+    afs_int32 C_dirp_Read;	/* afs_physio.c*/
+    afs_int32 C_dirp_SetCacheDev;	/* afs_physio.c*/
+    afs_int32 C_Die;	/* afs_physio.c*/
+    afs_int32 C_dirp_Cpy;	/* afs_physio.c*/
+    afs_int32 C_dirp_Eq;	/* afs_physio.c*/
+    afs_int32 C_dirp_Write;	/* afs_physio.c*/
+    afs_int32 C_dirp_Zap;	/* afs_physio.c*/
+    afs_int32 C_PSetVolumeStatus;	/* afs_pioctl.c*/
+    afs_int32 C_PFlush;	/* afs_pioctl.c*/
+    afs_int32 C_PNewStatMount;	/* afs_pioctl.c*/
+    afs_int32 C_PGetTokens;	/* afs_pioctl.c*/
+    afs_int32 C_PUnlog;	/* afs_pioctl.c*/
+    afs_int32 C_PCheckServers;	/* afs_pioctl.c*/
+    afs_int32 C_PMariner;	/* afs_pioctl.c*/
+    afs_int32 C_PCheckAuth;	/* afs_pioctl.c*/
+    afs_int32 C_PCheckVolNames;	/* afs_pioctl.c*/
+    afs_int32 C_PFindVolume;	/* afs_pioctl.c*/
+    afs_int32 C_Prefetch;	/* afs_pioctl.c*/
+    afs_int32 C_PGetCacheSize;	/* afs_pioctl.c*/
+    afs_int32 C_PRemoveCallBack;	/* afs_pioctl.c*/
+    afs_int32 C_PSetCacheSize;	/* afs_pioctl.c*/
+    afs_int32 C_PViceAccess;	/* afs_pioctl.c*/
+    afs_int32 C_PListCells;	/* afs_pioctl.c*/
+    afs_int32 C_PNewCell;	/* afs_pioctl.c*/
+    afs_int32 C_PRemoveMount;	/* afs_pioctl.c*/
+    afs_int32 C_HandleIoctl;	/* afs_pioctl.c*/
+    afs_int32 C__AFSIOCTL;	/* afs_pioctl.c*/
+    afs_int32 C__VALIDAFSIOCTL;	/* afs_pioctl.c*/
+    afs_int32 C_PGetCellStatus;	/* afs_pioctl.c*/
+    afs_int32 C_PSetCellStatus;	/* afs_pioctl.c*/
+    afs_int32 C_PVenusLogging;	/* afs_pioctl.c*/
+    afs_int32 C_PFlushVolumeData;	/* afs_pioctl.c*/
+    afs_int32 C_PSetSysName;	/* afs_pioctl.c*/
+    afs_int32 C_PExportAfs;	/* afs_pioctl.c*/
+    afs_int32 C_HandleClientContext;	/* afs_pioctl.c*/
+    afs_int32 C_afs_ioctl;	/* afs_pioctl.c*/
+    afs_int32 C_afs_xioctl;	/* afs_pioctl.c*/
+    afs_int32 C_afs_pioctl;	/* afs_pioctl.c*/
+    afs_int32 C_afs_syscall_pioctl;	/* afs_pioctl.c*/
+    afs_int32 C_HandlePioctl;	/* afs_pioctl.c*/
+    afs_int32 C_PGetAcl;	/* afs_pioctl.c*/
+    afs_int32 C_PGetFID;	/* afs_pioctl.c*/
+    afs_int32 C_PSetAcl;	/* afs_pioctl.c*/
+    afs_int32 C_PBogus;	/* afs_pioctl.c*/
+    afs_int32 C_PGetFileCell;	/* afs_pioctl.c*/
+    afs_int32 C_PGetWSCell;	/* afs_pioctl.c*/
+    afs_int32 C_PNoop;	/* afs_pioctl.c*/
+    afs_int32 C_PGetUserCell;	/* afs_pioctl.c*/
+    afs_int32 C_PSetTokens;	/* afs_pioctl.c*/
+    afs_int32 C_PGetVolumeStatus;	/* afs_pioctl.c*/
+    afs_int32 C_afs_ResetAccessCache;	/* afs_resource.c*/
+    afs_int32 C_afs_FindUser;	/* afs_resource.c*/
+    afs_int32 C_afs_ResetUserConns;	/* afs_resource.c*/
+    afs_int32 C_afs_ResourceInit;	/* afs_resource.c*/
+    afs_int32 C_afs_GetCell;	/* afs_resource.c*/
+    afs_int32 C_afs_GetCellByIndex;	/* afs_resource.c*/
+    afs_int32 C_afs_GetCellByName;	/* afs_resource.c*/
+    afs_int32 C_afs_NewCell;	/* afs_resource.c*/
+    afs_int32 C_afs_GetUser;	/* afs_resource.c*/
+    afs_int32 C_afs_PutUser;	/* afs_resource.c*/
+    afs_int32 C_afs_SetPrimary;	/* afs_resource.c*/
+    afs_int32 C_CheckVLDB;	/* afs_resource.c*/
+    afs_int32 C_afs_GetVolume;	/* afs_resource.c*/
+    afs_int32 C_afs_GetVolumeByName;	/* afs_resource.c*/
+    afs_int32 C_InstallVolumeEntry;	/* afs_resource.c*/
+    afs_int32 C_InstallVolumeInfo;	/* afs_resource.c*/
+    afs_int32 C_afs_FindServer;	/* afs_resource.c*/
+    afs_int32 C_afs_PutVolume;	/* afs_resource.c*/
+    afs_int32 C_afs_random;	/* afs_resource.c*/
+    afs_int32 C_ranstage;	/* afs_resource.c*/
+    afs_int32 C_RemoveUserConns;	/* afs_resource.c*/
+    afs_int32 C_afs_MarinerLog;	/* afs_resource.c*/
+    afs_int32 C_afs_vtoi;	/* afs_resource.c*/
+    afs_int32 C_afs_GetServer;	/* afs_resource.c*/
+    afs_int32 C_afs_SortServers;	/* afs_resource.c*/
+    afs_int32 C_afs_Conn;	/* afs_resource.c*/
+    afs_int32 C_afs_ConnByHost;	/* afs_resource.c*/
+    afs_int32 C_afs_ConnByMHosts;	/* afs_resource.c*/
+    afs_int32 C_afs_Analyze;	/* afs_resource.c*/
+    afs_int32 C_afs_PutConn;	/* afs_resource.c*/
+    afs_int32 C_afs_ResetVolumeInfo;	/* afs_resource.c*/
+    afs_int32 C_StartLogFile;	/* afs_resource.c*/
+    afs_int32 C_afs_SetLogFile;	/* afs_resource.c*/
+    afs_int32 C_EndLogFile;	/* afs_resource.c*/
+    afs_int32 C_afs_dp;	/* afs_resource.c*/
+    afs_int32 C_fprf;	/* afs_resource.c*/
+    afs_int32 C_fprint;	/* afs_resource.c*/
+    afs_int32 C_fprintn;	/* afs_resource.c*/
+    afs_int32 C_afs_CheckLocks;	/* afs_resource.c*/
+    afs_int32 C_puttofile;	/* afs_resource.c*/
+    afs_int32 C_shutdown_AFS;	/* afs_resource.c*/
+    afs_int32 C_afs_CheckCacheResets;	/* afs_resource.c*/
+    afs_int32 C_afs_GCUserData;	/* afs_resource.c*/
+    afs_int32 C_VSleep;	/* afs_resource.c*/
+    afs_int32 C_afs_CheckCode;	/* afs_resource.c*/
+    afs_int32 C_afs_CopyError;	/* afs_resource.c*/
+    afs_int32 C_afs_FinalizeReq;	/* afs_resource.c*/
+    afs_int32 C_afs_cv2string;	/* afs_resource.c*/
+    afs_int32 C_afs_FindVolCache;	/* afs_resource.c*/
+    afs_int32 C_afs_GetVolCache;	/* afs_resource.c*/
+    afs_int32 C_afs_GetVolSlot;	/* afs_resource.c*/
+    afs_int32 C_afs_WriteVolCache;	/* afs_resource.c*/
+    afs_int32 C_afs_UFSGetVolSlot;	/* afs_resource.c*/
+    afs_int32 C_afs_CheckVolumeNames;	/* afs_resource.c*/
+    afs_int32 C_afs_MemGetVolSlot;	/* afs_resource.c*/
+    afs_int32 C_print_internet_address;	/* afs_resource.c*/
+    afs_int32 C_CheckVLServer;	/* afs_resource.c*/
+    afs_int32 C_HaveCallBacksFrom;	/* afs_resource.c*/
+    afs_int32 C_ServerDown;	/* afs_resource.c*/
+    afs_int32 C_afs_CheckServers;	/* afs_resource.c*/
+    afs_int32 C_afs_AddToMean;	/* afs_stat.c*/
+    afs_int32 C_afs_GetCMStat;	/* afs_stat.c*/
+    afs_int32 C_afs_getpage;	/* afs_sun_subr.c*/
+    afs_int32 C_afs_putpage;	/* afs_sun_subr.c*/
+    afs_int32 C_afs_nfsrdwr;	/* afs_sun_subr.c*/
+    afs_int32 C_afs_map;	/* afs_sun_subr.c*/
+    afs_int32 C_afs_cmp;	/* afs_sun_subr.c*/
+    afs_int32 C_afs_cntl;	/* afs_sun_subr.c*/
+    afs_int32 C_afs_dump;	/* afs_sun_subr.c*/
+    afs_int32 C_afs_realvp;	/* afs_sun_subr.c*/
+    afs_int32 C_afs_PageLeft;	/* afs_sun_subr.c*/
+    afs_int32 C_afsinit;	/* afs_vfsops.c*/
+    afs_int32 C_afs_mount;	/* afs_vfsops.c*/
+    afs_int32 C_afs_unmount;	/* afs_vfsops.c*/
+    afs_int32 C_afs_root;	/* afs_vfsops.c*/
+    afs_int32 C_afs_statfs;	/* afs_vfsops.c*/
+    afs_int32 C_afs_sync;	/* afs_vfsops.c*/
+    afs_int32 C_afs_vget;	/* afs_vfsops.c*/
+    afs_int32 C_afs_mountroot;	/* afs_vfsops.c*/
+    afs_int32 C_afs_swapvp;	/* afs_vfsops.c*/
+    afs_int32 C_afs_AddMarinerName;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_setpag;	/* afs_vnodeops.c*/
+    afs_int32 C_genpag;	/* afs_vnodeops.c*/
+    afs_int32 C_getpag;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_GetMariner;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_badop;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_index;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_noop;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_open;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_closex;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_close;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_MemWrite;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_write;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_UFSWrite;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_rdwr;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_MemRead;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_read;	/* afs_vnodeops.c*/
+    afs_int32 C_FIXUPSTUPIDINODE;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_UFSRead;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_CopyOutAttrs;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_getattr;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_VAttrToAS;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_setattr;	/* afs_vnodeops.c*/
+    afs_int32 C_EvalMountPoint;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_access;	/* afs_vnodeops.c*/
+    afs_int32 C_ENameOK;	/* afs_vnodeops.c*/
+    afs_int32 C_HandleAtName;	/* afs_vnodeops.c*/
+    afs_int32 C_getsysname;	/* afs_vnodeops.c*/
+    afs_int32 C_strcat;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_lookup;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_create;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_LocalHero;	/* afs_vnodeops.c*/
+    afs_int32 C_FetchWholeEnchilada;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_remove;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_link;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_rename;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_InitReq;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_mkdir;	/* afs_vnodeops.c*/
+    afs_int32 C_BlobScan;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_rmdir;	/* afs_vnodeops.c*/
+    afs_int32 C_RecLen;	/* afs_vnodeops.c*/
+    afs_int32 C_RoundToInt;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_readdir_with_offlist;	/* afs_vnodeops.c*/
+    afs_int32 C_DIRSIZ_LEN;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_readdir_move;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_readdir_iter;	/* afs_vnodeops.c*/
+    afs_int32 C_HandleFlock;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_readdir;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_symlink;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_HandleLink;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_MemHandleLink;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_UFSHandleLink;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_readlink;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_fsync;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_inactive;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_ustrategy;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_bread;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_brelse;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_bmap;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_fid;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_strategy;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_FakeClose;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_FakeOpen;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_StoreOnLastReference;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_GetAccessBits;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_AccessOK;	/* afs_vnodeops.c*/
+    afs_int32 C_shutdown_vnodeops;	/* afs_vnodeops.c*/
+    afs_int32 C_afsio_copy;	/* afs_vnodeops.c*/
+    afs_int32 C_afsio_trim;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_page_read;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_page_write;	/* afs_vnodeops.c*/
+    afs_int32 C_afsio_skip;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_read1dir;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_get_groups_from_pag;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_get_pag_from_groups;	/* afs_vnodeops.c*/
+    afs_int32 C_PagInCred;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_getgroups;	/* afs_vnodeops.c*/
+    afs_int32 C_setpag;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_setgroups;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_page_in;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_page_out;	/* afs_vnodeops.c*/
+    afs_int32 C_AddPag;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_AdvanceFD;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_lockf;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_xsetgroups;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_nlinks;	/* afs_vnodeops.c*/
+    afs_int32 C_DoLockWarning;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_lockctl;	/* afs_vnodeops.c*/
+    afs_int32 C_afs_xflock;	/* afs_vnodeops.c*/
+    afs_int32 C_PSetSPrefs;	/* afs_pioctl.c*/
+    afs_int32 C_PGetSPrefs;	/* afs_pioctl.c*/
+    afs_int32 C_afs_warn;     /* afs_resource.c */
+    afs_int32 C_afs_warnuser; /* afs_resource.c */
+    afs_int32 C_afs_pagein;	/* afs_hp_subr.c*/
+    afs_int32 C_afs_pageout;	/* afs_hp_subr.c*/
+    afs_int32 C_afs_hp_strategy;	/* afs_hp_subr.c*/
+    afs_int32 C_PGetCPrefs;         /* afs_pioctl.c */
+    afs_int32 C_PSetCPrefs;		/* afs_pioctl.c */
+    afs_int32 C_SRXAFSCB_WhoAreYou;	/* afs_callback.c*/
+    afs_int32 C_afs_DiscardDCache;	/* afs_dcache.c*/
+    afs_int32 C_afs_FreeDiscardedDCache;	/* afs_dcache.c*/
+    afs_int32 C_afs_MaybeFreeDiscardedDCache; /* afs_dcache.c*/
+    afs_int32 C_PFlushMount;	/* afs_pioctl.c */
+    afs_int32 C_SRXAFSCB_GetServerPrefs;	/* afs_callback.c*/
+    afs_int32 C_SRXAFSCB_GetCellServDB;	/* afs_callback.c*/
+    afs_int32 C_SRXAFSCB_GetLocalCell;	/* afs_callback.c*/
+    afs_int32 C_afs_MarshallCacheConfig;	/* afs_callback.c*/
+    afs_int32 C_SRXAFSCB_GetCacheConfig;	/* afs_callback.c*/
 };
 
 struct afs_CMMeanStats {
@@ -684,24 +689,24 @@ extern struct afs_CMStats afs_cmstats;
  * and those outside the client's cell.
  */
 struct afs_stats_SrvUpDownInfo {
-    int32 numTtlRecords;		/*# records, active or inactive*/
-    int32 numUpRecords;		/*# (active) records currently marked up*/
-    int32 numDownRecords;	/*# (active) records currently marked down*/
-    int32 sumOfRecordAges;	/*Sum of server record lifetimes*/
-    int32 ageOfYoungestRecord;	/*Age of youngest server record*/
-    int32 ageOfOldestRecord;	/*Age of oldest server record*/
-    int32 numDowntimeIncidents;	/*Number of (completed) downtime incidents*/
-    int32 numRecordsNeverDown;	/*Number of server records never marked down*/
-    int32 maxDowntimesInARecord;	/*Max downtimes seen by any record*/
-    int32 sumOfDowntimes;	/*Sum of all (completed) downtimes, in seconds*/
-    int32 shortestDowntime;	/*Shortest downtime, in seconds*/
-    int32 longestDowntime;	/*Longest downtime, in seconds*/
+    afs_int32 numTtlRecords;		/*# records, active or inactive*/
+    afs_int32 numUpRecords;		/*# (active) records currently marked up*/
+    afs_int32 numDownRecords;	/*# (active) records currently marked down*/
+    afs_int32 sumOfRecordAges;	/*Sum of server record lifetimes*/
+    afs_int32 ageOfYoungestRecord;	/*Age of youngest server record*/
+    afs_int32 ageOfOldestRecord;	/*Age of oldest server record*/
+    afs_int32 numDowntimeIncidents;	/*Number of (completed) downtime incidents*/
+    afs_int32 numRecordsNeverDown;	/*Number of server records never marked down*/
+    afs_int32 maxDowntimesInARecord;	/*Max downtimes seen by any record*/
+    afs_int32 sumOfDowntimes;	/*Sum of all (completed) downtimes, in seconds*/
+    afs_int32 shortestDowntime;	/*Shortest downtime, in seconds*/
+    afs_int32 longestDowntime;	/*Longest downtime, in seconds*/
     /*
      * Arrays keeping distributions on downtime durations and number of
      * downtime incidents.
      */
-    int32 downDurations[AFS_STATS_NUM_DOWNTIME_DURATION_BUCKETS];
-    int32 downIncidents[AFS_STATS_NUM_DOWNTIME_INCIDENTS_BUCKETS];
+    afs_int32 downDurations[AFS_STATS_NUM_DOWNTIME_DURATION_BUCKETS];
+    afs_int32 downIncidents[AFS_STATS_NUM_DOWNTIME_INCIDENTS_BUCKETS];
 };
 
 /*
@@ -714,67 +719,67 @@ struct afs_stats_SrvUpDownInfo {
  * Performance numbers for the Cache Manager.
  */
 struct afs_stats_CMPerf {
-    int32 numPerfCalls;		/*# of performance calls rcvd*/
+    afs_int32 numPerfCalls;		/*# of performance calls rcvd*/
 
-    int32 epoch;			/*Cache Manager epoch time*/
-    int32 numCellsVisible;	/*# cells we know about*/
-    int32 numCellsContacted;	/*# cells corresponded with*/
-    int32 dlocalAccesses;	/*# data accesses to files within cell*/
-    int32 vlocalAccesses;	/*# stat accesses to files within cell*/
-    int32 dremoteAccesses;	/*# data accesses to files outside of cell*/
-    int32 vremoteAccesses;	/*# stat accesses to files outside of cell*/
-    int32 cacheNumEntries;	/*# cache entries*/
-    int32 cacheBlocksTotal;	/*# (1K) blocks configured for cache*/
-    int32 cacheBlocksInUse;	/*# cache blocks actively in use*/
-    int32 cacheBlocksOrig;	/*# cache blocks at bootup*/
-    int32 cacheMaxDirtyChunks;	/*Max # dirty cache chunks tolerated*/
-    int32 cacheCurrDirtyChunks;	/*Current # dirty cache chunks*/
-    int32 dcacheHits;		/*# data files found in local cache*/
-    int32 vcacheHits;		/*# stat entries found in local cache*/
-    int32 dcacheMisses;		/*# data files NOT found in local cache*/
-    int32 vcacheMisses;		/*# stat entries NOT found in local cache*/
-    int32 cacheFlushes;		/*# files flushed from cache*/
-    int32 cacheFilesReused;	/*# cache files reused*/
-    int32 ProtServerAddr;	/*Addr of Protection Server used*/
-    int32 vcacheXAllocs;		/* Additionally allocated vcaches */
-    int32 dcacheXAllocs;		/* Additionally allocated dcaches */
+    afs_int32 epoch;			/*Cache Manager epoch time*/
+    afs_int32 numCellsVisible;	/*# cells we know about*/
+    afs_int32 numCellsContacted;	/*# cells corresponded with*/
+    afs_int32 dlocalAccesses;	/*# data accesses to files within cell*/
+    afs_int32 vlocalAccesses;	/*# stat accesses to files within cell*/
+    afs_int32 dremoteAccesses;	/*# data accesses to files outside of cell*/
+    afs_int32 vremoteAccesses;	/*# stat accesses to files outside of cell*/
+    afs_int32 cacheNumEntries;	/*# cache entries*/
+    afs_int32 cacheBlocksTotal;	/*# (1K) blocks configured for cache*/
+    afs_int32 cacheBlocksInUse;	/*# cache blocks actively in use*/
+    afs_int32 cacheBlocksOrig;	/*# cache blocks at bootup*/
+    afs_int32 cacheMaxDirtyChunks;	/*Max # dirty cache chunks tolerated*/
+    afs_int32 cacheCurrDirtyChunks;	/*Current # dirty cache chunks*/
+    afs_int32 dcacheHits;		/*# data files found in local cache*/
+    afs_int32 vcacheHits;		/*# stat entries found in local cache*/
+    afs_int32 dcacheMisses;		/*# data files NOT found in local cache*/
+    afs_int32 vcacheMisses;		/*# stat entries NOT found in local cache*/
+    afs_int32 cacheFlushes;		/*# files flushed from cache*/
+    afs_int32 cacheFilesReused;	/*# cache files reused*/
+    afs_int32 ProtServerAddr;	/*Addr of Protection Server used*/
+    afs_int32 vcacheXAllocs;		/* Additionally allocated vcaches */
+    afs_int32 dcacheXAllocs;		/* Additionally allocated dcaches */
 
     /*
      * Some stats related to our buffer package
      */
-    int32 bufAlloced;		/* # of buffers allocated by afs */
-    int32 bufHits;		/* # of pages found on buffer cache */
-    int32 bufMisses;		/* # of pages NOT found on buffer cache */
-    int32 bufFlushDirty;		/* # of cached dirty bufs flushed because all busy */
+    afs_int32 bufAlloced;		/* # of buffers allocated by afs */
+    afs_int32 bufHits;		/* # of pages found on buffer cache */
+    afs_int32 bufMisses;		/* # of pages NOT found on buffer cache */
+    afs_int32 bufFlushDirty;		/* # of cached dirty bufs flushed because all busy */
      
     /*
      * Stats that keep track of all allocated/used objects in CM
      */
-    int32 LargeBlocksActive;	/* # of currently used large free pool entries */
-    int32 LargeBlocksAlloced;	/* # of allocated large free pool entries */
-    int32 SmallBlocksActive;	/* # of currently used small free pool entries */
-    int32 SmallBlocksAlloced;	/* # of allocated used small free pool entries */
-    int32 MediumBlocksActive;	/* # of currently used medium free pool entries */
-    int32 MediumBlocksAlloced;	/* # of allocated used medium free pool entries */
-    int32 OutStandingMemUsage;	/* # of alloced memory */
-    int32 OutStandingAllocs;	/* Outstanding osi_allocs (no osi_frees yet) */
-    int32 CallBackAlloced;	/* # callback structures allocated */
-    int32 CallBackFlushes;	/* # callback flush operations performed */
+    afs_int32 LargeBlocksActive;	/* # of currently used large free pool entries */
+    afs_int32 LargeBlocksAlloced;	/* # of allocated large free pool entries */
+    afs_int32 SmallBlocksActive;	/* # of currently used small free pool entries */
+    afs_int32 SmallBlocksAlloced;	/* # of allocated used small free pool entries */
+    afs_int32 MediumBlocksActive;	/* # of currently used medium free pool entries */
+    afs_int32 MediumBlocksAlloced;	/* # of allocated used medium free pool entries */
+    afs_int32 OutStandingMemUsage;	/* # of alloced memory */
+    afs_int32 OutStandingAllocs;	/* Outstanding osi_allocs (no osi_frees yet) */
+    afs_int32 CallBackAlloced;	/* # callback structures allocated */
+    afs_int32 CallBackFlushes;	/* # callback flush operations performed */
 
     /*
      * Accounting stats having to do with the server table & records.
      */
-    int32 srvRecords;		/*# of servers currently on record*/
-    int32 srvRecordsHWM;		/* Server record high water mark */
-    int32 srvNumBuckets;		/* Num server hash chain buckets */
-    int32 srvMaxChainLength;	/* Max server hash chain length */
-    int32 srvMaxChainLengthHWM;	/* Server hash chain high water mark */
+    afs_int32 srvRecords;		/*# of servers currently on record*/
+    afs_int32 srvRecordsHWM;		/* Server record high water mark */
+    afs_int32 srvNumBuckets;		/* Num server hash chain buckets */
+    afs_int32 srvMaxChainLength;	/* Max server hash chain length */
+    afs_int32 srvMaxChainLengthHWM;	/* Server hash chain high water mark */
 
     /*
      * Stats having to do with the systype upon which the Cache Manager
      * is running.
      */
-    int32 sysName_ID;		/*Sysname ID for host hardware*/
+    afs_int32 sysName_ID;		/*Sysname ID for host hardware*/
 
     /*
      * Stats recording downtime characteristics for each File Server and Volume
@@ -784,13 +789,13 @@ struct afs_stats_CMPerf {
     struct afs_stats_SrvUpDownInfo fs_UpDown[2];
     struct afs_stats_SrvUpDownInfo vl_UpDown[2];
 
-    u_int32 cbloops;
-    u_int32 osiread_efaults;
-    int32 cacheBlocksDiscarded;	/*# cache blocks free but not truncated */
+    afs_uint32 cbloops;
+    afs_uint32 osiread_efaults;
+    afs_int32 cacheBlocksDiscarded;	/*# cache blocks free but not truncated */
     /*
      * Spares for future expansion.
      */
-    int32 spare[13];		/*Spares*/
+    afs_int32 spare[13];		/*Spares*/
 };
 
 
@@ -849,8 +854,8 @@ struct afs_stats_CMPerf {
  * Record to track timing numbers for each Cache Manager RPC operation.
  */
 struct afs_stats_opTimingData {
-    int32 numOps;			/*Number of operations executed*/
-    int32 numSuccesses;			/*Number of successful ops*/
+    afs_int32 numOps;			/*Number of operations executed*/
+    afs_int32 numSuccesses;			/*Number of successful ops*/
     osi_timeval_t sumTime;		/*Sum of sample timings*/
     osi_timeval_t sqrTime;             /*Sum of squares of sample timings */
     osi_timeval_t minTime;		/*Minimum timing value observed*/
@@ -875,16 +880,16 @@ struct afs_stats_opTimingData {
  * Record to track timings and byte sizes for data transfers.
  */
 struct afs_stats_xferData {
-    int32 numXfers;			    /*Number of successful xfers*/
-    int32 numSuccesses;			    /*Number of successful xfers*/
+    afs_int32 numXfers;			    /*Number of successful xfers*/
+    afs_int32 numSuccesses;			    /*Number of successful xfers*/
     osi_timeval_t sumTime;		    /*Sum of timing values*/
     osi_timeval_t sqrTime;                 /*Sum of squares of timing values */
     osi_timeval_t minTime;		    /*Minimum xfer time recorded*/
     osi_timeval_t maxTime;		    /*Maximum xfer time recorded*/
-    int32 sumBytes;			    /*Sum of KBytes transferred*/
-    int32 minBytes;			    /*Minimum value observed*/
-    int32 maxBytes;			    /*Maximum value observed*/
-    int32 count[AFS_STATS_NUM_XFER_BUCKETS]; /*Tally for each range of bytes*/
+    afs_int32 sumBytes;			    /*Sum of KBytes transferred*/
+    afs_int32 minBytes;			    /*Minimum value observed*/
+    afs_int32 maxBytes;			    /*Maximum value observed*/
+    afs_int32 count[AFS_STATS_NUM_XFER_BUCKETS]; /*Tally for each range of bytes*/
 };
 
 /*
@@ -1031,12 +1036,12 @@ struct afs_stats_xferData {
  * Structure recording RPC outcomes.
  */
 struct afs_stats_RPCErrors {
-    int32 err_Server;			/*Server down error*/
-    int32 err_Network;			/*Network error*/
-    int32 err_Protection;		/*Protection violation*/
-    int32 err_Volume;			/*Volume-related error*/
-    int32 err_VolumeBusies;		/*"Volume busy conditions encountered*/
-    int32 err_Other;			/*Misc other errors*/
+    afs_int32 err_Server;			/*Server down error*/
+    afs_int32 err_Network;			/*Network error*/
+    afs_int32 err_Protection;		/*Protection violation*/
+    afs_int32 err_Volume;			/*Volume-related error*/
+    afs_int32 err_VolumeBusies;		/*"Volume busy conditions encountered*/
+    afs_int32 err_Other;			/*Misc other errors*/
 };
 
 
@@ -1062,25 +1067,25 @@ struct afs_stats_AuthentInfo {
      * This first set of fields don't have any history - they are simply
      * snapshots of the system at the time of the probe.
      */
-    int32 curr_PAGs;		/*Current number of PAGs*/
-    int32 curr_Records;		/*Current # of records in table*/
-    int32 curr_AuthRecords;	/*Current # of authenticated
+    afs_int32 curr_PAGs;		/*Current number of PAGs*/
+    afs_int32 curr_Records;		/*Current # of records in table*/
+    afs_int32 curr_AuthRecords;	/*Current # of authenticated
 				  records (w/valid ticket)*/
-    int32 curr_UnauthRecords;	/*Current # of unauthenticated
+    afs_int32 curr_UnauthRecords;	/*Current # of unauthenticated
 				  records (w/o any ticket at all)*/
-    int32 curr_MaxRecordsInPAG;	/*Max records for a single PAG*/
-    int32 curr_LongestChain;	/*Length of longest current hash chain*/
+    afs_int32 curr_MaxRecordsInPAG;	/*Max records for a single PAG*/
+    afs_int32 curr_LongestChain;	/*Length of longest current hash chain*/
 
     /*
      * This second set of fields are values accumulated over the lifetme
      * of the current CM incarnation.
      */
-    int32 PAGCreations;		/*# PAG creations*/
-    int32 TicketUpdates;		/*# ticket additions/refreshes*/
-    int32 HWM_PAGs;		/*High water mark - # PAGs*/
-    int32 HWM_Records;		/* " - # records*/
-    int32 HWM_MaxRecordsInPAG;	/* " - max records for a single PAG*/
-    int32 HWM_LongestChain;	/* " - longest hash chain*/
+    afs_int32 PAGCreations;		/*# PAG creations*/
+    afs_int32 TicketUpdates;		/*# ticket additions/refreshes*/
+    afs_int32 HWM_PAGs;		/*High water mark - # PAGs*/
+    afs_int32 HWM_Records;		/* " - # records*/
+    afs_int32 HWM_MaxRecordsInPAG;	/* " - max records for a single PAG*/
+    afs_int32 HWM_LongestChain;	/* " - longest hash chain*/
 };
 
 /*
@@ -1089,11 +1094,11 @@ struct afs_stats_AuthentInfo {
  * case of failure.
  */
 struct afs_stats_AccessInfo {
-    int32 unreplicatedRefs;		/*# references to unreplicated data*/
-    int32 replicatedRefs;		/*# references to replicated data*/
-    int32 numReplicasAccessed;		/*# replicas accessed*/
-    int32 maxReplicasPerRef;		/*Max # replicas accessed per ref*/
-    int32 refFirstReplicaOK;		/*# references satisfied by 1st replica*/
+    afs_int32 unreplicatedRefs;		/*# references to unreplicated data*/
+    afs_int32 replicatedRefs;		/*# references to replicated data*/
+    afs_int32 numReplicasAccessed;		/*# replicas accessed*/
+    afs_int32 maxReplicasPerRef;		/*Max # replicas accessed per ref*/
+    afs_int32 refFirstReplicaOK;		/*# references satisfied by 1st replica*/
 };
 
 /*
@@ -1102,17 +1107,17 @@ struct afs_stats_AccessInfo {
  * Results cover all objects in the cache uniformly.
  */
 struct afs_stats_AuthorInfo {
-    int32 fileSameAuthor;	/*File write by same author*/
-    int32 fileDiffAuthor;	/*File write by diff author*/
-    int32 dirSameAuthor;		/*Directory write by same author*/
-    int32 dirDiffAuthor;		/*Directory write by diff author*/
+    afs_int32 fileSameAuthor;	/*File write by same author*/
+    afs_int32 fileDiffAuthor;	/*File write by diff author*/
+    afs_int32 dirSameAuthor;		/*Directory write by same author*/
+    afs_int32 dirDiffAuthor;		/*Directory write by diff author*/
 };
 
 /*
  * Structure holding ``full'' CM peformance measurements.
  */
 struct afs_stats_CMFullPerf {
-    int32 numFullPerfCalls;			/*Number of accesses*/
+    afs_int32 numFullPerfCalls;			/*Number of accesses*/
     struct afs_stats_CMPerf perf;		/*General performance stats*/
     struct afs_stats_RPCOpInfo rpc;		/*RPC op stats*/
     struct afs_stats_AuthentInfo authent;	/*Authentication stats*/
@@ -1126,7 +1131,7 @@ struct afs_stats_CMFullPerf {
  */
 extern struct afs_stats_CMPerf afs_stats_cmperf;
 extern struct afs_stats_CMFullPerf afs_stats_cmfullperf;
-extern int32 afs_stats_XferSumBytes[];
+extern afs_int32 afs_stats_XferSumBytes[];
 
 #ifndef AFS_NOSTATS
 /*

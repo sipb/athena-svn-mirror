@@ -1,10 +1,10 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/nfs.h,v 1.1.1.1 1999-12-22 20:45:22 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/nfs.h,v 1.1.1.2 2000-04-12 18:46:02 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/nfs.h,v $ */
 
 #include <errno.h>
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidnfs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/nfs.h,v 1.1.1.1 1999-12-22 20:45:22 ghudson Exp $";
+static char *rcsidnfs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/i386_linux22/include/afs/nfs.h,v 1.1.1.2 2000-04-12 18:46:02 ghudson Exp $";
 #endif
 
 #ifndef	AFS_VOL_NFS_H
@@ -27,7 +27,7 @@ static char *rcsidnfs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbi
 #endif
 #define TRUE	1
 #define FALSE	0
-typedef u_int32 bit32;	/* Unsigned, 32 bits */
+typedef afs_uint32 bit32;	/* Unsigned, 32 bits */
 typedef unsigned short bit16;	/* Unsigned, 16 bits */
 typedef unsigned char byte;	/* Unsigned, 8 bits */
 

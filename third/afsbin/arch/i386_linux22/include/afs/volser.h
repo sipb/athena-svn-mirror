@@ -53,15 +53,15 @@
 
 struct volser_trans {
     struct volser_trans	*next;	/* next ptr in active trans list */
-    int32 tid;		    /* transaction id */
-    int32 time;		    /* time transaction was last active (for timeouts) */
-    int32 creationTime;	    /* time the transaction started */
-    int32 returnCode;	    /* transaction error code */
+    afs_int32 tid;		    /* transaction id */
+    afs_int32 time;		    /* time transaction was last active (for timeouts) */
+    afs_int32 creationTime;	    /* time the transaction started */
+    afs_int32 returnCode;	    /* transaction error code */
     struct Volume *volume;  /* pointer to open volume */
-    int32 volid;		    /* open volume's id */
-    int32 partition;	    /* open volume's partition */
-    int32 dumpTransId;	    /* other side's trans id during a dump */
-    int32 dumpSeq;	    /* next sequence number to use during a dump */
+    afs_int32 volid;		    /* open volume's id */
+    afs_int32 partition;	    /* open volume's partition */
+    afs_int32 dumpTransId;	    /* other side's trans id during a dump */
+    afs_int32 dumpSeq;	    /* next sequence number to use during a dump */
     short refCount;	    /* reference count on this structure */
     short iflags;	    /* initial attach mode flags (IT*) */
     char vflags;	    /* current volume status flags (VT*) */
@@ -79,9 +79,9 @@ struct volser_trans {
 #define GCWAKEUP            30
 
 struct volser_dest {
-    int32 destHost;
-    int32 destPort;
-    int32 destSSID;
+    afs_int32 destHost;
+    afs_int32 destPort;
+    afs_int32 destSSID;
 };
 
 #define	MAXHELPERS	    10
@@ -129,15 +129,15 @@ extern struct volser_trans *QI_GlobalWriteTrans;
 /*flags used for interfacing with the  backup system */
 struct volDescription {    /*used for interfacing with the backup system */
     char volName[VOLSER_MAXVOLNAME];/* should be VNAMESIZE as defined in volume.h*/
-    int32 volId;
+    afs_int32 volId;
     int volSize;
-    int32 volFlags;
-    int32 volCloneId;
+    afs_int32 volFlags;
+    afs_int32 volCloneId;
 };
 
 struct partList {   /*used by the backup system */
-    int32 partId[VOLMAXPARTS];
-    int32 partFlags[VOLMAXPARTS];
+    afs_int32 partId[VOLMAXPARTS];
+    afs_int32 partFlags[VOLMAXPARTS];
 };
 
 #define	STDERR	stderr

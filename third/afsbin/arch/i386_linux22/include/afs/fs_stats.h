@@ -30,33 +30,33 @@
  * Performance numbers.
  */
 struct afs_PerfStats {
-    int32 numPerfCalls;		/*# of performance calls rcvd*/
+    afs_int32 numPerfCalls;		/*# of performance calls rcvd*/
 
     /*
      * Vnode cache section.
      */
-    int32 vcache_L_Entries;	/*Num entries in LARGE vnode cache*/
-    int32 vcache_L_Allocs;	/*# allocs, large*/
-    int32 vcache_L_Gets;		/*# gets, large*/
-    int32 vcache_L_Reads;	/*# reads, large*/
-    int32 vcache_L_Writes;	/*# writes, large*/
+    afs_int32 vcache_L_Entries;	/*Num entries in LARGE vnode cache*/
+    afs_int32 vcache_L_Allocs;	/*# allocs, large*/
+    afs_int32 vcache_L_Gets;		/*# gets, large*/
+    afs_int32 vcache_L_Reads;	/*# reads, large*/
+    afs_int32 vcache_L_Writes;	/*# writes, large*/
 
-    int32 vcache_S_Entries;	/*Num entries in SMALL vnode cache*/
-    int32 vcache_S_Allocs;	/*# allocs, small*/
-    int32 vcache_S_Gets;		/*# gets, small*/
-    int32 vcache_S_Reads;	/*# reads, small*/
-    int32 vcache_S_Writes;	/*# writes, small*/
+    afs_int32 vcache_S_Entries;	/*Num entries in SMALL vnode cache*/
+    afs_int32 vcache_S_Allocs;	/*# allocs, small*/
+    afs_int32 vcache_S_Gets;		/*# gets, small*/
+    afs_int32 vcache_S_Reads;	/*# reads, small*/
+    afs_int32 vcache_S_Writes;	/*# writes, small*/
 
-    int32 vcache_H_Entries;	/*Num entries in HEADER vnode cache */
-    int32 vcache_H_Gets;		/*# gets*/
-    int32 vcache_H_Replacements;	/*# replacements*/
+    afs_int32 vcache_H_Entries;	/*Num entries in HEADER vnode cache */
+    afs_int32 vcache_H_Gets;		/*# gets*/
+    afs_int32 vcache_H_Replacements;	/*# replacements*/
 
     /*
      * Directory package section.
      */
-    int32 dir_Buffers;		/*Num buffers in use*/
-    int32 dir_Calls;		/*Num read calls made*/
-    int32 dir_IOs;		/*I/O ops performed*/
+    afs_int32 dir_Buffers;		/*Num buffers in use*/
+    afs_int32 dir_Calls;		/*Num read calls made*/
+    afs_int32 dir_IOs;		/*I/O ops performed*/
 
     /*
      * Rx section.  These numbers represent the contents of the
@@ -64,69 +64,69 @@ struct afs_PerfStats {
      * including struct rx_debug and connection stuff is available
      * via the rxdebug interface.
      */
-    int32 rx_packetRequests;		/*Packet alloc requests*/
-    int32 rx_noPackets_RcvClass;		/*Failed pkt requests, receives*/
-    int32 rx_noPackets_SendClass;	/*Ditto, sends*/
-    int32 rx_noPackets_SpecialClass;	/*Ditto, specials*/
-    int32 rx_socketGreedy;		/*Did SO_GREEDY succeed?*/
-    int32 rx_bogusPacketOnRead;		/*Short pkts rcvd*/
-    int32 rx_bogusHost;			/*Host addr from bogus pkts*/
-    int32 rx_noPacketOnRead;		/*Read pkts w/no packet there*/
-    int32 rx_noPacketBuffersOnRead;	/*Pkts dropped from buff shortage*/
-    int32 rx_selects;			/*Selects waiting on pkt or timeout*/
-    int32 rx_sendSelects;		/*Selects forced upon sends*/
-    int32 rx_packetsRead_RcvClass;	/*Packets read, rcv class*/
-    int32 rx_packetsRead_SendClass;	/*Packets read, send class*/
-    int32 rx_packetsRead_SpecialClass;	/*Packets read, special class*/
-    int32 rx_dataPacketsRead;		/*Uniq data packets read off wire*/
-    int32 rx_ackPacketsRead;		/*Ack packets read*/
-    int32 rx_dupPacketsRead;		/*Duplicate data packets read*/
-    int32 rx_spuriousPacketsRead;	/*Inappropriate packets read*/
-    int32 rx_packetsSent_RcvClass;	/*Packets sent, rcv class*/
-    int32 rx_packetsSent_SendClass;	/*Packets sent, send class*/
-    int32 rx_packetsSent_SpecialClass;	/*Packets sent, special class*/
-    int32 rx_ackPacketsSent;		/*Ack packets sent*/
-    int32 rx_pingPacketsSent;		/*Ping packets sent*/
-    int32 rx_abortPacketsSent;		/*Abort packets sent*/
-    int32 rx_busyPacketsSent;		/*Busy packets sent*/
-    int32 rx_dataPacketsSent;		/*Unique data packets sent*/
-    int32 rx_dataPacketsReSent;		/*Retransmissions sent*/
-    int32 rx_dataPacketsPushed;		/*Retransmissions pushed by NACK*/
-    int32 rx_ignoreAckedPacket;		/*Packets w/acked flag on rxi_Start*/
-    int32 rx_totalRtt_Sec;		/*Ttl round trip time, secs*/
-    int32 rx_totalRtt_Usec;		/*Ttl round trip time, usecs*/
-    int32 rx_minRtt_Sec;			/*Min round trip time, secs*/
-    int32 rx_minRtt_Usec;		/*Min round trip time, usecs*/
-    int32 rx_maxRtt_Sec;			/*Max round trip time, secs*/
-    int32 rx_maxRtt_Usec;		/*Max round trip time, usecs*/
-    int32 rx_nRttSamples;		/*Round trip samples*/
-    int32 rx_nServerConns;		/*Ttl server connections*/
-    int32 rx_nClientConns;		/*Ttl client connections*/
-    int32 rx_nPeerStructs;		/*Ttl peer structures*/
-    int32 rx_nCallStructs;		/*Ttl call structures*/
-    int32 rx_nFreeCallStructs;		/*Ttl free call structures*/
+    afs_int32 rx_packetRequests;		/*Packet alloc requests*/
+    afs_int32 rx_noPackets_RcvClass;		/*Failed pkt requests, receives*/
+    afs_int32 rx_noPackets_SendClass;	/*Ditto, sends*/
+    afs_int32 rx_noPackets_SpecialClass;	/*Ditto, specials*/
+    afs_int32 rx_socketGreedy;		/*Did SO_GREEDY succeed?*/
+    afs_int32 rx_bogusPacketOnRead;		/*Short pkts rcvd*/
+    afs_int32 rx_bogusHost;			/*Host addr from bogus pkts*/
+    afs_int32 rx_noPacketOnRead;		/*Read pkts w/no packet there*/
+    afs_int32 rx_noPacketBuffersOnRead;	/*Pkts dropped from buff shortage*/
+    afs_int32 rx_selects;			/*Selects waiting on pkt or timeout*/
+    afs_int32 rx_sendSelects;		/*Selects forced upon sends*/
+    afs_int32 rx_packetsRead_RcvClass;	/*Packets read, rcv class*/
+    afs_int32 rx_packetsRead_SendClass;	/*Packets read, send class*/
+    afs_int32 rx_packetsRead_SpecialClass;	/*Packets read, special class*/
+    afs_int32 rx_dataPacketsRead;		/*Uniq data packets read off wire*/
+    afs_int32 rx_ackPacketsRead;		/*Ack packets read*/
+    afs_int32 rx_dupPacketsRead;		/*Duplicate data packets read*/
+    afs_int32 rx_spuriousPacketsRead;	/*Inappropriate packets read*/
+    afs_int32 rx_packetsSent_RcvClass;	/*Packets sent, rcv class*/
+    afs_int32 rx_packetsSent_SendClass;	/*Packets sent, send class*/
+    afs_int32 rx_packetsSent_SpecialClass;	/*Packets sent, special class*/
+    afs_int32 rx_ackPacketsSent;		/*Ack packets sent*/
+    afs_int32 rx_pingPacketsSent;		/*Ping packets sent*/
+    afs_int32 rx_abortPacketsSent;		/*Abort packets sent*/
+    afs_int32 rx_busyPacketsSent;		/*Busy packets sent*/
+    afs_int32 rx_dataPacketsSent;		/*Unique data packets sent*/
+    afs_int32 rx_dataPacketsReSent;		/*Retransmissions sent*/
+    afs_int32 rx_dataPacketsPushed;		/*Retransmissions pushed by NACK*/
+    afs_int32 rx_ignoreAckedPacket;		/*Packets w/acked flag on rxi_Start*/
+    afs_int32 rx_totalRtt_Sec;		/*Ttl round trip time, secs*/
+    afs_int32 rx_totalRtt_Usec;		/*Ttl round trip time, usecs*/
+    afs_int32 rx_minRtt_Sec;			/*Min round trip time, secs*/
+    afs_int32 rx_minRtt_Usec;		/*Min round trip time, usecs*/
+    afs_int32 rx_maxRtt_Sec;			/*Max round trip time, secs*/
+    afs_int32 rx_maxRtt_Usec;		/*Max round trip time, usecs*/
+    afs_int32 rx_nRttSamples;		/*Round trip samples*/
+    afs_int32 rx_nServerConns;		/*Ttl server connections*/
+    afs_int32 rx_nClientConns;		/*Ttl client connections*/
+    afs_int32 rx_nPeerStructs;		/*Ttl peer structures*/
+    afs_int32 rx_nCallStructs;		/*Ttl call structures*/
+    afs_int32 rx_nFreeCallStructs;		/*Ttl free call structures*/
 
     /*
      * Host module fields.
      */
-    int32 host_NumHostEntries;		/*Number of host entries*/
-    int32 host_HostBlocks;		/*Blocks in use for hosts*/
-    int32 host_NonDeletedHosts;		/*Non-deleted hosts*/
-    int32 host_HostsInSameNetOrSubnet;	/*" in same [sub]net as server*/
-    int32 host_HostsInDiffSubnet;	/*" in different subnet as server*/
-    int32 host_HostsInDiffNetwork;	/*" in different network as server*/
-    int32 host_NumClients;		/*Number of client entries*/
-    int32 host_ClientBlocks;		/*Blocks in use for clients*/
+    afs_int32 host_NumHostEntries;		/*Number of host entries*/
+    afs_int32 host_HostBlocks;		/*Blocks in use for hosts*/
+    afs_int32 host_NonDeletedHosts;		/*Non-deleted hosts*/
+    afs_int32 host_HostsInSameNetOrSubnet;	/*" in same [sub]net as server*/
+    afs_int32 host_HostsInDiffSubnet;	/*" in different subnet as server*/
+    afs_int32 host_HostsInDiffNetwork;	/*" in different network as server*/
+    afs_int32 host_NumClients;		/*Number of client entries*/
+    afs_int32 host_ClientBlocks;		/*Blocks in use for clients*/
 
     /*
      * Host systype
      */
-    int32 sysname_ID;			/*Unique hardware/OS identifier*/
+    afs_int32 sysname_ID;			/*Unique hardware/OS identifier*/
 
     /*
      * Spares
      */
-    int32 spare[31];
+    afs_int32 spare[31];
 };
 
 #if FS_STATS_DETAILED
@@ -177,8 +177,8 @@ struct afs_PerfStats {
  * Record to track timing numbers for each File Server RPC operation.
  */
 struct fs_stats_opTimingData {
-    int32 numOps;			/*Number of operations executed*/
-    int32 numSuccesses;			/*Number of successful ops*/
+    afs_int32 numOps;			/*Number of operations executed*/
+    afs_int32 numSuccesses;			/*Number of successful ops*/
     struct timeval sumTime;		/*Sum of sample timings*/
     struct timeval sqrTime;             /*Sum of squares of sample timings */
     struct timeval minTime;		/*Minimum timing value observed*/
@@ -204,16 +204,16 @@ struct fs_stats_opTimingData {
  * Record to track timings and byte sizes for data transfers.
  */
 struct fs_stats_xferData {
-    int32 numXfers;			   /*Number of xfers*/
-    int32 numSuccesses;			   /*Number of successful xfers*/
+    afs_int32 numXfers;			   /*Number of xfers*/
+    afs_int32 numSuccesses;			   /*Number of successful xfers*/
     struct timeval sumTime;		   /*Sum of timing values*/
     struct timeval sqrTime;                /*Sum of squares of timing values */
     struct timeval minTime;		   /*Minimum xfer time recorded*/
     struct timeval maxTime;		   /*Maximum xfer time recorded*/
-    int32 sumBytes;			   /*Sum of bytes transferred*/
-    int32 minBytes;			   /*Minimum value observed*/
-    int32 maxBytes;			   /*Maximum value observed*/
-    int32 count[FS_STATS_NUM_XFER_BUCKETS]; /*Tally for each range of bytes*/
+    afs_int32 sumBytes;			   /*Sum of bytes transferred*/
+    afs_int32 minBytes;			   /*Minimum value observed*/
+    afs_int32 maxBytes;			   /*Maximum value observed*/
+    afs_int32 count[FS_STATS_NUM_XFER_BUCKETS]; /*Tally for each range of bytes*/
 };
 
 /*
@@ -328,7 +328,7 @@ extern struct afs_PerfStats afs_perfstats;
   * host byte order.
   */
 extern char FS_HostName[];
-extern u_int32 FS_HostAddr_NBO;
-extern u_int32 FS_HostAddr_HBO;
+extern afs_uint32 FS_HostAddr_NBO;
+extern afs_uint32 FS_HostAddr_HBO;
 
 #endif /* __fs_stats_h */

@@ -73,11 +73,11 @@
 #define NEVERDATE 037777777777		/* a date that will never come */
 #endif
 #ifndef Date
-#define Date u_int32
+#define Date afs_uint32
 #endif
 #define BUDB_MAJORVERSION 2
 #ifndef dumpId
-#define dumpId u_int32 
+#define dumpId afs_uint32 
 #endif
 #define	TB_DUMPSCHEDULE	0
 #define	TB_VOLUMESET	1
@@ -95,12 +95,12 @@ bool_t xdr_budb_principal();
 
 
 struct budb_tapeSet {
-	int32 id;
+	afs_int32 id;
 	char tapeServer[32];
 	char format[32];
-	int32 maxTapes;
-	int32 a;
-	int32 b;
+	afs_int32 maxTapes;
+	afs_int32 a;
+	afs_int32 b;
 };
 typedef struct budb_tapeSet budb_tapeSet;
 bool_t xdr_budb_tapeSet();
@@ -108,20 +108,20 @@ bool_t xdr_budb_tapeSet();
 #define budb_MakeTapeName(name,set,seq) sprintf (name, (set)->format, (set)->a*(seq) + (set)->b)
 
 struct budb_dumpEntry {
-	u_int32 id;
-	u_int32 parent;
-	int32 level;
-	int32 flags;
+	afs_uint32 id;
+	afs_uint32 parent;
+	afs_int32 level;
+	afs_int32 flags;
 	char volumeSetName[32];
 	char dumpPath[256];
 	char name[32];
-	u_int32 created;
-	u_int32 incTime;
-	int32 nVolumes;
+	afs_uint32 created;
+	afs_uint32 incTime;
+	afs_int32 nVolumes;
 	struct budb_tapeSet tapes;
 	struct budb_principal dumper;
-	u_int32 initialDumpID;
-	u_int32 appendedDumpID;
+	afs_uint32 initialDumpID;
+	afs_uint32 appendedDumpID;
 };
 typedef struct budb_dumpEntry budb_dumpEntry;
 bool_t xdr_budb_dumpEntry();
@@ -130,22 +130,24 @@ bool_t xdr_budb_dumpEntry();
 #define BUDB_DUMP_TAPEERROR  (1<<1)	/* tape error during dump */
 #define BUDB_DUMP_INPROGRESS (1<<2)
 #define BUDB_DUMP_ABORTED    (1<<3)	/* aborted: prob. dump unavailable */
-#define BUDB_DUMP_ADSMBUTA   0x800	/* (used by ADSM buta) */
+#define BUDB_DUMP_XBSA_NSS   (1<<8)    /* dump was done with a client    */
+#define BUDB_DUMP_BUTA       (1<<11)	/* (used by ADSM buta) == 0x800 */
+#define BUDB_DUMP_ADSM	      (1<<12)	/* (used by XBSA/ADSM buta) == 0x1000 */
 
 struct budb_tapeEntry {
 	char name[32];
-	int32 flags;
-	u_int32 written;
-	u_int32 expires;
-	u_int32 nMBytes;
-	u_int32 nBytes;
-	int32 nFiles;
-	int32 nVolumes;
-	int32 seq;
-	int32 labelpos;
-	int32 useCount;
-	int32 useKBytes;
-	u_int32 dump;
+	afs_int32 flags;
+	afs_uint32 written;
+	afs_uint32 expires;
+	afs_uint32 nMBytes;
+	afs_uint32 nBytes;
+	afs_int32 nFiles;
+	afs_int32 nVolumes;
+	afs_int32 seq;
+	afs_int32 labelpos;
+	afs_int32 useCount;
+	afs_int32 useKBytes;
+	afs_uint32 dump;
 };
 typedef struct budb_tapeEntry budb_tapeEntry;
 bool_t xdr_budb_tapeEntry();
@@ -159,18 +161,18 @@ bool_t xdr_budb_tapeEntry();
 
 struct budb_volumeEntry {
 	char name[32];
-	int32 flags;
-	int32 id;
+	afs_int32 flags;
+	afs_int32 id;
 	char server[32];
-	int32 partition;
-	int32 tapeSeq;
-	int32 position;
-	u_int32 clone;
-	u_int32 incTime;
-	int32 startByte;
-	u_int32 nBytes;
-	int32 seq;
-	u_int32 dump;
+	afs_int32 partition;
+	afs_int32 tapeSeq;
+	afs_int32 position;
+	afs_uint32 clone;
+	afs_uint32 incTime;
+	afs_int32 startByte;
+	afs_uint32 nBytes;
+	afs_int32 seq;
+	afs_uint32 dump;
 	char tape[32];
 };
 typedef struct budb_volumeEntry budb_volumeEntry;
@@ -182,6 +184,7 @@ bool_t xdr_budb_volumeEntry();
 #define BUDB_VOL_FIRSTFRAG    (1<<3)	/* same as low bits of tape position */
 #define BUDB_VOL_LASTFRAG     (1<<4)
 #define BUDB_VOL_ABORTED      (1<<5)	/* aborted: vol probably undumped */
+#define BUDB_STATINDEX 17
 #define BUDB_OP_NAMES	    (0x7)
 #define BUDB_OP_STARTS	    (0x7<<3)
 #define BUDB_OP_ENDS	    (0x7<<6)
@@ -225,7 +228,7 @@ bool_t xdr_budb_tapeList();
 
 typedef struct budb_dumpsList {
 	u_int budb_dumpsList_len;
-	int32 *budb_dumpsList_val;
+	afs_int32 *budb_dumpsList_val;
 } budb_dumpsList;
 bool_t xdr_budb_dumpsList();
 
@@ -245,23 +248,27 @@ bool_t xdr_charListT();
 #define	SD_TEXT_VOLUMESET	6
 #define	SD_TEXT_TAPEHOSTS	7
 #define	SD_END			8
+#define	BUDB_OP_DATES		(0x01)
+#define	BUDB_OP_GROUPID		(0x02)
+#define	BUDB_OP_APPDUMP		(0x01)
+#define	BUDB_OP_DBDUMP		(0x02)
 
 struct DbHeader {
-	int32 dbversion;
-	int32 created;
+	afs_int32 dbversion;
+	afs_int32 created;
 	char cell[256];
-	u_int32 lastDumpId;
-	u_int32 lastInstanceId;
-	u_int32 lastTapeId;
+	afs_uint32 lastDumpId;
+	afs_uint32 lastInstanceId;
+	afs_uint32 lastTapeId;
 };
 typedef struct DbHeader DbHeader;
 bool_t xdr_DbHeader();
 
 
 struct structDumpHeader {
-	int32 type;
-	int32 structversion;
-	int32 size;
+	afs_int32 type;
+	afs_int32 structversion;
+	afs_int32 size;
 };
 typedef struct structDumpHeader structDumpHeader;
 bool_t xdr_structDumpHeader();
@@ -269,7 +276,7 @@ bool_t xdr_structDumpHeader();
 
 /* Opcode-related useful stats for package: BUDB_ */
 #define BUDB_LOWEST_OPCODE   0
-#define BUDB_HIGHEST_OPCODE	29
-#define BUDB_NUMBER_OPCODES	30
+#define BUDB_HIGHEST_OPCODE	30
+#define BUDB_NUMBER_OPCODES	31
 
 #endif	/* _RXGEN_BUDB_ */
