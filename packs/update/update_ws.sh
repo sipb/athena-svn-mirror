@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.20 1997-04-04 18:04:31 ghudson Exp $
+# $Id: update_ws.sh,v 1.21 1997-04-17 19:03:45 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -27,7 +27,7 @@ export CONFDIR LIBDIR PATH HOSTTYPE AUTO
 CONFDIR=/etc/athena
 LIBDIR=/srvd/usr/athena/lib/update
 PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
-HOSTTYPE=`/srvd/bin/athena/machtype`
+HOSTTYPE=`/bin/athena/machtype`
 
 case "$0" in
 *auto_update)
