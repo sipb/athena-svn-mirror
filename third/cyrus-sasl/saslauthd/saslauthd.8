@@ -5,7 +5,7 @@ NNAAMMEE
      ssaassllaauutthhdd - sasl authentication server
 
 SSYYNNOOPPSSIISS
-     ssaassllaauutthhdd --aa _a_u_t_h_m_e_c_h [--TTvv] [--OO _o_p_t_i_o_n] [--mm _m_u_x___p_a_t_h] [--nn _t_h_r_e_a_d_s]
+     ssaassllaauutthhdd --aa _a_u_t_h_m_e_c_h [--TTvvdd] [--OO _o_p_t_i_o_n] [--mm _m_u_x___p_a_t_h] [--nn _t_h_r_e_a_d_s]
 
 DDEESSCCRRIIPPTTIIOONN
      ssaassllaauutthhdd is a daemon process that handles plaintext authentication re-
@@ -41,7 +41,11 @@ DDEESSCCRRIIPPTTIIOONN
 
      --mm _p_a_t_h
              Use _p_a_t_h as the pathname to the named socket to listen on for
-             connection requests. This must be an absolute pathname.
+             connection requests. This must be an absolute pathname, and MUST
+             NOT include the trailing "/mux".  Note that the default for this
+             value is "/var/state/saslauthd" (or what was specified at compile
+             time) and that this directory must exist for saslauthd to func-
+             tion.
 
      --nn _t_h_r_e_a_d_s
              Use _t_h_r_e_a_d_s processes for responding to authentication queries.
@@ -53,6 +57,8 @@ DDEESSCCRRIIPPTTIIOONN
 
      --vv      Print the version number and available authentication mechanisms
              on standard error, then exit.
+
+     --dd      Debugging mode.
 
    LLooggggiinngg
      ssaassllaauutthhdd logs it's activities via ssyyssllooggdd using the LOG_AUTH facility.
@@ -123,6 +129,7 @@ AAUUTTHHEENNTTIICCAATTIIOONN MMEECCHHAANNIISSMMSS
                 even disabled at compile-time by default.  If you want to use
                 sasldb with the SASL library, you probably want to use the
                 pwcheck_method of "auxprop" along with the sasldb auxprop plu-
+
                 gin instead.
 
      ldap       _(_A_l_l _p_l_a_t_f_o_r_m_s _t_h_a_t _s_u_p_p_o_r_t _O_p_e_n_L_D_A_P _2_._0 _o_r _h_i_g_h_e_r_)

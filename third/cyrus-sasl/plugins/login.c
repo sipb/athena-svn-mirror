@@ -2,7 +2,7 @@
  * Rob Siemborski (SASLv2 Conversion)
  * contributed by Rainer Schoepf <schoepf@uni-mainz.de>
  * based on PLAIN, by Tim Martin <tmartin@andrew.cmu.edu>
- * $Id: login.c,v 1.1.1.1 2002-10-13 18:01:05 ghudson Exp $
+ * $Id: login.c,v 1.1.1.2 2003-02-12 22:33:44 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -52,14 +52,9 @@
 
 #include "plugin_common.h"
 
-#ifdef WIN32
-/* This must be after sasl.h */
-# include "saslLOGIN.h"
-#endif /* WIN32 */
-
 /*****************************  Common Section  *****************************/
 
-static const char plugin_id[] = "$Id: login.c,v 1.1.1.1 2002-10-13 18:01:05 ghudson Exp $";
+static const char plugin_id[] = "$Id: login.c,v 1.1.1.2 2003-02-12 22:33:44 ghudson Exp $";
 
 /*****************************  Server Section  *****************************/
 
@@ -245,7 +240,7 @@ static sasl_server_plug_t login_server_plugins[] =
 	"LOGIN",			/* mech_name */
 	0,				/* max_ssf */
 	SASL_SEC_NOANONYMOUS,		/* security_flags */
-	SASL_FEAT_SERVER_FIRST,		/* features */
+	0,				/* features */
 	NULL,				/* glob_context */
 	&login_server_mech_new,		/* mech_new */
 	&login_server_mech_step,	/* mech_step */

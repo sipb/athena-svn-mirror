@@ -1,6 +1,6 @@
 /* OTP SASL plugin
  * Ken Murchison
- * $Id: otp.c,v 1.1.1.1 2002-10-13 18:01:30 ghudson Exp $
+ * $Id: otp.c,v 1.1.1.2 2003-02-12 22:33:56 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -54,11 +54,10 @@
 #include <assert.h>
 
 #include <openssl/evp.h>
+#include <openssl/md5.h> /* XXX hack for OpenBSD/OpenSSL cruftiness */
 
 #include <sasl.h>
-#if OPENSSL_VERSION_NUMBER < 0x00907000L
 #define MD5_H  /* suppress internal MD5 */
-#endif
 #include <saslplug.h>
 
 #include "plugin_common.h"
@@ -75,7 +74,7 @@
 
 /*****************************  Common Section  *****************************/
 
-static const char plugin_id[] = "$Id: otp.c,v 1.1.1.1 2002-10-13 18:01:30 ghudson Exp $";
+static const char plugin_id[] = "$Id: otp.c,v 1.1.1.2 2003-02-12 22:33:56 ghudson Exp $";
 
 #define OTP_SEQUENCE_MAX	9999
 #define OTP_SEQUENCE_DEFAULT	499
@@ -1735,7 +1734,8 @@ static sasl_client_plug_t otp_client_plugins[] =
 	SASL_SEC_NOPLAINTEXT
 	| SASL_SEC_NOANONYMOUS
 	| SASL_SEC_FORWARD_SECRECY,	/* security_flags */
-	SASL_FEAT_WANT_CLIENT_FIRST,	/* features */
+	SASL_FEAT_WANT_CLIENT_FIRST
+	| SASL_FEAT_ALLOWS_PROXY,	/* features */
 	NULL,				/* required_prompts */
 	NULL,				/* glob_context */
 	&otp_client_mech_new,		/* mech_new */

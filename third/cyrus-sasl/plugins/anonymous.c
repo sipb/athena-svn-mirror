@@ -1,7 +1,7 @@
 /* Anonymous SASL plugin
  * Rob Siemborski
  * Tim Martin 
- * $Id: anonymous.c,v 1.1.1.1 2002-10-13 18:02:03 ghudson Exp $
+ * $Id: anonymous.c,v 1.1.1.2 2003-02-12 22:33:38 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -58,14 +58,9 @@
 #include <sasl_anonymous_plugin_decl.h> 
 #endif 
 
-#ifdef WIN32
-/* This must be after sasl.h, saslutil.h */
-# include "saslANONYMOUS.h"
-#endif
-
 /*****************************  Common Section  *****************************/
 
-static const char plugin_id[] = "$Id: anonymous.c,v 1.1.1.1 2002-10-13 18:02:03 ghudson Exp $";
+static const char plugin_id[] = "$Id: anonymous.c,v 1.1.1.2 2003-02-12 22:33:38 ghudson Exp $";
 
 static const char anonymous_id[] = "anonymous";
 
@@ -134,7 +129,7 @@ anonymous_server_mech_step(void *conn_context __attribute__((unused)),
 			"ANONYMOUS login: \"%s\"",
 			clientdata);
     
-    if (clientdata != clientin)
+    if (clientdata != clientin) 
 	sparams->utils->free(clientdata);
     
     result = sparams->canon_user(sparams->utils->conn,

@@ -20,6 +20,16 @@ if test "$with_des" != no; then
                      with_des=no)],
       with_des=no, $LIB_RSAREF)
 
+  dnl same test again, different symbol name
+  if test "$with_des" = no; then
+    AC_CHECK_LIB(crypto, DES_cbc_encrypt, [
+      AC_CHECK_HEADER(openssl/des.h, [AC_DEFINE(WITH_SSL_DES)
+                                     LIB_DES="-lcrypto";
+                                     with_des=yes],
+                     with_des=no)],
+      with_des=no, $LIB_RSAREF)
+  fi
+
   if test "$with_des" = no; then
     AC_CHECK_LIB(des, des_cbc_encrypt, [LIB_DES="-ldes";
                                         with_des=yes], with_des=no)
@@ -101,7 +111,7 @@ AC_DEFUN(SASL_KERBEROS_V4_CHK, [
                      krb4lib=no, $LIB_DES -lcom_err)], [
     	  AC_CHECK_LIB(krb, krb_mk_priv,
                      [COM_ERR=""; SASL_KRB_LIB="-lkrb"; krb4lib="yes"],
-                     krb4lib=no, $LIB_DES)])])
+                     krb4lib=no, $LIB_DES)])], krb4="no")
 
     if test "$krb4" = "yes" -a "$krb4lib" = "no"; then
 	AC_CHECK_LIB(krb4, krb_mk_priv,

@@ -1,7 +1,7 @@
 /* saslutil.c
  * Rob Siemborski
  * Tim Martin
- * $Id: saslutil.c,v 1.1.1.1 2002-10-13 18:01:46 ghudson Exp $
+ * $Id: saslutil.c,v 1.1.1.2 2003-02-12 22:33:46 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -55,6 +55,9 @@
 #include <errno.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+#ifdef HAVE_TIME_H
+#include <time.h>
 #endif
 #include "saslint.h"
 #include <saslutil.h>

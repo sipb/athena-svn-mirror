@@ -1,4 +1,4 @@
-.\" $Id: saslauthd.mdoc,v 1.1.1.1 2002-10-13 18:01:08 ghudson Exp $
+.\" $Id: saslauthd.mdoc,v 1.1.1.2 2003-02-12 22:33:30 ghudson Exp $
 .\" Copyright 1997-2001 Messaging Direct Ltd. All rights reserved.
 .\"
 .\" This manpage uses the BSD mdoc manpage macros. Please don't
@@ -19,7 +19,7 @@
 .Nm
 .Fl a
 .Ar authmech
-.Op Fl \&Tv
+.Op Fl \&Tvd
 .Op Fl O Ar option
 .Op Fl m Ar mux_path
 .Op Fl n Ar threads
@@ -66,7 +66,10 @@ authentication mechanism. (Depricated, use -O instead)
 Use
 .Ar path
 as the pathname to the named socket to listen on for
-connection requests. This must be an absolute pathname.
+connection requests. This must be an absolute pathname, and MUST NOT
+include the trailing "/mux".  Note that the default for this value
+is "/var/state/saslauthd" (or what was specified at compile time)
+and that this directory must exist for saslauthd to function.
 .It Fl n Ar threads
 Use
 .Ar threads
@@ -79,6 +82,8 @@ Honour time-of-day login restrictions.
 .It Fl v
 Print the version number and available authentication
 mechanisms on standard error, then exit.
+.It Fl d
+Debugging mode.
 .El
 .Ss Logging
 .Nm

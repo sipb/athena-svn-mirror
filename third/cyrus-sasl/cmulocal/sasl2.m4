@@ -1,6 +1,6 @@
 dnl sasl2.m4--sasl2 libraries and includes
 dnl Rob Siemborski
-dnl $Id: sasl2.m4,v 1.1.1.1 2002-10-13 18:02:12 ghudson Exp $
+dnl $Id: sasl2.m4,v 1.1.1.2 2003-02-12 22:34:15 ghudson Exp $
 
 AC_DEFUN(SASL_GSSAPI_CHK,[
  AC_ARG_ENABLE(gssapi, [  --enable-gssapi=<DIR>   enable GSSAPI authentication [yes] ],
@@ -12,7 +12,7 @@ AC_DEFUN(SASL_GSSAPI_CHK,[
        CPPFLAGS="$CPPFLAGS -I$gssapi/include"
        LDFLAGS="$LDFLAGS -L$gssapi/lib"
     fi
-    AC_CHECK_HEADER(gssapi.h, AC_DEFINE(HAVE_GSSAPI_H), [
+    AC_CHECK_HEADER(gssapi.h, AC_DEFINE(HAVE_GSSAPI_H,,[Define if you have the gssapi.h header file]), [
       AC_CHECK_HEADER(gssapi/gssapi.h,, AC_WARN(Disabling GSSAPI); gssapi=no)])
  fi
 
@@ -44,14 +44,14 @@ AC_DEFUN(SASL_GSSAPI_CHK,[
 
   # Check a full link against the heimdal libraries.  If this fails, assume
   # MIT.
-  AC_CHECK_LIB(gssapi,gss_unwrap,gss_impl="heimdal",,$GSSAPIBASE_LIBS -lgssapi -lkrb5 -ldes -lasn1 -lroken ${LIB_CRYPT} -lcom_err)
+  AC_CHECK_LIB(gssapi,gss_unwrap,gss_impl="heimdal",,$GSSAPIBASE_LIBS -lgssapi -lkrb5 -lasn1 -lroken ${LIB_CRYPT} -lcom_err)
 
   if test "$gss_impl" = "mit"; then
      GSSAPIBASE_LIBS="$GSSAPIBASE_LIBS -lgssapi_krb5 -lkrb5 -lk5crypto -lcom_err"
      GSSAPIBASE_STATIC_LIBS="$GSSAPIBASE_LIBS $gssapi_dir/libgssapi_krb5.a $gssapi_dir/libkrb5.a $gssapi_dir/libk5crypto.a $gssapi_dir/libcom_err.a"
   elif test "$gss_impl" = "heimdal"; then
-     GSSAPIBASE_LIBS="$GSSAPIBASE_LIBS -lgssapi -lkrb5 -ldes -lasn1 -lroken ${LIB_CRYPT} -lcom_err"
-     GSSAPIBASE_STATIC_LIBS="$GSSAPIBASE_STATIC_LIBS $gssapi_dir/libgssapi.a $gssapi_dir/libkrb5.a $gssapi_dir/libdes.a $gssapi_dir/libasn1.a $gssapi_dir/libroken.a $gssapi_dir/libcom_err.a ${LIB_CRYPT}"
+     GSSAPIBASE_LIBS="$GSSAPIBASE_LIBS -lgssapi -lkrb5 -lasn1 -lroken ${LIB_CRYPT} -lcom_err"
+     GSSAPIBASE_STATIC_LIBS="$GSSAPIBASE_STATIC_LIBS $gssapi_dir/libgssapi.a $gssapi_dir/libkrb5.a $gssapi_dir/libasn1.a $gssapi_dir/libroken.a $gssapi_dir/libcom_err.a ${LIB_CRYPT}"
   else
      gssapi="no"
      AC_WARN(Disabling GSSAPI)
@@ -60,10 +60,10 @@ AC_DEFUN(SASL_GSSAPI_CHK,[
 
  if test "$ac_cv_header_gssapi_h" = "yes"; then
   AC_EGREP_HEADER(GSS_C_NT_HOSTBASED_SERVICE, gssapi.h,
-    AC_DEFINE(HAVE_GSS_C_NT_HOSTBASED_SERVICE))
+    AC_DEFINE(HAVE_GSS_C_NT_HOSTBASED_SERVICE,,[Define if your GSSAPI implimentation defines GSS_C_NT_HOSTBASED_SERVICE]))
  elif test "$ac_cv_header_gssapi_gssapi_h"; then
   AC_EGREP_HEADER(GSS_C_NT_HOSTBASED_SERVICE, gssapi/gssapi.h,
-    AC_DEFINE(HAVE_GSS_C_NT_HOSTBASED_SERVICE))
+    AC_DEFINE(HAVE_GSS_C_NT_HOSTBASED_SERVICE,,[Define if your GSSAPI implimentation defines GSS_C_NT_HOSTBASED_SERVICE]))
  fi
 
  GSSAPI_LIBS=""
@@ -204,7 +204,7 @@ AC_DEFUN(CMU_SASL2_CHECKAPOP_REQUIRED, [
 
 	cmu_saved_LDFLAGS=$LDFLAGS
 
-	LDFLAGS="$LIB_SASL $LDFLAGS"
+	LDFLAGS="$LDFLAGS $LIB_SASL"
 
 	AC_CHECK_LIB(sasl2, sasl_checkapop, AC_DEFINE(HAVE_APOP),
 		AC_MSG_ERROR([libsasl2 without working sasl_checkapop.  Cannot continue.]))

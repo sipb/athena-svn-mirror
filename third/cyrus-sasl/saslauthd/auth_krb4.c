@@ -28,7 +28,7 @@
  * END COPYRIGHT */
 
 #ifdef __GNUC__
-#ident "$Id: auth_krb4.c,v 1.1.1.1 2002-10-13 18:00:36 ghudson Exp $"
+#ident "$Id: auth_krb4.c,v 1.1.1.2 2003-02-12 22:34:17 ghudson Exp $"
 #endif
 
 /* PUBLIC DEPENDENCIES */
@@ -36,9 +36,19 @@
 #include "mechanisms.h"
 
 #ifdef AUTH_KRB4
+
 # include <krb.h>
-# include <des.h>
+
+# ifdef WITH_DES
+#  ifdef WITH_SSL_DES
+#   include <openssl/des.h>
+#  else
+#   include <des.h>
+#  endif /* WITH_SSL_DES */
+# endif /* WITH_DES */
+
 #endif /* AUTH_KRB4 */
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -14,7 +14,7 @@ AC_ARG_WITH(saslauthd, [  --with-saslauthd=DIR    enable use of the saslauth dae
   AC_DEFINE_UNQUOTED(PATH_SASLAUTHD_RUNDIR, "$with_saslauthd")
 AM_CONDITIONAL(SASLAUTHD, test "$with_saslauthd" != no)
 
-AM_INIT_AUTOMAKE(saslauthd,2.1.8)
+AM_INIT_AUTOMAKE(saslauthd,2.1.12)
 CMU_INIT_AUTOMAKE
 
 dnl Checks for programs.
@@ -24,10 +24,17 @@ AC_PROG_AWK
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
 AC_PROG_INSTALL
+
+dnl Checks for build foo
 CMU_C___ATTRIBUTE__
+CMU_GUESS_RUNPATH_SWITCH
 
 dnl Checks for libraries.
 CMU_SOCKETS
+
+CMU_HAVE_OPENSSL
+AC_MSG_CHECKING(for OpenSSL)
+AC_MSG_RESULT($with_openssl)
 
 dnl mechanism-related checking
 SASL_KERBEROS_V4_CHK
@@ -40,7 +47,7 @@ if test "$gssapi" != no; then
 	fi
 fi
 
-SASL_PLAIN_CHK
+SASL_CRYPT_CHK
 
 AC_ARG_ENABLE(sia, [  --enable-sia            enable SIA authentication [no] ],
   sia=$enableval,
@@ -116,13 +123,17 @@ AC_MSG_RESULT($with_ldap)
 
 if test -d $with_ldap; then
     CPPFLAGS="$CPPFLAGS -I${with_ldap}/include"
-    LDFLAGS="$LDFLAGS -L${with_ldap}/lib"
+    CMU_ADD_LIBPATH(${with_ldap}/lib)
 fi
 
 LDAP_LIBS=""
 if test "$with_ldap" != no; then
   AC_CHECK_LIB(ldap, ldap_initialize, [ AC_DEFINE(HAVE_LDAP)
-                                        LDAP_LIBS="-lldap -llber" ],,-llber)
+                                        LDAP_LIBS="-lldap -llber"
+					if test "$with_openssl" != "no"; then
+					    LDAP_LIBS="$LDAP_LIBS -lcrypto $LIB_RSAREF"
+					fi],,-llber)
+  
 fi
 AC_SUBST(LDAP_LIBS)
 

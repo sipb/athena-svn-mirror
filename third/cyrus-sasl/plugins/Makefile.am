@@ -1,7 +1,7 @@
 # Makefile.am for the SASL plugins
 # Rob Siemborski
 # Rob Earhart
-# $Id: Makefile.am,v 1.1.1.1 2002-10-13 18:02:25 ghudson Exp $
+# $Id: Makefile.am,v 1.1.1.2 2003-02-12 22:34:24 ghudson Exp $
 #
 ################################################################
 # Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
@@ -46,25 +46,25 @@
 
 # Library version info - here at the top, for sanity
 # CURRENT:REVISION:AGE
-anonymous_version = 2:8:0
-digestmd5_version = 2:8:0
-kerberos4_version = 2:8:0
-gssapiv2_version = 2:8:0
-crammd5_version = 2:8:0
-sasldb_version = 2:8:0
-login_version = 2:8:0
-mysql_version = 2:8:0
-plain_version = 2:8:0
-ntlm_version = 2:8:0
-otp_version = 2:8:0
-srp_version = 2:8:0
+anonymous_version = 2:12:0
+digestmd5_version = 2:12:0
+kerberos4_version = 2:12:0
+gssapiv2_version = 2:12:0
+crammd5_version = 2:12:0
+sasldb_version = 2:12:0
+login_version = 2:12:0
+mysql_version = 2:12:0
+plain_version = 2:12:0
+ntlm_version = 2:12:0
+otp_version = 2:12:0
+srp_version = 2:12:0
 
 INCLUDES=-I$(top_srcdir)/include -I$(top_srcdir)/lib -I$(top_srcdir)/sasldb
 LDFLAGS = @LDFLAGS@ -module -export-dynamic -rpath $(plugindir)
 
 COMPAT_OBJS = @LTGETADDRINFOOBJS@ @LTGETNAMEINFOOBJS@ @LTSNPRINTFOBJS@
 
-EXTRA_DIST = makeinit.sh
+EXTRA_DIST = makeinit.sh NTMakefile
 noinst_SCRIPTS = makeinit.sh
 
 LIB_MYSQL = @LIB_MYSQL@

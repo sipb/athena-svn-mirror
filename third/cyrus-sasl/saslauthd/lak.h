@@ -53,6 +53,7 @@
 
 #define LAK_AUTH_METHOD_BIND 0
 #define LAK_AUTH_METHOD_CUSTOM 1
+#define LAK_AUTH_METHOD_FASTBIND 2
 
 typedef struct lak_conf {
     char   *path;
@@ -72,7 +73,6 @@ typedef struct lak_conf {
     char   *search_base;
     char   *filter;
     char    auth_method;
-    char   *lookup_attrib;
     int     tls_check_peer;
     char   *tls_cacert_file;
     char   *tls_cacert_dir;
@@ -95,8 +95,10 @@ typedef struct lak_result {
     struct lak_result *next;
 } LAK_RESULT;
 
-int lak_authenticate(const char *, const char *, const char *, const char *);
-int lak_lookup_attrib(const char *, const char *, const char *, LAK_RESULT **);
-void lak_free_result(LAK_RESULT *);
+int lak_init(const char *, LAK **);
+void lak_close(LAK *);
+int lak_authenticate(LAK *, const char *, const char *, const char *);
+int lak_retrieve(LAK *, const char *, const char *, const char **, LAK_RESULT **);
+void lak_result_free(LAK_RESULT *);
 
 #endif  /* _LAK_H */

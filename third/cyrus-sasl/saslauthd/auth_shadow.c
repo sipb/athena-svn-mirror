@@ -28,7 +28,7 @@
  * END COPYRIGHT */
 
 #ifdef __GNUC__
-#ident "$Id: auth_shadow.c,v 1.1.1.1 2002-10-13 18:00:19 ghudson Exp $"
+#ident "$Id: auth_shadow.c,v 1.1.1.2 2003-02-12 22:34:17 ghudson Exp $"
 #endif
 
 /* PUBLIC DEPENDENCIES */
@@ -44,8 +44,15 @@
 # include <pwd.h>
 # include <syslog.h>
 # ifndef HAVE_GETSPNAM
-/* XXX Is this header only available on AIX? */
+
+# ifdef WITH_DES
+#  ifdef WITH_SSL_DES
+#   include <openssl/des.h>
+#  else
 #   include <des.h>
+#  endif /* WITH_SSL_DES */
+# endif /* WITH_DES */
+
 #endif /* ! HAVE_GETSPNAM */
 # ifdef HAVE_GETUSERPW
 #  include <userpw.h>

@@ -78,7 +78,7 @@
  * END HISTORY */
 
 #ifdef __GNUC__
-#ident "$Id: saslauthd-doors.c,v 1.1.1.1 2002-10-13 18:00:57 ghudson Exp $"
+#ident "$Id: saslauthd-doors.c,v 1.1.1.2 2003-02-12 22:34:20 ghudson Exp $"
 #endif
 
 /* PUBLIC DEPENDENCIES */
@@ -133,6 +133,7 @@ void		show_version(void);
 #define LOCK_SUFFIX ".pid"
 #define ACCEPT_LOCK_SUFFIX ".accept"
 #define MAX_REQ_LEN 256		/* login/pw/service/realm input buffer size */
+#define MAX_RESP_LEN 1024
 
 #ifdef _AIX
 # define SALEN_TYPE size_t
@@ -511,6 +512,7 @@ door_request(void *cookie, char *data, size_t datasize,
     char service[MAX_REQ_LEN + 1];	/* service name for authentication */
     char realm[MAX_REQ_LEN + 1];	/* user realm for authentication */
     int error_condition;		/* 1: error occured, can't continue */
+    char response[MAX_RESP_LEN + 1];
     char *dataend = data + datasize;
 /* END VARIABLES */
 
@@ -619,9 +621,15 @@ door_request(void *cookie, char *data, size_t datasize,
 	}
     }
 
-    door_return(reply, strlen(reply), NULL, 0);
-
+    /* don't leak the response */
+    strncpy(response, reply, MAX_RESP_LEN);
+    response[MAX_RESP_LEN] = '\0';
     free(reply);
+    
+    door_return(response, strlen(response), NULL, 0);
+
+    /* NOTREACHED */
+
     return;
 }
 
@@ -723,10 +731,11 @@ sigchld_ignore (
  * Keep calling the read() system call with 'fd', 'buf', and 'nbyte'
  * until all the data is read in or an error occurs.
  * END SYNOPSIS */
-int retry_read(int fd, void *buf, unsigned nbyte)
+int retry_read(int fd, void *inbuf, unsigned nbyte)
 {
     int n;
     int nread = 0;
+    char *buf = (char *)inbuf;
 
     if (nbyte == 0) return 0;
 

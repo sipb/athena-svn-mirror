@@ -1,6 +1,6 @@
 /* canonusr.c - user canonicalization support
  * Rob Siemborski
- * $Id: canonusr.c,v 1.1.1.1 2002-10-13 18:01:50 ghudson Exp $
+ * $Id: canonusr.c,v 1.1.1.2 2003-02-12 22:33:47 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -303,14 +303,17 @@ static int _canonuser_internal(const sasl_utils_t *utils,
 	u_apprealm = strlen(sconn->user_realm) + 1;
     }
     
-    /* Now copy! (FIXME: check for SASL_BUFOVER?) */
+    /* Now Copy */
     memcpy(out_user, begin_u, MIN(ulen, out_umax));
     if(sconn && u_apprealm) {
+	if(ulen >= out_umax) return SASL_BUFOVER;
 	out_user[ulen] = '@';
 	memcpy(&(out_user[ulen+1]), sconn->user_realm,
 	       MIN(u_apprealm-1, out_umax-ulen-1));
     }
     out_user[MIN(ulen + u_apprealm,out_umax)] = '\0';
+
+    if(ulen + u_apprealm > out_umax) return SASL_BUFOVER;
 
     if(out_ulen) *out_ulen = MIN(ulen + u_apprealm,out_umax);
     

@@ -12,7 +12,7 @@
 
 # Makefile.am for SASL documentation
 # Rob Earhart
-# $Id: Makefile.in,v 1.1.1.1 2002-10-13 18:02:30 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2003-02-12 22:34:31 ghudson Exp $
 #
 ################################################################
 # Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
@@ -104,10 +104,23 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AFS_CLIENT_LIBS = @AFS_CLIENT_LIBS@
+AFS_CLIENT_LIBS_STATIC = @AFS_CLIENT_LIBS_STATIC@
+AFS_INC_FLAGS = @AFS_INC_FLAGS@
+AFS_KTC_LIBS = @AFS_KTC_LIBS@
+AFS_KTC_LIBS_STATIC = @AFS_KTC_LIBS_STATIC@
+AFS_LIBAUDIT = @AFS_LIBAUDIT@
+AFS_LIBDES = @AFS_LIBDES@
+AFS_LIBDESA = @AFS_LIBDESA@
+AFS_LIB_FLAGS = @AFS_LIB_FLAGS@
+AFS_RX_LIBS = @AFS_RX_LIBS@
+AFS_TOP_DIR = @AFS_TOP_DIR@
 AS = @AS@
 AWK = @AWK@
 CC = @CC@
 CPP = @CPP@
+DB_INC_FLAGS = @DB_INC_FLAGS@
+DB_LIB_FLAGS = @DB_LIB_FLAGS@
 DIRS = @DIRS@
 DLLTOOL = @DLLTOOL@
 DMALLOC_LIBS = @DMALLOC_LIBS@
@@ -123,7 +136,13 @@ JAVADOC = @JAVADOC@
 JAVAH = @JAVAH@
 JAVAROOT = @JAVAROOT@
 JAVA_INCLUDES = @JAVA_INCLUDES@
+KRB_INC_FLAGS = @KRB_INC_FLAGS@
+KRB_LIB_FLAGS = @KRB_LIB_FLAGS@
 LIBOBJS = @LIBOBJS@
+LIBSSL_INC_DIR = @LIBSSL_INC_DIR@
+LIBSSL_INC_FLAGS = @LIBSSL_INC_FLAGS@
+LIBSSL_LIB_DIR = @LIBSSL_LIB_DIR@
+LIBSSL_LIB_FLAGS = @LIBSSL_LIB_FLAGS@
 LIBTOOL = @LIBTOOL@
 LIB_CRYPT = @LIB_CRYPT@
 LIB_DES = @LIB_DES@
@@ -148,6 +167,7 @@ PURECOV = @PURECOV@
 PURIFY = @PURIFY@
 PWCHECKMETH = @PWCHECKMETH@
 RANLIB = @RANLIB@
+RPATH = @RPATH@
 SASLFLAGS = @SASLFLAGS@
 SASL_DB_BACKEND = @SASL_DB_BACKEND@
 SASL_DB_BACKEND_STATIC = @SASL_DB_BACKEND_STATIC@
@@ -170,7 +190,7 @@ SRP_LIBS = @SRP_LIBS@
 VERSION = @VERSION@
 plugindir = @plugindir@
 
-EXTRA_DIST = rfc1321.txt 		rfc1939.txt 		rfc2104.txt 		rfc2195.txt 		rfc2222.txt 		rfc2243.txt 		rfc2245.txt 		rfc2289.txt 		rfc2444.txt 		rfc2595.txt 		rfc2831.txt 		rfc2945.txt 		rfc3174.txt 		testing.txt 		server-plugin-flow.fig 		draft-burdis-cat-srp-sasl-06.txt 		draft-ietf-cat-sasl-gssapi-05.txt 		draft-myers-saslrev-02.txt 		draft-sasl-login.txt 		programming.html 		sysadmin.html 		gssapi.html 		advanced.html 		options.html 		plugprog.html 		appconvert.html 		macosx.html 		readme.html 		upgrading.html 		index.html 		install.html 		TODO 		ONEWS
+EXTRA_DIST = rfc1321.txt 		rfc1939.txt 		rfc2104.txt 		rfc2195.txt 		rfc2222.txt 		rfc2243.txt 		rfc2245.txt 		rfc2289.txt 		rfc2444.txt 		rfc2595.txt 		rfc2831.txt 		rfc2945.txt 		rfc3174.txt 		testing.txt 		server-plugin-flow.fig 		draft-burdis-cat-srp-sasl-06.txt 		draft-ietf-cat-sasl-gssapi-05.txt 		draft-melnikov-rfc2831bis-02.txt 		draft-myers-saslrev-02.txt 		draft-nerenberg-sasl-crammd5-03.txt 		draft-newman-sasl-c-api-00.txt 		draft-sasl-login.txt 		draft-zeilenga-sasl-anon-01.txt 		draft-zeilenga-sasl-plain-01.txt 		programming.html 		sysadmin.html 		gssapi.html 		advanced.html 		options.html 		plugprog.html 		appconvert.html 		macosx.html 		windows.html 		readme.html 		mechanisms.html 		upgrading.html 		index.html 		install.html 		TODO 		ONEWS
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = ../config.h

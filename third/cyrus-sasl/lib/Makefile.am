@@ -1,6 +1,6 @@
 # Makefile.am for the SASL library
 # Rob Earhart
-# $Id: Makefile.am,v 1.1.1.1 2002-10-13 18:02:23 ghudson Exp $
+# $Id: Makefile.am,v 1.1.1.2 2003-02-12 22:34:23 ghudson Exp $
 # Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -41,11 +41,11 @@
 #
 
 # Library version info - here at the top, for sanity
-sasl_version = 2:8:0
+sasl_version = 2:12:0
 
 INCLUDES=-I$(top_srcdir)/include -I$(top_srcdir)/plugins
 
-EXTRA_DIST = windlopen.c
+EXTRA_DIST = windlopen.c staticopen.h NTMakefile
 EXTRA_LIBRARIES = libsasl2.a
 noinst_LIBRARIES = @SASL_STATIC_LIBS@
 libsasl2_a_SOURCES=
@@ -63,10 +63,12 @@ libsasl2_la_LDFLAGS = -version-info $(sasl_version)
 libsasl2_la_DEPENDENCIES = $(LTLIBOBJS)
 libsasl2_la_LIBADD = $(LTLIBOBJS) $(SASL_DL_LIB) $(LIB_SOCKET)
 
-plugin_common.lo:
+plugin_common.lo: plugin_common.o
+	rm -f plugin_common.lo
 	ln -s $(top_builddir)/plugins/plugin_common.lo plugin_common.lo
 
 plugin_common.o:
+	rm -f plugin_common.o
 	ln -s $(top_builddir)/plugins/plugin_common.o plugin_common.o
 
 if MACOSX

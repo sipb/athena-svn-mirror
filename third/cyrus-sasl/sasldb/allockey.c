@@ -1,7 +1,7 @@
 /* db_berkeley.c--SASL berkeley db interface
  * Rob Siemborski
  * Tim Martin
- * $Id: allockey.c,v 1.1.1.1 2002-10-13 18:00:50 ghudson Exp $
+ * $Id: allockey.c,v 1.1.1.2 2003-02-12 22:33:59 ghudson Exp $
  */
 /* 
  * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
@@ -146,13 +146,15 @@ int _sasldb_getsecret(const sasl_utils_t *utils,
     size_t len;
     sasl_secret_t *out;
     int ret;
+    const char *param = SASL_AUX_PASSWORD;
+    param++;
     
     if(!secret) {
 	utils->seterror(context, 0, "No secret pointer in _sasldb_getsecret");
 	return SASL_BADPARAM;
     }
 
-    ret = _sasldb_getdata(utils, context, authid, realm, SASL_AUX_PASSWORD,
+    ret = _sasldb_getdata(utils, context, authid, realm, param,
 			  buf, 8192, &len);
     
     if(ret != SASL_OK) {
