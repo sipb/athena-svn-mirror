@@ -16,7 +16,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.3 1987-06-27 19:23:32 opus Exp $";
+static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.4 1987-06-29 04:35:06 opus Exp $";
 #endif SABER
 #endif lint
 
@@ -133,6 +133,8 @@ Code_t retransmit_queue(sin)
 		  fprintf(stderr, "Error = %d\n", ret);
 		  com_err("queue", ret, "sending raw notice");
 	    }
+	    srch->q_data->timeout = TIMEOUT;
+	    srch->q_data->retries = 0;
 	    srch = srch->q_forw;
       } while (srch != &hm_queue);
 }
