@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,12 +15,12 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_common_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.5 1987-07-07 17:12:53 jtkohl Exp $";
+static char rcsid_common_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/common.c,v 1.6 1988-10-19 23:06:35 raeburn Exp $";
 #endif SABER
 #endif lint
 
 #include <stdio.h>
-#include <syslog.h>
+#include <zephyr/zsyslog.h>
 #include <strings.h>
 
 extern char *malloc();
