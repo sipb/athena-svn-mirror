@@ -19,8 +19,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.46 1994-08-21 18:22:20 cfields Exp $
- *	$Author: cfields $
+ *	$Id: olcd.h,v 1.47 1996-09-20 02:26:11 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #include <mit-copyright.h>
@@ -251,21 +251,9 @@ ERRCODE olc_version P((int fd , REQUEST *request ));
 
 /* other libraries */
 /* Kerberos */
-#ifdef KERBEROS
-extern int krb_get_lrealm P((char *, int));
-extern int krb_rd_req P((KTEXT, const char *, char *, u_long, AUTH_DAT *,
-		       char *));
-#endif /* KERBEROS */
 
 #ifdef ZEPHYR
 #include <zephyr/zephyr.h>
-extern Code_t	ZInitialize P((void));
-typedef int	(*ZPredFunc) P((ZNotice_t *, ZUnique_Id_t *));
-typedef int	(*ZCertFunc) P((ZNotice_t *, char *, int, int*));
-extern Code_t	ZSendNotice P((ZNotice_t *, ZCertFunc));
-extern Code_t	ZIfNotice P((ZNotice_t *, struct sockaddr_in *,
-			   ZPredFunc, char *));
-extern void	ZFreeNotice P((ZNotice_t *));
 #endif /* Zephyr */
 
 #undef P

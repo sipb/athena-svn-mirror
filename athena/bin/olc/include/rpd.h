@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.18 1993-10-08 09:22:44 thorne Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.19 1996-09-20 02:25:59 ghudson Exp $
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -63,15 +63,6 @@ struct 	entry {
 #define SRVTAB      "/etc/athena/srvtab"
 #define MONITOR_ACL "/var/server/olc/acls/monitor.acl"
 
-/* system */
-char *inet_ntoa P((struct in_addr in));
-int accept P((int s, struct sockaddr *addr, int *addrlen));
-int bind P((int s, struct sockaddr *name, int namelen));
-int connect P((int s, struct sockaddr *name, int namelen));
-int fstat P((int fd, struct stat *buf));
-int stat P((char *path, struct stat *buf));
-
-
 /* Acl Library */
 int acl_check P((char *acl, char *principal));
 void acl_canonicalize_principal P((char *principal , char *canon ));
@@ -91,13 +82,6 @@ char *get_nm P((char *username , int instance , int *result , int nuke ));
 /* handle_request.c */
 void handle_request P((int fd, struct sockaddr_in from));
 void punt_connection P((int fd, struct sockaddr_in from));
-
-#ifdef KERBEROS
-/* kopt.c */
-int krb_set_key P((char *key , int cvt ));
-int krb_rd_req P((KTEXT authent , char *service , char *instance , long from_addr , AUTH_DAT *ad , char *fn ));
-int krb_get_lrealm P((char *r , int n ));
-#endif /* KERBEROS */
 
 /* io.c */
 int sread P((int fd , void *buf , int nbytes ));
