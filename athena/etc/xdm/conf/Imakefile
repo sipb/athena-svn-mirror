@@ -1,7 +1,5 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/conf/Imakefile,v 1.4 1991-03-28 12:57:05 mar Exp $
-FONTS75=courR18 ncenB12 ncenB14 ncenB18 ncenB24 ncenR12
-FONTSM=	6x13 cursor 9x15
-BITMAPS=menu16
+# $Id: Imakefile,v 1.5 1991-06-26 11:10:17 probe Exp $
+
 POPUPSCRIPTS=library lucy mitvma moira register techinfo xcluster \
 	xinfo machine
 
@@ -15,6 +13,13 @@ install::
 	-for i in $(POPUPSCRIPTS); do \
 		$(INSTALL) -m 0555 $$i $(DESTDIR)/usr/athena/lib/login/$$i; \
 		done
+
+#if defined(vax) && !defined(ultrix) || defined(ibm032)
+FONTS75=courR18 ncenB12 ncenB14 ncenB18 ncenB24 ncenR12
+FONTSM=	6x13 cursor 9x15
+BITMAPS=menu16
+
+install::
 	-for i in txt dir pag; do \
 		$(INSTALL) $(DESTDIR)/usr/lib/X11/rgb.$$i \
 			$(DESTDIR)/etc/athena/login/rgb.$$i; done
@@ -28,3 +33,4 @@ install::
 		$(INSTALL) $(DESTDIR)/usr/lib/X11/bitmaps/$$i \
 			$(DESTDIR)/etc/athena/login/$$i; done
 	$(INSTALL) fonts.alias	$(DESTDIR)/etc/athena/login/fonts/
+#endif
