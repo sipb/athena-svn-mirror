@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.20 1990-11-16 07:58:32 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.21 1990-12-31 10:57:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.20 1990-11-16 07:58:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.21 1990-12-31 10:57:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -164,7 +164,7 @@ input_text_into_file(filename)
   int fd;
   int nchars;                   
 	
-  fd = open(filename, O_CREAT | O_WRONLY, 0644);
+  fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
   if (fd < 0) 
     {
       fprintf(stderr, "input_text: Can't open file %s for writing.",
