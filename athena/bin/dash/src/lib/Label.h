@@ -16,6 +16,10 @@
 
 extern JetClass labelJetClass;
 extern void setLabel();
+extern void setPixmap();
+extern void setState();
+
+#define setIcon setState	/* backward compatibility -- do not use... */
 
 typedef struct {int littlefoo;} LabelClassPart;
 
@@ -26,14 +30,16 @@ typedef struct _LabelClassRec {
 
 extern LabelClassRec labelClassRec;
 
-typedef struct {
-  char *label;
-  GC gc, gc_clear;
+typedef struct _LabelPart {
   int foreground, background;
   Boolean reverseVideo;
   XFontStruct *font;
-  Boolean centerX, centerY;
-  int x, y;
+  int justifyX, justifyY;
+  int x, y, leftX, leftY, rightX, rightY;
+  char *label;
+  GC gc, gc_reverse;
+  XjPixmap *pixmap, *leftPixmap, *rightPixmap;
+  int inverted, padding;
 } LabelPart;
 
 typedef struct _LabelRec {
@@ -46,5 +52,10 @@ typedef struct _LabelClassRec *LabelJetClass;
 
 #define XjCLabel "Label"
 #define XjNlabel "label"
+
+#define XjCIcon "Icon"
+#define XjNicon "icon"
+#define XjNleftIcon "leftIcon"
+#define XjNrightIcon "rightIcon"
 
 #endif /* _Xj_Label_h */
