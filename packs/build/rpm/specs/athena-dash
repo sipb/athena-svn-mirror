@@ -31,7 +31,7 @@ cp Dash $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults/Dash
 
 # Dash menus are versioned.  We pick up the version from the particular
 # version this Dash came from.
-. ./version
+. ./athena-version
 ln -s /afs/athena.mit.edu/system/config/dash/Dash.menus-$major.$minor \
 	$RPM_BUILD_ROOT/usr/athena/lib/Dash.menus
 
