@@ -15,15 +15,15 @@ distclean:: clean
 
 RSH=	-DKRB_RLOGIN=\"$(PROGDIR)/rlogin\"
 
-# Kerberos 5 hackery.  Not the way it will be done in the future.
-KRB5DIR=/build/third/supported/kerberos5/src
-KRB5LIBS= -L$(KRB5DIR)/lib -L/usr/athena/lib -lkrb5 -lcrypto -lcom_err
+# Kerberos 5 hackery.
+KRB5LIBS= -L/usr/athena/lib -lkrb5 -lcrypto -lcom_err
 
 # AFS hackery.
-AFSDIR=/build/transarc
-AFSLIBS=-L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx -lsys -llwp
+AFSDIR=/usr/afsws
+AFSLIBS=-L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx -lsys -llwp \
+	$(AFSBSDLIB)
 
-DEFINES= $(RSH) $(RPROGS) -DKRB5 -I$(KRB5DIR)/include \
+DEFINES= $(RSH) $(RPROGS) -DKRB5 \
 	-DLOGIN_PROGRAM=\"$(DAEMDIR)/login.krb\" -DKPROGDIR=\"$(PROGDIR)\"
 
 
