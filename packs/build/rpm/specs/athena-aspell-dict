@@ -1,0 +1,8 @@
+Name: athena-aspell-dict
+Summary: Dictionaries for aspell, for Athena
+License: LGPL
+Group: Applications/Text
+
+%description 
+This package contains dictionaries for use with aspell, a spelling
+checker.
