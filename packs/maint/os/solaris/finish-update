@@ -10,7 +10,8 @@ start)
 		echo "Creating config files for Athena software"
 		sh /srvd/install/athchanges | tee -a /var/athena/install.log
 		vers=`awk '{a=$6} END {print a}' /etc/athena/version`
-		echo "Athena Workstation ($HOSTTYPE) Version $vers `date`" \
+		hosttype=`/bin/athena/machtype`
+		echo "Athena Workstation ($hosttype) Version $vers `date`" \
 		  >> /etc/athena/version
 		;;
 	Reboot)
