@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.4 1991-01-22 16:18:20 probe Exp $";
+static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.5 1991-03-04 12:56:58 epeisach Exp $";
 #endif lint
 
 #include "attach.h"
@@ -37,6 +37,9 @@ rvd_attach(at, mopt, errorout)
 	    fprintf(stderr, "%s: No free RVD drives\n", at->hesiodname);
 	return (FAILURE);
     }
+
+    if (debug_flag)
+      printf("avail_drive returned %d\n", vddrive);
 
     at->drivenum = vddrive;
     
@@ -116,13 +119,15 @@ rvd_attach(at, mopt, errorout)
 rvd_detach(at)
     struct _attachtab *at;
 {
+	char buf[BUFSIZ];
+
 	if (at->flags & FLAG_PERMANENT) {
 		if (debug_flag)
 			printf("Permanent flag on, skipping umount.\n");
 		return(SUCCESS);
 	}
 	
-	if (unmount_42(at->hesiodname, at->mntpt) == FAILURE)
+	if (unmount_42(at->hesiodname, at->mntpt, vdnam(buf,at->drivenum)) == FAILURE)
 		return (FAILURE);
 	rvd_spindown(at->drivenum);
 	return (SUCCESS);
