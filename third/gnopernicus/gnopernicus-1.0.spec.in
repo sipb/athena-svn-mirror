@@ -1,0 +1,67 @@
+Name:		gnopernicus
+Summary:	Assistive Technology 
+Version:	@VERSION@
+Release:	1
+License:	LGPL
+Group:		Applications/Productivity
+Source:		ftp://ftp.baum.de/pub/gnopernicus/gnopernicus-%{version}.tar.gz
+BuildRoot:	/var/tmp/%{name}-%{version}-root
+URL:		http://www.baum.de
+
+%description
+The Gnopernicus project enables users with limited vision, or no vision, to use
+the Gnome 2 desktop  and  Gnome/GTK+-2  applications  effectively. By providing 
+automated  focus  tracking and  fullscreen  magnification, Gnopernicus will aid 
+low-vision Gnome users, and  its  screen reader features  will allow low-vision 
+and blind  users  access to standard GTK+2  and Java-based GUI applications via 
+speech  and  braille  output. By leveraging  Gnome 2's  built-in  accessibility 
+framework, Gnopernicus makes interacting  with  applications more efficient for 
+these users, and enables use of the Gnome2 desktop for some users who otherwise
+would have no access to Gnome.
+
+%prep
+#-n name_of_the build_directory
+%setup -q -n gnopernicus-%{version}
+
+%build
+CFLAGS="$RPM_OPT_FLAGS"
+./configure --prefix=%{_prefix} \
+    --bindir=%{_bindir} --mandir=%{_mandir} \
+    --localstatedir=%{_localstatedir} --libdir=%{_libdir} \
+    --datadir=%{_datadir} --includedir=%{_includedir} \
+    --sysconfdir=%{_sysconfdir} --disable-gtk-doc
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
+    mandir=$RPM_BUILD_ROOT%{_mandir} libdir=$RPM_BUILD_ROOT%{_libdir} \
+    localstatedir=$RPM_BUILD_ROOT%{_localstatedir} \
+    datadir=$RPM_BUILD_ROOT%{_datadir} \
+    includedir=$RPM_BUILD_ROOT%{_includedir} \
+    sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir} install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+
+%doc AUTHORS COPYING ChangeLog NEWS README
+%{_libdir}/lib*.so
+%{_libdir}/gnopernicus-1.0
+%{_libdir}/pkgconfig/*.pc
+%{_includedir}/gnopernicus-1.0
+#%{_datadir}/aclocal/*
+%{_sysconfdir}/gnopernicus-1.0/libbrl
+%{_bindir}/*
+#%{_datadir}/gtk-doc/html/srlow
+
+%changelog
+* Tue May 28 2002 Adi Dascal <ad@baum.ro>
+- created the this spec file

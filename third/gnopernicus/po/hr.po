@@ -1,0 +1,4976 @@
+# Translation of gnopernicus to Croatiann
+# Copyright (C) Croatiann team
+# Translators: Antun Krasic <butch@gawab.com>,Automatski Prijevod <>,Danijel Studen <dstuden@vuka.hr>,Denis Lackovic <delacko@fly.srk.fer.hr>,Kresimir Kalafatic <>,Ljubomir Božić <ljubo108@vip.hr>,Mato Kutlić <mate@iskraemeco.hr>,Nikola Planinac <>,pr pr <delacko@192.168.0.1>,Robert Sedak <robert.sedak@sk.tel.hr>,Sasa Poznanovic <sasa.poznanovic@vuka.hr>,Tanja Minarik <tanja@finte.net>,Tomislav Cavrag <tcavrag@vuka.hr>,Vedran Vyroubal <vedran.vyroubal@inet.hr>,
+msgid ""
+msgstr ""
+"Project-Id-Version: gnopernicus 0\n"
+"POT-Creation-Date: 2004-09-15 12:38+0300\n"
+"PO-Revision-Date: 2004-03-28 23:25+CEST\n"
+"Last-Translator: auto\n"
+"Language-Team: Croatian <lokalizacija@linux.hr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: TransDict server\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: braille/test/remote.c:548
+msgid "Braille remote"
+msgstr "Udaljeni braillov terminal"
+
+#: brlmon/brlmon.c:196
+msgid "Braille monitor"
+msgstr "Braillov monitor"
+
+#: brlmon/brlmon.c:325 brlmon/brlmon.c:333
+#, c-format
+msgid "Invalid port number: %d."
+msgstr "Nevažeći broj porta: %d."
+
+#: brlmon/brlmon.c:326 brlmon/brlmon.c:334
+msgid "port_no = [1025 - 30000]."
+msgstr "broj_porta = [1025–30000]."
+
+#: brlmon/brlmon.c:520
+msgid "Can not open socket!"
+msgstr "Ne mogu otvoriti socket!"
+
+#: brlmon/brlmon.c:543
+#, c-format
+msgid "Can not bind port number %d."
+msgstr "Ne mogu se spojiti na na port broj %d."
+
+#: brlmon/brlmon.c:547
+#, c-format
+msgid "Waiting for data on port UDP %u."
+msgstr "Očekuje podatke na UDP portu %u."
+
+#: brlmon/brlmonui.c:225 gnopi/gnopiconf.c:43
+msgid "Failed to init gconf client."
+msgstr "Nije uspjelo pokretanje gconf klijenta."
+
+#: brlmon/brlmonui.c:234 srconf/libsrconf/libsrconf.c:418
+msgid "Failed to add directory."
+msgstr "Nije uspjelo dodavanje mape."
+
+#: brlmon/brlmonui.c:246 gnopi/kbconf.c:79 gnopi/spconf.c:89
+#: srconf/libsrconf/libsrconf.c:431
+msgid "Failed to add notify."
+msgstr "Nije uspjelo dodavanje obavještenja."
+
+#: brlmon/brlmonui.c:261 gnopi/gnopiconf.c:145
+#, c-format
+msgid "Expected key: %s"
+msgstr "Očekivani ključ: %s"
+
+#: brlmon/brlmonui.c:301
+#, c-format
+msgid "Failed to set value: %d"
+msgstr "Nije uspjelo podešavanje vrijednosti: %d"
+
+#: brlmon/brlmonui.c:342 brlmon/brlmonui.c:444 gnopi/gnopiconf.c:355
+#: gnopi/gnopiconf.c:409 gnopi/gnopiconf.c:560 gnopi/gnopiconf.c:733
+#, c-format
+msgid "Invalid type of key: %s."
+msgstr "Nevažeći tip tipke: %s."
+
+#: brlmon/brlmonui.c:345 brlmon/brlmonui.c:364
+#, c-format
+msgid "Failed to set int value: %d."
+msgstr "Nije uspjelo postaviti  inicilizacijsku vrijednost: %d."
+
+#: brlmon/brlmonui.c:358 brlmon/brlmonui.c:459
+#, c-format
+msgid "Failed to get value: %s."
+msgstr "Nije uspjelo preuzimanje vrijednosti: %s."
+
+#: brlmon/brlmonui.c:403 gnopi/gnopiconf.c:357 gnopi/gnopiconf.c:375
+#: gnopi/gnopiconf.c:562 gnopi/gnopiconf.c:578
+#, c-format
+msgid "Failed to set value: %d."
+msgstr "Nije uspjelo podešavanje vrijednosti: %d"
+
+#: brlmon/brlmonui.c:447 brlmon/brlmonui.c:462
+#, c-format
+msgid "Failed to set boolean value: %d."
+msgstr "Nije uspjelo podešavanje boolean vrijednosti: %d."
+
+#: brlmon/brlmonui.c:501 gnopi/gnopiconf.c:496 gnopi/gnopiconf.c:509
+#, c-format
+msgid "Failed to set value: %s."
+msgstr "Nije uspjelo podešavanje vrijednosti: %s."
+
+#: brlmon/brlmonui.c:535
+#, c-format
+msgid "Failed to get string value: %s."
+msgstr "Nije uspjelo preuzimanje vrijednosti  niza podata: %s."
+
+#: brlmon/brlmonui.c:539 brlmon/brlmonui.c:549
+#, c-format
+msgid "Failed to set string value: %s."
+msgstr "Nije uspjelo  postaviti vrijednost niza podataka: %s."
+
+#: brlmon/brlmonui.c:583 gnopi/bmui.c:297
+#, c-format
+msgid "Invalid modetype: %s."
+msgstr "Nevažeći modetype: %s."
+
+#: brlmon/brlmonui.c:635
+#, c-format
+msgid "%s font not installed."
+msgstr "%s font nije instaliran."
+
+#. *
+#. * bmui_load_colors
+#. *
+#. * Load text colors.
+#. *
+#. * returns:
+#. *
+#: brlmon/brlmonui.c:639 gnopi/bmui.c:251
+msgid "Can not parse color string."
+msgstr "Ne mogu parsirati znakovni niz sa bojom."
+
+#: brlmon/brlmonui.c:1111
+msgid "Status"
+msgstr "Status"
+
+#: brlmon/brlmonui.c:1318
+#, fuzzy, c-format
+msgid "Too many cells on display. [Max %d]"
+msgstr "Previše ćelija na zaslonu. [Najviše %d]"
+
+#: brlmon/brlmonui.c:1319
+#, c-format
+msgid "Load default display size. Line: %d Column: %d."
+msgstr "Učitaj osnovnu veličinu ekrana. Line: %d Colum: %d"
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:84
+#, c-format
+msgid "BRLOUT attribute %s is not supported."
+msgstr "Atribut BRLOUT %s nije podržan."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:218
+#, c-format
+msgid "TEXT attribute %s is not supported."
+msgstr "Atribut TEXT %s nije podržan."
+
+#: gnopi/bmconf.c:318
+msgid "Failed to set display size."
+msgstr "Nije uspjelo postaviti veličinu prikaza."
+
+#: gnopi/bmconf.c:336
+msgid "Failed to set display position."
+msgstr "Nije uspjelo postaviti položaj prikaza."
+
+#: gnopi/bmconf.c:368
+msgid "Failed to set display mode."
+msgstr "Nije uspjelo postaviti mod prikaza."
+
+#: gnopi/bmconf.c:392
+msgid "Failed to set dot type colors."
+msgstr "Nije uspjelo postaviti dot klasa boje."
+
+#: gnopi/bmconf.c:409
+msgid "Failed to set font size."
+msgstr "nije uspjelo postaviti veličinu fonta."
+
+#: gnopi/bmui.c:328
+#, c-format
+msgid "Invalid position: %s."
+msgstr "Nevažeća pozicija: %s."
+
+#: gnopi/brlconf.c:282 gnopi/cmdmapconf.c:237 gnopi/coreconf.c:140
+#: gnopi/kbconf.c:126 gnopi/magconf.c:226 gnopi/spconf.c:152
+#: gnopi/spconf.c:1203
+msgid "Unable to allocate memory."
+msgstr "Ne može dodijeliti memoriju."
+
+#: gnopi/brlconf.c:388
+#, c-format
+msgid "Failed to set braille style: %s."
+msgstr "Nije uspjelo podešavanje braille stila: %s."
+
+#: gnopi/brlconf.c:397
+#, c-format
+msgid "Failed to set braille cursor style: %s."
+msgstr "Nije uspjelo podešavanje stila braille pokazivača: %s."
+
+#: gnopi/brlconf.c:406
+#, c-format
+msgid "Failed to set attribute settings: %d."
+msgstr "Nije uspjelo podešavanje dodataka: %d."
+
+#: gnopi/brlconf.c:415
+#, c-format
+msgid "Failed to set braille device: %s."
+msgstr "Nije uspjelo podešavanje braille komunikacijskog uređaja: %s."
+
+#: gnopi/brlconf.c:424
+#, c-format
+msgid "Failed to set fill character: %s."
+msgstr "Nije uspjelo postaviti ispunu karaktera: %s."
+
+#: gnopi/brlconf.c:433
+#, c-format
+msgid "Failed to set serial port number: %d."
+msgstr "Nije uspjelo postaviti broj serijskog porta: %d."
+
+#: gnopi/brlconf.c:443
+#, c-format
+msgid "Failed to set translation table: %s."
+msgstr "Nije uspjelo podešavanje tablice premještanja: %s."
+
+#: gnopi/brlconf.c:452
+#, c-format
+msgid "Failed to set optical sensor: %d."
+msgstr "Nije uspjelo postaviti optički senzor:%d."
+
+#: gnopi/brlconf.c:461
+#, c-format
+msgid "Failed to set position sensor: %d."
+msgstr "nije uspjelo postaviti senzor polozaja: %d."
+
+#: gnopi/brlconf.c:470
+#, c-format
+msgid "Failed to set status cell: %s."
+msgstr "Nije uspjelo postaviti statu ćelije: %s."
+
+#: gnopi/brlconf.c:556
+msgid "<none>"
+msgstr "<nijedno>"
+
+#: gnopi/brlui.c:79
+msgid "American English"
+msgstr "Američki engleski"
+
+#: gnopi/brlui.c:80
+msgid "German"
+msgstr "Njemački"
+
+#: gnopi/brlui.c:81
+msgid "Spanish"
+msgstr "Španjolski"
+
+#: gnopi/brlui.c:82
+msgid "Swedish"
+msgstr "Švedski"
+
+#. To translators: X = X Window System server
+#: gnopi/brlui.c:351
+msgid "X display's _terminal number:"
+msgstr "Broj _terminala na X zaslonu:"
+
+#: gnopi/brlui.c:357
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:6
+msgid "_Port:"
+msgstr "_Port:"
+
+#: gnopi/brlui.c:623
+msgid "Language"
+msgstr "Jezik"
+
+#: gnopi/brlui.c:1218 gnopi/cmdmapui.c:475
+msgid "No selected command!"
+msgstr "Nije odabrana naredba!"
+
+#: gnopi/brlui.c:1242
+msgid "Invalid device key!"
+msgstr "Neispravan ključ uređaja!"
+
+#: gnopi/brlui.c:1477 gnopi/brlui.c:1900 gnopi/cmdmapui.c:717
+#: gnopi/cmdmapui.c:1568 gnopi/cmdmapui.c:1588
+msgid "Commands"
+msgstr "Naredbe"
+
+#: gnopi/brlui.c:1632 gnopi/cmdmapui.c:1186
+msgid "No selected item to modify!"
+msgstr "Nije odabrana stavka za izmjenu!"
+
+#: gnopi/brlui.c:1644 gnopi/brlui.c:1724 gnopi/cmdmapui.c:1059
+#: gnopi/cmdmapui.c:1196
+msgid "Invalid selected item!"
+msgstr "Nevažeči odabrani predmet!"
+
+#: gnopi/brlui.c:1712 gnopi/cmdmapui.c:1046
+msgid "No selected item to remove!"
+msgstr "Nije odabrana stavka za brisanje!"
+
+#: gnopi/brlui.c:1894
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:9
+msgid "Braille Keys"
+msgstr "Braillovi ključevi"
+
+#: gnopi/cmdmapconf.c:462 gnopi/cmdmapconf.c:503
+msgid "Change commit error."
+msgstr "Greška prilikom potvrđivanja izmjene."
+
+#: gnopi/cmdmapui.c:45
+msgid "decrease y scale"
+msgstr "umanji vertikalni razmjer"
+
+#: gnopi/cmdmapui.c:46
+msgid "decrease x scale"
+msgstr "umanji horizontalni razmjer"
+
+#: gnopi/cmdmapui.c:47
+msgid "increase y scale"
+msgstr "povećaj y omjer"
+
+#: gnopi/cmdmapui.c:48
+msgid "increase x scale"
+msgstr "povećaj x omjer"
+
+#: gnopi/cmdmapui.c:49
+msgid "lock xy scale"
+msgstr "zaključaj okomito-vodoravni razmjer"
+
+#: gnopi/cmdmapui.c:50
+msgid "smoothing toggle"
+msgstr "prekidač za dotjerivanje"
+
+#: gnopi/cmdmapui.c:51
+msgid "cursor toggle"
+msgstr "prekidač za kurzor"
+
+#: gnopi/cmdmapui.c:52
+msgid "cursor on/off"
+msgstr "kursor uključen/isključen"
+
+#: gnopi/cmdmapui.c:53
+msgid "cursor magnification on/off"
+msgstr "uvećanje kursora uključeno/isključeno"
+
+#: gnopi/cmdmapui.c:54
+msgid "decrease cursor size"
+msgstr "umanji veličinu kursora"
+
+#: gnopi/cmdmapui.c:55
+msgid "increase cursor size"
+msgstr "povaćaj veličinu pokazivača"
+
+#: gnopi/cmdmapui.c:56
+msgid "invert on/off"
+msgstr "uključena/isključena inverzija"
+
+#: gnopi/cmdmapui.c:57
+msgid "magnifier default"
+msgstr "uobičajeno uvećanje"
+
+#: gnopi/cmdmapui.c:58
+msgid "crosshair on/off"
+msgstr "nišan uključen/isključen"
+
+#: gnopi/cmdmapui.c:59
+msgid "crosshair clip on/off"
+msgstr "isječak nišan uključen/isključen"
+
+#: gnopi/cmdmapui.c:60
+msgid "decrease crosshair size"
+msgstr "umanji veličinu nišana"
+
+#: gnopi/cmdmapui.c:61
+msgid "increase crosshair size"
+msgstr "uvećaj veličinu nišana"
+
+#: gnopi/cmdmapui.c:62
+msgid "automatic panning on/off"
+msgstr "automatsko pomicanje uključeno/isključeno"
+
+#: gnopi/cmdmapui.c:63
+msgid "mouse tracking toggle"
+msgstr "prekidač za praćenje miša"
+
+#: gnopi/cmdmapui.c:64
+msgid "load magnifier defaults"
+msgstr "učitaj uobičajena podešavanja za uvećanje"
+
+#: gnopi/cmdmapui.c:66
+msgid "decrease pitch"
+msgstr "umanji frekvenciju"
+
+#: gnopi/cmdmapui.c:67
+msgid "increase pitch"
+msgstr "povećaj visinu tona"
+
+#: gnopi/cmdmapui.c:68
+msgid "default pitch"
+msgstr "uobičajena frekvencija"
+
+#: gnopi/cmdmapui.c:69
+msgid "decrease rate"
+msgstr "umanji brzinu"
+
+#: gnopi/cmdmapui.c:70
+msgid "increase rate"
+msgstr "povaćaj brzinu"
+
+#: gnopi/cmdmapui.c:71
+msgid "default rate"
+msgstr "uobičajena brzina"
+
+#: gnopi/cmdmapui.c:72
+msgid "decrease volume"
+msgstr "Smanji jačinu zvuka"
+
+#: gnopi/cmdmapui.c:73
+msgid "increase volume"
+msgstr "Pojačaj jačinu zvuka"
+
+#: gnopi/cmdmapui.c:74
+msgid "default volume"
+msgstr "uobičajena jačina zvuka"
+
+#: gnopi/cmdmapui.c:75
+msgid "speech default"
+msgstr "uobičajen govor"
+
+#: gnopi/cmdmapui.c:77
+msgid "goto parent"
+msgstr "idi na roditelja"
+
+#: gnopi/cmdmapui.c:78
+msgid "goto child"
+msgstr "idi na dijete"
+
+#: gnopi/cmdmapui.c:79
+msgid "goto previous"
+msgstr "idi na prethodni"
+
+#: gnopi/cmdmapui.c:80
+msgid "goto next"
+msgstr "idi na sljedeći"
+
+#: gnopi/cmdmapui.c:81
+msgid "repeat last"
+msgstr "ponovi posljednje"
+
+#: gnopi/cmdmapui.c:82
+msgid "goto focus"
+msgstr "idi na fokus"
+
+#: gnopi/cmdmapui.c:83
+msgid "goto title"
+msgstr "idi na naslov"
+
+#: gnopi/cmdmapui.c:84
+msgid "goto menu"
+msgstr "idi na izbornik"
+
+#: gnopi/cmdmapui.c:85
+msgid "goto toolbar"
+msgstr "idi na alatnu traku"
+
+#: gnopi/cmdmapui.c:86
+msgid "goto statusbar"
+msgstr "idi na liniju sa stanjem"
+
+#: gnopi/cmdmapui.c:87
+msgid "widget surroundings"
+msgstr "okruženja elemenata"
+
+#: gnopi/cmdmapui.c:89
+msgid "goto caret"
+msgstr "idi na znak za umetanje"
+
+#: gnopi/cmdmapui.c:90
+msgid "goto first"
+msgstr "idi na prvi"
+
+#: gnopi/cmdmapui.c:91
+msgid "goto last"
+msgstr "idi na posljednji"
+
+#: gnopi/cmdmapui.c:92
+msgid "change navigation mode"
+msgstr "promijeni način upravljanja"
+
+#: gnopi/cmdmapui.c:94
+msgid "toggle flat review/focus tracking mode"
+msgstr "promijeni ravan prelaz/praćenje fokusa"
+
+#: gnopi/cmdmapui.c:95
+msgid "flat review"
+msgstr "ravan prelaz"
+
+#: gnopi/cmdmapui.c:96
+msgid "window hierarchy"
+msgstr "hijerarhija prozora"
+
+#: gnopi/cmdmapui.c:97
+msgid "read whole window"
+msgstr ""
+
+#: gnopi/cmdmapui.c:98
+msgid "detailed informations"
+msgstr "detaljni podaci"
+
+#: gnopi/cmdmapui.c:99
+msgid "do default action"
+msgstr "izvedi uobičajenu akciju"
+
+#: gnopi/cmdmapui.c:100
+msgid "window overview"
+msgstr "pregled prozora"
+
+#: gnopi/cmdmapui.c:101
+msgid "find next"
+msgstr "pronađi sljedeće"
+
+#: gnopi/cmdmapui.c:102
+msgid "find set"
+msgstr "nađi postavljen"
+
+#: gnopi/cmdmapui.c:103
+msgid "attributes at caret"
+msgstr "atributi na mestu umetanja"
+
+#: gnopi/cmdmapui.c:104
+msgid "watch current object"
+msgstr "nadgledaj trenutni objekt"
+
+#: gnopi/cmdmapui.c:105 srcore/srctrl.c:1353
+msgid "unwatch all objects"
+msgstr "Prestani nadzirati sve objekte"
+
+#: gnopi/cmdmapui.c:107
+msgid "mouse left press"
+msgstr "pritisak na lijevu tipku miša "
+
+#: gnopi/cmdmapui.c:108
+msgid "mouse left click"
+msgstr "klik na lijevu tipku miša "
+
+#: gnopi/cmdmapui.c:109
+msgid "mouse left release"
+msgstr "otpuštanje lijeve tipke miša "
+
+#: gnopi/cmdmapui.c:110
+msgid "mouse right press"
+msgstr "desni pritisak miša"
+
+#: gnopi/cmdmapui.c:111
+msgid "mouse right click"
+msgstr "desni klik miša"
+
+#: gnopi/cmdmapui.c:112
+msgid "mouse right release"
+msgstr "desno otpuštanje miša"
+
+#: gnopi/cmdmapui.c:113
+msgid "mouse middle press"
+msgstr "pritisak na srednju tipku miša "
+
+#: gnopi/cmdmapui.c:114
+msgid "mouse middle release"
+msgstr "srednje otpuštanje miša"
+
+#: gnopi/cmdmapui.c:115
+msgid "mouse middle click"
+msgstr "klik na srednju tipku miša "
+
+#: gnopi/cmdmapui.c:116
+msgid "mouse goto current"
+msgstr " "
+
+#: gnopi/cmdmapui.c:118
+msgid "shutup"
+msgstr "ušuti"
+
+#: gnopi/cmdmapui.c:119
+msgid "pause/resume"
+msgstr "zaustavi/nastavi"
+
+#: gnopi/cmdmapui.c:121
+msgid "char left"
+msgstr "znak lijevo"
+
+#: gnopi/cmdmapui.c:122
+msgid "char right"
+msgstr "znak desno"
+
+#: gnopi/cmdmapui.c:123
+msgid "display left"
+msgstr "prikaži ljevo"
+
+#: gnopi/cmdmapui.c:124
+msgid "display right"
+msgstr "prikaži desno"
+
+#: gnopi/cmdmapui.c:126
+msgid "braille on/off"
+msgstr "Braille uključi/isključi"
+
+#: gnopi/cmdmapui.c:127
+msgid "speech on/off"
+msgstr "govor uključi/isključi"
+
+#: gnopi/cmdmapui.c:128
+msgid "magnifier on/off"
+msgstr "povećalo uključi/isključi"
+
+#: gnopi/cmdmapui.c:129
+msgid "braille monitor on/off"
+msgstr "Brailleov zaslon uključi/isključi"
+
+#: gnopi/cmdmapui.c:143
+msgid "A"
+msgstr "A"
+
+#: gnopi/cmdmapui.c:144
+msgid "B"
+msgstr "B"
+
+#: gnopi/cmdmapui.c:145
+msgid "C"
+msgstr "C"
+
+#: gnopi/cmdmapui.c:146
+msgid "D"
+msgstr "D"
+
+#: gnopi/cmdmapui.c:147
+msgid "E"
+msgstr "E"
+
+#: gnopi/cmdmapui.c:148
+msgid "F"
+msgstr "F"
+
+#: gnopi/cmdmapui.c:149
+msgid "G"
+msgstr "P"
+
+#: gnopi/cmdmapui.c:150
+msgid "H"
+msgstr "H"
+
+#: gnopi/cmdmapui.c:151
+msgid "I"
+msgstr "K"
+
+#: gnopi/cmdmapui.c:152
+msgid "J"
+msgstr "J"
+
+#: gnopi/cmdmapui.c:153
+msgid "K"
+msgstr "K"
+
+#: gnopi/cmdmapui.c:154
+msgid "L"
+msgstr "L"
+
+#: gnopi/cmdmapui.c:155
+msgid "M"
+msgstr "M"
+
+#: gnopi/cmdmapui.c:156
+msgid "N"
+msgstr "N"
+
+#: gnopi/cmdmapui.c:157
+msgid "O"
+msgstr "O"
+
+#: gnopi/cmdmapui.c:158
+msgid "P"
+msgstr "P"
+
+#: gnopi/cmdmapui.c:159
+msgid "Q"
+msgstr "Kv"
+
+#: gnopi/cmdmapui.c:160
+msgid "R"
+msgstr "R"
+
+#: gnopi/cmdmapui.c:161
+msgid "S"
+msgstr "S"
+
+#: gnopi/cmdmapui.c:162
+msgid "T"
+msgstr "T"
+
+#: gnopi/cmdmapui.c:163
+msgid "U"
+msgstr "U"
+
+#: gnopi/cmdmapui.c:164
+msgid "V"
+msgstr "V"
+
+#: gnopi/cmdmapui.c:165
+msgid "W"
+msgstr "W"
+
+#: gnopi/cmdmapui.c:166
+msgid "X"
+msgstr "X"
+
+#: gnopi/cmdmapui.c:167
+msgid "Y"
+msgstr "Y"
+
+#: gnopi/cmdmapui.c:168
+msgid "Z"
+msgstr "Z"
+
+#: gnopi/cmdmapui.c:169
+msgid "F1"
+msgstr "F1"
+
+#: gnopi/cmdmapui.c:170
+msgid "F2"
+msgstr "F2"
+
+#: gnopi/cmdmapui.c:171
+msgid "F3"
+msgstr "F3"
+
+#: gnopi/cmdmapui.c:172
+msgid "F4"
+msgstr "F4"
+
+#: gnopi/cmdmapui.c:173
+msgid "F5"
+msgstr "F5"
+
+#: gnopi/cmdmapui.c:174
+msgid "F6"
+msgstr "F6"
+
+#: gnopi/cmdmapui.c:175
+msgid "F7"
+msgstr "F7"
+
+#: gnopi/cmdmapui.c:176
+msgid "F8"
+msgstr "F8"
+
+#: gnopi/cmdmapui.c:177
+msgid "F9"
+msgstr "F9"
+
+#: gnopi/cmdmapui.c:178
+msgid "F10"
+msgstr "F10"
+
+#: gnopi/cmdmapui.c:179
+msgid "F11"
+msgstr "F11"
+
+#: gnopi/cmdmapui.c:180
+msgid "F12"
+msgstr "F12"
+
+#: gnopi/cmdmapui.c:181
+msgid "0"
+msgstr "0"
+
+#: gnopi/cmdmapui.c:182
+msgid "1"
+msgstr "1"
+
+#: gnopi/cmdmapui.c:183
+msgid "2"
+msgstr "2"
+
+#: gnopi/cmdmapui.c:184
+msgid "3"
+msgstr "3"
+
+#: gnopi/cmdmapui.c:185
+msgid "4"
+msgstr "4"
+
+#: gnopi/cmdmapui.c:186
+msgid "5"
+msgstr "5"
+
+#: gnopi/cmdmapui.c:187
+msgid "6"
+msgstr "6"
+
+#: gnopi/cmdmapui.c:188
+msgid "7"
+msgstr "7"
+
+#: gnopi/cmdmapui.c:189
+msgid "8"
+msgstr "8"
+
+#: gnopi/cmdmapui.c:190
+msgid "9"
+msgstr "9"
+
+#: gnopi/cmdmapui.c:191
+msgid "apostrophe"
+msgstr "apostrof"
+
+#: gnopi/cmdmapui.c:192
+msgid "backslash"
+msgstr "obrnuta kosa crta"
+
+#: gnopi/cmdmapui.c:193
+msgid "bracket left"
+msgstr "lijeva uglata zagrada"
+
+#: gnopi/cmdmapui.c:194
+msgid "bracket right"
+msgstr "desna uglasa zagrada"
+
+#: gnopi/cmdmapui.c:195
+msgid "comma"
+msgstr "zarez"
+
+#: gnopi/cmdmapui.c:196
+msgid "equal"
+msgstr "jednako"
+
+#: gnopi/cmdmapui.c:197
+msgid "grave"
+msgstr "ozbiljno"
+
+#: gnopi/cmdmapui.c:198
+msgid "minus"
+msgstr "minus"
+
+#: gnopi/cmdmapui.c:199
+msgid "period"
+msgstr "razdoblje"
+
+#: gnopi/cmdmapui.c:200
+msgid "quote left"
+msgstr "lijevi navodnik"
+
+#: gnopi/cmdmapui.c:201
+msgid "semicolon"
+msgstr "točka-zarez"
+
+#: gnopi/cmdmapui.c:202
+msgid "slash"
+msgstr "kosa crta"
+
+#: gnopi/cmdmapui.c:1133
+msgid "Invalid key or existent key."
+msgstr "Nevažeći kljuć ili važeći kljuć"
+
+#: gnopi/cmdmapui.c:1562
+msgid "Layer Keys"
+msgstr "Tipke nivoa"
+
+#: gnopi/cmdmapui.c:1582
+msgid "User Keys"
+msgstr "Korisničke tipke "
+
+#: gnopi/coreconf.c:248
+#, c-format
+msgid "Failed to set exit val: %d."
+msgstr "Nije uspjelo postaviti izlazne vrijednosti: %d."
+
+#: gnopi/coreconf.c:290
+#, c-format
+msgid "Failed to set move mouse: %d."
+msgstr "Nije uspjelo postaviti korak miša: %d."
+
+#: gnopi/coreconf.c:299
+#, c-format
+msgid "Failed to set simulate click: %d."
+msgstr "Nije uspjelo simulirati klik: %d."
+
+#: gnopi/coreconf.c:308
+#, c-format
+msgid "Failed to set find text: %s."
+msgstr "Nije uspjelo postaviti tekst za traženje: %s."
+
+#: gnopi/coreconf.c:318
+#, c-format
+msgid "Failed to set magnifier status: %d."
+msgstr "Nije uspjelo postaviti status  povećala: %d."
+
+#: gnopi/coreconf.c:327
+#, c-format
+msgid "Failed to set speech status: %d."
+msgstr "Nije uspjelo postaviti status govora: %d."
+
+#: gnopi/coreconf.c:336
+#, c-format
+msgid "Failed to set braille status: %d."
+msgstr "Nije uspjelo podešavanje braille stanja: %d."
+
+#: gnopi/coreconf.c:345
+#, c-format
+msgid "Failed to set braille monitor status: %d."
+msgstr "Nije uspjelo podešavanje braille monitora stanja: %d."
+
+#: gnopi/coreconf.c:354
+#, c-format
+msgid "Failed to set minimize flag: %d."
+msgstr "Nije uspjelo postaviti zastavicu minimiziranja: %d."
+
+#: gnopi/coreconf.c:363
+#, c-format
+msgid "Failed to set exit ack: %d."
+msgstr "Nije uspjelo postaviti islaz ack: %d."
+
+#: gnopi/coreconf.c:372
+#, c-format
+msgid "Failed to set language: %s."
+msgstr "Nije uspjelo postaviti jezik: %s."
+
+#: gnopi/coreconf.c:381
+#, c-format
+msgid "Failed to set screen review: %d."
+msgstr "Nije uspjelo postaviti pregled ekrana: %d."
+
+#: gnopi/defui.c:73
+#, c-format
+msgid "Are you sure you want to load default values for %s?"
+msgstr "Sigurni ste da želite učitati uobičajene postavke za %s?"
+
+#: gnopi/defui.c:100
+msgid "braille"
+msgstr "braillovo pismo"
+
+#: gnopi/defui.c:116
+msgid "Braille default setting loaded."
+msgstr "Učitano je uobičajeno braillovo podešavanje."
+
+#: gnopi/defui.c:125
+msgid "speech"
+msgstr "besjeda"
+
+#: gnopi/defui.c:133
+msgid "Speech default setting loaded."
+msgstr "Učitana je uobičajena postavka govora. "
+
+#: gnopi/defui.c:142
+msgid "magnifier"
+msgstr "lupa"
+
+#: gnopi/defui.c:156
+msgid "Magnifier default setting loaded."
+msgstr "Učitano je uobičajeno postavki povećala."
+
+#: gnopi/defui.c:165
+msgid "keyboard"
+msgstr "klavijatura"
+
+#: gnopi/defui.c:173
+msgid "Keyboard default setting loaded."
+msgstr "Uobičajeno podešenje tastature učitano."
+
+#: gnopi/defui.c:182
+msgid "braille monitor"
+msgstr "braillov zaslon"
+
+#: gnopi/defui.c:189
+msgid "Braille monitor default setting loaded."
+msgstr "Učitane su uobičajene postavke brailovog zaslona."
+
+#: gnopi/defui.c:198
+msgid "start up"
+msgstr "pokretanje"
+
+#: gnopi/defui.c:207
+msgid "Startup default setting loaded."
+msgstr "Učitane su početne postavke."
+
+#: gnopi/defui.c:217
+msgid "command map"
+msgstr "mapa naredbi"
+
+#: gnopi/defui.c:225
+msgid "Command map default setting loaded."
+msgstr "Učitano je uobičajeno podešavanje mape naredbi."
+
+#: gnopi/defui.c:235
+msgid "presentation"
+msgstr "dar"
+
+#: gnopi/defui.c:241
+msgid "Presentation default setting loaded."
+msgstr "Učitano je uobičajeno podešavanje predstavljanja."
+
+#: gnopi/defui.c:250
+msgid "screen review"
+msgstr "pregled zaslona"
+
+#: gnopi/defui.c:256
+msgid "Screen review default setting loaded."
+msgstr "Učitano je uobičajeno podešavanje pregleda zaslona."
+
+#: gnopi/defui.c:279
+msgid "all modules"
+msgstr "svi moduli"
+
+#: gnopi/defui.c:282
+msgid "All default settings loaded."
+msgstr "Sve uobičajene postavke učitane."
+
+#: gnopi/genui.c:66
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:12
+msgid "_Braille"
+msgstr "_Brajevo"
+
+#: gnopi/genui.c:69
+msgid "_Braille (unavailable)"
+msgstr "_Brajevo (nedostupan)"
+
+#: gnopi/genui.c:74
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:13
+msgid "_Magnifier"
+msgstr "_Povećalo"
+
+#: gnopi/genui.c:77
+msgid "_Magnifier (unavailable)"
+msgstr "_Lupa (nedostupna)"
+
+#: gnopi/genui.c:82
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:14
+msgid "_Speech"
+msgstr "_Govor"
+
+#: gnopi/genui.c:85
+msgid "_Speech (unavailable)"
+msgstr "_Govor (nedostupan)"
+
+#: gnopi/genui.c:90
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:4
+msgid "B_raille monitor"
+msgstr "B_raillov monitor"
+
+#: gnopi/genui.c:93
+msgid "B_raille monitor (unavailable)"
+msgstr "B_raillov monitor (nedostupan)"
+
+#: gnopi/gnopernicus.desktop.in.h:1
+msgid "Assistive Technologies for Blind and Visually Impaired"
+msgstr "Tehnologije za pomoć slijepima i osobama sa oštećenim vidom"
+
+#: gnopi/gnopernicus.desktop.in.h:2
+msgid "Screen Reader and Magnifier"
+msgstr "Čitač zaslona i lupa"
+
+#: gnopi/gnopi.c:302
+msgid "gnopernicus"
+msgstr "gnopernicus"
+
+#: gnopi/gnopi.c:309
+msgid "Gconf initialization failed."
+msgstr "Inicijalizacija Gconf-a nije uspjela."
+
+#: gnopi/gnopi.c:316
+msgid "Invalid parameters."
+msgstr "Nevažeči parametri"
+
+#: gnopi/gnopi.c:322
+msgid "Multiple instances are NOT ALLOWED. This instance will end."
+msgstr "Višestruke instance NISU DOZVOLJENE. Ova instanca će biti prekinuta. "
+
+#: gnopi/gnopi.c:328
+msgid "GTK initialization failed."
+msgstr "GTK inicijalizacija nije uspjela."
+
+#: gnopi/gnopi.c:334
+msgid "Can not create a new process."
+msgstr "Ne mogu stvoriti novi proces."
+
+#: gnopi/gnopi.c:344
+msgid "Exit gnopernicus."
+msgstr "Izađi iz gnopernicus."
+
+#: gnopi/gnopi.c:352
+msgid "Gnopernicus initialization failed."
+msgstr "Inicijalizacija Gnopernicus-a nije uspjela."
+
+#: gnopi/gnopi.c:359
+msgid "Can not load .glade2 file"
+msgstr "Ne mogu učitati .glade2 datoteku"
+
+#. if (WIFSIGNALED (gn_srcore_status) != 0)
+#. sru_message ("signal no: %d", WTERMSIG (gn_srcore_status));
+#: gnopi/gnopi.c:659
+msgid "srcore exited."
+msgstr "srcore je završio."
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:1
+msgid "<b>Color</b>"
+msgstr "<b>Boja</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:2
+msgid "<b>Font</b>"
+msgstr "<b>Font</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:3
+msgid "<b>Mode Type</b>"
+msgstr "<b>Način rada</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:4
+msgid "<b>Position</b>"
+msgstr "<b>Pozicija</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:5
+msgid "<b>Size</b>"
+msgstr "<b>Veličina</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:6
+msgid "B_raille"
+msgstr "B_raillov"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:7
+msgid "Braille Monitor Preferences"
+msgstr "Postavke braillovog zaslona"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:8
+msgid "Color selection for texts which use dot 7"
+msgstr "Odabir boje za tekstove koji koriste točku 7"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:9
+msgid "Color selection for texts which use dot 8"
+msgstr "Odabir boje za tekstove koji koriste točku 8"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:10
+msgid "Color selection for texts which use dots 7 and 8"
+msgstr "Odabir boje za tekstove koji koriste točku 7 i 8"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:11
+msgid "Colu_mns:"
+msgstr "_Stupci:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:12
+msgid "Display at bottom of screen"
+msgstr "Prikaži na dnu ekrana"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:13
+msgid "Display on top of screen"
+msgstr "Prikaz na vrhu zaslona"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:14
+msgid "Display using braille font"
+msgstr "Prikaz pomoću braillovog pisma"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:15
+msgid "Display using normal font"
+msgstr "Prikaz pomoću običnog pisma"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:16
+msgid "Display with both fonts"
+msgstr "Prikaz pomoću oba pisma."
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:17
+msgid "Dot 7:"
+msgstr "Točka 7:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:18
+msgid "Dot 8:"
+msgstr "Točka 8:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:19
+msgid "Dots 78:"
+msgstr "Točke 78:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:20
+msgid "Number of cell columns"
+msgstr "Broj kolona ćelije"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:21
+msgid "Number of cell lines"
+msgstr "Broj linija ćelije"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:22
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:43
+msgid "Pick a color"
+msgstr "Odabir boje"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:23
+msgid "Size of font"
+msgstr "Veličina pisma"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:24
+msgid "Use system theme colors"
+msgstr "Koristi boje postavljene u temi sustava "
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:25
+msgid "Use theme _system colors"
+msgstr "Koristi boje postavljene u temi _sustava "
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:26
+msgid "_Dual"
+msgstr "_Duplo"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:27
+msgid "_Lines:"
+msgstr "_Redaka:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:28
+msgid "_Normal"
+msgstr "_Obično"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:29
+msgid "_Size:"
+msgstr "_Veličina:"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:1
+msgid "Attributes"
+msgstr "Atributi"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:2
+msgid "_1. Dot 8"
+msgstr "_1. točka 8"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:3
+msgid "_2. Dot 7"
+msgstr "_2. tačka 7"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:4
+msgid "_3. Dot 8 or 7"
+msgstr "_3. točka 8 ili 7 "
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:5
+msgid "_4. Off"
+msgstr "_4. Isključeno"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:1
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:1
+#: gnopi/gnopi_files/Find/find.glade2.h:2
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:1
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:1
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:3
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:2
+msgid "Braille Device"
+msgstr "Braillov uređaj"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:3
+msgid "Braille devices list"
+msgstr "Popis braillovih uređaja"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:4
+msgid "Serial port number where the device is linked"
+msgstr "Broj serijskog porta na koji je vezan uređaj"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:5
+msgid "_Device:"
+msgstr "_Uređaj:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:2
+msgid "10 _Font size"
+msgstr "10 _Font veličina"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:3
+msgid "11 _Activate script function \"OnPosSwitch\""
+msgstr "11 _Aktivirati skriptu funkcije \"OnPosSwitch\""
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:4
+msgid "12 _Present attributes"
+msgstr "12 _Trenutna svojstva"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:5
+msgid "<b>_Braille keys list</b>"
+msgstr "<b>_popis Brailleovih tipki</b>"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:6
+msgid "Activate script function \"OnPosSwitch\""
+msgstr "Aktiviraj funkciju skripte \"OnPosSwitch\""
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:7
+msgid "Add item in braille keys list"
+msgstr "Dodaj stavku u listu braille ključeva"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:8
+msgid "Braille Display Key Mapping"
+msgstr "Raspored tipaka za braillov zaslon"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:10
+msgid "Braille device keys list"
+msgstr "Popis ključeva braillovih uređaja"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:11
+msgid "Braille keys list"
+msgstr "Popis braillovih tipka"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:12
+msgid "Command List"
+msgstr "Popis naredbi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:13
+msgid "Command list"
+msgstr "Popis naredbi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:14
+msgid "Font name"
+msgstr "Ime pisma"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:15
+msgid "Font size"
+msgstr "Veličina pisma"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:16
+msgid "Font style"
+msgstr "Stil pisma"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:17
+msgid "Modify selected item"
+msgstr "Promijeni odabranu stavku"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:18
+msgid "Move caret"
+msgstr "Pomakni caret"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:19
+msgid "Move mouse and click left"
+msgstr "Pomaknite miša i kliknite lijevo"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:20
+msgid "Move mouse and click left and right"
+msgstr "Pomaknite miša i kliknite lijevo i desno"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:21
+msgid "Move mouse and click right"
+msgstr "Pomaknite miša i kliknite desno"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:22
+msgid "Only move mouse"
+msgstr "Samo pomjeri miša"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:23
+msgid "Optical Sensors"
+msgstr "Optički senzori"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:24
+msgid "Optical sensors off"
+msgstr "Optički senzori su isključeni"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:25
+msgid "Position Sensors"
+msgstr "Položaj senzora"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:26
+msgid "Position sensors off"
+msgstr "Senzori položaja su isključeni"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:27
+msgid "Present attributes"
+msgstr "Tekući atributi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:28
+msgid "Remove selected item from braille keys list"
+msgstr "Ukloni odabrane stavke iz spiska brajovih tastera"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:29
+msgid "Show X coordinate"
+msgstr "Prikaži X koordinatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:30
+msgid "Show Y coordinate"
+msgstr "Prikaži Y koordinatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:31
+msgid "_0 Optical sensors off"
+msgstr "_0 Optički senzori su isključeni"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:32
+msgid "_0 Position sensors off"
+msgstr "_0 Senzori položaja su isključeni"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:33
+msgid "_1 Only move mouse"
+msgstr "_1 Samo pomiči miš"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:34
+msgid "_2 Move mouse and click left"
+msgstr "_2 Pomaknite miša i pritisnite lijevu tipku na mišu "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:35
+msgid "_3 Move mouse and click right"
+msgstr "_3 Pomaknite miša i pritisnite desnu tipku na mišu "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:36
+msgid "_4 Move mouse and click left or right"
+msgstr "_4 Pomaknite miša i pritisnite lijevu ili desnu tipku miša "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:37
+msgid "_5 Move caret"
+msgstr "_5 Premjesti mjesto umetanja"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:38
+msgid "_6 Show X coordinate"
+msgstr "_6 Prikaži X koordinatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:39
+msgid "_7 Show Y coordinate"
+msgstr "_7 Prikaži Y koordinatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:40
+msgid "_8 Font style"
+msgstr "_8 Stil pisma"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:41
+msgid "_9 Font name"
+msgstr "_9 Ime pisma"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:42
+msgid "_Commands:"
+msgstr "_Naredbe:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:43
+msgid "_Device key:"
+msgstr "_Tipke uređaja:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:44
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:85
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:28
+msgid "_Modify"
+msgstr "_Izmijeni"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:1
+msgid "Braille Preferences"
+msgstr "Braillove postavke"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:2
+msgid "Close braille settings"
+msgstr "Zatvori braillove postavke"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:3
+msgid "Map function for display keys"
+msgstr "Dodijeljivanje funkcija prikaznim tipkama"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:4
+msgid "Select braille device"
+msgstr "Odaberite brailleov uređaj "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:5
+msgid "Select braille style 8/6 dots"
+msgstr "Odaberite brailleov stil 8/6 točaka "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:6
+msgid "Select cursor setting FullCell/UnderLined/NoCursor"
+msgstr "Odaberite postavke kursora PunaĆelija/Podvučen/BezKursora "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:7
+msgid "Select translation table for braille device"
+msgstr "Izaberite tablicu prevođenja za brailleov uređaj"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:8
+msgid "_1 Braille Device"
+msgstr "_1 Brajev uređaj"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:9
+msgid "_2 Translation Table"
+msgstr "_2 Tablica prevođenja"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:10
+msgid "_3 Braille Style"
+msgstr "_3 Brailleov stil "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:11
+msgid "_4 Cursor Preferences"
+msgstr "_4 Postavke kursora "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:12
+msgid "_5 Braille Key Mapping"
+msgstr "_5 Brailleov raspored tipki "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:1
+msgid "Braille Style"
+msgstr "Braillov stil"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:2
+msgid "Use 6 dots"
+msgstr "Koristi 6 točaka"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:3
+msgid "Use 8 dots"
+msgstr "Koristi točku 8 "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:4
+msgid "_6 Dot Braille"
+msgstr "_6 točka Braille "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:5
+msgid "_8 Dot Braille"
+msgstr "_8 točka Braille "
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:1
+msgid "Cursor Preferences"
+msgstr "Podešavanja pokazivača"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:2
+msgid "Cursor on braille display is a full cell"
+msgstr "Pokazivač na braillovom zaslonu zauzima punu ćeliju"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:3
+msgid "Cursor on braille display is an underline"
+msgstr "PPokazivač na braillovom zaslonu je podvlaka"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:4
+msgid "No cursor on braille display"
+msgstr "Nema pokazivača na braille ekranu"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:5
+msgid "_Full cell cursor"
+msgstr "_Kursor zauzima punu ćeliju"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:6
+msgid "_No cursor"
+msgstr "_Nema kursora"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:7
+msgid "_Underline cursor (dots 7 and 8)"
+msgstr "Kursor je _podvlaka (tačke 7+8)"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:1
+msgid "Translation Table"
+msgstr "Tablica sa prijevodom "
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:2
+msgid "Translation table list"
+msgstr "Popis tablica sa prijevodima "
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:3
+msgid "_Select language:"
+msgstr "I_zaberite jezik:"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:1
+msgid "   "
+msgstr "   "
+
+#: gnopi/gnopi_files/Find/find.glade2.h:3
+msgid "<b>Fi_nd Text:</b>"
+msgstr "<b>Pro_nađi Tekst:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:4
+msgid "<b>Find Attributes:</b>"
+msgstr "<b>Pronađi svojstva:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:5
+msgid "<b>Match</b>"
+msgstr "<b>Podudaranje</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:6
+msgid "<b>Scope</b>"
+msgstr "<b>Dalekozor</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:7
+msgid "<b>Search For</b>"
+msgstr "<b>Potraga za</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:8
+msgid "A_ll chosen attributes"
+msgstr "S_va odabrana svojstva"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:9
+msgid "A_ny chosen attributes"
+msgstr "B_ilo koja odabrana svojstva"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:10
+msgid "A_ttribute"
+msgstr "_Atribut"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:11
+msgid "Bold"
+msgstr "Masno"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:12
+msgid "Case _sensitive"
+msgstr "_Osjetlj. na V/m slova:"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:13
+msgid "Case sensitive on/off"
+msgstr "Uključi/isključi osjetljivost na veličinu slova"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:14
+msgid "Italic"
+msgstr "Nakošeno"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:15
+msgid "S_elected"
+msgstr "_Odabrano"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:16
+msgid "Scope area is a desktop"
+msgstr "Domena rada je radna površina"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:17
+msgid "Scope area is a window"
+msgstr "Domena rada je prozor"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:18
+msgid "Scope area is an application"
+msgstr "Domena rada je program"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:19
+msgid "Search Preferences"
+msgstr "Postavke pretraživanja"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:20
+msgid "Search criteria is a graphics"
+msgstr "Kriterij za pretragu je grafika"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:21
+msgid "Search criteria is a text"
+msgstr "Kriterij za pretragu je tekst"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:22
+msgid "Search criteria is an attribute"
+msgstr "Kriterij za pretragu je atribut "
+
+#: gnopi/gnopi_files/Find/find.glade2.h:23
+msgid "Selected item"
+msgstr "Odabrana stavka"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:24
+msgid "Stri_kethrough"
+msgstr "_Precrtano"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:25
+msgid "Strikethrough"
+msgstr "Precrtano"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:26
+msgid "Te_xt"
+msgstr "Tekst"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:27
+msgid "Text to search"
+msgstr "Tekst koji se traži"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:28
+msgid "Underline"
+msgstr "Podcrtano"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:29
+msgid "_Application"
+msgstr "_Aplikacija"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:30
+msgid "_Bold"
+msgstr "_Masno"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:31
+msgid "_Desktop"
+msgstr "_Radna površina"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:32
+msgid "_Graphics"
+msgstr "_Grafike"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:33
+msgid "_Italic"
+msgstr "_Ukošeno"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:34
+msgid "_Underline"
+msgstr "_Podvučeno"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:35
+msgid "_Window"
+msgstr "_Prozor"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:1
+msgid "    "
+msgstr "    "
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:2
+msgid "<b>Active Components</b>"
+msgstr "<b>Aktivne komponente</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:3
+msgid "<b>Startup</b>"
+msgstr "<b>Pokretanje</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:5
+msgid "Braille monitor on/off"
+msgstr "Braillov zaslon uključen/isključen"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:6
+msgid "Braille on/off"
+msgstr "Braill uključen/isključen"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:7
+msgid "Magnifier on/off"
+msgstr "Povećalo uključeno/isključeno"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:8
+msgid "Speech on/off"
+msgstr "Govor uključen/isključen"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:9
+msgid "Start gnopernicus minimized"
+msgstr "Pokreni gnopernicusa minimiziranog "
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:10
+msgid "Start m_inimized"
+msgstr "_Pokreni minimizirano "
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:11
+msgid "Startup Mode"
+msgstr "Način pokretanja"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:1
+msgid "Mouse Preferences"
+msgstr "Postavke miša"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:2
+msgid "Simulate click on current object"
+msgstr "Simuliraj klik na trenutni objekt "
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:3
+msgid "Take mouse at current object"
+msgstr "Idi mišem na trenutni objekt "
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:4
+msgid "_Simulate click on current object"
+msgstr "O_ponašaj klik na tekući objekt"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:5
+msgid "_Take mouse at current object"
+msgstr "Idi mišem na _tekući objekt."
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:1
+msgid "Close \"Load Default Preferences\""
+msgstr "Zatvori \"Učitaj uobičajene postavke\""
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:2
+msgid "Load Default Preferences"
+msgstr "Učitaj default postavke"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:3
+msgid "Load Default Settings"
+msgstr "Učitaj default postavke"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:4
+msgid "Load all defaults"
+msgstr "Učitaj sve osnovne podatke"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:5
+msgid "Load braille defaults"
+msgstr "Učitaj osnovne podatke braille"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:6
+msgid "Load braille monitor defaults"
+msgstr "Učitaj osnove postavke braile nadgeldnika"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:7
+msgid "Load command map defaults"
+msgstr "Učitaj osnovne podatke komande mape"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:8
+msgid "Load magnifier defaults"
+msgstr "Učitaj uobičajene postavke povećala"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:9
+msgid "Load mouse defaults"
+msgstr "Učitaj uobičajene postavke miša"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:10
+msgid "Load presentation defaults"
+msgstr "Učitaj uobičajene postavke prezentacije"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:11
+msgid "Load screen review defaults"
+msgstr "Učitaj uobičajene postavke za izvješće ekrana"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:12
+msgid "Load speech defaults"
+msgstr "Učitaj uobičajene postavke govora"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:13
+msgid "Load startup mode defaults"
+msgstr "Učitaj uobičajene postavke početnog moda"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:14
+msgid "_0 All"
+msgstr "_0 Sve"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:15
+msgid "_1 Braille"
+msgstr "_2 Brajevo"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:16
+msgid "_2 Speech"
+msgstr "_2 Govor"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:17
+#: gnopi/gnopi_files/gnopi.glade2.h:33
+msgid "_3 Magnifier"
+msgstr "_3 Povećalo "
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:18
+msgid "_4 Keyboard"
+msgstr "_4 Tipkovnica"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:19
+#: gnopi/gnopi_files/gnopi.glade2.h:36
+msgid "_5 Braille Monitor"
+msgstr "_5 Brailleov monitor "
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:20
+msgid "_6 Startup"
+msgstr "_6 Pokretanje"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:21
+msgid "_7 Command Map"
+msgstr "_7 Popis naredbi"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:22
+msgid "_8 Presentation"
+msgstr "_8 Predstavljanje"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:23
+msgid "_9 Screen Review"
+msgstr "_9 Pregled zaslona"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:2
+msgid "<b>Border settings</b>"
+msgstr "<b>Podešavanje okvira</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:3
+msgid "<b>Cross-hair</b>"
+msgstr "<b>Cross-hair</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:4
+msgid "<b>Cursor setting</b>"
+msgstr "<b>Podešavanje pokazivača</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:5
+msgid "<b>Display screen</b>"
+msgstr "<b>Prikaz na zaslonu</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:6
+msgid "<b>Focus tracking mode</b>"
+msgstr "<b>Način praćenja fokusa</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:7
+msgid "<b>Mo_use tracking mode</b>"
+msgstr "<b>Način praćenja _miša</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:8
+msgid "<b>S_moothing</b>"
+msgstr "<b>_Izglađivanje</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:9
+msgid "<b>Zoomer placement</b>"
+msgstr "<b>Postavljanje Zoomera </b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:10
+msgid "<b>Zoomfactor</b>"
+msgstr "<b>Faktor povećanja</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:11
+msgid "<b>_Zoomer list</b>"
+msgstr "<b>_Zoomer popis</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:12
+msgid "Bor_der size:"
+msgstr "_Debljina ruba:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:13
+msgid "Border c_olor:"
+msgstr "_Boja ruba:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:14
+msgid "Border color"
+msgstr "Boja okvira"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:15
+msgid "Border size"
+msgstr "Veličina okvira"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:16
+#, fuzzy
+msgid "C_entered"
+msgstr "_Centrirano"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:17
+msgid "C_ursor on/off"
+msgstr "P_okazivač uključen/isključen"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:18
+msgid "Cross-ha_ir size:"
+msgstr "Veličina Cross-ha_ir-a:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:19
+msgid "Cross-hair c_lip on/off"
+msgstr "_Nišan uključen / isključen"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:20
+#, fuzzy
+msgid "Cross-hair colo_r:"
+msgstr "_Boja Cross-hair-a:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:21
+#, fuzzy
+msgid "Cross-hair color in_verted"
+msgstr "_Inverzinva boja za Cross-hair "
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:22
+#, fuzzy
+msgid "Cross-hair o_n/off"
+msgstr "_Nišan uključen / isključen"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:23
+msgid "Crosshair clip on/off"
+msgstr "Nišan uključen/isključen"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:24
+msgid "Crosshair color"
+msgstr "Boja nišana"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:25
+msgid "Crosshair on/off"
+msgstr "Nišan uključen/isključen"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:26
+msgid "Crosshair size"
+msgstr "Veličina nišana"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:27
+msgid "Cursor _size:"
+msgstr "Ve_ličina pokazivača:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:28
+msgid "Cursor c_olor:"
+msgstr "Bo_ja pokazivača:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:29
+msgid "Cursor color"
+msgstr "Boja pokazivača"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:30
+msgid "Cursor magnification"
+msgstr "Povećanje pokazivača"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:31
+msgid "Cursor on/off"
+msgstr "Pokaziavč uključen/isključen"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:32
+msgid "Cursor size"
+msgstr "Veličina pokazivača"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:33
+msgid "Display screen source"
+msgstr "Prikaz izvora zaslona"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:34
+msgid "Display screen target"
+msgstr "Prikaz mete zaslona"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:35
+msgid "Invert crosshair color"
+msgstr "Izokrenuti boju crosshair-a"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:36
+msgid "Invert on/off"
+msgstr "Izokretanje uključeno/isključeno"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:37
+#, fuzzy
+msgid "Lock zoom _factor"
+msgstr "Zaključaj faktor povećavanja (zoom)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:38
+msgid "Lock zoom factor"
+msgstr "Zaključaj faktor povećavanja (zoom)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:39
+msgid "Magnifier Preferences"
+msgstr "Postavke povećala"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:40
+msgid "Magnifier settings"
+msgstr "Postavke povećanja"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:41
+msgid "Mouse tracking type"
+msgstr "Vrsta praćenja miša"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:42
+msgid "Panning on/off"
+msgstr "Pomicanje uključeno/isključeno"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:44
+#, fuzzy
+msgid "Set cursor separate from _magnification"
+msgstr "_Povećanje pokazivača"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:45
+msgid "Smoothing type"
+msgstr "Vrsta zaglađivanja "
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:46
+#, fuzzy
+msgid "Tar_get:"
+msgstr "_Cilj:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:47
+msgid "Zoom factor X"
+msgstr "Vrijednost uvećanja X"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:48
+msgid "Zoom factor Y"
+msgstr "Vrijednost uvećanja Y"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:49
+msgid "Zoom factor _X:"
+msgstr "Vrijednost uvećanja _X:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:50
+msgid "Zoom factor _Y:"
+msgstr "Vrijednost uvećanja _Y:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:51
+msgid "Zoomer Options"
+msgstr "Podešavanja lupe"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:52
+msgid "Zoomer placement bottom"
+msgstr "Lupa se nalazi dolje"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:53
+msgid "Zoomer placement left"
+msgstr "Lupa se nalazi ljevo"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:54
+msgid "Zoomer placement right"
+msgstr "Lupa se nalazi desno"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:55
+msgid "Zoomer placement top"
+msgstr "Lupa se nalazi gore"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:56
+msgid "Zoomers list"
+msgstr "Popis uvećanja lupe"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:57
+#, fuzzy
+msgid "_Add/Modify"
+msgstr "Dodaj/Izmjeni"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:58
+msgid "_Auto"
+msgstr "_Automatsko"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:59
+msgid "_Bottom:"
+msgstr "_Dno:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:60
+msgid "_Invert"
+msgstr "_Inverzno"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:61
+msgid "_Left:"
+msgstr "_Lijevo:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:62
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:87
+msgid "_None"
+msgstr "_Nijedan"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:63
+msgid "_Panning"
+msgstr "_Pomicanje"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:64
+#, fuzzy
+msgid "_Remove"
+msgstr "Ukloni"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:65
+msgid "_Right:"
+msgstr "_Desno:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:66
+msgid "_Source:"
+msgstr "_Izvor:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:67
+msgid "_Top:"
+msgstr "_Vrh:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:68
+#: gnopi/magui.c:49
+msgid "bilinear"
+msgstr "bilinearno"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:69
+#: gnopi/magui.c:61
+msgid "centered"
+msgstr "centrirano"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:70
+#: gnopi/magui.c:48 gnopi/magui.c:63
+msgid "none"
+msgstr "ništa"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:71
+#: gnopi/magui.c:62
+msgid "proportional"
+msgstr "proporcionalno"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:72
+#: gnopi/magui.c:60
+msgid "push"
+msgstr "guraj"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:2
+msgid "Expert"
+msgstr "Stručnjak"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:3
+msgid "Mode selected:"
+msgstr "Odabrani način:"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:4
+msgid "Presentation"
+msgstr "Prezentacija"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:5
+#: srcore/default.xml.in.h:10 srcore/verbose.xml.in.h:10
+msgid "Verbose"
+msgstr "Opširno"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:1
+msgid "<b>Horizontal flags</b>"
+msgstr "<b>Vodoravne zastavice</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:2
+msgid "<b>Vertical flags</b>"
+msgstr "<b>Vertikalne zastavice</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:3
+msgid "Add all empty lines"
+msgstr "Dodaj sve prazne linije"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:4
+msgid "Add all spaces"
+msgstr "Dodaj sve razmake"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:5
+msgid "Add all spaces and empty lines"
+msgstr "Dodaj sve razmake i prazne linije"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:6
+msgid "Add embedded empty lines"
+msgstr "Dodaj ugrađene prazne linije"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:7
+msgid "Add embedded spaces"
+msgstr "Dodaj ugrađene razmake"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:8
+msgid "Add leading empty lines"
+msgstr "Dodaj vodeće prazne linije"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:9
+msgid "Add leading spaces"
+msgstr "Dodaj vodeće razmake"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:10
+msgid "Add trailing empty lines"
+msgstr "Dodaj prateće prazne linije"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:11
+msgid "Add trailing spaces"
+msgstr "Dodaj prateće razmake"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:12
+msgid "All _horizontal"
+msgstr "Sve _vodoravno"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:13
+msgid "All _vertical"
+msgstr "Sve _okomito"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:14
+msgid "Count em_pty lines"
+msgstr "Prebrojavanje _praznih linija"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:15
+msgid "Count empty lines"
+msgstr "Prebrojavanje praznih linija"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:16
+msgid "E_mbedded"
+msgstr "U_gradbeni"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:17
+msgid "Lea_ding"
+msgstr "Lea_ding"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:18
+msgid "Screen Review Preferences"
+msgstr "Postavke pregleda na zaslonu"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:19
+msgid "T_railing"
+msgstr "_Prateći"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:20
+msgid "_All flags"
+msgstr "_Sve oznake"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:21
+msgid "_Embedded"
+msgstr "_Uključeno"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:22
+msgid "_Leading"
+msgstr "Pro_red"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:23
+msgid "_Trailing"
+msgstr "_Prateće"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:2
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:4
+msgid "<b><></b>"
+msgstr "<b><></b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:5
+msgid "<b>Absolute Value</b>"
+msgstr "<b>Apslutna veličina</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:6
+msgid "<b>Driver</b>"
+msgstr "<b>Upravljački program</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:7
+msgid "<b>Properties</b>"
+msgstr "<b>Odrednice</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:8
+msgid "<b>Punctuation</b>"
+msgstr "<b>Interpukcija</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:9
+msgid "<b>Relative Values</b>"
+msgstr "<b>Relativne veličine</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:10
+msgid "<b>Text Echo</b>"
+msgstr "<b>Ispisivanje teksta</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:11
+msgid "<b>Voice</b>"
+msgstr "<b>Glas</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:12
+msgid "<b>_Dictionary</b>"
+msgstr "<b>_Riječnik</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:13
+msgid "<b>_Replacement:</b>"
+msgstr "<b>_Zamjena:</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:14
+msgid "<b>_Voice list</b>"
+msgstr "<b>_Glasovna lista</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:15
+msgid "<b>_Word:</b>"
+msgstr "<b>_Riječ:</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:16
+msgid "A_ll"
+msgstr "Ubij"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:17
+msgid "Activate pitch"
+msgstr "Aktiviraj visinu zvuka"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:18
+msgid "Activate rate"
+msgstr "Aktiviraj brzinu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:19
+msgid "Activate volume"
+msgstr "Aktiviraj jačinu zvuka"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:20
+msgid "Add / Modify Dictionary Entry"
+msgstr "Dodaj / Izmjeni unos u rječniku"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:21
+msgid "Add / Modify Voice"
+msgstr "Dodaj / Izmjeni Glas"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:22
+msgid "Add new item in voices list"
+msgstr "Dodaj novu stavku u listu glasova"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:23
+msgid "Add new word in dictionary"
+msgstr "Dodaj novu riječ u rječnik"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:24
+msgid ""
+"Change for all voices the engine driver and the engine speaker with a "
+"selected driver and speaker"
+msgstr ""
+"Zamijeni upravljački program za sve glasove i glavnog govornika sa odabranim "
+"upravljačkim programom i govornikom"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:25
+msgid "Charac_ter"
+msgstr "_Znak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:26
+msgid "Count cha_racters"
+msgstr "Prebroji zna_kove"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:27
+msgid "Count characters"
+msgstr "Prebrojavanje znakova"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:28
+msgid "Decrease pitch"
+msgstr "Umanji visinu tona"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:29
+msgid "Decrease rate"
+msgstr "Umanjiti brzinu zvuka"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:30
+msgid "Decrease volume"
+msgstr "Smanji jačinu zvuka"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:31
+msgid "Dictionary"
+msgstr "Rječnik"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:32
+msgid "Dictionary list"
+msgstr "Lista rječnika"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:33
+msgid "Do not speak text"
+msgstr ""
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:34
+msgid "Edit A_bsolute..."
+msgstr "Doradi A_pslolutno..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:35
+msgid "Edit Absolute Voice Values"
+msgstr "Doradi apsolutne vrijednosti glasa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:36
+msgid "Edit R_elative..."
+msgstr "Doradi R_elativno..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:37
+msgid "Edit Relative Voice Values"
+msgstr "Doradi relativne vrijednosti glasa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:38
+msgid "Edit dictionary"
+msgstr "Uredi rječnik"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:39
+msgid "Edit parameter values absolutely"
+msgstr "uredi apsolutne vrijednosti parametra"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:40
+msgid "Edit parameter values relatively"
+msgstr "uredi vrijednosti parametra relativno"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:41
+msgid "Engine _driver:"
+msgstr "Stroj _driver:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:42
+msgid "Engine _speaker:"
+msgstr "Stroj _speaker:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:43
+msgid "Engine driver"
+msgstr "Upravljački program mehanizma"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:44
+msgid "Engine speaker"
+msgstr "Spiker mehanizma"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:45
+msgid "Gnopernicus system voice"
+msgstr "Gnopernicus sistemski glas"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:46
+msgid "Hz"
+msgstr "Hz"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:47
+msgid "Ignore all punctuation"
+msgstr "Zanemari svu interpukciju"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:48
+msgid "Increase pitch"
+msgstr "Povećaj visinu zvuka"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:49
+msgid "Increase rate"
+msgstr "Povećaj brzinu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:50
+msgid "Increase volume"
+msgstr "Pojačaj jačinu zvuka"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:51
+msgid "Made pitch sensitive for changing"
+msgstr "Visina zvuka podešena za izmjenjivanje"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:52
+msgid "Made rate sensitive for changing"
+msgstr "Brzina podešena za izmjenjivanje"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:53
+msgid "Made volume sensitive for changing"
+msgstr "Jačinu zvuka je osjetljiva na izmjene"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:54
+msgid "Modify selected voice"
+msgstr "Promijeni odabrani glas"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:55
+msgid "Modify word"
+msgstr "Promijeni riječ"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:56
+#: gnopi/spvoiceui.c:2010
+msgid "Pitch"
+msgstr "Visina tona"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:57
+#: gnopi/spvoiceui.c:2002
+msgid "Rate"
+msgstr "Stopa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:58
+msgid "Remove selected voice from voices list"
+msgstr "Ukloni odabrane glasova iz spiska glasova"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:59
+msgid "Remove word from dictionary"
+msgstr "Ukloni riječ iz riječnika"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:60
+msgid "Replecement"
+msgstr "Zamijena"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:61
+#, fuzzy
+msgid "Sa_y all navigation keys"
+msgstr "promijeni način upravljanja"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:62
+msgid "Say all modi_fiers"
+msgstr "_Izgovori sve izmjenjivače"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:63
+msgid "Say all modifiers"
+msgstr "Izgovori sve izmjenjivače"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:64
+#, fuzzy
+msgid "Say all navigation keys"
+msgstr "promijeni način upravljanja"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:65
+msgid "Say all s_paces"
+msgstr "Izgovori sve _razmake"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:66
+msgid "Say all spaces"
+msgstr "Izgovori sve razmake"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:67
+msgid "Say text as character"
+msgstr "Izgovori tekst kao znak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:68
+msgid "Say text as word"
+msgstr "Izgovori tekst kao riječ"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:69
+msgid "Set voices and the voice parameters"
+msgstr "Postavi glasove i parametre glasa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:70
+msgid "Show all punctuation"
+msgstr "Prikaži sve interpunkcije"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:71
+msgid "Show most punctuation"
+msgstr "Prikaži većinu interpunkcija"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:72
+msgid "Show some punctuation"
+msgstr "Prikaži dio interpunkcija"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:73
+msgid "Speech Preferences"
+msgstr "Postavke govora"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:74
+msgid "Test selected voice"
+msgstr "Isprobaj odabrani glas"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:75
+msgid "Use dictionary"
+msgstr "Koristi rječnik "
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:76
+msgid "Voice _name:"
+msgstr "_Ime glasa:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:77
+msgid "Voice list"
+msgstr "Popis glasova"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:78
+msgid "Voices"
+msgstr "Glasovi"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:79
+#: gnopi/spvoiceui.c:1994
+msgid "Volume"
+msgstr "Razina Zvuka"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:80
+msgid "Word to replace"
+msgstr "Riječ koja se zamijenjuje"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:81
+msgid "Word/Min"
+msgstr "Rjieč/najmanje"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:82
+msgid "_Dictionary..."
+msgstr "_Riječnik..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:83
+msgid "_Force All Voices to Selected Driver and Speaker"
+msgstr "_Svi glasovi koriste odabrani upravljački program i govornika"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:84
+msgid "_Ignore"
+msgstr "_Zanemari"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:86
+msgid "_Most"
+msgstr "_Većina"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:88
+msgid "_Pitch (Hz)"
+msgstr "_Visina glasa (Hz)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:89
+msgid "_Pitch:"
+msgstr "_Visina tona:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:90
+msgid "_Rate (words/min)"
+msgstr "_Brzina (reči po minutu)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:91
+msgid "_Rate:"
+msgstr "_Mjera:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:92
+msgid "_Some"
+msgstr "_Nešto"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:93
+msgid "_Test voice"
+msgstr "_Isprobaj glas"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:94
+msgid "_Use dictionary"
+msgstr "_Koristi rečnik"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:95
+msgid "_Voices..."
+msgstr "_Glasovi..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:97
+#, no-c-format
+msgid "_Volume (%)"
+msgstr "_Jačina zvuka (%)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:98
+msgid "_Volume:"
+msgstr "_Jačina zvuka:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:99
+msgid "_Word"
+msgstr "_Word"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:100
+msgid "words/min"
+msgstr "riječi po minutu"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:2
+msgid "<b>_Commands list</b>"
+msgstr "<b>_Lista naredbi</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:3
+msgid "<b>_Layers list</b>"
+msgstr "<b>_Popis Slojeva</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:4
+msgid "<b>_User defined list</b>"
+msgstr "<b>_Korisnički određen popis</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:5
+msgid "Add Layer Key"
+msgstr "Dodaj ključ nivoa"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:6
+msgid "Add User Defined Key"
+msgstr "Dodaj korisnikov ključ"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:7
+msgid "Add new item"
+msgstr "Dodaj novu stavku"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:8
+msgid "Alt modifier"
+msgstr "Modifikator visine"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:9
+msgid "Command Mapping"
+msgstr "Dodjela naredbi"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:10
+msgid "Commands List"
+msgstr "Popis naredbi"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:11
+msgid "Control modifier"
+msgstr "Control modifikator"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:12
+msgid "Key number"
+msgstr "Broj tipke"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:13
+msgid "Keys list"
+msgstr "Lista tipki"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:14
+msgid "Layer command list"
+msgstr "Lista komandi nivoa"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:15
+msgid "Layer number"
+msgstr "Broj nivoa"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:16
+msgid "Layers"
+msgstr "Slojevi"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:17
+msgid "List of gnopernicus commands"
+msgstr "Popis komandi gnopernicus"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:18
+msgid "Modify command for the selected item"
+msgstr "Promijeni naredbu za odabranu stavku"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:19
+msgid "Remove selected item"
+msgstr "Makni odabrano"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:20
+msgid "Shift modifier"
+msgstr "Shift izmjenjivač"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:21
+msgid "User Defined"
+msgstr "Korisnički definirano"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:22
+msgid "User defined commands list."
+msgstr "Popis korisnički definiranih naredbi. "
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:23
+msgid "_Alt"
+msgstr "_Alt"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:24
+msgid "_Ctrl"
+msgstr "_Ctrl"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:25
+msgid "_Key:"
+msgstr "_Tipka:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:26
+msgid "_Layer:"
+msgstr "S_loj:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:27
+msgid "_Modifier keys:"
+msgstr "Tipke-iz_menjivači:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:29
+msgid "_Shift"
+msgstr "_Shift"
+
+#: gnopi/gnopi_files/about.glade2.h:1
+msgid "Screen Reader and Magnifier for the GNOME Desktop"
+msgstr "Čitač zaslona i povečalo za GNOME radnu površinu"
+
+#: gnopi/gnopi_files/about.glade2.h:2
+msgid "translator_credits"
+msgstr ""
+
+#: gnopi/gnopi_files/gnopi.glade2.h:1
+msgid ""
+"<b>Gnopernicus has detected that the assistive technology \n"
+"support is not enabled.</b>\n"
+msgstr ""
+"<b>Gnopernicus je detektirao da podrška tehnologije za \n"
+"pomaganje nije uključena.</b>\n"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:4
+msgid "About"
+msgstr "O"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:759
+msgid "Alert"
+msgstr "Upozorenje"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:6
+msgid "Braille device preferences"
+msgstr "Postavke braillovih uređaja"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:7
+msgid "Braille monitor preferences"
+msgstr "Postavke braillovog zaslona"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:8
+msgid "Close preferences"
+msgstr "Zatvori podešavanja"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:9
+msgid "Command mapping"
+msgstr "Dodjela naredbi"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:10
+msgid "Do you want to enable the assistive technology support?"
+msgstr "Želite li uključiti podršku tehnologije za pomaganje?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:11
+msgid "Exit from gnopernicus"
+msgstr "Izlaz iz gnopernicus"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:12
+msgid "Find on screen"
+msgstr "Pronađi na ekranu"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:13
+msgid "Gnopernicus"
+msgstr "Gnopernicus"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:14
+msgid "Gnopernicus usage help"
+msgstr "Gnopernicus upute korištenja"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:15
+msgid "Iconify menu"
+msgstr "Iconify izbornik"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:16
+msgid "Load default preferences"
+msgstr "Učitaj uobičajene postavke"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:17
+msgid "Magnifier preferences"
+msgstr "Postavke povećala"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:18
+#, fuzzy
+msgid "Mouse preferences"
+msgstr "Postavke miša"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:19
+msgid "Preferences"
+msgstr "Podešenja"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:20
+msgid "Preferences..."
+msgstr "Podešenja..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1032
+msgid "Question"
+msgstr "Pitanje"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:22
+msgid "Role presentation"
+msgstr "Predstavljanje uloge"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:23
+msgid "Screen review"
+msgstr "Pregled zaslona"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:24
+msgid "Speech preferences"
+msgstr "Postavke govora"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:25
+msgid "Startup mode..."
+msgstr "Način pokretanja..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:26
+msgid ""
+"You will have to log out for the change to take effect.\n"
+"Do you want to log out now? "
+msgstr ""
+"Morat ćete da se odjavite da bi izmjene stupile na snagu.\n"
+"Želite li sada da se odjavite?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:28
+msgid "_1 Speech"
+msgstr "_1 Govor"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:29
+msgid "_1 Startup Mode..."
+msgstr "_1 Način pokretanja..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:30
+msgid "_2 Braille"
+msgstr "_2 Brajov"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:31
+msgid "_2 Preferences..."
+msgstr "_2 Postavke..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:32
+msgid "_3 Default Preferences..."
+msgstr "_3 Predefinirane postavke... "
+
+#: gnopi/gnopi_files/gnopi.glade2.h:34
+msgid "_4 Minimize"
+msgstr "_4 Minimiziraj "
+
+#: gnopi/gnopi_files/gnopi.glade2.h:35
+msgid "_4 Mouse"
+msgstr "_4 Miš"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:37
+msgid "_5 Help"
+msgstr "_5 Pomoć"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:38
+msgid "_6 About"
+msgstr "_6 O programu"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:39
+msgid "_6 Command Mapping"
+msgstr "_6 Mapiranje naredbi "
+
+#: gnopi/gnopi_files/gnopi.glade2.h:40
+msgid "_7 Presentation"
+msgstr "_7 Predstavljanje"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:41
+msgid "_8 Screen Review"
+msgstr "_8 Pregled zaslona"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:42
+msgid "_9 Search"
+msgstr "_9 Pretraga"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:43
+msgid "_Don't Enable Support"
+msgstr "_Ne uključuj podršku"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:44
+msgid "_Enable Support"
+msgstr "_Uključi podršku"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:45
+msgid "_Quit"
+msgstr "_Završi"
+
+#: gnopi/gnopiconf.c:411 gnopi/gnopiconf.c:429
+#, fuzzy, c-format
+msgid "Failed to set value: %f."
+msgstr "Nije uspjelo podešavanje vrijednosti: %d"
+
+#: gnopi/gnopiconf.c:735
+msgid "Failed to set value."
+msgstr "Nije uspjelo podešavanje vrijednosti."
+
+#: gnopi/gnopiui.c:73 gnopi/gnopiui.c:87 gnopi/gnopiui.c:99
+#: gnopi/gnopiui.c:105
+msgid "We could not load the interface!"
+msgstr "Ne mogu učitati sučelje!"
+
+#: gnopi/magui.c:74
+msgid "default"
+msgstr "uobičajeno"
+
+#: gnopi/magui.c:472
+msgid ""
+"Can NOT remove zoomer because multiple zoomers are not supported in this "
+"version."
+msgstr ""
+"Ne mogu ukloniti povećalo jer višestruka povećala nisu podržana u ovoj "
+"inačici."
+
+#: gnopi/magui.c:673
+msgid "Zoomers"
+msgstr "Lupe"
+
+#: gnopi/magui.c:1588
+#, c-format
+msgid "Zoomer Options (%s)"
+msgstr "Opcije lupe (%s)"
+
+#: gnopi/spconf.c:335
+msgid "Failed to set dictionary changes."
+msgstr "Promjene riječnika nisu uspjele."
+
+#: gnopi/spconf.c:343
+msgid "Failed to set removed voice value."
+msgstr "Nije uspjelo postaviti maknutu vrijednost glasa."
+
+#: gnopi/spconf.c:353
+#, c-format
+msgid "Failed to set count: %s."
+msgstr "Nije uspjelo postaviti brojač %s."
+
+#: gnopi/spconf.c:362
+#, c-format
+msgid "Failed to set Punctuation: %s."
+msgstr "Nije uspjelo podešavanje interpukcije: %s."
+
+#: gnopi/spconf.c:371
+#, c-format
+msgid "Failed to set text echo value: %s."
+msgstr "Nije uspjelo podešavanje vrijednosti jeke teksta: %s."
+
+#: gnopi/spconf.c:380
+#, c-format
+msgid "Failed to set modifiers value: %s."
+msgstr "Nije uspjelo postaviti vrijednost parametara.: %s."
+
+#: gnopi/spconf.c:389
+#, c-format
+msgid "Failed to set cursors value: %s."
+msgstr "Nije uspjelo postaviti vrijednosti pokazivača: %s."
+
+#: gnopi/spconf.c:398
+#, c-format
+msgid "Failed to set spaces value: %s."
+msgstr "Nije uspjelo postaviti vrijednost razmaka: %s."
+
+#: gnopi/spconf.c:407
+#, c-format
+msgid "Failed to set dictionary value: %s."
+msgstr "Nije uspjelo postaviti vrijednost riječnika %s."
+
+#: gnopi/spconf.c:416
+#, c-format
+msgid "Failed to set testable voice %s."
+msgstr "Nije uspjelo postaviti iskušani glas: %s."
+
+#: gnopi/spconf.c:608
+#, c-format
+msgid "%s no name"
+msgstr "%s bez imena"
+
+#: gnopi/spdictui.c:79
+msgid "Invalid word or replacer!"
+msgstr "Nevažeća riječ ili zamjenik!"
+
+#: gnopi/spdictui.c:85
+#, fuzzy
+msgid "Word exists in dictionary!"
+msgstr "Riječ postoji u riječniku!"
+
+#: gnopi/spdictui.c:271 gnopi/spdictui.c:324
+msgid "No selected word to modify!"
+msgstr "Nije odabrana riječ radi izmjene!"
+
+#: gnopi/spdictui.c:298
+msgid "No selected word to remove!"
+msgstr "Nije odabrana riječ radi uklanjanja!"
+
+#: gnopi/spdictui.c:447
+msgid "Word"
+msgstr "Word"
+
+#: gnopi/spdictui.c:456
+msgid "Replacer"
+msgstr "Zamijenjivač"
+
+#: gnopi/spvoiceui.c:32
+msgid "<all drivers>"
+msgstr "<svi upravljački programi>"
+
+#: gnopi/spvoiceui.c:33
+msgid "<all voices>"
+msgstr "<svi glasovi>"
+
+#: gnopi/spvoiceui.c:277
+msgid "Invalid voice!"
+msgstr "Nevažeći glas!"
+
+#: gnopi/spvoiceui.c:1165
+msgid "Invalid driver or voice!"
+msgstr "Neispravin pogonski sklop ili glas!"
+
+#: gnopi/spvoiceui.c:1595
+msgid "No selected voice to modify!"
+msgstr "Nije odabran glas za izmjene!"
+
+#: gnopi/spvoiceui.c:1654
+msgid "No selected voice to remove!"
+msgstr "Nije odabran glas radi uklanjanja!"
+
+#: gnopi/spvoiceui.c:1727
+msgid "No selected voice to test!"
+msgstr "Nije odabran glas radi isprobavanja!"
+
+#: gnopi/spvoiceui.c:1968
+msgid "Voice"
+msgstr "Glas"
+
+#: gnopi/spvoiceui.c:1977
+msgid "Driver"
+msgstr "Upravljački program"
+
+#: gnopi/spvoiceui.c:1986
+msgid "Speaker"
+msgstr "Zvučnik"
+
+#: speech/libsrs/srs-speech.c:289
+msgid "Alpha"
+msgstr "Alfa"
+
+#: speech/libsrs/srs-speech.c:290
+msgid "Bravo"
+msgstr "Bravo"
+
+#: speech/libsrs/srs-speech.c:291
+msgid "Charlie"
+msgstr "Mirko"
+
+#: speech/libsrs/srs-speech.c:292
+msgid "Delta"
+msgstr "Izaberite..."
+
+#: speech/libsrs/srs-speech.c:293
+msgid "Echo"
+msgstr "Jeka"
+
+#: speech/libsrs/srs-speech.c:294
+msgid "Foxtrot"
+msgstr "Foxtrot"
+
+#: speech/libsrs/srs-speech.c:295
+msgid "Golf"
+msgstr "Golf"
+
+#: speech/libsrs/srs-speech.c:296
+msgid "Hotel"
+msgstr "Hotel"
+
+#: speech/libsrs/srs-speech.c:297
+msgid "India"
+msgstr "Indija"
+
+#: speech/libsrs/srs-speech.c:298
+msgid "Juliet"
+msgstr "Juliet"
+
+#: speech/libsrs/srs-speech.c:299
+msgid "Kilo"
+msgstr "Kilogram"
+
+#: speech/libsrs/srs-speech.c:300
+msgid "Lima"
+msgstr "Lima"
+
+#: speech/libsrs/srs-speech.c:301
+msgid "Mike"
+msgstr "Mirko"
+
+#: speech/libsrs/srs-speech.c:302
+msgid "November"
+msgstr "Studeni"
+
+#: speech/libsrs/srs-speech.c:303
+msgid "Oscar"
+msgstr "Oscar"
+
+#: speech/libsrs/srs-speech.c:304
+msgid "Papa"
+msgstr "Papa"
+
+#: speech/libsrs/srs-speech.c:305
+msgid "Quebec"
+msgstr "Quebec"
+
+#: speech/libsrs/srs-speech.c:306
+msgid "Romeo"
+msgstr "Romeo"
+
+#: speech/libsrs/srs-speech.c:307
+msgid "Sierra"
+msgstr "Sierra "
+
+#: speech/libsrs/srs-speech.c:308
+msgid "Tango"
+msgstr "Tango"
+
+#: speech/libsrs/srs-speech.c:309
+msgid "Uniform"
+msgstr "Ravnomjerno"
+
+#: speech/libsrs/srs-speech.c:310
+msgid "Victor"
+msgstr "Viktor"
+
+#: speech/libsrs/srs-speech.c:311
+msgid "Whiskey"
+msgstr "Viski"
+
+#: speech/libsrs/srs-speech.c:312
+msgid "Xray"
+msgstr "X-zrake"
+
+#: speech/libsrs/srs-speech.c:313
+msgid "Yankee"
+msgstr "Yankee"
+
+#: speech/libsrs/srs-speech.c:314
+msgid "Zulu"
+msgstr "Zulu"
+
+#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1759
+msgid "space"
+msgstr "razmak"
+
+#: speech/libsrs/srs-speech.c:316
+msgid "tab"
+msgstr "tab"
+
+#: speech/libsrs/srs-speech.c:317
+msgid "new line"
+msgstr "novi redak"
+
+#: speech/libsrs/srs-speech.c:318
+msgid "dash"
+msgstr "crtica"
+
+#: srconf/libsrconf/libsrconf.c:454
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr "Nisam uspio pristupiti izvoru(ima) postavki: %s\n"
+
+#: srconf/libsrconf/libsrconf.c:467
+#, c-format
+msgid "Failed to add notify: %s"
+msgstr "Nije uspjelo dodavanje obavijesti: %s"
+
+#: srconf/libsrconf/libsrconf.c:521
+msgid "Failed to remove directory."
+msgstr "Nije uspjelo uklanjanje mape."
+
+#: srconf/libsrconf/libsrconf.c:865
+msgid "Failed to set configdata."
+msgstr "Nije uspjelo podešavanje podataka konfiguracije."
+
+#: srconf/libsrconf/libsrconf.c:939
+msgid "Failed set data."
+msgstr "Nije uspjelo podešavanje podataka."
+
+#: srcore/default.xml.in.h:1 srcore/verbose.xml.in.h:1
+msgid "( )"
+msgstr "( )"
+
+#: srcore/default.xml.in.h:2 srcore/verbose.xml.in.h:2
+msgid "(C)"
+msgstr "(C)"
+
+#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
+msgid "(E)"
+msgstr "(E)"
+
+#: srcore/default.xml.in.h:4 srcore/verbose.xml.in.h:4
+msgid "(P)"
+msgstr "(P)"
+
+#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
+msgid "(U)"
+msgstr "(U)"
+
+#: srcore/default.xml.in.h:6 srcore/verbose.xml.in.h:6
+msgid "(c)"
+msgstr "(c)"
+
+#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
+msgid "(m)"
+msgstr "(m)"
+
+#: srcore/default.xml.in.h:8 srcore/verbose.xml.in.h:8
+msgid "(n)"
+msgstr "(n)"
+
+#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
+msgid "Give maximum speech and braille output."
+msgstr "Daje najviše govornog ili brialleovog izlaza."
+
+#: srcore/default.xml.in.h:11 srcore/srctrl.c:2258 srcore/srctrl.c:2409
+#: srcore/verbose.xml.in.h:11
+msgid "item"
+msgid_plural "items"
+msgstr[0] "stavka"
+msgstr[1] "stavke"
+msgstr[2] "stavaka"
+
+#: srcore/default.xml.in.h:12 srcore/verbose.xml.in.h:12
+msgid "items"
+msgstr "stavaka"
+
+#: srcore/srctrl.c:1012
+msgid "no parent"
+msgstr "nema roditelja"
+
+#: srcore/srctrl.c:1036
+msgid "no children"
+msgstr "nema sadržanih"
+
+#: srcore/srctrl.c:1069
+msgid "no next"
+msgstr "nema slijedećeg"
+
+#: srcore/srctrl.c:1185
+msgid "Cannot find next text!"
+msgstr "Ne mogu pronaći slijedeći tekst!"
+
+#: srcore/srctrl.c:1196
+msgid "Cannot find next image!"
+msgstr "Ne mogu pronaći slijedeću sliku!"
+
+#: srcore/srctrl.c:1207
+msgid "Cannot find next attributes!"
+msgstr "Ne mogu pronaći slijedeće vrijednosti!"
+
+#: srcore/srctrl.c:1296
+msgid "no previous"
+msgstr "nema prethodnog"
+
+#: srcore/srctrl.c:1340
+msgid "added watch for current object"
+msgstr "dodano nadgledanje trenutnog objekta "
+
+#: srcore/srctrl.c:1341
+msgid "cannot add watch for current object"
+msgstr "ne mogu dodati nadgledanje trenutnog prozora"
+
+#: srcore/srctrl.c:1366
+msgid "no caret"
+msgstr "nema mijesta umetanja"
+
+#: srcore/srctrl.c:1387
+msgid "already on first"
+msgstr "već je na prvom"
+
+#: srcore/srctrl.c:1408
+msgid "already on last"
+msgstr "već je na posljednjem"
+
+#: srcore/srctrl.c:1421
+msgid "now navigating in application"
+msgstr "sada upravlja programom"
+
+#: srcore/srctrl.c:1425
+msgid "now navigating in desktop"
+msgstr "sada upravlja radnom površinom"
+
+#: srcore/srctrl.c:1429
+msgid "now navigating in window"
+msgstr "sada upravlja prozorom"
+
+#: srcore/srctrl.c:1522
+msgid "no focus"
+msgstr "nema fokusa"
+
+#: srcore/srctrl.c:1562
+msgid "no title"
+msgstr "bez naslova"
+
+#: srcore/srctrl.c:1583
+msgid "no menu bar"
+msgstr "nema osnovnog izbornika"
+
+#: srcore/srctrl.c:1606
+msgid "no tool bar"
+msgstr "nema trake sa alatima"
+
+#: srcore/srctrl.c:1630
+msgid "no status bar"
+msgstr "nema linije sa stanjem"
+
+#: srcore/srctrl.c:2214
+#, fuzzy
+msgid "on"
+msgstr "dolje"
+
+#: srcore/srctrl.c:2236 srcore/srctrl.c:2387
+msgid "from a"
+msgstr "iz"
+
+#: srcore/srctrl.c:2238 srcore/srctrl.c:2394
+msgid "with"
+msgstr "sa"
+
+#: srcore/srctrl.c:2269
+#, fuzzy
+msgid "in a"
+msgstr "na"
+
+#: srcore/srctrl.c:2272
+msgid "named "
+msgstr ""
+
+#: srcore/srctrl.c:2274
+#, fuzzy
+msgid "with no name"
+msgstr "%s bez imena"
+
+#: srcore/srctrl.c:2288
+#, fuzzy
+msgid "of application"
+msgstr "_Aplikacija"
+
+#: srcore/srctrl.c:2375
+msgid "on a"
+msgstr "na"
+
+#: srcore/srctrl.c:2614
+#, fuzzy
+msgid "first line"
+msgstr "prazna linija"
+
+#: srcore/srctrl.c:2621
+#, fuzzy
+msgid "last line"
+msgstr "prazna linija"
+
+#: srcore/srctrl.c:2629 srcore/srctrl.c:2631
+#, fuzzy
+msgid "[first line]"
+msgstr "[prazna linija]"
+
+#: srcore/srctrl.c:2636 srcore/srctrl.c:2638
+#, fuzzy
+msgid "[last line]"
+msgstr "[prazna linija]"
+
+#: srcore/srctrl.c:2654
+msgid "empty line"
+msgstr "prazna linija"
+
+#: srcore/srctrl.c:2661
+#, c-format
+msgid "%d empty line"
+msgid_plural "%d empty lines"
+msgstr[0] "%d ispraznite liniju"
+msgstr[1] "%d ispraznite linije"
+msgstr[2] "%d ispraznih linija"
+
+#: srcore/srctrl.c:2682 srcore/srctrl.c:2684
+msgid "[empty line]"
+msgstr "[prazna linija]"
+
+#: srcore/srctrl.c:2689
+#, c-format
+msgid "[%d empty line]"
+msgid_plural "[%d empty lines]"
+msgstr[0] "[%d prazna linija]"
+msgstr[1] "[%d prazne linija]"
+msgstr[2] "[%d praznih linija]"
+
+#: srcore/srctrl.c:2771 srcore/srctrl.c:2772 srcore/srctrl.c:2780
+#: srcore/srctrl.c:2935 srcore/srctrl.c:2936
+msgid "cannot make flat review for current window"
+msgstr "ne može da napravi ravan pregled tekućeg prozora"
+
+#: srcore/srctrl.c:3007
+msgid "flat review mode"
+msgstr "ravan režim pregleda"
+
+#: srcore/srctrl.c:3023
+msgid "focus tracking mode"
+msgstr "režim praćenja fokusa"
+
+#: srcore/srctrl.c:3562
+#, c-format
+msgid "\"%s\" entry has invalid value at position %d."
+msgstr "Stavka \"%s\" sadrži nedozvoljenu vrijednost na mestu %d."
+
+#: srcore/srctrl.c:3583
+#, c-format
+msgid "key \"%s\" has an invalid value at position %d."
+msgstr "Tipka \"%s\" sadrži neispravnu vrijednost na mjestu %d."
+
+#: srcore/srctrl.c:3619
+msgid "Can not get key pad commands mapping from gconf."
+msgstr "Ne mogu dobiti mapiranja za numeričku tipkovnicu iz gconfa."
+
+#: srcore/srctrl.c:3630
+msgid "Can not get braille display commands mapping from gconf."
+msgstr "Ne mogu dobiti braillove naredbe za prikaz iz gconfa."
+
+#: srcore/srctrl.c:3641
+msgid "Can not get user defined commands mapping from gconf."
+msgstr "Ne mogu dohvatiti korisnički definirane naredbe iz gconfa."
+
+#: srcore/srctrl.c:3745
+msgid "no role available"
+msgstr "uloga nije dostupna"
+
+#: srcore/srmain.c:68 srcore/srmain.c:71
+msgid "No focus"
+msgstr "Nije usredotočeno"
+
+#: srcore/srmain.c:74
+msgid "No accessible object is focused"
+msgstr "Usredotočeno na nedostupan objekt"
+
+#: srcore/srmain.c:434
+msgid "unknown location"
+msgstr "nepoznatno mjesto"
+
+#: srcore/srmain.c:471
+msgid "no details"
+msgstr "bez detalja"
+
+#: srcore/srmain.c:511
+msgid "layer"
+msgstr "sloj"
+
+#: srcore/srmain.c:532
+msgid "back to layer"
+msgstr "nazad na sloj"
+
+#: srcore/srmain.c:898
+msgid "cursor on"
+msgstr "kursor na"
+
+#: srcore/srmain.c:898
+msgid "cursor off"
+msgstr "kursor isključen"
+
+#: srcore/srmain.c:916
+msgid "current cursor is"
+msgstr "tekući kursor je"
+
+#: srcore/srmain.c:934
+msgid "cursor size"
+msgstr "veličina kursora"
+
+#: srcore/srmain.c:951
+msgid "cursor magnification on"
+msgstr "uključeno uvećanje kursora"
+
+#: srcore/srmain.c:952
+msgid "cursor magnification off"
+msgstr "isključeno uvećanje kursora"
+
+#: srcore/srmain.c:970
+msgid "cursor color"
+msgstr "boja kursora"
+
+#: srcore/srmain.c:987
+msgid "crosshair on"
+msgstr "nišan uključen"
+
+#: srcore/srmain.c:987
+msgid "crosshair off"
+msgstr "nišan isključen"
+
+#: srcore/srmain.c:1004
+msgid "crosshair clip on"
+msgstr "isječak nišana uključen"
+
+#: srcore/srmain.c:1005
+msgid "crosshair clip off"
+msgstr "isječak nišana isključen"
+
+#: srcore/srmain.c:1023
+msgid "crosshair size"
+msgstr "veličina nišana"
+
+#: srcore/srmain.c:1041
+msgid "crosshair color"
+msgstr "boja nišana"
+
+#: srcore/srmain.c:1059
+msgid "zoomer placement left"
+msgstr "postavka lupe ljevo"
+
+#: srcore/srmain.c:1077
+msgid "zoomer placement top"
+msgstr "postavka lupe gore"
+
+#: srcore/srmain.c:1095
+msgid "zoomer placement width"
+msgstr "postavka širine lupe"
+
+#: srcore/srmain.c:1113
+msgid "zoomer placement height"
+msgstr "postavka visine lupe"
+
+#: srcore/srmain.c:1143
+#, fuzzy
+msgid "magnifier target"
+msgstr "izvor povećanja "
+
+#: srcore/srmain.c:1161
+msgid "magnifier source"
+msgstr "izvor povećanja "
+
+#: srcore/srmain.c:1179
+msgid "zoom factor x"
+msgstr "X rfaktor uvećanja"
+
+#: srcore/srmain.c:1197
+msgid "zoom factor y"
+msgstr "Y faktor uvećanja"
+
+#: srcore/srmain.c:1214
+msgid "zoom factor locked"
+msgstr "zaključan faktor uvećanja"
+
+#: srcore/srmain.c:1215
+msgid "zoom factor unlocked"
+msgstr "otključana faktor uvećanja"
+
+#: srcore/srmain.c:1232
+msgid "invert on"
+msgstr "inverzija uključena"
+
+#: srcore/srmain.c:1232
+msgid "invert off"
+msgstr "inverzija isključena"
+
+#: srcore/srmain.c:1250
+msgid "magnifier smoothing type"
+msgstr "vrsta izglađivanja prilikom uvećanja"
+
+#: srcore/srmain.c:1273
+msgid "mouse tracking mode"
+msgstr "način praćenja miša"
+
+#: srcore/srmain.c:1295
+msgid "panning on"
+msgstr "pomicanje uključeno"
+
+#: srcore/srmain.c:1295
+msgid "panning off"
+msgstr "pomicanje isključeno"
+
+#: srcore/srmain.c:1667
+msgid "alt"
+msgstr "alt"
+
+#: srcore/srmain.c:1672
+msgid "control"
+msgstr "kontrola"
+
+#: srcore/srmain.c:1677
+msgid "shift"
+msgstr "shift"
+
+#: srcore/srmain.c:1682
+msgid "caps lock"
+msgstr "caps lock"
+
+#: srcore/srmain.c:1686
+msgid "num lock"
+msgstr "num lock"
+
+#: srcore/srmain.c:1694 srcore/srmain.c:1738
+msgid "right"
+msgstr "desno"
+
+#: srcore/srmain.c:1696 srcore/srmain.c:1740
+msgid "left"
+msgstr "lijevo"
+
+#: srcore/srmain.c:1730
+msgid "home"
+msgstr "home"
+
+#: srcore/srmain.c:1732
+msgid "end"
+msgstr "kraj"
+
+#: srcore/srmain.c:1734
+msgid "page up"
+msgstr "stranica gore"
+
+#: srcore/srmain.c:1736
+msgid "page down"
+msgstr "stranica dolje"
+
+#: srcore/srmain.c:1742
+msgid "down"
+msgstr "dolje"
+
+#: srcore/srmain.c:1744
+msgid "up"
+msgstr "gore"
+
+#: srcore/srmain.c:1746
+#, fuzzy
+msgid "backspace"
+msgstr "razmak"
+
+#: srcore/srmain.c:1748
+#, fuzzy
+msgid "delete"
+msgstr "_Odabrano"
+
+#: srcore/srmain.c:1750
+msgid "escape"
+msgstr ""
+
+#: srcore/srmain.c:2269
+msgid "Welcome to Gnopernicus"
+msgstr "Dobrodošli u Gnopernika!"
+
+#: srcore/srmain.c:2373
+msgid "braille device can not be initialized"
+msgstr "ne može da pokrene brajev uređaj"
+
+#: srcore/srmain.c:2385
+msgid "Gnopernicus is now exiting. Have a nice day!"
+msgstr "Gnopernicus sada izlazi. Ugodan dan Vam želim !"
+
+#: srcore/srmain.c:2662
+msgid "srcore"
+msgstr "srcore"
+
+#: srcore/srpres.c:757
+msgid "UNK"
+msgstr ""
+
+#: srcore/srpres.c:757
+msgid "UNKNOWN"
+msgstr ""
+
+#: srcore/srpres.c:757
+msgid "Unknown"
+msgstr ""
+
+#: srcore/srpres.c:758
+msgid "???"
+msgstr ""
+
+#: srcore/srpres.c:758
+msgid "INVALID"
+msgstr ""
+
+#: srcore/srpres.c:758
+#, fuzzy
+msgid "Invalid"
+msgstr "Nevažeći glas!"
+
+#: srcore/srpres.c:759
+msgid "ALR"
+msgstr ""
+
+#: srcore/srpres.c:759
+msgid "ALERT"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "CNV"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "CANVAS"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "Canvas"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "CHK"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "CHECK_BOX"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "Check box"
+msgstr ""
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MIT"
+msgstr ""
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MENU ITEM"
+msgstr ""
+
+#: srcore/srpres.c:762
+msgid "Check Menu item"
+msgstr ""
+
+#: srcore/srpres.c:763
+msgid "CCH"
+msgstr ""
+
+#: srcore/srpres.c:763
+msgid "COLOR CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:763
+#, fuzzy
+msgid "Color chooser"
+msgstr "Boja pokazivača"
+
+#: srcore/srpres.c:764
+msgid "CHD"
+msgstr ""
+
+#: srcore/srpres.c:764
+msgid "COLUMN HEADER"
+msgstr ""
+
+#: srcore/srpres.c:764
+#, fuzzy
+msgid "Column header"
+msgstr "Prebrojavanje znakova"
+
+#: srcore/srpres.c:765
+msgid "CBO"
+msgstr ""
+
+#: srcore/srpres.c:765
+msgid "COMBO BOX"
+msgstr ""
+
+#: srcore/srpres.c:765
+msgid "Combo box"
+msgstr ""
+
+#: srcore/srpres.c:766
+msgid "DIC"
+msgstr ""
+
+#: srcore/srpres.c:766
+msgid "DESKTOP ICON"
+msgstr ""
+
+#: srcore/srpres.c:766
+#, fuzzy
+msgid "Desktop icon"
+msgstr "_Radna površina"
+
+#: srcore/srpres.c:767
+msgid "DFR"
+msgstr ""
+
+#: srcore/srpres.c:767
+msgid "DESKTOP FRAME"
+msgstr ""
+
+#: srcore/srpres.c:767
+#, fuzzy
+msgid "Desktop frame"
+msgstr "_Radna površina"
+
+#: srcore/srpres.c:768
+msgid "DLG"
+msgstr ""
+
+#: srcore/srpres.c:768
+msgid "DIALOG"
+msgstr ""
+
+#: srcore/srpres.c:768
+#, fuzzy
+msgid "Dialog"
+msgstr "Kilogram"
+
+#: srcore/srpres.c:769
+msgid "DIP"
+msgstr ""
+
+#: srcore/srpres.c:769
+msgid "DIRECTORY PANE"
+msgstr ""
+
+#: srcore/srpres.c:769
+msgid "Directory pane"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "FCH"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "FILE CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "File chooser"
+msgstr ""
+
+#: srcore/srpres.c:771
+msgid "FLR"
+msgstr ""
+
+#: srcore/srpres.c:771
+msgid "FILLER"
+msgstr ""
+
+#: srcore/srpres.c:771
+#, fuzzy
+msgid "Filler"
+msgstr "braillovo pismo"
+
+#: srcore/srpres.c:772
+msgid "FRM"
+msgstr ""
+
+#: srcore/srpres.c:772
+msgid "FRAME"
+msgstr ""
+
+#: srcore/srpres.c:772
+#, fuzzy
+msgid "Frame"
+msgstr "ozbiljno"
+
+#: srcore/srpres.c:773
+msgid "GPN"
+msgstr ""
+
+#: srcore/srpres.c:773
+msgid "GLASS PANE"
+msgstr ""
+
+#: srcore/srpres.c:773
+msgid "Glass pane"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "HTM"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "HTML CONTAINER"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "H T M L container"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LNK"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LINK"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "link"
+msgstr ""
+
+#: srcore/srpres.c:776
+msgid "ICO"
+msgstr ""
+
+#: srcore/srpres.c:776
+msgid "ICON"
+msgstr ""
+
+#: srcore/srpres.c:776
+msgid "Icon"
+msgstr ""
+
+#: srcore/srpres.c:777
+msgid "IFR"
+msgstr ""
+
+#: srcore/srpres.c:777
+msgid "INTERNAL FRAME"
+msgstr ""
+
+#: srcore/srpres.c:777
+msgid "Internal frame"
+msgstr ""
+
+#: srcore/srpres.c:778
+msgid "LBL"
+msgstr ""
+
+#: srcore/srpres.c:778
+msgid "LABEL"
+msgstr ""
+
+#: srcore/srpres.c:778
+msgid "Label"
+msgstr ""
+
+#: srcore/srpres.c:779
+msgid "LPN"
+msgstr ""
+
+#: srcore/srpres.c:779
+msgid "LAYERED PANE"
+msgstr ""
+
+#: srcore/srpres.c:779
+#, fuzzy
+msgid "Layered pane"
+msgstr "Broj nivoa"
+
+#: srcore/srpres.c:781
+msgid "LST"
+msgstr ""
+
+#: srcore/srpres.c:781
+msgid "LIST"
+msgstr ""
+
+#: srcore/srpres.c:781
+msgid "List"
+msgstr ""
+
+#: srcore/srpres.c:782
+msgid "LIT"
+msgstr ""
+
+#: srcore/srpres.c:782
+msgid "LIST ITEM"
+msgstr ""
+
+#: srcore/srpres.c:782
+#, fuzzy
+msgid "List item"
+msgstr "stavka"
+
+#: srcore/srpres.c:783
+msgid "MNU"
+msgstr ""
+
+#: srcore/srpres.c:783
+msgid "MENU"
+msgstr ""
+
+#: srcore/srpres.c:783
+#, fuzzy
+msgid "Menu"
+msgstr "Minus"
+
+#: srcore/srpres.c:784
+msgid "MBR"
+msgstr ""
+
+#: srcore/srpres.c:784
+msgid "MENU BAR"
+msgstr ""
+
+#: srcore/srpres.c:784
+#, fuzzy
+msgid "Menu bar"
+msgstr "nema osnovnog izbornika"
+
+#: srcore/srpres.c:785
+#, fuzzy
+msgid "Menu item"
+msgstr "stavka"
+
+#: srcore/srpres.c:786
+msgid "OPN"
+msgstr ""
+
+#: srcore/srpres.c:786
+msgid "OPTION PANE"
+msgstr ""
+
+#: srcore/srpres.c:786
+msgid "Option pane"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "PGT"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "PAGE TAB"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "Page tab"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "PTL"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "PAGE TAB LIST"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "Page tab list"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "PNL"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "PANEL"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "Panel"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "PWD"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "PASSWORD TEXT"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "Password text"
+msgstr ""
+
+#: srcore/srpres.c:791
+msgid "PMN"
+msgstr ""
+
+#: srcore/srpres.c:791
+msgid "POPUP MENU"
+msgstr ""
+
+#: srcore/srpres.c:791
+#, fuzzy
+msgid "Popup menu"
+msgstr "idi na izbornik"
+
+#: srcore/srpres.c:792
+msgid "PRG"
+msgstr ""
+
+#: srcore/srpres.c:792
+msgid "PROGRESS BAR"
+msgstr ""
+
+#: srcore/srpres.c:792
+msgid "Progress bar"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "PBT"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "PUSH BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "Push button"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "RAD"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "RADIO BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "Radio button"
+msgstr ""
+
+#: srcore/srpres.c:795
+msgid "Radio Menu item"
+msgstr ""
+
+#: srcore/srpres.c:796
+msgid "RPN"
+msgstr ""
+
+#: srcore/srpres.c:796
+msgid "ROOT PANE"
+msgstr ""
+
+#: srcore/srpres.c:796
+#, fuzzy
+msgid "Root pane"
+msgstr "idi na roditelja"
+
+#: srcore/srpres.c:797
+msgid "RHD"
+msgstr ""
+
+#: srcore/srpres.c:797
+msgid "ROW HEADER"
+msgstr ""
+
+#: srcore/srpres.c:797
+msgid "Row header"
+msgstr ""
+
+#: srcore/srpres.c:798
+msgid "SCR"
+msgstr ""
+
+#: srcore/srpres.c:798
+msgid "SCROLL BAR"
+msgstr ""
+
+#: srcore/srpres.c:798
+#, fuzzy
+msgid "Scroll bar"
+msgstr "Dolar ($)"
+
+#: srcore/srpres.c:799 srcore/srpres.c:827
+msgid "SPN"
+msgstr ""
+
+#: srcore/srpres.c:799
+msgid "SCROLL PANE"
+msgstr ""
+
+#: srcore/srpres.c:799
+msgid "Scroll pane"
+msgstr ""
+
+#: srcore/srpres.c:800
+msgid "SEP"
+msgstr ""
+
+#: srcore/srpres.c:800
+msgid "SEPARATOR"
+msgstr ""
+
+#: srcore/srpres.c:800
+msgid "Separator"
+msgstr ""
+
+#: srcore/srpres.c:801
+msgid "SLD"
+msgstr ""
+
+#: srcore/srpres.c:801
+msgid "SLIDER"
+msgstr ""
+
+#: srcore/srpres.c:801
+#, fuzzy
+msgid "Slider"
+msgstr "Sierra "
+
+#: srcore/srpres.c:802
+msgid "SPP"
+msgstr ""
+
+#: srcore/srpres.c:802
+msgid "SPLIT PANE"
+msgstr ""
+
+#: srcore/srpres.c:802
+msgid "Split pane"
+msgstr ""
+
+#: srcore/srpres.c:803
+msgid "STA"
+msgstr ""
+
+#: srcore/srpres.c:803
+msgid "STATUS BAR"
+msgstr ""
+
+#: srcore/srpres.c:803
+#, fuzzy
+msgid "Status bar"
+msgstr "nema linije sa stanjem"
+
+#: srcore/srpres.c:804
+msgid "TAB"
+msgstr ""
+
+#: srcore/srpres.c:804
+msgid "TABLE"
+msgstr ""
+
+#: srcore/srpres.c:804
+#, fuzzy
+msgid "Table"
+msgstr "Tilda"
+
+#: srcore/srpres.c:805
+msgid "CEL"
+msgstr ""
+
+#: srcore/srpres.c:805
+msgid "TABLE CELL"
+msgstr ""
+
+#: srcore/srpres.c:805
+msgid "Table cell"
+msgstr ""
+
+#: srcore/srpres.c:806 srcore/srpres.c:831
+msgid "TCH"
+msgstr ""
+
+#: srcore/srpres.c:806
+msgid "TABLE COLUMN HEADER"
+msgstr ""
+
+#: srcore/srpres.c:806
+msgid "Table column header"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "TRH"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "TABLE ROW HEADER"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "Table row header"
+msgstr ""
+
+#: srcore/srpres.c:808 srcore/srpres.c:809
+msgid "TXT"
+msgstr ""
+
+#: srcore/srpres.c:808
+msgid "MULTI LINE TEXT"
+msgstr ""
+
+#: srcore/srpres.c:808
+msgid "Multi Line Text"
+msgstr ""
+
+#: srcore/srpres.c:809
+msgid "SINGLE LINE TEXT"
+msgstr ""
+
+#: srcore/srpres.c:809
+msgid "Single Line Text"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "TOG"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "TOGGLE BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "Toggle button"
+msgstr ""
+
+#: srcore/srpres.c:811
+msgid "TOL"
+msgstr ""
+
+#: srcore/srpres.c:811
+msgid "TOOL BAR"
+msgstr ""
+
+#: srcore/srpres.c:811
+#, fuzzy
+msgid "Tool bar"
+msgstr "nema trake sa alatima"
+
+#: srcore/srpres.c:812
+msgid "TIP"
+msgstr ""
+
+#: srcore/srpres.c:812
+msgid "TOOL TIP"
+msgstr ""
+
+#: srcore/srpres.c:812
+msgid "Tool tip"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "TRE"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "TREE"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "Tree"
+msgstr ""
+
+#: srcore/srpres.c:814
+msgid "TRI"
+msgstr ""
+
+#: srcore/srpres.c:814
+msgid "TREE ITEM"
+msgstr ""
+
+#: srcore/srpres.c:814
+#, fuzzy
+msgid "Tree item"
+msgstr "Odabrana stavka"
+
+#: srcore/srpres.c:815
+msgid "TRT"
+msgstr ""
+
+#: srcore/srpres.c:815
+msgid "TREE TABLE"
+msgstr ""
+
+#: srcore/srpres.c:815
+msgid "Tree table"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "VWP"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "VIEWPORT"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "Viewport"
+msgstr ""
+
+#: srcore/srpres.c:817
+msgid "WND"
+msgstr ""
+
+#: srcore/srpres.c:817
+msgid "WINDOW"
+msgstr ""
+
+#: srcore/srpres.c:817
+#, fuzzy
+msgid "Window"
+msgstr "_Prozor"
+
+#: srcore/srpres.c:818
+msgid "ACC"
+msgstr ""
+
+#: srcore/srpres.c:818
+msgid "ACCELERATOR LABEL"
+msgstr ""
+
+#: srcore/srpres.c:818
+msgid "Accelerator label"
+msgstr ""
+
+#: srcore/srpres.c:819
+msgid "ANI"
+msgstr ""
+
+#: srcore/srpres.c:819
+msgid "ANIMATION"
+msgstr ""
+
+#: srcore/srpres.c:819
+#, fuzzy
+msgid "Animation"
+msgstr "_Aplikacija"
+
+#: srcore/srpres.c:820
+msgid "ARR"
+msgstr ""
+
+#: srcore/srpres.c:820
+msgid "ARROW"
+msgstr ""
+
+#: srcore/srpres.c:820
+msgid "Arrow"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "CAL"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "CALENDAR"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "Calendar"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "DAT"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "DATE EDITOR"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "Date editor"
+msgstr ""
+
+#: srcore/srpres.c:823
+msgid "DIL"
+msgstr ""
+
+#: srcore/srpres.c:823
+msgid "DIAL"
+msgstr ""
+
+#: srcore/srpres.c:823
+#, fuzzy
+msgid "Dial"
+msgstr "_Duplo"
+
+#: srcore/srpres.c:824
+msgid "DRW"
+msgstr ""
+
+#: srcore/srpres.c:824
+msgid "DRAWING AREA"
+msgstr ""
+
+#: srcore/srpres.c:824
+msgid "Drawing area"
+msgstr ""
+
+#: srcore/srpres.c:825
+msgid "FNT"
+msgstr ""
+
+#: srcore/srpres.c:825
+msgid "FONT CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:825
+#, fuzzy
+msgid "Font chooser"
+msgstr "Veličina pisma"
+
+#: srcore/srpres.c:826
+msgid "IMG"
+msgstr ""
+
+#: srcore/srpres.c:826
+msgid "IMAGE"
+msgstr ""
+
+#: srcore/srpres.c:826
+msgid "Image"
+msgstr ""
+
+#: srcore/srpres.c:827
+msgid "SPIN BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:827
+msgid "Spin button"
+msgstr ""
+
+#: srcore/srpres.c:828
+msgid "TRM"
+msgstr ""
+
+#: srcore/srpres.c:828
+msgid "TERMINAL"
+msgstr ""
+
+#: srcore/srpres.c:828
+msgid "Terminal"
+msgstr ""
+
+#: srcore/srpres.c:829
+msgid "EXT"
+msgstr ""
+
+#: srcore/srpres.c:829
+msgid "EXTENDED"
+msgstr ""
+
+#: srcore/srpres.c:829
+msgid "Extended"
+msgstr ""
+
+#: srcore/srpres.c:830
+msgid "TLI"
+msgstr ""
+
+#: srcore/srpres.c:830
+msgid "TABLE LINE"
+msgstr ""
+
+#: srcore/srpres.c:830
+#, fuzzy
+msgid "Table line"
+msgstr "novi redak"
+
+#: srcore/srpres.c:831
+msgid "TABLE COLUMNS HEADER"
+msgstr ""
+
+#: srcore/srpres.c:831
+msgid "Table columns header"
+msgstr ""
+
+#: srcore/srpres.c:832
+msgid "TIT"
+msgstr ""
+
+#: srcore/srpres.c:832
+msgid "TITLE BAR"
+msgstr ""
+
+#: srcore/srpres.c:832
+#, fuzzy
+msgid "Title bar"
+msgstr "nema trake sa alatima"
+
+#: srcore/srpres.c:833
+msgid "EDB"
+msgstr ""
+
+#: srcore/srpres.c:833
+msgid "EDIT BAR"
+msgstr ""
+
+#: srcore/srpres.c:833
+#, fuzzy
+msgid "Edit bar"
+msgstr "Uredi rječnik"
+
+#: srcore/srspc.c:439
+#, c-format
+msgid "Incorrect parameters for voice \"%s%s\""
+msgstr "Neispravni parametri za glas  \"%s%s\""
+
+#: srcore/srspc.c:481
+#, c-format
+msgid "failed to send to speech next string \"%s\""
+msgstr "ne može da pošalje za izgovor sledeći tekst \"%s\""
+
+#: srcore/srspc.c:547
+#, c-format
+msgid "could not create/modify voice \"%s\""
+msgstr "ne može napraviti/promijeniti glas \"%s\""
+
+#: srcore/srspc.c:707
+#, c-format
+msgid "voice \"%s\" will sound this way"
+msgstr "glas \"%s\" će zvučati ovako"
+
+#: srcore/srspc.c:712
+#, c-format
+msgid "could not test voice \"%s\""
+msgstr "ne može isprobati glas \"%s\""
+
+#: srcore/srspc.c:801
+#, c-format
+msgid "value not supported for speech count mode \"%s\""
+msgstr "vrijednost nije podržana za govorno brojanje \"%s\""
+
+#: srcore/srspc.c:837
+#, c-format
+msgid "value not supported for speech modifiers type \"%s\""
+msgstr "vrijednost nije podržana za vrstu izmjenjivača govora \"%s\""
+
+#: srcore/srspc.c:873
+#, c-format
+msgid "value not supported for speech cursors type \"%s\""
+msgstr "vrijednost nije podržana za vrstu kursora govora \"%s\""
+
+#: srcore/srspc.c:909
+#, c-format
+msgid "value not supported for speech spaces type \"%s\""
+msgstr "vrijednost nije podržana za vrstu razmaka govora \"%s\""
+
+#: srcore/srspc.c:945
+#, c-format
+msgid "value not supported for speech dictionary type \"%s\""
+msgstr "vrijednost nije podržana za vrstu riječnika govora \"%s\""
+
+#: srcore/srspc.c:982
+#, c-format
+msgid "value not supported for speech text echo type \"%s\""
+msgstr "vrijednost nije podržana za vrstu ispisa teksta govora \"%s\""
+
+#: srcore/srspc.c:1001
+msgid "Tilde"
+msgstr "Tilda"
+
+#: srcore/srspc.c:1001
+msgid "Tildaes"
+msgstr "Tilde"
+
+#: srcore/srspc.c:1002
+msgid "Exclamation"
+msgstr "Objašnjenje"
+
+#: srcore/srspc.c:1002
+msgid "Exclamations"
+msgstr "Objašnjenja"
+
+#: srcore/srspc.c:1003
+msgid "At"
+msgstr "Za koliko"
+
+#: srcore/srspc.c:1003
+msgid "Ats"
+msgstr "Ats"
+
+#: srcore/srspc.c:1004
+msgid "Hash"
+msgstr "Smjesa"
+
+#: srcore/srspc.c:1004
+msgid "Hashes"
+msgstr "Smjese"
+
+#: srcore/srspc.c:1005
+msgid "Dollar"
+msgstr "Dolar ($)"
+
+#: srcore/srspc.c:1005
+msgid "Dollars"
+msgstr "Dolari ($)"
+
+#: srcore/srspc.c:1006
+msgid "Percent"
+msgstr "Postotak"
+
+#: srcore/srspc.c:1006
+msgid "Percents"
+msgstr "postotci"
+
+#: srcore/srspc.c:1007
+msgid "Caret"
+msgstr "Caret"
+
+#: srcore/srspc.c:1007
+msgid "Carets"
+msgstr "Careti"
+
+#: srcore/srspc.c:1008
+msgid "And"
+msgstr "I"
+
+#: srcore/srspc.c:1008
+msgid "Ands"
+msgstr "Ampersandi"
+
+#: srcore/srspc.c:1009
+msgid "Asterisk"
+msgstr "Zvjezdica"
+
+#: srcore/srspc.c:1009
+msgid "Asterisks"
+msgstr "Zvjezdice"
+
+#: srcore/srspc.c:1010
+msgid "Left Paranthesis"
+msgstr "Lijeva zagrada"
+
+#: srcore/srspc.c:1011
+msgid "Right Paranthesis"
+msgstr "Zatvorena zagrada"
+
+#: srcore/srspc.c:1012
+msgid "Underscore"
+msgstr "Podvlaka"
+
+#: srcore/srspc.c:1012
+msgid "Underscores"
+msgstr "Podvlake"
+
+#: srcore/srspc.c:1013
+msgid "Plus"
+msgstr "Plus"
+
+#: srcore/srspc.c:1013
+msgid "Pluses"
+msgstr "Plusevi"
+
+#: srcore/srspc.c:1014
+msgid "Equal"
+msgstr "Jednako"
+
+#: srcore/srspc.c:1014
+msgid "Equals"
+msgstr "Jednako"
+
+#: srcore/srspc.c:1015
+msgid "Minus"
+msgstr "Minus"
+
+#: srcore/srspc.c:1015
+msgid "Minuses"
+msgstr "Minusi"
+
+#: srcore/srspc.c:1016
+msgid "Quote"
+msgstr "Citat"
+
+#: srcore/srspc.c:1016
+msgid "Quotes"
+msgstr "Navodnici"
+
+#: srcore/srspc.c:1017
+msgid "Left Bracket"
+msgstr "Lijeva uglata zagrada"
+
+#: srcore/srspc.c:1017
+msgid "Left Brackets"
+msgstr "lijeve zagrade"
+
+#: srcore/srspc.c:1018
+msgid "Right Bracket"
+msgstr "Desna uglata zagrada"
+
+#: srcore/srspc.c:1018
+msgid "Right Brackets"
+msgstr "Desne zagrade"
+
+#: srcore/srspc.c:1019
+msgid "Left Brace"
+msgstr "Lijeva vitičasta zagrada"
+
+#: srcore/srspc.c:1019
+msgid "Left Braces"
+msgstr "Lijeve proteze"
+
+#: srcore/srspc.c:1020
+msgid "Right Brace"
+msgstr "Desna vitičasta zagrada"
+
+#: srcore/srspc.c:1020
+msgid "Right Braces"
+msgstr "Desne zagrade"
+
+#: srcore/srspc.c:1021
+msgid "Semicolon"
+msgstr "Točka-zarez"
+
+#: srcore/srspc.c:1021
+msgid "Semicolons"
+msgstr "Točka-zarezima"
+
+#: srcore/srspc.c:1022
+msgid "Colon"
+msgstr "Dvotočka"
+
+#: srcore/srspc.c:1022
+msgid "Colons"
+msgstr "Dvotočke"
+
+#: srcore/srspc.c:1023
+msgid "Double quote"
+msgstr "Dvostruki citat"
+
+#: srcore/srspc.c:1023
+msgid "Double quotes"
+msgstr "Dvostuki navodnici"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophe"
+msgstr "Apostorf"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophes"
+msgstr "Apostrofi"
+
+#: srcore/srspc.c:1025
+msgid "Back Slash"
+msgstr "Obrnuta kosa crta"
+
+#: srcore/srspc.c:1025
+msgid "Back Slashes"
+msgstr "Obrnute kose crte"
+
+#: srcore/srspc.c:1026
+msgid "Bar"
+msgstr "Položeni stup."
+
+#: srcore/srspc.c:1026
+msgid "Bars"
+msgstr "Stupci"
+
+#: srcore/srspc.c:1027
+msgid "Greater"
+msgstr "Veće"
+
+#: srcore/srspc.c:1027
+msgid "Greaters"
+msgstr "Pozdravljači"
+
+#: srcore/srspc.c:1028
+msgid "Less"
+msgstr "Manje"
+
+#: srcore/srspc.c:1028
+msgid "Lesses"
+msgstr "Lesses"
+
+#: srcore/srspc.c:1029
+msgid "Comma"
+msgstr "Zarez"
+
+#: srcore/srspc.c:1029
+msgid "Commas"
+msgstr "Zarezi"
+
+#: srcore/srspc.c:1030
+msgid "Dot"
+msgstr "Točka"
+
+#: srcore/srspc.c:1030
+msgid "Dots"
+msgstr "Točke"
+
+#: srcore/srspc.c:1031
+msgid "Slash"
+msgstr "Kosa crta"
+
+#: srcore/srspc.c:1031
+msgid "Slashes"
+msgstr "Kose crte"
+
+#: srcore/srspc.c:1032
+msgid "Questions"
+msgstr "Pitanja"
+
+#: srcore/srspc.c:1106
+#, c-format
+msgid "value not supported for speech punctuation type \"%s\""
+msgstr "vrijednost nije podržana za vrstu interpunkcije govora \"%s\""
+
+#: srcore/srspc.c:1364
+msgid "Unable to initialize hashtable"
+msgstr "Ne može uspostaviti hash tabelu"
+
+#: srcore/srspc.c:1370
+msgid "Unable to load dictionary from gconf"
+msgstr "Ne može učitati rječnik iz gconfa"
+
+#: srcore/srspc.c:1561
+msgid "speech initialization succeded"
+msgstr "uspješno pokretanje govora"
+
+#: srcore/srspc.c:1565
+msgid "speech initialization failed"
+msgstr "neuspješno pokretanje govora"
+
+#: srcore/srspc.c:1761
+#, fuzzy
+msgid "enter"
+msgstr "centrirano"
+
+#: srcore/srspc.c:1844
+#, c-format
+msgid "can not find \"%s\" voice. use default voice"
+msgstr "ne mogu naći glas \"%s\". Koristi uobičajeni glas"
+
+#: srcore/srspc.c:1861
+msgid "voices pitch will be set to default value"
+msgstr "visina glasa će biti postavljena na uobičajenu vrijednost"
+
+#: srcore/srspc.c:1863
+msgid "voices pitch will be decreased"
+msgstr "visina glasa će biti umanjena"
+
+#: srcore/srspc.c:1865
+msgid "voices pitch will be increased"
+msgstr "visina glasa će biti uvećana"
+
+#: srcore/srspc.c:1909
+msgid "voices rate will be set to default value"
+msgstr "brzina glasa će biti postavljena na uobičajenu vrijednost"
+
+#: srcore/srspc.c:1911
+msgid "voices rate will be decreased"
+msgstr "brzina glasa će biti umanjena"
+
+#: srcore/srspc.c:1913
+msgid "voices rate will be increased"
+msgstr "brzina glasa će biti uvećana"
+
+#: srcore/srspc.c:1958
+msgid "voices volume will be set to default value"
+msgstr "jačina glasa će biti postavljena na uobičajenu vrijednost"
+
+#: srcore/srspc.c:1960
+msgid "voices volume will be decreased"
+msgstr "jačina glasa će biti umanjena"
+
+#: srcore/srspc.c:1962
+msgid "voices volume will be increased"
+msgstr "jačina glasa će biti uvećana"
+
+#: srcore/srspc.c:2088
+#, c-format
+msgid "no support for speech key \"%s\""
+msgstr "nema podrške za izgovaranje ključa \"%s\""
+
+#~ msgid "Can not install braille font."
+#~ msgstr "Ne mogu postaviti braillovo pismo."
+
+#~ msgid "window hierarchy flat"
+#~ msgstr "tanka hijerarhija prozora"
+
+#~ msgid "_Lock zoom factor"
+#~ msgstr "_Zaključaj uvećanje"
+
+#~ msgid "Sa_y all cursors"
+#~ msgstr "Iz_govori sve pokazivače"
+
+#~ msgid "Say all cursors"
+#~ msgstr "Izgovori sve pokazivače"
+
+#~ msgid "Keyboard preferences"
+#~ msgstr "Postavke tastature"
+
+#~ msgid "uniform"
+#~ msgstr "jednoliko"

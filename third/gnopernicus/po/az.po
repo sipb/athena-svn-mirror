@@ -1,0 +1,4977 @@
+# translation of gnopernicus.HEAD.az.po to Azerbaijani Turkish
+# Copyright (C) 2003 Mətin Əmirov
+# This file is distributed under the same license as the gnopernicus package.
+# Mətin Əmirov <metin@karegen.com>, 2003, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnopernicus.HEAD.az\n"
+"POT-Creation-Date: 2004-09-15 12:38+0300\n"
+"PO-Revision-Date: 2004-02-22 19:55+0200\n"
+"Last-Translator: Mətin Əmirov <metin@karegen.com>\n"
+"Language-Team: Azerbaijani Turkish <translation-team-az@lists.sourceforge."
+"net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: braille/test/remote.c:548
+msgid "Braille remote"
+msgstr "Uzaq braille"
+
+#: brlmon/brlmon.c:196
+msgid "Braille monitor"
+msgstr "Braille izləyicisi"
+
+#: brlmon/brlmon.c:325 brlmon/brlmon.c:333
+#, c-format
+msgid "Invalid port number: %d."
+msgstr "Hökmsüz qapı nömrəsi: %d."
+
+#: brlmon/brlmon.c:326 brlmon/brlmon.c:334
+msgid "port_no = [1025 - 30000]."
+msgstr "port_no = [1025 - 30000]."
+
+#: brlmon/brlmon.c:520
+msgid "Can not open socket!"
+msgstr "Soket açıla bilmir!"
+
+#: brlmon/brlmon.c:543
+#, c-format
+msgid "Can not bind port number %d."
+msgstr "%d qapı nömrəsi düyümlənə bilmir."
+
+#: brlmon/brlmon.c:547
+#, c-format
+msgid "Waiting for data on port UDP %u."
+msgstr "UDP %u qapısında mə'lumat gözlənir."
+
+#: brlmon/brlmonui.c:225 gnopi/gnopiconf.c:43
+msgid "Failed to init gconf client."
+msgstr "Gconf alıcısı hazırlana bilmədi."
+
+#: brlmon/brlmonui.c:234 srconf/libsrconf/libsrconf.c:418
+msgid "Failed to add directory."
+msgstr "Cərgə əlavə edilə bilmədi."
+
+#: brlmon/brlmonui.c:246 gnopi/kbconf.c:79 gnopi/spconf.c:89
+#: srconf/libsrconf/libsrconf.c:431
+msgid "Failed to add notify."
+msgstr "Xəbərdarlıq əlavə edilə bilmədi."
+
+#: brlmon/brlmonui.c:261 gnopi/gnopiconf.c:145
+#, c-format
+msgid "Expected key: %s"
+msgstr "Gözlənilən açar: %s"
+
+#: brlmon/brlmonui.c:301
+#, c-format
+msgid "Failed to set value: %d"
+msgstr "Qiymət tə'yin edilə bilmədi: %d"
+
+#: brlmon/brlmonui.c:342 brlmon/brlmonui.c:444 gnopi/gnopiconf.c:355
+#: gnopi/gnopiconf.c:409 gnopi/gnopiconf.c:560 gnopi/gnopiconf.c:733
+#, c-format
+msgid "Invalid type of key: %s."
+msgstr "Hökmsüz düymə növü: %s."
+
+#: brlmon/brlmonui.c:345 brlmon/brlmonui.c:364
+#, c-format
+msgid "Failed to set int value: %d."
+msgstr "int qiyməti tə'yin edilə bilmədi: %d."
+
+#: brlmon/brlmonui.c:358 brlmon/brlmonui.c:459
+#, c-format
+msgid "Failed to get value: %s."
+msgstr "Qiymət alına bilmədi: %s."
+
+#: brlmon/brlmonui.c:403 gnopi/gnopiconf.c:357 gnopi/gnopiconf.c:375
+#: gnopi/gnopiconf.c:562 gnopi/gnopiconf.c:578
+#, c-format
+msgid "Failed to set value: %d."
+msgstr "Qiymət tə'yin edilə bilmədi: %d."
+
+#: brlmon/brlmonui.c:447 brlmon/brlmonui.c:462
+#, c-format
+msgid "Failed to set boolean value: %d."
+msgstr "Boolean qiymət tə'yin edilə bilmədi: %d."
+
+#: brlmon/brlmonui.c:501 gnopi/gnopiconf.c:496 gnopi/gnopiconf.c:509
+#, c-format
+msgid "Failed to set value: %s."
+msgstr "Qiymət tə'yin edilə bilmədi: %s."
+
+#: brlmon/brlmonui.c:535
+#, c-format
+msgid "Failed to get string value: %s."
+msgstr "Qatar qiyməti alına bilmədi: %s."
+
+#: brlmon/brlmonui.c:539 brlmon/brlmonui.c:549
+#, c-format
+msgid "Failed to set string value: %s."
+msgstr "Qatar qiyməti tə'yin edilə bilmədi bilmədi: %s."
+
+#: brlmon/brlmonui.c:583 gnopi/bmui.c:297
+#, c-format
+msgid "Invalid modetype: %s."
+msgstr "Hökmsüz mod növü: %s."
+
+#: brlmon/brlmonui.c:635
+#, c-format
+msgid "%s font not installed."
+msgstr "%s yazı növü qurulu deyil."
+
+#. *
+#. * bmui_load_colors
+#. *
+#. * Load text colors.
+#. *
+#. * returns:
+#. *
+#: brlmon/brlmonui.c:639 gnopi/bmui.c:251
+msgid "Can not parse color string."
+msgstr "Rəng qatarı oxuna bilmir."
+
+#: brlmon/brlmonui.c:1111
+msgid "Status"
+msgstr "Vəziyyət"
+
+#: brlmon/brlmonui.c:1318
+#, fuzzy, c-format
+msgid "Too many cells on display. [Max %d]"
+msgstr "Displeydə həddindən çox hücrə. [Maks. %d]"
+
+#: brlmon/brlmonui.c:1319
+#, c-format
+msgid "Load default display size. Line: %d Column: %d."
+msgstr "Ön qurğulu displey böyüklüyünü yüklə. Sətir: %d Sütun: %d."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:84
+#, c-format
+msgid "BRLOUT attribute %s is not supported."
+msgstr "BRLOUT atribyutu %s dəstəklənmir."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:218
+#, c-format
+msgid "TEXT attribute %s is not supported."
+msgstr "TEXT atribyutu %s dəstəklənmir."
+
+#: gnopi/bmconf.c:318
+msgid "Failed to set display size."
+msgstr "Displey böyüklüyü tə'yin edilə bilmədi."
+
+#: gnopi/bmconf.c:336
+msgid "Failed to set display position."
+msgstr "Displey mövqeyi tə'yin edilə bilmədi."
+
+#: gnopi/bmconf.c:368
+msgid "Failed to set display mode."
+msgstr "Displey modu tə'yin edilə bilmədi."
+
+#: gnopi/bmconf.c:392
+msgid "Failed to set dot type colors."
+msgstr "Nöqtə şəkilli rənglər tə'yin edilə bilmədi."
+
+#: gnopi/bmconf.c:409
+msgid "Failed to set font size."
+msgstr "Yazı növü böyüklüyü tə'yin edilə bilmədi."
+
+#: gnopi/bmui.c:328
+#, c-format
+msgid "Invalid position: %s."
+msgstr "Hökmsüz mövqe: %s."
+
+#: gnopi/brlconf.c:282 gnopi/cmdmapconf.c:237 gnopi/coreconf.c:140
+#: gnopi/kbconf.c:126 gnopi/magconf.c:226 gnopi/spconf.c:152
+#: gnopi/spconf.c:1203
+msgid "Unable to allocate memory."
+msgstr "Yaddaş ayrıla bilmədi."
+
+#: gnopi/brlconf.c:388
+#, c-format
+msgid "Failed to set braille style: %s."
+msgstr "Braille displeyi tə'yin edilə bilmədi: %s."
+
+#: gnopi/brlconf.c:397
+#, c-format
+msgid "Failed to set braille cursor style: %s."
+msgstr "Braille kursor tərzi tə'yin edilə bilmədi: %s."
+
+#: gnopi/brlconf.c:406
+#, c-format
+msgid "Failed to set attribute settings: %d."
+msgstr "Atribut qurğuları tə'yin edilə bilmədi: %d."
+
+#: gnopi/brlconf.c:415
+#, c-format
+msgid "Failed to set braille device: %s."
+msgstr "Braille avadanlığı tə'yin edilə bilmədi: %s."
+
+#: gnopi/brlconf.c:424
+#, c-format
+msgid "Failed to set fill character: %s."
+msgstr "Doldurma hərfi tə'yin edilə bilmədi: %s."
+
+#: gnopi/brlconf.c:433
+#, c-format
+msgid "Failed to set serial port number: %d."
+msgstr "Qapı nömrəsi tə'yin edilə bilmədi: %d."
+
+#: gnopi/brlconf.c:443
+#, c-format
+msgid "Failed to set translation table: %s."
+msgstr "Tərcümə cədvəli tə'yin edilə bilmədi: %s."
+
+#: gnopi/brlconf.c:452
+#, c-format
+msgid "Failed to set optical sensor: %d."
+msgstr "Optik sensorlar tə'yin edilə bilmədi: %d."
+
+#: gnopi/brlconf.c:461
+#, c-format
+msgid "Failed to set position sensor: %d."
+msgstr "Mövqe sensoru tə'yin edilə bilmədi: %d."
+
+#: gnopi/brlconf.c:470
+#, c-format
+msgid "Failed to set status cell: %s."
+msgstr "Vəziyyət hücrəsi tə'yin edilə bilmədi: %s."
+
+#: gnopi/brlconf.c:556
+msgid "<none>"
+msgstr "<yoxdur>"
+
+#: gnopi/brlui.c:79
+msgid "American English"
+msgstr "Amerikan İngilis Dili"
+
+#: gnopi/brlui.c:80
+msgid "German"
+msgstr "Alman Dili"
+
+#: gnopi/brlui.c:81
+msgid "Spanish"
+msgstr "İspan Dili"
+
+#: gnopi/brlui.c:82
+msgid "Swedish"
+msgstr "İsveç Dili"
+
+#. To translators: X = X Window System server
+#: gnopi/brlui.c:351
+msgid "X display's _terminal number:"
+msgstr "X displeyinin _terminal nömrəsi:"
+
+#: gnopi/brlui.c:357
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:6
+msgid "_Port:"
+msgstr "_Qapı:"
+
+#: gnopi/brlui.c:623
+msgid "Language"
+msgstr "Dil"
+
+#: gnopi/brlui.c:1218 gnopi/cmdmapui.c:475
+msgid "No selected command!"
+msgstr "Əmr seçilməyib!"
+
+#: gnopi/brlui.c:1242
+msgid "Invalid device key!"
+msgstr "Hökmsüz avadanlıq qiyməti!"
+
+#: gnopi/brlui.c:1477 gnopi/brlui.c:1900 gnopi/cmdmapui.c:717
+#: gnopi/cmdmapui.c:1568 gnopi/cmdmapui.c:1588
+msgid "Commands"
+msgstr "Əmrlər"
+
+#: gnopi/brlui.c:1632 gnopi/cmdmapui.c:1186
+msgid "No selected item to modify!"
+msgstr "Dəyişdiriləcək seçili üzv yoxdur!"
+
+#: gnopi/brlui.c:1644 gnopi/brlui.c:1724 gnopi/cmdmapui.c:1059
+#: gnopi/cmdmapui.c:1196
+msgid "Invalid selected item!"
+msgstr "Hökmsüz seçili üzv!"
+
+#: gnopi/brlui.c:1712 gnopi/cmdmapui.c:1046
+msgid "No selected item to remove!"
+msgstr "Silinəcək seçili üzv yoxdur!"
+
+#: gnopi/brlui.c:1894
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:9
+msgid "Braille Keys"
+msgstr "Braille Düymələri"
+
+#: gnopi/cmdmapconf.c:462 gnopi/cmdmapconf.c:503
+msgid "Change commit error."
+msgstr "Dəyişmə commit xətası."
+
+#: gnopi/cmdmapui.c:45
+msgid "decrease y scale"
+msgstr "y miqyasını azalt"
+
+#: gnopi/cmdmapui.c:46
+msgid "decrease x scale"
+msgstr "x miqyasını azalt"
+
+#: gnopi/cmdmapui.c:47
+msgid "increase y scale"
+msgstr "y miqyasını artır"
+
+#: gnopi/cmdmapui.c:48
+msgid "increase x scale"
+msgstr "x miqyasını artır"
+
+#: gnopi/cmdmapui.c:49
+msgid "lock xy scale"
+msgstr "xy miqyasını qıfılla"
+
+#: gnopi/cmdmapui.c:50
+msgid "smoothing toggle"
+msgstr "yumuşaltma düyməsi"
+
+#: gnopi/cmdmapui.c:51
+msgid "cursor toggle"
+msgstr "kursor düyməsi"
+
+#: gnopi/cmdmapui.c:52
+msgid "cursor on/off"
+msgstr "kursor fəal/bağlı"
+
+#: gnopi/cmdmapui.c:53
+msgid "cursor magnification on/off"
+msgstr "kursor yaxınlaşdırması fəal/bağlı"
+
+#: gnopi/cmdmapui.c:54
+msgid "decrease cursor size"
+msgstr "kursor böyüklüyünü azalt"
+
+#: gnopi/cmdmapui.c:55
+msgid "increase cursor size"
+msgstr "kursor böyüklüyünü artır"
+
+#: gnopi/cmdmapui.c:56
+msgid "invert on/off"
+msgstr "çevirmə fəal/bağlı"
+
+#: gnopi/cmdmapui.c:57
+msgid "magnifier default"
+msgstr "ön qurğulu böyüdücü"
+
+#: gnopi/cmdmapui.c:58
+msgid "crosshair on/off"
+msgstr "ox fəal/bağlı"
+
+#: gnopi/cmdmapui.c:59
+msgid "crosshair clip on/off"
+msgstr "ox tutucusu fəal/bağlı"
+
+#: gnopi/cmdmapui.c:60
+msgid "decrease crosshair size"
+msgstr "ox böyüklüyünü azalt"
+
+#: gnopi/cmdmapui.c:61
+msgid "increase crosshair size"
+msgstr "ox böyüklüyünü artır"
+
+#: gnopi/cmdmapui.c:62
+msgid "automatic panning on/off"
+msgstr "avtomatik üfüqi istiqamətləndirmə fəal/bağlı"
+
+#: gnopi/cmdmapui.c:63
+msgid "mouse tracking toggle"
+msgstr "siçan izləmə düyməsi"
+
+#: gnopi/cmdmapui.c:64
+msgid "load magnifier defaults"
+msgstr "böyüdücü ön qurğularını yüklə"
+
+#: gnopi/cmdmapui.c:66
+msgid "decrease pitch"
+msgstr "dərəcəni azalt"
+
+#: gnopi/cmdmapui.c:67
+msgid "increase pitch"
+msgstr "dərəcəni artır"
+
+#: gnopi/cmdmapui.c:68
+msgid "default pitch"
+msgstr "ön qurğulu dərəcə"
+
+#: gnopi/cmdmapui.c:69
+msgid "decrease rate"
+msgstr "sıxlığı azalt"
+
+#: gnopi/cmdmapui.c:70
+msgid "increase rate"
+msgstr "sıxlığı artır"
+
+#: gnopi/cmdmapui.c:71
+msgid "default rate"
+msgstr "ön qurğulu sıxlıq"
+
+#: gnopi/cmdmapui.c:72
+msgid "decrease volume"
+msgstr "səsi azalt"
+
+#: gnopi/cmdmapui.c:73
+msgid "increase volume"
+msgstr "səsi artır"
+
+#: gnopi/cmdmapui.c:74
+msgid "default volume"
+msgstr "ön qurğulu səs"
+
+#: gnopi/cmdmapui.c:75
+msgid "speech default"
+msgstr "ön qurğulu danışma"
+
+#: gnopi/cmdmapui.c:77
+msgid "goto parent"
+msgstr "valideynə get"
+
+#: gnopi/cmdmapui.c:78
+msgid "goto child"
+msgstr "törəməyə get"
+
+#: gnopi/cmdmapui.c:79
+msgid "goto previous"
+msgstr "əvvəlkinə get"
+
+#: gnopi/cmdmapui.c:80
+msgid "goto next"
+msgstr "sonrakına get"
+
+#: gnopi/cmdmapui.c:81
+msgid "repeat last"
+msgstr "sonuncunu təkrarla"
+
+#: gnopi/cmdmapui.c:82
+msgid "goto focus"
+msgstr "fokusa get"
+
+#: gnopi/cmdmapui.c:83
+msgid "goto title"
+msgstr "başlığa get"
+
+#: gnopi/cmdmapui.c:84
+msgid "goto menu"
+msgstr "menyuya get"
+
+#: gnopi/cmdmapui.c:85
+msgid "goto toolbar"
+msgstr "vasitə çubuğuna get"
+
+#: gnopi/cmdmapui.c:86
+msgid "goto statusbar"
+msgstr "vəziyyət çubuğuna get"
+
+#: gnopi/cmdmapui.c:87
+msgid "widget surroundings"
+msgstr "widget ətrafı"
+
+#: gnopi/cmdmapui.c:89
+msgid "goto caret"
+msgstr "caretə get"
+
+#: gnopi/cmdmapui.c:90
+msgid "goto first"
+msgstr "birinciyə get"
+
+#: gnopi/cmdmapui.c:91
+msgid "goto last"
+msgstr "axırıncıya get"
+
+#: gnopi/cmdmapui.c:92
+msgid "change navigation mode"
+msgstr "naviqasiya modunu dəyişdir"
+
+#: gnopi/cmdmapui.c:94
+msgid "toggle flat review/focus tracking mode"
+msgstr "düz izləməni aç/fokus izləmə modu"
+
+#: gnopi/cmdmapui.c:95
+msgid "flat review"
+msgstr "düz izləmə"
+
+#: gnopi/cmdmapui.c:96
+msgid "window hierarchy"
+msgstr "pəncərə iyerarxiyası"
+
+#: gnopi/cmdmapui.c:97
+msgid "read whole window"
+msgstr ""
+
+#: gnopi/cmdmapui.c:98
+msgid "detailed informations"
+msgstr "ətrflı mə'lumatlar"
+
+#: gnopi/cmdmapui.c:99
+msgid "do default action"
+msgstr "ön qurğulu gedişat et"
+
+#: gnopi/cmdmapui.c:100
+msgid "window overview"
+msgstr "pəncərə icmalı"
+
+#: gnopi/cmdmapui.c:101
+msgid "find next"
+msgstr "sonrakını tap"
+
+#: gnopi/cmdmapui.c:102
+msgid "find set"
+msgstr "dəstəni tap"
+
+#: gnopi/cmdmapui.c:103
+msgid "attributes at caret"
+msgstr "caretdəki atributlar"
+
+#: gnopi/cmdmapui.c:104
+msgid "watch current object"
+msgstr "hazırkı obyekti izlə"
+
+#: gnopi/cmdmapui.c:105 srcore/srctrl.c:1353
+msgid "unwatch all objects"
+msgstr "obyektləri izləmə"
+
+#: gnopi/cmdmapui.c:107
+msgid "mouse left press"
+msgstr "siçanın sol düyməsinin basılışı"
+
+#: gnopi/cmdmapui.c:108
+msgid "mouse left click"
+msgstr "siçanın sol düyməsinin tıqlanması"
+
+#: gnopi/cmdmapui.c:109
+msgid "mouse left release"
+msgstr "siçanın sol düyməsinin buraxılışı"
+
+#: gnopi/cmdmapui.c:110
+msgid "mouse right press"
+msgstr "siçanın sağ düyməsinin basılışı"
+
+#: gnopi/cmdmapui.c:111
+msgid "mouse right click"
+msgstr "siçanın sağ düyməsinin tıqlanması"
+
+#: gnopi/cmdmapui.c:112
+msgid "mouse right release"
+msgstr "siçanın sağ düyməsinin buraxılışı"
+
+#: gnopi/cmdmapui.c:113
+msgid "mouse middle press"
+msgstr "siçanın orta düyməsinin basılışı"
+
+#: gnopi/cmdmapui.c:114
+msgid "mouse middle release"
+msgstr "siçanın orta düyməsinin buraxılışı"
+
+#: gnopi/cmdmapui.c:115
+msgid "mouse middle click"
+msgstr "siçanın orta düyməsinin tıqlanması"
+
+#: gnopi/cmdmapui.c:116
+msgid "mouse goto current"
+msgstr "siçan hazırkına getsin"
+
+#: gnopi/cmdmapui.c:118
+msgid "shutup"
+msgstr "bağla"
+
+#: gnopi/cmdmapui.c:119
+msgid "pause/resume"
+msgstr "fasilə ver/davam et"
+
+#: gnopi/cmdmapui.c:121
+msgid "char left"
+msgstr "soldakı hərf"
+
+#: gnopi/cmdmapui.c:122
+msgid "char right"
+msgstr "sağdakı hərf"
+
+#: gnopi/cmdmapui.c:123
+msgid "display left"
+msgstr "solu göstər"
+
+#: gnopi/cmdmapui.c:124
+msgid "display right"
+msgstr "sağı göstər"
+
+#: gnopi/cmdmapui.c:126
+msgid "braille on/off"
+msgstr "braille fəal/bağlı"
+
+#: gnopi/cmdmapui.c:127
+msgid "speech on/off"
+msgstr "danışma fəal/bağlı"
+
+#: gnopi/cmdmapui.c:128
+msgid "magnifier on/off"
+msgstr "böyüdücü fəal/bağlı"
+
+#: gnopi/cmdmapui.c:129
+msgid "braille monitor on/off"
+msgstr "braille izləyicisi fəal/bağlı"
+
+#: gnopi/cmdmapui.c:143
+msgid "A"
+msgstr "A"
+
+#: gnopi/cmdmapui.c:144
+msgid "B"
+msgstr "B"
+
+#: gnopi/cmdmapui.c:145
+msgid "C"
+msgstr "C"
+
+#: gnopi/cmdmapui.c:146
+msgid "D"
+msgstr "D"
+
+#: gnopi/cmdmapui.c:147
+msgid "E"
+msgstr "E"
+
+#: gnopi/cmdmapui.c:148
+msgid "F"
+msgstr "F"
+
+#: gnopi/cmdmapui.c:149
+msgid "G"
+msgstr "G"
+
+#: gnopi/cmdmapui.c:150
+msgid "H"
+msgstr "H"
+
+#: gnopi/cmdmapui.c:151
+msgid "I"
+msgstr "I"
+
+#: gnopi/cmdmapui.c:152
+msgid "J"
+msgstr "J"
+
+#: gnopi/cmdmapui.c:153
+msgid "K"
+msgstr "K"
+
+#: gnopi/cmdmapui.c:154
+msgid "L"
+msgstr "L"
+
+#: gnopi/cmdmapui.c:155
+msgid "M"
+msgstr "M"
+
+#: gnopi/cmdmapui.c:156
+msgid "N"
+msgstr "N"
+
+#: gnopi/cmdmapui.c:157
+msgid "O"
+msgstr "O"
+
+#: gnopi/cmdmapui.c:158
+msgid "P"
+msgstr "P"
+
+#: gnopi/cmdmapui.c:159
+msgid "Q"
+msgstr "Q"
+
+#: gnopi/cmdmapui.c:160
+msgid "R"
+msgstr "R"
+
+#: gnopi/cmdmapui.c:161
+msgid "S"
+msgstr "S"
+
+#: gnopi/cmdmapui.c:162
+msgid "T"
+msgstr "T"
+
+#: gnopi/cmdmapui.c:163
+msgid "U"
+msgstr "U"
+
+#: gnopi/cmdmapui.c:164
+msgid "V"
+msgstr "V"
+
+#: gnopi/cmdmapui.c:165
+msgid "W"
+msgstr "W"
+
+#: gnopi/cmdmapui.c:166
+msgid "X"
+msgstr "X"
+
+#: gnopi/cmdmapui.c:167
+msgid "Y"
+msgstr "Y"
+
+#: gnopi/cmdmapui.c:168
+msgid "Z"
+msgstr "Z"
+
+#: gnopi/cmdmapui.c:169
+msgid "F1"
+msgstr "F1"
+
+#: gnopi/cmdmapui.c:170
+msgid "F2"
+msgstr "F2"
+
+#: gnopi/cmdmapui.c:171
+msgid "F3"
+msgstr "F3"
+
+#: gnopi/cmdmapui.c:172
+msgid "F4"
+msgstr "F4"
+
+#: gnopi/cmdmapui.c:173
+msgid "F5"
+msgstr "F5"
+
+#: gnopi/cmdmapui.c:174
+msgid "F6"
+msgstr "F6"
+
+#: gnopi/cmdmapui.c:175
+msgid "F7"
+msgstr "F7"
+
+#: gnopi/cmdmapui.c:176
+msgid "F8"
+msgstr "F8"
+
+#: gnopi/cmdmapui.c:177
+msgid "F9"
+msgstr "F9"
+
+#: gnopi/cmdmapui.c:178
+msgid "F10"
+msgstr "F10"
+
+#: gnopi/cmdmapui.c:179
+msgid "F11"
+msgstr "F11"
+
+#: gnopi/cmdmapui.c:180
+msgid "F12"
+msgstr "F12"
+
+#: gnopi/cmdmapui.c:181
+msgid "0"
+msgstr "0"
+
+#: gnopi/cmdmapui.c:182
+msgid "1"
+msgstr "1"
+
+#: gnopi/cmdmapui.c:183
+msgid "2"
+msgstr "2"
+
+#: gnopi/cmdmapui.c:184
+msgid "3"
+msgstr "3"
+
+#: gnopi/cmdmapui.c:185
+msgid "4"
+msgstr "4"
+
+#: gnopi/cmdmapui.c:186
+msgid "5"
+msgstr "5"
+
+#: gnopi/cmdmapui.c:187
+msgid "6"
+msgstr "6"
+
+#: gnopi/cmdmapui.c:188
+msgid "7"
+msgstr "7"
+
+#: gnopi/cmdmapui.c:189
+msgid "8"
+msgstr "8"
+
+#: gnopi/cmdmapui.c:190
+msgid "9"
+msgstr "9"
+
+#: gnopi/cmdmapui.c:191
+msgid "apostrophe"
+msgstr "apostrof"
+
+#: gnopi/cmdmapui.c:192
+msgid "backslash"
+msgstr "tərs slaş"
+
+#: gnopi/cmdmapui.c:193
+msgid "bracket left"
+msgstr "sol mö'tərizə"
+
+#: gnopi/cmdmapui.c:194
+msgid "bracket right"
+msgstr "sağ mö'tərizə"
+
+#: gnopi/cmdmapui.c:195
+msgid "comma"
+msgstr "vergül"
+
+#: gnopi/cmdmapui.c:196
+msgid "equal"
+msgstr "bərabərdir işarəsi"
+
+#: gnopi/cmdmapui.c:197
+msgid "grave"
+msgstr "vacib"
+
+#: gnopi/cmdmapui.c:198
+msgid "minus"
+msgstr "minus işarəsi"
+
+#: gnopi/cmdmapui.c:199
+msgid "period"
+msgstr "nöqtə"
+
+#: gnopi/cmdmapui.c:200
+msgid "quote left"
+msgstr "sol dırnaq"
+
+#: gnopi/cmdmapui.c:201
+msgid "semicolon"
+msgstr "nöqtəli vergül"
+
+#: gnopi/cmdmapui.c:202
+msgid "slash"
+msgstr "slaş"
+
+#: gnopi/cmdmapui.c:1133
+msgid "Invalid key or existent key."
+msgstr "Hökmsüz ya da mövcud düymə."
+
+#: gnopi/cmdmapui.c:1562
+msgid "Layer Keys"
+msgstr "Lay Düymələri"
+
+#: gnopi/cmdmapui.c:1582
+msgid "User Keys"
+msgstr "İstifadəçi Düymələri"
+
+#: gnopi/coreconf.c:248
+#, c-format
+msgid "Failed to set exit val: %d."
+msgstr "Çıxış qiyməti tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:290
+#, c-format
+msgid "Failed to set move mouse: %d."
+msgstr "Siçan modu tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:299
+#, c-format
+msgid "Failed to set simulate click: %d."
+msgstr "Tıqlama simulyasiyası tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:308
+#, c-format
+msgid "Failed to set find text: %s."
+msgstr "Mətni tap tə'yin edilə bilmədi: %s."
+
+#: gnopi/coreconf.c:318
+#, c-format
+msgid "Failed to set magnifier status: %d."
+msgstr "Böyüdücü vəziyyəti tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:327
+#, c-format
+msgid "Failed to set speech status: %d."
+msgstr "Danışıq vəziyyəti tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:336
+#, c-format
+msgid "Failed to set braille status: %d."
+msgstr "Braille vəziyyəti tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:345
+#, c-format
+msgid "Failed to set braille monitor status: %d."
+msgstr "Braille izləyicisi vəziyyəti tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:354
+#, c-format
+msgid "Failed to set minimize flag: %d."
+msgstr "Kiçiltmə bayrağı tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:363
+#, c-format
+msgid "Failed to set exit ack: %d."
+msgstr "Ack çıxışı tə'yin edilə bilmədi: %d."
+
+#: gnopi/coreconf.c:372
+#, c-format
+msgid "Failed to set language: %s."
+msgstr "Dil tə'yin edilə bilmədi: %s."
+
+#: gnopi/coreconf.c:381
+#, c-format
+msgid "Failed to set screen review: %d."
+msgstr "Ekran icmalı tə'yin edilə bilmədi: %d."
+
+#: gnopi/defui.c:73
+#, c-format
+msgid "Are you sure you want to load default values for %s?"
+msgstr "Həqiqətən də %s üçün ön qurğuları yükləmək istəyirsiniz?"
+
+#: gnopi/defui.c:100
+msgid "braille"
+msgstr "braille"
+
+#: gnopi/defui.c:116
+msgid "Braille default setting loaded."
+msgstr "Braille ön qurğulu qurğusu yükləndi."
+
+#: gnopi/defui.c:125
+msgid "speech"
+msgstr "danışıq"
+
+#: gnopi/defui.c:133
+msgid "Speech default setting loaded."
+msgstr "Danışıq ön qurğuları yükləndi."
+
+#: gnopi/defui.c:142
+msgid "magnifier"
+msgstr "böyüdücü"
+
+#: gnopi/defui.c:156
+msgid "Magnifier default setting loaded."
+msgstr "Böyüdücü ön qurğuları yükləndi."
+
+#: gnopi/defui.c:165
+msgid "keyboard"
+msgstr "klaviatura"
+
+#: gnopi/defui.c:173
+msgid "Keyboard default setting loaded."
+msgstr "Klaviatura ön qurğuları yükləndi."
+
+#: gnopi/defui.c:182
+msgid "braille monitor"
+msgstr "braille izləyicisi"
+
+#: gnopi/defui.c:189
+msgid "Braille monitor default setting loaded."
+msgstr "Braille izləyicisi ön qurğuları yükləndi."
+
+#: gnopi/defui.c:198
+msgid "start up"
+msgstr "başlanğıc"
+
+#: gnopi/defui.c:207
+msgid "Startup default setting loaded."
+msgstr "Başlanğıc ön qurğuları yükləndi."
+
+#: gnopi/defui.c:217
+msgid "command map"
+msgstr "mmr xəritəsi"
+
+#: gnopi/defui.c:225
+msgid "Command map default setting loaded."
+msgstr "Əmr xəritəsi ön qurğuları yükləndi."
+
+#: gnopi/defui.c:235
+msgid "presentation"
+msgstr "təqdimat"
+
+#: gnopi/defui.c:241
+msgid "Presentation default setting loaded."
+msgstr "Təqdim ön qurğuları yükləndi."
+
+#: gnopi/defui.c:250
+msgid "screen review"
+msgstr "ekran icmalı"
+
+#: gnopi/defui.c:256
+msgid "Screen review default setting loaded."
+msgstr "Ekran icmalı ön qurğuları yükləndi."
+
+#: gnopi/defui.c:279
+msgid "all modules"
+msgstr "bütün modullar"
+
+#: gnopi/defui.c:282
+msgid "All default settings loaded."
+msgstr "Bütün ön qurğuları yükləndi."
+
+#: gnopi/genui.c:66
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:12
+msgid "_Braille"
+msgstr "_Braille"
+
+#: gnopi/genui.c:69
+msgid "_Braille (unavailable)"
+msgstr "_Braille (mövcud deyil)"
+
+#: gnopi/genui.c:74
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:13
+msgid "_Magnifier"
+msgstr "_Böyüdücü"
+
+#: gnopi/genui.c:77
+msgid "_Magnifier (unavailable)"
+msgstr "_Böyüdücü (mövcud deyil)"
+
+#: gnopi/genui.c:82
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:14
+msgid "_Speech"
+msgstr "_Danışıq"
+
+#: gnopi/genui.c:85
+msgid "_Speech (unavailable)"
+msgstr "_Danışıq (mövcud deyil)"
+
+#: gnopi/genui.c:90
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:4
+msgid "B_raille monitor"
+msgstr "B_raille izləyicisi"
+
+#: gnopi/genui.c:93
+msgid "B_raille monitor (unavailable)"
+msgstr "B_raille izləyicisi (mövcud deyil)"
+
+#: gnopi/gnopernicus.desktop.in.h:1
+msgid "Assistive Technologies for Blind and Visually Impaired"
+msgstr "Korlar və Görmə Zəyiflikləri Olanlar Üçün Yardımcı Texnologiyalar"
+
+#: gnopi/gnopernicus.desktop.in.h:2
+msgid "Screen Reader and Magnifier"
+msgstr "Ekran Oxuyucusu və Böyüdücü"
+
+#: gnopi/gnopi.c:302
+msgid "gnopernicus"
+msgstr "gnopernicus"
+
+#: gnopi/gnopi.c:309
+msgid "Gconf initialization failed."
+msgstr "Gconf hazırlanması bacarılmadı."
+
+#: gnopi/gnopi.c:316
+msgid "Invalid parameters."
+msgstr "Hökmsüz parametrlər."
+
+#: gnopi/gnopi.c:322
+msgid "Multiple instances are NOT ALLOWED. This instance will end."
+msgstr ""
+"Eyni anda yalnız bir tə'minat işləyə bilər. Ən son başlatdığınız indi "
+"bağlanacaq."
+
+#: gnopi/gnopi.c:328
+msgid "GTK initialization failed."
+msgstr "GTK hazırlanması bacarılmadı."
+
+#: gnopi/gnopi.c:334
+msgid "Can not create a new process."
+msgstr "Yeni proses yaradıla bilmir."
+
+#: gnopi/gnopi.c:344
+msgid "Exit gnopernicus."
+msgstr "Gnopernicus'dan çıx."
+
+#: gnopi/gnopi.c:352
+msgid "Gnopernicus initialization failed."
+msgstr "Gnopernicus başladılması bacarılmadı."
+
+#: gnopi/gnopi.c:359
+msgid "Can not load .glade2 file"
+msgstr ".glade2 faylı yüklənə bilmir"
+
+#. if (WIFSIGNALED (gn_srcore_status) != 0)
+#. sru_message ("signal no: %d", WTERMSIG (gn_srcore_status));
+#: gnopi/gnopi.c:659
+msgid "srcore exited."
+msgstr "srcore sonlandırıldı."
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:1
+msgid "<b>Color</b>"
+msgstr "<b>Rəng</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:2
+msgid "<b>Font</b>"
+msgstr "<b>Yazı Növü</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:3
+msgid "<b>Mode Type</b>"
+msgstr "<b>Mod Növü</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:4
+msgid "<b>Position</b>"
+msgstr "<b>Mövqe</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:5
+msgid "<b>Size</b>"
+msgstr "<b>Böyüklük</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:6
+msgid "B_raille"
+msgstr "B_raille"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:7
+msgid "Braille Monitor Preferences"
+msgstr "Braille İzləyicisi Qurğuları"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:8
+msgid "Color selection for texts which use dot 7"
+msgstr "7 nöqtə işlədən mətnlər üçün rəng seçimi"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:9
+msgid "Color selection for texts which use dot 8"
+msgstr "8 nöqtə işlədən mətnlər üçün rəng seçimi"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:10
+msgid "Color selection for texts which use dots 7 and 8"
+msgstr "7 və 8 nöqtə işlədən mətnlər üçün rəng seçimi"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:11
+msgid "Colu_mns:"
+msgstr "Sü_tunlar:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:12
+msgid "Display at bottom of screen"
+msgstr "Ekranın altında göstər"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:13
+msgid "Display on top of screen"
+msgstr "Ekranın üstündə göstər"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:14
+msgid "Display using braille font"
+msgstr "Braille yazı növünü işlədərək göstər"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:15
+msgid "Display using normal font"
+msgstr "Sıravi yazı növünü işlədərək göstər"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:16
+msgid "Display with both fonts"
+msgstr "İki cür yazı növünü də işlədərək göstər"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:17
+msgid "Dot 7:"
+msgstr "7 Nöqtə:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:18
+msgid "Dot 8:"
+msgstr "8 Nöqtə:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:19
+msgid "Dots 78:"
+msgstr "Nöqtə 78:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:20
+msgid "Number of cell columns"
+msgstr "Hücrə sütunlarının sayı"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:21
+msgid "Number of cell lines"
+msgstr "Hücrə sətirlərinin sayı"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:22
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:43
+msgid "Pick a color"
+msgstr "Rəng Seç"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:23
+msgid "Size of font"
+msgstr "Yazı növünün böyüklüyü"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:24
+msgid "Use system theme colors"
+msgstr "Sistem örtüyü rənglərini işlət"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:25
+msgid "Use theme _system colors"
+msgstr "Sistem örtüyü _rənglərini işlət"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:26
+msgid "_Dual"
+msgstr "_Cüt"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:27
+msgid "_Lines:"
+msgstr "_Sətirlər:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:28
+msgid "_Normal"
+msgstr "_Normal"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:29
+msgid "_Size:"
+msgstr "_Böyüklük:"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:1
+msgid "Attributes"
+msgstr "Atributlar"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:2
+msgid "_1. Dot 8"
+msgstr "_1. Nöqtə 8"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:3
+msgid "_2. Dot 7"
+msgstr "_2. Nöqtə 7"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:4
+msgid "_3. Dot 8 or 7"
+msgstr "_3. Nöqtə 8 ya da 7"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:5
+msgid "_4. Off"
+msgstr "_4. Bağlı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:1
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:1
+#: gnopi/gnopi_files/Find/find.glade2.h:2
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:1
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:1
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:3
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:2
+msgid "Braille Device"
+msgstr "Braille Avadanlığı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:3
+msgid "Braille devices list"
+msgstr "Braille avadanlıqlarının siyahısı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:4
+msgid "Serial port number where the device is linked"
+msgstr "Avadanlığın bağlı olduğu qapı nömrəsi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:5
+msgid "_Device:"
+msgstr "_Avadanlıq:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:2
+msgid "10 _Font size"
+msgstr "10 _Yazı növü böyüklüyü"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:3
+msgid "11 _Activate script function \"OnPosSwitch\""
+msgstr "11 \"OnPosSwitch\" skript funksiyasını _fəallaşdır"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:4
+msgid "12 _Present attributes"
+msgstr "12 _Hazırkı atributlar"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:5
+msgid "<b>_Braille keys list</b>"
+msgstr "<b>_Braille düymələrinin siyahısı</b>"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:6
+msgid "Activate script function \"OnPosSwitch\""
+msgstr "\"OnPosSwitch\" skript funksiyasını fəallaşdır"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:7
+msgid "Add item in braille keys list"
+msgstr "Braille düymələri siyahısına üzv əlavə et"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:8
+msgid "Braille Display Key Mapping"
+msgstr "Braille Displey Düymə Xəritələməsi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:10
+msgid "Braille device keys list"
+msgstr "Braille avadanlıqları düymələri siyahısı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:11
+msgid "Braille keys list"
+msgstr "Braille düymələri siyahısı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:12
+msgid "Command List"
+msgstr "Əmr Siyahısı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:13
+msgid "Command list"
+msgstr "Əmr siyahısı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:14
+msgid "Font name"
+msgstr "Yazı növü adı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:15
+msgid "Font size"
+msgstr "Yazı növü böyüklüyü"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:16
+msgid "Font style"
+msgstr "Yazı növü tərzi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:17
+msgid "Modify selected item"
+msgstr "Süçili üzvü dəyişdir"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:18
+msgid "Move caret"
+msgstr "Careti daşı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:19
+msgid "Move mouse and click left"
+msgstr "Siçanı hərəkət etdir və solu tıqla"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:20
+msgid "Move mouse and click left and right"
+msgstr "Siçanı hərəkət etdir və solu və sağı tıqla"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:21
+msgid "Move mouse and click right"
+msgstr "Siçanı hərəkət etdir və sağı tıqla"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:22
+msgid "Only move mouse"
+msgstr "Sadəcə olaraq siçanı hərəkət etdir"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:23
+msgid "Optical Sensors"
+msgstr "Optik Sensorlar"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:24
+msgid "Optical sensors off"
+msgstr "Optik sensorlar qeyri-fəal"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:25
+msgid "Position Sensors"
+msgstr "Mövqe Sensorları"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:26
+msgid "Position sensors off"
+msgstr "Mövqe sensorları qeyri-fəal"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:27
+msgid "Present attributes"
+msgstr "Hazırkı atributlar"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:28
+msgid "Remove selected item from braille keys list"
+msgstr "Seçili üzvü braille düymə siyahısından sil"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:29
+msgid "Show X coordinate"
+msgstr "X mövqeyini göstər"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:30
+msgid "Show Y coordinate"
+msgstr "Y mövqeyini göstər"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:31
+msgid "_0 Optical sensors off"
+msgstr "_0 Optik sensorlar qeyri-fəal"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:32
+msgid "_0 Position sensors off"
+msgstr "_0 Mövqe sensorları qeyri-fəal"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:33
+msgid "_1 Only move mouse"
+msgstr "_1 Sadəcə olaraq siçanı hərəkət etdir"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:34
+msgid "_2 Move mouse and click left"
+msgstr "_2 Siçanı hərəkət etdir və solu tıqla"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:35
+msgid "_3 Move mouse and click right"
+msgstr "_3 Siçanı hərəkət etdir və sağı tıqla"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:36
+msgid "_4 Move mouse and click left or right"
+msgstr "_4 Siçanı hərəkət etdir və solu ya da sağı tıqla"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:37
+msgid "_5 Move caret"
+msgstr "_5 Careti daşı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:38
+msgid "_6 Show X coordinate"
+msgstr "_6 X mövqeyini göstər"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:39
+msgid "_7 Show Y coordinate"
+msgstr "_7 Y mövqeyini göstər"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:40
+msgid "_8 Font style"
+msgstr "_8 Yazı növü tərzi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:41
+msgid "_9 Font name"
+msgstr "_9 Yazı növü adı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:42
+msgid "_Commands:"
+msgstr "_Əmrlər:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:43
+msgid "_Device key:"
+msgstr "_Avadanlıq qiyməti:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:44
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:85
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:28
+msgid "_Modify"
+msgstr "_Düzəlt"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:1
+msgid "Braille Preferences"
+msgstr "Braille Qurğuları"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:2
+msgid "Close braille settings"
+msgstr "Braille qurğularını bağla"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:3
+msgid "Map function for display keys"
+msgstr "Displey düymələri üçün funkiyanı xəritələ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:4
+msgid "Select braille device"
+msgstr "Braille avadanlığını seç"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:5
+msgid "Select braille style 8/6 dots"
+msgstr "Braille tərzini seç 8/6 nöqtə"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:6
+msgid "Select cursor setting FullCell/UnderLined/NoCursor"
+msgstr "TamHücrə/AltıCızqılı/Kursorsuz kursor qurğusunu seç"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:7
+msgid "Select translation table for braille device"
+msgstr "Braille avadanlığı üçün tərcümə cədvəlini seç"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:8
+msgid "_1 Braille Device"
+msgstr "_1 Braille Avadanlığı"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:9
+msgid "_2 Translation Table"
+msgstr "_2 Tərcümə Cədvəli"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:10
+msgid "_3 Braille Style"
+msgstr "_3 Braille Tərzi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:11
+msgid "_4 Cursor Preferences"
+msgstr "_4 Kursor Qurğuları"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:12
+msgid "_5 Braille Key Mapping"
+msgstr "_5 Braille Düymə Xəritələməsi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:1
+msgid "Braille Style"
+msgstr "Braille Tərzi"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:2
+msgid "Use 6 dots"
+msgstr "6 nöqtə işlət"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:3
+msgid "Use 8 dots"
+msgstr "8 nöqtə işlət"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:4
+msgid "_6 Dot Braille"
+msgstr "_6 Nöqtəli Braille"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:5
+msgid "_8 Dot Braille"
+msgstr "_8 Nöqtəli Braille"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:1
+msgid "Cursor Preferences"
+msgstr "Kursor Qurğuları"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:2
+msgid "Cursor on braille display is a full cell"
+msgstr "Braille displeyi üstündəki kursor tam hecrədir"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:3
+msgid "Cursor on braille display is an underline"
+msgstr "Braille displeyi üstündəki kursor alt cızıqdır"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:4
+msgid "No cursor on braille display"
+msgstr "Braille displeyi üstündəki kursor yoxdur"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:5
+msgid "_Full cell cursor"
+msgstr "_Tam hücrə kursoru"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:6
+msgid "_No cursor"
+msgstr "_Kursorsuz"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:7
+msgid "_Underline cursor (dots 7 and 8)"
+msgstr "_Alt cızıq kursoru (7 və 8 nöqtə)"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:1
+msgid "Translation Table"
+msgstr "Tərcümə Cədvəli"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:2
+msgid "Translation table list"
+msgstr "Tərcümə cədvəli siyahısı"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:3
+msgid "_Select language:"
+msgstr "_Dili seç:"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:1
+msgid "   "
+msgstr "   "
+
+#: gnopi/gnopi_files/Find/find.glade2.h:3
+msgid "<b>Fi_nd Text:</b>"
+msgstr "<b>Mətni _Tap:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:4
+msgid "<b>Find Attributes:</b>"
+msgstr "<b>Atributları Tap:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:5
+msgid "<b>Match</b>"
+msgstr "<b>Uyğunluq</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:6
+msgid "<b>Scope</b>"
+msgstr "<b>Əhatə Sahəsi</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:7
+msgid "<b>Search For</b>"
+msgstr "<b>Axtarılan:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:8
+msgid "A_ll chosen attributes"
+msgstr "Bütün seçili _atributlar"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:9
+msgid "A_ny chosen attributes"
+msgstr "Seçilən atributlardan hər hansı biri"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:10
+msgid "A_ttribute"
+msgstr "Ə_tribut"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:11
+msgid "Bold"
+msgstr "Qalın"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:12
+msgid "Case _sensitive"
+msgstr "Böyük/kiçik hərfə _həssas"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:13
+msgid "Case sensitive on/off"
+msgstr "Hərf böyüklüyünün nəzərə alınması fəal/bağlı"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:14
+msgid "Italic"
+msgstr "Əyik"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:15
+msgid "S_elected"
+msgstr "S_çili olanı"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:16
+msgid "Scope area is a desktop"
+msgstr "Əhatə sahəsi masa üstüdür"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:17
+msgid "Scope area is a window"
+msgstr "Əhatə sahəsi pəncərədir"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:18
+msgid "Scope area is an application"
+msgstr "Əhatə sahəsi proqramdır"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:19
+msgid "Search Preferences"
+msgstr "Axtarış Qurğuları"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:20
+msgid "Search criteria is a graphics"
+msgstr "Axtarılan qrafikadır"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:21
+msgid "Search criteria is a text"
+msgstr "Axtarılan mətndir"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:22
+msgid "Search criteria is an attribute"
+msgstr "Axtarılan atributdur"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:23
+msgid "Selected item"
+msgstr "Seçili üzvü"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:24
+msgid "Stri_kethrough"
+msgstr "_Qaralanmış"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:25
+msgid "Strikethrough"
+msgstr "Qaralanmış"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:26
+msgid "Te_xt"
+msgstr "Mə_tn"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:27
+msgid "Text to search"
+msgstr "Axtarılacaq mətn"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:28
+msgid "Underline"
+msgstr "Alt Cızıqlı"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:29
+msgid "_Application"
+msgstr "_Proqram"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:30
+msgid "_Bold"
+msgstr "_Qalın"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:31
+msgid "_Desktop"
+msgstr "_Masa Üstü"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:32
+msgid "_Graphics"
+msgstr "_Qrafika"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:33
+msgid "_Italic"
+msgstr "Ə_yik"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:34
+msgid "_Underline"
+msgstr "Alt _Cızıqlı"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:35
+msgid "_Window"
+msgstr "_Pəncərə"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:1
+msgid "    "
+msgstr "    "
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:2
+msgid "<b>Active Components</b>"
+msgstr "<b>Fəal Tərkib Hissələri</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:3
+msgid "<b>Startup</b>"
+msgstr "<b>Başlanğıc</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:5
+msgid "Braille monitor on/off"
+msgstr "Braille izləyicisi fəal/bağlı"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:6
+msgid "Braille on/off"
+msgstr "Braille fəal/bağlı"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:7
+msgid "Magnifier on/off"
+msgstr "Böyüdücü fəal/bağlı"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:8
+msgid "Speech on/off"
+msgstr "Danışıq fəal/bağlı"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:9
+msgid "Start gnopernicus minimized"
+msgstr "Gnopernicus'u kiçildilmiş vəziyyətdə başlat"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:10
+msgid "Start m_inimized"
+msgstr "_Kiçildilmiş vəziyyətdə başlat"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:11
+msgid "Startup Mode"
+msgstr "Başlanğıc Modu"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:1
+msgid "Mouse Preferences"
+msgstr "Siçan Qurğuları"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:2
+msgid "Simulate click on current object"
+msgstr "Hazırkı obyekt üstünə tıqlamanı simulyasiya et"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:3
+msgid "Take mouse at current object"
+msgstr "Hazırkı obyekt üstünə siçanı gətir"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:4
+msgid "_Simulate click on current object"
+msgstr "Hazırkı obyekt üstünə tıqlamanı _simulyasiya et"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:5
+msgid "_Take mouse at current object"
+msgstr "Hazırkı obyekt üstünə siçanı _gətir"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:1
+msgid "Close \"Load Default Preferences\""
+msgstr "\"Ön Qurğulu Seçimləri Yüklə\" Pəncərəsini Bağla"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:2
+msgid "Load Default Preferences"
+msgstr "Ön Qurğulu Seçimləri Yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:3
+msgid "Load Default Settings"
+msgstr "Ön Qurğulu Qurğuları Yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:4
+msgid "Load all defaults"
+msgstr "Bütün ön qurğuları yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:5
+msgid "Load braille defaults"
+msgstr "Braille ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:6
+msgid "Load braille monitor defaults"
+msgstr "Braille izləyicisi ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:7
+msgid "Load command map defaults"
+msgstr "Əmr xəritəsi ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:8
+msgid "Load magnifier defaults"
+msgstr "Böyüdücü ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:9
+msgid "Load mouse defaults"
+msgstr "Siçan ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:10
+msgid "Load presentation defaults"
+msgstr "Təqdim ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:11
+msgid "Load screen review defaults"
+msgstr "Ekran icmalı ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:12
+msgid "Load speech defaults"
+msgstr "Danışıq ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:13
+msgid "Load startup mode defaults"
+msgstr "Başlanğıc modu ön qurğularını yüklə"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:14
+msgid "_0 All"
+msgstr "_0 Hamısı"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:15
+msgid "_1 Braille"
+msgstr "_1 Braille"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:16
+msgid "_2 Speech"
+msgstr "_2 Danışıq"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:17
+#: gnopi/gnopi_files/gnopi.glade2.h:33
+msgid "_3 Magnifier"
+msgstr "_3 Böyüdücü"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:18
+msgid "_4 Keyboard"
+msgstr "_4 Klaviatura"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:19
+#: gnopi/gnopi_files/gnopi.glade2.h:36
+msgid "_5 Braille Monitor"
+msgstr "_5 Braille İzləyicisi"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:20
+msgid "_6 Startup"
+msgstr "_6 Başlanğıc"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:21
+msgid "_7 Command Map"
+msgstr "_7 Əmr Xəritəsi"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:22
+msgid "_8 Presentation"
+msgstr "_8 Təqdim"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:23
+msgid "_9 Screen Review"
+msgstr "_9 Ekran İcmalı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:2
+msgid "<b>Border settings</b>"
+msgstr "<b>Kənar qurğuları</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:3
+msgid "<b>Cross-hair</b>"
+msgstr "<b>Xaç</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:4
+msgid "<b>Cursor setting</b>"
+msgstr "<b>Kursor qurğusu</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:5
+msgid "<b>Display screen</b>"
+msgstr "<b>Displey ekranı</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:6
+msgid "<b>Focus tracking mode</b>"
+msgstr "<b>Fokus izləmə modu</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:7
+msgid "<b>Mo_use tracking mode</b>"
+msgstr "<b>Siçan _izlənməsi modu</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:8
+msgid "<b>S_moothing</b>"
+msgstr "<b>Y_umuşaltma</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:9
+msgid "<b>Zoomer placement</b>"
+msgstr "<b>Yaxınlaşdırıcının mövqeyi</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:10
+msgid "<b>Zoomfactor</b>"
+msgstr "<b>Yaxınlaşdırma faktoru</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:11
+msgid "<b>_Zoomer list</b>"
+msgstr "<b>_Yaxınlaşdırıcı siyahısı</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:12
+msgid "Bor_der size:"
+msgstr "Kənar _qalınlığı:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:13
+msgid "Border c_olor:"
+msgstr "Kənar _rəngi:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:14
+msgid "Border color"
+msgstr "Kənar rəngi"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:15
+msgid "Border size"
+msgstr "Kənar qalınlığı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:16
+#, fuzzy
+msgid "C_entered"
+msgstr "_Ortalanmış"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:17
+msgid "C_ursor on/off"
+msgstr "K_ursor fəal/bağlı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:18
+msgid "Cross-ha_ir size:"
+msgstr "Xaç _böyüklüyü:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:19
+msgid "Cross-hair c_lip on/off"
+msgstr "Xaç _tutucusu fəal/bağlı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:20
+#, fuzzy
+msgid "Cross-hair colo_r:"
+msgstr "Xaç _rəngi:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:21
+#, fuzzy
+msgid "Cross-hair color in_verted"
+msgstr "Xaçın tə_rs çevirilmiş rəngi"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:22
+#, fuzzy
+msgid "Cross-hair o_n/off"
+msgstr "_Xaç fəal/bağlı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:23
+msgid "Crosshair clip on/off"
+msgstr "Xaç tutucusu fəal/bağlı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:24
+msgid "Crosshair color"
+msgstr "Ox rəngi"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:25
+msgid "Crosshair on/off"
+msgstr "Xaç fəal/bağlı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:26
+msgid "Crosshair size"
+msgstr "Ox böyüklüyü"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:27
+msgid "Cursor _size:"
+msgstr "Kursor _böyüklüyü:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:28
+msgid "Cursor c_olor:"
+msgstr "Kursor _rəngi:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:29
+msgid "Cursor color"
+msgstr "Kursor rəngi"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:30
+msgid "Cursor magnification"
+msgstr "Kursor yaxınlaşdırılması"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:31
+msgid "Cursor on/off"
+msgstr "Kursor fəal/bağlı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:32
+msgid "Cursor size"
+msgstr "Kursor böyüklüyü"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:33
+msgid "Display screen source"
+msgstr "Ekran mənbəsini göstər"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:34
+msgid "Display screen target"
+msgstr "Ekran hədəfini göstər"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:35
+msgid "Invert crosshair color"
+msgstr "Oxun rəngini tərs çevir"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:36
+msgid "Invert on/off"
+msgstr "Çevirmə fəal/bağlı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:37
+#, fuzzy
+msgid "Lock zoom _factor"
+msgstr "Yaxınlaşdırma faktorunu qıfılla"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:38
+msgid "Lock zoom factor"
+msgstr "Yaxınlaşdırma faktorunu qıfılla"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:39
+msgid "Magnifier Preferences"
+msgstr "Böyüdücü Qurğuları"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:40
+msgid "Magnifier settings"
+msgstr "Böyüdücü qurğuları"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:41
+msgid "Mouse tracking type"
+msgstr "Siçan izləmə növü"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:42
+msgid "Panning on/off"
+msgstr "Üfüqi istiqamətləndirmə fəal/bağlı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:44
+#, fuzzy
+msgid "Set cursor separate from _magnification"
+msgstr "Kursor _yaxınlaşdırılması"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:45
+msgid "Smoothing type"
+msgstr "Yumuşaltma növü"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:46
+#, fuzzy
+msgid "Tar_get:"
+msgstr "_Hədəf:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:47
+msgid "Zoom factor X"
+msgstr "X yaxınlaşdırma faktoru"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:48
+msgid "Zoom factor Y"
+msgstr "Y yaxınlaşdırma faktoru"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:49
+msgid "Zoom factor _X:"
+msgstr "_X yaxınlaşdırma faktoru:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:50
+msgid "Zoom factor _Y:"
+msgstr "_Y yaxınlaşdırma faktoru:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:51
+msgid "Zoomer Options"
+msgstr "Yaxınlaşdırıcı Qurğuları"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:52
+msgid "Zoomer placement bottom"
+msgstr "Yaxınlaşdırıcı yerləşdirilməsi alt"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:53
+msgid "Zoomer placement left"
+msgstr "Yaxınlaşdırıcı yerləşdirilməsi sol"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:54
+msgid "Zoomer placement right"
+msgstr "Yaxınlaşdırıcı yerləşdirilməsi sağ"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:55
+msgid "Zoomer placement top"
+msgstr "Yaxınlaşdırıcı yerləşdirilməsi üst"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:56
+msgid "Zoomers list"
+msgstr "Yaxınlaşdırıcılar siyahısı"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:57
+#, fuzzy
+msgid "_Add/Modify"
+msgstr "Əlavə Et/Dəyişdir"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:58
+msgid "_Auto"
+msgstr "_Avtomatik"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:59
+msgid "_Bottom:"
+msgstr "_Alt:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:60
+msgid "_Invert"
+msgstr "_Tərs Çevir"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:61
+msgid "_Left:"
+msgstr "_Sol:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:62
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:87
+msgid "_None"
+msgstr "_Heç biri"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:63
+msgid "_Panning"
+msgstr "_Üfüqi istiqamətləndirmə"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:64
+#, fuzzy
+msgid "_Remove"
+msgstr "Çıxart"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:65
+msgid "_Right:"
+msgstr "S_ağ:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:66
+msgid "_Source:"
+msgstr "_Mənbə:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:67
+msgid "_Top:"
+msgstr "Ü_st:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:68
+#: gnopi/magui.c:49
+msgid "bilinear"
+msgstr "cüt sətrli"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:69
+#: gnopi/magui.c:61
+msgid "centered"
+msgstr "ortalanmış"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:70
+#: gnopi/magui.c:48 gnopi/magui.c:63
+msgid "none"
+msgstr "yoxdur"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:71
+#: gnopi/magui.c:62
+msgid "proportional"
+msgstr "proporsiyonal"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:72
+#: gnopi/magui.c:60
+msgid "push"
+msgstr "itələ"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:2
+msgid "Expert"
+msgstr "Mütəxəssis"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:3
+msgid "Mode selected:"
+msgstr "Süçili mod:"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:4
+msgid "Presentation"
+msgstr "Təqdimat"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:5
+#: srcore/default.xml.in.h:10 srcore/verbose.xml.in.h:10
+msgid "Verbose"
+msgstr "İnteraktiv"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:1
+msgid "<b>Horizontal flags</b>"
+msgstr "<b>Üfüqi bayraqlar</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:2
+msgid "<b>Vertical flags</b>"
+msgstr "<b>Şaquli bayraqlar</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:3
+msgid "Add all empty lines"
+msgstr "Bütün boş sətirləri əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:4
+msgid "Add all spaces"
+msgstr "Bütün boşluqları əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:5
+msgid "Add all spaces and empty lines"
+msgstr "Bütün boş sətirləri və boşluqları əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:6
+msgid "Add embedded empty lines"
+msgstr "Daxili boş sətirləri əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:7
+msgid "Add embedded spaces"
+msgstr "Daxili boşluqları əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:8
+msgid "Add leading empty lines"
+msgstr "Başına boş sətirlər əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:9
+msgid "Add leading spaces"
+msgstr "Başına boşluqlar əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:10
+msgid "Add trailing empty lines"
+msgstr "Sonuna boş sətirlər əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:11
+msgid "Add trailing spaces"
+msgstr "Sonuna boşluqlar əlavə et"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:12
+msgid "All _horizontal"
+msgstr "Hamısı _üfüqi"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:13
+msgid "All _vertical"
+msgstr "Hamısı _şaquli"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:14
+msgid "Count em_pty lines"
+msgstr "Boş sətirləri _say"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:15
+msgid "Count empty lines"
+msgstr "Boş sətirləri say"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:16
+msgid "E_mbedded"
+msgstr "Da_xili"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:17
+msgid "Lea_ding"
+msgstr "B_aşında"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:18
+msgid "Screen Review Preferences"
+msgstr "Ekran İcmalı Seçimləri"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:19
+msgid "T_railing"
+msgstr "S_onunda"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:20
+msgid "_All flags"
+msgstr "_Bütün bayraqlar"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:21
+msgid "_Embedded"
+msgstr "_Daxili"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:22
+msgid "_Leading"
+msgstr "_Başında"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:23
+msgid "_Trailing"
+msgstr "_Sonunda"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:2
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:4
+msgid "<b><></b>"
+msgstr "<b><></b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:5
+msgid "<b>Absolute Value</b>"
+msgstr "<b>Mütləq Qiymət</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:6
+msgid "<b>Driver</b>"
+msgstr "<b>Sürücü</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:7
+msgid "<b>Properties</b>"
+msgstr "<b>Xassələr</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:8
+msgid "<b>Punctuation</b>"
+msgstr "<b>Punktuasiya</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:9
+msgid "<b>Relative Values</b>"
+msgstr "<b>Nisbi Qiymətlər</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:10
+msgid "<b>Text Echo</b>"
+msgstr "<b>Mətn Əks Sədası</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:11
+msgid "<b>Voice</b>"
+msgstr "<b>Səs</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:12
+msgid "<b>_Dictionary</b>"
+msgstr "<b>_Lüğət</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:13
+msgid "<b>_Replacement:</b>"
+msgstr "<b>_Əvəzi:</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:14
+msgid "<b>_Voice list</b>"
+msgstr "<b>_Səs siyahısı</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:15
+msgid "<b>_Word:</b>"
+msgstr "<b>_Kəlmə:</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:16
+msgid "A_ll"
+msgstr "_Hamısı"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:17
+msgid "Activate pitch"
+msgstr "Dərəcəni fəallaşdır"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:18
+msgid "Activate rate"
+msgstr "Səviyyəni fəallaşdır"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:19
+msgid "Activate volume"
+msgstr "Səsi fəallaşdır"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:20
+msgid "Add / Modify Dictionary Entry"
+msgstr "Lüğət Girişinə Əlavə Et / Təkmilləşdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:21
+msgid "Add / Modify Voice"
+msgstr "Səs Əlavə Et / Təkmilləşdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:22
+msgid "Add new item in voices list"
+msgstr "Səs siyahısına yeni üzv əlavə et"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:23
+msgid "Add new word in dictionary"
+msgstr "Lüğətə yeni kəlmə əlavə et"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:24
+msgid ""
+"Change for all voices the engine driver and the engine speaker with a "
+"selected driver and speaker"
+msgstr ""
+"Bütün səslər üçün mühərrik sürücüsünü və spikerini seçili sürücü və spikerlə "
+"dəyişdir."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:25
+msgid "Charac_ter"
+msgstr "_Hərf"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:26
+msgid "Count cha_racters"
+msgstr "Hərfləri _say"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:27
+msgid "Count characters"
+msgstr "Hərfləri say"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:28
+msgid "Decrease pitch"
+msgstr "Dərəcəni azalt"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:29
+msgid "Decrease rate"
+msgstr "Sıxlığı azalt"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:30
+msgid "Decrease volume"
+msgstr "Səsi azalt"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:31
+msgid "Dictionary"
+msgstr "Lüğət"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:32
+msgid "Dictionary list"
+msgstr "Lüğət siyahısı"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:33
+msgid "Do not speak text"
+msgstr ""
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:34
+msgid "Edit A_bsolute..."
+msgstr "Mütlə_qi Dəyişdir..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:35
+msgid "Edit Absolute Voice Values"
+msgstr "Mütləq Səs Qiymətlərini Dəyişdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:36
+msgid "Edit R_elative..."
+msgstr "N_isbini Dəyişdir..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:37
+msgid "Edit Relative Voice Values"
+msgstr "Nisbi Səs Qiymətlərini Dəyişdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:38
+msgid "Edit dictionary"
+msgstr "Lüğəti dəyişdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:39
+msgid "Edit parameter values absolutely"
+msgstr "Parametr qiymətlərini mütləq olaraq dəyişdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:40
+msgid "Edit parameter values relatively"
+msgstr "Parametr qiymətlərini nisbi olaraq dəyişdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:41
+msgid "Engine _driver:"
+msgstr "Mühərrik _sürücüsü:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:42
+msgid "Engine _speaker:"
+msgstr "Mühərrik _spikeri:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:43
+msgid "Engine driver"
+msgstr "Mühərrik sürücüsü"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:44
+msgid "Engine speaker"
+msgstr "Mühərrik spikeri"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:45
+msgid "Gnopernicus system voice"
+msgstr "Gnopernicus sistem səsi"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:46
+msgid "Hz"
+msgstr "Hz"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:47
+msgid "Ignore all punctuation"
+msgstr "Punktuasiyaları nəzərə alma"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:48
+msgid "Increase pitch"
+msgstr "Dərəcəni artır"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:49
+msgid "Increase rate"
+msgstr "Sıxlığı artır"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:50
+msgid "Increase volume"
+msgstr "Səsi artır"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:51
+msgid "Made pitch sensitive for changing"
+msgstr "Dərəcə dəyişməyə qarşı həssas edildi"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:52
+msgid "Made rate sensitive for changing"
+msgstr "Sıxlıq dəyişməyə qarşı həssas edildi"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:53
+msgid "Made volume sensitive for changing"
+msgstr "Səs dəyişməyə qarşı həssas edildi"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:54
+msgid "Modify selected voice"
+msgstr "Seçili səsi təkmilləşdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:55
+msgid "Modify word"
+msgstr "Kəlməni təkmilləşdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:56
+#: gnopi/spvoiceui.c:2010
+msgid "Pitch"
+msgstr "Dərəcə"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:57
+#: gnopi/spvoiceui.c:2002
+msgid "Rate"
+msgstr "Dərəcə"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:58
+msgid "Remove selected voice from voices list"
+msgstr "Seçili səsi səs siyahısından sil"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:59
+msgid "Remove word from dictionary"
+msgstr "Kəlməni lüğətdən sil"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:60
+msgid "Replecement"
+msgstr "Əvəz Etmə"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:61
+#, fuzzy
+msgid "Sa_y all navigation keys"
+msgstr "naviqasiya modunu dəyişdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:62
+msgid "Say all modi_fiers"
+msgstr "Bütün qısa _yolları oxu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:63
+msgid "Say all modifiers"
+msgstr "Bütün sür'ətləndiriciləri oxu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:64
+#, fuzzy
+msgid "Say all navigation keys"
+msgstr "naviqasiya modunu dəyişdir"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:65
+msgid "Say all s_paces"
+msgstr "Bütün _boşluqları oxu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:66
+msgid "Say all spaces"
+msgstr "Bütün boşluqları oxu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:67
+msgid "Say text as character"
+msgstr "Mətni hərf olaraq oxu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:68
+msgid "Say text as word"
+msgstr "Mətni kəlmə olaraq oxu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:69
+msgid "Set voices and the voice parameters"
+msgstr "Səsləri və səs parametrlərini seç"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:70
+msgid "Show all punctuation"
+msgstr "Bütün punktuasiyaları göstər"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:71
+msgid "Show most punctuation"
+msgstr "Punktuasiyaların çoxunu göstər"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:72
+msgid "Show some punctuation"
+msgstr "Punktuasiyaların bə'zilərini göstər"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:73
+msgid "Speech Preferences"
+msgstr "Danışıq Seçimləri"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:74
+msgid "Test selected voice"
+msgstr "Seçili səsi sına"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:75
+msgid "Use dictionary"
+msgstr "Lüğəti işlət"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:76
+msgid "Voice _name:"
+msgstr "Səs _adı:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:77
+msgid "Voice list"
+msgstr "Səs siyahısı"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:78
+msgid "Voices"
+msgstr "Səslər"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:79
+#: gnopi/spvoiceui.c:1994
+msgid "Volume"
+msgstr "Səs Həcmi"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:80
+msgid "Word to replace"
+msgstr "Əvəz ediləcək kəlmə"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:81
+msgid "Word/Min"
+msgstr "Kəlmə/Dəq"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:82
+msgid "_Dictionary..."
+msgstr "_Lüğət..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:83
+msgid "_Force All Voices to Selected Driver and Speaker"
+msgstr "_Bütün Səsləri Sürücü və Spiker Seçməyə Məcburla"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:84
+msgid "_Ignore"
+msgstr "_Rədd et"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:86
+msgid "_Most"
+msgstr "_Çoxusu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:88
+msgid "_Pitch (Hz)"
+msgstr "_Dərəcə (Hz)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:89
+msgid "_Pitch:"
+msgstr "_Dərəcə:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:90
+msgid "_Rate (words/min)"
+msgstr "_Sıxlıq (kəlmə/dəq)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:91
+msgid "_Rate:"
+msgstr "_Dərəcə:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:92
+msgid "_Some"
+msgstr "_Bə'zi"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:93
+msgid "_Test voice"
+msgstr "_Səsi sına"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:94
+msgid "_Use dictionary"
+msgstr "_Lüğəti işlət"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:95
+msgid "_Voices..."
+msgstr "_Səslər..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:97
+#, no-c-format
+msgid "_Volume (%)"
+msgstr "_Səs Həcmi (%)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:98
+msgid "_Volume:"
+msgstr "_Səs Həcmi:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:99
+msgid "_Word"
+msgstr "_Kəlmə"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:100
+msgid "words/min"
+msgstr "kəlmə/dəq"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:2
+msgid "<b>_Commands list</b>"
+msgstr "<b>Ə_mrlər siyahısı</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:3
+msgid "<b>_Layers list</b>"
+msgstr "<b>_Laylar siyahısı</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:4
+msgid "<b>_User defined list</b>"
+msgstr "<b>_İstifadəçi tə'yinli siyahı</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:5
+msgid "Add Layer Key"
+msgstr "Lay Düyməsi Əlavə Et"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:6
+msgid "Add User Defined Key"
+msgstr "İstifadəçi Tə'yinli Düymə Əlavə Et"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:7
+msgid "Add new item"
+msgstr "Yeni üzv əlavə et"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:8
+msgid "Alt modifier"
+msgstr "Alt  sür'ətləndirici"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:9
+msgid "Command Mapping"
+msgstr "Əmr Xəritələməsi"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:10
+msgid "Commands List"
+msgstr "Əmr Siyahısı"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:11
+msgid "Control modifier"
+msgstr "Control sür'ətləndirici"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:12
+msgid "Key number"
+msgstr "Düymə nömrəsi"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:13
+msgid "Keys list"
+msgstr "Düymə siyahısı"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:14
+msgid "Layer command list"
+msgstr "Lay əmr siyahısı"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:15
+msgid "Layer number"
+msgstr "Lay nömrəsi"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:16
+msgid "Layers"
+msgstr "Laylar"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:17
+msgid "List of gnopernicus commands"
+msgstr "Gnopernicus əmrlərinin siyahısı"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:18
+msgid "Modify command for the selected item"
+msgstr "Seçili üzvün əmrini təkmilləşdir"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:19
+msgid "Remove selected item"
+msgstr "Seçili üzvü sil"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:20
+msgid "Shift modifier"
+msgstr "Shift sür'ətləndirici"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:21
+msgid "User Defined"
+msgstr "İstifadəçi Tə'yinli"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:22
+msgid "User defined commands list."
+msgstr "İstifadəçi tə'yinli əmr siyahısı."
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:23
+msgid "_Alt"
+msgstr "_Alt"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:24
+msgid "_Ctrl"
+msgstr "_Ctrl"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:25
+msgid "_Key:"
+msgstr "_Düymə:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:26
+msgid "_Layer:"
+msgstr "_Lay:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:27
+msgid "_Modifier keys:"
+msgstr "_Sür'ətləndirici düymələr:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:29
+msgid "_Shift"
+msgstr "_Shift"
+
+#: gnopi/gnopi_files/about.glade2.h:1
+msgid "Screen Reader and Magnifier for the GNOME Desktop"
+msgstr "GNOME Masa Üstü Üçün Ekran Oxuyucusu və Böyüdücü"
+
+#: gnopi/gnopi_files/about.glade2.h:2
+msgid "translator_credits"
+msgstr ""
+
+#: gnopi/gnopi_files/gnopi.glade2.h:1
+msgid ""
+"<b>Gnopernicus has detected that the assistive technology \n"
+"support is not enabled.</b>\n"
+msgstr ""
+"<b>Gnopernicus yardımçı texnologiyaları dəstəyinin fəal \n"
+"olmadığını aşkar etdi.</b>\n"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:4
+msgid "About"
+msgstr "Haqqında"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:759
+msgid "Alert"
+msgstr "Xəbərdarlıq"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:6
+msgid "Braille device preferences"
+msgstr "Braille avadanlığı seçimləri"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:7
+msgid "Braille monitor preferences"
+msgstr "Braille izləyicisi seçimləri"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:8
+msgid "Close preferences"
+msgstr "Seçimləri bağla"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:9
+msgid "Command mapping"
+msgstr "Əmr xəritələməsi"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:10
+msgid "Do you want to enable the assistive technology support?"
+msgstr "Yardımçı texnologiyalar dəstəyini fəallaşdırmaq istəyirsiniz?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:11
+msgid "Exit from gnopernicus"
+msgstr "Gnopernicus'dan çıx"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:12
+msgid "Find on screen"
+msgstr "Ekranda tap"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:13
+msgid "Gnopernicus"
+msgstr "Gnopernicus"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:14
+msgid "Gnopernicus usage help"
+msgstr "Gnopernicus istifadəsi haqqında yardım"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:15
+msgid "Iconify menu"
+msgstr "Menyunu timsallaşdır"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:16
+msgid "Load default preferences"
+msgstr "Ön qurğulu seçimləri yüklə"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:17
+msgid "Magnifier preferences"
+msgstr "Böyüdücü qurğuları"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:18
+#, fuzzy
+msgid "Mouse preferences"
+msgstr "Siçan Qurğuları"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:19
+msgid "Preferences"
+msgstr "Qurğular"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:20
+msgid "Preferences..."
+msgstr "Seçimlər..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1032
+msgid "Question"
+msgstr "Sual"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:22
+msgid "Role presentation"
+msgstr "Rol təqdimatı"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:23
+msgid "Screen review"
+msgstr "Ekran icmalı"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:24
+msgid "Speech preferences"
+msgstr "Danışıq seçimləri"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:25
+msgid "Startup mode..."
+msgstr "Başlanğıc modu..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:26
+msgid ""
+"You will have to log out for the change to take effect.\n"
+"Do you want to log out now? "
+msgstr ""
+"Dəyişikliklərin fəal olması üçün iclasınıza yenidən giriş etməlisiniz.\n"
+"İndi iclasınızı sonlandırmaq istəyirsiniz?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:28
+msgid "_1 Speech"
+msgstr "_1 Danışıq"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:29
+msgid "_1 Startup Mode..."
+msgstr "_1 Başlanğıc Modu..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:30
+msgid "_2 Braille"
+msgstr "_2 Braille"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:31
+msgid "_2 Preferences..."
+msgstr "_2 Seçimlər..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:32
+msgid "_3 Default Preferences..."
+msgstr "_3 Default Preferences..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:34
+msgid "_4 Minimize"
+msgstr "_4 Kiçilt"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:35
+msgid "_4 Mouse"
+msgstr "_4 Siçan"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:37
+msgid "_5 Help"
+msgstr "_5 Yardım"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:38
+msgid "_6 About"
+msgstr "_6 Haqqında"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:39
+msgid "_6 Command Mapping"
+msgstr "_6 Əmr Xəritələməsi"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:40
+msgid "_7 Presentation"
+msgstr "_7 Təqdimat"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:41
+msgid "_8 Screen Review"
+msgstr "_8 Ekran İcmalı"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:42
+msgid "_9 Search"
+msgstr "_9 Axtar"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:43
+msgid "_Don't Enable Support"
+msgstr "Dəstəyi Fəallaşdır_ma"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:44
+msgid "_Enable Support"
+msgstr "Dəstəyi _Fəallaşdır"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:45
+msgid "_Quit"
+msgstr "Çı_x"
+
+#: gnopi/gnopiconf.c:411 gnopi/gnopiconf.c:429
+#, fuzzy, c-format
+msgid "Failed to set value: %f."
+msgstr "Qiymət tə'yin edilə bilmədi: %d."
+
+#: gnopi/gnopiconf.c:735
+msgid "Failed to set value."
+msgstr "Qiymət tə'yin edilə bilmədi."
+
+#: gnopi/gnopiui.c:73 gnopi/gnopiui.c:87 gnopi/gnopiui.c:99
+#: gnopi/gnopiui.c:105
+msgid "We could not load the interface!"
+msgstr "Ara üz yüklənə bilmədi!"
+
+#: gnopi/magui.c:74
+msgid "default"
+msgstr "ön qurğulu"
+
+#: gnopi/magui.c:472
+msgid ""
+"Can NOT remove zoomer because multiple zoomers are not supported in this "
+"version."
+msgstr ""
+"Bu buraxılışda birdən çox yaxınlaşdırıcı dəstəklənmədiyi üçün yaxınlaşdırıcı "
+"silinə  BİLMƏZ."
+
+#: gnopi/magui.c:673
+msgid "Zoomers"
+msgstr "Yaxınlaşdırıcılar"
+
+#: gnopi/magui.c:1588
+#, c-format
+msgid "Zoomer Options (%s)"
+msgstr "Yaxınlaşdırıcı Qurğuları (%s)"
+
+#: gnopi/spconf.c:335
+msgid "Failed to set dictionary changes."
+msgstr "Lüğətdə dəyişikliklər edilə bilmədi."
+
+#: gnopi/spconf.c:343
+msgid "Failed to set removed voice value."
+msgstr "Silinmiş səs qiyməti tə'yin edilə bilmədi."
+
+#: gnopi/spconf.c:353
+#, c-format
+msgid "Failed to set count: %s."
+msgstr "Say tə'yin edilə bilmədi: %s."
+
+#: gnopi/spconf.c:362
+#, c-format
+msgid "Failed to set Punctuation: %s."
+msgstr "Punktuasiya tə'yin edilə bilmədi: %s."
+
+#: gnopi/spconf.c:371
+#, c-format
+msgid "Failed to set text echo value: %s."
+msgstr "Mətn əks səda qiyməti tə'yin edilə bilmədi: %s."
+
+#: gnopi/spconf.c:380
+#, c-format
+msgid "Failed to set modifiers value: %s."
+msgstr "Sür'ətləndirici qiyməti tə'yin edilə bilmədi: %s."
+
+#: gnopi/spconf.c:389
+#, c-format
+msgid "Failed to set cursors value: %s."
+msgstr "Kursor qiyməti tə'yin edilə bilmədi: %s."
+
+#: gnopi/spconf.c:398
+#, c-format
+msgid "Failed to set spaces value: %s."
+msgstr "Boşluq qiyməti tə'yin edilə bilmədi: %s."
+
+#: gnopi/spconf.c:407
+#, c-format
+msgid "Failed to set dictionary value: %s."
+msgstr "Lüğət qiyməti tə'yin edilə bilmədi: %s."
+
+#: gnopi/spconf.c:416
+#, c-format
+msgid "Failed to set testable voice %s."
+msgstr "Sınana bilən %s səsi tə'yin edilə bilmədi."
+
+#: gnopi/spconf.c:608
+#, c-format
+msgid "%s no name"
+msgstr "%s adsız"
+
+#: gnopi/spdictui.c:79
+msgid "Invalid word or replacer!"
+msgstr "Hökmsüz kəlmə ya da əvəz edici!"
+
+#: gnopi/spdictui.c:85
+#, fuzzy
+msgid "Word exists in dictionary!"
+msgstr "Kəlmə lüğətdə mövcuddur!"
+
+#: gnopi/spdictui.c:271 gnopi/spdictui.c:324
+msgid "No selected word to modify!"
+msgstr "Dəyişdiriləcək kəlmə seçilməyib!"
+
+#: gnopi/spdictui.c:298
+msgid "No selected word to remove!"
+msgstr "Silinəcək kəlmə seçilməyib!"
+
+#: gnopi/spdictui.c:447
+msgid "Word"
+msgstr "Kəlmə"
+
+#: gnopi/spdictui.c:456
+msgid "Replacer"
+msgstr "Əvəz edici"
+
+#: gnopi/spvoiceui.c:32
+msgid "<all drivers>"
+msgstr "<bütün sürücülər>"
+
+#: gnopi/spvoiceui.c:33
+msgid "<all voices>"
+msgstr "<bütün səslər>"
+
+#: gnopi/spvoiceui.c:277
+msgid "Invalid voice!"
+msgstr "Hökmsüz səs!"
+
+#: gnopi/spvoiceui.c:1165
+msgid "Invalid driver or voice!"
+msgstr "Hökmsüz sürücü ya da səs!"
+
+#: gnopi/spvoiceui.c:1595
+msgid "No selected voice to modify!"
+msgstr "Dəyişdiriləcək səs seçilməyib!"
+
+#: gnopi/spvoiceui.c:1654
+msgid "No selected voice to remove!"
+msgstr "Silinəcək səs seçilməyib!"
+
+#: gnopi/spvoiceui.c:1727
+msgid "No selected voice to test!"
+msgstr "Sınanacaq səs seçilməyib!"
+
+#: gnopi/spvoiceui.c:1968
+msgid "Voice"
+msgstr "Səs"
+
+#: gnopi/spvoiceui.c:1977
+msgid "Driver"
+msgstr "Sürücü"
+
+#: gnopi/spvoiceui.c:1986
+msgid "Speaker"
+msgstr "Spiker"
+
+#: speech/libsrs/srs-speech.c:289
+msgid "Alpha"
+msgstr "Alfa"
+
+#: speech/libsrs/srs-speech.c:290
+msgid "Bravo"
+msgstr "Bravo"
+
+#: speech/libsrs/srs-speech.c:291
+msgid "Charlie"
+msgstr "Çarli"
+
+#: speech/libsrs/srs-speech.c:292
+msgid "Delta"
+msgstr "Delta"
+
+#: speech/libsrs/srs-speech.c:293
+msgid "Echo"
+msgstr "Əks səda"
+
+#: speech/libsrs/srs-speech.c:294
+msgid "Foxtrot"
+msgstr "Foxtrot"
+
+#: speech/libsrs/srs-speech.c:295
+msgid "Golf"
+msgstr "Qolf"
+
+#: speech/libsrs/srs-speech.c:296
+msgid "Hotel"
+msgstr "Otel"
+
+#: speech/libsrs/srs-speech.c:297
+msgid "India"
+msgstr "Hindistan"
+
+#: speech/libsrs/srs-speech.c:298
+msgid "Juliet"
+msgstr "Juliet"
+
+#: speech/libsrs/srs-speech.c:299
+msgid "Kilo"
+msgstr "Kilo"
+
+#: speech/libsrs/srs-speech.c:300
+msgid "Lima"
+msgstr "Lima"
+
+#: speech/libsrs/srs-speech.c:301
+msgid "Mike"
+msgstr "Məmməd"
+
+#: speech/libsrs/srs-speech.c:302
+msgid "November"
+msgstr "Noyabr"
+
+#: speech/libsrs/srs-speech.c:303
+msgid "Oscar"
+msgstr "Oskar"
+
+#: speech/libsrs/srs-speech.c:304
+msgid "Papa"
+msgstr "Papa"
+
+#: speech/libsrs/srs-speech.c:305
+msgid "Quebec"
+msgstr "Kvebek"
+
+#: speech/libsrs/srs-speech.c:306
+msgid "Romeo"
+msgstr "Romeo"
+
+#: speech/libsrs/srs-speech.c:307
+msgid "Sierra"
+msgstr "Sierra"
+
+#: speech/libsrs/srs-speech.c:308
+msgid "Tango"
+msgstr "Tango"
+
+#: speech/libsrs/srs-speech.c:309
+msgid "Uniform"
+msgstr "Ümumi"
+
+#: speech/libsrs/srs-speech.c:310
+msgid "Victor"
+msgstr "Viktor"
+
+#: speech/libsrs/srs-speech.c:311
+msgid "Whiskey"
+msgstr "Viski"
+
+#: speech/libsrs/srs-speech.c:312
+msgid "Xray"
+msgstr "Xray"
+
+#: speech/libsrs/srs-speech.c:313
+msgid "Yankee"
+msgstr "Yankee"
+
+#: speech/libsrs/srs-speech.c:314
+msgid "Zulu"
+msgstr "Zulu"
+
+#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1759
+msgid "space"
+msgstr "boşluq"
+
+#: speech/libsrs/srs-speech.c:316
+msgid "tab"
+msgstr "səkmə"
+
+#: speech/libsrs/srs-speech.c:317
+msgid "new line"
+msgstr "yeni sətir"
+
+#: speech/libsrs/srs-speech.c:318
+msgid "dash"
+msgstr "tire"
+
+#: srconf/libsrconf/libsrconf.c:454
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr "Qurğu mənbələrinə yetişilə bilmədi: %s\n"
+
+#: srconf/libsrconf/libsrconf.c:467
+#, c-format
+msgid "Failed to add notify: %s"
+msgstr "Xəbərdarlıq əlavə edilə bilmədi: %s"
+
+#: srconf/libsrconf/libsrconf.c:521
+msgid "Failed to remove directory."
+msgstr "Cərgə silinə bilmədi."
+
+#: srconf/libsrconf/libsrconf.c:865
+msgid "Failed to set configdata."
+msgstr "Quraşdırma mə'lumatı tə'yin edilə bilmədi."
+
+#: srconf/libsrconf/libsrconf.c:939
+msgid "Failed set data."
+msgstr "Mə'lumat tə'yin edilə bilmədi."
+
+#: srcore/default.xml.in.h:1 srcore/verbose.xml.in.h:1
+msgid "( )"
+msgstr "( )"
+
+#: srcore/default.xml.in.h:2 srcore/verbose.xml.in.h:2
+msgid "(C)"
+msgstr "(C)"
+
+#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
+msgid "(E)"
+msgstr "(E)"
+
+#: srcore/default.xml.in.h:4 srcore/verbose.xml.in.h:4
+msgid "(P)"
+msgstr "(P)"
+
+#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
+msgid "(U)"
+msgstr "(U)"
+
+#: srcore/default.xml.in.h:6 srcore/verbose.xml.in.h:6
+msgid "(c)"
+msgstr "(c)"
+
+#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
+msgid "(m)"
+msgstr "(m)"
+
+#: srcore/default.xml.in.h:8 srcore/verbose.xml.in.h:8
+msgid "(n)"
+msgstr "(n)"
+
+#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
+msgid "Give maximum speech and braille output."
+msgstr "Maksimal danışıq və braille çıxışı ver."
+
+#: srcore/default.xml.in.h:11 srcore/srctrl.c:2258 srcore/srctrl.c:2409
+#: srcore/verbose.xml.in.h:11
+msgid "item"
+msgid_plural "items"
+msgstr[0] "üzv"
+msgstr[1] "üzvlər"
+
+#: srcore/default.xml.in.h:12 srcore/verbose.xml.in.h:12
+msgid "items"
+msgstr "üzvlər"
+
+#: srcore/srctrl.c:1012
+msgid "no parent"
+msgstr "valideyn mövcud deyil"
+
+#: srcore/srctrl.c:1036
+msgid "no children"
+msgstr "törəmələr mövcud deyil"
+
+#: srcore/srctrl.c:1069
+msgid "no next"
+msgstr "mətn mövcud deyil"
+
+#: srcore/srctrl.c:1185
+msgid "Cannot find next text!"
+msgstr "Sonrakı mətn tapıla bilmir!"
+
+#: srcore/srctrl.c:1196
+msgid "Cannot find next image!"
+msgstr "Sonrakı rəsm tapıla bilmir!"
+
+#: srcore/srctrl.c:1207
+msgid "Cannot find next attributes!"
+msgstr "Sonrakı atributlar tapıla bilmir!"
+
+#: srcore/srctrl.c:1296
+msgid "no previous"
+msgstr "əvvəlki mövcud deyil"
+
+#: srcore/srctrl.c:1340
+msgid "added watch for current object"
+msgstr "hazırkı obyektə izləmə əlavə edildi"
+
+#: srcore/srctrl.c:1341
+msgid "cannot add watch for current object"
+msgstr "hazırkı obyektə izləmə əlavə edilə bilmir"
+
+#: srcore/srctrl.c:1366
+msgid "no caret"
+msgstr "karet mövcud deyil"
+
+#: srcore/srctrl.c:1387
+msgid "already on first"
+msgstr "onsuzda başdadır"
+
+#: srcore/srctrl.c:1408
+msgid "already on last"
+msgstr "onsuzda sondadır"
+
+#: srcore/srctrl.c:1421
+msgid "now navigating in application"
+msgstr "indi tə'minat içində gəzilir"
+
+#: srcore/srctrl.c:1425
+msgid "now navigating in desktop"
+msgstr "indi masa üstündə gəzilir"
+
+#: srcore/srctrl.c:1429
+msgid "now navigating in window"
+msgstr "indi pəncərə içində gəzilir"
+
+#: srcore/srctrl.c:1522
+msgid "no focus"
+msgstr "fokus mövcud deyil"
+
+#: srcore/srctrl.c:1562
+msgid "no title"
+msgstr "başlıq mövcud deyil"
+
+#: srcore/srctrl.c:1583
+msgid "no menu bar"
+msgstr "menyu çubuğu mövcud deyil"
+
+#: srcore/srctrl.c:1606
+msgid "no tool bar"
+msgstr "vasitə çubuğu mövcud deyil"
+
+#: srcore/srctrl.c:1630
+msgid "no status bar"
+msgstr "vəziyyət çubuğu mövcud deyil"
+
+#: srcore/srctrl.c:2214
+#, fuzzy
+msgid "on"
+msgstr "aşağı"
+
+#: srcore/srctrl.c:2236 srcore/srctrl.c:2387
+msgid "from a"
+msgstr "-dan"
+
+#: srcore/srctrl.c:2238 srcore/srctrl.c:2394
+msgid "with"
+msgstr "ilə"
+
+#: srcore/srctrl.c:2269
+#, fuzzy
+msgid "in a"
+msgstr "-də"
+
+#: srcore/srctrl.c:2272
+msgid "named "
+msgstr ""
+
+#: srcore/srctrl.c:2274
+#, fuzzy
+msgid "with no name"
+msgstr "%s adsız"
+
+#: srcore/srctrl.c:2288
+#, fuzzy
+msgid "of application"
+msgstr "_Proqram"
+
+#: srcore/srctrl.c:2375
+msgid "on a"
+msgstr "-də"
+
+#: srcore/srctrl.c:2614
+#, fuzzy
+msgid "first line"
+msgstr "boş sətir"
+
+#: srcore/srctrl.c:2621
+#, fuzzy
+msgid "last line"
+msgstr "boş sətir"
+
+#: srcore/srctrl.c:2629 srcore/srctrl.c:2631
+#, fuzzy
+msgid "[first line]"
+msgstr "[boş sətir]"
+
+#: srcore/srctrl.c:2636 srcore/srctrl.c:2638
+#, fuzzy
+msgid "[last line]"
+msgstr "[boş sətir]"
+
+#: srcore/srctrl.c:2654
+msgid "empty line"
+msgstr "boş sətir"
+
+#: srcore/srctrl.c:2661
+#, c-format
+msgid "%d empty line"
+msgid_plural "%d empty lines"
+msgstr[0] "%d boş sətir"
+msgstr[1] "%d boş sətir"
+
+#: srcore/srctrl.c:2682 srcore/srctrl.c:2684
+msgid "[empty line]"
+msgstr "[boş sətir]"
+
+#: srcore/srctrl.c:2689
+#, c-format
+msgid "[%d empty line]"
+msgid_plural "[%d empty lines]"
+msgstr[0] "[%d boş sətir]"
+msgstr[1] "[%d boş sətir]"
+
+#: srcore/srctrl.c:2771 srcore/srctrl.c:2772 srcore/srctrl.c:2780
+#: srcore/srctrl.c:2935 srcore/srctrl.c:2936
+msgid "cannot make flat review for current window"
+msgstr "hazırkı pəncərə üçün düz baxış yaradıla bilmir"
+
+#: srcore/srctrl.c:3007
+msgid "flat review mode"
+msgstr "düz baxış modu"
+
+#: srcore/srctrl.c:3023
+msgid "focus tracking mode"
+msgstr "fokus izləmə modu"
+
+#: srcore/srctrl.c:3562
+#, c-format
+msgid "\"%s\" entry has invalid value at position %d."
+msgstr "\"%s\" girişi %d mövqeyində hökmsüz qiymətə malikdir."
+
+#: srcore/srctrl.c:3583
+#, c-format
+msgid "key \"%s\" has an invalid value at position %d."
+msgstr "\"%s\" düyməsi %d mövqeyində hökmsüz qiymətə malikdir."
+
+#: srcore/srctrl.c:3619
+msgid "Can not get key pad commands mapping from gconf."
+msgstr "Gconf'dan düymə lövhəsi əmrləri xəritələməsi alına bilmir."
+
+#: srcore/srctrl.c:3630
+msgid "Can not get braille display commands mapping from gconf."
+msgstr "Gconf'dan braille displey əmrləri xəritələməsi alına bilmir."
+
+#: srcore/srctrl.c:3641
+msgid "Can not get user defined commands mapping from gconf."
+msgstr "Gconf'dan düymə lövhəsi əmrləri xəritələməsi alına bilmir."
+
+#: srcore/srctrl.c:3745
+msgid "no role available"
+msgstr "mövcud rol yoxdur"
+
+#: srcore/srmain.c:68 srcore/srmain.c:71
+msgid "No focus"
+msgstr "Fokus yoxdur"
+
+#: srcore/srmain.c:74
+msgid "No accessible object is focused"
+msgstr "Heç bir yetişilə bilən obyekt fokuslanmayıb"
+
+#: srcore/srmain.c:434
+msgid "unknown location"
+msgstr "namə'lum mövqe"
+
+#: srcore/srmain.c:471
+msgid "no details"
+msgstr "təfsilatsız"
+
+#: srcore/srmain.c:511
+msgid "layer"
+msgstr "lay"
+
+#: srcore/srmain.c:532
+msgid "back to layer"
+msgstr "laya geri"
+
+#: srcore/srmain.c:898
+msgid "cursor on"
+msgstr "kursor fəal"
+
+#: srcore/srmain.c:898
+msgid "cursor off"
+msgstr "kursor qeyri-fəal"
+
+#: srcore/srmain.c:916
+msgid "current cursor is"
+msgstr "hazırkı kursor"
+
+#: srcore/srmain.c:934
+msgid "cursor size"
+msgstr "kursor böyüklüyü"
+
+#: srcore/srmain.c:951
+msgid "cursor magnification on"
+msgstr "kursor yaxınlaşdırılması fəal"
+
+#: srcore/srmain.c:952
+msgid "cursor magnification off"
+msgstr "kursor yaxınlaşdırılması qeyri-fəal"
+
+#: srcore/srmain.c:970
+msgid "cursor color"
+msgstr "kursor rəngi"
+
+#: srcore/srmain.c:987
+msgid "crosshair on"
+msgstr "ox fəal"
+
+#: srcore/srmain.c:987
+msgid "crosshair off"
+msgstr "ox qeyri-fəal"
+
+#: srcore/srmain.c:1004
+msgid "crosshair clip on"
+msgstr "ox tutucusu fəal"
+
+#: srcore/srmain.c:1005
+msgid "crosshair clip off"
+msgstr "ox tutucusu bağlı"
+
+#: srcore/srmain.c:1023
+msgid "crosshair size"
+msgstr "ox böyüklüyü"
+
+#: srcore/srmain.c:1041
+msgid "crosshair color"
+msgstr "ox rəngi"
+
+#: srcore/srmain.c:1059
+msgid "zoomer placement left"
+msgstr "yaxınlaşdırıcı yerləşdirilməsi sol"
+
+#: srcore/srmain.c:1077
+msgid "zoomer placement top"
+msgstr "yaxınlaşdırıcı yerləşdirilməsi üst"
+
+#: srcore/srmain.c:1095
+msgid "zoomer placement width"
+msgstr "yaxınlaşdırıcı yerləşdirilməsi en"
+
+#: srcore/srmain.c:1113
+msgid "zoomer placement height"
+msgstr "yaxınlaşdırıcı yerləşdirilməsi hündürlük"
+
+#: srcore/srmain.c:1143
+#, fuzzy
+msgid "magnifier target"
+msgstr "böyüdücü mənbəsi"
+
+#: srcore/srmain.c:1161
+msgid "magnifier source"
+msgstr "böyüdücü mənbəsi"
+
+#: srcore/srmain.c:1179
+msgid "zoom factor x"
+msgstr "x yaxınlaşdırma faktoru"
+
+#: srcore/srmain.c:1197
+msgid "zoom factor y"
+msgstr "y yaxınlaşdırma faktoru"
+
+#: srcore/srmain.c:1214
+msgid "zoom factor locked"
+msgstr "yaxınlaşdırma faktoru qıfıllıdır"
+
+#: srcore/srmain.c:1215
+msgid "zoom factor unlocked"
+msgstr "yaxınlaşdırma faktorunun qıfılı açıqdır"
+
+#: srcore/srmain.c:1232
+msgid "invert on"
+msgstr "tərs çevirmə fəal"
+
+#: srcore/srmain.c:1232
+msgid "invert off"
+msgstr "tərs çevirmə bağlı"
+
+#: srcore/srmain.c:1250
+msgid "magnifier smoothing type"
+msgstr "böyüdücü yumuşaltma növü"
+
+#: srcore/srmain.c:1273
+msgid "mouse tracking mode"
+msgstr "siçan izləmə modu"
+
+#: srcore/srmain.c:1295
+msgid "panning on"
+msgstr "üfüqi istiqamətləndirmə fəal"
+
+#: srcore/srmain.c:1295
+msgid "panning off"
+msgstr "üfüqi istiqamətləndirmə bağlı"
+
+#: srcore/srmain.c:1667
+msgid "alt"
+msgstr "alt"
+
+#: srcore/srmain.c:1672
+msgid "control"
+msgstr "control"
+
+#: srcore/srmain.c:1677
+msgid "shift"
+msgstr "shift"
+
+#: srcore/srmain.c:1682
+msgid "caps lock"
+msgstr "caps lock"
+
+#: srcore/srmain.c:1686
+msgid "num lock"
+msgstr "num lock"
+
+#: srcore/srmain.c:1694 srcore/srmain.c:1738
+msgid "right"
+msgstr "sağ"
+
+#: srcore/srmain.c:1696 srcore/srmain.c:1740
+msgid "left"
+msgstr "sol"
+
+#: srcore/srmain.c:1730
+msgid "home"
+msgstr "home"
+
+#: srcore/srmain.c:1732
+msgid "end"
+msgstr "end"
+
+#: srcore/srmain.c:1734
+msgid "page up"
+msgstr "page up"
+
+#: srcore/srmain.c:1736
+msgid "page down"
+msgstr "page down"
+
+#: srcore/srmain.c:1742
+msgid "down"
+msgstr "aşağı"
+
+#: srcore/srmain.c:1744
+msgid "up"
+msgstr "yuxarı"
+
+#: srcore/srmain.c:1746
+#, fuzzy
+msgid "backspace"
+msgstr "boşluq"
+
+#: srcore/srmain.c:1748
+#, fuzzy
+msgid "delete"
+msgstr "S_çili olanı"
+
+#: srcore/srmain.c:1750
+msgid "escape"
+msgstr ""
+
+#: srcore/srmain.c:2269
+msgid "Welcome to Gnopernicus"
+msgstr "Gnopernicus'a Xoş Gəlmişsiniz!"
+
+#: srcore/srmain.c:2373
+msgid "braille device can not be initialized"
+msgstr "braille avadanlığı hazırlana bilmir"
+
+#: srcore/srmain.c:2385
+msgid "Gnopernicus is now exiting. Have a nice day!"
+msgstr "Gnopernicus indi bağlanır. Sağolun, sağlıqla qalın!"
+
+#: srcore/srmain.c:2662
+msgid "srcore"
+msgstr "srcore"
+
+#: srcore/srpres.c:757
+msgid "UNK"
+msgstr ""
+
+#: srcore/srpres.c:757
+msgid "UNKNOWN"
+msgstr ""
+
+#: srcore/srpres.c:757
+msgid "Unknown"
+msgstr ""
+
+#: srcore/srpres.c:758
+msgid "???"
+msgstr ""
+
+#: srcore/srpres.c:758
+msgid "INVALID"
+msgstr ""
+
+#: srcore/srpres.c:758
+#, fuzzy
+msgid "Invalid"
+msgstr "Hökmsüz səs!"
+
+#: srcore/srpres.c:759
+msgid "ALR"
+msgstr ""
+
+#: srcore/srpres.c:759
+msgid "ALERT"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "CNV"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "CANVAS"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "Canvas"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "CHK"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "CHECK_BOX"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "Check box"
+msgstr ""
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MIT"
+msgstr ""
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MENU ITEM"
+msgstr ""
+
+#: srcore/srpres.c:762
+msgid "Check Menu item"
+msgstr ""
+
+#: srcore/srpres.c:763
+msgid "CCH"
+msgstr ""
+
+#: srcore/srpres.c:763
+msgid "COLOR CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:763
+#, fuzzy
+msgid "Color chooser"
+msgstr "Kursor rəngi"
+
+#: srcore/srpres.c:764
+msgid "CHD"
+msgstr ""
+
+#: srcore/srpres.c:764
+msgid "COLUMN HEADER"
+msgstr ""
+
+#: srcore/srpres.c:764
+#, fuzzy
+msgid "Column header"
+msgstr "Hərfləri say"
+
+#: srcore/srpres.c:765
+msgid "CBO"
+msgstr ""
+
+#: srcore/srpres.c:765
+msgid "COMBO BOX"
+msgstr ""
+
+#: srcore/srpres.c:765
+msgid "Combo box"
+msgstr ""
+
+#: srcore/srpres.c:766
+msgid "DIC"
+msgstr ""
+
+#: srcore/srpres.c:766
+msgid "DESKTOP ICON"
+msgstr ""
+
+#: srcore/srpres.c:766
+#, fuzzy
+msgid "Desktop icon"
+msgstr "_Masa Üstü"
+
+#: srcore/srpres.c:767
+msgid "DFR"
+msgstr ""
+
+#: srcore/srpres.c:767
+msgid "DESKTOP FRAME"
+msgstr ""
+
+#: srcore/srpres.c:767
+#, fuzzy
+msgid "Desktop frame"
+msgstr "_Masa Üstü"
+
+#: srcore/srpres.c:768
+msgid "DLG"
+msgstr ""
+
+#: srcore/srpres.c:768
+msgid "DIALOG"
+msgstr ""
+
+#: srcore/srpres.c:768
+#, fuzzy
+msgid "Dialog"
+msgstr "Kilo"
+
+#: srcore/srpres.c:769
+msgid "DIP"
+msgstr ""
+
+#: srcore/srpres.c:769
+msgid "DIRECTORY PANE"
+msgstr ""
+
+#: srcore/srpres.c:769
+msgid "Directory pane"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "FCH"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "FILE CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "File chooser"
+msgstr ""
+
+#: srcore/srpres.c:771
+msgid "FLR"
+msgstr ""
+
+#: srcore/srpres.c:771
+msgid "FILLER"
+msgstr ""
+
+#: srcore/srpres.c:771
+#, fuzzy
+msgid "Filler"
+msgstr "braille"
+
+#: srcore/srpres.c:772
+msgid "FRM"
+msgstr ""
+
+#: srcore/srpres.c:772
+msgid "FRAME"
+msgstr ""
+
+#: srcore/srpres.c:772
+#, fuzzy
+msgid "Frame"
+msgstr "vacib"
+
+#: srcore/srpres.c:773
+msgid "GPN"
+msgstr ""
+
+#: srcore/srpres.c:773
+msgid "GLASS PANE"
+msgstr ""
+
+#: srcore/srpres.c:773
+msgid "Glass pane"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "HTM"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "HTML CONTAINER"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "H T M L container"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LNK"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LINK"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "link"
+msgstr ""
+
+#: srcore/srpres.c:776
+msgid "ICO"
+msgstr ""
+
+#: srcore/srpres.c:776
+msgid "ICON"
+msgstr ""
+
+#: srcore/srpres.c:776
+msgid "Icon"
+msgstr ""
+
+#: srcore/srpres.c:777
+msgid "IFR"
+msgstr ""
+
+#: srcore/srpres.c:777
+msgid "INTERNAL FRAME"
+msgstr ""
+
+#: srcore/srpres.c:777
+msgid "Internal frame"
+msgstr ""
+
+#: srcore/srpres.c:778
+msgid "LBL"
+msgstr ""
+
+#: srcore/srpres.c:778
+msgid "LABEL"
+msgstr ""
+
+#: srcore/srpres.c:778
+msgid "Label"
+msgstr ""
+
+#: srcore/srpres.c:779
+msgid "LPN"
+msgstr ""
+
+#: srcore/srpres.c:779
+msgid "LAYERED PANE"
+msgstr ""
+
+#: srcore/srpres.c:779
+#, fuzzy
+msgid "Layered pane"
+msgstr "Lay nömrəsi"
+
+#: srcore/srpres.c:781
+msgid "LST"
+msgstr ""
+
+#: srcore/srpres.c:781
+msgid "LIST"
+msgstr ""
+
+#: srcore/srpres.c:781
+msgid "List"
+msgstr ""
+
+#: srcore/srpres.c:782
+msgid "LIT"
+msgstr ""
+
+#: srcore/srpres.c:782
+msgid "LIST ITEM"
+msgstr ""
+
+#: srcore/srpres.c:782
+#, fuzzy
+msgid "List item"
+msgstr "üzv"
+
+#: srcore/srpres.c:783
+msgid "MNU"
+msgstr ""
+
+#: srcore/srpres.c:783
+msgid "MENU"
+msgstr ""
+
+#: srcore/srpres.c:783
+#, fuzzy
+msgid "Menu"
+msgstr "Minus işarəsi"
+
+#: srcore/srpres.c:784
+msgid "MBR"
+msgstr ""
+
+#: srcore/srpres.c:784
+msgid "MENU BAR"
+msgstr ""
+
+#: srcore/srpres.c:784
+#, fuzzy
+msgid "Menu bar"
+msgstr "menyu çubuğu mövcud deyil"
+
+#: srcore/srpres.c:785
+#, fuzzy
+msgid "Menu item"
+msgstr "üzv"
+
+#: srcore/srpres.c:786
+msgid "OPN"
+msgstr ""
+
+#: srcore/srpres.c:786
+msgid "OPTION PANE"
+msgstr ""
+
+#: srcore/srpres.c:786
+msgid "Option pane"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "PGT"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "PAGE TAB"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "Page tab"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "PTL"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "PAGE TAB LIST"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "Page tab list"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "PNL"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "PANEL"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "Panel"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "PWD"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "PASSWORD TEXT"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "Password text"
+msgstr ""
+
+#: srcore/srpres.c:791
+msgid "PMN"
+msgstr ""
+
+#: srcore/srpres.c:791
+msgid "POPUP MENU"
+msgstr ""
+
+#: srcore/srpres.c:791
+#, fuzzy
+msgid "Popup menu"
+msgstr "menyuya get"
+
+#: srcore/srpres.c:792
+msgid "PRG"
+msgstr ""
+
+#: srcore/srpres.c:792
+msgid "PROGRESS BAR"
+msgstr ""
+
+#: srcore/srpres.c:792
+msgid "Progress bar"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "PBT"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "PUSH BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "Push button"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "RAD"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "RADIO BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "Radio button"
+msgstr ""
+
+#: srcore/srpres.c:795
+msgid "Radio Menu item"
+msgstr ""
+
+#: srcore/srpres.c:796
+msgid "RPN"
+msgstr ""
+
+#: srcore/srpres.c:796
+msgid "ROOT PANE"
+msgstr ""
+
+#: srcore/srpres.c:796
+#, fuzzy
+msgid "Root pane"
+msgstr "valideynə get"
+
+#: srcore/srpres.c:797
+msgid "RHD"
+msgstr ""
+
+#: srcore/srpres.c:797
+msgid "ROW HEADER"
+msgstr ""
+
+#: srcore/srpres.c:797
+msgid "Row header"
+msgstr ""
+
+#: srcore/srpres.c:798
+msgid "SCR"
+msgstr ""
+
+#: srcore/srpres.c:798
+msgid "SCROLL BAR"
+msgstr ""
+
+#: srcore/srpres.c:798
+#, fuzzy
+msgid "Scroll bar"
+msgstr "Dollar"
+
+#: srcore/srpres.c:799 srcore/srpres.c:827
+msgid "SPN"
+msgstr ""
+
+#: srcore/srpres.c:799
+msgid "SCROLL PANE"
+msgstr ""
+
+#: srcore/srpres.c:799
+msgid "Scroll pane"
+msgstr ""
+
+#: srcore/srpres.c:800
+msgid "SEP"
+msgstr ""
+
+#: srcore/srpres.c:800
+msgid "SEPARATOR"
+msgstr ""
+
+#: srcore/srpres.c:800
+msgid "Separator"
+msgstr ""
+
+#: srcore/srpres.c:801
+msgid "SLD"
+msgstr ""
+
+#: srcore/srpres.c:801
+msgid "SLIDER"
+msgstr ""
+
+#: srcore/srpres.c:801
+#, fuzzy
+msgid "Slider"
+msgstr "Sierra"
+
+#: srcore/srpres.c:802
+msgid "SPP"
+msgstr ""
+
+#: srcore/srpres.c:802
+msgid "SPLIT PANE"
+msgstr ""
+
+#: srcore/srpres.c:802
+msgid "Split pane"
+msgstr ""
+
+#: srcore/srpres.c:803
+msgid "STA"
+msgstr ""
+
+#: srcore/srpres.c:803
+msgid "STATUS BAR"
+msgstr ""
+
+#: srcore/srpres.c:803
+#, fuzzy
+msgid "Status bar"
+msgstr "vəziyyət çubuğu mövcud deyil"
+
+#: srcore/srpres.c:804
+msgid "TAB"
+msgstr ""
+
+#: srcore/srpres.c:804
+msgid "TABLE"
+msgstr ""
+
+#: srcore/srpres.c:804
+#, fuzzy
+msgid "Table"
+msgstr "Tilda işarəsi"
+
+#: srcore/srpres.c:805
+msgid "CEL"
+msgstr ""
+
+#: srcore/srpres.c:805
+msgid "TABLE CELL"
+msgstr ""
+
+#: srcore/srpres.c:805
+msgid "Table cell"
+msgstr ""
+
+#: srcore/srpres.c:806 srcore/srpres.c:831
+msgid "TCH"
+msgstr ""
+
+#: srcore/srpres.c:806
+msgid "TABLE COLUMN HEADER"
+msgstr ""
+
+#: srcore/srpres.c:806
+msgid "Table column header"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "TRH"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "TABLE ROW HEADER"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "Table row header"
+msgstr ""
+
+#: srcore/srpres.c:808 srcore/srpres.c:809
+msgid "TXT"
+msgstr ""
+
+#: srcore/srpres.c:808
+msgid "MULTI LINE TEXT"
+msgstr ""
+
+#: srcore/srpres.c:808
+msgid "Multi Line Text"
+msgstr ""
+
+#: srcore/srpres.c:809
+msgid "SINGLE LINE TEXT"
+msgstr ""
+
+#: srcore/srpres.c:809
+msgid "Single Line Text"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "TOG"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "TOGGLE BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "Toggle button"
+msgstr ""
+
+#: srcore/srpres.c:811
+msgid "TOL"
+msgstr ""
+
+#: srcore/srpres.c:811
+msgid "TOOL BAR"
+msgstr ""
+
+#: srcore/srpres.c:811
+#, fuzzy
+msgid "Tool bar"
+msgstr "vasitə çubuğu mövcud deyil"
+
+#: srcore/srpres.c:812
+msgid "TIP"
+msgstr ""
+
+#: srcore/srpres.c:812
+msgid "TOOL TIP"
+msgstr ""
+
+#: srcore/srpres.c:812
+msgid "Tool tip"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "TRE"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "TREE"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "Tree"
+msgstr ""
+
+#: srcore/srpres.c:814
+msgid "TRI"
+msgstr ""
+
+#: srcore/srpres.c:814
+msgid "TREE ITEM"
+msgstr ""
+
+#: srcore/srpres.c:814
+#, fuzzy
+msgid "Tree item"
+msgstr "Seçili üzvü"
+
+#: srcore/srpres.c:815
+msgid "TRT"
+msgstr ""
+
+#: srcore/srpres.c:815
+msgid "TREE TABLE"
+msgstr ""
+
+#: srcore/srpres.c:815
+msgid "Tree table"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "VWP"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "VIEWPORT"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "Viewport"
+msgstr ""
+
+#: srcore/srpres.c:817
+msgid "WND"
+msgstr ""
+
+#: srcore/srpres.c:817
+msgid "WINDOW"
+msgstr ""
+
+#: srcore/srpres.c:817
+#, fuzzy
+msgid "Window"
+msgstr "_Pəncərə"
+
+#: srcore/srpres.c:818
+msgid "ACC"
+msgstr ""
+
+#: srcore/srpres.c:818
+msgid "ACCELERATOR LABEL"
+msgstr ""
+
+#: srcore/srpres.c:818
+msgid "Accelerator label"
+msgstr ""
+
+#: srcore/srpres.c:819
+msgid "ANI"
+msgstr ""
+
+#: srcore/srpres.c:819
+msgid "ANIMATION"
+msgstr ""
+
+#: srcore/srpres.c:819
+#, fuzzy
+msgid "Animation"
+msgstr "_Proqram"
+
+#: srcore/srpres.c:820
+msgid "ARR"
+msgstr ""
+
+#: srcore/srpres.c:820
+msgid "ARROW"
+msgstr ""
+
+#: srcore/srpres.c:820
+msgid "Arrow"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "CAL"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "CALENDAR"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "Calendar"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "DAT"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "DATE EDITOR"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "Date editor"
+msgstr ""
+
+#: srcore/srpres.c:823
+msgid "DIL"
+msgstr ""
+
+#: srcore/srpres.c:823
+msgid "DIAL"
+msgstr ""
+
+#: srcore/srpres.c:823
+#, fuzzy
+msgid "Dial"
+msgstr "_Cüt"
+
+#: srcore/srpres.c:824
+msgid "DRW"
+msgstr ""
+
+#: srcore/srpres.c:824
+msgid "DRAWING AREA"
+msgstr ""
+
+#: srcore/srpres.c:824
+msgid "Drawing area"
+msgstr ""
+
+#: srcore/srpres.c:825
+msgid "FNT"
+msgstr ""
+
+#: srcore/srpres.c:825
+msgid "FONT CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:825
+#, fuzzy
+msgid "Font chooser"
+msgstr "Yazı növü böyüklüyü"
+
+#: srcore/srpres.c:826
+msgid "IMG"
+msgstr ""
+
+#: srcore/srpres.c:826
+msgid "IMAGE"
+msgstr ""
+
+#: srcore/srpres.c:826
+msgid "Image"
+msgstr ""
+
+#: srcore/srpres.c:827
+msgid "SPIN BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:827
+msgid "Spin button"
+msgstr ""
+
+#: srcore/srpres.c:828
+msgid "TRM"
+msgstr ""
+
+#: srcore/srpres.c:828
+msgid "TERMINAL"
+msgstr ""
+
+#: srcore/srpres.c:828
+msgid "Terminal"
+msgstr ""
+
+#: srcore/srpres.c:829
+msgid "EXT"
+msgstr ""
+
+#: srcore/srpres.c:829
+msgid "EXTENDED"
+msgstr ""
+
+#: srcore/srpres.c:829
+msgid "Extended"
+msgstr ""
+
+#: srcore/srpres.c:830
+msgid "TLI"
+msgstr ""
+
+#: srcore/srpres.c:830
+msgid "TABLE LINE"
+msgstr ""
+
+#: srcore/srpres.c:830
+#, fuzzy
+msgid "Table line"
+msgstr "yeni sətir"
+
+#: srcore/srpres.c:831
+msgid "TABLE COLUMNS HEADER"
+msgstr ""
+
+#: srcore/srpres.c:831
+msgid "Table columns header"
+msgstr ""
+
+#: srcore/srpres.c:832
+msgid "TIT"
+msgstr ""
+
+#: srcore/srpres.c:832
+msgid "TITLE BAR"
+msgstr ""
+
+#: srcore/srpres.c:832
+#, fuzzy
+msgid "Title bar"
+msgstr "vasitə çubuğu mövcud deyil"
+
+#: srcore/srpres.c:833
+msgid "EDB"
+msgstr ""
+
+#: srcore/srpres.c:833
+msgid "EDIT BAR"
+msgstr ""
+
+#: srcore/srpres.c:833
+#, fuzzy
+msgid "Edit bar"
+msgstr "Lüğəti dəyişdir"
+
+#: srcore/srspc.c:439
+#, c-format
+msgid "Incorrect parameters for voice \"%s%s\""
+msgstr "\"%s%s\" səsi üçün hökmsüz parametrlər"
+
+#: srcore/srspc.c:481
+#, c-format
+msgid "failed to send to speech next string \"%s\""
+msgstr "növbəti \"%s\" qatarı danışığa göndərilə bilmədi"
+
+#: srcore/srspc.c:547
+#, c-format
+msgid "could not create/modify voice \"%s\""
+msgstr "\"%s\" səsi yaradıla / təkmilləşdirilə bilmədi"
+
+#: srcore/srspc.c:707
+#, c-format
+msgid "voice \"%s\" will sound this way"
+msgstr "\"%s\" səsi belə eçidiləcək"
+
+#: srcore/srspc.c:712
+#, c-format
+msgid "could not test voice \"%s\""
+msgstr "\"%s\" səsi sınana bilmədi"
+
+#: srcore/srspc.c:801
+#, c-format
+msgid "value not supported for speech count mode \"%s\""
+msgstr "\"%s\" danışıq sayma modu üçün qiymət dəstəklənmir"
+
+#: srcore/srspc.c:837
+#, c-format
+msgid "value not supported for speech modifiers type \"%s\""
+msgstr "\"%s\" danışıq sür'ətləndirici növü üçün qiymət dəstəklənmir"
+
+#: srcore/srspc.c:873
+#, c-format
+msgid "value not supported for speech cursors type \"%s\""
+msgstr "\"%s\" danışıq kursor növü üçün qiymət dəstəklənmir"
+
+#: srcore/srspc.c:909
+#, c-format
+msgid "value not supported for speech spaces type \"%s\""
+msgstr "\"%s\" danışıq boşluq növü üçün qiymət dəstəklənmir"
+
+#: srcore/srspc.c:945
+#, c-format
+msgid "value not supported for speech dictionary type \"%s\""
+msgstr "\"%s\" danışıq lüğət növü üçün qiymət dəstəklənmir"
+
+#: srcore/srspc.c:982
+#, c-format
+msgid "value not supported for speech text echo type \"%s\""
+msgstr "\"%s\" danışıq mətn əks səda növü üçün qiymət dəstəklənmir"
+
+#: srcore/srspc.c:1001
+msgid "Tilde"
+msgstr "Tilda işarəsi"
+
+#: srcore/srspc.c:1001
+msgid "Tildaes"
+msgstr "Tilda işarələri"
+
+#: srcore/srspc.c:1002
+msgid "Exclamation"
+msgstr "Nida İşarəsi"
+
+#: srcore/srspc.c:1002
+msgid "Exclamations"
+msgstr "Nida İşarələri"
+
+#: srcore/srspc.c:1003
+msgid "At"
+msgstr "At"
+
+#: srcore/srspc.c:1003
+msgid "Ats"
+msgstr "Ats"
+
+#: srcore/srspc.c:1004
+msgid "Hash"
+msgstr "Tire"
+
+#: srcore/srspc.c:1004
+msgid "Hashes"
+msgstr "Tirelər"
+
+#: srcore/srspc.c:1005
+msgid "Dollar"
+msgstr "Dollar"
+
+#: srcore/srspc.c:1005
+msgid "Dollars"
+msgstr "Dollarlar"
+
+#: srcore/srspc.c:1006
+msgid "Percent"
+msgstr "Faiz"
+
+#: srcore/srspc.c:1006
+msgid "Percents"
+msgstr "Faiz"
+
+#: srcore/srspc.c:1007
+msgid "Caret"
+msgstr "Caret"
+
+#: srcore/srspc.c:1007
+msgid "Carets"
+msgstr "Karetlər"
+
+#: srcore/srspc.c:1008
+msgid "And"
+msgstr "Və işarəsi"
+
+#: srcore/srspc.c:1008
+msgid "Ands"
+msgstr "Və işarələri"
+
+#: srcore/srspc.c:1009
+msgid "Asterisk"
+msgstr "Ulduz işarəsi"
+
+#: srcore/srspc.c:1009
+msgid "Asterisks"
+msgstr "Ulduz işarələri"
+
+#: srcore/srspc.c:1010
+msgid "Left Paranthesis"
+msgstr "Sol Parantez"
+
+#: srcore/srspc.c:1011
+msgid "Right Paranthesis"
+msgstr "Sağ Parantez"
+
+#: srcore/srspc.c:1012
+msgid "Underscore"
+msgstr "Alt cızıq"
+
+#: srcore/srspc.c:1012
+msgid "Underscores"
+msgstr "Alt cızıqlar"
+
+#: srcore/srspc.c:1013
+msgid "Plus"
+msgstr "Plyus işarəsi"
+
+#: srcore/srspc.c:1013
+msgid "Pluses"
+msgstr "Plyus işarələri"
+
+#: srcore/srspc.c:1014
+msgid "Equal"
+msgstr "Bərabərdir işarəsi"
+
+#: srcore/srspc.c:1014
+msgid "Equals"
+msgstr "Bərabərdir işarələri"
+
+#: srcore/srspc.c:1015
+msgid "Minus"
+msgstr "Minus işarəsi"
+
+#: srcore/srspc.c:1015
+msgid "Minuses"
+msgstr "Minus işarələri"
+
+#: srcore/srspc.c:1016
+msgid "Quote"
+msgstr "Dırnaq işarəsi"
+
+#: srcore/srspc.c:1016
+msgid "Quotes"
+msgstr "Dırnaq işarələri"
+
+#: srcore/srspc.c:1017
+msgid "Left Bracket"
+msgstr "Sol Mö'tərizə"
+
+#: srcore/srspc.c:1017
+msgid "Left Brackets"
+msgstr "Sol Mö'tərizələr"
+
+#: srcore/srspc.c:1018
+msgid "Right Bracket"
+msgstr "Sağ Mö'tərizə"
+
+#: srcore/srspc.c:1018
+msgid "Right Brackets"
+msgstr "Sağ Mö'tərizələr"
+
+#: srcore/srspc.c:1019
+msgid "Left Brace"
+msgstr "Sol Bənd"
+
+#: srcore/srspc.c:1019
+msgid "Left Braces"
+msgstr "Sol Bəndlər"
+
+#: srcore/srspc.c:1020
+msgid "Right Brace"
+msgstr "Sağ Bənd"
+
+#: srcore/srspc.c:1020
+msgid "Right Braces"
+msgstr "Sağ Bəndlər"
+
+#: srcore/srspc.c:1021
+msgid "Semicolon"
+msgstr "Nöqtəli vergül"
+
+#: srcore/srspc.c:1021
+msgid "Semicolons"
+msgstr "Nöqtəli vergüllər"
+
+#: srcore/srspc.c:1022
+msgid "Colon"
+msgstr "iki nöqtə"
+
+#: srcore/srspc.c:1022
+msgid "Colons"
+msgstr "iki nöqtələr"
+
+#: srcore/srspc.c:1023
+msgid "Double quote"
+msgstr "Cüt dırnaq"
+
+#: srcore/srspc.c:1023
+msgid "Double quotes"
+msgstr "Cüt dırnaqlar"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophe"
+msgstr "Apostrof"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophes"
+msgstr "Apostroflar"
+
+#: srcore/srspc.c:1025
+msgid "Back Slash"
+msgstr "Geriyə Slaş"
+
+#: srcore/srspc.c:1025
+msgid "Back Slashes"
+msgstr "Geriyə Slaşlar"
+
+#: srcore/srspc.c:1026
+msgid "Bar"
+msgstr "Çubuq"
+
+#: srcore/srspc.c:1026
+msgid "Bars"
+msgstr "Çubuqlar"
+
+#: srcore/srspc.c:1027
+msgid "Greater"
+msgstr "Böyükdür"
+
+#: srcore/srspc.c:1027
+msgid "Greaters"
+msgstr "Böyüklər"
+
+#: srcore/srspc.c:1028
+msgid "Less"
+msgstr "Kiçikdir"
+
+#: srcore/srspc.c:1028
+msgid "Lesses"
+msgstr "Kiçiklər"
+
+#: srcore/srspc.c:1029
+msgid "Comma"
+msgstr "Vergül"
+
+#: srcore/srspc.c:1029
+msgid "Commas"
+msgstr "Vergüllər"
+
+#: srcore/srspc.c:1030
+msgid "Dot"
+msgstr "Nöqtə"
+
+#: srcore/srspc.c:1030
+msgid "Dots"
+msgstr "Nöqtələr"
+
+#: srcore/srspc.c:1031
+msgid "Slash"
+msgstr "Slaş"
+
+#: srcore/srspc.c:1031
+msgid "Slashes"
+msgstr "Slaşlar"
+
+#: srcore/srspc.c:1032
+msgid "Questions"
+msgstr "Suallar"
+
+#: srcore/srspc.c:1106
+#, c-format
+msgid "value not supported for speech punctuation type \"%s\""
+msgstr "\"%s\" danışıq punktuasiya növü üçün qiymət dəstəklənmir"
+
+#: srcore/srspc.c:1364
+msgid "Unable to initialize hashtable"
+msgstr "Hash cədvəli hazırlana bilmədi"
+
+#: srcore/srspc.c:1370
+msgid "Unable to load dictionary from gconf"
+msgstr "Gconf'dan lüğət yüklənə bilmədi"
+
+#: srcore/srspc.c:1561
+msgid "speech initialization succeded"
+msgstr "danışıq hazırlanması müvəffəqiyyətlə tamamlandı"
+
+#: srcore/srspc.c:1565
+msgid "speech initialization failed"
+msgstr "danışıq hazırlanması bacarılmadı"
+
+#: srcore/srspc.c:1761
+#, fuzzy
+msgid "enter"
+msgstr "ortalanmış"
+
+#: srcore/srspc.c:1844
+#, c-format
+msgid "can not find \"%s\" voice. use default voice"
+msgstr "\"%s\" səsi tapıla bilmir. ön qurğulu səsi işlət"
+
+#: srcore/srspc.c:1861
+msgid "voices pitch will be set to default value"
+msgstr "səsin dərəcəsi ön qurğulu qiymətinə tə'yin ediləcək"
+
+#: srcore/srspc.c:1863
+msgid "voices pitch will be decreased"
+msgstr "səsin dərəcəsi azaldılacaq"
+
+#: srcore/srspc.c:1865
+msgid "voices pitch will be increased"
+msgstr "səsin dərəcəsi artırılacaq"
+
+#: srcore/srspc.c:1909
+msgid "voices rate will be set to default value"
+msgstr "səsin sıxlığı ön qurğulu qiymətinə tə'yin ediləcək"
+
+#: srcore/srspc.c:1911
+msgid "voices rate will be decreased"
+msgstr "səsin sıxlığı azaldılacaq"
+
+#: srcore/srspc.c:1913
+msgid "voices rate will be increased"
+msgstr "səsin sıxlığı artırılacaq"
+
+#: srcore/srspc.c:1958
+msgid "voices volume will be set to default value"
+msgstr "səsin həcmi ön qurğulu qiymətinə tə'yin ediləcək"
+
+#: srcore/srspc.c:1960
+msgid "voices volume will be decreased"
+msgstr "səsin həcmi azaldılacaq"
+
+#: srcore/srspc.c:1962
+msgid "voices volume will be increased"
+msgstr "səsin həcmi artırılacaq"
+
+#: srcore/srspc.c:2088
+#, c-format
+msgid "no support for speech key \"%s\""
+msgstr "\"%s\" danışıq düyməsi üçün dəstək yoxdur"
+
+#~ msgid "Can not install braille font."
+#~ msgstr "Braille yazı növü qurula bilmir."
+
+#~ msgid "window hierarchy flat"
+#~ msgstr "pəncərə iyerarxiyası düz"
+
+#~ msgid "_Lock zoom factor"
+#~ msgstr "_Yaxınlaşdırma faktorunu qıfıla"
+
+#~ msgid "Sa_y all cursors"
+#~ msgstr "_Bütün kursorları oxu"
+
+#~ msgid "Say all cursors"
+#~ msgstr "Bütün kursorları oxu"
+
+#~ msgid "Keyboard preferences"
+#~ msgstr "Klaviatura seçimləri"
+
+#~ msgid "uniform"
+#~ msgstr "ümumi"

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<omf>
+  <resource>
+    <creator>
+      ps@baum.ro (BAUM Retec AG and BAUM Engineering SRL)
+    </creator>
+    <maintainer>
+      ps@baum.ro (BAUM Retec AG and BAUM Engineering SRL)
+    </maintainer>
+<!--
+    <title>
+      gnopernicus Manual V0.1
+    </title>
+-->
+    <title>
+      brlmonitor
+    </title>    
+    <date>
+      2003-01-07
+    </date>
+    <version identifier="0.0.2" date="2003-01-07" description="Updated for GNOME 2.0, program version 2.0.2"/>
+F    <subject category="GNOME|Applications|Settings"/>
+F    <description>
+      Manual del usuario de brlmonitor. 
+    </description>
+    <type>
+      Guía de usuario
+    </type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url="brlmonitor.xml"/>
+    <language code="es"/>
+    <relation seriesid="cbf7dfba-1f4e-11d8-9255-fb3146eb050c"/>
+    <rights type="GNU FDL" license.version="1.1" holder="BAUM Retec AG and BAUM Engineering SRL"/>
+  </resource>        
+</omf>

@@ -1,0 +1,2 @@
+SUBDIRS= libmag test
+

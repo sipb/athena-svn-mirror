@@ -1,0 +1,5038 @@
+# translation of eu.po to Basque
+# translation of gnopernicus.HEAD.eu2.po to basque
+# translation of gnopernicus.HEAD.eu.po to
+# translation of gnopernicus.HEAD.eu.po to
+# translation of gnopernicus.HEAD.eu.po to
+# translation of gnopernicus.HEAD.eu.po to Basque
+# translation of gnopernicus.HEAD.po to Basque
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
+# Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>, 2003, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eu\n"
+"POT-Creation-Date: 2004-09-15 12:38+0300\n"
+"PO-Revision-Date: 2004-08-26 19:23+0200\n"
+"Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
+"Language-Team: Basque <itzulpena@euskalgnu.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"X-Generator: KBabel 1.0.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: braille/test/remote.c:548
+msgid "Braille remote"
+msgstr "Urruneko Braille"
+
+#: brlmon/brlmon.c:196
+msgid "Braille monitor"
+msgstr "Braille monitorea"
+
+#: brlmon/brlmon.c:325 brlmon/brlmon.c:333
+#, c-format
+msgid "Invalid port number: %d."
+msgstr "Ataka-zenbaki baliogabea: %d."
+
+#: brlmon/brlmon.c:326 brlmon/brlmon.c:334
+msgid "port_no = [1025 - 30000]."
+msgstr "ataka_zbkia = [1025 - 30000]."
+
+#: brlmon/brlmon.c:520
+msgid "Can not open socket!"
+msgstr "Ezin izan da socket-a ireki!"
+
+#: brlmon/brlmon.c:543
+#, c-format
+msgid "Can not bind port number %d."
+msgstr "Ezin izan da %d ataka-zenbakira esleitu."
+
+#: brlmon/brlmon.c:547
+#, c-format
+msgid "Waiting for data on port UDP %u."
+msgstr "%u UDP atakako datuen zai."
+
+#: brlmon/brlmonui.c:225 gnopi/gnopiconf.c:43
+msgid "Failed to init gconf client."
+msgstr "Huts egin du gconf-en bezeroa abiatzean."
+
+#: brlmon/brlmonui.c:234 srconf/libsrconf/libsrconf.c:418
+msgid "Failed to add directory."
+msgstr "Huts egin du direktorioa gehitzerakoan."
+
+#: brlmon/brlmonui.c:246 gnopi/kbconf.c:79 gnopi/spconf.c:89
+#: srconf/libsrconf/libsrconf.c:431
+msgid "Failed to add notify."
+msgstr "Huts egin du oharra gehitzerakoan."
+
+#: brlmon/brlmonui.c:261 gnopi/gnopiconf.c:145
+#, c-format
+msgid "Expected key: %s"
+msgstr "Itxoindako tekla: %s"
+
+#: brlmon/brlmonui.c:301
+#, c-format
+msgid "Failed to set value: %d"
+msgstr "Huts egin du balioa ezartzerakoan: %d"
+
+#: brlmon/brlmonui.c:342 brlmon/brlmonui.c:444 gnopi/gnopiconf.c:355
+#: gnopi/gnopiconf.c:409 gnopi/gnopiconf.c:560 gnopi/gnopiconf.c:733
+#, c-format
+msgid "Invalid type of key: %s."
+msgstr "Tekla-mota baliogabea: %s"
+
+#: brlmon/brlmonui.c:345 brlmon/brlmonui.c:364
+#, c-format
+msgid "Failed to set int value: %d."
+msgstr "Huts egin du osoko balioa ezarterakoan: %d."
+
+#: brlmon/brlmonui.c:358 brlmon/brlmonui.c:459
+#, c-format
+msgid "Failed to get value: %s."
+msgstr "Huts egin du balioa lortzerakoan: %s."
+
+#: brlmon/brlmonui.c:403 gnopi/gnopiconf.c:357 gnopi/gnopiconf.c:375
+#: gnopi/gnopiconf.c:562 gnopi/gnopiconf.c:578
+#, c-format
+msgid "Failed to set value: %d."
+msgstr "Huts egin du balioa ezartzerakoan:%d."
+
+#: brlmon/brlmonui.c:447 brlmon/brlmonui.c:462
+#, c-format
+msgid "Failed to set boolean value: %d."
+msgstr "Huts egin du boolear balioa ezartzerakoan: %d."
+
+#: brlmon/brlmonui.c:501 gnopi/gnopiconf.c:496 gnopi/gnopiconf.c:509
+#, c-format
+msgid "Failed to set value: %s."
+msgstr "Huts egin du balioa ezartzerakoan: %s."
+
+#: brlmon/brlmonui.c:535
+#, c-format
+msgid "Failed to get string value: %s."
+msgstr "Huts egin du katearen balioa lortzerakoan: %s."
+
+#: brlmon/brlmonui.c:539 brlmon/brlmonui.c:549
+#, c-format
+msgid "Failed to set string value: %s."
+msgstr "Huts egin du katearen balioa ezartzerakoan: %s."
+
+#: brlmon/brlmonui.c:583 gnopi/bmui.c:297
+#, c-format
+msgid "Invalid modetype: %s."
+msgstr "modetype baliogabea: %s."
+
+#: brlmon/brlmonui.c:635
+#, c-format
+msgid "%s font not installed."
+msgstr "%s letra-tipoa instalatu gabe."
+
+#. *
+#. * bmui_load_colors
+#. *
+#. * Load text colors.
+#. *
+#. * returns:
+#. *
+#: brlmon/brlmonui.c:639 gnopi/bmui.c:251
+msgid "Can not parse color string."
+msgstr "Ezin izan da kolore-katea aztertu."
+
+#: brlmon/brlmonui.c:1111
+msgid "Status"
+msgstr "Egoera"
+
+#: brlmon/brlmonui.c:1318
+#, c-format
+msgid "Too many cells on display. [Max %d]"
+msgstr "Gelaxka gehiegi monitorean. [Gehienez %d]"
+
+#: brlmon/brlmonui.c:1319
+#, c-format
+msgid "Load default display size. Line: %d Column: %d."
+msgstr "Kargatu monitore-tamaina lehenetsia. Lerroa: %d zutabea: %d."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:84
+#, c-format
+msgid "BRLOUT attribute %s is not supported."
+msgstr "Ez da BRLOUT-en %s atributua onartzen."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:218
+#, c-format
+msgid "TEXT attribute %s is not supported."
+msgstr "Ez da TEXT-en %s atributua onartzen."
+
+#: gnopi/bmconf.c:318
+msgid "Failed to set display size."
+msgstr "Huts egin du monitore-tamaina ezartzerakoan."
+
+#: gnopi/bmconf.c:336
+msgid "Failed to set display position."
+msgstr "Huts egin du monitore-kokapena ezartzerakoan."
+
+#: gnopi/bmconf.c:368
+msgid "Failed to set display mode."
+msgstr "Huts egin du monitore-modua ezartzerakoan."
+
+#: gnopi/bmconf.c:392
+msgid "Failed to set dot type colors."
+msgstr "Huts egin du koloreen puntu-mota ezartzerakoan."
+
+#: gnopi/bmconf.c:409
+msgid "Failed to set font size."
+msgstr "Huts egin du letra-tamaina ezarterakoan."
+
+#: gnopi/bmui.c:328
+#, c-format
+msgid "Invalid position: %s."
+msgstr "Kokapen baliogabea: %s."
+
+#: gnopi/brlconf.c:282 gnopi/cmdmapconf.c:237 gnopi/coreconf.c:140
+#: gnopi/kbconf.c:126 gnopi/magconf.c:226 gnopi/spconf.c:152
+#: gnopi/spconf.c:1203
+msgid "Unable to allocate memory."
+msgstr "Ezinezkoa memoria alokatzea."
+
+#: gnopi/brlconf.c:388
+#, c-format
+msgid "Failed to set braille style: %s."
+msgstr "Huts egin du braille-estiloa ezartzerakoan: %s."
+
+#: gnopi/brlconf.c:397
+#, c-format
+msgid "Failed to set braille cursor style: %s."
+msgstr "Huts egin du braille-kurtsorearen estiloa ezartzerakoan: %s."
+
+#: gnopi/brlconf.c:406
+#, c-format
+msgid "Failed to set attribute settings: %d."
+msgstr "Huts egin du atributuen konfigurazioa ezartzerakoan: %d."
+
+#: gnopi/brlconf.c:415
+#, c-format
+msgid "Failed to set braille device: %s."
+msgstr "Huts egin du braille-gailua ezartzerakoan: %s."
+
+#: gnopi/brlconf.c:424
+#, c-format
+msgid "Failed to set fill character: %s."
+msgstr "Huts egin du karaktere betegarriak ezartzerakoan: %s."
+
+#: gnopi/brlconf.c:433
+#, c-format
+msgid "Failed to set serial port number: %d."
+msgstr "Huts egin du serieko ataka-zenbakia ezartzerakoan: %d."
+
+#: gnopi/brlconf.c:443
+#, c-format
+msgid "Failed to set translation table: %s."
+msgstr "Huts egin du itzulpen-taula ezartzerakoan: %s."
+
+#: gnopi/brlconf.c:452
+#, c-format
+msgid "Failed to set optical sensor: %d."
+msgstr "Huts egin du sentsore-optikoa ezartzerakoan: %d."
+
+#: gnopi/brlconf.c:461
+#, c-format
+msgid "Failed to set position sensor: %d."
+msgstr "Huts egin du sentsore-kokapena ezartzerakoan: %d."
+
+#: gnopi/brlconf.c:470
+#, c-format
+msgid "Failed to set status cell: %s."
+msgstr "Huts egin du egoeraren gelaxka ezartzerakoan: %s."
+
+#: gnopi/brlconf.c:556
+msgid "<none>"
+msgstr "<bat ere ez>"
+
+#: gnopi/brlui.c:79
+msgid "American English"
+msgstr "Amerikar ingelesa"
+
+#: gnopi/brlui.c:80
+msgid "German"
+msgstr "Alemaniera"
+
+#: gnopi/brlui.c:81
+msgid "Spanish"
+msgstr "Gaztelera"
+
+#: gnopi/brlui.c:82
+msgid "Swedish"
+msgstr "Suediera"
+
+#. To translators: X = X Window System server
+#: gnopi/brlui.c:351
+msgid "X display's _terminal number:"
+msgstr "X monitorearen _terminal-zenbakia:"
+
+#: gnopi/brlui.c:357
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:6
+msgid "_Port:"
+msgstr "_Ataka:"
+
+#: gnopi/brlui.c:623
+msgid "Language"
+msgstr "Hizkuntza"
+
+#: gnopi/brlui.c:1218 gnopi/cmdmapui.c:475
+msgid "No selected command!"
+msgstr "Ez da komandorik hautatu!"
+
+#: gnopi/brlui.c:1242
+msgid "Invalid device key!"
+msgstr "Gailuaren tekla baliogabea!"
+
+#: gnopi/brlui.c:1477 gnopi/brlui.c:1900 gnopi/cmdmapui.c:717
+#: gnopi/cmdmapui.c:1568 gnopi/cmdmapui.c:1588
+msgid "Commands"
+msgstr "Komandoak"
+
+#: gnopi/brlui.c:1632 gnopi/cmdmapui.c:1186
+msgid "No selected item to modify!"
+msgstr "Ez da aldatzeko elementurik hautatu!"
+
+#: gnopi/brlui.c:1644 gnopi/brlui.c:1724 gnopi/cmdmapui.c:1059
+#: gnopi/cmdmapui.c:1196
+msgid "Invalid selected item!"
+msgstr "Hautatutako elementua baliogabea!"
+
+#: gnopi/brlui.c:1712 gnopi/cmdmapui.c:1046
+msgid "No selected item to remove!"
+msgstr "Ez da ezabatzeko elementurik hautatu!"
+
+#: gnopi/brlui.c:1894
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:9
+msgid "Braille Keys"
+msgstr "Braille teklak"
+
+#: gnopi/cmdmapconf.c:462 gnopi/cmdmapconf.c:503
+msgid "Change commit error."
+msgstr "Errorea aldaketak eragiterakoan."
+
+#: gnopi/cmdmapui.c:45
+msgid "decrease y scale"
+msgstr "gutxitu y eskala"
+
+#: gnopi/cmdmapui.c:46
+msgid "decrease x scale"
+msgstr "gutxitu x eskala"
+
+#: gnopi/cmdmapui.c:47
+msgid "increase y scale"
+msgstr "handitu y eskala"
+
+#: gnopi/cmdmapui.c:48
+msgid "increase x scale"
+msgstr "handitu x eskala"
+
+#: gnopi/cmdmapui.c:49
+msgid "lock xy scale"
+msgstr "blokeatu xy eskala"
+
+#: gnopi/cmdmapui.c:50
+msgid "smoothing toggle"
+msgstr "leuntasuna txandakatu"
+
+#: gnopi/cmdmapui.c:51
+msgid "cursor toggle"
+msgstr "kurtsorea txandakatu"
+
+#: gnopi/cmdmapui.c:52
+msgid "cursor on/off"
+msgstr "kurtsorea aktibatu/desaktibatu"
+
+#: gnopi/cmdmapui.c:53
+msgid "cursor magnification on/off"
+msgstr "kurtsorearen lupa aktibatu/desaktibatu"
+
+#: gnopi/cmdmapui.c:54
+msgid "decrease cursor size"
+msgstr "kurtsorearen tamaina txikitu"
+
+#: gnopi/cmdmapui.c:55
+msgid "increase cursor size"
+msgstr "kurtsorearen tamain handitu"
+
+#: gnopi/cmdmapui.c:56
+msgid "invert on/off"
+msgstr "alderanzketa aktibatu/desaktibatu"
+
+#: gnopi/cmdmapui.c:57
+msgid "magnifier default"
+msgstr "lupa lehenetsia"
+
+#: gnopi/cmdmapui.c:58
+msgid "crosshair on/off"
+msgstr "gurutzea aktibatu/desaktibatu"
+
+#: gnopi/cmdmapui.c:59
+msgid "crosshair clip on/off"
+msgstr "gurutzearen klipa aktibatu/desaktibatu"
+
+#: gnopi/cmdmapui.c:60
+msgid "decrease crosshair size"
+msgstr "gurutzearen tamaina txikitu"
+
+#: gnopi/cmdmapui.c:61
+msgid "increase crosshair size"
+msgstr "gurutzearen tamaina handitu"
+
+#: gnopi/cmdmapui.c:62
+msgid "automatic panning on/off"
+msgstr "Panoramika automatikoa aktibatu/desaktibatu"
+
+#: gnopi/cmdmapui.c:63
+msgid "mouse tracking toggle"
+msgstr "saguaren jarraipena txandakatu"
+
+#: gnopi/cmdmapui.c:64
+msgid "load magnifier defaults"
+msgstr "kargatu lehenetsitako lupa"
+
+#: gnopi/cmdmapui.c:66
+msgid "decrease pitch"
+msgstr "txikiagotu tonua"
+
+#: gnopi/cmdmapui.c:67
+msgid "increase pitch"
+msgstr "handiagotu tonua"
+
+#: gnopi/cmdmapui.c:68
+msgid "default pitch"
+msgstr "tonua lehenetsia"
+
+#: gnopi/cmdmapui.c:69
+msgid "decrease rate"
+msgstr "txikiagotu tasa"
+
+#: gnopi/cmdmapui.c:70
+msgid "increase rate"
+msgstr "handiagotu tasa"
+
+#: gnopi/cmdmapui.c:71
+msgid "default rate"
+msgstr "tasa lehenetsia"
+
+#: gnopi/cmdmapui.c:72
+msgid "decrease volume"
+msgstr "jeitsi bolumena"
+
+#: gnopi/cmdmapui.c:73
+msgid "increase volume"
+msgstr "igo bolumena"
+
+#: gnopi/cmdmapui.c:74
+msgid "default volume"
+msgstr "bolumen lehenetsia"
+
+#: gnopi/cmdmapui.c:75
+msgid "speech default"
+msgstr "ahots lehenetsia"
+
+#: gnopi/cmdmapui.c:77
+msgid "goto parent"
+msgstr "joan gainekora"
+
+#: gnopi/cmdmapui.c:78
+msgid "goto child"
+msgstr "joan azpikora"
+
+#: gnopi/cmdmapui.c:79
+msgid "goto previous"
+msgstr "joan aurrekora"
+
+#: gnopi/cmdmapui.c:80
+msgid "goto next"
+msgstr "joan hurrengora"
+
+#: gnopi/cmdmapui.c:81
+msgid "repeat last"
+msgstr "errepikatu azkena"
+
+#: gnopi/cmdmapui.c:82
+msgid "goto focus"
+msgstr "joan fokura"
+
+#: gnopi/cmdmapui.c:83
+msgid "goto title"
+msgstr "joan titulura"
+
+#: gnopi/cmdmapui.c:84
+msgid "goto menu"
+msgstr "joan menura"
+
+#: gnopi/cmdmapui.c:85
+msgid "goto toolbar"
+msgstr "joan tresna-barrara"
+
+#: gnopi/cmdmapui.c:86
+msgid "goto statusbar"
+msgstr "joan egoera-barrara"
+
+#: gnopi/cmdmapui.c:87
+msgid "widget surroundings"
+msgstr "widget-aren inguruan"
+
+#: gnopi/cmdmapui.c:89
+msgid "goto caret"
+msgstr "joan kurtsore-bertikalera"
+
+#: gnopi/cmdmapui.c:90
+msgid "goto first"
+msgstr "joan lehenbizikora"
+
+#: gnopi/cmdmapui.c:91
+msgid "goto last"
+msgstr "joan azkenekora"
+
+#: gnopi/cmdmapui.c:92
+msgid "change navigation mode"
+msgstr "aldatu nabigazio modua"
+
+#: gnopi/cmdmapui.c:94
+msgid "toggle flat review/focus tracking mode"
+msgstr "txandakatu berrikuspen zapala/foku detekzio era"
+
+#: gnopi/cmdmapui.c:95
+msgid "flat review"
+msgstr "berrikuspen zapala"
+
+#: gnopi/cmdmapui.c:96
+msgid "window hierarchy"
+msgstr "leihoen hierarkia"
+
+#: gnopi/cmdmapui.c:97
+msgid "read whole window"
+msgstr "irakurri leiho osoa"
+
+#: gnopi/cmdmapui.c:98
+msgid "detailed informations"
+msgstr "informazio xehatuak"
+
+#: gnopi/cmdmapui.c:99
+msgid "do default action"
+msgstr "landu lehenetsitako ekintza"
+
+#: gnopi/cmdmapui.c:100
+msgid "window overview"
+msgstr "leihoen ikuspegi orokorra"
+
+#: gnopi/cmdmapui.c:101
+msgid "find next"
+msgstr "bilatu hurrengoa"
+
+#: gnopi/cmdmapui.c:102
+msgid "find set"
+msgstr "bilatu multzoa"
+
+#: gnopi/cmdmapui.c:103
+msgid "attributes at caret"
+msgstr "atributuak kurtsore-bertikalean"
+
+#: gnopi/cmdmapui.c:104
+msgid "watch current object"
+msgstr "zaindu uneko objektua"
+
+#: gnopi/cmdmapui.c:105 srcore/srctrl.c:1353
+msgid "unwatch all objects"
+msgstr "kendu uneko objektuak zaintzea"
+
+#: gnopi/cmdmapui.c:107
+msgid "mouse left press"
+msgstr "sakatuta eduki saguaren ezkerreko botoia"
+
+#: gnopi/cmdmapui.c:108
+msgid "mouse left click"
+msgstr "klikatu saguaren ezkerreko botoia"
+
+#: gnopi/cmdmapui.c:109
+msgid "mouse left release"
+msgstr "askatu saguaren ezkerrekobotoia"
+
+#: gnopi/cmdmapui.c:110
+msgid "mouse right press"
+msgstr "sakatuta eduki saguaren eskuineko botoia"
+
+#: gnopi/cmdmapui.c:111
+msgid "mouse right click"
+msgstr "klikatu saguaren eskuineko botoia"
+
+#: gnopi/cmdmapui.c:112
+msgid "mouse right release"
+msgstr "askatu saguaren eskuineko botoia"
+
+#: gnopi/cmdmapui.c:113
+msgid "mouse middle press"
+msgstr "sakatu saguaren erdiko botoia"
+
+#: gnopi/cmdmapui.c:114
+msgid "mouse middle release"
+msgstr "askatu saguaren erdiko botoia"
+
+#: gnopi/cmdmapui.c:115
+msgid "mouse middle click"
+msgstr "klikatu saguaren erdiko botoia"
+
+#: gnopi/cmdmapui.c:116
+msgid "mouse goto current"
+msgstr "sagua badoa unekora"
+
+#: gnopi/cmdmapui.c:118
+msgid "shutup"
+msgstr "ixildu"
+
+#: gnopi/cmdmapui.c:119
+msgid "pause/resume"
+msgstr "eten/jarraitu"
+
+#: gnopi/cmdmapui.c:121
+msgid "char left"
+msgstr "ezker-karakterea"
+
+#: gnopi/cmdmapui.c:122
+msgid "char right"
+msgstr "eskuin-karakterea"
+
+#: gnopi/cmdmapui.c:123
+msgid "display left"
+msgstr "ezkerreko pantaila"
+
+#: gnopi/cmdmapui.c:124
+msgid "display right"
+msgstr "eskuineko pantaila"
+
+#: gnopi/cmdmapui.c:126
+msgid "braille on/off"
+msgstr "aktibatu/desaktibatu Braille"
+
+#: gnopi/cmdmapui.c:127
+msgid "speech on/off"
+msgstr "aktibatu/desaktibatu ahotsa"
+
+#: gnopi/cmdmapui.c:128
+msgid "magnifier on/off"
+msgstr "aktibatu/desaktibatu lupa"
+
+#: gnopi/cmdmapui.c:129
+msgid "braille monitor on/off"
+msgstr "aktibatu/desaktibatu Braille monitorea"
+
+#: gnopi/cmdmapui.c:143
+msgid "A"
+msgstr "A"
+
+#: gnopi/cmdmapui.c:144
+msgid "B"
+msgstr "B"
+
+#: gnopi/cmdmapui.c:145
+msgid "C"
+msgstr "C"
+
+#: gnopi/cmdmapui.c:146
+msgid "D"
+msgstr "D"
+
+#: gnopi/cmdmapui.c:147
+msgid "E"
+msgstr "E"
+
+#: gnopi/cmdmapui.c:148
+msgid "F"
+msgstr "F"
+
+#: gnopi/cmdmapui.c:149
+msgid "G"
+msgstr "G"
+
+#: gnopi/cmdmapui.c:150
+msgid "H"
+msgstr "H"
+
+#: gnopi/cmdmapui.c:151
+msgid "I"
+msgstr "I"
+
+#: gnopi/cmdmapui.c:152
+msgid "J"
+msgstr "J"
+
+#: gnopi/cmdmapui.c:153
+msgid "K"
+msgstr "K"
+
+#: gnopi/cmdmapui.c:154
+msgid "L"
+msgstr "L"
+
+#: gnopi/cmdmapui.c:155
+msgid "M"
+msgstr "M"
+
+#: gnopi/cmdmapui.c:156
+msgid "N"
+msgstr "N"
+
+#: gnopi/cmdmapui.c:157
+msgid "O"
+msgstr "O"
+
+#: gnopi/cmdmapui.c:158
+msgid "P"
+msgstr "P"
+
+#: gnopi/cmdmapui.c:159
+msgid "Q"
+msgstr "Q"
+
+#: gnopi/cmdmapui.c:160
+msgid "R"
+msgstr "R"
+
+#: gnopi/cmdmapui.c:161
+msgid "S"
+msgstr "S"
+
+#: gnopi/cmdmapui.c:162
+msgid "T"
+msgstr "T"
+
+#: gnopi/cmdmapui.c:163
+msgid "U"
+msgstr "U"
+
+#: gnopi/cmdmapui.c:164
+msgid "V"
+msgstr "V"
+
+#: gnopi/cmdmapui.c:165
+msgid "W"
+msgstr "W"
+
+#: gnopi/cmdmapui.c:166
+msgid "X"
+msgstr "X"
+
+#: gnopi/cmdmapui.c:167
+msgid "Y"
+msgstr "Y"
+
+#: gnopi/cmdmapui.c:168
+msgid "Z"
+msgstr "Z"
+
+#: gnopi/cmdmapui.c:169
+msgid "F1"
+msgstr "F1"
+
+#: gnopi/cmdmapui.c:170
+msgid "F2"
+msgstr "F2"
+
+#: gnopi/cmdmapui.c:171
+msgid "F3"
+msgstr "F3"
+
+#: gnopi/cmdmapui.c:172
+msgid "F4"
+msgstr "F4"
+
+#: gnopi/cmdmapui.c:173
+msgid "F5"
+msgstr "F5"
+
+#: gnopi/cmdmapui.c:174
+msgid "F6"
+msgstr "F6"
+
+#: gnopi/cmdmapui.c:175
+msgid "F7"
+msgstr "F7"
+
+#: gnopi/cmdmapui.c:176
+msgid "F8"
+msgstr "F8"
+
+#: gnopi/cmdmapui.c:177
+msgid "F9"
+msgstr "F9"
+
+#: gnopi/cmdmapui.c:178
+msgid "F10"
+msgstr "F10"
+
+#: gnopi/cmdmapui.c:179
+msgid "F11"
+msgstr "F11"
+
+#: gnopi/cmdmapui.c:180
+msgid "F12"
+msgstr "F12"
+
+#: gnopi/cmdmapui.c:181
+msgid "0"
+msgstr "0"
+
+#: gnopi/cmdmapui.c:182
+msgid "1"
+msgstr "1"
+
+#: gnopi/cmdmapui.c:183
+msgid "2"
+msgstr "2"
+
+#: gnopi/cmdmapui.c:184
+msgid "3"
+msgstr "3"
+
+#: gnopi/cmdmapui.c:185
+msgid "4"
+msgstr "4"
+
+#: gnopi/cmdmapui.c:186
+msgid "5"
+msgstr "5"
+
+#: gnopi/cmdmapui.c:187
+msgid "6"
+msgstr "6"
+
+#: gnopi/cmdmapui.c:188
+msgid "7"
+msgstr "7"
+
+#: gnopi/cmdmapui.c:189
+msgid "8"
+msgstr "8"
+
+#: gnopi/cmdmapui.c:190
+msgid "9"
+msgstr "9"
+
+#: gnopi/cmdmapui.c:191
+msgid "apostrophe"
+msgstr "apostrofea"
+
+#: gnopi/cmdmapui.c:192
+msgid "backslash"
+msgstr "alderantzizko barra"
+
+#: gnopi/cmdmapui.c:193
+msgid "bracket left"
+msgstr "ezkerreko kortxetea"
+
+#: gnopi/cmdmapui.c:194
+msgid "bracket right"
+msgstr "eskuineko kortxetea"
+
+#: gnopi/cmdmapui.c:195
+msgid "comma"
+msgstr "koma"
+
+#: gnopi/cmdmapui.c:196
+msgid "equal"
+msgstr "berdin"
+
+#: gnopi/cmdmapui.c:197
+msgid "grave"
+msgstr "tilet"
+
+#: gnopi/cmdmapui.c:198
+msgid "minus"
+msgstr "minus"
+
+#: gnopi/cmdmapui.c:199
+msgid "period"
+msgstr "puntua"
+
+#: gnopi/cmdmapui.c:200
+msgid "quote left"
+msgstr "ezkerreko komatxoa"
+
+#: gnopi/cmdmapui.c:201
+msgid "semicolon"
+msgstr "puntu eta koma"
+
+#: gnopi/cmdmapui.c:202
+msgid "slash"
+msgstr "barra"
+
+#: gnopi/cmdmapui.c:1133
+msgid "Invalid key or existent key."
+msgstr "Tekla baliogabea edo existitzen den tekla."
+
+#: gnopi/cmdmapui.c:1562
+msgid "Layer Keys"
+msgstr "Teklen geruza"
+
+#: gnopi/cmdmapui.c:1582
+msgid "User Keys"
+msgstr "Erabiltzailearen teklak"
+
+#: gnopi/coreconf.c:248
+#, c-format
+msgid "Failed to set exit val: %d."
+msgstr "Huts egin du irteerako balioa ezartzean: %d."
+
+#: gnopi/coreconf.c:290
+#, c-format
+msgid "Failed to set move mouse: %d."
+msgstr "Huts egin du saguaren mugimendua ezartzean: %d."
+
+#: gnopi/coreconf.c:299
+#, c-format
+msgid "Failed to set simulate click: %d."
+msgstr "Huts egin du klikatze simulatua ezartzean: %d."
+
+#: gnopi/coreconf.c:308
+#, c-format
+msgid "Failed to set find text: %s."
+msgstr "Huts egin du testuaren bilaketa ezartzean: %s."
+
+#: gnopi/coreconf.c:318
+#, c-format
+msgid "Failed to set magnifier status: %d."
+msgstr "Huts egin du luparen egoera ezartzean: .%d."
+
+#: gnopi/coreconf.c:327
+#, c-format
+msgid "Failed to set speech status: %d."
+msgstr "Huts egin du ahotsaren egoera ezartzean: %d."
+
+#: gnopi/coreconf.c:336
+#, c-format
+msgid "Failed to set braille status: %d."
+msgstr "Huts egin du Braille-ren egoera ezartzean: %d."
+
+#: gnopi/coreconf.c:345
+#, c-format
+msgid "Failed to set braille monitor status: %d."
+msgstr "Huts egin du monitorearen egoera ezartzean:. %d."
+
+#: gnopi/coreconf.c:354
+#, c-format
+msgid "Failed to set minimize flag: %d."
+msgstr "Huts egin du minimizatze bandera ezartzean: %d."
+
+#: gnopi/coreconf.c:363
+#, c-format
+msgid "Failed to set exit ack: %d."
+msgstr "Huts egin du irteerako karakterea ezartzean: %d."
+
+#: gnopi/coreconf.c:372
+#, c-format
+msgid "Failed to set language: %s."
+msgstr "Huts egin du hizkuntza ezartzean: %s."
+
+#: gnopi/coreconf.c:381
+#, c-format
+msgid "Failed to set screen review: %d."
+msgstr "Huts egin du pantailaren berrikuspena ezartzean: %d."
+
+#: gnopi/defui.c:73
+#, c-format
+msgid "Are you sure you want to load default values for %s?"
+msgstr "Ziur zaude balio lehenetsiak kargatzea nahi dituzula %s-(r)entzako?"
+
+#: gnopi/defui.c:100
+msgid "braille"
+msgstr "braille"
+
+#: gnopi/defui.c:116
+msgid "Braille default setting loaded."
+msgstr "Braile-ren konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:125
+msgid "speech"
+msgstr "ahotsa"
+
+#: gnopi/defui.c:133
+msgid "Speech default setting loaded."
+msgstr "Ahotsaren konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:142
+msgid "magnifier"
+msgstr "lupa"
+
+#: gnopi/defui.c:156
+msgid "Magnifier default setting loaded."
+msgstr "Luparen konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:165
+msgid "keyboard"
+msgstr "teklatua"
+
+#: gnopi/defui.c:173
+msgid "Keyboard default setting loaded."
+msgstr "Teklatuaren konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:182
+msgid "braille monitor"
+msgstr "braille monitorea"
+
+#: gnopi/defui.c:189
+msgid "Braille monitor default setting loaded."
+msgstr "Braille monitorearen konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:198
+msgid "start up"
+msgstr "abiarazlea"
+
+#: gnopi/defui.c:207
+msgid "Startup default setting loaded."
+msgstr "Abioko konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:217
+msgid "command map"
+msgstr "komandoen mapaketa"
+
+#: gnopi/defui.c:225
+msgid "Command map default setting loaded."
+msgstr "Komando-mapen konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:235
+msgid "presentation"
+msgstr "aurkezpena"
+
+#: gnopi/defui.c:241
+msgid "Presentation default setting loaded."
+msgstr "Aurkezpenaren konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:250
+msgid "screen review"
+msgstr "pantailaren berrikuspena"
+
+#: gnopi/defui.c:256
+msgid "Screen review default setting loaded."
+msgstr "Pantailako berrikuspenaren konfigurazio lehenetsia kargatuta."
+
+#: gnopi/defui.c:279
+msgid "all modules"
+msgstr "modulu denak"
+
+#: gnopi/defui.c:282
+msgid "All default settings loaded."
+msgstr "Lehenetsitako konfigurazio guztiak kargatuta."
+
+#: gnopi/genui.c:66
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:12
+msgid "_Braille"
+msgstr "_Braille"
+
+#: gnopi/genui.c:69
+msgid "_Braille (unavailable)"
+msgstr "_Braille (eskurakaitza)"
+
+#: gnopi/genui.c:74
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:13
+msgid "_Magnifier"
+msgstr "_Lupa"
+
+#: gnopi/genui.c:77
+msgid "_Magnifier (unavailable)"
+msgstr "_Lupa (eskurakaitza)"
+
+#: gnopi/genui.c:82
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:14
+msgid "_Speech"
+msgstr "_Ahotsa"
+
+#: gnopi/genui.c:85
+msgid "_Speech (unavailable)"
+msgstr "_Ahotsa (eskurakaitza)"
+
+#: gnopi/genui.c:90
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:4
+msgid "B_raille monitor"
+msgstr "B_raille monitorea"
+
+#: gnopi/genui.c:93
+msgid "B_raille monitor (unavailable)"
+msgstr "B_raille monitorea (eskurakaitza)"
+
+#: gnopi/gnopernicus.desktop.in.h:1
+msgid "Assistive Technologies for Blind and Visually Impaired"
+msgstr "Itxu eta ikusmen gutxikoen laguntzako teknologiak"
+
+#: gnopi/gnopernicus.desktop.in.h:2
+msgid "Screen Reader and Magnifier"
+msgstr "Pantaila irakurgailua eta lupa"
+
+#: gnopi/gnopi.c:302
+msgid "gnopernicus"
+msgstr "gnopernicus"
+
+#: gnopi/gnopi.c:309
+msgid "Gconf initialization failed."
+msgstr "Huts egin du Gconf hasieratzean."
+
+#: gnopi/gnopi.c:316
+msgid "Invalid parameters."
+msgstr "Parametro baliogabeak."
+
+#: gnopi/gnopi.c:322
+msgid "Multiple instances are NOT ALLOWED. This instance will end."
+msgstr "EZ DIRA ONARTZEN instantzia anitzik. Instantzia hau amaitzera doa."
+
+#: gnopi/gnopi.c:328
+msgid "GTK initialization failed."
+msgstr "Huts egin du GTK hasieratzean."
+
+#: gnopi/gnopi.c:334
+msgid "Can not create a new process."
+msgstr "Ezin du prozesu berririk sortu."
+
+#: gnopi/gnopi.c:344
+msgid "Exit gnopernicus."
+msgstr "Irten gnopernicus-etik."
+
+#: gnopi/gnopi.c:352
+msgid "Gnopernicus initialization failed."
+msgstr "Huts egin du Gnopernicus hasieratzean."
+
+#: gnopi/gnopi.c:359
+msgid "Can not load .glade2 file"
+msgstr "Ezin kargatu .glade2 fitxategia"
+
+#. if (WIFSIGNALED (gn_srcore_status) != 0)
+#. sru_message ("signal no: %d", WTERMSIG (gn_srcore_status));
+#: gnopi/gnopi.c:659
+msgid "srcore exited."
+msgstr "srcore irten da."
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:1
+msgid "<b>Color</b>"
+msgstr "<b>Kolorea</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:2
+msgid "<b>Font</b>"
+msgstr "<b>Tipografia</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:3
+msgid "<b>Mode Type</b>"
+msgstr "<b>Modu motak</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:4
+msgid "<b>Position</b>"
+msgstr "<b>Kokalekua</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:5
+msgid "<b>Size</b>"
+msgstr "<b>Tamaina</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:6
+msgid "B_raille"
+msgstr "B_raille"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:7
+msgid "Braille Monitor Preferences"
+msgstr "Braille monitorearen hobespenak"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:8
+msgid "Color selection for texts which use dot 7"
+msgstr "Kolore hautapena, 7 puntokoa darabilten testuentzako"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:9
+msgid "Color selection for texts which use dot 8"
+msgstr "Kolore hautapena, 8 puntokoa darabilten testuentzako"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:10
+msgid "Color selection for texts which use dots 7 and 8"
+msgstr "Kolore hautapena, 7 eta 8 puntokoak darabilten testuentzako"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:11
+msgid "Colu_mns:"
+msgstr "_Zutabeak:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:12
+msgid "Display at bottom of screen"
+msgstr "Bistaratu pantailaren behean"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:13
+msgid "Display on top of screen"
+msgstr "Bistaratu pantailaren goian"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:14
+msgid "Display using braille font"
+msgstr "Bistaratu Braille tipografia erabiliz"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:15
+msgid "Display using normal font"
+msgstr "Bistaratu tipografia normala erabiliz"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:16
+msgid "Display with both fonts"
+msgstr "Bistaratu bi tipografiekin"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:17
+msgid "Dot 7:"
+msgstr "7 puntu:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:18
+msgid "Dot 8:"
+msgstr "8 puntu:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:19
+msgid "Dots 78:"
+msgstr "78 puntu:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:20
+msgid "Number of cell columns"
+msgstr "Gelaxka zutabeen kopurua"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:21
+msgid "Number of cell lines"
+msgstr "Gelaxka lerroen kopurua"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:22
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:43
+msgid "Pick a color"
+msgstr "Hartu kolore bat"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:23
+msgid "Size of font"
+msgstr "Letra-tamaina"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:24
+msgid "Use system theme colors"
+msgstr "Erabili sistemako koloreen tema"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:25
+msgid "Use theme _system colors"
+msgstr "Erabili _sistemako temaren koloreak"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:26
+msgid "_Dual"
+msgstr "_Duala"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:27
+msgid "_Lines:"
+msgstr "_Lerroak:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:28
+msgid "_Normal"
+msgstr "_Normala"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:29
+msgid "_Size:"
+msgstr "_Tamaina:"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:1
+msgid "Attributes"
+msgstr "Atributuak"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:2
+msgid "_1. Dot 8"
+msgstr "_1. 8 puntutakoa"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:3
+msgid "_2. Dot 7"
+msgstr "_2. 7 puntutakoa"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:4
+msgid "_3. Dot 8 or 7"
+msgstr "_3. 8 edo 7 puntutakoa"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:5
+msgid "_4. Off"
+msgstr "_4. Desaktibatua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:1
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:1
+#: gnopi/gnopi_files/Find/find.glade2.h:2
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:1
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:1
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:3
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:2
+msgid "Braille Device"
+msgstr "Braille gailua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:3
+msgid "Braille devices list"
+msgstr "Braille gailuen zerrenda"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:4
+msgid "Serial port number where the device is linked"
+msgstr "Gailua esleituta dagoen serieko atakaren zenbakia"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:5
+msgid "_Device:"
+msgstr "_Gailua:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:2
+msgid "10 _Font size"
+msgstr "10 _Letra-tamaina"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:3
+msgid "11 _Activate script function \"OnPosSwitch\""
+msgstr "11 _Aktibatu \"OnPosSwitch\" scriptaren funtzioa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:4
+msgid "12 _Present attributes"
+msgstr "12 _Dauden atributuak"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:5
+msgid "<b>_Braille keys list</b>"
+msgstr "<b>_Braille teklen zerrenda</b>"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:6
+msgid "Activate script function \"OnPosSwitch\""
+msgstr "Aktibatu \"OnPosSwitch\" scriptaren funtzioa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:7
+msgid "Add item in braille keys list"
+msgstr "Gehitu elementua Braille teklen zerrendan"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:8
+msgid "Braille Display Key Mapping"
+msgstr "Bistaratu Braille teklen mapaketa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:10
+msgid "Braille device keys list"
+msgstr "Braille gailuen tekla zerrenda"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:11
+msgid "Braille keys list"
+msgstr "Braille teklen zerrenda"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:12
+msgid "Command List"
+msgstr "Komandoen zerrenda"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:13
+msgid "Command list"
+msgstr "Komandoen zerrenda"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:14
+msgid "Font name"
+msgstr "Letra-tipoa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:15
+msgid "Font size"
+msgstr "Letra-tamaina"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:16
+msgid "Font style"
+msgstr "Letra-estiloa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:17
+msgid "Modify selected item"
+msgstr "Aldatu hautatutako elementua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:18
+msgid "Move caret"
+msgstr "Mugitu kurtsore-bertikala"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:19
+msgid "Move mouse and click left"
+msgstr "Mugitu sagua eta klikatu ezkerreko botoia"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:20
+msgid "Move mouse and click left and right"
+msgstr "Mugitu sagua eta klikatu ezkerreko eta eskuineko botoia"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:21
+msgid "Move mouse and click right"
+msgstr "Mugitu sagua eta klikatu eskuineko botoia"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:22
+msgid "Only move mouse"
+msgstr "Sagua mugitu bakarrik"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:23
+msgid "Optical Sensors"
+msgstr "Sentsore optikoak"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:24
+msgid "Optical sensors off"
+msgstr "Sentsore optikoak desaktibatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:25
+msgid "Position Sensors"
+msgstr "Kokalekuen sentsoreak"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:26
+msgid "Position sensors off"
+msgstr "Kokalekuen sentsoreak desaktibatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:27
+msgid "Present attributes"
+msgstr "Dauden atributuak"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:28
+msgid "Remove selected item from braille keys list"
+msgstr "Ezabatu hautaturiko elementuak Braille teklen zerrendatik"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:29
+msgid "Show X coordinate"
+msgstr "Erakutsi X koordenatua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:30
+msgid "Show Y coordinate"
+msgstr "Erakutsi Y koordenatua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:31
+msgid "_0 Optical sensors off"
+msgstr "_0 Sentsore optikoak desaktibatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:32
+msgid "_0 Position sensors off"
+msgstr "_0 Kokalekuen sentsoreak desaktibatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:33
+msgid "_1 Only move mouse"
+msgstr "_1 Sagua mugitu bakarrik"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:34
+msgid "_2 Move mouse and click left"
+msgstr "_2 Sagua mugitu eta klikatu ezkerreko botoia"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:35
+msgid "_3 Move mouse and click right"
+msgstr "_3 Sagua mugitu eta klikatu eskuineko botoia"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:36
+msgid "_4 Move mouse and click left or right"
+msgstr "_4 Sagua mugitu eta klikatu ezkerreko edo eskuineko botoia"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:37
+msgid "_5 Move caret"
+msgstr "_5 Mugitu kurtsore-bertikala"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:38
+msgid "_6 Show X coordinate"
+msgstr "_6 Erakutsi X koordenatua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:39
+msgid "_7 Show Y coordinate"
+msgstr "_7 Erakutsi Y koordenatua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:40
+msgid "_8 Font style"
+msgstr "_8 Letra- estiloa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:41
+msgid "_9 Font name"
+msgstr "_9 Letra-tipoa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:42
+msgid "_Commands:"
+msgstr "_Komandoak:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:43
+msgid "_Device key:"
+msgstr "_Gailuaren tekla:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:44
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:85
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:28
+msgid "_Modify"
+msgstr "_Aldatu"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:1
+msgid "Braille Preferences"
+msgstr "Braille hobespenak"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:2
+msgid "Close braille settings"
+msgstr "Itxi Braille-ren konfigurazioa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:3
+msgid "Map function for display keys"
+msgstr "Teklak bistaratzeko mapaketa funtzioa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:4
+msgid "Select braille device"
+msgstr "Hautatu Braille gailua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:5
+msgid "Select braille style 8/6 dots"
+msgstr "Hautatu Braille 8/6 puntutako estiloa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:6
+msgid "Select cursor setting FullCell/UnderLined/NoCursor"
+msgstr ""
+"Hautatu kurtsorearen konfigurazioa Gelaxka-osoa/Azpimarratua/Kurtsorerik-gabe"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:7
+msgid "Select translation table for braille device"
+msgstr "Hautatu itzulpen taula Braille gailuarentzako"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:8
+msgid "_1 Braille Device"
+msgstr "_1 Braille gailua"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:9
+msgid "_2 Translation Table"
+msgstr "_2 Itzulpen taula"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:10
+msgid "_3 Braille Style"
+msgstr "_3 Braille estiloa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:11
+msgid "_4 Cursor Preferences"
+msgstr "_4 Kurtsorearen hobespenak"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:12
+msgid "_5 Braille Key Mapping"
+msgstr "_5 Braille teklen mapaketa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:1
+msgid "Braille Style"
+msgstr "Braille estiloa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:2
+msgid "Use 6 dots"
+msgstr "Erabili 6 puntukoa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:3
+msgid "Use 8 dots"
+msgstr "Erabili 8 puntukoa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:4
+msgid "_6 Dot Braille"
+msgstr "Braille _6 puntukoa"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:5
+msgid "_8 Dot Braille"
+msgstr "Braille _8 puntukoa"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:1
+msgid "Cursor Preferences"
+msgstr "Kurtsorearen hobespenak"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:2
+msgid "Cursor on braille display is a full cell"
+msgstr "Kurtsoreak Braille bistaraketan gelaxka oso bat da"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:3
+msgid "Cursor on braille display is an underline"
+msgstr "Kurtsorea Braille bistaraketan azpimarra bat da"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:4
+msgid "No cursor on braille display"
+msgstr "Ez dago kurtsorerik Braille pantailan"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:5
+msgid "_Full cell cursor"
+msgstr "_Gelaxka osoko kurtsorea"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:6
+msgid "_No cursor"
+msgstr "_Kurtsorerik ez"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:7
+msgid "_Underline cursor (dots 7 and 8)"
+msgstr "_Azpimarra kurtsorea (7 eta 8 puntutakoa)"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:1
+msgid "Translation Table"
+msgstr "Itzulpen taula"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:2
+msgid "Translation table list"
+msgstr "Itzulpen taulen zerrenda"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:3
+msgid "_Select language:"
+msgstr "_Hautatu hizkuntza"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:1
+msgid "   "
+msgstr "   "
+
+#: gnopi/gnopi_files/Find/find.glade2.h:3
+msgid "<b>Fi_nd Text:</b>"
+msgstr "<b>_Aurkitu testua:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:4
+msgid "<b>Find Attributes:</b>"
+msgstr "<b>Aurkitu atributuak:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:5
+msgid "<b>Match</b>"
+msgstr "<b>Parekatu</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:6
+msgid "<b>Scope</b>"
+msgstr "<b>Esparrua</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:7
+msgid "<b>Search For</b>"
+msgstr "<b>Bilatu</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:8
+msgid "A_ll chosen attributes"
+msgstr "Aukeratutako atributu g_uztiak"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:9
+msgid "A_ny chosen attributes"
+msgstr "Aukeratutako _edozein atributu"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:10
+msgid "A_ttribute"
+msgstr "A_tributua"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:11
+msgid "Bold"
+msgstr "Lodia"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:12
+msgid "Case _sensitive"
+msgstr "_Maiuskula/Minuskula"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:13
+msgid "Case sensitive on/off"
+msgstr "Aktibatu/desaktibatu maiuskula/minuskula"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:14
+msgid "Italic"
+msgstr "Etzana"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:15
+msgid "S_elected"
+msgstr "_Hautatutakoa"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:16
+msgid "Scope area is a desktop"
+msgstr "Esparruaren gunea mahaigaina da"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:17
+msgid "Scope area is a window"
+msgstr "Esparruaren gunea leihoa da"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:18
+msgid "Scope area is an application"
+msgstr "Esparruaren gunea aplikazioa da"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:19
+msgid "Search Preferences"
+msgstr "Bilaketaren hobespenak"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:20
+msgid "Search criteria is a graphics"
+msgstr "Bilaketaren irizpidea grafiko bat da"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:21
+msgid "Search criteria is a text"
+msgstr "Bilaketaren irizpidea testu bat da"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:22
+msgid "Search criteria is an attribute"
+msgstr "Bilaketaren irizpidea atributu bat da"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:23
+msgid "Selected item"
+msgstr "Hautatutako elementua"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:24
+msgid "Stri_kethrough"
+msgstr "Marratua"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:25
+msgid "Strikethrough"
+msgstr "Marratua"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:26
+msgid "Te_xt"
+msgstr "Testua"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:27
+msgid "Text to search"
+msgstr "Bilatzeko testua"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:28
+msgid "Underline"
+msgstr "Azpimarratua"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:29
+msgid "_Application"
+msgstr "_Aplikazioa"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:30
+msgid "_Bold"
+msgstr "_Lodia"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:31
+msgid "_Desktop"
+msgstr "_Mahaigaina"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:32
+msgid "_Graphics"
+msgstr "_Grafikoak"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:33
+msgid "_Italic"
+msgstr "_Etzana"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:34
+msgid "_Underline"
+msgstr "_Azpimarratua"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:35
+msgid "_Window"
+msgstr "_Leihoa"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:1
+msgid "    "
+msgstr "    "
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:2
+msgid "<b>Active Components</b>"
+msgstr "<b>Osagai aktiboak</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:3
+msgid "<b>Startup</b>"
+msgstr "<b>Abiarazlea</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:5
+msgid "Braille monitor on/off"
+msgstr "Aktibatu/desaktibatu Braille monitorea"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:6
+msgid "Braille on/off"
+msgstr "Aktibatu/desaktibatu Braille"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:7
+msgid "Magnifier on/off"
+msgstr "Aktibatu/desaktibatu lupa"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:8
+msgid "Speech on/off"
+msgstr "Aktibatu/desaktibatu ahotsa"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:9
+msgid "Start gnopernicus minimized"
+msgstr "Abiatu gnopernicus minimizatua moduan"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:10
+msgid "Start m_inimized"
+msgstr "Abiatu m_inimizatuta"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:11
+msgid "Startup Mode"
+msgstr "Abiatze modua"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:1
+msgid "Mouse Preferences"
+msgstr "Saguaren hobespenak"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:2
+msgid "Simulate click on current object"
+msgstr "Simulatu klikatzea uneko objektuan"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:3
+msgid "Take mouse at current object"
+msgstr "Eraman sagua uneko objektura"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:4
+msgid "_Simulate click on current object"
+msgstr "_Simulatu klikatzea uneko objektuan"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:5
+msgid "_Take mouse at current object"
+msgstr "_Eraman sagua uneko objektura"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:1
+msgid "Close \"Load Default Preferences\""
+msgstr "Itxi \"Kargatu hobespen lehenetsiak\""
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:2
+msgid "Load Default Preferences"
+msgstr "Kargatu hobespen lehenetsia"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:3
+msgid "Load Default Settings"
+msgstr "Kargatu konfigurazio lehenetsiak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:4
+msgid "Load all defaults"
+msgstr "Kargatu lehenespen guztiak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:5
+msgid "Load braille defaults"
+msgstr "Kargatu Braille lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:6
+msgid "Load braille monitor defaults"
+msgstr "Kargatu Braillie monitore lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:7
+msgid "Load command map defaults"
+msgstr "Kargatu komando-mapen lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:8
+msgid "Load magnifier defaults"
+msgstr "Kargatu luparen lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:9
+msgid "Load mouse defaults"
+msgstr "Kargatu saguaren lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:10
+msgid "Load presentation defaults"
+msgstr "Kargatu aurkezpenaren lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:11
+msgid "Load screen review defaults"
+msgstr "Kargatu pantaila berrikustailearen lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:12
+msgid "Load speech defaults"
+msgstr "Kargatu ahotsaren lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:13
+msgid "Load startup mode defaults"
+msgstr "Kargatu abiatze moduaren lehenespenak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:14
+msgid "_0 All"
+msgstr "_0 Denak"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:15
+msgid "_1 Braille"
+msgstr "_1 Braille"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:16
+msgid "_2 Speech"
+msgstr "_2 Ahotsa"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:17
+#: gnopi/gnopi_files/gnopi.glade2.h:33
+msgid "_3 Magnifier"
+msgstr "_3 Lupa"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:18
+msgid "_4 Keyboard"
+msgstr "_4 Teklatua"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:19
+#: gnopi/gnopi_files/gnopi.glade2.h:36
+msgid "_5 Braille Monitor"
+msgstr "_5 Braille pantaila"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:20
+msgid "_6 Startup"
+msgstr "_6 Abiarazlea"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:21
+msgid "_7 Command Map"
+msgstr "_7 Komandoen mapa"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:22
+msgid "_8 Presentation"
+msgstr "_8 Aurkezpena"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:23
+msgid "_9 Screen Review"
+msgstr "_9 Pantailaren berrikuspena"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:2
+msgid "<b>Border settings</b>"
+msgstr "<b>Ertzaren konfigurazioa</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:3
+msgid "<b>Cross-hair</b>"
+msgstr "<b>Gurutzea</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:4
+msgid "<b>Cursor setting</b>"
+msgstr "<b>Kurtsorearen konfigurazioa</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:5
+msgid "<b>Display screen</b>"
+msgstr "<b>Bistaratze pantaila</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:6
+msgid "<b>Focus tracking mode</b>"
+msgstr "<b<fokuaren jarraipena modua</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:7
+msgid "<b>Mo_use tracking mode</b>"
+msgstr "<b>Sag_uaren jarraipen modua</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:8
+msgid "<b>S_moothing</b>"
+msgstr "<b>Leu_ntasuna</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:9
+msgid "<b>Zoomer placement</b>"
+msgstr "<b>Zoom-aren kokapena</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:10
+msgid "<b>Zoomfactor</b>"
+msgstr "<b>Zoom faktorea</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:11
+msgid "<b>_Zoomer list</b>"
+msgstr "<b>_Zoom-zerrenda</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:12
+msgid "Bor_der size:"
+msgstr "Er_tzaren tamaina:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:13
+msgid "Border c_olor:"
+msgstr "Ertzaren k_olorea:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:14
+msgid "Border color"
+msgstr "Ertzaren kolorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:15
+msgid "Border size"
+msgstr "Ertzaren tamaina"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:16
+msgid "C_entered"
+msgstr "_Erdiratua"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:17
+msgid "C_ursor on/off"
+msgstr "Aktibatu/desaktibatu k_urtsorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:18
+msgid "Cross-ha_ir size:"
+msgstr "Gurutze_aren tamaina:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:19
+msgid "Cross-hair c_lip on/off"
+msgstr "Aktibatu/desaktibatu gurutzearen k_lipa"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:20
+msgid "Cross-hair colo_r:"
+msgstr "Gurutzearen ko_lorea:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:21
+msgid "Cross-hair color in_verted"
+msgstr "Gurutzearen kolorea _alderantzikatua"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:22
+msgid "Cross-hair o_n/off"
+msgstr "_Aktibatu/desaktibatu gurutzea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:23
+msgid "Crosshair clip on/off"
+msgstr "Aktibatu/desaktibatu gurutzearen klipa"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:24
+msgid "Crosshair color"
+msgstr "Gurutzearen kolorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:25
+msgid "Crosshair on/off"
+msgstr "Aktibatu/desaktibatu gurutzea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:26
+msgid "Crosshair size"
+msgstr "Gurutzearen tamaina"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:27
+msgid "Cursor _size:"
+msgstr "Kurtsorearen _tamaina:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:28
+msgid "Cursor c_olor:"
+msgstr "Kurtsorearen k_olorea:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:29
+msgid "Cursor color"
+msgstr "Kurtsorearen kolorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:30
+msgid "Cursor magnification"
+msgstr "Kurtsorearen lupa"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:31
+msgid "Cursor on/off"
+msgstr "Aktibatu/desaktibatu kurtsorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:32
+msgid "Cursor size"
+msgstr "Kurtsorearen tamaina"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:33
+msgid "Display screen source"
+msgstr "Bistaratu pantailaren jatorria"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:34
+msgid "Display screen target"
+msgstr "Bistaratu pantailaren objetiboa"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:35
+msgid "Invert crosshair color"
+msgstr "Alderanztu gurutzearen kolorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:36
+msgid "Invert on/off"
+msgstr "Aktibatu/desaktibatu alderanzketa"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:37
+msgid "Lock zoom _factor"
+msgstr "Blokeatu zoomaren _faktorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:38
+msgid "Lock zoom factor"
+msgstr "Blokeatu zoomaren faktorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:39
+msgid "Magnifier Preferences"
+msgstr "Luparen hobespenak"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:40
+msgid "Magnifier settings"
+msgstr "Luparen konfigurazioa"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:41
+msgid "Mouse tracking type"
+msgstr "Sagu jarraipen mota"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:42
+msgid "Panning on/off"
+msgstr "Aktibatu/desaktibatu panoramika"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:44
+msgid "Set cursor separate from _magnification"
+msgstr "Ezarri kurtsorea _lupatik bereiztuta"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:45
+msgid "Smoothing type"
+msgstr "Leuntasun mota"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:46
+msgid "Tar_get:"
+msgstr "_Helburua:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:47
+msgid "Zoom factor X"
+msgstr "Zoomaren X faktorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:48
+msgid "Zoom factor Y"
+msgstr "Zoomaren Y faktorea"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:49
+msgid "Zoom factor _X:"
+msgstr "Zoomaren _X faktorea:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:50
+msgid "Zoom factor _Y:"
+msgstr "Zoomaren _Y faktorea:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:51
+msgid "Zoomer Options"
+msgstr "Zoomaren aukerak"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:52
+msgid "Zoomer placement bottom"
+msgstr "Zoomaren beheko kokapena"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:53
+msgid "Zoomer placement left"
+msgstr "Zoomaren ezkerreko kokapena"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:54
+msgid "Zoomer placement right"
+msgstr "Zoomaren eskuineko kokapena"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:55
+msgid "Zoomer placement top"
+msgstr "Zoomaren goiko kokapena"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:56
+msgid "Zoomers list"
+msgstr "Zoomen zerrenda"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:57
+msgid "_Add/Modify"
+msgstr "_Gehitu/aldatu"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:58
+msgid "_Auto"
+msgstr "_Auto."
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:59
+msgid "_Bottom:"
+msgstr "_Behea:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:60
+msgid "_Invert"
+msgstr "_Alderanztu"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:61
+msgid "_Left:"
+msgstr "_Ezkerra:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:62
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:87
+msgid "_None"
+msgstr "_Bat ere ez"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:63
+msgid "_Panning"
+msgstr "_Panoramika"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:64
+msgid "_Remove"
+msgstr "_Kendu"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:65
+msgid "_Right:"
+msgstr "_Eskuina:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:66
+msgid "_Source:"
+msgstr "_Jatorria:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:67
+msgid "_Top:"
+msgstr "_Goia:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:68
+#: gnopi/magui.c:49
+msgid "bilinear"
+msgstr "bilinearra"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:69
+#: gnopi/magui.c:61
+msgid "centered"
+msgstr "erdiratua"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:70
+#: gnopi/magui.c:48 gnopi/magui.c:63
+msgid "none"
+msgstr "bat ere ez"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:71
+#: gnopi/magui.c:62
+msgid "proportional"
+msgstr "proportzionala"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:72
+#: gnopi/magui.c:60
+msgid "push"
+msgstr "sakatu"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:2
+msgid "Expert"
+msgstr "Aditua"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:3
+msgid "Mode selected:"
+msgstr "Hautapen modua:"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:4
+msgid "Presentation"
+msgstr "Aurkezpena"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:5
+#: srcore/default.xml.in.h:10 srcore/verbose.xml.in.h:10
+msgid "Verbose"
+msgstr "Hitzez hitz"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:1
+msgid "<b>Horizontal flags</b>"
+msgstr "<b>Bandera horizontalak</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:2
+msgid "<b>Vertical flags</b>"
+msgstr "<b>Bandera bertikalak</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:3
+msgid "Add all empty lines"
+msgstr "Gehitu lerro huts guztiak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:4
+msgid "Add all spaces"
+msgstr "Gehitu zuriune guztiak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:5
+msgid "Add all spaces and empty lines"
+msgstr "Gehitu zuriune eta lerro huts guztiak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:6
+msgid "Add embedded empty lines"
+msgstr "Gehitu txertatutako lerro hutsak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:7
+msgid "Add embedded spaces"
+msgstr "Gehitu txertatutako zuriuneak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:8
+msgid "Add leading empty lines"
+msgstr "Gehitu haserako lerro hutsak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:9
+msgid "Add leading spaces"
+msgstr "Gehitu haserako zuriuneak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:10
+msgid "Add trailing empty lines"
+msgstr "Gehitu amaierako lerro hutsak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:11
+msgid "Add trailing spaces"
+msgstr "Gehitu amaierako zuriuneak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:12
+msgid "All _horizontal"
+msgstr "Guztiak _horizontalak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:13
+msgid "All _vertical"
+msgstr "Guztiak bertikalak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:14
+msgid "Count em_pty lines"
+msgstr "Zenbatu lerro _hutsak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:15
+msgid "Count empty lines"
+msgstr "Zenbatu lerro hutsak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:16
+msgid "E_mbedded"
+msgstr "T_xertatuta"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:17
+msgid "Lea_ding"
+msgstr "_Aurretik"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:18
+msgid "Screen Review Preferences"
+msgstr "Pantaila berrikuspenaren konfigurazioa"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:19
+msgid "T_railing"
+msgstr "A_tzetik"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:20
+msgid "_All flags"
+msgstr "_Bandera guztiak"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:21
+msgid "_Embedded"
+msgstr "T_xertatuta"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:22
+msgid "_Leading"
+msgstr "_Aurretik"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:23
+msgid "_Trailing"
+msgstr "A_tzetik"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:2
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:4
+msgid "<b><></b>"
+msgstr "<b><></b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:5
+msgid "<b>Absolute Value</b>"
+msgstr "<b>Balio absolutua</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:6
+msgid "<b>Driver</b>"
+msgstr "<b>Kontrolatzailea</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:7
+msgid "<b>Properties</b>"
+msgstr "<b>Propietateak</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:8
+msgid "<b>Punctuation</b>"
+msgstr "<b>Puntuazioa</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:9
+msgid "<b>Relative Values</b>"
+msgstr "<b>Balio erlatiboak</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:10
+msgid "<b>Text Echo</b>"
+msgstr "<b>Testuaren oihartzuna</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:11
+msgid "<b>Voice</b>"
+msgstr "<b>Ahotsa</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:12
+msgid "<b>_Dictionary</b>"
+msgstr "<b>_Hiztegia</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:13
+msgid "<b>_Replacement:</b>"
+msgstr "<b>_Ordeztu:</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:14
+msgid "<b>_Voice list</b>"
+msgstr "<b>_Ahots zerrenda</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:15
+msgid "<b>_Word:</b>"
+msgstr "<b>_Hitza:</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:16
+msgid "A_ll"
+msgstr "_Denak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:17
+msgid "Activate pitch"
+msgstr "Aktibatu tonua"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:18
+msgid "Activate rate"
+msgstr "Aktibatu tasa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:19
+msgid "Activate volume"
+msgstr "Aktibatu bolumena"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:20
+msgid "Add / Modify Dictionary Entry"
+msgstr "Gehitu / Aldatu hiztegi sarrera"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:21
+msgid "Add / Modify Voice"
+msgstr "Gehitu / Aldatu ahotsa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:22
+msgid "Add new item in voices list"
+msgstr "Gehitu elementu berria ahots-zerrendan"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:23
+msgid "Add new word in dictionary"
+msgstr "Gehitu hitz berria hiztegian"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:24
+msgid ""
+"Change for all voices the engine driver and the engine speaker with a "
+"selected driver and speaker"
+msgstr ""
+"Aldatu ahots guztientzako tresna-kontrolatzailea eta bozgorailu-tresna "
+"hautaturiko kontrolatzaile eta bozgorailu baten bitartez"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:25
+msgid "Charac_ter"
+msgstr "Karak_terea"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:26
+msgid "Count cha_racters"
+msgstr "Zenbatu ka_raktereak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:27
+msgid "Count characters"
+msgstr "Zenbatu karaktereak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:28
+msgid "Decrease pitch"
+msgstr "Txikiagotu tonua"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:29
+msgid "Decrease rate"
+msgstr "Txikiagotu tasa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:30
+msgid "Decrease volume"
+msgstr "Jeitsi bolumena"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:31
+msgid "Dictionary"
+msgstr "Hiztegia"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:32
+msgid "Dictionary list"
+msgstr "Hiztegi zerrenda"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:33
+msgid "Do not speak text"
+msgstr "Ez ahozkatu testua"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:34
+msgid "Edit A_bsolute..."
+msgstr "Editatu a_bsolutua..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:35
+msgid "Edit Absolute Voice Values"
+msgstr "Editatu ahotsen balio absolutuak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:36
+msgid "Edit R_elative..."
+msgstr "Editatu _erlatiboa..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:37
+msgid "Edit Relative Voice Values"
+msgstr "Editatu ahotsen balio erlatiboak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:38
+msgid "Edit dictionary"
+msgstr "Editatu hiztegia"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:39
+msgid "Edit parameter values absolutely"
+msgstr "Editatu parametroen balioak absolutuki"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:40
+msgid "Edit parameter values relatively"
+msgstr "Editatu parametroen balioak erlatiboki"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:41
+msgid "Engine _driver:"
+msgstr "Tresna-_kontrolatzailea:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:42
+msgid "Engine _speaker:"
+msgstr "Bozgorailu-tresna:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:43
+msgid "Engine driver"
+msgstr "Tresna-kontrolatzailea"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:44
+msgid "Engine speaker"
+msgstr "Bozgorailu-tresna"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:45
+msgid "Gnopernicus system voice"
+msgstr "Gnopernicus sistemaren ahotsa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:46
+msgid "Hz"
+msgstr "Hz"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:47
+msgid "Ignore all punctuation"
+msgstr "Ezikusi puntuazio denak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:48
+msgid "Increase pitch"
+msgstr "Handiagotu tonua"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:49
+msgid "Increase rate"
+msgstr "Handiagotu tasa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:50
+msgid "Increase volume"
+msgstr "Handiagotu bolumena"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:51
+msgid "Made pitch sensitive for changing"
+msgstr "Jarri tonua aldaketen menpe"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:52
+msgid "Made rate sensitive for changing"
+msgstr "Jarri tasa aldaketen menpe"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:53
+msgid "Made volume sensitive for changing"
+msgstr "Jarri bolumena aldaketen menpe"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:54
+msgid "Modify selected voice"
+msgstr "Aldatu hautatutako ahotsa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:55
+msgid "Modify word"
+msgstr "Aldatu hitza"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:56
+#: gnopi/spvoiceui.c:2010
+msgid "Pitch"
+msgstr "Tonua"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:57
+#: gnopi/spvoiceui.c:2002
+msgid "Rate"
+msgstr "Tasa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:58
+msgid "Remove selected voice from voices list"
+msgstr "Kendu hautatutako ahotsa ahots-zerrendatik"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:59
+msgid "Remove word from dictionary"
+msgstr "Kendu hitza hiztegitik"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:60
+msgid "Replecement"
+msgstr "Ordeztu"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:61
+msgid "Sa_y all navigation keys"
+msgstr "E_san nabigazioko giltza guztiak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:62
+msgid "Say all modi_fiers"
+msgstr "Esan modi_fikatzaile denak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:63
+msgid "Say all modifiers"
+msgstr "Esan modifikatzaile denak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:64
+msgid "Say all navigation keys"
+msgstr "Esan nabigazioko giltza guztiak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:65
+msgid "Say all s_paces"
+msgstr "Esan _zuriune denak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:66
+msgid "Say all spaces"
+msgstr "Esan zuriune denak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:67
+msgid "Say text as character"
+msgstr "Esan testua karaktere gisa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:68
+msgid "Say text as word"
+msgstr "Esan testua hitz gisa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:69
+msgid "Set voices and the voice parameters"
+msgstr "Ezarri ahotsa eta ahotsen parametroak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:70
+msgid "Show all punctuation"
+msgstr "Erakutsi puntuazio guztia"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:71
+msgid "Show most punctuation"
+msgstr "Erakutsi gehiengo puntuazioa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:72
+msgid "Show some punctuation"
+msgstr "Erakutsi puntuazio batzuk"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:73
+msgid "Speech Preferences"
+msgstr "Ahotsaren konfigurazioa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:74
+msgid "Test selected voice"
+msgstr "Probatu hautatutako ahotsa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:75
+msgid "Use dictionary"
+msgstr "Erabili hiztegia"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:76
+msgid "Voice _name:"
+msgstr "Ahotsaren _izena:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:77
+msgid "Voice list"
+msgstr "Ahots-zerrenda"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:78
+msgid "Voices"
+msgstr "Ahotsak"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:79
+#: gnopi/spvoiceui.c:1994
+msgid "Volume"
+msgstr "Bolumena"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:80
+msgid "Word to replace"
+msgstr "Ordezteko hitza"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:81
+msgid "Word/Min"
+msgstr "Hitz/Min"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:82
+msgid "_Dictionary..."
+msgstr "_Hiztegia..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:83
+msgid "_Force All Voices to Selected Driver and Speaker"
+msgstr "_Bideratu ahots guztiak hautatutako kontrolatzailera eta bozgorailua"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:84
+msgid "_Ignore"
+msgstr "_Ezikusi"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:86
+msgid "_Most"
+msgstr "_Gehiengoa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:88
+msgid "_Pitch (Hz)"
+msgstr "_Tonua (Hz)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:89
+msgid "_Pitch:"
+msgstr "_Tonua:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:90
+msgid "_Rate (words/min)"
+msgstr "_Tasa (hitz/min)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:91
+msgid "_Rate:"
+msgstr "_Tasa:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:92
+msgid "_Some"
+msgstr "_Batzuk"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:93
+msgid "_Test voice"
+msgstr "_Probatu ahotsa"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:94
+msgid "_Use dictionary"
+msgstr "_Erabili hiztegia"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:95
+msgid "_Voices..."
+msgstr "_Ahotsak..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:97
+#, no-c-format
+msgid "_Volume (%)"
+msgstr "_Bolumena (%)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:98
+msgid "_Volume:"
+msgstr "_Bolumena:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:99
+msgid "_Word"
+msgstr "_Hitza"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:100
+msgid "words/min"
+msgstr "hitzak/min"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:2
+msgid "<b>_Commands list</b>"
+msgstr "<b>_Komandoen zerrenda</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:3
+msgid "<b>_Layers list</b>"
+msgstr "<b>_Geruzen zerrenda</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:4
+msgid "<b>_User defined list</b>"
+msgstr "<b>_Erabiltzaileak definituriko zerrenda</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:5
+msgid "Add Layer Key"
+msgstr "Gehitu geruza tekla"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:6
+msgid "Add User Defined Key"
+msgstr "Gehitu erabiltzaileak definitutako tekla"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:7
+msgid "Add new item"
+msgstr "Gehitu elementu berria"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:8
+msgid "Alt modifier"
+msgstr "Alt modifikatzailea"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:9
+msgid "Command Mapping"
+msgstr "Komandoen mapaketa"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:10
+msgid "Commands List"
+msgstr "Komandoen zerrenda"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:11
+msgid "Control modifier"
+msgstr "Kontrol modifikatzailea"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:12
+msgid "Key number"
+msgstr "Tekla zenbakia"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:13
+msgid "Keys list"
+msgstr "Teklen zerrenda"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:14
+msgid "Layer command list"
+msgstr "Geruzaren komando zerrenda"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:15
+msgid "Layer number"
+msgstr "Geruza zenbakia"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:16
+msgid "Layers"
+msgstr "Geruzak"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:17
+msgid "List of gnopernicus commands"
+msgstr "Gnopernicus komandoen zerrenda"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:18
+msgid "Modify command for the selected item"
+msgstr "Aldatu komandoa hautatutako elementuarentzako"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:19
+msgid "Remove selected item"
+msgstr "Kendu hautatutako elementua"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:20
+msgid "Shift modifier"
+msgstr "Shift modifikatzailea"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:21
+msgid "User Defined"
+msgstr "Erabiltzaileak definitua"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:22
+msgid "User defined commands list."
+msgstr "Erabiltzaileak definitutako komando zerrenda"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:23
+msgid "_Alt"
+msgstr "_Alt"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:24
+msgid "_Ctrl"
+msgstr "_Ctrl"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:25
+msgid "_Key:"
+msgstr "_Tekla:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:26
+msgid "_Layer:"
+msgstr "_Geruza:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:27
+msgid "_Modifier keys:"
+msgstr "Tekla _modifikatzailea:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:29
+msgid "_Shift"
+msgstr "_Shift"
+
+#: gnopi/gnopi_files/about.glade2.h:1
+msgid "Screen Reader and Magnifier for the GNOME Desktop"
+msgstr "Pantaila irakurlea eta lupa, GNOMErako"
+
+#: gnopi/gnopi_files/about.glade2.h:2
+msgid "translator_credits"
+msgstr "Iñaki Larrañaga  <dooteo@euskalgnu.org>"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:1
+msgid ""
+"<b>Gnopernicus has detected that the assistive technology \n"
+"support is not enabled.</b>\n"
+msgstr ""
+"<b>Gnopernicus-ek elbarrituei zuzenduriko teknologia \n"
+"ez dagoela gaituta atzeman du.</b>\n"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:4
+msgid "About"
+msgstr "Honi buruz"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:759
+msgid "Alert"
+msgstr "Kontuz"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:6
+msgid "Braille device preferences"
+msgstr "Braille gailuaren hobespenak"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:7
+msgid "Braille monitor preferences"
+msgstr "Braille monitorearen hobespena"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:8
+msgid "Close preferences"
+msgstr "Itxi hobespenak"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:9
+msgid "Command mapping"
+msgstr "Komandoen mapaketa"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:10
+msgid "Do you want to enable the assistive technology support?"
+msgstr "Nahi duzu laguntzako teknologi-euskarria gaitzea?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:11
+msgid "Exit from gnopernicus"
+msgstr "Irten gnopernicus-etik"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:12
+msgid "Find on screen"
+msgstr "Bilatu pantailan"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:13
+msgid "Gnopernicus"
+msgstr "Gnopernicus"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:14
+msgid "Gnopernicus usage help"
+msgstr "Gnopernicus erabileraren laguntza"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:15
+msgid "Iconify menu"
+msgstr "Ikonizatu menua"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:16
+msgid "Load default preferences"
+msgstr "Kargatu lehenetsitako hobespenen"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:17
+msgid "Magnifier preferences"
+msgstr "Luparen hobespenak"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:18
+msgid "Mouse preferences"
+msgstr "Saguaren hobespenak"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:19
+msgid "Preferences"
+msgstr "Hobespenak"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:20
+msgid "Preferences..."
+msgstr "Hobespenak..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1032
+msgid "Question"
+msgstr "Galdera"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:22
+msgid "Role presentation"
+msgstr "Jokaeraren aurkezpena"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:23
+msgid "Screen review"
+msgstr "Pantailaren berrikuspena"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:24
+msgid "Speech preferences"
+msgstr "Ahotsaren hobespenak"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:25
+msgid "Startup mode..."
+msgstr "Abiatze modua..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:26
+msgid ""
+"You will have to log out for the change to take effect.\n"
+"Do you want to log out now? "
+msgstr ""
+"Saioa amaitu beharko duzu aldaketek eragina izan dezaten.\n"
+"Gnopernicus-etik orain irtetzea nahi duzu?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:28
+msgid "_1 Speech"
+msgstr "_1 Ahotsa"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:29
+msgid "_1 Startup Mode..."
+msgstr "_1 Abiatze modua..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:30
+msgid "_2 Braille"
+msgstr "_2 Braille"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:31
+msgid "_2 Preferences..."
+msgstr "_2 Hobespenak..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:32
+msgid "_3 Default Preferences..."
+msgstr "_3 Hobespen lehenetsiak...."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:34
+msgid "_4 Minimize"
+msgstr "-4 Ikonotu"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:35
+msgid "_4 Mouse"
+msgstr "_4 Sagua"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:37
+msgid "_5 Help"
+msgstr "_5 Laguntza"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:38
+msgid "_6 About"
+msgstr "_6 Honi buruz"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:39
+msgid "_6 Command Mapping"
+msgstr "_6 Komandoen mapaketa"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:40
+msgid "_7 Presentation"
+msgstr "_7 Aurkezpena"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:41
+msgid "_8 Screen Review"
+msgstr "_8 Pantailaren berrikuspena"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:42
+msgid "_9 Search"
+msgstr "_9 Bilatu"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:43
+msgid "_Don't Enable Support"
+msgstr "_Ez gaitu euskarria"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:44
+msgid "_Enable Support"
+msgstr "_Gaitu euskarria"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:45
+msgid "_Quit"
+msgstr "_Irten"
+
+#: gnopi/gnopiconf.c:411 gnopi/gnopiconf.c:429
+#, c-format
+msgid "Failed to set value: %f."
+msgstr "Huts egin du balioa ezartzerakoan:%f."
+
+#: gnopi/gnopiconf.c:735
+msgid "Failed to set value."
+msgstr "Huts egin du balioa ezartzean."
+
+#: gnopi/gnopiui.c:73 gnopi/gnopiui.c:87 gnopi/gnopiui.c:99
+#: gnopi/gnopiui.c:105
+msgid "We could not load the interface!"
+msgstr "Ezin izan da interfazea kargatu!"
+
+#: gnopi/magui.c:74
+msgid "default"
+msgstr "lehenetsia"
+
+#: gnopi/magui.c:472
+msgid ""
+"Can NOT remove zoomer because multiple zoomers are not supported in this "
+"version."
+msgstr "EZIN du kendu zoom-a, bertsio honek ez baititu zoom anitzak onartzen."
+
+#: gnopi/magui.c:673
+msgid "Zoomers"
+msgstr "Zoom-ak"
+
+#: gnopi/magui.c:1588
+#, c-format
+msgid "Zoomer Options (%s)"
+msgstr "Zoom-aren aukerak (%s)"
+
+#: gnopi/spconf.c:335
+msgid "Failed to set dictionary changes."
+msgstr "Huts egin du hiztegiko aldaketak ezartzean."
+
+#: gnopi/spconf.c:343
+msgid "Failed to set removed voice value."
+msgstr "Huts egin du kendutako ahotsaren balioa ezartzean."
+
+#: gnopi/spconf.c:353
+#, c-format
+msgid "Failed to set count: %s."
+msgstr "Huts egin du zenbatzailea ezartzean: %s."
+
+#: gnopi/spconf.c:362
+#, c-format
+msgid "Failed to set Punctuation: %s."
+msgstr "Huts egin du puntuazioa ezartzean: %s."
+
+#: gnopi/spconf.c:371
+#, c-format
+msgid "Failed to set text echo value: %s."
+msgstr "Huts egin du testuaren ohiartzunaren balioa ezartzean: %s."
+
+#: gnopi/spconf.c:380
+#, c-format
+msgid "Failed to set modifiers value: %s."
+msgstr "Huts egin du modifikatzaileen balioa ezartzean: %s."
+
+#: gnopi/spconf.c:389
+#, c-format
+msgid "Failed to set cursors value: %s."
+msgstr "Huts egin du kurtsoreen balioa ezartzean: %s."
+
+#: gnopi/spconf.c:398
+#, c-format
+msgid "Failed to set spaces value: %s."
+msgstr "Huts egin du zuriuneen balioa ezartzean: %s."
+
+#: gnopi/spconf.c:407
+#, c-format
+msgid "Failed to set dictionary value: %s."
+msgstr "Huts egin du hiztegiaren balioa ezartzean:. %s."
+
+#: gnopi/spconf.c:416
+#, c-format
+msgid "Failed to set testable voice %s."
+msgstr "Huts egin du probako ahotsa ezartzean %s."
+
+#: gnopi/spconf.c:608
+#, c-format
+msgid "%s no name"
+msgstr "%s izenik gabea"
+
+#: gnopi/spdictui.c:79
+msgid "Invalid word or replacer!"
+msgstr "Hitz edo ordezkatzaile baliogabea!"
+
+#: gnopi/spdictui.c:85
+msgid "Word exists in dictionary!"
+msgstr "Hitza jadanik badago hiztegian."
+
+#: gnopi/spdictui.c:271 gnopi/spdictui.c:324
+msgid "No selected word to modify!"
+msgstr "Ez da aldatzeko hitzik hautatu!"
+
+#: gnopi/spdictui.c:298
+msgid "No selected word to remove!"
+msgstr "Ez da kentzeko hitzik hautatu!"
+
+#: gnopi/spdictui.c:447
+msgid "Word"
+msgstr "Hitza"
+
+#: gnopi/spdictui.c:456
+msgid "Replacer"
+msgstr "Ordezkatzailea"
+
+#: gnopi/spvoiceui.c:32
+msgid "<all drivers>"
+msgstr "<kontrolatzaile guztiak>"
+
+#: gnopi/spvoiceui.c:33
+msgid "<all voices>"
+msgstr "<ahots guztiak>"
+
+#: gnopi/spvoiceui.c:277
+msgid "Invalid voice!"
+msgstr "Ahots baliogabea!"
+
+#: gnopi/spvoiceui.c:1165
+msgid "Invalid driver or voice!"
+msgstr "Kontrolatzaile edo ahots baliogabea!"
+
+#: gnopi/spvoiceui.c:1595
+msgid "No selected voice to modify!"
+msgstr "Ez da aldatzeko ahotsik hautatu!"
+
+#: gnopi/spvoiceui.c:1654
+msgid "No selected voice to remove!"
+msgstr "Ez da kentzeko ahotsik hautatu!"
+
+#: gnopi/spvoiceui.c:1727
+msgid "No selected voice to test!"
+msgstr "Ez da probatzeko ahotsik hautatu!"
+
+#: gnopi/spvoiceui.c:1968
+msgid "Voice"
+msgstr "Ahotsa"
+
+#: gnopi/spvoiceui.c:1977
+msgid "Driver"
+msgstr "Kontrolatzailea"
+
+#: gnopi/spvoiceui.c:1986
+msgid "Speaker"
+msgstr "Bozgorailua"
+
+#: speech/libsrs/srs-speech.c:289
+msgid "Alpha"
+msgstr "Alfa"
+
+#: speech/libsrs/srs-speech.c:290
+msgid "Bravo"
+msgstr "Bravo"
+
+#: speech/libsrs/srs-speech.c:291
+msgid "Charlie"
+msgstr "Charlie"
+
+#: speech/libsrs/srs-speech.c:292
+msgid "Delta"
+msgstr "Delta"
+
+#: speech/libsrs/srs-speech.c:293
+msgid "Echo"
+msgstr "Oihartzuna"
+
+#: speech/libsrs/srs-speech.c:294
+msgid "Foxtrot"
+msgstr "Foxtrot"
+
+#: speech/libsrs/srs-speech.c:295
+msgid "Golf"
+msgstr "Golfa"
+
+#: speech/libsrs/srs-speech.c:296
+msgid "Hotel"
+msgstr "Hotela"
+
+#: speech/libsrs/srs-speech.c:297
+msgid "India"
+msgstr "India"
+
+#: speech/libsrs/srs-speech.c:298
+msgid "Juliet"
+msgstr "Juliet"
+
+#: speech/libsrs/srs-speech.c:299
+msgid "Kilo"
+msgstr "Kilo"
+
+#: speech/libsrs/srs-speech.c:300
+msgid "Lima"
+msgstr "Lima"
+
+#: speech/libsrs/srs-speech.c:301
+msgid "Mike"
+msgstr "Mike"
+
+#: speech/libsrs/srs-speech.c:302
+msgid "November"
+msgstr "November"
+
+#: speech/libsrs/srs-speech.c:303
+msgid "Oscar"
+msgstr "Oscar"
+
+#: speech/libsrs/srs-speech.c:304
+msgid "Papa"
+msgstr "Papa"
+
+#: speech/libsrs/srs-speech.c:305
+msgid "Quebec"
+msgstr "Quebec"
+
+#: speech/libsrs/srs-speech.c:306
+msgid "Romeo"
+msgstr "Romeo"
+
+#: speech/libsrs/srs-speech.c:307
+msgid "Sierra"
+msgstr "Sierra"
+
+#: speech/libsrs/srs-speech.c:308
+msgid "Tango"
+msgstr "Tango"
+
+#: speech/libsrs/srs-speech.c:309
+msgid "Uniform"
+msgstr "Uniform"
+
+#: speech/libsrs/srs-speech.c:310
+msgid "Victor"
+msgstr "Victor"
+
+#: speech/libsrs/srs-speech.c:311
+msgid "Whiskey"
+msgstr "Whiskey"
+
+#: speech/libsrs/srs-speech.c:312
+msgid "Xray"
+msgstr "Xray"
+
+#: speech/libsrs/srs-speech.c:313
+msgid "Yankee"
+msgstr "Yankee"
+
+#: speech/libsrs/srs-speech.c:314
+msgid "Zulu"
+msgstr "Zulu"
+
+#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1759
+msgid "space"
+msgstr "zuriunea"
+
+#: speech/libsrs/srs-speech.c:316
+msgid "tab"
+msgstr "tabulatzailea"
+
+#: speech/libsrs/srs-speech.c:317
+msgid "new line"
+msgstr "lerro berria"
+
+#: speech/libsrs/srs-speech.c:318
+msgid "dash"
+msgstr "marra"
+
+#: srconf/libsrconf/libsrconf.c:454
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr "Huts egin du konfigurazioaren iturburura sarbidetzeran: %s\n"
+
+#: srconf/libsrconf/libsrconf.c:467
+#, c-format
+msgid "Failed to add notify: %s"
+msgstr "Huts egin du oharra gehitzerakoan: %s"
+
+#: srconf/libsrconf/libsrconf.c:521
+msgid "Failed to remove directory."
+msgstr "Huts egin du direktorioa ezabatzean."
+
+#: srconf/libsrconf/libsrconf.c:865
+msgid "Failed to set configdata."
+msgstr "Huts egin du configdata ezartzean."
+
+#: srconf/libsrconf/libsrconf.c:939
+msgid "Failed set data."
+msgstr "Huts egin du balioa ezartzean."
+
+#: srcore/default.xml.in.h:1 srcore/verbose.xml.in.h:1
+msgid "( )"
+msgstr "( )"
+
+#: srcore/default.xml.in.h:2 srcore/verbose.xml.in.h:2
+msgid "(C)"
+msgstr "(C)"
+
+#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
+msgid "(E)"
+msgstr "(E)"
+
+#: srcore/default.xml.in.h:4 srcore/verbose.xml.in.h:4
+msgid "(P)"
+msgstr "(P)"
+
+#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
+msgid "(U)"
+msgstr "(U)"
+
+#: srcore/default.xml.in.h:6 srcore/verbose.xml.in.h:6
+msgid "(c)"
+msgstr "(c)"
+
+#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
+msgid "(m)"
+msgstr "(m)"
+
+#: srcore/default.xml.in.h:8 srcore/verbose.xml.in.h:8
+msgid "(n)"
+msgstr "(n)"
+
+#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
+msgid "Give maximum speech and braille output."
+msgstr "Eman gehiengo irteera ahotsari eta braille-ari"
+
+#: srcore/default.xml.in.h:11 srcore/srctrl.c:2258 srcore/srctrl.c:2409
+#: srcore/verbose.xml.in.h:11
+msgid "item"
+msgid_plural "items"
+msgstr[0] "elementu"
+msgstr[1] "elementu"
+
+#: srcore/default.xml.in.h:12 srcore/verbose.xml.in.h:12
+msgid "items"
+msgstr "elementuak"
+
+#: srcore/srctrl.c:1012
+msgid "no parent"
+msgstr "gurasorik ez"
+
+#: srcore/srctrl.c:1036
+msgid "no children"
+msgstr "semerik ez"
+
+#: srcore/srctrl.c:1069
+msgid "no next"
+msgstr "hurrengorik ez"
+
+#: srcore/srctrl.c:1185
+msgid "Cannot find next text!"
+msgstr "Ezin da hurrengo testua aurkitu!"
+
+#: srcore/srctrl.c:1196
+msgid "Cannot find next image!"
+msgstr "Ezin da hurrengo irudia aurkitu!"
+
+#: srcore/srctrl.c:1207
+msgid "Cannot find next attributes!"
+msgstr "Ezin dira hurrengo atributuak aurkitu!"
+
+#: srcore/srctrl.c:1296
+msgid "no previous"
+msgstr "aurrekorik ez"
+
+#: srcore/srctrl.c:1340
+msgid "added watch for current object"
+msgstr "uneko objektuen zainketa gehituta"
+
+#: srcore/srctrl.c:1341
+msgid "cannot add watch for current object"
+msgstr "ezin da uneko objektuen zainketa gehitu"
+
+#: srcore/srctrl.c:1366
+msgid "no caret"
+msgstr "kurtsore-bertikalik ez"
+
+#: srcore/srctrl.c:1387
+msgid "already on first"
+msgstr "lehenengoan badago"
+
+#: srcore/srctrl.c:1408
+msgid "already on last"
+msgstr "azkenengoan badago"
+
+#: srcore/srctrl.c:1421
+msgid "now navigating in application"
+msgstr "orain aplikazioan nabigatzen"
+
+#: srcore/srctrl.c:1425
+msgid "now navigating in desktop"
+msgstr "orain mahaigainean nabigatzen"
+
+#: srcore/srctrl.c:1429
+msgid "now navigating in window"
+msgstr "orain leihoan nabigatzen"
+
+#: srcore/srctrl.c:1522
+msgid "no focus"
+msgstr "fokurik ez"
+
+#: srcore/srctrl.c:1562
+msgid "no title"
+msgstr "titulurik ez"
+
+#: srcore/srctrl.c:1583
+msgid "no menu bar"
+msgstr "menu-barrarik ez"
+
+#: srcore/srctrl.c:1606
+msgid "no tool bar"
+msgstr "tresna-barrarik ez"
+
+#: srcore/srctrl.c:1630
+msgid "no status bar"
+msgstr "egoera-barrarik ez"
+
+#: srcore/srctrl.c:2214
+msgid "on"
+msgstr "gainean"
+
+#: srcore/srctrl.c:2236 srcore/srctrl.c:2387
+msgid "from a"
+msgstr "hemendik"
+
+#: srcore/srctrl.c:2238 srcore/srctrl.c:2394
+msgid "with"
+msgstr "honekin"
+
+#: srcore/srctrl.c:2269
+msgid "in a"
+msgstr "batean"
+
+#: srcore/srctrl.c:2272
+msgid "named "
+msgstr "izendatua "
+
+#: srcore/srctrl.c:2274
+msgid "with no name"
+msgstr "izenik gabea"
+
+#: srcore/srctrl.c:2288
+msgid "of application"
+msgstr "aplikazioarena"
+
+#: srcore/srctrl.c:2375
+msgid "on a"
+msgstr "honetan"
+
+#: srcore/srctrl.c:2614
+msgid "first line"
+msgstr "lehen lerroa"
+
+#: srcore/srctrl.c:2621
+msgid "last line"
+msgstr "azken lerroa"
+
+#: srcore/srctrl.c:2629 srcore/srctrl.c:2631
+msgid "[first line]"
+msgstr "[lehen lerroa]"
+
+#: srcore/srctrl.c:2636 srcore/srctrl.c:2638
+msgid "[last line]"
+msgstr "[azken lerroa]"
+
+#: srcore/srctrl.c:2654
+msgid "empty line"
+msgstr "lerro hutsa"
+
+#: srcore/srctrl.c:2661
+#, c-format
+msgid "%d empty line"
+msgid_plural "%d empty lines"
+msgstr[0] "lerro huts %d"
+msgstr[1] "%d lerro huts"
+
+#: srcore/srctrl.c:2682 srcore/srctrl.c:2684
+msgid "[empty line]"
+msgstr "[lerro hutsa]"
+
+#: srcore/srctrl.c:2689
+#, c-format
+msgid "[%d empty line]"
+msgid_plural "[%d empty lines]"
+msgstr[0] "[lerro huts %d]"
+msgstr[1] "[%d lerro huts]"
+
+#: srcore/srctrl.c:2771 srcore/srctrl.c:2772 srcore/srctrl.c:2780
+#: srcore/srctrl.c:2935 srcore/srctrl.c:2936
+msgid "cannot make flat review for current window"
+msgstr "Ezin da uneko lehioaren berrikuspen zapala egin"
+
+#: srcore/srctrl.c:3007
+msgid "flat review mode"
+msgstr "berrikuspen zapala modua"
+
+#: srcore/srctrl.c:3023
+msgid "focus tracking mode"
+msgstr "fokuaren jarraipena modua"
+
+#: srcore/srctrl.c:3562
+#, c-format
+msgid "\"%s\" entry has invalid value at position %d."
+msgstr "\"%s\" sarrerak balio baliogabea du %d posizioan."
+
+#: srcore/srctrl.c:3583
+#, c-format
+msgid "key \"%s\" has an invalid value at position %d."
+msgstr "\"%s\" teklak balio baliogabea du %d posizioan."
+
+#: srcore/srctrl.c:3619
+msgid "Can not get key pad commands mapping from gconf."
+msgstr "Ezin da gconf-etik pad-eko teklen komando-maparik lortu."
+
+#: srcore/srctrl.c:3630
+msgid "Can not get braille display commands mapping from gconf."
+msgstr "Ezin da gconf-etik braille pantailako komando-maparik lortu."
+
+#: srcore/srctrl.c:3641
+msgid "Can not get user defined commands mapping from gconf."
+msgstr "Ezin da erabiltzaileak definitutako komanod-maparik lortu."
+
+#: srcore/srctrl.c:3745
+msgid "no role available"
+msgstr "jokaera ez dago erabilgarri"
+
+#: srcore/srmain.c:68 srcore/srmain.c:71
+msgid "No focus"
+msgstr "Fokurik ez"
+
+#: srcore/srmain.c:74
+msgid "No accessible object is focused"
+msgstr "Ez dago objektu erabilterrazik enfokaturik"
+
+#: srcore/srmain.c:434
+msgid "unknown location"
+msgstr "kokapen ezezaguna"
+
+#: srcore/srmain.c:471
+msgid "no details"
+msgstr "xehetasunik ez"
+
+#: srcore/srmain.c:511
+msgid "layer"
+msgstr "geruza"
+
+#: srcore/srmain.c:532
+msgid "back to layer"
+msgstr "itzuli geruzara"
+
+#: srcore/srmain.c:898
+msgid "cursor on"
+msgstr "kurtsorea aktibatua"
+
+#: srcore/srmain.c:898
+msgid "cursor off"
+msgstr "kurtsorea desaktibatua"
+
+#: srcore/srmain.c:916
+msgid "current cursor is"
+msgstr "uneko kurtsorea hemen"
+
+#: srcore/srmain.c:934
+msgid "cursor size"
+msgstr "kurtsore-tamaina"
+
+#: srcore/srmain.c:951
+msgid "cursor magnification on"
+msgstr "kurtsore-lupa aktibatua"
+
+#: srcore/srmain.c:952
+msgid "cursor magnification off"
+msgstr "kurtsore-lupa desaktibatua"
+
+#: srcore/srmain.c:970
+msgid "cursor color"
+msgstr "kurtsore-kolorea"
+
+#: srcore/srmain.c:987
+msgid "crosshair on"
+msgstr "gurutzea aktibatua"
+
+#: srcore/srmain.c:987
+msgid "crosshair off"
+msgstr "gurutzea desaktibatua"
+
+#: srcore/srmain.c:1004
+msgid "crosshair clip on"
+msgstr "gurutzearen klipa aktibatua"
+
+#: srcore/srmain.c:1005
+msgid "crosshair clip off"
+msgstr "gurutzearen klipa desaktibatua"
+
+#: srcore/srmain.c:1023
+msgid "crosshair size"
+msgstr "gurutze-tamaina"
+
+#: srcore/srmain.c:1041
+msgid "crosshair color"
+msgstr "gurutze-kolorea"
+
+#: srcore/srmain.c:1059
+msgid "zoomer placement left"
+msgstr "Zooma ezkerrean kokatu"
+
+#: srcore/srmain.c:1077
+msgid "zoomer placement top"
+msgstr "Zooma goian kokatu"
+
+#: srcore/srmain.c:1095
+msgid "zoomer placement width"
+msgstr "Zoom kokapenaren zabalera"
+
+#: srcore/srmain.c:1113
+msgid "zoomer placement height"
+msgstr "Zoom kokapenaren altuera"
+
+#: srcore/srmain.c:1143
+msgid "magnifier target"
+msgstr "luparen helburua"
+
+#: srcore/srmain.c:1161
+msgid "magnifier source"
+msgstr "luparen jatorria"
+
+#: srcore/srmain.c:1179
+msgid "zoom factor x"
+msgstr "zoomaren x faktorea"
+
+#: srcore/srmain.c:1197
+msgid "zoom factor y"
+msgstr "zoomaren y faktorea"
+
+#: srcore/srmain.c:1214
+msgid "zoom factor locked"
+msgstr "zoomaren faktorea blokeatua"
+
+#: srcore/srmain.c:1215
+msgid "zoom factor unlocked"
+msgstr "zoomaren faktorea desblokeatua"
+
+#: srcore/srmain.c:1232
+msgid "invert on"
+msgstr "alderanzketa aktibatua"
+
+#: srcore/srmain.c:1232
+msgid "invert off"
+msgstr "alderanzketa desaktibatua"
+
+#: srcore/srmain.c:1250
+msgid "magnifier smoothing type"
+msgstr "luparen leuntasun mota"
+
+#: srcore/srmain.c:1273
+msgid "mouse tracking mode"
+msgstr "saguaren jarraipen mota"
+
+#: srcore/srmain.c:1295
+msgid "panning on"
+msgstr "panoramika aktibatu"
+
+#: srcore/srmain.c:1295
+msgid "panning off"
+msgstr "panoramika desaktibatu"
+
+#: srcore/srmain.c:1667
+msgid "alt"
+msgstr "alt"
+
+#: srcore/srmain.c:1672
+msgid "control"
+msgstr "kontrol"
+
+#: srcore/srmain.c:1677
+msgid "shift"
+msgstr "shift"
+
+#: srcore/srmain.c:1682
+msgid "caps lock"
+msgstr "Blok.maius."
+
+#: srcore/srmain.c:1686
+msgid "num lock"
+msgstr "Blok.zenb."
+
+#: srcore/srmain.c:1694 srcore/srmain.c:1738
+msgid "right"
+msgstr "eskuina"
+
+#: srcore/srmain.c:1696 srcore/srmain.c:1740
+msgid "left"
+msgstr "ezkerra"
+
+#: srcore/srmain.c:1730
+msgid "home"
+msgstr "hasiera"
+
+#: srcore/srmain.c:1732
+msgid "end"
+msgstr "amaiera"
+
+#: srcore/srmain.c:1734
+msgid "page up"
+msgstr "orri gora"
+
+#: srcore/srmain.c:1736
+msgid "page down"
+msgstr "orri behera"
+
+#: srcore/srmain.c:1742
+msgid "down"
+msgstr "behera"
+
+#: srcore/srmain.c:1744
+msgid "up"
+msgstr "gora"
+
+#: srcore/srmain.c:1746
+msgid "backspace"
+msgstr "atzera-tekla"
+
+#: srcore/srmain.c:1748
+msgid "delete"
+msgstr "ezabatu"
+
+#: srcore/srmain.c:1750
+msgid "escape"
+msgstr "ihes"
+
+#: srcore/srmain.c:2269
+msgid "Welcome to Gnopernicus"
+msgstr "Ongi etorri Gnopernicus-era"
+
+#: srcore/srmain.c:2373
+msgid "braille device can not be initialized"
+msgstr "braille gailua ezin da hasieratu"
+
+#: srcore/srmain.c:2385
+msgid "Gnopernicus is now exiting. Have a nice day!"
+msgstr "Gnopernicus irtetzen ari da. Egun politta izan!"
+
+#: srcore/srmain.c:2662
+msgid "srcore"
+msgstr "srcore"
+
+#: srcore/srpres.c:757
+msgid "UNK"
+msgstr "EZZ"
+
+#: srcore/srpres.c:757
+msgid "UNKNOWN"
+msgstr "EZEZAGUNA"
+
+#: srcore/srpres.c:757
+msgid "Unknown"
+msgstr "Ezezaguna"
+
+#: srcore/srpres.c:758
+msgid "???"
+msgstr "???"
+
+#: srcore/srpres.c:758
+msgid "INVALID"
+msgstr "BALIOGABEA"
+
+#: srcore/srpres.c:758
+msgid "Invalid"
+msgstr "Baliogabea"
+
+#: srcore/srpres.c:759
+msgid "ALR"
+msgstr "ABS"
+
+#: srcore/srpres.c:759
+msgid "ALERT"
+msgstr "ABISUA"
+
+#: srcore/srpres.c:760
+msgid "CNV"
+msgstr "OHL"
+
+#: srcore/srpres.c:760
+msgid "CANVAS"
+msgstr "OIHALA"
+
+#: srcore/srpres.c:760
+msgid "Canvas"
+msgstr "Ohiala"
+
+#: srcore/srpres.c:761
+msgid "CHK"
+msgstr "KLK"
+
+#: srcore/srpres.c:761
+msgid "CHECK_BOX"
+msgstr "KONTROL-_LAUKIA"
+
+#: srcore/srpres.c:761
+msgid "Check box"
+msgstr "Kontrol-laukia"
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MIT"
+msgstr "MEL"
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MENU ITEM"
+msgstr "MENUKO ELEMENTUA"
+
+#: srcore/srpres.c:762
+msgid "Check Menu item"
+msgstr "Menuko elementu egiaztakorra"
+
+#: srcore/srpres.c:763
+msgid "CCH"
+msgstr "MEE"
+
+#: srcore/srpres.c:763
+msgid "COLOR CHOOSER"
+msgstr "KOLORE-HAUTATZAILEA"
+
+#: srcore/srpres.c:763
+msgid "Color chooser"
+msgstr "Kolore-hautatzailea"
+
+#: srcore/srpres.c:764
+msgid "CHD"
+msgstr "ZGB"
+
+#: srcore/srpres.c:764
+msgid "COLUMN HEADER"
+msgstr "ZUTABE-GOIBURUA"
+
+#: srcore/srpres.c:764
+msgid "Column header"
+msgstr "Zutabe-goiburua"
+
+#: srcore/srpres.c:765
+msgid "CBO"
+msgstr "KBK"
+
+#: srcore/srpres.c:765
+msgid "COMBO BOX"
+msgstr "KONBINAZIO-KOADROA"
+
+#: srcore/srpres.c:765
+msgid "Combo box"
+msgstr "Konbinazio-koadroa"
+
+#: srcore/srpres.c:766
+msgid "DIC"
+msgstr "MIK"
+
+#: srcore/srpres.c:766
+msgid "DESKTOP ICON"
+msgstr "MAHAIGAINEKO IKONOA"
+
+#: srcore/srpres.c:766
+msgid "Desktop icon"
+msgstr "Mahaigaineko ikonoa"
+
+#: srcore/srpres.c:767
+msgid "DFR"
+msgstr "MMK"
+
+#: srcore/srpres.c:767
+msgid "DESKTOP FRAME"
+msgstr "MAHAIGAINEKO MARKOA"
+
+#: srcore/srpres.c:767
+msgid "Desktop frame"
+msgstr "Mahaigaineko markoa"
+
+#: srcore/srpres.c:768
+msgid "DLG"
+msgstr "EKD"
+
+#: srcore/srpres.c:768
+msgid "DIALOG"
+msgstr "ELKARRIZKETA"
+
+#: srcore/srpres.c:768
+msgid "Dialog"
+msgstr "Elkarrizketa"
+
+#: srcore/srpres.c:769
+msgid "DIP"
+msgstr "DPN"
+
+#: srcore/srpres.c:769
+msgid "DIRECTORY PANE"
+msgstr "DIREKTORIO-PANELA"
+
+#: srcore/srpres.c:769
+msgid "Directory pane"
+msgstr "Direktorio-panela"
+
+#: srcore/srpres.c:770
+msgid "FCH"
+msgstr "FHT"
+
+#: srcore/srpres.c:770
+msgid "FILE CHOOSER"
+msgstr "FITXATEGI-HAUTATZAILEA"
+
+#: srcore/srpres.c:770
+msgid "File chooser"
+msgstr "Fitxategi-hautatzailea"
+
+#: srcore/srpres.c:771
+msgid "FLR"
+msgstr "BTG"
+
+#: srcore/srpres.c:771
+msgid "FILLER"
+msgstr "BETEGARRIA"
+
+#: srcore/srpres.c:771
+msgid "Filler"
+msgstr "Betegarria"
+
+#: srcore/srpres.c:772
+msgid "FRM"
+msgstr "MRK"
+
+#: srcore/srpres.c:772
+msgid "FRAME"
+msgstr "MARKOA"
+
+#: srcore/srpres.c:772
+msgid "Frame"
+msgstr "Markoa"
+
+#: srcore/srpres.c:773
+msgid "GPN"
+msgstr "PGD"
+
+#: srcore/srpres.c:773
+msgid "GLASS PANE"
+msgstr "PANEL GARDENA"
+
+#: srcore/srpres.c:773
+msgid "Glass pane"
+msgstr "Panel gardena"
+
+#: srcore/srpres.c:774
+msgid "HTM"
+msgstr "HTM"
+
+#: srcore/srpres.c:774
+msgid "HTML CONTAINER"
+msgstr "HTML EDUKIONTZIA"
+
+#: srcore/srpres.c:774
+msgid "H T M L container"
+msgstr "H T M L edukiontzia"
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LNK"
+msgstr "ETK"
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LINK"
+msgstr "ESTEKA"
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "link"
+msgstr "esteka"
+
+#: srcore/srpres.c:776
+msgid "ICO"
+msgstr "IKO"
+
+#: srcore/srpres.c:776
+msgid "ICON"
+msgstr "IKONOA"
+
+#: srcore/srpres.c:776
+msgid "Icon"
+msgstr "Ikonoa"
+
+#: srcore/srpres.c:777
+msgid "IFR"
+msgstr "BMK"
+
+#: srcore/srpres.c:777
+msgid "INTERNAL FRAME"
+msgstr "BARNEKO MARKOA"
+
+#: srcore/srpres.c:777
+msgid "Internal frame"
+msgstr "Barneko markoa"
+
+#: srcore/srpres.c:778
+msgid "LBL"
+msgstr "ETK"
+
+#: srcore/srpres.c:778
+msgid "LABEL"
+msgstr "ETIKETA"
+
+#: srcore/srpres.c:778
+msgid "Label"
+msgstr "Etiketa"
+
+#: srcore/srpres.c:779
+msgid "LPN"
+msgstr "GPN"
+
+#: srcore/srpres.c:779
+msgid "LAYERED PANE"
+msgstr "GERUZADUN PANELA"
+
+#: srcore/srpres.c:779
+msgid "Layered pane"
+msgstr "Geruzadun panela"
+
+#: srcore/srpres.c:781
+msgid "LST"
+msgstr "ZRD"
+
+#: srcore/srpres.c:781
+msgid "LIST"
+msgstr "ZERRENDA"
+
+#: srcore/srpres.c:781
+msgid "List"
+msgstr "Zerrenda"
+
+#: srcore/srpres.c:782
+msgid "LIT"
+msgstr "ZEL"
+
+#: srcore/srpres.c:782
+msgid "LIST ITEM"
+msgstr "ZERRENDAKO ELEMENTUA"
+
+#: srcore/srpres.c:782
+msgid "List item"
+msgstr "Zerrendako elementua"
+
+#: srcore/srpres.c:783
+msgid "MNU"
+msgstr "MNA"
+
+#: srcore/srpres.c:783
+msgid "MENU"
+msgstr "MENUA"
+
+#: srcore/srpres.c:783
+msgid "Menu"
+msgstr "Menua"
+
+#: srcore/srpres.c:784
+msgid "MBR"
+msgstr "MBR"
+
+#: srcore/srpres.c:784
+msgid "MENU BAR"
+msgstr "MENU-BARRA"
+
+#: srcore/srpres.c:784
+msgid "Menu bar"
+msgstr "Menu-barra"
+
+#: srcore/srpres.c:785
+msgid "Menu item"
+msgstr "Menuko elementua"
+
+#: srcore/srpres.c:786
+msgid "OPN"
+msgstr "OPN"
+
+#: srcore/srpres.c:786
+msgid "OPTION PANE"
+msgstr "PANELAREN AUKERAK"
+
+#: srcore/srpres.c:786
+msgid "Option pane"
+msgstr "Panelaren aukerak"
+
+#: srcore/srpres.c:787
+msgid "PGT"
+msgstr "FTX"
+
+#: srcore/srpres.c:787
+msgid "PAGE TAB"
+msgstr "FITXA"
+
+#: srcore/srpres.c:787
+msgid "Page tab"
+msgstr "Fitxa"
+
+#: srcore/srpres.c:788
+msgid "PTL"
+msgstr "FTD"
+
+#: srcore/srpres.c:788
+msgid "PAGE TAB LIST"
+msgstr "FITXA-TALDEA"
+
+#: srcore/srpres.c:788
+msgid "Page tab list"
+msgstr "Fitxa-taldea"
+
+#: srcore/srpres.c:789
+msgid "PNL"
+msgstr "PNL"
+
+#: srcore/srpres.c:789
+msgid "PANEL"
+msgstr "PANELA"
+
+#: srcore/srpres.c:789
+msgid "Panel"
+msgstr "Panela"
+
+#: srcore/srpres.c:790
+msgid "PWD"
+msgstr "PHT"
+
+#: srcore/srpres.c:790
+msgid "PASSWORD TEXT"
+msgstr "PASAHITZAREN TESTUA"
+
+#: srcore/srpres.c:790
+msgid "Password text"
+msgstr "Pasahitzaren testua"
+
+#: srcore/srpres.c:791
+msgid "PMN"
+msgstr "LMN"
+
+#: srcore/srpres.c:791
+msgid "POPUP MENU"
+msgstr "LASTER-MENUA"
+
+#: srcore/srpres.c:791
+msgid "Popup menu"
+msgstr "Laster-menua"
+
+#: srcore/srpres.c:792
+msgid "PRG"
+msgstr "ARB"
+
+#: srcore/srpres.c:792
+msgid "PROGRESS BAR"
+msgstr "AURRERAPEN-BARRA"
+
+#: srcore/srpres.c:792
+msgid "Progress bar"
+msgstr "Aurrerapen-barra"
+
+#: srcore/srpres.c:793
+msgid "PBT"
+msgstr "SBT"
+
+#: srcore/srpres.c:793
+msgid "PUSH BUTTON"
+msgstr "SAKATZE-BOTOIA"
+
+#: srcore/srpres.c:793
+msgid "Push button"
+msgstr "Sakatze-botoia"
+
+#: srcore/srpres.c:794
+msgid "RAD"
+msgstr "IRB"
+
+#: srcore/srpres.c:794
+msgid "RADIO BUTTON"
+msgstr "IRRATI-BOTOIA"
+
+#: srcore/srpres.c:794
+msgid "Radio button"
+msgstr "Irrati-botoia"
+
+#: srcore/srpres.c:795
+msgid "Radio Menu item"
+msgstr "IRRATIAREN MENU-ELEMENTUA"
+
+#: srcore/srpres.c:796
+msgid "RPN"
+msgstr "ERP"
+
+#: srcore/srpres.c:796
+msgid "ROOT PANE"
+msgstr "ERRO-PANELA"
+
+#: srcore/srpres.c:796
+msgid "Root pane"
+msgstr "Erro-panela"
+
+#: srcore/srpres.c:797
+msgid "RHD"
+msgstr "EDG"
+
+#: srcore/srpres.c:797
+msgid "ROW HEADER"
+msgstr "ERRENKADA-GOIBURUA"
+
+#: srcore/srpres.c:797
+msgid "Row header"
+msgstr "Errenkada-goiburua"
+
+#: srcore/srpres.c:798
+msgid "SCR"
+msgstr "KRB"
+
+#: srcore/srpres.c:798
+msgid "SCROLL BAR"
+msgstr "KORRITZE-BARRA"
+
+#: srcore/srpres.c:798
+msgid "Scroll bar"
+msgstr "Korritze-barra"
+
+#: srcore/srpres.c:799 srcore/srpres.c:827
+msgid "SPN"
+msgstr "KRP"
+
+#: srcore/srpres.c:799
+msgid "SCROLL PANE"
+msgstr "KORRITZE-PANELA"
+
+#: srcore/srpres.c:799
+msgid "Scroll pane"
+msgstr "Korritze-panela"
+
+#: srcore/srpres.c:800
+msgid "SEP"
+msgstr "BRZ"
+
+#: srcore/srpres.c:800
+msgid "SEPARATOR"
+msgstr "BEREIZLEA"
+
+#: srcore/srpres.c:800
+msgid "Separator"
+msgstr "Bereizlea"
+
+#: srcore/srpres.c:801
+msgid "SLD"
+msgstr "GRD"
+
+#: srcore/srpres.c:801
+msgid "SLIDER"
+msgstr "GRADUATZAILEA"
+
+#: srcore/srpres.c:801
+msgid "Slider"
+msgstr "Graduatzailea"
+
+#: srcore/srpres.c:802
+msgid "SPP"
+msgstr "ZTP"
+
+#: srcore/srpres.c:802
+msgid "SPLIT PANE"
+msgstr "ZATITZE-PANELA"
+
+#: srcore/srpres.c:802
+msgid "Split pane"
+msgstr "Zatitze-panela"
+
+#: srcore/srpres.c:803
+msgid "STA"
+msgstr "EGB"
+
+#: srcore/srpres.c:803
+msgid "STATUS BAR"
+msgstr "EGOERA-BARRA"
+
+#: srcore/srpres.c:803
+msgid "Status bar"
+msgstr "Egoera-barra"
+
+#: srcore/srpres.c:804
+msgid "TAB"
+msgstr "TAL"
+
+#: srcore/srpres.c:804
+msgid "TABLE"
+msgstr "TAULA"
+
+#: srcore/srpres.c:804
+msgid "Table"
+msgstr "Taula"
+
+#: srcore/srpres.c:805
+msgid "CEL"
+msgstr "GEL"
+
+#: srcore/srpres.c:805
+msgid "TABLE CELL"
+msgstr "TAULAKO GELAXKA"
+
+#: srcore/srpres.c:805
+msgid "Table cell"
+msgstr "Taulako gelaxka"
+
+#: srcore/srpres.c:806 srcore/srpres.c:831
+msgid "TCH"
+msgstr "TZG"
+
+#: srcore/srpres.c:806
+msgid "TABLE COLUMN HEADER"
+msgstr "TAULAKO ZUTABE-GOIBURUA"
+
+#: srcore/srpres.c:806
+msgid "Table column header"
+msgstr "Taulako zutabe-goiburua"
+
+#: srcore/srpres.c:807
+msgid "TRH"
+msgstr "TEG"
+
+#: srcore/srpres.c:807
+msgid "TABLE ROW HEADER"
+msgstr "TAULAKO ERRENKADA-GOIBURUA"
+
+#: srcore/srpres.c:807
+msgid "Table row header"
+msgstr "Taulako errendaka-goiburua"
+
+#: srcore/srpres.c:808 srcore/srpres.c:809
+msgid "TXT"
+msgstr "TST"
+
+#: srcore/srpres.c:808
+msgid "MULTI LINE TEXT"
+msgstr "LERRO ANITZEKO TESTUA"
+
+#: srcore/srpres.c:808
+msgid "Multi Line Text"
+msgstr "Lerro anitzeko testua"
+
+#: srcore/srpres.c:809
+msgid "SINGLE LINE TEXT"
+msgstr "LERRO BAKARREKO TESTUA"
+
+#: srcore/srpres.c:809
+msgid "Single Line Text"
+msgstr "Lerro bakarreko testua"
+
+#: srcore/srpres.c:810
+msgid "TOG"
+msgstr "TXD"
+
+#: srcore/srpres.c:810
+msgid "TOGGLE BUTTON"
+msgstr "TXANDAKATZE-BOTOIA"
+
+#: srcore/srpres.c:810
+msgid "Toggle button"
+msgstr "Txandakatze-botoia"
+
+#: srcore/srpres.c:811
+msgid "TOL"
+msgstr "TRE"
+
+#: srcore/srpres.c:811
+msgid "TOOL BAR"
+msgstr "TRESNA-BARRA"
+
+#: srcore/srpres.c:811
+msgid "Tool bar"
+msgstr "Tresna-barra"
+
+#: srcore/srpres.c:812
+msgid "TIP"
+msgstr "AHO"
+
+#: srcore/srpres.c:812
+msgid "TOOL TIP"
+msgstr "AHOLKUA"
+
+#: srcore/srpres.c:812
+msgid "Tool tip"
+msgstr "Aholkua"
+
+#: srcore/srpres.c:813
+msgid "TRE"
+msgstr "ZUH"
+
+#: srcore/srpres.c:813
+msgid "TREE"
+msgstr "ZUHAITZA"
+
+#: srcore/srpres.c:813
+msgid "Tree"
+msgstr "Zuhaitza"
+
+#: srcore/srpres.c:814
+msgid "TRI"
+msgstr "ZHE"
+
+#: srcore/srpres.c:814
+msgid "TREE ITEM"
+msgstr "ZUHAITZEKO ELEMENTUA"
+
+#: srcore/srpres.c:814
+msgid "Tree item"
+msgstr "Zuhaitzeko elementua"
+
+#: srcore/srpres.c:815
+msgid "TRT"
+msgstr "ZHT"
+
+#: srcore/srpres.c:815
+msgid "TREE TABLE"
+msgstr "ZUHAITZ-TAULA"
+
+#: srcore/srpres.c:815
+msgid "Tree table"
+msgstr "Zuhaitz-taula"
+
+#: srcore/srpres.c:816
+msgid "VWP"
+msgstr "LHT"
+
+#: srcore/srpres.c:816
+msgid "VIEWPORT"
+msgstr "LEIHATILA"
+
+#: srcore/srpres.c:816
+msgid "Viewport"
+msgstr "Leihatila"
+
+#: srcore/srpres.c:817
+msgid "WND"
+msgstr "LHA"
+
+#: srcore/srpres.c:817
+msgid "WINDOW"
+msgstr "LEIHOA"
+
+#: srcore/srpres.c:817
+msgid "Window"
+msgstr "Leihoa"
+
+#: srcore/srpres.c:818
+msgid "ACC"
+msgstr "LSE"
+
+#: srcore/srpres.c:818
+msgid "ACCELERATOR LABEL"
+msgstr "LASTER-ETIKETA"
+
+#: srcore/srpres.c:818
+msgid "Accelerator label"
+msgstr "Laster-etiketa"
+
+#: srcore/srpres.c:819
+msgid "ANI"
+msgstr "ANI"
+
+#: srcore/srpres.c:819
+msgid "ANIMATION"
+msgstr "ANIMAZIOA"
+
+#: srcore/srpres.c:819
+msgid "Animation"
+msgstr "Animazioa"
+
+#: srcore/srpres.c:820
+msgid "ARR"
+msgstr "GEZ"
+
+#: srcore/srpres.c:820
+msgid "ARROW"
+msgstr "GEZIA"
+
+#: srcore/srpres.c:820
+msgid "Arrow"
+msgstr "Gezia"
+
+#: srcore/srpres.c:821
+msgid "CAL"
+msgstr "EGU"
+
+#: srcore/srpres.c:821
+msgid "CALENDAR"
+msgstr "EGUTEGIA"
+
+#: srcore/srpres.c:821
+msgid "Calendar"
+msgstr "Egutegia"
+
+#: srcore/srpres.c:822
+msgid "DAT"
+msgstr "DAT"
+
+#: srcore/srpres.c:822
+msgid "DATE EDITOR"
+msgstr "DATA-EDITOREA"
+
+#: srcore/srpres.c:822
+msgid "Date editor"
+msgstr "Data-editorea"
+
+#: srcore/srpres.c:823
+msgid "DIL"
+msgstr "MAR"
+
+#: srcore/srpres.c:823
+msgid "DIAL"
+msgstr "MARKATU"
+
+#: srcore/srpres.c:823
+msgid "Dial"
+msgstr "MARKATU"
+
+#: srcore/srpres.c:824
+msgid "DRW"
+msgstr "MRA"
+
+#: srcore/srpres.c:824
+msgid "DRAWING AREA"
+msgstr "MARRAZTE-AREA"
+
+#: srcore/srpres.c:824
+msgid "Drawing area"
+msgstr "Marrazte-area"
+
+#: srcore/srpres.c:825
+msgid "FNT"
+msgstr "LET"
+
+#: srcore/srpres.c:825
+msgid "FONT CHOOSER"
+msgstr "LETRA-TIPOEN  HAUTATZAILEA"
+
+#: srcore/srpres.c:825
+msgid "Font chooser"
+msgstr "Letra-tipoen hautatzailea"
+
+#: srcore/srpres.c:826
+msgid "IMG"
+msgstr "IRU"
+
+#: srcore/srpres.c:826
+msgid "IMAGE"
+msgstr "IRUDIA"
+
+#: srcore/srpres.c:826
+msgid "Image"
+msgstr "Irudia"
+
+#: srcore/srpres.c:827
+msgid "SPIN BUTTON"
+msgstr "BIRATZE-BOTOIA"
+
+#: srcore/srpres.c:827
+msgid "Spin button"
+msgstr "Biratze-botoia"
+
+#: srcore/srpres.c:828
+msgid "TRM"
+msgstr "TRM"
+
+#: srcore/srpres.c:828
+msgid "TERMINAL"
+msgstr "TERMINALA"
+
+#: srcore/srpres.c:828
+msgid "Terminal"
+msgstr "Terminala"
+
+#: srcore/srpres.c:829
+msgid "EXT"
+msgstr "HED"
+
+#: srcore/srpres.c:829
+msgid "EXTENDED"
+msgstr "HEDATUA"
+
+#: srcore/srpres.c:829
+msgid "Extended"
+msgstr "Hedatua"
+
+#: srcore/srpres.c:830
+msgid "TLI"
+msgstr "TLE"
+
+#: srcore/srpres.c:830
+msgid "TABLE LINE"
+msgstr "TAULAKO LERROA"
+
+#: srcore/srpres.c:830
+msgid "Table line"
+msgstr "Taulako lerroa"
+
+#: srcore/srpres.c:831
+msgid "TABLE COLUMNS HEADER"
+msgstr "TAULAKO ZUTABEEN GOIBURUA"
+
+#: srcore/srpres.c:831
+msgid "Table columns header"
+msgstr "Taulako zutabeen goiburua"
+
+#: srcore/srpres.c:832
+msgid "TIT"
+msgstr "IZB"
+
+#: srcore/srpres.c:832
+msgid "TITLE BAR"
+msgstr "IZENBURU-BARRA"
+
+#: srcore/srpres.c:832
+msgid "Title bar"
+msgstr "Izenburu-barra"
+
+#: srcore/srpres.c:833
+msgid "EDB"
+msgstr "EDB"
+
+#: srcore/srpres.c:833
+msgid "EDIT BAR"
+msgstr "EDIZIO-BARRA"
+
+#: srcore/srpres.c:833
+msgid "Edit bar"
+msgstr "Edizio-barra"
+
+#: srcore/srspc.c:439
+#, c-format
+msgid "Incorrect parameters for voice \"%s%s\""
+msgstr "Parametro baliogabeak \"%s%s\" ahotsarentzat"
+
+#: srcore/srspc.c:481
+#, c-format
+msgid "failed to send to speech next string \"%s\""
+msgstr "huts egin du ahotsari ondorengo katea igortzean \"%s\""
+
+#: srcore/srspc.c:547
+#, c-format
+msgid "could not create/modify voice \"%s\""
+msgstr "ezin izan da \"%s\" ahotsa sortu/aldatu"
+
+#: srcore/srspc.c:707
+#, c-format
+msgid "voice \"%s\" will sound this way"
+msgstr "\"%s\" ahotsa honela entzungo da"
+
+#: srcore/srspc.c:712
+#, c-format
+msgid "could not test voice \"%s\""
+msgstr "ezin izan da \"%s\" ahotsa probatu"
+
+#: srcore/srspc.c:801
+#, c-format
+msgid "value not supported for speech count mode \"%s\""
+msgstr "balioa ez dago onartutan ahotsaren \"%s\" kontu moduan"
+
+#: srcore/srspc.c:837
+#, c-format
+msgid "value not supported for speech modifiers type \"%s\""
+msgstr "balioa ez dago onartuta ahotsaren \"%s\" modifikatzaile motan"
+
+#: srcore/srspc.c:873
+#, c-format
+msgid "value not supported for speech cursors type \"%s\""
+msgstr "balioa ez dago onartuta ahotsaren \"%s\" kurtsoren motan"
+
+#: srcore/srspc.c:909
+#, c-format
+msgid "value not supported for speech spaces type \"%s\""
+msgstr "balioa ez dago onartuta ahotsaren \"%s\" zuriune motan"
+
+#: srcore/srspc.c:945
+#, c-format
+msgid "value not supported for speech dictionary type \"%s\""
+msgstr "balioa ez dago onartuta ahotsaren \"%s\" hiztegi motan"
+
+#: srcore/srspc.c:982
+#, c-format
+msgid "value not supported for speech text echo type \"%s\""
+msgstr "balioa ez dago onartuta ahotsaren \"%s\" testu-ohiartzun motan"
+
+#: srcore/srspc.c:1001
+msgid "Tilde"
+msgstr "Tildea"
+
+#: srcore/srspc.c:1001
+msgid "Tildaes"
+msgstr "Tildeak"
+
+#: srcore/srspc.c:1002
+msgid "Exclamation"
+msgstr "Harridura"
+
+#: srcore/srspc.c:1002
+msgid "Exclamations"
+msgstr "Harridurak"
+
+#: srcore/srspc.c:1003
+msgid "At"
+msgstr "Abildua"
+
+#: srcore/srspc.c:1003
+msgid "Ats"
+msgstr "Abilduak"
+
+#: srcore/srspc.c:1004
+msgid "Hash"
+msgstr "Marra"
+
+#: srcore/srspc.c:1004
+msgid "Hashes"
+msgstr "Marrak"
+
+#: srcore/srspc.c:1005
+msgid "Dollar"
+msgstr "Dolar"
+
+#: srcore/srspc.c:1005
+msgid "Dollars"
+msgstr "Dolarrak"
+
+#: srcore/srspc.c:1006
+msgid "Percent"
+msgstr "Ehunekoa"
+
+#: srcore/srspc.c:1006
+msgid "Percents"
+msgstr "Ehunekoak"
+
+#: srcore/srspc.c:1007
+msgid "Caret"
+msgstr "Zirkuflexua"
+
+#: srcore/srspc.c:1007
+msgid "Carets"
+msgstr "Zirkunfexuak"
+
+#: srcore/srspc.c:1008
+msgid "And"
+msgstr "&"
+
+#: srcore/srspc.c:1008
+msgid "Ands"
+msgstr "&"
+
+#: srcore/srspc.c:1009
+msgid "Asterisk"
+msgstr "Izartxoa"
+
+#: srcore/srspc.c:1009
+msgid "Asterisks"
+msgstr "Izartxoak"
+
+#: srcore/srspc.c:1010
+msgid "Left Paranthesis"
+msgstr "Ezkerreko parentesia"
+
+#: srcore/srspc.c:1011
+msgid "Right Paranthesis"
+msgstr "Eskuineko parentesia"
+
+#: srcore/srspc.c:1012
+msgid "Underscore"
+msgstr "Azpimarra"
+
+#: srcore/srspc.c:1012
+msgid "Underscores"
+msgstr "Azpimarrak"
+
+#: srcore/srspc.c:1013
+msgid "Plus"
+msgstr "Plus"
+
+#: srcore/srspc.c:1013
+msgid "Pluses"
+msgstr "Plus-ak"
+
+#: srcore/srspc.c:1014
+msgid "Equal"
+msgstr "Berdin"
+
+#: srcore/srspc.c:1014
+msgid "Equals"
+msgstr "Berdinak"
+
+#: srcore/srspc.c:1015
+msgid "Minus"
+msgstr "Minus"
+
+#: srcore/srspc.c:1015
+msgid "Minuses"
+msgstr "Minus-ak"
+
+#: srcore/srspc.c:1016
+msgid "Quote"
+msgstr "Komatxoa"
+
+#: srcore/srspc.c:1016
+msgid "Quotes"
+msgstr "Komatxoak"
+
+#: srcore/srspc.c:1017
+msgid "Left Bracket"
+msgstr "Ezkerreko kortxetea"
+
+#: srcore/srspc.c:1017
+msgid "Left Brackets"
+msgstr "Ezkerreko kortxeteak"
+
+#: srcore/srspc.c:1018
+msgid "Right Bracket"
+msgstr "Eskuineko kortxetea"
+
+#: srcore/srspc.c:1018
+msgid "Right Brackets"
+msgstr "Eskuineko kortxeteak"
+
+#: srcore/srspc.c:1019
+msgid "Left Brace"
+msgstr "Ezkerreko giltza"
+
+#: srcore/srspc.c:1019
+msgid "Left Braces"
+msgstr "Ezkerreko giltzak"
+
+#: srcore/srspc.c:1020
+msgid "Right Brace"
+msgstr "Eskuineko giltza"
+
+#: srcore/srspc.c:1020
+msgid "Right Braces"
+msgstr "Eskuineko giltzak"
+
+#: srcore/srspc.c:1021
+msgid "Semicolon"
+msgstr "Puntu eta koma"
+
+#: srcore/srspc.c:1021
+msgid "Semicolons"
+msgstr "Puntu eta komak"
+
+#: srcore/srspc.c:1022
+msgid "Colon"
+msgstr "Bi puntu"
+
+#: srcore/srspc.c:1022
+msgid "Colons"
+msgstr "Bi puntuak"
+
+#: srcore/srspc.c:1023
+msgid "Double quote"
+msgstr "Komatxo bikoitza"
+
+#: srcore/srspc.c:1023
+msgid "Double quotes"
+msgstr "Komatxo bikoitzak"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophe"
+msgstr "Apostrofea"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophes"
+msgstr "Apostrofea"
+
+#: srcore/srspc.c:1025
+msgid "Back Slash"
+msgstr "Alderantzizko barra"
+
+#: srcore/srspc.c:1025
+msgid "Back Slashes"
+msgstr "Alderantzizko barrak"
+
+#: srcore/srspc.c:1026
+msgid "Bar"
+msgstr "Barra"
+
+#: srcore/srspc.c:1026
+msgid "Bars"
+msgstr "Barrak"
+
+#: srcore/srspc.c:1027
+msgid "Greater"
+msgstr "Handiagoa"
+
+#: srcore/srspc.c:1027
+msgid "Greaters"
+msgstr "Handiagoak"
+
+#: srcore/srspc.c:1028
+msgid "Less"
+msgstr "Txikiagoa"
+
+#: srcore/srspc.c:1028
+msgid "Lesses"
+msgstr "Txikiagoak."
+
+#: srcore/srspc.c:1029
+msgid "Comma"
+msgstr "Koma"
+
+#: srcore/srspc.c:1029
+msgid "Commas"
+msgstr "Komak"
+
+#: srcore/srspc.c:1030
+msgid "Dot"
+msgstr "Puntua"
+
+#: srcore/srspc.c:1030
+msgid "Dots"
+msgstr "Puntuak"
+
+#: srcore/srspc.c:1031
+msgid "Slash"
+msgstr "Barra"
+
+#: srcore/srspc.c:1031
+msgid "Slashes"
+msgstr "Barrak"
+
+#: srcore/srspc.c:1032
+msgid "Questions"
+msgstr "Galderak"
+
+#: srcore/srspc.c:1106
+#, c-format
+msgid "value not supported for speech punctuation type \"%s\""
+msgstr "balioa ez dago onartuta ahotsaren \"%s\" puntuazio motan"
+
+#: srcore/srspc.c:1364
+msgid "Unable to initialize hashtable"
+msgstr "Ezin izan da hash taula hasieratu"
+
+#: srcore/srspc.c:1370
+msgid "Unable to load dictionary from gconf"
+msgstr "Ezin izan da gconf-etik hiztegia kargatu"
+
+#: srcore/srspc.c:1561
+msgid "speech initialization succeded"
+msgstr "Ahotsaren haseraketa burututa"
+
+#: srcore/srspc.c:1565
+msgid "speech initialization failed"
+msgstr "huts egin du ahotsaren hasieraketan"
+
+#: srcore/srspc.c:1761
+msgid "enter"
+msgstr "sartu"
+
+#: srcore/srspc.c:1844
+#, c-format
+msgid "can not find \"%s\" voice. use default voice"
+msgstr "ezin izan da \"%s\" ahotsa aurkitu. Erabili ahots lehenetsia"
+
+#: srcore/srspc.c:1861
+msgid "voices pitch will be set to default value"
+msgstr "ahotsen tonua lehenetsitako balioarekin ezarriko da"
+
+#: srcore/srspc.c:1863
+msgid "voices pitch will be decreased"
+msgstr "ahotsen tonua gutxiagotuko da"
+
+#: srcore/srspc.c:1865
+msgid "voices pitch will be increased"
+msgstr "ahotsen tonua handiagotuko da"
+
+#: srcore/srspc.c:1909
+msgid "voices rate will be set to default value"
+msgstr "ahotsen tasa lehenetsitako balioarekin ezarriko da"
+
+#: srcore/srspc.c:1911
+msgid "voices rate will be decreased"
+msgstr "ahotsen tasa gutxituko da"
+
+#: srcore/srspc.c:1913
+msgid "voices rate will be increased"
+msgstr "ahotsen tasa handituko da"
+
+#: srcore/srspc.c:1958
+msgid "voices volume will be set to default value"
+msgstr "ahotsen bolumena lehenetsitako balioarekin ezarriko da"
+
+#: srcore/srspc.c:1960
+msgid "voices volume will be decreased"
+msgstr "ahotsen bolumena jeitsiko da"
+
+#: srcore/srspc.c:1962
+msgid "voices volume will be increased"
+msgstr "ahotsen bolumena igoko da"
+
+#: srcore/srspc.c:2088
+#, c-format
+msgid "no support for speech key \"%s\""
+msgstr "Ez da onartzen \"%s\" ahots-gakoa."
+
+#~ msgid "Can not install braille font."
+#~ msgstr "Ezin izan da Braille letra-tipoa instalatu."
+
+#~ msgid "window hierarchy flat"
+#~ msgstr "leihoen hierarkia laua"
+
+#~ msgid "_Lock zoom factor"
+#~ msgstr "_Blokeatu zoomaren faktorea"
+
+#~ msgid "Sa_y all cursors"
+#~ msgstr "_Esan kurtsore denak"
+
+#~ msgid "Say all cursors"
+#~ msgstr "Esan kurtsore denak"
+
+#~ msgid "Keyboard preferences"
+#~ msgstr "Teklatuaren hobespenak"
+
+#~ msgid "uniform"
+#~ msgstr "uniform"
+
+#~ msgid "General default setting loaded."
+#~ msgstr "Konfigurazio orokor lehenetsia kargatuta."
+
+#~ msgid "Position Switches"
+#~ msgstr "Kokalekuen txandakatzaileak"
+
+#~ msgid "<b>Ch_unk</b>"
+#~ msgstr "<b>_Zatia</b>"
+
+#~ msgid "<b>_Presentation order list</b>"
+#~ msgstr "<b>Aurkezpen ordenaren zerrenda</b>"
+
+#~ msgid "Add new chunk"
+#~ msgstr "Gehitu zati berria"
+
+#~ msgid "Add new presentation item"
+#~ msgstr "Gehitu aurkezpen elementu berria"
+
+#~ msgid "Copy chunk"
+#~ msgstr "Kopiatu zatia"
+
+#~ msgid "D_evice:"
+#~ msgstr "G_ailua:"
+
+#~ msgid "Device (braille, speech or magnifier)"
+#~ msgstr "Gailua (braille, ahotsa edo lupa)"
+
+#~ msgid "E_vent:"
+#~ msgstr "Ge_rtaera:"
+
+#~ msgid "Event"
+#~ msgstr "Gertaera"
+
+#~ msgid "Modify selected presentation item"
+#~ msgstr "Aldatu hautatutako aurkezpen elementua"
+
+#~ msgid "Move down selected chunk"
+#~ msgstr "Mugitu bera hautatutako zatia"
+
+#~ msgid "Move up selected chunk"
+#~ msgstr "Mugitu gora hautatutako zatia"
+
+#~ msgid "Paste chunk"
+#~ msgstr "Itsatsi zatia"
+
+#~ msgid "Presentation Add / Modify"
+#~ msgstr "Gehitu / aldatu aurkezpena"
+
+#~ msgid "Presentation chunk list."
+#~ msgstr "Aurkezpen-zatien zerrenda"
+
+#~ msgid "Remove selected chunk"
+#~ msgstr "Kendu hautatutako zatia"
+
+#~ msgid "Remove selected presentation item."
+#~ msgstr "Ezabatu hautatutako aurkezpen elementua"
+
+#~ msgid "Ro_le:"
+#~ msgstr "Jo_kaera:"
+
+#~ msgid "Role"
+#~ msgstr "Jokaera"
+
+#~ msgid "About gnopernicus"
+#~ msgstr "Gnopernicus-i buruz"
+
+#~ msgid ""
+#~ "And everyone else who has participated in the gnopernicus effort and is "
+#~ "not mentioned here."
+#~ msgstr ""
+#~ "Eta gnopernicus-en eraketan parte hartu eta hemen aipatzen ez diren beste "
+#~ "guztiak"
+
+#~ msgid "Credits"
+#~ msgstr "Egileak"
+
+#~ msgid "Thanks to"
+#~ msgstr "Esker onak"
+
+#~ msgid "Translated by"
+#~ msgstr ""
+#~ "Axlor Elorza <axlor@zundan.com>\n"
+#~ "Iñaki Larrañaga <dooteo@zundan.com>"
+
+#~ msgid "Written by"
+#~ msgstr "Garatzaileak"
+
+#~ msgid "_Credits"
+#~ msgstr "_Egileak"
+
+#~ msgid "Invalid presentation item!"
+#~ msgstr "Aurkezpeneko elementu baliogabea!"
+
+#~ msgid "Chunk List"
+#~ msgstr "Zatien zerrenda"
+
+#~ msgid "We could not load interface."
+#~ msgstr "Ezin izan da interfazea kargatu."
+
+#~ msgid "No selected presentation to remove!"
+#~ msgstr "Ez da kentzeko aurkezpenik hautatu!"
+
+#~ msgid "No selected presentation to modify!"
+#~ msgstr "Ez da aldatzeko aurkezpenik hautatu!"
+
+#~ msgid "Device"
+#~ msgstr "Gailua"
+
+#~ msgid "Chunk"
+#~ msgstr "Zatia"

@@ -1,0 +1,40 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
+
+<glade-interface>
+<requires lib="gnome"/>
+
+<widget class="GnomeAbout" id="dl_about">
+  <property name="border_width">5</property>
+  <property name="visible">True</property>
+  <property name="destroy_with_parent">True</property>
+  <property name="title">About Gnopernicus</property>
+  <property name="name">Gnopernicus</property>
+  <property name="copyright" translatable="no">Copyright &#169; 2001-2003 BAUM Retec AG
+Copyright &#169; 2001-2003 BAUM Engineering SRL
+Copyright &#169; 2001-2003 Sun Microsystems</property>
+  <property name="comments" translatable="yes">Screen Reader and Magnifier for the GNOME Desktop</property>
+  <property name="authors">Draghi Puterity 		&lt;mp@baum.de&gt;
+Adi Dascal 			&lt;ad@baum.ro&gt;
+Adriana Iobb 			&lt;ai@baum.de&gt;
+Remus Draica 			&lt;rd@baum.ro&gt;
+Iuliu Szijjarto 			&lt;is@baum.ro&gt;
+Pal Csongor Sprencz 	&lt;ps@baum.ro&gt;
+
+Thanks to
+Thomas Friehoff		&lt;tf@baum.de&gt;
+Peter Korn			&lt;peter.korn@sun.com&gt;
+Bill Haneman			&lt;bill.haneman@sun.com&gt;
+Marc Mulcahy			&lt;marc.mulcahy@sun.com&gt;
+Michael Meeks		&lt;michael@ximian.com&gt;
+Padraig O'Briain		&lt;Padraig.Obriain@sun.com&gt;
+Calum Benson			&lt;calum.benson@sun.com&gt;
+Brian Cameron		&lt;Brian.Cameron@sun.com&gt;
+Mario Lang			&lt;mlang@delysid.org&gt;
+
+And everyone else who has participated
+in the gnopernicus effort and is not mentioned here.</property>
+  <property name="translator_credits" translatable="yes">translator_credits</property>
+</widget>
+
+</glade-interface>

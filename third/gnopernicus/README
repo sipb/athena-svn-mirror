@@ -1,0 +1,582 @@
+gnopernicus 0.9.9
+---------------
+
+This is the Early Release of the BAUM Gnopernicus Project
+
+***   Welcome to the BAUM Gnopernicus Project !  ***
+
+If you have not already done so, please visit 
+
+http://developer.gnome.org/projects/gap/AT/Gnopenicus/index.html 
+http://www.baum.ro/gnopernicus.html
+http://www.baum.de
+http://mielke.cc/brltty/doc/Gnopernicus.txt
+
+Tarballs available at:
+ftp://ftp.gnome.org/pub/gnome/sources/gnopernicus
+
+Contents of this package
+========================
+The directories within this package are arranged as follows:
+
+gnopi       : this  directory   contains the  user  interface  program,  called 
+	      'gnopernicus'. This  program  will  configure  all  settings  in  the
+	      gnopernicus module. 
+braille     : libbrl is a SO ( shared object ) which accepts input in BML ( Braille 
+	      Markup Language, a XML  dialect  developed @ Baum)  and  drives  many  
+	      known Braille devices ( currently  just a couple of Baum  devices are  
+	      supported ).BML supports multiple language translation tables, mixing 
+	      of text and dots, different  Braille  and  cursor  styles etc. libbrl 
+	      also produce an input stream from the Braille device tothe client.See 
+	      brl_*_test.xml for BML examples.
+              Note : The user needs rw access to the serial port in order to use it.
+srlow       : There are two subdirectories in srlow : libsrlow and test.
+	      libsrlow : contains code that  monitors  events  in system. From this 
+	      events  collects   necessary  informations  and  notifies  registered
+	      clients .
+	      test : this directory contains examples of how libsrlow could be used 
+	      in application.
+srcore      : srcore - is a console application which implements the Screen Reader/
+	      Magnifier logic. It  gets  the  input from at-spi through srlow, 
+	      keyboard, braille  and  speech  devices  and  produces output  for 
+	      Braille, Speech and Magnifier. The output is  produced as XML streams. 
+	      This is  a very very very early release.  Basicaly, just a proof of 
+	      concept.
+srconf      : Added a libsrconf  modules  which  is  working  like  a  proxy for SR 
+	      configuration. If you want to test this module, run test   executable 
+	      which  simulates writing in configuration file, and run testlibsrconf 
+	      which sets a callback for configrution and prints the events.
+kbd_mouse   : For the moment there are two subdirectories in it: libke and test.
+	      libke: contains the keylistener code. The key listener translates the
+	      key or key-combinations to a string. There are three operation modes
+	      available: letter mode, word mode and auto mode. At the moment it 
+	      listens only to normal characters and by default is set to auto mode. 
+	      The key listener settings can be changed via Gconf by using either 
+	      gnopi or the test from srconf.
+	      test : contains a simple test program (can be used like the simple-at)
+speech      : this is an early release of the screen reader speech components.Parts 
+	      of it will migrate in the gnome-speech component.
+	      Note : festival-server should be running in order to run the tester.
+	      (festival --server fvlinit OR festival-server &)
+magnifier   : this is an early release of the screen reader magnifier component.
+	      There are two subdirectories in magnifier : libmag and test.
+	      libmag : is a SO ( shared object ) which accepts input in MML (Mag 
+	      Markup Language, a XML  dialect  developed by Baum ) and parses it,   
+	      creating  or  modifying  the zoomes according to the properties in 
+	      *.xml.
+	      test : this directory contains examples of how libmag could be used 
+	      in application. An  xml file is parsed and the attributes are spe-
+	      cifying the properties of the zoomer (the zoomer is individualized 
+	      by an ID ) : parameters, region of interest, zoomer placement. 
+	      For the moment there is only one zoomer that is modified (region 0 
+	      from AT_SPI), but there is support code for multizoomers.
+	      Note : Headers for libat-util.so must be installed.
+brlmon	    : this directory  contains a  braille device monitor  and  the  tester. 
+	      Braille device monitor is a window in which the text and commands,
+	      which are sent by srcore to braille, appear in ASCII mode. The text 
+	      which appears is the same whith the xml from braille.The brlmon can
+	      be launch when gnopernicus runs. CTRL-F is the shortcut for change the 
+	      display font. It is necesary the braille 14 font to be installed. 
+	      (This font has only 94 characters, the characters with utf8 will be not
+	      display in braille mode).
+schemas	    : this directory contains schemas for gnopernicus.
+srutil	    : here is a ashared object that is used almost by every component
+	      of gnopernicus (a set of common functions)
+docs        : this directory contains documentation for the SRLow. Documentation is
+	      currently limited to API documentation for the C bindings API, and is 
+	      built from sourcesvia the 'gtk-doc' system.
+
+Dependencies
+============
+
+In order to get gnopernicus installed on your system, you need to have the following 
+packages installed as well:
+    cspi-1.0
+    gconf-2.0
+    glib-2.0
+    gtk+-2.0 
+    gtk-doc (optional-necessary just for docs generation)
+    libglade-2.0
+    libgnome-2.0
+    libgnomeui-2.0
+    libxml-2.0
+    gnome-speech-2.0    
+    gnome-mag-1.0
+
+Additional non-gnome packages [they are optional]:
+    TTS engines:
+	festival
+	FreeTTS
+	ViaVoice
+	DecTalk
+    Braille driver:
+	BRLTTY 
+	Note: version required is 3.5. Gnopernicus cant be compiled with
+	      an older brltty version !
+	(Note: please visit 
+	http://mielke.cc/brltty/doc/Gnopernicus.txt
+	for information on gnopernicus & BRLTTY)
+	
+Building, compiling and installing/uninstalling
+===============================================
+
+A. Building
+-----------
+To compile gnopernicus  on your system, you will need to take several steps to setup 
+the tree for compilation.  You can do all these steps at once by running:
+
+    $ ./autogen.sh
+    OR
+    $ ./configure
+  
+Basically this does the following for you:
+
+    $ aclocal; automake; autoconf
+
+    The above commands create the "configure" script. Now you can run the configure 
+    script to create  all the Makefiles.
+
+Before  running  autogen.sh or configure, make sure you have GNUTools in your path.
+(GNUTools = automake, autoconf,libtool etc. For more information visit www.gnu.org)
+
+    Note that autogen.sh  runs configure for you.  If you wish to pass options like  
+--prefix=/opt/gnome-2.0 to configure  you  can give those options to autogen.sh and 
+they will be passed on to configure.
+    You can specify to compile with or without magnifier support by using
+--enable-magnifier=yes/no option.
+
+B. Compiling
+------------
+    $ make
+
+C. Installing
+-------------
+    $ make install
+    
+D. Uninstalling
+---------------    
+    $ make uninstall
+    
+    Read more about building/installation in the INSTALL file.
+
+Running gnopernicus
+===================
+
+*************
+* IMPORTANT *
+*************
+    NUMLOCK key should be ON, otherwise gnopernicus can have an unexpected
+    behaviour.
+
+The following applications can be launched :
+    * gnopernicus (main application; it has a GUI)
+    * srcore	  (same application as gnopernicus, but without GUI)
+    * brlmonitor  (Braille Monitor : on screen braille display;
+		   shows you what is displayed/would be displayed on a 
+		   Braille Display)
+
+*********
+* Note1 * 
+*********
+	It is NOT recommended to use voices from festival together with viavoice
+	or FreeTTS voices because the first type of voices don't support speech
+	markers. The lack of the markers implicates that not the entire presentation 
+	chunk will be spoken.
+	If you STILL want to use festival voices you can, BUT they should be 
+	the same voice (ex Kevin for all voices that should present a role OR 
+	these voices should be at the end of the chunk).
+	Example:
+	if the presentation chunk for push-button looks like this:
+	    %name<voice=name>%
+	    %role<voice=role>%
+	    %?shortcut?"shortcut":""<voice=system>?%
+	    %shortcut<voice=shortcut>%
+	make sure that you use a similar combination:
+    	    name voice	- Kevin | Kal | ViaVoice voice | ViaVoice voice | Viavoice/FreeTTS
+	    role voice	- Kevin | Kal | Viavoice voice | ViaVoice voice | Viavoice/FreeTTS	
+	    system voice- Kevin | Kal | Kevin	       | Kal/ViaVoice   | Viavoice/FreeTTS
+  	    system voice- Kevin | Kal | Kevin	       | Kal            | Viavoice/FreeTTS
+
+	THIS IS TEMPORARY AND SHOULD BE SOLVED SOON (in gnopernicus/gnome-speech).
+*********
+* Note2 * 
+*********
+	If the srcore process exits with an error, gnopernicus shows a warning 
+	message in the terminal and sends a beep to notify the user. 
+*********
+* Note3 * 
+*********
+	Due to some changes, gnopernicus application might NOT RESPOND to the 
+	commands if you had it on your system before.
+	
+	THIS IS TEMPORARY AND SHOULD BE SOLVED SOON.
+	
+	Please follow the instructions bellow to "erase" the default keys 
+	written in gconf if this is happening to you:
+*********
+* Note4 * 
+*********
+	Events can be reported to user on a timer or on a idle callback.
+	Also reporting events to user can be forced. Reason to do that is that
+	user want to have feedback from gnopernicus in case of quickly actions.
+	All these settings can be setted using GNOPERNICUS_TIMER. Valid values
+	are "idle" and "timer" Every of these values can be used in association
+	with "force" to report events for feedback in case of quickly actions.
+	eg: GNOPERNICUS_TIMER=timer
+	    GNOPERNICUS_TIMER=idle:force
+	In case that this varaible is not defined,the default value is "idle".
+*********
+* Note5 * 
+*********
+	Gnopernicus is able to create a log with events received, processed
+	and reported to user. To use this facility you should set environment
+	variable GNOPERNICUS_LOG. Valid values are "at-spi", "gnopernicus",
+	"reentrancy". Any combination of these values is a valid one.
+	-- "at-spi" value will log all events, execpt event for terminal objects
+	    received from at-spi
+	-- "gnopernicus" value will log all event reported by gnopernicus to 
+	    user
+	-- "reentrancy" value will report all events received from at-spi, events
+	    which are caming while another event is processed.
+*********
+* Note6 *
+*********
+	At make install it tried to install the braille font in standar font path
+	(/usr/share/fonts/default/Type1). If the font installation is failed or 
+	the standard font path is other then /usr/share/fonts/default/Type1, you 
+	can specify a new font path using --with-default-fonts-path=DIR parameters 
+	at configure. (in RedHat linux the default fonts path could be a 
+	/usr/share/fonts/default/Type1 or in a user home directory the ~/.fonts 
+	directory). If you install a gnopernicus as user copy the braille font in 
+	~/.fonts directory and type a command "mkfontdir ~/.fonts" .
+*********
+* Note7 *
+*********
+	Command layers and user defined key combinations will work properly 
+	ONLY if	NumLock key is turned ON. Also modifiers are reported 
+	more than once with NumLock turned off.
+
+The GConf daemon can be running after when all application is stoped whose use
+gconf. You can stop with gconftool-2 --shutdown
+
+Steps:
+1. Go to your home directory.
+$ cd
+
+2. Test if gconfd-1 or gconf-2 is running.
+$ ps -aux | grep gconfd 
+
+If running
+$ gconftool-2 --shutdown
+
+Now the lock files can be deleted.
+
+3. If ~/.gconf/%gconf-xml-backned.lock and ~/.gconfd/lock directorys exists:
+$ gconftool-2 --shutdown
+Repeat step 3  until the lock files are removed.
+
+4. Go to ~/.gconf/apps
+$ cd ~/gconf/apps
+
+5. Delete gnopernicus directory from gconf.
+$ rm -f -R ./gnopernicus
+
+In this case if the lockfiles does not exist delete only the 
+/.gconf/apps/gnopernicus directorie tree. (Step 3)
+And try to run gnopernicus.
+If the gnopernicus prefix is not same with the gconf prefix you need to set in
+{sysconfdir}/gconf/2/path of gconf the path where the schemas were installed.
+(Copy and modify last line of this file).
+
+More information about gconf errors and how to set the gconf configurations 
+files can be found at:
+www.gnome.org/projects/gconf
+	
+
+Using gnopernicus
+=================
+This is  a  brief description  of the current Gnopernicus features mapping and 
+GUI's options. For more details visit 
+
+	www.baum.ro/gnopernicus.html
+
+A. gnopernicus feature mapping
+-----------------------------
+1. Touch  sensors  reaction: the action that take place when  a touch sensor is
+pressed  is  working  according  with  the "gnopernicus" configuration (Braille
+Settings/Position Sensors  dialog). As  for  now, these  following  actions are
+available:
+
+- mouse move
+- mouse move and left click
+- mouse move and right click
+
+The text attributes are presented on speech all the time.
+
+
+2.Keypad Layers
+
+Gnopernicus functions are mapped on fixed keys on numeric keypad. Because the 
+number of keys on numeric keypad is limted, the "layer concept" is introduced.
+That means that a key can have multiple meanings, depending on which layer is 
+the user is.
+Now there are 11 layers available, from 0 to 10. To swith between them you have
+to press 0 key from numeric keypad, folowed in 5 seconds by the layer number,
+or DEL key for layer 10.
+
+NOTE: NumLock key must be pressed!!!
+
+If you don't press a layer number in 5 seconds, then gnopernicus will not change
+the current layer.
+
+NOTE: If it stress the layers, (press fast the keys or not release a numpad key 
+before to press other numpad key), it can be possible to get a side effects
+from the applications (to speak "switch window" or to lose a focus). 
+
+For now, proposal mapped layers are:
+
+(X --- means that this function is working)
+(* --- this function is just mapped. It has no real effect)
+
+LAYER 0: (navigation layer)
+    1 - goto toolbar			X
+    2 - goto child/goto next line	X
+    3 - goto statusbar			X
+    4 - goto previous			X
+    5 - repeat last utterance		X
+    6 - goto next			X
+    7 - goto title			X
+    8 - goto parent/goto previous line	X
+    9 - goto menubar			X
+    10(DEL) - toggle focus tracking/flat review mode	X
+   11(Enter) - describe my surroundings	X
+   12 (+) - goto focus			X
+   13 (-) - change navigation mode	X
+   14 (*) - goto last			X
+   15 (/) - goto first			X
+   In flat review mode the following keys have other functions (for the moment 
+   the command string is the same as above, but the functionality differs)
+    1 - present last line in flat review (bottom of the context)
+    2 - presnet next line (down)
+    3 - present line containg focused object
+    4 - scroll to the left on braille device (inside the current line)
+    5 - |
+    6 - scroll to the right on braille device (inside the current line)
+    7 - present first line in flat review (top of the context)
+    8 - present previous line (up)	
+    9 - |
+   
+LAYER 1:
+    1 - attributes at caret		X
+    2 - watch current object		X
+    3 - unwatch all objects		X
+    12 (+) - goto caret			X
+LAYER 2:
+LAYER 3:
+    1 - find set			X
+    2 - do default action		X
+    3 - window overview			X
+    4 - window hierarchy		X
+    7 - read whole window		X
+    5 - flat review			X
+    6 - object details			X
+    10(DEL) - find next			X
+LAYER 4:
+LAYER 5: (mouse layer)
+    1 - left mouse press		X
+    2 - left mouse click		X
+    3 - left mouse release		X
+    4 - middle mouse press		X
+    5 - middle mouse click		X
+    6 - middle mouse release		X
+    7 - right mouse press		X
+    8 - right mouse click		X
+    9 - right mouse release		X
+    10 - move mouse to current object	X
+LAYER 6:(magnifier layer 1)
+    1 - cursor on/off			X
+    2 - decrease y scale		X
+    3 - crosswire on/off		X
+    4 - decrease x scale		X
+    5 - lock xy scale			X
+    6 - increase x scale		X
+    7 - invert on/off			X
+    8 - increase y scale		X
+    9 - smoothing toggle		X
+   10(Del) - load magnifier defaults	X	
+   11(Enter) - cursor mag on/off
+   12(+) - panning on/off			X
+   13(-) - toggle between mouse traking modes	X
+LAYER 7: (magnifier layer 2 = cursors layer)
+    1 - cursor on/off			X
+    2 - decrease cursor size		X
+    3 - crosswire on/off		X
+    4 - decrease crosswire size		X
+    5 - crosswire clip on/off		X
+    6 - increase crosswire size		X
+
+    8 - increase cursor size		X
+    9 - cursor toggle			X
+   10(Del) - load magnifier defaults	X			
+   11(Enter) - cursor mag on/off	
+
+   13(-) - toggle between mouse traking modes	X
+LAYER 8: (speech layer)
+    1 - decrease volume			X
+    2 - default volume			X
+    3 - increase volume			X
+    4 - decrease rate			X
+    5 - default rate			X
+    6 - increase rate			X
+    7 - decrease pitch			X
+    8 - default pitch			X
+    9 - increase pitch			X
+    10(DEL) - default settings		X
+    13(-) - pause/resume		X
+LAYER 9:(braille layer)
+    1 - scroll 1 char left		X
+    3 - scroll 1 char right		X
+    4 - scroll 1 display left		*
+    6 - scroll 1 display right		*
+LAYER 10:
+BRAILLE INPUT KEYS:
+    0 - goto parent		X
+    1 - goto focus		X
+    2 - goto child		X
+    3 - goto previous		X
+    4 - repeat last utterance 	X
+    5 - goto next		X
+    1+2 - do default action	X
+
+
+B. GUI
+------
+The following list shows GUI's option to configure gnopernicus.
+
+X- marks what works in the current stage
+
+Gnopi Options			Works
+=============			=====
+1.Startup Mode...
+- Braille		 	X
+- Magnifier			X
+- Speech		 	X
+- Braille Monitor		X
+- Start GnopernicusMinimized	X
+
+2. Preferences...
+
+2.1 Speech
+-Voices				X
+-Count				X
+-Punctuation			X
+-Cursors			X
+-Spaces				X
+-Modifiers			X
+-Dictionary			X
+
+2.2 Braille
+
+2.2.1 Braille Device
+    - Device			X
+    - Port		        X
+2.2.2 Transaltion Table		X
+2.2.3 Braille Style		X
+2.2.4 Cursor settings		X
+2.2.5 Braille key mapping	X
+
+2.3.Magnifier			X(no support in gnome-mag for all options)
+
+2.4.Mouse 			X
+
+2.5.Braille Monitor 		X
+
+2.6.Command Mapping		X
+
+2.7.Presentation		X
+
+2.8.Screen Review		X
+
+2.9.Find			X
+
+
+3.Default preferences...
+- Load Default Braille		X
+- Load Default Speech		X
+- Load Default Magnifier	X
+- Load Default Keyboard		X
+- Load Default Braille Monitor	X
+- Load Default General		X
+- Load Default Command Map	X
+- Load Default Presentation	X
+- Load Default Screen Review	X
+- Load Default All		X 
+
+4.Minimize menu			X
+
+5.Help				X (rudimentary)
+
+6.About				X
+
+0.Exit				X
+
+
+C. Command line parameters
+--------------------------
+gnopernicus [options]
+Options:
+    -b  --enable-braille	enable braille service
+    -s	--enable-speech		enable speech  service
+    -m	--enable-magnifier	enable magnifier service
+    -o  --enable-braille-monitor enable braille monitor service
+    -B  --disable-braille	disable braille service
+    -S	--disable-speech	disable speech  service
+    -M	--disable-magnifier	disable magnifier service
+    -O  --disable-braille-monitor disable braille monitor service
+    -p	--braille-port		Serial link port number where the device is linked
+    -e  --braille-device	Braille device name
+    -l  --login			disable accessibility check.
+NOTE: All command line paramters will be saved in gconf.
+    
+srcore [options]
+Options:
+    -b  --enable-braille	enable braille service
+    -s	--enable-speech		enable speech  service
+    -m	--enable-magnifier	enable magnifier service
+    -o  --enable-braille-monitor enable braille monitor service
+    -B  --disable-braille	disable braille service
+    -S	--disable-speech	disable speech  service
+    -M	--disable-magnifier	disable magnifier service
+    -O  --disable-braille-monitor disable braille monitor service
+
+    -p	--braille-port		Serial link port number where the device is linked
+    -e  --braille-device	Braille device name
+    -l  --login			
+NOTE: Command line parameters will not saved in gconf.
+
+
+Using Braille Monitor
+=====================
+Execution:
+    brlmonitor [options]
+    Options:
+    -p	--port=port_no     	UDP port number [1025 - 30000] (default 7000)
+    -l	--line=line_no     	Number of line on display [line_no >= 2] (default 2)
+    -c	--column=column_no    	Number of column in line  [column_no >= 1] (default 40)
+    -m 	--mode=modetype  	Display mode [normal|braille|dual]
+				    normal 	- show with courier font
+				    braille 	- show with braille font
+				    dual 	- show with both font
+
+Obs: line*column  can not be bigger then 128 [128 - max cells on display]
+Command keys:
+Braille Monitor is can get a focus, all settings could be changed in gnopi UI.
+
+Bug reporting
+=============
+Report bugs with "GNOME bug Tracking System" :
+	http://bugzilla.gnome.org
+Pick the "gnopernicus" product on which to enter the bug.
+
+_gnopernicus Team.
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<omf>
+  <resource>
+    <creator>
+      ps@baum.ro (BUAM Retec AG and BAUM Engineering)
+    </creator>
+    <maintainer>
+      ps@baum.ro (BUAM Retec AG and BAUM Engineering)
+    </maintainer>
+<!--
+    <title>
+      gnopernicus Manual V0.1
+    </title>
+-->
+    <title>
+      Lector de pantalla y ampliador Gnopernicus
+    </title>    
+    <date>
+      2003-01-07
+    </date>
+    <version identifier="0.0.2" date="2003-01-07" description="Updated for GNOME 2.0, program version 2.0.2"/>
+    <subject category="GNOME|Applications|Settings|Accessibility"/>
+    <description>
+      Manual de usuario del lector de pantalla y ampliador gnopernicus. 
+    </description>
+    <type>
+      guía de usuario
+    </type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url="gnopernicus.xml"/>
+    <language code="es"/>
+    <relation seriesid="e1afad9c-1f4e-11d8-93e6-b29c1d931de0"/>
+    <rights type="GNU FDL" license.version="1.1" holder="BAUM Retec AG"/>
+  </resource>        
+</omf>

@@ -1,0 +1,17 @@
+NULL=
+
+noinst_PROGRAMS = tester
+
+tester_SOURCES = tester.c
+tester_LDFLAGS = $(LIBSRS_LIBS)
+
+INCLUDES = -I$(srcdir)/../libsrs 		\
+	    -I$(top_srcdir)/srconf/libsrconf 	\
+	    $(LIBSRS_CFLAGS)			\
+	    -DG_LOG_DOMAIN=\"gnopernicus\"
+
+LDADD =  ../libsrs/libsrs.la ../../srconf/libsrconf/libsrconf.la ../../srutil/libsrutil.la
+
+
+EXTRA_DIST = srsml.xml
+

@@ -1,0 +1,4923 @@
+# This file is distributed under the same license as the gnopernicus package.
+# Changwoo Ryu <cwryu@debian.org>, 2003-2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnopernicus 0.7.4\n"
+"POT-Creation-Date: 2004-09-15 12:38+0300\n"
+"PO-Revision-Date: 2004-08-13 19:52+0900\n"
+"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: braille/test/remote.c:548
+msgid "Braille remote"
+msgstr "점자 리모트"
+
+#: brlmon/brlmon.c:196
+msgid "Braille monitor"
+msgstr "점자 모니터"
+
+#: brlmon/brlmon.c:325 brlmon/brlmon.c:333
+#, c-format
+msgid "Invalid port number: %d."
+msgstr "포트 번호가 잘못되었습니다: %d."
+
+#: brlmon/brlmon.c:326 brlmon/brlmon.c:334
+msgid "port_no = [1025 - 30000]."
+msgstr "포트 번호 = [1025 - 30000]."
+
+#: brlmon/brlmon.c:520
+msgid "Can not open socket!"
+msgstr "소켓을 열 수 없습니다!"
+
+#: brlmon/brlmon.c:543
+#, c-format
+msgid "Can not bind port number %d."
+msgstr "포트 번호 %d에 bind할 수 없습니다."
+
+#: brlmon/brlmon.c:547
+#, c-format
+msgid "Waiting for data on port UDP %u."
+msgstr "포트 UDP %u에서 데이타를 기다립니다."
+
+#: brlmon/brlmonui.c:225 gnopi/gnopiconf.c:43
+msgid "Failed to init gconf client."
+msgstr "gconf 클라이언트를 초기화하는 데 실패했습니다."
+
+#: brlmon/brlmonui.c:234 srconf/libsrconf/libsrconf.c:418
+msgid "Failed to add directory."
+msgstr "디렉토리를 더하는 데 실패했습니다."
+
+#: brlmon/brlmonui.c:246 gnopi/kbconf.c:79 gnopi/spconf.c:89
+#: srconf/libsrconf/libsrconf.c:431
+msgid "Failed to add notify."
+msgstr "알림을 더하는 데 실패했습니다."
+
+#: brlmon/brlmonui.c:261 gnopi/gnopiconf.c:145
+#, c-format
+msgid "Expected key: %s"
+msgstr "예상했던 키: %s"
+
+#: brlmon/brlmonui.c:301
+#, c-format
+msgid "Failed to set value: %d"
+msgstr "값을 설정하는 데 실패했습니다: %d"
+
+#: brlmon/brlmonui.c:342 brlmon/brlmonui.c:444 gnopi/gnopiconf.c:355
+#: gnopi/gnopiconf.c:409 gnopi/gnopiconf.c:560 gnopi/gnopiconf.c:733
+#, c-format
+msgid "Invalid type of key: %s."
+msgstr "키의 종류가 잘못되었습니다: %s."
+
+#: brlmon/brlmonui.c:345 brlmon/brlmonui.c:364
+#, c-format
+msgid "Failed to set int value: %d."
+msgstr "int 값을 설정하는 데 실패했습니다: %d."
+
+#: brlmon/brlmonui.c:358 brlmon/brlmonui.c:459
+#, c-format
+msgid "Failed to get value: %s."
+msgstr "값을 얻어 오는 데 실패했습니다: %s."
+
+#: brlmon/brlmonui.c:403 gnopi/gnopiconf.c:357 gnopi/gnopiconf.c:375
+#: gnopi/gnopiconf.c:562 gnopi/gnopiconf.c:578
+#, c-format
+msgid "Failed to set value: %d."
+msgstr "값을 설정하는 데 실패했습니다: %d."
+
+#: brlmon/brlmonui.c:447 brlmon/brlmonui.c:462
+#, c-format
+msgid "Failed to set boolean value: %d."
+msgstr "불리언 값을 설정하는 데 실패했습니다: %d."
+
+#: brlmon/brlmonui.c:501 gnopi/gnopiconf.c:496 gnopi/gnopiconf.c:509
+#, c-format
+msgid "Failed to set value: %s."
+msgstr "값을 설정하는 데 실패했습니다: %s."
+
+#: brlmon/brlmonui.c:535
+#, c-format
+msgid "Failed to get string value: %s."
+msgstr "문자열 값을 얻어오는 데 실패했습니다: %s."
+
+#: brlmon/brlmonui.c:539 brlmon/brlmonui.c:549
+#, c-format
+msgid "Failed to set string value: %s."
+msgstr "문자열 값을 설정하는 데 실패했습니다: %s."
+
+#: brlmon/brlmonui.c:583 gnopi/bmui.c:297
+#, c-format
+msgid "Invalid modetype: %s."
+msgstr "잘못된 모드 종류: %s."
+
+#: brlmon/brlmonui.c:635
+#, c-format
+msgid "%s font not installed."
+msgstr "%s 글꼴이 설치되지 않았습니다."
+
+#. *
+#. * bmui_load_colors
+#. *
+#. * Load text colors.
+#. *
+#. * returns:
+#. *
+#: brlmon/brlmonui.c:639 gnopi/bmui.c:251
+msgid "Can not parse color string."
+msgstr "색 문자열을 파싱할 수 없습니다."
+
+#: brlmon/brlmonui.c:1111
+msgid "Status"
+msgstr "상태"
+
+#: brlmon/brlmonui.c:1318
+#, c-format
+msgid "Too many cells on display. [Max %d]"
+msgstr "표시할 셀이 너무 많습니다. [최대 %d]"
+
+#: brlmon/brlmonui.c:1319
+#, c-format
+msgid "Load default display size. Line: %d Column: %d."
+msgstr "기본 표시 크기를 읽어들입니다. 줄: %d 열: %d."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:84
+#, c-format
+msgid "BRLOUT attribute %s is not supported."
+msgstr "BRLOUT 속성 %s은(는) 지원하지 않습니다."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:218
+#, c-format
+msgid "TEXT attribute %s is not supported."
+msgstr "TEXT 속성 %s은(는) 지원하지 않습니다."
+
+#: gnopi/bmconf.c:318
+msgid "Failed to set display size."
+msgstr "보여줄 크기를 설정하는 데 실패했습니다."
+
+#: gnopi/bmconf.c:336
+msgid "Failed to set display position."
+msgstr "보여줄 위치를 설정하는 데 실패했습니다."
+
+#: gnopi/bmconf.c:368
+msgid "Failed to set display mode."
+msgstr "보여주기 모드를 설정하는 데 실패했습니다."
+
+#: gnopi/bmconf.c:392
+msgid "Failed to set dot type colors."
+msgstr "점 타입 색을 설정하는 데 실패했습니다."
+
+#: gnopi/bmconf.c:409
+msgid "Failed to set font size."
+msgstr "글꼴 크기를 설정하는 데 실패했습니다."
+
+#: gnopi/bmui.c:328
+#, c-format
+msgid "Invalid position: %s."
+msgstr "위치가 잘못되었습니다: %s."
+
+#: gnopi/brlconf.c:282 gnopi/cmdmapconf.c:237 gnopi/coreconf.c:140
+#: gnopi/kbconf.c:126 gnopi/magconf.c:226 gnopi/spconf.c:152
+#: gnopi/spconf.c:1203
+msgid "Unable to allocate memory."
+msgstr "메모리를 할당할 수 없습니다."
+
+#: gnopi/brlconf.c:388
+#, c-format
+msgid "Failed to set braille style: %s."
+msgstr "점자 스타일을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/brlconf.c:397
+#, c-format
+msgid "Failed to set braille cursor style: %s."
+msgstr "점자 커서 스타일을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/brlconf.c:406
+#, c-format
+msgid "Failed to set attribute settings: %d."
+msgstr "속성 설정을 하는 데 실패했습니다: %d."
+
+#: gnopi/brlconf.c:415
+#, c-format
+msgid "Failed to set braille device: %s."
+msgstr "점자 장치를 설정하는 데 실패했습니다: %s."
+
+#: gnopi/brlconf.c:424
+#, c-format
+msgid "Failed to set fill character: %s."
+msgstr "채움 문자를 설정하는 데 실패했습니다: %s."
+
+#: gnopi/brlconf.c:433
+#, c-format
+msgid "Failed to set serial port number: %d."
+msgstr "직렬 포트 번호를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/brlconf.c:443
+#, c-format
+msgid "Failed to set translation table: %s."
+msgstr "변환 테이블을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/brlconf.c:452
+#, c-format
+msgid "Failed to set optical sensor: %d."
+msgstr "눈 추적 센서를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/brlconf.c:461
+#, c-format
+msgid "Failed to set position sensor: %d."
+msgstr "위치 센서를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/brlconf.c:470
+#, c-format
+msgid "Failed to set status cell: %s."
+msgstr "상태 셀을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/brlconf.c:556
+msgid "<none>"
+msgstr "<없음>"
+
+#: gnopi/brlui.c:79
+msgid "American English"
+msgstr "미국 영어"
+
+#: gnopi/brlui.c:80
+msgid "German"
+msgstr "독일어"
+
+#: gnopi/brlui.c:81
+msgid "Spanish"
+msgstr "스페인어"
+
+#: gnopi/brlui.c:82
+msgid "Swedish"
+msgstr "스웨덴어"
+
+#. To translators: X = X Window System server
+#: gnopi/brlui.c:351
+msgid "X display's _terminal number:"
+msgstr "X 디스플레이의 터미널 번호(_T):"
+
+#: gnopi/brlui.c:357
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:6
+msgid "_Port:"
+msgstr "포트(_P):"
+
+#: gnopi/brlui.c:623
+msgid "Language"
+msgstr "언어"
+
+#: gnopi/brlui.c:1218 gnopi/cmdmapui.c:475
+msgid "No selected command!"
+msgstr "선택한 명령어가 없습니다!"
+
+#: gnopi/brlui.c:1242
+msgid "Invalid device key!"
+msgstr "장치 키가 잘못되었습니다!"
+
+#: gnopi/brlui.c:1477 gnopi/brlui.c:1900 gnopi/cmdmapui.c:717
+#: gnopi/cmdmapui.c:1568 gnopi/cmdmapui.c:1588
+msgid "Commands"
+msgstr "명령"
+
+#: gnopi/brlui.c:1632 gnopi/cmdmapui.c:1186
+msgid "No selected item to modify!"
+msgstr "고칠 항목을 선택하지 않았습니다!"
+
+#: gnopi/brlui.c:1644 gnopi/brlui.c:1724 gnopi/cmdmapui.c:1059
+#: gnopi/cmdmapui.c:1196
+msgid "Invalid selected item!"
+msgstr "선택한 항목이 잘못되었습니다!"
+
+#: gnopi/brlui.c:1712 gnopi/cmdmapui.c:1046
+msgid "No selected item to remove!"
+msgstr "지울 항목을 선택하지 않았습니다!"
+
+#: gnopi/brlui.c:1894
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:9
+msgid "Braille Keys"
+msgstr "점자 키"
+
+#: gnopi/cmdmapconf.c:462 gnopi/cmdmapconf.c:503
+msgid "Change commit error."
+msgstr "바뀐 점을 저장하는 데 오류."
+
+#: gnopi/cmdmapui.c:45
+msgid "decrease y scale"
+msgstr "y 배율 줄이기"
+
+#: gnopi/cmdmapui.c:46
+msgid "decrease x scale"
+msgstr "x 배율 줄이기"
+
+#: gnopi/cmdmapui.c:47
+msgid "increase y scale"
+msgstr "y 배율 늘이기"
+
+#: gnopi/cmdmapui.c:48
+msgid "increase x scale"
+msgstr "x 배율 늘이기"
+
+#: gnopi/cmdmapui.c:49
+msgid "lock xy scale"
+msgstr "xy 배율 고정"
+
+#: gnopi/cmdmapui.c:50
+msgid "smoothing toggle"
+msgstr "고르게 하기 토글"
+
+#: gnopi/cmdmapui.c:51
+msgid "cursor toggle"
+msgstr "커서 토글"
+
+#: gnopi/cmdmapui.c:52
+msgid "cursor on/off"
+msgstr "커서 켜기/끄기"
+
+#: gnopi/cmdmapui.c:53
+msgid "cursor magnification on/off"
+msgstr "커서 돋보기 켜기/끄기"
+
+#: gnopi/cmdmapui.c:54
+msgid "decrease cursor size"
+msgstr "커서 크기 줄이기"
+
+#: gnopi/cmdmapui.c:55
+msgid "increase cursor size"
+msgstr "커서 크기 늘이기"
+
+#: gnopi/cmdmapui.c:56
+msgid "invert on/off"
+msgstr "반전 사용/사용 안 함"
+
+#: gnopi/cmdmapui.c:57
+msgid "magnifier default"
+msgstr "돋보기 기본값"
+
+#: gnopi/cmdmapui.c:58
+msgid "crosshair on/off"
+msgstr "십자선 사용/사용 안 함"
+
+#: gnopi/cmdmapui.c:59
+msgid "crosshair clip on/off"
+msgstr "십자선 클립 켜기/끄기"
+
+#: gnopi/cmdmapui.c:60
+msgid "decrease crosshair size"
+msgstr "십자선 크기 줄이기"
+
+#: gnopi/cmdmapui.c:61
+msgid "increase crosshair size"
+msgstr "십자선 크기 늘이기"
+
+#: gnopi/cmdmapui.c:62
+msgid "automatic panning on/off"
+msgstr "자동 패닝 사용/사용 안 함"
+
+#: gnopi/cmdmapui.c:63
+msgid "mouse tracking toggle"
+msgstr "마우스 추적 토글"
+
+#: gnopi/cmdmapui.c:64
+msgid "load magnifier defaults"
+msgstr "돋보기 기본값 읽어들이기"
+
+#: gnopi/cmdmapui.c:66
+msgid "decrease pitch"
+msgstr "음 높이 낮추기"
+
+#: gnopi/cmdmapui.c:67
+msgid "increase pitch"
+msgstr "음 높이 높이기"
+
+#: gnopi/cmdmapui.c:68
+msgid "default pitch"
+msgstr "음 높이 기본값"
+
+#: gnopi/cmdmapui.c:69
+msgid "decrease rate"
+msgstr "속도 줄이기"
+
+#: gnopi/cmdmapui.c:70
+msgid "increase rate"
+msgstr "속도 늘이기"
+
+#: gnopi/cmdmapui.c:71
+msgid "default rate"
+msgstr "속도 기본값"
+
+#: gnopi/cmdmapui.c:72
+msgid "decrease volume"
+msgstr "볼륨 줄이기"
+
+#: gnopi/cmdmapui.c:73
+msgid "increase volume"
+msgstr "볼륨 늘이기"
+
+#: gnopi/cmdmapui.c:74
+msgid "default volume"
+msgstr "볼륨 기본값"
+
+#: gnopi/cmdmapui.c:75
+msgid "speech default"
+msgstr "음성 기본값"
+
+#: gnopi/cmdmapui.c:77
+msgid "goto parent"
+msgstr "상위로 이동"
+
+#: gnopi/cmdmapui.c:78
+msgid "goto child"
+msgstr "하위로 이동"
+
+#: gnopi/cmdmapui.c:79
+msgid "goto previous"
+msgstr "이전으로 이동"
+
+#: gnopi/cmdmapui.c:80
+msgid "goto next"
+msgstr "다음으로 이동"
+
+#: gnopi/cmdmapui.c:81
+msgid "repeat last"
+msgstr "마지막 반복"
+
+#: gnopi/cmdmapui.c:82
+msgid "goto focus"
+msgstr "포커스로 이동"
+
+#: gnopi/cmdmapui.c:83
+msgid "goto title"
+msgstr "제목으로 이동"
+
+#: gnopi/cmdmapui.c:84
+msgid "goto menu"
+msgstr "메뉴로 이동"
+
+#: gnopi/cmdmapui.c:85
+msgid "goto toolbar"
+msgstr "도구 모음으로 이동"
+
+#: gnopi/cmdmapui.c:86
+msgid "goto statusbar"
+msgstr "상태 표시줄로 이동"
+
+#: gnopi/cmdmapui.c:87
+msgid "widget surroundings"
+msgstr "위젯 주변"
+
+#: gnopi/cmdmapui.c:89
+msgid "goto caret"
+msgstr "캐럿으로 이동"
+
+#: gnopi/cmdmapui.c:90
+msgid "goto first"
+msgstr "처음으로 이동"
+
+#: gnopi/cmdmapui.c:91
+msgid "goto last"
+msgstr "마지막으로 이동"
+
+#: gnopi/cmdmapui.c:92
+msgid "change navigation mode"
+msgstr "네비게이션 모드 바꾸기"
+
+#: gnopi/cmdmapui.c:94
+msgid "toggle flat review/focus tracking mode"
+msgstr "플랫 다시 보기/포커스 추적 모드 토글"
+
+#: gnopi/cmdmapui.c:95
+msgid "flat review"
+msgstr "플랫 다시 보기"
+
+#: gnopi/cmdmapui.c:96
+msgid "window hierarchy"
+msgstr "창 계층관계"
+
+#: gnopi/cmdmapui.c:97
+msgid "read whole window"
+msgstr "전체 창 읽기"
+
+#: gnopi/cmdmapui.c:98
+msgid "detailed informations"
+msgstr "자세한 정보"
+
+#: gnopi/cmdmapui.c:99
+msgid "do default action"
+msgstr "기본 액션 실행"
+
+#: gnopi/cmdmapui.c:100
+msgid "window overview"
+msgstr "창 개요"
+
+#: gnopi/cmdmapui.c:101
+msgid "find next"
+msgstr "다음 찾기"
+
+#: gnopi/cmdmapui.c:102
+msgid "find set"
+msgstr "집합 찾기"
+
+#: gnopi/cmdmapui.c:103
+msgid "attributes at caret"
+msgstr "캐럿 위치의 속성"
+
+#: gnopi/cmdmapui.c:104
+msgid "watch current object"
+msgstr "현재 오브젝트 들여다 보기"
+
+#: gnopi/cmdmapui.c:105 srcore/srctrl.c:1353
+msgid "unwatch all objects"
+msgstr "모든 오브젝트 들여다 보기 해제"
+
+#: gnopi/cmdmapui.c:107
+msgid "mouse left press"
+msgstr "마우스 왼쪽 단추 누르기"
+
+#: gnopi/cmdmapui.c:108
+msgid "mouse left click"
+msgstr "마우스 왼쪽 단추 클릭"
+
+#: gnopi/cmdmapui.c:109
+msgid "mouse left release"
+msgstr "마우스 왼쪽 단추 떼기"
+
+#: gnopi/cmdmapui.c:110
+msgid "mouse right press"
+msgstr "마우스 오른쪽 단추 클릭"
+
+#: gnopi/cmdmapui.c:111
+msgid "mouse right click"
+msgstr "마우스 오른쪽 단추 누르기"
+
+#: gnopi/cmdmapui.c:112
+msgid "mouse right release"
+msgstr "마우스 오른쪽 단추 떼기"
+
+#: gnopi/cmdmapui.c:113
+msgid "mouse middle press"
+msgstr "마우스 가운데 단추 누르기"
+
+#: gnopi/cmdmapui.c:114
+msgid "mouse middle release"
+msgstr "마우스 가운데 단추 떼기"
+
+#: gnopi/cmdmapui.c:115
+msgid "mouse middle click"
+msgstr "마우스 가운데 단추 클릭"
+
+#: gnopi/cmdmapui.c:116
+msgid "mouse goto current"
+msgstr "마우스 현재로 이동"
+
+#: gnopi/cmdmapui.c:118
+msgid "shutup"
+msgstr "조용히"
+
+#: gnopi/cmdmapui.c:119
+msgid "pause/resume"
+msgstr "일시 정지/다시 시작"
+
+#: gnopi/cmdmapui.c:121
+msgid "char left"
+msgstr "문자 왼쪽"
+
+#: gnopi/cmdmapui.c:122
+msgid "char right"
+msgstr "문자 오른쪽"
+
+#: gnopi/cmdmapui.c:123
+msgid "display left"
+msgstr "왼쪽 보여주기"
+
+#: gnopi/cmdmapui.c:124
+msgid "display right"
+msgstr "오른쪽 보여주기"
+
+#: gnopi/cmdmapui.c:126
+msgid "braille on/off"
+msgstr "점자 켜기/끄기"
+
+#: gnopi/cmdmapui.c:127
+msgid "speech on/off"
+msgstr "음성 켜기/끄기"
+
+#: gnopi/cmdmapui.c:128
+msgid "magnifier on/off"
+msgstr "돋보기 켜기/끄기"
+
+#: gnopi/cmdmapui.c:129
+msgid "braille monitor on/off"
+msgstr "점자 모니터 켜기/끄기"
+
+#: gnopi/cmdmapui.c:143
+msgid "A"
+msgstr "A"
+
+#: gnopi/cmdmapui.c:144
+msgid "B"
+msgstr "B"
+
+#: gnopi/cmdmapui.c:145
+msgid "C"
+msgstr "C"
+
+#: gnopi/cmdmapui.c:146
+msgid "D"
+msgstr "D"
+
+#: gnopi/cmdmapui.c:147
+msgid "E"
+msgstr "E"
+
+#: gnopi/cmdmapui.c:148
+msgid "F"
+msgstr "F"
+
+#: gnopi/cmdmapui.c:149
+msgid "G"
+msgstr "G"
+
+#: gnopi/cmdmapui.c:150
+msgid "H"
+msgstr "H"
+
+#: gnopi/cmdmapui.c:151
+msgid "I"
+msgstr "I"
+
+#: gnopi/cmdmapui.c:152
+msgid "J"
+msgstr "J"
+
+#: gnopi/cmdmapui.c:153
+msgid "K"
+msgstr "K"
+
+#: gnopi/cmdmapui.c:154
+msgid "L"
+msgstr "L"
+
+#: gnopi/cmdmapui.c:155
+msgid "M"
+msgstr "M"
+
+#: gnopi/cmdmapui.c:156
+msgid "N"
+msgstr "N"
+
+#: gnopi/cmdmapui.c:157
+msgid "O"
+msgstr "O"
+
+#: gnopi/cmdmapui.c:158
+msgid "P"
+msgstr "P"
+
+#: gnopi/cmdmapui.c:159
+msgid "Q"
+msgstr "Q"
+
+#: gnopi/cmdmapui.c:160
+msgid "R"
+msgstr "R"
+
+#: gnopi/cmdmapui.c:161
+msgid "S"
+msgstr "S"
+
+#: gnopi/cmdmapui.c:162
+msgid "T"
+msgstr "T"
+
+#: gnopi/cmdmapui.c:163
+msgid "U"
+msgstr "U"
+
+#: gnopi/cmdmapui.c:164
+msgid "V"
+msgstr "V"
+
+#: gnopi/cmdmapui.c:165
+msgid "W"
+msgstr "W"
+
+#: gnopi/cmdmapui.c:166
+msgid "X"
+msgstr "X"
+
+#: gnopi/cmdmapui.c:167
+msgid "Y"
+msgstr "Y"
+
+#: gnopi/cmdmapui.c:168
+msgid "Z"
+msgstr "Z"
+
+#: gnopi/cmdmapui.c:169
+msgid "F1"
+msgstr "F1"
+
+#: gnopi/cmdmapui.c:170
+msgid "F2"
+msgstr "F2"
+
+#: gnopi/cmdmapui.c:171
+msgid "F3"
+msgstr "F3"
+
+#: gnopi/cmdmapui.c:172
+msgid "F4"
+msgstr "F4"
+
+#: gnopi/cmdmapui.c:173
+msgid "F5"
+msgstr "F5"
+
+#: gnopi/cmdmapui.c:174
+msgid "F6"
+msgstr "F6"
+
+#: gnopi/cmdmapui.c:175
+msgid "F7"
+msgstr "F7"
+
+#: gnopi/cmdmapui.c:176
+msgid "F8"
+msgstr "F8"
+
+#: gnopi/cmdmapui.c:177
+msgid "F9"
+msgstr "F9"
+
+#: gnopi/cmdmapui.c:178
+msgid "F10"
+msgstr "F10"
+
+#: gnopi/cmdmapui.c:179
+msgid "F11"
+msgstr "F11"
+
+#: gnopi/cmdmapui.c:180
+msgid "F12"
+msgstr "F12"
+
+#: gnopi/cmdmapui.c:181
+msgid "0"
+msgstr "0"
+
+#: gnopi/cmdmapui.c:182
+msgid "1"
+msgstr "1"
+
+#: gnopi/cmdmapui.c:183
+msgid "2"
+msgstr "2"
+
+#: gnopi/cmdmapui.c:184
+msgid "3"
+msgstr "3"
+
+#: gnopi/cmdmapui.c:185
+msgid "4"
+msgstr "4"
+
+#: gnopi/cmdmapui.c:186
+msgid "5"
+msgstr "5"
+
+#: gnopi/cmdmapui.c:187
+msgid "6"
+msgstr "6"
+
+#: gnopi/cmdmapui.c:188
+msgid "7"
+msgstr "7"
+
+#: gnopi/cmdmapui.c:189
+msgid "8"
+msgstr "8"
+
+#: gnopi/cmdmapui.c:190
+msgid "9"
+msgstr "9"
+
+#: gnopi/cmdmapui.c:191
+msgid "apostrophe"
+msgstr "아포스트로피"
+
+#: gnopi/cmdmapui.c:192
+msgid "backslash"
+msgstr "백슬래쉬"
+
+#: gnopi/cmdmapui.c:193
+msgid "bracket left"
+msgstr "대괄호 왼쪽"
+
+#: gnopi/cmdmapui.c:194
+msgid "bracket right"
+msgstr "대괄호 오른쪽"
+
+#: gnopi/cmdmapui.c:195
+msgid "comma"
+msgstr "쉼표"
+
+#: gnopi/cmdmapui.c:196
+msgid "equal"
+msgstr "등호"
+
+#: gnopi/cmdmapui.c:197
+msgid "grave"
+msgstr "따옴표"
+
+#: gnopi/cmdmapui.c:198
+msgid "minus"
+msgstr "빼기"
+
+#: gnopi/cmdmapui.c:199
+msgid "period"
+msgstr "마침표"
+
+#: gnopi/cmdmapui.c:200
+msgid "quote left"
+msgstr "따옴표 왼쪽"
+
+#: gnopi/cmdmapui.c:201
+msgid "semicolon"
+msgstr "세미콜론"
+
+#: gnopi/cmdmapui.c:202
+msgid "slash"
+msgstr "슬래쉬"
+
+#: gnopi/cmdmapui.c:1133
+msgid "Invalid key or existent key."
+msgstr "키가 잘못되었거나 이미 존재하는 키입니다."
+
+#: gnopi/cmdmapui.c:1562
+msgid "Layer Keys"
+msgstr "레이어 키"
+
+#: gnopi/cmdmapui.c:1582
+msgid "User Keys"
+msgstr "사용자 키"
+
+#: gnopi/coreconf.c:248
+#, c-format
+msgid "Failed to set exit val: %d."
+msgstr "끝내기 값을 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:290
+#, c-format
+msgid "Failed to set move mouse: %d."
+msgstr "마우스 움직임을 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:299
+#, c-format
+msgid "Failed to set simulate click: %d."
+msgstr "클릭 흉내내기를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:308
+#, c-format
+msgid "Failed to set find text: %s."
+msgstr "텍스트 찾기를 설정하는 데 실패했습니다 text: %s."
+
+#: gnopi/coreconf.c:318
+#, c-format
+msgid "Failed to set magnifier status: %d."
+msgstr "돋보기 상태를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:327
+#, c-format
+msgid "Failed to set speech status: %d."
+msgstr "음성 상태를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:336
+#, c-format
+msgid "Failed to set braille status: %d."
+msgstr "점자 상태를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:345
+#, c-format
+msgid "Failed to set braille monitor status: %d."
+msgstr "점자 모니터 상태를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:354
+#, c-format
+msgid "Failed to set minimize flag: %d."
+msgstr "최소화 플래그를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:363
+#, c-format
+msgid "Failed to set exit ack: %d."
+msgstr "끝내기 알림을 설정하는 데 실패했습니다: %d."
+
+#: gnopi/coreconf.c:372
+#, c-format
+msgid "Failed to set language: %s."
+msgstr "언어를 설정하는 데 실패했습니다: %s."
+
+#: gnopi/coreconf.c:381
+#, c-format
+msgid "Failed to set screen review: %d."
+msgstr "화면 다시 보기를 설정하는 데 실패했습니다: %d."
+
+#: gnopi/defui.c:73
+#, c-format
+msgid "Are you sure you want to load default values for %s?"
+msgstr "정말로 %s에 대한 기본값을 읽어들이시겠습니까?"
+
+#: gnopi/defui.c:100
+msgid "braille"
+msgstr "점자"
+
+#: gnopi/defui.c:116
+msgid "Braille default setting loaded."
+msgstr "점자 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:125
+msgid "speech"
+msgstr "음성"
+
+#: gnopi/defui.c:133
+msgid "Speech default setting loaded."
+msgstr "음성 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:142
+msgid "magnifier"
+msgstr "돋보기"
+
+#: gnopi/defui.c:156
+msgid "Magnifier default setting loaded."
+msgstr "돋보기 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:165
+msgid "keyboard"
+msgstr "키보드"
+
+#: gnopi/defui.c:173
+msgid "Keyboard default setting loaded."
+msgstr "키보드 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:182
+msgid "braille monitor"
+msgstr "점자 모니터"
+
+#: gnopi/defui.c:189
+msgid "Braille monitor default setting loaded."
+msgstr "점자 모니터 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:198
+msgid "start up"
+msgstr "시작"
+
+#: gnopi/defui.c:207
+msgid "Startup default setting loaded."
+msgstr "시작 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:217
+msgid "command map"
+msgstr "명령어 매핑"
+
+#: gnopi/defui.c:225
+msgid "Command map default setting loaded."
+msgstr "명령어 맵 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:235
+msgid "presentation"
+msgstr "표현"
+
+#: gnopi/defui.c:241
+msgid "Presentation default setting loaded."
+msgstr "표현 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:250
+msgid "screen review"
+msgstr "화면 다시 보기"
+
+#: gnopi/defui.c:256
+msgid "Screen review default setting loaded."
+msgstr "화면 다시 읽기 기본값을 읽어들였습니다."
+
+#: gnopi/defui.c:279
+msgid "all modules"
+msgstr "모든 모듈"
+
+#: gnopi/defui.c:282
+msgid "All default settings loaded."
+msgstr "모든 설정 기본값을 읽어들였습니다."
+
+#: gnopi/genui.c:66
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:12
+msgid "_Braille"
+msgstr "점자(_B)"
+
+#: gnopi/genui.c:69
+msgid "_Braille (unavailable)"
+msgstr "점자 (사용할 수 없음)(_B)"
+
+#: gnopi/genui.c:74
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:13
+msgid "_Magnifier"
+msgstr "돋보기(_M)"
+
+#: gnopi/genui.c:77
+msgid "_Magnifier (unavailable)"
+msgstr "돋보기 (사용할 수 없음)(_M)"
+
+#: gnopi/genui.c:82
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:14
+msgid "_Speech"
+msgstr "음성(_S)"
+
+#: gnopi/genui.c:85
+msgid "_Speech (unavailable)"
+msgstr "음성 (사용할 수 없음)(_S)"
+
+#: gnopi/genui.c:90
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:4
+msgid "B_raille monitor"
+msgstr "점자 모니터(_R)"
+
+#: gnopi/genui.c:93
+msgid "B_raille monitor (unavailable)"
+msgstr "점자 모니터 (사용할 수 없음)(_R)"
+
+#: gnopi/gnopernicus.desktop.in.h:1
+msgid "Assistive Technologies for Blind and Visually Impaired"
+msgstr "시각 장애자를 위한 보조 기술"
+
+#: gnopi/gnopernicus.desktop.in.h:2
+msgid "Screen Reader and Magnifier"
+msgstr "스크린 읽어주기 프로그램 및 돋보기"
+
+#: gnopi/gnopi.c:302
+msgid "gnopernicus"
+msgstr "gnopernicus"
+
+#: gnopi/gnopi.c:309
+msgid "Gconf initialization failed."
+msgstr "Gconf 초기화 실패."
+
+#: gnopi/gnopi.c:316
+msgid "Invalid parameters."
+msgstr "파라미터가 잘못되었습니다."
+
+#: gnopi/gnopi.c:322
+msgid "Multiple instances are NOT ALLOWED. This instance will end."
+msgstr "여러 개의 인스턴스를 실행하면 안 됩니다. 이 인스턴스를 끝냅니다."
+
+#: gnopi/gnopi.c:328
+msgid "GTK initialization failed."
+msgstr "GTK 초기화 실패."
+
+#: gnopi/gnopi.c:334
+msgid "Can not create a new process."
+msgstr "새 프로세스를 만들 수 없습니다."
+
+#: gnopi/gnopi.c:344
+msgid "Exit gnopernicus."
+msgstr "Gnopernicus를 끝냅니다."
+
+#: gnopi/gnopi.c:352
+msgid "Gnopernicus initialization failed."
+msgstr "Gnopernicus 초기화 실패."
+
+#: gnopi/gnopi.c:359
+msgid "Can not load .glade2 file"
+msgstr ".glade2 파일을 읽어들일 수 없습니다."
+
+#. if (WIFSIGNALED (gn_srcore_status) != 0)
+#. sru_message ("signal no: %d", WTERMSIG (gn_srcore_status));
+#: gnopi/gnopi.c:659
+msgid "srcore exited."
+msgstr "화면 읽기 코어를 끝냅니다."
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:1
+msgid "<b>Color</b>"
+msgstr "<b>색</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:2
+msgid "<b>Font</b>"
+msgstr "<b>글꼴</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:3
+msgid "<b>Mode Type</b>"
+msgstr "<b>모드 종류</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:4
+msgid "<b>Position</b>"
+msgstr "<b>위치</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:5
+msgid "<b>Size</b>"
+msgstr "<b>크기</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:6
+msgid "B_raille"
+msgstr "점자(_R)"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:7
+msgid "Braille Monitor Preferences"
+msgstr "점자 모니터 기본 설정"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:8
+msgid "Color selection for texts which use dot 7"
+msgstr "점 7을 사용하는 텍스트에 대한 색 선택"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:9
+msgid "Color selection for texts which use dot 8"
+msgstr "점 8을 사용하는 텍스트에 대한 색 선택"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:10
+msgid "Color selection for texts which use dots 7 and 8"
+msgstr "점 7 및 점 8을 사용하는 텍스트에 대한 색 선택"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:11
+msgid "Colu_mns:"
+msgstr "열(_M):"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:12
+msgid "Display at bottom of screen"
+msgstr "화면의 맨 아래 보여주기"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:13
+msgid "Display on top of screen"
+msgstr "화면의 맨 위 보여주기"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:14
+msgid "Display using braille font"
+msgstr "점자 글꼴을 이용해 보여주기"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:15
+msgid "Display using normal font"
+msgstr "일반 글꼴을 이용해 보여주기"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:16
+msgid "Display with both fonts"
+msgstr "모든 글꼴을 이용해 보여주기"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:17
+msgid "Dot 7:"
+msgstr "점 7:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:18
+msgid "Dot 8:"
+msgstr "점 8:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:19
+msgid "Dots 78:"
+msgstr "점 78:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:20
+msgid "Number of cell columns"
+msgstr "셀 열의 개수"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:21
+msgid "Number of cell lines"
+msgstr "셀 줄의 개수"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:22
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:43
+msgid "Pick a color"
+msgstr "색 선택"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:23
+msgid "Size of font"
+msgstr "글꼴의 크기"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:24
+msgid "Use system theme colors"
+msgstr "시스템 테마 색 사용"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:25
+msgid "Use theme _system colors"
+msgstr "시스템 테마 색 사용(_S)"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:26
+msgid "_Dual"
+msgstr "듀얼(_D)"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:27
+msgid "_Lines:"
+msgstr "줄(_L):"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:28
+msgid "_Normal"
+msgstr "보통(_N)"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:29
+msgid "_Size:"
+msgstr "크기(_S):"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:1
+msgid "Attributes"
+msgstr "속성"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:2
+msgid "_1. Dot 8"
+msgstr "_1. 점 8"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:3
+msgid "_2. Dot 7"
+msgstr "_2. 점 7"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:4
+msgid "_3. Dot 8 or 7"
+msgstr "_3. 점 8 혹은 7"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:5
+msgid "_4. Off"
+msgstr "_4. 끄기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:1
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:1
+#: gnopi/gnopi_files/Find/find.glade2.h:2
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:1
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:1
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:3
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:2
+msgid "Braille Device"
+msgstr "점자 장치"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:3
+msgid "Braille devices list"
+msgstr "점자 장치 목록"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:4
+msgid "Serial port number where the device is linked"
+msgstr "장치가 연결된 직렬 포트 번호"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:5
+msgid "_Device:"
+msgstr "장치(_D):"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:2
+msgid "10 _Font size"
+msgstr "10 글꼴 크기(_F)"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:3
+msgid "11 _Activate script function \"OnPosSwitch\""
+msgstr "11 스크립트 기능 \"OnPosSwitch\" 활성화(_A)"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:4
+msgid "12 _Present attributes"
+msgstr "12 현재 속성(_P)"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:5
+msgid "<b>_Braille keys list</b>"
+msgstr "<b>점자 키 목록(_B)</b>"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:6
+msgid "Activate script function \"OnPosSwitch\""
+msgstr "스크립트 기능 \"OnPosSwitch\" 활성화"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:7
+msgid "Add item in braille keys list"
+msgstr "점자 키 목록에 항목 더하기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:8
+msgid "Braille Display Key Mapping"
+msgstr "점자 장치 키 매핑"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:10
+msgid "Braille device keys list"
+msgstr "점자 장치 키 목록"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:11
+msgid "Braille keys list"
+msgstr "점자 키 목록"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:12
+msgid "Command List"
+msgstr "명령어 목록"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:13
+msgid "Command list"
+msgstr "명령어 목록"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:14
+msgid "Font name"
+msgstr "글꼴 이름"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:15
+msgid "Font size"
+msgstr "글꼴 크기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:16
+msgid "Font style"
+msgstr "글꼴 모양새"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:17
+msgid "Modify selected item"
+msgstr "선택한 항목 고치기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:18
+msgid "Move caret"
+msgstr "캐럿 이동"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:19
+msgid "Move mouse and click left"
+msgstr "마우스 이동 및 왼쪽 단추 클릭"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:20
+msgid "Move mouse and click left and right"
+msgstr "마우스 이동 및 왼쪽 오른쪽 단추 클릭"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:21
+msgid "Move mouse and click right"
+msgstr "마우스 이동 및 오른쪽 단추 클릭"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:22
+msgid "Only move mouse"
+msgstr "마우스 이동만"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:23
+msgid "Optical Sensors"
+msgstr "눈 추적 센서"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:24
+msgid "Optical sensors off"
+msgstr "눈 추적 센서 끄기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:25
+msgid "Position Sensors"
+msgstr "위치 센서"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:26
+msgid "Position sensors off"
+msgstr "위치 센서 끄기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:27
+msgid "Present attributes"
+msgstr "현재 속성"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:28
+msgid "Remove selected item from braille keys list"
+msgstr "점자 키 목록에서 선택한 항목 지우기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:29
+msgid "Show X coordinate"
+msgstr "X 좌표 보이기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:30
+msgid "Show Y coordinate"
+msgstr "Y 좌표 보이기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:31
+msgid "_0 Optical sensors off"
+msgstr "_0 눈 추적 센서 끄기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:32
+msgid "_0 Position sensors off"
+msgstr "_0 위치 센서 끄기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:33
+msgid "_1 Only move mouse"
+msgstr "_1 마우스 이동만"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:34
+msgid "_2 Move mouse and click left"
+msgstr "_2 마우스 이동 및 왼쪽 단추 클릭"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:35
+msgid "_3 Move mouse and click right"
+msgstr "_3 마우스 이동 및 오른쪽 단추 클릭"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:36
+msgid "_4 Move mouse and click left or right"
+msgstr "_4 마우스 이동 및 왼쪽 오른쪽 단추 클릭"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:37
+msgid "_5 Move caret"
+msgstr "_5 캐럿 이동"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:38
+msgid "_6 Show X coordinate"
+msgstr "_6 X 좌표 보이기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:39
+msgid "_7 Show Y coordinate"
+msgstr "_7 Y 좌표 보이기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:40
+msgid "_8 Font style"
+msgstr "_8 글꼴 스타일"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:41
+msgid "_9 Font name"
+msgstr "_9 글꼴 이름"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:42
+msgid "_Commands:"
+msgstr "명령어(_C):"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:43
+msgid "_Device key:"
+msgstr "장치 키(_D):"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:44
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:85
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:28
+msgid "_Modify"
+msgstr "고치기(_M)"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:1
+msgid "Braille Preferences"
+msgstr "점자 기본 설정"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:2
+msgid "Close braille settings"
+msgstr "점자 설정 닫기"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:3
+msgid "Map function for display keys"
+msgstr "표시 키에 대한 맵 기능"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:4
+msgid "Select braille device"
+msgstr "점자 장치 선택"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:5
+msgid "Select braille style 8/6 dots"
+msgstr "점자 스타일 8/6점 선택"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:6
+msgid "Select cursor setting FullCell/UnderLined/NoCursor"
+msgstr "커서 설정 사각형/밑줄/커서 없음을 선택합니다"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:7
+msgid "Select translation table for braille device"
+msgstr "점자 장치에 대한 변환 테이블 선택"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:8
+msgid "_1 Braille Device"
+msgstr "_1 점자 장치"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:9
+msgid "_2 Translation Table"
+msgstr "_2 변환 테이블"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:10
+msgid "_3 Braille Style"
+msgstr "_3 점자 스타일"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:11
+msgid "_4 Cursor Preferences"
+msgstr "_4 커서 기본 설정"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:12
+msgid "_5 Braille Key Mapping"
+msgstr "_5 점자 키 매핑"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:1
+msgid "Braille Style"
+msgstr "점자 스타일"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:2
+msgid "Use 6 dots"
+msgstr "6점 사용"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:3
+msgid "Use 8 dots"
+msgstr "8점 사용"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:4
+msgid "_6 Dot Braille"
+msgstr "_6점 점자"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:5
+msgid "_8 Dot Braille"
+msgstr "_8점 점자"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:1
+msgid "Cursor Preferences"
+msgstr "커서 기본 설정"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:2
+msgid "Cursor on braille display is a full cell"
+msgstr "점자 표시의 커서가 사각형입니다"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:3
+msgid "Cursor on braille display is an underline"
+msgstr "점자 표시의 커서가 밑줄입니다"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:4
+msgid "No cursor on braille display"
+msgstr "점자 표시에 커서 없음"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:5
+msgid "_Full cell cursor"
+msgstr "사각형 커서(_F)"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:6
+msgid "_No cursor"
+msgstr "커서 없음(_N)"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:7
+msgid "_Underline cursor (dots 7 and 8)"
+msgstr "밑줄 커서 (점 7 및 8)(_U)"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:1
+msgid "Translation Table"
+msgstr "변환 테이블"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:2
+msgid "Translation table list"
+msgstr "변환 테이블 목록"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:3
+msgid "_Select language:"
+msgstr "언어 선택(_S):"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:1
+msgid "   "
+msgstr "   "
+
+#: gnopi/gnopi_files/Find/find.glade2.h:3
+msgid "<b>Fi_nd Text:</b>"
+msgstr "<b>텍스트 찾기(_N):</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:4
+msgid "<b>Find Attributes:</b>"
+msgstr "<b>속성 찾기:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:5
+msgid "<b>Match</b>"
+msgstr "<b>맞추기</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:6
+msgid "<b>Scope</b>"
+msgstr "<b>범위</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:7
+msgid "<b>Search For</b>"
+msgstr "<b>찾을 대상</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:8
+msgid "A_ll chosen attributes"
+msgstr "선택한 모든 속성(_L)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:9
+msgid "A_ny chosen attributes"
+msgstr "선택한 속성 중 1개라도(_N)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:10
+msgid "A_ttribute"
+msgstr "속성(_T)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:11
+msgid "Bold"
+msgstr "굵게"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:12
+msgid "Case _sensitive"
+msgstr "대소문자 구별(_S)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:13
+msgid "Case sensitive on/off"
+msgstr "대소문자 구별 하기/안 하기"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:14
+msgid "Italic"
+msgstr "이탤릭"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:15
+msgid "S_elected"
+msgstr "선택됨(_E)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:16
+msgid "Scope area is a desktop"
+msgstr "찾을 범위가 바탕화면입니다"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:17
+msgid "Scope area is a window"
+msgstr "찾을 범위가 창입니다"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:18
+msgid "Scope area is an application"
+msgstr "찾을 범위가 프로그램입니다"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:19
+msgid "Search Preferences"
+msgstr "찾기 기본 설정"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:20
+msgid "Search criteria is a graphics"
+msgstr "찾기 기준이 그래픽입니다"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:21
+msgid "Search criteria is a text"
+msgstr "찾기 기준이 텍스트입니다"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:22
+msgid "Search criteria is an attribute"
+msgstr "찾기 기준이 속성입니다"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:23
+msgid "Selected item"
+msgstr "선택한 항목"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:24
+msgid "Stri_kethrough"
+msgstr "취소선(_K)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:25
+msgid "Strikethrough"
+msgstr "취소선"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:26
+msgid "Te_xt"
+msgstr "텍스트(_X)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:27
+msgid "Text to search"
+msgstr "찾을 텍스트"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:28
+msgid "Underline"
+msgstr "밑줄"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:29
+msgid "_Application"
+msgstr "프로그램(_A)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:30
+msgid "_Bold"
+msgstr "굵은 글씨(_B)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:31
+msgid "_Desktop"
+msgstr "바탕화면(_D)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:32
+msgid "_Graphics"
+msgstr "그래픽(_G)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:33
+msgid "_Italic"
+msgstr "이탤릭(_I)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:34
+msgid "_Underline"
+msgstr "밑줄(_U)"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:35
+msgid "_Window"
+msgstr "창(_W)"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:1
+msgid "    "
+msgstr "    "
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:2
+msgid "<b>Active Components</b>"
+msgstr "<b>활성화된 구성 요소</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:3
+msgid "<b>Startup</b>"
+msgstr "<b>시작</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:5
+msgid "Braille monitor on/off"
+msgstr "점자 모니터 켜기/끄기"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:6
+msgid "Braille on/off"
+msgstr "점자 켜기/끄기"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:7
+msgid "Magnifier on/off"
+msgstr "돋보기 켜기/끄기"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:8
+msgid "Speech on/off"
+msgstr "음성 켜기/끄기"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:9
+msgid "Start gnopernicus minimized"
+msgstr "gnopernicus를 최소화된 상태로 시작(_I)"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:10
+msgid "Start m_inimized"
+msgstr "최소화된 상태로 시작(_I)"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:11
+msgid "Startup Mode"
+msgstr "시작 모드"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:1
+msgid "Mouse Preferences"
+msgstr "마우스 기본 설정"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:2
+msgid "Simulate click on current object"
+msgstr "현재 오브젝트에 대해 클릭 흉내내기"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:3
+msgid "Take mouse at current object"
+msgstr "현재 오브젝트에 마우스 놓기"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:4
+msgid "_Simulate click on current object"
+msgstr "현재 오브젝트에 대해 클릭 흉내내기(_S)"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:5
+msgid "_Take mouse at current object"
+msgstr "현재 오브젝트에 마우스 놓기(_T)"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:1
+msgid "Close \"Load Default Preferences\""
+msgstr "\"기본 설정 기본값 읽어들이기\"를 닫기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:2
+msgid "Load Default Preferences"
+msgstr "기본 설정 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:3
+msgid "Load Default Settings"
+msgstr "설정 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:4
+msgid "Load all defaults"
+msgstr "모든 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:5
+msgid "Load braille defaults"
+msgstr "점자 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:6
+msgid "Load braille monitor defaults"
+msgstr "점자 모니터 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:7
+msgid "Load command map defaults"
+msgstr "명령어 맵 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:8
+msgid "Load magnifier defaults"
+msgstr "돋보기 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:9
+msgid "Load mouse defaults"
+msgstr "마우스 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:10
+msgid "Load presentation defaults"
+msgstr "표현 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:11
+msgid "Load screen review defaults"
+msgstr "화면 다시 보기 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:12
+msgid "Load speech defaults"
+msgstr "음성 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:13
+msgid "Load startup mode defaults"
+msgstr "시작 모드 기본값 읽어들이기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:14
+msgid "_0 All"
+msgstr "_0 모두"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:15
+msgid "_1 Braille"
+msgstr "_1 점자"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:16
+msgid "_2 Speech"
+msgstr "_2 음성"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:17
+#: gnopi/gnopi_files/gnopi.glade2.h:33
+msgid "_3 Magnifier"
+msgstr "_3 돋보기"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:18
+msgid "_4 Keyboard"
+msgstr "_4 키보드"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:19
+#: gnopi/gnopi_files/gnopi.glade2.h:36
+msgid "_5 Braille Monitor"
+msgstr "_5 점자 모니터"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:20
+msgid "_6 Startup"
+msgstr "_6 시작"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:21
+msgid "_7 Command Map"
+msgstr "_7 명령어 맵"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:22
+msgid "_8 Presentation"
+msgstr "_8 표현"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:23
+msgid "_9 Screen Review"
+msgstr "_9 화면 다시 보기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:2
+msgid "<b>Border settings</b>"
+msgstr "<b>테두리 설정</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:3
+msgid "<b>Cross-hair</b>"
+msgstr "<b>십자선</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:4
+msgid "<b>Cursor setting</b>"
+msgstr "<b>커서 설정</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:5
+msgid "<b>Display screen</b>"
+msgstr "<b>표시 화면</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:6
+msgid "<b>Focus tracking mode</b>"
+msgstr "<b>포커스 추적 모드</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:7
+msgid "<b>Mo_use tracking mode</b>"
+msgstr "<b>마우스 추적 모드(_U)</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:8
+msgid "<b>S_moothing</b>"
+msgstr "<b>부드럽게(_M)</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:9
+msgid "<b>Zoomer placement</b>"
+msgstr "<b>돋보기 놓기</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:10
+msgid "<b>Zoomfactor</b>"
+msgstr "<b>확대/축소 비율</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:11
+msgid "<b>_Zoomer list</b>"
+msgstr "<b>돋보기 목록(_Z)</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:12
+msgid "Bor_der size:"
+msgstr "테두리 크기(_D):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:13
+msgid "Border c_olor:"
+msgstr "테두리 색(_O):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:14
+msgid "Border color"
+msgstr "테두리 색"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:15
+msgid "Border size"
+msgstr "테두리 크기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:16
+msgid "C_entered"
+msgstr "가운데(_E)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:17
+msgid "C_ursor on/off"
+msgstr "커서 켜기/끄기(_U)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:18
+msgid "Cross-ha_ir size:"
+msgstr "십자선 크기(_I):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:19
+msgid "Cross-hair c_lip on/off"
+msgstr "십자선 클립 켜기/끄기(_L)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:20
+msgid "Cross-hair colo_r:"
+msgstr "십자선 색(_R):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:21
+msgid "Cross-hair color in_verted"
+msgstr "십자선 색 반전(_V)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:22
+msgid "Cross-hair o_n/off"
+msgstr "십자선 켜기/끄기(_N)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:23
+msgid "Crosshair clip on/off"
+msgstr "십자선 클립 켜기/끄기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:24
+msgid "Crosshair color"
+msgstr "십자선 색"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:25
+msgid "Crosshair on/off"
+msgstr "십자선 켜기/끄기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:26
+msgid "Crosshair size"
+msgstr "십자선 크기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:27
+msgid "Cursor _size:"
+msgstr "커서 크기(_S):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:28
+msgid "Cursor c_olor:"
+msgstr "커서 색(_O):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:29
+msgid "Cursor color"
+msgstr "커서 색"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:30
+msgid "Cursor magnification"
+msgstr "커서 확대"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:31
+msgid "Cursor on/off"
+msgstr "커서 켜기/끄기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:32
+msgid "Cursor size"
+msgstr "커서 크기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:33
+msgid "Display screen source"
+msgstr "화면 표시 원본"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:34
+msgid "Display screen target"
+msgstr "화면 표시 목표"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:35
+msgid "Invert crosshair color"
+msgstr "십자선 색 반전"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:36
+msgid "Invert on/off"
+msgstr "반전 켜기/끄기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:37
+msgid "Lock zoom _factor"
+msgstr "확대/축소 비율 잠그기(_F)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:38
+msgid "Lock zoom factor"
+msgstr "확대/축소 비율 잠그기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:39
+msgid "Magnifier Preferences"
+msgstr "돋보기 기본 설정"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:40
+msgid "Magnifier settings"
+msgstr "돋보기 설정"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:41
+msgid "Mouse tracking type"
+msgstr "마우스 추적 모드"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:42
+msgid "Panning on/off"
+msgstr "패닝 켜기/끄기"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:44
+msgid "Set cursor separate from _magnification"
+msgstr "커서는 돋보기와 상관없음(_M)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:45
+msgid "Smoothing type"
+msgstr "부드러움 종류"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:46
+msgid "Tar_get:"
+msgstr "목표(_G):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:47
+msgid "Zoom factor X"
+msgstr "확대/축소 비율 X"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:48
+msgid "Zoom factor Y"
+msgstr "확대/축소 비율 Y"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:49
+msgid "Zoom factor _X:"
+msgstr "확대/축소 비율 가로(_X):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:50
+msgid "Zoom factor _Y:"
+msgstr "확대/축소 비율 세로(_Y):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:51
+msgid "Zoomer Options"
+msgstr "돋보기 옵션"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:52
+msgid "Zoomer placement bottom"
+msgstr "돋보기 놓기 아래"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:53
+msgid "Zoomer placement left"
+msgstr "돋보기 놓기 왼쪽"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:54
+msgid "Zoomer placement right"
+msgstr "돋보기 놓기 오른쪽"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:55
+msgid "Zoomer placement top"
+msgstr "돋보기 놓기 위"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:56
+msgid "Zoomers list"
+msgstr "돋보기 목록"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:57
+msgid "_Add/Modify"
+msgstr "더하기/고치기(_A)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:58
+msgid "_Auto"
+msgstr "자동(_A)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:59
+msgid "_Bottom:"
+msgstr "아래(_B):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:60
+msgid "_Invert"
+msgstr "반전(_I)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:61
+msgid "_Left:"
+msgstr "왼쪽(_L):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:62
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:87
+msgid "_None"
+msgstr "없음(_N)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:63
+msgid "_Panning"
+msgstr "패닝(_P)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:64
+msgid "_Remove"
+msgstr "지우기(_R)"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:65
+msgid "_Right:"
+msgstr "오른쪽(_R):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:66
+msgid "_Source:"
+msgstr "원본(_S):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:67
+msgid "_Top:"
+msgstr "위(_T):"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:68
+#: gnopi/magui.c:49
+msgid "bilinear"
+msgstr "쌍일차"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:69
+#: gnopi/magui.c:61
+msgid "centered"
+msgstr "가운데"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:70
+#: gnopi/magui.c:48 gnopi/magui.c:63
+msgid "none"
+msgstr "없음"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:71
+#: gnopi/magui.c:62
+msgid "proportional"
+msgstr "비례"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:72
+#: gnopi/magui.c:60
+msgid "push"
+msgstr "푸시"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:2
+msgid "Expert"
+msgstr "전문가"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:3
+msgid "Mode selected:"
+msgstr "모드 선택:"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:4
+msgid "Presentation"
+msgstr "표현"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:5
+#: srcore/default.xml.in.h:10 srcore/verbose.xml.in.h:10
+msgid "Verbose"
+msgstr "말 많이"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:1
+msgid "<b>Horizontal flags</b>"
+msgstr "<b>가로 플래그</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:2
+msgid "<b>Vertical flags</b>"
+msgstr "<b>세로 플래그</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:3
+msgid "Add all empty lines"
+msgstr "빈 줄 모두 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:4
+msgid "Add all spaces"
+msgstr "공백 모두 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:5
+msgid "Add all spaces and empty lines"
+msgstr "공백과 빈 줄 모두 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:6
+msgid "Add embedded empty lines"
+msgstr "포함된 빈 줄 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:7
+msgid "Add embedded spaces"
+msgstr "포함된 공백 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:8
+msgid "Add leading empty lines"
+msgstr "앞에 오는 빈 줄 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:9
+msgid "Add leading spaces"
+msgstr "앞에 오는 공백 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:10
+msgid "Add trailing empty lines"
+msgstr "뒤에 오는 빈 줄 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:11
+msgid "Add trailing spaces"
+msgstr "뒤에 오는 공백 더하기"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:12
+msgid "All _horizontal"
+msgstr "가로 모두(_H)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:13
+msgid "All _vertical"
+msgstr "세로 모두(_V)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:14
+msgid "Count em_pty lines"
+msgstr "빈 줄 카운트(_P)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:15
+msgid "Count empty lines"
+msgstr "빈 줄 카운트"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:16
+msgid "E_mbedded"
+msgstr "포함(_M)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:17
+msgid "Lea_ding"
+msgstr "앞에 오는(_D)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:18
+msgid "Screen Review Preferences"
+msgstr "화면 다시 보기 기본 설정"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:19
+msgid "T_railing"
+msgstr "뒤에 오는(_R)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:20
+msgid "_All flags"
+msgstr "모든 플래그(_A)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:21
+msgid "_Embedded"
+msgstr "포함(_E)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:22
+msgid "_Leading"
+msgstr "앞에 오는(_L)"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:23
+msgid "_Trailing"
+msgstr "뒤에 오는(_T)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:2
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:4
+msgid "<b><></b>"
+msgstr "<b><></b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:5
+msgid "<b>Absolute Value</b>"
+msgstr "<b>절대값</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:6
+msgid "<b>Driver</b>"
+msgstr "<b>드라이버</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:7
+msgid "<b>Properties</b>"
+msgstr "<b>등록 정보</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:8
+msgid "<b>Punctuation</b>"
+msgstr "<b>구두점</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:9
+msgid "<b>Relative Values</b>"
+msgstr "<b>비교값</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:10
+msgid "<b>Text Echo</b>"
+msgstr "<b>텍스트 에코</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:11
+msgid "<b>Voice</b>"
+msgstr "<b>목소리</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:12
+msgid "<b>_Dictionary</b>"
+msgstr "<b>사전(_D)</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:13
+msgid "<b>_Replacement:</b>"
+msgstr "<b>바꾸기(_R):</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:14
+msgid "<b>_Voice list</b>"
+msgstr "<b>목소리 목록(_V)</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:15
+msgid "<b>_Word:</b>"
+msgstr "<b>단어(_W):</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:16
+msgid "A_ll"
+msgstr "모두(_L)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:17
+msgid "Activate pitch"
+msgstr "음 높이 활성화"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:18
+msgid "Activate rate"
+msgstr "속도 활성화"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:19
+msgid "Activate volume"
+msgstr "볼륨 활성화"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:20
+msgid "Add / Modify Dictionary Entry"
+msgstr "사전 항목 더하기 / 고치기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:21
+msgid "Add / Modify Voice"
+msgstr "목소리 더하기 / 고치기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:22
+msgid "Add new item in voices list"
+msgstr "새 항목을 목소리 목록에 더합니다"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:23
+msgid "Add new word in dictionary"
+msgstr "새 단어를 사전에 더합니다"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:24
+msgid ""
+"Change for all voices the engine driver and the engine speaker with a "
+"selected driver and speaker"
+msgstr ""
+"모든 목소리에 대하여 엔진 드라이버와 엔진 스피커를 선택한 드라이버와 스피커"
+"로 바꿉니다"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:25
+msgid "Charac_ter"
+msgstr "문자(_T)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:26
+msgid "Count cha_racters"
+msgstr "문자 카운트(_R)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:27
+msgid "Count characters"
+msgstr "문자 카운트"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:28
+msgid "Decrease pitch"
+msgstr "음 높이 낮추기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:29
+msgid "Decrease rate"
+msgstr "속도 낮추기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:30
+msgid "Decrease volume"
+msgstr "볼륨 줄이기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:31
+msgid "Dictionary"
+msgstr "사전"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:32
+msgid "Dictionary list"
+msgstr "사전 목록"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:33
+msgid "Do not speak text"
+msgstr "텍스트 말하지 않기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:34
+msgid "Edit A_bsolute..."
+msgstr "절대값 편집(_B)..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:35
+msgid "Edit Absolute Voice Values"
+msgstr "절대 목소리 값 편집"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:36
+msgid "Edit R_elative..."
+msgstr "상대값 편집(_E)..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:37
+msgid "Edit Relative Voice Values"
+msgstr "상대 목소리 값 편집"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:38
+msgid "Edit dictionary"
+msgstr "사전 편집"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:39
+msgid "Edit parameter values absolutely"
+msgstr "파라미터 값을 절대값으로 편집"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:40
+msgid "Edit parameter values relatively"
+msgstr "파라미터 값을 상대값으로 편집"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:41
+msgid "Engine _driver:"
+msgstr "엔진 드라이버(_D):"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:42
+msgid "Engine _speaker:"
+msgstr "엔진 스피커(_S):"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:43
+msgid "Engine driver"
+msgstr "엔진 드라이버"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:44
+msgid "Engine speaker"
+msgstr "엔진 스피커"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:45
+msgid "Gnopernicus system voice"
+msgstr "Gnopernicus 시스템 목소리"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:46
+msgid "Hz"
+msgstr "헤르츠"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:47
+msgid "Ignore all punctuation"
+msgstr "구두점 모두 무시"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:48
+msgid "Increase pitch"
+msgstr "음 높이 높이기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:49
+msgid "Increase rate"
+msgstr "속도 높이기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:50
+msgid "Increase volume"
+msgstr "볼륨 높이기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:51
+msgid "Made pitch sensitive for changing"
+msgstr "음 높이가 바뀌도록 합니다"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:52
+msgid "Made rate sensitive for changing"
+msgstr "속도가 바뀌도록 합니다"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:53
+msgid "Made volume sensitive for changing"
+msgstr "볼륨이 바뀌도록 합니다"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:54
+msgid "Modify selected voice"
+msgstr "선택한 목소리 고치기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:55
+msgid "Modify word"
+msgstr "단어 고치기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:56
+#: gnopi/spvoiceui.c:2010
+msgid "Pitch"
+msgstr "음 높이"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:57
+#: gnopi/spvoiceui.c:2002
+msgid "Rate"
+msgstr "속도"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:58
+msgid "Remove selected voice from voices list"
+msgstr "목소리 목록에서 선택한 목소리를 지웁니다"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:59
+msgid "Remove word from dictionary"
+msgstr "사전에서 단어를 지웁니다"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:60
+msgid "Replecement"
+msgstr "바꾸기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:61
+msgid "Sa_y all navigation keys"
+msgstr "모든 네비게이션 키 말하기(_Y)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:62
+msgid "Say all modi_fiers"
+msgstr "조정 키 모두 말하기(_F)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:63
+msgid "Say all modifiers"
+msgstr "조정 키 모두 말하기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:64
+msgid "Say all navigation keys"
+msgstr "모든 네비게이션 키 말하기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:65
+msgid "Say all s_paces"
+msgstr "공백 모두 말하기(_P)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:66
+msgid "Say all spaces"
+msgstr "공백 모두 말하기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:67
+msgid "Say text as character"
+msgstr "텍스트를 문자로 말하기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:68
+msgid "Say text as word"
+msgstr "텍스트를 단어로 말하기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:69
+msgid "Set voices and the voice parameters"
+msgstr "목소리 및 목소리 파라미터 설정"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:70
+msgid "Show all punctuation"
+msgstr "모든 구두점 보여주기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:71
+msgid "Show most punctuation"
+msgstr "대부분의 구두점 보여주기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:72
+msgid "Show some punctuation"
+msgstr "일부 구두점 보여주기"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:73
+msgid "Speech Preferences"
+msgstr "음성 기본 설정"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:74
+msgid "Test selected voice"
+msgstr "선택한 목소리 테스트"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:75
+msgid "Use dictionary"
+msgstr "사전 사용"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:76
+msgid "Voice _name:"
+msgstr "목소리 이름(_N):"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:77
+msgid "Voice list"
+msgstr "목소리 목록"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:78
+msgid "Voices"
+msgstr "목소리"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:79
+#: gnopi/spvoiceui.c:1994
+msgid "Volume"
+msgstr "볼륨"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:80
+msgid "Word to replace"
+msgstr "바꿀 단어"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:81
+msgid "Word/Min"
+msgstr "단어/분"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:82
+msgid "_Dictionary..."
+msgstr "사전(_D)..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:83
+msgid "_Force All Voices to Selected Driver and Speaker"
+msgstr "모든 목소리를 선택한 드라이버와 스피커로 강제합니다(_F)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:84
+msgid "_Ignore"
+msgstr "무시(_I)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:86
+msgid "_Most"
+msgstr "대부분(_M)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:88
+msgid "_Pitch (Hz)"
+msgstr "음 높이 (Hz)(_P)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:89
+msgid "_Pitch:"
+msgstr "음 높이(_P):"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:90
+msgid "_Rate (words/min)"
+msgstr "속도 (단어/분)(_R)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:91
+msgid "_Rate:"
+msgstr "속도(_R):"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:92
+msgid "_Some"
+msgstr "일부(_S)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:93
+msgid "_Test voice"
+msgstr "목소리 테스트(_T)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:94
+msgid "_Use dictionary"
+msgstr "사전 사용(_U)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:95
+msgid "_Voices..."
+msgstr "목소리(_V)..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:97
+#, no-c-format
+msgid "_Volume (%)"
+msgstr "볼륨 (%)(_V)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:98
+msgid "_Volume:"
+msgstr "볼륨(_V):"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:99
+msgid "_Word"
+msgstr "단어(_W)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:100
+msgid "words/min"
+msgstr "단어/분"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:2
+msgid "<b>_Commands list</b>"
+msgstr "<b>명령어 목록(_C)</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:3
+msgid "<b>_Layers list</b>"
+msgstr "<b>레이어 목록(_L)</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:4
+msgid "<b>_User defined list</b>"
+msgstr "<b>사용자 정의 목록(_U)</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:5
+msgid "Add Layer Key"
+msgstr "레이어 키 더하기"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:6
+msgid "Add User Defined Key"
+msgstr "사용자 정의 키 더하기"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:7
+msgid "Add new item"
+msgstr "새 항목 더하기"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:8
+msgid "Alt modifier"
+msgstr "알트 조합 키"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:9
+msgid "Command Mapping"
+msgstr "명령어 매핑"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:10
+msgid "Commands List"
+msgstr "명령어 목록"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:11
+msgid "Control modifier"
+msgstr "컨트롤 조합 키"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:12
+msgid "Key number"
+msgstr "키 번호"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:13
+msgid "Keys list"
+msgstr "키 목록"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:14
+msgid "Layer command list"
+msgstr "레이어 명령어 목록"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:15
+msgid "Layer number"
+msgstr "레이어 번호"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:16
+msgid "Layers"
+msgstr "레이어"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:17
+msgid "List of gnopernicus commands"
+msgstr "Gnopernicus 명령어 목록"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:18
+msgid "Modify command for the selected item"
+msgstr "선택한 항목에 대해 명령어 고치기"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:19
+msgid "Remove selected item"
+msgstr "선택한 항목 지우기"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:20
+msgid "Shift modifier"
+msgstr "쉬프트 조합 키"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:21
+msgid "User Defined"
+msgstr "사용자 정의"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:22
+msgid "User defined commands list."
+msgstr "사용자 정의 명령어 목록."
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:23
+msgid "_Alt"
+msgstr "<Alt>(_A)"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:24
+msgid "_Ctrl"
+msgstr "<Ctrl>(_C)"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:25
+msgid "_Key:"
+msgstr "키(_K):"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:26
+msgid "_Layer:"
+msgstr "레이어(_L):"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:27
+msgid "_Modifier keys:"
+msgstr "조합 키(_M):"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:29
+msgid "_Shift"
+msgstr "<Shift>(_S)"
+
+#: gnopi/gnopi_files/about.glade2.h:1
+msgid "Screen Reader and Magnifier for the GNOME Desktop"
+msgstr "그놈 데스크탑의 화면 읽기 및 돋보기 프로그램"
+
+#: gnopi/gnopi_files/about.glade2.h:2
+msgid "translator_credits"
+msgstr "류창우 <cwryu debian.org>"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:1
+msgid ""
+"<b>Gnopernicus has detected that the assistive technology \n"
+"support is not enabled.</b>\n"
+msgstr ""
+"<b>Gnopernicus에서 보조 기술이 지원되지 않다는 것을 발견했습니다.</b>\n"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:4
+msgid "About"
+msgstr "정보"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:759
+msgid "Alert"
+msgstr "경보"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:6
+msgid "Braille device preferences"
+msgstr "점자 장치 기본 설정"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:7
+msgid "Braille monitor preferences"
+msgstr "점자 모니터 기본 설정"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:8
+msgid "Close preferences"
+msgstr "기본 설정 닫기"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:9
+msgid "Command mapping"
+msgstr "명령어 매핑"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:10
+msgid "Do you want to enable the assistive technology support?"
+msgstr "보조 기술을 지원하도록 하시겠습니까?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:11
+msgid "Exit from gnopernicus"
+msgstr "Gnopernicus 끝내기"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:12
+msgid "Find on screen"
+msgstr "화면에서 찾기"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:13
+msgid "Gnopernicus"
+msgstr "Gnopernicus"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:14
+msgid "Gnopernicus usage help"
+msgstr "Gnopernicus 사용법 도움말"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:15
+msgid "Iconify menu"
+msgstr "아이콘화 메뉴"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:16
+msgid "Load default preferences"
+msgstr "기본값 설정 읽어들이기"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:17
+msgid "Magnifier preferences"
+msgstr "돋보기 기본 설정"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:18
+msgid "Mouse preferences"
+msgstr "마우스 기본 설정"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:19
+msgid "Preferences"
+msgstr "기본 설정"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:20
+msgid "Preferences..."
+msgstr "기본 설정..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1032
+msgid "Question"
+msgstr "물음"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:22
+msgid "Role presentation"
+msgstr "역할 표현"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:23
+msgid "Screen review"
+msgstr "화면 다시 보기"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:24
+msgid "Speech preferences"
+msgstr "음성 기본 설정"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:25
+msgid "Startup mode..."
+msgstr "시작 모드..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:26
+msgid ""
+"You will have to log out for the change to take effect.\n"
+"Do you want to log out now? "
+msgstr ""
+"바뀐 점을 적용하려면 로그아웃해야 합니다.\n"
+"지금 로그아웃하시겠습니까? "
+
+#: gnopi/gnopi_files/gnopi.glade2.h:28
+msgid "_1 Speech"
+msgstr "_1 음성"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:29
+msgid "_1 Startup Mode..."
+msgstr "_1 시작 모드..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:30
+msgid "_2 Braille"
+msgstr "_2 점자"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:31
+msgid "_2 Preferences..."
+msgstr "_2 기본 설정..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:32
+msgid "_3 Default Preferences..."
+msgstr "_3 설정 기본값..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:34
+msgid "_4 Minimize"
+msgstr "_4 최소화"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:35
+msgid "_4 Mouse"
+msgstr "_4 마우스"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:37
+msgid "_5 Help"
+msgstr "_5 도움말"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:38
+msgid "_6 About"
+msgstr "_6 정보"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:39
+msgid "_6 Command Mapping"
+msgstr "_6 명령어 매핑"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:40
+msgid "_7 Presentation"
+msgstr "_7 표현"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:41
+msgid "_8 Screen Review"
+msgstr "_8 화면 다시 보기"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:42
+msgid "_9 Search"
+msgstr "_9 찾기"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:43
+msgid "_Don't Enable Support"
+msgstr "지원하지 않기(_E)"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:44
+msgid "_Enable Support"
+msgstr "지원하기(_E)"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:45
+msgid "_Quit"
+msgstr "끝내기(_Q)"
+
+#: gnopi/gnopiconf.c:411 gnopi/gnopiconf.c:429
+#, c-format
+msgid "Failed to set value: %f."
+msgstr "값을 설정하는 데 실패했습니다: %f."
+
+#: gnopi/gnopiconf.c:735
+msgid "Failed to set value."
+msgstr "값을 설정하는 데 실패했습니다."
+
+#: gnopi/gnopiui.c:73 gnopi/gnopiui.c:87 gnopi/gnopiui.c:99
+#: gnopi/gnopiui.c:105
+msgid "We could not load the interface!"
+msgstr "인터페이스를 읽어들일 수 없습니다!"
+
+#: gnopi/magui.c:74
+msgid "default"
+msgstr "기본값"
+
+#: gnopi/magui.c:472
+msgid ""
+"Can NOT remove zoomer because multiple zoomers are not supported in this "
+"version."
+msgstr ""
+"돋보기를 지울 수 없습니다. 이 버전에서는 여러 개의 돋보기를 지원하지 않습니"
+"다."
+
+#: gnopi/magui.c:673
+msgid "Zoomers"
+msgstr "돋보기"
+
+#: gnopi/magui.c:1588
+#, c-format
+msgid "Zoomer Options (%s)"
+msgstr "돋보기 옵션 (%s)"
+
+#: gnopi/spconf.c:335
+msgid "Failed to set dictionary changes."
+msgstr "디렉토리 바뀐 점을 설정하는 데 실패했습니다."
+
+#: gnopi/spconf.c:343
+msgid "Failed to set removed voice value."
+msgstr "지운 목소리 값을 설정하는 데 실패했습니다."
+
+#: gnopi/spconf.c:353
+#, c-format
+msgid "Failed to set count: %s."
+msgstr "카운트를 설정하는 데 실패했습니다: %s."
+
+#: gnopi/spconf.c:362
+#, c-format
+msgid "Failed to set Punctuation: %s."
+msgstr "구두점을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/spconf.c:371
+#, c-format
+msgid "Failed to set text echo value: %s."
+msgstr "텍스트 에코 값을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/spconf.c:380
+#, c-format
+msgid "Failed to set modifiers value: %s."
+msgstr "조정 키 값을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/spconf.c:389
+#, c-format
+msgid "Failed to set cursors value: %s."
+msgstr "커서 값을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/spconf.c:398
+#, c-format
+msgid "Failed to set spaces value: %s."
+msgstr "공백 값을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/spconf.c:407
+#, c-format
+msgid "Failed to set dictionary value: %s."
+msgstr "디렉토리 값을 설정하는 데 실패했습니다: %s."
+
+#: gnopi/spconf.c:416
+#, c-format
+msgid "Failed to set testable voice %s."
+msgstr "테스트 가능 목소리를 설정하는 데 실패했습니다: %s."
+
+#: gnopi/spconf.c:608
+#, c-format
+msgid "%s no name"
+msgstr "%s 이름 없음"
+
+#: gnopi/spdictui.c:79
+msgid "Invalid word or replacer!"
+msgstr "단어 혹은 바꿀 단어가 잘못되었습니다!"
+
+#: gnopi/spdictui.c:85
+msgid "Word exists in dictionary!"
+msgstr "단어가 이미 사전에 있습니다!"
+
+#: gnopi/spdictui.c:271 gnopi/spdictui.c:324
+msgid "No selected word to modify!"
+msgstr "고칠 단어를 선택하지 않았습니다!"
+
+#: gnopi/spdictui.c:298
+msgid "No selected word to remove!"
+msgstr "지울 단어를 선택하지 않았습니다!"
+
+#: gnopi/spdictui.c:447
+msgid "Word"
+msgstr "단어"
+
+#: gnopi/spdictui.c:456
+msgid "Replacer"
+msgstr "바꿀 단어"
+
+#: gnopi/spvoiceui.c:32
+msgid "<all drivers>"
+msgstr "<모든 드라이버>"
+
+#: gnopi/spvoiceui.c:33
+msgid "<all voices>"
+msgstr "<모든 목소리>"
+
+#: gnopi/spvoiceui.c:277
+msgid "Invalid voice!"
+msgstr "목소리가 잘못되었습니다!"
+
+#: gnopi/spvoiceui.c:1165
+msgid "Invalid driver or voice!"
+msgstr "드라이버 혹은 목소리가 잘못되었습니다!"
+
+#: gnopi/spvoiceui.c:1595
+msgid "No selected voice to modify!"
+msgstr "고칠 목소리를 선택하지 않았습니다!"
+
+#: gnopi/spvoiceui.c:1654
+msgid "No selected voice to remove!"
+msgstr "지울 목소리를 선택하지 않았습니다!"
+
+#: gnopi/spvoiceui.c:1727
+msgid "No selected voice to test!"
+msgstr "테스트할 목소리를 선택하지 않았습니다!"
+
+#: gnopi/spvoiceui.c:1968
+msgid "Voice"
+msgstr "목소리"
+
+#: gnopi/spvoiceui.c:1977
+msgid "Driver"
+msgstr "드라이버"
+
+#: gnopi/spvoiceui.c:1986
+msgid "Speaker"
+msgstr "스피커"
+
+#: speech/libsrs/srs-speech.c:289
+msgid "Alpha"
+msgstr "Alpha"
+
+#: speech/libsrs/srs-speech.c:290
+msgid "Bravo"
+msgstr "Bravo"
+
+#: speech/libsrs/srs-speech.c:291
+msgid "Charlie"
+msgstr "Charlie"
+
+#: speech/libsrs/srs-speech.c:292
+msgid "Delta"
+msgstr "Delta"
+
+#: speech/libsrs/srs-speech.c:293
+msgid "Echo"
+msgstr "Echo"
+
+#: speech/libsrs/srs-speech.c:294
+msgid "Foxtrot"
+msgstr "Foxtrot"
+
+#: speech/libsrs/srs-speech.c:295
+msgid "Golf"
+msgstr "Golf"
+
+#: speech/libsrs/srs-speech.c:296
+msgid "Hotel"
+msgstr "Hotel"
+
+#: speech/libsrs/srs-speech.c:297
+msgid "India"
+msgstr "India"
+
+#: speech/libsrs/srs-speech.c:298
+msgid "Juliet"
+msgstr "Juliet"
+
+#: speech/libsrs/srs-speech.c:299
+msgid "Kilo"
+msgstr "Kilo"
+
+#: speech/libsrs/srs-speech.c:300
+msgid "Lima"
+msgstr "Lima"
+
+#: speech/libsrs/srs-speech.c:301
+msgid "Mike"
+msgstr "Mike"
+
+#: speech/libsrs/srs-speech.c:302
+msgid "November"
+msgstr "November"
+
+#: speech/libsrs/srs-speech.c:303
+msgid "Oscar"
+msgstr "Oscar"
+
+#: speech/libsrs/srs-speech.c:304
+msgid "Papa"
+msgstr "Papa"
+
+#: speech/libsrs/srs-speech.c:305
+msgid "Quebec"
+msgstr "Quebec"
+
+#: speech/libsrs/srs-speech.c:306
+msgid "Romeo"
+msgstr "Romeo"
+
+#: speech/libsrs/srs-speech.c:307
+msgid "Sierra"
+msgstr "Sierra"
+
+#: speech/libsrs/srs-speech.c:308
+msgid "Tango"
+msgstr "Tango"
+
+#: speech/libsrs/srs-speech.c:309
+msgid "Uniform"
+msgstr "Uniform"
+
+#: speech/libsrs/srs-speech.c:310
+msgid "Victor"
+msgstr "Victor"
+
+#: speech/libsrs/srs-speech.c:311
+msgid "Whiskey"
+msgstr "Whiskey"
+
+#: speech/libsrs/srs-speech.c:312
+msgid "Xray"
+msgstr "Xray"
+
+#: speech/libsrs/srs-speech.c:313
+msgid "Yankee"
+msgstr "Yankee"
+
+#: speech/libsrs/srs-speech.c:314
+msgid "Zulu"
+msgstr "Zulu"
+
+#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1759
+msgid "space"
+msgstr "스페이스"
+
+#: speech/libsrs/srs-speech.c:316
+msgid "tab"
+msgstr "탭"
+
+#: speech/libsrs/srs-speech.c:317
+msgid "new line"
+msgstr "줄바꿈"
+
+#: speech/libsrs/srs-speech.c:318
+msgid "dash"
+msgstr "대시"
+
+#: srconf/libsrconf/libsrconf.c:454
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr "설정 소스에 접근하는 데 실패했습니다: %s\n"
+
+#: srconf/libsrconf/libsrconf.c:467
+#, c-format
+msgid "Failed to add notify: %s"
+msgstr "알림을 더하는 데 실패했습니다: %s"
+
+#: srconf/libsrconf/libsrconf.c:521
+msgid "Failed to remove directory."
+msgstr "디렉토리를 지우는 데 실패했습니다."
+
+#: srconf/libsrconf/libsrconf.c:865
+msgid "Failed to set configdata."
+msgstr "설정 데이타를 설정하는 데 실패했습니다."
+
+#: srconf/libsrconf/libsrconf.c:939
+msgid "Failed set data."
+msgstr "데이타를 설정하는 데 실패했습니다."
+
+#: srcore/default.xml.in.h:1 srcore/verbose.xml.in.h:1
+msgid "( )"
+msgstr "( )"
+
+#: srcore/default.xml.in.h:2 srcore/verbose.xml.in.h:2
+msgid "(C)"
+msgstr "(C)"
+
+#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
+msgid "(E)"
+msgstr "(E)"
+
+#: srcore/default.xml.in.h:4 srcore/verbose.xml.in.h:4
+msgid "(P)"
+msgstr "(P)"
+
+#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
+msgid "(U)"
+msgstr "(U)"
+
+#: srcore/default.xml.in.h:6 srcore/verbose.xml.in.h:6
+msgid "(c)"
+msgstr "(c)"
+
+#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
+msgid "(m)"
+msgstr "(m)"
+
+#: srcore/default.xml.in.h:8 srcore/verbose.xml.in.h:8
+msgid "(n)"
+msgstr "(n)"
+
+#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
+msgid "Give maximum speech and braille output."
+msgstr "최대한 많은 음성 및 점자 출력을 내보냅니다."
+
+#: srcore/default.xml.in.h:11 srcore/srctrl.c:2258 srcore/srctrl.c:2409
+#: srcore/verbose.xml.in.h:11
+msgid "item"
+msgid_plural "items"
+msgstr[0] "항목"
+
+#: srcore/default.xml.in.h:12 srcore/verbose.xml.in.h:12
+msgid "items"
+msgstr "항목"
+
+#: srcore/srctrl.c:1012
+msgid "no parent"
+msgstr "상위가 없음"
+
+#: srcore/srctrl.c:1036
+msgid "no children"
+msgstr "하위가 없음"
+
+#: srcore/srctrl.c:1069
+msgid "no next"
+msgstr "텍스트 없음"
+
+#: srcore/srctrl.c:1185
+msgid "Cannot find next text!"
+msgstr "다음 텍스트를 찾을 수 없습니다!"
+
+#: srcore/srctrl.c:1196
+msgid "Cannot find next image!"
+msgstr "다음 이미지를 찾을 수 없습니다!"
+
+#: srcore/srctrl.c:1207
+msgid "Cannot find next attributes!"
+msgstr "다음 속성을 찾을 수 없습니다!"
+
+#: srcore/srctrl.c:1296
+msgid "no previous"
+msgstr "이전이 없습니다"
+
+#: srcore/srctrl.c:1340
+msgid "added watch for current object"
+msgstr "현재 오브젝트에 관찰 모드 더하기"
+
+#: srcore/srctrl.c:1341
+msgid "cannot add watch for current object"
+msgstr "현재 오브젝트에 관찰 모드를 더할 수 없습니다"
+
+#: srcore/srctrl.c:1366
+msgid "no caret"
+msgstr "캐럿이 없습니다"
+
+#: srcore/srctrl.c:1387
+msgid "already on first"
+msgstr "이미 처음입니다"
+
+#: srcore/srctrl.c:1408
+msgid "already on last"
+msgstr "이미 마지막입니다"
+
+#: srcore/srctrl.c:1421
+msgid "now navigating in application"
+msgstr "현재 프로그램에서 네비게이션중입니다"
+
+#: srcore/srctrl.c:1425
+msgid "now navigating in desktop"
+msgstr "현재 바탕화면에서 네비게이션중입니다"
+
+#: srcore/srctrl.c:1429
+msgid "now navigating in window"
+msgstr "현재 창에서 네비게이션중입니다"
+
+#: srcore/srctrl.c:1522
+msgid "no focus"
+msgstr "포커스 없음"
+
+#: srcore/srctrl.c:1562
+msgid "no title"
+msgstr "제목 없음"
+
+#: srcore/srctrl.c:1583
+msgid "no menu bar"
+msgstr "메뉴 모음 없음"
+
+#: srcore/srctrl.c:1606
+msgid "no tool bar"
+msgstr "도구 모음 없음"
+
+#: srcore/srctrl.c:1630
+msgid "no status bar"
+msgstr "상태 표시줄 없음"
+
+# FIXME: 한국어 어순에서 크게 벗어난다
+#: srcore/srctrl.c:2214
+msgid "on"
+msgstr "다음에서"
+
+# FIXME: 한국어 어순에서 크게 벗어난다
+#: srcore/srctrl.c:2236 srcore/srctrl.c:2387
+msgid "from a"
+msgstr "다음에서"
+
+# FIXME: 한국어 어순에서 크게 벗어난다
+#: srcore/srctrl.c:2238 srcore/srctrl.c:2394
+msgid "with"
+msgstr "다음과 함께"
+
+# FIXME: 한국어 어순에서 크게 벗어난다
+#: srcore/srctrl.c:2269
+msgid "in a"
+msgstr "다음 안에"
+
+# FIXME: 한국어 어순에서 크게 벗어난다
+#: srcore/srctrl.c:2272
+msgid "named "
+msgstr "이름은"
+
+# FIXME: 한국어 어순에서 크게 벗어난다
+#: srcore/srctrl.c:2274
+msgid "with no name"
+msgstr "이름은 없음"
+
+# FIXME: 한국어 어순에서 크게 벗어난다
+#: srcore/srctrl.c:2288
+msgid "of application"
+msgstr "다음 프로그램의"
+
+# FIXME: 한국어 어순에서 크게 벗어난다
+#: srcore/srctrl.c:2375
+msgid "on a"
+msgstr "다음 위에"
+
+#: srcore/srctrl.c:2614
+msgid "first line"
+msgstr "첫 줄"
+
+#: srcore/srctrl.c:2621
+msgid "last line"
+msgstr "끝 줄"
+
+#: srcore/srctrl.c:2629 srcore/srctrl.c:2631
+msgid "[first line]"
+msgstr "[첫 줄]"
+
+#: srcore/srctrl.c:2636 srcore/srctrl.c:2638
+msgid "[last line]"
+msgstr "[끝 줄]"
+
+#: srcore/srctrl.c:2654
+msgid "empty line"
+msgstr "빈 줄"
+
+#: srcore/srctrl.c:2661
+#, c-format
+msgid "%d empty line"
+msgid_plural "%d empty lines"
+msgstr[0] "%d개 빈 줄"
+
+#: srcore/srctrl.c:2682 srcore/srctrl.c:2684
+msgid "[empty line]"
+msgstr "[빈 줄]"
+
+#: srcore/srctrl.c:2689
+#, c-format
+msgid "[%d empty line]"
+msgid_plural "[%d empty lines]"
+msgstr[0] "[%d개 빈 줄]"
+
+#: srcore/srctrl.c:2771 srcore/srctrl.c:2772 srcore/srctrl.c:2780
+#: srcore/srctrl.c:2935 srcore/srctrl.c:2936
+msgid "cannot make flat review for current window"
+msgstr "현재 창에 대해 플랫 다시 보기를 할 수 없습니다"
+
+#: srcore/srctrl.c:3007
+msgid "flat review mode"
+msgstr "플랫 다시 보기 모드"
+
+#: srcore/srctrl.c:3023
+msgid "focus tracking mode"
+msgstr "포커스 추적 모드"
+
+#: srcore/srctrl.c:3562
+#, c-format
+msgid "\"%s\" entry has invalid value at position %d."
+msgstr "\"%s\" 엔트리의 %d 위치에 잘못된 값이 들어 있습니다."
+
+#: srcore/srctrl.c:3583
+#, c-format
+msgid "key \"%s\" has an invalid value at position %d."
+msgstr "\"%s\" 키의 %d 위치에 잘못된 값이 들어 있습니다."
+
+#: srcore/srctrl.c:3619
+msgid "Can not get key pad commands mapping from gconf."
+msgstr "gconf에서 키 패드 명령어 매핑을 가져올 수 없습니다."
+
+#: srcore/srctrl.c:3630
+msgid "Can not get braille display commands mapping from gconf."
+msgstr "gconf에서 점자 표시 명령어 매핑을 가져올 수 없습니다."
+
+#: srcore/srctrl.c:3641
+msgid "Can not get user defined commands mapping from gconf."
+msgstr "gconf에서 사용자 정의 명령어 매핑을 가져올 수 없습니다."
+
+#: srcore/srctrl.c:3745
+msgid "no role available"
+msgstr "역할을 사용할 수 없습니다"
+
+#: srcore/srmain.c:68 srcore/srmain.c:71
+msgid "No focus"
+msgstr "포커스 없음"
+
+#: srcore/srmain.c:74
+msgid "No accessible object is focused"
+msgstr "접근할 수 있는 오브젝트가 하나도 포커스되지 않았습니다"
+
+#: srcore/srmain.c:434
+msgid "unknown location"
+msgstr "위치를 알 수 없음"
+
+#: srcore/srmain.c:471
+msgid "no details"
+msgstr "자세한 정보 없음"
+
+#: srcore/srmain.c:511
+msgid "layer"
+msgstr "레이어"
+
+#: srcore/srmain.c:532
+msgid "back to layer"
+msgstr "다음 레이어로 돌아가기: "
+
+#: srcore/srmain.c:898
+msgid "cursor on"
+msgstr "커서 켜기"
+
+#: srcore/srmain.c:898
+msgid "cursor off"
+msgstr "커서 끄기"
+
+#: srcore/srmain.c:916
+msgid "current cursor is"
+msgstr "현재 커서는"
+
+#: srcore/srmain.c:934
+msgid "cursor size"
+msgstr "커서 크기"
+
+#: srcore/srmain.c:951
+msgid "cursor magnification on"
+msgstr "커서 확대 켜기"
+
+#: srcore/srmain.c:952
+msgid "cursor magnification off"
+msgstr "커서 확대 끄기"
+
+#: srcore/srmain.c:970
+msgid "cursor color"
+msgstr "커서 색"
+
+#: srcore/srmain.c:987
+msgid "crosshair on"
+msgstr "십자선 켜기"
+
+#: srcore/srmain.c:987
+msgid "crosshair off"
+msgstr "십자선 끄기"
+
+#: srcore/srmain.c:1004
+msgid "crosshair clip on"
+msgstr "십자선 클립 켜기"
+
+#: srcore/srmain.c:1005
+msgid "crosshair clip off"
+msgstr "십자선 클립 끄기"
+
+#: srcore/srmain.c:1023
+msgid "crosshair size"
+msgstr "십자선 크기"
+
+#: srcore/srmain.c:1041
+msgid "crosshair color"
+msgstr "십자선 색"
+
+#: srcore/srmain.c:1059
+msgid "zoomer placement left"
+msgstr "돋보기 놓기 왼쪽"
+
+#: srcore/srmain.c:1077
+msgid "zoomer placement top"
+msgstr "돋보기 놓기 위"
+
+#: srcore/srmain.c:1095
+msgid "zoomer placement width"
+msgstr "돋보기 놓기 너비"
+
+#: srcore/srmain.c:1113
+msgid "zoomer placement height"
+msgstr "돋보기 놓기 높이"
+
+#: srcore/srmain.c:1143
+msgid "magnifier target"
+msgstr "돋보기 목표"
+
+#: srcore/srmain.c:1161
+msgid "magnifier source"
+msgstr "돋보기 원본"
+
+#: srcore/srmain.c:1179
+msgid "zoom factor x"
+msgstr "확대/축소 비율 x"
+
+#: srcore/srmain.c:1197
+msgid "zoom factor y"
+msgstr "확대/축소 비율 y"
+
+#: srcore/srmain.c:1214
+msgid "zoom factor locked"
+msgstr "확대/축소 비율 잠겨짐"
+
+#: srcore/srmain.c:1215
+msgid "zoom factor unlocked"
+msgstr "확대/축소 비율 풀림"
+
+#: srcore/srmain.c:1232
+msgid "invert on"
+msgstr "반전 켜기"
+
+#: srcore/srmain.c:1232
+msgid "invert off"
+msgstr "반전 끄기"
+
+#: srcore/srmain.c:1250
+msgid "magnifier smoothing type"
+msgstr "돋보기 부드러움 종류"
+
+#: srcore/srmain.c:1273
+msgid "mouse tracking mode"
+msgstr "마우스 추적 모드"
+
+#: srcore/srmain.c:1295
+msgid "panning on"
+msgstr "패닝 켜기"
+
+#: srcore/srmain.c:1295
+msgid "panning off"
+msgstr "패닝 끄기"
+
+#: srcore/srmain.c:1667
+msgid "alt"
+msgstr "알트"
+
+#: srcore/srmain.c:1672
+msgid "control"
+msgstr "컨트롤"
+
+#: srcore/srmain.c:1677
+msgid "shift"
+msgstr "쉬프트"
+
+#: srcore/srmain.c:1682
+msgid "caps lock"
+msgstr "캡스락"
+
+#: srcore/srmain.c:1686
+msgid "num lock"
+msgstr "넘버락"
+
+#: srcore/srmain.c:1694 srcore/srmain.c:1738
+msgid "right"
+msgstr "오른쪽"
+
+#: srcore/srmain.c:1696 srcore/srmain.c:1740
+msgid "left"
+msgstr "왼쪽"
+
+#: srcore/srmain.c:1730
+msgid "home"
+msgstr "홈"
+
+#: srcore/srmain.c:1732
+msgid "end"
+msgstr "엔드"
+
+#: srcore/srmain.c:1734
+msgid "page up"
+msgstr "페이지업"
+
+#: srcore/srmain.c:1736
+msgid "page down"
+msgstr "페이지다운"
+
+#: srcore/srmain.c:1742
+msgid "down"
+msgstr "아래"
+
+#: srcore/srmain.c:1744
+msgid "up"
+msgstr "위"
+
+#: srcore/srmain.c:1746
+msgid "backspace"
+msgstr "백스페이스"
+
+#: srcore/srmain.c:1748
+msgid "delete"
+msgstr "딜리트"
+
+#: srcore/srmain.c:1750
+msgid "escape"
+msgstr "이스케이프"
+
+#: srcore/srmain.c:2269
+msgid "Welcome to Gnopernicus"
+msgstr "Gnopernicus에 오신 것을 환영합니다"
+
+#: srcore/srmain.c:2373
+msgid "braille device can not be initialized"
+msgstr "점자 장치를 초기화할 수 없습니다"
+
+#: srcore/srmain.c:2385
+msgid "Gnopernicus is now exiting. Have a nice day!"
+msgstr "Gnopernicus를 지금 끝냅니다. 좋은 하루 보내십시오!"
+
+#: srcore/srmain.c:2662
+msgid "srcore"
+msgstr "화면 읽기 코어"
+
+#: srcore/srpres.c:757
+msgid "UNK"
+msgstr "알 수 없음"
+
+#: srcore/srpres.c:757
+msgid "UNKNOWN"
+msgstr "알 수 없음"
+
+#: srcore/srpres.c:757
+msgid "Unknown"
+msgstr "알 수 없음"
+
+#: srcore/srpres.c:758
+msgid "???"
+msgstr "???"
+
+#: srcore/srpres.c:758
+msgid "INVALID"
+msgstr "잘못되었습니다"
+
+#: srcore/srpres.c:758
+msgid "Invalid"
+msgstr "잘못되었습니다"
+
+#: srcore/srpres.c:759
+msgid "ALR"
+msgstr "알림"
+
+#: srcore/srpres.c:759
+msgid "ALERT"
+msgstr "알림"
+
+#: srcore/srpres.c:760
+msgid "CNV"
+msgstr "캔버스"
+
+#: srcore/srpres.c:760
+msgid "CANVAS"
+msgstr "캔버스"
+
+#: srcore/srpres.c:760
+msgid "Canvas"
+msgstr "캔버스"
+
+#: srcore/srpres.c:761
+msgid "CHK"
+msgstr "체크 상자"
+
+#: srcore/srpres.c:761
+msgid "CHECK_BOX"
+msgstr "체크 상자"
+
+#: srcore/srpres.c:761
+msgid "Check box"
+msgstr "체크 상자"
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MIT"
+msgstr "메뉴 항목"
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MENU ITEM"
+msgstr "메뉴 항목"
+
+#: srcore/srpres.c:762
+msgid "Check Menu item"
+msgstr "체크 메뉴 항목"
+
+#: srcore/srpres.c:763
+msgid "CCH"
+msgstr "색 고르기"
+
+#: srcore/srpres.c:763
+msgid "COLOR CHOOSER"
+msgstr "색 고르기"
+
+#: srcore/srpres.c:763
+msgid "Color chooser"
+msgstr "색 고르기"
+
+#: srcore/srpres.c:764
+msgid "CHD"
+msgstr "열 헤더"
+
+#: srcore/srpres.c:764
+msgid "COLUMN HEADER"
+msgstr "열 헤더"
+
+#: srcore/srpres.c:764
+msgid "Column header"
+msgstr "열 헤더"
+
+#: srcore/srpres.c:765
+msgid "CBO"
+msgstr "콤보 상자"
+
+#: srcore/srpres.c:765
+msgid "COMBO BOX"
+msgstr "콤보 상자"
+
+#: srcore/srpres.c:765
+msgid "Combo box"
+msgstr "콤보 상자"
+
+#: srcore/srpres.c:766
+msgid "DIC"
+msgstr "바탕화면 아이콘"
+
+#: srcore/srpres.c:766
+msgid "DESKTOP ICON"
+msgstr "바탕화면 아이콘"
+
+#: srcore/srpres.c:766
+msgid "Desktop icon"
+msgstr "바탕화면 아이콘"
+
+#: srcore/srpres.c:767
+msgid "DFR"
+msgstr "바탕화면 프레임"
+
+#: srcore/srpres.c:767
+msgid "DESKTOP FRAME"
+msgstr "바탕화면 프레임"
+
+#: srcore/srpres.c:767
+msgid "Desktop frame"
+msgstr "바탕화면 프레임"
+
+#: srcore/srpres.c:768
+msgid "DLG"
+msgstr "대화 상자"
+
+#: srcore/srpres.c:768
+msgid "DIALOG"
+msgstr "대화 상자"
+
+#: srcore/srpres.c:768
+msgid "Dialog"
+msgstr "대화 상자"
+
+#: srcore/srpres.c:769
+msgid "DIP"
+msgstr "디렉토리 부분"
+
+#: srcore/srpres.c:769
+msgid "DIRECTORY PANE"
+msgstr "디렉토리 부분"
+
+#: srcore/srpres.c:769
+msgid "Directory pane"
+msgstr "디렉토리 부분"
+
+#: srcore/srpres.c:770
+msgid "FCH"
+msgstr "파일 고르기"
+
+#: srcore/srpres.c:770
+msgid "FILE CHOOSER"
+msgstr "파일 고르기"
+
+#: srcore/srpres.c:770
+msgid "File chooser"
+msgstr "파일 고르기"
+
+#: srcore/srpres.c:771
+msgid "FLR"
+msgstr "채움"
+
+#: srcore/srpres.c:771
+msgid "FILLER"
+msgstr "채움"
+
+#: srcore/srpres.c:771
+msgid "Filler"
+msgstr "채움"
+
+#: srcore/srpres.c:772
+msgid "FRM"
+msgstr "프레임"
+
+#: srcore/srpres.c:772
+msgid "FRAME"
+msgstr "프레임"
+
+#: srcore/srpres.c:772
+msgid "Frame"
+msgstr "프레임"
+
+#: srcore/srpres.c:773
+msgid "GPN"
+msgstr "글래스 부분"
+
+#: srcore/srpres.c:773
+msgid "GLASS PANE"
+msgstr "글래스 부분"
+
+#: srcore/srpres.c:773
+msgid "Glass pane"
+msgstr "글래스 부분"
+
+#: srcore/srpres.c:774
+msgid "HTM"
+msgstr "HTML"
+
+#: srcore/srpres.c:774
+msgid "HTML CONTAINER"
+msgstr "HTML 컨테이너"
+
+#: srcore/srpres.c:774
+msgid "H T M L container"
+msgstr "HTML 컨테이너"
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LNK"
+msgstr "바로가기"
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LINK"
+msgstr "바로가기"
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "link"
+msgstr "바로가기"
+
+#: srcore/srpres.c:776
+msgid "ICO"
+msgstr "아이콘"
+
+#: srcore/srpres.c:776
+msgid "ICON"
+msgstr "아이콘"
+
+#: srcore/srpres.c:776
+msgid "Icon"
+msgstr "아이콘"
+
+#: srcore/srpres.c:777
+msgid "IFR"
+msgstr "내부 프레임"
+
+#: srcore/srpres.c:777
+msgid "INTERNAL FRAME"
+msgstr "내부 프레임"
+
+#: srcore/srpres.c:777
+msgid "Internal frame"
+msgstr "내부 프레임"
+
+#: srcore/srpres.c:778
+msgid "LBL"
+msgstr "레이블"
+
+#: srcore/srpres.c:778
+msgid "LABEL"
+msgstr "레이블"
+
+#: srcore/srpres.c:778
+msgid "Label"
+msgstr "레이블"
+
+#: srcore/srpres.c:779
+msgid "LPN"
+msgstr "레이어 부분"
+
+#: srcore/srpres.c:779
+msgid "LAYERED PANE"
+msgstr "레이어 부분"
+
+#: srcore/srpres.c:779
+msgid "Layered pane"
+msgstr "레이어 부분"
+
+#: srcore/srpres.c:781
+msgid "LST"
+msgstr "목록"
+
+#: srcore/srpres.c:781
+msgid "LIST"
+msgstr "목록"
+
+#: srcore/srpres.c:781
+msgid "List"
+msgstr "목록"
+
+#: srcore/srpres.c:782
+msgid "LIT"
+msgstr "목록 항목"
+
+#: srcore/srpres.c:782
+msgid "LIST ITEM"
+msgstr "목록 항목"
+
+#: srcore/srpres.c:782
+msgid "List item"
+msgstr "목록 항목"
+
+#: srcore/srpres.c:783
+msgid "MNU"
+msgstr "메뉴"
+
+#: srcore/srpres.c:783
+msgid "MENU"
+msgstr "메뉴"
+
+#: srcore/srpres.c:783
+msgid "Menu"
+msgstr "메뉴"
+
+#: srcore/srpres.c:784
+msgid "MBR"
+msgstr "메뉴 모음"
+
+#: srcore/srpres.c:784
+msgid "MENU BAR"
+msgstr "메뉴 모음"
+
+#: srcore/srpres.c:784
+msgid "Menu bar"
+msgstr "메뉴 모음"
+
+#: srcore/srpres.c:785
+msgid "Menu item"
+msgstr "메뉴 항목"
+
+#: srcore/srpres.c:786
+msgid "OPN"
+msgstr "옵션 부분"
+
+#: srcore/srpres.c:786
+msgid "OPTION PANE"
+msgstr "옵션 부분"
+
+#: srcore/srpres.c:786
+msgid "Option pane"
+msgstr "옵션 부분"
+
+#: srcore/srpres.c:787
+msgid "PGT"
+msgstr "페이지 탭"
+
+#: srcore/srpres.c:787
+msgid "PAGE TAB"
+msgstr "페이지 탭"
+
+#: srcore/srpres.c:787
+msgid "Page tab"
+msgstr "페이지 탭"
+
+#: srcore/srpres.c:788
+msgid "PTL"
+msgstr "페이지 탭 목록"
+
+#: srcore/srpres.c:788
+msgid "PAGE TAB LIST"
+msgstr "페이지 탭 목록"
+
+#: srcore/srpres.c:788
+msgid "Page tab list"
+msgstr "페이지 탭 목록"
+
+#: srcore/srpres.c:789
+msgid "PNL"
+msgstr "패널"
+
+#: srcore/srpres.c:789
+msgid "PANEL"
+msgstr "패널"
+
+#: srcore/srpres.c:789
+msgid "Panel"
+msgstr "패널"
+
+#: srcore/srpres.c:790
+msgid "PWD"
+msgstr "열쇠글 텍스트"
+
+#: srcore/srpres.c:790
+msgid "PASSWORD TEXT"
+msgstr "열쇠글 텍스트"
+
+#: srcore/srpres.c:790
+msgid "Password text"
+msgstr "열쇠글 텍스트"
+
+#: srcore/srpres.c:791
+msgid "PMN"
+msgstr "팝업 메뉴"
+
+#: srcore/srpres.c:791
+msgid "POPUP MENU"
+msgstr "팝업 메뉴"
+
+#: srcore/srpres.c:791
+msgid "Popup menu"
+msgstr "팝업 메뉴"
+
+#: srcore/srpres.c:792
+msgid "PRG"
+msgstr "진행률 표시줄"
+
+#: srcore/srpres.c:792
+msgid "PROGRESS BAR"
+msgstr "진행률 표시줄"
+
+#: srcore/srpres.c:792
+msgid "Progress bar"
+msgstr "진행률 표시줄"
+
+#: srcore/srpres.c:793
+msgid "PBT"
+msgstr "누르기 단추"
+
+#: srcore/srpres.c:793
+msgid "PUSH BUTTON"
+msgstr "누르기 단추"
+
+#: srcore/srpres.c:793
+msgid "Push button"
+msgstr "누르기 단추"
+
+#: srcore/srpres.c:794
+msgid "RAD"
+msgstr "라디오 단추"
+
+#: srcore/srpres.c:794
+msgid "RADIO BUTTON"
+msgstr "라디오 단추"
+
+#: srcore/srpres.c:794
+msgid "Radio button"
+msgstr "라디오 단추"
+
+#: srcore/srpres.c:795
+msgid "Radio Menu item"
+msgstr "라디오 메뉴 항목"
+
+#: srcore/srpres.c:796
+msgid "RPN"
+msgstr "최상위 부분"
+
+#: srcore/srpres.c:796
+msgid "ROOT PANE"
+msgstr "최상위 부분"
+
+#: srcore/srpres.c:796
+msgid "Root pane"
+msgstr "최상위 부분"
+
+#: srcore/srpres.c:797
+msgid "RHD"
+msgstr "열 헤더"
+
+#: srcore/srpres.c:797
+msgid "ROW HEADER"
+msgstr "열 헤더"
+
+#: srcore/srpres.c:797
+msgid "Row header"
+msgstr "열 헤더"
+
+#: srcore/srpres.c:798
+msgid "SCR"
+msgstr "스크롤"
+
+#: srcore/srpres.c:798
+msgid "SCROLL BAR"
+msgstr "스크롤 막대"
+
+#: srcore/srpres.c:798
+msgid "Scroll bar"
+msgstr "스크롤 막대"
+
+#: srcore/srpres.c:799 srcore/srpres.c:827
+msgid "SPN"
+msgstr "스크롤 부분"
+
+#: srcore/srpres.c:799
+msgid "SCROLL PANE"
+msgstr "스크롤 부분"
+
+#: srcore/srpres.c:799
+msgid "Scroll pane"
+msgstr "스크롤 부분"
+
+#: srcore/srpres.c:800
+msgid "SEP"
+msgstr "구분자"
+
+#: srcore/srpres.c:800
+msgid "SEPARATOR"
+msgstr "구분자"
+
+#: srcore/srpres.c:800
+msgid "Separator"
+msgstr "구분자"
+
+#: srcore/srpres.c:801
+msgid "SLD"
+msgstr "슬라이더"
+
+#: srcore/srpres.c:801
+msgid "SLIDER"
+msgstr "슬라이더"
+
+#: srcore/srpres.c:801
+msgid "Slider"
+msgstr "슬라이더"
+
+#: srcore/srpres.c:802
+msgid "SPP"
+msgstr "나누기"
+
+#: srcore/srpres.c:802
+msgid "SPLIT PANE"
+msgstr "나누기 부분"
+
+#: srcore/srpres.c:802
+msgid "Split pane"
+msgstr "나누기 부분"
+
+#: srcore/srpres.c:803
+msgid "STA"
+msgstr "상태"
+
+#: srcore/srpres.c:803
+msgid "STATUS BAR"
+msgstr "상태 표시줄"
+
+#: srcore/srpres.c:803
+msgid "Status bar"
+msgstr "상태 표시줄"
+
+#: srcore/srpres.c:804
+msgid "TAB"
+msgstr "테이블"
+
+#: srcore/srpres.c:804
+msgid "TABLE"
+msgstr "테이블"
+
+#: srcore/srpres.c:804
+msgid "Table"
+msgstr "테이블"
+
+#: srcore/srpres.c:805
+msgid "CEL"
+msgstr "셀"
+
+#: srcore/srpres.c:805
+msgid "TABLE CELL"
+msgstr "테이블 셀"
+
+#: srcore/srpres.c:805
+msgid "Table cell"
+msgstr "테이블 셀"
+
+#: srcore/srpres.c:806 srcore/srpres.c:831
+msgid "TCH"
+msgstr "테이블 열 헤더"
+
+#: srcore/srpres.c:806
+msgid "TABLE COLUMN HEADER"
+msgstr "테이블 열 헤더"
+
+#: srcore/srpres.c:806
+msgid "Table column header"
+msgstr "테이블 열 헤더"
+
+#: srcore/srpres.c:807
+msgid "TRH"
+msgstr "테이블 행 헤더"
+
+#: srcore/srpres.c:807
+msgid "TABLE ROW HEADER"
+msgstr "테이블 행 헤더"
+
+#: srcore/srpres.c:807
+msgid "Table row header"
+msgstr "테이블 행 헤더"
+
+#: srcore/srpres.c:808 srcore/srpres.c:809
+msgid "TXT"
+msgstr "텍스트"
+
+#: srcore/srpres.c:808
+msgid "MULTI LINE TEXT"
+msgstr "여러 줄 텍스트"
+
+#: srcore/srpres.c:808
+msgid "Multi Line Text"
+msgstr "여러 줄 텍스트"
+
+#: srcore/srpres.c:809
+msgid "SINGLE LINE TEXT"
+msgstr "한 줄 텍스트"
+
+#: srcore/srpres.c:809
+msgid "Single Line Text"
+msgstr "한 줄 텍스트"
+
+#: srcore/srpres.c:810
+msgid "TOG"
+msgstr "토글"
+
+#: srcore/srpres.c:810
+msgid "TOGGLE BUTTON"
+msgstr "토글 단추"
+
+#: srcore/srpres.c:810
+msgid "Toggle button"
+msgstr "토글 단추"
+
+#: srcore/srpres.c:811
+msgid "TOL"
+msgstr "도구"
+
+#: srcore/srpres.c:811
+msgid "TOOL BAR"
+msgstr "도구 모음"
+
+#: srcore/srpres.c:811
+msgid "Tool bar"
+msgstr "도구 모음"
+
+#: srcore/srpres.c:812
+msgid "TIP"
+msgstr "풍선"
+
+#: srcore/srpres.c:812
+msgid "TOOL TIP"
+msgstr "풍선 도움말"
+
+#: srcore/srpres.c:812
+msgid "Tool tip"
+msgstr "풍선 도움말"
+
+#: srcore/srpres.c:813
+msgid "TRE"
+msgstr "트리"
+
+#: srcore/srpres.c:813
+msgid "TREE"
+msgstr "트리"
+
+#: srcore/srpres.c:813
+msgid "Tree"
+msgstr "트리"
+
+#: srcore/srpres.c:814
+msgid "TRI"
+msgstr "트리 항목"
+
+#: srcore/srpres.c:814
+msgid "TREE ITEM"
+msgstr "트리 항목"
+
+#: srcore/srpres.c:814
+msgid "Tree item"
+msgstr "트리 항목"
+
+#: srcore/srpres.c:815
+msgid "TRT"
+msgstr "트리 테이블"
+
+#: srcore/srpres.c:815
+msgid "TREE TABLE"
+msgstr "트리 테이블"
+
+#: srcore/srpres.c:815
+msgid "Tree table"
+msgstr "트리 테이블"
+
+#: srcore/srpres.c:816
+msgid "VWP"
+msgstr "뷰포트"
+
+#: srcore/srpres.c:816
+msgid "VIEWPORT"
+msgstr "뷰포트"
+
+#: srcore/srpres.c:816
+msgid "Viewport"
+msgstr "뷰포트"
+
+#: srcore/srpres.c:817
+msgid "WND"
+msgstr "창"
+
+#: srcore/srpres.c:817
+msgid "WINDOW"
+msgstr "창"
+
+#: srcore/srpres.c:817
+msgid "Window"
+msgstr "창"
+
+#: srcore/srpres.c:818
+msgid "ACC"
+msgstr "바로가기 레이블"
+
+#: srcore/srpres.c:818
+msgid "ACCELERATOR LABEL"
+msgstr "바로가기 레이블"
+
+#: srcore/srpres.c:818
+msgid "Accelerator label"
+msgstr "바로가기 레이블"
+
+#: srcore/srpres.c:819
+msgid "ANI"
+msgstr "애니메이션"
+
+#: srcore/srpres.c:819
+msgid "ANIMATION"
+msgstr "애니메이션"
+
+#: srcore/srpres.c:819
+msgid "Animation"
+msgstr "애니메이션"
+
+#: srcore/srpres.c:820
+msgid "ARR"
+msgstr "화살표"
+
+#: srcore/srpres.c:820
+msgid "ARROW"
+msgstr "화살표"
+
+#: srcore/srpres.c:820
+msgid "Arrow"
+msgstr "화살표"
+
+#: srcore/srpres.c:821
+msgid "CAL"
+msgstr "달력"
+
+#: srcore/srpres.c:821
+msgid "CALENDAR"
+msgstr "달력"
+
+#: srcore/srpres.c:821
+msgid "Calendar"
+msgstr "달력"
+
+#: srcore/srpres.c:822
+msgid "DAT"
+msgstr "날짜 편집"
+
+#: srcore/srpres.c:822
+msgid "DATE EDITOR"
+msgstr "날짜 편집"
+
+#: srcore/srpres.c:822
+msgid "Date editor"
+msgstr "날짜 편집"
+
+#: srcore/srpres.c:823
+msgid "DIL"
+msgstr "다이얼"
+
+#: srcore/srpres.c:823
+msgid "DIAL"
+msgstr "다이얼"
+
+#: srcore/srpres.c:823
+msgid "Dial"
+msgstr "다이얼"
+
+#: srcore/srpres.c:824
+msgid "DRW"
+msgstr "그리기 영역"
+
+#: srcore/srpres.c:824
+msgid "DRAWING AREA"
+msgstr "그리기 영역"
+
+#: srcore/srpres.c:824
+msgid "Drawing area"
+msgstr "그리기 영역"
+
+#: srcore/srpres.c:825
+msgid "FNT"
+msgstr "글꼴"
+
+#: srcore/srpres.c:825
+msgid "FONT CHOOSER"
+msgstr "글꼴 고르기"
+
+#: srcore/srpres.c:825
+msgid "Font chooser"
+msgstr "글꼴 고르기"
+
+#: srcore/srpres.c:826
+msgid "IMG"
+msgstr "그림"
+
+#: srcore/srpres.c:826
+msgid "IMAGE"
+msgstr "그림"
+
+#: srcore/srpres.c:826
+msgid "Image"
+msgstr "그림"
+
+#: srcore/srpres.c:827
+msgid "SPIN BUTTON"
+msgstr "스핀 단추"
+
+#: srcore/srpres.c:827
+msgid "Spin button"
+msgstr "스핀 단추"
+
+#: srcore/srpres.c:828
+msgid "TRM"
+msgstr "터미널"
+
+#: srcore/srpres.c:828
+msgid "TERMINAL"
+msgstr "터미널"
+
+#: srcore/srpres.c:828
+msgid "Terminal"
+msgstr "터미널"
+
+#: srcore/srpres.c:829
+msgid "EXT"
+msgstr "확장"
+
+#: srcore/srpres.c:829
+msgid "EXTENDED"
+msgstr "확장"
+
+#: srcore/srpres.c:829
+msgid "Extended"
+msgstr "확장"
+
+#: srcore/srpres.c:830
+msgid "TLI"
+msgstr "테이블 줄"
+
+#: srcore/srpres.c:830
+msgid "TABLE LINE"
+msgstr "테이블 줄"
+
+#: srcore/srpres.c:830
+msgid "Table line"
+msgstr "테이블 줄"
+
+#: srcore/srpres.c:831
+msgid "TABLE COLUMNS HEADER"
+msgstr "테이블 열 헤더"
+
+#: srcore/srpres.c:831
+msgid "Table columns header"
+msgstr "테이블 열 헤더"
+
+#: srcore/srpres.c:832
+msgid "TIT"
+msgstr "제목 표시줄"
+
+#: srcore/srpres.c:832
+msgid "TITLE BAR"
+msgstr "제목 표시줄"
+
+#: srcore/srpres.c:832
+msgid "Title bar"
+msgstr "제목 표시줄"
+
+#: srcore/srpres.c:833
+msgid "EDB"
+msgstr "편집 막대"
+
+#: srcore/srpres.c:833
+msgid "EDIT BAR"
+msgstr "편집 막대"
+
+#: srcore/srpres.c:833
+msgid "Edit bar"
+msgstr "편집 막대"
+
+#: srcore/srspc.c:439
+#, c-format
+msgid "Incorrect parameters for voice \"%s%s\""
+msgstr "\"%s%s\" 목소리에 대한 파라미터가 틀렸습니다"
+
+#: srcore/srspc.c:481
+#, c-format
+msgid "failed to send to speech next string \"%s\""
+msgstr "다음 문자열 \"%s\"을(를) 음성으로 보내는 데 실패했습니다"
+
+#: srcore/srspc.c:547
+#, c-format
+msgid "could not create/modify voice \"%s\""
+msgstr "\"%s\" 목소리를 만들/고칠 수 없습니다 "
+
+#: srcore/srspc.c:707
+#, c-format
+msgid "voice \"%s\" will sound this way"
+msgstr "\"%s\" 목소리는 이런 식으로 소리가 납니다"
+
+#: srcore/srspc.c:712
+#, c-format
+msgid "could not test voice \"%s\""
+msgstr "\"%s\" 목소리를 테스트할 수 없습니다"
+
+#: srcore/srspc.c:801
+#, c-format
+msgid "value not supported for speech count mode \"%s\""
+msgstr "음성 카운트 모드 \"%s\"에서 지원되지 않는 값입니다"
+
+#: srcore/srspc.c:837
+#, c-format
+msgid "value not supported for speech modifiers type \"%s\""
+msgstr "음성 조정 타입 \"%s\"에서 지원되지 않는 값입니다"
+
+#: srcore/srspc.c:873
+#, c-format
+msgid "value not supported for speech cursors type \"%s\""
+msgstr "음성 커서 타입 \"%s\"에서 지원되지 않는 값입니다"
+
+#: srcore/srspc.c:909
+#, c-format
+msgid "value not supported for speech spaces type \"%s\""
+msgstr "음성 공백 타입 \"%s\"에서 지원되지 않는 값입니다"
+
+#: srcore/srspc.c:945
+#, c-format
+msgid "value not supported for speech dictionary type \"%s\""
+msgstr "음성 사전 타입 \"%s\"에서 지원되지 않는 값입니다"
+
+#: srcore/srspc.c:982
+#, c-format
+msgid "value not supported for speech text echo type \"%s\""
+msgstr "음성 텍스트 에코 타입 \"%s\"에서 지원되지 않는 값입니다"
+
+#: srcore/srspc.c:1001
+msgid "Tilde"
+msgstr "물결"
+
+#: srcore/srspc.c:1001
+msgid "Tildaes"
+msgstr "물결"
+
+#: srcore/srspc.c:1002
+msgid "Exclamation"
+msgstr "느낌표"
+
+#: srcore/srspc.c:1002
+msgid "Exclamations"
+msgstr "느낌표"
+
+#: srcore/srspc.c:1003
+msgid "At"
+msgstr "앳"
+
+#: srcore/srspc.c:1003
+msgid "Ats"
+msgstr "앳"
+
+#: srcore/srspc.c:1004
+msgid "Hash"
+msgstr "해시"
+
+#: srcore/srspc.c:1004
+msgid "Hashes"
+msgstr "해시"
+
+#: srcore/srspc.c:1005
+msgid "Dollar"
+msgstr "달러"
+
+#: srcore/srspc.c:1005
+msgid "Dollars"
+msgstr "달러"
+
+#: srcore/srspc.c:1006
+msgid "Percent"
+msgstr "퍼센트"
+
+#: srcore/srspc.c:1006
+msgid "Percents"
+msgstr "퍼센트"
+
+#: srcore/srspc.c:1007
+msgid "Caret"
+msgstr "캐럿"
+
+#: srcore/srspc.c:1007
+msgid "Carets"
+msgstr "캐럿"
+
+#: srcore/srspc.c:1008
+msgid "And"
+msgstr "엔드"
+
+#: srcore/srspc.c:1008
+msgid "Ands"
+msgstr "엔드"
+
+#: srcore/srspc.c:1009
+msgid "Asterisk"
+msgstr "별표"
+
+#: srcore/srspc.c:1009
+msgid "Asterisks"
+msgstr "별표"
+
+#: srcore/srspc.c:1010
+msgid "Left Paranthesis"
+msgstr "왼쪽 괄호"
+
+#: srcore/srspc.c:1011
+msgid "Right Paranthesis"
+msgstr "오른쪽 괄호"
+
+#: srcore/srspc.c:1012
+msgid "Underscore"
+msgstr "밑줄"
+
+#: srcore/srspc.c:1012
+msgid "Underscores"
+msgstr "밑줄"
+
+#: srcore/srspc.c:1013
+msgid "Plus"
+msgstr "더하기"
+
+#: srcore/srspc.c:1013
+msgid "Pluses"
+msgstr "더하기"
+
+#: srcore/srspc.c:1014
+msgid "Equal"
+msgstr "등호"
+
+#: srcore/srspc.c:1014
+msgid "Equals"
+msgstr "등호"
+
+#: srcore/srspc.c:1015
+msgid "Minus"
+msgstr "빼기"
+
+#: srcore/srspc.c:1015
+msgid "Minuses"
+msgstr "빼기"
+
+#: srcore/srspc.c:1016
+msgid "Quote"
+msgstr "따옴표"
+
+#: srcore/srspc.c:1016
+msgid "Quotes"
+msgstr "따옴표"
+
+#: srcore/srspc.c:1017
+msgid "Left Bracket"
+msgstr "왼쪽 대괄호"
+
+#: srcore/srspc.c:1017
+msgid "Left Brackets"
+msgstr "왼쪽 대괄호"
+
+#: srcore/srspc.c:1018
+msgid "Right Bracket"
+msgstr "오른쪽 대괄호"
+
+#: srcore/srspc.c:1018
+msgid "Right Brackets"
+msgstr "오른쪽 대괄호"
+
+#: srcore/srspc.c:1019
+msgid "Left Brace"
+msgstr "왼쪽 중괄호"
+
+#: srcore/srspc.c:1019
+msgid "Left Braces"
+msgstr "왼쪽 중괄호"
+
+#: srcore/srspc.c:1020
+msgid "Right Brace"
+msgstr "오른쪽 중괄호"
+
+#: srcore/srspc.c:1020
+msgid "Right Braces"
+msgstr "오른쪽 중괄호"
+
+#: srcore/srspc.c:1021
+msgid "Semicolon"
+msgstr "세미콜론"
+
+#: srcore/srspc.c:1021
+msgid "Semicolons"
+msgstr "세미콜론"
+
+#: srcore/srspc.c:1022
+msgid "Colon"
+msgstr "콜론"
+
+#: srcore/srspc.c:1022
+msgid "Colons"
+msgstr "콜론"
+
+#: srcore/srspc.c:1023
+msgid "Double quote"
+msgstr "쌍따옴표"
+
+#: srcore/srspc.c:1023
+msgid "Double quotes"
+msgstr "쌍따옴표"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophe"
+msgstr "아포스트로피"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophes"
+msgstr "아포스트로피"
+
+#: srcore/srspc.c:1025
+msgid "Back Slash"
+msgstr "백슬래쉬"
+
+#: srcore/srspc.c:1025
+msgid "Back Slashes"
+msgstr "백슬래쉬"
+
+#: srcore/srspc.c:1026
+msgid "Bar"
+msgstr "세로선"
+
+#: srcore/srspc.c:1026
+msgid "Bars"
+msgstr "세로선"
+
+#: srcore/srspc.c:1027
+msgid "Greater"
+msgstr "더큼"
+
+#: srcore/srspc.c:1027
+msgid "Greaters"
+msgstr "더큼"
+
+#: srcore/srspc.c:1028
+msgid "Less"
+msgstr "더작음"
+
+#: srcore/srspc.c:1028
+msgid "Lesses"
+msgstr "더작음"
+
+#: srcore/srspc.c:1029
+msgid "Comma"
+msgstr "쉼표"
+
+#: srcore/srspc.c:1029
+msgid "Commas"
+msgstr "쉼표"
+
+#: srcore/srspc.c:1030
+msgid "Dot"
+msgstr "점"
+
+#: srcore/srspc.c:1030
+msgid "Dots"
+msgstr "점"
+
+#: srcore/srspc.c:1031
+msgid "Slash"
+msgstr "슬래쉬"
+
+#: srcore/srspc.c:1031
+msgid "Slashes"
+msgstr "슬래쉬"
+
+#: srcore/srspc.c:1032
+msgid "Questions"
+msgstr "물음"
+
+#: srcore/srspc.c:1106
+#, c-format
+msgid "value not supported for speech punctuation type \"%s\""
+msgstr "음성 구두점 타입 \"%s\"에서 지원되지 않는 값입니다"
+
+#: srcore/srspc.c:1364
+msgid "Unable to initialize hashtable"
+msgstr "해시 테이블을 초기화할 수 없습니다"
+
+#: srcore/srspc.c:1370
+msgid "Unable to load dictionary from gconf"
+msgstr "gconf에서 사전을 읽어들일 수 없습니다"
+
+#: srcore/srspc.c:1561
+msgid "speech initialization succeded"
+msgstr "음성 초기화가 성공했습니다"
+
+#: srcore/srspc.c:1565
+msgid "speech initialization failed"
+msgstr "음성 초기화가 실패했습니다"
+
+#: srcore/srspc.c:1761
+msgid "enter"
+msgstr "enter"
+
+#: srcore/srspc.c:1844
+#, c-format
+msgid "can not find \"%s\" voice. use default voice"
+msgstr "\"%s\" 목소리를 찾을 수 없습니다. 기본 목소리를 사용합니다"
+
+#: srcore/srspc.c:1861
+msgid "voices pitch will be set to default value"
+msgstr "목소리 높이를 기본값으로 합니다"
+
+#: srcore/srspc.c:1863
+msgid "voices pitch will be decreased"
+msgstr "목소리 높이를 낮춥니다"
+
+#: srcore/srspc.c:1865
+msgid "voices pitch will be increased"
+msgstr "목소리 높이를 높입니다"
+
+#: srcore/srspc.c:1909
+msgid "voices rate will be set to default value"
+msgstr "목소리 속도를 기본값으로 합니다"
+
+#: srcore/srspc.c:1911
+msgid "voices rate will be decreased"
+msgstr "목소리 속도를 낮춥니다"
+
+#: srcore/srspc.c:1913
+msgid "voices rate will be increased"
+msgstr "목소리 속도를 높입니다"
+
+#: srcore/srspc.c:1958
+msgid "voices volume will be set to default value"
+msgstr "목소리 볼륨을 기본값으로 합니다"
+
+#: srcore/srspc.c:1960
+msgid "voices volume will be decreased"
+msgstr "목소리 볼륨을 낮춥니다"
+
+#: srcore/srspc.c:1962
+msgid "voices volume will be increased"
+msgstr "목소리 볼륨을 높입니다"
+
+#: srcore/srspc.c:2088
+#, c-format
+msgid "no support for speech key \"%s\""
+msgstr "음성 키 \"%s\"에 대해 지원하지 않습니다"
+
+#~ msgid "Can not install braille font."
+#~ msgstr "점자 글꼴을 설치할 수 없습니다."
+
+#~ msgid "window hierarchy flat"
+#~ msgstr "창 계층관계 플랫"
+
+#~ msgid "_Lock zoom factor"
+#~ msgstr "확대/축소 비율 잠그기(_L)"
+
+#~ msgid "Sa_y all cursors"
+#~ msgstr "커서 모두 말하기(_Y)"
+
+#~ msgid "Say all cursors"
+#~ msgstr "커서 모두 말하기"
+
+#~ msgid "Keyboard preferences"
+#~ msgstr "키보드 기본 설정"
+
+#~ msgid "uniform"
+#~ msgstr "uniform"

@@ -1,0 +1,60 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically,
+# using the C collating order if possible:
+# shell: $ export LC_COLLATE=C
+# shell: $ sort POTFILES.in -o POTFILES.in
+braille/test/remote.c
+brlmon/brlmon.c
+brlmon/brlmonui.c
+brlmon/brlmonxml.c
+gnopi/bmconf.c
+gnopi/bmui.c
+gnopi/brlconf.c
+gnopi/brlui.c
+gnopi/cmdmapconf.c
+gnopi/cmdmapui.c
+gnopi/coreconf.c
+gnopi/defui.c
+gnopi/findui.c
+gnopi/genui.c
+gnopi/gnopernicus.desktop.in
+gnopi/gnopi.c
+gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2
+gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2
+gnopi/gnopi_files/Braille_Settings/braille_device.glade2
+gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2
+gnopi/gnopi_files/Braille_Settings/braille_settings.glade2
+gnopi/gnopi_files/Braille_Settings/braille_style.glade2
+gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2
+gnopi/gnopi_files/Braille_Settings/translation_table.glade2
+gnopi/gnopi_files/Find/find.glade2
+gnopi/gnopi_files/General_Settings/general_settings.glade2
+gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2
+gnopi/gnopi_files/Load_Default/load_default.glade2
+gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2
+gnopi/gnopi_files/Presentation/presentation.glade2
+gnopi/gnopi_files/Screen_Review/screen_review.glade2
+gnopi/gnopi_files/Speech_Settings/speech_settings.glade2
+gnopi/gnopi_files/User_Properties/user_properties.glade2
+gnopi/gnopi_files/about.glade2
+gnopi/gnopi_files/gnopi.glade2
+gnopi/gnopiconf.c
+gnopi/gnopiui.c
+gnopi/kbconf.c
+gnopi/kbui.c
+gnopi/magconf.c
+gnopi/magui.c
+gnopi/presui.c
+gnopi/scrui.c
+gnopi/spconf.c
+gnopi/spdictui.c
+gnopi/spui.c
+gnopi/spvoiceui.c
+speech/libsrs/srs-speech.c
+srconf/libsrconf/libsrconf.c
+srcore/default.xml.in
+srcore/srctrl.c
+srcore/srmain.c
+srcore/srpres.c
+srcore/srspc.c
+srcore/verbose.xml.in
