@@ -3,7 +3,7 @@
 #	For copying and distribution information, see the file
 #	"mit-copyright.h".
 # 
-#	$Id: zwgc.desc,v 1.16 2000-07-14 14:04:23 ghudson Exp $
+#	$Id: zwgc.desc,v 1.17 2004-06-24 02:24:11 ghudson Exp $
 #
 #
 # Default WindowGram description file
@@ -63,10 +63,11 @@ match "message"
     set type = "Instance "+$instance
   endif
 
-  fields signature body
-  if ($body == "") then
-    set body = $signature
+  if ($number_of_fields == "1") then
+    fields body
     set signature = ""
+  else
+    fields signature body
   endif
   if ($signature =~ "^[Ff]rom: .*") then
     set dummy = lany($signature,"From: ")
