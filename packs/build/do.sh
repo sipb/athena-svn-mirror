@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.56.2.2 2000-08-01 19:08:23 ghudson Exp $
+# $Id: do.sh,v 1.56.2.3 2000-09-01 19:08:31 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -183,7 +183,7 @@ else
 	MAKE=make
 fi
 
-export WARN_CFLAGS ERROR_CFLAGS CC MAKE
+export WARN_CFLAGS ERROR_CFLAGS CC CXX MAKE
 
 if [ -r Makefile.athena ]; then
 	export SRVD SOURCE COMPILER ATHTOOLROOT
