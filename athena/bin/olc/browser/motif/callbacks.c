@@ -13,7 +13,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.1 1991-03-21 16:12:12 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.2 1991-03-23 13:34:07 lwvanels Exp $";
 #endif
 
 #include <Mrm/MrmAppl.h>
@@ -44,7 +44,7 @@ ENTRY new_entry_table[MAX_ENTRIES];	/* Entry table to hold new entries. */
 ENTRY EntryTable[MAX_ENTRIES];		/* Table of entries. */
 int Deep = 0;
 char buffer[BUFSIZ];
-Widget w_list, w_text, w_top_lbl, w_bottom_lbl, w_up;
+Widget w_list, w_text, w_top_lbl, w_bottom_lbl, w_up, w_save;
 
 /*
  *  Procedures
@@ -188,12 +188,25 @@ int show_file(text_widget, file)
      Widget text_widget;
      char file[BUFSIZ];
 {
+  Arg arg;
   struct stat buf;
   char *text;
   int fd;
   char error[BUFSIZ];		/* Space for error message. */
+  static int init = 0;
+  
+  if (init == 0) {
+      XtSetArg(arg, XmNsensitive, TRUE);
+      XtSetValues(w_save, &arg, 1);
+      init = 1;
+    }
 
-  stat(file, &buf);
+  if (stat(file, &buf) < 0) {
+    sprintf(error, "Error stat'ing file %s\n",file);
+    MuError(error);
+    return(ERROR);
+  }
+
   if ((text = (char *) malloc((1 + buf.st_size) * sizeof(char)))
       == (char *) NULL)
     {
@@ -381,6 +394,11 @@ void createCB (w, string, callback_data)
   }
 
   if (!strcmp(string, "save")) {
+    w_save = w;
+    return;
+  }
+
+  if (!strcmp(string, "save_dlg")) {
     XtDestroyWidget(XmSelectionBoxGetChild(w,XmDIALOG_HELP_BUTTON));
     return;
   }

@@ -84,7 +84,8 @@ Xbrowser.wcChildren:		main
 *prev.activateCallback:		prevCB()
 *list.singleSelectionCallback:	setCursorCB(150), selectCB(), setCursorCB(132)
 *list.defaultActionCallback:	setCursorCB(150), selectCB(), setCursorCB(132)
-*save_dlg.wcCallback:		createCB(save), setPromptCB()
+*save.wcCallback:		createCB(save)
+*save_dlg.wcCallback:		createCB(save_dlg), setPromptCB()
 *save_dlg.okCallback:		saveCB(), WcSetSensitiveCB(*save)
 *save_dlg.cancelCallback:	WcSetSensitiveCB(*save)
 *help_dlg.wcCallback:		createCB(help)
@@ -96,6 +97,7 @@ Xbrowser.wcChildren:		main
 !
 !  Other Widget resources
 !
+*save.sensitive:		FALSE
 *up.sensitive:			FALSE
 *list.selectionPolicy:		SINGLE_SELECT
 *list.scrollBarDisplayPolicy:	STATIC
