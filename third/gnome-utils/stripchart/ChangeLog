@@ -1,0 +1,35 @@
+2001-03-10  John Kodis  <kodis@jagunet.com>
+
+	* eval.c (num_op): Correct evaluation of time ($t) and delta-time
+	(~t) values.
+
+	* chart.c (chart_parameter_add): Default to an unlimited range of
+	allowable adjustment for parameters.
+
+2001-03-07  John Kodis  <kodis@jagunet.com>
+
+	* params.c (param_desc_ingest): If a parameter file is missing or
+	invalid, only complain about it once.
+
+	* eval.c (num_op): Correct time values: $t is time since startup,
+	and ~t is the delta time between evaluation iterations.
+
+	* stripchart.params: Add mail, ppp parameters.
+
+	* stripchart.conf: Add parameter to monitor e-mail; add
+	description to Busy parameter.
+
+	* params.c (on_color_set): Insure that a parameter datum actually
+	exists before attempting to set its color, thus avoiding an
+	embarrassing seg fault.
+
+2001-02-24 - John Fleck <jfleck@inkstain.net>
+
+	* adding <figure> tags to screenshots in stripchart.sgml to avoid
+	annoying segfault in gnome-db2htm2
+
+2001-01-21  John Kodis  <kodis@jagunet.com>
+
+	* Initial checkin to the Gnome CVS repository.
+	
+

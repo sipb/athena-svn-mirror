@@ -1,0 +1,221 @@
+<HTML
+><HEAD
+><TITLE
+>Configuration and Parameter Files</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.54"><LINK
+REL="HOME"
+TITLE="stripchart"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Parameter Settings"
+HREF="parameters.html"><LINK
+REL="NEXT"
+TITLE="Known bugs and limitations"
+HREF="bugs.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>stripchart</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="parameters.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="bugs.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="FILES"
+>Configuration and Parameter Files</A
+></H1
+><P
+>The <TT
+CLASS="APPLICATION"
+>stripchart</TT
+> program
+    determines the parameters to display by reading a configuration
+    file.  The <TT
+CLASS="APPLICATION"
+>stripchart</TT
+> program will
+    look for a configuration file in the following order:
+    <P
+></P
+><UL
+><LI
+><P
+>first, for a file specified on the command
+      line, </P
+></LI
+><LI
+><P
+>then, for a file named
+      <TT
+CLASS="FILENAME"
+>stripchart.conf</TT
+> in the current working
+      directory, </P
+></LI
+><LI
+><P
+>then, for a file named
+      <TT
+CLASS="FILENAME"
+>.stripchart.conf</TT
+> in the users home
+      directory, </P
+></LI
+><LI
+><P
+>then, for a file named
+      <TT
+CLASS="FILENAME"
+>/etc/stripchart.conf</TT
+>, </P
+></LI
+><LI
+><P
+>and finally, for a file named
+      <TT
+CLASS="FILENAME"
+>stripchart.conf</TT
+> in the
+      <TT
+CLASS="REPLACEABLE"
+><I
+>CONFDIR</I
+></TT
+> directory, which will usually
+      be either <TT
+CLASS="FILENAME"
+>/usr/share/stripchart/</TT
+> or
+      <TT
+CLASS="FILENAME"
+>/usr/local/share/stripchart/</TT
+>.
+      </P
+></LI
+></UL
+>
+
+    If no configuration file is found, the program displays an error
+    message and exits.</P
+><P
+>The canned parameters that are displayed in the
+    <SPAN
+CLASS="INTERFACE"
+>Parameter Editor</SPAN
+> window are read from the
+    <TT
+CLASS="FILENAME"
+>stripchart.param</TT
+> file in the <TT
+CLASS="FILENAME"
+> <TT
+CLASS="REPLACEABLE"
+><I
+> {prefix}/share/stripchart
+    </I
+></TT
+> </TT
+> directory.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="parameters.html"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="bugs.html"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Parameter Settings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Known bugs and limitations</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
