@@ -15,7 +15,7 @@
 
 /* This is the client for the lert system. */
 
-static const char rcsid[] = "$Id: lert.c,v 1.8 1999-12-13 15:55:41 danw Exp $";
+static const char rcsid[] = "$Id: lert.c,v 1.9 1999-12-14 16:03:59 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -367,7 +367,7 @@ static char *read_file(char *name)
 }
 
 /* View the message from lert. */
-static void view_message(char *msgs, int type)
+static void view_message(char *msgs, int type, int no_more)
 {
   char name[sizeof(LERTS_MSG_FILES) + 2];
   char *user, *subject = NULL;
@@ -399,7 +399,7 @@ static void view_message(char *msgs, int type)
 	bombout(ERR_MEMORY);
     }
 
-  header = read_file(LERTS_MSG_FILES "0");
+  header = read_file(no_more ? LERTS_MSG_FILES "1" : LERTS_MSG_FILES "0");
 
   while (*msgs)
     {
@@ -474,7 +474,7 @@ int main(int argc, char **argv)
   message = lert_says(no_more);
   if (message)
     {
-      view_message(message, method);
+      view_message(message, method, no_more);
       free(message);
     }
 
