@@ -1,18 +1,23 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v $
- *	$Author: probe $
+ *	$Author: epeisach $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.7 1991-01-22 16:19:27 probe Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.8 1991-03-04 12:56:39 epeisach Exp $";
 
 #include "attach.h"
 #ifdef NFS
 #include <sys/socket.h>
 #include <krb.h>
+#if defined(_AIX) && (AIXV < 30)
+#include <rpc/rpcmount.h>
+#include <rpc/nfsmount.h>
+#else
 #include <rpcsvc/mount.h>
+#endif
 #include <sys/param.h>
 
 extern bool_t	xdr_void();
