@@ -109,6 +109,11 @@ END {
 	}
     }
 
+    if (target) {
+	build(target);
+	exit;
+    }
+
     # Now remove the late packages from the packages list to keep
     # them from being built too soon.
     for (i = 0; i < numlate; i++)
