@@ -104,14 +104,18 @@ cmd:		USER SP username CRLF
 			logged_in = 0;
 			if (strcmp((char *) $3, "ftp") == 0 ||
 			  strcmp((char *) $3, "anonymous") == 0) {
-				if ((pw = sgetpwnam("ftp")) != NULL) {
-					guest = 1;
-					reply(331,
-				  "Guest login ok, send ident as password.");
-				}
-				else {
-					reply(530, "User %s unknown.", $3);
-				}
+			     if (checkuser("ftp") &&
+				 checkftpusers("anonymous")) {
+				  if ((pw = sgetpwnam("ftp")) != NULL) {
+				       guest = 1;
+				       reply(331,
+				    "Guest login ok, send ident as password.");
+				  } else {
+				       reply(530, "User %s unknown.",$3);
+				  }
+			     } else {
+				  reply(530, "Anonymous ftp not allowed.");
+			     }
 			} else if (checkuser((char *) $3)) {
 				guest = 0;
 				pw = sgetpwnam((char *) $3);
