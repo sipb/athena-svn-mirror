@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.1 1989-05-21 11:09:03 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.2 1989-05-21 11:12:31 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.1 1989-05-21 11:09:03 probe Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.2 1989-05-21 11:12:31 probe Exp $";
 #endif lint
 
 /*
@@ -404,8 +404,6 @@ chkhost(f)
 #define SUBNET(x) (((x) >> 16) & 0xff)
 #define HHOST(x) (((x) >> 8) & 0xff)
 #define LHOST ((x) & 0xff)
-#define MIN_ATHENA_SUBNET 58
-#define MAX_ATHENA_SUBNET 141
 #define ATHENA_NETWORK 18
 #endif
 
@@ -437,10 +435,8 @@ chkhost(f)
 	   in /etc/hosts.equiv or /etc/hosts.lpd */
 
 	hold_net = ntohl(f->sin_addr.s_addr);
-	if ((NET(hold_net) == ATHENA_NETWORK) &&
-	    (SUBNET(hold_net) >= MIN_ATHENA_SUBNET &&
-	     SUBNET(hold_net) <= MAX_ATHENA_SUBNET))
-	  return;
+	if (NET(hold_net) == ATHENA_NETWORK)
+	    return;
 #endif
 	sp = fromb;
 	cp = ahost;
