@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.4 1987-08-28 15:11:40 shanzer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.5 1987-09-08 15:55:42 shanzer Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.4  87/08/28  15:11:40  shanzer
+ * Catches SIGINT, and removes lockfiles... 
+ * 
  * Revision 1.3  87/08/28  13:47:30  shanzer
  * Put temp file in /tmp where the belong.. 
  * 
@@ -15,7 +18,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.4 1987-08-28 15:11:40 shanzer Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.5 1987-09-08 15:55:42 shanzer Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -430,7 +433,7 @@ writestat()
 	}
 
 	if (exists(tmpoutname)) {
-		if (rename(tmpoutname,outname) == -1) {
+		if (copy_file(tmpoutname,outname) == 1 || unlink(tmpoutname) == -1) {
 			sprintf(errmsg,
 				"can't change file from %s to %s\n",
 				tmpoutname,
