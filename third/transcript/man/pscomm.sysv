@@ -1,0 +1,49 @@
+.TH PSCOMM 8 "19 August 1992" "Adobe Systems"
+\" Copyright (c) 1985,1987,1992 Adobe Systems Incorporated. All Rights Reserved.
+\" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/pscomm.sysv,v 1.1.1.1 1996-10-07 20:25:39 ghudson Exp $
+.ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
+.ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
+.SH NAME
+pscomm \(em\*(TS serial communications filter for \*(PS printers
+.SH "SYNOPSIS"
+.B XPSLIBDIRX/pscomm
+.SH "DESCRIPTION"
+This is the low-level \*(TS serial communication filter for use by the 
+System V line printer spooling system.  It is called from the
+.I psinterface
+shell script.
+The program 
+.I pscomm
+is the lowest level filter.  It manages communication with the printer,
+error handling, status reporting, etc.  
+Psinterface 
+and 
+.I pscomm
+manage a printer log file named
+transcript/\fIprinter\fP-log (under the lp spooling directory).
+This file contains a log of each job processed, as well as any
+error output from the printer.  In particular, it contains messages
+regarding the printer being out of paper, jammed, etc.  Doing a 
+tail
+on this file will help determine the printer's status.
+.PP
+.SH ENVIRONMENT
+.IP VERBOSELOG=\fInumber\fP
+print verbose log messages
+.SH FILES
+.TP 2.2i
+\fIspooldir\fP/transcript/\fIprinter\fP-log
+printer log file
+.SH "SEE ALSO"
+transcript(1), lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinterface(8)
+.br
+.I System V Line Printer Spooling Utilities
+.SH AUTHOR
+Adobe Systems Incorporated
+.SH NOTES
+\*(PS is a registered trademark of Adobe Systems Incorporated.
+.br
+\*(TS is a trademark of Adobe Systems Incorporated.
+.br
+Unix is a trademark of AT&T Bell Laboratories.

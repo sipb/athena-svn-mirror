@@ -1,0 +1,47 @@
+.TH QMSCOMM 8 "19 August 1992" "Adobe Systems"
+\" Copyright (c) 1992 Adobe Systems Incorporated. All Rights Reserved.
+\" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/qmscomm.sysv,v 1.1.1.1 1996-10-07 20:25:40 ghudson Exp $
+.ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
+.ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
+.SH NAME
+qmscomm\(em\*(TS Ethernet communications filter for
+QMS \*(PS printers
+.SH "SYNOPSIS"
+.B XPSLIBDIRX/qmscomm
+.SH "DESCRIPTION"
+This is the low-level \*(TS Ethernet communication filter for use by the 
+System V line printer spooling system when communicating with a QMS \*(PS printer.  It is called from the
+psinterface
+shell script.
+The program 
+.I qmscomm
+is the lowest level filter.  It manages communication with the printer
+and status reporting.
+psinterface 
+and 
+.I qmscomm
+manage a printer log file named
+transcript/\fIprinter\fP-log (under the lp spooling directory).
+This file contains a log of each job processed.
+.PP
+.SH ENVIRONMENT
+.IP VERBOSELOG=\fInumber\fP
+print verbose log messages
+.SH FILES
+.TP 2.2i
+\fIspooldir\fP/transcript/\fIprinter\fP-log
+printer log file
+.SH "SEE ALSO"
+transcript(1), lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinterface(8)
+.br
+.I System V Line Printer Spooling Utilities
+.SH AUTHOR
+Adobe Systems Incorporated
+.SH NOTES
+\*(PS is a registered trademark of Adobe Systems Incorporated.
+.br
+\*(TS is a trademark of Adobe Systems Incorporated.
+.br
+Unix is a trademark of AT&T Bell Laboratories.
+

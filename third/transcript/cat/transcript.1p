@@ -1,0 +1,198 @@
+
+
+
+   19 August 1992                                               TRANSCRIPT(1)
+
+
+
+
+
+
+   NAME
+     TRANSCRIPT-Programs for accessing POSTSCRIPT printers
+
+   DESCRIPTION
+     The TRANSCRIPT package is a suite of UNIX programs that enables UNIX
+     systems to access state-of-the-art POSTSCRIPT printers.  The package
+     transforms UNIX documents and graphics files into POSTSCRIPT language
+     format.  The POSTSCRIPT language is a device-independent programming
+     language and print file format for describing the appearance of printed
+     pages. POSTSCRIPT language documents can combine text, graphics, line
+     art, and scanned images for printing on raster devices.  POSTSCRIPT
+     language files will print _w_i_t_h_o_u_t _m_o_d_i_f_i_c_a_t_i_o_n on any POSTSCRIPT
+     printer.
+
+     The TRANSCRIPT package includes translator filters for common UNIX docu-
+     ment file formats like troff, ditroff, and plot.  It also includes
+     filters for "line-printer" listings, Diablo 630 print files, and Tek-
+     tronix 4014 files.  TRANSCRIPT software is fully integrated into the
+     spooling architecture, and includes the communications filters necessary
+     to print job banner pages, do page accounting, and perform communication
+     with a POSTSCRIPT printer.
+
+     The following programs are provided with the TRANSCRIPT release.  See
+     the appropriate manual page for each filter for more details.
+
+     _e_n_s_c_r_i_p_t
+            converts plain text files into POSTSCRIPT language format. Fonts,
+            headings, and limited formatting options may be specified, as
+            well as spooling options.
+
+     _p_s_4_0_1_4 converts Tektronix 4014 graphics terminal commands into
+            POSTSCRIPT language format.
+
+     _p_s_6_3_0  converts Diablo 630 word processing files into POSTSCRIPT
+            language format.
+
+     _p_s_p_l_o_t converts UNIX plot(1) format files into POSTSCRIPT language for-
+            mat.
+
+     _p_s_l_p_r  Reverse page order and/or select specified pages in POSTSCRIPT
+            language format files .  Pslpr also provides other document
+            management services such as font downloading, downloading of
+            other resources such as procedure sets, and handling of printer-
+            specific features.  It is similar in function to psdman, but is
+            invoked by the user, so the user has more control over things
+            such as where fonts and resources are obtained.  These services
+            are provided for documents that conform to the Document Structur-
+            ing Conventions.  See the pslpr(1) manual page for a more com-
+            plete description of this filter and its various functions.
+
+
+
+   Adobe Systems                                                            1
+
+
+
+
+
+
+   TRANSCRIPT(1)                                               19 August 1992
+
+
+     _p_s_n_u_p  prints multiple virtual pages on a single page, for documents
+            that conform to the Document Structuring Conventions.  See the
+            psnup(1) manual page for a more complete description of this
+            filter and its various functions.
+
+     _p_s_r_o_f_f converts [di]troff(1) input into POSTSCRIPT language format.
+            This is actually a shell script.  See the psroff(1) manual page
+            for more information.
+
+     _p_t_r_o_f_f converts [o]troff(1) input into POSTSCRIPT language format.  This
+            is actually a shell script.  See the ptroff(1) manual page for
+            more information.
+
+     _p_s_f_a_x  prepares documents for sending as FAX transmissions from
+            POSTSCRIPT printers with fax capabilities.  See the psfax(1)
+            manual page for more information.
+
+     _p_s_d_r_a_f_tadds a draft string to a document. See the psdraft(1) manual page
+            for more information.
+
+     _p_p_a_n_e_l a Motif graphical user interface to the TRANSCRIPT programs.  See
+            the ppanel(1) manual page for more information.
+
+     _p_s_c_o_m_m the program that performs serial communication with the
+            POSTSCRIPT printer.  This is normally invisible to the casual
+            user.  See the pscomm(8) manual page for a more complete descrip-
+            tion.  _q_m_s_c_o_m_m the program that performs network communication
+            with a QMS POSTSCRIPT printer.  This is normally invisible to the
+            casual user.  See the qmscomm(8) manual page for a more complete
+            description.  _f_p_c_o_m_m the program that performs network communica-
+            tion with a POSTSCRIPT printer connected via a MiLAN FastPort
+            box.  This is normally invisible to the casual user.  See the
+            fpcomm(8) manual page for a more complete description.  _l_p_c_o_m_m
+            the program that performs parallel communication with the
+            POSTSCRIPT printer.  This is normally invisible to the casual
+            user.  See the lpcomm(8) manual page for a more complete descrip-
+            tion.  _c_a_p_c_o_m_m the program that performs Appletalk communication
+            with the POSTSCRIPT printer.  This is normally invisible to the
+            casual user.  See the capcomm(8) manual page for a more complete
+            description.
+
+     _p_s_d_m_a_n the TRANSCRIPT document manager.  Invoked by psinterface (System
+            V), or psint.sh (BSD) to process print files.  Calls enscript to
+            convert text files to POSTSCRIPT language format, if necessary.
+            psdman is normally invisible to the user and is not intended to
+            be invoked in a command line.  Psdman performs document manage-
+            ment functions such as page reversal (if desired), font download-
+            ing, other resource downloading, and handling of printer-specific
+            features for documents that conform to the Document Structuring
+            Conventions.  See the psdman(8) manual page for a more complete
+            description.
+
+
+
+
+
+   2                                                            Adobe Systems
+
+
+
+
+
+
+   19 August 1992                                               TRANSCRIPT(1)
+
+
+   FILES
+
+     XPSLIBDIRX            Most data files for the TRANSCRIPT package can be
+                           found in this directory
+
+   SEE ALSO
+     enscript(1), ps4014(1), ps630(1), psplot(1), pslpr(1), psroff(1),
+     ptroff(1), psnup(1),psdman(1), psfonts(1), pssymbols(1), pscat(1),
+     psdit(1), pscomm(8), afm(7), postscript(7), capcomm(8), qmscomm(8),
+     fpcomm(8), lpcomm(8), psfax(1), psdraft(1), ppanel(1)
+
+   AUTHOR
+     Adobe Systems Incorporated
+
+   NOTES
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     TRANSCRIPT is a trademark of Adobe Systems Incorporated.
+     Unix is a trademark of AT&T Bell Laboratories.
+     FastPort is a trademark of MiLAN Technology.
+     Tektronix is a registered trademark of Tektronix, Inc.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Adobe Systems                                                            3
+
+
+99

@@ -1,0 +1,77 @@
+.TH PPANEL 1 "18 August 1992" "Adobe Systems"
+\" Copyright (c) 1992 Adobe Systems Incorporated. All Rights Reserved.
+\" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/ppanel.1p,v 1.1.1.1 1996-10-07 20:25:38 ghudson Exp $
+.ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
+.ds TS T\s-2RANS\s+2S\s-2CRIPT\s+2
+.SH NAME
+ppanel\(emMotif graphical user interface to T\s-2RANS\s+2S\s-2CRIPT\s+2
+.SH SYNOPSIS
+.B ppanel
+[ 
+.BI -P printer
+] [
+.BI -f filter
+] [
+.I files
+]
+.SH DESCRIPTION
+.I ppanel
+provides a graphical user interface to all the \*(TS programs.  It allows
+you to translate, manipulate, and print files, as well as save the output
+to another file, take advantage of \*(PS printers with fax capabilities, or
+preview documents 
+if you have an appropriate \*(PS language document previewer.
+.sp
+The possible options are:
+.TP
+.BI -P printer
+the print panel comes up with
+.I printer
+selected from the list of printers.  The default selection is the value of
+the PRINTER environment variable.
+.TP
+.BI -f filter
+selects 
+.I filter
+from the list of filters.  The default is the value of the TSFILTER
+environment variable, if set; if this variable isn't set, the default
+filter is "none".
+.SH ENVIRONMENT
+.IP PRINTER
+default printer
+.IP TSFILTER
+default filter
+.IP PREVIEWER
+path name for the \*(PS language document previewer
+.IP PSFAXDB
+location of the fax phone book
+.IP PSLIBDIR
+path name of the directory containing preview.info (and printer.list for
+System V)  
+.SH FILES
+.TP 2.2i
+XPSLIBDIRX/preview.info
+path name for the \*(PS language document previewer, which can be
+overridden by the PREVIEWER 
+environment variable
+.TP
+XPSLIBDIRX/printer.list
+list of available printers, for System V machines.
+.br
+.SH "SEE ALSO"
+transcript(1), enscript(1), ptroff(1), psroff(1), ps4014(1), psplot(1),
+ps630(1), pslpr(1), psnup(1), psfax(1), psdraft(1)
+.br
+BSD Unix systems: lpr(1), lpq(1), lprm(1).
+.br
+System V Unix systems: lp(1), cancel(1), lpstat(1).
+.SH AUTHOR
+Adobe Systems Incorporated
+.SH NOTES
+\*(PS is a registered trademark of Adobe Systems Incorporated.
+.br
+\*(TS is a trademark of Adobe Systems Incorporated.
+.br
+Unix is a trademark of AT&T Bell Laboratories.
+

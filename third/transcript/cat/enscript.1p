@@ -1,0 +1,330 @@
+
+
+
+   18 August 1992                                                 ENSCRIPT(1)
+
+
+
+
+
+
+   NAME
+     enscript-convert text files to POSTSCRIPT language format for printing
+
+   SYNOPSIS
+     enscript [ -1BcGghlmoqRr2 ] [ -v_c_o_l_u_m_n_s ] [ -L_l_i_n_e_s ] [ -f_b_f_o_n_t ] [ -
+     F_h_f_o_n_t ] [ -b_h_e_a_d_e_r ] [ -p_o_u_t ]
+     [ -s_s_i_z_e ] [ -S_f_e_a_t_u_r_e=_v_a_l_u_e ] [ -T_c_h_a_r_a_c_t_e_r_s ] [ _s_p_o_o_l_o_p_t_s ] [ _f_i_l_e_s ]
+
+   DESCRIPTION
+     _e_n_s_c_r_i_p_t reads in plain text files, converts them to POSTSCRIPT
+     language, and spools them for printing on a POSTSCRIPT printer.  Fonts,
+     headings, limited formatting options, and spooling options may be speci-
+     fied.
+
+     For example:
+          enscript -Paleph boring.txt
+     prints a copy of the file called boring.txt on the printer called aleph.
+          enscript -2r boring.c
+     prints a two-up landscape listing of the file called boring.c on the
+     default printer (see below).
+
+     Font specifications have two parts: a font name as known to the
+     POSTSCRIPT printer (e.g., Times-Roman, Times-BoldItalic, Helvetica,
+     Courier), and a point size (1 point=1/72 inch; 8 point is a good small
+     point size).  So Courier-Bold8 is 8 point Courier Bold, Helvetica12 is
+     12 point Helvetica.
+
+     The environment variable ENSCRIPT may be used to specify defaults.  The
+     value of ENSCRIPT is parsed as a string of arguments _b_e_f_o_r_e the argu-
+     ments that appear on the command line.  For example "ENSCRIPT='-fTimes-
+     Roman8'" sets the default body font to 8 point Times Roman.
+
+     The possible options are:
+
+     -1   sets in 1 column. One column is the default.
+
+     -2   sets in 2 columns.
+
+     -v_c_o_l_u_m_n_s
+          output is set in _c_o_l_u_m_n_s number of columns.  This is an extension
+          of the -2 switch.
+
+     -r   rotates the output 90 degrees (landscape mode).  This is good for
+          output that requires a wide page or for program listings when used
+          in conjunction with -2.
+          " enscript -2r files " is a nice way to get program listings.
+
+     -R   don't rotate, also known as portrait mode (the default).
+
+     -G   prints in gaudy mode: causes page headings, dates, and page numbers
+
+
+   Adobe Systems                                                            1
+
+
+
+
+
+
+   ENSCRIPT(1)                                                 18 August 1992
+
+
+          to be printed in a flashy style, at some slight performance
+          expense.
+
+     -l   simulates a line printer: make pages 66 lines long and omit
+          headers.
+
+     -B   omits page headings.
+
+     -c   truncates ("cuts") lines that are longer than the page width.  Nor-
+          mally, long lines are wrapped around to the following line on the
+          page.
+
+     -b_h_e_a_d_e_r
+          sets the string to be used for page headings to _h_e_a_d_e_r.  The
+          default header is constructed from the file name, its last modifi-
+          cation date, and a page number.  You can include elements from the
+          default header in your header by specifying %f for file name, %d
+          for date, or %n for page number.  If you need a '%' character in
+          the header, it must be specified by "%%".
+
+     -L_l_i_n_e_s
+          set the maximum number of lines to output on a page.  _E_n_s_c_r_i_p_t usu-
+          ally computes how many lines to put on a page based on point size,
+          and may put fewer lines per page than requested by _l_i_n_e_s.
+
+     -f_b_f_o_n_t
+          sets the font to be used for the body of each page.  The default is
+          Courier10 unless two-column rotated mode is used, in which case the
+          default is Courier7.
+
+     -F_h_f_o_n_t
+          sets the font to be used for page headings.  The default is
+          Courier-Bold10.
+
+     -p_o_u_t
+          causes the POSTSCRIPT file to be written to the named file rather
+          than being spooled for printing.  As a special case, -p will send
+          the resultingPOSTSCRIPT language code to the standard output.
+
+     -g   causes the fact that a file is garbage to be ignored.  Normally,
+          any file with more than a small number of nonprinting characters is
+          suspected of being garbage and not printed; this option means
+          "print it anyway."
+
+     -o   if _e_n_s_c_r_i_p_t cannot find characters in a font, the missing charac-
+          ters are listed.
+
+     -q   causes _e_n_s_c_r_i_p_t to be quiet about what it is doing. _E_n_s_c_r_i_p_t won't
+          report about pages, destination, omitted characters, etc. Fatal
+          errors are still reported to the standard error output.
+
+     -h   suppresses printing of the job burst page.
+
+     -s_s_i_z_e
+
+
+   2                                                            Adobe Systems
+
+
+
+
+
+
+   18 August 1992                                                 ENSCRIPT(1)
+
+
+          chooses a paper size for printing.  This size must match one of the
+          *PaperSize keywords in the POSTSCRIPT Printer Description file,
+          such as Letter, Legal, or A4.
+
+     -S_f_e_a_t_u_r_e=_v_a_l_u_e
+          chooses a printer feature, such as manual feed or duplex.  If _v_a_l_u_e
+          is omitted, a value of true is assumed.  These features must match
+          a keyword in the POSTSCRIPT Printer Description file.  For example,
+          "enscript -S ManualFeed" turns on manual feed.
+
+     -T_c_h_a_r_a_c_t_e_r_s
+          sets the width of a tab to be _c_h_a_r_a_c_t_e_r_s
+           number of characters.  This is especially useful to get columns to
+          line up correctly when printing with a variable width font.
+
+     In BSD Unix systems, the following spooler options are also recognized:
+
+     -P_p_r_i_n_t_e_r
+          causes the output to be sent to the named printer unless -p_f_i_l_e is
+          specified. In that case, the printer name is used to access the
+          printer's POSTSCRIPT Printer Description file for information, and
+          the output is written to the specified file instead of being
+          spooled for printing.
+
+     -#_n  causes _n copies of the output to be produced.  The default is one.
+
+     -m   causes the printer daemon to send mail upon job completion.
+
+     -J_n_a_m_e
+          sets the job name for use on the burst page.  Otherwise, the name
+          of the first input file will be used.
+
+     -C_c_l_a_s_s
+          set the job classification for use on the burst page.
+
+     In System V Unix systems, the following spooler options are also recog-
+     nized:
+
+     -t_t_i_t_l_e
+          sets job title for use on the burst page.
+
+     -d_d_e_s_t
+          causes the output to be sent to the named printer or printer class
+          unless -p_f_i_l_e is specified. In that case, the printer name is used
+          to access the printer's POSTSCRIPT Printer Description file for
+          information, and the output is written to the specified file
+          instead of being spooled for printing.
+
+     -n_n  causes _n copies of the output to be produced. The default is one.
+
+     -w or -m
+          causes the printer daemon to write or send mail upon job comple-
+          tion.
+
+
+
+   Adobe Systems                                                            3
+
+
+
+
+
+
+   ENSCRIPT(1)                                                 18 August 1992
+
+
+   ENVIRONMENT
+
+     ENSCRIPT
+          string of options to be used by _e_n_s_c_r_i_p_t
+
+     PSLIBDIR
+          path name of a directory to use instead of XPSLIBDIRX for _e_n_s_c_r_i_p_t
+          prologue and font metric files
+
+     PSTEMPDIR
+          path name of a temporary directory to use instead of XPSTEMPDIRX
+          for temporary files.
+
+     PRINTER (BSD)
+          the name of a printer (as in the -P option) for lpr to use.  If no
+          -P option is specified, lpr will use this printer.  If neither -P
+          nor PRINTER is set, _e_n_s_c_r_i_p_t will spool to a printer named
+          "PostScript".
+
+     LPDEST (System V)
+          the name of a printer (as in the -d option) for lp to use.  If no
+          -d option is specified, lp will use this printer.  If neither -d
+          nor LPDEST is set, _e_n_s_c_r_i_p_t will spool to a printer class named
+          "PostScript".
+
+   FILES
+
+     XPSLIBDIRX/*.afm      font metrics files
+
+     XPSLIBDIRX/enscript.pro
+                           prologue for _e_n_s_c_r_i_p_t
+                            files
+
+   SEE ALSO
+     pr(1), transcript(1), psfonts(1), ps630(1)
+     BSD Unix systems: lpr(1), lpq(1), lprm(1)
+     System V Unix systems: lp(1), cancel(1), lpstat(1)
+
+   AUTHOR
+     Adobe Systems Incorporated
+     Gaudy mode by Guy Riddle of AT&T Bell Laboratories
+
+   BUGS
+     _E_n_s_c_r_i_p_t generates temporary files which are spooled for printing.  The
+     temporary file names are used by the spooling software (e.g., lpq ),
+     rather than the symbolic job name passed to lpr .
+
+     There are too many options.
+
+   NOTES
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     Times and Helvetica are registered trademarks of Linotype.
+     Unix is a trademark of AT&T Bell Laboratories.
+
+
+
+   4                                                            Adobe Systems
+
+
+
+
+
+
+   18 August 1992                                                 ENSCRIPT(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Adobe Systems                                                            5
+
+
+99
