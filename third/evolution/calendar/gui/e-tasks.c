@@ -26,7 +26,7 @@
 #include <gnome.h>
 #include <gal/util/e-util.h>
 #include <gal/e-table/e-table-scrolled.h>
-#include <gal/menus/gal-view-collection.h>
+#include <gal/menus/gal-view-instance.h>
 #include <gal/menus/gal-view-factory-etable.h>
 #include <gal/menus/gal-view-etable.h>
 #include "e-util/e-url.h"
@@ -47,15 +47,16 @@ static GList *all_tasks = NULL;
 struct _ETasksPrivate {
 	/* The calendar client object we monitor */
 	CalClient   *client;
-
+	CalQuery    *query;
+	
 	/* The ECalendarTable showing the tasks. */
 	GtkWidget   *tasks_view;
 
 	/* Calendar search bar for tasks */
 	GtkWidget *search_bar;
 
-	/* View collection and the view menus handler */
-	GalViewCollection *view_collection;
+	/* View instance and the view menus handler */
+	GalViewInstance *view_instance;
 	GalViewMenus *view_menus;
 };
 
@@ -66,8 +67,7 @@ static void setup_widgets (ETasks *tasks);
 static void e_tasks_destroy (GtkObject *object);
 
 static void cal_opened_cb (CalClient *client, CalClientOpenStatus status, gpointer data);
-
-static char* e_tasks_get_config_filename (ETasks *tasks);
+static void backend_error_cb (CalClient *client, const char *message, gpointer data);
 
 /* Signal IDs */
 enum {
@@ -120,10 +120,10 @@ e_tasks_init (ETasks *tasks)
 	priv = g_new0 (ETasksPrivate, 1);
 	tasks->priv = priv;
 
-	priv->view_collection = NULL;
+	priv->client = NULL;
+	priv->query = NULL;
+	priv->view_instance = NULL;
 	priv->view_menus = NULL;
-
-	setup_widgets (tasks);
 }
 
 /* Callback used when the selection changes in the table. */
@@ -241,12 +241,16 @@ e_tasks_construct (ETasks *tasks)
 
 	priv = tasks->priv;
 
+	setup_widgets (tasks);
+
 	priv->client = cal_client_new ();
 	if (!priv->client)
 		return NULL;
 
 	gtk_signal_connect (GTK_OBJECT (priv->client), "cal_opened",
 			    GTK_SIGNAL_FUNC (cal_opened_cb), tasks);
+	gtk_signal_connect (GTK_OBJECT (priv->client), "backend_error",
+			    GTK_SIGNAL_FUNC (backend_error_cb), tasks);
 	gtk_signal_connect (GTK_OBJECT (priv->client), "categories_changed",
 			    GTK_SIGNAL_FUNC (client_categories_changed_cb), tasks);
 
@@ -278,24 +282,28 @@ e_tasks_new (void)
 }
 
 
+void
+e_tasks_set_ui_component (ETasks *tasks,
+			  BonoboUIComponent *ui_component)
+{
+	g_return_if_fail (E_IS_TASKS (tasks));
+	g_return_if_fail (ui_component == NULL || BONOBO_IS_UI_COMPONENT (ui_component));
+
+	e_search_bar_set_ui_component (E_SEARCH_BAR (tasks->priv->search_bar), ui_component);
+}
+
+
 static void
 e_tasks_destroy (GtkObject *object)
 {
 	ETasks *tasks;
 	ETasksPrivate *priv;
-	char *config_filename;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (E_IS_TASKS (object));
 
 	tasks = E_TASKS (object);
 	priv = tasks->priv;
-
-	/* Save the ETable layout. */
-	config_filename = e_tasks_get_config_filename (tasks);
-	e_calendar_table_save_state (E_CALENDAR_TABLE (priv->tasks_view),
-				     config_filename);
-	g_free (config_filename);
 
 	if (priv->client) {
 		gtk_object_unref (GTK_OBJECT (priv->client));
@@ -311,13 +319,23 @@ e_tasks_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+static void
+set_status_message (ETasks *tasks, const char *message)
+{
+	ETasksPrivate *priv;
+	CalendarModel *model;
+	
+	priv = tasks->priv;
+	
+	model = e_calendar_table_get_model (E_CALENDAR_TABLE (priv->tasks_view));
+	calendar_model_set_status_message (model, message);
+}
 
 gboolean
 e_tasks_open			(ETasks		*tasks,
 				 char		*file)
 {
 	ETasksPrivate *priv;
-	char *config_filename;
 	char *message;
 	EUri *uri;
 	char *real_uri;
@@ -335,9 +353,7 @@ e_tasks_open			(ETasks		*tasks,
 		real_uri = g_strdup (file);
 
 	message = g_strdup_printf (_("Opening tasks at %s"), real_uri);
-	calendar_model_set_status_message (
-		e_calendar_table_get_model (E_CALENDAR_TABLE (priv->tasks_view)),
-		message);
+	set_status_message (tasks, message);
 	g_free (message);
 
 	if (!cal_client_open_calendar (priv->client, real_uri, FALSE)) {
@@ -348,10 +364,6 @@ e_tasks_open			(ETasks		*tasks,
 		return FALSE;
 	}
 
-	config_filename = e_tasks_get_config_filename (tasks);
-	e_calendar_table_load_state (E_CALENDAR_TABLE (priv->tasks_view),
-				     config_filename);
-	g_free (config_filename);
 	g_free (real_uri);
 	e_uri_free (uri);
 
@@ -383,6 +395,17 @@ method_error				(ETasks		*tasks,
 	g_free (msg);
 }
 
+/* Displays an error to indicate permission problems */
+static void
+permission_error (ETasks *tasks, const char *uri)
+{
+	char *msg;
+
+	msg = g_strdup_printf (_("You don't have permission to open the folder in `%s'"), uri);
+	gnome_error_dialog_parented (msg, GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (tasks))));
+	g_free (msg);
+}
+
 /* Callback from the calendar client when a calendar is opened */
 static void
 cal_opened_cb				(CalClient	*client,
@@ -397,8 +420,7 @@ cal_opened_cb				(CalClient	*client,
 	tasks = E_TASKS (data);
 	priv = tasks->priv;
 
-	calendar_model_set_status_message (
-		e_calendar_table_get_model (E_CALENDAR_TABLE (priv->tasks_view)), NULL);
+	set_status_message (tasks, NULL);
 
 	switch (status) {
 	case CAL_CLIENT_OPEN_SUCCESS:
@@ -424,32 +446,30 @@ cal_opened_cb				(CalClient	*client,
 		method_error (tasks, cal_client_get_uri (client));
 		break;
 
+	case CAL_CLIENT_OPEN_PERMISSION_DENIED:
+		permission_error (tasks, cal_client_get_uri (client));
+		break;
+
 	default:
 		g_assert_not_reached ();
 	}
 }
 
-
-static char*
-e_tasks_get_config_filename		(ETasks		*tasks)
+/* Callback from the calendar client when an error occurs in the backend */
+static void
+backend_error_cb (CalClient *client, const char *message, gpointer data)
 {
+	ETasks *tasks;
 	ETasksPrivate *priv;
-	char *url, *filename;
+	char *errmsg;
 
+	tasks = E_TASKS (data);
 	priv = tasks->priv;
 
-	url = g_strdup (cal_client_get_uri (priv->client));
-
-	/* This turns all funny characters into '_', in the string itself. */
-	e_filename_make_safe (url);
-	
-	filename = g_strdup_printf ("%s/config/et-header-%s", evolution_dir,
-				    url);
-	g_free (url);
-	
-	return filename;
+	errmsg = g_strdup_printf (_("Error on %s:\n %s"), cal_client_get_uri (client), message);
+	gnome_error_dialog_parented (errmsg, GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (tasks))));
+	g_free (errmsg);
 }
-
 
 /**
  * e_tasks_get_cal_client:
@@ -484,8 +504,7 @@ e_tasks_new_task			(ETasks		*tasks)
 
 	priv = tasks->priv;
 
-	tedit = task_editor_new ();
-	comp_editor_set_cal_client (COMP_EDITOR (tedit), priv->client);
+	tedit = task_editor_new (priv->client);
 
 	comp = cal_component_new ();
 	cal_component_set_new_vtype (comp, CAL_COMPONENT_TODO);
@@ -497,6 +516,30 @@ e_tasks_new_task			(ETasks		*tasks)
 	gtk_object_unref (GTK_OBJECT (comp));
 
 	comp_editor_focus (COMP_EDITOR (tedit));
+}
+
+/**
+ * e_tasks_complete_selected:
+ * @tasks: A tasks control widget
+ * 
+ * Marks the selected tasks complete
+ **/
+void
+e_tasks_complete_selected (ETasks *tasks)
+{
+	ETasksPrivate *priv;
+	ECalendarTable *cal_table;
+
+	g_return_if_fail (tasks != NULL);
+	g_return_if_fail (E_IS_TASKS (tasks));
+
+	priv = tasks->priv;
+
+	cal_table = E_CALENDAR_TABLE (priv->tasks_view);
+
+	set_status_message (tasks, _("Completing tasks..."));
+	e_calendar_table_complete_selected (cal_table);
+	set_status_message (tasks, NULL);
 }
 
 /**
@@ -517,20 +560,127 @@ e_tasks_delete_selected (ETasks *tasks)
 	priv = tasks->priv;
 
 	cal_table = E_CALENDAR_TABLE (priv->tasks_view);
+	set_status_message (tasks, _("Deleting selected objects..."));
 	e_calendar_table_delete_selected (cal_table);
+	set_status_message (tasks, NULL);
+}
+
+static char *
+create_sexp (void)
+{
+	char *sexp;
+
+	sexp = g_strdup ("(and (= (get-vtype) \"VTODO\") (is-completed?))");
+#if 0
+	g_print ("Calendar model sexp:\n%s\n", sexp);
+#endif
+
+	return sexp;
+}
+
+/* Callback used when a component is updated in the live query */
+static void
+query_obj_updated_cb (CalQuery *query, const char *uid,
+		      gboolean query_in_progress, int n_scanned, int total,
+		      gpointer data)
+{
+	ETasks *tasks;
+	ETasksPrivate *priv;
+	
+	tasks = E_TASKS (data);
+	priv = tasks->priv;
+	
+	cal_client_remove_object (priv->client, uid);
+}
+
+/* Callback used when an evaluation error occurs when running a query */
+static void
+query_eval_error_cb (CalQuery *query, const char *error_str, gpointer data)
+{
+	ETasks *tasks;
+	ETasksPrivate *priv;
+	
+	tasks = E_TASKS (data);
+	priv = tasks->priv;
+	
+	g_warning ("eval error: %s\n", error_str);
+
+	set_status_message (tasks, NULL);
+
+	gtk_signal_disconnect_by_data (GTK_OBJECT (priv->query), tasks);
+	gtk_object_unref (GTK_OBJECT (priv->query));
+	priv->query = NULL;
+}
+
+static void
+query_query_done_cb (CalQuery *query, CalQueryDoneStatus status, const char *error_str, gpointer data)
+{
+	ETasks *tasks;
+	ETasksPrivate *priv;
+	
+	tasks = E_TASKS (data);
+	priv = tasks->priv;
+	
+	if (status != CAL_QUERY_DONE_SUCCESS)
+		g_warning ("query done: %s\n", error_str);
+
+	set_status_message (tasks, NULL);
+
+	gtk_signal_disconnect_by_data (GTK_OBJECT (priv->query), tasks);
+	gtk_object_unref (GTK_OBJECT (priv->query));
+	priv->query = NULL;
+}
+/**
+ * e_tasks_expunge:
+ * @tasks: A tasks control widget
+ * 
+ * Removes all tasks marked as completed
+ **/
+void
+e_tasks_delete_completed (ETasks *tasks)
+{
+	ETasksPrivate *priv;
+	char *sexp;
+	
+	g_return_if_fail (tasks != NULL);
+	g_return_if_fail (E_IS_TASKS (tasks));
+
+	priv = tasks->priv;
+
+	/* If we have a query, we are already expunging */
+	if (priv->query)
+		return;
+
+	sexp = create_sexp ();
+
+	set_status_message (tasks, _("Expunging"));
+	priv->query = cal_client_get_query (priv->client, sexp);
+	g_free (sexp);
+
+	if (!priv->query) {
+		set_status_message (tasks, NULL);
+		g_message ("update_query(): Could not create the query");
+		return;
+	}
+
+	gtk_signal_connect (GTK_OBJECT (priv->query), "obj_updated",
+			    GTK_SIGNAL_FUNC (query_obj_updated_cb), tasks);
+	gtk_signal_connect (GTK_OBJECT (priv->query), "query_done",
+			    GTK_SIGNAL_FUNC (query_query_done_cb), tasks);
+	gtk_signal_connect (GTK_OBJECT (priv->query), "eval_error",
+			    GTK_SIGNAL_FUNC (query_eval_error_cb), tasks);
 }
 
 /* Callback used from the view collection when we need to display a new view */
 static void
-display_view_cb (GalViewCollection *collection, GalView *view, gpointer data)
+display_view_cb (GalViewInstance *instance, GalView *view, gpointer data)
 {
 	ETasks *tasks;
 
 	tasks = E_TASKS (data);
 
 	if (GAL_IS_VIEW_ETABLE (view)) {
-		e_table_set_state_object (e_table_scrolled_get_table (E_TABLE_SCROLLED (E_CALENDAR_TABLE (tasks->priv->tasks_view)->etable)),
-					  GAL_VIEW_ETABLE (view)->state);
+		gal_view_etable_attach_table (GAL_VIEW_ETABLE (view), e_table_scrolled_get_table (E_TABLE_SCROLLED (E_CALENDAR_TABLE (tasks->priv->tasks_view)->etable)));
 	}
 }
 
@@ -550,6 +700,7 @@ e_tasks_setup_view_menus (ETasks *tasks, BonoboUIComponent *uic)
 	GalViewFactory *factory;
 	ETableSpecification *spec;
 	char *dir;
+	static GalViewCollection *collection = NULL;
 
 	g_return_if_fail (tasks != NULL);
 	g_return_if_fail (E_IS_TASKS (tasks));
@@ -558,40 +709,47 @@ e_tasks_setup_view_menus (ETasks *tasks, BonoboUIComponent *uic)
 
 	priv = tasks->priv;
 
-	g_return_if_fail (priv->view_collection == NULL);
+	g_return_if_fail (priv->view_instance == NULL);
 
-	g_assert (priv->view_collection == NULL);
+	g_assert (priv->view_instance == NULL);
 	g_assert (priv->view_menus == NULL);
 
-	/* Create the view collection */
+	/* Create the view instance */
 
-	priv->view_collection = gal_view_collection_new ();
+	if (collection == NULL) {
+		collection = gal_view_collection_new ();
 
-	dir = gnome_util_prepend_user_home ("/evolution/views/tasks/");
-	gal_view_collection_set_storage_directories (priv->view_collection,
-						     EVOLUTION_DATADIR "/evolution/views/tasks/",
-						     dir);
-	g_free (dir);
+		gal_view_collection_set_title (collection, _("Tasks"));
 
-	/* Create the views */
+		dir = gnome_util_prepend_user_home ("/evolution/views/tasks/");
+		gal_view_collection_set_storage_directories (collection,
+							     EVOLUTION_DATADIR "/evolution/views/tasks/",
+							     dir);
+		g_free (dir);
 
-	spec = e_table_specification_new ();
-	e_table_specification_load_from_file (spec, 
-					      EVOLUTION_ETSPECDIR "/e-calendar-table.etspec");
+		/* Create the views */
 
-	factory = gal_view_factory_etable_new (spec);
-	gtk_object_unref (GTK_OBJECT (spec));
-	gal_view_collection_add_factory (priv->view_collection, factory);
-	gtk_object_unref (GTK_OBJECT (factory));
+		spec = e_table_specification_new ();
+		e_table_specification_load_from_file (spec, 
+						      EVOLUTION_ETSPECDIR "/e-calendar-table.etspec");
 
-	/* Load the collection and create the menus */
+		factory = gal_view_factory_etable_new (spec);
+		gtk_object_unref (GTK_OBJECT (spec));
+		gal_view_collection_add_factory (collection, factory);
+		gtk_object_unref (GTK_OBJECT (factory));
 
-	gal_view_collection_load (priv->view_collection);
+		/* Load the collection and create the menus */
 
-	priv->view_menus = gal_view_menus_new (priv->view_collection);
+		gal_view_collection_load (collection);
+	}
+
+	priv->view_instance = gal_view_instance_new (collection, cal_client_get_uri (priv->client));
+
+	priv->view_menus = gal_view_menus_new (priv->view_instance);
 	gal_view_menus_apply (priv->view_menus, uic, NULL);
-	gtk_signal_connect (GTK_OBJECT (priv->view_collection), "display_view",
+	gtk_signal_connect (GTK_OBJECT (priv->view_instance), "display_view",
 			    GTK_SIGNAL_FUNC (display_view_cb), tasks);
+	display_view_cb (priv->view_instance, gal_view_instance_get_current_view (priv->view_instance), tasks);
 }
 
 /**
@@ -612,13 +770,13 @@ e_tasks_discard_view_menus (ETasks *tasks)
 
 	priv = tasks->priv;
 
-	g_return_if_fail (priv->view_collection != NULL);
+	g_return_if_fail (priv->view_instance != NULL);
 
-	g_assert (priv->view_collection != NULL);
+	g_assert (priv->view_instance != NULL);
 	g_assert (priv->view_menus != NULL);
 
-	gtk_object_unref (GTK_OBJECT (priv->view_collection));
-	priv->view_collection = NULL;
+	gtk_object_unref (GTK_OBJECT (priv->view_instance));
+	priv->view_instance = NULL;
 
 	gtk_object_unref (GTK_OBJECT (priv->view_menus));
 	priv->view_menus = NULL;

@@ -37,9 +37,10 @@
 #include "filter-input.h"
 #include "e-util/e-sexp.h"
 
-#define d(x)
+#define d(x) 
 
 static gboolean validate (FilterElement *fe);
+static int input_eq(FilterElement *fe, FilterElement *cm);
 static void xml_create(FilterElement *fe, xmlNodePtr node);
 static xmlNodePtr xml_encode(FilterElement *fe);
 static int xml_decode(FilterElement *fe, xmlNodePtr node);
@@ -99,6 +100,7 @@ filter_input_class_init (FilterInputClass *class)
 
 	/* override methods */
 	filter_element->validate = validate;
+	filter_element->eq = input_eq;
 	filter_element->xml_create = xml_create;
 	filter_element->xml_encode = xml_encode;
 	filter_element->xml_decode = xml_decode;
@@ -176,7 +178,7 @@ validate (FilterElement *fe)
 	FilterInput *fi = (FilterInput *)fe;
 	gboolean valid = TRUE;
 	
-	if (!strcmp (fi->type, "regex")) {
+	if (fi->values && !strcmp (fi->type, "regex")) {
 		regex_t regexpat;        /* regex patern */
 		gint regerr;
 		char *text;
@@ -211,6 +213,30 @@ validate (FilterElement *fe)
 	}
 	
 	return valid;
+}
+
+static int
+list_eq(GList *al, GList *bl)
+{
+	int truth = TRUE;
+
+	while (truth && al && bl) {
+		truth = strcmp((char *)al->data, (char *)bl->data) == 0;
+		al = al->next;
+		bl = bl->next;
+	}
+
+	return truth && al == NULL && bl == NULL;
+}
+
+static int
+input_eq(FilterElement *fe, FilterElement *cm)
+{
+	FilterInput *fi = (FilterInput *)fe, *ci = (FilterInput *)cm;
+
+	return ((FilterElementClass *)(parent_class))->eq(fe, cm)
+		&& strcmp(fi->type, ci->type) == 0
+		&& list_eq(fi->values, ci->values);
 }
 
 static void
@@ -276,9 +302,11 @@ xml_decode (FilterElement *fe, xmlNodePtr node)
 			if (str) {
 				decstr = e_utf8_xml1_decode (str);
 				xmlFree (str);
-				d(printf ("  '%s'\n", decstr));
-				fi->values = g_list_append (fi->values, decstr);
-			}
+			} else
+				decstr = g_strdup("");
+
+			d(printf ("  '%s'\n", decstr));
+			fi->values = g_list_append (fi->values, decstr);
 		} else {
 			g_warning ("Unknown node type '%s' encountered decoding a %s\n", n->name, type);
 		}

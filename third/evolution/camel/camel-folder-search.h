@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2000 Ximian Inc.
  *
@@ -21,10 +22,15 @@
 #ifndef _CAMEL_FOLDER_SEARCH_H
 #define _CAMEL_FOLDER_SEARCH_H
 
+#ifdef __cplusplus
+extern "C" {
+#pragma }
+#endif /* __cplusplus */
+
 #include <e-util/e-sexp.h>
-#include <libibex/ibex.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-object.h>
+#include <camel/camel-index.h>
 
 #define CAMEL_FOLDER_SEARCH_TYPE         (camel_folder_search_get_type ())
 #define CAMEL_FOLDER_SEARCH(obj)         CAMEL_CHECK_CAST (obj, camel_folder_search_get_type (), CamelFolderSearch)
@@ -44,10 +50,11 @@ struct _CamelFolderSearch {
 	/* these are only valid during the search, and are reset afterwards */
 	CamelFolder *folder;	/* folder for current search */
 	GPtrArray *summary;	/* summary array for current search */
+	GHashTable *summary_hash; /* hashtable of summary items */
 	CamelMessageInfo *current; /* current message info, when searching one by one */
 	CamelMessageInfo *match1; /* message info, when searching a single message only */
 	CamelMimeMessage *current_message; /* cache of current message, if required */
-	ibex *body_index;
+	CamelIndex *body_index;
 };
 
 struct _CamelFolderSearchClass {
@@ -105,16 +112,20 @@ struct _CamelFolderSearchClass {
 	ESExpResult * (*uid)(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 };
 
-guint		camel_folder_search_get_type	(void);
+CamelType		camel_folder_search_get_type	(void);
 CamelFolderSearch      *camel_folder_search_new	(void);
 void camel_folder_search_construct (CamelFolderSearch *search);
 
 void camel_folder_search_set_folder(CamelFolderSearch *search, CamelFolder *folder);
 void camel_folder_search_set_summary(CamelFolderSearch *search, GPtrArray *summary);
-void camel_folder_search_set_body_index(CamelFolderSearch *search, ibex *index);
+void camel_folder_search_set_body_index(CamelFolderSearch *search, CamelIndex *index);
 GPtrArray *camel_folder_search_execute_expression(CamelFolderSearch *search, const char *expr, CamelException *ex);
 gboolean camel_folder_search_match_expression(CamelFolderSearch *search, const char *expr,
 					      const CamelMessageInfo *info, CamelException *ex);
 void camel_folder_search_free_result(CamelFolderSearch *search, GPtrArray *);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* ! _CAMEL_FOLDER_SEARCH_H */

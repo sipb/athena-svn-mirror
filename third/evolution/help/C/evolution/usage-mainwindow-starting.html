@@ -16,7 +16,7 @@ REL="PREVIOUS"
 TITLE="Getting Started with Ximian Evolution"
 HREF="usage-mainwindow.html"><LINK
 REL="NEXT"
-TITLE="Importing Mail from Individual Mail Clients"
+TITLE="Importing Mail from Other Mail Clients"
 HREF="importing-mail-from-clients.html"></HEAD
 ><BODY
 CLASS="SECT1"
@@ -101,6 +101,69 @@ CLASS="COMMAND"
 >
      </P
 ><P
+>       <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Command Line Options: </B
+>           Evolution has a number of command-line options that you may
+           wish to make use of. You can find the full list by running
+           the commands <TT
+CLASS="USERINPUT"
+><B
+>man evolution</B
+></TT
+> or
+           <TT
+CLASS="USERINPUT"
+><B
+>evolution --help</B
+></TT
+>.  The most
+           important ones are:
+           <P
+></P
+><UL
+><LI
+><P
+>                 To start Evolution in offline mode: <TT
+CLASS="USERINPUT"
+><B
+>evolution --offline</B
+></TT
+> 
+               </P
+></LI
+><LI
+><P
+>                 To start Evolution and begin composing a message to the email address you name: <TT
+CLASS="USERINPUT"
+><B
+>evolution mailto:joe@somewhere.net</B
+></TT
+>
+             </P
+></LI
+><LI
+><P
+>               To make your web browser use Evolution as the default email client, enter <TT
+CLASS="USERINPUT"
+><B
+>evolution "%s"</B
+></TT
+> as the email handler in your web browser or in the GNOME Control Center.
+            </P
+></LI
+></UL
+>
+      </P
+></BLOCKQUOTE
+></DIV
+>
+  </P
+><P
 >     The first time you run the program, it will create a directory
       called <TT
 CLASS="FILENAME"
@@ -131,9 +194,12 @@ CLASS="GUIMENU"
 >Tools</SPAN
 >-&gt;<SPAN
 CLASS="GUIMENUITEM"
->Mail
-	Settings</SPAN
-> tool.
+>Configure</SPAN
+> tool and
+	clicking the <SPAN
+CLASS="GUIBUTTON"
+>Mail Accounts</SPAN
+> button.
 	<P
 ></P
 ><UL
@@ -149,26 +215,9 @@ CLASS="GUIMENUITEM"
 ></LI
 ><LI
 ><P
->	      Organization: The company where you work (optional).
-	    </P
-></LI
-><LI
-><P
->	      Signature file: If you'd like to use an email
-	      <A
-HREF="apx-gloss.html#SIGNATURE"
-><I
-CLASS="GLOSSTERM"
->signature</I
-></A
->,
-	      select your signature file here.  Normally, the
-	      signature will be the contents of the
-	      <TT
-CLASS="FILENAME"
->.signature</TT
-> file in your home
-	      directory.
+>	      Organization: The company where you work, or the
+	      organization you represent when you send email
+	      (optional).
 	    </P
 ></LI
 ></UL
@@ -187,8 +236,8 @@ NAME="SECOND-STEP"
 >	The <SPAN
 CLASS="GUILABEL"
 >Receiving Email</SPAN
-> step lets you configure
-	receiving email people have sent you.
+> lets you determine
+	which you will get your email.
 	<P
 ></P
 ><UL
@@ -229,11 +278,11 @@ CLASS="APPLICATION"
 ></LI
 ><LI
 ><P
->		    Standard Unix mbox spools: If you want to read and
-		    store mail in the mail spool on your local system,
-		    choose this option. You'll need
-		    to provide the path to the mail spool you want to
-		    use.
+>		    Standard Unix mbox spools: If you want
+		    to read and store mail in the mail spool on your
+		    local system, choose this option. You'll need to
+		    provide the path to the mail spool
+		    you want to use.
 		  </P
 ></LI
 ><LI
@@ -243,6 +292,14 @@ CLASS="APPLICATION"
 		    program, you'll want to use this option.  You'll need
 		    to provide the path to the mail directory you want to
 		    use.
+		  </P
+></LI
+><LI
+><P
+>		    MH format mail directories: If you download your
+		    mail using mh or another MH-style program, you'll
+		    want to use this option.  You'll need to provide
+		    the path to the mail directory you want to use.
 		  </P
 ></LI
 ><LI
@@ -258,6 +315,17 @@ CLASS="GUIMENUITEM"
 > option instead. You'll need
 		    to provide the path to the mail spool you want to
 		    use.
+		  </P
+></LI
+><LI
+><P
+>		    Directory Tree of mbox files: If you wish to use a
+		    directory tree full of mbox files, select this
+		    option and enter the directory you wish to
+		    use. This option is useful if you wish to use pine
+		    or other email clients at the same time as
+		    Evolution, while storing mail on your local system
+		    in mbox format.
 		  </P
 ></LI
 ><LI
@@ -317,9 +385,9 @@ CLASS="GUILABEL"
 ></LI
 ></UL
 >
-
-      </P
-><DIV
+              </P
+><P
+>      <DIV
 CLASS="TIP"
 ><BLOCKQUOTE
 CLASS="TIP"
@@ -328,8 +396,8 @@ NAME="EXCHANGE-INFO"
 ></A
 ><P
 ><B
->Can Ximian Evolution Talk to Microsoft Exchange?: </B
->           If you have purchased the Ximian Connector for Microsoft
+>Ximian Evolution Talk to Microsoft Exchange?: </B
+>	   If you have purchased Ximian Connector for Microsoft
 	   Exchange, you can access Microsoft Exchange 2000 servers
 	   natively.  If you do not have the Connector, or if you use
 	   an older version of Microsoft Exchange, talk to your system
@@ -338,6 +406,7 @@ NAME="EXCHANGE-INFO"
 	</P
 ></BLOCKQUOTE
 ></DIV
+> </P
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -357,14 +426,17 @@ CLASS="GUIMENU"
 >Tools</SPAN
 >-&gt;<SPAN
 CLASS="GUIMENUITEM"
+>Configure
+        </SPAN
+>, click the <SPAN
+CLASS="GUIBUTTON"
 >Mail
-        Settings</SPAN
->, click on the account you
-        want to change, and then click the <SPAN
+        Accounts</SPAN
+> button. Then, select the account you want
+        to change and click <SPAN
 CLASS="GUIBUTTON"
 >Edit</SPAN
->
-        button. See <A
+>. See <A
 HREF="config-prefs.html#CONFIG-PREFS-MAIL"
 >the section called <I
 >Mail Settings</I
@@ -424,16 +496,25 @@ CLASS="APPLICATION"
 ></LI
 ><LI
 ><P
->Exchange Server: If your active directory user name
+>Mailbox Name is Different from Login Name: If your active directory user name
 	    is different from your Exchange mailbox name, check this
 	    box and enter your mailbox name here.
 	    </P
 ></LI
 ><LI
 ><P
->Create a Global Address List folder: If you would
-	    like to have a separate folder for the Active Directory's
-	    Global Address List, leave this box checked. </P
+>	      Override Outlook Web Access Path: In most cases,
+	      the URL for web access is
+	      "http://server.company.com/exchange." If your
+	      system has a path that is not "exchange," check
+	      the box and enter the custom path here.
+	     </P
+></LI
+><LI
+><P
+>Create a Global Address List folder: If you want to
+	    use your organization's Active Directory or Global Address
+	    List, leave this box checked. </P
 ></LI
 ><LI
 ><P
@@ -582,9 +663,9 @@ CLASS="APPLICATION"
 ><P
 >		    Microsoft Exchange: Sends mail through a Microsoft
 		    Exchange server using the Microsoft Exchange 2000
-		    protocol. Available only if you have purchased the
-		    Ximian Connector for Microsoft Exchange from
-		    <A
+		    protocol. Available only if you have are using the
+		    Ximian Connector for Microsoft Exchange. You must
+		    have a valid license key purchased from <A
 HREF="http://store.ximian.com"
 TARGET="_top"
 >store.ximian.com</A
@@ -626,7 +707,8 @@ CLASS="GUILABEL"
 ></LI
 ><LI
 ><P
->	      Authentication Type: Chances are you are using
+>	      Authentication Type: Unless you've been told otherwise,
+	      your best bet is to leave this set at
 	      <SPAN
 CLASS="GUILABEL"
 >Password</SPAN
@@ -635,8 +717,8 @@ CLASS="GUILABEL"
 	      <SPAN
 CLASS="APPLICATION"
 >Ximian Evolution</SPAN
-> check for you by
-	      clicking <SPAN
+> check for
+	      you by clicking <SPAN
 CLASS="GUIBUTTON"
 >Check for supported
 	      types</SPAN
@@ -896,7 +978,7 @@ HREF="usage-mainwindow.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Importing Mail from Individual Mail Clients</TD
+>Importing Mail from Other Mail Clients</TD
 ></TR
 ></TABLE
 ></DIV

@@ -30,7 +30,15 @@
 #include <gdk/gdkprivate.h>
 #include <gdk/gdk.h>
 
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkfilesel.h>
+
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomeui/gnome-dialog-util.h>
+#include <libgnomeui/gnome-uidefs.h>
 
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-property-bag.h>
@@ -77,6 +85,15 @@ set_transient_for_gdk (GtkWindow *window,
 {
 	g_return_if_fail (window != NULL);
 	g_return_if_fail (gtk_object_get_data (GTK_OBJECT (window), TRANSIENT_DATA_ID) == NULL);
+
+	/* if the parent window doesn't exist anymore,
+	 * something is probably about to go very wrong,
+	 * but at least let's not segfault here. */
+
+	if (parent == NULL) {
+		g_warning ("set_transient_for_gdk: uhoh, parent of window %p is NULL", window);
+		return;
+	}
 
 	gdk_window_ref (parent); /* FIXME? */
 
@@ -162,3 +179,95 @@ e_set_dialog_parent_from_xid (GtkWindow *dialog,
 
 	set_transient_for_gdk (dialog, gdk_window_foreign_new (xid));
 }
+
+static void
+e_gnome_dialog_parent_destroyed (GtkWidget *parent, GtkWidget *dialog)
+{
+	gnome_dialog_close (GNOME_DIALOG (dialog));
+}
+
+void
+e_gnome_dialog_set_parent (GnomeDialog *dialog, GtkWindow *parent)
+{
+	gnome_dialog_set_parent (dialog, parent);
+	gtk_signal_connect_while_alive (GTK_OBJECT (parent), "destroy",
+					e_gnome_dialog_parent_destroyed,
+					dialog, GTK_OBJECT (dialog));
+}
+
+GtkWidget *
+e_gnome_warning_dialog_parented (const char *warning, GtkWindow *parent)
+{
+	GtkWidget *dialog;
+	
+	dialog = gnome_warning_dialog_parented (warning, parent);
+	gtk_signal_connect_while_alive (GTK_OBJECT (parent), "destroy",
+					e_gnome_dialog_parent_destroyed, dialog, GTK_OBJECT(dialog));
+	
+	return dialog;
+}
+
+GtkWidget *
+e_gnome_ok_cancel_dialog_parented (const char *message, GnomeReplyCallback callback,
+				   gpointer data, GtkWindow *parent)
+{
+	GtkWidget *dialog;
+	
+	dialog = gnome_ok_cancel_dialog_parented (message, callback, data, parent);
+	gtk_signal_connect_while_alive (GTK_OBJECT (parent), "destroy",
+					e_gnome_dialog_parent_destroyed, dialog, GTK_OBJECT(dialog));
+	
+	return dialog;
+}
+
+static void
+save_ok (GtkWidget *widget, gpointer data)
+{
+	GtkWidget *fs;
+	char **filename = data;
+	char *path;
+	int btn = GNOME_YES;
+
+	fs = gtk_widget_get_toplevel (widget);
+	path = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
+
+	if (g_file_test (path, G_FILE_TEST_ISFILE)) {
+		GtkWidget *dlg;
+
+		dlg = gnome_question_dialog_modal (_("A file by that name already exists.\n"
+						     "Overwrite it?"), NULL, NULL);
+		btn = gnome_dialog_run_and_close (GNOME_DIALOG (dlg));
+	}
+
+	if (btn == GNOME_YES)
+		*filename = g_strdup (path);
+
+	gtk_main_quit ();
+}
+
+char *
+e_file_dialog_save (const char *title)
+{
+	GtkFileSelection *fs;
+	char *path, *filename = NULL;
+
+	fs = GTK_FILE_SELECTION (gtk_file_selection_new (title));
+	path = g_strdup_printf ("%s/", g_get_home_dir ());
+	gtk_file_selection_set_filename (fs, path);
+	g_free (path);
+	
+	gtk_signal_connect (GTK_OBJECT (fs->ok_button), "clicked",
+			    GTK_SIGNAL_FUNC (save_ok), &filename);
+	gtk_signal_connect (GTK_OBJECT (fs->cancel_button), "clicked",
+			    GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+	
+	gtk_widget_show (GTK_WIDGET (fs));
+	gtk_grab_add (GTK_WIDGET (fs));
+	gtk_main ();
+	
+	gtk_widget_destroy (GTK_WIDGET (fs));
+
+	return filename;
+}
+
+

@@ -46,6 +46,7 @@ typedef enum {
 	E_CHARSET_CHINESE,
 	E_CHARSET_CYRILLIC,
 	E_CHARSET_GREEK,
+	E_CHARSET_HEBREW,
 	E_CHARSET_JAPANESE,
 	E_CHARSET_KOREAN,
 	E_CHARSET_TURKISH,
@@ -60,6 +61,7 @@ static const char *classnames[] = {
 	N_("Chinese"),
 	N_("Cyrillic"),
 	N_("Greek"),
+	N_("Hebrew"),
 	N_("Japanese"),
 	N_("Korean"),
 	N_("Turkish"),
@@ -90,6 +92,7 @@ static ECharset charsets[] = {
 	{ "KOI8-U", E_CHARSET_CYRILLIC, N_("Ukrainian") },
 	{ "ISO-8859-5", E_CHARSET_CYRILLIC, NULL },
 	{ "ISO-8859-7", E_CHARSET_GREEK, NULL },
+	{ "ISO-8859-8", E_CHARSET_HEBREW, N_("Visual") },
 	{ "ISO-2022-JP", E_CHARSET_JAPANESE, NULL },
 	{ "EUC-JP", E_CHARSET_JAPANESE, NULL },
 	{ "Shift_JIS", E_CHARSET_JAPANESE, NULL },
@@ -120,18 +123,20 @@ add_charset (GtkWidget *menu, ECharset *charset, gboolean free_name)
 {
 	GtkWidget *item;
 	char *label;
-
+	
 	if (charset->subclass) {
 		label = g_strdup_printf ("%s, %s (%s)",
 					 _(classnames[charset->class]),
 					 _(charset->subclass),
 					 charset->name);
-	} else {
+	} else if (charset->class) {
 		label = g_strdup_printf ("%s (%s)",
 					 _(classnames[charset->class]),
 					 charset->name);
+	} else {
+		label = g_strdup (charset->name);
 	}
-
+	
 	item = gtk_menu_item_new_with_label (label);
 	gtk_object_set_data_full (GTK_OBJECT (item), "charset",
 				  charset->name, free_name ? g_free : NULL);

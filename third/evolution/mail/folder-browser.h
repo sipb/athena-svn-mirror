@@ -25,7 +25,7 @@
 
 #define FB_DEFAULT_CHARSET _("Default")
 
-#define FOLDER_BROWSER_IS_DESTROYED(fb) (!fb || !fb->message_list || !fb->mail_display)
+#define FOLDER_BROWSER_IS_DESTROYED(fb) (!fb || !fb->message_list || !fb->mail_display || !fb->folder)
 
 typedef enum _FolderBrowserSelectionState {
 	FB_SELSTATE_NONE,
@@ -36,7 +36,7 @@ typedef enum _FolderBrowserSelectionState {
 
 struct  _FolderBrowser {
 	GtkTable parent;
-
+	
 	BonoboPropertyBag *properties;
 	
 	GNOME_Evolution_Shell shell;
@@ -52,12 +52,13 @@ struct  _FolderBrowser {
 	int          unread_count; /* last known unread message count */
 	
 	/* async loading stuff */
-	char	    *loading_uid;/* what uid am i loading now */
-	char	    *pending_uid; /* what uid should i load next */
-	char	    *new_uid;	/* place to save the next uid during idle timeout */
-	char	    *loaded_uid; /* what we have loaded */
-	guint	     loading_id, seen_id;
-
+	char	    *loading_uid;  /* what uid am i loading now */
+	char	    *pending_uid;  /* what uid should i load next */
+	char	    *new_uid;      /* place to save the next uid during idle timeout */
+	char	    *loaded_uid;   /* what we have loaded */
+	guint	     loading_id;
+	guint        seen_id;
+	
 	/* a folder we are expunging, dont use other than to compare the pointer value */
 	CamelFolder *expunging;
 	
@@ -68,9 +69,9 @@ struct  _FolderBrowser {
 	EFilterBar  *search;
 	FilterRule  *search_full; /* if we have a full search active */
 	
-	gboolean     preview_shown;
-	gboolean     threaded;
-	gboolean     pref_master;
+	guint32 preview_shown  : 1;
+	guint32 threaded       : 1;
+	guint32 pref_master    : 1;
 	
 	FolderBrowserSelectionState selection_state;
 	GSList *sensitize_changes;
@@ -78,17 +79,20 @@ struct  _FolderBrowser {
 	int sensitize_timeout_id;
 	int update_status_bar_idle_id;
 	
-	/* View collection and the menu handler object */
-	GalViewCollection *view_collection;
+	/* View instance and the menu handler object */
+	GalViewInstance *view_instance;
 	GalViewMenus *view_menus;
 	
 	GtkWidget *invisible;
 	GByteArray *clipboard_selection;
-
+	
 	/* for async events */
 	struct _MailAsyncEvent *async_event;
-
+	
 	int get_id;		/* for getting folder op */
+	
+	/* info used by popup for filter/vfolder */
+	struct _popup_filter_data *popup;
 };
 
 typedef struct {
@@ -109,6 +113,8 @@ GtkType    folder_browser_get_type             (void);
 GtkWidget *folder_browser_new                  (const GNOME_Evolution_Shell  shell,
 						const char *uri);
 
+void       folder_browser_set_folder           (FolderBrowser *fb, CamelFolder *folder, const char *uri);
+
 void       folder_browser_set_ui_component     (FolderBrowser *fb, BonoboUIComponent *uicomp);
 void       folder_browser_set_shell_view       (FolderBrowser *fb, GNOME_Evolution_ShellView shell_view);
 
@@ -119,6 +125,8 @@ void       folder_browser_clear_search         (FolderBrowser         *fb);
 void       folder_browser_cut                  (GtkWidget *widget, FolderBrowser *fb);
 void       folder_browser_copy                 (GtkWidget *widget, FolderBrowser *fb);
 void       folder_browser_paste                (GtkWidget *widget, FolderBrowser *fb);
+
+void       folder_browser_reload               (FolderBrowser *fb);
 
 /* callbacks for functions on the folder-browser */
 void vfolder_subject   (GtkWidget *w, FolderBrowser *fb);

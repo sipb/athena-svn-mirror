@@ -81,7 +81,7 @@ static ECardSimpleFieldData field_data[] =
 	{ E_CARD_SIMPLE_FIELD_PHONE_PAGER,        "pager",           N_("Pager"),         N_("Pager"),    E_CARD_SIMPLE_PHONE_ID_PAGER,        E_CARD_SIMPLE_INTERNAL_TYPE_PHONE },
 	{ E_CARD_SIMPLE_FIELD_PHONE_RADIO,        "radio",           N_("Radio"),         N_("Radio"),    E_CARD_SIMPLE_PHONE_ID_RADIO,        E_CARD_SIMPLE_INTERNAL_TYPE_PHONE },
 	{ E_CARD_SIMPLE_FIELD_PHONE_TELEX,        "telex",           N_("Telex"),         N_("Telex"),    E_CARD_SIMPLE_PHONE_ID_TELEX,        E_CARD_SIMPLE_INTERNAL_TYPE_PHONE },
-	{ E_CARD_SIMPLE_FIELD_PHONE_TTYTTD,       "tty",             N_("TTY"),           N_("TTY"),      E_CARD_SIMPLE_PHONE_ID_TTYTTD,       E_CARD_SIMPLE_INTERNAL_TYPE_PHONE },
+	{ E_CARD_SIMPLE_FIELD_PHONE_TTYTDD,       "tty",             N_("TTY"),           N_("TTY"),      E_CARD_SIMPLE_PHONE_ID_TTYTDD,       E_CARD_SIMPLE_INTERNAL_TYPE_PHONE },
 	{ E_CARD_SIMPLE_FIELD_ADDRESS_OTHER,      "other_address",   N_("Other"),         N_("Other"),    E_CARD_SIMPLE_ADDRESS_ID_OTHER,      E_CARD_SIMPLE_INTERNAL_TYPE_ADDRESS },
 	{ E_CARD_SIMPLE_FIELD_EMAIL_2,            "email_2",         N_("Email 2"),       N_("Email 2"),  E_CARD_SIMPLE_EMAIL_ID_EMAIL_2,      E_CARD_SIMPLE_INTERNAL_TYPE_EMAIL },
 	{ E_CARD_SIMPLE_FIELD_EMAIL_3,            "email_3",         N_("Email 3"),       N_("Email 3"),  E_CARD_SIMPLE_EMAIL_ID_EMAIL_3,      E_CARD_SIMPLE_INTERNAL_TYPE_EMAIL },
@@ -139,7 +139,7 @@ ECardPhoneFlags phone_correspondences[] = {
 	E_CARD_PHONE_PREF, /* E_CARD_SIMPLE_PHONE_ID_PRIMARY,	   */
 	E_CARD_PHONE_RADIO, /* E_CARD_SIMPLE_PHONE_ID_RADIO,	   */
 	E_CARD_PHONE_TELEX, /* E_CARD_SIMPLE_PHONE_ID_TELEX,	   */
-	E_CARD_PHONE_TTYTDD, /* E_CARD_SIMPLE_PHONE_ID_TTYTTD,	   */
+	E_CARD_PHONE_TTYTDD, /* E_CARD_SIMPLE_PHONE_ID_TTYTDD,	   */
 };
 
 char *phone_names[] = {
@@ -161,7 +161,7 @@ char *phone_names[] = {
 	"Primary",
 	NULL, /* E_CARD_SIMPLE_PHONE_ID_RADIO,	   */
 	NULL, /* E_CARD_SIMPLE_PHONE_ID_TELEX,	   */
-	NULL, /* E_CARD_SIMPLE_PHONE_ID_TTYTTD,	   */
+	NULL, /* E_CARD_SIMPLE_PHONE_ID_TTYTDD,	   */
 };
 
 char *phone_short_names[] = {
@@ -183,7 +183,7 @@ char *phone_short_names[] = {
 	"Prim",
 	NULL, /* E_CARD_SIMPLE_PHONE_ID_RADIO,	   */
 	NULL, /* E_CARD_SIMPLE_PHONE_ID_TELEX,	   */
-	NULL, /* E_CARD_SIMPLE_PHONE_ID_TTYTTD,	   */
+	NULL, /* E_CARD_SIMPLE_PHONE_ID_TTYTDD,	   */
 };
 
 ECardAddressFlags addr_correspondences[] = {
@@ -625,7 +625,8 @@ e_card_simple_sync_card(ECardSimple *simple)
 			for (i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i ++) {
 				if ((address->flags & addr_correspondences[i]) == addr_correspondences[i]) {
 					if (simple->address[i]) {
-						simple->address[i]->flags = addr_correspondences[i];
+						simple->address[i]->flags &= ~E_CARD_ADDR_MASK;
+						simple->address[i]->flags |= addr_correspondences[i];
 						if (simple->address[i]->data && *simple->address[i]->data) {
 							e_iterator_set(iterator, simple->address[i]);
 						} else {
@@ -641,7 +642,8 @@ e_card_simple_sync_card(ECardSimple *simple)
 		gtk_object_unref(GTK_OBJECT(iterator));
 		for (i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i ++) {
 			if (simple->address[i]) {
-				simple->address[i]->flags = addr_correspondences[i];
+				simple->address[i]->flags &= ~E_CARD_ADDR_MASK;
+				simple->address[i]->flags |= addr_correspondences[i];
 				e_list_append(address_list, simple->address[i]);
 				e_card_address_label_unref(simple->address[i]);
 				simple->address[i] = NULL;
@@ -654,7 +656,8 @@ e_card_simple_sync_card(ECardSimple *simple)
 			for (i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i ++) {
 				if ((delivery->flags & addr_correspondences[i]) == addr_correspondences[i]) {
 					if (simple->delivery[i]) {
-						simple->delivery[i]->flags = addr_correspondences[i];
+						simple->delivery[i]->flags &= ~E_CARD_ADDR_MASK;
+						simple->delivery[i]->flags |= addr_correspondences[i];
 						if (!e_card_delivery_address_is_empty(simple->delivery[i])) {
 							e_iterator_set(iterator, simple->delivery[i]);
 						} else {
@@ -670,7 +673,8 @@ e_card_simple_sync_card(ECardSimple *simple)
 		gtk_object_unref(GTK_OBJECT(iterator));
 		for (i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i ++) {
 			if (simple->delivery[i]) {
-				simple->delivery[i]->flags = addr_correspondences[i];
+				simple->delivery[i]->flags &= ~E_CARD_ADDR_MASK;
+				simple->delivery[i]->flags |= addr_correspondences[i];
 				e_list_append(delivery_list, simple->delivery[i]);
 				e_card_delivery_address_unref(simple->delivery[i]);
 				simple->delivery[i] = NULL;
@@ -817,7 +821,7 @@ char     *e_card_simple_get            (ECardSimple          *simple,
 					field_data[field].ecard_field, &boole,
 					NULL);
 			if (boole)
-				return "true";
+				return g_strdup("true");
 			else
 				return NULL;
 		} else {
@@ -827,6 +831,8 @@ char     *e_card_simple_get            (ECardSimple          *simple,
 		switch (field) {
 		case E_CARD_SIMPLE_FIELD_NAME_OR_ORG:
 			if (simple->card) {
+				gboolean is_list;
+
 				gtk_object_get(GTK_OBJECT(simple->card),
 					       "file_as", &string,
 					       NULL);
@@ -842,8 +848,12 @@ char     *e_card_simple_get            (ECardSimple          *simple,
 					       NULL);
 				if (string && *string)
 					return g_strdup(string);
-				string = e_card_simple_get_email(simple,
-								 E_CARD_SIMPLE_EMAIL_ID_EMAIL); 
+				is_list = e_card_evolution_list (simple->card);
+				if (is_list)
+					string = _("Unnamed List");
+				else
+					string = e_card_simple_get_email(simple,
+									 E_CARD_SIMPLE_EMAIL_ID_EMAIL); 
 				return g_strdup(string);
 			} else
 				return NULL;

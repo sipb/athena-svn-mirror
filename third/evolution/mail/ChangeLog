@@ -1,7 +1,3191 @@
+2002-12-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (guess_me_from_accounts): Use the same logic as
+	mail_generate_reply(). Fixes bug #34882
+
+	Fixes bug #34315
+
+	* component-factory.c (message_rfc822_dnd): Return TRUE if we
+	successfully handled all messages in the mbox stream, or FALSE
+	otherwise.
+	(destination_folder_handle_drop): For TEXT_URI_LIST, use the
+	retval from message_rfc822_dnd() rather than relying on an
+	exception, because one will not always necessarily be set. For
+	MESSAGE_RFC822, also use the retval from message_rfc822_dnd().
+	Based on preliminary work by Yuedong Du.
+
+2002-11-25  Radek Doulik  <rodo@ximian.com>
+
+	* mail-preferences.c (mail_preferences_construct): magic_check -->
+	magic_links_check
+
+2002-11-15  Harry Lu  <harry.lu@sun.com>
+
+	* mail-display.c (write_data_to_file): Show file name when prompt
+	to user for overwrite.
+
+2002-11-20  Harry Lu  <harry.lu@sun.com>
+
+	* mail-display.c (do_attachment_header): Enable dragging of all 
+	attachments. For bug #34327.
+
+2002-11-19  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c (sig_load_preview): use
+	gtk_html_begin_content to specify utf-8
+
+2002-11-18  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c (spell_setup_check_options): check
+	exception state and take care when exception raised
+
+2002-11-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c (mail_accounts_load): Specify which account is
+	the default account.
+
+2002-11-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-composer-prefs.c (sig_edit): Correctly spell Advanced.
+
+2002-10-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (folder_browser_query_changed): No longer need
+	to check for a CLEAR_ID.
+
+2002-10-28  Larry Ewing  <lewing@ximian.com>
+
+	* mail-format.c (handle_multipart_mixed): instead of bailing with
+	an assertion dump the body.
+
+2002-10-27  Larry Ewing  <lewing@ximian.com>
+
+	* mail-display.c (fetch_next): don't queue the action until we've
+	added ourselves to the active list, because the fetch_done
+	callback can fire immediately and we'll end up queueing something
+	that has already been destroyed.
+
+2002-10-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Update the upgrade script to handle the new url format introduced
+	with NotZed's most recent commits.
+
+	* upgrade-mailer.c (mailer_upgrade): Save an encoded version of
+	the namespace too, for use later.
+	(si_free): Free the encoded namespace too.
+	(imap_url_upgrade): Use the encoded namespace when creating the
+	new url.
+	(shortcuts_upgrade_xml_file): Upgrade the default: urls. Fixes bug
+	#32127.
+
+2002-10-25  Not Zed  <NotZed@Ximian.com>
+
+	* mail-config.c (mail_config_uri_renamed): Always strdup the new
+	key in the threaded/preview hash/always free the working copy.
+	For #32799.
+
+2002-10-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (write_data_to_file): Use the mode 0666 when
+	creating a new file and let the user's umask handle permissions.
+
+	* folder-browser.c (message_list_drag_data_get): When using open()
+	with the O_CREAT flag, we need to pass a mode argument. Also use
+	O_EXCL.
+
+2002-10-24  Not Zed  <NotZed@Ximian.com>
+
+	* subscribe-dialog.c (fe_got_children): Use a hashtable to only
+	insert nodes we dont have already, rather than relying on the
+	scanning logic.  Also, only re-sort this tree level once done
+	rather than on each insert.
+	(folder_etree_init): Setup hash to track nodes setup.
+	(folder_etree_clear_tree): Reset hash.
+	(fe_destroy): Free hash.
+
+2002-10-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (folder_browser_query_changed): Only perform
+	the search if it is either a clear or advanced search.
+
+2002-10-22  Mike Kestner  <mkestner@ximian.com>
+
+	* mail-callbacks.c (transfer_msg): pass fb->uri to the folder
+	selection dialog so the current folder is selected on display.
+	"fixes" 15966.
+
+2002-10-21  Dan Winship  <danw@ximian.com>
+
+	* upgrade-mailer.c (mailer_upgrade): Fix the transport URL on any
+	Exchange accounts. Fixes #30209, which is to say that it fixes
+	#28490 correctly.
+
+2002-10-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-tools.c (mail_tool_quote_message): Strip the signature from
+	the body-text. Fixes bug #5529.
+
+2002-10-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_multipart_signed): Don't need to pass a
+	path to camel_gpg_context_new () anymore.
+	(mail_get_message_body): Same here.
+	(handle_multipart_encrypted): Use camel_gpg_context_new () instead
+	of mail_crypto_get_pgp_cipher_context ().
+
+	* mail-preferences.c (mail_preferences_construct): There's no
+	security tab anymore.
+	(mail_preferences_apply): No need to save any pgp config data,
+	there's nothing to configure!
+
+	* mail-crypto.c (mail_crypto_get_pgp_cipher_context): Updated to
+	not pass a pgp path into camel_gpg_context_new ().
+
+	* mail-config.c (mail_config_clear): No need to free a pgp_path
+	variable anymore, we don't need one.
+	(config_read): Don't read in a pgp-path or pgp-type anymore.
+	(mail_config_write_on_exit): Don't save a pgp-path or pgp-type
+	anymore, we don't use them.
+	(pgpopen): Removed.
+	(pgpclose): Removed.
+	(mail_config_pgp_type_detect_from_path): Removed.
+	(auto_detect_pgp_variables): Removed.
+	(mail_config_get_pgp_type): Removed.
+	(mail_config_set_pgp_type): Removed.
+	(mail_config_get_pgp_path): Removed.
+	(mail_config_set_pgp_path): Removed.
+
+2002-10-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): If mode == REPLY_LIST
+	and the mlist is "" (we only checked NULL before), change the mode
+	to REPLY_ALL so that we don't accidently reply to the user's
+	address. Fixes bug #28735
+
+2002-10-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): If we are trying to
+	reply to a list, first check that we can by getting the mlist
+	token (makes it easier to fix the mem leak). If not, then change
+	the mode to REPLY_ALL. If we can reply to list, the make sure we
+	free the CamelMessageInfo when we're done so we don't leak.
+
+2002-10-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-session.c (main_get_filter_driver): Add the new-mail-notify
+	rule to the filter driver before adding the user defined filter
+	rules so that we can be sure that the new-mail-notify rule gets
+	invoked. Fixes bug #32328.
+
+	* mail-composer-prefs.c (mail_composer_prefs_new_signature): Make
+	sure that name[0] cannot ever be NULL. Should maybe fix bug
+	#32230.
+
+2002-10-15  Dan Winship  <danw@ximian.com>
+
+	* upgrade-mailer.c (shortcuts_upgrade_xml_file): Change the type
+	in LDAP shortcuts from "ldap-contacts" to "contacts/ldap". Rewrite
+	this to use libxml since that was easier than trying to make the
+	old code do both kinds of changes at once.
+
+2002-10-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config-druid.c (management_prepare): Only set an account
+	name if one doesn't already exist. Also use the
+	e_utf8_gtk_entry_get/set_text functions since account names are
+	supposed to be in UTF8. Fixes bug #31891.
+
+2002-10-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (main_folder_changed): Don't do anything if the
+	message_list is NULL (this means the FolderBrowser has been
+	destroyed). Fixes bug #32002.
+
+2002-10-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* component-factory.c (storage_remove_folder): The CamelFolderInfo
+	that we get back has nodes for all parent folders, so do not
+	delete all folders that have nodes in the returned tree. Instead,
+	descend into the tree until we find the folder we want to delete
+	and start deleting from there.
+
+2002-10-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-signature-editor.c (mail_signature_editor): Mark a string
+	for translation, fixes bug #31942. Thanks to kmaraas@gnome.org for
+	this patch.
+
+	* mail-offline-handler.h: Don't #include config.h here. Fixes bug
+	#31941.
+
+2002-10-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-composer-prefs.c (spell_load_values): Don't mark "en" for
+	translation. Fixes bug #31788.
+
+	* mail-config.glade: Removed a "xxxxxxxxxxx" string so that
+	translators don't need to translate it. It was only a filler
+	string. Fixes bug #31789.
+
+2002-10-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): Don't default 'me' to
+	the source account until after we've tried to detect the account
+	based on recipients. When adding accounts to the account hash, if
+	any accounts have identical email addresses, the ones that are
+	enabled take precedence over ones that aren't. This will hopefully
+	make everyone happy with reply account picking. Fixes bug #31693.
+
+2002-10-01  Larry Ewing  <lewing@ximian.com>
+
+	* mail-display.c (drag_data_get_cb): add support for dragging the
+	content type directly.
+	(do_attachment_header): add the target for the mime type to the
+	drag source.
+	(drag_data_get_cb): silence warning.
+
+2002-10-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config-druid.c (get_fn): Connect to the changed signal for
+	the reply_to entry box. Fixes bugs #31553 and #31554.
+
+	* mail-composer-prefs.c (spell_setup): Only setup the languages if
+	the language_seq is not CORBA_OBJECT_NIL. Fixes bug #31559
+	(presumably at least).
+
+	* mail-account-gui.c (mail_account_gui_new): Use
+	e_utf8_gtk_entry_set_text for the email address and reply-to
+	fields. Fixes bug #31555.
+
+	* mail-format.c (mail_get_message_body): Handle a
+	multipart/encrypted part. Fixes bug #31547.
+
+	* upgrade-mailer.c: Shut up some compiler warnings.
+
+	* importers/evolution-mbox-importer.c (process_item_fn): Use the
+	camel_message_info_new/free functions rather than g_new0 and
+	g_free. Also, if we fail to parse a message make sure we don't
+	later try to use that message object.
+	(get_info_from_mozilla): Use camel_message_info_new and strtoul
+	instead of string_to_int.
+
+2002-09-30  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* subscribe-dialog.c (fe_node_to_shell_path): Removed (useless).
+
+2002-10-01  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #24732]
+
+	* importers/evolution-mbox-importer.c (process_item_fn): Set
+	deleted to FALSE when not having Mozilla status headers.  Before
+	it was being left uninitialized and so there was a pretty good
+	chance that its value would be nonzero and hence the message would
+	not be imported...
+
+2002-10-01  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser.c (on_cursor_activated): cursor activated on
+	etable is required to know when the selection changes on a single
+	row, update selection changed info with this signal too.  Sounds
+	like an etable bug to me, but this fixes #29808.
+	(folder_browser_gui_init): Hook onto above signal.
+
+2002-09-30  Aaron Weber  <aaron@ximian.com>
+
+	* mail-signature-editor.c (mail_signature_editor): change
+	string to "Enter a name for this signature" on line 372.
+
+	* mail-callbacks.c (ask_confirm_for_unwanted_html_mail): change
+	HTML-mail warning on 255
+
+	* component-factory.c (component_factory_init): change
+	"Evolution's foo" to "the Evolution foo" in string on 1078
+
+2002-09-30  Not Zed  <NotZed@Ximian.com>
+
+	* mail-session.c (request_password): translate prompt from utf8 to
+	gtk widget.  #31365.
+
+2002-09-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-searching-tokenizer.c: #include <stdlib.h> for alloca
+	(searcher_next_token): Changed slightly to make sure that m is not
+	NULL before dereferencing it. Also initialise m to NULL so that it
+	can't be used uninitialised (NULL is a safe initialised value
+	here).
+	(build_trie): Same, but for n.
+
+2002-09-26  Dan Winship  <danw@ximian.com>
+
+	* mail-config.c (impl_GNOME_Evolution_MailConfig_addAccount,
+	impl_GNOME_Evolution_MailConfig_removeAccount): Set a timeout to
+	call mail_config_write() in 2 seconds. Otherwise changes made by
+	this interface would not be saved to disk unless the user also
+	changed some other preference.
+	(mail_config_write_on_exit): If there's a config_write_timeout
+	pending, call mail_config_write() too.
+
+2002-09-25  Dan Winship  <danw@ximian.com>
+
+	* mail-display.c (mail_display_render): Add a margin around the
+	"flag for followup" table so it lines up with everything else.
+	Also, don't add "at your earliest convenience" after the flag if
+	there's no date set, since that doesn't make any sense for half of
+	the flags. ("For Your Information at your earliest convenience").
+
+2002-09-25  Dan Winship  <danw@ximian.com>
+
+	* component-factory.c (folder_types): add "mail/public". Leave
+	"vtrash" as it is rather than renaming it to "mail/vtrash",
+	because we want it to behave differently from normal mail folders
+	more often than we want it to behave the same.
+	(type_is_mail, type_is_vtrash): utility funcs
+	(create_view, create_folder, remove_folder, xfer_folder,
+	populate_folder_context_menu, unpopulate_folder_context_menu,
+	destination_folder_handle_drop, storage_create_folder): Use
+	type_is_mail/type_is_vtrash.
+	(create_component): Register "New Post" with "mail/public" instead
+	of "mail" so it becomes the default New icon for it. (29024)
+
+	* mail-callbacks.c (transfer_msg): Use "mail/*" for allowed type.
+
+	* message-browser.c (transfer_msg): Likewise.
+
+	* mail-account-gui.c (mail_account_gui_new): Use "mail/*" instead
+	of "mail" here for sent/drafts allowed type. (?)
+
+2002-09-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* upgrade-mailer.c (imap_url_upgrade): NULL-check si->folders
+	before passing it into find_folder so we don't crash. Fixes bug
+	#30915.
+
+2002-09-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-ui.c: Allow users to delete already deleted
+	messages, fixes bug #30827.
+
+2002-09-24  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser.c (folder_browser_query_changed): Always do a
+	search if the query changed.  For #31060 & #29625.
+
+2002-09-23  Radek Doulik  <rodo@ximian.com>
+
+	* mail-config.c (mail_config_signature_run_script): pass name of
+	the script as 1st parameter
+
+	* mail-composer-prefs.c (sig_add_script_add): fix entry's glade
+	name
+
+2002-09-23  Dan Winship  <danw@ximian.com>
+
+	* mail-signature-editor.c (exit_dialog_cb): Fix non-ANSI switch
+	statement.
+
+	* mail-account-gui.c (mail_account_gui_auto_detect_extra_conf):
+	Likewise.
+
+	* mail-composer-prefs.c (spell_load_values): add some dummy
+	typedefs to avoid empty macro arguments, which have undefined
+	behavior.
+
+	* mail-importer.c: #include <sys/types.h> for OS X
+
+2002-09-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (save_part_save): Use 0666 as the create mode so that
+	the user's umask is used to it's fullest.
+
+2002-09-23  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (idldir, idl_DATA): add these and install Mailer.idl
+
+2002-09-20  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-preferences.c (mail_preferences_construct): Connect signal
+	handlers to the GtkHTML preferences so that when the widgets
+	change we can update the OK/Apply buttons. Also removed the
+	omenuShortcutsType widget reference since this was not being used?
+	Fixes bug #30731.
+
+2002-09-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (do_edit_messages): Unset the changed bit on
+	the composer and also drop any undo operations (since we loaded
+	the message into the composer). Fixes bug #30580.
+
+2002-09-19  Not Zed  <NotZed@Ximian.com>
+
+	* mail-session.c (main_get_filter_driver): Fix for filter driver
+	api change.
+
+2002-09-18  Not Zed  <NotZed@Ximian.com>
+
+	* mail-config-druid.c (wizard_back_cb): If going back from a page
+	past our end (i.e. the final page), jump to the last page we know
+	of.  For #29293.
+
+	* component-factory.c (notify_listener_exception): helper to map a
+	camel excpeiton to a listener result.
+	(storage_create_folder): Use above to return more meaningful error.
+	(storage_remove_folder): "
+	(storage_xfer_folder): ".  For #28209.
+
+2002-09-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (mail_display_render): Use e_strftime_fix_am_pm
+	here which fixes locale issues as well as working around systems
+	that don't support %P (afaik).
+
+	* mail-ops.c (prep_offline_do): Cache important messages too.
+
+	* mail-composer-prefs.c (d): Disable debugging printf's
+
+	* mail-ops.c: fixed a comment
+
+2002-09-13  Dan Winship  <danw@ximian.com>
+
+	* folder-browser.c (fb_resize_cb): If the vpaned isn't realized,
+	don't call mail_config_set_paned_size. Fixes a problem with the
+	saved pane size being repeatedly lost (#29933)
+
+2002-09-13  Dan Winship  <danw@ximian.com>
+
+	* Mailer.idl: rename this from "Mail.idl" so that the generated .h
+	file won't overwrite "mail.h" on Mac OS X. Remove some
+	never-implemented IDL and add MailConfig_removeAccount.
+
+	* Makefile.am: Update for IDL rename
+
+	* mail-config.c: #include Mailer.h, not Mail.h
+	(impl_GNOME_Evolution_MailConfig_removeAccount): Implement.
+
+	* folder-info.c: #include Mailer.h, not Mail.h
+
+	* message-list.c: Remove Mail.h include.
+
+2002-09-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* main.c (main): Ignore SIGXFSZ to fix bug #30269.
+
+	* upgrade-mailer.c (cache_upgrade_and_free): The new callback
+	function for the g_hash_table_foreach which both upgrades the
+	cache for that store and then free's the struct _storeinfo
+	afterwards.
+	(cache_upgrade): Upgrade a cached folder by moving the old cache
+	folder into the appropriate new location.
+
+2002-09-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (folder_browser_query_changed): Only abort if
+	the user selected ADVANCED_SEARCH, not the other way around. Any
+	other menu item and we are supposed to perform an actual
+	search. Fixes bug #30183.
+
+	* mail-display.c (pixbuf_for_mime_type): check the new gnome-vfs
+	icon_filename key. If that fails, fall back to checking
+	icon-filename. Also don't leak the fm_icon string and rearranged
+	some code.
+
+2002-09-11  Not Zed  <NotZed@Ximian.com>
+
+	* component-factory.c (configure_folder_popup): Handle file uri's
+	too.
+
+	* mail-callbacks.c (configure_folder): clear message list before
+	calling configure folder.
+	(local_configure_done): completion callback to reset message list
+	when done.
+
+	* mail-local.c (mail_local_reconfigure_folder): changed args to
+	accept uri, and done callback.
+	(reconfigure_got_folder): moved code to callback which presents
+	the configure uri once we have the folder.
+
+2002-09-10  Not Zed  <NotZed@Ximian.com>
+
+	* component-factory.c: Handle file: as well as vfolder: uri's.
+	Pass both to the normal configure_folder callback.  For #20849.
+
+	* folder-browser.c (got_folder): If we already have a folder, make
+	sure we unref/unhook from it.  Fixes a crash on exit.
+
+	* message-list.c (message_list_hide_clear): clear thread tree
+	cache if set.
+	(message_list_set_search): Same.  For bug #28834.
+
+2002-09-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-ui.c (folder_browser_ui_scan_selection): Make
+	sure that fb->message_list is non-NULL before checking
+	fb->message_list->threaded? I guess this'll fix bug #29965.
+
+	* mail-callbacks.c (composer_save_draft_cb): NULL-check the ccd
+	before reffing it.
+	(composer_send_cb): Same.
+
+	* upgrade-mailer.c (shortcuts_upgrade_xml_file): Don't look for an
+	end quote, instead look for </item> to terminate the uri.
+	(shortcuts_upgrade_uri): Hex decode the imap folder name after
+	we've constructed the final version of it.
+
+2002-09-08  Dan Winship  <danw@ximian.com>
+
+	* upgrade-mailer.c (exchange_url_upgrade): Don't modify the URL if
+	the path doesn't start with "exchange". (Means it's already a 1.2
+	URL.)
+	(shortcuts_upgrade_uri): Need to hex-decode exchange URLs here too.
+	(shortcuts_upgrade_xml_file): Fix an off-by-one error here (twice)
+	so it actually works instead of always claiming shortcuts.xml
+	doesn't need to be upgraded.
+	(mailer_upgrade): Check the size of the accounts hash rather than
+	imap_sources since we have work to do if the user has an exchange
+	account but no imap accounts.
+
+2002-09-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* upgrade-mailer.c (upgrade): Sync the database after upgrading
+	mailer stuff.
+	(imap_url_upgrade): Since we need 'p' if we fail to find the
+	folder, don't g_free it until later.
+	(hex_encode): Don't forget to increment inptr after hex encoding a
+	character.
+	(exchange_url_upgrade): Apprently exchange uri's are rebelious and
+	do not want to be hex encoded like every other url, so hex decode
+	the folder names here before concatenating them onto the base url.
+
+2002-09-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	All this snot is to fix bug #29930. What I think was happening was
+	that the composer's destroy callback got fired off before the
+	async callback did.
+
+	* mail-callbacks.c (ccd_new): New convenience function to malloc a
+	new ccd.
+	(ccd_ref): ccd is now ref_counted (it needs to be) so we now have
+	this.
+	(ccd_unref): And we need this now too of course.
+	(composer_destroy_cb): composer's new destroy callback function -
+	unref's the ccd.
+	(composer_send_queued_cb): unref the ccd.
+	(composer_send_cb): ref the ccd here.
+	(save_draft_done): unref the ccd.
+	(composer_save_draft_cb): ref the ccd.
+
+2002-09-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* upgrade-mailer.c (imap_url_upgrade): Hex decode the folder names
+	when searching for them in the memory buffer, and re-hex encode
+	them when combining them with the rst of the URL.
+	(mailer_upgrade): Instead of reading in the storeinfo file as raw
+	binary data, use the camel-file-utils to correctly parse it.
+
+2002-09-05  Anna Marie Dirks  <anna@ximian.com>
+
+	* GNOME_Evolution_Mail.oaf.in: Changed the descriptions of the 
+	fonts, mail, accounts and composer pages of the settings dialog to be
+	hopefully more descriptive and less confusing.
+
+2002-09-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	* upgrade-mailer.c (upgrade): Return FALSE here.
+	(get_base_url): Add a cast.
+
+	* component-factory.c (storage_xfer_folder): Removed unused
+	variables.
+
+	* Makefile.am: Rename upgrade-mailer to evolution-mail-upgrade.
+
+2002-09-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* Makefile.am: Add upgrade-mailer.c to the build.
+
+	* upgrade-mailer.c: New program to upgrade configuration files
+	from 1.0 to 1.2.
+
+2002-09-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): Made sure
+	account->id->address is not NULL before adding it to the hash
+	table. This is to prevent bug #29877 from crashing, although it is
+	still an invalid error condition.
+
+2002-09-04  Dan Winship  <danw@ximian.com>
+
+	* folder-info.c (get_prop): Remove the "Get!" printf.
+	(set_prop): Likewise for "Set!"
+
+2002-09-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_save): Remove unused
+	variable.
+
+	* component-factory.c (unpopulate_folder_context_menu): New.
+	(create_component): Pass it to evolution_shell_component_new().
+
+2002-09-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (mark_as_seen_cb):
+	(mark_as_unseen_cb):
+	(mark_as_important_cb):
+	(mark_as_unimportant_cb): New callback functions that wrap the
+	mail-callbacks versions of mark_as_<whatever>. Thanks to Owen
+	Taylor for this fix.
+
+2002-09-04  Not Zed  <NotZed@Ximian.com>
+
+	* component-factory.c (storage_xfer_folder): Dont translate / to
+	dir_sep anymore, we always use /.
+
+2002-08-29  Peter Williams  <peterw@ximian.com>
+
+	* folder-browser-ui.c: Add HAS_FLAGS to a few miscellaneous commands
+	that don't use IS_xMESSAGE.
+
+2002-08-28  Dan Winship  <danw@ximian.com>
+
+	* GNOME_Evolution_Mail.oaf.in: Add an
+	evolution:shell_component_launch_order and rename
+	evolution:shell_component_icon.
+
+2002-08-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (make_safe_filename): Fix some broken logic here,
+	`p = strrchr (path, '/') + 1` will *never* be NULL!! If the
+	strrchr returns NULL, then that expression will evaluate to 0x1!!
+
+	* main.c (main): We now always need to init gconf for our later
+	call to e_proxy_init() which initialises the proxy settings for
+	soup to use.
+
+2002-08-28  Peter Williams  <peterw@ximian.com>
+
+	* folder-browser-ui.c (default_ui_nodes): Add some new flags for
+	sensitizing nodes based on the flags of the currently selected
+	messages.
+	(folder_browser_ui_add_message): Reset the sensitivity cache when
+	we re-add UI items.
+	(folder_browser_ui_add_list): Same.
+	(folder_browser_ui_add_global): Same.
+	(fbui_sensitise_item): Only cache the sensitivity in the hash
+	table if we actually change it.
+	(folder_browser_ui_scan_selection): New function, getting the bulk
+	of the contents of folder_browser_ui_set_selection_state.  Now
+	with code to iterate over the currently selected messages and
+	check their flags so we can sensitize based on them.
+	(folder_browser_ui_set_selection_state): Now just set the
+	selection state if necessary and pass off to _scan_selection. Don't
+	skip of we're trying to go from SELSTATE_SINGLE to SELSTATE_SINGLE,
+	eg, as the flags of the selected messages may have changed.
+
+	* folder-browser-ui.h: Prototype folder_browser_ui_scan_selection.
+	
+	* folder-browser.c (main_folder_changed): Call
+	folder_browser_ui_scan_selection as the flags on a selected
+	message may have just changed.
+
+2002-08-28  Peter Williams  <peterw@ximian.com>
+
+	* mail-format.c (component_supports): Also check that the component
+	has PersistStream.
+	(mail_lookup_handler): Get a list of all components and go with the
+	first matching one.
+
+2002-08-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (regen_list_regen): Pass
+	mail_config_get_thread_subject() as the third argument to
+	camel_folder_thread_messages_new().
+
+	* mail-config.c (config_read): Read in the thread_by_subject
+	config option.
+	(mail_config_write_on_exit): Save the thread_by_subject config
+	option.
+	(mail_config_get_thread_subject): New function to get the
+	thread_subject value.
+	(mail_config_set_thread_subject): New function to set the
+	thread_subject value.
+
+2002-08-27  Radek Doulik  <rodo@ximian.com>
+
+	* mail-signature-editor.c: removed tip frame
+
+2002-08-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Fixes for bug #4480
+
+	* folder-browser-factory.c (control_activate): Call
+	folder_browser_reload() instead of refreshing the folder
+	ourselves.
+
+	* folder-browser.c (folder_browser_reload): New convenience
+	function. If the folder-browser's folder is already loaded,
+	refresh the contents, otherwise if the folder has not been loaded
+	- try loading the folder again (it may have failed to open last
+	time for some reason?).
+
+2002-08-27  Peter Williams  <peterw@ximian.com>
+
+	* mail-format.c (handle_text_plain_flowed): Fix bug #29493.
+
+2002-08-26  Peter Williams  <peterw@ximian.com>
+
+	* mail-callbacks.c (toggle_flags): Logic change for when untoggling
+	a message from deleted-dom.
+
+2002-08-26  Peter Williams  <peterw@ximian.com>
+
+	* mail-ops.c (transfer_messages_transfer): Enforce the mailer policy
+	that deleted messages are marked as seen. Fixes 29448. This could
+	go in camel_folder_transfer_messages_to, but I don't think we
+	necessarily want to enforce that policy for Camel in general.
+
+2002-08-23  Peter Williams  <peterw@ximian.com>
+
+	Address most of bug #4940. Fails on the last page of the add account
+	dialog as called from the prefs dialog due to EvolutionWizard being
+	weird.
+	
+	* mail-config-druid.c (goto_next_page): New function, little
+	wrapper around wizard_next_cb. Also potential place to work around
+	EvolutionWizard weirdness in the future.
+	(identity_activate_cb): New function, calls goto_next_page if
+	identity page is complete.
+	(source_activate_cb): Analogous.
+	(transport_activate_cb): Analogous.
+	(management_activate_cb): Analogous.
+	(get_fn): Hook up the activate signals of the various GtkEntries
+	to the correct callbacks above.
+	(management_check): Return the result of the check so that
+	management_activate_cb can use it.
+
+2002-08-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-tools.c (mail_tool_restore_xevolution_headers): Reset the
+	X-Evolution-PostTo header.
+	(mail_tool_remove_xevolution_headers): Remove the
+	X-Evolution-PostTo header.
+
+2002-08-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-folder-cache.c (ping_store): Spawn a new thread to ping the
+	server but only if it is connected.
+	(ping_cb): This needs to return TRUE so the timeout keeps getting
+	called.
+
+2002-08-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-session.c (class_init): Don't bother overloading the
+	timeout virtual methods since they don't exist anymore.
+
+	* mail-folder-cache.c (mail_note_store): Register a ping timeout
+	callback to ping each store to keep the connections alive.
+
+2002-08-20  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c (do_mail_print): be sure that widget is
+	realized so that e_utf8_from_gtk_string works properly
+	(footer_print_cb): save/restore
+
+2002-08-20  Mike Kestner  <mkestner@ximian.com>
+
+	* folder-browser-ui.c (folder_browser_ui_setup_view_menus): guard
+	against the view_instance disappearing during earlier CORBA work.
+
+2002-08-20  Peter Williams  <peterw@ximian.com>
+
+	* message-list.c (search_func): Once we hit the target node,
+	update the cursor_uid if it's set. Fixes #29085.
+
+2002-08-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-preferences.c (mail_preferences_apply): Fix a
+	copy/paste-o. Use the pgp_path GnomeFileEntry widget rather than
+	the notify_sound_file GnomeFileEntry widget for the pgp path stuff
+	:-)
+
+2002-08-19  Dan Winship  <danw@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_setup): source_type_changed
+	may try to change the transport optionmenu (incorrectly in this
+	case), so don't call gtk_option_menu_set_history on it until after
+	emitting "activate" on the source type menuitem.
+	(mail_account_gui_save): Fix the saving of STORE_AND_TRANSPORT
+	transports and add a comment so it doesn't get mistakenly unfixed
+	again.
+
+2002-08-09  Peter Williams  <peterw@ximian.com>
+
+	* subscribe-dialog.c: Change this into a GnomeApp so we get a
+	statusbar and the dialog is a little more comprehensible.
+
+	* subscribe-dialog.c: (struct _FolderETree): Add members for
+	tracking activity callback information.
+	(get_short_folderinfo_got): Notify the activity callback.
+	(subscribe_get_short_folderinfo): Here too.
+	(folder_etree_init): Initialize the activity level to 0.
+	(folder_etree_construct): Take new parameters of our activity
+	callback and user_data.
+	(folder_etree_new): Here too.
+	(store_data_get_widget): Take the parameters here and pass them
+	on.
+	(sc_close_pressed): New callback for when close button is pressed.
+	(sc_activity_timeout): New timeout to move the activity bar when
+	folders are being scanned.
+	(sc_activity_cb): If activity_level > 0, start the progressbar
+	moving and set the status.
+	(menu_item_selected): Pass the callback to store_data_get_widget.
+	(subscribe_dialog_construct): Load some more widgets and adapt to
+	some changes in the XML. Also connect the close button signal and
+	initialize the progress bar's settings.
+
+	* mail-callbacks.c (manage_subscriptions): Don't call 
+	gnome_dialog_set_close on it anymore since it's no longer a gnome 
+	dialog.
+
+2002-08-14  Dan Winship  <danw@ximian.com>
+
+	* mail-config.glade: Add a "don't sign meeting requests" option to
+	the security pane, since some versions of Outlook won't recognize
+	pgp-signed meeting requests. Sigh.
+
+	* mail-config.c (account_copy, config_read, mail_config_write):
+	Handle pgp_no_imip_sign.
+
+	* mail-account-gui.c (mail_account_gui_new,
+	mail_account_gui_save): Setup/save "don't sign meeting requests"
+	button.
+
+2002-08-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (forward_message): Removed an unused variable.
+
+	* mail-account-editor.c (construct): Set the focus on the Account
+	Name entry widget. Fixes bug #10350.
+
+2002-08-12  Dan Winship  <danw@ximian.com>
+
+	* mail-display.c (on_url_requested): Replace no-longer-existent
+	e_book_query_address_locally with e_book_query_address_default.
+
+2002-08-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (forward_message): Use mail_get_messages()
+	instead of mail_get_message().
+	(do_forward_non_attached): Fixed to work as a callback from
+	mail_get_messages().
+	(do_edit_messages): Only set the drafts_folder and drafts_uid if
+	the folder-browser is a drafts folder. Fixes bug #28863.
+
+2002-08-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (save_draft_done): If the ccd is NULL, create a
+	new ccd, disconnect the old signal handlers, and then reconnect
+	the signal handlers using the non-NULL ccd as the user_data.
+	(composer_send_queued_cb): Same, but only if the queue append
+	operation failed.
+
+2002-08-09  Dan Winship  <danw@ximian.com>
+
+	* mail-callbacks.c (composer_send_queued_cb, save_draft_done):
+	Handle the fact that ccd may be NULL (if the composer was created
+	via CORBA). Quick temporary fix for sending meeting requests.
+
+2002-08-09  Peter Williams  <peterw@ximian.com>
+
+	* mail-config.c (mail_config_uri_renamed): When a URI is changed,
+	try to copy over threaded view settings, preview pane shown
+	settings, headers, hide state, tree expansion, and GAL view files.
+	(uri_to_evname): New utility function.
+
+2002-08-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_save): Instead of comparing
+	old/new CamelStore objects, just compare their account urls since
+	changing params would still result in the same CamelStore
+	object. Fixes bug #18539.
+
+	* mail-callbacks.c (delete_msg): Don't check permanent_flags for
+	the CAMEL_MESSAGE_DELETED bit here, if we are gonna check to see
+	if the folder supports the permanent flag then there are better
+	places to check this. Besides, it was the cause for bug #28038.
+
+2002-08-08  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser.c (folder_browser_toggle_threads): Force a
+	refresh of the menu sensitivity when the thread state changes.
+
+2002-08-07  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser-ui.c: Added EditSelectThread to only enable
+	threaded mode if threaded is on.  For #19941.  Added some macro's
+	to simplify the table.
+	(folder_browser_ui_set_selection_state): Implement IS_THREADED
+	mask.
+
+2002-08-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_send_queued_cb): Delete the Draft
+	item that this was edited from if that is the case as well as
+	setting any replied flags if we need to. Fixes bug #18171.
+	(save_draft_done): Not only delete the previously saved draft, but
+	also set any PostSendData on the message being replied to or
+	whatever. Fixes bug #20224.
+	(compose_msg): Create an empty callback data struct which is now a
+	MUST.
+	(mail_reply): Fill in the new post_send_data info and also move
+	the creation of the post_send_data to AFTER the creation of the
+	composer widget so we don't leak on fail.
+	(forward_get_composer): Pass an empty post_send_data structure as
+	the user_data to the signal callbacks.
+	(send_to_url): Same.
+	(post_to_url): Here too.
+	(redirect_get_composer): And here.
+	(do_edit_messages): We no longer use the evil kludge of setting
+	data on the composer object to denote the drafts_uid etc, this is
+	now part of the post_send_data struct.
+
+2002-08-07  Peter Williams  <peterw@ximian.com>
+
+	* component-factory.c (request_quit): If outbox_folder is NULL,
+	don't try and get its message count (this should never happen, but
+	has.)
+
+2002-08-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-local.c (save_metainfo): No need to save a temporary file
+	first anymore since I updated e_xml_save_file() to do this for us.
+
+2002-08-07  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser-ui.c: Enable the view type menu's always.  See
+	#20901.
+
+	* message-tag-followup.c (target_date_new): Set the week start day
+	from the calendar prefs, do same for 24 hour format.  See #23423.
+
+	* mail-config.c (config_read): Added week_start_day from
+	Calendar/Display config.  Also time_24hour format.
+	(mail_config_get_week_start_day): 
+	(mail_config_get_time_24hour): And read-only accessors.
+
+2002-08-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-local.c (save_metainfo): Save to a temporary file first
+	using e_xml_save_file rather than xmlSaveFile, if the save
+	completes successfully then rename it to the real filename. Make
+	sure that errno is saved.
+	(mls_get_folder): save_metainfo doesn't return -1 on fail, it
+	returns FALSE.
+
+2002-08-06  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser.c (folder_browser_search_menu_activated): Set the
+	rule name to include the search string, for #10979.
+
+	* message-list.c (message_list_hidden): Only count hidden messages
+	which are in the folder.  Should probably maintain hidden table
+	better.  For #4334.
+	
+	* mail-ops.c (filter_folder_filter): Unref the driver before
+	returning to main thread, so any closing operations are handled
+	async (as in fetch_mail_fetch()), for #28072.
+	(fetch_mail_fetch): Check driver != NULL, if folder_filter freed
+	it already.
+
+	** fixes for #24605.
+	
+	* mail-vfolder.c (vfolder_gui_add_from_mlist): Removed.
+
+	* folder-browser.c (filter_type_uid,vfolder_type_uid): Changed to
+	accept args directly.  Fixed callers.
+	(filter_mlist_uid,vfolder_mlist_uid): Use filter_type_uid instead
+	of mlist variant.
+	(vfolder_type_current): new function to handle setup of vfolders
+	from the main menu.  It now uses the vfolder_type_uid function the
+	same as the popup.
+	(vfolder_subject, vfolder_sender, vfolder_recipient,
+	vfolder_mlist): Changed to use vfolder_type_current.
+	(filter_type_current): Similar for filters.
+	(filter_subject, filter_sender, filter_recipient,
+	filter_mlist): Changed to use filter_type_current.
+
+	* mail-autofilter.c (rule_from_message): Handle AUTO_MLIST type.
+	(rule_from_mlist): 
+	(vfolder_rule_from_mlist): 
+	(filter_rule_from_mlist): Removed.
+	(filter_gui_add_from_mlist): Removed.
+
+	* mail-autofilter.h: Added AUTO_MLIST type.
+
+2002-08-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-mt.c (mail_msg_check_error): If we are not in interactive
+	mode, don't display error dialogs.
+
+	* component-factory.c (interactive_cb): Updated to use the new
+	function mail_session_set_interactive().
+	(owner_unset_cb): Same here.
+
+	* mail-session.c (mail_session_set_interactive): Renamed from
+	mail_session_enable_interaction().
+	(mail_session_get_interactive): New function to get the
+	interactive state.
+
+2002-08-01  Peter Williams  <peterw@ximian.com>
+
+	* mail-offline-handler.c (struct _sync_info): Add a GHashTable pointer
+	so we can remove the info once the operation is done.
+	(sync_done): Remove the info from the hash table.
+	(impl_syncFolder): Save the table to which the info was added.
+
+2002-08-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* component-factory.c (user_create_new_item_cb): Updated to call
+	post_to_url if the id is "post".
+
+	* mail-callbacks.c (post_to_url): New function so that we don't
+	need a FolderBrowser to post a new message.
+	(post_message): Call post_to_url since they shared so much code.
+
+2002-08-05  Dan Winship  <danw@ximian.com>
+
+	* mail-callbacks.c (mail_reply): Only reply to all or reply to
+	list, set CAMEL_MESSAGE_ANSWERED_ALL too.
+
+2002-08-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-tag-followup.c (construct): Set the default flag to
+	Follow-Up.
+
+	* mail-display.c (mail_display_render): Updated to use the new
+	Follow-Up tags. Instead of storing a string containing the
+	follow-up tag value, we now have to store the CamelMessageInfo.
+	(mail_display_destroy): Unref the folder and the message-info.
+
+	* folder-browser.c (followup_tag_complete): No longer needed.
+	(on_right_clicked): Use the individual follow-up tags to decide
+	whether or not to enable something.
+
+	* message-list.c (ml_tree_value_at): Update to use the new
+	Follow-Up tags.
+
+	* mail-callbacks.c (flag_for_followup): Update to use the new
+	MessageTagEditor API.
+	(tag_editor_ok): Update this too.
+	(flag_followup_completed): Updated this too.
+	(flag_followup_clear): Set all the follow-up tag values to "".
+
+2002-08-01  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (create_component): Use
+	"post-message-16.png" as the icon for the "New Message Post" item.
+
+2002-08-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_save): If we are editing an
+	account, then get the CamelStore associated with the old account
+	info and save it in a struct that we will pass along as user_data
+	to mail_get_store() for the new account url.
+	(add_new_store): If the old account and new account stores are
+	identical, then don't remove the old store from the folder
+	tree. If they are not the same, then remove the old store and add
+	the new store to the folder tree.
+
+2002-07-31  Peter Williams  <peterw@ximian.com>
+
+	* mail-folder-cache.c: Add another bitfield "unsub"
+	(real_flush_updates): If unsubscribing, manually remove the folder
+	from the shell.
+	(unset_folder_info): Add another parameter which is used to set
+	the unsub member.
+	(store_folder_unsubscribed): Pass true for @unsub.
+	(unset_folder_info_hash): Pass false for @unsub.
+
+	* subscribe-dialog.c (fe_done_subscribing): Don't notify the shell
+	here. The folder cache does it now, and it was broken to make the
+	CORBA call in another thread anyway.
+
+2002-08-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (setup_mime_tables): Don't setup a handler for
+	multipart/digest.
+	(handle_multipart_digest): Removed.
+
+2002-07-31  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* Makefile.am: Removed folder-browser-window from the build.
+
+	* folder-browser-window.[c,h]: Removed.
+
+	* mail-callbacks.c (view_digest): Removed.
+
+	* mail-display.c (mail_display_digest_clicked): Removed.
+	(on_link_clicked): Don't handle digest: urls anymore.
+
+2002-07-31  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (create_component): Put "New Mail Message"
+	before "New Message Post" instead of vice versa.
+
+2002-07-31  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (create_component): Pass "mail" as
+	@folder_type to
+	evolution_shell_component_add_user_creatable_item().
+
+2002-07-31  Not Zed  <NotZed@Ximian.com>
+
+	* mail-display.c: Added global cameldatacache for managing remote
+	image cache.
+	(fetch_remote): Lookup data in cache first, use that if available,
+	or setup a new cache item.
+	(fetch_data): Write any retrieved data to cache as well as html
+	stream.
+	(fetch_free): Unref cache stream.
+	(fetch_done): 
+	(fetch_cancel): If failed/cancelled, remove cache items so they
+	dont foul the result.  Probably need a header in cache items to
+	guarantee this, but this is ok for now.
+	(mail_display_class_init): Setup cache structure.  Also ensure
+	globals are initialised at-most once.
+
+2002-07-30  Radek Doulik  <rodo@ximian.com>
+
+	* mail-config.c (mail_config_signature_set_name): save signature
+	here to remember the changed name
+
+2002-07-30  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (write_date): Use camel_medium_get_header to get
+	the date header rather than getting the time_t and converting it
+	into a string.
+
+2002-07-29  Not Zed  <NotZed@Ximian.com>
+
+	* mail-display.c (mail_display_init): setup private data.
+	(mail_display_destroy): cancel any outstanding fetches, and free
+	private data.
+	(mail_display_set_message): Cancel any outstanding fetches.
+	(fetch_cancelled): 
+	(fetch_next): 
+	(fetch_remote): 
+	(fetch_data): 
+	(fetch_free): 
+	(fetch_cancel): 
+	(fetch_done): Implement, used to use soup to download remote
+	images.
+	(load_http): Removed.
+	(on_url_requested): When requesting a http* url, use the
+	fetch_remote call above.
+
+	* mail-display.h (struct _MailDisplay): Added priv(ate) member.
+
+2002-07-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-session.c (request_password): Left-align the check button's
+	label.
+
+2002-07-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_new): Get the "Reset
+	Defaults" folders button and connect to the clicked signal.
+	(default_folders_clicked): Set the default uris on for the Drafts
+	and Sent folders.
+
+2002-07-26  Peter Williams  <peterw@ximian.com>
+
+	* mail-offline-handler.c (storage_go_online): Call mail_note_store
+	to get the folders to be updated and new ones to be inserted into
+	the tree.
+
+2002-07-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-session.c (request_password): Add an accelerator for the
+	"Remember this password" checkbox.
+
+2002-07-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (mail_execute_shell_command): No real need for this
+	to be an async function sync we are going to call
+	gnome_execute_async anyway.
+
+	* component-factory.c (create_component): Add a new menu item for
+	posting to the New toolbar button thing.
+	(destination_folder_handle_drop): Don't use a NULL exception when
+	we already have one to use anyway.
+	(got_folder): Move the *fp = folder; to before the check to make
+	sure folder != NULL, this makes it so that if getting a folder
+	fails at least have have a known value to look out for (NULL)
+	rather than some random garbage.
+
+2002-07-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config-druid.c (create_label): Make the gtk label line-wrap
+	instead of us forcing \n's in the label, that was just
+	wrong. Fixes bug #10320.
+
+	* mail-callbacks.c (composer_send_cb): Make sure that the url
+	isn't an empty string and also make sure to free it when we're
+	done with it. Also check that we got the folder - if it is NULL,
+	then just abort.
+
+2002-07-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config.c (mail_config_folder_to_safe_url): Use
+	mail_tools_folder_to_url().
+
+	* mail-tools.c (mail_tools_folder_to_url): New convenience
+	function to take a CamelFolder and return the URL associated with
+	it.
+
+	* mail-callbacks.c (composer_get_message): Pass in a 'post'
+	argument so we know whether or not we can ignore a NULL set of
+	recipients.
+	(composer_send_cb): Default send->send to TRUE unless we are in
+	Post-To mode, in which case set send->send to FALSE (since we'll
+	have nothing to send). Also, if we are in Post-To mode, append to
+	the folder the user wants to post to rather than appending to
+	Outbox.
+	(composer_send_queued_cb): Only queue a send thread if send->send
+	is TRUE (ie, the composer was not in Post mode - if it was in Post
+	mode, then the message post has already been saved in the correct
+	folder so there is nothing to do).
+	(post_message): New function to create an empty composer widget in
+	Post mode.
+	(post_reply): New function that calls mail_reply with the new mode
+	of REPLY_POST.
+	(mail_generate_reply): If the mode is REPLY_POST, create a Post
+	composer widget otherwise create a normal composer widget.
+
+2002-07-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (mail_execute_shell_command): Update to take argc and
+	argv arguments since this is the new definition for the
+	CamelFilterDriverShellFunc.
+
+	* mail-session.c (main_get_filter_driver): Updated for the renamed
+	function.
+
+	* mail-display.c (link_open_in_browser): Make sure that the
+	html->pointer_url is non-NULL. Should fix bug #28159 (this seems
+	to be the only questionable way for a NULL url to be passed into
+	on_link_clicked).
+
+2002-07-24  Peter Williams  <peterw@ximian.com>
+
+	* mail-callbacks.c (do_mail_fetch_and_print): Check for whether
+	current_message is NULL as well as preview_shown (if we tried to
+	load the message and failed, as may happen in offline mode.)
+	(done_message_selected): Only print if we actually got the message.
+
+	* folder-browser.c (folder_browser_query_changed): New function,
+	use this on the query_changed signal. Don't run the search if
+	they only changed the dropdown.
+
+2002-07-23  Peter Williams  <peterw@ximian.com>
+
+	* mail-ops.c (get_store_get): Call camel_session_get_service
+	instead of camel_session_get_store, as _get_store calls
+	_get_service_connected which is not what we want to do on startup.
+	(set_offline_do): Rework the logic here. It was failing when
+	trying to go online with a disco store that couldn't work offline.
+
+	* mail-folder-cache.c (mail_note_store): If we're using an offline
+	(well, non-online) disco store that cannot work offline, don't get
+	the folderinfo as that will fail.
+
+2002-07-24  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c (sig_add): use
+	mail_config_get_send_html for html format flag
+
+	* mail-account-gui.c (sig_add_new_signature): use
+	mail_config_get_send_html for html format flag
+
+2002-07-24  Not Zed  <NotZed@Ximian.com>
+
+	* mail-folder-cache.c (real_flush_updates): Propagate name changes
+	or removes to the mail config.  #15951.  Doesn't enitrely work for
+	local folders, because they are never renamed only removed and
+	added thanks to the shell's api.
+
+	* mail-config.c (mail_config_uri_renamed): If a store folder is
+	renamed, this checks for any config that needs updating, so far
+	sent and drafts folders.
+	(mail_config_uri_deleted): Same, for deleted folders.
+
+2002-07-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_multipart_encrypted): Commit a fix that I
+	thought I committed a while ago:
+
+	* mail-format.c (handle_multipart_encrypted): Pass the correct
+	pointer into camel_multipart_encrypted_decrypt().
+
+	* mail-ops.c (mail_send_message): Rework the logic a bit. If we
+	find an account, use that to set the sent_folder_uri and the
+	transport_url, otherwise use the X-Evolution-Transport and
+	X-Evolution-Fcc headers.
+
+2002-07-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-tag-followup.c (message_tag_followup_decode): Don't pass
+	the length of the tag name into strncmp, instead use the length up
+	to the first ':' in the value string.
+
+2002-07-22  Peter Williams  <peterw@ximian.com>
+
+	* folder-browser.c (folder_browser_gui_init): Also perform a search
+	on the query_changed signal, which is what gets emitted when the 
+	Search menu is used.
+
+2002-07-24  Not Zed  <NotZed@Ximian.com>
+
+	* component-factory.c (owner_set_cb): Initialise the standard
+	uri's before doing anything else.
+
+	* mail-vfolder.c (uri_is_ignore): Return true if the uri is any
+	sent, drafts or outbox folder uri.
+	(mail_vfolder_add_uri): Dont automagically add any
+	sent/outbox/drafts folder with "local" or "remote" etc rules, only
+	add sent folders if explictly listed as folder rules.  Maintain
+	the remote/local folders list accordingly.
+	(vfolder_adduri_do): dont check against sent_folder, drafts_folder
+	or outbox_folder, this is checked by above code.  For #14863.
+
+	* mail-display.c (drag_data_delete_cb): use uri_list before we set
+	"uri-list" to NULL, which will automagically free it for us, so
+	dont free it either.  Found with vagrind.
+
+2002-07-23  Not Zed  <NotZed@Ximian.com>
+
+	* message-browser.c (message_browser_destroy): Disconnect from
+	folderbroser signals when we unref it, so we dont get signals
+	later on if someone else has a ref on it (causing crash).
+
+2002-07-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config.c (mail_config_signature_run_script): Check to make
+	sure the script output is valid UTF-8, if not then attempt to
+	convert it into UTF-8. Fixes bug #28086.
+
+2002-07-22  Not Zed  <NotZed@Ximian.com>
+
+	* message-list.c (regen_list_regened): Remove the assert, and
+	always copy over the threadtree which represents the current view,
+	unreffing the old one if set.  For #28021.  Haven't tested this a
+	lot, but i guess it cant be worse than what is there.
+
+	* mail-vfolder.c (store_folder_renamed): When renaming, use
+	full_name to set the folder, not name, so the path is preserved.
+
+2002-07-20  Larry Ewing  <lewing@ximian.com>
+
+	* mail-format.c (mail_get_message_body): recognize urls in plain
+	text reply quoting logic (bug #27908).
+
+2002-07-19  Not Zed  <NotZed@Ximian.com>
+
+	* mail-callbacks.c: Try including gtkhtml/gtkhtml.h instead.  Test
+	really is a 4 letter word obviously.
+
+2002-07-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-folder-cache.c: Removed bogus static pre-declaration.
+
+	* e-searching-tokenizer.c (e_searching_tokenizer_end): Removed
+	unused variables.
+
+	* mail-callbacks.c: #include <gtkhtml.h>.
+
+	* folder-info.h (evolution_folder_info_get_type): Add prototype.
+
+2002-07-18  Peter Williams  <peterw@ximian.com>
+
+	* mail-format.c (handle_multipart_digest): Change the HTML to
+	make this a little prettier.
+
+	* folder-browser-window.c (folder_browser_window_new): Load the
+	messagedisplay XML file as a base for the UI, so that things
+	appear. Don't add the global UI items as they don't make sense
+	here.
+	(fb_window_close): New function, used to ... close the window,
+	suprisingly.
+
+2002-07-18  Not Zed  <NotZed@Ximian.com>
+
+	* main.c (main): Put the mcheck stuff back in, which was removed
+	without a changelog entry.
+
+2002-07-08  Peter Williams  <peterw@ximian.com>
+
+	* Makefile.am: Reference the new libefilterbar.a.
+
+2002-07-17  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c (save_draft_done): use "saved" gtkhtml command
+
+2002-07-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* component-factory.c (add_storage): Oops, Don't comment out the
+	mail_note_store call.
+
+2002-07-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c (account_able_clicked): Re-enable some #if 0'd code.
+
+	* mail-vfolder.c (vfolder_load_storage): Updated to not pass TRUE
+	for an auto_connect argument since that argument no longer exists.
+
+	* mail-account-gui.c (add_new_store): Updated to not pass an
+	auto_connect argument.
+
+	* component-factory.c (add_storage): Don't ever auto-connect here.
+	(mail_add_storage): No longer takes an auto_connect argument.
+	(mail_load_storages): Only load the account storages that are
+	enabled.
+
+2002-07-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_send_cb): Pass 'info' into
+	mail_append_mail(), seems I created the info but forgot to pass it
+	in.
+	(composer_send_queued_cb): If the message is successfully queued,
+	we destroy the composer, otherwise we unref it. Don't ever destroy
+	and then unref it.
+
+2002-07-15  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c: use new save_header_state flag
+
+2002-07-15  Peter Williams  <peterw@ximian.com>
+
+	* mail-offline-handler.c (service_is_relevant): Account for the
+	case that when a disco store is "online" but actually offline and
+	we're going online, we should actually connect it.
+
+	* component-factory.c (mail_load_storages): Always set
+	auto_connect to FALSE, same reason as below.
+
+	* mail-session.c (mail_session_init): Initialize our session to
+	not be online, since the shell will tell us to go online if we
+	need to.
+
+2002-07-10  Peter Williams  <peterw@ximian.com>
+
+	* Makefile.am (importerdir): Define this in terms of the new
+	privlibdir, again resulting in a new directory name.
+
+	* importers/Makefile.am (importersdir): Here too.
+
+2002-07-15  Not Zed  <NotZed@Ximian.com>
+
+	* message-list.c (ml_tree_value_at): Lookup the label colour based
+	on the label token, not an integer.
+
+	* folder-browser.c (on_right_click): Lookup the label name from
+	the filter type.  Sigh, a bunch of other code should do similar
+	but i'm going to leave it as integers.
+	(set_msg_label): Set the label directly.
+
+	* mail-vfolder.c (vfolder_editor_clicked): Set the vfolder_editor
+	variable to null before we close the dialogue, otherwise the close
+	destroys it and reverts the file.
+
+	* component-factory.c (populate_folder_context_menu): Oops,
+	accidentally checked in some unfinished, unworking code.
+	Reverted.
+
+2002-07-10  Not Zed  <NotZed@Ximian.com>
+
+	** fixes for #10781
+
+	* mail-callbacks.c (filter_edit): Add back a cancel button.  We
+	dont need to do anything special to 'undo' here, as the rules are
+	loaded every time they're used.
+
+	* mail-vfolder.c (vfolder_editor_clicked): If ok wans't clicked,
+	revert the ruleset.
+	(vfolder_editor_destroy): Fake a button of -1 if we get destroyed
+	with no click.
+	(context_rule_removed): Unref the folder after we delete it.  If
+	we're the last ref to the folder, unrefing it means it no longer
+	exist,s which means no delte processing occurs ...
+
+2002-07-04  Not Zed  <NotZed@Ximian.com>
+
+	* mail-accounts.c (news_add_destroyed): Pass teh autoconnect flag,
+	whcih shoudlnt' exist anyeway.
+
+2002-07-03  Not Zed  <NotZed@Ximian.com>
+
+	* component-factory.c (populate_folder_context_menu): If this is a
+	file url, look up its component, if we have it, then use the
+	mail-callback reconfigure call.
+
+	* folder-browser-factory.c (folder_browser_factory_get_browser):
+	Util to get the folder browser from a uri.
+
+2002-07-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (pixmap_press): Rename "Save to disk..." to "Save
+	Attachment..."
+
+2002-07-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-ui.c: Modified to use a single list of UI node
+	elements with an enable-mask rather than split into groups. This
+	allows much more control and easier modification to get the
+	desired enable/disable effects.
+
+	* mail-display.c (mail_display_set_message): If we unref'd a
+	current_message, clear the datalist. Don't bother connecting to
+	the message's finalise signal because something else may own a ref
+	to the original message when we replace it with a new one.
+	(mail_display_destroy): Only clear the datalist if we have a
+	current_message, otherwise it's safe to assume that it is already
+	cleared.
+
+2002-07-08  Peter Williams  <peterw@ximian.com>
+
+	* Makefile.am (INCLUDES): Add -I flags to get the ebook headers.
+
+2002-07-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	* subscribe-dialog.c (recursive_add_folder): Pass zero as
+	@sorting_priority to evolution_storage_new_folder().
+
+	* mail-folder-cache.c (real_flush_updates): Pass zero as
+	@sorting_priority to evolution_storage_new_folder().
+
+2002-07-09  Ettore Perazzoli  <ettore@ximian.com>
+
+	* subscribe-dialog.c (recursive_add_folder): Pass NULL for
+	@custom_icon_name to evolution_storage_new_folder().
+
+	* mail-folder-cache.c (real_flush_updates): Pass NULL for
+	@custom_icon_name to evolution_storage_new_folder().
+
+2002-07-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (redirect): Don't ever use the mail-display's
+	current_message, this can cause problems.
+
+	* mail-ops.c (get_message_free): Unref the gotten message. All of
+	the callers seemed to think that they didn't have to unref the
+	message.
+
+	* mail-display.c (mail_display_set_message): Now refs the message.
+	(mail_display_destroy): Unref the current_message if we still have
+	ownership of it.
+
+2002-07-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_send_queued_cb): Only queue a send
+	operation if we are in Online mode, otherwise don't bother wasting
+	our time.
+
+2002-07-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* main.c (main): No longer need to pass a postpone_cb function
+	into the composer factory_init.
+
+	* mail-send-recv.c (get_receive_type): If the provider is a
+	transport, return SEND_SEND.
+
+	* mail-config.c (mail_config_get_default_transport): If the
+	default account doesn't have a transport, find the first account
+	that does.
+
+	* mail-callbacks.c (append_mail_cleanup): Don't bother freeing the
+	appended_uid here.
+	(composer_send_internal): New helper function that does all the
+	similar work that composer_send_cb and composer_postpone_cb did.
+	(composer_send_cb): Append the message to Outbox and in the async
+	callback, queue a message send operation.
+	(composer_postpone_cb): Removed.
+	(composer_send_queued_cb): The new async callback for
+	composer_send_cb(). If the append is successful, queue a message
+	send operation and destroy the composer otherwise re-show the
+	composer.
+	(save_draft_done): g_strdup the appended uid.
+	(compose_msg): Don't connect to the postpone signal anymore as it
+	no longer exists.
+	(send_to_url): Same.
+	(mail_reply): Here too.
+	(forward_get_composer): And here.
+	(redirect_get_composer): Again here.
+	(do_edit_messages): And finally here.
+
+	* mail-ops.c (append_mail_free): Free the appended uid.
+
+2002-07-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-editor-news.[c,h]: Removed.
+
+	* mail-accounts.c: Removed special-case code for NNTP support.
+
+	* mail-account-gui.c (mail_account_gui_setup): Allow configuration
+	of both mail and news accounts.
+
+	* component-factory.c (mail_load_storages): No longer need the
+	is-account argument.
+
+	* subscribe-dialog.c (populate_store_list): Don't special-case
+	news accounts anymore.
+
+	* mail-config.c (mail_config_get_default_news): Removed.
+	(mail_config_get_news): Removed.
+	(mail_config_add_news): Removed.
+	(mail_config_remove_news): Removed.
+
+2002-07-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-vfolder.c (vfolder_load_storage): Pass TRUE as the
+	auto_connect argument to mail_load_storage_from_uri().
+
+	* mail-account-gui.c (add_new_store): Pass FALSE as the
+	auto_connect value to mail_load_storage_from_uri().
+
+	* mail-format.c (handle_multipart_encrypted): Pass the correct
+	pointer into camel_multipart_encrypted_decrypt().
+
+	* component-factory.c (mail_add_storage): Now takes an
+	auto-connect argument which it passes along to add_storage().
+	(mail_load_storage_from_uri): Same.
+	(add_storage): Only call mail_note_store() if we plan on
+	auto-connecting.
+
+2002-07-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (on_right_click): Increase the size of the
+	escapped mlist buffer, we can't assume that there can only ever be
+	a single '_' in the mlist name afaik.
+	(filter_type_uid): Ugh, we need to copy the fdata->source here.
+
+	Fixes bug #27263.
+
+	* folder-browser.c (filter_subject): Decide the filter source type
+	based on the folder we are in (Sent/Outbox folders use
+	FILTER_SOURCE_OUTGOING).
+	(filter_sender): Same.
+	(filter_recipient): Here too.
+	(filter_mlist): And here.
+	(on_right_click): Set the fdata->source.
+	(filter_type_got_message): Pass fdata->source into
+	filter_gui_add_from_message().
+	(filter_mlist_uid): Same.
+
+	* mail-autofilter.c (filter_gui_add_from_message): Now takes a
+	source argument so that we don't always add incoming rules.
+	(filter_gui_add_from_mlist): Same.
+
+	* mail-tools.c (mail_tool_make_message_attachment): Remove Bcc
+	headers too. Fixes bug #27302.
+
+2002-07-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	* folder-browser.c (folder_browser_gui_init): Don't connect
+	folder_browser_search_do_search to "query_changed" since we don't
+	want the search to happen unless the user clicks "Find Now", for
+	consistency.
+
+2002-07-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (create_component): Pass a tooltip to
+	evolution_shell_component_add_user_creatable_item.
+
+2002-07-02  Sean Atkinson  <sean@cantab.net>
+
+	* mail-preferences.c: remove dependency on removed file
+	camel/camel-pgp-context.h
+
+2002-07-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_multipart_related): Make sure that cid is
+	non-NULL.
+
+2002-07-01  Not Zed  <NotZed@Ximian.com>
+
+	* mail-folder-cache.c (folder_deleted): Removed.  The
+	folder's deleted event isn't needed since we're listening to the
+	store's folder_deleted signal.  Also, the code was wrong, it
+	cleared the folder without disconnecting events, etc.  See #16486,
+	and probably others.
+	(mail_note_folder): Dont hook onto deleted anymore.
+	(unset_folder_info): Or unhook from it.
+
+2002-06-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* component-factory.c (mail_load_storages): Don't skip over
+	disabled accounts - put them in the folder tree too.
+
+2002-06-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Fixes bug #27055.
+
+	* mail-accounts.c (account_add_finished): Unref the main accounts
+	widget.
+	(account_add_clicked): Ref the main accounts widget.
+	(account_edit_finished): Unref the main accounts widget.
+	(account_edit_clicked): Ref the main accounts widget.
+
+2002-06-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* component-factory.c (storage_remove_folder): Recursively delete
+	any subfolders.
+
+2002-06-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config.c (config_read): Don't allow the pgp type to be
+	anything except NONE or GPG.
+
+	* mail-preferences.c (mail_preferences_apply): Don't allow someone
+	to use anything other than GnuPG.
+
+	* mail-crypto.c (mail_crypto_get_pgp_cipher_context): No need to
+	handle pgp5 or pgp6 types anymore since we are no longer
+	supporting them. Ding dong the witch is dead!
+
+	* mail-format.c (handle_multipart_encrypted): Rewritten to use
+	camel_multipart_encrypted_decrypt.
+
+	* mail-crypto.c (mail_crypto_pgp_mime_part_verify): Removed.
+	(mail_crypto_pgp_mime_part_encrypt): Removed.
+	(mail_crypto_pgp_mime_part_decrypt): Are we seeing a trend yet?
+
+2002-06-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (on_url_requested): Also handle https urls.
+
+	* component-factory.c (mail_add_storage): Some compiler warning
+	fixes.
+
+	* mail-crypto.c (mail_crypto_pgp_mime_part_sign): Removed.
+	(mail_crypto_get_pgp_cipher_context): New convenience function to
+	construct a pgp cipher context.
+	(mail_crypto_pgp_mime_part_verify): Use the new
+	get_pgp_cipher_context function.
+	(mail_crypto_pgp_mime_part_encrypt): Same.
+	(mail_crypto_pgp_mime_part_decrypt): Here too.
+
+	* mail-account-gui.c (mail_account_gui_new): Initialise the
+	pgp_always_trust checkbox.
+	(mail_account_gui_save): Get whether or not to always_trust the
+	user's pgp keys.
+
+	* mail-config.c (account_copy): Copy over the pgp_always_trust
+	option.
+	(config_read): Read in the always_trust option.
+	(mail_config_write): Save the always_trust option.
+
+2002-06-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-crypto.c (mail_crypto_pgp_mime_part_verify): If the pgp
+	type is gpg, then use the gpg context.
+	(mail_crypto_pgp_mime_part_sign): Same.
+	(mail_crypto_pgp_mime_part_encrypt): Same.
+	(mail_crypto_pgp_mime_part_decrypt): Same.
+
+	* mail-format.c (handle_multipart_signed): Use the new gpg cipher
+	context.
+
+2002-06-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (message_list_change_first_visible_parent): New
+	convenience function to find the first parent node that is visible
+	and emit a changed signal on it.
+	(main_folder_changed): If a message changed, call
+	change_first_visible_parent() in case we are in a collapsed thread
+	so that our first visible parent gets updated as well. Fixes bug
+	#26263.
+
+	* component-factory.c (storage_remove_folder): Simplify the error
+	checking.
+
+2002-06-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (get_normalised_string): New convenience function
+	to get a cached normalised string.
+	(subject_compare): Removed, as we strip Re:'s when normalising the
+	subject strings now.
+	(ml_tree_value_at): Added support for the normalised columns (used
+	for a sorting optimisation).
+	(message_list_init): Initialise normalised_hash.
+	(message_list_destroy): Destroy normalised_hash.
+	(message_list_create_extras): Removed subject_compare.
+	(main_folder_changed): De-cache normalised strings for any removed
+	uids.
+
+2002-06-17  Not Zed  <NotZed@Ximian.com>
+
+	* message-list.c (regen_list_regen): If we dont support searching,
+	dont try to.
+
+2002-06-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (regen_list_regen): Move m->complete = TRUE; to
+	within the cancel-check block, this way complete only ever gets
+	set to TRUE if we weren't cancelled. I assume this is how it was
+	supposed to work.
+
+2002-06-11  Not Zed  <NotZed@Ximian.com>
+
+	* folder-info.c (do_get_info): If we dont get a folder, dont try
+	and get details off it.  Should get rid of most of those annoying
+	summary warnings, but not the cause of them.
+
+2002-06-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c (account_able_clicked): Comment out the code to
+	add/remove the store to the folder-tree when it gets
+	enabled/disabled.
+
+	* mail-callbacks.c (mail_generate_reply): If we are doing
+	Reply-to-All, do not include any of the user's email accounts in
+	the To: field. If, after this, the To: field is empty - then
+	promote the first recipient in the Cc: list to the To: field.
+
+2002-06-07  Radek Doulik  <rodo@ximian.com>
+
+	* mail-config.c (mail_config_write_account_sig): call
+	mail_config_init to be sure we have the db, save auto_signature as
+	well
+
+	* mail-composer-prefs.c (sig_add_script_cancel): hook this to
+	cancel button in signature script dialog
+
+	* mail-signature-editor.c (mail_signature_editor): fix some typos,
+	set label usize to 500, -2
+	(menu_help): added help link to Help menu
+
+2002-06-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_save): If this account is
+	not a completely new account (ie, it is an edited account), then
+	remove any trace of it from the shell storages. If the new account
+	belongs in the folder-tree, add it to the list of storages.
+
+	* component-factory.c (mail_add_storage): New function to add a
+	single storage.
+
+2002-06-06  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c (mail_composer_prefs_construct): disable
+	edit and delete when there are no signatures defined
+
+2002-06-06  Not Zed  <NotZed@Ximian.com>
+
+	* message-list.c (mail_regen_list): Keep track of the regeneration
+	request in a list.
+	(regen_list_free): Remove the request from the regenreation list.
+	(message_list_set_folder): If there are any outstanding
+	regneration requests, cancel them.
+	(regen_list_regened): If we were cancelled, do nothing.
+	(regen_list_regen): If we were cancelled, shortcut processing.
+	This is all for #23571.
+
+	* message-list.c (regen_list_regen): Change the way we calculate
+	the hide deleted messages and tree view options.  Do it based on a
+	search and uid's rather than a summary.
+	(regen_list_regened): Handle changes to tree storage.
+	(mail_regen_list): The tree is now stored between updates, so we
+	can update the tree structure incrementally.  This blows out
+	memory use some however.  We need an etree that uses this as its
+	model directly?
+	(message_list_destroy): Free the thread tree.
+	(message_list_set_folder): Clear the thread tree when changing
+	folder.
+
+2002-06-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (mail_get_message_rfc822): Don't forget to free
+	the date string buffer.
+
+2002-06-05  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c (sig_fill_clist): use gtk string instead
+	of utf8 one
+
+2002-06-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	The following changes take a great leap toward fixing bug #1042.
+
+	* mail-display.c (mail_display_push_content_location): New
+	function to push a Content-Location value onto the MailDisplay.
+	(mail_display_get_content_location): Gets the current
+	Content-Location CamelURL value.
+	(mail_display_pop_content_location): Pop the Content-Location off
+	the stack.
+
+	* mail-format.c (get_location): Do URL merging if the
+	Content-Location isn't a full URL. If the Content-Location doesn't
+	exist, pretend the URL is actually the Content-Location URL of our
+	parent multipart (assuming it exists). If that doesn't exist, then
+	yes - return NULL.
+	(handle_multipart_related): Push the Content-Location header value
+	of the multipart/related so that we can do URL merging in
+	get_location() as we process each of the subparts. When we're
+	done, pop it back off the stack.
+
+2002-06-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* message-list.etspec: Added priorities.
+
+2002-06-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* folder-browser-ui.c (folder_browser_ui_setup_view_menus): Set
+	the title of our GalViewCollection.
+
+2002-06-04  Not Zed  <NotZed@Ximian.com>
+
+	* mail-accounts.c (mail_accounts_tab_construct): Duh, we want to
+	set the news_edit/delete buttons for the news page, not overwrite
+	the mail ones!  That would've saved a bit of angst ...
+
+	* mail-config-druid.c (extra_prepare): dont call build_extra_conf,
+	otherwise it blows away any settings with defaults.
+
+2002-06-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_save): Write the signature
+	after the account has been added.
+	(sig_new_html): Don't write the signatures at this time.
+	(sig_new_text): Same.
+
+2002-06-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c (account_delete_clicked): Correctly get the
+	GtkWindow ancestor of the prefs widget.
+
+2002-06-03  Not Zed  <NotZed@Ximian.com>
+
+	* mail-callbacks.c (composer_get_message): Changed to check
+	everything from the composer before the message is requested.
+	Otherwise we could end up signing/encrypting it twice, etc.
+
+	* mail-format.c (handle_multipart_signed): removed some dead wood.
+
+2002-06-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* component-factory.c (request_quit): Prompt the user to see if he
+	really wants to quit when there are queued messages in the Outbox.
+
+2002-06-01  Not Zed  <NotZed@Ximian.com>
+
+	* mail-local.c (mlf_getv): Implement, return a text description of
+	the localfolder.
+
+	* message-list.c (ml_duplicate_value): 
+	(ml_free_value): 
+	(ml_initialize_value): 
+	(ml_value_is_empty): 
+	(ml_value_to_string): 
+	(ml_tree_value_at): Implement COL_LOCATION, original location of
+	message (useful for vfolder).
+
+2002-06-02  Larry Ewing  <lewing@ximian.com>
+
+	* mail-tools.c (mail_tool_quote_message): make these citations as
+	well.
+
+	* mail-format.c (handle_text_plain_flowed): make these blockquotes
+	into citations.
+
+2002-05-31  Not Zed  <NotZed@Ximian.com>
+
+	* mail-format.c (handle_multipart_signed): Changed to handle new
+	multipart-signed type.
+
+2002-05-30  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-send-recv.c (mail_send_receive): Noop if we are in offline
+	mode.
+
+	* component-factory.c (mail_remove_storage): If the store is not
+	in the storage hash, then it must not have ever been added. Fixes
+	bug #25456.
+
+	* mail-callbacks.c (view_msg): Oops, create a message-browser
+	window here, not a folder-browser-window window.
+
+2002-05-29  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c: moved spell checking options to separate
+	page, updated UI by Anna's design
+
+	* mail-accounts.c (mail_accounts_load): use _ instead of U_ for
+	clist
+	(mail_accounts_tab_construct): justify marks column to right
+
+2002-05-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-window.c (folder_browser_window_new): Revert a
+	failed idea.
+
+2002-05-24  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c (mail_composer_prefs_construct): ops,
+	revert array size
+
+2002-05-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): If we can't find the
+	mailing list address in the recipients list, just Reply-to-All
+	instead.
+
+2002-05-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-window.c (folder_browser_window_new): Set the ui
+	to be the evolution-mail-global.xml file thingy. Still broken but
+	oh well. I give up. bonobo-ui sucks.
+
+	* message-browser.c (set_bonobo_ui): Fixed to not crash.
+
+2002-05-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-window.c (folder_browser_window_new): If the
+	folder-browser has a parent, reparent it.
+
+	* message-browser.[c,h]: Revert back to the old broken
+	implementation since that's what users want. They're not happy
+	unless it's broken.
+
+2002-05-23  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c: be more careful about language_str{_orig}
+	(mail_composer_prefs_construct): add auto smiley check button
+
+2002-05-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (sig_fill_options): Only clear the text/html
+	signature menus if they are non-NULL.
+
+	* mail-composer-prefs.c (spell_save_values): Use a new macro,
+	STR_EQUAL, to tell if the 2 values are equal or not rather than
+	using strcmp since one or both strings could be NULL.
+
+2002-05-21  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser.c (folder_browser_config_search): Split the
+	search word up for a body search and add it to the tokeniser to
+	highlight.
+
+2002-05-18  Not Zed  <NotZed@Ximian.com>
+
+	* e-searching-tokenizer.c
+	(e_searching_tokenizer_add_primary_search_string):
+	(e_searching_tokenizer_add_secondary_search_string): New functions
+	to add additional search strings one at a time.  Maybe it should
+	just split the word itself?
+	(all): Basically, entirely rewritten.  Now implements the
+	Aho-Corasick multiple pattern search algorithm and handles
+	multiple search strings and only ever has to decode any utf8
+	character once, etc etc.
+
+2002-05-20  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (mail_get_message_body): Only get the contents of
+	a mime part if it is marked as "inline". Fixes bug #7527.
+
+	* mail-display.c (mail_display_render): Fixed the "Overdue:"
+	string to not contain any HTML tags.
+
+2002-05-20  Ettore Perazzoli  <ettore@ximian.com>
+
+	* subscribe-dialog.c (recursive_add_folder): Pass TRUE for
+	@sync_offline to evolution_storage_new_folder().
+
+	* mail-folder-cache.c (real_flush_updates): Pass TRUE for 
+	@sync_offline to evolution_storage_new_folder().
+
+2002-05-20  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-callbacks.c (composer_sent_cb): Always unref the composer
+	[even when we are destroying it], otherwise we leak it and we get
+	the nasty bug where you can't quit.
+
+2002-05-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (ml_tree_value_at): Check for a label tag when
+	doing a lookup on the COLOR column.
+
+	* mail-config.c (mail_config_get_label_color_string): Return the
+	colour in string format.
+
+	* folder-browser.c (set_msg_label): Replaces colourise_msg and
+	sets the "label" tag rather than the "colour" tag.
+
+	* mail-preferences.c (mail_preferences_apply): Call
+	mail_config_write() so that the settings get synced to disk.
+
+2002-05-16  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (request_quit): New.
+	(create_component): Pass it as the @request_quit_fn to
+	evolution_shell_component_new().
+
+2002-05-15  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (create_component): Pass NULL as
+	@request_quit_fn.
+
+2002-05-15  Not Zed  <NotZed@Ximian.com>
+
+	* mail-ops.c (prep_offline_do): 
+	(prep_offline_done): 
+	(prep_offline_free): 
+	(mail_prep_offline): Implement prep_offline for an individual
+	folder.
+	(set_offline_do): Only call disco_store_set_status or disconnect
+	for the store, dont do any offline prep stuff.
+
+	* mail-offline-handler.c: Applied patch from Ettore to hook in
+	extra offline interfaces.
+	(impl_destroy): Dont free listener here anymore, its removed, but
+	free sync table.
+	(mail_offline_handler_init): Same for setup.
+	(impl_syncFolder): Implement.
+	(sync_done): handles finalising synchronisation of 1 folder.
+	(sync_status): progress reporting, camel side.
+	(sync_timeout): progress reporting, gmainloop side.
+	(impl_cancelSyncFolder): Implement.
+	(impl_goOffline, storage_go_offline, went_offline): Dont copy the
+	listener to our struct - its an argument, not a member, so give
+	each thread its own copy.
+
+2002-05-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (ml_tree_value_at): Instead of g_assert()ing that
+	the msg_info is not NULL, if it is NULL just return NULL. This
+	fixes a crash when ETree requests the value at a root node (I
+	don't understand why it needs to do that??).
+
+2002-05-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-info.h: Added.
+
+2002-05-14  Christopher James Lahey  <clahey@ximian.com>
+
+	* component-factory.c: Added #include "folder-info.h".
+
+	* folder-browser-window.c (folder_browser_window_new),
+	mail-account-editor.c (apply_changes), mail-account-gui.c
+	(mail_account_gui_save), message-tag-editor.c: Removed some unused
+	variables.
+
+	* folder-info.c: Added #include "folder-info.h".  Removed static
+	declaration of evolution_folder_info_get_type.
+
+	* folder-info.c (destroy), mail-callbacks.c
+	(confirm_goto_next_folder, find_current_folder,
+	find_next_folder_r, find_next_folder,
+	do_evil_kludgy_goto_next_folder_hack), mail-composer-prefs.c
+	(sig_name_changed): Commented out these unused functions.
+
+	* mail-config.c (add_new_storage): Removed this unused function.
+
+	* mail-local.c (mlf_init): Fix the declaration of this function to
+	match the required signature.
+
+2002-05-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* message-list.etspec: Added search="string" where appropriate.
+
+2002-05-13  Dan Winship  <danw@ximian.com>
+
+	* (various places): Update for camel_folder_append_message /
+	camel_folder_transfer_messages_to API change.
+
+	* mail-ops.c (mail_append_mail): Pass the appended_uid to the
+	callback.
+
+	* mail-callbacks.c (composer_save_draft_cb, save_draft_done,
+	do_edit_messages): Take advantage of the append_message change to
+	keep track of the UID of the saved draft so that we can delete the
+	old copy of the draft each time we save a new one. Remove the
+	FIXME suggesting we should do that, since we're doing it now. :)
+
+2002-05-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (do_view_message): Update for the new
+	message-browser api.
+
+	* message-browser.c (message_browser_new): A brand new
+	implementation that just shows the message, none of that next/prev
+	crap that always caused problems anyway.
+
+	* mail-config.c (mail_config_add_account): Don't add any shortcuts
+	here.
+	(mail_config_remove_account): And don't remove them here. This
+	code has never worked properly.
+
+	* mail-ops.c (save_part_save): Use the exception enum names rather
+	than '1' since it makes the code clearer.
+
+2002-05-10  Dan Winship  <danw@ximian.com>
+
+	* mail-ops.c (transfer_messages_transfer): Simplify. Use
+	transfer_messages_to instead of picking between copy and move.
+	Remove vtrash special-casing since it's all in
+	camel-vtrash-folder.c now. Remove duplicate source == dest check.
+
+	* mail-local.c (mail_local_folder_reconfigure): Use
+	transfer_messages_to instead of copy_messages_to.
+
+2002-05-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_save): Make sure that even
+	if the new source url is NULL, that we preserve the enabledness of
+	the source.
+
+2002-05-09  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (add_storage): Pass %FALSE as
+	@has_shared_folders to evolution_storage_new().
+
+2002-05-09  JP Rosevear  <jpr@ximian.com>
+
+	* Makefile.am: dist Spell.idl
+
+2002-05-08  Radek Doulik  <rodo@ximian.com>
+
+	* mail-composer-prefs.c: implemented (c'n'p-ed and updated) spell
+	checking settings
+
+2002-05-08  Iain Holmes <iain@ximian.com>
+
+	* component-factory.c (owner_set_cb): Tell the folder info listeners 
+	that they're ready.
+
+	* folder-info.c: Add a property bag to the CORBAObject.
+	(do_get_info): Remove a load of cruft. Add some error checks.
+	(do_free_info): Unref the listener.
+	(destroy): Unref the propertybag.
+	(set_prop): Set the property.
+	(get_prop): Get the property.
+	(evolution_folder_info_factory_fn): Create a propertybag.
+	(evolution_folder_info_notify_ready): Notify all the listeners that
+	the folder info is ready for querying.
+
+2002-05-08  Not Zed  <NotZed@Ximian.com>
+
+	* mail-autofilter.c (mail_filter_rename_uri): Changed for
+	rule_context_rename_uri api changes.
+	(mail_filter_delete_uri): Same.  Also, popup a dialogue similar to
+	vfolder deleted dialogue to notify the user something has
+	changed.  Partial fix for #18826.
+
+2002-05-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (filter_folder_free): Flush the filter log to make
+	Tuomas happy :-)
+
+	* mail-session.c (mail_session_flush_filter_log): New convenience
+	function to flush the session's filter log file.
+
+	* mail-callbacks.c (mail_reply): Set the Seen flag as well since
+	it's safe to assume that if the user has replied to an email
+	message that he has read it. Not always true, but usually ;-)
+
+	* folder-browser.c (on_right_click): If we are in a
+	Sent/Drafts/Outbox folder, don't show the "Add Sender to
+	Addressbook" menu item.
+
+2002-05-06  Not Zed  <NotZed@Ximian.com>
+
+	* component-factory.c (idle_quit): Check all threads are idle as
+	well, using new e_thread_busy call.  Should fix #22553?  Also
+	sleep a little bit, to let the other threads run.
+
+2002-05-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (sig_new_text): Update the code to actually
+	work.
+	(sig_new_html): Same.
+
+	* mail-composer-prefs.c (mail_composer_prefs_new_signature): Allow
+	'prefs' to be NULL.
+
+	* folder-browser.c (on_right_click): Fix the filter_menu static
+	array to use the E_POPUP_MENU_CC macros since we plan on using
+	custom closures for this.
+	(on_right_click): Fixed so that you can "Edit as New" for any Sent
+	folder and not just the local Sent folder.
+
+2002-05-01  Not Zed  <NotZed@Ximian.com>
+
+	* folder-browser.h (FOLDER_BROWSER_IS_DESTROYED): Also check
+	folder!=NULL.  Fixes race where folder isn't setup yet, and
+	neither is bonobo menu status (because its delayed), and we get a
+	menu event before we're setup yet.  For bug #21939.
+
+2002-04-30  Dan Winship  <danw@ximian.com>
+
+	* mail-callbacks.c (delete_msg): If the folder's permanent_flags
+	don't include CAMEL_MESSAGE_DELETED, don't do anything. (In
+	particular, don't move the cursor.)
+
+2002-04-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-tag-followup.c (message_tag_followup_append_message):
+	Convert UTF-8 to gtkstrings since we are using a clist and not an
+	E-widget that takes UTF-8.
+
+	* mail-display.c (mail_display_add_url): If the data-urls is NULL,
+	add a data-urls hash to the datalist. This finishes up bug #90.
+
+	* mail-account-gui.c (save_service): Strip leading/trailing
+	whitespace from the username because users sometimes accidently
+	add extra spaces here and there. Fixes bug #24009 (along with a
+	number of other "bugs").
+	(mail_account_gui_auto_detect_extra_conf): Use a CamelURL instead
+	of a GHashTable *settings. Also parse out the port # from the
+	hostname.
+
+2002-04-29  Larry Ewing  <lewing@ximian.com>
+
+	* mail-composer-prefs.c (mail_composer_prefs_construct): clean up
+	propmanager initialization code.
+
+	* mail-preferences.c (mail_preferences_construct): small clean
+	ups to propmanager code.
+
+	* mail-config-factory.c (config_control_factory_cb): handle
+	requests for the font manager control.
+
+	* mail-config.glade: add fonts tabs and reorder composer options
+	to match the new dialogs from anna.
+
+	* GNOME_Evolution_Mail.oaf.in: add font manager control definition.
+
+	* mail-composer-prefs.c (mail_composer_prefs_construct): hook to
+	the gtkhtml propmanager.
+	(mail_composer_prefs_apply): apply propmanager changes.
+	(mail_composer_prefs_finalise): unref the propmanager.
+
+	* mail-composer-prefs.h: add propmanager member.
+	
+	* mail-font-prefs.c: initialize gui properly.
+	
+	* mail-preferences.c (mail_preferences_construct): hook to
+	gtkhtml's propmanager.
+	(mail_preferences_apply): apply propmanager changes.
+	(mail_preferences_finalise): unref the propmanager.
+
+	* mail-preferences.h: add propmanager member.
+
+	* Makefile.am (evolution_mail_SOURCES): add mail-font-prefs.[ch]
+	to the build.
+
+	* mail-tools.c (mail_tool_quote_message): use the html reply logic
+	even for plain parts so that we can test out the new gtkhtml cite logic.
+
+	* importers/evolution-mbox-importer.c (process_item_fn): add const
+	to silence warning.
+
+	* mail-display.c: add gtkhtml.h include so to pick up the
+	object_relative prototype.
+
+2002-04-26  Larry Ewing  <lewing@ximian.com>
+
+	* mail-font-prefs.c: Add the font config dialog.
+
+	* mail-font-prefs.h: add font config dialog headers.
+
+2002-04-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* Makefile.am: Don't link with libibex anymore, it's been
+	deprecated.
+
+	* mail-callbacks.c (next_unread_msg): Do away with the
+	goto-next-folder stuff, it's very annoying.
+
+	* mail-config-druid.c (extra_prepare): After building the extra
+	config options into a Gtk form, auto-detect any values that we can
+	and populate them by calling
+	mail_account_gui_auto_detect_extra_conf.
+
+	* mail-account-gui.c (mail_account_gui_auto_detect_extra_conf):
+	New function to auto-detect the extra config options for a source.
+
+2002-04-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_build_extra_conf): Allow
+	providers to override text entry boxes too.
+	(source_type_changed): Remove the logic to decide upon default
+	paths, these paths can now be set by the provider.
+
+2002-04-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (label_menu): Update to use
+	E_POPUP_MENU_PIXMAP_WIDGET_ITEM_CC so that our callback gets
+	called without per-item closure rather than being called with NULL
+	and causing a segfault.
+
+	* mail-account-gui.c (mail_account_gui_build_extra_conf): Set the
+	default Username label and handle the new
+	CAMEL_PROVIDER_CONF_LABEL enum allowing the provider to setup a
+	label.
+
+2002-04-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c: Added back the checkmark icon for enabled
+	accounts.
+	(account_able_clicked): Don't reload the accounts list, that was
+	just lame.
+
+2002-04-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (mail_display_render): Plug-in Anna's html for
+	the flag-for-followup stuff. Finishes up bug #90.
+
+2002-04-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (folder_browser_finalise): Free the
+	loading/pending/new/loaded_uid string buffers.
+
+	* mail-config.c (config_read_signature): Free some temporary path
+	buffers.
+
+	* mail-display.c (stream_write_or_redisplay_when_loaded): Ref the
+	html object here, this is an async handler so it's possible for
+	our caller (or someone else) to unref the html object before we
+	finish.
+	(load_content_free): Unref the async handler's ref of the html
+	object here.
+	(mail_display_new): Ref the html widget here so that we can be
+	sure that so long as the mail-display is "alive", so is the html
+	object. See bug #22328 for details. Basically, the message-browser
+	is being closed before the message gets loaded and so the html
+	object was being destroyed but the mail-display was still alive.
+	(mail_display_destroy): Unref the html object when the
+	mail-display is destroyed.
+
+2002-04-19  Anna Marie Dirks  <anna@ximian.com>
+
+	* mail-config.glade: Added yet more accelerators for the new config
+	dialog--this time for the composer pages
+
+2002-04-19  Anna Marie Dirks  <anna@ximian.com>
+
+	* mail-config.glade: Added a bunch of accelerators for the new config
+	dialog
+
+2002-04-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (redirect_get_composer): Removed all
+	Delivered-To headers before redirecting. Fixes bug #23635.
+
 2002-04-18  Radek Doulik  <rodo@ximian.com>
 
 	* mail-callbacks.c (do_mail_print): use default paper name in case
 	of wrong translation
+
+2002-04-15  Not Zed  <NotZed@Ximian.com>
+
+	* mail-identify.c (mail_identify_mime_part): Turn off the code
+	which downloads the part if we can't identify it.  See discussion
+	in #11778.
+
+2002-04-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* folder-browser.c, mail-display.c: Updated these to match the new
+	EPopupMenu.
+
+2002-04-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_multipart_signed): Handle broken
+	multipart/signed parts such as where the signature part is not the
+	last part (as it should be). Fixes bug #23583.
+
+	* folder-browser.c (message_list_drag_data_get): Free the temp
+	GByteArrays.
+
+2002-04-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-local.c (mail_local_folder_construct): Just use g_basename.
+	(mlf_finalize): Free the real_path.
+
+	* folder-browser.c (on_right_click): Unref the GdkGC so we don't
+	leak it.
+
+2002-04-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-tools.c (mail_tool_destroy_xevolution): Free the format
+	string.
+
+	* mail-config.c (config_write_signature): Don't leak the path
+	strings here.
+
+	* mail-signature-editor.c (menu_file_save_cb): Free the dirname
+	string.
+
+	* mail-config-factory.c (config_control_factory_cb): Ref the prefs
+	widget here since we unref in the destroy callback. Caught this
+	thanks to purify.
+
+2002-04-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c: Build fixes for --enable-nntp.
+
+2002-04-13  Christophe Merlet  <redfox@eikonex.org>
+
+	* mail-config.glade: Little typo. s/IS0/ISO/
+
+2002-04-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-composer-prefs.c (mail_composer_prefs_construct): Make it
+	so that unchecking the "Enable Advanced Options" in the signature
+	tab disables the advanced settings and vise versa.
+
+	* mail-accounts.c (mail_accounts_tab_construct): Setup News
+	preferences too if it is enabled.
+
+	* mail-account-gui.c (mail_account_gui_new): Set the text of the
+	reply-to.
+	(mail_account_gui_save): Get the reply-to text here.
+	(mail_account_gui_identity_complete): If there is text in the
+	reply-to widget make sure it's valid.
+
+	* mail-config.c (identity_copy): Copy the reply-to.
+	(config_read): Read in the reply-to for all the accounts.
+	(mail_config_write): Save the reply-to.
+	(impl_GNOME_Evolution_MailConfig_addAccount): Get the reply-to.
+	(identity_destroy): Free the reply-to.
+
+2002-04-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.etspec: s/Sent/Date. This fixes bug #11159.
+
+2002-04-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (confirm_expunge): Set the 'No' button as the
+	default.
+
+2002-04-10  Dan Winship  <danw@ximian.com>
+
+	* mail-config.c (config_read, mail_config_write,
+	mail_config_get_x_mailer_display_style,
+	mail_config_set_x_mailer_display_style): Handle the X-Mailer
+	display style. (There is currently no GUI for configuring this.)
+
+	* mail-format.c (write_headers, write_xmailer_header): Show
+	X-Mailer/User-Agent (and Rupert's stamp of approval) as
+	appropriate.
+	
+2002-04-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (setup_service): Kludge around the brokeness
+	that is GtkOptionMenu just like we kludge around it for the
+	authtype option menu.
+
+2002-04-09  Dan Winship  <danw@ximian.com>
+
+	* component-factory.c (create_view): Add view_info arg, but don't
+	do anything with it.
+
+2002-04-08  Not Zed  <NotZed@Ximian.com>
+
+	* mail-send-recv.c (receive_update_got_folderinfo): Argh!
+	get_folder_info owns and frees its *OWN* folder info, it shouldn't
+	be free'd here!  See mail-ops.c:get_folderinfo_free.
+	This should fix #17259 and friends.
+
+2002-04-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-signature-editor.c (menu_file_save_cb): Simplify a bit and
+	write to a temp file first and then rename() it to the real
+	filename. This protects against losing data if the drive is full
+	too. Also use a real mode, not 0, so that we can actually
+	save/read the content ;-)
+
+	* GNOME_Evolution_Mail.oaf.in: Re-added the config wizard
+	interfaces. Ettore accidently removed them thinking they were
+	duplicates of the new mail-config interfaces.
+
+	* mail-config.glade: Remove the OK, Apply, Cancel buttons from the
+	keyboard shortcut tab in the composer_prefs dialog.
+
+	* mail-account-gui.c: No need to check gui->source before using
+	gui->source->url, since gui->source *has* to exist.
+
+2002-04-06  JP Rosevear  <jpr@ximian.com>
+
+	* GNOME_Evolution_Mail.oaf.in: add config_item:type
+
+2002-04-04  Dan Winship  <danw@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_new): Make the drafts and
+	sent folder buttons be EvolutionFolderSelectorButtons. Remove the
+	code to deal with drafts_folder_name and sent_folder_name, since
+	they were only used to construct the button and aren't needed now.
+	(mail_account_gui_save): Remove drafts/sent name references.
+	(mail_account_gui_destroy): Likewise
+	(folder_selected): Handle the "selected" signal on the folder
+	selector button by updating the URI in the MailAccountGui.
+	(mail_account_gui_folder_selector_button_new): Glade custom widget
+	constructor.
+
+	* mail-callbacks.c (transfer_msg): Update for
+	evolution_shell_client_user_select_folder change.
+
+	* message-browser.c (transfer_msg): Likewise. (Sigh. Why is this
+	cut+pasted?)
+
+	* mail-config.glade: Make the drafts/sent folder buttons custom
+	widgets.
+
+	* mail-config.c (account_copy): Remove drafts/sent folder name
+	handling.
+	(account_destroy): Likewise.
+	(config_read): Likewise.
+	(mail_config_write): Likewise.
+
+	* Mail.idl (MailConfig:Account): remove drafts_folder_name and
+	sent_folder_name.
+
+2002-04-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-tag-followup.c (construct): Set the window title/icon
+	here instead.
+
+	* message-tag-editor.c (message_tag_editor_init): Don't set the
+	title or window icon here, this is a generic class.
+
+	* mail-format.c (handle_multipart_signed): Replace
+	get_url_for_icon with the new mail_display_get_url_for_icon
+	function.
+	(handle_multipart_digest): Here too.
+	(get_cid): Use mail_display_add_url instead.
+	(get_location): Same.
+	(handle_text_enriched): Here too.
+	(handle_multipart_signed): And here.
+
+	* message-tag-followup.c (message_tag_followup_i18n_name): Use the
+	U_() macro, not the _() macro as it is what we really want.
+
+	* mail-ops.c (mail_send_message): Don't cast the message into a
+	CamelMedium before sending anymore.
+
+	* mail-callbacks.c (expunge_folder): Set the followup argument to
+	NULL here.
+	(done_message_selected): Get the followup value here and pass it
+	to the mail-display here.
+	(do_mail_fetch_and_print): Again with the NULL followup here.
+
+	* folder-browser.c (folder_browser_set_message_preview): Update to
+	pass in NULL as the followup since we are setting the message to
+	NULL here.
+	(done_message_selected): Get and set the appropriate followup
+	value here.
+	(do_message_selected): Update to pass in NULL as the followup
+	since we are setting the message to NULL here.
+
+	* mail-display.c (mail_display_set_message): Now takes a followup
+	tag value.
+	(mail_display_init): Set md->followup to NULL.
+	(mail_display_destroy): Free md->followup.
+	(mail_display_add_url): New: replaces the static add_url function
+	originally in mail-format.c
+	(mail_display_get_url_for_icon): New: replaces get_url_for_icon
+	which was originally in mail-format.c
+
+2002-04-03  Dan Winship  <danw@ximian.com>
+
+	* mail-account-gui.c: Changes to allow combined store/transport
+	providers (like exchange and nntp). You can only select the
+	transport if the account is also using that provider for the
+	source.
+	(source_type_changed): If changing away from a combined
+	store/transport type, disable that provider on the transport page.
+	If change to a combined store/transport type, enable and select
+	that provider on the transport page.
+	(mail_account_gui_setup): Do some additional bookkeeping here to
+	make the above stuff work.
+	(transport_type_changed): If the provider is a combined
+	store/transport type, pretend it doesn't need any additional URL
+	configuration.
+	(mail_account_gui_transport_complete): if the transport provider
+	is also a store provider, then as long as it matches the source
+	for the account, it's considered complete.
+	(mail_account_gui_save): If the selected transport is a combined
+	store/transport provider, use the source page's information to
+	fill in the transport url.
+
+	* mail-local.c (mail_local_provider_init): Don't set up
+	service_cache.
+
+2002-04-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (do_edit_messages): Pass the UID of the message
+	being edited to the save-draft signal handler.
+	(composer_save_draft_cb): Pass the old draft uid to our async
+	append_message function and let the append_message callback worry
+	about deleting the old draft message on success.
+	(save_draft_done): Delete the old draft message if we successfully
+	appended the new draft message.
+
+2002-04-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-ui.c: Removed an unused pixmap from
+	Tools/Settings to avoid a big nasty bonobo warning.
+
+	* mail-composer-prefs.c (mail_composer_prefs_construct):
+	Re-Implemented the signature editor stuff (mostly just copy/paste
+	from Radeks original code).
+
+	* mail-signature-editor.c (mail_signature_editor): Use the right
+	oafiid for the html editor control.
+
+2002-04-01  Dan Winship  <danw@ximian.com>
+
+	* importers/Makefile.am (liboutlook_la_LDFLAGS,
+	libmbox_la_LDFLAGS): Use -avoid-version -module. (From Max Horn
+	<max@quendi.de>)
+
+2002-03-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* GNOME_Evolution_Mail.oaf.in: Added priorities for all the
+	configuration pages [evolution:config_item:priority].
+
+2002-03-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-preferences.c (colorpicker_get_color): Don't shift the r, g
+	and b values here either.
+
+	* mail-composer-prefs.c (colorpicker_get_color): Don't shift the
+	r, g, b values.
+
+	* mail-preferences.c (mail_preferences_construct): Restore the
+	labels & colours options from the grave.
+	(mail_preferences_apply): Save these labels & colours options.
+
+2002-03-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-composer-prefs.c (mail_composer_prefs_construct): Same
+	here.
+
+	* mail-preferences.c (mail_preferences_construct): Do some gtk
+	hackery action so we can detect if a option menu has changed.
+
+2002-03-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* GNOME_Evolution_Mail.oaf.in: Cleaned up a bunch [removing
+	duplicates ;-)], set up icons for all the configuration pages.
+
+2002-03-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c: Use a GtkCList instead of an ETable, for some
+	reason the etable was getting into some infinite resize loop or
+	something. I probably did something wrong but I can't figure out
+	what so I'm using a clist for now.
+	(account_cursor_change): Make sure that event is non-NULL here.
+
+2002-03-27  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-accounts.c (mail_accounts_tab_construct): Use
+	gtk_container_add() to put the toplevel in the parent widget,
+	instead of just gtk_widget_set_parent().
+	* mail-preferences.c (mail_preferences_construct): Likewise.
+	* mail-composer-prefs.c (mail_composer_prefs_construct): Likewise.
+
+2002-03-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): Updated to respect the
+	new mail-config options for default reply style that NotZed had
+	started to implement before there was a gui.
+
+2002-03-27  Dan Winship  <danw@ximian.com>
+
+	* mail-display.c (do_attachment_header): unset GTK_CAN_FOCUS on
+	the button so that it can't grab focus when you click it.
+	(do_signature): Likewise on the signature button. #3904
+
+2002-03-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Sync with yet-another-mail-config branch.
+
+	* mail-composer-prefs.c: Updated to get the right widgets and
+	whatnot. Also updated to tell the evolution-config-control that
+	stuff has changed.
+
+	* mail-preferences.c: Updated to get the right widgets and
+	whatnot. Also updated to tell the evolution-config-control that
+	stuff has changed.
+
+	* mail-accounts.etspec: New file needed by mail-accounts.c
+
+2002-03-26  Not Zed  <NotZed@Ximian.com>
+
+	* mail-callbacks.c (addrbook_sender): Changed to get the address
+	from the messageinfo of the current selected message rather than
+	from the current_message.
+	(requeue_mail_reply): Only re-queue if we got a message, could
+	potentially cause an infinite loop trying to get a message it
+	can't.
+	(reply_to_sender, reply_to_list, reply_to_all): Always pass NULL
+	as the msg to mail_replay, this forces mail_reply to always load
+	the message anew.  Fixes FIXME's and popup behaviour.  Basically
+	this and stuff below fixes #8542.  Its probably not the nicest
+	way, but it works.
+	(mark_as_important): Use the flags properly, we can set all flags
+	to any combination of on or off as we want, so we just need to
+	call set_flags once, thats why its set flags and not set_option.
+	(toggle_flags): Fixed the logic here also, so we dont have to call
+	set_message_flags more than once, and also implement a true toggle
+	for any number of simultaneous flags (whilst simplifying code).
+
+	* mail-vfolder.c (vfolder_gui_add_from_mlist): Removed the 'msg'
+	parameter, its not used, fixed callers.
+
+	* folder-browser.c (on_right_click): Lookup the mlist from
+	messageinfo, and change the 'no selected' logic slightly, fixes
+	most of #8542.
+	(filter_data_free): Free filter data struct.
+	(vfolder_type_got_message): Actually create vfolder once we have
+	the message we need to use for it.  Code could probably be changed
+	to use messageinfo instead.
+	(vfolder_type_uid): Lookup a message based on uid, and use that to
+	create a vfolder based on type.
+	(vfolder_subject_uid, vfolder_sender_uid, vfolder_receipient_uid,
+	vfolder_mlist_uid): Callbacks for the popup menu, used to create
+	rules based on the uid rather than the message, which it loads as
+	required.
+	(filter_type_got_message, filter_*_uid): Similar to vfolder
+	stuff above.
+	(filter_menu[]): Changed callbacks to popup specific ones, not
+	folderbrowser specific ones used by bonobo.
+	(on_right_click): Initialise callback data for the filter submenu
+	so it can look up messages for callback implementation.
+
+	* local-config.glade: New version from anna, with fixed widget
+	names.
+
+2002-03-20  Ettore Perazzoli  <ettore@ximian.com>
+
+	* folder-browser.c: Reorder folder_browser_search_menu_items
+	according to #16246.
+
+2002-03-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-send-recv.c: Remove member current_folder from struct
+	_send_data.
+	(build_dialogue): Remove arg @current_folder.
+	(mail_send_receive): Likewise.
+	(free_send_data): No need to refresh the current folder here.
+	[Well, hopefully, at least.]
+
+	* component-factory.c (send_receive_callback): New.
+	(create_component): Connect.
+
+	* mail-callbacks.c (send_receive_mail): Removed.
+
+	* folder-browser-ui.c: Remove "MailGetSend" verb.
+
+2002-03-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* GNOME_Evolution_Mail.oaf.in: Add info about the new config
+	controls.
+
+	* mail-config-factory.c: New file to handle the creation/etc of
+	the config controls.
+
+	* mail-accounts.c:
+
+	* mail-preferences.c:
+
+	* mail-composer-prefs.c: No longer handle their own bonobo control
+	creation.
+
+2002-03-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (sig_new_text): Temporarily #if 0 this
+	function out.
+	(sig_new_html): Same.
+
+	* mail-config.c (config_read): Read in the default reply style
+	setting.
+	(mail_config_write_on_exit): Same the default reply style.
+	(mail_config_get_default_reply_style): New function to get the
+	default reply style.
+	(mail_config_set_default_reply_style): New function to set the
+	default reply style.
+
+	* folder-browser-ui.c: There is no longer a Tools/Mail Settings
+	menu item.
+
+	* mail-account-gui.c: Updated the widget types for the
+	MailAccountsDialog->MailAccountsTab change.
+
+	* mail_account_editor.c: Same.
+
+	* mail-callbacks.c (providers_config): Removed.
+
+	* mail-composer-prefs.c: New file that implements the composer
+	preferences tab of anna's new config design.
+
+2002-03-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c: Reimplemented. This time we only have to worry
+	about accounts. Also this now implements Annas config gui changes.
+
+	* mail-preferences.c: Implements the mailer's Preferences tab in
+	Anna's new config GUI.
+
+2002-03-19  Larry Ewing  <lewing@ximian.com>
+
+	* mail-display.c: add missing NULL closure data to popup menu
+	initialization.
+
+2002-03-19  Dan Winship  <danw@ximian.com>
+
+	* Makefile.am (evolution_mail_LDADD): s/libversit.la/libversit.a/
+
+2002-03-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (main): Report a message before entering bonobo_main() to
+	simplify debugging.
+
+2002-03-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* folder-browser.c: Remove E_FILTERBAR_RESET menu entry.
+
+2002-03-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (on_right_click): Draw colour rectangles for
+	each of the colour items and set a closure on each.
+	(colourise_msg): colourise the message, yo.
+
+2002-03-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (colour_msg): New callback to set a colour on a
+	message.
+
+	* folder-browser.c (on_right_click): Setup our popup icons and
+	stuff. Also add a submenu for Labels.
+
+	* mail-display.c (pixmap_press): Sync up with the new EPopupMenu
+	API. Note: This code can probably now be fixed to use per-item
+	closures - yay!
+
+	* mail-accounts.c (construct): Connect to the label GtkEntry's and
+	GnomeColorPickers and also to the Restore Defaults button.
+
+	* mail-config.c (mail_config_get_label_name): New function to get
+	a label's name.
+	(mail_config_set_label_name): New function to set the label name.
+	(mail_config_get_label_color): New function to get the label
+	color.
+	(mail_config_set_label_color): New function to set the label
+	color.
+	(config_read): Read in the config options for the labels and their
+	colors.
+	(mail_config_write_on_exit): Save the label options.
+
+2002-03-15  Larry Ewing  <lewing@ximian.com>
+
+	* mail-display.c: expand the relative urls of the object at the
+	point so that relative images can be saved correctly.
+
+	* folder-browser.c: add a closing quote in a comment.
+
+2002-03-15  Ettore Perazzoli  <ettore@ximian.com>
+
+	* folder-browser-factory.c (control_activate): Set the UI
+	component on the search bar.
+
+2002-03-14  Dan Winship  <danw@ximian.com>
+
+	* component-factory.c (folder_types): Remove "mailstorage", since
+	it's not needed any more.
+	(storage_activate): Gone, although some of it is moved to
+	storage_connect.
+	(create_view): Remove mailstorage code.
+	(add_storage): Connect to the storage's open_folder signal.
+	Instead of creating a "mailstorage" folder, call
+	evolution_storage_has_subfolders to let the shell know we haven't
+	finished filling it in yet.
+	(storage_connect): Handler for the storage's asyncOpenFolder
+	signal. Call mail_note_store() to try to connect.
+	(storage_connected): Callback for above. If the connection attempt
+	failed, call evolution_storage_has_subfolders again to make the
+	shell re-close the storage.
+
+	* mail-folder-cache.c (update_folders): Remove a piece of
+	mailstorage legacy code from here.
+
+2002-03-14  Radek Doulik  <rodo@ximian.com>
+
+	* mail-config.c (get_new_signature_filename): create new signature
+	file
+	(delete_unused_signature_file): be more careful about signature
+	file path before unlinking
+
+2002-03-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (next_thread): Implemented.
+
+	* message-list.c (message_list_select_next_thread): New function
+	to select the next thread.
+
+2002-03-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser-window.c (folder_browser_window_new): Set a
+	default size of the window, so we don't get this itty-bitty window
+	the size of a quarter on the screen when it first gets shown.
+
+2002-03-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (on_link_clicked): Handle digest: urls.
+
+	* mail-format.c (setup_mime_tables): Add a handler for
+	multipart/digest.
+	(handle_multipart_digest): Handle multipart/digest parts.
+
+2002-03-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (folder_browser_set_folder): Set the folder on
+	a folder-browser object.
+
+	* folder-browser-window.c (folder_browser_window_new): Simple
+	window to display a folder-browser.
+
+	* mail-callbacks.c (view_digest): New callback to open a
+	folder-browser-window with a digest folder.
+
+2002-03-08  Radek Doulik  <rodo@ximian.com>
+
+	* mail-signature-editor.c (menu_file_save_cb): truncate stream
+	before saving
+
+	* mail-config.c (mail_config_signature_set_html): new function
+
+	* mail-accounts.c (sig_event_client): watch for HTML changed event
+
+	* mail-signature-editor.c: added HTML check menu item to Format
+	menu
+
+2002-03-08  Dan Winship  <danw@ximian.com>
+
+	* mail-config-druid.c (management_prepare): Rewrite this to not
+	use stpcpy, which isn't portable.
+
+2002-03-08  Radek Doulik  <rodo@ximian.com>
+
+	* mail-accounts.c (sig_event_client): handle name changed event
+	(sig_load_preview): don't run script before each reload
+	(sig_script_activate): run script only if script entry is
+	activated
+
+	* mail-signature-editor.c (mail_signature_editor): added signature
+	name entry
+
+2002-03-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config-druid.c (management_changed): Re-focus the account
+	name entry widget.
+	(identity_prepare): If a name is not set, try and get the user's
+	full name for them and set the text on the entry widget.
+	(management_prepare): If the account name is already taken,
+	generate a unique one by appending " (%d)".
+
+2002-03-07  Radek Doulik  <rodo@ximian.com>
+
+	* mail-account-gui.c (sig_new_html): make edit button sensitive
+	after new signature is created
+	(sig_new_text): ditto
+
+2002-03-07  Anna Marie Dirks  <anna@ximian.com>
+
+	* folder-browser.c: Made all the acclerators in the context menu
+	on a message work. (There are 22 different menu items here, so
+	picking a unique accelerator for each label was tricky, and some
+	of the choices I made are different from the ones I would have
+	made if there weren't so many stinking menu items.)
+
+2002-03-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config.c (config_import_old_signatures): Don't use an
+	uninitialized 'id'.
+
+2002-03-07  Radek Doulik  <rodo@ximian.com>
+
+	* mail-signature-editor.c: notify accounts dialog about signature
+	content change
+
+	* mail-accounts.c (run_script): run script only if file regular
+	file exists and has x flag
+
+	* mail-signature-editor.c (mail_signature_editor): set initial
+	focus to editor
+	(do_exit): use hasUndo to avoid question dialog when content is
+	unchanged
+
+2002-03-07  Dan Winship  <danw@ximian.com>
+
+	* component-factory.c (add_storage): Update for storage changes:
+	explicitly create a root folder.
+
+2002-03-06  Dan Winship  <danw@ximian.com>
+
+	* mail-display.c (mail_display_render): Fix the "don't scroll back
+	to the top of the HTML widget when opening an attachment" hack
+	again by moving it here from mail_display_redisplay(). (It has to
+	happen after the gtk_html_begin.)
+	(mail_display_redisplay): Pass reset_scroll arg to
+	mail_display_render.
+
+	* mail-callbacks.c (do_mail_print): Pass reset_scroll (TRUE) to
+	mail_display_render.
+
+2002-03-05  Dan Winship  <danw@ximian.com>
+
+	* folder-browser-ui.c: Don't try to set pixmap for
+	/Toolbar/MailCompose, since it doesn't exist any more.
+
+2002-03-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (save_service): "use_ssl" can now be 3
+	options, modify the code to handle this.
+	(setup_service): Toggle the correct ssl option.
+	(source_type_changed): Show/hide the ssl hbox container widget.
+	(transport_type_changed): Same.
+
+2002-03-05  Dan Winship  <danw@ximian.com>
+
+	* mail-folder-cache.c (mail_note_store): Pull up assertion change
+	from evolution-1-0-branch to allow external storages.
+
+2002-03-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c (mail_unselect): If the clicked column was
+	column 0, enable/disable it.
+	(mail_select): Same.
+
+	* mail-display.c (load_http): Added more debugging code to help
+	figure out why a certain image isn't loading - looks like
+	gnome-vfs is getting a premature EOF?
+
+	* folder-browser.c (my_folder_browser_init): Connect to the
+	focus-in/out events on the message-list so that we can disable the
+	EditInvertSelection and EditSelectThread menu items when the
+	message-list is not in focus.
+
+	* folder-browser-ui.c (folder_browser_ui_message_list_unfocus):
+	New function to de-sensitize some items if the message-list is not
+	in focus.
+	(folder_browser_ui_message_list_focus): New function to sensitize
+	some items if the message-list is not in focus.
+
+	* mail-callbacks.c (invert_selection): Only invert the selection
+	of the message-list if it is the widget in focus.
+
+	* message-list.c (message_list_select): Do not explicitly grab the
+	focus here.
 
 2002-03-04  Ettore Perazzoli  <ettore@ximian.com>
 
@@ -9,6 +3193,33 @@
 
 	* mail-ops.c (mail_send_message): Set X-Mailer to say "Ximian
 	Evolution", not just "Evolution".
+
+2002-03-01  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (forward_message): Forward all selected
+	messages. Fixes bug #21190.
+
+2002-02-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_text_html): Get the Content-Base if the
+	header exists and use gtk_html_set_base to set this base url.
+
+	* mail-display.c (on_link_clicked): No longer need to calculate
+	the full url. This is now handled by GtkHTML.
+	(on_set_base): Removed.
+	(on_url_requested): No longer need to calculate the full url.
+	(mail_display_initialize_gtkhtml): Don't connect to the set_base
+	signal anymore. We don't care.
+
+	* mail-display.h: No longer need base_url (it was broken anyway).
+
+2002-02-26  Not Zed  <NotZed@Ximian.com>
+
+	* mail-display.c (on_url_requested): If a related part is
+	requested, remove it from the related undisplayed list.
+
+	* mail-format.c (handle_multipart_related): Check if related parts
+	are displayed, if not, remove them.  For #2741.
 
 2002-02-24  Chris Toshok  <toshok@ximian.com>
 
@@ -18,41 +3229,548 @@
 	search_activated up to folder_browser_search_do_search, preserving
 	current behavior.
 
+2002-02-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (on_message_list_built): Removed, this wasn't
+	working as intended and seemed to break other features.
+
+2002-02-21  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (create_component): Add an icon for the "New
+	message" user creatable item.
+
+2002-02-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (on_message_list_built): Connect to our own
+	message_list_built signal. Focus the list and select the first
+	unread message (or frst message depending). Fixes bug #3900.
+
+2002-02-20  Anna Marie Dirks  <anna@ximian.com>
+
+	* message-tag-editor.c (message_tag_editor_init): Gave the editor 
+	window a title and an icon.
+
+2002-02-20  Anna Marie Dirks  <anna@ximian.com>
+
+	* message-tags.glade: Changed the policy for table2 so that it 
+	does not expand/fill. This was necessary to allow the message list 
+	as much growing room as possible. (And besides, there's no reason for
+	table2 to expand/fill; its child widgets can't change size. 
+
+2002-02-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (confirm_goto_next_folder): Prompt the user to
+	find out if he/she wants to go to the next folder with unread mail
+	in it.
+	(find_current_folder): Find a given CamelFolderInfo node based on
+	a given uri.
+	(find_next_folder_r): Recursively look for a CamelFOlderInfo node
+	which has unread messages.
+	(find_next_folder): Given a currently selected CamelFolderInfo
+	node, look for the next node containing unread messages.
+	(do_evil_kludgy_goto_next_folder_hack): Find the currently
+	selected folder and then find the very next folder after it that
+	contains unread messages and then select it via a CORBA call to
+	the shell.
+	(next_unread_msg): If we fail to find an unread message in the
+	message-list, prompt the user to find out if we should jump to the
+	next fodler containing unread messages. If so, call
+	do_evil_kludgy_goto_next_folder_hack().
+
+	* message-list.c (message_list_select): Return a boolean value
+	based on whether the call was successfull or not.
+
+	* mail-config.c (mail_config_get_confirm_goto_next_folder):
+	(mail_config_set_confirm_goto_next_folder):
+	(mail_config_get_goto_next_folder):
+	(mail_config_set_goto_next_folder): All new functions, yay.
+	(config_read): Read in the confirm_goto_next_folder and
+	goto_next_folder config options.
+	(mail_config_write_on_exit): Same the options here.
+
 2002-02-15  Jeffrey Stedfast  <fejj@ximian.com>
 
-	* mail-display.c (launch_cb): Some programs are buggy when it
-	comes to parsing file: uris, so make sure we do file://%s. Fixes
-	bug #20456.
+	* mail-account-gui.c (basename_from_uri): Ack, strip off the
+	leading '/' char and also only translate if it is a local uri,
+	imap folders and other external folders will be named by the user
+	so no need to translate those.
+
+	* mail-display.c (do_attachment_header): Don't display a
+	down-arrow if the attachment is undisplayable. Fixes bug #6919.
+	(launch_cb): Some programs are buggy when it comes to parsing
+	file: uris, so make sure we do file://%s. Fixes bug #20456.
+
+2002-02-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (basename_from_uri): Replacement for using
+	g_basename and also translates the basename string to fix bug
+	#7160.
+	(mail_account_gui_save): Use basename_from_uri().
+	(folder_picker_clicked): Here too.
+
+	* mail-callbacks.c (mail_generate_reply): Default the from-account
+	to the source account. If that fails, then guess the from-account
+	based on the recipients. Fixes bug #20479.
+
+2002-02-13  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (drag_data_get_cb): Implement.
+	(drag_data_delete_cb): Implement.
+	(do_attachment_header): Setup Drag & Drop. This implements
+	bugzilla bug #1066.
+
+	* folder-browser-ui.c: Set the followup icon to use the new flag
+	icon rather than the exclamation mark icon.
+
+	* mail-callbacks.c (flag_for_followup): Append the selected
+	messages to the clist in the followp editor.
+
+	* message-list.c: Include the new flag-for-followup icon.
+
+	* message-tag-followup.c (message_tag_followup_append_message):
+	New method to add a message to the message-list.
+	(construct): Get the message_list widget and load the flag icon
+	pixmap.
+
+2002-02-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-tag-followup.c (set_widget_values): Fixed a bug.
+
+	* mail-callbacks.c (flag_for_followup): If only 1 message is
+	selected and it happens to already be marked for follow-up, set
+	the value of the flag on the editor so the settings are restored.
+
+	* folder-browser-ui.c: Set the pixmaps on MarkAsRead, MarkAsUnread
+	and MarkAsImportant bonobo verbs. Also connect to
+	flag-for-followup verb.
+	(folder_browser_ui_set_selection_state): Added MessageFollowUpFlag
+	verb to the array of verb strings.
+
+	* folder-browser.c: Set key accelerators on the follow-up
+	right-click menu items to match Outlook.
+
+2002-02-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (create_msg_composer): No longer need to call
+	e_msg_composer_show_sig_file(). This gets handled auto-magically
+	by a signal emition when the default From address chooser gets
+	created.
+	(do_forward_non_attached): No longer need to call it here either
+	because e_msg_composer_set_body_text() now makes sure to re-show
+	the signature.
 
 2002-02-12  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* mail-callbacks.c (do_forward_non_attached): Show the signature.
 
+2002-02-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (ml_tree_value_at): Get followup-up message-list
+	values. Also highlight the message in red if the due-by date is
+	past due (this is what Outlook does).
+	(ml_duplicate_value): Handle follow-up columns.
+	(ml_free_value): Same.
+	(ml_initialize_value): Here too.
+	(ml_value_is_empty): And here.
+	(ml_value_to_string): And finally here.
+
+	* message-tag-followup.c (message_tag_followup_i18n_name): New
+	convenience function.
+
+2002-02-11  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c (create_msg_composer): unset changed, drop
+	editor undo
+	(mail_generate_reply): drop editor undo
+	(do_forward_non_attached): ditto
+	(do_forward_attach): ditto
+	(do_redirect): ditto
+
+2002-02-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (followup_tag_complete): Implemented.
+	(on_right_click): Do better enabling/hiding of unwanted
+	flag-for-followup options.
+
+2002-02-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-tag-followup.c (set_widget_values): Set the correct
+	drop-down menu item.
+	(message_tag_followup_encode): Return NULL if the type is NONE.
+	(clear_clicked): Set the drop-down menu to None.
+	(type_changed): Hide the None menu item.
+	(construct): Create a None menu item and set it as the default.
+
 2002-02-08  Jeffrey Stedfast  <fejj@ximian.com>
 
-	* mail-format.c (try_inline_pgp_sig): Handle cases where there
-	isn't a hash header (apparently some PGP versions don't use them
-	and/or are configurable to not display them?). Fixes bug #18935.
+	* message-tag-followup.[c,h]: New flag-for-followup tag editor
+	dialog.
+
+	* mail-callbacks.c (flag_for_followup): New callback that pops up
+	a flag-for-followup editor dialog.
+	(flag_followup_completed): Marks all flag-for-followup'd messages
+	as 'complete'.
+	(flag_followup_clear): Clears all flag-for-followup tags from the
+	selected messages.
+
+	* message-tags.glade: glade file for tag editors.
+
+2002-02-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-tag-editor.[c,h]: Base class for a message tag editor.
+
+	* folder-browser.c (on_right_click): Setup the hide/enable masks
+	for "Flag for Follow-up"
+
+	* mail-callbacks.c (confirm_expunge): Instead of hiding deleted
+	messages and then expunging, disable the use of the message-list
+	completely during the expunge operation.
+	(expunged_folder): Re-enable the use of the message-list widget
+	here.
+
+2002-02-07  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): call set_body later to
+	allow ignored words to be sent to gtkhtml control ahead
+
+2002-02-07  JP Rosevear  <jpr@ximian.com>
+
+	* component-factory.c (create_component): remove "New" from user
+	creatable menu item
+
+2002-02-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* folder-browser.c, folder-browser.h, folder-browser-ui.c,
+	folder-browser-ui.h
+	(folder_browser_ui_setup_view_menus,
+	folder_browser_ui_discard_view_menus): Changed this to use the new
+	GalViewMenus stuff.  Made these exported functions.
+
+	* mail-callbacks.c, message-browser.c: Changed these to not pass
+	the now removed row parameter to message_list_select.
+
+	* mail-config.c, mail-config.h (mail_config_folder_to_safe_url):
+	Refactored this out of mail_config_folder_to_cachename.
+
+	* message-list.c, message-list.h (message_list_select): Removed
+	the row argument.  Changed this to use the new function in ETree
+	for finding the next cursor row that matches a test.
+	(message_list_construct): Handle a failed construction of the
+	ETree here.
+	(message_list_setup_etree, save_tree_state): Don't load or save
+	the header state.  folder-browser-ui.c deals with this now.
+
+2002-02-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_new): Rearranged the #if
+	checks so that we don't ever try to access any smime widgets
+	(since they are now being destroyed) if smime isn't enabled.
+	(mail_account_gui_save): Same here.
+
+	* message-list.c: Removed references to NEEDS_REPLY.
+
+	* mail-callbacks.c (mark_as_needing_reply): Removed.
+	(mark_as_not_needing_reply): Removed.
+	(toggle_need_reply): Removed.
+
+	* folder-browser.c (on_right_click): Remove CAN_MARK_NEEDS_REPLY
+	stuff, this is going to be implemented in an entirely different
+	way.
+
+	* mail-format.c (handle_text_plain): Look for DOCTYPE XML comments
+	too to decide if the message content is really HTML.
+
+2002-02-06  Not Zed  <NotZed@Ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): Dont double-free the
+	text body data.
+
+2002-01-31  Not Zed  <NotZed@Ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): Add attachments after
+	we've seen if the composer object is valid.
+	(mail_generate_reply): Support new flag REPLY_NO_QUOTE - if set,
+	then dont quote any of the message in the reply.
+
+2002-02-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-account-gui.c (mail_account_gui_new): Destroy the S/MIME
+	frame if not available, instead of just graying it out.  [I would
+	just hide it, but it looks like there is a show_all somewhere so
+	that doesn't work.]
+
+2002-02-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	* mail-config.glade: Some touchups from me and Anna.
+
+2002-01-31  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_get_message): Don't bother setting
+	the auto-cc/bcc recipients here. I'm moving the code to add them
+	in the GUI in the composer so they will already be in the
+	recipient list by this point.
+
+2002-01-31  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c (mail_generate_reply): ignore spell checking of
+	words in addresses, move set_body_text after all ignored words are
+	set so we don't have to spell check whole document again
+	(mail_ignore_address): helper function
+	(mail_ignore): ditto
+
+2002-01-30  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-accounts.c (mail_edit): Pass the parent window to
+	mail_account_editor_new().
+
+	* mail-account-editor.c (mail_account_editor_new): Set the parent
+	window here because construct() inadvertantly
+	gtk_widget_show_all's the editor.
+
+	* mail-account-gui.c (mail_account_gui_save): Use g_basename()
+	rather than strrchr for '/' especially since the strrchr code
+	wasn't doing any NULL checks.
+
+2002-01-30  Radek Doulik  <rodo@ximian.com>
+
+	* mail-format.c (handle_text_plain_flowed): print quoted text in
+	italic
+
+2002-01-30  Not Zed  <NotZed@Ximian.com>
+
+	* component-factory.c (create_component): re-enable popup menu.
+	(populate_folder_context_menu): If we're on a vfolder, and its not
+	UNMATCHED, create a change properties item, and set it up
+	approriately.
+	(change_prop_popup): Callback to edit the vfolder rule.  For
+	#3358.
+
+2002-01-29  Dave West  <kat@unleashed.org>
+
+	* mail-callbacks.c (create_msg_composer): Changed the function
+	signature so that we can pass in whom we want to compose as.
+	Should fix bug #10391.
+	(compose_msg): Get the current profile account and pass it along
+	to create_msg_composer.
+	(send_to_url): Pass in a NULL profile account to cause
+	create_msg_composer to use the default account.
+
+2002-01-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (mail_send_message): Make X-Evolution-Account take
+	priority over X-Evolution-Transport. Should we just get rid of
+	X-Evolution-Transport? Anyways, this ought to fix a number of
+	complaints.
+
+	* mail-accounts.c (construct): Don't pass NULL text to
+	gtk_entry_set_text. Maybe this will fix bug #18971.
+
+2002-01-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (redirect): New function that implements the
+	Redirect feature.
+
+	* mail-ops.c (mail_send_message): If we are redirecting a message,
+	get the Resent-* recipients otherwise get the normal To/Cc/Bcc
+	recipients and use them in the CamelTransport::send_to() method.
+
+	* mail-session.c (main_get_filter_driver): Set the beep_func to
+	the beep_cb, not the play_sound_func. Oops ;-)
+
+	* folder-browser-ui.c: Add Redirect bonobo verb thingy here.
+	(folder_browser_ui_set_selection_state): Add MessageRedirect to
+	the proper string arrays.
+
+2002-01-29  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c (do_mail_print): initialize line to 0 to make
+	everybody happy ;-)
+	ops, set local_font to NULL
+	(do_mail_print): get rid of static global variables, as they are
+	not thread safe (thanks to clahey for pointing this out)
+	(footer_info_free): unref footer font
+
+2002-01-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_get_message): Don't bother checking
+	for invalid recipients anymore. If a recipient is invalid, the
+	transport error message will specify that now.
+
+2002-01-28  Radek Doulik  <rodo@ximian.com>
+
+	* mail-callbacks.c (do_mail_print): print footer
+	(footer_print_cb): print page number and number of pages
+
+2002-01-27  Ettore Perazzoli  <ettore@ximian.com>
+
+	* importers/Makefile.am: Use IMPORTERS_CFLAGS. 
+
+2002-01-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (delete_event_cb): We need to return a value
+	here. I think FALSE is fine (I hope).
+
+	* mail-display.c (save_data_cb): Save the pathname.
+	(save_part): Use the new mail_config cruft to get the last used
+	save pathname.
+
+	* mail-config.c (config_read): Read in last_filesel_dir string.
+	(mail_config_write_on_exit): Save the last_filesel_dir setting.
+	(mail_config_get_last_filesel_dir): New
+	(mail_config_set_last_filesel_dir): New
+
+	* component-factory.c (destination_folder_handle_motion): Do some
+	NULL checking on the url before using it.
+	(destination_folder_handle_drop): Make sure the uri is non-NULL
+	before freeing.
+
+2002-01-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* Makefile.am: s/MAILER_CFLAGS/EVOLUTION_MAIL_CFLAGS/,
+	s/MAILER_LIBS/EVOLUTION_MAIL_LIBS/.
+
+2002-01-24  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-session.c (session_system_beep): This wrapper for gdk_beep().
+
+	* mail-account-gui.c (is_email): Don't bother trying to see if the
+	domain looks like a FQDN.
+
+	* mail-callbacks.c (select_all): If the mail-display is in focus,
+	then select-all in the mail display rather than the
+	message-list. Fixes bug #19126.
+
+2002-01-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* component-factory.c (create_component): Pass a NULL icon to
+	`evolution_shell_component_add_user_creatable_item()'.
+
+2002-01-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	Implements bug #15692
+
+	* folder-browser.c (html_button_press_event): New callback that
+	checks to make sure that the mouse isn't over a link or image in
+	the html view and then calls the on_right_click handler after
+	getting the appropriate args.
+	(my_folder_browser_init): Connect to the button_press_event here.
 
 2002-01-23  Dan Winship  <danw@ximian.com>
 
-	* mail-folder-cache.c (mail_note_store): Allow this to be called
-	with both storage and corba_storage NULL.
+	* Makefile.am (INCLUDES): Define CAMEL_PROVIDERDIR to be the
+	configure.in-defined camel_providerdir. (Was supposed to have been
+	committed a month ago... oops.)
 
-	* mail-send-recv.c (receive_update_got_store): Remove the
-	2001-12-07 hack since it's no longer needed.
+2002-01-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (mail_filter_folder): Now takes a boolean notify
+	argument. If this is *not* set, then remove the sound-notify
+	filter rule that mail-session adds. Kinda kludgy, but good enough
+	for the moment.
+
+	* mail-callbacks.c (guess_me): Simplified.
+
+2002-01-21  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (handle_text_plain): If the first "token" in the
+	body is "<html>", then treat this as a text/html part rather than
+	a text/plain part. Fixes bug #16817.
+
+	* component-factory.c (destination_folder_handle_drop): Removed
+	some unused variables.
+
+2002-01-17  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-format.c (try_uudecoding): Update to match new uudecode
+	interface (ie, no longer need a uulen state variable).
+
+2002-01-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-display.c (on_set_base): New callback to handle the
+	set_base signal.
+	(on_url_requested): If the base_url is set, prepend it to the data
+	url (we don't want to do this for cid urls or part urls tho).
+	(mail_display_init): Initialize md->base_url to NULL.
+	(mail_display_destroy): Free the base_url.
+	(mail_display_initialize_gtkhtml): Connect to the set_base signal.
+	(on_link_clicked): If the base_url is set, prepend it to the url
+	string passed to us from gtkhtml.
+
+2002-01-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (do_edit_messages): Don't remove any
+	X-Evolution* headers here, the composer already knows to ignore
+	these. Besides, it needs to know the X-Evolution-Format header.
 
 2002-01-08  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_save_draft_cb): Do proper refcounting
+	on the draft folder.
 
 	* message-list.c (message_list_select): When performing a
-	wraparound, check to see if the first message fits the selection
-	criteria before telling etable to find the next node.
-
-2002-01-08  Jeffrey Stedfast  <fejj@ximian.com>
+	wraparound, check to see if the first (or last depending on
+	direction) message fits the selection criteria before telling
+	etable to find the next/previous matching node.
 
 	* mail-account-gui.c (mail_account_gui_new): When connecting to
 	the transport username changed event, pass the gui->transport not
 	the gui->source.
+
+2002-01-08  Iain Holmes  <iain@ximian.com>
+
+	* importers/evolution-mbox-importer.c (string_to_int): Takes a hex
+	string and converts it to an int.
+	(get_info_from_mozilla): Creates a CamelMessageInfo structure from
+	the X-Mozilla-Status header.
+	(process_item_fn): Check for the X-Mozilla-Status header and if it
+	is present call get_info_from_mozilla. If get_info_from_mozilla
+	returns that the message was marked as deleted but never expunged
+	it isn't imported.
+
+	* importers/mozilla-status-headers.h: Stuff Evolution cares about
+	from the mozilla header.
+
+2002-01-07  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config.c (mail_config_set_new_mail_notify_sound_file): Renamed.
+	(mail_config_get_new_mail_notify_sound_file): Renamed.
+
+	* mail-accounts.c (notify_radio_toggled): Replace EXEC with
+	PLAY_SOUND.
+	(construct): renamed the exec_command stuff to play_sound.
+
+	* main.c (main): Init and shutdown gnome_sound.
+
+	* mail-ops.c (fetch_mail_fetch): Don't do any new-mail
+	notification here.
+	(filter_folder_filter): call camel_filter_driver_flush.
+
+	* mail-session.c (main_get_filter_driver): Set the filter-driver
+	exec_func here instead.
+
+	* mail-ops.c (mail_fetch_mail): Don't set the filter-driver
+	exec_func here.
+
+2002-01-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_get_message): Add an Organization
+	header.
+
+2002-01-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (list_add_addresses): Simplified. Also no
+	longer needs an "ignore_addr" argument as far as I can tell so
+	that has been removed.
+	(mail_generate_reply): Don't pass an ignore_addr argument to
+	list_add_addresses and also change to use g_strcase_hash and
+	g_strcase_equal since addresses are not case snesitive
+	(mostly). Also, Reply-To can contain multiple addresses, so handle
+	this case too.
+
+2002-01-02  JP Rosevear  <jpr@ximian.com>
+
+	* mail-callbacks.c: remove e_gnome_dialog util functions and use
+	e-util ones instead
 
 2001-12-21  Jeffrey Stedfast  <fejj@ximian.com>
 
@@ -71,21 +3789,84 @@
 	provided.
 	(mail_tool_do_movemail): Pass along the source_uri.
 
-2001-12-21  Jon Trowbridge  <trow@ximian.com>
+2001-12-20  Jon Trowbridge  <trow@ximian.com>
 
 	* message-list.c (on_click): Makes the auto-undelete behavior when
 	changing message flags a bit more sane. (Fixes #17634)
 
-2001-12-17  Dan Winship  <danw@ximian.com>
-
-	* Makefile.am (INCLUDES): Define CAMEL_PROVIDERDIR to be the
-	configure.in-defined camel_providerdir.
-
-2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+2001-12-20  Ettore Perazzoli  <ettore@ximian.com>
 
 	[Fixes #17377, Evolution doesn't work on multi-depth displays.]
 
 	* main.c (main): Push GdkRGB visual and colormap.
+
+2001-12-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (composer_get_message): Add the auto-cc/bcc
+	recipients here. The problem with setting them in the composer is
+	that what if the user changes which account he wants to use? We'd
+	either have to clear the cc/bcc lists *or* we'd have to leave them
+	alone. Either way is bad. We can't just clear the entries because
+	the user may have added addresses since the composer was
+	opened. We don't want to leave any old auto-cc/bcc addresses there
+	because that isn't desirable either. So we give up and add them
+	here after the user has already hit the send button.
+
+	* mail-config.c (account_copy): Update to copy the always-[b]cc
+	options.
+	(account_destroy): Update to destroy the above options.
+	(config_read): Update to read in those values.
+	(mail_config_write): Save those options.
+
+	* mail-account-gui.c (mail_account_gui_new): Setup Always Cc/Bcc
+	widgets.
+	(mail_account_gui_save): Get the user-entered values for the
+	always-cc/bcc stuff.
+
+2001-12-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-account-gui.c (setup_service): If the provider is NULL,
+	don't do anything.
+
+	* mail-accounts.c (construct): Oops, no wonder the exec command
+	thing never stuck around... I wasn't getting the right widget from
+	libglade. Also connect to the GtkEntry's changed event since a
+	GnomeFileEntry doesn't have that signal in its ancestry.
+
+2001-12-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (filter_folder_free): Argh, don't notify about new
+	mail here.
+	(fetch_mail_fetch): Notify about new mail here instead.
+
+	* mail-accounts.c (construct): Setup the new-mail-notification
+	widgets.
+	(notify_command_changed): Update the command-line for new mail
+	notification.
+	(notify_radio_toggled): Update the new-mail-notification type.
+
+	* mail-ops.c (filter_folder_free): See if we got any new mail and
+	"sound the alarm" if we did.
+
+2001-12-17  Jon Trowbridge  <trow@ximian.com>
+
+	* mail-format.c (handle_text_plain_flowed): Set citation color to
+	black when we are printing.
+
+	* mail-format.c (attachment_header): Avoid embedding <object> tags
+	when we are printing.
+	(handle_multipart_signed): Don't do the click-for-info signature
+	stuff when we are printing.
+	(handle_via_bonobo): Don't embed an <object> tag if we are
+	printing.
+
+	* folder-browser.c: Changed context_menu[] array so that we can
+	print when the preview pane is closed.
+
+2001-12-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (mail_fetch_mail): Set the filter driver's shell-exec
+	callback.
 
 2001-12-12  Jeffrey Stedfast  <fejJ@ximian.com>
 
@@ -96,6 +3877,123 @@
 
 	* mail-format.c (handle_text_plain): Make sure i != num_specials
 	after we check for any special text markers. Fixes bug #12265.
+
+2001-12-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-callbacks.c (compose_msg): Connect to the save-draft signal.
+	(send_to_url): Here too.
+	(mail_reply): And here...
+	(forward_get_composer): Same.
+	(do_edit_messages): And finally here.
+
+	* mail-format.c (try_inline_pgp):
+	(try_inline_pgp_sig): Start reiplementing The Right Way and not
+	danw's fucking half-assed kludge that doesn't work.
+
+2001-12-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-config.c (mail_config_set_new_mail_notification_command):
+	set the new-mail-notify command.
+	(mail_config_get_new_mail_notification_command): get the
+	new-mail-notify command.
+	(mail_config_set_new_mail_notification): set the
+	new-mail-notification action.
+	(mail_config_get_new_mail_notification): get the
+	new-mail-notification action.
+	(mail_config_write_on_exit): save the new-mail-notification
+	settings.
+	(config_read): Read in the new-mail-notification settings.
+
+	* mail-ops.c (mail_execute_shell_command): New function to execute
+	a shell command async. Will be used for playing sounds on new mail
+	or whatever.
+
+2001-12-11  Jon Trowbridge  <trow@ximian.com>
+
+	* mail-identify.c (mail_identify_mime_part): Fixed for
+	mail_content_loaded's new signature.
+
+	* mail-format.c (attachment_header): Don't convert URLs, etc. if
+	we are printing.
+	(write_address): Don't convert addresses to mailto: links if we
+	are printing.
+	(write_one_text_plain_chunk): Add a printing flag, that we pass
+	along to mail_text_write.
+	(handle_text_plain): Pass our printing flag to
+	write_one_text_plain_chunk.
+	(mail_get_message_rfc822): Don't unneccesarily convert URLs.
+	(mail_content_loaded): Add a GtkHTML parameter.
+
+	* mail-display.c (mail_display_initialize_gtkhtml): Added.  Breaks
+	all of the signal hookups out of mail_display_new.
+	(mail_display_new): Call mail_display_initialize_gtkhtml.
+	(mail_text_write): Don't convert URLs, etc., if we are printing.
+	Lots of other changes to pass around GtkHTML/GtkHTMLStream objects.
+
+	* mail-callbacks.c (do_mail_print): Call
+	mail_display_initialize_gtkhtml on our GtkHTML object.
+
+	* folder-browser.c (update_status_bar): Make the status bar more
+	useful when you have a large number of hidden messages.
+
+	* message-list.etspec: Add ETable magic for our new "Needs Reply"
+	column.  (The next few entries are for bug #90)
+
+	* message-list.h: Add COL_NEED_REPLY.
+
+	* message-list.c: Move mail_need_reply_xpm to the end of
+	states_pixmaps.
+	(ml_duplicate_value): Handle COL_NEED_REPLY.
+	(ml_free_value): Handle COL_NEED_REPLY.
+	(ml_initialize_value): Handle COL_NEED_REPLY.
+	(ml_value_is_empty): Handle COL_NEED_REPLY.  Added
+	needs_reply_map[] array.
+	(ml_value_to_string): Handle COL_NEED_REPLY.
+	(ml_tree_value_at): Fix magic numbers, undoing my changes from the
+	otehr day.  Add handler for COL_NEED_REPLY.
+	(message_list_create_extras): Attach icons for COL_NEED_REPLY.
+	(on_click): Undo my previous changes to display need-reply status
+	in COL_MESSAGE_STATUS.  Add handing for COL_NEED_REPLY.
+
+	* mail.h: Change mail_format_mime_message, mail_format_raw_message
+	and the MailMimeHandlerFn typedef to take GtkHTML and
+	GtkHTMLStream args, as per our changes in mail-format.c.
+
+	* mail-format.c: Giant refactoring.  Remove the assumption
+	throughout that we will always want to render into the GtkHTML
+	object contained in the MailDisplay.  Instead, always pass in the
+	GtkHTML and GtkHTMLStream that we want to write to.  Also, ignore
+	theme work-arounds if the printing flag is set.  (This and what
+	follows fixes bug #82)
+
+	* mail-display.h: Remove GtkHTMLStream *stream from MailDisplay.
+	We don't need it anymore.
+
+	* mail-display.c (mail_display_render): Added.  Breaks the code
+	that renders the message into the GtkHTML object out of
+	mail_display_redisplay.
+	(mail_display_redisplay): Call mail_display_render.
+	(mail_display_init): Remove reference to ->stream.
+	(mail_display_new): Remove reference to ->stream.
+
+	* mail-callbacks.c (do_mail_print): Create a new GtkHTML to render
+	our printed version into (via the new function
+	mail_display_render.  Set the MailDisplay's printing flag to TRUE
+	before we render, and set it back to FALSE afterwards.
+	(do_mail_fetch_and_print): If the preview pane isn't open when we
+	try to print, fetch the message before printing.
+	(print_msg): Call do_mail_fetch_and_print.
+	(print_preview_msg): Call do_mail_fetch_and_print.
+
+	* folder-browser-ui.c: Remove "PrintMessage" and
+	"PrintPreviewMessage" from message_pane_enables... these now work
+	when the preview pane is closed.  Disable printing if multiple
+	messages are selected.
+
+2001-12-10  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-ops.c (filter_folder_filter): Don't expunge when we sync
+	anymore, this fixes bug #4472.
 
 2001-12-04  Jeffrey Stedfast  <fejj@ximian.com>
 
@@ -15293,48 +19191,48 @@ End of branch
 	current_message = NULL, which shouldn't happen, but has happened
 	to me.
 
-2000-07-25  Dan Wnihspi  d<na@wehilcxdo.eoc>m
+2000-07-25  Dan Winship  <danw@helixcode.com>
 
-*	m seasegt-rhae.d cg(orpur_oo_tes)t :oD'n trguo poteghtrem seaseg
-sw	ti hht easemn noR-:es buejtca dnn  oeRefercnseI/-neRlp-yoT .oMer	
-foet nhtnan to ,htyer' enueralet.d( ge ,["oNs buejtc"]).	
-t(rhae_demssgase:)H nald eemssgasew ti honM seasegI-.d" hTsi	
-hsuodl'n tahppne,"b tui  todses motemise ,na dtis'n tom cu hoced	
-otm ka etij su towkr
-.2
-00-0702- 5E ttro eeParzzlo i< teoterh@lexiocedc.mo
->	
- *amlic-noif.g cc(erta_eesvrci_eapeg:)C la
-l`	tg_kpoitnom_ne_ues_temun)( 'sat ehl sa thtni,ga  sG`ktpOitnoeMun
-'i	 ssfkcni grbkone .A sl,o` tg_kiwgdtes_oh(w')t ehi dnvidiau lemun	
-time.s
+	* message-thread.c (group_root_set): Don't group together messages
+	with the same non-Re: subject and no References/In-Reply-To. More
+	often than not, they're unrelated. (eg, "[No subject]".)
+	(thread_messages): Handle messages with no Message-Id. "This
+	shouldn't happen", but it does sometimes, and it's not much code
+	to make it just work.
 
-02000--742  aD niWsnih p< adwnh@lexiocedc.mo
->	
- *emssga-eiltsc.( amkrm_gss_ee,nm _lrtees_tev_laeua_,t	
-emssga_eiltsr_genereta)e :pUadetf roC maleoFdlreA IPc ahgnse
-.(	eCtria nufcnitno sonl noeg rateka C malexEectpoi.n
-)	
- *amlio-spc.( erlaf_tehcm_ia,lr ae_lesdnm_ia,lr ae_ledeletm_gs:)	
-idtt
-o	
- *ocpmnone-taftcro.y cr(ae_lrcaeeti_am_ptsroga,e	
-erlac_erta_eensws_otareg:)d tiot
+2000-07-25  Ettore Perazzoli  <ettore@helixcode.com>
 
-02000--742  aD niWsnih p< adwnh@lexiocedc.mo
->	
- *ocpmnone-taftcro.y,cf loed-rrbwoes-raftcro.y,ct se-tamlic.
-:R	mevo eOGDAs puoptr
-.	
- *amnic. :eRomevG AO Dusppro.t	
-m(ia)n :oMer" ugse sht eubli dimtska"ef nu ,htsit mi eof rht
-ef	iaulert  onitiaiilezB nobo oaces
-.2
-00-0702- 4P tereW liilma s< epetwrh@lexiocedc.mo
->	
- *amlit-ooslc.( amlit_oo_les_tiu_dlfga)s :hCnaeg	
-ufcnitnot  oaftifhluylp sa saparemetsrt 
-oc	malef_loed_res_temssga_elfga;st ih sufnction is
+	* mail-config.c (create_service_page): Call
+	`gtk_option_menu_set_menu()' as the last thing, as `GtkOptionMenu'
+	is fscking broken.  Also, `gtk_widget_show()' the individual menu
+	items.
+
+2000-07-24  Dan Winship  <danw@helixcode.com>
+
+	* message-list.c (mark_msg_seen, ml_tree_set_value_at,
+	message_list_regenerate): Update for CamelFolder API changes.
+	(Certain functions no longer take a CamelException.)
+
+	* mail-ops.c (real_fetch_mail, real_send_mail, real_delete_msg):
+	ditto
+
+	* component-factory.c (real_create_imap_storage,
+	real_create_news_storage): ditto
+
+2000-07-24  Dan Winship  <danw@helixcode.com>
+
+	* component-factory.c, folder-browser-factory.c, test-mail.c:
+	Remove GOAD support.
+
+	* main.c: Remove GOAD support.
+	(main): More "guess the build mistake" fun, this time for the
+	failure to initialize Bonobo case.
+
+2000-07-24  Peter Williams  <peterw@helixcode.com>
+
+	* mail-tools.c (mail_tool_set_uid_flags): Change
+	function to faithfully pass parameters to
+	camel_folder_set_message_flags; this function is
 	somewhat useless now. Other files synced with
 	API change.
 

@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2000 Ximian Inc.
  *
@@ -21,6 +22,11 @@
 #ifndef _CAMEL_FOLDER_THREAD_H
 #define _CAMEL_FOLDER_THREAD_H
 
+#ifdef __cplusplus
+extern "C" {
+#pragma }
+#endif /* __cplusplus */
+
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-folder.h>
 
@@ -34,24 +40,36 @@ typedef struct _CamelFolderThreadNode {
 	int order;
 } CamelFolderThreadNode;
 
-typedef struct CamelFolderThread {
+typedef struct _CamelFolderThread {
+	guint32 refcount  : 31;
+	guint32 subject   : 1;
+	
 	struct _CamelFolderThreadNode *tree;
 	struct _EMemChunk *node_chunks;
 	CamelFolder *folder;
 	GPtrArray *summary;
 } CamelFolderThread;
 
-CamelFolderThread *camel_folder_thread_messages_new(CamelFolder *folder, GPtrArray *uids);
+/* interface 1: using uid's */
+CamelFolderThread *camel_folder_thread_messages_new(CamelFolder *folder, GPtrArray *uids, gboolean thread_subject);
+void camel_folder_thread_messages_apply(CamelFolderThread *thread, GPtrArray *uids);
 
-/* new improved interface (believe it or not!) */
+/* interface 2: using messageinfo's.  Currently disabled. */
+#if 0
+/* new improved interface */
 CamelFolderThread *camel_folder_thread_messages_new_summary(GPtrArray *summary);
-/*
-void camel_folder_thread_messages_add(CamelFolderThread *threads, CamelFolder *folder, GPtrArray *uids);
-void camel_folder_thread_messages_remove(CamelFolderThread *threads, CamelFolder *folder, GPtrArray *uids);
-*/
-void camel_folder_thread_messages_destroy(CamelFolderThread *threads);
+void camel_folder_thread_messages_add(CamelFolderThread *thread, GPtrArray *summary);
+void camel_folder_thread_messages_remove(CamelFolderThread *thread, GPtrArray *uids);
+#endif
+
+void camel_folder_thread_messages_ref(CamelFolderThread *threads);
+void camel_folder_thread_messages_unref(CamelFolderThread *threads);
 
 /* debugging function only */
 int camel_folder_threaded_messages_dump(CamelFolderThreadNode *c);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* !_CAMEL_FOLDER_THREAD_H */

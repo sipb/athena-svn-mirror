@@ -22,13 +22,18 @@
 #include <config.h>
 #endif
 
+#include <bonobo/bonobo-exception.h>
+#include <evolution-calendar.h>
 #include <e-util/e-url.h>
 #include <cal-client/cal-client.h>
 #include "calendar-config.h"
+#include "e-comp-editor-registry.h"
 #include "comp-editor-factory.h"
 #include "comp-util.h"
 #include "dialogs/event-editor.h"
 #include "dialogs/task-editor.h"
+
+extern ECompEditorRegistry *comp_editor_registry;
 
 
 
@@ -48,7 +53,7 @@ typedef struct {
 		} existing;
 
 		struct {
-			CalComponentVType vtype;
+			 GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode type;
 		} new;
 	} u;
 } Request;
@@ -63,9 +68,9 @@ typedef struct {
 
 	/* Client of the calendar */
 	CalClient *client;
-
-	/* Hash table of Component structures that belong to this client */
-	GHashTable *uid_comp_hash;
+ 
+	/* Count editors using this client */
+	int editor_count;
 
 	/* Pending requests; they are pending if the client is still being opened */
 	GSList *pending;
@@ -73,21 +78,6 @@ typedef struct {
 	/* Whether this is open or still waiting */
 	guint open : 1;
 } OpenClient;
-
-/* A component that is being edited */
-typedef struct {
-	/* Our parent client */
-	OpenClient *parent;
-
-	/* UID of the component we are editing, used as the key in the hash table */
-	const char *uid;
-
-	/* Component we are editing */
-	CalComponent *comp;
-
-	/* Component editor that is open */
-	CompEditor *editor;
-} Component;
 
 /* Private part of the CompEditorFactory structure */
 struct CompEditorFactoryPrivate {
@@ -147,23 +137,6 @@ comp_editor_factory_init (CompEditorFactory *factory)
 	priv->uri_client_hash = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
-/* Used from g_hash_table_foreach(); frees a component structure */
-static void
-free_component_cb (gpointer key, gpointer value, gpointer data)
-{
-	Component *c;
-
-	c = value;
-
-	c->parent = NULL;
-	c->uid = NULL;
-
-	gtk_object_unref (GTK_OBJECT (c->comp));
-	c->comp = NULL;
-
-	g_free (c);
-}
-
 /* Frees a Request structure */
 static void
 free_request (Request *r)
@@ -187,10 +160,6 @@ free_client (OpenClient *oc)
 
 	gtk_object_unref (GTK_OBJECT (oc->client));
 	oc->client = NULL;
-
-	g_hash_table_foreach (oc->uid_comp_hash, free_component_cb, NULL);
-	g_hash_table_destroy (oc->uid_comp_hash);
-	oc->uid_comp_hash = NULL;
 
 	for (l = oc->pending; l; l = l->next) {
 		Request *r;
@@ -244,27 +213,20 @@ comp_editor_factory_destroy (GtkObject *object)
 static void
 editor_destroy_cb (GtkObject *object, gpointer data)
 {
-	Component *c;
 	OpenClient *oc;
 	CompEditorFactory *factory;
 	CompEditorFactoryPrivate *priv;
 
-	c = data;
-	oc = c->parent;
+	oc = data;
 	factory = oc->factory;
 	priv = factory->priv;
 
-	/* Free the Component */
-
-	g_hash_table_remove (oc->uid_comp_hash, c->uid);
-	gtk_object_unref (GTK_OBJECT (c->comp));
-	g_free (c);
+	oc->editor_count--;
 
 	/* See if we need to free the client */
-
 	g_assert (oc->pending == NULL);
 
-	if (g_hash_table_size (oc->uid_comp_hash) != 0)
+	if (oc->editor_count != 0)
 		return;
 
 	g_hash_table_remove (priv->uri_client_hash, oc->uri);
@@ -278,7 +240,6 @@ edit_existing (OpenClient *oc, const char *uid)
 	CalComponent *comp;
 	CalClientGetStatus status;
 	CompEditor *editor;
-	Component *c;
 	CalComponentVType vtype;
 
 	g_assert (oc->open);
@@ -306,16 +267,16 @@ edit_existing (OpenClient *oc, const char *uid)
 	}
 
 	/* Create the appropriate type of editor */
-
+	
 	vtype = cal_component_get_vtype (comp);
 
 	switch (vtype) {
 	case CAL_COMPONENT_EVENT:
-		editor = COMP_EDITOR (event_editor_new ());
+		editor = COMP_EDITOR (event_editor_new (oc->client));
 		break;
 
 	case CAL_COMPONENT_TODO:
-		editor = COMP_EDITOR (task_editor_new ());
+		editor = COMP_EDITOR (task_editor_new (oc->client));
 		break;
 
 	default:
@@ -324,98 +285,106 @@ edit_existing (OpenClient *oc, const char *uid)
 		return;
 	}
 
-	/* Set the client/object on the editor */
-
-	c = g_new (Component, 1);
-	c->parent = oc;
-	cal_component_get_uid (comp, &c->uid);
-	c->comp = comp;
-	c->editor = editor;
-
-	g_hash_table_insert (oc->uid_comp_hash, (char *) c->uid, c);
-
-	gtk_signal_connect (GTK_OBJECT (editor), "destroy",
-			    GTK_SIGNAL_FUNC (editor_destroy_cb), c);
-
-	comp_editor_set_cal_client (editor, oc->client);
+	/* Set the object on the editor */
 	comp_editor_edit_comp (editor, comp);
 	comp_editor_focus (editor);
+
+	oc->editor_count++;
+	gtk_signal_connect (GTK_OBJECT (editor), "destroy",
+			    GTK_SIGNAL_FUNC (editor_destroy_cb), oc);
+
+	e_comp_editor_registry_add (comp_editor_registry, editor, TRUE);
 }
 
 /* Creates a component with the appropriate defaults for the specified component
  * type.
  */
 static CalComponent *
-get_default_component (CalComponentVType vtype)
+get_default_event (gboolean all_day) 
 {
 	CalComponent *comp;
+	struct icaltimetype itt;
+	CalComponentDateTime dt;
+	char *location;
+	icaltimezone *zone;
 
-	if (vtype == CAL_COMPONENT_EVENT) {
-		struct icaltimetype itt;
-		CalComponentDateTime dt;
-		char *location;
-		icaltimezone *zone;
+	comp = cal_comp_event_new_with_defaults ();
 
-		comp = cal_comp_event_new_with_defaults ();
+	location = calendar_config_get_timezone ();
+	zone = icaltimezone_get_builtin_timezone (location);
 
-		itt = icaltime_today ();
+	if (all_day) {
+		itt = icaltime_from_timet_with_zone (time (NULL), 1, zone);
 
 		dt.value = &itt;
-		location = calendar_config_get_timezone ();
-		zone = icaltimezone_get_builtin_timezone (location);
 		dt.tzid = icaltimezone_get_tzid (zone);
-
+		
 		cal_component_set_dtstart (comp, &dt);
-		cal_component_set_dtend (comp, &dt);
-
-		cal_component_commit_sequence (comp);
+		cal_component_set_dtend (comp, &dt);		
 	} else {
-		comp = cal_component_new ();
-		cal_component_set_new_vtype (comp, vtype);
+		itt = icaltime_current_time_with_zone (zone);
+		icaltime_adjust (&itt, 0, 1, -itt.minute, -itt.second);
+		
+		dt.value = &itt;
+		dt.tzid = icaltimezone_get_tzid (zone);
+		
+		cal_component_set_dtstart (comp, &dt);
+		icaltime_adjust (&itt, 0, 1, 0, 0);
+		cal_component_set_dtend (comp, &dt);
 	}
+
+	cal_component_commit_sequence (comp);
+
+	return comp;
+}
+
+static CalComponent *
+get_default_task (void)
+{
+	CalComponent *comp;
+	
+	comp = cal_component_new ();
+	cal_component_set_new_vtype (comp, CAL_COMPONENT_TODO);
 
 	return comp;
 }
 
 /* Edits a new object in the context of a client */
 static void
-edit_new (OpenClient *oc, CalComponentVType vtype)
+edit_new (OpenClient *oc, const GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode type)
 {
 	CalComponent *comp;
-	Component *c;
 	CompEditor *editor;
-
-	switch (vtype) {
-	case CAL_COMPONENT_EVENT:
-		editor = COMP_EDITOR (event_editor_new ());
+	
+	switch (type) {
+	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_EVENT:
+	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_MEETING:
+		editor = COMP_EDITOR (event_editor_new (oc->client));
+		comp = get_default_event (FALSE);
 		break;
-
-	case CAL_COMPONENT_TODO:
-		editor = COMP_EDITOR (task_editor_new ());
+	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_ALLDAY_EVENT:
+		editor = COMP_EDITOR (event_editor_new (oc->client));
+		comp = get_default_event (TRUE);
 		break;
-
+	case GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_TODO:
+		editor = COMP_EDITOR (task_editor_new (oc->client));
+		comp = get_default_task ();
+		break;
 	default:
 		g_assert_not_reached ();
 		return;
 	}
 
-	comp = get_default_component (vtype);
-
-	c = g_new (Component, 1);
-	c->parent = oc;
-	cal_component_get_uid (comp, &c->uid);
-	c->comp = comp;
-
-	c->editor = editor;
-
-	g_hash_table_insert (oc->uid_comp_hash, (char *) c->uid, c);
-
-	gtk_signal_connect (GTK_OBJECT (editor), "destroy",
-			    GTK_SIGNAL_FUNC (editor_destroy_cb), c);
-
-	comp_editor_set_cal_client (editor, oc->client);
 	comp_editor_edit_comp (editor, comp);
+	if (type == GNOME_Evolution_Calendar_CompEditorFactory_EDITOR_MODE_MEETING)
+		event_editor_show_meeting (EVENT_EDITOR (editor));
 	comp_editor_focus (editor);
+
+	oc->editor_count++;
+	gtk_signal_connect (GTK_OBJECT (editor), "destroy",
+			    GTK_SIGNAL_FUNC (editor_destroy_cb), oc);
+
+	e_comp_editor_registry_add (comp_editor_registry, editor, TRUE);
 }
 
 /* Resolves all the pending requests for a client */
@@ -450,7 +419,7 @@ resolve_pending_requests (OpenClient *oc)
 			break;
 
 		case REQUEST_NEW:
-			edit_new (oc, request->u.new.vtype);
+			edit_new (oc, request->u.new.type);
 			break;
 		}
 
@@ -526,7 +495,7 @@ open_client (CompEditorFactory *factory, const char *uristr)
 	oc->uri = g_strdup (uristr);
 
 	oc->client = client;
-	oc->uid_comp_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	oc->editor_count = 0;
 	oc->pending = NULL;
 	oc->open = FALSE;
 
@@ -536,7 +505,6 @@ open_client (CompEditorFactory *factory, const char *uristr)
 	if (!cal_client_open_calendar (oc->client, uristr, FALSE)) {
 		g_free (oc->uri);
 		gtk_object_unref (GTK_OBJECT (oc->client));
-		g_hash_table_destroy (oc->uid_comp_hash);
 		g_free (oc);
 
 		return NULL;
@@ -563,9 +531,7 @@ lookup_open_client (CompEditorFactory *factory, const char *str_uri, CORBA_Envir
 
 	uri = e_uri_new (str_uri);
 	if (!uri) {
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				     ex_GNOME_Evolution_Calendar_CompEditorFactory_InvalidURI,
-				     NULL);
+		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CompEditorFactory_InvalidURI);
 		return NULL;
 	}
 	e_uri_free (uri);
@@ -574,10 +540,7 @@ lookup_open_client (CompEditorFactory *factory, const char *str_uri, CORBA_Envir
 	if (!oc) {
 		oc = open_client (factory, str_uri);
 		if (!oc) {
-			CORBA_exception_set (
-				ev, CORBA_USER_EXCEPTION,
-				ex_GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError,
-				NULL);
+			bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_CompEditorFactory_BackendContactError);
 			return NULL;
 		}
 	}
@@ -610,7 +573,7 @@ impl_editExisting (PortableServer_Servant servant,
 	CompEditorFactory *factory;
 	CompEditorFactoryPrivate *priv;
 	OpenClient *oc;
-	Component *c;
+	CompEditor *editor;
 
 	factory = COMP_EDITOR_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
@@ -625,19 +588,17 @@ impl_editExisting (PortableServer_Servant servant,
 	}
 
 	/* Look up the component */
-
-	c = g_hash_table_lookup (oc->uid_comp_hash, uid);
-	if (!c)
+	editor = e_comp_editor_registry_find (comp_editor_registry, uid);	
+	if (editor == NULL) {
 		edit_existing (oc, uid);
-	else {
-		g_assert (c->editor != NULL);
-		comp_editor_focus (c->editor);
+	} else {
+		comp_editor_focus (editor);
 	}
 }
 
 /* Queues a request for creating a new object */
 static void
-queue_edit_new (OpenClient *oc, CalComponentVType vtype)
+queue_edit_new (OpenClient *oc, const GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode type)
 {
 	Request *request;
 
@@ -645,7 +606,7 @@ queue_edit_new (OpenClient *oc, CalComponentVType vtype)
 
 	request = g_new (Request, 1);
 	request->type = REQUEST_NEW;
-	request->u.new.vtype = vtype;
+	request->u.new.type = type;
 
 	oc->pending = g_slist_append (oc->pending, request);
 }
@@ -654,14 +615,13 @@ queue_edit_new (OpenClient *oc, CalComponentVType vtype)
 static void
 impl_editNew (PortableServer_Servant servant,
 	      const CORBA_char *str_uri,
-	      const GNOME_Evolution_Calendar_CalObjType corba_type,
+	      const GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode corba_type,
 	      CORBA_Environment *ev)
 {
 	CompEditorFactory *factory;
 	CompEditorFactoryPrivate *priv;
 	OpenClient *oc;
-	CalComponentVType vtype;
-
+ 
 	factory = COMP_EDITOR_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
 
@@ -669,26 +629,10 @@ impl_editNew (PortableServer_Servant servant,
 	if (!oc)
 		return;
 
-	switch (corba_type) {
-	case GNOME_Evolution_Calendar_TYPE_EVENT:
-		vtype = CAL_COMPONENT_EVENT;
-		break;
-
-	case GNOME_Evolution_Calendar_TYPE_TODO:
-		vtype = CAL_COMPONENT_TODO;
-		break;
-
-	default:
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				     ex_GNOME_Evolution_Calendar_CompEditorFactory_UnsupportedType,
-				     NULL);
-		return;
-	}
-
 	if (!oc->open)
-		queue_edit_new (oc, vtype);
+		queue_edit_new (oc, corba_type);
 	else
-		edit_new (oc, vtype);
+		edit_new (oc, corba_type);
 }
 
 

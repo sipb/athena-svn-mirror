@@ -18,11 +18,15 @@
 	<oaf_attribute name="description-da" type="string"
                        value="Personlig adressebogs-server"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Der pers&#246;nliche Adressbuchserver"/>
+                       value="Der Pers&#195;&#182;nliche Adressbuch-Server"/>
 	<oaf_attribute name="description-el" type="string"
                        value="&#207; &#228;&#233;&#225;&#234;&#239;&#236;&#233;&#243;&#244;&#222;&#242; &#240;&#241;&#239;&#243;&#249;&#240;&#233;&#234;&#239;&#253; &#226;&#233;&#226;&#235;&#223;&#239;&#245; &#228;&#233;&#229;&#245;&#232;&#253;&#237;&#243;&#229;&#249;&#237;"/>
 	<oaf_attribute name="description-es" type="string"
                        value="El Servidor de Agendas Personales"/>
+	<oaf_attribute name="description-et" type="string"
+                       value="Personal Addressbook Server"/>
+	<oaf_attribute name="description-eu" type="string"
+                       value="Helbide-liburu pertsonalaren zerbitzaria"/>
 	<oaf_attribute name="description-fr" type="string"
                        value="Le serveur de carnet d&#39;adresses personnel"/>
 	<oaf_attribute name="description-gl" type="string"
@@ -38,7 +42,7 @@
 	<oaf_attribute name="description-lt" type="string"
                        value="Asmeninis Adres&#248; knygel&#235;s serveris"/>
 	<oaf_attribute name="description-lv" type="string"
-                       value="Person&#226;lais Adre&#240;u Gr&#226;matas Serveris"/>
+                       value="Person&#196;&#129;lais Adre&#197;&#161;u Gr&#196;&#129;matas Serveris"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="De Persoonlijke Adresboekserver"/>
 	<oaf_attribute name="description-nn" type="string"
@@ -58,15 +62,17 @@
 	<oaf_attribute name="description-sl" type="string"
                        value="Stre&#197;&#190;nik osebnega adresarja"/>
 	<oaf_attribute name="description-sv" type="string"
-                       value="Server f&#246;r personlig adressbok"/>
+                       value="Server f&#195;&#182;r personlig adressbok"/>
 	<oaf_attribute name="description-tr" type="string"
-                       value="Ki&#254;isel Adres Defteri Sunucusu"/>
+                       value="Ki&#197;&#159;isel Adres Defteri Sunucusu"/>
 	<oaf_attribute name="description-uk" type="string"
-                       value="&#240;&#197;&#210;&#211;&#207;&#206;&#193;&#204;&#216;&#206;&#201;&#202; &#211;&#197;&#210;&#215;&#197;&#210; &#193;&#196;&#210;&#197;&#211;&#206;&#207;&#167; &#203;&#206;&#201;&#199;&#201;"/>
+                       value="&#208;&#159;&#208;&#181;&#209;&#128;&#209;&#129;&#208;&#190;&#208;&#189;&#208;&#176;&#208;&#187;&#209;&#140;&#208;&#189;&#208;&#184;&#208;&#185; &#209;&#129;&#208;&#181;&#209;&#128;&#208;&#178;&#208;&#181;&#209;&#128; &#208;&#176;&#208;&#180;&#209;&#128;&#208;&#181;&#209;&#129;&#208;&#189;&#208;&#190;&#209;&#151; &#208;&#186;&#208;&#189;&#208;&#184;&#208;&#179;&#208;&#184;"/>
+	<oaf_attribute name="description-vi" type="string"
+                       value="Server S&#225;&#187;&#149; &#196;&#145;&#225;&#187;&#139;a ch&#225;&#187;&#137; c&#195;&#161; nh&#195;&#162;n"/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#228;&#184;&#170;&#228;&#186;&#186;&#229;&#156;&#176;&#229;&#157;&#128;&#231;&#176;&#191;&#230;&#156;&#141;&#229;&#138;&#161;&#229;&#153;&#168;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-                       value="&#229;&#128;&#139;&#228;&#186;&#186;&#231;&#154;&#132;&#231;&#155;&#174;&#233;&#140;&#132;&#228;&#188;&#186;&#230;&#156;&#141;&#229;&#153;&#168;"/>
+                       value="&#173;&#211;&#164;H&#170;&#186;&#165;&#216;&#191;&#253;&#166;&#248;&#170;A&#190;&#185;"/>
 
         <oaf_attribute name="addressbook:supported_protocols" type="stringv">
 		<item value="ldap"/>
@@ -86,17 +92,19 @@
 	<oaf_attribute name="description" type="string"
                        value="The Personal Calendar Server; calendar factory"/>
 	<oaf_attribute name="description-az" type="string"
-                       value="&#197;&#158;&#201;&#153;xsi &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri Vericisi; t&#201;&#153;qvim e&#39;malatxanas&#196;&#177;"/>
+                       value="&#197;&#158;&#201;&#153;xsi &#195;&#156;nvan D&#201;&#153;ft&#201;&#153;ri Vericisi; t&#201;&#153;qvim emalatxanas&#196;&#177;"/>
 	<oaf_attribute name="description-bg" type="string"
                        value="&#209;&#250;&#240;&#226;&#250;&#240; &#237;&#224; &#207;&#229;&#240;&#241;&#238;&#237;&#224;&#235;&#229;&#237; &#202;&#224;&#235;&#229;&#237;&#228;&#224;&#240;; &#244;&#224;&#225;&#240;&#232;&#234;&#224; &#237;&#224; &#234;&#224;&#235;&#229;&#237;&#228;&#224;&#240;"/>
 	<oaf_attribute name="description-da" type="string"
                        value="Personlig adressebogs-server; fabrik"/>
 	<oaf_attribute name="description-de" type="string"
-                       value="Der pers&#246;nliche Kalenderserver; Kalender-Fabrik"/>
+                       value="Der pers&#195;&#182;nliche Kalenderserver; Kalender-Fabrik"/>
 	<oaf_attribute name="description-el" type="string"
                        value="&#207; &#208;&#241;&#239;&#243;&#249;&#240;&#233;&#234;&#252;&#242; &#197;&#238;&#245;&#240;&#231;&#241;&#229;&#244;&#231;&#244;&#222;&#242; &#199;&#236;&#229;&#241;&#239;&#235;&#239;&#227;&#223;&#239;&#245;, &#197;&#241;&#227;&#239;&#243;&#244;&#220;&#243;&#233;&#239; &#199;&#236;&#229;&#241;&#239;&#235;&#239;&#227;&#223;&#239;&#245;"/>
 	<oaf_attribute name="description-es" type="string"
                        value="El Servidor de Calendarios Personales. Factor&#237;a de calendarios"/>
+	<oaf_attribute name="description-eu" type="string"
+                       value="Egutegi pertsonalaren zerbitzaria; egutegi-fabrika"/>
 	<oaf_attribute name="description-fr" type="string"
                        value="Le serveur de calendrier personnel; utilitaire de calendrier"/>
 	<oaf_attribute name="description-gl" type="string"
@@ -108,7 +116,7 @@
 	<oaf_attribute name="description-ja" type="string"
                        value="&#165;&#209;&#161;&#188;&#165;&#189;&#165;&#202;&#165;&#235;&#165;&#171;&#165;&#236;&#165;&#243;&#165;&#192;&#165;&#181;&#161;&#188;&#165;&#208;; &#165;&#171;&#165;&#236;&#165;&#243;&#165;&#192;&#165;&#213;&#165;&#161;&#165;&#175;&#165;&#200;&#165;&#234;"/>
 	<oaf_attribute name="description-lv" type="string"
-                       value="Person&#226;lais Kalend&#226;ra Serveris, kalend&#226;ra ra&#254;otne"/>
+                       value="Person&#196;&#129;lais Kalend&#196;&#129;ra Serveris, kalend&#196;&#129;ra ra&#197;&#190;otne"/>
 	<oaf_attribute name="description-nl" type="string"
                        value="De Persoonlijke Kalenderserver; kalender fabriek"/>
 	<oaf_attribute name="description-nn" type="string"
@@ -128,15 +136,17 @@
 	<oaf_attribute name="description-sl" type="string"
                        value="Stre&#197;&#190;nik osebnega koledarja; tovarna koledarjal"/>
 	<oaf_attribute name="description-sv" type="string"
-                       value="Server f&#246;r personlig kalender; kalenderfabrik"/>
+                       value="Server f&#195;&#182;r personlig kalender; kalenderfabrik"/>
 	<oaf_attribute name="description-tr" type="string"
-                       value="Ki&#254;isel Takvim Sunucusu"/>
+                       value="Ki&#197;&#159;isel Takvim Sunucusu"/>
 	<oaf_attribute name="description-uk" type="string"
-                       value="&#240;&#197;&#210;&#211;&#207;&#206;&#193;&#204;&#216;&#206;&#201;&#202; &#203;&#193;&#204;&#197;&#206;&#196;&#193;&#210;&#206;&#201;&#202; &#211;&#197;&#210;&#215;&#197;&#210;; &#203;&#193;&#204;&#197;&#206;&#196;&#193;&#210;&#206;&#193; &#198;&#193;&#194;&#210;&#201;&#203;&#193;"/>
+                       value="&#208;&#159;&#208;&#181;&#209;&#128;&#209;&#129;&#208;&#190;&#208;&#189;&#208;&#176;&#208;&#187;&#209;&#140;&#208;&#189;&#208;&#184;&#208;&#185; &#208;&#186;&#208;&#176;&#208;&#187;&#208;&#181;&#208;&#189;&#208;&#180;&#208;&#176;&#209;&#128;&#208;&#189;&#208;&#184;&#208;&#185; &#209;&#129;&#208;&#181;&#209;&#128;&#208;&#178;&#208;&#181;&#209;&#128;; &#208;&#186;&#208;&#176;&#208;&#187;&#208;&#181;&#208;&#189;&#208;&#180;&#208;&#176;&#209;&#128;&#208;&#189;&#208;&#176; &#209;&#132;&#208;&#176;&#208;&#177;&#209;&#128;&#208;&#184;&#208;&#186;&#208;&#176;"/>
+	<oaf_attribute name="description-vi" type="string"
+                       value="Server L&#225;&#187;&#139;ch c&#195;&#161; nh&#195;&#162;n; factory l&#225;&#187;&#139;ch"/>
 	<oaf_attribute name="description-zh_CN" type="string"
                        value="&#228;&#184;&#170;&#228;&#186;&#186;&#230;&#151;&#165;&#229;&#142;&#134;&#230;&#156;&#141;&#229;&#138;&#161;&#229;&#153;&#168;&#239;&#188;&#155;&#230;&#151;&#165;&#229;&#142;&#134;&#229;&#183;&#165;&#229;&#142;&#130;"/>
 	<oaf_attribute name="description-zh_TW" type="string"
-                       value="&#229;&#128;&#139;&#228;&#186;&#186;&#231;&#154;&#132;&#232;&#161;&#140;&#228;&#186;&#139;&#230;&#155;&#134;&#228;&#188;&#186;&#230;&#156;&#141;&#229;&#153;&#168;&#239;&#188;&#155;&#232;&#161;&#140;&#228;&#186;&#139;&#230;&#155;&#134;&#229;&#133;&#131;&#228;&#187;&#182;&#229;&#183;&#165;&#229;&#187;&#160;"/>
+                       value="&#173;&#211;&#164;H&#170;&#186;&#166;&#230;&#168;&#198;&#190;&#228;&#166;&#248;&#170;A&#190;&#185;&#161;F&#166;&#230;&#168;&#198;&#190;&#228;&#164;&#184;&#165;&#243;&#164;u&#188;t"/>
 
 </oaf_server>
 

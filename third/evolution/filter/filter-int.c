@@ -32,21 +32,17 @@
 
 #define d(x)
 
+static int int_eq(FilterElement *fe, FilterElement *cm);
 static void xml_create (FilterElement *fe, xmlNodePtr node);
 static xmlNodePtr xml_encode (FilterElement *fe);
 static int xml_decode (FilterElement *fe, xmlNodePtr node);
 static GtkWidget *get_widget (FilterElement *fe);
 static void build_code (FilterElement *fe, GString *out, struct _FilterPart *ff);
-static void format_sexp (FilterElement *, GString *);
+static void format_sexp (FilterElement *fe, GString *out);
 
 static void filter_int_class_init (FilterIntClass *class);
 static void filter_int_init (FilterInt *gspaper);
 static void filter_int_finalise (GtkObject *obj);
-
-#define _PRIVATE(x) (((FilterInt *)(x))->priv)
-
-struct _FilterIntPrivate {
-};
 
 static FilterElementClass *parent_class;
 
@@ -56,10 +52,10 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-guint
+GtkType
 filter_int_get_type (void)
 {
-	static guint type = 0;
+	static GtkType type = 0;
 	
 	if (!type) {
 		GtkTypeInfo type_info = {
@@ -90,6 +86,7 @@ filter_int_class_init (FilterIntClass *class)
 	object_class->finalize = filter_int_finalise;
 	
 	/* override methods */
+	filter_element->eq = int_eq;
 	filter_element->xml_create = xml_create;
 	filter_element->xml_encode = xml_encode;
 	filter_element->xml_decode = xml_decode;
@@ -105,15 +102,16 @@ filter_int_class_init (FilterIntClass *class)
 static void
 filter_int_init (FilterInt *o)
 {
-	o->priv = g_malloc0 (sizeof (*o->priv));
+	o->min = 0;
+	o->max = G_MAXINT;
 }
 
 static void
 filter_int_finalise(GtkObject *obj)
 {
 	FilterInt *o = (FilterInt *)obj;
-	
-	o = o;
+
+	g_free(o->type);
 	
         ((GtkObjectClass *)(parent_class))->finalize(obj);
 }
@@ -132,6 +130,29 @@ filter_int_new (void)
 	return o;
 }
 
+FilterInt *
+filter_int_new_type(const char *type, int min, int max)
+{
+	FilterInt *o = (FilterInt *)gtk_type_new(filter_int_get_type ());
+	o->type = g_strdup(type);
+	o->min = min;
+	o->max = max;
+	return o;
+}
+
+void
+filter_int_set_value(FilterInt *fi, int val)
+{
+	fi->val = val;
+}
+
+static int
+int_eq(FilterElement *fe, FilterElement *cm)
+{
+        return ((FilterElementClass *)(parent_class))->eq(fe, cm)
+		&& ((FilterInt *)fe)->val == ((FilterInt *)cm)->val;
+}
+
 static void
 xml_create (FilterElement *fe, xmlNodePtr node)
 {
@@ -144,17 +165,19 @@ xml_encode (FilterElement *fe)
 {
 	xmlNodePtr value;
 	FilterInt *fs = (FilterInt *)fe;
-	char *intval;
+	char intval[32];
+	const char *type;
 	
-	d(printf("Encoding integer as xml\n"));
+	type = fs->type?fs->type:"integer";
+
+	d(printf("Encoding %s as xml\n", type));
 	
 	value = xmlNewNode (NULL, "value");
 	xmlSetProp (value, "name", fe->name);
-	xmlSetProp (value, "type", "integer");
+	xmlSetProp (value, "type", type);
 	
-	intval = g_strdup_printf ("%d", fs->val);
-	xmlSetProp (value, "integer", intval);
-	g_free (intval);
+	sprintf(intval, "%d", fs->val);
+	xmlSetProp (value, type, intval);
 	
 	return value;
 }
@@ -163,7 +186,7 @@ static int
 xml_decode (FilterElement *fe, xmlNodePtr node)
 {
 	FilterInt *fs = (FilterInt *)fe;
-	char *name;
+	char *name, *type;
 	char *intval;
 	
 	d(printf("Decoding integer from xml %p\n", fe));
@@ -172,12 +195,22 @@ xml_decode (FilterElement *fe, xmlNodePtr node)
 	d(printf ("Name = %s\n", name));
 	xmlFree (fe->name);
 	fe->name = name;
-	intval = xmlGetProp (node, "integer");
+
+	type = xmlGetProp(node, "type");
+	d(printf ("Type = %s\n", type));
+	g_free(fs->type);
+	fs->type = g_strdup(type);
+	xmlFree(type);
+	
+	intval = xmlGetProp (node, fs->type ? fs->type : "integer");
 	if (intval) {
+		d(printf ("Value = %s\n", intval));
 		fs->val = atoi (intval);
 		xmlFree (intval);
-	} else
+	} else {
+		d(printf ("Value = ?unknown?\n"));
 		fs->val = 0;
+	}
 	
 	return 0;
 }
@@ -197,14 +230,12 @@ get_widget (FilterElement *fe)
 	GtkObject *adjustment;
 	FilterInt *fs = (FilterInt *)fe;
 	
-	adjustment = gtk_adjustment_new (0.0, 0.0, (gfloat)G_MAXINT, 
-					 1.0, 1.0, 1.0);
-	spin = gtk_spin_button_new (GTK_ADJUSTMENT (adjustment), 5.0, 0);
+	adjustment = gtk_adjustment_new (0.0, (gfloat)fs->min, (gfloat)fs->max, 1.0, 1.0, 1.0);
+	spin = gtk_spin_button_new (GTK_ADJUSTMENT (adjustment), fs->max>fs->min+1000?5.0:1.0, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spin), TRUE);
 	
-	if (fs->val) {
+	if (fs->val)
 		gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), (gfloat) fs->val);
-	}
 	
 	gtk_signal_connect (GTK_OBJECT (spin), "changed", spin_changed, fe);
 	
@@ -221,6 +252,6 @@ static void
 format_sexp (FilterElement *fe, GString *out)
 {
 	FilterInt *fs = (FilterInt *)fe;
-	
-	g_string_append(out, g_strdup_printf("%d", fs->val));
+
+	g_string_sprintfa(out, "%d", fs->val);
 }

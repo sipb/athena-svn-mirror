@@ -33,7 +33,6 @@
 
 #include "e-select-names-model.h"
 #include "e-util/e-list.h"
-#include "shell/evolution-storage-listener.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,6 +55,7 @@ extern "C" {
 
 typedef struct _ESelectNames       ESelectNames;
 typedef struct _ESelectNamesClass  ESelectNamesClass;
+typedef struct _ESelectNamesFolder ESelectNamesFolder;
 
 struct _ESelectNames
 {
@@ -71,13 +71,11 @@ struct _ESelectNames
 	ETableModel *without;
 	EAddressbookModel *model;
 	GtkWidget *categories;
-	GtkWidget *categories_entry;
-	GtkWidget *search_entry;
+	GtkWidget *select_entry;
 	GtkWidget *status_message;
-	EvolutionStorageListener *local_listener;
-	EvolutionStorageListener *other_contacts_listener;
-	GHashTable *folders;
+	GtkWidget *status_image;
 	char *def;
+	ESelectNamesFolder *current_folder;
 };
 
 struct _ESelectNamesClass

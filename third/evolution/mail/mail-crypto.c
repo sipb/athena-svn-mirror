@@ -33,111 +33,22 @@
 
 
 /**
- * mail_crypto_pgp_mime_part_sign:
- * @mime_part: a MIME part that will be replaced by a pgp signed part
- * @userid: userid to sign with
- * @hash: one of CAMEL_CIPHER_HASH_MD5 or CAMEL_CIPHER_HASH_SHA1
- * @ex: exception which will be set if there are any errors.
+ * mail_crypto_get_pgp_cipher_context:
+ * @account: Account that will be using this context
  *
- * Constructs a PGP/MIME multipart in compliance with rfc2015 and
- * replaces #part with the generated multipart/signed. On failure,
- * #ex will be set and #part will remain untouched.
+ * Constructs a new GnuPG cipher context with the appropriate
+ * options set based on the account provided.
  **/
-void
-mail_crypto_pgp_mime_part_sign (CamelMimePart **mime_part, const char *userid, CamelCipherHash hash, CamelException *ex)
+CamelCipherContext *
+mail_crypto_get_pgp_cipher_context (const MailConfigAccount *account)
 {
-	CamelPgpContext *context;
+	CamelCipherContext *cipher;
 	
-	context = camel_pgp_context_new (session, mail_config_get_pgp_type (),
-					 mail_config_get_pgp_path ());
+	cipher = camel_gpg_context_new (session);
+	if (account)
+		camel_gpg_context_set_always_trust ((CamelGpgContext *) cipher, account->pgp_always_trust);
 	
-	if (context) {
-		camel_pgp_mime_part_sign (context, mime_part, userid, hash, ex);
-		camel_object_unref (CAMEL_OBJECT (context));
-	} else
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not create a PGP signature context."));
-}
-
-
-/**
- * mail_crypto_pgp_mime_part_verify:
- * @mime_part: a multipart/signed MIME Part
- * @ex: exception
- *
- * Returns a CamelCipherValidity on success or NULL on fail.
- **/
-CamelCipherValidity *
-mail_crypto_pgp_mime_part_verify (CamelMimePart *mime_part, CamelException *ex)
-{
-	CamelCipherValidity *valid = NULL;
-	CamelPgpContext *context;
-	
-	context = camel_pgp_context_new (session, mail_config_get_pgp_type (),
-					 mail_config_get_pgp_path ());
-	
-	if (context) {
-		valid = camel_pgp_mime_part_verify (context, mime_part, ex);
-		camel_object_unref (CAMEL_OBJECT (context));
-	} else
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not create a PGP verification context."));
-	
-	return valid;
-}
-
-
-/**
- * mail_crypto_pgp_mime_part_encrypt:
- * @mime_part: a MIME part that will be replaced by a pgp encrypted part
- * @recipients: list of recipient PGP Key IDs
- * @ex: exception which will be set if there are any errors.
- *
- * Constructs a PGP/MIME multipart in compliance with rfc2015 and
- * replaces #mime_part with the generated multipart/encrypted. On failure,
- * #ex will be set and #part will remain untouched.
- **/
-void
-mail_crypto_pgp_mime_part_encrypt (CamelMimePart **mime_part, GPtrArray *recipients, CamelException *ex)
-{
-	CamelPgpContext *context;
-	
-	context = camel_pgp_context_new (session, mail_config_get_pgp_type (),
-					 mail_config_get_pgp_path ());
-	
-	if (context) {
-		camel_pgp_mime_part_encrypt (context, mime_part, recipients, ex);
-		camel_object_unref (CAMEL_OBJECT (context));
-	} else
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not create a PGP encryption context."));
-}
-
-
-/**
- * mail_crypto_pgp_mime_part_decrypt:
- * @mime_part: a multipart/encrypted MIME Part
- * @ex: exception
- *
- * Returns the decrypted MIME Part on success or NULL on fail.
- **/
-CamelMimePart *
-mail_crypto_pgp_mime_part_decrypt (CamelMimePart *mime_part, CamelException *ex)
-{
-	CamelPgpContext *context;
-	CamelMimePart *part = NULL;
-	
-	context = camel_pgp_context_new (session, mail_config_get_pgp_type (),
-					 mail_config_get_pgp_path ());
-	
-	if (context) {
-		part = camel_pgp_mime_part_decrypt (context, mime_part, ex);
-		camel_object_unref (CAMEL_OBJECT (context));
-	} else
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Could not create a PGP decryption context."));
-	
-	return part;
+	return cipher;
 }
 
 
@@ -207,6 +118,7 @@ mail_crypto_smime_certsonly (CamelMimeMessage *message, const char *userid,
 	return mesg;
 }
 
+
 /**
  * mail_crypto_smime_encrypt:
  * @message: MIME message
@@ -238,6 +150,7 @@ mail_crypto_smime_encrypt (CamelMimeMessage *message, const char *userid,
 	return mesg;
 }
 
+
 /**
  * mail_crypto_smime_envelope:
  * @message: MIME message
@@ -268,6 +181,7 @@ mail_crypto_smime_envelope (CamelMimeMessage *message, const char *userid,
 	
 	return mesg;
 }
+
 
 /**
  * mail_crypto_smime_decode:

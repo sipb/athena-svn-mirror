@@ -44,6 +44,7 @@
 
 typedef struct _ESummaryPrivate ESummaryPrivate;
 typedef struct _ESummaryClass ESummaryClass;
+typedef struct _ESummaryPrefsFolder ESummaryPrefsFolder;
 typedef struct _ESummaryPrefs ESummaryPrefs;
 typedef struct _ESummaryConnection ESummaryConnection;
 typedef struct _ESummaryConnectionData ESummaryConnectionData;
@@ -77,10 +78,15 @@ struct _ESummaryConnectionData {
 	char *type;
 };
 
+struct _ESummaryPrefsFolder {
+	char *physical_uri;
+	char *evolution_uri;
+};
+
 struct _ESummaryPrefs {
 
 	/* Mail */
-	GList *display_folders;
+	GList *display_folders; /* List of ESummaryPrefsFolder */
 	gboolean show_full_path;
 
 	/* RDF */
@@ -102,7 +108,6 @@ struct _ESummary {
 	GtkVBox parent;
 
 	ESummaryPrefs *preferences;
-	ESummaryPrefs *old_prefs;
 
 	ESummaryMail *mail;
 	ESummaryCalendar *calendar;
@@ -112,9 +117,9 @@ struct _ESummary {
 
 	ESummaryPrivate *priv;
 
+	GNOME_Evolution_Shell shell;
 	GNOME_Evolution_ShellView shell_view_interface;
 
-	GtkWidget *prefs_window;
 	gboolean online;
 
 	char *timezone;
@@ -127,7 +132,8 @@ struct _ESummaryClass {
 
 
 GtkType e_summary_get_type (void);
-GtkWidget *e_summary_new (const GNOME_Evolution_Shell shell);
+GtkWidget *e_summary_new (const GNOME_Evolution_Shell shell,
+			  ESummaryPrefs *prefs);
 
 void e_summary_print (BonoboUIComponent *component,
 		      gpointer user_data,
@@ -136,6 +142,8 @@ void e_summary_reload (BonoboUIComponent *component,
 		       gpointer user_data,
 		       const char *cname);
 void e_summary_draw (ESummary *summary);
+void e_summary_redraw_all (void);
+
 void e_summary_change_current_view (ESummary *summary,
 				    const char *uri);
 
@@ -150,6 +158,7 @@ void e_summary_add_protocol_listener (ESummary *summary,
 				      void *closure);
 
 void e_summary_reconfigure (ESummary *summary);
+void e_summary_reconfigure_all (void);
 
 int e_summary_count_connections (ESummary *summary);
 GList *e_summary_add_connections (ESummary *summary);

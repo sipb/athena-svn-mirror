@@ -57,6 +57,7 @@ static gchar *name_synonyms[][2] = {
 	{ "ian", "iain" },
 	{ "richard", "dick" },
 	{ "william", "bill" },
+	{ "william", "will" },
 	{ "anthony", "tony" },
 	{ "michael", "mike" },
 	{ "eric", "erik" },
@@ -70,11 +71,13 @@ static gchar *name_synonyms[][2] = {
 	{ "amanda", "amy" },
 	{ "amanda", "manda" },
 	{ "jennifer", "jenny" },
+	{ "christopher", "chris" },
 	{ "rebecca", "becca" },
 	{ "rebecca", "becky" },
 	{ "anderson", "andersen" },
 	{ "johnson", "johnsen" },
 	/* We could go on and on... */
+	/* We should add soundex here. */
 	{ NULL, NULL }
 };
 	
@@ -417,11 +420,12 @@ match_email_hostname (const gchar *addr1, const gchar *addr2)
 static ECardMatchType
 compare_email_addresses (const gchar *addr1, const gchar *addr2)
 {
-	if (addr1 == NULL || addr2 == NULL)
+	if (addr1 == NULL || *addr1 == 0 ||
+	    addr2 == NULL || *addr2 == 0)
 		return E_CARD_MATCH_NOT_APPLICABLE;
 
 	if (match_email_username (addr1, addr2)) 
-		return match_email_hostname (addr1, addr2) ? E_CARD_MATCH_EXACT : E_CARD_MATCH_PARTIAL;
+		return match_email_hostname (addr1, addr2) ? E_CARD_MATCH_EXACT : E_CARD_MATCH_VAGUE;
 
 	return E_CARD_MATCH_NONE;
 }
@@ -595,9 +599,10 @@ use_common_book_cb (EBook *book, gpointer closure)
 		return;
 	}
 
-	if (card->nickname)
+#if 0
+	if (card->nickname && *card->nickname)
 		query_parts[p++] = g_strdup_printf ("(beginswith \"nickname\" \"%s\")", card->nickname);
-
+#endif
 
 	if (card->name->given && strlen (card->name->given) > 1)
 		query_parts[p++] = g_strdup_printf ("(contains \"full_name\" \"%s\")", card->name->given);
@@ -613,7 +618,7 @@ use_common_book_cb (EBook *book, gpointer closure)
 		EIterator *iter = e_list_get_iterator (card->email);
 		while (e_iterator_is_valid (iter) && p < MAX_QUERY_PARTS) {
 			gchar *addr = g_strdup (e_iterator_get (iter));
-			if (addr) {
+			if (addr && *addr) {
 				gchar *s = addr;
 				while (*s) {
 					if (*s == '@') {
@@ -663,12 +668,12 @@ e_card_locate_match (ECard *card, ECardMatchQueryCallback cb, gpointer closure)
 	info->closure = closure;
 	info->avoid = NULL;
 
-	e_book_use_local_address_book (use_common_book_cb, info);
+	e_book_use_default_book (use_common_book_cb, info);
 }
 
 /**
  * e_card_locate_match_full:
- * @book: The book to look in.  If this is NULL, use the main local
+ * @book: The book to look in.  If this is NULL, use the default
  * addressbook.
  * @card: The card to compare to.
  * @avoid: A list of cards to not match.  These will not show up in the search.
@@ -696,6 +701,6 @@ e_card_locate_match_full (EBook *book, ECard *card, GList *avoid, ECardMatchQuer
 	if (book)
 		use_common_book_cb (book, info);
 	else
-		e_book_use_local_address_book (use_common_book_cb, info);
+		e_book_use_default_book (use_common_book_cb, info);
 }
 

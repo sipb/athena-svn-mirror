@@ -1,10 +1,89 @@
-== Version 1.0.5. ==
+== Version 1.2.1 ==
 
-2002-04-29  Ettore Perazzoli  <ettore@ximian.com>
+2002-12-05  Ettore Perazzoli  <ettore@ximian.com>
 
-	* configure.in: Don't add `-lsocket' unconditionally to `LDFLAGS'.
+	* configure.in: Bump version to 1.2.1, require GAL 0.22 and
+	GtkHTML 1.1.7.
 
-2002-04-29  Ettore Perazzoli  <ettore@ximian.com>
+2002-12-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* tools/evolution-launch-composer.c: New.
+
+2002-11-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Define KILL_PROCESS_CMD.
+
+2002-11-22  Not Zed  <NotZed@Ximian.com>
+
+	* configure.in (E_UTIL_CFLAGS/LDFLAGS): Added NSPR stuff, so we
+	can nsprpoll on msgports.
+
+2002-11-07  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in (VERSION_COMMENT): 1.2.0.99.
+
+== Version 1.2 ==
+
+2002-11-06  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Version 1.2.0.
+
+2002-11-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Version 1.1.90.99.
+
+== Version 1.1.90 (Release Candidate 1) ==
+
+2002-10-28  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: gal 0.21, GtkHTML 1.1.5.
+
+2002-10-23  Chris Toshok  <toshok@ximian.com>
+
+	* configure.in: Update dep for GAL to 0.21.0.
+
+2002-10-07  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Update version number to 1.1.2.99.
+
+== Version 1.1.2 ==
+
+2002-10-07  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: 1.1.2.  Update deps for GAL and GtkHTML.
+
+2002-09-27  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Add m4.
+	(ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): Add config.rpath.
+	* configure.in (AC_OUTPUT): Add po/Makefile.in, m4/Makefile.
+
+2002-09-23  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: use pkg-config for gtkhtml
+
+2002-09-23  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: fix kde applnk test to not test for things if
+	disabled
+
+	* configure.in: Fix up mozilla tests and allow static linking of
+	nss/nspr (Frank Belew <frb@ximian.com>)
+	
+2002-09-23  Aaron Weber  <aaron@ximian.com>
+
+	* README: Update URLs for mailing lists, Evolution application
+	page, help information. Remove note that Evolution is beta. In
+	general, changes to the "soft" data.  Also, jeff's commit to this
+	file from 2001-11-21 seems to have been lost, so I re-removed the
+	stuff he took out. And changed libnspr to mozilla-nspr, and
+	libnss3 to mozilla-nss.
+
+	* data/evolution.1: Update with information about where the real
+	help is. Clarify example formatting.
+
+2002-09-16  Ettore Perazzoli  <ettore@ximian.com>
 
 	* data/cde_app_root/Makefile.am: New.
 	* data/cde_app_root/dt/Makefile.am: New.
@@ -12,18 +91,10 @@
 	* data/cde_app_root/dt/appconfig/appmanager/Makefile.am: New.
 	* data/cde_app_root/dt/appconfig/appmanager/C/Makefile.am: New.
 	* data/cde_app_root/dt/appconfig/appmanager/C/Ximian/Makefile.am: New.
-	* data/cde_app_root/dt/appconfig/appmanager/C/Ximian/Evolution: New.
 	* data/cde_app_root/dt/appconfig/icons/Makefile.am: New.
 	* data/cde_app_root/dt/appconfig/icons/C/Makefile.am: New.
-	* data/cde_app_root/dt/appconfig/icons/C/Evolution.l.pm: New.
-	* data/cde_app_root/dt/appconfig/icons/C/Evolution.m.pm: New.
-	* data/cde_app_root/dt/appconfig/icons/C/Evolution.t.pm: New.
-	* data/cde_app_root/dt/appconfig/icons/C/Ximian.l.pm: New.
-	* data/cde_app_root/dt/appconfig/icons/C/Ximian.m.pm: New.
-	* data/cde_app_root/dt/appconfig/icons/C/Ximian.t.pm: New.
 	* data/cde_app_root/dt/appconfig/types/Makefile.am: New.
 	* data/cde_app_root/dt/appconfig/types/C/Makefile.am: New.
-	* data/cde_app_root/dt/appconfig/types/C/Ximian.dt.in: New.
 
 	* configure.in: Add a `--with-cde-path' option.  Check for
 	dtappintegrate in that path.  Define HAVE_DTAPPINTEGRATE and
@@ -31,69 +102,385 @@
 	data/cde_app_root/dt/appconfig/types/C/Ximian.dt.in and
 	shell/evolution-nognome.
 
-2002-04-19  Ettore Perazzoli  <ettore@ximian.com>
+2002-09-12  Ettore Perazzoli  <ettore@ximian.com>
 
-	* configure.in: Change VERSION to 1.0.4.99.
+	* configure.in: 1.1.1.99.
 
-== Version 1.0.4. ==
+2002-09-11  Ettore Perazzoli  <ettore@ximian.com>
 
-2002-04-18  Ettore Perazzoli  <ettore@ximian.com>
+	* Makefile.am (SUBDIRS): Put po on the top.
 
-	* configure.in: Version 1.0.4.
+== Version 1.1.1 ==
+
+2002-09-09  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: 1.1.1.  Also bump some requirements.
+
+	* README: Update according to the new requirements.
+
+2002-09-06  Larry Ewing  <lewing@ximian.com>
+
+	* NEWS: update with some gtkhtml features.
+
+2002-09-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* NEWS: Updated with the new 1.2 features (unfinished).
+
+	* NEWS-1.0: New, contains the changes up to version 1.0.8.
+
+2002-09-04  Dan Winship  <danw@ximian.com>
+
+	* acinclude.m4 (EVO_CHECK_TIMEZONE): Remove this from here.
+
+	* configure.in: Put it here. (Connector no longer needs to share
+	it). Also, check "tm_gmtoff" before "timezone", and if we have
+	"timezone", check for "altzone" too.
+
+	* acconfig.h: Add HAVE_ALTZONE
+
+2002-08-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: e-util now requires soup and gconf flags.
+
+2002-08-12  Dan Winship  <danw@ximian.com>
+
+	* tools/evolution-addressbook-import.c (main): Use default book,
+	not local one.
+
+	* tools/evolution-addressbook-export.c (main): Likewise.
+
+	* tools/evolution-addressbook-abuse.c (abuse_timeout): Likewise.
+
+2002-08-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* README: Update required gal and gtkhtml dependency information.
+
+2002-08-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in (THREADS_CFLAGS): Need to check for gal 0.19.99.18
+	for e_xml_save_file().
+
+2002-08-01  Ettore Perazzoli  <ettore@ximian.com>
+
+	* README: Update Soup information and remove hard spaces.
+
+	* configure.in: Check for Soup 0.7 or later.  [Hm, we should make
+	sure that it's actually a 0.7.x version.]
+
+2002-07-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: Add checks for IPv6 support.
+
+2002-07-30  Not Zed  <NotZed@Ximian.com>
+
+	* configure.in (EVOLUTION_MAIL): added soup to compile flags.
+
+2002-07-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Patch by Frank Belew <frb@ximian.com>.]
+
+	* configure.in: If no --with-kde-applnk-path is given, try to
+	detect the directory using `kde-config'.
+
+2002-07-22  Dan Winship  <danw@ximian.com>
+
+	* acinclude.m4: Move EVO_CHECK_LIB into here, and also create
+	EVO_PURIFY_SUPPORT, EVO_TIMEZONE_CHECK, and EVO_LDAP_CHECK from
+	stuff in configure.in. (This stuff is also used by Connector.)
+
+	* configure.in: Remove the stuff that was moved to acinclude.m4.
+
+	* evolution_addressbookConf.sh.in: Remove db3 and ldap references
+	since pas-backend-file and pas-backend-ldap are no longer in
+	libpas, and those flags weren't doing anything useful here before
+	anyway. (Our attempts to force static linking to those libraries
+	end up getting mangled when passed through gnome-config.)
+
+	* evolution_calendarConf.sh.in: Likewise, remove db3 references.
+
+2002-07-22  Dan Winship  <danw@ximian.com>
+
+	* configure.in: Check if we're trying to build with the old
+	libversit module borrowed from gnome-pim instead of our own new
+	one, and refuse to build if so.
+
+	* libversit/Makefile.am: Remove libversit.la stuff since we don't
+	want it and it messes up the build slightly.
+
+2002-07-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Prepend "$(WERROR)" to all the *_CFLAGS variables
+	so you can do `make WERROR=-Werror' to turn all compiler warnings
+	into errors.
+
+2002-07-09  Peter Williams  <peterw@ximian.com>
+
+	* libversit/Makefile.am (privlib_LIBRARIES): Install libversit.a so
+	that people compiling against the addressbook can do so successfully.
+
+	* Makefile.am: create our *Conf.sh files and dist them and install
+	them.
+
+	* configure.in: Define and subst some variables that the Conf.sh
+	file need.
+	
+2002-07-10  Peter Williams  <peterw@ximian.com>
+
+	* configure.in (privlibdir): Define a versioned library directory
+	that we can use for things that are ABI-sensitive: camel
+	providers, importers... Define camel_providerder in terms of this,
+	resulting in a new location for the providers. Camel will have to
+	be rebuilt for it to get the new -D flag.
+
+2002-07-12  Peter Williams  <peterw@ximian.com>
+
+	* configure.in (E_UTIL_LIBS): e-util relies on bonobo-conf
+	in e-passwords.c and e-categories-master-list-wombat.c, so
+	reflect that here. And the e-port code needs THREADS_LIBS.
+
+2002-07-09  Peter Williams  <peterw@ximian.com>
+	
+	* tools/Makefile.am (INCLUDES): Add include lines to get
+	ebook headers relative to <ebook/foo.h>, not "foo.h".
+
+2002-07-09    <jpr@ximian.com>
+
+	* configure.in: re-order nss and nspr flags
+
+2002-07-03  Peter Williams  <peterw@ximian.com>
+
+	* README: Fix the URL for the DB 3.1.17 package; it's moved.
+
+2002-06-28  Ettore Perazzoli  <ettore@ximian.com>
+
+	[As suggested by #24466.]
+
+	* data/evolution.desktop.in (Categories): Added.
+
+2002-06-27  Dan Winship  <danw@ximian.com>
+
+	* libversit/Makefile.am: Hack around a libtool/make problem that
+	was causing libversit.a to be rebuilt at "make install" time,
+	causing further relinking down the line.
+
+2002-06-18  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: check for libsoftokn3 if we couldn't link the
+	first time
+
+2002-06-14  Chris Toshok  <toshok@ximian.com>
+
+	* libversit/vobject.c (unUseStr): fix a braindead typo that caused
+	us to leak strings in certain circumstances (when the string being
+	freed was second in the list, the head of the list would get
+	lost.)
+
+2002-06-05  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Changed the required version of gal to 0.19.99.17.
+
+2002-06-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Changed the required version of gal to 0.19.99.16.
+
+2002-06-02  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: require gtkhtml-1.1.1.1 aka multicite branch.
+
+2002-05-14  Dan Winship  <danw@ximian.com>
+
+	* data/evolution.1: Document "evolution default:mail"
+
+2002-05-08  Ettore Perazzoli  <ettore@ximian.com>
+
+	* README: Add an explanation/warning about why we want Berkeley DB
+	3.1.17 and nothing else.
+
+2002-04-28  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: require gtkhtml-1.1.1.
+
+2002-04-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in (EVO_CHECK_LIB): Bumped the required version number
+	of gal to 0.19.99.15.
+
+2002-04-26  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: Don't generate libibex/Makefile anymore.
+
+	* Makefile.am: Removed libibex from SUBDIRS.
+
+	* tools/Makefile.am: Don't link with libibex.
+
+	* tests/Makefile.am: Same here.
+
+2002-04-22  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Require gal 0.19.99.14.
+
+2002-04-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* configure.in: Require GAL 0.19.99.13.
+
+2002-04-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped required gal version number to 0.19.99.12.
+
+2002-04-17  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped required gal version number to 0.19.99.11.
+
+2002-04-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: Add checks for gethostbyaddr_r
+
+2002-04-14  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: Check for socklen_t and if it doesn't exist,
+	define it as unsigned int.
 
 2002-04-04  JP Rosevear  <jpr@ximian.com>
 
 	* configure.in: Fix static linking on solaris which doesn't have a
-	static libresolv. Fixes 21033.
+	static libresolv.
 
-2002-03-20  Ettore Perazzoli  <ettore@ximian.com>
+2002-04-01  Chris Toshok  <toshok@ximian.com>
 
-	* configure.in: Up to version 1.0.3.99.
+	* libversit/vobject.c (newStrItem): only include if USE_STRTBL is
+	defined.
+	(deleteStrItem): same.
+	(hashStr): same.
+	(lookupStr): if USE_STRTBL is defined, use existing behavior.  if
+	not defined, just dup the string.
+	(unUseStr): if USE_STRTBL is defined, use existing behavior.  if
+	not defined, just free the string.
 
-== Version 1.0.3. ==
+2002-04-01  Dan Winship  <danw@ximian.com>
 
-2002-03-19  Ettore Perazzoli  <ettore@ximian.com>
+	Darwin/OS X portability from Max Horn <max@quendi.de>
 
-	* configure.in: Version 1.0.3.
+	* libversit/vcc.y: Remove #include <malloc.h>.
 
-2002-03-04  JP Rosevear  <jpr@ximian.com>
+	* libversit/vobject.c: Likewise, and #include <stdlib.h>
 
-	* NEWS: Update calendar news
+2002-03-30  Ettore Perazzoli  <ettore@ximian.com>
 
-2002-02-02  Ettore Perazzoli  <ettore@ximian.com>
+	* configure.in: Add argument `--enable-shlib-components'.  New
+	substitutions OAF_SHLIB_LOCATION, OAF_SHLIB_PREFIX,
+	OAF_SHLIB_SUFFIX.
 
-	* configure.in: 1.0.2.99, Preview Release.
+2002-03-29  Ettore Perazzoli  <ettore@ximian.com>
 
-== Version 1.0.2. ==
+	* configure.in: Check for GConf.  Add gthreads to LIBIBEX_CFLAGS
+	and LIBIBEX_LIBS.
+
+2002-03-28  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the required version of gal to 0.19.99.10.
+
+2002-03-24  Peter Williams  <peterw@ximian.com>
+
+	* tools/killev: Change the OAFIID for the GtkHTML editor to
+	have :1.1 at the end.
+
+2002-03-19  Dan Winship  <danw@ximian.com>
+
+	* tools/Makefile.am (evolution_addressbook_import_LDADD):
+	s/libversit.la/libversit.a/
+
+2002-03-13  Chris Toshok  <toshok@ximian.com>
+
+	* configure.in (EVOLUTION_ADDRESSBOOK_DEPS): add gal.
+
+2002-03-12  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the required version of gal.
+
+2002-03-06  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* configure.in: Allow the user to enable OpenSSL over Mozilla NSS
+	using --enable-openssl or --disable-nss.
+
+2002-02-24  jacob berkman  <jacob@ximian.com>
+
+	* sounds/Makefile.am (EXTRA_DIST): add $(sounds_DATA)
+
+2002-02-22  Larry Ewing  <lewing@ximian.com>
+
+	* configure.in: add libglade the to the E_UTIL flags.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the required version of gal.
+
+2002-02-12  Tõivo Leedjärv  <leedjarv@interest.ee>
+
+	* configure.in: Added et to ALL_LINGUAS.
+
+2002-02-09  JP Rosevear  <jpr@ximian.com>
+
+	* configure.in: make sure PISOCK cflags are added where
+	appropriate
+
+2002-02-08  Damon Chaplin  <damon@ximian.com>
+
+	* Makefile.am (SUBDIRS): added sounds.
+
+	* configure.in (AC_OUTPUT): added sounds/Makefile.
+
+	* sounds/Makefile.am: new file.
+	* sounds/default_alarm.wav: default alarm sound, currently only used
+	when vCalendar files are imported with audio alarms. We need a better
+	sound.
+
+2002-02-07  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped the required version of gal.
+
+2002-01-28  Radek Doulik  <rodo@ximian.com>
+
+	* configure.in: added bonobo to filter flags to avoid compile
+	error
+
+2002-01-27  Ettore Perazzoli  <ettore@ximian.com>
+
+	* tools/Makefile.am: Use GNOME_FULL_LIBS and GNOME_FULL_CFLAGS.
+
+	* configure.in: Define the CAMEL_{CFLAGS,LIBS} using
+	EVO_SET_COMPILE_FLAGS.  Likewise define E_UTIL_{CFLAGS,LIBS},
+	E_NAME_{CFLAGS,LIBS}, SHELL_{CFLAGS,LIBS},
+	IMPORTERS_{CFLAGS,LIBS}, WOMBAT_{CFLAGS,LIBS} and
+	E_WIDGETS_{CFLAGS,LIBS}, LIBFILTER_{CFLAGS,LIBS}.  Remove
+	GAL_{LIBS,CFLAGS}.  Add GNOME_FULL_{CFLAGS,LIBS}.  Also, move all
+	this stuff after OpenSSL check so they benefit from all the
+	cflags/ldflags discoveries for the support libraries.
+
+2002-01-25  Ettore Perazzoli  <ettore@ximian.com>
+ 
+	* configure.in: Require gal 0.19.99.1.
 
 2002-01-24  Ettore Perazzoli  <ettore@ximian.com>
 
-	* configure.in: Not a Preview Release anymore.  Set VERSION to
-	1.0.2.
+	* configure.in: Define a new macro EVO_SET_COMPILE_FLAGS.  Define
+	EVOLUTION_ADDRESSBOOK_CFLAGS, EVOLUTION_ADDRESSBOOK_LIBS,
+	EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS,
+	EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS, EVOLUTION_SUMMARY_LIBS,
+	EVOLUTION_SUMMARY_CFLAGS, EVOLUTION_CALENDAR_LIBS,
+	EVOLUTION_CALENDAR_CFLAGS, EVOLUTION_CALENDAR_CONDUIT_LIBS,
+	EVOLUTION_CALENDAR_CONDUIT_CFLAGS through it.  Remove SOUP_CFLAGS
+	and SOUP_LIBS.
 
-2002-01-24  Ettore Perazzoli  <ettore@ximian.com>
+2002-01-15  Iain Holmes  <iain@ximian.com>
 
-	* NEWS: Update.
+	* configure.in: Add a check for libsoup. Define SOUP_CFLAGS and 
+	SOUP_LIBS
 
-2001-12-18  Ettore Perazzoli  <ettore@ximian.com>
+	* README: Update to include the SOUP dependancy.
 
-	* configure.in: Set VERSION_COMMENT say "Preview Release".
+2002-01-04  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
-2001-12-18  Ettore Perazzoli  <ettore@ximian.com>
-
-	* configure.in: Set VERSION to 1.0.1.99.
-
-== Version 1.0.1. ==
-
-2001-12-18  Ettore Perazzoli  <ettore@ximian.com>
-
-	* configure.in: Define `VERSION_COMMENT' to be the empty string.
-	Up version number to 1.0.1.  Require GAL 0.19 or later and gtkhtml
-	1.0.1 or later.
-
-2001-12-17  JP Rosevear  <jpr@ximian.com>
-
-	* NEWS: Update
+        * configure.in: Added "eu" to ALL_LINGUAS
 
 2001-12-17  Dan Winship  <danw@ximian.com>
 
@@ -101,22 +488,11 @@
 	EVOLUTION_MAJOR_VERSION and EVOLUTION_MINOR_VERSION (and not MICRO
 	and NANO).
 
-2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
+2001-12-13  Chris Toshok  <toshok@ximian.com>
 
-	* NEWS: Tidied up a bit.
+	* configure.in: check for alloca.h.
 
-2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
-
-	* tools/Makefile.am (bin_SCRIPTS): Add `csv2vcard'.
-
-	* csv2vcard: New file; script by Michael MacDonald to convert CSV
-	files into VCard files.
-
-2001-12-17  Iain Holmes  <iain@ximian.com>
-
-	* NEWS: Updated for summary
-
-2001-12-11  Ettore Perazzoli  <ettore@ximian.com>
+2001-12-12  Ettore Perazzoli  <ettore@ximian.com>
 
 	[Fix #16358, No man page for Evolution.]
 
@@ -125,32 +501,26 @@
 	* data/evolution.1: New man page for Evolution.
 
 2001-12-10  JP Rosevear  <jpr@ximian.com>
-
+ 
 	* configure.in: use UTF-8 as the char set when testing pilot link
+ 
+2001-12-11  Ettore Perazzoli  <ettore@ximian.com>
 
-2001-12-10  Ettore Perazzoli  <ettore@ximian.com>
+	* data/evolution.desktop.in (_Name): "Ximian Evolution", not
+	"Evolution".
 
-	* NEWS: Added 1.0 changes, massaged a little bit.
+2001-12-11  Ettore Perazzoli  <ettore@ximian.com>
 
-	* HACKING: Remove Dan Winship from the mailer core team listing.
+	* configure.in: Up VERSION to 1.1.0.99.
 
 2001-12-06  Jeffrey Stedfast  <fejj@ximian.com>
 
-	* configure.in: s/PREVIEW_RELEASE/VERSION_COMMENT
+	* configure.in: s/PREVIEW_VERSION/VERSION_COMMENT
 
 2001-12-04  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* configure.in: Add a AC_DEFINE for PREVIEW_RELEASE which is a
 	string that will be appended to the X-Mailer header.
-
-2001-12-05  Ettore Perazzoli  <ettore@ximian.com>
-
-	* HACKING: Put the patch review policy here.
-
-2001-12-04  Ettore Perazzoli  <ettore@ximian.com>
-
-	* configure.in: Update version number to 1.0.0.99 for snapshot
-	purposes.
 
 2001-11-21  Jeffrey Stedfast  <fejj@ximian.com>
  
@@ -163,13 +533,6 @@
  
 	* configure.in: Remove checks for OpenSSL libraries.
  
-2001-11-21  Ettore Perazzoli  <ettore@ximian.com>
-
-	* configure.in: Version 1.0.  Require GtkHTML 1.0.
-
-	* data/evolution.desktop.in: Say "Ximian Evolution", not
-	"Evolution".
-
 2001-11-20  Wang Jian  <lark@linux.net.cn>
 
 	* configure.in(ALL_LINGUAS): Re-Added zh_CN. It is checked 

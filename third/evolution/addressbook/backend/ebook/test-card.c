@@ -3,22 +3,22 @@
 #include <libgnomeui/gnome-init.h>
 #include "e-card.h"
 
-#define TEST_VCARD                   \
-"BEGIN:VCARD"                      \
-"FN:Nat"                           \
-"N:Friedman;Nat;D;Mr."             \
-"ORG:Ximian, Inc."             \
-"TITLE:Head Geek"                  \
-"ROLE:Programmer/Executive"        \
-"BDAY:1977-08-06"                  \
-"TEL;WORK:617 679 1984"            \
-"TEL;CELL:123 456 7890"            \
-"EMAIL;INTERNET:nat@nat.org"       \
-"EMAIL;INTERNET:nat@ximian.com" \
-"ADR;WORK;POSTAL:P.O. Box 101;;;Any Town;CA;91921-1234;" \
-"ADR;HOME;POSTAL;INTL:P.O. Box 202;;;Any Town 2;MI;12344-4321;USA" \
-"END:VCARD"                        \
-""
+#define TEST_VCARD                     \
+"BEGIN:VCARD\r\n"                      \
+"FN:Nat\r\n"                           \
+"N:Friedman;Nat;D;Mr.\r\n"             \
+"ORG:Ximian, Inc.\r\n"                 \
+"TITLE:Head Geek\r\n"                  \
+"ROLE:Programmer/Executive\r\n"        \
+"BDAY:1977-08-06\r\n"                  \
+"TEL;WORK:617 679 1984\r\n"            \
+"TEL;CELL:123 456 7890\r\n"            \
+"EMAIL;INTERNET:nat@nat.org\r\n"       \
+"EMAIL;INTERNET:nat@ximian.com\r\n"    \
+"ADR;WORK;POSTAL:P.O. Box 101;;;Any Town;CA;91921-1234;\r\n" \
+"ADR;HOME;POSTAL;INTL:P.O. Box 202;;;Any Town 2;MI;12344-4321;USA\r\n" \
+"END:VCARD\r\n"                        \
+"\r\n"
 
 static char *
 read_file (char *name)
@@ -63,6 +63,7 @@ main (int argc, char **argv)
 	EList *address;
 	EList *phone;
 	EList *email;
+	EList *arbitrary;
 	EIterator *iterator;
 	ECardDate *bday;
 
@@ -97,6 +98,7 @@ main (int argc, char **argv)
 		       "role",       &role,
 		       "nickname",   &nickname,
 		       "fburl",      &fburl,
+		       "arbitrary",  &arbitrary,
 		       "birth_date", &bday,
 		       NULL);
 	if ( fname ) {
@@ -133,7 +135,15 @@ main (int argc, char **argv)
         }
 	if ( fburl ) {
 	  printf("Free Busy URL : %s\n", fburl);
-        }
+	}
+	if ( arbitrary ) {
+	  iterator = e_list_get_iterator(arbitrary);
+	  for (; e_iterator_is_valid(iterator); e_iterator_next(iterator)) {
+            ECardArbitrary *arbitrary = (ECardArbitrary *) e_iterator_get(iterator);
+	    printf("Arbitrary : %s, %s\n", arbitrary->key, arbitrary->value);
+	  }
+	  gtk_object_unref(GTK_OBJECT(iterator));
+	}
 	if ( bday ) {
 	  printf("BDay : %4d-%02d-%02d\n", bday->year, bday->month, bday->day);
 	}

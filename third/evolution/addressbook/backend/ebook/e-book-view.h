@@ -13,8 +13,8 @@
 
 #include <libgnome/gnome-defs.h>
 
-#include <addressbook/backend/ebook/e-card.h>
-#include <addressbook/backend/ebook/e-book-view-listener.h>
+#include <ebook/e-card.h>
+#include <ebook/e-book-view-listener.h>
 
 BEGIN_GNOME_DECLS
 
@@ -38,7 +38,7 @@ struct _EBookViewClass {
 	void (* card_changed)      (EBookView *book_view, const GList *cards);
 	void (* card_removed)      (EBookView *book_view, const char *id);
 	void (* card_added)        (EBookView *book_view, const GList *cards);
-	void (* sequence_complete) (EBookView *book_view);
+	void (* sequence_complete) (EBookView *book_view, EBookViewStatus status);
 	void (* status_message)    (EBookView *book_view, const char *message);
 };
 

@@ -1,3 +1,29 @@
+2002-09-30  Chris Toshok  <toshok@ximian.com>
+
+	[ Partial fix for #30657 ]
+	* addressbook-sources.xml: remove Bigfoot, since ldap.bigfoot.com
+	no longer resolves.
+
+2002-09-23  Dan Winship  <danw@ximian.com>
+
+	* vfolders.xml: Make the default vfolders only operate on local
+	folders. Otherwise evolution is mysteriously incredibly slow to
+	start up for new users with lots of IMAP/exchange folders.
+
+2002-07-29  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* searches.xml: Reordered.
+
+2002-06-25  Aaron Weber  <aaron@ximian.com>
+
+	* local/Inbox/mbox: Add example FAQ items in welcome email, as per
+	danw's request in bug 18645
+
+2001-12-10  Not Zed  <NotZed@Ximian.com>
+
+	* Makefile.am: Added vfolders.xml containing default initial
+	vfolders - important vfolder and unread vfolder, #1040.
+
 2001-11-02  JP Rosevear  <jpr@ximian.com>
 
 	* local/Inbox/mbox: Fix email link to be valid

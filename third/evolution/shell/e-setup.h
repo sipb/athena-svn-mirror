@@ -24,7 +24,11 @@
 #define _E_SETUP_H
 
 #include <glib.h>
+#include <bonobo-conf/bonobo-config-database.h>
 
-gboolean  e_setup  (const char *evolution_directory);
+gboolean  e_setup          (const char            *evolution_directory);
+
+void      e_setup_check_db (Bonobo_ConfigDatabase  db,
+			    const char            *evolution_directory);
 
 #endif /* _E_SETUP_H */

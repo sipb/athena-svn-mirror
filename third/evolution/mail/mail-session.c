@@ -19,6 +19,7 @@
  *
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -26,6 +27,7 @@
 #include <stdlib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-config.h>
+#include <libgnome/gnome-sound.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomeui/gnome-messagebox.h>
@@ -40,6 +42,7 @@
 #include "mail-session.h"
 #include "mail-tools.h"
 #include "mail-mt.h"
+#include "mail-ops.h"
 #include "e-util/e-passwords.h"
 #include "e-util/e-msgport.h"
 
@@ -59,7 +62,7 @@ CamelSession *session;
 typedef struct _MailSession {
 	CamelSession parent_object;
 
-	gboolean interaction_enabled;
+	gboolean interactive;
 	FILE *filter_logfile;
 
 	EMutex *lock;
@@ -108,8 +111,6 @@ class_init (MailSessionClass *mail_session_class)
 	camel_session_class->get_password = get_password;
 	camel_session_class->forget_password = forget_password;
 	camel_session_class->alert_user = alert_user;
-	camel_session_class->register_timeout = register_timeout;
-	camel_session_class->remove_timeout = remove_timeout;
 	camel_session_class->get_filter_driver = get_filter_driver;
 }
 
@@ -244,10 +245,11 @@ request_password(struct _pass_msg *m)
 {
 	const MailConfigAccount *mca = NULL;
 	GtkWidget *dialogue;
-	GtkWidget *check, *entry;
+	GtkWidget *check, *check_label, *entry;
 	GList *children, *iter;
 	gboolean show;
 	char *title;
+	unsigned int accel_key;
 
 	/* If we already have a password_dialogue up, save this request till later */
 	if (!m->ismain && password_dialogue) {
@@ -257,15 +259,24 @@ request_password(struct _pass_msg *m)
 
 	/* FIXME: Remove this total snot */
 
-	/* this api is just awful ... hence the major hacks */
-	password_dialogue = (GnomeDialog *)dialogue = gnome_request_dialog (m->secret, m->prompt, NULL, 0, pass_got, m, NULL);
-
-	/* cant bleieve how @!@#!@# 5this api is, it doesn't handle this for you, BLAH! */
+	/* assume we can use any widget to translate string for display */
+	check_label = gtk_label_new ("");
+	title = e_utf8_to_gtk_string (GTK_WIDGET (check_label), m->prompt);
+	password_dialogue = (GnomeDialog *)dialogue = gnome_request_dialog (m->secret, title, NULL, 0, pass_got, m, NULL);
+	g_free(title);
 	password_destroy_id = gtk_signal_connect((GtkObject *)dialogue, "destroy", request_password_deleted, m);
 
-	/* Remember the password? */
-	check = gtk_check_button_new_with_label (m->service_url ? _("Remember this password") :
-						 _("Remember this password for the remainder of this session"));
+	check = gtk_check_button_new ();
+	gtk_misc_set_alignment (GTK_MISC (check_label), 0.0, 0.5);
+	accel_key = gtk_label_parse_uline (GTK_LABEL (check_label),
+					   m->service_url ? _("_Remember this password") :
+					   _("_Remember this password for the remainder of this session"));
+	gtk_widget_add_accelerator (check, "clicked",
+				    GNOME_DIALOG (password_dialogue)->accelerators,
+				    accel_key,
+				    GDK_MOD1_MASK, 0);
+	gtk_container_add (GTK_CONTAINER (check), check_label);
+
 	show = TRUE;
 	
 	if (m->service_url) {
@@ -284,8 +295,8 @@ request_password(struct _pass_msg *m)
 	}
 	
 	if (show)
-		gtk_widget_show (check);
-	
+		gtk_widget_show_all (check);
+
 	/* do some dirty stuff to put the checkbutton after the entry */
 	entry = NULL;
 	children = gtk_container_children (GTK_CONTAINER (GNOME_DIALOG (dialogue)->vbox));
@@ -346,7 +357,7 @@ do_get_pass(struct _mail_msg *mm)
 	} else if (m->key) {
 		m->result = e_passwords_get_password(m->key);
 		if (m->result == NULL) {
-			if (mail_session->interaction_enabled) {
+			if (mail_session->interactive) {
 				request_password(m);
 				return;
 			}
@@ -545,7 +556,7 @@ alert_user(CamelSession *session, CamelSessionAlertType type, const char *prompt
 	EMsgPort *user_message_reply;
 	gboolean ret;
 
-	if (!mail_session->interaction_enabled)
+	if (!mail_session->interactive)
 		return FALSE;
 
 	user_message_reply = e_msgport_new ();	
@@ -806,6 +817,21 @@ get_folder (CamelFilterDriver *d, const char *uri, void *data, CamelException *e
 	return mail_tool_uri_to_folder (uri, 0, ex);
 }
 
+static void
+session_play_sound (CamelFilterDriver *driver, const char *filename, gpointer user_data)
+{
+	if (!filename || !*filename)
+		gdk_beep ();
+	else
+		gnome_sound_play (filename);
+}
+
+static void
+session_system_beep (CamelFilterDriver *driver, gpointer user_data)
+{
+	gdk_beep ();
+}
+
 static CamelFilterDriver *
 main_get_filter_driver (CamelSession *session, const char *type, CamelException *ex)
 {
@@ -821,7 +847,7 @@ main_get_filter_driver (CamelSession *session, const char *type, CamelException 
 	rule_context_load (fc, system, user);
 	g_free (user);
 	
-	driver = camel_filter_driver_new ();
+	driver = camel_filter_driver_new (session);
 	camel_filter_driver_set_folder_func (driver, get_folder, NULL);
 	
 	if (mail_config_get_filter_log ()) {
@@ -838,9 +864,41 @@ main_get_filter_driver (CamelSession *session, const char *type, CamelException 
 			camel_filter_driver_set_logfile (driver, ms->filter_logfile);
 	}
 	
+	camel_filter_driver_set_shell_func (driver, mail_execute_shell_command, NULL);
+	camel_filter_driver_set_play_sound_func (driver, session_play_sound, NULL);
+	camel_filter_driver_set_system_beep_func (driver, session_system_beep, NULL);
+	
 	fsearch = g_string_new ("");
 	faction = g_string_new ("");
 	
+	/* add the new-mail notification rule first to be sure that it gets invoked */
+	
+	/* FIXME: we need a way to distinguish between filtering new
+           mail and re-filtering a folder because both use the
+           "incoming" filter type */
+	if (mail_config_get_new_mail_notify () && !strcmp (type, "incoming")) {
+		g_string_truncate (faction, 0);
+		
+		g_string_append (faction, "(only-once \"new-mail-notification\" ");
+		
+		switch (mail_config_get_new_mail_notify ()) {
+		case MAIL_CONFIG_NOTIFY_BEEP:
+			g_string_append (faction, "\"(beep)\"");
+			break;
+		case MAIL_CONFIG_NOTIFY_PLAY_SOUND:
+			g_string_sprintfa (faction, "\"(play-sound \\\"%s\\\")\"",
+					   mail_config_get_new_mail_notify_sound_file ());
+			break;
+		default:
+			break;
+		}
+		
+		g_string_append (faction, ")");
+		
+		camel_filter_driver_add_rule (driver, "new-mail-notification", "(begin #t)", faction->str);
+	}
+	
+	/* add the user-defined rules next */
 	while ((rule = rule_context_next_rule (fc, rule, type))) {
 		g_string_truncate (fsearch, 0);
 		g_string_truncate (faction, 0);
@@ -856,6 +914,7 @@ main_get_filter_driver (CamelSession *session, const char *type, CamelException 
 	g_string_free (faction, TRUE);
 	
 	gtk_object_unref (GTK_OBJECT (fc));
+	
 	return driver;
 }
 
@@ -933,15 +992,25 @@ mail_session_init (void)
 	
 	camel_dir = g_strdup_printf ("%s/mail", evolution_dir);
 	camel_session_construct (session, camel_dir);
+
+	/* The shell will tell us to go online. */
+	camel_session_set_online ((CamelSession *)session, FALSE);
+
 	g_free (camel_dir);
 }
 
-void
-mail_session_enable_interaction (gboolean enable)
+gboolean
+mail_session_get_interactive (void)
 {
-	MAIL_SESSION (session)->interaction_enabled = enable;
+	return MAIL_SESSION (session)->interactive;
+}
 
-	if (!enable) {
+void
+mail_session_set_interactive (gboolean interactive)
+{
+	MAIL_SESSION (session)->interactive = interactive;
+	
+	if (!interactive) {
 		struct _pass_msg *pm;
 		struct _user_message_msg *um;
 
@@ -978,4 +1047,14 @@ mail_session_forget_passwords (BonoboUIComponent *uih, void *user_data,
 			       const char *path)
 {
 	e_passwords_forget_passwords ();
+}
+
+
+void
+mail_session_flush_filter_log (void)
+{
+	MailSession *ms = (MailSession *) session;
+	
+	if (ms->filter_logfile)
+		fflush (ms->filter_logfile);
 }

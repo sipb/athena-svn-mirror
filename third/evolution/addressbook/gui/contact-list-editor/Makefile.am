@@ -1,17 +1,19 @@
 INCLUDES =					\
-	$(BONOBO_GNOME_CFLAGS)			\
-	$(EXTRA_GNOME_CFLAGS)			\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/addressbook/		\
 	-I$(top_srcdir)/addressbook/backend	\
+	-I$(top_builddir)/addressbook/backend	\
 	-I$(top_srcdir)/addressbook/gui/merging	\
 	-I$(top_srcdir)/addressbook/gui/contact-editor	\
 	-I$(top_builddir)/shell			\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"	\
+	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"\
 	-DDATADIR=\""$(datadir)"\"		\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"	\
+	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"	\
 	-DEVOLUTIONDIR=\""$(evolutiondir)"\"	\
-	-DG_LOG_DOMAIN=\"contact-list-editor\"
+	-DG_LOG_DOMAIN=\"contact-list-editor\"	\
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 noinst_LIBRARIES =				\
 	libecontactlisteditor.a
@@ -22,9 +24,15 @@ libecontactlisteditor_a_SOURCES = 		\
 	e-contact-list-model.c			\
 	e-contact-list-model.h
 
+iconsdir = $(datadir)/images/evolution
+
 gladedir   = $(datadir)/evolution/glade
 
 glade_DATA = 					\
 	contact-list-editor.glade
 
-EXTRA_DIST = $(glade_DATA)
+etspecdir   = $(datadir)/evolution/etspec
+etspec_DATA = e-contact-list-editor.etspec
+
+EXTRA_DIST = $(glade_DATA)	\
+	$(etspec_DATA)

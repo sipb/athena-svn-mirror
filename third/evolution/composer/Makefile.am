@@ -22,10 +22,10 @@ $(IDL_GENERATED): $(IDLS) $(selectnamesdir)/Evolution-Addressbook-SelectNames.id
 	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`	\
 		-I $(selectnamesdir)  $(srcdir)/Composer.idl
 
-Editor-commmon.c:	$(GTKHTML_DATADIR)/gtkhtml/Editor.idl
+Editor-commmon.c: $(GTKHTML_DATADIR)/Editor.idl
 
-$(HTML_EDITOR_GENERATED): $(GTKHTML_DATADIR)/gtkhtml/Editor.idl
-	$(ORBIT_IDL) -I $(srcdir) `$(GNOME_CONFIG) --cflags idl` -I $(GTKHTML_DATADIR)/gtkhtml $(GTKHTML_DATADIR)/gtkhtml/Editor.idl
+$(HTML_EDITOR_GENERATED): $(GTKHTML_DATADIR)/Editor.idl
+	$(ORBIT_IDL) -I $(srcdir) `$(GNOME_CONFIG) --cflags idl` -I $(GTKHTML_DATADIR)/gtkhtml $(GTKHTML_DATADIR)/Editor.idl
 
 ##
 
@@ -33,9 +33,10 @@ idldir = $(datadir)/idl
 idl_DATA = $(IDLS)
 
 gladedir = $(datadir)/evolution/glade
-
 glade_DATA =					\
 	e-msg-composer-attachment.glade
+
+iconsdir = $(datadir)/images/evolution
 
 libcomposerincludedir = $(includedir)/composer
 
@@ -48,21 +49,16 @@ INCLUDES =								\
 	-I$(top_builddir)/widgets					\
 	-I$(top_srcdir)/camel					 	\
 	-I$(top_builddir)/camel					 	\
-	-I$(top_srcdir)/addressbook/backend/ebook			\
-	-I$(top_builddir)/addressbook/backend/ebook			\
+	-I$(top_srcdir)/addressbook/backend				\
+	-I$(top_builddir)/addressbook/backend				\
 	-I$(top_builddir)/addressbook/gui/component/select-names	\
 	-I$(top_builddir)/shell						\
 	-I$(top_srcdir)/shell						\
-	$(EXTRA_GNOME_CFLAGS)						\
-	$(GNOME_INCLUDEDIR)						\
-	$(BONOBO_GNOME_CFLAGS)						\
-	$(BONOBO_CONF_CFLAGS)						\
-	$(GTKHTML_CFLAGS)						\
-	$(BONOBO_CONF_CFLAGS)						\
-	$(GNOME_VFS_CFLAGS)						\
 	-DEVOLUTION_DATADIR=\"$(datadir)\"				\
+	-DEVOLUTION_ICONSDIR=\"$(iconsdir)\"				\
 	-DE_GLADEDIR=\"$(gladedir)\"					\
-	-DG_LOG_DOMAIN=\"composer\"
+	-DG_LOG_DOMAIN=\"composer\"					\
+	$(GNOME_FULL_CFLAGS)
 
 libcomposer_a_SOURCES = 			\
 	$(IDL_GENERATED)			\

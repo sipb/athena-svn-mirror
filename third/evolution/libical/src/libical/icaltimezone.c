@@ -4,7 +4,7 @@
  CREATOR: Damon Chaplin 15 March 2001
 
 
- $Id: icaltimezone.c,v 1.1.1.4 2002-02-15 17:33:55 ghudson Exp $
+ $Id: icaltimezone.c,v 1.1.1.5 2002-12-19 15:30:58 ghudson Exp $
  $Locker:  $
 
  (C) COPYRIGHT 2001, Damon Chaplin
@@ -266,6 +266,9 @@ icaltimezone_get_vtimezone_properties	(icaltimezone	*zone,
     tzid = icalproperty_get_tzid (prop);
     if (!tzid)
 	return 0;
+
+    if (zone->location)
+	free (zone->location);
 
     zone->tzid = strdup (tzid);
     zone->component = component;

@@ -69,13 +69,6 @@ void	  calendar_config_write_on_exit		(void);
  * Calendar Settings.
  */
 
-/* The default calendar URI to be used when no specified (~/evolution/local/Calendar) */
-gchar*    calendar_config_get_default_uri       (void);
-void      calendar_config_set_default_uri       (gchar       *default_uri);
-
-gchar*    calendar_config_get_default_tasks_uri (void);
-void      calendar_config_set_default_tasks_uri (gchar       *default_tasks_uri);
-
 /* The current timezone, e.g. "Europe/London". */
 gchar*	  calendar_config_get_timezone		(void);
 void	  calendar_config_set_timezone		(gchar	     *timezone);
@@ -161,6 +154,9 @@ char*	  calendar_config_get_hide_completed_tasks_sexp (void);
 gboolean  calendar_config_get_confirm_delete (void);
 void      calendar_config_set_confirm_delete (gboolean confirm);
 
+gboolean  calendar_config_get_confirm_expunge (void);
+void      calendar_config_set_confirm_expunge (gboolean confirm);
+
 /* Default reminder options */
 gboolean calendar_config_get_use_default_reminder (void);
 void     calendar_config_set_use_default_reminder (gboolean value);
@@ -185,5 +181,9 @@ void	  calendar_config_check_timezone_set	(void);
 /* Returns TRUE if the locale has 'am' and 'pm' strings defined, i.e. it
    supports 12-hour time format. */
 gboolean  calendar_config_locale_supports_12_hour_format(void);
+
+/* Default folders, read-only */
+char *calendar_config_default_calendar_folder (void);
+char *calendar_config_default_tasks_folder (void);
 
 #endif /* _CALENDAR_CONFIG_H_ */

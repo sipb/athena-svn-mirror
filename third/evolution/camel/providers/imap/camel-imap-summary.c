@@ -21,6 +21,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <sys/stat.h>
 #include <sys/uio.h>
 #include <unistd.h>
@@ -221,6 +225,29 @@ camel_imap_summary_add_offline (CamelFolderSummary *summary, const char *uid,
 		camel_tag_set (&mi->user_tags, tag->name, tag->value);
 		tag = tag->next;
 	}
+
+	/* Set uid and add to summary */
+	camel_message_info_set_uid (mi, g_strdup (uid));
+	camel_folder_summary_add (summary, mi);
+}
+
+void
+camel_imap_summary_add_offline_uncached (CamelFolderSummary *summary, const char *uid,
+					 const CamelMessageInfo *info)
+{
+	CamelMessageInfo *mi;
+	CamelMessageContentInfo *ci;
+
+	/* Create summary entry */
+	mi = camel_folder_summary_info_new (summary);
+	ci = camel_folder_summary_content_info_new (summary);
+
+	camel_message_info_dup_to (info, mi);
+	mi->content = ci;
+
+	/* copy our private fields */
+	((CamelImapMessageInfo *)mi)->server_flags = 
+		((CamelImapMessageInfo *)info)->server_flags;
 
 	/* Set uid and add to summary */
 	camel_message_info_set_uid (mi, g_strdup (uid));

@@ -25,6 +25,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <gal/e-table/e-table-scrolled.h>
@@ -96,6 +97,8 @@ enum {
 	ARG_IS_NEW_LIST,
 	ARG_EDITABLE
 };
+
+static GSList *all_contact_list_editors = NULL;
 
 GtkType
 e_contact_list_editor_get_type (void)
@@ -207,6 +210,7 @@ e_contact_list_editor_init (EContactListEditor *editor)
 	GladeXML *gui;
 	GtkWidget *bonobo_win;
 	BonoboUIContainer *container;
+	char *icon_path;
 
 	editor->card = NULL;
 	editor->changed = FALSE;
@@ -294,6 +298,11 @@ e_contact_list_editor_init (EContactListEditor *editor)
 
 	gtk_signal_connect (GTK_OBJECT (editor->app), "delete_event",
 			    GTK_SIGNAL_FUNC (app_delete_event_cb), editor);
+
+	/* set the icon */
+	icon_path = g_concat_dir_and_file (EVOLUTION_ICONSDIR, "contact-list-16.png");
+	gnome_window_icon_set_from_file (GTK_WINDOW (editor->app), icon_path);
+	g_free (icon_path);
 }
 
 static void
@@ -382,9 +391,24 @@ save_card (EContactListEditor *cle, gboolean should_close)
 }
 
 static gboolean
+is_named (EContactListEditor *editor)
+{
+	char *string = e_utf8_gtk_editable_get_chars(GTK_EDITABLE (editor->list_name_entry), 0, -1);
+	gboolean named = FALSE;
+
+	if (string && *string) {
+		named = TRUE;
+	}
+
+	g_free (string);
+
+	return named;
+}
+
+static gboolean
 prompt_to_save_changes (EContactListEditor *editor)
 {
-	if (!editor->changed)
+	if (!editor->changed || !is_named (editor))
 		return TRUE;
 
 	switch (e_addressbook_prompt_save_dialog (GTK_WINDOW(editor->app))) {
@@ -425,7 +449,7 @@ file_save_as_cb (GtkWidget *widget, gpointer data)
 
 	extract_info (cle);
 
-	e_contact_save_as(_("Save List as VCard"), cle->card);
+	e_contact_save_as(_("Save List as VCard"), cle->card, GTK_WINDOW (cle->app));
 }
 
 static void
@@ -501,9 +525,9 @@ BonoboUIVerb verbs [] = {
 	BONOBO_UI_UNSAFE_VERB ("ContactListEditorSave", file_save_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactListEditorSaveClose", tb_save_and_close_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactListEditorDelete", delete_cb),
-	BONOBO_UI_UNSAFE_VERB ("ContactEditorSaveAs", file_save_as_cb),
-	BONOBO_UI_UNSAFE_VERB ("ContactEditorSendAs", file_send_as_cb),
-	BONOBO_UI_UNSAFE_VERB ("ContactEditorSendTo", file_send_to_cb),
+	BONOBO_UI_UNSAFE_VERB ("ContactListEditorSaveAs", file_save_as_cb),
+	BONOBO_UI_UNSAFE_VERB ("ContactListEditorSendAs", file_send_as_cb),
+	BONOBO_UI_UNSAFE_VERB ("ContactListEditorSendTo", file_send_to_cb),
 	BONOBO_UI_UNSAFE_VERB ("ContactListEditorClose", file_close_cb),
 	BONOBO_UI_VERB_END
 };
@@ -538,6 +562,14 @@ create_ui (EContactListEditor *ce)
 	e_pixmaps_update (ce->uic, pixmaps);
 }
 
+static void
+contact_list_editor_destroy_notify (void *data)
+{
+	EContactListEditor *ce = E_CONTACT_LIST_EDITOR (data);
+
+	all_contact_list_editors = g_slist_remove (all_contact_list_editors, ce);
+}
+
 EContactListEditor *
 e_contact_list_editor_new (EBook *book,
 			   ECard *list_card,
@@ -547,6 +579,9 @@ e_contact_list_editor_new (EBook *book,
 	EContactListEditor *ce;
 
 	ce = E_CONTACT_LIST_EDITOR (gtk_type_new (E_CONTACT_LIST_EDITOR_TYPE));
+
+	all_contact_list_editors = g_slist_prepend (all_contact_list_editors, ce);
+	gtk_object_weakref (GTK_OBJECT (ce), contact_list_editor_destroy_notify, ce);
 
 	gtk_object_set (GTK_OBJECT (ce),
 			"book", book,
@@ -651,14 +686,6 @@ e_contact_list_editor_raise (EContactListEditor *editor)
 	gdk_window_raise (GTK_WIDGET (editor->app)->window);
 }
 
-#define SPEC "<ETableSpecification no-headers=\"true\" cursor-mode=\"line\" selection-mode=\"single\"> \
- <ETableColumn model_col= \"0\" _title=\"Contact\" expansion=\"1.0\" minimum_width=\"20\" resizable=\"true\" cell=\"string\" compare=\"string\" /> \
-	<ETableState>                   			       \
-		<column source=\"0\"/>     			       \
-	        <grouping> </grouping>				       \
-	</ETableState>                  			       \
-</ETableSpecification>"
-
 GtkWidget *
 e_contact_list_editor_create_table(gchar *name,
 				   gchar *string1, gchar *string2,
@@ -675,7 +702,10 @@ e_contact_list_editor_create_table(gchar *name,
 
 	model = e_contact_list_model_new ();
 
-	table = e_table_scrolled_new (model, NULL, SPEC, NULL);
+	table = e_table_scrolled_new_from_spec_file (model,
+				      NULL,
+				      EVOLUTION_ETSPECDIR "/e-contact-list-editor.etspec",
+				      NULL);
 
 	gtk_object_set_data(GTK_OBJECT(table), "model", model);
 
@@ -698,10 +728,9 @@ add_email_cb (GtkWidget *w, EContactListEditor *editor)
 
 	gtk_entry_set_text (GTK_ENTRY(editor->email_entry), "");
 
-	if (!editor->changed) {
-		editor->changed = TRUE;
-		command_state_changed (editor);
-	}
+	editor->changed = TRUE;
+
+	command_state_changed (editor);
 }
 
 static void
@@ -715,28 +744,22 @@ remove_entry_cb (GtkWidget *w, EContactListEditor *editor)
 {
 	e_table_selected_row_foreach (e_table_scrolled_get_table(E_TABLE_SCROLLED(editor->table)),
 				      (EForeachFunc)remove_row, editor);
-	if (!editor->changed) {
-		editor->changed = TRUE;
-		command_state_changed (editor);
-	}
+	editor->changed = TRUE;
+	command_state_changed (editor);
 }
 
 static void
 list_name_changed_cb (GtkWidget *w, EContactListEditor *editor)
 {
-	if (!editor->changed) {
-		editor->changed = TRUE;
-		command_state_changed (editor);
-	}
+	editor->changed = TRUE;
+	command_state_changed (editor);
 }
 
 static void
 visible_addrs_toggled_cb (GtkWidget *w, EContactListEditor *editor)
 {
-	if (!editor->changed) {
-		editor->changed = TRUE;
-		command_state_changed (editor);
-	}
+	editor->changed = TRUE;
+	command_state_changed (editor);
 }
 
 static void
@@ -858,7 +881,7 @@ table_drag_data_received_cb (ETable *table, int row, int col,
 			gtk_adjustment_set_value (adj, adj->upper);
 	}
 
-	if (changed && !editor->changed) {
+	if (changed) {
 		editor->changed = TRUE;
 		command_state_changed (editor);
 	}
@@ -867,15 +890,17 @@ table_drag_data_received_cb (ETable *table, int row, int col,
 static void
 command_state_changed (EContactListEditor *editor)
 {
+	gboolean named = is_named (editor);
+
 	bonobo_ui_component_set_prop (editor->uic,
 				      "/commands/ContactListEditorSaveClose",
 				      "sensitive",
-				      editor->changed && editor->editable ? "1" : "0", NULL);
+				      editor->changed && named && editor->editable ? "1" : "0", NULL);
 
 	bonobo_ui_component_set_prop (editor->uic,
 				      "/commands/ContactListEditorSave",
 				      "sensitive",
-				      editor->changed && editor->editable ? "1" : "0", NULL);
+				      editor->changed && named && editor->editable ? "1" : "0", NULL);
 
 	bonobo_ui_component_set_prop (editor->uic,
 				      "/commands/ContactListEditorDelete",
@@ -977,4 +1002,28 @@ fill_in_info(EContactListEditor *editor)
 			e_iterator_next (email_iter);
 		}
 	}
+}
+
+
+gboolean
+e_contact_list_editor_request_close_all (void)
+{
+	GSList *p;
+	GSList *pnext;
+	gboolean retval;
+
+	retval = TRUE;
+	for (p = all_contact_list_editors; p != NULL; p = pnext) {
+		pnext = p->next;
+
+		e_contact_list_editor_raise (E_CONTACT_LIST_EDITOR (p->data));
+		if (! prompt_to_save_changes (E_CONTACT_LIST_EDITOR (p->data))) {
+			retval = FALSE;
+			break;
+		}
+
+		close_dialog (E_CONTACT_LIST_EDITOR (p->data));
+	}
+
+	return retval;
 }

@@ -4,6 +4,7 @@
 /*
  * Author:
  *  Dan Winship <danw@ximian.com>
+ *  Michael Zucchi <notzed@ximian.com>
  *
  * Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
@@ -22,132 +23,200 @@
  * USA
  */
 
+
 #ifndef CAMEL_OBJECT_H
 #define CAMEL_OBJECT_H 1
 
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif				/* __cplusplus } */
+#endif /* __cplusplus */
 
 #include <stdlib.h>		/* size_t */
 #include <glib.h>
+#include <stdarg.h>
+#include <camel/camel-arg.h>
+#include <camel/camel-types.h>	/* this is a @##$@#SF stupid header */
+
+/* this crap shouldn't be here */
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <camel/camel-types.h>
 
-#ifdef G_DISABLE_CHECKS
-#define CAMEL_CHECK_CAST( obj, ctype, ptype )         ((ptype *) obj)
-#define CAMEL_CHECK_CLASS_CAST( class, ctype, ptype ) ((ptype *) class)
-#define CAMEL_CHECK_TYPE( obj, ctype )                (TRUE)
-#define CAMEL_CHECK_CLASS_TYPE( class, ctype )        (TRUE)
-#else
-#define CAMEL_CHECK_CAST( obj, ctype, ptype )         ((ptype *) camel_object_check_cast( (CamelObject *)(obj), (CamelType)(ctype) ))
-#define CAMEL_CHECK_CLASS_CAST( class, ctype, ptype ) ((ptype *) camel_object_class_check_cast( (CamelObjectClass *)(class), (CamelType)(ctype) ))
-#define CAMEL_CHECK_TYPE( obj, ctype )                (camel_object_is_of_type( (CamelObject *)(obj), (CamelType)(ctype) ))
-#define CAMEL_CHECK_CLASS_TYPE( class, ctype )        (camel_object_class_is_of_type( (CamelObjectClass *)(class), (CamelType)(ctype) ))
+#ifdef ENABLE_THREADS
+#include <pthread.h>
 #endif
 
-#define CAMEL_INVALID_TYPE ((CamelType)0)
+/* turn on so that camel_object_class_dump_tree() dumps object instances as well */
+/*#define CAMEL_OBJECT_TRACK_INSTANCES*/
 
-#define CAMEL_OBJECT_TYPE        (camel_object_get_type ())
+typedef struct _CamelObjectClass *CamelType;
 
-#define CAMEL_OBJECT(obj)        (CAMEL_CHECK_CAST((obj), CAMEL_OBJECT_TYPE, CamelObject))
-#define CAMEL_OBJECT_CLASS(k)    (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_OBJECT_TYPE, CamelObjectClass))
-#define CAMEL_IS_OBJECT(o)       (CAMEL_CHECK_TYPE((o), CAMEL_OBJECT_TYPE))
-#define CAMEL_IS_OBJECT_CLASS(k) (CAMEL_CHECK_CLASS_TYPE((k), CAMEL_OBJECT_TYPE))
+#ifdef G_DISABLE_CHECKS
+#define CAMEL_CHECK_CAST(obj, ctype, ptype)         ((ptype *) obj)
+#define CAMEL_CHECK_CLASS_CAST(klass, ctype, ptype) ((ptype *) klass)
+#else
+#define CAMEL_CHECK_CAST(obj, ctype, ptype)         ((ptype *) camel_object_cast ((CamelObject *)(obj), (CamelType)(ctype)))
+#define CAMEL_CHECK_CLASS_CAST(klass, ctype, ptype) ((ptype *) camel_object_class_cast ((CamelObjectClass *)(klass), (CamelType)(ctype) ))
+#endif
+#define CAMEL_CHECK_TYPE(obj, ctype)                (camel_object_is ((CamelObject *)(obj), (CamelType)(ctype) ))
+#define CAMEL_CHECK_CLASS_TYPE(klass, ctype)        (camel_object_class_is ((CamelObjectClass *)(klass), (CamelType)(ctype)))
 
-#define CAMEL_OBJECT_GET_CLASS(o) ((CamelObjectClass *)(CAMEL_OBJECT(o))->classfuncs)
-#define CAMEL_OBJECT_GET_TYPE(o)  ((CamelType)(CAMEL_OBJECT(o))->s.type)
+extern CamelType camel_object_type;
 
-typedef guint32 CamelType;
+#define CAMEL_OBJECT_TYPE        (camel_object_type)
 
-typedef struct _CamelObjectShared
-{
-	guint32 magic;
-	CamelType type;
-}
-CamelObjectShared;
+/* we can't check casts till we've got the type, use the global type variable because its cheaper */
+#define CAMEL_OBJECT(obj)        (CAMEL_CHECK_CAST((obj), camel_object_type, CamelObject))
+#define CAMEL_OBJECT_CLASS(k)    (CAMEL_CHECK_CLASS_CAST ((k), camel_object_type, CamelObjectClass))
+#define CAMEL_IS_OBJECT(o)       (CAMEL_CHECK_TYPE((o), camel_object_type))
+#define CAMEL_IS_OBJECT_CLASS(k) (CAMEL_CHECK_CLASS_TYPE((k), camel_object_type))
 
-typedef struct _CamelObjectClass
-{
-	CamelObjectShared s;
-	
-	GHashTable *event_to_preplist;
-}
-CamelObjectClass;
+#define CAMEL_OBJECT_GET_CLASS(o) ((CamelObjectClass *)(CAMEL_OBJECT(o))->klass)
+#define CAMEL_OBJECT_GET_TYPE(o)  ((CamelType)(CAMEL_OBJECT(o))->klass)
 
-typedef struct _CamelObject
-{
-	CamelObjectShared s;
-	CamelObjectClass *classfuncs;
-	struct _CamelHookList *hooks;
-	guint32 ref_count:30;
-	guint32 in_event:1;
-	guint32 destroying:1;
-}
-CamelObject;
+typedef struct _CamelObjectClass CamelObjectClass;
+typedef struct _CamelObject CamelObject;
+typedef unsigned int CamelObjectHookID;
 
 typedef void (*CamelObjectClassInitFunc) (CamelObjectClass *);
 typedef void (*CamelObjectClassFinalizeFunc) (CamelObjectClass *);
-typedef void (*CamelObjectInitFunc) (CamelObject *);
+typedef void (*CamelObjectInitFunc) (CamelObject *, CamelObjectClass *);
 typedef void (*CamelObjectFinalizeFunc) (CamelObject *);
 
-typedef gboolean (*CamelObjectEventPrepFunc) (CamelObject *,
-					      gpointer);
-typedef void (*CamelObjectEventHookFunc) (CamelObject *, gpointer,
-					  gpointer);
+typedef gboolean (*CamelObjectEventPrepFunc) (CamelObject *, gpointer);
+typedef void (*CamelObjectEventHookFunc) (CamelObject *, gpointer, gpointer);
+
+#define CAMEL_INVALID_TYPE (NULL)
+
+/* camel object args */
+enum {
+	CAMEL_OBJECT_ARG_DESCRIPTION = CAMEL_ARG_FIRST,
+};
+
+enum {
+	CAMEL_OBJECT_DESCRIPTION = CAMEL_OBJECT_ARG_DESCRIPTION | CAMEL_ARG_STR,
+};
+
+enum _CamelObjectFlags {
+	CAMEL_OBJECT_DESTROY = (1<<0),
+};
+
+/* TODO: create a simpleobject which has no events on it, or an interface for events */
+struct _CamelObject {
+	struct _CamelObjectClass *klass;
+
+	guint32 magic;		/* only really needed for debugging ... */
+
+	/* current hooks on this object */
+	struct _CamelHookList *hooks;
+
+	guint32 ref_count:24;
+	guint32 flags:8;
+
+#ifdef CAMEL_OBJECT_TRACK_INSTANCES
+	struct _CamelObject *next, *prev;
+#endif
+};
+
+struct _CamelObjectClass
+{
+	struct _CamelObjectClass *parent;
+
+	guint32 magic;		/* in same spot for validation */
+
+	struct _CamelObjectClass *next, *child; /* maintain heirarchy, just for kicks */
+
+	const char *name;
+
+	void *lock;		/* lock when used in threading, else just pads struct */
+
+	/*unsigned short version, revision;*/
+
+	/* if the object's bigger than 64K, it could use redesigning */
+	unsigned short object_size/*, object_data*/;
+	unsigned short klass_size/*, klass_data*/;
+
+	/* available hooks for this class */
+	struct _CamelHookPair *hooks;
+
+	/* memchunks for this type */
+	struct _EMemChunk *instance_chunks;
+#ifdef CAMEL_OBJECT_TRACK_INSTANCES
+	struct _CamelObject *instances;
+#endif
+
+	/* init class */
+	void (*klass_init)(struct _CamelObjectClass *);
+	void (*klass_finalise)(struct _CamelObjectClass *);
+
+	/* init/finalise object */
+	void (*init)(struct _CamelObject *, struct _CamelObjectClass *);
+	void (*finalise)(struct _CamelObject *);
+
+	/* get/set interface */
+	int (*setv)(struct _CamelObject *, struct _CamelException *ex, CamelArgV *args);
+	int (*getv)(struct _CamelObject *, struct _CamelException *ex, CamelArgGetV *args);
+	/* we only free 1 at a time, and only pointer types, obviously */
+	void (*free)(struct _CamelObject *, guint32 tag, void *ptr);
+};
 
 /* The type system .... it's pretty simple..... */
-
 void camel_type_init (void);
-CamelType camel_type_register (CamelType parent, const gchar * name,
-			       size_t instance_size,
-			       size_t classfuncs_size,
-			       CamelObjectClassInitFunc class_init,
-			       CamelObjectClassFinalizeFunc
-			       class_finalize,
-			       CamelObjectInitFunc instance_init,
-			       CamelObjectFinalizeFunc
-			       instance_finalize);
-CamelObjectClass *camel_type_get_global_classfuncs (CamelType type);
-const gchar *camel_type_to_name (CamelType type);
+CamelType camel_type_register(CamelType parent, const char * name, /*unsigned int ver, unsigned int rev,*/
+			      size_t instance_size,
+			      size_t classfuncs_size,
+			      CamelObjectClassInitFunc class_init,
+			      CamelObjectClassFinalizeFunc  class_finalize,
+			      CamelObjectInitFunc instance_init,
+			      CamelObjectFinalizeFunc instance_finalize);
+
+/* deprecated interface */
+#define camel_type_get_global_classfuncs(x) ((CamelObjectClass *)(x))
+
+/* object class methods (types == classes now) */
+const char *camel_type_to_name (CamelType type);
+CamelType camel_name_to_type (const char *name);
+void camel_object_class_add_event (CamelObjectClass *class, const char *name, CamelObjectEventPrepFunc prep);
+
+void camel_object_class_dump_tree (CamelType root);
+
+/* casting */
+CamelObject *camel_object_cast(CamelObject *obj, CamelType ctype);
+gboolean camel_object_is(CamelObject *obj, CamelType ctype);
+
+CamelObjectClass *camel_object_class_cast (CamelObjectClass *klass, CamelType ctype);
+gboolean camel_object_class_is (CamelObjectClass *klass, CamelType ctype);
 
 CamelType camel_object_get_type (void);
-CamelObject *camel_object_new (CamelType type);
 
-void camel_object_ref (CamelObject *obj);
-void camel_object_unref (CamelObject *obj);
+CamelObject *camel_object_new (CamelType type);
+CamelObject *camel_object_new_name (const char *name);
+
+void camel_object_ref(void *);
+void camel_object_unref(void *);
 
 #ifdef CAMEL_DEBUG
 #define camel_object_ref(o) (printf("%s (%s:%d):ref (%p)\n", __FUNCTION__, __FILE__, __LINE__, o), camel_object_ref(o))
 #define camel_object_unref(o) (printf("%s (%s:%d):unref (%p)\n", __FUNCTION__, __FILE__, __LINE__, o), camel_object_unref (o))
 #endif
 
-CamelObject *camel_object_check_cast (CamelObject * obj,
-				      CamelType ctype);
-CamelObjectClass *camel_object_class_check_cast (CamelObjectClass *
-						 class,
-						 CamelType ctype);
-gboolean camel_object_is_of_type (CamelObject * obj, CamelType ctype);
-gboolean camel_object_class_is_of_type (CamelObjectClass * class,
-					CamelType ctype);
-gchar *camel_object_describe (CamelObject * obj);
-void camel_object_class_declare_event (CamelObjectClass * class,
-				       const gchar * name,
-				       CamelObjectEventPrepFunc prep);
-void camel_object_hook_event (CamelObject * obj, const gchar * name,
-			      CamelObjectEventHookFunc hook,
-			      gpointer user_data);
-void camel_object_unhook_event (CamelObject * obj, const gchar * name,
-				CamelObjectEventHookFunc hook,
-				gpointer user_data);
-void camel_object_trigger_event (CamelObject * obj,
-				 const gchar * name,
-				 gpointer event_data);
+/* hooks */
+CamelObjectHookID camel_object_hook_event(void *obj, const char *name, CamelObjectEventHookFunc hook, void *data);
+void camel_object_remove_event(void *obj, CamelObjectHookID id);
+void camel_object_unhook_event(void *obj, const char *name, CamelObjectEventHookFunc hook, void *data);
+void camel_object_trigger_event(void *obj, const char *name, void *event_data);
+
+/* get/set methods */
+int camel_object_set(void *obj, struct _CamelException *ex, ...);
+int camel_object_setv(void *obj, struct _CamelException *ex, CamelArgV *);
+int camel_object_get(void *obj, struct _CamelException *ex, ...);
+int camel_object_getv(void *obj, struct _CamelException *ex, CamelArgGetV *);
+
+/* free a bunch of objects, list must be 0 terminated */
+void camel_object_free(void *vo, guint32 tag, void *value);
 
 #ifdef __cplusplus
 }
-#endif				/* __cplusplus */
+#endif /* __cplusplus */
 
-#endif				/* CAMEL_OBJECT_H */
+#endif /* CAMEL_OBJECT_H */

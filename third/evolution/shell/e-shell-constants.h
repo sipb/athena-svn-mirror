@@ -26,10 +26,25 @@
 #define E_SHELL_URI_PREFIX		"evolution:"
 #define E_SHELL_URI_PREFIX_LEN		10
 
+#define E_SHELL_DEFAULTURI_PREFIX	"default:"
+#define E_SHELL_DEFAULTURI_PREFIX_LEN	8
+
 #define E_SHELL_MINI_ICON_SUFFIX	"-mini"
 #define E_SHELL_MINI_ICON_SUFFIX_LEN	5
 
 #define E_SHELL_ICON_SIZE		48
 #define E_SHELL_MINI_ICON_SIZE		16
+
+#define E_PATH_SEPARATOR                '/'
+#define E_PATH_SEPARATOR_S		"/"
+
+#define E_LOCAL_STORAGE_NAME            "local"
+#define E_SUMMARY_STORAGE_NAME          "summary"
+
+#define E_SUMMARY_URI			"evolution:/summary"
+#define E_LOCAL_INBOX_URI		"evolution:/local/Inbox"
+#define E_LOCAL_CONTACTS_URI		"evolution:/local/Contacts"
+#define E_LOCAL_CALENDAR_URI		"evolution:/local/Calendar"
+#define E_LOCAL_TASKS_URI		"evolution:/local/Tasks"
 
 #endif

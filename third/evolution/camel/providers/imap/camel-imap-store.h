@@ -29,7 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 #include "camel-imap-types.h"
 #include <camel/camel-disco-store.h>
@@ -58,6 +58,25 @@ void camel_imap_msg_queue(CamelImapStore *store, CamelImapMsg *msg);
 #define CAMEL_IMAP_STORE_CLASS(k) (CAMEL_CHECK_CLASS_CAST ((k), CAMEL_IMAP_STORE_TYPE, CamelImapStoreClass))
 #define CAMEL_IS_IMAP_STORE(o)    (CAMEL_CHECK_TYPE((o), CAMEL_IMAP_STORE_TYPE))
 
+enum {
+	CAMEL_IMAP_STORE_ARG_FIRST  = CAMEL_DISCO_STORE_ARG_FIRST + 100,
+	CAMEL_IMAP_STORE_ARG_NAMESPACE,
+	CAMEL_IMAP_STORE_ARG_OVERRIDE_NAMESPACE,
+	CAMEL_IMAP_STORE_ARG_CHECK_ALL,
+	CAMEL_IMAP_STORE_ARG_FILTER_INBOX
+};
+
+#define CAMEL_IMAP_STORE_NAMESPACE           (CAMEL_IMAP_STORE_ARG_NAMESPACE | CAMEL_ARG_STR)
+#define CAMEL_IMAP_STORE_OVERRIDE_NAMESPACE  (CAMEL_IMAP_STORE_ARG_OVERRIDE_NAMESPACE | CAMEL_ARG_INT)
+#define CAMEL_IMAP_STORE_CHECK_ALL           (CAMEL_IMAP_STORE_ARG_CHECK_ALL | CAMEL_ARG_INT)
+#define CAMEL_IMAP_STORE_FILTER_INBOX        (CAMEL_IMAP_STORE_ARG_FILTER_INBOX | CAMEL_ARG_INT)
+
+/* CamelFolderInfo flags */
+#define CAMEL_IMAP_FOLDER_MARKED	     (1<<16)
+#define CAMEL_IMAP_FOLDER_UNMARKED	     (1<<17)
+#define CAMEL_IMAP_FOLDER_NOCHILDREN	     (1<<18)
+
+
 typedef enum {
 	IMAP_LEVEL_UNKNOWN,
 	IMAP_LEVEL_IMAP4,
@@ -70,7 +89,9 @@ typedef enum {
 #define IMAP_CAPABILITY_NAMESPACE		(1 << 3)
 #define IMAP_CAPABILITY_UIDPLUS			(1 << 4)
 #define IMAP_CAPABILITY_LITERALPLUS		(1 << 5)
-#define IMAP_CAPABILITY_useful_lsub		(1 << 6)
+#define IMAP_CAPABILITY_STARTTLS                (1 << 6)
+#define IMAP_CAPABILITY_useful_lsub		(1 << 7)
+#define IMAP_CAPABILITY_utf8_search		(1 << 8)
 
 #define IMAP_PARAM_OVERRIDE_NAMESPACE		(1 << 0)
 #define IMAP_PARAM_CHECK_ALL			(1 << 1)
@@ -78,7 +99,11 @@ typedef enum {
 
 struct _CamelImapStore {
 	CamelDiscoStore parent_object;	
-	struct _CamelImapStorePrivate *priv;
+	
+	CamelStream *istream;
+	CamelStream *ostream;
+
+	struct _CamelImapStoreSummary *summary;
 	
 	/* Information about the command channel / connection status */
 	gboolean connected;
@@ -89,8 +114,9 @@ struct _CamelImapStore {
 	/* Information about the server */
 	CamelImapServerLevel server_level;
 	guint32 capabilities, parameters;
+	/* NB: namespace should be handled by summary->namespace */
 	char *namespace, dir_sep, *base_url, *storage_path;
-	GHashTable *authtypes, *subscribed_folders;
+	GHashTable *authtypes;
 	
 	gboolean renaming;
 	
@@ -108,6 +134,11 @@ typedef struct {
 
 /* Standard Camel function */
 CamelType camel_imap_store_get_type (void);
+
+
+gboolean camel_imap_store_connected (CamelImapStore *store, CamelException *ex);
+
+ssize_t camel_imap_store_readline (CamelImapStore *store, char **dest, CamelException *ex);
 
 #ifdef __cplusplus
 }

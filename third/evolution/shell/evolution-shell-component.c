@@ -26,6 +26,8 @@
 
 #include "evolution-shell-component.h"
 
+#include "e-shell-corba-icon-utils.h"
+
 #include <fcntl.h>
 
 #include <glib.h>
@@ -35,21 +37,22 @@
 
 #include <gal/util/e-util.h>
 
-#include "Evolution.h"
-
 
 #define PING_DELAY 10000
 
 
 #define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
-static GtkObjectClass *parent_class = NULL;
+static BonoboXObjectClass *parent_class = NULL;
 
 struct _UserCreatableItemType {
 	char *id;
 	char *description;
 	char *menu_description;
+	char *tooltip;
 	char menu_shortcut;
+	GdkPixbuf *icon;
+	char *folder_type;
 };
 typedef struct _UserCreatableItemType UserCreatableItemType;
 
@@ -62,11 +65,17 @@ struct _EvolutionShellComponentPrivate {
 	EvolutionShellComponentRemoveFolderFn remove_folder_fn;
 	EvolutionShellComponentXferFolderFn xfer_folder_fn;
 	EvolutionShellComponentPopulateFolderContextMenuFn populate_folder_context_menu_fn;
+	EvolutionShellComponentUnpopulateFolderContextMenuFn unpopulate_folder_context_menu_fn;
 	EvolutionShellComponentGetDndSelectionFn get_dnd_selection_fn;
+	EvolutionShellComponentRequestQuitFn request_quit_fn;
 
 	EvolutionShellClient *owner_client;
 
 	GSList *user_creatable_item_types; /* UserCreatableItemType */
+
+	/* This is used for
+	   populateFolderContextMenu/unpopulateFolderContextMenu.  */
+	BonoboUIComponent *uic;
 
 	int ping_timeout_id;
 
@@ -81,6 +90,7 @@ enum {
 	INTERACTIVE,
 	HANDLE_EXTERNAL_URI,
 	USER_CREATE_NEW_ITEM,
+	SEND_RECEIVE,
 	LAST_SIGNAL
 };
 
@@ -93,7 +103,10 @@ static UserCreatableItemType *
 user_creatable_item_type_new (const char *id,
 			      const char *description,
 			      const char *menu_description,
-			      char menu_shortcut)
+			      const char *tooltip,
+			      const char *folder_type,
+			      char menu_shortcut,
+			      GdkPixbuf *icon)
 {
 	UserCreatableItemType *type;
 
@@ -101,7 +114,14 @@ user_creatable_item_type_new (const char *id,
 	type->id               = g_strdup (id);
 	type->description      = g_strdup (description);
 	type->menu_description = g_strdup (menu_description);
+	type->tooltip          = g_strdup (tooltip);
 	type->menu_shortcut    = menu_shortcut;
+	type->folder_type      = g_strdup (folder_type);
+
+	if (icon == NULL)
+		type->icon = NULL;
+	else
+		type->icon = gdk_pixbuf_ref (icon);
 
 	return type;
 }
@@ -112,6 +132,10 @@ user_creatable_item_type_free (UserCreatableItemType *type)
 	g_free (type->id);
 	g_free (type->description);
 	g_free (type->menu_description);
+	g_free (type->folder_type);
+
+	if (type->icon != NULL)
+		gdk_pixbuf_unref (type->icon);
 
 	g_free (type);
 }
@@ -169,6 +193,8 @@ fill_corba_sequence_from_null_terminated_string_array (CORBA_sequence_CORBA_stri
 
 	for (i = 0; i < count; i++)
 		corba_sequence->_buffer[i] = CORBA_string_dup (array[i]);
+
+	CORBA_sequence_set_release (corba_sequence, TRUE);
 }
 
 
@@ -318,6 +344,8 @@ impl__get_externalUriSchemas (PortableServer_Servant servant,
 		uri_schema_list->_buffer[i] = CORBA_string_dup (schema);
 	}
 
+	CORBA_sequence_set_release (uri_schema_list, TRUE);
+
 	return uri_schema_list;
 }
 
@@ -349,7 +377,11 @@ impl__get_userCreatableItemTypes (PortableServer_Servant servant,
 		corba_type->id              = CORBA_string_dup (type->id);
 		corba_type->description     = CORBA_string_dup (type->description);
 		corba_type->menuDescription = CORBA_string_dup (type->menu_description);
+		corba_type->tooltip         = CORBA_string_dup (type->tooltip != NULL ? type->tooltip : "");
+		corba_type->folderType      = CORBA_string_dup (type->folder_type != NULL ? type->folder_type : "");
 		corba_type->menuShortcut    = type->menu_shortcut;
+
+		e_store_corba_icon_from_pixbuf (type->icon, & corba_type->icon);
 	}
 
 	CORBA_sequence_set_release (list, TRUE);
@@ -465,6 +497,7 @@ static Bonobo_Control
 impl_createView (PortableServer_Servant servant,
 		 const CORBA_char *physical_uri,
 		 const CORBA_char *type,
+		 const CORBA_char *view_info,
 		 CORBA_Environment *ev)
 {
 	BonoboObject *bonobo_object;
@@ -478,7 +511,7 @@ impl_createView (PortableServer_Servant servant,
 	priv = shell_component->priv;
 
 	result = (* priv->create_view_fn) (shell_component, physical_uri, type,
-					   &control, priv->closure);
+					   view_info, &control, priv->closure);
 
 	if (result != EVOLUTION_SHELL_COMPONENT_OK) {
 		switch (result) {
@@ -609,7 +642,6 @@ impl_populateFolderContextMenu (PortableServer_Servant servant,
 	BonoboObject *bonobo_object;
 	EvolutionShellComponent *shell_component;
 	EvolutionShellComponentPrivate *priv;
-	BonoboUIComponent *uic;
 
 	bonobo_object = bonobo_object_from_servant (servant);
 	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object);
@@ -618,13 +650,49 @@ impl_populateFolderContextMenu (PortableServer_Servant servant,
 	if (priv->populate_folder_context_menu_fn == NULL)
 		return;
 
-	uic = bonobo_ui_component_new_default ();
-	bonobo_ui_component_set_container (uic, corba_uih);
+	if (priv->uic != NULL) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_GNOME_Evolution_ShellComponent_AlreadyPopulated,
+				     NULL);
+		return;
+	}
+
+	priv->uic = bonobo_ui_component_new_default ();
+	bonobo_ui_component_set_container (priv->uic, corba_uih);
 	bonobo_object_release_unref (corba_uih, NULL);
 
-	(* priv->populate_folder_context_menu_fn) (shell_component, uic, physical_uri, type, priv->closure);
+	(* priv->populate_folder_context_menu_fn) (shell_component, priv->uic, physical_uri, type, priv->closure);
+}
 
-	bonobo_object_unref (BONOBO_OBJECT (uic));
+static void
+impl_unpopulateFolderContextMenu (PortableServer_Servant servant,
+				  const Bonobo_UIContainer corba_uih,
+				  const CORBA_char *physical_uri,
+				  const CORBA_char *type,
+				  CORBA_Environment *ev)
+{
+	BonoboObject *bonobo_object;
+	EvolutionShellComponent *shell_component;
+	EvolutionShellComponentPrivate *priv;
+
+	bonobo_object = bonobo_object_from_servant (servant);
+	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object);
+	priv = shell_component->priv;
+
+	if (priv->unpopulate_folder_context_menu_fn == NULL)
+		return;
+
+	if (priv->uic == NULL) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_GNOME_Evolution_ShellComponent_NotPopulated,
+				     NULL);
+		return;
+	}
+
+	(* priv->unpopulate_folder_context_menu_fn) (shell_component, priv->uic, physical_uri, type, priv->closure);
+
+	bonobo_object_unref (BONOBO_OBJECT (priv->uic));
+	priv->uic = NULL;
 }
 
 static void
@@ -643,6 +711,43 @@ impl_userCreateNewItem (PortableServer_Servant servant,
 	/* FIXME: Check that the type is good.  */
 
 	gtk_signal_emit (GTK_OBJECT (shell_component), signals[USER_CREATE_NEW_ITEM], id, parent_physical_uri, parent_type);
+}
+
+static void
+impl_sendReceive (PortableServer_Servant servant,
+		  const CORBA_boolean show_dialog,
+		  CORBA_Environment *ev)
+{
+	EvolutionShellComponent *shell_component;
+
+	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object_from_servant (servant));
+	gtk_signal_emit (GTK_OBJECT (shell_component), signals[SEND_RECEIVE], show_dialog);
+}
+
+static void
+impl_requestQuit (PortableServer_Servant servant,
+		  const GNOME_Evolution_ShellComponentListener listener,
+		  CORBA_Environment *ev)
+{
+	EvolutionShellComponent *shell_component;
+	gboolean allow_quit;
+
+	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object_from_servant (servant));
+
+	if (shell_component->priv->request_quit_fn == NULL)
+		allow_quit = TRUE;
+	else
+		allow_quit = (* shell_component->priv->request_quit_fn) (shell_component,
+									 shell_component->priv->closure);
+
+	if (allow_quit)
+		GNOME_Evolution_ShellComponentListener_notifyResult (listener,
+								     GNOME_Evolution_ShellComponentListener_OK,
+								     ev);
+	else
+		GNOME_Evolution_ShellComponentListener_notifyResult (listener,
+								     GNOME_Evolution_ShellComponentListener_CANCEL,
+								     ev);
 }
 
 
@@ -698,9 +803,12 @@ destroy (GtkObject *object)
 		user_creatable_item_type_free ((UserCreatableItemType *) sp->data);
 	g_slist_free (priv->user_creatable_item_types);
 
+	if (priv->uic != NULL)
+		bonobo_object_unref (BONOBO_OBJECT (priv->uic));
+
 	g_free (priv);
 
-	parent_class->destroy (object);
+	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 
@@ -819,6 +927,15 @@ class_init (EvolutionShellComponentClass *klass)
 				  GTK_TYPE_STRING,
 				  GTK_TYPE_STRING);
 
+	signals[SEND_RECEIVE]
+		= gtk_signal_new ("send_receive",
+				  GTK_RUN_FIRST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, send_receive),
+				  gtk_marshal_NONE__BOOL,
+				  GTK_TYPE_NONE, 1,
+				  GTK_TYPE_BOOL);
+
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	parent_class = gtk_type_class (PARENT_TYPE);
@@ -836,7 +953,10 @@ class_init (EvolutionShellComponentClass *klass)
 	epv->removeFolderAsync           = impl_removeFolderAsync; 
 	epv->xferFolderAsync             = impl_xferFolderAsync; 
 	epv->populateFolderContextMenu   = impl_populateFolderContextMenu;
+	epv->unpopulateFolderContextMenu = impl_unpopulateFolderContextMenu;
 	epv->userCreateNewItem           = impl_userCreateNewItem;
+	epv->sendReceive                 = impl_sendReceive;
+	epv->requestQuit                 = impl_requestQuit;
 
 	shell_component_class = EVOLUTION_SHELL_COMPONENT_CLASS (object_class);
 	shell_component_class->owner_died = impl_owner_died;
@@ -853,17 +973,20 @@ init (EvolutionShellComponent *shell_component)
 	priv->folder_types                    = NULL;
 	priv->external_uri_schemas            = NULL;
 
-	priv->create_view_fn                  = NULL;
-	priv->create_folder_fn                = NULL;
-	priv->remove_folder_fn                = NULL;
-	priv->xfer_folder_fn                  = NULL;
-	priv->populate_folder_context_menu_fn = NULL;
+	priv->create_view_fn                    = NULL;
+	priv->create_folder_fn                  = NULL;
+	priv->remove_folder_fn                  = NULL;
+	priv->xfer_folder_fn                    = NULL;
+	priv->populate_folder_context_menu_fn   = NULL;
+	priv->unpopulate_folder_context_menu_fn = NULL;
 
-	priv->owner_client                    = NULL;
-	priv->user_creatable_item_types       = NULL;
-	priv->closure                         = NULL;
+	priv->owner_client                      = NULL;
+	priv->user_creatable_item_types         = NULL;
+	priv->closure                           = NULL;
 
-	priv->ping_timeout_id                 = -1;
+	priv->ping_timeout_id                   = -1;
+
+	priv->uic                               = NULL;
 
 	shell_component->priv = priv;
 }
@@ -878,7 +1001,9 @@ evolution_shell_component_construct (EvolutionShellComponent *shell_component,
 				     EvolutionShellComponentRemoveFolderFn remove_folder_fn,
 				     EvolutionShellComponentXferFolderFn xfer_folder_fn,
 				     EvolutionShellComponentPopulateFolderContextMenuFn populate_folder_context_menu_fn,
+				     EvolutionShellComponentUnpopulateFolderContextMenuFn unpopulate_folder_context_menu_fn,
 				     EvolutionShellComponentGetDndSelectionFn get_dnd_selection_fn,
+				     EvolutionShellComponentRequestQuitFn request_quit_fn,
 				     void *closure)
 {
 	EvolutionShellComponentPrivate *priv;
@@ -890,12 +1015,14 @@ evolution_shell_component_construct (EvolutionShellComponent *shell_component,
 
 	priv = shell_component->priv;
 
-	priv->create_view_fn                  = create_view_fn;
-	priv->create_folder_fn                = create_folder_fn;
-	priv->remove_folder_fn                = remove_folder_fn;
-	priv->xfer_folder_fn                  = xfer_folder_fn;
-	priv->populate_folder_context_menu_fn = populate_folder_context_menu_fn;
-	priv->get_dnd_selection_fn            = get_dnd_selection_fn;
+	priv->create_view_fn                    = create_view_fn;
+	priv->create_folder_fn                  = create_folder_fn;
+	priv->remove_folder_fn                  = remove_folder_fn;
+	priv->xfer_folder_fn                    = xfer_folder_fn;
+	priv->populate_folder_context_menu_fn   = populate_folder_context_menu_fn;
+	priv->unpopulate_folder_context_menu_fn = unpopulate_folder_context_menu_fn;
+	priv->get_dnd_selection_fn              = get_dnd_selection_fn;
+	priv->request_quit_fn                   = request_quit_fn;
 
 	priv->closure = closure;
 
@@ -940,7 +1067,9 @@ evolution_shell_component_new (const EvolutionShellComponentFolderType folder_ty
 			       EvolutionShellComponentRemoveFolderFn remove_folder_fn,
 			       EvolutionShellComponentXferFolderFn xfer_folder_fn,
 			       EvolutionShellComponentPopulateFolderContextMenuFn populate_folder_context_menu_fn,
+			       EvolutionShellComponentUnpopulateFolderContextMenuFn unpopulate_folder_context_menu_fn,
 			       EvolutionShellComponentGetDndSelectionFn get_dnd_selection_fn,
+			       EvolutionShellComponentRequestQuitFn request_quit_fn,
 			       void *closure)
 {
 	EvolutionShellComponent *new;
@@ -957,7 +1086,9 @@ evolution_shell_component_new (const EvolutionShellComponentFolderType folder_ty
 					     remove_folder_fn,
 					     xfer_folder_fn,
 					     populate_folder_context_menu_fn,
+					     unpopulate_folder_context_menu_fn,
 					     get_dnd_selection_fn,
+					     request_quit_fn,
 					     closure);
 
 	return new;
@@ -978,7 +1109,10 @@ evolution_shell_component_add_user_creatable_item  (EvolutionShellComponent *she
 						    const char *id,
 						    const char *description,
 						    const char *menu_description,
-						    char menu_shortcut)
+						    const char *tooltip,
+						    const char *folder_type,
+						    char menu_shortcut,
+						    GdkPixbuf *icon)
 {
 	EvolutionShellComponentPrivate *priv;
 	UserCreatableItemType *type;
@@ -991,7 +1125,7 @@ evolution_shell_component_add_user_creatable_item  (EvolutionShellComponent *she
 
 	priv = shell_component->priv;
 
-	type = user_creatable_item_type_new (id, description, menu_description, menu_shortcut);
+	type = user_creatable_item_type_new (id, description, menu_description, tooltip, folder_type, menu_shortcut, icon);
 
 	priv->user_creatable_item_types = g_slist_prepend (priv->user_creatable_item_types, type);
 }
@@ -1005,6 +1139,8 @@ evolution_shell_component_result_to_string (EvolutionShellComponentResult result
 	switch (result) {
 	case EVOLUTION_SHELL_COMPONENT_OK:
 		return _("Success");
+	case EVOLUTION_SHELL_COMPONENT_CANCEL:
+		return _("Cancel");
 	case EVOLUTION_SHELL_COMPONENT_CORBAERROR:
 		return _("CORBA error");
 	case EVOLUTION_SHELL_COMPONENT_INTERRUPTED:

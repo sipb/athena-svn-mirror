@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *  Copyright (C) 2000 Ximian Inc.
  *
@@ -18,11 +19,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
 #ifndef _CAMEL_MIME_FILTER_INDEX_H
 #define _CAMEL_MIME_FILTER_INDEX_H
 
+#ifdef __cplusplus
+extern "C" {
+#pragma }
+#endif /* __cplusplus */
+
 #include <camel/camel-mime-filter.h>
-#include <libibex/ibex.h>
 
 #define CAMEL_MIME_FILTER_INDEX(obj)         CAMEL_CHECK_CAST (obj, camel_mime_filter_index_get_type (), CamelMimeFilterIndex)
 #define CAMEL_MIME_FILTER_INDEX_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_mime_filter_index_get_type (), CamelMimeFilterIndexClass)
@@ -35,21 +41,25 @@ struct _CamelMimeFilterIndex {
 
 	struct _CamelMimeFilterIndexPrivate *priv;
 
-	ibex *index;
-	char *name;
+	struct _CamelIndex *index;
+	struct _CamelIndexName *name;
 };
 
 struct _CamelMimeFilterIndexClass {
 	CamelMimeFilterClass parent_class;
 };
 
-guint		camel_mime_filter_index_get_type	(void);
+CamelType		camel_mime_filter_index_get_type	(void);
 CamelMimeFilterIndex      *camel_mime_filter_index_new	(void);
 
-CamelMimeFilterIndex      *camel_mime_filter_index_new_ibex (ibex *);
+CamelMimeFilterIndex      *camel_mime_filter_index_new_index(struct _CamelIndex *);
 
 /* Set the match name for any indexed words */
-void camel_mime_filter_index_set_name (CamelMimeFilterIndex *, char *);
-void camel_mime_filter_index_set_ibex (CamelMimeFilterIndex *mf, ibex *index);
+void camel_mime_filter_index_set_name (CamelMimeFilterIndex *, struct _CamelIndexName *name);
+void camel_mime_filter_index_set_index (CamelMimeFilterIndex *mf, struct _CamelIndex *index);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* ! _CAMEL_MIME_FILTER_INDEX_H */

@@ -8,6 +8,7 @@
  * Copyright 2001, Ximian, Inc.
  */
 
+#include <string.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnome/gnome-i18n.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -82,21 +83,21 @@ e_categories_config_set_color_for (const char *category, const char *color)
  * Returns the icon (and associated mask) configured for the
  * given category.
  */
-void
+gboolean
 e_categories_config_get_icon_for (const char *category, GdkPixmap **pixmap, GdkBitmap **mask)
 {
 	char *icon_file;
 	GdkPixbuf *pixbuf;
 	GdkBitmap *tmp_mask;
 
-	g_return_if_fail (pixmap != NULL);
+	g_return_val_if_fail (pixmap != NULL, FALSE);
 
 	icon_file = (char *) e_categories_config_get_icon_file_for (category);
 	if (!icon_file) {
 		*pixmap = NULL;
 		if (mask != NULL)
 			*mask = NULL;
-		return;
+		return FALSE;
 	}
 
 	/* load the icon in our list */
@@ -107,7 +108,7 @@ e_categories_config_get_icon_for (const char *category, GdkPixmap **pixmap, GdkB
 			*pixmap = NULL;
 			if (mask != NULL)
 				*mask = NULL;
-			return;
+			return FALSE;
 		}
 
 		g_hash_table_insert (icons_table, g_strdup (icon_file), pixbuf);
@@ -117,6 +118,8 @@ e_categories_config_get_icon_for (const char *category, GdkPixmap **pixmap, GdkB
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, &tmp_mask, 1);
 	if (mask != NULL)
 		*mask = tmp_mask;
+
+	return TRUE;
 }
 
 /**

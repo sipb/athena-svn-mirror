@@ -77,6 +77,37 @@
      </itemizedlist>
      </para>
  
+     <para>
+       <note>
+         <title>Command Line Options</title>
+         <para>
+           Evolution has a number of command-line options that you may
+           wish to make use of. You can find the full list by running
+           the commands <userinput>man evolution</userinput> or
+           <userinput>evolution --help</userinput>.  The most
+           important ones are:
+           <itemizedlist>
+             <listitem>
+               <para>
+                 To start Evolution in offline mode: <userinput>evolution --offline</userinput> 
+               </para>
+             </listitem>
+
+             <listitem>
+               <para>
+                 To start Evolution and begin composing a message to the email address you name: <userinput>evolution mailto:joe@somewhere.net</userinput>
+             </para>
+           </listitem>
+
+           <listitem>
+             <para>
+               To make your web browser use Evolution as the default email client, enter <userinput>evolution "%s"</userinput> as the email handler in your web browser or in the GNOME Control Center.
+            </para>
+          </listitem>
+        </itemizedlist>
+      </para>
+    </note>
+  </para>
  <para>
      The first time you run the program, it will create a directory
       called <filename>evolution</filename> in your home directory,
@@ -95,8 +126,9 @@
 	The Identity window is the first step in the assistant. Here,
 	you will enter some basic personal information.  You can
 	define multiple identities later on with the
-	<menuchoice><guimenu>Tools</guimenu> <guimenuitem>Mail
-	Settings</guimenuitem></menuchoice> tool.
+	<menuchoice><guimenu>Tools</guimenu>
+	<guimenuitem>Configure</guimenuitem></menuchoice> tool and
+	clicking the <guibutton>Mail Accounts</guibutton> button.
 	<itemizedlist>
 	  <listitem>
 	    <para>
@@ -110,17 +142,9 @@
 	  </listitem>
 	  <listitem>
 	    <para>
-	      Organization: The company where you work (optional).
-	    </para>
-	  </listitem>
-	  <listitem>
-	    <para>
-	      Signature file: If you'd like to use an email
-	      <glossterm linkend="signature">signature</glossterm>,
-	      select your signature file here.  Normally, the
-	      signature will be the contents of the
-	      <filename>.signature</filename> file in your home
-	      directory.
+	      Organization: The company where you work, or the
+	      organization you represent when you send email
+	      (optional).
 	    </para>
 	  </listitem>
 	</itemizedlist>
@@ -169,10 +193,11 @@
 
 		<listitem>
 		  <para>
-		    Standard Unix mbox spools: If you want to read and
-		    store mail in the mail spool on your local system,
-		    choose this option. You'll need to provide the
-		    path to the mail spool you want to use.
+		    Standard Unix mbox spools: If you want
+		    to read and store mail in the mail spool on your
+		    local system, choose this option. You'll need to
+		    provide the path to the mail spool
+		    you want to use.
 		  </para>
 		</listitem>
 
@@ -183,6 +208,14 @@
 		    program, you'll want to use this option.  You'll need
 		    to provide the path to the mail directory you want to
 		    use.
+		  </para>
+		</listitem>
+		<listitem>
+		  <para>
+		    MH format mail directories: If you download your
+		    mail using mh or another MH-style program, you'll
+		    want to use this option.  You'll need to provide
+		    the path to the mail directory you want to use.
 		  </para>
 		</listitem>
 
@@ -196,6 +229,18 @@
 		    spools</guimenuitem> option instead. You'll need
 		    to provide the path to the mail spool you want to
 		    use.
+		  </para>
+		</listitem>
+
+		<listitem>
+		  <para>
+		    Directory Tree of mbox files: If you wish to use a
+		    directory tree full of mbox files, select this
+		    option and enter the directory you wish to
+		    use. This option is useful if you wish to use pine
+		    or other email clients at the same time as
+		    Evolution, while storing mail on your local system
+		    in mbox format.
 		  </para>
 		</listitem>
 
@@ -248,12 +293,12 @@
 			</para>
 		      </listitem>
 		    </itemizedlist>
-
-      </para>
+              </para>
+      <para>
       <tip id="exchange-info">
-	<title>Can Ximian Evolution Talk to Microsoft Exchange?</title>
-	<para>
-           If you have purchased the Ximian Connector for Microsoft
+	<title>Ximian Evolution Talk to Microsoft Exchange?</title>
+         <para>
+	   If you have purchased Ximian Connector for Microsoft
 	   Exchange, you can access Microsoft Exchange 2000 servers
 	   natively.  If you do not have the Connector, or if you use
 	   an older version of Microsoft Exchange, talk to your system
@@ -261,6 +306,7 @@
 	   like POP and IMAP.
 	</para>
       </tip> 
+</para>
     </sect2>
     <sect2 id="more-mail-options">
       <title>More Mail Configuration Options</title>
@@ -269,10 +315,11 @@
         especially if you've chosen POP, Microsoft Exchange, or IMAP
         as incoming mail server type.  If you want to set these
         options after you've created the account, you can select
-        <menuchoice><guimenu>Tools</guimenu> <guimenuitem>Mail
-        Settings</guimenuitem></menuchoice>, click on the account you
-        want to change, and then click the <guibutton>Edit</guibutton>
-        button. See <xref linkend="config-prefs-mail"> for details.
+        <menuchoice><guimenu>Tools</guimenu> <guimenuitem>Configure
+        </guimenuitem></menuchoice>, click the <guibutton>Mail
+        Accounts</guibutton> button. Then, select the account you want
+        to change and click <guibutton>Edit</guibutton>. See <xref
+        linkend="config-prefs-mail"> for details.
       </para>
         <variablelist>
 	 <varlistentry>
@@ -613,7 +660,7 @@ the workaround described in the note below.
   </sect1>
 
   <sect1 id="importing-mail-from-clients">
-    <title>Importing Mail from Individual Mail Clients</title>
+    <title>Importing Mail from Other Mail Clients</title>
     <para>
       Chances are, you already have your email in another mail program
       and don't want to lose the information.  The following section
@@ -882,25 +929,7 @@ the workaround described in the note below.
 	      and shared over a network.
 	   </para>
 	  </listitem>
-	</varlistentry>
-
-<!-- NOT IMPLEMENTED YET
-
-
-	<varlistentry>
-	  <term> <guibutton>Notes:</guibutton></term>
-	<listitem>
-	  <para> The note pad is your catch-all tool: use it to take
-	    messages from phone conversations, keep small things
-	    organized, write <glossterm linkend="haiku">haiku</glossterm>, or whatever
-	    you like. This feature is not yet implemented, but will be
-	    soon. See <xref linkend="usage-notes"> for more
-	    information.
-	  </para>
-	</listitem>
-	</varlistentry>
--->
-	  
+	</varlistentry>	  
 	</variablelist>
       </para>
     </sect2>
@@ -1146,8 +1175,8 @@ the workaround described in the note below.
           <term> <guimenu>Tools</guimenu>:</term>
           <listitem><para>
              Tools for configuring, changing, and
-          setting up preferences go here.  For mail, that means things like
-          <guimenuitem>Mail Configuration</guimenuitem> and the
+          setting up  go here.  For mail, that means things like
+           and the
           <guimenuitem>Virtual Folder Editor</guimenuitem>.  For the
           <interface>Calendar</interface> and the <interface>Contact
           Manager</interface>, it's color, network, and layout
@@ -1232,9 +1261,9 @@ Shows your pending tasks
         To add additional services to your Summary, or to edit the
         existing services, select
         <menuchoice>
-	  <guimenu>Tools</guimenu> 
-	  <guimenuitem>Summary Settings</guimenuitem> 
-	</menuchoice>.
+	  <guimenu>Tools</guimenu>
+	  <guimenuitem>Configure</guimenuitem> </menuchoice> and click
+	  the <guibutton>Summary Settings</guibutton> button.
       </para>
 
     </sect2>
@@ -1262,14 +1291,9 @@ Shows your pending tasks
 	    <para>
               It supports multiple mail sources, including <glossterm
               linkend="imap">IMAP</glossterm>, <glossterm
-              linkend="pop">POP3</glossterm>, local
-              <filename>mbox</filename> and <filename>mh</filename>
+              linkend="pop">POP3</glossterm>, and local
+              <filename>mbox</filename> or <filename>mh</filename>
               spools and files created by other mail programs.
-
-<!-- NOT FOR 1.0, but maybe later 
-              and even NNTP messages (newsgroups), which aren't
-              technically email.
--->
             </para>
 	  </listitem>
 	  <listitem>

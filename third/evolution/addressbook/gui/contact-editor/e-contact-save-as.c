@@ -29,6 +29,7 @@
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <gal/util/e-util.h>
+#include <gal/widgets/e-unicode.h>
 #include <libgnome/gnome-i18n.h>
 #include <errno.h>
 #include <string.h>
@@ -120,11 +121,12 @@ make_safe_filename (const char *prefix, char *name)
 }
 
 void
-e_contact_save_as(char *title, ECard *card)
+e_contact_save_as(char *title, ECard *card, GtkWindow *parent_window)
 {
 	GtkFileSelection *filesel;
 	char *file;
 	char *name;
+	char *locale_name;
 	SaveAsInfo *info = g_new(SaveAsInfo, 1);
 
 	filesel = GTK_FILE_SELECTION(gtk_file_selection_new(title));
@@ -132,9 +134,11 @@ e_contact_save_as(char *title, ECard *card)
 	gtk_object_get (GTK_OBJECT (card),
 			"file_as", &name,
 			NULL);
-	file = make_safe_filename (g_get_home_dir(), name);
+	locale_name = e_utf8_to_locale_string (name);
+	file = make_safe_filename (g_get_home_dir(), locale_name);
 	gtk_file_selection_set_filename (filesel, file);
 	g_free (file);
+	g_free (locale_name);
 
 	info->filesel = filesel;
 	info->vcard = e_card_get_vcard(card);
@@ -145,11 +149,18 @@ e_contact_save_as(char *title, ECard *card)
 			   close_it, info);
 	gtk_signal_connect(GTK_OBJECT(filesel), "delete_event",
 			   delete_it, info);
+
+	if (parent_window) {
+		gtk_window_set_transient_for (GTK_WINDOW (filesel),
+					      parent_window);
+		gtk_window_set_modal (GTK_WINDOW (filesel), TRUE);
+	}
+
 	gtk_widget_show(GTK_WIDGET(filesel));
 }
 
 void
-e_contact_list_save_as(char *title, GList *list)
+e_contact_list_save_as(char *title, GList *list, GtkWindow *parent_window)
 {
 	GtkFileSelection *filesel;
 	SaveAsInfo *info = g_new(SaveAsInfo, 1);
@@ -158,13 +169,15 @@ e_contact_list_save_as(char *title, GList *list)
 
 	/* This is a filename. Translators take note. */
 	if (list && list->data && list->next == NULL) {
-		char *name, *file;
+		char *name, *locale_name, *file;
 		gtk_object_get (GTK_OBJECT (list->data),
 				"file_as", &name,
 				NULL);
-		file = make_safe_filename (g_get_home_dir(), name);
+		locale_name = e_utf8_to_locale_string (name);
+		file = make_safe_filename (g_get_home_dir(), locale_name);
 		gtk_file_selection_set_filename (filesel, file);
 		g_free (file);
+		g_free (locale_name);
 	} else {
 		char *file;
 		file = make_safe_filename (g_get_home_dir(), _("list"));
@@ -181,6 +194,13 @@ e_contact_list_save_as(char *title, GList *list)
 			   close_it, info);
 	gtk_signal_connect(GTK_OBJECT(filesel), "delete_event",
 			   delete_it, info);
+
+	if (parent_window) {
+		gtk_window_set_transient_for (GTK_WINDOW (filesel),
+					      parent_window);
+		gtk_window_set_modal (GTK_WINDOW (filesel), TRUE);
+	}
+
 	gtk_widget_show(GTK_WIDGET(filesel));
 }
 

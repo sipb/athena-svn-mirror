@@ -1,4 +1,318 @@
-2001-12-18  JP Rosevear  <jpr@ximian.com>
+2002-11-25  Dan Winship  <danw@ximian.com>
+
+	* e-lang-utils.c (e_get_language_list): If the language is
+	something like "fr_FR", return both "fr_FR" and "fr" in the list.
+	Oaf doesn't consider "fr_FR" to match a "-fr" translation.
+
+2002-11-22  Not Zed  <NotZed@Ximian.com>
+
+	* e-msgport.c (EMsgPort): Added an optional nspr pipe field.
+	(e_msgport_new): Init nspr pipe to null.
+	(e_msgport_destroy): close prfiledesc's if they're open.
+	(e_msgport_prfd): get the prfiledesc to wait asynchronously on.
+	(e_msgport_put): Write notify to nspr pipe if it exists.
+	(e_msgport_wait): poll nspr pipe fd if it is set, and the pipe fd
+	isn't.
+	(e_msgport_get): skim off a notify byte on the pr pipe if set.
+	(): Include config.h, and nspr stuff if HAVE_NSS is set.
+
+2002-10-24  Rodrigo Moya <rodrigo@ximian.com>
+
+	Fixes #32764
+
+	* e-config-listener.c (add_key): store the value returned by
+	bonobo_event_source_client_add_listener, so that we can remove it
+	later, when freeing the key structure.
+	(free_key_hash): remove listener.
+	(e_config_listener_set_boolean):
+	(e_config_listener_set_float): 
+	(e_config_listener_set_long):
+	(e_config_listener_set_string): only set the cache values if there's
+	no exception.
+	(e_config_listener_destroy): remove all keys before unrefing the db
+	component.
+
+2002-10-23  Dan Winship  <danw@ximian.com>
+
+	* ename/e-name-western.c: Cast chars to unsigned char before
+	passing to ctype macros since they are not defined on negative
+	numbers. Fixes parsing problems with names with accented
+	characters on Solaris. (At least part of #32146)
+
+2002-09-25  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-component-listener.c (ping_component_callback): added a comment
+	about the fix for #30918.
+
+2002-09-23  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-component-listener.c (ping_component_callback): gtk_object_ref the
+	component listener before emitting the "component_died" signal, since
+	in most cases, the component listener will be destroyed in the
+	callbacks for that signal.
+
+2002-09-22  Dan Winship  <danw@ximian.com>
+
+	* e-config-listener.c: Fix some non-ANSI switch statements
+
+	* e-path.c: #include <sys/types.h> for OS X
+
+2002-09-11  Chris Toshok  <toshok@ximian.com>
+
+	[ Fixes #27546 ]
+	* ename/e-name-western-tables.h
+	(e_name_western_complex_last_table): add "di" to
+	e_name_western_complex_last_table.
+
+2002-09-05  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-config-listener.c (e_config_listener_set_boolean,
+	e_config_listener_set_float, e_config_listener_set_long,
+	e_config_listener_set_string): update the local copy (if we've
+	got one) so that we don't return values if asked before getting
+	the change notification.
+
+2002-09-04  Dan Winship  <danw@ximian.com>
+
+	* e-time-utils.c (e_mktime_utc): New. Like mktime(3), but assumes
+	the input time is UTC.
+	(e_localtime_with_offset): New. Like localtime_r(3), but also
+	returns an offset from UTC.
+
+2002-08-29  Dan Winship  <danw@ximian.com>
+
+	* e-list.c (e_list_destroy): Don't call g_list_foreach with the
+	free func if the free func is NULL.
+
+2002-08-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-html-utils.c (e_text_to_html_full): Convert file: urls
+	too. Fixes bug #29557.
+
+	* e-proxy.[c,h] (e_proxy_init): New convenience function to
+	initialise the proxy settings for soup to use.
+
+2002-08-27  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-config-listener.c[ch] (e_config_listener_get_float_with_default,
+	  e_config_listener_set_boolean, e_config_listener_set_float): new
+	functions.
+	(property_change_cb, add_key): added support for FLOAT values.
+	(e_config_listener_set_string): free strings before returning.
+
+2002-08-26  Peter Williams  <peterw@ximian.com>
+
+	* e-dialog-utils.c (set_transient_for_gdk): If gdk_window_foreign_new
+	returned NULL, we're probably screwed, but try to avoid a segfault.
+	(Preemptive fix suggested by kmaraas).
+
+2002-08-26  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-config-listener.c (e_config_listener_get_string_with_default):
+	call g_strdup in the correct place, or we'll return the internal copy.
+
+2002-08-26  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-config-listener.c (e_config_listener_set_long): only set the key
+	if the value is different from what we've already read from the
+	database, to avoid extra change notifications.
+	(e_config_listener_set_string): likewise.
+
+2002-08-22  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-config-listener.[ch]: added "key_changed" signal to class.
+	(property_change_cb): emit "key_changed" signal.
+	(e_config_listener_set_long): new function.
+	(e_config_listener_get_long_with_default): new function.
+
+2002-08-22  Dan Winship  <danw@ximian.com>
+
+	* e-path.c (e_path_rmdir): Remove an e_path directory, and its
+	parent "subfolders" dir if it's now empty.
+
+2002-08-22  JP Rosevear  <jpr@ximian.com>
+
+	* e-time-utils.c (e_time_parse_date): if the year was two digits,
+	add the current century
+
+	Fixes # 17252
+	
+2002-08-16  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-config-listener.[ch]: new class for config database access and
+	monitoring.
+
+	* Makefile.am: added new files.
+
+2002-08-14  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-component-listener.[ch]: new class for controlling a component,
+	to detect when it dies.
+
+2002-08-01  Dan Winship  <danw@ximian.com>
+
+	* e-html-utils.c (is_citation): Remove the logic that assumes
+	"Rupert> " is a citation, since it misfires more often than it
+	hits.
+
+2002-07-31  Dan Winship  <danw@ximian.com>
+
+	* e-html-utils.c (is_addr_char, is_trailing_garbage): Don't use
+	"isprint(c)" to mean "c >= 32 && c < 128" since it doesn't in most
+	locales.
+	(is_domain_name_char): new macro for dns-valid characters
+	(email_address_extract): Use is_domain_name_char rather than
+	is_addr_char for the part after the @.
+
+2002-07-30  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-host-utils.c (e_gethostbyname_r): If the user has enabled IPv6
+	support, use getaddrinfo to resolve hostnames and then manually
+	fit the result into a struct hostent.
+	(e_gethostbyaddr_r): Same.
+
+2002-07-25  Not Zed  <NotZed@Ximian.com>
+
+	* e-msgport.c (e_dlist_length): Return the actual count, rather
+	than always 0!
+	
+2002-07-03  Peter Williams  <peterw@ximian.com>
+
+	* Makefile.am: Install libeutil, libeconduit, and libedb3util and
+	their headers.
+	
+2002-07-15  Not Zed  <NotZed@Ximian.com>
+
+	* e-sexp.c (term_eval_caststring): Cast to a string type.
+	(term_eval_castint): Cast to an int type.
+	(symbols[]): Add to symbol table.
+
+2002-07-09  Dan Winship  <danw@ximian.com>
+
+	* e-categories-config.c: #include <string.h>
+
+2002-07-02  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-categories-config.c (e_categories_config_get_icon_for): changed to
+	return a gboolean (TRUE if the icon is found, FALSE if not).
+
+2002-06-07  Not Zed  <NotZed@Ximian.com>
+
+	* e-dialog-utils.c (e_gnome_warning_dialog_parented):
+	(e_gnome_ok_cancel_dialog_parented): Use connect_while_alive, so
+	we're not called after we've quit.  See bug #15397.
+
+2002-06-03  Not Zed  <NotZed@Ximian.com>
+
+	* e-msgport.c (e_msgport_wait): Protect against EINTR (irix?), see
+	bug #24086.
+
+2002-05-07  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-corba-utils.c (e_safe_corba_string_dup): New.
+
+2002-05-06  Not Zed  <NotZed@Ximian.com>
+
+	* e-msgport.c (e_thread_destroy): Destroy our mutex too.
+	(e_thread_new): Add thread to a new list of all threads.
+	(e_thread_destroy): Remove thread from list of all threads.
+	(e_thread_busy): New function, returh true if we're busy somewhere
+	processing work.
+
+2002-04-19  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-passwords.c (e_passwords_get_password): Don't leak the base64
+	encoded password buffer.
+
+2002-04-16  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-host-utils.c (e_gethostbyaddr_r): New wrapper around
+	gethostbyaddr_r if the system has it, else a whole new
+	implementation.
+
+2002-04-11  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-sexp.c (parse_value): Handle parsing negative integers.
+
+2002-03-29  JP Rosevear  <jpr@ximian.com>
+
+	* e-dialog-utils.c (e_file_dialog_save): open a file selection
+	dialog with the given title and return the selected file name
+	(save_ok): if the ok button is clicked, make sure the file doesn't
+	already exist and if it does, see if the user wants to over write
+	it
+
+	* e-dialog-utils.h: new proto
+
+2002-03-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-lang-utils.c: New.
+	* e-lang-utils.h: New.
+
+2002-03-22  Dan Winship  <danw@ximian.com>
+
+	* e-request.c (e_request_string): Document the fact that this
+	takes two locale charset strings and one UTF8 string and returns a
+	UTF8 string. (Huh.)
+
+2002-03-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-mktemp.c: #include <string.h> for strcmp.
+
+2002-02-22  Dan Winship  <danw@ximian.com>
+
+	* e-html-utils.c (e_text_to_html_full): Fix for if the buffer ends
+	with an email address (and no newline).
+
+2002-02-09  JP Rosevear  <jpr@ximian.com>
+
+	* e-pilot-settings.h: add row and column defines
+
+2002-01-27  Ettore Perazzoli  <ettore@ximian.com>
+
+	* ename/Makefile.am: Use E_NAME_CFLAGS and E_NAME_LIBS.
+
+	* Makefile.am: Use E_UTIL_CFLAGS and E_UTIL_LIBS.
+
+2002-01-14  JP Rosevear  <jpr@ximian.com>
+
+	* Makefile.am: compile new files
+
+	* e-pilot-settings.[hc]: beginnings of a general conduit
+	configuration gui
+
+2002-01-10  Christopher James Lahey  <clahey@ximian.com>
+
+	* ename/e-name-western.c (e_name_western_word_is_suffix): Allow
+	for a period after suffixes.  Fixes Ximian bug #17012.
+
+2002-01-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-memory.c (e_memchunk_clean): Prune free'd nodes from our free
+	list otherwise we'll end up re-using free'd memory blocks and
+	that's not a Good Thing (tm).
+
+2002-01-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* md5-utils.h: Reverted.
+
+2002-01-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* md5-utils.h: Move the struct into md5-utils.c - this is a
+	kludgey hack around the fact that NSS also defines
+	MD5Context. Besides, this should be a private struct anyway.
+
+2002-01-02  JP Rosevear  <jpr@ximian.com>
+
+	* e-dialog-utils.c (e_gnome_dialog_set_parent): util function
+	moved from mail-callbacks, also destroys the dialog if the parent
+	is destroyed
+	(e_gnome_warning_dialog_parented): similarly
+	(e_gnome_ok_cancel_dialog_parented): ditto
+
+	* e-dialog-utils.h: new protos
+
+2001-12-17  JP Rosevear  <jpr@ximian.com>
 
 	* e-pilot-map.c (e_pilot_map_clear): clear all info from the map
 

@@ -22,16 +22,15 @@ INCLUDES = 								\
 	-I$(top_builddir)/libical/src/libical				\
 	-I$(top_builddir)/shell						\
 	-I$(top_srcdir)/shell						\
-	-I$(top_srcdir)/addressbook/backend/ebook			\
-	-I$(top_builddir)/addressbook/backend/ebook			\
+	-I$(top_srcdir)/addressbook/backend				\
+	-I$(top_builddir)/addressbook/backend				\
 	-I$(includedir)							\
-	$(EXTRA_GNOME_CFLAGS)						\
-	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
+	-DEVOLUTION_DATADIR=\""$(datadir)"\"				\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"				\
 	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"				\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"			\
-	$(BONOBO_VFS_GNOME_CFLAGS)					\
-        -DGNOMELOCALEDIR=\""$(localedir)"\"
+        -DGNOMELOCALEDIR=\""$(localedir)"\"				\
+	$(EVOLUTION_CALENDAR_CFLAGS)
 
 noinst_LIBRARIES = libcal-dialogs.a
 

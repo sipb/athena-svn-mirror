@@ -441,6 +441,18 @@
 	person with a pile of envelopes.
       </para>
 
+      
+	  <tip id="easy-filter">
+	      <title>Quick Filter Creation</title>
+	      <para>
+		There is an easy shortcut for fast filter or vFolder
+                creation. Right-click on the message in the message
+                list, and select one of the items under the
+                <guimenuitem>Create Rule from Message</guimenuitem>
+                submenu.
+	      </para>
+	    </tip>
+
     <sect2 id="usage-mail-org-filters-new">
       <title>Making New Filters</title>
       <para>
@@ -486,6 +498,23 @@
 		    want, even obscure or custom ones. Enter the header name
 		    in the first text box, and put your search text in the
 		    second one.
+        
+
+      <note id="multiple-repeated-headers">
+        <title>Repeated Headers</title>
+         <para>
+            If a message uses a header more than once, Evolution will
+	    pay attention only to the first instance, even if the
+	    message defines the header differently the second
+	    time. For example, if a message declares the Resent-From:
+	    header as "engineering@rupertcorp.com" and then restates
+	    it as "marketing@rupertcorp.com," Evolution will filter as
+	    though the second declaration had not occurred.  To filter
+	    on messages that use headers multiple times, use a regular
+	    expression.
+         </para>
+      </note>
+
 		  </para></listitem>
 		
 		<listitem><para>
@@ -498,8 +527,25 @@
 		    expression you write in the Scheme language, used to
 		    define filters in <application>Ximian Evolution</application>.
 		  </para>
+
+<para>
+
+      <note id="lots-of-filters">
+        <title>What if Multiple Filters Match One Message?</title>
+         <para>
+            If you have several filters that match a single message,
+            they will all be applied to the message, in order, unless
+            one of the filters has the action <guibutton>Stop
+            Processing</guibutton>. If you use that action in a
+            filter, the messages that it affects will not be touched
+            by other filters.
+         </para>
+      </note>
+</para>
 		</listitem>
-		
+	
+
+	
 		<listitem><para> Date sent - Filter messages according to the date on
 		    which they were sent: First, choose the conditions you
 		    want a message to meet &mdash; <guilabel>before</guilabel>
@@ -642,7 +688,7 @@
 	  <listitem>
 	    <para>
 	      Set Status - If you want to add multiple actions for this filter, press
-	      <guibutton>Add filter</guibutton> and repeat the previous step.
+	      <guibutton>Add action</guibutton> and repeat the previous step.
 	    </para>
 	  </listitem>
 	  <listitem>
@@ -652,6 +698,7 @@
 	  </listitem>
 	</orderedlist>
       </para>
+      
       <note id="when-filters-go-wrong">
         <title>When Are Filters Applied?</title>
          <para>
@@ -686,6 +733,8 @@
            However, if you filter out all the mail with that header,
            you'll catch a lot of the mail you don't want to get.
          </para>
+
+
          <para>
            To catch them and automatically mark them for deletion, do
            the following:
@@ -862,11 +911,9 @@
     <note id="unmatched-vfolder">
       <title>The "Unmatched" vFolder</title>
       <para>
-	Obviously, not all messages will fit into all your Virtual
-	Folders.  That's why <application>Ximian
-	Evolution</application> includes an Unmatched vFolder.  The
-	Unmatched vFolder displays messages that are not matched by
-	other rules.
+	 The Unmatched vFolder is the mirror of all your other
+         vFolders: it displays whatever messages are not matched by
+         other vFolders.
       </para>
       <para>
         If you use remote email storage like IMAP or Microsoft

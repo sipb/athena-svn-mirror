@@ -20,6 +20,14 @@
  *
  */
 
+/* NOTE: This is the default implementation of CamelTcpStreamSSL,
+ * used when the Mozilla NSS libraries are used. If you configured
+ * OpenSSL support instead, then this file won't be compiled and
+ * the CamelTcpStreamSSL implementation in camel-tcp-stream-openssl.c
+ * will be used instead.
+ */
+
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -36,14 +44,26 @@
 #include <prio.h>
 #include <prerror.h>
 #include <prerr.h>
+#include <secerr.h>
+#include <sslerr.h>
 #include "nss.h"    /* Don't use <> here or it will include the system nss.h instead */
 #include <ssl.h>
 #include <cert.h>
 #include <certdb.h>
 #include <pk11func.h>
 
+/* this is commented because otherwise we get an error about the
+   redefinition of MD5Context...yay */
+/*#include <e-util/md5-utils.h>*/
+
 #include "camel-tcp-stream-ssl.h"
+#include "camel-stream-fs.h"
 #include "camel-session.h"
+#include "camel-certdb.h"
+
+/* from md5-utils.h */
+void md5_get_digest (const char *buffer, int buffer_size, unsigned char digest[16]);
+
 
 static CamelTcpStreamClass *parent_class = NULL;
 
@@ -55,16 +75,20 @@ static ssize_t stream_write (CamelStream *stream, const char *buffer, size_t n);
 static int stream_flush  (CamelStream *stream);
 static int stream_close  (CamelStream *stream);
 
+static PRFileDesc *enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd);
+
 static int stream_connect    (CamelTcpStream *stream, struct hostent *host, int port);
 static int stream_getsockopt (CamelTcpStream *stream, CamelSockOptData *data);
 static int stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data);
-static gpointer stream_get_socket (CamelTcpStream *stream);
+static CamelTcpAddress *stream_get_local_address (CamelTcpStream *stream);
+static CamelTcpAddress *stream_get_remote_address (CamelTcpStream *stream);
 
 struct _CamelTcpStreamSSLPrivate {
 	PRFileDesc *sockfd;
 	
 	CamelService *service;
 	char *expected_host;
+	gboolean ssl_mode;
 };
 
 static void
@@ -86,7 +110,8 @@ camel_tcp_stream_ssl_class_init (CamelTcpStreamSSLClass *camel_tcp_stream_ssl_cl
 	camel_tcp_stream_class->connect = stream_connect;
 	camel_tcp_stream_class->getsockopt = stream_getsockopt;
 	camel_tcp_stream_class->setsockopt = stream_setsockopt;
-	camel_tcp_stream_class->get_socket = stream_get_socket;
+	camel_tcp_stream_class->get_local_address  = stream_get_local_address;
+	camel_tcp_stream_class->get_remote_address = stream_get_remote_address;
 }
 
 static void
@@ -130,6 +155,7 @@ camel_tcp_stream_ssl_get_type (void)
 	return type;
 }
 
+
 /**
  * camel_tcp_stream_ssl_new:
  * @service: camel service
@@ -139,7 +165,7 @@ camel_tcp_stream_ssl_get_type (void)
  * user, a CamelService is needed. @expected_host is needed as a
  * protection against an MITM attack.
  *
- * Return value: a tcp stream
+ * Return value: a ssl stream (in ssl mode)
  **/
 CamelStream *
 camel_tcp_stream_ssl_new (CamelService *service, const char *expected_host)
@@ -150,9 +176,37 @@ camel_tcp_stream_ssl_new (CamelService *service, const char *expected_host)
 	
 	stream->priv->service = service;
 	stream->priv->expected_host = g_strdup (expected_host);
+	stream->priv->ssl_mode = TRUE;
 	
 	return CAMEL_STREAM (stream);
 }
+
+
+/**
+ * camel_tcp_stream_ssl_new_raw:
+ * @service: camel service
+ * @expected_host: host that the stream is expected to connect with.
+ *
+ * Since the SSL certificate authenticator may need to prompt the
+ * user, a CamelService is needed. @expected_host is needed as a
+ * protection against an MITM attack.
+ *
+ * Return value: a ssl-capable stream (in non ssl mode)
+ **/
+CamelStream *
+camel_tcp_stream_ssl_new_raw (CamelService *service, const char *expected_host)
+{
+	CamelTcpStreamSSL *stream;
+	
+	stream = CAMEL_TCP_STREAM_SSL (camel_object_new (camel_tcp_stream_ssl_get_type ()));
+	
+	stream->priv->service = service;
+	stream->priv->expected_host = g_strdup (expected_host);
+	stream->priv->ssl_mode = FALSE;
+	
+	return CAMEL_STREAM (stream);
+}
+
 
 static void
 set_errno (int code)
@@ -166,7 +220,6 @@ set_errno (int code)
 		errno = EINTR;
 		break;
 	case PR_IO_PENDING_ERROR:
-	case PR_IO_TIMEOUT_ERROR:
 		errno = EAGAIN;
 		break;
 	case PR_WOULD_BLOCK_ERROR:
@@ -185,6 +238,7 @@ set_errno (int code)
 		errno = ECONNREFUSED;
 		break;
 	case PR_CONNECT_TIMEOUT_ERROR:
+	case PR_IO_TIMEOUT_ERROR:
 		errno = ETIMEDOUT;
 		break;
 	case PR_NOT_CONNECTED_ERROR:
@@ -200,22 +254,116 @@ set_errno (int code)
 	}
 }
 
+
+/**
+ * camel_tcp_stream_ssl_enable_ssl:
+ * @ssl: ssl stream
+ *
+ * Toggles an ssl-capable stream into ssl mode (if it isn't already).
+ *
+ * Returns 0 on success or -1 on fail.
+ **/
+int
+camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
+{
+	PRFileDesc *fd;
+	
+	g_return_val_if_fail (CAMEL_IS_TCP_STREAM_SSL (ssl), -1);
+	
+	if (ssl->priv->sockfd && !ssl->priv->ssl_mode) {
+		if (!(fd = enable_ssl (ssl, NULL))) {
+			set_errno (PR_GetError ());
+			return -1;
+		}
+		
+		ssl->priv->sockfd = fd;
+		
+		if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
+			set_errno (PR_GetError ());
+			return -1;
+		}
+		
+		if (SSL_ForceHandshake (fd) == -1) {
+			set_errno (PR_GetError ());
+			return -1;
+		}
+	}
+	
+	ssl->priv->ssl_mode = TRUE;
+	
+	return 0;
+}
+
+
 static ssize_t
 stream_read (CamelStream *stream, char *buffer, size_t n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
+	PRFileDesc *cancel_fd;
 	ssize_t nread;
 	
-	do {
-		if (camel_operation_cancel_check (NULL)) {
-			errno = EINTR;
-			return -1;
-		}
+	if (camel_operation_cancel_check (NULL)) {
+		errno = EINTR;
+		return -1;
+	}
+	
+	cancel_fd = camel_operation_cancel_prfd (NULL);
+	if (cancel_fd == NULL) {
+		do {
+			nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
+			if (nread == -1)
+				set_errno (PR_GetError ());
+		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+	} else {
+		PRSocketOptionData sockopts;
+		PRPollDesc pollfds[2];
+		gboolean nonblock;
+		int error;
 		
-		nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
-		if (nread == -1)
-			set_errno (PR_GetError ());
-	} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+		/* get O_NONBLOCK options */
+		sockopts.option = PR_SockOpt_Nonblocking;
+		PR_GetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		sockopts.option = PR_SockOpt_Nonblocking;
+		nonblock = sockopts.value.non_blocking;
+		sockopts.value.non_blocking = TRUE;
+		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		
+		pollfds[0].fd = tcp_stream_ssl->priv->sockfd;
+		pollfds[0].in_flags = PR_POLL_READ;
+		pollfds[1].fd = cancel_fd;
+		pollfds[1].in_flags = PR_POLL_READ;
+		
+		do {
+			pollfds[0].out_flags = 0;
+			pollfds[1].out_flags = 0;
+			
+			nread = -1;
+			if (PR_Poll (pollfds, 2, -1) != -1) {
+				if (pollfds[1].out_flags == PR_POLL_READ) {
+					sockopts.option = PR_SockOpt_Nonblocking;
+					sockopts.value.non_blocking = nonblock;
+					PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+					errno = EINTR;
+					return -1;
+				}
+				
+				do {
+					nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
+					if (nread == -1)
+						set_errno (PR_GetError ());
+				} while (nread == -1 && errno == EINTR);
+			} else {
+				errno = EAGAIN;
+			}
+		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+		
+		/* restore O_NONBLOCK options */
+		error = errno;
+		sockopts.option = PR_SockOpt_Nonblocking;
+		sockopts.value.non_blocking = nonblock;
+		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		errno = error;
+	}
 	
 	return nread;
 }
@@ -225,22 +373,94 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
 	ssize_t w, written = 0;
+	PRFileDesc *cancel_fd;
 	
-	do {
-		if (camel_operation_cancel_check (NULL)) {
-			errno = EINTR;
-			return -1;
-		}
+	if (camel_operation_cancel_check (NULL)) {
+		errno = EINTR;
+		return -1;
+	}
+	
+	cancel_fd = camel_operation_cancel_prfd (NULL);
+	if (cancel_fd == NULL) {
+		do {
+			do {
+				w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
+				if (w == -1)
+					set_errno (PR_GetError ());
+			} while (w == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+			
+			if (w > 0)
+				written += w;
+		} while (w != -1 && written < n);
+	} else {
+		PRSocketOptionData sockopts;
+		PRPollDesc pollfds[2];
+		gboolean nonblock;
+		int error;
+		
+		/* get O_NONBLOCK options */
+		sockopts.option = PR_SockOpt_Nonblocking;
+		PR_GetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		sockopts.option = PR_SockOpt_Nonblocking;
+		nonblock = sockopts.value.non_blocking;
+		sockopts.value.non_blocking = TRUE;
+		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		
+		pollfds[0].fd = tcp_stream_ssl->priv->sockfd;
+		pollfds[0].in_flags = PR_POLL_WRITE;
+		pollfds[1].fd = cancel_fd;
+		pollfds[1].in_flags = PR_POLL_READ;
 		
 		do {
-			w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
-			if (w == -1)
+			pollfds[0].out_flags = 0;
+			pollfds[1].out_flags = 0;
+			
+			w = -1;
+			if (PR_Poll (pollfds, 2, -1) != -1) {
+				if (pollfds[1].out_flags == PR_POLL_READ) {
+					sockopts.option = PR_SockOpt_Nonblocking;
+					sockopts.value.non_blocking = nonblock;
+					PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+					errno = EINTR;
+					return -1;
+				}
+				
+				do {
+					w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
+					if (w == -1)
+						set_errno (PR_GetError ());
+				} while (w == -1 && errno == EINTR);
+				
+				if (w == -1) {
+					if (errno == EAGAIN || errno == EWOULDBLOCK) {
+						w = 0;
+					} else {
+						error = errno;
+						sockopts.option = PR_SockOpt_Nonblocking;
+						sockopts.value.non_blocking = nonblock;
+						PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+						errno = error;
+						return -1;
+					}
+				} else
+					written += w;
+			} else {
 				set_errno (PR_GetError ());
-		} while (w == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+				if (errno == EINTR)
+					w = 0;
+			}
+		} while (w != -1 && written < n);
 		
-		if (w > 0)
-			written += w;
-	} while (w != -1 && written < n);
+		/* restore O_NONBLOCK options */
+		error = errno;
+		sockopts.option = PR_SockOpt_Nonblocking;
+		sockopts.value.non_blocking = nonblock;
+		PR_SetSocketOption (tcp_stream_ssl->priv->sockfd, &sockopts);
+		errno = error;
+	}
+	
+	if (w == -1)
+		return -1;
 	
 	return written;
 }
@@ -277,8 +497,8 @@ ssl_get_client_auth (void *data, PRFileDesc *sockfd,
 	
 	proto_win = SSL_RevealPinArg (sockfd);
 	
-	if ((char *)data) {
-		cert = PK11_FindCertFromNickname ((char *)data, proto_win);
+	if ((char *) data) {
+		cert = PK11_FindCertFromNickname ((char *) data, proto_win);
 		if (cert) {
 			privKey = PK11_FindKeyByAnyCert (cert, proto_win);
 			if (privkey) {
@@ -298,7 +518,6 @@ ssl_get_client_auth (void *data, PRFileDesc *sockfd,
 		
 		if (names != NULL) {
 			for (i = 0; i < names->numnicknames; i++) {
-				
 				cert = PK11_FindCertFromNickname (names->nicknames[i], 
 								  proto_win);
 				if (!cert)
@@ -369,139 +588,428 @@ ssl_auth_cert (void *data, PRFileDesc *sockfd, PRBool checksig, PRBool is_server
 	}
 	
 	if (host)
-		PR_Free (hostName);
+		PR_Free (host);
 	
 	return secStatus;
 }
 #endif
 
-static void
-save_ssl_cert (const char *certid)
+CamelCert *camel_certdb_nss_cert_get(CamelCertDB *certdb, CERTCertificate *cert);
+CamelCert *camel_certdb_nss_cert_add(CamelCertDB *certdb, CERTCertificate *cert);
+void camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate *cert);
+
+static char *
+cert_fingerprint(CERTCertificate *cert)
 {
-	char *path, *filename;
-	struct stat st;
-	int fd;
-	
-	path = g_strdup_printf ("%s/.camel_certs", getenv ("HOME"));
-	if (mkdir (path, 0700) == -1) {
-		if (errno != EEXIST)
-			return;
-		
-		if (stat (path, &st) == -1)
-			return;
-		
-		if (!S_ISDIR (st.st_mode))
-			return;
+	unsigned char md5sum[16], fingerprint[50], *f;
+	int i;
+	const char tohex[16] = "0123456789abcdef";
+
+	md5_get_digest (cert->derCert.data, cert->derCert.len, md5sum);
+	for (i=0,f = fingerprint; i<16; i++) {
+		unsigned int c = md5sum[i];
+
+		*f++ = tohex[(c >> 4) & 0xf];
+		*f++ = tohex[c & 0xf];
+		*f++ = ':';
 	}
-	
-	filename = g_strdup_printf ("%s/%s", path, certid);
-	g_free (path);
-	
-	fd = open (filename, O_WRONLY | O_CREAT, 0600);
-	if (fd != -1)
-		close (fd);
-	
-	g_free (filename);
+
+	fingerprint[47] = 0;
+
+	return g_strdup(fingerprint);
 }
 
-static gboolean
-ssl_cert_is_saved (const char *certid)
+/* lookup a cert uses fingerprint to index an on-disk file */
+CamelCert *
+camel_certdb_nss_cert_get(CamelCertDB *certdb, CERTCertificate *cert)
 {
-	char *filename;
+	char *fingerprint, *path;
+	CamelCert *ccert;
+	int fd;
+	ssize_t len;
+	struct stat st;
+
+	fingerprint = cert_fingerprint(cert);
+	ccert = camel_certdb_get_cert(certdb, fingerprint);
+	if (ccert == NULL) {
+		g_free(fingerprint);
+		return ccert;
+	}
+
+	if (ccert->rawcert == NULL) {
+		path = g_strdup_printf("%s/.camel_certs/%s", getenv("HOME"), fingerprint);
+		if (stat(path, &st) == -1
+		    || (fd = open(path, O_RDONLY)) == -1) {
+			g_warning("could not load cert %s: %s", path, strerror(errno));
+			g_free(fingerprint);
+			g_free(path);
+			camel_cert_set_trust(certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
+			camel_certdb_touch(certdb);
+
+			return ccert;
+		}
+		g_free(path);
+		
+		ccert->rawcert = g_byte_array_new();
+		g_byte_array_set_size(ccert->rawcert, st.st_size);
+		len = read(fd, ccert->rawcert->data, st.st_size);
+		close(fd);
+		if (len != st.st_size) {
+			g_warning("cert size read truncated %s: %d != %ld", path, len, st.st_size);
+			g_byte_array_free(ccert->rawcert, TRUE);
+			ccert->rawcert = NULL;
+			g_free(fingerprint);
+			camel_cert_set_trust(certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
+			camel_certdb_touch(certdb);
+
+			return ccert;
+		}
+	}
+
+	g_free(fingerprint);
+	if (ccert->rawcert->len != cert->derCert.len
+	    || memcmp(ccert->rawcert->data, cert->derCert.data, cert->derCert.len) != 0) {
+		g_warning("rawcert != derCer");
+		camel_cert_set_trust(certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
+		camel_certdb_touch(certdb);
+	}
+
+	return ccert;
+}
+
+/* add a cert to the certdb */
+CamelCert *
+camel_certdb_nss_cert_add(CamelCertDB *certdb, CERTCertificate *cert)
+{
+	CamelCert *ccert;
+	char *fingerprint;
+
+	fingerprint = cert_fingerprint(cert);
+
+	ccert = camel_certdb_cert_new(certdb);
+	camel_cert_set_issuer(certdb, ccert, CERT_NameToAscii(&cert->issuer));
+	camel_cert_set_subject(certdb, ccert, CERT_NameToAscii(&cert->subject));
+	/* hostname is set in caller */
+	/*camel_cert_set_hostname(certdb, ccert, ssl->priv->expected_host);*/
+	camel_cert_set_fingerprint(certdb, ccert, fingerprint);
+	camel_cert_set_trust(certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
+	g_free(fingerprint);
+
+	camel_certdb_nss_cert_set(certdb, ccert, cert);
+
+	camel_certdb_add(certdb, ccert);
+
+	return ccert;
+}
+
+/* set the 'raw' cert (& save it) */
+void
+camel_certdb_nss_cert_set(CamelCertDB *certdb, CamelCert *ccert, CERTCertificate *cert)
+{
+	char *dir, *path, *fingerprint;
+	CamelStream *stream;
 	struct stat st;
 	
-	filename = g_strdup_printf ("%s/.camel_certs/%s", getenv ("HOME"), certid);
+	fingerprint = ccert->fingerprint;
+
+	if (ccert->rawcert == NULL)
+		ccert->rawcert = g_byte_array_new();
+	g_byte_array_set_size(ccert->rawcert, cert->derCert.len);
+	memcpy(ccert->rawcert->data, cert->derCert.data, cert->derCert.len);
 	
-	if (stat (filename, &st) == -1) {
-		g_free (filename);
-		return FALSE;
+	dir = g_strdup_printf ("%s/.camel_certs", getenv ("HOME"));
+	if (stat (dir, &st) == -1 && mkdir (dir, 0700) == -1) {
+		g_warning ("Could not create cert directory '%s': %s", dir, strerror (errno));
+		g_free (dir);
+		return;
 	}
 	
-	g_free (filename);
+	path = g_strdup_printf ("%s/%s", dir, fingerprint);
+	g_free (dir);
 	
-	return st.st_uid == getuid ();
+	stream = camel_stream_fs_new_with_name(path, O_WRONLY|O_CREAT|O_TRUNC, 0600);
+	if (stream != NULL) {
+		if (camel_stream_write(stream, ccert->rawcert->data, ccert->rawcert->len) != ccert->rawcert->len) {
+			g_warning("Could not save cert: %s: %s", path, strerror(errno));
+			unlink(path);
+		}
+		camel_stream_close(stream);
+		camel_object_unref(stream);
+	} else {
+		g_warning("Could not save cert: %s: %s", path, strerror(errno));
+	}
+	
+	g_free(path);
 }
+
+
+#if 0
+/* used by the mozilla-like code below */
+static char *
+get_nickname(CERTCertificate *cert)
+{
+	char *server, *nick = NULL;
+	int i;
+	PRBool status = PR_TRUE;
+
+	server = CERT_GetCommonName(&cert->subject);
+	if (server == NULL)
+		return NULL;
+
+	for (i=1;status == PR_TRUE;i++) {
+		if (nick) {
+			g_free(nick);
+			nick = g_strdup_printf("%s #%d", server, i);
+		} else {
+			nick = g_strdup(server);
+		}
+		status = SEC_CertNicknameConflict(server, &cert->derSubject, cert->dbhandle);
+	}
+
+	return nick;
+}
+#endif
 
 static SECStatus
 ssl_bad_cert (void *data, PRFileDesc *sockfd)
 {
+	gboolean accept;
+	CamelCertDB *certdb = NULL;
+	CamelCert *ccert = NULL;
+	char *prompt, *cert_str, *fingerprint;
 	CamelTcpStreamSSL *ssl;
 	CERTCertificate *cert;
 	CamelService *service;
-	char *prompt, *cert_str;
-	gboolean accept;
-	
+	SECStatus status = SECFailure;
+
 	g_return_val_if_fail (data != NULL, SECFailure);
 	g_return_val_if_fail (CAMEL_IS_TCP_STREAM_SSL (data), SECFailure);
-	
+
 	ssl = CAMEL_TCP_STREAM_SSL (data);
 	service = ssl->priv->service;
 	
-	/* this is part of a work-around hack */
-	if (ssl_cert_is_saved (ssl->priv->expected_host))
-		return SECSuccess;
-	
 	cert = SSL_PeerCertificate (sockfd);
-	
-	cert_str = g_strdup_printf (_("EMail: %s\n"
-				      "Common Name: %s\n"
-				      "Organization Unit: %s\n"
-				      "Organization: %s\n"
-				      "Locality: %s\n"
-				      "State: %s\n"
-				      "Country: %s"),
-				    cert->emailAddr ? cert->emailAddr : "",
-				    CERT_GetCommonName (&cert->issuer) ? CERT_GetCommonName (&cert->issuer) : "",
-				    CERT_GetOrgUnitName (&cert->issuer) ? CERT_GetOrgUnitName (&cert->issuer) : "",
-				    CERT_GetOrgName (&cert->issuer) ? CERT_GetOrgName (&cert->issuer) : "",
-				    CERT_GetLocalityName (&cert->issuer) ? CERT_GetLocalityName (&cert->issuer) : "",
-				    CERT_GetStateName (&cert->issuer) ? CERT_GetStateName (&cert->issuer) : "",
-				    CERT_GetCountryName (&cert->issuer) ? CERT_GetCountryName (&cert->issuer) : "");
-	
-	/* construct our user prompt */
-	prompt = g_strdup_printf (_("Bad certificate from %s:\n\n%s\n\nDo you wish to accept anyway?"),
-				  service->url->host, cert_str);
-	g_free (cert_str);
-	
-	/* query the user to find out if we want to accept this certificate */
-	accept = camel_session_alert_user (service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE);
-	g_free (prompt);
-	
-	if (accept) {
-		SECItem *certs[1];
-		
-		if (!cert->trust)
-			cert->trust = PORT_ZAlloc (sizeof (CERTCertTrust));
-		
-		cert->trust->sslFlags = CERTDB_VALID_PEER | CERTDB_TRUSTED;
-		
-		certs[0] = &cert->derCert;
-		
-		CERT_ImportCerts (CERT_GetDefaultCertDB (), certUsageSSLServer, 1, certs,
-				  NULL, TRUE, FALSE, cert->nickname);
-		
-		/* and since the above code doesn't seem to
-                   work... time for a good ol' fashioned hack */
-		save_ssl_cert (ssl->priv->expected_host);
-		
-		return SECSuccess;
+	if (cert == NULL)
+		return SECFailure;
+
+	certdb = camel_certdb_get_default();
+	ccert = camel_certdb_nss_cert_get(certdb, cert);
+	if (ccert == NULL) {
+		ccert = camel_certdb_nss_cert_add(certdb, cert);
+		camel_cert_set_hostname(certdb, ccert, ssl->priv->expected_host);
 	}
+
+	if (ccert->trust == CAMEL_CERT_TRUST_UNKNOWN) {
+		status = CERT_VerifyCertNow(cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL);
+		fingerprint = cert_fingerprint(cert);
+		cert_str = g_strdup_printf (_("Issuer:            %s\n"
+					      "Subject:           %s\n"
+					      "Fingerprint:       %s\n"
+					      "Signature:         %s"),
+					    CERT_NameToAscii (&cert->issuer),
+					    CERT_NameToAscii (&cert->subject),
+					    fingerprint, status == SECSuccess?_("GOOD"):_("BAD"));
+		g_free(fingerprint);
+
+		/* construct our user prompt */
+		prompt = g_strdup_printf (_("SSL Certificate check for %s:\n\n%s\n\nDo you wish to accept?"),
+					  service->url->host, cert_str);
+		g_free (cert_str);
 	
-	return SECFailure;
+		/* query the user to find out if we want to accept this certificate */
+		accept = camel_session_alert_user (service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE);
+		g_free(prompt);
+		if (accept) {
+			camel_certdb_nss_cert_set(certdb, ccert, cert);
+			camel_cert_set_trust(certdb, ccert, CAMEL_CERT_TRUST_FULLY);
+			camel_certdb_touch(certdb);
+		}
+	} else {
+		accept = ccert->trust != CAMEL_CERT_TRUST_NEVER;
+	}
+
+	camel_certdb_cert_unref(certdb, ccert);
+	camel_object_unref(certdb);
+
+	return accept ? SECSuccess : SECFailure;
+
+#if 0
+	int i, error;
+	CERTCertTrust trust;
+	SECItem *certs[1];
+	int go = 1;
+	char *host, *nick;
+
+	error = PR_GetError();
+
+	/* This code is basically what mozilla does - however it doesn't seem to work here
+	   very reliably :-/ */
+	while (go && status != SECSuccess) {
+		char *prompt = NULL;
+
+		printf("looping, error '%d'\n", error);
+
+		switch(error) {
+		case SEC_ERROR_UNKNOWN_ISSUER:
+		case SEC_ERROR_CA_CERT_INVALID:
+		case SEC_ERROR_UNTRUSTED_ISSUER:
+		case SEC_ERROR_EXPIRED_ISSUER_CERTIFICATE:
+			/* add certificate */
+			printf("unknown issuer, adding ... \n");
+			prompt = g_strdup_printf(_("Certificate problem: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
+
+			if (camel_session_alert_user(service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
+
+				nick = get_nickname(cert);
+				if (NULL == nick) {
+					g_free(prompt);
+					status = SECFailure;
+					break;
+				}
+
+				printf("adding cert '%s'\n", nick);
+
+				if (!cert->trust) {
+					cert->trust = (CERTCertTrust*)PORT_ArenaZAlloc(cert->arena, sizeof(CERTCertTrust));
+					CERT_DecodeTrustString(cert->trust, "P");
+				}
+		
+				certs[0] = &cert->derCert;
+				/*CERT_ImportCerts (cert->dbhandle, certUsageSSLServer, 1, certs, NULL, TRUE, FALSE, nick);*/
+				CERT_ImportCerts(cert->dbhandle, certUsageUserCertImport, 1, certs, NULL, TRUE, FALSE, nick);
+				g_free(nick);
+
+				printf(" cert type %08x\n", cert->nsCertType);
+
+				memset((void*)&trust, 0, sizeof(trust));
+				if (CERT_GetCertTrust(cert, &trust) != SECSuccess) {
+					CERT_DecodeTrustString(&trust, "P");
+				}
+				trust.sslFlags |= CERTDB_VALID_PEER | CERTDB_TRUSTED;
+				if (CERT_ChangeCertTrust(cert->dbhandle, cert, &trust) != SECSuccess) {
+					printf("couldn't change cert trust?\n");
+				}
+
+				/*status = SECSuccess;*/
+#if 1
+				/* re-verify? */
+				status = CERT_VerifyCertNow(cert->dbhandle, cert, TRUE, certUsageSSLServer, NULL);
+				error = PR_GetError();
+				printf("re-verify status %d, error %d\n", status, error);
+#endif
+
+				printf(" cert type %08x\n", cert->nsCertType);
+			} else {
+				printf("failed/cancelled\n");
+				go = 0;
+			}
+
+			break;
+		case SSL_ERROR_BAD_CERT_DOMAIN:
+			printf("bad domain\n");
+
+			prompt = g_strdup_printf(_("Bad certificate domain: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
+
+			if (camel_session_alert_user (service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
+				host = SSL_RevealURL(sockfd);
+				status = CERT_AddOKDomainName(cert, host);
+				printf("add ok domain name : %s\n", status == SECFailure?"fail":"ok");
+				error = PR_GetError();
+				if (status == SECFailure)
+					go = 0;
+			} else {
+				go = 0;
+			}
+
+			break;
+			
+		case SEC_ERROR_EXPIRED_CERTIFICATE:
+			printf("expired\n");
+
+			prompt = g_strdup_printf(_("Certificate expired: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
+
+			if (camel_session_alert_user(service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
+				cert->timeOK = PR_TRUE;
+				status = CERT_VerifyCertNow(cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL);
+				error = PR_GetError();
+				if (status == SECFailure)
+					go = 0;
+			} else {
+				go = 0;
+			}
+
+			break;
+
+		case SEC_ERROR_CRL_EXPIRED:
+			printf("crl expired\n");
+
+			prompt = g_strdup_printf(_("Certificate revocation list expired: %s\nIssuer: %s"), cert->subjectName, cert->issuerName);
+
+			if (camel_session_alert_user(service->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE)) {
+				host = SSL_RevealURL(sockfd);
+				status = CERT_AddOKDomainName(cert, host);
+			}
+
+			go = 0;
+			break;
+
+		default:
+			printf("generic error\n");
+			go = 0;
+			break;
+		}
+
+		g_free(prompt);
+	}
+
+	CERT_DestroyCertificate(cert);
+
+	return status;
+#endif
 }
+
+static PRFileDesc *
+enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
+{
+	PRFileDesc *ssl_fd;
+	
+	ssl_fd = SSL_ImportFD (NULL, fd ? fd : ssl->priv->sockfd);
+	if (!ssl_fd)
+		return NULL;
+	
+	SSL_OptionSet (ssl_fd, SSL_SECURITY, PR_TRUE);
+	SSL_SetURL (ssl_fd, ssl->priv->expected_host);
+	
+	/*SSL_GetClientAuthDataHook (sslSocket, ssl_get_client_auth, (void *) certNickname);*/
+	/*SSL_AuthCertificateHook (ssl_fd, ssl_auth_cert, (void *) CERT_GetDefaultCertDB ());*/
+	SSL_BadCertHook (ssl_fd, ssl_bad_cert, ssl);
+	
+	ssl->priv->ssl_mode = TRUE;
+	
+	return ssl_fd;
+}
+
+#define CONNECT_TIMEOUT PR_TicksPerSecond () * 120
 
 static int
 stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
 {
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
-	PRIntervalTime timeout = PR_INTERVAL_MIN;
+	PRIntervalTime timeout = CONNECT_TIMEOUT;
 	PRNetAddr netaddr;
-	PRFileDesc *fd, *ssl_fd;
+	PRFileDesc *fd;
 	
 	g_return_val_if_fail (host != NULL, -1);
 	
 	memset ((void *) &netaddr, 0, sizeof (PRNetAddr));
+#ifdef ENABLE_IPv6
+	if (h->addrtype == AF_INET6)
+		memcpy (&netaddr.ipv6.ip, host->h_addr, sizeof (netaddr.ipv6.ip));
+	else
+		memcpy (&netaddr.inet.ip, host->h_addr, sizeof (netaddr.inet.ip));
+#else
 	memcpy (&netaddr.inet.ip, host->h_addr, sizeof (netaddr.inet.ip));
+#endif
 	
 	if (PR_InitializeNetAddr (PR_IpAddrNull, port, &netaddr) == PR_FAILURE) {
 		set_errno (PR_GetError ());
@@ -514,16 +1022,25 @@ stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
 		return -1;
 	}
 	
-	ssl_fd = SSL_ImportFD (NULL, fd);
-	if (ssl_fd == NULL) {
-		set_errno (PR_GetError ());
-		return -1;
+	if (ssl->priv->ssl_mode) {
+		PRFileDesc *ssl_fd;
+		
+		ssl_fd = enable_ssl (ssl, fd);
+		if (ssl_fd == NULL) {
+			int errnosave;
+			
+			set_errno (PR_GetError ());
+			errnosave = errno;
+			PR_Close (fd);
+			errno = errnosave;
+			
+			return -1;
+		}
+		
+		fd = ssl_fd;
 	}
 	
-	SSL_OptionSet (ssl_fd, SSL_SECURITY, PR_TRUE);
-	SSL_SetURL (ssl_fd, ssl->priv->expected_host);
-	
-	if (PR_Connect (ssl_fd, &netaddr, timeout) == PR_FAILURE) {
+	if (PR_Connect (fd, &netaddr, timeout) == PR_FAILURE) {
 		int errnosave;
 		
 		set_errno (PR_GetError ());
@@ -536,7 +1053,7 @@ stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
 				poll.in_flags = PR_POLL_WRITE | PR_POLL_EXCEPT;
 				poll.out_flags = 0;
 				
-				timeout = PR_INTERVAL_MIN;
+				timeout = CONNECT_TIMEOUT;
 				
 				if (PR_Poll (&poll, 1, timeout) == PR_FAILURE) {
 					set_errno (PR_GetError ());
@@ -564,11 +1081,7 @@ stream_connect (CamelTcpStream *stream, struct hostent *host, int port)
 		errno = 0;
 	}
 	
-	/*SSL_GetClientAuthDataHook (sslSocket, ssl_get_client_auth, (void *)certNickname);*/
-	/*SSL_AuthCertificateHook (ssl_fd, ssl_auth_cert, (void *) CERT_GetDefaultCertDB ());*/
-	SSL_BadCertHook (ssl_fd, ssl_bad_cert, ssl);
-	
-	ssl->priv->sockfd = ssl_fd;
+	ssl->priv->sockfd = fd;
 	
 	return 0;
 }
@@ -604,10 +1117,56 @@ stream_setsockopt (CamelTcpStream *stream, const CamelSockOptData *data)
 	return 0;
 }
 
-static gpointer
-stream_get_socket (CamelTcpStream *stream)
+static CamelTcpAddress *
+stream_get_local_address (CamelTcpStream *stream)
 {
-	return (gpointer) CAMEL_TCP_STREAM_SSL (stream)->priv->sockfd;
+	PRFileDesc *sockfd = CAMEL_TCP_STREAM_SSL (stream)->priv->sockfd;
+	int family, length;
+	gpointer address;
+	PRNetAddr addr;
+	
+	PR_GetSockName (sockfd, &addr);
+	
+	if (addr.inet.family == PR_AF_INET) {
+		family = CAMEL_TCP_ADDRESS_IPv4;
+		address = &addr.inet.ip;
+		length = 4;
+#ifdef ENABLE_IPv6
+	} else if (addr.inet.family == PR_AF_INET6) {
+		family = CAMEL_TCP_ADDRESS_IPv6;
+		address = &addr.ipv6.ip;
+		length = 16;
+#endif
+	} else
+		return NULL;
+	
+	return camel_tcp_address_new (family, addr.inet.port, length, address);
+}
+
+static CamelTcpAddress *
+stream_get_remote_address (CamelTcpStream *stream)
+{
+	PRFileDesc *sockfd = CAMEL_TCP_STREAM_SSL (stream)->priv->sockfd;
+	int family, length;
+	gpointer address;
+	PRNetAddr addr;
+	
+	PR_GetPeerName (sockfd, &addr);
+	
+	if (addr.inet.family == PR_AF_INET) {
+		family = CAMEL_TCP_ADDRESS_IPv4;
+		address = &addr.inet.ip;
+		length = sizeof (addr.inet.ip);
+#ifdef ENABLE_IPv6
+	} else if (addr.inet.family == PR_AF_INET6) {
+		family = CAMEL_TCP_ADDRESS_IPv6;
+		address = &addr.ipv6.ip;
+		length = sizeof (addr.ipv6.ip);
+#endif
+	} else
+		return NULL;
+	
+	return camel_tcp_address_new (family, addr.inet.port, length, address);
 }
 
 #endif /* HAVE_NSS */

@@ -39,14 +39,16 @@
 #include <bonobo/bonobo-main.h>
 #include <liboaf/liboaf.h>
 
-#ifdef GTKHTML_HAVE_GCONF
-#include <gconf/gconf.h>
-#endif
+#include <e-util/e-proxy.h>
 
-#include <libgnomevfs/gnome-vfs.h>
 #include <glade/glade.h>
 
+#include <gconf/gconf.h>
+
+#include <gal/widgets/e-cursors.h>
+
 #include "component-factory.h"
+
 
 int
 main (int argc,
@@ -67,13 +69,14 @@ main (int argc,
 		exit (1);
 	}
 
-#ifdef GTKHTML_HAVE_GCONF
 	gconf_init (argc, argv, NULL);
-#endif
 
 	glade_gnome_init ();
-	gnome_vfs_init ();
 
+	e_cursors_init ();
+
+	e_proxy_init ();
+	
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 

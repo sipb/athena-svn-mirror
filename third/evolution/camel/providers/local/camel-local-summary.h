@@ -24,7 +24,7 @@
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-exception.h>
-#include <libibex/ibex.h>
+#include <camel/camel-index.h>
 
 #define CAMEL_LOCAL_SUMMARY(obj)         CAMEL_CHECK_CAST (obj, camel_local_summary_get_type (), CamelLocalSummary)
 #define CAMEL_LOCAL_SUMMARY_CLASS(klass) CAMEL_CHECK_CLASS_CAST (klass, camel_local_summary_get_type (), CamelLocalSummaryClass)
@@ -37,17 +37,17 @@ typedef struct _CamelLocalSummaryClass CamelLocalSummaryClass;
 enum {
 	CAMEL_MESSAGE_FOLDER_NOXEV = 1<<17,
 	CAMEL_MESSAGE_FOLDER_XEVCHANGE = 1<<18,
+	CAMEL_MESSAGE_FOLDER_NOTSEEN = 1<<19, /* have we seen this in processing this loop? */
 };
 
 struct _CamelLocalSummary {
 	CamelFolderSummary parent;
-
-	struct _CamelLocalSummaryPrivate *priv;
-
+	
 	char *folder_path;	/* name of matching folder */
-
-	ibex *index;
-	int index_force;	/* do we force index during creation? */
+	
+	CamelIndex *index;
+	unsigned int index_force:1; /* do we force index during creation? */
+	unsigned int check_force:1; /* does a check force a full check? */
 };
 
 struct _CamelLocalSummaryClass {
@@ -62,8 +62,8 @@ struct _CamelLocalSummaryClass {
 	int (*decode_x_evolution)(CamelLocalSummary *cls, const char *xev, CamelMessageInfo *info);
 };
 
-guint	camel_local_summary_get_type	(void);
-void	camel_local_summary_construct	(CamelLocalSummary *new, const char *filename, const char *local_name, ibex *index);
+CamelType	camel_local_summary_get_type	(void);
+void	camel_local_summary_construct	(CamelLocalSummary *new, const char *filename, const char *local_name, CamelIndex *index);
 
 /* load/check the summary */
 int camel_local_summary_load(CamelLocalSummary *cls, int forceindex, CamelException *ex);
@@ -74,12 +74,15 @@ int camel_local_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFold
 /* add a new message to the summary */
 CamelMessageInfo *camel_local_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, CamelException *ex);
 
+/* force the next check to be a full check/rebuild */
+void camel_local_summary_check_force(CamelLocalSummary *cls);
+
 /* generate an X-Evolution header line */
 char *camel_local_summary_encode_x_evolution(CamelLocalSummary *cls, const CamelMessageInfo *info);
 int camel_local_summary_decode_x_evolution(CamelLocalSummary *cls, const char *xev, CamelMessageInfo *info);
 
-/* utility functions - write headers to a file with optional X-Evolution header */
-int camel_local_summary_write_headers(int fd, struct _header_raw *header, char *xevline);
+/* utility functions - write headers to a file with optional X-Evolution header and/or status header */
+int camel_local_summary_write_headers(int fd, struct _header_raw *header, const char *xevline, const char *status, const char *xstatus);
 
 #endif /* ! _CAMEL_LOCAL_SUMMARY_H */
 

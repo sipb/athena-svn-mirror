@@ -1,17 +1,18 @@
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"e-minicard\"			\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
+	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"	\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
 	-DEVOLUTION_IMAGESDIR=\""$(datadir)"/images/evolution\" \
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/addressbook/backend		\
+	-I$(top_builddir)/addressbook/backend		\
 	-I$(top_srcdir)/addressbook/gui/contact-editor	\
 	-I$(top_srcdir)/addressbook/gui/merging		\
 	-I$(top_srcdir)/addressbook/gui/component	\
 	-I$(top_srcdir)/widgets/misc			\
 	-I$(top_builddir)/shell				\
-	$(BONOBO_GNOME_CFLAGS)				\
-	$(EXTRA_GNOME_CFLAGS)
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 noinst_LIBRARIES =				\
 	libeminicard.a
@@ -56,8 +57,7 @@ libeminicard_a_SOURCES =			\
 #
 #minicard_label_test_LDADD =				\
 #	 libeminicard.a					\
-#	 $(EXTRA_GNOME_LIBS)				\
-#	 $(BONOBO_GNOME_LIBS)				\
+#	 $(EVOLUTION_ADDRESSBOOK_LIBS)			\
 #	 $(top_builddir)/e-util/libeutil.la
 #
 #minicard_test_SOURCES = 	\
@@ -76,9 +76,7 @@ libeminicard_a_SOURCES =			\
 #	 $(top_builddir)/widgets/misc/libemiscwidgets.a 			\
 #	 $(top_builddir)/addressbook/gui/component/select-names/libeselectnames.la	\
 #	 $(top_builddir)/e-util/libeutil.la				\
-#	 $(EXTRA_GNOME_LIBS)						\
-#	 $(BONOBO_GNOME_LIBS)						\
-#	 $(GNOME_PRINT_LIBS)						\
+#	$(EVOLUTION_ADDRESSBOOK_LIBS)					\
 #	 libeminicard.a
 #
 #reflow_test_SOURCES = 	\
@@ -94,16 +92,13 @@ libeminicard_a_SOURCES =			\
 #	 $(top_builddir)/addressbook/printing/libecontactprint.a		\
 #	 $(top_builddir)/widgets/misc/libemiscwidgets.a 			\
 #	 $(top_builddir)/e-util/libeutil.la				\
-#	 $(EXTRA_GNOME_LIBS)						\
-#	 $(BONOBO_GNOME_LIBS)						\
-#	 $(GNOME_PRINT_LIBS)
+#	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 #minicard_view_test_SOURCES = 	\
 #	test-minicard-view.c
 
 #minicard_view_test_LDADD =						\
-#	$(EXTRA_GNOME_LIBS)						\
-#	$(BONOBO_GNOME_LIBS)						\
+#	$(EVOLUTION_ADDRESSBOOK_LIBS)
 #	libeminicard.a							\
 #	$(top_builddir)/addressbook/backend/ebook/libebook.la		\
 #	$(top_builddir)/e-util/libeutil.la				\
@@ -130,12 +125,15 @@ libeminicard_a_SOURCES =			\
 #	 $(top_builddir)/widgets/misc/libemiscwidgets.a 			\
 #	 $(top_builddir)/e-util/libeutil.la				\
 #	 $(top_builddir)/addressbook/gui/merging/libecardmerging.a	\
-#	 $(EXTRA_GNOME_LIBS)						\
-#	 $(BONOBO_GNOME_LIBS)						\
-#	 $(GNOME_PRINT_LIBS)
+#	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 gladedir   = $(datadir)/evolution/glade
 glade_DATA = 
 
+etspecdir  = $(datadir)/evolution/etspec
+etspec_DATA= e-addressbook-view.etspec
+
 EXTRA_DIST = 			\
-	$(glade_DATA)
+	$(glade_DATA)		\
+	$(etspec_DATA)
+	

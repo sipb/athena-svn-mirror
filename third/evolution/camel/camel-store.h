@@ -38,6 +38,9 @@ extern "C" {
 #include <camel/camel-object.h>
 #include <camel/camel-service.h>
 
+enum {
+	CAMEL_STORE_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100,
+};
 
 typedef struct _CamelFolderInfo {
 	struct _CamelFolderInfo *parent,
@@ -48,7 +51,19 @@ typedef struct _CamelFolderInfo {
 	char *full_name;
 	char *path;
 	int unread_message_count;
+	guint32 flags;
 } CamelFolderInfo;
+
+/* Note: these are abstractions (duh), its upto the provider to make them make sense */
+
+/* a folder which can't contain messages */
+#define CAMEL_FOLDER_NOSELECT (1<<0)
+/* a folder which cannot have children */
+#define CAMEL_FOLDER_NOINFERIORS (1<<1)
+/* a folder which has children (not yet fully implemented) */
+#define CAMEL_FOLDER_CHILDREN (1<<2)
+/* a folder which is subscribed */
+#define CAMEL_FOLDER_SUBSCRIBED (1<<3)
 
 /* Structure of rename event's event_data */
 typedef struct _CamelRenameInfo {
@@ -142,6 +157,8 @@ typedef struct {
 	void            (*unsubscribe_folder)       (CamelStore *store,
 						     const char *folder_name,
 						     CamelException *ex);
+	void            (*noop)                     (CamelStore *store,
+						     CamelException *ex);
 } CamelStoreClass;
 
 
@@ -203,6 +220,9 @@ void             camel_store_subscribe_folder         (CamelStore *store,
 						       CamelException *ex);
 void             camel_store_unsubscribe_folder       (CamelStore *store,
 						       const char *folder_name,
+						       CamelException *ex);
+
+void             camel_store_noop                     (CamelStore *store,
 						       CamelException *ex);
 
 gboolean	 camel_store_uri_cmp		      (CamelStore *store, const char *uria, const char *urib);

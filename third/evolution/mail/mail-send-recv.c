@@ -78,8 +78,6 @@ struct _send_data {
 	CamelFolder *inbox;	/* since we're never asked to update this one, do it ourselves */
 	time_t inbox_update;
 
-	CamelFolder *current_folder;
-
 	GMutex *lock;
 	GHashTable *folders;
 
@@ -179,10 +177,7 @@ free_send_data(void)
 		/*camel_folder_thaw (data->inbox);		*/
 		camel_object_unref((CamelObject *)data->inbox);
 	}
-	if (data->current_folder) {
-		mail_refresh_folder(data->current_folder, NULL, NULL);
-		camel_object_unref((CamelObject *)data->current_folder);
-	}
+
 	g_list_free(data->infos);
 	g_hash_table_foreach(data->active, (GHFunc)free_send_info, NULL);
 	g_hash_table_destroy(data->active);
@@ -267,14 +262,20 @@ static send_info_t get_receive_type(const char *url)
 	if (!provider)
 		return SEND_INVALID;
 	
-	if (provider->flags & CAMEL_PROVIDER_IS_STORAGE)
-		return SEND_UPDATE;
-	else
-		return SEND_RECEIVE;
+	if (provider->object_types[CAMEL_PROVIDER_STORE]) {
+		if (provider->flags & CAMEL_PROVIDER_IS_STORAGE)
+			return SEND_UPDATE;
+		else
+			return SEND_RECEIVE;
+	} else if (provider->object_types[CAMEL_PROVIDER_TRANSPORT]) {
+		return SEND_SEND;
+	}
+	
+	return SEND_INVALID;
 }
 
 static struct _send_data *
-build_dialogue (GSList *sources, CamelFolder *current_folder, CamelFolder *outbox, const char *destination)
+build_dialogue (GSList *sources, CamelFolder *outbox, const char *destination)
 {
 	GnomeDialog *gd;
 	GtkTable *table;
@@ -433,8 +434,6 @@ build_dialogue (GSList *sources, CamelFolder *current_folder, CamelFolder *outbo
 	
 	data->infos = list;
 	data->gd = gd;
-	data->current_folder = current_folder;
-	camel_object_ref (CAMEL_OBJECT (current_folder));
 	
 	return data;
 }
@@ -616,6 +615,12 @@ receive_get_folder(CamelFilterDriver *d, const char *uri, void *data, CamelExcep
 }
 
 static void
+receive_update_got_folderinfo (CamelStore *store, CamelFolderInfo *info, void *data)
+{
+	receive_done ("", data);
+}
+
+static void
 receive_update_got_store (char *uri, CamelStore *store, void *data)
 {
 	struct _send_info *info = data;
@@ -623,13 +628,23 @@ receive_update_got_store (char *uri, CamelStore *store, void *data)
 	if (store) {
 		EvolutionStorage *storage = mail_lookup_storage (store);
 		
-		mail_note_store(store, storage, CORBA_OBJECT_NIL, receive_update_done, info);
+		if (storage) {
+			mail_note_store(store, storage, CORBA_OBJECT_NIL, receive_update_done, info);
+			/*bonobo_object_unref (BONOBO_OBJECT (storage));*/
+		} else {
+			/* If we get here, store must be an external
+			 * storage other than /local. (Eg, Exchange).
+			 * Do a get_folder_info just to force it to
+			 * update itself.
+			 */
+			mail_get_folderinfo(store, receive_update_got_folderinfo, info);
+		}
 	} else {
 		receive_done ("", info);
 	}
 }
 
-void mail_send_receive (CamelFolder *current_folder)
+void mail_send_receive (void)
 {
 	GSList *sources;
 	GList *scan;
@@ -644,7 +659,10 @@ void mail_send_receive (CamelFolder *current_folder)
 		}
 		return;
 	}
-
+	
+	if (!camel_session_is_online (session))
+		return;
+	
 	sources = mail_config_get_sources();
 	if (!sources)
 		return;
@@ -652,11 +670,7 @@ void mail_send_receive (CamelFolder *current_folder)
 	if (!account || !account->transport)
 		return;
 	
-	/* what to do about pop before smtp ?
-	   Well, probably hook into receive_done or receive_status on
-	   the right pop account, and when it is, then kick off the
-	   smtp one. */
-	data = build_dialogue(sources, current_folder, outbox_folder, account->transport->url);
+	data = build_dialogue(sources, outbox_folder, account->transport->url);
 	scan = data->infos;
 	while (scan) {
 		struct _send_info *info = scan->data;
@@ -845,4 +859,57 @@ mail_receive_uri (const char *uri, int keep)
 	default:
 		g_assert_not_reached ();
 	}
+}
+
+void
+mail_send (void)
+{
+	extern CamelFolder *outbox_folder;
+	const MailConfigService *transport;
+	struct _send_info *info;
+	struct _send_data *data;
+	send_info_t type;
+	
+	transport = mail_config_get_default_transport ();
+	if (!transport || !transport->url)
+		return;
+	
+	data = setup_send_data ();
+	info = g_hash_table_lookup (data->active, transport->url);
+	if (info != NULL) {
+		d(printf("send of %s still in progress\n", transport->url));
+		return;
+	}
+	
+	d(printf("starting non-interactive send of '%s'\n", transport->url));
+	
+	type = get_receive_type (transport->url);
+	if (type == SEND_INVALID) {
+		d(printf ("unsupported provider: '%s'\n", transport->url));
+		return;
+	}
+	
+	info = g_malloc0 (sizeof (*info));
+	info->type = SEND_SEND;
+	info->bar = NULL;
+	info->status = NULL;
+	info->uri = g_strdup (transport->url);
+	info->keep = FALSE;
+	info->cancel = camel_operation_new (operation_status, info);
+	info->stop = NULL;
+	info->data = data;
+	info->state = SEND_ACTIVE;
+	info->timeout_id = 0;
+	
+	d(printf("Adding new info %p\n", info));
+	
+	g_hash_table_insert (data->active, info->uri, info);
+	
+	/* todo, store the folder in info? */
+	mail_send_queue (outbox_folder, info->uri,
+			 FILTER_SOURCE_OUTGOING,
+			 info->cancel,
+			 receive_get_folder, info,
+			 receive_status, info,
+			 receive_done, info);
 }

@@ -25,6 +25,10 @@
 #include <config.h>
 #endif
 
+#define __USE_LARGEFILE 1
+#include <stdio.h>
+#include <errno.h>
+
 #include "camel-disco-diary.h"
 #include "camel-disco-folder.h"
 #include "camel-disco-store.h"
@@ -34,8 +38,6 @@
 #include "camel-operation.h"
 #include "camel-session.h"
 #include "camel-store.h"
-
-#include <errno.h>
 
 
 static void
@@ -149,12 +151,12 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 		break;
 	}
 
-	case CAMEL_DISCO_DIARY_FOLDER_MOVE:
-	case CAMEL_DISCO_DIARY_FOLDER_COPY:
+	case CAMEL_DISCO_DIARY_FOLDER_TRANSFER:
 	{
 		CamelFolder *source = va_arg (ap, CamelFolder *);
 		CamelFolder *destination = va_arg (ap, CamelFolder *);
 		GPtrArray *uids = va_arg (ap, GPtrArray *);
+		gboolean delete_originals = va_arg (ap, gboolean);
 
 		status = camel_file_util_encode_string (diary->file, source->full_name);
 		if (status == -1)
@@ -163,6 +165,9 @@ camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
 		if (status == -1)
 			break;
 		status = diary_encode_uids (diary, uids);
+		if (status == -1)
+			break;
+		status = camel_file_util_encode_uint32 (diary->file, delete_originals);
 		break;
 	}
 
@@ -304,7 +309,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 		case CAMEL_DISCO_DIARY_FOLDER_APPEND:
 		{
 			CamelFolder *folder;
-			char *uid;
+			char *uid, *ret_uid;
 			CamelMimeMessage *message;
 			CamelMessageInfo *info;
 
@@ -325,23 +330,31 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 			}
 			info = camel_folder_get_message_info (folder, uid);
 
-			camel_folder_append_message (folder, message, info, ex);
-			g_free (uid);
+			camel_folder_append_message (folder, message, info, &ret_uid, ex);
 			camel_folder_free_message_info (folder, info);
+
+			if (ret_uid) {
+				camel_disco_diary_uidmap_add (diary, uid, ret_uid);
+				g_free (ret_uid);
+			}
+			g_free (uid);
 
 			break;
 		}
 
-		case CAMEL_DISCO_DIARY_FOLDER_COPY:
-		case CAMEL_DISCO_DIARY_FOLDER_MOVE:
+		case CAMEL_DISCO_DIARY_FOLDER_TRANSFER:
 		{
 			CamelFolder *source, *destination;
-			GPtrArray *uids;
+			GPtrArray *uids, *ret_uids;
+			guint32 delete_originals;
+			int i;
 
 			source = diary_decode_folder (diary);
 			destination = diary_decode_folder (diary);
 			uids = diary_decode_uids (diary);
 			if (!uids)
+				goto lose;
+			if (camel_file_util_decode_uint32 (diary->file, &delete_originals) == -1)
 				goto lose;
 
 			if (!source || !destination) {
@@ -349,10 +362,17 @@ camel_disco_diary_replay (CamelDiscoDiary *diary, CamelException *ex)
 				continue;
 			}
 
-			if (action == CAMEL_DISCO_DIARY_FOLDER_COPY)
-				camel_folder_copy_messages_to (source, uids, destination, ex);
-			else
-				camel_folder_move_messages_to (source, uids, destination, ex);
+			camel_folder_transfer_messages_to (source, uids, destination, &ret_uids, delete_originals, ex);
+
+			if (ret_uids) {
+				for (i = 0; i < uids->len; i++) {
+					if (!ret_uids->pdata[i])
+						continue;
+					camel_disco_diary_uidmap_add (diary, uids->pdata[i], ret_uids->pdata[i]);
+					g_free (ret_uids->pdata[i]);
+				}
+				g_ptr_array_free (ret_uids, TRUE);
+			}
 			free_uids (uids);
 			break;
 		}

@@ -2,6 +2,7 @@
 /* e-summary-calendar.c
  *
  * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 2002 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -29,6 +30,9 @@
 
 #include "e-summary-calendar.h"
 #include "e-summary.h"
+
+#include "e-util/e-config-listener.h"
+
 #include <cal-client/cal-client.h>
 #include <cal-util/timeutil.h>
 
@@ -40,11 +44,20 @@
 
 #include <ical.h>
 
+#define MAX_RELOAD_TRIES 10
+
 struct _ESummaryCalendar {
 	CalClient *client;
 
 	char *html;
 	gboolean wants24hr;
+
+	char *default_uri;
+
+	EConfigListener *config_listener;
+
+	int cal_open_reload_timeout_id;
+	int reload_count;
 };
 
 const char *
@@ -81,77 +94,102 @@ cal_component_compare_tzid (const char *tzid1, const char *tzid2)
         return retval;
 }
 
-gboolean
-e_cal_comp_util_compare_event_timezones (CalComponent *comp,
-					 CalClient *client,
-					 icaltimezone *zone)
+static gboolean
+compare_event_timezones (CalComponent *comp,
+			 CalClient *client,
+			 icaltimezone *zone)
 {
-        CalClientGetStatus status;
-        CalComponentDateTime start_datetime, end_datetime;
-        const char *tzid;
-        gboolean retval = FALSE;
-        icaltimezone *start_zone, *end_zone;
-        int offset1, offset2;
+	CalClientGetStatus status;
+	CalComponentDateTime start_datetime, end_datetime;
+	const char *tzid;
+	gboolean retval = FALSE;
+	icaltimezone *start_zone, *end_zone;
+	int offset1, offset2;
 
-        tzid = icaltimezone_get_tzid (zone);
+	tzid = icaltimezone_get_tzid (zone);
 
-        cal_component_get_dtstart (comp, &start_datetime);
-        cal_component_get_dtend (comp, &end_datetime);
+	cal_component_get_dtstart (comp, &start_datetime);
+	cal_component_get_dtend (comp, &end_datetime);
 
 	/* If either the DTSTART or the DTEND is a DATE value, we return TRUE.
 	   Maybe if one was a DATE-TIME we should check that, but that should
 	   not happen often. */
-	if (start_datetime.value->is_date || end_datetime.value->is_date) {
+	if ((start_datetime.value && start_datetime.value->is_date)
+	    || (end_datetime.value && end_datetime.value->is_date)) {
 		retval = TRUE;
 		goto out;
 	}
 
-        /* FIXME: DURATION may be used instead. */
-        if (cal_component_compare_tzid (tzid, start_datetime.tzid)
-            && cal_component_compare_tzid (tzid, end_datetime.tzid)) {
-                /* If both TZIDs are the same as the given zone's TZID, then
-                   we know the timezones are the same so we return TRUE. */
-                retval = TRUE;
-        } else {
-                /* If the TZIDs differ, we have to compare the UTC offsets
-                   of the start and end times, using their own timezones and
-                   the given timezone. */
-                status = cal_client_get_timezone (client,
-                                                  start_datetime.tzid,
-                                                  &start_zone);
-                if (status != CAL_CLIENT_GET_SUCCESS)
-                        goto out;
+	/* If the event uses UTC for DTSTART & DTEND, return TRUE. Outlook
+	   will send single events as UTC, so we don't want to mark all of
+	   these. */
+	if ((!start_datetime.value || start_datetime.value->is_utc)
+	    && (!end_datetime.value || end_datetime.value->is_utc)) {
+		retval = TRUE;
+		goto out;
+	}
 
-                offset1 = icaltimezone_get_utc_offset (start_zone,
-                                                       start_datetime.value,
-                                                       NULL);
-                offset2 = icaltimezone_get_utc_offset (zone,
-                                                       start_datetime.value,
-                                                       NULL);
-                if (offset1 == offset2) {
-                        status = cal_client_get_timezone (client,
-                                                          end_datetime.tzid,
-                                                          &end_zone);
-                        if (status != CAL_CLIENT_GET_SUCCESS)
-                                goto out;
+	/* If the event uses floating time for DTSTART & DTEND, return TRUE.
+	   Imported vCalendar files will use floating times, so we don't want
+	   to mark all of these. */
+	if (!start_datetime.tzid && !end_datetime.tzid) {
+		retval = TRUE;
+		goto out;
+	}
 
-                        offset1 = icaltimezone_get_utc_offset (end_zone,
-                                                               end_datetime.value,
-                                                               NULL);
-                        offset2 = icaltimezone_get_utc_offset (zone,
-                                                               end_datetime.value,
-                                                               NULL);
-                        if (offset1 == offset2)
-                                retval = TRUE;
-                }
-        }
+	/* FIXME: DURATION may be used instead. */
+	if (cal_component_compare_tzid (tzid, start_datetime.tzid)
+	    && cal_component_compare_tzid (tzid, end_datetime.tzid)) {
+		/* If both TZIDs are the same as the given zone's TZID, then
+		   we know the timezones are the same so we return TRUE. */
+		retval = TRUE;
+	} else {
+		/* If the TZIDs differ, we have to compare the UTC offsets
+		   of the start and end times, using their own timezones and
+		   the given timezone. */
+		status = cal_client_get_timezone (client,
+						  start_datetime.tzid,
+						  &start_zone);
+		if (status != CAL_CLIENT_GET_SUCCESS)
+			goto out;
+
+		if (start_datetime.value) {
+			offset1 = icaltimezone_get_utc_offset (start_zone,
+							       start_datetime.value,
+							       NULL);
+			offset2 = icaltimezone_get_utc_offset (zone,
+							       start_datetime.value,
+							       NULL);
+			if (offset1 != offset2)
+				goto out;
+		}
+
+		status = cal_client_get_timezone (client,
+						  end_datetime.tzid,
+						  &end_zone);
+		if (status != CAL_CLIENT_GET_SUCCESS)
+			goto out;
+
+		if (end_datetime.value) {
+			offset1 = icaltimezone_get_utc_offset (end_zone,
+							       end_datetime.value,
+							       NULL);
+			offset2 = icaltimezone_get_utc_offset (zone,
+							       end_datetime.value,
+							       NULL);
+			if (offset1 != offset2)
+				goto out;
+		}
+
+		retval = TRUE;
+	}
 
  out:
 
-        cal_component_free_datetime (&start_datetime);
-        cal_component_free_datetime (&end_datetime);
+	cal_component_free_datetime (&start_datetime);
+	cal_component_free_datetime (&end_datetime);
 
-        return retval;
+	return retval;
 }
 
 static int
@@ -302,6 +340,9 @@ generate_html (gpointer data)
 	char *tmp;
 	time_t t, begin, end, f;
 
+	if (cal_client_get_load_state (calendar->client) != CAL_CLIENT_LOAD_LOADED)
+		return FALSE;
+
 	/* Set the default timezone on the server. */
 	if (summary->tz) {
 		cal_client_set_default_timezone (calendar->client,
@@ -341,20 +382,22 @@ generate_html (gpointer data)
 		s2 = e_utf8_from_locale_string (_("No appointments"));
 		g_free (calendar->html);
 		calendar->html = g_strconcat ("<dl><dt><img src=\"myevo-appointments.png\" align=\"middle\" "
-		                              "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"evolution:/local/Calendar\">",
+		                              "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"", calendar->default_uri, "\">",
 		                              s1, "</a></b></dt><dd><b>", s2, "</b></dd></dl>", NULL);
 		g_free (s1);
 		g_free (s2);
 
-		e_summary_draw (summary);
+ 		e_summary_draw (summary);
 		return FALSE;
 	} else {
 		GPtrArray *uidarray;
 		int i;
 		char *s;
 
-		string = g_string_new ("<dl><dt><img src=\"myevo-appointments.png\" align=\"middle\" "
-		                       "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"evolution:/local/Calendar\">");
+		string = g_string_new (NULL);
+		g_string_sprintf (string, "<dl><dt><img src=\"myevo-appointments.png\" align=\"middle\" "
+			      "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"%s\">",
+			      calendar->default_uri);
 		s = e_utf8_from_locale_string (_("Appointments"));
 		g_string_append (string, s);
 		g_free (s);
@@ -379,9 +422,9 @@ generate_html (gpointer data)
 
 			if (cal_component_has_alarms (event->comp)) {
 				img = "es-appointments.png";
-			} else if (e_cal_comp_util_compare_event_timezones (event->comp,
-									    calendar->client,
-									    summary->tz) == FALSE) {
+			} else if (compare_event_timezones (event->comp,
+							    calendar->client,
+							    summary->tz) == FALSE) {
 				img = "timezone-16.xpm";
 			} else {
 				img = "new_appointment.xpm";
@@ -409,7 +452,23 @@ generate_html (gpointer data)
 	calendar->html = string->str;
 	g_string_free (string, FALSE);
 
-	e_summary_draw (summary);
+ 	e_summary_draw (summary);
+	return FALSE;
+}
+
+static gboolean
+cal_open_reload_timeout (void *data)
+{
+	ESummary *summary = (ESummary *) data;
+
+	summary->calendar->cal_open_reload_timeout_id = 0;
+
+	if (++ summary->calendar->reload_count >= MAX_RELOAD_TRIES) {
+		summary->calendar->reload_count = 0;
+		return FALSE;
+	}
+
+	cal_client_open_default_calendar (summary->calendar->client, FALSE);
 	return FALSE;
 }
 
@@ -421,9 +480,12 @@ cal_opened_cb (CalClient *client,
 	if (status == CAL_CLIENT_OPEN_SUCCESS) {
 		g_idle_add (generate_html, summary);
 	} else {
-		/* Need to work out what to do if there's an error */
+		summary->calendar->cal_open_reload_timeout_id = g_timeout_add (1000,
+									       cal_open_reload_timeout,
+									       summary);
 	}
 }
+
 static void
 obj_changed_cb (CalClient *client,
 		const char *uid,
@@ -477,36 +539,24 @@ locale_uses_24h_time_format (void)
 	return s[0] == '\0';
 }
 
-void
-e_summary_calendar_init (ESummary *summary)
+static void
+setup_calendar (ESummary *summary)
 {
-	Bonobo_ConfigDatabase db;
-	CORBA_Environment ev;
 	ESummaryCalendar *calendar;
-	gboolean result;
 
-	g_return_if_fail (summary != NULL);
+	calendar = summary->calendar;
+	g_assert (calendar != NULL);
 
-	calendar = g_new (ESummaryCalendar, 1);
-	summary->calendar = calendar;
-	calendar->html = NULL;
-
-	CORBA_exception_init (&ev);
-	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
-	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
-		CORBA_exception_free (&ev);
-		g_warning ("Error getting Wombat. Using defaults");
-		return;
+	if (calendar->cal_open_reload_timeout_id != 0) {
+		g_source_remove (calendar->cal_open_reload_timeout_id);
+		calendar->cal_open_reload_timeout_id = 0;
+		calendar->reload_count = 0;
 	}
 
-	CORBA_exception_free (&ev);
+	if (calendar->client != NULL)
+		gtk_object_unref (GTK_OBJECT (calendar->client));
 
 	calendar->client = cal_client_new ();
-	if (calendar->client == NULL) {
-		bonobo_object_release_unref (db, NULL);
-		g_warning ("Error making the client");
-		return;
-	}
 
 	gtk_signal_connect (GTK_OBJECT (calendar->client), "cal-opened",
 			    GTK_SIGNAL_FUNC (cal_opened_cb), summary);
@@ -515,20 +565,63 @@ e_summary_calendar_init (ESummary *summary)
 	gtk_signal_connect (GTK_OBJECT (calendar->client), "obj-removed",
 			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
 
-	result = cal_client_open_default_calendar (calendar->client, FALSE);
-	if (result == FALSE) {
+	if (! cal_client_open_default_calendar (calendar->client, FALSE))
 		g_message ("Open calendar failed");
-	}
-	
-	e_summary_add_protocol_listener (summary, "calendar", e_summary_calendar_protocol, calendar);
 
-	calendar->wants24hr = bonobo_config_get_boolean_with_default (db, "/Calendar/Display/Use24HourFormat", locale_uses_24h_time_format (), NULL);
-	bonobo_object_release_unref (db, NULL);
+	calendar->wants24hr = e_config_listener_get_boolean_with_default (calendar->config_listener,
+									  "/Calendar/Display/Use24HourFormat",
+									  locale_uses_24h_time_format (), NULL);
+	calendar->default_uri = e_config_listener_get_string_with_default (calendar->config_listener,
+									   "/DefaultFolders/calendar_path",
+									   "evolution:/local/Calendar", NULL);
+}
+
+static void
+config_listener_key_changed_cb (EConfigListener *listener,
+				const char *key,
+				void *user_data)
+{
+	setup_calendar (E_SUMMARY (user_data));
+	generate_html (user_data);
+}
+
+static void
+setup_config_listener (ESummary *summary)
+{
+	ESummaryCalendar *calendar;
+
+	calendar = summary->calendar;
+	g_assert (calendar != NULL);
+
+	calendar->config_listener = e_config_listener_new ();
+
+	gtk_signal_connect (GTK_OBJECT (calendar->config_listener), "key_changed",
+			    GTK_SIGNAL_FUNC (config_listener_key_changed_cb), summary);
+
+	setup_calendar (summary);
+}
+
+void
+e_summary_calendar_init (ESummary *summary)
+{
+	ESummaryCalendar *calendar;
+
+	g_return_if_fail (summary != NULL);
+
+	calendar = g_new0 (ESummaryCalendar, 1);
+	summary->calendar = calendar;
+	calendar->html = NULL;
+
+	setup_config_listener (summary);
+	setup_calendar (summary);
+
+	e_summary_add_protocol_listener (summary, "calendar", e_summary_calendar_protocol, calendar);
 }
 
 void
 e_summary_calendar_reconfigure (ESummary *summary)
 {
+	setup_calendar (summary);
 	generate_html (summary);
 }
 
@@ -541,9 +634,14 @@ e_summary_calendar_free (ESummary *summary)
 	g_return_if_fail (IS_E_SUMMARY (summary));
 
 	calendar = summary->calendar;
+
+	if (calendar->cal_open_reload_timeout_id != 0)
+		g_source_remove (calendar->cal_open_reload_timeout_id);
+
 	gtk_object_unref (GTK_OBJECT (calendar->client));
 	g_free (calendar->html);
-
+	g_free (calendar->default_uri);
+	
 	g_free (calendar);
 	summary->calendar = NULL;
 }

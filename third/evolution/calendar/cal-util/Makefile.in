@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,16 +60,9 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BONOBO_CONF_CFLAGS = @BONOBO_CONF_CFLAGS@
-BONOBO_CONF_LIBS = @BONOBO_CONF_LIBS@
-BONOBO_GNOME_CFLAGS = @BONOBO_GNOME_CFLAGS@
-BONOBO_GNOME_LIBS = @BONOBO_GNOME_LIBS@
-BONOBO_HTML_GNOME_CFLAGS = @BONOBO_HTML_GNOME_CFLAGS@
-BONOBO_HTML_GNOME_LIBS = @BONOBO_HTML_GNOME_LIBS@
-BONOBO_VFS_GNOME_CFLAGS = @BONOBO_VFS_GNOME_CFLAGS@
-BONOBO_VFS_GNOME_LIBS = @BONOBO_VFS_GNOME_LIBS@
 BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -83,15 +76,35 @@ DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
+EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
+EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
+EVOLUTION_ADDRESSBOOK_LIBS = @EVOLUTION_ADDRESSBOOK_LIBS@
+EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
+EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
+EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
+EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
+EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
+EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
+EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
+EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
+EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
+EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
+EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
-EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
-EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
-GAL_CFLAGS = @GAL_CFLAGS@
-GAL_LIBS = @GAL_LIBS@
+E_NAME_CFLAGS = @E_NAME_CFLAGS@
+E_NAME_LIBS = @E_NAME_LIBS@
+E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
+E_UTIL_LIBS = @E_UTIL_LIBS@
+E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
+E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_CONFIG = @GCONF_CONFIG@
+GCONF_LIBS = @GCONF_LIBS@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GENCAT = @GENCAT@
-GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -100,16 +113,14 @@ GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
 GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
 GNOME_CONFIG = @GNOME_CONFIG@
 GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
+GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
+GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
 GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
 GNOME_PREFIX = @GNOME_PREFIX@
-GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
-GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
-GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
-GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
 GTKDOC = @GTKDOC@
@@ -124,6 +135,8 @@ GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
+IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -131,6 +144,7 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
+KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -139,10 +153,10 @@ KRB5_LDFLAGS = @KRB5_LDFLAGS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
+LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
+LIBFILTER_LIBS = @LIBFILTER_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-MAILER_CFLAGS = @MAILER_CFLAGS@
-MAILER_LIBS = @MAILER_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -150,8 +164,13 @@ NSPR_CFLAGS = @NSPR_CFLAGS@
 NSPR_LDFLAGS = @NSPR_LDFLAGS@
 NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
+OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
+OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
+OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
+OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -159,6 +178,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PISOCK_CFLAGS = @PISOCK_CFLAGS@
 PISOCK_LIBS = @PISOCK_LIBS@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -168,12 +188,16 @@ SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
+SHELL_CFLAGS = @SHELL_CFLAGS@
+SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
+WOMBAT_LIBS = @WOMBAT_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
 XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
@@ -194,10 +218,11 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 localedir = @localedir@
+privlibdir = @privlibdir@
 
 noinst_PROGRAMS = test-recur
 
-INCLUDES =          -DGNOMELOCALEDIR=\""$(localedir)"\"			-DG_LOG_DOMAIN=\"cal-util\"				-I$(top_srcdir) 					-I$(top_srcdir)/calendar				-I. 							-I.. 							-I$(top_builddir)					-I$(top_srcdir)/libical/src/libical			-I$(top_builddir)/libical/src/libical		        $(GNOME_INCLUDEDIR)
+INCLUDES =          -DGNOMELOCALEDIR=\""$(localedir)"\"			-DG_LOG_DOMAIN=\"cal-util\"				-I$(top_srcdir) 					-I$(top_srcdir)/calendar				-I. 							-I.. 							-I$(top_builddir)					-I$(top_srcdir)/libical/src/libical			-I$(top_builddir)/libical/src/libical			$(EVOLUTION_CALENDAR_CFLAGS)
 
 
 #
@@ -205,6 +230,7 @@ INCLUDES =          -DGNOMELOCALEDIR=\""$(localedir)"\"			-DG_LOG_DOMAIN=\"cal-u
 #
 
 lib_LTLIBRARIES = libcal-util.la
+privlib_LTLIBRARIES = libcal-util-static.la
 
 libcal_util_la_SOURCES =  	cal-component.c			cal-recur.c			cal-util.c			timeutil.c
 
@@ -217,19 +243,19 @@ libcal_utilinclude_HEADERS =  	cal-component.h			cal-recur.h			cal-util.h			time
 #
 # static library for use in conduits' shared libraries
 #
-noinst_LTLIBRARIES = libcal-util-static.la
+#lib_LTLIBRARIES = libcal-util-static.la
 libcal_util_static_la_SOURCES = $(libcal_util_la_SOURCES)
-libcal_util_static_la_LDFLAGS = --all-static
+libcal_util_static_la_LDFLAGS = -all-static
 
 test_recur_SOURCES =  	 test-recur.c
 
 
-test_recur_LDADD =  	 libcal-util.la		 $(top_builddir)/libversit/libversit.la			 $(top_builddir)/libical/src/libical/libical-evolution.la		 $(EXTRA_GNOME_LIBS)
+test_recur_LDADD =  	 libcal-util.la								 $(top_builddir)/libversit/libversit.a					 $(top_builddir)/libical/src/libical/libical-evolution.la		 $(EVOLUTION_CALENDAR_LIBS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-LTLIBRARIES =  $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES) $(privlib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
@@ -248,7 +274,7 @@ PROGRAMS =  $(noinst_PROGRAMS)
 
 test_recur_OBJECTS =  test-recur.$(OBJEXT)
 test_recur_DEPENDENCIES =  libcal-util.la \
-$(top_builddir)/libversit/libversit.la \
+$(top_builddir)/libversit/libversit.a \
 $(top_builddir)/libical/src/libical/libical-evolution.la
 test_recur_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -304,14 +330,30 @@ uninstall-libLTLIBRARIES:
 	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
-mostlyclean-noinstLTLIBRARIES:
+mostlyclean-privlibLTLIBRARIES:
 
-clean-noinstLTLIBRARIES:
-	-test -z "$(noinst_LTLIBRARIES)" || rm -f $(noinst_LTLIBRARIES)
+clean-privlibLTLIBRARIES:
+	-test -z "$(privlib_LTLIBRARIES)" || rm -f $(privlib_LTLIBRARIES)
 
-distclean-noinstLTLIBRARIES:
+distclean-privlibLTLIBRARIES:
 
-maintainer-clean-noinstLTLIBRARIES:
+maintainer-clean-privlibLTLIBRARIES:
+
+install-privlibLTLIBRARIES: $(privlib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(privlibdir)
+	@list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(privlibdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-privlibLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(privlib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(privlibdir)/$$p; \
+	done
 
 .c.o:
 	$(COMPILE) -c $<
@@ -361,7 +403,7 @@ libcal-util.la: $(libcal_util_la_OBJECTS) $(libcal_util_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libcal_util_la_LDFLAGS) $(libcal_util_la_OBJECTS) $(libcal_util_la_LIBADD) $(LIBS)
 
 libcal-util-static.la: $(libcal_util_static_la_OBJECTS) $(libcal_util_static_la_DEPENDENCIES)
-	$(LINK)  $(libcal_util_static_la_LDFLAGS) $(libcal_util_static_la_OBJECTS) $(libcal_util_static_la_LIBADD) $(LIBS)
+	$(LINK) -rpath $(privlibdir) $(libcal_util_static_la_LDFLAGS) $(libcal_util_static_la_OBJECTS) $(libcal_util_static_la_LIBADD) $(LIBS)
 
 mostlyclean-noinstPROGRAMS:
 
@@ -409,7 +451,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -435,6 +477,16 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+cal-component.lo cal-component.o : cal-component.c ../../config.h \
+	cal-component.h ../../libical/src/libical/ical.h timeutil.h
+cal-recur.lo cal-recur.o : cal-recur.c ../../config.h cal-recur.h \
+	cal-component.h ../../libical/src/libical/ical.h timeutil.h
+cal-util.lo cal-util.o : cal-util.c ../../config.h cal-util.h \
+	../../libical/src/libical/ical.h cal-component.h cal-recur.h
+test-recur.o: test-recur.c ../../config.h cal-recur.h cal-component.h \
+	../../libical/src/libical/ical.h
+timeutil.lo timeutil.o : timeutil.c ../../libical/src/libical/ical.h \
+	../../config.h timeutil.h
 
 info-am:
 info: info-am
@@ -447,13 +499,14 @@ installcheck: installcheck-am
 install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
-install-data-am: install-libcal_utilincludeHEADERS
+install-data-am: install-privlibLTLIBRARIES \
+		install-libcal_utilincludeHEADERS
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES \
+uninstall-am: uninstall-libLTLIBRARIES uninstall-privlibLTLIBRARIES \
 		uninstall-libcal_utilincludeHEADERS
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
@@ -461,7 +514,7 @@ all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) \
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(privlibdir) \
 		$(DESTDIR)$(libcal_utilincludedir)
 
 
@@ -475,19 +528,19 @@ distclean-generic:
 
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-libLTLIBRARIES \
-		mostlyclean-noinstLTLIBRARIES mostlyclean-compile \
+		mostlyclean-privlibLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
 		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLTLIBRARIES clean-noinstLTLIBRARIES clean-compile \
+clean-am:  clean-libLTLIBRARIES clean-privlibLTLIBRARIES clean-compile \
 		clean-libtool clean-noinstPROGRAMS clean-tags \
 		clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLTLIBRARIES distclean-noinstLTLIBRARIES \
+distclean-am:  distclean-libLTLIBRARIES distclean-privlibLTLIBRARIES \
 		distclean-compile distclean-libtool \
 		distclean-noinstPROGRAMS distclean-tags \
 		distclean-generic clean-am
@@ -496,7 +549,7 @@ distclean-am:  distclean-libLTLIBRARIES distclean-noinstLTLIBRARIES \
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
-		maintainer-clean-noinstLTLIBRARIES \
+		maintainer-clean-privlibLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
 		maintainer-clean-noinstPROGRAMS maintainer-clean-tags \
 		maintainer-clean-generic distclean-am
@@ -508,8 +561,9 @@ maintainer-clean: maintainer-clean-am
 .PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
 clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
 uninstall-libLTLIBRARIES install-libLTLIBRARIES \
-mostlyclean-noinstLTLIBRARIES distclean-noinstLTLIBRARIES \
-clean-noinstLTLIBRARIES maintainer-clean-noinstLTLIBRARIES \
+mostlyclean-privlibLTLIBRARIES distclean-privlibLTLIBRARIES \
+clean-privlibLTLIBRARIES maintainer-clean-privlibLTLIBRARIES \
+uninstall-privlibLTLIBRARIES install-privlibLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool mostlyclean-noinstPROGRAMS \

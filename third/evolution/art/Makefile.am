@@ -5,57 +5,30 @@ images_DATA = \
 	16_cut.png			\
 	16_paste.png			\
 	about-box.png			\
+	alarm.png			\
+	all_contacts.xpm		\
 	apply-filters-16.xpm		\
 	bcg.png				\
+	briefcase.png       		\
+	butterfly.png			\
+	calendar-and-tasks-settings.png \
+	cellphone.png       		\
+	compose-message.png		\
+	composer-settings.png		\
 	configure_16_addressbook.xpm	\
 	configure_16_calendar.xpm	\
 	configure_16_folder.xpm		\
 	configure_16_mail.xpm		\
+	connect_to_url-16.xpm		\
 	contact-is-a-list.png		\
+	contact-list-16.png		\
 	copy_16_message.xpm		\
 	edit.xpm			\
 	empty.gif			\
 	encrypt.xpm			\
+	envelope.png        		\
 	es-appointments.png		\
 	es-weather.png			\
-	folder.xpm			\
-	forward.xpm			\
-	goto-16.png			\
-	ico-calendar.png		\
-	ico-mail.png			\
-	ico-rdf.png			\
-	ico-weather.png			\
-	import.png			\
-	import.xpm			\
-	inbox-16.png			\
-	inbox-full-16.png		\
-	meeting-request.png 		\
-	alarm.png			\
-	meeting-request.png		\
-	move_message.xpm		\
-	offline.png			\
-	online.png			\
-	open-in-new-window-16.png 	\
-	outbox-16.png 			\
-	outbox-full-16.png 		\
-	pattern.png			\
-	pgp-signature-bad.png 		\
-	pgp-signature-nokey.png 	\
-	pgp-signature-ok.png 		\
-	print.xpm			\
-	print-preview.xpm		\
-	rdf.png				\
-	reply.xpm			\
-	reply_to_all.xpm		\
-	save.xpm			\
-	all_contacts.xpm		\
-	find_contact.xpm		\
-	find_message.xpm		\
-	briefcase.png       		\
-	butterfly.png			\
-	cellphone.png       		\
-	compose-message.png		\
-	envelope.png        		\
 	evolution-calendar-mini.png 	\
 	evolution-calendar.png 		\
 	evolution-contacts-mini.png 	\
@@ -73,40 +46,91 @@ images_DATA = \
 	evolution-trash.png 		\
 	executive-summary-bg.png	\
 	executive-summary-curve.png	\
+	info-bulb.png			\
 	faq-16.png			\
 	fetch-mail.png			\
+	find_contact.xpm		\
+	find_message.xpm		\
+	flag-for-followup-16.png	\
 	folder-copy-16.png		\
 	folder-move-16.png		\
+	folder-settings.png		\
+	folder.png			\
+	folder-mini.png			\
+	folder.xpm			\
+	font.png			\
+	forward.xpm			\
 	globe.png           		\
+	goto-16.png			\
 	hide_deleted_messages.xpm	\
 	hide_read_messages.xpm		\
 	hide_selected_messages.xpm	\
 	house.png           		\
-	ldap.png			\
+	ico-calendar.png		\
+	ico-mail.png			\
+	ico-rdf.png			\
+	ico-weather.png			\
+	import.png			\
+	import.xpm			\
+	inbox.png			\
+	inbox-mini.png			\
 	ldap-mini.png			\
-	malehead.png			\
-	mail-config-druid.png		\
+	ldap-settings.png		\
+	ldap.png			\
+	mail.png			\
+	mail-accounts-settings.png	\
+	mail-config-druid-account-name.png \
 	mail-config-druid-identity.png	\
 	mail-config-druid-receive.png	\
 	mail-config-druid-send.png	\
-	mail-config-druid-account-name.png \
+	mail-config-druid.png		\
+	mail-new.xpm			\
+	mail-read.xpm			\
+	malehead.png			\
 	mark-as-important-16.png	\
+	meeting-request.png		\
+	meeting-request-16.png 		\
+	monkey-16.png			\
+	move_message.xpm		\
 	myevo-appointments.png		\
 	myevo-mail-summary.png		\
 	myevo-post-it.png		\
+	myweather-clouds.png		\
+	myweather-fog.png		\
 	myweather-rain.png		\
 	myweather-snow.png		\
 	myweather-storm.png		\
-	myweather-fog.png		\
 	myweather-sun.png		\
 	myweather-suncloud.png		\
-	myweather-clouds.png		\
+	new-message.xpm			\
+	new_all_day_event.png		\
 	new_appointment.xpm		\
 	new_contact.xpm			\
-	new-message.xpm			\
 	new_task-16.png			\
+	offline.png			\
+	online.png			\
+	open-in-new-window-16.png 	\
+	outbox.png			\
+	outbox-mini.png			\
+	pattern.png			\
+	pgp-signature-bad.png 		\
+	pgp-signature-nokey.png 	\
+	pgp-signature-ok.png 		\
+	post-message-16.png		\
+	post-reply-24.png		\
+	print-preview.xpm		\
+	print.xpm			\
+	priority-high.xpm		\
+	public-folder.png		\
+	public-folder-mini.png		\
+	rdf.png				\
+	reply.xpm			\
+	reply_to_all.xpm		\
 	save-16.png			\
 	save-as-16.png			\
+	save.xpm			\
+	schedule-meeting-16.xpm		\
+	schedule-meeting-24.png		\
 	search-16.png			\
 	search-and-replace-16.png	\
 	send-16.png                     \
@@ -114,27 +138,32 @@ images_DATA = \
 	send-receive.xpm		\
 	service-close.png		\
 	service-configure.png		\
-	service-down.png		\
 	service-down-disabled.png	\
-	service-left.png		\
+	service-down.png		\
 	service-left-disabled.png	\
-	service-right.png		\
+	service-left.png		\
 	service-right-disabled.png	\
-	service-up.png			\
+	service-right.png		\
 	service-up-disabled.png		\
+	service-up.png			\
+	settings.png			\
+	settings-16.png			\
 	show_all_messages.xpm		\
 	splash.png			\
+	summary-settings.png		\
+	summary_preferences-16.png	\
 	talking-heads.png		\
-	task.xpm			\
 	task.png			\
+	task.xpm			\
 	thankyou.png			\
 	timezone-16.xpm			\
 	timezone-48.png 		\
 	undelete_message-16.png		\
-	wax-seal.png			\
 	wax-seal-broken.png		\
+	wax-seal.png			\
 	work_offline.xpm		\
 	work_online-16.png		\
+	working-16.png			\
 	world_map-960.png
 
 buttonsdir = $(datadir)/images/evolution/buttons
@@ -175,12 +204,12 @@ gladedir = $(datadir)/evolution/glade
 glade_DATA = 					\
 	evolution.png				\
 	import.png				\
+	flag-for-followup-48.png		\
 	mail-config-druid-account-name.png	\
 	mail-config-druid-identity.png		\
 	mail-config-druid.png			\
 	mail-config-druid-receive.png		\
 	mail-config-druid-send.png		\
-	meeting_widget.png			\
 	thankyou.png				\
 	timezone-48.png
 
@@ -202,11 +231,12 @@ EXTRA_DIST = \
 	check-filled.xpm		\
 	empty.xpm			\
 	jump.xpm			\
+	mail-need-reply.xpm		\
 	mail-new.xpm			\
 	mail-read.xpm			\
 	mail-replied.xpm		\
+	flag-for-followup.xpm		\
 	mark.xpm			\
-	meeting.xpm			\
 	priority-high.xpm		\
 	priority-low.xpm		\
 	recur.xpm			\
@@ -228,5 +258,3 @@ EXTRA_DIST = \
 	$(conduits_DATA)		\
 	$(glade_DATA)			\
 	$(appicon_DATA)
-
-

@@ -39,7 +39,6 @@ typedef struct _EShellClass   EShellClass;
 #include "Evolution.h"
 
 #include "e-component-registry.h"
-#include "e-shortcuts.h"
 #include "e-shell-view.h"
 #include "e-uri-schema-registry.h"
 #include "e-shell-user-creatable-items-handler.h"
@@ -60,6 +59,13 @@ enum _EShellLineStatus {
 };
 typedef enum _EShellLineStatus EShellLineStatus;
 
+enum _EShellStartupLineMode {
+	E_SHELL_STARTUP_LINE_MODE_CONFIG,
+	E_SHELL_STARTUP_LINE_MODE_ONLINE,
+	E_SHELL_STARTUP_LINE_MODE_OFFLINE
+};
+typedef enum _EShellStartupLineMode EShellStartupLineMode;
+
 struct _EShell {
 	BonoboXObject parent;
 
@@ -73,6 +79,8 @@ struct _EShellClass {
 
 	void (* no_views_left) (EShell *shell);
 	void (* line_status_changed) (EShell *shell, EShellLineStatus status);
+	void (* new_view_created) (EShell *shell, EShellView *view);
+
 };
 
 
@@ -88,25 +96,30 @@ enum _EShellConstructResult {
 };
 typedef enum _EShellConstructResult EShellConstructResult;
 
+
+#include "e-shortcuts.h"
 
 
 GtkType                e_shell_get_type   (void);
 EShellConstructResult  e_shell_construct  (EShell                *shell,
 					   const char            *iid,
 					   const char            *local_directory,
-					   gboolean               show_splash);
+					   gboolean               show_splash,
+					   EShellStartupLineMode  startup_line_mode);
 EShell                *e_shell_new        (const char            *local_directory,
 					   gboolean               show_splash,
+					   EShellStartupLineMode  startup_line_mode,
 					   EShellConstructResult *construct_result_return);
 
-EShellView *e_shell_create_view                (EShell     *shell,
-						const char *uri,
-						EShellView *template_view);
-EShellView *e_shell_create_view_from_settings  (EShell     *shell,
-						const char *uri,
-						EShellView  *template_view,
-						int         view_num,
-						gboolean   *settings_found);
+EShellView *e_shell_create_view                        (EShell     *shell,
+							const char *uri,
+							EShellView *template_view);
+EShellView *e_shell_create_view_from_uri_and_settings  (EShell     *shell,
+							const char *uri,
+							int         view_num);
+gboolean    e_shell_request_close_view                 (EShell     *shell,
+							EShellView *view);
+
 
 const char          *e_shell_get_local_directory       (EShell          *shell);
 EShortcuts          *e_shell_get_shortcuts             (EShell          *shell);
@@ -116,7 +129,8 @@ EFolderTypeRegistry *e_shell_get_folder_type_registry  (EShell          *shell);
 EUriSchemaRegistry  *e_shell_get_uri_schema_registry   (EShell          *shell);
 
 gboolean             e_shell_save_settings             (EShell          *shell);
-gboolean             e_shell_restore_from_settings     (EShell          *shell);
+gboolean             e_shell_restore_from_settings     (EShell          *shell,
+							gboolean         restore_all_views);
 
 void                 e_shell_destroy_all_views         (EShell          *shell);
 
@@ -134,12 +148,28 @@ void              e_shell_go_offline       (EShell     *shell,
 void              e_shell_go_online        (EShell     *shell,
 					    EShellView *action_view);
 
+void  e_shell_set_interactive  (EShell *shell,
+				gboolean interactive);
+
+void e_shell_send_receive  (EShell     *shell);
+void e_shell_show_settings (EShell     *shell,
+			    const char *type,
+			    EShellView *shell_view);
+
 Bonobo_ConfigDatabase            e_shell_get_config_db                     (EShell *shell);
 EComponentRegistry              *e_shell_get_component_registry            (EShell *shell);
 EShellUserCreatableItemsHandler *e_shell_get_user_creatable_items_handler  (EShell *shell);
 
+gboolean e_shell_prepare_for_quit (EShell *shell);
+
 
 const char *e_shell_construct_result_to_string (EShellConstructResult result);
+
+
+gboolean  e_shell_parse_uri  (EShell      *shell,
+			      const char  *uri,
+			      char       **path_return,
+			      char       **extra_return);
 
 #ifdef __cplusplus
 }

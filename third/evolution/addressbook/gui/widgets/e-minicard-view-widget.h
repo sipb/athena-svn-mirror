@@ -44,7 +44,6 @@ struct _EMinicardViewWidget
 {
 	ECanvas parent;
 
-	GnomeCanvasItem *rect;
 	GnomeCanvasItem *emv;
 
 	EAddressbookReflowAdapter *adapter;
@@ -52,24 +51,25 @@ struct _EMinicardViewWidget
 	EBook *book;
 	char *query;
 	guint editable : 1;
+
+	double column_width;
 };
 
 struct _EMinicardViewWidgetClass
 {
 	ECanvasClass parent_class;
-	void         (*selection_change) (EMinicardViewWidget*);
+	void         (*selection_change)     (EMinicardViewWidget *emvw);
+	void         (*column_width_changed) (EMinicardViewWidget *emvw, double width);
+	guint        (*right_click)          (EMinicardViewWidget *emvw);
 };
 
-GtkType    e_minicard_view_widget_get_type (void);
-gint       e_minicard_view_widget_selected_count   (EMinicardViewWidget *view);
-void       e_minicard_view_widget_remove_selection (EMinicardViewWidget *view,
-						    EBookCallback  cb,
-						    gpointer       closure);
-void       e_minicard_view_widget_jump_to_letter   (EMinicardViewWidget *view,
-                                                    gunichar letter);
-GtkWidget *e_minicard_view_widget_new              (EAddressbookReflowAdapter *adapter);
 
-ESelectionModel *e_minicard_view_widget_get_selection_model (EMinicardViewWidget *view);
+GtkType          e_minicard_view_widget_get_type             (void);
+GtkWidget       *e_minicard_view_widget_new                  (EAddressbookReflowAdapter *adapter);
+
+/* Get parts of the view widget. */
+ESelectionModel *e_minicard_view_widget_get_selection_model  (EMinicardViewWidget       *view);
+EMinicardView   *e_minicard_view_widget_get_view             (EMinicardViewWidget       *view);
 
 #ifdef __cplusplus
 }

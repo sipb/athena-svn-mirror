@@ -127,7 +127,11 @@ CLASS="EMPHASIS"
 >get</I
 >
         an encrypted message, you must make sure that the sender has
-        your public key in advance.
+        your public key in advance. For signing messages, it's
+        reversed: you encrypt the signature with your private key, so
+        only your public key can unlock it. When you send it, the
+        recipient gets your public key and unlocks the signature,
+        verifying your identity.
       </P
 ><P
 >	You can use encryption in two different ways:
@@ -144,8 +148,9 @@ BORDER="0"
 ><TR
 ><TD
 >            Attach an encrypted signature to a plain text message, so
-            that the recipient can read the message without decrypting it, and 
-            only needs decryption to verify the sender's identity.
+            that the recipient can read the message without decrypting
+            it, and only needs decryption to verify the sender's
+            identity. 
            </TD
 ></TR
 ></TBODY
@@ -157,7 +162,7 @@ BORDER="0"
 ><DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1795"
+NAME="AEN1930"
 ></A
 ><P
 ><B
@@ -393,6 +398,12 @@ NAME="WHY-KEYSERVER"
 	    and then let people download them from the keyserver when
 	    they want.
 	  </P
+><P
+>             If you don't have a key you need to unlock or encrypt a
+             message, you can have your encryption tool set to look it
+             up automatically. If it can't find the key, then you'll
+             get an error message.
+          </P
 ></BLOCKQUOTE
 ></DIV
 >
@@ -456,14 +467,21 @@ CLASS="GUIMENU"
 >Tools</SPAN
 >-&gt;<SPAN
 CLASS="GUIMENUITEM"
->Mail Settings</SPAN
+>Settings</SPAN
 >
-	Once there, select the account with which you'd like to send
-	and receive encrypted mail, and click the
+	and select the <SPAN
+CLASS="GUILABEL"
+>Mail Accounts</SPAN
+> button, then
+	select the account you want to use securely, and click the
 	<SPAN
 CLASS="GUIBUTTON"
 >Edit</SPAN
-> button.  In the
+> button. Then, select the
+	<SPAN
+CLASS="GUILABEL"
+>Security</SPAN
+> tab in the account dialog.   In the
 	<SPAN
 CLASS="GUILABEL"
 >Security</SPAN

@@ -39,21 +39,23 @@ check_size (char **buffer, int *buffer_size, char *out, int len)
 	return out;
 }
 
-/* 1 = non-email-address chars: ()<>@,;:\"[]`'|  */
-/* 2 = trailing url garbage:    ,.!?;:>)]}`'-_|  */
+/* 1 = non-email-address chars: ()<>@,;:\"[]`'{}| */
+/* 2 = trailing url garbage:    ,.!?;:>)]}`'-_|   */
+/* 4 = dns chars                                  */
 static int special_chars[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,    /*  nul - 0x0f */
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,    /* 0x10 - 0x1f */
-	1, 2, 1, 0, 0, 0, 0, 3, 1, 3, 0, 0, 3, 2, 2, 0,    /*   sp - /    */
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 1, 0, 3, 2,    /*    0 - ?    */
-	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,    /*    @ - O    */
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 3, 0, 2,    /*    P - _    */
-	3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,    /*    ` - o    */
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 2, 0, 0     /*    p - del  */
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,    /*  nul - 0x0f */
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,    /* 0x10 - 0x1f */
+	1, 2, 1, 0, 0, 0, 0, 3, 1, 3, 0, 0, 3, 6, 6, 0,    /*   sp - /    */
+	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 1, 0, 3, 2,    /*    0 - ?    */
+	1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,    /*    @ - O    */
+	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 3, 0, 2,    /*    P - _    */
+	3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,    /*    ` - o    */
+	4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 3, 3, 0, 3     /*    p - del  */
 };
 
-#define is_addr_char(c) (isprint (c) && !(special_chars[c] & 1))
-#define is_trailing_garbage(c) (!isprint(c) || (special_chars[c] & 2))
+#define is_addr_char(c) (c < 128 && !(special_chars[c] & 1))
+#define is_trailing_garbage(c) (c > 127 || (special_chars[c] & 2))
+#define is_domain_name_char(c) (c < 128 && (special_chars[c] & 4))
 
 static char *
 url_extract (const unsigned char **text, gboolean check)
@@ -93,7 +95,7 @@ email_address_extract (const unsigned char **cur, char **out, const unsigned cha
 		return NULL;
 
 	/* Now look forward for a valid domain part */
-	for (end = *cur + 1, dot = NULL; is_addr_char (*end); end++) {
+	for (end = *cur + 1, dot = NULL; is_domain_name_char (*end); end++) {
 		if (*end == '.' && !dot)
 			dot = end;
 	}
@@ -116,41 +118,29 @@ email_address_extract (const unsigned char **cur, char **out, const unsigned cha
 static gboolean
 is_citation (const unsigned char *c, gboolean saw_citation)
 {
-	gunichar u;
-	gint i;
+	const unsigned char *p;
+
+	if (*c != '>')
+		return FALSE;
 
 	/* A line that starts with a ">" is a citation, unless it's
 	 * just mbox From-mangling...
 	 */
-	if (*c == '>') {
-		const unsigned char *p;
+	if (strncmp (c, ">From ", 6) != 0)
+		return TRUE;
 
-		if (strncmp (c, ">From ", 6) != 0)
-			return TRUE;
+	/* If the previous line was a citation, then say this
+	 * one is too.
+	 */
+	if (saw_citation)
+		return TRUE;
 
-		/* If the previous line was a citation, then say this
-		 * one is too.
-		 */
-		if (saw_citation)
-			return TRUE;
+	/* Same if the next line is */
+	p = (const unsigned char *)strchr ((const char *)c, '\n');
+	if (p && *++p == '>')
+		return TRUE;
 
-		/* Same if the next line is */
-		p = (const unsigned char *)strchr ((const char *)c, '\n');
-		if (p && *++p == '>')
-			return TRUE;
-
-		/* Otherwise, it was just an isolated ">From" line. */
-		return FALSE;
-	}
-
-	/* Check for "Rupert> " and the like... */
-	for (i = 0; c && *c && g_unichar_validate (g_utf8_get_char (c)) && *c != '\n' && i < 10; i ++, c = g_utf8_next_char (c)) {
-		u = g_utf8_get_char (c);
-		if (u == '>')
-			return TRUE;
-		if (!g_unichar_isalnum (u))
-			return FALSE;
-	}
+	/* Otherwise, it was just an isolated ">From" line. */
 	return FALSE;
 }
 
@@ -259,7 +249,8 @@ e_text_to_html_full (const char *input, unsigned int flags, guint32 color)
 			    !strncasecmp (cur, "ftp://", 6) ||
 			    !strncasecmp (cur, "nntp://", 7) ||
 			    !strncasecmp (cur, "mailto:", 7) ||
-			    !strncasecmp (cur, "news:", 5)) {
+			    !strncasecmp (cur, "news:", 5) ||
+			    !strncasecmp (cur, "file:", 5)) {
 				tmpurl = url_extract (&cur, TRUE);
 				if (tmpurl) {
 					refurl = e_text_to_html (tmpurl, 0);
@@ -307,6 +298,8 @@ e_text_to_html_full (const char *input, unsigned int flags, guint32 color)
 				g_free (dispaddr);
 				g_free (outaddr);
 
+				if (!*cur)
+					break;
 				u = g_utf8_get_char (cur);
 			}
 		}

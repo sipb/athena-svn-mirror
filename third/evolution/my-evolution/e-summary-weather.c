@@ -34,9 +34,10 @@
 
 #include <gal/widgets/e-unicode.h>
 
-#include <libgnomevfs/gnome-vfs.h>
 #include "e-summary.h"
+#include "e-summary-shown.h"
 #include "e-summary-weather.h"
+#include "e-summary-preferences.h"
 #include "weather.h"
 #include "metar.h"
 
@@ -61,7 +62,7 @@ e_summary_weather_get_html (ESummary *summary)
 	char *html;
 	char *s;
 
-	if (summary->weather == NULL) {
+	if (summary->weather == NULL || summary->weather->weathers == NULL) {
 		return NULL;
 	}
 
@@ -92,18 +93,6 @@ static char *
 make_url (const char *code)
 {
 	return g_strdup_printf ("http://weather.noaa.gov/cgi-bin/mgetmetar.pl?cccc=%s", code);
-}
-
-static char *
-make_anchor (const char *name, const char *code)
-{
-	char *url, *anchor;
-
-	url = make_url (code);
-	anchor = g_strdup_printf ("<a href=\"%s\">%s</a>", url, name);
-	g_free (url);
-
-	return anchor;
 }
 
 static void
@@ -251,10 +240,10 @@ parse_metar (const char *metar,
 }
 
 static void
-close_callback (GnomeVFSAsyncHandle *handle,
-		GnomeVFSResult result,
-		Weather *w)
+message_finished (SoupMessage *msg,
+		  gpointer userdata)
 {
+	Weather *w = (Weather *) userdata;
 	ESummary *summary;
 	char *html, *metar, *end;
 	char *search_str;
@@ -265,27 +254,35 @@ close_callback (GnomeVFSAsyncHandle *handle,
 		connection->callback (summary, connection->callback_closure);
 	}
 
-	if (w->handle == NULL) {
-		g_free (w->buffer);
-		w->buffer = NULL;
-		g_string_free (w->string, TRUE);
-		w->string = NULL;
+	if (SOUP_MESSAGE_IS_ERROR (msg)) {
+		char *mess;
+		ESummaryWeatherLocation *location;
+
+		g_warning ("Message failed: %d\n%s", msg->errorcode,
+			   msg->errorphrase);
+		w->message = NULL;
+
+		location = g_hash_table_lookup (locations_hash, w->location);
+
+		mess = g_strdup_printf ("<br><b>%s %s</b></br>",
+					_("There was an error downloading data for"),
+					location ? location->name : w->location);
+
+		w->html = e_utf8_from_locale_string (mess);
+		g_free (mess);
+
+		e_summary_draw (w->summary);
 		return;
 	}
 
-	w->handle = NULL;
-	g_free (w->buffer);
-	w->buffer = NULL;
-	html = w->string->str;
-	g_string_free (w->string, FALSE);
-	w->string = NULL;
+	html = g_strdup (msg->response.body);
+	w->message = NULL;
 
 	/* Find the metar data */
 	search_str = g_strdup_printf ("\n%s", w->location);
 	metar = strstr (html, search_str);
 	if (metar == NULL) {
 		g_free (search_str);
-		g_free (html);
 		return;
 	}
 
@@ -293,75 +290,13 @@ close_callback (GnomeVFSAsyncHandle *handle,
 	end = strchr (metar, '\n');
 	if (end == NULL) {
 		g_free (search_str);
-		g_free (html);
 		return;
 	}
 	*end = '\0';
 
 	parse_metar (metar, w);
-	g_free (html);
 	g_free (search_str);
 	return;
-}
-
-static void
-read_callback (GnomeVFSAsyncHandle *handle,
-	       GnomeVFSResult result,
-	       gpointer buffer,
-	       GnomeVFSFileSize bytes_requested,
-	       GnomeVFSFileSize bytes_read,
-	       Weather *w)
-{
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
-		if (w->summary->weather->errorshown == FALSE) {
-			w->html = g_strdup ("<dd><b>An error occurred while downloading weather data</b></dd>");
-			w->summary->weather->errorshown = TRUE;
-		} else {
-			w->html = g_strdup ("<dd> </dd>");
-		}
-
-		e_summary_draw (w->summary);
-		w->handle = NULL;
-		gnome_vfs_async_close (handle, 
-				       (GnomeVFSAsyncCloseCallback) close_callback, w);
-		return;
-	}
-
-	if (bytes_read == 0) {
-		gnome_vfs_async_close (handle,
-				       (GnomeVFSAsyncCloseCallback) close_callback, w);
-	} else {
-		*((char *) buffer + bytes_read) = 0;
-		g_string_append (w->string, (const char *) buffer);
-		gnome_vfs_async_read (handle, buffer, 4095,
-				      (GnomeVFSAsyncReadCallback) read_callback, w);
-	}
-}
-
-static void
-open_callback (GnomeVFSAsyncHandle *handle,
-	       GnomeVFSResult result,
-	       Weather *w)
-{
-	if (result != GNOME_VFS_OK) {
-		if (w->summary->weather->errorshown == FALSE) {
-			w->html = e_utf8_from_locale_string (_("<dd><b>The weather server could not be contacted</b></dd>"));
-
-			w->summary->weather->errorshown = TRUE;
-		} else {
-			w->html = g_strdup ("<dd> </dd>");
-		}
-
-		w->handle = NULL;
-		e_summary_draw (w->summary);
-		return;
-	}
-
-	w->string = g_string_new ("");
-	w->buffer = g_new (char, 4096);
-
-	gnome_vfs_async_read (handle, w->buffer, 4095,
-			      (GnomeVFSAsyncReadCallback) read_callback, w);
 }
 
 gboolean
@@ -376,26 +311,27 @@ e_summary_weather_update (ESummary *summary)
 
 	summary->weather->errorshown = FALSE;
 	for (w = summary->weather->weathers; w; w = w->next) {
+		SoupContext *context;
 		char *uri;
 		Weather *weather = w->data;
 
-		if (weather->handle != NULL) {
-			gnome_vfs_async_cancel (weather->handle);
-			weather->handle = NULL;
-		}
-		if (weather->string) {
-			g_string_free (weather->string, TRUE);
-			weather->string = NULL;
-		}
-		if (weather->buffer) {
-			g_free (weather->buffer);
-			weather->buffer = NULL;
+		if (weather->message != NULL) {
+			continue;
 		}
 
 		uri = g_strdup_printf ("http://weather.noaa.gov/cgi-bin/mgetmetar.pl?cccc=%s", weather->location);
+		context = soup_context_get (uri);
+		if (context == NULL) {
+			g_warning ("Invalid URL: %s", uri);
+			soup_context_unref (context);
+			g_free (uri);
+			continue;
+		}
 
-		gnome_vfs_async_open (&weather->handle, uri, GNOME_VFS_OPEN_READ,
-				      (GnomeVFSAsyncOpenCallback) open_callback, weather);
+		weather->message = soup_message_new (context, SOUP_METHOD_GET);
+		soup_context_unref (context);
+		soup_message_queue (weather->message, message_finished, weather);
+
 		g_free (uri);
 	}
 
@@ -407,14 +343,8 @@ weather_free (Weather *w)
 {
 	g_return_if_fail (w != NULL);
 
-	if (w->handle != NULL) {
-		gnome_vfs_async_cancel (w->handle);
-	}
-	if (w->string) {
-		g_string_free (w->string, TRUE);
-	}
-	if (w->buffer) {
-		g_free (w->buffer);
+	if (w->message != NULL) {
+		soup_message_cancel (w->message);
 	}
 
 	g_free (w->location);
@@ -541,7 +471,7 @@ e_summary_weather_count (ESummary *summary,
 	for (p = weather->weathers; p; p = p->next) {
 		Weather *w = p->data;
 
-		if (w->handle != NULL) {
+		if (w->message != NULL) {
 			count++;
 		}
 	}
@@ -572,7 +502,7 @@ e_summary_weather_add (ESummary *summary,
 	for (p = weather->weathers; p; p = p->next) {
 		Weather *w = p->data;
 
-		if (w->handle != NULL) {
+		if (w->message != NULL) {
 			ESummaryConnectionData *d;
 
 			d = make_connection (w);
@@ -607,9 +537,9 @@ e_summary_weather_set_online (ESummary *summary,
 			Weather *w;
 
 			w = p->data;
-			if (w->handle) {
-				gnome_vfs_async_cancel (w->handle);
-				w->handle = NULL;
+			if (w->message) {
+				soup_message_cancel (w->message);
+				w->message = NULL;
 			}
 		}
 
@@ -703,13 +633,30 @@ e_summary_weather_code_to_name (const char *code)
 	}
 }
 
-void
-e_summary_weather_ctree_fill (GtkCTree *tree)
+static gboolean
+is_weather_shown (const char *code)
 {
-	GtkCTreeNode *region, *state, *location, *pref_loc_root;
+	GList *p;
+	ESummaryPrefs *global_preferences;
+
+	global_preferences = e_summary_preferences_get_global ();
+	for (p = global_preferences->stations; p; p = p->next) {
+		if (strcmp (p->data, code) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+void
+e_summary_weather_fill_etable (ESummaryShown *ess)
+{
+	ETreePath region, state, location;
+	ESummaryShownModelEntry *entry;
 	char *key, *path;
 	int nregions, iregions;
-	char **regions, *pp[1];
+	char **regions;
 
 	path = g_strdup (EVOLUTION_DATADIR "/evolution/Locations");
 
@@ -718,11 +665,6 @@ e_summary_weather_ctree_fill (GtkCTree *tree)
 
 	gnome_config_push_prefix (key);
 	g_free (key);
-
-	pp[0] = _("Regions");
-	pref_loc_root = gtk_ctree_insert_node (tree, NULL, NULL, pp, 0,
-					       NULL, NULL, NULL, NULL,
-					       FALSE, TRUE);
 
 	gnome_config_get_vector ("Main/regions", &nregions, &regions);
 	region = NULL;
@@ -737,16 +679,17 @@ e_summary_weather_ctree_fill (GtkCTree *tree)
 		states_key = g_strconcat (regions[iregions], "/states", NULL);
 		region_name = gnome_config_get_string (region_name_key);
 
-		pp[0] = region_name;
-		region = gtk_ctree_insert_node (tree, pref_loc_root,
-						region, pp, 0, NULL,
-						NULL, NULL, NULL, 
-						FALSE, FALSE);
-							
+		entry = g_new (ESummaryShownModelEntry, 1);
+		entry->location = NULL;
+		entry->name = g_strdup (region_name);
+		entry->showable = FALSE;
+		
+		region = e_summary_shown_add_node (ess, TRUE, entry, NULL, FALSE, NULL);
+
 		gnome_config_get_vector (states_key, &nstates, &states);
 
 		state = NULL;
-		for (istates = nstates - 1; istates >= 0; istates--) {
+		for (istates = 0; istates < nstates; istates++) {
 			void *iter;
 			char *iter_key, *iter_val;
 			char *state_path, *state_name_key, *state_name;
@@ -755,32 +698,38 @@ e_summary_weather_ctree_fill (GtkCTree *tree)
 			state_name_key = g_strconcat (state_path, "name", NULL);
 			state_name = gnome_config_get_string (state_name_key);
 
-			pp[0] = state_name;
-			state = gtk_ctree_insert_node (tree, region,
-						       state, pp, 0,
-						       NULL, NULL,
-						       NULL, NULL,
-						       FALSE, FALSE);
+			entry = g_new (ESummaryShownModelEntry, 1);
+			entry->location = NULL;
+			entry->name = g_strdup (state_name);
+			entry->showable = FALSE;
+
+			state = e_summary_shown_add_node (ess, TRUE, entry, region, FALSE, NULL);
 
 			location = NULL;
 			iter = gnome_config_init_iterator (state_path);
 
 			while ((iter = gnome_config_iterator_next (iter, &iter_key, &iter_val)) != NULL) {
-				if (strstr (iter_key, "loc") != NULL) {
+				if (strncmp (iter_key, "loc", 3) == 0) {
 					char **locdata;
 					int nlocdata;
-					ESummaryWeatherLocation *w_location;
-
+					
 					gnome_config_make_vector (iter_val,
 								  &nlocdata,
 								  &locdata);
 					g_return_if_fail (nlocdata == 4);
+					
+					entry = g_new (ESummaryShownModelEntry, 1);
+					entry->location = g_strdup (locdata[1]);
+					entry->name = g_strdup (locdata[0]);
+					entry->showable = TRUE;
 
-					pp[0] = locdata[0];
-					location = gtk_ctree_insert_node (tree, state, location, pp, 0,
-									  NULL, NULL, NULL, NULL, FALSE, TRUE);
-					w_location = g_hash_table_lookup (locations_hash, locdata[1]);
-					gtk_ctree_node_set_row_data (tree, location, w_location);
+					location = e_summary_shown_add_node (ess, TRUE, entry, state, TRUE, NULL);
+					if (is_weather_shown (locdata[1]) == TRUE) {
+						entry = g_new (ESummaryShownModelEntry, 1);
+						entry->location = g_strdup (locdata[1]);
+						entry->name = g_strdup (locdata[0]);
+						location = e_summary_shown_add_node (ess, FALSE, entry, NULL, TRUE, NULL);
+					}
 					g_strfreev (locdata);
 				}
 
@@ -810,6 +759,7 @@ e_summary_weather_reconfigure (ESummary *summary)
 {
 	ESummaryWeather *weather;
 	GList *old, *p;
+	GList *weather_list;
 
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (IS_E_SUMMARY (summary));
@@ -819,14 +769,20 @@ e_summary_weather_reconfigure (ESummary *summary)
 	/* Stop timeout so it doesn't occur while we're changing stuff*/
 	gtk_timeout_remove (weather->timeout);
 
-	for (old = weather->weathers; old; old = old->next) {
+	/* Clear the weather list before doing weather_free() on each of them
+	   because otherwise soup_message_cancel() could invoke the refresh
+	   function just while we are freeing things.  [#31639]  */
+	weather_list = weather->weathers;
+	weather->weathers = NULL;
+
+	for (old = weather_list; old != NULL; old = old->next) {
 		Weather *w;
 
 		w = old->data;
 		weather_free (w);
 	}
-	g_list_free (weather->weathers);
-	weather->weathers = NULL;
+	g_list_free (weather_list);
+
 	for (p = summary->preferences->stations; p; p = p->next) {
 		e_summary_weather_add_location (summary, p->data);
 	}

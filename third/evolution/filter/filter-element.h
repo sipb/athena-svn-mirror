@@ -35,7 +35,6 @@ typedef struct _FilterElementClass	FilterElementClass;
 
 struct _FilterElement {
 	GtkObject parent;
-	struct _FilterElementPrivate *priv;
 
 	char *name;
 	gpointer data;
@@ -48,7 +47,8 @@ struct _FilterElementClass {
 
 	/* virtual methods */
 	gboolean (*validate)(FilterElement *fe);
-	
+	int (*eq)(FilterElement *fe, FilterElement *cm);
+
 	void (*xml_create)(FilterElement *, xmlNodePtr);
 	xmlNodePtr (*xml_encode)(FilterElement *);
 	int (*xml_decode)(FilterElement *, xmlNodePtr);
@@ -62,7 +62,7 @@ struct _FilterElementClass {
 	/* signals */
 };
 
-guint		filter_element_get_type	(void);
+GtkType		filter_element_get_type	(void);
 FilterElement	*filter_element_new	(void);
 
 FilterElement	*filter_element_new_type_name	(const char *type);
@@ -71,12 +71,14 @@ void            filter_element_set_data (FilterElement *fe, gpointer data);
 
 /* methods */
 gboolean        filter_element_validate         (FilterElement *fe);
+int		filter_element_eq		(FilterElement *fe, FilterElement *cm);
 
 void		filter_element_xml_create	(FilterElement *fe, xmlNodePtr node);
 
 xmlNodePtr	filter_element_xml_encode	(FilterElement *fe);
 int		filter_element_xml_decode	(FilterElement *fe, xmlNodePtr node);
 FilterElement	*filter_element_clone		(FilterElement *fe);
+void		filter_element_copy_value	(FilterElement *de, FilterElement *se);
 
 GtkWidget	*filter_element_get_widget	(FilterElement *fe);
 void		filter_element_build_code	(FilterElement *fe, GString *out, struct _FilterPart *ff);

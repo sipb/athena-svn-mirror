@@ -26,6 +26,8 @@
 
 #include "e-activity-handler.h"
 
+#include "e-shell-corba-icon-utils.h"
+
 #include <gtk/gtksignal.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
@@ -64,48 +66,6 @@ struct _EActivityHandlerPrivate {
 
 /* Utility functions.  */
 
-static GdkPixbuf *
-create_gdk_pixbuf_from_corba_icon (const GNOME_Evolution_Icon *icon)
-{
-	GdkPixbuf *pixbuf;
-	GdkPixbuf *scaled_pixbuf;
-	unsigned char *p;
-	int src_offset;
-	int i, j;
-	int rowstride;
-	int total_width;
-
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, icon->hasAlpha, 8, icon->width, icon->height);
-
-	if (icon->hasAlpha)
-		total_width = 4 * icon->width;
-	else
-		total_width = 3 * icon->width;
-
-	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-	src_offset = 0;
-	p = gdk_pixbuf_get_pixels (pixbuf);
-
-	for (i = 0; i < icon->height; i++) {
-		for (j = 0; j < total_width; j++)
-			p[j] = icon->rgbaData._buffer[src_offset ++];
-		p += rowstride;
-	}
-
-	if (icon->width == ICON_SIZE && icon->height == ICON_SIZE)
-		return pixbuf;
-		
-	scaled_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, icon->hasAlpha, 8, ICON_SIZE, ICON_SIZE);
-	gdk_pixbuf_scale (pixbuf, scaled_pixbuf,
-			  0, 0, ICON_SIZE, ICON_SIZE,
-			  0, 0, (double) ICON_SIZE / icon->width, (double) ICON_SIZE / icon->height,
-			  GDK_INTERP_HYPER);
-
-	gdk_pixbuf_unref (pixbuf);
-
-	return scaled_pixbuf;
-}
-
 static unsigned int
 get_new_activity_id (EActivityHandler *activity_handler)
 {
@@ -138,6 +98,7 @@ lookup_activity (GList *list,
 	return NULL;
 }
 
+#if 0
 static const CORBA_any *
 get_corba_null_value (void)
 {
@@ -165,6 +126,7 @@ report_task_event (ActivityInfo *activity_info,
 
 	CORBA_exception_free (&ev);
 }
+#endif
 
 
 /* ETaskWidget actions.  */
@@ -197,10 +159,10 @@ show_cancellation_popup (ActivityInfo *activity_info,
 {
 	GtkMenu *popup;
 	EPopupMenu items[] = {
-		{ N_("Show Details"), NULL, task_widget_show_details_callback, NULL, 0 },
-		{ "", NULL, NULL, NULL, 0 },
-		{ N_("Cancel Operation"), NULL, task_widget_cancel_callback, NULL, 0 },
-		{ NULL }
+		E_POPUP_MENU (N_("Show Details"), task_widget_show_details_callback, 0),
+		E_POPUP_SEPARATOR,
+		E_POPUP_MENU (N_("Cancel Operation"), task_widget_cancel_callback, 0),
+		E_POPUP_TERMINATOR
 	};
 
 	/* FIXME: We should gray out things properly here.  */
@@ -421,7 +383,7 @@ impl_operationStarted (PortableServer_Servant servant,
 	if (icon->_length > 1)
 		g_warning ("Animated icons are not supported for activities (yet).");
 
-	icon_pixbuf = create_gdk_pixbuf_from_corba_icon (icon->_buffer);
+	icon_pixbuf = e_new_gdk_pixbuf_from_corba_icon (icon->_buffer, ICON_SIZE, ICON_SIZE);
 
 	activity_id = get_new_activity_id (activity_handler);
 

@@ -1,7 +1,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Sharing your Cards</TITLE
+>LDAP: Shared Addressbooks on a Network</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.64
@@ -66,7 +66,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="USAGE-CONTACT-SHARING"
->Sharing your Cards</A
+>LDAP: Shared Addressbooks on a Network</A
 ></H1
 ><P
 >      The <A
@@ -76,40 +76,11 @@ CLASS="GLOSSTERM"
 >LDAP</I
 ></A
 > protocol was
-      created to let users share contact information over a network.
-      LDAP allows for users to browse other people's addressbooks, or
-      maintain a shared set of contact information for a company or
-      department.  This feature comes in handy if you are in a group
-      where there are lots of people using the same contacts.  Such an
-      example would be the sales department of a company with their
-      client list.
-    </P
-><DIV
-CLASS="EXAMPLE"
-><A
-NAME="USAGE-CONTACT-SHARING-EX"
-></A
-><P
-><B
->Example 5-2. Sharing Address Cards and Calendar Data</B
-></P
-><P
->	    Rich wants to schedule a meeting with Company X, so he
-	    checks the network for the Company X address card so he
-	    knows whom to call there.  Since his company also shares
-	    calendars, he then learns that his co-worker Deanna has
-	    already scheduled a meeting with Company X next Thursday.
-	    He can either go to the meeting himself or ask Deanna to
-	    discuss his concerns for him.  Either way, he avoids
-	    scheduling an extra meeting with Company X. 
-	 </P
-></DIV
-><P
->       Of course, you don't want to share all of your cards&#8212; why
-       overload the network with a list of babysitters or tell
-       everyone in the office you're talking to new job prospects?  If
-       you keep cards on your own computer, you can decide which items
-       you want to make accessible to others.
+      created to let users share contact information over a network by
+      sharing access to a central address book.  LDAP allows a company
+      to maintain a shared set of contact information for a company or
+      department.  Many companies keep a common LDAP address book for
+      all their employees or for client contacts.
     </P
 ><P
 >       To learn how to add a remote directory to your available
@@ -161,8 +132,9 @@ CLASS="INTERFACE"
 ></LI
 ><LI
 ><P
->              Your ability to view, change, add, and delete contacts
-              depends on the settings of the LDAP server. 
+>              You cannot add, delete, or alter cards on the LDAP
+              server. If you need to change information there, you
+              will need to speak to your system administrator
 	    </P
 ></LI
 ></UL

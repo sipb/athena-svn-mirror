@@ -80,6 +80,27 @@ NAME="USAGE-MAIL-ORGANIZE-FILTERS"
 	person with a pile of envelopes.
       </P
 ><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><A
+NAME="EASY-FILTER"
+></A
+><P
+><B
+>Quick Filter Creation: </B
+>		There is an easy shortcut for fast filter or vFolder
+                creation. Right-click on the message in the message
+                list, and select one of the items under the
+                <SPAN
+CLASS="GUIMENUITEM"
+>Create Rule from Message</SPAN
+>
+                submenu.
+	      </P
+></BLOCKQUOTE
+></DIV
+><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
@@ -147,6 +168,32 @@ CLASS="GUILABEL"
 		    want, even obscure or custom ones. Enter the header name
 		    in the first text box, and put your search text in the
 		    second one.
+        
+
+      <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><A
+NAME="MULTIPLE-REPEATED-HEADERS"
+></A
+><P
+><B
+>Repeated Headers: </B
+>            If a message uses a header more than once, Evolution will
+	    pay attention only to the first instance, even if the
+	    message defines the header differently the second
+	    time. For example, if a message declares the Resent-From:
+	    header as "engineering@rupertcorp.com" and then restates
+	    it as "marketing@rupertcorp.com," Evolution will filter as
+	    though the second declaration had not occurred.  To filter
+	    on messages that use headers multiple times, use a regular
+	    expression.
+         </P
+></BLOCKQUOTE
+></DIV
+>
+
 		  </P
 ></LI
 ><LI
@@ -163,6 +210,30 @@ CLASS="APPLICATION"
 >Ximian Evolution</SPAN
 >.
 		  </P
+><P
+>&#13;      <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><A
+NAME="LOTS-OF-FILTERS"
+></A
+><P
+><B
+>What if Multiple Filters Match One Message?: </B
+>            If you have several filters that match a single message,
+            they will all be applied to the message, in order, unless
+            one of the filters has the action <SPAN
+CLASS="GUIBUTTON"
+>Stop
+            Processing</SPAN
+>. If you use that action in a
+            filter, the messages that it affects will not be touched
+            by other filters.
+         </P
+></BLOCKQUOTE
+></DIV
+></P
 ></LI
 ><LI
 ><P
@@ -366,7 +437,7 @@ CLASS="APPLICATION"
 >	      Set Status - If you want to add multiple actions for this filter, press
 	      <SPAN
 CLASS="GUIBUTTON"
->Add filter</SPAN
+>Add action</SPAN
 > and repeat the previous step.
 	    </P
 ></LI

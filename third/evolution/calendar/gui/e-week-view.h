@@ -26,6 +26,7 @@
 
 #include <gtk/gtktable.h>
 #include <libgnomeui/gnome-canvas.h>
+#include <gal/widgets/e-popup-menu.h>
 
 #include "gnome-cal.h"
 #include "evolution-activity-client.h"
@@ -106,6 +107,7 @@ typedef enum
 	E_WEEK_VIEW_COLOR_SELECTED,
 	E_WEEK_VIEW_COLOR_DATES,
 	E_WEEK_VIEW_COLOR_DATES_SELECTED,
+	E_WEEK_VIEW_COLOR_TODAY,
 	
 	E_WEEK_VIEW_COLOR_LAST
 } EWeekViewColors;
@@ -346,6 +348,7 @@ struct _EWeekView
 
 	/* The event that the context menu is for. */
 	gint popup_event_num;
+	EPopupMenu *view_menu;
 
 	/* The last mouse position when dragging, in the entire canvas. */
 	gint drag_event_x;
@@ -409,6 +412,10 @@ void       e_week_view_get_selected_time_range	(EWeekView	*week_view,
 void	   e_week_view_set_selected_time_range	(EWeekView	*week_view,
 						 time_t		 start_time,
 						 time_t		 end_time);
+
+void       e_week_view_set_selected_time_range_visible	(EWeekView	*week_view,
+							 time_t		 start_time,
+							 time_t		 end_time);
 
 /* Gets the visible time range. Returns FALSE if no time range has been set. */
 gboolean   e_week_view_get_visible_time_range	(EWeekView	*week_view,

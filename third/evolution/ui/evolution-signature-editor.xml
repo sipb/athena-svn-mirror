@@ -10,8 +10,11 @@
 		accel="*Ctrl*w"/>
 
 		<cmd name="FileSaveClose" _label="Save and Close"
-		pixtype="stock" pixname="Save"/>
+		_tip="Save the current file and close the window"
+		pixtype="stock" pixname="Save" accel="*Ctrl*s"/>
 
+		<cmd name="FormatHtml" _label="H_TML" _tip="Send the mail in HTML format"
+		type="toggle" state="0"/> 
 	</commands>
 
         <keybindings>
@@ -27,7 +30,7 @@
 <!--
 			<menuitem name="FileSave" verb="" _label="_Save"/>
 -->
-			<menuitem name="FileSaveClose" verb="" _label="Save and Close"/>
+			<menuitem name="FileSaveClose" verb="" _label="Save and Close" accel="*Control*Return"/>
 
 			<placeholder name="Print" delimit="top"/>
 
@@ -47,6 +50,13 @@
 			 <placeholder name="EditMisc"/>
 		</submenu>
 
+		<submenu name="Format" _label="For_mat">
+			<menuitem name="FormatHtml" verb=""/>
+		
+			<separator/>
+			<placeholder name="FormatParagraph"/>
+		</submenu>
+
                 <submenu name="Insert" _label="_Insert">
 	  
                 	<placeholder name="Component">
@@ -56,13 +66,12 @@
 		<placeholder name="Component"/>
 
 		<submenu name="Help" _label="_Help">
-	
-			<placeholder name="BuiltMenuItems"/>
-
+	                <menuitem name="HelpSigEditor" verb="" _label="_Signature editor"/>
 		</submenu>
 	</menu>
 
 	<dockitem name="Toolbar" behavior="exclusive" hlook="text" vlook="icon">
+		<toolitem name="FileSaveClose" verb=""/>
 	</dockitem>
 
 </Root>

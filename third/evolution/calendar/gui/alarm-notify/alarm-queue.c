@@ -23,16 +23,20 @@
 #endif
 
 #include <glib.h>
+#include <liboaf/liboaf.h>
+#include <bonobo/bonobo-object.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkbox.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkcheckbutton.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <gtk/gtksignal.h>
-#include <liboaf/liboaf.h>
 #include <libgnome/gnome-exec.h>
 #include <libgnome/gnome-sound.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
+#include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <bonobo/bonobo-object.h>
 #include <cal-util/timeutil.h>
 #include "alarm.h"
 #include "alarm-notify-dialog.h"
@@ -178,11 +182,11 @@ lookup_queued_alarm (CompQueuedAlarms *cqa, gpointer alarm_id)
 	for (l = cqa->queued_alarms; l; l = l->next) {
 		qa = l->data;
 		if (qa->alarm_id == alarm_id)
-			break;
+			return qa;
 	}
 
-	g_assert (l != NULL);
-	return qa;
+	/* not found, might have been updated/removed */
+	return NULL;
 }
 
 /* Removes an alarm from the list of alarms of a component.  If the alarm was
@@ -203,7 +207,8 @@ remove_queued_alarm (CompQueuedAlarms *cqa, gpointer alarm_id)
 			break;
 	}
 
-	g_assert (l != NULL);
+	if (!l)
+		return;
 
 	cqa->queued_alarms = g_slist_remove_link (cqa->queued_alarms, l);
 	g_slist_free_1 (l);
@@ -243,6 +248,8 @@ alarm_trigger_cb (gpointer alarm_id, time_t trigger, gpointer data)
 	save_notification_time (trigger);
 
 	qa = lookup_queued_alarm (cqa, alarm_id);
+	if (!qa)
+		return;
 
 	/* Decide what to do based on the alarm action.  We use the trigger that
 	 * is passed to us instead of the one from the instance structure
@@ -512,6 +519,8 @@ create_snooze (CompQueuedAlarms *cqa, gpointer alarm_id, int snooze_mins)
 	gpointer new_id;
 
 	orig_qa = lookup_queued_alarm (cqa, alarm_id);
+	if (!orig_qa)
+		return;
 
 	t = time (NULL);
 	t += snooze_mins * 60;
@@ -636,7 +645,8 @@ display_notification (time_t trigger, CompQueuedAlarms *cqa,
 
 	comp = cqa->alarms->comp;
 	qa = lookup_queued_alarm (cqa, alarm_id);
-	g_assert (qa != NULL);
+	if (!qa)
+		return;
 
 	vtype = cal_component_get_vtype (comp);
 
@@ -693,7 +703,8 @@ audio_notification (time_t trigger, CompQueuedAlarms *cqa,
 
 	comp = cqa->alarms->comp;
 	qa = lookup_queued_alarm (cqa, alarm_id);
-	g_assert (qa != NULL);
+	if (!qa)
+		return;
 
 	alarm = cal_component_get_alarm (comp, qa->instance->auid);
 	g_assert (alarm != NULL);
@@ -735,6 +746,49 @@ mail_notification (time_t trigger, CompQueuedAlarms *cqa, gpointer alarm_id)
 }
 
 /* Performs notification of a procedure alarm */
+static gboolean
+procedure_notification_dialog (const char *cmd, const char *url) 
+{
+	GtkWidget *dialog, *label, *checkbox;
+	char *str;
+	int btn;
+	
+	if (is_blessed_program (url))
+		return TRUE;
+	
+	dialog = gnome_dialog_new (_("Warning"),
+				   GNOME_STOCK_BUTTON_YES,
+				   GNOME_STOCK_BUTTON_NO,
+				   NULL);
+
+	str = g_strdup_printf (_("An Evolution Calendar reminder is about to trigger. "
+				 "This reminder is configured to run the following program:\n\n"
+				 "        %s\n\n"
+				 "Are you sure you want to run this program?"),
+			       cmd);
+	label = gtk_label_new (str);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+			    label, TRUE, TRUE, 4);
+	g_free (str);
+
+	checkbox = gtk_check_button_new_with_label
+		(_("Do not ask me about this program again."));
+	gtk_widget_show (checkbox);
+	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
+			    checkbox, TRUE, TRUE, 4);
+
+	/* Run the dialog */
+	btn = gnome_dialog_run (GNOME_DIALOG (dialog));
+	if (btn == GNOME_YES && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (checkbox)))
+		save_blessed_program (url);
+	gnome_dialog_close (GNOME_DIALOG (dialog));
+
+	return (btn == GNOME_YES);
+}
+
 static void
 procedure_notification (time_t trigger, CompQueuedAlarms *cqa, gpointer alarm_id)
 {
@@ -744,13 +798,13 @@ procedure_notification (time_t trigger, CompQueuedAlarms *cqa, gpointer alarm_id
 	CalComponentText description;
 	icalattach *attach;
 	const char *url;
-	char *cmd, *str;
-	GtkWidget *dialog;
+	char *cmd;
 	int result;
 
 	comp = cqa->alarms->comp;
 	qa = lookup_queued_alarm (cqa, alarm_id);
-	g_assert (qa != NULL);
+	if (!qa)
+		return;
 
 	alarm = cal_component_get_alarm (comp, qa->instance->auid);
 	g_assert (alarm != NULL);
@@ -772,25 +826,15 @@ procedure_notification (time_t trigger, CompQueuedAlarms *cqa, gpointer alarm_id
 	g_assert (url != NULL);
 
 	/* Ask for confirmation before executing the stuff */
-
 	if (description.value)
 		cmd = g_strconcat (url, " ", description.value, NULL);
 	else
 		cmd = (char *) url;
 
-	str = g_strdup_printf (_("An Evolution Calendar reminder is about to trigger.\n"
-				 "This reminder is configured to run the following program:\n\n"
-				 "        %s\n\n"
-				 "Are you sure you want to run this program?"),
-			       cmd);
-
-	dialog = gnome_question_dialog_modal (str, NULL, NULL);
-	g_free (str);
-
 	result = 0;
-	if (gnome_dialog_run (GNOME_DIALOG (dialog)) == GNOME_YES)
+	if (procedure_notification_dialog (cmd, url))
 		result = gnome_execute_shell (NULL, cmd);
-
+	
 	if (cmd != (char *) url)
 		g_free (cmd);
 

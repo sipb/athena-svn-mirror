@@ -1,25 +1,26 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* e-msg-composer-attachment.c
+/*
+ *  Authors: Ettore Perazzoli <ettore@ximian.com>
+ *           Jeffrey Stedfast <fejj@ximian.com>
  *
- * Copyright (C) 1999,2001  Ximian, Inc.
+ *  Copyright 1999-2002 Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU General Public
- * published by the Free Software Foundation; either version 2 of the
- * License as published by the Free Software Foundation.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
  *
- * Author: Ettore Perazzoli
  */
+
 
 /* This is the object representing an email attachment.  It is implemented as a
    GtkObject to make it easier for the application to handle it.  For example,
@@ -158,7 +159,7 @@ e_msg_composer_attachment_new (const char *file_name,
 	CamelDataWrapper *wrapper;
 	CamelStream *stream;
 	struct stat statbuf;
-	gchar *mime_type;
+	char *mime_type;
 	char *filename;
 	
 	g_return_val_if_fail (file_name != NULL, NULL);
@@ -188,24 +189,30 @@ e_msg_composer_attachment_new (const char *file_name,
 	
 	wrapper = camel_data_wrapper_new ();
 	camel_data_wrapper_construct_from_stream (wrapper, stream);
-	camel_object_unref (CAMEL_OBJECT (stream));
+	
 	mime_type = e_msg_composer_guess_mime_type (file_name);
 	if (mime_type) {
+		if (!strcasecmp (mime_type, "message/rfc822")) {
+			camel_object_unref (wrapper);
+			wrapper = (CamelDataWrapper *) camel_mime_message_new ();
+			
+			camel_stream_reset (stream);
+			camel_data_wrapper_construct_from_stream (wrapper, stream);
+		}
+		
 		camel_data_wrapper_set_mime_type (wrapper, mime_type);
 		g_free (mime_type);
 	} else
 		camel_data_wrapper_set_mime_type (wrapper, "application/octet-stream");
+	
+	camel_object_unref (CAMEL_OBJECT (stream));
 	
 	part = camel_mime_part_new ();
 	camel_medium_set_content_object (CAMEL_MEDIUM (part), wrapper);
 	camel_object_unref (CAMEL_OBJECT (wrapper));
 	
 	camel_mime_part_set_disposition (part, disposition);
-	if (strchr (file_name, '/'))
-		filename = e_utf8_from_locale_string (strrchr (file_name, '/') + 1);
-	else
-		filename = e_utf8_from_locale_string (file_name);
-	
+	filename = e_utf8_from_locale_string (g_basename (file_name));
 	camel_mime_part_set_filename (part, filename);
 	g_free (filename);
 	
@@ -220,9 +227,9 @@ e_msg_composer_attachment_new (const char *file_name,
 	g_free (content_id);
 #endif
 	
-	new = e_msg_composer_attachment_new_from_mime_part (part);
-	camel_object_unref (CAMEL_OBJECT (part));
-	
+	new = gtk_type_new (e_msg_composer_attachment_get_type ());
+	new->editor_gui = NULL;
+	new->body = part;
 	new->size = statbuf.st_size;
 	new->guessed_type = TRUE;
 	
@@ -240,17 +247,34 @@ EMsgComposerAttachment *
 e_msg_composer_attachment_new_from_mime_part (CamelMimePart *part)
 {
 	EMsgComposerAttachment *new;
-
+	CamelMimePart *mime_part;
+	CamelStream *stream;
+	
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (part), NULL);
-
+	
+	stream = camel_stream_mem_new ();
+	if (camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (part), stream) == -1) {
+		camel_object_unref (stream);
+		return NULL;
+	}
+	
+	camel_stream_reset (stream);
+	mime_part = camel_mime_part_new ();
+	
+	if (camel_data_wrapper_construct_from_stream (CAMEL_DATA_WRAPPER (mime_part), stream) == -1) {
+		camel_object_unref (mime_part);
+		camel_object_unref (stream);
+		return NULL;
+	}
+	
+	camel_object_unref (stream);
+	
 	new = gtk_type_new (e_msg_composer_attachment_get_type ());
-
 	new->editor_gui = NULL;
-	new->body = part;
-	camel_object_ref (CAMEL_OBJECT (part));
+	new->body = mime_part;
 	new->guessed_type = FALSE;
 	new->size = 0;
-
+	
 	return new;
 }
 
@@ -438,8 +462,8 @@ e_msg_composer_attachment_edit (EMsgComposerAttachment *attachment,
 	
 	if (attachment != NULL) {
 		CamelContentType *content_type;
-		char *type;
 		const char *disposition;
+		char *type;
 		
 		set_entry (editor_gui, "file_name_entry",
 			   camel_mime_part_get_filename (attachment->body));

@@ -22,6 +22,7 @@
  *   Ettore Perazzoli (ettore@ximian.com)
  *   Jeffrey Stedfast (fejj@ximian.com)
  *   Miguel de Icaza  (miguel@ximian.com)
+ *   Radek Doulik     (rodo@ximian.com)
  * 
  */
 
@@ -44,27 +45,43 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+#include <gtk/gtkoptionmenu.h>
+#include <gal/unicode/gunicode.h>
+#include <gal/util/e-unicode-i18n.h>
+#include <gal/widgets/e-unicode.h>
+
 #include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-exec.h>
 #include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-window-icon.h>
+
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-stream-memory.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-widget.h>
+
 #include <libgnomevfs/gnome-vfs.h>
 
 #include <glade/glade.h>
+
 #include <gal/widgets/e-gui-utils.h>
 #include <gal/widgets/e-scroll-frame.h>
 #include <gal/e-text/e-entry.h>
-#include <gal/util/e-unicode-i18n.h>
+
 #include <gtkhtml/gtkhtml.h>
+#include <gtkhtml/htmlselection.h>
 
 #include "widgets/misc/e-charset-picker.h"
 
@@ -91,7 +108,9 @@
 #include "Editor.h"
 #include "listener.h"
 
-#define GNOME_GTKHTML_EDITOR_CONTROL_ID "OAFIID:GNOME_GtkHTML_Editor"
+#define GNOME_GTKHTML_EDITOR_CONTROL_ID "OAFIID:GNOME_GtkHTML_Editor:1.1"
+
+#define d(x) x
 
 
 #define DEFAULT_WIDTH 600
@@ -99,7 +118,7 @@
 
 enum {
 	SEND,
-	POSTPONE,
+	SAVE_DRAFT,
 	LAST_SIGNAL
 };
 
@@ -108,17 +127,25 @@ static guint signals[LAST_SIGNAL] = { 0 };
 enum {
 	DND_TYPE_MESSAGE_RFC822,
 	DND_TYPE_TEXT_URI_LIST,
+	DND_TYPE_TEXT_VCARD,
 };
 
 static GtkTargetEntry drop_types[] = {
 	{ "message/rfc822", 0, DND_TYPE_MESSAGE_RFC822 },
 	{ "text/uri-list", 0, DND_TYPE_TEXT_URI_LIST },
+	{ "text/x-vcard", 0, DND_TYPE_TEXT_VCARD },
 };
 
-static const int num_drop_types = sizeof (drop_types) / sizeof (drop_types[0]);
+static int num_drop_types = sizeof (drop_types) / sizeof (drop_types[0]);
 
-static GnomeAppClass *parent_class = NULL;
+
+/* The parent class.  */
+static BonoboWindowClass *parent_class = NULL;
 
+/* All the composer windows open, for bookkeeping purposes.  */
+static GSList *all_composers = NULL;
+
+
 /* local prototypes */
 static GList *add_recipients   (GList *list, const char *recips, gboolean decode);
 
@@ -129,11 +156,12 @@ static void add_attachments_from_multipart (EMsgComposer *composer, CamelMultipa
 					    gboolean just_inlines, int depth);
 
 /* used by e_msg_composer_new_with_message() */
-static void handle_multipart_alternative (EMsgComposer *composer, CamelMultipart *multipart, int depth);
-
 static void handle_multipart (EMsgComposer *composer, CamelMultipart *multipart, int depth);
+static void handle_multipart_alternative (EMsgComposer *composer, CamelMultipart *multipart, int depth);
+static void handle_multipart_encrypted (EMsgComposer *composer, CamelMultipart *multipart, int depth);
+static void handle_multipart_signed (EMsgComposer *composer, CamelMultipart *multipart, int depth);
 
-
+static void set_editor_signature (EMsgComposer *composer);
 
 
 static GByteArray *
@@ -291,7 +319,7 @@ add_inlined_images (EMsgComposer *composer, CamelMultipart *multipart)
  * composed in `composer'.
  */
 static CamelMimeMessage *
-build_message (EMsgComposer *composer)
+build_message (EMsgComposer *composer, gboolean save_html_object_data)
 {
 	EMsgComposerAttachmentBar *attachment_bar =
 		E_MSG_COMPOSER_ATTACHMENT_BAR (composer->attachment_bar);
@@ -311,6 +339,13 @@ build_message (EMsgComposer *composer)
 	if (composer->persist_stream_interface == CORBA_OBJECT_NIL)
 		return NULL;
 	
+	/* evil kludgy hack for Redirect */
+	if (composer->redirect) {
+		e_msg_composer_hdrs_to_redirect (hdrs, composer->redirect);
+		camel_object_ref (CAMEL_OBJECT (composer->redirect));
+		return composer->redirect;
+	}
+	
 	new = camel_mime_message_new ();
 	e_msg_composer_hdrs_to_message (hdrs, new);
 	for (i = 0; i < composer->extra_hdr_names->len; i++) {
@@ -322,7 +357,7 @@ build_message (EMsgComposer *composer)
 	if (composer->mime_body) {
 		plain_encoding = CAMEL_MIME_PART_ENCODING_7BIT;
 		for (i = 0; composer->mime_body[i]; i++) {
-			if ((unsigned char)composer->mime_body[i] > 127) {
+			if ((unsigned char) composer->mime_body[i] > 127) {
 				plain_encoding = CAMEL_MIME_PART_ENCODING_QUOTEDPRINTABLE;
 				break;
 			}
@@ -353,9 +388,19 @@ build_message (EMsgComposer *composer)
 	header_content_type_unref (type);
 	
 	if (composer->send_html) {
+		CORBA_Environment ev;
 		clear_current_images (composer);
 		
+		if (save_html_object_data) {
+			CORBA_exception_init (&ev);
+			GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "save-data-on", &ev);
+		}
 		data = get_text (composer->persist_stream_interface, "text/html");		
+		if (save_html_object_data) {
+			GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "save-data-off", &ev);
+			CORBA_exception_free (&ev);
+		}
+		
 		if (!data) {
 			/* The component has probably died */
 			camel_object_unref (CAMEL_OBJECT (new));
@@ -448,6 +493,8 @@ build_message (EMsgComposer *composer)
 		current = CAMEL_DATA_WRAPPER (multipart);
 	}
 	
+	camel_exception_init (&ex);
+	
 	if (composer->pgp_sign || composer->pgp_encrypt) {
 		part = camel_mime_part_new ();
 		camel_medium_set_content_object (CAMEL_MEDIUM (part), current);
@@ -457,56 +504,78 @@ build_message (EMsgComposer *composer)
 		
 		if (composer->pgp_sign) {
 			CamelInternetAddress *from = NULL;
-			const char *pgpid;
+			CamelMultipartSigned *mps;
+			CamelCipherContext *cipher;
+			const char *userid;
 			
-			camel_exception_init (&ex);
+			cipher = mail_crypto_get_pgp_cipher_context (hdrs->account);
+			if (cipher == NULL) {
+				camel_exception_setv (&ex, CAMEL_EXCEPTION_SYSTEM,
+						      _("Could not create a PGP signature context"));
+				goto exception;
+			}
 			
-			if (hdrs->account && hdrs->account->pgp_key) {
-				pgpid = hdrs->account->pgp_key;
+			if (hdrs->account && hdrs->account->pgp_key && *hdrs->account->pgp_key) {
+				userid = hdrs->account->pgp_key;
 			} else {
 				/* time for plan b */
 				from = e_msg_composer_hdrs_get_from (hdrs);
-				camel_internet_address_get (from, 0, NULL, &pgpid);
+				camel_internet_address_get (from, 0, NULL, &userid);
 			}
 			
-			printf ("build_message(): pgpid = '%s'\n", pgpid);
-			
-			mail_crypto_pgp_mime_part_sign (&part, pgpid, CAMEL_CIPHER_HASH_SHA1, &ex);
+			mps = camel_multipart_signed_new ();
+			camel_multipart_signed_sign (mps, cipher, part, userid, CAMEL_CIPHER_HASH_SHA1, &ex);
+			camel_object_unref (cipher);
 			
 			if (from)
-				camel_object_unref (CAMEL_OBJECT (from));
+				camel_object_unref (from);
 			
-			if (camel_exception_is_set (&ex))
-				goto exception;
+			/* if cancelled, just leave part as is, otherwise, replace content with the multipart */
+			if (camel_exception_is_set (&ex)) {
+				if (camel_exception_get_id (&ex) == CAMEL_EXCEPTION_USER_CANCEL) {
+					camel_exception_clear (&ex);
+					goto exception;
+				} else {
+					camel_object_unref (mps);
+					goto exception;
+				}
+			} else {
+				camel_object_unref (part);
+				part = camel_mime_part_new ();
+				camel_multipart_set_boundary (CAMEL_MULTIPART (mps), NULL);
+				camel_medium_set_content_object (CAMEL_MEDIUM (part), (CamelDataWrapper *) mps);
+			}
+			
+			camel_object_unref (mps);
 		}
 		
 		if (composer->pgp_encrypt) {
 			/* FIXME: recipients should be an array of key ids rather than email addresses */
+			CamelInternetAddress *from = NULL;
 			const CamelInternetAddress *addr;
-			const char *address;
+			CamelMultipartEncrypted *mpe;
+			CamelCipherContext *cipher;
 			GPtrArray *recipients;
+			const char *address;
+			const char *userid;
 			int i, len;
 			
 			camel_exception_init (&ex);
 			recipients = g_ptr_array_new ();
 			
-			/* check to see if we should encrypt to self */
-			if (hdrs->account && hdrs->account->pgp_encrypt_to_self) {
-				CamelInternetAddress *from = NULL;
-				
-				if (hdrs->account->pgp_key) {
-					address = hdrs->account->pgp_key;
-				} else {
-					/* time for plan b */
-					from = e_msg_composer_hdrs_get_from (hdrs);
-					camel_internet_address_get (from, 0, NULL, &address);
-				}
-				
-				g_ptr_array_add (recipients, g_strdup (address));
-				
-				if (from)
-					camel_object_unref (CAMEL_OBJECT (from));
+			/* get our userid */
+			userid = NULL;
+			if (hdrs->account && hdrs->account->pgp_key && *hdrs->account->pgp_key) {
+				userid = hdrs->account->pgp_key;
+			} else {
+				/* time for plan b */
+				from = e_msg_composer_hdrs_get_from (hdrs);
+				camel_internet_address_get (from, 0, NULL, &userid);
 			}
+			
+			/* check to see if we should encrypt to self */
+			if (hdrs->account && hdrs->account->pgp_encrypt_to_self && userid)
+				g_ptr_array_add (recipients, g_strdup (userid));
 			
 			addr = camel_mime_message_get_recipients (new, CAMEL_RECIPIENT_TYPE_TO);
 			len = camel_address_length (CAMEL_ADDRESS (addr));
@@ -529,12 +598,36 @@ build_message (EMsgComposer *composer)
 				g_ptr_array_add (recipients, g_strdup (address));
 			}
 			
-			mail_crypto_pgp_mime_part_encrypt (&part, recipients, &ex);
+			mpe = camel_multipart_encrypted_new ();
+			cipher = mail_crypto_get_pgp_cipher_context (hdrs->account);
+			
+			camel_multipart_encrypted_encrypt (mpe, part, cipher, userid, recipients, &ex);
+			camel_object_unref (cipher);
+			
+			if (from)
+				camel_object_unref (from);
+			
 			for (i = 0; i < recipients->len; i++)
 				g_free (recipients->pdata[i]);
 			g_ptr_array_free (recipients, TRUE);
-			if (camel_exception_is_set (&ex))
-				goto exception;
+			
+			/* if cancelled, just leave part as is, otherwise, replace content with the multipart */
+			if (camel_exception_is_set (&ex)) {
+				if (camel_exception_get_id (&ex) == CAMEL_EXCEPTION_USER_CANCEL) {
+					camel_exception_clear (&ex);
+					goto exception;
+				} else {
+					camel_object_unref (mpe);
+					goto exception;
+				}
+			} else {
+				camel_object_unref (part);
+				part = camel_mime_part_new ();
+				camel_multipart_set_boundary (CAMEL_MULTIPART (mpe), NULL);
+				camel_medium_set_content_object (CAMEL_MEDIUM (part), (CamelDataWrapper *) mpe);
+			}
+			
+			camel_object_unref (mpe);
 		}
 		
 		current = camel_medium_get_content_object (CAMEL_MEDIUM (part));
@@ -555,7 +648,7 @@ build_message (EMsgComposer *composer)
 		
 		camel_exception_init (&ex);
 		
-		if (hdrs->account && hdrs->account->smime_key) {
+		if (hdrs->account && hdrs->account->smime_key && *hdrs->account->smime_key) {
 			certname = hdrs->account->smime_key;
 		} else {
 			/* time for plan b */
@@ -589,7 +682,7 @@ build_message (EMsgComposer *composer)
 		
 		/* check to see if we should encrypt to self */
 		if (hdrs->account && hdrs->account->smime_encrypt_to_self) {
-			if (hdrs->account->smime_key) {
+			if (hdrs->account && hdrs->account->smime_key && *hdrs->account->smime_key) {
 				address = hdrs->account->smime_key;
 			} else {
 				/* time for plan b */
@@ -673,58 +766,84 @@ build_message (EMsgComposer *composer)
 	return NULL;
 }
 
-static char *
-read_file_content (gint fd)
-{
-	GByteArray *contents;
-	gchar buf[4096];
-	gint n;
-	gchar *body;
-	
-	g_return_val_if_fail (fd > 0, NULL);
-	
-	contents = g_byte_array_new ();
-	while ((n = read (fd, buf, 4096)) > 0) {
-		g_byte_array_append (contents, buf, n);
-	}
-	g_byte_array_append (contents, "\0", 1);
-	
-	body = (n < 0) ? NULL : (gchar *)contents->data;
-	g_byte_array_free (contents, (n < 0));
-	
-	return body;
-}
 
 static char *
-get_file_content (const gchar *file_name, gboolean convert, guint flags)
+get_file_content (EMsgComposer *composer, const char *file_name, gboolean want_html, guint flags, gboolean warn)
 {
-	gint fd;
-	char *raw;
-	char *html;
+	CamelStreamFilter *filtered_stream;
+	CamelStreamMem *memstream;
+	CamelMimeFilter *html, *charenc;
+	CamelStream *stream;
+	GByteArray *buffer;
+	const char *charset;
+	char *content;
+	int fd;
 	
-	fd = open (file_name, O_RDONLY | O_CREAT, 0775);
-	
-	raw = read_file_content (fd);
-	
-	if (raw == NULL) {
+	fd = open (file_name, O_RDONLY);
+	if (fd == -1) {
 		char *msg;
 		
-		msg = g_strdup_printf (_("Error while reading file %s:\n"
-					 "%s"), file_name, g_strerror (errno));
-		
-		gnome_error_dialog (msg);
-		g_free (msg);
-		close (fd);
+		if (warn) {
+			msg = g_strdup_printf (_("Error while reading file %s:\n%s"),
+					       file_name, g_strerror (errno));
+			gnome_error_dialog (msg);
+			g_free (msg);
+		}
 		return g_strdup ("");
 	}
-	close (fd);
 	
-	html = convert ? e_text_to_html (raw, flags) : raw;
+	stream = camel_stream_fs_new_with_fd (fd);
 	
-	if (convert)
-		g_free (raw);
+	if (want_html) {
+		filtered_stream = camel_stream_filter_new_with_stream (stream);
+		camel_object_unref (stream);
+		
+		html = camel_mime_filter_tohtml_new (flags, 0);
+		camel_stream_filter_add (filtered_stream, html);
+		camel_object_unref (html);
+		
+		stream = (CamelStream *) filtered_stream;
+	}
 	
-	return html;
+	memstream = (CamelStreamMem *) camel_stream_mem_new ();
+	buffer = g_byte_array_new ();
+	camel_stream_mem_set_byte_array (memstream, buffer);
+	
+	camel_stream_write_to_stream (stream, (CamelStream *) memstream);
+	camel_object_unref (stream);
+	
+	/* The newer signature UI saves signatures in UTF-8, but we still need to check that
+	   the signature is valid UTF-8 because it is possible that the user imported a
+	   signature file that is in his/her locale charset. If it's not in UTF-8 and not in
+	   the charset the composer is in (or their default mail charset) then fuck it,
+	   there's nothing we can do. */
+	if (!g_utf8_validate (buffer->data, buffer->len, NULL)) {
+		stream = (CamelStream *) memstream;
+		memstream = (CamelStreamMem *) camel_stream_mem_new ();
+		camel_stream_mem_set_byte_array (memstream, g_byte_array_new ());
+		
+		filtered_stream = camel_stream_filter_new_with_stream (stream);
+		camel_object_unref (stream);
+		
+		charset = composer ? composer->charset : mail_config_get_default_charset ();
+		charenc = (CamelMimeFilter *) camel_mime_filter_charset_new_convert (charset, "utf-8");
+		camel_stream_filter_add (filtered_stream, charenc);
+		camel_object_unref (charenc);
+		
+		camel_stream_write_to_stream ((CamelStream *) filtered_stream, (CamelStream *) memstream);
+		camel_object_unref (filtered_stream);
+		g_byte_array_free (buffer, TRUE);
+		
+		buffer = memstream->buffer;
+	}
+	
+	camel_object_unref (memstream);
+	
+	g_byte_array_append (buffer, "", 1);
+	content = buffer->data;
+	g_byte_array_free (buffer, FALSE);
+	
+	return content;
 }
 
 char *
@@ -734,7 +853,7 @@ e_msg_composer_get_sig_file_content (const char *sigfile, gboolean in_html)
 		return NULL;
 	}
 	
-	return get_file_content (sigfile, !in_html, 0);
+	return get_file_content (NULL, sigfile, !in_html, CAMEL_MIME_FILTER_TOHTML_PRESERVE_8BIT, FALSE);
 }
 
 static void
@@ -742,7 +861,6 @@ prepare_engine (EMsgComposer *composer)
 {
 	CORBA_Environment ev;
 	
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
 	
 	/* printf ("prepare_engine\n"); */
@@ -756,10 +874,11 @@ prepare_engine (EMsgComposer *composer)
 		composer->editor_listener = BONOBO_OBJECT (listener_new (composer));
 		if (composer->editor_listener != NULL)
 			GNOME_GtkHTML_Editor_Engine__set_listener (composer->editor_engine,
-							       (GNOME_GtkHTML_Editor_Listener)
-							       bonobo_object_dup_ref
-							       (bonobo_object_corba_objref (composer->editor_listener), &ev),
-							       &ev);
+								   (GNOME_GtkHTML_Editor_Listener)
+								   bonobo_object_dup_ref
+								   (bonobo_object_corba_objref (composer->editor_listener),
+								    &ev),
+								   &ev);
 		
 		if ((ev._major != CORBA_NO_EXCEPTION) || (composer->editor_listener == NULL)) {
 			CORBA_Environment err_ev;
@@ -783,43 +902,166 @@ prepare_engine (EMsgComposer *composer)
 }
 
 static gchar *
+encode_signature_name (const gchar *name)
+{
+	const gchar *s;
+	gchar *ename, *e;
+	gint len = 0;
+
+	s = name;
+	while (*s) {
+		len ++;
+		if (*s == '"' || *s == '.' || *s == '=')
+			len ++;
+		s ++;
+	}
+
+	ename = g_new (gchar, len + 1);
+
+	s = name;
+	e = ename;
+	while (*s) {
+		if (*s == '"') {
+			*e = '.';
+			e ++;
+			*e = '1';
+			e ++;
+		} else if (*s == '=') {
+			*e = '.';
+			e ++;
+			*e = '2';
+			e ++;
+		} else {
+			*e = *s;
+			e ++;
+		}
+		if (*s == '.') {
+			*e = '.';
+			e ++;
+		}
+		s ++;
+	}
+	*e = 0;
+	
+	return ename;
+}
+
+static gchar *
+decode_signature_name (const gchar *name)
+{
+	const gchar *s;
+	gchar *dname, *d;
+	gint len = 0;
+
+	s = name;
+	while (*s) {
+		len ++;
+		if (*s == '.') {
+			s ++;
+			if (!*s || !(*s == '.' || *s == '1' || *s == '2'))
+				return NULL;
+		}
+		s ++;
+	}
+
+	dname = g_new (gchar, len + 1);
+
+	s = name;
+	d = dname;
+	while (*s) {
+		if (*s == '.') {
+			s ++;
+			if (!*s || !(*s == '.' || *s == '1' || *s == '2')) {
+				g_free (dname);
+				return NULL;
+			}
+			if (*s == '1')
+				*d = '"';
+			else if (*s == '2')
+				*d = '=';
+			else
+				*d = '.';
+		} else
+			*d = *s;
+		d ++;
+		s ++;
+	}
+	*d = 0;
+
+	return dname;
+}
+
+static gchar *
 get_signature_html (EMsgComposer *composer)
 {
 	gboolean format_html = FALSE;
-	gchar *text, *html = NULL, *sig_file = NULL;
-	
-	if (E_MSG_COMPOSER_HDRS (composer->hdrs)->account->id) {
+	char *text = NULL, *html = NULL, *sig_file = NULL, *script = NULL;
+
+	if (composer->signature) {
+		sig_file = composer->signature->filename;
+		format_html = composer->signature->html;
+		script = composer->signature->script;
+	} else if (composer->auto_signature) {
 		MailConfigIdentity *id;
-		
+		gchar *address;
+		gchar *name;
+		gchar *organization;
+
 		id = E_MSG_COMPOSER_HDRS (composer->hdrs)->account->id;
-		if (composer->send_html) {
-			if  (id->has_html_signature) {
-				sig_file = id->html_signature;
-				format_html = TRUE;
-			} else
-				sig_file = id->signature;
-		} else
-			sig_file = id->signature;
+		address = id->address ? e_text_to_html (id->address, E_TEXT_TO_HTML_CONVERT_SPACES) : NULL;
+		name = id->name ? e_text_to_html (id->name, E_TEXT_TO_HTML_CONVERT_SPACES) : NULL;
+		organization = id->organization ? e_text_to_html (id->organization, E_TEXT_TO_HTML_CONVERT_SPACES) : NULL;
+
+		text = g_strdup_printf ("-- <BR>%s%s%s%s%s%s%s%s",
+					name ? name : "",
+					(address && *address) ? " &lt;<A HREF=\"mailto:" : "",
+					address ? address : "",
+					(address && *address) ? "\">" : "",
+					address ? address : "",
+					(address && *address) ? "</A>&gt;" : "",
+					(organization && *organization) ? "<BR>" : "",
+					organization ? organization : "");
+		g_free (address);
+		g_free (name);
+		g_free (organization);
+		format_html = TRUE;
 	}
-	
-	if (!sig_file)
-		return NULL;
-	
-	text = e_msg_composer_get_sig_file_content (sig_file, format_html);
+
+	if (!text) {
+		if (script)
+			text = mail_config_signature_run_script (script);
+		else {
+			if (!sig_file)
+				return NULL;
+			/* printf ("sig file: %s\n", sig_file); */
+			text = e_msg_composer_get_sig_file_content (sig_file, format_html);
+		}
+	}
+
+	/* printf ("text: %s\n", text); */
 	if (text) {
+		gchar *encoded_name = NULL;
+
+		if (composer->signature)
+			encoded_name = encode_signature_name (composer->signature->name);
+
 		/* The signature dash convention ("-- \n") is specified in the
 		 * "Son of RFC 1036": http://www.chemie.fu-berlin.de/outerspace/netnews/son-of-1036.html,
 		 * section 4.3.2.
 		 */
 		html = g_strdup_printf ("<!--+GtkHTML:<DATA class=\"ClueFlow\" key=\"signature\" value=\"1\">-->"
+					"<!--+GtkHTML:<DATA class=\"ClueFlow\" key=\"signature_name\" value=\"%s%s\">-->"
 					"<TABLE WIDTH=\"100%%\" CELLSPACING=\"0\" CELLPADDING=\"0\"><TR><TD>"
 					"%s%s%s%s"
 					"</TD></TR></TABLE>",
+					composer->signature ? "name:" : "auto",
+					composer->signature ? encoded_name : "",
 					format_html ? "" : "<PRE>\n",
-					format_html || !strncmp ("-- \n", text, 4) ? "" : "-- \n",
+					format_html || (!strncmp ("-- \n", text, 4) || strstr(text, "\n-- \n")) ? "" : "-- \n",
 					text,
 					format_html ? "" : "</PRE>\n");
 		g_free (text);
+		g_free (encoded_name);
 		text = html;
 	}
 	
@@ -833,29 +1075,29 @@ set_editor_text (EMsgComposer *composer, const char *text)
 	BonoboStream *stream;
 	BonoboWidget *editor;
 	CORBA_Environment ev;
+	Bonobo_Unknown object;
+	
+	g_return_if_fail (composer->persist_stream_interface != CORBA_OBJECT_NIL);
+	
+	persist = composer->persist_stream_interface;
 	
 	editor = BONOBO_WIDGET (composer->editor);
 	
 	CORBA_exception_init (&ev);
-	persist = (Bonobo_PersistStream) bonobo_object_client_query_interface (
-		bonobo_widget_get_server (editor), "IDL:Bonobo/PersistStream:1.0", &ev);
-
-	g_return_if_fail (persist != CORBA_OBJECT_NIL);
 	
-	stream = bonobo_stream_mem_create (text, strlen (text),
-					   TRUE, FALSE);
-	Bonobo_PersistStream_load (persist, (Bonobo_Stream)bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
-				   "text/html", &ev);
+	stream = bonobo_stream_mem_create (text, strlen (text), TRUE, FALSE);
+	object = bonobo_object_corba_objref (BONOBO_OBJECT (stream));
+	Bonobo_PersistStream_load (persist, (Bonobo_Stream) object, "text/html", &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		/* FIXME. Some error message. */
+		bonobo_object_unref (BONOBO_OBJECT (stream));
+		CORBA_exception_free (&ev);
 		return;
 	}
-	if (ev._major != CORBA_SYSTEM_EXCEPTION)
-		CORBA_Object_release (persist, &ev);
 	
-	Bonobo_Unknown_unref (persist, &ev);
 	CORBA_exception_free (&ev);
-	bonobo_object_unref (BONOBO_OBJECT(stream));
+	
+	bonobo_object_unref (BONOBO_OBJECT (stream));
 }
 
 static void
@@ -897,8 +1139,7 @@ show_attachments (EMsgComposer *composer,
 }
 
 static void
-save (EMsgComposer *composer,
-      const char *file_name)
+save (EMsgComposer *composer, const char *file_name)
 {
 	CORBA_Environment ev;
 	char *my_file_name;
@@ -932,6 +1173,7 @@ save (EMsgComposer *composer,
 			return;
 		default:
 			/* ie, the user hit "Yes" so just continue as normal */
+			break;
 		}
 	} else
 		close (fd);
@@ -943,8 +1185,9 @@ save (EMsgComposer *composer,
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		e_notice (GTK_WINDOW (composer), GNOME_MESSAGE_BOX_ERROR,
 			  _("Error saving file: %s"), g_basename (my_file_name));
-	}
-	
+	} else
+		GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "saved", &ev);
+
 	CORBA_exception_free (&ev);
 	
 	g_free (my_file_name);
@@ -966,96 +1209,6 @@ load (EMsgComposer *composer, const char *file_name)
 	CORBA_exception_free (&ev);
 }
 
-/* Exit dialog.  (Displays a "Save composition to 'Drafts' before exiting?" warning before actually exiting.)  */
-
-enum { REPLY_YES = 0, REPLY_NO, REPLY_CANCEL };
-
-struct _save_info {
-	EMsgComposer *composer;
-	int quitok;
-};
-
-static void
-save_done (CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *info, int ok, void *data)
-{
-	struct _save_info *si = data;
-	
-	if (ok && si->quitok)
-		gtk_widget_destroy (GTK_WIDGET (si->composer));
-	else
-		gtk_object_unref (GTK_OBJECT (si->composer));
-	
-	g_free (info);
-	g_free (si);
-}
-
-extern CamelFolder *drafts_folder;
-extern char *default_drafts_folder_uri;
-
-static void
-use_default_drafts_cb (gint reply, gpointer data)
-{
-	CamelFolder **folder = data;
-	
-	if (reply == 0)
-		*folder = drafts_folder;
-}
-
-static void
-save_folder (char *uri, CamelFolder *folder, gpointer data)
-{
-	CamelFolder **save = data;
-	
-	if (folder) {
-		*save = folder;
-		camel_object_ref (CAMEL_OBJECT (folder));
-	}
-}
-
-static void
-save_draft (EMsgComposer *composer, int quitok)
-{
-	CamelMimeMessage *msg;
-	CamelMessageInfo *info;
-	const MailConfigAccount *account;
-	struct _save_info *si;
-	CamelFolder *folder = NULL;
-	
-	account = e_msg_composer_get_preferred_account (composer);
-	if (account && account->drafts_folder_uri &&
-	    strcmp (account->drafts_folder_uri, default_drafts_folder_uri) != 0) {
-		int id;
-		
-		id = mail_get_folder (account->drafts_folder_uri, 0, save_folder, &folder, mail_thread_new);
-		mail_msg_wait (id);
-		
-		if (!folder) {
-			GtkWidget *dialog;
-			
-			dialog = gnome_ok_cancel_dialog_parented (_("Unable to open the drafts folder for this account.\n"
-								    "Would you like to use the default drafts folder?"),
-								  use_default_drafts_cb, &folder, GTK_WINDOW (composer));
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-			if (!folder)
-				return;
-		}
-	} else
-		folder = drafts_folder;
-	
-	msg = e_msg_composer_get_message_draft (composer);
-	
-	info = g_new0 (CamelMessageInfo, 1);
-	info->flags = CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_SEEN;
-	
-	si = g_malloc (sizeof (*si));
-	si->composer = composer;
-	gtk_object_ref (GTK_OBJECT (composer));
-	si->quitok = quitok;
-	
-	mail_append_mail (folder, msg, info, save_done, si);
-	camel_object_unref (CAMEL_OBJECT (msg));
-}
-
 #define AUTOSAVE_SEED ".evolution-composer.autosave-XXXXXX"
 #define AUTOSAVE_INTERVAL 60000
 
@@ -1067,6 +1220,8 @@ struct _AutosaveManager {
 };
 
 static AutosaveManager *am = NULL;
+static void autosave_manager_start (AutosaveManager *am);
+static void autosave_manager_stop (AutosaveManager *am);
 
 static gboolean
 autosave_save_draft (EMsgComposer *composer)
@@ -1153,8 +1308,6 @@ autosave_load_draft (const char *filename)
 		
 		gtk_signal_connect (GTK_OBJECT (composer), "send",
 				    GTK_SIGNAL_FUNC (composer_send_cb), NULL);
-		gtk_signal_connect (GTK_OBJECT (composer), "postpone",
-				    GTK_SIGNAL_FUNC (composer_postpone_cb), NULL);
 		
 		gtk_widget_show (GTK_WIDGET (composer));
 	}
@@ -1254,8 +1407,11 @@ autosave_run (gpointer data)
 	AutosaveManager *am = data;
 	
 	g_hash_table_foreach (am->table, (GHFunc)autosave_run_foreach_cb, am);
+
+	autosave_manager_stop (am);
+	autosave_manager_start (am);
 	
-	return TRUE;
+	return FALSE;
 }
 
 static gboolean
@@ -1268,6 +1424,7 @@ autosave_init_file (EMsgComposer *composer)
 	}
 	return FALSE;
 }
+
 static void
 autosave_manager_start (AutosaveManager *am)
 {
@@ -1341,49 +1498,59 @@ autosave_manager_unregister (AutosaveManager *am, EMsgComposer *composer)
 static void
 menu_file_save_draft_cb (BonoboUIComponent *uic, void *data, const char *path)
 {
-	save_draft (E_MSG_COMPOSER (data), FALSE);
+	gtk_signal_emit (GTK_OBJECT (data), signals[SAVE_DRAFT], FALSE);
 	e_msg_composer_unset_changed (E_MSG_COMPOSER (data));
 }
 
-static void
-exit_dialog_cb (int reply, EMsgComposer *composer)
-{
-	switch (reply) {
-	case REPLY_YES:
-		/* this has to be done async */
-		save_draft (composer, TRUE);
-		e_msg_composer_unset_changed (composer);
-		break;
-	case REPLY_NO:
-		gtk_widget_destroy (GTK_WIDGET (composer));
-		break;
-	case REPLY_CANCEL:
-	default:
-	}
-}
+/* Exit dialog.  (Displays a "Save composition to 'Drafts' before exiting?" warning before actually exiting.)  */
 
 static void
 do_exit (EMsgComposer *composer)
 {
+	char *subject, *subject_utf8, *label;
 	GtkWidget *dialog;
-	gint button;
+	int button;
 	
-	if (TRUE || e_msg_composer_is_dirty (composer)) {
-		dialog = gnome_message_box_new (_("This message has not been sent.\n\nDo you wish to save your changes?"),
-						GNOME_MESSAGE_BOX_QUESTION,
-						GNOME_STOCK_BUTTON_YES,      /* Save */
-						GNOME_STOCK_BUTTON_NO,       /* Don't save */
-						GNOME_STOCK_BUTTON_CANCEL,   /* Cancel */
-						NULL);
-	
-		gtk_window_set_title (GTK_WINDOW (dialog), _("Warning: Modified Message"));
-		gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (composer));
-		gnome_dialog_set_default (GNOME_DIALOG (dialog), 0);
-		button = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-		
-		exit_dialog_cb (button, composer);
-	} else {
+	if (!e_msg_composer_is_dirty (composer)) {
 		gtk_widget_destroy (GTK_WIDGET (composer));
+		return;
+	}
+	
+	gdk_window_raise (GTK_WIDGET (composer)->window);
+	
+	subject_utf8 = e_msg_composer_hdrs_get_subject (E_MSG_COMPOSER_HDRS (composer->hdrs));
+	subject = e_utf8_to_locale_string (subject_utf8);
+	g_free (subject_utf8);
+	
+	label = g_strdup_printf (_("The message \"%s\" has not been sent.\n\nDo you wish to save your changes?"), subject);
+	g_free (subject);
+	
+	dialog = gnome_message_box_new (label, GNOME_MESSAGE_BOX_QUESTION,
+					GNOME_STOCK_BUTTON_YES,      /* Save */
+					GNOME_STOCK_BUTTON_NO,       /* Don't save */
+					GNOME_STOCK_BUTTON_CANCEL,   /* Cancel */
+					NULL);
+	
+	g_free (label);
+	
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Warning: Modified Message"));
+	gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (composer));
+	gnome_dialog_set_default (GNOME_DIALOG (dialog), 0);
+	button = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+	
+	switch (button) {
+	case 0:
+		/* Save */
+		gtk_signal_emit (GTK_OBJECT (composer), signals[SAVE_DRAFT], TRUE);
+		e_msg_composer_unset_changed (composer);
+		break;
+	case 1:
+		/* Don't save */
+		gtk_widget_destroy (GTK_WIDGET (composer));
+		break;
+	default:
+		/* Cancel */
+		break;
 	}
 }
 
@@ -1449,18 +1616,7 @@ menu_file_send_cb (BonoboUIComponent *uic,
 		   void *data,
 		   const char *path)
 {
-	if (session && camel_session_is_online (session))
-		gtk_signal_emit (GTK_OBJECT (data), signals[SEND]);
-	else
-		gtk_signal_emit (GTK_OBJECT (data), signals[POSTPONE]);
-}
-
-static void
-menu_file_send_later_cb (BonoboUIComponent *uic,
-			 void *data,
-			 const char *path)
-{
-	gtk_signal_emit (GTK_OBJECT (data), signals[POSTPONE]);
+	gtk_signal_emit (GTK_OBJECT (data), signals[SEND]);
 }
 
 static void
@@ -1497,7 +1653,7 @@ menu_edit_delete_all_cb (BonoboUIComponent *uic, void *data, const char *path)
 	composer = E_MSG_COMPOSER (data);
 	CORBA_exception_init (&ev);
 	
-	GNOME_GtkHTML_Editor_Engine_undo_begin (composer->editor_engine, "Delete all but signature", "Undelete all", &ev);
+	GNOME_GtkHTML_Editor_Engine_undoBegin (composer->editor_engine, "Delete all but signature", "Undelete all", &ev);
 	GNOME_GtkHTML_Editor_Engine_freeze (composer->editor_engine, &ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "disable-selection", &ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "text-default-color", &ev);
@@ -1512,10 +1668,10 @@ menu_edit_delete_all_cb (BonoboUIComponent *uic, void *data, const char *path)
 	e_msg_composer_show_sig_file (composer);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "style-normal", &ev);
 	GNOME_GtkHTML_Editor_Engine_thaw (composer->editor_engine, &ev);
-	GNOME_GtkHTML_Editor_Engine_undo_end (composer->editor_engine, &ev);
+	GNOME_GtkHTML_Editor_Engine_undoEnd (composer->editor_engine, &ev);
 	
 	CORBA_exception_free (&ev);
-	printf ("delete all\n");
+	/* printf ("delete all\n"); */
 }
 
 static void
@@ -1534,41 +1690,6 @@ menu_view_attachments_activate_cb (BonoboUIComponent           *component,
 	new_state = atoi (state);
 	
 	e_msg_composer_show_attachments (E_MSG_COMPOSER (user_data), new_state);
-}
-
-static void
-menu_file_insert_file_cb (BonoboUIComponent *uic,
-			  void *data,
-			  const char *path)
-{
-	EMsgComposer *composer;
-	char *file_name;
-	char *html;
-	CORBA_Environment ev;
-	
-	composer = E_MSG_COMPOSER (data);
-	
-	file_name = e_msg_composer_select_file (composer, _("Insert File"));
-	if (file_name == NULL)
-		return;
-	
-	html = get_file_content (file_name, TRUE, E_TEXT_TO_HTML_PRE);
-	if (html == NULL)
-		return;
-	
-	CORBA_exception_init (&ev);
-	GNOME_GtkHTML_Editor_Engine_freeze (composer->editor_engine, &ev);
-	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "cursor-position-save", &ev);
-	GNOME_GtkHTML_Editor_Engine_undo_begin (composer->editor_engine, "Insert file", "Uninsert file", &ev);
-	if (!GNOME_GtkHTML_Editor_Engine_isParagraphEmpty (composer->editor_engine, &ev))
-		GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "insert-paragraph", &ev);
-	GNOME_GtkHTML_Editor_Engine_insertHTML (composer->editor_engine, html, &ev);
-	GNOME_GtkHTML_Editor_Engine_undo_end (composer->editor_engine, &ev);
-	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "cursor-position-restore", &ev);
-	GNOME_GtkHTML_Editor_Engine_thaw (composer->editor_engine, &ev);
-	CORBA_exception_free (&ev);
-	
-	g_free (html);
 }
 
 static void
@@ -1669,19 +1790,6 @@ menu_view_replyto_cb (BonoboUIComponent           *component,
 }
 
 static void
-menu_view_bcc_cb (BonoboUIComponent           *component,
-		  const char                  *path,
-		  Bonobo_UIComponent_EventType type,
-		  const char                  *state,
-		  gpointer                     user_data)
-{
-	if (type != Bonobo_UIComponent_STATE_CHANGED)
-		return;
-	
-	e_msg_composer_set_view_bcc (E_MSG_COMPOSER (user_data), atoi (state));
-}
-
-static void
 menu_view_cc_cb (BonoboUIComponent           *component,
 		 const char                  *path,
 		 Bonobo_UIComponent_EventType type,
@@ -1692,6 +1800,19 @@ menu_view_cc_cb (BonoboUIComponent           *component,
 		return;
 	
 	e_msg_composer_set_view_cc (E_MSG_COMPOSER (user_data), atoi (state));
+}
+
+static void
+menu_view_bcc_cb (BonoboUIComponent           *component,
+		  const char                  *path,
+		  Bonobo_UIComponent_EventType type,
+		  const char                  *state,
+		  gpointer                     user_data)
+{
+	if (type != Bonobo_UIComponent_STATE_CHANGED)
+		return;
+	
+	e_msg_composer_set_view_bcc (E_MSG_COMPOSER (user_data), atoi (state));
 }
 
 static void
@@ -1720,11 +1841,9 @@ static BonoboUIVerb verbs [] = {
 	BONOBO_UI_VERB ("FileSaveDraft", menu_file_save_draft_cb),
 	BONOBO_UI_VERB ("FileClose",  menu_file_close_cb),
 	
-	BONOBO_UI_VERB ("FileInsertFile", menu_file_insert_file_cb),
 	BONOBO_UI_VERB ("FileAttach",     menu_file_add_attachment_cb),
 	
 	BONOBO_UI_VERB ("FileSend",       menu_file_send_cb),
-	BONOBO_UI_VERB ("FileSendLater",  menu_file_send_later_cb),
 	
 	BONOBO_UI_VERB ("DeleteAll",  menu_edit_delete_all_cb),
 	
@@ -1737,12 +1856,134 @@ static EPixmap pixcache [] = {
 	
 /*	E_PIXMAP ("/menu/Insert/FileAttach", "buttons/add-attachment.png"), */
 	E_PIXMAP ("/commands/FileSend", "send-16.png"),
-	E_PIXMAP ("/commands/FileSendLater", "send-later-16.png"),
 	E_PIXMAP ("/commands/FileSave", "save-16.png"),
 	E_PIXMAP ("/commands/FileSaveAs", "save-as-16.png"),
 	
 	E_PIXMAP_END
 };
+
+static void sig_select_item (EMsgComposer *composer);
+
+static void
+signature_cb (GtkWidget *w, EMsgComposer *composer)
+{
+	MailConfigSignature *old_sig;
+	gboolean old_auto;
+	int idx = g_list_index (GTK_MENU_SHELL (w)->children, gtk_menu_get_active (GTK_MENU (w)));
+	int len = g_list_length (GTK_MENU_SHELL (w)->children);
+	
+	/* printf ("signature_cb: %d\n", idx); */
+	
+	old_sig = composer->signature;
+	old_auto = composer->auto_signature;
+	
+	if (idx < len) {
+		if (idx == 0) {			                /* none */
+			composer->signature = NULL;
+			composer->auto_signature = FALSE;
+		} else if (idx == 1) {				/* auto */
+			composer->signature = NULL;
+			composer->auto_signature = TRUE;
+		} else {
+			composer->signature = g_list_nth_data (mail_config_get_signature_list (), idx - 2);
+			composer->auto_signature = FALSE;
+		}
+		if (old_sig != composer->signature || old_auto != composer->auto_signature)
+			e_msg_composer_show_sig_file (composer);
+	}
+	/* printf ("signature_cb end\n"); */
+}
+
+static void setup_signatures_menu (EMsgComposer *composer);
+
+static void
+sig_event_client (MailConfigSigEvent event, MailConfigSignature *sig, EMsgComposer *composer)
+{
+	switch (event) {
+	case MAIL_CONFIG_SIG_EVENT_DELETED:
+		if (sig == composer->signature) {
+			composer->signature = NULL;
+			composer->auto_signature = TRUE;
+			e_msg_composer_show_sig_file (composer);
+		}
+		setup_signatures_menu (composer);
+		break;
+	case MAIL_CONFIG_SIG_EVENT_ADDED:
+	case MAIL_CONFIG_SIG_EVENT_NAME_CHANGED:
+		setup_signatures_menu (composer);
+	default:
+		;
+	}
+}
+
+static void
+prepare_signatures_menu (EMsgComposer *composer)
+{
+	GtkWidget *hbox;
+	GtkWidget *label;
+	
+	hbox = e_msg_composer_hdrs_get_from_hbox (E_MSG_COMPOSER_HDRS (composer->hdrs));
+	
+	label = gtk_label_new (_("Signature:"));
+	gtk_widget_show (label);
+	
+	composer->sig_omenu = gtk_option_menu_new ();
+	gtk_widget_show (composer->sig_omenu);
+	
+	gtk_box_pack_end_defaults (GTK_BOX (hbox), composer->sig_omenu);
+	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, TRUE, 0);
+}
+
+static void
+sig_select_item (EMsgComposer *composer)
+{
+	int idx;
+	
+	if (composer->auto_signature) {
+		idx = 1;
+	} else if (composer->signature == NULL) {
+		idx = 0;
+	} else {
+		idx = composer->signature->id + 2;
+	}
+	
+	gtk_option_menu_set_history (GTK_OPTION_MENU (composer->sig_omenu), idx);
+}
+
+static void
+setup_signatures_menu (EMsgComposer *composer)
+{
+	GList *l, *list;
+	gint len = 0;
+	GtkWidget *menu;
+	GtkWidget *mi;
+	
+#define ADD(x) \
+	mi = (x ? gtk_menu_item_new_with_label (x) : gtk_menu_item_new ()); \
+	gtk_widget_show (mi); \
+	gtk_menu_append (GTK_MENU (menu), mi);
+	
+	menu = gtk_menu_new ();
+	ADD (_("None"));
+	ADD (_("Autogenerated"));
+	
+	list = mail_config_get_signature_list ();
+	if (list)
+		for (l = list; l; len ++, l = l->next) {
+			gchar *gtk_str;
+
+			gtk_str = e_utf8_to_gtk_string (menu, ((MailConfigSignature *)l->data)->name);
+			ADD (gtk_str);
+			g_free (gtk_str);
+		}
+#undef ADD
+
+	gtk_widget_show (menu);
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (composer->sig_omenu), menu);
+	sig_select_item (composer);
+
+	gtk_signal_connect (GTK_OBJECT (menu), "selection-done", signature_cb, composer);
+}
 
 static void
 setup_ui (EMsgComposer *composer)
@@ -1753,15 +1994,11 @@ setup_ui (EMsgComposer *composer)
 	
 	container = bonobo_ui_container_new ();
 	bonobo_ui_container_set_win (container, BONOBO_WINDOW (composer));
-	
+
 	composer->uic = bonobo_ui_component_new_default ();
 	bonobo_ui_component_set_container (composer->uic, bonobo_object_corba_objref (BONOBO_OBJECT (container)));
 	
 	bonobo_ui_component_add_verb_list_with_data (composer->uic, verbs, composer);
-	
-        /* Customize Toolbar thingie */
-	bonobo_ui_engine_config_set_path (bonobo_window_get_ui_engine (BONOBO_WINDOW (composer)),
-                                          "/evolution/UIConf/composer");
 	
 	bonobo_ui_component_freeze (composer->uic, NULL);
 	
@@ -1781,27 +2018,6 @@ setup_ui (EMsgComposer *composer)
 					     menu_changed_charset_cb,
 					     composer);
 	g_free (default_charset);
-	
-	if (!session || !camel_session_is_online (session)) {
-		char *tooltip;
-		
-		/* Move the accelerator from Send to Send Later */
-		bonobo_ui_component_set_prop (
-			composer->uic, "/commands/FileSend",
-			"accel", NULL, NULL);
-		bonobo_ui_component_set_prop (
-			composer->uic, "/commands/FileSendLater",
-			"accel", "*Ctrl*Return", NULL);
-		
-		/* Update the FileSend tooltip to be the same as the FileSendLater tooltip... */
-		tooltip = bonobo_ui_component_get_prop (
-			composer->uic, "/commands/FileSendLater",
-			"tip", NULL);
-		bonobo_ui_component_set_prop (
-			composer->uic, "/commands/FileSend",
-			"tip", tooltip, NULL);
-		g_free (tooltip);
-	}
 	
 	/* Format -> HTML */
 	bonobo_ui_component_set_prop (
@@ -1827,14 +2043,6 @@ setup_ui (EMsgComposer *composer)
 		composer->uic, "ViewReplyTo",
 		menu_view_replyto_cb, composer);
 	
-	/* View/BCC */
-	bonobo_ui_component_set_prop (
-		composer->uic, "/commands/ViewBCC",
-		"state", composer->view_bcc ? "1" : "0", NULL);
-	bonobo_ui_component_add_listener (
-		composer->uic, "ViewBCC",
-		menu_view_bcc_cb, composer);
-	
 	/* View/CC */
 	bonobo_ui_component_set_prop (
 		composer->uic, "/commands/ViewCC",
@@ -1842,6 +2050,14 @@ setup_ui (EMsgComposer *composer)
 	bonobo_ui_component_add_listener (
 		composer->uic, "ViewCC",
 		menu_view_cc_cb, composer);
+	
+	/* View/BCC */
+	bonobo_ui_component_set_prop (
+		composer->uic, "/commands/ViewBCC",
+		"state", composer->view_bcc ? "1" : "0", NULL);
+	bonobo_ui_component_add_listener (
+		composer->uic, "ViewBCC",
+		menu_view_bcc_cb, composer);
 	
 	/* Security -> PGP Sign */
 	bonobo_ui_component_set_prop (
@@ -1895,6 +2111,8 @@ setup_ui (EMsgComposer *composer)
 	bonobo_ui_component_add_listener (
 		composer->uic, "ViewAttach",
 		menu_view_attachments_activate_cb, composer);
+	
+	mail_config_signature_register_client ((MailConfigSignatureClient) sig_event_client, composer);
 	
 	bonobo_ui_component_thaw (composer->uic, NULL);
 }
@@ -1950,6 +2168,110 @@ hdrs_changed_cb (EMsgComposerHdrs *hdrs,
 	e_msg_composer_set_changed (composer);
 }
 
+enum {
+	UPDATE_AUTO_CC,
+	UPDATE_AUTO_BCC,
+};
+
+static void
+update_auto_recipients (EMsgComposerHdrs *hdrs, int mode, const char *auto_addrs)
+{
+	EDestination *dest, **destv = NULL;
+	CamelInternetAddress *iaddr;
+	GList *list, *tail, *node;
+	int i, n = 0;
+	
+	tail = list = NULL;
+	
+	if (auto_addrs) {
+		iaddr = camel_internet_address_new ();
+		if (camel_address_decode (CAMEL_ADDRESS (iaddr), auto_addrs) != -1) {
+			for (i = 0; i < camel_address_length (CAMEL_ADDRESS (iaddr)); i++) {
+				const char *name, *addr;
+				
+				if (!camel_internet_address_get (iaddr, i, &name, &addr))
+					continue;
+				
+				dest = e_destination_new ();
+				e_destination_set_auto_recipient (dest, TRUE);
+				
+				if (name)
+					e_destination_set_name (dest, name);
+				
+				if (addr)
+					e_destination_set_email (dest, addr);
+				
+				node = g_list_alloc ();
+				node->data = dest;
+				node->next = NULL;
+				
+				if (tail) {
+					node->prev = tail;
+					tail->next = node;
+				} else {
+					node->prev = NULL;
+					list = node;
+				}
+				
+				tail = node;
+				n++;
+			}
+		}
+		
+		camel_object_unref (CAMEL_OBJECT (iaddr));
+	}
+	
+	switch (mode) {
+	case UPDATE_AUTO_CC:
+		destv = e_msg_composer_hdrs_get_cc (hdrs);
+		break;
+	case UPDATE_AUTO_BCC:
+		destv = e_msg_composer_hdrs_get_bcc (hdrs);
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	
+	if (destv) {
+		for (i = 0; destv[i]; i++) {
+			if (!e_destination_is_auto_recipient (destv[i])) {
+				node = g_list_alloc ();
+				node->data = e_destination_copy (destv[i]);
+				node->next = NULL;
+				
+				if (tail) {
+					node->prev = tail;
+					tail->next = node;
+				} else {
+					node->prev = NULL;
+					list = node;
+				}
+				
+				tail = node;
+				n++;
+			}
+		}
+		
+		e_destination_freev (destv);
+	}
+	
+	destv = e_destination_list_to_vector_sized (list, n);
+	g_list_free (list);
+	
+	switch (mode) {
+	case UPDATE_AUTO_CC:
+		e_msg_composer_hdrs_set_cc (hdrs, destv);
+		break;
+	case UPDATE_AUTO_BCC:
+		e_msg_composer_hdrs_set_bcc (hdrs, destv);
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	
+	e_destination_freev (destv);
+}
+
 static void
 from_changed_cb (EMsgComposerHdrs *hdrs, void *data)
 {
@@ -1958,10 +2280,21 @@ from_changed_cb (EMsgComposerHdrs *hdrs, void *data)
 	composer = E_MSG_COMPOSER (data);
 	
 	if (hdrs->account) {
-		e_msg_composer_set_pgp_sign (composer, hdrs->account->pgp_always_sign);
-		e_msg_composer_set_smime_sign (composer, hdrs->account->smime_always_sign);
+		const MailConfigAccount *account = hdrs->account;
+		
+		e_msg_composer_set_pgp_sign (composer,
+					     account->pgp_always_sign &&
+					     (!account->pgp_no_imip_sign || !composer->mime_type ||
+					      g_strncasecmp (composer->mime_type, "text/calendar", 13) != 0));
+		e_msg_composer_set_smime_sign (composer, account->smime_always_sign);
+		update_auto_recipients (hdrs, UPDATE_AUTO_CC, account->always_cc ? account->cc_addrs : NULL);
+		update_auto_recipients (hdrs, UPDATE_AUTO_BCC, account->always_bcc ? account->bcc_addrs : NULL);
+	} else {
+		update_auto_recipients (hdrs, UPDATE_AUTO_CC, NULL);
+		update_auto_recipients (hdrs, UPDATE_AUTO_BCC, NULL);
 	}
 	
+	set_editor_signature (composer);
 	e_msg_composer_show_sig_file (composer);
 }
 
@@ -1987,15 +2320,17 @@ destroy (GtkObject *object)
 	CORBA_Environment ev;
 	
 	composer = E_MSG_COMPOSER (object);
-
+	
+	mail_config_signature_unregister_client ((MailConfigSignatureClient) sig_event_client, composer);
+	
 	CORBA_exception_init (&ev);
-
+	
 	if (composer->config_db) {
 		Bonobo_ConfigDatabase_sync (composer->config_db, &ev);
 		bonobo_object_release_unref (composer->config_db, NULL);
 	}
 	composer->config_db = NULL;
-
+	
 	if (composer->uic)
 		bonobo_object_unref (BONOBO_OBJECT (composer->uic));
 	composer->uic = NULL;
@@ -2045,6 +2380,9 @@ destroy (GtkObject *object)
 	}
 	
 	CORBA_exception_free (&ev);
+	
+	if (composer->redirect)
+		camel_object_unref (CAMEL_OBJECT (composer->redirect));
 	
 	if (composer->editor_listener)
 		bonobo_object_unref (composer->editor_listener);
@@ -2108,16 +2446,18 @@ message_rfc822_dnd (EMsgComposer *composer, CamelStream *stream)
 
 static void
 drag_data_received (EMsgComposer *composer, GdkDragContext *context,
-		    gint x, gint y, GtkSelectionData *selection,
+		    int x, int y, GtkSelectionData *selection,
 		    guint info, guint time)
 {
-	gchar *tmp, *filename, **filenames;
+	char *tmp, *filename, **filenames;
+	CamelMimePart *mime_part;
 	CamelStream *stream;
 	CamelURL *url;
 	int i;
 	
 	switch (info) {
 	case DND_TYPE_MESSAGE_RFC822:
+		d(printf ("dropping a message/rfc822\n"));
 		/* write the message(s) out to a CamelStream so we can use it */
 		stream = camel_stream_mem_new ();
 		camel_stream_write (stream, selection->data, selection->length);
@@ -2127,6 +2467,7 @@ drag_data_received (EMsgComposer *composer, GdkDragContext *context,
 		camel_object_unref (CAMEL_OBJECT (stream));
 		break;
 	case DND_TYPE_TEXT_URI_LIST:
+		d(printf ("dropping a text/uri-list\n"));
 		tmp = g_strndup (selection->data, selection->length);
 		filenames = g_strsplit (tmp, "\n", 0);
 		g_free (tmp);
@@ -2149,12 +2490,36 @@ drag_data_received (EMsgComposer *composer, GdkDragContext *context,
 		
 		g_free (filenames);
 		break;
+	case DND_TYPE_TEXT_VCARD:
+		d(printf ("dropping a text/x-vcard\n"));
+		mime_part = camel_mime_part_new ();
+		camel_mime_part_set_content (mime_part, selection->data,
+					     selection->length, "text/x-vcard");
+		camel_mime_part_set_disposition (mime_part, "inline");
+		
+		e_msg_composer_attachment_bar_attach_mime_part
+			(E_MSG_COMPOSER_ATTACHMENT_BAR (composer->attachment_bar),
+			 mime_part);
+		
+		camel_object_unref (CAMEL_OBJECT (mime_part));
 	default:
+		d(printf ("dropping an unknown\n"));
 		break;
 	}
 }
 
-
+typedef void (*GtkSignal_NONE__NONE_INT) (GtkObject *, int, gpointer);
+
+static void marshal_NONE__NONE_INT (GtkObject *object, GtkSignalFunc func,
+				    gpointer func_data, GtkArg *args)
+{
+	GtkSignal_NONE__NONE_INT rfunc;
+	
+	rfunc = (GtkSignal_NONE__NONE_INT) func;
+	(*rfunc)(object, GTK_VALUE_INT (args[0]), func_data);
+}
+
+
 static void
 class_init (EMsgComposerClass *klass)
 {
@@ -2179,13 +2544,13 @@ class_init (EMsgComposerClass *klass)
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	
-	signals[POSTPONE] =
-		gtk_signal_new ("postpone",
+	signals[SAVE_DRAFT] =
+		gtk_signal_new ("save-draft",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EMsgComposerClass, postpone),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+				GTK_SIGNAL_OFFSET (EMsgComposerClass, save_draft),
+				marshal_NONE__NONE_INT,
+				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
@@ -2213,7 +2578,7 @@ init (EMsgComposer *composer)
 	composer->inline_images            = g_hash_table_new (g_str_hash, g_str_equal);
 	composer->inline_images_by_url     = g_hash_table_new (g_str_hash, g_str_equal);
 	composer->current_images           = NULL;
-
+	
 	composer->attachment_bar_visible   = FALSE;
 	composer->send_html                = FALSE;
 	composer->pgp_sign                 = FALSE;
@@ -2222,6 +2587,8 @@ init (EMsgComposer *composer)
 	composer->smime_encrypt            = FALSE;
 	
 	composer->has_changed              = FALSE;
+	
+	composer->redirect                 = FALSE;
 	
 	composer->charset                  = NULL;
 	
@@ -2259,16 +2626,16 @@ load_from_config_db (EMsgComposer *composer)
 {
 	Bonobo_ConfigDatabase db = composer->config_db;
 	
-	composer->view_from = bonobo_config_get_long_with_default (db, 
-		"Mail/Composer/ViewFrom", 1, NULL);
-	composer->view_replyto = bonobo_config_get_long_with_default (db, 
-                "Mail/Composer/ViewReplyTo", 0, NULL);
-	composer->view_bcc = bonobo_config_get_long_with_default (db, 
-                "Mail/Composer/ViewBCC", 0, NULL);
-	composer->view_cc = bonobo_config_get_long_with_default (db, 
-                "Mail/Composer/ViewCC", 1, NULL);
-	composer->view_subject = bonobo_config_get_long_with_default (db, 
-                "Mail/Composer/ViewSubject", 1, NULL);
+	composer->view_from = bonobo_config_get_long_with_default (
+		db, "Mail/Composer/ViewFrom", 1, NULL);
+	composer->view_replyto = bonobo_config_get_long_with_default ( 
+		db, "Mail/Composer/ViewReplyTo", 0, NULL);
+	composer->view_cc = bonobo_config_get_long_with_default ( 
+                db, "Mail/Composer/ViewCC", 1, NULL);
+	composer->view_bcc = bonobo_config_get_long_with_default (
+		db, "Mail/Composer/ViewBCC", 0, NULL);
+	composer->view_subject = bonobo_config_get_long_with_default (
+		db, "Mail/Composer/ViewSubject", 1, NULL);
 }
 
 static void
@@ -2279,7 +2646,7 @@ e_msg_composer_load_config (EMsgComposer *composer)
 	
 	CORBA_exception_init (&ev);
 	
-	db = bonobo_get_object ( "wombat:", "Bonobo/ConfigDatabase", &ev);
+	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
 	
 	if (ev._major == CORBA_NO_EXCEPTION && db != CORBA_OBJECT_NIL){
 		composer->config_db = db;
@@ -2290,7 +2657,7 @@ e_msg_composer_load_config (EMsgComposer *composer)
 	CORBA_exception_free (&ev);
 }
 
-static gint
+static int
 e_msg_composer_get_visible_flags (EMsgComposer *composer)
 {
 	int flags = 0;
@@ -2325,26 +2692,26 @@ map_default_cb (EMsgComposer *composer, gpointer user_data)
         Bonobo_PropertyBag pb = CORBA_OBJECT_NIL;
 	char *text;
 	CORBA_Environment ev;
-
+	
 	/* If the 'To:' field is empty, focus it (This is ridiculously complicated) */
-
+	
 	to = e_msg_composer_hdrs_get_to_entry (E_MSG_COMPOSER_HDRS (composer->hdrs));
         cf = bonobo_widget_get_control_frame (BONOBO_WIDGET (to));
         pb = bonobo_control_frame_get_control_property_bag (cf, NULL);
 	text = bonobo_property_bag_client_get_value_string (pb, "text", NULL);
 	bonobo_object_release_unref (pb, NULL);
-
+	
 	if (!text || text[0] == '\0') {
 		bonobo_control_frame_focus_child (cf, GTK_DIR_TAB_FORWARD);
 		g_free (text);
 		return;
 	}
 	g_free (text);
-
+	
 	/* If not, check the subject field */
-
+	
 	text = e_msg_composer_hdrs_get_subject (E_MSG_COMPOSER_HDRS (composer->hdrs));
-
+	
 	if (!text || text[0] == '\0') {
 		GtkWidget *widget;
 		
@@ -2354,25 +2721,55 @@ map_default_cb (EMsgComposer *composer, gpointer user_data)
 		return;
 	}
 	g_free (text);
-
+	
 	/* Jump to the editor as a last resort. */
-
+	
 	CORBA_exception_init (&ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "grab-focus", &ev);
 	CORBA_exception_free (&ev);
 }
 
+static void
+msg_composer_destroy_notify (void *data)
+{
+	EMsgComposer *composer = E_MSG_COMPOSER (data);
+	
+	all_composers = g_slist_remove (all_composers, composer);
+}
+
+static int
+composer_key_pressed (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+{
+	if (event->keyval == GDK_Escape) {
+		do_exit (E_MSG_COMPOSER (widget));
+
+		gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "key-press-event");
+		return TRUE; /* Handled.  */
+	}
+
+	return FALSE; /* Not handled. */
+}
+
 static EMsgComposer *
-create_composer (void)
+create_composer (int visible_mask)
 {
 	EMsgComposer *composer;
 	GtkWidget *vbox;
 	BonoboObject *editor_server;
-	gint vis;
+	int vis;
 	
 	g_return_val_if_fail (gtk_main_level () > 0, NULL);
-
+	
 	composer = gtk_type_new (E_TYPE_MSG_COMPOSER);
+	
+	all_composers = g_slist_prepend (all_composers, composer);
+	
+	gtk_signal_connect (GTK_OBJECT (composer), "key-press-event",
+			    GTK_SIGNAL_FUNC (composer_key_pressed),
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (composer), "destroy",
+			    GTK_SIGNAL_FUNC (msg_composer_destroy_notify),
+			    NULL);
 	
 	gtk_window_set_default_size (GTK_WINDOW (composer),
 				     DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -2393,7 +2790,7 @@ create_composer (void)
 	vbox = gtk_vbox_new (FALSE, 0);
 	
 	vis = e_msg_composer_get_visible_flags (composer);
-	composer->hdrs = e_msg_composer_hdrs_new (vis);
+	composer->hdrs = e_msg_composer_hdrs_new (composer->uic, visible_mask, vis);
 	if (!composer->hdrs) {
 		e_activation_failure_dialog (GTK_WINDOW (composer),
 					     _("Could not create composer window:\n"
@@ -2413,6 +2810,9 @@ create_composer (void)
 			    GTK_SIGNAL_FUNC (from_changed_cb), composer);
 	gtk_widget_show (composer->hdrs);
 	
+	prepare_signatures_menu (composer);
+	setup_signatures_menu (composer);
+	
 	/* Editor component.  */
 	composer->editor = bonobo_widget_new_control (
 		GNOME_GTKHTML_EDITOR_CONTROL_ID,
@@ -2420,7 +2820,9 @@ create_composer (void)
 	if (!composer->editor) {
 		e_activation_failure_dialog (GTK_WINDOW (composer),
 					     _("Could not create composer window:\n"
-					       "Unable to activate HTML editor component."),
+					       "Unable to activate HTML editor component.\n"
+					       "Please make sure you have the correct version\n"
+					       "of gtkhtml and libgtkhtml installed.\n"),
 					     GNOME_GTKHTML_EDITOR_CONTROL_ID,
 					     "IDL:Bonobo/Control:1.0");
 		gtk_object_destroy (GTK_OBJECT (composer));
@@ -2470,7 +2872,7 @@ create_composer (void)
 	gtk_widget_show (composer->editor);
 	
 	e_msg_composer_show_attachments (composer, FALSE);
-
+	
 	prepare_engine (composer);
 	if (composer->editor_engine == CORBA_OBJECT_NIL) {
 		e_activation_failure_dialog (GTK_WINDOW (composer),
@@ -2483,14 +2885,34 @@ create_composer (void)
 	}
 		
 	gtk_signal_connect (GTK_OBJECT (composer), "map", map_default_cb, NULL);
-
+	
 	if (am == NULL) {
 		am = autosave_manager_new ();
 	}
 	autosave_manager_register (am, composer);
-
+	
 	return composer;
 }
+
+static void
+set_editor_signature (EMsgComposer *composer)
+{
+	/* printf ("set_editor_signature\n"); */
+	if (E_MSG_COMPOSER_HDRS (composer->hdrs)->account->id) {
+		MailConfigIdentity *id;
+		
+		id = E_MSG_COMPOSER_HDRS (composer->hdrs)->account->id;
+		
+		composer->signature = id->def_signature;
+		composer->auto_signature = id->auto_signature;
+		
+		/* printf ("auto: %d\n", id->auto_signature); */
+		
+		sig_select_item (composer);
+	}
+	/* printf ("set_editor_signature end\n"); */
+}
+
 
 /**
  * e_msg_composer_new:
@@ -2504,56 +2926,54 @@ e_msg_composer_new (void)
 {
 	EMsgComposer *new;
 	
-	new = create_composer ();
+	new = create_composer (E_MSG_COMPOSER_VISIBLE_MASK_MAIL);
 	if (new) {
 		e_msg_composer_set_send_html (new, mail_config_get_send_html ());
 		set_editor_text (new, "");
+		set_editor_signature (new);
 	}
 	
 	return new;
 }
 
 
-/* FIXME: are there any other headers?? */
-/* This is a list of headers that we DO NOT want to append to the
- * extra_hdr_* arrays.
+/**
+ * e_msg_composer_new_post:
  *
- * Note: a '*' char can be used for a simple wilcard match.
- * is_special_header() will use g_strNcasecmp() with the first '*'
- * char being the end of the match string. If no '*' is present, then
- * it will be assumed that the header must be an exact match.
- */
-static char *special_headers[] = {
-	"Subject",
-	"Date",
-	"From",
-	"To",
-	"Cc",
-	"Bcc",
-	"Received",
-	"Message-Id",
-	"X-Evolution*",
-	"Content-*",
-	"MIME-Version",
-	NULL
-};
+ * Create a new message composer widget.
+ * 
+ * Return value: A pointer to the newly created widget
+ **/
+EMsgComposer *
+e_msg_composer_new_post (void)
+{
+	EMsgComposer *new;
+	
+	new = create_composer (E_MSG_COMPOSER_VISIBLE_MASK_POST);
+	if (new) {
+		e_msg_composer_set_send_html (new, mail_config_get_send_html ());
+		set_editor_text (new, "");
+		set_editor_signature (new);
+	}
+	
+	return new;
+}
+
 
 static gboolean
 is_special_header (const char *hdr_name)
 {
-	int i;
+	/* Note: a header is a "special header" if it has any meaning:
+	   1. it's not a X-* header or
+	   2. it's an X-Evolution* header
+	*/
+	if (g_strncasecmp (hdr_name, "X-", 2))
+		return TRUE;
 	
-	for (i = 0; special_headers[i]; i++) {
-		char *p;
-		
-		if ((p = strchr (special_headers[i], '*'))) {
-			if (!g_strncasecmp (special_headers[i], hdr_name, p - special_headers[i]))
-				return TRUE;
-		} else {
-			if (!g_strcasecmp (special_headers[i], hdr_name))
-				return TRUE;
-		}
-	}
+	if (!g_strncasecmp (hdr_name, "X-Evolution", 11))
+		return TRUE;
+	
+	/* we can keep all other X-* headers */
 	
 	return FALSE;
 }
@@ -2576,7 +2996,7 @@ e_msg_composer_flush_pending_body (EMsgComposer *composer, gboolean apply)
 	body = gtk_object_get_data (GTK_OBJECT (composer), "body:text");
 	if (body) {
 		if (apply) 
-			e_msg_composer_set_body_text (composer, body);
+			set_editor_text (composer, body);
 		
 		gtk_object_set_data (GTK_OBJECT (composer), "body:text", NULL);
 		g_free (body);
@@ -2584,40 +3004,54 @@ e_msg_composer_flush_pending_body (EMsgComposer *composer, gboolean apply)
 }	
 
 static void
+add_attachments_handle_mime_part (EMsgComposer *composer, CamelMimePart *mime_part, 
+				  gboolean just_inlines, int depth)
+{
+	CamelContentType *content_type;
+	CamelDataWrapper *wrapper;
+	
+	content_type = camel_mime_part_get_content_type (mime_part);
+	wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
+	
+	if (CAMEL_IS_MULTIPART (wrapper)) {
+		/* another layer of multipartness... */
+		CamelMultipart *mpart;
+		
+		mpart = CAMEL_MULTIPART (wrapper);
+		
+		add_attachments_from_multipart (composer, mpart, just_inlines, depth + 1);
+	} else if (header_content_type_is (content_type, "text", "*")) {
+		/* do nothing */
+	} else if (header_content_type_is (content_type, "message", "*")) {
+		/* do nothing */
+	} else if (just_inlines) {
+		if (camel_mime_part_get_content_id (mime_part) ||
+		    camel_mime_part_get_content_location (mime_part))
+			e_msg_composer_add_inline_image_from_mime_part (composer, mime_part);
+	} else {
+		e_msg_composer_attach (composer, mime_part);
+	}
+}
+
+static void
 add_attachments_from_multipart (EMsgComposer *composer, CamelMultipart *multipart,
 				gboolean just_inlines, int depth)
 {
 	/* find appropriate message attachments to add to the composer */
+	CamelMimePart *mime_part;
 	int i, nparts;
 	
-	nparts = camel_multipart_get_number (multipart);
-	
-	for (i = 0; i < nparts; i++) {
-		CamelContentType *content_type;
-		CamelMimePart *mime_part;
+	if (CAMEL_IS_MULTIPART_SIGNED (multipart)) {
+		mime_part = camel_multipart_get_part (multipart, CAMEL_MULTIPART_SIGNED_CONTENT);
+		add_attachments_handle_mime_part (composer, mime_part, just_inlines, depth);
+	} else if (CAMEL_IS_MULTIPART_ENCRYPTED (multipart)) {
+		/* what should we do in this case? */
+	} else {
+		nparts = camel_multipart_get_number (multipart);
 		
-		mime_part = camel_multipart_get_part (multipart, i);
-		content_type = camel_mime_part_get_content_type (mime_part);
-		
-		if (header_content_type_is (content_type, "multipart", "*")) {
-			/* another layer of multipartness... */
-			CamelDataWrapper *wrapper;
-			CamelMultipart *mpart;
-			
-			wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
-			mpart = CAMEL_MULTIPART (wrapper);
-			
-			add_attachments_from_multipart (composer, mpart, just_inlines, depth + 1);
-		} else if (header_content_type_is (content_type, "text", "*")) {
-			/* do nothing */
-		} else if (header_content_type_is (content_type, "message", "*")) {
-			/* do nothing */
-		} else if (just_inlines) {
-			if (camel_mime_part_get_content_id (mime_part) ||
-			    camel_mime_part_get_content_location (mime_part))
-				e_msg_composer_add_inline_image_from_mime_part (composer, mime_part);
-		} else {
-			e_msg_composer_attach (composer, mime_part);
+		for (i = 0; i < nparts; i++) {
+			mime_part = camel_multipart_get_part (multipart, i);
+			add_attachments_handle_mime_part (composer, mime_part, just_inlines, depth);
 		}
 	}
 }
@@ -2637,15 +3071,13 @@ void
 e_msg_composer_add_message_attachments (EMsgComposer *composer, CamelMimeMessage *message,
 					gboolean just_inlines)
 {
-	CamelContentType *content_type;
+	CamelDataWrapper *wrapper;
 	
-	content_type = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
-	if (header_content_type_is (content_type, "multipart", "*")) {
+	wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (message));
+	if (CAMEL_IS_MULTIPART (wrapper)) {
 		/* there must be attachments... */
-		CamelDataWrapper *wrapper;
 		CamelMultipart *multipart;
 		
-		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (CAMEL_MIME_PART (message)));
 		multipart = CAMEL_MULTIPART (wrapper);
 		
 		add_attachments_from_multipart (composer, multipart, just_inlines, 0);
@@ -2654,6 +3086,115 @@ e_msg_composer_add_message_attachments (EMsgComposer *composer, CamelMimeMessage
 	}
 }
 
+
+static void
+handle_multipart_signed (EMsgComposer *composer, CamelMultipart *multipart, int depth)
+{
+	CamelContentType *content_type;
+	CamelDataWrapper *content;
+	CamelMimePart *mime_part;
+	
+	/* FIXME: make sure this isn't an s/mime signed part?? */
+	e_msg_composer_set_pgp_sign (composer, TRUE);
+	
+	mime_part = camel_multipart_get_part (multipart, CAMEL_MULTIPART_SIGNED_CONTENT);
+	content_type = camel_mime_part_get_content_type (mime_part);
+	
+	content = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
+	
+	if (CAMEL_IS_MULTIPART (content)) {
+		multipart = CAMEL_MULTIPART (content);
+		
+		/* Note: depth is preserved here because we're not
+                   counting multipart/signed as a multipart, instead
+                   we want to treat the content part as our mime part
+                   here. */
+		
+		if (CAMEL_IS_MULTIPART_SIGNED (content)) {
+			/* handle the signed content and configure the composer to sign outgoing messages */
+			handle_multipart_signed (composer, multipart, depth);
+		} else if (CAMEL_IS_MULTIPART_ENCRYPTED (content)) {
+			/* decrypt the encrypted content and configure the composer to encrypt outgoing messages */
+			handle_multipart_encrypted (composer, multipart, depth);
+		} else if (header_content_type_is (content_type, "multipart", "alternative")) {
+			/* this contains the text/plain and text/html versions of the message body */
+			handle_multipart_alternative (composer, multipart, depth);
+		} else {
+			/* there must be attachments... */
+			handle_multipart (composer, multipart, depth);
+		}
+	} else if (header_content_type_is (content_type, "text", "*")) {
+		char *text;
+		
+		text = mail_get_message_body (content, FALSE, FALSE);
+		
+		if (text)
+			e_msg_composer_set_pending_body (composer, text);
+	} else {
+		e_msg_composer_attach (composer, mime_part);
+	}
+}
+
+static void
+handle_multipart_encrypted (EMsgComposer *composer, CamelMultipart *multipart, int depth)
+{
+	CamelMultipartEncrypted *mpe = (CamelMultipartEncrypted *) multipart;
+	CamelContentType *content_type;
+	CamelCipherContext *cipher;
+	CamelDataWrapper *content;
+	CamelMimePart *mime_part;
+	CamelException ex;
+	
+	/* FIXME: make sure this is a PGP/MIME encrypted part?? */
+	e_msg_composer_set_pgp_encrypt (composer, TRUE);
+	
+	camel_exception_init (&ex);
+	cipher = mail_crypto_get_pgp_cipher_context (NULL);
+	mime_part = camel_multipart_encrypted_decrypt (mpe, cipher, &ex);
+	camel_object_unref (cipher);
+	camel_exception_clear (&ex);
+	
+	if (!mime_part)
+		return;
+	
+	content_type = camel_mime_part_get_content_type (mime_part);
+	
+	content = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
+	
+	if (CAMEL_IS_MULTIPART (content)) {
+		multipart = CAMEL_MULTIPART (content);
+		
+		/* Note: depth is preserved here because we're not
+                   counting multipart/encrypted as a multipart, instead
+                   we want to treat the content part as our mime part
+                   here. */
+		
+		if (CAMEL_IS_MULTIPART_SIGNED (content)) {
+			/* handle the signed content and configure the composer to sign outgoing messages */
+			handle_multipart_signed (composer, multipart, depth);
+		} else if (CAMEL_IS_MULTIPART_ENCRYPTED (content)) {
+			/* decrypt the encrypted content and configure the composer to encrypt outgoing messages */
+			handle_multipart_encrypted (composer, multipart, depth);
+		} else if (header_content_type_is (content_type, "multipart", "alternative")) {
+			/* this contains the text/plain and text/html versions of the message body */
+			handle_multipart_alternative (composer, multipart, depth);
+		} else {
+			/* there must be attachments... */
+			handle_multipart (composer, multipart, depth);
+		}
+	} else if (header_content_type_is (content_type, "text", "*")) {
+		char *text;
+		
+		text = mail_get_message_body (content, FALSE, FALSE);
+		
+		if (text)
+			e_msg_composer_set_pending_body (composer, text);
+	} else {
+		e_msg_composer_attach (composer, mime_part);
+	}
+	
+	camel_object_unref (mime_part);
+}
 
 static void
 handle_multipart_alternative (EMsgComposer *composer, CamelMultipart *multipart, int depth)
@@ -2666,21 +3207,28 @@ handle_multipart_alternative (EMsgComposer *composer, CamelMultipart *multipart,
 	
 	for (i = 0; i < nparts; i++) {
 		CamelContentType *content_type;
+		CamelDataWrapper *content;
 		CamelMimePart *mime_part;
 		
 		mime_part = camel_multipart_get_part (multipart, i);
 		content_type = camel_mime_part_get_content_type (mime_part);
+		content = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
 		
-		if (header_content_type_is (content_type, "multipart", "*")) {
-			/* another layer of multipartness... */
-			CamelDataWrapper *wrapper;
-			CamelMultipart *mpart;
+		if (CAMEL_IS_MULTIPART (content)) {
+			CamelMultipart *mp;
 			
-			wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
-			mpart = CAMEL_MULTIPART (wrapper);
+			mp = CAMEL_MULTIPART (content);
 			
-			/* depth doesn't matter so long as we don't pass 0 */
-			handle_multipart (composer, mpart, depth + 1);
+			if (CAMEL_IS_MULTIPART_SIGNED (content)) {
+				/* handle the signed content and configure the composer to sign outgoing messages */
+				handle_multipart_signed (composer, mp, depth + 1);
+			} else if (CAMEL_IS_MULTIPART_ENCRYPTED (content)) {
+				/* decrypt the encrypted content and configure the composer to encrypt outgoing messages */
+				handle_multipart_encrypted (composer, mp, depth + 1);
+			} else {
+				/* depth doesn't matter so long as we don't pass 0 */
+				handle_multipart (composer, mp, depth + 1);
+			}
 		} else if (header_content_type_is (content_type, "text", "html")) {
 			/* text/html is preferable, so once we find it we're done... */
 			text_part = mime_part;
@@ -2716,36 +3264,35 @@ handle_multipart (EMsgComposer *composer, CamelMultipart *multipart, int depth)
 	
 	for (i = 0; i < nparts; i++) {
 		CamelContentType *content_type;
+		CamelDataWrapper *content;
 		CamelMimePart *mime_part;
-		
+
 		mime_part = camel_multipart_get_part (multipart, i);
 		content_type = camel_mime_part_get_content_type (mime_part);
+		content = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
 		
-		if (header_content_type_is (content_type, "multipart", "alternative")) {
-			/* this structure contains the body */
-			CamelDataWrapper *wrapper;
-			CamelMultipart *mpart;
+		if (CAMEL_IS_MULTIPART (content)) {
+			CamelMultipart *mp;
 			
-			wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
-			mpart = CAMEL_MULTIPART (wrapper);
+			mp = CAMEL_MULTIPART (content);
 			
-			handle_multipart_alternative (composer, mpart, depth + 1);
-		} else if (header_content_type_is (content_type, "multipart", "*")) {
-			/* another layer of multipartness... */
-			CamelDataWrapper *wrapper;
-			CamelMultipart *mpart;
-			
-			wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
-			mpart = CAMEL_MULTIPART (wrapper);
-			
-			handle_multipart (composer, mpart, depth + 1);
+			if (CAMEL_IS_MULTIPART_SIGNED (content)) {
+				/* handle the signed content and configure the composer to sign outgoing messages */
+				handle_multipart_signed (composer, mp, depth + 1);
+			} else if (CAMEL_IS_MULTIPART_ENCRYPTED (content)) {
+				/* decrypt the encrypted content and configure the composer to encrypt outgoing messages */
+				handle_multipart_encrypted (composer, mp, depth + 1);
+			} else if (header_content_type_is (content_type, "multipart", "alternative")) {
+				handle_multipart_alternative (composer, mp, depth + 1);
+			} else {
+				/* depth doesn't matter so long as we don't pass 0 */
+				handle_multipart (composer, mp, depth + 1);
+			}
 		} else if (depth == 0 && i == 0) {
 			/* Since the first part is not multipart/alternative, then this must be the body */
-			CamelDataWrapper *contents;
 			char *text;
 			
-			contents = camel_medium_get_content_object (CAMEL_MEDIUM (mime_part));
-			text = mail_get_message_body (contents, FALSE, FALSE);
+			text = mail_get_message_body (content, FALSE, FALSE);
 			
 			if (text)
 				e_msg_composer_set_pending_body (composer, text);
@@ -2760,6 +3307,51 @@ handle_multipart (EMsgComposer *composer, CamelMultipart *multipart, int depth)
 	}
 }
 
+static void
+set_signature_gui (EMsgComposer *composer)
+{
+	CORBA_Environment ev;
+
+	composer->auto_signature = FALSE;
+	composer->signature = NULL;
+
+	CORBA_exception_init (&ev);
+	if (GNOME_GtkHTML_Editor_Engine_searchByData (composer->editor_engine, 1, "ClueFlow", "signature", "1", &ev)) {
+		gchar *str = NULL;
+
+		str = GNOME_GtkHTML_Editor_Engine_getParagraphData (composer->editor_engine, "signature_name", &ev);
+		if (ev._major == CORBA_NO_EXCEPTION && str) {
+			if (!strncmp (str, "name:", 5)) {
+				GList *list = NULL;
+				gchar *decoded_signature_name = decode_signature_name (str + 5);
+
+				list = mail_config_get_signature_list ();
+				if (list && decoded_signature_name)
+					for (; list; list = list->next) {
+						if (!strcmp (decoded_signature_name,
+							     ((MailConfigSignature *) list->data)->name))
+							break;
+					}
+				if (list && decoded_signature_name)
+					composer->signature = (MailConfigSignature *) list->data;
+				else
+					composer->auto_signature = TRUE;
+				g_free (decoded_signature_name);
+			} else if (!strcmp (str, "auto")) {
+				composer->auto_signature = TRUE;
+			}
+		}
+		sig_select_item (composer);
+	}
+	CORBA_exception_free (&ev);
+}
+
+
+static void
+auto_recip_free (gpointer key, gpointer value, gpointer user_data)
+{
+	g_free (key);
+}
 
 /**
  * e_msg_composer_new_with_message:
@@ -2776,80 +3368,147 @@ e_msg_composer_new_with_message (CamelMimeMessage *message)
 {
 	const CamelInternetAddress *to, *cc, *bcc;
 	GList *To = NULL, *Cc = NULL, *Bcc = NULL;
+	const MailConfigAccount *account = NULL;
+	const char *format, *subject, *postto;
 	EDestination **Tov, **Ccv, **Bccv;
-	const char *format, *subject, *account_name;
+	GHashTable *auto_cc, *auto_bcc;
 	CamelContentType *content_type;
 	struct _header_raw *headers;
+	CamelDataWrapper *content;
+	char *account_name;
 	EMsgComposer *new;
 	XEvolution *xev;
-	guint len, i;
+	int len, i;
 	
 	g_return_val_if_fail (gtk_main_level () > 0, NULL);
 	
-	new = create_composer ();
+	postto = camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-PostTo");
+	
+	new = create_composer (postto ? E_MSG_COMPOSER_VISIBLE_MASK_POST : E_MSG_COMPOSER_VISIBLE_MASK_MAIL);
 	if (!new)
 		return NULL;
 	
-	subject = camel_mime_message_get_subject (message);
-	
-	to = camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO);
-	cc = camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC);
-	bcc = camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC);
-	
-	len = CAMEL_ADDRESS (to)->addresses->len;
-	for (i = 0; i < len; i++) {
-		const char *name, *addr;
-		
-		if (camel_internet_address_get (to, i, &name, &addr)) {
-			EDestination *dest = e_destination_new ();
-			e_destination_set_name (dest, name);
-			e_destination_set_email (dest, addr);
-			To = g_list_append (To, dest);
-		}
-	}
-	Tov = e_destination_list_to_vector (To);
-	g_list_free (To);
-	
-	len = CAMEL_ADDRESS (cc)->addresses->len;
-	for (i = 0; i < len; i++) {
-		const char *name, *addr;
-		
-		if (camel_internet_address_get (cc, i, &name, &addr)) {
-			EDestination *dest = e_destination_new ();
-			e_destination_set_name (dest, name);
-			e_destination_set_email (dest, addr);
-			Cc = g_list_append (Cc, dest);
-		}
-	}
-	Ccv = e_destination_list_to_vector (Cc);
-	g_list_free (Cc);
-	
-	len = CAMEL_ADDRESS (bcc)->addresses->len;
-	for (i = 0; i < len; i++) {
-		const char *name, *addr;
-		
-		if (camel_internet_address_get (bcc, i, &name, &addr)) {
-			EDestination *dest = e_destination_new ();
-			e_destination_set_name (dest, name);
-			e_destination_set_email (dest, addr);
-			Bcc = g_list_append (Bcc, dest);
-		}
-	}
-	
-	Bccv = e_destination_list_to_vector (Bcc);
-	g_list_free (Bcc);
+	if (postto)
+		e_msg_composer_hdrs_set_post_to (E_MSG_COMPOSER_HDRS (new->hdrs), postto);
 	
 	/* Restore the Account preference */
-	account_name = camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-Account");
+	account_name = (char *) camel_medium_get_header (CAMEL_MEDIUM (message), "X-Evolution-Account");
 	if (account_name) {
-		while (*account_name && isspace ((unsigned) *account_name))
-			account_name++;
-	}
-	if (account_name == NULL) {
-		account_name = camel_medium_get_header (CAMEL_MEDIUM (message), "From");
+		account_name = g_strdup (account_name);
+		g_strstrip (account_name);
+		
+		account = mail_config_get_account_by_name (account_name);
 	}
 	
+	if (postto == NULL) {
+		auto_cc = g_hash_table_new (g_strcase_hash, g_strcase_equal);
+		auto_bcc = g_hash_table_new (g_strcase_hash, g_strcase_equal);
+		
+		if (account) {
+			CamelInternetAddress *iaddr;
+			
+			/* hash our auto-recipients for this account */
+			if (account->always_cc) {
+				iaddr = camel_internet_address_new ();
+				if (camel_address_decode (CAMEL_ADDRESS (iaddr), account->cc_addrs) != -1) {
+					for (i = 0; i < camel_address_length (CAMEL_ADDRESS (iaddr)); i++) {
+						const char *name, *addr;
+						
+						if (!camel_internet_address_get (iaddr, i, &name, &addr))
+							continue;
+						
+						g_hash_table_insert (auto_cc, g_strdup (addr), GINT_TO_POINTER (TRUE));
+					}
+				}
+				camel_object_unref (iaddr);
+			}
+			
+			if (account->always_bcc) {
+				iaddr = camel_internet_address_new ();
+				if (camel_address_decode (CAMEL_ADDRESS (iaddr), account->bcc_addrs) != -1) {
+					for (i = 0; i < camel_address_length (CAMEL_ADDRESS (iaddr)); i++) {
+						const char *name, *addr;
+						
+						if (!camel_internet_address_get (iaddr, i, &name, &addr))
+							continue;
+						
+						g_hash_table_insert (auto_bcc, g_strdup (addr), GINT_TO_POINTER (TRUE));
+					}
+				}
+				camel_object_unref (iaddr);
+			}
+		}
+		
+		to = camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_TO);
+		cc = camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_CC);
+		bcc = camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC);
+		
+		len = CAMEL_ADDRESS (to)->addresses->len;
+		for (i = 0; i < len; i++) {
+			const char *name, *addr;
+			
+			if (camel_internet_address_get (to, i, &name, &addr)) {
+				EDestination *dest = e_destination_new ();
+				e_destination_set_name (dest, name);
+				e_destination_set_email (dest, addr);
+				To = g_list_append (To, dest);
+			}
+		}
+		Tov = e_destination_list_to_vector (To);
+		g_list_free (To);
+		
+		len = CAMEL_ADDRESS (cc)->addresses->len;
+		for (i = 0; i < len; i++) {
+			const char *name, *addr;
+			
+			if (camel_internet_address_get (cc, i, &name, &addr)) {
+				EDestination *dest = e_destination_new ();
+				e_destination_set_name (dest, name);
+				e_destination_set_email (dest, addr);
+				
+				if (g_hash_table_lookup (auto_cc, addr))
+					e_destination_set_auto_recipient (dest, TRUE);
+				
+				Cc = g_list_append (Cc, dest);
+			}
+		}
+		
+		Ccv = e_destination_list_to_vector (Cc);
+		g_hash_table_foreach (auto_cc, auto_recip_free, NULL);
+		g_hash_table_destroy (auto_cc);
+		g_list_free (Cc);
+		
+		len = CAMEL_ADDRESS (bcc)->addresses->len;
+		for (i = 0; i < len; i++) {
+			const char *name, *addr;
+			
+			if (camel_internet_address_get (bcc, i, &name, &addr)) {
+				EDestination *dest = e_destination_new ();
+				e_destination_set_name (dest, name);
+				e_destination_set_email (dest, addr);
+				
+				if (g_hash_table_lookup (auto_bcc, addr))
+					e_destination_set_auto_recipient (dest, TRUE);
+				
+				Bcc = g_list_append (Bcc, dest);
+			}
+		}
+		
+		Bccv = e_destination_list_to_vector (Bcc);
+		g_hash_table_foreach (auto_bcc, auto_recip_free, NULL);
+		g_hash_table_destroy (auto_bcc);
+		g_list_free (Bcc);
+	} else {
+		Tov = NULL;
+		Ccv = NULL;
+		Bccv = NULL;
+	}
+	
+	subject = camel_mime_message_get_subject (message);
+	
 	e_msg_composer_set_headers (new, account_name, Tov, Ccv, Bccv, subject);
+	
+	g_free (account_name);
 	
 	e_destination_freev (Tov);
 	e_destination_freev (Ccv);
@@ -2874,7 +3533,9 @@ e_msg_composer_new_with_message (CamelMimeMessage *message)
 	/* set extra headers */
 	headers = CAMEL_MIME_PART (message)->headers;
 	while (headers) {
-		if (!is_special_header (headers->name)) {
+		if (!is_special_header (headers->name) ||
+		    !strcasecmp (headers->name, "References") ||
+		    !strcasecmp (headers->name, "In-Reply-To")) {
 			g_ptr_array_add (new->extra_hdr_names, g_strdup (headers->name));
 			g_ptr_array_add (new->extra_hdr_values, g_strdup (headers->value));
 		}
@@ -2883,25 +3544,26 @@ e_msg_composer_new_with_message (CamelMimeMessage *message)
 	}
 	
 	/* Restore the attachments and body text */
-	content_type = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
-	if (header_content_type_is (content_type, "multipart", "alternative")) {
-		/* this contains the text/plain and text/html versions of the message body */
-		CamelDataWrapper *wrapper;
+	content = camel_medium_get_content_object (CAMEL_MEDIUM (message));
+	if (CAMEL_IS_MULTIPART (content)) {
 		CamelMultipart *multipart;
 		
-		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (CAMEL_MIME_PART (message)));
-		multipart = CAMEL_MULTIPART (wrapper);
+		multipart = CAMEL_MULTIPART (content);
+		content_type = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
 		
-		handle_multipart_alternative (new, multipart, 0);
-	} else if (header_content_type_is (content_type, "multipart", "*")) {
-		/* there must be attachments... */
-		CamelDataWrapper *wrapper;
-		CamelMultipart *multipart;
-		
-		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (CAMEL_MIME_PART (message)));
-		multipart = CAMEL_MULTIPART (wrapper);
-		
-		handle_multipart (new, multipart, 0);
+		if (CAMEL_IS_MULTIPART_SIGNED (content)) {
+			/* handle the signed content and configure the composer to sign outgoing messages */
+			handle_multipart_signed (new, multipart, 0);
+		} else if (CAMEL_IS_MULTIPART_ENCRYPTED (content)) {
+			/* decrypt the encrypted content and configure the composer to encrypt outgoing messages */
+			handle_multipart_encrypted (new, multipart, 0);
+		} else if (header_content_type_is (content_type, "multipart", "alternative")) {
+			/* this contains the text/plain and text/html versions of the message body */
+			handle_multipart_alternative (new, multipart, 0);
+		} else {
+			/* there must be attachments... */
+			handle_multipart (new, multipart, 0);
+		}
 	} else {
 		/* We either have a text/plain or a text/html part */
 		CamelDataWrapper *contents;
@@ -2916,8 +3578,10 @@ e_msg_composer_new_with_message (CamelMimeMessage *message)
 	
 	/* We wait until now to set the body text because we need to ensure that
 	 * the attachment bar has all the attachments, before we request them.
-	 */
+	 */	
 	e_msg_composer_flush_pending_body (new, TRUE);
+	
+	set_signature_gui (new);
 	
 	return new;
 }
@@ -2927,35 +3591,41 @@ disable_editor (EMsgComposer *composer)
 {
 	gtk_widget_set_sensitive (composer->editor, FALSE);
 	gtk_widget_set_sensitive (composer->attachment_bar, FALSE);
-
+	
 	bonobo_ui_component_set_prop (composer->uic, "/menu/Edit", "sensitive", "0", NULL);
 	bonobo_ui_component_set_prop (composer->uic, "/menu/Format", "sensitive", "0", NULL);
 	bonobo_ui_component_set_prop (composer->uic, "/menu/Insert", "sensitive", "0", NULL);
 }
 
-#if 0
-static GList *
-add_recipients (GList *list, const char *recips, gboolean decode)
+/**
+ * e_msg_composer_new_redirect:
+ * @message: The message to use as the source
+ * 
+ * Create a new message composer widget.
+ *
+ * Return value: A pointer to the newly created widget
+ **/
+EMsgComposer *
+e_msg_composer_new_redirect (CamelMimeMessage *message, const char *resent_from)
 {
-	int len;
-	char *addr;
+	EMsgComposer *composer;
+	const char *subject;
 	
-	while (*recips) {
-		len = strcspn (recips, ",");
-		if (len) {
-			addr = g_strndup (recips, len);
-			if (decode)
-				camel_url_decode (addr);
-			list = g_list_append (list, addr);
-		}
-		recips += len;
-		if (*recips == ',')
-			recips++;
-	}
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), NULL);
 	
-	return list;
+	composer = e_msg_composer_new_with_message (message);
+	subject = camel_mime_message_get_subject (message);
+	
+	composer->redirect = message;
+	camel_object_ref (CAMEL_OBJECT (message));
+	
+	e_msg_composer_set_headers (composer, resent_from, NULL, NULL, NULL, subject);
+	
+	disable_editor (composer);
+	
+	return composer;
 }
-#endif
+
 
 static GList *
 add_recipients (GList *list, const char *recips, gboolean decode)
@@ -2999,24 +3669,21 @@ e_msg_composer_new_from_url (const char *url_in)
 	EDestination **tov, **ccv, **bccv;
 	char *subject = NULL, *body = NULL;
 	const char *p, *header;
+	char *content;
 	int len, clen;
-	char *url, *content;
-
 	
 	g_return_val_if_fail (g_strncasecmp (url_in, "mailto:", 7) == 0, NULL);
 	
 	composer = e_msg_composer_new ();
 	if (!composer)
 		return NULL;
-
-	url = g_strdup (url_in);
-	camel_url_decode (url);
-
-	/* Parse recipients (everything after ':' until '?' or eos. */
-	p = url + 7;
+	
+	/* Parse recipients (everything after ':' until '?' or eos). */
+	p = url_in + 7;
 	len = strcspn (p, "?");
 	if (len) {
 		content = g_strndup (p, len);
+		camel_url_decode (content);
 		to = add_recipients (to, content, FALSE);
 		g_free (content);
 	}
@@ -3036,21 +3703,29 @@ e_msg_composer_new_from_url (const char *url_in)
 			p += len + 1;
 			
 			clen = strcspn (p, "&");
+			
 			content = g_strndup (p, clen);
 			camel_url_decode (content);
-
-			if (!g_strncasecmp (header, "to", len))
+			
+			if (!g_strncasecmp (header, "to", len)) {
 				to = add_recipients (to, content, FALSE);
-			else if (!g_strncasecmp (header, "cc", len))
+			} else if (!g_strncasecmp (header, "cc", len)) {
 				cc = add_recipients (cc, content, FALSE);
-			else if (!g_strncasecmp (header, "bcc", len))
+			} else if (!g_strncasecmp (header, "bcc", len)) {
 				bcc = add_recipients (bcc, content, FALSE);
-			else if (!g_strncasecmp (header, "subject", len))
+			} else if (!g_strncasecmp (header, "subject", len)) {
+				g_free (subject);
 				subject = g_strdup (content);
-			else if (!g_strncasecmp (header, "body", len))
+			} else if (!g_strncasecmp (header, "body", len)) {
+				g_free (body);
 				body = g_strdup (content);
+			} else {
+				/* add an arbitrary header */
+				e_msg_composer_add_header (composer, header, content);
+			}
 			
 			g_free (content);
+			
 			p += clen;
 			if (*p == '&') {
 				p++;
@@ -3059,38 +3734,41 @@ e_msg_composer_new_from_url (const char *url_in)
 			}
 		}
 	}
-
+	
 	tov  = e_destination_list_to_vector (to);
 	ccv  = e_destination_list_to_vector (cc);
 	bccv = e_destination_list_to_vector (bcc);
-
+	
 	g_list_free (to);
 	g_list_free (cc);
 	g_list_free (bcc);
-
+	
 	hdrs = E_MSG_COMPOSER_HDRS (composer->hdrs);
-
+	
 	e_msg_composer_hdrs_set_to (hdrs, tov);
 	e_msg_composer_hdrs_set_cc (hdrs, ccv);
 	e_msg_composer_hdrs_set_bcc (hdrs, bccv);
-
+	
 	e_destination_freev (tov);
 	e_destination_freev (ccv);
 	e_destination_freev (bccv);
-
+	
 	if (subject) {
 		e_msg_composer_hdrs_set_subject (hdrs, subject);
 		g_free (subject);
 	}
 	
 	if (body) {
-		char *htmlbody = e_text_to_html (body, E_TEXT_TO_HTML_PRE);
-		e_msg_composer_set_body_text (composer, htmlbody);
+		char *htmlbody;
+		
+		htmlbody = e_text_to_html (body, E_TEXT_TO_HTML_PRE);
+		set_editor_text (composer, htmlbody);
 		g_free (htmlbody);
 	}
 	
 	return composer;
 }
+
 
 /**
  * e_msg_composer_show_attachments:
@@ -3104,11 +3782,11 @@ void
 e_msg_composer_show_attachments (EMsgComposer *composer,
 				 gboolean show)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
 	
 	show_attachments (composer, show);
 }
+
 
 /**
  * e_msg_composer_set_headers:
@@ -3133,13 +3811,14 @@ e_msg_composer_set_headers (EMsgComposer *composer,
 	EMsgComposerHdrs *hdrs;
 	
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
+	
 	hdrs = E_MSG_COMPOSER_HDRS (composer->hdrs);
 	
-	e_msg_composer_hdrs_set_from_account (hdrs, from);
 	e_msg_composer_hdrs_set_to (hdrs, to);
 	e_msg_composer_hdrs_set_cc (hdrs, cc);
 	e_msg_composer_hdrs_set_bcc (hdrs, bcc);
 	e_msg_composer_hdrs_set_subject (hdrs, subject);
+	e_msg_composer_hdrs_set_from_account (hdrs, from);
 }
 
 
@@ -3155,10 +3834,11 @@ e_msg_composer_set_body_text (EMsgComposer *composer, const char *text)
 {
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
 	
-	printf ("setting as body text:\n-----\n%s\n-----\n", text);
-	fflush (stdout);
-	
 	set_editor_text (composer, text);
+	
+	/* set editor text unfortunately kills the signature so we
+           have to re-show it */
+	e_msg_composer_show_sig_file (composer);
 }
 
 
@@ -3176,17 +3856,23 @@ e_msg_composer_set_body (EMsgComposer *composer, const char *body,
 			 const char *mime_type)
 {
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
+	
 	set_editor_text (composer, U_("<b>(The composer contains a non-text "
 				      "message body, which cannot be "
-				      "editted.)<b>"));
+				      "edited.)<b>"));
 	e_msg_composer_set_send_html (composer, FALSE);
 	disable_editor (composer);
-
+	
 	g_free (composer->mime_body);
 	composer->mime_body = g_strdup (body);
 	g_free (composer->mime_type);
 	composer->mime_type = g_strdup (mime_type);
+
+	if (g_strncasecmp (composer->mime_type, "text/calendar", 13) == 0) {
+		EMsgComposerHdrs *hdrs = E_MSG_COMPOSER_HDRS (composer->hdrs);
+		if (hdrs->account && hdrs->account->pgp_no_imip_sign)
+			e_msg_composer_set_pgp_sign (composer, FALSE);
+	}
 }
 
 
@@ -3224,7 +3910,7 @@ void
 e_msg_composer_attach (EMsgComposer *composer, CamelMimePart *attachment)
 {
 	EMsgComposerAttachmentBar *bar;
-
+	
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
 	g_return_if_fail (CAMEL_IS_MIME_PART (attachment));
 	
@@ -3253,19 +3939,19 @@ e_msg_composer_add_inline_image_from_file (EMsgComposer *composer,
 	CamelDataWrapper *wrapper;
 	CamelMimePart *part;
 	struct stat statbuf;
-
+	
 	/* check for regular file */
 	if (stat (file_name, &statbuf) < 0 || !S_ISREG (statbuf.st_mode))
 		return NULL;
-
+	
 	stream = camel_stream_fs_new_with_name (file_name, O_RDONLY, 0);
 	if (!stream)
 		return NULL;
-
+	
 	wrapper = camel_data_wrapper_new ();
 	camel_data_wrapper_construct_from_stream (wrapper, stream);
 	camel_object_unref (CAMEL_OBJECT (stream));
-
+	
 	mime_type = e_msg_composer_guess_mime_type (file_name);
 	camel_data_wrapper_set_mime_type (wrapper, mime_type ? mime_type : "application/octet-stream");
 	g_free (mime_type);
@@ -3273,21 +3959,22 @@ e_msg_composer_add_inline_image_from_file (EMsgComposer *composer,
 	part = camel_mime_part_new ();
 	camel_medium_set_content_object (CAMEL_MEDIUM (part), wrapper);
 	camel_object_unref (CAMEL_OBJECT (wrapper));
-
+	
 	cid = header_msgid_generate ();
 	camel_mime_part_set_content_id (part, cid);
 	camel_mime_part_set_filename (part, g_basename (file_name));
 	camel_mime_part_set_encoding (part, CAMEL_MIME_PART_ENCODING_BASE64);
-
+	
 	url = g_strdup_printf ("file:%s", file_name);
 	g_hash_table_insert (composer->inline_images_by_url, url, part);
-
+	
 	url = g_strdup_printf ("cid:%s", cid);
 	g_hash_table_insert (composer->inline_images, url, part);
 	g_free (cid);
-
+	
 	return part;
 }	
+
 
 /**
  * e_msg_composer_add_inline_image_from_mime_part:
@@ -3303,23 +3990,24 @@ e_msg_composer_add_inline_image_from_mime_part (EMsgComposer  *composer,
 {
 	char *cid, *url;
 	const char *location;
-
+	
 	cid = (char *)camel_mime_part_get_content_id (part);
 	if (!cid) {
 		camel_mime_part_set_content_id (part, NULL);
 		cid = (char *)camel_mime_part_get_content_id (part);
 	}
-
+	
 	url = g_strdup_printf ("cid:%s", cid);
 	g_hash_table_insert (composer->inline_images, url, part);
 	camel_object_ref (CAMEL_OBJECT (part));
-
+	
 	location = camel_mime_part_get_content_location (part);
 	if (location) {
 		g_hash_table_insert (composer->inline_images_by_url,
 				     g_strdup (location), part);
 	}
 }
+
 
 /**
  * e_msg_composer_get_message:
@@ -3332,12 +4020,13 @@ e_msg_composer_add_inline_image_from_mime_part (EMsgComposer  *composer,
  * Return value: A pointer to the new CamelMimeMessage object
  **/
 CamelMimeMessage *
-e_msg_composer_get_message (EMsgComposer *composer)
+e_msg_composer_get_message (EMsgComposer *composer, gboolean save_html_object_data)
 {
 	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), NULL);
 	
-	return build_message (composer);
+	return build_message (composer, save_html_object_data);
 }
+
 
 CamelMimeMessage *
 e_msg_composer_get_message_draft (EMsgComposer *composer)
@@ -3362,7 +4051,7 @@ e_msg_composer_get_message_draft (EMsgComposer *composer)
 	old_smime_encrypt = composer->smime_encrypt;
 	composer->smime_encrypt = FALSE;
 	
-	msg = e_msg_composer_get_message (composer);
+	msg = e_msg_composer_get_message (composer, TRUE);
 	
 	composer->send_html = old_send_html;
 	composer->pgp_sign = old_pgp_sign;
@@ -3383,13 +4072,12 @@ e_msg_composer_get_message_draft (EMsgComposer *composer)
 	return msg;
 }
 
-
 
 static void
 delete_old_signature (EMsgComposer *composer)
 {
 	CORBA_Environment ev;
-
+	
 	/* printf ("delete_old_signature\n"); */
 	CORBA_exception_init (&ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "cursor-bod", &ev);
@@ -3401,10 +4089,11 @@ delete_old_signature (EMsgComposer *composer)
 		/* if (!rv)
 		   break; */
 		GNOME_GtkHTML_Editor_Engine_setParagraphData (composer->editor_engine, "signature", "0", &ev);
-	} else
-		GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "insert-paragraph", &ev);
+		GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "delete-back", &ev);
+	}
 	CORBA_exception_free (&ev);
 }
+
 
 /**
  * e_msg_composer_show_sig:
@@ -3416,36 +4105,44 @@ void
 e_msg_composer_show_sig_file (EMsgComposer *composer)
 {
 	CORBA_Environment ev;
-	gchar *html;
-
-	g_return_if_fail (composer != NULL);
+	char *html;
+	
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
+	
+	/* printf ("e_msg_composer_show_sig_file\n"); */
 	/* printf ("set sig '%s' '%s'\n", sig_file, composer->sig_file); */
-
+	
 	composer->in_signature_insert = TRUE;
 	CORBA_exception_init (&ev);
 	GNOME_GtkHTML_Editor_Engine_freeze (composer->editor_engine, &ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "cursor-position-save", &ev);
-	GNOME_GtkHTML_Editor_Engine_undo_begin (composer->editor_engine, "Set signature", "Reset signature", &ev);
-
+	GNOME_GtkHTML_Editor_Engine_undoBegin (composer->editor_engine, "Set signature", "Reset signature", &ev);
+	
 	delete_old_signature (composer);
 	html = get_signature_html (composer);
 	if (html) {
 		if (!GNOME_GtkHTML_Editor_Engine_isParagraphEmpty (composer->editor_engine, &ev))
 			GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "insert-paragraph", &ev);
+		if (!GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "cursor-backward", &ev))
+			GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "insert-paragraph", &ev);
+		else
+			GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "cursor-forward", &ev);
 		/* printf ("insert %s\n", html); */
 		GNOME_GtkHTML_Editor_Engine_setParagraphData (composer->editor_engine, "orig", "0", &ev);
 		GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "indent-zero", &ev);
 		GNOME_GtkHTML_Editor_Engine_insertHTML (composer->editor_engine, html, &ev);
 		g_free (html);
 	}
-	GNOME_GtkHTML_Editor_Engine_undo_end (composer->editor_engine, &ev);
+	
+	GNOME_GtkHTML_Editor_Engine_undoEnd (composer->editor_engine, &ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "cursor-position-restore", &ev);
 	GNOME_GtkHTML_Editor_Engine_thaw (composer->editor_engine, &ev);
 	CORBA_exception_free (&ev);
 	composer->in_signature_insert = FALSE;
+	
+	/* printf ("e_msg_composer_show_sig_file end\n"); */
 }
+
 
 /**
  * e_msg_composer_set_send_html:
@@ -3459,32 +4156,31 @@ e_msg_composer_set_send_html (EMsgComposer *composer,
 			      gboolean send_html)
 {
 	CORBA_Environment ev;
-
-	g_return_if_fail (composer != NULL);
+	
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
+	
 	if (composer->send_html && send_html)
 		return;
-	if (! composer->send_html && ! send_html)
+	if (!composer->send_html && !send_html)
 		return;
-
+	
 	composer->send_html = send_html;
-
+	
 	CORBA_exception_init (&ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "block-redraw", &ev);
 	bonobo_ui_component_set_prop (
 		composer->uic, "/commands/FormatHtml",
 		"state", composer->send_html ? "1" : "0", NULL);
-
+	
 	/* let the editor know which mode we are in */
 	bonobo_widget_set_property (BONOBO_WIDGET (composer->editor), "FormatHTML",
 				    composer->send_html, NULL);
-
+	
 	set_config (composer, "FormatHTML", composer->send_html);
-	e_msg_composer_show_sig_file (composer);
 	GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "unblock-redraw", &ev);
 	CORBA_exception_free (&ev);
 }
+
 
 /**
  * e_msg_composer_get_send_html:
@@ -3497,9 +4193,8 @@ e_msg_composer_set_send_html (EMsgComposer *composer,
 gboolean
 e_msg_composer_get_send_html (EMsgComposer *composer)
 {
-	g_return_val_if_fail (composer != NULL, FALSE);
 	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
-
+	
 	return composer->send_html;
 }
 
@@ -3515,7 +4210,6 @@ e_msg_composer_get_preferred_account (EMsgComposer *composer)
 {
 	EMsgComposerHdrs *hdrs;
 	
-	g_return_val_if_fail (composer != NULL, NULL);
 	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), NULL);
 	
 	hdrs = E_MSG_COMPOSER_HDRS (composer->hdrs);
@@ -3534,7 +4228,6 @@ e_msg_composer_get_preferred_account (EMsgComposer *composer)
 void
 e_msg_composer_set_pgp_sign (EMsgComposer *composer, gboolean pgp_sign)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
 	
 	if (composer->pgp_sign && pgp_sign)
@@ -3548,6 +4241,7 @@ e_msg_composer_set_pgp_sign (EMsgComposer *composer, gboolean pgp_sign)
 				      "state", composer->pgp_sign ? "1" : "0", NULL);
 }
 
+
 /**
  * e_msg_composer_get_pgp_sign:
  * @composer: A message composer widget
@@ -3559,7 +4253,6 @@ e_msg_composer_set_pgp_sign (EMsgComposer *composer, gboolean pgp_sign)
 gboolean
 e_msg_composer_get_pgp_sign (EMsgComposer *composer)
 {
-	g_return_val_if_fail (composer != NULL, FALSE);
 	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
 	
 	return composer->pgp_sign;
@@ -3576,7 +4269,6 @@ e_msg_composer_get_pgp_sign (EMsgComposer *composer)
 void
 e_msg_composer_set_pgp_encrypt (EMsgComposer *composer, gboolean pgp_encrypt)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
 	
 	if (composer->pgp_encrypt && pgp_encrypt)
@@ -3602,7 +4294,6 @@ e_msg_composer_set_pgp_encrypt (EMsgComposer *composer, gboolean pgp_encrypt)
 gboolean
 e_msg_composer_get_pgp_encrypt (EMsgComposer *composer)
 {
-	g_return_val_if_fail (composer != NULL, FALSE);
 	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
 	
 	return composer->pgp_encrypt;
@@ -3619,7 +4310,6 @@ e_msg_composer_get_pgp_encrypt (EMsgComposer *composer)
 void
 e_msg_composer_set_smime_sign (EMsgComposer *composer, gboolean smime_sign)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
 	
 	if (composer->smime_sign && smime_sign)
@@ -3633,6 +4323,7 @@ e_msg_composer_set_smime_sign (EMsgComposer *composer, gboolean smime_sign)
 				      "state", composer->smime_sign ? "1" : "0", NULL);
 }
 
+
 /**
  * e_msg_composer_get_smime_sign:
  * @composer: A message composer widget
@@ -3644,7 +4335,6 @@ e_msg_composer_set_smime_sign (EMsgComposer *composer, gboolean smime_sign)
 gboolean
 e_msg_composer_get_smime_sign (EMsgComposer *composer)
 {
-	g_return_val_if_fail (composer != NULL, FALSE);
 	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
 	
 	return composer->smime_sign;
@@ -3661,7 +4351,6 @@ e_msg_composer_get_smime_sign (EMsgComposer *composer)
 void
 e_msg_composer_set_smime_encrypt (EMsgComposer *composer, gboolean smime_encrypt)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
 	
 	if (composer->smime_encrypt && smime_encrypt)
@@ -3687,10 +4376,158 @@ e_msg_composer_set_smime_encrypt (EMsgComposer *composer, gboolean smime_encrypt
 gboolean
 e_msg_composer_get_smime_encrypt (EMsgComposer *composer)
 {
-	g_return_val_if_fail (composer != NULL, FALSE);
 	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
 	
 	return composer->smime_encrypt;
+}
+
+
+/**
+ * e_msg_composer_get_view_from:
+ * @composer: A message composer widget
+ * 
+ * Get the status of the "View From header" flag.
+ * 
+ * Return value: The status of the "View From header" flag.
+ **/
+gboolean
+e_msg_composer_get_view_from (EMsgComposer *composer)
+{
+	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
+	
+	return composer->view_from;
+}
+
+
+/**
+ * e_msg_composer_set_view_from:
+ * @composer: A message composer widget
+ * @state: whether to show or hide the From selector
+ *
+ * Controls the state of the From selector
+ */
+void
+e_msg_composer_set_view_from (EMsgComposer *composer, gboolean view_from)
+{
+	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
+	
+	if ((composer->view_from && view_from) ||
+	    (!composer->view_from && !view_from))
+		return;
+	
+	composer->view_from = view_from;
+	bonobo_ui_component_set_prop (
+		composer->uic, "/commands/ViewFrom",
+		"state", composer->view_from ? "1" : "0", NULL);
+	set_config (composer, "ViewFrom", composer->view_from);
+	e_msg_composer_hdrs_set_visible
+		(E_MSG_COMPOSER_HDRS (composer->hdrs),
+		 e_msg_composer_get_visible_flags (composer));
+}
+
+
+/**
+ * e_msg_composer_get_view_replyto:
+ * @composer: A message composer widget
+ * 
+ * Get the status of the "View Reply-To header" flag.
+ * 
+ * Return value: The status of the "View Reply-To header" flag.
+ **/
+gboolean
+e_msg_composer_get_view_replyto (EMsgComposer *composer)
+{
+	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
+	
+	return composer->view_replyto;
+}
+
+
+/**
+ * e_msg_composer_set_view_replyto:
+ * @composer: A message composer widget
+ * @state: whether to show or hide the Reply-To selector
+ *
+ * Controls the state of the Reply-To selector
+ */
+void
+e_msg_composer_set_view_replyto (EMsgComposer *composer, gboolean view_replyto)
+{
+	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
+	
+	if ((composer->view_replyto && view_replyto) ||
+	    (!composer->view_replyto && !view_replyto))
+		return;
+	
+	composer->view_replyto = view_replyto;
+	bonobo_ui_component_set_prop (
+		composer->uic, "/commands/ViewReplyTo",
+		"state", composer->view_replyto ? "1" : "0", NULL);
+	set_config (composer, "ViewReplyTo", composer->view_replyto);
+	e_msg_composer_hdrs_set_visible
+		(E_MSG_COMPOSER_HDRS (composer->hdrs),
+		 e_msg_composer_get_visible_flags (composer));
+}
+
+
+/**
+ * e_msg_composer_get_view_cc:
+ * @composer: A message composer widget
+ * 
+ * Get the status of the "View CC header" flag.
+ * 
+ * Return value: The status of the "View CC header" flag.
+ **/
+gboolean
+e_msg_composer_get_view_cc (EMsgComposer *composer)
+{
+	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
+	
+	return composer->view_cc;
+}
+
+
+/**
+ * e_msg_composer_set_view_cc:
+ * @composer: A message composer widget
+ * @state: whether to show or hide the cc view
+ *
+ * Controls the state of the CC display
+ */
+void
+e_msg_composer_set_view_cc (EMsgComposer *composer, gboolean view_cc)
+{
+	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
+	
+	if ((composer->view_cc && view_cc) ||
+	    (!composer->view_cc && !view_cc))
+		return;
+	
+	composer->view_cc = view_cc;
+	bonobo_ui_component_set_prop (
+		composer->uic, "/commands/ViewCC",
+		"state", composer->view_cc ? "1" : "0", NULL);
+	set_config (composer, "ViewCC", composer->view_cc);
+	e_msg_composer_hdrs_set_visible
+		(E_MSG_COMPOSER_HDRS (composer->hdrs),
+		 e_msg_composer_get_visible_flags (composer));
+}
+
+
+/**
+ * e_msg_composer_get_view_bcc:
+ * @composer: A message composer widget
+ * 
+ * Get the status of the "View BCC header" flag.
+ * 
+ * Return value: The status of the "View BCC header" flag.
+ **/
+gboolean
+e_msg_composer_get_view_bcc (EMsgComposer *composer)
+{
+	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
+	
+	return composer->view_bcc;
 }
 
 
@@ -3704,67 +4541,22 @@ e_msg_composer_get_smime_encrypt (EMsgComposer *composer)
 void
 e_msg_composer_set_view_bcc (EMsgComposer *composer, gboolean view_bcc)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
+	
 	if ((composer->view_bcc && view_bcc) ||
 	    (!composer->view_bcc && !view_bcc))
 		return;
-
+	
 	composer->view_bcc = view_bcc;
 	bonobo_ui_component_set_prop (
 		composer->uic, "/commands/ViewBCC",
 		"state", composer->view_bcc ? "1" : "0", NULL);
 	set_config (composer, "ViewBCC", composer->view_bcc);
-	e_msg_composer_set_hdrs_visible
+	e_msg_composer_hdrs_set_visible
 		(E_MSG_COMPOSER_HDRS (composer->hdrs),
-		 e_msg_composer_get_visible_flags (composer));
-		 
+		 e_msg_composer_get_visible_flags (composer));		 
 }
 
-/**
- * e_msg_composer_get_view_bcc:
- * @composer: A message composer widget
- * 
- * Get the status of the "View BCC header" flag.
- * 
- * Return value: The status of the "View BCC header" flag.
- **/
-gboolean
-e_msg_composer_get_view_bcc (EMsgComposer *composer)
-{
-	g_return_val_if_fail (composer != NULL, FALSE);
-	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
-	
-	return composer->view_bcc;
-}
-
-/**
- * e_msg_composer_set_view_cc:
- * @composer: A message composer widget
- * @state: whether to show or hide the cc view
- *
- * Controls the state of the CC display
- */
-void
-e_msg_composer_set_view_cc (EMsgComposer *composer, gboolean view_cc)
-{
-	g_return_if_fail (composer != NULL);
-	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
-	if ((composer->view_cc && view_cc) ||
-	    (!composer->view_cc && !view_cc))
-		return;
-
-	composer->view_cc = view_cc;
-	bonobo_ui_component_set_prop (
-		composer->uic, "/commands/ViewCC",
-		"state", composer->view_cc ? "1" : "0", NULL);
-	set_config (composer, "ViewCC", composer->view_cc);
-	e_msg_composer_set_hdrs_visible
-		(E_MSG_COMPOSER_HDRS (composer->hdrs),
-		 e_msg_composer_get_visible_flags (composer));
-}
 
 EDestination **
 e_msg_composer_get_recipients (EMsgComposer *composer)
@@ -3774,110 +4566,38 @@ e_msg_composer_get_recipients (EMsgComposer *composer)
 	return composer->hdrs ? e_msg_composer_hdrs_get_recipients (E_MSG_COMPOSER_HDRS (composer->hdrs)) : NULL;
 }
 
-/**
- * e_msg_composer_get_view_cc:
- * @composer: A message composer widget
- * 
- * Get the status of the "View CC header" flag.
- * 
- * Return value: The status of the "View CC header" flag.
- **/
-gboolean
-e_msg_composer_get_view_cc (EMsgComposer *composer)
+EDestination **
+e_msg_composer_get_to (EMsgComposer *composer)
 {
-	g_return_val_if_fail (composer != NULL, FALSE);
-	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
+	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), NULL);
 	
-	return composer->view_cc;
+	return composer->hdrs ? e_msg_composer_hdrs_get_to (E_MSG_COMPOSER_HDRS (composer->hdrs)) : NULL;
 }
 
-/**
- * e_msg_composer_set_view_from:
- * @composer: A message composer widget
- * @state: whether to show or hide the From selector
- *
- * Controls the state of the From selector
- */
-void
-e_msg_composer_set_view_from (EMsgComposer *composer, gboolean view_from)
+EDestination **
+e_msg_composer_get_cc (EMsgComposer *composer)
 {
-	g_return_if_fail (composer != NULL);
-	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
-	if ((composer->view_from && view_from) ||
-	    (!composer->view_from && !view_from))
-		return;
-
-	composer->view_from = view_from;
-	bonobo_ui_component_set_prop (
-		composer->uic, "/commands/ViewFrom",
-		"state", composer->view_from ? "1" : "0", NULL);
-	set_config (composer, "ViewFrom", composer->view_from);
-	e_msg_composer_set_hdrs_visible
-		(E_MSG_COMPOSER_HDRS (composer->hdrs),
-		 e_msg_composer_get_visible_flags (composer));
+	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), NULL);
+	
+	return composer->hdrs ? e_msg_composer_hdrs_get_cc (E_MSG_COMPOSER_HDRS (composer->hdrs)) : NULL;
 }
 
-/**
- * e_msg_composer_get_view_from:
- * @composer: A message composer widget
- * 
- * Get the status of the "View From header" flag.
- * 
- * Return value: The status of the "View From header" flag.
- **/
-gboolean
-e_msg_composer_get_view_from (EMsgComposer *composer)
+EDestination **
+e_msg_composer_get_bcc (EMsgComposer *composer)
 {
-	g_return_val_if_fail (composer != NULL, FALSE);
-	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
+	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), NULL);
 	
-	return composer->view_from;
+	return composer->hdrs ? e_msg_composer_hdrs_get_bcc (E_MSG_COMPOSER_HDRS (composer->hdrs)) : NULL;
 }
 
-/**
- * e_msg_composer_set_view_from:
- * @composer: A message composer widget
- * @state: whether to show or hide the From selector
- *
- * Controls the state of the From selector
- */
-void
-e_msg_composer_set_view_replyto (EMsgComposer *composer, gboolean view_replyto)
+char *
+e_msg_composer_get_subject (EMsgComposer *composer)
 {
-	g_return_if_fail (composer != NULL);
-	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
+	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), NULL);
 	
-	if ((composer->view_replyto && view_replyto) ||
-	    (!composer->view_replyto && !view_replyto))
-		return;
-	
-	composer->view_replyto = view_replyto;
-	bonobo_ui_component_set_prop (
-		composer->uic, "/commands/ViewReplyTo",
-		"state", composer->view_replyto ? "1" : "0", NULL);
-	set_config (composer, "ViewReplyTo", composer->view_replyto);
-	e_msg_composer_set_hdrs_visible
-		(E_MSG_COMPOSER_HDRS (composer->hdrs),
-		 e_msg_composer_get_visible_flags (composer));
+	return composer->hdrs ? e_msg_composer_hdrs_get_subject(E_MSG_COMPOSER_HDRS (composer->hdrs)) : NULL;
 }
 
-/**
- * e_msg_composer_get_view_replyto:
- * @composer: A message composer widget
- * 
- * Get the status of the "View Reply-To header" flag.
- * 
- * Return value: The status of the "View Reply-To header" flag.
- **/
-gboolean
-e_msg_composer_get_view_replyto (EMsgComposer *composer)
-{
-	g_return_val_if_fail (composer != NULL, FALSE);
-	g_return_val_if_fail (E_IS_MSG_COMPOSER (composer), FALSE);
-	
-	return composer->view_replyto;
-}
 
 /**
  * e_msg_composer_guess_mime_type:
@@ -3885,24 +4605,28 @@ e_msg_composer_get_view_replyto (EMsgComposer *composer)
  *
  * Returns the guessed mime type of the file given by #file_name.
  **/
-gchar *
-e_msg_composer_guess_mime_type (const gchar *file_name)
+char *
+e_msg_composer_guess_mime_type (const char *file_name)
 {
-	GnomeVFSFileInfo info;
+	GnomeVFSFileInfo *info;
 	GnomeVFSResult result;
-
-	result = gnome_vfs_get_file_info (file_name, &info,
+	
+	info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (file_name, info,
 					  GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
 					  GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	if (result == GNOME_VFS_OK) {
-		gchar *type;
-
-		type = g_strdup (gnome_vfs_file_info_get_mime_type (&info));
-		gnome_vfs_file_info_unref (&info);
+		char *type;
+		
+		type = g_strdup (gnome_vfs_file_info_get_mime_type (info));
+		gnome_vfs_file_info_unref (info);
 		return type;
-	} else
+	} else {
+		gnome_vfs_file_info_unref (info);
 		return NULL;
+	}
 }
+
 
 /**
  * e_msg_composer_set_changed:
@@ -3914,11 +4638,11 @@ e_msg_composer_guess_mime_type (const gchar *file_name)
 void
 e_msg_composer_set_changed (EMsgComposer *composer)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
+	
 	composer->has_changed = TRUE;
 }
+
 
 /**
  * e_msg_composer_unset_changed:
@@ -3930,32 +4654,120 @@ e_msg_composer_set_changed (EMsgComposer *composer)
 void
 e_msg_composer_unset_changed (EMsgComposer *composer)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
+	
 	composer->has_changed = FALSE;
 }
+
 
 gboolean
 e_msg_composer_is_dirty (EMsgComposer *composer)
 {
 	CORBA_Environment ev;
-	gboolean dirty = composer->has_changed;
+	gboolean rv;
+	
 	CORBA_exception_init (&ev);
-	
-	dirty = dirty || Bonobo_PersistStream_isDirty (composer->persist_stream_interface, &ev);
-	
-	return dirty;
+	rv = composer->has_changed
+		|| (GNOME_GtkHTML_Editor_Engine_hasUndo (composer->editor_engine, &ev) &&
+		    !GNOME_GtkHTML_Editor_Engine_runCommand (composer->editor_engine, "is-saved", &ev));
+	CORBA_exception_free (&ev);
+
+	return rv;
 }
+
 
 void
 e_msg_composer_set_enable_autosave  (EMsgComposer *composer, gboolean enabled)
 {
-	g_return_if_fail (composer != NULL);
 	g_return_if_fail (E_IS_MSG_COMPOSER (composer));
-
+	
 	composer->enable_autosave = enabled;
 }
 
+static char *
+next_word (const char *s, const char **sr)
+{
+	if (!s || !*s)
+		return NULL;
+	else {
+		const char *begin;
+		gunichar uc;
+		gboolean cited;
+		
+		do {
+			begin = s;
+			cited = FALSE;
+			uc = g_utf8_get_char (s);
+			if (uc == 0)
+				return NULL;
+			s  = g_utf8_next_char (s);
+		} while (!html_selection_spell_word (uc, &cited) && !cited && s);
+		
+		/* we are at beginning of word */
+		if (s && *s) {
+			gboolean cited_end;
+			
+			cited_end = FALSE;
+			uc = g_utf8_get_char (s);
+			
+			/* go to end of word */
+			while (html_selection_spell_word (uc, &cited_end) || (!cited && cited_end)) {
+				cited_end = FALSE;
+				s  = g_utf8_next_char (s);
+				uc = g_utf8_get_char (s);
+				if (uc == 0)
+					break;
+			}
+			*sr = s;
+			return s ? g_strndup (begin, s - begin) : g_strdup (begin);
+		} else
+			return NULL;
+	}
+}
 
-						       
+
+void
+e_msg_composer_ignore (EMsgComposer *composer, const char *str)
+{
+	CORBA_Environment ev;
+	char *word;
+	
+	if (!str)
+		return;
+	
+	CORBA_exception_init (&ev);
+	while ((word = next_word (str, &str))) {
+		/* printf ("ignore word %s\n", word); */
+		GNOME_GtkHTML_Editor_Engine_ignoreWord (composer->editor_engine, word, &ev);
+		g_free (word);
+	}
+	CORBA_exception_free (&ev);
+}
+
+
+void
+e_msg_composer_drop_editor_undo (EMsgComposer *composer)
+{
+	CORBA_Environment ev;
+	
+	CORBA_exception_init (&ev);
+	GNOME_GtkHTML_Editor_Engine_dropUndo (composer->editor_engine, &ev);
+	CORBA_exception_free (&ev);
+}
+
+
+gboolean
+e_msg_composer_request_close_all (void)
+{
+	GSList *p, *pnext;
+
+	for (p = all_composers; p != NULL; p = pnext) {
+		pnext = p->next;
+		do_exit (E_MSG_COMPOSER (p->data));
+	}
+
+	if (all_composers == NULL)
+		return TRUE;
+	else
+		return FALSE;
+}

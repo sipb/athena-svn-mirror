@@ -1523,6 +1523,74 @@ const struct CORBA_TypeCode_struct
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
 #endif
+#if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_0 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_1 == 'v') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_2 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_4 == 'u') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_5 == 't') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_7 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_8 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_10 == 'c') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_12 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_14 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_15 == 'd') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_16 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_17 == 'r') \
+) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied)
+#define TC_DEF_TC_GNOME_Evolution_Calendar_Cal_PermissionDenied 1
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Evolution_Calendar_Cal_PermissionDenied_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_except, "PermissionDenied",
+      "IDL:GNOME/Evolution/Calendar/Cal/PermissionDenied:1.0",
+   0, 0,
+   NULL,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_0 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_1 == 'v') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_2 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_4 == 'u') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_5 == 't') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_7 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_8 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_10 == 'c') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_12 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_14 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_15 == 'd') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_16 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_Cal_Busy_17 == 'r') \
+) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_Cal_Busy)
+#define TC_DEF_TC_GNOME_Evolution_Calendar_Cal_Busy 1
+static const char *anon_subnames_array271[] = { "errorMsg" };
+static const CORBA_TypeCode anon_subtypes_array272[] =
+   { (CORBA_TypeCode) & TC_CORBA_string_struct };
+const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_Cal_Busy_struct
+   = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_except, "Busy", "IDL:GNOME/Evolution/Calendar/Cal/Busy:1.0",
+   0, 1,
+   (const char **) anon_subnames_array271,
+   (CORBA_TypeCode *) anon_subtypes_array272,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
 #if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_Listener_0 == 'e') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_Listener_1 == 'v') \
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_Listener_2 == 'o') \
@@ -1575,16 +1643,17 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Calendar_Listener_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_Listener_OpenStatus_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_Listener_OpenStatus)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_Listener_OpenStatus 1
-static const char *anon_subnames_array271[] =
-   { "SUCCESS", "ERROR", "NOT_FOUND", "METHOD_NOT_SUPPORTED" };
+static const char *anon_subnames_array279[] =
+   { "SUCCESS", "ERROR", "NOT_FOUND", "METHOD_NOT_SUPPORTED",
+"PERMISSION_DENIED" };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_Calendar_Listener_OpenStatus_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
    CORBA_tk_enum, "OpenStatus",
       "IDL:GNOME/Evolution/Calendar/Listener/OpenStatus:1.0",
-   0, 4,
-   (const char **) anon_subnames_array271,
+   0, 5,
+   (const char **) anon_subnames_array279,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1610,7 +1679,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_Listener_SetModeStatus_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_Listener_SetModeStatus)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_Listener_SetModeStatus 1
-static const char *anon_subnames_array275[] =
+static const char *anon_subnames_array283[] =
    { "MODE_SET", "MODE_NOT_SET", "MODE_NOT_SUPPORTED" };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_Calendar_Listener_SetModeStatus_struct = {
@@ -1619,7 +1688,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_enum, "SetModeStatus",
       "IDL:GNOME/Evolution/Calendar/Listener/SetModeStatus:1.0",
    0, 3,
-   (const char **) anon_subnames_array275,
+   (const char **) anon_subnames_array283,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1709,7 +1778,7 @@ const struct CORBA_TypeCode_struct
 && (TC_IMPL_TC_GNOME_Evolution_Calendar_QueryListener_QueryDoneStatus_17 == 'r') \
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_QueryListener_QueryDoneStatus)
 #define TC_DEF_TC_GNOME_Evolution_Calendar_QueryListener_QueryDoneStatus 1
-static const char *anon_subnames_array287[] = { "SUCCESS", "PARSE_ERROR" };
+static const char *anon_subnames_array295[] = { "SUCCESS", "PARSE_ERROR" };
 const struct CORBA_TypeCode_struct
    TC_GNOME_Evolution_Calendar_QueryListener_QueryDoneStatus_struct = {
    {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
@@ -1717,7 +1786,7 @@ const struct CORBA_TypeCode_struct
    CORBA_tk_enum, "QueryDoneStatus",
       "IDL:GNOME/Evolution/Calendar/QueryListener/QueryDoneStatus:1.0",
    0, 2,
-   (const char **) anon_subnames_array287,
+   (const char **) anon_subnames_array295,
    NULL,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
@@ -1848,6 +1917,39 @@ const struct CORBA_TypeCode_struct
     ORBIT_PSEUDO_TYPECODE},
    CORBA_tk_except, "UnsupportedMethod",
       "IDL:GNOME/Evolution/Calendar/CalFactory/UnsupportedMethod:1.0",
+   0, 0,
+   NULL,
+   NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_0 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_1 == 'v') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_2 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_4 == 'u') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_5 == 't') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_7 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_8 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_10 == 'c') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_12 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_14 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_15 == 'd') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_16 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_17 == 'r') \
+) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied)
+#define TC_DEF_TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied 1
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Evolution_Calendar_CalFactory_PermissionDenied_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_except, "PermissionDenied",
+      "IDL:GNOME/Evolution/Calendar/CalFactory/PermissionDenied:1.0",
    0, 0,
    NULL,
    NULL,
@@ -2116,6 +2218,41 @@ const struct CORBA_TypeCode_struct
    0, 0,
    NULL,
    NULL,
+   NULL,
+   CORBA_OBJECT_NIL, 0, -1, 0, 0
+};
+#endif
+#if ( (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_0 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_1 == 'v') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_2 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_3 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_4 == 'u') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_5 == 't') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_6 == 'i') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_7 == 'o') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_8 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_9 == '_') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_10 == 'c') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_11 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_12 == 'l') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_13 == 'e') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_14 == 'n') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_15 == 'd') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_16 == 'a') \
+&& (TC_IMPL_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_17 == 'r') \
+) && !defined(TC_DEF_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode)
+#define TC_DEF_TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode 1
+static const CORBA_TypeCode anon_subtypes_array357[] =
+   { (CORBA_TypeCode) & TC_CORBA_long_struct };
+const struct CORBA_TypeCode_struct
+   TC_GNOME_Evolution_Calendar_CompEditorFactory_CompEditorMode_struct = {
+   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+    ORBIT_PSEUDO_TYPECODE},
+   CORBA_tk_alias, "CompEditorMode",
+      "IDL:GNOME/Evolution/Calendar/CompEditorFactory/CompEditorMode:1.0",
+   0, 1,
+   NULL,
+   (CORBA_TypeCode *) anon_subtypes_array357,
    NULL,
    CORBA_OBJECT_NIL, 0, -1, 0, 0
 };
@@ -2971,6 +3108,43 @@ GNOME_Evolution_Calendar_Cal_CouldNotCreate__free(gpointer mem, gpointer dat,
    return (gpointer) (var + 1);
 }
 
+gpointer
+GNOME_Evolution_Calendar_Cal_PermissionDenied__free(gpointer mem,
+						    gpointer dat,
+						    CORBA_boolean
+						    free_strings)
+{
+   GNOME_Evolution_Calendar_Cal_PermissionDenied *var = mem;
+
+   return (gpointer) (var + 1);
+}
+
+gpointer
+GNOME_Evolution_Calendar_Cal_Busy__free(gpointer mem, gpointer dat,
+					CORBA_boolean free_strings)
+{
+   GNOME_Evolution_Calendar_Cal_Busy *var = mem;
+
+   if (free_strings) {
+      CORBA_string__free(&(var->errorMsg), NULL, free_strings);
+   }
+   return (gpointer) (var + 1);
+}
+
+GNOME_Evolution_Calendar_Cal_Busy *
+GNOME_Evolution_Calendar_Cal_Busy__alloc(void)
+{
+   GNOME_Evolution_Calendar_Cal_Busy *retval;
+
+   retval =
+      ORBit_alloc(sizeof(GNOME_Evolution_Calendar_Cal_Busy),
+		  (ORBit_free_childvals)
+		  GNOME_Evolution_Calendar_Cal_Busy__free,
+		  GUINT_TO_POINTER(1));
+   memset(&(retval->errorMsg), '\0', sizeof(retval->errorMsg));
+   return retval;
+}
+
 CORBA_unsigned_long GNOME_Evolution_Calendar_Cal__classid = 0;
 CORBA_unsigned_long GNOME_Evolution_Calendar_Listener__classid = 0;
 CORBA_unsigned_long GNOME_Evolution_Calendar_Query__classid = 0;
@@ -3004,6 +3178,17 @@ GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod__free(gpointer mem,
 							    free_strings)
 {
    GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod *var = mem;
+
+   return (gpointer) (var + 1);
+}
+
+gpointer
+GNOME_Evolution_Calendar_CalFactory_PermissionDenied__free(gpointer mem,
+							   gpointer dat,
+							   CORBA_boolean
+							   free_strings)
+{
+   GNOME_Evolution_Calendar_CalFactory_PermissionDenied *var = mem;
 
    return (gpointer) (var + 1);
 }

@@ -1,137 +1,436 @@
-2002-05-03  Zbigniew Chyla  <cyba@gnome.pl>
+2002-12-01  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation done by
+	Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>.
+
+2002-11-27  Joaquim Fellmann  <joaquim@altern.org>
+
+	* fr.po: Updated French translation.
+
+2002-11-27  Joaquim Fellmann  <joaquim@altern.org>
+
+	* fr.po: Switch charset to ISO-8859-1 which is the one to use
+	with evolution 1.2 (UTF-8 seems to be for GNOME 2)
+
+2002-11-25  Dan Winship  <danw@ximian.com>
+
+	* fr.po: Remove a ":" that shouldn't have been there (and
+	abbreviate the translation of "Mailer" to make the mail header
+	display look nicer).
+
+2002-11-20  Tõivo Leedjärv  <toivo@linux.ee>
+
+	* et.po: Updated Estonian translation
+	by Estonian team <gnome-et@linux.ee>.
+
+2002-11-18  Christian Neumair  <chris@gnome-de.org>
+
+	* de.po: Updated German translation.
+	* POTFILES.in: Updated.
+
+2002-11-09  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation done by
+	Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>.
+
+2002-11-06  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2002-10-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+
+2002-10-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	* POTFILES.in: Added new etspec files.
+	
+2002-10-04  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2002-09-25  Changwoo Ryu  <cwryu@debian.org>
+
+        * ko.po: Updated Korean translation by Young-Ho Cha 
+        <ganadist@mizi.com>.
+
+2002-09-25  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2002-09-25  Zbigniew Chyla  <cyba@gnome.pl>
 
 	* pl.po: Updated Polish translation by
 	GNOME PL Team <translators@gnome.pl>.
+
+2002-09-22  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* vi.po: Updated Vietnamese file
+
+2002-09-22  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian nynorsk translation.
+
+2002-09-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* POTFILES.in: Added a couple of missing .glade files.
+	* no.po: Updated Norwegian translation.
+	
+2002-09-10  Fatih Demir	<kabalak@gtranslator.org>
+	
+	* tr.po: Committed updated Turkish translation by Gorkem...
+
+2002-09-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-09-01  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation
+	and converted to UTF-8.
+
+2002-08-25  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2002-08-25  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Updated French translation.
+
+2002-08-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-08-20  Yanko Kaneti <yaneti@declera.com>
+
+	* bg.po: Updated Bulgarian translation. 
+	Not full: +~300 location places to 4305 translated.
+
+2002-08-16  Yanko Kaneti <yaneti@declera.com>
+
+	* bg.po: Updated Bulgarian translation. 
+	Not full: +~400 location places to 3991.
+
+2002-07-30  Hector Garcia Alvarez  <hector@scouts-es.org>
+
+    * es.po: Updated Spanish translation.
+		
+2002-07-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-07-23  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2002-07-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-07-19  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2002-07-04  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* POTFILES.in: Removed mail/mail-account-news-editor.c
+
+2002-07-04  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Convert back to native encoding.
+
+2002-07-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-06-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* POTFILES.in: Removed camel/camel-pgp-context.c and added
+	camel-gpg-context.c and camel-multipart-encrypted.c.
+	Also removed camel/camel-spoold-store.c
+
+2002-06-23  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-06-21  Abel Cheung  <maddog@linux.org.hk>
+
+	* .cvsignore: Ignore more files.
+	* Makefile.i18npatch, update.sh: Removed obsolete files.
+	* POTFILES.in: Add missing files, remove entries already present in
+	POTFILES.skip.
+	* POTFILES.skip: Remove non-existant entries.
+
+2002-06-13  Andrew V. Samoilov  <kai@cmail.ru>
+
+	* ru.po: Updated Russian translation.
+	* uk.po: Updated Ukrainian translation.  Use utf-8 instead of
+	utf8 to avoid msgfmt's warning.
+
+2002-06-11  Andrew V. Samoilov  <kai@cmail.ru>
+
+	* uk.po: Updated Ukrainian translation.
+
+2002-06-09  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2002-05-24  Manuel Borchers  <webmaster@matronix.de>
+
+	* de.po: Updated German translation.
+
+2002-05-24  Chris Toshok  <toshok@ximian.com>
+
+	* POTFILES.in: added shell/e-shell-config-autocompletion.c and
+	shell/e-shell-config-folder-settings.c.
+
+2002-05-23  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-05-22  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* POTFILES.in: Removed references to camel-remote-store.c
+
+2002-05-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-05-21  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation.
+
+2002-05-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* POTFILES.in: Updated this.
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-05-14  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Updated French translation.
+
+2002-05-10  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* vi.po: Updated Vietnamese file
+
+2002-05-08  JP Rosevear  <jpr@ximian.com>
+
+	* Revert zh_CN and zh_TW changes because gettext sucks
+
+2002-05-08  JP Rosevear  <jpr@ximian.com>
+	
+	* Update the po files to cut down on dist time
+
+2002-05-06  Christopher James Lahey  <clahey@ximian.com>
+
+	* POTFILES.in: Replaced ldap-config.c with addressbook-config.c.
+
+2002-04-30  Hector Garcia Alvarez  <hector@scouts-es.org>
+
+    * es.po: Updated Spanish translation.
 
 2002-04-30  Yanko Kaneti <yaneti@declera.com>
 
 	* Updated Bulgarian translation by 
 	Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>
 
-2002-04-18  Yanko Kaneti <yaneti@declera.com>
+2002-04-28  Fatih Demir <kabalak@gtranslator.org>
 
-	* Updated Bulgarian translation by 
-	Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>
+	* tr.po: Conversion to UTF-8 and some small hotkey corrections.
 
-2002-04-17  Christophe Merlet  <redfox@eikonex.org>
+2002-04-19  Jeffrey Stedfast  <fejj@ximian.com>
 
-	* fr.po: Updated French translation.
+	* POTFILES.in: Removed
+	addressbook/gui/component/addressbook-config.[c,glade] and added
+	in it's place ldap-config.[c,glade].
 
-2002-04-16  Christophe Merlet  <redfox@eikonex.org>
-
-	* fr.po: Updated French translation.
-
-2002-04-15  Changwoo Ryu  <cwryu@debian.org>
-
-	* ko.po: Updated Korean translation from Young-Ho Cha
-	<ganadist@chollian.net>.
-
-2002-04-13  Christophe Merlet  <redfox@eikonex.org>
+2002-04-16  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 
-2002-04-08  Christophe Merlet  <redfox@eikonex.org>
+2002-04-13  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Updated French translation.
+
+2002-04-08  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from work of
 	Frederic Riss <frederic.riss@laposte.net>.
 
-2002-04-06  Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>
+2002-04-06  JP Rosevear  <jpr@ximian.com>
 
-	* nl.po: Updated Dutch translation (Tino Meinen).
+	* POTFILES.in: Remove notes files.
+	
+2002-04-06  JP Rosevear  <jpr@ximian.com>
 
-2002-04-06  Kjartan Maraas  <kmaraas@gnome.org>
+	* POTFILES.in: Remove mail-summary.c
+	
+2002-04-06  JP Rosevear  <jpr@ximian.com>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* POTFILES.in: Remove executive summary files.
+
+2002-04-05  JP Rosevear  <jpr@ximian.com>
+
+	* POTFILES.in: comment out more unused camel files
+	
+2002-04-05  JP Rosevear  <jpr@ximian.com>
+
+	* POTFILES.in: remove file that is not compiled (and hence not
+	disted)
+	
 
 2002-04-04  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
 
 	* pt_BR.po: Updated Brazilian Portuguese translation done by
 	Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>.
 
-2002-03-28  Sami Pesonen  <spesonen@dlc.fi>
+2002-04-02  Ettore Perazzoli  <ettore@ximian.com>
 
-	* fi.po: Updated Finnish translation (part 1/2).
+	* it.po: Updated Italian translation from Clara Tattoni
+	<clara.tattoni@libero.it>.
 
-2002-03-12  Christophe Merlet  <redfox@eikonex.org>
+2002-04-01  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* fr.po: Updated French translation with report from
-	Stéphane Raimbault <stephane.raimbault@deesse.univ-lemans.fr>.
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-04-01  Christian Rose  <menthos@menthos.com>
 
-2002-03-11  Valek Filippov  <frob@df.ru>
+	* POTFILES.in: Added missing file.
+	* sv.po: Updated Swedish translation some.
 
-	* ru.po: updated russian translation.
+2002-03-30  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2002-03-27  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	* POTFILES.in: Bring back up to speed.
+	
+2002-03-15  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2002-03-12  Tõivo Leedjärv  <toivo@linux.ee>
+
+	* et.po: Updated Estonian translation 
+	by the Gnome Estonian team <gnome-et@linux.ee>.
+
+2002-03-11  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Updated French translation from report of
+	Stéphane Raimbault <stephane.raimbault@deesse.univ-lemans.fr>
+
+2002-02-28  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
 
 2002-02-27  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
 
 	* sk.po: Updated Slovak translation.
 
+2002-02-26  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Updated Basque file
+
+2002-02-25  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Updated French translation from work of
+	Frederic Riss <frederic.riss@laposte.net>.
+
 2002-02-24  Carlos Perelló Marín <carlos@gnome-db.org>
 
-	* es.po: Small fix.
-
-2002-02-23  Zbigniew Chyla  <cyba@gnome.pl>
-
-	* pl.po: Updated Polish translation by
-	GNOME PL Team <translators@gnome.pl>.
+        * es.po: Small fix.
 
 2002-02-23  Carlos Perelló Marín <carlos@gnome-db.org>
 
-	* es.po: Updated the fuzzy strings and removed obsolete
-	strings (we have them at translation memory).
+	* es.po: Sync with translation memory.
 
-2002-02-23  Carlos Perelló Marín <carlos@gnome-db.org>
+2002-02-21  Fatih Demir <kabalak@gtranslator.org>
 
-	* es.po: Updated with our memory translation.
+	* tr.po: Committed updated Turkish translation by Görkem.
 
-2002-02-21  Kjartan Maraas  <kmaraas@gnome.org>
+2002-02-19  Tõivo Leedjärv  <leedjarv@interest.ee>
+
+	* et.po: Updated Estonian translation by
+	Ivar Smolin <okul@linux.ee>.
+
+2002-02-15  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian (bokmål) translation.
 
-2002-02-13  Christophe Merlet  <redfox@eikonex.org>
+2002-02-12  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
-	* fr.po: Updated French translation.
+	* eu.po: Updated Basque file
+
+2002-02-12  Tõivo Leedjärv  <leedjarv@interest.ee>
+
+	* et.po: Added Estonian translation.
 
 2002-02-12  Akira TAGOH  <tagoh@gnome.gr.jp>
 
 	* ja.po: fixed typo.
 
-2002-02-11  Christophe Merlet  <redfox@eikonex.org>
+2002-02-11 Alastair McKinstry <mckinstry@computer.org>
 
-	* fr.po: Updated French translation.
+	* ga.po: Updated Irish file.
 
-2002-02-04  Carlos Perelló Marín <carlos@gnome-db.org>
+2002-02-11  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
-	* es.po: Updated by Eneko Lacunza <enlar@iname.com>
+	* eu.po: Updated Basque file
+
+2002-02-04  Héctor García Alvarez  <hector@scouts-es.org>
+
+    * es.po: Updated Spanish translation.
+	
+2002-02-04  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Li.
+
+2002-02-02  Héctor García Álvarez  <hector@scouts-es.org>
+
+	* es.po: Updated Spanish translation.
+
+2002-02-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2002-01-31  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Converted French translation to UTF-8.
 
 2002-01-31  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* no.po: Updated Norwegian (bokmål) translation.
 
-2002-01-30  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
-
-	* pt_BR.po: Updated Brazilian Portuguese translation.
-
-2002-01-30  Christophe Merlet  <redfox@eikonex.org>
+2002-01-30  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from work of
 	Frederic Riss <frederic.riss@laposte.net>.
 
-2002-01-30  Roy-Magne Mo <rmo@sunnmore.net>
+2002-01-29  Valek Filippov  <frob@df.ru>
 
-	* nn.po: Updated Norwegian (nynorsk) translation
-	* ChangeLog: removed gettext-entries
+	* ru.po: updated russian translation.
 
-2002-01-29  Christophe Merlet  <redfox@eikonex.org>
+2002-01-28  Andras Timar <timar@gnome.hu>
 
-	* fr.po: Updated French translation.
+        * hu.po: Updated Hungarian translation 
 
-2002-01-25  Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>
+2002-01-28  Christian Rose  <menthos@menthos.com>
 
-	* nl.po: Massive translation update.
+	* POTFILES.in: Added missing file.
+	* sv.po: Updated and converted to UTF-8.
 
-2002-01-24  Ettore Perazzoli  <ettore@ximian.com>
+2002-01-26  Kjartan Maraas  <kmaraas@gnome.org>
 
-	* it.po: More tweaking.
+	* no.po: Updated Norwegian (bokmål) translation.
+	* POTFILES.in: Updated.
+	
+2002-01-25  Roy-Magne Mo <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
 
 2002-01-23  Ettore Perazzoli  <ettore@ximian.com>
 
@@ -139,112 +438,201 @@
 
 2002-01-23  Ettore Perazzoli  <ettore@ximian.com>
 
-	* it.po: Updated Italian translation by Clara Tattoni
+	* it.po: Updated translation by Clara Tattoni
 	<clara.tattoni@libero.it>.
+
+2002-01-23  Peteris Krisjanis <peteris.krisjanis@ttc.lv>
+
+	* lv.po: Updated Latvian translation.
 
 2002-01-22  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
 
 	* sk.po: Updated Slovak translation.
 
-2002-01-20  Simos Xenitellis  <simos@hellug.gr>
+2002-01-21 Alastair McKinstry <mckinstry@computer.org>
 
-	* Updated Greek translation (by Nick Niktaris).
+	* ga.po: updated Irish translation.
 
-2002-01-19	Roy-Magne Mo <rmo@sunnmore.net>
+2002-01-21  Valek Filippov  <frob@df.ru>
 
-	* Updated Norwegian (nynorsk) translation.
+	* ru.po: updated russian translation.
 
-2002-01-19    Alexander Shopov <al_shopov@web.bg>
+2002-01-18  Simos Xenitellis  <simos@hellug.gr>
 
-	* Small update of Bulgarian translation
+	* el.po: Updated Greek translation (by Nick Niktaris).
 
-2002-01-13  Dan Winship  <danw@ximian.com>
+2002-01-14  Christian Rose  <menthos@menthos.com>
 
-	* POTFILES.in: Revert previous change AGAIN.
+	* sv.po: Updated Swedish translation.
+
+2002-01-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2002-01-13  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation (work from Panayotis Pakos).
+
+2002-01-13  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
 
 2002-01-12  Christian Rose  <menthos@menthos.com>
 
-	* POTFILES.in: Sorted and added LOTS of missing files.
 	* sv.po: Updated Swedish translation.
 
 2002-01-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
 
-	* sk.po: Finished Slovak update.
+	* sk.po: Updated Slovak translation.
 
-2002-01-10  Peteris Krisjanis <peteris.krisjanis@ttc.lv>
+2001-01-10  Wang Jian  <lark@linux.net.cn>
 
-	* lv.po: Heavely updated latvian translation.
-
-2002-01-09  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
-
-	* sk.po: Starting Slovak translation of zones.
-
-2002-01-09  Dan Winship  <danw@ximian.com>
-
-	* POTFILES.in: Revert previous change as it broke the snapshot
-	builds by depending on non-disted (ie, unused) files
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Jian.
 
 2002-01-09  Christian Rose  <menthos@menthos.com>
 
 	* POTFILES.in: Sorted and added LOTS of missing files.
 	* sv.po: Updated Swedish translation.
 
-2002-01-07  Simos Xenitellis  <simos@hellug.gr>
+2002-01-05  Christian Rose  <menthos@menthos.com>
 
-	* el.po: Minor fixes.
-	* el.po: Updated Greek translation by Panayotis Pakos.
+	* sv.po: Updated Swedish translation.
 
-2002-01-04  Christophe Merlet  <redfox@eikonex.org>
+2002-01-04  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* eu.po: Added Basque file
+
+2002-01-04  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 
-2001-12-29  Kjartan Maraas  <kmaraas@gnome.org>
+2001-12-28  Christian Rose  <menthos@menthos.com>
 
-	* no.po: Updated Norwegian (bokmål) translation.
+	* sv.po: Updated Swedish translation.
 
-2001-12-27  Andras Timar <timar@gnome.hu>
+2001-12-26  Fatih Demir <kabalak@gtranslator.org>
 
-	* hu.po: Updated Hungarian translation. 
+	* tr.po: Small correction in the charset field of the po file.
 
 2001-12-22  Simos Xenitellis  <simos@hellug.gr>
 
-	* el.po: Updated Greek translation 
-	by Nick Nicktaris.
+	* el.po: Run xml-i18n-update on the file.
+	* el.po: Updated Greek translation by 
+	 Nikos Niktaris.
+
+2001-12-21  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
 
 2001-12-19  Christian Rose  <menthos@menthos.com>
 
 	* sv.po: Fixed Swedish translation. Thanks to
 	Johan Dahlin <zilch.am@home.se> for his review.
 
-2001-12-19  Andras Timar <timar@gnome.hu>
-
-	* hu.po: Updated Hungarian translation. 
-
 2001-12-19  Christian Rose  <menthos@menthos.com>
 
 	* sv.po: Updated Swedish translation.
 
-2001-12-19  Roy-Magne Mo <rmo@sunnmore.net>
+2001-12-18  Wang Jian  <lark@linux.net.cn>
 
-	* nn.po: Updated Norwegian (nynorsk) translation
-	* ChangeLog: removed gettext-entries
-
-2001-12-18  Ettore Perazzoli  <ettore@ximian.com>
-
-	* it.po: More updates.
-
-2001-12-17  Ettore Perazzoli  <ettore@ximian.com>
-
-	* it.po: Updated Italian translation.
-
-2001-12-17  Zbigniew Chyla  <cyba@gnome.pl>
-
-	* pl.po: Updated Polish translation by
-	GNOME PL Team <translators@gnome.pl>.
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Li <charlesw1234@163.com>.
 
 2001-12-17  Iain Holmes  <iain@ximian.com>
 
 	* POFILES.in: Added my-evolution/Locations.h
+
+2001-12-17  Roy-Magne Mo  <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation.
+
+2001-12-15  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-12-13  Damon Chaplin  <damon@ximian.com>
+
+	* POTFILES.in: added calendar/zones.h
+
+2001-12-13  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-12-12  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-12-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-12-09  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified translation by
+	Wang Li <charlesw1234@163.com>.
+
+2001-12-07  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-12-02  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-11-30  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation
+	
+2001-11-26  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* az.po: Updated Azeri file
+
+2001-11-24  Peteris Krisjanis <pecisk@inbox.lv>
+
+	* lv.po: Added latvian translation.
+
+2001-11-23  Christophe Merlet  <christophe@merlet.net>
+
+	* fr.po: Updated French translation from work of
+	Frederic Riss <frederic.riss@laposte.net>.
+
+2001-11-20  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Converted to UTF-8.
+
+2001-11-20  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation
+	
+2001-11-20  Christian Meyer  <chrisime@gnome.org>
+
+	* de.po: Applied Manuel Borchers diff.
+	Made the translation for consistent.
+
+2001-11-19  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Jian.
+
+2001-11-18  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+	* el.po: Updated Greek translation.
+
+2001-11-17  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Li <charlesw1234@163.com>.
+
+2001-11-15  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-12-06  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.39.
 
 2001-12-16  Kjartan Maraas  <kmaraas@gnome.org>
 
@@ -252,7 +640,7 @@
 
 2001-12-14  Andras Timar <timar@gnome.hu>
 
-	* hu.po: Updated Hungarian translation 
+        * hu.po: Updated Hungarian translation 
 		 and fixed Bugzilla ID 17344.
 
 2001-12-13  Damon Chaplin  <damon@ximian.com>
@@ -282,7 +670,7 @@
 
 2001-12-07  Andras Timar <timar@gnome.hu>
 
-	* hu.po: Updated Hungarian translation.
+        * hu.po: Updated Hungarian translation.
 
 2001-12-07  Kjartan Maraas  <kmaraas@gnome.org>
 
@@ -329,7 +717,7 @@
 
 	* de.po: Updated German translation for release.
 
-2001-11-25  Christophe Merlet  <redfox@eikonex.org>
+2001-11-25  Christophe Merlet  <christophe@merlet.net>
 	
 	* fr.po: Updated French translation from work of
 	Frederic Riss <frederic.riss@laposte.net>.
@@ -498,7 +886,7 @@
 
 	* sv.po: Updated Swedish translation.
 
-2001-11-01  Christophe Merlet  <redfox@eikonex.org>
+2001-11-01  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from work of
 	Frederic Riss <frederic.riss@laposte.net>.
@@ -626,7 +1014,7 @@
 
         * es.po: Updated Spanish translation.
 	
-2001-10-23  Christophe Merlet  <redfox@eikonex.org>
+2001-10-23  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from work of
 	Frederic Riss <frederic.riss@laposte.net>.
@@ -645,7 +1033,7 @@
 	* POTFILES.in: added calendar/gui/e-cell-date-edit-text.c and
 	widgets/misc/e-cell-percent.c.
 
-2001-10-22  Christophe Merlet  <redfox@eikonex.org>
+2001-10-22  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from work of
 	Frederic Riss <frederic.riss@laposte.net>.
@@ -670,7 +1058,7 @@
 
 	* ro.po: updated
 
-2001-10-21  Christophe Merlet  <redfox@eikonex.org>
+2001-10-21  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 
@@ -794,7 +1182,7 @@
 
 	* no.po: Updated Norwegian (bokmål) translation.
 	
-2001-10-05  Christophe Merlet  <redfox@eikonex.org>
+2001-10-05  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 
@@ -890,7 +1278,7 @@
 
 	* sk.po: Updated Slovak translation.
 
-2001-09-24  Christophe Merlet  <redfox@eikonex.org>
+2001-09-24  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation with contributions from
 	Jean-Noël Guiheneuf <jean-noel.guiheneuf@wanadoo.fr>.
@@ -1003,7 +1391,7 @@
 
 	* de.po: Updated German translation.
 
-2001-09-08  Christophe Merlet  <redfox@eikonex.org>
+2001-09-08  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation with contributions from
 	Jean-Noël Guiheneuf <jean-noel.guiheneuf@wanadoo.fr>.
@@ -1052,7 +1440,7 @@
 
 	* pl.po: Updated Polish translation.
 
-2001-09-02  Christophe Merlet  <redfox@eikonex.org>
+2001-09-02  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from contribution of
 	Jean-Noël Guiheneuf <jean-noel.guiheneuf@wanadoo.fr>.
@@ -1065,7 +1453,7 @@
 
 	* pl.po: Updated Polish translation.
 
-2001-08-31  Christophe Merlet  <redfox@eikonex.org>
+2001-08-31  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from contribution of
 	Jean-Noël Guiheneuf <jean-noel.guiheneuf@wanadoo.fr>.
@@ -1078,7 +1466,7 @@
 
 	* no.po: Updated Norwegian (bokmål) translation.
 	
-2001-08-28  Christophe Merlet  <redfox@eikonex.org>
+2001-08-28  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from contribution of
 	Jean-Noël Guiheneuf <jean-noel.guiheneuf@wanadoo.fr>.
@@ -1095,7 +1483,7 @@
 
 	* POTFILES.in: Added shell/glade/evolution-startup-wizard.glade
 
-2001-08-26  Christophe Merlet  <redfox@eikonex.org>
+2001-08-26  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation from contribution of
 	Jean-Noël Guiheneuf <jean-noel.guiheneuf@wanadoo.fr>.
@@ -2168,7 +2556,7 @@
 
 	* sk.po: Updated Slovak translation.
 
-2001-02-13  Christophe Merlet  <redfox@eikonex.org>
+2001-02-13  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 
@@ -2206,7 +2594,7 @@
 
 	* sl.po: Add \n to fix a compile error.
 
-2001-02-09  Christophe Merlet  <redfox@eikonex.org>
+2001-02-09  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 
@@ -2364,7 +2752,7 @@
 
 	* ja.po: Updated Japanese translation.
 
-2001-01-10  Christophe Merlet  <redfox@eikonex.org>
+2001-01-10  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 
@@ -2394,7 +2782,7 @@
 
 	* de.po: Updated German translation
 
-2001-01-07  Christophe Merlet  <redfox@eikonex.org>
+2001-01-07  Christophe Merlet  <christophe@merlet.net>
 
 	* fr.po: Updated French translation.
 

@@ -30,7 +30,7 @@
 #ifdef __cplusplus
 extern "C" {
 #pragma }
-#endif /* __cplusplus }*/
+#endif /* __cplusplus */
 
 #include <camel/camel-cipher-context.h>
 #include <camel/camel-cms-context.h>
@@ -38,6 +38,7 @@ extern "C" {
 #include <camel/camel-exception.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-digest-folder.h>
+#include <camel/camel-digest-store.h>
 #include <camel/camel-disco-diary.h>
 #include <camel/camel-disco-folder.h>
 #include <camel/camel-disco-store.h>
@@ -48,6 +49,7 @@ extern "C" {
 #include <camel/camel-mime-filter-index.h>
 #include <camel/camel-mime-filter-save.h>
 #include <camel/camel-mime-filter-crlf.h>
+#include <camel/camel-mime-filter-tohtml.h>
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-mime-message.h>
 #include <camel/camel-mime-parser.h>
@@ -56,7 +58,9 @@ extern "C" {
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-movemail.h>
 #include <camel/camel-multipart.h>
-#include <camel/camel-pgp-context.h>
+#include <camel/camel-multipart-encrypted.h>
+#include <camel/camel-multipart-signed.h>
+#include <camel/camel-gpg-context.h>
 #include <camel/camel-pgp-mime.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-seekable-stream.h>

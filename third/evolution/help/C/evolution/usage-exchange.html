@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="Multiple Calendars"
 HREF="usage-calendar-multiple.html"><LINK
 REL="NEXT"
-TITLE="Installing the Connector"
-HREF="install.html"></HEAD
+TITLE="Connector Features"
+HREF="features.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
 ><DIV
@@ -52,7 +52,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="install.html"
+HREF="features.html"
 >Next</A
 ></TD
 ></TR
@@ -76,7 +76,12 @@ CLASS="TOC"
 ></DT
 ><DT
 ><A
-HREF="usage-exchange.html#FEATURES"
+HREF="usage-exchange.html#NEW-IN-CONNECTOR-ONE-TWO"
+>What's New in Connector 1.2</A
+></DT
+><DT
+><A
+HREF="features.html"
 >Connector Features</A
 ></DT
 ><DT
@@ -92,7 +97,10 @@ HREF="configure.html"
 ><DT
 ><A
 HREF="access.html"
->Accessing the Exchange Server</A
+>Accessing the <SPAN
+CLASS="APPLICATION"
+>Exchange</SPAN
+>Server</A
 ></DT
 ><DT
 ><A
@@ -115,56 +123,6 @@ TARGET="_top"
     Microsoft Exchange is proprietary software and source code is not
     available.
     </P
-><P
->      The Ximian Connector offers a significant price advantage over
-      other Exchange access methods for Linux and UNIX systems:
-    <P
-></P
-><DIV
-CLASS="VARIABLELIST"
-><DL
-><DT
->Dual Computer Installation:</DT
-><DD
-><P
->             The purchase of a second computer for each client imposes
-             a very heavy expense burden and is exceptionally
-             inconvenient.
-          </P
-></DD
-><DT
->Dual Boot or Virtual Machine:</DT
-><DD
-><P
->             Installation of multiple operating systems in a dual boot
-             or virtual machine configuration (such as VMWare) also
-             increases licensing and administration costs.  Users
-             often complain that such a system is inconvenient, slow,
-             and not integrated with the rest of their operating
-             system.
-          </P
-></DD
-><DT
->Outlook Web Access:</DT
-><DD
-><P
->            Outlook Web Access is a web interface for Exchange
-            servers, but works best in Microsoft Internet Explorer.
-            Outlook Web Access also is
-            not integrated with the rest of the host operating system
-            and offers only limited groupware functionality.
-          </P
-></DD
-></DL
-></DIV
->
-  </P
-><P
->   The Ximian Connector offers a low cost, fully integrated, option
-   for Exchange 2000 server access in heterogeneous client
-   networks. This chapter will explain how to install, configure, and
-   use it.
-  </P
 ><DIV
 CLASS="WARNING"
 ><P
@@ -180,15 +138,16 @@ ALIGN="CENTER"
 ><A
 NAME="LICENSING"
 ></A
->Exchange Client Licenses</B
+>Requirements</B
 ></TD
 ></TR
 ><TR
 ><TD
 ALIGN="LEFT"
 ><P
->      Each user will need a valid Microsoft Exchange 2000 server
-      account and license.
+>      Ximian Connector works only with Exchange 2000, and requires
+      that Outlook Web Access be enabled. Each user will need a
+      valid Microsoft Exchange 2000 server account, including license.
   </P
 ></TD
 ></TR
@@ -199,226 +158,79 @@ CLASS="SECT1"
 ><H1
 CLASS="SECT1"
 ><A
-NAME="FEATURES"
->Connector Features</A
+NAME="NEW-IN-CONNECTOR-ONE-TWO"
+>What's New in Connector 1.2</A
 ></H1
 ><P
->      <SPAN
-CLASS="APPLICATION"
->Ximian Connector</SPAN
-> supports the most
-      often used features of <SPAN
-CLASS="APPLICATION"
->Microsoft
-      Exchange</SPAN
->:
-      <P
-></P
-><UL
-><LI
-><P
->	    General
-	  </P
+>    Ximian Connector 1.2 has added some of the most frequently
+    requested features of Microsoft Exchange clients, including Public
+    Folder access and calendar delegation.
+  </P
 ><P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
->Remote <SPAN
-CLASS="APPLICATION"
->Exchange</SPAN
-> Information Store</DT
+>Preferences Dialogs</DT
 ><DD
 ><P
->		  Allows you to access mail, address book (including
-		  Global Address List folder), and calendars, and task
-		  folders on an <SPAN
-CLASS="APPLICATION"
->Exchange
-		  2000</SPAN
-> server from
-		  <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
->.
-		</P
-></DD
-><DT
->Palm synchronization</DT
-><DD
-><P
->		  Supported for Contacts and Calendars on Exchange.
-		</P
-></DD
-></DL
-></DIV
-></LI
-><LI
-><P
->	    Mail
-	  </P
-><P
-></P
-><DIV
-CLASS="VARIABLELIST"
-><DL
-><DT
->Viewing Mail in Exchange Folder</DT
-><DD
-><P
-></P
-></DD
-><DT
->Sending Email via Exchange Protocols</DT
-><DD
-><P
->		  You may use the Microsoft Exchange mail transport
-		  protocol to send email. Make sure that the address
-		  you have entered as your email address is exactly
-		  the one that the Exchange server has on file. This
-		  may be "yourname@exchange-server.xyzcorp.com" rather
-		  than "yourname@xyzcorp.com."
-		</P
-></DD
-></DL
-></DIV
-></LI
-><LI
-><P
->	    Calendar
-	  </P
-><P
-></P
-><DIV
-CLASS="VARIABLELIST"
-><DL
-><DT
->Meeting Request/Proposal</DT
-><DD
-><P
->		  Allows <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> users to
-		  schedule meetings and view attendee availability for
-		  other users (<SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> or
-		  <SPAN
-CLASS="APPLICATION"
->Outlook</SPAN
-> users) on
-		  <SPAN
-CLASS="APPLICATION"
->Exchange</SPAN
->.
-		</P
-></DD
-><DT
->Adding iCalendar Meeting Requests to Calendar</DT
-><DD
-><P
->		  If you receive an iCalendar meeting request and add it
-		  to your calendar, it will be saved to your
-		  <SPAN
-CLASS="APPLICATION"
->Exchange</SPAN
-> calendar.
-		</P
-></DD
-></DL
-></DIV
-></LI
-><LI
-><P
->	    Contacts
-	  </P
-><P
-></P
-><DIV
-CLASS="VARIABLELIST"
-><DL
-><DT
->Address Completion</DT
-><DD
-><P
->		  Supported for your <SPAN
-CLASS="APPLICATION"
->Exchange</SPAN
+>           The preferences dialogs have been completely overhauled for
+           Evolution and Connector 1.2. Select
+           <SPAN
+CLASS="GUIMENU"
+>Tools</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Preferences</SPAN
 >
-		  Contacts folder.  Not yet supported for the Global
-		  Address List.
-		</P
+           from the main Evolution window to change your settings.
+          </P
 ></DD
 ><DT
->Adding vCards to Address Book</DT
+>Public Folders, Posting, and Delegation</DT
 ><DD
 ><P
->		  If you receive a vCard attachment and click
-		  <SPAN
-CLASS="GUIBUTTON"
->Save in Address Book</SPAN
->, it will
-		  be saved to your <SPAN
-CLASS="APPLICATION"
->Exchange</SPAN
-> address book.
-		</P
+>            Public folders, posting to folders, and delegation
+            functions have been added. You may now set permissions on
+            folders to which you have appropriate access, and view the
+            folders of other users who have granted you permission to
+            view them.
+          </P
 ></DD
 ><DT
->New Address Book entries can be created on
-		<SPAN
-CLASS="APPLICATION"
->Exchange</SPAN
-> from received email
-		messages with a single click</DT
+>Flag for Followup</DT
 ><DD
 ><P
->		</P
+>            Flag for Followup now works properly in both Outlook and
+            Evolution, even when set in one and read in the other.
+          </P
+></DD
+><DT
+>Improved vFolder Support</DT
+><DD
+><P
+>            vFolders now function better with Exchange accounts.
+          </P
+></DD
+><DT
+>Notes</DT
+><DD
+><P
+>            The "Notes" and "Journal" folders in Exchange accounts are now readable, and you can drag items into them from other folders. Creating new Notes or Journal entries is not yet supported.
+          </P
+></DD
+><DT
+>Direct Booking</DT
+><DD
+><P
+>            When creating a meeting request, resources such as rooms
+            and equipment can be checked and reserved without waiting
+            for a reply.	    
+          </P
 ></DD
 ></DL
 ></DIV
-></LI
-></UL
-></P
-><P
->There are, however, some features which are not available:
-<P
-></P
-><UL
-><LI
-><P
->		  Access to shared and public folders is not
-		  available, although the Global Address List is
-		  available.
-	      </P
-></LI
-><LI
-><P
->                Journal and Notes components are not available.
-	      </P
-></LI
-><LI
-><P
->		Work Offline (disconnected mode) support is not functional.
-	      </P
-></LI
-><LI
-><P
->               "Recall Message" function does not work yet.
-	      </P
-></LI
-><LI
-><P
->               Creation of an automatic "out-of-office" reply messages
-               is not available.
-	      </P
-></LI
-></UL
->
-    </P
 ></DIV
 ></DIV
 ><DIV
@@ -452,7 +264,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="install.html"
+HREF="features.html"
 >Next</A
 ></TD
 ></TR
@@ -474,7 +286,7 @@ HREF="usage.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Installing the Connector</TD
+>Connector Features</TD
 ></TR
 ></TABLE
 ></DIV

@@ -28,6 +28,8 @@
 
 #include "Evolution.h"
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
 #ifdef __cplusplus
 extern "C" {
 #pragma }
@@ -99,40 +101,62 @@ struct _EvolutionStorageClass {
 			     const char *destination_path,
 			     gboolean remove_source);
 
+	void (*open_folder) (EvolutionStorage *storage,
+			     const char *path);
+
 	void (*update_folder) (EvolutionStorage *storage,
 			       const char *path,
 			       int unread_count);
+
+	void (*discover_shared_folder) (EvolutionStorage *storage,
+					Bonobo_Listener listener,
+					const char *user,
+					const char *folder_name);
+
+	void (*cancel_discover_shared_folder)  (EvolutionStorage *storage,
+						const char *user,
+						const char *folder_name);
+
+	void (*remove_shared_folder) (EvolutionStorage *storage,
+				      Bonobo_Listener listener,
+				      const char *path);
+
+	void (*show_folder_properties) (EvolutionStorage *storage,
+					const char *path,
+					unsigned int itemNumber,
+					unsigned long parentWindowId);
 };
 
 
 POA_GNOME_Evolution_Storage__epv *evolution_storage_get_epv            (void);
 
-GtkType           evolution_storage_get_type   (void);
-void              evolution_storage_construct  (EvolutionStorage        *storage,
-						GNOME_Evolution_Storage  corba_object,
-						const char              *name,
-						const char              *toplevel_node_uri,
-						const char              *toplevel_node_type);
-EvolutionStorage *evolution_storage_new        (const char              *name,
-						const char              *toplevel_node_uri,
-						const char              *toplevel_node_type);
+GtkType                 evolution_storage_get_type             (void);
+void                    evolution_storage_construct            (EvolutionStorage                *storage,
+								GNOME_Evolution_Storage          corba_object,
+								const char                      *name,
+								gboolean                         has_shared_folders);
+EvolutionStorage       *evolution_storage_new                  (const char                      *name,
+								gboolean                         has_shared_folders);
 
-void                    evolution_storage_rename (EvolutionStorage *storage,
-						  const char *new_name);
+void                    evolution_storage_rename               (EvolutionStorage                *storage,
+								const char                      *new_name);
 
 EvolutionStorageResult  evolution_storage_register             (EvolutionStorage                *storage,
 								GNOME_Evolution_StorageRegistry  corba_registry);
 EvolutionStorageResult  evolution_storage_register_on_shell    (EvolutionStorage                *evolution_storage,
 								GNOME_Evolution_Shell            corba_shell);
-EvolutionStorageResult  evolution_storage_deregister_on_shell (EvolutionStorage *storage,
-							       GNOME_Evolution_Shell corba_shell);
+EvolutionStorageResult  evolution_storage_deregister_on_shell  (EvolutionStorage                *storage,
+							        GNOME_Evolution_Shell            corba_shell);
 EvolutionStorageResult  evolution_storage_new_folder           (EvolutionStorage                *evolution_storage,
 								const char                      *path,
 								const char                      *display_name,
 								const char                      *type,
 								const char                      *physical_uri,
 								const char                      *description,
-								int                              unread_count);
+								const char                      *custom_icon_name,
+								int                              unread_count,
+								gboolean                         can_sync_offline,
+								int                              sorting_priority);
 EvolutionStorageResult  evolution_storage_update_folder        (EvolutionStorage                *evolution_storage,
 								const char                      *path,
 								int                              unread_count);
@@ -143,6 +167,14 @@ EvolutionStorageResult  evolution_storage_removed_folder       (EvolutionStorage
 								const char                      *path);
 gboolean                evolution_storage_folder_exists        (EvolutionStorage                *evolution_storage,
 								const char                      *path);
+EvolutionStorageResult  evolution_storage_has_subfolders       (EvolutionStorage                *evolution_storage,
+								const char                      *path,
+								const char                      *message);
+
+void  evolution_storage_add_property_item  (EvolutionStorage *evolution_storage,
+					    const char       *label,
+					    const char       *tooltip,
+					    GdkPixbuf        *icon);
 
 #ifdef __cplusplus
 }

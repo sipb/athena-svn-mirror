@@ -150,6 +150,9 @@ static void e_meeting_time_selector_on_zoomed_out_toggled (GtkWidget *button,
 							   EMeetingTimeSelector *mts);
 static void e_meeting_time_selector_on_working_hours_toggled (GtkWidget *button,
 							      EMeetingTimeSelector *mts);
+static void e_meeting_time_selector_on_invite_others_button_draw (GtkWidget *button,
+								  GdkRectangle *area,
+								  EMeetingTimeSelector *mts);
 static void e_meeting_time_selector_on_invite_others_button_clicked (GtkWidget *button,
 								     EMeetingTimeSelector *mts);
 static void e_meeting_time_selector_on_update_free_busy (GtkWidget *button,
@@ -457,6 +460,8 @@ e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *em
 				    accel_key, GDK_MOD1_MASK, 0);
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
 			    GTK_SIGNAL_FUNC (e_meeting_time_selector_on_invite_others_button_clicked), mts);
+	gtk_signal_connect (GTK_OBJECT (button), "draw",
+			    GTK_SIGNAL_FUNC (e_meeting_time_selector_on_invite_others_button_draw), mts);
 
 	mts->options_button = gtk_button_new ();
 	gtk_box_pack_start (GTK_BOX (hbox), mts->options_button, TRUE, TRUE, 0);
@@ -1197,9 +1202,16 @@ e_meeting_time_selector_set_working_hours (EMeetingTimeSelector *mts,
 
 	mts->day_start_hour = day_start_hour;
 	mts->day_start_minute = day_start_minute;
-	mts->day_end_hour = day_end_hour;
-	mts->day_end_minute = day_end_minute;
 
+	/* Make sure we always show atleast an hour */
+	if (day_start_hour * 60 + day_start_minute + 60 < day_end_hour * 60 + day_end_minute) {
+		mts->day_end_hour = day_end_hour;
+		mts->day_end_minute = day_end_minute;
+	} else {
+		mts->day_end_hour = day_start_hour + 1;
+		mts->day_end_minute = day_start_minute;
+	}
+	
 	e_meeting_time_selector_save_position (mts, &saved_time);
 	e_meeting_time_selector_recalc_grid (mts);
 	e_meeting_time_selector_restore_position (mts, &saved_time);
@@ -1399,6 +1411,20 @@ e_meeting_time_selector_dump_date (GDate *date)
 
 #endif /* E_MEETING_TIME_SELECTOR_DEBUG */
 
+
+static void
+e_meeting_time_selector_on_invite_others_button_draw (GtkWidget *button,
+						      GdkRectangle *area,
+						      EMeetingTimeSelector *mts)
+{
+	ETable *real_table;
+	gboolean click_to_add = TRUE;
+	
+	real_table = e_table_scrolled_get_table (E_TABLE_SCROLLED (mts->etable));
+	gtk_object_get (GTK_OBJECT (real_table), "use_click_to_add", &click_to_add, NULL);
+
+	gtk_widget_set_sensitive (button, click_to_add);
+}
 
 static void
 e_meeting_time_selector_on_invite_others_button_clicked (GtkWidget *button,

@@ -2,6 +2,7 @@
 /* e-summary-tasks.c
  *
  * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 2002 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -29,24 +30,44 @@
 
 #include "e-summary-tasks.h"
 #include "e-summary.h"
+
+#include "e-util/e-config-listener.h"
+
 #include <cal-client/cal-client.h>
 #include <cal-util/timeutil.h>
 
+#include <bonobo/bonobo-event-source.h>
 #include <bonobo/bonobo-exception.h>
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-listener.h>
 #include <bonobo/bonobo-moniker-util.h>
+#include <bonobo/bonobo-object.h>
 #include <bonobo-conf/bonobo-config-database.h>
 #include <liboaf/liboaf.h>
+
+#define MAX_RELOAD_TRIES 10
 
 struct _ESummaryTasks {
 	CalClient *client;
 
 	char *html;
+	char *due_today_colour;
+	char *overdue_colour;
+
+	char *default_uri;
+
+	EConfigListener *config_listener;
+
+	int cal_open_reload_timeout_id;
+	int reload_count;
 };
 
 const char *
 e_summary_tasks_get_html (ESummary *summary)
 {
+	if (summary == NULL) {
+		return NULL;
+	}
+	
 	if (summary->tasks == NULL) {
 		return NULL;
 	}
@@ -136,8 +157,9 @@ sort_uids (gconstpointer a,
 	CalComponent *comp_a, *comp_b;
 	CalClient *client = user_data;
 	CalClientGetStatus status;
-	CalComponentDateTime start_a, start_b;
-	int retval;
+	/* let undefined priorities be lowest ones */
+	int lowest = 10, rv;
+	int *pri_a, *pri_b;
 
 	/* a after b then return > 0 */
 
@@ -149,20 +171,30 @@ sort_uids (gconstpointer a,
 	if (status != CAL_CLIENT_GET_SUCCESS)
 		return 1;
 
-	cal_component_get_dtstart (comp_a, &start_a);
-	cal_component_get_dtstart (comp_b, &start_b);
+	cal_component_get_priority (comp_a, &pri_a);
+	cal_component_get_priority (comp_b, &pri_b);
 
-	if (start_a.value == NULL || start_b.value == NULL) {
-		/* Try to do something reasonable if one or more of our .values is NULL */
-		retval = (start_a.value ? 1 : 0) - (start_b.value ? 1 : 0);
-	} else {
-		retval = icaltime_compare (*start_a.value, *start_b.value);
+	if (pri_a == NULL)
+		pri_a = &lowest;
+	if (pri_b == NULL)
+		pri_b = &lowest;
+
+	if (*pri_a == 0) {
+		*pri_a = lowest;
 	}
 
-	cal_component_free_datetime (&start_a);
-	cal_component_free_datetime (&start_b);
+	if (*pri_b == 0) {
+		*pri_b = lowest;
+	}
+	
+	rv = *pri_a - *pri_b;
 
-	return retval;
+	if (pri_a != &lowest)
+		cal_component_free_priority (pri_a);
+	if (pri_b != &lowest)
+		cal_component_free_priority (pri_b);
+
+	return rv;
 }
 
 static GList *
@@ -198,10 +230,11 @@ get_todays_uids (ESummary *summary,
 			icaltimezone_convert_time (due.value, zone, summary->tz);
 			endt = icaltime_as_timet (*due.value);
 
-			if (endt >= todays_start && endt <= todays_end) {
+			if (endt <= todays_end) {
 				today = g_list_append (today, g_strdup (uid));
 			}
 		}
+		
 		cal_component_free_datetime (&due);
 	}
 
@@ -213,6 +246,50 @@ get_todays_uids (ESummary *summary,
 	return today;
 }
 
+static const char *
+get_task_colour (ESummary *summary,
+		 CalClient *client,
+		 const char *uid)
+{
+	CalComponent *comp;
+	CalClientGetStatus status;
+	CalComponentDateTime due;
+	icaltimezone *zone;
+	char *ret;
+	time_t end_t, t, todays_start, todays_end;
+
+	t = time (NULL);
+	todays_start = time_day_begin_with_zone (t, summary->tz);
+	todays_end = time_day_end_with_zone (t, summary->tz);
+
+	status = cal_client_get_object (client, uid, &comp);
+	if (status != CAL_CLIENT_GET_SUCCESS) {
+		return "black";
+	}
+
+	cal_component_get_due (comp, &due);
+
+	cal_client_get_timezone (client, due.tzid, &zone);
+	if (due.value != 0) {
+		icaltimezone_convert_time (due.value, zone, summary->tz);
+		end_t = icaltime_as_timet (*due.value);
+
+		if (end_t >= todays_start && end_t <= todays_end) {
+			ret = summary->tasks->due_today_colour;
+		} else if (end_t < t) {
+			ret = summary->tasks->overdue_colour;
+		} else {
+			ret = "black";
+		}
+	} else {
+		ret = "black";
+	}
+
+	cal_component_free_datetime (&due);
+
+	return (const char *)ret;
+}
+
 static gboolean
 generate_html (gpointer data)
 {
@@ -222,6 +299,9 @@ generate_html (gpointer data)
 	GString *string;
 	char *tmp;
 	time_t t;
+
+	if (cal_client_get_load_state (tasks->client) != CAL_CLIENT_LOAD_LOADED)
+		return FALSE;
 
 	/* Set the default timezone on the server. */
 	if (summary->tz) {
@@ -248,18 +328,20 @@ generate_html (gpointer data)
 		s2 = e_utf8_from_locale_string (_("No tasks"));
 		g_free (tasks->html);
 		tasks->html = g_strconcat ("<dl><dt><img src=\"myevo-post-it.png\" align=\"middle\" "
-					   "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"evolution:/local/Tasks\">",
+					   "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"", tasks->default_uri, "\">",
 					   s1, "</a></b></dt><dd><b>", s2, "</b></dd></dl>", NULL);
 		g_free (s1);
 		g_free (s2);
 
-		e_summary_draw (summary);
 		return FALSE;
 	} else {
 		char *s;
 
-		string = g_string_new ("<dl><dt><img src=\"myevo-post-it.png\" align=\"middle\" "
-		                       "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"evolution:/local/Tasks\">");
+		uids = cal_list_sort (uids, sort_uids, tasks->client);
+		string = g_string_new (NULL);
+		g_string_sprintf (string, "<dl><dt><img src=\"myevo-post-it.png\" align=\"middle\" "
+				  "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"%s\">", tasks->default_uri);
+		
 		s = e_utf8_from_locale_string (_("Tasks"));
 		g_string_append (string, s);
 		g_free (s);
@@ -270,7 +352,8 @@ generate_html (gpointer data)
 			CalComponentText text;
 			CalClientGetStatus status;
 			struct icaltimetype *completed;
-
+			const char *colour;
+			
 			uid = l->data;
 			status = cal_client_get_object (tasks->client, uid, &comp);
 			if (status != CAL_CLIENT_GET_SUCCESS) {
@@ -279,12 +362,14 @@ generate_html (gpointer data)
 
 			cal_component_get_summary (comp, &text);
 			cal_component_get_completed (comp, &completed);
-			
+
+			colour = get_task_colour (summary, tasks->client, uid);
+
 			if (completed == NULL) {
 				tmp = g_strdup_printf ("<img align=\"middle\" src=\"task.png\" "
 						       "alt=\"\" width=\"16\" height=\"16\">  &#160; "
-						       "<font size=\"-1\"><a href=\"tasks:/%s\">%s</a></font><br>", 
-						       uid, text.value ? text.value : _("(No Description)"));
+						       "<a href=\"tasks:/%s\"><font size=\"-1\" color=\"%s\">%s</font></a><br>", 
+						       uid, colour, text.value ? text.value : _("(No Description)"));
 			} else {
 #if 0
 				tmp = g_strdup_printf ("<img align=\"middle\" src=\"task.xpm\" "
@@ -312,7 +397,23 @@ generate_html (gpointer data)
 	tasks->html = string->str;
 	g_string_free (string, FALSE);
 
-	e_summary_draw (summary);
+  	e_summary_draw (summary);
+	return FALSE;
+}
+
+static gboolean
+cal_open_reload_timeout (void *data)
+{
+	ESummary *summary = (ESummary *) data;
+
+	summary->tasks->cal_open_reload_timeout_id = 0;
+
+	if (++ summary->tasks->reload_count >= MAX_RELOAD_TRIES) {
+		summary->tasks->reload_count = 0;
+		return FALSE;
+	}
+
+	cal_client_open_default_tasks (summary->tasks->client, FALSE);
 	return FALSE;
 }
 
@@ -321,12 +422,14 @@ cal_opened_cb (CalClient *client,
 	       CalClientOpenStatus status,
 	       ESummary *summary)
 {
-	if (status == CAL_CLIENT_OPEN_SUCCESS) {
+	if (status == CAL_CLIENT_OPEN_SUCCESS)
 		g_idle_add (generate_html, summary);
-	} else {
-		/* Need to work out what to do if there's an error */
-	}
+	else
+		summary->tasks->cal_open_reload_timeout_id = g_timeout_add (1000,
+									    cal_open_reload_timeout,
+									    summary);
 }
+
 static void
 obj_changed_cb (CalClient *client,
 		const char *uid,
@@ -370,18 +473,38 @@ e_summary_tasks_protocol (ESummary *summary,
 	bonobo_object_release_unref (factory, NULL);
 }
 
-void
-e_summary_tasks_init (ESummary *summary)
+static void
+setup_task_folder (ESummary *summary)
 {
 	ESummaryTasks *tasks;
-	gboolean result;
 
-	g_return_if_fail (summary != NULL);
+	tasks = summary->tasks;
+	g_assert (tasks != NULL);
+	g_assert (tasks->config_listener != NULL);
 
-	tasks = g_new (ESummaryTasks, 1);
-	summary->tasks = tasks;
-	tasks->html = NULL;
+	if (tasks->cal_open_reload_timeout_id != 0) {
+		g_source_remove (tasks->cal_open_reload_timeout_id);
+		tasks->cal_open_reload_timeout_id = 0;
+		tasks->reload_count = 0;
+	}
 
+	g_free (tasks->due_today_colour);
+	g_free (tasks->overdue_colour);
+	g_free (tasks->default_uri);
+	
+	tasks->due_today_colour = e_config_listener_get_string_with_default (tasks->config_listener,
+									     "/Calendar/Tasks/Colors/TasksDueToday", "blue", NULL);
+	tasks->overdue_colour = e_config_listener_get_string_with_default (tasks->config_listener,
+									   "/Calendar/Tasks/Colors/TasksOverdue", "red", NULL);
+
+	tasks->default_uri = e_config_listener_get_string_with_default (tasks->config_listener,
+									"/DefaultFolders/tasks_path",
+									NULL,
+									NULL);
+
+	if (tasks->client != NULL)
+		gtk_object_unref (GTK_OBJECT (tasks->client));
+	
 	tasks->client = cal_client_new ();
 	if (tasks->client == NULL) {
 		g_warning ("Error making the client");
@@ -395,10 +518,48 @@ e_summary_tasks_init (ESummary *summary)
 	gtk_signal_connect (GTK_OBJECT (tasks->client), "obj-removed",
 			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
 
-	result = cal_client_open_default_tasks (tasks->client, FALSE);
-	if (result == FALSE) {
+	if (! cal_client_open_default_tasks (tasks->client, FALSE))
 		g_message ("Open tasks failed");
-	}
+}
+
+static void
+config_listener_key_changed_cb (EConfigListener *config_listener,
+				const char *key,
+				void *user_data)
+{
+	setup_task_folder (E_SUMMARY (user_data));
+
+	generate_html (user_data);
+}
+
+static void
+setup_config_listener (ESummary *summary)
+{
+	ESummaryTasks *tasks;
+
+	tasks = summary->tasks;
+	g_assert (tasks != NULL);
+
+	tasks->config_listener = e_config_listener_new ();
+
+	gtk_signal_connect (GTK_OBJECT (tasks->config_listener), "key_changed",
+			    GTK_SIGNAL_FUNC (config_listener_key_changed_cb), summary);
+}
+
+void
+e_summary_tasks_init (ESummary *summary)
+{
+	ESummaryTasks *tasks;
+
+	g_return_if_fail (summary != NULL);
+
+	tasks = g_new0 (ESummaryTasks, 1);
+	tasks->config_listener = e_config_listener_new ();
+
+	summary->tasks = tasks;
+
+	setup_config_listener (summary);
+	setup_task_folder (summary);
 
 	e_summary_add_protocol_listener (summary, "tasks", e_summary_tasks_protocol, tasks);
 }
@@ -406,6 +567,7 @@ e_summary_tasks_init (ESummary *summary)
 void
 e_summary_tasks_reconfigure (ESummary *summary)
 {
+	setup_task_folder (summary);
 	generate_html (summary);
 }
 
@@ -418,8 +580,17 @@ e_summary_tasks_free (ESummary *summary)
 	g_return_if_fail (IS_E_SUMMARY (summary));
 
 	tasks = summary->tasks;
+
+	if (tasks->cal_open_reload_timeout_id != 0)
+		g_source_remove (tasks->cal_open_reload_timeout_id);
+
 	gtk_object_unref (GTK_OBJECT (tasks->client));
 	g_free (tasks->html);
+	g_free (tasks->due_today_colour);
+	g_free (tasks->overdue_colour);
+	g_free (tasks->default_uri);
+
+	gtk_object_unref (GTK_OBJECT (tasks->config_listener));
 
 	g_free (tasks);
 	summary->tasks = NULL;

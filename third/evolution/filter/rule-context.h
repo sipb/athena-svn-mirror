@@ -60,9 +60,10 @@ struct _RuleContextClass {
 	/* virtual methods */
 	int (*load)(RuleContext *f, const char *system, const char *user);
 	int (*save)(RuleContext *f, const char *user);
+	int (*revert)(RuleContext *f, const char *user);
 
-	int (*delete_uri)(RuleContext *f, const char *uri, GCompareFunc cmp);
-	int (*rename_uri)(RuleContext *f, const char *olduri, const char *newuri, GCompareFunc cmp);
+	GList *(*delete_uri)(RuleContext *f, const char *uri, GCompareFunc cmp);
+	GList *(*rename_uri)(RuleContext *f, const char *olduri, const char *newuri, GCompareFunc cmp);
 
 	/* signals */
 	void (*rule_added)(RuleContext *f, FilterRule *rule);
@@ -95,6 +96,7 @@ RuleContext	*rule_context_new	(void);
 /* methods */
 int		rule_context_load(RuleContext *f, const char *system, const char *user);
 int		rule_context_save(RuleContext *f, const char *user);
+int		rule_context_revert(RuleContext *f, const char *user);
 
 void		rule_context_add_part(RuleContext *f, FilterPart *new);
 FilterPart 	*rule_context_find_part(RuleContext *f, const char *name);
@@ -117,8 +119,10 @@ void		rule_context_add_part_set(RuleContext *f, const char *setname, int part_ty
 void		rule_context_add_rule_set(RuleContext *f, const char *setname, int rule_type, RCRuleFunc append, RCNextRuleFunc next);
 
 /* uri's disappear/renamed externally */
-int		rule_context_delete_uri(RuleContext *f, const char *uri, GCompareFunc cmp);
-int		rule_context_rename_uri(RuleContext *f, const char *olduri, const char *newuri, GCompareFunc cmp);
+GList		*rule_context_delete_uri(RuleContext *f, const char *uri, GCompareFunc cmp);
+GList		*rule_context_rename_uri(RuleContext *f, const char *olduri, const char *newuri, GCompareFunc cmp);
+
+void		rule_context_free_uri_list(RuleContext *f, GList *uris);
 
 #endif /* ! _RULE_CONTEXT_H */
 

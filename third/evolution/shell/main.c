@@ -23,7 +23,9 @@
 #include <config.h>
 #include <fcntl.h>
 #include <glib.h>
+#include <stdio.h>
 
+#include <gtk/gtkalignment.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
@@ -40,6 +42,8 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-window-icon.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-moniker-util.h>
+#include <bonobo/bonobo-exception.h>
 #include <glade/glade.h>
 #include <liboaf/liboaf.h>
 
@@ -50,9 +54,13 @@
 #include <gal/widgets/e-gui-utils.h>
 #include <gal/widgets/e-cursors.h>
 
+#include "Evolution-Wombat.h"
+
 #include "e-util/e-gtk-utils.h"
 
+#include "e-icon-factory.h"
 #include "e-shell-constants.h"
+#include "e-shell-config.h"
 #include "e-setup.h"
 
 #include "e-shell.h"
@@ -60,7 +68,13 @@
 
 static EShell *shell = NULL;
 static char *evolution_directory = NULL;
+
+/* Command-line options.  */
 static gboolean no_splash = FALSE;
+static gboolean start_online = FALSE;
+static gboolean start_offline = FALSE;
+static gboolean force_upgrade = FALSE;
+
 extern char *evolution_debug_log;
 
 
@@ -72,6 +86,7 @@ quit_box_new (void)
 	GtkWidget *frame;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, FALSE);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 
 	/* (Just to prevent smart-ass window managers like Sawfish from setting
@@ -173,6 +188,95 @@ destroy_cb (GtkObject *object, gpointer data)
 }
 
 
+static void
+kill_wombat (void)
+{
+	g_print ("(Killing old version of Wombat...)\n");
+
+	system (KILL_PROCESS_CMD " -9 lt-wombat 2> /dev/null");
+	system (KILL_PROCESS_CMD " -9 wombat 2> /dev/null");
+}
+
+static void
+kill_old_wombat (void)
+{
+	GNOME_Evolution_WombatInterfaceCheck iface;
+	CORBA_Environment ev;
+	CORBA_char *version;
+
+	CORBA_exception_init (&ev);
+
+	iface = bonobo_get_object ("wombat:", "GNOME/Evolution/WombatInterfaceCheck", &ev);
+	if (BONOBO_EX (&ev) || iface == CORBA_OBJECT_NIL) {
+		kill_wombat ();
+		CORBA_exception_free (&ev);
+		return;
+	}
+
+	version = GNOME_Evolution_WombatInterfaceCheck__get_interfaceVersion (iface, &ev);
+	if (BONOBO_EX (&ev)) {
+		kill_wombat ();
+		bonobo_object_release_unref (iface, &ev);
+		CORBA_exception_free (&ev);
+		return;
+	}
+
+	if (strcmp (version, VERSION) != 0) {
+		CORBA_free (version);
+		kill_wombat ();
+		bonobo_object_release_unref (iface, &ev);
+		CORBA_exception_free (&ev);
+		return;
+	}
+
+	CORBA_free (version);
+
+	bonobo_object_release_unref (iface, &ev);
+
+	CORBA_exception_free (&ev);
+}
+
+
+static void
+upgrade_from_1_0_if_needed (void)
+{
+	Bonobo_ConfigDatabase config_db;
+	CORBA_Environment ev;
+	int result;
+
+	CORBA_exception_init (&ev);
+
+	config_db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
+	if (BONOBO_EX (&ev) || config_db == CORBA_OBJECT_NIL) {
+		g_print ("(Cannot access Bonobo/ConfigDatabase, not upgrading configuration.)\n");
+		if (BONOBO_EX (&ev))
+			g_print ("\t%s\n", BONOBO_EX_ID (&ev));
+		CORBA_exception_free (&ev);
+		return;
+ 	}
+
+	CORBA_exception_free (&ev);
+
+	if (! force_upgrade
+	    && bonobo_config_get_boolean_with_default (config_db, "/Shell/upgrade_from_1_0_to_1_2_performed",
+						       FALSE, NULL))
+		return;
+
+	g_print ("\nOlder configuration files detected, upgrading...\n");
+
+	result = system (PREFIX "/bin/evolution-mail-upgrade");
+
+	if (result == 0)
+		g_print ("\n--> Configuration files upgraded from version 1.0.\n");
+	else
+		g_print ("\n*** Error upgrading configuration files -- status %d\n", result);
+
+	bonobo_config_set_boolean (config_db, "/Shell/upgrade_from_1_0_to_1_2_performed", TRUE, NULL);
+
+	bonobo_object_release_unref (config_db, NULL);
+}
+
+
 /* This is for doing stuff that requires the GTK+ loop to be running already.  */
 
 static gint
@@ -182,23 +286,39 @@ idle_cb (void *data)
 	GNOME_Evolution_Shell corba_shell;
 	CORBA_Environment ev;
 	EShellConstructResult result;
+	EShellStartupLineMode startup_line_mode;
 	GSList *p;
 	gboolean have_evolution_uri;
 	gboolean display_default;
+	gboolean displayed_any;
+
+	kill_old_wombat ();
+
+	upgrade_from_1_0_if_needed ();
 
 	CORBA_exception_init (&ev);
 
 	uri_list = (GSList *) data;
 
-	shell = e_shell_new (evolution_directory, ! no_splash, &result);
+	if (! start_online && ! start_offline)
+		startup_line_mode = E_SHELL_STARTUP_LINE_MODE_CONFIG;
+	else if (start_online)
+		startup_line_mode = E_SHELL_STARTUP_LINE_MODE_ONLINE;
+	else
+		startup_line_mode = E_SHELL_STARTUP_LINE_MODE_OFFLINE;
+
+	shell = e_shell_new (evolution_directory, ! no_splash, startup_line_mode, &result);
 	g_free (evolution_directory);
 
 	switch (result) {
 	case E_SHELL_CONSTRUCT_RESULT_OK:
+		e_shell_config_factory_register (shell);
+
 		gtk_signal_connect (GTK_OBJECT (shell), "no_views_left",
 				    GTK_SIGNAL_FUNC (no_views_left_cb), NULL);
 		gtk_signal_connect (GTK_OBJECT (shell), "destroy",
 				    GTK_SIGNAL_FUNC (destroy_cb), NULL);
+
 		corba_shell = bonobo_object_corba_objref (BONOBO_OBJECT (shell));
 		corba_shell = CORBA_Object_duplicate (corba_shell, &ev);
 		break;
@@ -229,18 +349,27 @@ idle_cb (void *data)
 		const char *uri;
 
 		uri = (const char *) p->data;
-		if (strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0)
+		if (strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0 ||
+		    strncmp (uri, E_SHELL_DEFAULTURI_PREFIX, E_SHELL_DEFAULTURI_PREFIX_LEN) == 0)
 			have_evolution_uri = TRUE;
 	}
 
 	if (shell == NULL) {
+		/* We're talking to a remote shell. If the user didn't
+		 * ask us to open any particular URI, then open another
+		 * view of the default URI
+		 */
 		if (uri_list == NULL)
 			display_default = TRUE;
 		else
 			display_default = FALSE;
 	} else {
+		/* We're starting a new shell. If the user didn't specify
+		 * any evolution: URIs to view, AND we can't load the
+		 * user's previous settings, then show the default URI.
+		 */
 		if (! have_evolution_uri) {
-			if (! e_shell_restore_from_settings (shell)) 
+			if (! e_shell_restore_from_settings (shell, FALSE)) 
 				display_default = TRUE;
 			else
 				display_default = FALSE;
@@ -249,7 +378,23 @@ idle_cb (void *data)
 		}
 	}
 
-	if (display_default) {
+	displayed_any = FALSE;
+	for (p = uri_list; p != NULL; p = p->next) {
+		const char *uri;
+
+		uri = (const char *) p->data;
+		GNOME_Evolution_Shell_handleURI (corba_shell, uri, &ev);
+		if (ev._major == CORBA_NO_EXCEPTION)
+			displayed_any = TRUE;
+		else {
+			g_warning ("CORBA exception %s when requesting URI -- %s", ev._repo_id, uri);
+			CORBA_exception_free (&ev);
+		}
+	}
+
+	g_slist_free (uri_list);
+
+	if (display_default && ! displayed_any) {
 		const char *uri;
 
 		uri = E_SHELL_VIEW_DEFAULT_URI;
@@ -257,20 +402,6 @@ idle_cb (void *data)
 		if (ev._major != CORBA_NO_EXCEPTION)
 			g_warning ("CORBA exception %s when requesting URI -- %s", ev._repo_id, uri);
 	}
-
-	for (p = uri_list; p != NULL; p = p->next) {
-		const char *uri;
-
-		uri = (const char *) p->data;
-		GNOME_Evolution_Shell_handleURI (corba_shell, uri, &ev);
-		if (ev._major != CORBA_NO_EXCEPTION)
-			g_warning ("CORBA exception %s when requesting URI -- %s", ev._repo_id, uri);
-
-		if (strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0)
-			have_evolution_uri = TRUE;
-	}
-
-	g_slist_free (uri_list);
 
 	CORBA_Object_release (corba_shell, &ev);
 
@@ -286,8 +417,16 @@ int
 main (int argc, char **argv)
 {
 	struct poptOption options[] = {
-		{ "no-splash", '\0', POPT_ARG_NONE, &no_splash, 0, N_("Disable splash screen"), NULL },
-		{ "debug", '\0', POPT_ARG_STRING, &evolution_debug_log, 0, N_("Send the debugging output of all components to a file."), NULL },
+		{ "no-splash", '\0', POPT_ARG_NONE, &no_splash, 0,
+		  N_("Disable splash screen"), NULL },
+		{ "offline", '\0', POPT_ARG_NONE, &start_offline, 0, 
+		  N_("Start in offline mode"), NULL },
+		{ "online", '\0', POPT_ARG_NONE, &start_online, 0, 
+		  N_("Start in online mode"), NULL },
+		{ "debug", '\0', POPT_ARG_STRING, &evolution_debug_log, 0, 
+		  N_("Send the debugging output of all components to a file."), NULL },
+		{ "force-upgrade", '\0', POPT_ARG_NONE, &force_upgrade, 0, 
+		  N_("Force upgrading of configuration files from Evolution 1.0.x"), NULL },
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
@@ -303,6 +442,12 @@ main (int argc, char **argv)
 	free (malloc (10));
 
 	gnome_init_with_popt_table ("Evolution", VERSION " [" SUB_VERSION "]", argc, argv, options, 0, &popt_context);
+
+	if (start_online && start_offline) {
+		fprintf (stderr, _("%s: --online and --offline cannot be used together.\n  Use %s --help for more information.\n"),
+			 argv[0], argv[0]);
+		exit (1);
+	}
 
 	if (evolution_debug_log) {
 		int fd;
@@ -324,6 +469,7 @@ main (int argc, char **argv)
 
 	glade_gnome_init ();
 	e_cursors_init ();
+	e_icon_factory_init ();
 
 	gnome_window_icon_set_default_from_file (EVOLUTION_IMAGES "/evolution-inbox.png");
 

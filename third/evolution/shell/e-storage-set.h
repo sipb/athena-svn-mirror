@@ -65,6 +65,8 @@ struct _EStorageSetClass {
 	void (* new_folder)     (EStorageSet *storage_set, const char *path);
 	void (* updated_folder) (EStorageSet *storage_set, const char *path);
 	void (* removed_folder) (EStorageSet *storage_set, const char *path);
+	void (* moved_folder)   (EStorageSet *storage_set, const char *source_path, const char *destination_path);
+	void (* close_folder)   (EStorageSet *storage_set, const char *path);
 };
 
 
@@ -82,7 +84,7 @@ EStorage    *e_storage_set_get_storage          (EStorageSet            *storage
 						 const char             *storage_name);
 EFolder     *e_storage_set_get_folder           (EStorageSet            *storage_set,
 						 const char             *path);
-GtkWidget   *e_storage_set_new_view             (EStorageSet            *storage_set,
+GtkWidget   *e_storage_set_create_new_view      (EStorageSet            *storage_set,
 						 BonoboUIContainer      *container);
 
 void  e_storage_set_async_create_folder  (EStorageSet               *storage_set,
@@ -101,6 +103,11 @@ void  e_storage_set_async_xfer_folder    (EStorageSet               *storage_set
 					  gboolean                   remove_source,
 					  EStorageSetResultCallback  callback,
 					  void                      *data);
+
+void  e_storage_set_async_remove_shared_folder (EStorageSet               *storage_set,
+						const char                *path,
+						EStorageSetResultCallback  callback,
+						void                      *data);
 
 EFolderTypeRegistry *e_storage_set_get_folder_type_registry (EStorageSet *storage_set);
 

@@ -109,7 +109,25 @@ cal_comp_util_compare_event_timezones (CalComponent *comp,
 	/* If either the DTSTART or the DTEND is a DATE value, we return TRUE.
 	   Maybe if one was a DATE-TIME we should check that, but that should
 	   not happen often. */
-	if (start_datetime.value->is_date || end_datetime.value->is_date) {
+	if ((start_datetime.value && start_datetime.value->is_date)
+	    || (end_datetime.value && end_datetime.value->is_date)) {
+		retval = TRUE;
+		goto out;
+	}
+
+	/* If the event uses UTC for DTSTART & DTEND, return TRUE. Outlook
+	   will send single events as UTC, so we don't want to mark all of
+	   these. */
+	if ((!start_datetime.value || start_datetime.value->is_utc)
+	    && (!end_datetime.value || end_datetime.value->is_utc)) {
+		retval = TRUE;
+		goto out;
+	}
+
+	/* If the event uses floating time for DTSTART & DTEND, return TRUE.
+	   Imported vCalendar files will use floating times, so we don't want
+	   to mark all of these. */
+	if (!start_datetime.tzid && !end_datetime.tzid) {
 		retval = TRUE;
 		goto out;
 	}
@@ -130,28 +148,35 @@ cal_comp_util_compare_event_timezones (CalComponent *comp,
 		if (status != CAL_CLIENT_GET_SUCCESS)
 			goto out;
 
-		offset1 = icaltimezone_get_utc_offset (start_zone,
-						       start_datetime.value,
-						       NULL);
-		offset2 = icaltimezone_get_utc_offset (zone,
-						       start_datetime.value,
-						       NULL);
-		if (offset1 == offset2) {
-			status = cal_client_get_timezone (client,
-							  end_datetime.tzid,
-							  &end_zone);
-			if (status != CAL_CLIENT_GET_SUCCESS)
+		if (start_datetime.value) {
+			offset1 = icaltimezone_get_utc_offset (start_zone,
+							       start_datetime.value,
+							       NULL);
+			offset2 = icaltimezone_get_utc_offset (zone,
+							       start_datetime.value,
+							       NULL);
+			if (offset1 != offset2)
 				goto out;
+		}
 
+		status = cal_client_get_timezone (client,
+						  end_datetime.tzid,
+						  &end_zone);
+		if (status != CAL_CLIENT_GET_SUCCESS)
+			goto out;
+
+		if (end_datetime.value) {
 			offset1 = icaltimezone_get_utc_offset (end_zone,
 							       end_datetime.value,
 							       NULL);
 			offset2 = icaltimezone_get_utc_offset (zone,
 							       end_datetime.value,
 							       NULL);
-			if (offset1 == offset2)
-				retval = TRUE;
+			if (offset1 != offset2)
+				goto out;
 		}
+
+		retval = TRUE;
 	}
 
  out:
@@ -180,19 +205,17 @@ cal_comp_util_compare_event_timezones (CalComponent *comp,
  * was on the server and the user deleted it, or whether the
  * user cancelled the deletion.
  **/
-ConfirmDeleteEmptyCompResult
-cal_comp_confirm_delete_empty_comp (CalComponent *comp, CalClient *client, GtkWidget *widget)
+gboolean
+cal_comp_is_on_server (CalComponent *comp, CalClient *client)
 {
 	const char *uid;
 	CalClientGetStatus status;
 	CalComponent *server_comp;
 
-	g_return_val_if_fail (comp != NULL, EMPTY_COMP_DO_NOT_REMOVE);
-	g_return_val_if_fail (IS_CAL_COMPONENT (comp), EMPTY_COMP_DO_NOT_REMOVE);
-	g_return_val_if_fail (client != NULL, EMPTY_COMP_DO_NOT_REMOVE);
-	g_return_val_if_fail (IS_CAL_CLIENT (client), EMPTY_COMP_DO_NOT_REMOVE);
-	g_return_val_if_fail (widget != NULL, EMPTY_COMP_DO_NOT_REMOVE);
-	g_return_val_if_fail (GTK_IS_WIDGET (widget), EMPTY_COMP_DO_NOT_REMOVE);
+	g_return_val_if_fail (comp != NULL, FALSE);
+	g_return_val_if_fail (IS_CAL_COMPONENT (comp), FALSE);
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (IS_CAL_CLIENT (client), FALSE);
 
 	/* See if the component is on the server.  If it is not, then it likely
 	 * means that the appointment is new, only in the day view, and we
@@ -207,30 +230,22 @@ cal_comp_confirm_delete_empty_comp (CalComponent *comp, CalClient *client, GtkWi
 	switch (status) {
 	case CAL_CLIENT_GET_SUCCESS:
 		gtk_object_unref (GTK_OBJECT (server_comp));
-		/* Will handle confirmation below */
-		break;
+		return TRUE;
 
 	case CAL_CLIENT_GET_SYNTAX_ERROR:
 		g_message ("confirm_delete_empty_appointment(): Syntax error when getting "
 			   "object `%s'",
 			   uid);
-		/* However, the object *is* in the server, so confirm */
-		break;
+		return TRUE;
 
 	case CAL_CLIENT_GET_NOT_FOUND:
-		return EMPTY_COMP_REMOVE_LOCALLY;
+		return FALSE;
 
 	default:
 		g_assert_not_reached ();
 	}
-
-	/* The event exists in the server, so confirm whether to delete it */
-
-	if (delete_component_dialog (comp, TRUE, 1, CAL_COMPONENT_EVENT, widget)) {
-		cal_client_remove_object (client, uid);
-		return EMPTY_COMP_REMOVED_FROM_SERVER;
-	} else
-		return EMPTY_COMP_DO_NOT_REMOVE;
+	
+	return FALSE;
 }
 
 /**
@@ -248,6 +263,8 @@ cal_comp_event_new_with_defaults (void)
 	int interval;
 	CalUnits units;
 	CalComponentAlarm *alarm;
+	icalcomponent *icalcomp;
+	icalproperty *icalprop;
 	CalAlarmTrigger trigger;
 
 	comp = cal_component_new ();
@@ -263,8 +280,13 @@ cal_comp_event_new_with_defaults (void)
 	alarm = cal_component_alarm_new ();
 
 	/* We don't set the description of the alarm; we'll copy it from the
-	 * summary when it gets committed to the server.
+	 * summary when it gets committed to the server. For that, we add a
+	 * X-EVOLUTION-NEEDS-DESCRIPTION property to the alarm's component.
 	 */
+	icalcomp = cal_component_alarm_get_icalcomponent (alarm);
+	icalprop = icalproperty_new_x ("1");
+	icalproperty_set_x_name (icalprop, "X-EVOLUTION-NEEDS-DESCRIPTION");
+	icalcomponent_add_property (icalcomp, icalprop);
 
 	cal_component_alarm_set_action (alarm, CAL_ALARM_DISPLAY);
 

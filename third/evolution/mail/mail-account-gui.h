@@ -36,6 +36,7 @@ extern "C" {
 #include <camel/camel-provider.h>
 
 #include "mail-config.h"
+#include "mail-accounts.h"
 
 typedef struct {
 	GtkOptionMenu *type;
@@ -43,7 +44,9 @@ typedef struct {
 	GtkEntry *hostname;
 	GtkEntry *username;
 	GtkEntry *path;
-	GtkToggleButton *use_ssl;
+	GtkOptionMenu *use_ssl;
+	GtkWidget *ssl_selected;
+	GtkWidget *ssl_hbox;
 	GtkWidget *no_ssl;
 	GtkOptionMenu *authtype;
 	GtkWidget *authitem;
@@ -55,23 +58,22 @@ typedef struct {
 } MailAccountGuiService;
 
 typedef struct {
-	char *name, *uri;
-} MailAccountGuiFolder;
-
-typedef struct {
 	GtkWidget *top;
 	MailConfigAccount *account;
+	MailAccountsTab *dialog;
 	GladeXML *xml;
 	
 	/* identity */
 	GtkEntry *full_name;
 	GtkEntry *email_address;
+	GtkEntry *reply_to;
 	GtkEntry *organization;
-	GnomeFileEntry *signature;
-	GnomeFileEntry *html_signature;
-	GtkToggleButton *has_html_signature;
-	GtkButton *edit_signature;
-	GtkButton *edit_html_signature;
+	
+	/* signatures */
+	GtkWidget *sig_option_menu;
+	
+	MailConfigSignature *def_signature;
+	gboolean auto_signature;
 	
 	/* incoming mail */
 	MailAccountGuiService source;
@@ -91,21 +93,29 @@ typedef struct {
 	
 	/* special folders */
 	GtkButton *drafts_folder_button;
-	MailAccountGuiFolder drafts_folder;
+	char *drafts_folder_uri;
 	GtkButton *sent_folder_button;
-	MailAccountGuiFolder sent_folder;
+	char *sent_folder_uri;
+	
+	/* always cc/bcc */
+	GtkToggleButton *always_cc;
+	GtkEntry *cc_addrs;
+	GtkToggleButton *always_bcc;
+	GtkEntry *bcc_addrs;
 	
 	/* Security */
 	GtkEntry *pgp_key;
 	GtkToggleButton *pgp_encrypt_to_self;
 	GtkToggleButton *pgp_always_sign;
+	GtkToggleButton *pgp_no_imip_sign;
+	GtkToggleButton *pgp_always_trust;
 	GtkEntry *smime_key;
 	GtkToggleButton *smime_encrypt_to_self;
 	GtkToggleButton *smime_always_sign;
 } MailAccountGui;
 
 
-MailAccountGui *mail_account_gui_new (MailConfigAccount *account);
+MailAccountGui *mail_account_gui_new (MailConfigAccount *account, MailAccountsTab *dialog);
 void mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top);
 gboolean mail_account_gui_save (MailAccountGui *gui);
 void mail_account_gui_destroy (MailAccountGui *gui);
@@ -116,6 +126,8 @@ gboolean mail_account_gui_transport_complete (MailAccountGui *gui, GtkWidget **i
 gboolean mail_account_gui_management_complete (MailAccountGui *gui, GtkWidget **incomplete);
 
 void mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url);
+
+void mail_account_gui_auto_detect_extra_conf (MailAccountGui *gui);
 
 #ifdef __cplusplus
 }

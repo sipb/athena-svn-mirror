@@ -47,6 +47,8 @@
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-filter-bestenc.h"
 
+#include "e-time-utils.h"
+
 #define d(x)
 
 /* these 2 below should be kept in sync */
@@ -56,23 +58,27 @@ typedef enum {
 	HEADER_REPLY_TO,
 	HEADER_SUBJECT,
 	HEADER_TO,
+	HEADER_RESENT_TO,
 	HEADER_CC,
+	HEADER_RESENT_CC,
 	HEADER_BCC,
+	HEADER_RESENT_BCC,
 	HEADER_DATE,
 	HEADER_MESSAGE_ID
 } CamelHeaderType;
 
 static char *header_names[] = {
 	/* dont include HEADER_UNKNOWN string */
-	"From", "Reply-To", "Subject", "To", "Cc", "Bcc", "Date", "Message-Id", NULL
+	"From", "Reply-To", "Subject", "To", "Resent-To", "Cc", "Resent-Cc",
+	"Bcc", "Resent-Bcc", "Date", "Message-Id", NULL
 };
 
 static GHashTable *header_name_table;
 
-static CamelMimePartClass *parent_class=NULL;
+static CamelMimePartClass *parent_class = NULL;
 
 static char *recipient_names[] = {
-	"To", "Cc", "Bcc", NULL
+	"To", "Cc", "Bcc", "Resent-To", "Resent-Cc", "Resent-Bcc", NULL
 };
 
 static int write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
@@ -198,22 +204,12 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, int offset
 	g_assert(message);
 	
 	if (date == CAMEL_MESSAGE_DATE_CURRENT) {
-		struct tm *local;
+		struct tm local;
 		int tz;
 		
 		date = time(0);
-		local = localtime(&date);
-#if defined(HAVE_TIMEZONE)
-		tz = timezone;
-#elif defined(HAVE_TM_GMTOFF)
-		tz = -local->tm_gmtoff;
-#endif
-		offset = -(((tz/60/60) * 100) + (tz/60 % 60));
-#ifdef HAVE_TIMEZONE
-		/* tm.tm_gmtoff is already adjusted for DST */
-		if (local->tm_isdst>0)
-			offset += 100;
-#endif
+		e_localtime_with_offset(date, &local, &tz);
+		offset = (((tz/60/60) * 100) + (tz/60 % 60));
 	}
 	message->date = date;
 	message->date_offset = offset;
@@ -558,6 +554,9 @@ process_header (CamelMedium *medium, const char *header_name, const char *header
 	case HEADER_TO:
 	case HEADER_CC:
 	case HEADER_BCC:
+	case HEADER_RESENT_TO:
+	case HEADER_RESENT_CC:
+	case HEADER_RESENT_BCC:
 		addr = g_hash_table_lookup (message->recipients, header_name);
 		if (header_value)
 			camel_address_decode (CAMEL_ADDRESS (addr), header_value);
@@ -653,10 +652,14 @@ camel_mime_message_foreach_part (CamelMimeMessage *msg, CamelPartFunc callback, 
 static gboolean
 check_8bit (CamelMimeMessage *msg, CamelMimePart *part, void *data)
 {
+	CamelMimePartEncodingType encoding;
 	int *has8bit = data;
 	
 	/* check this part, and stop as soon as we are done */
-	*has8bit = camel_mime_part_get_encoding (part) == CAMEL_MIME_PART_ENCODING_8BIT;
+	encoding = camel_mime_part_get_encoding (part);
+	
+	*has8bit = encoding == CAMEL_MIME_PART_ENCODING_8BIT || encoding == CAMEL_MIME_PART_ENCODING_BINARY;
+	
 	return !(*has8bit);
 }
 

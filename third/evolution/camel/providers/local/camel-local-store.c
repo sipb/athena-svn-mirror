@@ -38,8 +38,9 @@
 #include "camel-url.h"
 
 #include "camel-local-folder.h"
+#include <camel/camel-text-index.h>
 
-#define d(x)
+#define d(x) 
 
 /* Returns the class for a CamelLocalStore */
 #define CLOCALS_CLASS(so) CAMEL_LOCAL_STORE_CLASS (CAMEL_OBJECT_GET_CLASS(so))
@@ -143,8 +144,9 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 		if (!S_ISDIR(st.st_mode)) {
 			camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 					     _("Store root %s is not a regular directory"), path);
+			return NULL;
 		}
-		return NULL;
+		return (CamelFolder *) 0xdeadbeef;
 	}
 
 	if (errno != ENOENT
@@ -174,7 +176,7 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 			*slash = '/';
 	} while (slash);
 
-	return NULL;
+	return (CamelFolder *) 0xdeadbeef;
 }
 
 static CamelFolder *
@@ -220,15 +222,16 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 
 	/* This is a pretty hacky version of create folder, but should basically work */
 
-	/* FIXME: The strings here are funny because of string freeze */
-
 	if (path[0] != '/') {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
 				     _("Store root %s is not an absolute path"), path);
 		return NULL;
 	}
 
-	name = g_strdup_printf("%s/%s/%s", path, parent_name, folder_name);
+	if (parent_name)
+		name = g_strdup_printf("%s/%s/%s", path, parent_name, folder_name);
+	else
+		name = g_strdup_printf("%s/%s", path, folder_name);
 
 	if (stat(name, &st) == 0 || errno != ENOENT) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
@@ -239,12 +242,15 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 
 	g_free(name);
 
-	name = g_strdup_printf("%s/%s", parent_name, folder_name);
+	if (parent_name)
+		name = g_strdup_printf("%s/%s", parent_name, folder_name);
+	else
+		name = g_strdup_printf("%s", folder_name);
 
-	folder = ((CamelStoreClass *)((CamelObject *)store)->classfuncs)->get_folder(store, name, CAMEL_STORE_FOLDER_CREATE, ex);
+	folder = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder(store, name, CAMEL_STORE_FOLDER_CREATE, ex);
 	if (folder) {
 		camel_object_unref((CamelObject *)folder);
-		info = ((CamelStoreClass *)((CamelObject *)store)->classfuncs)->get_folder_info(store, name, 0, ex);
+		info = ((CamelStoreClass *)((CamelObject *)store)->klass)->get_folder_info(store, name, 0, ex);
 
 		/* get_folder(CREATE) will emit a folder_created event for us */
 		/*if (info)
@@ -321,11 +327,12 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 
 	CAMEL_STORE_LOCK(store, cache_lock);
 	folder = g_hash_table_lookup(store->folders, old);
-	if (folder) {
-		if (folder->index && ibex_move(folder->index, newibex) == -1)
+	if (folder && folder->index) {
+		if (camel_index_rename(folder->index, newibex) == -1)
 			goto ibex_failed;
 	} else {
-		if (xrename(old, new, path, ".ibex", TRUE, ex))
+		/* TODO: camel_text_index_rename should find out if we have an active index itself? */
+		if (camel_text_index_rename(oldibex, newibex) == -1)
 			goto ibex_failed;
 	}
 
@@ -348,11 +355,14 @@ base_failed:
 summary_failed:
 	if (folder) {
 		if (folder->index)
-			ibex_move(folder->index, oldibex);
+			camel_index_rename(folder->index, oldibex);
 	} else
-		xrename(new, old, path, ".ibex", TRUE, ex);
-
+		camel_text_index_rename(newibex, oldibex);
 ibex_failed:
+	camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
+			     _("Could not rename '%s': %s"),
+			     old, strerror(errno));
+
 	CAMEL_STORE_UNLOCK(store, cache_lock);
 	g_free(newibex);
 	g_free(oldibex);
@@ -379,7 +389,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	}
 	g_free(str);
 	str = g_strdup_printf("%s.ibex", name);
-	if (unlink(str) == -1 && errno != ENOENT) {
+	if (camel_text_index_remove(str) == -1 && errno != ENOENT) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 				     _("Could not delete folder index file `%s': %s"),
 				     str, strerror(errno));

@@ -30,6 +30,7 @@
 
 #include "mail-config.h"
 #include "camel/camel-url.h"
+#include "mail-session.h"
 #include "mail-mt.h"
 
 #include "component-factory.h"
@@ -40,8 +41,6 @@
 #define d(x) 
 
 static void set_stop(int sensitive);
-static void mail_enable_stop(void);
-static void mail_disable_stop(void);
 static void mail_operation_status(struct _CamelOperation *op, const char *what, int pc, void *data);
 
 #ifdef LOG_LOCKS
@@ -233,13 +232,17 @@ void mail_msg_check_error(void *msg)
 	char *what = NULL;
 	char *text;
 	GnomeDialog *gd;
-
+	
 #ifdef MALLOC_CHECK
 	checkmem(m);
 	checkmem(m->cancel);
 	checkmem(m->priv);
 #endif
-
+	
+	/* don't report any errors if we are not in interactive mode */
+	if (!mail_session_get_interactive ())
+		return;
+	
 	if (!camel_exception_is_set(&m->ex)
 	    || m->ex.id == CAMEL_EXCEPTION_USER_CANCEL)
 		return;
@@ -799,7 +802,7 @@ struct _mail_msg_op set_busy_op = {
 	NULL,
 };
 
-static void mail_enable_stop(void)
+void mail_enable_stop(void)
 {
 	struct _mail_msg *m;
 
@@ -812,7 +815,7 @@ static void mail_enable_stop(void)
 	MAIL_MT_UNLOCK(status_lock);
 }
 
-static void mail_disable_stop(void)
+void mail_disable_stop(void)
 {
 	struct _mail_msg *m;
 

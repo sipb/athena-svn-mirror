@@ -108,9 +108,6 @@ async_create_cb (EStorageSet *storage_set,
 			dialog_data_destroy (dialog_data);
 		}
 		return;
-	} else if (result == E_STORAGE_EXISTS) {
-		e_storage_set_view_set_current_folder (E_STORAGE_SET_VIEW (dialog_data->storage_set_view),
-						       dialog_data->folder_path);
 	}
 
 	/* Tell the callback something failed, then popup a dialog
@@ -262,19 +259,6 @@ storage_set_view_folder_selected_cb (EStorageSetView *storage_set_view,
 		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog_data->dialog), 0, TRUE);
 }
 
-static void
-storage_set_view_storage_selected_cb (EStorageSetView *storage_set_view,
-				      const char *name,
-				      void *data)
-{
-	DialogData *dialog_data;
-
-	dialog_data = (DialogData *) data;
-
-	if (GTK_ENTRY (dialog_data->folder_name_entry)->text_length > 0)
-		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog_data->dialog), 0, TRUE);
-}
-
 
 /* Shell signal callbacks.  */
 
@@ -301,7 +285,7 @@ setup_dialog (GtkWidget *dialog,
 		gtk_window_set_transient_for (GTK_WINDOW (dialog), parent_window);
 
 	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Evolution - Create new folder"));
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Create New Folder"));
 
 	gnome_dialog_set_default   (GNOME_DIALOG (dialog), 0);
 	gnome_dialog_set_sensitive (GNOME_DIALOG (dialog), 0, FALSE);
@@ -333,7 +317,7 @@ add_storage_set_view (GtkWidget *dialog,
 	GtkWidget *vbox;
 
 	storage_set = e_shell_get_storage_set (shell);
-	storage_set_view = e_storage_set_new_view (storage_set, NULL/*XXX*/);
+	storage_set_view = e_storage_set_create_new_view (storage_set, NULL);
 
 	e_storage_set_view_set_allow_dnd (E_STORAGE_SET_VIEW (storage_set_view), FALSE);
 
@@ -473,12 +457,12 @@ get_type_from_parent_path (EShell *shell,
 	set = e_shell_get_storage_set (shell);
 	folder = e_storage_set_get_folder (set, path);
 	if (folder == NULL) {
-		return NULL;
+		return "mail";
 	}
 
 	folder_type = e_folder_get_type_string (folder);
-	if (folder_type == NULL) {
-		return NULL;
+	if (folder_type == NULL || strcmp (folder_type, "noselect") == 0) {
+		return "mail";
 	} else {
 		return folder_type;
 	}
@@ -549,8 +533,6 @@ e_shell_show_folder_creation_dialog (EShell *shell,
 
 	gtk_signal_connect (GTK_OBJECT (dialog_data->storage_set_view), "folder_selected",
 			    storage_set_view_folder_selected_cb, dialog_data);
-	gtk_signal_connect (GTK_OBJECT (dialog_data->storage_set_view), "storage_selected",
-			    storage_set_view_storage_selected_cb, dialog_data);
 
 	gtk_signal_connect_while_alive (GTK_OBJECT (shell), "destroy",
 					GTK_SIGNAL_FUNC (shell_destroy_cb), dialog_data,

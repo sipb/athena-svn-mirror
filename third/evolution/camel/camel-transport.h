@@ -42,13 +42,15 @@ extern "C" {
 #define CAMEL_IS_TRANSPORT(o)    (CAMEL_CHECK_TYPE((o), CAMEL_TRANSPORT_TYPE))
 
 
+enum {
+	CAMEL_TRANSPORT_ARG_FIRST  = CAMEL_SERVICE_ARG_FIRST + 100,
+};
+
 struct _CamelTransport
 {
 	CamelService parent_object;
 	
 	struct _CamelTransportPrivate *priv;
-	
-	gboolean supports_8bit;
 };
 
 
@@ -56,27 +58,18 @@ struct _CamelTransport
 typedef struct {
 	CamelServiceClass parent_class;
 
-	gboolean (*can_send) (CamelTransport *transport, CamelMedium *message);
-	gboolean (*send) (CamelTransport *transport, CamelMedium *message,
-			  CamelException *ex);
 	gboolean (*send_to) (CamelTransport *transport,
-			     CamelMedium *message, GList *recipients,
+			     CamelMimeMessage *message,
+			     CamelAddress *from, CamelAddress *recipients,
 			     CamelException *ex);
 } CamelTransportClass;
 
 
 /* public methods */
-gboolean camel_transport_can_send (CamelTransport *transport,
-				   CamelMedium *message);
-
-gboolean camel_transport_send (CamelTransport *transport,
-			       CamelMedium *message,
-			       CamelException *ex);
-
-/* FIXME: This should use a camel-address */
 gboolean camel_transport_send_to (CamelTransport *transport,
-				  CamelMedium *message,
-				  GList *recipients,
+				  CamelMimeMessage *message,
+				  CamelAddress *from,
+				  CamelAddress *recipients,
 				  CamelException *ex);
 
 /* Standard Camel function */

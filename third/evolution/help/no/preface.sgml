@@ -2,81 +2,79 @@
 <!DOCTYPE preface PUBLIC "-//GNOME//DTD DocBook PNG Variant V1.1//EN">
 -->
   <preface id="introduction">
-    <title>Om denne boken</title> 
+    <title>About this Book</title> 
       <sect1 id="organization">
-        <title>Organisering</title>
+        <title>Organization</title>
       <para>
-        Denne boken er delt inn i to deler, med flere
-        appendikser. Første del er en <link linkend="usage">
-        omvisning</link>, som vil forklare hvordan du bruker
-        <application>Evolution</application>. Hvis du ikke har brukt
-        <application>Evolution</application> eller andre gruppevare-
-        produkter vil denne delen være av interesse. Den andre delen, som
-        dekker <link linkend="config">konfigurasjon</link>, har mer avanserte
-        brukere som målgruppe, men alle som ønsker å endre utseende eller
-        oppførsel for <application>Evolution</application> vil kunne dra nytte
-        av å lese den.  
+        This book is divided into two parts, with several
+        appendices. The first part is a <link linkend="usage">guided
+        tour</link>, which will explain how to use
+        <application>Evolution</application>.  If you are new to
+        <application>Evolution</application> or to groupware in
+        general, this section is for you. The second section, covering
+        <link linkend="config">configuration</link>, is targeted at
+        more advanced users, but anyone who wants to change the way
+        <application>Evolution</application> looks or acts can benefit
+        from reading it.  
       </para>
       </sect1>
 
       <sect1 id="typography">
-        <title>Typografiske konvensjoner</title>
+        <title>Typographical conventions</title>
 	<para>
-          I denne boken, vil vi markere noen ord med spesiell typografi:
+          In this book, we'll mark some words with special typography:
           <simplelist>
-	    <member><application>Applikasjoner</application></member>
-	    <member><command>Kommandoer</command> du skriver på kommandolinjen</member>
-	    <member><guilabel>Etiketter</guilabel> for knapper og andre deler av det
-	    grafiske grensesnittet</member>
+	    <member><application>Applications</application></member>
+	    <member><command>Commands</command> you type at the command line</member>
+	    <member><guilabel>Labels</guilabel> for buttons and other portions of the graphical interface</member>
 
-            <member>Menyutvalg har følgende utseende:
+            <member> Menu selections look like this:
                        <menuchoice>
-                          <guimenu>Meny</guimenu>
-                          <guisubmenu>Undermeny</guisubmenu> 
-                          <guimenuitem>Menyoppføring</guimenuitem>
+                          <guimenu>Menu</guimenu>
+                          <guisubmenu>Submenu</guisubmenu> 
+                          <guimenuitem>Menu Item</guimenuitem>
                      </menuchoice>
             </member>
-	    <member><guibutton>Knapper</guibutton> du kan
-            klikke på</member> <member><userinput>Alle steder du kan
-            skrive inn tekst</userinput></member> <member><computeroutput>
-            Tekstutskrift fra en datamaskin</computeroutput></member>
-	  <member><glossterm linkend="apx-gloss">Ord</glossterm>
-            som er definert i ordboken<xref linkend="apx-gloss">.</member>
+	    <member><guibutton>Buttons</guibutton> you can
+            click</member> <member><userinput>Anything you type
+            in</userinput></member> <member><computeroutput>Text
+            output from a computer</computeroutput></member>
+	  <member><glossterm linkend="apx-gloss">Words</glossterm>
+            that are defined in the <xref linkend="apx-gloss">.</member>
 	  </simplelist>
 </para>
 <para>
-  Du vil få forskjellig tilleggsinformasjon i tips som er skilt ut
-  fra resten av boken.
+We'll provide assorted bits of additional information in tips set off from the rest of the book, as well. 
 
 	  <tip id="example-tip">
-	      <title>Tips</title>
+	      <title>Tip</title>
 	      <para>
-		Tips og ekstra informasjon vil ha se slik
-		ut.
+		Tips and bits of extra information will look like
+		this.
 	      </para>
 	    </tip>
 </para>
 
 <para>
-Eksempler er også adskilt fra resten av teksten. De ser slik ut:
+Examples are also set off from the rest of the text.  They look like this:
 
 	  <example>
-	    <title>Eksempel</title>
+	    <title>Example Example</title>
 	    <para>
-	      Et eksempel vil se slik ut. Eksempler vil bli gitt
-	      for noen av de mer kompliserte oppgavene du kan
-	      utføre.
+	      This is what an example looks like.  We'll provide
+	      examples for some of the more complicated tasks you
+	      might be performing.
 	    </para>
 	  </example>
 </para>
 <para>
-Til slutt har vi advarsler, for tilfeller hvor man bør være forsiktig:
+Lastly, we'll have warnings, in cases where you should be careful:
 
 	    <warning id="example-warning">
-	      <title>Exempel på advarsel</title>
+	      <title>Example Warning</title>
 	      <para>
-		Dette er en advarsel. Hvis det er muligheter for at
-		du kan få problemer vil du få en advarsel på forhånd.
+		This is what a warning looks like. If there's a chance
+		you'll run into trouble, we'll warn you beforehand.
 	      </para>
 	  </warning>
         </para>

@@ -32,6 +32,7 @@
 
 #include <bonobo/bonobo-exception.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 #include <gal/util/e-util.h>
 
 #define PARENT_TYPE bonobo_x_object_get_type ()
@@ -177,7 +178,7 @@ impl_goOffline (PortableServer_Servant servant,
 
 	/* FIXME: If we have a progress already, then something is wrong and we
 	   should raise an exception.  */
-	priv->listener_interface = CORBA_Object_duplicate (progress_listener, &ev);
+	priv->listener_interface = CORBA_Object_duplicate (progress_listener, ev);
 
 	for (sp = priv->summaries; sp != NULL; sp = sp->next) {
 		ESummary *summary;

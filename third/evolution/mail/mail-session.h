@@ -33,7 +33,8 @@ extern "C" {
 #endif /* __cplusplus */
 
 void mail_session_init (void);
-void mail_session_enable_interaction (gboolean enable);
+gboolean mail_session_get_interactive (void);
+void mail_session_set_interactive (gboolean interactive);
 char *mail_session_request_dialog (const char *prompt, gboolean secret,
 				   const char *key, gboolean async);
 gboolean mail_session_accept_dialog (const char *prompt, const char *key,
@@ -45,6 +46,8 @@ void mail_session_forget_passwords (BonoboUIComponent *uih, void *user_data,
 void mail_session_remember_password (const char *url);
 
 void mail_session_forget_password (const char *key);
+
+void mail_session_flush_filter_log (void);
 
 extern CamelSession *session;
 

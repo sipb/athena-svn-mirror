@@ -39,11 +39,13 @@
 #include "evolution-shell-component.h"
 #include "evolution-shell-component-dnd.h"
 #include "evolution-storage.h"
+#include "e-folder-list.h"
 
 #include "ebook/e-book.h"
 #include "ebook/e-card.h"
 #include "ebook/e-book-util.h"
 
+#include "addressbook-config.h"
 #include "addressbook-storage.h"
 #include "addressbook-component.h"
 #include "addressbook.h"
@@ -70,12 +72,14 @@ static char *accepted_dnd_types[] = {
 static const EvolutionShellComponentFolderType folder_types[] = {
 	{ "contacts", "evolution-contacts.png", N_("Contacts"), N_("Folder containing contact information"),
 	  TRUE, accepted_dnd_types, NULL },
-	{ "ldap-contacts", "ldap.png", N_("LDAP Server"), N_("LDAP server containing contact information"),
+	{ "contacts/ldap", "ldap.png", N_("LDAP Server"), N_("LDAP server containing contact information"),
+	  FALSE, accepted_dnd_types, NULL },
+	{ "contacts/public", "evolution-contacts.png", N_("Public Contacts"), N_("Public folder containing contact information"),
 	  FALSE, accepted_dnd_types, NULL },
 	{ NULL }
 };
 
-#define IS_CONTACT_TYPE(x)  (g_strcasecmp((x), "contacts") == 0 || g_strcasecmp ((x), "ldap-contacts") == 0)
+#define IS_CONTACT_TYPE(x)  (g_strcasecmp((x), "contacts") == 0 || g_strcasecmp ((x), "contacts/ldap") == 0 || g_strcasecmp((x), "contacts/public") == 0)
 
 /* EvolutionShellComponent methods and signals.  */
 
@@ -83,6 +87,7 @@ static EvolutionShellComponentResult
 create_view (EvolutionShellComponent *shell_component,
 	     const char *physical_uri,
 	     const char *type,
+	     const char *view_info,
 	     BonoboControl **control_return,
 	     void *closure)
 {
@@ -367,6 +372,8 @@ owner_set_cb (EvolutionShellComponent *shell_component,
 	if (global_shell_client == NULL)
 		global_shell_client = shell_client;
 
+	addressbook_config_register_factory (bonobo_object_corba_objref (BONOBO_OBJECT (shell_client)));
+
 	addressbook_storage_setup (shell_component, evolution_homedir);
 }
 
@@ -390,7 +397,7 @@ owner_unset_cb (EvolutionShellComponent *shell_component,
 
 /* FIXME We should perhaps take the time to figure out if the book is editable. */
 static void
-local_addressbook_cb (EBook *book, gpointer closure)
+new_item_cb (EBook *book, gpointer closure)
 {
 	gboolean is_list = GPOINTER_TO_INT (closure);
 	if (book == NULL)
@@ -399,15 +406,6 @@ local_addressbook_cb (EBook *book, gpointer closure)
 		e_addressbook_show_contact_list_editor (book, e_card_new(""), TRUE, TRUE);
 	else
 		e_addressbook_show_contact_editor (book, e_card_new(""), TRUE, TRUE);
-}
-
-static void
-nonlocal_addressbook_cb (EBook *book, EBookStatus status, gpointer closure)
-{
-	if (status == E_BOOK_STATUS_SUCCESS)
-		local_addressbook_cb (book, closure);
-	else
-		local_addressbook_cb (NULL, closure);
 }
 
 static void
@@ -427,18 +425,10 @@ user_create_new_item_cb (EvolutionShellComponent *shell_component,
 		return;
 	}
 	if (IS_CONTACT_TYPE (parent_folder_type)) {
-		EBook *book;
-		gchar *uri;
-
-		book = e_book_new ();
-		uri = g_strdup_printf ("%s/addressbook.db", parent_folder_physical_uri);
-
-		if (addressbook_load_uri (book, uri, nonlocal_addressbook_cb, GINT_TO_POINTER (is_contact_list)) == 0)
-			g_warning ("Couldn't load addressbook %s", uri);
-
-		g_free (uri);
+		e_book_use_address_book_by_uri (parent_folder_physical_uri,
+						new_item_cb, GINT_TO_POINTER (is_contact_list));
 	} else {
-		e_book_use_local_address_book (local_addressbook_cb, GINT_TO_POINTER (is_contact_list));
+		e_book_use_default_book (new_item_cb, GINT_TO_POINTER (is_contact_list));
 	}
 }
 
@@ -489,7 +479,7 @@ destination_folder_handle_drop (EvolutionShellComponentDndDestinationFolder *fol
 
 	card_list = e_card_load_cards_from_string_with_default_charset (data->bytes._buffer, "ISO-8859-1");
 
-	expanded_uri = addressbook_expand_uri (physical_uri);
+	expanded_uri = e_book_expand_uri (physical_uri);
 
 	book = e_book_new ();
 	addressbook_load_uri (book, expanded_uri,
@@ -501,7 +491,56 @@ destination_folder_handle_drop (EvolutionShellComponentDndDestinationFolder *fol
 }
 
 
+/* Quitting.  */
+
+static gboolean
+request_quit (EvolutionShellComponent *shell_component,
+	      void *data)
+{
+	if (! e_contact_editor_request_close_all ()
+	    || ! e_contact_list_editor_request_close_all ())
+		return FALSE;
+	else
+		return TRUE;
+}
+
+
 /* The factory function.  */
+
+static void
+add_creatable_item (EvolutionShellComponent *shell_component,
+		    const char *id,
+		    const char *description,
+		    const char *menu_description,
+		    const char *tooltip,
+		    char menu_shortcut,
+		    const char *icon_name)
+{
+	char *icon_path;
+	GdkPixbuf *icon;
+
+	if (icon_name == NULL) {
+		icon_path = NULL;
+		icon = NULL;
+	} else {
+		icon_path = g_concat_dir_and_file (EVOLUTION_ICONSDIR, icon_name);
+		icon = gdk_pixbuf_new_from_file (icon_path);
+	}
+
+	evolution_shell_component_add_user_creatable_item (shell_component,
+							   id,
+							   description,
+							   menu_description,
+							   tooltip,
+							   "contacts",
+							   menu_shortcut,
+							   icon);
+
+
+	if (icon != NULL)
+		gdk_pixbuf_unref (icon);
+	g_free (icon_path);
+}
 
 static BonoboObject *
 create_component (void)
@@ -512,8 +551,9 @@ create_component (void)
 	shell_component = evolution_shell_component_new (folder_types, NULL,
 							 create_view, create_folder,
 							 remove_folder, xfer_folder,
-							 NULL,
+							 NULL, NULL,
 							 get_dnd_selection,
+							 request_quit,
 							 NULL);
 
 	destination_interface = evolution_shell_component_dnd_destination_folder_new (destination_folder_handle_motion,
@@ -523,8 +563,14 @@ create_component (void)
 	bonobo_object_add_interface (BONOBO_OBJECT (shell_component),
 				     BONOBO_OBJECT (destination_interface));
 
-	evolution_shell_component_add_user_creatable_item (shell_component, "contact", _("New Contact"), _("New _Contact"), 'c');
-	evolution_shell_component_add_user_creatable_item (shell_component, "contact_list", _("New Contact List"), _("New Contact _List"), 'l');
+	add_creatable_item (shell_component, "contact",
+			    _("New Contact"), _("_Contact"),
+			    _("Create a new contact"), 'c',
+			    "evolution-contacts-mini.png");
+	add_creatable_item (shell_component, "contact_list",
+			    _("New Contact List"), _("Contact _List"),
+			    _("Create a new contact list"), 'l',
+			    "contact-list-16.png");
 
 	gtk_signal_connect (GTK_OBJECT (shell_component), "owner_set",
 			    GTK_SIGNAL_FUNC (owner_set_cb), NULL);
@@ -534,6 +580,48 @@ create_component (void)
 			    GTK_SIGNAL_FUNC (user_create_new_item_cb), NULL);
 
 	return BONOBO_OBJECT (shell_component);
+}
+
+static void
+ensure_completion_uris_exist()
+{
+	/* Initialize the completion uris if they aren't set yet.  The
+	   default set is just the local Contacts folder. */
+	Bonobo_ConfigDatabase db;
+	CORBA_Environment ev;
+	char *val;
+
+	CORBA_exception_init (&ev);
+	
+	db = addressbook_config_database (&ev);
+		
+	val = bonobo_config_get_string (db, "/Addressbook/Completion/uris", &ev);
+
+	if (!val) {
+		EFolderListItem f[2];
+		char *dirname, *uri;
+		/* in the case where the user is running for the first
+		   time, populate the list with the local contact
+		   folder */
+		dirname = gnome_util_prepend_user_home("evolution/local/Contacts");
+		uri = g_strdup_printf ("file://%s", dirname);
+			
+		f[0].uri = "evolution:/local/Contacts";
+		f[0].physical_uri = uri;
+		f[0].display_name = _("Contacts");
+
+		memset (&f[1], 0, sizeof (f[1]));
+
+		val = e_folder_list_create_xml (f);
+
+		g_free (dirname);
+		g_free (uri);
+		bonobo_config_set_string (db, "/Addressbook/Completion/uris", val, &ev);
+
+		g_free (val);
+	}
+
+	CORBA_exception_free (&ev);
 }
 
 
@@ -552,4 +640,9 @@ addressbook_component_factory_init (void)
 					     bonobo_object_corba_objref (object));
 	if (result == OAF_REG_ERROR)
 		g_error ("Cannot register -- %s", GNOME_EVOLUTION_ADDRESSBOOK_COMPONENT_ID);
+
+	/* XXX this could probably go someplace else, but I'll leave
+	   it here for now since it's a component init time
+	   operation. */
+	ensure_completion_uris_exist ();
 }

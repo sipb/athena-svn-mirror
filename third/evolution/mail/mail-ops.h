@@ -39,7 +39,8 @@ extern "C" {
 #include "e-util/e-msgport.h"
 
 void mail_append_mail (CamelFolder *folder, CamelMimeMessage *message, CamelMessageInfo *info,
-		       void (*done)(CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *info, int ok, void *data),
+		       void (*done)(CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *info, int ok,
+				    const char *appended_uid, void *data),
 		       void *data);
 
 void mail_transfer_messages (CamelFolder *source, GPtrArray *uids,
@@ -51,7 +52,7 @@ void mail_transfer_messages (CamelFolder *source, GPtrArray *uids,
 
 /* get a single message, asynchronously */
 void mail_get_message (CamelFolder *folder, const char *uid,
-		       void (*done) (CamelFolder *folder, char *uid, CamelMimeMessage *msg, void *data),
+		       void (*done) (CamelFolder *folder, const char *uid, CamelMimeMessage *msg, void *data),
 		       void *data,
 		       EThread *thread);
 
@@ -140,15 +141,22 @@ void mail_fetch_mail (const char *source, int keep,
 		      void *data);
 
 void mail_filter_folder (CamelFolder *source_folder, GPtrArray *uids,
-			 const char *type, CamelOperation *cancel);
+			 const char *type, gboolean notify,
+			 CamelOperation *cancel);
 
 /* convenience function for above */
 void mail_filter_on_demand (CamelFolder *folder, GPtrArray *uids);
 
 /* Work Offline */
-void mail_store_set_offline (CamelStore *store, gboolean offline,
-			     void (*done)(CamelStore *, void *data),
-			     void *data);
+void mail_prep_offline(const char *uri, CamelOperation *cancel,
+		       void (*done)(const char *, void *data),
+		       void *data);
+void mail_store_set_offline(CamelStore *store, gboolean offline,
+			    void (*done)(CamelStore *, void *data),
+			    void *data);
+
+/* filter driver execute shell command async callback */
+void mail_execute_shell_command (CamelFilterDriver *driver, int argc, char **argv, void *data);
 
 #ifdef __cplusplus
 }

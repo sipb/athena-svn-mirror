@@ -116,7 +116,17 @@ CLASS="GUIMENUITEM"
 CLASS="APPLICATION"
 >Pilot Link</SPAN
 > is
-       properly configured.
+       properly configured. You will need to make sure that you have
+       read and write permissions on the device, which is normally
+       /dev/pilot. If that does not work, check /dev/ttyS0 if you have
+       a serial connection, or /dev/ttyUSB0 for a USB connection. You
+       can do this by becoming root and running the command:
+       <TT
+CLASS="USERINPUT"
+><B
+>chmod 777 /dev/ttyUSB0</B
+></TT
+>.
     </P
 ><P
 >        Once your computer and your Palm-OS device are talking happily

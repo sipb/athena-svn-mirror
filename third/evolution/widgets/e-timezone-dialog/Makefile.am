@@ -1,10 +1,11 @@
-INCLUDES =					\
-	-I$(top_srcdir)				\
-	-I$(top_srcdir)/libical/src/libical	\
-	$(EXTRA_GNOME_CFLAGS)			\
+INCLUDES =						\
+	-I$(top_srcdir)					\
+	-I$(top_srcdir)/libical/src/libical		\
+	-I$(top_builddir)/libical/src/libical		\
 	-DMAP_DIR=\""$(datadir)/images/evolution"\"	\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
-	-DG_LOG_DOMAIN=__FILE__
+	-DG_LOG_DOMAIN=__FILE__				\
+	$(GNOME_FULL_CFLAGS)
 
 noinst_LIBRARIES =	\
 	libetimezonedialog.a

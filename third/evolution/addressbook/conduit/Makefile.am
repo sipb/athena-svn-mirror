@@ -2,11 +2,11 @@ INCLUDES = 					\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/addressbook		\
 	-I$(top_srcdir)/addressbook/backend	\
+	-I$(top_builddir)/addressbook/backend	\
 	-I$(top_srcdir)/e-util			\
 	-I$(top_builddir)/e-util		\
 	$(PISOCK_CFLAGS)			\
-	$(GNOME_PILOT_CFLAGS)			\
-	$(BONOBO_GNOME_CFLAGS)			\
+	$(EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS)	\
 	-DCAMEL_PROVIDERDIR=\""$(providerdir)"\"
 
 # Address Conduit
@@ -14,24 +14,17 @@ e_address_conduitsdir=$(libdir)/gnome-pilot/conduits
 e_address_conduits_LTLIBRARIES = libeaddress_conduit.la
 
 libeaddress_conduit_la_SOURCES = \
-	address-conduit.c \
-	address-conduit.h \
-	address-conduit-config.h
+	address-conduit.c
 
 libeaddress_conduit_la_LDFLAGS = -module -avoid-version
 libeaddress_conduit_la_LIBADD = 					\
+	$(top_builddir)/e-util/libeutil.la				\
 	$(top_builddir)/addressbook/backend/ebook/libebook-static.la	\
 	$(top_builddir)/e-util/ename/libename-static.la			\
-	$(top_builddir)/libversit/libversit.la				\
+	$(top_builddir)/libversit/libversit.a				\
 	$(top_builddir)/e-util/libeconduit-static.la	 		\
-	$(top_builddir)/camel/libcamel-static.la	 		\
-	$(top_builddir)/libibex/libibex.la				\
-	$(PISOCK_LIBS) 							\
-	$(GNOME_PILOT_LIBS) 						\
-	$(BONOBO_CONF_LIBS)						\
-	$(BONOBO_GNOME_LIBS)						\
-	$(GNOME_LIBDIR) 						\
-	$(GNOME_LIBS)
+	$(top_builddir)/camel/libcamel.la	 			\
+	$(EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS)
 
 e-address.conduit: e-address.conduit.in Makefile
 	sed -e 's^\@prefix\@^$(prefix)^g' 				\

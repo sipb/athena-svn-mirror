@@ -3,33 +3,30 @@
   <commands>   <!-- Alphabetical by name, yo -->
 
     <cmd name="AddSenderToAddressbook"
-     _tip="Add Sender to Address Book"/>
+     _tip="Add Sender to Addressbook"/>
 
     <cmd name="MailNext"
-     _tip="Display the next message"
-     accel="f"/>
+     _tip="Display the next message"/>
 
     <cmd name="MailNextFlagged"
      _tip="Display the next important message"/>
 
     <cmd name="MailNextUnread"
      _tip="Display the next unread message"
-     accel="n"/>
+     accel="bracketright"/>
 
     <cmd name="MailNextThread"
-     _tip="Display the next unread thread"
-     accel="t"/>
+     _tip="Display the next unread thread"/>
 
     <cmd name="MailPrevious"
-     _tip="Display the previous message"
-     accel="b"/>
+     _tip="Display the previous message"/>
 
     <cmd name="MailPreviousFlagged"
      _tip="Display the previous important message"/>
 
     <cmd name="MailPreviousUnread"
      _tip="Display the previous unread message"
-     accel="p"/>
+     accel="bracketleft"/>
 
     <cmd name="MessageApplyFilters"
      _tip="Apply filter rules to the selected messages"
@@ -44,6 +41,11 @@
     <cmd name="MessageDelete"
      _tip="Mark the selected messages for deletion"
      accel="*Control*d"
+     pixtype="pixbuf"/>
+
+    <cmd name="MessageFollowUpFlag"
+     _tip="Flag selected message(s) for follow-up"
+     accel="*Control**Shift*G"
      pixtype="pixbuf"/>
 
     <cmd name="MessageForward"
@@ -63,27 +65,39 @@
      _tip="Forward the selected message quoted like a reply"/>
 
     <cmd name="MessageMarkAsRead"
-     _tip="Mark the selected messages as having been read"
-     accel="*Control*k"/>
+     _tip="Mark the selected message(s) as having been read"
+     accel="*Control*k"
+     pixtype="pixbuf"/>
 
     <cmd name="MessageMarkAsUnRead"
-     _tip="Mark the selected messages as not having been read"
-     accel="*Control**Shift*k"/>
+     _tip="Mark the selected message(s) as not having been read"
+     accel="*Control**Shift*k"
+     pixtype="pixbuf"/>
 
     <cmd name="MessageMarkAsImportant"
-     _tip="Mark the selected messages as important"/>
+     _tip="Mark the selected message(s) as important"
+     pixtype="pixbuf"/>
 
     <cmd name="MessageMarkAsUnimportant"
-     _tip="Mark the selected messages as unimportant"/>
+     _tip="Mark the selected message(s) as unimportant"/>
 
     <cmd name="MessageMove"
-     _tip="Move selected messages to another folder"
-     accel="*Control**Shift*m"
+     _tip="Move selected message(s) to another folder"
+     accel="*Control**Shift*v"
      pixtype="pixbuf"/>
 
     <cmd name="MessageOpen"
      _tip="Open the selected message in a new window"
      accel="*Control*o"/>
+
+    <cmd name="MessagePostReply"
+     _tip="Post a reply to a message in a Public folder"
+     accel=""
+     pixtype="pixbuf"/>
+
+    <cmd name="MessageRedirect"
+     _tip="Redirect (bounce) the selected message to someone"
+     accel=""/>
 
     <cmd name="MessageReplyAll"
      _tip="Compose a reply to all of the recipients of the selected message"
@@ -128,7 +142,7 @@
      pixtype="pixbuf"/>
 
     <cmd name="PrintSetup"
-     _tip="Setup the page settings for your current printer"
+     _tip="Set up the page settings for your current printer"
      pixtype="pixbuf"/>
 
     <cmd name="ToolsFilterMailingList"
@@ -172,19 +186,36 @@
 
     <cmd name="TextZoomIn"
     _tip="Increase the text size"
-    accel="*Control*+" />
+    accel="*Control*8"/>
 
     <cmd name="TextZoomOut"
     _tip="Decrease the text size"
-    accel="*Control*-" />
+    accel="*Control*0"/>
 
     <cmd name="TextZoomReset"
-    _tip="Reset the text to its original size"/>
+    _tip="Reset the text to its original size"
+    accel="*Control*9"/>
 
   </commands>
 
   <keybindings>
+    <accel name="*Shift*comma"        verb="MailPreviousUnread"/>
+    <accel name="comma"	              verb="MailPreviousUnread"/>
+    <accel name="less"                verb="MailPreviousUnread"/>
+    <accel name="*Shift*less"         verb="MailPreviousUnread"/>
+    <accel name="bracketleft"         verb="MailPreviousUnread"/>
+    <accel name="*Shift*bracketleft"  verb="MailPreviousUnread"/>
+    <accel name="braceleft"           verb="MailPreviousUnread"/>
+    <accel name="*Shift*braceleft"    verb="MailPreviousUnread"/>
 
+    <accel name="*Shift*period"       verb="MailNextUnread"/>
+    <accel name="period"              verb="MailNextUnread"/>
+    <accel name="greater"             verb="MailNextUnread"/>
+    <accel name="*Shift*greater"      verb="MailNextUnread"/>
+    <accel name="bracketright"        verb="MailNextUnread"/>
+    <accel name="*Shift*bracketright" verb="MailNextUnread"/>
+    <accel name="braceright"          verb="MailNextUnread"/>
+    <accel name="*Shift*braceright"   verb="MailNextUnread"/>
   </keybindings>
 
   <menu>
@@ -192,12 +223,11 @@
     <submenu name="File">
       <placeholder name="FileOps">
         <menuitem name="MessageOpen" verb="" _label="_Open Message"/>
-        <menuitem name="MessageResend" verb="" _label="_Edit as New Message..."/>
         <menuitem name="MessageSaveAs" verb="" _label="_Save As..."/>
       </placeholder>
 
       <placeholder name="Print">
-        <menuitem name="PrintPreviewMessage" verb="" _label="Print Preview"/>
+        <menuitem name="PrintPreviewMessage" verb="" _label="Print Pre_view"/>
         <menuitem name="PrintMessage" verb="" _label="_Print..."/>
       </placeholder>
     </submenu>
@@ -246,44 +276,57 @@
       </placeholder>
     </submenu>
 
-    <placeholder name="ComponentActionsPlaceholder">
-      <submenu name="Actions" _label="_Actions">
+    <submenu name="Actions" _label="_Actions">
+      <placeholder name="ComponentActionsPlaceholder">
         <placeholder name="MailMessageActions">
-          <submenu name="GoTo" _label="Go To">
-            <menuitem name="MailNext" verb="" _label="Next Message"/>
-            <menuitem name="MailNextUnread" verb="" _label="Next Unread Message"/>
-            <menuitem name="MailNextFlagged" verb="" _label="Next Important Message"/>
-            <menuitem name="MailNextThread" verb="" _label="Next Thread"/>
+          <submenu name="GoTo" _label="_Go To">
+            <menuitem name="MailNext" verb="" _label="_Next Message"/>
+            <menuitem name="MailNextUnread" verb="" _label="Next _Unread Message"/>
+            <menuitem name="MailNextFlagged" verb="" _label="Next _Important Message"/>
+            <menuitem name="MailNextThread" verb="" _label="Next _Thread"/>
 	    <separator f="" name="emaillist"/>
-            <menuitem name="MailPrevious" verb="" _label="Previous Message"/>
-            <menuitem name="MailPreviousUnread" verb="" _label="Previous Unread Message"/>
-            <menuitem name="MailPreviousFlagged" verb="" _label="Previous Important Message"/>
-          </submenu>
-          <menuitem name="MessageReplySender" verb="" _label="_Reply to Sender"/>
-          <menuitem name="MessageReplyList" verb="" _label="Reply to _List"/>
-          <menuitem name="MessageReplyAll" verb="" _label="Reply to _All"/>
-          <menuitem name="MessageForward" verb="" _label="_Forward Message"/>
-          <submenu name="ForwardAs" _label="Forward As">
-            <menuitem verb="MessageForwardAttached" _label="Forward _Attached"/>
-            <menuitem verb="MessageForwardInline" _label="Forward _Inline"/>
-            <menuitem verb="MessageForwardQuoted" _label="Forward _Quoted"/>
+            <menuitem name="MailPrevious" verb="" _label="_Previous Message"/>
+            <menuitem name="MailPreviousUnread" verb="" _label="P_revious Unread Message"/>
+            <menuitem name="MailPreviousFlagged" verb="" _label="Pr_evious Important Message"/>
           </submenu>
 
 	  <separator f="" name="emaillist1"/>
 
-          <menuitem name="MessageMove" verb="" _label="_Move to Folder"/>
-          <menuitem name="MessageCopy" verb="" _label="_Copy to Folder"/>
+          <menuitem name="MessageFollowUpFlag" verb="" _label="Follow _Up..."/>
 
 	  <separator f="" name="emaillist2"/>
 
-          <menuitem name="AddSenderToAddressbook" verb="" _label="Add Sender to Address Book"/>
+          <menuitem name="MessageReplySender" verb="" _label="_Reply to Sender"/>
+          <menuitem name="MessageReplyList" verb="" _label="Reply to _List"/>
+          <menuitem name="MessageReplyAll" verb="" _label="Reply to _All"/>
+          <menuitem name="MessageForward" verb="" _label="_Forward Message"/>
+          <submenu name="ForwardAs" _label="F_orward">
+            <menuitem verb="MessageForwardAttached" _label="_Attached"/>
+            <menuitem verb="MessageForwardInline" _label="_Inline"/>
+            <menuitem verb="MessageForwardQuoted" _label="_Quoted"/>
+            <separator f="" name="forwardlist1"/>
+            <menuitem verb="MessageRedirect" _label="Re_direct"/>
+          </submenu>
+
+          <menuitem name="MessagePostReply" verb="" _label="Post a Reply"/>
+
+          <menuitem name="MessageResend" verb="" _label="_Resend..."/>
 
 	  <separator f="" name="emaillist3"/>
 
-          <menuitem name="MessageApplyFilters" verb="" _label="_Apply Filters"/>
+          <menuitem name="MessageMove" verb="" _label="_Move to Folder"/>
+          <menuitem name="MessageCopy" verb="" _label="_Copy to Folder"/>
+
+	  <separator f="" name="emaillist4"/>
+
+          <menuitem name="AddSenderToAddressbook" verb="" _label="A_dd Sender to Addressbook"/>
+
+	  <separator f="" name="emaillist5"/>
+
+          <menuitem name="MessageApplyFilters" verb="" _label="A_pply Filters"/>
         </placeholder>
-      </submenu>
-    </placeholder>
+      </placeholder>
+    </submenu>
 
     <submenu name="Tools" _label="_Tools">
       <placeholder name="ComponentPlaceholder">

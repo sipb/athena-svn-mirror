@@ -5,7 +5,7 @@
   
   DESCRIPTION:
   
-  $Id: icallangbind.c,v 1.1.1.1 2001-11-02 18:37:50 ghudson Exp $
+  $Id: icallangbind.c,v 1.1.1.2 2002-12-19 15:21:53 ghudson Exp $
   $Locker:  $
 
   (C) COPYRIGHT 1999 Eric Busboom 
@@ -22,7 +22,7 @@
 #include "icalproperty.h"
 #include "icalerror.h"
 #include "icalmemory.h"
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 
 int* icallangbind_new_array(int size){

@@ -36,23 +36,35 @@
 #endif /* HAVE_NSS */
 
 #include "camel.h"
+#include "camel-certdb.h"
 #include "camel-mime-utils.h"
 
 gboolean camel_verbose_debug = FALSE;
 
-#ifdef HAVE_NSS
 static void
 camel_shutdown (void)
 {
+	CamelCertDB *certdb;
+	
+#ifdef HAVE_NSS
 	NSS_Shutdown ();
 	
 	PR_Cleanup ();
-}
 #endif /* HAVE_NSS */
+	
+	certdb = camel_certdb_get_default ();
+	if (certdb) {
+		camel_certdb_save (certdb);
+		camel_object_unref (certdb);
+	}
+}
 
 gint
 camel_init (const char *configdir, gboolean nss_init)
 {
+	CamelCertDB *certdb;
+	char *path;
+	
 #ifdef ENABLE_THREADS
 #ifdef G_THREADS_ENABLED	
 	/*g_thread_init (NULL);*/
@@ -63,9 +75,12 @@ camel_init (const char *configdir, gboolean nss_init)
 	
 	if (getenv ("CAMEL_VERBOSE_DEBUG"))
 		camel_verbose_debug = TRUE;
-
+	
+	/* initialise global camel_object_type */
+	camel_object_get_type();
+	
 	camel_mime_utils_init();
-
+	
 #ifdef HAVE_NSS
 	if (nss_init) {
 		PR_Init (PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 10);
@@ -80,14 +95,27 @@ camel_init (const char *configdir, gboolean nss_init)
 		
 		NSS_SetDomesticPolicy ();
 		
-		g_atexit (camel_shutdown);
+		SSL_OptionSetDefault (SSL_ENABLE_SSL2, PR_TRUE);
+		SSL_OptionSetDefault (SSL_ENABLE_SSL3, PR_TRUE);
+		SSL_OptionSetDefault (SSL_ENABLE_TLS, PR_TRUE);
+		SSL_OptionSetDefault (SSL_V2_COMPATIBLE_HELLO, PR_TRUE /* maybe? */);
 	}
-	
-	SSL_OptionSetDefault (SSL_ENABLE_SSL2, PR_TRUE);
-	SSL_OptionSetDefault (SSL_ENABLE_SSL3, PR_TRUE);
-	SSL_OptionSetDefault (SSL_ENABLE_TLS, PR_TRUE);
-	SSL_OptionSetDefault (SSL_V2_COMPATIBLE_HELLO, PR_TRUE /* maybe? */);
 #endif /* HAVE_NSS */
+	
+	path = g_strdup_printf ("%s/camel-cert.db", configdir);
+	certdb = camel_certdb_new ();
+	camel_certdb_set_filename (certdb, path);
+	g_free (path);
+	
+	/* if we fail to load, who cares? it'll just be a volatile certdb */
+	camel_certdb_load (certdb);
+	
+	/* set this certdb as the default db */
+	camel_certdb_set_default (certdb);
+	
+	camel_object_unref (certdb);
+	
+	g_atexit (camel_shutdown);
 	
 	return 0;
 }

@@ -132,7 +132,7 @@ typedef enum {
 typedef struct {
 	CalComponentRangeType type;
 	
-	CalComponentDateTime *datetime;
+	CalComponentDateTime datetime;
 } CalComponentRange;
 
 /* Text properties */
@@ -209,12 +209,14 @@ void cal_component_set_new_vtype (CalComponent *comp, CalComponentVType type);
 gboolean cal_component_set_icalcomponent (CalComponent *comp, icalcomponent *icalcomp);
 icalcomponent *cal_component_get_icalcomponent (CalComponent *comp);
 void cal_component_rescan (CalComponent *comp);
+void cal_component_strip_errors (CalComponent *comp);
 
 CalComponentVType cal_component_get_vtype (CalComponent *comp);
 
 char *cal_component_get_as_string (CalComponent *comp);
 
 void cal_component_commit_sequence (CalComponent *comp);
+void cal_component_abort_sequence (CalComponent *comp);
 
 void cal_component_get_uid (CalComponent *comp, const char **uid);
 void cal_component_set_uid (CalComponent *comp, const char *uid);
@@ -281,7 +283,7 @@ void cal_component_set_percent (CalComponent *comp, int *percent);
 void cal_component_get_priority (CalComponent *comp, int **priority);
 void cal_component_set_priority (CalComponent *comp, int *priority);
 
-void cal_component_get_recurid (CalComponent *comp, CalComponentRange **recur_id);
+void cal_component_get_recurid (CalComponent *comp, CalComponentRange *recur_id);
 void cal_component_set_recurid (CalComponent *comp, CalComponentRange *recur_id);
 
 void cal_component_get_rdate_list (CalComponent *comp, GSList **period_list);
@@ -294,6 +296,7 @@ void cal_component_set_rrule_list (CalComponent *comp, GSList *recur_list);
 gboolean cal_component_has_rrules (CalComponent *comp);
 
 gboolean cal_component_has_recurrences (CalComponent *comp);
+gboolean cal_component_has_simple_recurrence (CalComponent *comp);
 
 void cal_component_get_sequence (CalComponent *comp, int **sequence);
 void cal_component_set_sequence (CalComponent *comp, int *sequence);
@@ -430,6 +433,8 @@ void cal_component_alarm_set_repeat (CalComponentAlarm *alarm, CalAlarmRepeat re
 
 void cal_component_alarm_get_trigger (CalComponentAlarm *alarm, CalAlarmTrigger *trigger);
 void cal_component_alarm_set_trigger (CalComponentAlarm *alarm, CalAlarmTrigger trigger);
+
+icalcomponent *cal_component_alarm_get_icalcomponent (CalComponentAlarm *alarm);
 
 
 

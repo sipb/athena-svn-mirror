@@ -34,7 +34,7 @@
 ## Release information
 my $PROGRAM = "intltool-merge";
 my $PACKAGE = "intltool";
-my $VERSION = "0.17";
+my $VERSION = "0.22";
 
 ## Loaded modules
 use strict; 
@@ -47,6 +47,7 @@ my $BA_STYLE_ARG = 0;
 my $XML_STYLE_ARG = 0;
 my $KEYS_STYLE_ARG = 0;
 my $DESKTOP_STYLE_ARG = 0;
+my $SCHEMAS_STYLE_ARG = 0;
 my $QUIET_ARG = 0;
 my $PASS_THROUGH_ARG = 0;
 my $UTF8_ARG = 0;
@@ -63,6 +64,7 @@ GetOptions
  "xml-style|x" => \$XML_STYLE_ARG,
  "keys-style|k" => \$KEYS_STYLE_ARG,
  "desktop-style|d" => \$DESKTOP_STYLE_ARG,
+ "schemas-style|s" => \$SCHEMAS_STYLE_ARG,
  "pass-through|p" => \$PASS_THROUGH_ARG,
  "utf8|u" => \$UTF8_ARG,
  "cache|c=s" => \$cache_file
@@ -109,6 +111,11 @@ if ($VERSION_ARG) {
         &print_message;
         &desktop_merge_translations;
 	&finalize;
+} elsif ($SCHEMAS_STYLE_ARG && @ARGV > 2) {
+        &preparation;
+        &print_message;
+        &schemas_merge_translations;
+	&finalize;
 } else {
 	&print_help;
 }
@@ -136,6 +143,7 @@ sub print_help
     print "  -b, --ba-style         includes translations in the bonobo-activation style\n";
     print "  -d, --desktop-style    includes translations in the desktop style\n";
     print "  -k, --keys-style       includes translations in the keys style\n";
+    print "  -s, --schemas-style    includes translations in the schemas style\n";
     print "  -x, --xml-style        includes translations in the standard xml style\n";
     print "  -u, --utf8             convert all strings to UTF-8 before merging\n";
     print "  -p, --pass-through     use strings as found in .po files, without\n";
@@ -269,7 +277,7 @@ sub load_cache
 sub get_cached_translation_database
 {
     my $cache_file_age = -M $cache_file;
-    if ($cache_file_age) {
+    if (defined $cache_file_age) {
         if ($cache_file_age <= &get_newest_po_age) {
             &load_cache;
             return;
@@ -564,4 +572,86 @@ sub desktop_merge_translations
 
     close OUTPUT;
     close INPUT;
+}
+
+sub schemas_merge_translations
+{
+    my $source;
+
+    {
+       local $/; # slurp mode
+       open INPUT, "<$FILE" or die "can't open $FILE: $!";
+       $source = <INPUT>;
+       close INPUT;
+    }
+
+    open OUTPUT, ">$OUTFILE" or die;
+
+    # FIXME: support attribute translations
+
+    # Empty nodes never need translation, so unmark all of them.
+    # For example, <_foo/> is just replaced by <foo/>.
+    $source =~ s|<\s*_($w+)\s*/>|<$1/>|g;
+
+    # Support for <_foo>blah</_foo> style translations.
+
+    my $regex_start = "^(.*?)([ \t]*)<locale name=\"C\">";
+    my $regex_short = "([ \t\n]*)<short>(.*?)</short>";
+    my $regex_long  = "([ \t\n]*)<long>(.*?)</long>";
+    my $regex_end   = "([ \t\n]*)</locale>";
+
+    while ($source =~ s|$regex_start$regex_short$regex_long$regex_end||s) {
+        print OUTPUT $1;
+
+        my $locale_start_spaces = $2;
+	my $locale_end_spaces = $7;
+	my $short_spaces = $3;
+	my $short_string = $4;
+	my $long_spaces = $5;
+	my $long_string = $6;
+
+	# English first
+
+	print OUTPUT "$locale_start_spaces<locale name=\"C\">";
+	print OUTPUT "$short_spaces<short>$short_string</short>";
+	print OUTPUT "$long_spaces<long>$long_string</long>";
+	print OUTPUT "$locale_end_spaces</locale>";
+
+	$short_string =~ s/\s+/ /g;
+	$short_string =~ s/^ //;
+	$short_string =~ s/ $//;
+	$short_string = entity_decode($short_string);
+
+	$long_string =~ s/\s+/ /g;
+	$long_string =~ s/^ //;
+	$long_string =~ s/ $//;
+	$long_string = entity_decode($long_string);
+
+	for my $lang (sort keys %po_files_by_lang) {
+	    my $short_translation = $translations{$lang, $short_string};
+	    my $long_translation  = $translations{$lang, $long_string};
+
+	    next if (!$short_translation && !$long_translation);
+
+	    print OUTPUT "\n$locale_start_spaces<locale name=\"$lang\">";
+
+	    if ($short_translation)
+	    {
+		$short_translation = entity_encode($short_translation);
+		print OUTPUT "$short_spaces<short>$short_translation</short>";
+	    }
+
+	    if ($long_translation)
+	    {
+		$long_translation = entity_encode($long_translation);
+		print OUTPUT "$long_spaces<long>$long_translation</long>";
+	    }	    
+
+	    print OUTPUT "$locale_end_spaces</locale>";
+        }
+    }
+
+    print OUTPUT $source;
+
+    close OUTPUT;
 }

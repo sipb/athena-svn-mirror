@@ -26,6 +26,15 @@ enum {
 	COL_RECEIVED,
 	COL_TO,
 	COL_SIZE,
+	COL_FOLLOWUP_FLAG_STATUS,
+	COL_FOLLOWUP_FLAG,
+	COL_FOLLOWUP_DUE_BY,
+	COL_LOCATION,		/* vfolder location? */
+	
+	/* normalised strings */
+	COL_FROM_NORM,
+	COL_SUBJECT_NORM,
+	COL_TO_NORM,
 	
 	COL_LAST,
 	
@@ -56,7 +65,9 @@ struct _MessageList {
 	CamelFolder  *folder;
 
 	GHashTable *uid_nodemap; /* uid (from info) -> tree node mapping */
-
+	
+	GHashTable *normalised_hash;
+	
 	/* UID's to hide.  Keys in the mempool */
 	/* IMPORTANT: You MUST have obtained the hide lock, to operate on this data */
 	GHashTable	 *hidden;
@@ -81,6 +92,12 @@ struct _MessageList {
 
 	/* locks */
 	GMutex *hide_lock;	/* for any 'hide' info above */
+
+	/* list of outstanding regeneration requests */
+	GList *regen;
+
+	/* the current camel folder thread tree, if any */
+	struct _CamelFolderThread *thread_tree;
 
 	/* for message/folder chagned event handling */
 	struct _MailAsyncEvent *async_event;
@@ -113,8 +130,7 @@ void           message_list_foreach    (MessageList *message_list,
 					MessageListForeachFunc callback,
 					gpointer user_data);
 
-void           message_list_select     (MessageList *message_list,
-					int base_row,
+gboolean       message_list_select     (MessageList *message_list,
 					MessageListSelectDirection direction,
 					guint32 flags,
 					guint32 mask,
@@ -122,6 +138,8 @@ void           message_list_select     (MessageList *message_list,
 
 void           message_list_select_uid (MessageList *message_list,
 					const char *uid);
+
+void           message_list_select_next_thread (MessageList *messageList);
 
 /* info */
 unsigned int   message_list_length(MessageList *ml);

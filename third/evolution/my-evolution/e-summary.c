@@ -24,6 +24,12 @@
 #include <config.h>
 #endif
 
+#include <stdio.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -33,8 +39,6 @@
 #include <gtkhtml/gtkhtml-stream.h>
 #include <gtkhtml/htmlengine.h>
 #include <gtkhtml/htmlselection.h>
-
-#include <libgnomevfs/gnome-vfs.h>
 
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-gui-utils.h>
@@ -58,7 +62,7 @@
 #include "e-summary.h"
 #include "e-summary-preferences.h"
 #include "my-evolution-html.h"
-#include "Mail.h"
+#include "Mailer.h"
 
 #include <Evolution.h>
 
@@ -67,6 +71,8 @@
 #define PARENT_TYPE (gtk_vbox_get_type ())
 
 extern char *evolution_dir;
+
+static GList *all_summaries = NULL;
 
 static GtkObjectClass *e_summary_parent_class;
 
@@ -77,15 +83,7 @@ struct _ESummaryMailFolderInfo {
 	int unread;
 };
 
-typedef struct _DownloadInfo {
-	GtkHTMLStream *stream;
-	char *uri;
-	char *buffer, *ptr;
-	guint32 bufsize;
-} DownloadInfo;
-
 struct _ESummaryPrivate {
-	GNOME_Evolution_Shell shell;
 	GNOME_Evolution_ShellView shell_view_interface;
 
 	GtkWidget *html_scroller;
@@ -100,7 +98,8 @@ struct _ESummaryPrivate {
 	gpointer alarm;
 
 	gboolean frozen;
-	gboolean redraw_pending;
+
+	int queued_draw_idle_id;
 };
 
 typedef struct _ProtocolListener {
@@ -130,11 +129,18 @@ destroy (GtkObject *object)
 		return;
 	}
 
+	all_summaries = g_list_remove (all_summaries, summary);
+	
 	if (priv->pending_reload_tag) {
 		gtk_timeout_remove (priv->pending_reload_tag);
 		priv->pending_reload_tag = 0;
 	}
-		
+
+	if (priv->queued_draw_idle_id != 0) {
+		g_source_remove (priv->queued_draw_idle_id);
+		priv->queued_draw_idle_id = 0;
+	}
+
 	if (summary->mail) {
 		e_summary_mail_free (summary);
 	}
@@ -165,28 +171,17 @@ destroy (GtkObject *object)
 	e_summary_parent_class->destroy (object);
 }
 
-void
-e_summary_draw (ESummary *summary)
+static gboolean
+draw_idle_cb (void *data)
 {
+	ESummary *summary;
 	GString *string;
 	GtkHTMLStream *stream;
 	char *html;
 	char date[256], *date_utf;
 	time_t t;
 
-	g_return_if_fail (summary != NULL);
-	g_return_if_fail (IS_E_SUMMARY (summary));
-
-	if (summary->mail == NULL || summary->calendar == NULL
-	    || summary->rdf == NULL || summary->weather == NULL 
-	    || summary->tasks == NULL) {
-		return;
-	}
-
-	if (summary->priv->frozen == TRUE) {
-		summary->priv->redraw_pending = TRUE;
-		return;
-	}
+	summary = E_SUMMARY (data);
 
 	string = g_string_new (HTML_1);
 	t = time (NULL);
@@ -237,6 +232,38 @@ e_summary_draw (ESummary *summary)
 	gtk_html_end (GTK_HTML (summary->priv->html), stream, GTK_HTML_STREAM_OK);
 
 	g_string_free (string, TRUE);
+
+	summary->priv->queued_draw_idle_id = 0;
+
+	return FALSE;
+}
+
+void
+e_summary_draw (ESummary *summary)
+{
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (IS_E_SUMMARY (summary));
+
+	if (summary->mail == NULL || summary->calendar == NULL
+	    || summary->rdf == NULL || summary->weather == NULL 
+	    || summary->tasks == NULL) {
+		return;
+	}
+
+	if (summary->priv->queued_draw_idle_id != 0)
+		return;
+
+	summary->priv->queued_draw_idle_id = g_idle_add (draw_idle_cb, summary);
+}
+
+void
+e_summary_redraw_all (void)
+{
+	GList *p;
+
+	for (p = all_summaries; p; p = p->next) {
+		e_summary_draw (E_SUMMARY (p->data));
+	}
 }
 
 static char *
@@ -290,74 +317,6 @@ struct _imgcache {
 };
 
 static void
-close_callback (GnomeVFSAsyncHandle *handle,
-		GnomeVFSResult result,
-		gpointer data)
-{
-	DownloadInfo *info = data;
-	struct _imgcache *img;
-
-	if (images_cache == NULL) {
-		images_cache = g_hash_table_new (g_str_hash, g_str_equal);
-	}
-
-	img = g_new (struct _imgcache, 1);
-	img->buffer = info->buffer;
-	img->bufsize = info->bufsize;
-
-	g_hash_table_insert (images_cache, info->uri, img);
-	g_free (info);
-}
-
-/* The way this behaves is a workaround for ximian bug 10235: loading
- * the image into gtkhtml progressively will result in garbage being
- * drawn, so we wait until we've read the whole thing and then write
- * it all at once.
- */
-static void
-read_callback (GnomeVFSAsyncHandle *handle,
-	       GnomeVFSResult result,
-	       gpointer buffer,
-	       GnomeVFSFileSize bytes_requested,
-	       GnomeVFSFileSize bytes_read,
-	       gpointer data)
-{
-	DownloadInfo *info = data;
-
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
-		gtk_html_stream_close (info->stream, GTK_HTML_STREAM_ERROR);
-		gnome_vfs_async_close (handle, close_callback, info);
-	} else if (bytes_read == 0) {
-		gtk_html_stream_write (info->stream, info->buffer, info->bufsize);
-		gtk_html_stream_close (info->stream, GTK_HTML_STREAM_OK);
-		gnome_vfs_async_close (handle, close_callback, info);
-	} else {
-		bytes_read += info->ptr - info->buffer;
-		info->bufsize += 4096;
-		info->buffer = g_realloc (info->buffer, info->bufsize);
-		info->ptr = info->buffer + bytes_read;
-		gnome_vfs_async_read (handle, info->ptr, 4095, read_callback, info);
-	}
-}
-
-static void
-open_callback (GnomeVFSAsyncHandle *handle,
-	       GnomeVFSResult result,
-	       DownloadInfo *info)
-{
-	if (result != GNOME_VFS_OK) {
-		gtk_html_stream_close (info->stream, GTK_HTML_STREAM_ERROR);
-		g_free (info->uri);
-		g_free (info);
-		return;
-	}
-
-	info->bufsize = 4096;
-	info->buffer = info->ptr = g_new (char, info->bufsize);
-	gnome_vfs_async_read (handle, info->buffer, 4095, read_callback, info);
-}
-
-static void
 e_summary_url_clicked (GtkHTML *html,
 		       const char *url,
 		       ESummary *summary)
@@ -387,6 +346,52 @@ e_summary_url_clicked (GtkHTML *html,
 	protocol_listener->listener (summary, url, protocol_listener->closure);
 }
 
+static char *
+e_read_file_with_length (const char *filename,
+			 size_t *length)
+{
+	int fd;
+	struct stat stat_buf;
+	char *buf;
+	size_t bytes_read, size;
+
+	g_return_val_if_fail (filename != NULL, NULL);
+
+	fd = open (filename, O_RDONLY);
+	g_return_val_if_fail (fd != -1, NULL);
+
+	fstat (fd, &stat_buf);
+	size = stat_buf.st_size;
+	buf = g_new (char, size + 1);
+
+	bytes_read = 0;
+	while (bytes_read < size) {
+		ssize_t rc;
+
+		rc = read (fd, buf + bytes_read, size - bytes_read);
+		if (rc < 0) {
+			if (errno != EINTR) {
+				close (fd);
+				g_free (buf);
+				
+				return NULL;
+			}
+		} else if (rc == 0) {
+			break;
+		} else {
+			bytes_read += rc;
+		}
+	}
+
+	buf[bytes_read] = '\0';
+
+	if (length) {
+		*length = bytes_read;
+	}
+
+	return buf;
+}
+
 static void
 e_summary_url_requested (GtkHTML *html,
 			 const char *url,
@@ -394,8 +399,6 @@ e_summary_url_requested (GtkHTML *html,
 			 ESummary *summary)
 {
 	char *filename;
-	GnomeVFSAsyncHandle *handle;
-	DownloadInfo *info;
 	struct _imgcache *img = NULL;
 
 	if (strncasecmp (url, "file:", 5) == 0) {
@@ -414,19 +417,28 @@ e_summary_url_requested (GtkHTML *html,
 
 	if (images_cache != NULL) {
 		img = g_hash_table_lookup (images_cache, filename);
+	} else {
+		images_cache = g_hash_table_new (g_str_hash, g_str_equal);
 	}
 
 	if (img == NULL) {
-		info = g_new (DownloadInfo, 1);
-		info->stream = stream;
-		info->uri = filename;
+		size_t length;
+		char *contents;
 
-		gnome_vfs_async_open (&handle, filename, GNOME_VFS_OPEN_READ,
-				      (GnomeVFSAsyncOpenCallback) open_callback, info);
-	} else {
-		gtk_html_stream_write (stream, img->buffer, img->bufsize);
-		gtk_html_stream_close (stream, GTK_HTML_STREAM_OK);
+		contents = e_read_file_with_length (filename, &length);
+		if (contents == NULL) {
+			return;
+		}
+
+		img = g_new (struct _imgcache, 1);
+		img->buffer = contents;
+		img->bufsize = length;
+
+		g_hash_table_insert (images_cache, g_strdup (filename), img);
 	}
+
+	gtk_html_stream_write (stream, img->buffer, img->bufsize);
+	gtk_html_stream_close (stream, GTK_HTML_STREAM_OK);
 }
 
 static void
@@ -477,8 +489,7 @@ e_summary_init (ESummary *summary)
 
 	priv = summary->priv;
 
-	priv->frozen = FALSE;
-	priv->redraw_pending = FALSE;
+	priv->frozen = TRUE;
 	priv->pending_reload_tag = 0;
 
 	priv->html_scroller = gtk_scrolled_window_new (NULL, NULL);
@@ -500,10 +511,6 @@ e_summary_init (ESummary *summary)
 			    GTK_SIGNAL_FUNC (e_summary_url_requested), summary);
 	gtk_signal_connect (GTK_OBJECT (priv->html), "link-clicked",
 			    GTK_SIGNAL_FUNC (e_summary_url_clicked), summary);
-#if 0
-	gtk_signal_connect (GTK_OBJECT (priv->html), "on-url",
-			    GTK_SIGNAL_FUNC (e_summary_on_url), summary);
-#endif
 
 	gtk_container_add (GTK_CONTAINER (priv->html_scroller), priv->html);
 	gtk_widget_show_all (priv->html_scroller);
@@ -512,9 +519,6 @@ e_summary_init (ESummary *summary)
 
 	priv->protocol_hash = NULL;
 	priv->connections = NULL;
-
-	summary->prefs_window = NULL;
-	e_summary_preferences_init (summary);
 
 	CORBA_exception_init (&ev);
 	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
@@ -543,22 +547,27 @@ e_summary_init (ESummary *summary)
 	}
 
 	priv->alarm = alarm_add (day_end, alarm_fn, summary, NULL);
+
+	priv->queued_draw_idle_id = 0;
 }
 
 E_MAKE_TYPE (e_summary, "ESummary", ESummary, e_summary_class_init,
 	     e_summary_init, PARENT_TYPE);
 
 GtkWidget *
-e_summary_new (const GNOME_Evolution_Shell shell)
+e_summary_new (const GNOME_Evolution_Shell shell,
+	       ESummaryPrefs *prefs)
 {
 	ESummary *summary;
 
 	summary = gtk_type_new (e_summary_get_type ());
-	summary->priv->shell = shell;
-
+	summary->shell = shell;
+	/* Just get a pointer to the global preferences */
+	summary->preferences = prefs;
+	
 	e_summary_add_protocol_listener (summary, "evolution", e_summary_evolution_protocol_listener, summary);
 
-	e_summary_mail_init (summary, shell);
+	e_summary_mail_init (summary);
 	e_summary_calendar_init (summary);
 	e_summary_tasks_init (summary);
 	e_summary_rdf_init (summary);
@@ -566,6 +575,7 @@ e_summary_new (const GNOME_Evolution_Shell shell)
 
 /*  	e_summary_draw (summary); */
 
+	all_summaries = g_list_prepend (all_summaries, summary);
 	return GTK_WIDGET (summary);
 }
 
@@ -739,10 +749,6 @@ e_summary_unset_message (ESummary *summary)
 void
 e_summary_reconfigure (ESummary *summary)
 {
-	if (summary->mail != NULL) {
-		e_summary_mail_reconfigure (summary);
-	}
-
 	if (summary->rdf != NULL) {
 		e_summary_rdf_reconfigure (summary);
 	}
@@ -758,6 +764,21 @@ e_summary_reconfigure (ESummary *summary)
 	if (summary->tasks != NULL) {
 		e_summary_tasks_reconfigure (summary);
 	}
+
+	e_summary_draw (summary);
+}
+
+void
+e_summary_reconfigure_all (void)
+{
+	GList *p;
+
+	/* This is here, because it only needs to be done once for all summaries */
+	e_summary_mail_reconfigure ();
+
+	for (p = all_summaries; p; p = p->next) {
+		e_summary_reconfigure (E_SUMMARY (p->data));
+	}
 }
 
 static gint
@@ -765,13 +786,17 @@ e_summary_reload_timeout (gpointer closure)
 {
 	ESummary *summary = closure;
 
-	if (summary->rdf != NULL) {
+	if (summary->rdf != NULL)
 		e_summary_rdf_update (summary);
-	}
 
-	if (summary->weather != NULL) {
+	if (summary->weather != NULL)
 		e_summary_weather_update (summary);
-	}
+
+	if (summary->calendar != NULL)
+		e_summary_calendar_reconfigure (summary);
+
+	if (summary->tasks != NULL)
+		e_summary_tasks_reconfigure (summary);
 
 	summary->priv->pending_reload_tag = 0;
 
@@ -821,7 +846,6 @@ e_summary_count_connections (ESummary *summary)
 		count += c->count (summary, c->closure);
 	}
 
-	g_print ("Count: %d", count);
 	return count;
 }
 
@@ -865,11 +889,9 @@ e_summary_set_online (ESummary *summary,
 		c->callback_closure = closure;
 
 		c->set_online (summary, progress, online, c->closure);
-		g_print ("Setting %s\n", online ? "online" : "offline");
 
-		if (callback != NULL) {
+		if (callback != NULL)
 			callback (summary, closure);
-		}
 	}
 }
 
@@ -900,33 +922,4 @@ e_summary_remove_online_connection (ESummary *summary,
 
 	summary->priv->connections = g_list_remove_link (summary->priv->connections, p);
 	g_list_free (p);
-}
-
-void
-e_summary_freeze (ESummary *summary)
-{
-	g_return_if_fail (IS_E_SUMMARY (summary));
-	g_return_if_fail (summary->priv != NULL);
-
-	if (summary->priv->frozen == TRUE) {
-		return;
-	}
-
-	summary->priv->frozen = TRUE;
-}
-
-void
-e_summary_thaw (ESummary *summary)
-{
-	g_return_if_fail (IS_E_SUMMARY (summary));
-	g_return_if_fail (summary->priv != NULL);
-
-	if (summary->priv->frozen == FALSE) {
-		return;
-	}
-
-	summary->priv->frozen = FALSE;
-	if (summary->priv->redraw_pending) {
-		e_summary_draw (summary);
-	}
 }

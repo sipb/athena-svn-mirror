@@ -24,7 +24,10 @@
 #include <config.h>
 #endif
 
-#include <string.h>
+#include "e-storage-set.h"
+
+#include "e-storage-set-view.h"
+#include "e-shell-constants.h"
 
 #include <glib.h>
 #include <gtk/gtkobject.h>
@@ -33,8 +36,7 @@
 
 #include <gal/util/e-util.h>
 
-#include "e-storage-set-view.h"
-#include "e-storage-set.h"
+#include <string.h>
 
 
 #define PARENT_TYPE GTK_TYPE_OBJECT
@@ -61,6 +63,8 @@ enum {
 	NEW_FOLDER,
 	UPDATED_FOLDER,
 	REMOVED_FOLDER,
+	MOVED_FOLDER,
+	CLOSE_FOLDER,
 	LAST_SIGNAL
 };
 
@@ -103,42 +107,74 @@ name_to_named_storage_foreach_destroy (void *key,
 /* "Callback converter", from `EStorageResultCallback' to
    `EStorageSetResultCallback'.  */
 
-struct _StorageCallbackConverterData {
+enum _StorageOperation {
+	OPERATION_COPY,
+	OPERATION_MOVE,
+	OPERATION_REMOVE,
+	OPERATION_CREATE
+};
+typedef enum _StorageOperation StorageOperation;
+
+struct _StorageCallbackData {
 	EStorageSet *storage_set;
 	EStorageSetResultCallback storage_set_result_callback;
+	char *source_path;
+	char *destination_path;
+	StorageOperation operation;
 	void *data;
 };
-typedef struct _StorageCallbackConverterData StorageCallbackConverterData;
+typedef struct _StorageCallbackData StorageCallbackData;
 
-static StorageCallbackConverterData *
-storage_callback_converter_data_new (EStorageSet *storage_set,
-				     EStorageSetResultCallback callback,
-				     void *data)
+static StorageCallbackData *
+storage_callback_data_new (EStorageSet *storage_set,
+			   EStorageSetResultCallback callback,
+			   const char *source_path,
+			   const char *destination_path,
+			   StorageOperation operation,
+			   void *data)
 {
-	StorageCallbackConverterData *new;
+	StorageCallbackData *new;
 
-	new = g_new (StorageCallbackConverterData, 1);
+	new = g_new (StorageCallbackData, 1);
 	new->storage_set                 = storage_set;
 	new->storage_set_result_callback = callback;
+	new->source_path                 = g_strdup (source_path);
+	new->destination_path            = g_strdup (destination_path);
+	new->operation                   = operation;
 	new->data                        = data;
 
 	return new;
 }
 
 static void
-storage_callback_converter (EStorage *storage,
-			    EStorageResult result,
-			    void *data)
+storage_callback_data_free (StorageCallbackData *data)
 {
-	StorageCallbackConverterData *converter_data;
+	g_free (data->source_path);
+	g_free (data->destination_path);
 
-	converter_data = (StorageCallbackConverterData *) data;
+	g_free (data);
+}
 
-	(* converter_data->storage_set_result_callback) (converter_data->storage_set,
-							 result,
-							 converter_data->data);
+static void
+storage_callback (EStorage *storage,
+		  EStorageResult result,
+		  void *data)
+{
+	StorageCallbackData *storage_callback_data;
 
-	g_free (converter_data);
+	storage_callback_data = (StorageCallbackData *) data;
+
+	(* storage_callback_data->storage_set_result_callback) (storage_callback_data->storage_set,
+								result,
+								storage_callback_data->data);
+
+	if (storage_callback_data->operation == OPERATION_MOVE)
+		gtk_signal_emit (GTK_OBJECT (storage_callback_data->storage_set),
+				 signals[MOVED_FOLDER],
+				 storage_callback_data->source_path,
+				 storage_callback_data->destination_path);
+
+	storage_callback_data_free (storage_callback_data);
 }
 
 
@@ -153,11 +189,14 @@ make_full_path (EStorage *storage,
 
 	storage_name = e_storage_get_name (storage);
 
-	if (! g_path_is_absolute (path))
-		full_path = g_strconcat (G_DIR_SEPARATOR_S, storage_name,
-					 G_DIR_SEPARATOR_S, path, NULL);
+	if (strcmp (path, E_PATH_SEPARATOR_S) == 0)
+		full_path = g_strconcat (E_PATH_SEPARATOR_S, storage_name,
+					 NULL);
+	else if (! g_path_is_absolute (path))
+		full_path = g_strconcat (E_PATH_SEPARATOR_S, storage_name,
+					 E_PATH_SEPARATOR_S, path, NULL);
 	else
-		full_path = g_strconcat (G_DIR_SEPARATOR_S, storage_name,
+		full_path = g_strconcat (E_PATH_SEPARATOR_S, storage_name,
 					 path, NULL);
 
 	return full_path;
@@ -208,6 +247,21 @@ storage_removed_folder_cb (EStorage *storage,
 	g_free (full_path);
 }
 
+static void
+storage_close_folder_cb (EStorage *storage,
+			 const char *path,
+			 void *data)
+{
+	EStorageSet *storage_set;
+	char *full_path;
+
+	storage_set = E_STORAGE_SET (data);
+
+	full_path = make_full_path (storage, path);
+	gtk_signal_emit (GTK_OBJECT (storage_set), signals[CLOSE_FOLDER], full_path);
+	g_free (full_path);
+}
+
 
 static EStorage *
 get_storage_for_path (EStorageSet *storage_set,
@@ -219,22 +273,23 @@ get_storage_for_path (EStorageSet *storage_set,
 	const char *first_separator;
 
 	g_return_val_if_fail (g_path_is_absolute (path), NULL);
+	g_return_val_if_fail (path[1] != E_PATH_SEPARATOR, NULL);
 
 	/* Skip initial separator.  */
 	path++;
 
-	first_separator = strchr (path, G_DIR_SEPARATOR);
+	first_separator = strchr (path, E_PATH_SEPARATOR);
 
-	if (first_separator == NULL || first_separator == path || first_separator[1] == 0) {
-		*subpath_return = NULL;
-		return NULL;
+	if (first_separator == NULL || first_separator[1] == 0) {
+		storage = e_storage_set_get_storage (storage_set, path);
+		*subpath_return = E_PATH_SEPARATOR_S;
+	} else {
+		storage_name = g_strndup (path, first_separator - path);
+		storage = e_storage_set_get_storage (storage_set, storage_name);
+		g_free (storage_name);
+
+		*subpath_return = first_separator;
 	}
-
-	storage_name = g_strndup (path, first_separator - path);
-	storage = e_storage_set_get_storage (storage_set, storage_name);
-	g_free (storage_name);
-
-	*subpath_return = first_separator;
 
 	return storage;
 }
@@ -253,7 +308,7 @@ signal_new_folder_for_all_folders_under_paths (EStorageSet *storage_set,
 
 		path = (const char *) p->data;
 
-		path_with_storage = g_strconcat (G_DIR_SEPARATOR_S, e_storage_get_name (storage), path, NULL);
+		path_with_storage = g_strconcat (E_PATH_SEPARATOR_S, e_storage_get_name (storage), path, NULL);
 		gtk_signal_emit (GTK_OBJECT (storage_set), signals[NEW_FOLDER], path_with_storage);
 		g_free (path_with_storage);
 
@@ -271,7 +326,7 @@ signal_new_folder_for_all_folders_in_storage (EStorageSet *storage_set,
 {
 	GList *path_list;
 
-	path_list = e_storage_get_subfolder_paths (storage, G_DIR_SEPARATOR_S);
+	path_list = e_storage_get_subfolder_paths (storage, E_PATH_SEPARATOR_S);
 
 	signal_new_folder_for_all_folders_under_paths (storage_set, storage, path_list);
 
@@ -351,6 +406,23 @@ class_init (EStorageSetClass *klass)
 				GTK_RUN_FIRST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EStorageSetClass, removed_folder),
+				gtk_marshal_NONE__STRING,
+				GTK_TYPE_NONE, 1,
+				GTK_TYPE_STRING);
+	signals[MOVED_FOLDER] = 
+		gtk_signal_new ("moved_folder",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EStorageSetClass, moved_folder),
+				gtk_marshal_NONE__POINTER_POINTER,
+				GTK_TYPE_NONE, 2,
+				GTK_TYPE_STRING,
+				GTK_TYPE_STRING);
+	signals[CLOSE_FOLDER] = 
+		gtk_signal_new ("close_folder",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EStorageSetClass, close_folder),
 				gtk_marshal_NONE__STRING,
 				GTK_TYPE_NONE, 1,
 				GTK_TYPE_STRING);
@@ -455,6 +527,8 @@ e_storage_set_add_storage (EStorageSet *storage_set,
 			    GTK_SIGNAL_FUNC (storage_updated_folder_cb), storage_set);
 	gtk_signal_connect (GTK_OBJECT (storage), "removed_folder",
 			    GTK_SIGNAL_FUNC (storage_removed_folder_cb), storage_set);
+	gtk_signal_connect (GTK_OBJECT (storage), "close_folder",
+			    GTK_SIGNAL_FUNC (storage_close_folder_cb), storage_set);
 
 	priv->storages = g_list_append (priv->storages, storage);
 
@@ -567,15 +641,34 @@ e_storage_set_get_folder (EStorageSet *storage_set,
 }
 
 
+static void
+storage_set_view_folder_opened (EStorageSetView *storage_set_view,
+				const char *path,
+				EStorageSet *storage_set)
+{
+	EStorage *storage;
+	const char *subpath;
+
+	storage = get_storage_for_path (storage_set, path, &subpath);
+	if (storage == NULL)
+		return;
+
+	e_storage_async_open_folder (storage, subpath);
+}
+
 GtkWidget *
-e_storage_set_new_view (EStorageSet *storage_set, BonoboUIContainer *container)
+e_storage_set_create_new_view (EStorageSet *storage_set,
+			       BonoboUIContainer *ui_container)
 {
 	GtkWidget *storage_set_view;
 
 	g_return_val_if_fail (storage_set != NULL, NULL);
 	g_return_val_if_fail (E_IS_STORAGE_SET (storage_set), NULL);
 
-	storage_set_view = e_storage_set_view_new (storage_set, container);
+	storage_set_view = e_storage_set_view_new (storage_set, ui_container);
+	gtk_signal_connect (GTK_OBJECT (storage_set_view), "folder_opened",
+			    GTK_SIGNAL_FUNC (storage_set_view_folder_opened),
+			    storage_set);
 
 	return storage_set_view;
 }
@@ -591,7 +684,7 @@ e_storage_set_async_create_folder  (EStorageSet *storage_set,
 {
 	EStorage *storage;
 	const char *subpath;
-	StorageCallbackConverterData *converter_data;
+	StorageCallbackData *storage_callback_data;
 
 	g_return_if_fail (storage_set != NULL);
 	g_return_if_fail (E_IS_STORAGE_SET (storage_set));
@@ -603,10 +696,12 @@ e_storage_set_async_create_folder  (EStorageSet *storage_set,
 
 	storage = get_storage_for_path (storage_set, path, &subpath);
 
-	converter_data = storage_callback_converter_data_new (storage_set, callback, data);
+	storage_callback_data = storage_callback_data_new (storage_set, callback,
+							   path, NULL, OPERATION_CREATE,
+							   data);
 
 	e_storage_async_create_folder (storage, subpath, type, description,
-				       storage_callback_converter, converter_data);
+				       storage_callback, storage_callback_data);
 }
 
 void
@@ -617,7 +712,7 @@ e_storage_set_async_remove_folder  (EStorageSet *storage_set,
 {
 	EStorage *storage;
 	const char *subpath;
-	StorageCallbackConverterData *converter_data;
+	StorageCallbackData *storage_callback_data;
 
 	g_return_if_fail (storage_set != NULL);
 	g_return_if_fail (E_IS_STORAGE_SET (storage_set));
@@ -627,10 +722,12 @@ e_storage_set_async_remove_folder  (EStorageSet *storage_set,
 
 	storage = get_storage_for_path (storage_set, path, &subpath);
 
-	converter_data = storage_callback_converter_data_new (storage_set, callback, data);
+	storage_callback_data = storage_callback_data_new (storage_set, callback,
+							   path, NULL, OPERATION_REMOVE,
+							   data);
 
 	e_storage_async_remove_folder (storage, subpath,
-				       storage_callback_converter, converter_data);
+				       storage_callback, storage_callback_data);
 }
 
 void
@@ -645,7 +742,7 @@ e_storage_set_async_xfer_folder (EStorageSet *storage_set,
 	EStorage *destination_storage;
 	const char *source_subpath;
 	const char *destination_subpath;
-	StorageCallbackConverterData *converter_data;
+	StorageCallbackData *storage_callback_data;
 
 	g_return_if_fail (storage_set != NULL);
 	g_return_if_fail (E_IS_STORAGE_SET (storage_set));
@@ -665,11 +762,48 @@ e_storage_set_async_xfer_folder (EStorageSet *storage_set,
 		return;
 	}
 
-	converter_data = storage_callback_converter_data_new (storage_set, callback, data);
+	storage_callback_data = storage_callback_data_new (storage_set,
+							   callback,
+							   source_path,
+							   destination_path,
+							   remove_source ? OPERATION_MOVE : OPERATION_COPY,
+							   data);
 
 	e_storage_async_xfer_folder (source_storage,
  				     source_subpath, destination_subpath, remove_source,
-				     storage_callback_converter, converter_data);
+				     storage_callback, storage_callback_data);
+}
+
+void
+e_storage_set_async_remove_shared_folder (EStorageSet *storage_set,
+					  const char *path,
+					  EStorageSetResultCallback callback,
+					  void *data)
+{
+	EStorage *storage;
+	const char *subpath;
+	StorageCallbackData *storage_callback_data;
+
+	g_return_if_fail (storage_set != NULL);
+	g_return_if_fail (E_IS_STORAGE_SET (storage_set));
+	g_return_if_fail (path != NULL);
+	g_return_if_fail (g_path_is_absolute (path));
+	g_return_if_fail (callback != NULL);
+
+	storage = get_storage_for_path (storage_set, path, &subpath);
+
+	if (!e_storage_supports_shared_folders (storage)) {
+		(* callback) (storage_set, E_STORAGE_NOTIMPLEMENTED, data);
+		return;
+	}
+
+	storage_callback_data = storage_callback_data_new (storage_set, callback,
+							   path, NULL, OPERATION_REMOVE,
+							   data);
+
+	e_storage_async_remove_shared_folder (storage, subpath,
+					      storage_callback,
+					      storage_callback_data);
 }
 
 
@@ -715,7 +849,7 @@ e_storage_set_get_path_for_physical_uri (EStorageSet *storage_set,
 		if (storage_path != NULL) {
 			char *storage_set_path;
 
-			storage_set_path = g_strconcat (G_DIR_SEPARATOR_S,
+			storage_set_path = g_strconcat (E_PATH_SEPARATOR_S,
 							e_storage_get_name (storage),
 							storage_path,
 							NULL);

@@ -25,11 +25,12 @@
 #endif
 
 #include "camel-digest-folder.h"
+#include "camel-digest-summary.h"
 
 #include "camel-exception.h"
 #include "camel-multipart.h"
 #include "camel-mime-message.h"
-#include "camel-folder-summary.h"
+#include "camel-folder-search.h"
 
 #define d(x)
 
@@ -37,10 +38,19 @@
 
 struct _CamelDigestFolderPrivate {
 	CamelMimeMessage *message;
-	GHashTable *info_hash;
-	GPtrArray *summary;
-	GPtrArray *uids;
+	CamelFolderSearch *search;
+#ifdef ENABLE_THREADS
+	GMutex *search_lock;
+#endif
 };
+
+#ifdef ENABLE_THREADS
+#define CAMEL_DIGEST_FOLDER_LOCK(f, l) (g_mutex_lock(((CamelDigestFolder *)f)->priv->l))
+#define CAMEL_DIGEST_FOLDER_UNLOCK(f, l) (g_mutex_unlock(((CamelDigestFolder *)f)->priv->l))
+#else
+#define CAMEL_DIGEST_FOLDER_LOCK(f, l)
+#define CAMEL_DIGEST_FOLDER_UNLOCK(f, l)
+#endif
 
 static CamelFolderClass *parent_class = NULL;
 
@@ -49,20 +59,22 @@ static void digest_sync (CamelFolder *folder, gboolean expunge, CamelException *
 static const char *digest_get_full_name (CamelFolder *folder);
 static void digest_expunge (CamelFolder *folder, CamelException *ex);
 
-static GPtrArray *digest_get_uids (CamelFolder *folder);
-static void digest_free_uids (CamelFolder *folder, GPtrArray *uids);
-static CamelMessageInfo *digest_get_message_info (CamelFolder *folder, const char *uid);
-
 /* message manipulation */
 static CamelMimeMessage *digest_get_message (CamelFolder *folder, const gchar *uid,
-					   CamelException *ex);
+					     CamelException *ex);
 static void digest_append_message (CamelFolder *folder, CamelMimeMessage *message,
-				 const CamelMessageInfo *info, CamelException *ex);
-static void digest_copy_messages_to (CamelFolder *source, GPtrArray *uids,
-				   CamelFolder *destination, CamelException *ex);
-static void digest_move_messages_to (CamelFolder *source, GPtrArray *uids,
-				   CamelFolder *destination, CamelException *ex);
+				   const CamelMessageInfo *info, char **appended_uid, CamelException *ex);
+static void digest_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
+					 CamelFolder *dest, GPtrArray **transferred_uids,
+					 gboolean delete_originals, CamelException *ex);
 
+static GPtrArray *digest_search_by_expression (CamelFolder *folder, const char *expression,
+					       CamelException *ex);
+
+static GPtrArray *digest_search_by_uids (CamelFolder *folder, const char *expression,
+					 GPtrArray *uids, CamelException *ex);
+
+static void digest_search_free (CamelFolder *folder, GPtrArray *result);
 
 static void
 camel_digest_folder_class_init (CamelDigestFolderClass *camel_digest_folder_class)
@@ -79,14 +91,13 @@ camel_digest_folder_class_init (CamelDigestFolderClass *camel_digest_folder_clas
 	camel_folder_class->expunge = digest_expunge;
 	camel_folder_class->get_full_name = digest_get_full_name;
 	
-	camel_folder_class->get_uids = digest_get_uids;
-	camel_folder_class->free_uids = digest_free_uids;
-	camel_folder_class->get_message_info = digest_get_message_info;
-	
 	camel_folder_class->get_message = digest_get_message;
 	camel_folder_class->append_message = digest_append_message;
-	camel_folder_class->copy_messages_to = digest_copy_messages_to;
-	camel_folder_class->move_messages_to = digest_move_messages_to;
+	camel_folder_class->transfer_messages_to = digest_transfer_messages_to;
+	
+	camel_folder_class->search_by_expression = digest_search_by_expression;
+	camel_folder_class->search_by_uids = digest_search_by_uids;
+	camel_folder_class->search_free = digest_search_free;
 }
 
 static void
@@ -95,34 +106,37 @@ camel_digest_folder_init (gpointer object, gpointer klass)
 	CamelDigestFolder *digest_folder = CAMEL_DIGEST_FOLDER (object);
 	CamelFolder *folder = CAMEL_FOLDER (object);
 	
-	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
+	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY | CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
 	
-	digest_folder->priv = g_new0 (struct _CamelDigestFolderPrivate, 1);
-	digest_folder->priv->info_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	folder->summary = camel_digest_summary_new ();
+	
+	digest_folder->priv = g_new (struct _CamelDigestFolderPrivate, 1);
+	digest_folder->priv->message = NULL;
+	digest_folder->priv->search = NULL;
+#ifdef ENABLE_THREADS
+	digest_folder->priv->search_lock = g_mutex_new ();
+#endif
 }
 
 static void           
 digest_finalize (CamelObject *object)
 {
 	CamelDigestFolder *digest_folder = CAMEL_DIGEST_FOLDER (object);
-	GPtrArray *summary;
+	CamelFolder *folder = CAMEL_FOLDER (object);
+	
+	if (folder->summary) {
+		camel_object_unref (CAMEL_OBJECT (folder->summary));
+		folder->summary = NULL;
+	}
 	
 	camel_object_unref (CAMEL_OBJECT (digest_folder->priv->message));
 	
-	g_hash_table_destroy (digest_folder->priv->info_hash);
+	if (digest_folder->priv->search)
+		camel_object_unref (CAMEL_OBJECT (digest_folder->priv->search));
 	
-	summary = digest_folder->priv->summary;
-	if (summary) {
-		int i;
-		
-		for (i = 0; i < summary->len; i++)
-			camel_message_info_free (summary->pdata[i]);
-		
-		g_ptr_array_free (summary, TRUE);
-	}
-	
-	if (digest_folder->priv->uids)
-		g_ptr_array_free (digest_folder->priv->uids, TRUE);
+#ifdef ENABLE_THREADS
+	g_mutex_free (digest_folder->priv->search_lock);
+#endif
 	
 	g_free (digest_folder->priv);
 }
@@ -146,8 +160,68 @@ camel_digest_folder_get_type (void)
 	return type;
 }
 
+static gboolean
+multipart_contains_message_parts (CamelMultipart *multipart)
+{
+	gboolean has_message_parts = FALSE;
+	CamelDataWrapper *wrapper;
+	CamelMimePart *part;
+	int i, parts;
+	
+	parts = camel_multipart_get_number (multipart);
+	for (i = 0; i < parts && !has_message_parts; i++) {
+		part = camel_multipart_get_part (multipart, i);
+		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+		if (CAMEL_IS_MULTIPART (wrapper)) {
+			has_message_parts = multipart_contains_message_parts (CAMEL_MULTIPART (wrapper));
+		} else if (CAMEL_IS_MIME_MESSAGE (wrapper)) {
+			has_message_parts = TRUE;
+		}
+	}
+	
+	return has_message_parts;
+}
+
+static void
+digest_add_multipart (CamelFolder *folder, CamelMultipart *multipart, const char *preuid)
+{
+	CamelDataWrapper *wrapper;
+	CamelMessageInfo *info;
+	CamelMimePart *part;
+	int parts, i;
+	char *uid;
+	
+	parts = camel_multipart_get_number (multipart);
+	for (i = 0; i < parts; i++) {
+		part = camel_multipart_get_part (multipart, i);
+		
+		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+		
+		if (CAMEL_IS_MULTIPART (wrapper)) {
+			uid = g_strdup_printf ("%s%d.", preuid, i);
+			digest_add_multipart (folder, CAMEL_MULTIPART (wrapper), uid);
+			g_free (uid);
+			continue;
+		} else if (!CAMEL_IS_MIME_MESSAGE (wrapper)) {
+			continue;
+		}
+		
+		info = camel_folder_summary_info_new_from_message (folder->summary, CAMEL_MIME_MESSAGE (wrapper));
+		
+		uid = g_strdup_printf ("%s%d", preuid, i);
+		camel_message_info_set_uid (info, uid);
+		camel_folder_summary_add (folder->summary, info);
+	}
+}
+
+static void
+construct_summary (CamelFolder *folder, CamelMultipart *multipart)
+{
+	digest_add_multipart (folder, multipart, "");
+}
+
 CamelFolder *
-camel_digest_folder_new (CamelMimeMessage *message)
+camel_digest_folder_new (CamelStore *parent_store, CamelMimeMessage *message)
 {
 	CamelDigestFolder *digest_folder;
 	CamelDataWrapper *wrapper;
@@ -157,26 +231,21 @@ camel_digest_folder_new (CamelMimeMessage *message)
 	if (!wrapper || !CAMEL_IS_MULTIPART (wrapper))
 		return NULL;
 	
+	/* Make sure we have a multipart/digest subpart or at least some message/rfc822 attachments... */
 	if (!header_content_type_is (CAMEL_MIME_PART (message)->content_type, "multipart", "digest")) {
-		int i, parts;
-		
-		/* Make sure we have a multipart of message/rfc822 attachments... */
-		parts = camel_multipart_get_number (CAMEL_MULTIPART (wrapper));
-		for (i = 0; i < parts; i++) {
-			CamelMimePart *part = camel_multipart_get_part (CAMEL_MULTIPART (wrapper), i);
-			
-			if (!header_content_type_is (part->content_type, "message", "rfc822"))
-				return NULL;
-		}
+		if (!multipart_contains_message_parts (CAMEL_MULTIPART (wrapper)))
+			return NULL;
 	}
 	
 	folder = CAMEL_FOLDER (camel_object_new (camel_digest_folder_get_type ()));
 	digest_folder = CAMEL_DIGEST_FOLDER (folder);
 	
-	camel_folder_construct (folder, NULL, "folder_name", "short_name");
+	camel_folder_construct (folder, parent_store, "folder_name", "short_name");
 	
 	camel_object_ref (CAMEL_OBJECT (message));
 	digest_folder->priv->message = message;
+	
+	construct_summary (folder, CAMEL_MULTIPART (wrapper));
 	
 	return folder;
 }
@@ -190,71 +259,13 @@ digest_refresh_info (CamelFolder *folder, CamelException *ex)
 static void
 digest_sync (CamelFolder *folder, gboolean expunge, CamelException *ex)
 {
-	
+	/* no-op */
 }
 
 static void
 digest_expunge (CamelFolder *folder, CamelException *ex)
 {
-	
-}
-
-static GPtrArray *
-digest_get_uids (CamelFolder *folder)
-{
-	CamelDigestFolder *digest_folder = CAMEL_DIGEST_FOLDER (folder);
-	CamelDataWrapper *wrapper;
-	GHashTable *info_hash;
-	GPtrArray *summary;
-	GPtrArray *uids;
-	int parts, i;
-	
-	if (digest_folder->priv->uids)
-		return digest_folder->priv->uids;
-	
-	uids = g_ptr_array_new ();
-	summary = g_ptr_array_new ();
-	info_hash = digest_folder->priv->info_hash;
-	
-	wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (digest_folder->priv->message));
-	parts = camel_multipart_get_number (CAMEL_MULTIPART (wrapper));
-	for (i = 0; i < parts; i++) {
-		CamelMimeMessage *message;
-		CamelMessageInfo *info;
-		CamelMimePart *part;
-		char *uid;
-		
-		uid = g_strdup_printf ("%d", i + 1);
-		
-		part = camel_multipart_get_part (CAMEL_MULTIPART (wrapper), i);
-		message = CAMEL_MIME_MESSAGE (part);
-		
-		info = camel_message_info_new_from_header (CAMEL_MIME_PART (message)->headers);
-		camel_message_info_set_uid (info, uid);
-		
-		g_ptr_array_add (uids, uid);
-		g_ptr_array_add (summary, info);
-		g_hash_table_insert (info_hash, uid, info);
-	}
-	
-	digest_folder->priv->uids = uids;
-	digest_folder->priv->summary = summary;
-	
-	return uids;
-}
-
-static void
-digest_free_uids (CamelFolder *folder, GPtrArray *uids)
-{
 	/* no-op */
-}
-
-static CamelMessageInfo *
-digest_get_message_info (CamelFolder *folder, const char *uid)
-{
-	CamelDigestFolder *digest = CAMEL_DIGEST_FOLDER (folder);
-	
-	return g_hash_table_lookup (digest->priv->info_hash, uid);
 }
 
 static const char *
@@ -265,23 +276,22 @@ digest_get_full_name (CamelFolder *folder)
 
 static void
 digest_append_message (CamelFolder *folder, CamelMimeMessage *message,
-		       const CamelMessageInfo *info, CamelException *ex)
+		       const CamelMessageInfo *info, char **appended_uid,
+		       CamelException *ex)
 {
 	/* no-op */
+	if (appended_uid)
+		*appended_uid = NULL;
 }
 
 static void
-digest_copy_messages_to (CamelFolder *source, GPtrArray *uids,
-		       CamelFolder *destination, CamelException *ex)
+digest_transfer_messages_to (CamelFolder *source, GPtrArray *uids,
+			     CamelFolder *dest, GPtrArray **transferred_uids,
+			     gboolean delete_originals, CamelException *ex)
 {
 	/* no-op */
-}
-
-static void
-digest_move_messages_to (CamelFolder *source, GPtrArray *uids,
-			 CamelFolder *destination, CamelException *ex)
-{
-	/* no-op */
+	if (transferred_uids)
+		*transferred_uids = NULL;
 }
 
 static CamelMimeMessage *
@@ -291,14 +301,107 @@ digest_get_message (CamelFolder *folder, const char *uid, CamelException *ex)
 	CamelDataWrapper *wrapper;
 	CamelMimeMessage *message;
 	CamelMimePart *part;
+	char *subuid;
 	int id;
 	
-	id = atoi (uid) - 1;
+	part = CAMEL_MIME_PART (digest->priv->message);
+	wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
 	
-	wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (digest->priv->message));
-	part = camel_multipart_get_part (CAMEL_MULTIPART (wrapper), id);
-	message = CAMEL_MIME_MESSAGE (part);
+	do {
+		id = strtoul (uid, &subuid, 10);
+		if (!CAMEL_IS_MULTIPART (wrapper))
+			return NULL;
+		
+		part = camel_multipart_get_part (CAMEL_MULTIPART (wrapper), id);
+		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+		uid = subuid + 1;
+	} while (*subuid == '.');
+	
+	if (!CAMEL_IS_MIME_MESSAGE (wrapper))
+		return NULL;
+	
+	message = CAMEL_MIME_MESSAGE (wrapper);
 	camel_object_ref (CAMEL_OBJECT (message));
 	
 	return message;
+}
+
+
+static GPtrArray *
+digest_search_by_expression (CamelFolder *folder, const char *expression, CamelException *ex)
+{
+	CamelDigestFolder *df = (CamelDigestFolder *) folder;
+	CamelFolderSearch *search;
+	GPtrArray *summary, *matches;
+	
+	summary = camel_folder_get_summary (folder);
+	
+	CAMEL_DIGEST_FOLDER_LOCK (folder, search_lock);
+	
+	if (!df->priv->search)
+		df->priv->search = camel_folder_search_new ();
+	
+	search = df->priv->search;
+	camel_folder_search_set_folder (search, folder);
+	camel_folder_search_set_summary (search, summary);
+	
+	matches = camel_folder_search_execute_expression (search, expression, ex);
+	
+	CAMEL_DIGEST_FOLDER_UNLOCK (folder, search_lock);
+	
+	camel_folder_free_summary (folder, summary);
+	
+	return matches;
+}
+
+static GPtrArray *
+digest_search_by_uids (CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
+{
+	CamelDigestFolder *df = (CamelDigestFolder *) folder;
+	CamelFolderSearch *search;
+	GPtrArray *summary, *matches;
+	int i;
+	
+	summary = g_ptr_array_new ();
+	for (i = 0; i < uids->len; i++) {
+		CamelMessageInfo *info;
+		
+		info = camel_folder_get_message_info (folder, uids->pdata[i]);
+		if (info)
+			g_ptr_array_add (summary, info);
+	}
+	
+	if (summary->len == 0)
+		return summary;
+	
+	CAMEL_DIGEST_FOLDER_LOCK (folder, search_lock);
+	
+	if (!df->priv->search)
+		df->priv->search = camel_folder_search_new ();
+	
+	search = df->priv->search;
+	camel_folder_search_set_folder (search, folder);
+	camel_folder_search_set_summary (search, summary);
+	
+	matches = camel_folder_search_execute_expression (search, expression, ex);
+	
+	CAMEL_DIGEST_FOLDER_UNLOCK (folder, search_lock);
+	
+	for (i = 0; i < summary->len; i++)
+		camel_folder_free_message_info (folder, summary->pdata[i]);
+	g_ptr_array_free (summary, TRUE);
+	
+	return matches;
+}
+
+static void
+digest_search_free (CamelFolder *folder, GPtrArray *result)
+{
+	CamelDigestFolder *digest_folder = CAMEL_DIGEST_FOLDER (folder);
+	
+	CAMEL_DIGEST_FOLDER_LOCK (folder, search_lock);
+	
+	camel_folder_search_free_result (digest_folder->priv->search, result);
+	
+	CAMEL_DIGEST_FOLDER_UNLOCK (folder, search_lock);
 }

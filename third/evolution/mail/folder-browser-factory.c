@@ -1,12 +1,25 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * folder-browser-factory.c: A Bonobo Control factory for Folder Browsers
+ *  Authors: Miguel de Icaza <miguel@ximian.com>
  *
- * Author:
- *   Miguel de Icaza (miguel@ximian.com)
+ *  Copyright 2002 Ximian, Inc. (www.ximian.com)
  *
- * (C) 2000 Ximian, Inc.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ *
  */
+
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -94,11 +107,12 @@ control_activate (BonoboControl     *control,
 	folder_browser_ui_add_message (fb);
 
 	/*bonobo_ui_component_thaw (uic, NULL);*/
-
-	folder_browser_set_shell_view(fb, fb_get_svi (control));
-
-	if (fb->folder)
-		mail_refresh_folder (fb->folder, NULL, NULL);
+	
+	folder_browser_set_shell_view (fb, fb_get_svi (control));
+	
+	folder_browser_reload (fb);
+	
+	e_search_bar_set_ui_component (E_SEARCH_BAR (fb->search), uic);
 }
 
 static void
@@ -118,6 +132,8 @@ control_deactivate (BonoboControl     *control,
 	
 	folder_browser_set_ui_component (fb, NULL);
 	folder_browser_set_shell_view (fb, CORBA_OBJECT_NIL);
+
+	e_search_bar_set_ui_component (E_SEARCH_BAR (fb->search), NULL);
 }
 
 static void
@@ -209,3 +225,29 @@ folder_browser_factory_get_control_list (void)
 		control_list = e_list_new (NULL, NULL, NULL);
 	return control_list;
 }
+
+FolderBrowser *
+folder_browser_factory_get_browser(const char *uri)
+{
+	EList *controls;
+	EIterator *it;
+	BonoboControl *control;
+	FolderBrowser *fb = NULL;
+
+	if (control_list == NULL)
+		return NULL;
+	
+	controls = folder_browser_factory_get_control_list ();
+	for (it = e_list_get_iterator (controls); e_iterator_is_valid (it); e_iterator_next (it)) {		
+		control = BONOBO_CONTROL (e_iterator_get (it));
+		fb = FOLDER_BROWSER(bonobo_control_get_widget(control));
+		if (fb->uri && strcmp(fb->uri, uri) == 0)
+			break;
+		fb = NULL;
+	}
+	gtk_object_unref (GTK_OBJECT(it));
+
+	return fb;
+}
+
+

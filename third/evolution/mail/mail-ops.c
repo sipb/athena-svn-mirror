@@ -30,6 +30,8 @@
 
 /* #include <ctype.h> */
 #include <errno.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-exec.h>
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-unicode.h>
 #include <gal/util/e-unicode-i18n.h>
@@ -41,6 +43,7 @@
 #include "mail-tools.h"
 #include "mail-ops.h"
 #include "mail-vfolder.h"
+#include "mail-session.h"
 #include "composer/e-msg-composer.h"
 #include "folder-browser.h"
 #include "e-util/e-html-utils.h"
@@ -119,17 +122,23 @@ filter_folder_filter (struct _mail_msg *mm)
 		folder_uids = uids = camel_folder_get_uids (folder);
 	
 	camel_filter_driver_filter_folder (m->driver, folder, m->cache, uids, m->delete, &mm->ex);
+	camel_filter_driver_flush (m->driver, &mm->ex);
 	
 	if (folder_uids)
 		camel_folder_free_uids (folder, folder_uids);
 	
-	/* sync and expunge */
+	/* sync our source folder */
 	if (!m->cache)
-		camel_folder_sync (folder, TRUE, camel_exception_is_set (&mm->ex) ? NULL : &mm->ex);
+		camel_folder_sync (folder, FALSE, camel_exception_is_set (&mm->ex) ? NULL : &mm->ex);
 	camel_folder_thaw (folder);
 	
 	if (m->destination)
 		camel_folder_thaw (m->destination);
+
+	/* this may thaw/unref source folders, do it here so we dont do it in the main thread
+	   see also fetch_mail_fetch() below */
+	camel_object_unref(CAMEL_OBJECT(m->driver));
+	m->driver = NULL;
 	
 	if (m->cancel)
 		camel_operation_unregister (m->cancel);
@@ -164,6 +173,8 @@ filter_folder_free (struct _mail_msg *mm)
 	
 	if (m->driver)
 		camel_object_unref (CAMEL_OBJECT (m->driver));
+	
+	mail_session_flush_filter_log ();
 }
 
 static struct _mail_msg_op filter_folder_op = {
@@ -175,7 +186,8 @@ static struct _mail_msg_op filter_folder_op = {
 
 void
 mail_filter_folder (CamelFolder *source_folder, GPtrArray *uids,
-		    const char *type, CamelOperation *cancel)
+		    const char *type, gboolean notify,
+		    CamelOperation *cancel)
 {
 	struct _filter_mail_msg *m;
 	
@@ -192,6 +204,12 @@ mail_filter_folder (CamelFolder *source_folder, GPtrArray *uids,
 	
 	m->driver = camel_session_get_filter_driver (session, type, NULL);
 	
+	if (!notify) {
+		/* FIXME: have a #define NOTIFY_FILTER_NAME macro? */
+		/* the filter name has to stay in sync with mail-session::get_filter_driver */
+		camel_filter_driver_remove_rule_by_name (m->driver, "new-mail-notification");
+	}
+	
 	e_thread_put (mail_thread_new, (EMsg *)m);
 }
 
@@ -199,7 +217,7 @@ mail_filter_folder (CamelFolder *source_folder, GPtrArray *uids,
 void
 mail_filter_on_demand (CamelFolder *folder, GPtrArray *uids)
 {
-	mail_filter_folder (folder, uids, FILTER_SOURCE_INCOMING, NULL);
+	mail_filter_folder (folder, uids, FILTER_SOURCE_INCOMING, FALSE, NULL);
 }
 
 /* ********************************************************************** */
@@ -349,8 +367,10 @@ fetch_mail_fetch (struct _mail_msg *mm)
 	/* we unref this here as it may have more work to do (syncing
 	   folders and whatnot) before we are really done */
 	/* should this be cancellable too? (i.e. above unregister above) */
-	camel_object_unref (CAMEL_OBJECT (fm->driver));
-	fm->driver = NULL;
+	if (fm->driver) {
+		camel_object_unref (CAMEL_OBJECT (fm->driver));
+		fm->driver = NULL;
+	}
 }
 
 static void
@@ -417,41 +437,65 @@ mail_fetch_mail (const char *source, int keep, const char *type, CamelOperation 
 
 extern CamelFolder *sent_folder;
 
+static char *normal_recipients[] = {
+	CAMEL_RECIPIENT_TYPE_TO,
+	CAMEL_RECIPIENT_TYPE_CC,
+	CAMEL_RECIPIENT_TYPE_BCC
+};
+
+static char *resent_recipients[] = {
+	CAMEL_RECIPIENT_TYPE_RESENT_TO,
+	CAMEL_RECIPIENT_TYPE_RESENT_CC,
+	CAMEL_RECIPIENT_TYPE_RESENT_BCC
+};
+
 /* send 1 message to a specific transport */
 static void
 mail_send_message (CamelMimeMessage *message, const char *destination,
 		   CamelFilterDriver *driver, CamelException *ex)
 {
+	const MailConfigAccount *account = NULL;
+	const CamelInternetAddress *iaddr;
+	CamelAddress *from, *recipients;
 	CamelMessageInfo *info;
 	CamelTransport *xport = NULL;
 	char *transport_url = NULL;
 	char *sent_folder_uri = NULL;
+	const char *resent_from;
 	CamelFolder *folder;
 	XEvolution *xev;
+	int i;
 	
-	camel_medium_add_header (CAMEL_MEDIUM (message), "X-Mailer",
+	camel_medium_set_header (CAMEL_MEDIUM (message), "X-Mailer",
 				 "Ximian Evolution " VERSION SUB_VERSION " " VERSION_COMMENT);
 	
 	camel_mime_message_set_date (message, CAMEL_MESSAGE_DATE_CURRENT, 0);
 	
 	xev = mail_tool_remove_xevolution_headers (message);
 	
-	if (xev->transport) {
-		transport_url = g_strstrip (g_strdup (xev->transport));
-	} else if (xev->account) {
-		const MailConfigAccount *account;
+	if (xev->account) {
 		char *name;
 		
 		name = g_strstrip (g_strdup (xev->account));
 		account = mail_config_get_account_by_name (name);
 		g_free (name);
 		
-		if (account && account->transport && account->transport->url)
-			transport_url = g_strdup (account->transport->url);
+		if (account) {
+			if (account->transport && account->transport->url)
+				transport_url = g_strdup (account->transport->url);
+			
+			sent_folder_uri = g_strdup (account->sent_folder_uri);
+		}
 	}
 	
-	if (xev->fcc)
-		sent_folder_uri = g_strstrip (g_strdup (xev->fcc));
+	if (!account) {
+		/* default back to these headers */
+		if (xev->transport)
+			transport_url = g_strstrip (g_strdup (xev->transport));
+		
+		if (xev->fcc)
+			sent_folder_uri = g_strstrip (g_strdup (xev->fcc));
+	}
 	
 	xport = camel_session_get_transport (session, transport_url ? transport_url : destination, ex);
 	g_free (transport_url);
@@ -462,7 +506,27 @@ mail_send_message (CamelMimeMessage *message, const char *destination,
 		return;
 	}
 	
-	camel_transport_send (xport, CAMEL_MEDIUM (message), ex);
+	from = (CamelAddress *) camel_internet_address_new ();
+	resent_from = camel_medium_get_header (CAMEL_MEDIUM (message), "Resent-From");
+	if (resent_from) {
+		camel_address_decode (from, resent_from);
+	} else {
+		iaddr = camel_mime_message_get_from (message);
+		camel_address_copy (from, CAMEL_ADDRESS (iaddr));
+	}
+	
+	recipients = (CamelAddress *) camel_internet_address_new ();
+	for (i = 0; i < 3; i++) {
+		const char *type;
+		
+		type = resent_from ? resent_recipients[i] : normal_recipients[i];
+		iaddr = camel_mime_message_get_recipients (message, type);
+		camel_address_cat (recipients, CAMEL_ADDRESS (iaddr));
+	}
+	
+	camel_transport_send_to (xport, message, from, recipients, ex);
+	camel_object_unref (CAMEL_OBJECT (recipients));
+	camel_object_unref (CAMEL_OBJECT (from));
 	
 	mail_tool_restore_xevolution_headers (message, xev);
 	mail_tool_destroy_xevolution (xev);
@@ -509,7 +573,7 @@ mail_send_message (CamelMimeMessage *message, const char *destination,
 	}
 	
 	if (folder) {
-		camel_folder_append_message (folder, message, info, ex);
+		camel_folder_append_message (folder, message, info, NULL, ex);
 		if (camel_exception_is_set (ex)) {
 			ExceptionId id;
 			
@@ -533,7 +597,7 @@ struct _send_mail_msg {
 	CamelFilterDriver *driver;
 	char *destination;
 	CamelMimeMessage *message;
-
+	
 	void (*done)(char *uri, CamelMimeMessage *message, gboolean sent, void *data);
 	void *data;
 };
@@ -579,7 +643,7 @@ static void
 send_mail_free (struct _mail_msg *mm)
 {
 	struct _send_mail_msg *m = (struct _send_mail_msg *)mm;
-
+	
 	camel_object_unref (CAMEL_OBJECT (m->driver));
 	camel_object_unref (CAMEL_OBJECT (m->message));
 	g_free (m->destination);
@@ -777,8 +841,9 @@ struct _append_msg {
         CamelFolder *folder;
 	CamelMimeMessage *message;
         CamelMessageInfo *info;
+	char *appended_uid;
 
-	void (*done)(CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *info, int ok, void *data);
+	void (*done)(CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *info, int ok, const char *appended_uid, void *data);
 	void *data;
 };
 
@@ -794,7 +859,7 @@ append_mail_append (struct _mail_msg *mm)
 	struct _append_msg *m = (struct _append_msg *)mm;
 
 	camel_mime_message_set_date(m->message, CAMEL_MESSAGE_DATE_CURRENT, 0);
-	camel_folder_append_message(m->folder, m->message, m->info, &mm->ex);
+	camel_folder_append_message(m->folder, m->message, m->info, &m->appended_uid, &mm->ex);
 }
 
 static void
@@ -803,7 +868,7 @@ append_mail_appended (struct _mail_msg *mm)
 	struct _append_msg *m = (struct _append_msg *)mm;
 
 	if (m->done)
-		m->done(m->folder, m->message, m->info, !camel_exception_is_set(&mm->ex), m->data);
+		m->done(m->folder, m->message, m->info, !camel_exception_is_set(&mm->ex), m->appended_uid, m->data);
 }
 
 static void
@@ -813,6 +878,7 @@ append_mail_free (struct _mail_msg *mm)
 
 	camel_object_unref((CamelObject *)m->message);
 	camel_object_unref((CamelObject *)m->folder);
+	g_free (m->appended_uid);
 }
 
 static struct _mail_msg_op append_mail_op = {
@@ -824,7 +890,7 @@ static struct _mail_msg_op append_mail_op = {
 
 void
 mail_append_mail (CamelFolder *folder, CamelMimeMessage *message, CamelMessageInfo *info,
-		  void (*done)(CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *info, int ok, void *data),
+		  void (*done)(CamelFolder *folder, CamelMimeMessage *msg, CamelMessageInfo *info, int ok, const char *appended_uid, void *data),
 		  void *data)
 {
 	struct _append_msg *m;
@@ -875,10 +941,6 @@ transfer_messages_transfer (struct _mail_msg *mm)
 {
 	struct _transfer_msg *m = (struct _transfer_msg *)mm;
 	CamelFolder *dest;
-	char *desc;
-	void (*func) (CamelFolder *, GPtrArray *, 
-		      CamelFolder *, 
-		      CamelException *);
 
 	dest = mail_tool_uri_to_folder (m->dest_uri, m->dest_flags, &mm->ex);
 	if (camel_exception_is_set (&mm->ex))
@@ -890,40 +952,21 @@ transfer_messages_transfer (struct _mail_msg *mm)
 		return;
 	}
 
-	if (m->delete) {
-		func = camel_folder_move_messages_to;
-		desc = _("Moving");
-	} else {
-		func = camel_folder_copy_messages_to;
-		desc = _("Copying");
-	}
-	
 	camel_folder_freeze (m->source);
 	camel_folder_freeze (dest);
-	
-	if (CAMEL_IS_VTRASH_FOLDER (dest)) {
-		if (m->delete) {
-			int i;
-			
-			/* Just mark all the messages as deleted */
-			for (i = 0; i < m->uids->len; i++)
-				camel_folder_delete_message (m->source, m->uids->pdata[i]);
-		} else {
-			/* no-op - can't copy messages to*/
-		}
-	} else {
-		if (dest == m->source) {
-			int i;
-			
-			/* Undelete the messages if they are marked as deleted */
-			for (i = 0; i < m->uids->len; i++)
-				camel_folder_set_message_flags (m->source, m->uids->pdata[i],
-								CAMEL_MESSAGE_DELETED, 0);
-		} else {
-			(func) (m->source, m->uids, dest, &mm->ex);
-		}
+
+	camel_folder_transfer_messages_to (m->source, m->uids, dest, NULL, m->delete, &mm->ex);
+
+	/* make sure all deleted messages are marked as seen */
+
+	if (m->delete) {
+		int i;
+
+		for (i = 0; i < m->uids->len; i++)
+			camel_folder_set_message_flags (m->source, m->uids->pdata[i], 
+							CAMEL_MESSAGE_SEEN, CAMEL_MESSAGE_SEEN);
 	}
-	
+
 	camel_folder_thaw (m->source);
 	camel_folder_thaw (dest);
 	camel_folder_sync (dest, FALSE, NULL);
@@ -1213,12 +1256,12 @@ mail_build_attachment(CamelFolder *folder, GPtrArray *uids,
 
 /* ** LOAD FOLDER ********************************************************* */
 
-/* there hsould be some way to merge this and create folder, since both can
+/* there should be some way to merge this and create folder, since both can
    presumably create a folder ... */
 
 struct _get_folder_msg {
 	struct _mail_msg msg;
-
+	
 	char *uri;
 	guint32 flags;
 	CamelFolder *folder;
@@ -1311,7 +1354,11 @@ get_store_get (struct _mail_msg *mm)
 {
 	struct _get_store_msg *m = (struct _get_store_msg *)mm;
 	
-	m->store = camel_session_get_store (session, m->uri, &mm->ex);
+	/*camel_session_get_store connects us, which we don't want to do on startup. */
+
+	m->store = (CamelStore *) camel_session_get_service (session, m->uri,
+							     CAMEL_PROVIDER_STORE,
+							     &mm->ex);
 }
 
 static void
@@ -1592,7 +1639,7 @@ struct _get_message_msg {
 
 	CamelFolder *folder;
 	char *uid;
-	void (*done) (CamelFolder *folder, char *uid, CamelMimeMessage *msg, void *data);
+	void (*done) (CamelFolder *folder, const char *uid, CamelMimeMessage *msg, void *data);
 	void *data;
 	CamelMimeMessage *message;
 	CamelOperation *cancel;
@@ -1623,10 +1670,13 @@ static void get_message_got(struct _mail_msg *mm)
 static void get_message_free(struct _mail_msg *mm)
 {
 	struct _get_message_msg *m = (struct _get_message_msg *)mm;
-
-	g_free(m->uid);
-	camel_object_unref((CamelObject *)m->folder);
-	camel_operation_unref(m->cancel);
+	
+	g_free (m->uid);
+	camel_object_unref (m->folder);
+	camel_operation_unref (m->cancel);
+	
+	if (m->message)
+		camel_object_unref (m->message);
 }
 
 static struct _mail_msg_op get_message_op = {
@@ -1637,10 +1687,12 @@ static struct _mail_msg_op get_message_op = {
 };
 
 void
-mail_get_message(CamelFolder *folder, const char *uid, void (*done) (CamelFolder *folder, char *uid, CamelMimeMessage *msg, void *data), void *data, EThread *thread)
+mail_get_message(CamelFolder *folder, const char *uid, void (*done) (CamelFolder *folder, const char *uid,
+								     CamelMimeMessage *msg, void *data),
+		 void *data, EThread *thread)
 {
 	struct _get_message_msg *m;
-
+	
 	m = mail_msg_new(&get_message_op, NULL, sizeof(*m));
 	m->folder = folder;
 	camel_object_ref((CamelObject *)folder);
@@ -1648,7 +1700,7 @@ mail_get_message(CamelFolder *folder, const char *uid, void (*done) (CamelFolder
 	m->data = data;
 	m->done = done;
 	m->cancel = camel_operation_new(NULL, NULL);
-
+	
 	e_thread_put(thread, (EMsg *)m);
 }
 
@@ -1978,15 +2030,16 @@ save_part_save (struct _mail_msg *mm)
 	struct _save_part_msg *m = (struct _save_part_msg *)mm;
 	CamelMimeFilterCharset *charsetfilter;
 	CamelContentType *content_type;
-	CamelStreamFilter *filtered_stream;
+	CamelStream *filtered_stream;
 	CamelStream *stream_fs;
 	CamelDataWrapper *data;
 	const char *charset;
 	
-	stream_fs = camel_stream_fs_new_with_name (m->path, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	stream_fs = camel_stream_fs_new_with_name (m->path, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (stream_fs == NULL) {
-		camel_exception_setv (&mm->ex, 1, _("Cannot create output file: %s:\n %s"), m->path,
-				      g_strerror (errno));
+		camel_exception_setv (&mm->ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot create output file: %s:\n %s"),
+				      m->path, g_strerror (errno));
 		return;
 	}
 	
@@ -2002,24 +2055,23 @@ save_part_save (struct _mail_msg *mm)
 	    && (charset = header_content_type_param (content_type, "charset"))
 	    && g_strcasecmp (charset, "utf-8") != 0) {
 		charsetfilter = camel_mime_filter_charset_new_convert ("utf-8", charset);
-		filtered_stream = camel_stream_filter_new_with_stream (stream_fs);
+		filtered_stream = (CamelStream *) camel_stream_filter_new_with_stream (stream_fs);
+		camel_object_unref (CAMEL_OBJECT (stream_fs));
 		if (charsetfilter) {
-			camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (charsetfilter));
+			camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered_stream), CAMEL_MIME_FILTER (charsetfilter));
 			camel_object_unref (CAMEL_OBJECT (charsetfilter));
 		}
 	} else {
-		/* no we can't use a CAMEL_BLAH() cast here, since its not true, HOWEVER
-		   we only treat it as a normal stream from here on, so it is OK */
-		filtered_stream = (CamelStreamFilter *)stream_fs;
-		camel_object_ref (CAMEL_OBJECT (stream_fs));
+		filtered_stream = stream_fs;
 	}
 	
-	if (camel_data_wrapper_write_to_stream (data, CAMEL_STREAM (filtered_stream)) == -1
-	    || camel_stream_flush (CAMEL_STREAM (filtered_stream)) == -1)
-		camel_exception_setv (&mm->ex, 1, _("Could not write data: %s"), g_strerror (errno));
+	if (camel_data_wrapper_write_to_stream (data, filtered_stream) == -1
+	    || camel_stream_flush (filtered_stream) == -1)
+		camel_exception_setv (&mm->ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not write data: %s"),
+				      g_strerror (errno));
 	
 	camel_object_unref (CAMEL_OBJECT (filtered_stream));
-	camel_object_unref (CAMEL_OBJECT (stream_fs));
 }
 
 static void
@@ -2068,6 +2120,85 @@ mail_save_part (CamelMimePart *part, const char *path,
 }
 
 
+/* ** PREPARE OFFLINE ***************************************************** */
+
+struct _prep_offline_msg {
+	struct _mail_msg msg;
+
+	CamelOperation *cancel;
+	char *uri;
+	void (*done)(const char *uri, void *data);
+	void *data;
+};
+
+static void prep_offline_do(struct _mail_msg *mm)
+{
+	struct _prep_offline_msg *m = (struct _prep_offline_msg *)mm;
+	CamelFolder *folder;
+
+	if (m->cancel)
+		camel_operation_register(m->cancel);
+
+	folder = mail_tool_uri_to_folder(m->uri, 0, &mm->ex);
+	if (folder) {
+		if (CAMEL_IS_DISCO_FOLDER(folder)) {
+			camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder,
+							       "(match-all (or (not (system-flag \"Seen\")) (system-flag \"Flagged\")))",
+							       &mm->ex);
+		}
+		/* prepare_for_offline should do this? */
+		/* of course it should all be atomic, but ... */
+		camel_folder_sync(folder, FALSE, NULL);
+		camel_object_unref((CamelObject *)folder);
+	}
+
+	if (m->cancel)
+		camel_operation_unregister(m->cancel);
+}
+
+static void prep_offline_done(struct _mail_msg *mm)
+{
+	struct _prep_offline_msg *m = (struct _prep_offline_msg *)mm;
+
+	if (m->done)
+		m->done(m->uri, m->data);
+}
+
+static void prep_offline_free(struct _mail_msg *mm)
+{
+	struct _prep_offline_msg *m = (struct _prep_offline_msg *)mm;
+
+	if (m->cancel)
+		camel_operation_unref(m->cancel);
+	g_free(m->uri);
+}
+
+static struct _mail_msg_op prep_offline_op = {
+	NULL, /* DO NOT CHANGE THIS, IT MUST BE NULL FOR CANCELLATION TO WORK */
+	prep_offline_do,
+	prep_offline_done,
+	prep_offline_free,
+};
+
+void
+mail_prep_offline(const char *uri,
+		  CamelOperation *cancel,
+		  void (*done)(const char *, void *data),
+		  void *data)
+{
+	struct _prep_offline_msg *m;
+
+	m = mail_msg_new(&prep_offline_op, NULL, sizeof(*m));
+	m->cancel = cancel;
+	if (cancel)
+		camel_operation_ref(cancel);
+	m->uri = g_strdup(uri);
+	m->data = data;
+	m->done = done;
+
+	e_thread_put(mail_thread_queued, (EMsg *)m);
+}
+
 /* ** GO OFFLINE ***************************************************** */
 
 struct _set_offline_msg {
@@ -2085,9 +2216,9 @@ static char *set_offline_desc(struct _mail_msg *mm, int done)
 	char *service_name = camel_service_get_name (CAMEL_SERVICE (m->store), TRUE);
 	char *msg;
 
-	msg = g_strdup_printf (m->offline ? _("Disconnecting from %s") :
-			       _("Reconnecting to %s"), service_name);
-	g_free (service_name);
+	msg = g_strdup_printf(m->offline?_("Disconnecting from %s"):_("Reconnecting to %s"),
+			      service_name);
+	g_free(service_name);
 	return msg;
 }
 
@@ -2095,35 +2226,23 @@ static void set_offline_do(struct _mail_msg *mm)
 {
 	struct _set_offline_msg *m = (struct _set_offline_msg *)mm;
 
-	if (!CAMEL_IS_DISCO_STORE (m->store) ||
-	    !camel_disco_store_can_work_offline (CAMEL_DISCO_STORE (m->store))) {
-		if (m->offline) {
-			camel_service_disconnect (CAMEL_SERVICE (m->store),
-						  TRUE, &mm->ex);
-		}
-		return;
-	}
-
-	if (m->offline && camel_disco_store_status (CAMEL_DISCO_STORE (m->store)) == CAMEL_DISCO_STORE_ONLINE) {
-		CamelFolder *inbox;
-
-		/* FIXME. Something more generic here... (bug 10755) */
-		inbox = camel_store_get_inbox (m->store, NULL);
-		if (inbox) {
-			camel_disco_folder_prepare_for_offline (
-				CAMEL_DISCO_FOLDER (inbox),
-				"(match-all (not (system-flag \"Seen\")))",
-				&mm->ex);
-			camel_folder_sync (inbox, FALSE, NULL);
-			camel_object_unref (CAMEL_OBJECT (inbox));
-			if (camel_exception_is_set (&mm->ex))
-				return;
+	if (CAMEL_IS_DISCO_STORE (m->store)) {
+		if (!m->offline) {
+			camel_disco_store_set_status (CAMEL_DISCO_STORE (m->store),
+						      CAMEL_DISCO_STORE_ONLINE,
+						      &mm->ex);
+			return;
+		} else if (camel_disco_store_can_work_offline (CAMEL_DISCO_STORE (m->store))) {
+			camel_disco_store_set_status (CAMEL_DISCO_STORE (m->store),
+						      CAMEL_DISCO_STORE_OFFLINE,
+						      &mm->ex);
+			return;
 		}
 	}
 
-	camel_disco_store_set_status (CAMEL_DISCO_STORE (m->store),
-				      m->offline ? CAMEL_DISCO_STORE_OFFLINE :
-				      CAMEL_DISCO_STORE_ONLINE, &mm->ex);
+	if (m->offline)
+		camel_service_disconnect (CAMEL_SERVICE (m->store),
+					  TRUE, &mm->ex);
 }
 
 static void set_offline_done(struct _mail_msg *mm)
@@ -2169,4 +2288,15 @@ mail_store_set_offline (CamelStore *store, gboolean offline,
 	m->done = done;
 
 	e_thread_put(mail_thread_queued, (EMsg *)m);
+}
+
+/* ** Execute Shell Command ***************************************************** */
+
+void
+mail_execute_shell_command (CamelFilterDriver *driver, int argc, char **argv, void *data)
+{
+	if (argc <= 0)
+		return;
+	
+	gnome_execute_async_fds (NULL, argc, argv, TRUE);
 }

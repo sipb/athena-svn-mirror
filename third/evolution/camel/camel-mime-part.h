@@ -50,6 +50,7 @@ enum _CamelMimePartEncodingType {
         CAMEL_MIME_PART_ENCODING_BASE64,
         CAMEL_MIME_PART_ENCODING_QUOTEDPRINTABLE,
         CAMEL_MIME_PART_ENCODING_BINARY,
+	CAMEL_MIME_PART_ENCODING_UUENCODE,
         CAMEL_MIME_PART_NUM_ENCODINGS
 };
 typedef enum _CamelMimePartEncodingType CamelMimePartEncodingType;
@@ -64,6 +65,7 @@ struct _CamelMimePart
 	struct _header_raw *headers; /* mime headers */
 	
 	/* All fields here are -** PRIVATE **- */
+	/* TODO: these should be in a camelcontentinfo */
 	char *description;
 	CamelMimeDisposition *disposition;
 	char *content_id;

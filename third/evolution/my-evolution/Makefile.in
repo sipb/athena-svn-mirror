@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,16 +60,9 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BONOBO_CONF_CFLAGS = @BONOBO_CONF_CFLAGS@
-BONOBO_CONF_LIBS = @BONOBO_CONF_LIBS@
-BONOBO_GNOME_CFLAGS = @BONOBO_GNOME_CFLAGS@
-BONOBO_GNOME_LIBS = @BONOBO_GNOME_LIBS@
-BONOBO_HTML_GNOME_CFLAGS = @BONOBO_HTML_GNOME_CFLAGS@
-BONOBO_HTML_GNOME_LIBS = @BONOBO_HTML_GNOME_LIBS@
-BONOBO_VFS_GNOME_CFLAGS = @BONOBO_VFS_GNOME_CFLAGS@
-BONOBO_VFS_GNOME_LIBS = @BONOBO_VFS_GNOME_LIBS@
 BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -83,15 +76,35 @@ DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
+EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
+EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
+EVOLUTION_ADDRESSBOOK_LIBS = @EVOLUTION_ADDRESSBOOK_LIBS@
+EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
+EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
+EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
+EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
+EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
+EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
+EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
+EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
+EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
+EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
+EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
-EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
-EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
-GAL_CFLAGS = @GAL_CFLAGS@
-GAL_LIBS = @GAL_LIBS@
+E_NAME_CFLAGS = @E_NAME_CFLAGS@
+E_NAME_LIBS = @E_NAME_LIBS@
+E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
+E_UTIL_LIBS = @E_UTIL_LIBS@
+E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
+E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_CONFIG = @GCONF_CONFIG@
+GCONF_LIBS = @GCONF_LIBS@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GENCAT = @GENCAT@
-GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -100,16 +113,14 @@ GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
 GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
 GNOME_CONFIG = @GNOME_CONFIG@
 GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
+GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
+GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
 GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
 GNOME_PREFIX = @GNOME_PREFIX@
-GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
-GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
-GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
-GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
 GTKDOC = @GTKDOC@
@@ -124,6 +135,8 @@ GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
+IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -131,6 +144,7 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
+KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -139,10 +153,10 @@ KRB5_LDFLAGS = @KRB5_LDFLAGS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
+LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
+LIBFILTER_LIBS = @LIBFILTER_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-MAILER_CFLAGS = @MAILER_CFLAGS@
-MAILER_LIBS = @MAILER_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -150,8 +164,13 @@ NSPR_CFLAGS = @NSPR_CFLAGS@
 NSPR_LDFLAGS = @NSPR_LDFLAGS@
 NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
+OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
+OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
+OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
+OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -159,6 +178,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PISOCK_CFLAGS = @PISOCK_CFLAGS@
 PISOCK_LIBS = @PISOCK_LIBS@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -168,12 +188,16 @@ SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
+SHELL_CFLAGS = @SHELL_CFLAGS@
+SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
+WOMBAT_LIBS = @WOMBAT_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
 XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
@@ -194,65 +218,116 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 localedir = @localedir@
+privlibdir = @privlibdir@
 
-bin_PROGRAMS = evolution-executive-summary
-
-INCLUDES =  	-I$(top_srcdir)							-I$(top_srcdir)/shell						-I$(top_builddir)/shell						-I$(top_srcdir)/calendar					-I$(top_builddir)/calendar/cal-client				-I$(top_srcdir)/libical/src/libical				-I$(top_builddir)/libical/src/libical				$(EXTRA_GNOME_CFLAGS)						$(GNOME_VFS_CFLAGS)						$(GTKHTML_CFLAGS)						$(BONOBO_CONF_CFLAGS)						$(BONOBO_GNOME_CFLAGS)						-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"				-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"			-DEVOLUTION_DATADIR=\""$(datadir)"\"            		-DG_LOG_DOMAIN=\"evolution-executive-summary\"
-
-
-IDLS =  	$(top_srcdir)/mail/Mail.idl
+INCLUDES =  	-I$(top_srcdir)							-I$(top_srcdir)/shell						-I$(top_builddir)/shell						-I$(top_srcdir)/calendar					-I$(top_builddir)/calendar/cal-client				-I$(top_srcdir)/libical/src/libical				-I$(top_builddir)/libical/src/libical				-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"				-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"			-DEVOLUTION_DATADIR=\""$(datadir)"\"            		-DG_LOG_DOMAIN=\"evolution-executive-summary\"			$(EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS)
 
 
-MAIL_GENERATED =  	Mail.h								Mail-common.c							Mail-skels.c							Mail-stubs.c
+IDLS =  	$(top_srcdir)/mail/Mailer.idl
 
 
-evolution_executive_summary_SOURCES =  	$(MAIL_GENERATED)				component-factory.c			component-factory.h			e-summary.c				e-summary.h				e-summary-calendar.c			e-summary-calendar.h			e-summary-factory.c			e-summary-factory.h			e-summary-mail.c			e-summary-mail.h			e-summary-offline-handler.c		e-summary-offline-handler.h		e-summary-preferences.c			e-summary-preferences.h			e-summary-rdf.c				e-summary-rdf.h				e-summary-tasks.c			e-summary-tasks.h			e-summary-type.h			e-summary-weather.c			e-summary-weather.h			main.c					metar.c					metar.h					my-evolution-html.h			weather.h
+MAIL_GENERATED =  	Mailer.h							Mailer-common.c							Mailer-skels.c							Mailer-stubs.c
 
 
-evolution_executive_summary_LDADD =  	$(top_builddir)/calendar/gui/alarm-notify/libalarm.a				$(top_builddir)/shell/libeshell.la			$(top_builddir)/widgets/misc/libemiscwidgets.a		$(top_builddir)/e-util/libeutil.la			$(top_builddir)/calendar/cal-client/libcal-client.la			$(top_builddir)/calendar/cal-util/libcal-util.la			$(top_builddir)/libversit/libversit.la			$(top_builddir)/libical/src/libical/libical-evolution.la		$(top_builddir)/libwombat/libwombat.la			$(BONOBO_VFS_GNOME_LIBS)				$(BONOBO_CONF_LIBS)					$(EXTRA_GNOME_LIBS)					-lgal							$(GTKHTML_LIBS)
+summary_sources =  	$(MAIL_GENERATED)				component-factory.c				component-factory.h				e-cell-tri.c					e-cell-tri.h					e-summary.c					e-summary.h					e-summary-calendar.c				e-summary-calendar.h				e-summary-factory.c				e-summary-factory.h				e-summary-mail.c				e-summary-mail.h				e-summary-offline-handler.c			e-summary-offline-handler.h			e-summary-preferences.c				e-summary-preferences.h				e-summary-rdf.c					e-summary-rdf.h					e-summary-shown.c				e-summary-shown.h				e-summary-table.c				e-summary-table.h				e-summary-tasks.c				e-summary-tasks.h				e-summary-type.h				e-summary-weather.c				e-summary-weather.h				metar.c						metar.h						my-evolution-html.h				weather.h
 
+
+summary_exe_sources =  	main.c
+
+
+summary_libs =  	$(top_builddir)/calendar/gui/alarm-notify/libalarm.a			$(top_builddir)/shell/libeshell.la					$(top_builddir)/widgets/misc/libemiscwidgets.a				$(top_builddir)/e-util/libeutil.la					$(top_builddir)/calendar/cal-client/libcal-client.la			$(top_builddir)/calendar/cal-util/libcal-util.la			$(top_builddir)/libversit/libversit.a					$(top_builddir)/libical/src/libical/libical-evolution.la		$(top_builddir)/libwombat/libwombat.la					$(EVOLUTION_EXECUTIVE_SUMMARY_LIBS)
+
+
+@ENABLE_SHLIB_COMPONENTS_TRUE@lib_LTLIBRARIES = libevolution-executive-summary.la
+
+@ENABLE_SHLIB_COMPONENTS_TRUE@libevolution_executive_summary_la_SOURCES = 	$(summary_sources)
+
+@ENABLE_SHLIB_COMPONENTS_TRUE@libevolution_executive_summary_la_LIBADD = 	$(summary_libs)
+
+@ENABLE_SHLIB_COMPONENTS_FALSE@bin_PROGRAMS = evolution-executive-summary
+
+@ENABLE_SHLIB_COMPONENTS_FALSE@evolution_executive_summary_SOURCES = 	$(summary_sources)				$(summary_exe_sources)
+
+@ENABLE_SHLIB_COMPONENTS_FALSE@evolution_executive_summary_LDADD = 	$(summary_libs)
 
 Locationdir = $(datadir)/evolution
 Location_DATA = Locations
 
+oaf_files = GNOME_Evolution_Summary.oaf
+oaf_in_files = $(oaf_files:.oaf=.oaf.in)
+oaf_in_in_files = $(oaf_files:.oaf=.oaf.in.in)
+
 oafdir = $(datadir)/oaf
-oaf_in_files = GNOME_Evolution_Summary.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+oaf_DATA = $(oaf_files)
 
 gladedir = $(datadir)/evolution/glade
 glade_DATA = my-evolution.glade
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(Location_DATA) $(glade_DATA) Locations.h Location-translation-script
+EXTRA_DIST =  	$(summary_sources)			$(summary_exe_sources)			$(oaf_files)				$(oaf_in_files)				$(oaf_in_in_files)			$(oaf_DATA)				$(Location_DATA)			$(glade_DATA)				Locations.h				Location-translation-script		check-empty.xpm				check-filled.xpm			check-none.xpm
 
-@ENABLE_PURIFY_TRUE@PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
-CONFIG_CLEAN_FILES = 
-bin_PROGRAMS =  evolution-executive-summary$(EXEEXT)
-PROGRAMS =  $(bin_PROGRAMS)
+CONFIG_CLEAN_FILES =  GNOME_Evolution_Summary.oaf.in
+LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-evolution_executive_summary_OBJECTS =  Mail-common.$(OBJEXT) \
-Mail-skels.$(OBJEXT) Mail-stubs.$(OBJEXT) component-factory.$(OBJEXT) \
-e-summary.$(OBJEXT) e-summary-calendar.$(OBJEXT) \
-e-summary-factory.$(OBJEXT) e-summary-mail.$(OBJEXT) \
-e-summary-offline-handler.$(OBJEXT) e-summary-preferences.$(OBJEXT) \
-e-summary-rdf.$(OBJEXT) e-summary-tasks.$(OBJEXT) \
-e-summary-weather.$(OBJEXT) main.$(OBJEXT) metar.$(OBJEXT)
-evolution_executive_summary_DEPENDENCIES =  \
-$(top_builddir)/calendar/gui/alarm-notify/libalarm.a \
-$(top_builddir)/shell/libeshell.la \
-$(top_builddir)/widgets/misc/libemiscwidgets.a \
-$(top_builddir)/e-util/libeutil.la \
-$(top_builddir)/calendar/cal-client/libcal-client.la \
-$(top_builddir)/calendar/cal-util/libcal-util.la \
-$(top_builddir)/libversit/libversit.la \
-$(top_builddir)/libical/src/libical/libical-evolution.la \
-$(top_builddir)/libwombat/libwombat.la
+libevolution_executive_summary_la_LDFLAGS = 
+@ENABLE_SHLIB_COMPONENTS_TRUE@libevolution_executive_summary_la_DEPENDENCIES =  \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/calendar/gui/alarm-notify/libalarm.a \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/shell/libeshell.la \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/widgets/misc/libemiscwidgets.a \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/e-util/libeutil.la \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/calendar/cal-client/libcal-client.la \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/calendar/cal-util/libcal-util.la \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/libversit/libversit.a \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/libical/src/libical/libical-evolution.la \
+@ENABLE_SHLIB_COMPONENTS_TRUE@$(top_builddir)/libwombat/libwombat.la
+@ENABLE_SHLIB_COMPONENTS_TRUE@libevolution_executive_summary_la_OBJECTS =  \
+@ENABLE_SHLIB_COMPONENTS_TRUE@Mailer-common.lo Mailer-skels.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@Mailer-stubs.lo component-factory.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@e-cell-tri.lo e-summary.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@e-summary-calendar.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@e-summary-factory.lo e-summary-mail.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@e-summary-offline-handler.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@e-summary-preferences.lo e-summary-rdf.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@e-summary-shown.lo e-summary-table.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@e-summary-tasks.lo e-summary-weather.lo \
+@ENABLE_SHLIB_COMPONENTS_TRUE@metar.lo
+@ENABLE_SHLIB_COMPONENTS_FALSE@bin_PROGRAMS =  \
+@ENABLE_SHLIB_COMPONENTS_FALSE@evolution-executive-summary$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
+
+@ENABLE_SHLIB_COMPONENTS_FALSE@evolution_executive_summary_OBJECTS =  \
+@ENABLE_SHLIB_COMPONENTS_FALSE@Mailer-common.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@Mailer-skels.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@Mailer-stubs.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@component-factory.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-cell-tri.$(OBJEXT) e-summary.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-calendar.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-factory.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-mail.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-offline-handler.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-preferences.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-rdf.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-shown.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-table.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-tasks.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@e-summary-weather.$(OBJEXT) \
+@ENABLE_SHLIB_COMPONENTS_FALSE@metar.$(OBJEXT) main.$(OBJEXT)
+@ENABLE_SHLIB_COMPONENTS_FALSE@evolution_executive_summary_DEPENDENCIES =  \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/calendar/gui/alarm-notify/libalarm.a \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/shell/libeshell.la \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/widgets/misc/libemiscwidgets.a \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/e-util/libeutil.la \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/calendar/cal-client/libcal-client.la \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/calendar/cal-util/libcal-util.la \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/libversit/libversit.a \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/libical/src/libical/libical-evolution.la \
+@ENABLE_SHLIB_COMPONENTS_FALSE@$(top_builddir)/libwombat/libwombat.la
 evolution_executive_summary_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -261,15 +336,16 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(Location_DATA) $(glade_DATA) $(oaf_DATA)
 
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog GNOME_Evolution_Summary.oaf.in.in Makefile.am \
+Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(evolution_executive_summary_SOURCES)
-OBJECTS = $(evolution_executive_summary_OBJECTS)
+SOURCES = $(libevolution_executive_summary_la_SOURCES) $(evolution_executive_summary_SOURCES)
+OBJECTS = $(libevolution_executive_summary_la_OBJECTS) $(evolution_executive_summary_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -281,30 +357,32 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+GNOME_Evolution_Summary.oaf.in: $(top_builddir)/config.status GNOME_Evolution_Summary.oaf.in.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-mostlyclean-binPROGRAMS:
+mostlyclean-libLTLIBRARIES:
 
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
 
-distclean-binPROGRAMS:
+distclean-libLTLIBRARIES:
 
-maintainer-clean-binPROGRAMS:
+maintainer-clean-libLTLIBRARIES:
 
-install-binPROGRAMS: $(bin_PROGRAMS)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-binPROGRAMS:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .c.o:
@@ -350,6 +428,34 @@ clean-libtool:
 distclean-libtool:
 
 maintainer-clean-libtool:
+
+libevolution-executive-summary.la: $(libevolution_executive_summary_la_OBJECTS) $(libevolution_executive_summary_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libevolution_executive_summary_la_LDFLAGS) $(libevolution_executive_summary_la_OBJECTS) $(libevolution_executive_summary_la_LIBADD) $(LIBS)
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
 
 evolution-executive-summary$(EXEEXT): $(evolution_executive_summary_OBJECTS) $(evolution_executive_summary_DEPENDENCIES)
 	@rm -f evolution-executive-summary$(EXEEXT)
@@ -430,7 +536,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -457,6 +563,103 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+component-factory.o: component-factory.c ../config.h \
+	../shell/evolution-shell-component.h ../shell/Evolution.h \
+	../shell/evolution-shell-client.h e-summary-factory.h \
+	e-summary-offline-handler.h e-summary.h e-summary-type.h \
+	e-summary-mail.h e-summary-table.h e-summary-calendar.h \
+	e-summary-rdf.h e-summary-weather.h e-summary-shown.h \
+	e-summary-tasks.h ../libical/src/libical/ical.h \
+	e-summary-preferences.h component-factory.h
+e-cell-tri.o: e-cell-tri.c ../config.h e-cell-tri.h check-none.xpm \
+	check-empty.xpm check-filled.xpm
+e-summary-calendar.o: e-summary-calendar.c ../config.h \
+	e-summary-calendar.h e-summary-type.h e-summary.h \
+	e-summary-mail.h ../shell/Evolution.h e-summary-table.h \
+	e-summary-rdf.h e-summary-weather.h e-summary-shown.h \
+	e-summary-tasks.h ../libical/src/libical/ical.h \
+	../e-util/e-config-listener.h \
+	../calendar/cal-client/cal-client.h \
+	../calendar/cal-util/cal-recur.h \
+	../calendar/cal-util/cal-component.h \
+	../calendar/cal-util/cal-util.h \
+	../calendar/cal-client/cal-query.h \
+	../calendar/cal-client/evolution-calendar.h \
+	../calendar/cal-util/timeutil.h
+e-summary-factory.o: e-summary-factory.c ../config.h \
+	../e-util/e-gui-utils.h e-summary.h e-summary-type.h \
+	e-summary-mail.h ../shell/Evolution.h e-summary-table.h \
+	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
+	e-summary-shown.h e-summary-tasks.h \
+	../libical/src/libical/ical.h e-summary-factory.h \
+	e-summary-offline-handler.h e-summary-preferences.h \
+	../shell/evolution-shell-component-utils.h
+e-summary-mail.o: e-summary-mail.c ../config.h ../shell/Evolution.h \
+	../shell/evolution-storage-listener.h Mailer.h e-summary.h \
+	e-summary-type.h e-summary-mail.h e-summary-table.h \
+	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
+	e-summary-shown.h e-summary-tasks.h \
+	../libical/src/libical/ical.h e-summary-preferences.h \
+	../e-util/e-path.h
+e-summary-offline-handler.o: e-summary-offline-handler.c ../config.h \
+	e-summary-offline-handler.h e-summary.h e-summary-type.h \
+	e-summary-mail.h ../shell/Evolution.h e-summary-table.h \
+	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
+	e-summary-shown.h e-summary-tasks.h \
+	../libical/src/libical/ical.h
+e-summary-preferences.o: e-summary-preferences.c ../config.h \
+	../shell/evolution-storage-set-view-listener.h \
+	../shell/Evolution.h e-summary.h e-summary-type.h \
+	e-summary-mail.h e-summary-table.h e-summary-calendar.h \
+	e-summary-rdf.h e-summary-weather.h e-summary-shown.h \
+	e-summary-tasks.h ../libical/src/libical/ical.h \
+	e-summary-preferences.h ../shell/evolution-config-control.h
+e-summary-rdf.o: e-summary-rdf.c ../config.h e-summary.h \
+	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
+	e-summary-table.h e-summary-calendar.h e-summary-rdf.h \
+	e-summary-weather.h e-summary-shown.h e-summary-tasks.h \
+	../libical/src/libical/ical.h
+e-summary-shown.o: e-summary-shown.c ../config.h e-summary-shown.h
+e-summary-table.o: e-summary-table.c ../config.h e-summary-table.h \
+	e-cell-tri.h
+e-summary-tasks.o: e-summary-tasks.c ../config.h e-summary-tasks.h \
+	e-summary-type.h e-summary.h e-summary-mail.h \
+	../shell/Evolution.h e-summary-table.h e-summary-calendar.h \
+	e-summary-rdf.h e-summary-weather.h e-summary-shown.h \
+	../libical/src/libical/ical.h ../e-util/e-config-listener.h \
+	../calendar/cal-client/cal-client.h \
+	../calendar/cal-util/cal-recur.h \
+	../calendar/cal-util/cal-component.h \
+	../calendar/cal-util/cal-util.h \
+	../calendar/cal-client/cal-query.h \
+	../calendar/cal-client/evolution-calendar.h \
+	../calendar/cal-util/timeutil.h
+e-summary-weather.o: e-summary-weather.c ../config.h e-summary.h \
+	e-summary-type.h e-summary-mail.h ../shell/Evolution.h \
+	e-summary-table.h e-summary-calendar.h e-summary-rdf.h \
+	e-summary-weather.h e-summary-shown.h e-summary-tasks.h \
+	../libical/src/libical/ical.h e-summary-preferences.h weather.h \
+	metar.h
+e-summary.o: e-summary.c ../config.h \
+	../calendar/gui/alarm-notify/alarm.h \
+	../calendar/cal-util/timeutil.h ../libical/src/libical/ical.h \
+	e-summary.h e-summary-type.h e-summary-mail.h \
+	../shell/Evolution.h e-summary-table.h e-summary-calendar.h \
+	e-summary-rdf.h e-summary-weather.h e-summary-shown.h \
+	e-summary-tasks.h e-summary-preferences.h my-evolution-html.h \
+	Mailer.h
+Mail-common.o: Mail-common.c Mail.h
+Mail-skels.o: Mail-skels.c Mail.h
+Mail-stubs.o: Mail-stubs.c Mail.h
+Mailer-common.o: Mailer-common.c Mailer.h
+Mailer-skels.o: Mailer-skels.c Mailer.h
+Mailer-stubs.o: Mailer-stubs.c Mailer.h
+main.o: main.c ../config.h ../e-util/e-proxy.h component-factory.h
+metar.o: metar.c ../config.h e-summary.h e-summary-type.h \
+	e-summary-mail.h ../shell/Evolution.h e-summary-table.h \
+	e-summary-calendar.h e-summary-rdf.h e-summary-weather.h \
+	e-summary-shown.h e-summary-tasks.h \
+	../libical/src/libical/ical.h weather.h metar.h
 
 info-am:
 info: info-am
@@ -466,7 +669,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-binPROGRAMS
+install-exec-am: install-libLTLIBRARIES install-binPROGRAMS
 install-exec: install-exec-am
 
 install-data-am: install-LocationDATA install-gladeDATA install-oafDATA
@@ -475,16 +678,18 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-binPROGRAMS uninstall-LocationDATA \
-		uninstall-gladeDATA uninstall-oafDATA
+uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
+		uninstall-LocationDATA uninstall-gladeDATA \
+		uninstall-oafDATA
 uninstall: uninstall-am
-all-am: Makefile $(PROGRAMS) $(DATA) all-local
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(bindir) $(DESTDIR)$(Locationdir) \
-		$(DESTDIR)$(gladedir) $(DESTDIR)$(oafdir)
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
+		$(DESTDIR)$(Locationdir) $(DESTDIR)$(gladedir) \
+		$(DESTDIR)$(oafdir)
 
 
 mostlyclean-generic:
@@ -496,57 +701,55 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-binPROGRAMS mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
-		mostlyclean-generic
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-binPROGRAMS \
+		mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-binPROGRAMS clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-binPROGRAMS clean-tags clean-generic \
+		mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-binPROGRAMS distclean-compile distclean-libtool \
-		distclean-tags distclean-generic clean-am
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-binPROGRAMS distclean-tags \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-binPROGRAMS \
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean-am
+		maintainer-clean-binPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-binPROGRAMS distclean-binPROGRAMS clean-binPROGRAMS \
-maintainer-clean-binPROGRAMS uninstall-binPROGRAMS install-binPROGRAMS \
-mostlyclean-compile distclean-compile clean-compile \
-maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-LocationDATA \
-install-LocationDATA uninstall-gladeDATA install-gladeDATA \
-uninstall-oafDATA install-oafDATA tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-local all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
+clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
+install-binPROGRAMS uninstall-LocationDATA install-LocationDATA \
+uninstall-gladeDATA install-gladeDATA uninstall-oafDATA install-oafDATA \
+tags mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-am install-data \
+install-am install uninstall-am uninstall all-redirect all-am all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 $(MAIL_GENERATED): $(IDLS)
-	$(ORBIT_IDL) -I $(srcdir) `$(GNOME_CONFIG) --cflags idl` $(top_srcdir)/mail/Mail.idl
+	$(ORBIT_IDL) -I $(srcdir) `$(GNOME_CONFIG) --cflags idl` $(top_srcdir)/mail/Mailer.idl
 
 @XML_I18N_MERGE_OAF_RULE@
-
-@ENABLE_PURIFY_TRUE@all-local: evolution-executive-summary.pure
-
-@ENABLE_PURIFY_TRUE@evolution-executive-summary.pure: evolution-executive-summary
-@ENABLE_PURIFY_TRUE@	@rm -f evolution-executive-summary.pure
-@ENABLE_PURIFY_TRUE@	$(PLINK) $(evolution_executive_summary_OBJECTS) $(evolution_executive_summary_LDADD) $(LIBS)
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

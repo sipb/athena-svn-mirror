@@ -29,6 +29,8 @@
 
 #include "e-shortcuts-view-model.h"
 
+#include "e-icon-factory.h"
+
 #include <glib.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
@@ -55,11 +57,14 @@ get_icon_for_item (EShortcutsViewModel *shortcuts_view_model,
 
 	priv = shortcuts_view_model->priv;
 
+	if (item->custom_icon_name != NULL)
+		return e_icon_factory_get_icon (item->custom_icon_name, want_mini);
+
 	if (item->type != NULL) {
 		EStorageSet *storage_set;
 		EFolderTypeRegistry *folder_type_registry;
 
-		storage_set = e_shortcuts_get_storage_set (priv->shortcuts);
+		storage_set = e_shell_get_storage_set (e_shortcuts_get_shell (priv->shortcuts));
 		folder_type_registry = e_storage_set_get_folder_type_registry (storage_set);
 
 		return e_folder_type_registry_get_icon_for_type (folder_type_registry,

@@ -6,33 +6,25 @@ INCLUDES = 					\
 	-I$(top_builddir)/libical/src/libical	\
 	-I$(top_srcdir)/e-util			\
 	-I$(top_builddir)/e-util		\
-	$(BONOBO_GNOME_CFLAGS)			\
-	$(BONOBO_CONF_CFLAGS)			\
-	$(PISOCK_CFLAGS)			\
-	$(GNOME_PILOT_CFLAGS)
+	$(EVOLUTION_CALENDAR_CONDUIT_CFLAGS)
 
 # ToDo Conduit
 e_todo_conduitsdir=$(libdir)/gnome-pilot/conduits
 e_todo_conduits_LTLIBRARIES = libetodo_conduit.la
 
 libetodo_conduit_la_SOURCES = 	\
-	todo-conduit.c 		\
-	todo-conduit.h		\
-	todo-conduit-config.h 
+	todo-conduit.c
 
 libetodo_conduit_la_LDFLAGS = -module -avoid-version
 libetodo_conduit_la_LIBADD = 						\
+	$(top_builddir)/e-util/libeutil.la				\
 	$(top_builddir)/calendar/cal-client/libcal-client-static.la	\
 	$(top_builddir)/calendar/cal-util/libcal-util-static.la		\
-	$(top_builddir)/libversit/libversit.la				\
+	$(top_builddir)/libversit/libversit.a				\
 	$(top_builddir)/libical/src/libical/libical-static.la		\
 	$(top_builddir)/libwombat/libwombat-static.la	 		\
 	$(top_builddir)/e-util/libeconduit-static.la	 		\
-	$(BONOBO_GNOME_LIBS)						\
-	$(BONOBO_CONF_LIBS)						\
-	$(PISOCK_LIBS) 							\
-	$(GNOME_LIBDIR) 						\
-	$(GNOME_LIBS)
+	$(EVOLUTION_CALENDAR_CONDUIT_LIBS)
 
 e-todo.conduit: e-todo.conduit.in Makefile
 	sed -e 's^\@prefix\@^$(prefix)^g' 				\

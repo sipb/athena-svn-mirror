@@ -9,7 +9,6 @@ INCLUDES = -I.. \
 	-I$(srcdir)/..				\
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)/intl			\
-	-I$(top_srcdir)/libibex			\
 	-I$(top_srcdir)/e-util			\
 	-I$(top_srcdir)				\
 	-I$(includedir)				\
@@ -56,8 +55,8 @@ libcamellocalinclude_HEADERS =			\
 noinst_HEADERS =				\
 	camel-local-private.h
 
-libcamellocal_la_LDFLAGS = -version-info 0:0:0
+libcamellocal_la_LDFLAGS = -avoid-version -module
 
-libcamellocal_la_LIBADD = $(top_builddir)/e-util/libeutil.la $(top_builddir)/libibex/libibex.la
+libcamellocal_la_LIBADD = $(top_builddir)/e-util/libeutil.la
 
 EXTRA_DIST = libcamellocal.urls

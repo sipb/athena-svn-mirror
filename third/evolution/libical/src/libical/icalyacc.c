@@ -149,7 +149,7 @@
   
   DESCRIPTION:
   
-  $Id: icalyacc.c,v 1.1.1.5 2002-05-13 17:15:15 ghudson Exp $
+  $Id: icalyacc.c,v 1.1.1.6 2002-12-19 15:32:22 ghudson Exp $
   $Locker:  $
 
   (C) COPYRIGHT 1999 Eric Busboom 
@@ -306,10 +306,10 @@ static const short yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined. */
 static const short yyrline[] =
 {
-       0,   177,   179,   180,   181,   182,   183,   190,   205,   207,
-     210,   212,   214,   230,   231,   233,   238,   241,   244,   248,
-     252,   257,   261,   266,   271,   276,   280,   284,   289,   294,
-     299,   308,   329,   360,   361,   363,   369
+       0,   177,   179,   180,   181,   182,   183,   191,   207,   209,
+     213,   215,   218,   235,   236,   239,   245,   248,   251,   256,
+     260,   266,   270,   276,   282,   288,   292,   296,   302,   307,
+     312,   322,   343,   375,   376,   379,   385
 };
 #endif
 
@@ -1158,7 +1158,7 @@ case 6:
                   }
     break;
 case 7:
-#line 191 "icalyacc.y"
+#line 192 "icalyacc.y"
 {
 	    struct icaltimetype stm;
 
@@ -1174,23 +1174,23 @@ case 7:
 	}
     break;
 case 8:
-#line 206 "icalyacc.y"
+#line 208 "icalyacc.y"
 {utc = 0;}
     break;
 case 9:
-#line 207 "icalyacc.y"
+#line 209 "icalyacc.y"
 {utc = 1;}
     break;
 case 10:
-#line 211 "icalyacc.y"
+#line 214 "icalyacc.y"
 {utc_b = 0;}
     break;
 case 11:
-#line 212 "icalyacc.y"
+#line 215 "icalyacc.y"
 {utc_b = 1;}
     break;
 case 12:
-#line 216 "icalyacc.y"
+#line 220 "icalyacc.y"
 {
 	    struct  icaltimetype stm;
 	    stm = fill_datetime(yyvsp[-3].v_string, yyvsp[-1].v_string);
@@ -1202,103 +1202,103 @@ case 12:
 	}
     break;
 case 15:
-#line 234 "icalyacc.y"
+#line 240 "icalyacc.y"
 {
 	    duration.weeks = atoi(yyvsp[-1].v_string);
 	}
     break;
 case 16:
-#line 239 "icalyacc.y"
+#line 246 "icalyacc.y"
 {
 	}
     break;
 case 17:
-#line 242 "icalyacc.y"
+#line 249 "icalyacc.y"
 {
 	}
     break;
 case 18:
-#line 245 "icalyacc.y"
+#line 252 "icalyacc.y"
 {
 	}
     break;
 case 19:
-#line 249 "icalyacc.y"
+#line 257 "icalyacc.y"
 {
 	    duration.hours = atoi(yyvsp[-1].v_string);
 	}
     break;
 case 20:
-#line 253 "icalyacc.y"
+#line 261 "icalyacc.y"
 {
 	    duration.hours = atoi(yyvsp[-2].v_string);
 	}
     break;
 case 21:
-#line 258 "icalyacc.y"
+#line 267 "icalyacc.y"
 {
 	    duration.minutes = atoi(yyvsp[-1].v_string);
 	}
     break;
 case 22:
-#line 262 "icalyacc.y"
+#line 271 "icalyacc.y"
 {
 	    duration.minutes = atoi(yyvsp[-2].v_string);
 	}
     break;
 case 23:
-#line 267 "icalyacc.y"
+#line 277 "icalyacc.y"
 {
 	    duration.seconds = atoi(yyvsp[-1].v_string);
 	}
     break;
 case 24:
-#line 272 "icalyacc.y"
+#line 283 "icalyacc.y"
 {
 	    duration.days = atoi(yyvsp[-1].v_string);
 	}
     break;
 case 25:
-#line 277 "icalyacc.y"
+#line 289 "icalyacc.y"
 {
 	    duration.is_neg = 0;
 	}
     break;
 case 26:
-#line 281 "icalyacc.y"
+#line 293 "icalyacc.y"
 {
 	    duration.is_neg = 0;
 	}
     break;
 case 27:
-#line 285 "icalyacc.y"
+#line 297 "icalyacc.y"
 { 
 	    duration.is_neg = 1;
 	}
     break;
 case 28:
-#line 290 "icalyacc.y"
+#line 303 "icalyacc.y"
 { 
 	    icalparser_yy_value = icalvalue_new_duration(duration); 
 	    memset(&duration,0, sizeof(duration));
 	}
     break;
 case 29:
-#line 295 "icalyacc.y"
+#line 308 "icalyacc.y"
 { 
 	    icalparser_yy_value = icalvalue_new_duration(duration); 
 	    memset(&duration,0, sizeof(duration));
 	}
     break;
 case 30:
-#line 300 "icalyacc.y"
+#line 313 "icalyacc.y"
 { 
 	    icalparser_yy_value = icalvalue_new_duration(duration); 
 	    memset(&duration,0, sizeof(duration));
 	}
     break;
 case 31:
-#line 309 "icalyacc.y"
+#line 323 "icalyacc.y"
 {
             struct icalperiodtype p;
         
@@ -1321,7 +1321,7 @@ case 31:
 	}
     break;
 case 32:
-#line 330 "icalyacc.y"
+#line 344 "icalyacc.y"
 {
             struct icalperiodtype p;
 	    
@@ -1350,21 +1350,21 @@ case 32:
 	}
     break;
 case 33:
-#line 360 "icalyacc.y"
+#line 375 "icalyacc.y"
 { utcsign = 1; }
     break;
 case 34:
-#line 361 "icalyacc.y"
+#line 376 "icalyacc.y"
 { utcsign = -1; }
     break;
 case 35:
-#line 365 "icalyacc.y"
+#line 381 "icalyacc.y"
 {
 	    icalparser_yy_value = icalvalue_new_utcoffset( utcsign * ((yyvsp[-1].v_int*3600) + (yyvsp[0].v_int*60)) );
   	}
     break;
 case 36:
-#line 370 "icalyacc.y"
+#line 386 "icalyacc.y"
 {
 	    icalparser_yy_value = icalvalue_new_utcoffset(utcsign * ((yyvsp[-2].v_int*3600) + (yyvsp[-1].v_int*60) +(yyvsp[0].v_int)));
   	}
@@ -1602,7 +1602,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 374 "icalyacc.y"
+#line 391 "icalyacc.y"
 
 
 struct icaltimetype fill_datetime(char* datestr, char* timestr)

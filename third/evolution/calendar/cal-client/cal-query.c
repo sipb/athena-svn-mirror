@@ -180,8 +180,9 @@ cal_query_destroy (GtkObject *object)
 	query = CAL_QUERY (object);
 	priv = query->priv;
 
-	/* The server unrefs the query listener, so we just NULL it out here */
+	/* The server keeps a copy of the query listener, so we must unref it */
 	query_listener_stop_notification (priv->ql);
+	bonobo_object_unref (BONOBO_OBJECT (priv->ql));
 	priv->ql = NULL;
 
 	if (priv->corba_query != CORBA_OBJECT_NIL) {
@@ -243,18 +244,22 @@ marshal_query_done (GtkObject *object, GtkSignalFunc func, gpointer func_data, G
 /* Callback used when an object is updated in the query */
 static void
 obj_updated_cb (QueryListener *ql,
-		const GNOME_Evolution_Calendar_CalObjUID uid,
+		const GNOME_Evolution_Calendar_CalObjUIDSeq *uids,
 		CORBA_boolean query_in_progress,
 		CORBA_long n_scanned,
 		CORBA_long total,
 		gpointer data)
 {
 	CalQuery *query;
+	int n;
 
 	query = CAL_QUERY (data);
 
-	gtk_signal_emit (GTK_OBJECT (query), query_signals[OBJ_UPDATED],
-			 uid, query_in_progress, (int) n_scanned, (int) total);
+	for (n = 0; n < uids->_length; n++) {
+		gtk_signal_emit (GTK_OBJECT (query), query_signals[OBJ_UPDATED],
+				 uids->_buffer[n], query_in_progress,
+				 (int) n_scanned, (int) total);
+	}
 }
 
 /* Callback used when an object is removed from the query */

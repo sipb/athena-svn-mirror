@@ -1,7 +1,7 @@
 <Root>
   <commands>
     <cmd name="FileClose" _label="Close" _tip="Close this window"
-	 pixtype="stock" pixname="Close"/>
+	 pixtype="stock" pixname="Close" accel="*Control*w"/>
 
     <cmd name="FileExit" _label="E_xit" _tip="Exit the program"
 	 pixtype="stock" pixname="Quit" accel="*Control*q"/>
@@ -17,6 +17,12 @@
     <cmd name="HelpSubmitBug" _label="Submit Bug Report"
 	 _tip="Submit a bug report using Bug Buddy"/>
 
+    <cmd name="SendReceive"
+     _tip="Send queued items and retrieve new items"
+     pixtype="pixbuf"/>
+
+    <cmd name="Settings" pixtype="pixbuf"/>
+
     <cmd name="ToggleOffline" _type="Toggle"
 	 _label="_Work Offline"
 	 _tip="Toggle whether we are working offline."/>
@@ -29,22 +35,30 @@
   <menu>
     <submenu name="File" _label="_File">
       <submenu name="New" _label="_New">
-	<placeholder name="NewFirstItem">
-	</placeholder>
-	
-	<menuitem name="EvolutionWindow" verb="OpenFolderInNewWindow" _label="Evolution _Window"
-		  accel="*Control**Shift*w"/>
+	<placeholder name="NewFirstItem"/>
+	<placeholder name="ComponentItems"/>
+
+	<separator f="" name="eshell6"/>
 
 	<menuitem name="Folder" verb="NewFolder"
-		  _label="_Folder"
+		  _label="_Folder..."
+		  _tip="Create a new folder"
 		  accel="*Control**Shift*e"
 		  pixtype="pixbuf"/>
 
 	<menuitem name="Shortcut" verb="NewShortcut"
-		  _label="_Shortcut"
+		  _label="_Shortcut..."
+		  _tip="Create a new shortcut"
 		  accel="*Control**Shift*s"/>
 
-	<placeholder name="NewItems"/>
+	<separator f="" name="eshell6"/>
+
+	<menuitem name="EvolutionWindow"
+	          verb="OpenFolderInNewWindow"
+		  _label="Evolution _Window"
+		  _tip="Create a new window displaying this folder"
+		  accel="*Control**Shift*w"/>
+
       </submenu>
 
       <placeholder name="FileOps"/>
@@ -55,6 +69,7 @@
 	<menuitem name="Folder"
                   verb="NewFolder"
 		  _label="_New Folder"
+		  _tip="Create a new folder"
 		  accel="*Control**Shift*e"
 		  pixtype="pixbuf"/>
 
@@ -100,10 +115,20 @@
                      delimit="top"/>
 
       </submenu>
-      
+
       <menuitem name="FileGoToFolder" verb=""
 		_label="_Go to Folder..."
 		_tip="Display a different folder" accel="*Control*g"/>
+
+      <menuitem name="FileOpenOtherUsersFolder"
+		verb="FileOpenOtherUsersFolder"
+		_label="Open Other _User's Folder..."
+		_tip="Open a folder belonging to some other user on the server"/>
+
+      <menuitem name="FileRemoveOtherUsersFolder"
+		verb="FileRemoveOtherUsersFolder"
+		_label="_Remove Other User's Folder"
+		_tip="Remove a folder added with &quot;Open Other User's Folder&quot;"/>
 
       <separator f="" name="eshell4"/>
       
@@ -136,12 +161,21 @@
       <placeholder name="ViewAfterControl"/>
     </submenu>
 
-    <placeholder name="ComponentActionsPlaceholder"/>
+    <submenu name="Actions" _label="_Actions">
+      <menuitem name="SendReceive" verb="" _label="_Send / Receive" accel="F9"/>
+      <placeholder name="ComponentActionsPlaceholder"/>
+    </submenu>
 
     <submenu name="Tools" _label="_Tools">
+      <menuitem name="Settings" verb="" _label="_Settings..." _tip="Change Evolution's settings" pixtype="pixbuf"/>
+      <separator/>
       <placeholder name="ComponentPlaceholder"/>
-      <menuitem name="PilotSettings" verb="" _label="_Pilot Settings..."/>
+      <menuitem name="PilotSettings" verb="" _label="Pi_lot Settings..." _tip="Set up Pilot configuration"/>
+      <menuitem name="PilotConduitSettings" verb="" _label="Pilot Con_duit Settings..." _tip="Set up Pilot conduit configuration"/>
     </submenu>
+
+    <placeholder name="SearchPlaceholder">
+    </placeholder>
 
     <submenu name="Help" _label="_Help">
 
@@ -165,10 +199,49 @@
     </submenu>
   </menu>
 
-  <dockitem name="Toolbar" relief="none" behavior="exclusive" config="0"
-	    _tip="Main toolbar" hlook="text" vlook="icon"/>
+  <dockitem name="Toolbar"
+	    relief="none"
+	    behavior="exclusive"
+	    config="0"
+	    _tip="Main toolbar"
+	    hlook="text"
+	    vlook="icon">
+
+    <control name="NewComboButton"/>
+    <separator f="" name="eshell4"/>
+
+    <toolitem name="SendReceive" verb="SendReceive"
+     _label="Send / Receive" priority="1"
+     pixtype="pixbuf"/>
+
+  </dockitem>
 
   <popups>
+    <popup name="NewPopup">
+    	<placeholder name="ComponentItems"/>
+
+	<separator f="" name="eshell7"/>
+
+	<menuitem name="Folder" verb="NewFolder"
+		  _label="_Folder..."
+		  _tip="Create a new folder"
+		  accel="*Control**Shift*e"
+		  pixtype="pixbuf"/>
+
+	<menuitem name="Shortcut" verb="NewShortcut"
+		  _label="_Shortcut..."
+		  _tip="Create a new shortcut"
+		  accel="*Control**Shift*s"/>
+
+	<separator f="" name="eshell8"/>
+
+	<menuitem name="EvolutionWindow"
+	          verb="OpenFolderInNewWindow"
+		  _label="Evolution _Window"
+		  _tip="Create a new window displaying this folder"
+		  accel="*Control**Shift*w"/>
+    </popup>
+
     <popup name="FolderPopup">
       <menuitem name="ActivateView"
 		verb="ActivateView"
@@ -218,6 +291,8 @@
                 
       <placeholder name="ComponentPlaceholder"
 		   delimit="top"/>
+
+      <placeholder name="StorageFolderPropertiesPlaceholder"/>
 
     </popup>
   </popups>

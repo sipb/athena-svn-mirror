@@ -1,9 +1,348 @@
-2002-01-15  Michael Meeks  <michael@ximian.com>
+2002-11-03  Jeffrey Stedfast  <fejj@ximian.com>
 
+	* evolution-mail-message.xml: Fix for bug #33173
+
+2002-10-28  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Set the pixtype for command "Settings" to
+	"pixbuf".
+
+2002-10-15  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-mail-list.xml: Made tooltips more clear.
+
+2002-10-04  Dan Winship  <danw@ximian.com>
+
+	* evolution.xml: Remove "..." from "Remove Other User's Folder"
+	since it doesn't pop up a dialog. #31576.
+
+2002-09-30  Aaron Weber  <aaron@ximian.com>
+
+	* evolution-mail-message.xml: setup/set up
+
+	* evolution-executive-summary.xml: Customize is spelled with a Z
+	in us english, and an S elsewhere. Nitpicky!
+
+2002-09-30  Dan Winship  <danw@ximian.com>
+
+	* evolution.xml: Add FileRemoveOtherUsersFolder
+
+2002-09-30  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-mail-global.xml: Change the accelerator of
+	ToolsSubscriptions to be "u".
+
+	* evolution.xml: Add PilotConduitSettings in Tools.  Rename
+	"Preferences" to "Settings" as per Anna's request.
+
+2002-09-25  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-mail-message.xml: Make the Zoom accels the same as
+	galeon so people will shut the fuck up about it.
+
+2002-09-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-mail-message.xml: Add back "period" and "comma" as
+	accels for MailNextUnread and MailPreviousUnread.
+
+2002-09-03  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-mail-message.xml: Use "bracketright" and "bracketleft"
+	for MailNextUnread and MailPreviousUnread.
+
+2002-08-06  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: New placeholder at
+	FolderPopup/StorageFolderPropertiesPlaceholder.
+
+2002-07-31  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-mail-global.xml: Remove "New Mail Message" and "Post
+	Message" items.
+
+2002-07-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Move File/New/NewItems placeholder on the top and
+	add some separators.  Also add items to the popups/NewPopup so the
+	pop-up and the "New" submenu look the same.
+
+	* evolution-addressbook.xml: Remove ContactNew and ContactNewList
+	verbs, as well as the corresponding menu items.
+
+2002-07-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-message-composer.xml: Add a View/Post-To ui dingus.
+
+	* evolution-mail-global.xml: Add a Post ui dingus.
+
+	* evolution-mail-message.xml: Add a Post-Reply ui dingus.
+
+2002-07-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-mail-message.xml: Use *Control*equal and *Control*minus
+	for TextZoomIn and TextZoomOut instead of *Control*+ and
+	*Control*-, since the former actually works.  :-)
+
+2002-07-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-mail-message.xml: Bind MessageMove to Control-Shift-V.
+	[#24394]
+
+	* evolution-addressbook.xml: Bind ContactsMoveToFolder and
+	ContactsCopyToFolder to Control-Shift-V and Control-Shift-Y for
+	consistency with the mailer.  Also move "Select All" up in the
+	Edit menu and add a separator before "Delete".
+
+2002-07-23  Larry Ewing  <lewing@ximian.com>
+
+	* evolution-message-composer.xml: changed accel for HTML from T to
+	M to avoid conflict with other menu items.
+
+2002-07-22  Radek Doulik  <rodo@ximian.com>
+
+	* evolution-message-composer.xml: removed insert file as gtkhtml
+	editor has this now
+
+2002-07-18  Peter Williams  <peterw@ximian.com>
+
+	* evolution-signature-editor.xml: Add a tooltip to the Save item
+	as per bug 27901.
+	
+2002-07-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Change shortcut for "PilotSettings" to be `l'
+	instead of `p', so it doesn't conflict with "_Preferences".
+	[#27948]
+
+2002-07-15  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-signature-editor.xml: Add a Control-Return accel for
+	"FileSaveClose".
+
+	* evolution-contact-list-editor.xml: Add a Control-Return accel for
+	"ContactListEditorSaveClose".
+
+	* evolution-contact-editor.xml: Add a Control-Return accel for
+	"ContactEditorSaveClose".
+
+2002-07-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Add an accelerator for "FileClose".
+
+2002-07-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	[#10068]
+
+	* evolution-mail-message.xml: Add accelerator for "Print Preview",
+	"Delete".
+
+	* evolution-addressbook.xml: Add accelerator for "Print Preview",
+	"Delete".
+
+2002-07-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-mail-message.xml: s/Edit as New Message/Resend - this
+	was confusing people. Also moved it to the Actions menu. Fixes bug
+	#27454.
+
+2002-07-05  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-message-composer.xml: Removed the Send Later verb.
+
+2002-07-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Added a bunch of tooltips.
+
+2002-06-06  jacob berkman  <jacob@ximian.com>
+
+	* evolution-addressbook.xml: 
+	* evolution-mail-global.xml: add a 'stop' menu item (fixes ximian
+	#17242)
+
+2002-05-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Put the search menu in a SearchPlaceholder.
+
+2002-05-20  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-event-editor.xml: Add a toolbar item for
+	ActionScheduleMeeting.
+
+2002-05-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* evolution-mail-global.xml: Replaced q binding with ` for
+	hiding/showing the message view pane.
+
+	* evolution-mail-message.xml: Replace n/p with ,/. for doing
+	previous/next unread messages.  Removed a few other bindings that
+	interfere with alphanumeric characters.
+
+2002-05-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Add FileOpenOtherUsersFolder.
+
+2002-04-08  Dan Winship  <danw@ximian.com>
+
+	* evolution-calendar.xml: Fix bad xml.
+
+2002-04-04  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-addressbook.xml: Added missing </submenu> tag.  Remove
+	bogus "Dump" menu item.
+
+2002-03-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-mail-global.xml: Removed the "Mail Settings" stuff.
+
+2002-03-20  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Move the ComponentActionsPlaceholder into the
+	Actions menu, instead of the Actions menu being in the
+	ComponentActionsPlaceholder.
+	* evolution-addressbook.xml: Updated accordingly.
+	* evolution-calendar.xml: Updated accordingly.
+	* evolution-mail-global.xml: Updated accordingly.
+	* evolution-mail-list.xml: Updated accordingly.
+	* evolution-mail-message.xml: Updated accordingly.
+	* evolution-mail-messagedisplay.xml: Updated accordingly.
+	* evolution-tasks.xml: Updated accordingly.
+
+	* evolution.xml: Add "SendReceive" verb, menu item and toolbar
+	button.
+
+	* evolution-mail-global.xml: Remove "MailGetSend" verb and menu
+	item.
+
+2002-03-14  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Add a "Search" menu.
+
+	* my-evolution.xml: Remove "Settings" item.
+
+2002-03-14  JP Rosevear  <jpr@ximian.com>
+
+	* evolution-tasks.xml: remove duplicate new items in the file
+	and action menus
+
+2002-03-14  JP Rosevear  <jpr@ximian.com>
+	
+	* evolution-calendar.xml: remove duplicate new items in the file
+	and action menus
+
+2002-03-13  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-tasks.xml: Remove the "Tasks Settings..." menu item.
+
+	* evolution-calendar.xml: Remove the "Calendar Settings..." menu
+	item.
+
+	* evolution-addressbook.xml: Remove the "LDAP Sources..." menu
+	item.
+
+2002-03-12  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Add an entry to invoke the new unified config
+	dialog.
+
+2002-03-11  Anna Marie Dirks  <anna@ximian.com>
+
+	* evolution-mail-message.xml: doh. In my previous commit, a whole
+	bunch of changes that were supposed to be kept in my personal evo
+	were added to HEAD. (Mainly, this was the addition of a "Search"
+	menu.) I am reverting the wrong parts of that patch, and am
+	committing only the accelerators which that patch was supposed to
+	add. Sorry.
+
+2002-03-08  Radek Doulik  <rodo@ximian.com>
+
+	* evolution-signature-editor.xml: added FormatHTML
+
+2002-03-07  Anna Marie Dirks  <anna@ximian.com>
+
+	* evolution-mail-message.xml: Fixed tiny typo ("Addressbook", not
+	"Address book"), and cleaned up accelerators more, so that all of
+	them actually work. Also added accelerators to items in the Go To
+	menu and the Forward menu as part of fixing bug #10666.
+
+2002-03-07  Radek Doulik  <rodo@ximian.com>
+
+	* evolution-signature-editor.xml: added save & close on toolbar,
+	added C-s shortcut
+
+2002-03-04  Damon Chaplin  <damon@ximian.com>
+
+	* evolution-tasks.xml: added Print & PrintPreview stuff.
+
+2002-02-21  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Add NewComboButton and a separator.
+
+	* evolution-calendar.xml: remove CalendarNewAppointment and
+	CalendarNewTask from the toolbar.
+
+	* evolution-tasks.xml: Remove TasksNewTask button from the
+	toolbar.
+
+	* evolution-addressbook.xml: Remove ContactNew and ContactNewList
+	from the toolbar.
+
+	* evolution-mail-global.xml: Remove the MessageNew from the
+	toolbar.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+
+	* evolution-addressbook.xml: Added Copy to Folder and Move to
+	Folder in the Actions menu here.
+
+2002-02-12  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-mail-message.xml: Added pixbufs to MarkAsImportant,
+	MarkAsRead and MarkAsUnread. Also added MessageFollowUpFlag verb.
+
+2002-02-07  JP Rosevear  <jpr@ximian.com>
+
+	* evolution-calendar.xml: add new meeting item to Actions and
+	File->New
+
+2002-02-05  Anna Marie Dirks  <anna@ximian.com>
+
+	* evolution-mail-message.xml: Changed "Forward As" to "Forward" to
+	improve grammar ("Forward As" implies an answer in the form of a
+	noun, while "Redirect" is a verb), and added accelerators to "Add
+	Sender to Addressbook" and "Redirect".
+
+2002-01-28  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* evolution-mail-message.xml: Add MessageRedirect.
+
+2002-01-18  Christopher James Lahey  <clahey@ximian.com>
+
+	* evolution-addressbook.xml: Added File->Open which calls the
+	ContactsView command.
+
+2002-01-16  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution.xml: Remove "Dump" menu item.
+
+2002-01-15  Michael Meeks  <michael@ximian.com>
+ 
 	* *.xml: for all separators, add a unique (per xml file) name
 	to each separator, so we don't get them conflicting across
 	merges and messing with the order; then give them a dummy attr
 	f="" to stop them being transparent, hmm.
+ 
+2002-01-03  JP Rosevear  <jpr@ximian.com>
+
+	* evolution-tasks.xml: add a mark as complete item
+	
+2002-01-03  JP Rosevear  <jpr@ximian.com>
+
+	* evolution-tasks.xml: make spacing consistent with calendar xml
+	file, add expunge command and actions menu and add accelerator for
+	delete
+
+	* evolution-calendar.xml: add an accelerator for delete and put in
+	a separator to be consistent with the mailer
 
 2001-12-03  Jeffrey Stedfast  <fejj@ximian.com>
 
@@ -163,7 +502,6 @@
 
 	* evolution-comp-editor.xml: remove print preview from toolbar
 
->>>>>>> 1.239
 2001-08-20  JP Rosevear  <jpr@ximian.com>
 
 	* evolution-comp-editor.xml: remove print setup option for

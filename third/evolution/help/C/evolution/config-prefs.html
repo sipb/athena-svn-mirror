@@ -16,7 +16,7 @@ REL="PREVIOUS"
 TITLE="Configuring and Managing Ximian Evolution"
 HREF="config.html"><LINK
 REL="NEXT"
-TITLE="Configuring the Calendar"
+TITLE="Calendar and Task List Settings"
 HREF="config-prefs-cal.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
@@ -82,7 +82,7 @@ HREF="config-prefs.html#CONFIG-PREFS-MAIL"
 ><DT
 ><A
 HREF="config-prefs-cal.html"
->Configuring the Calendar</A
+>Calendar and Task List Settings</A
 ></DT
 ><DT
 ><A
@@ -101,88 +101,21 @@ CLASS="APPLICATION"
 > settings.  This chapter
         will tell you how to do just that.
       </P
-><DIV
-CLASS="SECT1"
-><H1
-CLASS="SECT1"
-><A
-NAME="CONFIG-PREFS-MAIL"
->Mail Settings</A
-></H1
 ><P
->        To change your mail settings, select <SPAN
+>        Evolution 1.2 brings with it a redesigned comprehensive
+        settings window that you can open by choosing <SPAN
 CLASS="GUIMENU"
 >Tools</SPAN
 >-&gt;<SPAN
 CLASS="GUIMENUITEM"
->Mail
-        Settings</SPAN
-> in the Inbox.  This
-        will open the <SPAN
-CLASS="INTERFACE"
->mail preferences window</SPAN
->,
-        illustrated in <A
-HREF="config-prefs.html#CONFIG-PREFS-MAIL-FIG"
->Figure 10-1</A
->.  Mail
-        preferences are separated into several categories:
-        <P
-></P
-><DIV
-CLASS="VARIABLELIST"
-><DL
-><DT
-><SPAN
-CLASS="GUILABEL"
->Accounts</SPAN
-></DT
-><DD
-><P
->		This allows you to create and alter one or more
-		identities for your email.
-	      </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Display</SPAN
-></DT
-><DD
-><P
->		Allows you to edit how email appears.
-	      </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Composer</SPAN
-></DT
-><DD
-><P
->		Customizes the behavior of the email message composer.
-	      </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Other</SPAN
-></DT
-><DD
-><P
->		Configures miscellanious aspects of
-		<SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> such as character
-		set and encryption tools.
-	      </P
-></DD
-></DL
-></DIV
->
-	
-    </P
+>Configure</SPAN
+>, no matter
+        where you are in Evolution. On the left half of the settings
+        window is a column, similar to the Evolution shortcut bar,
+        which lets you choose which portion of Evolution to
+        customize. The right half of the window is where you'll make
+        your actual changes.
+      </P
 ><DIV
 CLASS="FIGURE"
 ><A
@@ -190,7 +123,7 @@ NAME="CONFIG-PREFS-MAIL-FIG"
 ></A
 ><P
 ><B
->Figure 10-1. Account Editor Window</B
+>Figure 10-1. Changing Mail Settings</B
 ></P
 ><DIV
 CLASS="MEDIAOBJECT"
@@ -201,13 +134,136 @@ SRC="figures/config-mail.png"
 ></P
 ></DIV
 ></DIV
+><P
+>    There are eight items you can customize. From top to bottom, they
+    are:
+    <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Mail Accounts</DT
+><DD
+><P
+>             Here, add or change information about your email
+             accounts: the servers to which you connect, the way you
+             download mail, your password authentication mode, and so
+             forth. This is the most complex item in the list, and is
+             covered in <A
+HREF="config-prefs.html#CONFIG-PREFS-MAIL-IDENTITY"
+>the section called <I
+>Working with Mail Accounts</I
+></A
+>.
+          </P
+></DD
+><DT
+>Folder Settings</DT
+><DD
+><P
+>             Here, you can choose the default folders for various
+             components of Evolution, the folders that will be cached
+             locally when you go to offline mode, and the folders that
+             Evolution will use when it is searching for
+             autocompletion information as you address a mail.
+          </P
+></DD
+><DT
+>Mail Preferences</DT
+><DD
+><P
+>             These are overall mail reading preferences: display
+             settings, notification options, security, and so
+             forth. These are covered in <A
+HREF="config-prefs.html#CONFIG-PREFS-MAIL-DISPLAY"
+>the section called <I
+>Mail Display Options</I
+></A
+>.
+          </P
+></DD
+><DT
+>Composer Preferences</DT
+><DD
+><P
+>             Settings for the way that you use the mail composer:
+             shortcuts, signatures, spelling, and so forth. One fun
+             feature here is the ability to substitute graphical
+             smiley-faces for "emoticons" such as :) that many people
+             use in email. This tool is covered in <A
+HREF="config-prefs.html#CONFIG-PREFS-MAIL-COMPOSER"
+>the section called <I
+>Message Composer Preferences</I
+></A
+>.
+          </P
+></DD
+><DT
+>Calendar and Tasks</DT
+><DD
+><P
+>             Here, you can set the way the calendar behaves, including
+             your time zone and the length of your work-week.
+          </P
+></DD
+><DT
+>Directory Servers</DT
+><DD
+><P
+>             If you want to use a shared directory server (LDAP
+             server), this is the place to set it up.
+          </P
+></DD
+><DT
+>Font Preferences</DT
+><DD
+><P
+>            Choose the fonts that Evolution will use to display email
+            here.  You can choose fonts for the mail composer by
+            selecting <SPAN
+CLASS="GUIMENU"
+>Edit</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Properties</SPAN
+> from
+            within the composer window.
+          </P
+></DD
+><DT
+>Summary Preferences</DT
+><DD
+><P
+>             Set the mail folders, news feeds, schedule summary
+             length, and weather locations to be displayed here. For
+             news feeds, enter the web address of any RDF file.
+          </P
+></DD
+></DL
+></DIV
+>
+
+  </P
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIG-PREFS-MAIL"
+>Mail Settings</A
+></H1
+><P
+>       The first few tools, with the exception of the folder tool,
+       cover mail tasks:
+    </P
 ><DIV
 CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
 NAME="CONFIG-PREFS-MAIL-IDENTITY"
->Working with the Accounts Tab</A
+>Working with Mail Accounts</A
 ></H2
 ><P
 >         <SPAN
@@ -346,7 +402,8 @@ CLASS="USERINPUT"
 ><DD
 ><P
 >              Here, decide whether you'd like to check for mail
-              automatically and how often. 
+              automatically and how often, as well as other message
+              retrieval options.
 
               <P
 ></P
@@ -377,6 +434,17 @@ CLASS="APPLICATION"
 >                             Message Storage: If you'd like to store
 	                      copies of your mail on the server, check
 	                      this option.
+                           </P
+></LI
+><LI
+><P
+>Store Store status headers in
+			    Elm/Pine/Mutt format: If you would like to
+			    use the X-Status header format used by the
+			    mail clients Elm, Pine, and Mutt, select
+			    this option. This option is useful if you
+			    plan to check your mail with those clients
+			    from time to time.
                            </P
 ></LI
 ></UL
@@ -492,6 +560,15 @@ HREF="usage-mail-subscriptions.html"
 	    server: If you'd like your filters to work on this account
 	    as well as on locally downloaded mail, check this box.</P
 ></LI
+><LI
+><P
+>Store Store status headers in Elm/Pine/Mutt format:
+	    If you would like to use the X-Status header format used
+	    by the mail clients Elm, Pine, and Mutt, select this
+	    option. This option is useful if you plan to check your
+	    mail with those clients from time to time.
+	   </P
+></LI
 ></UL
 >
                      </P
@@ -584,7 +661,7 @@ HREF="usage-mail-getnsend-get.html#USAGE-MAIL-GETNSEND-GET-ATTACH-HTML"
 >.
      </P
 ><P
->       To hange the font which <SPAN
+>       To change the font which <SPAN
 CLASS="APPLICATION"
 >Ximian
         Evolution</SPAN
@@ -641,204 +718,94 @@ NAME="CONFIG-PREFS-MAIL-COMPOSER"
 >Message Composer Preferences</A
 ></H2
 ><P
->        Mercifully, there are only four preferences you can prefer in
-        the message composer preferences dialog:
+>        There are three whole tabs of settings you can change for the
+        message composer. The General tab covers shortcuts and
+        assorted behavior, and the other two control signatures and
+        spell checking.  In the General tab, you can set:
+
          <P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
->Send mail in HTML format by default</DT
+>Shortcuts Type</DT
 ><DD
 ><P
->                 If you would like all email messages that you compose
-                 to begin in HTML format, leave this box checked. You
-                 can convert messages between HTML and plain text by
-                 selecting the <SPAN
-CLASS="GUIMENU"
->Format</SPAN
->-&gt;<SPAN
-CLASS="GUIMENUITEM"
->HTML</SPAN
-> toggle
-                 in the message composer.
+>                 Choose a keyboard shortcut scheme: do you prefer
+                 keyboard shortcuts similar to those of Microsoft
+                 Windows, XEmacs, or Emacs?
                </P
 ></DD
 ><DT
->Default Forward style</DT
+>Default Behavior</DT
 ><DD
 ><P
->                  Select from: 
-                  <P
-></P
-><TABLE
-BORDER="0"
-><TBODY
-><TR
-><TD
-><SPAN
-CLASS="GUILABEL"
->Attachment:</SPAN
-> the
-                  message you forward appended to the message you send
-                  as a seperate file.</TD
-></TR
-><TR
-><TD
-> <SPAN
-CLASS="GUILABEL"
->Inline:</SPAN
-> The message
-                  you forward is included at the end of the message
-                  you send.</TD
-></TR
-><TR
-><TD
-> 
-                     <SPAN
-CLASS="GUILABEL"
->Quoted:</SPAN
-> The message
-                     you forward is included at the end of the message
-                     you send, and a greater-than symbol (&#62;) is
-                     inserted at the beginning of each line to
-                     indicate that it is quoted.
-                   </TD
-></TR
-></TBODY
-></TABLE
-><P
-></P
->
+>                 Choose how you will normally forward and reply
+                 messages, what character set they will use, whether
+                 they will be in HTML, and whether that HTML can
+                 contain smiley face images.
                </P
 ></DD
 ><DT
->Prompt when sending messages with an empty subject</DT
+>Alerts</DT
 ><DD
 ><P
->                 The composer will warn you if you try to send a
-                 message without a subject.
-               </P
-></DD
-><DT
->Prompt when sending messages with only Bcc recipients defined</DT
-><DD
-><P
->                 The composer will warn you if you try to send a
-                 message that has only <SPAN
-CLASS="GUILABEL"
->Bcc</SPAN
->
-                 recipients. This is important because some mail
-                 servers will fail to honor blind carbon copy if you
-                 do not have at least one recipient that is visible to
-                 all readers.
-               </P
-></DD
-></DL
-></DIV
->
-      </P
-></DIV
-><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="CONFIG-PREFS-MAIL-OTHER"
->Other Mail Preferences</A
-></H2
-><P
->          Not everything fits neatly into categories.  This tab
-          contains some miscellaneous configuration options that
-          didn't fit anywhere else.
-          <P
+>                 There are two optional alerts here:
+                 <P
 ></P
 ><DIV
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><SPAN
-CLASS="GUILABEL"
->PGP binary path</SPAN
-></DT
+>Prompt when sending messages with an empty subject</DT
 ><DD
 ><P
->                The complete path to your external encryption tool On
-                most Linux systems, this will be
-                <TT
-CLASS="FILENAME"
->/usr/bin/gpg</TT
->.
-	      </P
+>			 The composer will warn you if you try to send a
+			 message without a subject.
+		       </P
 ></DD
 ><DT
-><SPAN
-CLASS="GUILABEL"
->Remember PGP Passphrase until Exit</SPAN
-></DT
+>Prompt when sending messages with only Bcc recipients defined</DT
 ><DD
 ><P
-> Check this box if you want <SPAN
-CLASS="APPLICATION"
->Ximian
-                Evolution</SPAN
-> to remember your PGP
-                passphrase for as long as it is running.  You will
-                still have to enter your passphrase again each time
-                you start <SPAN
-CLASS="APPLICATION"
->Ximian Evolution</SPAN
->.
-	      </P
-></DD
-><DT
-><SPAN
+>			 The composer will warn you if you try to send a
+			 message that has only <SPAN
 CLASS="GUILABEL"
->Default Character Encoding</SPAN
-></DT
-><DD
-><P
-> Choose a default character encoding for
-	      your messages.
-	      </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Empty Trash Folders on Exit</SPAN
-></DT
-><DD
-><P
-> If you would like to expunge all deleted
-	      mail when you quit <SPAN
-CLASS="APPLICATION"
->Ximian
-	      Evolution</SPAN
->, check this box.
-	      </P
-></DD
-><DT
-><SPAN
-CLASS="GUILABEL"
->Log filter actions to:</SPAN
-></DT
-><DD
-><P
-> If you like, you can have
-	      <SPAN
-CLASS="APPLICATION"
->Ximian Evolution</SPAN
-> write all
-	      its message filter actions to a log file. Select a log
-	      file here.
-	      </P
+>Bcc</SPAN
+>
+			 recipients. This is important because some mail
+			 servers will fail to honor blind carbon copy if you
+			 do not have at least one recipient that is visible to
+			 all readers.
+		       </P
 ></DD
 ></DL
 ></DIV
 >
-        </P
+               </P
+></DD
+></DL
+></DIV
+>
+    </P
+><P
+>         The signature editor is new for Evolution 1.2. It allows you
+         to create several different signatures in plain text or in
+         HTML, and to specify which of them will be added to emails
+         you create in the message composer.  If you prefer to use an
+         alternate signature or none at all, you can select it from
+         the mail composer itself.
+    </P
+><P
+>       In the spell-checking tool, you can set spelling options,
+       including the language or languages you will use. Note that you
+       must install the gnome-spell package, available through Red
+       Carpet, for spell-checking to be available in
+       Evolution. Alternate dictionaries are aslo available through
+       Red Carpet and are detected automatically if you have installed
+       them.
+    </P
 ></DIV
 ></DIV
 ></DIV
@@ -895,7 +862,7 @@ HREF="config.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Configuring the Calendar</TD
+>Calendar and Task List Settings</TD
 ></TR
 ></TABLE
 ></DIV
