@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-moniker-util</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="monikers.html" title="Monikers"><link rel="previous" href="libbonobo-bonobo-moniker-simple.html" title="BonoboMonikerSimple"><link rel="next" href="libbonobo-bonobo-moniker-extender.html" title="BonoboMonikerExtender"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-moniker-simple.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="monikers.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-moniker-extender.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-moniker-util"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-moniker-util</h2><p>bonobo-moniker-util &#8212; Object activation and construction through monikers.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> <a href="libbonobo-bonobo-moniker-util.html#bonobo-get-object">bonobo_get_object</a>            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-new-from-name">bonobo_moniker_client_new_from_name</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK>* <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-get-name">bonobo_moniker_client_get_name</a>  (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-resolve-default">bonobo_moniker_client_resolve_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-equal">bonobo_moniker_client_equal</a>     (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        (<a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">*BonoboMonikerAsyncFn</a>)         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);
+void        <a href="libbonobo-bonobo-moniker-util.html#bonobo-get-object-async">bonobo_get_object_async</a>         (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">BonoboMonikerAsyncFn</a> cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);
+void        <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-new-from-name-async">bonobo_moniker_client_new_from_name_async</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">BonoboMonikerAsyncFn</a> cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);
+void        <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-resolve-async">bonobo_moniker_resolve_async</a>    (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ResolveOptions">Bonobo_ResolveOptions</GTKDOCLINK> *options,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">BonoboMonikerAsyncFn</a> cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);
+void        <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-resolve-async-default">bonobo_moniker_resolve_async_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">BonoboMonikerAsyncFn</a> cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK>* <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-get-parent-name">bonobo_moniker_util_get_parent_name</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-qi-return">bonobo_moniker_util_qi_return</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *requested_interface,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+const char* <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-parse-name">bonobo_moniker_util_parse_name</a>  (const char *name,
+                                             int *plen);
+int         <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-seek-std-separator">bonobo_moniker_util_seek_std_separator</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *str,
+                                             int min_idx);
+char*       <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-escape">bonobo_moniker_util_escape</a>      (const char *string,
+                                             int offset);
+char*       <a href="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-unescape">bonobo_moniker_util_unescape</a>    (const char *string,
+                                             int num_chars);
+void        <a href="libbonobo-bonobo-moniker-util.html#bonobo-url-register">bonobo_url_register</a>             (char *oafiid,
+                                             char *url,
+                                             char *mime_type,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+void        <a href="libbonobo-bonobo-moniker-util.html#bonobo-url-unregister">bonobo_url_unregister</a>           (char *oafiid,
+                                             char *url,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> <a href="libbonobo-bonobo-moniker-util.html#bonobo-url-lookup">bonobo_url_lookup</a>            (char *oafiid,
+                                             char *url,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+</pre></div><div xmlns:ns13="" class="refsect1" lang="en"><h2>Description</h2><ns13:p>
+The moniker utility functions provide two sets of functions:
+  </ns13:p><div class="itemizedlist"><ul type="disc"><li><p>
+      Helper functions for constructing and resolving monikers,
+      and a simple get_object method that constructs and resolves
+      against an interface in a single pass. Also, asynchronous
+      versions of these methods are provided using the <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="BonoboAsync">BonoboAsync</GTKDOCLINK>
+      code. 
+      </p></li><li><p>
+      Helper functions for the implementation of new custom
+      monikers are also provided here, along with a lot of the
+      grunt code neccessary for moniker implementation, particularly
+      constructing the chained list of sub-monikers that comprises
+      a complex moniker.
+      </p></li></ul></div><ns13:p>
+</ns13:p><ns13:p>
+The most useful function to get a feel for what monikers can do
+is the <tt>bonobo_get_object</tt> method. This is
+used to create a moniker and resolve it against a given interface
+like this:
+  </ns13:p><div class="example"><a name="id2950666"></a><p class="title"><b>Example 3. GetObject example</b></p><pre class="programlisting">
+GtkWidget *
+moniker_resolve_demo (void)
+{
+	Bonobo_Control control;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&amp;ev);
+
+	control = bonobo_get_object (&quot;file:/demo/a.jpeg&quot;,
+                                     &quot;Bonobo/Control&quot;, NULL);
+
+	if (control == CORBA_OBJECT_NIL)
+		g_error (&quot;Failed to get object file:/demo/a.jpeg&quot;);
+
+	return bonobo_widget_new_control (control);
+}
+     </pre></div><ns13:p>
+  This also makes a control out of the widget.
+</ns13:p><p>
+  It is worth noting that when resolving monikers a contracted
+version of the interface name may be used, ommitting the 'IDL:'
+prefix and / or the ':0' suffix.
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="bonobo-get-object"></a>bonobo_get_object ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> bonobo_get_object            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+This encapsulates both the parse stage and resolve process of using
+a moniker, providing a simple VisualBasic like mechanism for using the
+object name space.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td> the name of a moniker
+</td></tr><tr><td><span class="term"><i><tt>interface_name</tt></i> :</span></td><td> the name of the interface we want returned as the result 
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional corba exception environment 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the requested interface or CORBA_OBJECT_NIL
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-client-new-from-name"></a>bonobo_moniker_client_new_from_name ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> bonobo_moniker_client_new_from_name
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+This routine tries to parse a Moniker in string form
+</p><p>
+eg. file:/tmp/a.tar.gz<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gzip">gzip</GTKDOCLINK>:<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="tar">tar</GTKDOCLINK>:
+</p><p>
+into a CORBA_Object representation of this that can
+later be resolved against an interface.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td> the name of a moniker
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional corba exception environment 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new Moniker handle
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-client-get-name"></a>bonobo_moniker_client_get_name ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK>* bonobo_moniker_client_get_name  (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>moniker</tt></i> :</span></td><td> a moniker handle
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> a corba exception environment 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the name of the moniker.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-client-resolve-default"></a>bonobo_moniker_client_resolve_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> bonobo_moniker_client_resolve_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+This resolves the moniker object against the given interface,
+with a default set of resolve options.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>moniker</tt></i> :</span></td><td> a moniker
+</td></tr><tr><td><span class="term"><i><tt>interface_name</tt></i> :</span></td><td> the name of the interface we want returned as the result 
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional corba exception environment 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the interfaces resolved to or CORBA_OBJECT_NIL
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-client-equal"></a>bonobo_moniker_client_equal ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    bonobo_moniker_client_equal     (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Compare a full <i><tt>moniker</tt></i> with the given <i><tt>name</tt></i></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>moniker</tt></i> :</span></td><td> The moniker
+</td></tr><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td> a moniker name eg. file:/demo/a.jpeg
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> optional CORBA_Environment or NULL.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if they are the same
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboMonikerAsyncFn"></a>BonoboMonikerAsyncFn ()</h3><pre class="programlisting">void        (*BonoboMonikerAsyncFn)         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-get-object-async"></a>bonobo_get_object_async ()</h3><pre class="programlisting">void        bonobo_get_object_async         (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">BonoboMonikerAsyncFn</a> cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);</pre><p>
+An async version of bonobo_get_object</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td> 
+</td></tr><tr><td><span class="term"><i><tt>interface_name</tt></i> :</span></td><td> the name of the interface we want returned as the result 
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> a corba exception environment 
+</td></tr><tr><td><span class="term"><i><tt>cb</tt></i> :</span></td><td> the async callback that gets the response 
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> user context data to pass to that callback 
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-client-new-from-name-async"></a>bonobo_moniker_client_new_from_name_async ()</h3><pre class="programlisting">void        bonobo_moniker_client_new_from_name_async
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">BonoboMonikerAsyncFn</a> cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);</pre><p>
+An asynchronous version of new_from_name</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td> the name
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> a corba exception environment 
+</td></tr><tr><td><span class="term"><i><tt>cb</tt></i> :</span></td><td> the async callback that gets the response
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> user context data to pass to that callback
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-resolve-async"></a>bonobo_moniker_resolve_async ()</h3><pre class="programlisting">void        bonobo_moniker_resolve_async    (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ResolveOptions">Bonobo_ResolveOptions</GTKDOCLINK> *options,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">BonoboMonikerAsyncFn</a> cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);</pre><p>
+An async version of bonobo_moniker_client_resolve</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>moniker</tt></i> :</span></td><td> the moniker to resolve
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td> resolve options
+</td></tr><tr><td><span class="term"><i><tt>interface_name</tt></i> :</span></td><td> the name of the interface we want returned as the result 
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> a corba exception environment 
+</td></tr><tr><td><span class="term"><i><tt>cb</tt></i> :</span></td><td> the async callback that gets the response 
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> user context data to pass to that callback 
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-resolve-async-default"></a>bonobo_moniker_resolve_async_default ()</h3><pre class="programlisting">void        bonobo_moniker_resolve_async_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             const char *interface_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <a href="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn">BonoboMonikerAsyncFn</a> cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);</pre><p>
+An async version of bonobo_moniker_client_resolve_default</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>moniker</tt></i> :</span></td><td> 
+</td></tr><tr><td><span class="term"><i><tt>interface_name</tt></i> :</span></td><td> the name of the interface we want returned as the result 
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> a corba exception environment 
+</td></tr><tr><td><span class="term"><i><tt>cb</tt></i> :</span></td><td> the async callback that gets the response 
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> user context data to pass to that callback 
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-util-get-parent-name"></a>bonobo_moniker_util_get_parent_name ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK>* bonobo_moniker_util_get_parent_name
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> moniker,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+This gets the name of the parent moniker ( recursively
+all of the parents of this moniker ).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>moniker</tt></i> :</span></td><td> the moniker
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional corba exception environment
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the name; use CORBA_free to release it.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-util-qi-return"></a>bonobo_moniker_util_qi_return ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> bonobo_moniker_util_qi_return
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *requested_interface,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+A helper function to share code from the end of a resolve
+implementation; this ensures that the returned object is of
+the correct interface by doing a queryInterface on the object.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>object</tt></i> :</span></td><td> the unknown to query
+</td></tr><tr><td><span class="term"><i><tt>requested_interface</tt></i> :</span></td><td> the desired interface
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> a corba exception environment 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an handle to the requested interface
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-util-parse-name"></a>bonobo_moniker_util_parse_name ()</h3><pre class="programlisting">const char* bonobo_moniker_util_parse_name  (const char *name,
+                                             int *plen);</pre><p>
+This routine finds the rightmost moniker name. For example
+it will return &quot;cache:&quot; if you pass in &quot;file:/tmp.txt<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="cache">cache</GTKDOCLINK>:&quot;. It will 
+also store the length of the parent string in <i><tt>plen</tt></i> (13 for the above 
+example)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td> a moniker name
+</td></tr><tr><td><span class="term"><i><tt>plen</tt></i> :</span></td><td> an optional pointer to store the parent length
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the name of the rightmost moniker
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-util-seek-std-separator"></a>bonobo_moniker_util_seek_std_separator ()</h3><pre class="programlisting">int         bonobo_moniker_util_seek_std_separator
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *str,
+                                             int min_idx);</pre><p>
+This looks for a moniker separator in a moniker's name string.
+</p><p>
+ See also bonobo_moniker_util_escape</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>str</tt></i> :</span></td><td> the string to scan
+</td></tr><tr><td><span class="term"><i><tt>min_idx</tt></i> :</span></td><td> the minimum offset at which a separator can be found.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the position of the separator, or a
+pointer to the end of the string.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-util-escape"></a>bonobo_moniker_util_escape ()</h3><pre class="programlisting">char*       bonobo_moniker_util_escape      (const char *string,
+                                             int offset);</pre><p>
+Escapes possible separator characters inside a moniker
+these include '!' and '#', the '\' escaping character is
+used.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>string</tt></i> :</span></td><td> an unescaped string
+</td></tr><tr><td><span class="term"><i><tt>offset</tt></i> :</span></td><td> an offset of characters to ignore
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an escaped sub-string.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-util-unescape"></a>bonobo_moniker_util_unescape ()</h3><pre class="programlisting">char*       bonobo_moniker_util_unescape    (const char *string,
+                                             int num_chars);</pre><p>
+This routine strips <i><tt>num_chars</tt></i>: from the start of
+<i><tt>string</tt></i>, discards the rest, and proceeds to un-escape
+characters escaped with '\'.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>string</tt></i> :</span></td><td> a string
+</td></tr><tr><td><span class="term"><i><tt>num_chars</tt></i> :</span></td><td> the number of chars to process.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the unescaped sub string.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-url-register"></a>bonobo_url_register ()</h3><pre class="programlisting">void        bonobo_url_register             (char *oafiid,
+                                             char *url,
+                                             char *mime_type,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>oafiid</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>url</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>mime_type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-url-unregister"></a>bonobo_url_unregister ()</h3><pre class="programlisting">void        bonobo_url_unregister           (char *oafiid,
+                                             char *url,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>oafiid</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>url</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-url-lookup"></a>bonobo_url_lookup ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> bonobo_url_lookup            (char *oafiid,
+                                             char *url,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>oafiid</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>url</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-moniker-simple.html"><b>&lt;&lt; BonoboMonikerSimple</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-moniker-extender.html"><b>BonoboMonikerExtender &gt;&gt;</b></a></td></tr></table></body></html>

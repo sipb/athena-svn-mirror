@@ -1,0 +1,1216 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<book xmlns="http://www.devhelp.net/book" title="Libbonobo Reference Manual" link="index.html" author="" name="libbonobo">
+<chapters>
+<sub name="General" link="general.html">
+<sub name="bonobo-main" link="libbonobo-bonobo-main.html">
+<sub name="Description" link="libbonobo-bonobo-main.html#id2863499"/>
+<sub name="Details" link="libbonobo-bonobo-main.html#id2812754">
+<sub name="bonobo_is_initialized ()" link="libbonobo-bonobo-main.html#bonobo-is-initialized"/>
+<sub name="bonobo_init ()" link="libbonobo-bonobo-main.html#bonobo-init"/>
+<sub name="bonobo_init_full ()" link="libbonobo-bonobo-main.html#bonobo-init-full"/>
+<sub name="bonobo_debug_shutdown ()" link="libbonobo-bonobo-main.html#bonobo-debug-shutdown"/>
+<sub name="bonobo_main ()" link="libbonobo-bonobo-main.html#bonobo-main"/>
+<sub name="bonobo_main_quit ()" link="libbonobo-bonobo-main.html#bonobo-main-quit"/>
+<sub name="bonobo_activate ()" link="libbonobo-bonobo-main.html#bonobo-activate"/>
+<sub name="bonobo_setup_x_error_handler ()" link="libbonobo-bonobo-main.html#bonobo-setup-x-error-handler"/>
+<sub name="bonobo_orb ()" link="libbonobo-bonobo-main.html#bonobo-orb"/>
+<sub name="bonobo_poa ()" link="libbonobo-bonobo-main.html#bonobo-poa"/>
+<sub name="bonobo_poa_manager ()" link="libbonobo-bonobo-main.html#bonobo-poa-manager"/>
+</sub>
+</sub>
+<sub name="bonobo-running-context" link="libbonobo-bonobo-running-context.html">
+<sub name="Description" link="libbonobo-bonobo-running-context.html#id2813675"/>
+<sub name="Details" link="libbonobo-bonobo-running-context.html#id2813687">
+<sub name="struct BonoboRunningContextPrivate" link="libbonobo-bonobo-running-context.html#BonoboRunningContextPrivate"/>
+<sub name="BonoboRunningContext" link="libbonobo-bonobo-running-context.html#BonoboRunningContext"/>
+<sub name="BonoboRunningContextClass" link="libbonobo-bonobo-running-context.html#BonoboRunningContextClass"/>
+<sub name="bonobo_running_context_get_type ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-get-type"/>
+<sub name="bonobo_running_context_new ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-new"/>
+<sub name="bonobo_running_context_add_object ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-add-object"/>
+<sub name="bonobo_running_context_remove_object ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-remove-object"/>
+<sub name="bonobo_running_context_ignore_object ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-ignore-object"/>
+<sub name="bonobo_running_context_trace_objects ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-trace-objects"/>
+<sub name="bonobo_running_context_at_exit_unref ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-at-exit-unref"/>
+</sub>
+</sub>
+<sub name="bonobo-shutdown" link="libbonobo-bonobo-shutdown.html">
+<sub name="Description" link="libbonobo-bonobo-shutdown.html#id2877214"/>
+<sub name="Details" link="libbonobo-bonobo-shutdown.html#id2877227">
+<sub name="bonobo_context_init ()" link="libbonobo-bonobo-shutdown.html#bonobo-context-init"/>
+<sub name="bonobo_context_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-context-shutdown"/>
+<sub name="bonobo_object_init ()" link="libbonobo-bonobo-shutdown.html#bonobo-object-init"/>
+<sub name="bonobo_object_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-object-shutdown"/>
+<sub name="bonobo_exception_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-exception-shutdown"/>
+<sub name="bonobo_property_bag_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-property-bag-shutdown"/>
+<sub name="bonobo_running_context_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-running-context-shutdown"/>
+</sub>
+</sub>
+<sub name="bonobo-i18n" link="libbonobo-bonobo-i18n.html">
+<sub name="Description" link="libbonobo-bonobo-i18n.html#id2877528"/>
+<sub name="Details" link="libbonobo-bonobo-i18n.html#id2877541">
+<sub name="_()" link="libbonobo-bonobo-i18n.html#gettext-macro"/>
+<sub name="N_()" link="libbonobo-bonobo-i18n.html#N--CAPS"/>
+<sub name="textdomain()" link="libbonobo-bonobo-i18n.html#textdomain"/>
+<sub name="gettext()" link="libbonobo-bonobo-i18n.html#gettext"/>
+<sub name="dgettext()" link="libbonobo-bonobo-i18n.html#dgettext"/>
+<sub name="dcgettext()" link="libbonobo-bonobo-i18n.html#dcgettext"/>
+<sub name="bindtextdomain()" link="libbonobo-bonobo-i18n.html#bindtextdomain"/>
+</sub>
+</sub>
+<sub name="bonobo-macros" link="libbonobo-bonobo-macros.html">
+<sub name="Description" link="libbonobo-bonobo-macros.html#id2881614"/>
+<sub name="Details" link="libbonobo-bonobo-macros.html#id2881626">
+<sub name="BONOBO_BOILERPLATE()" link="libbonobo-bonobo-macros.html#BONOBO-BOILERPLATE-CAPS"/>
+<sub name="BONOBO_CALL_PARENT()" link="libbonobo-bonobo-macros.html#BONOBO-CALL-PARENT-CAPS"/>
+<sub name="BONOBO_CALL_PARENT_WITH_DEFAULT()" link="libbonobo-bonobo-macros.html#BONOBO-CALL-PARENT-WITH-DEFAULT-CAPS"/>
+<sub name="BONOBO_CLASS_BOILERPLATE()" link="libbonobo-bonobo-macros.html#BONOBO-CLASS-BOILERPLATE-CAPS"/>
+<sub name="BONOBO_REGISTER_TYPE()" link="libbonobo-bonobo-macros.html#BONOBO-REGISTER-TYPE-CAPS"/>
+<sub name="BONOBO_CLASS_BOILERPLATE_FULL()" link="libbonobo-bonobo-macros.html#BONOBO-CLASS-BOILERPLATE-FULL-CAPS"/>
+<sub name="BONOBO_REGISTER_TYPE_FULL()" link="libbonobo-bonobo-macros.html#BONOBO-REGISTER-TYPE-FULL-CAPS"/>
+</sub>
+</sub>
+<sub name="bonobo-types" link="libbonobo-bonobo-types.html">
+<sub name="Description" link="libbonobo-bonobo-types.html#id2882393"/>
+<sub name="Details" link="libbonobo-bonobo-types.html#id2882406">
+<sub name="bonobo_corba_object_type_register_static ()" link="libbonobo-bonobo-types.html#bonobo-corba-object-type-register-static"/>
+<sub name="bonobo_unknown_get_type ()" link="libbonobo-bonobo-types.html#bonobo-unknown-get-type"/>
+<sub name="bonobo_corba_any_get_type ()" link="libbonobo-bonobo-types.html#bonobo-corba-any-get-type"/>
+<sub name="bonobo_corba_object_get_type ()" link="libbonobo-bonobo-types.html#bonobo-corba-object-get-type"/>
+<sub name="bonobo_corba_typecode_get_type ()" link="libbonobo-bonobo-types.html#bonobo-corba-typecode-get-type"/>
+<sub name="bonobo_corba_exception_get_type ()" link="libbonobo-bonobo-types.html#bonobo-corba-exception-get-type"/>
+<sub name="BONOBO_TYPE_UNKNOWN" link="libbonobo-bonobo-types.html#BONOBO-TYPE-UNKNOWN-CAPS"/>
+<sub name="BONOBO_TYPE_CORBA_ANY" link="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-ANY-CAPS"/>
+<sub name="BONOBO_TYPE_CORBA_OBJECT" link="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-OBJECT-CAPS"/>
+<sub name="BONOBO_TYPE_CORBA_TYPECODE" link="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-TYPECODE-CAPS"/>
+<sub name="BONOBO_TYPE_CORBA_EXCEPTION" link="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-EXCEPTION-CAPS"/>
+<sub name="BONOBO_VALUE_HOLDS_UNKNOWN()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-UNKNOWN-CAPS"/>
+<sub name="BONOBO_VALUE_HOLDS_CORBA_ANY()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-ANY-CAPS"/>
+<sub name="BONOBO_VALUE_HOLDS_CORBA_OBJECT()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-OBJECT-CAPS"/>
+<sub name="BONOBO_VALUE_HOLDS_CORBA_TYPECODE()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-TYPECODE-CAPS"/>
+<sub name="BONOBO_VALUE_HOLDS_CORBA_EXCEPTION()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-EXCEPTION-CAPS"/>
+<sub name="bonobo_value_get_unknown ()" link="libbonobo-bonobo-types.html#bonobo-value-get-unknown"/>
+<sub name="bonobo_value_get_corba_any ()" link="libbonobo-bonobo-types.html#bonobo-value-get-corba-any"/>
+<sub name="bonobo_value_get_corba_object ()" link="libbonobo-bonobo-types.html#bonobo-value-get-corba-object"/>
+<sub name="bonobo_value_get_corba_typecode ()" link="libbonobo-bonobo-types.html#bonobo-value-get-corba-typecode"/>
+<sub name="bonobo_value_get_corba_exception ()" link="libbonobo-bonobo-types.html#bonobo-value-get-corba-exception"/>
+<sub name="bonobo_value_set_unknown ()" link="libbonobo-bonobo-types.html#bonobo-value-set-unknown"/>
+<sub name="bonobo_value_set_corba_any ()" link="libbonobo-bonobo-types.html#bonobo-value-set-corba-any"/>
+<sub name="bonobo_value_set_corba_typecode ()" link="libbonobo-bonobo-types.html#bonobo-value-set-corba-typecode"/>
+<sub name="bonobo_value_set_corba_environment ()" link="libbonobo-bonobo-types.html#bonobo-value-set-corba-environment"/>
+<sub name="bonobo_closure_invoke_va_list ()" link="libbonobo-bonobo-types.html#bonobo-closure-invoke-va-list"/>
+<sub name="bonobo_closure_invoke ()" link="libbonobo-bonobo-types.html#bonobo-closure-invoke"/>
+<sub name="bonobo_closure_store ()" link="libbonobo-bonobo-types.html#bonobo-closure-store"/>
+</sub>
+</sub>
+<sub name="bonobo-context" link="libbonobo-bonobo-context.html">
+<sub name="Description" link="libbonobo-bonobo-context.html#id2887856"/>
+<sub name="Details" link="libbonobo-bonobo-context.html#id2886594">
+<sub name="bonobo_context_get ()" link="libbonobo-bonobo-context.html#bonobo-context-get"/>
+<sub name="bonobo_context_add ()" link="libbonobo-bonobo-context.html#bonobo-context-add"/>
+<sub name="bonobo_context_running_get ()" link="libbonobo-bonobo-context.html#bonobo-context-running-get"/>
+<sub name="bonobo_running_context_auto_exit_unref ()" link="libbonobo-bonobo-context.html#bonobo-running-context-auto-exit-unref"/>
+</sub>
+</sub>
+<sub name="bonobo-exception" link="libbonobo-bonobo-exception.html">
+<sub name="Description" link="libbonobo-bonobo-exception.html#id2887444"/>
+<sub name="Details" link="libbonobo-bonobo-exception.html#id2886955">
+<sub name="bonobo_exception_set()" link="libbonobo-bonobo-exception.html#bonobo-exception-set"/>
+<sub name="bonobo_return_if_fail()" link="libbonobo-bonobo-exception.html#bonobo-return-if-fail"/>
+<sub name="bonobo_return_val_if_fail()" link="libbonobo-bonobo-exception.html#bonobo-return-val-if-fail"/>
+<sub name="BONOBO_EX()" link="libbonobo-bonobo-exception.html#BONOBO-EX-CAPS"/>
+<sub name="BONOBO_USER_EX()" link="libbonobo-bonobo-exception.html#BONOBO-USER-EX-CAPS"/>
+<sub name="BONOBO_EX_REPOID()" link="libbonobo-bonobo-exception.html#BONOBO-EX-REPOID-CAPS"/>
+<sub name="BONOBO_RET_EX()" link="libbonobo-bonobo-exception.html#BONOBO-RET-EX-CAPS"/>
+<sub name="BONOBO_RET_VAL_EX()" link="libbonobo-bonobo-exception.html#BONOBO-RET-VAL-EX-CAPS"/>
+<sub name="BonoboExceptionFn ()" link="libbonobo-bonobo-exception.html#BonoboExceptionFn"/>
+<sub name="bonobo_exception_get_text ()" link="libbonobo-bonobo-exception.html#bonobo-exception-get-text"/>
+<sub name="bonobo_exception_repoid_to_text ()" link="libbonobo-bonobo-exception.html#bonobo-exception-repoid-to-text"/>
+<sub name="bonobo_exception_add_handler_str ()" link="libbonobo-bonobo-exception.html#bonobo-exception-add-handler-str"/>
+<sub name="bonobo_exception_add_handler_fn ()" link="libbonobo-bonobo-exception.html#bonobo-exception-add-handler-fn"/>
+<sub name="bonobo_exception_general_error_set ()" link="libbonobo-bonobo-exception.html#bonobo-exception-general-error-set"/>
+<sub name="bonobo_exception_general_error_get ()" link="libbonobo-bonobo-exception.html#bonobo-exception-general-error-get"/>
+</sub>
+</sub>
+</sub>
+<sub name="Objects, Factories, Reference Counting" link="factories.html">
+<sub name="BonoboObject" link="libbonobo-bonobo-object.html">
+<sub name="Description" link="libbonobo-bonobo-object.html#id2891405"/>
+<sub name="Details" link="libbonobo-bonobo-object.html#id2891683">
+<sub name="BONOBO_OBJECT_TYPE" link="libbonobo-bonobo-object.html#BONOBO-OBJECT-TYPE-CAPS"/>
+<sub name="BONOBO_OBJREF()" link="libbonobo-bonobo-object.html#BONOBO-OBJREF-CAPS"/>
+<sub name="BonoboObjectPOAFn ()" link="libbonobo-bonobo-object.html#BonoboObjectPOAFn"/>
+<sub name="struct BonoboObjectPrivate" link="libbonobo-bonobo-object.html#BonoboObjectPrivate"/>
+<sub name="BonoboObjectHeader" link="libbonobo-bonobo-object.html#BonoboObjectHeader"/>
+<sub name="BONOBO_OBJECT_HEADER_SIZE" link="libbonobo-bonobo-object.html#BONOBO-OBJECT-HEADER-SIZE-CAPS"/>
+<sub name="BONOBO_OBJECT_SIGNATURE" link="libbonobo-bonobo-object.html#BONOBO-OBJECT-SIGNATURE-CAPS"/>
+<sub name="BONOBO_SERVANT_SIGNATURE" link="libbonobo-bonobo-object.html#BONOBO-SERVANT-SIGNATURE-CAPS"/>
+<sub name="BonoboObject" link="libbonobo-bonobo-object.html#BonoboObject"/>
+<sub name="BonoboObjectClass" link="libbonobo-bonobo-object.html#BonoboObjectClass"/>
+<sub name="bonobo_object_add_interface ()" link="libbonobo-bonobo-object.html#bonobo-object-add-interface"/>
+<sub name="bonobo_object_query_local_interface ()" link="libbonobo-bonobo-object.html#bonobo-object-query-local-interface"/>
+<sub name="bonobo_object_query_interface ()" link="libbonobo-bonobo-object.html#bonobo-object-query-interface"/>
+<sub name="bonobo_object_corba_objref ()" link="libbonobo-bonobo-object.html#bonobo-object-corba-objref"/>
+<sub name="bonobo_object_dup_ref ()" link="libbonobo-bonobo-object.html#bonobo-object-dup-ref"/>
+<sub name="bonobo_object_release_unref ()" link="libbonobo-bonobo-object.html#bonobo-object-release-unref"/>
+<sub name="bonobo_object_ref ()" link="libbonobo-bonobo-object.html#bonobo-object-ref"/>
+<sub name="bonobo_object_idle_unref ()" link="libbonobo-bonobo-object.html#bonobo-object-idle-unref"/>
+<sub name="bonobo_object_unref ()" link="libbonobo-bonobo-object.html#bonobo-object-unref"/>
+<sub name="bonobo_object_set_immortal ()" link="libbonobo-bonobo-object.html#bonobo-object-set-immortal"/>
+<sub name="bonobo_object_trace_refs ()" link="libbonobo-bonobo-object.html#bonobo-object-trace-refs"/>
+<sub name="bonobo_object_dump_interfaces ()" link="libbonobo-bonobo-object.html#bonobo-object-dump-interfaces"/>
+<sub name="bonobo_object_check_env ()" link="libbonobo-bonobo-object.html#bonobo-object-check-env"/>
+<sub name="BONOBO_OBJECT_CHECK()" link="libbonobo-bonobo-object.html#BONOBO-OBJECT-CHECK-CAPS"/>
+<sub name="bonobo_unknown_ping ()" link="libbonobo-bonobo-object.html#bonobo-unknown-ping"/>
+<sub name="bonobo_object_list_unref_all ()" link="libbonobo-bonobo-object.html#bonobo-object-list-unref-all"/>
+<sub name="bonobo_object_slist_unref_all ()" link="libbonobo-bonobo-object.html#bonobo-object-slist-unref-all"/>
+<sub name="bonobo_object ()" link="libbonobo-bonobo-object.html#bonobo-object"/>
+<sub name="bonobo_object_fast()" link="libbonobo-bonobo-object.html#bonobo-object-fast"/>
+<sub name="bonobo_object_from_servant()" link="libbonobo-bonobo-object.html#bonobo-object-from-servant"/>
+<sub name="bonobo_object_get_servant()" link="libbonobo-bonobo-object.html#bonobo-object-get-servant"/>
+<sub name="bonobo_type_unique ()" link="libbonobo-bonobo-object.html#bonobo-type-unique"/>
+<sub name="bonobo_type_setup ()" link="libbonobo-bonobo-object.html#bonobo-type-setup"/>
+<sub name="BONOBO_TYPE_FUNC_FULL()" link="libbonobo-bonobo-object.html#BONOBO-TYPE-FUNC-FULL-CAPS"/>
+<sub name="BONOBO_TYPE_FUNC()" link="libbonobo-bonobo-object.html#BONOBO-TYPE-FUNC-CAPS"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-object.html#id2898513"/>
+</sub>
+<sub name="BonoboXObject" link="libbonobo-bonobo-xobject.html">
+<sub name="Description" link="libbonobo-bonobo-xobject.html#id2899928"/>
+<sub name="Details" link="libbonobo-bonobo-xobject.html#id2898665">
+<sub name="BONOBO_X_OBJECT_TYPE" link="libbonobo-bonobo-xobject.html#BONOBO-X-OBJECT-TYPE-CAPS"/>
+<sub name="BONOBO_X_OBJECT_HEADER_SIZE" link="libbonobo-bonobo-xobject.html#BONOBO-X-OBJECT-HEADER-SIZE-CAPS"/>
+<sub name="BONOBO_X_OBJECT_GET_SERVANT()" link="libbonobo-bonobo-xobject.html#BONOBO-X-OBJECT-GET-SERVANT-CAPS"/>
+<sub name="BONOBO_X_SERVANT_GET_OBJECT()" link="libbonobo-bonobo-xobject.html#BONOBO-X-SERVANT-GET-OBJECT-CAPS"/>
+<sub name="BonoboXObject" link="libbonobo-bonobo-xobject.html#BonoboXObject"/>
+<sub name="BonoboXObjectClass" link="libbonobo-bonobo-xobject.html#BonoboXObjectClass"/>
+<sub name="bonobo_x_object" link="libbonobo-bonobo-xobject.html#bonobo-x-object"/>
+<sub name="BonoboXObjectPOAFn" link="libbonobo-bonobo-xobject.html#BonoboXObjectPOAFn"/>
+<sub name="bonobo_x_type_unique" link="libbonobo-bonobo-xobject.html#bonobo-x-type-unique"/>
+<sub name="bonobo_x_type_setup" link="libbonobo-bonobo-xobject.html#bonobo-x-type-setup"/>
+<sub name="BONOBO_X_TYPE_FUNC_FULL()" link="libbonobo-bonobo-xobject.html#BONOBO-X-TYPE-FUNC-FULL-CAPS"/>
+<sub name="BONOBO_X_TYPE_FUNC()" link="libbonobo-bonobo-xobject.html#BONOBO-X-TYPE-FUNC-CAPS"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-xobject.html#id2899186"/>
+</sub>
+<sub name="BonoboGenericFactory" link="libbonobo-bonobo-generic-factory.html">
+<sub name="Description" link="libbonobo-bonobo-generic-factory.html#id2899476"/>
+<sub name="Details" link="libbonobo-bonobo-generic-factory.html#id2900859">
+<sub name="BONOBO_GENERIC_FACTORY_TYPE" link="libbonobo-bonobo-generic-factory.html#BONOBO-GENERIC-FACTORY-TYPE-CAPS"/>
+<sub name="struct BonoboGenericFactoryPrivate" link="libbonobo-bonobo-generic-factory.html#BonoboGenericFactoryPrivate"/>
+<sub name="struct BonoboGenericFactory" link="libbonobo-bonobo-generic-factory.html#BonoboGenericFactory"/>
+<sub name="BonoboFactoryCallback ()" link="libbonobo-bonobo-generic-factory.html#BonoboFactoryCallback"/>
+<sub name="BonoboGenericFactoryClass" link="libbonobo-bonobo-generic-factory.html#BonoboGenericFactoryClass"/>
+<sub name="bonobo_generic_factory_new ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-new"/>
+<sub name="bonobo_generic_factory_new_closure ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-new-closure"/>
+<sub name="bonobo_generic_factory_construct ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-construct"/>
+<sub name="bonobo_generic_factory_construct_noreg ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-construct-noreg"/>
+<sub name="bonobo_generic_factory_main ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-main"/>
+<sub name="BONOBO_FACTORY_INIT()" link="libbonobo-bonobo-generic-factory.html#BONOBO-FACTORY-INIT-CAPS"/>
+<sub name="BONOBO_OAF_FACTORY()" link="libbonobo-bonobo-generic-factory.html#BONOBO-OAF-FACTORY-CAPS"/>
+<sub name="BONOBO_OAF_FACTORY_MULTI()" link="libbonobo-bonobo-generic-factory.html#BONOBO-OAF-FACTORY-MULTI-CAPS"/>
+<sub name="BONOBO_ACTIVATION_FACTORY()" link="libbonobo-bonobo-generic-factory.html#BONOBO-ACTIVATION-FACTORY-CAPS"/>
+</sub>
+</sub>
+<sub name="bonobo-shlib-factory" link="libbonobo-bonobo-shlib-factory.html">
+<sub name="Description" link="libbonobo-bonobo-shlib-factory.html#id2903900"/>
+<sub name="Details" link="libbonobo-bonobo-shlib-factory.html#id2903913">
+<sub name="BONOBO_SHLIB_FACTORY_TYPE" link="libbonobo-bonobo-shlib-factory.html#BONOBO-SHLIB-FACTORY-TYPE-CAPS"/>
+<sub name="struct BonoboShlibFactoryPrivate" link="libbonobo-bonobo-shlib-factory.html#BonoboShlibFactoryPrivate"/>
+<sub name="BonoboShlibFactory" link="libbonobo-bonobo-shlib-factory.html#BonoboShlibFactory"/>
+<sub name="BonoboShlibFactoryClass" link="libbonobo-bonobo-shlib-factory.html#BonoboShlibFactoryClass"/>
+<sub name="bonobo_shlib_factory_construct ()" link="libbonobo-bonobo-shlib-factory.html#bonobo-shlib-factory-construct"/>
+<sub name="bonobo_shlib_factory_new ()" link="libbonobo-bonobo-shlib-factory.html#bonobo-shlib-factory-new"/>
+<sub name="bonobo_shlib_factory_new_closure ()" link="libbonobo-bonobo-shlib-factory.html#bonobo-shlib-factory-new-closure"/>
+<sub name="bonobo_shlib_factory_std ()" link="libbonobo-bonobo-shlib-factory.html#bonobo-shlib-factory-std"/>
+<sub name="BONOBO_OAF_SHLIB_FACTORY()" link="libbonobo-bonobo-shlib-factory.html#BONOBO-OAF-SHLIB-FACTORY-CAPS"/>
+<sub name="BONOBO_OAF_SHLIB_FACTORY_MULTI()" link="libbonobo-bonobo-shlib-factory.html#BONOBO-OAF-SHLIB-FACTORY-MULTI-CAPS"/>
+<sub name="BONOBO_ACTIVATION_SHLIB_FACTORY()" link="libbonobo-bonobo-shlib-factory.html#BONOBO-ACTIVATION-SHLIB-FACTORY-CAPS"/>
+</sub>
+</sub>
+<sub name="Reference Counting" link="refcounting.html">
+<sub name="Reference Counting" link="refcounting.html#id2908035">
+<sub name="Bonobo Objects" link="refcounting.html#id2908048"/>
+<sub name="Ref counting" link="refcounting.html#id2908103"/>
+<sub name="Reference leaks" link="refcounting.html#id2908159"/>
+<sub name="Ref Counting Conventions" link="refcounting.html#id2906827"/>
+</sub>
+</sub>
+</sub>
+<sub name="Property Bags, Events, Listeners" link="property-bags.html">
+<sub name="Properties" link="properties.html">
+<sub name="Properties" link="properties.html#id2908566">
+<sub name="Properties and bags" link="properties.html#id2908586"/>
+<sub name="BonoboArgs" link="properties.html#id2908618"/>
+<sub name="PropertyBag creation" link="properties.html#id2908717"/>
+<sub name="Property Creation" link="properties.html#id2908758"/>
+<sub name="Wrapping GObjects" link="properties.html#id2908824"/>
+<sub name="Using properties in your client application" link="properties.html#id2908852"/>
+</sub>
+</sub>
+<sub name="bonobo-event-source" link="libbonobo-bonobo-event-source.html">
+<sub name="Description" link="libbonobo-bonobo-event-source.html#id2907161"/>
+<sub name="Details" link="libbonobo-bonobo-event-source.html#id2907280">
+<sub name="BONOBO_EVENT_SOURCE_TYPE" link="libbonobo-bonobo-event-source.html#BONOBO-EVENT-SOURCE-TYPE-CAPS"/>
+<sub name="struct BonoboEventSourcePrivate" link="libbonobo-bonobo-event-source.html#BonoboEventSourcePrivate"/>
+<sub name="BonoboEventSource" link="libbonobo-bonobo-event-source.html#BonoboEventSource"/>
+<sub name="BonoboEventSourceClass" link="libbonobo-bonobo-event-source.html#BonoboEventSourceClass"/>
+<sub name="bonobo_event_source_new ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-new"/>
+<sub name="bonobo_event_source_notify_listeners ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-notify-listeners"/>
+<sub name="bonobo_event_source_notify_listeners_full ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-notify-listeners-full"/>
+<sub name="bonobo_event_source_client_remove_listener ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-client-remove-listener"/>
+<sub name="bonobo_event_source_client_add_listener ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener"/>
+<sub name="bonobo_event_source_client_add_listener_closure ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener-closure"/>
+<sub name="bonobo_event_source_client_add_listener_full ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener-full"/>
+<sub name="bonobo_event_source_ignore_listeners ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-ignore-listeners"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-event-source.html#id2911623"/>
+</sub>
+<sub name="bonobo-listener" link="libbonobo-bonobo-listener.html">
+<sub name="Description" link="libbonobo-bonobo-listener.html#id2911703"/>
+<sub name="Details" link="libbonobo-bonobo-listener.html#id2911789">
+<sub name="BONOBO_LISTENER_TYPE" link="libbonobo-bonobo-listener.html#BONOBO-LISTENER-TYPE-CAPS"/>
+<sub name="struct BonoboListenerPrivate" link="libbonobo-bonobo-listener.html#BonoboListenerPrivate"/>
+<sub name="BonoboListener" link="libbonobo-bonobo-listener.html#BonoboListener"/>
+<sub name="BonoboListenerClass" link="libbonobo-bonobo-listener.html#BonoboListenerClass"/>
+<sub name="BonoboListenerCallbackFn ()" link="libbonobo-bonobo-listener.html#BonoboListenerCallbackFn"/>
+<sub name="bonobo_listener_new ()" link="libbonobo-bonobo-listener.html#bonobo-listener-new"/>
+<sub name="bonobo_listener_new_closure ()" link="libbonobo-bonobo-listener.html#bonobo-listener-new-closure"/>
+<sub name="bonobo_event_make_name ()" link="libbonobo-bonobo-listener.html#bonobo-event-make-name"/>
+<sub name="bonobo_event_type ()" link="libbonobo-bonobo-listener.html#bonobo-event-type"/>
+<sub name="bonobo_event_subtype ()" link="libbonobo-bonobo-listener.html#bonobo-event-subtype"/>
+<sub name="bonobo_event_kind ()" link="libbonobo-bonobo-listener.html#bonobo-event-kind"/>
+<sub name="bonobo_event_idl_path ()" link="libbonobo-bonobo-listener.html#bonobo-event-idl-path"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-listener.html#id2912681"/>
+</sub>
+<sub name="BonoboPropertyBag" link="libbonobo-bonobo-property-bag.html">
+<sub name="Description" link="libbonobo-bonobo-property-bag.html#id2914814"/>
+<sub name="Details" link="libbonobo-bonobo-property-bag.html#id2914952">
+<sub name="BONOBO_PROPERTY_READABLE" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-READABLE-CAPS"/>
+<sub name="BONOBO_PROPERTY_WRITEABLE" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-WRITEABLE-CAPS"/>
+<sub name="BONOBO_PROPERTY_NO_LISTENING" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-NO-LISTENING-CAPS"/>
+<sub name="BONOBO_PROPERTY_NO_AUTONOTIFY" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-NO-AUTONOTIFY-CAPS"/>
+<sub name="struct BonoboPropertyBagPrivate" link="libbonobo-bonobo-property-bag.html#BonoboPropertyBagPrivate"/>
+<sub name="struct BonoboPropertyBag" link="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"/>
+<sub name="struct BonoboProperty" link="libbonobo-bonobo-property-bag.html#BonoboProperty"/>
+<sub name="struct BonoboPropertyPrivate" link="libbonobo-bonobo-property-bag.html#BonoboPropertyPrivate"/>
+<sub name="BonoboPropertyGetFn ()" link="libbonobo-bonobo-property-bag.html#BonoboPropertyGetFn"/>
+<sub name="BonoboPropertySetFn ()" link="libbonobo-bonobo-property-bag.html#BonoboPropertySetFn"/>
+<sub name="BonoboPropertyBagClass" link="libbonobo-bonobo-property-bag.html#BonoboPropertyBagClass"/>
+<sub name="BONOBO_PROPERTY_BAG_TYPE" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-BAG-TYPE-CAPS"/>
+<sub name="bonobo_property_bag_new ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new"/>
+<sub name="bonobo_property_bag_new_closure ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new-closure"/>
+<sub name="bonobo_property_bag_new_full ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new-full"/>
+<sub name="bonobo_property_bag_construct ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-construct"/>
+<sub name="bonobo_property_bag_add ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-add"/>
+<sub name="bonobo_property_bag_add_full ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-add-full"/>
+<sub name="bonobo_property_bag_remove ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-remove"/>
+<sub name="bonobo_property_bag_map_params ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-map-params"/>
+<sub name="bonobo_property_bag_get_prop_list ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-get-prop-list"/>
+</sub>
+</sub>
+<sub name="bonobo-arg" link="libbonobo-bonobo-arg.html">
+<sub name="Description" link="libbonobo-bonobo-arg.html#id2919998"/>
+<sub name="Details" link="libbonobo-bonobo-arg.html#id2920042">
+<sub name="BonoboArg" link="libbonobo-bonobo-arg.html#BonoboArg"/>
+<sub name="BonoboArgType" link="libbonobo-bonobo-arg.html#BonoboArgType"/>
+<sub name="BONOBO_ARG_NULL" link="libbonobo-bonobo-arg.html#BONOBO-ARG-NULL-CAPS"/>
+<sub name="BONOBO_ARG_BOOLEAN" link="libbonobo-bonobo-arg.html#BONOBO-ARG-BOOLEAN-CAPS"/>
+<sub name="BONOBO_ARG_SHORT" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SHORT-CAPS"/>
+<sub name="BONOBO_ARG_INT" link="libbonobo-bonobo-arg.html#BONOBO-ARG-INT-CAPS"/>
+<sub name="BONOBO_ARG_LONG" link="libbonobo-bonobo-arg.html#BONOBO-ARG-LONG-CAPS"/>
+<sub name="BONOBO_ARG_LONGLONG" link="libbonobo-bonobo-arg.html#BONOBO-ARG-LONGLONG-CAPS"/>
+<sub name="BONOBO_ARG_FLOAT" link="libbonobo-bonobo-arg.html#BONOBO-ARG-FLOAT-CAPS"/>
+<sub name="BONOBO_ARG_DOUBLE" link="libbonobo-bonobo-arg.html#BONOBO-ARG-DOUBLE-CAPS"/>
+<sub name="BONOBO_ARG_CHAR" link="libbonobo-bonobo-arg.html#BONOBO-ARG-CHAR-CAPS"/>
+<sub name="BONOBO_ARG_STRING" link="libbonobo-bonobo-arg.html#BONOBO-ARG-STRING-CAPS"/>
+<sub name="BONOBO_ARG_GET_GENERAL()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-GENERAL-CAPS"/>
+<sub name="BONOBO_ARG_SET_GENERAL()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-GENERAL-CAPS"/>
+<sub name="BONOBO_ARG_GET_BOOLEAN()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-BOOLEAN-CAPS"/>
+<sub name="BONOBO_ARG_SET_BOOLEAN()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-BOOLEAN-CAPS"/>
+<sub name="BONOBO_ARG_GET_SHORT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-SHORT-CAPS"/>
+<sub name="BONOBO_ARG_SET_SHORT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-SHORT-CAPS"/>
+<sub name="BONOBO_ARG_GET_INT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-INT-CAPS"/>
+<sub name="BONOBO_ARG_SET_INT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-INT-CAPS"/>
+<sub name="BONOBO_ARG_GET_LONG()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-LONG-CAPS"/>
+<sub name="BONOBO_ARG_SET_LONG()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-LONG-CAPS"/>
+<sub name="BONOBO_ARG_GET_LONGLONG()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-LONGLONG-CAPS"/>
+<sub name="BONOBO_ARG_SET_LONGLONG()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-LONGLONG-CAPS"/>
+<sub name="BONOBO_ARG_GET_FLOAT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-FLOAT-CAPS"/>
+<sub name="BONOBO_ARG_SET_FLOAT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-FLOAT-CAPS"/>
+<sub name="BONOBO_ARG_GET_DOUBLE()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-DOUBLE-CAPS"/>
+<sub name="BONOBO_ARG_SET_DOUBLE()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-DOUBLE-CAPS"/>
+<sub name="BONOBO_ARG_GET_CHAR()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-CHAR-CAPS"/>
+<sub name="BONOBO_ARG_SET_CHAR()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-CHAR-CAPS"/>
+<sub name="BONOBO_ARG_GET_STRING()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-STRING-CAPS"/>
+<sub name="BONOBO_ARG_SET_STRING()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-STRING-CAPS"/>
+<sub name="bonobo_arg_new ()" link="libbonobo-bonobo-arg.html#bonobo-arg-new"/>
+<sub name="bonobo_arg_new_from ()" link="libbonobo-bonobo-arg.html#bonobo-arg-new-from"/>
+<sub name="bonobo_arg_release ()" link="libbonobo-bonobo-arg.html#bonobo-arg-release"/>
+<sub name="bonobo_arg_copy ()" link="libbonobo-bonobo-arg.html#bonobo-arg-copy"/>
+<sub name="bonobo_arg_from_gvalue ()" link="libbonobo-bonobo-arg.html#bonobo-arg-from-gvalue"/>
+<sub name="bonobo_arg_type_from_gtype ()" link="libbonobo-bonobo-arg.html#bonobo-arg-type-from-gtype"/>
+<sub name="bonobo_arg_to_gvalue ()" link="libbonobo-bonobo-arg.html#bonobo-arg-to-gvalue"/>
+<sub name="bonobo_arg_type_to_gtype ()" link="libbonobo-bonobo-arg.html#bonobo-arg-type-to-gtype"/>
+<sub name="bonobo_arg_is_equal ()" link="libbonobo-bonobo-arg.html#bonobo-arg-is-equal"/>
+<sub name="bonobo_arg_type_is_equal ()" link="libbonobo-bonobo-arg.html#bonobo-arg-type-is-equal"/>
+</sub>
+</sub>
+<sub name="bonobo-property-bag-client" link="libbonobo-bonobo-property-bag-client.html">
+<sub name="Description" link="libbonobo-bonobo-property-bag-client.html#id2937806"/>
+<sub name="Details" link="libbonobo-bonobo-property-bag-client.html#id2937835">
+<sub name="bonobo_pbclient_get_type ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-type"/>
+<sub name="bonobo_pbclient_get_string ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-string"/>
+<sub name="bonobo_pbclient_get_default_string ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-string"/>
+<sub name="bonobo_pbclient_get_string_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-string-with-default"/>
+<sub name="bonobo_pbclient_get_short ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-short"/>
+<sub name="bonobo_pbclient_get_default_short ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-short"/>
+<sub name="bonobo_pbclient_get_short_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-short-with-default"/>
+<sub name="bonobo_pbclient_get_ushort ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ushort"/>
+<sub name="bonobo_pbclient_get_default_ushort ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-ushort"/>
+<sub name="bonobo_pbclient_get_ushort_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ushort-with-default"/>
+<sub name="bonobo_pbclient_get_long ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-long"/>
+<sub name="bonobo_pbclient_get_default_long ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-long"/>
+<sub name="bonobo_pbclient_get_long_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-long-with-default"/>
+<sub name="bonobo_pbclient_get_ulong ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ulong"/>
+<sub name="bonobo_pbclient_get_default_ulong ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-ulong"/>
+<sub name="bonobo_pbclient_get_ulong_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ulong-with-default"/>
+<sub name="bonobo_pbclient_get_float ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-float"/>
+<sub name="bonobo_pbclient_get_default_float ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-float"/>
+<sub name="bonobo_pbclient_get_float_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-float-with-default"/>
+<sub name="bonobo_pbclient_get_double ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-double"/>
+<sub name="bonobo_pbclient_get_default_double ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-double"/>
+<sub name="bonobo_pbclient_get_double_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-double-with-default"/>
+<sub name="bonobo_pbclient_get_boolean ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-boolean"/>
+<sub name="bonobo_pbclient_get_default_boolean ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-boolean"/>
+<sub name="bonobo_pbclient_get_boolean_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-boolean-with-default"/>
+<sub name="bonobo_pbclient_get_char ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-char"/>
+<sub name="bonobo_pbclient_get_default_char ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-char"/>
+<sub name="bonobo_pbclient_get_char_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-char-with-default"/>
+<sub name="bonobo_pbclient_get_value ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-value"/>
+<sub name="bonobo_pbclient_get_default_value ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-value"/>
+<sub name="bonobo_pbclient_set_string ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-string"/>
+<sub name="bonobo_pbclient_set_short ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-short"/>
+<sub name="bonobo_pbclient_set_ushort ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-ushort"/>
+<sub name="bonobo_pbclient_set_long ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-long"/>
+<sub name="bonobo_pbclient_set_ulong ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-ulong"/>
+<sub name="bonobo_pbclient_set_float ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-float"/>
+<sub name="bonobo_pbclient_set_double ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-double"/>
+<sub name="bonobo_pbclient_set_boolean ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-boolean"/>
+<sub name="bonobo_pbclient_set_char ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-char"/>
+<sub name="bonobo_pbclient_set_value ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-value"/>
+<sub name="bonobo_pbclient_get_doc_title ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-doc-title"/>
+<sub name="bonobo_pbclient_get_doc ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-doc"/>
+<sub name="bonobo_pbclient_get_keys ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-keys"/>
+<sub name="bonobo_pbclient_free_keys ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-free-keys"/>
+<sub name="bonobo_pbclient_get_flags ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-flags"/>
+<sub name="bonobo_pbclient_set ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set"/>
+<sub name="bonobo_pbclient_get ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get"/>
+<sub name="bonobo_pbclient_setv ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-setv"/>
+<sub name="bonobo_pbclient_getv ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-getv"/>
+<sub name="bonobo_property_bag_client_setv" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-setv"/>
+<sub name="bonobo_property_bag_client_getv" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-getv"/>
+<sub name="bonobo_property_bag_client_get_property_type" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-property-type"/>
+<sub name="bonobo_property_bag_client_get_value_gboolean" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gboolean"/>
+<sub name="bonobo_property_bag_client_get_value_gint" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gint"/>
+<sub name="bonobo_property_bag_client_get_value_glong" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-glong"/>
+<sub name="bonobo_property_bag_client_get_value_gfloat" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gfloat"/>
+<sub name="bonobo_property_bag_client_get_value_gdouble" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gdouble"/>
+<sub name="bonobo_property_bag_client_get_value_string" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-string"/>
+<sub name="bonobo_property_bag_client_get_value_any()" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-any"/>
+<sub name="bonobo_property_bag_client_get_default_gboolean" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gboolean"/>
+<sub name="bonobo_property_bag_client_get_default_gint" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gint"/>
+<sub name="bonobo_property_bag_client_get_default_glong" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-glong"/>
+<sub name="bonobo_property_bag_client_get_default_gfloat" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gfloat"/>
+<sub name="bonobo_property_bag_client_get_default_gdouble" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gdouble"/>
+<sub name="bonobo_property_bag_client_get_default_string" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-string"/>
+<sub name="bonobo_property_bag_client_get_default_any()" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-any"/>
+<sub name="bonobo_property_bag_client_set_value_gboolean" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gboolean"/>
+<sub name="bonobo_property_bag_client_set_value_gint" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gint"/>
+<sub name="bonobo_property_bag_client_set_value_glong" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-glong"/>
+<sub name="bonobo_property_bag_client_set_value_gfloat" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gfloat"/>
+<sub name="bonobo_property_bag_client_set_value_gdouble" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gdouble"/>
+<sub name="bonobo_property_bag_client_set_value_string" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-string"/>
+<sub name="bonobo_property_bag_client_set_value_any" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-any"/>
+<sub name="bonobo_property_bag_client_get_docstring" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-docstring"/>
+<sub name="bonobo_property_bag_client_get_flags" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-flags"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-property-bag-client.html#id2944913"/>
+</sub>
+</sub>
+<sub name="Monikers" link="monikers.html">
+<sub name="BonoboMoniker" link="libbonobo-bonobo-moniker.html">
+<sub name="Description" link="libbonobo-bonobo-moniker.html#id2945085"/>
+<sub name="Details" link="libbonobo-bonobo-moniker.html#id2945137">
+<sub name="struct BonoboMonikerPrivate" link="libbonobo-bonobo-moniker.html#BonoboMonikerPrivate"/>
+<sub name="BONOBO_MONIKER_TYPE" link="libbonobo-bonobo-moniker.html#BONOBO-MONIKER-TYPE-CAPS"/>
+<sub name="BonoboMoniker" link="libbonobo-bonobo-moniker.html#BonoboMoniker"/>
+<sub name="BonoboMonikerClass" link="libbonobo-bonobo-moniker.html#BonoboMonikerClass"/>
+<sub name="bonobo_moniker_construct ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-construct"/>
+<sub name="bonobo_moniker_get_parent ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-parent"/>
+<sub name="bonobo_moniker_set_parent ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-set-parent"/>
+<sub name="bonobo_moniker_get_name ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-name"/>
+<sub name="bonobo_moniker_get_name_full ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-name-full"/>
+<sub name="bonobo_moniker_get_name_escaped ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-name-escaped"/>
+<sub name="bonobo_moniker_set_name ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-set-name"/>
+<sub name="bonobo_moniker_get_prefix ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-prefix"/>
+<sub name="bonobo_moniker_set_case_sensitive ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-set-case-sensitive"/>
+<sub name="bonobo_moniker_get_case_sensitive ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-case-sensitive"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-moniker.html#id2946107"/>
+</sub>
+<sub name="BonoboMonikerSimple" link="libbonobo-bonobo-moniker-simple.html">
+<sub name="Description" link="libbonobo-bonobo-moniker-simple.html#id2947835"/>
+<sub name="Details" link="libbonobo-bonobo-moniker-simple.html#id2947936">
+<sub name="BONOBO_MONIKER_SIMPLE_TYPE" link="libbonobo-bonobo-moniker-simple.html#BONOBO-MONIKER-SIMPLE-TYPE-CAPS"/>
+<sub name="BONOBO_TYPE_RESOLVE_FLAG" link="libbonobo-bonobo-moniker-simple.html#BONOBO-TYPE-RESOLVE-FLAG-CAPS"/>
+<sub name="BONOBO_RESOLVE_FLAG_TYPE" link="libbonobo-bonobo-moniker-simple.html#BONOBO-RESOLVE-FLAG-TYPE-CAPS"/>
+<sub name="struct BonoboMonikerSimple" link="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimple"/>
+<sub name="struct BonoboMonikerSimplePrivate" link="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimplePrivate"/>
+<sub name="BonoboMonikerSimpleResolveFn ()" link="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimpleResolveFn"/>
+<sub name="BonoboMonikerSimpleClass" link="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimpleClass"/>
+<sub name="bonobo_moniker_simple_get_type ()" link="libbonobo-bonobo-moniker-simple.html#bonobo-moniker-simple-get-type"/>
+<sub name="bonobo_moniker_simple_construct ()" link="libbonobo-bonobo-moniker-simple.html#bonobo-moniker-simple-construct"/>
+<sub name="bonobo_moniker_simple_new ()" link="libbonobo-bonobo-moniker-simple.html#bonobo-moniker-simple-new"/>
+<sub name="bonobo_moniker_simple_new_closure ()" link="libbonobo-bonobo-moniker-simple.html#bonobo-moniker-simple-new-closure"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-moniker-simple.html#id2948607"/>
+</sub>
+<sub name="bonobo-moniker-util" link="libbonobo-bonobo-moniker-util.html">
+<sub name="Description" link="libbonobo-bonobo-moniker-util.html#id2950603"/>
+<sub name="Details" link="libbonobo-bonobo-moniker-util.html#id2950699">
+<sub name="bonobo_get_object ()" link="libbonobo-bonobo-moniker-util.html#bonobo-get-object"/>
+<sub name="bonobo_moniker_client_new_from_name ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-new-from-name"/>
+<sub name="bonobo_moniker_client_get_name ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-get-name"/>
+<sub name="bonobo_moniker_client_resolve_default ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-resolve-default"/>
+<sub name="bonobo_moniker_client_equal ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-equal"/>
+<sub name="BonoboMonikerAsyncFn ()" link="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn"/>
+<sub name="bonobo_get_object_async ()" link="libbonobo-bonobo-moniker-util.html#bonobo-get-object-async"/>
+<sub name="bonobo_moniker_client_new_from_name_async ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-new-from-name-async"/>
+<sub name="bonobo_moniker_resolve_async ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-resolve-async"/>
+<sub name="bonobo_moniker_resolve_async_default ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-resolve-async-default"/>
+<sub name="bonobo_moniker_util_get_parent_name ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-get-parent-name"/>
+<sub name="bonobo_moniker_util_qi_return ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-qi-return"/>
+<sub name="bonobo_moniker_util_parse_name ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-parse-name"/>
+<sub name="bonobo_moniker_util_seek_std_separator ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-seek-std-separator"/>
+<sub name="bonobo_moniker_util_escape ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-escape"/>
+<sub name="bonobo_moniker_util_unescape ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-unescape"/>
+<sub name="bonobo_url_register ()" link="libbonobo-bonobo-moniker-util.html#bonobo-url-register"/>
+<sub name="bonobo_url_unregister ()" link="libbonobo-bonobo-moniker-util.html#bonobo-url-unregister"/>
+<sub name="bonobo_url_lookup ()" link="libbonobo-bonobo-moniker-util.html#bonobo-url-lookup"/>
+</sub>
+</sub>
+<sub name="BonoboMonikerExtender" link="libbonobo-bonobo-moniker-extender.html">
+<sub name="Description" link="libbonobo-bonobo-moniker-extender.html#id2958070"/>
+<sub name="Details" link="libbonobo-bonobo-moniker-extender.html#id2956216">
+<sub name="BONOBO_MONIKER_EXTENDER_TYPE" link="libbonobo-bonobo-moniker-extender.html#BONOBO-MONIKER-EXTENDER-TYPE-CAPS"/>
+<sub name="struct BonoboMonikerExtender" link="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtender"/>
+<sub name="BonoboMonikerExtenderFn ()" link="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtenderFn"/>
+<sub name="BonoboMonikerExtenderClass" link="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtenderClass"/>
+<sub name="bonobo_moniker_extender_new ()" link="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-extender-new"/>
+<sub name="bonobo_moniker_find_extender ()" link="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-find-extender"/>
+<sub name="bonobo_moniker_use_extender ()" link="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-use-extender"/>
+</sub>
+</sub>
+<sub name="BonoboItemHandler" link="libbonobo-bonobo-item-handler.html">
+<sub name="Description" link="libbonobo-bonobo-item-handler.html#id2956965">
+<sub name="Implementing it" link="libbonobo-bonobo-item-handler.html#id2957006"/>
+<sub name="Sample functions" link="libbonobo-bonobo-item-handler.html#id2957080"/>
+</sub>
+<sub name="Details" link="libbonobo-bonobo-item-handler.html#id2957154">
+<sub name="BONOBO_ITEM_HANDLER_TYPE" link="libbonobo-bonobo-item-handler.html#BONOBO-ITEM-HANDLER-TYPE-CAPS"/>
+<sub name="struct BonoboItemHandlerPrivate" link="libbonobo-bonobo-item-handler.html#BonoboItemHandlerPrivate"/>
+<sub name="struct BonoboItemHandler" link="libbonobo-bonobo-item-handler.html#BonoboItemHandler"/>
+<sub name="BonoboItemHandlerClass" link="libbonobo-bonobo-item-handler.html#BonoboItemHandlerClass"/>
+<sub name="bonobo_item_handler_new ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-handler-new"/>
+<sub name="bonobo_item_handler_new_closure ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-handler-new-closure"/>
+<sub name="bonobo_item_handler_construct ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-handler-construct"/>
+<sub name="BonoboItemOption" link="libbonobo-bonobo-item-handler.html#BonoboItemOption"/>
+<sub name="bonobo_item_option_parse ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-option-parse"/>
+<sub name="bonobo_item_options_free ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-options-free"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-item-handler.html#id2959366"/>
+</sub>
+<sub name="BonoboItemContainer" link="libbonobo-bonobo-item-container.html">
+<sub name="Description" link="libbonobo-bonobo-item-container.html#id2959528"/>
+<sub name="Details" link="libbonobo-bonobo-item-container.html#id2959548">
+<sub name="BONOBO_ITEM_CONTAINER_TYPE" link="libbonobo-bonobo-item-container.html#BONOBO-ITEM-CONTAINER-TYPE-CAPS"/>
+<sub name="BonoboClientSiteList" link="libbonobo-bonobo-item-container.html#BonoboClientSiteList"/>
+<sub name="struct BonoboItemContainerPrivate" link="libbonobo-bonobo-item-container.html#BonoboItemContainerPrivate"/>
+<sub name="BonoboItemContainer" link="libbonobo-bonobo-item-container.html#BonoboItemContainer"/>
+<sub name="BonoboItemContainerClass" link="libbonobo-bonobo-item-container.html#BonoboItemContainerClass"/>
+<sub name="bonobo_item_container_new ()" link="libbonobo-bonobo-item-container.html#bonobo-item-container-new"/>
+<sub name="bonobo_item_container_add ()" link="libbonobo-bonobo-item-container.html#bonobo-item-container-add"/>
+<sub name="bonobo_item_container_remove_by_name ()" link="libbonobo-bonobo-item-container.html#bonobo-item-container-remove-by-name"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-item-container.html#id2961217"/>
+</sub>
+<sub name="bonobo-moniker-context" link="libbonobo-bonobo-moniker-context.html">
+<sub name="Description" link="libbonobo-bonobo-moniker-context.html#id2961634"/>
+<sub name="Details" link="libbonobo-bonobo-moniker-context.html#id2961647">
+<sub name="struct BonoboMonikerContextPrivate" link="libbonobo-bonobo-moniker-context.html#BonoboMonikerContextPrivate"/>
+<sub name="BonoboMonikerContext" link="libbonobo-bonobo-moniker-context.html#BonoboMonikerContext"/>
+<sub name="BonoboMonikerContextClass" link="libbonobo-bonobo-moniker-context.html#BonoboMonikerContextClass"/>
+<sub name="bonobo_moniker_context_new ()" link="libbonobo-bonobo-moniker-context.html#bonobo-moniker-context-new"/>
+</sub>
+</sub>
+</sub>
+<sub name="Storages and Streams" link="streams.html">
+<sub name="bonobo-storage-memory" link="libbonobo-bonobo-storage-memory.html">
+<sub name="Description" link="libbonobo-bonobo-storage-memory.html#id2963368"/>
+<sub name="Details" link="libbonobo-bonobo-storage-memory.html#id2963381">
+<sub name="BONOBO_STORAGE_MEM_TYPE" link="libbonobo-bonobo-storage-memory.html#BONOBO-STORAGE-MEM-TYPE-CAPS"/>
+<sub name="struct BonoboStorageMemPriv" link="libbonobo-bonobo-storage-memory.html#BonoboStorageMemPriv"/>
+<sub name="BonoboStorageMem" link="libbonobo-bonobo-storage-memory.html#BonoboStorageMem"/>
+<sub name="BonoboStorageMemClass" link="libbonobo-bonobo-storage-memory.html#BonoboStorageMemClass"/>
+<sub name="bonobo_storage_mem_create ()" link="libbonobo-bonobo-storage-memory.html#bonobo-storage-mem-create"/>
+</sub>
+</sub>
+<sub name="BonoboStreamMem" link="libbonobo-bonobo-stream-memory.html">
+<sub name="Description" link="libbonobo-bonobo-stream-memory.html#id2962786"/>
+<sub name="Details" link="libbonobo-bonobo-stream-memory.html#id2962827">
+<sub name="struct BonoboStreamMem" link="libbonobo-bonobo-stream-memory.html#BonoboStreamMem"/>
+<sub name="struct BonoboStreamMemPrivate" link="libbonobo-bonobo-stream-memory.html#BonoboStreamMemPrivate"/>
+<sub name="BONOBO_STREAM_MEM_TYPE" link="libbonobo-bonobo-stream-memory.html#BONOBO-STREAM-MEM-TYPE-CAPS"/>
+<sub name="BonoboStreamMemClass" link="libbonobo-bonobo-stream-memory.html#BonoboStreamMemClass"/>
+<sub name="bonobo_stream_mem_construct ()" link="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-construct"/>
+<sub name="bonobo_stream_mem_create ()" link="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-create"/>
+<sub name="bonobo_stream_mem_get_buffer ()" link="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-get-buffer"/>
+<sub name="bonobo_stream_mem_get_size ()" link="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-get-size"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-stream-memory.html#id2963842"/>
+</sub>
+<sub name="bonobo-storage" link="libbonobo-bonobo-storage.html">
+<sub name="Description" link="libbonobo-bonobo-storage.html#id2964007"/>
+<sub name="Details" link="libbonobo-bonobo-storage.html#id2964058">
+<sub name="BonoboStream" link="libbonobo-bonobo-storage.html#BonoboStream"/>
+<sub name="BONOBO_STREAM()" link="libbonobo-bonobo-storage.html#BONOBO-STREAM-CAPS"/>
+<sub name="BONOBO_STREAM_CLASS()" link="libbonobo-bonobo-storage.html#BONOBO-STREAM-CLASS-CAPS"/>
+<sub name="BonoboStorage" link="libbonobo-bonobo-storage.html#BonoboStorage"/>
+<sub name="BONOBO_STORAGE()" link="libbonobo-bonobo-storage.html#BONOBO-STORAGE-CAPS"/>
+<sub name="BONOBO_STORAGE_CLASS()" link="libbonobo-bonobo-storage.html#BONOBO-STORAGE-CLASS-CAPS"/>
+<sub name="bonobo_storage_copy_to ()" link="libbonobo-bonobo-storage.html#bonobo-storage-copy-to"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-storage.html#id2965446"/>
+</sub>
+<sub name="bonobo-stream-client" link="libbonobo-bonobo-stream-client.html">
+<sub name="Description" link="libbonobo-bonobo-stream-client.html#id2965882"/>
+<sub name="Details" link="libbonobo-bonobo-stream-client.html#id2965933">
+<sub name="bonobo_stream_client_write ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write"/>
+<sub name="bonobo_stream_client_read ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-read"/>
+<sub name="bonobo_stream_client_write_string ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write-string"/>
+<sub name="bonobo_stream_client_printf ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-printf"/>
+<sub name="bonobo_stream_client_read_string ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-read-string"/>
+<sub name="bonobo_stream_client_get_length ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-get-length"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-stream-client.html#id2967362"/>
+</sub>
+</sub>
+<sub name="Persistency" link="persist.html">
+<sub name="BonoboPersist" link="libbonobo-bonobo-persist.html">
+<sub name="Description" link="libbonobo-bonobo-persist.html#id2970280"/>
+<sub name="Details" link="libbonobo-bonobo-persist.html#id2970302">
+<sub name="BONOBO_PERSIST_TYPE" link="libbonobo-bonobo-persist.html#BONOBO-PERSIST-TYPE-CAPS"/>
+<sub name="struct BonoboPersistPrivate" link="libbonobo-bonobo-persist.html#BonoboPersistPrivate"/>
+<sub name="BonoboPersist" link="libbonobo-bonobo-persist.html#BonoboPersist"/>
+<sub name="BonoboPersistClass" link="libbonobo-bonobo-persist.html#BonoboPersistClass"/>
+<sub name="bonobo_persist_generate_content_types ()" link="libbonobo-bonobo-persist.html#bonobo-persist-generate-content-types"/>
+<sub name="bonobo_persist_construct ()" link="libbonobo-bonobo-persist.html#bonobo-persist-construct"/>
+<sub name="bonobo_persist_set_dirty ()" link="libbonobo-bonobo-persist.html#bonobo-persist-set-dirty"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-persist.html#id2969278"/>
+</sub>
+<sub name="BonoboPersistFile" link="libbonobo-bonobo-persist-file.html">
+<sub name="Description" link="libbonobo-bonobo-persist-file.html#id2969814"/>
+<sub name="Details" link="libbonobo-bonobo-persist-file.html#id2969416">
+<sub name="BONOBO_PERSIST_FILE_TYPE" link="libbonobo-bonobo-persist-file.html#BONOBO-PERSIST-FILE-TYPE-CAPS"/>
+<sub name="struct BonoboPersistFilePrivate" link="libbonobo-bonobo-persist-file.html#BonoboPersistFilePrivate"/>
+<sub name="struct BonoboPersistFile" link="libbonobo-bonobo-persist-file.html#BonoboPersistFile"/>
+<sub name="BonoboPersistFileIOFn ()" link="libbonobo-bonobo-persist-file.html#BonoboPersistFileIOFn"/>
+<sub name="BonoboPersistFileClass" link="libbonobo-bonobo-persist-file.html#BonoboPersistFileClass"/>
+<sub name="bonobo_persist_file_new ()" link="libbonobo-bonobo-persist-file.html#bonobo-persist-file-new"/>
+<sub name="bonobo_persist_file_construct ()" link="libbonobo-bonobo-persist-file.html#bonobo-persist-file-construct"/>
+</sub>
+<sub name="See Also" link="libbonobo-bonobo-persist-file.html#id2971250"/>
+</sub>
+<sub name="BonoboPersistStream" link="libbonobo-bonobo-persist-stream.html">
+<sub name="Description" link="libbonobo-bonobo-persist-stream.html#id2971521"/>
+<sub name="Details" link="libbonobo-bonobo-persist-stream.html#id2972529">
+<sub name="BONOBO_PERSIST_STREAM_TYPE" link="libbonobo-bonobo-persist-stream.html#BONOBO-PERSIST-STREAM-TYPE-CAPS"/>
+<sub name="struct BonoboPersistStreamPrivate" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamPrivate"/>
+<sub name="struct BonoboPersistStream" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStream"/>
+<sub name="BonoboPersistStreamIOFn ()" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn"/>
+<sub name="BonoboPersistStreamTypesFn ()" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamTypesFn"/>
+<sub name="BonoboPersistStreamClass" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamClass"/>
+<sub name="bonobo_persist_stream_new ()" link="libbonobo-bonobo-persist-stream.html#bonobo-persist-stream-new"/>
+<sub name="bonobo_persist_stream_construct ()" link="libbonobo-bonobo-persist-stream.html#bonobo-persist-stream-construct"/>
+</sub>
+</sub>
+<sub name="bonobo-persist-client" link="libbonobo-bonobo-persist-client.html">
+<sub name="Description" link="libbonobo-bonobo-persist-client.html#id2974831"/>
+<sub name="Details" link="libbonobo-bonobo-persist-client.html#id2974843">
+<sub name="bonobo_object_save_to_stream ()" link="libbonobo-bonobo-persist-client.html#bonobo-object-save-to-stream"/>
+<sub name="bonobo_object_from_stream ()" link="libbonobo-bonobo-persist-client.html#bonobo-object-from-stream"/>
+</sub>
+</sub>
+</sub>
+<sub name="Miscellaneous" link="misc.html">
+<sub name="Debugging" link="debugging.html">
+<sub name="Debugging" link="debugging.html#id2975714">
+<sub name="Read the FAQ" link="debugging.html#id2975732"/>
+<sub name="Versions" link="debugging.html#id2975745"/>
+<sub name="Correct install" link="debugging.html#id2975766"/>
+<sub name="Stale processes" link="debugging.html#id2975781"/>
+<sub name="Debugging" link="debugging.html#id2975809"/>
+<sub name="CORBA method tracing" link="debugging.html#id2975438"/>
+<sub name="Order of execution" link="debugging.html#id2975460"/>
+<sub name="Nothing will activate!" link="debugging.html#id2975476"/>
+<sub name="Nothing seems to happen, the code just locks" link="debugging.html#id2975499"/>
+<sub name="Getting more information" link="debugging.html#id2975532"/>
+<sub name="Debugging bonobo-activation" link="debugging.html#id2975576"/>
+<sub name="The last resort" link="debugging.html#id2975605"/>
+<sub name="Talk to the experts." link="debugging.html#id2975619"/>
+</sub>
+</sub>
+<sub name="Common Questions" link="libbonobo-faq.html">
+<sub name="Questions and Answers" link="libbonobo-faq.html#id2975149"/>
+</sub>
+<sub name="bonobo-config-database" link="libbonobo-bonobo-config-database.html">
+<sub name="Description" link="libbonobo-bonobo-config-database.html#id2980539"/>
+<sub name="Details" link="libbonobo-bonobo-config-database.html#id2980552">
+<sub name="bonobo_config_get_string ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-string"/>
+<sub name="bonobo_config_get_string_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-string-with-default"/>
+<sub name="bonobo_config_get_short ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-short"/>
+<sub name="bonobo_config_get_short_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-short-with-default"/>
+<sub name="bonobo_config_get_ushort ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-ushort"/>
+<sub name="bonobo_config_get_ushort_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-ushort-with-default"/>
+<sub name="bonobo_config_get_long ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-long"/>
+<sub name="bonobo_config_get_long_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-long-with-default"/>
+<sub name="bonobo_config_get_ulong ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-ulong"/>
+<sub name="bonobo_config_get_ulong_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-ulong-with-default"/>
+<sub name="bonobo_config_get_float ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-float"/>
+<sub name="bonobo_config_get_float_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-float-with-default"/>
+<sub name="bonobo_config_get_double ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-double"/>
+<sub name="bonobo_config_get_double_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-double-with-default"/>
+<sub name="bonobo_config_get_boolean ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-boolean"/>
+<sub name="bonobo_config_get_boolean_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-boolean-with-default"/>
+<sub name="bonobo_config_get_char ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-char"/>
+<sub name="bonobo_config_get_char_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-char-with-default"/>
+<sub name="bonobo_config_get_value ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-value"/>
+<sub name="bonobo_config_set_string ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-string"/>
+<sub name="bonobo_config_set_short ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-short"/>
+<sub name="bonobo_config_set_ushort ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-ushort"/>
+<sub name="bonobo_config_set_long ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-long"/>
+<sub name="bonobo_config_set_ulong ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-ulong"/>
+<sub name="bonobo_config_set_float ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-float"/>
+<sub name="bonobo_config_set_double ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-double"/>
+<sub name="bonobo_config_set_boolean ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-boolean"/>
+<sub name="bonobo_config_set_char ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-char"/>
+<sub name="bonobo_config_set_value ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-value"/>
+</sub>
+</sub>
+</sub>
+</chapters>
+<functions>
+<function name="bonobo_is_initialized ()" link="libbonobo-bonobo-main.html#bonobo-is-initialized"/>
+<function name="bonobo_init ()" link="libbonobo-bonobo-main.html#bonobo-init"/>
+<function name="bonobo_init_full ()" link="libbonobo-bonobo-main.html#bonobo-init-full"/>
+<function name="bonobo_debug_shutdown ()" link="libbonobo-bonobo-main.html#bonobo-debug-shutdown"/>
+<function name="bonobo_main ()" link="libbonobo-bonobo-main.html#bonobo-main"/>
+<function name="bonobo_main_quit ()" link="libbonobo-bonobo-main.html#bonobo-main-quit"/>
+<function name="bonobo_activate ()" link="libbonobo-bonobo-main.html#bonobo-activate"/>
+<function name="bonobo_setup_x_error_handler ()" link="libbonobo-bonobo-main.html#bonobo-setup-x-error-handler"/>
+<function name="bonobo_orb ()" link="libbonobo-bonobo-main.html#bonobo-orb"/>
+<function name="bonobo_poa ()" link="libbonobo-bonobo-main.html#bonobo-poa"/>
+<function name="bonobo_poa_manager ()" link="libbonobo-bonobo-main.html#bonobo-poa-manager"/>
+<function name="struct BonoboRunningContextPrivate" link="libbonobo-bonobo-running-context.html#BonoboRunningContextPrivate"/>
+<function name="BonoboRunningContext" link="libbonobo-bonobo-running-context.html#BonoboRunningContext"/>
+<function name="BonoboRunningContextClass" link="libbonobo-bonobo-running-context.html#BonoboRunningContextClass"/>
+<function name="bonobo_running_context_get_type ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-get-type"/>
+<function name="bonobo_running_context_new ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-new"/>
+<function name="bonobo_running_context_add_object ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-add-object"/>
+<function name="bonobo_running_context_remove_object ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-remove-object"/>
+<function name="bonobo_running_context_ignore_object ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-ignore-object"/>
+<function name="bonobo_running_context_trace_objects ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-trace-objects"/>
+<function name="bonobo_running_context_at_exit_unref ()" link="libbonobo-bonobo-running-context.html#bonobo-running-context-at-exit-unref"/>
+<function name="bonobo_context_init ()" link="libbonobo-bonobo-shutdown.html#bonobo-context-init"/>
+<function name="bonobo_context_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-context-shutdown"/>
+<function name="bonobo_object_init ()" link="libbonobo-bonobo-shutdown.html#bonobo-object-init"/>
+<function name="bonobo_object_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-object-shutdown"/>
+<function name="bonobo_exception_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-exception-shutdown"/>
+<function name="bonobo_property_bag_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-property-bag-shutdown"/>
+<function name="bonobo_running_context_shutdown ()" link="libbonobo-bonobo-shutdown.html#bonobo-running-context-shutdown"/>
+<function name="_()" link="libbonobo-bonobo-i18n.html#gettext-macro"/>
+<function name="N_()" link="libbonobo-bonobo-i18n.html#N--CAPS"/>
+<function name="textdomain()" link="libbonobo-bonobo-i18n.html#textdomain"/>
+<function name="gettext()" link="libbonobo-bonobo-i18n.html#gettext"/>
+<function name="dgettext()" link="libbonobo-bonobo-i18n.html#dgettext"/>
+<function name="dcgettext()" link="libbonobo-bonobo-i18n.html#dcgettext"/>
+<function name="bindtextdomain()" link="libbonobo-bonobo-i18n.html#bindtextdomain"/>
+<function name="BONOBO_BOILERPLATE()" link="libbonobo-bonobo-macros.html#BONOBO-BOILERPLATE-CAPS"/>
+<function name="BONOBO_CALL_PARENT()" link="libbonobo-bonobo-macros.html#BONOBO-CALL-PARENT-CAPS"/>
+<function name="BONOBO_CALL_PARENT_WITH_DEFAULT()" link="libbonobo-bonobo-macros.html#BONOBO-CALL-PARENT-WITH-DEFAULT-CAPS"/>
+<function name="BONOBO_CLASS_BOILERPLATE()" link="libbonobo-bonobo-macros.html#BONOBO-CLASS-BOILERPLATE-CAPS"/>
+<function name="BONOBO_REGISTER_TYPE()" link="libbonobo-bonobo-macros.html#BONOBO-REGISTER-TYPE-CAPS"/>
+<function name="BONOBO_CLASS_BOILERPLATE_FULL()" link="libbonobo-bonobo-macros.html#BONOBO-CLASS-BOILERPLATE-FULL-CAPS"/>
+<function name="BONOBO_REGISTER_TYPE_FULL()" link="libbonobo-bonobo-macros.html#BONOBO-REGISTER-TYPE-FULL-CAPS"/>
+<function name="bonobo_corba_object_type_register_static ()" link="libbonobo-bonobo-types.html#bonobo-corba-object-type-register-static"/>
+<function name="bonobo_unknown_get_type ()" link="libbonobo-bonobo-types.html#bonobo-unknown-get-type"/>
+<function name="bonobo_corba_any_get_type ()" link="libbonobo-bonobo-types.html#bonobo-corba-any-get-type"/>
+<function name="bonobo_corba_object_get_type ()" link="libbonobo-bonobo-types.html#bonobo-corba-object-get-type"/>
+<function name="bonobo_corba_typecode_get_type ()" link="libbonobo-bonobo-types.html#bonobo-corba-typecode-get-type"/>
+<function name="bonobo_corba_exception_get_type ()" link="libbonobo-bonobo-types.html#bonobo-corba-exception-get-type"/>
+<function name="BONOBO_TYPE_UNKNOWN" link="libbonobo-bonobo-types.html#BONOBO-TYPE-UNKNOWN-CAPS"/>
+<function name="BONOBO_TYPE_CORBA_ANY" link="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-ANY-CAPS"/>
+<function name="BONOBO_TYPE_CORBA_OBJECT" link="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-OBJECT-CAPS"/>
+<function name="BONOBO_TYPE_CORBA_TYPECODE" link="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-TYPECODE-CAPS"/>
+<function name="BONOBO_TYPE_CORBA_EXCEPTION" link="libbonobo-bonobo-types.html#BONOBO-TYPE-CORBA-EXCEPTION-CAPS"/>
+<function name="BONOBO_VALUE_HOLDS_UNKNOWN()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-UNKNOWN-CAPS"/>
+<function name="BONOBO_VALUE_HOLDS_CORBA_ANY()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-ANY-CAPS"/>
+<function name="BONOBO_VALUE_HOLDS_CORBA_OBJECT()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-OBJECT-CAPS"/>
+<function name="BONOBO_VALUE_HOLDS_CORBA_TYPECODE()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-TYPECODE-CAPS"/>
+<function name="BONOBO_VALUE_HOLDS_CORBA_EXCEPTION()" link="libbonobo-bonobo-types.html#BONOBO-VALUE-HOLDS-CORBA-EXCEPTION-CAPS"/>
+<function name="bonobo_value_get_unknown ()" link="libbonobo-bonobo-types.html#bonobo-value-get-unknown"/>
+<function name="bonobo_value_get_corba_any ()" link="libbonobo-bonobo-types.html#bonobo-value-get-corba-any"/>
+<function name="bonobo_value_get_corba_object ()" link="libbonobo-bonobo-types.html#bonobo-value-get-corba-object"/>
+<function name="bonobo_value_get_corba_typecode ()" link="libbonobo-bonobo-types.html#bonobo-value-get-corba-typecode"/>
+<function name="bonobo_value_get_corba_exception ()" link="libbonobo-bonobo-types.html#bonobo-value-get-corba-exception"/>
+<function name="bonobo_value_set_unknown ()" link="libbonobo-bonobo-types.html#bonobo-value-set-unknown"/>
+<function name="bonobo_value_set_corba_any ()" link="libbonobo-bonobo-types.html#bonobo-value-set-corba-any"/>
+<function name="bonobo_value_set_corba_typecode ()" link="libbonobo-bonobo-types.html#bonobo-value-set-corba-typecode"/>
+<function name="bonobo_value_set_corba_environment ()" link="libbonobo-bonobo-types.html#bonobo-value-set-corba-environment"/>
+<function name="bonobo_closure_invoke_va_list ()" link="libbonobo-bonobo-types.html#bonobo-closure-invoke-va-list"/>
+<function name="bonobo_closure_invoke ()" link="libbonobo-bonobo-types.html#bonobo-closure-invoke"/>
+<function name="bonobo_closure_store ()" link="libbonobo-bonobo-types.html#bonobo-closure-store"/>
+<function name="bonobo_context_get ()" link="libbonobo-bonobo-context.html#bonobo-context-get"/>
+<function name="bonobo_context_add ()" link="libbonobo-bonobo-context.html#bonobo-context-add"/>
+<function name="bonobo_context_running_get ()" link="libbonobo-bonobo-context.html#bonobo-context-running-get"/>
+<function name="bonobo_running_context_auto_exit_unref ()" link="libbonobo-bonobo-context.html#bonobo-running-context-auto-exit-unref"/>
+<function name="bonobo_exception_set()" link="libbonobo-bonobo-exception.html#bonobo-exception-set"/>
+<function name="bonobo_return_if_fail()" link="libbonobo-bonobo-exception.html#bonobo-return-if-fail"/>
+<function name="bonobo_return_val_if_fail()" link="libbonobo-bonobo-exception.html#bonobo-return-val-if-fail"/>
+<function name="BONOBO_EX()" link="libbonobo-bonobo-exception.html#BONOBO-EX-CAPS"/>
+<function name="BONOBO_USER_EX()" link="libbonobo-bonobo-exception.html#BONOBO-USER-EX-CAPS"/>
+<function name="BONOBO_EX_REPOID()" link="libbonobo-bonobo-exception.html#BONOBO-EX-REPOID-CAPS"/>
+<function name="BONOBO_RET_EX()" link="libbonobo-bonobo-exception.html#BONOBO-RET-EX-CAPS"/>
+<function name="BONOBO_RET_VAL_EX()" link="libbonobo-bonobo-exception.html#BONOBO-RET-VAL-EX-CAPS"/>
+<function name="BonoboExceptionFn ()" link="libbonobo-bonobo-exception.html#BonoboExceptionFn"/>
+<function name="bonobo_exception_get_text ()" link="libbonobo-bonobo-exception.html#bonobo-exception-get-text"/>
+<function name="bonobo_exception_repoid_to_text ()" link="libbonobo-bonobo-exception.html#bonobo-exception-repoid-to-text"/>
+<function name="bonobo_exception_add_handler_str ()" link="libbonobo-bonobo-exception.html#bonobo-exception-add-handler-str"/>
+<function name="bonobo_exception_add_handler_fn ()" link="libbonobo-bonobo-exception.html#bonobo-exception-add-handler-fn"/>
+<function name="bonobo_exception_general_error_set ()" link="libbonobo-bonobo-exception.html#bonobo-exception-general-error-set"/>
+<function name="bonobo_exception_general_error_get ()" link="libbonobo-bonobo-exception.html#bonobo-exception-general-error-get"/>
+<function name="BONOBO_OBJECT_TYPE" link="libbonobo-bonobo-object.html#BONOBO-OBJECT-TYPE-CAPS"/>
+<function name="BONOBO_OBJREF()" link="libbonobo-bonobo-object.html#BONOBO-OBJREF-CAPS"/>
+<function name="BonoboObjectPOAFn ()" link="libbonobo-bonobo-object.html#BonoboObjectPOAFn"/>
+<function name="struct BonoboObjectPrivate" link="libbonobo-bonobo-object.html#BonoboObjectPrivate"/>
+<function name="BonoboObjectHeader" link="libbonobo-bonobo-object.html#BonoboObjectHeader"/>
+<function name="BONOBO_OBJECT_HEADER_SIZE" link="libbonobo-bonobo-object.html#BONOBO-OBJECT-HEADER-SIZE-CAPS"/>
+<function name="BONOBO_OBJECT_SIGNATURE" link="libbonobo-bonobo-object.html#BONOBO-OBJECT-SIGNATURE-CAPS"/>
+<function name="BONOBO_SERVANT_SIGNATURE" link="libbonobo-bonobo-object.html#BONOBO-SERVANT-SIGNATURE-CAPS"/>
+<function name="BonoboObject" link="libbonobo-bonobo-object.html#BonoboObject"/>
+<function name="BonoboObjectClass" link="libbonobo-bonobo-object.html#BonoboObjectClass"/>
+<function name="bonobo_object_add_interface ()" link="libbonobo-bonobo-object.html#bonobo-object-add-interface"/>
+<function name="bonobo_object_query_local_interface ()" link="libbonobo-bonobo-object.html#bonobo-object-query-local-interface"/>
+<function name="bonobo_object_query_interface ()" link="libbonobo-bonobo-object.html#bonobo-object-query-interface"/>
+<function name="bonobo_object_corba_objref ()" link="libbonobo-bonobo-object.html#bonobo-object-corba-objref"/>
+<function name="bonobo_object_dup_ref ()" link="libbonobo-bonobo-object.html#bonobo-object-dup-ref"/>
+<function name="bonobo_object_release_unref ()" link="libbonobo-bonobo-object.html#bonobo-object-release-unref"/>
+<function name="bonobo_object_ref ()" link="libbonobo-bonobo-object.html#bonobo-object-ref"/>
+<function name="bonobo_object_idle_unref ()" link="libbonobo-bonobo-object.html#bonobo-object-idle-unref"/>
+<function name="bonobo_object_unref ()" link="libbonobo-bonobo-object.html#bonobo-object-unref"/>
+<function name="bonobo_object_set_immortal ()" link="libbonobo-bonobo-object.html#bonobo-object-set-immortal"/>
+<function name="bonobo_object_trace_refs ()" link="libbonobo-bonobo-object.html#bonobo-object-trace-refs"/>
+<function name="bonobo_object_dump_interfaces ()" link="libbonobo-bonobo-object.html#bonobo-object-dump-interfaces"/>
+<function name="bonobo_object_check_env ()" link="libbonobo-bonobo-object.html#bonobo-object-check-env"/>
+<function name="BONOBO_OBJECT_CHECK()" link="libbonobo-bonobo-object.html#BONOBO-OBJECT-CHECK-CAPS"/>
+<function name="bonobo_unknown_ping ()" link="libbonobo-bonobo-object.html#bonobo-unknown-ping"/>
+<function name="bonobo_object_list_unref_all ()" link="libbonobo-bonobo-object.html#bonobo-object-list-unref-all"/>
+<function name="bonobo_object_slist_unref_all ()" link="libbonobo-bonobo-object.html#bonobo-object-slist-unref-all"/>
+<function name="bonobo_object ()" link="libbonobo-bonobo-object.html#bonobo-object"/>
+<function name="bonobo_object_fast()" link="libbonobo-bonobo-object.html#bonobo-object-fast"/>
+<function name="bonobo_object_from_servant()" link="libbonobo-bonobo-object.html#bonobo-object-from-servant"/>
+<function name="bonobo_object_get_servant()" link="libbonobo-bonobo-object.html#bonobo-object-get-servant"/>
+<function name="bonobo_type_unique ()" link="libbonobo-bonobo-object.html#bonobo-type-unique"/>
+<function name="bonobo_type_setup ()" link="libbonobo-bonobo-object.html#bonobo-type-setup"/>
+<function name="BONOBO_TYPE_FUNC_FULL()" link="libbonobo-bonobo-object.html#BONOBO-TYPE-FUNC-FULL-CAPS"/>
+<function name="BONOBO_TYPE_FUNC()" link="libbonobo-bonobo-object.html#BONOBO-TYPE-FUNC-CAPS"/>
+<function name="BONOBO_X_OBJECT_TYPE" link="libbonobo-bonobo-xobject.html#BONOBO-X-OBJECT-TYPE-CAPS"/>
+<function name="BONOBO_X_OBJECT_HEADER_SIZE" link="libbonobo-bonobo-xobject.html#BONOBO-X-OBJECT-HEADER-SIZE-CAPS"/>
+<function name="BONOBO_X_OBJECT_GET_SERVANT()" link="libbonobo-bonobo-xobject.html#BONOBO-X-OBJECT-GET-SERVANT-CAPS"/>
+<function name="BONOBO_X_SERVANT_GET_OBJECT()" link="libbonobo-bonobo-xobject.html#BONOBO-X-SERVANT-GET-OBJECT-CAPS"/>
+<function name="BonoboXObject" link="libbonobo-bonobo-xobject.html#BonoboXObject"/>
+<function name="BonoboXObjectClass" link="libbonobo-bonobo-xobject.html#BonoboXObjectClass"/>
+<function name="bonobo_x_object" link="libbonobo-bonobo-xobject.html#bonobo-x-object"/>
+<function name="BonoboXObjectPOAFn" link="libbonobo-bonobo-xobject.html#BonoboXObjectPOAFn"/>
+<function name="bonobo_x_type_unique" link="libbonobo-bonobo-xobject.html#bonobo-x-type-unique"/>
+<function name="bonobo_x_type_setup" link="libbonobo-bonobo-xobject.html#bonobo-x-type-setup"/>
+<function name="BONOBO_X_TYPE_FUNC_FULL()" link="libbonobo-bonobo-xobject.html#BONOBO-X-TYPE-FUNC-FULL-CAPS"/>
+<function name="BONOBO_X_TYPE_FUNC()" link="libbonobo-bonobo-xobject.html#BONOBO-X-TYPE-FUNC-CAPS"/>
+<function name="BONOBO_GENERIC_FACTORY_TYPE" link="libbonobo-bonobo-generic-factory.html#BONOBO-GENERIC-FACTORY-TYPE-CAPS"/>
+<function name="struct BonoboGenericFactoryPrivate" link="libbonobo-bonobo-generic-factory.html#BonoboGenericFactoryPrivate"/>
+<function name="struct BonoboGenericFactory" link="libbonobo-bonobo-generic-factory.html#BonoboGenericFactory"/>
+<function name="BonoboFactoryCallback ()" link="libbonobo-bonobo-generic-factory.html#BonoboFactoryCallback"/>
+<function name="BonoboGenericFactoryClass" link="libbonobo-bonobo-generic-factory.html#BonoboGenericFactoryClass"/>
+<function name="bonobo_generic_factory_new ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-new"/>
+<function name="bonobo_generic_factory_new_closure ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-new-closure"/>
+<function name="bonobo_generic_factory_construct ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-construct"/>
+<function name="bonobo_generic_factory_construct_noreg ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-construct-noreg"/>
+<function name="bonobo_generic_factory_main ()" link="libbonobo-bonobo-generic-factory.html#bonobo-generic-factory-main"/>
+<function name="BONOBO_FACTORY_INIT()" link="libbonobo-bonobo-generic-factory.html#BONOBO-FACTORY-INIT-CAPS"/>
+<function name="BONOBO_OAF_FACTORY()" link="libbonobo-bonobo-generic-factory.html#BONOBO-OAF-FACTORY-CAPS"/>
+<function name="BONOBO_OAF_FACTORY_MULTI()" link="libbonobo-bonobo-generic-factory.html#BONOBO-OAF-FACTORY-MULTI-CAPS"/>
+<function name="BONOBO_ACTIVATION_FACTORY()" link="libbonobo-bonobo-generic-factory.html#BONOBO-ACTIVATION-FACTORY-CAPS"/>
+<function name="BONOBO_SHLIB_FACTORY_TYPE" link="libbonobo-bonobo-shlib-factory.html#BONOBO-SHLIB-FACTORY-TYPE-CAPS"/>
+<function name="struct BonoboShlibFactoryPrivate" link="libbonobo-bonobo-shlib-factory.html#BonoboShlibFactoryPrivate"/>
+<function name="BonoboShlibFactory" link="libbonobo-bonobo-shlib-factory.html#BonoboShlibFactory"/>
+<function name="BonoboShlibFactoryClass" link="libbonobo-bonobo-shlib-factory.html#BonoboShlibFactoryClass"/>
+<function name="bonobo_shlib_factory_construct ()" link="libbonobo-bonobo-shlib-factory.html#bonobo-shlib-factory-construct"/>
+<function name="bonobo_shlib_factory_new ()" link="libbonobo-bonobo-shlib-factory.html#bonobo-shlib-factory-new"/>
+<function name="bonobo_shlib_factory_new_closure ()" link="libbonobo-bonobo-shlib-factory.html#bonobo-shlib-factory-new-closure"/>
+<function name="bonobo_shlib_factory_std ()" link="libbonobo-bonobo-shlib-factory.html#bonobo-shlib-factory-std"/>
+<function name="BONOBO_OAF_SHLIB_FACTORY()" link="libbonobo-bonobo-shlib-factory.html#BONOBO-OAF-SHLIB-FACTORY-CAPS"/>
+<function name="BONOBO_OAF_SHLIB_FACTORY_MULTI()" link="libbonobo-bonobo-shlib-factory.html#BONOBO-OAF-SHLIB-FACTORY-MULTI-CAPS"/>
+<function name="BONOBO_ACTIVATION_SHLIB_FACTORY()" link="libbonobo-bonobo-shlib-factory.html#BONOBO-ACTIVATION-SHLIB-FACTORY-CAPS"/>
+<function name="Bonobo Objects" link="refcounting.html#id2908048"/>
+<function name="Ref counting" link="refcounting.html#id2908103"/>
+<function name="Reference leaks" link="refcounting.html#id2908159"/>
+<function name="Ref Counting Conventions" link="refcounting.html#id2906827"/>
+<function name="Properties and bags" link="properties.html#id2908586"/>
+<function name="BonoboArgs" link="properties.html#id2908618"/>
+<function name="PropertyBag creation" link="properties.html#id2908717"/>
+<function name="Property Creation" link="properties.html#id2908758"/>
+<function name="Wrapping GObjects" link="properties.html#id2908824"/>
+<function name="Using properties in your client application" link="properties.html#id2908852"/>
+<function name="BONOBO_EVENT_SOURCE_TYPE" link="libbonobo-bonobo-event-source.html#BONOBO-EVENT-SOURCE-TYPE-CAPS"/>
+<function name="struct BonoboEventSourcePrivate" link="libbonobo-bonobo-event-source.html#BonoboEventSourcePrivate"/>
+<function name="BonoboEventSource" link="libbonobo-bonobo-event-source.html#BonoboEventSource"/>
+<function name="BonoboEventSourceClass" link="libbonobo-bonobo-event-source.html#BonoboEventSourceClass"/>
+<function name="bonobo_event_source_new ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-new"/>
+<function name="bonobo_event_source_notify_listeners ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-notify-listeners"/>
+<function name="bonobo_event_source_notify_listeners_full ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-notify-listeners-full"/>
+<function name="bonobo_event_source_client_remove_listener ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-client-remove-listener"/>
+<function name="bonobo_event_source_client_add_listener ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener"/>
+<function name="bonobo_event_source_client_add_listener_closure ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener-closure"/>
+<function name="bonobo_event_source_client_add_listener_full ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener-full"/>
+<function name="bonobo_event_source_ignore_listeners ()" link="libbonobo-bonobo-event-source.html#bonobo-event-source-ignore-listeners"/>
+<function name="BONOBO_LISTENER_TYPE" link="libbonobo-bonobo-listener.html#BONOBO-LISTENER-TYPE-CAPS"/>
+<function name="struct BonoboListenerPrivate" link="libbonobo-bonobo-listener.html#BonoboListenerPrivate"/>
+<function name="BonoboListener" link="libbonobo-bonobo-listener.html#BonoboListener"/>
+<function name="BonoboListenerClass" link="libbonobo-bonobo-listener.html#BonoboListenerClass"/>
+<function name="BonoboListenerCallbackFn ()" link="libbonobo-bonobo-listener.html#BonoboListenerCallbackFn"/>
+<function name="bonobo_listener_new ()" link="libbonobo-bonobo-listener.html#bonobo-listener-new"/>
+<function name="bonobo_listener_new_closure ()" link="libbonobo-bonobo-listener.html#bonobo-listener-new-closure"/>
+<function name="bonobo_event_make_name ()" link="libbonobo-bonobo-listener.html#bonobo-event-make-name"/>
+<function name="bonobo_event_type ()" link="libbonobo-bonobo-listener.html#bonobo-event-type"/>
+<function name="bonobo_event_subtype ()" link="libbonobo-bonobo-listener.html#bonobo-event-subtype"/>
+<function name="bonobo_event_kind ()" link="libbonobo-bonobo-listener.html#bonobo-event-kind"/>
+<function name="bonobo_event_idl_path ()" link="libbonobo-bonobo-listener.html#bonobo-event-idl-path"/>
+<function name="BONOBO_PROPERTY_READABLE" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-READABLE-CAPS"/>
+<function name="BONOBO_PROPERTY_WRITEABLE" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-WRITEABLE-CAPS"/>
+<function name="BONOBO_PROPERTY_NO_LISTENING" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-NO-LISTENING-CAPS"/>
+<function name="BONOBO_PROPERTY_NO_AUTONOTIFY" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-NO-AUTONOTIFY-CAPS"/>
+<function name="struct BonoboPropertyBagPrivate" link="libbonobo-bonobo-property-bag.html#BonoboPropertyBagPrivate"/>
+<function name="struct BonoboPropertyBag" link="libbonobo-bonobo-property-bag.html#BonoboPropertyBag"/>
+<function name="struct BonoboProperty" link="libbonobo-bonobo-property-bag.html#BonoboProperty"/>
+<function name="struct BonoboPropertyPrivate" link="libbonobo-bonobo-property-bag.html#BonoboPropertyPrivate"/>
+<function name="BonoboPropertyGetFn ()" link="libbonobo-bonobo-property-bag.html#BonoboPropertyGetFn"/>
+<function name="BonoboPropertySetFn ()" link="libbonobo-bonobo-property-bag.html#BonoboPropertySetFn"/>
+<function name="BonoboPropertyBagClass" link="libbonobo-bonobo-property-bag.html#BonoboPropertyBagClass"/>
+<function name="BONOBO_PROPERTY_BAG_TYPE" link="libbonobo-bonobo-property-bag.html#BONOBO-PROPERTY-BAG-TYPE-CAPS"/>
+<function name="bonobo_property_bag_new ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new"/>
+<function name="bonobo_property_bag_new_closure ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new-closure"/>
+<function name="bonobo_property_bag_new_full ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-new-full"/>
+<function name="bonobo_property_bag_construct ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-construct"/>
+<function name="bonobo_property_bag_add ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-add"/>
+<function name="bonobo_property_bag_add_full ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-add-full"/>
+<function name="bonobo_property_bag_remove ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-remove"/>
+<function name="bonobo_property_bag_map_params ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-map-params"/>
+<function name="bonobo_property_bag_get_prop_list ()" link="libbonobo-bonobo-property-bag.html#bonobo-property-bag-get-prop-list"/>
+<function name="BonoboArg" link="libbonobo-bonobo-arg.html#BonoboArg"/>
+<function name="BonoboArgType" link="libbonobo-bonobo-arg.html#BonoboArgType"/>
+<function name="BONOBO_ARG_NULL" link="libbonobo-bonobo-arg.html#BONOBO-ARG-NULL-CAPS"/>
+<function name="BONOBO_ARG_BOOLEAN" link="libbonobo-bonobo-arg.html#BONOBO-ARG-BOOLEAN-CAPS"/>
+<function name="BONOBO_ARG_SHORT" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SHORT-CAPS"/>
+<function name="BONOBO_ARG_INT" link="libbonobo-bonobo-arg.html#BONOBO-ARG-INT-CAPS"/>
+<function name="BONOBO_ARG_LONG" link="libbonobo-bonobo-arg.html#BONOBO-ARG-LONG-CAPS"/>
+<function name="BONOBO_ARG_LONGLONG" link="libbonobo-bonobo-arg.html#BONOBO-ARG-LONGLONG-CAPS"/>
+<function name="BONOBO_ARG_FLOAT" link="libbonobo-bonobo-arg.html#BONOBO-ARG-FLOAT-CAPS"/>
+<function name="BONOBO_ARG_DOUBLE" link="libbonobo-bonobo-arg.html#BONOBO-ARG-DOUBLE-CAPS"/>
+<function name="BONOBO_ARG_CHAR" link="libbonobo-bonobo-arg.html#BONOBO-ARG-CHAR-CAPS"/>
+<function name="BONOBO_ARG_STRING" link="libbonobo-bonobo-arg.html#BONOBO-ARG-STRING-CAPS"/>
+<function name="BONOBO_ARG_GET_GENERAL()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-GENERAL-CAPS"/>
+<function name="BONOBO_ARG_SET_GENERAL()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-GENERAL-CAPS"/>
+<function name="BONOBO_ARG_GET_BOOLEAN()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-BOOLEAN-CAPS"/>
+<function name="BONOBO_ARG_SET_BOOLEAN()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-BOOLEAN-CAPS"/>
+<function name="BONOBO_ARG_GET_SHORT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-SHORT-CAPS"/>
+<function name="BONOBO_ARG_SET_SHORT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-SHORT-CAPS"/>
+<function name="BONOBO_ARG_GET_INT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-INT-CAPS"/>
+<function name="BONOBO_ARG_SET_INT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-INT-CAPS"/>
+<function name="BONOBO_ARG_GET_LONG()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-LONG-CAPS"/>
+<function name="BONOBO_ARG_SET_LONG()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-LONG-CAPS"/>
+<function name="BONOBO_ARG_GET_LONGLONG()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-LONGLONG-CAPS"/>
+<function name="BONOBO_ARG_SET_LONGLONG()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-LONGLONG-CAPS"/>
+<function name="BONOBO_ARG_GET_FLOAT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-FLOAT-CAPS"/>
+<function name="BONOBO_ARG_SET_FLOAT()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-FLOAT-CAPS"/>
+<function name="BONOBO_ARG_GET_DOUBLE()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-DOUBLE-CAPS"/>
+<function name="BONOBO_ARG_SET_DOUBLE()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-DOUBLE-CAPS"/>
+<function name="BONOBO_ARG_GET_CHAR()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-CHAR-CAPS"/>
+<function name="BONOBO_ARG_SET_CHAR()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-CHAR-CAPS"/>
+<function name="BONOBO_ARG_GET_STRING()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-GET-STRING-CAPS"/>
+<function name="BONOBO_ARG_SET_STRING()" link="libbonobo-bonobo-arg.html#BONOBO-ARG-SET-STRING-CAPS"/>
+<function name="bonobo_arg_new ()" link="libbonobo-bonobo-arg.html#bonobo-arg-new"/>
+<function name="bonobo_arg_new_from ()" link="libbonobo-bonobo-arg.html#bonobo-arg-new-from"/>
+<function name="bonobo_arg_release ()" link="libbonobo-bonobo-arg.html#bonobo-arg-release"/>
+<function name="bonobo_arg_copy ()" link="libbonobo-bonobo-arg.html#bonobo-arg-copy"/>
+<function name="bonobo_arg_from_gvalue ()" link="libbonobo-bonobo-arg.html#bonobo-arg-from-gvalue"/>
+<function name="bonobo_arg_type_from_gtype ()" link="libbonobo-bonobo-arg.html#bonobo-arg-type-from-gtype"/>
+<function name="bonobo_arg_to_gvalue ()" link="libbonobo-bonobo-arg.html#bonobo-arg-to-gvalue"/>
+<function name="bonobo_arg_type_to_gtype ()" link="libbonobo-bonobo-arg.html#bonobo-arg-type-to-gtype"/>
+<function name="bonobo_arg_is_equal ()" link="libbonobo-bonobo-arg.html#bonobo-arg-is-equal"/>
+<function name="bonobo_arg_type_is_equal ()" link="libbonobo-bonobo-arg.html#bonobo-arg-type-is-equal"/>
+<function name="bonobo_pbclient_get_type ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-type"/>
+<function name="bonobo_pbclient_get_string ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-string"/>
+<function name="bonobo_pbclient_get_default_string ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-string"/>
+<function name="bonobo_pbclient_get_string_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-string-with-default"/>
+<function name="bonobo_pbclient_get_short ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-short"/>
+<function name="bonobo_pbclient_get_default_short ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-short"/>
+<function name="bonobo_pbclient_get_short_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-short-with-default"/>
+<function name="bonobo_pbclient_get_ushort ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ushort"/>
+<function name="bonobo_pbclient_get_default_ushort ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-ushort"/>
+<function name="bonobo_pbclient_get_ushort_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ushort-with-default"/>
+<function name="bonobo_pbclient_get_long ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-long"/>
+<function name="bonobo_pbclient_get_default_long ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-long"/>
+<function name="bonobo_pbclient_get_long_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-long-with-default"/>
+<function name="bonobo_pbclient_get_ulong ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ulong"/>
+<function name="bonobo_pbclient_get_default_ulong ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-ulong"/>
+<function name="bonobo_pbclient_get_ulong_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ulong-with-default"/>
+<function name="bonobo_pbclient_get_float ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-float"/>
+<function name="bonobo_pbclient_get_default_float ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-float"/>
+<function name="bonobo_pbclient_get_float_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-float-with-default"/>
+<function name="bonobo_pbclient_get_double ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-double"/>
+<function name="bonobo_pbclient_get_default_double ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-double"/>
+<function name="bonobo_pbclient_get_double_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-double-with-default"/>
+<function name="bonobo_pbclient_get_boolean ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-boolean"/>
+<function name="bonobo_pbclient_get_default_boolean ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-boolean"/>
+<function name="bonobo_pbclient_get_boolean_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-boolean-with-default"/>
+<function name="bonobo_pbclient_get_char ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-char"/>
+<function name="bonobo_pbclient_get_default_char ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-char"/>
+<function name="bonobo_pbclient_get_char_with_default ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-char-with-default"/>
+<function name="bonobo_pbclient_get_value ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-value"/>
+<function name="bonobo_pbclient_get_default_value ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-value"/>
+<function name="bonobo_pbclient_set_string ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-string"/>
+<function name="bonobo_pbclient_set_short ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-short"/>
+<function name="bonobo_pbclient_set_ushort ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-ushort"/>
+<function name="bonobo_pbclient_set_long ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-long"/>
+<function name="bonobo_pbclient_set_ulong ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-ulong"/>
+<function name="bonobo_pbclient_set_float ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-float"/>
+<function name="bonobo_pbclient_set_double ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-double"/>
+<function name="bonobo_pbclient_set_boolean ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-boolean"/>
+<function name="bonobo_pbclient_set_char ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-char"/>
+<function name="bonobo_pbclient_set_value ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-value"/>
+<function name="bonobo_pbclient_get_doc_title ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-doc-title"/>
+<function name="bonobo_pbclient_get_doc ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-doc"/>
+<function name="bonobo_pbclient_get_keys ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-keys"/>
+<function name="bonobo_pbclient_free_keys ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-free-keys"/>
+<function name="bonobo_pbclient_get_flags ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-flags"/>
+<function name="bonobo_pbclient_set ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set"/>
+<function name="bonobo_pbclient_get ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get"/>
+<function name="bonobo_pbclient_setv ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-setv"/>
+<function name="bonobo_pbclient_getv ()" link="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-getv"/>
+<function name="bonobo_property_bag_client_setv" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-setv"/>
+<function name="bonobo_property_bag_client_getv" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-getv"/>
+<function name="bonobo_property_bag_client_get_property_type" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-property-type"/>
+<function name="bonobo_property_bag_client_get_value_gboolean" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gboolean"/>
+<function name="bonobo_property_bag_client_get_value_gint" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gint"/>
+<function name="bonobo_property_bag_client_get_value_glong" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-glong"/>
+<function name="bonobo_property_bag_client_get_value_gfloat" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gfloat"/>
+<function name="bonobo_property_bag_client_get_value_gdouble" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gdouble"/>
+<function name="bonobo_property_bag_client_get_value_string" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-string"/>
+<function name="bonobo_property_bag_client_get_value_any()" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-any"/>
+<function name="bonobo_property_bag_client_get_default_gboolean" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gboolean"/>
+<function name="bonobo_property_bag_client_get_default_gint" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gint"/>
+<function name="bonobo_property_bag_client_get_default_glong" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-glong"/>
+<function name="bonobo_property_bag_client_get_default_gfloat" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gfloat"/>
+<function name="bonobo_property_bag_client_get_default_gdouble" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gdouble"/>
+<function name="bonobo_property_bag_client_get_default_string" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-string"/>
+<function name="bonobo_property_bag_client_get_default_any()" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-any"/>
+<function name="bonobo_property_bag_client_set_value_gboolean" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gboolean"/>
+<function name="bonobo_property_bag_client_set_value_gint" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gint"/>
+<function name="bonobo_property_bag_client_set_value_glong" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-glong"/>
+<function name="bonobo_property_bag_client_set_value_gfloat" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gfloat"/>
+<function name="bonobo_property_bag_client_set_value_gdouble" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gdouble"/>
+<function name="bonobo_property_bag_client_set_value_string" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-string"/>
+<function name="bonobo_property_bag_client_set_value_any" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-any"/>
+<function name="bonobo_property_bag_client_get_docstring" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-docstring"/>
+<function name="bonobo_property_bag_client_get_flags" link="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-flags"/>
+<function name="struct BonoboMonikerPrivate" link="libbonobo-bonobo-moniker.html#BonoboMonikerPrivate"/>
+<function name="BONOBO_MONIKER_TYPE" link="libbonobo-bonobo-moniker.html#BONOBO-MONIKER-TYPE-CAPS"/>
+<function name="BonoboMoniker" link="libbonobo-bonobo-moniker.html#BonoboMoniker"/>
+<function name="BonoboMonikerClass" link="libbonobo-bonobo-moniker.html#BonoboMonikerClass"/>
+<function name="bonobo_moniker_construct ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-construct"/>
+<function name="bonobo_moniker_get_parent ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-parent"/>
+<function name="bonobo_moniker_set_parent ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-set-parent"/>
+<function name="bonobo_moniker_get_name ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-name"/>
+<function name="bonobo_moniker_get_name_full ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-name-full"/>
+<function name="bonobo_moniker_get_name_escaped ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-name-escaped"/>
+<function name="bonobo_moniker_set_name ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-set-name"/>
+<function name="bonobo_moniker_get_prefix ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-prefix"/>
+<function name="bonobo_moniker_set_case_sensitive ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-set-case-sensitive"/>
+<function name="bonobo_moniker_get_case_sensitive ()" link="libbonobo-bonobo-moniker.html#bonobo-moniker-get-case-sensitive"/>
+<function name="BONOBO_MONIKER_SIMPLE_TYPE" link="libbonobo-bonobo-moniker-simple.html#BONOBO-MONIKER-SIMPLE-TYPE-CAPS"/>
+<function name="BONOBO_TYPE_RESOLVE_FLAG" link="libbonobo-bonobo-moniker-simple.html#BONOBO-TYPE-RESOLVE-FLAG-CAPS"/>
+<function name="BONOBO_RESOLVE_FLAG_TYPE" link="libbonobo-bonobo-moniker-simple.html#BONOBO-RESOLVE-FLAG-TYPE-CAPS"/>
+<function name="struct BonoboMonikerSimple" link="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimple"/>
+<function name="struct BonoboMonikerSimplePrivate" link="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimplePrivate"/>
+<function name="BonoboMonikerSimpleResolveFn ()" link="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimpleResolveFn"/>
+<function name="BonoboMonikerSimpleClass" link="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimpleClass"/>
+<function name="bonobo_moniker_simple_get_type ()" link="libbonobo-bonobo-moniker-simple.html#bonobo-moniker-simple-get-type"/>
+<function name="bonobo_moniker_simple_construct ()" link="libbonobo-bonobo-moniker-simple.html#bonobo-moniker-simple-construct"/>
+<function name="bonobo_moniker_simple_new ()" link="libbonobo-bonobo-moniker-simple.html#bonobo-moniker-simple-new"/>
+<function name="bonobo_moniker_simple_new_closure ()" link="libbonobo-bonobo-moniker-simple.html#bonobo-moniker-simple-new-closure"/>
+<function name="bonobo_get_object ()" link="libbonobo-bonobo-moniker-util.html#bonobo-get-object"/>
+<function name="bonobo_moniker_client_new_from_name ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-new-from-name"/>
+<function name="bonobo_moniker_client_get_name ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-get-name"/>
+<function name="bonobo_moniker_client_resolve_default ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-resolve-default"/>
+<function name="bonobo_moniker_client_equal ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-equal"/>
+<function name="BonoboMonikerAsyncFn ()" link="libbonobo-bonobo-moniker-util.html#BonoboMonikerAsyncFn"/>
+<function name="bonobo_get_object_async ()" link="libbonobo-bonobo-moniker-util.html#bonobo-get-object-async"/>
+<function name="bonobo_moniker_client_new_from_name_async ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-client-new-from-name-async"/>
+<function name="bonobo_moniker_resolve_async ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-resolve-async"/>
+<function name="bonobo_moniker_resolve_async_default ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-resolve-async-default"/>
+<function name="bonobo_moniker_util_get_parent_name ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-get-parent-name"/>
+<function name="bonobo_moniker_util_qi_return ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-qi-return"/>
+<function name="bonobo_moniker_util_parse_name ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-parse-name"/>
+<function name="bonobo_moniker_util_seek_std_separator ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-seek-std-separator"/>
+<function name="bonobo_moniker_util_escape ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-escape"/>
+<function name="bonobo_moniker_util_unescape ()" link="libbonobo-bonobo-moniker-util.html#bonobo-moniker-util-unescape"/>
+<function name="bonobo_url_register ()" link="libbonobo-bonobo-moniker-util.html#bonobo-url-register"/>
+<function name="bonobo_url_unregister ()" link="libbonobo-bonobo-moniker-util.html#bonobo-url-unregister"/>
+<function name="bonobo_url_lookup ()" link="libbonobo-bonobo-moniker-util.html#bonobo-url-lookup"/>
+<function name="BONOBO_MONIKER_EXTENDER_TYPE" link="libbonobo-bonobo-moniker-extender.html#BONOBO-MONIKER-EXTENDER-TYPE-CAPS"/>
+<function name="struct BonoboMonikerExtender" link="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtender"/>
+<function name="BonoboMonikerExtenderFn ()" link="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtenderFn"/>
+<function name="BonoboMonikerExtenderClass" link="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtenderClass"/>
+<function name="bonobo_moniker_extender_new ()" link="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-extender-new"/>
+<function name="bonobo_moniker_find_extender ()" link="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-find-extender"/>
+<function name="bonobo_moniker_use_extender ()" link="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-use-extender"/>
+<function name="Implementing it" link="libbonobo-bonobo-item-handler.html#id2957006"/>
+<function name="Sample functions" link="libbonobo-bonobo-item-handler.html#id2957080"/>
+<function name="BONOBO_ITEM_HANDLER_TYPE" link="libbonobo-bonobo-item-handler.html#BONOBO-ITEM-HANDLER-TYPE-CAPS"/>
+<function name="struct BonoboItemHandlerPrivate" link="libbonobo-bonobo-item-handler.html#BonoboItemHandlerPrivate"/>
+<function name="struct BonoboItemHandler" link="libbonobo-bonobo-item-handler.html#BonoboItemHandler"/>
+<function name="BonoboItemHandlerClass" link="libbonobo-bonobo-item-handler.html#BonoboItemHandlerClass"/>
+<function name="bonobo_item_handler_new ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-handler-new"/>
+<function name="bonobo_item_handler_new_closure ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-handler-new-closure"/>
+<function name="bonobo_item_handler_construct ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-handler-construct"/>
+<function name="BonoboItemOption" link="libbonobo-bonobo-item-handler.html#BonoboItemOption"/>
+<function name="bonobo_item_option_parse ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-option-parse"/>
+<function name="bonobo_item_options_free ()" link="libbonobo-bonobo-item-handler.html#bonobo-item-options-free"/>
+<function name="BONOBO_ITEM_CONTAINER_TYPE" link="libbonobo-bonobo-item-container.html#BONOBO-ITEM-CONTAINER-TYPE-CAPS"/>
+<function name="BonoboClientSiteList" link="libbonobo-bonobo-item-container.html#BonoboClientSiteList"/>
+<function name="struct BonoboItemContainerPrivate" link="libbonobo-bonobo-item-container.html#BonoboItemContainerPrivate"/>
+<function name="BonoboItemContainer" link="libbonobo-bonobo-item-container.html#BonoboItemContainer"/>
+<function name="BonoboItemContainerClass" link="libbonobo-bonobo-item-container.html#BonoboItemContainerClass"/>
+<function name="bonobo_item_container_new ()" link="libbonobo-bonobo-item-container.html#bonobo-item-container-new"/>
+<function name="bonobo_item_container_add ()" link="libbonobo-bonobo-item-container.html#bonobo-item-container-add"/>
+<function name="bonobo_item_container_remove_by_name ()" link="libbonobo-bonobo-item-container.html#bonobo-item-container-remove-by-name"/>
+<function name="struct BonoboMonikerContextPrivate" link="libbonobo-bonobo-moniker-context.html#BonoboMonikerContextPrivate"/>
+<function name="BonoboMonikerContext" link="libbonobo-bonobo-moniker-context.html#BonoboMonikerContext"/>
+<function name="BonoboMonikerContextClass" link="libbonobo-bonobo-moniker-context.html#BonoboMonikerContextClass"/>
+<function name="bonobo_moniker_context_new ()" link="libbonobo-bonobo-moniker-context.html#bonobo-moniker-context-new"/>
+<function name="BONOBO_STORAGE_MEM_TYPE" link="libbonobo-bonobo-storage-memory.html#BONOBO-STORAGE-MEM-TYPE-CAPS"/>
+<function name="struct BonoboStorageMemPriv" link="libbonobo-bonobo-storage-memory.html#BonoboStorageMemPriv"/>
+<function name="BonoboStorageMem" link="libbonobo-bonobo-storage-memory.html#BonoboStorageMem"/>
+<function name="BonoboStorageMemClass" link="libbonobo-bonobo-storage-memory.html#BonoboStorageMemClass"/>
+<function name="bonobo_storage_mem_create ()" link="libbonobo-bonobo-storage-memory.html#bonobo-storage-mem-create"/>
+<function name="struct BonoboStreamMem" link="libbonobo-bonobo-stream-memory.html#BonoboStreamMem"/>
+<function name="struct BonoboStreamMemPrivate" link="libbonobo-bonobo-stream-memory.html#BonoboStreamMemPrivate"/>
+<function name="BONOBO_STREAM_MEM_TYPE" link="libbonobo-bonobo-stream-memory.html#BONOBO-STREAM-MEM-TYPE-CAPS"/>
+<function name="BonoboStreamMemClass" link="libbonobo-bonobo-stream-memory.html#BonoboStreamMemClass"/>
+<function name="bonobo_stream_mem_construct ()" link="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-construct"/>
+<function name="bonobo_stream_mem_create ()" link="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-create"/>
+<function name="bonobo_stream_mem_get_buffer ()" link="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-get-buffer"/>
+<function name="bonobo_stream_mem_get_size ()" link="libbonobo-bonobo-stream-memory.html#bonobo-stream-mem-get-size"/>
+<function name="BonoboStream" link="libbonobo-bonobo-storage.html#BonoboStream"/>
+<function name="BONOBO_STREAM()" link="libbonobo-bonobo-storage.html#BONOBO-STREAM-CAPS"/>
+<function name="BONOBO_STREAM_CLASS()" link="libbonobo-bonobo-storage.html#BONOBO-STREAM-CLASS-CAPS"/>
+<function name="BonoboStorage" link="libbonobo-bonobo-storage.html#BonoboStorage"/>
+<function name="BONOBO_STORAGE()" link="libbonobo-bonobo-storage.html#BONOBO-STORAGE-CAPS"/>
+<function name="BONOBO_STORAGE_CLASS()" link="libbonobo-bonobo-storage.html#BONOBO-STORAGE-CLASS-CAPS"/>
+<function name="bonobo_storage_copy_to ()" link="libbonobo-bonobo-storage.html#bonobo-storage-copy-to"/>
+<function name="bonobo_stream_client_write ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write"/>
+<function name="bonobo_stream_client_read ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-read"/>
+<function name="bonobo_stream_client_write_string ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-write-string"/>
+<function name="bonobo_stream_client_printf ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-printf"/>
+<function name="bonobo_stream_client_read_string ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-read-string"/>
+<function name="bonobo_stream_client_get_length ()" link="libbonobo-bonobo-stream-client.html#bonobo-stream-client-get-length"/>
+<function name="BONOBO_PERSIST_TYPE" link="libbonobo-bonobo-persist.html#BONOBO-PERSIST-TYPE-CAPS"/>
+<function name="struct BonoboPersistPrivate" link="libbonobo-bonobo-persist.html#BonoboPersistPrivate"/>
+<function name="BonoboPersist" link="libbonobo-bonobo-persist.html#BonoboPersist"/>
+<function name="BonoboPersistClass" link="libbonobo-bonobo-persist.html#BonoboPersistClass"/>
+<function name="bonobo_persist_generate_content_types ()" link="libbonobo-bonobo-persist.html#bonobo-persist-generate-content-types"/>
+<function name="bonobo_persist_construct ()" link="libbonobo-bonobo-persist.html#bonobo-persist-construct"/>
+<function name="bonobo_persist_set_dirty ()" link="libbonobo-bonobo-persist.html#bonobo-persist-set-dirty"/>
+<function name="BONOBO_PERSIST_FILE_TYPE" link="libbonobo-bonobo-persist-file.html#BONOBO-PERSIST-FILE-TYPE-CAPS"/>
+<function name="struct BonoboPersistFilePrivate" link="libbonobo-bonobo-persist-file.html#BonoboPersistFilePrivate"/>
+<function name="struct BonoboPersistFile" link="libbonobo-bonobo-persist-file.html#BonoboPersistFile"/>
+<function name="BonoboPersistFileIOFn ()" link="libbonobo-bonobo-persist-file.html#BonoboPersistFileIOFn"/>
+<function name="BonoboPersistFileClass" link="libbonobo-bonobo-persist-file.html#BonoboPersistFileClass"/>
+<function name="bonobo_persist_file_new ()" link="libbonobo-bonobo-persist-file.html#bonobo-persist-file-new"/>
+<function name="bonobo_persist_file_construct ()" link="libbonobo-bonobo-persist-file.html#bonobo-persist-file-construct"/>
+<function name="BONOBO_PERSIST_STREAM_TYPE" link="libbonobo-bonobo-persist-stream.html#BONOBO-PERSIST-STREAM-TYPE-CAPS"/>
+<function name="struct BonoboPersistStreamPrivate" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamPrivate"/>
+<function name="struct BonoboPersistStream" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStream"/>
+<function name="BonoboPersistStreamIOFn ()" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn"/>
+<function name="BonoboPersistStreamTypesFn ()" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamTypesFn"/>
+<function name="BonoboPersistStreamClass" link="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamClass"/>
+<function name="bonobo_persist_stream_new ()" link="libbonobo-bonobo-persist-stream.html#bonobo-persist-stream-new"/>
+<function name="bonobo_persist_stream_construct ()" link="libbonobo-bonobo-persist-stream.html#bonobo-persist-stream-construct"/>
+<function name="bonobo_object_save_to_stream ()" link="libbonobo-bonobo-persist-client.html#bonobo-object-save-to-stream"/>
+<function name="bonobo_object_from_stream ()" link="libbonobo-bonobo-persist-client.html#bonobo-object-from-stream"/>
+<function name="Read the FAQ" link="debugging.html#id2975732"/>
+<function name="Versions" link="debugging.html#id2975745"/>
+<function name="Correct install" link="debugging.html#id2975766"/>
+<function name="Stale processes" link="debugging.html#id2975781"/>
+<function name="Debugging" link="debugging.html#id2975809"/>
+<function name="CORBA method tracing" link="debugging.html#id2975438"/>
+<function name="Order of execution" link="debugging.html#id2975460"/>
+<function name="Nothing will activate!" link="debugging.html#id2975476"/>
+<function name="Nothing seems to happen, the code just locks" link="debugging.html#id2975499"/>
+<function name="Getting more information" link="debugging.html#id2975532"/>
+<function name="Debugging bonobo-activation" link="debugging.html#id2975576"/>
+<function name="The last resort" link="debugging.html#id2975605"/>
+<function name="Talk to the experts." link="debugging.html#id2975619"/>
+<function name="bonobo_config_get_string ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-string"/>
+<function name="bonobo_config_get_string_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-string-with-default"/>
+<function name="bonobo_config_get_short ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-short"/>
+<function name="bonobo_config_get_short_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-short-with-default"/>
+<function name="bonobo_config_get_ushort ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-ushort"/>
+<function name="bonobo_config_get_ushort_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-ushort-with-default"/>
+<function name="bonobo_config_get_long ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-long"/>
+<function name="bonobo_config_get_long_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-long-with-default"/>
+<function name="bonobo_config_get_ulong ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-ulong"/>
+<function name="bonobo_config_get_ulong_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-ulong-with-default"/>
+<function name="bonobo_config_get_float ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-float"/>
+<function name="bonobo_config_get_float_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-float-with-default"/>
+<function name="bonobo_config_get_double ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-double"/>
+<function name="bonobo_config_get_double_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-double-with-default"/>
+<function name="bonobo_config_get_boolean ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-boolean"/>
+<function name="bonobo_config_get_boolean_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-boolean-with-default"/>
+<function name="bonobo_config_get_char ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-char"/>
+<function name="bonobo_config_get_char_with_default ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-char-with-default"/>
+<function name="bonobo_config_get_value ()" link="libbonobo-bonobo-config-database.html#bonobo-config-get-value"/>
+<function name="bonobo_config_set_string ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-string"/>
+<function name="bonobo_config_set_short ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-short"/>
+<function name="bonobo_config_set_ushort ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-ushort"/>
+<function name="bonobo_config_set_long ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-long"/>
+<function name="bonobo_config_set_ulong ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-ulong"/>
+<function name="bonobo_config_set_float ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-float"/>
+<function name="bonobo_config_set_double ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-double"/>
+<function name="bonobo_config_set_boolean ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-boolean"/>
+<function name="bonobo_config_set_char ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-char"/>
+<function name="bonobo_config_set_value ()" link="libbonobo-bonobo-config-database.html#bonobo-config-set-value"/>
+</functions>
+</book>

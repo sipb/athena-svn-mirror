@@ -1,3 +1,21 @@
+libbonobo 2.2.0
+
+	* Features
+		+ large pretty new docs; lots of work
+		    (Gustavo J.A.M. Carneiro)
+
+	* Bugs fixed
+		+ translation fix (Abel Cheung)
+		+ portability fixes (James H.)
+		+ build fixage (Julio Merino, Frederic Crozat)
+
+libbonobo 2.1.0
+
+	* Featurelets
+		+ add async property set API (Michael)
+		+ add QI C wrapper for convenience (Michael)
+		+ make release_unref async - pending ORB fixes (Michael)
+
 libbonobo 2.0.1
 
 	* Bugs fixed

@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-listener</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="previous" href="libbonobo-bonobo-event-source.html" title="bonobo-event-source"><link rel="next" href="libbonobo-bonobo-property-bag.html" title="BonoboPropertyBag"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-event-source.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="property-bags.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-property-bag.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-listener"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-listener</h2><p>bonobo-listener &#8212; An Event Listener (an implementation of Bonobo::Listener)</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonobo-bonobo-listener.html#BONOBO-LISTENER-TYPE-CAPS">BONOBO_LISTENER_TYPE</a>
+struct      <a href="libbonobo-bonobo-listener.html#BonoboListenerPrivate">BonoboListenerPrivate</a>;
+typedef     <a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a>;
+typedef     <a href="libbonobo-bonobo-listener.html#BonoboListenerClass">BonoboListenerClass</a>;
+void        (<a href="libbonobo-bonobo-listener.html#BonoboListenerCallbackFn">*BonoboListenerCallbackFn</a>)     (<a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a> *listener,
+                                             const char *event_name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *any,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);
+<a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a>* <a href="libbonobo-bonobo-listener.html#bonobo-listener-new">bonobo_listener_new</a>         (<a href="libbonobo-bonobo-listener.html#BonoboListenerCallbackFn">BonoboListenerCallbackFn</a> event_cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);
+<a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a>* <a href="libbonobo-bonobo-listener.html#bonobo-listener-new-closure">bonobo_listener_new_closure</a> (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *event_closure);
+char*       <a href="libbonobo-bonobo-listener.html#bonobo-event-make-name">bonobo_event_make_name</a>          (const char *idl_path,
+                                             const char *kind,
+                                             const char *subtype);
+char*       <a href="libbonobo-bonobo-listener.html#bonobo-event-type">bonobo_event_type</a>               (const char *event_name);
+char*       <a href="libbonobo-bonobo-listener.html#bonobo-event-subtype">bonobo_event_subtype</a>            (const char *event_name);
+char*       <a href="libbonobo-bonobo-listener.html#bonobo-event-kind">bonobo_event_kind</a>               (const char *event_name);
+char*       <a href="libbonobo-bonobo-listener.html#bonobo-event-idl-path">bonobo_event_idl_path</a>           (const char *event_name);
+
+</pre></div><div xmlns:ns7="" class="refsect1" lang="en"><h2>Description</h2><p>
+   The BonoboListener object is a CORBA server used to receive events
+   emitted by a remote Bonobo::EventSource server.  The combination
+   EventSource/Listener is used to notify one or more client
+   applications of events that happen in a component.    Think of the
+   EventSource/Listener as a notification/callback system that allows
+   multiple clients to be informed of events.
+</p><p>
+   Once created, the BonoboListener object needs to be attached to a
+   remote IDL:Bonobo/EventSource:1.0 server.  This is done by passing the
+   CORBA Object reference of the BonoboListener to the addListener
+   method in the IDL:Bonobo/EventSource:1.0.  
+</p><p>
+   The BonoboListener object allows the user to specify a callback
+   function to be invoked when an event is emitted by the
+   IDL:Bonobo/EventSource:1.0 server.  The BonoboListener object also
+   emits the &quot;event_notify&quot; Gtk+ signal, which allows you to connect
+   multiple code segments to the same event notification. 
+</p><ns7:p>
+    Here is a sample client application that registers interest in
+    being notified of events from the fictional &quot;Keyboard&quot; event
+    source:
+
+    </ns7:p><div class="informalexample"><pre class="programlisting">
+BonoboListener *keyboard_listener;
+
+my_listener_function (BonoboListener *l, char *event_name,
+                      CORBA_any value, CORBA_Environment *ev,
+                      gpointer user_data)
+{
+	printf (&quot;Received event named: <tt>s</tt>\n&quot;, event_name);
+}
+
+connect_to_keyboard_source (Bonobo_EventSource *keyboard)
+{
+        Bonobo_Unknown reference;
+
+        /*
+         * First, create the listener Bonobo server.
+         */
+	keyboard_listener = bonobo_listener_new (my_listener_function, NULL);
+
+        /*
+         * Now, register our listener with the EventSource
+         */
+        reference = bonobo_object_corba_objref (keyboard_listener);
+        Bonobo_EventSource_addListener (keyboard, reference);
+}
+      </pre></div><ns7:p>
+
+</ns7:p><p>
+  The CORBA::any value passed to the listener function is defined by
+  the contract between the EventSource's event you are using and you.
+  To manipulate the value, you can use the CORBA DynamicAny interface
+  to introspect the value and extract the information you need. 
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="BONOBO-LISTENER-TYPE-CAPS"></a>BONOBO_LISTENER_TYPE</h3><pre class="programlisting">#define BONOBO_LISTENER_TYPE        BONOBO_TYPE_LISTENER /* deprecated, you should use BONOBO_TYPE_LISTENER */
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboListenerPrivate"></a>struct BonoboListenerPrivate</h3><pre class="programlisting">struct BonoboListenerPrivate;</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboListener"></a>BonoboListener</h3><pre class="programlisting">typedef struct {
+        BonoboObject          parent;
+
+	BonoboListenerPrivate *priv;
+} BonoboListener;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboListenerClass"></a>BonoboListenerClass</h3><pre class="programlisting">typedef struct {
+	BonoboObjectClass     parent_class;
+
+	POA_Bonobo_Listener__epv epv;
+
+	/* Signals */
+	void (* event_notify) (BonoboListener    *listener, 
+			       char              *event_name,
+			       BonoboArg         *event_data, 
+			       CORBA_Environment *ev);
+} BonoboListenerClass;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboListenerCallbackFn"></a>BonoboListenerCallbackFn ()</h3><pre class="programlisting">void        (*BonoboListenerCallbackFn)     (<a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a> *listener,
+                                             const char *event_name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *any,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);</pre><p>
+   The signature for the callback function invoked when an event is
+   delivered to the BonoboListener object.  
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>listener</tt></i> :</span></td><td>a pointer to the BonoboListener.
+</td></tr><tr><td><span class="term"><i><tt>event_name</tt></i> :</span></td><td>the event name that was emitted.
+</td></tr><tr><td><span class="term"><i><tt>any</tt></i> :</span></td><td>The value (A CORBA Any) that was passed by the EventSource.
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>Environment for returning CORBA errors.
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>the data pointer specified when you called bonobo_listener_new
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div xmlns:ns8="" class="refsect2" lang="en"><h3><a name="bonobo-listener-new"></a>bonobo_listener_new ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a>* bonobo_listener_new         (<a href="libbonobo-bonobo-listener.html#BonoboListenerCallbackFn">BonoboListenerCallbackFn</a> event_cb,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);</pre><p>
+Creates a generic event listener.  The listener calls the <i><tt>event_callback</tt></i> 
+function and emits an &quot;event_notify&quot; signal when notified of an event.  
+The signal callback should be of the form:
+</p><ns8:p>
+</ns8:p><div class="informalexample"><pre class="programlisting">
+     void some_callback (BonoboListener *listener,
+                         char *event_name, 
+		    CORBA_any *any,
+		    CORBA_Environment *ev,
+		    gpointer user_data);
+</pre></div><ns8:p>
+</ns8:p><p>
+You will typically pass the CORBA_Object reference in the return value
+to an EventSource (by invoking EventSource::addListener).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_cb</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> data passed to the functioned pointed by <i><tt>event_call</tt></i>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A BonoboListener object.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div xmlns:ns9="" class="refsect2" lang="en"><h3><a name="bonobo-listener-new-closure"></a>bonobo_listener_new_closure ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a>* bonobo_listener_new_closure (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *event_closure);</pre><p>
+Creates a generic event listener.  The listener invokes the <i><tt>event_closure</tt></i> 
+closure and emits an &quot;event_notify&quot; signal when notified of an event.  
+The signal callback should be of the form:
+</p><ns9:p>
+</ns9:p><div class="informalexample"><pre class="programlisting">
+     void some_callback (BonoboListener *listener,
+                         char *event_name, 
+		    CORBA_any *any,
+		    CORBA_Environment *ev,
+		    gpointer user_data);
+</pre></div><ns9:p>
+</ns9:p><p>
+You will typically pass the CORBA_Object reference in the return value
+to an EventSource (by invoking EventSource::addListener).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_closure</tt></i> :</span></td><td> closure to be invoked when an event is emitted by the EventSource.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A BonoboListener object.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-make-name"></a>bonobo_event_make_name ()</h3><pre class="programlisting">char*       bonobo_event_make_name          (const char *idl_path,
+                                             const char *kind,
+                                             const char *subtype);</pre><p>
+Creates an event name. Event names consist of three parts. The <i><tt>idl_path</tt></i> is
+mainly to create a unique namespace, and should identify the interface 
+which triggered the event, for example &quot;Bonobo/Property&quot;. The <i><tt>kind</tt></i> denotes
+what happened, for example &quot;change&quot;. Finally you can use the optional 
+<i><tt>subtype</tt></i> to make events more specific. All three parts of the name are 
+joined together separated by colons. &quot;Bonobo/Property:change&quot; or 
+&quot;Bonobo/Property:change:autosave&quot; are examples of valid event names.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>idl_path</tt></i> :</span></td><td> the IDL part of the event name.
+</td></tr><tr><td><span class="term"><i><tt>kind</tt></i> :</span></td><td> the kind of the event
+</td></tr><tr><td><span class="term"><i><tt>subtype</tt></i> :</span></td><td> an optional subtype
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A valid event_name, or NULL on error.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-type"></a>bonobo_event_type ()</h3><pre class="programlisting">char*       bonobo_event_type               (const char *event_name);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_name</tt></i> :</span></td><td> the event name
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The event subtype, or NULL on error.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-subtype"></a>bonobo_event_subtype ()</h3><pre class="programlisting">char*       bonobo_event_subtype            (const char *event_name);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-kind"></a>bonobo_event_kind ()</h3><pre class="programlisting">char*       bonobo_event_kind               (const char *event_name);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_name</tt></i> :</span></td><td> the event name
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The event kind, or NULL on error.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-idl-path"></a>bonobo_event_idl_path ()</h3><pre class="programlisting">char*       bonobo_event_idl_path           (const char *event_name);</pre><p>
+</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_name</tt></i> :</span></td><td> the event name
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The event idl path, or NULL on error.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><h2>See Also</h2><p>
+   <a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a>
+</p></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-event-source.html"><b>&lt;&lt; bonobo-event-source</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-property-bag.html"><b>BonoboPropertyBag &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,13 +1,13 @@
 # libbonobo translation to Catalan.
-# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
 # Softcatalà <info@softcatala.org>, 2001.
-# Jordi Mallach <jordi@sindominio.net>, 2002.
+# Jordi Mallach <jordi@sindominio.net>, 2002, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonobo 2.0.0\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-07-12 01:11+0200\n"
+"Project-Id-Version: libbonobo 2.1.1\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-13 03:38+0100\n"
 "Last-Translator: Softcatalà <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <info@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -197,12 +197,12 @@ msgstr "flux MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Ha tingut lloc una excepció a l'activar «%s»"
+msgid "Exception activating '%s'"
+msgstr "Ha tingut lloc una excepció en activar «%s»"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
+msgid "Failed to activate '%s'"
 msgstr "No s'ha pogut activar «%s»"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1

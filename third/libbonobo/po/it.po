@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo 2\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
 "PO-Revision-Date: 2002-03-03 16:20+0100\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@cgabriel.org>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
-msgstr "» stata eseguita una operazione non supportata"
+msgstr "√à stata eseguita una operazione non supportata"
 
 #: bonobo/bonobo-exception.c:157
 msgid "IO Error"
@@ -43,7 +43,7 @@ msgstr "Non ci sono permessi per accedere allo stream"
 
 #: bonobo/bonobo-exception.c:180
 msgid "An unsupported stream action was attempted"
-msgstr "» stata eseguita una operazione sullo stream non supportata"
+msgstr "√à stata eseguita una operazione sullo stream non supportata"
 
 #: bonobo/bonobo-exception.c:183
 msgid "IO Error on stream"
@@ -55,7 +55,7 @@ msgstr "Errore di Input/Output sullo storage"
 
 #: bonobo/bonobo-exception.c:190
 msgid "Name already exists in storage"
-msgstr "Il name Ë gi‡ esistente nello storage"
+msgstr "Il name √® gi√† esistente nello storage"
 
 #: bonobo/bonobo-exception.c:193
 msgid "Object not found in storage"
@@ -67,19 +67,19 @@ msgstr "Non ci sono permessi per eseguire l'operazione sullo storage"
 
 #: bonobo/bonobo-exception.c:198
 msgid "An unsupported storage action was attempted"
-msgstr "» stata eseguita una operazione sullo storage non supportata"
+msgstr "√à stata eseguita una operazione sullo storage non supportata"
 
 #: bonobo/bonobo-exception.c:200
 msgid "Object is not a stream"
-msgstr "L'oggetto non Ë uno stream"
+msgstr "L'oggetto non √® uno stream"
 
 #: bonobo/bonobo-exception.c:203
 msgid "Object is not a storage"
-msgstr "L'oggetto non Ë uno storage"
+msgstr "L'oggetto non √® uno storage"
 
 #: bonobo/bonobo-exception.c:206
 msgid "Storage is not empty"
-msgstr "Lo storage non Ë vuoto"
+msgstr "Lo storage non √® vuoto"
 
 #: bonobo/bonobo-exception.c:210
 msgid "malformed user interface XML description"
@@ -99,7 +99,7 @@ msgstr "Comando o verbo sconosciuto"
 
 #: bonobo/bonobo-exception.c:222
 msgid "Command is insensitive"
-msgstr "Comando non Ë sensibile"
+msgstr "Comando non √® sensibile"
 
 #: bonobo/bonobo-exception.c:226
 msgid "incorrect data type"
@@ -111,15 +111,15 @@ msgstr "stream non trovato"
 
 #: bonobo/bonobo-exception.c:233
 msgid "property not found"
-msgstr "propriet‡ non trovata"
+msgstr "propriet√† non trovata"
 
 #: bonobo/bonobo-exception.c:236
 msgid "property has invalid type"
-msgstr "propriet‡ non possiede tipo valido"
+msgstr "propriet√† non possiede tipo valido"
 
 #: bonobo/bonobo-exception.c:239
 msgid "property is read only"
-msgstr "propriet‡ in sola lettura"
+msgstr "propriet√† in sola lettura"
 
 #: bonobo/bonobo-exception.c:242
 msgid "config database backend failed "
@@ -127,7 +127,7 @@ msgstr "Backend database di configurazione fallito "
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
-msgstr "Non Ë stata trovata l'interfaccia Moniker"
+msgstr "Non √® stata trovata l'interfaccia Moniker"
 
 #: bonobo/bonobo-exception.c:249
 msgid "Moniker activation timed out"
@@ -195,13 +195,13 @@ msgid "stream MonikerExtender"
 msgstr "MonikerExtender stream"
 
 #: monikers/bonobo-moniker-oaf.c:51
-#, c-format
-msgid "Exception activating '%s"
+#, fuzzy, c-format
+msgid "Exception activating '%s'"
 msgstr "Eccezione attiva '%s"
 
 #: monikers/bonobo-moniker-oaf.c:60
-#, c-format
-msgid "Failed to activate '%s"
+#, fuzzy, c-format
+msgid "Failed to activate '%s'"
 msgstr "Impossibile attivare '%s"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
@@ -231,4 +231,4 @@ msgstr "Impossibile creare una istanza per il componente di esempio Echo"
 #: samples/echo/echo-client.c:45
 #, c-format
 msgid "An exception occured '%s'"
-msgstr "Si Ë verificare una eccezione '%s'"
+msgstr "Si √® verificare una eccezione '%s'"

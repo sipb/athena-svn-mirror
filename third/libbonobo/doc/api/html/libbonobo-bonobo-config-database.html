@@ -1,0 +1,463 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-config-database</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="misc.html" title="Miscellaneous"><link rel="previous" href="libbonobo-faq.html" title="Common Questions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-faq.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="misc.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-config-database"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-config-database</h2><p>bonobo-config-database &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-string">bonobo_config_get_string</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-string-with-default">bonobo_config_get_string_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-short">bonobo_config_get_short</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-short-with-default">bonobo_config_get_short_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-ushort">bonobo_config_get_ushort</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-ushort-with-default">bonobo_config_get_ushort_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-long">bonobo_config_get_long</a>          (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-long-with-default">bonobo_config_get_long_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-ulong">bonobo_config_get_ulong</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-ulong-with-default">bonobo_config_get_ulong_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-float">bonobo_config_get_float</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-float-with-default">bonobo_config_get_float_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-double">bonobo_config_get_double</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-double-with-default">bonobo_config_get_double_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-boolean">bonobo_config_get_boolean</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-boolean-with-default">bonobo_config_get_boolean_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-char">bonobo_config_get_char</a>          (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-char-with-default">bonobo_config_get_char_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK>*  <a href="libbonobo-bonobo-config-database.html#bonobo-config-get-value">bonobo_config_get_value</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> opt_tc,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-string">bonobo_config_set_string</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             const char *value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-short">bonobo_config_set_short</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-ushort">bonobo_config_set_ushort</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-long">bonobo_config_set_long</a>          (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-ulong">bonobo_config_set_ulong</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-float">bonobo_config_set_float</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-double">bonobo_config_set_double</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-boolean">bonobo_config_set_boolean</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-char">bonobo_config_set_char</a>          (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-config-database.html#bonobo-config-set-value">bonobo_config_set_value</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-string"></a>bonobo_config_get_string ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      bonobo_config_get_string        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a string from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database, or zero on error.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-string-with-default"></a>bonobo_config_get_string_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      bonobo_config_get_string_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-short"></a>bonobo_config_get_short ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      bonobo_config_get_short         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 16 bit integer from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-short-with-default"></a>bonobo_config_get_short_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      bonobo_config_get_short_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-ushort"></a>bonobo_config_get_ushort ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     bonobo_config_get_ushort        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 16 bit unsigned integer from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-ushort-with-default"></a>bonobo_config_get_ushort_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     bonobo_config_get_ushort_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-long"></a>bonobo_config_get_long ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      bonobo_config_get_long          (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 32 bit integer from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-long-with-default"></a>bonobo_config_get_long_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      bonobo_config_get_long_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-ulong"></a>bonobo_config_get_ulong ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     bonobo_config_get_ulong         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 32 bit unsigned integer from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-ulong-with-default"></a>bonobo_config_get_ulong_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     bonobo_config_get_ulong_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-float"></a>bonobo_config_get_float ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      bonobo_config_get_float         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a single precision floating point value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-float-with-default"></a>bonobo_config_get_float_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      bonobo_config_get_float_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-double"></a>bonobo_config_get_double ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     bonobo_config_get_double        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a double precision floating point value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-double-with-default"></a>bonobo_config_get_double_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     bonobo_config_get_double_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-boolean"></a>bonobo_config_get_boolean ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    bonobo_config_get_boolean       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a boolean value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-boolean-with-default"></a>bonobo_config_get_boolean_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    bonobo_config_get_boolean_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-char"></a>bonobo_config_get_char ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       bonobo_config_get_char          (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 8 bit character value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-char-with-default"></a>bonobo_config_get_char_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       bonobo_config_get_char_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-get-value"></a>bonobo_config_get_value ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK>*  bonobo_config_get_value         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> opt_tc,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a value from the configuration database</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_tc</tt></i> :</span></td><td> the type of the value, optional
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database, or zero on error.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-string"></a>bonobo_config_set_string ()</h3><pre class="programlisting">void        bonobo_config_set_string        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             const char *value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a string value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-short"></a>bonobo_config_set_short ()</h3><pre class="programlisting">void        bonobo_config_set_short         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 16 bit integer value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-ushort"></a>bonobo_config_set_ushort ()</h3><pre class="programlisting">void        bonobo_config_set_ushort        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 16 bit unsigned integer value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-long"></a>bonobo_config_set_long ()</h3><pre class="programlisting">void        bonobo_config_set_long          (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 32 bit integer value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-ulong"></a>bonobo_config_set_ulong ()</h3><pre class="programlisting">void        bonobo_config_set_ulong         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 32 bit unsigned integer value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-float"></a>bonobo_config_set_float ()</h3><pre class="programlisting">void        bonobo_config_set_float         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a single precision floating point value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-double"></a>bonobo_config_set_double ()</h3><pre class="programlisting">void        bonobo_config_set_double        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a double precision floating point value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-boolean"></a>bonobo_config_set_boolean ()</h3><pre class="programlisting">void        bonobo_config_set_boolean       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a boolean value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-char"></a>bonobo_config_set_char ()</h3><pre class="programlisting">void        bonobo_config_set_char          (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 8 bit characte value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-config-set-value"></a>bonobo_config_set_value ()</h3><pre class="programlisting">void        bonobo_config_set_value         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ConfigDatabase">Bonobo_ConfigDatabase</GTKDOCLINK> db,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a value in the configuration database.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>db</tt></i> :</span></td><td> a reference to the database object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-faq.html"><b>&lt;&lt; Common Questions</b></a></td><td align="right"></td></tr></table></body></html>

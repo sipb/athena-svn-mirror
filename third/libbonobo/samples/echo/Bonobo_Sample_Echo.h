@@ -40,7 +40,7 @@ extern "C"
 #define TC_IMPL_TC_Bonobo_Sample_Echo_15 'c'
 #define TC_IMPL_TC_Bonobo_Sample_Echo_16 'h'
 #define TC_IMPL_TC_Bonobo_Sample_Echo_17 'o'
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_Bonobo_Sample_Echo
    static
 #else
    extern
@@ -101,14 +101,14 @@ extern "C"
 				CORBA_Environment * ev);
 #include <orbit/orb-core/orbit-interface.h>
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_Bonobo_Sample_Echo
    static
 #else
    extern
 #endif
    ORBit_IInterface Bonobo_Sample_Echo__iinterface;
 #define Bonobo_Sample_Echo_IMETHODS_LEN 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_Bonobo_Sample_Echo
    static
 #else
    extern

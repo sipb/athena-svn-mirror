@@ -177,6 +177,15 @@ create_bag_client (void)
 		"string-test", TC_CORBA_string, "you are a precious flower",
 		NULL);
 
+	{
+		CORBA_any a;
+		CORBA_boolean b = TRUE;
+		a._type = TC_CORBA_boolean;
+		a._value = &b;
+		bonobo_pbclient_set_value_async
+			(pb, "boolean-test", &a, NULL);
+	}
+
 	bonobo_main_quit ();
 
 	return FALSE;

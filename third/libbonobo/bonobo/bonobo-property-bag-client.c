@@ -10,6 +10,7 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include <bonobo/bonobo-arg.h>
 #include <bonobo/bonobo-shutdown.h>
 #include <bonobo/bonobo-exception.h>
@@ -796,10 +797,8 @@ bonobo_pbclient_set_value  (Bonobo_PropertyBag  bag,
  * @first_arg: first argument name
  * @var_args: list of subsequent name / type / value triplets
  * 
- * This function uses the TypeCode data extracted from the
- * @pb to determine how it walks its stack. This function
- * provides the grunt implementation for other var-arg
- * functions like bonobo_widget_set_property
+ * This function provides the grunt implementation for
+ * other var-arg functions like bonobo_widget_set_property
  * 
  * Return value: an error string on error or NULL on success.
  **/
@@ -865,10 +864,8 @@ bonobo_pbclient_setv (Bonobo_PropertyBag       bag,
  * @first_arg: first argument name
  * @var_args: list of subsequent name / type / value triplets
  * 
- * This function uses the TypeCode data extracted from the
- * @pb to determine how it walks its stack. This function
- * provides the grunt implementation for other var-arg
- * functions like bonobo_widget_get_property.
+ * This function provides the grunt implementation for
+ * other var-arg functions like bonobo_widget_get_property.
  * 
  * Return value: an error string on error or NULL on success.
  **/
@@ -983,4 +980,72 @@ bonobo_pbclient_get (Bonobo_PropertyBag   pb,
 		CORBA_exception_free (&temp_ev);
 
 	va_end (args);
+}
+
+static ORBit_IMethod *
+get_set_value_imethod (void)
+{
+	static ORBit_IMethod *imethod = NULL;
+
+	if (!imethod) {
+		guint i;
+		ORBit_IMethods *methods;
+
+		methods = &Bonobo_PropertyBag__iinterface.methods;
+
+		for (i = 0; i < methods->_length; i++) {
+			if (!strcmp (methods->_buffer [i].name,
+				     "setValue"))
+				imethod = &methods->_buffer [i];
+		}
+		g_assert (imethod != NULL);
+	}
+
+	return imethod;
+}
+
+/**
+ * bonobo_pbclient_set_value_async:
+ * @bag: a reference to the PropertyBag
+ * @key: key of the value to set
+ * @value: the new value
+ * @opt_ev: an optional CORBA_Environment to return failure codes
+ *
+ * Set a value on the PropertyBag asynchronously, discarding any
+ * possible roundtrip exceptions.
+ */
+void
+bonobo_pbclient_set_value_async (Bonobo_PropertyBag  bag,
+				 const char         *key,
+				 CORBA_any          *value,
+				 CORBA_Environment  *opt_ev)
+{
+	gpointer args [2];
+	CORBA_Environment ev, *my_ev;
+
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (value != NULL);
+	g_return_if_fail (bag != CORBA_OBJECT_NIL);
+
+	if (!opt_ev) {
+		CORBA_exception_init (&ev);
+		my_ev = &ev;
+	} else
+		my_ev = opt_ev;
+
+	if (BONOBO_EX (my_ev) || bag == CORBA_OBJECT_NIL) {
+		if (!opt_ev)
+			CORBA_exception_free (&ev);
+		return;
+	}
+
+	args [0] = (gpointer) &key;
+	args [1] = (gpointer) value;
+
+	ORBit_small_invoke_async
+		(bag, get_set_value_imethod (),
+		 NULL, NULL, args, NULL, my_ev);
+	
+	if (!opt_ev)
+		CORBA_exception_free (&ev);
 }

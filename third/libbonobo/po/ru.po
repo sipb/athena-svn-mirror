@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-05-10 13:28+0400\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-09 11:00+0300\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,17 +16,17 @@ msgstr ""
 # bonobo/bonobo-exception.c:154
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
-msgstr "Попытка выполнить неподдерживаемое действие"
+msgstr "Произошла попытка выполнить неподдерживаемое действие"
 
 # bonobo/bonobo-exception.c:157
 #: bonobo/bonobo-exception.c:157
 msgid "IO Error"
-msgstr "Ошибка ввода-вывода"
+msgstr "Произошла ошибка ввода-вывода"
 
 # bonobo/bonobo-exception.c:160
 #: bonobo/bonobo-exception.c:160
 msgid "Invalid argument value"
-msgstr "Недопустимое значение аргумента"
+msgstr "Значение аргумента недопустимо"
 
 # bonobo/bonobo-exception.c:164
 #: bonobo/bonobo-exception.c:164
@@ -36,7 +36,7 @@ msgstr "Объект не найден"
 # bonobo/bonobo-exception.c:167
 #: bonobo/bonobo-exception.c:167
 msgid "Syntax error in object description"
-msgstr "Синтаксическая ошибка в описании объекта"
+msgstr "Синтаксическая ошибка присутствует в описании объекта"
 
 # bonobo/bonobo-exception.c:172
 #: bonobo/bonobo-exception.c:172
@@ -46,22 +46,22 @@ msgstr "Невозможно активировать объект из фабр
 # bonobo/bonobo-exception.c:177
 #: bonobo/bonobo-exception.c:177
 msgid "No permission to access stream"
-msgstr "Нет прав на доступ к потоку"
+msgstr "Отсутствуют права на доступ к потоку"
 
 # bonobo/bonobo-exception.c:180
 #: bonobo/bonobo-exception.c:180
 msgid "An unsupported stream action was attempted"
-msgstr "Попытка выполнить неподдерживаемое действие потока"
+msgstr "Произошла попытка выполнить неподдерживаемое действие потока"
 
 # bonobo/bonobo-exception.c:183
 #: bonobo/bonobo-exception.c:183
 msgid "IO Error on stream"
-msgstr "Ошибка ввода-вывода в потоке"
+msgstr "Произошла ошибка ввода-вывода в потоке"
 
 # bonobo/bonobo-exception.c:187
 #: bonobo/bonobo-exception.c:187
 msgid "IO Error on storage"
-msgstr "Ошибка ввода-вывода в хранилище"
+msgstr "Произошла ошибка ввода-вывода в хранилище"
 
 # bonobo/bonobo-exception.c:190
 #: bonobo/bonobo-exception.c:190
@@ -76,12 +76,12 @@ msgstr "Объект в хранилище не найден"
 # bonobo/bonobo-exception.c:196
 #: bonobo/bonobo-exception.c:196
 msgid "No permission to do operation on storage"
-msgstr "Нет прав для выполнения действий c хранилищем"
+msgstr "Отсутствуют права для выполнения действий c хранилищем"
 
 # bonobo/bonobo-exception.c:198
 #: bonobo/bonobo-exception.c:198
 msgid "An unsupported storage action was attempted"
-msgstr "Попытка выполнить неподдерживаемое действие с хранилищем"
+msgstr "Произошла попытка выполнить неподдерживаемое действие с хранилищем"
 
 # bonobo/bonobo-exception.c:200
 #: bonobo/bonobo-exception.c:200
@@ -116,12 +116,12 @@ msgstr "запрошенный атрибут интерфейса пользо�
 # bonobo/bonobo-exception.c:219
 #: bonobo/bonobo-exception.c:219
 msgid "Unknown command or verb"
-msgstr "Неизвестная команда или действие"
+msgstr "Команда или действие неизвестны"
 
 # bonobo/bonobo-exception.c:222
 #: bonobo/bonobo-exception.c:222
 msgid "Command is insensitive"
-msgstr "Бессмысленная команда"
+msgstr "Команда является бессмысленной"
 
 # bonobo/bonobo-exception.c:226
 #: bonobo/bonobo-exception.c:226
@@ -151,7 +151,7 @@ msgstr "свойство только для чтения"
 # bonobo/bonobo-exception.c:242
 #: bonobo/bonobo-exception.c:242
 msgid "config database backend failed "
-msgstr "сбой в модуле конфигурационной базы данных"
+msgstr "произошёл сбой в модуле конфигурационной базы данных"
 
 # bonobo/bonobo-exception.c:246
 #: bonobo/bonobo-exception.c:246
@@ -161,12 +161,12 @@ msgstr "Невозможно найти интерфейс моникера"
 # bonobo/bonobo-exception.c:249
 #: bonobo/bonobo-exception.c:249
 msgid "Moniker activation timed out"
-msgstr "Превышение времени ожидания активации моникера"
+msgstr "Время ожидания активации моникера превышено"
 
 # bonobo/bonobo-exception.c:252
 #: bonobo/bonobo-exception.c:252
 msgid "Syntax error within moniker"
-msgstr "Синтаксическая ошибка в моникере"
+msgstr "Произошла синтаксическая ошибка в моникере"
 
 # bonobo/bonobo-exception.c:255
 #: bonobo/bonobo-exception.c:255
@@ -176,28 +176,28 @@ msgstr "Моникер имеет неизвестный префикс"
 # bonobo/bonobo-exception.c:279
 #: bonobo/bonobo-exception.c:279
 msgid "Error checking error; no exception"
-msgstr "Ошибка проверки ошибок; нет исключения"
+msgstr "Произошла ошибка проверки ошибок; исключение отсутствует"
 
 # bonobo/bonobo-exception.c:288
 #: bonobo/bonobo-exception.c:288
 msgid "General activation error with no description"
-msgstr "Общая ошибка активирования без описания"
+msgstr "Произошла общая ошибка активирования без описания"
 
 # bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
 #: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
 msgid "Could not initialize Bonobo"
-msgstr "Не удалось инициализировать Bonobo"
+msgstr "Не удалось инициализировать систему Bonobo"
 
 # bonobo/bonobo-moniker.c:353
 #: bonobo/bonobo-moniker.c:353
 #, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr "Сбой при разрешении или расширении \"%s\""
+msgstr "Произошёл сбой при разрешении или расширении \"%s\""
 
 # bonobo/bonobo-moniker-util.c:246
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
-msgstr "Сбой при активации объекта"
+msgstr "Произошёл сбой при активации объекта"
 
 # monikers/Bonobo_Moniker_std.server.in.in.h:1
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
@@ -242,14 +242,14 @@ msgstr "потоковый MonikerExtender"
 # monikers/bonobo-moniker-oaf.c:51
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Вызов исключения \"%s\""
+msgid "Exception activating '%s'"
+msgstr "Исключение \"%s\" активируется"
 
 # monikers/bonobo-moniker-oaf.c:60
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
-msgstr "Сбой при активации \"%s\""
+msgid "Failed to activate '%s'"
+msgstr "Произошёл сбой при активации \"%s\""
 
 # samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
@@ -274,7 +274,7 @@ msgstr "Фабрика компонента Эхо"
 # samples/echo/echo-client.c:22
 #: samples/echo/echo-client.c:22
 msgid "I could not initialize Bonobo"
-msgstr "Не удалось инициализировать Bonobo"
+msgstr "Не удалось инициализировать систему Bonobo"
 
 # samples/echo/echo-client.c:33
 #: samples/echo/echo-client.c:33

@@ -469,6 +469,28 @@ bonobo_object_dup_ref (Bonobo_Unknown     object,
 	return ans;
 }
 
+static ORBit_IMethod *
+get_unknown_unref_imethod (void)
+{
+	static ORBit_IMethod *imethod = NULL;
+
+	if (!imethod) {
+		guint i;
+		ORBit_IMethods *methods;
+
+		methods = &Bonobo_Unknown__iinterface.methods;
+
+		for (i = 0; i < methods->_length; i++) {
+			if (!strcmp (methods->_buffer [i].name,
+				     "unref"))
+				imethod = &methods->_buffer [i];
+		}
+		g_assert (imethod != NULL);
+	}
+
+	return imethod;
+}
+
 /**
  * bonobo_object_release_unref:
  * @object: a Bonobo_Unknown corba object
@@ -495,6 +517,14 @@ bonobo_object_release_unref (Bonobo_Unknown     object,
 		ev = opt_ev;
 
 	Bonobo_Unknown_unref (object, ev);
+/*	Asynchronous unrefs need ORB 'shutdown' work.
+	if (ORBit_small_get_servant (object))
+		Bonobo_Unknown_unref (object, ev);
+	else
+		ORBit_small_invoke_async
+			(object, get_unknown_unref_imethod (),
+			NULL, NULL, NULL, NULL, ev);*/
+	
 	CORBA_Object_release (object, ev);
 
 	if (!opt_ev)
@@ -1434,3 +1464,43 @@ bonobo_type_unique (GType             parent_type,
 	else
 		return 0;
 }
+
+/**
+ * bonobo_object_query_remote:
+ * @unknown: an unknown object ref ( or NIL )
+ * @repo_id: the interface to query for
+ * @opt_ev: an optional exception environment
+ * 
+ * A helper wrapper for query interface
+ * 
+ * Return value: the interface or CORBA_OBJECT_NIL
+ **/
+Bonobo_Unknown
+bonobo_object_query_remote (Bonobo_Unknown     unknown,
+			    const char        *repo_id,
+			    CORBA_Environment *opt_ev)
+{
+	Bonobo_Unknown new_if;
+	CORBA_Environment *ev, temp_ev;
+       
+	if (unknown == CORBA_OBJECT_NIL)
+		return CORBA_OBJECT_NIL;
+
+	if (!opt_ev) {
+		CORBA_exception_init (&temp_ev);
+		ev = &temp_ev;
+	} else
+		ev = opt_ev;
+
+	new_if = Bonobo_Unknown_queryInterface (
+		unknown, repo_id, ev);
+
+	if (BONOBO_EX (ev))
+		new_if = CORBA_OBJECT_NIL;
+
+	if (!opt_ev)
+		CORBA_exception_free (ev);
+
+	return new_if;
+}
+

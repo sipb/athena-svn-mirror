@@ -1,0 +1,1509 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-macros</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="general.html" title="General"><link rel="previous" href="libbonobo-bonobo-i18n.html" title="bonobo-i18n"><link rel="next" href="libbonobo-bonobo-types.html" title="bonobo-types"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-i18n.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="general.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-types.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-macros"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-macros</h2><p>bonobo-macros &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonobo-bonobo-macros.html#BONOBO-BOILERPLATE-CAPS">BONOBO_BOILERPLATE</a>              (type, type_as_function, corba_type,		\
+			   parent_type, parent_type_macro,		\
+			   register_type_macro)
+#define     <a href="libbonobo-bonobo-macros.html#BONOBO-CALL-PARENT-CAPS">BONOBO_CALL_PARENT</a>              (parent_class_cast, name, args)
+#define     <a href="libbonobo-bonobo-macros.html#BONOBO-CALL-PARENT-WITH-DEFAULT-CAPS">BONOBO_CALL_PARENT_WITH_DEFAULT</a> (parent_class_cast,		\
+					name, args, def_return)
+#define     <a href="libbonobo-bonobo-macros.html#BONOBO-CLASS-BOILERPLATE-CAPS">BONOBO_CLASS_BOILERPLATE</a>        (type, type_as_function,		\
+				 parent_type, parent_type_macro)
+#define     <a href="libbonobo-bonobo-macros.html#BONOBO-REGISTER-TYPE-CAPS">BONOBO_REGISTER_TYPE</a>            (type, type_as_function, corba_type,	\
+			     parent_type, parent_type_macro)
+#define     <a href="libbonobo-bonobo-macros.html#BONOBO-CLASS-BOILERPLATE-FULL-CAPS">BONOBO_CLASS_BOILERPLATE_FULL</a>   (type, type_as_function,		\
+				      corba_type,			\
+				      parent_type, parent_type_macro)
+#define     <a href="libbonobo-bonobo-macros.html#BONOBO-REGISTER-TYPE-FULL-CAPS">BONOBO_REGISTER_TYPE_FULL</a>       (type, type_as_function, corba_type,	\
+				  parent_type, parent_type_macro)
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="BONOBO-BOILERPLATE-CAPS"></a>BONOBO_BOILERPLATE()</h3><pre class="programlisting">#define     BONOBO_BOILERPLATE(type, type_as_function, corba_type,		\
+			   parent_type, parent_type_macro,		\
+			   register_type_macro)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>type_as_function</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>corba_type</tt></i> :</span></td><td>
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type:
+@\
+			   parent_type: 
+</td></tr><tr><td><span class="term"><i><tt>parent_type_macro</tt></i> :</span></td><td>
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro:
+@\
+			   register_type_macro: 
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-CALL-PARENT-CAPS"></a>BONOBO_CALL_PARENT()</h3><pre class="programlisting">#define     BONOBO_CALL_PARENT(parent_class_cast, name, args)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>parent_class_cast</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>args</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-CALL-PARENT-WITH-DEFAULT-CAPS"></a>BONOBO_CALL_PARENT_WITH_DEFAULT()</h3><pre class="programlisting">#define     BONOBO_CALL_PARENT_WITH_DEFAULT(parent_class_cast,		\
+					name, args, def_return)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>parent_class_cast</tt></i> :</span></td><td>
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name:
+@\
+					name: 
+</td></tr><tr><td><span class="term"><i><tt>args</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def_return</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-CLASS-BOILERPLATE-CAPS"></a>BONOBO_CLASS_BOILERPLATE()</h3><pre class="programlisting">#define     BONOBO_CLASS_BOILERPLATE(type, type_as_function,		\
+				 parent_type, parent_type_macro)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>type_as_function</tt></i> :</span></td><td>
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type:
+@\
+				 parent_type: 
+</td></tr><tr><td><span class="term"><i><tt>parent_type_macro</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-REGISTER-TYPE-CAPS"></a>BONOBO_REGISTER_TYPE()</h3><pre class="programlisting">#define     BONOBO_REGISTER_TYPE(type, type_as_function, corba_type,	\
+			     parent_type, parent_type_macro)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>type_as_function</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>corba_type</tt></i> :</span></td><td>
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type:
+@\
+			     parent_type: 
+</td></tr><tr><td><span class="term"><i><tt>parent_type_macro</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-CLASS-BOILERPLATE-FULL-CAPS"></a>BONOBO_CLASS_BOILERPLATE_FULL()</h3><pre class="programlisting">#define     BONOBO_CLASS_BOILERPLATE_FULL(type, type_as_function,		\
+				      corba_type,			\
+				      parent_type, parent_type_macro)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>type_as_function</tt></i> :</span></td><td>
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type:
+@\
+				      corba_type: 
+@\
+				      parent_type: 
+</td></tr><tr><td><span class="term"><i><tt>parent_type_macro</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BONOBO-REGISTER-TYPE-FULL-CAPS"></a>BONOBO_REGISTER_TYPE_FULL()</h3><pre class="programlisting">#define     BONOBO_REGISTER_TYPE_FULL(type, type_as_function, corba_type,	\
+				  parent_type, parent_type_macro)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>type_as_function</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>corba_type</tt></i> :</span></td><td>
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type:
+@\
+				  parent_type: 
+</td></tr><tr><td><span class="term"><i><tt>parent_type_macro</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-i18n.html"><b>&lt;&lt; bonobo-i18n</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-types.html"><b>bonobo-types &gt;&gt;</b></a></td></tr></table></body></html>

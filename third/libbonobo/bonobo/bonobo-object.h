@@ -87,6 +87,9 @@ void                     bonobo_object_add_interface          (BonoboObject     
 							       BonoboObject           *newobj);
 BonoboObject            *bonobo_object_query_local_interface  (BonoboObject           *object,
 							       const char             *repo_id);
+Bonobo_Unknown           bonobo_object_query_remote           (Bonobo_Unknown          unknown,
+							       const char             *repo_id,
+							       CORBA_Environment      *opt_ev);
 Bonobo_Unknown           bonobo_object_query_interface        (BonoboObject           *object,
 							       const char             *repo_id,
 							       CORBA_Environment      *opt_ev);

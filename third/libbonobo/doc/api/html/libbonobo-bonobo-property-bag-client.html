@@ -1,0 +1,862 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-property-bag-client</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="previous" href="libbonobo-bonobo-arg.html" title="bonobo-arg"><link rel="next" href="monikers.html" title="Monikers"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-arg.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="property-bags.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="monikers.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-property-bag-client"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-property-bag-client</h2><p>bonobo-property-bag-client &#8212; simplified property bag client wrapper code</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-type">bonobo_pbclient_get_type</a>     (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-string">bonobo_pbclient_get_string</a>      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-string">bonobo_pbclient_get_default_string</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-string-with-default">bonobo_pbclient_get_string_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-short">bonobo_pbclient_get_short</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-short">bonobo_pbclient_get_default_short</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-short-with-default">bonobo_pbclient_get_short_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ushort">bonobo_pbclient_get_ushort</a>      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-ushort">bonobo_pbclient_get_default_ushort</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ushort-with-default">bonobo_pbclient_get_ushort_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-long">bonobo_pbclient_get_long</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-long">bonobo_pbclient_get_default_long</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-long-with-default">bonobo_pbclient_get_long_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ulong">bonobo_pbclient_get_ulong</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-ulong">bonobo_pbclient_get_default_ulong</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-ulong-with-default">bonobo_pbclient_get_ulong_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-float">bonobo_pbclient_get_float</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-float">bonobo_pbclient_get_default_float</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-float-with-default">bonobo_pbclient_get_float_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-double">bonobo_pbclient_get_double</a>      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-double">bonobo_pbclient_get_default_double</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-double-with-default">bonobo_pbclient_get_double_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-boolean">bonobo_pbclient_get_boolean</a>     (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-boolean">bonobo_pbclient_get_default_boolean</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-boolean-with-default">bonobo_pbclient_get_boolean_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-char">bonobo_pbclient_get_char</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-char">bonobo_pbclient_get_default_char</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-char-with-default">bonobo_pbclient_get_char_with_default</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK>*  <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-value">bonobo_pbclient_get_value</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> opt_tc,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK>*  <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-default-value">bonobo_pbclient_get_default_value</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> opt_tc,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-string">bonobo_pbclient_set_string</a>      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             const char *value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-short">bonobo_pbclient_set_short</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-ushort">bonobo_pbclient_set_ushort</a>      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-long">bonobo_pbclient_set_long</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-ulong">bonobo_pbclient_set_ulong</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-float">bonobo_pbclient_set_float</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-double">bonobo_pbclient_set_double</a>      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-boolean">bonobo_pbclient_set_boolean</a>     (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-char">bonobo_pbclient_set_char</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set-value">bonobo_pbclient_set_value</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+char*       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-doc-title">bonobo_pbclient_get_doc_title</a>   (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+char*       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-doc">bonobo_pbclient_get_doc</a>         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GList">GList</GTKDOCLINK>*      <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-keys">bonobo_pbclient_get_keys</a>        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-free-keys">bonobo_pbclient_free_keys</a>       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GList">GList</GTKDOCLINK> *key_list);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyFlags">Bonobo_PropertyFlags</GTKDOCLINK> <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get-flags">bonobo_pbclient_get_flags</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-set">bonobo_pbclient_set</a>             (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev,
+                                             const char *first_prop,
+                                             ...);
+void        <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-get">bonobo_pbclient_get</a>             (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev,
+                                             const char *first_prop,
+                                             ...);
+char*       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-setv">bonobo_pbclient_setv</a>            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             const char *first_prop,
+                                             va_list var_args);
+char*       <a href="libbonobo-bonobo-property-bag-client.html#bonobo-pbclient-getv">bonobo_pbclient_getv</a>            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             const char *first_prop,
+                                             va_list var_args);
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-setv">bonobo_property_bag_client_setv</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-getv">bonobo_property_bag_client_getv</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-property-type">bonobo_property_bag_client_get_property_type</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gboolean">bonobo_property_bag_client_get_value_gboolean</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gint">bonobo_property_bag_client_get_value_gint</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-glong">bonobo_property_bag_client_get_value_glong</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gfloat">bonobo_property_bag_client_get_value_gfloat</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-gdouble">bonobo_property_bag_client_get_value_gdouble</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-string">bonobo_property_bag_client_get_value_string</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-value-any">bonobo_property_bag_client_get_value_any</a>(pb, name, ev)
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gboolean">bonobo_property_bag_client_get_default_gboolean</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gint">bonobo_property_bag_client_get_default_gint</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-glong">bonobo_property_bag_client_get_default_glong</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gfloat">bonobo_property_bag_client_get_default_gfloat</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-gdouble">bonobo_property_bag_client_get_default_gdouble</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-string">bonobo_property_bag_client_get_default_string</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-default-any">bonobo_property_bag_client_get_default_any</a>(pb, name, ev)
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gboolean">bonobo_property_bag_client_set_value_gboolean</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gint">bonobo_property_bag_client_set_value_gint</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-glong">bonobo_property_bag_client_set_value_glong</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gfloat">bonobo_property_bag_client_set_value_gfloat</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-gdouble">bonobo_property_bag_client_set_value_gdouble</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-string">bonobo_property_bag_client_set_value_string</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-set-value-any">bonobo_property_bag_client_set_value_any</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-docstring">bonobo_property_bag_client_get_docstring</a>
+#define     <a href="libbonobo-bonobo-property-bag-client.html#bonobo-property-bag-client-get-flags">bonobo_property_bag_client_get_flags</a>
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+This code is designed to make the property bag interface slightly
+easier to use, by allowing optional CORBA environments, sensible
+return values on exceptions, and accessors for specific types of
+CORBA_Any. eg. bonobo_property_bag_client_get_value_glong.
+</p><p>
+With the property bag interface, as in all current remote Bonobo
+method invocations, translation issues are very dodgy. Assuming
+that the server process was activated in the correct locale, all
+should be well, however there is no guarantee that ( in a rapidly
+changing locale environment ) the string will be correctly translated.
+It is difficult to know how to solve this problem.
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-type"></a>bonobo_pbclient_get_type ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> bonobo_pbclient_get_type     (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-string"></a>bonobo_pbclient_get_string ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      bonobo_pbclient_get_string      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a string from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database, or zero on error.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-string"></a>bonobo_pbclient_get_default_string ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      bonobo_pbclient_get_default_string
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-string-with-default"></a>bonobo_pbclient_get_string_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>*      bonobo_pbclient_get_string_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-short"></a>bonobo_pbclient_get_short ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      bonobo_pbclient_get_short       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 16 bit integer from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-short"></a>bonobo_pbclient_get_default_short ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      bonobo_pbclient_get_default_short
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-short-with-default"></a>bonobo_pbclient_get_short_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK>      bonobo_pbclient_get_short_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-ushort"></a>bonobo_pbclient_get_ushort ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     bonobo_pbclient_get_ushort      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 16 bit unsigned integer from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-ushort"></a>bonobo_pbclient_get_default_ushort ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     bonobo_pbclient_get_default_ushort
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-ushort-with-default"></a>bonobo_pbclient_get_ushort_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK>     bonobo_pbclient_get_ushort_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-long"></a>bonobo_pbclient_get_long ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      bonobo_pbclient_get_long        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 32 bit integer from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-long"></a>bonobo_pbclient_get_default_long ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      bonobo_pbclient_get_default_long
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-long-with-default"></a>bonobo_pbclient_get_long_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK>      bonobo_pbclient_get_long_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-ulong"></a>bonobo_pbclient_get_ulong ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     bonobo_pbclient_get_ulong       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 32 bit unsigned integer from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-ulong"></a>bonobo_pbclient_get_default_ulong ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     bonobo_pbclient_get_default_ulong
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-ulong-with-default"></a>bonobo_pbclient_get_ulong_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK>     bonobo_pbclient_get_ulong_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-float"></a>bonobo_pbclient_get_float ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      bonobo_pbclient_get_float       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a single precision floating point value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-float"></a>bonobo_pbclient_get_default_float ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      bonobo_pbclient_get_default_float
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-float-with-default"></a>bonobo_pbclient_get_float_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK>      bonobo_pbclient_get_float_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-double"></a>bonobo_pbclient_get_double ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     bonobo_pbclient_get_double      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a double precision floating point value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-double"></a>bonobo_pbclient_get_default_double ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     bonobo_pbclient_get_default_double
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-double-with-default"></a>bonobo_pbclient_get_double_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK>     bonobo_pbclient_get_double_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-boolean"></a>bonobo_pbclient_get_boolean ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    bonobo_pbclient_get_boolean     (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a boolean value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-boolean"></a>bonobo_pbclient_get_default_boolean ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    bonobo_pbclient_get_default_boolean
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-boolean-with-default"></a>bonobo_pbclient_get_boolean_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK>    bonobo_pbclient_get_boolean_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-char"></a>bonobo_pbclient_get_char ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       bonobo_pbclient_get_char        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a 8 bit character value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the database.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-char"></a>bonobo_pbclient_get_default_char ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       bonobo_pbclient_get_default_char
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-char-with-default"></a>bonobo_pbclient_get_char_with_default ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK>       bonobo_pbclient_get_char_with_default
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> defval,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> *def);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>defval</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>def</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-value"></a>bonobo_pbclient_get_value ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK>*  bonobo_pbclient_get_value       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> opt_tc,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get a value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_tc</tt></i> :</span></td><td> the type of the value, optional
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value contained in the PropertyBag, or zero on error.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-default-value"></a>bonobo_pbclient_get_default_value ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK>*  bonobo_pbclient_get_default_value
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-TypeCode">CORBA_TypeCode</GTKDOCLINK> opt_tc,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Get the default value from the PropertyBag</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag object
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to get
+</td></tr><tr><td><span class="term"><i><tt>opt_tc</tt></i> :</span></td><td> the type of the value, optional
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the default value contained in the PropertyBag, or zero on error.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-string"></a>bonobo_pbclient_set_string ()</h3><pre class="programlisting">void        bonobo_pbclient_set_string      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             const char *value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a string value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-short"></a>bonobo_pbclient_set_short ()</h3><pre class="programlisting">void        bonobo_pbclient_set_short       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint16">gint16</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 16 bit integer value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-ushort"></a>bonobo_pbclient_set_ushort ()</h3><pre class="programlisting">void        bonobo_pbclient_set_ushort      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint16">guint16</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 16 bit unsigned integer value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-long"></a>bonobo_pbclient_set_long ()</h3><pre class="programlisting">void        bonobo_pbclient_set_long        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gint32">gint32</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 32 bit integer value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-ulong"></a>bonobo_pbclient_set_ulong ()</h3><pre class="programlisting">void        bonobo_pbclient_set_ulong       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="guint32">guint32</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 32 bit unsigned integer value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-float"></a>bonobo_pbclient_set_float ()</h3><pre class="programlisting">void        bonobo_pbclient_set_float       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gfloat">gfloat</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a single precision floating point value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-double"></a>bonobo_pbclient_set_double ()</h3><pre class="programlisting">void        bonobo_pbclient_set_double      (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gdouble">gdouble</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a double precision floating point value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-boolean"></a>bonobo_pbclient_set_boolean ()</h3><pre class="programlisting">void        bonobo_pbclient_set_boolean     (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gboolean">gboolean</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a boolean value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-char"></a>bonobo_pbclient_set_char ()</h3><pre class="programlisting">void        bonobo_pbclient_set_char        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a 8 bit characte value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set-value"></a>bonobo_pbclient_set_value ()</h3><pre class="programlisting">void        bonobo_pbclient_set_value       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Set a value in the PropertyBag.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> a reference to the PropertyBag
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key of the value to set
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> the new value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional CORBA_Environment to return failure codes
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-doc-title"></a>bonobo_pbclient_get_doc_title ()</h3><pre class="programlisting">char*       bonobo_pbclient_get_doc_title   (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-doc"></a>bonobo_pbclient_get_doc ()</h3><pre class="programlisting">char*       bonobo_pbclient_get_doc         (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-keys"></a>bonobo_pbclient_get_keys ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GList">GList</GTKDOCLINK>*      bonobo_pbclient_get_keys        (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-free-keys"></a>bonobo_pbclient_free_keys ()</h3><pre class="programlisting">void        bonobo_pbclient_free_keys       (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GList">GList</GTKDOCLINK> *key_list);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>key_list</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get-flags"></a>bonobo_pbclient_get_flags ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyFlags">Bonobo_PropertyFlags</GTKDOCLINK> bonobo_pbclient_get_flags
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             const char *key,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-set"></a>bonobo_pbclient_set ()</h3><pre class="programlisting">void        bonobo_pbclient_set             (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev,
+                                             const char *first_prop,
+                                             ...);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>first_prop</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>...</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-get"></a>bonobo_pbclient_get ()</h3><pre class="programlisting">void        bonobo_pbclient_get             (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev,
+                                             const char *first_prop,
+                                             ...);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>first_prop</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>...</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-setv"></a>bonobo_pbclient_setv ()</h3><pre class="programlisting">char*       bonobo_pbclient_setv            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             const char *first_prop,
+                                             va_list var_args);</pre><p>
+This function provides the grunt implementation for
+other var-arg functions like bonobo_widget_set_property</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> the property bag
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> optional CORBA exception environment or NULL
+</td></tr><tr><td><span class="term"><i><tt>first_prop</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>var_args</tt></i> :</span></td><td> list of subsequent name / type / value triplets
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an error string on error or NULL on success.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-pbclient-getv"></a>bonobo_pbclient_getv ()</h3><pre class="programlisting">char*       bonobo_pbclient_getv            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-PropertyBag">Bonobo_PropertyBag</GTKDOCLINK> bag,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev,
+                                             const char *first_prop,
+                                             va_list var_args);</pre><p>
+This function provides the grunt implementation for
+other var-arg functions like bonobo_widget_get_property.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>bag</tt></i> :</span></td><td> the property bag
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td> optional CORBA exception environment or NULL
+</td></tr><tr><td><span class="term"><i><tt>first_prop</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>var_args</tt></i> :</span></td><td> list of subsequent name / type / value triplets
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an error string on error or NULL on success.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-setv"></a>bonobo_property_bag_client_setv</h3><pre class="programlisting">#define     bonobo_property_bag_client_setv</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-getv"></a>bonobo_property_bag_client_getv</h3><pre class="programlisting">#define     bonobo_property_bag_client_getv</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-property-type"></a>bonobo_property_bag_client_get_property_type</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_property_type</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-value-gboolean"></a>bonobo_property_bag_client_get_value_gboolean</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_value_gboolean</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-value-gint"></a>bonobo_property_bag_client_get_value_gint</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_value_gint</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-value-glong"></a>bonobo_property_bag_client_get_value_glong</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_value_glong</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-value-gfloat"></a>bonobo_property_bag_client_get_value_gfloat</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_value_gfloat</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-value-gdouble"></a>bonobo_property_bag_client_get_value_gdouble</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_value_gdouble</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-value-string"></a>bonobo_property_bag_client_get_value_string</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_value_string</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-value-any"></a>bonobo_property_bag_client_get_value_any()</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_value_any(pb, name, ev)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>pb</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-default-gboolean"></a>bonobo_property_bag_client_get_default_gboolean</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_default_gboolean</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-default-gint"></a>bonobo_property_bag_client_get_default_gint</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_default_gint</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-default-glong"></a>bonobo_property_bag_client_get_default_glong</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_default_glong</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-default-gfloat"></a>bonobo_property_bag_client_get_default_gfloat</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_default_gfloat</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-default-gdouble"></a>bonobo_property_bag_client_get_default_gdouble</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_default_gdouble</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-default-string"></a>bonobo_property_bag_client_get_default_string</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_default_string</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-default-any"></a>bonobo_property_bag_client_get_default_any()</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_default_any(pb, name, ev)</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>pb</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-set-value-gboolean"></a>bonobo_property_bag_client_set_value_gboolean</h3><pre class="programlisting">#define     bonobo_property_bag_client_set_value_gboolean</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-set-value-gint"></a>bonobo_property_bag_client_set_value_gint</h3><pre class="programlisting">#define     bonobo_property_bag_client_set_value_gint</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-set-value-glong"></a>bonobo_property_bag_client_set_value_glong</h3><pre class="programlisting">#define     bonobo_property_bag_client_set_value_glong</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-set-value-gfloat"></a>bonobo_property_bag_client_set_value_gfloat</h3><pre class="programlisting">#define     bonobo_property_bag_client_set_value_gfloat</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-set-value-gdouble"></a>bonobo_property_bag_client_set_value_gdouble</h3><pre class="programlisting">#define     bonobo_property_bag_client_set_value_gdouble</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-set-value-string"></a>bonobo_property_bag_client_set_value_string</h3><pre class="programlisting">#define     bonobo_property_bag_client_set_value_string</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-set-value-any"></a>bonobo_property_bag_client_set_value_any</h3><pre class="programlisting">#define     bonobo_property_bag_client_set_value_any</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-docstring"></a>bonobo_property_bag_client_get_docstring</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_docstring</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-property-bag-client-get-flags"></a>bonobo_property_bag_client_get_flags</h3><pre class="programlisting">#define     bonobo_property_bag_client_get_flags</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><h2>See Also</h2><p>
+   <a href="libbonobo-bonobo-property-bag.html#BonoboPropertyBag">BonoboPropertyBag</a>, <a href="libbonobo-bonobo-property-bag.html#BonoboProperty">BonoboProperty</a>, <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="BonoboPropertyControl">BonoboPropertyControl</GTKDOCLINK>
+</p></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-arg.html"><b>&lt;&lt; bonobo-arg</b></a></td><td align="right"><a accesskey="n" href="monikers.html"><b>Monikers &gt;&gt;</b></a></td></tr></table></body></html>

@@ -268,6 +268,10 @@ bonobo_generic_factory_main (const char           *act_iid,
 	factory = bonobo_generic_factory_new (
 		act_iid, factory_cb, user_data);
 
+	/* FIXME: we need a nice timeout here so if we
+	 * havn't created anything within a few minutes
+	 * we just quit */
+
 	if (factory) {
 		bonobo_running_context_auto_exit_unref (
 			BONOBO_OBJECT (factory));

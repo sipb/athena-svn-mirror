@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-context</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="general.html" title="General"><link rel="previous" href="libbonobo-bonobo-types.html" title="bonobo-types"><link rel="next" href="libbonobo-bonobo-exception.html" title="bonobo-exception"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-types.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="general.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-exception.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-context"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-context</h2><p>bonobo-context &#8212; Extensible runtime service interface</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> <a href="libbonobo-bonobo-context.html#bonobo-context-get">bonobo_context_get</a>           (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *context_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-context.html#bonobo-context-add">bonobo_context_add</a>              (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *context_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> context);
+<a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>* <a href="libbonobo-bonobo-context.html#bonobo-context-running-get">bonobo_context_running_get</a>    (void);
+void        <a href="libbonobo-bonobo-context.html#bonobo-running-context-auto-exit-unref">bonobo_running_context_auto_exit_unref</a>
+                                            (<a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a> *object);
+</pre></div><div xmlns:ns1="" class="refsect1" lang="en"><h2>Description</h2><p>
+The bonobo-context code is designed to provide a way to
+expose CORBA contexts through a single C interface. This
+is so that language bindings can get away with wrapping
+a single function, and yet have access to the whole
+Bonobo service framework. Two examples of this are the
+MonikerContext and the RunningContext ( see
+Bonobo_Context.idl ).
+</p><ns1:p>
+  </ns1:p><div class="example"><a name="id2887877"></a><p class="title"><b>Example 1. Getting and using the moniker context</b></p><pre class="programlisting">
+Bonobo_MonikerContext context;
+Bonobo_Unknown        object;
+
+context = bonobo_context_get (&quot;Activation&quot;, NULL);
+
+if (context == CORBA_OBJECT_NIL)
+	g_error (_(&quot;Internal error, no activation context&quot;));
+
+object = Bonobo_MonikerContext_getObject (
+	&quot;file:/demo/a.jpeg&quot;, &quot;Bonobo/Control&quot;, ev);
+...
+     </pre></div><ns1:p>
+</ns1:p><ns1:p>
+The list of contexts is open and may be expanded in the future,
+currently there are the following:
+  </ns1:p><div class="itemizedlist"><ul type="disc"><li><p>
+        Activation - Bonobo/MonikerContext
+      </p></li><li><p>
+        Running - Bonobo/RunningContext
+      </p></li></ul></div><ns1:p>
+</ns1:p><p>
+The running context is particularly useful for ensuring that
+server processes exit cleanly when all their objects and
+derived objects are dead. To do this we can simply do the
+following:
+</p><ns1:p>
+  </ns1:p><div class="example"><a name="id2886528"></a><p class="title"><b>Example 2. How to get a factory to quit when it is idle</b></p><pre class="programlisting">
+static void
+last_unref_exit_cb (gpointer      context,
+		    BonoboObject *factory)
+{
+        bonobo_object_unref (factory);
+	<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gtk-main-quit">gtk_main_quit</GTKDOCLINK>();
+}
+...
+int main (int argc, char **argv)
+{
+	...
+	bonobo_running_context_ignore_object (BONOBO_OBJREF (object));
+
+	gtk_signal_connect (GTK_OBJECT (<a href="libbonobo-bonobo-context.html#bonobo-context-running-get">bonobo_context_running_get</a>()),
+			    &quot;last_unref&quot;, last_unref_exit_cb, factory);
+	...
+	<a href="libbonobo-bonobo-main.html#bonobo-main">bonobo_main</a>();
+}
+    </pre></div><ns1:p>
+</ns1:p><ns1:p>
+  Since this is a commonly used thing there is a helper to make this
+easier:
+  </ns1:p><div class="example"><a name="id2886576"></a><p class="title"><b>Example 3. How to get a factory to quit when it is idle</b></p><pre class="programlisting">
+bonobo_running_context_auto_exit_unref (factory) 
+    </pre></div><ns1:p>
+</ns1:p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="bonobo-context-get"></a>bonobo_context_get ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> bonobo_context_get           (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *context_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+The most useful context is named 'Activation' and returns
+the IDL:Bonobo/ActivationContext:1.0 interface.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>context_name</tt></i> :</span></td><td> the name of the context
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> optional Environment, or NULL
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a new reference to a global Bonobo context or CORBA_OBJECT_NIL
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-context-add"></a>bonobo_context_add ()</h3><pre class="programlisting">void        bonobo_context_add              (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *context_name,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> context);</pre><p>
+This function adds a new context to the context system</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>context_name</tt></i> :</span></td><td> the name to refer to the context by
+</td></tr><tr><td><span class="term"><i><tt>context</tt></i> :</span></td><td> The Bonobo_Unknown; a ref. is taken on this.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-context-running-get"></a>bonobo_context_running_get ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>* bonobo_context_running_get    (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-running-context-auto-exit-unref"></a>bonobo_running_context_auto_exit_unref ()</h3><pre class="programlisting">void        bonobo_running_context_auto_exit_unref
+                                            (<a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a> *object);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>object</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-types.html"><b>&lt;&lt; bonobo-types</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-exception.html"><b>bonobo-exception &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,285 @@
+<refentry id="libbonobo-bonobo-item-handler">
+<refmeta>
+<refentrytitle>BonoboItemHandler</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBBONOBO Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>BonoboItemHandler</refname><refpurpose>Simple Moniker Arguments</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="BONOBO-ITEM-HANDLER-TYPE-CAPS">BONOBO_ITEM_HANDLER_TYPE</link>
+struct      <link linkend="BonoboItemHandlerPrivate">BonoboItemHandlerPrivate</link>;
+struct      <link linkend="BonoboItemHandler">BonoboItemHandler</link>;
+typedef     <link linkend="BonoboItemHandlerClass">BonoboItemHandlerClass</link>;
+<link linkend="BonoboItemHandler">BonoboItemHandler</link>* <link linkend="bonobo-item-handler-new">bonobo_item_handler_new</link>  (<link linkend="BonoboItemHandlerEnumObjectsFn">BonoboItemHandlerEnumObjectsFn</link> enum_objects,
+                                             <link linkend="BonoboItemHandlerGetObjectFn">BonoboItemHandlerGetObjectFn</link> get_object,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="BonoboItemHandler">BonoboItemHandler</link>* <link linkend="bonobo-item-handler-new-closure">bonobo_item_handler_new_closure</link>
+                                            (<link linkend="GClosure">GClosure</link> *enum_objects,
+                                             <link linkend="GClosure">GClosure</link> *get_object);
+<link linkend="BonoboItemHandler">BonoboItemHandler</link>* <link linkend="bonobo-item-handler-construct">bonobo_item_handler_construct</link>
+                                            (<link linkend="BonoboItemHandler">BonoboItemHandler</link> *handler,
+                                             <link linkend="GClosure">GClosure</link> *enum_objects,
+                                             <link linkend="GClosure">GClosure</link> *get_object);
+typedef     <link linkend="BonoboItemOption">BonoboItemOption</link>;
+<link linkend="GSList">GSList</link>*     <link linkend="bonobo-item-option-parse">bonobo_item_option_parse</link>        (const char *option_string);
+void        <link linkend="bonobo-item-options-free">bonobo_item_options_free</link>        (<link linkend="GSList">GSList</link> *options);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<!-- doc/simple-moniker-arguments.txt -->
+<para>
+    Sometimes you want to pass "arguments" to a component.
+    Consider the component with the following OAFIID:
+</para>
+<para><literal>OAFIID:GNOME_FileSelector</literal></para>
+<para>
+    You might want to be able to set configuration options from
+    its moniker name, without having to ever use the property bag
+    API. For example:</para>
+<para><literal>
+    OAFIID:GNOME_FileSelector!AcceptMimeTypes=image/*</literal></para>
+
+<refsect2>
+    <title>Implementing it</title>
+    <para>
+	Create a BonoboItemHandler.  This component will
+	let you do argument parsing of any kind.</para>
+    <para>
+	You have to provide two functions: <function>enumObjects</function>
+	(this can be empty) and <function>getObject</function>.</para>
+    <para>The getObject function will be called when the moniker
+	mechanism is trying to resolve a set of arguments to your
+	function.</para>
+    <para>Like this:</para>
+    <informalexample>
+	<programlisting>
+Bonobo_Unknown
+getObject (BonoboItemHandler *h, const char *item_name,
+           gboolean only_if_exists, gpointer data,
+           CORBA_Environment *ev)
+{
+        MyData *m = data;
+                                                                        
+        if (strcmp (item_name, "friendly") == 0){
+                m-&gt;friendly = true;
+        }
+                                                                        
+        /* we just return ourselves */
+        return bonobo_object_corba_objref (h);
+}
+	</programlisting>
+    </informalexample>
+    <para>
+	So basically during the `getObject' operation you will be
+	given a chance to process the `item_name' string which is
+	basically like a command line argument (for the sake of
+	explaining this) and based on this information you can
+	customize your component.
+    </para>
+</refsect2>
+
+<refsect2>
+    <title>Sample functions</title>
+    <para>
+	Sometimes you will want to specify a bunch of options to
+	configure your component, like this:
+    </para>
+    <para><literal>OAFIID:MyComponent!visible=true;image=blah.png</literal></para>
+    <para>
+	So we are separating the various options with semi-colons
+	here.  To simplify your code, we have provided a couple of
+	functions that given the following string:</para>
+    <para><literal>visible=true;image=blah.png</literal></para>
+    <para>Will return a GList split with BonoboItemOptions:</para>
+    <informalexample>
+	<programlisting>
+GSList *l, *x;
+									
+x = bonobo_item_option_parse ("visible=true;image=blah.png");
+									
+for (l = x; l != NULL; l++){
+	BonoboItemOption *io = l-&gt;data;
+									
+	printf ("Key=<literal>s</literal>, Value=<literal>s</literal>\n", io-&gt;key, io-&gt;value);
+}
+bonobo_item_option_free (x);
+	</programlisting>
+    </informalexample>
+
+</refsect2>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="BONOBO-ITEM-HANDLER-TYPE-CAPS"/>BONOBO_ITEM_HANDLER_TYPE</title>
+<programlisting>#define BONOBO_ITEM_HANDLER_TYPE        BONOBO_TYPE_ITEM_HANDLER /* deprecated, you should use BONOBO_TYPE_ITEM_HANDLER */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboItemHandlerPrivate"/>struct BonoboItemHandlerPrivate</title>
+<programlisting>struct BonoboItemHandlerPrivate;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboItemHandler"/>struct BonoboItemHandler</title>
+<programlisting>struct BonoboItemHandler {
+
+	BonoboObject base;
+
+	POA_Bonobo_ItemContainer__epv epv;
+
+	BonoboItemHandlerPrivate      *priv;
+};
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="BonoboItemHandlerClass"/>BonoboItemHandlerClass</title>
+<programlisting>typedef struct {
+	BonoboObjectClass parent_class;
+
+	POA_Bonobo_ItemContainer__epv epv;
+} BonoboItemHandlerClass;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-item-handler-new"/>bonobo_item_handler_new ()</title>
+<programlisting><link linkend="BonoboItemHandler">BonoboItemHandler</link>* bonobo_item_handler_new  (<link linkend="BonoboItemHandlerEnumObjectsFn">BonoboItemHandlerEnumObjectsFn</link> enum_objects,
+                                             <link linkend="BonoboItemHandlerGetObjectFn">BonoboItemHandlerGetObjectFn</link> get_object,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Creates a new BonoboItemHandler object.  These are used to hold
+client sites.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>enum_objects</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>get_object</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The newly created BonoboItemHandler object
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-item-handler-new-closure"/>bonobo_item_handler_new_closure ()</title>
+<programlisting><link linkend="BonoboItemHandler">BonoboItemHandler</link>* bonobo_item_handler_new_closure
+                                            (<link linkend="GClosure">GClosure</link> *enum_objects,
+                                             <link linkend="GClosure">GClosure</link> *get_object);</programlisting>
+<para>
+Creates a new BonoboItemHandler object.  These are used to hold
+client sites.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>enum_objects</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>get_object</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The newly created BonoboItemHandler object
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-item-handler-construct"/>bonobo_item_handler_construct ()</title>
+<programlisting><link linkend="BonoboItemHandler">BonoboItemHandler</link>* bonobo_item_handler_construct
+                                            (<link linkend="BonoboItemHandler">BonoboItemHandler</link> *handler,
+                                             <link linkend="GClosure">GClosure</link> *enum_objects,
+                                             <link linkend="GClosure">GClosure</link> *get_object);</programlisting>
+<para>
+Constructs the <parameter>container</parameter> BonoboObject using the provided closures
+for the actual implementation.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>handler</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>enum_objects</parameter>&nbsp;:</term>
+<listitem><simpara> The closure implementing enumObjects
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>get_object</parameter>&nbsp;:</term>
+<listitem><simpara> The closure implementing getObject
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The constructed BonoboItemContainer object.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="BonoboItemOption"/>BonoboItemOption</title>
+<programlisting>typedef struct {
+	char *key;
+	char *value;
+} BonoboItemOption;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="bonobo-item-option-parse"/>bonobo_item_option_parse ()</title>
+<programlisting><link linkend="GSList">GSList</link>*     bonobo_item_option_parse        (const char *option_string);</programlisting>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>option_string</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+
+
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="bonobo-item-options-free"/>bonobo_item_options_free ()</title>
+<programlisting>void        bonobo_item_options_free        (<link linkend="GSList">GSList</link> *options);</programlisting>
+<para>
+Use this to release a list returned by <link linkend="bonobo-item-option-parse">bonobo_item_option_parse</link>()</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>options</parameter>&nbsp;:</term>
+<listitem><simpara> a GSList of BonoboItemOption structures that was returned by <link linkend="bonobo-item-option-parse">bonobo_item_option_parse</link>()
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+   A simplistic implementation exists in <link linkend="BonoboItemContainer">BonoboItemContainer</link>.
+</para>
+</refsect1>
+
+</refentry>

@@ -7,7 +7,7 @@ server_dot_in=Bonobo_Sample_Echo.server.in
 $(server_dot_in): $(server_dot_in).in
 	sed -e "s|\@prefix\@|$(prefix)|" $< > $@
 
-samplesdir = $(prefix)/lib/bonobo-2.0/samples
+samplesdir = $(libdir)/bonobo-2.0/samples
 samples_PROGRAMS = bonobo-echo-2
 
 bin_PROGRAMS     = echo-client-2

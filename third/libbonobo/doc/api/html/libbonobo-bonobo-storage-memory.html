@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-storage-memory</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="streams.html" title="Storages and Streams"><link rel="previous" href="streams.html" title="Storages and Streams"><link rel="next" href="libbonobo-bonobo-stream-memory.html" title="BonoboStreamMem"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="streams.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="streams.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-stream-memory.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-storage-memory"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-storage-memory</h2><p>bonobo-storage-memory &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonobo-bonobo-storage-memory.html#BONOBO-STORAGE-MEM-TYPE-CAPS">BONOBO_STORAGE_MEM_TYPE</a>
+struct      <a href="libbonobo-bonobo-storage-memory.html#BonoboStorageMemPriv">BonoboStorageMemPriv</a>;
+typedef     <a href="libbonobo-bonobo-storage-memory.html#BonoboStorageMem">BonoboStorageMem</a>;
+typedef     <a href="libbonobo-bonobo-storage-memory.html#BonoboStorageMemClass">BonoboStorageMemClass</a>;
+<a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>* <a href="libbonobo-bonobo-storage-memory.html#bonobo-storage-mem-create">bonobo_storage_mem_create</a>     (void);
+
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="BONOBO-STORAGE-MEM-TYPE-CAPS"></a>BONOBO_STORAGE_MEM_TYPE</h3><pre class="programlisting">#define BONOBO_STORAGE_MEM_TYPE        BONOBO_TYPE_STORAGE_MEM /* deprecated, you should use BONOBO_TYPE_STORAGE_MEM */
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboStorageMemPriv"></a>struct BonoboStorageMemPriv</h3><pre class="programlisting">struct BonoboStorageMemPriv;</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboStorageMem"></a>BonoboStorageMem</h3><pre class="programlisting">typedef struct {
+	BonoboObject parent;
+
+	BonoboStorageMemPriv *priv;
+} BonoboStorageMem;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboStorageMemClass"></a>BonoboStorageMemClass</h3><pre class="programlisting">typedef struct {
+	BonoboObjectClass parent_class;
+
+	POA_Bonobo_Storage__epv epv;
+} BonoboStorageMemClass;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-storage-mem-create"></a>bonobo_storage_mem_create ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>* bonobo_storage_mem_create     (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="streams.html"><b>&lt;&lt; Storages and Streams</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-stream-memory.html"><b>BonoboStreamMem &gt;&gt;</b></a></td></tr></table></body></html>

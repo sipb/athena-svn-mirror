@@ -1,0 +1,242 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>BonoboPersistStream</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="persist.html" title="Persistency"><link rel="previous" href="libbonobo-bonobo-persist-file.html" title="BonoboPersistFile"><link rel="next" href="libbonobo-bonobo-persist-client.html" title="bonobo-persist-client"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-persist-file.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="persist.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-persist-client.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-persist-stream"></a><div class="titlepage"></div><div class="refnamediv"><h2>BonoboPersistStream</h2><p>BonoboPersistStream &#8212; Interface for anything that can save / load itself from a Bonobo stream.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonobo-bonobo-persist-stream.html#BONOBO-PERSIST-STREAM-TYPE-CAPS">BONOBO_PERSIST_STREAM_TYPE</a>
+struct      <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamPrivate">BonoboPersistStreamPrivate</a>;
+struct      <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a>;
+void        (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">*BonoboPersistStreamIOFn</a>)      (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a> *ps,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Persist-ContentType">Bonobo_Persist_ContentType</GTKDOCLINK> type,
+                                             void *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Persist-ContentTypeList">Bonobo_Persist_ContentTypeList</GTKDOCLINK>* (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamTypesFn">*BonoboPersistStreamTypesFn</a>)
+                                            (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a> *ps,
+                                             void *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+typedef     <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamClass">BonoboPersistStreamClass</a>;
+<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a>* <a href="libbonobo-bonobo-persist-stream.html#bonobo-persist-stream-new">bonobo_persist_stream_new</a>
+                                            (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</a> load_fn,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</a> save_fn,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn</a> types_fn,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *iid,
+                                             void *closure);
+<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a>* <a href="libbonobo-bonobo-persist-stream.html#bonobo-persist-stream-construct">bonobo_persist_stream_construct</a>
+                                            (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a> *ps,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</a> load_fn,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</a> save_fn,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn</a> types_fn,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *iid,
+                                             void *closure);
+
+</pre></div><div xmlns:ns20="" class="refsect1" lang="en"><h2>Description</h2><p>
+The PersistStream interface is the interface to use for all new
+components that are able to load and save themselves to a stream.
+It should be associated with any <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="BonoboEmbeddable">BonoboEmbeddable</GTKDOCLINK> for use by the
+container in creating a compound document.
+</p><p>
+This interface works by connecting callbacks to the methods, in
+a somewhat deprecated fashion, it is probably better nowadays to
+simply sub-class the BonoboXObject and override the epv methods.
+Either way, after all the caveats here is an example use:
+</p><ns20:p>
+  </ns20:p><div class="example"><a name="id2971555"></a><p class="title"><b>Example 4. Implementing the PersistStream callbacks</b></p><pre class="programlisting">
+static void
+load_from_stream (BonoboPersistStream        *ps,
+                  const Bonobo_Stream         stream,
+                  Bonobo_Persist_ContentType  type,
+                  void                       *closure,
+                  CORBA_Environment          *ev)
+{
+	EogImageData *image_data = closure;
+
+	g_warning (&quot;Load content from stream of type '<tt>s</tt>'&quot;, type);
+}
+
+static gint
+save_to_stream (BonoboPersistStream        *ps,
+                const Bonobo_Stream         stream,
+                Bonobo_Persist_ContentType  type,
+                void                       *closure,
+                CORBA_Environment          *ev)
+{
+	EogImageData *image_data = closure;
+
+	g_warning (&quot;Save content to stream with type '<tt>s</tt>'&quot;, type);
+}
+
+static Bonobo_Persist_ContentTypeList *
+get_supported_types (BonoboPersistStream *ps,
+                     void                *closure,
+                     CORBA_Environment   *ev)
+{
+	return bonobo_persist_generate_content_types (
+		2, &quot;text/plain&quot;, &quot;text/html&quot;);
+}
+    </pre></div><ns20:p>
+Having implemented the callbacks we then have to register them
+and aggregate the interface to our object:
+  </ns20:p><div class="example"><a name="id2971605"></a><p class="title"><b>Example 5. Aggregating a new PersistStream</b></p><pre class="programlisting">
+EogImageData *
+eog_image_data_construct (EogImageData *image_data)
+{
+	BonoboObject        *retval;
+	BonoboPersistStream *ps;
+
+	ps = bonobo_persist_stream_new (
+		load_from_stream, save_to_stream,
+		get_supported_types, NULL,
+		image_data);
+
+	if (ps == NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (image_data));
+		return NULL;
+	}
+
+	bonobo_object_add_interface (BONOBO_OBJECT (image_data),
+				     BONOBO_OBJECT (ps));
+
+	return image_data;
+}
+    </pre></div><ns20:p>
+</ns20:p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="BONOBO-PERSIST-STREAM-TYPE-CAPS"></a>BONOBO_PERSIST_STREAM_TYPE</h3><pre class="programlisting">#define BONOBO_PERSIST_STREAM_TYPE        BONOBO_TYPE_PERSIST_STREAM /* deprecated, you should use BONOBO_TYPE_PERSIST_STREAM */
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboPersistStreamPrivate"></a>struct BonoboPersistStreamPrivate</h3><pre class="programlisting">struct BonoboPersistStreamPrivate;</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboPersistStream"></a>struct BonoboPersistStream</h3><pre class="programlisting">struct BonoboPersistStream {
+
+	BonoboPersist persist;
+
+	gboolean     is_dirty;
+
+	/*
+	 * For the sample routines, NULL if we use the
+	 * methods from the class
+	 */
+	BonoboPersistStreamIOFn     save_fn;
+	BonoboPersistStreamIOFn     load_fn;
+	BonoboPersistStreamTypesFn  types_fn;
+	
+	void                       *closure;
+
+	BonoboPersistStreamPrivate *priv;
+};
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboPersistStreamIOFn"></a>BonoboPersistStreamIOFn ()</h3><pre class="programlisting">void        (*BonoboPersistStreamIOFn)      (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a> *ps,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Stream">Bonobo_Stream</GTKDOCLINK> stream,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Persist-ContentType">Bonobo_Persist_ContentType</GTKDOCLINK> type,
+                                             void *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>ps</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>stream</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>closure</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboPersistStreamTypesFn"></a>BonoboPersistStreamTypesFn ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Persist-ContentTypeList">Bonobo_Persist_ContentTypeList</GTKDOCLINK>* (*BonoboPersistStreamTypesFn)
+                                            (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a> *ps,
+                                             void *closure,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>ps</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>closure</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboPersistStreamClass"></a>BonoboPersistStreamClass</h3><pre class="programlisting">typedef struct {
+	BonoboPersistClass parent_class;
+
+	POA_Bonobo_PersistStream__epv epv;
+
+	/* methods */
+	void       (*load)         (BonoboPersistStream        *ps,
+				    Bonobo_Stream              stream,
+				    Bonobo_Persist_ContentType type,
+				    CORBA_Environment          *ev);
+	void       (*save)         (BonoboPersistStream        *ps,
+				    Bonobo_Stream              stream,
+				    Bonobo_Persist_ContentType type,
+				    CORBA_Environment          *ev);
+
+	Bonobo_Persist_ContentTypeList * (*get_content_types) (BonoboPersistStream *ps,
+							       CORBA_Environment   *ev);
+
+} BonoboPersistStreamClass;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-persist-stream-new"></a>bonobo_persist_stream_new ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a>* bonobo_persist_stream_new
+                                            (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</a> load_fn,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</a> save_fn,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn</a> types_fn,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *iid,
+                                             void *closure);</pre><p>
+Creates a new BonoboPersistStream object. The various operations
+for the object are performed by the provided callback functions,
+which are passed <i><tt>closure</tt></i> when they are invoked. If any callback is
+<tt>NULL</tt>, the corresponding operation is performed by the class load
+and save routines.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>load_fn</tt></i> :</span></td><td> Loading routine
+</td></tr><tr><td><span class="term"><i><tt>save_fn</tt></i> :</span></td><td> Saving routine
+</td></tr><tr><td><span class="term"><i><tt>types_fn</tt></i> :</span></td><td> get_content_types routine
+</td></tr><tr><td><span class="term"><i><tt>iid</tt></i> :</span></td><td> OAF IID of the object this interface is aggregated to
+</td></tr><tr><td><span class="term"><i><tt>closure</tt></i> :</span></td><td> Data passed to IO routines.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the newly-created BonoboPersistStream object.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-persist-stream-construct"></a>bonobo_persist_stream_construct ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a>* bonobo_persist_stream_construct
+                                            (<a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStream">BonoboPersistStream</a> *ps,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</a> load_fn,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamIOFn">BonoboPersistStreamIOFn</a> save_fn,
+                                             <a href="libbonobo-bonobo-persist-stream.html#BonoboPersistStreamTypesFn">BonoboPersistStreamTypesFn</a> types_fn,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *iid,
+                                             void *closure);</pre><p>
+Initializes the BonoboPersistStream object.  The load and save
+operations for the object are performed by the provided <i><tt>load_fn</tt></i>
+and <i><tt>save_fn</tt></i> callback functions, which are passed <i><tt>closure</tt></i> when
+they are invoked.  If either <i><tt>load_fn</tt></i> or <i><tt>save_fn</tt></i> is <tt>NULL</tt>, the
+corresponding operation is performed by the class load and save
+routines.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>ps</tt></i> :</span></td><td> A BonoboPersistStream object
+</td></tr><tr><td><span class="term"><i><tt>load_fn</tt></i> :</span></td><td> Loading routine
+</td></tr><tr><td><span class="term"><i><tt>save_fn</tt></i> :</span></td><td> Saving routine
+</td></tr><tr><td><span class="term"><i><tt>types_fn</tt></i> :</span></td><td> returns the supported types
+</td></tr><tr><td><span class="term"><i><tt>iid</tt></i> :</span></td><td> OAF IID of the object this interface is aggregated to
+</td></tr><tr><td><span class="term"><i><tt>closure</tt></i> :</span></td><td> Data passed to IO routines.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The initialized BonoboPersistStream object.
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-persist-file.html"><b>&lt;&lt; BonoboPersistFile</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-persist-client.html"><b>bonobo-persist-client &gt;&gt;</b></a></td></tr></table></body></html>

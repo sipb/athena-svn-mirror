@@ -1,7 +1,7 @@
 AC_INIT(bonobo/bonobo-moniker.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libbonobo, 2.0.1)
+AM_INIT_AUTOMAKE(libbonobo, 2.2.0)
 
 AM_MAINTAINER_MODE
 
@@ -19,6 +19,7 @@ AC_STDC_HEADERS
 AM_PROG_LIBTOOL
 AC_PROG_YACC
 AC_PATH_PROGS(PATH_TO_XRDB, "xrdb")
+AC_CHECK_FUNCS(bind_textdomain_codeset)
 
 GETTEXT_PACKAGE=libbonobo-2.0
 AC_SUBST(GETTEXT_PACKAGE)
@@ -26,7 +27,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
 gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(gnomelocaledir)
 
-ALL_LINGUAS="ar az bg ca cs el es fi fr gl hu it ja ko lv ms nn no pl pt pt_BR ru sk sl sv ta tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el es fa fi fr gl he hu it ja ko lv mk ms nl nn no pl pt pt_BR ru sk sl sq sv ta tr uk vi zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 AC_SUBST(CFLAGS)
@@ -101,19 +102,27 @@ AC_SUBST(HTML_DIR)
 
 AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
 
-gtk_doc_min_version=0.6
+gtk_doc_min_version=0.10
 if $GTKDOC ; then 
     gtk_doc_version=`gtkdoc-mkdb --version`
     AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
-    if perl <<EOF ; then
-      exit (("$gtk_doc_version" =~ /^[[0-9]]+\.[[0-9]]+$/) &&
-            ("$gtk_doc_version" >= "$gtk_doc_min_version") ? 0 : 1);
-EOF
+
+    IFS="${IFS= 	}"; bonobo_save_IFS="$IFS"; IFS="."
+    set $gtk_doc_version
+    for min in $gtk_doc_min_version ; do
+        cur=$1; shift
+        if test -z $min ; then break; fi
+        if test -z $cur ; then GTKDOC=false; break; fi
+        if test $cur -gt $min ; then break ; fi
+        if test $cur -lt $min ; then GTKDOC=false; break ; fi
+    done
+    IFS="$bonobo_save_IFS"
+
+    if $GTKDOC ; then
       AC_MSG_RESULT(yes)
-   else
+    else
       AC_MSG_RESULT(no)
-      GTKDOC=false
-   fi
+    fi
 fi
 
 dnl Let people disable the gtk-doc stuff.
@@ -150,5 +159,6 @@ samples/echo/Makefile
 tests/Makefile
 doc/Makefile
 doc/api/Makefile
+doc/api/figures/Makefile
 ])
 

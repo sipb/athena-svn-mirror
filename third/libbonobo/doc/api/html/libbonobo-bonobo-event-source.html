@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-event-source</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="property-bags.html" title="Property Bags, Events, Listeners"><link rel="previous" href="properties.html" title="Properties"><link rel="next" href="libbonobo-bonobo-listener.html" title="bonobo-listener"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="properties.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="property-bags.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-listener.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-event-source"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-event-source</h2><p>bonobo-event-source &#8212; An Event Source where clients can connect to listen to events.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonobo-bonobo-event-source.html#BONOBO-EVENT-SOURCE-TYPE-CAPS">BONOBO_EVENT_SOURCE_TYPE</a>
+struct      <a href="libbonobo-bonobo-event-source.html#BonoboEventSourcePrivate">BonoboEventSourcePrivate</a>;
+typedef     <a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a>;
+typedef     <a href="libbonobo-bonobo-event-source.html#BonoboEventSourceClass">BonoboEventSourceClass</a>;
+<a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a>* <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-new">bonobo_event_source_new</a>  (void);
+void        <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-notify-listeners">bonobo_event_source_notify_listeners</a>
+                                            (<a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> *event_source,
+                                             const char *event_name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *opt_value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-notify-listeners-full">bonobo_event_source_notify_listeners_full</a>
+                                            (<a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> *event_source,
+                                             const char *path,
+                                             const char *type,
+                                             const char *subtype,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *opt_value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-client-remove-listener">bonobo_event_source_client_remove_listener</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Listener">Bonobo_Listener</GTKDOCLINK> listener,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener">bonobo_event_source_client_add_listener</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <a href="libbonobo-bonobo-listener.html#BonoboListenerCallbackFn">BonoboListenerCallbackFn</a> event_callback,
+                                             const char *opt_mask,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);
+void        <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener-closure">bonobo_event_source_client_add_listener_closure</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *callback,
+                                             const char *opt_mask,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Listener">Bonobo_Listener</GTKDOCLINK> <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-client-add-listener-full">bonobo_event_source_client_add_listener_full</a>
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *callback,
+                                             const char *opt_mask,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+void        <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-ignore-listeners">bonobo_event_source_ignore_listeners</a>
+                                            (<a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> *event_source);
+
+</pre></div><div xmlns:ns6="" class="refsect1" lang="en"><h2>Description</h2><p>
+An event source object is responsible for channeling the emission
+of signals on an object to the appropriate attached listeners.
+The API is extremely simple and allows implementations to notify
+their listeners of a new event occuring.
+</p><ns6:p>
+To notify a listener, you need to construct a textual string,
+this is done by the <tt>bonobo_event</tt> functions
+( see <a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a> ) ':' delimiting the fields. It is reccommended
+that the IDL module path of the interface be used as the first
+part of the string. This is because many interfaces can be aggregated
+together and need to share the same event namespace without conflicts.
+So for example the bonobo property bag notification code
+uses the IDL path &quot;Bonobo/Property&quot; the &quot;change&quot; kind and sets the
+sub-type to the property name:
+  </ns6:p><div class="example"><a name="id2907202"></a><p class="title"><b>Example 1. An example event source notification</b></p><pre class="programlisting">
+static void
+notify_listeners (BonoboPropertyBag *pb,
+		  BonoboProperty    *prop,
+		  const BonoboArg   *new_value,
+		  CORBA_Environment *opt_ev)
+{
+	if (prop-&gt;flags &amp; BONOBO_PROPERTY_NO_LISTENING)
+		return;
+	
+	bonobo_event_source_notify_listeners_full (pb-&gt;es,
+						   &quot;Bonobo/Property&quot;,
+						   &quot;change&quot;, prop-&gt;name,
+						   new_value, opt_ev);
+}
+    </pre></div><ns6:p>
+  Of course, you need to notify the listener with a valid
+BonoboArg containing the event data, this could easily contain
+a structure. eg.
+  </ns6:p><div class="example"><a name="id2907228"></a><p class="title"><b>Example 2. Passing a structure in an event</b></p><pre class="programlisting">
+module GNOME {
+	module Foo {
+		struct BaaEvent {
+			double a;
+			string b;
+			long   c;
+		};
+	};
+};
+     </pre><pre class="programlisting">
+static void
+fire_event (BonoboEventSource *on_source,
+            double             a_double,
+	    char              *a_string,
+	    long               a_float,
+	    CORBA_Environment *opt_ev)
+{
+	CORBA_any any;
+	GNOME_Foo_BaaEvent e;
+
+	e.a = a_double;
+	e.b = a_string;
+	e.c = a_float;
+
+	any-&gt;_type = TC_GNOME_Foo_BaaEvent;
+	any-&gt;_data = &amp;e;
+
+	bonobo_event_source_notify_listeners_full (
+	   on_source, &quot;GNOME/Foo&quot;, &quot;event&quot;, NULL,
+	   &amp;any, opt_ev);
+}
+     </pre></div><ns6:p>
+  NB. it is reccommended that you make it clear that the event
+structure is intended for use with the <a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> /
+<a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a> by naming it XYZEvent, ie. with the 'Event'
+suffix.
+</ns6:p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="BONOBO-EVENT-SOURCE-TYPE-CAPS"></a>BONOBO_EVENT_SOURCE_TYPE</h3><pre class="programlisting">#define BONOBO_EVENT_SOURCE_TYPE        BONOBO_TYPE_EVENT_SOURCE /* deprecated, you should use BONOBO_TYPE_EVENT_SOURCE */
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboEventSourcePrivate"></a>struct BonoboEventSourcePrivate</h3><pre class="programlisting">struct BonoboEventSourcePrivate;</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboEventSource"></a>BonoboEventSource</h3><pre class="programlisting">typedef struct {
+	BonoboObject             parent;
+	BonoboEventSourcePrivate *priv;
+} BonoboEventSource;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboEventSourceClass"></a>BonoboEventSourceClass</h3><pre class="programlisting">typedef struct {
+	BonoboObjectClass parent_class;
+
+	POA_Bonobo_EventSource__epv epv;
+} BonoboEventSourceClass;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-source-new"></a>bonobo_event_source_new ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a>* bonobo_event_source_new  (void);</pre><p>
+Creates a new BonoboEventSource object.  Typically this
+object will be exposed to clients through CORBA and they
+will register and unregister functions to be notified
+of events that this EventSource generates.
+</p><p>
+To notify clients of an event, use the <a href="libbonobo-bonobo-event-source.html#bonobo-event-source-notify-listeners">bonobo_event_source_notify_listeners</a>()
+function.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new <a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> server object.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-source-notify-listeners"></a>bonobo_event_source_notify_listeners ()</h3><pre class="programlisting">void        bonobo_event_source_notify_listeners
+                                            (<a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> *event_source,
+                                             const char *event_name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *opt_value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+This will notify all clients that have registered with this EventSource
+(through the addListener or addListenerWithMask methods) of the availability
+of the event named <i><tt>event_name</tt></i>.  The <i><tt>value</tt></i> CORBA::any value is passed to
+all listeners.
+</p><p>
+<i><tt>event_name</tt></i> can not contain comma separators, as commas are used to
+separate the various event names.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_source</tt></i> :</span></td><td> the Event Source that will emit the event.
+</td></tr><tr><td><span class="term"><i><tt>event_name</tt></i> :</span></td><td> Name of the event being emitted
+</td></tr><tr><td><span class="term"><i><tt>opt_value</tt></i> :</span></td><td> A CORBA_any value that contains the data that is passed
+to interested clients, or NULL for an empty value
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> A CORBA_Environment where a failure code can be returned, can be NULL.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-source-notify-listeners-full"></a>bonobo_event_source_notify_listeners_full ()</h3><pre class="programlisting">void        bonobo_event_source_notify_listeners_full
+                                            (<a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> *event_source,
+                                             const char *path,
+                                             const char *type,
+                                             const char *subtype,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-any">CORBA_any</GTKDOCLINK> *opt_value,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_source</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>path</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>type</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>subtype</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_value</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-source-client-remove-listener"></a>bonobo_event_source_client_remove_listener ()</h3><pre class="programlisting">void        bonobo_event_source_client_remove_listener
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Listener">Bonobo_Listener</GTKDOCLINK> listener,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>listener</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-source-client-add-listener"></a>bonobo_event_source_client_add_listener ()</h3><pre class="programlisting">void        bonobo_event_source_client_add_listener
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <a href="libbonobo-bonobo-listener.html#BonoboListenerCallbackFn">BonoboListenerCallbackFn</a> event_callback,
+                                             const char *opt_mask,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>event_callback</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_mask</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-source-client-add-listener-closure"></a>bonobo_event_source_client_add_listener_closure ()</h3><pre class="programlisting">void        bonobo_event_source_client_add_listener_closure
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *callback,
+                                             const char *opt_mask,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_mask</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-source-client-add-listener-full"></a>bonobo_event_source_client_add_listener_full ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Listener">Bonobo_Listener</GTKDOCLINK> bonobo_event_source_client_add_listener_full
+                                            (<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> object,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="GClosure">GClosure</GTKDOCLINK> *callback,
+                                             const char *opt_mask,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>object</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_mask</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-event-source-ignore-listeners"></a>bonobo_event_source_ignore_listeners ()</h3><pre class="programlisting">void        bonobo_event_source_ignore_listeners
+                                            (<a href="libbonobo-bonobo-event-source.html#BonoboEventSource">BonoboEventSource</a> *event_source);</pre><p>
+Instructs the event source to de-register any listeners
+that are added from the global running context.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>event_source</tt></i> :</span></td><td> 
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><h2>See Also</h2><p>
+  <a href="libbonobo-bonobo-listener.html#BonoboListener">BonoboListener</a> <a href="libbonobo-bonobo-arg.html#BonoboArg">BonoboArg</a>
+</p></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="properties.html"><b>&lt;&lt; Properties</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-listener.html"><b>bonobo-listener &gt;&gt;</b></a></td></tr></table></body></html>

@@ -38,8 +38,7 @@ module Bonobo {
  		 * emitted by this object.
   		 * @l: the listener implementation.
 		 *
-		 * Returns: The ListenerId which can be passed to the 
-		 * remove method
+		 * Adds a listener to this event source.
   		 */
  		void addListener (in Listener l);
   		
@@ -52,8 +51,7 @@ module Bonobo {
  		 * receiving events from this EventSource, only the 
  		 * events listed here will be delivered.
 		 *
-		 * Returns: The ListenerId which can be passed to the 
-		 * remove method
+		 * Adds a listener to this event source with the given mask.
  		 */
  		void addListenerWithMask (in Listener l,
 					  in string   event_mask);
@@ -61,6 +59,8 @@ module Bonobo {
  		/**
   		 * removeListener: Removes a listener
   		 * @l: the listener implementation
+		 *
+		 * Removes the listener from the notification list.
   		 */
  		void removeListener (in Listener l)
   			raises (UnknownListener);

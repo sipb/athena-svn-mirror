@@ -216,6 +216,9 @@ bonobo_init_full (int *argc, char **argv,
 	bonobo_context_init ();
 
 	bindtextdomain (GETTEXT_PACKAGE, BONOBO_LOCALEDIR);
+#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
 
 	return TRUE;
 }

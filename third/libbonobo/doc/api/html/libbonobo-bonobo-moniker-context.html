@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>bonobo-moniker-context</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="monikers.html" title="Monikers"><link rel="previous" href="libbonobo-bonobo-item-container.html" title="BonoboItemContainer"><link rel="next" href="streams.html" title="Storages and Streams"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-item-container.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="monikers.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="streams.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-moniker-context"></a><div class="titlepage"></div><div class="refnamediv"><h2>bonobo-moniker-context</h2><p>bonobo-moniker-context &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="libbonobo-bonobo-moniker-context.html#BonoboMonikerContextPrivate">BonoboMonikerContextPrivate</a>;
+typedef     <a href="libbonobo-bonobo-moniker-context.html#BonoboMonikerContext">BonoboMonikerContext</a>;
+typedef     <a href="libbonobo-bonobo-moniker-context.html#BonoboMonikerContextClass">BonoboMonikerContextClass</a>;
+<a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>* <a href="libbonobo-bonobo-moniker-context.html#bonobo-moniker-context-new">bonobo_moniker_context_new</a>    (void);
+</pre></div><div class="refsect1" lang="en"><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="BonoboMonikerContextPrivate"></a>struct BonoboMonikerContextPrivate</h3><pre class="programlisting">struct BonoboMonikerContextPrivate;</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboMonikerContext"></a>BonoboMonikerContext</h3><pre class="programlisting">typedef struct {
+	BonoboObject parent;
+
+	BonoboMonikerContextPrivate *priv;
+} BonoboMonikerContext;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboMonikerContextClass"></a>BonoboMonikerContextClass</h3><pre class="programlisting">typedef struct {
+	BonoboObjectClass parent;
+
+	POA_Bonobo_MonikerContext__epv epv;
+} BonoboMonikerContextClass;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-context-new"></a>bonobo_moniker_context_new ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-object.html#BonoboObject">BonoboObject</a>* bonobo_moniker_context_new    (void);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-item-container.html"><b>&lt;&lt; BonoboItemContainer</b></a></td><td align="right"><a accesskey="n" href="streams.html"><b>Storages and Streams &gt;&gt;</b></a></td></tr></table></body></html>

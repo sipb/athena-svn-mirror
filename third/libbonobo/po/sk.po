@@ -1,21 +1,21 @@
 # libbonobo sk.po
-# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
-# Marcel Telka <marcel@telka.sk>, 2001, 2002.
+# Copyright (C) 2001, 2002, 2003 Free Software Foundation, Inc.
+# Marcel Telka <marcel@telka.sk>, 2001, 2002, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
-"PO-Revision-Date: 2002-02-24 21:05+0100\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"PO-Revision-Date: 2003-01-12 23:55+0100\n"
 "Last-Translator: Marcel Telka <marcel@telka.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
-msgstr "Sk˙sen· nepodporovan· akcia"
+msgstr "Sk√∫sen√° nepodporovan√° akcia"
 
 #: bonobo/bonobo-exception.c:157
 msgid "IO Error"
@@ -23,11 +23,11 @@ msgstr "V/V chyba"
 
 #: bonobo/bonobo-exception.c:160
 msgid "Invalid argument value"
-msgstr "Nespr·vna hodnota argumentu"
+msgstr "Nespr√°vna hodnota argumentu"
 
 #: bonobo/bonobo-exception.c:164
 msgid "Object not found"
-msgstr "Objekt nen·jden˝"
+msgstr "Objekt nen√°jden√Ω"
 
 #: bonobo/bonobo-exception.c:167
 msgid "Syntax error in object description"
@@ -35,103 +35,103 @@ msgstr "Chyba syntaxe v popise objektu"
 
 #: bonobo/bonobo-exception.c:172
 msgid "Cannot activate object from factory"
-msgstr "NemÙæem aktivovaª objekt z tov·rne"
+msgstr "Nem√¥≈æem aktivova≈• objekt z tov√°rne"
 
 #: bonobo/bonobo-exception.c:177
 msgid "No permission to access stream"
-msgstr "Nie s˙ pr·va na prÌstup k pr˙du"
+msgstr "Nie s√∫ pr√°va na pr√≠stup k pr√∫du"
 
 #: bonobo/bonobo-exception.c:180
 msgid "An unsupported stream action was attempted"
-msgstr "Sk˙sen· nepodporovan· akcia pr˙du"
+msgstr "Sk√∫sen√° nepodporovan√° akcia pr√∫du"
 
 #: bonobo/bonobo-exception.c:183
 msgid "IO Error on stream"
-msgstr "V/V chyba v pr˙de"
+msgstr "V/V chyba v pr√∫de"
 
 #: bonobo/bonobo-exception.c:187
 msgid "IO Error on storage"
-msgstr "V/V chyba v ˙loæisku"
+msgstr "V/V chyba v √∫lo≈æisku"
 
 #: bonobo/bonobo-exception.c:190
 msgid "Name already exists in storage"
-msgstr "Meno uæ existuje v ˙loæisku"
+msgstr "Meno u≈æ existuje v √∫lo≈æisku"
 
 #: bonobo/bonobo-exception.c:193
 msgid "Object not found in storage"
-msgstr "Objekt nebol n·jden˝ v ˙loæisku"
+msgstr "Objekt nebol n√°jden√Ω v √∫lo≈æisku"
 
 #: bonobo/bonobo-exception.c:196
 msgid "No permission to do operation on storage"
-msgstr "Nie s˙ pr·va na vykonanie oper·cie v ˙loæisku"
+msgstr "Nie s√∫ pr√°va na vykonanie oper√°cie v √∫lo≈æisku"
 
 #: bonobo/bonobo-exception.c:198
 msgid "An unsupported storage action was attempted"
-msgstr "Sk˙sen· nepodporovan· akcia ˙loæiska"
+msgstr "Sk√∫sen√° nepodporovan√° akcia √∫lo≈æiska"
 
 #: bonobo/bonobo-exception.c:200
 msgid "Object is not a stream"
-msgstr "Objekt nie je pr˙d"
+msgstr "Objekt nie je pr√∫d"
 
 #: bonobo/bonobo-exception.c:203
 msgid "Object is not a storage"
-msgstr "Objekt nie je ˙loæisko"
+msgstr "Objekt nie je √∫lo≈æisko"
 
 #: bonobo/bonobo-exception.c:206
 msgid "Storage is not empty"
-msgstr "⁄loæisko nie je pr·zdne"
+msgstr "√ölo≈æisko nie je pr√°zdne"
 
 #: bonobo/bonobo-exception.c:210
 msgid "malformed user interface XML description"
-msgstr "poruπen˝ XML popis pouæÌvateµskÈho rozhrania"
+msgstr "poru≈°en√Ω XML popis pou≈æ√≠vateƒæsk√©ho rozhrania"
 
 #: bonobo/bonobo-exception.c:213
 msgid "invalid path to XML user interface element"
-msgstr "neplatn· cesta k prvku XML pouæÌvateµskÈho rozhrania"
+msgstr "neplatn√° cesta k prvku XML pou≈æ√≠vateƒæsk√©ho rozhrania"
 
 #: bonobo/bonobo-exception.c:216
 msgid "the requested UI attribute didn't exist"
-msgstr "poæadovan· vlastnosª UI neexistuje"
+msgstr "po≈æadovan√° vlastnos≈• UI neexistuje"
 
 #: bonobo/bonobo-exception.c:219
 msgid "Unknown command or verb"
-msgstr "Nezn·my prÌkaz alebo v˝raz"
+msgstr "Nezn√°my pr√≠kaz alebo v√Ωraz"
 
 #: bonobo/bonobo-exception.c:222
 msgid "Command is insensitive"
-msgstr "PrÌkaz je necitliv˝"
+msgstr "Pr√≠kaz je necitliv√Ω"
 
 #: bonobo/bonobo-exception.c:226
 msgid "incorrect data type"
-msgstr "nespr·vny typ d·t"
+msgstr "nespr√°vny typ d√°t"
 
 #: bonobo/bonobo-exception.c:229
 msgid "stream not found"
-msgstr "pr˙d nen·jden˝"
+msgstr "pr√∫d nen√°jden√Ω"
 
 #: bonobo/bonobo-exception.c:233
 msgid "property not found"
-msgstr "vlastnosª nen·jden·"
+msgstr "vlastnos≈• nen√°jden√°"
 
 #: bonobo/bonobo-exception.c:236
 msgid "property has invalid type"
-msgstr "vlastnosª je neplatnÈho typu"
+msgstr "vlastnos≈• je neplatn√©ho typu"
 
 #: bonobo/bonobo-exception.c:239
 msgid "property is read only"
-msgstr "vlastnosª je len na ËÌtanie"
+msgstr "vlastnos≈• je len na ƒç√≠tanie"
 
 #: bonobo/bonobo-exception.c:242
 msgid "config database backend failed "
-msgstr "komunik·cia s konfiguraËnou datab·zou zlyhala "
+msgstr "komunik√°cia s konfiguraƒçnou datab√°zou zlyhala "
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
-msgstr "Rozhranie monikera nemÙæe byª n·jdenÈ"
+msgstr "Rozhranie monikera nem√¥≈æe by≈• n√°jden√©"
 
 #: bonobo/bonobo-exception.c:249
 msgid "Moniker activation timed out"
-msgstr "»asov˝ limit aktiv·cie monikera vyprπal"
+msgstr "ƒåasov√Ω limit aktiv√°cie monikera vypr≈°al"
 
 #: bonobo/bonobo-exception.c:252
 msgid "Syntax error within moniker"
@@ -139,28 +139,28 @@ msgstr "Chyba syntaxe v monikeri"
 
 #: bonobo/bonobo-exception.c:255
 msgid "Moniker has an unknown moniker prefix"
-msgstr "Moniker m· nezn·mu predponu"
+msgstr "Moniker m√° nezn√°mu predponu"
 
 #: bonobo/bonobo-exception.c:279
 msgid "Error checking error; no exception"
-msgstr "Chyba pri kontrole chyby; bez v˝nimky"
+msgstr "Chyba pri kontrole chyby; bez v√Ωnimky"
 
 #: bonobo/bonobo-exception.c:288
 msgid "General activation error with no description"
-msgstr "Vπeobecn· chyba aktiv·cie bez popisu"
+msgstr "V≈°eobecn√° chyba aktiv√°cie bez popisu"
 
 #: bonobo/bonobo-generic-factory.h:74 bonobo/bonobo-generic-factory.h:78
 msgid "Could not initialize Bonobo"
-msgstr "NemÙæem inicializovaª Bonobo"
+msgstr "Nem√¥≈æem inicializova≈• Bonobo"
 
 #: bonobo/bonobo-moniker.c:353
 #, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr "Zlyhalo rozdelenie alebo rozπÌrenie '%s'"
+msgstr "Zlyhalo rozdelenie alebo roz≈°√≠renie '%s'"
 
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
-msgstr "Zlyhala aktiv·cia objektu"
+msgstr "Zlyhala aktiv√°cia objektu"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
 msgid "HTTP Moniker"
@@ -168,49 +168,49 @@ msgstr "HTTP moniker"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:2
 msgid "ORB IOR handling moniker"
-msgstr "ORB IOR ovl·dacÌ moniker"
+msgstr "ORB IOR ovl√°dac√≠ moniker"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:3
 msgid "Standard Moniker factory"
-msgstr "©tandardn· tov·reÚ monikera"
+msgstr "≈†tandardn√° tov√°re≈à monikera"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:4
 msgid "generic Oaf activation moniker"
-msgstr "vπeobecn˝ aktivaËn˝ moniker Oaf"
+msgstr "v≈°eobecn√Ω aktivaƒçn√Ω moniker Oaf"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:5
 msgid "generic Oaf query moniker"
-msgstr "vπeobecn˝ dotazovacÌ moniker Oaf"
+msgstr "v≈°eobecn√Ω dotazovac√≠ moniker Oaf"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:6
 msgid "generic factory 'new' moniker"
-msgstr "vπeobecn˝ moniker tov·rne 'new'"
+msgstr "v≈°eobecn√Ω moniker tov√°rne 'new'"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:7
 msgid "generic item moniker"
-msgstr "vπeobecn˝ moniker poloæiek"
+msgstr "v≈°eobecn√Ω moniker polo≈æiek"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:8
 msgid "stream MonikerExtender"
-msgstr "pr˙d MonikerExtender"
+msgstr "pr√∫d MonikerExtender"
 
 #: monikers/bonobo-moniker-oaf.c:51
 #, c-format
-msgid "Exception activating '%s"
-msgstr "Aktiv·cia v˝nimky '%s'"
+msgid "Exception activating '%s'"
+msgstr "Aktiv√°cia v√Ωnimky '%s'"
 
 #: monikers/bonobo-moniker-oaf.c:60
 #, c-format
-msgid "Failed to activate '%s"
-msgstr "Zlyhala aktiv·cia '%s'"
+msgid "Failed to activate '%s'"
+msgstr "Zlyhala aktiv√°cia '%s'"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr "Bonobo tov·reÚ servera echo"
+msgstr "Bonobo tov√°re≈à servera echo"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr "Uk·ækov˝ program bonobo servera echo"
+msgstr "Uk√°≈ækov√Ω program bonobo servera echo"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:3
 msgid "Echo component"
@@ -218,17 +218,17 @@ msgstr "Komponent echo"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:4
 msgid "Echo component factory"
-msgstr "Tov·reÚ komponentu echo"
+msgstr "Tov√°re≈à komponentu echo"
 
 #: samples/echo/echo-client.c:22
 msgid "I could not initialize Bonobo"
-msgstr "NemÙæem inicializovaª Bonobo"
+msgstr "Nem√¥≈æem inicializova≈• Bonobo"
 
 #: samples/echo/echo-client.c:33
 msgid "Could not create an instance of the sample echo component"
-msgstr "NemÙæem vytvoriª inπtanciu uk·ækovÈho komponentu echo"
+msgstr "Nem√¥≈æem vytvori≈• in≈°tanciu uk√°≈ækov√©ho komponentu echo"
 
 #: samples/echo/echo-client.c:45
 #, c-format
 msgid "An exception occured '%s'"
-msgstr "Vyskytla sa v˝nimka '%s'"
+msgstr "Vyskytla sa v√Ωnimka '%s'"

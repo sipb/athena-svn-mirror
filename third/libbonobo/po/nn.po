@@ -4,17 +4,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo 1.107.0\n"
-"POT-Creation-Date: 2002-10-18 12:13+0100\n"
+"POT-Creation-Date: 2003-01-20 16:07+0000\n"
 "PO-Revision-Date: 2001-09-26 08:36+0200\n"
 "Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
 "Language-Team: nynorsk <nn@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonobo/bonobo-exception.c:154
 msgid "An unsupported action was attempted"
-msgstr "Ei ustøtta handling vart prøvd"
+msgstr "Ei ustÃ¸tta handling vart prÃ¸vd"
 
 #: bonobo/bonobo-exception.c:157
 msgid "IO Error"
@@ -34,23 +34,23 @@ msgstr "Syntaksfeil i objektskildringa"
 
 #: bonobo/bonobo-exception.c:172
 msgid "Cannot activate object from factory"
-msgstr "Kan ikkje aktivere objekt frå fabrikk"
+msgstr "Kan ikkje aktivere objekt frÃ¥ fabrikk"
 
 #: bonobo/bonobo-exception.c:177
 msgid "No permission to access stream"
-msgstr "Ikkje løyve til å aksessere straum"
+msgstr "Ikkje lÃ¸yve til Ã¥ aksessere straum"
 
 #: bonobo/bonobo-exception.c:180
 msgid "An unsupported stream action was attempted"
-msgstr "Ei ustøtta straumhandling vart prøvd"
+msgstr "Ei ustÃ¸tta straumhandling vart prÃ¸vd"
 
 #: bonobo/bonobo-exception.c:183
 msgid "IO Error on stream"
-msgstr "IU-feil på straum"
+msgstr "IU-feil pÃ¥ straum"
 
 #: bonobo/bonobo-exception.c:187
 msgid "IO Error on storage"
-msgstr "IU-feil på lager"
+msgstr "IU-feil pÃ¥ lager"
 
 #: bonobo/bonobo-exception.c:190
 msgid "Name already exists in storage"
@@ -62,11 +62,11 @@ msgstr "Objektet ikkje funne i lageret"
 
 #: bonobo/bonobo-exception.c:196
 msgid "No permission to do operation on storage"
-msgstr "Ikkje løyve til å gjere operasjonar på lager"
+msgstr "Ikkje lÃ¸yve til Ã¥ gjere operasjonar pÃ¥ lager"
 
 #: bonobo/bonobo-exception.c:198
 msgid "An unsupported storage action was attempted"
-msgstr "Ei ustøtta handling vart forsøkt"
+msgstr "Ei ustÃ¸tta handling vart forsÃ¸kt"
 
 #: bonobo/bonobo-exception.c:200
 msgid "Object is not a stream"
@@ -130,7 +130,7 @@ msgstr "Moniker grensesnittet vart ikkje funne"
 
 #: bonobo/bonobo-exception.c:249
 msgid "Moniker activation timed out"
-msgstr "Monikeraktiveringa vart kopla ut på tid"
+msgstr "Monikeraktiveringa vart kopla ut pÃ¥ tid"
 
 #: bonobo/bonobo-exception.c:252
 msgid "Syntax error within moniker"
@@ -155,11 +155,11 @@ msgstr "Kunne ikkje initialisere Bonobo"
 #: bonobo/bonobo-moniker.c:353
 #, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr "Klarte ikkje å slå opp, eller utvide «%s»"
+msgstr "Klarte ikkje Ã¥ slÃ¥ opp, eller utvide Â«%sÂ»"
 
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
-msgstr "Klarter ikkje å aktivere objekt"
+msgstr "Klarter ikkje Ã¥ aktivere objekt"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:1
 msgid "HTTP Moniker"
@@ -167,7 +167,7 @@ msgstr "HTTP Moniker"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:2
 msgid "ORB IOR handling moniker"
-msgstr "moniker som helt styr på ORB IOR"
+msgstr "moniker som helt styr pÃ¥ ORB IOR"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:3
 msgid "Standard Moniker factory"
@@ -179,7 +179,7 @@ msgstr "vanleg Oaf aktiviseringsmoniker"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:5
 msgid "generic Oaf query moniker"
-msgstr "vanleg Oaf spørjingsmoniker"
+msgstr "vanleg Oaf spÃ¸rjingsmoniker"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:6
 msgid "generic factory 'new' moniker"
@@ -187,21 +187,21 @@ msgstr "vanleg fabrikk 'ny' moniker"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:7
 msgid "generic item moniker"
-msgstr "vanleg oppørings moniker"
+msgstr "vanleg oppÃ¸rings moniker"
 
 #: monikers/Bonobo_Moniker_std.server.in.in.h:8
 msgid "stream MonikerExtender"
 msgstr "straum Moniker utvidar"
 
 #: monikers/bonobo-moniker-oaf.c:51
-#, c-format
-msgid "Exception activating '%s"
-msgstr "Unntak ved aktivering «%s»"
+#, fuzzy, c-format
+msgid "Exception activating '%s'"
+msgstr "Unntak ved aktivering Â«%sÂ»"
 
 #: monikers/bonobo-moniker-oaf.c:60
-#, c-format
-msgid "Failed to activate '%s"
-msgstr "Klarte ikkje å aktivere «%s»"
+#, fuzzy, c-format
+msgid "Failed to activate '%s'"
+msgstr "Klarte ikkje Ã¥ aktivere Â«%sÂ»"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
@@ -221,13 +221,13 @@ msgstr "Ekkokomponent fabrikk"
 
 #: samples/echo/echo-client.c:22
 msgid "I could not initialize Bonobo"
-msgstr "Klarte ikkje å initialisere Bonobo"
+msgstr "Klarte ikkje Ã¥ initialisere Bonobo"
 
 #: samples/echo/echo-client.c:33
 msgid "Could not create an instance of the sample echo component"
-msgstr "Klarte ikkje å opprette ein instans av eksempel ekkokomponent"
+msgstr "Klarte ikkje Ã¥ opprette ein instans av eksempel ekkokomponent"
 
 #: samples/echo/echo-client.c:45
 #, c-format
 msgid "An exception occured '%s'"
-msgstr "Eit unntakk skjedde «%s»"
+msgstr "Eit unntakk skjedde Â«%sÂ»"

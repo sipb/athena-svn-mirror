@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>BonoboMonikerExtender</title><meta name="generator" content="DocBook XSL Stylesheets V1.59.1"><meta xmlns="http://www.w3.org/TR/xhtml1/transitional" name="generator" content="GTK-Doc V0.10 (XML mode)"></meta><style xmlns="http://www.w3.org/TR/xhtml1/transitional" type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="Libbonobo Reference Manual"><link rel="up" href="monikers.html" title="Monikers"><link rel="previous" href="libbonobo-bonobo-moniker-util.html" title="bonobo-moniker-util"><link rel="next" href="libbonobo-bonobo-item-handler.html" title="BonoboItemHandler"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libbonobo-bonobo-moniker-util.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></img></a></td><td><a accesskey="u" href="monikers.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></img></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></img></a></td><th width="100%" align="center">Libbonobo Reference Manual</th><td><a accesskey="n" href="libbonobo-bonobo-item-handler.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></img></a></td></tr></table><div class="refentry" lang="en"><a name="libbonobo-bonobo-moniker-extender"></a><div class="titlepage"></div><div class="refnamediv"><h2>BonoboMonikerExtender</h2><p>BonoboMonikerExtender &#8212; A way to extend arbitary monikers</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="libbonobo-bonobo-moniker-extender.html#BONOBO-MONIKER-EXTENDER-TYPE-CAPS">BONOBO_MONIKER_EXTENDER_TYPE</a>
+struct      <a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtender">BonoboMonikerExtender</a>;
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> (<a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtenderFn">*BonoboMonikerExtenderFn</a>)   (<a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtender">BonoboMonikerExtender</a> *extender,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> parent,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ResolveOptions">Bonobo_ResolveOptions</GTKDOCLINK> *options,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *display_name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *requested_interface,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);
+typedef     <a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtenderClass">BonoboMonikerExtenderClass</a>;
+<a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtender">BonoboMonikerExtender</a>* <a href="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-extender-new">bonobo_moniker_extender_new</a>
+                                            (<a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtenderFn">BonoboMonikerExtenderFn</a> resolve,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> data);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-MonikerExtender">Bonobo_MonikerExtender</GTKDOCLINK> <a href="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-find-extender">bonobo_moniker_find_extender</a>
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *interface,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+<GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> <a href="libbonobo-bonobo-moniker-extender.html#bonobo-moniker-use-extender">bonobo_moniker_use_extender</a>  (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *extender_oafiid,
+                                             <a href="libbonobo-bonobo-moniker.html#BonoboMoniker">BonoboMoniker</a> *moniker,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ResolveOptions">Bonobo_ResolveOptions</GTKDOCLINK> *options,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *requested_interface,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);
+
+</pre></div><div xmlns:ns14="" class="refsect1" lang="en"><h2>Description</h2><ns14:p>
+A moniker extender is used to extend the functionality of a moniker.
+There are two standard moniker extenders that cannot be system wide,
+since they use the oaf database to expand the scope of a moniker to
+arbitrarily many interfaces. These are invoked explicitely by monikers
+implementing the stream interface in the following way:
+  </ns14:p><div class="example"><a name="id2958086"></a><p class="title"><b>Example 4. Explicit Stream extender usage example</b></p><pre class="programlisting">
+Bonobo_Unknown
+example_moniker_resolve (BonoboMoniker               *moniker,
+			 const Bonobo_ResolveOptions *options,
+			 const CORBA_char            *requested_interface,
+			 CORBA_Environment           *ev)
+{
+	if (!strcmp (requested_interface, &quot;IDL:Bonobo/Stream:1.0&quot;))
+		return handle_stream (moniker, options, ev);
+	else
+		return bonobo_moniker_use_extender (
+			&quot;OAFIID:Bonobo_MonikerExtender_stream&quot;,
+			moniker, options, requested_interface, ev);
+}
+     </pre></div><ns14:p>
+  The moniker extender essentialy resolves 'moniker' against stream
+and my some means ( not known when the moniker was written ) converts
+this to a new exotic interface - via. the PersistStream interface.
+</ns14:p><ns14:p>
+All standard moniker extenders are registered by adding a fragment
+like this:
+  </ns14:p><div class="example"><a name="id2958120"></a><p class="title"><b>Example 5. Oaf information for an extender</b></p><pre class="programlisting">
+&lt;oaf_attribute name=&quot;bonobo:moniker_extender&quot; type=&quot;stringv&quot;&gt;
+	&lt;item value=&quot;file:&quot;/&gt;
+&lt;/oaf_attribute&gt;
+    </pre></div><ns14:p>
+to the .oaf file. This registers the extender with the system, such
+that when a moniker resolve fails an extender can be found for any
+of the monikers with prefix specified in the &quot;bonobo:moniker_extender&quot;
+stringv.
+</ns14:p><ns14:p>
+Implementing your own extender is extremely simple, much like
+<a href="libbonobo-bonobo-moniker-simple.html#BonoboMonikerSimple">BonoboMonikerSimple</a>.
+  </ns14:p><div class="example"><a name="id2956165"></a><p class="title"><b>Example 6. Oaf information for an extender</b></p><pre class="programlisting">
+Bonobo_Unknown
+example_extender_resolve (BonoboMonikerExtender *extender,
+			  const Bonobo_Moniker   m,
+			  const Bonobo_ResolveOptions *options,
+			  const CORBA_char      *display_name,
+			  const CORBA_char      *requested_interface,
+			  CORBA_Environment     *ev)
+{
+	... resolve 'm' against an interface we know it supports ...
+	... then use that interface to provide requested_interface ...
+}
+    </pre></div><ns14:p>
+It is registered again in much the same way in your factory:
+  </ns14:p><div class="example"><a name="id2956190"></a><p class="title"><b>Example 7. Creating a new simple moniker</b></p><pre class="programlisting">
+static BonoboObject *
+bonobo_std_moniker_factory (BonoboGenericFactory *this,
+			    const char           *object_id,
+			    void                 *data)
+{
+	g_return_val_if_fail (object_id != NULL, NULL);
+
+	if (!strcmp (object_id, &quot;OAFIID:Bonobo_MonikerExtender_file&quot;))
+		return BONOBO_OBJECT (bonobo_moniker_extender_new (
+			example_extender_resolve, NULL));
+	else
+		return NULL;
+}
+    </pre></div><ns14:p>
+</ns14:p></div><div class="refsect1" lang="en"><h2>Details</h2><div class="refsect2" lang="en"><h3><a name="BONOBO-MONIKER-EXTENDER-TYPE-CAPS"></a>BONOBO_MONIKER_EXTENDER_TYPE</h3><pre class="programlisting">#define BONOBO_MONIKER_EXTENDER_TYPE        BONOBO_TYPE_MONIKER_EXTENDER /* deprecated, you should use BONOBO_TYPE_MONIKER_EXTENDER */
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboMonikerExtender"></a>struct BonoboMonikerExtender</h3><pre class="programlisting">struct BonoboMonikerExtender {
+
+        BonoboObject           object;
+	BonoboMonikerExtenderFn resolve;
+	gpointer                data;
+};
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboMonikerExtenderFn"></a>BonoboMonikerExtenderFn ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> (*BonoboMonikerExtenderFn)   (<a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtender">BonoboMonikerExtender</a> *extender,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Moniker">Bonobo_Moniker</GTKDOCLINK> parent,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ResolveOptions">Bonobo_ResolveOptions</GTKDOCLINK> *options,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *display_name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *requested_interface,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *ev);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>extender</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>parent</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>display_name</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>requested_interface</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>ev</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="BonoboMonikerExtenderClass"></a>BonoboMonikerExtenderClass</h3><pre class="programlisting">typedef struct {
+	BonoboObjectClass      parent_class;
+
+	POA_Bonobo_MonikerExtender__epv epv;
+	
+	BonoboMonikerExtenderFn resolve;
+} BonoboMonikerExtenderClass;
+</pre><p>
+
+</p></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-extender-new"></a>bonobo_moniker_extender_new ()</h3><pre class="programlisting"><a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtender">BonoboMonikerExtender</a>* bonobo_moniker_extender_new
+                                            (<a href="libbonobo-bonobo-moniker-extender.html#BonoboMonikerExtenderFn">BonoboMonikerExtenderFn</a> resolve,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gpointer">gpointer</GTKDOCLINK> data);</pre><p>
+This creates a new moniker extender.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>resolve</tt></i> :</span></td><td> the resolve function that will be used to do the extension
+</td></tr><tr><td><span class="term"><i><tt>data</tt></i> :</span></td><td> user data to be passed back to the resolve function.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the extender object
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-find-extender"></a>bonobo_moniker_find_extender ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-MonikerExtender">Bonobo_MonikerExtender</GTKDOCLINK> bonobo_moniker_find_extender
+                                            (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *name,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *interface,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+This routine tries to locate an extender for our moniker
+by examining a registry of extenders that map new interfaces
+to certain moniker names.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>name</tt></i> :</span></td><td> the name of the moniker we want to extend eg. 'file:'
+</td></tr><tr><td><span class="term"><i><tt>interface</tt></i> :</span></td><td> the interface we want to resolve to
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> an optional corba exception environment.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an appropriate extender or CORBA_OBJECT_NIL.
+</td></tr></tbody></table></div></div><hr xmlns="http://www.w3.org/TR/xhtml1/transitional"></hr><div class="refsect2" lang="en"><h3><a name="bonobo-moniker-use-extender"></a>bonobo_moniker_use_extender ()</h3><pre class="programlisting"><GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-Unknown">Bonobo_Unknown</GTKDOCLINK> bonobo_moniker_use_extender  (const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="gchar">gchar</GTKDOCLINK> *extender_oafiid,
+                                             <a href="libbonobo-bonobo-moniker.html#BonoboMoniker">BonoboMoniker</a> *moniker,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="Bonobo-ResolveOptions">Bonobo_ResolveOptions</GTKDOCLINK> *options,
+                                             const <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-char">CORBA_char</GTKDOCLINK> *requested_interface,
+                                             <GTKDOCLINK xmlns="http://www.w3.org/TR/xhtml1/transitional" HREF="CORBA-Environment">CORBA_Environment</GTKDOCLINK> *opt_ev);</pre><p>
+Locates a known extender via. OAFIID; eg.
+OAFIID:Bonobo_Moniker_Extender_file</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i><tt>extender_oafiid</tt></i> :</span></td><td> The IID of the extender to use
+</td></tr><tr><td><span class="term"><i><tt>moniker</tt></i> :</span></td><td> the moniker to extend
+</td></tr><tr><td><span class="term"><i><tt>options</tt></i> :</span></td><td> resolve options
+</td></tr><tr><td><span class="term"><i><tt>requested_interface</tt></i> :</span></td><td> the requested interface
+</td></tr><tr><td><span class="term"><i><tt>opt_ev</tt></i> :</span></td><td> optional corba environment
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the resolved result or CORBA_OBJECT_NIL.
+</td></tr></tbody></table></div></div></div></div><table xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libbonobo-bonobo-moniker-util.html"><b>&lt;&lt; bonobo-moniker-util</b></a></td><td align="right"><a accesskey="n" href="libbonobo-bonobo-item-handler.html"><b>BonoboItemHandler &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,3 +1,166 @@
+2003-01-20  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.2.0
+
+	* doc/Makefile.am (EXTRA_DIST): ship NAMESPACE
+
+	* doc/api/Makefile.am (content_files): add misc. xml files.
+
+2003-01-20  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in: Added German (de), Farsi (fa),
+	Macedonian (mk) and Dutch (nl) to ALL_LINGUAS
+
+2003-01-16  Daniel Yacob <locales@geez.org>
+
+	* configure.in: added am to ALL_LINGUAS
+	
+2003-01-07  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/figures/*.png: Added the dia generated png files for
+	those who don't have dia installed.
+
+	* doc/api/figures/Makefile.am (%.png): Don't fail if dia is not
+	installed.
+
+	* doc/api/Makefile.am (EXTRA_DIST): Don't include $(HTML_IMAGES)
+	in EXTRA_DIST, because they are already included in
+	doc/api/figures/Makefile.am's EXTRA_DIST.
+	(html-build.stamp): Don't fail when copying images to the html dir
+	if the image files were not built.
+
+2003-01-06  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/Makefile.am (dist-hook): Replace the 'sgml' directory
+	with 'xml'.
+
+2003-01-06  Julio Merino  <jmmv@hispabsd.org>
+
+	* doc/api/Makefile.am (all-local): Add fall-back
+	in case of no gtk-doc.
+
+2003-01-06  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* samples/echo/Makefile.am:
+	use $(libdir) instead of $(prefix)/lib, for x86-64
+
+2003-01-06  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-arg.h (BONOBO_ARG_GET_GENERAL):
+	make these conditional on __STRICT_ANSI__, and
+	C++ thanks to James H.
+
+2003-01-02  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* doc/api/tmpl/bonobo-property-bag.sgml: Added a couple of
+	<title>'s to some examples.
+
+	* bonobo/bonobo-types.c (bonobo_closure_invoke): Just added a
+	space between '&' and 'retval', because libxml2 (invoked by
+	xsltproc, invoked by gtk-doc) doesn't like &amp; followed by
+	letters followed by ';' very much. I think this is fixed by now,
+	but I'm not sure...
+
+	* configure.in: Require gtk-doc >= 0.10; Added
+	doc/api/figures/Makefile to list of processed makefiles.
+
+	* doc/api/libbonobo-docs.sgml: Changed SGML declaration to XML,
+	with DocBook 4.1.2. Indented the whole file with xml-lite mode of
+	Emacs (4 spaces basic offset). Created the following toplevel
+	sections: General; Objects, Factories, Reference Counting;
+	Property Bags, Events, Listeners; Monikers; Storages and Streams;
+	Persistency; Miscellaneous. Moved the old sections into the
+	appropriate toplevel section, based on topic. Also, added the new
+	xml files and added the figures at appropriate places.
+	
+	* doc/simple-moniker-arguments.txt, api/tmpl/bonobo-item-handler.sgml:
+	Included this documentation in api/tmpl/bonobo-item-handler.sgml.
+
+	* doc/properties.txt, api/propertis.xml: Moved this
+	documentation to api/properties.xml and converted to DocBook.
+
+	* doc/refcounting.txt, api/refcounting.xml: Moved this
+	documentation to api/refcounting.xml and converted to DocBook.
+
+	* doc/debugging.txt, api/debugging.xml: Moved this documentation
+	to api/debugging.xml and converted to DocBook.
+
+	* doc/FAQ, api/faq.xml: Moved to api/faq.xml and converted to DocBook.
+
+	* doc/api/Makefile.am: Everything below the comment '# Everything
+	below here is generic #' has been replaced by that same section in
+	the gtk-doc template Makefile.am. Also changed the MKDB_OPTIONS to
+	generate xml instead of sgml, so gtk-doc uses the xslt-proc mode
+	to generate html instead of jade, which makes this whole process a
+	*lot* faster; In addition, declare 'figures' in SUBDIRS.
+
+2002-12-31  Abel Cheung  <maddog@linux.org.hk>
+
+	* monikers/bonobo-moniker-oaf.c: Just 2 typo in
+	  translation string; nothing more.
+
+2002-12-17  Gustavo J. A. M. Carneiro <gjc@inescporto.pt>
+
+	* bonobo/bonobo-storage.h,
+	* bonobo/bonobo-stream.h: add blurb on why these
+	headers are deprecated, and how to do things now.
+
+2002-11-28  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.1.1
+
+2002-11-28  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-i18n.h (bind_textdomain_codeset):
+	undef before defining the non-NLS path macros,
+	add bind_textdomain_codeset stub.
+
+2002-11-22  Hidetoshi Tajima <hidetoshi.tajima@sun.com>
+
+	* configure.in: check for bind_textdomain_codeset
+
+	* bonobo/bonobo-main.c: use it.
+
+	* monikers/bonobo-moniker-oaf.c: set explicit domain properly.
+
+2002-11-22  Dan Mills  <thunder@vximian.com>
+
+	* configure.in: fixed gtk-doc check.
+
+2002-11-10  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in: Added da to ALL_LINGUAS.
+
+2002-11-09  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-11-05  Michael Meeks  <michael@ximian.com>
+
+	* idl/Bonobo_Listener.idl: fix comments.
+
+2002-11-01  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.1.0
+
+2002-10-28  Michael Meeks  <michael@ximian.com>
+
+	* bonobo/bonobo-object.c
+	(bonobo_object_query_remote): helper wrapper
+	for queryInterface.
+	(get_unknown_unref_imethod): impl.
+	(bonobo_object_release_unref): make these
+	unrefs asynchronous for more speed.
+
+	* tests/test-properties-client.c
+	(create_bag_client): add test.
+
+	* bonobo/bonobo-property-bag-client.c
+	(bonobo_pbclient_set_value_async),
+	(get_set_value_imethod): add from eel impl.
+
+	* Branch for 2.1
+
 2002-10-18  Michael Meeks  <michael@ximian.com>
 
 	* Version 2.0.1
