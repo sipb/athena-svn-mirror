@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.12 1988-07-20 18:24:32 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.13 1988-07-20 18:33:22 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.12 1988-07-20 18:24:32 jtkohl Exp $";
+static char rcsid_ZSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSubs.c,v 1.13 1988-07-20 18:33:22 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -89,8 +89,10 @@ Z_Subscriptions(sublist, nitems, port, opcode, authit)
     if (retval != ZERR_NONE && !authit)
 	retval = Z_FormatHeader(&notice, header, sizeof(header),
 				&hdrlen, ZAUTH);
-    if (retval != ZERR_NONE)
+    if (retval != ZERR_NONE) {
+	free((char *)list);
 	return(retval);
+    }
 
     /* compute amount of room left */
     size_avail -= hdrlen;
@@ -131,10 +133,11 @@ Z_Subscriptions(sublist, nitems, port, opcode, authit)
 	    i++;
 	    continue;
 	}
-	if (!numok)			/* a single subscription won't
+	if (!numok) {			/* a single subscription won't
 					   fit into one packet */
+	    free((char *)list);
 	    return(ZERR_FIELDLEN);
-
+	}
 	retval = subscr_sendoff(&notice, &list[start*3], numok, authit);
 	if (retval) {
 	    free((char *)list);
