@@ -56,4 +56,3 @@ DECLARE_YYTEXT
 extern void find_next_temp(), normal(), new_line(), indent_line(), my_output();
 extern void semicolon(), remove_locals(), mark(), initialize();
 extern int add_to_table(), search_table(), yyerror(), yylex(), yyparse();
-extern void *alloca();
