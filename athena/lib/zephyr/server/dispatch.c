@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_dispatch_c[] = "$Id: dispatch.c,v 1.31 1989-11-30 17:16:26 jtkohl Exp $";
+static char rcsid_dispatch_c[] = "$Id: dispatch.c,v 1.32 1989-12-13 10:31:44 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -171,7 +171,7 @@ handle_packet()
 		break;
 	}
 	if (whoisit.sin_port != hm_port &&
-	    strcmp(new_notice.z_class,ZEPHYR_ADMIN_CLASS) &&
+	    strcasecmp(new_notice.z_class,ZEPHYR_ADMIN_CLASS) &&
 	    whoisit.sin_port != sock_sin.sin_port &&
 	    new_notice.z_kind != CLIENTACK) {
 		syslog(LOG_ERR,
@@ -731,7 +731,7 @@ ZServerDesc_t *server;
 	 *	CLIENT_CANCELSUB:   ""
 	 */
 
-	if (!strcmp(notice->z_class_inst, ZEPHYR_CTL_HM))
+	if (!strcasecmp(notice->z_class_inst, ZEPHYR_CTL_HM))
 		return(hostm_dispatch(notice, auth, who, server));
 	else if (!strcmp(opcode, CLIENT_GIMMESUBS) ||
 		 !strcmp(opcode, CLIENT_GIMMEDEFS)) {
