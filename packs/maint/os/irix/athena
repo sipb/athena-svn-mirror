@@ -1,4 +1,4 @@
-# $Id: athena,v 1.23 2001-10-23 23:39:05 rbasch Exp $
+# $Id: athena,v 1.24 2002-04-05 14:51:12 zacheiss Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -130,7 +130,7 @@ if [ "$PUBLIC" = true ]; then
 	$ECHO "Beginning public workstation cleanup"
 	rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
-	rm -f /etc/ssh_*
+	rm -f /etc/ssh_host_* /etc/ssh_random_seed
 	rm -rf /etc/ptmp /etc/stmp /etc/gtmp
 	if [ -r /srvd/etc/passwd ]; then
 		syncupdate -c /etc/passwd.local.new /srvd/etc/passwd \

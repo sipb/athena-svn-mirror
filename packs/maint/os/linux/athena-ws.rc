@@ -135,7 +135,8 @@ case "$1" in
 		fix-xconfig
 		rm -rf /.hushlogin /etc/X0.hosts \
 			&& rm -f /etc/nologin.persist \
-			&& rm -rf /etc/ssh_host_key* \
+			&& rm -rf /etc/ssh_host_* \
+			&& rm -f /etc/ssh_random_seed \
 			&& rm -f {/etc,/etc/athena,/etc/athena/login}/*.local \
 			&& chmod 600 /etc/shadow \
 			&& cp /dev/null /etc/X0.hosts \
