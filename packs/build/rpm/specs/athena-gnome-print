@@ -3,7 +3,7 @@ Summary: GNOME printing libraries, for Athena
 Copyright: LGPL
 Group: System Environment/Base
 
-Requires: athena-gnome-libs athena-libxml
+Requires: athena-gnome-libs athena-libxml athena-gdk-pixbuf
 
 %description
 The gnome-print package contains libraries and fonts that are needed

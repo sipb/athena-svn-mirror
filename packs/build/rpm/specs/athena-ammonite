@@ -4,6 +4,7 @@ Copyright: GPL
 Group: User Interface/Desktop
 
 Requires: athena-gnome-libs athena-libxml athena-GConf athena-oaf
+Requires: athena-openssl
 
 %description
 Ammonite is a non-caching client-side HTTP proxy with a set of special

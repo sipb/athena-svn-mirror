@@ -1,0 +1,13 @@
+Name: athena-xalf
+Summary: A utility to provide feedback when starting X applications, for Athena
+Copyright: GPL
+Group: X11/Utilities
+
+Requires: athena-gtk athena-control-center
+
+%description
+This is a small utility to provide feedback when starting X11
+applications.  Feedback can be given via four different indicators:
+An invisible window (to be used in conjunction with a task pager like
+Gnomes tasklist_applet or KDE Taskbar), an generic splashscreen, an
+hourglass attached to the mouse cursor or an animated star. 
