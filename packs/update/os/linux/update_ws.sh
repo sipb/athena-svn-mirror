@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.13 2000-07-09 05:31:49 ghudson Exp $
+# $Id: update_ws.sh,v 1.14 2000-07-29 14:24:43 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -21,7 +21,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do-update.
 
-PATH=/bin/athena:/etc/athena:/bin:/usr/bin:/sbin:/usr/sbin
+PATH=/usr/athena/bin:/bin/athena:/etc/athena:/bin:/usr/bin:/sbin:/usr/sbin
 
 errorout() {
 	echo "$@" >&2
