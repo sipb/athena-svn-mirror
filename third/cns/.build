@@ -1,26 +1,8 @@
-set rule = skip
+# $Id: .build,v 1.2 1996-09-20 05:38:39 ghudson Exp $
 
-cd $BUILD/$package
-
-if ( $installman == "1" ) then
-	exit 0
-endif
-
-if ( $installonly == "0" ) then
-	(echo "Configuring in $package..." ; \
-	./configure --site=athena) >>& $outfile && \
-	(echo "Depending in $package..." ; make depend) >>& $outfile && \
-	(echo "Cleaning in $package..." ; make clean) >>& $outfile && \
-	(echo "Building in $package..." ; make) >>& $outfile
-	if ( $status == 1 ) then
-        	echo "We bombed in $package" >> & $outfile
-	       	exit -1
-	endif
-endif
-
-(echo "Installing in $package..." ; make install DESTDIR=$SRVD) >>& $outfile
-if ( $status == 1 ) then
-       	echo "We bombed in $package" >> & $outfile
-       	exit -1
-endif
-
+CC="$compiler" export CC
+echo In ${package}: ./configure --site=athena && ./configure --site=athena &&
+echo In ${package}: make clean && make clean &&
+echo In ${package}: make depend && make depend &&
+echo In ${package}: make all && make all &&
+echo In ${package}: make install DESTDIR=$srvd && make install DESTDIR=$srvd
