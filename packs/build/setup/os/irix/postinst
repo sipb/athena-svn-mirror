@@ -1,0 +1,217 @@
+#!/bin/sh
+#
+# helper script for completing a live install
+#
+set `who -r`
+new_runlevel=$3
+errors=0
+actives=0
+AUTO_MR_FILE=auto_mr
+
+shadow=.shd
+shadowfile=/var/inst/.shadowed
+
+	if [ -f /core -a ! -l /core ]
+	then
+		echo "Moving /core to /usr/tmp/core.postinst_detected
+	An old core file has been found at /core. To reduce
+	the chance of running out of disk space on the root
+	filesystem during postinst processing, the file /core
+	is being moved to /usr/tmp/core.postinst_detected."
+		mv /core /usr/tmp/core.postinst_detected
+	fi 
+
+
+#
+# special treatment for files active at shutdown time:
+#
+
+	for file in /sbin/init /etc/inittab 
+	do
+		if [ -f $file$shadow ]
+		then
+			actives=1
+			base=`basename $file`
+			mv -f $file /tmp/$base
+			if mv $file$shadow $file
+			then :
+			else
+				errors=1
+				echo Unable to move $file$shadow to $file
+
+# safety net: we really don't want to end up with no init (or perhaps a
+# truncated one!) Try to put the old one back! 
+
+				if [ -f /tmp/$base ]
+				then
+					if mv /tmp/$base $file 
+					then :
+					else
+						echo Unable to restore $file from /tmp/$base
+					fi
+				fi
+			fi
+		fi
+	done
+
+# MAKEDEV should be marked "to shadow". We will do an actual MAKEDEV run only
+# if it's changed: this can be eliminated later if/when inst gets smarter.
+
+	if [ -f /dev/MAKEDEV$shadow ]
+	then
+		if /bin/cmp -s /dev/MAKEDEV$shadow /dev/MAKEDEV
+		then
+			rm -f /dev/MAKEDEV$shadow
+		else
+			actives=1
+			if mv /dev/MAKEDEV$shadow /dev/MAKEDEV
+			then
+				echo executing new MAKEDEV, please wait...
+				(cd /dev; ./MAKEDEV > /dev/null )
+			else
+				errors=1
+				echo Unable to move /dev/MAKEDEV$shadow to /dev/MAKEDEV
+			fi
+		fi
+	fi
+
+
+#
+# Now complete any remaining transfers. 
+#
+	if [ -s $shadowfile ]
+	then
+		rm -f $shadowfile.tmp 2> /dev/null
+		cd /
+		for i in `cat $shadowfile`
+		do
+			if [ -f $i$shadow ]
+			then
+				if mv $i$shadow $i
+				then :	
+				else
+					errors=1
+					echo Unable to move $i$shadow to $i
+					echo "$i" >> $shadowfile.tmp
+					
+				fi
+			fi	
+		done
+		if [ -s $shadowfile.tmp  ]
+                then		
+			mv -f $shadowfile.tmp $shadowfile
+		else
+			rm -f  $shadowfile
+		fi
+	fi
+
+
+# Do any shadowed postops/exitops. For the moment, we will excise any
+# MAKEDEV op from these, since we are implementing a bit of intelligence
+# above to avoid an unconditional MAKEDEV run. If inst gets smarter
+# and only installs really changed files, this filtering can go.
+
+	if [ -x /var/inst/.shdops ]
+	then
+		grep -v MAKEDEV /var/inst/.shdops > /var/inst/.fshdops
+		rm -f /var/inst/.shdops
+		chmod +x /var/inst/.fshdops
+		rbase=/
+		export rbase
+		/var/inst/.fshdops
+	fi
+
+
+
+# Do any kernel reconfig needed. Note we do this only if going down: if coming 
+# up, autoconfig's going to run anyway, no point in running it twice.
+# To save some time, do an upfront test for a 1970 (or 1969, if timezone
+# is out of whack) date on /unix; we assume that anything needing a reconf will
+# follow the "touch to epoch" protocol. 
+
+if [ "$new_runlevel" != "2" ]
+then
+	if test ! -f /unix \
+	|| ls -l /unix |grep 1970 >/dev/null \
+	|| ls -l /unix |grep 1969 >/dev/null
+	then
+
+# Do not call autoconfig during an auto-miniroot boot
+# (ie. when $AUTO_MR_FILE in vh) unless there is no
+# kernel at all.  If autoconfig fails and we are
+# in an auto-miniroot boot, just fail silently
+# and continue on since we expect a new kernel
+# to be generated after the miniroot install.
+
+		test "$new_runlevel" = "6" && \
+		/sbin/dvhtool -v list | grep "$AUTO_MR_FILE" > /dev/null
+
+	        automr=$?
+		if test -f /unix -a $automr -eq 0 
+		then :
+		else
+# Set TMPDIR to minimize danger of running out of space.
+		    TMPDIR=/usr/tmp
+		    export TMPDIR
+		    echo Reconfiguring new kernel, please wait...
+		    if echo y | /etc/init.d/autoconfig -o -N >/dev/null || \
+		       test $automr -eq 0
+		    then :
+		    else
+			echo "
+ERROR IN KERNEL CONFIGURATION
+
+The new UNIX kernel is not properly installed on the system, probably as
+a result of an autoconfig(1M) failure or due to a lack of sufficient
+disk space to create /unix.install. Rebooting the existing /unix kernel
+might not work. 
+
+After reading this message and pressing return to continue, when you see
+the "Starting up the System" message, press the escape key (possibly several 
+times), to go to the prom's system maintenance menu. 
+
+	Select 5) Enter Command Monitor, from the prom menu. 
+	Type single at the prom prompt.
+	Once in single-user mode:
+
+		autoconfig -v
+
+	If the error message indicates that there is not enough space for 
+	autoconfig to successfully create a new kernel, free up some space 
+	on / by moving /unix and other unnecessary files on / to another 
+	disk.  If the error message refers to undefined symbols, you 
+	probably have incompatible products installed.  If you have patches 
+	installed, determine if you have all the required patches installed.  
+	After the appropriate action has been taken, run autoconfig again.
+	Once you have a new kernel in /unix.install, reboot:
+
+		reboot
+
+	You might want to write these instructions down before continuing.
+
+Press return to continue: \c "
+			read key
+		    fi
+		fi
+	fi
+fi
+
+# 
+#
+# If we're coming up, things are not quite right: we obviously didn't go
+# down cleanly. And will need to reboot again to get any active-at-shutdown
+# files or new devices right. 
+
+if [ "$new_runlevel" = "2" -a $actives -eq 1 ]
+then
+	echo warning: installation not fully completed, reboot.
+fi
+
+# delete auto_mr file when coming up so subsequent reboots 
+# don't automatically result in a miniroot boot
+# remove inst.lock residue an interrupted inst may have left
+# in case its miniroot pid is recycled in multiuser mode.
+if [ "$new_runlevel" = "2" ] ; then
+	/sbin/dvhtool -v d $AUTO_MR_FILE > /dev/null 2>&1
+	rm /var/inst/inst.lock > /dev/null 2>&1
+fi
