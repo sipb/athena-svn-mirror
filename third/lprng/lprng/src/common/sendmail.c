@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.2 1999-05-12 02:08:00 danw Exp $";
+"$Id: sendmail.c,v 1.3 1999-06-29 22:07:41 mwhitson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -44,7 +44,7 @@ void Sendmail_to_user( int retval, struct job *job )
 	DEBUG2("Sendmail_to_user: MAILNAME '%s' sendmail '%s'", mailname, Sendmail_DYN );
 	if( mailname == 0 ){
 		if( retval != JSUCC ){
-			mailname = Mail_operator_on_error_DYN;
+			if ((mailname = Mail_operator_on_error_DYN) == 0) return;
 		} else
 			return;
 	}
