@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.7 1995-07-11 19:25:54 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.8 1997-10-09 04:05:38 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.7 1995-07-11 19:25:54 miki Exp $";
+static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.8 1997-10-09 04:05:38 ghudson Exp $";
 #endif lint
 
 /*
@@ -59,7 +59,7 @@ void	intr();
 struct	cmd *getcmd();
 extern struct cmd cmdtab[];
 
-jmp_buf	toplevel;
+sigjmp_buf	toplevel;
 
 main(argc, argv)
 	char *argv[];
@@ -102,7 +102,7 @@ main(argc, argv)
 		exit(0);
 	}
 	fromatty = isatty(fileno(stdin));
-	top = setjmp(toplevel) == 0;
+	top = sigsetjmp(toplevel, 1) == 0;
 	if (top)
 		signal(SIGINT, intr);
 	for (;;) {
@@ -116,7 +116,7 @@ intr()
 {
 	if (!fromatty)
 		exit(0);
-	longjmp(toplevel, 1);
+	siglongjmp(toplevel, 1);
 }
 
 /*
@@ -158,7 +158,7 @@ cmdscanner(top)
 #endif
 		(*c->c_handler)(margc, margv);
 	}
-	longjmp(toplevel, 0);
+	siglongjmp(toplevel, 0);
 }
 
 struct cmd *
