@@ -25,18 +25,13 @@ cp ThisCell $RPM_BUILD_ROOT/usr/vice/etc/ThisCell
 cp cacheinfo $RPM_BUILD_ROOT/usr/vice/etc/cacheinfo
 %endif
 
-%ifos linux
-mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
-cp system-afs.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
-chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
-%endif
-
 mkdir -p $RPM_BUILD_ROOT/etc/athena/network-scripts/system
 cp system-afs.sh $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
 chmod +x $RPM_BUILD_ROOT/etc/athena/network-scripts/system/40afs
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/usr/vice/etc/CellAlias$|%config \0|" \
       -e "s|^/usr/vice/etc/CellServDB$|%config \0|" \
       -e "s|^/usr/vice/etc/ThisCell$|%config \0|" \
       -e "s|^/usr/vice/etc/cacheinfo$|%config \0|" \
