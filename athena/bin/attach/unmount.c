@@ -1,17 +1,17 @@
 /*
- * $Id: unmount.c,v 1.7 1991-08-14 10:55:58 probe Exp $
+ * $Id: unmount.c,v 1.8 1993-05-05 17:05:21 vrt Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.7 1991-08-14 10:55:58 probe Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.8 1993-05-05 17:05:21 vrt Exp $";
 
 #include "attach.h"
 
 
-#if !defined(ultrix) && !defined(_IBMR2)
+#if !defined(ultrix) && !defined(_IBMR2) && !defined(SOLARIS)
 #include <mntent.h>
 #endif
 
@@ -271,3 +271,39 @@ nfs_unmount(errname, host, hostaddr, mntpt, rmntpt)
     return (SUCCESS);
 }
 #endif
+
+#ifdef SOLARIS
+bool_t
+xdr_path(xdrs, pathp)
+        XDR *xdrs;
+        char **pathp;
+{
+        if (xdr_string(xdrs, pathp, 1024)) {
+                return(TRUE);
+        }
+        return(FALSE);
+}
+
+xdr_fhstatus(xdrs, fhsp)
+        XDR *xdrs;
+        struct fhstatus *fhsp;
+{
+        if (!xdr_int(xdrs, &fhsp->fhs_status))
+                return FALSE;
+        if (fhsp->fhs_status == 0) {
+                if (!xdr_fhandle(xdrs, &fhsp->fhs_fh))
+                        return FALSE;
+        }
+}
+xdr_fhandle(xdrs, fhp)
+        XDR *xdrs;
+        fhandle_t *fhp;
+{
+        if (xdr_opaque(xdrs, fhp, NFS_FHSIZE)) {
+                return (TRUE);
+        }
+        return (FALSE);
+}
+
+#endif
+

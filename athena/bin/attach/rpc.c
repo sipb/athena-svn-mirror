@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v $
- *	$Author: probe $
+ *	$Author: vrt $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.11 1992-07-31 19:23:00 probe Exp $";
+static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rpc.c,v 1.12 1993-05-05 17:05:05 vrt Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -14,6 +14,11 @@ static char *rcsid_rpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/b
 #if defined(_AIX) && (AIXV < 30)
 #include <rpc/rpcmount.h>
 #include <rpc/nfsmount.h>
+#endif
+
+#if defined(SOLARIS)
+#include <limits.h>
+#define NGROUPS NGROUPS_MAX
 #endif
 
 extern bool_t	xdr_void();

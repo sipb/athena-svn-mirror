@@ -1,13 +1,13 @@
 /*	Created by:  Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v $
- *	$Author: probe $
+ *	$Author: vrt $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.3 1992-01-06 15:56:11 probe Exp $";
+static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.4 1993-05-05 17:05:37 vrt Exp $";
 #endif
 
 #include "attach.h"
@@ -87,7 +87,11 @@ perform_fsck(device, errorname, useraw)
 	static char	rdevice[512];
 	static char	*fsck_av[4];
 	int	error_ret, save_stderr;
+#ifdef POSIX
+	int	waitb;
+#else
 	union wait	waitb;
+#endif
 
 	strncpy(rdevice, device, sizeof(rdevice));
 	
@@ -153,7 +157,11 @@ perform_fsck(device, errorname, useraw)
 		}
 	}
 	
+#ifdef POSIX
+	if ((error_ret = WEXITSTATUS(waitb))) {
+#else
 	if (error_ret = waitb.w_retcode) {
+#endif
 		fprintf(stderr,
 			"%s: fsck returned a bad exit status (%d)\n",
 			errorname, error_ret);

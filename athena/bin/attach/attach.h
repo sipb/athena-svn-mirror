@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.15 1992-07-31 19:18:57 probe Exp $
+ * $Id: attach.h,v 1.16 1993-05-05 17:04:32 vrt Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -36,6 +36,10 @@
 #ifdef _AUX_SOURCE
 #include <nfs/mount.h>
 #endif
+#ifdef SOLARIS
+#include <nfs/mount.h>
+#include <sys/fs/ufs_mount.h>
+#endif
 #endif /* NFS */
 
 #ifdef ultrix
@@ -67,7 +71,10 @@
 #if defined(_IBMR2)
 #define MOUNT_CMD	"/etc/mount"
 #endif
-
+#if defined(SOLARIS)
+#define MOUNT_CMD "/etc/fs/nfs/mount"
+#define UMOUNT_CMD "/usr/sbin/umount"
+#endif
 
 #define MAXOWNERS 64
 #define MAXHOSTS 64

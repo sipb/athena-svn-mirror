@@ -1,6 +1,6 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
- *	$Id: config.h,v 1.14 1992-07-31 19:16:00 probe Exp $
+ *	$Id: config.h,v 1.15 1993-05-05 17:04:52 vrt Exp $
  *
  * Configuration defines
  *
@@ -52,7 +52,11 @@
 #if defined(_AIX) && defined(i386)
 #define MTAB		"/local/mtab"
 #else
+#if defined(SOLARIS)
+#define MTAB		"/etc/mnttab"
+#else
 #define MTAB		"/etc/mtab"
+#endif
 #endif
 
 /*
