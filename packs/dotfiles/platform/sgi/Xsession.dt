@@ -280,4 +280,4 @@ if [ -f $sgisession -a ! -f $sgisessioncheck ]; then
 	(echo "1" > $sgisessioncheck)
 fi
 
-# exec /usr/bin/X11/reaper
+exec /usr/bin/X11/reaper
