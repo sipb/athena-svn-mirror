@@ -3,7 +3,7 @@
  *	Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.4 1991-01-22 16:13:27 probe Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.5 1991-01-31 09:39:06 probe Exp $";
 
 #include "attach.h"
 
@@ -85,7 +85,7 @@ afs_attach(at, mopt, errorout)
 			buf[len] = '\0';
 			(void) strcpy(buf, path_canon(buf));
 			if (!strcmp(buf, path_canon(at->hostdir))) {
-				if (!print_path)
+				if (!print_path && verbose)
 				    fprintf(stderr,
 					    "%s: %s already sym linked%s\n",
 					    at->hesiodname, at->hostdir,
