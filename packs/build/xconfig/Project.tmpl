@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM X Window System Build Parameters
-XCOMM $XConsortium: Project.tmpl,v 1.137 91/07/30 22:57:01 rws Exp $
+XCOMM $XConsortium: Project.tmpl,v 1.138 91/09/10 09:02:12 rws Exp $
 
 /*****************************************************************************
  *                                                                           *
@@ -624,6 +624,8 @@ XCOMM X Window System make variables; this need to be coordinated with rules
         DEPPHIGSLIB = _UseCat($(USRLIBDIR),$(PHIGSLIBSRC),/libphigs.a)
            PHIGSLIB = LoaderLibPrefix _Use(-lphigs,$(DEPPHIGSLIB))
 #endif
+       DEPXBSDLIB = _UseCat($(USRLIBDIR),$(LIBSRC)/Berk,/libXbsd.a)
+          XBSDLIB = LoaderLibPrefix _Use(-lXbsd,$(DEPXBSDLIB))
 
  LINTEXTENSIONLIB = _UseCat($(LINTLIBDIR),$(EXTENSIONSRC)/lib,/llib-lXext.ln)
          LINTXLIB = _UseCat($(LINTLIBDIR),$(XLIBSRC),/llib-lX11.ln)
