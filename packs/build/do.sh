@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.15 1997-09-24 06:53:31 ghudson Exp $
+# $Id: do.sh,v 1.16 1998-01-08 07:01:07 ghudson Exp $
 
 source="/mit/source"
 srvd="/srvd"
@@ -47,7 +47,7 @@ export ATHENA_SYS HOSTTYPE CONFIG_SITE PATH
 CONFIG_SITE=$source/packs/build/config.site
 
 # Determine proper ATHENA_SYS value.
-case "`uname -a`" in
+case "`uname -srm`" in
 SunOS*5.5*sun4*)	ATHENA_SYS=sun4x_55	;;
 SunOS*5.4*sun4*)	ATHENA_SYS=sun4m_54	;;
 IRIX*5.3*)		ATHENA_SYS=sgi_53	;;
@@ -57,7 +57,7 @@ esac
 
 # Determine platform type, appropriate path, and compiler for use with plain
 # Makefiles and some third-party packages.
-case "`uname -a`" in
+case "`uname -sm`" in
 SunOS*sun4*)
 	HOSTTYPE=sun4
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
