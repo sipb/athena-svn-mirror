@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.35 1996-03-28 22:32:58 ghudson Exp $
+# $Id: Imakefile,v 1.36 1996-03-31 21:41:37 ghudson Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -30,14 +30,13 @@ KRB5_DEFS = -DKRB5 -I$(KRB5DIR)/include
 KRB5_LIBS = -L$(KRB5DIR)/lib -lkrb5 -lcrypto -lcom_err
 
 DEFINES = -DSETPAG $(KRB5_DEFS) $(MACHDEFS)
-AFSLIBS = $(AFSDIR)/lib/afs/libsys.a \
-	$(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
+AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp
 
 
 SRCS = xlogin.c ${ARISRC} verify.c SmeBSB.c StringToPixel.c
 OBJS = xlogin.o ${ARIOBJ} verify.o SmeBSB.o StringToPixel.o
 LIBS = -lXaw  ${WCL} -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
-	$(MACHLIBS) $(KRB5_LIBS) $(AFSLIBS) -lm
+	$(KRB5_LIBS) $(AFSLIBS) $(MACHLIBS) -lm
 
 #ifdef _IBMR2
 PRESOURCES=Xlogin.rios.presed
