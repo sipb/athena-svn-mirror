@@ -504,9 +504,6 @@ int create_ciph PROTOTYPE((KTEXT , C_Block , char *, char *, char *, unsigned lo
 /* create_death_packet.c */
 KTEXT krb_create_death_packet PROTOTYPE((char *));
 
-/* create_ticket.c */
-int krb_create_ticket PROTOTYPE((KTEXT , unsigned int , char *, char *, char *, long , char *, int , long , char *, char *, C_Block ));
-
 /* debug_decl.c */
 
 /* decomp_ticket.c */
