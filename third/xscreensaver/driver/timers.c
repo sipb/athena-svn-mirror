@@ -239,6 +239,7 @@ activate_lock_timer (XtPointer closure, XtIntervalId *id)
   if (p->verbose_p)
     fprintf (stderr, "%s: timed out; activating lock\n", blurb());
   si->locked_p = True;
+  si->locked_due_to_idle_p = True;
 
 #ifdef HAVE_XHPDISABLERESET
   if (!hp_locked_p)
