@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.1.2.5 2000-02-28 21:35:00 ghudson Exp $
+# $Id: update_ws.sh,v 1.1.2.6 2000-03-01 19:22:14 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -202,6 +202,7 @@ failupdate() {
 		rpm --erase -v $removals || logger -t $HOST -p user.notice \
 			"Update ($oldvers -> $newvers) package removal failed"
 	fi
+	cp "$newlist" /var/athena/release-rpms
 	echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
 		/etc/athena/version
 	echo "Ending update from $oldvers to $newvers at `date`."
