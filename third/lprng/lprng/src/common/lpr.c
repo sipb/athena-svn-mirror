@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.15 2002-01-23 12:13:06 zacheiss Exp $";
+"$Id: lpr.c,v 1.16 2002-11-22 23:34:13 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -566,7 +566,8 @@ void Get_parms(int argc, char *argv[] )
  usage summary: %s [ -Pprinter[@host] ] [-(K|#)copies] [-Cclass][-Jinfo]\n\
    [-Raccountname] [-m mailaddr] [-Ttitle] [-i indent]\n\
    [-wnum ][ -Zoptions ] [ -Uuser ] [ -Fformat ] [ -bhkr ]\n\
-   [-Ddebugopt ] [ filenames ...  ]\n\
+   [-Ddebugopt ] [-A authtype ] [ filenames ...  ]\n\
+ -A authtype - use authentication authtype instead of the default\n\
  -b,l        - binary or literal format\n\
  -Cclass  - job class\n\
  -F format   - job format filter\n\

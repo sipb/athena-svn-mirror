@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: krb5_auth.c,v 1.11 2001-03-07 21:23:04 ghudson Exp $";
+"$Id: krb5_auth.c,v 1.12 2002-11-22 23:34:13 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -481,7 +481,7 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 		}
 		if((retval = krb5_cc_get_principal(context, ccdef, &client))){
 			if( retval == KRB5_FCC_NOFILE )
-				plp_snprintf( err, errlen, "No tickets - try \"lpr -A none\"" );
+				plp_snprintf( err, errlen, "No tickets - try the \"-A none\" option");
 			else
 				plp_snprintf( err, errlen, "krb5_cc_get_principal failed - %s",
 					error_message( retval ) );

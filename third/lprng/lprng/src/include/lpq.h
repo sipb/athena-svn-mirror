@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lpq.h,v 1.2 2001-03-07 01:20:16 ghudson Exp $
+ * $Id: lpq.h,v 1.3 2002-11-22 23:33:51 zacheiss Exp $
  ***************************************************************************/
 
 
@@ -18,6 +18,7 @@ EXTERN int All_printers;    /* show all printers */
 EXTERN int Status_line_count; /* number of status lines */
 EXTERN int Clear_scr;       /* clear screen */
 EXTERN int Interval;        /* display interval */
+EXTERN char *Auth_JOB;      /* Auth type to use, overriding printcap */
 
 /* PROTOTYPES */
 int main(int argc, char *argv[], char *envp[]);

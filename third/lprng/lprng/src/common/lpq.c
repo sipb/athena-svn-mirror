@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpq.c,v 1.5 2001-03-07 21:23:11 ghudson Exp $";
+"$Id: lpq.c,v 1.6 2002-11-22 23:34:13 zacheiss Exp $";
 
 
 /***************************************************************************
@@ -207,6 +207,13 @@ void Show_status(char **argv)
 	/* set up configuration */
 	Get_printer();
 	Fix_Rm_Rp_info();
+
+	if ( Auth_JOB ){
+	  /* Edit our copy of the printcap record: Fix_auth
+	   * will update Auth_DYN from it later.
+	   */
+	  Set_str_value(&PC_entry_line_list, "auth", Auth_JOB);
+	}
 
 	if( LP_mode == 0 && Displayformat != REQ_DSHORT
 		&& safestrcasecmp(Printer_DYN, RemotePrinter_DYN) ){
@@ -492,7 +499,7 @@ int Remove_excess( struct line_list *l, int status_line_count, int output )
  extern char *next_opt;
 
  char LPQ_optstr[]    /* LPQ options */
- = "D:P:VacLlst:v" ;
+ = "D:P:VacLlst:vA:" ;
 
 void Get_parms(int argc, char *argv[] )
 {
@@ -554,6 +561,7 @@ SYNOPSIS
 						Interval = atoi( Optarg );
 						break;
 			case 'v': Longformat = 0; Displayformat = REQ_VERBOSE; break;
+			case 'A': Auth_JOB = safestrdup(Optarg,__FILE__,__LINE__); break;
 			default:
 				usage();
 			}
@@ -566,8 +574,9 @@ SYNOPSIS
 }
 
  char *lpq_msg = 
-"usage: %s [-aAclV] [-Ddebuglevel] [-Pprinter] [-tsleeptime]\n\
+"usage: %s [-aclV] [-Ddebuglevel] [-Pprinter] [-tsleeptime] [-A authtype]\n\
   -a           - all printers\n\
+  -A authtype  - use authentication authtype instead of the default\n\
   -c           - clear screen before update\n\
   -l           - increase (lengthen) detailed status information\n\
                  additional l flags add more detail.\n\
