@@ -18,6 +18,8 @@
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuRegisterWidget.c,v $
  * $Author: djf $
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/02/13  14:21:08  djf
+ * 
  * Revision 1.1  89/12/09  15:14:44  djf
  * Initial revision
  * 
@@ -236,7 +238,7 @@ char *name;
 {
     XrmQuark quark;
     int i;
-    char *err_buf[BUFSIZ];
+    char err_buf[BUFSIZ];
   
     quark = XrmStringToQuark(name);
     
@@ -246,7 +248,7 @@ char *name;
     i = hash_store(h, quark, w);
   
     if (i == 1) {/* if a widget was already stored by that name, warn */
-	(void)sprintf(err_buf,
+	sprintf(err_buf,
 "MuRegisterName: reuse of name %s.  Previously registered value overwritten",
 		name);
 	XtWarning(err_buf);
