@@ -5,4 +5,17 @@ echo "NEWTTYS=true"			>> ${CONFVARS}
 
 case ${MACH} in
 VS2*)	;;
+RSAIX)
+	echo -n "Updating /root ..."
+	cp /afs/rel-eng/system/rs_aix32/image/rconf.root /tmp/rconf
+	synctree -s /afs/rel-eng/system/rs_aix32/image/usr/lpp/bos/int_root -d / -nosrcrules -nodstrules -a /tmp/rconf
+	rm /tmp/rconf
+	echo -n "Updating /usr ..."
+	cp /afs/rel-eng/system/rs_aix32/image/rconf.usr /tmp/rconf
+	synctree -s /afs/rel-eng/system/rs_aix32/image/ -d / -nosrcrules -nodstrules -a /tmp/rconf
+	rm /tmp/rconf
+	sh /afs/athena/system/rs_aix32/install/rc
+	sysck -y inventory
+	tcbck -y ALL
+	echo "Done"
 esac
