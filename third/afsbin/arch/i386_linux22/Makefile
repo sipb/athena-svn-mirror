@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1999-04-09 20:55:36 tb Exp $
+# $Id: Makefile,v 1.2 1999-06-04 16:42:28 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -53,8 +53,8 @@ install:
 	install -c -m 444 lib/afs/libdir.a $(DESTDIR)$(AFSWS)/lib/afs
 	install -c -m 444 lib/afs/libfsprobe.a $(DESTDIR)$(AFSWS)/lib/afs
 	install -c -m 444 lib/afs/libgtx.a $(DESTDIR)$(AFSWS)/lib/afs
-	install -c -m 444 lib/afs/libauth.a $(DESTDIR)$(AFSWS)/lib/afs
-	install -c -m 444 lib/afs/libauth.krb.a $(DESTDIR)$(AFSWS)/lib/afs
+	install -c -m 444 lib/afs/libkauth.a $(DESTDIR)$(AFSWS)/lib/afs
+	install -c -m 444 lib/afs/libkauth.krb.a $(DESTDIR)$(AFSWS)/lib/afs
 	install -c -m 444 lib/afs/libnull.a $(DESTDIR)$(AFSWS)/lib/afs
 	install -c -m 444 lib/afs/libprocmgmt.a $(DESTDIR)$(AFSWS)/lib/afs
 	install -c -m 444 lib/afs/libprot.a $(DESTDIR)$(AFSWS)/lib/afs
