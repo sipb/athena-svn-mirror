@@ -1,6 +1,6 @@
 Summary: libglade library
 Name: libglade
-Version: 2.4.0
+Version: 2.4.2
 Release: 1
 Copyright: LGPL
 Group: System Environment/Libraries

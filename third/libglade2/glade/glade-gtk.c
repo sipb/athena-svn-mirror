@@ -69,7 +69,11 @@ static void
 set_tooltip(GladeXML *xml, GtkWidget *widget,
 	    const gchar *prop_name, const gchar *prop_value)
 {
-    gtk_tooltips_set_tip(xml->priv->tooltips, widget, prop_value, NULL);
+    if (GTK_IS_TOOL_ITEM (widget))
+	gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (widget), xml->priv->tooltips,
+				   prop_value, NULL);
+    else
+	gtk_tooltips_set_tip(xml->priv->tooltips, widget, prop_value, NULL);
 }
 
 static void
@@ -377,6 +381,14 @@ menu_item_set_use_stock (GladeXML *xml, GtkWidget *w,
 
 	    gtk_label_set_text(GTK_LABEL(child), stock_item.label);
 	    gtk_label_set_use_underline(GTK_LABEL(child), TRUE);
+
+	    if (stock_item.keyval)
+		gtk_widget_add_accelerator (w,
+					    "activate",
+					    glade_xml_ensure_accel(xml),
+					    stock_item.keyval,
+					    stock_item.modifier,
+					    GTK_ACCEL_VISIBLE);
 	} else {
 	    g_warning("could not look up stock id '%s'", stock_id);
 	}
@@ -839,16 +851,8 @@ toolbar_build_children (GladeXML *xml, GtkWidget *parent,
 	       here, partly because GTK+ doesn't have direct support for stock
 	       toggle & radio items. */
 	    if (use_stock) {
-		GtkStockItem item;
-
-		if (gtk_stock_lookup (label, &item)) {
-		    /* Set stock to label, so the icon is created below. */
-		    stock = label;
-		    label = item.label;
-
-		    /* Most stock items have mnemonic accelerators. */
-		    use_underline = TRUE;
-		}
+		stock = label;
+		label = NULL;
 	    }
 
 	    if (stock) {
@@ -873,8 +877,8 @@ toolbar_build_children (GladeXML *xml, GtkWidget *parent,
 		    GTK_TOOLBAR (parent),
 		    GTK_TOOLBAR_CHILD_TOGGLEBUTTON, NULL,
 		    label, tooltip, NULL, iconw, NULL, NULL);
-		gtk_toggle_button_set_active(
-		    GTK_TOGGLE_BUTTON (child), active);
+		gtk_toggle_button_set_active
+		    (GTK_TOGGLE_BUTTON (child), active);
 	    } else if (!strcmp (childinfo->child->classname, "radio")) {
 		child = gtk_toolbar_append_element (
 		    GTK_TOOLBAR (parent),
@@ -886,6 +890,8 @@ toolbar_build_children (GladeXML *xml, GtkWidget *parent,
 				  "group", glade_xml_get_widget (xml, group_name),
 				  NULL);
 		}
+		gtk_toggle_button_set_active
+		    (GTK_TOGGLE_BUTTON (child), active);
 	    } else
 		child = gtk_toolbar_append_item (
 		    GTK_TOOLBAR (parent),
@@ -903,7 +909,11 @@ toolbar_build_children (GladeXML *xml, GtkWidget *parent,
 	    glade_xml_set_common_params (xml, child, childinfo->child);
 	} else {
 	    child = glade_xml_build_widget (xml, childinfo->child);
-	    gtk_toolbar_append_widget (GTK_TOOLBAR (parent), child, NULL, NULL);
+
+	    if (GTK_IS_TOOL_ITEM (child))
+		gtk_toolbar_insert (GTK_TOOLBAR (parent), GTK_TOOL_ITEM (child), -1);
+	    else
+		gtk_toolbar_append_widget (GTK_TOOLBAR (parent), child, NULL, NULL);
 	}
     }
 }
@@ -1107,6 +1117,15 @@ combo_find_internal_child(GladeXML *xml, GtkWidget *parent,
     return NULL;
 }
 
+static GtkWidget *
+combo_box_entry_find_internal_child(GladeXML *xml, GtkWidget *parent,
+				    const gchar *childname)
+{
+    if (!strcmp(childname, "entry"))
+	return gtk_bin_get_child(GTK_BIN(parent));
+    return NULL;
+}
+
 void
 _glade_init_gtk_widgets(void)
 {
@@ -1178,7 +1197,7 @@ _glade_init_gtk_widgets(void)
     glade_register_widget (GTK_TYPE_COMBO_BOX, glade_standard_build_widget,
 			   NULL, NULL);
     glade_register_widget (GTK_TYPE_COMBO_BOX_ENTRY, glade_standard_build_widget,
-			   NULL, NULL);
+			   glade_standard_build_children, combo_box_entry_find_internal_child);
     glade_register_widget (GTK_TYPE_CTREE, glade_standard_build_widget,
 			   clist_build_children, NULL);
     glade_register_widget (GTK_TYPE_CURVE, glade_standard_build_widget,
@@ -1195,6 +1214,8 @@ _glade_init_gtk_widgets(void)
 			   expander_build_children, NULL);
     glade_register_widget (GTK_TYPE_FILE_CHOOSER, glade_standard_build_widget,
 			   NULL, NULL);
+    glade_register_widget (GTK_TYPE_FILE_CHOOSER_DIALOG, glade_standard_build_widget,
+			   gtk_dialog_build_children, dialog_find_internal_child);
     glade_register_widget (GTK_TYPE_FILE_SELECTION, NULL,
 			   glade_standard_build_children, filesel_find_internal_child);
     glade_register_widget (GTK_TYPE_FIXED, glade_standard_build_widget,
