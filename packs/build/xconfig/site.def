@@ -55,7 +55,7 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #define	StripInstalledPrograms YES
 #endif
 
-#ifdef MipsArchitecture
+#ifdef UltrixArchitecture
 /* Build the Xdec server */
 #define XcfbpmaxServer NO
 #ifdef XdecServer
