@@ -1,4 +1,4 @@
-# $Id: athena,v 1.40 1998-04-16 22:01:19 ghudson Exp $
+# $Id: athena,v 1.41 1998-04-16 22:13:06 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -93,6 +93,7 @@ if [ "$PUBLIC" = true ]; then
 	$ECHO "Beginning public workstation cleanup"
 	rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
+	rm -f /etc/ssh_*
 	if [ -r /srvd/etc/passwd ]; then
 		cp -p /srvd/etc/passwd /etc/passwd.local
 		chmod 644 /etc/passwd.local
@@ -193,7 +194,11 @@ fi
 # Start Athena's inetd.  Make sure the time zone is set in its environment.
 . /etc/TIMEZONE
 $ECHO "inetd... \c"
-/etc/athena/inetd &
+if [ "$ACCESSON" = true ]; then
+	/etc/athena/inetd -n &
+else
+	/etc/athena/inetd &
+fi
 
 if [ "$OLC" = true ]; then
 	$ECHO "olcd... \c"
@@ -222,7 +227,7 @@ if [ "$MRUPDATE" = true ]; then
 	/usr/athena/etc/update_server &
 fi
 
-if [ "$SSHD" = true ]; then
+if [ "$SSHD" = true -o \( "$SSHD" = switched -a "$ACCESSON" = true \) ]; then
 	$ECHO "sshd... \c"
 	/etc/athena/sshd &
 fi

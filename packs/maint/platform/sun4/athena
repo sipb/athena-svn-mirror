@@ -1,4 +1,4 @@
-# $Id: athena,v 1.58 1998-04-16 21:59:24 ghudson Exp $
+# $Id: athena,v 1.59 1998-04-16 22:13:02 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -109,6 +109,7 @@ if [ "$PUBLIC" = true ]; then
 	echo "Beginning public workstation cleanup"
 	rm -rf /.hushlogin /etc/X0.hosts /etc/nologin.persist /usr/local
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
+	rm -f /etc/ssh_*
 	if [ -r /srvd/etc/passwd ]; then
 		cp -p /srvd/etc/passwd /etc/passwd.local
 		chmod 644 /etc/passwd.local
@@ -193,7 +194,11 @@ fi
 
 # Start Athena's inetd
 echo "inetd... \c"
-/etc/athena/inetd &
+if [ "$ACCESSON" = true ]; then
+	/etc/athena/inetd -n &
+else
+	/etc/athena/inetd &
+fi
 
 if [ "$KRBSRV" != false -a -f /.k ]; then
 	echo "kerberos... \c"
@@ -251,7 +256,7 @@ if [ "$MRUPDATE" = true ]; then
 	/usr/athena/etc/update_server &
 fi
 
-if [ "$SSHD" = true ]; then
+if [ "$SSHD" = true -o \( "$SSHD" = switched -a "$ACCESSON" = true \) ]; then
 	echo "sshd... \c"
 	/etc/athena/sshd &
 fi
