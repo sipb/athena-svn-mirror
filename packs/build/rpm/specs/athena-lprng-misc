@@ -3,6 +3,8 @@ Summary: Miscellaneous support files for the Athena lprng installation
 Copyright: MIT
 Group: System Environment/Base
 
+Requires: athena-hesinfo
+
 %description
 Miscellaneous support files for the Athena lprng installation
 
