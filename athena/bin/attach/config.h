@@ -1,8 +1,8 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.11 1991-08-15 16:37:37 probe Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.12 1992-01-29 11:15:19 epeisach Exp $
  */
 
 /*
@@ -81,7 +81,8 @@ typedef int	sig_catch;
 char *malloc();
 #endif
 
-#ifdef ultrix
+#if defined(ultrix) && !defined(vax)
+/* Ultrix vax compiler complains about void * casting */
 #include <malloc.h>
 #endif
 
