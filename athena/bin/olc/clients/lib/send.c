@@ -18,12 +18,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v $
- *	$Id: send.c,v 1.7 1990-07-16 08:17:08 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: send.c,v 1.8 1990-07-16 09:22:26 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.7 1990-07-16 08:17:08 lwvanels Exp $";
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/send.c,v 1.8 1990-07-16 09:22:26 vanharen Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -99,18 +99,18 @@ OSend(Request,type,file)
     
 
 ERRCODE
-OMailHeader(Request,file,recipient,topic,destination,message)
+OMailHeader(Request, file, username, realname, topic, destination, message)
      REQUEST *Request;
-     char *file, *recipient, *topic, *destination, *message;
+     char *file, *username, *realname, *topic, *destination, *message;
 {
   FILE *fp;
   
   fp = fopen(file, "w");
   if(fp == NULL)
     return(ERROR);
-  fprintf(fp, "To: %s@%s\n", recipient,destination);
+  fprintf(fp, "To: %s  <%s@%s>\n", realname, username, destination);
   fprintf(fp, "cc: \n");
-  fprintf(fp, "Subject: Your OLC question about %s\n", topic);
+  fprintf(fp, "Subject: Your OLC question about \"%s\"\n", topic);
   fprintf(fp, "--------\n\n");
   
   if(message != (char *) NULL)
