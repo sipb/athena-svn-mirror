@@ -19,12 +19,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.23 1990-08-25 23:45:02 lwvanels Exp $
+ *	$Id: notify.c,v 1.24 1990-08-26 15:59:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.23 1990-08-25 23:45:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.24 1990-08-26 15:59:18 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -478,8 +478,7 @@ zsend(notice)
   if ((ret = ZSendNotice(notice, ZAUTH)) != ZERR_NONE)
     {
       /* Some sort of unknown communications error. */
-      fprintf(stderr, "zsend: error %s from ZSendNotice\n",
-	      error_message (ret));
+      log_error (fmt("zsend: error %s from ZSendNotice",error_message (ret)));
       alarm(0);
       signal(SIGALRM, SIG_IGN);
       return(ERROR);
@@ -497,8 +496,7 @@ zsend(notice)
       ZERR_NONE)
     {
       /* Server acknowledgement error here. */
-      fprintf(stderr, "zsend: error %s from ZIfNotice\n",
-	      error_message (ret));
+      log_error(fmt("zsend: error %s from ZIfNotice",error_message (ret)));
       ZFreeNotice(&retnotice);
       alarm(0);
       signal(SIGALRM, SIG_IGN);
@@ -510,14 +508,14 @@ zsend(notice)
 
   if (retnotice.z_kind == SERVNAK)
     {
-      fprintf(stderr, "zsend: authentication failure (SERVNAK)\n");
+      log_error("zsend: authentication failure (SERVNAK)");
       ZFreeNotice(&retnotice);
       return(ERROR);
     }
 
   if (retnotice.z_kind != SERVACK || !retnotice.z_message_len)
     {
-      fprintf(stderr, "zsend: server failure during SERVACK\n");
+      log_error("zsend: server failure during SERVACK");
       ZFreeNotice(&retnotice);
       return(ERROR);
     }
@@ -552,7 +550,7 @@ zsend(notice)
 extern int sys_nerr;
 extern char *sys_errlist[];
 extern int errno;
-static char time_buf[20];
+static char time_buf[25];
  
 #ifdef mips
 int errno; /* declared in same file as perror in libc,
@@ -603,5 +601,6 @@ perror(msg)
 
 	v->iov_base = "\n";
 	v->iov_len = 1;
+	(void) lseek(2, 0L, L_XTND);
 	(void) writev(2, iov, (v - iov) + 1);
 }
