@@ -152,4 +152,36 @@ fi
 # should be in the infoagents file, just nuke it from the OS.
 rm -rf ${AIS_ROOT}/usr/lib/X11/app-defaults/Netscape
 
+# The IRIX 6.5.7 X server has a bug which can crash it when running
+# in 24-bit mode.  Though the bug was fixed in 6.5.10, no patch was
+# issued for the problem.  So, we extracted the fixed binaries from
+# the 6.5.10 distribution and installed them in the OS volume.
+# The following makes sure that the fixes are installed locally, for
+# each machine graphics type.
+
+verify()
+{
+    cmp -s /os$1 ${AIS_ROOT}$1 || {
+	rm -rf ${AIS_ROOT}$1
+	cp -p /os$1 ${AIS_ROOT}$1
+	if [ $? -ne 0 ]; then
+	    echo "verify: failed to copy $1 "
+	fi
+    }
+}
+
+case "${AIS_GRAPHICS}" in
+    CRM)
+	verify /usr/gfx/arch/GENERIC/Xsgi
+	verify /usr/lib/X11/dyDDX/crm.so
+	;;
+    GR3-XZ)
+	verify /usr/gfx/arch/GENERIC/Xsgi
+	verify /usr/lib/X11/dyDDX/gr2.so
+	;;
+    Indy)
+	verify /usr/gfx/arch/IP22NG1/Xsgi
+	;;
+esac
+
 exit 0

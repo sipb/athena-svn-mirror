@@ -910,8 +910,19 @@ handle_passwd_key (saver_info *si, XKeyEvent *event)
     case '\014':					/* Control-L */
       if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
       {
+	/* Try to find out what user we're running as, falling back to the
+	 * original uid we ran as if we can't.
+	 */
+	char *username;
+
+	username = getenv("USER");
+	if (!username)
+	  username = si->orig_uid;
+
+	openlog(progname, LOG_PID, LOG_AUTH);
 	syslog(LOG_NOTICE|LOG_AUTH, "%s forcibly logged out, %d seconds idle",
-	       si->orig_uid, (int) pw->idle_time);
+	       username, (int) pw->idle_time / 1000);
+	closelog();
 
         update_passwd_window (si, "Logging out...", pw->ratio);
         XSync (si->dpy, False);
