@@ -1407,12 +1407,8 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 		}
 
 		/* Tentatively create the account prior to authentication. */
-		if (!local_acct) {
-		    retval = al_acct_create(username, NULL, getpid(), 0, 0,
-					    &warnings);
-		    if (warnings)
-			free(warnings);
-		}
+		if (!local_acct)
+		    al_acct_create(username, NULL, getpid(), 0, 0, NULL);
 
 		lookup_user (username);	/* sets pwd */
 

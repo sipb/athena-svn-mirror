@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.11 1998-04-09 22:51:48 ghudson Exp $
+ * $Id: sshd.c,v 1.12 1998-04-25 23:15:56 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  1998/04/09 22:51:48  ghudson
+ * Support local accounts as determined by libal.
+ *
  * Revision 1.10  1998/03/12 20:37:12  danw
  * recheck pw->pw_dir after al_acct_create in case we got a temp homedir
  *
@@ -1878,14 +1881,9 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
     }
   if (!al_local_acct)
     {
-      al_acct_create(user, NULL, getpid(), 0, 0, &al_warnings);
+      al_acct_create(user, NULL, getpid(), 0, 0, NULL);
       al_user = xstrdup(user);
       atexit(al_cleanup);
-      if (al_warnings)
-	{
-	  free(al_warnings);
-	  al_warnings = NULL;
-	}
     }
   pw = getpwnam(user);
 

@@ -565,7 +565,7 @@ user(name)
 	char *getusershell();
 #endif
 	char *errmem;
-	int status, *warnings;
+	int status;
 
 	/* Some paranoid sites may want the client to authenticate
 	 * before accepting the USER command.  If so, uncomment this:
@@ -604,16 +604,12 @@ user(name)
 		return;
 	}
 	if (!al_local_acct) {
-		status = al_acct_create(name, NULL, getpid(), 0, 0, &warnings);
-		if (status != AL_SUCCESS) {
-			if (status == AL_WARNINGS)
-				free(warnings);
-			else {
-				reply(530, "User %s access denied: %s", name,
-				      al_strerror(status, &errmem));
-				al_free_errmem(errmem);
-				return;
-			}
+		status = al_acct_create(name, NULL, getpid(), 0, 0, NULL);
+		if (status != AL_SUCCESS && status != AL_WARNINGS) {
+		    reply(530, "User %s access denied: %s", name,
+			  al_strerror(status, &errmem));
+		    al_free_errmem(errmem);
+		    return;
 		}
 	}
 
