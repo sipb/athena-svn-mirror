@@ -22,6 +22,12 @@ swap -d "$swapdev" || {
   exit 2
 }
 
+# Between April and June of 2001, some types of Suns were installed
+# with partitions that had the last cylinder of the swap partition and
+# the first partition of the AFS cache partition overlapping.  
+# We need to fix this before we can newfs the swap partition.
+/srvd/usr/athena/lib/update/fix-partitions
+
 # Put a miniroot in the swap partition, and prepare to boot it.
 
 swapmount=/var/athena/update.miniroot

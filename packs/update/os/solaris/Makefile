@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 2001-04-12 17:14:26 ghudson Exp $
+# $Id: Makefile,v 1.4 2001-06-20 14:33:43 zacheiss Exp $
 
 SLISTS=/usr/athena/lib/slists
 UPDATE=/usr/athena/lib/update
@@ -11,6 +11,7 @@ install:
 	mkdir -p ${DESTDIR}${UPDATE}
 	mkdir -p ${DESTDIR}${SLISTS}
 	install -c -m 0444 configfiles ${DESTDIR}${UPDATE}
+	install -c -m 0555 fix-partitions.sh ${DESTDIR}${UPDATE}/fix-partitions
 	install -c -m 0444 kernel_rvd ${DESTDIR}${SLISTS}
 	install -c -m 0444 os_rvd ${DESTDIR}${SLISTS}
 	install -c -m 0555 setup-swap-boot.sh \
