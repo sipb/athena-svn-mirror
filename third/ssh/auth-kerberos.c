@@ -9,13 +9,19 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.5.2.4 1998-08-03 02:35:35 ghudson Exp $
+ * $Id: auth-kerberos.c,v 1.5.2.5 1998-11-09 16:27:08 ghudson Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.5.2.4  1998/08/03 02:35:35  ghudson
+ * Pull up change from rev 1.9 to Athena 8.2 branch.
+ *
  * Revision 1.5.2.3  1998/07/28 03:16:51  ghudson
  * Pull up change from rev 1.8 to Athena 8.2 branch.
  *
  * Revision 1.5.2.2  1998/07/15 22:49:55  ghudson
  * Pull up change from rev 1.7 to Athena 8.2 branch.
+ *
+ * Revision 1.10  1998/11/09 16:25:21  ghudson
+ * Close some possible buffer overflows.
  *
  * Revision 1.9  1998/08/01 18:38:49  danw
  * from amu: malloc enough space to store the full ticket file name
@@ -110,11 +116,11 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
 	  krb5_auth_con_free(ssh_context, auth_context);
 	  auth_context = 0;
 	}
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
       
-      debug("Kerberos krb5_auth_con_genaddrs (%s).", error_message(problem));
-      packet_send_debug("Kerberos krb5_auth_con_genaddrs: %s",
+      debug("Kerberos krb5_auth_con_genaddrs (%.100s).", error_message(problem));
+      packet_send_debug("Kerberos krb5_auth_con_genaddrs: %.100s",
 			error_message(problem));
       return 0;
     }
@@ -127,11 +133,11 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
 	  krb5_auth_con_free(ssh_context, auth_context);
 	  auth_context = 0;  
 	}
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
       
-      debug("Kerberos V5 rd_req failed (%s).", error_message(problem));
-      packet_send_debug("Kerberos V5 krb5_rd_req: %s", error_message(problem));
+      debug("Kerberos V5 rd_req failed (%.100s).", error_message(problem));
+      packet_send_debug("Kerberos V5 krb5_rd_req: %.100s", error_message(problem));
       return 0;
     }
   
@@ -140,22 +146,22 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
   if (problem)
     {
       krb5_free_ticket(ssh_context, ticket);
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
       
-      debug("Kerberos krb5_unparse_name failed (%s).", error_message(problem));
-      packet_send_debug("Kerberos krb5_unparse_name: %s",
+      debug("Kerberos krb5_unparse_name failed (%.100s).", error_message(problem));
+      packet_send_debug("Kerberos krb5_unparse_name: %.100s",
 			error_message(problem));
       return 0;
     }
   if (strncmp(server, "host/", strlen("host/")))
     {
       krb5_free_ticket(ssh_context, ticket);
-      log_msg("Kerberos ticket authentication of user %s failed: invalid service name (%s)",
+      log_msg("Kerberos ticket authentication of user %.100s failed: invalid service name (%.100s)",
 	      server_user, server);
       
-      debug("Kerberos invalid service name (%s).", server);
-      packet_send_debug("Kerberos invalid service name (%s).", server);
+      debug("Kerberos invalid service name (%.100s).", server);
+      packet_send_debug("Kerberos invalid service name (%.100s).", server);
       krb5_xfree(server);
       return 0;
     }
@@ -169,11 +175,11 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
   
   if (problem)
     {
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
-      debug("Kerberos krb5_copy_principal failed (%s).", 
+      debug("Kerberos krb5_copy_principal failed (%.100s).", 
 	    error_message(problem));
-      packet_send_debug("Kerberos krb5_copy_principal: %s", 
+      packet_send_debug("Kerberos krb5_copy_principal: %.100s", 
 			error_message(problem));
       return 0;
     }
@@ -182,11 +188,11 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
   /* Make the reply - so that mutual authentication can be done */
   if ((problem = krb5_mk_rep(ssh_context, auth_context, &reply)))
     {
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
-      debug("Kerberos krb5_mk_rep failed (%s).",
+      debug("Kerberos krb5_mk_rep failed (%.100s).",
 	    error_message(problem));
-      packet_send_debug("Kerberos krb5_mk_rep failed: %s",
+      packet_send_debug("Kerberos krb5_mk_rep failed: %.100s",
 			error_message(problem));
       return 0;
     }
@@ -207,7 +213,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
 {
   krb5_creds **creds;
   krb5_error_code retval;
-  static char ccname[128], tktname[128];
+  static char ccname[512], tktname[512];
   krb5_ccache ccache = NULL;
   struct passwd *pwd;
   extern char *ticket;
@@ -258,9 +264,9 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   
   if (retval = krb5_rd_cred(ssh_context, auth_context, krb5data, &creds, NULL))
     {
-      log_msg("Kerberos V5 tgt rejected for user %.100s : %s", server_user,
+      log_msg("Kerberos V5 tgt rejected for user %.100s : %.100s", server_user,
 	      error_message(retval));
-      packet_send_debug("Kerberos V5 tgt rejected for %.100s : %s",
+      packet_send_debug("Kerberos V5 tgt rejected for %.100s : %.100s",
 			server_user,
 			error_message(retval));
       packet_start(SSH_SMSG_FAILURE);
@@ -281,7 +287,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
     goto errout;
   
   ticket = xmalloc(strlen(ccname) + 1);
-  (void) sprintf(ticket, "%s", ccname);
+  (void) sprintf(ticket, "%.100s", ccname);
   
   /* Now try to get krb4 tickets */
   krb524_init_ets(ssh_context);
@@ -328,9 +334,9 @@ errout2:
   krb5_cc_destroy(ssh_context, ccache);
 errout:
   krb5_free_tgt_creds(ssh_context, creds);
-  log_msg("Kerberos V5 tgt rejected for user %.100s :%s", server_user,
+  log_msg("Kerberos V5 tgt rejected for user %.100s :%.100s", server_user,
 	  error_message(retval));
-  packet_send_debug("Kerberos V5 tgt rejected for %.100s : %s", server_user,
+  packet_send_debug("Kerberos V5 tgt rejected for %.100s : %.100s", server_user,
 		    error_message(retval));
   packet_start(SSH_SMSG_FAILURE);
   packet_send();
