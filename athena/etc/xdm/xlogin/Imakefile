@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.43 1998-05-17 03:51:42 ghudson Exp $
+# $Id: Imakefile,v 1.43.2.1 1998-09-24 15:32:55 ghudson Exp $
 
 #ifdef SOLARIS
 MACHDEFS=-DSOLARIS_MAE
@@ -18,8 +18,8 @@ AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp -lsys
 
 SRCS = xlogin.c verify.c SmeBSB.c StringToPixel.c Clock.c
 OBJS = xlogin.o verify.o SmeBSB.o StringToPixel.o Clock.o
-LIBS = -lWc -lXp -lXmu -lXaw -lXt -lXext -lX11 -lal -lkrb4 -ldes425 -lkrb5 \
-	-lcrypto -lhesiod $(AFSLIBS) $(MACHLIBS) -lcom_err -lm
+LIBS = -lWc -lXp -lXmu -lXaw -lXt -lXext -lX11 -lal -llarv -lkrb4 -ldes425 \
+	-lkrb5 -lcrypto -lhesiod $(AFSLIBS) $(MACHLIBS) -lcom_err -lm
 
 #ifdef SOLARIS
 PRESOURCES=Xlogin.sun4.presed
