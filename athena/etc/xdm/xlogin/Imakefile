@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.31 1995-11-27 23:48:26 cfields Exp $
+# $Id: Imakefile,v 1.32 1995-11-28 14:11:46 miki Exp $
 
 #if defined(_AIX) && (AIXV >= 30)
 MACHLIBS = -lodm -lcfg -ls
@@ -33,15 +33,8 @@ AFSLIBS = $(AFSDIR)/lib/afs/libsys.a \
 
 SRCS = xlogin.c ${ARISRC} verify.c SmeBSB.c StringToPixel.c
 OBJS = xlogin.o ${ARIOBJ} verify.o SmeBSB.o StringToPixel.o
-#ifndef SOLARIS
 LIBS = -lXaw  ${WCL} -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
 	$(MACHLIBS) $(KRB5_LIBS) $(AFSLIBS) -lm
-#else
-/* Is this linking R5 Xaw, Xmu, with R5 other? */
-LIBS = /usr/athena/lib/libXaw.a ${WCL} \
-	/usr/athena/lib/libXmu.a -lXt -lXext -lX11 \
-	$(KRB5_LIBS) -lkrb -ldes -lhesiod  $(AFSLIBS) $(MACHLIBS) -lm
-#endif
 
 #ifdef _IBMR2
 PRESOURCES=Xlogin.rios.presed
