@@ -1,11 +1,11 @@
 /* 
- * $Id: aklog_main.c,v 1.31 1998-03-30 19:01:11 danw Exp $
+ * $Id: aklog_main.c,v 1.32 1999-01-24 21:34:19 ghudson Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog_main.c,v 1.31 1998-03-30 19:01:11 danw Exp $";
+static const char rcsid[] = "$Id: aklog_main.c,v 1.32 1999-01-24 21:34:19 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,6 +50,10 @@ static const char rcsid[] = "$Id: aklog_main.c,v 1.31 1998-03-30 19:01:11 danw E
 
 #ifndef FALSE
 #define FALSE 0
+#endif
+
+#ifndef MAXSYMLINKS
+#define MAXSYMLINKS 15
 #endif
 
 #define DIR '/'			/* Character that divides directories */
