@@ -183,29 +183,40 @@ Bool
 grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor)
 {
   Status mstatus, kstatus;
-  XSync (si->dpy, False);
+  int i;
+  int retries = 4;
 
-  kstatus = grab_kbd (si, window);
-  if (kstatus != GrabSuccess)
-    {	/* try again in a second */
-      sleep (1);
+  for (i = 0; i < retries; i++)
+    {
+      XSync (si->dpy, False);
       kstatus = grab_kbd (si, window);
-      if (kstatus != GrabSuccess)
-	fprintf (stderr, "%s: couldn't grab keyboard!  (%s)\n",
-		 blurb(), grab_string(kstatus));
-    }
+      if (kstatus == GrabSuccess)
+        break;
 
-  mstatus = grab_mouse (si, window, cursor);
-  if (mstatus != GrabSuccess)
-    {	/* try again in a second */
+      /* else, wait a second and try to grab again. */
       sleep (1);
-      mstatus = grab_mouse (si, window, cursor);
-      if (mstatus != GrabSuccess)
-	fprintf (stderr, "%s: couldn't grab pointer!  (%s)\n",
-		 blurb(), grab_string(mstatus));
     }
 
-  return (kstatus == GrabSuccess ||
+  if (kstatus != GrabSuccess)
+    fprintf (stderr, "%s: couldn't grab keyboard!  (%s)\n",
+             blurb(), grab_string(kstatus));
+
+  for (i = 0; i < retries; i++)
+    {
+      XSync (si->dpy, False);
+      mstatus = grab_mouse (si, window, cursor);
+      if (mstatus == GrabSuccess)
+        break;
+
+      /* else, wait a second and try to grab again. */
+      sleep (1);
+    }
+
+  if (mstatus != GrabSuccess)
+    fprintf (stderr, "%s: couldn't grab pointer!  (%s)\n",
+             blurb(), grab_string(mstatus));
+
+  return (kstatus == GrabSuccess &&
 	  mstatus == GrabSuccess);
 }
 
@@ -1070,21 +1081,26 @@ raise_window (saver_info *si,
     }
 }
 
-void
+Bool
 blank_screen (saver_info *si)
 {
   int i;
+  Bool ok;
 
   /* Note: we do our grabs on the root window, not on the screensaver window.
      If we grabbed on the saver window, then the demo mode and lock dialog
      boxes wouldn't get any events.
    */
-  grab_keyboard_and_mouse (si,
-			   /*si->screens[0].screensaver_window,*/
-			   RootWindowOfScreen(si->screens[0].screen),
-			   (si->demoing_p
-			    ? 0
-			    : si->screens[0].cursor));
+  ok = grab_keyboard_and_mouse (si,
+                                /*si->screens[0].screensaver_window,*/
+                                RootWindowOfScreen(si->screens[0].screen),
+                                (si->demoing_p
+                                 ? 0
+                                 : si->screens[0].cursor));
+
+
+  if (!ok)
+    return False;
 
   for (i = 0; i < si->nscreens; i++)
     {
@@ -1112,6 +1128,8 @@ blank_screen (saver_info *si)
 #endif
 
   si->screen_blanked_p = True;
+
+  return True;
 }
 
 void
