@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.12 1997-04-01 01:17:59 ghudson Exp $
+# $Id: do-update.sh,v 1.13 1997-04-03 06:24:07 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -69,8 +69,7 @@ if [ "$PUBLIC" = true ]; then
 	for i in $configfiles; do
 		echo "$i" >> $CONFCHG;
 	done
-	rm -f	/.hushlogin \
-		/etc/*.local /etc/athena/*.local \
+	rm -f /.hushlogin /etc/*.local /etc/athena/*.local
 	touch /etc/named.local
 fi
 for i in $configfiles; do
