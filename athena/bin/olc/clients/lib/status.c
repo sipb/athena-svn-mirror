@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v $
- *	$Id: status.c,v 1.14 1990-12-13 16:45:21 lwvanels Exp $
+ *	$Id: status.c,v 1.15 1991-01-21 01:14:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.14 1990-12-13 16:45:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.15 1991-01-21 01:14:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -170,4 +170,32 @@ OGetConnectedHostname(Request,hostname)
 
   strcpy(hostname,list.connected.machine);
   return(SUCCESS);
+}
+
+OVersion(Request,vstring)
+     REQUEST *Request;
+     char **vstring;
+{
+  int fd;
+  int status;
+
+  Request->request_type = OLC_VERSION;
+  status = open_connection_to_daemon(Request, &fd);
+  if(status)
+    return(status);
+
+  status = send_request(fd, Request);
+  if(status)
+    {
+      close(fd);
+      return(status);
+    }
+  read_response(fd, &status);
+
+  if(status == SUCCESS)
+    {
+      *vstring = read_text_from_fd(fd);
+    }
+  (void) close(fd);
+  return(status);
 }
