@@ -1,5 +1,8 @@
 #!/sbin/sh
 
+PATH=/srvd/install:$PATH
+export PATH
+
 method=$1
 newvers=$2
 
@@ -29,7 +32,7 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-mkfs_efs $swapdev
+mkfs_xfs $swapdev
 if [ $? -ne 0 ]; then
 	echo "Failure building filesystem on $swapdev."
 	exit 1
@@ -49,69 +52,71 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-# Indy's have different kernels to choose from, based on the
-# CPU/graphics combination.  There's also different versions
-# of binaries such as /lib32/libc.so.1 between the R4000 and
-# R5000 architectures.  These are split into different tar sets.
-if [ `uname -m` = "IP22" ]; then
-	eval `hinv | awk '\
-	    /CPU: MIPS/			{ p = $3 }			\
-	    /Graphics board:/		{ g = $3 }			\
-	    /graphics installed/	{ g = $1 }			\
-	    END		{ printf("cpu=%s; graphics=%s", p, g); }'`
+# SGI's have different kernels to choose from, based on the
+# CPU/graphics combination.  Figure out the right one to
+# copy in for this machine.
+eval `hinv | awk '\
+    /CPU: MIPS/			{ p = $3 }			\
+    /Graphics board:/		{ g = $3 }			\
+    /graphics installed/	{ g = $1 }			\
+    END		{ printf("cpu=%s; graphics=%s", p, g); }'`
 
-	# Copy in files specific to the hardware combination (kernel)
-	case ${cpu} in
-	    R4400)
-		hdwr=44
-		;;
-	    R4600)
-		hdwr=46
-		;;
-	    R5000)
-		hdwr=50
-		;;
-	    *)
-		echo "Unrecognized CPU type: ${cpu}"
-		exit 1
-		;;
-	esac
+# Copy in files specific to the hardware combination (kernel)
+case ${cpu} in
+    R4400)
+	hdwr=44
+	;;
+    R4600)
+	hdwr=46
+	;;
+    R5000)
+	hdwr=50
+	;;
+    *)
+	echo "Unrecognized CPU type: ${cpu}"
+	exit 1
+	;;
+esac
 
-	case ${graphics} in
-	    GR3-XZ)
-		hdwr=${hdwr}xz
-		;;
-	    Indy)
-		hdwr=${hdwr}xl
-		;;
-	    *)
-		echo "Unrecognized graphics subsystem: ${graphics}"
-		exit 1
-		;;
-	esac
+case ${graphics} in
+    GR3-XZ)
+	hdwr=${hdwr}xz
+	;;
+    Indy)
+	hdwr=${hdwr}xl
+	;;
+    CRM)
+	hdwr=${hdwr}cr
+	;;
+    *)
+	echo "Unrecognized graphics subsystem: ${graphics}"
+	exit 1
+	;;
+esac
 
-	echo "Untarring miniroot.${hdwr}..."
-	(cd $swapmount; \
-	    zcat /install/miniroot/miniroot.${hdwr}.tar.Z | tar xf -)
-	if [ $? -ne 0 ]; then
-	    echo "Failed untarring miniroot.${hdwr}."
-	    exit 1
-	fi
+echo "Copying unix.${hdwr}..."
+zcat /install/miniroot/unix.${hdwr} > $swapmount/unix
+if [ $? -ne 0 ]; then
+	echo "Failed copying unix.${hdwr}."
+	exit 1
+fi
+chmod 755 $swapmount/unix
 
-	# Copy in files specific to the CPU architecture
-	case ${cpu} in
-	    R4?00)
-		cpuarch=R4000
-		;;
-	    R5?00)
-		cpuarch=R5000
-		;;
-	    *)
-		echo "$prog: Unrecognized CPU architecture: ${cpu}"
-		exit 1
-		;;
-	esac
+# Copy in files specific to the CPU architecture, if any.
+case ${cpu} in
+    R4?00)
+	cpuarch=R4000
+	;;
+    R5?00)
+	cpuarch=R5000
+	;;
+    *)
+	echo "$prog: Unrecognized CPU architecture: ${cpu}"
+	exit 1
+	;;
+esac
 
+if [ -f /install/miniroot/miniroot.${cpuarch}.tar.Z ]; then
 	echo "Untarring miniroot.${cpuarch}..."
 	(cd $swapmount; \
 	    zcat /install/miniroot/miniroot.${cpuarch}.tar.Z | tar xf -)
@@ -119,7 +124,6 @@ if [ `uname -m` = "IP22" ]; then
 	    echo "Failed untarring miniroot.${cpuarch}."
 	    exit 1
 	fi
-
 fi
 
 # The miniroot may be a different OS version from
@@ -131,19 +135,24 @@ fi
 
 /srvd/install/netconf --swap --root $swapmount --hostname $HOST --ipaddr $ADDR
 
-# The miniroot kernel is built with a bogus rootdev; it will get the
-# correct root device from the OSLoadPartition nvram variable, set below.
-# So, we just need to link /dev/root and /dev/rroot to the correct devices.
-rm -f $swapmount/dev/root $swapmount/dev/rroot
-swapdisk=`devnm $swapmount | awk -F/ '{ print $4 }'`
-ln $swapmount/dev/dsk/$swapdisk $swapmount/dev/root
-ln $swapmount/dev/rdsk/$swapdisk $swapmount/dev/rroot
-
 # Pass on information about where the proper root partition is.
 # Note this code assumes there is just one big root partition, and
-# no subpartitions like /usr. (The AFS cache partition isn't relevant.)
+# no subpartitions like /usr.
 rootdev=`devnm / | awk '{ print $1 }'`
 echo "ROOTDEVICE=$rootdev" >> $CONFVARS
+
+# Create a small (40 MB) swap file. (inst needs a lot of virtual memory).
+# Note that the fstab entry should already have been added when the
+# miniroot was created.
+rm -f $swapmount/swap/swapfile
+mkfile 40m $swapmount/swap/swapfile
+if [ $? -ne 0 ]; then
+	echo "Failure creating swap file in miniroot"
+	exit 1
+fi
+
+# Add the current AFS cache partition to the miniroot fstab.
+mount -p | awk '$2 == "/usr/vice/cache"' >> $swapmount/etc/fstab
 
 mkdir -p $swapmount`dirname $CONFVARS`
 cp $CONFVARS $swapmount/$CONFVARS
@@ -157,6 +166,7 @@ mkdir -p $swapmount$CONFDIR
 cp $CONFDIR/version $swapmount$CONFDIR/version
 cp /srvd/etc/rc2.d/S36finish-update $swapmount/etc/rc2.d
 rm $swapmount/etc/rc2.d/S35afs
+rm $swapmount/etc/rc2.d/S49swap
 
 # Add needed Athena customizations
 cp /etc/config/suppress-network-daemons $swapmount/etc/config
