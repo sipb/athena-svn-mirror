@@ -150,8 +150,8 @@ case "$1" in
 				/usr/vice/etc/cacheinfo.old
 			df -bk /usr/vice/cache/ | awk '
 				(NR == 2) {
-					printf("/afs:/usr/vice/cache:%d\n",
-					       int($2 * 3 / 4));
+					printf "/afs:/usr/vice/cache:";
+					print int($3 * 3 / 4);
 				}' > /usr/vice/etc/cacheinfo
 			sed -n '1s/^.*:\([^:]*\)$/New AFS cache size = \1K/p' \
 				/usr/vice/etc/cacheinfo	> /dev/console
