@@ -7,17 +7,17 @@
  * replacement for rm which allows for file recovery.
  * 
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/errors.c,v 1.3 1990-11-12 02:28:28 jik Exp $";
+     static char rcsid_errors_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/errors.c,v 1.4 1991-02-28 18:42:40 jik Exp $";
 #endif
 
 #include <com_err.h>
 #include <stdio.h>
 #include "delete_errs.h"
-#include "mit-copyright.h"
+#include "mit-copying.h"
 
 char *whoami;
 int error_reported = 1;

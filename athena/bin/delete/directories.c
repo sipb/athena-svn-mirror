@@ -7,11 +7,11 @@
  * replacement for rm which allows for file recovery.
  * 
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.18 1991-02-22 06:32:25 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.19 1991-02-28 18:42:28 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -30,7 +30,7 @@
 #include "delete_errs.h"
 #include "util.h"
 #include "directories.h"
-#include "mit-copyright.h"
+#include "mit-copying.h"
 #include "errors.h"
 
 extern char *realloc();

@@ -1,11 +1,11 @@
 #     Copyright 1988 Massachusetts Institute of Technology.
 #
 #     For copying and distribution information, see the file
-#     "mit-copyright.h".
+#     "mit-copying.h".
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.28 1991-02-22 07:35:51 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.29 1991-02-28 18:41:57 jik Exp $
 #
 
 DESTDIR=
@@ -63,7 +63,7 @@ SRCS= 		delete.c undelete.c directories.c pattern.c util.c\
 		expunge.c lsdel.c col.c shell_regexp.c\
 		errors.c stack.c
 INCS= 		col.h delete.h directories.h expunge.h lsdel.h\
-		mit-copyright.h pattern.h undelete.h util.h\
+		mit-copying.h pattern.h undelete.h util.h\
 		shell_regexp.h errors.h stack.h
 ETS=		delete_errs.h delete_errs.c
 ETSRCS=		delete_errs.et

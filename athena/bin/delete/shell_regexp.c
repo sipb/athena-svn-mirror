@@ -7,18 +7,18 @@
  * replacement for rm which allows for file recovery.
  * 
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_shell_regexp_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/shell_regexp.c,v 1.2 1989-11-06 21:27:16 jik Exp $";
+     static char rcsid_shell_regexp_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/shell_regexp.c,v 1.3 1991-02-28 18:43:43 jik Exp $";
 #endif
 
 #include <com_err.h>
 #include "shell_regexp.h"
 #include "delete_errs.h"
 #include "errors.h"
-#include "mit-copyright.h"
+#include "mit-copying.h"
 
 static int real_cmp();
 

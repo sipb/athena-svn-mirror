@@ -7,11 +7,11 @@
  * prefix.
  *
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.21 1991-02-20 17:28:11 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.22 1991-02-28 18:44:11 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -39,7 +39,7 @@ typedef unsigned short uid_t;
 #include "delete_errs.h"
 #include "util.h"
 #include "directories.h"
-#include "mit-copyright.h"
+#include "mit-copying.h"
 #include "errors.h"
 
 extern char *getenv();

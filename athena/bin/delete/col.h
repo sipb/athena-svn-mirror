@@ -7,9 +7,9 @@
  * replacement for rm which allows for file recovery.
  * 
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
-#include "mit-copyright.h"
+#include "mit-copying.h"
 
 /*
  * DEF_COL_WIDTH: the column with to try to use if none is specified.

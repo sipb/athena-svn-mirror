@@ -1,16 +1,16 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.11 1991-02-20 17:28:33 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.12 1991-02-28 18:44:15 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
  * replacement for rm which allows for file recovery.
  * 
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
-#include "mit-copyright.h"
+#include "mit-copying.h"
 
 #include <sys/stat.h>
 #ifndef S_IFLNK

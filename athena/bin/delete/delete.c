@@ -7,11 +7,11 @@
  * prefix.
  *
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.24 1991-02-20 17:24:51 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.25 1991-02-28 18:42:16 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -31,7 +31,7 @@
 #include "delete_errs.h"
 #include "util.h"
 #include "delete.h"
-#include "mit-copyright.h"
+#include "mit-copying.h"
 
 
 

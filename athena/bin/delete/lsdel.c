@@ -7,11 +7,11 @@
  * prefix.
  *
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.14 1991-02-20 17:36:11 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.15 1991-02-28 18:43:04 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -36,7 +36,7 @@ extern char *strcmp();
 #include "pattern.h"
 #include "lsdel.h"
 #include "shell_regexp.h"
-#include "mit-copyright.h"
+#include "mit-copying.h"
 #include "delete_errs.h"
 #include "errors.h"
 

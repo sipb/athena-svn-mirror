@@ -7,11 +7,11 @@
  * replacement for rm which allows for file recovery.
  * 
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.7 1990-06-06 19:05:56 jik Exp $";
+     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.8 1991-02-28 18:42:09 jik Exp $";
 #endif
 
 /*
@@ -31,7 +31,7 @@
 #include "errors.h"
 #include "delete_errs.h"
 #include "col.h"
-#include "mit-copyright.h"
+#include "mit-copying.h"
 
 
 static int calc_string_width(), calc_widths(), num_width();

@@ -7,11 +7,11 @@
  * replacement for rm which allows for file recovery.
  * 
  * Copyright (c) 1989 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h."
+ * For copying and distribution information, see the file "mit-copying.h."
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.8 1990-09-26 03:45:37 jik Exp $";
+     static char rcsid_stack_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/stack.c,v 1.9 1991-02-28 18:43:49 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -20,7 +20,7 @@
 #include "stack.h"
 #include "delete_errs.h"
 #include "errors.h"
-#include "mit-copyright.h"
+#include "mit-copying.h"
 #include "util.h"
 
 extern char *realloc();
