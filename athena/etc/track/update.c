@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.6 1991-02-28 11:35:53 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.7 1993-10-19 10:30:35 vrt Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.6  91/02/28  11:35:53  epeisach
+ * Changes by jfc to be more machine independent and not know the order
+ * of the bits in the type field.
+ * 
  * Revision 4.5  88/09/19  20:27:49  don
  * bellcore copyright.
  * 
@@ -67,7 +71,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.6 1991-02-28 11:35:53 epeisach Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.7 1993-10-19 10:30:35 vrt Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -242,7 +246,7 @@ struct currentness *r, *l;
 	    for ( p = missing_dirs; p; p = NEXT( p))
 		if ( ! strncmp( lpath[ ROOT], TEXT( p), strlen( TEXT( p)))) {
 		    sprintf(errmsg,"%s %s,\n\t%s %s.\n",
-			    "would't find parent directory for", localname,
+			    "couldn't find parent directory for", localname,
 			    "because track previously failed to create",
 			    TEXT( p));
 		    do_gripe();
