@@ -1,4 +1,4 @@
-# $Id: packages,v 1.294 2004-10-15 16:58:13 ghudson Exp $
+# $Id: packages,v 1.295 2004-11-03 12:18:02 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -39,7 +39,7 @@ third/binutils			early on solaris
 third/m4			early
 third/autoconf			early
 athena/bin/install		early on solaris
-third/pkgconfig			early on solaris
+third/pkgconfig			early
 third/sed			early on solaris
 third/bison			early on solaris
 third/flex			early on solaris
