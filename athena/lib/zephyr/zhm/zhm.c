@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.35 1988-08-25 11:53:52 jtkohl Exp $";
+static char rcsid_hm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.c,v 1.35.0.1 1988-09-09 13:14:21 jtkohl Exp $";
 
 #include <ctype.h>
 #include <signal.h>
@@ -248,7 +248,7 @@ void init_hm()
      FILE *fp;
 
      starttime = time((time_t *)0);
-     openlog("hm", LOG_PID, LOG_DAEMON);
+     OPENLOG("hm", LOG_PID, LOG_DAEMON);
   
      if ((ret = ZInitialize()) != ZERR_NONE) {
 	  Zperr(ret);
