@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.68 1998-10-21 16:08:53 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.69 1998-10-21 20:11:44 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -38,7 +38,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.68 1998-10-21 16:08:53 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.69 1998-10-21 20:11:44 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
     char **dmargv, **xargv, **consoleargv = NULL, **loginargv;
     char xpidf[256], line[16], buf[256];
     fd_set readfds;
-    int pgrp, file, tries, console = TRUE;
+    int pgrp, file, tries, count, console = TRUE;
 #ifdef TIOCCONS
     int on = 1;
 #endif
@@ -534,9 +534,9 @@ int main(int argc, char **argv)
 	    FD_ZERO(&readfds);
 	    FD_SET(console_tty, &readfds);
 	    (void) sigprocmask(SIG_SETMASK, &sig_zero, &mask);
-	    select(console_tty + 1, &readfds, NULL, NULL, NULL);
+	    count = select(console_tty + 1, &readfds, NULL, NULL, NULL);
 	    (void) sigprocmask(SIG_BLOCK, &mask, NULL);
-	    if (FD_ISSET(console_tty, &readfds)) {
+	    if (count > 0 && FD_ISSET(console_tty, &readfds)) {
 		file = read(console_tty, buf, sizeof(buf));
 		write(1, buf, file);
 	    }
