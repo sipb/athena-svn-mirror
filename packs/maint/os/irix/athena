@@ -1,4 +1,4 @@
-# $Id: athena,v 1.11 1999-06-01 19:11:17 danw Exp $
+# $Id: athena,v 1.12 1999-06-01 21:43:12 mwhitson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -100,6 +100,13 @@ $ECHO "Checking for a new release"
 if [ -x /srvd/auto_update ]; then
 	/srvd/auto_update rc
 fi
+
+# Irix likes to have its CD-ROM devices be mode 600 by default, which
+# would require various CD-playing programs to be setuid.  Make sure
+# they're world-writeable.
+for id in `hinv | awk '/CDROM/ {print $7"d"$3}'`; do
+      chmod 666 /dev/scsi/sc${id}l0
+done
 
 # If this is a PUBLIC workstation, ensure that that there are no hacks.
 # Do not update rc.conf if the workstation and srvd are different versions.
