@@ -15,7 +15,7 @@
 
 /* This file is part of liblocker. It implements attaching lockers. */
 
-static const char rcsid[] = "$Id: attach.c,v 1.9 2000-08-02 22:09:55 ghudson Exp $";
+static const char rcsid[] = "$Id: attach.c,v 1.9.2.1 2001-08-21 00:25:11 ghudson Exp $";
 
 #include <errno.h>
 #include <stdlib.h>
@@ -235,6 +235,9 @@ static int attach_attachent(locker_context context, locker_attachent *at,
 	  locker__remove_mountpoint(context, at);
 	  return status;
 	} 
+
+      /* Release the lock on the directory we have just created. */
+      locker__put_mountpoint(context, at);
     }
   else
       status = LOCKER_EALREADY;
