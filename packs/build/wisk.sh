@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.75 $
+# $Revision: 1.76 $
 
 umask 2
 
@@ -78,7 +78,7 @@ switch ( $machine )
     breaksw
 endsw
 
-set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod $krb_stage1 third/supported/kerberos5 "
+set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod third/supported/kerberos5 $krb_stage1 "
 
 set tools="athena/etc/synctree"
 
