@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.41 2002-06-04 22:32:03 ghudson Exp $
+# $Id: do-update.sh,v 1.42 2003-03-05 22:24:59 miki Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -51,12 +51,9 @@ echo "Beginning update from $version to $newvers at `date`."
 
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
-rm -f "$CONFIGVERS" "$LOCALPACKAGES" "$LINKPACKAGES" "$PATCHES"
-if [ -n "$LOCALPACKAGES" ]; then
-	rm -f "$LOCALPACKAGES".*
-fi
-if [ -n "$LINKPACKAGES" ]; then
-	rm -f "$LINKPACKAGES".*
+rm -f "$CONFIGVERS" "$PACKAGES" "$PATCHES"
+if [ -n "$PACKAGES" ]; then
+      rm -f "$PACKAGES".*
 fi
 
 # Get the platform name for Solaris.  "uname -i" is the documented way, but
@@ -130,8 +127,7 @@ fi
 #	$OLDBINS	A list of binaries to preserve before tracking
 #	$OLDLIBS	A list of libraries to preserve before tracking
 #	$DEADFILES	A list of local files to be removed
-#	$LOCALPACKAGES	A list of local OS packages to be de/installed
-#	$LINKPACKAGES	A list of linked OS packages to be de/installed
+#	$PACKAGES	A list of OS packages to be de/installed
 #	$CONFIGVERS	A list of new/old versions of config files,
 #			left behind by OS installation (Irix only)
 #	$CONFVARS	Can set variables to "true", including:

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.17 2001-10-23 23:32:37 rbasch Exp $
+# $Id: finish-update.sh,v 1.18 2003-03-05 22:25:47 miki Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -42,12 +42,9 @@ fi
 
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$OLDLIBS" "$DEADFILES"
-rm -f "$CONFIGVERS" "$LOCALPACKAGES" "$LINKPACKAGES" "$PATCHES"
-if [ -n "$LOCALPACKAGES" ]; then
-	rm -f "$LOCALPACKAGES".*
-fi
-if [ -n "$LINKPACKAGES" ]; then
-	rm -f "$LINKPACKAGES".*
+rm -f "$CONFIGVERS" "$PACKAGES" "$PATCHES"
+if [ -n "$PACKAGES" ]; then
+	rm -f "$PACKAGES".*
 fi
 
 # Convert old attachtab files.

@@ -28,30 +28,23 @@ fi
 
 yes="y\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny"
 
-if [ -s "$LOCALPACKAGES" -o -s "$LINKPACKAGES" ]; then
+if [ -s "$PACKAGES" ]; then
   pkglog=$UPDATE_ROOT/var/athena/update.pkglog
   rm -f "$pkglog"
 fi
 
-if [ -s "$LOCALPACKAGES" ]; then
-  echo "Installing os local packages"
-  for i in `cat "$LOCALPACKAGES"`; do
+if [ -s "$PACKAGES" ]; then
+  echo "Installing the os packages"
+  for i in `cat "$PACKAGES"`; do
     echo "$i"
     echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /install/cdrom "$i"
   done 2>>$pkglog
 fi
 
-if [ -s "$LINKPACKAGES" ]; then
-  echo "Installing the os link packages"
-  for i in `cat "$LINKPACKAGES"`; do
-    echo "$i"
-    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /install/cdrom/cdrom.link "$i"
-  done 2>>$pkglog
-fi
 
 if [ "$NEWOS" = "true" ]; then
   echo "Making adjustments"
-  cp /cdrom/I* "$UPDATE_ROOT/var/sadm/system/admin"
+  cp /cdrom/INST_RELEASE "$UPDATE_ROOT/var/sadm/system/admin"
   rm $UPDATE_ROOT/etc/.UNC*
   rm "$UPDATE_ROOT/etc/.sysidconfig.apps"
   cp /cdrom/.sysIDtool.state "$UPDATE_ROOT/etc/default"
