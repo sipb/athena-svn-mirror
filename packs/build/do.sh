@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.30 1999-02-28 18:30:45 ghudson Exp $
+# $Id: do.sh,v 1.31 1999-03-24 20:27:55 ghudson Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -71,6 +71,10 @@ case `uname -srm` in
 "IRIX 6.3 "*)
 	ATHENA_SYS=sgi_63
 	ATHENA_SYS_COMPAT=sgi_62:sgi_53:sgi_52
+	;;
+"IRIX 6.5 "*)
+	ATHENS_SYS=sgi_65
+	ATHENA_SYS_COMPAT=sgi_63:sgi_62:sgi_53:sgi_52
 	;;
 Linux\ 2.2.*\ i?86)
 	ATHENA_SYS=i386_linux22
