@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.77 1995-11-09 19:02:21 cfields Exp $
+ * $Id: login.c,v 1.78 1996-06-26 20:44:11 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.77 1995-11-09 19:02:21 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.78 1996-06-26 20:44:11 cfields Exp $";
 #endif
 
 /*
@@ -1091,7 +1091,9 @@ leavethis:
     pututxline(&utmpx);
     getutmp(&utmpx, &utmp); 
     setutent();
-    ut_tmp = getutline(&utmp);
+/*  ut_tmp = getutline(&utmp); Doing this probably breaks Solaris,
+	not doing it happens to work everywhere. You probably don't want
+	to know. */
     pututline(&utmp);
     if ((f = open("/usr/adm/wtmp", O_WRONLY|O_APPEND)) >= 0) {
 	write(f, (char *)&utmp, sizeof(utmp));
