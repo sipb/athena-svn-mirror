@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.5 1991-03-26 11:58:28 lwvanels Exp $
+ *	$Id: polld.c,v 1.6 1991-04-08 21:17:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.5 1991-03-26 11:58:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.6 1991-04-08 21:17:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -146,12 +146,20 @@ main(argc, argv)
   signal(SIGUSR2, start_profile); /* Start profiling */
 #endif /* PROFILE */
   
-#ifdef mips
-  openlog("polld",LOG_PID);  /* Broken ultrix syslog.. */
+#if defined(ultrix)
+#ifdef LOG_CONS
+  openlog ("polld", LOG_CONS | LOG_PID);
 #else
-  openlog("polld",LOG_CONS | LOG_PID, SYSLOG_LEVEL);
-#endif
-  
+  openlog ("polld", LOG_PID);
+#endif /* LOG_CONS */
+#else
+#ifdef LOG_CONS
+  openlog ("polld", LOG_CONS | LOG_PID,SYSLOG_LEVEL);
+#else
+  openlog ("polld", LOG_PID, SYSLOG_LEVEL);
+#endif /* LOG_CONS */
+#endif /* ultrix */
+
 #ifdef SABER
   nofork = 1;
 #endif
