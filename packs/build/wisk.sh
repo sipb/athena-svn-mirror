@@ -2,7 +2,7 @@
 
 # tcsh -x is the useful option.
 
-# $Revision: 1.38 $
+# $Revision: 1.39 $
 
 umask 2
 
@@ -48,7 +48,7 @@ set libs1=" athena/lib/et athena/lib/ss athena/lib/hesiod athena/lib/kerberos1 t
 
 set tools="athena/etc/synctree"
 
-set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif athena/lib/Mu third/supported/tcsh6 third/supported/emacs-19.28 third/supported/emacs-18.59 third/unsupported/perl-4.036 third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
+set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third/supported/xfonts third/supported/motif third/supported/wcl athena/lib/Mu third/supported/tcsh6 third/supported/emacs-19.28 third/supported/emacs-18.59 third/unsupported/perl-4.036 third/supported/tex third/unsupported/top third/unsupported/sysinfo third/unsupported/rcs third/unsupported/patch third/unsupported/tac third/unsupported/tools third/supported/mh.6.8"
 
 switch ( $machine )
   case decmips
@@ -76,7 +76,9 @@ set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanu
 # Decomissioned 9/95 by fiat
 # athena/bin/xps athena/bin/afs-nfs athena/bin/xprint athena/bin/kerberometer
 
-set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tar athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
+set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/olh athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
+
+# athena/bin/tar is leftover from vax & rt
 
 set end="athena/man athena/dotfiles athena/config"
 
@@ -249,7 +251,8 @@ switch ($package)
 	((echo "In install" >>& $outfile) &&\
 	(xmkmf . >>& $outfile) &&\
 	(make clean >>& $outfile) &&\
-	(make >>& $outfile))
+	(make >>& $outfile) &&\
+	(make install DESTDIR=$SRVD >>& $outfile)
 	if ($status == 1 ) then
 	        echo "We bombed in install" >>& $outfile
 		exit -1
