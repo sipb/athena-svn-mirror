@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.18 2003-04-02 20:10:55 ghudson Exp $
+# $Id: Makefile,v 1.19 2003-04-22 05:32:26 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -31,6 +31,7 @@ install:
 	rm -f ${DESTDIR}${ATHRETCDIR}/update_ws
 	ln -s /srvd/update_ws ${DESTDIR}${ATHRETCDIR}/update_ws
 	cd os/${OS} && ${MAKE} $@
+	install -c -m 0555 vers/athena-deadfiles-9.2 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/noask ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/irix52-53 ${DESTDIR}${UPDATE}
 	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}
