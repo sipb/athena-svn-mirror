@@ -17,11 +17,12 @@
  * miscellaneous functions.
  */
 
-static const char rcsid[] = "$Id: util.c,v 1.2 1997-10-30 23:58:57 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.3 1997-11-13 21:56:35 ghudson Exp $";
 
 #include <sys/param.h>
 #include <assert.h>
 #include <string.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <pwd.h>
 #include "al.h"
@@ -59,7 +60,7 @@ const char *al_strerror(int code, char **mem)
     "Home directory attach is disabled on this machine"
   };
 
-  assert(code >= AL_SUCCESS && code <= AL_WNOATTACH);
+  assert(code >= 0 && code < (sizeof(errtext) / sizeof(*errtext)));
   return errtext[code];
 }
 
@@ -67,6 +68,16 @@ void al_free_errmem(char *mem)
 {
   /* Do nothing for now. */
 }
+
+/* The next couple of functions (al__getpwnam() and al__getpwuid())
+ * are here because libal, being a library, shouldn't be stomping on
+ * the static memory returned by the native operating system's
+ * getpwnam() and getpwuid() calls.  Unfortunately, we have to write a
+ * lot of code which does the same thing as libc does.  Some day we
+ * may be able to assume that all modern platforms have getpwnam_r()
+ * and getpwuid_r() and have a single, simple version of these
+ * functions.
+ */
 
 #ifdef HAVE_MASTER_PASSWD
 static struct passwd *lookup(const DBT *key);
@@ -77,6 +88,9 @@ struct passwd *al__getpwnam(const char *username)
   char buf[UT_NAMESIZE + 1];
   int len;
 
+  /* Paranoia: don't find an empty username. */
+  if (!*username)
+    return NULL;
   len = strlen(username);
   if (len > UT_NAMESIZE)
     len = UT_NAMESIZE;
@@ -108,10 +122,11 @@ static struct passwd *lookup(const DBT *key)
   struct passwd *pwd;
 
   /* Open the insecure or secure database depending on whether we're root. */
-  db = dbopen((geteuid()) ? _PATH_MP_DB : _PATH_SMP_DB, O_RDONLY, 0,
-	      DB_HASH, NULL);
+  db = dbopen(_PATH_SMP_DB, O_RDONLY, 0, DB_HASH, NULL);
   if (!db)
-    return(NULL);
+    db = dbopen(_PATH_MP_DB, O_RDONLY, 0, DB_HASH, NULL);
+  if (!db)
+    return NULL;
 
   /* Look up the username. */
   if (db->get(db, key, &value, 0) != 0)
@@ -144,12 +159,15 @@ static struct passwd *lookup(const DBT *key)
   return pwd;
 }
 
-#else /* not HAVE_MASTER_PASSWD */
+#else /* HAVE_MASTER_PASSWD */
 
 static struct passwd *lookup(const char *username, uid_t uid);
 
 struct passwd *al__getpwnam(const char *username)
 {
+  /* Paranoia: don't find an empty username. */
+  if (!*username)
+    return NULL;
   return lookup(username, 0);
 }
 
@@ -166,7 +184,7 @@ static struct passwd *lookup(const char *username, uid_t uid)
    * we don't really need that level of performance in the login system
    * anyway. */
   FILE *fp;
-  int success = 0, linesize = 0, len = (username) ? strlen(username) : 0;
+  int linesize = 0, len = (username) ? strlen(username) : 0;
   struct passwd *pwd;
   char *line, *buffer;
   const char *p;
@@ -199,7 +217,7 @@ static struct passwd *lookup(const char *username, uid_t uid)
 	}
       pwd = (struct passwd *) buffer;
       buffer += sizeof(struct passwd);
-      memcpy(buffer, line, strlen(line) + 1);
+      strcpy(buffer, line);
 
 #if defined(BSD) || defined(ultrix)
       pwd->pw_quota = 0;
@@ -207,13 +225,18 @@ static struct passwd *lookup(const char *username, uid_t uid)
 #endif
 
       /* Set the fields of the returned structure. */
-#define NEXT_FIELD	buffer = strchr(buffer, ':'); \
-      if (!buffer) { free(pwd); break; } *buffer++ = 0
-#define FIELD(v) v = buffer; NEXT_FIELD
-					   FIELD(pwd->pw_name);
+#define BAD_LINE	{ free(pwd); break; }
+#define NEXT_FIELD	{ buffer = strchr(buffer, ':'); \
+	if (!buffer) BAD_LINE; *buffer++ = 0; }
+#define FIELD(v)	{ v = buffer; NEXT_FIELD; }
+      FIELD(pwd->pw_name);
       FIELD(pwd->pw_passwd);
+      if (!isdigit(*buffer))
+	BAD_LINE;
       pwd->pw_uid = atoi(buffer);
       NEXT_FIELD;
+      if (!isdigit(*buffer))
+	BAD_LINE;
       pwd->pw_gid = atoi(buffer);
       NEXT_FIELD;
       FIELD(pwd->pw_gecos);
@@ -238,13 +261,16 @@ void al__free_passwd(struct passwd *pwd)
   free(pwd);
 }
 
-/*
- * This is an internal function.  Its contract is to read a line from a
+/* This is an internal function.  Its contract is to read a line from a
  * file into a dynamically allocated buffer, zeroing the trailing newline
- * if there is one.  The initial value of *bufsize should be 0, and *buf
- * should be freed by the caller after use iff *bufsize is not 0.  This
- * function returns 0 if a line was successfully read, 1 if the file ended,
- * and -1 if there was an I/O error or if it ran out of memory.
+ * if there is one.  The calling routine may call al__read_line multiple
+ * times with the same buf and bufsize pointers; *buf will be reallocated
+ * and *bufsize adjusted as appropriate.  The initial value of *bufsize
+ * should be zero.  After the calling routine is done reading lines, it
+ * should free *buf if and only if *bufsize is 0 (it may assume *bufsize
+ * is not 0 if al__read_line() ever returned success).  This function
+ * returns 0 if a line was successfully read, 1 if the file ended, and -1
+ * if there was an I/O error or if it ran out of memory.
  */
 
 int al__read_line(FILE *fp, char **buf, int *bufsize)
