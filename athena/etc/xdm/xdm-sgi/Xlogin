@@ -1,6 +1,8 @@
 #!/bin/sh
 # /usr/bin/X11/xsetroot -bg sgilightblue -bitmap /usr/include/X11/bitmaps/grainy
 
+/usr/gfx/setmon 72hz
+
 XAUTHORITY=/usr/lib/X11/xdm/xdm-auth export XAUTHORITY
 
 #
