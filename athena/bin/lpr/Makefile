@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.12 1990-07-03 16:10:29 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.13 1990-07-05 13:49:45 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -150,29 +150,24 @@ FILTERS:
 	cd filters; make ${MFLAGS}
 
 install:
-	for i in lpr lpq lprm; do \
+	-for i in lpr lpq lprm; do \
 		install -c -s -o root -g ${SPGRP} -m 6755 $$i \
 			${DESTDIR}/${BINDIR}/$$i; \
 	done
-	ln -s lpr ${DESTDIR}/${BINDIR}/lpr.ucb
-	for i in ${SUBDIR}; do \
+	-rm -f ${DESTDIR}/${BINDIR}/lpr.ucb
+	-ln -s lpr ${DESTDIR}/${BINDIR}/lpr.ucb
+	-for i in ${SUBDIR}; do \
 		(cd $$i; make ${MFLAGS} DESTDIR=${DESTDIR} install; cd ..); \
 		done
-	install -c print.sh ${DESTDIR}/usr/ucb/print
-
-install_old:
 #	install -c -m 444 printcap ${DESTDIR}/etc/printcap
 	install -c -s -o root -g ${SPGRP} -m 6755 lpd ${DESTDIR}/${LIBDIR}/
-	install -c -s -o root -g ${SPGRP} -m 6755 lpr ${DESTDIR}/${BINDIR}/
-	install -c -s -o root -g ${SPGRP} -m 6755 lpq ${DESTDIR}/${BINDIR}/
-	install -c -s -o root -g ${SPGRP} -m 6755 lprm ${DESTDIR}/${BINDIR}/
 	install -c -s -o root -g ${SPGRP} -m 6755 s_lpr ${DESTDIR}/${BINDIR}/
 	install -c -s -o root -g ${SPGRP} -m 6755 s_lpq ${DESTDIR}/${BINDIR}/
 	install -c -s -o root -g ${SPGRP} -m 6755 s_lprm ${DESTDIR}/${BINDIR}/
-	install -c -s -o root -g ${OP_GID} -m 6754 o_lprm ${DESTDIR}/usr/etc/
+#	install -c -s -o root -g ${OP_GID} -m 6754 o_lprm ${DESTDIR}/usr/etc/
 	install -c -s -g ${SPGRP} -m 2755 lpc ${DESTDIR}/usr/etc/
-	install -c -s -o root -g ${OP_GID} -m 6754 o_lpc ${DESTDIR}/usr/etc/
-#	install -s lptest ${DESTDIR}/${BINDIR}/lptest
+#	install -c -s -o root -g ${OP_GID} -m 6754 o_lpc ${DESTDIR}/usr/etc/
+	install -s lptest ${DESTDIR}/${BINDIR}/lptest
 	install -s pac ${DESTDIR}/usr/etc/pac
 	install -c print.sh ${DESTDIR}/usr/ucb/print
 	install -c -m 755 makespools ${DESTDIR}/etc
