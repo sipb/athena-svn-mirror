@@ -557,7 +557,7 @@ stop\n%%xdvimark\n";
 	(void) fcntl(std_in[1], F_SETFL,
 	    fcntl(std_in[1], F_GETFL, 0) | O_NONBLOCK);
 
-#ifdef	_POSIX_SOURCE
+#ifdef	HAVE_SIGACTION
 	sigpipe_handler_struct.sa_handler = gs_sigpipe_handler;
 	sigemptyset(&sigpipe_handler_struct.sa_mask);
 #endif
