@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.11 2000-05-23 18:00:45 ghudson Exp $
+# $Id: Makefile,v 1.12 2002-05-22 15:17:58 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -56,7 +56,6 @@ install:
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 cron ${DESTDIR}${DEFAULT}
 	install -c -m 0644 crontab.root ${DESTDIR}${CRONTABS}/root
-	install -c -m 0644 devlink.tab ${DESTDIR}${ETCDIR}
 	install -c -m 0644 group ${DESTDIR}${ETCDIR}
 	install -c -m 0644 inetd.conf ${DESTDIR}${INET}
 	install -c -m 0644 inetd.conf.athena ${DESTDIR}${ATHRETCDIR}/inetd.conf
