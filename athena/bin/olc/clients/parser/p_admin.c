@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_admin.c,v $
- *	$Id: p_admin.c,v 1.1 1991-11-05 14:04:40 lwvanels Exp $
+ *	$Id: p_admin.c,v 1.2 1991-11-06 15:42:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_admin.c,v 1.1 1991-11-05 14:04:40 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_admin.c,v 1.2 1991-11-06 15:42:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -32,7 +32,7 @@ do_olc_zephyr(arguments)
 {
   REQUEST Request;
   int status;
-  int how_long;
+  int how_long = -1;
   int what = -1;
 
   if(fill_request(&Request) != SUCCESS)
@@ -49,10 +49,7 @@ do_olc_zephyr(arguments)
       }
       what = 1;
       ++arguments;
-      if(*arguments == NULL) {
-	how_long = -1; /* use server default */
-      }
-      else {
+      if(*arguments != NULL) { /* override default */
 	how_long = atoi(*arguments);
 	arguments++;
       }
