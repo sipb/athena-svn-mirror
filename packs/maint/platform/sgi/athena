@@ -119,7 +119,7 @@ if [ "${PUBLIC}" = "true" ]; then
 	rm -f /etc/shadow
 	cp -p /srvd/etc/group /etc/group.local
 	cp -p /etc/group.local /etc/group
-#?	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
+	cp -p /srvd/etc/syslog.conf /etc/syslog.conf
 
 	cp /dev/null /etc/named.local
 	cp /dev/null /etc/X0.hosts
