@@ -160,33 +160,45 @@ flags are specified.
 .SS Description of processes to restart
 It is possible to define additional flags that describe processes that
 should be restarted when the logfile is turned over by sending them a
-signal.  By default (if no signal flags are specified), a HUP signal
+signal. The processes may be specified either by pid file name,
+using ``signal,'' or by process name, using ``signame.'' (The latter
+is currently available on SGI only.)
+.PP
+By default (if no signal flags are specified), a HUP signal
 is sent to the process specified by
 .IR /etc/syslog.pid ,
 which is presumably the running
 .IR syslogd .
+On the SGI, the HUP signal is sent to the process named ``syslogd,''
+as that platform has no
+.IR syslog.pid
+file.
+.PP
 The flag definitions have the following fields:
 .br
 	the keyword
 .RB `` signal ''
+(or
+.RB `` signame '' )
 .br
 	flag letter
 .br
-	pidfile specifying the process
+	pidident specifying the pid file (or name of process)
 .br
 	signal (optional)
 .PP
 The
 .I flag letter
-is a character which will be used to refer to this pidfile and signal
+is a character which will be used to refer to this pidident and signal
 in the log file description lines.  The character is case-insensitive.
 Flags must be defined before they are used in a log file description.
 .PP
-The
-.I pidfile
-is a file which must contain, on the first line, the process ID (in
-ASCII decimal representation) of the process to which a signal should
-be sent.
+For the ``signal'' keyword, the
+.I pidident
+is the name of a file which must contain, on the first line, the
+process ID (in ASCII decimal representation) of the process to which a
+signal should be sent. For the ``signame'' keyword, it is the name of
+the process to be signaled.
 .PP
 It is possible to specify the
 .I signal
