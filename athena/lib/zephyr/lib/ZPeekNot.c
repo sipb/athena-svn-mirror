@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekNot.c,v 1.2 1987-06-20 19:21:36 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekNot.c,v 1.3 1987-06-23 16:58:51 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -30,5 +30,5 @@ Code_t ZPeekNotice(buffer,buffer_len,notice,auth,from)
 	    ZERR_NONE)
 		return (retval);
 
-	return (ZParseNotice(buffer,len,notice,auth));
+	return (ZParseNotice(buffer,len,notice,auth,from));
 }
