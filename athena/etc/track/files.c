@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.2 1991-02-28 11:10:39 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.3 1991-03-07 17:47:31 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.2  91/02/28  11:10:39  epeisach
+ * For PS2 may need rmslink.
+ * 
+ * 
  * Revision 4.1  88/09/19  20:25:03  don
  * bellcore copyright.
  * 
@@ -42,7 +46,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.2 1991-02-28 11:10:39 epeisach Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.3 1991-03-07 17:47:31 epeisach Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -284,7 +288,7 @@ unsigned int type;
 	}
 	if ( type == S_IFDIR);
 #ifdef i386
-	else if ( unlink( name) == -1 && rmsline(name) == -1) {
+	else if ( unlink( name) == -1 && rmslink(name) == -1) {
 #else
 	else if ( unlink( name)) {
 #endif
