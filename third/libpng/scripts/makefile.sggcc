@@ -36,13 +36,13 @@ OBJS = png.o pngset.o pngget.o pngrutil.o pngtrans.o pngwutil.o \
 	pngread.o pngrio.o pngwio.o pngwrite.o pngrtran.o \
 	pngwtran.o pngmem.o pngerror.o pngpread.o
 
-all: libpng.a $(SHAREDLIB).$(VER) pngtest
+all: libpng.a $(SHAREDLIB).$(SONUM).$(VER) pngtest
 
 libpng.a: $(OBJS)
 	ar rc $@  $(OBJS)
 	$(RANLIB) $@
 
-$(SHAREDLIB).$(VER): $(OBJS)
+$(SHAREDLIB).$(SONUM).$(VER): $(OBJS)
 	$(LDSHARED) -o $@ $(OBJS)
 	rm -f $(SHAREDLIB) $(SHAREDLIB).$(SONUM)
 	ln -s $@ $(SHAREDLIB)
@@ -63,11 +63,11 @@ install: libpng.a
 	chmod 644 $(DESTDIR)$(prefix)/include/pngconf.h
 	cp libpng.a $(DESTDIR)$(prefix)/lib
 	chmod 644 $(DESTDIR)$(prefix)/lib/libpng.a
-	cp $(SHAREDLIB).$(VER) $(DESTDIR)$(libdir); chmod 755 $(DESTDIR)$(libdir)/$(SHAREDLIB).$(VER)
-	(cd $(DESTDIR)$(libdir); if test -f $(SHAREDLIB).$(VER); then \
+	cp $(SHAREDLIB).$(SONUM).$(VER) $(DESTDIR)$(libdir); chmod 755 $(DESTDIR)$(libdir)/$(SHAREDLIB).$(SONUM).$(VER)
+	(cd $(DESTDIR)$(libdir); if test -f $(SHAREDLIB).$(SONUM).$(VER); then \
 	rm -f $(SHAREDLIB) $(SHAREDLIB).$(SONUM); \
-	ln -s $(SHAREDLIB).$(VER) $(SHAREDLIB); \
-	ln -s $(SHAREDLIB).$(VER) $(SHAREDLIB).$(SONUM); \
+	ln -s $(SHAREDLIB).$(SONUM) $(SHAREDLIB); \
+	ln -s $(SHAREDLIB).$(SONUM).$(VER) $(SHAREDLIB).$(SONUM); \
 	(ldconfig || true)  >/dev/null 2>&1; \
 	fi)
 
